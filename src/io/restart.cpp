@@ -1,6 +1,4 @@
 #include <stdio.h>
-#include <stdlib.h>
-#include <assert.h>
 
 #include <conf.h>
 #include "inc/conf.h"
