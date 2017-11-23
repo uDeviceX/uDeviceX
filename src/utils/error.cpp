@@ -14,7 +14,7 @@ static int         err_line;
 static const char *err_file;
 static char        err_msg[BUFSIZ];
 
-static int  err_status = 0
+static int  err_status = 0;
 static int  mpi_status = 0; 
 static int cuda_status = 0;
 
@@ -69,8 +69,7 @@ void report(const char *file, int line) {
         MSG("%s: %d: Error: %s\n"
             "backtrace:\n%s",
             err_file, err_line, err_msg, back_trace);
-        exit(1);
     }
-}
+}void abort() { exit(1); }
 
 } /* UdxError */

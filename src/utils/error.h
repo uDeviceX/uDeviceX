@@ -5,8 +5,10 @@
 #define UC(F) do {                                      \
         UdxError::stack_push(__FILE__, __LINE__);       \
         F;                                              \
-        if (UdxError::error())                          \
+        if (UdxError::error()) {                        \
             UdxError::report(__FILE__, __LINE__);       \
+            UdxError::abort();                          \
+        }                                               \
         UdxError::stack_pop();                          \
     } while (0)
 
@@ -18,4 +20,5 @@ void signal_error(const char *file, int line, const char *fmt, ...);
 
 bool error();
 void report(const char *file, int line);
+void abort();
 }
