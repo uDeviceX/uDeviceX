@@ -30,6 +30,11 @@ namespace scheme { namespace force {
   #include "dev/double_poiseuille.h"
   }
   #include "imp/double_poiseuille.h"
+#elif defined(FORCE_SHEAR)
+  namespace dev {
+  #include "dev/shear.h"
+  }
+  #include "imp/shear.h"
 #elif defined(FORCE_4ROLLER)
   namespace dev {
   #include "dev/4roller.h"
