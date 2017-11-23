@@ -9,4 +9,5 @@
 #include "imp.h"
 
 #include "imp/type.h"
+#include "imp/dev.h"
 #include "imp/main.h"
