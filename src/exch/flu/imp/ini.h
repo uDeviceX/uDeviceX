@@ -12,7 +12,6 @@ void ini(int maxd, Pack *p) {
         d::Malloc((void**) &p->bcc.d[i], sz);
         d::Malloc((void**) &p->bss.d[i], sz);
         d::Malloc((void**) &p->fss.d[i], sz);
-        p->hfss.counts[i] = nc;
         
         sz = cap[i] * sizeof(int);
         d::Malloc((void**) &p->bii.d[i], sz);
@@ -25,6 +24,8 @@ void ini(int maxd, Pack *p) {
 
     UC(ini(PINNED_HST, NONE, sizeof(int), ncs, /**/ &p->hfss, NULL));
 
+    memcpy(p->hfss.counts, ncs, sizeof(ncs));
+    
     sz = 26 * sizeof(int);
     d::Malloc((void**) &p->counts_dev, sz);
 }
