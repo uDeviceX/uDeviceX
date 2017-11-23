@@ -1,5 +1,5 @@
 #### periodic box: stretch
-# cTEST: rbc.u.main.stress.free.0
+# sTEST: rbc.u.main.stress.free.0
 set -eu
 rm -rf bop diag.txt h5 ply rbc.off
 :
