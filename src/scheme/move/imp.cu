@@ -1,11 +1,13 @@
 #include <conf.h>
 #include "inc/conf.h"
 
+#include "d/api.h"
 #include "d/q.h"
 #include "d/ker.h"
 
 #include "inc/def.h"
 #include "msg.h"
+#include "utils/cc.h"
 
 #include "utils/kl.h"
 #include "inc/type.h"
