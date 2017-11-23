@@ -21,7 +21,6 @@ struct Rnd {
     int mask;
 };
 
-typedef Sarray<int, 27> int27;
 typedef Sarray<LFrag, 26> LFrag26;
 typedef Sarray<RFrag, 26> RFrag26;
 typedef Sarray<  Rnd, 26>   Rnd26;
