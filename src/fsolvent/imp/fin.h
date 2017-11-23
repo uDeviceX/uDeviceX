@@ -6,5 +6,7 @@ void fin(/**/ BulkData *b) {
 }
 
 void fin(/**/ HaloData *h) {
+    for (int i = 0; i < 26; ++i)
+        delete h->trunks[i];
     delete h;
 }
