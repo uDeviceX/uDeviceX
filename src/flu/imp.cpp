@@ -1,4 +1,6 @@
+#include <vector_types.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <stdint.h>
 #include <mpi.h>
 #include <assert.h>
