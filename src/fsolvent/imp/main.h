@@ -1,9 +1,11 @@
-static void zip(const int n, const Particle *pp, /**/ float4 *zip0, ushort4 * zip1) {
+static void zip(const int n, const float *pp, /**/ float4 *zipped_pp, ushort4 *zipped_rr) {
     assert(sizeof(Particle) == 6 * sizeof(float)); /* :TODO: implicit dependency */
-    KL(dev::zip, (k_cnf(n)), (n, (float*)pp, zip0, zip1));
+    KL(dev::zip, (k_cnf(n)), (n, pp, zipped_pp, zipped_rr));
 }
 
 
-void prepare(const Cloud *c, /**/ BulkData *b) {
+void prepare(int n, const Cloud *c, /**/ BulkData *b) {
+    if (n == 0) return;
+    zip(n, c->pp, /**/ b->zipped_pp, b->zipped_rr);
     
 }
