@@ -18,19 +18,27 @@
 #include "imp.h"
 
 namespace scheme { namespace force {
-namespace dev {
 #if   defined(FORCE_NONE)
+  namespace dev {
   #include "dev/none.h"
+  }
+  #include "imp/none.h"
 #elif defined(FORCE_CONSTANT)
+  namespace dev {
   #include "dev/constant.h"
+  }
+  #include "imp/constant.h"
 #elif defined(FORCE_DOUBLE_POISEUILLE)
+  namespace dev {
   #include "dev/double_poiseuille.h"
+  }
+  #include "imp/double_poiseuille.h"
 #elif defined(FORCE_4ROLLER)
+  namespace dev {
+  #include "dev/4roller.h"
+  }
   #include "dev/4roller.h"
 #else
   #error FORCE_* is undefined
 #endif
-} /* namespace */
-
-#include "imp/main.h"
 }} /* namespace */
