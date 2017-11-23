@@ -10,23 +10,20 @@
 namespace UdxError {
 
 /* context information */
-static int err_line, err_status = 0;
+static int         err_line;
 static const char *err_file;
-static char err_msg[BUFSIZ];
+static char        err_msg[BUFSIZ];
 
-/* context for MPI errors */
-// TODO
-static int mpi_status = 0; 
-
-/* context for CUDA errors */
-// TODO
+static int  err_status = 0
+static int  mpi_status = 0; 
 static int cuda_status = 0;
 
 /* stack used to dump backtrace in case of error */
 enum {MAX_TRACE = 128};
-static char stack[MAX_TRACE][BUFSIZ];
-static int stack_sz = 0;
-static char back_trace[MAX_TRACE * BUFSIZ];
+static char stack      [ MAX_TRACE ][ BUFSIZ ];
+static char back_trace [ MAX_TRACE  * BUFSIZ ];
+static int  stack_sz = 0;
+
 
 static void stack_pop() {
     -- stack_sz;
