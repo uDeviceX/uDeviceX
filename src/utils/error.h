@@ -18,6 +18,7 @@ void stack_pop();
 
 void signal_error(const char *file, int line, const char *fmt, ...);
 void signal_cuda_error(const char *file, int line, const char *msg);
+void signal_mpi_error(const char *file, int line, const char *msg);
 
 bool error();
 void report();

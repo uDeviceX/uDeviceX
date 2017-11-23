@@ -12,11 +12,9 @@ namespace UdxError {
 /* context information */
 static int         err_line;
 static const char *err_file;
-static char        err_msg[BUFSIZ];
-
-static int  err_status = 0;
-static int  mpi_status = 0; 
-static int cuda_status = 0;
+static char        err_msg [BUFSIZ];
+static char        err_kind[BUFSIZ];
+static int         err_status = 0;
 
 /* stack used to dump backtrace in case of error */
 enum {MAX_TRACE = 128};
@@ -56,7 +54,8 @@ static void set_err_loc(const char *file, int line) {
 void signal_error(const char *file, int line, const char *fmt, ...) {
     set_err_loc(file, line);
     err_status = 1;
-
+    strcpy(err_kind, "udx");
+    
     va_list ap;
     va_start(ap, fmt);
     vsprintf(err_msg, fmt, ap);
@@ -65,17 +64,25 @@ void signal_error(const char *file, int line, const char *fmt, ...) {
 
 void signal_cuda_error(const char *file, int line, const char *msg) {
     set_err_loc(file, line);
-    cuda_status = 1;
+    err_status = 1;
+    strcpy(err_kind, "cuda");
     strcpy(err_msg, msg);
 }
 
-bool error() {return err_status || mpi_status || cuda_status;}
+void signal_mpi_error(const char *file, int line, const char *msg) {
+    set_err_loc(file, line);
+    err_status = 1;
+    strcpy(err_kind, "mpi");
+    strcpy(err_msg, msg);
+}
+
+bool error() {return err_status;}
 void report() {
     if (err_status) {
         stack_dump();
-        MSG("%s: %d: Error: %s\n"
+        MSG("%s: %d: %s error: %s\n"
             "backtrace:\n%s",
-            err_file, err_line, err_msg, back_trace);
+            err_file, err_line, err_kind, err_msg, back_trace);
     }
 }void abort() { exit(1); }
 
