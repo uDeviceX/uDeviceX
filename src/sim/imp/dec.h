@@ -6,10 +6,12 @@ basetags::TagGen tag_gen;
 namespace o /* s[o]lvent */
 {
 flu::Quants       q;
-BulkData *bulkdata;
 
 FluDistr d;
 Fluexch e;
+
+BulkData *bulkdata;
+HaloData *halodata;
 
 /* [h]alo interactions : local halos : see type.h */
 H h;
