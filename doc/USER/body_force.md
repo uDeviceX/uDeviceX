@@ -10,7 +10,7 @@ Types of body forces is controled by `FORCE_*` parameters
   constant force in `X`
 
 * `FORCE_4ROLLER`
-   see [src/scheme/dev/force/4roller.h](src/scheme/dev/force/4roller.h)
+   see [src/scheme/force/dev/4roller.h](src/scheme/force/dev/4roller.h)
    
 * `FORCE_SHEAR`
    shearing force in `X` and gradient in `Y`. Amplitude is
