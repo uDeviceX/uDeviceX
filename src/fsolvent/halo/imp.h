@@ -16,15 +16,15 @@ struct RFrag { /* "remote" fragment */
     FragType type;
 };
 
-struct Rnd {
+struct RndFrag {
     float seed;
     int mask;
 };
 
-typedef Sarray<LFrag, 26> LFrag26;
-typedef Sarray<RFrag, 26> RFrag26;
-typedef Sarray<  Rnd, 26>   Rnd26;
+typedef Sarray<LFrag,   26> LFrag26;
+typedef Sarray<RFrag,   26> RFrag26;
+typedef Sarray<RndFrag, 26> RndFrag26;
 
-void interactions(const LFrag26 lfrags, const RFrag26 rfrags, const Rnd26 rrnd, /**/ float *ff);
+void interactions(const LFrag26 lfrags, const RFrag26 rfrags, const RndFrag26 rrnd, /**/ float *ff);
 
 } /* namespace */

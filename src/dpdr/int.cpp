@@ -195,7 +195,7 @@ static void ini_remote_frags(TicketRhalo tr, /**/ hforces::RFrag26 *rfrags) {
     }
 }
 
-static void ini_rnd(TicketRnd trnd, /**/ hforces::Rnd26 *rnd) {
+static void ini_rnd(TicketRnd trnd, /**/ hforces::RndFrag26 *rnd) {
     for (int i = 0; i < 26; ++i)
         rnd->d[i] = {
             .seed = trnd.interrank_trunks[i]->get_float(),
@@ -214,9 +214,9 @@ static void ini_color_remote_frags(TicketRIhalo t, /**/ hforces::RFrag26 *rfrags
 }
 
 void fremote_color(TicketRnd trnd, TicketShalo ts, TicketRhalo tr, TicketSIhalo tis, TicketRIhalo tir, /**/ Force *ff) {
-    hforces::LFrag26 lfrags;
-    hforces::RFrag26 rfrags;
-    hforces::Rnd26   rnd;
+    hforces::LFrag26   lfrags;
+    hforces::RFrag26   rfrags;
+    hforces::RndFrag26    rnd;
 
     ini_local_frags(ts, /**/ &lfrags);
     ini_remote_frags (tr, /**/ &rfrags);
@@ -229,9 +229,9 @@ void fremote_color(TicketRnd trnd, TicketShalo ts, TicketRhalo tr, TicketSIhalo 
 }
 
 void fremote(TicketRnd trnd, TicketShalo ts, TicketRhalo tr, /**/ Force *ff) {
-    hforces::LFrag26 lfrags;
-    hforces::RFrag26 rfrags;
-    hforces::Rnd26   rnd;
+    hforces::LFrag26  lfrags;
+    hforces::RFrag26  rfrags;
+    hforces::RndFrag26   rnd;
 
     ini_local_frags(ts, /**/ &lfrags);
     ini_remote_frags (tr, /**/ &rfrags);
