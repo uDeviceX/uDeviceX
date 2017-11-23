@@ -58,15 +58,15 @@ void after() {
     stack_pop();
 }
 
-void signal(const char *file, int line) {
+static void raise_error(const char *file, int line) {
     err_line = line;
     err_status = 1;
     err_file = file;
     memset(err_msg, 0, sizeof(err_msg));
 }
 
-void signal_extra(const char *file, int line, const char *fmt, ...) {
-    signal(file, line);
+void signal_error(const char *file, int line, const char *fmt, ...) {
+    raise_error(file, line);
     va_list ap;
     va_start(ap, fmt);
     vsprintf(err_msg, fmt, ap);
