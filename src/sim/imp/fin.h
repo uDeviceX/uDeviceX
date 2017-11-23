@@ -75,6 +75,7 @@ void fin() {
 
     flu::fin(&o::q);
     fin(/**/ o::bulkdata);
+    fin(/**/ o::halodata);
  
     dpdr::free_ticketcom(&o::h.tc);
     dpdr::free_ticketrnd(&o::h.trnd);
