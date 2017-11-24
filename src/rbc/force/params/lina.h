@@ -7,11 +7,15 @@
 #endif
 
 #ifndef RBCkb
-  #define       RBCkb ( 100.0        )
+  #define       RBCkb  ( 100.0        )
 #endif
 
 #ifndef RBCp
-  #define       RBCp  ( 0.00136      )
+  #define       RBCp   ( 0.00136      )
+#endif
+
+#ifndef RBCphi
+  #define       RBCphi ( 6.97219932574)
 #endif
 
 #define         RBCx0 ( 0.457        )
@@ -20,4 +24,3 @@
 #define         RBCkv ( 5000.0       )
 #define     RBCgammaT ( 0.0          )
 #define       RBCmpow ( 2.0          )
-#define        RBCphi ( 6.97219932574)
