@@ -7,6 +7,7 @@
 #include "inc/def.h"
 #include "msg.h"
 #include "mpi/glb.h"
+#include "utils/error.h"
 
 #include "restart.h"
 

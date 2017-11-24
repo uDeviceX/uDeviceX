@@ -7,7 +7,7 @@ int emalloc(size_t size, /**/ void **data) {
     *data = malloc(size);
 
     if (NULL == *data) {
-        UERR("Failed to allocate array of size %ld\n", size);
+        ERR("Failed to allocate array of size %ld\n", size);
         return 1;
     }
     return 0;

@@ -13,6 +13,7 @@
 #include "utils/mc.h"
 
 #include "msg.h"
+#include "utils/error.h"
 
 #include "inc/type.h"
 

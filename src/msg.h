@@ -10,7 +10,7 @@ void exit(int);
         msg::print();                           \
     } while (0)
 
-#define ERR(fmt, ...)                           \
+#define OLDERR(fmt, ...)                        \
     do {                                        \
         MSG(fmt, ##__VA_ARGS__);                \
         msg::exit(1);                           \

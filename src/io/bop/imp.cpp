@@ -11,9 +11,9 @@
 
 #include "inc/type.h"
 #include "inc/def.h"
-#include "msg.h"
 #include "mpi/type.h"
 #include "utils/os.h"
+#include "utils/error.h"
 
 #include "imp.h"
 

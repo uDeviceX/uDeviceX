@@ -1,4 +1,4 @@
-#define UERR(fmt, ...)  do {                                            \
+#define ERR(fmt, ...)  do {                                             \
         UdxError::signal_error(__FILE__, __LINE__, fmt, ##__VA_ARGS__); \
         UdxError::report();                                             \
         UdxError::abort();                                              \

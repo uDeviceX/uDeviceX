@@ -3,6 +3,8 @@
 #include <conf.h>
 #include "inc/conf.h"
 
+#include "utils/error.h"
+
 #include "d/api.h"
 #include "d/ker.h"
 
@@ -15,7 +17,6 @@
 #include "utils/halloc.h"
 #include "utils/cc.h"
 #include "utils/mc.h"
-#include "utils/error.h"
 
 #include "mpi/basetags.h"
 #include "inc/type.h"
