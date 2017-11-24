@@ -1,15 +1,15 @@
-= utils/mc
+==== utils/mc
 
 [M]PI [C]heck.
 
 Error handling for MPI API calls.
 
-== Usage
+===== Usage
 
-[source,c++]
+[source,cpp]
 ----
 MC(my_mpi_api_call());
 ----
 
 `MC` uses internally `UdxError` in case of failure. This allows to
-dump a backtrace (see link:/doc/dev/modules/utils/error.adoc[error]).
+dump a backtrace (see <<error>>).

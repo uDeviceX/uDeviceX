@@ -1,4 +1,4 @@
-= kernel launch macros
+==== kernel launch macros
 
 [K]ernel [L]aunch.
 
@@ -9,13 +9,9 @@ All but `unsafe` skip kernels with zero thread number.
 
 Examples:
 
-[source, c++]
+[source, cpp]
 ----
 KL(fun, (i+1, j, k), ())     -> fun<<<i+1, j, k>>>()
 KL(fun, (i+1, j, k), (a, b)) -> fun<<<i+1, j, k>>>(a, b)
 ----
 
-== release
-== trace
-== peek
-== unsafe

@@ -1,8 +1,9 @@
-= utils/error
+[[error]]
+==== utils/error
 
 Custom error handling with context.
 
-== Usage
+===== Usage
 
 * an error can be raised by the use of one of the following macros:
 ** `signal_error_extra(fmt, ...)` will raise an error with extra
@@ -10,6 +11,7 @@ Custom error handling with context.
 * use macro `UC` on any function which might contain an error signal in
 one of the subfunctions.
 
-== Interface
+===== Interface
 
+TODO
 

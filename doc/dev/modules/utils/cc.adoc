@@ -1,15 +1,16 @@
-= utils/cc
+[[cc]]
+===== utils/cc
 
 [C]uda [C]heck.
 
 Error handling for cuda API calls.
 
-== Usage
+====== Usage
 
-[source,c++]
+[source,cpp]
 ----
 CC(my_cuda_api_call());
 ----
 
 `CC` uses internally `UdxError` in case of failure. This allows to
-dump a backtrace (see link:/doc/dev/modules/utils/error.adoc[error]).
+dump a backtrace (see <<error>>).
