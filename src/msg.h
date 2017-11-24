@@ -9,9 +9,3 @@ void exit(int);
         sprintf(msg::buf, fmt, ##__VA_ARGS__);  \
         msg::print();                           \
     } while (0)
-
-#define OLDERR(fmt, ...)                        \
-    do {                                        \
-        MSG(fmt, ##__VA_ARGS__);                \
-        msg::exit(1);                           \
-    } while(0)
