@@ -1,3 +1,0 @@
-# RBC forces
-
-Dumps internal RBC forces.

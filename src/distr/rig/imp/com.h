@@ -1,6 +1,6 @@
 void post_recv(Comm *c, Unpack *u) {
-    OC(post_recv(&u->hipp, &c->ipp));
-    OC(post_recv(&u->hss, &c->ss));
+    UC(post_recv(&u->hipp, &c->ipp));
+    UC(post_recv(&u->hss, &c->ss));
 }
 
 void post_send(Pack *p, Comm *c) {

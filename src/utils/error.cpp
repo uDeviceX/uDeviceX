@@ -10,32 +10,27 @@
 namespace UdxError {
 
 /* context information */
-static int err_line, err_status = 0;
+static int         err_line;
 static const char *err_file;
-static char err_msg[BUFSIZ];
-
-/* context for MPI errors */
-// TODO
-static int mpi_status = 0; 
-
-/* context for CUDA errors */
-// TODO
-static int cuda_status = 0;
+static char        err_msg [BUFSIZ];
+static char        err_kind[BUFSIZ];
+static int         err_status = 0;
 
 /* stack used to dump backtrace in case of error */
 enum {MAX_TRACE = 128};
-static char stack[MAX_TRACE][BUFSIZ];
-static int stack_sz = 0;
-static char back_trace[MAX_TRACE * BUFSIZ];
+static char stack      [ MAX_TRACE ][ BUFSIZ ];
+static char back_trace [ MAX_TRACE  * BUFSIZ ];
+static int  stack_sz = 0;
 
-static void stack_pop() {
-    -- stack_sz;
+
+void stack_pop() {
+    stack_sz--;
     assert (stack_sz >= 0);
 }
 
-static void stack_push(const char *file, int line) {
+void stack_push(const char *file, int line) {
     sprintf(stack[stack_sz], ": %s: %d:", file, line);
-    ++ stack_sz;
+    stack_sz++;
     assert (stack_sz < MAX_TRACE);
 }
 
@@ -50,37 +45,45 @@ static void stack_dump() {
     }
 }
 
-void before(const char *file, int line) {
-    stack_push(file, line);
-}
-
-void after() {
-    stack_pop();
-}
-
-void signal(const char *file, int line) {
+static void set_err_loc(const char *file, int line) {
     err_line = line;
-    err_status = 1;
     err_file = file;
     memset(err_msg, 0, sizeof(err_msg));
 }
 
-void signal_extra(const char *file, int line, const char *fmt, ...) {
-    signal(file, line);
+void signal_error(const char *file, int line, const char *fmt, ...) {
+    set_err_loc(file, line);
+    err_status = 1;
+    strcpy(err_kind, "udx");
+    
     va_list ap;
     va_start(ap, fmt);
     vsprintf(err_msg, fmt, ap);
     va_end(ap);    
 }
 
-bool error() {return err_status || mpi_status || cuda_status;}
-void report(const char *file, int line) {
+void signal_cuda_error(const char *file, int line, const char *msg) {
+    set_err_loc(file, line);
+    err_status = 1;
+    strcpy(err_kind, "cuda");
+    strcpy(err_msg, msg);
+}
+
+void signal_mpi_error(const char *file, int line, const char *msg) {
+    set_err_loc(file, line);
+    err_status = 1;
+    strcpy(err_kind, "mpi");
+    strcpy(err_msg, msg);
+}
+
+bool error() {return err_status;}
+void report() {
     if (err_status) {
         stack_dump();
-        ERR("%s: %d: Error: %s\n"
+        MSG("%s: %d: %s error: %s\n"
             "backtrace:\n%s",
-            err_file, err_line, err_msg, back_trace);
+            err_file, err_line, err_kind, err_msg, back_trace);
     }
-}
+}void abort() { exit(1); }
 
 } /* UdxError */

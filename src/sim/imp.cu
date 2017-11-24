@@ -3,6 +3,8 @@
 #include <conf.h>
 #include "inc/conf.h"
 
+#include "utils/error.h"
+
 #include "d/api.h"
 #include "d/ker.h"
 
@@ -15,7 +17,6 @@
 #include "utils/halloc.h"
 #include "utils/cc.h"
 #include "utils/mc.h"
-#include "utils/error.h"
 
 #include "mpi/basetags.h"
 #include "inc/type.h"
@@ -55,7 +56,6 @@
 #include "sdf/int.h"
 #include "wall/imp.h"
 
-#include "comm/oc/imp.h"
 #include "comm/imp.h"
 #include "distr/map/type.h"
 #include "distr/flu/type.h"
@@ -69,7 +69,6 @@
 
 #include "fsi/type.h"
 #include "fsi/imp.h"
-#include "fsolvent/bulk/imp.h"
 
 #include "exch/map/type.h"
 #include "exch/obj/type.h"
@@ -82,7 +81,7 @@
 #include "exch/flu/type.h"
 #include "exch/flu/imp.h"
 
-#include "fsolvent/imp.h"
+#include "fluforces/imp.h"
 
 #include "mesh/collision.h"
 #include "mesh/bbox.h"

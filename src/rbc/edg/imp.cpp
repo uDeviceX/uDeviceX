@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include "msg.h"
 
+#include "utils/error.h"
 #include "imp.h"
 
 namespace edg {

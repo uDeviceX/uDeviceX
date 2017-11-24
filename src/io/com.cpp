@@ -13,8 +13,6 @@
 #include "utils/os.h"
 #include "utils/error.h"
 
-#include "msg.h"
-
 enum {MAX_CHAR_PER_LINE = 128};
 
 static void shift(float3 *r) {
@@ -32,7 +30,7 @@ static int swrite(int n, const int *ii, const float3 *rr, /**/ char *s) {
         shift(/**/ &r);
         c = sprintf(s + start, "%d %g %g %g\n", id, r.x, r.y, r.z);
         if (c >= MAX_CHAR_PER_LINE)
-            signal_error_extra("buffer too small : %d / %d", c, MAX_CHAR_PER_LINE);
+            ERR("buffer too small : %d / %d", c, MAX_CHAR_PER_LINE);
         start += c;
     }
     return start;

@@ -4,6 +4,7 @@
 #include <conf.h>
 #include "inc/conf.h"
 #include "inc/def.h"
+#include "utils/error.h"
 #include "msg.h"
 #include "utils/cc.h"
 

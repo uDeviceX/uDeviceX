@@ -9,7 +9,6 @@
 #include "mpi/glb.h"
 #include "mpi/wrapper.h"
 #include "frag/imp.h"
-#include "comm/oc/imp.h"
 #include "comm/imp.h"
 
 #include "inc/type.h"

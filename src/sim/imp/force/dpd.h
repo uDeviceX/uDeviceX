@@ -15,14 +15,14 @@ void forces_dpd() {
     pack(&cloud, /**/ &e.p);
     download_data(/**/ &e.p);
 
-    post_recv(&e.c, &e.u);
+    UC(post_recv(&e.c, &e.u));
     UC(post_send(&e.p, &e.c));
     
     prepare(q.n, &cloud, /**/ bulkdata);
     bulk_forces(q.n, bulkdata, start, count, /**/ ff);
     dSync();
-    wait_recv(&e.c, &e.u);
-    wait_send(&e.c);
+    UC(wait_recv(&e.c, &e.u));
+    UC(wait_send(&e.c));
 
     unpack(&e.u);
 

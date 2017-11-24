@@ -1,10 +1,9 @@
 #include <hdf5.h>
 
-#include "msg.h"
-
 #include "mpi/glb.h"
 #include "mpi/wrapper.h"
 #include "imp.h"
+#include "utils/error.h"
 
 namespace h5 {
 

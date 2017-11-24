@@ -1,25 +1,29 @@
-#define signal_error()                          \
-    UdxError::signal(__FILE__, __LINE__)
-
-#define signal_error_extra(fmt, ...)                                    \
-    UdxError::signal_extra(__FILE__, __LINE__, fmt, ##__VA_ARGS__)
+#define ERR(fmt, ...)  do {                                             \
+        UdxError::signal_error(__FILE__, __LINE__, fmt, ##__VA_ARGS__); \
+        UdxError::report();                                             \
+        UdxError::abort();                                              \
+    } while (0)
 
 /* udx check */
 #define UC(F) do {                                      \
-        UdxError::before(__FILE__, __LINE__);           \
+        UdxError::stack_push(__FILE__, __LINE__);       \
         F;                                              \
-        if (UdxError::error())                          \
-            UdxError::report(__FILE__, __LINE__);       \
-        UdxError::after();                              \
+        if (UdxError::error()) {                        \
+            UdxError::report();                         \
+            UdxError::abort();                          \
+        }                                               \
+        UdxError::stack_pop();                          \
     } while (0)
 
 namespace UdxError {
-void before(const char *file, int line);
-void after();
+void stack_push(const char *file, int line);
+void stack_pop();
 
-void signal(const char *file, int line); 
-void signal_extra(const char *file, int line, const char *fmt, ...);
+void signal_error(const char *file, int line, const char *fmt, ...);
+void signal_cuda_error(const char *file, int line, const char *msg);
+void signal_mpi_error(const char *file, int line, const char *msg);
 
 bool error();
-void report(const char *file, int line);
+void report();
+void abort();
 }
