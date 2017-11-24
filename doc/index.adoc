@@ -12,6 +12,10 @@
 * link:/doc/DEV/modules/utils/mc.adoc[MC mpi check]
 * link:/doc/DEV/modules/utils/kl.adoc[KL Kernel Launch]
 
+* link:/doc/DEV/modules/comm.adoc[Communication]
+// Does this belong to DEV?
+* link:/doc/DEV/compile.adoc[compilation]
+
 == units
 
 * link:/doc/units/error.adoc[error]
