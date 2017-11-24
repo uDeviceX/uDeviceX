@@ -1,5 +1,5 @@
 [[cc]]
-===== utils/cc
+==== utils/cc
 
 [C]uda [C]heck.
 
