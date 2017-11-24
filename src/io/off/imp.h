@@ -10,11 +10,10 @@ static void assert_nf(int n, int max, const char *f) {
 /* return faces: f0[0] f1[0] f2[0]   f0[1] f1[1] ... */
 int faces(const char *f, int max, int4* faces) {
     char buf[BUFSIZ];
-    FILE *fd = fopen(f, "r");
-    if (fd == NULL) {
-        fprintf(stderr, "off:faces fail to open <%s>\n", f);
-        exit(2);
-    }
+    FILE *fd;
+
+    UC(efopen(f, "r", /**/ &fd));
+
     fgets(buf, sizeof buf, fd); /* skip OFF */
     if (!eq(buf, "OFF\n")) {
         fprintf(stderr, "off: expecting [OFF] <%s> : [%s]\n", f, buf);
@@ -33,7 +32,7 @@ int faces(const char *f, int max, int4* faces) {
         fscanf(fd, "%*d %d %d %d", &t.x, &t.y, &t.z);
         faces[ifa] = t;
     }
-    fclose(fd);
+    UC(efclose(fd));
 
     return nf;
 }
@@ -45,11 +44,9 @@ static void assert_nv(int n, int max, const char *f) {
 }
 int vert(const char *f, int max, float* vert) {
     char buf[BUFSIZ];
-    FILE *fd = fopen(f, "r");
-    if (fd == NULL) {
-        fprintf(stderr, "off:vert fail to open <%s>\n", f);
-        exit(2);
-    }
+    FILE *fd;
+    UC(efopen(f, "r", /**/ &fd));
+
     fgets(buf, sizeof buf, fd); /* skip OFF */
 
     int nv;
@@ -63,7 +60,7 @@ int vert(const char *f, int max, float* vert) {
         vert[ib++] = x; vert[ib++] = y; vert[ib++] = z;
     }
 
-    fclose(fd);
+    UC(efclose(fd));
 
     return nv;
 }

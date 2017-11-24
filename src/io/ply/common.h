@@ -10,12 +10,8 @@ static bool prop(const char *pname, const char *str) {
 }
 
 void read(const char *fname, int *nt, int *nv, int4 **tt, float **vv) {
-    FILE *f = fopen(fname, "r");
-
-    if (f == NULL) {
-        fprintf(stderr, "error. could not read <%s>\nexiting...\n", fname);
-        exit(1);
-    }
+    FILE *f;
+    UC(efopen(fname, "r", /**/ &f));
 
     int l = 0;
     *nt = *nv = -1;
@@ -63,7 +59,7 @@ void read(const char *fname, int *nt, int *nv, int4 **tt, float **vv) {
         (*tt)[i] = t;
     }
 
-    fclose(f);
+    UC(efclose(f));
 }
 
 } // ply
