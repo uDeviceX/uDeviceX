@@ -23,7 +23,6 @@ namespace dev {
 #include "dev/main.h"
 }
 #include "imp/type.h"
-#include "imp/util.h"
 #include "imp/main.h"
 
 }} /* namespace */
