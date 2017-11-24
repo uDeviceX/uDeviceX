@@ -1,44 +1,43 @@
 = index
-
-== How to use this documentation
+:toc:
 
 == user
 
 == dev
 
-* link:/doc/dev/conventions.adoc[coding style and conventions]
-* link:/doc/dev/modules/utils/error.adoc[udx error handling]
-* link:/doc/dev/modules/utils/cc.adoc[CC cuda check]
-* link:/doc/dev/modules/utils/mc.adoc[MC mpi check]
-* link:/doc/dev/modules/utils/kl.adoc[KL Kernel Launch]
-* link:/doc/dev/modules/d.adoc[d : generic device api]
-* link:/doc/dev/modules/comm.adoc[Communication]
-* link:/doc/dev/modules/clist.adoc[cell lists]
-* link:/doc/dev/modules/fluforces/main.adoc[fluforces : solvent forces]
-* link:/doc/dev/modules/fluforces/bulk.adoc[fluforces : bulk]
-* link:/doc/dev/modules/fluforces/halo.adoc[fluforces : halo]
-* link:/doc/dev/modules/algo/scan.adoc[scan]
+include::dev/conventions.adoc[]
+include::dev/modules/utils/error.adoc[]
+include::dev/modules/utils/cc.adoc[]
+include::dev/modules/utils/mc.adoc[]
+include::dev/modules/utils/kl.adoc[]
+include::dev/modules/d.adoc[]
+include::dev/modules/comm.adoc[]
+include::dev/modules/clist.adoc[]
+include::dev/modules/fluforces/main.adoc[]
+include::dev/modules/fluforces/bulk.adoc[]
+include::dev/modules/fluforces/halo.adoc[]
+include::dev/modules/algo/scan.adoc[]
 
-* link:/doc/dev/modules/distr/main.adoc[distr]
-* link:/doc/dev/modules/distr/flu.adoc[distr : solvent]
-* link:/doc/dev/modules/distr/rbc.adoc[distr : red blood cells]
-* link:/doc/dev/modules/distr/rig.adoc[distr : rigid bodies]
+include::dev/modules/distr/main.adoc[]
+include::dev/modules/distr/flu.adoc[]
+include::dev/modules/distr/rbc.adoc[]
+include::dev/modules/distr/rig.adoc[]
 
 // Does this belong to dev?
-* link:/doc/dev/compile.adoc[compilation]
+include::dev/compile.adoc[]
 
 == units
 
-* link:/doc/units/comm.adoc[comm]
-* link:/doc/units/error.adoc[error]
-* link:/doc/units/hw/hst.adoc[hello world (hst)]
-* link:/doc/units/hw/dev.adoc[hello world (dev)]
-* link:/doc/units/meshbb.adoc[meshbb]
-* link:/doc/units/mpi.adoc[mpi]
-* link:/doc/units/pair.adoc[pair]
-* link:/doc/units/rbc/force.adoc[rbc/force]
-* link:/doc/units/rbc/main.adoc[rbc/main]
-* link:/doc/units/rbc/rnd.adoc[rbc/rnd]
-* link:/doc/units/scan.adoc[scan]
-* link:/doc/units/x.adoc[x : udx]
+include::units/comm.adoc[]
+include::units/error.adoc[]
+include::units/hw/hst.adoc[]
+include::units/hw/dev.adoc[)]
+include::units/meshbb.adoc[]
+include::units/mpi.adoc[]
+include::units/pair.adoc[]
+include::units/rbc/force.adoc[]
+include::units/rbc/main.adoc[]
+include::units/rbc/rnd.adoc[]
+include::units/scan.adoc[]
+include::units/x.adoc[]
 
