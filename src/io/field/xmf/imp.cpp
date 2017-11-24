@@ -2,6 +2,9 @@
 #include <stdio.h>
 
 #include "mpi/glb.h"
+#include "utils/error.h"
+#include "utils/efopen.h"
+
 #include "imp.h"
 
 namespace xmf {
@@ -66,13 +69,13 @@ void write(const char *path, const char **names, int ncomp, int sx, int sy, int 
     FILE *f;
 
     xsuffix(path, /**/ w);
-    f = fopen(w, "w");
+    UC(efopen(w, "w", /**/ &f));
     header(f);
 
     basename(path, /**/ w);
     grid(f, w, names, ncomp, sx, sy, sz);
     epilogue(f);
-    fclose(f);
+    UC(efclose(f));
 }
 
 } /* namespace */
