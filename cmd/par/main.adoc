@@ -5,7 +5,7 @@ u.par - create udx parameter file
 
 
 == SYNOPSIS
-*u.par* ['OPTIONS'] 'FILE'
+*u.par* ['OPTIONS'] ['FILE']
 
 
 == DESCRIPTION
