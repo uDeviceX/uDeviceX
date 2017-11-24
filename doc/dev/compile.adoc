@@ -1,12 +1,14 @@
-= compilation command
-
+=== compilation
 Shows full compilation and linking commands
+
+[source,sh]
 ----
 u.make LOG=
 ----
 
-= profile compilation time
+Profile compilation time
 
+[source,sh]
 ----
 u.make LOG='@time -f "%e $<"'
 ----
@@ -18,3 +20,4 @@ Summarize time used to compile
 10.16 restrain/imp.cu
 ...
 ----
+
