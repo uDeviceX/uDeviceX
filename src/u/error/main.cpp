@@ -19,7 +19,7 @@
 enum {UDX_, MPI_, CUDA_, NKINDS};
 
 void UDX_bar() {
-    UERR("udx bar failed");
+    ERR("udx bar failed");
 }
 
 void MPI_bar() {
