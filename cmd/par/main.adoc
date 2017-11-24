@@ -10,3 +10,15 @@ u.par - create udx parameter file
 
 == DESCRIPTION
 The u.par(1) write udx parameter file to stdout
+
+== OPTIONS
+*-w::
+  Overwrite parameters set in the 'FILE'
+
+*key=val*::
+  Append key=val at the end of the output
+
+== EXAMPLES
+`u.par a=1`
+
+`u.par a=1 b=2 c=\"cell.off\" input.file`

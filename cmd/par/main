@@ -23,11 +23,15 @@ do shift
    esac
    if !  parp "$c"
    then
-       if test -n "$File"; then err two files "<$File>" and "<$c>"; fi
+       if test -n "$File"; then err two files \'"$File"\' and \'"$c"\'; fi
        File="$c"
        continue
    fi
    set -- "$@" "$c"
 done
+
+if test -n "$File" -a ! -r "$File"
+then err not a file \'"$File"\'
+fi
 
 u.par0 -v File="$File" -v Over="$Over" "$@"
