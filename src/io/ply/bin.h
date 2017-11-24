@@ -1,6 +1,8 @@
 namespace ply {
 void write(const char *fname, int nt, int nv, const int *tt, const float *vv) {
-    FILE * f = fopen(fname, "wb");
+    FILE *f;
+
+    UC(efopen(fname, "wb", /**/ &f));
 
     assert(f != NULL);
 
@@ -37,6 +39,6 @@ void write(const char *fname, int nt, int nv, const int *tt, const float *vv) {
 
     delete[] ibuf;
 
-    fclose(f);
+    UC(efclose(f));
 }
 } // ply

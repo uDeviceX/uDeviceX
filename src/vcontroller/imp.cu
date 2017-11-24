@@ -6,6 +6,9 @@
 #include "inc/conf.h"
 #include "msg.h"
 
+#include "utils/error.h"
+#include "utils/efopen.h"
+
 #include "inc/type.h"
 #include "inc/dev.h"
 #include "d/api.h"
@@ -23,13 +26,13 @@
 static void ini_dump(FILE **f) {
     *f = NULL;
     if (m::rank) return;
-    *f = fopen(DUMP_BASE "/vcont.txt", "w");
+    UC(efopen(DUMP_BASE "/vcont.txt", "w", /**/ f));
     fprintf(*f, "#vx vy vz fx fy fz\n");        
 }
 
 static void fin_dump(FILE *f) {
     if (m::rank) return;
-    fclose(f);
+    UC(efclose(f));
 }
 
 static void reini_sampler(/**/ PidVCont *c) {

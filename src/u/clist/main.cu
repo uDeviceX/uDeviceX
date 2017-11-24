@@ -13,7 +13,7 @@
 #include "utils/halloc.h"
 #include "utils/cc.h"
 
-#include "algo/scan/int.h"
+#include "algo/scan/imp.h"
 #include "clist/imp.h"
 
 enum {X,Y,Z};

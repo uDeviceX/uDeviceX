@@ -6,6 +6,7 @@
 
 #include "utils/error.h"
 #include "utils/halloc.h"
+#include "utils/efopen.h"
 #include "inc/type.h"
 #include "io/field/imp.h"
 #include "mpi/glb.h"
@@ -28,30 +29,23 @@ static void skip_line(FILE *f) {
     fgets(l, sizeof(l), f);
 }
 
-static FILE* safe_fopen(const char *path, const char *mode) {
-    FILE *f;
-    f = fopen(path, mode);
-    if (f == NULL) ERR("fail to open: '%s'\n", path);
-    return f;
-}
-
 void ini_dims(const char *path, /**/ int N[3], float ext[3]) {
     FILE *f;
     char l[BUFSIZ];
-    f = safe_fopen(path, "r");
+    UC(efopen(path, "r", /**/ &f));
     fgets(l, sizeof(l), f);
     sscanf(l, "%f %f %f", &ext[0], &ext[1], &ext[2]);
     fgets(l, sizeof(l), f);
     sscanf(l, "%d %d %d", &N[0], &N[1], &N[2]);
-    fclose(f);
+    UC(efclose(f));
 }
   
 void ini_data(const char *path, int n, /**/ float *D) { /* read sdf file */
     FILE *f;
-    f = safe_fopen(path, "r");
+    UC(efopen(path, "r", /**/ &f));
     skip_line(f); skip_line(f);
     fread(D, sizeof(D[0]), n, f);
-    fclose(f);
+    UC(efclose(f));
 }
 
 void sample(const float org[3], const float spa[3], const int N0[3], const float *D0, const int N1[3], float *D1) {

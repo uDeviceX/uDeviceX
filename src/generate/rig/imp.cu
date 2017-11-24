@@ -14,6 +14,7 @@
 
 #include "msg.h"
 #include "utils/error.h"
+#include "utils/efopen.h"
 
 #include "inc/type.h"
 

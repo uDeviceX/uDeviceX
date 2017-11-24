@@ -22,7 +22,7 @@
 #include "utils/mc.h"
 #include "utils/cc.h"
 
-#include "algo/scan/int.h"
+#include "algo/scan/imp.h"
 #include "clist/imp.h"
 #include "rnd/imp.h"
 

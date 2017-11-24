@@ -14,7 +14,7 @@
 #include "utils/kl.h"
 #include "utils/error.h"
 
-#include "algo/minmax.h"
+#include "algo/minmax/imp.h"
 
 #include "frag/imp.h"
 #include "mpi/basetags.h"

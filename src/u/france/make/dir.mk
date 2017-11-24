@@ -1,5 +1,5 @@
 D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
-    d $B/algo                     && \
+    d $B/algo/minmax              && \
     d $B/algo/scan                && \
     d $B/clist                    && \
     d $B/cnt                      && \

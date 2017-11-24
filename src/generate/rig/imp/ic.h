@@ -5,11 +5,9 @@ enum {X, Y, Z};
 
 static int read_coms(const char *fname, /**/ float* coms) {
     int i, nsolids;
-    FILE *f = fopen(fname, "r");
+    FILE *f;
+    UC(efopen(fname, "r", /**/ &f));
     float x, y, z;
-    
-    if (f == NULL)
-        ERR("Could not open %s.\n", fname);
 
     i = 0;
     while (fscanf(f, "%f %f %f\n", &x, &y, &z) == 3) {
@@ -21,6 +19,8 @@ static int read_coms(const char *fname, /**/ float* coms) {
     }
     nsolids = i;
     DBG("have read %d solids", nsolids);
+
+    UC(efclose(f));
     return nsolids;
 }
 

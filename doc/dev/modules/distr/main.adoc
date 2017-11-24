@@ -1,0 +1,21 @@
+= distr
+
+distribution modules
+
+== flu
+
+solvent distribution
+
+see link:flu.adoc[flu]
+
+== rbc
+
+red blood cells distribution
+
+see link:rbc.adoc[rbc]
+
+== rigid
+
+rigid objects distribution
+
+see link:rig.adoc[rig]
