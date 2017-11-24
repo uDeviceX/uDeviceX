@@ -1,0 +1,4 @@
+= uDeviceX Documentation
+:toc:
+
+include::index.adoc[]
