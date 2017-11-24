@@ -13,7 +13,7 @@ void gen() { /* generate */
     run_eq(wall_creation);
     if (walls) {
         dSync();
-        sdf::ini(&w::qsdf);
+        UC(sdf::ini(&w::qsdf));
         MC(m::Barrier(m::cart));
         inter::create_walls(MAXNWALL, w::qsdf, /*io*/ &o::q, /**/ &w::q);
     }
@@ -81,7 +81,7 @@ void sim_strt() {
     MC(m::Barrier(m::cart));
     if (walls) {
         dSync();
-        sdf::ini(&w::qsdf);
+        UC(sdf::ini(&w::qsdf));
         MC(m::Barrier(m::cart));
     }
 

@@ -5,6 +5,7 @@
 #include "d/ker.h"
 #include "d/api.h"
 
+#include "utils/error.h"
 #include "inc/def.h"
 #include "msg.h"
 #include "mpi/glb.h"
@@ -30,11 +31,11 @@ void  free_quants(Quants *q) {
 }
 
 void ini(Quants *q) {
-    sub::ini(q->arrsdf, &q->texsdf);
+    UC(sub::ini(q->arrsdf, &q->texsdf));
 }
 
 void bulk_wall(const tex3Dca<float> texsdf, /*io*/ Particle *s_pp, int *s_n, /*o*/ Particle *w_pp, int *w_n) {
-    sub::bulk_wall(texsdf, /*io*/ s_pp, s_n, /*o*/ w_pp, w_n);
+    UC(sub::bulk_wall(texsdf, /*io*/ s_pp, s_n, /*o*/ w_pp, w_n));
 }
 
 int who_stays(const Quants q, Particle *pp, int n, int nc, int nv, int *stay) {
@@ -42,6 +43,6 @@ int who_stays(const Quants q, Particle *pp, int n, int nc, int nv, int *stay) {
 }
 
 void bounce(const Quants *q, int n, /**/ Particle *pp) {
-    sub::bounce(q->texsdf, n, /**/ pp);
+    UC(sub::bounce(q->texsdf, n, /**/ pp));
 }
 }
