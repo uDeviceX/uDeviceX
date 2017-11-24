@@ -4,7 +4,6 @@ static void check_size(long n, long max) {
 }
 
 void step(scheme::force::Param *fpar, bool wall0, int it) {
-    
     UC(check_size(r::q.nc, MAX_CELL_NUM));
     UC(check_size(r::q.n , MAX_PART_NUM));
     UC(check_size(o::q.n , MAX_PART_NUM));
