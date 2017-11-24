@@ -28,4 +28,6 @@
 * link:/doc/units/rbc/force.adoc[rbc/force]
 * link:/doc/units/rbc/main.adoc[rbc/main]
 * link:/doc/units/rbc/rnd.adoc[rbc/rnd]
+* link:/doc/units/scan.adoc[scan]
+* link:/doc/units/x.adoc[x : udx]
 

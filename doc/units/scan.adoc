@@ -1,0 +1,3 @@
+= scan unit
+
+a unit to test scan algorithm (exclusive prefix sum , see e.g. link:https://en.wikipedia.org/wiki/Prefix_sum) on host and device.
