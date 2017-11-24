@@ -1,15 +1,3 @@
-= fsolvent
+= fluforces
 
-solvent forces
-
-== structures
-TODO
-
-== submodules
-
-=== bulk
-solvent bulk interactions
-
-=== halo
-interactions with solvent of neighbouring subdomains
-
+see link:/doc/dev/modules/fluforces/main.adoc[doc]
