@@ -17,7 +17,7 @@ void wait_recv(Comm *c, Unpack *u) {
 }
 
 void wait_send(Comm *c) {
-    wait_send(&c->pp);
-    if (global_ids)    wait_send(&c->ii);
-    if (multi_solvent) wait_send(&c->cc);
+    UC(wait_send(&c->pp));
+    if (global_ids)    UC(wait_send(&c->ii));
+    if (multi_solvent) UC(wait_send(&c->cc));
 }
