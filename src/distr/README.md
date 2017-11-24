@@ -1,3 +1,0 @@
-# distr
-
-distribution hiwis
