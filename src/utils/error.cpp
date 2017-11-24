@@ -84,6 +84,8 @@ void report() {
             "backtrace:\n%s",
             err_file, err_line, err_kind, err_msg, back_trace);
     }
-}void abort() { exit(1); }
+}
+
+void abort() { exit(1); }
 
 } /* UdxError */
