@@ -1,7 +1,10 @@
 #!/usr/bin/awk -f
 
 BEGIN {
-    if (!emptyp(File)) cat(File)
+    if (!emptyp(File)) {
+	cat(File)
+	printf "\n"
+    }
     for (i = 1; i in ARGV; i++)
 	print ARGV[i]
 }
