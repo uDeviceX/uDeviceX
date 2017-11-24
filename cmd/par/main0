@@ -2,7 +2,7 @@
 
 BEGIN {
     if (!emptyp(File)) cat(File)
-    for (i in ARGV)
+    for (i = 1; i in ARGV; i++)
 	print ARGV[i]
 }
 function cat(f) {
