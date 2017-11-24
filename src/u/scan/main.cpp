@@ -11,7 +11,7 @@
 #include "inc/dev.h"
 #include "utils/cc.h"
 
-#include "algo/scan/int.h"
+#include "algo/scan/imp.h"
 
 /* see set.cpp */
 void set(/**/ int*, int*);

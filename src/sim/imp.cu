@@ -25,7 +25,7 @@
 
 #include "utils/texo.h"
 #include "utils/te.h"
-#include "algo/scan/int.h"
+#include "algo/scan/imp.h"
 #include "algo/minmax.h"
 
 #include "cloud/imp.h"

@@ -8,7 +8,7 @@
 #include "d/q.h"
 #include "d/ker.h"
 
-#include "algo/scan/int.h"
+#include "algo/scan/imp.h"
 
 #include "rnd/imp.h"
 #include "rnd/dev.h"
