@@ -36,7 +36,7 @@ void dump(const char *path, int sx, int sy, int sz) {
     UC(emalloc(size, (void**) &u[Z]));
 
     float *data[] = { rho, u[X], u[Y], u[Z] };
-    h5::write(path, data, names, 4, sx, sy, sz);
+    UC(h5::write(path, data, names, 4, sx, sy, sz));
     free(rho); free(u[X]); free(u[Y]); free(u[Z]);
     if (m::rank == 0) xmf::write(path, names, 4, sx, sy, sz);
 }

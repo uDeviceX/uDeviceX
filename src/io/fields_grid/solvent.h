@@ -4,5 +4,5 @@ void fields_grid(QQ qq, NN nn, /*w*/ Particle *hst) {
     o = qq.o;
     n = nn.o;
     cD2H(hst, o, n);
-    io::field::dump(hst, n);
+    UC(io::field::dump(hst, n));
 }

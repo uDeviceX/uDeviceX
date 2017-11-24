@@ -87,6 +87,8 @@ void report() {
         MSG("%s: %d: %s error: %s\n%s\n",
             err_file, err_line, err_kind, err_msg, back_trace);
     }
-}void abort() { exit(1); }
+}
+
+void abort() { exit(1); }
 
 } /* UdxError */
