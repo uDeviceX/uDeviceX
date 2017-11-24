@@ -13,6 +13,11 @@
 * link:/doc/dev/modules/utils/kl.adoc[KL Kernel Launch]
 
 * link:/doc/dev/modules/comm.adoc[Communication]
+* link:/doc/dev/modules/clist.adoc[cell lists]
+* link:/doc/dev/modules/fluforces/main.adoc[fluforces : solvent forces]
+* link:/doc/dev/modules/fluforces/bulk.adoc[fluforces : bulk]
+* link:/doc/dev/modules/fluforces/halo.adoc[fluforces : halo]
+
 // Does this belong to dev?
 * link:/doc/dev/compile.adoc[compilation]
 
