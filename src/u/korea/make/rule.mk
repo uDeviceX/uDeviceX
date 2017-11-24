@@ -1,4 +1,4 @@
-$B/algo/minmax.o: $S/algo/minmax.cu; $N -I$S/. -I$S/algo
+$B/algo/minmax/imp.o: $S/algo/minmax/imp.cu; $N -I$S/. -I$S/algo/minmax
 $B/algo/scan/imp.o: $S/algo/scan/imp.cu; $N -I$S/. -I$S/algo/scan
 $B/clist/imp.o: $S/clist/imp.cu; $N -I$S/. -I$S/clist
 $B/cnt/imp.o: $S/cnt/imp.cu; $N -I$S/. -I$S/cnt

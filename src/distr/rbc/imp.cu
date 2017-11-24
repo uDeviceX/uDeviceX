@@ -26,7 +26,7 @@
 #include "comm/imp.h"
 #include "comm/utils.h"
 
-#include "algo/minmax.h"
+#include "algo/minmax/imp.h"
 
 #include "distr/map/type.h"
 #include "type.h"

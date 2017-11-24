@@ -14,7 +14,8 @@
 #include "inc/dev.h"
 
 #include "utils/kl.h"
-#include "minmax.h"
+
+#include "imp.h"
 
 #define MAXTHREADS 1024
 #define WARPSIZE     32
