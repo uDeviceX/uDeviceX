@@ -39,6 +39,7 @@ $B/scheme/restrain/sub/sum/imp.o: $B/conf.h $S/inc/conf.h $S/mpi/wrapper.h $S/sc
 $B/u/rbc/main/lib/imp.o: $B/conf.h $S/d/api.h $S/inc/conf.h $S/inc/def.h $S/inc/dev.h $S/inc/type.h $S/io/diag.h $S/io/mesh/imp.h $S/mpi/glb.h $S/msg.h $S/rbc/force/area_volume/imp.h $S/rbc/force/imp.h $S/rbc/main/imp.h $S/rbc/rnd/imp.h $S/rbc/stretch/imp.h $S/rbc/type.h $S/scheme/force/imp.h $S/scheme/move/imp.h $S/u/rbc/main/lib/imp.h $S/u/rbc/main/lib/imp/main.h $S/u/rbc/main/lib/imp/stretch0.h $S/u/rbc/main/lib/imp/stretch1.h $S/utils/cc.h $S/utils/error.h $S/utils/halloc.h $S/utils/te.h $S/utils/texo.h
 $B/u/rbc/main/main.o: $S/mpi/glb.h $S/u/rbc/main/lib/imp.h
 $B/utils/cc.o: $B/conf.h $S/d/api.h $S/inc/conf.h $S/utils/cc/common.h $S/utils/error.h
+$B/utils/efopen.o: $S/utils/efopen.h $S/utils/error.h
 $B/utils/error.o: $S/msg.h $S/utils/error.h
 $B/utils/halloc.o: $S/utils/error.h $S/utils/halloc.h
 $B/utils/mc.o: $B/conf.h $S/inc/conf.h $S/utils/error.h $S/utils/mc.h

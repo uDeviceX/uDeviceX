@@ -7,6 +7,7 @@ $B/rbc/rnd/api/imp.o: $S/rbc/rnd/api/imp.cpp; $X -I$S/. -I$S/rbc/rnd/api
 $B/rbc/rnd/imp.o: $S/rbc/rnd/imp.cpp; $X -I$S/. -I$S/rbc/rnd
 $B/u/rbc/rnd/main.o: $S/u/rbc/rnd/main.cpp; $X -I$S/.
 $B/utils/cc.o: $S/utils/cc.cpp; $X -I$S/. -I$S/utils
+$B/utils/efopen.o: $S/utils/efopen.cpp; $X -I$S/. -I$S/utils
 $B/utils/error.o: $S/utils/error.cpp; $X -I$S/. -I$S/utils
 $B/utils/halloc.o: $S/utils/halloc.cpp; $X -I$S/. -I$S/utils
 $B/utils/mc.o: $S/utils/mc.cpp; $X -I$S/. -I$S/utils

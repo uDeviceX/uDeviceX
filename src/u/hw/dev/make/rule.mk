@@ -5,6 +5,7 @@ $B/mpi/wrapper.o: $S/mpi/wrapper.cpp; $X -I$S/. -I$S/mpi
 $B/msg.o: $S/msg.cpp; $X -I$S/.
 $B/u/hw/dev/main.o: $S/u/hw/dev/main.cu; $N -I$S/. -I$S/u/hw/dev
 $B/utils/cc.o: $S/utils/cc.cpp; $X -I$S/. -I$S/utils
+$B/utils/efopen.o: $S/utils/efopen.cpp; $X -I$S/. -I$S/utils
 $B/utils/error.o: $S/utils/error.cpp; $X -I$S/. -I$S/utils
 $B/utils/halloc.o: $S/utils/halloc.cpp; $X -I$S/. -I$S/utils
 $B/utils/mc.o: $S/utils/mc.cpp; $X -I$S/. -I$S/utils

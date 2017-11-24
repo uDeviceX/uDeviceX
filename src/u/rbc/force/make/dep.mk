@@ -31,6 +31,7 @@ $B/rbc/stretch/imp.o: $B/conf.h $S/d/api.h $S/d/ker.h $S/inc/conf.h $S/inc/def.h
 $B/u/rbc/force/lib/imp.o: $B/conf.h $S/d/api.h $S/inc/conf.h $S/inc/def.h $S/inc/dev.h $S/inc/type.h $S/mpi/glb.h $S/msg.h $S/rbc/force/imp.h $S/rbc/main/imp.h $S/rbc/rnd/imp.h $S/rbc/type.h $S/u/rbc/force/lib/imp.h $S/u/rbc/force/lib/imp/main.h $S/utils/cc.h $S/utils/error.h $S/utils/halloc.h $S/utils/te.h $S/utils/texo.h
 $B/u/rbc/force/main.o: $S/mpi/glb.h $S/u/rbc/force/lib/imp.h
 $B/utils/cc.o: $B/conf.h $S/d/api.h $S/inc/conf.h $S/utils/cc/common.h $S/utils/error.h
+$B/utils/efopen.o: $S/utils/efopen.h $S/utils/error.h
 $B/utils/error.o: $S/msg.h $S/utils/error.h
 $B/utils/halloc.o: $S/utils/error.h $S/utils/halloc.h
 $B/utils/mc.o: $B/conf.h $S/inc/conf.h $S/utils/error.h $S/utils/mc.h

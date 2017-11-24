@@ -17,5 +17,6 @@ O = $B/algo/minmax.o $B/algo/scan/imp.o $B/clist/imp.o $B/cnt/imp.o $B/color/flu
     $B/scheme/force/imp.o $B/scheme/move/imp.o $B/scheme/restrain/imp.o \
     $B/scheme/restrain/sub/imp.o $B/scheme/restrain/sub/stat/imp.o \
     $B/scheme/restrain/sub/sum/imp.o $B/sdf/imp.o $B/sdf/int.o $B/sim/imp.o \
-    $B/utils/cc.o $B/utils/error.o $B/utils/halloc.o $B/utils/mc.o $B/utils/os.o \
-    $B/vcontroller/imp.o $B/wall/exch/imp.o $B/wall/force/imp.o $B/wall/imp.o
+    $B/utils/cc.o $B/utils/efopen.o $B/utils/error.o $B/utils/halloc.o \
+    $B/utils/mc.o $B/utils/os.o $B/vcontroller/imp.o $B/wall/exch/imp.o \
+    $B/wall/force/imp.o $B/wall/imp.o

@@ -7,6 +7,7 @@ $B/mpi/wrapper.o: $S/mpi/wrapper.h
 $B/msg.o: $S/mpi/glb.h $S/msg.h
 $B/u/hw/hst/main.o: $S/mpi/glb.h $S/msg.h
 $B/utils/cc.o: $B/conf.h $S/d/api.h $S/inc/conf.h $S/utils/cc/common.h $S/utils/error.h
+$B/utils/efopen.o: $S/utils/efopen.h $S/utils/error.h
 $B/utils/error.o: $S/msg.h $S/utils/error.h
 $B/utils/halloc.o: $S/utils/error.h $S/utils/halloc.h
 $B/utils/mc.o: $B/conf.h $S/inc/conf.h $S/utils/error.h $S/utils/mc.h

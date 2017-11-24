@@ -7,6 +7,7 @@ $B/rbc/rnd/api/imp.o: $B/conf.h $S/inc/conf.h $S/rbc/rnd/api/imp.h $S/rbc/rnd/ap
 $B/rbc/rnd/imp.o: $B/conf.h $S/d/api.h $S/inc/conf.h $S/inc/dev.h $S/mpi/glb.h $S/msg.h $S/rbc/rnd/api/imp.h $S/rbc/rnd/api/type.h $S/rbc/rnd/imp.h $S/rbc/rnd/imp/cu.h $S/rbc/rnd/imp/main.h $S/rbc/rnd/imp/seed.h $S/rbc/rnd/type.h $S/utils/cc.h $S/utils/error.h $S/utils/halloc.h $S/utils/os.h
 $B/u/rbc/rnd/main.o: $B/conf.h $S/d/api.h $S/inc/conf.h $S/inc/dev.h $S/mpi/glb.h $S/msg.h $S/rbc/rnd/imp.h $S/utils/cc.h
 $B/utils/cc.o: $B/conf.h $S/d/api.h $S/inc/conf.h $S/utils/cc/common.h $S/utils/error.h
+$B/utils/efopen.o: $S/utils/efopen.h $S/utils/error.h
 $B/utils/error.o: $S/msg.h $S/utils/error.h
 $B/utils/halloc.o: $S/utils/error.h $S/utils/halloc.h
 $B/utils/mc.o: $B/conf.h $S/inc/conf.h $S/utils/error.h $S/utils/mc.h
