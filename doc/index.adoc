@@ -18,6 +18,12 @@
 * link:/doc/dev/modules/fluforces/bulk.adoc[fluforces : bulk]
 * link:/doc/dev/modules/fluforces/halo.adoc[fluforces : halo]
 * link:/doc/dev/modules/algo/scan.adoc[scan]
+
+* link:/doc/dev/modules/distr/main.adoc[distr]
+* link:/doc/dev/modules/distr/flu.adoc[distr : solvent]
+* link:/doc/dev/modules/distr/rbc.adoc[distr : red blood cells]
+* link:/doc/dev/modules/distr/rig.adoc[distr : rigid bodies]
+
 // Does this belong to dev?
 * link:/doc/dev/compile.adoc[compilation]
 
