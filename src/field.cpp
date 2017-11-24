@@ -31,7 +31,7 @@ static void skip_line(FILE *f) {
 static FILE* safe_fopen(const char *path, const char *mode) {
     FILE *f;
     f = fopen(path, mode);
-    if (f == NULL) ERR("fail to open: %s\n", path);
+    if (f == NULL) ERR("fail to open: '%s'\n", path);
     return f;
 }
 
@@ -149,13 +149,13 @@ static void dump0(const int N0[3], const float* D0, /**/ float* D1) {
 
 static void dump1(const int N[3], const float* D, /*w*/ float* W) {
     dump0(N, D, /**/ W);
-    io::field::scalar(W, "wall");
+    UC(io::field::scalar(W, "wall"));
 }
 
 void dump(const int N[], const float* D) {
     float *W;
     UC(emalloc(XS*YS*ZS*sizeof(float), (void**) &W));
-    dump1(N, D, /*w*/ W);
+    UC(dump1(N, D, /*w*/ W));
     efree(W);
 }
 } /* namespace field */
