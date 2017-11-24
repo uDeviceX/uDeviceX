@@ -68,8 +68,8 @@ void forces_objects() {
     
     download_ff(&e.pf);
 
-    post_send_ff(&e.pf, &e.c);
-    post_recv_ff(&e.c, &e.uf);
+    UC(post_send_ff(&e.pf, &e.c));
+    UC(post_recv_ff(&e.c, &e.uf));
 
     wait_send_ff(&e.c);    
     wait_recv_ff(&e.c, &e.uf);
