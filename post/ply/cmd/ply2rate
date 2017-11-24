@@ -1,0 +1,24 @@
+set -e
+
+usg () {
+    msg 'u.ply2ext   [file0] [file..]    > xy.txt'
+    msg 'computes max(x) - min(x), max(y) - min(y), max(z) - min(z)'
+    msg 'output value for every [file..] normalized by values from [file0]'
+    exit
+}
+
+msg () { echo >&2 "$@"; }
+
+if test "$1" = -h; then usg; fi
+
+u.ply2ext "$@" | "${AWK-awk}" '
+NR == 1 { split($0, a) }
+NF {
+    for (i = 1; i <= NF; i++) {
+	v = $i; v0 = a[i]
+	if (i != 1) printf " "
+	printf "%g", (v0 ? v/v0 : v)
+    }
+    printf "\n"
+}
+'
