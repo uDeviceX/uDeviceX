@@ -20,7 +20,7 @@ void forces_dpd() {
     if (multi_solvent)
         pack_ii(q.cc, &h.ts, /**/ &h.tsi);
 
-    post_send(&h.tc, &h.ts);
+    UC(post_send(&h.tc, &h.ts));
     if (multi_solvent)
         post_send_ii(&h.tc, &h.ts, /**/ &h.tic, &h.tsi);
  

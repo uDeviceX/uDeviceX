@@ -35,8 +35,8 @@ void forces_objects() {
     pack(nw, pw, /**/ &e.p);
     download(nw, /**/ &e.p);
 
-    post_send(&e.p, &e.c);
-    post_recv(&e.c, &e.u);
+    UC(post_send(&e.p, &e.c));
+    UC(post_recv(&e.c, &e.u));
 
     /* bulk interactions */
     

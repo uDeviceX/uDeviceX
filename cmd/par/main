@@ -1,0 +1,37 @@
+usg () {
+    msg 'u.par    a=1 b=42           [FILE]'
+    msg 'u.par -w a=1 b=\"cell.off\" [FILE]'
+    exit
+}
+
+msg () { echo >&2 "$@";           }
+err () { msg "u.par: $@"; exit 2; }
+
+if test "$1" = -h; then usg; fi
+
+# parameter?
+parp () { echo "$@" | grep -q =; }
+
+File=
+# overwrite?
+Over=0
+for c
+do shift
+   case "$c" in
+       -w) Over=1; continue ;;
+       -*) err 'invalid option: $c' ;;
+   esac
+   if !  parp "$c"
+   then
+       if test -n "$File"; then err two files \'"$File"\' and \'"$c"\'; fi
+       File="$c"
+       continue
+   fi
+   set -- "$@" "$c"
+done
+
+if test -n "$File" -a ! -r "$File"
+then err not a file \'"$File"\'
+fi
+
+u.par0 -v File="$File" -v Over="$Over" "$@"

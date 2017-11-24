@@ -8,8 +8,8 @@ void distribute_flu() {
     pack(&q, /**/ &d.p);
     download(q.n, /**/ &d.p);
 
-    post_send(&d.p, &d.c);
-    post_recv(&d.c, &d.u);
+    UC(post_send(&d.p, &d.c));
+    UC(post_recv(&d.c, &d.u));
 
     distr::flu::bulk(/**/ &q);
     
@@ -31,8 +31,8 @@ void distribute_rbc() {
     pack(&q, /**/ &d.p);
     download(/**/&d.p);
 
-    post_send(&d.p, &d.c);
-    post_recv(&d.c, &d.u);
+    UC(post_send(&d.p, &d.c));
+    UC(post_recv(&d.c, &d.u));
 
     unpack_bulk(&d.p, /**/ &q);
 
@@ -51,8 +51,8 @@ void distribute_rig() {
     pack(q.ns, nv, q.ss, q.i_pp, /**/ &d.p);
     download(/**/&d.p);
 
-    post_send(&d.p, &d.c);
-    post_recv(&d.c, &d.u);
+    UC(post_send(&d.p, &d.c));
+    UC(post_recv(&d.c, &d.u));
 
     unpack_bulk(&d.p, /**/ &q);
     

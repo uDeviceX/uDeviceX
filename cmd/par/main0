@@ -1,0 +1,14 @@
+#!/usr/bin/awk -f
+
+BEGIN {
+    if (!emptyp(File)) cat(File)
+    for (i = 1; i in ARGV; i++)
+	print ARGV[i]
+}
+function cat(f) {
+    c = sprintf("cat '%s'", f)
+    system(c)
+}
+function emptyp(s) { return !length(s) }
+
+# TODO: parse File, respect Over
