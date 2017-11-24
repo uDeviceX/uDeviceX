@@ -18,7 +18,7 @@
 
 == units
 
-* link:/doc/units/comm.adoc[error]
+* link:/doc/units/comm.adoc[comm]
 * link:/doc/units/error.adoc[error]
 * link:/doc/units/hw/hst.adoc[hello world (hst)]
 * link:/doc/units/hw/dev.adoc[hello world (dev)]
