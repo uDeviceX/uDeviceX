@@ -6,7 +6,7 @@ $B/glb/wvel/imp.o: $B/conf.h $S/glb/wvel/imp.h $S/glb/wvel/imp/dupire/common.h $
 $B/mpi/glb.o: $B/conf.h $S/inc/conf.h $S/mpi/glb.h $S/mpi/wrapper.h $S/utils/mc.h
 $B/mpi/type.o: $S/inc/conf.h $S/inc/type.h $S/mpi/type.h $S/utils/mc.h
 $B/mpi/wrapper.o: $S/mpi/wrapper.h
-$B/msg.o: $S/mpi/glb.h $S/msg.h
+$B/msg.o: $S/mpi/glb.h $S/msg.h $S/utils/efopen.h $S/utils/error.h
 $B/u/clist/main.o: $S/algo/scan/int.h $S/clist/imp.h $B/conf.h $S/d/api.h $S/inc/conf.h $S/inc/dev.h $S/inc/type.h $S/msg.h $S/utils/cc.h $S/utils/error.h $S/utils/halloc.h
 $B/utils/cc.o: $B/conf.h $S/d/api.h $S/inc/conf.h $S/utils/cc/common.h $S/utils/error.h
 $B/utils/efopen.o: $S/utils/efopen.h $S/utils/error.h
