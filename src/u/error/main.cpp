@@ -6,9 +6,14 @@
 #include "inc/conf.h"
 
 #include "msg.h"
+
 #include "mpi/glb.h"
 #include "mpi/wrapper.h"
+
+#include "d/api.h"
+
 #include "utils/mc.h"
+#include "utils/cc.h"
 #include "utils/error.h"
 
 enum {UDX_, MPI_, CUDA_, NKINDS};
@@ -19,11 +24,13 @@ void UDX_bar() {
 
 void MPI_bar() {
     int c;
-    MC(m::Get_count(NULL, MPI_CHAR, &c));
+    MPI_Status *wrong_status = NULL;
+    MC(m::Get_count(wrong_status, MPI_CHAR, &c));
 }
 
 void CUDA_bar() {
-    signal_error_extra("cuda bar failed");
+    int *wrong_pointer = NULL;
+    CC(d::Memset(wrong_pointer, 0, 32));
 }
 
 void foo(int kind) {
@@ -47,7 +54,6 @@ int main(int argc, char **argv) {
 
     const char *ckind = getenv("ERR_KIND");
     int k = atoi(ckind);
-    printf("%s %d\n", ckind, k);
     
     UC(foo(k));
     m::fin();
