@@ -39,7 +39,7 @@ static int nhalocells() {
 void ini(int maxdensity, Unpack *u) {
     int capacity[NBAGS];
     get_capacity(maxdensity, /**/ capacity);
-    for(int i = 0; i < 26; ++i) printf("cap %d\n", capacity[i]);
+
     UC(ini(HST_ONLY, NONE, sizeof(Particle), capacity, /**/ &u->hpp, NULL));
     if (global_ids)    UC(ini(HST_ONLY, NONE, sizeof(int), capacity, /**/ &u->hii, NULL));
     if (multi_solvent) UC(ini(HST_ONLY, NONE, sizeof(int), capacity, /**/ &u->hcc, NULL));
