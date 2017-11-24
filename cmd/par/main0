@@ -1,1 +1,5 @@
-echo 42
+"${AWK-awk}" '
+BEGIN {
+    print "preved"
+}
+' "$@"
