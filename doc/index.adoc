@@ -11,7 +11,7 @@
 * link:/doc/dev/modules/utils/cc.adoc[CC cuda check]
 * link:/doc/dev/modules/utils/mc.adoc[MC mpi check]
 * link:/doc/dev/modules/utils/kl.adoc[KL Kernel Launch]
-
+* link:/doc/dev/modules/d.adoc[d : generic device api]
 * link:/doc/dev/modules/comm.adoc[Communication]
 * link:/doc/dev/modules/clist.adoc[cell lists]
 * link:/doc/dev/modules/fluforces/main.adoc[fluforces : solvent forces]
