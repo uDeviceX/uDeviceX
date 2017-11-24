@@ -1,6 +1,6 @@
 static void check_size(long n, long max) {
     if (n < 0 || n >= max)
-        signal_error_extra("wrong size: %ld / %ld", n, max);
+        UERR("wrong size: %ld / %ld", n, max);
 }
 
 void step(scheme::force::Param *fpar, bool wall0, int it) {

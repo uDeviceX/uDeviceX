@@ -1,4 +1,4 @@
-#define signal_error_extra(fmt, ...)                                    \
+#define UERR(fmt, ...)                                    \
     UdxError::signal_error(__FILE__, __LINE__, fmt, ##__VA_ARGS__)
 
 /* udx check */
