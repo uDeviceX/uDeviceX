@@ -5,13 +5,13 @@ static int estimate_max_flux(int fid, int maxd) {
     return e;
 }
 
-static void get_capacity(float maxd, /**/ int capacity[NBAGS]) {
+static void get_capacity(int maxd, /**/ int capacity[NBAGS]) {
     for (int i = 0; i < NFRAGS; ++i)
         capacity[i] = estimate_max_flux(i, maxd);
-    capacity[frag_bulk] = 0;    
+    capacity[frag_bulk] = 0;
 }
 
-void ini(float maxdensity, Pack *p) {
+void ini(int maxdensity, Pack *p) {
     int capacity[NBAGS];
     get_capacity(maxdensity, /**/ capacity);
 
@@ -36,10 +36,10 @@ static int nhalocells() {
         2 * YS * ZS;
 }
 
-void ini(float maxdensity, Unpack *u) {
+void ini(int maxdensity, Unpack *u) {
     int capacity[NBAGS];
     get_capacity(maxdensity, /**/ capacity);
-
+    for(int i = 0; i < 26; ++i) printf("cap %d\n", capacity[i]);
     UC(ini(HST_ONLY, NONE, sizeof(Particle), capacity, /**/ &u->hpp, NULL));
     if (global_ids)    UC(ini(HST_ONLY, NONE, sizeof(int), capacity, /**/ &u->hii, NULL));
     if (multi_solvent) UC(ini(HST_ONLY, NONE, sizeof(int), capacity, /**/ &u->hcc, NULL));

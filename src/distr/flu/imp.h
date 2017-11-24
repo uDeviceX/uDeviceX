@@ -1,9 +1,9 @@
 namespace distr {
 namespace flu {
 
-void ini(float maxdensity, Pack *p);
+void ini(int maxdensity, Pack *p);
 void ini(MPI_Comm comm, /*io*/ basetags::TagGen *tg, /**/ Comm *c);
-void ini(float maxdensity, Unpack *u);
+void ini(int maxdensity, Unpack *u);
 
 void fin(Pack *p);
 void fin(Comm *c);
