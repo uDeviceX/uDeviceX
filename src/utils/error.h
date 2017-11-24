@@ -1,5 +1,8 @@
-#define UERR(fmt, ...)                                    \
-    UdxError::signal_error(__FILE__, __LINE__, fmt, ##__VA_ARGS__)
+#define UERR(fmt, ...)  do {                                            \
+        UdxError::signal_error(__FILE__, __LINE__, fmt, ##__VA_ARGS__); \
+        UdxError::report();                                             \
+        UdxError::abort();                                              \
+    } while (0)
 
 /* udx check */
 #define UC(F) do {                                      \
