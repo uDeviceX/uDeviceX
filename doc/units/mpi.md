@@ -1,3 +1,0 @@
-# MPI error
-
-Units triggers mpi error. A test for MC macro.

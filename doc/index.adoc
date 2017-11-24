@@ -23,4 +23,6 @@
 * link:/doc/units/hw/hst.adoc[hello world (hst)]
 * link:/doc/units/hw/dev.adoc[hello world (dev)]
 * link:/doc/units/meshbb.adoc[meshbb]
+* link:/doc/units/mpi.adoc[mpi]
+* link:/doc/units/pair.adoc[pair]
 
