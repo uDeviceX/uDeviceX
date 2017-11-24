@@ -1,0 +1,20 @@
+= compilation command
+
+Shows full compilation and linking commands
+----
+u.make LOG=
+----
+
+= profile compilation time
+
+----
+u.make LOG='@time -f "%e $<"'
+----
+
+Summarize time used to compile
+
+----
+10.09 flu/imp.cu
+10.16 restrain/imp.cu
+...
+----
