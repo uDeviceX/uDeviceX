@@ -14,6 +14,7 @@
 #include "mpi/type.h"
 #include "utils/os.h"
 #include "utils/error.h"
+#include "utils/efopen.h"
 
 #include "imp.h"
 
@@ -52,18 +53,18 @@ static void copy_shift_with_forces(const Particle *pp, const Force *ff, const lo
     
 static void header(const long n, const char *name, const int step, const char *type, const char *fields) {
     char fname[256] = {0};
+    FILE *f;
+    
     sprintf(fname, DUMP_BASE "/bop/" PATTERN ".bop", name, step / part_freq);
         
-    FILE *f = fopen(fname, "w");
-
-    if (f == NULL)
-    ERR("could not open <%s>\n", fname);
+    UC(efopen(fname, "w", /**/ &f));
 
     fprintf(f, "%ld\n", n);
     fprintf(f, "DATA_FILE: " PATTERN ".values\n", name, step / part_freq);
     fprintf(f, "DATA_FORMAT: %s\n", type);
     fprintf(f, "VARIABLES: %s\n", fields);
-    fclose(f);
+
+    UC(efclose(f));
 }
 
 static void header_pp(const long n, const char *name, const int step) {
