@@ -1,12 +1,27 @@
 = error unit
 
-a unit to test error handling `UC` (see link:/doc/DEV/modules/utils/error.adoc[error])
+a unit to test error handling `UC` (see
+link:/doc/DEV/modules/utils/error.adoc[error]), `CC` (see
+link:/doc/DEV/modules/utils/cc.adoc[cc]) and `MC` link:/doc/DEV/modules/utils/mc.adoc[mc]
 
-[source,c++]
+== compile
+
+from `/src/` directory:
+[source,shell]
 ----
-include::../src/u/error/main.cpp[]
+u.conf0 u/error
+make -j
 ----
 
-The function `bar` triggers an error with extra message.
-When calling `bar()` with the macro `UC`, the backtrace (all levels
-with `UC` calls) is dumped.
+== usage
+[source,shell]
+----
+export ERR_KIND=<kind> && ./udx
+----
+ where `<kind>` must be:
+ * 0 for rasing an error from host code
+ * 1 for testing `MC` on a failing MPI call
+ * 2 for testing `CC` on a failing cuda API call
+
+The output should result in an error message, location of the error
+and a backtrace
