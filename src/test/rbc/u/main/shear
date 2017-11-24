@@ -4,23 +4,32 @@ set -eu
 rm -rf bop diag.txt h5 ply rbc.off
 :
 S=`pwd`
-U=u/rbc/main
+: U=u/rbc/main
+U=u/x
 C=conf/lina.h
 nv=2562
 seed=123456
+kb=1000
 A=0
-alpha=1
+p=0.00005
+alpha=0.5
 cell=data/cells/rbc/$nv.off
 cell0=data/cells/sph/$nv.off
+cellt=data/cells/rbc/$nv.off
+:
+cp $S/data/sdf/yplates1/yplates.dat sdf.dat
+Wall="walls wall_creation=1000 WVEL_PAR_Y WVEL_PAR_A=10"
+: Force="FORCE_SHEAR FORCE_PAR_A=$alpha"
+Force=
 :
 cp              $cell           rbc.off
 cp              $cell0          rbc.stress.free
 u.stretch $A 5% $cell         > rbc.stretch
 :
-volume=`volume $cell` : needs gitlab:off
-area=`area $cell`
+volume=`volume $cellt` : needs gitlab:off
+area=`area $cellt`
 :
-XS=48 YS=48 ZS=48
+XS=48 YS=24 ZS=24
 half () { awk -v n=$1 'BEGIN {print n/2}'; }
 x=`half $XS` y=`half $YS` z=`half $ZS`
 : 'cos(pi/2) and sin(pi/2)'
@@ -34,13 +43,15 @@ echo 1   0    0  $x \
 u.conf $S $U $C <<!
    rbcs
    RESTRAIN_RBC_VEL RBC_STRESS_FREE MESH_SHIFT_CENTER
-   pushrbc FORCE_SHEAR FORCE_PAR_A=$alpha
-   RBCtotArea=$area RBCtotVolume=$volume
-   XS=$XS YS=$YS ZS=$ZS RBCnv=$nv RBC_RND=false
-   dt=1e-4 tend=200.0 part_freq=5000
+   $Force $Wall
+   RBCtotArea=$area RBCtotVolume=$volume RBCnv=$nv RBCp=$p
+   RBC_RND RBCkb=$kb RBCgammaC=1000
+   XS=$XS YS=$YS ZS=$ZS
+   dt=1e-5 tend=200000.0 part_freq=2000
    run
 !
 { make clean && u.make -j; } > /dev/null
+u.strtdir .
 :
 u.run ./udx
 ply2punto r/00009.ply | uscale 1 > ply.out.txt
