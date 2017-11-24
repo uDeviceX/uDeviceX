@@ -4,5 +4,8 @@
 gource -s 0.1 --file-filter 'test_data/' \
 	      --file-filter 'poc/' \
 	      --file-filter 'tcdf/' \
-	      --file-filter 'cmd/'
+	      --file-filter 'cmd/'  \
+	      --date-format '%d %b %Y'
 ----
+
+`-o g.ppm` to dump
