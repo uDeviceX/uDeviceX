@@ -1,0 +1,12 @@
+
+// algo
+
+include::algo/scan.adoc[]
+
+//
+
+include::clist.adoc[]
+
+include::comm.adoc[]
+
+

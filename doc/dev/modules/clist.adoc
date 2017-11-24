@@ -1,15 +1,15 @@
-= clists
+=== clists
 
 Cell lists
 Purpose: reorder data according to particle positions into cells
 
-== data structures
+==== data structures
 
-=== Clist
+===== Clist
 
 Helpers to find which particles are in which cells.
 
-[source,c++]
+[source,cpp]
 ----
 struct Clist {
     int3 dims;
@@ -23,11 +23,11 @@ struct Clist {
 * `counts` number of particles per cell
 * `starts` exclusive prefic scan of the above
 
-=== Map
+===== Map
 
 Helper to reorder the arrays
 
-[source,c++]
+[source,cpp]
 ----
 struct Map {
     int nA;              /* number of source arrays to build the cell lists, e.g remote+bulk -> 2 */

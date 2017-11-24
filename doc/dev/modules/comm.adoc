@@ -1,10 +1,10 @@
-= comm
+=== comm
 
 generic communicator with "halo".
 
-== purpose
+==== purpose
 
-== data structures
+==== data structures
 
 
 * `hBags`: buffers on the host, contains all necessary information of the data to communicate:
@@ -20,13 +20,13 @@ generic communicator with "halo".
 ** `ranks`: ranks of the neighbors in the grid (who do I send to?)
 ** `tags`: tags used by neighbors to send messages
 
-== allocation mod
+==== allocation mod
 
 User can choose how the buffers are allocated with the enum type `AllocMod`.
 This is used in the funcion `ini` and `fin`. allocation mode and free mode are assumed to be the same
 
 currently supported allocation modes:
-[source,c++]
+[source,cpp]
 ----
 HST_ONLY,   /* only host bags allocated                 */
 DEV_ONLY,   /* only device bags allocated               */
@@ -36,11 +36,11 @@ PINNED_DEV, /* host pinned; device global memory on gpu */
 NONE        /* no allocation                            */
 ----
 
-== interface
+==== interface
 
-=== ini
+===== ini
 
-[source,c++]
+[source,cpp]
 ----
 void ini(AllocMod fmod, AllocMod bmod, size_t bsize, const int capacity[NBAGS], /**/ hBags *hb, dBags *db);
 ----
@@ -49,37 +49,37 @@ Given two structures `hBags` and `dBags`, `ini` allocates the buffers on host an
 * `fmod`: allocation mode for fragment buffers
 * `bmod`: allocation mode for bulk buffer
 
-[source,c++]
+[source,cpp]
 ----
 void ini(MPI_Comm comm, /*io*/ basetags::TagGen *tg, /**/ Stamp *s);
 ----
 initialize `Stamp` structure
 
-=== fin
+===== fin
 
 free memory allocated by `ini`
 
-=== communication
+===== communication
 
-[source,c++]
+[source,cpp]
 ----
 void post_recv(hBags *b, Stamp *s);
 ----
 call MPI asynchroneous recv and store requests in `s`
 
-[source,c++]
+[source,cpp]
 ----
 void post_send(const hBags *b, Stamp *s);
 ----
 call MPI asynchroneous send and store requests in `s`
 
-[source,c++]
+[source,cpp]
 ----
 void wait_recv(Stamp *s, /**/ hBags *b);
 ----
 wait for recv requests
 
-[source,c++]
+[source,cpp]
 ----
 void wait_send(Stamp *s);
 ----
