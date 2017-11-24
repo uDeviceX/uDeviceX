@@ -1,0 +1,42 @@
+= scan
+
+exclusive prefix sum implementation for integer data
+
+input is of size `n`, output is of size `n + 1` as in the following
+example:
+
+----
+input:  4 5 1  2  3  -
+output: 0 4 9 10 12 15
+----
+
+== data structures
+
+[source,c++]
+----
+struct Work {
+    unsigned int  *tmp;
+    unsigned char *compressed;
+};
+----
+
+Workspace needed for cuda implementation
+
+this is allocated and freed by
+
+[source,c++]
+----
+void alloc_work(int size, /**/ Work *w);
+void free_work(/**/ Work *w);
+----
+
+where `size` is the size of the input.
+
+
+== interface
+
+[source,c++]
+----
+void scan(const int *input, int size, /**/ int *output, /*w*/ Work *w);
+----
+
