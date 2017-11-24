@@ -32,7 +32,9 @@ static void run0(rbc::Quants q, rbc::force::TicketT t, rbc::stretch::Fo* stretch
         if (pushrbc) body_force(q, /**/ f);
         scheme::move::main(rbc_mass, q.n, f, q.pp);
         if (i % part_freq  == 0) dump(q, t);
-        //scheme::move::clear_vel(q.n, /**/ q.pp);
+#ifdef RBC_CLEAR_VEL
+        scheme::move::clear_vel(q.n, /**/ q.pp);
+#endif
     }
 }
 
