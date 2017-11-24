@@ -1,6 +1,6 @@
 void post_recv(Comm *c, Unpack *u) {
-    OC(post_recv(&u->hpp, &c->pp));
-    if (rbc_ids) OC(post_recv(&u->hii, &c->ii));
+    UC(post_recv(&u->hpp, &c->pp));
+    if (rbc_ids) UC(post_recv(&u->hii, &c->ii));
 }
 
 void post_send(Pack *p, Comm *c) {
@@ -14,6 +14,6 @@ void wait_recv(Comm *c, Unpack *u) {
 }
 
 void wait_send(Comm *c) {
-    wait_send(&c->pp);
-    if (rbc_ids) wait_send(&c->ii);
+    UC(wait_send(&c->pp));
+    if (rbc_ids) UC(wait_send(&c->ii));
 }

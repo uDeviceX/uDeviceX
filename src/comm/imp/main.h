@@ -3,7 +3,7 @@ int post_recv(hBags *b, Stamp *s) {
     for (i = 0; i < NFRAGS; ++i) {
         c = b->capacity[i] * b->bsize;
         tag = s->bt + s->tags[i];
-        COMM_MC(m::Irecv(b->data[i], c, MPI_BYTE, s->ranks[i], tag, s->cart, s->rreq + i));
+        MC(m::Irecv(b->data[i], c, MPI_BYTE, s->ranks[i], tag, s->cart, s->rreq + i));
     }
     return 0;
 }
@@ -18,14 +18,14 @@ int post_send(const hBags *b, Stamp *s) {
 
         if (c > cap)
             signal_error_extra("sending more than capacity in fragment %d : (%ld / %ld)", i, (long) c, (long) cap);
-        COMM_MC(m::Isend(b->data[i], n, MPI_BYTE, s->ranks[i], tag, s->cart, s->sreq + i));
+        MC(m::Isend(b->data[i], n, MPI_BYTE, s->ranks[i], tag, s->cart, s->sreq + i));
     }
     return 0;
 }
 
 static void get_counts_bytes(const MPI_Status ss[NFRAGS], /**/ int counts[NFRAGS]) {
     for (int i = 0; i < NFRAGS; ++i)
-        COMM_MC(m::Get_count(ss + i, MPI_BYTE, counts + i));
+        MC(m::Get_count(ss + i, MPI_BYTE, counts + i));
 }
 
 static void get_counts(const MPI_Status ss[NFRAGS], /**/ hBags *b) {
@@ -42,16 +42,16 @@ static void get_counts(const MPI_Status ss[NFRAGS], /**/ hBags *b) {
 
 int wait_recv(Stamp *s, /**/ hBags *b) {
     MPI_Status ss[NFRAGS];
-    COMM_MC(m::Waitall(NFRAGS, s->rreq, /**/ ss));
+    MC(m::Waitall(NFRAGS, s->rreq, /**/ ss));
     get_counts(ss, /**/ b);
     return 0;
 }
 
 int wait_send(Stamp *s) {
     MPI_Status ss[NFRAGS];
-    COMM_MC(m::Waitall(NFRAGS, s->sreq, ss));
+    MC(m::Waitall(NFRAGS, s->sreq, ss));
     return 0;
 }
 
-int mpi_error() { COMM_MC(m::Barrier(-1234)); return 0; }
+int mpi_error() { MC(m::Barrier(-1234)); return 0; }
 int comm_error() { return 1; }
