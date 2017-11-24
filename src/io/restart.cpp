@@ -8,6 +8,7 @@
 #include "msg.h"
 #include "mpi/glb.h"
 #include "utils/error.h"
+#include "utils/efopen.h"
 
 #include "restart.h"
 
@@ -39,8 +40,6 @@ enum {X, Y, Z};
         ERR("Buffer too small to handle this format\n");    \
     } while (0)
 
-#define CF(f, fname) do {if (f==NULL) ERR("could not open the file <%s>\n", fname);} while(0)
-
 void id2str(const int id, char *str) {
     switch (id) {
     case TEMPL:
@@ -67,45 +66,51 @@ void gen_name(const bool read, const char *code, const int id, const char *ext, 
 
 namespace bopwrite {
 void header_pp(const char *bop, const char *rel, const long n) {
-    FILE *f = fopen(bop, "w"); CF(f, bop); /* TODO */
+    FILE *f;
+    UC(efopen(bop, "w", /**/ &f));
     
     fprintf(f, "%ld\n", n);
     fprintf(f, "DATA_FILE: %s\n", rel);
     fprintf(f, "DATA_FORMAT: float\n");
     fprintf(f, "VARIABLES: x y z vx vy vz\n");
-    fclose(f);
+
+    UC(efclose(f));
 }
 
 void header_ii(const char *bop, const char *rel, const long n) {
-    FILE *f = fopen(bop, "w"); CF(f, bop);
+    FILE *f;
+    UC(efopen(bop, "w", /**/ &f));
     
     fprintf(f, "%ld\n", n);
     fprintf(f, "DATA_FILE: %s\n", rel);
     fprintf(f, "DATA_FORMAT: int\n");
     fprintf(f, "VARIABLES: id\n");
-    fclose(f);
+    UC(efclose(f));
 }
 
 template <typename T>
 void data(const char *val, const T *dat, const long n) {
-    FILE *f = fopen(val, "w"); CF(f, val);
+    FILE *f;
+    UC(efopen(val, "w", /**/ &f));
     fwrite(dat, sizeof(T), n, f);
-    fclose(f);
+    UC(efclose(f));
 }
 } // namespace bopwrite
 
 namespace bopread {
 void read_n(const char *name, long *n) {
-    FILE *f = fopen(name, "r"); CF(f, name);
+    FILE *f;
+    UC(efopen(name, "r", /**/ &f));
     if (fscanf(f, "%ld\n", n) != 1) ERR("wrong format\n");
-    fclose(f);
+    UC(efclose(f));
 }
 
 template <typename T>
 void data(const char *name, const long n, T *dat) {
-    FILE *f = fopen(name, "r"); CF(f, name);
+    FILE *f;
+    UC(efopen(name, "r", /**/ &f));
     fread(dat, sizeof(T), n, f);
-    fclose(f);
+    UC(efclose(f));
 }
 } // namespace bopread
 
@@ -166,23 +171,26 @@ void read_ii(const char *code, const char *subext, const int id, int *ii, int *n
 
 void write_ss(const char *code, const int id, const Solid *ss, const long n) {
     char fname[BS] = {0};
+    FILE *f;
     gen_name(DUMP, code, id, "solid", /**/ fname);
         
-    FILE *f = fopen(fname, "w"); CF(f, fname);
+    UC(efopen(fname, "w", /**/ &f));
     fprintf(f, "%ld\n", n);
     fwrite(ss, sizeof(Solid), n, f);
-    fclose(f);
+    UC(efclose(f));
 }
 
 void read_ss(const char *code, const int id, Solid *ss, int *n) {
     long ns = 0;
     char fname[BS] = {0};
+    FILE *f;
     gen_name(READ, code, id, "solid", /**/ fname);
     fprintf(stderr, "reading %s\n", fname);
-    FILE *f = fopen(fname, "r"); CF(f, fname);
+
+    UC(efopen(fname, "r", /**/ &f));
     fscanf(f, "%ld\n", &ns);
     fread(ss, sizeof(Solid), ns, f);
-    fclose(f);
+    UC(efclose(f));
     *n = ns;
     DBG("I have read %ld ss.", ns);
 }
