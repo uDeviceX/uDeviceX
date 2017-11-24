@@ -1,7 +1,7 @@
 = u.par(1)
 
 == NAME
-u.par - create udx parameter file
+u.par - create key=value configuration file
 
 
 == SYNOPSIS
