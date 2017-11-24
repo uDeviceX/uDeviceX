@@ -1,0 +1,18 @@
+u.par(1)
+===========
+:doctype: manpage
+
+
+NAME
+----
+u.par - create udx parameter file
+
+
+SYNOPSIS
+--------
+*u.par* ['OPTIONS'] 'FILE'
+
+
+DESCRIPTION
+-----------
+The u.par(1) write udx parameter file to stdout
