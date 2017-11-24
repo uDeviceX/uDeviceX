@@ -55,7 +55,6 @@
 #include "sdf/int.h"
 #include "wall/imp.h"
 
-#include "comm/oc/imp.h"
 #include "comm/imp.h"
 #include "distr/map/type.h"
 #include "distr/flu/type.h"
