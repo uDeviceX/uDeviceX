@@ -8,6 +8,8 @@
 
 * link:/doc/DEV/conventions.adoc[coding style and conventions]
 * link:/doc/DEV/modules/utils/error.adoc[udx error handling]
+* link:/doc/DEV/modules/utils/cc.adoc[CC cuda check]
+* link:/doc/DEV/modules/utils/mc.adoc[MC mpi check]
 
 == units
 
