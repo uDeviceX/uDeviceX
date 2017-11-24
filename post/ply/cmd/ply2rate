@@ -1,7 +1,7 @@
 set -e
 
 usg () {
-    msg 'u.ply2ext   [file0] [file..]    > xy.txt'
+    msg 'u.ply2rate   [file0] [file..]    > xy.txt'
     msg 'computes max(x) - min(x), max(y) - min(y), max(z) - min(z)'
     msg 'output value for every [file..] normalized by values from [file0]'
     exit
