@@ -37,7 +37,11 @@ void stack_push(const char *file, int line) {
 static void stack_dump() {
     int i, nchar;
     char *bt = back_trace;
-    
+
+    if (stack_sz) {
+        nchar = sprintf(bt, "backtrace:\n");
+        bt += nchar;
+    }
     for (i = 0; i < stack_sz; ++i) {
         nchar = sprintf(bt, "%s\n", stack[i]);
         assert(nchar >= 0);
@@ -80,8 +84,7 @@ bool error() {return err_status;}
 void report() {
     if (err_status) {
         stack_dump();
-        MSG("%s: %d: %s error: %s\n"
-            "backtrace:\n%s",
+        MSG("%s: %d: %s error: %s\n%s\n",
             err_file, err_line, err_kind, err_msg, back_trace);
     }
 }void abort() { exit(1); }
