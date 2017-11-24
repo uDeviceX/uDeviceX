@@ -12,7 +12,6 @@ seed=123456
 cell=data/cells/rbc/$nv.off
 cp              $cell           rbc.off
 u.stretch $A 5% $cell         > rbc.stretch
-cp $S/data/ic/ident             rbcs-ic.dat
 :
 sph=1.02
 volume=`sphericity2volume $sph $cell` : needs gitlab:off
