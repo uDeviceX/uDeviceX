@@ -7,18 +7,21 @@ link:/doc/DEV/modules/utils/cc.adoc[cc]) and `MC` (see link:/doc/DEV/modules/uti
 == compile
 
 from `/src/` directory:
-[source,shell]
+
+[source,sh]
 ----
 u.conf0 u/error
 make -j
 ----
 
 == usage
-[source,shell]
+
+[source,sh]
 ----
 export ERR_KIND=<kind> && ./udx
 ----
- where `<kind>` must be:
+
+where `<kind>` must be:
  * 0 for rasing an error from host code
  * 1 for testing `MC` on a failing MPI call
  * 2 for testing `CC` on a failing cuda API call
