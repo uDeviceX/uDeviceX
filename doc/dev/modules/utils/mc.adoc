@@ -12,4 +12,4 @@ MC(my_mpi_api_call());
 ----
 
 `MC` uses internally `UdxError` in case of failure. This allows to
-dump a backtrace (see link:/doc/DEV/modules/utils/error.adoc[error]).
+dump a backtrace (see link:/doc/dev/modules/utils/error.adoc[error]).

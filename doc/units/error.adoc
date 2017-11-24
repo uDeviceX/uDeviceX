@@ -1,8 +1,8 @@
 = error unit
 
 a unit to test error handling `UC` (see
-link:/doc/DEV/modules/utils/error.adoc[error]), `CC` (see
-link:/doc/DEV/modules/utils/cc.adoc[cc]) and `MC` (see link:/doc/DEV/modules/utils/mc.adoc[mc])
+link:/doc/dev/modules/utils/error.adoc[error]), `CC` (see
+link:/doc/dev/modules/utils/cc.adoc[cc]) and `MC` (see link:/doc/dev/modules/utils/mc.adoc[mc])
 
 == compile
 
