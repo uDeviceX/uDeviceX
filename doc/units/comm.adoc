@@ -1,0 +1,3 @@
+= comm unit
+
+a send/recv unit with the 26 neighbors using link:/doc/dev/modules/comm.adoc[comm module]
