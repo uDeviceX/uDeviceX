@@ -1,15 +1,21 @@
-= gource command
+= gource commands
 
+Dump
 ----
+o=g.ppm
 gource -s 0.1 --file-filter 'test_data/' \
-	      --file-filter 'poc/' \
+	      --file-filter 'poc/'  \
 	      --file-filter 'tcdf/' \
 	      --file-filter 'cmd/'  \
-	      --date-format '%d %b %Y'
+	      --highlight-users   \
+	      --highlight-colour #FFFFFF \
+	      --date-format '%d %b %Y' -o $o
 ----
 
-`-o g.ppm` to dump
-
+Convert
 ----
-ffmpeg -y -r 60 -f image2pipe -vcodec ppm -i g.ppm -vcodec libx264 -preset ultrafast -pix_fmt yuv420p -crf 1 -threads 0 -bf 0 g.mp4
+i=g.ppm
+o=g.mp4
+ffmpeg -y -r 60 -f image2pipe -vcodec ppm -i $i -vcodec libx264 \
+    -preset ultrafast -pix_fmt yuv420p -crf 1 -threads 0 -bf 0 $o
 ----
