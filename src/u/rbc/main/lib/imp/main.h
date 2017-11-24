@@ -29,14 +29,15 @@ static void run0(rbc::Quants q, rbc::force::TicketT t, rbc::stretch::Fo* stretch
         Dzero(f, q.n);
         rbc::force::apply(q, t, /**/ f);
         rbc::stretch::apply(q.nc, stretch, /**/ f);
-        if (pushrbc) body_force(q, f);
+        if (pushrbc) body_force(q, /**/ f);
         scheme::move::main(rbc_mass, q.n, f, q.pp);
         if (i % part_freq  == 0) dump(q, t);
-        //        scheme::clear_vel(q.n, /**/ q.pp);
+        //scheme::move::clear_vel(q.n, /**/ q.pp);
     }
 }
 
-static void run1(rbc::Quants q, rbc::force::TicketT t, rbc::stretch::Fo *stretch) {
+static void run1(rbc::Quants q, rbc::force::TicketT t,
+                 rbc::stretch::Fo *stretch) {
     Force *f;
     Dalloc(&f, q.n);
     Dzero(f, q.n);
