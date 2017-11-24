@@ -10,6 +10,7 @@
 * link:/doc/DEV/modules/utils/error.adoc[udx error handling]
 * link:/doc/DEV/modules/utils/cc.adoc[CC cuda check]
 * link:/doc/DEV/modules/utils/mc.adoc[MC mpi check]
+* link:/doc/DEV/modules/utils/kl.adoc[KL Kernel Launch]
 
 == units
 
