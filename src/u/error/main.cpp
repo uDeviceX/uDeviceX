@@ -1,18 +1,25 @@
+#include <mpi.h>
 #include <stdio.h>
 #include <stdlib.h>
 
+#include <conf.h>
+#include "inc/conf.h"
+
 #include "msg.h"
 #include "mpi/glb.h"
+#include "mpi/wrapper.h"
+#include "utils/mc.h"
 #include "utils/error.h"
 
-enum {UDX, MPI, CUDA, NKINDS};
+enum {UDX_, MPI_, CUDA_, NKINDS};
 
 void UDX_bar() {
     signal_error_extra("udx bar failed");
 }
 
 void MPI_bar() {
-    signal_error_extra("mpi bar failed");
+    int c;
+    MC(m::Get_count(NULL, MPI_CHAR, &c));
 }
 
 void CUDA_bar() {
@@ -21,13 +28,13 @@ void CUDA_bar() {
 
 void foo(int kind) {
     switch(kind) {
-    case UDX:
+    case UDX_:
         UC(UDX_bar());
         break;
-    case MPI:
+    case MPI_:
         UC(MPI_bar());
         break;
-    case CUDA:
+    case CUDA_:
         UC(CUDA_bar());
         break;
     default:
