@@ -69,7 +69,6 @@
 
 #include "fsi/type.h"
 #include "fsi/imp.h"
-#include "fsolvent/bulk/imp.h"
 
 #include "exch/map/type.h"
 #include "exch/obj/type.h"
@@ -82,7 +81,7 @@
 #include "exch/flu/type.h"
 #include "exch/flu/imp.h"
 
-#include "fsolvent/imp.h"
+#include "fluforces/imp.h"
 
 #include "mesh/collision.h"
 #include "mesh/bbox.h"

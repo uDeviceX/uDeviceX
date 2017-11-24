@@ -14,12 +14,12 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/exch/mesh                && \
     d $B/exch/obj                 && \
     d $B/flu                      && \
+    d $B/fluforces                && \
+    d $B/fluforces/bulk           && \
+    d $B/fluforces/bulk/transpose && \
+    d $B/fluforces/halo           && \
     d $B/frag                     && \
     d $B/fsi                      && \
-    d $B/fsolvent                 && \
-    d $B/fsolvent/bulk            && \
-    d $B/fsolvent/bulk/transpose  && \
-    d $B/fsolvent/halo            && \
     d $B/generate/rig             && \
     d $B/glb                      && \
     d $B/glb/wvel                 && \
