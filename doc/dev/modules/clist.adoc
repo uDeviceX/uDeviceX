@@ -1,4 +1,5 @@
-=== clists
+[[clist]]
+=== clist
 
 Cell lists
 Purpose: reorder data according to particle positions into cells

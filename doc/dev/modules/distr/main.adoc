@@ -1,21 +1,10 @@
-= distr
+=== distr
 
 distribution modules
 
-== flu
+include::flu.adoc[]
 
-solvent distribution
+include::rbc.adoc[]
 
-see link:flu.adoc[flu]
+include::rig.adoc[]
 
-== rbc
-
-red blood cells distribution
-
-see link:rbc.adoc[rbc]
-
-== rigid
-
-rigid objects distribution
-
-see link:rig.adoc[rig]

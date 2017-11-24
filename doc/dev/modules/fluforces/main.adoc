@@ -1,12 +1,12 @@
-= fluforces
+=== fluforces
 
 solvent forces
 
-== structures
+==== data structures
 
 TODO
 
-== submodules
+include::bulk.adoc[]
 
-* link:bulk.adoc[bulk forces]
-* link:halo.adoc[halo forces]
+include::halo.adoc[]
+

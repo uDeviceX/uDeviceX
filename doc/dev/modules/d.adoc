@@ -1,4 +1,4 @@
-= generic [d]evice API
+=== generic [d]evice API
 
 The goal is to make cuda API and kernel functions generic. Meaning
 they can be replaced by CPU calls.

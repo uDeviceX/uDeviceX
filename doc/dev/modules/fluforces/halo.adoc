@@ -1,8 +1,8 @@
-= fluforces: halo
+==== fluforces: halo
 
 solvent forces with remote particles (fragments)
 
-==  Internals
+=====  Internals
 
 main kernel is `dev::forces` and performs all interactions:
 
