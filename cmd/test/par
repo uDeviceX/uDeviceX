@@ -1,0 +1,8 @@
+# TEST: par.0
+u.par a=1 > par.out.txt
+
+# TEST: par.1
+u.par a=1 b=2 c=\"cell.off\" > par.out.txt
+
+# TEST: par.2
+echo q=42 | u.par a=1 b=2 c=\"cell.off\" /dev/stdin > par.out.txt
