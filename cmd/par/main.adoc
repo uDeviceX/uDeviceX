@@ -1,18 +1,12 @@
-u.par(1)
-===========
-:doctype: manpage
+= u.par(1)
 
-
-NAME
-----
+== NAME
 u.par - create udx parameter file
 
 
-SYNOPSIS
---------
+== SYNOPSIS
 *u.par* ['OPTIONS'] 'FILE'
 
 
-DESCRIPTION
------------
+== DESCRIPTION
 The u.par(1) write udx parameter file to stdout
