@@ -22,6 +22,7 @@ export ERR_KIND=<kind> && ./udx
 ----
 
 where `<kind>` must be:
+
 * 0 for rasing an error from host code
 * 1 for testing `MC` on a failing MPI call
 * 2 for testing `CC` on a failing cuda API call
