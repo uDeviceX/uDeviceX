@@ -56,7 +56,7 @@ static void dump0(Particle *pp, int n, int nc, /*w*/
 
     sprintf(path, DUMP_BASE "/h5/flowfields-%04d.h5", id++);
     float *data[] = { rho, u[X], u[Y], u[Z] };
-    h5::write(path, data, names, 4, XS, YS, ZS);
+    UC(h5::write(path, data, names, 4, XS, YS, ZS));
     if (m::rank == 0) xmf::write(path, names, 4, XS, YS, ZS);
 }
 
