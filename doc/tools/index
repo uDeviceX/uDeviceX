@@ -1,0 +1,19 @@
+#!/bin/sh
+
+I=index.adoc
+ADOC=`find . -type f \( -iname "*.adoc" ! -iname "*.inc.adoc" \)`
+
+header() (
+    echo "= index"
+    echo ":lext: .adoc"
+    echo
+)
+
+make_links() (
+    for f in $@; do
+	echo "* link:${f%.*}[]"
+    done
+)
+
+header            > $I
+make_links $ADOC >> $I
