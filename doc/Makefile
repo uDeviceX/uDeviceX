@@ -1,7 +1,8 @@
 ADOC=asciidoctor
 #ADOC=asciidoc
 
-PAGES = main.html
+include make/target.mk
+
 all: $(PAGES)
 
 args  = -a lext=.html
@@ -15,7 +16,6 @@ args += -a nofooter
 
 .PHONY: clean
 
-include make/deps.mk
 
 clean:
 	rm -rf $(PAGES)
