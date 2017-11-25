@@ -1,8 +1,7 @@
 = error unit
+:lext: adoc
 
-a unit to test error handling `UC` (see
-link:/doc/dev/modules/utils/error.adoc[error]), `CC` (see
-link:/doc/dev/modules/utils/cc.adoc[cc]) and `MC` (see link:/doc/dev/modules/utils/mc.adoc[mc])
+a unit to test error handling `UC`, `CC` and `MC` (see link:../dev/modules/utils/main{lext}[utils])
 
 == compile
 
