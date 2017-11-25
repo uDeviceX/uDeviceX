@@ -1,4 +1,0 @@
-==== fluforces: bulk
-
-compute local interactions of solvent particles, given cell starts,
-cell counts (see <<clist>>) and particles array

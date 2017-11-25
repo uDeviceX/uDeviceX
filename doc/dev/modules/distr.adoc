@@ -1,0 +1,13 @@
+= distr
+:lext: adoc
+
+redistribution of quantities across nodes
+
+== flu
+TODO
+
+== rbc
+TODO
+
+== rig
+TODO
