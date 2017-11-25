@@ -1,7 +1,10 @@
 #!/bin/sh
 
 I=index.adoc
-ADOC=`find . -type f \( -iname "*.adoc" ! -iname "*.inc.adoc" \)`
+
+get_docs() (
+    find $1 -type f \( -iname "*.adoc" ! -iname "*.inc.adoc" \)
+)
 
 header() (
     echo "= index"
@@ -15,5 +18,18 @@ make_links() (
     done
 )
 
-header            > $I
-make_links $ADOC >> $I
+section() {
+    ADOC=`get_docs $1`
+    echo "== $1"
+    make_links $ADOC
+    echo
+}
+
+dump() {
+    header
+    section dev
+    section user
+    section units
+}
+
+dump > $I
