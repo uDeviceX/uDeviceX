@@ -1,5 +1,5 @@
 = error unit
-:lext: adoc
+:lext: .adoc
 
 a unit to test error handling `UC`, `CC` and `MC` (see link:../dev/modules/utils/main{lext}[utils])
 

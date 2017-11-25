@@ -1,6 +1,6 @@
 = uDeviceX Documentation
 // extension for linking; must be defined here because of gitlab
-:lext: adoc
+:lext: .adoc
 
 uDeviceX documentation
 

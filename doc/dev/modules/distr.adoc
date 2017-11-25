@@ -1,5 +1,5 @@
 = distr
-:lext: adoc
+:lext: .adoc
 
 redistribution of quantities across nodes
 

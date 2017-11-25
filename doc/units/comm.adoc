@@ -1,4 +1,4 @@
 = comm unit
-:lext: adoc
+:lext: .adoc
 
 a send/recv unit with the 26 neighbors using link:../dev/modules/comm{lext}[comm module]

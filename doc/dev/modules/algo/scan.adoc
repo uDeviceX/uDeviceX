@@ -1,5 +1,5 @@
 = scan
-:lext: adoc
+:lext: .adoc
 
 exclusive prefix sum implementation for integer data
 

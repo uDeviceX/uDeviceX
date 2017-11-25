@@ -1,5 +1,5 @@
 = units
-:lext: adoc
+:lext: .adoc
 
 list of units
 

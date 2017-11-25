@@ -1,4 +1,4 @@
 = user documentation
-:lext: adoc
+:lext: .adoc
 
 TODO

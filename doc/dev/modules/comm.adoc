@@ -1,5 +1,5 @@
 = comm
-:lext: adoc
+:lext: .adoc
 
 generic communicator with "halo".
 
