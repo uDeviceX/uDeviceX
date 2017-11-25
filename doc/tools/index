@@ -11,7 +11,7 @@ header() (
 
 make_links() (
     for f in $@; do
-	echo "* link:${f%.*}[]"
+	echo "* link:${f%.*}{lext}[]"
     done
 )
 
