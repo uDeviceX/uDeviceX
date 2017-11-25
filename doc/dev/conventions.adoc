@@ -1,9 +1,9 @@
 = coding conventions
 :lext: .adoc
 
-= naming
+== naming
 
-== variables
+=== variables
 
 * names of local variables are short and understandable from the context
 * names of global variables are as descriptive as possible
@@ -19,17 +19,26 @@ r[Y] = ry;
 r[Z] = rz;
 ----
 
-== functions
+=== functions
 
 * a function name is descriptive on its own or inside its namespace
 * arguments are ordered as follow:
 ** input is at the beginning
-** input/output come after input and start with `/* io */`
-** output comes after input/output and start with `/**/` or `/* o */` depending on the context
-** workspace comes at the end ans starts with `/* w */`
+** input/output come after input and start with a commented `io`
+** output comes after input/output and start with a comment or `o` depending on the context
+** workspace comes at the end ans starts with a commented `w`
 * do **not** use references, use pointers instead
 
-= file structure
+Example of valid functions declarations:
+
+[source, cpp]
+----
+void read_int_from_file(const char *fname, /**/ int *n, int *ii);
+void forward_euler(int n, const Force *ff, /* io */ Particle *pp);
+----
+
+
+== file structure
 
 * no include guards; no "headers in headers" if easily avoidable.
 * all cuda kernels should be coded in a separate header `.h` file.
@@ -40,7 +49,7 @@ r[Z] = rz;
 ** cuda code should be inside `A/dev.h` or, if multiple files, `A/dev/` directory
 * modules can have submodules, which follow the same structure as above, e.g. submodule `B` inside module `A` belongs to `A/B/` directory
 
-= style
+== style
 
 for emacs: the following c++ mode is used
 
