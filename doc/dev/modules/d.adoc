@@ -1,4 +1,4 @@
-=== generic [d]evice API
+= generic [d]evice API
 
 The goal is to make cuda API and kernel functions generic. Meaning
 they can be replaced by CPU calls.
@@ -14,3 +14,4 @@ Generic device can by implemented by `cuda` and by `cpu`
 
 if `DEV_CUDA` defined it is `cuda`, if `DEV_CPU` is defined it is
 `cpu`. For `cpu` `KL_CPU` should be also defined.
+

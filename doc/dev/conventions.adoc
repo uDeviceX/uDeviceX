@@ -29,7 +29,7 @@ r[Z] = rz;
 ** workspace comes at the end ans starts with a commented `w`
 * do **not** use references, use pointers instead
 
-Example of valid functions declarations:
+Example of valid function declarations:
 
 [source, cpp]
 ----

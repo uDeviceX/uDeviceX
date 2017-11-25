@@ -1,12 +1,12 @@
-[[clist]]
-=== clist
+= clist
+:lext: adoc
 
 Cell lists
 Purpose: reorder data according to particle positions into cells
 
-==== data structures
+== data structures
 
-===== Clist
+=== Clist
 
 Helpers to find which particles are in which cells.
 
@@ -24,7 +24,7 @@ struct Clist {
 * `counts` number of particles per cell
 * `starts` exclusive prefic scan of the above
 
-===== Map
+=== Map
 
 Helper to reorder the arrays
 
@@ -47,4 +47,4 @@ struct Map {
   ** sid: source array id, in 0, ..., nA
 * `ii` indices of particles to fetch. can be decoded into the source
   array id and the particle id inside this array
-* `scan` scan workspace, see link:/doc/dev/modules/algo/scan.adoc[scan]
+* `scan` scan workspace, see link:algo/scan{lext}[scan]

@@ -1,10 +1,13 @@
-=== comm
+= comm
+:lext: adoc
 
 generic communicator with "halo".
 
-==== purpose
+== purpose
+Communicate data with the neighboring ranks
 
-==== data structures
+
+== data structures
 
 
 * `hBags`: buffers on the host, contains all necessary information of the data to communicate:
@@ -20,12 +23,13 @@ generic communicator with "halo".
 ** `ranks`: ranks of the neighbors in the grid (who do I send to?)
 ** `tags`: tags used by neighbors to send messages
 
-==== allocation mod
+== allocation mod
 
 User can choose how the buffers are allocated with the enum type `AllocMod`.
 This is used in the funcion `ini` and `fin`. allocation mode and free mode are assumed to be the same
 
 currently supported allocation modes:
+
 [source,cpp]
 ----
 HST_ONLY,   /* only host bags allocated                 */
@@ -36,9 +40,9 @@ PINNED_DEV, /* host pinned; device global memory on gpu */
 NONE        /* no allocation                            */
 ----
 
-==== interface
+== interface
 
-===== ini
+=== ini
 
 [source,cpp]
 ----
@@ -55,11 +59,11 @@ void ini(MPI_Comm comm, /*io*/ basetags::TagGen *tg, /**/ Stamp *s);
 ----
 initialize `Stamp` structure
 
-===== fin
+=== fin
 
 free memory allocated by `ini`
 
-===== communication
+=== communication
 
 [source,cpp]
 ----
