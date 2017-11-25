@@ -1,10 +1,10 @@
-=== Utils
+= Utils
 
-include::error.adoc[]
+include::error.inc.adoc[]
 
-include::cc.adoc[]
+include::cc.inc.adoc[]
 
-include::mc.adoc[]
+include::mc.inc.adoc[]
 
-include::kl.adoc[]
+include::kl.inc.adoc[]
 

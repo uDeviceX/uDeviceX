@@ -1,4 +1,4 @@
-==== kernel launch macros
+== kernel launch macros
 
 [K]ernel [L]aunch.
 

@@ -1,10 +1,10 @@
-==== utils/mc
+== utils/mc
 
 [M]PI [C]heck.
 
 Error handling for MPI API calls.
 
-===== Usage
+=== Usage
 
 [source,cpp]
 ----
