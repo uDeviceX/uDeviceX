@@ -1,0 +1,31 @@
+./units/hw/hst.adoc: 
+./units/hw/dev.adoc: 
+./units/rbc/main.adoc: 
+./units/rbc/force.adoc: 
+./units/rbc/rnd.adoc: 
+./units/mpi.adoc: 
+./units/error.adoc: 
+./units/comm.adoc: 
+./units/meshbb.adoc: 
+./units/x.adoc: 
+./units/pair.adoc: 
+./units/scan.adoc: 
+./main.adoc: 
+./dev/conventions.adoc: ./dev/cstyle/cc.el
+./dev/cstyle/emacs.adoc: 
+./dev/main.adoc: 
+./dev/wrap.adoc: 
+./dev/gource.adoc: 
+./dev/modules/fluforces.adoc: 
+./dev/modules/clist.adoc: 
+./dev/modules/comm.adoc: 
+./dev/modules/utils/error.inc.adoc: 
+./dev/modules/utils/kl.inc.adoc: 
+./dev/modules/utils/main.adoc: ./dev/modules/utils/error.inc.adoc ./dev/modules/utils/cc.inc.adoc ./dev/modules/utils/mc.inc.adoc ./dev/modules/utils/kl.inc.adoc
+./dev/modules/utils/mc.inc.adoc: 
+./dev/modules/utils/cc.inc.adoc: 
+./dev/modules/distr.adoc: 
+./dev/modules/algo/scan.adoc: 
+./dev/modules/d.adoc: 
+./dev/compile.adoc: 
+./index.adoc: 
