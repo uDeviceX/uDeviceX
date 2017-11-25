@@ -1,9 +1,11 @@
-== dev
+= developper documentaion
+:lext: .adoc
 
-include::conventions.adoc[]
+uDeviceX developper documentation
 
-include::compile.adoc[]
+== style and conventions
 
-include::modules/main.adoc[]
+A list of coding conventions can be found link:conventions{lext}[here].
 
+== source code modules
 

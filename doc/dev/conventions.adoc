@@ -1,8 +1,9 @@
-=== coding conventions
+= coding conventions
+:lext: .adoc
 
-==== naming
+= naming
 
-===== variables
+== variables
 
 * names of local variables are short and understandable from the context
 * names of global variables are as descriptive as possible
@@ -18,7 +19,7 @@ r[Y] = ry;
 r[Z] = rz;
 ----
 
-===== functions
+== functions
 
 * a function name is descriptive on its own or inside its namespace
 * arguments are ordered as follow:
@@ -28,7 +29,7 @@ r[Z] = rz;
 ** workspace comes at the end ans starts with `/* w */`
 * do **not** use references, use pointers instead
 
-==== file structure
+= file structure
 
 * no include guards; no "headers in headers" if easily avoidable.
 * all cuda kernels should be coded in a separate header `.h` file.
@@ -39,9 +40,9 @@ r[Z] = rz;
 ** cuda code should be inside `A/dev.h` or, if multiple files, `A/dev/` directory
 * modules can have submodules, which follow the same structure as above, e.g. submodule `B` inside module `A` belongs to `A/B/` directory
 
-==== style
+= style
 
-for emacs users:
+for emacs: the following c++ mode is used
 
 [source,lisp]
 ----
