@@ -5,6 +5,7 @@
 ./units/rbc/rnd.html: ./units/rbc/rnd.adoc 
 ./units/mpi.html: ./units/mpi.adoc 
 ./units/error.html: ./units/error.adoc 
+./units/main.html: ./units/main.adoc 
 ./units/comm.html: ./units/comm.adoc 
 ./units/meshbb.html: ./units/meshbb.adoc 
 ./units/x.html: ./units/x.adoc 
@@ -25,3 +26,4 @@
 ./dev/modules/d.html: ./dev/modules/d.adoc 
 ./dev/compile.html: ./dev/compile.adoc 
 ./index.html: ./index.adoc 
+./user/main.html: ./user/main.adoc 
