@@ -1,4 +1,4 @@
-== utils/mc
+== mc
 
 [M]PI [C]heck.
 

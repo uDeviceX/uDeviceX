@@ -1,11 +1,11 @@
 [[cc]]
-==== utils/cc
+== cc
 
 [C]uda [C]heck.
 
 Error handling for cuda API calls.
 
-====== Usage
+=== Usage
 
 [source,cpp]
 ----

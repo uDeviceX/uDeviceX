@@ -1,5 +1,5 @@
 [[error]]
-== utils/error
+== error
 
 Custom error handling with context.
 

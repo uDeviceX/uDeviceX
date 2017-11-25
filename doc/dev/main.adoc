@@ -15,6 +15,7 @@ A list of coding conventions can be found link:conventions{lext}[here].
 * generic device API: link:modules/d{lext}[d]
 * redistribution: link:modules/distr{lext}[distr]
 * solvent interactions: link:modules/fluforces{lext}[fluforces]
+* uDevice utilities: link:modules/utils/main{lext}[utils]
 
 
 == Useful links
