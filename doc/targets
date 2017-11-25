@@ -1,6 +1,6 @@
 #!/bin/sh
 
-ADOC=`find . -type f -name "*.adoc"`
+ADOC=`find . -type f \( -iname "*.adoc" ! -iname "*.inc.adoc" \)`
 
 ext_html() (
     for f in $@; do
