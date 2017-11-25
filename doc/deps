@@ -1,4 +1,0 @@
-#!/bin/sh
-
-ADOCS=`find . -type f -name "*.adoc" | xargs`
-echo "main.html: ${ADOCS}" > make/deps.mk

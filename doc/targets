@@ -1,0 +1,13 @@
+#!/bin/sh
+
+ADOC=`find . -type f -name "*.adoc"`
+
+ext_html() (
+    for f in $@; do
+	echo "${f%.*}.html"
+    done
+)
+
+PAGES=`ext_html $ADOC | xargs`
+
+echo "PAGES = $PAGES" > make/target.mk
