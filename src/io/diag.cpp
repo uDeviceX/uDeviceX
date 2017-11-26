@@ -7,6 +7,8 @@
 #include "mpi/wrapper.h"
 #include "mpi/glb.h"
 #include "inc/type.h"
+#include "utils/error.h"
+#include "utils/efopen.h"
 #include "diag.h"
 
 static float sq(float x) { return x*x; }
@@ -56,11 +58,11 @@ void diagnostics(Particle *pp, int n, int id) {
     if (m::rank == 0) {
         kbt = 0.5 * ke / (n * 3. / 2);
         static bool firsttime = true;
-        f = fopen(DUMP_BASE "/diag.txt", firsttime ? "w" : "a");
+        UC(efopen(DUMP_BASE "/diag.txt", firsttime ? "w" : "a", /**/ &f));
         firsttime = false;
         if (id == 0) fprintf(f, "# TSTEP\tKBT\tPX\tPY\tPZ\n");
         MSG("% .1e % .1e [% .1e % .1e % .1e] % .1e", id * dt, kbt, v[X], v[Y], v[Z], km);
         fprintf(f, "%e\t%.10e\t%.10e\t%.10e\t%.10e\t%.10e\n", id * dt, kbt, v[X], v[Y], v[Z], km);
-        fclose(f);
+        efclose(f);
     }
 }

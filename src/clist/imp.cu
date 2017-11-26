@@ -8,7 +8,7 @@
 #include "inc/def.h"
 #include "inc/type.h"
 #include "inc/dev.h"
-#include "algo/scan/int.h"
+#include "algo/scan/imp.h"
 
 #include "d/api.h"
 #include "utils/cc.h"

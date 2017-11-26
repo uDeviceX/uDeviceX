@@ -3,6 +3,9 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "utils/error.h"
+#include "utils/efopen.h"
+
 #include "off.h"
 
 namespace off {

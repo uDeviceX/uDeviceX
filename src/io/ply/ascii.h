@@ -2,9 +2,8 @@ namespace ply {
 
 void write(const char *fname, int nt, int nv, const int *tt, const float *vv) {
     int i;
-    FILE * f = fopen(fname, "w");
-
-    assert(f != NULL);
+    FILE *f;
+    UC(efopen(fname, "w", &f));
 
     fprintf(f, "ply\n");
     fprintf(f, "format ascii 1.0\n");
@@ -22,7 +21,7 @@ void write(const char *fname, int nt, int nv, const int *tt, const float *vv) {
     for (i = 0; i < nt; ++i)
         fprintf(f, "3 %d %d %d\n", tt[3*i + 0], tt[3*i + 1], tt[3*i + 2]);
 
-    fclose(f);
+    UC(efclose(f));
 }
 
 } // ply

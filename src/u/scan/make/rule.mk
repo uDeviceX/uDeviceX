@@ -9,6 +9,7 @@ $B/msg.o: $S/msg.cpp; $X -I$S/.
 $B/u/scan/main.o: $S/u/scan/main.cpp; $X -I$S/. -I$S/u/scan
 $B/u/scan/set.o: $S/u/scan/set.cpp; $X -I$S/. -I$S/u/scan
 $B/utils/cc.o: $S/utils/cc.cpp; $X -I$S/. -I$S/utils
+$B/utils/efopen.o: $S/utils/efopen.cpp; $X -I$S/. -I$S/utils
 $B/utils/error.o: $S/utils/error.cpp; $X -I$S/. -I$S/utils
 $B/utils/halloc.o: $S/utils/halloc.cpp; $X -I$S/. -I$S/utils
 $B/utils/mc.o: $S/utils/mc.cpp; $X -I$S/. -I$S/utils

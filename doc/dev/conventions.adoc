@@ -1,4 +1,5 @@
 = coding conventions
+:lext: .adoc
 
 == naming
 
@@ -8,7 +9,8 @@
 * names of global variables are as descriptive as possible
 * arrays of simple structures `x` have names `xx`, eg. `pp` is an array of particles, `cc` is an array of colors, `ii` is an array of indices
 * array of small dimentionality may use an enum type for readability, e.g.
-[source,c++]
+
+[source,cpp]
 ----
 enum {X, Y, Z};
 int r[3];
@@ -22,10 +24,19 @@ r[Z] = rz;
 * a function name is descriptive on its own or inside its namespace
 * arguments are ordered as follow:
 ** input is at the beginning
-** input/output come after input and start with `/* io */`
-** output comes after input/output and start with `/**/` or `/* o */` depending on the context
-** workspace comes at the end ans starts with `/* w */`
+** input/output come after input and start with a commented `io`
+** output comes after input/output and start with a comment or `o` depending on the context
+** workspace comes at the end ans starts with a commented `w`
 * do **not** use references, use pointers instead
+
+Example of valid function declarations:
+
+[source, cpp]
+----
+void read_int_from_file(const char *fname, /**/ int *n, int *ii);
+void forward_euler(int n, const Force *ff, /* io */ Particle *pp);
+----
+
 
 == file structure
 
@@ -40,4 +51,10 @@ r[Z] = rz;
 
 == style
 
-for emacs users: see link:cstyle/emacs.adoc[emacs]
+for emacs: the following c++ mode is used
+
+[source,lisp]
+----
+include::cstyle/cc.el[]
+----
+

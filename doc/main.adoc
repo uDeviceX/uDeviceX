@@ -1,0 +1,12 @@
+= uDeviceX Documentation
+// extension for linking; must be defined here because of gitlab
+:lext: .adoc
+
+uDeviceX documentation
+
+== Useful links
+
+* link:index{lext}[index]
+* link:dev/main{lext}[developper documentation]
+* link:user/main{lext}[user documentation]
+* link:units/main{lext}[units documentation]

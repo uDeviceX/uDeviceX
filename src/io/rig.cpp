@@ -3,6 +3,8 @@
 
 #include <conf.h>
 #include "inc/conf.h"
+#include "utils/error.h"
+#include "utils/efopen.h"
 
 enum {X, Y, Z};
 
@@ -20,8 +22,8 @@ void rig_dump(const int it, const Solid *ss, const Solid *ssbb, int ns, const in
             
         sprintf(fname, DUMP_BASE "/solid_diag_%04d.txt", (int) s->id);
         FILE *fp;
-        if (first) fp = fopen(fname, "w");
-        else       fp = fopen(fname, "a");
+        if (first) UC(efopen(fname, "w", /**/ &fp));
+        else       UC(efopen(fname, "a", /**/ &fp));
 
         fprintf(fp, "%+.6e ", dt*it);
 
@@ -44,7 +46,7 @@ void rig_dump(const int it, const Solid *ss, const Solid *ssbb, int ns, const in
         write_v(fp, sbb->to);
         fprintf(fp, "\n");
         
-        fclose(fp);
+        UC(efclose(fp));
     }
 
     first = false;

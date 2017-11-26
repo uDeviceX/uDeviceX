@@ -3,28 +3,23 @@
 
 #include "mpi/glb.h"
 #include "msg.h"
+#include "utils/error.h"
+#include "utils/efopen.h"
 
 namespace msg {
 char buf[BUFSIZ];
 static char fmt[] = ".%03d";
 
-static FILE* safe_fopen(const char *path, const char *mode) {
-    FILE *f;
-    f = fopen(path, mode);
-    if (!f) {
-        fprintf(stderr, "fail to open: %s\n", path);
-        msg::exit(1);
-    }
-    return f;
-}
-
 static FILE* open(const char *path) {
     static int fst = 1;
+    FILE *f;
     if (fst) {
         fst = 0;
-        return safe_fopen(path, "w");
-    } else
-        return safe_fopen(path, "a");
+        UC(efopen(path, "w", /**/ &f));
+    } else {
+        UC(efopen(path, "a", /**/ &f));
+    }
+    return f;
 }
 
 static void print0(FILE *f) {
@@ -39,6 +34,6 @@ void print() {
     sprintf(n, fmt, m::rank);
     f = open(n);
     print0(f);
-    fclose(f);
+    UC(efclose(f));
 }
 }

@@ -1,3 +1,3 @@
-# rig distribution
+= rig distribution
 
-redistribute rigid objects accross nodes
+see link:/doc/dev/modules/distr/main.adoc[doc]

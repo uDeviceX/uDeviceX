@@ -61,13 +61,13 @@ static void ini1(int N[3], float *D0, float *D1, /**/ struct Tex te) {
         spa[c] = N[c] * (L[c] + 2 * M[c]) / G / T[c];
         org[c] = N[c] * (lo - M[c]) / G;
     }
-    field::sample(org, spa, N, D0,   T, /**/ D1);
-    ini0(D1, te);
+    UC(field::sample(org, spa, N, D0,   T, /**/ D1));
+    UC(ini0(D1, te));
 }
 
 static void ini2(int N[3], float* D0, /**/ struct Tex te) {
     float *D1 = new float[XTE * YTE * ZTE];
-    ini1(N, D0, D1, /**/ te);
+    UC(ini1(N, D0, D1, /**/ te));
     delete[] D1;
 }
 
@@ -76,12 +76,12 @@ static void ini3(int N[3], float ext[3], float* D, /**/ struct Tex te) {
     float sc, G; /* domain size in x ([G]lobal) */
     G = m::dims[X] * XS;
     sc = G / ext[X];
-    field::scale(N, sc, /**/ D);
+    UC(field::scale(N, sc, /**/ D));
 
     /* MC(l::m::Barrier(l::m::cart)); */
-    if (field_dumps) field::dump(N, D);
+    if (field_dumps) UC(field::dump(N, D));
 
-    ini2(N, D, /**/ te);
+    UC(ini2(N, D, /**/ te));
 }
 
 void ini(cudaArray *arrsdf, tex3Dca<float> *texsdf) {
@@ -93,11 +93,11 @@ void ini(cudaArray *arrsdf, tex3Dca<float> *texsdf) {
     char f[] = "sdf.dat";
     struct Tex te {arrsdf, texsdf};
 
-    field::ini_dims(f, /**/ N, ext);
+    UC(field::ini_dims(f, /**/ N, ext));
     n = N[X] * N[Y] * N[Z];
     D = new float[n];
-    field::ini_data(f, n, /**/ D);
-    ini3(N, ext, D, /**/ te);
+    UC(field::ini_data(f, n, /**/ D));
+    UC(ini3(N, ext, D, /**/ te));
     delete[] D;
 }
 
@@ -130,7 +130,7 @@ static void bulk_wall0(const tex3Dca<float> texsdf, /*io*/ Particle *s_pp, int* 
     cD2H(keys_hst, keys, n);
     cD2H(s_pp_hst, s_pp, n);
 
-    split_wall_solvent(keys_hst, /*io*/ s_n, s_pp_hst, /**/ w_n, w_pp);
+    UC(split_wall_solvent(keys_hst, /*io*/ s_n, s_pp_hst, /**/ w_n, w_pp));
     cH2D(s_pp, s_pp_hst, *s_n);
                        
     free(s_pp_hst);
@@ -140,7 +140,7 @@ static void bulk_wall0(const tex3Dca<float> texsdf, /*io*/ Particle *s_pp, int* 
 void bulk_wall(const tex3Dca<float> texsdf, /*io*/ Particle *s_pp, int *s_n, /*o*/ Particle *w_pp, int *w_n) {
     int *keys;
     Dalloc(&keys, MAX_PART_NUM);
-    bulk_wall0(texsdf, s_pp, s_n, w_pp, w_n, keys);
+    UC(bulk_wall0(texsdf, s_pp, s_n, w_pp, w_n, keys));
     CC(d::Free(keys));
 }
 

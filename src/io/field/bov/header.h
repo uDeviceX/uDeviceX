@@ -6,7 +6,7 @@ void write_header(const char *fhname, const char *fdname, int nx, int ny, int nz
     Ly = m::coords[1] * ny;
     Lz = m::coords[2] * nz;
 
-    f = fopen(fhname, "w");
+    UC(efopen(fhname, "w", /**/ &f));
     
     fprintf(f, "DATA_FILE: %s\n", fdname);
     fprintf(f, "DATA_SIZE: %ld %ld %ld\n", Lx, Ly, Lz);
@@ -18,5 +18,5 @@ void write_header(const char *fhname, const char *fdname, int nx, int ny, int nz
     fprintf(f, "BRICK_SIZE: %g %g %g\n", (double) Lx, (double) Ly, (double) Lz);
     fprintf(f, "DATA_COMPONENTS: %d\n", ncmp);
     
-    fclose(f);
+    UC(efclose(f));
 }

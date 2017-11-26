@@ -1,0 +1,24 @@
+= developper documentaion
+:lext: .adoc
+
+uDeviceX developper documentation
+
+== style and conventions
+
+A list of coding conventions can be found link:conventions{lext}[here].
+
+== source code modules
+
+* prefix sum: link:modules/algo/scan{lext}[scan]
+* cell lists: link:modules/clist{lext}[clist]
+* generic communicator: link:modules/comm{lext}[comm]
+* generic device API: link:modules/d{lext}[d]
+* redistribution: link:modules/distr{lext}[distr]
+* solvent interactions: link:modules/fluforces{lext}[fluforces]
+* uDevice utilities: link:modules/utils/main{lext}[utils]
+
+
+== Useful links
+
+* link:compile{lext}[how to compile uDeviceX ?]
+* link:gource{lext}[gource]

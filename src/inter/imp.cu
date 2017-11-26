@@ -8,7 +8,7 @@
 #include "d/ker.h"
 
 #include "mpi/wrapper.h"
-#include "algo/scan/int.h"
+#include "algo/scan/imp.h"
 
 #include "inc/def.h"
 #include "msg.h"

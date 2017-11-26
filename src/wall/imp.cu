@@ -29,7 +29,7 @@
 #include "sdf/int.h"
 #include "sdf/cheap.dev.h"
 
-#include "algo/scan/int.h"
+#include "algo/scan/imp.h"
 #include "clist/imp.h"
 
 #include "io/restart.h"

@@ -88,9 +88,9 @@ void write(const char *path, float **data,
     /* ncomp: number of component,
        sx, sy, sz: sizes */
     IDs ids;
-    create(path, /**/ &ids);
-    write0(ids.file, data, names, ncomp, sx, sy, sz);
-    close(ids, path);
+    UC(create(path, /**/ &ids));
+    UC(write0(ids.file, data, names, ncomp, sx, sy, sz));
+    UC(close(ids, path));
 }
 
 } /* namespace */

@@ -8,6 +8,9 @@
 #include "msg.h"
 #include "ply.h"
 
+#include "utils/error.h"
+#include "utils/efopen.h"
+
 #ifdef PLY_WRITE_ASCII
   #include "io/ply/ascii.h"
 #else

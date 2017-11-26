@@ -48,8 +48,8 @@ static int main0(float *rr0, const char *ic, int nv, Particle *pp) {
     for (c = 0; c < 3; ++c) mi[c] = (m::coords[c] + 0.5) * L[c];
 
     float A[4*4]; /* 4x4 affice transformation matrix */
-    FILE *f = fopen(ic, "r");
-    if (f == NULL) ERR("Could not open <%s>\n", ic);
+    FILE *f;
+    UC(efopen(ic, "r", /**/ &f));
 
     while ( read_A(f, /**/ A) ) {
         shift(mi, /**/ A);
@@ -57,7 +57,7 @@ static int main0(float *rr0, const char *ic, int nv, Particle *pp) {
             transform(rr0, nv, A, &pp[nv*(nc++)]);
     }
     assert_nc(nc);
-    fclose(f);
+    UC(efclose(f));
     MSG("read %d rbcs", nc);
     return nc;
 }

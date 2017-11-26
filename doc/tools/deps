@@ -1,0 +1,22 @@
+#!/bin/sh
+
+FF=`find . -type f \( -iname "*.adoc" ! -iname "*.inc.adoc" \)`
+
+make_path() {
+    dir=$1; shift
+    for f in $@; do
+	echo "${dir}/$f"
+    done
+}
+
+deps() {
+    for f in $FF; do
+	target=`echo ${f%.adoc}.html`
+	DIR=`dirname $f`
+	DEPS=`grep "$f" -e "include::" | cut -d':' -f 3 | cut -d'[' -f 1`
+	DEPS=`make_path $DIR $DEPS | xargs`
+	echo "$target: $f $DEPS"
+    done
+}
+#deps
+deps > make/deps.mk
