@@ -1,7 +1,4 @@
-static void setup_textures(int md, int nt, int nv, int *adj0, Texo<int> *texadj0,
-                           int *adj1, Texo<int> *texadj1, Particle *pp, Texo<float2> *texvert) {
-    TE(texadj0, adj0, nv*md);
-    TE(texadj1, adj1, nv*md);
+static void setup_textures(Particle *pp, Texo<float2> *texvert) {
     TE(texvert, (float2*)pp, 2*MAX_PART_NUM);
 }
 
@@ -14,10 +11,9 @@ static void setup_rnd(int md, int nv, rbc::rnd::D **prnd) {
 }
 
 void gen_ticket(const Quants q, TicketT *t) {
-    int md, nt, nv;
+    int md, nv;
     md = RBCmd;
-    nt = RBCnt;
     nv = RBCnv;
-    setup_textures(md, nt, nv, q.adj0, &t->texadj0, q.adj1, &t->texadj1, q.pp, &t->texvert);
+    setup_textures(q.pp, &t->texvert);
     if (RBC_RND) setup_rnd(md, nv, &t->rnd);
 }
