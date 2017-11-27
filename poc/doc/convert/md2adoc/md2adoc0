@@ -4,7 +4,7 @@ set -u
 
 msg () { echo >&2 "$@"; }
 e0 () {
-   if test $DBG != 0; then msg "cmd: $@"; fi
+   if test "$DBG" != 0; then msg "cmd: $@"; fi
    eval "$@"
 }
 e () {
@@ -12,8 +12,5 @@ e () {
    if test $? -ne 0; then msg "fail: $@"; exit 2; fi
 }
 
-i=$1; shift
-t=/tmp/md2adoc.$$.xml; >$t
-trap 'rm -f $t' 0 1 2 3 15
-
-e pandoc --atx-headers -f markdown -t asciidoc "$t"
+i="$1"; shift
+e pandoc "$@" --atx-headers -f markdown -t asciidoc "$i"
