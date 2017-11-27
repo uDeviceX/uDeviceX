@@ -1,31 +1,27 @@
-/* particle - float2 union */
-union Part {
-    float2 f2[3];
-    struct { float3 r, v; };
-};
+struct Part { float3 r, v; };
+struct Pos  { float3 r; };
 
-/* position - float2 union */
-union Pos {
-    float2 f2[2];
-    struct { float3 r; float dummy; };
-};
 
-static __device__ Pos tex2Pos(const Texo<float2> vert, int id) {
+static __device__ Pos tex2Pos(const Particle *pp, int i) {
+    enum {X, Y, Z};
     Pos r;
-    r.f2[0] = fetch(vert, 3 * id + 0);
-    r.f2[1] = fetch(vert, 3 * id + 1);
+    r.r.x = pp[i].r[X];
+    r.r.y = pp[i].r[Y];
+    r.r.z = pp[i].r[Z];
     return r;
 }
 
-static __device__ Part tex2Part(const Texo<float2> vert, int id) {
+static __device__ Part tex2Part(const Particle *pp, int i) {
+    enum {X, Y, Z};
     Part p;
-    p.f2[0] = fetch(vert, 3 * id + 0);
-    p.f2[1] = fetch(vert, 3 * id + 1);
-    p.f2[2] = fetch(vert, 3 * id + 2);
+    const float *r, *v;
+    r = pp[i].r; v = pp[i].v;
+    p.r.x = r[X]; p.r.y = r[Y]; p.r.z = r[Z];
+    p.v.x = v[X]; p.v.y = v[Y]; p.v.z = v[Z];
     return p;
 }
 
-static __device__ float3 adj_tris(const Texo<float2> vert,  const Part p0, const float *av,
+static __device__ float3 adj_tris(const Particle *pp,  const Part p0, const float *av,
                                   const Shape0 shape, const Rnd0 rnd,
                                   adj::Map *m) {
     float3 f, fv, fr;
@@ -33,8 +29,8 @@ static __device__ float3 adj_tris(const Texo<float2> vert,  const Part p0, const
     float area, volume;
     i1 = m->i1; i2 = m->i2; rbc = m->rbc;
 
-    const Part p1 = tex2Part(vert, i1);
-    const Pos  r2 = tex2Pos(vert,  i2);
+    const Part p1 = tex2Part(pp, i1);
+    const Pos  r2 = tex2Pos(pp,  i2);
 
     area = av[2*rbc]; volume = av[2 * rbc + 1];
     f  = tri(p0.r, p1.r, r2.r, shape, area, volume);
@@ -47,18 +43,18 @@ static __device__ float3 adj_tris(const Texo<float2> vert,  const Part p0, const
     return f;
 }
 
-static __device__ float3 adj_dihedrals(const Texo<float2> vert, float3 r0,
+static __device__ float3 adj_dihedrals(const Particle *pp, float3 r0,
                                        const Shape0 shape,
                                        adj::Map *m) {
     Pos r1, r2, r3, r4;
-    r1 = tex2Pos(vert, m->i1);
-    r2 = tex2Pos(vert, m->i2);
-    r3 = tex2Pos(vert, m->i3);
-    r4 = tex2Pos(vert, m->i4);
+    r1 = tex2Pos(pp, m->i1);
+    r2 = tex2Pos(pp, m->i2);
+    r3 = tex2Pos(pp, m->i3);
+    r4 = tex2Pos(pp, m->i4);
     return dih(r0, r1.r, r2.r, r3.r, r4.r);
 }
 
-__global__ void force(int md, int nv, int nc, const Texo<float2> vert, float *rnd,
+__global__ void force(int md, int nv, int nc, const Particle *pp, float *rnd,
                       const int *adj0, const int *adj1,
                       const Shape shape,
                       const float *__restrict__ av, /**/ float *ff) {
@@ -80,10 +76,10 @@ __global__ void force(int md, int nv, int nc, const Texo<float2> vert, float *rn
     edg_shape(shape, i % (md * nv),         /**/ &shape0);
     edg_rnd(  shape, i % (md * nv), rnd, i, /**/ &rnd0);
 
-    const Part p0 = tex2Part(vert, m.i0);
+    const Part p0 = tex2Part(pp, m.i0);
 
-    f  = adj_tris(vert, p0, av,    shape0, rnd0, &m);
-    fd = adj_dihedrals(vert, p0.r, shape0,       &m);
+    f  = adj_tris(pp, p0, av,    shape0, rnd0, &m);
+    fd = adj_dihedrals(pp, p0.r, shape0,       &m);
     add(&fd, /**/ &f);
 
     atomicAdd(&ff[3 * pid + 0], f.x);
