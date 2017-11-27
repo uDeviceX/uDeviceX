@@ -1,7 +1,8 @@
 CFLAGS += -O3 -g -Wall -Wextra -std=c99 -pedantic
 
 BIN=$(HOME)/bin
-CNF=$(HOME)/.udx # config directory
+ # config directory
+CNF=$(HOME)/.udx
 
 EXS=ply2punto ply2off ply.sc ply.sxyz ply.2off off.2cm bop2txt2 u.conf0 \
 	u.avgh5 u.avgh5.py u.2davgh5 u.2davgh5.py

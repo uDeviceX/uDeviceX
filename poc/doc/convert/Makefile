@@ -1,12 +1,9 @@
-d = doc
-B = $(HOME)/bin
-
-p = u
-P = adoc2md adoc2md0
+D = adoc2html adoc2md md2adoc
 
 install:
-	mkdir -p "$B"
-	install0 () ( cp $$f $B/$p.$$f; )    ;  \
-	for f in $P; do install0; done
+	install0 () ( cd "$$d" && make install); \
+	for d in $D; do install0; done
 
-.PHONY: install
+test:; atest test/*
+
+.PHONY: install test

@@ -1,0 +1,19 @@
+set -u
+. u.adoc2html.util
+
+: ${DBG=0}
+: ${ADOC=asciidoctor}
+
+i="$1"; shift
+for c; do shift; set -- "$@" "$i"; i="$c"; done
+# i =  the last arguments
+# "$@" the rest of the arguments
+
+a="-a lext=.html
+   -a toc=left
+   -a source-highlighter=coderay
+   -a nofooter
+   -a disable-javascript
+   -a linkcss"
+
+e "$ADOC" $a -b html5 "$@" "$i"

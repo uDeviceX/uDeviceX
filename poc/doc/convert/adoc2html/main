@@ -1,0 +1,12 @@
+. u.adoc2html.util
+
+usg () {
+    msg 'u.adoc2html [ascidoctor options] [FILE.adoc]'
+    msg 'write html to FILE.html'
+    msg 'DBG is set logs the ascidoctor command'
+    exit
+}
+
+if test $# -eq 0 -o "$1" = -h; then usg; fi
+
+eval u.adoc2html0 "$@"

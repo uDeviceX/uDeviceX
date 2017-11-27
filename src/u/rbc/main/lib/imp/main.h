@@ -8,8 +8,6 @@ static void dump(rbc::Quants q, rbc::force::TicketT t) {
     cD2H(pp, q.pp, q.n);
     io::mesh::rbc(pp, q.tri_hst, q.nc, q.nv, q.nt, i++);
     area_volume_hst(q.nc, t.texvert, t.textri, /**/ av);
-
-    MSG("av: %g %g", av[0]/RBCtotArea, av[1]/RBCtotVolume);
     diagnostics(pp, n, i);
     free(pp);
 }
