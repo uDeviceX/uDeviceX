@@ -1,4 +1,5 @@
-CFLAGS += -O3 -g -Wall -std=c99 
+CC = gcc
+CFLAGS += -O3 -g -Wall 
 
 BIN=$(HOME)/bin
  # config directory
