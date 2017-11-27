@@ -1,2 +1,0 @@
-void fin(Ticket* t) {
-}
