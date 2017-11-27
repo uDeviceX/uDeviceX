@@ -21,6 +21,7 @@
 #include "imp.h"
 
 namespace area_volume {
+#include "imp/type.h"
 namespace dev0 {
 #include "dev/main.h"
 }
