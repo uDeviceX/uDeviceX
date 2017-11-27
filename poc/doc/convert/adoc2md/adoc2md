@@ -1,1 +1,10 @@
+usg () {
+    msg 'u.adoc2md [FILE.adoc]'
+    msg 'convert adoc to markdown'
+    exit
+}
+msg () { echo >&2 "$@"; }
+
+if test "$1" = -h; then usg; fi
+
 eval u.adoc2md0 "$@"
