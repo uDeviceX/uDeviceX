@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <assert.h>
+#include <mpi.h>
 
 #include <conf.h>
 #include "inc/conf.h"
@@ -31,6 +32,7 @@
 #include "io/mesh/imp.h"
 #include "io/diag.h"
 
+#include "mpi/wrapper.h"
 #include "mpi/glb.h"
 
 #include "imp.h"

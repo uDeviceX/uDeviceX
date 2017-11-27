@@ -6,9 +6,9 @@ static void dump(rbc::Quants q, rbc::force::TicketT t) {
     n = q.nc * q.nv;
     UC(emalloc(n*sizeof(Particle), (void**)&pp));
     cD2H(pp, q.pp, q.n);
-    io::mesh::rbc(pp, q.tri_hst, q.nc, q.nv, q.nt, i++);
-    area_volume::hst(q.nt, q.nv, q.nc, t.texvert, t.textri, /**/ av);
-    diagnostics(pp, n, i);
+    io::mesh::rbc(m::cart, pp, q.tri_hst, q.nc, q.nv, q.nt, i++);
+    area_volume::hst(q.nt, q.nv, q.nc, q.pp, q.tri, /**/ av);
+    diagnostics(m::cart, n, pp, i);
     free(pp);
 }
 
@@ -48,7 +48,7 @@ static void run1(rbc::Quants q, rbc::force::TicketT t,
 static void run2(const char *cell, const char *ic, rbc::Quants q) {
     rbc::stretch::Fo *stretch;
     rbc::force::TicketT t;
-    rbc::main::gen_quants(cell, ic, /**/ &q);
+    rbc::main::gen_quants(m::cart, cell, ic, /**/ &q);
     UC(stretch::ini("rbc.stretch", q.nv, /**/ &stretch));
     rbc::force::gen_ticket(q, &t);
     run1(q, t, stretch);
