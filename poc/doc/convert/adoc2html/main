@@ -1,9 +1,10 @@
+. u.adoc2html.util
+
 usg () {
     msg 'u.adoc2html [FILE.adoc]'
     msg 'write html to FILE.html'
     exit
 }
-msg () { echo >&2 "$@"; }
 
 if test "$1" = -h; then usg; fi
 

@@ -1,16 +1,7 @@
 set -u
+. u.adoc2html.util
 
 : ${DBG=0}
-
-msg () { echo >&2 "$@"; }
-e0 () {
-   if test "$DBG" != 0; then msg "cmd: $@"; fi
-   eval "$@"
-}
-e () {
-   e0 "$@"
-   if test $? -ne 0; then msg "fail: $@"; exit 2; fi
-}
 
 i="$1"; shift
 a="-a lext=.html
