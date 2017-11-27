@@ -14,7 +14,7 @@ static void report(int it) {
     if (cond) report0();
 }
 
-void main(const int*, NN nn, long it, /**/ QQ qq) {
-    grey::vel(nn.r, /**/ qq.r);
+void main(MPI_Comm comm, const int*, NN nn, long it, /**/ QQ qq) {
+    grey::vel(comm, nn.r, /**/ qq.r);
     report(it);
 }

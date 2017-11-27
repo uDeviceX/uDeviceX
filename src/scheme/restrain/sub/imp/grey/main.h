@@ -1,4 +1,4 @@
-void vel(int n, /**/ Particle *pp) {
+void vel(MPI_Comm comm, int n, /**/ Particle *pp) {
     dev::Map m;
-    vel0(m, n, /**/ pp);
+    vel0(comm, m, n, /**/ pp);
 }

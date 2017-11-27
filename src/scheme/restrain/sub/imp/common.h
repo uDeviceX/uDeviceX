@@ -14,12 +14,12 @@ static void d2h(int *n, float v[3]) {
     v[X] = u.x; v[Y] = u.y; v[Z] = u.z;
 }
 
-static void avg_v(/**/ float *v) {
+static void avg_v(MPI_Comm comm, /**/ float *v) {
     enum {X, Y, Z};
     int n;
     d2h(&n, v);
-    sum::i (&n);
-    sum::f3( v);
+    sum::i (comm, &n);
+    sum::f3(comm, v);
     if (n) {
         v[X] /= n;
         v[Y] /= n;

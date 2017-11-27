@@ -1,5 +1,5 @@
-void vel(const int *cc, int color, int n, /**/ Particle *pp) {
+void vel(MPI_Comm comm, const int *cc, int color, int n, /**/ Particle *pp) {
     dev::Map m;
     m.cc = cc; m.color = color;
-    vel0(m, n, /**/ pp);
+    vel0(comm, m, n, /**/ pp);
 }
