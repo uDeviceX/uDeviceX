@@ -16,5 +16,4 @@ i=$1; shift
 t=/tmp/md2adoc.$$.xml; >$t
 trap 'rm -f $t' 0 1 2 3 15
 
-e asciidoc -o $t --backend=docbook "$i"
-e pandoc --atx-headers -f docbook -t markdown "$t"
+e pandoc --atx-headers -f markdown -t asciidoc "$t"
