@@ -9,7 +9,6 @@ a="-a lext=.html
    -a source-highlighter=coderay
    -a nofooter
    -a disable-javascript
-   -a linkcss
-   -a stylesheet=main.css"
+   -a linkcss"
 
 e asciidoctor $a -b html5 $i
