@@ -7,7 +7,7 @@ static void dump(rbc::Quants q, rbc::force::TicketT t) {
     UC(emalloc(n*sizeof(Particle), (void**)&pp));
     cD2H(pp, q.pp, q.n);
     io::mesh::rbc(pp, q.tri_hst, q.nc, q.nv, q.nt, i++);
-    area_volume_hst0(q.nt, q.nv, q.nc, t.texvert, t.textri, /**/ av);
+    area_volume::main_hst(q.nt, q.nv, q.nc, t.texvert, t.textri, /**/ av);
     diagnostics(pp, n, i);
     free(pp);
 }
