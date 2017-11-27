@@ -1,11 +1,12 @@
 B = $(HOME)/bin
 
 p = u
-P = md2adoc md2adoc0
+m = md2adoc
 
 install:
-	mkdir -p "$B"
-	install0 () ( cp $$f $B/$p.$$f; )    ;  \
-	for f in $P; do install0; done
+	@echo install $p.$m
+	@mkdir -p "$B"
+	cp main   "$B/u.$m"
+	cp main0  "$B/u.$m"0
 
 .PHONY: install
