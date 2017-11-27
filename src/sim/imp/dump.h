@@ -71,7 +71,7 @@ void dump_diag_after(int it, bool wall0, bool solid0) { /* after wall */
 
 void diag(int it) {
     int n = o::q.n + s::q.n + r::q.n; dev2hst();
-    diagnostics(n, a::pp_hst, it);
+    diagnostics(m::cart, n, a::pp_hst, it);
 }
 
 void dump_strt_templ() { /* template dumps (wall, solid) */

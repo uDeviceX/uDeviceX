@@ -13,29 +13,29 @@
 
 static float sq(float x) { return x*x; }
 
-static int reduce(const void *sendbuf0, void *recvbuf, int count, MPI_Datatype datatype, MPI_Op op) {
+static int reduce(MPI_Comm comm, const void *sendbuf0, void *recvbuf, int count, MPI_Datatype datatype, MPI_Op op) {
     int root = 0;
     const void *sendbuf = (m::rank == 0 ? MPI_IN_PLACE : sendbuf0);
-    return m::Reduce(sendbuf, recvbuf, count, datatype, op, root, m::cart);
+    return m::Reduce(sendbuf, recvbuf, count, datatype, op, root, comm);
 }
 
-static int sum3(double *v) {
-    return reduce(&v, m::rank == 0 ? &v : NULL, 3, MPI_DOUBLE, MPI_SUM);
+static int sum3(MPI_Comm comm, double *v) {
+    return reduce(comm, &v, m::rank == 0 ? &v : NULL, 3, MPI_DOUBLE, MPI_SUM);
 }
 
-static int sum_d(double *v) {
-    return reduce(v, v, 1, MPI_DOUBLE, MPI_SUM);
+static int sum_d(MPI_Comm comm, double *v) {
+    return reduce(comm, v, v, 1, MPI_DOUBLE, MPI_SUM);
 }
 
-static int max_d(double *v) {
-    return reduce(v, v, 1, MPI_DOUBLE, MPI_MAX);
+static int max_d(MPI_Comm comm, double *v) {
+    return reduce(comm, v, v, 1, MPI_DOUBLE, MPI_MAX);
 }
 
-static int sum_i(int *v) {
-    return reduce(v, v, 1, MPI_INT, MPI_SUM);
+static int sum_i(MPI_Comm comm, int *v) {
+    return reduce(comm, v, v, 1, MPI_INT, MPI_SUM);
 }
 
-void diagnostics(int n, const Particle *pp, int id) {
+void diagnostics(MPI_Comm comm, int n, const Particle *pp, int id) {
     enum {X, Y, Z};
     int i, c;
     double k, km, ke; /* particle, total, and maximum kinetic energies */
@@ -43,7 +43,7 @@ void diagnostics(int n, const Particle *pp, int id) {
     FILE * f;
     double v[] = {0, 0, 0};
     for (i = 0; i < n; ++i) for (c = 0; c < 3; ++c) v[c] += pp[i].v[c];
-    sum3(v);
+    sum3(comm, v);
 
     ke = km = 0;
     for (i = 0; i < n; ++i) {
@@ -52,8 +52,8 @@ void diagnostics(int n, const Particle *pp, int id) {
         if (k > km) km = k;
     }
 
-    sum_d(&ke); max_d(&km);
-    sum_i(&n);
+    sum_d(comm, &ke); max_d(comm, &km);
+    sum_i(comm, &n);
 
     if (m::rank == 0) {
         kbt = 0.5 * ke / (n * 3. / 2);
