@@ -12,7 +12,7 @@ struct IDs {
     hid_t file;
 };
 
-static void create(const char *const path, /**/ IDs *ids) {
+static void create(MPI_Comm cart, const char *const path, /**/ IDs *ids) {
     hid_t plist, file;
     herr_t rc;
 
@@ -82,13 +82,13 @@ static void write0(hid_t file_id,
     H5Sclose(filespace_simple);
 }
 
-void write(const char *path, float **data,
+void write(MPI_Comm cart, const char *path, float **data,
            const char **names, int ncomp,
            int sx, int sy, int sz) {
     /* ncomp: number of component,
        sx, sy, sz: sizes */
     IDs ids;
-    UC(create(path, /**/ &ids));
+    UC(create(cart, path, /**/ &ids));
     UC(write0(ids.file, data, names, ncomp, sx, sy, sz));
     UC(close(ids, path));
 }

@@ -56,7 +56,7 @@ void dump_grid() {
     NN nn;
     qq.o = o::q.pp; qq.s = s::q.pp; qq.r = r::q.pp;
     nn.o = o::q.n ; nn.s = s::q.n ;  nn.r = r::q.n;
-    fields_grid(qq, nn, /*w*/ a::pp_hst);
+    fields_grid(m::cart, qq, nn, /*w*/ a::pp_hst);
 }
 
 void dump_diag_after(int it, bool wall0, bool solid0) { /* after wall */

@@ -1,5 +1,5 @@
 namespace h5 {
-void write(const char *path,
+void write(MPI_Comm cart, const char *path,
            float *data[],
            const char **names,
            int n,

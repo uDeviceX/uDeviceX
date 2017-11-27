@@ -39,7 +39,7 @@ static void avg(Particle *pp, int n, int nc, /**/
         u[c][i] = rho[i] ? u[c][i] / rho[i] : 0;
 }
 
-static void dump0(Particle *pp, int n, int nc, /*w*/
+static void dump0(MPI_Comm cart, Particle *pp, int n, int nc, /*w*/
                   float *rho, float *u[3]) {
     enum {X, Y, Z};
     static int id = 0; /* dump id */
@@ -56,11 +56,11 @@ static void dump0(Particle *pp, int n, int nc, /*w*/
 
     sprintf(path, DUMP_BASE "/h5/flowfields-%04d.h5", id++);
     float *data[] = { rho, u[X], u[Y], u[Z] };
-    UC(h5::write(path, data, names, 4, XS, YS, ZS));
+    UC(h5::write(cart, path, data, names, 4, XS, YS, ZS));
     if (m::rank == 0) xmf::write(path, names, 4, XS, YS, ZS);
 }
 
-void dump(Particle *pp, int n) {
+void dump(MPI_Comm cart, Particle *pp, int n) {
     enum {X, Y, Z};
     int nc, sz;
     float *rho, *u[3];
@@ -71,6 +71,6 @@ void dump(Particle *pp, int n) {
     UC(emalloc(sz, (void**) &u[X]));
     UC(emalloc(sz, (void**) &u[Y]));
     UC(emalloc(sz, (void**) &u[Z]));
-    dump0(pp, n, nc, /*w*/ rho, u);
+    dump0(cart, pp, n, nc, /*w*/ rho, u);
     efree(rho); efree(u[X]); efree(u[Y]); efree(u[Z]);
 }
