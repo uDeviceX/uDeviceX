@@ -16,8 +16,6 @@
 #include "d/ker.h"
 #include "utils/cc.h"
 #include "utils/kl.h"
-#include "utils/texo.h"
-#include "utils/texo.dev.h"
 
 #include "imp.h"
 
