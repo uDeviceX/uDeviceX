@@ -16,9 +16,6 @@
 #include "d/ker.h"
 #include "utils/cc.h"
 #include "utils/kl.h"
-#include "utils/te.h"
-#include "utils/texo.h"
-#include "utils/texo.dev.h"
 
 #include "rbc/rnd/imp.h"
 #include "rbc/type.h"
