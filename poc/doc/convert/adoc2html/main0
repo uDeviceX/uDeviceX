@@ -12,4 +12,7 @@ e () {
    if test $? -ne 0; then msg "fail: $@"; exit 2; fi
 }
 
-e pandoc "$@" --atx-headers -f docbook -t markdown "$i"
+i="$1"; shift
+a="-a lext=.html -a toc=left -a source-highlighter=coderay -a nofooter"
+
+e asciidoctor $a $i
