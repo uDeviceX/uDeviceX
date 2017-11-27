@@ -16,7 +16,16 @@
 #include "utils/cc.h"
 #include "utils/error.h"
 
-enum {UDX_, MPI_, CUDA_, NKINDS};
+enum {UDX_, MPI_, CUDA_, MAX_STACK_, NKINDS};
+
+void MAX_STACK_bar() {
+    int j = 0;
+    for (int i = 0; i < 130; ++i) {
+        UdxError::stack_push(__FILE__, __LINE__);
+        j ++;
+    }
+    printf("%d\n", j);
+}
 
 void UDX_bar() {
     ERR("udx bar failed");
@@ -43,6 +52,9 @@ void foo(int kind) {
         break;
     case CUDA_:
         UC(CUDA_bar());
+        break;
+    case MAX_STACK_:
+        UC(MAX_STACK_bar());
         break;
     default:
         break;
