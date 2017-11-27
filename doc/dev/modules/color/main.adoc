@@ -1,0 +1,5 @@
+= color
+
+include::main.inc.adoc[]
+
+include::modules.inc.adoc[]
