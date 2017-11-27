@@ -79,7 +79,7 @@ static void header_ii(const long n, const char *name, const char *fields, const 
     header(n, name, step, "int", fields);
 }
 
-static long write_data(const void *data, long n, size_t bytesperdata, MPI_Datatype datatype, const char *fname) {
+static long write_data(MPI_Comm cart, const void *data, long n, size_t bytesperdata, MPI_Datatype datatype, const char *fname) {
     MPI_File f;
     MPI_Status status;
     MPI_Offset base, offset = 0;
@@ -97,42 +97,42 @@ static long write_data(const void *data, long n, size_t bytesperdata, MPI_Dataty
     return ntot;
 }
     
-void parts(const Particle *pp, const long n, const char *name, const int step, Ticket *t) {
+void parts(MPI_Comm cart, const Particle *pp, const long n, const char *name, const int step, Ticket *t) {
     copy_shift(pp, n, t->mi, /**/ t->w_pp);
         
     char fname[256] = {0};
     sprintf(fname, DUMP_BASE "/bop/" PATTERN ".values", name, step / part_freq);
 
-    long ntot = write_data(t->w_pp, n, sizeof(Particle), datatype::particle, fname);
+    long ntot = write_data(cart, t->w_pp, n, sizeof(Particle), datatype::particle, fname);
     if (m::rank == 0) header_pp(ntot, name, step);
 }
 
-void parts_forces(const Particle *pp, const Force *ff, const long n, const char *name, const int step, /*w*/ Ticket *t) {
+void parts_forces(MPI_Comm cart, const Particle *pp, const Force *ff, const long n, const char *name, const int step, /*w*/ Ticket *t) {
     copy_shift_with_forces(pp, ff, n, t->mi, /**/ t->w_pp);
             
     char fname[256] = {0};
     sprintf(fname, DUMP_BASE "/bop/" PATTERN ".values", name, step / part_freq);
 
-    long ntot = write_data(t->w_pp, n, sizeof(Particle) + sizeof(Force), datatype::partforce, fname);
+    long ntot = write_data(cart, t->w_pp, n, sizeof(Particle) + sizeof(Force), datatype::partforce, fname);
     
     if (m::rank == 0) header_pp_ff(ntot, name, step);
 }
 
-static void intdata(const int *ii, const long n, const char *name, const char *fields, const int step) {
+static void intdata(MPI_Comm cart, const int *ii, const long n, const char *name, const char *fields, const int step) {
     char fname[256] = {0};
     sprintf(fname, DUMP_BASE "/bop/" PATTERN ".values", name, step / part_freq);
 
-    long ntot = write_data(ii, n, sizeof(int), MPI_INT, fname);
+    long ntot = write_data(cart, ii, n, sizeof(int), MPI_INT, fname);
     
     if (m::rank == 0) header_ii(ntot, name, fields, step);
 }
 
-void ids(const int *ii, const long n, const char *name, const int step) {
-    intdata(ii, n, name, "id", step);
+void ids(MPI_Comm cart, const int *ii, const long n, const char *name, const int step) {
+    intdata(cart, ii, n, name, "id", step);
 }
 
-void colors(const int *ii, const long n, const char *name, const int step) {
-    intdata(ii, n, name, "color", step);
+void colors(MPI_Comm cart, const int *ii, const long n, const char *name, const int step) {
+    intdata(cart, ii, n, name, "color", step);
 }
 
 #undef PATTERN
