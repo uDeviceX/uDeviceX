@@ -1,4 +1,4 @@
-D = adoc2md md2adoc
+D = adoc2html adoc2md md2adoc
 
 install:
 	install0 () ( cd "$$d" && make install); \

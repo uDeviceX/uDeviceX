@@ -1,7 +1,7 @@
 B = $(HOME)/bin
 
 p = u
-m = adoc2md
+m = adoc2html
 
 install:
 	@echo install $p.$m
