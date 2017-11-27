@@ -4,7 +4,10 @@ include make/target.mk
 all: $(PAGES)
 include make/deps.mk
 
-%.html: %.adoc; $(ADOC) $<
+style=
+#style=-a stylesheet=main.css
+
+%.html: %.adoc; $(ADOC) $(style) $<
 .PHONY: clean
 
 clean:; rm -rf $(PAGES)
