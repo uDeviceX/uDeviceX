@@ -1,7 +1,5 @@
 /* Part I (conf.base.h) */
 
-/* Configuration file for sphere in channel flow */
-
 /* DOMAIN */
 #define XS                  4
 #define YS                  4
@@ -17,10 +15,10 @@
 #define numberdensity       1
 #define kBT                 1.e-8
 #define dt                  0.0005
-#define adpd_b            (75.0/numberdensity)
+#define adpd_b             (75.0/numberdensity)
 #define adpd_r             (75.0/numberdensity)
 #define adpd_br            (75.0/numberdensity)
-#define gdpd_b       40.0
+#define gdpd_b        40.0
 #define gdpd_r        40.0
 #define gdpd_br       40.0
 #define dpd_mass            1.0
