@@ -99,7 +99,7 @@ void ini() {
 
     flu::ini(&o::q);
     ini(MAX_PART_NUM, /**/ &o::bulkdata);
-    ini(/**/ &o::halodata);
+    ini(m::cart, /**/ &o::halodata);
     
     UC(ini_flu_distr(m::cart, /*io*/ &tag_gen, /**/ &o::d));
     UC(ini_flu_exch(m::cart, /*io*/ &tag_gen, /**/ &o::e));

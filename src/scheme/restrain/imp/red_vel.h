@@ -14,7 +14,7 @@ static void report(int it) {
     if (cond) report0();
 }
 
-void main(const int *cc, NN nn, long it, /**/ QQ qq) {
-    color::vel(cc, RED_COLOR, nn.o, /**/ qq.o);
+void main(MPI_Comm cart, const int *cc, NN nn, long it, /**/ QQ qq) {
+    color::vel(cart, cc, RED_COLOR, nn.o, /**/ qq.o);
     report(it);
 }
