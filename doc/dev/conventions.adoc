@@ -27,6 +27,7 @@ r[Z] = rz;
 ** input is at the beginning
 ** input/output come after input and start with a commented `io`
 ** output comes after input/output and start with a comment or `o` depending on the context
+** sizes have higher priority than arrays
 ** workspace comes at the end ans starts with a commented `w`
 * do **not** use references, use pointers instead
 
