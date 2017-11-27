@@ -44,7 +44,7 @@ static void wfaces0(MPI_Comm cart, int *buf, const int4 *faces, int nc, int nv, 
     int c, t, b;  /* cell, triangle, buffer index */
     int n, shift;
     n = nc * nv;
-    write::shift(n, &shift);
+    write::shift(cart, n, &shift);
 
     int4 tri;
     for(b = c = 0; c < nc; ++c)
