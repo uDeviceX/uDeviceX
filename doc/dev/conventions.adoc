@@ -7,9 +7,10 @@
 
 * names of local variables are short and understandable from the context
 * names of global variables are as descriptive as possible
-* arrays of simple structures `x` have names `xx`, eg. `pp` is an array of particles, `cc` is an array of colors, `ii` is an array of indices
-* array of small dimentionality may use an enum type for readability, e.g.
-
+* arrays of simple structures `x` have names `xx`, eg. `pp` is an
+  array of particles, `cc` is an array of colors, `ii` is an array of
+  indices * array of small dimentionality may use an enum type for
+  readability, e.g.
 [source,cpp]
 ----
 enum {X, Y, Z};
