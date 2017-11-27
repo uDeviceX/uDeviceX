@@ -3,7 +3,6 @@ namespace rbc { namespace force {
 struct TicketT {
     Texo <float2> texvert;
     Texo <int> texadj0, texadj1;
-    Texo <int4> textri;
     rbc::rnd::D *rnd;
 };
 

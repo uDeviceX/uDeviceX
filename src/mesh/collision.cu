@@ -151,7 +151,8 @@ static __device__ bool inside_box(const float r[3], float3 lo, float3 hi) {
 
 /* assume nm blocks along y */
 /* if the ith particle is inside jth mesh, sets tag[i] to IN (see enum in collision.h) */
-__global__ void compute_colors_tex(const Particle *pp, const int n, const Texo<float2> texvert, const int nv, const Texo<int4> textri,
+__global__ void compute_colors_tex(const Particle *pp, const int n, const Texo<float2> texvert, const int nv,
+                                   const int4 *tri,
                                    const int nt, const float3 *minext, const float3 *maxext, /**/ int *cc) {
     const int sid = blockIdx.y;
     const int gid = threadIdx.x + blockIdx.x * blockDim.x;
@@ -173,7 +174,7 @@ __global__ void compute_colors_tex(const Particle *pp, const int n, const Texo<f
 
     int mbase = nv * sid;
     for (int i = 0; i < nt; ++i) {
-        const int4 t = fetch(textri, i);
+        const int4 t = tri[i];
 
         const Pos a = tex2Pos(texvert, mbase + t.x);
         const Pos b = tex2Pos(texvert, mbase + t.y);
@@ -205,7 +206,7 @@ void inside_dev(const Particle *pp, const int n, int nt, int nv, const int4 *tt,
    nt: number of triangles per mesh
    nv: number of vertices per mesh
 */
-void get_colors(const Particle *pp, const int n, const Texo<float2> texvert, const Texo<int4> textri, const int nt,
+void get_colors(const Particle *pp, const int n, const Texo<float2> texvert, const int4 *tri, const int nt,
                 const int nv, const int nm, const float3 *minext, const float3 *maxext, /**/ int *cc) {
     if (nm == 0 || n == 0) return;
 
@@ -215,6 +216,6 @@ void get_colors(const Particle *pp, const int n, const Texo<float2> texvert, con
     dim3 thrd(THR, 1);
     dim3 blck(ceiln(n, THR), nm);
 
-    KL(kernels::compute_colors_tex, (blck, thrd), (pp, n, texvert, nv, textri, nt, minext, maxext, /**/ cc));
+    KL(kernels::compute_colors_tex, (blck, thrd), (pp, n, texvert, nv, tri, nt, minext, maxext, /**/ cc));
 }
 }
