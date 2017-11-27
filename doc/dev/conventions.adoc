@@ -43,7 +43,7 @@ void forward_euler(int n, const Force *ff, /* io */ Particle *pp);
 == file structure
 
 * no include guards; no "headers in headers" if easily avoidable.
-* all cuda kernels should be coded in a separate header `.h` file.
+* all cuda kernels are in a separate header `.h` file.
 * a module is implemented inside its own directory `A`
 ** it has its own object `A/imp.cu` or `A/imp.cpp`
 ** interface `A/imp.h`
