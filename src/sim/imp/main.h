@@ -17,7 +17,7 @@ void gen() { /* generate */
         MC(m::Barrier(m::cart));
         inter::create_walls(MAXNWALL, w::qsdf, /*io*/ &o::q, /**/ &w::q);
     }
-    inter::freeze(w::qsdf, /*io*/ &o::q, /**/ &s::q, &r::q);
+    inter::freeze(m::cart, w::qsdf, /*io*/ &o::q, /**/ &s::q, &r::q);
     clear_vel();
 
     if (multi_solvent) {

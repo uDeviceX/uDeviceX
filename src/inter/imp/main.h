@@ -13,7 +13,7 @@ static void remove_rbcs(rbc::Quants *q, sdf::Quants qsdf) {
     MSG("%d/%d RBCs survived", q->nc, nc0);
 }
 
-static void create_solids(flu::Quants* qflu, rig::Quants* qrig) {
+static void create_solids(MPI_Comm cart, flu::Quants* qflu, rig::Quants* qrig) {
     cD2H(qflu->pp_hst, qflu->pp, qflu->n);
     rig::gen_quants(/*io*/ qflu->pp_hst, &qflu->n, /**/ qrig);
     MC(m::Barrier(m::cart));
@@ -46,9 +46,9 @@ void create_walls(int maxn, sdf::Quants qsdf, flu::Quants* qflu, wall::Quants *q
     MSG("solvent particles survived: %d/%d", qflu->n, nold);
 }
 
-void freeze(sdf::Quants qsdf, flu::Quants *qflu, rig::Quants *qrig, rbc::Quants *qrbc) {
+void freeze(MPI_Comm cart, sdf::Quants qsdf, flu::Quants *qflu, rig::Quants *qrig, rbc::Quants *qrbc) {
     MC(m::Barrier(m::cart));
-    if (solids)           create_solids(qflu, qrig);
+    if (solids)           create_solids(cart, qflu, qrig);
     if (walls && rbcs  )  remove_rbcs(qrbc, qsdf);
     if (walls && solids)  remove_solids(qrig, qsdf);
     if (solids)           rig::set_ids(*qrig);
