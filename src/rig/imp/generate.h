@@ -5,11 +5,11 @@ void gen_quants(MPI_Comm comm, /* io */ Particle *opp, int *on, /**/ Quants *q) 
     cpy_H2D(q);
 }
 
-static void set_ids(const int ns, /**/ Solid *ss_hst, Solid *ss_dev) {
-    gen::set_rig_ids(ns, /**/ ss_hst);
+static void set_ids(MPI_Comm comm, const int ns, /**/ Solid *ss_hst, Solid *ss_dev) {
+    gen::set_rig_ids(comm, ns, /**/ ss_hst);
     if (ns) cH2D(ss_dev, ss_hst, ns);
 }
 
-void set_ids(Quants q) {
-    set_ids(q.ns, q.ss_hst, q.ss);
+void set_ids(MPI_Comm comm, Quants q) {
+    set_ids(comm, q.ns, q.ss_hst, q.ss);
 }

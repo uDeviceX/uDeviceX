@@ -39,7 +39,7 @@ static void gen0(MPI_Comm comm, int nt, const int4 *tt, const float *vv, int nso
     *ns = nsolid = id;
     *nps = npsolid;
 
-    set_rig_ids(nsolid, /**/ ss);
+    set_rig_ids(comm, nsolid, /**/ ss);
 }
 
 static void gen1(MPI_Comm comm, int nt, const int4 *tt, const float *vv, int nsolid, float *coms, /**/
