@@ -79,7 +79,6 @@ static void ini3(MPI_Comm cart, int N[3], float ext[3], float* D, /**/ struct Te
     sc = G / ext[X];
     UC(field::scale(N, sc, /**/ D));
 
-    /* MC(l::m::Barrier(l::m::cart)); */
     if (field_dumps) UC(field::dump(cart, N, D));
 
     UC(ini2(N, D, /**/ te));

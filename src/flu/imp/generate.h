@@ -43,17 +43,17 @@ void gen_quants(Quants *q) {
         q->n = genGrey(q->pp, /*w*/ q->pp_hst);
 }
 
-static void ii_gen0(const long n, int *ii) {
+static void ii_gen0(MPI_Comm comm, const long n, int *ii) {
     long i0 = 0;
-    MC(m::Exscan(&n, &i0, 1, MPI_LONG, MPI_SUM, m::cart));
+    MC(m::Exscan(&n, &i0, 1, MPI_LONG, MPI_SUM, comm));
     for (long i = 0; i < n; ++i) ii[i] = i + i0;
 }
 
-static void ii_gen(const int n, int *ii_dev, int *ii_hst) {
-    ii_gen0(n, ii_hst);
+static void ii_gen(MPI_Comm comm, const int n, int *ii_dev, int *ii_hst) {
+    ii_gen0(comm, n, ii_hst);
     cH2D(ii_dev, ii_hst, n);
 }
 
-void gen_ids(const int n, Quants *q) {
-    ii_gen(n, q->ii, q->ii_hst);
+void gen_ids(MPI_Comm comm, const int n, Quants *q) {
+    ii_gen(comm, n, q->ii, q->ii_hst);
 }

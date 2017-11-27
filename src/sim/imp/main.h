@@ -33,7 +33,7 @@ void gen() { /* generate */
 void sim_gen() {
     flu::gen_quants(&o::q);
     flu::build_cells(&o::q);
-    if (global_ids)    flu::gen_ids  (o::q.n, &o::q);
+    if (global_ids)    flu::gen_ids  (m::cart, o::q.n, &o::q);
     if (rbcs) {
         rbc::main::gen_quants("rbc.off", "rbcs-ic.txt", /**/ &r::q);
         rbc::force::gen_ticket(r::q, &r::tt);

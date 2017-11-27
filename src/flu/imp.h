@@ -20,7 +20,7 @@ void ini(Quants *q);
 void fin(Quants *q);
 
 void gen_quants(Quants *q);
-void gen_ids(const int n, Quants *q);
+void gen_ids(MPI_Comm comm, const int n, Quants *q);
 
 void strt_quants(const int id, Quants *q);
 void strt_dump(const int id, const Quants q);
