@@ -1,4 +1,4 @@
-CFLAGS += -O3 -g -Wall -Wextra -std=c99 -pedantic
+CFLAGS += -O3 -g -Wall -std=c99 
 
 BIN=$(HOME)/bin
  # config directory
