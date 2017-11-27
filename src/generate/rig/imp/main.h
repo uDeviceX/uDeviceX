@@ -15,9 +15,9 @@ static void gen0(MPI_Comm comm, int nt, const int4 *tt, const float *vv, int nso
             empty_solid(nt, tt, vv, /* io */ rr0, &npsolid);
     }
 
-    MC(MPI_Bcast(&npsolid,       1,   MPI_INT, root, m::cart) );
-    MC(MPI_Bcast(rr0,  3 * npsolid, MPI_FLOAT, root, m::cart) );
-    MC(MPI_Bcast(&model, 1, datatype::solid, root, m::cart) );
+    MC(MPI_Bcast(&npsolid,       1,   MPI_INT, root, comm) );
+    MC(MPI_Bcast(rr0,  3 * npsolid, MPI_FLOAT, root, comm) );
+    MC(MPI_Bcast(&model, 1, datatype::solid,   root, comm) );
 
     // filter coms to keep only the ones in my domain
     int id = 0;
@@ -46,14 +46,14 @@ static void gen1(MPI_Comm comm, int nt, const int4 *tt, const float *vv, int nso
                  int *ns, int *nps, float *rr0, Solid *ss, int *s_n, Particle *s_pp, Particle *r_pp,
                  /*w*/ int *tags, int *rcounts) {
     int root, idmax;
-    elect(rcounts, nsolid, /**/ &root, &idmax);
-    MC(MPI_Bcast(&idmax, 1, MPI_INT, root, m::cart));
+    elect(comm, rcounts, nsolid, /**/ &root, &idmax);
+    MC(MPI_Bcast(&idmax, 1, MPI_INT, root, comm));
 
     int rcount = 0;
     kill(idmax, tags, /**/ s_n, s_pp, &rcount, r_pp);
     DBG("after kill: %d", rcount);
 
-    share(root, /**/ r_pp, &rcount);
+    share(comm, root, /**/ r_pp, &rcount);
     DBG("after share: %d", rcount);
 
     gen0(comm, nt, tt, vv, nsolid, rcount, idmax, root, coms, /**/ ns, nps, rr0, ss, r_pp);

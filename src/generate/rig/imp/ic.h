@@ -105,7 +105,7 @@ static void count_pp_inside(const Particle *s_pp, const int n, const float *coms
         DBG("Found %d particles in solid %d", rcounts[j], j);
 }
 
-static void elect(const int *rcounts, const int ns, /**/ int *root, int *idmax) {
+static void elect(MPI_Comm comm, const int *rcounts, const int ns, /**/ int *root, int *idmax) {
     int j, localmax[2] = {0, m::rank}, globalmax[2] = {0, m::rank}, idmax_ = 0;
 
     for (j = 0; j < ns; ++j)
@@ -114,7 +114,7 @@ static void elect(const int *rcounts, const int ns, /**/ int *root, int *idmax) 
             idmax_ = j;
         }
 
-    MPI_Allreduce(localmax, globalmax, 1, MPI_2INT, MPI_MAXLOC, m::cart);
+    MPI_Allreduce(localmax, globalmax, 1, MPI_2INT, MPI_MAXLOC, comm);
 
     *root = globalmax[1];
     *idmax = idmax_;

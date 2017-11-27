@@ -1,7 +1,7 @@
-static void share0(const int root, /**/ Particle *pp, int *n) {
+static void share0(MPI_Comm comm, const int root, /**/ Particle *pp, int *n) {
     std::vector<int> counts(m::size), displs(m::size);
     std::vector<Particle> recvbuf(MAX_PSOLID_NUM);
-    MC(MPI_Gather(n, 1, MPI_INT, counts.data(), 1, MPI_INT, root, m::cart) );
+    MC(MPI_Gather(n, 1, MPI_INT, counts.data(), 1, MPI_INT, root, comm) );
 
     if (m::rank == root)
     {
@@ -12,7 +12,7 @@ static void share0(const int root, /**/ Particle *pp, int *n) {
 
     MC(MPI_Gatherv(pp, *n,
                    datatype::particle, recvbuf.data(), counts.data(), displs.data(),
-                   datatype::particle, root, m::cart) );
+                   datatype::particle, root, comm) );
 
     if (m::rank == root) {
         *n = displs.back() + counts.back();
@@ -20,7 +20,7 @@ static void share0(const int root, /**/ Particle *pp, int *n) {
     }
 }
 
-static void share(const int root, /**/ Particle *pp, int *n) {
+static void share(MPI_Comm comm, const int root, /**/ Particle *pp, int *n) {
     if (*n >= MAX_PSOLID_NUM) ERR("Number of solid particles too high for the buffer\n");
     // set to global coordinates and then convert back to local
     int i, c;
@@ -30,7 +30,7 @@ static void share(const int root, /**/ Particle *pp, int *n) {
     for (c = 0; c < 3; ++c) mi[c] = (m::coords[c] + 0.5) * L[c];
     for (i = 0; i < *n; ++i) for (c = 0; c < 3; ++c) pp[i].r[c] += mi[c];
 
-    share0(root, /**/ pp, n);
+    share0(comm, root, /**/ pp, n);
 
     for (i = 0; i < *n; ++i) for (c = 0; c < 3; ++c) pp[i].r[c] -= mi[c];
 
