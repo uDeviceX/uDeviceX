@@ -1,3 +1,5 @@
+#!/bin/sh
+
 . u.adoc2html.util
 
 usg () {
