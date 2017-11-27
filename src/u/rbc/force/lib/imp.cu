@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <assert.h>
+#include <mpi.h>
 
 #include <conf.h>
 #include "inc/conf.h"
@@ -24,6 +25,7 @@
 #include "rbc/force/imp.h"
 
 #include "mpi/glb.h"
+#include "mpi/wrapper.h"
 
 #include "imp.h"
 
