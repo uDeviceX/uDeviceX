@@ -1,7 +1,7 @@
 B = $(HOME)/bin
 
 p = u
-P = adoc2md adoc2md0
+P = md2adoc md2adoc0
 
 install:
 	mkdir -p "$B"
