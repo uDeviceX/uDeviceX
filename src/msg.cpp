@@ -3,8 +3,6 @@
 
 #include "mpi/glb.h"
 #include "msg.h"
-#include "utils/error.h"
-#include "utils/efopen.h"
 
 namespace msg {
 char buf[BUFSIZ];
@@ -12,14 +10,12 @@ static char fmt[] = ".%03d";
 
 static FILE* open(const char *path) {
     static int fst = 1;
-    FILE *f;
     if (fst) {
         fst = 0;
-        UC(efopen(path, "w", /**/ &f));
+        return fopen(path, "w");
     } else {
-        UC(efopen(path, "a", /**/ &f));
+        return fopen(path, "a");
     }
-    return f;
 }
 
 static void print0(FILE *f) {
@@ -34,6 +30,6 @@ void print() {
     sprintf(n, fmt, m::rank);
     f = open(n);
     print0(f);
-    UC(efclose(f));
+    fclose(f);
 }
 }
