@@ -14,6 +14,7 @@
 
 #include "d/api.h"
 #include "d/ker.h"
+#include "d/q.h"
 #include "utils/cc.h"
 #include "utils/kl.h"
 

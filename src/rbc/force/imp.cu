@@ -12,6 +12,7 @@
 #include "utils/error.h"
 #include "msg.h"
 
+#include "d/q.h"
 #include "d/api.h"
 #include "d/ker.h"
 #include "utils/cc.h"
