@@ -28,15 +28,19 @@ void stack_pop() {
     assert (stack_sz >= 0);
 }
 
-void stack_push(const char *file, int line) {
-    sprintf(stack[stack_sz], ": %s: %d:", file, line);
-    ++stack_sz;
-
+static void check_stack_overflow() {
     if (stack_sz >= MAX_TRACE) {
         signal_error(__FILE__, __LINE__, "stack overflow (%d / %d)", stack_sz, MAX_TRACE);
         report();
         abort();
-    }
+    }    
+}
+
+void stack_push(const char *file, int line) {
+    sprintf(stack[stack_sz], ": %s: %d:", file, line);
+    ++stack_sz;
+
+    check_stack_overflow();
 }
 
 static void stack_dump() {
