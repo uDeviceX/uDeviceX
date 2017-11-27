@@ -1,5 +1,5 @@
 $B/comm/imp.o: $S/comm/imp/fin.h $S/inc/conf.h $S/utils/error.h $S/mpi/basetags.h $S/mpi/wrapper.h $S/comm/imp.h $S/utils/cc.h $S/comm/imp/ini.h $S/d/api.h $S/utils/mc.h $S/msg.h $B/conf.h $S/comm/imp/main.h $S/utils/halloc.h $S/frag/imp.h $S/mpi/glb.h
-$B/d/api.o: $S/d/cpu/imp.h $S/inc/conf.h $S/utils/error.h $S/d/common.h $S/d/api.h $B/conf.h $S/d/cuda/imp.h
+$B/d/api.o: $S/d/cpu/imp.h $S/inc/conf.h $S/utils/error.h $S/d/common.h $S/d/api.h $B/conf.h $S/utils/halloc.h $S/d/cuda/imp.h
 $B/frag/imp.o: $S/inc/conf.h $B/conf.h $S/frag/imp.h
 $B/glb/imp.o: $S/inc/conf.h $S/glb/imp/util.h $S/glb/set.h $S/glb/wvel/imp.h $S/d/api.h $B/conf.h $S/glb/imp/main.h $S/glb/imp/dec.h $S/glb/get.h $S/mpi/glb.h
 $B/glb/wvel/imp.o: $S/inc/conf.h $S/glb/wvel/imp/flat.h $S/glb/wvel/imp.h $S/msg.h $B/conf.h $S/glb/wvel/imp/dupire/common.h $S/glb/wvel/imp/dupire/down.h $S/glb/wvel/imp/dupire/up.h $S/glb/wvel/imp/sin.h

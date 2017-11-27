@@ -1,4 +1,4 @@
-$B/d/api.o: $S/d/cpu/imp.h $S/inc/conf.h $S/utils/error.h $S/d/common.h $S/d/api.h $B/conf.h $S/d/cuda/imp.h
+$B/d/api.o: $S/d/cpu/imp.h $S/inc/conf.h $S/utils/error.h $S/d/common.h $S/d/api.h $B/conf.h $S/utils/halloc.h $S/d/cuda/imp.h
 $B/io/bop/imp.o: $S/utils/os.h $S/inc/conf.h $S/utils/error.h $S/inc/type.h $S/mpi/wrapper.h $S/io/bop/imp.h $S/inc/def.h $S/utils/efopen.h $S/mpi/type.h $S/d/api.h $S/utils/mc.h $B/conf.h $S/mpi/glb.h
 $B/io/com.o: $S/utils/os.h $S/inc/conf.h $S/utils/error.h $S/mpi/wrapper.h $S/utils/mc.h $B/conf.h $S/utils/halloc.h $S/mpi/glb.h
 $B/io/diag.o: $S/inc/conf.h $S/utils/error.h $S/inc/type.h $S/mpi/wrapper.h $S/utils/efopen.h $S/msg.h $B/conf.h $S/io/diag.h $S/mpi/glb.h
