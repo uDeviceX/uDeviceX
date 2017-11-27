@@ -1,5 +1,5 @@
 struct File { MPI_File f; };
-void all(const void * const ptr, const int nbytes32, File *fp) {
+void all(MPI_Comm cart, const void * const ptr, const int nbytes32, File *fp) {
     MPI_File f = fp->f;
     MPI_Offset base;
     MPI_Offset offset = 0, nbytes = nbytes32;
@@ -13,10 +13,10 @@ void all(const void * const ptr, const int nbytes32, File *fp) {
 }
 /* root predicate */
 int rootp() { return m::rank == 0; }
-int one(const void * const ptr, int sz0, File *fp) {
+int one(MPI_Comm cart, const void * const ptr, int sz0, File *fp) {
     int sz;
     sz = rootp() ? sz0 : 0;
-    all(ptr, sz, fp);
+    all(cart, ptr, sz, fp);
     return 0;
 }
 
@@ -26,7 +26,7 @@ int shift(int n, int *shift0) {
     return 0;
 }
 
-int reduce(int n0, /**/ int* n) {
+int reduce(MPI_Comm cart,int n0, /**/ int* n) {
     *n = 0;
     MC(m::Reduce(&n0, n, 1, MPI_INT, MPI_SUM, 0, m::cart));
     return 0;

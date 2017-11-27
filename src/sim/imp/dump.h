@@ -41,7 +41,7 @@ void dump_part(int step) {
 void dump_rbcs() {
     static int id = 0;
     cD2H(a::pp_hst, r::q.pp, r::q.n);
-    io::mesh::rbc(a::pp_hst, r::q.tri_hst, r::q.nc, r::q.nv, r::q.nt, id++);
+    io::mesh::rbc(m::cart, a::pp_hst, r::q.tri_hst, r::q.nc, r::q.nv, r::q.nt, id++);
 }
 
 void dump_rbc_coms() {
@@ -65,7 +65,7 @@ void dump_diag_after(int it, bool wall0, bool solid0) { /* after wall */
         rig_dump(it, s::q.ss_dmp, s::q.ss_dmp_bb, s::q.ns, m::coords);
 
         cD2H(a::pp_hst, s::q.i_pp, s::q.ns * s::q.nv);
-        io::mesh::rig(a::pp_hst, s::q.htt, s::q.ns, s::q.nv, s::q.nt, id++);
+        io::mesh::rig(m::cart, a::pp_hst, s::q.htt, s::q.ns, s::q.nv, s::q.nt, id++);
     }
 }
 
