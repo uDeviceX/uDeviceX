@@ -86,12 +86,12 @@ static long write_data(MPI_Comm cart, const void *data, long n, size_t bytesperd
     MPI_Offset len = n * bytesperdata;
     long ntot = 0;
 
-    MC(m::Reduce(&n, &ntot, 1, MPI_LONG, MPI_SUM, 0, m::cart));
-    MC(MPI_File_open(m::cart, fname, MPI_MODE_CREATE | MPI_MODE_WRONLY, MPI_INFO_NULL, &f));
+    MC(m::Reduce(&n, &ntot, 1, MPI_LONG, MPI_SUM, 0, cart));
+    MC(MPI_File_open(cart, fname, MPI_MODE_CREATE | MPI_MODE_WRONLY, MPI_INFO_NULL, &f));
     MC(MPI_File_set_size(f, 0));
     MC(MPI_File_get_position(f, &base)); 
 
-    MC( MPI_Exscan(&len, &offset, 1, MPI_OFFSET, MPI_SUM, m::cart) );
+    MC( MPI_Exscan(&len, &offset, 1, MPI_OFFSET, MPI_SUM, cart) );
     MC( MPI_File_write_at_all(f, base + offset, data, n, datatype, &status) ); 
     MC( MPI_File_close(&f) );
     return ntot;
