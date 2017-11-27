@@ -4,10 +4,12 @@ union Pos {
     struct { float3 r; float dummy; };
 };
 
-static __device__ Pos tex2Pos(const Texo<float2> texvert, const int id) {
+static __device__ Pos tex2Pos(const Particle *texvert, const int id) {
+    enum {X, Y, Z};
     Pos r;
-    r.f2[0] = fetch(texvert, 3 * id + 0);
-    r.f2[1] = fetch(texvert, 3 * id + 1);
+    r.r.x = texvert[id].r[X];
+    r.r.y = texvert[id].r[Y];
+    r.r.z = texvert[id].r[Z];
     return r;
 }
 
@@ -35,7 +37,7 @@ static __device__ float volume0(float3 r0, float3 r1, float3 r2) {
          (r0.y*r1.z-r0.z*r1.y)*r2.x);
 }
 
-__global__ void dev(int nt, int nv, const Texo<float2> texvert, const int4 *tri, float *totA_V) {
+__global__ void dev(int nt, int nv, const Particle *texvert, const int4 *tri, float *totA_V) {
     float2 a_v = make_float2(0.0f, 0.0f);
     int cid = blockIdx.y;
 
