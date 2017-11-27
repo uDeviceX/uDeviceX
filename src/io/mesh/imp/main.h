@@ -87,7 +87,7 @@ static void main1(MPI_Comm cart, const Particle *pp, const int4 *faces, int nc, 
 
 static void main(MPI_Comm cart, const Particle *pp, const int4 *faces, int nc, int nv, int nt, const char *fn) {
     write::File *f;
-    write::fopen(fn, /**/ &f);
+    write::fopen(cart, fn, /**/ &f);
     main1(cart, pp, faces, nc, nv, nt, f);
     write::fclose(f);
 }

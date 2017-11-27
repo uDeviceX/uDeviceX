@@ -48,7 +48,7 @@ void dump_rbc_coms() {
     static int id = 0;
     int nc = r::q.nc;
     rbc::com::get(r::q.nc, r::q.nv, r::q.pp, /**/ &r::com);
-    dump_com(id++, nc, r::q.ii, r::com.hrr);
+    dump_com(m::cart, id++, nc, r::q.ii, r::com.hrr);
 }
 
 void dump_grid() {
