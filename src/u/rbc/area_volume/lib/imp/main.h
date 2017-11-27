@@ -2,7 +2,7 @@ static void run0(rbc::Quants q, rbc::force::TicketT t) {
     float area, volume, av[2];
     area_volume::hst(q.nt, q.nv, q.nc, q.pp, q.tri, /**/ av);
     area = av[0]; volume = av[1];
-    MSG("av: %g %g", area, volume);
+    printf("%g %g\n", area, volume);
 }
 
 static void run1(const char *cell, const char *ic, rbc::Quants q) {
