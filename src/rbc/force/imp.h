@@ -1,7 +1,5 @@
 namespace rbc { namespace force {
-/* textures ticket */
 struct TicketT {
-    Texo <float2> texvert;
     rbc::rnd::D *rnd;
 };
 
