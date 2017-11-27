@@ -1,0 +1,5 @@
+#!/bin/sh
+
+./tools/targets
+./tools/index
+./tools/deps

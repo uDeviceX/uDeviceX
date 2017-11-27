@@ -11,6 +11,7 @@ A list of coding conventions can be found link:conventions{lext}[here].
 
 * prefix sum: link:modules/algo/scan{lext}[scan]
 * cell lists: link:modules/clist{lext}[clist]
+* multi solvent: link:modules/color/main{lext}[color]
 * generic communicator: link:modules/comm{lext}[comm]
 * generic device API: link:modules/d{lext}[d]
 * redistribution: link:modules/distr{lext}[distr]

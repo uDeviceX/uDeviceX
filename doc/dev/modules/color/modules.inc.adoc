@@ -1,0 +1,21 @@
+== modules
+
+:src: ../../../../src
+
+Some utility modules are implemeted in `/src/color`.
+
+=== flux
+
+recolor particles crossing the face of the periodic domain in the
+positive direction x, y or z
+
+[source, cpp]
+----
+include::{src}/color/flux.h[]
+----
+
+* `dir` is the direction x, y or z
+* `color` is the new color
+* `pp` are input particles of size `n`
+* `cc` are output colors (stay the same if does not cross the face)
+

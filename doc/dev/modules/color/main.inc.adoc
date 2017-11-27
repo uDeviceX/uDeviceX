@@ -1,0 +1,8 @@
+== purpose
+
+Each particle of the solvent has an assigned color when the
+`multi_solvent` flag is enabled. 
+It is helpful for modeling different solvent with different
+viscosities, surface tensions etc.
+
+
