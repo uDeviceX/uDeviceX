@@ -1,0 +1,2 @@
+void fin(Ticket* t) {
+}
