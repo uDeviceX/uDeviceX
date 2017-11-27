@@ -4,6 +4,7 @@
 #include <conf.h>
 #include "inc/conf.h"
 
+#include "inc/type.h"
 #include "inc/def.h"
 #include "inc/dev.h"
 #include "math/dev.h"
@@ -25,5 +26,7 @@ namespace area_volume {
 namespace dev0 {
 #include "dev/main.h"
 }
+#include "imp/ini.h"
+#include "imp/fin.h"
 #include "imp/main.h"
 }
