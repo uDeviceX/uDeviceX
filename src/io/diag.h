@@ -1,1 +1,1 @@
-void diagnostics(Particle *pp, int n, int idstep);
+void diagnostics(int n, const Particle *pp, int idstep);

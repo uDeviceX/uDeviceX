@@ -35,7 +35,7 @@ static int sum_i(int *v) {
     return reduce(v, v, 1, MPI_INT, MPI_SUM);
 }
 
-void diagnostics(Particle *pp, int n, int id) {
+void diagnostics(int n, const Particle *pp, int id) {
     enum {X, Y, Z};
     int i, c;
     double k, km, ke; /* particle, total, and maximum kinetic energies */
