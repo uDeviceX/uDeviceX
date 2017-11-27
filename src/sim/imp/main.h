@@ -35,7 +35,7 @@ void sim_gen() {
     flu::build_cells(&o::q);
     if (global_ids)    flu::gen_ids  (m::cart, o::q.n, &o::q);
     if (rbcs) {
-        rbc::main::gen_quants("rbc.off", "rbcs-ic.txt", /**/ &r::q);
+        rbc::main::gen_quants(m::cart, "rbc.off", "rbcs-ic.txt", /**/ &r::q);
         rbc::force::gen_ticket(r::q, &r::tt);
 
         if (multi_solvent) gen_colors(&colorer);
