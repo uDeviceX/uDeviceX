@@ -1,3 +1,4 @@
+#include <mpi.h>
 #include <stdio.h>
 #include <conf.h>
 #include "inc/conf.h"
@@ -30,8 +31,8 @@ void  free_quants(Quants *q) {
     q->texsdf.destroy();
 }
 
-void ini(Quants *q) {
-    UC(sub::ini(q->arrsdf, &q->texsdf));
+void ini(MPI_Comm cart, Quants *q) {
+    UC(sub::ini(cart, q->arrsdf, &q->texsdf));
 }
 
 void bulk_wall(const tex3Dca<float> texsdf, /*io*/ Particle *s_pp, int *s_n, /*o*/ Particle *w_pp, int *w_n) {

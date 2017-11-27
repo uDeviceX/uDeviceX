@@ -1,3 +1,4 @@
+#include <mpi.h>
 #include <stdio.h>
 #include <conf.h>
 #include "inc/conf.h"
@@ -71,7 +72,7 @@ static void ini2(int N[3], float* D0, /**/ struct Tex te) {
     delete[] D1;
 }
 
-static void ini3(int N[3], float ext[3], float* D, /**/ struct Tex te) {
+static void ini3(MPI_Comm cart, int N[3], float ext[3], float* D, /**/ struct Tex te) {
     enum {X, Y, Z};
     float sc, G; /* domain size in x ([G]lobal) */
     G = m::dims[X] * XS;
@@ -79,12 +80,12 @@ static void ini3(int N[3], float ext[3], float* D, /**/ struct Tex te) {
     UC(field::scale(N, sc, /**/ D));
 
     /* MC(l::m::Barrier(l::m::cart)); */
-    if (field_dumps) UC(field::dump(N, D));
+    if (field_dumps) UC(field::dump(cart, N, D));
 
     UC(ini2(N, D, /**/ te));
 }
 
-void ini(cudaArray *arrsdf, tex3Dca<float> *texsdf) {
+void ini(MPI_Comm cart, cudaArray *arrsdf, tex3Dca<float> *texsdf) {
     enum {X, Y, Z};
     float *D;     /* data */
     int N[3];     /* size of D */
@@ -97,7 +98,7 @@ void ini(cudaArray *arrsdf, tex3Dca<float> *texsdf) {
     n = N[X] * N[Y] * N[Z];
     D = new float[n];
     UC(field::ini_data(f, n, /**/ D));
-    UC(ini3(N, ext, D, /**/ te));
+    UC(ini3(cart, N, ext, D, /**/ te));
     delete[] D;
 }
 
