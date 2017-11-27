@@ -1,0 +1,2 @@
+# TEST: adoc2md.0
+u.adoc2md data/main.adoc > main.out.md
