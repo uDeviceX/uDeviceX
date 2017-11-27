@@ -12,5 +12,5 @@ void fields_grid(QQ qq, NN nn, /*w*/ Particle *hst) {
     cD2H(hst + start, s, nn.s); start += nn.s;
     cD2H(hst + start, r, nn.r); start += nn.r;
 
-    UC(io::field::dump(hst, n));
+    UC(io::field::dump(m::cart, hst, n));
 }

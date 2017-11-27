@@ -1,6 +1,6 @@
-#include <mpi.h>
 #include <stdio.h>
 #include <math.h>
+#include <mpi.h>
 
 #include <conf.h>
 #include "inc/conf.h"
@@ -14,6 +14,7 @@
 #include "field/imp.h"
 #include "utils/cc.h"
 #include "inc/dev.h"
+#include "mpi/wrapper.h"
 
 #include "fields_grid.h"
 
