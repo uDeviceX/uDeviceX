@@ -13,6 +13,12 @@ e () {
 }
 
 i="$1"; shift
-a="-a lext=.html -a toc=left -a source-highlighter=coderay -a nofooter"
+a="-a lext=.html
+   -a toc=left
+   -a source-highlighter=coderay
+   -a nofooter
+   -a disable-javascript
+   -a linkcss
+   -a stylesheet=main.css"
 
-e asciidoctor $a $i
+e asciidoctor $a -b html5 $i
