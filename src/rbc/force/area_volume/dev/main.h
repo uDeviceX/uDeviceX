@@ -35,7 +35,7 @@ static __device__ float volume0(float3 r0, float3 r1, float3 r2) {
          (r0.y*r1.z-r0.z*r1.y)*r2.x);
 }
 
-__global__ void area_volume(int nt, int nv, const Texo<float2> texvert, const Texo<int4> textri, float *totA_V) {
+__global__ void dev(int nt, int nv, const Texo<float2> texvert, const Texo<int4> textri, float *totA_V) {
     float2 a_v = make_float2(0.0f, 0.0f);
     int cid = blockIdx.y;
 

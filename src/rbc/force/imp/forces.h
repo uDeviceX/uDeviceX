@@ -21,7 +21,7 @@ static void apply0(int nc,
 
 void apply(const Quants q, const TicketT t, /**/ Force *ff) {
     if (q.nc <= 0) return;
-    area_volume::main(q.nt, q.nv, q.nc, t.texvert, t.textri, /**/ q.av);
+    area_volume::dev(q.nt, q.nv, q.nc, t.texvert, t.textri, /**/ q.av);
     apply0(q.nc, t.texvert, t.rnd,
            t.texadj0, t.texadj1, q.shape, q.av, /**/ ff);
 }
