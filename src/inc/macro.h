@@ -18,11 +18,3 @@ enum {  /* used in sorting of bulk particle when wall is created */
 /* size of array of pointers to every element in array (used to allocate
    pointer-to-pointer on device) */
 #define SZ_PTR_ARR(A) (   sizeof(&A[0])*sizeof(A)/sizeof(A[0])   )
-
-/*
-  #define allsync() do {                                                  \
-  CC(cudaDeviceSynchronize()); MC(l::m::Barrier(m::cart));          \
-  if (m::rank == 0)                                               \
-  fprintf(stderr, "%s : %d\n", __FILE__, __LINE__);               \
-  } while (0)
-*/
