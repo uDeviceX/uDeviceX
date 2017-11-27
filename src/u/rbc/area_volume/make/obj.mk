@@ -8,6 +8,6 @@ O = $B/d/api.o $B/glb/imp.o $B/glb/wvel/imp.o $B/io/bop/imp.o $B/io/com.o $B/io/
     $B/rbc/rnd/api/imp.o $B/rbc/rnd/imp.o $B/rbc/stretch/imp.o \
     $B/scheme/force/imp.o $B/scheme/move/imp.o $B/scheme/restrain/imp.o \
     $B/scheme/restrain/sub/imp.o $B/scheme/restrain/sub/stat/imp.o \
-    $B/scheme/restrain/sub/sum/imp.o $B/u/rbc/main/lib/imp.o \
-    $B/u/rbc/main/main.o $B/utils/cc.o $B/utils/efopen.o $B/utils/error.o \
+    $B/scheme/restrain/sub/sum/imp.o $B/u/rbc/area_volume/lib/imp.o \
+    $B/u/rbc/area_volume/main.o $B/utils/cc.o $B/utils/efopen.o $B/utils/error.o \
     $B/utils/halloc.o $B/utils/mc.o $B/utils/os.o

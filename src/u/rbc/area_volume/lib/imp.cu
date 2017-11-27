@@ -36,13 +36,4 @@
 #include "mpi/glb.h"
 
 #include "imp.h"
-
-namespace stretch {
-#if RBC_STRETCH==true
-  #include "imp/stretch1.h"
-#else
-  #include "imp/stretch0.h"
-#endif
-}
-
 #include "imp/main.h"

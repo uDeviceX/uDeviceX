@@ -6,7 +6,7 @@ $B/io/com.o: $S/utils/os.h $S/inc/conf.h $S/utils/error.h $S/mpi/wrapper.h $S/ut
 $B/io/diag.o: $S/inc/conf.h $S/utils/error.h $S/inc/type.h $S/mpi/wrapper.h $S/utils/efopen.h $S/msg.h $B/conf.h $S/io/diag.h $S/mpi/glb.h
 $B/io/field/h5/imp.o: $S/utils/error.h $S/mpi/wrapper.h $S/io/field/h5/imp.h $S/mpi/glb.h
 $B/io/field/imp.o: $S/io/field/imp/scalar.h $S/utils/os.h $S/inc/conf.h $S/io/field/xmf/imp.h $S/utils/error.h $S/inc/type.h $S/mpi/wrapper.h $S/io/field/imp.h $S/io/field/h5/imp.h $S/io/field/imp/dump.h $S/utils/mc.h $B/conf.h $S/utils/halloc.h $S/mpi/glb.h
-$B/io/fields_grid.o: $S/inc/conf.h $S/utils/error.h $S/inc/type.h $S/utils/cc.h $S/io/fields_grid.h $S/inc/dev.h $S/d/api.h $S/msg.h $B/conf.h $S/io/field/imp.h $S/io/fields_grid/solvent.h $S/io/fields_grid/all.h
+$B/io/fields_grid.o: $S/inc/conf.h $S/utils/error.h $S/inc/type.h $S/mpi/wrapper.h $S/utils/cc.h $S/io/fields_grid.h $S/inc/dev.h $S/d/api.h $S/msg.h $B/conf.h $S/io/field/imp.h $S/io/fields_grid/solvent.h $S/io/fields_grid/all.h
 $B/io/field/xmf/imp.o: $S/utils/error.h $S/io/field/xmf/imp.h $S/utils/efopen.h $S/mpi/glb.h
 $B/io/mesh/imp.o: $S/utils/os.h $S/inc/conf.h $S/io/mesh/imp/shift/center.h $S/utils/error.h $S/io/mesh/imp/shift/edge.h $S/inc/type.h $S/io/mesh/imp.h $B/conf.h $S/io/mesh/imp/main.h $S/utils/halloc.h $S/io/mesh/write/imp.h $S/mpi/glb.h
 $B/io/mesh/write/imp.o: $S/inc/conf.h $S/mpi/wrapper.h $S/io/mesh/write/imp.h $S/utils/mc.h $B/conf.h $S/io/mesh/write/imp/main.h $S/mpi/glb.h
@@ -36,8 +36,8 @@ $B/scheme/restrain/imp.o: $S/inc/conf.h $S/scheme/restrain/imp/red_vel.h $S/inc/
 $B/scheme/restrain/sub/imp.o: $S/inc/conf.h $S/scheme/restrain/sub/dev/grey/map.h $S/scheme/restrain/sub/imp/color/main.h $S/scheme/restrain/sub/imp/main0.h $S/scheme/restrain/sub/dev/main0.h $S/inc/type.h $S/d/q.h $S/scheme/restrain/sub/imp.h $S/utils/cc.h $S/scheme/restrain/sub/imp/grey/main.h $S/scheme/restrain/sub/imp/common.h $S/scheme/restrain/sub/dev/util.h $S/inc/dev.h $S/msg.h $S/d/api.h $B/conf.h $S/scheme/restrain/sub/sum/imp.h $S/scheme/restrain/sub/dev/color/map.h $S/utils/kl.h $S/scheme/restrain/sub/dev/dec.h $S/scheme/restrain/sub/stat/imp.h $S/scheme/restrain/sub/dev/main.h $S/d/ker.h
 $B/scheme/restrain/sub/stat/imp.o: $S/scheme/restrain/sub/stat/imp.h $S/scheme/restrain/sub/stat/imp/main.h $S/scheme/restrain/sub/stat/imp/dec.h
 $B/scheme/restrain/sub/sum/imp.o: $S/inc/conf.h $S/mpi/wrapper.h $S/scheme/restrain/sub/sum/imp.h $S/utils/mc.h $B/conf.h $S/scheme/restrain/sub/sum/imp/main.h
-$B/u/rbc/main/lib/imp.o: $S/inc/conf.h $S/u/rbc/main/lib/imp/stretch0.h $S/scheme/force/imp.h $S/rbc/type.h $S/utils/error.h $S/rbc/stretch/imp.h $S/inc/type.h $S/io/mesh/imp.h $S/u/rbc/main/lib/imp.h $S/io/diag.h $S/scheme/move/imp.h $S/utils/cc.h $S/inc/def.h $S/u/rbc/main/lib/imp/stretch1.h $S/rbc/main/imp.h $S/rbc/force/area_volume/imp.h $S/inc/dev.h $S/msg.h $S/d/api.h $B/conf.h $S/u/rbc/main/lib/imp/main.h $S/utils/texo.h $S/utils/halloc.h $S/utils/te.h $S/rbc/force/imp.h $S/mpi/glb.h $S/rbc/rnd/imp.h
-$B/u/rbc/main/main.o: $S/u/rbc/main/lib/imp.h $S/mpi/glb.h
+$B/u/rbc/area_volume/lib/imp.o: $S/inc/conf.h $S/scheme/force/imp.h $S/rbc/type.h $S/utils/error.h $S/rbc/stretch/imp.h $S/inc/type.h $S/mpi/wrapper.h $S/io/mesh/imp.h $S/u/rbc/area_volume/lib/imp.h $S/io/diag.h $S/scheme/move/imp.h $S/utils/cc.h $S/inc/def.h $S/rbc/main/imp.h $S/rbc/force/area_volume/imp.h $S/inc/dev.h $S/msg.h $S/d/api.h $B/conf.h $S/u/rbc/area_volume/lib/imp/main.h $S/utils/texo.h $S/utils/halloc.h $S/utils/te.h $S/rbc/force/imp.h $S/mpi/glb.h $S/rbc/rnd/imp.h
+$B/u/rbc/area_volume/main.o: $S/u/rbc/area_volume/lib/imp.h $S/mpi/glb.h
 $B/utils/cc.o: $S/utils/cc/common.h $S/inc/conf.h $S/utils/error.h $S/d/api.h $B/conf.h
 $B/utils/efopen.o: $S/utils/error.h $S/utils/efopen.h
 $B/utils/error.o: $S/msg.h $S/utils/error.h

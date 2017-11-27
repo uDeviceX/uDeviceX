@@ -36,8 +36,8 @@ $B/scheme/restrain/imp.o: $S/scheme/restrain/imp.cpp; $X -I$S/scheme/restrain -I
 $B/scheme/restrain/sub/imp.o: $S/scheme/restrain/sub/imp.cu; $N -I$S/scheme/restrain/sub -I$S/.
 $B/scheme/restrain/sub/stat/imp.o: $S/scheme/restrain/sub/stat/imp.cpp; $X -I$S/scheme/restrain/sub/stat -I$S/.
 $B/scheme/restrain/sub/sum/imp.o: $S/scheme/restrain/sub/sum/imp.cpp; $X -I$S/scheme/restrain/sub/sum -I$S/.
-$B/u/rbc/main/lib/imp.o: $S/u/rbc/main/lib/imp.cu; $N -I$S/u/rbc/main/lib -I$S/.
-$B/u/rbc/main/main.o: $S/u/rbc/main/main.cpp; $X -I$S/u/rbc/main -I$S/.
+$B/u/rbc/area_volume/lib/imp.o: $S/u/rbc/area_volume/lib/imp.cu; $N -I$S/u/rbc/area_volume/lib -I$S/.
+$B/u/rbc/area_volume/main.o: $S/u/rbc/area_volume/main.cpp; $X -I$S/u/rbc/area_volume -I$S/.
 $B/utils/cc.o: $S/utils/cc.cpp; $X -I$S/utils -I$S/.
 $B/utils/efopen.o: $S/utils/efopen.cpp; $X -I$S/utils -I$S/.
 $B/utils/error.o: $S/utils/error.cpp; $X -I$S/utils -I$S/.
