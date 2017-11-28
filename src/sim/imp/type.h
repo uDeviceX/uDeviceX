@@ -121,7 +121,11 @@ struct Sim {
     Rig rig;
 
     /* helpers */
+    ObjInter objinter;
     BounceBack bb;
     Colorer colorer;
     PidVCont vcont;
+
+    /* particles on host for dump */
+    Particle *pp_dump;
 };

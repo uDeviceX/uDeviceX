@@ -1,4 +1,4 @@
-void dev2hst() { /* device to host  data transfer */
+static void dev2hst() { /* device to host  data transfer */
     int start = 0;
     cD2H(a::pp_hst + start, flu.q.pp, flu.q.n); start += flu.q.n;
     if (solids0) {
@@ -9,7 +9,7 @@ void dev2hst() { /* device to host  data transfer */
     }
 }
 
-void dump_part(int step) {
+static void dump_part(int step) {
     cD2H(flu.q.pp_hst, flu.q.pp, flu.q.n);
     if (global_ids) {
         cD2H(flu.q.ii_hst, flu.q.ii, flu.q.n);
@@ -38,20 +38,20 @@ void dump_part(int step) {
     }
 }
 
-void dump_rbcs(const Rbc *r) {
+static void dump_rbcs(const Rbc *r) {
     static int id = 0;
     cD2H(a::pp_hst, r->q.pp, r->q.n);
     io::mesh::rbc(m::cart, a::pp_hst, r->q.tri_hst, r->q.nc, r->q.nv, r->q.nt, id++);
 }
 
-void dump_rbc_coms(Rbc *r) {
+static void dump_rbc_coms(Rbc *r) {
     static int id = 0;
     int nc = r->q.nc;
     rbc::com::get(r->q.nc, r->q.nv, r->q.pp, /**/ &r->com);
     dump_com(m::cart, id++, nc, r->q.ii, r->com.hrr);
 }
 
-void dump_grid() {
+static void dump_grid() {
     QQ qq; /* pack for io/field_dumps */
     NN nn;
     qq.o = flu.q.pp; qq.s = rig.q.pp; qq.r = rbc.q.pp;
@@ -69,7 +69,7 @@ void dump_diag_after(int it, bool wall0, bool solid0) { /* after wall */
     }
 }
 
-void diag(int it) {
+static void diag(int it) {
     int n = flu.q.n + rig.q.n + rbc.q.n; dev2hst();
     diagnostics(m::cart, n, a::pp_hst, it);
 }
