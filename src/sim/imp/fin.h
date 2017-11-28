@@ -91,6 +91,12 @@ static void fin_rig(Rig *s) {
     UC(fin_rig_distr(/**/ &s->d));
 }
 
+static void fin_bounce_back(BounceBack *bb) {
+    meshbb::fin(/**/ &bb->d);
+    Dfree(bb->mm);
+    UC(fin_bb_exch(/**/ &bb->e));
+}
+
 void fin() {
     cnt::fin(&rs::c);
     bop::fin(&dumpt);

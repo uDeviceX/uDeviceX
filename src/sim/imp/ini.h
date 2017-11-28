@@ -100,6 +100,13 @@ static void ini_rig(MPI_Comm cart, /*io*/ basetags::TagGen *tg, /**/ Rig *s) {
     UC(ini_rig_distr(s->q.nv, cart, /*io*/ tg, /**/ &s->d));    
 }
 
+static void ini_bounce_back(MPI_Comm cart, Rig *s, /*io*/ basetags::TagGen *tg, /**/ BounceBack *bb) {
+    meshbb::ini(MAX_PART_NUM, /**/ &bb->d);
+    Dalloc(&bb->mm, MAX_PART_NUM);
+
+    UC(ini_bb_exch(s->q.nt, s->q.nv, MAX_CELL_NUM, cart, /*io*/ tg, /**/ &bb->e));
+}
+
 void ini() {
     basetags::ini(&tag_gen);
     datatype::ini();

@@ -109,4 +109,5 @@ struct Sim {
     /* helpers */
     BounceBack bb;
     Colorer colorer;
+    PidVCont vcont;
 };
