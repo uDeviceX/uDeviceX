@@ -1,11 +1,6 @@
 set -ue
 # update all units
-
-l="u/bangladesh u/clist
-u/comm/main u/france u/error
-u/h5 u/hw/hst u/hw/dev u/korea
-u/pair u/rbc/area_volume u/rbc/force u/rbc/rnd u/rbc/main u/safe
-u/scan u/x"
+S=`pwd`
 
 one () {
     local u
@@ -14,6 +9,6 @@ one () {
     ../tools/udeps "$u"
 }
 
-for u in $l
+for u in `u.u.list "$S"`
 do one "$u"
 done
