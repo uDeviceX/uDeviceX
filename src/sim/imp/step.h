@@ -28,9 +28,9 @@ void step(scheme::force::Param *fpar, bool wall0, int it) {
     if (rbcs)    update_rbc(it, &rbc);
 
     if (VCON && wall0) {
-        sample(it, &flu, /**/ &o::vcont);
-        adjust(it, /**/ &o::vcont, fpar);
-        log(it, &o::vcont);
+        sample(it, &flu, /**/ &vcont);
+        adjust(it, /**/ &vcont, fpar);
+        log(it, &vcont);
     }
 
     if (wall0) bounce_wall(/**/ &flu, &rbc);

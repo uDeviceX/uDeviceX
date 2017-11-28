@@ -103,7 +103,7 @@ void fin() {
     if (rbcs || solids)
         fin_obj_exch(&rs::e);
 
-    if (VCON) fin(/**/ &o::vcont);
+    if (VCON) fin(/**/ &vcont);
     if (fsiforces)  fsi::fin();
     
     if (walls) {

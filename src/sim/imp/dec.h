@@ -8,12 +8,8 @@ Rbc rbc;
 Rig rig;
 
 BounceBack bb;
-
-namespace o /* s[o]lvent */
-{
-/* velocity controller */
+Colorer colorer;
 PidVCont vcont;
-}
 
 /*** see int/wall.h ***/
 namespace w {
@@ -34,4 +30,4 @@ ObjExch e;
 cnt::Contact c;
 }
 
-Colorer colorer;
+
