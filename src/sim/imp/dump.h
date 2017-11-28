@@ -5,7 +5,7 @@ void dev2hst() { /* device to host  data transfer */
         cD2H(a::pp_hst + start, s::q.pp, s::q.n); start += s::q.n;
     }
     if (rbcs) {
-        cD2H(a::pp_hst + start, r::q.pp, r::q.n); start += r::q.n;
+        cD2H(a::pp_hst + start, rbc.q.pp, rbc.q.n); start += rbc.q.n;
     }
 }
 
@@ -38,24 +38,24 @@ void dump_part(int step) {
     }
 }
 
-void dump_rbcs() {
+void dump_rbcs(const Rbc *r) {
     static int id = 0;
-    cD2H(a::pp_hst, r::q.pp, r::q.n);
-    io::mesh::rbc(m::cart, a::pp_hst, r::q.tri_hst, r::q.nc, r::q.nv, r::q.nt, id++);
+    cD2H(a::pp_hst, r->q.pp, r->q.n);
+    io::mesh::rbc(m::cart, a::pp_hst, r->q.tri_hst, r->q.nc, r->q.nv, r->q.nt, id++);
 }
 
-void dump_rbc_coms() {
+void dump_rbc_coms(Rbc *r) {
     static int id = 0;
-    int nc = r::q.nc;
-    rbc::com::get(r::q.nc, r::q.nv, r::q.pp, /**/ &r::com);
-    dump_com(m::cart, id++, nc, r::q.ii, r::com.hrr);
+    int nc = r->q.nc;
+    rbc::com::get(r->q.nc, r->q.nv, r->q.pp, /**/ &r->com);
+    dump_com(m::cart, id++, nc, r->q.ii, r->com.hrr);
 }
 
 void dump_grid() {
     QQ qq; /* pack for io/field_dumps */
     NN nn;
-    qq.o = flu.q.pp; qq.s = s::q.pp; qq.r = r::q.pp;
-    nn.o = flu.q.n ; nn.s = s::q.n ;  nn.r = r::q.n;
+    qq.o = flu.q.pp; qq.s = s::q.pp; qq.r = rbc.q.pp;
+    nn.o = flu.q.n ; nn.s = s::q.n ;  nn.r = rbc.q.n;
     fields_grid(m::cart, qq, nn, /*w*/ a::pp_hst);
 }
 
@@ -70,7 +70,7 @@ void dump_diag_after(int it, bool wall0, bool solid0) { /* after wall */
 }
 
 void diag(int it) {
-    int n = flu.q.n + s::q.n + r::q.n; dev2hst();
+    int n = flu.q.n + s::q.n + rbc.q.n; dev2hst();
     diagnostics(m::cart, n, a::pp_hst, it);
 }
 
@@ -83,17 +83,17 @@ void dump_strt_templ() { /* template dumps (wall, solid) */
 
 void dump_strt(int id) {
     flu::strt_dump(id, flu.q);
-    if (rbcs)       rbc::main::strt_dump(id, r::q);
+    if (rbcs)       rbc::main::strt_dump(id, rbc.q);
     if (solids)     rig::strt_dump(id, s::q);
 }
 
 void dump_diag0(int it) { /* generic dump */
     if (it % part_freq  == 0) {
         if (part_dumps) dump_part(it);
-        if (rbcs)       dump_rbcs();
+        if (rbcs)       dump_rbcs(&rbc);
         diag(it);
     }
     if (field_dumps && it % field_freq == 0) dump_grid();
     if (strt_dumps  && it % strt_freq == 0)  dump_strt(it / strt_freq);
-    if (rbc_com_dumps && it % rbc_com_freq == 0) dump_rbc_coms();
+    if (rbc_com_dumps && it % rbc_com_freq == 0) dump_rbc_coms(&rbc);
 }

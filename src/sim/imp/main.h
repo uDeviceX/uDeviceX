@@ -17,7 +17,7 @@ void gen() { /* generate */
         MC(m::Barrier(m::cart));
         inter::create_walls(MAXNWALL, w::qsdf, /*io*/ &flu.q, /**/ &w::q);
     }
-    inter::freeze(m::cart, w::qsdf, /*io*/ &flu.q, /**/ &s::q, &r::q);
+    inter::freeze(m::cart, w::qsdf, /*io*/ &flu.q, /**/ &s::q, &rbc.q);
     clear_vel();
 
     if (multi_solvent) {
@@ -35,10 +35,10 @@ void sim_gen() {
     flu::build_cells(&flu.q);
     if (global_ids)    flu::gen_ids  (m::cart, flu.q.n, &flu.q);
     if (rbcs) {
-        rbc::main::gen_quants(m::cart, "rbc.off", "rbcs-ic.txt", /**/ &r::q);
-        rbc::force::gen_ticket(r::q, &r::tt);
+        rbc::main::gen_quants(m::cart, "rbc.off", "rbcs-ic.txt", /**/ &rbc.q);
+        rbc::force::gen_ticket(rbc.q, &rbc.tt);
 
-        if (multi_solvent) gen_colors(&colorer, /**/ &flu);
+        if (multi_solvent) gen_colors(&rbc, &colorer, /**/ &flu);
     }
     MC(m::Barrier(m::cart));
 
@@ -50,7 +50,7 @@ void sim_gen() {
         dSync();
         if (walls && w::q.n) wall::gen_ticket(w::q, &w::t);
         solids0 = solids;
-        if (rbcs && multi_solvent) gen_colors(&colorer, /**/ &flu);
+        if (rbcs && multi_solvent) gen_colors(&rbc, &colorer, /**/ &flu);
         run(wall_creation, nsteps);
     } else {
         solids0 = solids;
@@ -67,7 +67,7 @@ void sim_strt() {
     flu::strt_quants(restart::BEGIN, &flu.q);
     flu::build_cells(&flu.q);
 
-    if (rbcs) rbc::main::strt_quants("rbc.off", restart::BEGIN, &r::q);
+    if (rbcs) rbc::main::strt_quants("rbc.off", restart::BEGIN, &rbc.q);
     dSync();
 
     if (solids) rig::strt_quants(restart::BEGIN, &s::q);
@@ -75,7 +75,7 @@ void sim_strt() {
     if (walls) wall::strt_quants(MAXNWALL, &w::q);
 
     /*T*/
-    if (rbcs)            rbc::force::gen_ticket(r::q, &r::tt);
+    if (rbcs)            rbc::force::gen_ticket(rbc.q, &rbc.tt);
     if (walls && w::q.n) wall::gen_ticket(w::q, &w::t);
 
     MC(m::Barrier(m::cart));

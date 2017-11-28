@@ -1,18 +1,18 @@
 /* set colors of particles according to the RBCs */
 
-void gen_colors(Colorer *c, Flu *f) {
+void gen_colors(const Rbc *r, Colorer *c, Flu *f) {
     int nm, nv, nmhalo;
-    nm = r::q.nc;
-    nv = r::q.nv;
+    nm = r->q.nc;
+    nv = r->q.nv;
 
-    build_map(nm, nv, r::q.pp, /**/ &c->e.p);
-    pack(nv, r::q.pp, /**/ &c->e.p);
+    build_map(nm, nv, r->q.pp, /**/ &c->e.p);
+    pack(nv, r->q.pp, /**/ &c->e.p);
     download(&c->e.p);
 
     UC(post_send(&c->e.p, &c->e.c));
     UC(post_recv(&c->e.c, &c->e.u));
 
-    if (nm * nv) CC(d::MemcpyAsync(c->pp, r::q.pp, nm * nv * sizeof(Particle), D2D));
+    if (nm * nv) CC(d::MemcpyAsync(c->pp, r->q.pp, nm * nv * sizeof(Particle), D2D));
     
     wait_send(&c->e.c);
     wait_recv(&c->e.c, &c->e.u);
@@ -27,8 +27,8 @@ void gen_colors(Colorer *c, Flu *f) {
     Texo<float2> texvert;
     TE(&texvert, (float2*) c->pp, 3 * nm * nv);
 
-    collision::get_colors(f->q.pp, f->q.n, texvert, r::q.tri,
-                          r::q.nt, nv, nm, c->minext, c->maxext, /**/ f->q.cc);
+    collision::get_colors(f->q.pp, f->q.n, texvert, r->q.tri,
+                          r->q.nt, nv, nm, c->minext, c->maxext, /**/ f->q.cc);
     destroy(&texvert);
 }
 
