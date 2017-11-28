@@ -101,7 +101,12 @@ struct Rig {
 };  
 
 struct Sim {
+    /* quantities */
     Flu flu;
     Rbc rbc;
     Rig rig;
+
+    /* helpers */
+    BounceBack bb;
+    Colorer colorer;
 };
