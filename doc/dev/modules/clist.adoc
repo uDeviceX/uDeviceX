@@ -1,5 +1,6 @@
 = clist
 :lext: .adoc
+:src: ../../../src
 
 Cell lists
 Purpose: reorder data according to particle positions into cells
@@ -12,11 +13,7 @@ Helpers to find which particles are in which cells.
 
 [source,cpp]
 ----
-struct Clist {
-    int3 dims;
-    int ncells;
-    int *starts, *counts;
-};
+include::{src}/clist/imp.h[tag=clist]
 ----
 
 * `dims` dimesnsions of the grid
@@ -30,12 +27,7 @@ Helper to reorder the arrays
 
 [source,cpp]
 ----
-struct Map {
-    int nA;              /* number of source arrays to build the cell lists, e.g remote+bulk -> 2 */
-    uchar4 *ee[MAXA];    /* cell entries */
-    uint *ii;            /* codes containing: indices of data to fetch and array id from which to fetch */
-    scan::Work scan;     /* scan workspace */
-};
+include::{src}/clist/imp.h[tag=map]
 ----
 
 * `nA` number of source arrays

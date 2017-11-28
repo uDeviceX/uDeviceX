@@ -1,5 +1,6 @@
 = scan
 :lext: .adoc
+:src: ../../../../src
 
 exclusive prefix sum implementation for integer data
 
@@ -15,29 +16,19 @@ output: 0 4 9 10 12 15
 
 [source,cpp]
 ----
-struct Work {
-    unsigned int  *tmp;
-    unsigned char *compressed;
-};
+include::{src}/algo/scan/imp.h[tag=work]
 ----
 
 Workspace needed for cuda implementation
 
-this is allocated and freed by
-
-[source,cpp]
-----
-void alloc_work(int size, /**/ Work *w);
-void free_work(/**/ Work *w);
-----
-
-where `size` is the size of the input.
-
 
 == interface
 
+
 [source,cpp]
 ----
-void scan(const int *input, int size, /**/ int *output, /*w*/ Work *w);
+include::{src}/algo/scan/imp.h[tag=interface]
 ----
-
+<1> perform scan operation on `input` of size `size`
+<2> allocate work for performing scan of size `size`
+<3> free workspace

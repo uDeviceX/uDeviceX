@@ -1,5 +1,6 @@
 = comm
 :lext: .adoc
+:src: ../../../src
 
 generic communicator with "halo".
 
@@ -9,19 +10,25 @@ Communicate data with the neighboring ranks
 
 == data structures
 
+`hBags`: buffers on the host, contains all necessary information of the data to communicate:
 
-* `hBags`: buffers on the host, contains all necessary information of the data to communicate:
-** `data`: host buffer containing the data
-** `counts`: number of items per fragment
-** `capacity`: maximum number of items of buffers `data`
-** `bsize`: size (in bytes) of one item
-* `dBags`: buffers on the device
-* `Stamp`: contains the communication related variables:
-** `sreq`, `rreq`: send and receive requests
-** `bt`: base tag: tag of one exchange is `bt + fid`, where `fid` is the fragment id
-** `cart`: cartesian communicator
-** `ranks`: ranks of the neighbors in the grid (who do I send to?)
-** `tags`: tags used by neighbors to send messages
+[source,cpp]
+----
+include::{src}/comm/imp.h[tag=hBags]
+----
+
+`dBags`: buffers on the device
+[source,cpp]
+----
+include::{src}/comm/imp.h[tag=dBags]
+----
+
+`Stamp`: contains the communication related variables:
+
+[source,cpp]
+----
+include::{src}/comm/imp.h[tag=stamp]
+----
 
 == allocation mod
 
@@ -32,59 +39,39 @@ currently supported allocation modes:
 
 [source,cpp]
 ----
-HST_ONLY,   /* only host bags allocated                 */
-DEV_ONLY,   /* only device bags allocated               */
-PINNED,     /* both host and device pinned              */
-PINNED_HST, /* host pinned; no device memory            */
-PINNED_DEV, /* host pinned; device global memory on gpu */
-NONE        /* no allocation                            */
+include::{src}/comm/imp.h[tag=AllocMod]
 ----
 
 == interface
 
-=== ini
+=== memory management
 
 [source,cpp]
 ----
-void ini(AllocMod fmod, AllocMod bmod, size_t bsize, const int capacity[NBAGS], /**/ hBags *hb, dBags *db);
+include::{src}/comm/imp.h[tag=alloc]
 ----
 
-Given two structures `hBags` and `dBags`, `ini` allocates the buffers on host and device. `ini` expects 2 allocation modes:
-* `fmod`: allocation mode for fragment buffers
-* `bmod`: allocation mode for bulk buffer
-
-[source,cpp]
-----
-void ini(MPI_Comm comm, /*io*/ basetags::TagGen *tg, /**/ Stamp *s);
-----
-initialize `Stamp` structure
-
-=== fin
-
-free memory allocated by `ini`
+* *bags alloc:* Given two structures `hBags` and `dBags`, `ini` allocates the buffers on host and device. `ini` expects 2 allocation modes:
+** `fmod`: allocation mode for fragment buffers
+** `bmod`: allocation mode for bulk buffer
+* *stamp alloc*: initialize `Stamp` structure
 
 === communication
 
-[source,cpp]
-----
-void post_recv(hBags *b, Stamp *s);
-----
-call MPI asynchroneous recv and store requests in `s`
+Communication happens between host bags (see `hBags` structure).
+It needs 3 entities:
+
+* receiver bags
+* sender bags
+* a `Stamp` for communicating through MPI
+
+The interface is as follows:
 
 [source,cpp]
 ----
-void post_send(const hBags *b, Stamp *s);
+include::{src}/comm/imp.h[tag=communication]
 ----
-call MPI asynchroneous send and store requests in `s`
-
-[source,cpp]
-----
-void wait_recv(Stamp *s, /**/ hBags *b);
-----
-wait for recv requests
-
-[source,cpp]
-----
-void wait_send(Stamp *s);
-----
-wait for send requests
+<1> call MPI asynchroneous recv and store requests in `s`
+<2> call MPI asynchroneous send and store requests in `s`
+<3> wait for recv requests
+<4> wait for send requests

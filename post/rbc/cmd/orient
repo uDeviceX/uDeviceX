@@ -1,0 +1,14 @@
+#!/bin/sh
+
+usg () {
+    msg 'u.orient [FILE.ply]...'
+    msg 'move points to the coordinates system of equivalent ellipsoid'
+    msg 'dump "punto" format'
+    exit
+}
+
+msg () { echo >&2 "$@"; }
+
+if test "$1" = -h; then usg; fi
+
+exec u.orient0 "$@"
