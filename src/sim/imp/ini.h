@@ -107,6 +107,12 @@ static void ini_bounce_back(MPI_Comm cart, Rig *s, /*io*/ basetags::TagGen *tg, 
     UC(ini_bb_exch(s->q.nt, s->q.nv, MAX_CELL_NUM, cart, /*io*/ tg, /**/ &bb->e));
 }
 
+static void ini_wall(Wall *w) {
+    sdf::alloc_quants(&w->qsdf);
+    wall::alloc_quants(&w->q);
+    wall::alloc_ticket(&w->t);
+}
+
 void ini() {
     basetags::ini(&tag_gen);
     datatype::ini();

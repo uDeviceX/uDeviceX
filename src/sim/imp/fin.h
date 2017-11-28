@@ -97,6 +97,13 @@ static void fin_bounce_back(BounceBack *bb) {
     UC(fin_bb_exch(/**/ &bb->e));
 }
 
+static void fin_wall(Wall *w) {
+    sdf::free_quants(&w->qsdf);
+    wall::free_quants(&w->q);
+    wall::free_ticket(&w->t);
+}
+    
+
 void fin() {
     cnt::fin(&rs::c);
     bop::fin(&dumpt);
