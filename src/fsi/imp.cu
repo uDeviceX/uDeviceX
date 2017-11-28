@@ -50,8 +50,6 @@
 namespace fsi {
 namespace dev {
 #include "dev/type.h"
-#include "dev/decl.h"
-#include "dev/fetch.h"
 #include "dev/common.h"
 #include "dev/map.common.h"
 #include "dev/map/bulk.h"
@@ -62,7 +60,6 @@ namespace dev {
 }
 
 #include "imp/decl.h"
-#include "imp/setup.h"
 #include "imp/bind.h"
 #include "imp/bulk.h"
 #include "imp/fin.h"

@@ -14,6 +14,5 @@ void bulk(int nw, PaWrap *pw, FoWrap *fw) {
     int i;
 
     if (nw == 0) return;
-    // setup(wo->starts);
     for (i = 0; i < nw; i++) bulk0(wo->starts, pw++, fw++, wo->c);
 }
