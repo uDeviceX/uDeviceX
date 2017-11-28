@@ -1,4 +1,4 @@
-static void random(int n, rbc::rnd::D* rnd, /**/ float **r) {
+static void random(int n, rbc::rnd::D *rnd, /**/ float **r) {
     if (RBC_RND) {
         rbc::rnd::gen(rnd, n);
         *r = rnd->r;
