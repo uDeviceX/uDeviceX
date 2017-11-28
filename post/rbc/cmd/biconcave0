@@ -1,15 +1,14 @@
 #!/usr/bin/awk -f
 
-function rbc(    ans, d, rr, D, R, a0, a1, a2, neg) {
-    neg = z < 0
+function rbc(x, y, z,   z0, d, rr, D, R, a0, a1, a2) {
     D = 7.82; R = D/2
     a0 = 0.0518; a1 = 2.0026; a2 = -4.491
     x *= R; y *= R
     rr  = x^2 + y^2; rr /= D^2
     if (d = 1 - 4*rr < 0) return 0
-    z  = sqrt(d) * (a0 + a1*rr + a2*rr^2)
-    z *= D
-    if (neg) z = -z
+    z0  = sqrt(d) * (a0 + a1*rr + a2*rr^2)
+    z0 *= D
+    return z0 < z && z > -z0
 }
 
 function read(f,   rc) {
