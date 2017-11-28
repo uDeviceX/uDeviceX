@@ -5,7 +5,7 @@ $B/mpi/glb.o: $S/mpi/glb.cpp; $X -I$S/mpi -I$S/.
 $B/mpi/type.o: $S/mpi/type.cpp; $X -I$S/mpi -I$S/.
 $B/mpi/wrapper.o: $S/mpi/wrapper.cpp; $X -I$S/mpi -I$S/.
 $B/msg.o: $S/msg.cpp; $X -I$S/.
-$B/u/hw/hst/main.o: $S/u/hw/hst/main.cpp; $X -I$S/u/hw/hst -I$S/.
+$B/u/hw/hst/main.o: $S/u/hw/hst/main.cpp; $X -I$S/.
 $B/utils/cc.o: $S/utils/cc.cpp; $X -I$S/utils -I$S/.
 $B/utils/efopen.o: $S/utils/efopen.cpp; $X -I$S/utils -I$S/.
 $B/utils/error.o: $S/utils/error.cpp; $X -I$S/utils -I$S/.

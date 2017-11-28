@@ -5,4 +5,4 @@ f $U comm inc mpi d frag utils
 echo inc/conf.h msg.cpp msg.h
 
 # add dir
-echo $U $U/lib
+echo $U
