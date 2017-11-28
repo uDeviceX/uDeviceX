@@ -1,6 +1,6 @@
 void dev2hst() { /* device to host  data transfer */
     int start = 0;
-    cD2H(a::pp_hst + start, o::q.pp, o::q.n); start += o::q.n;
+    cD2H(a::pp_hst + start, flu.q.pp, flu.q.n); start += flu.q.n;
     if (solids0) {
         cD2H(a::pp_hst + start, s::q.pp, s::q.n); start += s::q.n;
     }
@@ -10,21 +10,21 @@ void dev2hst() { /* device to host  data transfer */
 }
 
 void dump_part(int step) {
-    cD2H(o::q.pp_hst, o::q.pp, o::q.n);
+    cD2H(flu.q.pp_hst, flu.q.pp, flu.q.n);
     if (global_ids) {
-        cD2H(o::q.ii_hst, o::q.ii, o::q.n);
-        bop::ids(m::cart, o::q.ii_hst, o::q.n, "id_solvent", step);
+        cD2H(flu.q.ii_hst, flu.q.ii, flu.q.n);
+        bop::ids(m::cart, flu.q.ii_hst, flu.q.n, "id_solvent", step);
     }
     if (multi_solvent) {
-        cD2H(o::q.cc_hst, o::q.cc, o::q.n);
-        bop::colors(m::cart, o::q.cc_hst, o::q.n, "colors_solvent", step);
+        cD2H(flu.q.cc_hst, flu.q.cc, flu.q.n);
+        bop::colors(m::cart, flu.q.cc_hst, flu.q.n, "colors_solvent", step);
     }
 
     if (force_dumps) {
-        cD2H(o::ff_hst, o::ff, o::q.n);
-        bop::parts_forces(m::cart, o::q.pp_hst, o::ff_hst, o::q.n, "solvent", step, /**/ &dumpt);
+        cD2H(flu.ff_hst, flu.ff, flu.q.n);
+        bop::parts_forces(m::cart, flu.q.pp_hst, flu.ff_hst, flu.q.n, "solvent", step, /**/ &dumpt);
     } else {
-        bop::parts(m::cart, o::q.pp_hst, o::q.n, "solvent", step, /**/ &dumpt);
+        bop::parts(m::cart, flu.q.pp_hst, flu.q.n, "solvent", step, /**/ &dumpt);
     }
 
     if(solids0) {
@@ -54,8 +54,8 @@ void dump_rbc_coms() {
 void dump_grid() {
     QQ qq; /* pack for io/field_dumps */
     NN nn;
-    qq.o = o::q.pp; qq.s = s::q.pp; qq.r = r::q.pp;
-    nn.o = o::q.n ; nn.s = s::q.n ;  nn.r = r::q.n;
+    qq.o = flu.q.pp; qq.s = s::q.pp; qq.r = r::q.pp;
+    nn.o = flu.q.n ; nn.s = s::q.n ;  nn.r = r::q.n;
     fields_grid(m::cart, qq, nn, /*w*/ a::pp_hst);
 }
 
@@ -70,7 +70,7 @@ void dump_diag_after(int it, bool wall0, bool solid0) { /* after wall */
 }
 
 void diag(int it) {
-    int n = o::q.n + s::q.n + r::q.n; dev2hst();
+    int n = flu.q.n + s::q.n + r::q.n; dev2hst();
     diagnostics(m::cart, n, a::pp_hst, it);
 }
 
@@ -82,7 +82,7 @@ void dump_strt_templ() { /* template dumps (wall, solid) */
 }
 
 void dump_strt(int id) {
-    flu::strt_dump(id, o::q);
+    flu::strt_dump(id, flu.q);
     if (rbcs)       rbc::main::strt_dump(id, r::q);
     if (solids)     rig::strt_dump(id, s::q);
 }

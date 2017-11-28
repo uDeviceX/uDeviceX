@@ -56,3 +56,21 @@ struct Colorer {
     Particle *pp;            /* particle workspace */
     float3 *minext, *maxext; /* bounding boxes     */
 };
+
+
+struct Flu {
+    flu::Quants q;
+
+    FluDistr d;
+    Fluexch e;
+
+    BulkData *bulkdata;
+    HaloData *halodata;
+
+    Force *ff;
+    Force *ff_hst; /* solvent forces on host    */
+};
+
+// struct Sim {
+//     Flu q;
+// };

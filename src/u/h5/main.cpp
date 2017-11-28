@@ -1,3 +1,4 @@
+#include <mpi.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -9,6 +10,8 @@
 
 #include "io/field/h5/imp.h"
 #include "io/field/xmf/imp.h"
+
+#include "mpi/wrapper.h"
 
 static int    argc;
 static char **argv;
@@ -22,7 +25,7 @@ void lshift() {
     }
 }
 
-void dump(const char *path, int sx, int sy, int sz) {
+void dump(MPI_Comm comm, const char *path, int sx, int sy, int sz) {
     enum {X, Y, Z};
     size_t size, nc;
     float *rho, *u[3];
@@ -36,7 +39,7 @@ void dump(const char *path, int sx, int sy, int sz) {
     UC(emalloc(size, (void**) &u[Z]));
 
     float *data[] = { rho, u[X], u[Y], u[Z] };
-    UC(h5::write(path, data, names, 4, sx, sy, sz));
+    UC(h5::write(comm, path, data, names, 4, sx, sy, sz));
     free(rho); free(u[X]); free(u[Y]); free(u[Z]);
     if (m::rank == 0) xmf::write(path, names, 4, sx, sy, sz);
 }
@@ -60,7 +63,7 @@ void main0(const char *path) {
     sx = 4; sy = 8; sz = 16;
     for (i = 0; i < ndump; i++) {
         report(i, ndump, path);
-        dump(path, sx, sy, sz);
+        dump(m::cart, path, sx, sy, sz);
     }
 }
 

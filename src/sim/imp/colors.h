@@ -1,6 +1,6 @@
 /* set colors of particles according to the RBCs */
 
-void gen_colors(Colorer *c) {
+void gen_colors(Colorer *c, Flu *f) {
     int nm, nv, nmhalo;
     nm = r::q.nc;
     nv = r::q.nv;
@@ -27,12 +27,12 @@ void gen_colors(Colorer *c) {
     Texo<float2> texvert;
     TE(&texvert, (float2*) c->pp, 3 * nm * nv);
 
-    collision::get_colors(o::q.pp, o::q.n, texvert, r::q.tri,
-                          r::q.nt, nv, nm, c->minext, c->maxext, /**/ o::q.cc);
+    collision::get_colors(f->q.pp, f->q.n, texvert, r::q.tri,
+                          r::q.nt, nv, nm, c->minext, c->maxext, /**/ f->q.cc);
     destroy(&texvert);
 }
 
-void recolor_flux() {
+void recolor_flux(Flu *f) {
     if (RECOLOR_FLUX)
-        recolor::flux(COL_FLUX_DIR, RED_COLOR, o::q.n, o::q.pp, /**/ o::q.cc);
+        recolor::flux(COL_FLUX_DIR, RED_COLOR, f->q.n, f->q.pp, /**/ f->q.cc);
 }

@@ -8,7 +8,7 @@ void forces_fsi(fsi::SolventWrap *w_s, int nw, PaWrap *pw, FoWrap *fw) {
     fsi::bulk(nw, pw, fw);
 }
 
-void forces_objects() {
+void forces_objects(Flu *f) {
     fsi::SolventWrap w_s;
     Cloud cloud;
     PaWrap pw[MAX_OBJ_TYPES];
@@ -40,14 +40,14 @@ void forces_objects() {
 
     /* bulk interactions */
     
-    ini_cloud(o::q.pp, &cloud);
-    if (multi_solvent) ini_cloud_color(o::q.cc, &cloud);
+    ini_cloud(f->q.pp, &cloud);
+    if (multi_solvent) ini_cloud_color(f->q.cc, &cloud);
 
-    w_s.pp = o::q.pp;
+    w_s.pp = f->q.pp;
     w_s.c  = cloud;
-    w_s.ff = o::ff;
-    w_s.n  = o::q.n;
-    w_s.starts = o::q.cells.starts;
+    w_s.ff = f->ff;
+    w_s.n  = f->q.n;
+    w_s.starts = f->q.cells.starts;
 
     if (contactforces) forces_cnt(nw, pw, fw);
     if (fsiforces)     forces_fsi(&w_s, nw, pw, fw);

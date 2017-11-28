@@ -69,6 +69,19 @@ static void ini_colorer(int nv, MPI_Comm comm, /*io*/ basetags::TagGen *tg, /**/
     Dalloc(&c->maxext, MAX_CELL_NUM);
 }
 
+static void ini_flu(MPI_Comm cart, /*io*/ basetags::TagGen *tg, /**/ Flu *f) {
+
+    flu::ini(&f->q);
+    ini(MAX_PART_NUM, /**/ &f->bulkdata);
+    ini(cart, /**/ &f->halodata);
+    
+    UC(ini_flu_distr(cart, /*io*/ tg, /**/ &f->d));
+    UC(ini_flu_exch(cart, /*io*/ tg, /**/ &f->e));
+    
+    UC(Dalloc(&f->ff, MAX_PART_NUM));
+    UC(emalloc(MAX_PART_NUM * sizeof(Force), /**/ (void**) &f->ff_hst));
+}
+
 void ini() {
     basetags::ini(&tag_gen);
     datatype::ini();
@@ -97,15 +110,8 @@ void ini() {
         wall::alloc_ticket(&w::t);
     }
 
-    flu::ini(&o::q);
-    ini(MAX_PART_NUM, /**/ &o::bulkdata);
-    ini(m::cart, /**/ &o::halodata);
-    
-    UC(ini_flu_distr(m::cart, /*io*/ &tag_gen, /**/ &o::d));
-    UC(ini_flu_exch(m::cart, /*io*/ &tag_gen, /**/ &o::e));
-    
-    Dalloc(&o::ff, MAX_PART_NUM);
-    
+    ini_flu(m::cart, /*io*/ &tag_gen, /**/ &flu);
+   
     if (multi_solvent && rbcs)
         UC(ini_colorer(r::q.nv, m::cart, /*io*/ &tag_gen, /**/ &colorer));
     

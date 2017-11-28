@@ -7,7 +7,7 @@ void run_eq(long te) { /* equilibrate */
     
     bool wall0 = false;
     for (long it = 0; it < te; ++it) step(&fpar, wall0, it);
-    UC(distribute_flu());
+    UC(distribute_flu(/**/ &flu));
 }
 
 void run(long ts, long te) {
@@ -25,5 +25,5 @@ void run(long ts, long te) {
         glb::step(it - ts, te - ts, dt); /* set kernel globals */
         step(&fpar, walls, it);
     }
-    UC(distribute_flu());
+    UC(distribute_flu(/**/ &flu));
 }
