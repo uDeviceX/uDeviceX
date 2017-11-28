@@ -17,9 +17,7 @@ def shift(xyz, center):
     x -= center[X]; y -= center[Y]; z -= center[Z]
     xyz[:, X] = x; xyz[:, Y] = y; xyz[:, Z] = z
 
-def write(xyz):
-    np.savetxt('o', xyz)
-    
+def write(xyz, f): np.savetxt(f, xyz)
 def rot(xyz, evecs): xyz[:] = np.dot(xyz, evecs)[:]
 
 f = sys.argv[1]
@@ -29,5 +27,4 @@ xyz = read(f)
 shift(xyz, center)
 rot(xyz, evecs)
 
-write(xyz)
-
+write(xyz, "o")
