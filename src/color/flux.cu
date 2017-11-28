@@ -15,7 +15,7 @@
 
 namespace recolor {
 namespace dev {
-__global__ void flux(int dir, int color, int n, const Particle *pp, int *cc) {
+__global__ void linear_flux(int dir, int color, int n, const Particle *pp, int *cc) {
     int i;
     Particle p;
     i = threadIdx.x + blockIdx.x * blockDim.x;
@@ -29,11 +29,11 @@ __global__ void flux(int dir, int color, int n, const Particle *pp, int *cc) {
 }
 } // dev
 
-void flux(int dir, int color, int n, const Particle *pp, int *cc) {
+void linear_flux(int dir, int color, int n, const Particle *pp, int *cc) {
     assert(dir >= 0 && dir <= 2);
     assert(multi_solvent);
         
     if (m::coords[dir] == m::dims[dir] - 1)
-        KL(dev::flux, (k_cnf(n)), (dir, color, n, pp, cc));
+        KL(dev::linear_flux, (k_cnf(n)), (dir, color, n, pp, cc));
 }
 } // recolor

@@ -34,5 +34,5 @@ void gen_colors(const Rbc *r, Colorer *c, Flu *f) {
 
 void recolor_flux(Flu *f) {
     if (RECOLOR_FLUX)
-        recolor::flux(COL_FLUX_DIR, RED_COLOR, f->q.n, f->q.pp, /**/ f->q.cc);
+        recolor::linear_flux(COL_FLUX_DIR, RED_COLOR, f->q.n, f->q.pp, /**/ f->q.cc);
 }
