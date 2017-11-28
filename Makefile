@@ -1,4 +1,4 @@
-C = cmd cmd/argp cmd/par
+C = cmd cmd/argp cmd/par cmd/u
 D = tools cmd post/strt pre/placement pre/units pre/stretch post/ply/cmd post/rbc
 
 install:
