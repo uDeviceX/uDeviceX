@@ -1,30 +1,33 @@
 void clear_vel() {
     scheme::move::clear_vel(flu.q.n, flu.q.pp);
-    if (solids) scheme::move::clear_vel(s::q.n, s::q.pp);
+    if (solids) scheme::move::clear_vel(rig.q.n, rig.q.pp);
     if (rbcs  ) scheme::move::clear_vel(rbc.q.n, rbc.q.pp);
 }
 
-void update_solid() {
-    if (!s::q.n) return;
-
-    rig::update(s::q.n, s::ff, s::q.rr0, s::q.ns, /**/ s::q.pp, s::q.ss);
-    rig::update_mesh(s::q.ns, s::q.ss, s::q.nv, s::q.dvv, /**/ s::q.i_pp);
+void update_solid(Rig *s) {
+    if (!s->q.n) return;
+    rig::Quants *q = &s->q;
+    
+    rig::update(q->n, s->ff, q->rr0, q->ns, /**/ q->pp, q->ss);
+    rig::update_mesh(q->ns, q->ss, q->nv, q->dvv, /**/ q->i_pp);
     // for dump
-    cD2H(s::q.ss_dmp, s::q.ss, s::q.ns);
-    rig::reinit_ft(s::q.ns, /**/ s::q.ss);
+    cD2H(q->ss_dmp, q->ss, q->ns);
+    rig::reinit_ft(q->ns, /**/ q->ss);
 }
 
-void bounce_solid(long it) {
+void bounce_solid(long it, Rig *s) {
     int n, nm, nt, nv, *ss, *cc, nmhalo, counts[comm::NFRAGS];
     int4 *tt;
     Particle *pp, *i_pp;
     int3 L = make_int3(XS, YS, ZS);
+
+    rig::Quants *qs = &s->q;
     
-    nm = s::q.ns;
-    nt = s::q.nt;
-    nv = s::q.nv;
-    tt = s::q.dtt;
-    i_pp = s::q.i_pp;
+    nm = qs->ns;
+    nt = qs->nt;
+    nv = qs->nv;
+    tt = qs->dtt;
+    i_pp = qs->i_pp;
 
     n  = flu.q.n;
     pp = flu.q.pp;
@@ -33,18 +36,18 @@ void bounce_solid(long it) {
 
     /* send meshes to frags */
 
-    exch::mesh::build_map(nm, nv, i_pp, /**/ &s::e.p);
-    exch::mesh::pack(nv, i_pp, /**/ &s::e.p);
-    exch::mesh::download(&s::e.p);
+    exch::mesh::build_map(nm, nv, i_pp, /**/ &bb::e.p);
+    exch::mesh::pack(nv, i_pp, /**/ &bb::e.p);
+    exch::mesh::download(&bb::e.p);
 
-    UC(exch::mesh::post_send(&s::e.p, &s::e.c));
-    UC(exch::mesh::post_recv(&s::e.c, &s::e.u));
+    UC(exch::mesh::post_send(&bb::e.p, &bb::e.c));
+    UC(exch::mesh::post_recv(&bb::e.c, &bb::e.u));
 
-    exch::mesh::wait_send(&s::e.c);
-    exch::mesh::wait_recv(&s::e.c, &s::e.u);
+    exch::mesh::wait_send(&bb::e.c);
+    exch::mesh::wait_recv(&bb::e.c, &bb::e.u);
 
     /* unpack at the end of current mesh buffer */
-    exch::mesh::unpack(nv, &s::e.u, /**/ &nmhalo, i_pp + nm * nv);
+    exch::mesh::unpack(nv, &bb::e.u, /**/ &nmhalo, i_pp + nm * nv);
     
     /* perform bounce back */
     
@@ -58,24 +61,24 @@ void bounce_solid(long it) {
 
     /* send momentum back */
 
-    exch::mesh::get_num_frag_mesh(&s::e.u, /**/ counts);
+    exch::mesh::get_num_frag_mesh(&bb::e.u, /**/ counts);
     
-    exch::mesh::packM(nt, counts, bb::mm + nm * nt, /**/ &s::e.pm);
-    exch::mesh::downloadM(counts, /**/ &s::e.pm);
+    exch::mesh::packM(nt, counts, bb::mm + nm * nt, /**/ &bb::e.pm);
+    exch::mesh::downloadM(counts, /**/ &bb::e.pm);
 
-    UC(exch::mesh::post_recv(&s::e.cm, &s::e.um));
-    UC(exch::mesh::post_send(&s::e.pm, &s::e.cm));
-    exch::mesh::wait_recv(&s::e.cm, &s::e.um);
-    exch::mesh::wait_send(&s::e.cm);
+    UC(exch::mesh::post_recv(&bb::e.cm, &bb::e.um));
+    UC(exch::mesh::post_send(&bb::e.pm, &bb::e.cm));
+    exch::mesh::wait_recv(&bb::e.cm, &bb::e.um);
+    exch::mesh::wait_send(&bb::e.cm);
 
-    exch::mesh::upload(&s::e.um);
-    exch::mesh::unpack_mom(nt, &s::e.p, &s::e.um, /**/ bb::mm);
+    exch::mesh::upload(&bb::e.um);
+    exch::mesh::unpack_mom(nt, &bb::e.p, &bb::e.um, /**/ bb::mm);
     
     /* gather bb momentum */
-    meshbb::collect_rig_momentum(nm, nt, nv, tt, i_pp, bb::mm, /**/ s::q.ss);
+    meshbb::collect_rig_momentum(nm, nt, nv, tt, i_pp, bb::mm, /**/ qs->ss);
 
     /* for dump */
-    cD2H(s::q.ss_dmp_bb, s::q.ss, nm);
+    cD2H(qs->ss_dmp_bb, qs->ss, nm);
 }
 
 

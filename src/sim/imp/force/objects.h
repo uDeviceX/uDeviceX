@@ -16,8 +16,8 @@ void forces_objects(Flu *f) {
     int nw = 0;
     
     if (solids0) {
-        pw[nw] = {s::q.n, s::q.pp};
-        fw[nw] = {s::q.n, s::ff};
+        pw[nw] = {rig.q.n, rig.q.pp};
+        fw[nw] = {rig.q.n, rig.ff};
         ++nw;
     }
     if (rbcs) {

@@ -3,24 +3,14 @@ bool solids0;
 bop::Ticket dumpt;
 basetags::TagGen tag_gen;
 
-/* solvent */
 Flu flu;
 Rbc rbc;
+Rig rig;
 
 namespace o /* s[o]lvent */
 {
 /* velocity controller */
 PidVCont vcont;
-}
-
-namespace s /* rigid bodies */
-{
-rig::Quants q;
-scan::Work ws; /* work for scan */
-Force *ff, *ff_hst;
-
-RigDistr d;
-BBexch e;
 }
 
 /*** see int/wall.h ***/
@@ -48,4 +38,5 @@ namespace bb /* bounce back */
 {
 meshbb::BBdata bbd;
 Momentum *mm;
+BBexch e;
 }

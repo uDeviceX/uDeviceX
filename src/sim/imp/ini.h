@@ -127,18 +127,13 @@ void ini() {
         UC(ini_colorer(rbc.q.nv, m::cart, /*io*/ &tag_gen, /**/ &colorer));
     
     if (solids) {
-        rig::ini(&s::q);
-        scan::alloc_work(XS*YS*ZS, /**/ &s::ws);
-        UC(emalloc(sizeof(&s::ff_hst)*MAX_PART_NUM, (void**) &s::ff_hst));
-        Dalloc(&s::ff, MAX_PART_NUM);
-
+        ini_rig(m::cart, /* io */ &tag_gen, /**/ &rig);
+        
         meshbb::ini(MAX_PART_NUM, /**/ &bb::bbd);
         Dalloc(&bb::mm, MAX_PART_NUM);
 
-        UC(ini_rig_distr(s::q.nv, m::cart, /*io*/ &tag_gen, /**/ &s::d));
-
         if (sbounce_back)
-            UC(ini_bb_exch(s::q.nt, s::q.nv, MAX_CELL_NUM, m::cart, /*io*/ &tag_gen, /**/ &s::e));
+            UC(ini_bb_exch(rig.q.nt, rig.q.nv, MAX_CELL_NUM, m::cart, /*io*/ &tag_gen, /**/ &bb::e));
     }
 
     MC(MPI_Barrier(m::cart));

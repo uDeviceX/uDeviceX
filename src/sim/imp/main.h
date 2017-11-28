@@ -17,7 +17,7 @@ void gen() { /* generate */
         MC(m::Barrier(m::cart));
         inter::create_walls(MAXNWALL, w::qsdf, /*io*/ &flu.q, /**/ &w::q);
     }
-    inter::freeze(m::cart, w::qsdf, /*io*/ &flu.q, /**/ &s::q, &rbc.q);
+    inter::freeze(m::cart, w::qsdf, /*io*/ &flu.q, /**/ &rig.q, &rbc.q);
     clear_vel();
 
     if (multi_solvent) {
@@ -70,7 +70,7 @@ void sim_strt() {
     if (rbcs) rbc::main::strt_quants("rbc.off", restart::BEGIN, &rbc.q);
     dSync();
 
-    if (solids) rig::strt_quants(restart::BEGIN, &s::q);
+    if (solids) rig::strt_quants(restart::BEGIN, &rig.q);
 
     if (walls) wall::strt_quants(MAXNWALL, &w::q);
 

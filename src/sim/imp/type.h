@@ -89,7 +89,6 @@ struct Rig {
     Force *ff, *ff_hst;
 
     RigDistr d;
-    BBexch e;
 };  
 
 struct Sim {

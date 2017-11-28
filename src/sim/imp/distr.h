@@ -45,25 +45,26 @@ void distribute_rbc(Rbc *r) {
     dSync();
 }
 
-void distribute_rig() {
-    using namespace s;
-    int nv = q.nv;
+void distribute_rig(Rig *s) {
+    rig::Quants *q = &s->q;
+    RigDistr    *d = &s->d;
+    int nv = q->nv;
 
-    build_map(q.ns, q.ss, /**/ &d.p);
-    pack(q.ns, nv, q.ss, q.i_pp, /**/ &d.p);
-    download(/**/&d.p);
+    build_map(q->ns, q->ss, /**/ &d->p);
+    pack(q->ns, nv, q->ss, q->i_pp, /**/ &d->p);
+    download(/**/&d->p);
 
-    UC(post_send(&d.p, &d.c));
-    UC(post_recv(&d.c, &d.u));
+    UC(post_send(&d->p, &d->c));
+    UC(post_recv(&d->c, &d->u));
 
-    unpack_bulk(&d.p, /**/ &q);
+    unpack_bulk(&d->p, /**/ q);
     
-    wait_send(&d.c);
-    wait_recv(&d.c, &d.u);
+    wait_send(&d->c);
+    wait_recv(&d->c, &d->u);
 
-    unpack_halo(&d.u, /**/ &q);
+    unpack_halo(&d->u, /**/ q);
 
-    q.n = q.ns * q.nps;
-    rig::generate(q.ns, q.ss, q.nps, q.rr0, /**/ q.pp);
+    q->n = q->ns * q->nps;
+    rig::generate(q->ns, q->ss, q->nps, q->rr0, /**/ q->pp);
     dSync();
 }

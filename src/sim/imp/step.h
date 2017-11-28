@@ -9,7 +9,7 @@ void step(scheme::force::Param *fpar, bool wall0, int it) {
     UC(check_size(flu.q.n , MAX_PART_NUM));
     
     UC(distribute_flu(&flu));
-    if (solids0) UC(distribute_rig());
+    if (solids0) UC(distribute_rig(/**/ &rig));
     if (rbcs)    UC(distribute_rbc(/**/ &rbc));
 
     UC(check_size(rbc.q.nc, MAX_CELL_NUM));
@@ -24,7 +24,7 @@ void step(scheme::force::Param *fpar, bool wall0, int it) {
 
     restrain(it, /**/ &flu, &rbc);
     update_solvent(it, /**/ &flu);
-    if (solids0) update_solid();
+    if (solids0) update_solid(/**/ &rig);
     if (rbcs)    update_rbc(it, &rbc);
 
     if (VCON && wall0) {
@@ -35,7 +35,7 @@ void step(scheme::force::Param *fpar, bool wall0, int it) {
 
     if (wall0) bounce_wall(/**/ &flu, &rbc);
 
-    if (sbounce_back && solids0) bounce_solid(it);
+    if (sbounce_back && solids0) bounce_solid(it, /**/ &rig);
 
     recolor_flux(/**/ &flu);
 }

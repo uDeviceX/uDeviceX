@@ -112,18 +112,13 @@ void fin() {
         fin_colorer(/**/ &colorer);
 
     if (solids) {
-        rig::fin(&s::q);
-        scan::free_work(/**/ &s::ws);
-        Dfree(s::ff);
-        free(s::ff_hst);
+        fin_rig(/**/ &rig);
 
         meshbb::fin(/**/ &bb::bbd);
         Dfree(bb::mm);
-
-        fin_rig_distr(/**/ &s::d);
         
         if (sbounce_back)
-            fin_bb_exch(/**/ &s::e);
+            fin_bb_exch(/**/ &bb::e);
     }
 
     if (rbcs) fin_rbc(/**/ &rbc);

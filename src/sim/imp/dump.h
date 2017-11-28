@@ -2,7 +2,7 @@ void dev2hst() { /* device to host  data transfer */
     int start = 0;
     cD2H(a::pp_hst + start, flu.q.pp, flu.q.n); start += flu.q.n;
     if (solids0) {
-        cD2H(a::pp_hst + start, s::q.pp, s::q.n); start += s::q.n;
+        cD2H(a::pp_hst + start, rig.q.pp, rig.q.n); start += rig.q.n;
     }
     if (rbcs) {
         cD2H(a::pp_hst + start, rbc.q.pp, rbc.q.n); start += rbc.q.n;
@@ -28,12 +28,12 @@ void dump_part(int step) {
     }
 
     if(solids0) {
-        cD2H(s::q.pp_hst, s::q.pp, s::q.n);
+        cD2H(rig.q.pp_hst, rig.q.pp, rig.q.n);
         if (force_dumps) {
-            cD2H(s::ff_hst, s::ff, s::q.n);
-            bop::parts_forces(m::cart, s::q.pp_hst, s::ff_hst, s::q.n, "solid", step, /**/ &dumpt);
+            cD2H(rig.ff_hst, rig.ff, rig.q.n);
+            bop::parts_forces(m::cart, rig.q.pp_hst, rig.ff_hst, rig.q.n, "solid", step, /**/ &dumpt);
         } else {
-            bop::parts(m::cart, s::q.pp_hst, s::q.n, "solid", step, /**/ &dumpt);
+            bop::parts(m::cart, rig.q.pp_hst, rig.q.n, "solid", step, /**/ &dumpt);
         }
     }
 }
@@ -54,37 +54,37 @@ void dump_rbc_coms(Rbc *r) {
 void dump_grid() {
     QQ qq; /* pack for io/field_dumps */
     NN nn;
-    qq.o = flu.q.pp; qq.s = s::q.pp; qq.r = rbc.q.pp;
-    nn.o = flu.q.n ; nn.s = s::q.n ;  nn.r = rbc.q.n;
+    qq.o = flu.q.pp; qq.s = rig.q.pp; qq.r = rbc.q.pp;
+    nn.o = flu.q.n ; nn.s = rig.q.n ;  nn.r = rbc.q.n;
     fields_grid(m::cart, qq, nn, /*w*/ a::pp_hst);
 }
 
 void dump_diag_after(int it, bool wall0, bool solid0) { /* after wall */
     if (solid0 && it % part_freq == 0) {
         static int id = 0;
-        rig_dump(it, s::q.ss_dmp, s::q.ss_dmp_bb, s::q.ns, m::coords);
+        rig_dump(it, rig.q.ss_dmp, rig.q.ss_dmp_bb, rig.q.ns, m::coords);
 
-        cD2H(a::pp_hst, s::q.i_pp, s::q.ns * s::q.nv);
-        io::mesh::rig(m::cart, a::pp_hst, s::q.htt, s::q.ns, s::q.nv, s::q.nt, id++);
+        cD2H(a::pp_hst, rig.q.i_pp, rig.q.ns * rig.q.nv);
+        io::mesh::rig(m::cart, a::pp_hst, rig.q.htt, rig.q.ns, rig.q.nv, rig.q.nt, id++);
     }
 }
 
 void diag(int it) {
-    int n = flu.q.n + s::q.n + rbc.q.n; dev2hst();
+    int n = flu.q.n + rig.q.n + rbc.q.n; dev2hst();
     diagnostics(m::cart, n, a::pp_hst, it);
 }
 
 void dump_strt_templ() { /* template dumps (wall, solid) */
     if (strt_dumps) {
         if (walls) wall::strt_dump_templ(w::q);
-        if (solids) rig::strt_dump_templ(s::q);
+        if (solids) rig::strt_dump_templ(rig.q);
     }
 }
 
 void dump_strt(int id) {
     flu::strt_dump(id, flu.q);
     if (rbcs)       rbc::main::strt_dump(id, rbc.q);
-    if (solids)     rig::strt_dump(id, s::q);
+    if (solids)     rig::strt_dump(id, rig.q);
 }
 
 void dump_diag0(int it) { /* generic dump */
