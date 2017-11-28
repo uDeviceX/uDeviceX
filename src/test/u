@@ -1,5 +1,5 @@
 # Compile all units
-# cTEST: test.u.0
+# TEST: test.u.0
 set -ue
 S=`pwd`
 for U in `u.u.list "$S"`
