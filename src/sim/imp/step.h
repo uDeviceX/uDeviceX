@@ -4,16 +4,16 @@ static void check_size(long n, long max) {
 }
 
 void step(scheme::force::Param *fpar, bool wall0, int it) {
-    UC(check_size(r::q.nc, MAX_CELL_NUM));
-    UC(check_size(r::q.n , MAX_PART_NUM));
+    UC(check_size(rbc.q.nc, MAX_CELL_NUM));
+    UC(check_size(rbc.q.n , MAX_PART_NUM));
     UC(check_size(flu.q.n , MAX_PART_NUM));
     
     UC(distribute_flu(&flu));
     if (solids0) UC(distribute_rig());
-    if (rbcs)    UC(distribute_rbc());
+    if (rbcs)    UC(distribute_rbc(/**/ &rbc));
 
-    UC(check_size(r::q.nc, MAX_CELL_NUM));
-    UC(check_size(r::q.n , MAX_PART_NUM));
+    UC(check_size(rbc.q.nc, MAX_CELL_NUM));
+    UC(check_size(rbc.q.n , MAX_PART_NUM));
     UC(check_size(flu.q.n , MAX_PART_NUM));
 
     forces(wall0);
@@ -22,10 +22,10 @@ void step(scheme::force::Param *fpar, bool wall0, int it) {
     dump_diag_after(it, wall0, solids0);
     body_force(*fpar);
 
-    restrain(it, /**/ &flu);
+    restrain(it, /**/ &flu, &rbc);
     update_solvent(it, /**/ &flu);
     if (solids0) update_solid();
-    if (rbcs)    update_rbc(it);
+    if (rbcs)    update_rbc(it, &rbc);
 
     if (VCON && wall0) {
         sample(it, &flu, /**/ &o::vcont);
@@ -33,7 +33,7 @@ void step(scheme::force::Param *fpar, bool wall0, int it) {
         log(it, &o::vcont);
     }
 
-    if (wall0) bounce_wall(/**/ &flu);
+    if (wall0) bounce_wall(/**/ &flu, &rbc);
 
     if (sbounce_back && solids0) bounce_solid(it);
 

@@ -94,14 +94,7 @@ static void ini_rbc(MPI_Comm cart, /*io*/ basetags::TagGen *tg, /**/ Rbc *r) {
 void ini() {
     basetags::ini(&tag_gen);
     datatype::ini();
-    if (rbcs) {
-        Dalloc(&r::ff, MAX_PART_NUM);
-        rbc::main::ini(&r::q);
-
-        UC(ini_rbc_distr(r::q.nv, m::cart, /*io*/ &tag_gen, /**/ &r::d));
-        if (rbc_com_dumps) rbc::com::ini(MAX_CELL_NUM, /**/ &r::com);
-        if (RBC_STRETCH)   UC(rbc::stretch::ini("rbc.stretch", r::q.nv, /**/ &r::stretch));
-    }
+    if (rbcs) ini_rbc(m::cart, /* io */ &tag_gen, /**/ &rbc);
 
     if (VCON) ini_vcont(m::cart, /**/ &o::vcont);
     if (fsiforces) fsi::ini();
@@ -122,7 +115,7 @@ void ini() {
     ini_flu(m::cart, /*io*/ &tag_gen, /**/ &flu);
    
     if (multi_solvent && rbcs)
-        UC(ini_colorer(r::q.nv, m::cart, /*io*/ &tag_gen, /**/ &colorer));
+        UC(ini_colorer(rbc.q.nv, m::cart, /*io*/ &tag_gen, /**/ &colorer));
     
     if (solids) {
         rig::ini(&s::q);

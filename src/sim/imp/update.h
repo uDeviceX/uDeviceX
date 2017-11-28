@@ -1,7 +1,7 @@
 void clear_vel() {
     scheme::move::clear_vel(flu.q.n, flu.q.pp);
     if (solids) scheme::move::clear_vel(s::q.n, s::q.pp);
-    if (rbcs  ) scheme::move::clear_vel(r::q.n, r::q.pp);
+    if (rbcs  ) scheme::move::clear_vel(rbc.q.n, rbc.q.pp);
 }
 
 void update_solid() {
@@ -83,27 +83,27 @@ void update_solvent(long it, /**/ Flu *f) {
     scheme::move::main(dpd_mass, f->q.n, f->ff, f->q.pp);
 }
 
-void update_rbc(long it) {
+void update_rbc(long it, Rbc *r) {
     bool cond;
     cond = multi_solvent && color_freq && it % color_freq == 0;
-    if (cond) {MSG("recolor"); gen_colors(&colorer, /**/ &flu);}; /* TODO: does not belong here*/
-    scheme::move::main(rbc_mass, r::q.n, r::ff, r::q.pp);
+    if (cond) {MSG("recolor"); gen_colors(r, &colorer, /**/ &flu);}; /* TODO: does not belong here*/
+    scheme::move::main(rbc_mass, r->q.n, r->ff, r->q.pp);
 }
 
-void restrain(long it, Flu *f) {
+void restrain(long it, Flu *f, Rbc *r) {
     scheme::restrain::QQ qq;
     scheme::restrain::NN nn;
     qq.o = f->q.pp;
-    qq.r = r::q.pp;
+    qq.r = r->q.pp;
 
     nn.o = f->q.n;
-    nn.r = r::q.n;
+    nn.r = r->q.n;
     scheme::restrain::main(m::cart, f->q.cc, nn, it, /**/ qq);
 }
 
-void bounce_wall(Flu *f) {
+void bounce_wall(Flu *f, Rbc *r) {
     sdf::bounce(&w::qsdf, f->q.n, /**/ f->q.pp);
-    if (rbcs) sdf::bounce(&w::qsdf, r::q.n, /**/ r::q.pp);
+    if (rbcs) sdf::bounce(&w::qsdf, r->q.n, /**/ r->q.pp);
 }
 
 void bounce_rbc() {

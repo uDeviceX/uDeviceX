@@ -117,17 +117,6 @@ void fin() {
             fin_bb_exch(/**/ &s::e);
     }
 
-    if (rbcs) {
-        rbc::main::fin(&r::q);
-        rbc::force::fin_ticket(&r::tt);
-
-        fin_rbc_distr(/**/ &r::d);
-        
-        Dfree(r::ff);
-
-        if (rbc_com_dumps) rbc::com::fin(/**/ &r::com);
-        if (RBC_STRETCH)   rbc::stretch::fin(/**/ r::stretch);
-            
-    }
+    if (rbcs) fin_rbc(/**/ &rbc);
     datatype::fin();
 }

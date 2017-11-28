@@ -5,24 +5,12 @@ basetags::TagGen tag_gen;
 
 /* solvent */
 Flu flu;
+Rbc rbc;
 
 namespace o /* s[o]lvent */
 {
 /* velocity controller */
 PidVCont vcont;
-}
-
-namespace r /* [r]bc */
-{
-rbc::Quants q;
-rbc::force::TicketT tt;
-
-RbcDistr d;
-
-Force *ff;
-
-rbc::com::Helper  com;      /* helper to compute center of masses */
-rbc::stretch::Fo *stretch;  /* helper to apply stretching [fo]rce to cells */
 }
 
 namespace s /* rigid bodies */

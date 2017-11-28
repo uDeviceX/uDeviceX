@@ -25,22 +25,23 @@ void distribute_flu(Flu *f) {
     dSync();
 }
 
-void distribute_rbc() {
-    using namespace r;
+void distribute_rbc(Rbc *r) {
+    rbc::Quants *q = &r->q;
+    RbcDistr *d    = &r->d;
+    
+    build_map(q->nc, q->nv, q->pp, /**/ &d->p);
+    pack(q, /**/ &d->p);
+    download(/**/&d->p);
 
-    build_map(q.nc, q.nv, q.pp, /**/ &d.p);
-    pack(&q, /**/ &d.p);
-    download(/**/&d.p);
+    UC(post_send(&d->p, &d->c));
+    UC(post_recv(&d->c, &d->u));
 
-    UC(post_send(&d.p, &d.c));
-    UC(post_recv(&d.c, &d.u));
+    unpack_bulk(&d->p, /**/ q);
 
-    unpack_bulk(&d.p, /**/ &q);
+    wait_send(&d->c);
+    wait_recv(&d->c, &d->u);
 
-    wait_send(&d.c);
-    wait_recv(&d.c, &d.u);
-
-    unpack_halo(&d.u, /**/ &q);
+    unpack_halo(&d->u, /**/ q);
     dSync();
 }
 

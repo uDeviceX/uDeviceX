@@ -21,8 +21,8 @@ void forces_objects(Flu *f) {
         ++nw;
     }
     if (rbcs) {
-        pw[nw] = {r::q.n, r::q.pp};
-        fw[nw] = {r::q.n, r::ff};
+        pw[nw] = {rbc.q.n, rbc.q.pp};
+        fw[nw] = {rbc.q.n, rbc.ff};
         ++nw;
     }
 
