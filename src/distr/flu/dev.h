@@ -1,6 +1,6 @@
 namespace dev {
 
-__device__ bool valid(int i, int n, LivingParts lp) {
+static __device__ bool valid(int i, int n, LivingParts lp) {
     if (i >= n) return false;
     if (lp.deadlist) return lp.tags[i];
     return true;
