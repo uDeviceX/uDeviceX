@@ -69,7 +69,7 @@ static void ini_colorer(int nv, MPI_Comm comm, /**/ Colorer *c) {
     Dalloc(&c->maxext, MAX_CELL_NUM);
 }
 
-static void ini_flu(MPI_Comm cart, /*io*/ basetags::TagGen *tg, /**/ Flu *f) {
+static void ini_flu(MPI_Comm cart, /**/ Flu *f) {
 
     flu::ini(&f->q);
     ini(MAX_PART_NUM, /**/ &f->bulkdata);
@@ -82,7 +82,7 @@ static void ini_flu(MPI_Comm cart, /*io*/ basetags::TagGen *tg, /**/ Flu *f) {
     UC(emalloc(MAX_PART_NUM * sizeof(Force), /**/ (void**) &f->ff_hst));
 }
 
-static void ini_rbc(MPI_Comm cart, /*io*/ basetags::TagGen *tg, /**/ Rbc *r) {
+static void ini_rbc(MPI_Comm cart, /**/ Rbc *r) {
     Dalloc(&r->ff, MAX_PART_NUM);
     UC(rbc::main::ini(&r->q));
 
@@ -120,12 +120,11 @@ static void ini_objinter(MPI_Comm cart, /**/ ObjInter *o) {
 }
 
 void ini() {
-    basetags::ini(&tag_gen);
     datatype::ini();
 
     UC(emalloc(3 * MAX_PART_NUM * sizeof(Particle), (void**) &a::pp_hst));
     
-    if (rbcs) UC(ini_rbc(m::cart, /* io */ &tag_gen, /**/ &rbc));
+    if (rbcs) UC(ini_rbc(m::cart, /**/ &rbc));
 
     if (VCON) UC(ini_vcont(m::cart, /**/ &vcont));
 
@@ -136,7 +135,7 @@ void ini() {
 
     if (walls) ini_wall(&wall);
     
-    UC(ini_flu(m::cart, /*io*/ &tag_gen, /**/ &flu));
+    UC(ini_flu(m::cart, /**/ &flu));
    
     if (multi_solvent && rbcs)
         UC(ini_colorer(rbc.q.nv, m::cart, /**/ &colorer));
