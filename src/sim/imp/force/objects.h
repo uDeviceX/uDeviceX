@@ -1,19 +1,20 @@
-void forces_cnt(int nw, PaWrap *pw, FoWrap *fw) {
-    cnt::build_cells(nw, pw, /**/ &rs::c);
-    cnt::bulk(&rs::c, nw, pw, fw);
+void forces_cnt(ObjInter *oi, int nw, PaWrap *pw, FoWrap *fw) {
+    cnt::build_cells(nw, pw, /**/ &oi->cnt);
+    cnt::bulk(&oi->cnt, nw, pw, fw);
 }
 
-void forces_fsi(fsi::SolventWrap *w_s, int nw, PaWrap *pw, FoWrap *fw) {
-    fsi::bind(*w_s, &rs::fsi);
-    fsi::bulk(&rs::fsi, nw, pw, fw);
+void forces_fsi(ObjInter *oi, fsi::SolventWrap *w_s, int nw, PaWrap *pw, FoWrap *fw) {
+    fsi::bind(*w_s, &oi->fsi);
+    fsi::bulk(&oi->fsi, nw, pw, fw);
 }
 
-void forces_objects(Flu *f, Rbc *r, Rig *s) {
+void forces_objects(ObjInter *oi, Flu *f, Rbc *r, Rig *s) {
     fsi::SolventWrap w_s;
     Cloud cloud;
     PaWrap pw[MAX_OBJ_TYPES];
     FoWrap fw[MAX_OBJ_TYPES];
     int nw = 0;
+    ObjExch *e = &oi->e;
     
     if (solids0) {
         pw[nw] = {s->q.n, s->q.pp};
@@ -30,13 +31,12 @@ void forces_objects(Flu *f, Rbc *r, Rig *s) {
 
     /* Prepare and send the data */
     
-    using namespace rs;
-    build_map(nw, pw, /**/ &e.p);
-    pack(nw, pw, /**/ &e.p);
-    download(nw, /**/ &e.p);
+    build_map(nw, pw, /**/ &e->p);
+    pack(nw, pw, /**/ &e->p);
+    download(nw, /**/ &e->p);
 
-    UC(post_send(&e.p, &e.c));
-    UC(post_recv(&e.c, &e.u));
+    UC(post_send(&e->p, &e->c));
+    UC(post_recv(&e->c, &e->u));
 
     /* bulk interactions */
     
@@ -49,31 +49,31 @@ void forces_objects(Flu *f, Rbc *r, Rig *s) {
     w_s.n  = f->q.n;
     w_s.starts = f->q.cells.starts;
 
-    if (contactforces) forces_cnt(nw, pw, fw);
-    if (fsiforces)     forces_fsi(&w_s, nw, pw, fw);
+    if (contactforces) forces_cnt(oi, nw, pw, fw);
+    if (fsiforces)     forces_fsi(oi, &w_s, nw, pw, fw);
 
     /* recv data and halo interactions  */
 
-    wait_send(&e.c);
-    wait_recv(&e.c, &e.u);
+    wait_send(&e->c);
+    wait_recv(&e->c, &e->u);
 
-    int26 hcc = get_counts(&e.u);
-    Pap26 hpp = upload_shift(&e.u);
-    Fop26 hff = reini_ff(&e.u, &e.pf);
+    int26 hcc = get_counts(&e->u);
+    Pap26 hpp = upload_shift(&e->u);
+    Fop26 hff = reini_ff(&e->u, &e->pf);
 
-    if (fsiforces)     fsi::halo(&rs::fsi, hpp, hff, hcc.d);
-    if (contactforces) cnt::halo(&rs::c, nw, pw, fw, hpp, hff, hcc.d);
+    if (fsiforces)     fsi::halo(&oi->fsi, hpp, hff, hcc.d);
+    if (contactforces) cnt::halo(&oi->cnt, nw, pw, fw, hpp, hff, hcc.d);
 
     /* send the forces back */ 
     
-    download_ff(&e.pf);
+    download_ff(&e->pf);
 
-    UC(post_send_ff(&e.pf, &e.c));
-    UC(post_recv_ff(&e.c, &e.uf));
+    UC(post_send_ff(&e->pf, &e->c));
+    UC(post_recv_ff(&e->c, &e->uf));
 
-    wait_send_ff(&e.c);    
-    wait_recv_ff(&e.c, &e.uf);
+    wait_send_ff(&e->c);    
+    wait_recv_ff(&e->c, &e->uf);
 
-    unpack_ff(&e.uf, &e.p, nw, /**/ fw);
+    unpack_ff(&e->uf, &e->p, nw, /**/ fw);
 }
 
