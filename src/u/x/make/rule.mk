@@ -4,6 +4,7 @@ $B/clist/imp.o: $S/clist/imp.cu; $N -I$S/. -I$S/clist
 $B/cnt/imp.o: $S/cnt/imp.cu; $N -I$S/. -I$S/cnt
 $B/color/flux.o: $S/color/flux.cu; $N -I$S/. -I$S/color
 $B/comm/imp.o: $S/comm/imp.cu; $N -I$S/. -I$S/comm
+$B/control/vel/imp.o: $S/control/vel/imp.cu; $N -I$S/. -I$S/control/vel
 $B/d/api.o: $S/d/api.cu; $N -I$S/. -I$S/d
 $B/dbg/imp.o: $S/dbg/imp.cu; $N -I$S/. -I$S/dbg
 $B/distr/flu/imp.o: $S/distr/flu/imp.cu; $N -I$S/. -I$S/distr/flu
@@ -77,7 +78,6 @@ $B/utils/error.o: $S/utils/error.cpp; $X -I$S/. -I$S/utils
 $B/utils/halloc.o: $S/utils/halloc.cpp; $X -I$S/. -I$S/utils
 $B/utils/mc.o: $S/utils/mc.cpp; $X -I$S/. -I$S/utils
 $B/utils/os.o: $S/utils/os.cpp; $X -I$S/. -I$S/utils
-$B/vcontroller/imp.o: $S/vcontroller/imp.cu; $N -I$S/. -I$S/vcontroller
 $B/wall/exch/imp.o: $S/wall/exch/imp.cpp; $X -I$S/. -I$S/wall/exch
 $B/wall/force/imp.o: $S/wall/force/imp.cu; $N -I$S/. -I$S/wall/force
 $B/wall/imp.o: $S/wall/imp.cu; $N -I$S/. -I$S/wall

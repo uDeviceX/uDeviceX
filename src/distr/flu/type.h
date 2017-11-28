@@ -3,6 +3,12 @@ namespace flu {
 
 using namespace comm;
 
+struct LivingParts {
+    bool deadlist;
+    const Particle *pp;
+    const int *tags;
+};
+
 struct Pack {
     Map map;
     dBags dpp, dii, dcc;
