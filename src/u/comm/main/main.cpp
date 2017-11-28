@@ -7,6 +7,8 @@
 #include "mpi/wrapper.h"
 #include "mpi/basetags.h"
 
+#include "utils/error.h"
+
 #include "frag/imp.h"
 
 #include "comm/imp.h"
