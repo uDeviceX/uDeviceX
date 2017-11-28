@@ -9,15 +9,15 @@ enum {
     MAXNWALL = NCELLSWALL * numberdensity
 };
 
-void gen() { /* generate */
+void gen(Wall *w) { /* generate */
     run_eq(wall_creation);
     if (walls) {
         dSync();
-        UC(sdf::ini(m::cart, &w::qsdf));
+        UC(sdf::ini(m::cart, &w->qsdf));
         MC(m::Barrier(m::cart));
-        inter::create_walls(MAXNWALL, w::qsdf, /*io*/ &flu.q, /**/ &w::q);
+        inter::create_walls(MAXNWALL, w->qsdf, /*io*/ &flu.q, /**/ &w->q);
     }
-    inter::freeze(m::cart, w::qsdf, /*io*/ &flu.q, /**/ &rig.q, &rbc.q);
+    inter::freeze(m::cart, w->qsdf, /*io*/ &flu.q, /**/ &rig.q, &rbc.q);
     clear_vel();
 
     if (multi_solvent) {
@@ -46,9 +46,9 @@ void sim_gen() {
     MSG("will take %ld steps", nsteps);
     if (walls || solids) {
         solids0 = false;  /* global */
-        gen();
+        gen(/**/ &wall);
         dSync();
-        if (walls && w::q.n) wall::gen_ticket(w::q, &w::t);
+        if (walls && wall.q.n) wall::gen_ticket(wall.q, &wall.t);
         solids0 = solids;
         if (rbcs && multi_solvent) gen_colors(&rbc, &colorer, /**/ &flu);
         run(wall_creation, nsteps);
@@ -72,16 +72,16 @@ void sim_strt() {
 
     if (solids) rig::strt_quants(restart::BEGIN, &rig.q);
 
-    if (walls) wall::strt_quants(MAXNWALL, &w::q);
+    if (walls) wall::strt_quants(MAXNWALL, &wall.q);
 
     /*T*/
     if (rbcs)            rbc::force::gen_ticket(rbc.q, &rbc.tt);
-    if (walls && w::q.n) wall::gen_ticket(w::q, &w::t);
+    if (walls && wall.q.n) wall::gen_ticket(wall.q, &wall.t);
 
     MC(m::Barrier(m::cart));
     if (walls) {
         dSync();
-        UC(sdf::ini(m::cart, &w::qsdf));
+        UC(sdf::ini(m::cart, &wall.qsdf));
         MC(m::Barrier(m::cart));
     }
 

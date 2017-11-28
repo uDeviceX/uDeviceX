@@ -105,7 +105,7 @@ void restrain(long it, Flu *f, Rbc *r) {
     scheme::restrain::main(m::cart, f->q.cc, nn, it, /**/ qq);
 }
 
-void bounce_wall(Flu *f, Rbc *r) {
-    sdf::bounce(&w::qsdf, f->q.n, /**/ f->q.pp);
-    if (rbcs) sdf::bounce(&w::qsdf, r->q.n, /**/ r->q.pp);
+void bounce_wall(const Wall *w, /**/ Flu *f, Rbc *r) {
+    sdf::bounce(&w->qsdf, f->q.n, /**/ f->q.pp);
+    if (rbcs) sdf::bounce(&w->qsdf, r->q.n, /**/ r->q.pp);
 }

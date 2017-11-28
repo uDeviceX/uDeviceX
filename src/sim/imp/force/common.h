@@ -15,7 +15,7 @@ void clear_forces(Force* ff, int n) {
     if (n) DzeroA(ff, n);
 }
 
-void forces_wall() {
+void forces_wall(Wall *w) {
     using namespace wall;
     Cloud co, cs, cr;
     ini_cloud(flu.q.pp, &co);
@@ -23,7 +23,7 @@ void forces_wall() {
     ini_cloud(rbc.q.pp, &cr);
     if (multi_solvent) ini_cloud_color(flu.q.cc, &co);
     
-    if (flu.q.n)           color::force(w::qsdf, w::q, w::t, co, flu.q.n, /**/ flu.ff);
-    if (solids0 && rig.q.n) grey::force(w::qsdf, w::q, w::t, cs, rig.q.n, /**/ rig.ff);
-    if (rbcs && rbc.q.n)    grey::force(w::qsdf, w::q, w::t, cr, rbc.q.n, /**/ rbc.ff);
+    if (flu.q.n)           color::force(w->qsdf, w->q, w->t, co, flu.q.n, /**/ flu.ff);
+    if (solids0 && rig.q.n) grey::force(w->qsdf, w->q, w->t, cs, rig.q.n, /**/ rig.ff);
+    if (rbcs && rbc.q.n)    grey::force(w->qsdf, w->q, w->t, cr, rbc.q.n, /**/ rbc.ff);
 }

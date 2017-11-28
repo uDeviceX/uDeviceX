@@ -6,18 +6,11 @@ basetags::TagGen tag_gen;
 Flu flu;
 Rbc rbc;
 Rig rig;
+Wall wall;
 
 BounceBack bb;
 Colorer colorer;
 PidVCont vcont;
-
-/*** see int/wall.h ***/
-namespace w {
-sdf::Quants qsdf;
-wall::Quants q;
-wall::Ticket t;
-}
-/***  ***/
 
 namespace a /* all */
 {

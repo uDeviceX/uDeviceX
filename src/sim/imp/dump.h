@@ -74,9 +74,9 @@ void diag(int it) {
     diagnostics(m::cart, n, a::pp_hst, it);
 }
 
-void dump_strt_templ() { /* template dumps (wall, solid) */
+void dump_strt_templ(Wall *w) { /* template dumps (wall, solid) */
     if (strt_dumps) {
-        if (walls) wall::strt_dump_templ(w::q);
+        if (walls) wall::strt_dump_templ(w->q);
         if (solids) rig::strt_dump_templ(rig.q);
     }
 }

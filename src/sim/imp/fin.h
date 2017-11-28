@@ -113,11 +113,7 @@ void fin() {
     if (VCON) fin(/**/ &vcont);
     if (fsiforces)  fsi::fin();
     
-    if (walls) {
-        sdf::free_quants(&w::qsdf);
-        wall::free_quants(&w::q);
-        wall::free_ticket(&w::t);
-    }
+    if (walls) fin_wall(&wall);
 
     fin_flu(&flu);
 

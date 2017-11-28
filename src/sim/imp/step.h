@@ -33,7 +33,7 @@ void step(scheme::force::Param *fpar, bool wall0, int it) {
         log(it, &vcont);
     }
 
-    if (wall0) bounce_wall(/**/ &flu, &rbc);
+    if (wall0) bounce_wall(&wall, /**/ &flu, &rbc);
 
     if (sbounce_back && solids0) bounce_solid(it, /**/ &bb, &rig);
 

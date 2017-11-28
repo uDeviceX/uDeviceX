@@ -131,12 +131,8 @@ void ini() {
     
     bop::ini(&dumpt);
 
-    if (walls) {
-        sdf::alloc_quants(&w::qsdf);
-        wall::alloc_quants(&w::q);
-        wall::alloc_ticket(&w::t);
-    }
-
+    if (walls) ini_wall(&wall);
+    
     ini_flu(m::cart, /*io*/ &tag_gen, /**/ &flu);
    
     if (multi_solvent && rbcs)

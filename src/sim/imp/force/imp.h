@@ -4,7 +4,7 @@ void forces(bool wall0) {
     if (rbcs)    clear_forces(rbc.ff, rbc.q.n);
 
     forces_dpd(&flu);
-    if (wall0 && w::q.n) forces_wall();
+    if (wall0 && wall.q.n) forces_wall(&wall);
     if (rbcs) forces_rbc(&rbc);
 
     forces_objects(&flu, &rbc, &rig);
