@@ -1,2 +1,3 @@
-O = $B/cc.o $B/d/api.o $B/dbg.o $B/dbg/imp.o $B/l/m.o $B/m.o $B/mc.o $B/msg.o \
-    $B/u/dbg/main.o
+O = $B/d/api.o $B/dbg/imp.o $B/mpi/glb.o $B/mpi/type.o $B/mpi/wrapper.o $B/msg.o \
+    $B/u/dbg/main.o $B/utils/cc.o $B/utils/efopen.o $B/utils/error.o \
+    $B/utils/halloc.o $B/utils/mc.o $B/utils/os.o

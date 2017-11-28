@@ -1,15 +1,17 @@
+#include <mpi.h>
 #include <stdio.h>
-
-#include "msg.h"
-#include "m.h" /* mini-MPI and -device */
-#include "glb.h"
-
-#include "d/api.h"
 
 #include <conf.h>
 #include "inc/conf.h"
-#include "cc.h"
-#include "kl.h"
+
+#include "msg.h"
+#include "mpi/wrapper.h" /* mini-MPI and -device */
+#include "mpi/glb.h"
+
+#include "d/api.h"
+
+#include "utils/cc.h"
+#include "utils/kl.h"
 #include "inc/type.h"
 #include "inc/dev.h"
 #include "dbg/imp.h"
