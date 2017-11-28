@@ -3,7 +3,7 @@ bool solids0;
 bop::Ticket dumpt;
 basetags::TagGen tag_gen;
 
-
+/* solvent */
 Flu flu;
 
 namespace o /* s[o]lvent */
@@ -19,7 +19,7 @@ rbc::force::TicketT tt;
 
 RbcDistr d;
 
-Force     *ff;
+Force *ff;
 
 rbc::com::Helper  com;      /* helper to compute center of masses */
 rbc::stretch::Fo *stretch;  /* helper to apply stretching [fo]rce to cells */
