@@ -1,16 +1,20 @@
 #!/usr/bin/awk -f
 
-function rbc(x, y, z,   z0, d, rr, D, R, a0, a1, a2) {
-    D = 7.82; R = D/2
-    a0 = 0.0518; a1 = 2.0026; a2 = -4.491
-    x *= R; y *= R
+function ini(Din,   Dr) {
+    D = Din   # cell diameter
+    Dr = 7.82 # reference value
+    a0 = 0.0518/Dr*D; a1 = 2.0026; a2 = -4.491/Dr^2*D^2
+    IN = 1; OUT = 0
+    BIG = 1000; NITER = 30
+}
+function rbc(x, y, z,   z0, d, rr) {
     rr  = x^2 + y^2; rr /= D^2
-    if (d = 1 - 4*rr < 0) return 0
+    d = 1 - 4*rr
+    if (d < 0) return OUT
     z0  = sqrt(d) * (a0 + a1*rr + a2*rr^2)
     z0 *= D
-    return z0 < z && z > -z0
+    return abs(z) < z0 ? IN : OUT
 }
-
 function read(f,   rc) {
     n = 0
     for (;;) {
@@ -21,24 +25,46 @@ function read(f,   rc) {
     }
 }
 
+function mid(l, h) { return (l + h)/2 }
+function f(s) { return rbc(s*x0, s*y0, s*z0) }
+function gscale0(   l, h, m, fl, fh, fm, i) {
+    l = 0.25; h = 3.0 # low, high, middle
+    fl = f(l); fh = f(h)
+    for (i = 1; i <= NITER; i++) {
+	m = mid(l, h)
+	fm = f(m)
+	if (fm == fl) {
+	    fl = fm; l = m
+	} else {
+	    fh = fm; h = m
+	}
+    }
+    return m
+}
+function gscale(x, y, z) {
+    x0 = x; y0 = y; z0 = z # global
+    return gscale0()
+}
+function dist(x, y, z, s,   r) {
+    r = rad(x, y, z)
+    return r - r*s
+}
+function main0(x, y, z,  s, d) {
+    s = gscale(x, y, z)
+    d = dist(x, y, z, s)
+    print s*x, s*y, s*z, s
+}
 function main(   i) {
-    for (i = 1; i <= n; i++) {
-	print x[i], y[i], z[i]
-    }
+    for (i = 1; i <= n; i++) main0(x[i], y[i], z[i])
 }
-
-function swap(   i, xt, yt, zt) {
-    for (i = 1; i <= n; i++) {
-	xt   = x[i]; yt   = y[i]; zt   = z[i]
-	x[i] = xt ; y[i] = zt;   z[i] = -yt
-    }
-}
-
 BEGIN {
+    ini(5.2)
     for (;;) {
 	if (rc == "(EOF)") break
 	rc = read(ARGV[1])
-	swap() # xyz -> xzy
 	main()
     }
 }
+
+function rad(x, y, z) { return sqrt(x^2 + y^2 + z^2) }
+function abs(x) { return x > 0 ? x : -x }
