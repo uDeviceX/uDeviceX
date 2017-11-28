@@ -5,7 +5,7 @@ static void fin_flu_exch(/**/ FluExch *e) {
     fin(/**/ &e->u);
 }
 
-static void fin_obj_exch(/**/ Objexch *e) {
+static void fin_obj_exch(/**/ ObjExch *e) {
     using namespace exch::obj;
     fin(/**/ &e->p);
     fin(/**/ &e->c);

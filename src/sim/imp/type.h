@@ -29,7 +29,7 @@ struct RigDistr {
 };
 
 /* object exchanger for forces */
-struct Objexch {
+struct ObjExch {
     exch::obj::Pack p;
     exch::obj::Unpack u;
     exch::obj::PackF pf;

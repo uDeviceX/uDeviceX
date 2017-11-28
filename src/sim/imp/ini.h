@@ -7,7 +7,7 @@ static void ini_flu_exch(MPI_Comm comm, /*io*/ basetags::TagGen *tg, /**/ FluExc
     UC(ini(maxd, /**/ &e->u));
 }
 
-static void ini_obj_exch(MPI_Comm comm, /*io*/ basetags::TagGen *tg, /**/ Objexch *e) {
+static void ini_obj_exch(MPI_Comm comm, /*io*/ basetags::TagGen *tg, /**/ ObjExch *e) {
     using namespace exch::obj;
     int maxpsolid = MAX_PSOLID_NUM;
     
