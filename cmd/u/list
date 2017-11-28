@@ -5,5 +5,17 @@ usg () {
 }
 
 msg () { echo >&2 "$@"; }
+err () { msg "$@"; exit 2; }
+ls0 () { ls 2>/dev/null -d "$@"; }
 
 if test "$1" = -h; then usg; fi
+if test "$#" -eq 0; then err 'u.u.list: not enough args'; fi
+
+S="$1"; shift
+if test ! -d "$S"; then err 'u.u.list: not a directory '"'$S'"; fi
+
+cd "$S"
+for U in `ls0 u/* u/*/* u/*/*/* u/*/*/* u/*/*/*/* u/*/*/*/*/* u/*/*/*/*/*/*`
+do if test ! -f "$U/make/i"; then continue; fi
+   echo "$U"
+done

@@ -14,7 +14,7 @@ u.conf conf/double.poiseuille.h <<!!!
    wall_creation=0 field_freq=100
    run
 !!!
-(make clean && u.make -j && make -C ../tools) > /dev/null
+{ make clean && u.make -j ; } > /dev/null
 sh runfile 2>/dev/null
 :
 awk '$NF == ":log_root:" { $NF = ""; print}' .000 > cubic.txt

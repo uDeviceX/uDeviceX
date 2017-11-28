@@ -1,4 +1,4 @@
-static void random(int n, rbc::rnd::D* rnd, /**/ float **r) {
+static void random(int n, rbc::rnd::D *rnd, /**/ float **r) {
     if (RBC_RND) {
         rbc::rnd::gen(rnd, n);
         *r = rnd->r;
@@ -10,7 +10,7 @@ static void random(int n, rbc::rnd::D* rnd, /**/ float **r) {
 static void apply0(int nc,
                    const Particle *pp, rbc::rnd::D *rnd,
                    const int *adj0, const int *adj1, const Shape shape,
-                   float* av, /**/ Force *ff){
+                   float *av, /**/ Force *ff){
     float *rnd0;    
     int md, nv;
     md = RBCmd; nv = RBCnv;

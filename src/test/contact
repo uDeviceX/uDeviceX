@@ -14,7 +14,7 @@ u.conf conf/double.poiseuille.h <<!!!
    contactforces
    run
 !!!
-{ make clean &&  u.make -j && make -C ../tools; } > /dev/null
+{ make clean &&  u.make -j ; } > /dev/null
 sh runfile
 ply2punto r/00002.ply > ply.out.txt
 
@@ -33,6 +33,6 @@ u.conf conf/double.poiseuille.h  <<!!!
    FORCE_DOUBLE_POISEUILLE pushrbc
    run
 !!!
-{ make clean && u.make -j && make -C ../tools; } > /dev/null
+{ make clean && u.make -j ; } > /dev/null
 sh runfile
 ply2punto r/00002.ply > ply.out.txt

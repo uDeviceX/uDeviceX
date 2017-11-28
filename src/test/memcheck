@@ -13,5 +13,5 @@ u.conf . u/safe conf/double.poiseuille.h <<!!!
   wall_creation=0 contactforces=true field_freq=100
   run
 !!!
-(make clean && u.make -j && make -C ../tools) > /dev/null
+{ make clean && u.make -j ; } > /dev/null
 MEM= sh runfile | awk '/========= ERROR SUMMARY:/'         > mem.out.txt
