@@ -5,7 +5,6 @@
 #include "msg.h"
 #include "mpi/glb.h"
 #include "mpi/wrapper.h"
-#include "mpi/basetags.h"
 
 #include "utils/error.h"
 
@@ -52,17 +51,15 @@ int main(int argc, char **argv) {
     MSG("mpi size: %d", m::size);
     MSG("Comm unit test!");
 
-    basetags::TagGen tg;
     hBags sendB, recvB;
     Stamp stamp;
     int capacity[NBAGS];
     float maxdensity = 26.f;
     frag_estimates(NBAGS, maxdensity, /**/ capacity);
 
-    basetags::ini(/**/ &tg);
     UC(ini(HST_ONLY, NONE, sizeof(int), capacity, /**/ &sendB, NULL));
     UC(ini(HST_ONLY, NONE,sizeof(int), capacity, /**/ &recvB, NULL));
-    UC(ini(m::cart, /*io*/ &tg, /**/ &stamp));
+    UC(ini(m::cart, /**/ &stamp));
 
     fill_bags(&sendB);
 

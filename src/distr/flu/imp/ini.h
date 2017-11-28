@@ -22,10 +22,10 @@ void ini(int maxdensity, Pack *p) {
     if (multi_solvent) UC(ini(PINNED, NONE, sizeof(int), capacity, /**/ &p->hcc, &p->dcc));
 }
 
-void ini(MPI_Comm comm, /*io*/ basetags::TagGen *tg, /**/ Comm *c) {
-    UC(ini(comm, /*io*/ tg, /**/ &c->pp));
-    if (global_ids)    UC(ini(comm, /*io*/ tg, /**/ &c->ii));
-    if (multi_solvent) UC(ini(comm, /*io*/ tg, /**/ &c->cc));
+void ini(MPI_Comm comm, /**/ Comm *c) {
+    UC(ini(comm, /**/ &c->pp));
+    if (global_ids)    UC(ini(comm, /**/ &c->ii));
+    if (multi_solvent) UC(ini(comm, /**/ &c->cc));
 }
 
 static int nhalocells() {

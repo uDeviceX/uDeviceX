@@ -32,8 +32,7 @@ struct hBags {
 struct Stamp {
     MPI_Request sreq[NBAGS]; /* send requests */
     MPI_Request rreq[NBAGS]; /* recv requests */
-    int bt;                  /* base tag */
-    MPI_Comm cart;
+    MPI_Comm cart;           /* cartesian communicator */
     int ranks[NFRAGS];       /* ranks of neighbors     */
     int  tags[NFRAGS];       /* tags in bt coordinates */
 };
@@ -42,7 +41,7 @@ int ini(AllocMod fmod, AllocMod bmod, size_t bsize, const int capacity[NBAGS], /
 int fin(AllocMod fmod, AllocMod bmod, /**/ hBags *hb, dBags *db);
 
 /* stamp alloc */
-int ini(MPI_Comm comm, /*io*/ basetags::TagGen *tg, /**/ Stamp *s);
+int ini(MPI_Comm comm, /**/ Stamp *s);
 int fin(/**/ Stamp *s);
 
 /* communication */

@@ -16,9 +16,9 @@ void ini(int maxns, int nv, Pack *p) {
     UC(ini(PINNED, DEV_ONLY, sizeof(Solid), numc, /**/ &p->hss, &p->dss));
 }
 
-void ini(MPI_Comm comm, /*io*/ basetags::TagGen *tg, /**/ Comm *c) {
-    UC(ini(comm, /*io*/ tg, /**/ &c->ipp));
-    UC(ini(comm, /*io*/ tg, /**/ &c->ss));
+void ini(MPI_Comm comm, /**/ Comm *c) {
+    UC(ini(comm, /**/ &c->ipp));
+    UC(ini(comm, /**/ &c->ss));
 }
 
 void ini(int maxns, int nv, Unpack *u) {

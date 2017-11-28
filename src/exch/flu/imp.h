@@ -2,7 +2,7 @@ namespace exch {
 namespace flu {
 
 void ini(int maxd, Pack *p);
-void ini(MPI_Comm comm, /*io*/ basetags::TagGen *tg, /**/ Comm *c);
+void ini(MPI_Comm comm, /**/ Comm *c);
 void ini(int maxd, Unpack *u);
 
 void fin(Pack *p);

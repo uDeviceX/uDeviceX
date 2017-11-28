@@ -2,7 +2,7 @@ int post_recv(hBags *b, Stamp *s) {
     int i, c, tag;
     for (i = 0; i < NFRAGS; ++i) {
         c = b->capacity[i] * b->bsize;
-        tag = s->bt + s->tags[i];
+        tag = s->tags[i];
         MC(m::Irecv(b->data[i], c, MPI_BYTE, s->ranks[i], tag, s->cart, s->rreq + i));
     }
     return 0;
@@ -14,7 +14,7 @@ int post_send(const hBags *b, Stamp *s) {
         c = b->counts[i];
         cap = b->capacity[i];
         n = c * b->bsize;
-        tag = s->bt + i;
+        tag = i;
 
         if (c > cap)
             ERR("sending more than capacity in fragment %d : (%ld / %ld)", i, (long) c, (long) cap);

@@ -22,7 +22,6 @@
 #include "rbc/type.h"
 
 #include "frag/imp.h"
-#include "mpi/basetags.h"
 #include "comm/imp.h"
 #include "comm/utils.h"
 

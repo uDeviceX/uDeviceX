@@ -2,7 +2,7 @@ namespace distr {
 namespace rig {
 
 void ini(int maxns, int nv, Pack *p);
-void ini(MPI_Comm comm, /*io*/ basetags::TagGen *tg, /**/ Comm *c);
+void ini(MPI_Comm comm, /**/ Comm *c);
 void ini(int maxns, int nv, Unpack *u);
 
 void fin(Pack *p);

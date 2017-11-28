@@ -16,8 +16,8 @@ void ini(int nv, int max_mesh_num, Pack *p) {
     CC(d::Malloc((void**) &p->maxext, max_mesh_num * sizeof(float3)));
 }
 
-void ini(MPI_Comm comm, /*io*/ basetags::TagGen *tg, /**/ Comm *c) {
-    UC(ini(comm, /*io*/ tg, /**/ &c->pp));
+void ini(MPI_Comm comm, /**/ Comm *c) {
+    UC(ini(comm, /**/ &c->pp));
 }
 
 void ini(int nv, int max_mesh_num, Unpack *u) {
@@ -59,9 +59,9 @@ void ini(int nt, int max_mesh_num, PackM *p) {
     CC(d::HostGetDevicePointer((void**) &p->ccdev, p->cchst, 0));
 }
 
-void ini(MPI_Comm comm, /*io*/ basetags::TagGen *tg, /**/ CommM *c) {
-    UC(ini(comm, /*io*/ tg, /**/ &c->mm));
-    UC(ini(comm, /*io*/ tg, /**/ &c->ii));
+void ini(MPI_Comm comm, /**/ CommM *c) {
+    UC(ini(comm, /**/ &c->mm));
+    UC(ini(comm, /**/ &c->ii));
 }
 
 void ini(int nt, int max_mesh_num, UnpackM *u) {

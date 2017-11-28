@@ -49,7 +49,7 @@ int ini(AllocMod fmod, AllocMod bmod, size_t bsize, const int capacity[NBAGS], /
 
 /* stamp allocation */
 
-int ini(MPI_Comm comm, /*io*/ basetags::TagGen *tg, /**/ Stamp *s) {
+int ini(MPI_Comm comm, /**/ Stamp *s) {
     int i, c, crd_rnk[3];
     
     for (i = 0; i < NFRAGS; ++i) {
@@ -58,7 +58,6 @@ int ini(MPI_Comm comm, /*io*/ basetags::TagGen *tg, /**/ Stamp *s) {
         MC(m::Cart_rank(comm, crd_rnk, s->ranks + i));
         s->tags[i] = frag_anti(i);
     }
-    s->bt = get_tag(tg);
     MC(m::Comm_dup(comm, &s->cart));
     return 0;
 }

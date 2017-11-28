@@ -2,7 +2,7 @@ namespace distr {
 namespace flu {
 
 void ini(int maxdensity, Pack *p);
-void ini(MPI_Comm comm, /*io*/ basetags::TagGen *tg, /**/ Comm *c);
+void ini(MPI_Comm comm, /**/ Comm *c);
 void ini(int maxdensity, Unpack *u);
 
 void fin(Pack *p);

@@ -1,7 +1,6 @@
 bool solids0;
 
 bop::Ticket dumpt;
-basetags::TagGen tag_gen;
 
 Flu flu;
 Rbc rbc;
