@@ -71,6 +71,24 @@ struct Flu {
     Force *ff_hst; /* solvent forces on host    */
 };
 
-// struct Sim {
-//     Flu q;
-// };
+struct Rbc {
+    rbc::Quants q;
+    rbc::force::TicketT tt;
+
+    RbcDistr d;
+
+    Force *ff;
+
+    rbc::com::Helper  com;      /* helper to compute center of masses */
+    rbc::stretch::Fo *stretch;  /* helper to apply stretching [fo]rce to cells */
+};
+
+struct Rig {
+    // TODO
+};  
+
+struct Sim {
+    Flu flu;
+    Rbc rbc;
+    Rig rig;
+};
