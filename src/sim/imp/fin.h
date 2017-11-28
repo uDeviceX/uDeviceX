@@ -103,15 +103,19 @@ static void fin_wall(Wall *w) {
     wall::free_ticket(&w->t);
 }
     
+static void fin_objinter(ObjInter *o) {
+    UC(fin_obj_exch(&o->e));
+    if (contactforces) cnt::fin(&o->cnt);
+    if (fsiforces)     fsi::fin(&o->fsi);
+}
 
 void fin() {
-    cnt::fin(&rs::c);
+
     bop::fin(&dumpt);
     if (rbcs || solids)
-        fin_obj_exch(&rs::e);
+        fin_objinter(&objinter);
 
     if (VCON) fin(/**/ &vcont);
-    if (fsiforces)  fsi::fin();
     
     if (walls) fin_wall(&wall);
 

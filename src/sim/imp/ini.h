@@ -113,6 +113,12 @@ static void ini_wall(Wall *w) {
     wall::alloc_ticket(&w->t);
 }
 
+static void ini_objinter(MPI_Comm cart, /*io*/ basetags::TagGen *tg, /**/ ObjInter *o) {
+    UC(ini_obj_exch(cart, tg, &o->e));    
+    if (contactforces) cnt::ini(&o->cnt);
+    if (fsiforces)     fsi::ini(&o->fsi);
+}
+
 void ini() {
     basetags::ini(&tag_gen);
     datatype::ini();
@@ -122,12 +128,9 @@ void ini() {
     if (rbcs) UC(ini_rbc(m::cart, /* io */ &tag_gen, /**/ &rbc));
 
     if (VCON) UC(ini_vcont(m::cart, /**/ &vcont));
-    if (fsiforces) UC(fsi::ini());
-
-    UC(cnt::ini(&rs::c));
 
     if (rbcs || solids)
-        UC(ini_obj_exch(m::cart, &tag_gen, &rs::e));
+        UC(ini_objinter(m::cart, /*io*/ &tag_gen, /**/ &objinter));        
     
     UC(bop::ini(&dumpt));
 
