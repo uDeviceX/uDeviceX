@@ -5,7 +5,6 @@
 #include <conf.h>
 #include "inc/conf.h"
 
-#include "mpi/basetags.h"
 #include "mpi/glb.h"
 #include "mpi/wrapper.h"
 #include "frag/imp.h"
@@ -95,13 +94,11 @@ static void unpack(int maxn, const hBags *b, /*io*/ int *n, Particle *pp) {
 void exch(int maxn, /*io*/ Particle *pp, int *n) {
     hBags send, recv;
     Stamp stamp;
-    basetags::TagGen tg;
     int i, capacity[NBAGS];
 
     for (i = 0; i < NBAGS; ++i) capacity[i] = maxn;
     UC(ini(HST_ONLY, NONE, sizeof(Particle), capacity, &send, NULL));
     UC(ini(HST_ONLY, NONE, sizeof(Particle), capacity, &recv, NULL));
-    ini(&tg);
     UC(ini(m::cart, &stamp));
 
     fill_bags(*n, pp, /**/ &send);
