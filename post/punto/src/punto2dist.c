@@ -10,9 +10,7 @@ double rad(double x, double y, double z) { return sqrt(x*x + y*y + z*z); }
 double pair(double x, double y, double z,
             double x0, double y0, double z0) {
     double dx, dy, dz;
-    dx = x - x0;
-    dy = y - y0;
-    dz = z - z0;
+    dx = x - x0; dy = y - y0; dz = z - z0;
     return dx*dx + dy*dy + dz*dz;
 }
 
