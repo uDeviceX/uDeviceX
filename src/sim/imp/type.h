@@ -107,6 +107,12 @@ struct Wall {
     wall::Ticket t;
 };
 
+/* helper for computing object forces */
+struct ObjHelper {
+    ObjExch e;
+    cnt::Contact c;
+};
+
 struct Sim {
     /* quantities */
     Flu flu;
