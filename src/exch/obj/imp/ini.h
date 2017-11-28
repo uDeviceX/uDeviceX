@@ -22,7 +22,7 @@ void ini(int nw, int maxd, int maxpsolid, Pack *p) {
     UC(ini(PINNED, NONE, sizeof(Particle), cap, /**/ &p->hpp, &p->dpp));
 }
 
-void ini(MPI_Comm comm, /*io*/ basetags::TagGen *tg, /**/ Comm *c) {
+void ini(MPI_Comm comm, /**/ Comm *c) {
     UC(ini(comm, /**/ &c->pp));
     UC(ini(comm, /**/ &c->ff));
 }

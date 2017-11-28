@@ -2,7 +2,7 @@ namespace exch {
 namespace obj {
 
 void ini(int nw, int maxd, int maxpsolid, Pack *p);
-void ini(MPI_Comm comm, /*io*/ basetags::TagGen *tg, /**/ Comm *c);
+void ini(MPI_Comm comm, /**/ Comm *c);
 void ini(int maxd, int maxpsolid, Unpack *u);
 void ini(int maxd, int maxpsolid, PackF *p);
 void ini(int maxd, int maxpsolid, UnpackF *u);

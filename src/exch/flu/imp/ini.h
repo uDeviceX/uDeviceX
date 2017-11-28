@@ -30,7 +30,7 @@ void ini(int maxd, Pack *p) {
     d::Malloc((void**) &p->counts_dev, sz);
 }
 
-void ini(MPI_Comm comm, /*io*/ basetags::TagGen *tg, /**/ Comm *c) {
+void ini(MPI_Comm comm, /**/ Comm *c) {
     UC(ini(comm, /**/ &c->pp));
     UC(ini(comm, /**/ &c->fss));
     if (multi_solvent)

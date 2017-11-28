@@ -4,7 +4,7 @@ namespace mesh {
 /* mesh exchanger */
 
 void ini(int nv, int max_mesh_num, Pack *p);
-void ini(MPI_Comm comm, /*io*/ basetags::TagGen *tg, /**/ Comm *c);
+void ini(MPI_Comm comm, /**/ Comm *c);
 void ini(int nv, int max_mesh_num, Unpack *u);
 
 void fin(Pack *p);
@@ -28,7 +28,7 @@ void unpack(int nv, const Unpack *u, /**/ int *nmhalo, Particle *pp);
 void get_num_frag_mesh(const Unpack *u, /**/ int cc[NFRAGS]);
 
 void ini(int num_mom_per_mesh, int max_mesh_num, PackM *p);
-void ini(MPI_Comm comm, /*io*/ basetags::TagGen *tg, /**/ CommM *c);
+void ini(MPI_Comm comm, /**/ CommM *c);
 void ini(int num_mom_per_mesh, int max_mesh_num, UnpackM *u);
 
 void fin(PackM *p);
