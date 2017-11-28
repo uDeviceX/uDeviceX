@@ -1,5 +1,4 @@
 static void dump(rbc::Quants q, rbc::force::TicketT t) {
-    float av[2];
     int n;
     Particle *pp;
     static int i = 0;
@@ -7,7 +6,6 @@ static void dump(rbc::Quants q, rbc::force::TicketT t) {
     UC(emalloc(n*sizeof(Particle), (void**)&pp));
     cD2H(pp, q.pp, q.n);
     io::mesh::rbc(m::cart, pp, q.tri_hst, q.nc, q.nv, q.nt, i++);
-    area_volume::hst(q.nt, q.nv, q.nc, q.pp, q.tri, /**/ av);
     diagnostics(m::cart, n, pp, i);
     free(pp);
 }

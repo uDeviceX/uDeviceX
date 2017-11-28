@@ -31,7 +31,7 @@ static __device__ float volume(float3 r0, float3 r1, float3 r2) {
          (r0.y*r1.z-r0.z*r1.y)*r2.x);
 }
 
-__global__ void dev(int nt, int nv, const Particle *pp, const int4 *tri, float *totA_V) {
+__global__ void main(int nt, int nv, const Particle *pp, const int4 *tri, float *totA_V) {
     float2 a_v = make_float2(0.0f, 0.0f);
     int i, cid = blockIdx.y;
     float3 r0, r1, r2;
