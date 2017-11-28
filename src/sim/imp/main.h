@@ -15,30 +15,30 @@ void gen() { /* generate */
         dSync();
         UC(sdf::ini(m::cart, &w::qsdf));
         MC(m::Barrier(m::cart));
-        inter::create_walls(MAXNWALL, w::qsdf, /*io*/ &o::q, /**/ &w::q);
+        inter::create_walls(MAXNWALL, w::qsdf, /*io*/ &flu.q, /**/ &w::q);
     }
-    inter::freeze(m::cart, w::qsdf, /*io*/ &o::q, /**/ &s::q, &r::q);
+    inter::freeze(m::cart, w::qsdf, /*io*/ &flu.q, /**/ &s::q, &r::q);
     clear_vel();
 
     if (multi_solvent) {
-        Particle *pp = o::q.pp;
-        int n = o::q.n;
-        int *cc = o::q.cc;
+        Particle *pp = flu.q.pp;
+        int n = flu.q.n;
+        int *cc = flu.q.cc;
         Particle *pp_hst = a::pp_hst;
-        int *cc_hst = o::q.cc_hst;
+        int *cc_hst = flu.q.cc_hst;
         inter::color_dev(pp, n, /*o*/ cc, /*w*/ pp_hst, cc_hst);
     }
 }
 
 void sim_gen() {
-    flu::gen_quants(&o::q);
-    flu::build_cells(&o::q);
-    if (global_ids)    flu::gen_ids  (m::cart, o::q.n, &o::q);
+    flu::gen_quants(&flu.q);
+    flu::build_cells(&flu.q);
+    if (global_ids)    flu::gen_ids  (m::cart, flu.q.n, &flu.q);
     if (rbcs) {
         rbc::main::gen_quants(m::cart, "rbc.off", "rbcs-ic.txt", /**/ &r::q);
         rbc::force::gen_ticket(r::q, &r::tt);
 
-        if (multi_solvent) gen_colors(&colorer);
+        if (multi_solvent) gen_colors(&colorer, /**/ &flu);
     }
     MC(m::Barrier(m::cart));
 
@@ -50,7 +50,7 @@ void sim_gen() {
         dSync();
         if (walls && w::q.n) wall::gen_ticket(w::q, &w::t);
         solids0 = solids;
-        if (rbcs && multi_solvent) gen_colors(&colorer);
+        if (rbcs && multi_solvent) gen_colors(&colorer, /**/ &flu);
         run(wall_creation, nsteps);
     } else {
         solids0 = solids;
@@ -64,8 +64,8 @@ void sim_strt() {
     long nsteps = (long)(tend / dt);
 
     /*Q*/
-    flu::strt_quants(restart::BEGIN, &o::q);
-    flu::build_cells(&o::q);
+    flu::strt_quants(restart::BEGIN, &flu.q);
+    flu::build_cells(&flu.q);
 
     if (rbcs) rbc::main::strt_quants("rbc.off", restart::BEGIN, &r::q);
     dSync();

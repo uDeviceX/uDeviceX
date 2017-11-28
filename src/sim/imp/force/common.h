@@ -1,5 +1,5 @@
 void body_force(scheme::force::Param fpar) {
-    scheme::force::main(1, fpar,  o::q.n, o::q.pp, /**/ o::ff);
+    scheme::force::main(1, fpar,  flu.q.n, flu.q.pp, /**/ flu.ff);
     if (pushsolid && solids0)
         scheme::force::main(solid_mass, fpar, s::q.n, s::q.pp, /**/ s::ff);
     if (pushrbc && rbcs)
@@ -18,12 +18,12 @@ void clear_forces(Force* ff, int n) {
 void forces_wall() {
     using namespace wall;
     Cloud co, cs, cr;
-    ini_cloud(o::q.pp, &co);
+    ini_cloud(flu.q.pp, &co);
     ini_cloud(s::q.pp, &cs);
     ini_cloud(r::q.pp, &cr);
-    if (multi_solvent) ini_cloud_color(o::q.cc, &co);
+    if (multi_solvent) ini_cloud_color(flu.q.cc, &co);
     
-    if (o::q.n)           color::force(w::qsdf, w::q, w::t, co, o::q.n, /**/ o::ff);
+    if (flu.q.n)           color::force(w::qsdf, w::q, w::t, co, flu.q.n, /**/ flu.ff);
     if (solids0 && s::q.n) grey::force(w::qsdf, w::q, w::t, cs, s::q.n, /**/ s::ff);
     if (rbcs && r::q.n)    grey::force(w::qsdf, w::q, w::t, cr, r::q.n, /**/ r::ff);
 }

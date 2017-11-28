@@ -1,5 +1,5 @@
 void clear_vel() {
-    scheme::move::clear_vel(o::q.n, o::q.pp);
+    scheme::move::clear_vel(flu.q.n, flu.q.pp);
     if (solids) scheme::move::clear_vel(s::q.n, s::q.pp);
     if (rbcs  ) scheme::move::clear_vel(r::q.n, r::q.pp);
 }
@@ -26,10 +26,10 @@ void bounce_solid(long it) {
     tt = s::q.dtt;
     i_pp = s::q.i_pp;
 
-    n  = o::q.n;
-    pp = o::q.pp;
-    cc = o::q.cells.counts;
-    ss = o::q.cells.starts;
+    n  = flu.q.n;
+    pp = flu.q.pp;
+    cc = flu.q.cells.counts;
+    ss = flu.q.cells.starts;
 
     /* send meshes to frags */
 
@@ -52,9 +52,9 @@ void bounce_solid(long it) {
     if (nm + nmhalo)
         CC(d::MemsetAsync(bb::mm, 0, nt * (nm + nmhalo) * sizeof(Momentum)));
 
-    meshbb::find_collisions(nm + nmhalo, nt, nv, tt, i_pp, L, ss, cc, pp, o::ff, /**/ bb::bbd);
+    meshbb::find_collisions(nm + nmhalo, nt, nv, tt, i_pp, L, ss, cc, pp, flu.ff, /**/ bb::bbd);
     meshbb::select_collisions(n, /**/ bb::bbd);
-    meshbb::bounce(n, bb::bbd, o::ff, nt, nv, tt, i_pp, /**/ pp, bb::mm);
+    meshbb::bounce(n, bb::bbd, flu.ff, nt, nv, tt, i_pp, /**/ pp, bb::mm);
 
     /* send momentum back */
 
@@ -79,30 +79,30 @@ void bounce_solid(long it) {
 }
 
 
-void update_solvent(long it) {
-    scheme::move::main(dpd_mass, o::q.n, o::ff, o::q.pp);
+void update_solvent(long it, /**/ Flu *f) {
+    scheme::move::main(dpd_mass, f->q.n, f->ff, f->q.pp);
 }
 
 void update_rbc(long it) {
     bool cond;
     cond = multi_solvent && color_freq && it % color_freq == 0;
-    if (cond) {MSG("recolor"); gen_colors(&colorer);};
+    if (cond) {MSG("recolor"); gen_colors(&colorer, /**/ &flu);}; /* TODO: does not belong here*/
     scheme::move::main(rbc_mass, r::q.n, r::ff, r::q.pp);
 }
 
-void restrain(long it) {
+void restrain(long it, Flu *f) {
     scheme::restrain::QQ qq;
     scheme::restrain::NN nn;
-    qq.o = o::q.pp;
+    qq.o = f->q.pp;
     qq.r = r::q.pp;
 
-    nn.o = o::q.n;
+    nn.o = f->q.n;
     nn.r = r::q.n;
-    scheme::restrain::main(m::cart, o::q.cc, nn, it, /**/ qq);
+    scheme::restrain::main(m::cart, f->q.cc, nn, it, /**/ qq);
 }
 
-void bounce_wall() {
-    sdf::bounce(&w::qsdf, o::q.n, /**/ o::q.pp);
+void bounce_wall(Flu *f) {
+    sdf::bounce(&w::qsdf, f->q.n, /**/ f->q.pp);
     if (rbcs) sdf::bounce(&w::qsdf, r::q.n, /**/ r::q.pp);
 }
 

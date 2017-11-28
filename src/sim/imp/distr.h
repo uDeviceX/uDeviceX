@@ -1,25 +1,26 @@
 /* the following functions will need to be splitted in the future 
    for performance reasons */
 
-void distribute_flu() {
-    using namespace o;
+void distribute_flu(Flu *f) {
+    flu::Quants *q = &f->q;
+    FluDistr *d = &f->d;
     
-    build_map(q.n, q.pp, /**/ &d.p);
-    pack(&q, /**/ &d.p);
-    download(q.n, /**/ &d.p);
+    build_map(q->n, q->pp, /**/ &d->p);
+    pack(q, /**/ &d->p);
+    download(q->n, /**/ &d->p);
 
-    UC(post_send(&d.p, &d.c));
-    UC(post_recv(&d.c, &d.u));
+    UC(post_send(&d->p, &d->c));
+    UC(post_recv(&d->c, &d->u));
 
-    distr::flu::bulk(/**/ &q);
+    distr::flu::bulk(/**/ q);
     
-    wait_send(&d.c);
-    wait_recv(&d.c, &d.u);
+    wait_send(&d->c);
+    wait_recv(&d->c, &d->u);
     
-    unpack(/**/ &d.u);
+    unpack(/**/ &d->u);
     
-    halo(&d.u, /**/ &q);
-    gather(&d.p, &d.u, /**/ &q);
+    halo(&d->u, /**/ q);
+    gather(&d->p, &d->u, /**/ q);
 
     dSync();
 }

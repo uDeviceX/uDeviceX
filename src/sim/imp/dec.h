@@ -3,19 +3,11 @@ bool solids0;
 bop::Ticket dumpt;
 basetags::TagGen tag_gen;
 
+
+Flu flu;
+
 namespace o /* s[o]lvent */
 {
-flu::Quants       q;
-
-FluDistr d;
-Fluexch e;
-
-BulkData *bulkdata;
-HaloData *halodata;
-
-Force *ff;
-Force  ff_hst[MAX_PART_NUM]; /* solvent forces on host    */
-
 /* velocity controller */
 PidVCont vcont;
 }

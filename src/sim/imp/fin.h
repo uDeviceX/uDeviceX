@@ -85,12 +85,7 @@ void fin() {
         wall::free_ticket(&w::t);
     }
 
-    flu::fin(&o::q);
-    fin(/**/ o::bulkdata);
-    fin(/**/ o::halodata);
- 
-    fin_flu_distr(/**/ &o::d);
-    fin_flu_exch(/**/ &o::e);
+    fin_flu(&flu);
 
     if (multi_solvent && rbcs)
         fin_colorer(/**/ &colorer);
