@@ -1,2 +1,2 @@
-# TEST: orient.0
+# nTEST: orient.0
 # u.orient data/rbc.ply data/rbc.ply | awk 'NR % 10 == 0' > punto.out.txt
