@@ -60,25 +60,25 @@ int main(int argc, char **argv) {
     frag_estimates(NBAGS, maxdensity, /**/ capacity);
 
     basetags::ini(/**/ &tg);
-    OC(ini(HST_ONLY, NONE, sizeof(int), capacity, /**/ &sendB, NULL));
-    OC(ini(HST_ONLY, NONE,sizeof(int), capacity, /**/ &recvB, NULL));
-    OC(ini(m::cart, /*io*/ &tg, /**/ &stamp));
+    UC(ini(HST_ONLY, NONE, sizeof(int), capacity, /**/ &sendB, NULL));
+    UC(ini(HST_ONLY, NONE,sizeof(int), capacity, /**/ &recvB, NULL));
+    UC(ini(m::cart, /*io*/ &tg, /**/ &stamp));
 
     fill_bags(&sendB);
 
-    OC(post_recv(&recvB, &stamp));
-    OC(post_send(&sendB, &stamp));
+    UC(post_recv(&recvB, &stamp));
+    UC(post_send(&sendB, &stamp));
 
-    OC(wait_recv(&stamp, &recvB));
-    OC(wait_send(&stamp));
+    UC(wait_recv(&stamp, &recvB));
+    UC(wait_send(&stamp));
 
     compare(&sendB, &recvB);
 
     MSG("Passed");
     
-    OC(fin(HST_ONLY, NONE, &sendB, NULL));
-    OC(fin(HST_ONLY, NONE, &recvB, NULL));
-    OC(fin(/**/ &stamp));
+    UC(fin(HST_ONLY, NONE, &sendB, NULL));
+    UC(fin(HST_ONLY, NONE, &recvB, NULL));
+    UC(fin(/**/ &stamp));
     
     m::fin();
 }
