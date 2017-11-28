@@ -7,7 +7,7 @@ void forces(bool wall0) {
     if (wall0 && w::q.n) forces_wall();
     if (rbcs) forces_rbc(&rbc);
 
-    forces_objects(&flu);
+    forces_objects(&flu, &rbc, &rig);
     
     dSync();
 }
