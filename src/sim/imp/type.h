@@ -84,7 +84,12 @@ struct Rbc {
 };
 
 struct Rig {
-    // TODO
+    rig::Quants q;
+    scan::Work ws; /* work for scan */
+    Force *ff, *ff_hst;
+
+    RigDistr d;
+    BBexch e;
 };  
 
 struct Sim {
