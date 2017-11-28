@@ -21,6 +21,7 @@ namespace rs /* objects */
 {
 ObjExch e;
 cnt::Contact c;
+fsi::Fsi fsi;
 }
 
 

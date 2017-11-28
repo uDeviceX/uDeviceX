@@ -110,6 +110,8 @@ static void fin_objhelper(ObjHelper *o) {
 
 void fin() {
     cnt::fin(&rs::c);
+    fsi::fin(&rs::fsi);
+    
     bop::fin(&dumpt);
     if (rbcs || solids)
         fin_obj_exch(&rs::e);

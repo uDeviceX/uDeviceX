@@ -130,7 +130,8 @@ void ini() {
     if (fsiforces) fsi::ini();
 
     cnt::ini(&rs::c);
-
+    fsi::ini(&rs::fsi);
+    
     if (rbcs || solids)
         UC(ini_obj_exch(m::cart, &tag_gen, &rs::e));
     
