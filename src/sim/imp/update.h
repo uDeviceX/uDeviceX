@@ -108,7 +108,3 @@ void bounce_wall(Flu *f, Rbc *r) {
     sdf::bounce(&w::qsdf, f->q.n, /**/ f->q.pp);
     if (rbcs) sdf::bounce(&w::qsdf, r->q.n, /**/ r->q.pp);
 }
-
-void bounce_rbc() {
-    // TODO
-}
