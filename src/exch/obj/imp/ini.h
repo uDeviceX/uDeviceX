@@ -23,8 +23,8 @@ void ini(int nw, int maxd, int maxpsolid, Pack *p) {
 }
 
 void ini(MPI_Comm comm, /*io*/ basetags::TagGen *tg, /**/ Comm *c) {
-    UC(ini(comm, /*io*/ tg, /**/ &c->pp));
-    UC(ini(comm, /*io*/ tg, /**/ &c->ff));
+    UC(ini(comm, /**/ &c->pp));
+    UC(ini(comm, /**/ &c->ff));
 }
 
 void ini(int maxd, int maxpsolid, Unpack *u) {

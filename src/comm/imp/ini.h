@@ -49,7 +49,7 @@ int ini(AllocMod fmod, AllocMod bmod, size_t bsize, const int capacity[NBAGS], /
 
 /* stamp allocation */
 
-int ini(MPI_Comm comm, /*io*/ basetags::TagGen *tg, /**/ Stamp *s) {
+int ini(MPI_Comm comm, /**/ Stamp *s) {
     int i, c, crd_rnk[3];
     
     for (i = 0; i < NFRAGS; ++i) {

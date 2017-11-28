@@ -23,9 +23,9 @@ void ini(int maxnc, int nv, Pack *p) {
 }
 
 void ini(MPI_Comm comm, /*io*/ basetags::TagGen *tg, /**/ Comm *c) {
-    UC(ini(comm, /*io*/ tg, /**/ &c->pp));
+    UC(ini(comm, /**/ &c->pp));
     if (rbc_ids)
-        UC(ini(comm, /*io*/ tg, /**/ &c->ii));
+        UC(ini(comm, /**/ &c->ii));
 }
 
 void ini(int maxnc, int nv, Unpack *u) {

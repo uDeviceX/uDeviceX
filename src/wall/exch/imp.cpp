@@ -102,7 +102,7 @@ void exch(int maxn, /*io*/ Particle *pp, int *n) {
     UC(ini(HST_ONLY, NONE, sizeof(Particle), capacity, &send, NULL));
     UC(ini(HST_ONLY, NONE, sizeof(Particle), capacity, &recv, NULL));
     ini(&tg);
-    UC(ini(m::cart, &tg, &stamp));
+    UC(ini(m::cart, &stamp));
 
     fill_bags(*n, pp, /**/ &send);
     communicate(&send, /**/ &stamp, &recv);

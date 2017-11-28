@@ -17,7 +17,7 @@ void ini(int nv, int max_mesh_num, Pack *p) {
 }
 
 void ini(MPI_Comm comm, /*io*/ basetags::TagGen *tg, /**/ Comm *c) {
-    UC(ini(comm, /*io*/ tg, /**/ &c->pp));
+    UC(ini(comm, /**/ &c->pp));
 }
 
 void ini(int nv, int max_mesh_num, Unpack *u) {
@@ -60,8 +60,8 @@ void ini(int nt, int max_mesh_num, PackM *p) {
 }
 
 void ini(MPI_Comm comm, /*io*/ basetags::TagGen *tg, /**/ CommM *c) {
-    UC(ini(comm, /*io*/ tg, /**/ &c->mm));
-    UC(ini(comm, /*io*/ tg, /**/ &c->ii));
+    UC(ini(comm, /**/ &c->mm));
+    UC(ini(comm, /**/ &c->ii));
 }
 
 void ini(int nt, int max_mesh_num, UnpackM *u) {

@@ -13,7 +13,6 @@
 #include "utils/error.h"
 #include "d/api.h"
 #include "mpi/wrapper.h"
-#include "mpi/basetags.h"
 #include "mpi/glb.h"
 
 #include "imp.h"

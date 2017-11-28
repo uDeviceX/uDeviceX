@@ -41,7 +41,7 @@ int ini(AllocMod fmod, AllocMod bmod, size_t bsize, const int capacity[NBAGS], /
 int fin(AllocMod fmod, AllocMod bmod, /**/ hBags *hb, dBags *db);
 
 /* stamp alloc */
-int ini(MPI_Comm comm, /*io*/ basetags::TagGen *tg, /**/ Stamp *s);
+int ini(MPI_Comm comm, /**/ Stamp *s);
 int fin(/**/ Stamp *s);
 
 /* communication */
