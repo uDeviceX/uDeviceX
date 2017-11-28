@@ -113,7 +113,7 @@ static void ini_wall(Wall *w) {
     wall::alloc_ticket(&w->t);
 }
 
-static void ini_objhelper(MPI_Comm cart, /*io*/ basetags::TagGen *tg, /**/ ObjHelper *o) {
+static void ini_objhelper(MPI_Comm cart, /*io*/ basetags::TagGen *tg, /**/ ObjInter *o) {
     if (contactforces) cnt::ini(&o->cnt);
     UC(ini_obj_exch(cart, tg, &o->e));    
 }

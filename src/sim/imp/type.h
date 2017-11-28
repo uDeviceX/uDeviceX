@@ -107,8 +107,8 @@ struct Wall {
     wall::Ticket t;
 };
 
-/* helper for computing object forces */
-struct ObjHelper {
+/* helper for computing object interactions */
+struct ObjInter {
     ObjExch e;
     cnt::Contact cnt;
     fsi::Fsi     fsi;
