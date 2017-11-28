@@ -100,6 +100,13 @@ struct Rig {
     RigDistr d;
 };  
 
+/* data holder for walls */
+struct Wall {
+    sdf::Quants qsdf;
+    wall::Quants q;
+    wall::Ticket t;
+};
+
 struct Sim {
     /* quantities */
     Flu flu;
