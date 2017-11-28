@@ -6,4 +6,9 @@ struct SolventWrap {
     int n; 
     int *starts;
 };
+
+struct Fsi {
+    SolventWrap* wo;
+    rnd::KISS* rgen;
+};
 }
