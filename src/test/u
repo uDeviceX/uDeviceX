@@ -1,5 +1,5 @@
 # Compile all units
-set -eu
+set -u
 for U in `ls -d u/* u/*/* u/*/*/* u/*/*/* u/*/*/*/*`
 do if test ! -f "$U/make/i"; then continue; fi
    echo >&2 "compile $U"
