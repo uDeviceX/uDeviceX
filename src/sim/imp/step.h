@@ -35,7 +35,7 @@ void step(scheme::force::Param *fpar, bool wall0, int it) {
 
     if (wall0) bounce_wall(/**/ &flu, &rbc);
 
-    if (sbounce_back && solids0) bounce_solid(it, /**/ &rig);
+    if (sbounce_back && solids0) bounce_solid(it, /**/ &bb, &rig);
 
     recolor_flux(/**/ &flu);
 }

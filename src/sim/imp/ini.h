@@ -135,12 +135,9 @@ void ini() {
     
     if (solids) {
         ini_rig(m::cart, /* io */ &tag_gen, /**/ &rig);
-        
-        meshbb::ini(MAX_PART_NUM, /**/ &bb::bbd);
-        Dalloc(&bb::mm, MAX_PART_NUM);
 
         if (sbounce_back)
-            UC(ini_bb_exch(rig.q.nt, rig.q.nv, MAX_CELL_NUM, m::cart, /*io*/ &tag_gen, /**/ &bb::e));
+            ini_bounce_back(m::cart, &rig, /*io*/ &tag_gen, /**/ &bb);
     }
 
     MC(MPI_Barrier(m::cart));

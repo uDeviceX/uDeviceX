@@ -119,12 +119,9 @@ void fin() {
 
     if (solids) {
         fin_rig(/**/ &rig);
-
-        meshbb::fin(/**/ &bb::bbd);
-        Dfree(bb::mm);
         
         if (sbounce_back)
-            fin_bb_exch(/**/ &bb::e);
+            fin_bounce_back(&bb);
     }
 
     if (rbcs) fin_rbc(/**/ &rbc);

@@ -7,6 +7,8 @@ Flu flu;
 Rbc rbc;
 Rig rig;
 
+BounceBack bb;
+
 namespace o /* s[o]lvent */
 {
 /* velocity controller */
@@ -33,10 +35,3 @@ cnt::Contact c;
 }
 
 Colorer colorer;
-
-namespace bb /* bounce back */
-{
-meshbb::BBdata bbd;
-Momentum *mm;
-BBexch e;
-}
