@@ -69,6 +69,19 @@ static void ini_colorer(int nv, MPI_Comm comm, /*io*/ basetags::TagGen *tg, /**/
     Dalloc(&c->maxext, MAX_CELL_NUM);
 }
 
+static void ini_flu(MPI_Comm cart, /*io*/ basetags::TagGen *tg, /**/ Flu *f) {
+
+    flu::ini(&f->q);
+    ini(MAX_PART_NUM, /**/ &f->bulkdata);
+    ini(cart, /**/ &f->halodata);
+    
+    UC(ini_flu_distr(cart, /*io*/ &tag_gen, /**/ &f->d));
+    UC(ini_flu_exch(cart, /*io*/ &tag_gen, /**/ &f->e));
+    
+    UC(Dalloc(&o::ff, MAX_PART_NUM));
+    UC(emalloc(MAX_PART_NUM * sizeof(Force), /**/ (void**) &f->ff_hst));
+}
+
 void ini() {
     basetags::ini(&tag_gen);
     datatype::ini();
