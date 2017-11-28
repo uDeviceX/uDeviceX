@@ -103,6 +103,10 @@ static void fin_wall(Wall *w) {
     wall::free_ticket(&w->t);
 }
     
+static void fin_objhelper(ObjHelper *o) {
+    if (contactforces) cnt::fin(&o->cnt);
+    UC(fin_obj_exch(&o->e));    
+}
 
 void fin() {
     cnt::fin(&rs::c);

@@ -110,7 +110,7 @@ struct Wall {
 /* helper for computing object forces */
 struct ObjHelper {
     ObjExch e;
-    cnt::Contact c;
+    cnt::Contact cnt;
 };
 
 struct Sim {
