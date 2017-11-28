@@ -7,6 +7,7 @@
 
 #include "mpi/glb.h"
 
+#include "utils/error.h"
 #include "utils/cc.h"
 #include "utils/kl.h"
 #include "inc/def.h"
@@ -18,7 +19,7 @@
 
 #include "utils/cc.h"
 
-#include "algo/scan/int.h"
+#include "algo/scan/imp.h"
 #include "clist/imp.h"
 #include "meshbb/imp.h"
 
