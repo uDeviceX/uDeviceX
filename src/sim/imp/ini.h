@@ -91,6 +91,15 @@ static void ini_rbc(MPI_Comm cart, /*io*/ basetags::TagGen *tg, /**/ Rbc *r) {
     if (RBC_STRETCH)   UC(rbc::stretch::ini("rbc.stretch", r->q.nv, /**/ &r->stretch));
 }
 
+static void ini_rig(MPI_Comm cart, /*io*/ basetags::TagGen *tg, /**/ Rig *s) {
+    rig::ini(&s->q);
+    scan::alloc_work(XS * YS * ZS, /**/ &s->ws);
+    UC(emalloc(sizeof(&s->ff_hst)*MAX_PART_NUM, (void**) &s->ff_hst));
+    Dalloc(&s->ff, MAX_PART_NUM);
+
+    UC(ini_rig_distr(s->q.nv, cart, /*io*/ tg, /**/ &s->d));    
+}
+
 void ini() {
     basetags::ini(&tag_gen);
     datatype::ini();

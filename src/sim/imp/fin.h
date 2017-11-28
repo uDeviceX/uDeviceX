@@ -82,6 +82,15 @@ static void fin_rbc(Rbc *r) {
     if (RBC_STRETCH)   rbc::stretch::fin(/**/ r->stretch);
 }
 
+static void fin_rig(Rig *s) {
+    rig::fin(&s->q);
+    scan::free_work(/**/ &s->ws);
+    Dfree(s->ff);
+    UC(efree(s->ff_hst));
+
+    UC(fin_rig_distr(/**/ &s->d));
+}
+
 void fin() {
     cnt::fin(&rs::c);
     bop::fin(&dumpt);
