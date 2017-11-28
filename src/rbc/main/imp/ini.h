@@ -19,7 +19,7 @@ static void ini_edg(Quants *q)  { Dalloc(&q->shape.edg,  q->nv * RBCmd); }
 static void ini_anti(Quants *q) { Dalloc(&q->shape.anti, q->nv * RBCmd); }
 
 void ini(Quants *q) {
-    ini_common(q);
+    UC(ini_common(q));
     if (rbc_ids) ini_ids(q);
     if (RBC_STRESS_FREE) ini_edg (q);
     if (RBC_RND)         ini_anti(q);
