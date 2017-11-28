@@ -58,6 +58,7 @@ struct Colorer {
 };
 
 
+/* data holder for solvent */
 struct Flu {
     flu::Quants q;
 
@@ -71,6 +72,7 @@ struct Flu {
     Force *ff_hst; /* solvent forces on host    */
 };
 
+/* data holder for red blood cells */
 struct Rbc {
     rbc::Quants q;
     rbc::force::TicketT tt;
@@ -83,6 +85,7 @@ struct Rbc {
     rbc::stretch::Fo *stretch;  /* helper to apply stretching [fo]rce to cells */
 };
 
+/* data holder for rigid objects */
 struct Rig {
     rig::Quants q;
     scan::Work ws; /* work for scan */
