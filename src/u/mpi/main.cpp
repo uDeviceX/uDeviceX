@@ -4,11 +4,10 @@
 #include "inc/conf.h"
 
 #include "msg.h"
-#include "mpi/glb.h"
-#include "glb/imp.h"
 
 #include "utils/mc.h"
 #include "mpi/wrapper.h"
+#include "mpi/glb.h"
 
 int main(int argc, char **argv) {
     m::ini(argc, argv);
