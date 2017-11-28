@@ -96,7 +96,7 @@
 #include "scheme/move/imp.h"
 #include "scheme/restrain/imp.h"
 
-#include "vcontroller/imp.h"
+#include "control/vel/imp.h"
 
 #include "color/flux.h"
 
