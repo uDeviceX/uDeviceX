@@ -24,7 +24,7 @@ int env2d_default(const char* n, int def) { /* read an integer from env with def
 FILE* safe_fopen(const char* fn, const char *mode) {
   FILE* fd = fopen(fn, mode);
   if (fd == NULL) {
-    fprintf(stderr, "(rbc_utils) ERROR: cannot open file: %s\n", fn);
+    fprintf(stderr, "(util) ERROR: cannot open file: %s\n", fn);
     exit(2);
   }
   return fd;
@@ -33,7 +33,7 @@ FILE* safe_fopen(const char* fn, const char *mode) {
 size_t safe_fread(void *ptr, size_t size, size_t nmemb, FILE *stream) {
   size_t rc = fread(ptr, size, nmemb, stream);
   if (rc == 0) {
-    fprintf(stderr, "(rbc_utils) ERROR: cannot read data\n");
+    fprintf(stderr, "(util) ERROR: cannot read data\n");
     exit(2);
   }
   return rc;
