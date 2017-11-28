@@ -20,17 +20,22 @@ enum AllocMod {
     // end::AllocMod[]
 };
 
+// tag::dBags[]
 struct dBags {
     data_t *data[NBAGS]; /* data on the device         */
 };
+// end::dBags[]
 
+// tag::hBags[]
 struct hBags {
     data_t *data[NBAGS]; /* data on the host           */
     int         *counts; /* size of the data           */
     int capacity[NBAGS]; /* capacity of each frag      */
     size_t bsize;        /* size of one datum in bytes */
 };
+// end::hBags[]
 
+// tag::stamp[]
 struct Stamp {
     MPI_Request sreq[NBAGS]; /* send requests */
     MPI_Request rreq[NBAGS]; /* recv requests */
@@ -38,6 +43,7 @@ struct Stamp {
     int ranks[NFRAGS];       /* ranks of neighbors     */
     int  tags[NFRAGS];       /* tags in bt coordinates */
 };
+// end::stamp[]
 
 // tag::alloc[]
 /* bags alloc */
