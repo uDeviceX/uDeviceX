@@ -84,10 +84,10 @@ static void ini_flu(MPI_Comm cart, /*io*/ basetags::TagGen *tg, /**/ Flu *f) {
 
 static void ini_rbc(MPI_Comm cart, /*io*/ basetags::TagGen *tg, /**/ Rbc *r) {
     Dalloc(&r->ff, MAX_PART_NUM);
-    rbc::main::ini(&r->q);
+    UC(rbc::main::ini(&r->q));
 
     UC(ini_rbc_distr(r->q.nv, cart, /*io*/ tg, /**/ &r->d));
-    if (rbc_com_dumps) rbc::com::ini(MAX_CELL_NUM, /**/ &r->com);
+    if (rbc_com_dumps) UC(rbc::com::ini(MAX_CELL_NUM, /**/ &r->com));
     if (RBC_STRETCH)   UC(rbc::stretch::ini("rbc.stretch", r->q.nv, /**/ &r->stretch));
 }
 
@@ -119,10 +119,10 @@ void ini() {
 
     UC(emalloc(3 * MAX_PART_NUM * sizeof(Particle), (void**) &a::pp_hst));
     
-    if (rbcs) ini_rbc(m::cart, /* io */ &tag_gen, /**/ &rbc);
+    if (rbcs) UC(ini_rbc(m::cart, /* io */ &tag_gen, /**/ &rbc));
 
-    if (VCON) ini_vcont(m::cart, /**/ &vcont);
-    if (fsiforces) fsi::ini();
+    if (VCON) UC(ini_vcont(m::cart, /**/ &vcont));
+    if (fsiforces) UC(fsi::ini());
 
     cnt::ini(&rs::c);
 
