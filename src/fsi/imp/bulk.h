@@ -1,18 +1,23 @@
-static void bulk0(const int *start, PaWrap *pw, FoWrap *fw, Cloud cloud) {
+static void bulk_one_wrap(PaWrap *pw, FoWrap *fw, Fsi *fsi) {
     int n0, n1;
     float rnd;
     const Particle *ppA = pw->pp;
-    rnd = rgen->get_float();
+    SolventWrap *wo = fsi->wo;
+    Cloud cloud = wo->c;
+    
+    rnd = fsi->rgen->get_float();
     n0 = pw->n;
     n1 = wo->n;
-    KL(dev::bulk, (k_cnf(3*n0)), (start, (float*)ppA, cloud,     \
-                                  n0, n1, \
+
+    KL(dev::bulk, (k_cnf(3*n0)), (wo->starts, (float*)ppA, cloud, 
+                                  n0, n1,
                                   rnd, (float*)fw->ff, (float*)wo->ff));
 }
 
-void bulk(int nw, PaWrap *pw, FoWrap *fw) {
-    int i;
+void bulk(Fsi *fsi, int nw, PaWrap *pw, FoWrap *fw) {
+    if (nw == 0)
+        return;
 
-    if (nw == 0) return;
-    for (i = 0; i < nw; i++) bulk0(wo->starts, pw++, fw++, wo->c);
+    for (int i = 0; i < nw; i++)
+        bulk_one_wrap(pw++, fw++, fsi);
 }

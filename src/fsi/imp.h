@@ -1,7 +1,7 @@
 namespace fsi {
-void halo(Pap26 PP, Fop26 FF, int counts[26]);
-void ini();
-void fin();
-void bind(SolventWrap wrap);
-void bulk(int nw, PaWrap *pw, FoWrap *fw);
+void ini(Fsi *fsi);
+void fin(Fsi *fsi);
+void bind(SolventWrap wrap, /**/ Fsi *fsi);
+void bulk(Fsi *fsi, int nw, PaWrap *pw, FoWrap *fw);
+void halo(Fsi *fsi, Pap26 PP, Fop26 FF, int counts[26]);
 }
