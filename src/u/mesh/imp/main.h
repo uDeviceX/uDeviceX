@@ -37,7 +37,7 @@ static void write_point(float *r, int inside) {
 }
 
 static void read_off(const char *path) {
-    M.nv = off::vert(path,  NV  M.vert);
+    M.nv = off::vert(path,  NV,  M.vert);
     M.nf = off::faces(path, NT, M.faces);
 }
 
