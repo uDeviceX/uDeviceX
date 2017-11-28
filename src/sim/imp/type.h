@@ -111,6 +111,7 @@ struct Wall {
 struct ObjHelper {
     ObjExch e;
     cnt::Contact cnt;
+    fsi::Fsi     fsi;
 };
 
 struct Sim {
