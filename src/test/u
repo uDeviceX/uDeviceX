@@ -1,8 +1,10 @@
 # Compile all units
+# cTEST: test.u.0
 set -ue
-for U in `ls -d u/* u/*/* u/*/*/* u/*/*/* u/*/*/*/*`
-do if test ! -f "$U/make/i"; then continue; fi
-   echo >&2 "compile $U"
+S=`pwd`
+for U in `u.u.list "$S"`
+do echo >&2 "compile $U"
    u.conf0 "$U"
    { u.make clean && u.make -j; } > .make
 done
+echo "$?" > status.out.txt
