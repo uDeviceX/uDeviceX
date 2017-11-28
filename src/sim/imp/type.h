@@ -57,6 +57,12 @@ struct Colorer {
     float3 *minext, *maxext; /* bounding boxes     */
 };
 
+/* holder for bounce back tools and work */
+struct BounceBack {
+    meshbb::BBdata d;
+    Momentum *mm;
+    BBexch e;
+};
 
 /* data holder for solvent */
 struct Flu {
