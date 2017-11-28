@@ -39,21 +39,25 @@ struct Stamp {
     int  tags[NFRAGS];       /* tags in bt coordinates */
 };
 
+// tag::alloc[]
+/* bags alloc */
 int ini(AllocMod fmod, AllocMod bmod, size_t bsize, const int capacity[NBAGS], /**/ hBags *hb, dBags *db);
 int fin(AllocMod fmod, AllocMod bmod, /**/ hBags *hb, dBags *db);
 
 /* stamp alloc */
 int ini(MPI_Comm comm, /**/ Stamp *s);
 int fin(/**/ Stamp *s);
+// end::alloc[]
 
-/* communication */
-int post_recv(hBags *b, Stamp *s);
-int post_send(const hBags *b, Stamp *s);
+// tag::communication[]
+int post_recv(hBags *b, Stamp *s); // <1>
+int post_send(const hBags *b, Stamp *s); // <2>
 
-int wait_recv(Stamp *s, /**/ hBags *b);
-int wait_send(Stamp *s);
+int wait_recv(Stamp *s, /**/ hBags *b); // <3>
+int wait_send(Stamp *s); // <4>
 
 int  mpi_error(); /* always mpi error for oc testing */
 int comm_error(); /* always comm error */
+// end::communication[]
 
 } // comm
