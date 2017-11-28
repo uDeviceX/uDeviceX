@@ -3,9 +3,8 @@ namespace flu {
 
 using namespace comm;
 
-/* TODO find a name */
-struct A {
-    bool active_predicate;
+struct LivingParts {
+    bool deadlist;
     const Particle *pp;
     const int *tags;
 };

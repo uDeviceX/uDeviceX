@@ -1,5 +1,11 @@
 namespace dev {
 
+__device__ bool valid(int i, int n, LivingParts lp) {
+    if (i >= n) return false;
+    if (lp.deadlist) return lp.tags[i];
+    return true;
+}
+
 __global__ void build_map(const Particle *pp, const int n, /**/ Map m) {
     int pid, fid;
     pid = threadIdx.x + blockIdx.x * blockDim.x;
