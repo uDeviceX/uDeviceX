@@ -1,3 +1,3 @@
 namespace t {
-texture<int, cudaTextureType1D> start;
+// texture<int, cudaTextureType1D> start;
 }

@@ -1,4 +1,4 @@
-static __device__ int r2map(int zplane, int n, float x, float y, float z, /**/ Map *m) {
+static __device__ int r2map(const int *start, int zplane, int n, float x, float y, float z, /**/ Map *m) {
     /* coordinate [r] to map */
     int cnt0, cnt1, cnt2, org0;
     int org1, org2;
@@ -28,28 +28,28 @@ static __device__ int r2map(int zplane, int n, float x, float y, float z, /**/ M
     
     if (zvalid && ycenter - 1 >= 0 && ycenter - 1 < YCELLS) {
         const int cid0 = xstart + XCELLS * (ycenter - 1 + YCELLS * zmy);
-        org0 = fetchS(cid0);
+        org0 = start[cid0];
         count0 = ((cid0 + xcount == NCELLS)
                   ? n
-                  : fetchS(cid0 + xcount)) -
+                  : start[cid0 + xcount]) -
             org0;
     }
     
     if (zvalid && ycenter >= 0 && ycenter < YCELLS) {
         const int cid1 = xstart + XCELLS * (ycenter + YCELLS * zmy);
-        org1 = fetchS(cid1);
+        org1 = start[cid1];
         count1 = ((cid1 + xcount == NCELLS)
                   ? n
-                  : fetchS(cid1 + xcount)) -
+                  : start[cid1 + xcount]) -
             org1;
     }
     
     if (zvalid && ycenter + 1 >= 0 && ycenter + 1 < YCELLS) {
         const int cid2 = xstart + XCELLS * (ycenter + 1 + YCELLS * zmy);
-        org2 = fetchS(cid2);
+        org2 = start[cid2];
         count2 = ((cid2 + xcount == NCELLS)
                   ? n
-                  : fetchS(cid2 + xcount)) -
+                  : start[cid2 + xcount]) -
             org2;
     }
     
