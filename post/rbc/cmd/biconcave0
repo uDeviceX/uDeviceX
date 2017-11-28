@@ -1,3 +1,45 @@
-#!/bin/sh
+#!/usr/bin/awk -f
 
-echo 42
+function rbc(    ans, d, rr, D, R, a0, a1, a2, neg) {
+    neg = z < 0
+    D = 7.82; R = D/2
+    a0 = 0.0518; a1 = 2.0026; a2 = -4.491
+    x *= R; y *= R
+    rr  = x^2 + y^2; rr /= D^2
+    if (d = 1 - 4*rr < 0) return 0
+    z  = sqrt(d) * (a0 + a1*rr + a2*rr^2)
+    z *= D
+    if (neg) z = -z
+}
+
+function read(f,   rc) {
+    n = 0
+    for (;;) {
+	rc = getline < f
+	if (rc <= 0) return "(EOF)"
+	if (!NF)     break
+	n++; x[n] += $1; y[n] += $2; z[n] += $3
+    }
+}
+
+function main(   i) {
+    for (i = 1; i <= n; i++) {
+	print x[i], y[i], z[i]
+    }
+}
+
+function swap(   i, xt, yt, zt) {
+    for (i = 1; i <= n; i++) {
+	xt   = x[i]; yt   = y[i]; zt   = z[i]
+	x[i] = xt ; y[i] = zt;   z[i] = -yt
+    }
+}
+
+BEGIN {
+    for (;;) {
+	if (rc == "(EOF)") break
+	rc = read(ARGV[1])
+	swap() # xyz -> xzy
+	main()
+    }
+}

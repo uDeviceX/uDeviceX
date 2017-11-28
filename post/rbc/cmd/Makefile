@@ -1,7 +1,7 @@
 BIN = $(HOME)/bin
 B = $(BIN)
 
-P = bioconcave0 efit orient orient0
+P = biconcave0 efit orient orient0
 
 # prefix
 p = u
