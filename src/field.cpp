@@ -16,7 +16,7 @@
 
 namespace field {
 static float spl(float x) { /* b-spline (see poc/spline/main.mac) */
-    return  \
+    return
         x <= 0 ? 0.0 :
         x <= 1 ? x*x*x/6 :
         x <= 2 ? (x*((12-3*x)*x-12)+4)/6 :
