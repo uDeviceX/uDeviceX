@@ -1,48 +1,14 @@
-#!/usr/bin/env python2
+#!/bin/sh
 
-from plyfile import PlyData
-import sys
-import numpy as np
-import efit
+usg () {
+    msg 'u.orient [FILE.ply]...'
+    msg 'move points to the coordinates system of equivalent ellipsoid'
+    msg 'dump "punto" format'
+    exit
+}
 
-def err(s):
-    sys.stderr.write("u.orient: %s\n" % s)
-    sys.exit(2)
+msg () { echo >&2 "$@"; }
 
-def read(f):
-    try:            return read0(f)
-    except IOError: return None
+if test "$1" = -h; then usg; fi
 
-def read0(f):
-    f = PlyData.read(f)
-    f = f["vertex"]
-    xyz = np.array([f[p] for p in ('x', 'y', 'z')]).T
-    return xyz
-def shift(xyz, center):
-    X, Y, Z = 0, 1, 2
-    x = xyz[:, X]; y = xyz[:, Y]; z = xyz[:, Z]
-    x -= center[X]; y -= center[Y]; z -= center[Z]
-    xyz[:, X] = x; xyz[:, Y] = y; xyz[:, Z] = z
-def write(xyz, f): np.savetxt(f, xyz)
-def rot(xyz, evecs): xyz[:] = np.dot(xyz, evecs)[:]
-
-def nxt0(xyz):
-    [center, radii, evecs, v, chi2] = efit.ellipsoid(xyz)
-    shift(xyz, center)
-    rot(xyz, evecs)
-    return xyz
-
-def nxt(f):
-    xyz = read(f)
-    if xyz is None: return None
-    else          : return nxt0(xyz)
-
-o = "/dev/stdout"
-Fst=True; o = open(o, "w")
-for f in sys.argv[1:]:
-    xyz = nxt(f)
-    if xyz is None: err("not a ply file: '%s'" % f)
-    if Fst: Fst = False
-    else  : o.write("\n")
-    write(xyz, o)
-o.close()
+exec u.orient0 "$@"
