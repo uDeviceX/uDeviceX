@@ -86,7 +86,7 @@ u.conf conf/couette.h <<!!!
 :
 u.strtdir bin.1
 u.strtdir bin.2
-(make clean && u.make -j && make -C ../tools) > /dev/null
+{ make clean && u.make -j ; } > /dev/null
 sh runfile
 ply2punto r/00003.ply | uscale 100 > ply.out.txt
 
@@ -119,7 +119,7 @@ u.conf conf/around.h <<!!!
 u.strtdir bin.1
 u.strtdir bin.2
 :
-{ make clean && u.make -j && make -C ../tools; } > /dev/null
+{ make clean && u.make -j ; } > /dev/null
 sh runfile
 ply2punto r/00001.ply | uscale 100 > ply.out.txt
 
@@ -152,6 +152,6 @@ u.conf conf/double.poiseuille.h <<!!!
 u.strtdir bin.1
 u.strtdir bin.2
 :
-{ make clean && u.make -j && make -C ../tools; } > /dev/null
+{ make clean && u.make -j ; } > /dev/null
 sh runfile
 cat solid_diag_0000.txt | awk '{print $2, $5, $8}' | uscale 2.5 > sdiag.out.txt

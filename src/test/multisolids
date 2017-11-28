@@ -13,7 +13,7 @@ u.conf conf/double.poiseuille.h <<!!!
   wall_creation=0 contactforces=false field_freq=100
   run
 !!!
-(make clean && u.make -j && make -C ../tools) > /dev/null
+{ make clean && u.make -j ; } > /dev/null
 sh runfile
 cat solid_diag_0000.txt | awk '{print $2, $5, $8}' | uscale 5 > sdiag.out.txt
 
@@ -31,7 +31,7 @@ u.conf conf/double.poiseuille.h <<!!!
   wall_creation=0 contactforces=true field_freq=100
   run
 !!!
-(make clean && u.make -j && make -C ../tools) > /dev/null
+{ make clean && u.make -j ; } > /dev/null
 sh runfile
 cat solid_diag_0000.txt | awk '{print $2, $5, $8}' | uscale 5 > sdiag.out.txt
 
@@ -50,6 +50,6 @@ u.conf conf/double.poiseuille.h <<!!!
   wall_creation=0 contactforces=true field_freq=100
   run
 !!!
-(make clean && u.make -j && make -C ../tools) > /dev/null
+{ make clean && u.make -j && ; } > /dev/null
 sh runfile
 cat solid_diag_0000.txt | awk '{print $2, $5, $8}' | uscale 2.5 > sdiag.out.txt
