@@ -1,4 +1,4 @@
-static void area_volume_hst(int nt, int nv, int nc, const Particle* pp, const int4 *tri, /**/ float *hst) {
+static void area_volume_hst(int nt, int nv, int nc, const Particle *pp, const int4 *tri, /**/ float *hst) {
     float *dev;
     Dalloc(&dev, 2*nc);
     area_volume::main(nt, nv, nc, pp, tri, /**/ dev);
