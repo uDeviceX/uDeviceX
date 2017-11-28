@@ -124,6 +124,8 @@ void fin() {
             fin_bounce_back(&bb);
     }
 
+    UC(efree(a::pp_hst));
+    
     if (rbcs) fin_rbc(/**/ &rbc);
     datatype::fin();
 }

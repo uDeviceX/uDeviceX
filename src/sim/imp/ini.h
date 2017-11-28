@@ -110,6 +110,9 @@ static void ini_bounce_back(MPI_Comm cart, Rig *s, /*io*/ basetags::TagGen *tg, 
 void ini() {
     basetags::ini(&tag_gen);
     datatype::ini();
+
+    UC(emalloc(3 * MAX_PART_NUM * sizeof(Particle), (void**) &a::pp_hst));
+    
     if (rbcs) ini_rbc(m::cart, /* io */ &tag_gen, /**/ &rbc);
 
     if (VCON) ini_vcont(m::cart, /**/ &vcont);

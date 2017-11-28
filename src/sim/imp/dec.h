@@ -21,7 +21,7 @@ wall::Ticket t;
 
 namespace a /* all */
 {
-Particle pp_hst[3*MAX_PART_NUM]; /* particles on host */
+Particle *pp_hst; /* particles on host */
 }
 
 namespace rs /* objects */
