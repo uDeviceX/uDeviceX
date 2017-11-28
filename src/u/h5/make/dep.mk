@@ -6,7 +6,7 @@ $B/io/field/xmf/imp.o: $S/utils/error.h $S/io/field/xmf/imp.h $S/utils/efopen.h 
 $B/mpi/glb.o: $S/inc/conf.h $S/mpi/wrapper.h $S/utils/mc.h $B/conf.h $S/mpi/glb.h
 $B/mpi/wrapper.o: $S/mpi/wrapper.h
 $B/msg.o: $S/msg.h $S/mpi/glb.h
-$B/u/h5/main.o: $S/utils/error.h $S/io/field/h5/imp.h $S/msg.h $S/utils/halloc.h $S/io/field/xmf/imp.h $S/mpi/glb.h
+$B/u/h5/main.o: $S/utils/error.h $S/io/field/h5/imp.h $S/mpi/wrapper.h $S/msg.h $S/utils/halloc.h $S/io/field/xmf/imp.h $S/mpi/glb.h
 $B/utils/efopen.o: $S/utils/error.h $S/utils/efopen.h
 $B/utils/error.o: $S/msg.h $S/utils/error.h
 $B/utils/halloc.o: $S/utils/error.h $S/utils/halloc.h

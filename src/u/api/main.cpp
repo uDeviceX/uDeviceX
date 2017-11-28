@@ -7,7 +7,7 @@
 #include "mpi/glb.h"
 #include "d/api.h"
 
-#include "glb.h"
+#include "mpi/glb.h"
 
 #include "inc/dev.h"
 #include "utils/cc.h"
