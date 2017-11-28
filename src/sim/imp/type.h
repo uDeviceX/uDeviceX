@@ -8,7 +8,7 @@ struct FluDistr {
 };
 
 /* particle exchanger for solvent forces */
-struct Fluexch {
+struct FluExch {
     exch::flu::Pack p;
     exch::flu::Comm c;
     exch::flu::Unpack u;
@@ -69,7 +69,7 @@ struct Flu {
     flu::Quants q;
 
     FluDistr d;
-    Fluexch e;
+    FluExch e;
 
     BulkData *bulkdata;
     HaloData *halodata;

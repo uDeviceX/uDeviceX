@@ -1,4 +1,4 @@
-static void fin_flu_exch(/**/ Fluexch *e) {
+static void fin_flu_exch(/**/ FluExch *e) {
     using namespace exch::flu;
     fin(/**/ &e->p);
     fin(/**/ &e->c);

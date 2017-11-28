@@ -1,4 +1,4 @@
-static void ini_flu_exch(MPI_Comm comm, /*io*/ basetags::TagGen *tg, /**/ Fluexch *e) {
+static void ini_flu_exch(MPI_Comm comm, /*io*/ basetags::TagGen *tg, /**/ FluExch *e) {
     using namespace exch::flu;
     int maxd = HSAFETY_FACTOR * numberdensity;
     

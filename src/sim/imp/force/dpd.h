@@ -5,7 +5,7 @@ void forces_dpd(Flu *f) {
     flu::LFrag26 lfrags;
     flu::RFrag26 rfrags;
 
-    Fluexch *e = &f->e;
+    FluExch *e = &f->e;
     
     ini_cloud(f->q.pp, /**/ &cloud);
     if (multi_solvent)
