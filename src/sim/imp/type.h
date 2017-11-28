@@ -69,9 +69,6 @@ struct Flu {
 
     Force *ff;
     Force *ff_hst; /* solvent forces on host    */
-
-    /* velocity controller */
-    PidVCont vcont;
 };
 
 // struct Sim {
