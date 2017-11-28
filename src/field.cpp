@@ -15,7 +15,7 @@
 #include "msg.h"
 
 namespace field {
-static float spl(float x) { /* b-spline (see tools/bspline.mac) */
+static float spl(float x) { /* b-spline (see poc/spline/main.mac) */
     return  \
         x <= 0 ? 0.0 :
         x <= 1 ? x*x*x/6 :
