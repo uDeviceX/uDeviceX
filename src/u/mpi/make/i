@@ -1,7 +1,6 @@
-find $U  -name '*.cu' -o -name '*.cpp' -o -name '*.h'
-find glb -name '*.cu' -o -name '*.cpp' -o -name '*.h'
+f0 () { find "$1" -name '*.cu' -o -name '*.cpp' -o -name '*.h' -type f ; }
+f () ( for d; do f0 "$d"; done )
 
-echo \
-d/api.cu d/api.h d/common.h d/cpu/imp.h d/cuda/imp.h \
-inc/conf.h mpi/glb.cpp mpi/glb.h mpi/wrapper.cpp mpi/wrapper.h  \
-mpi/wrapper.h msg.cpp msg.h utils/mc.cpp utils/mc.h
+echo $U msg.h msg.cpp
+f $U d inc mpi utils
+
