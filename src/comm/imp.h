@@ -10,12 +10,14 @@ enum {
 
 /* Allocation mod for bags */
 enum AllocMod {
+    // tag::AllocMod[]
     HST_ONLY,   /* only host bags allocated                 */
     DEV_ONLY,   /* only device bags allocated               */
     PINNED,     /* both host and device pinned              */
     PINNED_HST, /* host pinned; no device memory            */
     PINNED_DEV, /* host pinned; device global memory on gpu */
     NONE        /* no allocation                            */
+    // end::AllocMod[]
 };
 
 struct dBags {
