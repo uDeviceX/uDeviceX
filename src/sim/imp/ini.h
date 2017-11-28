@@ -124,25 +124,25 @@ void ini() {
     if (VCON) UC(ini_vcont(m::cart, /**/ &vcont));
     if (fsiforces) UC(fsi::ini());
 
-    cnt::ini(&rs::c);
+    UC(cnt::ini(&rs::c));
 
     if (rbcs || solids)
         UC(ini_obj_exch(m::cart, &tag_gen, &rs::e));
     
-    bop::ini(&dumpt);
+    UC(bop::ini(&dumpt));
 
     if (walls) ini_wall(&wall);
     
-    ini_flu(m::cart, /*io*/ &tag_gen, /**/ &flu);
+    UC(ini_flu(m::cart, /*io*/ &tag_gen, /**/ &flu));
    
     if (multi_solvent && rbcs)
         UC(ini_colorer(rbc.q.nv, m::cart, /*io*/ &tag_gen, /**/ &colorer));
     
     if (solids) {
-        ini_rig(m::cart, /* io */ &tag_gen, /**/ &rig);
+        UC(ini_rig(m::cart, /* io */ &tag_gen, /**/ &rig));
 
         if (sbounce_back)
-            ini_bounce_back(m::cart, &rig, /*io*/ &tag_gen, /**/ &bb);
+            UC(ini_bounce_back(m::cart, &rig, /*io*/ &tag_gen, /**/ &bb));
     }
 
     MC(MPI_Barrier(m::cart));
