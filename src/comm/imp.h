@@ -32,8 +32,7 @@ struct hBags {
 struct Stamp {
     MPI_Request sreq[NBAGS]; /* send requests */
     MPI_Request rreq[NBAGS]; /* recv requests */
-    int bt;                  /* base tag */
-    MPI_Comm cart;
+    MPI_Comm cart;           /* cartesian communicator */
     int ranks[NFRAGS];       /* ranks of neighbors     */
     int  tags[NFRAGS];       /* tags in bt coordinates */
 };

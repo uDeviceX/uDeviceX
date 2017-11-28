@@ -58,7 +58,6 @@ int ini(MPI_Comm comm, /*io*/ basetags::TagGen *tg, /**/ Stamp *s) {
         MC(m::Cart_rank(comm, crd_rnk, s->ranks + i));
         s->tags[i] = frag_anti(i);
     }
-    s->bt = get_tag(tg);
     MC(m::Comm_dup(comm, &s->cart));
     return 0;
 }
