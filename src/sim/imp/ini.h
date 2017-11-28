@@ -127,7 +127,6 @@ void ini() {
     if (rbcs) ini_rbc(m::cart, /* io */ &tag_gen, /**/ &rbc);
 
     if (VCON) ini_vcont(m::cart, /**/ &vcont);
-    if (fsiforces) fsi::ini();
 
     cnt::ini(&rs::c);
     fsi::ini(&rs::fsi);

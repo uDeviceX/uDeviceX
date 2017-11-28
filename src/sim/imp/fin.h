@@ -117,7 +117,6 @@ void fin() {
         fin_obj_exch(&rs::e);
 
     if (VCON) fin(/**/ &vcont);
-    if (fsiforces)  fsi::fin();
     
     if (walls) fin_wall(&wall);
 
