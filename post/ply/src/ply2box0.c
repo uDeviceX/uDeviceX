@@ -13,7 +13,7 @@ nb=498 xp1=80 xp2=140 yp1=15 yp2=16 zp1=120 zp2=1000 \
 #include <stdlib.h>
 #include <math.h>
 #include "endian.h"
-#include "rbc_utils.h"
+#include "util.h"
 
 int nb ; /* number of vertices in one RBC (number of beads) */
 float xp1, xp2, yp1, yp2, zp1, zp2;
