@@ -82,6 +82,15 @@ static void ini_flu(MPI_Comm cart, /*io*/ basetags::TagGen *tg, /**/ Flu *f) {
     UC(emalloc(MAX_PART_NUM * sizeof(Force), /**/ (void**) &f->ff_hst));
 }
 
+static void ini_rbc(MPI_Comm cart, /*io*/ basetags::TagGen *tg, /**/ Rbc *r) {
+    Dalloc(&r->ff, MAX_PART_NUM);
+    rbc::main::ini(&r->q);
+
+    UC(ini_rbc_distr(r->q.nv, cart, /*io*/ tg, /**/ &r->d));
+    if (rbc_com_dumps) rbc::com::ini(MAX_CELL_NUM, /**/ &r->com);
+    if (RBC_STRETCH)   UC(rbc::stretch::ini("rbc.stretch", r->q.nv, /**/ &r->stretch));
+}
+
 void ini() {
     basetags::ini(&tag_gen);
     datatype::ini();

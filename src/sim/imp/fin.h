@@ -70,6 +70,18 @@ static void fin_flu(Flu *f) {
     UC(efree(f->ff_hst));
 }
 
+static void fin_rbc(Rbc *r) {
+    rbc::main::fin(&r->q);
+    rbc::force::fin_ticket(&r->tt);
+
+    fin_rbc_distr(/**/ &r->d);
+        
+    Dfree(r->ff);
+
+    if (rbc_com_dumps) rbc::com::fin(/**/ &r->com);
+    if (RBC_STRETCH)   rbc::stretch::fin(/**/ r->stretch);
+}
+
 void fin() {
     cnt::fin(&rs::c);
     bop::fin(&dumpt);
