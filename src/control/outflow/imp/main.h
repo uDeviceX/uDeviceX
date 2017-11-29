@@ -7,12 +7,12 @@ void fin(/**/ Outflow *o) {
     CC(d::Free(o->kk));
 }
 
-void filter_particles(int n, const Particle *pp, Outflow *o) {
+void filter_particles_circle(float R, int n, const Particle *pp, Outflow *o) {
     circle::Params params;
     float3 origin;
 
-    params.Rsq = 4; // TODO
-    params.inside = 1;
+    params.Rsq = R*R;
+    // TODO
     origin.x = 0;
     origin.y = 0;
     origin.z = 0;

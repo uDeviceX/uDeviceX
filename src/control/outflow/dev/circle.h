@@ -1,6 +1,5 @@
 struct Params {
-    float Rsq;  /* radius squared                */
-    int inside; /* -1 for inside, +1 for outside */
+    float Rsq;  /* radius squared  */
 };
 
 __device__ int predicate(float3 o, Params p, const float r[3]) {
@@ -11,5 +10,5 @@ __device__ int predicate(float3 o, Params p, const float r[3]) {
     z = r[Z] - o.z;
 
     rsq = x*x + y*y + z*z;
-    return (rsq - p.Rsq) * p.inside > 0;
+    return rsq > p.Rsq;
 }
