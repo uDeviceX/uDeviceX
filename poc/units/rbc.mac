@@ -1,16 +1,13 @@
-(mu_p: 1e-3, mu_d: 20) $
-(l_p : 8e-6,  l_d: 20) $
-(m_p :  1e3,  m_d: 10) $
+(mu_p  : 1e-3, mu_d: 20)  $
+(l_p   : 8e-6,  l_d: 20)  $
+(rho_p :  1e3, rho_d: 10) $
 
-e1: mu_p * m/(t*l) = mu_d $
-e2: l_p  * l       = l_d  $
-e3: m_p  * m       = m_d  $
+e1: mu_p  * m/(t*l) = mu_d  $
+e2: l_p   * l       = l_d   $
+e3: rho_p * m/l^3   = rho_d $
 
 s: solve([e1, e2, e3], [l, m, t])[1];
 
 p2d(e):=subst(s, e);
 
-p2d(1000*m), numer;
-p2d(8e-6*l), numer;
-p2d(mu_p*m/(t*l)), numer;
-
+p2d(m*l/t^2);
