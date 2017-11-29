@@ -16,4 +16,9 @@ namespace circle {
 #include "dev/filter.h"
 }
 
+namespace plane {
+#include "dev/plane.h"
+#include "dev/filter.h"
+}
+
 #include "imp/main.h"
