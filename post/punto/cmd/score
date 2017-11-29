@@ -1,0 +1,15 @@
+#!/bin/sh
+
+. u.punto.util
+
+usg () {
+    msg 'u.punto.score [FILE0.ply] [FILE.ply]..'
+    msg 'compute the sum of mean square distances for every file [FILE0.ply] [FILE.ply]..'
+    msg 'from [FILE0.ply]'
+    exit
+}
+
+if test "$1" = -h; then usg; fi
+if test $# -eq 0; then err 'u.punto.score: not enough args'; fi
+
+e eval u.punto.score0 "$@"
