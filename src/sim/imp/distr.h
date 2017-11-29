@@ -6,7 +6,6 @@ void distribute_flu(Flu *f) {
     flu::Quants *q = &f->q;
     FluDistr *d = &f->d;
 
-    lp.kill      = false;
     lp.pp        = q->pp;
     lp.deathlist = NULL;
     

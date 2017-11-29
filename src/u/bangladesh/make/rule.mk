@@ -4,6 +4,7 @@ $B/clist/imp.o: $S/clist/imp.cu; $N -I$S/. -I$S/clist
 $B/cnt/imp.o: $S/cnt/imp.cu; $N -I$S/. -I$S/cnt
 $B/color/flux.o: $S/color/flux.cu; $N -I$S/. -I$S/color
 $B/comm/imp.o: $S/comm/imp.cu; $N -I$S/. -I$S/comm
+$B/control/outflow/imp.o: $S/control/outflow/imp.cu; $N -I$S/. -I$S/control/outflow
 $B/control/vel/imp.o: $S/control/vel/imp.cu; $N -I$S/. -I$S/control/vel
 $B/d/api.o: $S/d/api.cu; $N -I$S/. -I$S/d
 $B/dbg/imp.o: $S/dbg/imp.cu; $N -I$S/. -I$S/dbg

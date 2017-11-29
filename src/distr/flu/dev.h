@@ -1,8 +1,9 @@
 namespace dev {
 
+enum {ALIVE=0};
 static __device__ bool valid(int i, int n, PartList lp) {
     if (i >= n) return false;
-    if (lp.kill) return lp.deathlist[i];
+    if (lp.deathlist) return lp.deathlist[i] == ALIVE;
     return true;
 }
 
