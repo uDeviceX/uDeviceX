@@ -2,10 +2,13 @@
    for performance reasons */
 
 void distribute_flu(Flu *f) {
+    distr::flu::PartList lp;
     flu::Quants *q = &f->q;
     FluDistr *d = &f->d;
 
-    distr::flu::PartList lp = {false, q->pp, NULL};;
+    lp.kill      = false;
+    lp.pp        = q->pp;
+    lp.deathlist = NULL;
     
     build_map(q->n, lp, /**/ &d->p);
     pack(q, /**/ &d->p);
