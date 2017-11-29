@@ -1,8 +1,8 @@
 namespace dev {
 
-static __device__ bool valid(int i, int n, LivingParts lp) {
+static __device__ bool valid(int i, int n, PartList lp) {
     if (i >= n) return false;
-    if (lp.deadlist) return lp.tags[i];
+    if (lp.kill) return lp.deathlist[i];
     return true;
 }
 

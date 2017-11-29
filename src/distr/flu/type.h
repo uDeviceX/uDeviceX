@@ -3,10 +3,12 @@ namespace flu {
 
 using namespace comm;
 
-struct LivingParts {
-    bool deadlist;
+/* structure passed to the map            */
+/* optional "deathlist" to kill particles */
+struct PartList {
+    bool kill;
     const Particle *pp;
-    const int *tags;
+    const int *deathlist;
 };
 
 struct Pack {
