@@ -1,0 +1,4 @@
+= units conversion
+
+* `*_p` "physical"
+* `*_d` DPD

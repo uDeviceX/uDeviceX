@@ -1,0 +1,14 @@
+(mu_p: 1e-3, mu_d: 20) $
+(l_p :   20,  l_d: 8e-6) $
+(m_p :  1e3,  m_d: 10) $
+
+e1: mu_p * m/(t*l) = mu_d;
+e2: l_p  * l       = l_d;
+e3: m_p  * m       = m_d;
+
+e: [e1, e2, e3];
+s: solve(e, [l, m, t])[1];
+
+d2p(e):=subst(s, e);
+
+d2p(10*m), numer;
