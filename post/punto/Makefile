@@ -1,16 +1,10 @@
-BIN = $(HOME)/bin
-B = $(BIN)
-
-P = append circle util
-
-# prefix
-p = u.punto
+D = src cmd
 
 install:
-	mkdir -p "$B"
-	install0 () ( cp $$f $B/$p.$$f; )    ;  \
-	for f in $P; do install0; done
+	install0 () ( cd "$$d" ; make install); \
+	for d in $D; do install0; done
 
+clean:; cd src; make clean
 test:; atest test/*
 
-.PHONY: install test
+.PHONY: clean test
