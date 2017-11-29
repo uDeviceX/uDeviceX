@@ -6,7 +6,6 @@ using namespace comm;
 /* structure passed to the map            */
 /* optional "deathlist" to kill particles */
 struct PartList {
-    bool kill;
     const Particle *pp;
     const int *deathlist;
 };
