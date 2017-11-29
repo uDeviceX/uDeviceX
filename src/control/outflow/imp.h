@@ -1,5 +1,8 @@
 struct Outflow {
-    
+    int *kk; /* die or stay alive? */
 };
 
-void remove_particles(Outflow *o, int *n, Particle *pp);
+void ini(int maxp, /**/ Outflow *o);
+void fin(/**/ Outflow *o);
+
+void filter_particles(int n, const Particle *pp, Outflow *o);
