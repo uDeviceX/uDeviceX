@@ -1,2 +1,0 @@
-# TEST: score.0
-u.punto.score data/rbc.ply data/rbc.ply > score.out.txt
