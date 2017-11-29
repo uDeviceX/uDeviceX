@@ -10,7 +10,7 @@ void fin(Comm *c);
 void fin(Unpack *u);
 
 /* map */
-void build_map(int n, const Particle *pp, Pack *p);
+void build_map(int n, const PartList lp, Pack *p);
 
 using namespace ::flu;
 

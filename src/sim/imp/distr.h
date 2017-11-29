@@ -4,8 +4,10 @@
 void distribute_flu(Flu *f) {
     flu::Quants *q = &f->q;
     FluDistr *d = &f->d;
+
+    distr::flu::PartList lp = {false, q->pp, NULL};;
     
-    build_map(q->n, q->pp, /**/ &d->p);
+    build_map(q->n, lp, /**/ &d->p);
     pack(q, /**/ &d->p);
     download(q->n, /**/ &d->p);
 

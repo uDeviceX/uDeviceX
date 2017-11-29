@@ -6,11 +6,11 @@ static __device__ bool valid(int i, int n, PartList lp) {
     return true;
 }
 
-__global__ void build_map(const Particle *pp, const int n, /**/ Map m) {
+__global__ void build_map(const PartList lp, const int n, /**/ Map m) {
     int pid, fid;
     pid = threadIdx.x + blockIdx.x * blockDim.x;
-    if (pid >= n) return;
-    const Particle p = pp[pid];
+    if (!valid(pid, n, lp)) return;
+    const Particle p = lp.pp[pid];
 
     fid = get_fid(p.r);
 
