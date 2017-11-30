@@ -52,7 +52,6 @@
 
 #include "rig/imp.h"
 
-#include "sdf/type.h"
 #include "sdf/imp.h"
 #include "wall/imp.h"
 

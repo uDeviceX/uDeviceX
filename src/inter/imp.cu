@@ -31,7 +31,6 @@
 #include "rnd/imp.h"
 #include "clist/imp.h"
 
-#include "sdf/type.h"
 #include "sdf/imp.h"
 #include "flu/imp.h"
 

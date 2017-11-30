@@ -14,7 +14,6 @@
 #include "inc/dev.h"
 #include "utils/cc.h"
 
-#include "sdf/type.h"
 #include "sdf/imp.h"
 //#include "sdf/dev.h"
 

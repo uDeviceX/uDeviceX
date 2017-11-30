@@ -1,9 +1,5 @@
 namespace sdf {
-struct Quants {
-    cudaArray *arrsdf;
-    tex3Dca<float> texsdf;
-};
-
+struct Quants;
 void alloc_quants(Quants**);
 void  free_quants(Quants*);
 void ini(MPI_Comm cart, Quants*);
