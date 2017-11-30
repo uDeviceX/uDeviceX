@@ -10,7 +10,7 @@ from `/src/` directory:
 [source,sh]
 ----
 u.conf0 u/error
-make -j
+u.make -j
 ----
 
 == usage
