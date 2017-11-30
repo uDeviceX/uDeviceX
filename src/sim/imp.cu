@@ -116,6 +116,7 @@ namespace sim {
 
 #include "imp/colors.h"
 #include "imp/vcont.h"
+#include "imp/openbc.h"
 
 #include "imp/update.h"
 #include "imp/distr.h"
