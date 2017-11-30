@@ -17,7 +17,7 @@ void distribute_flu(Flu *f) {
     
     build_map(q->n, lp, /**/ &d->p);
     pack(q, /**/ &d->p);
-    download(q->n, /**/ &d->p);
+    download(/**/ &d->p);
 
     UC(post_send(&d->p, &d->c));
     UC(post_recv(&d->c, &d->u));

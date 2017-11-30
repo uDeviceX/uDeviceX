@@ -7,7 +7,7 @@ struct Pack {
     Map map;
     dBags dpp, dii, dcc;
     hBags hpp, hii, hcc;
-    int nbulk;
+    int nhalo; /* number of sent particles */
 };
 
 struct Comm {

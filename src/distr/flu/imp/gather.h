@@ -15,7 +15,7 @@ void gather(const Pack *p, const Unpack *u, /**/ Quants *q) {
     Particle *pp, *pp0;
     nold = q->n;
     nhalo = u->nhalo;
-    nbulk = p->nbulk;
+    nbulk = nold - p->nhalo;
     n = nbulk + nhalo;
     pp = q->pp; pp0 = q->pp0;    
 

@@ -17,7 +17,7 @@ using namespace ::flu;
 /* pack */
 void pack(const Quants *q, /**/ Pack *p);
 
-void download(int n, Pack *p);
+void download(Pack *p);
 
 /* communication */
 void post_recv(Comm *c, Unpack *u);

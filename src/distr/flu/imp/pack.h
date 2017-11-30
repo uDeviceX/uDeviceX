@@ -30,7 +30,7 @@ void pack(const Quants *q, /**/ Pack *p) {
     if (multi_solvent) pack_ii(p->map, q->cc, /**/ p->dcc);
 }
 
-void download(int n, Pack *p) {
+void download(Pack *p) {
     dSync(); /* wait for pack kernels */
     const size_t sz = NFRAGS * sizeof(int);
     memcpy(p->hpp.counts, p->map.hcounts, sz);
@@ -42,5 +42,5 @@ void download(int n, Pack *p) {
         c = p->hpp.counts[i];
         nhalo += c;
     }
-    p->nbulk = n - nhalo;
+    p->nhalo = nhalo;
 }
