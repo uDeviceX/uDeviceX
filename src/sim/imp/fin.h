@@ -58,8 +58,8 @@ static void fin_colorer(Colorer *c) {
     Dfree(c->maxext);
 }
 
-static void fin_outflow() {
-    fin(/**/ &outflow);
+static void fin_outflow(Outflow *o) {
+    fin(/**/ &o);
 }
 
 
