@@ -13,11 +13,11 @@ void gen(Wall *w) { /* generate */
     run_eq(wall_creation);
     if (walls) {
         dSync();
-        UC(sdf::ini(m::cart, &w->qsdf));
+        UC(sdf::ini(m::cart, w->qsdf));
         MC(m::Barrier(m::cart));
-        inter::create_walls(MAXNWALL, &w->qsdf, /*io*/ &flu.q, /**/ &w->q);
+        inter::create_walls(MAXNWALL, w->qsdf, /*io*/ &flu.q, /**/ &w->q);
     }
-    inter::freeze(m::cart, &w->qsdf, /*io*/ &flu.q, /**/ &rig.q, &rbc.q);
+    inter::freeze(m::cart, w->qsdf, /*io*/ &flu.q, /**/ &rig.q, &rbc.q);
     clear_vel();
 
     if (multi_solvent) {
@@ -81,7 +81,7 @@ void sim_strt() {
     MC(m::Barrier(m::cart));
     if (walls) {
         dSync();
-        UC(sdf::ini(m::cart, &wall.qsdf));
+        UC(sdf::ini(m::cart, wall.qsdf));
         MC(m::Barrier(m::cart));
     }
 

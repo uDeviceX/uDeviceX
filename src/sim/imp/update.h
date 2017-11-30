@@ -106,6 +106,6 @@ void restrain(long it, Flu *f, Rbc *r) {
 }
 
 void bounce_wall(const Wall *w, /**/ Flu *f, Rbc *r) {
-    sdf::bounce(&w->qsdf, f->q.n, /**/ f->q.pp);
-    if (rbcs) sdf::bounce(&w->qsdf, r->q.n, /**/ r->q.pp);
+    sdf::bounce(w->qsdf, f->q.n, /**/ f->q.pp);
+    if (rbcs) sdf::bounce(w->qsdf, r->q.n, /**/ r->q.pp);
 }

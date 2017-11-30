@@ -4,7 +4,7 @@ struct Quants {
     tex3Dca<float> texsdf;
 };
 
-void alloc_quants(Quants*);
+void alloc_quants(Quants**);
 void  free_quants(Quants*);
 void ini(MPI_Comm cart, Quants*);
 void bulk_wall(const Quants*, /*io*/ Particle *s_pp, int *s_n, /*o*/ Particle *w_pp, int *w_n);
