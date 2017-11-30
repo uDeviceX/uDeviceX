@@ -59,11 +59,6 @@ void fin(Inflow *i) {
     UC(efree(i));
 }
 
-template<typename P>
-static void create(int2 nc, P params, Desc *d, /**/ int *n, Particle *pp) {
-
-}
-
 void create_pp(Inflow *i, int *n, Particle *pp) {
     int2 nc;
     Desc *d;
