@@ -16,4 +16,6 @@ union VParamsU {
 
 struct Inflow {
     Desc d;
+    ParamsU p;
+    VParamsU vp;
 };
