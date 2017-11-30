@@ -65,5 +65,6 @@ u/hw/hst/make/rule.mk` to git.
 ** link:rbc/force{lext}[force]
 ** link:rbc/main{lext}[main]
 ** link:rbc/rnd{lext}[rnd]
+* link:sdf{lext}[sdf]
 * link:scan{lext}[scan]
 * link:x{lext}[x]
