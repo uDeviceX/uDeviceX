@@ -1,10 +1,12 @@
 void ini(int maxp, /**/ Outflow *o) {
     size_t sz = maxp * sizeof(Particle);
     CC(d::Malloc((void**) &o->kk, sz));
+    CC(d::Malloc((void**) &o->ndead_dev, sizeof(int)));
 }
 
 void fin(/**/ Outflow *o) {
     CC(d::Free(o->kk));
+    CC(d::Free(o->ndead_dev));
 }
 
 void filter_particles_circle(float R, int n, const Particle *pp, Outflow *o) {
