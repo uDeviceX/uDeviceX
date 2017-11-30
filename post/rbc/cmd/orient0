@@ -10,8 +10,9 @@ def err(s):
     sys.exit(2)
 
 def read(f):
-    try:            return read0(f)
-    except IOError: return None
+    try:                   return read0(f)
+    except IOError:        return None
+    except AssertionError: return None
 
 def read0(f):
     f = PlyData.read(f)

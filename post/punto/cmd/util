@@ -1,7 +1,10 @@
 : ${AWK=awk}
+: ${DBG=0}
 
 e () {
-  echo "cmd: $*"
+  if test ! "$DBG" = 0
+  then msg "cmd: $*"
+  fi
   eval "$@"
 }
 

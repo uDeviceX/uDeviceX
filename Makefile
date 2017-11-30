@@ -1,5 +1,5 @@
 C = cmd cmd/argp cmd/par cmd/u
-D = tools cmd post/strt pre/placement pre/units pre/stretch post/ply/cmd post/rbc
+D = tools cmd post/punto post/strt pre/placement pre/units pre/stretch post/ply/cmd post/rbc
 
 install:
 	install0 () ( cd "$$d" && make install); \

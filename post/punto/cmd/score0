@@ -1,3 +1,25 @@
 #!/bin/sh
 
-echo 42
+. u.punto.util
+
+set -eu
+
+t0=/tmp/score0.$$.dat; >$t0
+t1=/tmp/score1.$$.dat; >$t1
+
+trap 'rm $t0 $t1' 0 1 2 3 4 15
+
+e u.orient "$@"    '>' $t0
+e u.punto2dist $t0 '>' $t1
+
+"$AWK" '
+function dump() {
+    print s/n
+}
+function clear() { s = n = 0 }
+NF {
+    s += $4^2; n += 1
+}
+!NF { dump(); clear() }
+END { dump()          }
+' $t1
