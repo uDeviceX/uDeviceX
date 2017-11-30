@@ -39,6 +39,6 @@ void step(scheme::force::Param *fpar, bool wall0, int it) {
 
     if (sbounce_back && solids0) bounce_solid(it, /**/ &bb, &rig);
 
-    if (INFLOW)  apply_inflow(&inflow, &flu);
+    if (INFLOW)  apply_inflow(inflow, &flu);
     if (OUTFLOW) mark_outflow(&flu, /**/ &outflow);
 }

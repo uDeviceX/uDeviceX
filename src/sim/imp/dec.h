@@ -12,7 +12,7 @@ BounceBack bb;
 Colorer colorer;
 PidVCont vcont;
 Outflow outflow;
-Inflow inflow;
+Inflow *inflow;
 
 namespace a /* all */
 {

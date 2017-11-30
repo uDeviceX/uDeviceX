@@ -126,7 +126,7 @@ void fin() {
 
     if (VCON)    UC(fin(/**/ &vcont));
     if (OUTFLOW) UC(fin_outflow(/**/ &outflow));
-    if (INFLOW) UC(fin_inflow(/**/ &inflow));
+    if (INFLOW) UC(fin_inflow(/**/ inflow));
     
     if (walls) fin_wall(&wall);
 

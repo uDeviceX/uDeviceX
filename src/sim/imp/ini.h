@@ -66,7 +66,7 @@ static void ini_outflow(Outflow *o) {
     ini(MAX_PART_NUM, /**/ o);
 }
 
-static void ini_inflow(Inflow *i) {
+static void ini_inflow(Inflow **i) {
     int2 nc = make_int2(YS, ZS/2);
     ini(nc, /**/ i);
 }
