@@ -2,7 +2,7 @@
    for performance reasons */
 
 void distribute_flu(Flu *f) {
-    distr::flu::PartList lp;
+    PartList lp;
     flu::Quants *q = &f->q;
     FluDistr *d = &f->d;
 

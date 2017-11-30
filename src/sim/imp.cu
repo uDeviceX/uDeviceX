@@ -28,6 +28,7 @@
 #include "algo/minmax/imp.h"
 
 #include "cloud/imp.h"
+#include "partlist/imp.h"
 
 #include "io/fields_grid.h"
 #include "io/mesh/imp.h"

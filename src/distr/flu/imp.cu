@@ -26,6 +26,7 @@
 #include "comm/utils.h"
 
 #include "distr/map/type.h"
+#include "partlist/imp.h"
 #include "type.h"
 #include "imp.h"
 
