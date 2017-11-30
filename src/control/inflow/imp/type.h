@@ -1,3 +1,8 @@
+enum Type {
+    TYPE_NONE,
+    TYPE_PLATE,
+};
+    
 struct Desc {
     curandState_t *rnds; /* random states on device         */
     float3 *uu;          /* target flux                     */
@@ -16,6 +21,7 @@ union VParamsU {
 
 struct Inflow {
     Desc d;
+    Type t;
     ParamsU p;
     VParamsU vp;
 };
