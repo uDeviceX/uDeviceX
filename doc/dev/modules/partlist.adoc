@@ -1,0 +1,23 @@
+= partlist
+:lext: .adoc
+:src: ../../../src
+
+Part list: a structure to handle a list of dead or alive particles
+Purpose: kill particles during redistribution or cell lists build
+
+== data structure
+
+[source,cpp]
+----
+include::{src}/partlist/imp.h[tag=partlist]
+----
+
+* `pp` particle array
+* `deathlist` state of particles: dead or alive
+
+== interface
+
+[source,cpp]
+----
+include::{src}/partlist/dev.h[]
+----

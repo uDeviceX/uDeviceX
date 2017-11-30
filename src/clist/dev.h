@@ -45,19 +45,26 @@ static __device__ int get_cid(int3 L, uchar4 e) {
 }
 
 /* project:: if particle is outside of domain L, include it in closest cell */
-__global__ void subindex(bool project, int3 L, int n, const Particle *pp, /*io*/ int *counts, /**/ uchar4 *ee) {
+__global__ void subindex(bool project, int3 L, int n, const PartList lp, /*io*/ int *counts, /**/ uchar4 *ee) {
     int i, cid;
     Particle p;
     uchar4 e;
+    bool dead;
     
     i = threadIdx.x + blockIdx.x * blockDim.x;
     if (i >= n) return;
+
+    dead = is_dead(i, lp);
+    p = lp.pp[i];
+
+    if (dead) {
+        e.x = e.y = e.z = 0;
+        e.w = INVALID;
+    } else {
+        e = get_entry(project, p.r, L);
+        cid = get_cid(L, e);
+    }
     
-    p = pp[i];
-
-    e = get_entry(project, p.r, L);
-    cid = get_cid(L, e);
-
     if (e.w != INVALID)
         e.w = atomicAdd(counts + cid, 1);
 

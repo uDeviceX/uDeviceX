@@ -2,12 +2,18 @@
    for performance reasons */
 
 void distribute_flu(Flu *f) {
-    distr::flu::PartList lp;
+    PartList lp;
     flu::Quants *q = &f->q;
     FluDistr *d = &f->d;
 
     lp.pp        = q->pp;
-    lp.deathlist = NULL;
+
+    if (OUTFLOW)
+        lp.deathlist = outflow.kk;
+    else
+        lp.deathlist = NULL;
+
+    // printf("n = %d\n", q->n);
     
     build_map(q->n, lp, /**/ &d->p);
     pack(q, /**/ &d->p);

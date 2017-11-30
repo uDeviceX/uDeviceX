@@ -30,6 +30,7 @@
 #include "sdf/imp.h"
 #include "sdf/sub/dev/cheap.h"
 
+#include "partlist/imp.h"
 #include "algo/scan/imp.h"
 #include "clist/imp.h"
 

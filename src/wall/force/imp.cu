@@ -40,8 +40,6 @@
 
 #include "cloud/imp.h"
 #include "cloud/dev.h"
-#include "algo/scan/imp.h"
-#include "clist/imp.h"
 
 #include "utils/kl.h"
 #include "imp.h"

@@ -28,6 +28,7 @@
 #include "algo/minmax/imp.h"
 
 #include "cloud/imp.h"
+#include "partlist/imp.h"
 
 #include "io/fields_grid.h"
 #include "io/mesh/imp.h"
@@ -116,6 +117,7 @@ namespace sim {
 
 #include "imp/colors.h"
 #include "imp/vcont.h"
+#include "imp/openbc.h"
 
 #include "imp/update.h"
 #include "imp/distr.h"

@@ -3,13 +3,6 @@ namespace flu {
 
 using namespace comm;
 
-/* structure passed to the map            */
-/* optional "deathlist" to kill particles */
-struct PartList {
-    const Particle *pp;
-    const int *deathlist;
-};
-
 struct Pack {
     Map map;
     dBags dpp, dii, dcc;

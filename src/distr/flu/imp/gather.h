@@ -1,10 +1,16 @@
 void bulk(/**/ Quants *q) {
+    PartList lp;
+    lp.pp = q->pp;
+    lp.deathlist = NULL;
     ini_counts(&q->cells);
-    subindex_local(q->n, q->pp, /**/ &q->cells, &q->mcells);
+    subindex_local(q->n, lp, /**/ &q->cells, &q->mcells);
 }
 
 void halo(const Unpack *u, /**/ Quants *q) {
-    subindex_remote(u->nhalo, u->ppre, /**/ &q->cells, &q->mcells);
+    PartList lp;
+    lp.pp = u->ppre;
+    lp.deathlist = NULL;
+    subindex_remote(u->nhalo, lp, /**/ &q->cells, &q->mcells);
 }
 
 void gather(const Pack *p, const Unpack *u, /**/ Quants *q) {

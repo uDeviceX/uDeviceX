@@ -12,6 +12,7 @@ void fin(Contact *c) {
 
 void build_cells(int nw, const PaWrap *pw, /**/ Contact *c) {
     const PaWrap *w;
+    PartList lp;
     int i, cc[MAX_OBJ_TYPES] = {0};
 
     clist::ini_counts(&c->cells);
@@ -20,7 +21,9 @@ void build_cells(int nw, const PaWrap *pw, /**/ Contact *c) {
     for (i = 0; i < nw; ++i) {
         w = pw + i;
         cc[i] = w->n;
-        clist::subindex(project, i, w->n, w->pp, /**/ &c->cells, &c->cmap);
+        lp.pp = w->pp;
+        lp.deathlist = NULL;
+        clist::subindex(project, i, w->n, lp, /**/ &c->cells, &c->cmap);
     }
     clist::build_map(cc, /**/ &c->cells, &c->cmap);
 }

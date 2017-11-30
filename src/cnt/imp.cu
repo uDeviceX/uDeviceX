@@ -33,6 +33,8 @@
 #include "forces/pack.h"
 #include "forces/imp.h"
 
+#include "partlist/imp.h"
+
 #include "clist/imp.h"
 #include "clist/code.h"
 
