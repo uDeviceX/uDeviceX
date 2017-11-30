@@ -5,6 +5,7 @@
 #include "inc/conf.h"
 
 #include "utils/error.h"
+#include "utils/halloc.h"
 #include "utils/cc.h"
 #include "utils/kl.h"
 #include "d/api.h"
@@ -22,5 +23,5 @@ namespace plate {
 #include "dev/plate.h"
 #include "dev/main.h"
 }
-
+#include "imp/type.h"
 #include "imp/main.h"
