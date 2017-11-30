@@ -94,7 +94,7 @@ bool error() {return err_status;}
 void report() {
     if (err_status) {
         stack_dump();
-        MSG("%s: %d: %s error: %s\n%s\n",
+        MSG("%s: %d: %s error: %s\n%s",
             err_file, err_line, err_kind, err_msg, back_trace);
     }
 }

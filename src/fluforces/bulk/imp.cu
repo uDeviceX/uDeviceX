@@ -11,6 +11,7 @@
 #include "d/q.h"
 #include "d/ker.h"
 #include "d/api.h"
+#include "utils/error.h"
 
 #include "rnd/imp.h"
 #include "rnd/dev.h"

@@ -1,5 +1,4 @@
 #include <mpi.h>
-#include <stdio.h>
 #include <conf.h>
 #include "inc/conf.h"
 
@@ -28,10 +27,9 @@
 #include "imp.h"
 #include "dev/cheap.h"
 #include "dev/main.h"
+#include "dev/bounce.h"
 
-namespace sdf {
-namespace sub {
-
+namespace sdf { namespace sub {
 struct Tex { /* simplifies communication between ini[0123..] */
     cudaArray *a;
     tex3Dca   *t;
@@ -133,8 +131,8 @@ static void bulk_wall0(const tex3Dca texsdf, /*io*/ Particle *s_pp, int* s_n,
     UC(split_wall_solvent(keys_hst, /*io*/ s_n, s_pp_hst, /**/ w_n, w_pp));
     cH2D(s_pp, s_pp_hst, *s_n);
                        
-    free(s_pp_hst);
-    free(keys_hst);
+    UC(efree(s_pp_hst));
+    UC(efree(keys_hst));
 }
 
 void bulk_wall(const tex3Dca texsdf, /*io*/ Particle *s_pp, int *s_n, /*o*/ Particle *w_pp, int *w_n) {
@@ -179,5 +177,5 @@ void bounce(const tex3Dca texsdf, int n, /**/ Particle *pp) {
     KL(dev::bounce, (k_cnf(n)), (texsdf, n, /**/ (float2*) pp));
 }
 
-} // sub
-} // sdf
+} } /* namespace */
+
