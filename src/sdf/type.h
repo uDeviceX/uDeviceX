@@ -30,5 +30,4 @@ struct tex3Dca {
 
     void destroy() {CC(cudaDestroyTextureObject(to));}
 };
-typedef tex3Dca<float> Tex_t;
 } /* namespace */
