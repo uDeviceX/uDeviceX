@@ -59,22 +59,32 @@ void fin(Inflow *i) {
     UC(efree(i));
 }
 
+template<typename P>
+static void create(int2 nc, P params, Desc *d, /**/ int *n, Particle *pp) {
+
+}
 
 void create_pp(Inflow *i, int *n, Particle *pp) {
     int2 nc;
     Desc *d;
-    plate::Params p;
+    int nctot;
     
     d = &i->d;
     nc = d->nc;
+    nctot = nc.x * nc.y;
     
     CC(d::MemcpyAsync(d->ndev, n, sizeof(int), H2D));
-    
-    p = i->p.plate;
-    
-    KL(plate::cumulative_flux, (k_cnf(nc.x * nc.y)), (p, nc, d->uu, /**/ d->cumflux));
-    KL(plate::create_particles, (k_cnf(nc.x * nc.y)),
-       (p, nc, d->uu, /*io*/ d->rnds, d->cumflux, /**/ d->ndev, pp));
+
+    switch(i->t) {
+    case TYPE_PLATE:
+        KL(plate::cumulative_flux, (k_cnf(nctot)), (i->p.plate, nc, d->uu, /**/ d->cumflux));
+        KL(plate::create_particles, (k_cnf(nctot)),
+           (i->p.plate, nc, d->uu, /*io*/ d->rnds, d->cumflux, /**/ d->ndev, pp));    
+        break;
+    case TYPE_NONE:
+        ERR("No inflow type is set");
+        break;
+    };
     
     CC(d::MemcpyAsync(n, d->ndev, sizeof(int), D2H));
     dSync(); // wait for n
