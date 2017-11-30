@@ -3,19 +3,21 @@ static void check_size(long n, long max) {
         ERR("wrong size: %ld / %ld", n, max);
 }
 
-void step(scheme::force::Param *fpar, bool wall0, int it) {
+static void check_sizes() {
     UC(check_size(rbc.q.nc, MAX_CELL_NUM));
     UC(check_size(rbc.q.n , MAX_PART_NUM));
-    UC(check_size(flu.q.n , MAX_PART_NUM));
+    UC(check_size(flu.q.n , MAX_PART_NUM)); 
+}
+
+void step(scheme::force::Param *fpar, bool wall0, int it) {
+    UC(check_sizes());
     
     UC(distribute_flu(&flu));
     if (solids0) UC(distribute_rig(/**/ &rig));
     if (rbcs)    UC(distribute_rbc(/**/ &rbc));
 
-    UC(check_size(rbc.q.nc, MAX_CELL_NUM));
-    UC(check_size(rbc.q.n , MAX_PART_NUM));
-    UC(check_size(flu.q.n , MAX_PART_NUM));
-
+    UC(check_sizes());
+    
     forces(wall0);
 
     dump_diag0(it);
