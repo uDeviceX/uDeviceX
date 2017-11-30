@@ -1,12 +1,11 @@
 namespace sdf {
 /* 3D texture object binded to  cuda array */
-template <typename T>
 struct tex3Dca {
     cudaTextureObject_t to;
 
     __device__ __forceinline__
-    const T fetch(const float i, const float j, const float k) const {
-        return Ttex3D(T, to, i, j, k);
+    float fetch(const float i, const float j, const float k) const {
+        return Ttex3D(float, to, i, j, k);
     }
     
     void setup(cudaArray *ca) {

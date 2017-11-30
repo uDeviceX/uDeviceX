@@ -34,7 +34,7 @@ namespace sub {
 
 struct Tex { /* simplifies communication between ini[0123..] */
     cudaArray *a;
-    tex3Dca<float> *t;
+    tex3Dca   *t;
 };
 
 static void ini0(float *D, /**/ struct Tex te) {
@@ -84,7 +84,7 @@ static void ini3(MPI_Comm cart, int N[3], float ext[3], float* D, /**/ struct Te
     UC(ini2(N, D, /**/ te));
 }
 
-void ini(MPI_Comm cart, cudaArray *arrsdf, tex3Dca<float> *texsdf) {
+void ini(MPI_Comm cart, cudaArray *arrsdf, tex3Dca *texsdf) {
     enum {X, Y, Z};
     float *D;     /* data */
     int N[3];     /* size of D */
@@ -119,7 +119,7 @@ static void split_wall_solvent(const int *keys, /*io*/ int *s_n, Particle *s_pp,
 }
 
 /* sort solvent particle (dev) into remaining in solvent (dev) and turning into wall (hst)*/
-static void bulk_wall0(const tex3Dca<float> texsdf, /*io*/ Particle *s_pp, int* s_n,
+static void bulk_wall0(const tex3Dca texsdf, /*io*/ Particle *s_pp, int* s_n,
                        /*o*/ Particle *w_pp, int *w_n, /*w*/ int *keys) {
     int n = *s_n, *keys_hst;
     Particle *s_pp_hst;
@@ -137,7 +137,7 @@ static void bulk_wall0(const tex3Dca<float> texsdf, /*io*/ Particle *s_pp, int* 
     free(keys_hst);
 }
 
-void bulk_wall(const tex3Dca<float> texsdf, /*io*/ Particle *s_pp, int *s_n, /*o*/ Particle *w_pp, int *w_n) {
+void bulk_wall(const tex3Dca texsdf, /*io*/ Particle *s_pp, int *s_n, /*o*/ Particle *w_pp, int *w_n) {
     int *keys;
     Dalloc(&keys, MAX_PART_NUM);
     UC(bulk_wall0(texsdf, s_pp, s_n, w_pp, w_n, keys));
@@ -166,7 +166,7 @@ static int who_stays1(int *keys, int n, int nc, int nv, /*o*/ int *stay) {
     return nc0;
 }
 
-int who_stays(const tex3Dca<float> texsdf, Particle *pp, int n, int nc, int nv, /**/ int *stay) {
+int who_stays(const tex3Dca texsdf, Particle *pp, int n, int nc, int nv, /**/ int *stay) {
     int *keys;
     CC(d::Malloc((void **) &keys, n*sizeof(keys[0])));
     KL(dev::fill, (k_cnf(n)), (texsdf, pp, n, keys));
@@ -175,7 +175,7 @@ int who_stays(const tex3Dca<float> texsdf, Particle *pp, int n, int nc, int nv, 
     return nc;
 }
 
-void bounce(const tex3Dca<float> texsdf, int n, /**/ Particle *pp) {
+void bounce(const tex3Dca texsdf, int n, /**/ Particle *pp) {
     KL(dev::bounce, (k_cnf(n)), (texsdf, n, /**/ (float2*) pp));
 }
 
