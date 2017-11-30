@@ -15,9 +15,9 @@ void gen(Wall *w) { /* generate */
         dSync();
         UC(sdf::ini(m::cart, &w->qsdf));
         MC(m::Barrier(m::cart));
-        inter::create_walls(MAXNWALL, w->qsdf, /*io*/ &flu.q, /**/ &w->q);
+        inter::create_walls(MAXNWALL, &w->qsdf, /*io*/ &flu.q, /**/ &w->q);
     }
-    inter::freeze(m::cart, w->qsdf, /*io*/ &flu.q, /**/ &rig.q, &rbc.q);
+    inter::freeze(m::cart, &w->qsdf, /*io*/ &flu.q, /**/ &rig.q, &rbc.q);
     clear_vel();
 
     if (multi_solvent) {
