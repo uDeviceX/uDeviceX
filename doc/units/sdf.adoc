@@ -1,0 +1,32 @@
+= signed distance function (sdf) unit
+:lext: .adoc
+
+a unit to test sdf field.
+
+== compile
+
+[source,sh]
+----
+u.conf0 u/sdf
+u.make -j
+----
+
+== run
+
+Copy sdf file
+
+[source,sh]
+----
+cp  src/data/sdf/cyl1/cyl.dat sdf.dat
+----
+
+Pass coordinates as arguments
+----
+x=2.5 y=0 z=0
+u.run ./udx $x $y $z
+----
+
+Returns
+----
+1.45547
+----
