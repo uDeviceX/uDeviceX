@@ -1,4 +1,3 @@
-namespace sdf { namespace sub { namespace dev {
 static __device__ void bounce1(const tex3Dca texsdf, float currsdf,
                                float &x, float &y, float &z,
                                float &vx, float &vy, float &vz) {
@@ -52,5 +51,3 @@ __global__ void bounce(const tex3Dca texsdf, int n, /**/ float2 *const pp) {
         }
     }
 }
-
-}}} /* namespace */

@@ -27,8 +27,10 @@
 #include "imp.h"
 #include "dev/cheap.h"
 #include "dev/main.h"
-#include "dev/bounce.h"
 
 namespace sdf { namespace sub {
+namespace dev {
+#include "dev/bounce.h"
+}
 #include "imp/main.h"
 }} /* namespace */
