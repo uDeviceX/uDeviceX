@@ -6,7 +6,7 @@ static void ini_rnd(int n, curandState_t *rr) {
 static void ini_params(ParamsU *p, VParamsU *vp) {
     p->plate.o = make_float3(-XS/2, 0,     -ZS/2);
     p->plate.a = make_float3(    0,  YS/2,     0);
-    p->plate.b = make_float3(    0,     0,  ZS);
+    p->plate.b = make_float3(    0,     0,    ZS);
 
     vp->plate.u = make_float3(10.f, 0, 0);
     vp->plate.upoiseuille = true;
@@ -48,8 +48,8 @@ void ini(int2 nc, Inflow **i) {
     CC(d::Malloc((void**) &d->ndev, sz));
 
     ini_rnd(n, d->rnds);
-    ini_params(&p, &vp);
 
+    ini_params(&p, &vp);
     ini_velocity(nc, &p, &vp, /**/ d->uu);
     
     ip->p = p;
