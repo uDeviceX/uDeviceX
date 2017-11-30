@@ -15,6 +15,7 @@
 #include "utils/cc.h"
 #include "inc/macro.h"
 #include "utils/kl.h"
+#include "utils/error.h"
 
 #include "sdf/imp.h"
 #include "sdf/type.h"
@@ -34,17 +35,17 @@ void main0(sdf::Quants *qsdf) {
 
 void main1() {
     sdf::Quants *qsdf;
-    sdf::alloc_quants(&qsdf);
-    sdf::ini(m::cart, qsdf);
-    main0(qsdf);
-    sdf::free_quants(qsdf);
+    UC(sdf::alloc_quants(&qsdf));
+    UC(sdf::ini(m::cart, qsdf));
+    UC(main0(qsdf));
+    UC(sdf::free_quants(qsdf));
     dSync();
 }
 
 int main(int argc, char **argv) {
     m::ini(argc, argv);
     MSG("mpi size: %d", m::size);
-    main1();
+    UC(main1());
     MSG("Hello world!");
     m::fin();
 }
