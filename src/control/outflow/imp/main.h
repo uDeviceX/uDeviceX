@@ -1,13 +1,20 @@
+static void reset_ndead(Outflow *o) {
+    CC(d::MemsetAsync(o->ndead_dev, 0, sizeof(int)));
+    o->ndead = 0;
+}
+
 void ini(int maxp, /**/ Outflow *o) {
     size_t sz = maxp * sizeof(Particle);
     CC(d::Malloc((void**) &o->kk, sz));
     CC(d::Malloc((void**) &o->ndead_dev, sizeof(int)));
+    reset_ndead(o);
 }
 
 void fin(/**/ Outflow *o) {
     CC(d::Free(o->kk));
     CC(d::Free(o->ndead_dev));
 }
+
 
 void filter_particles_circle(float R, int n, const Particle *pp, Outflow *o) {
     circle::Params params;
@@ -18,7 +25,8 @@ void filter_particles_circle(float R, int n, const Particle *pp, Outflow *o) {
     origin.x = 0;
     origin.y = 0;
     origin.z = 0;
-    
+
+    reset_ndead(o);    
     KL(circle::filter, (k_cnf(n)), (origin, n, pp, params, /**/ *o) );
 }
 
@@ -34,6 +42,11 @@ void filter_particles_plane(float3 normal, float3 r, int n, const Particle *pp, 
     origin.x = 0;
     origin.y = 0;
     origin.z = 0;
-    
+
+    reset_ndead(o);
     KL(plane::filter, (k_cnf(n)), (origin, n, pp, params, /**/ *o) );
+}
+
+void download_ndead(Outflow *o) {
+    CC(d::Memcpy(&o->ndead, o->ndead_dev, sizeof(int), D2H));
 }
