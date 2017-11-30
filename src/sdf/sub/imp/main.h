@@ -124,20 +124,11 @@ static int who_stays0(int *keys, int nc, int nv, /*o*/ int *stay) {
     return s;
 }
 
-static int who_stays1(int *keys, int n, int nc, int nv, /*o*/ int *stay) {
-    int nc0, *keys_hst;
-    UC(emalloc(n*sizeof(int), (void**) &keys_hst));
-    cD2H(keys_hst, keys, n);
-    nc0 = who_stays0(keys_hst, nc, nv, /**/ stay);
-    efree(keys_hst);
-    return nc0;
-}
-
 int who_stays(const tex3Dca texsdf, Particle *pp, int n, int nc, int nv, /**/ int *stay) {
-    int *keys;
-    CC(d::Malloc((void **) &keys, n*sizeof(keys[0])));
-    KL(dev::fill, (k_cnf(n)), (texsdf, pp, n, keys));
-    nc = who_stays1(keys, n, nc, nv, /**/ stay);
-    CC(d::Free(keys));
+    int *labels;
+    UC(emalloc(n*sizeof(int), (void**)&labels));
+    UC(label::hst(texsdf, n, pp, /**/ labels));
+    nc = who_stays0(labels, nc, nv, /**/ stay);
+    efree(labels);
     return nc;
 }
