@@ -1,6 +1,4 @@
-namespace sdf {
-namespace sub {
-namespace dev {
+namespace sdf { namespace sub { namespace dev {
 
 static inline __device__ int iround(float x) {
     return (x > 0.5) ? (x + 0.5) : (x - 0.5);
@@ -15,10 +13,7 @@ inline __device__ float cheap_sdf(const tex3Dca texsdf, float x, float y, float 
     float r[3] = {x, y, z};
     for (int c = 0; c < 3; ++c)
         tc[c] = iround(T[c] * (r[c] + L[c] / 2 + M[c]) / (L[c] + 2 * M[c]));
-
     return texsdf.fetch(tc[0], tc[1], tc[2]);
 }
 
-} // dev
-} // sub
-} // sdf
+}}} /* namespace */
