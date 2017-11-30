@@ -1,5 +1,4 @@
 namespace sdf { namespace sub { namespace dev {
-
 static __device__ int iround(float x) {
     return (x > 0.5) ? (x + 0.5) : (x - 0.5);
 }
