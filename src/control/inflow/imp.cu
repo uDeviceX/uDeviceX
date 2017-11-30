@@ -17,8 +17,9 @@
 
 #include "imp.h"
 
-
+namespace plate {
 #include "dev/plate.h"
 #include "dev/main.h"
+}
 
 #include "imp/main.h"
