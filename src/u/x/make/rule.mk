@@ -15,7 +15,6 @@ $B/distr/rig/imp.o: $S/distr/rig/imp.cu; $N -I$S/distr/rig -I$S/.
 $B/exch/flu/imp.o: $S/exch/flu/imp.cu; $N -I$S/exch/flu -I$S/.
 $B/exch/mesh/imp.o: $S/exch/mesh/imp.cu; $N -I$S/exch/mesh -I$S/.
 $B/exch/obj/imp.o: $S/exch/obj/imp.cu; $N -I$S/exch/obj -I$S/.
-$B/field.o: $S/field.cpp; $X -I$S/.
 $B/fluforces/bulk/imp.o: $S/fluforces/bulk/imp.cu; $N -I$S/fluforces/bulk -I$S/.
 $B/fluforces/bulk/transpose/imp.o: $S/fluforces/bulk/transpose/imp.cu; $N -I$S/fluforces/bulk/transpose -I$S/.
 $B/fluforces/halo/imp.o: $S/fluforces/halo/imp.cu; $N -I$S/fluforces/halo -I$S/.
@@ -71,6 +70,7 @@ $B/scheme/restrain/imp.o: $S/scheme/restrain/imp.cpp; $X -I$S/scheme/restrain -I
 $B/scheme/restrain/sub/imp.o: $S/scheme/restrain/sub/imp.cu; $N -I$S/scheme/restrain/sub -I$S/.
 $B/scheme/restrain/sub/stat/imp.o: $S/scheme/restrain/sub/stat/imp.cpp; $X -I$S/scheme/restrain/sub/stat -I$S/.
 $B/scheme/restrain/sub/sum/imp.o: $S/scheme/restrain/sub/sum/imp.cpp; $X -I$S/scheme/restrain/sub/sum -I$S/.
+$B/sdf/field/imp.o: $S/sdf/field/imp.cpp; $X -I$S/sdf/field -I$S/.
 $B/sdf/imp.o: $S/sdf/imp.cu; $N -I$S/sdf -I$S/.
 $B/sdf/sub/imp.o: $S/sdf/sub/imp.cu; $N -I$S/sdf/sub -I$S/.
 $B/sim/imp.o: $S/sim/imp.cu; $N -I$S/sim -I$S/.

@@ -1,5 +1,4 @@
 $B/d/api.o: $S/d/api.cu; $N -I$S/d -I$S/.
-$B/field.o: $S/field.cpp; $X -I$S/.
 $B/glb/imp.o: $S/glb/imp.cu; $N -I$S/glb -I$S/.
 $B/glb/wvel/imp.o: $S/glb/wvel/imp.cu; $N -I$S/glb/wvel -I$S/.
 $B/io/field/h5/imp.o: $S/io/field/h5/imp.cpp; $X -I$S/io/field/h5 -I$S/.
@@ -9,6 +8,7 @@ $B/mpi/glb.o: $S/mpi/glb.cpp; $X -I$S/mpi -I$S/.
 $B/mpi/type.o: $S/mpi/type.cpp; $X -I$S/mpi -I$S/.
 $B/mpi/wrapper.o: $S/mpi/wrapper.cpp; $X -I$S/mpi -I$S/.
 $B/msg.o: $S/msg.cpp; $X -I$S/.
+$B/sdf/field/imp.o: $S/sdf/field/imp.cpp; $X -I$S/sdf/field -I$S/.
 $B/sdf/imp.o: $S/sdf/imp.cu; $N -I$S/sdf -I$S/.
 $B/sdf/sub/imp.o: $S/sdf/sub/imp.cu; $N -I$S/sdf/sub -I$S/.
 $B/u/sdf/main.o: $S/u/sdf/main.cu; $N -I$S/u/sdf -I$S/.

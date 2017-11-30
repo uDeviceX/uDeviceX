@@ -22,7 +22,7 @@
 #include "glb/get.h"
 #include "inc/dev/wvel.h"
 
-#include "field.h"
+#include "sdf/field/imp.h"
 
 #include "sdf/type.h"
 #include "imp.h"
