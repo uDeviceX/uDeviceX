@@ -9,7 +9,7 @@ $B/mpi/glb.o: $B/conf.h $S/inc/conf.h $S/mpi/glb.h $S/mpi/wrapper.h $S/utils/mc.
 $B/mpi/type.o: $S/inc/conf.h $S/inc/type.h $S/mpi/type.h $S/utils/mc.h
 $B/mpi/wrapper.o: $S/mpi/wrapper.h
 $B/msg.o: $S/mpi/glb.h $S/msg.h
-$B/sdf/imp.o: $B/conf.h $S/d/api.h $S/d/ker.h $S/inc/conf.h $S/inc/def.h $S/inc/dev.h $S/inc/macro.h $S/inc/type.h $S/mpi/glb.h $S/msg.h $S/sdf/imp.h $S/sdf/sub/imp.h $S/sdf/type.h $S/utils/cc.h $S/utils/error.h
+$B/sdf/imp.o: $B/conf.h $S/d/api.h $S/d/ker.h $S/inc/conf.h $S/inc/def.h $S/inc/dev.h $S/inc/macro.h $S/inc/type.h $S/mpi/glb.h $S/msg.h $S/sdf/imp.h $S/sdf/imp/main.h $S/sdf/sub/imp.h $S/sdf/type.h $S/utils/cc.h $S/utils/error.h
 $B/sdf/sub/imp.o: $B/conf.h $S/d/api.h $S/d/ker.h $S/d/q.h $S/field.h $S/glb/get.h $S/inc/conf.h $S/inc/def.h $S/inc/dev.h $S/inc/dev/wvel.h $S/inc/macro.h $S/inc/type.h $S/mpi/glb.h $S/msg.h $S/sdf/sub/dev/cheap.h $S/sdf/sub/dev/main.h $S/sdf/sub/imp.h $S/sdf/type.h $S/utils/cc.h $S/utils/error.h $S/utils/halloc.h $S/utils/kl.h
 $B/u/sdf/main.o: $B/conf.h $S/d/api.h $S/d/ker.h $S/inc/conf.h $S/inc/dev.h $S/inc/type.h $S/mpi/glb.h $S/mpi/wrapper.h $S/msg.h $S/sdf/imp.h $S/sdf/type.h $S/u/sdf/dev.h $S/utils/cc.h $S/utils/kl.h
 $B/utils/cc.o: $B/conf.h $S/d/api.h $S/inc/conf.h $S/utils/cc/common.h $S/utils/error.h
