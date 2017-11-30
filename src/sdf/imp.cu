@@ -17,7 +17,7 @@
 #include "inc/macro.h"
 
 #include "type.h"
-#include "int.h"
+#include "imp.h"
 #include "sub/imp.h"
 
 namespace sdf {

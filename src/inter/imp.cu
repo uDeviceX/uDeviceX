@@ -31,7 +31,7 @@
 #include "clist/imp.h"
 
 #include "sdf/type.h"
-#include "sdf/int.h"
+#include "sdf/imp.h"
 #include "flu/imp.h"
 
 #include "rbc/type.h"

@@ -71,7 +71,7 @@ $B/scheme/restrain/imp.o: $S/scheme/restrain/imp.cpp; $X -I$S/scheme/restrain -I
 $B/scheme/restrain/sub/imp.o: $S/scheme/restrain/sub/imp.cu; $N -I$S/scheme/restrain/sub -I$S/.
 $B/scheme/restrain/sub/stat/imp.o: $S/scheme/restrain/sub/stat/imp.cpp; $X -I$S/scheme/restrain/sub/stat -I$S/.
 $B/scheme/restrain/sub/sum/imp.o: $S/scheme/restrain/sub/sum/imp.cpp; $X -I$S/scheme/restrain/sub/sum -I$S/.
-$B/sdf/int.o: $S/sdf/int.cu; $N -I$S/sdf -I$S/.
+$B/sdf/imp.o: $S/sdf/imp.cu; $N -I$S/sdf -I$S/.
 $B/sdf/sub/imp.o: $S/sdf/sub/imp.cu; $N -I$S/sdf/sub -I$S/.
 $B/sim/imp.o: $S/sim/imp.cu; $N -I$S/sim -I$S/.
 $B/utils/cc.o: $S/utils/cc.cpp; $X -I$S/utils -I$S/.

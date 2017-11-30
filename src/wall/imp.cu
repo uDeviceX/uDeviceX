@@ -27,7 +27,7 @@
 #include "rnd/imp.h"
 
 #include "sdf/type.h"
-#include "sdf/int.h"
+#include "sdf/imp.h"
 #include "sdf/sub/dev/cheap.h"
 
 #include "algo/scan/imp.h"
