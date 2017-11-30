@@ -22,7 +22,7 @@ void distribute_flu(Flu *f) {
     UC(post_send(&d->p, &d->c));
     UC(post_recv(&d->c, &d->u));
 
-    distr::flu::bulk(/**/ q);
+    distr::flu::bulk(lp, /**/ q);
     
     wait_send(&d->c);
     wait_recv(&d->c, &d->u);

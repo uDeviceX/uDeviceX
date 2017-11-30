@@ -1,7 +1,4 @@
-void bulk(/**/ Quants *q) {
-    PartList lp;
-    lp.pp = q->pp;
-    lp.deathlist = NULL;
+void bulk(PartList lp, /**/ Quants *q) {
     ini_counts(&q->cells);
     subindex_local(q->n, lp, /**/ &q->cells, &q->mcells);
 }

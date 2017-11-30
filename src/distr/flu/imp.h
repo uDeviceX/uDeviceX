@@ -29,7 +29,7 @@ void wait_send(Comm *c);
 void unpack(/**/ Unpack *u);
 
 /* cell lists */
-void bulk(/**/ Quants *q);
+void bulk(PartList lp, /**/ Quants *q);
 void halo(const Unpack *u, /**/ Quants *q);
 void gather(const Pack *p, const Unpack *u, /**/ Quants *q);
 
