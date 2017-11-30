@@ -31,7 +31,7 @@ void unpack(/**/ Unpack *u);
 /* cell lists */
 void bulk(PartList lp, /**/ Quants *q);
 void halo(const Unpack *u, /**/ Quants *q);
-void gather(const Pack *p, const Unpack *u, /**/ Quants *q);
+void gather(int ndead, const Pack *p, const Unpack *u, /**/ Quants *q);
 
 } // flu
 } // distr

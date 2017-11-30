@@ -10,12 +10,12 @@ void halo(const Unpack *u, /**/ Quants *q) {
     subindex_remote(u->nhalo, lp, /**/ &q->cells, &q->mcells);
 }
 
-void gather(const Pack *p, const Unpack *u, /**/ Quants *q) {
+void gather(int ndead, const Pack *p, const Unpack *u, /**/ Quants *q) {
     int n, nold, nhalo, nbulk;
     Particle *pp, *pp0;
     nold = q->n;
     nhalo = u->nhalo;
-    nbulk = nold - p->nhalo;
+    nbulk = nold - p->nhalo - ndead;
     n = nbulk + nhalo;
     pp = q->pp; pp0 = q->pp0;    
 

@@ -5,13 +5,17 @@ void distribute_flu(Flu *f) {
     PartList lp;
     flu::Quants *q = &f->q;
     FluDistr *d = &f->d;
-
+    int ndead;
+    
     lp.pp        = q->pp;
 
-    if (OUTFLOW)
+    if (OUTFLOW) {
         lp.deathlist = outflow.kk;
-    else
+        ndead = outflow.ndead;
+    } else {
         lp.deathlist = NULL;
+        ndead = 0;
+    }
 
     // printf("n = %d\n", q->n);
     
@@ -30,7 +34,7 @@ void distribute_flu(Flu *f) {
     unpack(/**/ &d->u);
     
     halo(&d->u, /**/ q);
-    gather(&d->p, &d->u, /**/ q);
+    gather(ndead, &d->p, &d->u, /**/ q);
 
     dSync();
 }
