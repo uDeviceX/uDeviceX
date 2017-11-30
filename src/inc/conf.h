@@ -342,7 +342,7 @@
 /* outflow */
 
 #ifndef OUTFLOW
-  #define OUTFLOW (true)
+  #define OUTFLOW (false)
 #endif
 
 
