@@ -1,16 +1,11 @@
 namespace dev {
 
-enum {ALIVE=0};
-static __device__ bool valid(int i, int n, PartList lp) {
-    if (i >= n) return false;
-    if (lp.deathlist) return lp.deathlist[i] == ALIVE;
-    return true;
-}
-
 __global__ void build_map(const PartList lp, const int n, /**/ Map m) {
     int pid, fid;
     pid = threadIdx.x + blockIdx.x * blockDim.x;
-    if (!valid(pid, n, lp)) return;
+    if (pid >= n) return;
+    if (is_dead(pid, lp)) return;
+
     const Particle p = lp.pp[pid];
 
     fid = get_fid(p.r);

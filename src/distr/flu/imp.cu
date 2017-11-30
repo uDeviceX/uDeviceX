@@ -27,6 +27,7 @@
 
 #include "distr/map/type.h"
 #include "partlist/imp.h"
+#include "partlist/dev.h"
 #include "type.h"
 #include "imp.h"
 
