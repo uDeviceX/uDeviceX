@@ -1,0 +1,7 @@
+= signed distance function (sdf)
+:lext: .adoc
+
+* `field` read sdf field from a file
+* `bounce` bounce back particles
+* `sub` ini/fin sdf on device, sort particles into wall and solvent,
+  decides which object should be killed
