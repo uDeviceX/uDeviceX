@@ -13,7 +13,7 @@ void distribute_flu(Flu *f) {
     else
         lp.deathlist = NULL;
 
-    printf("n = %d\n", q->n);
+    // printf("n = %d\n", q->n);
     
     build_map(q->n, lp, /**/ &d->p);
     pack(q, /**/ &d->p);
