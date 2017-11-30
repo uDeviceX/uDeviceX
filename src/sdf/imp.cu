@@ -39,8 +39,8 @@ void bulk_wall(const Quants* q, /*io*/ Particle *s_pp, int *s_n, /*o*/ Particle 
     UC(sub::bulk_wall(q->texsdf, /*io*/ s_pp, s_n, /*o*/ w_pp, w_n));
 }
 
-int who_stays(const Quants q, Particle *pp, int n, int nc, int nv, int *stay) {
-    return sub::who_stays(q.texsdf, pp, n, nc, nv, /**/ stay);
+int who_stays(const Quants *q, Particle *pp, int n, int nc, int nv, int *stay) {
+    return sub::who_stays(q->texsdf, pp, n, nc, nv, /**/ stay);
 }
 
 void bounce(const Quants *q, int n, /**/ Particle *pp) {
