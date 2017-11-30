@@ -16,7 +16,6 @@
 
 #include "sdf/imp.h"
 //#include "sdf/dev.h"
-
 #include "utils/kl.h"
 
 namespace dev {
@@ -24,14 +23,14 @@ namespace dev {
 }
 
 void main0() {
-    sdf::Quants qsdf;
+    sdf::Quants *qsdf;
     sdf::alloc_quants(&qsdf);
-    sdf::ini(m::cart, &qsdf);
+    sdf::ini(m::cart, qsdf);
 
     KL(dev::main, (1, 1), ());
     dSync();
 
-    sdf::free_quants(&qsdf);
+    sdf::free_quants(qsdf);
 }
 
 int main(int argc, char **argv) {
