@@ -11,14 +11,18 @@ void ini(int2 nc, Inflow *i) {
 
     sz = n * sizeof(float);
     CC(d::Malloc((void**) &i->cumflux, sz));
+
+    sz = sizeof(int);
+    CC(d::Malloc((void**) &i->ndev, sz));
 }
 
 void fin(Inflow *i) {
     CC(d::Free(i->rnds));
     CC(d::Free(i->flux));
     CC(d::Free(i->cumflux));
+    CC(d::Free(i->ndev));
 }
 
 void create_pp(Inflow *i, int *n, Cloud *c) {
-
+    
 }
