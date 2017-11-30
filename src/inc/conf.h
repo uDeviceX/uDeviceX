@@ -339,6 +339,14 @@
   #define VCON_FACTOR (0.08f)
 #endif
 
+/* outflow */
+
+#ifndef OUTFLOW
+  #define OUTFLOW (true)
+#endif
+
+
+
 /* how mass affects dpd forces: like "gravity" ~ mi*mj or like
    "charge" -- no dependencies on mass */
 #if !defined(DPD_GRAVITY) && !defined(DPD_CHARGE)

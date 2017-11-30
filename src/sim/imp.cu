@@ -97,6 +97,7 @@
 #include "scheme/restrain/imp.h"
 
 #include "control/vel/imp.h"
+#include "control/outflow/imp.h"
 
 #include "color/flux.h"
 

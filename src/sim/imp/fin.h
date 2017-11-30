@@ -58,6 +58,11 @@ static void fin_colorer(Colorer *c) {
     Dfree(c->maxext);
 }
 
+static void fin_outflow(Outflow *o) {
+    fin(/**/ o);
+}
+
+
 static void fin_flu(Flu *f) {
     flu::fin(&f->q);
     fin(/**/ f->bulkdata);
