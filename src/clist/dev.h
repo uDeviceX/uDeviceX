@@ -45,7 +45,7 @@ static __device__ int get_cid(int3 L, uchar4 e) {
 }
 
 /* project:: if particle is outside of domain L, include it in closest cell */
-__global__ void subindex(bool project, int3 L, int n, const Particle *pp, /*io*/ int *counts, /**/ uchar4 *ee) {
+__global__ void subindex(bool project, int3 L, int n, const PartList lp, /*io*/ int *counts, /**/ uchar4 *ee) {
     int i, cid;
     Particle p;
     uchar4 e;
@@ -53,7 +53,7 @@ __global__ void subindex(bool project, int3 L, int n, const Particle *pp, /*io*/
     i = threadIdx.x + blockIdx.x * blockDim.x;
     if (i >= n) return;
     
-    p = pp[i];
+    p = lp.pp[i];
 
     e = get_entry(project, p.r, L);
     cid = get_cid(L, e);

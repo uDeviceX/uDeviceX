@@ -14,6 +14,9 @@
 #include "utils/cc.h"
 #include "utils/kl.h"
 
+#include "partlist/imp.h"
+#include "partlist/dev.h"
+
 #include "imp.h"
 #include "code.h"
 
