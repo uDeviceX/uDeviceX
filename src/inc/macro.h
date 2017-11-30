@@ -1,4 +1,4 @@
-/* wired constants from wall.impl */
+/* texture size for wall */
 enum {
     XSIZE_WALLCELLS = 2 * XWM + XS,
     YSIZE_WALLCELLS = 2 * YWM + YS,
