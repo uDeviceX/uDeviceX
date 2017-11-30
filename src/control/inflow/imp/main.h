@@ -14,6 +14,11 @@ static void ini_params(ParamsU *p, VParamsU *vp) {
 
 }
 
+static void ini_velocity(int2 nc, const ParamsU *p, const VParamsU *vp, /**/ float3 *uu) {
+    int n = nc.x * nc.y;
+    KL(plate::ini_vel, (k_cnf(n)), (vp->plate, p->plate, nc, /**/ uu));
+}
+
 void ini(int2 nc, Inflow **i) {
     int n;
     size_t sz;
@@ -45,7 +50,7 @@ void ini(int2 nc, Inflow **i) {
     ini_rnd(n, d->rnds);
     ini_params(&p, &vp);
 
-    KL(plate::ini_vel, (k_cnf(n)), (vp.plate, p.plate, nc, /**/ d->uu));
+    ini_velocity(nc, &p, &vp, /**/ d->uu);
     
     ip->p = p;
     ip->vp = vp;
