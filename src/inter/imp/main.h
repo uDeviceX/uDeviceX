@@ -7,7 +7,7 @@ static void remove(T *data, int nv, int *e, int nc) {
 static void remove_rbcs(rbc::Quants *q, sdf::Quants qsdf) {
     int stay[MAX_CELL_NUM];
     int nc0;
-    q->nc = sdf::who_stays(qsdf, q->pp, q->n, nc0 = q->nc, q->nv, /**/ stay);
+    q->nc = sdf::who_stays(&qsdf, q->pp, q->n, nc0 = q->nc, q->nv, /**/ stay);
     q->n = q->nc * q->nv;
     remove(q->pp, q->nv, stay, q->nc);
     MSG("%d/%d RBCs survived", q->nc, nc0);
@@ -26,7 +26,7 @@ static void remove_solids(rig::Quants *q, sdf::Quants qsdf) {
     int stay[MAX_SOLIDS];
     int ns0;
     int nip = q->ns * q->nv;
-    q->ns = sdf::who_stays(qsdf, q->i_pp, nip, ns0 = q->ns, q->nv, /**/ stay);
+    q->ns = sdf::who_stays(&qsdf, q->i_pp, nip, ns0 = q->ns, q->nv, /**/ stay);
     q->n  = q->ns * q->nps;
     remove(q->pp,       q->nps,      stay, q->ns);
     remove(q->pp_hst,   q->nps,      stay, q->ns);
@@ -41,7 +41,7 @@ static void remove_solids(rig::Quants *q, sdf::Quants qsdf) {
 
 void create_walls(int maxn, sdf::Quants qsdf, flu::Quants* qflu, wall::Quants *qwall) {
     int nold = qflu->n;
-    UC(wall::gen_quants(maxn, qsdf, /**/ &qflu->n, qflu->pp, qwall));
+    UC(wall::gen_quants(maxn, &qsdf, /**/ &qflu->n, qflu->pp, qwall));
     flu::build_cells(qflu);
     MSG("solvent particles survived: %d/%d", qflu->n, nold);
 }
