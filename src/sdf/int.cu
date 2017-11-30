@@ -16,9 +16,9 @@
 #include "inc/dev.h"
 #include "inc/macro.h"
 
-#include "sdf/type.h"
-#include "sdf/int.h"
-#include "sdf/sub/imp.h"
+#include "type.h"
+#include "int.h"
+#include "sub/imp.h"
 
 namespace sdf {
 void alloc_quants(Quants *q) {
