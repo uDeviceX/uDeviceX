@@ -20,11 +20,11 @@ void ini(int2 nc, Inflow *i) {
     plate::Params p;
     plate::VParams vp;
 
-    p.o = make_float3(-XS/2, -YS/2,     0);
+    p.o = make_float3(-XS/2, 0,     -ZS/2);
     p.a = make_float3(    0,  YS/2,     0);
-    p.b = make_float3(    0,     0,  ZS/2);
+    p.b = make_float3(    0,     0,  ZS);
 
-    vp.u = make_float3(1.f, 0, 0);
+    vp.u = make_float3(10.f, 0, 0);
     vp.upoiseuille = true;
     vp.upoiseuille = false;
 
@@ -48,9 +48,9 @@ void create_pp(Inflow *i, int *n, Particle *pp) {
     
     // TODO
     plate::Params p;
-    p.o = make_float3(-XS/2, -YS/2,     0);
+    p.o = make_float3(-XS/2, 0,     -ZS/2);
     p.a = make_float3(    0,  YS/2,     0);
-    p.b = make_float3(    0,     0,  ZS/2);
+    p.b = make_float3(    0,     0,  ZS);
 
     KL(plate::cumulative_flux, (k_cnf(nc.x * nc.y)), (p, nc, i->flux, /**/ i->cumflux));
     KL(plate::create_particles, (k_cnf(nc.x * nc.y)),

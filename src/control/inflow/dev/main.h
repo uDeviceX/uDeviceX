@@ -48,6 +48,8 @@ static __device__ Particle create_particle(Params params, int2 nc, int xcid, int
     u.x += curand_normal(rg) * sigma;
     u.y += curand_normal(rg) * sigma;
     u.z += curand_normal(rg) * sigma;
+
+    // printf("create one particle: %g %g %g   %g %g %g\n", r.x, r.y, r.z, u.x, u.y, u.z);
     
     return Particle({r.x, r.y, r.z, u.x, u.y, u.z});
 }

@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <curand_kernel.h>
 
 #include <conf.h>
