@@ -13,6 +13,8 @@
 #include "utils/halloc.h"
 #include "utils/cc.h"
 
+#include "partlist/imp.h"
+
 #include "algo/scan/imp.h"
 #include "clist/imp.h"
 

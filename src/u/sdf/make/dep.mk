@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 $B/d/api.o: $S/d/cpu/imp.h $S/inc/conf.h $S/utils/error.h $S/d/common.h $S/d/api.h $B/conf.h $S/utils/halloc.h $S/d/cuda/imp.h
 $B/glb/imp.o: $S/inc/conf.h $S/glb/imp/util.h $S/glb/set.h $S/glb/wvel/imp.h $S/d/api.h $B/conf.h $S/glb/imp/main.h $S/glb/imp/dec.h $S/glb/get.h $S/mpi/glb.h
 $B/glb/wvel/imp.o: $S/inc/conf.h $S/glb/wvel/imp/flat.h $S/glb/wvel/imp.h $S/msg.h $B/conf.h $S/glb/wvel/imp/dupire/common.h $S/glb/wvel/imp/dupire/down.h $S/glb/wvel/imp/dupire/up.h $S/glb/wvel/imp/sin.h
@@ -14,7 +15,25 @@ $B/sdf/sub/imp.o: $S/inc/conf.h $S/inc/dev/wvel.h $S/utils/error.h $S/inc/type.h
 $B/u/sdf/main.o: $S/inc/conf.h $S/inc/type.h $S/mpi/wrapper.h $S/utils/cc.h $S/u/sdf/dev.h $S/sdf/type.h $S/inc/dev.h $S/msg.h $S/d/api.h $B/conf.h $S/utils/kl.h $S/sdf/imp.h $S/mpi/glb.h $S/d/ker.h
 $B/utils/cc.o: $S/utils/cc/common.h $S/inc/conf.h $S/utils/error.h $S/d/api.h $B/conf.h
 $B/utils/efopen.o: $S/utils/error.h $S/utils/efopen.h
+=======
+$B/d/api.o: $B/conf.h $S/d/api.h $S/d/common.h $S/d/cpu/imp.h $S/d/cuda/imp.h $S/inc/conf.h $S/utils/error.h $S/utils/halloc.h
+$B/field.o: $B/conf.h $S/field.h $S/inc/conf.h $S/inc/type.h $S/io/field/imp.h $S/mpi/glb.h $S/msg.h $S/utils/efopen.h $S/utils/error.h $S/utils/halloc.h
+$B/glb/imp.o: $B/conf.h $S/d/api.h $S/glb/get.h $S/glb/imp/dec.h $S/glb/imp/main.h $S/glb/imp/util.h $S/glb/set.h $S/glb/wvel/imp.h $S/inc/conf.h $S/mpi/glb.h
+$B/glb/wvel/imp.o: $B/conf.h $S/glb/wvel/imp.h $S/glb/wvel/imp/dupire/common.h $S/glb/wvel/imp/dupire/down.h $S/glb/wvel/imp/dupire/up.h $S/glb/wvel/imp/flat.h $S/glb/wvel/imp/sin.h $S/inc/conf.h $S/msg.h
+$B/io/field/h5/imp.o: $S/io/field/h5/imp.h $S/mpi/glb.h $S/mpi/wrapper.h $S/utils/error.h
+$B/io/field/imp.o: $B/conf.h $S/inc/conf.h $S/inc/type.h $S/io/field/h5/imp.h $S/io/field/imp.h $S/io/field/imp/dump.h $S/io/field/imp/scalar.h $S/io/field/xmf/imp.h $S/mpi/glb.h $S/mpi/wrapper.h $S/utils/error.h $S/utils/halloc.h $S/utils/mc.h $S/utils/os.h
+$B/io/field/xmf/imp.o: $S/io/field/xmf/imp.h $S/mpi/glb.h $S/utils/efopen.h $S/utils/error.h
+$B/mpi/glb.o: $B/conf.h $S/inc/conf.h $S/mpi/glb.h $S/mpi/wrapper.h $S/utils/mc.h
+$B/mpi/type.o: $S/inc/conf.h $S/inc/type.h $S/mpi/type.h $S/utils/mc.h
+$B/mpi/wrapper.o: $S/mpi/wrapper.h
+$B/msg.o: $S/mpi/glb.h $S/msg.h
+$B/sdf/imp.o: $B/conf.h $S/d/api.h $S/d/ker.h $S/inc/conf.h $S/inc/def.h $S/inc/dev.h $S/inc/macro.h $S/inc/type.h $S/mpi/glb.h $S/msg.h $S/sdf/imp.h $S/sdf/imp/main.h $S/sdf/sub/imp.h $S/sdf/type.h $S/utils/cc.h $S/utils/error.h
+$B/sdf/sub/imp.o: $B/conf.h $S/d/api.h $S/d/ker.h $S/d/q.h $S/field.h $S/glb/get.h $S/inc/conf.h $S/inc/def.h $S/inc/dev.h $S/inc/dev/wvel.h $S/inc/macro.h $S/inc/type.h $S/mpi/glb.h $S/msg.h $S/sdf/sub/dev/cheap.h $S/sdf/sub/dev/main.h $S/sdf/sub/imp.h $S/sdf/type.h $S/utils/cc.h $S/utils/error.h $S/utils/halloc.h $S/utils/kl.h
+$B/u/sdf/main.o: $B/conf.h $S/d/api.h $S/d/ker.h $S/inc/conf.h $S/inc/dev.h $S/inc/type.h $S/mpi/glb.h $S/mpi/wrapper.h $S/msg.h $S/sdf/imp.h $S/sdf/type.h $S/u/sdf/dev.h $S/utils/cc.h $S/utils/kl.h
+$B/utils/cc.o: $B/conf.h $S/d/api.h $S/inc/conf.h $S/utils/cc/common.h $S/utils/error.h
+$B/utils/efopen.o: $S/utils/efopen.h $S/utils/error.h
+>>>>>>> 6e18123d20373f1341a8ed80eb7d480142b8b6d5
 $B/utils/error.o: $S/msg.h $S/utils/error.h
 $B/utils/halloc.o: $S/utils/error.h $S/utils/halloc.h
-$B/utils/mc.o: $S/inc/conf.h $S/utils/error.h $S/utils/mc.h $B/conf.h
+$B/utils/mc.o: $B/conf.h $S/inc/conf.h $S/utils/error.h $S/utils/mc.h
 $B/utils/os.o: $S/utils/os.h
