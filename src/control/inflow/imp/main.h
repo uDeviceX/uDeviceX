@@ -14,18 +14,11 @@ static void ini_params(ParamsU *p, VParamsU *vp) {
 
 }
 
-static void ini_velocity(int2 nc, const ParamsU *p, const VParamsU *vp, /**/ float3 *uu) {
-    int n = nc.x * nc.y;
-    KL(plate::ini_vel, (k_cnf(n)), (vp->plate, p->plate, nc, /**/ uu));
-}
-
 void ini(int2 nc, Inflow **i) {
     int n;
     size_t sz;
     Inflow *ip;
     Desc *d;
-    ParamsU p;
-    VParamsU vp;
         
     UC(emalloc(sizeof(Inflow), (void**) i));
     
@@ -49,11 +42,22 @@ void ini(int2 nc, Inflow **i) {
 
     ini_rnd(n, d->rnds);
 
-    ini_params(&p, &vp);
-    ini_velocity(nc, &p, &vp, /**/ d->uu);
-    
-    ip->p = p;
-    ip->vp = vp;
+    ip->t = TYPE_NONE;    
+}
+
+static void ini_velocity(Type t, int2 nc, const ParamsU *p, const VParamsU *vp, /**/ float3 *uu) {
+    int n = nc.x * nc.y;
+    switch(t) {
+    case TYPE_PLATE:
+        KL(plate::ini_vel, (k_cnf(n)), (vp->plate, p->plate, nc, /**/ uu));
+    case TYPE_NONE:
+        ERR("No inflow type is set");
+        break;
+    };
+}
+
+void ini_velocity(Inflow *i) {
+    ini_velocity(i->t, i->d.nc, &i->p, &i->vp, /**/ i->d.uu);
 }
 
 void fin(Inflow *i) {
