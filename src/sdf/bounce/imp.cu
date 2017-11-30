@@ -25,12 +25,13 @@
 
 #include "sdf/type.h"
 #include "imp.h"
-#include "dev/cheap.h"
-#include "dev/main.h"
 
-namespace sdf { namespace sub {
+#include "sdf/sub/dev/cheap.h"
+#include "sdf/sub/dev/main.h"
+
+namespace bounce {
 namespace dev {
-#include "dev/fill.h"
+#include "dev/main.h"
 }
 #include "imp/main.h"
-}} /* namespace */
+} /* namespace */

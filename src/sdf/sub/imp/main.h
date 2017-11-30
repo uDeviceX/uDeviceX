@@ -135,12 +135,8 @@ static int who_stays1(int *keys, int n, int nc, int nv, /*o*/ int *stay) {
 int who_stays(const tex3Dca texsdf, Particle *pp, int n, int nc, int nv, /**/ int *stay) {
     int *keys;
     CC(d::Malloc((void **) &keys, n*sizeof(keys[0])));
-    KL(dev::fill, (k_cnf(n)), (texsdf, pp, n, keys));
+p    KL(dev::fill, (k_cnf(n)), (texsdf, pp, n, keys));
     nc = who_stays1(keys, n, nc, nv, /**/ stay);
     CC(d::Free(keys));
     return nc;
-}
-
-void bounce(const tex3Dca texsdf, int n, /**/ Particle *pp) {
-    KL(dev::bounce, (k_cnf(n)), (texsdf, n, /**/ (float2*) pp));
 }

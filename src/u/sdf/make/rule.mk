@@ -8,6 +8,7 @@ $B/mpi/glb.o: $S/mpi/glb.cpp; $X -I$S/mpi -I$S/.
 $B/mpi/type.o: $S/mpi/type.cpp; $X -I$S/mpi -I$S/.
 $B/mpi/wrapper.o: $S/mpi/wrapper.cpp; $X -I$S/mpi -I$S/.
 $B/msg.o: $S/msg.cpp; $X -I$S/.
+$B/sdf/bounce/imp.o: $S/sdf/bounce/imp.cu; $N -I$S/sdf/bounce -I$S/.
 $B/sdf/field/imp.o: $S/sdf/field/imp.cpp; $X -I$S/sdf/field -I$S/.
 $B/sdf/imp.o: $S/sdf/imp.cu; $N -I$S/sdf -I$S/.
 $B/sdf/sub/imp.o: $S/sdf/sub/imp.cu; $N -I$S/sdf/sub -I$S/.

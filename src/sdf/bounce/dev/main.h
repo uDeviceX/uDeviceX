@@ -13,7 +13,7 @@ static __device__ void rv2p(float r[3], float v[3], int i, /**/ float2 *p) {
     p++->y = v[X]; p->x   = v[Y]; p->y = v[Z];
 }
 
-static __device__ float3 ugrad_sdf(const tex3Dca texsdf, float x, float y, float z) {
+static __device__ float3 ugrad_sdf(const sdf::tex3Dca texsdf, float x, float y, float z) {
     int L[3] = {XS, YS, ZS};
     int M[3] = {XWM, YWM, ZWM};
     int T[3] = {XTE, YTE, ZTE};
@@ -34,7 +34,7 @@ static __device__ float3 ugrad_sdf(const tex3Dca texsdf, float x, float y, float
     return make_float3(gx, gy, gz);
 }
 
-static __device__ float3 grad_sdf(const tex3Dca texsdf, float x, float y, float z) {
+static __device__ float3 grad_sdf(const sdf::tex3Dca texsdf, float x, float y, float z) {
     float gx, gy, gz;
     int L[3] = {XS, YS, ZS};
     int M[3] = {XWM, YWM, ZWM};
@@ -53,15 +53,15 @@ static __device__ float3 grad_sdf(const tex3Dca texsdf, float x, float y, float 
     return make_float3(gx, gy, gz);
 }
 
-static __device__ void bounce1(const tex3Dca texsdf, float currsdf,
+static __device__ void main0(const sdf::tex3Dca texsdf, float currsdf,
                                float &x, float &y, float &z,
                                float &vx, float &vy, float &vz) {
     float x0 = x - vx*dt, y0 = y - vy*dt, z0 = z - vz*dt;
-    if (sdf(texsdf, x0, y0, z0) >= 0) {
+    if (sdf::sub::dev::sdf(texsdf, x0, y0, z0) >= 0) {
         float3 dsdf = grad_sdf(texsdf, x, y, z); float sdf0 = currsdf;
         x -= sdf0 * dsdf.x; y -= sdf0 * dsdf.y; z -= sdf0 * dsdf.z;
         for (int l = 8; l >= 1; --l) {
-            if (sdf(texsdf, x, y, z) < 0) {
+            if (sdf::sub::dev::sdf(texsdf, x, y, z) < 0) {
                 k_wvel::bounce_vel(x, y, z, &vx, &vy, &vz); return;
             }
             float jump = 1.1f * sdf0 / (1 << l);
@@ -77,7 +77,7 @@ static __device__ void bounce1(const tex3Dca texsdf, float currsdf,
     dphi = vx*dsdf.x + vy*dsdf.y + vz*dsdf.z; if (small(dphi)) goto giveup;
     t -= phi/dphi;                            if (t < -dt) t = -dt; if (t > 0) t = 0;
 
-    r = rr(t); phi = sdf(texsdf, r.x, r.y, r.z);
+    r = rr(t); phi = sdf::sub::dev::sdf(texsdf, r.x, r.y, r.z);
     dsdf = ugrad_sdf(texsdf, r.x, r.y, r.z);
     dphi = vx*dsdf.x + vy*dsdf.y + vz*dsdf.z; if (small(dphi)) goto giveup;
     t -= phi/dphi;                            if (t < -dt) t = -dt; if (t > 0) t = 0;
@@ -87,21 +87,21 @@ static __device__ void bounce1(const tex3Dca texsdf, float currsdf,
     float xw = x + t*vx, yw = y + t*vy, zw = z + t*vz;
     x += 2*t*vx; y += 2*t*vy; z += 2*t*vz;
     k_wvel::bounce_vel(xw, yw, zw, &vx, &vy, &vz);
-    if (sdf(texsdf, x, y, z) >= 0) {x = x0; y = y0; z = z0;}
+    if (sdf::sub::dev::sdf(texsdf, x, y, z) >= 0) {x = x0; y = y0; z = z0;}
 }
 
-__global__ void bounce(const tex3Dca texsdf, int n, /**/ float2 *const pp) {
+__global__ void main(const sdf::tex3Dca texsdf, int n, /**/ float2 *const pp) {
     enum {X, Y, Z};
     float s, currsdf, r[3], v[3];
     int i;
     i = threadIdx.x + blockDim.x * blockIdx.x;
     if (i >= n) return;
     p2rv(pp, i, /**/ r, v);
-    s = cheap_sdf(texsdf, r[X], r[Y], r[Z]);
+    s = sdf::sub::dev::cheap_sdf(texsdf, r[X], r[Y], r[Z]);
     if (s >= -1.7320 * XSIZE_WALLCELLS / XTE) {
-        currsdf = sdf(texsdf, r[X], r[Y], r[Z]);
+        currsdf = sdf::sub::dev::sdf(texsdf, r[X], r[Y], r[Z]);
         if (currsdf >= 0) {
-            bounce1(texsdf, currsdf, /*io*/ r[X], r[Y], r[Z], v[X], v[Y], v[Z]);
+            main0(texsdf, currsdf, /*io*/ r[X], r[Y], r[Z], v[X], v[Y], v[Z]);
             rv2p(r, v, i, /**/ pp);
         }
     }
