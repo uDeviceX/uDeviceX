@@ -31,6 +31,7 @@
 namespace sdf { namespace sub {
 namespace dev {
 #include "dev/bounce.h"
+#include "dev/fill.h"
 }
 #include "imp/main.h"
 }} /* namespace */
