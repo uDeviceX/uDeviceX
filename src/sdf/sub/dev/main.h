@@ -1,6 +1,6 @@
 namespace sdf { namespace sub { namespace dev {
-__device__ float fst(float2 *t) { return t->x; }
-__device__ float scn(float2 *t) { return t->y; }
+static __device__ float fst(float2 *t) { return t->x; }
+static __device__ float scn(float2 *t) { return t->y; }
 static __device__ void p2rv(float2 *p, int i, /**/ float r[3], float v[3]) {
     enum {X, Y, Z};
     p += 3 * i;
@@ -86,14 +86,13 @@ static __device__ float3 grad_sdf(const tex3Dca texsdf, float x, float y, float 
     gy = tex0(0, 1, 0) - tex0( 0, -1,  0);
     gz = tex0(0, 0, 1) - tex0( 0,  0, -1);
 #undef tex0
-
     float ggmag = sqrt(gx*gx + gy*gy + gz*gz);
     if (ggmag > 1e-6) { gx /= ggmag; gy /= ggmag; gz /= ggmag; }
     return make_float3(gx, gy, gz);
 }
 
-__global__ void fill(const tex3Dca texsdf, const Particle *const pp, const int n,
-                     int *const key) {
+__global__ static void fill(const tex3Dca texsdf, const Particle *const pp, const int n,
+                            int *const key) {
     enum {X, Y, Z};
     int pid = threadIdx.x + blockDim.x * blockIdx.x;
     if (pid >= n) return;
