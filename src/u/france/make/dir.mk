@@ -5,6 +5,7 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/cnt                      && \
     d $B/color                    && \
     d $B/comm                     && \
+    d $B/control/inflow           && \
     d $B/control/outflow          && \
     d $B/control/vel              && \
     d $B/d                        && \
@@ -58,6 +59,7 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/scheme/restrain/sub/stat && \
     d $B/scheme/restrain/sub/sum  && \
     d $B/sdf                      && \
+    d $B/sdf/sub                  && \
     d $B/sim                      && \
     d $B/utils                    && \
     d $B/wall                     && \
