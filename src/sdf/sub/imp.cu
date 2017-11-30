@@ -28,10 +28,9 @@
 #include "imp.h"
 #include "dev/cheap.h"
 #include "dev/main.h"
+#include "dev/bounce.h"
 
-namespace sdf {
-namespace sub {
-
+namespace sdf { namespace sub {
 struct Tex { /* simplifies communication between ini[0123..] */
     cudaArray *a;
     tex3Dca   *t;
@@ -179,5 +178,5 @@ void bounce(const tex3Dca texsdf, int n, /**/ Particle *pp) {
     KL(dev::bounce, (k_cnf(n)), (texsdf, n, /**/ (float2*) pp));
 }
 
-} // sub
-} // sdf
+} } /* namespace */
+
