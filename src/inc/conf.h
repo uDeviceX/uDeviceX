@@ -345,6 +345,10 @@
   #define OUTFLOW (false)
 #endif
 
+#ifndef INFLOW
+  #define INFLOW (false)
+#endif
+
 
 
 /* how mass affects dpd forces: like "gravity" ~ mi*mj or like

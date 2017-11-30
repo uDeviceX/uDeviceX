@@ -98,6 +98,7 @@
 
 #include "control/vel/imp.h"
 #include "control/outflow/imp.h"
+#include "control/inlow/imp.h"
 
 #include "color/flux.h"
 
