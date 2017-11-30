@@ -8,6 +8,8 @@
 #include "msg.h"
 
 #include "mpi/glb.h"
+#include "mpi/wrapper.h"
+
 #include "inc/type.h"
 #include "inc/dev.h"
 #include "utils/cc.h"
@@ -24,6 +26,7 @@ namespace dev {
 void main0() {
     sdf::Quants qsdf;
     sdf::alloc_quants(&qsdf);
+    sdf::ini(m::cart, &qsdf);
 
     KL(dev::main, (1, 1), ());
     dSync();
