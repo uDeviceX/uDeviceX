@@ -69,6 +69,14 @@ static void ini_outflow(Outflow *o) {
 static void ini_inflow(Inflow **i) {
     int2 nc = make_int2(YS, ZS/2);
     ini(nc, /**/ i);
+    // hack for now
+
+    ini_params_plate(make_float3(-XS/2, 0,     -ZS/2),
+                     make_float3(    0,  YS/2,     0),
+                     make_float3(    0,     0,    ZS),
+                     make_float3(10.f, 0, 0), true, false,
+                      /**/ *i);
+    ini_velocity(*i);
 }
 
 static void ini_colorer(int nv, MPI_Comm comm, /**/ Colorer *c) {

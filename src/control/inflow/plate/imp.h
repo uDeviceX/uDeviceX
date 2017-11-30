@@ -14,4 +14,6 @@ void ini_params_plate(float3 o, float3 a, float3 b,
     vpp->u = u;
     vpp->upoiseuille = upoiseuille;
     vpp->vpoiseuille = vpoiseuille;
+
+    i->t = TYPE_PLATE;
 }
