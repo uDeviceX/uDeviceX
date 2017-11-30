@@ -1,6 +1,7 @@
 struct Inflow {
-    float3 *flux;   /* target flux     */
-    float *cumflux; /* cumulative flux */
+    curandState_t *rnds; /* random states on device     */
+    float3 *flux;        /* target flux                 */
+    float *cumflux;      /* cumulative flux             */
     int n;
 };
 
