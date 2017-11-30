@@ -49,15 +49,22 @@ __global__ void subindex(bool project, int3 L, int n, const PartList lp, /*io*/ 
     int i, cid;
     Particle p;
     uchar4 e;
+    bool dead;
     
     i = threadIdx.x + blockIdx.x * blockDim.x;
     if (i >= n) return;
-    
+
+    dead = is_dead(i, lp);
     p = lp.pp[i];
 
-    e = get_entry(project, p.r, L);
-    cid = get_cid(L, e);
-
+    if (dead) {
+        e.x = e.y = e.z = 0;
+        e.w = INVALID;
+    } else {
+        e = get_entry(project, p.r, L);
+        cid = get_cid(L, e);
+    }
+    
     if (e.w != INVALID)
         e.w = atomicAdd(counts + cid, 1);
 
