@@ -17,7 +17,7 @@ make -j
 
 [source,sh]
 ----
-export ERR_KIND=<kind> && ./udx
+ERR_KIND=<kind> ./udx
 ----
 
 where `<kind>` must be:
