@@ -18,7 +18,7 @@
 
 #include "sdf/type.h"
 #include "sdf/int.h"
-#include "sdf/imp.h"
+#include "sdf/sub/imp.h"
 
 namespace sdf {
 void alloc_quants(Quants *q) {

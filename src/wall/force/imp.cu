@@ -30,7 +30,7 @@
 
 #include "sdf/type.h"
 #include "sdf/int.h"
-#include "sdf/cheap.dev.h"
+#include "sdf/sub/dev/main.h"
 
 #include "inc/dev/wvel.h"
 #include "forces/type.h"

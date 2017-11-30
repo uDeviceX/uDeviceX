@@ -25,9 +25,9 @@
 #include "field.h"
 
 #include "sdf/type.h"
-#include "sdf/imp.h"
-#include "sdf/cheap.dev.h"
-#include "sdf/dev.h"
+#include "imp.h"
+#include "dev/cheap.h"
+#include "dev/main.h"
 
 namespace sdf {
 namespace sub {
