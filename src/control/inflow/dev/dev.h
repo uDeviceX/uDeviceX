@@ -26,11 +26,15 @@ __global__ void cumulative_flux(int2 n, const float3 *flux, /**/ float *cumflux)
     cumflux[i] += dn;
 }
 
+static void create_particle(xcid, ycid, f) {
+    
+}
 
-__global__ void create_particles(int2 n, const float3 *flux, /* io */ float *cumflux, /**/ int *n, Particle *pp) {
+__global__ void create_particles(int2 n, const float3 *flux, /* io */ curandState_t *rnds, float *cumflux, /**/ int *n, Particle *pp) {
     int i, xcid, ycid, j, nnew, strt;
     float c;
     Particle p;
+    curandState_t rndstate; 
     i = threadIdx.x + blockIdx.x * blockDim.x;
     xcid = i % n.x;
     ycid = i / n.x;
