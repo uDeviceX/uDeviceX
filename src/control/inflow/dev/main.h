@@ -1,7 +1,26 @@
-__global__ void cumulative_flux(Params params, int2 nc, const float3 *flux, /**/ float *cumflux) {
+__global__ void ini_vel(VParams vparams, Params params, int2 nc, /**/ float3 *uu) {
+    int i, xcid, ycid;
+    float3 u;
+    float2 xi;
+    i = threadIdx.x + blockIdx.x * blockDim.x;
+
+    if (i >= nc.x * nc.y) return;
+
+    xcid = i % nc.x;
+    ycid = i / nc.x;
+
+    xi.x = (xcid + 0.5f) / nc.x;
+    xi.y = (ycid + 0.5f) / nc.y;
+
+    coords2vel(vparams, params, xi, /**/ &u);
+    
+    uu[i] = u;
+}
+
+__global__ void cumulative_flux(Params params, int2 nc, const float3 *uu, /**/ float *cumflux) {
     int i, xcid, ycid;
     float dn;
-    float3 normal, f;
+    float3 normal, u;
     i = threadIdx.x + blockIdx.x * blockDim.x;
 
     if (i >= nc.x * nc.y) return;
@@ -10,8 +29,8 @@ __global__ void cumulative_flux(Params params, int2 nc, const float3 *flux, /**/
     ycid = i / nc.x;
 
     normal = get_normal(params, nc, xcid, ycid);
-    f      = flux[i];
-    dn = dt * dot<float>(&normal, &f);
+    u      = uu[i];
+    dn = dt * numberdensity * dot<float>(&normal, &u);
 
     cumflux[i] += dn;
 }
