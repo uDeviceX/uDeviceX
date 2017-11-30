@@ -38,18 +38,18 @@ static void ini_flocal_color(const int *cc, int n) {
 void flocal(const float4 *zip0, const ushort4 *zip1, int n, const int *start, const int *count,
             rnd::KISS* rnd, /**/ Force *ff) {
     if (n <= 0) return;
-    setup_flocal();
-    ini_flocal(zip0, zip1, n, start, count, rnd->get_float(), (float*)ff);
-    launch(n);
-    transpose(n, ff);
+    UC(setup_flocal());
+    UC(ini_flocal(zip0, zip1, n, start, count, rnd->get_float(), (float*)ff));
+    UC(launch(n));
+    UC(transpose(n, ff));
 }
 
 void flocal_color(const float4 *zip0, const ushort4 *zip1, const int *colors, int n, const int *start, const int *count,
                   rnd::KISS* rnd, /**/ Force *ff) {
     if (n <= 0) return;
-    setup_flocal();
-    ini_flocal(zip0, zip1, n, start, count, rnd->get_float(), (float*)ff);
-    ini_flocal_color(colors, n);
-    launch(n);
-    transpose(n, ff);
+    UC(setup_flocal());
+    UC(ini_flocal(zip0, zip1, n, start, count, rnd->get_float(), (float*)ff));
+    UC(ini_flocal_color(colors, n));
+    UC(launch(n));
+    UC(transpose(n, ff));
 }
