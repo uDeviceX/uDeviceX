@@ -11,8 +11,9 @@
 #include "inc/type.h"
 #include "io/field/imp.h"
 #include "mpi/glb.h"
-#include "field.h"
 #include "msg.h"
+
+#include "imp.h"
 
 namespace field {
 static float spl(float x) { /* b-spline (see poc/spline/main.mac) */

@@ -1,11 +1,17 @@
-void alloc_quants(Quants *q) {
+void alloc_quants(Quants **pq) {
+    Quants *q;
+    UC(emalloc(sizeof(Quants), (void**)&q));
+
     cudaChannelFormatDesc fmt = cudaCreateChannelDesc<float>();
     CC(cudaMalloc3DArray(&q->arrsdf, &fmt, make_cudaExtent(XTE, YTE, ZTE)));
+
+    *pq = q;
 }
 
 void  free_quants(Quants *q) {
     CC(cudaFreeArray(q->arrsdf));
     q->texsdf.destroy();
+    UC(efree(q));
 }
 
 void ini(MPI_Comm cart, Quants *q) {
@@ -23,4 +29,3 @@ int who_stays(const Quants *q, Particle *pp, int n, int nc, int nv, int *stay) {
 void bounce(const Quants *q, int n, /**/ Particle *pp) {
     UC(sub::bounce(q->texsdf, n, /**/ pp));
 }
-

@@ -15,7 +15,7 @@ static __device__ void rv2p(float r[3], float v[3], int i, /**/ float2 *p) {
     p++->y = v[X]; p->x   = v[Y]; p->y = v[Z];
 }
 
-static __device__ float sdf(const tex3Dca<float> texsdf, float x, float y, float z) {
+static __device__ float sdf(const tex3Dca texsdf, float x, float y, float z) {
     int c;
     float t;
     float s000, s001, s010, s100, s101, s011, s110, s111;
@@ -53,7 +53,7 @@ static __device__ float sdf(const tex3Dca<float> texsdf, float x, float y, float
     return szyx;
 }
 
-static __device__ float3 ugrad_sdf(const tex3Dca<float> texsdf, float x, float y, float z) {
+static __device__ float3 ugrad_sdf(const tex3Dca texsdf, float x, float y, float z) {
     int L[3] = {XS, YS, ZS};
     int M[3] = {XWM, YWM, ZWM};
     int T[3] = {XTE, YTE, ZTE};
@@ -74,7 +74,7 @@ static __device__ float3 ugrad_sdf(const tex3Dca<float> texsdf, float x, float y
     return make_float3(gx, gy, gz);
 }
 
-static __device__ float3 grad_sdf(const tex3Dca<float> texsdf, float x, float y, float z) {
+static __device__ float3 grad_sdf(const tex3Dca texsdf, float x, float y, float z) {
     float gx, gy, gz;
     int L[3] = {XS, YS, ZS};
     int M[3] = {XWM, YWM, ZWM};
@@ -94,7 +94,7 @@ static __device__ float3 grad_sdf(const tex3Dca<float> texsdf, float x, float y,
     return make_float3(gx, gy, gz);
 }
 
-__global__ void fill(const tex3Dca<float> texsdf, const Particle *const pp, const int n,
+__global__ void fill(const tex3Dca texsdf, const Particle *const pp, const int n,
                      int *const key) {
     enum {X, Y, Z};
     int pid = threadIdx.x + blockDim.x * blockIdx.x;
@@ -104,7 +104,7 @@ __global__ void fill(const tex3Dca<float> texsdf, const Particle *const pp, cons
     key[pid] = (int)(sdf0 >= 0) + (int)(sdf0 > 2);
 }
 
-static __device__ void bounce1(const tex3Dca<float> texsdf, float currsdf,
+static __device__ void bounce1(const tex3Dca texsdf, float currsdf,
                                float &x, float &y, float &z,
                                float &vx, float &vy, float &vz) {
     float x0 = x - vx*dt, y0 = y - vy*dt, z0 = z - vz*dt;
@@ -141,7 +141,7 @@ static __device__ void bounce1(const tex3Dca<float> texsdf, float currsdf,
     if (sdf(texsdf, x, y, z) >= 0) {x = x0; y = y0; z = z0;}
 }
 
-__global__ void bounce(const tex3Dca<float> texsdf, int n, /**/ float2 *const pp) {
+__global__ void bounce(const tex3Dca texsdf, int n, /**/ float2 *const pp) {
     enum {X, Y, Z};
     float s, currsdf, r[3], v[3];
     int i;

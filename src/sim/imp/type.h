@@ -102,7 +102,7 @@ struct Rig {
 
 /* data holder for walls */
 struct Wall {
-    sdf::Quants qsdf;
+    sdf::Quants *qsdf;
     wall::Quants q;
     wall::Ticket t;
 };
