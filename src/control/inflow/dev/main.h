@@ -1,37 +1,39 @@
-static __device__ void coords2pos(float2 u, /**/ float3 *r) {
-    
-}
-
-static __device__ float3 get_normal(int i, int j) {
-    // TODO
-    float3 n = make_float3(1,0,0);
-    return n;
-}
-
-__global__ void cumulative_flux(int2 n, const float3 *flux, /**/ float *cumflux) {
+__global__ void cumulative_flux(Params params, int2 nc, const float3 *flux, /**/ float *cumflux) {
     int i, xcid, ycid;
     float dn;
     float3 normal, f;
     i = threadIdx.x + blockIdx.x * blockDim.x;
 
-    if (i >= n.x * n.y) return;
+    if (i >= nc.x * nc.y) return;
 
-    xcid = i % n.x;
-    ycid = i / n.x;
+    xcid = i % nc.x;
+    ycid = i / nc.x;
 
-    normal = get_normal(xcid, ycid);
+    normal = get_normal(params, nc, xcid, ycid);
     f      = flux[i];
     dn = dt * dot<float>(&normal, &f);
 
     cumflux[i] += dn;
 }
 
-static __device__ Particle create_particle(int xcid, int ycid, float3 f, curandState_t *rg) {
-    Particle p = {0};
-    return p;
+static __device__ Particle create_particle(Params params, int2 nc, int xcid, int ycid, float3 u, curandState_t *rg) {
+    float2 xi;
+    float3 r;
+    float sigma;
+    xi.x = (xcid + curand_uniform(rg)) / nc.x;
+    xi.y = (ycid + curand_uniform(rg)) / nc.y;
+
+    coords2pos(params, xi, /**/ &r);
+
+    sigma = sqrt(kBT);
+    u.x += curand_normal(rg) * sigma;
+    u.y += curand_normal(rg) * sigma;
+    u.z += curand_normal(rg) * sigma;
+    
+    return Particle({r.x, r.y, r.z, u.x, u.y, u.z});
 }
 
-__global__ void create_particles(int2 nc, const float3 *flux, /* io */ curandState_t *rnds, float *cumflux, /**/ int *n, Particle *pp) {
+__global__ void create_particles(Params params, int2 nc, const float3 *flux, /* io */ curandState_t *rnds, float *cumflux, /**/ int *n, Particle *pp) {
     int i, xcid, ycid, j, nnew, strt;
     float c;
     float3 f;
@@ -55,8 +57,8 @@ __global__ void create_particles(int2 nc, const float3 *flux, /* io */ curandSta
     
     strt = atomicAdd(n, nnew);
     
-    for (j = strt; j < strt + nnew; ++j) {
-        pp[j] = create_particle(xcid, ycid, f, /*io*/ &rndstate);
-    }
+    for (j = strt; j < strt + nnew; ++j)
+        pp[j] = create_particle(params, nc, xcid, ycid, f, /*io*/ &rndstate);
+
     rnds[i] = rndstate;
 }

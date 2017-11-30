@@ -17,5 +17,8 @@
 
 #include "imp.h"
 
+
+#include "dev/plate.h"
 #include "dev/main.h"
+
 #include "imp/main.h"
