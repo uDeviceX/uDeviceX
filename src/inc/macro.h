@@ -8,9 +8,3 @@ enum {
     _YTE = ceiln(YE*XTE, XE), YTE  = 16*ceiln(_YTE, 16),
     _ZTE = ceiln(ZE*XTE, XE), ZTE  = 16*ceiln(_ZTE, 16)
 };
-
-enum {  /* used in sorting of bulk particle when wall is created */
-    W_BULK,  /* remains in bulk */
-    W_WALL,  /* becomes wall particle */
-    W_DEEP   /* deep inside the wall */
-};

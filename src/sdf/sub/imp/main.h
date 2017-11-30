@@ -78,8 +78,8 @@ static void split_wall_solvent(const int *keys, /*io*/ int *s_n, Particle *s_pp,
         k = keys[ia];
         p = s_pp[ia];
         
-        if      (k == W_BULK) s_pp[is++] = p;
-        else if (k == W_WALL) w_pp[iw++] = p;
+        if      (k == label::BULK) s_pp[is++] = p;
+        else if (k == label::WALL) w_pp[iw++] = p;
     }
     *s_n = is;
     *w_n = iw;
@@ -103,7 +103,7 @@ void bulk_wall(const tex3Dca texsdf, /*io*/ Particle *s_pp, int* s_n,
 }
 
 /* bulk predicate : is in bulk? */
-static bool bulkp(int *keys, int i) { return keys[i] == W_BULK; }
+static bool bulkp(int *keys, int i) { return keys[i] == label::BULK; }
 static int who_stays0(int *keys, int nc, int nv, /*o*/ int *stay) {
     int c, v;  /* cell and vertex */
     int s = 0; /* how many stays? */
