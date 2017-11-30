@@ -19,12 +19,16 @@
 
 #include "imp.h"
 
+#include "dev/common.h"
+
 namespace plate {
-#include "plate/imp.h"
+#include "plate/type.h"
 #include "plate/dev.h"
 #include "dev/main.h"
 }
-#include "dev/common.h"
 
 #include "imp/type.h"
+
+#include "plate/imp.h"
+
 #include "imp/main.h"

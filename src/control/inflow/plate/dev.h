@@ -1,12 +1,3 @@
-struct Params {
-    float3 o, a, b;
-};
-
-struct VParams {
-    float3 u;
-    bool upoiseuille, vpoiseuille;
-};
-
 static __device__ void coords2pos(Params p, float2 xi, /**/ float3 *r) {
     *r = p.o;
     axpy(xi.x, &p.a, /**/ r);
