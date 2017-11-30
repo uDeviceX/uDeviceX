@@ -19,8 +19,10 @@
 #include "utils/halloc.h"
 
 #include "type.h"
-#include "imp.h"
 #include "sub/imp.h"
+#include "bounce/imp.h"
+
+#include "imp.h"
 
 #include "imp/type.h"
 namespace sdf {

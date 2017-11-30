@@ -6,7 +6,7 @@ run
 !
 u.make clean && u.make -j
 cp "$S"/data/sdf/cyl1/cyl.dat  sdf.dat
-for x in `seq 0 3.0 10.0`
+for x in 0.0 3.0 6.0 9.0
 do
    u.run ./udx $x 0 0
 done > sdf.out.txt
