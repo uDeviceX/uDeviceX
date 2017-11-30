@@ -33,9 +33,12 @@ static void ini1(int N[3], float *D0, float *D1, /**/ struct Tex te) {
 }
 
 static void ini2(int N[3], float* D0, /**/ struct Tex te) {
-    float *D1 = new float[XTE * YTE * ZTE];
+    int sz;
+    float *D1;
+    sz = sizeof(float)*XTE*YTE*ZTE;
+    UC(emalloc(sz, (void**)&D1));
     UC(ini1(N, D0, D1, /**/ te));
-    delete[] D1;
+    UC(efree(D1));
 }
 
 static void ini3(MPI_Comm cart, int N[3], float ext[3], float* D, /**/ struct Tex te) {
