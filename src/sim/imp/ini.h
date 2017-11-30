@@ -63,7 +63,7 @@ static void ini_vcont(MPI_Comm comm, /**/ PidVCont *c) {
 }
 
 static void ini_outflow(Outflow *o) {
-    ini(MAX_PART_NUM, /**/ &o);
+    ini(MAX_PART_NUM, /**/ o);
 }
 
 static void ini_colorer(int nv, MPI_Comm comm, /**/ Colorer *c) {

@@ -59,7 +59,7 @@ static void fin_colorer(Colorer *c) {
 }
 
 static void fin_outflow(Outflow *o) {
-    fin(/**/ &o);
+    fin(/**/ o);
 }
 
 
