@@ -130,8 +130,9 @@ void ini() {
     
     if (rbcs) UC(ini_rbc(m::cart, /**/ &rbc));
 
-    if (VCON) UC(ini_vcont(m::cart, /**/ &vcont));
-
+    if (VCON)    UC(ini_vcont(m::cart, /**/ &vcont));
+    if (OUTFLOW) UC(ini_outflow(/**/ &outflow));
+        
     if (rbcs || solids)
         UC(ini_objinter(m::cart, /**/ &objinter));        
     

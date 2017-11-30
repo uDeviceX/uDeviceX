@@ -120,7 +120,8 @@ void fin() {
     if (rbcs || solids)
         fin_objinter(&objinter);
 
-    if (VCON) fin(/**/ &vcont);
+    if (VCON)    UC(fin(/**/ &vcont));
+    if (OUTFLOW) UC(fin_outflow(/**/ &outflow));
     
     if (walls) fin_wall(&wall);
 
