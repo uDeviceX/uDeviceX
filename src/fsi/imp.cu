@@ -9,8 +9,6 @@
 #include "d/q.h"
 #include "d/ker.h"
 
-#include "algo/scan/imp.h"
-
 #include "rnd/imp.h"
 #include "rnd/dev.h"
 
@@ -34,7 +32,6 @@
 
 #include "inc/dev/common.h"
 
-#include "clist/imp.h"
 #include "forces/type.h"
 #include "forces/pack.h"
 #include "forces/imp.h"
