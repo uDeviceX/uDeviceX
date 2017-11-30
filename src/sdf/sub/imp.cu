@@ -18,14 +18,10 @@
 #include "inc/macro.h"
 
 #include "utils/kl.h"
-#include "glb/get.h"
-#include "inc/dev/wvel.h"
 
 #include "sdf/field/imp.h"
-
 #include "sdf/type.h"
 #include "imp.h"
-#include "dev/cheap.h"
 #include "dev/main.h"
 
 namespace sdf { namespace sub {
