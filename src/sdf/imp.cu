@@ -35,8 +35,8 @@ void ini(MPI_Comm cart, Quants *q) {
     UC(sub::ini(cart, q->arrsdf, &q->texsdf));
 }
 
-void bulk_wall(const tex3Dca<float> texsdf, /*io*/ Particle *s_pp, int *s_n, /*o*/ Particle *w_pp, int *w_n) {
-    UC(sub::bulk_wall(texsdf, /*io*/ s_pp, s_n, /*o*/ w_pp, w_n));
+void bulk_wall(const Quants* q, /*io*/ Particle *s_pp, int *s_n, /*o*/ Particle *w_pp, int *w_n) {
+    UC(sub::bulk_wall(q->texsdf, /*io*/ s_pp, s_n, /*o*/ w_pp, w_n));
 }
 
 int who_stays(const Quants q, Particle *pp, int n, int nc, int nv, int *stay) {
