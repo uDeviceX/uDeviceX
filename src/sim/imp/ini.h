@@ -62,6 +62,10 @@ static void ini_vcont(MPI_Comm comm, /**/ PidVCont *c) {
     UC(ini(comm, L, V, VCON_FACTOR, /**/ c));
 }
 
+static void ini_outflow() {
+    ini(MAX_PART_NUM, /**/ &outflow);
+}
+
 static void ini_colorer(int nv, MPI_Comm comm, /**/ Colorer *c) {
     UC(ini_mesh_exch(nv, MAX_CELL_NUM, comm, &c->e));
     Dalloc(&c->pp, MAX_PART_NUM);
