@@ -47,9 +47,7 @@ static void ini3(MPI_Comm cart, int N[3], float ext[3], float* D, /**/ struct Te
     G = m::dims[X] * XS;
     sc = G / ext[X];
     UC(field::scale(N, sc, /**/ D));
-
     if (field_dumps) UC(field::dump(cart, N, D));
-
     UC(ini2(N, D, /**/ te));
 }
 
@@ -131,7 +129,7 @@ static int who_stays1(int *keys, int n, int nc, int nv, /*o*/ int *stay) {
     UC(emalloc(n*sizeof(int), (void**) &keys_hst));
     cD2H(keys_hst, keys, n);
     nc0 = who_stays0(keys_hst, nc, nv, /**/ stay);
-    free(keys_hst);
+    efree(keys_hst);
     return nc0;
 }
 
