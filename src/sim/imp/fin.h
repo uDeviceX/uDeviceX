@@ -62,6 +62,10 @@ static void fin_outflow(Outflow *o) {
     fin(/**/ o);
 }
 
+static void fin_inflow(Inflow *i) {
+    fin(/**/ i);
+}
+
 
 static void fin_flu(Flu *f) {
     flu::fin(&f->q);
@@ -122,6 +126,7 @@ void fin() {
 
     if (VCON)    UC(fin(/**/ &vcont));
     if (OUTFLOW) UC(fin_outflow(/**/ &outflow));
+    if (INFLOW) UC(fin_inflow(/**/ &inflow));
     
     if (walls) fin_wall(&wall);
 

@@ -1,6 +1,7 @@
 #include <assert.h>
 #include <mpi.h>
 #include <conf.h>
+#include <curand_kernel.h>
 #include "inc/conf.h"
 
 #include "utils/error.h"
@@ -98,7 +99,7 @@
 
 #include "control/vel/imp.h"
 #include "control/outflow/imp.h"
-#include "control/inlow/imp.h"
+#include "control/inflow/imp.h"
 
 #include "color/flux.h"
 

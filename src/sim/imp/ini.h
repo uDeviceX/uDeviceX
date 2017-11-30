@@ -66,6 +66,11 @@ static void ini_outflow(Outflow *o) {
     ini(MAX_PART_NUM, /**/ o);
 }
 
+static void ini_inflow(Inflow *i) {
+    int2 nc = make_int2(YS, ZS/2);
+    ini(nc, /**/ i);
+}
+
 static void ini_colorer(int nv, MPI_Comm comm, /**/ Colorer *c) {
     UC(ini_mesh_exch(nv, MAX_CELL_NUM, comm, &c->e));
     Dalloc(&c->pp, MAX_PART_NUM);
@@ -132,6 +137,7 @@ void ini() {
 
     if (VCON)    UC(ini_vcont(m::cart, /**/ &vcont));
     if (OUTFLOW) UC(ini_outflow(/**/ &outflow));
+    if (INFLOW) UC(ini_inflow(/**/ &inflow));
         
     if (rbcs || solids)
         UC(ini_objinter(m::cart, /**/ &objinter));        
