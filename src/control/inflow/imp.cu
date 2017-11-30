@@ -23,5 +23,7 @@ namespace plate {
 #include "dev/plate.h"
 #include "dev/main.h"
 }
+#include "dev/common.h"
+
 #include "imp/type.h"
 #include "imp/main.h"

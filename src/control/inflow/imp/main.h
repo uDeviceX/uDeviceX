@@ -1,9 +1,27 @@
+static void ini_rnd(int n, curandState_t *rr) {
+    long seed = 1234567;
+    KL(ini_rnd, (k_cnf(n)), (seed, n, rr));
+}
+
+static void ini_params(ParamsU *p, VParamsU *vp) {
+    p->plate.o = make_float3(-XS/2, 0,     -ZS/2);
+    p->plate.a = make_float3(    0,  YS/2,     0);
+    p->plate.b = make_float3(    0,     0,  ZS);
+
+    vp->plate.u = make_float3(10.f, 0, 0);
+    vp->plate.upoiseuille = true;
+    vp->plate.upoiseuille = false;
+
+}
+
 void ini(int2 nc, Inflow **i) {
     int n;
     size_t sz;
     Inflow *ip;
     Desc *d;
-    
+    ParamsU p;
+    VParamsU vp;
+        
     UC(emalloc(sizeof(Inflow), (void**) i));
     
     ip = *i;
@@ -24,22 +42,13 @@ void ini(int2 nc, Inflow **i) {
     sz = sizeof(int);
     CC(d::Malloc((void**) &d->ndev, sz));
 
-    // TODO 
-    plate::Params p;
-    plate::VParams vp;
+    ini_rnd(n, d->rnds);
+    ini_params(&p, &vp);
 
-    p.o = make_float3(-XS/2, 0,     -ZS/2);
-    p.a = make_float3(    0,  YS/2,     0);
-    p.b = make_float3(    0,     0,  ZS);
-
-    vp.u = make_float3(10.f, 0, 0);
-    vp.upoiseuille = true;
-    vp.upoiseuille = false;
-
-    KL(plate::ini_vel, (k_cnf(nc.x * nc.y)), (vp, p, nc, /**/ d->uu));
-
-    ip->p.plate = p;
-    ip->vp.plate = vp;
+    KL(plate::ini_vel, (k_cnf(n)), (vp.plate, p.plate, nc, /**/ d->uu));
+    
+    ip->p = p;
+    ip->vp = vp;
 }
 
 void fin(Inflow *i) {
