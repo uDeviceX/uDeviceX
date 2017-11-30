@@ -1,13 +1,19 @@
 #include <stdio.h>
+#include <mpi.h>
 #include <conf.h>
 #include "inc/conf.h"
 
+#include "d/ker.h"
 #include "d/api.h"
 #include "msg.h"
 
 #include "mpi/glb.h"
+#include "inc/type.h"
 #include "inc/dev.h"
 #include "utils/cc.h"
+
+#include "sdf/type.h"
+#include "sdf/int.h"
 
 #include "utils/kl.h"
 
@@ -16,6 +22,7 @@ namespace dev {
 }
 
 void main0() {
+    sdf::Quants qsdf;
     KL(dev::main, (1, 1), ());
     dSync();
 }
