@@ -1,6 +1,15 @@
 #!/bin/sh
 
-FF=`find . -type f \( -iname "*.adoc" ! -iname "*.inc.adoc" \)`
+usg() {
+    echo "usg: u.doc.deps <doc dir> > deps.mk"
+    exit 1
+}
+
+if test $# -ne 0 -a "$1" = -h; then usg; fi
+
+d=$1
+
+FF=`find $d -type f \( -iname "*.adoc" ! -iname "*.inc.adoc" \)`
 
 make_path() {
     dir=$1; shift
@@ -9,14 +18,24 @@ make_path() {
     done
 }
 
+filter_deps() {
+    for i in "$@"; do
+	if echo $i | grep "inc.adoc"; then
+	    echo $i
+	fi
+    done
+}
+
 deps() {
     for f in $FF; do
 	target=`echo ${f%.adoc}.html`
 	DIR=`dirname $f`
 	DEPS=`grep "$f" -e "include::" | cut -d':' -f 3 | cut -d'[' -f 1`
+	DEPS=`filter_deps $DEPS`
 	DEPS=`make_path $DIR $DEPS | xargs`
 	echo "$target: $f $DEPS"
     done
 }
-#deps
-deps > make/deps.mk
+
+deps
+#deps > make/deps.mk

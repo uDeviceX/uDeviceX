@@ -1,6 +1,16 @@
 #!/bin/sh
 
-ADOC=`find . -type f \( -iname "*.adoc" ! -iname "*.inc.adoc" \)`
+usg() {
+    echo "usg: u.doc.targets <doc dir> > targets.mk"
+    exit 1
+}
+
+if test $# -ne 0 -a "$1" = -h; then usg; fi
+
+d=$1
+
+
+ADOC=`find $d -type f \( -iname "*.adoc" ! -iname "*.inc.adoc" \)`
 
 ext_html() (
     for f in $@; do
@@ -10,4 +20,4 @@ ext_html() (
 
 PAGES=`ext_html $ADOC | xargs`
 
-echo "PAGES = $PAGES" > make/target.mk
+echo "PAGES = $PAGES"
