@@ -10,8 +10,8 @@ S=[SRC] *u.build* [UNIT] [CONFIG.h] [udx configuration file]
 
 == DESCRIPTION
 u.build(1) build udx executable. Envariament variable 'S' must be set
-to udx source directory.  'UNIT' is udx unit. `UDX` is a name of
-executable to build, default is 'udx'. If `DBG` is set log the commands
+to udx source directory.  'UNIT' is udx unit. 'UDX' is a name of
+executable to build, default is 'udx'. If 'DBG' is set log the commands
 and does not remove temporary directory.
 
 == EXAMPLES
