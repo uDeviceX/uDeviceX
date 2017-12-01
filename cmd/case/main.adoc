@@ -1,0 +1,14 @@
+= u.case(1)
+
+== NAME
+u.case - configure and run udx simulation (a case)
+
+== SYNOPSIS
+S=[SRC] *u.case* [UNIT] [CONFIG.h] [udx configuration file]
+
+== DESCRIPTION
+u.case(1)
+
+== OPTIONS
+
+== EXAMPLES

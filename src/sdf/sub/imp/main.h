@@ -33,9 +33,12 @@ static void ini1(int N[3], float *D0, float *D1, /**/ struct Tex te) {
 }
 
 static void ini2(int N[3], float* D0, /**/ struct Tex te) {
-    float *D1 = new float[XTE * YTE * ZTE];
+    int sz;
+    float *D1;
+    sz = sizeof(float)*XTE*YTE*ZTE;
+    UC(emalloc(sz, (void**)&D1));
     UC(ini1(N, D0, D1, /**/ te));
-    delete[] D1;
+    UC(efree(D1));
 }
 
 static void ini3(MPI_Comm cart, int N[3], float ext[3], float* D, /**/ struct Tex te) {
@@ -44,9 +47,7 @@ static void ini3(MPI_Comm cart, int N[3], float ext[3], float* D, /**/ struct Te
     G = m::dims[X] * XS;
     sc = G / ext[X];
     UC(field::scale(N, sc, /**/ D));
-
     if (field_dumps) UC(field::dump(cart, N, D));
-
     UC(ini2(N, D, /**/ te));
 }
 
@@ -77,41 +78,32 @@ static void split_wall_solvent(const int *keys, /*io*/ int *s_n, Particle *s_pp,
         k = keys[ia];
         p = s_pp[ia];
         
-        if      (k == W_BULK) s_pp[is++] = p;
-        else if (k == W_WALL) w_pp[iw++] = p;
+        if      (k == label::BULK) s_pp[is++] = p;
+        else if (k == label::WALL) w_pp[iw++] = p;
     }
     *s_n = is;
     *w_n = iw;
 }
-
 /* sort solvent particle (dev) into remaining in solvent (dev) and turning into wall (hst)*/
-static void bulk_wall0(const tex3Dca texsdf, /*io*/ Particle *s_pp, int* s_n,
-                       /*o*/ Particle *w_pp, int *w_n, /*w*/ int *keys) {
-    int n = *s_n, *keys_hst;
+void bulk_wall(const tex3Dca texsdf, /*io*/ Particle *s_pp, int* s_n,
+               /*o*/ Particle *w_pp, int *w_n) {
+    int n = *s_n, *labels;
     Particle *s_pp_hst;
-    UC(emalloc(n * sizeof(Particle), (void**) &s_pp_hst));
-    UC(emalloc(n * sizeof(int), (void**) &keys_hst));
+    UC(emalloc(n*sizeof(Particle), (void**) &s_pp_hst));
+    UC(emalloc(n*sizeof(int),      (void**)&labels));
     
-    KL(dev::fill,(k_cnf(n)), (texsdf, s_pp, n, keys));
-    cD2H(keys_hst, keys, n);
+    UC(label::hst(texsdf, n, s_pp, labels));
     cD2H(s_pp_hst, s_pp, n);
 
-    UC(split_wall_solvent(keys_hst, /*io*/ s_n, s_pp_hst, /**/ w_n, w_pp));
+    UC(split_wall_solvent(labels, /*io*/ s_n, s_pp_hst, /**/ w_n, w_pp));
     cH2D(s_pp, s_pp_hst, *s_n);
                        
     UC(efree(s_pp_hst));
-    UC(efree(keys_hst));
-}
-
-void bulk_wall(const tex3Dca texsdf, /*io*/ Particle *s_pp, int *s_n, /*o*/ Particle *w_pp, int *w_n) {
-    int *keys;
-    Dalloc(&keys, MAX_PART_NUM);
-    UC(bulk_wall0(texsdf, s_pp, s_n, w_pp, w_n, keys));
-    CC(d::Free(keys));
+    UC(efree(labels));
 }
 
 /* bulk predicate : is in bulk? */
-static bool bulkp(int *keys, int i) { return keys[i] == W_BULK; }
+static bool bulkp(int *keys, int i) { return keys[i] == label::BULK; }
 static int who_stays0(int *keys, int nc, int nv, /*o*/ int *stay) {
     int c, v;  /* cell and vertex */
     int s = 0; /* how many stays? */
@@ -122,21 +114,11 @@ static int who_stays0(int *keys, int nc, int nv, /*o*/ int *stay) {
     }
     return s;
 }
-
-static int who_stays1(int *keys, int n, int nc, int nv, /*o*/ int *stay) {
-    int nc0, *keys_hst;
-    UC(emalloc(n*sizeof(int), (void**) &keys_hst));
-    cD2H(keys_hst, keys, n);
-    nc0 = who_stays0(keys_hst, nc, nv, /**/ stay);
-    free(keys_hst);
-    return nc0;
-}
-
 int who_stays(const tex3Dca texsdf, Particle *pp, int n, int nc, int nv, /**/ int *stay) {
-    int *keys;
-    CC(d::Malloc((void **) &keys, n*sizeof(keys[0])));
-    KL(dev::fill, (k_cnf(n)), (texsdf, pp, n, keys));
-    nc = who_stays1(keys, n, nc, nv, /**/ stay);
-    CC(d::Free(keys));
+    int *labels;
+    UC(emalloc(n*sizeof(int), (void**)&labels));
+    UC(label::hst(texsdf, n, pp, /**/ labels));
+    nc = who_stays0(labels, nc, nv, /**/ stay);
+    efree(labels);
     return nc;
 }

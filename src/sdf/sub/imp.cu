@@ -21,12 +21,10 @@
 
 #include "sdf/field/imp.h"
 #include "sdf/type.h"
+#include "sdf/label/imp.h"
+
 #include "imp.h"
 #include "dev/main.h"
-
 namespace sdf { namespace sub {
-namespace dev {
-#include "dev/fill.h"
-}
 #include "imp/main.h"
 }} /* namespace */
