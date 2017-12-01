@@ -20,3 +20,10 @@ to_abs () ( # to absolute path
     cd "$d"
     echo "`pwd`/$f"
 )
+
+optp () { # option?
+    case "$1" in
+	-*) true  ;;
+	*)  false ;;
+    esac
+}

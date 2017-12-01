@@ -21,6 +21,7 @@ if test ! -d "$d"; then err "u.case: fail to create directory '$d'"; fi
 ### -f: file ###
 copy () {
     if test ! -r "$from"; then err "u.case: not a file '$from'"; fi
+    if optp "$to";        then err "u.case: not a file name '$to'"; fi
     e cp -- "$from" "$d/$to"
 }
 from= to= F=0
