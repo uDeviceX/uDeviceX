@@ -1,6 +1,6 @@
 . u.case.util
 
-${DRYRUN=0}
+: ${DRYRUN=0}
 
 set -eu
 
