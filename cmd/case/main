@@ -1,7 +1,7 @@
 . u.case.util
 
 usg () {
-    msg 'S=[SRC] u.case [UNIT] [CONFIG.h] [udx configuration file]'
+    msg 'S=[SRC] u.case -d [case dir] -f [from] [to] -b [exec before] -a [exec after] [UNIT] [CONFIG.h] [udx conf file]'
     exit
 }
 
