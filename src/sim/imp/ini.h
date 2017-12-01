@@ -64,6 +64,11 @@ static void ini_vcont(MPI_Comm comm, /**/ PidVCont *c) {
 
 static void ini_outflow(Outflow **o) {
     UC(ini(MAX_PART_NUM, /**/ o));
+
+    if (OUTFLOW_CIRCLE)
+        ini_params_circle(OUTFLOW_CIRCLE_R, *o);
+    else
+        ini_params_plane(0, XS/2-1, *o);
 }
 
 static void ini_inflow(Inflow **i) {
