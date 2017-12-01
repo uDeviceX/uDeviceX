@@ -60,7 +60,8 @@ done
 build () (
     if test  "$DRYRUN" != 0; then return; fi
     cd "$d"
-    e u.build "$@"
+    S=`to_abs "$S"`
+    e S="$S" u.build "$@"
     if test $? -ne 0; then err 'u.build failed'; fi
 )
 
