@@ -7,8 +7,8 @@
 : ${CONF=conf.h}
 
 set -eu
-
 if test   -z "$S"; then err 'u.build: S is not set'; fi
+S=`to_abs "$S"`
 if test ! -d "$S"; then err "u.build: not a directory '$S'"; fi
 
 if test $# -eq 0; then err 'u.build expecting unit'; fi
