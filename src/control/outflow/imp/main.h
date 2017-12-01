@@ -59,3 +59,6 @@ void filter_particles_plane(float3 normal, float3 r, int n, const Particle *pp, 
 void download_ndead(Outflow *o) {
     CC(d::Memcpy(&o->ndead, o->ndead_dev, sizeof(int), D2H));
 }
+
+int* get_deathlist(Outflow *o) {return o->kk;}
+int  get_ndead(Outflow *o)     {return o->ndead;}
