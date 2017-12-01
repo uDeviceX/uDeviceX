@@ -19,7 +19,6 @@ copy () {
     if test ! -r "$f"; then err "u.case: not a file '$f'"; fi
     e cp "$f" "$d"
 }
-
 f= F=0
 for c
 do shift
