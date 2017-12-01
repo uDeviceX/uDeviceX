@@ -24,3 +24,6 @@ namespace plane {
 
 #include "imp/type.h"
 #include "imp/main.h"
+
+#include "circle/imp.h"
+#include "plane/imp.h"
