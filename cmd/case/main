@@ -1,0 +1,10 @@
+. u.case.util
+
+usg () {
+    msg 'S=[SRC] u.case [UNIT] [CONFIG.h] [udx configuration file]'
+    exit
+}
+
+if test "$1" = -h; then usg; fi
+
+exec u.case "$@"
