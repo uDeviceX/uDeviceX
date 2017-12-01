@@ -1,4 +1,4 @@
-# sTEST: case.0
+# TEST: case.0
 set -eu
 S=`pwd` U=u/x C="$S/conf/default.h"
 c="$S/data/cells/rbc/498.off"
@@ -7,15 +7,16 @@ run
 !
 if test -e case0/abcd; then echo ok; else echo fail; fi > case.out.txt
 
-# sTEST: case.1
+# nTEST: case.1
+set -eu
 :
+rm -rf case0
 S=`pwd` U=u/x C="$S/conf/test.h"
 :
 export S
 w="$S/data/sdf/wall1/wall.dat"
-u.case -d case0 -f "$w" sdf.dat \
-$U \
-conf/test.h <<!
+u.case -d case0 -f "$w" sdf.dat -a "u.run ./udx" \
+$U $C <<!
    XS=12 YS=12 ZS=12
    tend=1.0 part_freq=300 walls wall_creation=1
    field_dumps part_dumps field_freq=300
