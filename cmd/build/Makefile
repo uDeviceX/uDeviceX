@@ -10,8 +10,9 @@ m = build
 install:
 	@echo install $p.$m
 	@mkdir -p "$B"
-	cp main   "$B/u.$m"
-	cp main0  "$B/u.$m"0
+	cp util   "$B/$p.$m.util"
+	cp main   "$B/$p.$m"
+	cp main0  "$B/$p.$m"0
 
 doc: man
 	@mkdir -p "$M/man1"
