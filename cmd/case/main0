@@ -1,5 +1,7 @@
 . u.case.util
 
+${DRYRUN=0}
+
 set -eu
 
 ### -d: case directory ###
@@ -46,7 +48,13 @@ do shift
    fi
 done
 
-main () (
+build () (
+    cd "$d"
+    e u.build
+    if test $? -ne 0; then err 'u.build failed'; fi
+)
+
+main () {
     ### skip -a ###
     local e c F
     e= F=0
@@ -57,10 +65,8 @@ main () (
        else                      set -- "$@" "$c"
        fi
     done
-    cd "$d"
-    e u.build "$@"
-    if test $? -ne 0; then err 'u.build failed'; fi
-)
+    build "$@"
+}
 main "$@"
 
 ### -a: after ###
