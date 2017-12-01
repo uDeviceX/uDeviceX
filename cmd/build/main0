@@ -25,7 +25,6 @@ t=$TMP/udx.$$; e mkdir "$t"
 if ! test -d $t; then err "u.build: fail to create dir `$t`"; fi
 trap 'rm0 $t' 0 1 2 3 4 15
 
-e cp $t/conf.h "$CONF"
 (
   e cd $t
   e u.conf "$S" "$U" "$C" "$@"
@@ -33,4 +32,5 @@ e cp $t/conf.h "$CONF"
   e u.make -j '>' .make.log
 )
 
+e cp $t/conf.h "$CONF"
 e cp $t/udx "$UDX"
