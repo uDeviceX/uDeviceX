@@ -1,0 +1,12 @@
+#!/bin/sh
+
+D="."
+
+# install tools
+make -C tools/ 
+
+u.doc.index   $D > index.adoc
+u.doc.targets $D > make/target.mk
+u.doc.deps    $D > make/deps.mk
+
+
