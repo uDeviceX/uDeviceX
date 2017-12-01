@@ -1,3 +1,5 @@
+: ${DBG=0}
+
 msg () { echo >&2 "$@"; }
 err () { msg "$@"; exit 2; }
 e   () {
