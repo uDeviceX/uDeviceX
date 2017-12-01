@@ -1,0 +1,5 @@
+# cTEST: build.0
+set -eu
+S=`pwd` U=u/x C="$S/conf/default.h"
+UDX=abcd S="$S" u.build $U "$C"
+if test -e abcd; then echo ok; else echo fail; fi > build.out.txt
