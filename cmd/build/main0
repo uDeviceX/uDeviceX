@@ -8,9 +8,11 @@
 set -eu
 
 if test   -z "$S"; then err 'u.build: S is not set'; fi
-if test ! -d "$S"; then err 'u.build: S is not a directory'; fi
+if test ! -d "$S"; then err "u.build: not a directory '$S'"; fi
 
 U="$1"; shift
+if test ! -d "$S/$U"; then err "u.build: not an unit '$U'"; fi
+
 C="$1"; shift
 if test ! -r "$C"; then err "u.build: not a file '$C'"; fi
 
