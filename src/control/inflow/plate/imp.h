@@ -65,9 +65,9 @@ void ini_params_plate(float3 o, int dir, float L1, float L2,
     diff(&ca, &co, /**/ &pp->a);
     diff(&cb, &co, /**/ &pp->b);
 
-    printf("%g %g %g\n", co.x, co.y, co.z);
-    printf("%g %g %g\n", pp->a.x, pp->a.y, pp->a.z);
-    printf("%g %g %g\n", pp->b.x, pp->b.y, pp->b.z);
+    // printf("%g %g %g\n", co.x, co.y, co.z);
+    // printf("%g %g %g\n", pp->a.x, pp->a.y, pp->a.z);
+    // printf("%g %g %g\n", pp->b.x, pp->b.y, pp->b.z);
     
     vpp->u = u;
     vpp->upoiseuille = upoiseuille;
