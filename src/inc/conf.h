@@ -345,6 +345,14 @@
   #define OUTFLOW (false)
 #endif
 
+#ifndef OUTFLOW_CIRCLE
+#define OUTFLOW_CIRCLE (true)
+#endif
+
+#ifndef OUTFLOW_CIRCLE_R
+#define OUTFLOW_CIRCLE_R (8.f)
+#endif
+
 #ifndef INFLOW
   #define INFLOW (false)
 #endif
