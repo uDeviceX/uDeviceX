@@ -21,4 +21,5 @@ namespace plane {
 #include "dev/filter.h"
 }
 
+#include "imp/type.h"
 #include "imp/main.h"

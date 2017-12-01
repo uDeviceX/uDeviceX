@@ -29,7 +29,7 @@ void filter_particles_circle(float R, int n, const Particle *pp, Outflow *o) {
     origin.z = 0;
 
     reset_ndead(o);    
-    KL(circle::filter, (k_cnf(n)), (origin, n, pp, params, /**/ *o) );
+    KL(circle::filter, (k_cnf(n)), (origin, n, pp, params, /**/ o->kk, o->ndead_dev) );
 }
 
 void filter_particles_plane(float3 normal, float3 r, int n, const Particle *pp, Outflow *o) {
@@ -46,7 +46,7 @@ void filter_particles_plane(float3 normal, float3 r, int n, const Particle *pp, 
     origin.z = 0;
 
     reset_ndead(o);
-    KL(plane::filter, (k_cnf(n)), (origin, n, pp, params, /**/ *o) );
+    KL(plane::filter, (k_cnf(n)), (origin, n, pp, params, /**/ o->kk, o->ndead_dev) );
 }
 
 void download_ndead(Outflow *o) {

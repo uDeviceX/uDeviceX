@@ -1,4 +1,4 @@
-__global__ void filter(float3 origin, int n, const Particle *pp, Params params, /**/ Outflow o) {
+__global__ void filter(float3 origin, int n, const Particle *pp, Params params, /**/ int *ndead, int *kk) {
     int i = threadIdx.x + blockIdx.x * blockDim.x;
     int dead;
     Particle p;
@@ -6,8 +6,8 @@ __global__ void filter(float3 origin, int n, const Particle *pp, Params params, 
 
     p = pp[i];
     dead = predicate(origin, params, p.r);
-    o.kk[i] = dead;
+    kk[i] = dead;
     if (dead)
-        atomicAdd(o.ndead_dev, 1);
+        atomicAdd(ndead, 1);
 }
 
