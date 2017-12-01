@@ -24,6 +24,7 @@ to_abs () ( # to absolute path
 optp () { # option?
     case "$1" in
 	-*) true  ;;
-	*)  false ;;
+	*) false ;;
     esac
+    return $?
 }

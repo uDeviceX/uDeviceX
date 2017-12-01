@@ -21,14 +21,20 @@ if test ! -d "$d"; then err "u.case: fail to create directory '$d'"; fi
 ### -f: file ###
 copy () {
     if test ! -r "$from"; then err "u.case: not a file '$from'"; fi
-    if optp "$to";        then err "u.case: not a file name '$to'"; fi
     e cp -- "$from" "$d/$to"
+}
+bad_opt() {
+    if test $F -eq 0; then return 1
+    elif optp "$c"  ; then return 0
+    else                   return 1
+    fi
 }
 from= to= F=0
 for c
 do shift
-   if   test "$c" = -f; then F=1
-   elif test  $F -eq 1; then from="$c"; F=2
+   if   bad_opt;        then err "u.case: not a file name '$c'"
+   elif test "$c" = -f; then                  F=1
+   elif test  $F -eq 1; then from="$c";       F=2
    elif test  $F -eq 2; then   to="$c"; copy; F=0
    else                      set -- "$@" "$c"
    fi
@@ -51,6 +57,7 @@ do shift
 done
 
 build () (
+    if test  "$DRYRUN" != 0; then return; fi
     cd "$d"
     e u.build "$@"
     if test $? -ne 0; then err 'u.build failed'; fi
