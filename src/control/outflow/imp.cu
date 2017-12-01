@@ -12,12 +12,12 @@
 #include "imp.h"
 
 namespace circle {
-#include "dev/circle.h"
+#include "circle/dev.h"
 #include "dev/filter.h"
 }
 
 namespace plane {
-#include "dev/plane.h"
+#include "plane/dev.h"
 #include "dev/filter.h"
 }
 
