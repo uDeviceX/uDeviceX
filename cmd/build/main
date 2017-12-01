@@ -1,1 +1,1 @@
-exec u.build0
+exec u.build0 "$@"

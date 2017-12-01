@@ -9,7 +9,7 @@ u.build - builds udx executable
 
 
 == DESCRIPTION
-The u.build(1) write udx buildameter file to stdout
+u.build(1) builds udx executable
 
 == OPTIONS
 
