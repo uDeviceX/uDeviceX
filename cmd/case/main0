@@ -39,6 +39,7 @@ do shift
    else                      set -- "$@" "$c"
    fi
 done
+if test "$F" -ne 0; then err 'u.case: wrong args for -f'; fi
 
 exe () (
     cd "$d"
