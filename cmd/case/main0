@@ -50,7 +50,7 @@ done
 
 build () (
     cd "$d"
-    e u.build
+    e u.build "$@"
     if test $? -ne 0; then err 'u.build failed'; fi
 )
 
