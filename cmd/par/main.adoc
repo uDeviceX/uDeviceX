@@ -9,7 +9,7 @@ u.par - create key=value configuration file
 
 
 == DESCRIPTION
-The u.par(1) write udx parameter file to stdout
+u.par(1) write udx parameter file to stdout
 
 == OPTIONS
 *-w::
