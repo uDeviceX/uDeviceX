@@ -7,6 +7,8 @@ void ini(int maxp, /**/ Outflow *o) {
     size_t sz = maxp * sizeof(Particle);
     CC(d::Malloc((void**) &o->kk, sz));
     CC(d::Malloc((void**) &o->ndead_dev, sizeof(int)));
+
+    CC(d::MemsetAsync(o->kk, 0, sz));
     reset_ndead(o);
 }
 
