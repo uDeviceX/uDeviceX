@@ -20,14 +20,15 @@ if test ! -d "$d"; then err "u.case: fail to create directory '$d'"; fi
 
 ### -f: file ###
 copy () {
-    if test ! -r "$f"; then err "u.case: not a file '$f'"; fi
-    e cp "$f" "$d"
+    if test ! -r "$from"; then err "u.case: not a file '$from'"; fi
+    e cp -- "$from" "$d/$to"
 }
-f= F=0
+from= to= F=0
 for c
 do shift
    if   test "$c" = -f; then F=1
-   elif test  $F -eq 1; then f="$c"; copy; F=0
+   elif test  $F -eq 1; then from="$c"; F=2
+   elif test  $F -eq 2; then   to="$c"; copy; F=0
    else                      set -- "$@" "$c"
    fi
 done
