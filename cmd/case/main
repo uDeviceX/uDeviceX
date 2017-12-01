@@ -7,4 +7,4 @@ usg () {
 
 if test "$1" = -h; then usg; fi
 
-exec u.case "$@"
+exec u.case0 "$@"

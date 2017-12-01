@@ -1,1 +1,30 @@
-echo 42
+. u.case.util
+
+set -eu
+
+d= F=0
+for c
+do shift
+   if   test "$c" = -d; then F=1
+   elif test  $F -eq 1; then d="$c"; F=0
+   else                      set -- "$@" "$c"
+   fi
+done
+if test -z "$d"; then err 'u.case: -d is not set'; fi
+
+e mkdir -p "$d"
+if test ! -d "$d"; then err "u.case: fail to create directory '$d'"; fi
+
+copy () {
+    if test ! -r "$f"; then err "u.case: not a file '$f'"; fi
+    e cp "$f" "$d"
+}
+
+f= F=0
+for c
+do shift
+   if   test "$c" = -f; then F=1
+   elif test  $F -eq 1; then f="$c"; copy; F=0
+   else                      set -- "$@" "$c"
+   fi
+done
