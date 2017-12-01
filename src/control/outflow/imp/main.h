@@ -3,8 +3,14 @@ static void reset_ndead(Outflow *o) {
     o->ndead = 0;
 }
 
-void ini(int maxp, /**/ Outflow *o) {
-    size_t sz = maxp * sizeof(Particle);
+void ini(int maxp, /**/ Outflow **o0) {
+    Outflow *o;
+    size_t sz;
+
+    UC(emalloc(sizeof(Outflow), (void**) o0));
+    o = *o0;
+    
+    sz = maxp * sizeof(Particle);
     CC(d::Malloc((void**) &o->kk, sz));
     CC(d::Malloc((void**) &o->ndead_dev, sizeof(int)));
 
@@ -15,6 +21,7 @@ void ini(int maxp, /**/ Outflow *o) {
 void fin(/**/ Outflow *o) {
     CC(d::Free(o->kk));
     CC(d::Free(o->ndead_dev));
+    UC(efree(o));
 }
 
 
