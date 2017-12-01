@@ -1,0 +1,16 @@
+= u.build(1)
+
+== NAME
+u.build - builds udx executable
+
+
+== SYNOPSIS
+*u.build* ['OPTIONS']
+
+
+== DESCRIPTION
+The u.build(1) write udx buildameter file to stdout
+
+== OPTIONS
+
+== EXAMPLES
