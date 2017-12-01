@@ -11,7 +11,7 @@ ObjInter objinter;
 BounceBack bb;
 Colorer colorer;
 PidVCont vcont;
-Outflow outflow;
+Outflow *outflow;
 Inflow *inflow;
 
 namespace a /* all */

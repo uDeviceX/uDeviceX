@@ -10,8 +10,8 @@ void distribute_flu(Flu *f) {
     lp.pp        = q->pp;
 
     if (OUTFLOW) {
-        lp.deathlist = outflow.kk;
-        ndead = outflow.ndead;
+        lp.deathlist = get_deathlist(outflow);
+        ndead = get_ndead(outflow);
     } else {
         lp.deathlist = NULL;
         ndead = 0;
