@@ -10,12 +10,12 @@ if test -e case0/abcd; then echo ok; else echo fail; fi > case.out.txt
 # nTEST: case.1
 set -eu
 :
-rm -rf case0
-S=`pwd` U=u/x C="$S/conf/test.h"
+D=case0 S=`pwd` U=u/x C="$S/conf/test.h"
+rm -rf "$D"
 :
 export S
-w="$S/data/sdf/wall1/wall.dat"
-u.case -d case0 -f "$w" sdf.dat -a "u.run ./udx" \
+W="$S/data/sdf/wall1/wall.dat"
+u.case -d "$D" -f "$W" sdf.dat -a "u.run ./udx" \
 $U $C <<!
    XS=12 YS=12 ZS=12
    tend=1.0 part_freq=300 walls wall_creation=1
