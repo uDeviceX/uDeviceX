@@ -16,6 +16,7 @@ void ini(int maxp, /**/ Outflow **o0) {
 
     CC(d::MemsetAsync(o->kk, 0, sz));
     reset_ndead(o);
+    o->type = TYPE_NONE;
 }
 
 void fin(/**/ Outflow *o) {
@@ -54,6 +55,29 @@ void filter_particles_plane(float3 normal, float3 r, int n, const Particle *pp, 
 
     reset_ndead(o);
     KL(plane::filter, (k_cnf(n)), (origin, n, pp, params, /**/ o->kk, o->ndead_dev) );
+}
+
+void filter_particles(int n, const Particle *pp, /**/ Outflow *o) {
+    float3 origin;
+    // TODO
+    origin.x = 0;
+    origin.y = 0;
+    origin.z = 0;
+
+    reset_ndead(o);
+
+    switch(o->type) {
+    case TYPE_CIRCLE:
+        KL(circle::filter, (k_cnf(n)), (origin, n, pp, o->params.circle, /**/ o->kk, o->ndead_dev) );
+        break;
+    case TYPE_PLANE:
+        KL(plane::filter, (k_cnf(n)), (origin, n, pp, o->params.plane, /**/ o->kk, o->ndead_dev) );
+        break;
+    case TYPE_NONE:
+    default:
+        ERR("No type set");
+        break;
+    };
 }
 
 void download_ndead(Outflow *o) {
