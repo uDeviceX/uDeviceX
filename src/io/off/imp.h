@@ -4,29 +4,26 @@
 static int eq(const char *a, const char *b) { return strcmp(a, b) == 0; }
 static void assert_nf(int n, int max, const char *f) {
     if (n <= max) return;
-    fprintf(stderr, "off:faces nf = %d < max = %d in <%s>\n", n, max, f);
-    exit(2);
+    ERR("off:faces nf = %d < max = %d in <%s>", n, max, f);
 }
 /* return faces: f0[0] f1[0] f2[0]   f0[1] f1[1] ... */
 int faces(const char *f, int max, int4* faces) {
     char buf[BUFSIZ];
     FILE *fd;
+    int nv, nf;
+    int4 t;
 
     UC(efopen(f, "r", /**/ &fd));
 
     fgets(buf, sizeof buf, fd); /* skip OFF */
-    if (!eq(buf, "OFF\n")) {
-        fprintf(stderr, "off: expecting [OFF] <%s> : [%s]\n", f, buf);
-        exit(2);
-    }
+    if (!eq(buf, "OFF\n"))
+        ERR("off: expecting [OFF] <%s> : [%s]", f, buf);
 
-    int nv, nf;
     fscanf(fd, "%d %d %*d", &nv, &nf); /* skip `ne' and all vertices */
     assert_nf(nf, max, f);
     
     for (int iv = 0; iv < nv;  iv++) fscanf(fd, "%*e %*e %*e");
 
-    int4 t;
     t.w = 0;
     for (int ifa = 0; ifa < nf; ifa++) {
         fscanf(fd, "%*d %d %d %d", &t.x, &t.y, &t.z);
@@ -39,23 +36,25 @@ int faces(const char *f, int max, int4* faces) {
 
 static void assert_nv(int n, int max, const char *f) {
     if (n <= max) return;
-    fprintf(stderr, "off:vert nv = %d < max = %d in <%s>\n", n, max, f);
-    exit(2);
+    ERR("off:vert nv = %d < max = %d in <%s>", n, max, f);
 }
 int vert(const char *f, int max, float* vert) {
     char buf[BUFSIZ];
     FILE *fd;
+    int nv;
+    int iv = 0, ib = 0;
+    float x, y, z;
+    
     UC(efopen(f, "r", /**/ &fd));
 
     fgets(buf, sizeof buf, fd); /* skip OFF */
+    if (!eq(buf, "OFF\n"))
+        ERR("off: expecting [OFF] <%s> : [%s]", f, buf);
 
-    int nv;
     fscanf(fd, "%d %*d %*d", &nv); /* skip `nf' and `ne' */
     assert_nv(nv, max, f);
     
-    int iv = 0, ib = 0;
     for (/*   */ ; iv < nv;  iv++) {
-        float x, y, z;
         fscanf(fd, "%e %e %e", &x, &y, &z);
         vert[ib++] = x; vert[ib++] = y; vert[ib++] = z;
     }
