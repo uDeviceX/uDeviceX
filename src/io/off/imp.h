@@ -4,7 +4,7 @@
 static int eq(const char *a, const char *b) { return strcmp(a, b) == 0; }
 static void assert_nf(int n, int max, const char *f) {
     if (n <= max) return;
-    ERR("off:faces nf = %d < max = %d in <%s>", n, max, f);
+    ERR("faces nf = %d < max = %d in <%s>", n, max, f);
 }
 /* return faces: f0[0] f1[0] f2[0]   f0[1] f1[1] ... */
 int faces(const char *f, int max, int4* faces) {
@@ -17,7 +17,7 @@ int faces(const char *f, int max, int4* faces) {
 
     fgets(buf, sizeof buf, fd); /* skip OFF */
     if (!eq(buf, "OFF\n"))
-        ERR("off: expecting [OFF] <%s> : [%s]", f, buf);
+        ERR("expecting [OFF] <%s> : [%s]", f, buf);
 
     fscanf(fd, "%d %d %*d", &nv, &nf); /* skip `ne' and all vertices */
     assert_nf(nf, max, f);
@@ -36,7 +36,7 @@ int faces(const char *f, int max, int4* faces) {
 
 static void assert_nv(int n, int max, const char *f) {
     if (n <= max) return;
-    ERR("off:vert nv = %d < max = %d in <%s>", n, max, f);
+    ERR("vert nv = %d < max = %d in <%s>", n, max, f);
 }
 int vert(const char *f, int max, float* vert) {
     char buf[BUFSIZ];
@@ -49,7 +49,7 @@ int vert(const char *f, int max, float* vert) {
 
     fgets(buf, sizeof buf, fd); /* skip OFF */
     if (!eq(buf, "OFF\n"))
-        ERR("off: expecting [OFF] <%s> : [%s]", f, buf);
+        ERR("expecting [OFF] <%s> : [%s]", f, buf);
 
     fscanf(fd, "%d %*d %*d", &nv); /* skip `nf' and `ne' */
     assert_nv(nv, max, f);
