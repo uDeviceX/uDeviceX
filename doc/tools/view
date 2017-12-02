@@ -1,0 +1,12 @@
+#!/bin/sh
+
+set -eu
+
+msg () { echo >&2 "$@"; }
+e ()   { msg ": $@"; eval "$@"; }
+
+h=`u.host`
+if test $h = acer
+then e xdg-open localhost:8000/"${1-main.html}"
+else e open     localhost:8000/"${1-main.html}"
+fi
