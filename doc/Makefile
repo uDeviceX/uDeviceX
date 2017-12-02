@@ -4,8 +4,7 @@ include make/target.mk
 all: $(PAGES)
 include make/deps.mk
 
-style=
-#style=-a stylesheet=main.css
+style=-a stylesheet=adoc.css
 
 %.html: %.adoc; $(ADOC) $(style) $<
 .PHONY: clean
