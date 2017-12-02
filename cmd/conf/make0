@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 S="$1"; shift # source
 U="$1"; shift # unit
