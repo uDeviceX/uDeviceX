@@ -40,10 +40,9 @@ button::-moz-focus-inner,input::-moz-focus-inner{border:0;padding:0}
 textarea{overflow:auto;vertical-align:top}
 table{border-collapse:collapse;border-spacing:0}
 *,*:before,*:after{-moz-box-sizing:border-box;-webkit-box-sizing:border-box;box-sizing:border-box}
-html,body{font-size:100%}
+html{font-size:100%}
 body{
-    background:#fff;
-    color:rgba(0,0,0,.8);
+    font-size:100%;
     padding:0;
     margin:0;
     font-weight:400;
@@ -52,8 +51,6 @@ body{
     position:relative;
     cursor:auto;
     tab-size:4;
-    -moz-osx-font-smoothing:grayscale;
-    -webkit-font-smoothing:antialiased
 }
 a:hover{cursor:pointer}
 img,object,embed{max-width:100%;height:auto}
