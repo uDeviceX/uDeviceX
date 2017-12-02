@@ -125,7 +125,7 @@ void fin() {
         fin_objinter(&objinter);
 
     if (VCON)    UC(fin(/**/ &vcont));
-    if (OUTFLOW) UC(fin_outflow(/**/ &outflow));
+    if (OUTFLOW) UC(fin_outflow(/**/ outflow));
     if (INFLOW) UC(fin_inflow(/**/ inflow));
     
     if (walls) fin_wall(&wall);

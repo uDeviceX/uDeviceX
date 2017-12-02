@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 usg () {
     msg 'usage: u.run NX NY NZ ./udx [ARGS]' >&2

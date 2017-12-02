@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 usg() {
     echo 'usage: u.conf [source dir] [unit dir] default.h <<<!

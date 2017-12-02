@@ -62,8 +62,13 @@ static void ini_vcont(MPI_Comm comm, /**/ PidVCont *c) {
     UC(ini(comm, L, V, VCON_FACTOR, /**/ c));
 }
 
-static void ini_outflow(Outflow *o) {
-    ini(MAX_PART_NUM, /**/ o);
+static void ini_outflow(Outflow **o) {
+    UC(ini(MAX_PART_NUM, /**/ o));
+
+    if (OUTFLOW_CIRCLE)
+        ini_params_circle(OUTFLOW_CIRCLE_R, *o);
+    else
+        ini_params_plane(0, XS/2-1, *o);
 }
 
 static void ini_inflow(Inflow **i) {
@@ -71,9 +76,7 @@ static void ini_inflow(Inflow **i) {
     ini(nc, /**/ i);
     // hack for now
 
-    ini_params_plate(make_float3(-XS/2, 0,     -ZS/2),
-                     make_float3(    0,  YS/2,     0),
-                     make_float3(    0,     0,    ZS),
+    ini_params_plate(make_float3(0, YS/2, 0), 0, YS/2, ZS,
                      make_float3(10.f, 0, 0), true, false,
                       /**/ *i);
     ini_velocity(*i);
@@ -145,7 +148,7 @@ void ini() {
 
     if (VCON)    UC(ini_vcont(m::cart, /**/ &vcont));
     if (OUTFLOW) UC(ini_outflow(/**/ &outflow));
-    if (INFLOW) UC(ini_inflow(/**/ &inflow));
+    if (INFLOW)  UC(ini_inflow(/**/ &inflow));
         
     if (rbcs || solids)
         UC(ini_objinter(m::cart, /**/ &objinter));        

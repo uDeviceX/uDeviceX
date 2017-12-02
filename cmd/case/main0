@@ -1,3 +1,5 @@
+#!/bin/sh
+
 . u.case.util
 
 : ${DRYRUN=0}
@@ -58,9 +60,14 @@ do shift
 done
 
 build () (
+    local U C
     if test  "$DRYRUN" != 0; then return; fi
+    U="$1"; shift
+    C="$1"; shift
+    S=`to_abs "$S"`
+    C=`to_abs "$C"`
     cd "$d"
-    e u.build "$@"
+    e S="$S" u.build "$U" "$C"
     if test $? -ne 0; then err 'u.build failed'; fi
 )
 

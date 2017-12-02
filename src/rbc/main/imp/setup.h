@@ -45,12 +45,12 @@ static void setup_edg(int md, int nv, adj::Hst *adj, /**/ Edg *dev, float *totAr
     UC(emalloc(md*nv*sizeof(Edg), (void**) &hst));
     UC(emalloc(3*nv*sizeof(float), (void**) &rr));
     MSG("reading <%s>", fn);
-    evert(fn, nv, /**/ rr);
-    setup_edg1(md, nv, adj, rr, /**/ hst, totArea);
+    UC(evert(fn, nv, /**/ rr));
+    UC(setup_edg1(md, nv, adj, rr, /**/ hst, totArea));
 
     cH2D(dev, hst, md*nv);
 
-    free(hst); free(rr);
+    UC(efree(hst)); UC(efree(rr));
 }
 
 static void setup_anti(int md, int nv, adj::Hst *adj, /**/ int *dev) {
@@ -70,8 +70,8 @@ static void setup0(int md, int nt, int nv, int4 *faces, /**/
     adj::Hst adj;
     adj::ini(md, nt, nv, faces, /**/ &adj);
 
-    if (RBC_STRESS_FREE) setup_edg(md,  nv, &adj, /**/ edg, totArea);
-    if (RBC_RND)         setup_anti(md, nv, &adj, /**/ anti);
+    if (RBC_STRESS_FREE) UC(setup_edg(md,  nv, &adj, /**/ edg, totArea));
+    if (RBC_RND)         UC(setup_anti(md, nv, &adj, /**/ anti));
 
     cH2D(adj0, adj.adj0, nv*md); /* TODO */
     cH2D(adj1, adj.adj1, nv*md);
@@ -82,7 +82,7 @@ static void setup0(int md, int nt, int nv, int4 *faces, /**/
 static void setup(int md, int nt, int nv, const char *cell, /**/
                   int *anti, Edg *edg, float *totArea, int4 *faces, int4 *tri,
                   int *adj0, int *adj1) {
-    efaces(cell, nt, /**/ faces);
-    setup0(md, nt, nv, faces, /**/ anti, edg, totArea, adj0, adj1);
+    UC(efaces(cell, nt, /**/ faces));
+    UC(setup0(md, nt, nv, faces, /**/ anti, edg, totArea, adj0, adj1));
     cH2D(tri, faces, nt);
 }

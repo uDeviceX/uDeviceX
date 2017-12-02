@@ -2,6 +2,7 @@
 #include "inc/conf.h"
 
 #include "utils/error.h"
+#include "utils/halloc.h"
 #include "utils/cc.h"
 #include "utils/kl.h"
 #include "d/api.h"
@@ -12,13 +13,17 @@
 #include "imp.h"
 
 namespace circle {
-#include "dev/circle.h"
+#include "circle/dev.h"
 #include "dev/filter.h"
 }
 
 namespace plane {
-#include "dev/plane.h"
+#include "plane/dev.h"
 #include "dev/filter.h"
 }
 
+#include "imp/type.h"
 #include "imp/main.h"
+
+#include "circle/imp.h"
+#include "plane/imp.h"

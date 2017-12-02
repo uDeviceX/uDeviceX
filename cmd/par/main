@@ -1,3 +1,5 @@
+#!/bin/sh
+
 usg () {
     msg 'u.par    a=1 b=42           [FILE]'
     msg 'u.par -w a=1 b=\"cell.off\" [FILE]'

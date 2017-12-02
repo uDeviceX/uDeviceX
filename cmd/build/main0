@@ -1,3 +1,5 @@
+#!/bin/sh
+
 . u.build.util
 
 : ${S=}
@@ -7,7 +9,6 @@
 : ${CONF=conf.h}
 
 set -eu
-
 if test   -z "$S"; then err 'u.build: S is not set'; fi
 if test ! -d "$S"; then err "u.build: not a directory '$S'"; fi
 

@@ -1,3 +1,5 @@
+#!/bin/sh
+
 . u.utils
 
 run_one() { # single processor

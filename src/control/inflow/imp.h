@@ -3,7 +3,7 @@ struct Inflow;
 void ini(int2 nc, Inflow **i);
 void ini_velocity(Inflow *i);
 
-void ini_params_plate(float3 o, float3 a, float3 b,
+void ini_params_plate(float3 o, int dir, float L1, float L2,
                       float3 u, bool upoiseuille, bool vpoiseuille,
                       /**/ Inflow *i);
 
