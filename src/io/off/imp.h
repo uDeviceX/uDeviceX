@@ -7,7 +7,7 @@ static void assert_nf(int n, int max, const char *f) {
     ERR("faces nf = %d < max = %d in <%s>", n, max, f);
 }
 /* return faces: f0[0] f1[0] f2[0]   f0[1] f1[1] ... */
-int faces(const char *f, int max, int4* faces) {
+void faces(const char *f, int max, /**/ int *pnf, int4 *faces) {
     char buf[BUFSIZ];
     FILE *fd;
     int nv, nf;
@@ -21,7 +21,7 @@ int faces(const char *f, int max, int4* faces) {
 
     fscanf(fd, "%d %d %*d", &nv, &nf); /* skip `ne' and all vertices */
     assert_nf(nf, max, f);
-    
+
     for (int iv = 0; iv < nv;  iv++) fscanf(fd, "%*e %*e %*e");
 
     t.w = 0;
@@ -31,20 +31,21 @@ int faces(const char *f, int max, int4* faces) {
     }
     UC(efclose(fd));
 
-    return nf;
+    *pnf = nf;
 }
 
 static void assert_nv(int n, int max, const char *f) {
     if (n <= max) return;
     ERR("vert nv = %d < max = %d in <%s>", n, max, f);
 }
-int vert(const char *f, int max, float* vert) {
+
+void vert(const char *f, int max, /**/ int *pnv, float *vert) {
     char buf[BUFSIZ];
     FILE *fd;
     int nv;
     int iv = 0, ib = 0;
     float x, y, z;
-    
+
     UC(efopen(f, "r", /**/ &fd));
 
     fgets(buf, sizeof buf, fd); /* skip OFF */
@@ -53,7 +54,7 @@ int vert(const char *f, int max, float* vert) {
 
     fscanf(fd, "%d %*d %*d", &nv); /* skip `nf' and `ne' */
     assert_nv(nv, max, f);
-    
+
     for (/*   */ ; iv < nv;  iv++) {
         fscanf(fd, "%e %e %e", &x, &y, &z);
         vert[ib++] = x; vert[ib++] = y; vert[ib++] = z;
@@ -61,5 +62,5 @@ int vert(const char *f, int max, float* vert) {
 
     UC(efclose(fd));
 
-    return nv;
+    *pnv = nv;
 }

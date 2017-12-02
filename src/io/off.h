@@ -1,7 +1,7 @@
 namespace off {
 /* file to vertices : max: maximum vert number */
-int vert(const char *f, int max, float* vert);
+void vert(const char *f, int max, /**/ int *nv, float *vert);
 
 /* file to faces : max: maximum face number */
-int faces(const char *f, int max, int4* faces);
+void faces(const char *f, int max, /**/ int *nf, int4 *faces);
 }

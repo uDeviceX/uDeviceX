@@ -64,7 +64,7 @@ static int main0(float *rr0, const char *ic, int nv, Particle *pp) {
 
 static void vert(const char *f, int n0, /**/ float *vert) {
     int n;
-    n = off::vert(f, n0, vert);
+    UC(off::vert(f, n0, /**/ &n, vert));
     if (n0 != n)
         ERR("wrong vert number in <%s> : %d != %d", f, n0, n);
 }
@@ -74,7 +74,7 @@ int main(const char *cell, const char *ic, int nv, /**/ Particle *pp) {
     int nc;
     UC(emalloc(3*nv*sizeof(float), (void**) &rr0));
 
-    vert(cell, nv, /**/ rr0);
+    UC(vert(cell, nv, /**/ rr0));
     nc = main0(rr0, ic, nv, pp);
 
     free(rr0);
