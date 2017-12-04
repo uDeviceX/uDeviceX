@@ -2,4 +2,5 @@
 
 e () { echo >&2 "cmd: $@"; eval "$@"; }
 
-e kill `cat .pid`
+pid=`cat .pid`
+e kill $pid

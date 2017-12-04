@@ -2,5 +2,5 @@
 
 e () { echo >&2 "cmd: $@"; eval "$@"; }
 
-e python -m CGIHTTPServer &
+e python -m CGIHTTPServer '&'
 e echo $! > .pid
