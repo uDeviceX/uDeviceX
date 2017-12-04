@@ -1,6 +1,7 @@
 enum Type {
     TYPE_NONE,
     TYPE_PLATE,
+    TYPE_CIRCLE,
 };
     
 struct Desc {
@@ -13,10 +14,12 @@ struct Desc {
 
 union ParamsU {
     plate::Params plate;
+    circle::Params circle;
 };
 
 union VParamsU {
     plate::VParams plate;
+    circle::VParams circle;
 };
 
 struct Inflow {
