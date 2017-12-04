@@ -36,10 +36,10 @@ void filter_particles(int n, const Particle *pp, /**/ Outflow *o) {
 
     switch(o->type) {
     case TYPE_CIRCLE:
-        KL(circle::filter, (k_cnf(n)), (origin, n, pp, o->params.circle, /**/ o->kk, o->ndead_dev) );
+        KL(circle::filter, (k_cnf(n)), (origin, n, pp, o->params.circle, /**/ o->ndead_dev, o->kk) );
         break;
     case TYPE_PLANE:
-        KL(plane::filter, (k_cnf(n)), (origin, n, pp, o->params.plane, /**/ o->kk, o->ndead_dev) );
+        KL(plane::filter, (k_cnf(n)), (origin, n, pp, o->params.plane, /**/ o->ndead_dev, o->kk) );
         break;
     case TYPE_NONE:
     default:
@@ -50,6 +50,7 @@ void filter_particles(int n, const Particle *pp, /**/ Outflow *o) {
 
 void download_ndead(Outflow *o) {
     CC(d::Memcpy(&o->ndead, o->ndead_dev, sizeof(int), D2H));
+    // printf("killed %d particles\n", o->ndead);
 }
 
 int* get_deathlist(Outflow *o) {return o->kk;}
