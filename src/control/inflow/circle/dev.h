@@ -13,12 +13,14 @@ static __device__ void coords2pos(Params p, float2 xi, /**/ float3 *r) {
 
 static __device__ float3 get_normal(Params p, int2 nc, int i, int j) {
     float3 n;
-    float th, cth, sth;
+    float th, cth, sth, area;
     th = p.th0 + (i + 0.5f) / (nc.x) * p.dth;
     cth = cos(th);
     sth = sin(th);
 
     n = make_float3(cth, sth, 0);
+    area = p.H * p.R * p.dth / (nc.x * nc.y);
+    scal(area, /**/ &n);
     return n;
 }
 
@@ -30,7 +32,7 @@ static __device__ void coords2vel(VParams vp, Params p, float2 xi, /**/ float3 *
 
     fact = 1.f;
     if (vp.poiseuille)
-        fact *= 4 * xi.x * (1 - xi.x);
+        fact *= 4 * xi.y * (1 - xi.y);
 
     *u = make_float3(cth, sth, 0);
     scal(fact * vp.u, /**/ u);
