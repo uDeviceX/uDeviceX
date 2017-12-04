@@ -38,5 +38,6 @@ namespace circle {
 #include "imp/type.h"
 
 #include "plate/imp.h"
+#include "circle/imp.h"
 
 #include "imp/main.h"
