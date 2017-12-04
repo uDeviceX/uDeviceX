@@ -1,0 +1,5 @@
+#!/bin/bash
+
+e () { echo >&2 "cmd: $@"; eval "$@"; }
+
+e kill `cat .pid`
