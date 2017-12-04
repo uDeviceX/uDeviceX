@@ -28,6 +28,7 @@ __global__ void cumulative_flux(Params params, int2 nc, const float3 *uu, /**/ f
     xcid = i % nc.x;
     ycid = i / nc.x;
 
+    // normal is scaled by area of element
     normal = get_normal(params, nc, xcid, ycid);
     u      = uu[i];
     dn = dt * numberdensity * dot<float>(&normal, &u);
