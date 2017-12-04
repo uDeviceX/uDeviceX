@@ -76,9 +76,18 @@ static void ini_inflow(Inflow **i) {
     ini(nc, /**/ i);
     // hack for now
 
-    ini_params_plate(make_float3(0, YS/2, 0), 0, YS/2, ZS,
-                     make_float3(10.f, 0, 0), true, false,
-                      /**/ *i);
+    // ini_params_plate(make_float3(0, YS/2, 0), 0, YS/2, ZS,
+    //                  make_float3(10.f, 0, 0), true, false,
+    //                   /**/ *i);
+
+    float3 o = make_float3(XS/2, YS/2, ZS/2);
+    float R, H, u;
+    R = 1;
+    H = ZS;
+    u = 1;
+    
+    ini_params_circle(o, R, H, u, false, /**/ *i);
+    
     ini_velocity(*i);
 }
 
