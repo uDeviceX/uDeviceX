@@ -1,8 +1,10 @@
 struct Params {
-    float3 o, a, b;
+    float3 o;   /* center of cylinder */
+    float R, H; /* radius, hight      */
+    float th0, dth;
 };
 
 struct VParams {
-    float3 u;
-    bool upoiseuille, vpoiseuille;
+    float u;
+    bool poiseuille;
 };

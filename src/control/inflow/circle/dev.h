@@ -1,25 +1,37 @@
 static __device__ void coords2pos(Params p, float2 xi, /**/ float3 *r) {
+    float th, h, cth, sth;
+    th = p.th0 + xi.x * p.dth;
+    h = xi.y * p.H;
+    cth = cos(th);
+    sth = sin(th);
+
     *r = p.o;
-    axpy(xi.x, &p.a, /**/ r);
-    axpy(xi.y, &p.b, /**/ r);
+    r->x += p.R * cth;
+    r->y += p.R * sth;
+    r->z += h;
 }
 
 static __device__ float3 get_normal(Params p, int2 nc, int i, int j) {
     float3 n;
-    cross(&p.a, &p.b, /**/ &n);
-    scal(1.f / (nc.x * nc.y), /**/ &n);
+    float th, cth, sth;
+    th = p.th0 + (i + 0.5f) / (nc.x) * p.dth;
+    cth = cos(th);
+    sth = sin(th);
+
+    n = make_float3(cth, sth, 0);
     return n;
 }
 
 static __device__ void coords2vel(VParams vp, Params p, float2 xi, /**/ float3 *u) {
-    float fact;
+    float th, cth, sth, fact;
+    th = p.th0 + xi.x * p.dth;
+    cth = cos(th);
+    sth = sin(th);
+
     fact = 1.f;
-    if (vp.upoiseuille)
+    if (vp.poiseuille)
         fact *= 4 * xi.x * (1 - xi.x);
 
-    if (vp.vpoiseuille)
-        fact *= 4 * xi.y * (1 - xi.y);
-
-    *u = vp.u;
-    scal(fact, /**/ u);
+    *u = make_float3(cth, sth, 0);
+    scal(fact * vp.u, /**/ u);
 }
