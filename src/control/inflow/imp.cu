@@ -29,6 +29,12 @@ namespace plate {
 #include "dev/main.h"
 }
 
+namespace circle {
+#include "circle/type.h"
+#include "circle/dev.h"
+#include "dev/main.h"
+}
+
 #include "imp/type.h"
 
 #include "plate/imp.h"
