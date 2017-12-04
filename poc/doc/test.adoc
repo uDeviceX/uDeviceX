@@ -1,0 +1,5 @@
+= test
+
+\[
+m \frac{\partial v}{\partial t} = F
+\]
