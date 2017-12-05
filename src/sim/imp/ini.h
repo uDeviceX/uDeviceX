@@ -80,7 +80,7 @@ static void ini_inflow(Inflow **i) {
     //                  make_float3(10.f, 0, 0), true, false,
     //                   /**/ *i);
 
-    float3 o = make_float3(XS/2, YS/2, ZS/2);
+    float3 o = make_float3(INFLOW_CIRCLE_OX, INFLOW_CIRCLE_OY, INFLOW_CIRCLE_OZ);
     ini_params_circle(o, INFLOW_CIRCLE_R, INFLOW_CIRCLE_H, INFLOW_CIRCLE_U, false, /**/ *i);
     
     ini_velocity(*i);

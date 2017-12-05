@@ -1,5 +1,5 @@
 #### rest with deleting cylinder
-# nTEST: out.t1
+# snTEST: out.t1
 :
 u.conf conf/default.h <<!!!
    tend=2.01 part_freq=4000
@@ -24,6 +24,9 @@ u.conf conf/default.h <<!!!
    INFLOW_CIRCLE_R=1
    INFLOW_CIRCLE_H=16
    INFLOW_CIRCLE_U=1
+   INFLOW_CIRCLE_OX=XS/2
+   INFLOW_CIRCLE_OY=YS/2
+   INFLOW_CIRCLE_OZ=ZS/2
    run
 !!!
 (make clean && u.make -j) > /dev/null
