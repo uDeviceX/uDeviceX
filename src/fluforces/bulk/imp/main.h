@@ -27,7 +27,7 @@ static void launch(int np) {
         KL(merged, (dim3(nx, ny, nz), dim3(32, MYWPB)), ());
         CC(d::PeekAtLastError());
     } else {
-        fprintf(stderr, "Incompatible grid config\n");
+        ERR("Incompatible grid: [%d %d %d]", XS, YS, ZS);
     }
 }
 
