@@ -277,7 +277,8 @@
 
 /* body force */
 #if !defined(FORCE_NONE) && !defined(FORCE_DOUBLE_POISEUILLE) && \
-    !defined(FORCE_4ROLLER) && !defined(FORCE_CONSTANT) && !defined(FORCE_SHEAR)
+    !defined(FORCE_4ROLLER) && !defined(FORCE_CONSTANT) && !defined(FORCE_SHEAR) && \
+    !defined(FORCE_RADIAL)
   #define FORCE_NONE
 #endif
 
@@ -309,6 +310,11 @@
 /*           Velocity controller           */
 #ifndef VCON
   #define VCON (false)
+#endif
+
+// default transformation
+#if !defined(VCON_CART) && !defined(VCON_RAD)
+  #define VCON_CART
 #endif
 
 #ifndef VCON_SAMPLE_FREQ
