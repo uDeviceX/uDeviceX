@@ -26,7 +26,12 @@
 namespace dev {
 #include "dev/common.h"
 
+#if   defined(VCON_CART)
 #include "dev/cart.h"
+#elif defined(VCON_RAD)
+#include "dev/radial.h"
+#endif
+
 #include "dev/sample.h"
 } // dev
 
