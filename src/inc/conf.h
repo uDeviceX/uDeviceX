@@ -311,6 +311,14 @@
   #define VCON (false)
 #endif
 
+// default transformation
+#define VCON_CART
+
+#ifdef VCON_RAD
+#undef VCON_CART
+#endif
+
+
 #ifndef VCON_SAMPLE_FREQ
   #define VCON_SAMPLE_FREQ (10)
 #endif
