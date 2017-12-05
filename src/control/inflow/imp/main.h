@@ -1,6 +1,10 @@
 static void ini_rnd(int n, curandState_t *rr) {
     long seed = 1234567;
-    KL(ini_rnd, (k_cnf(n)), (seed, n, rr));
+    KL(dev::ini_rnd, (k_cnf(n)), (seed, n, rr));
+}
+
+static void ini_flux(int n, curandState_t *rr, float *cumflux) {
+    KL(dev::ini_flux, (k_cnf(n)), (n, rr, cumflux));
 }
 
 void ini(int2 nc, Inflow **i) {
@@ -30,6 +34,7 @@ void ini(int2 nc, Inflow **i) {
     CC(d::Malloc((void**) &d->ndev, sz));
 
     ini_rnd(n, d->rnds);
+    ini_flux(n, d->rnds, d->cumflux);
 
     ip->t = TYPE_NONE;    
 }

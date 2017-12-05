@@ -21,7 +21,9 @@
 
 #include "imp.h"
 
+namespace dev {
 #include "dev/common.h"
+}
 
 namespace plate {
 #include "plate/type.h"
