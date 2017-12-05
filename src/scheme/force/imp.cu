@@ -40,6 +40,11 @@ namespace scheme { namespace force {
   #include "dev/4roller.h"
   }
   #include "imp/4roller.h"
+#elif defined(FORCE_RADIAL)
+  namespace dev {
+  #include "dev/radial.h"
+  }
+  #include "imp/radial.h"
 #else
   #error FORCE_* is undefined
 #endif
