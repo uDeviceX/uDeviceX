@@ -9,6 +9,9 @@
 #include "utils/kl.h"
 #include "d/api.h"
 
+#include "math/dev.h"
+#include "mpi/glb.h"
+
 #include "inc/dev.h"
 #include "inc/type.h"
 
