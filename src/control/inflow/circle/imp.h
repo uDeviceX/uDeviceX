@@ -12,9 +12,8 @@ void ini_params_circle(float3 o, float R, float H, float u, bool poiseuille,
     mi.y = (m::coords[Y] + 0.5) * YS;
     mi.z = (m::coords[Z] + 0.5) * ZS;
 
-    // TODO
     // shift to local referential
-    // axpy(-1.0, &mi, /**/ &o);
+    axpy(-1.0, &mi, /**/ &o);
     
     pp->o = o;
     pp->R = R;
