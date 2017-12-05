@@ -30,6 +30,8 @@ namespace dev {
 #include "dev/cart.h"
 #elif defined(VCON_RAD)
 #include "dev/radial.h"
+#else
+#error VCON_* transformation undefined
 #endif
 
 #include "dev/sample.h"
