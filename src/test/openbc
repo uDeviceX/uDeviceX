@@ -5,9 +5,24 @@ u.conf conf/default.h <<!!!
    tend=2.01 part_freq=4000
    field_dumps part_dumps
    field_freq=4000
-   OUTFLOW FORCE_PAR_A=0
+   OUTFLOW OUTFLOW_CIRCLE OUTFLOW_CIRCLE_R=8
+   FORCE_PAR_A=0
    run
 !!!
 (make clean && u.make -j) > /dev/null
 ./udx
-u.avgh5 0 u 0 h5/flowfields-0001.h5 | uscale 0.1 > h5.out.txt
+u.avgh5 0 u 0 h5/flowfields-0001.h5 | uscale 10 > h5.out.txt
+
+#### rest with deleting cylinder and cylinder inflow 
+# nTEST: inout.t1
+u.conf conf/default.h <<!!!
+   tend=2.01 part_freq=4000
+   field_dumps part_dumps
+   field_freq=4000
+   OUTFLOW OUTFLOW_CIRCLE OUTFLOW_CIRCLE_R=8
+   INFLOW FORCE_PAR_A=0
+   run
+!!!
+(make clean && u.make -j) > /dev/null
+./udx
+u.avgh5 0 u 0 h5/flowfields-0001.h5 | uscale 10 > h5.out.txt
