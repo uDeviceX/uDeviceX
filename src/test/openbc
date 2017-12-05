@@ -21,6 +21,12 @@ u.conf conf/default.h <<!!!
    field_freq=4000
    OUTFLOW OUTFLOW_CIRCLE OUTFLOW_CIRCLE_R=8
    INFLOW FORCE_PAR_A=0
+   INFLOW_CIRCLE_R=1
+   INFLOW_CIRCLE_H=16
+   INFLOW_CIRCLE_U=1
+   INFLOW_CIRCLE_OX=XS/2
+   INFLOW_CIRCLE_OY=YS/2
+   INFLOW_CIRCLE_OZ=ZS/2
    run
 !!!
 (make clean && u.make -j) > /dev/null

@@ -65,28 +65,26 @@ static void ini_vcont(MPI_Comm comm, /**/ PidVCont *c) {
 static void ini_outflow(Outflow **o) {
     UC(ini(MAX_PART_NUM, /**/ o));
 
-    if (OUTFLOW_CIRCLE)
-        ini_params_circle(OUTFLOW_CIRCLE_R, *o);
-    else
+    if (OUTFLOW_CIRCLE) {
+        // TODO read from conf
+        float3 c = make_float3(XS/2, YS/2, ZS/2);
+        ini_params_circle(c, OUTFLOW_CIRCLE_R, /**/ *o);
+    } else {
         ini_params_plane(0, XS/2-1, *o);
+    }
 }
 
 static void ini_inflow(Inflow **i) {
     int2 nc = make_int2(YS, ZS/2);
     ini(nc, /**/ i);
-    // hack for now
 
+    // hack for now
     // ini_params_plate(make_float3(0, YS/2, 0), 0, YS/2, ZS,
     //                  make_float3(10.f, 0, 0), true, false,
     //                   /**/ *i);
 
-    float3 o = make_float3(XS/2, YS/2, ZS/2);
-    float R, H, u;
-    R = 1;
-    H = ZS;
-    u = 1;
-    
-    ini_params_circle(o, R, H, u, false, /**/ *i);
+    float3 o = make_float3(INFLOW_CIRCLE_OX, INFLOW_CIRCLE_OY, INFLOW_CIRCLE_OZ);
+    ini_params_circle(o, INFLOW_CIRCLE_R, INFLOW_CIRCLE_H, INFLOW_CIRCLE_U, false, /**/ *i);
     
     ini_velocity(*i);
 }
