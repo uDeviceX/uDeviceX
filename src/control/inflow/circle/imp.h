@@ -18,6 +18,10 @@ void ini_params_circle(float3 o, float R, float H, float u, bool poiseuille,
     pp->o = o;
     pp->R = R;
     pp->H = H;
+
+    if (R > XS/2 || R > YS/2 || R > ZS/2)
+        ERR("not implemented for this  configuration");
+    
     // TODO
     pp->th0 = 0;
     pp->dth = 2 * M_PI;
