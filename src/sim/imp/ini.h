@@ -66,7 +66,7 @@ static void ini_outflow(Outflow **o) {
     UC(ini(MAX_PART_NUM, /**/ o));
 
     if (OUTFLOW_CIRCLE)
-        ini_params_circle(OUTFLOW_CIRCLE_R, *o);
+        ini_params_circle(OUTFLOW_CIRCLE_R, /**/ *o);
     else
         ini_params_plane(0, XS/2-1, *o);
 }
@@ -81,12 +81,7 @@ static void ini_inflow(Inflow **i) {
     //                   /**/ *i);
 
     float3 o = make_float3(XS/2, YS/2, ZS/2);
-    float R, H, u;
-    R = 1;
-    H = ZS;
-    u = 1;
-    
-    ini_params_circle(o, R, H, u, false, /**/ *i);
+    ini_params_circle(o, INFLOW_CIRCLE_R, INFLOW_CIRCLE_H, INFLOW_CIRCLE_U, false, /**/ *i);
     
     ini_velocity(*i);
 }
