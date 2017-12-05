@@ -23,3 +23,7 @@ void fin(DCont *d) {
     CC(d::Free(d->ndead_dev));
     UC(efree(d));
 }
+
+
+int* get_deathlist(DCont *d) {return d->kk;}
+int  get_ndead(DCont *d)     {return d->ndead;}

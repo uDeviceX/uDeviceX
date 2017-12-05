@@ -5,6 +5,6 @@ struct DCont {
 };
 
 struct DContMap {
-    int ncells;  // cells to be controlled
-    int *cids;   // cell ids of the controlled cells
+    int n;     // cells to be controlled
+    int *cids; // cell ids of the controlled cells
 };

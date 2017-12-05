@@ -22,4 +22,5 @@
 
 #include "imp/type.h"
 #include "imp/main.h"
+#include "imp/map.h"
 
