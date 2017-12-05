@@ -1,11 +1,32 @@
+static void garea_volume(rbc::Quants q, /**/ float *a, float *v) {
+    int nt, nv, nc;
+    const Particle *pp;
+    const int4 *tri;
+    float hst[2], *dev;
+
+    Dalloc(&dev, 2);
+
+    nt = q.nt; nv = q.nv; nc = q.nc;
+    pp = q.pp;
+    tri = q.tri;
+    area_volume::main(nt, nv, nc, pp, tri, /**/ dev);
+    cD2H(hst, dev, 2);
+    Dfree(dev);
+
+    *a = hst[0]; *v = hst[1];
+}
+
 static void dump(rbc::Quants q, rbc::force::TicketT t) {
     int n;
     Particle *pp;
+    float area, volume;
     static int i = 0;
     n = q.nc * q.nv;
     UC(emalloc(n*sizeof(Particle), (void**)&pp));
     cD2H(pp, q.pp, q.n);
     io::mesh::rbc(m::cart, pp, q.tri_hst, q.nc, q.nv, q.nt, i++);
+    garea_volume(q, /**/ &area, &volume);
+    MSG("av: %g %g", area/RBCtotArea, volume/RBCtotVolume);
     diagnostics(m::cart, n, pp, i);
     free(pp);
 }
