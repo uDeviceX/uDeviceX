@@ -1,0 +1,3 @@
+void ini(DCont **d) {
+    
+}
