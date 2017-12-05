@@ -11,8 +11,8 @@ static __device__ float3 transform(const Particle p) {
     cost = rinv * x;
     sint = rinv * y;
     
-    u.x =   cost * p.v[X] + sint * p.v[Y];
-    u.y = - sint * p.v[X] + cost * p.v[Y];
+    u.x = r * (  cost * p.v[X] + sint * p.v[Y]);
+    u.y = r * (- sint * p.v[X] + cost * p.v[Y]);
     u.z = p.v[Z];
     return u;
 }
