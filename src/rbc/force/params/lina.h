@@ -22,8 +22,17 @@
   #define       RBCphi      ( 6.97219932574 )
 #endif
 
-#define         RBCka       ( 4900.0        )
-#define         RBCkd       ( 200.0         )
-#define         RBCkv       ( 5000.0        )
+#ifndef RBCka
+  #define       RBCka       ( 4900.0        )
+#endif
+
+#ifndef RBCkd
+  #define       RBCkd       ( 200.0         )
+#endif
+
+#ifndef RBCkv
+  #define      RBCkv       ( 5000.0        )
+#endif
+
 #define     RBCgammaT       ( 0.0           )
 #define       RBCmpow       ( 2.0           )
