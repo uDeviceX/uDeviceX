@@ -26,20 +26,14 @@ void fin(/**/ Outflow *o) {
 }
 
 void filter_particles(int n, const Particle *pp, /**/ Outflow *o) {
-    float3 origin;
-    // TODO
-    origin.x = 0;
-    origin.y = 0;
-    origin.z = 0;
-
     reset_ndead(o);
 
     switch(o->type) {
     case TYPE_CIRCLE:
-        KL(circle::filter, (k_cnf(n)), (origin, n, pp, o->params.circle, /**/ o->ndead_dev, o->kk) );
+        KL(circle::filter, (k_cnf(n)), (n, pp, o->params.circle, /**/ o->ndead_dev, o->kk) );
         break;
     case TYPE_PLANE:
-        KL(plane::filter, (k_cnf(n)), (origin, n, pp, o->params.plane, /**/ o->ndead_dev, o->kk) );
+        KL(plane::filter, (k_cnf(n)), (n, pp, o->params.plane, /**/ o->ndead_dev, o->kk) );
         break;
     case TYPE_NONE:
     default:

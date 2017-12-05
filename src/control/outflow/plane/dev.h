@@ -3,7 +3,7 @@ struct Params {
     float a, b, c, d;
 };
 
-__device__ int predicate(float3 o, Params p, const float r[3]) {
+__device__ int predicate(Params p, const float r[3]) {
     enum {X, Y, Z};
     float s;
     
