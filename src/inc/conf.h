@@ -357,6 +357,17 @@
   #define INFLOW (false)
 #endif
 
+#ifndef INFLOW_CIRCLE_R
+#define INFLOW_CIRCLE_R (1)
+#endif
+    
+#ifndef INFLOW_CIRCLE_H
+  #define INFLOW_CIRCLE_H (1)
+#endif
+
+#ifndef INFLOW_CIRCLE_U
+#define INFLOW_CIRCLE_U (1)
+#endif
 
 
 /* how mass affects dpd forces: like "gravity" ~ mi*mj or like
