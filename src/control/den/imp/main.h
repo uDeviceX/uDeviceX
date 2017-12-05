@@ -24,6 +24,16 @@ void fin(DCont *d) {
     UC(efree(d));
 }
 
+void filter_particles(const DContMap *m, const int *starts, const int *counts, /**/ DCont *d) {
+    reset_ndead(d);
+    KL( kill, (k_cnf(m->n)), (numberdensity, starts, counts, m->n, m->cids, /**/ d->ndead_dev, d->kk) );
+}
+
+void download_ndead(DCont *d) {
+    CC(d::Memcpy(&d->ndead, d->ndead_dev, sizeof(int), D2H));
+    // printf("killed %d particles\n", o->ndead);
+}
+
 
 int* get_deathlist(DCont *d) {return d->kk;}
 int  get_ndead(DCont *d)     {return d->ndead;}
