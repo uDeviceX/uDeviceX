@@ -277,7 +277,8 @@
 
 /* body force */
 #if !defined(FORCE_NONE) && !defined(FORCE_DOUBLE_POISEUILLE) && \
-    !defined(FORCE_4ROLLER) && !defined(FORCE_CONSTANT) && !defined(FORCE_SHEAR)
+    !defined(FORCE_4ROLLER) && !defined(FORCE_CONSTANT) && !defined(FORCE_SHEAR) && \
+    !defined(FORCE_RADIAL)
   #define FORCE_NONE
 #endif
 
