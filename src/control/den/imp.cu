@@ -1,6 +1,9 @@
 #include <stdio.h>
 #include <curand_kernel.h>
 
+#include <conf.h>
+#include "inc/conf.h"
+
 #include "mpi/glb.h"
 
 #include "utils/error.h"
