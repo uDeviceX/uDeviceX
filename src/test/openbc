@@ -1,5 +1,5 @@
 #### rest with deleting cylinder
-# snTEST: out.t1
+# nTEST: out.t1
 :
 u.conf conf/default.h <<!!!
    tend=2.01 part_freq=4000

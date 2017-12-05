@@ -74,8 +74,8 @@ static void ini_outflow(Outflow **o) {
 static void ini_inflow(Inflow **i) {
     int2 nc = make_int2(YS, ZS/2);
     ini(nc, /**/ i);
-    // hack for now
 
+    // hack for now
     // ini_params_plate(make_float3(0, YS/2, 0), 0, YS/2, ZS,
     //                  make_float3(10.f, 0, 0), true, false,
     //                   /**/ *i);
