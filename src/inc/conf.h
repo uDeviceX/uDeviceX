@@ -384,7 +384,11 @@
 #ifndef INFLOW_CIRCLE_OZ
   #define INFLOW_CIRCLE_OZ (0)
 #endif
-    
+
+#ifndef INFLOW_CIRCLE_POISEUILLE
+  #define INFLOW_CIRCLE_POISEUILLE (false)
+#endif
+
 
 /* how mass affects dpd forces: like "gravity" ~ mi*mj or like
    "charge" -- no dependencies on mass */
