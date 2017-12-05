@@ -66,7 +66,7 @@ static void ini_outflow(Outflow **o) {
     UC(ini(MAX_PART_NUM, /**/ o));
 
     if (OUTFLOW_CIRCLE) {
-        // TODO
+        // TODO read from conf
         float3 c = make_float3(XS/2, YS/2, ZS/2);
         ini_params_circle(c, OUTFLOW_CIRCLE_R, /**/ *o);
     } else {
