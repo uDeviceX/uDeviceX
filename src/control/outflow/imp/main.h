@@ -10,7 +10,7 @@ void ini(int maxp, /**/ Outflow **o0) {
     UC(emalloc(sizeof(Outflow), (void**) o0));
     o = *o0;
     
-    sz = maxp * sizeof(Particle);
+    sz = maxp * sizeof(int);
     CC(d::Malloc((void**) &o->kk, sz));
     CC(d::Malloc((void**) &o->ndead_dev, sizeof(int)));
 
