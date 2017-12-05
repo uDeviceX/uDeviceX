@@ -1,11 +1,3 @@
-static __device__ bool valid(int3 L, int3 c) {
-    return c.x < L.x && c.y < L.y && c.z < L.z;
-}
-
-static __device__ int get_cid(int3 L, int3 c) {
-    return c.x + L.x * (c.y + L.y * c.z);
-}
-
 static __device__ float3 warpReduceSum(float3 val) {
     for (int offset = warpSize/2; offset > 0; offset /= 2) {
         val.x += __shfl_down(val.x, offset);
