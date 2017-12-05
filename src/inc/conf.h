@@ -312,12 +312,9 @@
 #endif
 
 // default transformation
-#define VCON_CART
-
-#ifdef VCON_RAD
-#undef VCON_CART
+#if !defined(VCON_CART) && !defined(VCON_RAD)
+  #define VCON_CART
 #endif
-
 
 #ifndef VCON_SAMPLE_FREQ
   #define VCON_SAMPLE_FREQ (10)
