@@ -1,5 +1,6 @@
 #include "stdio.h"
 #include "stdlib.h"
+#include "math.h"
 #include "string.h"
 
 #include "bop_common.h"
@@ -19,20 +20,44 @@ struct Args {
 };
 
 static void usg() {
-    fprintf(stderr, "usg: u.binning <u/v/w/rho> nx ny nz Lx Ly Lz <solvent.bop> <out>\n");
+    fprintf(stderr, "usg: u.binning <u/v/w/rho> <c/r> nx ny nz Lx Ly Lz <solvent.bop> <out>\n");
     exit(1);
 }
 
-void transform_carth(const float*, const float p0[6], /**/ float p[6]) {
+/* cartesian coordinates */
+void transform_cart(const float*, const float p0[6], /**/ float p[6]) {
     for (int c = 0; c < 6; ++c) p[c] = p0[c];
 }
 
+/* cylindrical coordinatess */
+void transform_cyl(const float rc[3], const float p0[6], /**/ float p[6]) {
+    enum {X, Y, Z, U, V, W};
+    float x, y, r, th, costh, sinth;
+    x = p0[X] - rc[X];
+    y = p0[Y] - rc[Y];
+
+    r = sqrt(x*x + y*y);
+    th = atan2(y, x);
+    costh = x / r;
+    sinth = y / r;
+
+    p[X] = r;
+    p[Y] = th;
+    p[Z] = p0[Z];
+
+    p[U] =  costh * p0[U] + sinth * p0[V];
+    p[V] = -sinth * p0[U] + costh * p0[V];
+    p[W] = p0[W];
+}
+
 static void parse(int argc, char **argv, /**/ Args *a) {
-    if (argc != 10) usg();
+    if (argc != 11) usg();
     int iarg = 1;
+    char transfcode;
 
     a->field = argv[iarg++];
-
+    transfcode = argv[iarg++][0];
+    
     a->nx = atoi(argv[iarg++]);
     a->ny = atoi(argv[iarg++]);
     a->nz = atoi(argv[iarg++]);
@@ -44,8 +69,17 @@ static void parse(int argc, char **argv, /**/ Args *a) {
     a->bop = argv[iarg++];
     a->bov = argv[iarg++];
 
-    // todo
-    a->trans = &transform_carth;
+    switch (transfcode) {
+    case 'c':
+        a->trans = &transform_cart;
+        break;
+    case 'r':
+        a->trans = &transform_cyl;
+        break;
+    default:
+        fprintf(stderr, "wrong transformation <%c>\n", transfcode);
+        exit(1);
+    };                
 }
 
 enum {INVALID = -1};
@@ -195,15 +229,17 @@ int main(int argc, char **argv) {
 /*
 
   # nTEST: u.t0
+  # rm *out.txt
   # make 
   # t=grid
-  # ./binning u 8 16 6 16 32 12 data/test.bop $t
+  # ./binning u c 8 16 6 16 32 12 data/test.bop $t
   # bov2txt $t.bov > u.out.txt
 
   # nTEST: rho.t0
+  # rm *out.txt
   # make 
   # t=grid
-  # ./binning density 8 16 6 16 32 12 data/test.bop $t
+  # ./binning density c 8 16 6 16 32 12 data/test.bop $t
   # bov2txt $t.bov > rho.out.txt
 
 */
