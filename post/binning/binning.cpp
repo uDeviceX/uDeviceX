@@ -58,7 +58,20 @@ static int r2cid(const float r[3],
     return ix + nx * (iy + ny * iz);
 }
 
-static void binning(int n, const float *pp,
+static float v2field(const float v[3], char f) {
+    enum {X, Y, Z};
+    switch(f) {
+    case 'u':
+        return v[X];
+    case 'v':
+        return v[Y];
+    case 'w':
+        return v[Z];
+    };
+    return 1.f; // default: density -> count
+}
+
+static void binning(int n, const float *pp, char f,
                     int nx, int ny, int nz,
                     float dx, float dy, float dz,
                     float ox, float oy, float oz,
@@ -74,7 +87,7 @@ static void binning(int n, const float *pp,
 
         if (cid != INVALID) {
             counts[cid] ++;
-            grid[cid] += u[0]; // TODO
+            grid[cid] += v2field(u, f);
         }
     }
 }
@@ -95,11 +108,12 @@ int main(int argc, char **argv) {
     BovDesc bov;
     float *grid, dx, dy, dz;
     int ngrid, *counts;
-    char fdname[CBUFSIZE];
+    char fdname[CBUFSIZE], field;
     size_t sz;
     
     parse(argc, argv, /**/ &a);
 
+    field = a.field[0];
     ngrid = a.nx * a.ny * a.nz;
     
     sz = ngrid * sizeof(float);
@@ -118,7 +132,7 @@ int main(int argc, char **argv) {
     dy = a.ly / a.ny;
     dz = a.lz / a.nz;
 
-    binning(bop.n, (const float*) bop.data,
+    binning(bop.n, (const float*) bop.data, field,
             a.nx, a.ny, a.nz,
             dx, dy, dz, 0, 0, 0, /**/ grid, counts);    
 
