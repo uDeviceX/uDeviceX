@@ -279,4 +279,11 @@ int main(int argc, char **argv) {
   # ./binning v r 16 1 1   0.5 6.29 1  0.5 0.5 0  data/rad.bop $t
   # bov2txt $t.bov > v.out.txt
 
+  # nTEST: rho.rad.t0
+  # rm *out.txt
+  # make 
+  # t=grid
+  # ./binning density r 16 1 1   0.5 6.29 1  0.5 0.5 0  data/rad.bop $t
+  # bov2txt $t.bov > rho.out.txt
+
 */
