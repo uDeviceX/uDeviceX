@@ -124,7 +124,9 @@ static void binning(int n, const float *pp, char f,
                     /**/ float *grid, int *counts) {
 
     int i, cid;
-    float p[6], rc[3] = {0};
+    float p[6], rc[3] = {nx * dx * 0.5 + ox,
+                         ny * dy * 0.5 + oy,
+                         nz * dz * 0.5 + oz};
     float *r, *u;
     
     for (i = 0; i < n; ++i) {
@@ -241,5 +243,12 @@ int main(int argc, char **argv) {
   # t=grid
   # ./binning density c 8 16 6 16 32 12 data/test.bop $t
   # bov2txt $t.bov > rho.out.txt
+
+  # nTEST: v.rad.t0
+  # rm *out.txt
+  # make 
+  # t=grid
+  # ./binning v r 16 1 1 1 1 1 data/rad.bop $t
+  # bov2txt $t.bov > v.out.txt
 
 */
