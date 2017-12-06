@@ -1,0 +1,15 @@
+#!/bin/bash
+
+d=ply; if test $# -ne 0; then d="$1"; shift; fi
+v=vtk; if test $# -ne 0; then v="$1"; shift; fi
+export nb=498
+
+mkdir -p "$v"
+echo "writing to $v" >&2
+
+for i in "$d"/*.ply
+do
+    if test ! -f "$i"; then continue; fi
+    o=`basename $i .ply`.vtk
+    ply2vtk $i vtk/$o
+done
