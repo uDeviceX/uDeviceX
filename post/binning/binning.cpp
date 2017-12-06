@@ -8,16 +8,23 @@
 #include "bov.h"
 #include "bov_serial.h"
 
+typedef void (*transform_t)(const float*, const float*, float*);
+
 struct Args {
     float lx, ly, lz;
     int nx, ny, nz;
     char *bop, *bov;
     char *field;
+    transform_t trans;
 };
 
 static void usg() {
     fprintf(stderr, "usg: u.binning <u/v/w/rho> nx ny nz Lx Ly Lz <solvent.bop> <out>\n");
     exit(1);
+}
+
+void transform_carth(const float*, const float p0[6], /**/ float p[6]) {
+    for (int c = 0; c < 6; ++c) p[c] = p0[c];
 }
 
 static void parse(int argc, char **argv, /**/ Args *a) {
@@ -36,6 +43,9 @@ static void parse(int argc, char **argv, /**/ Args *a) {
 
     a->bop = argv[iarg++];
     a->bov = argv[iarg++];
+
+    // todo
+    a->trans = &transform_carth;
 }
 
 enum {INVALID = -1};
@@ -76,14 +86,17 @@ static void binning(int n, const float *pp, char f,
                     int nx, int ny, int nz,
                     float dx, float dy, float dz,
                     float ox, float oy, float oz,
+                    transform_t transform,
                     /**/ float *grid, int *counts) {
 
     int i, cid;
-    const float *r, *u;
+    float p[6], rc[3] = {0};
+    float *r, *u;
     
     for (i = 0; i < n; ++i) {
-        r = pp + 6 * i + 0;
-        u = pp + 6 * i + 3;
+        transform(rc, pp + 6 * i, /**/ p);
+        r = p + 0;
+        u = p + 3;
         cid = r2cid(r, nx, ny, nz, dx, dy, dz, ox, oy, oz);
 
         if (cid != INVALID) {
@@ -145,7 +158,8 @@ int main(int argc, char **argv) {
 
     binning(bop.n, (const float*) bop.data, field,
             a.nx, a.ny, a.nz,
-            dx, dy, dz, 0, 0, 0, /**/ grid, counts);    
+            dx, dy, dz, 0, 0, 0, a.trans,
+            /**/ grid, counts);    
 
     if (field == 'u' ||
         field == 'v' ||
