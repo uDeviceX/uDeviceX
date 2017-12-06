@@ -1,4 +1,4 @@
-subdirs=build_smesh disp drop field msd
+subdirs=build_smesh disp drop field msd binning
 .PHONY: install $(subdirs)
 
 install: $(subdirs)
@@ -11,10 +11,12 @@ clean:
 	make clean -C disp
 	make clean -C msd
 	make clean -C color_density
+	make clean -C binning
 
 test:
 	make test -C color_density
 	make test -C disp
+	make test -C binning
 
 
 .PHONY: $(subdirs) clean install test
