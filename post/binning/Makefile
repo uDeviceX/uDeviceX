@@ -15,6 +15,7 @@ CXXFLAGS += -I$(BOP)/include
 LIBS     += -L$(BOP)/lib -lbop
 
 PROGS=binning
+PI=$(PROGS)
 P=u
 
 all: $(PROGS)
@@ -27,7 +28,7 @@ clean:; rm -rf *.o $(PROGS)
 install:
 	mkdir -p $(INST_BIN)
 	install0 () ( cp $$f $(INST_BIN)/$P.$$f; )    ;  \
-	for f in $(P); do install0; done
+	for f in $(PI); do install0; done
 
 test:
 	atest binning.cpp
