@@ -78,22 +78,34 @@ static void binning(int n, const float *pp,
     }
 }
 
+static void avg(int n, const int *counts, /**/ float *grid) {
+    int i, c;
+    float s;
+    for (i = 0; i < n; ++i) {
+        c = counts[i];
+        s = c ? 1.f / c : 1;
+        grid[i] *= s;
+    }
+}
+
 int main(int argc, char **argv) {
     Args a;
     BopData bop;
     BovDesc bov;
     float *grid, dx, dy, dz;
-    int *counts;
+    int ngrid, *counts;
     char fdname[CBUFSIZE];
     size_t sz;
     
     parse(argc, argv, /**/ &a);
 
-    sz = a.nx * a.ny * a.nz * sizeof(float);
+    ngrid = a.nx * a.ny * a.nz;
+    
+    sz = ngrid * sizeof(float);
     grid = (float*) malloc(sz);
     memset(grid, 0, sz);
     
-    sz = a.nx * a.ny * a.nz * sizeof(float);
+    sz = ngrid * sizeof(float);
     counts = (int*) malloc(sz);
     memset(counts, 0, sz);
     
@@ -108,6 +120,8 @@ int main(int argc, char **argv) {
     binning(bop.n, (const float*) bop.data,
             a.nx, a.ny, a.nz,
             dx, dy, dz, 0, 0, 0, /**/ grid, counts);    
+
+    avg(ngrid, counts, /**/ grid);
     
     bov.nx = a.nx; bov.ny = a.ny; bov.nz = a.nz;
     bov.lx = a.lx; bov.ly = a.ly; bov.lz = a.lz;
@@ -118,7 +132,7 @@ int main(int argc, char **argv) {
 
     bov_alloc(sizeof(float), &bov);
 
-    memcpy(bov.data, grid, sz);
+    memcpy(bov.data, grid, ngrid * sizeof(float));
 
     bov_write_header(a.bov, &bov);
     bov_write_values(a.bov, &bov);
