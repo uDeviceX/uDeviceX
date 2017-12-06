@@ -124,9 +124,9 @@ static void binning(int n, const float *pp, char f,
                     /**/ float *grid, int *counts) {
 
     int i, cid;
-    float p[6], rc[3] = {nx * dx * 0.5 + ox,
-                         ny * dy * 0.5 + oy,
-                         nz * dz * 0.5 + oz};
+    float p[6], rc[3] = {nx * dx * 0.5f + ox,
+                         ny * dy * 0.5f + oy,
+                         nz * dz * 0.5f + oz};
     float *r, *u;
     
     for (i = 0; i < n; ++i) {
