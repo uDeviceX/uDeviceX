@@ -16,7 +16,7 @@ struct Args {
 };
 
 static void usg() {
-    fprintf(stderr, "usg: u.avg nx ny nz Lx Ly Lz <solvent.bop> <out> <u/v/w/rho>\n");
+    fprintf(stderr, "usg: u.binning nx ny nz Lx Ly Lz <solvent.bop> <out> <u/v/w/rho>\n");
     exit(1);
 }
 
@@ -37,11 +37,53 @@ static void parse(int argc, char **argv, /**/ Args *a) {
     a->field = argv[iarg++];
 }
 
+enum {INVALID = -1};
+
+static int r2cid(const float r[3],
+                 int nx, int ny, int nz,
+                 float dx, float dy, float dz,
+                 float ox, float oy, float oz) {
+    enum {X, Y, Z};
+    int ix, iy, iz;
+    ix = (r[X] - ox) / dx;
+    iy = (r[Y] - oy) / dy;
+    iz = (r[Z] - oz) / dz;
+
+    if (ix < 0 || ix >= nx ||
+        iy < 0 || iy >= ny ||
+        iz < 0 || iz >= nz)
+        return INVALID;
+
+    return ix + nx * (iy + ny * iz);
+}
+
+static void binning(int n, const float *pp,
+                    int nx, int ny, int nz,
+                    float dx, float dy, float dz,
+                    float ox, float oy, float oz,
+                    /**/ float *grid, int *counts) {
+
+    int i, cid;
+    const float *r, *u;
+    
+    for (i = 0; i < n; ++i) {
+        r = pp + 6 * i + 0;
+        u = pp + 6 * i + 3;
+        cid = r2cid(r, nx, ny, nz, dx, dy, dz, ox, oy, oz);
+
+        if (cid != INVALID) {
+            counts[cid] ++;
+            grid[cid] += u[0]; // TODO
+        }
+    }
+}
+
 int main(int argc, char **argv) {
     Args a;
     BopData bop;
     BovDesc bov;
     float *grid, dx, dy, dz;
+    int *counts;
     char fdname[CBUFSIZE];
     size_t sz;
     
@@ -49,6 +91,11 @@ int main(int argc, char **argv) {
 
     sz = a.nx * a.ny * a.nz * sizeof(float);
     grid = (float*) malloc(sz);
+    memset(grid, 0, sz);
+    
+    sz = a.nx * a.ny * a.nz * sizeof(float);
+    counts = (int*) malloc(sz);
+    memset(counts, 0, sz);
     
     bop_read_header(a.bop, /**/ &bop, fdname);
     bop_alloc(/**/ &bop);
@@ -57,9 +104,10 @@ int main(int argc, char **argv) {
     dx = a.lx / a.nx;
     dy = a.ly / a.ny;
     dz = a.lz / a.nz;
-    
-    // avg(bop.n, (const float*) bop_s.data, (const int*) bop_c.data,
-    //             a.nx, a.ny, a.nz, dx, dy, dz, /**/ grid);    
+
+    binning(bop.n, (const float*) bop.data,
+            a.nx, a.ny, a.nz,
+            dx, dy, dz, 0, 0, 0, /**/ grid, counts);    
     
     bov.nx = a.nx; bov.ny = a.ny; bov.nz = a.nz;
     bov.lx = a.lx; bov.ly = a.ly; bov.lz = a.lz;
@@ -76,6 +124,7 @@ int main(int argc, char **argv) {
     bov_write_values(a.bov, &bov);
     
     free(grid);
+    free(counts);
     
     bop_free(&bop);
     bov_free(&bov);
