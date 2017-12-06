@@ -71,6 +71,7 @@ static float v2field(const float v[3], char f) {
     return 1.f; // default: density -> count
 }
 
+// reduce field quantities in each cell
 static void binning(int n, const float *pp, char f,
                     int nx, int ny, int nz,
                     float dx, float dy, float dz,
@@ -92,6 +93,7 @@ static void binning(int n, const float *pp, char f,
     }
 }
 
+// average: divide by counts in each cell
 static void avg(int n, const int *counts, /**/ float *grid) {
     int i, c;
     float s;
@@ -100,6 +102,15 @@ static void avg(int n, const int *counts, /**/ float *grid) {
         s = c ? 1.f / c : 1;
         grid[i] *= s;
     }
+}
+
+// density: scale by volume of each cell
+static void den(int n, float dx, float dy, float dz, /**/ float *grid) {
+    float s, dV;
+    int i;
+    dV = dx * dy * dz;
+    s = 1.f / dV;
+    for (i = 0; i < n; ++i) grid[i] *= s;
 }
 
 int main(int argc, char **argv) {
@@ -136,7 +147,13 @@ int main(int argc, char **argv) {
             a.nx, a.ny, a.nz,
             dx, dy, dz, 0, 0, 0, /**/ grid, counts);    
 
-    avg(ngrid, counts, /**/ grid);
+    if (field == 'u' ||
+        field == 'v' ||
+        field == 'w') {
+        avg(ngrid, counts, /**/ grid);
+    } else { // density
+        den(ngrid, dx, dy, dz, /**/ grid);
+    }
     
     bov.nx = a.nx; bov.ny = a.ny; bov.nz = a.nz;
     bov.lx = a.lx; bov.ly = a.ly; bov.lz = a.lz;
