@@ -1,5 +1,5 @@
 #!/bin/sh
-set -eu
+set -e
 
 msg ()  { echo >&2 "$@"; }
 err ()  { msg "$@"; exit 2; }
@@ -12,7 +12,7 @@ usg ()  {
 }
 
 if test $# -ne 0 -a "$1" = -h; then usg; fi
-if test $# -ne 2             ; then err 'r.ply2vtk not enough args'; fi
+if test $# -eq 0             ; then err 'r.ply2vtk: not enough args'; fi
 
 d="$1"; shift
 v="$1"; shift
