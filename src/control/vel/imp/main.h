@@ -114,4 +114,5 @@ void log(const PidVCont *c) {
     float3 f = c->f;
     fprintf(c->fdump, "%.g %.g %.g %.g %.g %.g\n",
             v.x, v.y, v.z, f.x, f.y, f.z);
+    fflush(c->fdump);
 }
