@@ -8,6 +8,7 @@ usg ()  {
     msg 'd.ply2vtk [dir] [vtk dir]'
     msg 'convert ply files in [dir] to vtk file in [vtk dir]'
     msg '[vtk dir] is relative to [dir]/..'
+    msg "environment variable `nb` must be set to number of beads in one cell"
     exit 2
 }
 
