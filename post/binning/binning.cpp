@@ -13,6 +13,7 @@ typedef void (*transform_t)(const float*, const float*, float*);
 
 struct Args {
     float lx, ly, lz;
+    float rc[3];
     int nx, ny, nz;
     char *bop, *bov;
     char *field;
@@ -20,7 +21,7 @@ struct Args {
 };
 
 static void usg() {
-    fprintf(stderr, "usg: u.binning <u/v/w/rho> <c/r> nx ny nz Lx Ly Lz <solvent.bop> <out>\n");
+    fprintf(stderr, "usg: u.binning <u/v/w/rho> <c/r> nx ny nz Lx Ly Lz rcx rcy rcz <solvent.bop> <out>\n");
     exit(1);
 }
 
@@ -42,6 +43,7 @@ void transform_cyl(const float rc[3], const float p0[6], /**/ float p[6]) {
     sinth = y / r;
 
     p[X] = r;
+    // printf("[%g %g] [%g %g] %g\n", p0[X], p0[Y], rc[X], rc[Y], r);
     p[Y] = th;
     p[Z] = p0[Z];
 
@@ -51,8 +53,8 @@ void transform_cyl(const float rc[3], const float p0[6], /**/ float p[6]) {
 }
 
 static void parse(int argc, char **argv, /**/ Args *a) {
-    if (argc != 11) usg();
-    int iarg = 1;
+    if (argc != 14) usg();
+    int iarg = 1, c;
     char transfcode;
 
     a->field = argv[iarg++];
@@ -66,6 +68,9 @@ static void parse(int argc, char **argv, /**/ Args *a) {
     a->ly = atof(argv[iarg++]);
     a->lz = atof(argv[iarg++]);
 
+    for (c = 0; c < 3; ++c)
+        a->rc[c] = atof(argv[iarg++]);
+    
     a->bop = argv[iarg++];
     a->bov = argv[iarg++];
 
@@ -120,13 +125,11 @@ static void binning(int n, const float *pp, char f,
                     int nx, int ny, int nz,
                     float dx, float dy, float dz,
                     float ox, float oy, float oz,
-                    transform_t transform,
+                    transform_t transform, const float rc[3],
                     /**/ float *grid, int *counts) {
 
     int i, cid;
-    float p[6], rc[3] = {nx * dx * 0.5f + ox,
-                         ny * dy * 0.5f + oy,
-                         nz * dz * 0.5f + oz};
+    float p[6];
     float *r, *u;
     
     for (i = 0; i < n; ++i) {
@@ -194,7 +197,7 @@ int main(int argc, char **argv) {
 
     binning(bop.n, (const float*) bop.data, field,
             a.nx, a.ny, a.nz,
-            dx, dy, dz, 0, 0, 0, a.trans,
+            dx, dy, dz, 0, 0, 0, a.trans, a.rc,
             /**/ grid, counts);    
 
     if (field == 'u' ||
@@ -234,21 +237,21 @@ int main(int argc, char **argv) {
   # rm *out.txt
   # make 
   # t=grid
-  # ./binning u c 8 16 6 16 32 12 data/test.bop $t
+  # ./binning u c 8 16 6   16 32 12  0 0 0   data/test.bop $t
   # bov2txt $t.bov > u.out.txt
 
   # nTEST: rho.t0
   # rm *out.txt
   # make 
   # t=grid
-  # ./binning density c 8 16 6 16 32 12 data/test.bop $t
+  # ./binning density c 8 16 6   16 32 12  0 0 0  data/test.bop $t
   # bov2txt $t.bov > rho.out.txt
 
   # nTEST: v.rad.t0
   # rm *out.txt
   # make 
   # t=grid
-  # ./binning v r 16 1 1 1 1 1 data/rad.bop $t
+  # ./binning v r 16 1 1   0.5 6.29 1  0.5 0.5 0  data/rad.bop $t
   # bov2txt $t.bov > v.out.txt
 
 */
