@@ -6,21 +6,25 @@ static __device__ int get_cid(int3 L, int3 c) {
     return c.x + L.x * (c.y + L.y * c.z);
 }
 
-__global__ void sample(int3 L, const int *__restrict__ cellsstart, const int *__restrict__ cellscount, __restrict__ const float2 *pp, /**/ float3 *gridv) {
+__global__ void sample(int3 L, const int *__restrict__ cellsstart, const int *__restrict__ cellscount, const Particle *pp, /**/ float3 *gridv) {
+    Particle p;
+    float3 u;
+    int pid, cid, num;
     const int3 c = make_int3(threadIdx.x + blockIdx.x * blockDim.x,
                              threadIdx.y + blockIdx.y * blockDim.y,
                              threadIdx.z + blockIdx.z * blockDim.z);
 
     if (valid(L, c)) {
-        const int cid = get_cid(L, c);
-        const float num = cellscount[cid];
+        cid = get_cid(L, c);
+        num = cellscount[cid];
         
-        for (int pid = cellsstart[cid]; pid < cellsstart[cid] + num; pid++) {
-            float2 tmp1 = pp[3*pid + 1];
-            float2 tmp2 = pp[3*pid + 2];
-            gridv[cid].x += tmp1.y / num;
-            gridv[cid].y += tmp2.x / num;
-            gridv[cid].z += tmp2.y / num;
+        for (pid = cellsstart[cid]; pid < cellsstart[cid] + num; pid++) {
+            p = pp[pid];
+            u = transform(p);
+
+            gridv[cid].x += u.x / num;
+            gridv[cid].y += u.y / num;
+            gridv[cid].z += u.z / num;
         }
     }
 }

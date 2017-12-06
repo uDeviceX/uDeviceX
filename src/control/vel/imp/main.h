@@ -65,7 +65,7 @@ void sample(int n, const Particle *pp, const int *starts, const int *counts, /**
               ceiln(L.y, block.y),
               ceiln(L.z, block.z));
 
-    KL(dev::sample, (grid, block), (L, starts, counts, (float2 *) pp, /**/ c->gridvel));
+    KL(dev::sample, (grid, block), (L, starts, counts, pp, /**/ c->gridvel));
     
     c->nsamples ++;
 }
