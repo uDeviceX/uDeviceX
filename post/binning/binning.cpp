@@ -186,4 +186,10 @@ int main(int argc, char **argv) {
   # ./binning u 8 16 6 16 32 12 data/test.bop $t
   # bov2txt $t.bov > u.out.txt
 
+  # nTEST: rho.t0
+  # make 
+  # t=grid
+  # ./binning density 8 16 6 16 32 12 data/test.bop $t
+  # bov2txt $t.bov > rho.out.txt
+
 */
