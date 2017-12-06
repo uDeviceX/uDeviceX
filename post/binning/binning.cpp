@@ -16,13 +16,16 @@ struct Args {
 };
 
 static void usg() {
-    fprintf(stderr, "usg: u.binning nx ny nz Lx Ly Lz <solvent.bop> <out> <u/v/w/rho>\n");
+    fprintf(stderr, "usg: u.binning <u/v/w/rho> nx ny nz Lx Ly Lz <solvent.bop> <out>\n");
     exit(1);
 }
 
 static void parse(int argc, char **argv, /**/ Args *a) {
     if (argc != 10) usg();
     int iarg = 1;
+
+    a->field = argv[iarg++];
+
     a->nx = atoi(argv[iarg++]);
     a->ny = atoi(argv[iarg++]);
     a->nz = atoi(argv[iarg++]);
@@ -33,8 +36,6 @@ static void parse(int argc, char **argv, /**/ Args *a) {
 
     a->bop = argv[iarg++];
     a->bov = argv[iarg++];
-
-    a->field = argv[iarg++];
 }
 
 enum {INVALID = -1};
@@ -148,10 +149,10 @@ int main(int argc, char **argv) {
 
 /*
 
-  # snTEST: u.t0
+  # nTEST: u.t0
   # make 
   # t=grid
-  # ./avg 16 32 12 16 32 12 data/test.bop data/colors.bop $t
-  # bop2txt $t.bov > colden.out.txt
+  # ./binning u 16 32 12 16 32 12 data/test.bop $t
+  # bov2txt $t.bov > colden.out.txt
 
 */
