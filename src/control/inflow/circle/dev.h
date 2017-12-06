@@ -31,8 +31,10 @@ static __device__ void coords2vel(VParams vp, Params p, float2 xi, /**/ float3 *
     sth = sin(th);
 
     fact = 1.f;
-    if (vp.poiseuille)
-        fact *= 4 * xi.y * (1 - xi.y);
+    if (vp.poiseuille) {
+        float y = xi.y;
+        fact *= 4 * y * (1 - y);
+    }
 
     *u = make_float3(cth, sth, 0);
     scal(fact * vp.u, /**/ u);
