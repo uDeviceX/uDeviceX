@@ -14,15 +14,15 @@ LIBS     += -L$(BOV)/lib -lbov -lbov_serial
 CXXFLAGS += -I$(BOP)/include
 LIBS     += -L$(BOP)/lib -lbop
 
-PROGS=avg
+PROGS=binning
 P=u
 
 all: $(PROGS)
 
-avg.o: avg.cpp
+binning.o: binning.cpp
 
 .PHONY: clean install test
-clean:; rm -rf $(PROGS)
+clean:; rm -rf *.o $(PROGS)
 
 install:
 	mkdir -p $(INST_BIN)
@@ -30,4 +30,4 @@ install:
 	for f in $(P); do install0; done
 
 test:
-	atest avg.cpp
+	atest binning.cpp
