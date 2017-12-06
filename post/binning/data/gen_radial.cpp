@@ -1,14 +1,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-const int N = 400;
+const int N = 4000;
 
 void header() {
     FILE *f = fopen("rad.bop", "w");
     fprintf(f, "%d\n"
             "DATA_FILE: rad.values\n"
             "DATA_FORMAT: float\n"
-            "VARIABLES: x y z vx vy vz\n",
+            "VARIABLES: x y z u v w\n",
             N);
     fclose(f);
 }
@@ -29,8 +29,8 @@ void body() {
         pp[j++] = y;
         pp[j++] = z;
 
-        pp[j++] = y;
-        pp[j++] = -x;
+        pp[j++] = y-0.5;
+        pp[j++] = -x+0.5;
         pp[j++] = 0;
     }
 
