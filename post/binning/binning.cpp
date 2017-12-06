@@ -10,7 +10,8 @@
 #include "bov_serial.h"
 
 typedef void (*transform_t)(const float*, const float*, float*);
-
+typedef float (*volume_t) (int, int, int, float, float, float);
+    
 struct Args {
     float lx, ly, lz;
     float rc[3];
@@ -18,6 +19,7 @@ struct Args {
     char *bop, *bov;
     char *field;
     transform_t trans;
+    volume_t vol;
 };
 
 static void usg() {
@@ -52,6 +54,16 @@ void transform_cyl(const float rc[3], const float p0[6], /**/ float p[6]) {
     p[W] = p0[W];
 }
 
+float volume_cart(int /*i*/, int /*j*/, int /*k*/, float dx, float dy, float dz) {
+    return dx * dy * dz;
+}
+
+float volume_cyl(int i, int /*j*/, int /*k*/, float dx, float dy, float dz) {
+    float r;
+    r = (i + 0.5f) * dx;
+    return r * dx * dy * dz;
+}
+
 static void parse(int argc, char **argv, /**/ Args *a) {
     if (argc != 14) usg();
     int iarg = 1, c;
@@ -77,9 +89,11 @@ static void parse(int argc, char **argv, /**/ Args *a) {
     switch (transfcode) {
     case 'c':
         a->trans = &transform_cart;
+        a->vol   = &volume_cart;
         break;
     case 'r':
         a->trans = &transform_cyl;
+        a->vol   = &volume_cyl;
         break;
     default:
         fprintf(stderr, "wrong transformation <%c>\n", transfcode);
@@ -157,12 +171,23 @@ static void avg(int n, const int *counts, /**/ float *grid) {
 }
 
 // density: scale by volume of each cell
-static void den(int n, float dx, float dy, float dz, /**/ float *grid) {
+static void den(int nx, int ny, int nz,
+                float dx, float dy, float dz,
+                volume_t vol, /**/ float *grid) {
     float s, dV;
-    int i;
-    dV = dx * dy * dz;
-    s = 1.f / dV;
-    for (i = 0; i < n; ++i) grid[i] *= s;
+    int i, j, k, cid;
+
+    cid = 0;
+    for (k = 0; k < nz; ++k) {
+        for (j = 0; j < ny; ++j) {
+            for (i = 0; i < nx; ++i) {
+                dV = vol(i, j, k, dx, dy, dz);
+                s = 1.f / dV;
+
+                grid[cid ++] *= s;
+            }
+        }
+    }
 }
 
 int main(int argc, char **argv) {
@@ -205,7 +230,7 @@ int main(int argc, char **argv) {
         field == 'w') {
         avg(ngrid, counts, /**/ grid);
     } else { // density
-        den(ngrid, dx, dy, dz, /**/ grid);
+        den(a.nx, a.ny, a.nz, dx, dy, dz, a.vol, /**/ grid);
     }
     
     bov.nx = a.nx; bov.ny = a.ny; bov.nz = a.nz;
