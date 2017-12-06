@@ -152,7 +152,7 @@ int main(int argc, char **argv) {
   # nTEST: u.t0
   # make 
   # t=grid
-  # ./binning u 16 32 12 16 32 12 data/test.bop $t
-  # bov2txt $t.bov > colden.out.txt
+  # ./binning u 8 16 6 16 32 12 data/test.bop $t
+  # bov2txt $t.bov > u.out.txt
 
 */
