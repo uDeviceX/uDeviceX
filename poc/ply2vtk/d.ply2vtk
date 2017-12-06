@@ -1,15 +1,29 @@
-#!/bin/bash
+#!/bin/sh
+set -e
 
-d=ply; if test $# -ne 0; then d="$1"; shift; fi
-v=vtk; if test $# -ne 0; then v="$1"; shift; fi
-export nb=498
+msg ()  { echo >&2 "$@"; }
+err ()  { msg "$@"; exit 2; }
+e ()    { msg "cmd: $@"; eval "$@"; }
+usg ()  {
+    msg 'd.ply2vtk [dir] [vtk dir]'
+    msg 'convert ply files in [dir] to vtk file in [vtk dir]'
+    msg '[vtk dir] is relative to [dir]/..'
+    msg "environment variable `nb` must be set to number of beads in one cell"
+    exit 2
+}
 
-mkdir -p "$v"
-echo "writing to $v" >&2
+if test $# -ne 0 -a "$1" = -h; then usg; fi
+if test $# -eq 0             ; then err 'r.ply2vtk: not enough args'; fi
 
-for i in "$d"/*.ply
+d="$1"; shift
+v="$1"; shift
+v="`dirname "$d"`/$v"
+e mkdir -p "$v"
+if test ! -d "$v"; then err "d.ply2vtk: faild to create $v"; fi
+
+for i in $d/*.ply
 do
     if test ! -f "$i"; then continue; fi
-    o=`basename $i .ply`.vtk
-    ply2vtk $i vtk/$o
+    o=`basename "$i" .ply`.vtk
+    e ply2vtk $i $v/$o
 done
