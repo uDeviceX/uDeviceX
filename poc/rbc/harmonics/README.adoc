@@ -1,1 +1,9 @@
 = spherical harmonic parameterization
+
+== References
+
+- Weisstein, Eric W. "Harmonic." From MathWorld--A Wolfram Web
+  Resource. http://mathworld.wolfram.com/Harmonic.html
+- Khairy, K., & Howard, J. (2008). Spherical harmonics-based parametric
+  deconvolution of 3D surface images using bending energy
+  minimization. Medical image analysis, 12(2), 217-227.
