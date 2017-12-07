@@ -1,0 +1,13 @@
+#!/usr/bin/awk -f
+
+NF {
+    # p : [0:2*pi]
+    # t : [0:  pi]
+    p = $1; t = $2; r = $3
+
+    x = r*sin(t)*cos(p)
+    y = r*sin(t)*sin(p)
+    z = r*cos(t)
+
+    print x, y, z
+}
