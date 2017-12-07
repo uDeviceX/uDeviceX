@@ -31,7 +31,6 @@
 #include "sdf/type.h"
 #include "sdf/dev.h"
 #include "sdf/imp.h"
-#include "sdf/sub/dev/cheap.h"
 
 #include "inc/dev/wvel.h"
 #include "forces/type.h"
