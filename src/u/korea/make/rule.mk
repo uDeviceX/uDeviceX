@@ -26,6 +26,7 @@ $B/fsi/imp.o: $S/fsi/imp.cu; $N -I$S/. -I$S/fsi
 $B/generate/rig/imp.o: $S/generate/rig/imp.cu; $N -I$S/. -I$S/generate/rig
 $B/glb/imp.o: $S/glb/imp.cu; $N -I$S/. -I$S/glb
 $B/glb/wvel/imp.o: $S/glb/wvel/imp.cu; $N -I$S/. -I$S/glb/wvel
+$B/glob/imp.o: $S/glob/imp.cu; $N -I$S/. -I$S/glob
 $B/inter/imp.o: $S/inter/imp.cu; $N -I$S/. -I$S/inter -I$S/inter/_korea
 $B/io/bop/imp.o: $S/io/bop/imp.cpp; $X -I$S/. -I$S/io/bop
 $B/io/com.o: $S/io/com.cpp; $X -I$S/. -I$S/io
