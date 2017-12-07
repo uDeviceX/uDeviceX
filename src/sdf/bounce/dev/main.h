@@ -57,6 +57,8 @@ static __device__ float3 grad_sdf(const sdf::tex3Dca texsdf, float x, float y, f
     return make_float3(gx, gy, gz);
 }
 
+static __device__ bool small(float f) {return fabs(f) < 1e-6f;}
+
 static __device__ void main0(const sdf::tex3Dca texsdf, float currsdf, /* io */ float3 *r, float3 *v) {
     float3 r0, rc, rw, dsdf;
     float sdf0, jump, phi, dphi, t;
@@ -80,9 +82,6 @@ static __device__ void main0(const sdf::tex3Dca texsdf, float currsdf, /* io */ 
         }
     }
 
-#define rr(t) make_float3(x + vx*t, y + vy*t, z + vz*t)
-#define small(phi) (fabs(phi) < 1e-6)
-
     t = 0;
 
     for (l = 0; l < 2; ++l) {
@@ -102,7 +101,6 @@ static __device__ void main0(const sdf::tex3Dca texsdf, float currsdf, /* io */ 
         if (t > 0)
             t = 0;
     }
-#undef small
 
     rw = *r;
     axpy(t, v, /**/ &rw);
