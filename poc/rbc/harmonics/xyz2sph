@@ -1,0 +1,19 @@
+#!/usr/bin/awk -f
+
+# cartesian to spherical
+
+NF {
+    # p : [0:2*pi]
+    # t : [0:  pi]
+    pi = 3.141592653589793
+    x = $1; y = $2; z = $3
+
+    p = atan2(y, x)
+    t = atan2(z, sqrt(x^2 + y^2))
+    r = sqrt(x^2 + y^2 + z^2)
+
+    p = p < 0 ? p + 2*pi : p
+    t = pi/2 - t
+
+    print p, t, r
+}
