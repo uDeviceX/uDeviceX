@@ -14,7 +14,7 @@ static int pred_circle(int i, int j, int k) {
     r.y = i - YS/2 + 0.5f - rc.y;
     r.z = i - ZS/2 + 0.5f - rc.z;
 
-    R = sqrt(r.x * r.x + r.y * r.y + r.z * r.z);
+    R = sqrt(r.x * r.x + r.y * r.y);
     return R < OUTFLOW_CIRCLE_R && R >= OUTFLOW_CIRCLE_R - 1;
 }
 
@@ -41,7 +41,7 @@ static void ini_map(int **ids, int *nids) {
             }
         }
     }
-
+    
     *nids = n;
     sz = n * sizeof(int);
     
