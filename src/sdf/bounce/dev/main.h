@@ -1,16 +1,20 @@
-static __device__ float fst(float2 *t) { return t->x; }
-static __device__ float scn(float2 *t) { return t->y; }
-static __device__ void p2rv(float2 *p, int i, /**/ float r[3], float v[3]) {
+static __device__ void p2rv(const Particle *pp, int i, /**/ float3 *r, float3 *v) {
     enum {X, Y, Z};
-    p += 3 * i;
-    r[X] = fst(p);   r[Y] = scn(p++); r[Z] = fst(p);
-    v[X] = scn(p++); v[Y] = fst(p);   v[Z] = scn(p);
+    Particle p = pp[i];
+    
+    r->x = p.r[X];
+    r->y = p.r[Y];
+    r->z = p.r[Z];
+
+    v->x = p.v[X];
+    v->y = p.v[Y];
+    v->z = p.v[Z];
 }
-static __device__ void rv2p(float r[3], float v[3], int i, /**/ float2 *p) {
+
+static __device__ void rv2p(float3 r, float3 v, int i, /**/ Particle *pp) {
     enum {X, Y, Z};
-    p += 3 * i;
-    p->x   = r[X]; p++->y = r[Y]; p->x = r[Z];
-    p++->y = v[X]; p->x   = v[Y]; p->y = v[Z];
+    Particle p = {r.x, r.y, r.z, v.x, v.y, v.z};
+    pp[i] = p;
 }
 
 static __device__ float3 ugrad_sdf(const sdf::tex3Dca texsdf, float x, float y, float z) {
@@ -90,18 +94,21 @@ static __device__ void main0(const sdf::tex3Dca texsdf, float currsdf,
     if (sdf::sub::dev::sdf(texsdf, x, y, z) >= 0) {x = x0; y = y0; z = z0;}
 }
 
-__global__ void main(const sdf::tex3Dca texsdf, int n, /**/ float2 *const pp) {
-    enum {X, Y, Z};
-    float s, currsdf, r[3], v[3];
+__global__ void main(const sdf::tex3Dca texsdf, int n, /**/ Particle *pp) {
+    float s, currsdf;
+    float3 r, v;
     int i;
     i = threadIdx.x + blockDim.x * blockIdx.x;
     if (i >= n) return;
-    p2rv(pp, i, /**/ r, v);
-    s = sdf::sub::dev::cheap_sdf(texsdf, r[X], r[Y], r[Z]);
+
+    p2rv(pp, i, /**/ &r, &v);
+
+    s = sdf::sub::dev::cheap_sdf(texsdf, r.x, r.y, r.z);
+
     if (s >= -1.7320 * XSIZE_WALLCELLS / XTE) {
-        currsdf = sdf::sub::dev::sdf(texsdf, r[X], r[Y], r[Z]);
+        currsdf = sdf::sub::dev::sdf(texsdf, r.x, r.y, r.z);
         if (currsdf >= 0) {
-            main0(texsdf, currsdf, /*io*/ r[X], r[Y], r[Z], v[X], v[Y], v[Z]);
+            main0(texsdf, currsdf, /*io*/ r.x, r.y, r.z, v.x, v.y, v.z);
             rv2p(r, v, i, /**/ pp);
         }
     }
