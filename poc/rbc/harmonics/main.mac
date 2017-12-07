@@ -11,7 +11,6 @@
 */
 
 fac(n):=n!;
-
 a1: fac(2*L)/fac(L) * (1/2*si)^L;
 a2: (L + K)*(L - K + 1)*P(K-1, L) = 2*K*ct*P(K, L) - P(K+1, L);
 s: linsolve(a2, P(K-1, L));
@@ -19,18 +18,26 @@ s: s[1];
 s: subst(K = K + 1, s);
 s: rhs(s);
 
-define(Peq(L, L), a1);
-define(P0(K, L), s);
+define(Peq(L), a1);
+define(P0(K, L),   s);
 
-P(K, L):= if L = K then Peq(L, L) else if K > L then 0 else P0(K, L);
+P(K, L):= if L = K then Peq(L) else if K > L then 0 else P0(K, L);
 pp(t, K, L):= block([co: cos(t), si: sin(t), ct: cot(t)], P(K, L));
-y(t, p, K, L):=pp(t, K, L)*exp(%i*K*p);
+y0(t, p, K, L):=pp(t, K, L)*exp(%i*K*p);
 
 i30(e):=integrate(integrate(sin('t)*e, 't, 0, %pi), 'p, 0, 2*%pi);
 i3(e):= i30(e * conjugate(e));
 
-r: i3(y('t, 'p, 3, 5));
+r: i3(y0('t, 'p, 3, 5));
 
 gold(m, l):= sqrt(   (2*l + 1)/(4*%pi) * fac(l - m)/fac(l + m));
 
 gold(3, 5)^2 * r;
+
+y02: realpart(y0('t, 'p, 1, 2));
+y02: trigsimp(y02);
+
+sq(e):=e * conjugate(e);
+expr(K, L):= trigsimp(sq(y0('t, 'p, K, L)));
+
+/* draw3d(spherical(expr(3, 3),'p,0,2*%pi, 't,0,%pi))$ */
