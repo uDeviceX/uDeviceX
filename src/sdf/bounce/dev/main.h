@@ -1,7 +1,11 @@
+enum {
+    MAX_RESCUE = 8,
+    MAX_NEWTON = 2
+}
+
 static __device__ void p2rv(const Particle *pp, int i, /**/ float3 *r, float3 *v) {
     enum {X, Y, Z};
-    Particle p = pp[i];
-    
+    Particle p = pp[i];    
     r->x = p.r[X];
     r->y = p.r[Y];
     r->z = p.r[Z];
@@ -60,6 +64,10 @@ static __device__ float3 grad_sdf(const sdf::tex3Dca texsdf, const float3 *pos) 
 }
 
 static __device__ bool is_small(float f) {return fabs(f) < 1e-6f;}
+static __device__ void crop(float *t) {
+        if (*t < -dt) *t = -dt;
+        if (*t >   0) *t = 0;
+}
 
 static __device__ void main0(const sdf::tex3Dca texsdf, float currsdf, /* io */ float3 *r, float3 *v) {
     float3 r0, rc, rw, dsdf;
@@ -74,7 +82,7 @@ static __device__ void main0(const sdf::tex3Dca texsdf, float currsdf, /* io */ 
 
         axpy(-sdf0, &dsdf, /**/ r);
         
-        for (l = 8; l >= 1; --l) {
+        for (l = MAX_RESCUE; l >= 1; --l) {
             if (sdf::sub::dev::sdf(texsdf, r->x, r->y, r->z) < 0) {
                 k_wvel::bounce_vel(r->x, r->y, r->z, &v->x, &v->y, &v->z);
                 return;
@@ -86,7 +94,7 @@ static __device__ void main0(const sdf::tex3Dca texsdf, float currsdf, /* io */ 
 
     t = 0;
 
-    for (l = 0; l < 2; ++l) {
+    for (l = 0; l < MAX_NEWTON; ++l) {
         rc = *r;
         axpy(t, v, /**/ &rc);
         phi = currsdf;
@@ -97,11 +105,7 @@ static __device__ void main0(const sdf::tex3Dca texsdf, float currsdf, /* io */ 
             break;
         
         t -= phi/dphi;
-
-        if (t < -dt)
-            t = -dt;
-        if (t > 0)
-            t = 0;
+        crop(&t);
     }
 
     rw = *r;
