@@ -1,5 +1,7 @@
 #!/usr/bin/awk -f
 
+# spherical to cartesian
+
 NF {
     # p : [0:2*pi]
     # t : [0:  pi]
