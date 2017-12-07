@@ -14,7 +14,7 @@ __global__ void pack_pp(const Particle *pp, PackHelper ph, /**/ Pap26 buf) {
     step = gridDim.x * blockDim.x;
 
     for (  ; gid < hi; gid += step) {
-        fid = k_common::fid(ph.starts, gid);
+        fid = frag_get_fid(ph.starts, gid);
 
         /* index in the fragment coordinates */ 
         frag_i = gid - ph.starts[fid];

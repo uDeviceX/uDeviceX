@@ -29,7 +29,7 @@ __global__ void count_cells(const int27 cellpackstarts, const int *start, const 
     gid = threadIdx.x + blockDim.x * blockIdx.x;
     if (gid >= cellpackstarts.d[26]) return;
 
-    fid = k_common::fid(cellpackstarts.d, gid);
+    fid = frag_get_fid(cellpackstarts.d, gid);
     hci = gid - cellpackstarts.d[fid];
 
     get_frag_box(fid, /**/ org, ext);

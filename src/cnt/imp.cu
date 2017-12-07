@@ -23,10 +23,9 @@
 #include "utils/kl.h"
 #include "inc/type.h"
 #include "inc/dev.h"
+#include "frag/dev.h"
 
 #include "dbg/imp.h"
-
-#include "inc/dev/common.h"
 
 #include "forces/type.h"
 #include "forces/use.h"

@@ -77,7 +77,7 @@ __global__ void force(const int27 start, const flu::LFrag26 lfrags, const flu::R
 
     gid = threadIdx.x + blockDim.x * blockIdx.x;
     if (gid >= start.d[26]) return;
-    fid = k_common::fid(start.d, gid);
+    fid = frag_get_fid(start.d, gid);
     i = gid - start.d[fid];
     lfrag = lfrags.d[fid];
     if (i >= lfrag.n) return;

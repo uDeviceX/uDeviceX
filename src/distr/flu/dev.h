@@ -22,7 +22,7 @@ __global__ void pack(const T *data, Map m, /**/ Sarray<T*, 26> buf) {
     
     gid = threadIdx.x + blockDim.x * blockIdx.x;
     slot = gid / STRIDE;
-    fid = k_common::fid(m.starts, slot);
+    fid = frag_get_fid(m.starts, slot);
     if (slot >= m.starts[26]) return;
     c = gid % STRIDE;
 

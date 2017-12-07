@@ -65,7 +65,7 @@ __global__ void halo(const int *cellstarts, const uint *ids, float seed, const i
     aid = threadIdx.x + blockDim.x * blockIdx.x;
     if (aid >= n) return;
 
-    fid = k_common::fid(starts.d, aid);
+    fid = frag_get_fid(starts.d, aid);
     start = starts.d[fid];
     pp2p(hpp.d[fid], aid - start, &a);
     fA = hff.d[fid][aid - start].f;

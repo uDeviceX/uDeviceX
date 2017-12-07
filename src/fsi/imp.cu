@@ -18,6 +18,7 @@
 #include "utils/cc.h"
 #include "utils/mc.h"
 #include "frag/imp.h"
+#include "frag/dev.h"
 
 #include "utils/kl.h"
 #include "inc/type.h"
@@ -29,8 +30,6 @@
 
 #include "sim/imp.h"
 #include "dbg/imp.h"
-
-#include "inc/dev/common.h"
 
 #include "forces/type.h"
 #include "forces/pack.h"

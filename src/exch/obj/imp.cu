@@ -7,7 +7,7 @@
 #include "msg.h"
 #include "inc/type.h"
 #include "inc/dev.h"
-#include "inc/dev/common.h"
+#include "frag/dev.h"
 
 #include "d/api.h"
 #include "utils/cc.h"

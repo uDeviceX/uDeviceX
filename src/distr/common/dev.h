@@ -8,7 +8,7 @@ __global__ void pack_pp_packets(int nv, const Particle *pp, Map m, /**/ Sarray<P
     cid = blockIdx.y;
 
     if (i >= nv) return;
-    fid = k_common::fid(m.starts, cid);
+    fid = frag_get_fid(m.starts, cid);
 
     offset = cid - m.starts[fid];
     scid   = m.ids[fid][offset];
@@ -47,7 +47,7 @@ __global__ void shift_halo(const Sarray<int, 27> starts, /**/ Particle *pp) {
 
     pid = threadIdx.x + blockDim.x * blockIdx.x;
     if (pid >= starts.d[26]) return;
-    fid = k_common::fid(starts.d, pid);
+    fid = frag_get_fid(starts.d, pid);
     
     fid2shift(fid, s);
     shift_1p(s, /**/ pp + pid);

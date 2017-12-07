@@ -38,7 +38,7 @@ static __device__ void halo1(const int *cellsstart, int27 starts, Pap26 pp, Fop2
     Pa A;
     float *fA;
 
-    fid = k_common::fid(starts.d, aid);
+    fid = frag_get_fid(starts.d, aid);
     start = starts.d[fid];
 
     A = warp2p(pp.d[fid], aid - start);

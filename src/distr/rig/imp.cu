@@ -11,10 +11,10 @@
 #include "utils/kl.h"
 #include "utils/error.h"
 #include "inc/dev.h"
-#include "inc/dev/common.h"
 #include "inc/type.h"
 #include "inc/def.h"
 
+#include "frag/dev.h"
 #include "frag/imp.h"
 #include "comm/imp.h"
 #include "comm/utils.h"

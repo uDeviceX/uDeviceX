@@ -10,6 +10,7 @@
 #include "d/q.h"
 #include "d/api.h"
 
+#include "frag/dev.h"
 #include "frag/imp.h"
 
 #include "inc/def.h"
@@ -23,7 +24,6 @@
 #include "forces/pack.h"
 #include "forces/use.h"
 #include "forces/imp.h"
-#include "inc/dev/common.h"
 
 #include "utils/kl.h"
 

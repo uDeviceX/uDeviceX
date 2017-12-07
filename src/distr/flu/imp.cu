@@ -13,8 +13,8 @@
 
 #include "d/api.h"
 #include "inc/type.h"
-#include "inc/dev/common.h"
 #include "inc/dev.h"
+#include "frag/dev.h"
 #include "frag/imp.h"
 
 #include "partlist/imp.h"
