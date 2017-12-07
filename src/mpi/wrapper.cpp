@@ -25,6 +25,10 @@ int Cart_coords(MPI_Comm comm, int rank, int maxdims, int coords[]) {
     return MPI_Cart_coords(comm, rank, maxdims, coords);
 }
 
+int Cart_get(MPI_Comm comm, int maxdims, int dims[], int periods[], int coords[]) {
+    return MPI_Cart_get(comm, maxdims, dims, periods, coords);
+}
+
 int Cart_rank(MPI_Comm comm, const int coords[], int *rank) {
     return MPI_Cart_rank(comm, coords, rank);
 }
