@@ -25,6 +25,4 @@
 #include "imp.h"
 
 #include "imp/type.h"
-namespace sdf {
 #include "imp/main.h"
-}

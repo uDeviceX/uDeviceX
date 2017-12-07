@@ -26,6 +26,6 @@
 
 #include "imp.h"
 #include "dev/main.h"
-namespace sdf { namespace sub {
+namespace sub {
 #include "imp/main.h"
-}} /* namespace */
+} /* namespace */
