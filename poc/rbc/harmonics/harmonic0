@@ -2,11 +2,10 @@
 
 import sys
 from scipy.special import sph_harm as Y
-### invert `p' and `t'
-def yre(K, L, p, t): return Y(K, L, t, p).real
-def yim(K, L, p, t): return Y(K, L, t, p).imag
+def yre(K, L, p, t): return Y(K, L, p, t).real
+def yim(K, L, p, t): return Y(K, L, p, t).imag
 def yy(K, L, p, t):
-    return yre(K, L, p, t) if K >= 0 else yim(-K, L, p, t)
+    return yre(K, L, p, t) if K > 0 else yim(-K, L, p, t)
 
 def shift(): sys.argv.pop(0)
 def fst()  : return sys.argv[1]
@@ -22,6 +21,7 @@ def from_to(l, h):
     return [l] if l == h else range(l, h + 1)
 
 def read_harmonic(f):
+    X, Y, Z = 0, 1, 2
     f = f.read().splitlines()
     n = len(f)
     i = L = 0; C = {}
@@ -48,9 +48,9 @@ def proj(p, t):
     for L in from_to(0, Lmax):
         for K in from_to(-L, L):
             k = yy(K, L, p, t)
-            x += C[K, L][X] * k
-            y += C[K, L][Y] * k
-            z += C[K, L][Z] * k
+            x += C[K, L][X]*k
+            y += C[K, L][Y]*k
+            z += C[K, L][Z]*k
     return x, y, z
 
 h = fst(); shift()

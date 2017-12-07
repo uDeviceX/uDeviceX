@@ -2,12 +2,14 @@
 
 import sys
 from scipy.special import sph_harm as Y
-### invert `p' and `t'
-def yre(K, L, p, t): return Y(K, L, t, p).real
-def yim(K, L, p, t): return Y(K, L, t, p).imag
+from math import pi, sin, cos
+
+def yre(K, L, p, t): return Y(K, L, p, t).real
+def yim(K, L, p, t): return Y(K, L, p, t).imag
 def yy(K, L, p, t):
     return yre(K, L, p, t) if K >= 0 else yim(-K, L, p, t)
-
+def from_to(l, h):
+    return [l] if l == h else range(l, h + 1)
 def shift(): sys.argv.pop(0)
 def fst()  : return sys.argv[1]
 def msg(s) : sys.stderr.write("%s\n" % s )
@@ -24,6 +26,32 @@ def read_sph(f):
         S.append(tu)
     return S
 
+def null():
+    for L in from_to(0, Lmax):
+        for K in from_to(-L, L):
+            C[K, L] = [0, 0, 0]
+def proj(p, t, x, y, z):
+    X, Y, Z = 0, 1, 2
+    for L in from_to(0, Lmax):
+        for K in from_to(-L, L):
+            k = yy(K, L, p, t)*sin(t)
+            C[K, L][X] += x*k
+            C[K, L][Y] += y*k
+            C[K, L][Z] += z*k
+def norm(n):
+    X, Y, Z = 0, 1, 2
+    k = 2*pi*pi / n
+    for L in from_to(0, Lmax):
+        for K in from_to(-L, L):
+            C[K, L][X] *= k
+            C[K, L][Y] *= k
+            C[K, L][Z] *= k
+def dump():
+    X, Y, Z = 0, 1, 2
+    for L in from_to(0, Lmax):
+        for K in from_to(-L, L):
+            c = C[K, L]
+            print c[X], c[Y], c[Z]
 
 Lmax = fst(); shift()
 try: Lmax = int(Lmax)
@@ -34,5 +62,9 @@ try:
 except IOError: err("not a file '%s'" % i)
 except ValueError: err("error reading '%s'" % i)
 
-for p, t, x, y, z in S:
-    print p, t, x, y, z
+C = {}
+null()
+for p, t, x, y, z in S: proj(p, t, x, y, z)
+n = len(S)    
+#norm(n)
+dump()
