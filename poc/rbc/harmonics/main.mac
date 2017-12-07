@@ -2,14 +2,18 @@
 
 /* fac(n):=n!; */
 
-/* 0  <= L < +inf
+/*
+   0  <= L < +inf
    -L <= K <= L
+
+   0 < t < pi
+   0 < p < 2 * pi
 */
 
 fac(n):=n!;
+
 a1: fac(2*L)/fac(L) * (1/2*si)^L;
 a2: (L + K)*(L - K + 1)*P(K-1, L) = 2*K*ct*P(K, L) - P(K+1, L)*co;
-
 s: linsolve(a2, P(K-1, L));
 s: s[1];
 s: subst(K = K + 1, s);
@@ -21,3 +25,9 @@ define(P0(K, L), s);
 P(K, L):= if L = K then Peq(L, L) else if K > L then 0 else P0(K, L);
 p(t, K, L):= block([co: cos(t), si: sin(t), ct: cot(t)], P(K, L));
 
+y(t, p, K, L):=p(t, K, L)*cos(K*p);
+
+i3(e):=integrate(integrate(sin('t)*e, 't, 0, %pi), 'p, 0, 2*%pi);
+
+
+i3(y('t, 'p, 0, 1));
