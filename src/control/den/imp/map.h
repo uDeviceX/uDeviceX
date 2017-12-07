@@ -1,5 +1,29 @@
-// TODO
-static int predicate(int i, int j, int z) {return 1;}
+static int pred_circle(int i, int j, int k) {
+    enum {X, Y, Z};
+    float3 r, rc;
+    float R;
+    int *c, *d;
+    c = m::coords;
+    d = m::dims;
+
+    rc.x = XS*(d[X]-2*c[X]-1)/2;
+    rc.y = YS*(d[Y]-2*c[Y]-1)/2;
+    rc.z = ZS*(d[Z]-2*c[Z]-1)/2;
+
+    r.x = i - XS/2 + 0.5f - rc.x;
+    r.y = i - YS/2 + 0.5f - rc.y;
+    r.z = i - ZS/2 + 0.5f - rc.z;
+
+    R = sqrt(r.x * r.x + r.y * r.y + r.z * r.z);
+    return R < OUTFLOW_CIRCLE_R && R >= OUTFLOW_CIRCLE_R - 1;
+}
+
+static int predicate(int i, int j, int k) {
+    int p = 0;
+    if (OUTFLOW_CIRCLE)
+        p = pred_circle(i, j, k);
+    return p;
+}
 
 static void ini_map(int **ids, int *nids) {
     int *ii, i, j, k, n;
