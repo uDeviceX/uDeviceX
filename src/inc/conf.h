@@ -345,6 +345,12 @@
   #define VCON_FACTOR (0.08f)
 #endif
 
+/* outflow: density control */
+
+#ifndef OUTFLOW_DEN
+  #define OUTFLOW_DEN (false)
+#endif
+
 /* outflow */
 
 #ifndef OUTFLOW

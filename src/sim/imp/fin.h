@@ -132,6 +132,7 @@ void fin() {
     if (VCON)    UC(fin(/**/ &vcont));
     if (OUTFLOW) UC(fin_outflow(/**/ outflow));
     if (INFLOW) UC(fin_inflow(/**/ inflow));
+    if (OUTFLOW_DEN) UC(fin_denoutflow(/**/ denoutflow, mapoutflow));
     
     if (walls) fin_wall(&wall);
 

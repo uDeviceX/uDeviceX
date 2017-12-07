@@ -161,7 +161,8 @@ void ini() {
     if (VCON)    UC(ini_vcont(m::cart, /**/ &vcont));
     if (OUTFLOW) UC(ini_outflow(/**/ &outflow));
     if (INFLOW)  UC(ini_inflow(/**/ &inflow));
-        
+    if (OUTFLOW_DEN) UC(ini_denoutflow(/**/ &denoutflow, &mapoutflow));
+    
     if (rbcs || solids)
         UC(ini_objinter(m::cart, /**/ &objinter));        
     

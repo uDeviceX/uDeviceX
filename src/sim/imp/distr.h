@@ -9,7 +9,11 @@ void distribute_flu(Flu *f) {
     
     lp.pp        = q->pp;
 
-    if (OUTFLOW) {
+    if (OUTFLOW_DEN) {
+        lp.deathlist = get_deathlist(denoutflow);
+        ndead = get_ndead(denoutflow);
+    }
+    else if (OUTFLOW) {
         lp.deathlist = get_deathlist(outflow);
         ndead = get_ndead(outflow);
     } else {

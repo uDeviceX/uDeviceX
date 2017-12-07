@@ -42,5 +42,6 @@ void step(scheme::force::Param *fpar, bool wall0, int it) {
     if (wall0) {
         if (INFLOW)  apply_inflow(inflow, &flu);
         if (OUTFLOW) mark_outflow(&flu, /**/ outflow);
+        if (OUTFLOW_DEN) mark_outflowden(&flu, mapoutflow, /**/ denoutflow);
     }
 }

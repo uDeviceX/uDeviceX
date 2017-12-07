@@ -10,6 +10,5 @@ void fin(DContMap *m);
 void filter_particles(const DContMap *m, const int *starts, const int *counts, /**/ DCont *d);
 void download_ndead(DCont *d);
 
-
 int* get_deathlist(DCont *d);
 int  get_ndead(DCont *d);
