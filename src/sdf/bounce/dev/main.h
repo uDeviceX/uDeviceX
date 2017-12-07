@@ -1,7 +1,7 @@
 enum {
     MAX_RESCUE = 8,
     MAX_NEWTON = 2
-}
+};
 
 static __device__ void p2rv(const Particle *pp, int i, /**/ float3 *r, float3 *v) {
     enum {X, Y, Z};
