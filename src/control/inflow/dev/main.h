@@ -45,7 +45,7 @@ static __device__ Particle create_particle(Params params, int2 nc, int xcid, int
 
     coords2pos(params, xi, /**/ &r);
 
-    sigma = sqrt(kBT);
+    sigma = sqrtf(kBT);
     u.x += curand_normal(rg) * sigma;
     u.y += curand_normal(rg) * sigma;
     u.z += curand_normal(rg) * sigma;
