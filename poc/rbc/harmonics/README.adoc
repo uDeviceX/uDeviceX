@@ -1,5 +1,17 @@
 = spherical harmonic parameterization
 
+== file format
+
+---
+L
++0X +0Y +0Z
++1X +1Y +1Z
+-1X -1Y -1Z
+...
++LX +LY +LZ
+-LX -LY -LZ
+---
+
 == References
 
 - Weisstein, Eric W. "Harmonic." From MathWorld--A Wolfram Web
