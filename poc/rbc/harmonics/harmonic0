@@ -7,9 +7,6 @@ def fst()  : return sys.argv[1]
 def msg(s) : sys.stderr.write("%s\n" % s )
 def err(s) : msg(s); sys.exit(2)
 
-h = fst(); shift()
-i = fst(); shift()
-
 def s2xyz(l):
     r = map(float, l.split())
     if len(r) != 3: err("expecting three numbers: %s" % l)
@@ -28,7 +25,17 @@ def read_harmonic(f):
     return L, C
 
 def read_sph(f):
-    pass
+    S = []
+    f = f.read().splitlines()
+    for l in f:
+        l = l.split()
+        p, t = l[0], l[1]
+        p, t = float(p), float(t)
+        S.append((p, t))
+    return S
+
+h = fst(); shift()
+i = fst(); shift()
 
 try:
     with open(h, 'r') as f:
@@ -38,4 +45,12 @@ except IOError:
 except ValueError:
     err("error reading '%s'" % h)
 
-print C    
+try:
+    with open(i, 'r') as f:
+        S = read_sph(f)
+except IOError:
+    err("not a file '%s'" % i)
+except ValueError:
+    err("error reading '%s'" % i)
+
+print S
