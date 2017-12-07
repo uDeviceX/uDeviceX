@@ -1,0 +1,38 @@
+#!/usr/bin/python2
+
+import sys
+from scipy.special import sph_harm as Y
+### invert `p' and `t'
+def yre(K, L, p, t): return Y(K, L, t, p).real
+def yim(K, L, p, t): return Y(K, L, t, p).imag
+def yy(K, L, p, t):
+    return yre(K, L, p, t) if K >= 0 else yim(-K, L, p, t)
+
+def shift(): sys.argv.pop(0)
+def fst()  : return sys.argv[1]
+def msg(s) : sys.stderr.write("%s\n" % s )
+def err(s) : msg(s); sys.exit(2)
+
+def read_sph(f):
+    X, Y, Z, P, T = 0, 1, 2, 3, 4
+    S = []
+    f = f.read().splitlines()
+    for l in f:
+        l = l.split()
+        tu = l[P], l[T], l[X], l[Y], l[Z]
+        tu = map(float, tu)
+        S.append(tu)
+    return S
+
+
+Lmax = fst(); shift()
+try: Lmax = int(Lmax)
+except ValueError: err("expecting an integer: %s" % Lmax)
+i = fst(); shift()
+try:
+    with open(i, 'r') as f: S = read_sph(f)
+except IOError: err("not a file '%s'" % i)
+except ValueError: err("error reading '%s'" % i)
+
+for p, t, x, y, z in S:
+    print p, t, x, y, z
