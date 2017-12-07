@@ -21,3 +21,10 @@ add path for pkg config
 export PKG_CONFIG_PATH=${PKG_CONFIG_PATH}:${HOME}/prefix/libconfig/lib/pkgconfig
 ----
 
+== LD_LIBRARY_PATH
+
+[source, sh]
+----
+export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${HOME}/prefix/libconfig/lib
+----
+
