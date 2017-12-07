@@ -14,6 +14,9 @@ PidVCont vcont;
 Outflow *outflow;
 Inflow *inflow;
 
+DCont    *denoutflow;
+DContMap *mapoutflow;
+
 namespace a /* all */
 {
 Particle *pp_hst; /* particles on host */

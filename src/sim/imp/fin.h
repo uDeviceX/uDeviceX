@@ -62,6 +62,11 @@ static void fin_outflow(Outflow *o) {
     fin(/**/ o);
 }
 
+static void fin_denoutflow(DCont *d, DContMap *m) {
+    UC(fin(d));
+    UC(fin(m));
+}
+
 static void fin_inflow(Inflow *i) {
     fin(/**/ i);
 }
