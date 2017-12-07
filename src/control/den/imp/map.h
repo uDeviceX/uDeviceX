@@ -11,8 +11,8 @@ static int pred_circle(int i, int j, int k) {
     rc.z = ZS*(d[Z]-2*c[Z]-1)/2;
 
     r.x = i - XS/2 + 0.5f - rc.x;
-    r.y = i - YS/2 + 0.5f - rc.y;
-    r.z = i - ZS/2 + 0.5f - rc.z;
+    r.y = j - YS/2 + 0.5f - rc.y;
+    r.z = k - ZS/2 + 0.5f - rc.z;
 
     R = sqrt(r.x * r.x + r.y * r.y);
     return R < OUTFLOW_CIRCLE_R && R >= OUTFLOW_CIRCLE_R - 1;
