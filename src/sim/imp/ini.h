@@ -74,6 +74,11 @@ static void ini_outflow(Outflow **o) {
     }
 }
 
+static void ini_denoutflow(DCont **d, DContMap **m) {
+    UC(ini(MAX_PART_NUM, /**/ d));
+    UC(ini(m));
+}
+
 static void ini_inflow(Inflow **i) {
     int2 nc = make_int2(YS, ZS/2);
     ini(nc, /**/ i);

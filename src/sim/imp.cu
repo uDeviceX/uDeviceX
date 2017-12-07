@@ -98,6 +98,7 @@
 #include "scheme/restrain/imp.h"
 
 #include "control/vel/imp.h"
+#include "control/den/imp.h"
 #include "control/outflow/imp.h"
 #include "control/inflow/imp.h"
 
@@ -125,5 +126,5 @@ namespace sim {
 #include "imp/step.h"
 #include "imp/run.h"
 #include "imp/main.h"
+} // sim
 
-}
