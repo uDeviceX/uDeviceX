@@ -14,18 +14,6 @@ void fin(Sdf *q) {
     UC(efree(q));
 }
 
-void gen(MPI_Comm cart, Sdf *q) {
-    UC(sub::ini(cart, q->arrsdf, &q->texsdf));
-}
-
-void bulk_wall(const Sdf* q, /*io*/ Particle *s_pp, int *s_n, /*o*/ Particle *w_pp, int *w_n) {
-    UC(sub::bulk_wall(q->texsdf, /*io*/ s_pp, s_n, /*o*/ w_pp, w_n));
-}
-
-int who_stays(const Sdf *q, Particle *pp, int n, int nc, int nv, int *stay) {
-    return sub::who_stays(q->texsdf, pp, n, nc, nv, /**/ stay);
-}
-
 void bounce(const Sdf *q, int n, /**/ Particle *pp) {
     UC(bounce_back(q->texsdf, n, /**/ pp));
 }

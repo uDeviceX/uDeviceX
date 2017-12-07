@@ -19,10 +19,13 @@
 #include "utils/halloc.h"
 
 #include "type.h"
-#include "sub/imp.h"
+#include "field/imp.h"
 #include "bounce/imp.h"
+#include "label/imp.h"
 
 #include "imp.h"
 
 #include "imp/type.h"
+#include "imp/gen.h"
+#include "imp/split.h"
 #include "imp/main.h"

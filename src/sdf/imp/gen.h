@@ -51,7 +51,7 @@ static void gen3(MPI_Comm cart, int N[3], float ext[3], float* D, /**/ struct Te
     UC(gen2(N, D, /**/ te));
 }
 
-void gen(MPI_Comm cart, cudaArray *arrsdf, tex3Dca *texsdf) {
+static void gen(MPI_Comm cart, cudaArray *arrsdf, tex3Dca *texsdf) {
     enum {X, Y, Z};
     float *D;     /* data */
     int N[3];     /* size of D */
@@ -66,4 +66,8 @@ void gen(MPI_Comm cart, cudaArray *arrsdf, tex3Dca *texsdf) {
     UC(field::ini_data(f, n, /**/ D));
     UC(gen3(cart, N, ext, D, /**/ te));
     delete[] D;
+}
+
+void gen(MPI_Comm cart, Sdf *sdf) {
+    gen(cart, sdf->arrsdf, &sdf->texsdf);
 }

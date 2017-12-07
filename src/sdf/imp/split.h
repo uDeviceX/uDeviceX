@@ -15,7 +15,7 @@ static void split_wall_solvent(const int *keys, /*io*/ int *s_n, Particle *s_pp,
     *w_n = iw;
 }
 /* sort solvent particle (dev) into remaining in solvent (dev) and turning into wall (hst)*/
-void bulk_wall(const tex3Dca texsdf, /*io*/ Particle *s_pp, int* s_n,
+static void bulk_wall(const tex3Dca texsdf, /*io*/ Particle *s_pp, int* s_n,
                /*o*/ Particle *w_pp, int *w_n) {
     int n = *s_n, *labels;
     Particle *s_pp_hst;
@@ -31,6 +31,11 @@ void bulk_wall(const tex3Dca texsdf, /*io*/ Particle *s_pp, int* s_n,
     UC(efree(s_pp_hst));
     UC(efree(labels));
 }
+
+void bulk_wall(const Sdf* sdf, /*io*/ Particle *s_pp, int *s_n, /*o*/ Particle *w_pp, int *w_n) {
+    UC(bulk_wall(sdf->texsdf, /*io*/ s_pp, s_n, /*o*/ w_pp, w_n));
+}
+
 
 /* bulk predicate : is in bulk? */
 static bool bulkp(int *keys, int i) { return keys[i] == label::BULK; }
@@ -52,4 +57,8 @@ int who_stays(const tex3Dca texsdf, Particle *pp, int n, int nc, int nv, /**/ in
     nc = who_stays0(labels, nc, nv, /**/ stay);
     efree(labels);
     return nc;
+}
+
+int who_stays(const Sdf *sdf, Particle *pp, int n, int nc, int nv, int *stay) {
+    return who_stays(sdf->texsdf, pp, n, nc, nv, /**/ stay);
 }
