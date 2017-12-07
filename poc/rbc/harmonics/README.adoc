@@ -2,10 +2,7 @@
 
 == file format
 
-`L` integer number
-
 ----
-L
 +0X +0Y +0Z
 +1X +1Y +1Z
 -1X -1Y -1Z
