@@ -1,6 +1,6 @@
 struct Sdf;
-void alloc_quants(Sdf**);
-void  free_quants(Sdf*);
+void ini(Sdf**);
+void fin(Sdf*);
 
 void gen(MPI_Comm cart, Sdf*);
 

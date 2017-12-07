@@ -112,7 +112,7 @@ static void fin_bounce_back(BounceBack *bb) {
 }
 
 static void fin_wall(Wall *w) {
-    free_quants(w->sdf);
+    fin(w->sdf);
     wall::free_quants(&w->q);
     wall::free_ticket(&w->t);
 }

@@ -1,4 +1,4 @@
-void alloc_quants(Sdf **pq) {
+void ini(Sdf **pq) {
     Sdf *q;
     UC(emalloc(sizeof(Sdf), (void**)&q));
 
@@ -8,7 +8,7 @@ void alloc_quants(Sdf **pq) {
     *pq = q;
 }
 
-void  free_quants(Sdf *q) {
+void fin(Sdf *q) {
     CC(cudaFreeArray(q->arrsdf));
     q->texsdf.destroy();
     UC(efree(q));
