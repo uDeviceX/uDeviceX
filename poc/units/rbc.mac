@@ -1,4 +1,4 @@
-(mu_p  : 1e-3, mu_d: 80)  $
+(mu_p  : 1e-3/0.8*22.0, mu_d: 80)  $
 (l_p   : 8e-6,  l_d: 20)  $
 (rho_p :  1e3, rho_d: 10) $
 
@@ -10,4 +10,7 @@ s: solve([e1, e2, e3], [l, m, t])[1];
 
 p2d(e):=subst(s, e);
 
-p2d(m*l/t^2) * 100e-12;
+force: 200e-12;
+kb   : 2.4*10^(-19);
+p2d(m*l/t^2)   * force, numer;
+p2d(m*l^2/t^2) * kb, numer;
