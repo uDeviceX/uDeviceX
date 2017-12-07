@@ -2,11 +2,9 @@
 
 import sys
 from scipy.special import sph_harm as Y
-
 ### invert `p' and `t'
 def yre(K, L, p, t): return Y(K, L, t, p).real
 def yim(K, L, p, t): return Y(K, L, t, p).imag
-
 def yy(K, L, p, t):
     return yre(K, L, p, t) if K >= 0 else yim(-K, L, p, t)
 
