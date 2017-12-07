@@ -13,7 +13,6 @@ $B/sdf/bounce/imp.o: $S/sdf/bounce/imp.cu; $N -I$S/. -I$S/sdf/bounce
 $B/sdf/field/imp.o: $S/sdf/field/imp.cpp; $X -I$S/. -I$S/sdf/field
 $B/sdf/imp.o: $S/sdf/imp.cu; $N -I$S/. -I$S/sdf
 $B/sdf/label/imp.o: $S/sdf/label/imp.cu; $N -I$S/. -I$S/sdf/label
-$B/sdf/sub/imp.o: $S/sdf/sub/imp.cu; $N -I$S/. -I$S/sdf/sub
 $B/u/sdf/main.o: $S/u/sdf/main.cu; $N -I$S/. -I$S/u/sdf
 $B/utils/cc.o: $S/utils/cc.cpp; $X -I$S/. -I$S/utils
 $B/utils/efopen.o: $S/utils/efopen.cpp; $X -I$S/. -I$S/utils
