@@ -1,13 +1,14 @@
 #include <vector_types.h>
 #include <stdio.h>
-#include <stdlib.h>
 #include <stdint.h>
+#include <stdlib.h>
 #include <mpi.h>
 #include <assert.h>
 
 #include <conf.h>
 #include "inc/conf.h"
 
+#include "utils/os.h"
 #include "msg.h"
 #include "inc/def.h"
 #include "inc/dev.h"
