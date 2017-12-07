@@ -1,4 +1,6 @@
-/* 10.1016/j.media.2007.10.005 */
+/* 10.1016/j.media.2007.10.005
+   http://mathworld.wolfram.com/about/author.html
+*/
 
 /*
    0  <= L < +inf
@@ -18,8 +20,8 @@ s: rhs(s);
 
 define(Peq(L), a1);
 define(P0(K, L),   s);
-
 P(K, L):= if L = K then Peq(L) else if K > L then 0 else P0(K, L);
+
 pp(t, K, L):= block([co: cos(t), si: sin(t), ct: cot(t)], P(K, L));
 y0(t, p, K, L):=pp(t, K, L)*exp(%i*K*p);
 
