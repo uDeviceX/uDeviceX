@@ -1,6 +1,10 @@
+static void assert_np(int n, int m) {
+    if (n >= m) ERR("too many particles: n = %d < m = %d", n, m);
+}
+
 static int gen0(Particle *pp) { /* generate particle positions and velocities */
     enum {X, Y, Z};
-    assert(XS * YS * ZS * numberdensity < MAX_PART_NUM);
+    UC(assert_np(XS * YS * ZS * numberdensity, MAX_PART_NUM));
     os::srand(123456);
     int iz, iy, ix, l, nd = numberdensity;
     int n = 0; /* particle index */
