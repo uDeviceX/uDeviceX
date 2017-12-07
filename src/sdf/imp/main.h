@@ -27,5 +27,5 @@ int who_stays(const Quants *q, Particle *pp, int n, int nc, int nv, int *stay) {
 }
 
 void bounce(const Quants *q, int n, /**/ Particle *pp) {
-    UC(bounce::main(q->texsdf, n, /**/ pp));
+    UC(bounce_back(q->texsdf, n, /**/ pp));
 }

@@ -26,9 +26,7 @@
 
 #include "imp.h"
 
-namespace bounce {
 namespace dev {
 #include "dev/main.h"
 }
 #include "imp/main.h"
-} /* namespace */

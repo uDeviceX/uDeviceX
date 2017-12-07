@@ -69,7 +69,7 @@ static __device__ void crop(float *t) {
         if (*t >   0) *t = 0;
 }
 
-static __device__ void main0(const tex3Dca texsdf, float currsdf, /* io */ float3 *r, float3 *v) {
+static __device__ void bounce_back_1p(const tex3Dca texsdf, float currsdf, /* io */ float3 *r, float3 *v) {
     float3 r0, rc, rw, dsdf;
     float sdf0, jump, phi, dphi, t;
     int l;
@@ -119,7 +119,7 @@ static __device__ void main0(const tex3Dca texsdf, float currsdf, /* io */ float
         *r = r0;    
 }
 
-__global__ void main(const tex3Dca texsdf, int n, /**/ Particle *pp) {
+__global__ void bounce_back(const tex3Dca texsdf, int n, /**/ Particle *pp) {
     float s, currsdf;
     float3 r, v;
     int i;
@@ -133,7 +133,7 @@ __global__ void main(const tex3Dca texsdf, int n, /**/ Particle *pp) {
     if (s >= -1.7320 * XSIZE_WALLCELLS / XTE) {
         currsdf = sdf::sub::dev::sdf(texsdf, r.x, r.y, r.z);
         if (currsdf >= 0) {
-            main0(texsdf, currsdf, /*io*/ &r, &v);
+            bounce_back_1p(texsdf, currsdf, /*io*/ &r, &v);
             rv2p(r, v, i, /**/ pp);
         }
     }
