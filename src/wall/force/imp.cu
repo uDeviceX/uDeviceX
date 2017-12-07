@@ -29,6 +29,7 @@
 #include "rnd/dev.h"
 
 #include "sdf/type.h"
+#include "sdf/dev.h"
 #include "sdf/imp.h"
 #include "sdf/sub/dev/cheap.h"
 

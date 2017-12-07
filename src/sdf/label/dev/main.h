@@ -1,4 +1,4 @@
-static __global__ void main(const sdf::tex3Dca texsdf, int n, const Particle *pp, /**/ int *labels) {
+static __global__ void main(const tex3Dca texsdf, int n, const Particle *pp, /**/ int *labels) {
     enum {X, Y, Z};
     int pid;
     Particle p;

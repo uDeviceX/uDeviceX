@@ -12,7 +12,7 @@ inline __device__ float cheap_sdf(const tex3Dca texsdf, float x, float y, float 
     float r[3] = {x, y, z};
     for (int c = 0; c < 3; ++c)
         tc[c] = iround(T[c] * (r[c] + L[c] / 2 + M[c]) / (L[c] + 2 * M[c]));
-    return texsdf.fetch(tc[0], tc[1], tc[2]);
+    return fetch(texsdf, tc[0], tc[1], tc[2]);
 }
 
 }}} /* namespace */

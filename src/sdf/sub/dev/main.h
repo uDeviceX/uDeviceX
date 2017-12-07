@@ -17,7 +17,7 @@ static __device__ float sdf(const tex3Dca texsdf, float x, float y, float z) {
         lmbd[c] = t - (int)t;
         tc[c] = (int)t + 0.5;
     }
-#define tex0(ix, iy, iz) (texsdf.fetch(tc[0] + ix, tc[1] + iy, tc[2] + iz))
+#define tex0(ix, iy, iz) (fetch(texsdf, tc[0] + ix, tc[1] + iy, tc[2] + iz))
     s000 = tex0(0, 0, 0), s001 = tex0(1, 0, 0), s010 = tex0(0, 1, 0);
     s011 = tex0(1, 1, 0), s100 = tex0(0, 0, 1), s101 = tex0(1, 0, 1);
     s110 = tex0(0, 1, 1), s111 = tex0(1, 1, 1);

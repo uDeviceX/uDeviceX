@@ -20,6 +20,7 @@
 #include "utils/kl.h"
 
 #include "sdf/type.h"
+#include "sdf/dev.h"
 #include "sdf/sub/dev/main.h"
 
 #include "imp.h"

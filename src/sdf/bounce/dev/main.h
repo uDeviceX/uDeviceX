@@ -21,7 +21,7 @@ static __device__ void rv2p(float3 r, float3 v, int i, /**/ Particle *pp) {
     pp[i] = p;
 }
 
-static __device__ float3 ugrad_sdf(const sdf::tex3Dca texsdf, const float3 *pos) {
+static __device__ float3 ugrad_sdf(const tex3Dca texsdf, const float3 *pos) {
     int L[3] = {XS, YS, ZS};
     int M[3] = {XWM, YWM, ZWM};
     int T[3] = {XTE, YTE, ZTE};
@@ -34,7 +34,7 @@ static __device__ float3 ugrad_sdf(const sdf::tex3Dca texsdf, const float3 *pos)
     for (int c = 0; c < 3; ++c)
         fcts[c] = T[c] / (2 * M[c] + L[c]);
 
-#define tex0(ix, iy, iz) (texsdf.fetch(tc[0] + ix, tc[1] + iy, tc[2] + iz))
+#define tex0(ix, iy, iz) (fetch(texsdf, tc[0] + ix, tc[1] + iy, tc[2] + iz))
     float myval = tex0(0, 0, 0);
     float gx = fcts[0] * (tex0(1, 0, 0) - myval);
     float gy = fcts[1] * (tex0(0, 1, 0) - myval);
@@ -44,7 +44,7 @@ static __device__ float3 ugrad_sdf(const sdf::tex3Dca texsdf, const float3 *pos)
     return make_float3(gx, gy, gz);
 }
 
-static __device__ float3 grad_sdf(const sdf::tex3Dca texsdf, const float3 *pos) {
+static __device__ float3 grad_sdf(const tex3Dca texsdf, const float3 *pos) {
     float gx, gy, gz;
     int L[3] = {XS, YS, ZS};
     int M[3] = {XWM, YWM, ZWM};
@@ -53,7 +53,7 @@ static __device__ float3 grad_sdf(const sdf::tex3Dca texsdf, const float3 *pos) 
     for (int c = 0; c < 3; ++c)
         tc[c] = T[c] * (r[c] + L[c] / 2 + M[c]) / (L[c] + 2 * M[c]) - 0.5;
 
-#define tex0(ix, iy, iz) (texsdf.fetch(tc[0] + ix, tc[1] + iy, tc[2] + iz))
+#define tex0(ix, iy, iz) (fetch(texsdf, tc[0] + ix, tc[1] + iy, tc[2] + iz))
     gx = tex0(1, 0, 0) - tex0(-1,  0,  0);
     gy = tex0(0, 1, 0) - tex0( 0, -1,  0);
     gz = tex0(0, 0, 1) - tex0( 0,  0, -1);
@@ -69,7 +69,7 @@ static __device__ void crop(float *t) {
         if (*t >   0) *t = 0;
 }
 
-static __device__ void main0(const sdf::tex3Dca texsdf, float currsdf, /* io */ float3 *r, float3 *v) {
+static __device__ void main0(const tex3Dca texsdf, float currsdf, /* io */ float3 *r, float3 *v) {
     float3 r0, rc, rw, dsdf;
     float sdf0, jump, phi, dphi, t;
     int l;
@@ -119,7 +119,7 @@ static __device__ void main0(const sdf::tex3Dca texsdf, float currsdf, /* io */ 
         *r = r0;    
 }
 
-__global__ void main(const sdf::tex3Dca texsdf, int n, /**/ Particle *pp) {
+__global__ void main(const tex3Dca texsdf, int n, /**/ Particle *pp) {
     float s, currsdf;
     float3 r, v;
     int i;

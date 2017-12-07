@@ -20,6 +20,7 @@
 #include "math/dev.h"
 
 #include "sdf/type.h"
+#include "sdf/dev.h"
 #include "sdf/sub/dev/cheap.h"
 #include "sdf/sub/dev/main.h"
 

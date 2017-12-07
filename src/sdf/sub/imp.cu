@@ -21,6 +21,7 @@
 
 #include "sdf/field/imp.h"
 #include "sdf/type.h"
+#include "sdf/dev.h"
 #include "sdf/label/imp.h"
 
 #include "imp.h"
