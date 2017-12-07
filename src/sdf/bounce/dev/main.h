@@ -27,31 +27,39 @@ static __device__ void crop(float *t) {
         if (*t >   0) *t = 0;
 }
 
+static __device__ void rescue(const tex3Dca texsdf, float currsdf, /* io */ float3 *r, float3 *v) {
+    float sdf0, jump;
+    float3 dsdf;
+    int l;
+    
+    dsdf = grad_sdf(texsdf, r);
+    sdf0 = currsdf;
+
+    axpy(-sdf0, &dsdf, /**/ r);
+        
+    for (l = MAX_RESCUE; l >= 1; --l) {
+        if (sdf(texsdf, r->x, r->y, r->z) < 0) {
+            k_wvel::bounce_vel(r->x, r->y, r->z, &v->x, &v->y, &v->z);
+            return;
+        }
+        jump = 1.1f * sdf0 / (1 << l);
+        axpy(-jump, &dsdf, /**/ r);
+    }
+}
+
 static __device__ void bounce_back_1p(const tex3Dca texsdf, float currsdf, /* io */ float3 *r, float3 *v) {
     float3 r0, rc, rw, dsdf;
-    float sdf0, jump, phi, dphi, t;
+    float phi, dphi, t;
     int l;
     r0 = *r;
     axpy(-dt, v, /**/ &r0);
 
     if (sdf(texsdf, r0.x, r0.y, r0.z) >= 0) {
-        dsdf = grad_sdf(texsdf, r);
-        sdf0 = currsdf;
-
-        axpy(-sdf0, &dsdf, /**/ r);
-        
-        for (l = MAX_RESCUE; l >= 1; --l) {
-            if (sdf(texsdf, r->x, r->y, r->z) < 0) {
-                k_wvel::bounce_vel(r->x, r->y, r->z, &v->x, &v->y, &v->z);
-                return;
-            }
-            jump = 1.1f * sdf0 / (1 << l);
-            axpy(-jump, &dsdf, /**/ r);
-        }
+        rescue(texsdf, currsdf, /* io */ r, v);
+        return;
     }
 
     t = 0;
-
     for (l = 0; l < MAX_NEWTON; ++l) {
         rc = *r;
         axpy(t, v, /**/ &rc);
