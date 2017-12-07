@@ -54,8 +54,8 @@ static __device__ float3 grad_sdf(const sdf::tex3Dca texsdf, float x, float y, f
 }
 
 static __device__ void main0(const sdf::tex3Dca texsdf, float currsdf,
-                               float &x, float &y, float &z,
-                               float &vx, float &vy, float &vz) {
+                             float &x, float &y, float &z,
+                             float &vx, float &vy, float &vz) {
     float x0 = x - vx*dt, y0 = y - vy*dt, z0 = z - vz*dt;
     if (sdf::sub::dev::sdf(texsdf, x0, y0, z0) >= 0) {
         float3 dsdf = grad_sdf(texsdf, x, y, z); float sdf0 = currsdf;
