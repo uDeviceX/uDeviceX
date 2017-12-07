@@ -1,9 +1,9 @@
-namespace sdf {
-struct Quants;
-void alloc_quants(Quants**);
-void  free_quants(Quants*);
-void ini(MPI_Comm cart, Quants*);
-void bulk_wall(const Quants*, /*io*/ Particle *s_pp, int *s_n, /*o*/ Particle *w_pp, int *w_n);
-int who_stays(const Quants*, Particle *pp, int n, int nc, int nv, int *stay);
-void bounce(const Quants*, int n, /**/ Particle*);
-}
+struct Sdf;
+void ini(Sdf**);
+void fin(Sdf*);
+
+void gen(MPI_Comm cart, Sdf*);
+
+void bulk_wall(const Sdf*, /*io*/ Particle *s_pp, int *s_n, /*o*/ Particle *w_pp, int *w_n);
+int who_stays(const Sdf*, Particle *pp, int n, int nc, int nv, int *stay);
+void bounce(const Sdf*, int n, /**/ Particle*);

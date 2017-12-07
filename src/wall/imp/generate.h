@@ -1,19 +1,19 @@
-static void freeze0(int maxn, const sdf::Quants *qsdf, /*io*/ Particle *pp, int *n, /*o*/ Particle *dev, int *w_n, /*w*/ Particle *hst) {
-    sdf::bulk_wall(qsdf, /*io*/ pp, n, /*o*/ hst, w_n); /* sort into bulk-frozen */
+static void freeze0(int maxn, const Sdf *qsdf, /*io*/ Particle *pp, int *n, /*o*/ Particle *dev, int *w_n, /*w*/ Particle *hst) {
+    bulk_wall(qsdf, /*io*/ pp, n, /*o*/ hst, w_n); /* sort into bulk-frozen */
     MSG("before exch: bulk/frozen : %d/%d", *n, *w_n);
     UC(exch(maxn, /*io*/ hst, w_n));
     cH2D(dev, hst, *w_n);
     MSG("after  exch: bulk/frozen : %d/%d", *n, *w_n);
 }
 
-static void freeze(int maxn, const sdf::Quants *qsdf, /*io*/ Particle *pp, int *n, /*o*/ Particle *dev, int *w_n) {
+static void freeze(int maxn, const Sdf *qsdf, /*io*/ Particle *pp, int *n, /*o*/ Particle *dev, int *w_n) {
     Particle *hst;
     UC(emalloc(maxn * sizeof(Particle), (void**) &hst));
     UC(freeze0(maxn, qsdf, /*io*/ pp, n, /*o*/ dev, w_n, /*w*/ hst));
     free(hst);
 }
 
-static void gen_quants(int maxn, const sdf::Quants *qsdf, /**/ int *o_n, Particle *o_pp, int *w_n, float4 **w_pp) {
+static void gen_quants(int maxn, const Sdf *qsdf, /**/ int *o_n, Particle *o_pp, int *w_n, float4 **w_pp) {
     Particle *frozen;
     CC(d::Malloc((void **) &frozen, maxn * sizeof(Particle)));
     UC(freeze(maxn, qsdf, o_pp, o_n, frozen, w_n));
@@ -25,8 +25,8 @@ static void gen_quants(int maxn, const sdf::Quants *qsdf, /**/ int *o_n, Particl
     dSync();
 }
 
-void gen_quants(int maxn, const sdf::Quants *qsdf, /**/ int *n, Particle* pp, Quants *q) {
-    UC(gen_quants(maxn, qsdf, n, pp, &q->n, &q->pp));
+void gen_quants(int maxn, const Sdf *sdf, /**/ int *n, Particle* pp, Quants *q) {
+    UC(gen_quants(maxn, sdf, n, pp, &q->n, &q->pp));
 }
 
 static void build_cells(const int n, float4 *pp4, clist::Clist *cells, clist::Map *mcells) {

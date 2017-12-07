@@ -1,12 +1,6 @@
-namespace sdf {
 /* 3D texture object binded to  cuda array */
 struct tex3Dca {
     cudaTextureObject_t to;
-
-    __device__ __forceinline__
-    float fetch(const float i, const float j, const float k) const {
-        return Ttex3D(float, to, i, j, k);
-    }
     
     void setup(cudaArray *ca) {
         cudaResourceDesc resD;
@@ -29,4 +23,4 @@ struct tex3Dca {
 
     void destroy() {CC(cudaDestroyTextureObject(to));}
 };
-} /* namespace */
+

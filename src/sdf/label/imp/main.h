@@ -1,8 +1,8 @@
-void dev(const sdf::tex3Dca texsdf, int n, const Particle *pp, /**/ int *labels) {
+void dev(const tex3Dca texsdf, int n, const Particle *pp, /**/ int *labels) {
     KL(dev0::main,(k_cnf(n)), (texsdf, n, pp, labels));
 }
 
-void hst(const sdf::tex3Dca texsdf, int n, const Particle *pp, /**/ int *hst) {
+void hst(const tex3Dca texsdf, int n, const Particle *pp, /**/ int *hst) {
     int *dev;
     Dalloc(&dev, n);
     KL(dev0::main,(k_cnf(n)), (texsdf, n, pp, dev));

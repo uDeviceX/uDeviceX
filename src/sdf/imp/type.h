@@ -1,6 +1,4 @@
-namespace sdf {
-struct Quants {
+struct Sdf {
     cudaArray *arrsdf;
     tex3Dca    texsdf;
 };
-}

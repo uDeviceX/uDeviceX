@@ -1,3 +1,1 @@
-namespace bounce {
-void main(const sdf::tex3Dca, int n, /**/ Particle *pp);
-}
+void bounce_back(const tex3Dca, int n, /**/ Particle *pp);
