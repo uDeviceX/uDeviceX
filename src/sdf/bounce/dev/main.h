@@ -17,14 +17,16 @@ static __device__ void rv2p(float3 r, float3 v, int i, /**/ Particle *pp) {
     pp[i] = p;
 }
 
-static __device__ float3 ugrad_sdf(const sdf::tex3Dca texsdf, float x, float y, float z) {
+static __device__ float3 ugrad_sdf(const sdf::tex3Dca texsdf, const float3 *pos) {
     int L[3] = {XS, YS, ZS};
     int M[3] = {XWM, YWM, ZWM};
     int T[3] = {XTE, YTE, ZTE};
     int tc[3];
-    float fcts[3], r[3] = {x, y, z};
+    float fcts[3], r[3] = {pos->x, pos->y, pos->z};
+
     for (int c = 0; c < 3; ++c)
         tc[c] = T[c] * (r[c] + L[c] / 2 + M[c]) / (L[c] + 2 * M[c]);
+
     for (int c = 0; c < 3; ++c)
         fcts[c] = T[c] / (2 * M[c] + L[c]);
 
@@ -38,12 +40,12 @@ static __device__ float3 ugrad_sdf(const sdf::tex3Dca texsdf, float x, float y, 
     return make_float3(gx, gy, gz);
 }
 
-static __device__ float3 grad_sdf(const sdf::tex3Dca texsdf, float x, float y, float z) {
+static __device__ float3 grad_sdf(const sdf::tex3Dca texsdf, const float3 *pos) {
     float gx, gy, gz;
     int L[3] = {XS, YS, ZS};
     int M[3] = {XWM, YWM, ZWM};
     int T[3] = {XTE, YTE, ZTE};
-    float tc[3], r[3] = {x, y, z};
+    float tc[3], r[3] = {pos->x, pos->y, pos->z};
     for (int c = 0; c < 3; ++c)
         tc[c] = T[c] * (r[c] + L[c] / 2 + M[c]) / (L[c] + 2 * M[c]) - 0.5;
 
@@ -57,7 +59,7 @@ static __device__ float3 grad_sdf(const sdf::tex3Dca texsdf, float x, float y, f
     return make_float3(gx, gy, gz);
 }
 
-static __device__ bool small(float f) {return fabs(f) < 1e-6f;}
+static __device__ bool is_small(float f) {return fabs(f) < 1e-6f;}
 
 static __device__ void main0(const sdf::tex3Dca texsdf, float currsdf, /* io */ float3 *r, float3 *v) {
     float3 r0, rc, rw, dsdf;
@@ -67,7 +69,7 @@ static __device__ void main0(const sdf::tex3Dca texsdf, float currsdf, /* io */ 
     axpy(-dt, v, /**/ &r0);
 
     if (sdf::sub::dev::sdf(texsdf, r0.x, r0.y, r0.z) >= 0) {
-        dsdf = grad_sdf(texsdf, r->x, r->y, r->z);
+        dsdf = grad_sdf(texsdf, r);
         sdf0 = currsdf;
 
         axpy(-sdf0, &dsdf, /**/ r);
@@ -88,10 +90,10 @@ static __device__ void main0(const sdf::tex3Dca texsdf, float currsdf, /* io */ 
         rc = *r;
         axpy(t, v, /**/ &rc);
         phi = currsdf;
-        dsdf = ugrad_sdf(texsdf, rc.x, rc.y, rc.z);
+        dsdf = ugrad_sdf(texsdf, &rc);
         dphi = dot<float> (v, &dsdf);
 
-        if (small(dphi))
+        if (is_small(dphi))
             break;
         
         t -= phi/dphi;
