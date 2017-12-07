@@ -19,8 +19,8 @@
 
 #include "sdf/imp.h"
 #include "sdf/type.h"
+#include "sdf/dev.h"
 #include "sdf/imp/type.h"
-#include "sdf/sub/dev/main.h"
 
 
 namespace dev {
@@ -36,18 +36,18 @@ void lshift() {
     if (argc < 1) ERR("u/sdf: not enough args");
 }
 
-void main0(sdf::Quants *qsdf, Part *p) {
+void main0(Sdf *sdf, Part *p) {
     float x, y, z;
     x = p->x; y = p->y; z = p->z;
-    KL(dev::main, (1, 1), (qsdf->texsdf, x, y, z));
+    KL(dev::main, (1, 1), (sdf->texsdf, x, y, z));
 }
 
 void main1(Part *p) {
-    sdf::Quants *qsdf;
-    UC(sdf::alloc_quants(&qsdf));
-    UC(sdf::ini(m::cart, qsdf));
-    UC(main0(qsdf, p));
-    UC(sdf::free_quants(qsdf));
+    Sdf *sdf;
+    UC(ini(&sdf));
+    UC(gen(m::cart, sdf));
+    UC(main0(sdf, p));
+    UC(fin(sdf));
     dSync();
 }
 
