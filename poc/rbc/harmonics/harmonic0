@@ -1,6 +1,14 @@
 #!/usr/bin/python2
 
 import sys
+from scipy.special import sph_harm as Y
+
+### invert `p' and `t'
+def yre(K, L, p, t): return Y(K, L, t, p).real
+def yim(K, L, p, t): return Y(K, L, t, p).imag
+
+def yy(K, L, p, t):
+    return yre(K, L, p, t) if K >= 0 else yim(-K, L, p, t)
 
 def shift(): sys.argv.pop(0)
 def fst()  : return sys.argv[1]
@@ -12,16 +20,18 @@ def s2xyz(l):
     if len(r) != 3: err("expecting three numbers: %s" % l)
     return r
 
+def from_to(l, h):
+    return [l] if l == h else range(l, h + 1)
+
 def read_harmonic(f):
     f = f.read().splitlines()
-    L = (len(f) - 1) // 2
-    C = {}
-    i = K = 0
-    C[K] = s2xyz(f[i]); i += 1; K += 1
-    while K <= L:
-        C[ K] = s2xyz(f[i]); i += 1
-        C[-K] = s2xyz(f[i]); i += 1
-        K += 1
+    n = len(f)
+    i = L = 0; C = {}
+    while True:
+        for K in from_to(-L, L):
+            C[K, L] = s2xyz(f[i]); i += 1
+        if i >= n: break
+        L += 1
     return L, C
 
 def read_sph(f):
@@ -34,23 +44,34 @@ def read_sph(f):
         S.append((p, t))
     return S
 
+def proj(p, t):
+    X, Y, Z = 0, 1, 2
+    x = y = z = 0
+    for L in from_to(0, Lmax):
+        for K in from_to(-L, L):
+            k = yy(K, L, p, t)
+            x += C[K, L][X] * k
+            y += C[K, L][Y] * k
+            z += C[K, L][Z] * k
+    return x, y, z
+
 h = fst(); shift()
 i = fst(); shift()
 
 try:
-    with open(h, 'r') as f:
-        [L, C] = read_harmonic(f)
-except IOError:
-    err("not a file '%s'" % h)
-except ValueError:
-    err("error reading '%s'" % h)
+    with open(h, 'r') as f: [Lmax, C] = read_harmonic(f)
+except IOError: err("not a file '%s'" % h)
+except ValueError: err("error reading '%s'" % h)
+except IndexError: err("error reading '%s'" % h)
 
 try:
-    with open(i, 'r') as f:
-        S = read_sph(f)
-except IOError:
-    err("not a file '%s'" % i)
-except ValueError:
-    err("error reading '%s'" % i)
+    with open(i, 'r') as f: S = read_sph(f)
+except IOError: err("not a file '%s'" % i)
+except ValueError: err("error reading '%s'" % i)
 
-print S
+O = []
+for p, t in S:
+    x, y, z = proj(p, t)
+    O.append( (x, y, z) )
+
+for x, y, z in O: print x, y, z
