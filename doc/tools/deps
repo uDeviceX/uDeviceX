@@ -32,7 +32,7 @@ deps() {
 	DIR=`dirname $f`
 	DEPS=`grep "$f" -e "include::" | cut -d':' -f 3 | cut -d'[' -f 1`
 	DEPS=`filter_deps $DEPS`
-	DEPS=`make_path $DIR $DEPS | xargs`
+	DEPS=`make_path $DIR $DEPS | sort | xargs`
 	echo "$target: $f $DEPS"
     done
 }

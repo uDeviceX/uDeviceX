@@ -28,7 +28,7 @@ make_links() (
 section() {
     ADOC=`get_docs $1`
     echo "== $1"
-    make_links $ADOC
+    make_links $ADOC | sort
     echo
 }
 
