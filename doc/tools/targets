@@ -18,6 +18,6 @@ ext_html() (
     done
 )
 
-PAGES=`ext_html $ADOC | xargs`
+PAGES=`ext_html $ADOC | sort | xargs`
 
 echo "PAGES = $PAGES"
