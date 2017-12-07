@@ -96,7 +96,7 @@ void rbc(MPI_Comm cart, const Particle *pp, const int4 *faces, int nc, int nv, i
     const char *fmt = DUMP_BASE "/r/%05d.ply";
     char f[BUFSIZ]; /* file name */
     sprintf(f, fmt, id);
-    if (write::rootp()) os::mkdir(DUMP_BASE "/r");
+    if (write::rootp()) UC(os::mkdir(DUMP_BASE "/r"));
     main(cart, pp, faces, nc, nv, nt, f);
 }
 
@@ -104,6 +104,6 @@ void rig(MPI_Comm cart, const Particle *pp, const int4 *faces, int nc, int nv, i
     const char *fmt = DUMP_BASE "/s/%05d.ply";
     char f[BUFSIZ]; /* file name */
     sprintf(f, fmt, id);
-    if (write::rootp()) os::mkdir(DUMP_BASE "/s");
+    if (write::rootp()) UC(os::mkdir(DUMP_BASE "/s"));
     main(cart, pp, faces, nc, nv, nt, f);
 }

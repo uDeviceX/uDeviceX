@@ -5,6 +5,9 @@
 #include <errno.h>
 #include <time.h>
 
+#include "msg.h"
+#include "utils/error.h"
+
 #include "os.h"
 
 namespace os {
@@ -15,8 +18,8 @@ void mkdir(const char *path) {
     rc = ::mkdir(path, mode);
     ok = (rc == 0 || errno == EEXIST);
     if (!ok) {
-        fprintf(stderr, "udx: os::mkdir: cannot create directory ‘%s’\n", path);
-        fprintf(stderr, "errno: %d\n", errno);
+        MSG("os::mkdir: cannot create directory ‘%s’", path);
+        ERR("errno: %d\n", errno);
         exit(1);
     }
 }

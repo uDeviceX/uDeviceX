@@ -49,7 +49,7 @@ static void dump0(MPI_Comm cart, Particle *pp, int n, int nc, /*w*/
 
     avg(pp, n, nc, rho, u);
     if (!directory_exists) {
-        if (m::rank == 0) os::mkdir(DUMP_BASE "/h5");
+        if (m::rank == 0) UC(os::mkdir(DUMP_BASE "/h5"));
         directory_exists = true;
         MC(m::Barrier(cart));
     }
