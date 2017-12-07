@@ -24,8 +24,12 @@ void fin(DCont *d) {
     UC(efree(d));
 }
 
-void filter_particles(const DContMap *m, const int *starts, const int *counts, /**/ DCont *d) {
+void reset(int n, /**/ DCont *d) {
     reset_ndead(d);
+    CC(d::MemsetAsync(d->kk, 0, n * sizeof(int)));
+}
+
+void filter_particles(const DContMap *m, const int *starts, const int *counts, /**/ DCont *d) {    
     KL( kill, (k_cnf(m->n)), (numberdensity, starts, counts, m->n, m->cids, /**/ d->ndead_dev, d->kk) );
 }
 
