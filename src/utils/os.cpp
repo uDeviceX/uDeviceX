@@ -23,5 +23,9 @@ void mkdir(const char *path) {
         exit(1);
     }
 }
+
 long time() { return ::time(NULL); }
+void   srand(long int seedval) { srand48(seedval); }
+double drand() { return drand48(); }
+
 }
