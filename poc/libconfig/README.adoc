@@ -11,3 +11,13 @@ autoreconf
 make -j
 make install
 ----
+
+== pkgconfig
+
+add path for pkg config
+
+[source, sh]
+----
+export PKG_CONFIG_PATH=${PKG_CONFIG_PATH}:${HOME}/prefix/libconfig/lib/pkgconfig
+----
+
