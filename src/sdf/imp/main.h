@@ -14,7 +14,7 @@ void  free_quants(Sdf *q) {
     UC(efree(q));
 }
 
-void ini(MPI_Comm cart, Sdf *q) {
+void gen(MPI_Comm cart, Sdf *q) {
     UC(sub::ini(cart, q->arrsdf, &q->texsdf));
 }
 
