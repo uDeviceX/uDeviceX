@@ -21,7 +21,7 @@
 namespace bop
 {
 void ini(Ticket *t) {
-    if (m::rank == 0) os::mkdir(DUMP_BASE "/bop");
+    if (m::rank == 0) UC(os::mkdir(DUMP_BASE "/bop"));
     const int L[3] = {XS, YS, ZS};        
     for (int c = 0; c < 3; ++c) t->mi[c] = (m::coords[c] + 0.5) * L[c];
 

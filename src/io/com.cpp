@@ -58,7 +58,7 @@ void dump_com(MPI_Comm comm, long id, int n, const int *ii, const float3 *rr) {
     
     UC(emalloc(MAX_CHAR_PER_LINE * n * sizeof(char), (void**) &data));
 
-    if (m::rank == 0) os::mkdir(DUMP_BASE "/com");
+    if (m::rank == 0) UC(os::mkdir(DUMP_BASE "/com"));
 
     sprintf(fname, DUMP_BASE "/com/%04ld.txt", id);
     

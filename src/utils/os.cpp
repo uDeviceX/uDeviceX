@@ -18,7 +18,7 @@ void mkdir(const char *path) {
     rc = ::mkdir(path, mode);
     ok = (rc == 0 || errno == EEXIST);
     if (!ok) {
-        MSG("udx: os::mkdir: cannot create directory ‘%s’", path);
+        MSG("os::mkdir: cannot create directory ‘%s’", path);
         ERR("errno: %d\n", errno);
         exit(1);
     }
