@@ -8,7 +8,6 @@ static __device__ void fetch_wall(Texo<float4> pp, int i, /**/ forces::Pa *a) {
 
 static __device__ void force0(forces::Pa a, int aid, int zplane,
                               float seed, Wa wa, /**/ float *ff) {
-    namespace sdfdev = sdf::sub::dev;
     map::Map m;
     forces::Pa b;  /* wall particles */
     float rnd;
@@ -20,7 +19,7 @@ static __device__ void force0(forces::Pa a, int aid, int zplane,
     forces::p2r3(&a, /**/ &x, &y, &z);
     threshold =
         -1 - 1.7320f * ((float)XSIZE_WALLCELLS / (float)XTE);
-    if (sdfdev::cheap_sdf(wa.sdf, x, y, z) <= threshold) return;
+    if (cheap_sdf(wa.sdf, x, y, z) <= threshold) return;
 
     map::ini(zplane, wa.start, wa.n, x, y, z, /**/ &m);
     float xforce = 0, yforce = 0, zforce = 0;
