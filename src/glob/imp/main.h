@@ -1,14 +1,14 @@
-enum {X, Y, Z, D}
+enum {X, Y, Z, D};
     
 void ini(MPI_Comm cart, Coords *c) {
     int periods[D];
-    MC(m::Cart_Get(cart, D, c->d, periods, c->c));
+    MC(m::Cart_get(cart, D, c->d, periods, c->c));
 }
 
 void fin(Coords *) {/*empty*/}
 
 void domain_center(const Coords *co, /**/ float3 *rc) {
-    int *c, *d;
+    const int *c, *d;
     c = co->c;
     d = co->d;
     
@@ -24,7 +24,7 @@ void local2global(const Coords *c, float3 rl, /**/ float3 *rg) {
 }
 
 void global2local(const Coords *c, float3 rg, /**/ float3 *rl) {
-    rl->x = rg->x - (c->c[X] + 0.5f) * XS;
-    rl->y = rg->y - (c->c[Y] + 0.5f) * YS;
-    rl->z = rg->z - (c->c[Z] + 0.5f) * ZS; 
+    rl->x = rg.x - (c->c[X] + 0.5f) * XS;
+    rl->y = rg.y - (c->c[Y] + 0.5f) * YS;
+    rl->z = rg.z - (c->c[Z] + 0.5f) * ZS; 
 }
