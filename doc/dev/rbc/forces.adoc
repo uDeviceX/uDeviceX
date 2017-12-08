@@ -1,19 +1,2 @@
 = RBC membrane forces
 :lext: .adoc
-
-[env.texmacro]
---
-\newcommand{\vec}{\boldsymbol}
-\newcommand{\ti}{\times}
-\newcommand{\fr}{\frac}
-\newcommand{\lb}{\left(}
-\newcommand{\rb}{\right)}
---
-
-\[
-        \vec{F}_{n}^{\text{bond}} =
-    -\fr{ k_B T }{ p } \lb \fr{ 1 }{ 4(1 - x_n)^2 }
-    -\fr{ 1 }{ 4 } + x_n \rb + \fr{ k_p }{ b_n^2 }
-    -\gamma^C (3\vec{v}_{ij} + (\vec{v}_{ij} \cdot \vec{e}_{ij}) \;\vec{e}_{ij})
-    + 2\sqrt{3 k_B T\gamma^C} d\overline{\vec{W}^S_{ij}} \; \vec{e}_{ij}
-\]
