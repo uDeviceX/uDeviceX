@@ -1,5 +1,11 @@
 #include <mpi.h>
+#include <math.h>
 #include <vector_types.h>
+
+#include <conf.h>
+
+#include "utils/error.h"
+#include "msg.h"
 
 #include "glob/imp.h"
 #include "type.h"

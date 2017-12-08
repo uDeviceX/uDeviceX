@@ -41,6 +41,7 @@ struct WvelShear {
 struct WvelShearSin {
     float3 g; // gdot amplitude
     float w;  // frequency
+    int log_freq;
 };
 
 enum {
