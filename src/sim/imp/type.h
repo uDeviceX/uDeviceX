@@ -105,6 +105,7 @@ struct Wall {
     Sdf *sdf;
     wall::Quants q;
     wall::Ticket t;
+    
 };
 
 /* helper for computing object interactions */

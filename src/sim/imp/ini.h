@@ -154,6 +154,8 @@ static void ini_objinter(MPI_Comm cart, /**/ ObjInter *o) {
 void ini() {
     datatype::ini();
 
+    UC(ini(m::cart, /**/ &coords));
+    
     UC(emalloc(3 * MAX_PART_NUM * sizeof(Particle), (void**) &a::pp_hst));
     
     if (rbcs) UC(ini_rbc(m::cart, /**/ &rbc));

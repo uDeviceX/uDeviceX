@@ -151,5 +151,8 @@ void fin() {
     UC(efree(a::pp_hst));
     
     if (rbcs) fin_rbc(/**/ &rbc);
+
+    UC(fin(/**/ &coords));
+    
     datatype::fin();
 }

@@ -37,6 +37,10 @@
 #include "io/diag.h"
 #include "io/com.h"
 
+#include "glob/imp.h"
+#include "wvel/type.h"
+#include "wvel/imp.h"
+
 #include "dbg/imp.h"
 #include "io/restart.h"
 #include "glb/set.h"

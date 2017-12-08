@@ -2,6 +2,8 @@ bool solids0;
 
 bop::Ticket dumpt;
 
+Coords coords;
+
 Flu flu;
 Rbc rbc;
 Rig rig;
