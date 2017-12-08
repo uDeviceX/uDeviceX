@@ -8,14 +8,26 @@ def fst()  : return sys.argv[1]
 def msg(s) : sys.stderr.write("%s\n" % s )
 def err(s) : msg(s); sys.exit(2)
 
-def s2xyz(l):
-    r = map(float, l.split())
-    if len(r) != 6: err("expecting six numbers: %s" % l)
+
+def s2xyz_complex(r):
     i = 0
     x = complex(r[i], r[i+1]); i += 2;
     y = complex(r[i], r[i+1]); i += 2;
     z = complex(r[i], r[i+1])
     return (x, y, z)
+
+def s2xyz_real(r):
+    i = 0
+    x = complex(r[i], 0); i += 1;
+    y = complex(r[i], 0); i += 1;
+    z = complex(r[i], 0)
+    return (x, y, z)
+
+def s2xyz(l):
+    r = map(float, l.split())
+    n = len(r)
+    if n != 6 and n != 3: err("expecting six numbers or three numbers: %s" % l)
+    return s2xyz_real(r) if n == 3 else s2xyz_complex(r)
 
 def from_to(l, h):
     return [l] if l == h else range(l, h + 1)
