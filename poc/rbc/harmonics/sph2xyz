@@ -5,11 +5,24 @@
 NF {
     # p : [0:2*pi]
     # t : [0:  pi]
-    p = $1; t = $2; r = $3
+    main()
+}
 
+function main(   i, p, t, r, x, y, z) {
+    p = $++i; t = $++i; r = $++i
     x = r*sin(t)*cos(p)
     y = r*sin(t)*sin(p)
     z = r*cos(t)
-
-    print x, y, z
+    ini_pr()
+    pr(x); pr(y); pr(z)
+    while (i <= NF) pr($++i)
+    fin_pr()
 }
+
+# print
+function ini_pr() { cnt = 0 }
+function pr(r) {
+    printf "%s", r
+    if (++cnt < NF) printf " "
+}
+function fin_pr() { printf "\n" }

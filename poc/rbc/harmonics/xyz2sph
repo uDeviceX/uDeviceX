@@ -2,11 +2,16 @@
 
 # cartesian to spherical
 
+BEGIN { ini() }
+
 NF {
     # p : [0:2*pi]
     # t : [0:  pi]
-    pi = 3.141592653589793
-    x = $1; y = $2; z = $3
+    main()
+}
+
+function main(   i, x, y, z, p, t, r) {
+    x = $++i; y = $++i; z = $++i
 
     p = atan2(y, x)
     t = atan2(z, sqrt(x^2 + y^2))
@@ -15,5 +20,18 @@ NF {
     p = p < 0 ? p + 2*pi : p
     t = pi/2 - t
 
-    print p, t, r
+    ini_pr()
+    pr(p); pr(t); pr(r)
+    while (i <= NF) pr($++i)
+    fin_pr()
 }
+
+function ini() { pi = 3.141592653589793 }
+
+# print
+function ini_pr() { cnt = 0 }
+function pr(r) {
+    printf "%s", r
+    if (++cnt < NF) printf " "
+}
+function fin_pr() { printf "\n" }

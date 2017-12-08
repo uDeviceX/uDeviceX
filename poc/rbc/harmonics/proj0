@@ -8,6 +8,7 @@ def yre(K, L, p, t): return Y(K, L, p, t).real
 def yim(K, L, p, t): return Y(K, L, p, t).imag
 def yy(K, L, p, t):
     return yre(K, L, p, t) if K >= 0 else yim(-K, L, p, t)
+
 def from_to(l, h):
     return [l] if l == h else range(l, h + 1)
 def shift(): sys.argv.pop(0)
@@ -34,7 +35,7 @@ def proj(p, t, x, y, z):
     X, Y, Z = 0, 1, 2
     for L in from_to(0, Lmax):
         for K in from_to(-L, L):
-            k = yy(K, L, p, t)*sin(t)
+            k = yy(K, L, p, t)
             C[K, L][X] += x*k
             C[K, L][Y] += y*k
             C[K, L][Z] += z*k
