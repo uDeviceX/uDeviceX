@@ -1,12 +1,7 @@
 #!/usr/bin/python2
 
 import sys
-from scipy.special import sph_harm as Y
-
-def yre(K, L, p, t): return Y(K, L, p, t).real
-def yim(K, L, p, t): return Y(K, L, p, t).imag
-def yy(K, L, p, t): return Y(K, L, p, t)
-#    return yre(K, L, p, t) if K >= 0 else yre(K, L, p, t)
+from scipy.special import sph_harm as YY
 
 def shift(): sys.argv.pop(0)
 def fst()  : return sys.argv[1]
@@ -38,11 +33,12 @@ def read_harmonic(f):
     return L, C
 
 def read_sph(f):
+    P, T = 0, 1
     S = []
     f = f.read().splitlines()
     for l in f:
         l = l.split()
-        p, t = l[0], l[1]
+        p, t = l[P], l[T]
         p, t = float(p), float(t)
         S.append((p, t))
     return S
@@ -52,10 +48,9 @@ def proj(p, t):
     x = y = z = 0
     for L in from_to(0, Lmax):
         for K in from_to(-L, L):
-            k = yy(K, L, p, t)
-            x += C[K, L][X]*k
-            y += C[K, L][Y]*k
-            z += C[K, L][Z]*k
+            k = YY(K, L, p, t)
+            c = C[K, L]
+            x += c[X]*k; y += c[Y]*k; z += c[Z]*k
     return x, y, z
 
 h = fst(); shift()

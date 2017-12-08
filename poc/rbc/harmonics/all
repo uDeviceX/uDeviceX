@@ -1,0 +1,14 @@
+set -eu
+
+Lmax=$1; shift
+p=2562
+
+off2tri   data/$p.off | awk '{print $4}'            > data/$p.area
+off2tri   data/$p.off | awk '{print $1, $2, $3}'    > data/$p.xyz
+./xyz2sph data/$p.xyz                               > data/$p.sph
+
+# p t r area x y z
+paste -d ' ' data/$p.sph data/$p.area data/$p.xyz   > data/$p.all
+./proj0 $Lmax data/$p.all                           > data/l2.txt
+
+./harmonic0 data/l2.txt data/$p.sph  > ddd

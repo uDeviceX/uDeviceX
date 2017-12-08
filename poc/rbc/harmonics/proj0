@@ -1,11 +1,9 @@
 #!/usr/bin/python2
 
 import sys
-from scipy.special import sph_harm as Y
-
-def yre(K, L, p, t): return Y(K, L, p, t).real
-def yim(K, L, p, t): return Y(K, L, p, t).imag
-def yy(K, L, p, t): return Y(K, L, p, t)
+from scipy.special import sph_harm as YY
+from numpy import conj
+from math  import sin
 
 def from_to(l, h):
     return [l] if l == h else range(l, h + 1)
@@ -15,7 +13,7 @@ def msg(s) : sys.stderr.write("%s\n" % s )
 def err(s) : msg(s); sys.exit(2)
 
 def read_sph(f):
-    P,  T, R, A,  X, Y, Z = 0, 1, 2, 3, 4, 5, 6
+    P, T, R, A,  X, Y, Z = 0, 1, 2, 3, 4, 5, 6
     S = []
     f = f.read().splitlines()
     for l in f:
@@ -34,7 +32,7 @@ def proj(p, t, a, x, y, z):
     X, Y, Z = 0, 1, 2
     for L in from_to(0, Lmax):
         for K in from_to(-L, L):
-            k = yy(K, L, p, t) * a
+            k = conj(YY(K, L, p, t))
             C[K, L][X] += x*k
             C[K, L][Y] += y*k
             C[K, L][Z] += z*k
@@ -57,6 +55,4 @@ except ValueError: err("error reading '%s'" % i)
 C = {}
 null()
 for p, t, a, x, y, z in S: proj(p, t, a, x, y, z)
-n = len(S)    
-#norm(n)
 dump()
