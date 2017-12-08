@@ -1,0 +1,31 @@
+#!/usr/bin/awk -f
+
+BEGIN {
+    pi = 3.141592653589793
+    np = 100
+    nt = 100
+    r  = 1
+    loop()
+}
+
+function loop(   i, p) {
+    for (i = 0; i < np; i++) {
+	p = i2p(i)
+	loop0(p)
+    }
+}
+
+function loop0(p,   i, t) {
+    for (i = 0; i < nt; i++) {
+	t = i2t(i)
+	print p, t, r
+    }
+}
+
+function i2p(i) { return i2x(i, np, 0, 2*pi) } # phi
+function i2t(i) { return i2x(i, nt, 0,   pi) } # theta
+
+function i2x(i, n, l, h) {
+    # i2x(0) = l; i2x(n) = h
+    return  l + (h - l)*i/n
+}
