@@ -1,3 +1,2 @@
-struct Wvel {
-    
-};
+
+void set_params();
