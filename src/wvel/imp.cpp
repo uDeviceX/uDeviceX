@@ -10,5 +10,7 @@
 #include "glob/imp.h"
 #include "type.h"
 
+#include "imp.h"
+
 #include "imp/ini.h"
 #include "imp/main.h"
