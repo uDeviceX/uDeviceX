@@ -20,4 +20,4 @@ O = $B/algo/minmax/imp.o $B/algo/scan/imp.o $B/clist/imp.o $B/cnt/imp.o \
     $B/scheme/restrain/sub/sum/imp.o $B/sdf/bounce/imp.o $B/sdf/field/imp.o \
     $B/sdf/imp.o $B/sdf/label/imp.o $B/sim/imp.o $B/utils/cc.o $B/utils/efopen.o \
     $B/utils/error.o $B/utils/halloc.o $B/utils/mc.o $B/utils/os.o \
-    $B/wall/exch/imp.o $B/wall/force/imp.o $B/wall/imp.o
+    $B/wall/exch/imp.o $B/wall/force/imp.o $B/wall/imp.o $B/wvel/imp.o
