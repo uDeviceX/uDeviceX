@@ -68,4 +68,5 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/utils                    && \
     d $B/wall                     && \
     d $B/wall/exch                && \
-    d $B/wall/force              
+    d $B/wall/force               && \
+    d $B/wvel                    
