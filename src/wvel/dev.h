@@ -1,8 +1,8 @@
-static __device__ void wvel_cste(WvelPar p, Coords c, float3 r, /**/ float3 *v) {
+static __device__ void wvel_cste(WvelPar_d p, Coords c, float3 r, /**/ float3 *v) {
     *v = p.cste.u;
 }
 
-static __device__ void wvel_shear(WvelPar p, Coords c, float3 r, /**/ float3 *v) {
+static __device__ void wvel_shear(WvelPar_d p, Coords c, float3 r, /**/ float3 *v) {
     float3 rc; // relative to center
     float3 gdot = p.shear.gdot;
     local2center(c, r, /**/ &rc);
@@ -12,7 +12,7 @@ static __device__ void wvel_shear(WvelPar p, Coords c, float3 r, /**/ float3 *v)
     v->z = gdot.z * rc.z;
 }
 
-static __device__ void bounce_vel(Wvel wvel, Coords c, float3 rw, /* io */ float3* v) {
+static __device__ void bounce_vel(Wvel_d wvel, Coords c, float3 rw, /* io */ float3* v) {
     float3 vw;
     int type;
     wvel_fun wvel_funs[] = {&wvel_cste, &wvel_shear};
