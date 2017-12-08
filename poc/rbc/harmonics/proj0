@@ -5,8 +5,7 @@ from scipy.special import sph_harm as Y
 
 def yre(K, L, p, t): return Y(K, L, p, t).real
 def yim(K, L, p, t): return Y(K, L, p, t).imag
-def yy(K, L, p, t):
-    return yre(K, L, p, t) if K >= 0 else yim(-K, L, p, t)
+def yy(K, L, p, t): return Y(K, L, p, t)
 
 def from_to(l, h):
     return [l] if l == h else range(l, h + 1)
@@ -44,7 +43,7 @@ def dump():
     for L in from_to(0, Lmax):
         for K in from_to(-L, L):
             c = C[K, L]
-            print c[X], c[Y], c[Z]
+            print c[X].real, c[X].imag,   c[Y].real, c[Y].imag,    c[Z].real, c[Z].imag
 
 Lmax = fst(); shift()
 try: Lmax = int(Lmax)

@@ -33,11 +33,14 @@ i3(e):= i30(sq(e));
 /* reference normalization cooeficeent */
 gold(m, l):= sqrt(   (2*l + 1)/(4*%pi) * fac(l - m)/fac(l + m));
 
-(K: 3, L: 3);
+(K: 0, L: 1);
 r: i3(y0('t, 'p, K, L));
-gold(K, L)^2 * r; /* should be one */
+gold(K, L) * sqrt(r); /* should be one */
 
 expr(K, L):= trigsimp(sq(y0('t, 'p, K, L)));
 
+i3(
+
+/* 
 (K: 3, L: 3);
-draw3d(spherical(expr(K, L),'p, 0, 2*%pi, 't, 0, %pi))$
+draw3d(spherical(expr(K, L),'p, 0, 2*%pi, 't, 0, %pi))$ */

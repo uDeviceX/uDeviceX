@@ -5,8 +5,8 @@ from scipy.special import sph_harm as Y
 
 def yre(K, L, p, t): return Y(K, L, p, t).real
 def yim(K, L, p, t): return Y(K, L, p, t).imag
-def yy(K, L, p, t):
-    return yre(K, L, p, t) if K >= 0 else yim(-K, L, p, t)
+def yy(K, L, p, t): return Y(K, L, p, t)
+#    return yre(K, L, p, t) if K >= 0 else yre(K, L, p, t)
 
 def shift(): sys.argv.pop(0)
 def fst()  : return sys.argv[1]
@@ -15,8 +15,12 @@ def err(s) : msg(s); sys.exit(2)
 
 def s2xyz(l):
     r = map(float, l.split())
-    if len(r) != 3: err("expecting three numbers: %s" % l)
-    return r
+    if len(r) != 6: err("expecting six numbers: %s" % l)
+    i = 0
+    x = complex(r[i], r[i+1]); i += 2;
+    y = complex(r[i], r[i+1]); i += 2;
+    z = complex(r[i], r[i+1])
+    return (x, y, z)
 
 def from_to(l, h):
     return [l] if l == h else range(l, h + 1)
@@ -73,4 +77,4 @@ for p, t in S:
     x, y, z = proj(p, t)
     O.append( (x, y, z) )
 
-for x, y, z in O: print x, y, z
+for x, y, z in O: print x.real, y.real, z.real
