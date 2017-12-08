@@ -4,7 +4,7 @@ set -u
 . u.adoc2html.util
 
 : ${DBG=0}
-: ${ADOC=asciidoctor-latex}
+: ${ADOC=asciidoctor}
 
 i="$1"; shift
 for c; do shift; set -- "$@" "$i"; i="$c"; done
