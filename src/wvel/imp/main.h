@@ -37,7 +37,7 @@ void step2params(long it, /**/ Wvel *wv) {
         set_dev(wv->p.shear, /**/ &wv->dev);
         break;
     case WALL_VEL_SHEAR_SIN:
-        // TODO
+        set_dev(it, wv->p.shearsin, /**/ &wv->dev);
         break;
     default:
         ERR("wrong type provided: <%d>", wv->type);
