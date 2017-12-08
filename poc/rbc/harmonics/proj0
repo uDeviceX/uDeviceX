@@ -2,7 +2,6 @@
 
 import sys
 from scipy.special import sph_harm as Y
-from math import pi, sin, cos
 
 def yre(K, L, p, t): return Y(K, L, p, t).real
 def yim(K, L, p, t): return Y(K, L, p, t).imag
@@ -17,12 +16,12 @@ def msg(s) : sys.stderr.write("%s\n" % s )
 def err(s) : msg(s); sys.exit(2)
 
 def read_sph(f):
-    X, Y, Z, P, T = 0, 1, 2, 3, 4
+    P,  T, R, A,  X, Y, Z = 0, 1, 2, 3, 4, 5, 6
     S = []
     f = f.read().splitlines()
     for l in f:
         l = l.split()
-        tu = l[P], l[T], l[X], l[Y], l[Z]
+        tu = l[P], l[T], l[A], l[X], l[Y], l[Z]
         tu = map(float, tu)
         S.append(tu)
     return S
@@ -31,22 +30,15 @@ def null():
     for L in from_to(0, Lmax):
         for K in from_to(-L, L):
             C[K, L] = [0, 0, 0]
-def proj(p, t, x, y, z):
+def proj(p, t, a, x, y, z):
+    '''phi, theta, area, ...'''
     X, Y, Z = 0, 1, 2
     for L in from_to(0, Lmax):
         for K in from_to(-L, L):
-            k = yy(K, L, p, t)
+            k = yy(K, L, p, t) * a
             C[K, L][X] += x*k
             C[K, L][Y] += y*k
             C[K, L][Z] += z*k
-def norm(n):
-    X, Y, Z = 0, 1, 2
-    k = 2*pi*pi / n
-    for L in from_to(0, Lmax):
-        for K in from_to(-L, L):
-            C[K, L][X] *= k
-            C[K, L][Y] *= k
-            C[K, L][Z] *= k
 def dump():
     X, Y, Z = 0, 1, 2
     for L in from_to(0, Lmax):
@@ -65,7 +57,7 @@ except ValueError: err("error reading '%s'" % i)
 
 C = {}
 null()
-for p, t, x, y, z in S: proj(p, t, x, y, z)
+for p, t, a, x, y, z in S: proj(p, t, a, x, y, z)
 n = len(S)    
 #norm(n)
 dump()

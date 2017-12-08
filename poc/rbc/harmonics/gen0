@@ -1,29 +1,37 @@
 #!/usr/bin/awk -f
 
-BEGIN {
+function ini() {
     pi = 3.141592653589793
     np = 100
     nt = 100
     r  = 1
+}
+
+BEGIN {
+    ini()
     loop()
 }
 
-function loop(   i, p) {
+function loop(   i, p, dp) {
     for (i = 0; i < np; i++) {
-	p = i2p(i)
-	loop0(p)
+	p = i2p(i); dp = i2dp(i)
+	loop0(p, dp)
     }
 }
 
-function loop0(p,   i, t) {
+function loop0(p, dp,  i, t, dt, dS) { # dS: area
     for (i = 0; i < nt; i++) {
-	t = i2t(i)
-	print p, t, r
+	t = i2t(i); dt = i2dt(i)
+	dS = dt*dp*sin(t)
+	print p, t, r, dS
     }
 }
 
 function i2p(i) { return i2x(i, np, 0, 2*pi) } # phi
 function i2t(i) { return i2x(i, nt, 0,   pi) } # theta
+
+function i2dp(i) { return i2p(i + 1) - i2p(i) }
+function i2dt(i) { return i2t(i + 1) - i2t(i) }
 
 function i2x(i, n, l, h) {
     # i2x(0) = l; i2x(n) = h
