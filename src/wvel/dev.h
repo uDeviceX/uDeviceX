@@ -4,12 +4,24 @@ static __device__ void wvel_cste(WvelPar_d p, Coords c, float3 r, /**/ float3 *v
 
 static __device__ void wvel_shear(WvelPar_d p, Coords c, float3 r, /**/ float3 *v) {
     float3 rc; // relative to center
-    float3 gdot = p.shear.gdot;
+    float gdot, d;
+    int vdir, gdir;
+
+    gdot = p.shear.gdot;
+    vdir = p.shear.vdir;
+    gdir = p.shear.gdir;
+
     local2center(c, r, /**/ &rc);
 
-    v->x = gdot.x * rc.x;
-    v->y = gdot.y * rc.y;
-    v->z = gdot.z * rc.z;
+    d = 0;
+    if      (vdir == 0) d = rc.x;
+    else if (vdir == 1) d = rc.y;
+    else if (vdir == 2) d = rc.z;
+
+    v->x = v->y = v->z = 0;
+    if      (gdir == 0) v->x = d * gdot;
+    else if (gdir == 1) v->y = d * gdot
+    else if (gdir == 2) v->z = d * gdot
 }
 
 static __device__ void bounce_vel(Wvel_d wvel, Coords c, float3 rw, /* io */ float3* v) {

@@ -6,7 +6,8 @@ struct WvelCste_d {
 };
 
 struct WvelShear_d {
-    float3 gdot; // shear rate in all three directions
+    float gdot; // shear rate
+    int vdir, gdir; // direction of the flow and gradient
 };
 
 enum {
@@ -35,12 +36,14 @@ struct WvelCste {
 };
 
 struct WvelShear {
-    float3 g; // gdot amplitude
+    float gdot;     // shear rate
+    int vdir, gdir; // direction of the flow and gradient
 };
 
 struct WvelShearSin {
-    float3 g; // gdot amplitude
-    float w;  // frequency
+    float gdot;     // shear rate
+    int vdir, gdir; // direction of the flow and gradient
+    float w;        // frequency
     int log_freq;
 };
 
