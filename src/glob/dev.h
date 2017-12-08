@@ -1,11 +1,13 @@
-__device__ void domain_center(const Coords co, /**/ float3 *rc) {
-    const int *c, *d;
-    c = co.c;
-    d = co.d;
-    
-    rc->x = XS * (d[X] - 2.f * c[X] - 1) / 2;
-    rc->y = YS * (d[Y] - 2.f * c[Y] - 1) / 2;
-    rc->z = ZS * (d[Z] - 2.f * c[Z] - 1) / 2;
+__device__ void local2center(const Coords c, float3 rl, /**/ float3 *rc) {
+    rc->x = rl.x + XS * (c.d[X] - 2.f * c.c[X] - 1) / 2;
+    rc->y = rl.y + YS * (c.d[Y] - 2.f * c.c[Y] - 1) / 2;
+    rc->z = rl.z + ZS * (c.d[Z] - 2.f * c.c[Z] - 1) / 2;
+}
+
+__device__ void center2local(const Coords c, float3 rc, /**/ float3 *rl) {
+    rl->x = rc.x - XS * (c.d[X] - 2.f * c.c[X] - 1) / 2;
+    rl->y = rc.y - YS * (c.d[Y] - 2.f * c.c[Y] - 1) / 2;
+    rl->z = rc.z - ZS * (c.d[Z] - 2.f * c.c[Z] - 1) / 2;
 }
 
 __device__ void local2global(const Coords c, float3 rl, /**/ float3 *rg) {
