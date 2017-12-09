@@ -1,9 +1,10 @@
 static __device__ void fetch_wall(Wvel_d wv, Coords c, Texo<float4> pp, int i, /**/ forces::Pa *a) {
-    float vx, vy, vz; /* wall velocity */
-    float4 r;
-    r = fetch(pp, i);
-    k_wvel::vell(r.x, r.y, r.z, /**/ &vx, &vy, &vz);
-    forces::r3v3k2p(r.x, r.y, r.z, vx, vy, vz, WALL_KIND, /**/ a);
+    float3 r, v; /* wall velocity */
+    float4 r0;
+    r0 = fetch(pp, i);
+    r = make_float3(r0.x, r0.y, r0.z);
+    wvel(wv, c, r, /**/ &v);
+    forces::r3v3k2p(r.x, r.y, r.z, v.x, v.y, v.z, WALL_KIND, /**/ a);
 }
 
 static __device__ void force0(Wvel_d wv, Coords c, forces::Pa a, int aid, int zplane,

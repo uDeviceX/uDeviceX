@@ -29,7 +29,9 @@
 #include "rnd/dev.h"
 
 #include "glob/type.h"
+#include "glob/dev.h"
 #include "wvel/type.h"
+#include "wvel/dev.h"
 
 #include "sdf/type.h"
 #include "sdf/dev.h"
