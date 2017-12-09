@@ -1,13 +1,13 @@
 static __device__ float xl2xc(const Coords c, float xl) {
-    return xl + XS * (c.d[0] - 2.f * c.xc - 1) / 2;
+    return xl + XS * (c.xd - 2.f * c.xc - 1) / 2;
 }
 
 static __device__ float yl2yc(const Coords c, float yl) {
-    return yl + YS * (c.d[1] - 2.f * c.yc - 1) / 2;
+    return yl + YS * (c.yd - 2.f * c.yc - 1) / 2;
 }
 
 static __device__ float zl2zc(const Coords c, float zl) {
-    return zl + ZS * (c.d[2] - 2.f * c.zc - 1) / 2;
+    return zl + ZS * (c.zd - 2.f * c.zc - 1) / 2;
 }
 
 static __device__ void local2center(const Coords c, float3 rl, /**/ float3 *rc) {
@@ -18,9 +18,9 @@ static __device__ void local2center(const Coords c, float3 rl, /**/ float3 *rc) 
 
 static __device__ void center2local(const Coords c, float3 rc, /**/ float3 *rl) {
     enum {X, Y, Z};
-    rl->x = rc.x - XS * (c.d[X] - 2.f * c.xc - 1) / 2;
-    rl->y = rc.y - YS * (c.d[Y] - 2.f * c.yc - 1) / 2;
-    rl->z = rc.z - ZS * (c.d[Z] - 2.f * c.zc - 1) / 2;
+    rl->x = rc.x - XS * (c.xd - 2.f * c.xc - 1) / 2;
+    rl->y = rc.y - YS * (c.yd - 2.f * c.yc - 1) / 2;
+    rl->z = rc.z - ZS * (c.zd - 2.f * c.zc - 1) / 2;
 }
 
 static __device__ void local2global(const Coords c, float3 rl, /**/ float3 *rg) {

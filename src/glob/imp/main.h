@@ -1,25 +1,30 @@
 enum {X, Y, Z, D};
     
 void ini(MPI_Comm cart, Coords *c) {
-    int periods[D], coords[D];
-    MC(m::Cart_get(cart, D, c->d, periods, coords));
+    int dims[D], periods[D], coords[D];
+    MC(m::Cart_get(cart, D, dims, periods, coords));
+
     c->xc = coords[X];
     c->yc = coords[Y];
     c->zc = coords[Z];
+
+    c->xd = dims[X];
+    c->yd = dims[Y];
+    c->zd = dims[Z];
 }
 
 void fin(Coords *) {/*empty*/}
 
-static float xl2xc(const Coords c, float xl) {
-    return xl + XS * (c.d[0] - 2.f * c.xc - 1) / 2;
+float xl2xc(const Coords c, float xl) {
+    return xl + XS * (c.xd - 2.f * c.xc - 1) / 2;
 }
 
-static float yl2yc(const Coords c, float yl) {
-    return yl + YS * (c.d[1] - 2.f * c.yc - 1) / 2;
+float yl2yc(const Coords c, float yl) {
+    return yl + YS * (c.yd - 2.f * c.yc - 1) / 2;
 }
 
-static float zl2zc(const Coords c, float zl) {
-    return zl + ZS * (c.d[2] - 2.f * c.zc - 1) / 2;
+float zl2zc(const Coords c, float zl) {
+    return zl + ZS * (c.zd - 2.f * c.zc - 1) / 2;
 }
 
 void local2center(Coords c, float3 rl, /**/ float3 *rc) {
@@ -28,10 +33,22 @@ void local2center(Coords c, float3 rl, /**/ float3 *rc) {
     rc->z = zl2zc(c, rl.z);
 }
 
-void center2local(const Coords *c, float3 rc, /**/ float3 *rl) {
-    rl->x = rc.x - XS * (c->d[X] - 2.f * c->xc - 1) / 2;
-    rl->y = rc.y - YS * (c->d[Y] - 2.f * c->yc - 1) / 2;
-    rl->z = rc.z - ZS * (c->d[Z] - 2.f * c->zc - 1) / 2;
+float xc2xl(const Coords c, float xc) {
+    return xc - XS * (c.xd - 2.f * c.xc - 1) / 2;
+}
+
+float yc2yl(const Coords c, float yc) {
+    return yc - YS * (c.yd - 2.f * c.yc - 1) / 2;
+}
+
+float zc2zl(const Coords c, float zc) {
+    return zc - ZS * (c.zd - 2.f * c.zc - 1) / 2;
+}
+
+void center2local(Coords c, float3 rc, /**/ float3 *rl) {
+    rl->x = xc2xl(c, rc.x);
+    rl->y = yc2yl(c, rc.y);
+    rl->z = zc2zl(c, rc.z);
 }
 
 void local2global(const Coords *c, float3 rl, /**/ float3 *rg) {
