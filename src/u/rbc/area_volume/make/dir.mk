@@ -1,7 +1,6 @@
 D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/d                        && \
-    d $B/glb                      && \
-    d $B/glb/wvel                 && \
+    d $B/glob                     && \
     d $B/io                       && \
     d $B/io/bop                   && \
     d $B/io/field                 && \

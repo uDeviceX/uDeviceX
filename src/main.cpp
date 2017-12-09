@@ -8,14 +8,12 @@
 #include "d/api.h"
 
 #include "sim/imp.h"
-#include "glb/set.h"
 
 int main(int argc, char **argv) {
     m::ini(argc, argv);
     MSG("mpi size: %d", m::size);
 
     d::ini();
-    glb::sim(); /* simulation level globals */
     sim::ini();
     if (RESTART) sim::sim_strt();
     else         sim::sim_gen();

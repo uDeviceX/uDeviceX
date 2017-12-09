@@ -25,8 +25,6 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/frag                     && \
     d $B/fsi                      && \
     d $B/generate/rig             && \
-    d $B/glb                      && \
-    d $B/glb/wvel                 && \
     d $B/glob                     && \
     d $B/inter                    && \
     d $B/io                       && \

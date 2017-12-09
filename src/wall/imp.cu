@@ -7,7 +7,6 @@
 #include "inc/conf.h"
 #include "inc/def.h"
 #include "msg.h"
-#include "glb/get.h"
 
 #include "utils/error.h"
 #include "utils/halloc.h"

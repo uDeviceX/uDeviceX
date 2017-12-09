@@ -9,8 +9,6 @@
 #include "msg.h"
 #include "utils/error.h"
 
-#include "glb/get.h"
-
 #include "d/api.h"
 #include "d/q.h"
 #include "d/ker.h"

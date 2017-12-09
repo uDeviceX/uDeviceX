@@ -1,6 +1,4 @@
 $B/d/api.o: $S/d/api.cu; $N -I$S/. -I$S/d
-$B/glb/imp.o: $S/glb/imp.cu; $N -I$S/. -I$S/glb
-$B/glb/wvel/imp.o: $S/glb/wvel/imp.cu; $N -I$S/. -I$S/glb/wvel
 $B/io/field/h5/imp.o: $S/io/field/h5/imp.cpp; $X -I$S/. -I$S/io/field/h5
 $B/io/field/xmf/imp.o: $S/io/field/xmf/imp.cpp; $X -I$S/. -I$S/io/field/xmf
 $B/mpi/glb.o: $S/mpi/glb.cpp; $X -I$S/. -I$S/mpi

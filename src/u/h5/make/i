@@ -1,5 +1,4 @@
 find $U  -name '*.cu' -o -name '*.cpp' -o -name '*.h'
-find glb -name '*.cu' -o -name '*.cpp' -o -name '*.h'
 
 echo \
 io/field/h5/imp.cpp  io/field/h5/imp.h                          \

@@ -9,5 +9,4 @@ find $D \
     grep -v '^\.\/u/'
 done
 
-find glb -name '*.cu' -o -name '*.cpp' -o -name '*.h'
 echo msg.cpp msg.h

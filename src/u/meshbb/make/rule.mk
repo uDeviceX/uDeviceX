@@ -1,8 +1,6 @@
 $B/algo/scan/imp.o: $S/algo/scan/imp.cu; $N -I$S/. -I$S/algo/scan
 $B/clist/imp.o: $S/clist/imp.cu; $N -I$S/. -I$S/clist
 $B/d/api.o: $S/d/api.cu; $N -I$S/. -I$S/d
-$B/glb/imp.o: $S/glb/imp.cu; $N -I$S/. -I$S/glb
-$B/glb/wvel/imp.o: $S/glb/wvel/imp.cu; $N -I$S/. -I$S/glb/wvel
 $B/io/off.o: $S/io/off.cpp; $X -I$S/. -I$S/io
 $B/meshbb/imp.o: $S/meshbb/imp.cu; $N -I$S/. -I$S/meshbb
 $B/mpi/glb.o: $S/mpi/glb.cpp; $X -I$S/. -I$S/mpi

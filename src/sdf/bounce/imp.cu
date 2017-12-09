@@ -16,7 +16,6 @@
 #include "inc/macro.h"
 
 #include "utils/kl.h"
-#include "glb/get.h"
 
 #include "glob/type.h"
 #include "glob/dev.h"
