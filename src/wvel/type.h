@@ -6,8 +6,9 @@ struct WvelCste_d {
 };
 
 struct WvelShear_d {
-    float gdot; // shear rate
+    float gdot;     // shear rate
     int vdir, gdir; // direction of the flow and gradient
+    int half;       // [0,1] : 1 if only lower wall is moving
 };
 
 enum {
@@ -38,11 +39,13 @@ struct WvelCste {
 struct WvelShear {
     float gdot;     // shear rate
     int vdir, gdir; // direction of the flow and gradient
+    int half;       // [0,1] : 1 if only lower wall is moving
 };
 
 struct WvelShearSin {
     float gdot;     // shear rate
     int vdir, gdir; // direction of the flow and gradient
+    int half;       // [0,1] : 1 if only lower wall is moving
     float w;        // frequency
     int log_freq;
 };

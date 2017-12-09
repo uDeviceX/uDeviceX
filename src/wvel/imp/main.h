@@ -8,6 +8,7 @@ static void set_dev(WvelShear p, Wvel_d *wv) {
     wv->p.shear.gdot = p.gdot;
     wv->p.shear.gdir = p.gdir;
     wv->p.shear.vdir = p.vdir;
+    wv->p.shear.half = p.half;
 }
 
 static void set_dev(long it, WvelShearSin p, Wvel_d *wv) {
@@ -23,7 +24,8 @@ static void set_dev(long it, WvelShearSin p, Wvel_d *wv) {
     wv->p.shear.gdot = gdot;
     wv->p.shear.gdir = p.gdir;
     wv->p.shear.vdir = p.vdir;
-
+    wv->p.shear.half = p.half;
+    
     cond = p.log_freq > 0 && it % p.log_freq == 0;
     if (cond)
         MSG("WVEL_SIN: gd = %6.3g", gdot);

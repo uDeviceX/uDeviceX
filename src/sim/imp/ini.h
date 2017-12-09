@@ -149,8 +149,10 @@ static void ini_wall(Wall *w) {
     WvelShearSin p;
     p.log_freq = WVEL_LOG_FREQ;
     p.w = WVEL_PAR_W;
+    p.half = 1;
 #else
-    WvelShear p;    
+    WvelShear p;
+    p.half = 0;
 #endif
     p.gdot = WVEL_PAR_A;
     p.vdir = 0;
