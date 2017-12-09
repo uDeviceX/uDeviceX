@@ -1,4 +1,4 @@
-static __device__ float3 transform(const Particle p) {
+static __device__ float3 transform(Coords, const Particle p) {
     enum {X, Y, Z};
     float3 u;
     u.x = p.v[X];

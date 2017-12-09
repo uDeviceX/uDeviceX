@@ -19,6 +19,6 @@ struct PidVCont {
 void ini(MPI_Comm comm, int3 L, float3 vtarget, float factor, /**/ PidVCont *c);
 void fin(/**/ PidVCont *cont);
 
-void sample(int n, const Particle *pp, const int *starts, const int *counts, /**/ PidVCont *c);
+void sample(Coords coords, int n, const Particle *pp, const int *starts, const int *counts, /**/ PidVCont *c);
 float3 adjustF(/**/ PidVCont *c);
 void log(const PidVCont *c);

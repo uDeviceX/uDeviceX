@@ -19,6 +19,8 @@
 #include "utils/mc.h"
 
 #include "math/dev.h"
+#include "glob/type.h"
+#include "glob/dev.h"
 #include "glb/get.h"
 
 #include "imp.h"

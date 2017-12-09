@@ -1,4 +1,4 @@
-static __device__ float3 transform(const Particle p) {
+static __device__ float3 transform(Coords c, const Particle p) {
     enum {X, Y, Z};
     float3 u; // radial coordinates
     float x, y, r, rinv;
