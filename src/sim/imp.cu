@@ -37,6 +37,7 @@
 #include "io/diag.h"
 #include "io/com.h"
 
+#include "glob/type.h"
 #include "glob/imp.h"
 #include "wvel/type.h"
 #include "wvel/imp.h"

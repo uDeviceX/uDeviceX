@@ -1,8 +1,3 @@
-struct Coords {
-    int c[3]; /* rank coordinates */
-    int d[3]; /* rank sizes       */
-};
-
 void ini(MPI_Comm cart, Coords *c);
 void fin(Coords *c);
 
