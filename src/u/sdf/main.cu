@@ -17,6 +17,9 @@
 #include "utils/kl.h"
 #include "utils/error.h"
 
+#include "glob/type.h"
+#include "wvel/type.h"
+
 #include "sdf/imp.h"
 #include "sdf/type.h"
 #include "sdf/dev.h"

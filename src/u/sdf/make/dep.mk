@@ -14,7 +14,7 @@ $B/sdf/bounce/imp.o: $B/conf.h $S/d/api.h $S/d/ker.h $S/d/q.h $S/glb/get.h $S/gl
 $B/sdf/field/imp.o: $B/conf.h $S/inc/conf.h $S/inc/type.h $S/io/field/imp.h $S/mpi/glb.h $S/msg.h $S/sdf/field/imp.h $S/utils/efopen.h $S/utils/error.h $S/utils/halloc.h
 $B/sdf/imp.o: $B/conf.h $S/d/api.h $S/d/ker.h $S/glob/type.h $S/inc/conf.h $S/inc/def.h $S/inc/dev.h $S/inc/macro.h $S/inc/type.h $S/mpi/glb.h $S/msg.h $S/sdf/bounce/imp.h $S/sdf/field/imp.h $S/sdf/imp.h $S/sdf/imp/gen.h $S/sdf/imp/main.h $S/sdf/imp/split.h $S/sdf/imp/type.h $S/sdf/label/imp.h $S/sdf/type.h $S/utils/cc.h $S/utils/error.h $S/utils/halloc.h $S/wvel/type.h
 $B/sdf/label/imp.o: $B/conf.h $S/d/api.h $S/d/ker.h $S/d/q.h $S/inc/conf.h $S/inc/def.h $S/inc/dev.h $S/inc/macro.h $S/inc/type.h $S/mpi/glb.h $S/msg.h $S/sdf/dev.h $S/sdf/label/dev/main.h $S/sdf/label/imp.h $S/sdf/label/imp/main.h $S/sdf/type.h $S/utils/cc.h $S/utils/error.h $S/utils/halloc.h $S/utils/kl.h
-$B/u/sdf/main.o: $B/conf.h $S/d/api.h $S/d/ker.h $S/inc/conf.h $S/inc/dev.h $S/inc/macro.h $S/inc/type.h $S/mpi/glb.h $S/mpi/wrapper.h $S/msg.h $S/sdf/dev.h $S/sdf/imp.h $S/sdf/imp/type.h $S/sdf/type.h $S/u/sdf/dev.h $S/utils/cc.h $S/utils/error.h $S/utils/kl.h
+$B/u/sdf/main.o: $B/conf.h $S/d/api.h $S/d/ker.h $S/glob/type.h $S/inc/conf.h $S/inc/dev.h $S/inc/macro.h $S/inc/type.h $S/mpi/glb.h $S/mpi/wrapper.h $S/msg.h $S/sdf/dev.h $S/sdf/imp.h $S/sdf/imp/type.h $S/sdf/type.h $S/u/sdf/dev.h $S/utils/cc.h $S/utils/error.h $S/utils/kl.h $S/wvel/type.h
 $B/utils/cc.o: $B/conf.h $S/d/api.h $S/inc/conf.h $S/utils/cc/common.h $S/utils/error.h
 $B/utils/efopen.o: $S/utils/efopen.h $S/utils/error.h
 $B/utils/error.o: $S/msg.h $S/utils/error.h
