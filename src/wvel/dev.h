@@ -12,16 +12,16 @@ static __device__ void wvel_shear(WvelPar_d p, Coords c, float3 r, /**/ float3 *
     gdir = p.shear.gdir;
 
     local2center(c, r, /**/ &rc);
-
+    
     d = 0;
-    if      (vdir == 0) d = rc.x;
-    else if (vdir == 1) d = rc.y;
-    else if (vdir == 2) d = rc.z;
+    if      (gdir == 0) d = rc.x;
+    else if (gdir == 1) d = rc.y;
+    else if (gdir == 2) d = rc.z;
 
     v->x = v->y = v->z = 0;
-    if      (gdir == 0) v->x = d * gdot;
-    else if (gdir == 1) v->y = d * gdot;
-    else if (gdir == 2) v->z = d * gdot;
+    if      (vdir == 0) v->x = d * gdot;
+    else if (vdir == 1) v->y = d * gdot;
+    else if (vdir == 2) v->z = d * gdot;
 }
 
 
