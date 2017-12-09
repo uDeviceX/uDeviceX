@@ -1,4 +1,4 @@
-__global__ void force(Cloud cloud, int np, float seed, Wa wa, /**/ float *ff) {
+__global__ void force(Wvel_d wv, Coords c, Cloud cloud, int np, float seed, Wa wa, /**/ float *ff) {
     forces::Pa a; /* bulk particle */
     int gid, aid, zplane;
     gid = threadIdx.x + blockDim.x * blockIdx.x;
@@ -9,5 +9,5 @@ __global__ void force(Cloud cloud, int np, float seed, Wa wa, /**/ float *ff) {
     fetch(cloud, aid, /**/ &a);
 
     /* call generic function from polymorphic */
-    wall::dev::force0(a, aid, zplane, seed, wa, /**/ ff);
+    wall::dev::force0(wv, c, a, aid, zplane, seed, wa, /**/ ff);
 }

@@ -13,11 +13,11 @@ struct Ticket {
 };
 
 namespace grey {
-void force(const Sdf *qsdf, const Quants q, const Ticket t, Cloud cloud, const int n, Force *ff);
+void force(Wvel wv, Coords c, const Sdf *qsdf, const Quants q, const Ticket t, Cloud cloud, const int n, Force *ff);
 }
 
 namespace color {
-void force(const Sdf *qsdf, const Quants q, const Ticket t, Cloud cloud, const int n, Force *ff);
+void force(Wvel wv, Coords c, const Sdf *qsdf, const Quants q, const Ticket t, Cloud cloud, const int n, Force *ff);
 }
 
 void alloc_quants(Quants *q);
