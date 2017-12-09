@@ -27,7 +27,7 @@ static __device__ void crop(float *t) {
         if (*t >   0) *t = 0;
 }
 
-static __device__ void rescue(const tex3Dca texsdf, float currsdf, /* io */ float3 *r, float3 *v) {
+static __device__ void rescue(Wvel_d wv, Coords c, const tex3Dca texsdf, float currsdf, /* io */ float3 *r, float3 *v) {
     float sdf0, jump;
     float3 dsdf;
     int l;
@@ -40,6 +40,7 @@ static __device__ void rescue(const tex3Dca texsdf, float currsdf, /* io */ floa
     for (l = MAX_RESCUE; l >= 1; --l) {
         if (sdf(texsdf, r->x, r->y, r->z) < 0) {
             k_wvel::bounce_vel(r->x, r->y, r->z, &v->x, &v->y, &v->z);
+            // bounce_vel(wv, c, *r, /**/ v);
             return;
         }
         jump = 1.1f * sdf0 / (1 << l);
@@ -47,7 +48,7 @@ static __device__ void rescue(const tex3Dca texsdf, float currsdf, /* io */ floa
     }
 }
 
-static __device__ void bounce_back_1p(const tex3Dca texsdf, float currsdf, /* io */ float3 *r, float3 *v) {
+static __device__ void bounce_back_1p(Wvel_d wv, Coords c, const tex3Dca texsdf, float currsdf, /* io */ float3 *r, float3 *v) {
     float3 r0, rc, rw, dsdf;
     float phi, dphi, t;
     int l;
@@ -55,7 +56,7 @@ static __device__ void bounce_back_1p(const tex3Dca texsdf, float currsdf, /* io
     axpy(-dt, v, /**/ &r0);
 
     if (sdf(texsdf, r0.x, r0.y, r0.z) >= 0) {
-        rescue(texsdf, currsdf, /* io */ r, v);
+        rescue(wv, c, texsdf, currsdf, /* io */ r, v);
         return;
     }
 
@@ -77,6 +78,7 @@ static __device__ void bounce_back_1p(const tex3Dca texsdf, float currsdf, /* io
     rw = *r;
     axpy(t, v, /**/ &rw);
     k_wvel::bounce_vel(rw.x, rw.y, rw.z, &v->x, &v->y, &v->z);
+    // bounce_vel(wv, c, rw, /**/ v);
 
     *r = rw;
     axpy(-t, v, /**/ r);
@@ -85,7 +87,7 @@ static __device__ void bounce_back_1p(const tex3Dca texsdf, float currsdf, /* io
         *r = r0;    
 }
 
-__global__ void bounce_back(const tex3Dca texsdf, int n, /**/ Particle *pp) {
+__global__ void bounce_back(Wvel_d wv, Coords c, const tex3Dca texsdf, int n, /**/ Particle *pp) {
     float s, currsdf;
     float3 r, v;
     int i;
@@ -99,7 +101,7 @@ __global__ void bounce_back(const tex3Dca texsdf, int n, /**/ Particle *pp) {
     if (s >= -1.7320 * XSIZE_WALLCELLS / XTE) {
         currsdf = sdf(texsdf, r.x, r.y, r.z);
         if (currsdf >= 0) {
-            bounce_back_1p(texsdf, currsdf, /*io*/ &r, &v);
+            bounce_back_1p(wv, c, texsdf, currsdf, /*io*/ &r, &v);
             rv2p(r, v, i, /**/ pp);
         }
     }

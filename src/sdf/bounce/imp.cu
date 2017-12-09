@@ -17,6 +17,11 @@
 #include "glb/get.h"
 #include "inc/dev/wvel.h"
 
+#include "glob/type.h"
+#include "glob/dev.h"
+#include "wvel/type.h"
+#include "wvel/dev.h"
+
 #include "math/dev.h"
 
 #include "sdf/type.h"

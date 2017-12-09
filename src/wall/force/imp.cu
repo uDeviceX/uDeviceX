@@ -28,6 +28,9 @@
 #include "rnd/imp.h"
 #include "rnd/dev.h"
 
+#include "glob/type.h"
+#include "wvel/type.h"
+
 #include "sdf/type.h"
 #include "sdf/dev.h"
 #include "sdf/imp.h"

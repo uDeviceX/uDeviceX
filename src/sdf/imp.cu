@@ -18,6 +18,9 @@
 
 #include "utils/halloc.h"
 
+#include "glob/type.h"
+#include "wvel/type.h"
+
 #include "type.h"
 #include "field/imp.h"
 #include "bounce/imp.h"
