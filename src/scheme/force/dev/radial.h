@@ -1,4 +1,4 @@
-__global__ void main(float mass, float f0, int n, const Particle *pp, /**/ Force *ff) {
+__global__ void main(Coords c, float mass, float f0, int n, const Particle *pp, /**/ Force *ff) {
     enum {X, Y};
     int pid;
     float *f;
@@ -11,8 +11,8 @@ __global__ void main(float mass, float f0, int n, const Particle *pp, /**/ Force
     r = pp[pid].r;
     f = ff[pid].f;
      /* coordinate relative to domain center */
-    d[X] = r[X] - glb::r0[X];
-    d[Y] = r[Y] - glb::r0[Y];
+    d[X] = xl2xc(c, r[X]);
+    d[Y] = yl2yc(c, r[Y]);
 
     S = 1.f / (d[X] * d[X] + d[Y] * d[Y]);
 

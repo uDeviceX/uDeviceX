@@ -13,7 +13,9 @@
 #include "utils/kl.h"
 #include "inc/type.h"
 #include "inc/dev.h"
-#include "glb/get.h"
+
+#include "glob/type.h"
+#include "glob/dev.h"
 
 #include "imp.h"
 

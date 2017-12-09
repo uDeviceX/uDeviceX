@@ -1,1 +1,1 @@
-void main(float, Param, int, const Particle*, /**/ Force*) { }
+void main(Coords, float, Param, int, const Particle*, /**/ Force*) { }

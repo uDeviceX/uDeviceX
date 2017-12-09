@@ -1,4 +1,5 @@
-__global__ void main(float mass, float f0, int n, const Particle *pp, /**/ Force *ff) {
+// TODO: use coords (this is one node for now)
+__global__ void main(Coords, float mass, float f0, int n, const Particle *pp, /**/ Force *ff) {
     enum {X, Y};
     int pid;
     float fx, fy, *f;
