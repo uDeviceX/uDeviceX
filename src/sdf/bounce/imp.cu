@@ -17,7 +17,6 @@
 
 #include "utils/kl.h"
 #include "glb/get.h"
-#include "inc/dev/wvel.h"
 
 #include "glob/type.h"
 #include "glob/dev.h"

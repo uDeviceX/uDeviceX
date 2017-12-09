@@ -37,7 +37,6 @@
 #include "sdf/dev.h"
 #include "sdf/imp.h"
 
-#include "inc/dev/wvel.h"
 #include "forces/type.h"
 #include "forces/use.h"
 #include "forces/pack.h"
