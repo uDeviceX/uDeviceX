@@ -3,8 +3,8 @@ static __device__ float3 transform(Coords c, const Particle p) {
     float3 u; // radial coordinates
     float x, y, r, rinv;
     float cost, sint;
-    x = p.r[X] - glb::r0[X];
-    y = p.r[Y] - glb::r0[Y];
+    x = xl2xc(c, p.r[X]);
+    y = yl2yc(c, p.r[Y]);
 
     r = sqrt(x*x + y*y);
     rinv = 1 / r;
