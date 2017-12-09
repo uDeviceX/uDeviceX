@@ -1,3 +1,17 @@
+/* domain sizes */
+
+static __device__ int xdomain(const Coords c) {
+    return XS * c.xd;
+}
+
+static __device__ int ydomain(const Coords c) {
+    return YS * c.yd;
+}
+
+static __device__ int zdomain(const Coords c) {
+    return ZS * c.zd;
+}
+
 /* [l]ocal to [c]enter */
 
 static __device__ float xl2xc(const Coords c, float xl) {
@@ -77,3 +91,4 @@ static __device__ void global2local(const Coords c, float3 rg, /**/ float3 *rl) 
     rl->y = yg2yl(c, rg.y);
     rl->z = zg2zl(c, rg.z);
 }
+

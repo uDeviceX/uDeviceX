@@ -15,6 +15,21 @@ void ini(MPI_Comm cart, Coords *c) {
 
 void fin(Coords *) {/*empty*/}
 
+/* domain sizes */
+
+int xdomain(const Coords c) {
+    return XS * c.xd;
+}
+
+int ydomain(const Coords c) {
+    return YS * c.yd;
+}
+
+int zdomain(const Coords c) {
+    return ZS * c.zd;
+}
+
+
 /* [l]ocal to [c]enter */
 
 float xl2xc(const Coords c, float xl) {
