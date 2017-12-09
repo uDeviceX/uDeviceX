@@ -143,6 +143,23 @@ static void ini_wall(Wall *w) {
     ini(&w->sdf);
     wall::alloc_quants(&w->q);
     wall::alloc_ticket(&w->t);
+    Wvel *vw = &w->vel;
+
+#if   defined(WVEL_SIN)
+    WvelShearSin p;
+    p.log_freq = WVEL_LOG_FREQ;
+    p.w = WVEL_PAR_W;
+#else
+    WvelShear p;    
+#endif
+    p.gdot = WVEL_PAR_A;
+    p.vdir = 0;
+#if   defWVEL_PAR_Y
+    p.gdir = 1;
+#elif WVEL_PAR_Z
+    p.gdir = 2;
+#endif
+    ini(p, vw);
 }
 
 static void ini_objinter(MPI_Comm cart, /**/ ObjInter *o) {
