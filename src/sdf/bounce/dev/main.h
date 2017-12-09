@@ -39,8 +39,7 @@ static __device__ void rescue(Wvel_d wv, Coords c, const tex3Dca texsdf, float c
         
     for (l = MAX_RESCUE; l >= 1; --l) {
         if (sdf(texsdf, r->x, r->y, r->z) < 0) {
-            k_wvel::bounce_vel(r->x, r->y, r->z, &v->x, &v->y, &v->z);
-            // bounce_vel(wv, c, *r, /**/ v);
+            bounce_vel(wv, c, *r, /**/ v);
             return;
         }
         jump = 1.1f * sdf0 / (1 << l);
@@ -77,8 +76,7 @@ static __device__ void bounce_back_1p(Wvel_d wv, Coords c, const tex3Dca texsdf,
 
     rw = *r;
     axpy(t, v, /**/ &rw);
-    k_wvel::bounce_vel(rw.x, rw.y, rw.z, &v->x, &v->y, &v->z);
-    // bounce_vel(wv, c, rw, /**/ v);
+    bounce_vel(wv, c, rw, /**/ v);
 
     *r = rw;
     axpy(-t, v, /**/ r);
