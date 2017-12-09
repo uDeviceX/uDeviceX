@@ -1,4 +1,4 @@
 struct Coords {
-    int c[3]; /* rank coordinates */
+    int xc, yc, zc; /* rank coordinates */
     int d[3]; /* rank sizes       */
 };
