@@ -1,5 +1,5 @@
 // TODO: use coords (this is one node for now)
-__global__ void main(Coords, float mass, float f0, int n, const Particle *pp, /**/ Force *ff) {
+__global__ void main(Coords c, float mass, float f0, int n, const Particle *pp, /**/ Force *ff) {
     enum {X, Y};
     int pid;
     float fx, fy, *f;
@@ -13,10 +13,14 @@ __global__ void main(Coords, float mass, float f0, int n, const Particle *pp, /*
     r = pp[pid].r;
     f = ff[pid].f;
 
-    lx = XS; ly = YS;
-    x = r[X] + 0.5*XS; y = r[Y] + 0.5*YS;
-    x /=   lx; y /=   ly;
-    x *= 2*PI; y *= 2*PI;
+    lx = xdomain(c);
+    ly = ydomain(c);
+
+    x = xl2xg(c, r[X]);
+    y = yl2yg(c, r[Y]);
+
+    x *= 2*PI / lx;
+    y *= 2*PI / ly;
 
     fx =  2*sin(x)*cos(y);
     fy = -2*cos(x)*sin(y);
