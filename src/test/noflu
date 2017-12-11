@@ -4,11 +4,11 @@ S=`pwd` C="$S/conf/poiseuille.h"
 :
 cp data/sdf/cyl1/cyl.dat sdf.dat
 :
-u.conf $C <<!!!
+u.conf $C <<!
    numberdensity=0 dt=5e-4 tend=0.4  walls wall_creation=100
    field_dumps part_dumps part_freq=500 field_freq=500 FORCE_CONSTANT
    run
-!!!
+!
 :
 (make clean && u.make -j) > .make.log
 sh runfile
