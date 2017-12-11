@@ -111,8 +111,8 @@
 
 // dpd
 
-#ifndef dpd_mass
-#define dpd_mass 1.0
+#ifndef flu_mass
+#define flu_mass 1.0
 #endif
 
 
@@ -123,7 +123,7 @@
 #endif
 
 #ifndef solid_mass
-#define solid_mass dpd_mass
+#define solid_mass flu_mass
 #endif
 
 #ifndef pin_com
@@ -185,7 +185,7 @@
 #endif
 
 #ifndef rbc_mass
-#define rbc_mass dpd_mass
+#define rbc_mass flu_mass
 #endif
 
 #ifndef RBCnv

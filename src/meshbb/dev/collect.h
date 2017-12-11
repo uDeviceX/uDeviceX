@@ -31,7 +31,7 @@ __global__ void collect_rig_mom(int ns, int nt, int nv, const int4 *tt, const Pa
         m.L[Y] += dr.z * m.P[X] - dr.x * m.P[Z];
         m.L[Z] += dr.x * m.P[Y] - dr.y * m.P[X];
 
-        const float fac = dpd_mass / dt;
+        const float fac = flu_mass / dt;
         
         atomicAdd(ss[sid].fo + X, fac * m.P[X]);
         atomicAdd(ss[sid].fo + Y, fac * m.P[Y]);

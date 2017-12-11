@@ -84,7 +84,7 @@ void bounce_solid(long it, BounceBack *bb, Rig *s) {
 
 
 void update_solvent(long it, /**/ Flu *f) {
-    scheme::move::main(dpd_mass, f->q.n, f->ff, f->q.pp);
+    scheme::move::main(flu_mass, f->q.n, f->ff, f->q.pp);
 }
 
 void update_rbc(long it, Rbc *r) {
