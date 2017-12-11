@@ -16,29 +16,36 @@ ic  () {
     > rbcs-ic.txt
 }
 :
+nv=2562
 inf=999999999
-XS=12 YS=12 ZS=8
-cp $S/data/cells/rbc/498.off rbc.off
-cp $S/data/sdf/yplates1/yplates.dat sdf.dat
-ic
+XS=16 YS=16 ZS=16
+c=$S/data/cells/rbc/$nv.off
+volume=`volume $c` area=`area $c`
+cp $c                                 rbc.off
+cp "$S/data/sdf/yplates1/yplates.dat" sdf.dat
 :
-make0 > .make
-u.strtdir
 u.conf "$C" <<!
+   MESH_SHIFT_CENTER
    rbcs rbc_ids rbc_com_dumps
+   RBCtotArea=$area RBCtotVolume=$volume RBCnv=$nv
    walls wall_creation=1000
-   strt_dumps strt_freq=$inf part_dumps=$inf
+   strt_dumps strt_freq=$inf part_dumps
    rbcs dt=1e-4 tend=0.11
    run
 !
 :
+make0 > .make
+ic
+u.strtdir
 sh runfile
 u.conf "$C" <<!
-   rbcs rbc_ids rbc_com_dumps
+   MESH_SHIFT_CENTER
+   rbcs rbc_ids rbc_com_dumps RBCnv=$nv
+   RBCtotArea=$area RBCtotVolume=$volume RBCnv=$nv
    pushrbc pushflu=false
    walls wall_creation=0
    RESTART=true
-   FORCE_CONSTANT FORCE_PAR_A=1e1
+   FORCE_CONSTANT FORCE_PAR_A=20
    tend=5 part_dumps part_freq=3000
    run
 !
