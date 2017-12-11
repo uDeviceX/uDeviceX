@@ -28,7 +28,7 @@ u.conf "$C" <<!
    rbcs rbc_ids rbc_com_dumps
    walls wall_creation=1000
    strt_dumps strt_freq=$inf part_dumps=$inf
-   rbcs dt=1e-4 tend=0.11 
+   rbcs dt=1e-4 tend=0.11
    run
 !
 :
@@ -37,9 +37,9 @@ u.conf "$C" <<!
    rbcs rbc_ids rbc_com_dumps
    pushrbc pushflu=false
    walls wall_creation=0
-   RESTART=true 
-   FORCE_CONSTANT FORCE_PAR_A=1e3
-   tend=0.5 part_dumps part_freq=300 
+   RESTART=true
+   FORCE_CONSTANT FORCE_PAR_A=1e1
+   tend=5 part_dumps part_freq=3000
    run
 !
 make0 > .make
