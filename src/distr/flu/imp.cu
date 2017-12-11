@@ -6,6 +6,8 @@
 
 #include "msg.h"
 
+#include "glob/type.h"
+
 #include "utils/halloc.h"
 #include "utils/cc.h"
 #include "utils/kl.h"
