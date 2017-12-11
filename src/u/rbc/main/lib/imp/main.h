@@ -32,10 +32,10 @@ static void dump(Coords coords, rbc::Quants q, rbc::force::TicketT t) {
     free(pp);
 }
 
-static int body_force(rbc::Quants q, Force *f) {
+static int body_force(Coords coords, rbc::Quants q, Force *f) {
     scheme::force::Param fpar;
     fpar.a = FORCE_PAR_A;
-    //scheme::force::main(rbc_mass, fpar, q.n, q.pp, /**/ f);
+    scheme::force::main(coords, rbc_mass, fpar, q.n, q.pp, /**/ f);
     return 0;
 }
 
@@ -47,7 +47,7 @@ static void run0(Coords coords, rbc::Quants q, rbc::force::TicketT t, rbc::stret
         Dzero(f, q.n);
         rbc::force::apply(q, t, /**/ f);
         stretch::apply(q.nc, stretch, /**/ f);
-        if (pushrbc) body_force(q, /**/ f);
+        if (pushrbc) body_force(coords, q, /**/ f);
         scheme::move::main(rbc_mass, q.n, f, q.pp);
         if (i % part_freq  == 0) dump(coords, q, t);
 #ifdef RBC_CLEAR_VEL
