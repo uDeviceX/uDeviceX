@@ -1,6 +1,5 @@
 namespace m { /* mini MPI */
 extern int rank, size, coords[], dims[];
-int lx(); int ly(); int lz(); /* domain size */
 
 /* local to relative to domain edge ([g]lobal) */
 float x2g(float); float y2g(float); float z2g(float);
