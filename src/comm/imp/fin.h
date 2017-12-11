@@ -5,18 +5,23 @@ static void free_counts(int **hc) {
 static void free_pair(int i, AllocMod mod, /**/ hBags *hb, dBags *db) {
     switch (mod) {
     case HST_ONLY:
-        free(hb->data[i]);
+        if (hb->data[i])
+            free(hb->data[i]);
         break;
     case DEV_ONLY:
-        CC(d::Free(db->data[i]));
+        if (db->data[i])
+            CC(d::Free(db->data[i]));
         break;
     case PINNED_HST:
     case PINNED:
-        CC(d::FreeHost(hb->data[i]));
+        if (hb->data[i])
+            CC(d::FreeHost(hb->data[i]));
         break;
     case PINNED_DEV:
-        CC(d::FreeHost(hb->data[i]));
-        CC(d::Free(db->data[i]));
+        if (hb->data[i])
+            CC(d::FreeHost(hb->data[i]));
+        if (db->data[i])
+            CC(d::Free(db->data[i]));
         break;
     case NONE:
     default:

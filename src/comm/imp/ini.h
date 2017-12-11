@@ -7,25 +7,35 @@ static void alloc_counts(int n, /**/ int **hc) {
 /* generic allocation */
 static void alloc_pair(int i, AllocMod mod, /**/ hBags *hb, dBags *db) {
     size_t n = hb->capacity[i] * hb->bsize;
-    if (n == 0) return;
     
     switch (mod) {
     case HST_ONLY:
-        UC(emalloc(n, (void**) &hb->data[i]));
+        if (n) UC(emalloc(n, (void**) &hb->data[i]));
+        else   hb->data[i] = NULL;
         break;
     case DEV_ONLY:
-        CC(d::Malloc((void**) &db->data[i], n));
+        if (n) CC(d::Malloc((void**) &db->data[i], n));
+        else db->data[i] = NULL;
         break;
     case PINNED:
-        CC(d::alloc_pinned(&hb->data[i], n));
-        CC(d::HostGetDevicePointer(&db->data[i], hb->data[i], 0));
+        if (n) {
+            CC(d::alloc_pinned(&hb->data[i], n));
+            CC(d::HostGetDevicePointer(&db->data[i], hb->data[i], 0));
+        } else {
+            hb->data[i] = db->data[i] = NULL;
+        }
         break;
     case PINNED_HST:
-        CC(d::alloc_pinned(&hb->data[i], n));
+        if (n) CC(d::alloc_pinned(&hb->data[i], n));
+        else hb->data[i] = NULL;
         break;
     case PINNED_DEV:
-        CC(d::alloc_pinned(&hb->data[i], n));
-        CC(d::Malloc((void **) &db->data[i], n));
+        if (n) {
+            CC(d::alloc_pinned(&hb->data[i], n));
+            CC(d::Malloc((void **) &db->data[i], n));
+        } else {
+            hb->data[i] = db->data[i] = NULL;
+        }
         break;
     case NONE:
     default:
