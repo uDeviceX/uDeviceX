@@ -9,6 +9,7 @@
 #include "mpi/wrapper.h"
 
 #include "type.h"
+#include "ini.h"
 #include "imp.h"
 #include "imp/main.h"
 

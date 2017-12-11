@@ -152,7 +152,7 @@ void fin() {
     
     if (rbcs) fin_rbc(/**/ &rbc);
 
-    UC(fin(/**/ &coords));
+    UC(fin_coords(/**/ &coords));
     
     datatype::fin();
 }
