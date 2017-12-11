@@ -1,6 +1,6 @@
-static void check_size(long n, long max) {
-    if (n < 0 || n >= max)
-        ERR("wrong size: %ld / %ld", n, max);
+static void check_size(long n, long nmax) {
+    if (n < 0 || n > nmax)
+        ERR("wrong size: %ld / %ld", n, nmax);
 }
 
 static void check_sizes() {

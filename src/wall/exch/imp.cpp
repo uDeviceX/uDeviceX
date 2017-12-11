@@ -71,7 +71,7 @@ static void communicate(const hBags *s, Stamp *c, hBags *r) {
 static void check_counts(int maxn, int n0, const hBags *b) {
     int i, c = n0;
     for (i = 0; i < NFRAGS; ++i) c += b->counts[i];
-    if (c >= maxn)
+    if (c > maxn)
         ERR("Too many particles for wall : %d / %d\n", c, maxn);
 }
 

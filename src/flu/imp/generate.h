@@ -1,5 +1,5 @@
 static void assert_np(int n, int m) {
-    if (n >= m) ERR("too many particles: n = %d < m = %d", n, m);
+    if (n > m) ERR("too many particles: n = %d < m = %d", n, m);
 }
 
 static int gen0(Particle *pp) { /* generate particle positions and velocities */
