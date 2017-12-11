@@ -7,6 +7,7 @@ static void alloc_counts(int n, /**/ int **hc) {
 /* generic allocation */
 static void alloc_pair(int i, AllocMod mod, /**/ hBags *hb, dBags *db) {
     size_t n = hb->capacity[i] * hb->bsize;
+    if (n == 0) return;
     
     switch (mod) {
     case HST_ONLY:
