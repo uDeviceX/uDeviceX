@@ -1,27 +1,45 @@
 #### RBC "pressed" to a plate
 # sTEST: rbc.press
-set -eux
+set -eu
 S=`pwd` C="$S/conf/poiseuille.h"
 :
-ae  () { awk "BEGIN {print $*}"; }
+ae  ()   { awk "BEGIN {print $*}"; }
+make0 () { make clean && u.make -j; }
+ic  () {
+    local x y z cs si
+    x=`ae $XS/2` y=`ae $YS/2` z=`ae $ZS/2`
+    cs=0 si=1
+    echo 1   0    0  $x \
+	 0 $cs -$si  $y \
+	 0 $si  $cs  $z \
+	 0   0   0   1  \
+    > rbcs-ic.txt
+}
 :
+inf=999999999
 XS=12 YS=12 ZS=8
 cp $S/data/cells/rbc/498.off rbc.off
-(cd ../cmd; make ) > .make.log
 cp $S/data/sdf/yplates1/yplates.dat sdf.dat
-x=`ae $XS/2` y=`ae $YS/2` z=`ae $ZS/2`
-cs=0 si=1
-echo 1   0    0  $x \
-     0 $cs -$si  $y \
-     0 $si  $cs  $z \
-     0   0   0   1  \
-     > rbcs-ic.txt
+ic
 :
-u.conf "$C" <<!!!
-   numberdensity=0 rbcs tend=0.5 part_freq=300  walls  wall_creation=100
+make0 > .make
+u.strtdir
+u.conf "$C" <<!
+   rbcs
+   walls wall_creation=1000
+   strt_dumps strt_freq=$inf
+   rbcs dt=1e-4 tend=0.11 
+   run
+!
+:
+sh runfile
+u.conf "$C" <<!
+   rbcs
+   RESTART=true walls wall_creation=0
+   rbcs tend=0.5 part_freq=300
    part_dumps
    run
-!!!
-{ make clean && u.make -j ; } > .make.log
+!
+make0 > .make
 sh runfile
 ply2punto r/00003.ply | uscale 100 > ply.out.txt
