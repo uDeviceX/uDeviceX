@@ -1,10 +1,23 @@
+static void gen(const char *cell, const char *ic, int nv, /**/ int *pnc, Particle *dev) {
+    int nc, sz;
+    Particle *hst;
+    sz = sizeof(Particle)*MAX_CELL_NUM*nv;
+    UC(emalloc(sz, (void**)hst));
+
+    nc = rbc::gen::main(cell, ic, nv, /**/ hst);
+    if (nc) cH2D(dev, hst, nc*nv);
+
+    UC(efree(hst));
+    *pnc = nc;
+}
+
 static void setup_from_pos(MPI_Comm comm, const char *cell, const char *ic, int nv, /**/
-                           Particle *pp, int *nc, int *n, /* storage */ Particle *pp_hst) {
-    /* fills `pp' with RBCs for this processor */
-    *nc = rbc::gen::main(cell, ic, nv, pp_hst);
-    if (*nc) cH2D(pp, pp_hst, nv * *nc);
+                           Particle *pp, int *pnc, int *pn, /* storage */ Particle *pp_hst) {
+    int nc;
+    nc = rbc::gen::main(cell, ic, nv, pp_hst);
+    if (nc) cH2D(pp, pp_hst, nv * nc);
     MC(m::Barrier(comm));
-    *n = *nc * nv;
+    *pnc = nc; *pn = nc * nv;
 }
 
 static void gen_ids(MPI_Comm comm, long nc, /**/ int *ii) {

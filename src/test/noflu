@@ -1,15 +1,15 @@
 #### no fluid
-# cTEST: noflu
+# TEST: noflu
 S=`pwd` C="$S/conf/poiseuille.h"
 :
 cp data/sdf/cyl1/cyl.dat sdf.dat
 :
-u.conf $C <<!!!
+u.conf $C <<!
    numberdensity=0 dt=5e-4 tend=0.4  walls wall_creation=100
    field_dumps part_dumps part_freq=500 field_freq=500 FORCE_CONSTANT
    run
-!!!
+!
 :
-(make clean && u.make -j) > /dev/null
+(make clean && u.make -j) > .make.log
 sh runfile
-u.avgh5 1 u 1 h5/flowfields-0001.h5 > h5.out.txt
+cp bop/solvent-00001.bop bop.out.txt

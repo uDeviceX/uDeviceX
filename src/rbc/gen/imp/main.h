@@ -77,6 +77,6 @@ int main(const char *cell, const char *ic, int nv, /**/ Particle *pp) {
     UC(vert(cell, nv, /**/ rr0));
     nc = main0(rr0, ic, nv, pp);
 
-    free(rr0);
+    UC(efree(rr0));
     return nc;
 }
