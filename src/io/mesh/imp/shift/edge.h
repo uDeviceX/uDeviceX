@@ -1,6 +1,6 @@
-static void shift0(const Particle *f, /**/ Particle *t) {
+static void shift0(Coords c, const Particle *f, /**/ Particle *t) {
     enum {X, Y, Z};
-    t->r[X] = m::x2g(f->r[X]);
-    t->r[Y] = m::y2g(f->r[Y]);
-    t->r[Z] = m::z2g(f->r[Z]);
+    t->r[X] = xl2xg(c, f->r[X]);
+    t->r[Y] = yl2yg(c, f->r[Y]);
+    t->r[Z] = zl2zg(c, f->r[Z]);    
 }
