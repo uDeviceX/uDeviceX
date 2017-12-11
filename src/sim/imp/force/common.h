@@ -1,5 +1,6 @@
 void body_force(FParam fpar) {
-    body_force(coords, flu_mass, fpar,  flu.q.n, flu.q.pp, /**/ flu.ff);
+    if (pushflu)
+        body_force(coords, flu_mass, fpar,  flu.q.n, flu.q.pp, /**/ flu.ff);
     if (pushsolid && solids0)
         body_force(coords, solid_mass, fpar, rig.q.n, rig.q.pp, /**/ rig.ff);
     if (pushrbc && rbcs)

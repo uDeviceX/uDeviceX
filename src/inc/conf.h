@@ -154,8 +154,8 @@
 #define rescue_freq (100)
 #endif
 
-#ifndef pushflow
-#define pushflow (false)
+#ifndef pushflu
+#define pushflu (true)
 #endif
 
 #ifndef pushsolid
