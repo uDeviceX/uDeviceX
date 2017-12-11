@@ -5,6 +5,7 @@
 #include "inc/conf.h"
 
 #include "utils/error.h"
+#include "utils/os.h"
 
 #include "d/api.h"
 #include "d/ker.h"

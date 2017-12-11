@@ -36,6 +36,7 @@ sh runfile
 u.conf "$C" <<!
    rbcs
    RESTART=true walls wall_creation=0
+   FORCE_CONSTANT FORCE_PAR_A=100
    rbcs tend=0.5 part_freq=300
    part_dumps
    run

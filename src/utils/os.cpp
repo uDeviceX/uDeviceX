@@ -51,7 +51,7 @@ void env2float(const char *key, float *px) {
     } else {
         ERR("unknown status");
     }
-    MSG("env %s = %g\n", key, *px);
+    MSG("env %s = %g", key, *px);
 }
 
 void env2float_d(const char *key, float def, /**/ float *px) { /* with default */
@@ -67,7 +67,7 @@ void env2float_d(const char *key, float def, /**/ float *px) { /* with default *
     } else {
         ERR("unknown status");
     }
-    MSG("env %s = %g\n", key, *px);    
+    MSG("env %s = %g", key, *px);    
 }
 
 

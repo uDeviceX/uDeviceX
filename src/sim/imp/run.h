@@ -16,7 +16,11 @@ void run(long ts, long te) {
     ini_none(/**/ &fpar);
 #elif defined(FORCE_CONSTANT)
     FParam_cste_d par;
-    par.a = make_float3(FORCE_PAR_A, 0, 0);
+    float ex, ey, ez;
+    os::env2float_d("FORCE_PAR_EX", 1, &ex);
+    os::env2float_d("FORCE_PAR_EY", 0, &ey);
+    os::env2float_d("FORCE_PAR_EZ", 0, &ez);
+    par.a = make_float3(FORCE_PAR_A*ex, FORCE_PAR_A*ey, FORCE_PAR_A*ez);
     ini(par, /**/ &fpar);
 #elif defined(FORCE_DOUBLE_POISEUILLE)
     FParam_dp_d par;
