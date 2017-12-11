@@ -38,6 +38,7 @@
 #include "io/com.h"
 
 #include "glob/type.h"
+#include "glob/ini.h"
 #include "glob/imp.h"
 #include "wvel/type.h"
 #include "wvel/imp.h"

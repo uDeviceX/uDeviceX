@@ -1,6 +1,3 @@
-void ini(MPI_Comm cart, Coords *c);
-void fin(Coords *c);
-
 /* domain sizes */
 
 int xdomain(const Coords c);

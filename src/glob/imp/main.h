@@ -1,6 +1,6 @@
 enum {X, Y, Z, D};
     
-void ini(MPI_Comm cart, Coords *c) {
+void ini_coords(MPI_Comm cart, Coords *c) {
     int dims[D], periods[D], coords[D];
     MC(m::Cart_get(cart, D, dims, periods, coords));
 
@@ -13,7 +13,7 @@ void ini(MPI_Comm cart, Coords *c) {
     c->zd = dims[Z];
 }
 
-void fin(Coords *) {/*empty*/}
+void fin_coords(Coords *) {/*empty*/}
 
 /* domain sizes */
 

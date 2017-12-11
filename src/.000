@@ -1,0 +1,9 @@
+mpi size: 1
+comm/imp/ini.h: 20: cuda error: invalid argument
+backtrace:
+: sim/imp/ini.h: 194:
+: sim/imp/ini.h: 110:
+: sim/imp/ini.h: 40:
+: distr/flu/imp/ini.h: 20:
+: comm/imp/ini.h: 41:
+
