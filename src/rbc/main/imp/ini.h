@@ -1,7 +1,7 @@
 static void ini_common(Quants *q) {
     q->n = q->nc = 0;
-    Dalloc(&q->pp, MAX_PART_NUM);
-    UC(emalloc(MAX_PART_NUM * sizeof(Particle), (void**) &q->pp_hst));
+    Dalloc(&q->pp, MAX_CELL_NUM * RBCnv);
+    UC(emalloc(MAX_CELL_NUM * RBCnv * sizeof(Particle), (void**) &q->pp_hst));
 
     q->nt = RBCnt;
     q->nv = RBCnv;
