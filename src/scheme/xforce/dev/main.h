@@ -1,8 +1,8 @@
-__device__ float3 get_gp(Coords, FParam_cste_d par, Particle) {
-    return par.a.x;
+static __device__ float3 get_gp(Coords, FParam_cste_d par, Particle) {
+    return par.a;
 }
 
-__device__ float3 get_gp(Coords c, FParam_dp_d par, Particle p) {
+static __device__ float3 get_gp(Coords c, FParam_dp_d par, Particle p) {
     enum {X, Y, Z};
     float d, f;
     d = yl2yc(c, p.r[Y]);
@@ -10,7 +10,7 @@ __device__ float3 get_gp(Coords c, FParam_dp_d par, Particle p) {
     return make_float3(f, 0, 0);
 }
 
-__device__ float3 get_gp(Coords c, FParam_shear_d par, Particle p) {
+static __device__ float3 get_gp(Coords c, FParam_shear_d par, Particle p) {
     enum {X, Y, Z};
     float d, f;
     d = yl2yc(c, p.r[Y]);
@@ -18,7 +18,7 @@ __device__ float3 get_gp(Coords c, FParam_shear_d par, Particle p) {
     return make_float3(f, 0, 0);
 }
 
-__device__ float3 get_gp(Coords c, FParam_rol_d par, Particle p) {
+static __device__ float3 get_gp(Coords c, FParam_rol_d par, Particle p) {
     enum {X, Y, Z};
     float x, y, lx, ly;
     float3 f;
@@ -42,12 +42,12 @@ __device__ float3 get_gp(Coords c, FParam_rol_d par, Particle p) {
 template <typename P>
 __global__ void force(Coords c, P par, float mass, int n, const Particle *pp, /**/ Force *ff) {
     enum {X, Y, Z};
-    int pid;
+    int i;
     Particle p;
     float3 gp; // pressure gradient
     float *f; // force
-    pid = threadIdx.x + blockDim.x * blockIdx.x;
-    if (pid >= n) return;
+    i = threadIdx.x + blockDim.x * blockIdx.x;
+    if (i >= n) return;
 
     p = pp[i];
     f = ff[i].f;

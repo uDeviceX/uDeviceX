@@ -31,4 +31,5 @@ union FParam_d {
 
 struct FParam {
     FParam_d dev;
+    int type;
 };
