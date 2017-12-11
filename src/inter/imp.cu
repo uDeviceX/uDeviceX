@@ -32,6 +32,7 @@
 #include "clist/imp.h"
 
 #include "glob/type.h"
+#include "glob/imp.h"
 #include "wvel/type.h"
 
 #include "sdf/imp.h"
