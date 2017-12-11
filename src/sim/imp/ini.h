@@ -115,7 +115,7 @@ static void ini_flu(MPI_Comm cart, /**/ Flu *f) {
 }
 
 static void ini_rbc(MPI_Comm cart, /**/ Rbc *r) {
-    Dalloc(&r->ff, MAX_PART_NUM);
+    Dalloc(&r->ff, MAX_CELL_NUM * RBCnv);
     UC(rbc::main::ini(&r->q));
 
     UC(ini_rbc_distr(r->q.nv, cart, /**/ &r->d));
