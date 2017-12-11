@@ -5,7 +5,7 @@ static void check_size(long n, long nmax) {
 
 static void check_sizes() {
     UC(check_size(rbc.q.nc, MAX_CELL_NUM));
-    UC(check_size(rbc.q.n , MAX_PART_NUM));
+    UC(check_size(rbc.q.n , MAX_CELL_NUM * RBCnv));
     UC(check_size(flu.q.n , MAX_PART_NUM)); 
 }
 

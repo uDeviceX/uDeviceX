@@ -20,7 +20,7 @@ static void create(MPI_Comm cart, const char *const path, /**/ IDs *ids) {
     if (plist < 0) ERR("fail to create plist for <%s>", path);
 
     rc = H5Pset_fapl_mpio(plist, cart, MPI_INFO_NULL);
-    if (rc < 0) ERR("file to store MPI information for <%s>", path);
+    if (rc < 0) ERR("fail to store MPI information for <%s>", path);
 
     file = H5Fcreate(path, H5F_ACC_TRUNC, H5P_DEFAULT, plist);
     if (file < 0) ERR("fail to create file <%s>", path);
