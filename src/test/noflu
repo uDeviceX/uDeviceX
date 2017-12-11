@@ -1,5 +1,5 @@
 #### no fluid
-# nTEST: flow.t4
+# nTEST: noflu
 S=`pwd` C="$S/conf/poiseuille.h"
 :
 cp data/sdf/cyl1/cyl.dat sdf.dat
