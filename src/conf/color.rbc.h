@@ -21,7 +21,7 @@
 #define gdpd_b           8.0
 #define gdpd_r            12.0
 #define gdpd_br           8.0
-#define dpd_mass                1.0
+#define flu_mass                1.0
 #define rbc_mass                1.0
 #define solid_mass              1.0
 

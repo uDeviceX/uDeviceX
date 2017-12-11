@@ -9,7 +9,7 @@
 #define numberdensity       4
 #define kBT                 4.44302e-8
 #define dt                  5e-4
-#define dpd_mass         1.0        /* solvent particle mass */
+#define flu_mass         1.0        /* solvent particle mass */
 #define rbc_mass         0.5        /* RBC particle mass     */
 #define solid_mass       0.5        /* solid particle mass   */
 
