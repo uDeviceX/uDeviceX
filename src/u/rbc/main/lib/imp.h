@@ -1,1 +1,1 @@
-void run(const char *cell, const char *ic);
+void run(Coords coords, const char *cell, const char *ic);
