@@ -28,19 +28,6 @@ float z2g(float r) {
     return (m::coords[Z] + 0.5)*ZS  + r;
 }
 
-float x2c(float r) { /* local to domain center */
-    enum {X};
-    return (m::coords[X] + 0.5 - 0.5*dims[X])*XS  + r;
-}
-float y2c(float r) {
-    enum {X, Y};
-    return (m::coords[Y] + 0.5 - 0.5*dims[Y])*YS  + r;
-}
-float z2c(float r) {
-    enum {X, Y, Z};
-    return (m::coords[Z] + 0.5 - 0.5*dims[Z])*ZS  + r;
-}
-
 static void set_dims(int argc, char **argv) {
     int i;
     dims[0] = dims[1] = dims[2] = 1;
