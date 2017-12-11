@@ -13,6 +13,8 @@
 #include "inc/dev.h"
 #include "inc/type.h"
 
+#include "glob/type.h"
+
 #include "d/api.h"
 #include "mpi/wrapper.h"
 

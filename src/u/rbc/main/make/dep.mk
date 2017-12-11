@@ -1,5 +1,5 @@
 $B/d/api.o: $B/conf.h $S/d/api.h $S/d/common.h $S/d/cpu/imp.h $S/d/cuda/imp.h $S/inc/conf.h $S/utils/error.h $S/utils/halloc.h
-$B/glob/imp.o: $B/conf.h $S/glob/imp.h $S/glob/imp/main.h $S/glob/type.h $S/inc/conf.h $S/mpi/wrapper.h $S/utils/error.h $S/utils/mc.h
+$B/glob/imp.o: $B/conf.h $S/glob/imp.h $S/glob/imp/main.h $S/glob/ini.h $S/glob/type.h $S/inc/conf.h $S/mpi/wrapper.h $S/utils/error.h $S/utils/mc.h
 $B/io/bop/imp.o: $B/conf.h $S/d/api.h $S/inc/conf.h $S/inc/def.h $S/inc/type.h $S/io/bop/imp.h $S/mpi/glb.h $S/mpi/type.h $S/mpi/wrapper.h $S/utils/efopen.h $S/utils/error.h $S/utils/mc.h $S/utils/os.h
 $B/io/com.o: $B/conf.h $S/inc/conf.h $S/mpi/glb.h $S/mpi/wrapper.h $S/utils/error.h $S/utils/halloc.h $S/utils/mc.h $S/utils/os.h
 $B/io/diag.o: $B/conf.h $S/inc/conf.h $S/inc/type.h $S/io/diag.h $S/mpi/glb.h $S/mpi/wrapper.h $S/msg.h $S/utils/efopen.h $S/utils/error.h
@@ -12,7 +12,7 @@ $B/io/mesh/write/imp.o: $B/conf.h $S/inc/conf.h $S/io/mesh/write/imp.h $S/io/mes
 $B/io/off.o: $S/io/off.h $S/io/off/imp.h $S/utils/efopen.h $S/utils/error.h
 $B/io/ply.o: $S/inc/def.h $S/inc/type.h $S/io/ply.h $S/io/ply/ascii.h $S/io/ply/bin.h $S/io/ply/common.h $S/msg.h $S/utils/efopen.h $S/utils/error.h
 $B/io/restart.o: $B/conf.h $S/inc/conf.h $S/inc/def.h $S/inc/type.h $S/io/restart.h $S/mpi/glb.h $S/msg.h $S/utils/efopen.h $S/utils/error.h
-$B/io/rig.o: $B/conf.h $S/inc/conf.h $S/inc/type.h $S/utils/efopen.h $S/utils/error.h
+$B/io/rig.o: $B/conf.h $S/glob/imp.h $S/glob/type.h $S/inc/conf.h $S/inc/type.h $S/utils/efopen.h $S/utils/error.h
 $B/math/linal.o: $S/math/linal.h
 $B/mpi/glb.o: $B/conf.h $S/inc/conf.h $S/mpi/glb.h $S/mpi/wrapper.h $S/utils/mc.h
 $B/mpi/type.o: $S/inc/conf.h $S/inc/type.h $S/mpi/type.h $S/utils/mc.h

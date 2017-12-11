@@ -1,10 +1,13 @@
 #include <stdio.h>
+#include <vector_types.h>
 #include "inc/type.h"
 
 #include <conf.h>
 #include "inc/conf.h"
 #include "utils/error.h"
 #include "utils/efopen.h"
+#include "glob/type.h"
+#include "glob/imp.h"
 
 enum {X, Y, Z};
 
@@ -12,27 +15,29 @@ static void write_v(FILE *f, const float v[3]) {
     fprintf(f, "%+.6e %+.6e %+.6e ", v[X], v[Y], v[Z]);
 }
 
-void rig_dump(const int it, const Solid *ss, const Solid *ssbb, int ns, const int *mcoords) {
+void rig_dump(const int it, const Solid *ss, const Solid *ssbb, int ns, const Coords coords) {
+    enum {X, Y, Z};
     static bool first = true;
     char fname[256];
+    float com[3];
+    FILE *fp;
+    int j;
+    const Solid *s, *sbb;
 
-    for (int j = 0; j < ns; ++j) {
-        const Solid *s   = ss   + j;
-        const Solid *sbb = ssbb + j;
+    for (j = 0; j < ns; ++j) {
+        s   = ss   + j;
+        sbb = ssbb + j;
             
         sprintf(fname, DUMP_BASE "/solid_diag_%04d.txt", (int) s->id);
-        FILE *fp;
         if (first) UC(efopen(fname, "w", /**/ &fp));
         else       UC(efopen(fname, "a", /**/ &fp));
 
         fprintf(fp, "%+.6e ", dt*it);
 
-        // make global coordinates
-        float com[3] = {0};
-        const int L[3] = {XS, YS, ZS};
-        int mi[3];
-        for (int c = 0; c < 3; ++c) mi[c] = (mcoords[c] + 0.5) * L[c];
-        for (int c = 0; c < 3; ++c) com[c] = s->com[c] + mi[c];
+        // shift to global coordinates
+        com[X] = xl2xg(coords, s->com[X]);
+        com[Y] = yl2yg(coords, s->com[Y]);
+        com[Z] = zl2zg(coords, s->com[Z]);
             
         write_v(fp, com);
         write_v(fp, s->v );

@@ -54,12 +54,12 @@ void freeze(MPI_Comm cart, Sdf *sdf, flu::Quants *qflu, rig::Quants *qrig, rbc::
     if (solids)           rig::set_ids(cart, *qrig);
 }
 
-void color_hst(Particle *pp, int n, /**/ int *cc) {
-    color(pp, n, /**/ cc);
+void color_hst(Coords coords, Particle *pp, int n, /**/ int *cc) {
+    color(coords, pp, n, /**/ cc);
 }
 
-void color_dev(Particle *pp, int n, /*o*/ int *cc, /*w*/ Particle *pp_hst, int *cc_hst) {
+void color_dev(Coords coords, Particle *pp, int n, /*o*/ int *cc, /*w*/ Particle *pp_hst, int *cc_hst) {
     cD2H(pp_hst, pp, n);
-    color(pp_hst, n, /**/ cc_hst);
+    color(coords, pp_hst, n, /**/ cc_hst);
     cH2D(cc, cc_hst, n);
 }

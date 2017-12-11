@@ -1,1 +1,1 @@
-void rig_dump(const int it, const Solid *ss, const Solid *ssbb, int ns, const int *mcoords);
+void rig_dump(const int it, const Solid *ss, const Solid *ssbb, int ns, const Coords coords);

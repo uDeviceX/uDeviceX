@@ -26,12 +26,12 @@ void gen(Wall *w) { /* generate */
         int *cc = flu.q.cc;
         Particle *pp_hst = a::pp_hst;
         int *cc_hst = flu.q.cc_hst;
-        inter::color_dev(pp, n, /*o*/ cc, /*w*/ pp_hst, cc_hst);
+        inter::color_dev(coords, pp, n, /*o*/ cc, /*w*/ pp_hst, cc_hst);
     }
 }
 
 void sim_gen() {
-    flu::gen_quants(&flu.q);
+    flu::gen_quants(coords, &flu.q);
     flu::build_cells(&flu.q);
     if (global_ids)    flu::gen_ids  (m::cart, flu.q.n, &flu.q);
     if (rbcs) {

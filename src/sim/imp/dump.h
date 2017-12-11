@@ -62,7 +62,7 @@ static void dump_grid() {
 void dump_diag_after(int it, bool wall0, bool solid0) { /* after wall */
     if (solid0 && it % part_freq == 0) {
         static int id = 0;
-        rig_dump(it, rig.q.ss_dmp, rig.q.ss_dmp_bb, rig.q.ns, m::coords);
+        rig_dump(it, rig.q.ss_dmp, rig.q.ss_dmp_bb, rig.q.ns, coords);
 
         cD2H(a::pp_hst, rig.q.i_pp, rig.q.ns * rig.q.nv);
         io::mesh::rig(m::cart, a::pp_hst, rig.q.htt, rig.q.ns, rig.q.nv, rig.q.nt, id++);
