@@ -44,7 +44,9 @@ static void color(Coords coords, Particle *pp, int n, /**/ int *cc) {
     for (i = w = b = r = 0; i < n; i++) {
         p = pp[i];
         x = p.r[X]; y = p.r[Y]; z = p.r[Z];
-        x = m::x2g(x); y = m::y2g(y); z = m::z2g(z);
+        x = xl2xg(coords, x);
+        y = yl2yg(coords, y);
+        z = zl2zg(coords, z);
         if      (blue(coords, x, y, z)) {cc[i] = B; b++;}
         else if (red (coords, x, y, z)) {cc[i] = R; r++;}
         else                            {cc[i] = W; w++;}
