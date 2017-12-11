@@ -15,19 +15,6 @@ static int periods[d] = {true, true, true};
 static const bool reorder = false;
 int rank, size, coords[d], dims[d];
 
-float x2g(float r) { /* local to domain edge  */
-    enum {X};
-    return (m::coords[X] + 0.5)*XS  + r;
-}
-float y2g(float r) {
-    enum {X, Y};
-    return (m::coords[Y] + 0.5)*YS  + r;
-}
-float z2g(float r) {
-    enum {X, Y, Z};
-    return (m::coords[Z] + 0.5)*ZS  + r;
-}
-
 static void set_dims(int argc, char **argv) {
     int i;
     dims[0] = dims[1] = dims[2] = 1;
