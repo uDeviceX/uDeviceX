@@ -1,3 +1,16 @@
+static void gen(const char *cell, const char *ic, int nv, /**/ int *pnc, Particle *dev) {
+    int nc, sz;
+    Particle *hst;
+    sz = sizeof(Particle)*MAX_CELL_NUM*nv;
+    UC(emalloc(sz, (void**)hst));
+
+    nc = rbc::gen::main(cell, ic, nv, /**/ hst);
+    if (nc) cH2D(dev, hst, nc*nv);
+
+    UC(efree(hst));
+    *pnc = nc;
+}
+
 static void setup_from_pos(MPI_Comm comm, const char *cell, const char *ic, int nv, /**/
                            Particle *pp, int *pnc, int *pn, /* storage */ Particle *pp_hst) {
     int nc;
