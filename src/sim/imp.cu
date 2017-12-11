@@ -9,6 +9,10 @@
 #include "d/api.h"
 #include "d/ker.h"
 
+#include "glob/type.h"
+#include "glob/ini.h"
+#include "glob/imp.h"
+
 #include "mpi/wrapper.h"
 #include "rnd/imp.h"
 
@@ -37,9 +41,6 @@
 #include "io/diag.h"
 #include "io/com.h"
 
-#include "glob/type.h"
-#include "glob/ini.h"
-#include "glob/imp.h"
 #include "wvel/type.h"
 #include "wvel/imp.h"
 
