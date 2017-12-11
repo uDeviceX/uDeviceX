@@ -19,7 +19,7 @@ echo 1   0    0  $x \
 :
 u.conf "$C" <<!!!
    numberdensity=0 rbcs tend=0.5 part_freq=300  walls  wall_creation=100
-   field_dumps part_dumps field_freq=300
+   part_dumps
    run
 !!!
 { make clean && u.make -j ; } > .make.log
