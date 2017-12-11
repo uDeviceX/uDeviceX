@@ -20,7 +20,7 @@ static bool blue(Coords c, float x, float y, float z) {
 
     x0 = 0.25*lx; y0 = 0.6*ly; z0 = 0.5*lz;
     x -= x0; y -= y0; z -= z0;
-    r = rad();
+    r = rad(c);
     return x*x + y*y + z*z < r*r;
 }
 static bool red(Coords c, float x, float y, float z) {
@@ -31,7 +31,7 @@ static bool red(Coords c, float x, float y, float z) {
     lz = zdomain(c);
     x0 = 0.75*lx; y0 = 0.4*ly; z0 = 0.5*lz;
     x -= x0; y -= y0; z -= z0;
-    r = rad();
+    r = rad(c);
     return x*x + y*y + z*z < r*r;
 }
 
