@@ -1,9 +1,10 @@
 #!/usr/bin/python2
 
 import sys
-from scipy.special import sph_harm as YY
+from scipy.special import sph_harm as YY0
+def YY(K, L, p, t):
+    return YY0(K, L, p, t).real if K >= 0 else YY0(-K, L, p, t).imag
 from numpy import conj
-from math  import sin
 
 def from_to(l, h):
     return [l] if l == h else range(l, h + 1)
@@ -32,7 +33,7 @@ def proj(p, t, a, x, y, z):
     X, Y, Z = 0, 1, 2
     for L in from_to(0, Lmax):
         for K in from_to(-L, L):
-            k = conj(YY(K, L, p, t))
+            k = conj(YY(K, L, p, t))*a
             C[K, L][X] += x*k
             C[K, L][Y] += y*k
             C[K, L][Z] += z*k
