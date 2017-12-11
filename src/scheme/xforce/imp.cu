@@ -11,4 +11,5 @@
 
 #include "type.h"
 #include "dev/main.h"
+#include "imp/ini.h"
 #include "imp/main.h"

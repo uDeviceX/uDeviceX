@@ -1,11 +1,3 @@
-enum {
-    TYPE_NONE,
-    TYPE_CSTE,
-    TYPE_DP,
-    TYPE_SHEAR,
-    TYPE_ROL
-};
-
 void body_force(Coords c, float mass, FParam fpar, int n, const Particle *pp, /**/ Force *ff) {
     int type;
     FParam_d p;

@@ -20,6 +20,14 @@ struct FParam_rol_d {
     float a;
 };
 
+enum {
+    TYPE_NONE,
+    TYPE_CSTE,
+    TYPE_DP,
+    TYPE_SHEAR,
+    TYPE_ROL
+};
+
 union FParam_d {
     FParam_cste_d cste;
     FParam_dp_d dp;
