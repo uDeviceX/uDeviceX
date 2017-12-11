@@ -19,14 +19,15 @@ static void garea_volume(rbc::Quants q, /**/ float *a, float *v) {
 static void dump(rbc::Quants q, rbc::force::TicketT t) {
     int n;
     Particle *pp;
-    float area, volume;
+    float area, volume, area0, volume0;
     static int i = 0;
     n = q.nc * q.nv;
     UC(emalloc(n*sizeof(Particle), (void**)&pp));
     cD2H(pp, q.pp, q.n);
     io::mesh::rbc(m::cart, pp, q.tri_hst, q.nc, q.nv, q.nt, i++);
+    rbc::force::stat(/**/ &area0, &volume0);
     garea_volume(q, /**/ &area, &volume);
-    MSG("av: %g %g", area/RBCtotArea, volume/RBCtotVolume);
+    MSG("av: %g %g", area/area0, volume/volume0);
     diagnostics(m::cart, n, pp, i);
     free(pp);
 }
@@ -34,7 +35,7 @@ static void dump(rbc::Quants q, rbc::force::TicketT t) {
 static int body_force(rbc::Quants q, Force *f) {
     scheme::force::Param fpar;
     fpar.a = FORCE_PAR_A;
-    scheme::force::main(rbc_mass, fpar, q.n, q.pp, /**/ f);
+    //scheme::force::main(rbc_mass, fpar, q.n, q.pp, /**/ f);
     return 0;
 }
 

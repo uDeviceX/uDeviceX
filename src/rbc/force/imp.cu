@@ -63,5 +63,6 @@ namespace dev {
 #include "imp/ini.h"
 #include "imp/fin.h"
 #include "imp/forces.h"
+#include "imp/stat.h"
 
 }} /* namespace */
