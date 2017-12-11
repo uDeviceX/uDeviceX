@@ -20,6 +20,28 @@ void body_force(Coords c, float mass, FParam fpar, int n, const Particle *pp, /*
         KL(force, (k_cnf(n)), (c, p.rol, mass, n, pp, /**/ ff));
         break;
     default:
+        ERR("wrong type");
+        break;
+    };
+}
+
+void adjust(float3 f, /**/ FParam *fpar) {
+    int type;
+    FParam_d *p;
+    type = fpar->type;
+    p    = &fpar->dev;
+
+    switch (type) {
+    case TYPE_NONE:
+        break;
+    case TYPE_CSTE:
+        p->cste.a = f;
+        break;
+    case TYPE_DP:
+    case TYPE_SHEAR:
+    case TYPE_ROL:
+    default:
+        ERR("not implemented");
         break;
     };
 }
