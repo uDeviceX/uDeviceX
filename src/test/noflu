@@ -1,4 +1,4 @@
-#### no solvent
+#### no fluid
 # nTEST: flow.t4
 S=`pwd` C="$S/conf/poiseuille.h"
 :
