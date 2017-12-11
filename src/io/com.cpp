@@ -9,26 +9,23 @@
 #include "mpi/glb.h"
 #include "utils/mc.h"
 
+#include "glob/type.h"
+#include "glob/imp.h"
+
 #include "utils/halloc.h"
 #include "utils/os.h"
 #include "utils/error.h"
 
 enum {MAX_CHAR_PER_LINE = 128};
 
-static void shift(float3 *r) {
-    r->x = m::x2g(r->x);
-    r->y = m::y2g(r->y);
-    r->z = m::z2g(r->z);
-}
-
-static int swrite(int n, const int *ii, const float3 *rr, /**/ char *s) {
+static int swrite(Coords coords, int n, const int *ii, const float3 *rr, /**/ char *s) {
     int i, id, c, start;
-    float3 r;
+    float3 r, rg;
     for (i = start = 0; i < n; ++i) {
         id = ii[i];
         r  = rr[i];
-        shift(/**/ &r);
-        c = sprintf(s + start, "%d %g %g %g\n", id, r.x, r.y, r.z);
+        local2global(coords, r, /**/ &rg);
+        c = sprintf(s + start, "%d %g %g %g\n", id, rg.x, rg.y, rg.z);
         if (c >= MAX_CHAR_PER_LINE)
             ERR("buffer too small : %d / %d", c, MAX_CHAR_PER_LINE);
         start += c;
@@ -52,7 +49,7 @@ static void write_mpi(MPI_Comm comm, const char *fname, long n, const char *data
 }
 
 
-void dump_com(MPI_Comm comm, long id, int n, const int *ii, const float3 *rr) {
+void dump_com(MPI_Comm comm, Coords coords, long id, int n, const int *ii, const float3 *rr) {
     char fname[256] = {0}, *data;
     long nchar = 0;
     
@@ -62,7 +59,7 @@ void dump_com(MPI_Comm comm, long id, int n, const int *ii, const float3 *rr) {
 
     sprintf(fname, DUMP_BASE "/com/%04ld.txt", id);
     
-    UC(nchar = swrite(n, ii, rr, /**/ data));
+    UC(nchar = swrite(coords, n, ii, rr, /**/ data));
     write_mpi(comm, fname, nchar, data);
     
     efree(data);

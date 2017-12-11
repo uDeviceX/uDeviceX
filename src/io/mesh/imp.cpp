@@ -6,6 +6,9 @@
 #include <conf.h>
 #include "inc/conf.h"
 
+#include "glob/type.h"
+#include "glob/imp.h"
+
 #include "utils/os.h"
 #include "utils/error.h"
 #include "utils/halloc.h"
