@@ -25,22 +25,23 @@ ic
 make0 > .make
 u.strtdir
 u.conf "$C" <<!
-   rbcs
+   rbcs rbc_ids rbc_com_dumps
    walls wall_creation=1000
-   strt_dumps strt_freq=$inf
+   strt_dumps strt_freq=$inf part_dumps=$inf
    rbcs dt=1e-4 tend=0.11 
    run
 !
 :
 sh runfile
 u.conf "$C" <<!
-   rbcs
-   RESTART=true walls wall_creation=0
-   FORCE_CONSTANT FORCE_PAR_A=100
-   rbcs tend=0.5 part_freq=300
-   part_dumps
+   rbcs rbc_ids rbc_com_dumps
+   pushrbc pushflu=false
+   walls wall_creation=0
+   RESTART=true 
+   FORCE_CONSTANT FORCE_PAR_A=1e3
+   tend=0.5 part_dumps part_freq=300 
    run
 !
 make0 > .make
-FORCE_PAR_EX=0 FORCE_PAR_EY=0 FORCE_PAR_EZ=-1 sh runfile
+FORCE_PAR_EX=0 FORCE_PAR_EY=-1 FORCE_PAR_EZ=0 sh runfile
 ply2punto r/00003.ply | uscale 100 > ply.out.txt
