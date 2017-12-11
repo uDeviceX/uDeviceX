@@ -18,7 +18,7 @@ echo 1   0    0  $x \
      > rbcs-ic.txt
 :
 u.conf "$C" <<!!!
-   rbcs tend=0.5 part_freq=300  walls  wall_creation=100
+   numberdensity=0 rbcs tend=0.5 part_freq=300  walls  wall_creation=100
    field_dumps part_dumps field_freq=300
    run
 !!!
