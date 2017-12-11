@@ -9,7 +9,7 @@ static void check_sizes() {
     UC(check_size(flu.q.n , MAX_PART_NUM)); 
 }
 
-void step(scheme::force::Param *fpar, bool wall0, int it) {
+void step(FParam *fpar, bool wall0, int it) {
     UC(check_sizes());
     
     UC(distribute_flu(&flu));

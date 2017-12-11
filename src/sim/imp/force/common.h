@@ -1,9 +1,9 @@
-void body_force(scheme::force::Param fpar) {
-    scheme::force::main(coords, flu_mass, fpar,  flu.q.n, flu.q.pp, /**/ flu.ff);
+void body_force(FParam fpar) {
+    body_force(coords, flu_mass, fpar,  flu.q.n, flu.q.pp, /**/ flu.ff);
     if (pushsolid && solids0)
-        scheme::force::main(coords, solid_mass, fpar, rig.q.n, rig.q.pp, /**/ rig.ff);
+        body_force(coords, solid_mass, fpar, rig.q.n, rig.q.pp, /**/ rig.ff);
     if (pushrbc && rbcs)
-        scheme::force::main(coords, rbc_mass, fpar, rbc.q.n, rbc.q.pp, /**/ rbc.ff);
+        body_force(coords, rbc_mass, fpar, rbc.q.n, rbc.q.pp, /**/ rbc.ff);
 }
 
 void forces_rbc (Rbc *r) {

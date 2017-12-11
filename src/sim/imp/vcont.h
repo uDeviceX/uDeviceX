@@ -11,14 +11,11 @@ void sample(long id, const Flu *f, /**/ PidVCont *c) {
     }
 }
 
-void adjust(long id, /**/ PidVCont *c, scheme::force::Param *fpar) {
+void adjust(long id, /**/ PidVCont *c, FParam *fpar) {
     if (valid_step(id, VCON_ADJUST_FREQ)) {
         float3 f;
         f = adjustF(/**/ c);
-
-        fpar->a = f.x;
-        fpar->b = f.y;
-        fpar->c = f.z;
+        adjust(f, /**/ fpar);
     }
 }
 
