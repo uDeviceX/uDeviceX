@@ -1,5 +1,6 @@
 void body_force(scheme::force::Param fpar) {
-    scheme::force::main(coords, 1, fpar,  flu.q.n, flu.q.pp, /**/ flu.ff);
+    float flu_mass = 1;
+    scheme::force::main(coords, flu_mass, fpar,  flu.q.n, flu.q.pp, /**/ flu.ff);
     if (pushsolid && solids0)
         scheme::force::main(coords, solid_mass, fpar, rig.q.n, rig.q.pp, /**/ rig.ff);
     if (pushrbc && rbcs)
