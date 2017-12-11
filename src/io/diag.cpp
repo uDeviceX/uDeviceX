@@ -56,7 +56,7 @@ void diagnostics(MPI_Comm comm, int n, const Particle *pp, int id) {
     sum_i(comm, &n);
 
     if (m::rank == 0) {
-        kbt = 0.5 * ke / (n * 3. / 2);
+        kbt = n ? 0.5 * ke / (n * 3. / 2) : 0;
         static bool firsttime = true;
         UC(efopen(DUMP_BASE "/diag.txt", firsttime ? "w" : "a", /**/ &f));
         firsttime = false;
