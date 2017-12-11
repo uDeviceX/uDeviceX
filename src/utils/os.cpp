@@ -30,10 +30,9 @@ double drand() { return drand48(); }
 
 enum {OK, NOT_SET, NOT_FLOAT};
 static int env2float0(const char *key, /**/ const char **pval, float *px) {
-    float x;
     if ((*pval = getenv(key)) == NULL)
         return NOT_SET;
-    if (sscanf(*pval, "%f", &x) != 1)
+    if (sscanf(*pval, "%f", px) != 1)
         return NOT_FLOAT;
     return OK;
 }
@@ -42,33 +41,29 @@ void env2float(const char *key, float *px) {
     int status;
     const char *val;
     status = env2float0(key, /**/ &val, px);
-    if (status == OK) {
-        /**/
-    } else if (status == NOT_SET) {
+    if (status == OK)
+        MSG("env %s = %g", key, *px);
+    else if (status == NOT_SET)
         ERR("env. variable is not set: `%s`", key, val);
-    } else if (status == NOT_FLOAT) {
+    else if (status == NOT_FLOAT)
         ERR("env. variable `%s = %s` is not float", key, val);
-    } else {
+    else
         ERR("unknown status");
-    }
-    MSG("env %s = %g", key, *px);
 }
 
 void env2float_d(const char *key, float def, /**/ float *px) { /* with default */
     int status;
     const char *val;
     status = env2float0(key, /**/ &val, px);
-    if (status == OK) {
-        /**/
-    } else if (status == NOT_SET) {
+    if (status == OK)
+        MSG("env %s = %g", key, *px);
+    else if (status == NOT_SET) {
         *px = def;
-    } else if  (status == NOT_FLOAT) {
+        MSG("env %s = %g (default)", key, *px);
+    } else if  (status == NOT_FLOAT)
         ERR("env. variable `%s = %s` is not float", key, val);
-    } else {
+    else
         ERR("unknown status");
-    }
-    MSG("env %s = %g", key, *px);    
 }
-
 
 } /* namespace */

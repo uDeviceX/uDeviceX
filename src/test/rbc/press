@@ -42,5 +42,5 @@ u.conf "$C" <<!
    run
 !
 make0 > .make
-sh runfile
+FORCE_PAR_EX=0 FORCE_PAR_EY=0 FORCE_PAR_EZ=-1 sh runfile
 ply2punto r/00003.ply | uscale 100 > ply.out.txt
