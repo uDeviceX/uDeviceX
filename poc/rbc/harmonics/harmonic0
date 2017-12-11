@@ -1,7 +1,9 @@
 #!/usr/bin/python2
 
 import sys
-from scipy.special import sph_harm as YY
+from scipy.special import sph_harm as YY0
+def YY(K, L, p, t):
+    return YY0(K, L, p, t).real if K >= 0 else YY0(-K, L, p, t).imag
 
 def shift(): sys.argv.pop(0)
 def fst()  : return sys.argv[1]
