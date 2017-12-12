@@ -145,6 +145,11 @@ static void ini_wall(Wall *w) {
     wall::alloc_ticket(&w->t);
     Wvel *vw = &w->vel;
 
+#if defined(WVEL_HS)
+    WvelHS p;
+    p.u = WVEL_PAR_U;
+    p.h = WVEL_PAR_H;
+#else
 #if   defined(WVEL_SIN)
     WvelShearSin p;
     p.log_freq = WVEL_LOG_FREQ;
@@ -156,10 +161,12 @@ static void ini_wall(Wall *w) {
 #endif
     p.gdot = WVEL_PAR_A;
     p.vdir = 0;
-#if   defWVEL_PAR_Y
+
+#if   defined(WVEL_PAR_Y)
     p.gdir = 1;
-#elif WVEL_PAR_Z
+#elif defined(WVEL_PAR_Z)
     p.gdir = 2;
+#endif
 #endif
     ini(p, vw);
 }
