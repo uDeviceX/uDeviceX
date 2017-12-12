@@ -31,6 +31,12 @@ static void set_dev(long it, WvelShearSin p, Wvel_d *wv) {
         MSG("WVEL_SIN: gd = %6.3g", gdot);
 }
 
+static void set_dev(long it, WvelHS p, Wvel_d *wv) {
+    wv->type = WALL_VEL_DEV_HS;    
+    wv->p.hs.u = p.u;
+    wv->p.hs.h = p.h;
+}
+
 void step2params(long it, /**/ Wvel *wv) {
     switch (wv->type) {
     case WALL_VEL_CSTE:
@@ -41,6 +47,9 @@ void step2params(long it, /**/ Wvel *wv) {
         break;
     case WALL_VEL_SHEAR_SIN:
         set_dev(it, wv->p.shearsin, /**/ &wv->dev);
+        break;
+    case WALL_VEL_HS:
+        set_dev(it, wv->p.hs, /**/ &wv->dev);
         break;
     default:
         ERR("wrong type provided: <%d>", wv->type);
