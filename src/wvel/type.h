@@ -25,7 +25,7 @@ enum {
 union WvelPar_d {
     WvelCste_d cste;
     WvelShear_d shear;
-    WvelHS_d shear;
+    WvelHS_d hs;
     
 };
 

@@ -24,12 +24,31 @@ static __device__ void wvel_shear(WvelPar_d p, Coords c, float3 r, /**/ float3 *
     else if (vdir == 2) v->z = d * gdot;
 }
 
+/* a hack for hele shaw */
+static __device__ void wvel_hs(WvelPar_d p, Coords c, float3 r, /**/ float3 *v) {
+    float3 rc; // relative to center
+    float u, h, r2inv, hfac;
+
+    u = p.hs.u;
+    h = p.hs.h;
+
+    local2center(c, r, /**/ &rc);
+
+    r2inv = 1.f / (rc.x*rc.x + rc.y*rc.y);
+    hfac = 4 * u / (h*h);
+
+    v->x = r2inv * hfac * rc.x;
+    v->y = r2inv * hfac * rc.y;
+    v->z = 0;
+}
+
+
 
 /* device interface */
 
 static __device__ void wvel(Wvel_d wv, Coords c, float3 r, /**/ float3 *v) {
     int type;
-    wvel_fun wvel_funs[] = {&wvel_cste, &wvel_shear};
+    wvel_fun wvel_funs[] = {&wvel_cste, &wvel_shear, &wvel_hs};
     type = wv.type;
     wvel_funs[type](wv.p, c, r, /**/ v);
 }
