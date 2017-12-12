@@ -64,7 +64,7 @@ static __device__ void bounce_back_1p(Wvel_v wv, Coords c, const tex3Dca texsdf,
     for (l = 0; l < MAX_NEWTON; ++l) {
         rc = *r;
         axpy(t, v, /**/ &rc);
-        phi = currsdf;
+        phi = sdf(texsdf, rc.x, rc.y, rc.z);
         dsdf = ugrad_sdf(texsdf, &rc);
         dphi = dot<float> (v, &dsdf);
 
