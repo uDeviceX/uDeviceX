@@ -35,7 +35,8 @@ static __device__ void wvel_hs(WvelPar_d p, Coords c, float3 r, /**/ float3 *v) 
     local2center(c, r, /**/ &rc);
 
     r2inv = 1.f / (rc.x*rc.x + rc.y*rc.y);
-    hfac = 4 * u / (h*h);
+    hfac = u * (1.f - rc.z * rc.z * 4 / (h*h));
+    hfac = max(0.f, hfac);
 
     v->x = r2inv * hfac * rc.x;
     v->y = r2inv * hfac * rc.y;
