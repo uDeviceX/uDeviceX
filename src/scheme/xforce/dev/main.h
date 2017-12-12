@@ -1,7 +1,9 @@
+/* cste */
 static __device__ float3 get_gp(Coords, FParam_cste_d par, Particle) {
     return par.a;
 }
 
+/* double poiseuille */
 static __device__ float3 get_gp(Coords c, FParam_dp_d par, Particle p) {
     enum {X, Y, Z};
     float d, f;
@@ -10,6 +12,7 @@ static __device__ float3 get_gp(Coords c, FParam_dp_d par, Particle p) {
     return make_float3(f, 0, 0);
 }
 
+/* shear */
 static __device__ float3 get_gp(Coords c, FParam_shear_d par, Particle p) {
     enum {X, Y, Z};
     float d, f;
@@ -18,6 +21,7 @@ static __device__ float3 get_gp(Coords c, FParam_shear_d par, Particle p) {
     return make_float3(f, 0, 0);
 }
 
+/* 4 roller mills */
 static __device__ float3 get_gp(Coords c, FParam_rol_d par, Particle p) {
     enum {X, Y, Z};
     float x, y, lx, ly;
@@ -39,6 +43,24 @@ static __device__ float3 get_gp(Coords c, FParam_rol_d par, Particle p) {
     return f;
 }
 
+/* radial */
+static __device__ float3 get_gp(Coords c, FParam_rad_d par, Particle p) {
+    enum {X, Y, Z};
+    float x, y, fact;
+    float3 f;
+    
+    x = xl2xc(c, p.r[X]);
+    y = yl2yc(c, p.r[Y]);
+
+    fact = par.a / (x*x + y*y);
+
+    f.x = fact * x;
+    f.y = fact * y;    
+    f.z = 0;
+    return f;
+}
+
+/* common */
 template <typename P>
 __global__ void force(Coords c, P par, float mass, int n, const Particle *pp, /**/ Force *ff) {
     enum {X, Y, Z};

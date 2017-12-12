@@ -19,6 +19,9 @@ void body_force(Coords c, float mass, FParam fpar, int n, const Particle *pp, /*
     case TYPE_ROL:
         KL(force, (k_cnf(n)), (c, p.rol, mass, n, pp, /**/ ff));
         break;
+    case TYPE_RAD:
+        KL(force, (k_cnf(n)), (c, p.rad, mass, n, pp, /**/ ff));
+        break;
     default:
         ERR("wrong type");
         break;
@@ -36,6 +39,10 @@ void adjust(float3 f, /**/ FParam *fpar) {
         break;
     case TYPE_CSTE:
         p->cste.a = f;
+        break;
+    case TYPE_RAD:
+        /* do not control radial and z directions */
+        p->rad.a = f.x;
         break;
     case TYPE_DP:
     case TYPE_SHEAR:

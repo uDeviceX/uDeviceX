@@ -21,3 +21,8 @@ void ini(FParam_rol_d par, /**/ FParam *p) {
     p->type = TYPE_ROL;
     p->dev.rol = par;
 }
+
+void ini(FParam_rad_d par, /**/ FParam *p) {
+    p->type = TYPE_RAD;
+    p->dev.rad = par;
+}
