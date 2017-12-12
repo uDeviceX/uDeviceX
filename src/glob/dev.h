@@ -15,15 +15,15 @@ static __device__ int zdomain(const Coords c) {
 /* [l]ocal to [c]enter */
 
 static __device__ float xl2xc(const Coords c, float xl) {
-    return xl + XS * (c.xd - 2.f * c.xc - 1) / 2;
+    return xl - 0.5f * XS * (c.xd - 2 * c.xc - 1);
 }
 
 static __device__ float yl2yc(const Coords c, float yl) {
-    return yl + YS * (c.yd - 2.f * c.yc - 1) / 2;
+    return yl - 0.5f * YS * (c.yd - 2 * c.yc - 1);
 }
 
 static __device__ float zl2zc(const Coords c, float zl) {
-    return zl + ZS * (c.zd - 2.f * c.zc - 1) / 2;
+    return zl - 0.5f * ZS * (c.zd - 2 * c.zc - 1);
 }
 
 static __device__ void local2center(const Coords c, float3 rl, /**/ float3 *rc) {
@@ -35,15 +35,15 @@ static __device__ void local2center(const Coords c, float3 rl, /**/ float3 *rc) 
 /* [c]enter to [l]ocal  */
 
 static __device__ float xc2xl(const Coords c, float xc) {
-    return xc - XS * (c.xd - 2.f * c.xc - 1) / 2;
+    return xc + 0.5f * XS * (c.xd - 2 * c.xc - 1);
 }
 
 static __device__ float yc2yl(const Coords c, float yc) {
-    return yc - YS * (c.yd - 2.f * c.yc - 1) / 2;
+    return yc + 0.5f * YS * (c.yd - 2.f * c.yc - 1);
 }
 
 static __device__ float zc2zl(const Coords c, float zc) {
-    return zc - ZS * (c.zd - 2.f * c.zc - 1) / 2;
+    return zc + 0.5f * ZS * (c.zd - 2.f * c.zc - 1);
 }
 
 static __device__ void center2local(Coords c, float3 rc, /**/ float3 *rl) {
