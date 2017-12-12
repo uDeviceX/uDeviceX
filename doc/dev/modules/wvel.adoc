@@ -1,5 +1,7 @@
 = wvel
 
+:src: ../../../src
+
 wall velocity field
 
 == purpose
@@ -18,8 +20,19 @@ data structures are separated into 2 kinds of data structures:
 
 == interface 
 
-Interface is splitted between host and device:
+Interface is splitted between host and device
 
-* Host code is responsible for initialisation of `Wvel` and convert
+=== Host
+Host code is responsible for initialisation of `Wvel` and convert
 `Wvel` to a view at a given timestep.
-* Device code contains the functions describing the filed.
+
+=== Device
+
+Device code contains the functions describing the field.
+Also contains bouncer function: gives bounce back velocity from
+position and velocity.
+
+[source, c++]
+----
+include::{src}/wvel/dev.h[tag=interface]
+----

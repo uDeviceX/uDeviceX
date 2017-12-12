@@ -13,6 +13,7 @@
 ./dev/modules/partlist.html: ./dev/modules/partlist.adoc 
 ./dev/modules/sdf.html: ./dev/modules/sdf.adoc 
 ./dev/modules/utils/main.html: ./dev/modules/utils/main.adoc ./dev/modules/utils/cc.inc.adoc ./dev/modules/utils/cc.inc.adoc ./dev/modules/utils/error.inc.adoc ./dev/modules/utils/error.inc.adoc ./dev/modules/utils/kl.inc.adoc ./dev/modules/utils/kl.inc.adoc ./dev/modules/utils/mc.inc.adoc ./dev/modules/utils/mc.inc.adoc
+./dev/modules/wvel.html: ./dev/modules/wvel.adoc 
 ./dev/rbc/forces.html: ./dev/rbc/forces.adoc 
 ./dev/wrap.html: ./dev/wrap.adoc 
 ./index.html: ./index.adoc 
