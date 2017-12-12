@@ -35,7 +35,9 @@ void run(long ts, long te) {
     par.a = FORCE_PAR_A;
     ini(par, /**/ &fpar);    
 #elif defined(FORCE_RADIAL)
-#error not implemented yet
+    FParam_rad_d par;
+    par.a = FORCE_PAR_A;
+    ini(par, /**/ &fpar);    
 #else
 #error FORCE_* is undefined
 #endif
