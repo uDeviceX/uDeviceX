@@ -37,19 +37,19 @@ static void set_dev(long it, WvelHS p, Wvel_d *wv) {
     wv->p.hs.h = p.h;
 }
 
-void step2params(long it, /**/ Wvel *wv) {
+void step2params(long it, const Wvel *wv, /**/ Wvel_d *view) {
     switch (wv->type) {
     case WALL_VEL_CSTE:
-        set_dev(wv->p.cste, /**/ &wv->dev);
+        set_dev(wv->p.cste, /**/ view);
         break;
     case WALL_VEL_SHEAR:
-        set_dev(wv->p.shear, /**/ &wv->dev);
+        set_dev(wv->p.shear, /**/ view);
         break;
     case WALL_VEL_SHEAR_SIN:
-        set_dev(it, wv->p.shearsin, /**/ &wv->dev);
+        set_dev(it, wv->p.shearsin, /**/ view);
         break;
     case WALL_VEL_HS:
-        set_dev(it, wv->p.hs, /**/ &wv->dev);
+        set_dev(it, wv->p.hs, /**/ view);
         break;
     default:
         ERR("wrong type provided: <%d>", wv->type);
