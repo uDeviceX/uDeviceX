@@ -44,7 +44,7 @@ void run(long ts, long te) {
     
     /* ts, te: time start and end */
     for (it = ts; it < te; ++it) {
-        step2params(it - ts, /**/ &wall.vel);
+        step2params(it - ts, &wall.vel, /**/ &wall.vview);
         step(&fpar, walls, it);
     }
     UC(distribute_flu(/**/ &flu));

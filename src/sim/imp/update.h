@@ -106,6 +106,6 @@ void restrain(long it, Flu *f, Rbc *r) {
 }
 
 void bounce_wall(Coords c, const Wall *w, /**/ Flu *f, Rbc *r) {
-    bounce(w->vel, c, w->sdf, f->q.n, /**/ f->q.pp);
-    if (rbcs) bounce(w->vel, c, w->sdf, r->q.n, /**/ r->q.pp);
+    bounce(w->vview, c, w->sdf, f->q.n, /**/ f->q.pp);
+    if (rbcs) bounce(w->vview, c, w->sdf, r->q.n, /**/ r->q.pp);
 }

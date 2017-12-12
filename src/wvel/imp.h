@@ -3,4 +3,5 @@ void ini(WvelShear p, Wvel *vw);
 void ini(WvelShearSin p, Wvel *vw);
 void ini(WvelHS p, Wvel *vw);
 
-void step2params(long it, /**/ Wvel *wv);
+void step2params(long it, const Wvel *wv, /**/ Wvel_d *view);
+

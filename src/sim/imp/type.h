@@ -106,6 +106,7 @@ struct Wall {
     wall::Quants q;
     wall::Ticket t;
     Wvel vel;
+    Wvel_d vview;
 };
 
 /* helper for computing object interactions */
