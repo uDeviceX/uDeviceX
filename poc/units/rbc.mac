@@ -2,6 +2,7 @@
 (l_p   : 8e-6,  l_d: 20)  $
 (rho_p :  1e3, rho_d: 10) $
 
+
 e1: mu_p  * m/(t*l) = mu_d  $
 e2: l_p   * l       = l_d   $
 e3: rho_p * m/l^3   = rho_d $
@@ -12,5 +13,10 @@ p2d(e):=subst(s, e);
 
 force: 200e-12;
 kb   : 2.4*10^(-19);
+gdot : 200;
+kbT  : 293.15 * 1.38064852e-23;
+
 p2d(m*l/t^2)   * force, numer;
-p2d(m*l^2/t^2) * kb, numer;
+p2d(m*l^2/t^2) * kb,    numer;
+p2d(1/t)       * gdot,  numer;
+p2d(m*l^2/t^2) * kbT,   numer;
