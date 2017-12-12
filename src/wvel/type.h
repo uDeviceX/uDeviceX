@@ -82,7 +82,6 @@ union WvelPar {
 /* main structure */
 
 struct Wvel {
-    // Wvel_d dev; /* to be passed to device */
     WvelPar p;  /* parameters             */
     int type;
 };
