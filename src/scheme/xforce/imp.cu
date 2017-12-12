@@ -6,8 +6,10 @@
 #include "glob/type.h"
 #include "glob/dev.h"
 
+#include "d/api.h"
 #include "utils/error.h"
 #include "utils/kl.h"
+#include "utils/cc.h"
 
 #include "type.h"
 #include "dev/main.h"
