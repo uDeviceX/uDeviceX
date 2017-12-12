@@ -1,21 +1,21 @@
-static void set_dev(WvelCste p, Wvel_d *wv) {
-    wv->type = WALL_VEL_DEV_CSTE;
+static void set_dev(WvelCste p, Wvel_v *wv) {
+    wv->type = WALL_VEL_V_CSTE;
     wv->p.cste.u = p.u;
 }
 
-static void set_dev(WvelShear p, Wvel_d *wv) {
-    wv->type = WALL_VEL_DEV_SHEAR;
+static void set_dev(WvelShear p, Wvel_v *wv) {
+    wv->type = WALL_VEL_V_SHEAR;
     wv->p.shear.gdot = p.gdot;
     wv->p.shear.gdir = p.gdir;
     wv->p.shear.vdir = p.vdir;
     wv->p.shear.half = p.half;
 }
 
-static void set_dev(long it, WvelShearSin p, Wvel_d *wv) {
+static void set_dev(long it, WvelShearSin p, Wvel_v *wv) {
     float gdot;
     float t, w;
     bool cond;
-    wv->type = WALL_VEL_DEV_SHEAR;
+    wv->type = WALL_VEL_V_SHEAR;
 
     w = p.w;
     t = it * dt;
@@ -31,13 +31,13 @@ static void set_dev(long it, WvelShearSin p, Wvel_d *wv) {
         MSG("WVEL_SIN: gd = %6.3g", gdot);
 }
 
-static void set_dev(long it, WvelHS p, Wvel_d *wv) {
-    wv->type = WALL_VEL_DEV_HS;    
+static void set_dev(long it, WvelHS p, Wvel_v *wv) {
+    wv->type = WALL_VEL_V_HS;    
     wv->p.hs.u = p.u;
     wv->p.hs.h = p.h;
 }
 
-void step2params(long it, const Wvel *wv, /**/ Wvel_d *view) {
+void step2params(long it, const Wvel *wv, /**/ Wvel_v *view) {
     switch (wv->type) {
     case WALL_VEL_CSTE:
         set_dev(wv->p.cste, /**/ view);

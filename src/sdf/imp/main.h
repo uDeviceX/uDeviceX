@@ -14,6 +14,6 @@ void fin(Sdf *q) {
     UC(efree(q));
 }
 
-void bounce(Wvel_d wv, Coords c, const Sdf *q, int n, /**/ Particle *pp) {
+void bounce(Wvel_v wv, Coords c, const Sdf *q, int n, /**/ Particle *pp) {
     UC(bounce_back(wv, c, q->texsdf, n, /**/ pp));
 }

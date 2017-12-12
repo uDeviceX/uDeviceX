@@ -1,8 +1,8 @@
-static __device__ void wvel_cste(WvelPar_d p, Coords c, float3 r, /**/ float3 *v) {
+static __device__ void wvel_cste(WvelPar_v p, Coords c, float3 r, /**/ float3 *v) {
     *v = p.cste.u;
 }
 
-static __device__ void wvel_shear(WvelPar_d p, Coords c, float3 r, /**/ float3 *v) {
+static __device__ void wvel_shear(WvelPar_v p, Coords c, float3 r, /**/ float3 *v) {
     float3 rc; // relative to center
     float gdot, d;
     int vdir, gdir;
@@ -25,7 +25,7 @@ static __device__ void wvel_shear(WvelPar_d p, Coords c, float3 r, /**/ float3 *
 }
 
 /* a hack for hele shaw */
-static __device__ void wvel_hs(WvelPar_d p, Coords c, float3 r, /**/ float3 *v) {
+static __device__ void wvel_hs(WvelPar_v p, Coords c, float3 r, /**/ float3 *v) {
     float3 rc; // relative to center
     float u, h, r2inv, hfac;
 
@@ -47,14 +47,14 @@ static __device__ void wvel_hs(WvelPar_d p, Coords c, float3 r, /**/ float3 *v) 
 
 /* device interface */
 
-static __device__ void wvel(Wvel_d wv, Coords c, float3 r, /**/ float3 *v) {
+static __device__ void wvel(Wvel_v wv, Coords c, float3 r, /**/ float3 *v) {
     int type;
     wvel_fun wvel_funs[] = {&wvel_cste, &wvel_shear, &wvel_hs};
     type = wv.type;
     wvel_funs[type](wv.p, c, r, /**/ v);
 }
 
-static __device__ void bounce_vel(Wvel_d wv, Coords c, float3 rw, /* io */ float3* v) {
+static __device__ void bounce_vel(Wvel_v wv, Coords c, float3 rw, /* io */ float3* v) {
     float3 vw;
     wvel(wv, c, rw, /**/ &vw);
     v->x = 2 * vw.x - v->x;
