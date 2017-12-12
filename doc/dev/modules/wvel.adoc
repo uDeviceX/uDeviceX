@@ -1,0 +1,25 @@
+= wvel
+
+wall velocity field
+
+== purpose
+
+* set velocity to wall particles for wall interactions
+* get wall velocity for bounce back on walls
+
+== data structures
+
+data structures are separated into 2 kinds of data structures:
+
+* `Wvel`, which contains all informations needed for the velocity
+  field. It is hold and maintained on host.
+* `Wvel_v` (`Wvel view`), containing only the information needed for one
+   specific time. It is passed to device kernels.
+
+== interface 
+
+Interface is splitted between host and device:
+
+* Host code is responsible for initialisation of `Wvel` and convert
+`Wvel` to a view at a given timestep.
+* Device code contains the functions describing the filed.
