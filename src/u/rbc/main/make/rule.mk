@@ -29,12 +29,12 @@ $B/rbc/main/imp.o: $S/rbc/main/imp.cpp; $X -I$S/. -I$S/rbc/main
 $B/rbc/rnd/api/imp.o: $S/rbc/rnd/api/imp.cpp; $X -I$S/. -I$S/rbc/rnd/api
 $B/rbc/rnd/imp.o: $S/rbc/rnd/imp.cpp; $X -I$S/. -I$S/rbc/rnd
 $B/rbc/stretch/imp.o: $S/rbc/stretch/imp.cu; $N -I$S/. -I$S/rbc/stretch
+$B/scheme/force/xforce/imp.o: $S/scheme/force/xforce/imp.cu; $N -I$S/. -I$S/scheme/force/xforce
 $B/scheme/move/imp.o: $S/scheme/move/imp.cu; $N -I$S/. -I$S/scheme/move
 $B/scheme/restrain/imp.o: $S/scheme/restrain/imp.cpp; $X -I$S/. -I$S/scheme/restrain
 $B/scheme/restrain/sub/imp.o: $S/scheme/restrain/sub/imp.cu; $N -I$S/. -I$S/scheme/restrain/sub
 $B/scheme/restrain/sub/stat/imp.o: $S/scheme/restrain/sub/stat/imp.cpp; $X -I$S/. -I$S/scheme/restrain/sub/stat
 $B/scheme/restrain/sub/sum/imp.o: $S/scheme/restrain/sub/sum/imp.cpp; $X -I$S/. -I$S/scheme/restrain/sub/sum
-$B/scheme/xforce/imp.o: $S/scheme/xforce/imp.cu; $N -I$S/. -I$S/scheme/xforce
 $B/u/rbc/main/lib/imp.o: $S/u/rbc/main/lib/imp.cu; $N -I$S/. -I$S/u/rbc/main/lib
 $B/u/rbc/main/main.o: $S/u/rbc/main/main.cpp; $X -I$S/. -I$S/u/rbc/main
 $B/utils/cc.o: $S/utils/cc.cpp; $X -I$S/. -I$S/utils

@@ -21,12 +21,12 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/rbc/rnd                  && \
     d $B/rbc/rnd/api              && \
     d $B/rbc/stretch              && \
+    d $B/scheme/force/xforce      && \
     d $B/scheme/move              && \
     d $B/scheme/restrain          && \
     d $B/scheme/restrain/sub      && \
     d $B/scheme/restrain/sub/stat && \
     d $B/scheme/restrain/sub/sum  && \
-    d $B/scheme/xforce            && \
     d $B/u/rbc/main               && \
     d $B/u/rbc/main/lib           && \
     d $B/utils                   

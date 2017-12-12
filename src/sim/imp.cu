@@ -100,8 +100,8 @@
 
 #include "inter/imp.h"
 #include "inter/color.h"
-#include "scheme/xforce/type.h"
-#include "scheme/xforce/imp.h"
+#include "scheme/force/type.h"
+#include "scheme/force/imp.h"
 #include "scheme/move/imp.h"
 #include "scheme/restrain/imp.h"
 
