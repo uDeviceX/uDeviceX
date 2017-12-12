@@ -1,28 +1,28 @@
 void ini_none(/**/ FParam *p) {
-    p->type = TYPE_NONE;
+    p->type = TYPE_V_NONE;
 }
 
 void ini(FParam_cste_v par, /**/ FParam *p) {
-    p->type = TYPE_CSTE;
+    p->type = TYPE_V_CSTE;
     p->dev.cste = par;
 }
 
 void ini(FParam_dp_v par, /**/ FParam *p) {
-    p->type = TYPE_DP;
+    p->type = TYPE_V_DP;
     p->dev.dp = par;
 }
 
 void ini(FParam_shear_v par, /**/ FParam *p) {
-    p->type = TYPE_SHEAR;
+    p->type = TYPE_V_SHEAR;
     p->dev.shear = par;
 }
 
 void ini(FParam_rol_v par, /**/ FParam *p) {
-    p->type = TYPE_ROL;
+    p->type = TYPE_V_ROL;
     p->dev.rol = par;
 }
 
 void ini(FParam_rad_v par, /**/ FParam *p) {
-    p->type = TYPE_RAD;
+    p->type = TYPE_V_RAD;
     p->dev.rad = par;
 }
