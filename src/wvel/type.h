@@ -11,14 +11,22 @@ struct WvelShear_d {
     int half;       // [0,1] : 1 if only lower wall is moving
 };
 
+struct WvelHS_d {
+    float u; // radial max inflow
+    float h; // height of the channel
+};
+
 enum {
     WALL_VEL_DEV_CSTE,
     WALL_VEL_DEV_SHEAR,
+    WALL_VEL_DEV_HS,
 };
 
 union WvelPar_d {
     WvelCste_d cste;
     WvelShear_d shear;
+    WvelHS_d shear;
+    
 };
 
 struct Wvel_d {
@@ -50,16 +58,23 @@ struct WvelShearSin {
     int log_freq;
 };
 
+struct WvelHS {
+    float u; // radial max inflow
+    float h; // height of the channel    
+};
+
 enum {
     WALL_VEL_CSTE,
     WALL_VEL_SHEAR,
     WALL_VEL_SHEAR_SIN,
+    WALL_VEL_HS,
 };
 
 union WvelPar {
     WvelCste cste;
     WvelShear shear;
     WvelShearSin shearsin;
+    WvelHS hs;
 };
 
 /* main structure */
