@@ -1,5 +1,8 @@
-#### RBC "pressed" to a plate
-# sTEST: rbc.press
+#### "press" a cell
+#### 1. generate wall
+#### 2. press cell to the wall
+#### 3. detach cell from the wall
+# nTEST: rbc.press
 set -eu
 S=`pwd` C="$S/conf/poiseuille.h"
 :
@@ -7,7 +10,7 @@ ae  ()   { awk "BEGIN {print $*}"; }
 make0 () { make clean && u.make -j; }
 ic  () {
     local x y z cs si
-    x=`ae $XS/2` y=`ae $YS/2` z=`ae $ZS/2`
+    x=`ae 0.5*$XS` y=`ae 0.5*$YS` z=`ae 0.8*$ZS`
     cs=0 si=1
     echo 1   0    0  $x \
 	 0 $cs -$si  $y \
@@ -16,23 +19,23 @@ ic  () {
     > rbcs-ic.txt
 }
 :
-nv=2562
+nv=642
 inf=999999999
-XS=16 YS=16 ZS=16
+XS=12 YS=12 ZS=8
 c0=$S/data/cells/rbc/$nv.off
 c1=$S/data/cells/rbc/$nv.off
 volume=`volume $c1` area=`area $c1`
 cp $c0          rbc.stress.free
 cp $c1          rbc.off
 cp "$S/data/sdf/yplates1/yplates.dat" sdf.dat
+Rbc="rbcs rbc_ids rbc_com_dumps RBC_STRESS_FREE RBCnv=$nv RBCtotArea=$area RBCtotVolume=$volume pushrbc"
 :
 u.conf "$C" <<!
    MESH_SHIFT_CENTER
-   rbcs rbc_ids rbc_com_dumps RBC_STRESS_FREE
-   RBCnv=$nv RBCtotArea=$area RBCtotVolume=$volume
+   $Rbc
    walls wall_creation=1000
    strt_dumps strt_freq=$inf
-   rbcs dt=1e-4 tend=0.11
+   tend=0.11
    run
 !
 :
@@ -40,17 +43,34 @@ make0 > .make
 ic
 u.strtdir
 sh runfile
+:
 u.conf "$C" <<!
    MESH_SHIFT_CENTER
    rbcs rbc_ids rbc_com_dumps RBC_STRESS_FREE
-   RBCnv=$nv RBCtotArea=$area RBCtotVolume=$volume
-   pushrbc pushflu=false
+   $Rbc
+   pushflu=false
    walls wall_creation=0
    RESTART=true
-   FORCE_CONSTANT FORCE_PAR_A=5.0
-   tend=50 part_dumps part_freq=3000
+   FORCE_CONSTANT FORCE_PAR_A=2.0
+   strt_dumps strt_freq=$inf
+   tend=1.1 part_dumps part_freq=2000
    run
 !
 make0 > .make
 FORCE_PAR_EX=0 FORCE_PAR_EY=-1 FORCE_PAR_EZ=0 sh runfile
-ply2punto r/00003.ply | uscale 100 > ply.out.txt
+:
+u.conf "$C" <<!
+   MESH_SHIFT_CENTER
+   $Rbc
+   pushflu=false
+   walls wall_creation=0
+   RESTART=true
+   FORCE_CONSTANT FORCE_PAR_A=1.0
+   tend=1.1 part_dumps part_freq=2000
+   run
+!
+rm -rf r
+make0 > .make
+FORCE_PAR_EX=0 FORCE_PAR_EY=1 FORCE_PAR_EZ=0 sh runfile
+:
+ply2punto r/00001.ply > ply.out.txt

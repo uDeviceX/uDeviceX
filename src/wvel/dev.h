@@ -47,6 +47,7 @@ static __device__ void wvel_hs(WvelPar_v p, Coords c, float3 r, /**/ float3 *v) 
 
 /* device interface */
 
+// tag::interface[]
 static __device__ void wvel(Wvel_v wv, Coords c, float3 r, /**/ float3 *v) {
     int type;
     wvel_fun wvel_funs[] = {&wvel_cste, &wvel_shear, &wvel_hs};
@@ -61,3 +62,4 @@ static __device__ void bounce_vel(Wvel_v wv, Coords c, float3 rw, /* io */ float
     v->y = 2 * vw.y - v->y;
     v->z = 2 * vw.z - v->z;
 }
+// end::interface[]
