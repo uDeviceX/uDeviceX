@@ -15,7 +15,7 @@ void run(long ts, long te) {
 #if   defined(FORCE_NONE)
     ini_none(/**/ &fpar);
 #elif defined(FORCE_CONSTANT)
-    FParam_cste_d par;
+    FParam_cste_v par;
     float ex, ey, ez;
     os::env2float_d("FORCE_PAR_EX", 1, &ex);
     os::env2float_d("FORCE_PAR_EY", 0, &ey);
@@ -23,19 +23,19 @@ void run(long ts, long te) {
     par.a = make_float3(FORCE_PAR_A*ex, FORCE_PAR_A*ey, FORCE_PAR_A*ez);
     ini(par, /**/ &fpar);
 #elif defined(FORCE_DOUBLE_POISEUILLE)
-    FParam_dp_d par;
+    FParam_dp_v par;
     par.a = FORCE_PAR_A;
     ini(par, /**/ &fpar);    
 #elif defined(FORCE_SHEAR)
-    FParam_shear_d par;
+    FParam_shear_v par;
     par.a = FORCE_PAR_A;
     ini(par, /**/ &fpar);    
 #elif defined(FORCE_4ROLLER)
-    FParam_rol_d par;
+    FParam_rol_v par;
     par.a = FORCE_PAR_A;
     ini(par, /**/ &fpar);    
 #elif defined(FORCE_RADIAL)
-    FParam_rad_d par;
+    FParam_rad_v par;
     par.a = FORCE_PAR_A;
     ini(par, /**/ &fpar);    
 #else
