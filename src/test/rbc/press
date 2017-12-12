@@ -32,7 +32,7 @@ u.conf "$C" <<!
    $Rbc
    walls wall_creation=1000
    strt_dumps strt_freq=$inf
-   rbcs dt=1e-4 tend=0.11
+   dt=1e-4 tend=0.11
    run
 !
 :
@@ -48,9 +48,9 @@ u.conf "$C" <<!
    pushflu=false
    walls wall_creation=0
    RESTART=true
-   FORCE_CONSTANT FORCE_PAR_A=2.0
+   FORCE_CONSTANT FORCE_PAR_A=5.0
    strt_dumps strt_freq=$inf
-   tend=50 part_dumps part_freq=3000
+   tend=10 part_dumps part_freq=3000
    run
 !
 make0 > .make
@@ -62,8 +62,8 @@ u.conf "$C" <<!
    pushflu=false
    walls wall_creation=0
    RESTART=true
-   FORCE_CONSTANT FORCE_PAR_A=2.0
-   tend=50 part_dumps part_freq=3000
+   FORCE_CONSTANT FORCE_PAR_A=5.0
+   tend=10 part_dumps part_freq=3000
    run
 !
 make0 > .make
