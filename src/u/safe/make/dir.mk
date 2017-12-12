@@ -52,7 +52,7 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/rig                      && \
     d $B/rigid                    && \
     d $B/rnd                      && \
-    d $B/scheme/force/xforce      && \
+    d $B/scheme/force             && \
     d $B/scheme/move              && \
     d $B/scheme/restrain          && \
     d $B/scheme/restrain/sub      && \

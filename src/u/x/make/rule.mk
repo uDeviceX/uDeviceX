@@ -64,7 +64,7 @@ $B/rbc/stretch/imp.o: $S/rbc/stretch/imp.cu; $N -I$S/. -I$S/rbc/stretch
 $B/rig/imp.o: $S/rig/imp.cu; $N -I$S/. -I$S/rig
 $B/rigid/imp.o: $S/rigid/imp.cu; $N -I$S/. -I$S/rigid
 $B/rnd/imp.o: $S/rnd/imp.cpp; $X -I$S/. -I$S/rnd
-$B/scheme/force/xforce/imp.o: $S/scheme/force/xforce/imp.cu; $N -I$S/. -I$S/scheme/force/xforce
+$B/scheme/force/imp.o: $S/scheme/force/imp.cu; $N -I$S/. -I$S/scheme/force
 $B/scheme/move/imp.o: $S/scheme/move/imp.cu; $N -I$S/. -I$S/scheme/move
 $B/scheme/restrain/imp.o: $S/scheme/restrain/imp.cpp; $X -I$S/. -I$S/scheme/restrain
 $B/scheme/restrain/sub/imp.o: $S/scheme/restrain/sub/imp.cu; $N -I$S/. -I$S/scheme/restrain/sub

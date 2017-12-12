@@ -14,7 +14,7 @@ O = $B/algo/minmax/imp.o $B/algo/scan/imp.o $B/clist/imp.o $B/cnt/imp.o \
     $B/rbc/force/area_volume/imp.o $B/rbc/force/imp.o $B/rbc/gen/imp.o \
     $B/rbc/main/anti/imp.o $B/rbc/main/imp.o $B/rbc/rnd/api/imp.o \
     $B/rbc/rnd/imp.o $B/rbc/stretch/imp.o $B/rig/imp.o $B/rigid/imp.o $B/rnd/imp.o \
-    $B/scheme/force/xforce/imp.o $B/scheme/move/imp.o $B/scheme/restrain/imp.o \
+    $B/scheme/force/imp.o $B/scheme/move/imp.o $B/scheme/restrain/imp.o \
     $B/scheme/restrain/sub/imp.o $B/scheme/restrain/sub/stat/imp.o \
     $B/scheme/restrain/sub/sum/imp.o $B/sdf/bounce/imp.o $B/sdf/field/imp.o \
     $B/sdf/imp.o $B/sdf/label/imp.o $B/sim/imp.o $B/utils/cc.o $B/utils/efopen.o \
