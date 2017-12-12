@@ -52,6 +52,7 @@ static __device__ void bounce_back_1p(Wvel_d wv, Coords c, const tex3Dca texsdf,
     float phi, dphi, t;
     int l;
     r0 = *r;
+    // get previous position
     axpy(-dt, v, /**/ &r0);
 
     if (sdf(texsdf, r0.x, r0.y, r0.z) >= 0) {
