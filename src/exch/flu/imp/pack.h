@@ -9,12 +9,13 @@ void pack(const Cloud *cloud, /**/ Pack *p) {
     scan(NFRAGS, cc.d, /**/ ss.d);
 
     bag2Sarray(p->dpp, /**/ &fpp);
+
+    CC(d::MemsetAsync(p->counts_dev, 0, NFRAGS * sizeof(int)));
     
     KL( dev::collect_particles,
         ((nc+1) / 2, 32),
         (ss, (const Particle*) cloud->pp, p->bss, p->bcc, p->fss, p->cap, /**/ p->bii, fpp, p->counts_dev));
     
-
     if (multi_solvent) {
         bag2Sarray(p->dcc, /**/ &fcc);
 
@@ -31,14 +32,13 @@ static void copy(int n, const int counts[], const dBags *d, /**/ hBags *h) {
     for (i = 0; i < NFRAGS; ++i) {
         c = counts[i];
         sz = c * h->bsize;
-        d::MemcpyAsync(h->data[i], d->data[i], sz, D2H);
         if (c)
             CC(d::MemcpyAsync(h->data[i], d->data[i], sz, D2H));
     }
 }
 
 void download_data(Pack *p) {
-    int counts[26];
+    int counts[NFRAGS];
     size_t sz = sizeof(counts);
 
     CC(d::MemcpyAsync(counts, p->counts_dev, sz, D2H));
