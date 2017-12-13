@@ -26,6 +26,11 @@ Interface is splitted between host and device
 Host code is responsible for initialisation of `Wvel` and convert
 `Wvel` to a view at a given timestep.
 
+[source, c++]
+----
+include::{src}/wvel/imp.h[tag=interface]
+----
+
 === Device
 
 Device code contains the functions describing the field.
