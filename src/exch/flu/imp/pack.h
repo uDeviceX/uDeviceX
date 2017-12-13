@@ -32,22 +32,25 @@ static void copy(int n, const int counts[], const dBags *d, /**/ hBags *h) {
         c = counts[i];
         sz = c * h->bsize;
         d::MemcpyAsync(h->data[i], d->data[i], sz, D2H);
+        if (c)
+            CC(d::MemcpyAsync(h->data[i], d->data[i], sz, D2H));
     }
 }
 
 void download_data(Pack *p) {
     int counts[26];
+    size_t sz = sizeof(counts);
 
-    d::MemcpyAsync(counts, p->counts_dev, sizeof(counts), D2H);
+    CC(d::MemcpyAsync(counts, p->counts_dev, sz, D2H));
     dSync(); /* wait for counts memcpy */
 
     copy(NFRAGS, counts, &p->dpp, /**/ &p->hpp);
     if (multi_solvent)
         copy(NFRAGS, counts, &p->dcc, /**/ &p->hcc);
 
-    memcpy(p->hpp.counts, counts, sizeof(counts));
+    memcpy(p->hpp.counts, counts, sz);
     if (multi_solvent)
-        memcpy(p->hcc.counts, counts, sizeof(counts));
+        memcpy(p->hcc.counts, counts, sz);
 
     dSync(); /* wait for copy */
 }
