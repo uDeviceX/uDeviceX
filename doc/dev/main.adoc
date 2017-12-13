@@ -10,6 +10,7 @@ A list of coding conventions can be found link:conventions{lext}[here].
 == source code modules
 
 * prefix sum: link:modules/algo/scan{lext}[scan]
+* body forces: link:modules/bforce{lext}[bforce]
 * cell lists: link:modules/clist{lext}[clist]
 * multi solvent: link:modules/color/main{lext}[color]
 * generic communicator: link:modules/comm{lext}[comm]
