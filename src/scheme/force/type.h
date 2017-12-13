@@ -44,7 +44,7 @@ union BForceParam_v {
 
 /* structure containing parameters on host */
 
-struct BForce {
+struct BForce_v {
     BForceParam_v p;
     int type;
 };

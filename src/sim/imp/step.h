@@ -9,7 +9,7 @@ static void check_sizes() {
     UC(check_size(flu.q.n , MAX_PART_NUM)); 
 }
 
-void step(BForce *fpar, bool wall0, int it) {
+void step(BForce_v *bforce, bool wall0, int it) {
     UC(check_sizes());
     
     UC(distribute_flu(&flu));
@@ -22,7 +22,7 @@ void step(BForce *fpar, bool wall0, int it) {
 
     dump_diag0(it);
     dump_diag_after(it, wall0, solids0);
-    body_force(*fpar);
+    body_force(*bforce);
 
     restrain(it, /**/ &flu, &rbc);
     update_solvent(it, /**/ &flu);
@@ -31,7 +31,7 @@ void step(BForce *fpar, bool wall0, int it) {
 
     if (VCON && wall0) {
         sample(it, &flu, /**/ &vcont);
-        adjust(it, /**/ &vcont, fpar);
+        adjust(it, /**/ &vcont, bforce);
         log(it, &vcont);
     }
 

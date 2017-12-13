@@ -1,8 +1,8 @@
 void run_eq(long te) { /* equilibrate */
-    BForce fpar;
-    ini_none(/**/ &fpar);    
+    BForce_v bforce;
+    ini_none(/**/ &bforce);    
     bool wall0 = false;
-    for (long it = 0; it < te; ++it) step(&fpar, wall0, it);
+    for (long it = 0; it < te; ++it) step(&bforce, wall0, it);
     UC(distribute_flu(/**/ &flu));
 }
 
@@ -10,10 +10,10 @@ void run(long ts, long te) {
     long it; /* current timestep */
     dump_strt_templ(&wall); /* :TODO: is it the right place? */
 
-    BForce fpar;
+    BForce_v bforce;
     // TODO
 #if   defined(FORCE_NONE)
-    ini_none(/**/ &fpar);
+    ini_none(/**/ &bforce);
 #elif defined(FORCE_CONSTANT)
     BForce_cste_v par;
     float ex, ey, ez;
@@ -21,23 +21,23 @@ void run(long ts, long te) {
     os::env2float_d("FORCE_PAR_EY", 0, &ey);
     os::env2float_d("FORCE_PAR_EZ", 0, &ez);
     par.a = make_float3(FORCE_PAR_A*ex, FORCE_PAR_A*ey, FORCE_PAR_A*ez);
-    ini(par, /**/ &fpar);
+    ini(par, /**/ &bforce);
 #elif defined(FORCE_DOUBLE_POISEUILLE)
     BForce_dp_v par;
     par.a = FORCE_PAR_A;
-    ini(par, /**/ &fpar);    
+    ini(par, /**/ &bforce);    
 #elif defined(FORCE_SHEAR)
     BForce_shear_v par;
     par.a = FORCE_PAR_A;
-    ini(par, /**/ &fpar);    
+    ini(par, /**/ &bforce);    
 #elif defined(FORCE_4ROLLER)
     BForce_rol_v par;
     par.a = FORCE_PAR_A;
-    ini(par, /**/ &fpar);    
+    ini(par, /**/ &bforce);    
 #elif defined(FORCE_RADIAL)
     BForce_rad_v par;
     par.a = FORCE_PAR_A;
-    ini(par, /**/ &fpar);    
+    ini(par, /**/ &bforce);    
 #else
 #error FORCE_* is undefined
 #endif
@@ -45,7 +45,7 @@ void run(long ts, long te) {
     /* ts, te: time start and end */
     for (it = ts; it < te; ++it) {
         step2params(it - ts, &wall.vel, /**/ &wall.vview);
-        step(&fpar, walls, it);
+        step(&bforce, walls, it);
     }
     UC(distribute_flu(/**/ &flu));
 }
