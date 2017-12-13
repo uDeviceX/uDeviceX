@@ -1,8 +1,8 @@
 void body_force(Coords c, float mass, BForce fpar, int n, const Particle *pp, /**/ Force *ff) {
     int type;
-    BForce_v p;
+    BForceParam_v p;
     type = fpar.type;
-    p    = fpar.dev;
+    p    = fpar.p;
 
     switch (type) {
     case BODY_FORCE_V_NONE:
@@ -30,9 +30,9 @@ void body_force(Coords c, float mass, BForce fpar, int n, const Particle *pp, /*
 
 void adjust(float3 f, /**/ BForce *fpar) {
     int type;
-    BForce_v *p;
+    BForceParam_v *p;
     type = fpar->type;
-    p    = &fpar->dev;
+    p    = &fpar->p;
 
     switch (type) {
     case BODY_FORCE_V_NONE:

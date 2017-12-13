@@ -4,25 +4,25 @@ void ini_none(/**/ BForce *p) {
 
 void ini(BForce_cste_v par, /**/ BForce *p) {
     p->type = BODY_FORCE_V_CSTE;
-    p->dev.cste = par;
+    p->p.cste = par;
 }
 
 void ini(BForce_dp_v par, /**/ BForce *p) {
     p->type = BODY_FORCE_V_DP;
-    p->dev.dp = par;
+    p->p.dp = par;
 }
 
 void ini(BForce_shear_v par, /**/ BForce *p) {
     p->type = BODY_FORCE_V_SHEAR;
-    p->dev.shear = par;
+    p->p.shear = par;
 }
 
 void ini(BForce_rol_v par, /**/ BForce *p) {
     p->type = BODY_FORCE_V_ROL;
-    p->dev.rol = par;
+    p->p.rol = par;
 }
 
 void ini(BForce_rad_v par, /**/ BForce *p) {
     p->type = BODY_FORCE_V_RAD;
-    p->dev.rad = par;
+    p->p.rad = par;
 }

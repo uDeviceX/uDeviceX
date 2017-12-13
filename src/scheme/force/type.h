@@ -34,7 +34,7 @@ enum {
     BODY_FORCE_V_RAD
 };
 
-union BForce_v {
+union BForceParam_v {
     BForce_cste_v cste;
     BForce_dp_v dp;
     BForce_shear_v shear;
@@ -45,6 +45,6 @@ union BForce_v {
 /* structure containing parameters on host */
 
 struct BForce {
-    BForce_v dev;
+    BForceParam_v p;
     int type;
 };
