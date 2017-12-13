@@ -26,12 +26,12 @@ struct FParam_rad_v {
 };
 
 enum {
-    TYPE_V_NONE,
-    TYPE_V_CSTE,
-    TYPE_V_DP,
-    TYPE_V_SHEAR,
-    TYPE_V_ROL,
-    TYPE_V_RAD
+    BODY_FORCE_V_NONE,
+    BODY_FORCE_V_CSTE,
+    BODY_FORCE_V_DP,
+    BODY_FORCE_V_SHEAR,
+    BODY_FORCE_V_ROL,
+    BODY_FORCE_V_RAD
 };
 
 union FParam_v {
