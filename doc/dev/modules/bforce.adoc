@@ -2,17 +2,13 @@
 
 :src: ../../../src
 
-force field applied to particles
-
-== purpose
-
-body forces to external force to particles
+force applied to every particles
 
 == data structures
 
-data structures are separated into 2 kinds of data structures:
+Defined by two structures:
 
-* `BForce`, which contains all informations needed for the  force
+* `BForce`, contains all informations needed for the  force
   field. It is hold and maintained on host.
 * `BForce_v` (`BForce view`), containing only the information needed at
    a specific time. It is passed to device kernels.
