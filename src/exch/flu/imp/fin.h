@@ -1,9 +1,9 @@
 void fin(Pack *p) {
     for (int i = 0; i < NFRAGS; ++i) {
-        d::Free(p->bcc.d[i]);
-        d::Free(p->bss.d[i]);
-        d::Free(p->fss.d[i]);
-        d::Free(p->bii.d[i]);
+        CC(d::Free(p->bcc.d[i]));
+        CC(d::Free(p->bss.d[i]));
+        CC(d::Free(p->fss.d[i]));
+        CC(d::Free(p->bii.d[i]));
     }
     
     fin(PINNED_DEV, NONE, /**/ &p->hpp, &p->dpp);
@@ -12,7 +12,7 @@ void fin(Pack *p) {
 
     fin(PINNED_HST, NONE, /**/ &p->hfss, NULL);
 
-    d::Free(p->counts_dev);
+    CC(d::Free(p->counts_dev));
 }
 
 void fin(Comm *c) {

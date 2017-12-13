@@ -33,9 +33,13 @@ static void dump(Coords coords, rbc::Quants q, rbc::force::TicketT t) {
 }
 
 static int body_force(Coords coords, rbc::Quants q, Force *f) {
-    scheme::force::Param fpar;
-    fpar.a = FORCE_PAR_A;
-    scheme::force::main(coords, rbc_mass, fpar, q.n, q.pp, /**/ f);
+    BForce bf;
+    BForce_cste par;
+    BForce_v v;
+    par.a = make_float3(FORCE_PAR_A, 0, 0);
+    UC(ini(par, /**/ &bf));
+    UC(get_view(0, bf, /**/ &v));    
+    UC(body_force(coords, rbc_mass, v, q.n, q.pp, /**/ f));
     return 0;
 }
 

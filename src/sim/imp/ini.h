@@ -162,11 +162,11 @@ static void ini_wall(Wall *w) {
     p.gdot = WVEL_PAR_A;
     p.vdir = 0;
 
-#if   defined(WVEL_PAR_Y)
-    p.gdir = 1;
-#elif defined(WVEL_PAR_Z)
-    p.gdir = 2;
-#endif
+    p.gdir = 0;
+    if (WVEL_PAR_Y)
+        p.gdir = 1;
+    else if (WVEL_PAR_Z)
+        p.gdir = 2;
 #endif
     ini(p, vw);
 }

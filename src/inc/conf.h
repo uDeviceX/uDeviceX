@@ -8,7 +8,13 @@
 
 #ifndef WVEL_PAR_A
   #define WVEL_PAR_A (0.0)
+#endif
+
+#ifndef WVEL_PAR_Y
   #define WVEL_PAR_Y (false)
+#endif
+
+#ifndef WVEL_PAR_Z
   #define WVEL_PAR_Z (false)
 #endif
 

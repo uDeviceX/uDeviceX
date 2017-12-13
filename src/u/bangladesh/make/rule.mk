@@ -70,7 +70,6 @@ $B/scheme/restrain/imp.o: $S/scheme/restrain/imp.cpp; $X -I$S/. -I$S/scheme/rest
 $B/scheme/restrain/sub/imp.o: $S/scheme/restrain/sub/imp.cu; $N -I$S/. -I$S/scheme/restrain/sub
 $B/scheme/restrain/sub/stat/imp.o: $S/scheme/restrain/sub/stat/imp.cpp; $X -I$S/. -I$S/scheme/restrain/sub/stat
 $B/scheme/restrain/sub/sum/imp.o: $S/scheme/restrain/sub/sum/imp.cpp; $X -I$S/. -I$S/scheme/restrain/sub/sum
-$B/scheme/xforce/imp.o: $S/scheme/xforce/imp.cu; $N -I$S/. -I$S/scheme/xforce
 $B/sdf/bounce/imp.o: $S/sdf/bounce/imp.cu; $N -I$S/. -I$S/sdf/bounce
 $B/sdf/field/imp.o: $S/sdf/field/imp.cpp; $X -I$S/. -I$S/sdf/field
 $B/sdf/imp.o: $S/sdf/imp.cu; $N -I$S/. -I$S/sdf

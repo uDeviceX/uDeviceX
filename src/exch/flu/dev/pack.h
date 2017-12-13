@@ -39,7 +39,7 @@ __global__ void collect_particles(const int27 fragstart, const Particle *pp, con
         spid = src + lpid;
         fii.d[fid][dpid] = spid;
     }
-    if (gid + 1 == fragstart.d[fid + 1]) fnn[fid] = dst;    
+    if (gid + 1 == fragstart.d[fid + 1]) fnn[fid] = dst;
 }
 
 /* copy colors from bulk array ii to fragments to be exchanged */

@@ -37,10 +37,5 @@ void download(Pack *p) {
     if (global_ids)    memcpy(p->hii.counts, p->map.hcounts, sz);
     if (multi_solvent) memcpy(p->hcc.counts, p->map.hcounts, sz);
 
-    int nhalo, i, c;
-    for (i = nhalo = 0; i < NFRAGS; ++i) {
-        c = p->hpp.counts[i];
-        nhalo += c;
-    }
-    p->nhalo = nhalo;
+    p->nhalo = reduce(NFRAGS, p->hpp.counts);
 }

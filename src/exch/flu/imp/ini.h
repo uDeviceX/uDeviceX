@@ -9,12 +9,12 @@ void ini(int maxd, Pack *p) {
     for (i = 0; i < NFRAGS; ++i) {
         ncs[i] = nc = frag_ncell(i) + 1;
         sz = nc * sizeof(int);
-        d::Malloc((void**) &p->bcc.d[i], sz);
-        d::Malloc((void**) &p->bss.d[i], sz);
-        d::Malloc((void**) &p->fss.d[i], sz);
+        CC(d::Malloc((void**) &p->bcc.d[i], sz));
+        CC(d::Malloc((void**) &p->bss.d[i], sz));
+        CC(d::Malloc((void**) &p->fss.d[i], sz));
         
         sz = cap[i] * sizeof(int);
-        d::Malloc((void**) &p->bii.d[i], sz);
+        CC(d::Malloc((void**) &p->bii.d[i], sz));
     }
     ncs[BULK] = 0;
     
@@ -27,7 +27,7 @@ void ini(int maxd, Pack *p) {
     memcpy(p->hfss.counts, ncs, sizeof(ncs));
     
     sz = 26 * sizeof(int);
-    d::Malloc((void**) &p->counts_dev, sz);
+    CC(d::Malloc((void**) &p->counts_dev, sz));
 }
 
 void ini(MPI_Comm comm, /**/ Comm *c) {
