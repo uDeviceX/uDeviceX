@@ -48,6 +48,7 @@ struct BForce_v {
 };
 
 /* structure containing parameters on host */
+// tag::params[]
 
 /* constant force f */
 struct BForce_cste {
@@ -73,6 +74,8 @@ struct BForce_rol {
 struct BForce_rad {
     float a;
 };
+
+// end::params[]
 
 enum {
     BODY_FORCE_NONE,
