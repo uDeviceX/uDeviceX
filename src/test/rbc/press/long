@@ -4,7 +4,8 @@
 #### 3. detach cell from the wall
 # sTEST: rbc.press.long
 set -eu
-S=`pwd` C="$S/conf/poiseuille.h"
+S=`pwd` U=u/x C="$S/conf/poiseuille.h"
+cd "$S"/test/rbc/press
 :
 ae  ()   { awk "BEGIN {print $*}"; }
 make0 () { make clean && u.make -j; }
@@ -30,7 +31,7 @@ cp $c1          rbc.off
 cp "$S/data/sdf/yplates1/yplates.dat" sdf.dat
 Rbc="rbcs rbc_ids rbc_com_dumps RBC_STRESS_FREE RBCnv=$nv RBCtotArea=$area RBCtotVolume=$volume pushrbc"
 :
-u.conf "$C" <<!
+u.conf "$S" "$U" "$C" <<!
    MESH_SHIFT_CENTER
    $Rbc
    walls wall_creation=1000
