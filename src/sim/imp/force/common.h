@@ -1,13 +1,13 @@
 void body_force(long it, BForce bforce) {
     BForce_v view;
-    get_view(it, bforce, /**/ &view);
+    UC(get_view(it, bforce, /**/ &view));
 
     if (pushflu)
-        body_force(coords, flu_mass, view,  flu.q.n, flu.q.pp, /**/ flu.ff);
+        UC(body_force(coords, flu_mass, view,  flu.q.n, flu.q.pp, /**/ flu.ff));
     if (pushsolid && solids0)
-        body_force(coords, solid_mass, view, rig.q.n, rig.q.pp, /**/ rig.ff);
+        UC(body_force(coords, solid_mass, view, rig.q.n, rig.q.pp, /**/ rig.ff));
     if (pushrbc && rbcs)
-        body_force(coords, rbc_mass, view, rbc.q.n, rbc.q.pp, /**/ rbc.ff);
+        UC(body_force(coords, rbc_mass, view, rbc.q.n, rbc.q.pp, /**/ rbc.ff));
 }
 
 void forces_rbc (Rbc *r) {

@@ -21,23 +21,23 @@ void run(long ts, long te) {
     os::env2float_d("FORCE_PAR_EY", 0, &ey);
     os::env2float_d("FORCE_PAR_EZ", 0, &ez);
     par.a = make_float3(FORCE_PAR_A*ex, FORCE_PAR_A*ey, FORCE_PAR_A*ez);
-    ini(par, /**/ &bforce);
+    UC(ini(par, /**/ &bforce));
 #elif defined(FORCE_DOUBLE_POISEUILLE)
     BForce_dp par;
     par.a = FORCE_PAR_A;
-    ini(par, /**/ &bforce);    
+    UC(ini(par, /**/ &bforce));
 #elif defined(FORCE_SHEAR)
     BForce_shear par;
     par.a = FORCE_PAR_A;
-    ini(par, /**/ &bforce);    
+    UC(ini(par, /**/ &bforce));
 #elif defined(FORCE_4ROLLER)
     BForce_rol par;
     par.a = FORCE_PAR_A;
-    ini(par, /**/ &bforce);    
+    UC(ini(par, /**/ &bforce));
 #elif defined(FORCE_RADIAL)
     BForce_rad par;
     par.a = FORCE_PAR_A;
-    ini(par, /**/ &bforce);    
+    UC(ini(par, /**/ &bforce));
 #else
 #error FORCE_* is undefined
 #endif
