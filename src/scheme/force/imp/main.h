@@ -1,8 +1,8 @@
-void body_force(Coords c, float mass, BForce_v bforce, int n, const Particle *pp, /**/ Force *ff) {
+void body_force(Coords c, float mass, BForce_v view, int n, const Particle *pp, /**/ Force *ff) {
     int type;
     BForceParam_v p;
-    type = bforce.type;
-    p    = bforce.p;
+    type = view.type;
+    p    = view.p;
 
     switch (type) {
     case BODY_FORCE_V_NONE:
@@ -23,7 +23,7 @@ void body_force(Coords c, float mass, BForce_v bforce, int n, const Particle *pp
         KL(force, (k_cnf(n)), (c, p.rad, mass, n, pp, /**/ ff));
         break;
     default:
-        ERR("wrong type");
+        ERR("wrong type <%d>", type);
         break;
     };
 }
@@ -61,6 +61,7 @@ void get_view(long it, BForce bforce, /**/ BForce_v *view) {
 
     switch (type) {
     case BODY_FORCE_NONE:
+        view->type = BODY_FORCE_V_NONE;
         break;
     case BODY_FORCE_CSTE:
         get_view(p.cste, /**/ view);
