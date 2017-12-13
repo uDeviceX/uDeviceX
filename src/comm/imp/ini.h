@@ -1,7 +1,9 @@
 /* pinned allocation */
 
 static void alloc_counts(int n, /**/ int **hc) {
-    UC(emalloc(n * sizeof(int), (void**) hc));
+    size_t sz = n * sizeof(int);
+    UC(emalloc(sz, (void**) hc));
+    memset(*hc, 0, sz);
 }
 
 /* generic allocation */
