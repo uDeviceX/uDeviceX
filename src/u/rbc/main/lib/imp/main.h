@@ -37,9 +37,8 @@ static int body_force(Coords coords, rbc::Quants q, Force *f) {
     BForce_cste par;
     BForce_v v;
     par.a = make_float3(FORCE_PAR_A, 0, 0);
-    ini(par, /**/ &bf);
-    get_view(0, bf, /**/ &v);
-    
+    UC(ini(par, /**/ &bf));
+    UC(get_view(0, bf, /**/ &v));    
     UC(body_force(coords, rbc_mass, v, q.n, q.pp, /**/ f));
     return 0;
 }
