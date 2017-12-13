@@ -1,27 +1,27 @@
 /* "view" structures: to be passed to device funtions */
 
 /* constant force f */
-struct FParam_cste_v {
+struct BForce_cste_v {
     float3 a;
 };
 
 /* double poiseuille */
-struct FParam_dp_v {
+struct BForce_dp_v {
     float a;
 };
 
 /* shear force fx = a * (y - yc) */
-struct FParam_shear_v {
+struct BForce_shear_v {
     float a;
 };
 
 /* 4 rollers mill */
-struct FParam_rol_v {
+struct BForce_rol_v {
     float a;
 };
 
 /* radial force decaying as 1/r */
-struct FParam_rad_v {
+struct BForce_rad_v {
     float a;
 };
 
@@ -34,17 +34,17 @@ enum {
     BODY_FORCE_V_RAD
 };
 
-union FParam_v {
-    FParam_cste_v cste;
-    FParam_dp_v dp;
-    FParam_shear_v shear;
-    FParam_rol_v rol;
-    FParam_rad_v rad;
+union BForce_v {
+    BForce_cste_v cste;
+    BForce_dp_v dp;
+    BForce_shear_v shear;
+    BForce_rol_v rol;
+    BForce_rad_v rad;
 };
 
 /* structure containing parameters on host */
 
-struct FParam {
-    FParam_v dev;
+struct BForce {
+    BForce_v dev;
     int type;
 };

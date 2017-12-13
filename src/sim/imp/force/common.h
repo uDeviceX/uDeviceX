@@ -1,4 +1,4 @@
-void body_force(FParam fpar) {
+void body_force(BForce fpar) {
     if (pushflu)
         body_force(coords, flu_mass, fpar,  flu.q.n, flu.q.pp, /**/ flu.ff);
     if (pushsolid && solids0)

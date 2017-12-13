@@ -1,6 +1,6 @@
-void body_force(Coords c, float mass, FParam fpar, int n, const Particle *pp, /**/ Force *ff) {
+void body_force(Coords c, float mass, BForce fpar, int n, const Particle *pp, /**/ Force *ff) {
     int type;
-    FParam_v p;
+    BForce_v p;
     type = fpar.type;
     p    = fpar.dev;
 
@@ -28,9 +28,9 @@ void body_force(Coords c, float mass, FParam fpar, int n, const Particle *pp, /*
     };
 }
 
-void adjust(float3 f, /**/ FParam *fpar) {
+void adjust(float3 f, /**/ BForce *fpar) {
     int type;
-    FParam_v *p;
+    BForce_v *p;
     type = fpar->type;
     p    = &fpar->dev;
 
