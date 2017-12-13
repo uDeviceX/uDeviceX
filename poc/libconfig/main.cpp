@@ -10,25 +10,23 @@ struct Config {
 void conf_ini(/**/ Config *c);
 void conf_read_args(int argc, char **argv, /**/ Config *c);
 void conf_read_file(const char *fname, /**/ Config *c);
+void conf_lookup_int(const Config *c, const char *desc, int *a);
 void conf_destroy(/**/ Config *c);
 
 int main(int argc, char **argv) {
-    config_t cfg;
-    int i;
-    config_init(&cfg);
+    Config c;
 
-    for (i = 1; i < argc; ++i) {
-        printf("parsing %s\n", argv[i]);
-        config_read_string(&cfg, argv[i]);
-    }
-
+    conf_ini(&c);
+    conf_read_args(argc-1, argv + 1, &c);
+    conf_read_file("default.cfg", &c);
+    
     int a, b;
-    config_lookup_int(&cfg, "a", &a);
-    config_lookup_int(&cfg, "b", &b);
+    conf_lookup_int(&c, "a", &a);
+    conf_lookup_int(&c, "b", &b);
 
     printf("a = %d, b = %d\n", a, b);
     
-    config_destroy(&cfg);
+    conf_destroy(&c);
     return 0;
 }
 
@@ -57,6 +55,15 @@ void conf_read_args(int argc, char **argv, /**/ Config *c) {
 
 void conf_read_file(const char *fname, /**/ Config *c) {
     config_read_file(&c->file, fname);
+}
+
+static bool found(int s) {return s == CONFIG_TRUE;}
+
+void conf_lookup_int(const Config *c, const char *desc, int *a) {
+    int s;
+    s = config_lookup_int(&c->args, desc, a);
+    if ( found(s) ) return;
+    s = config_lookup_int(&c->file, desc, a);
 }
 
 void conf_destroy(/**/ Config *c) {
