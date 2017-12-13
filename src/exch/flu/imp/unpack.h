@@ -4,7 +4,8 @@ static void upload_data(int n, const hBags *h, /**/ dBags *d) {
     for (i = 0; i < n; ++i) {
         c = h->counts[i];
         sz = c * h->bsize;
-        d::MemcpyAsync(d->data[i], h->data[i], sz, H2D);
+        if (c)
+            CC(d::MemcpyAsync(d->data[i], h->data[i], sz, H2D));
     }
 }
 
