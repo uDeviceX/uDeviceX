@@ -26,8 +26,8 @@ cp              $cell           rbc.off
 cp              $cell0          rbc.stress.free
 u.stretch $A 5% $cell         > rbc.stretch
 :
-volume=`volume $cellt` : needs gitlab:off
-area=`area $cellt`
+volume=`off.volume $cellt` : needs gitlab:off
+area=`off.area $cellt`
 :
 XS=48 YS=24 ZS=24
 half () { awk -v n=$1 'BEGIN {print n/2}'; }

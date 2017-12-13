@@ -13,8 +13,8 @@ cell=data/cells/rbc/$nv.off
 cp              $cell           rbc.off
 u.stretch $A 5% $cell         > rbc.stretch
 cp $S/data/ic/ident             rbcs-ic.dat
-volume=`volume $cell` : needs gitlab:off
-area=`area $cell`
+volume=`off.volume $cell` : needs gitlab:off
+area=`off.area $cell`
 :
 x=24 y=16 z=16; echo 1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 > rbcs-ic.txt
 :

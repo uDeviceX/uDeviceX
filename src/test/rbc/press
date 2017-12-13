@@ -24,7 +24,7 @@ inf=999999999
 XS=12 YS=12 ZS=8
 c0=$S/data/cells/rbc/$nv.off
 c1=$S/data/cells/rbc/$nv.off
-volume=`volume $c1` area=`area $c1`
+volume=`off.volume $c1` area=`off.area $c1`
 cp $c0          rbc.stress.free
 cp $c1          rbc.off
 cp "$S/data/sdf/yplates1/yplates.dat" sdf.dat

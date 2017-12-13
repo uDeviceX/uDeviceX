@@ -10,7 +10,7 @@ cp $cell rbc.off
 :
 sph=1
 volume=`sphericity2volume $sph $cell` : needs gitlab.ethz.ch:mavt-cse/off
-area=`area $cell`
+area=`off.area $cell`
 :
 x=24 y=16 z=16; echo 1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 > rbcs-ic.txt
 :
