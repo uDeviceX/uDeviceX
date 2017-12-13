@@ -21,7 +21,7 @@ The parameters are listed in the following structures:
 
 [source, c++]
 ----
-include::{src}/scheme/force/imp.h[tag=params]
+include::{src}/scheme/force/type.h[tag=params]
 ----
 
 They are used to initialise the `BForce` object:

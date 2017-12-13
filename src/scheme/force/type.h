@@ -48,6 +48,7 @@ struct BForce_v {
 };
 
 /* structure containing parameters on host */
+
 // tag::params[]
 
 /* constant force f */
