@@ -4,6 +4,7 @@
 ./dev/gource.html: ./dev/gource.adoc 
 ./dev/main.html: ./dev/main.adoc 
 ./dev/modules/algo/scan.html: ./dev/modules/algo/scan.adoc 
+./dev/modules/bforce.html: ./dev/modules/bforce.adoc 
 ./dev/modules/clist.html: ./dev/modules/clist.adoc 
 ./dev/modules/color/main.html: ./dev/modules/color/main.adoc ./dev/modules/color/main.inc.adoc ./dev/modules/color/main.inc.adoc ./dev/modules/color/modules.inc.adoc ./dev/modules/color/modules.inc.adoc
 ./dev/modules/comm.html: ./dev/modules/comm.adoc 

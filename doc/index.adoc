@@ -8,6 +8,7 @@
 * link:./dev/gource{lext}[]
 * link:./dev/main{lext}[]
 * link:./dev/modules/algo/scan{lext}[]
+* link:./dev/modules/bforce{lext}[]
 * link:./dev/modules/clist{lext}[]
 * link:./dev/modules/color/main{lext}[]
 * link:./dev/modules/comm{lext}[]
