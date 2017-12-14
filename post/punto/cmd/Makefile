@@ -1,7 +1,7 @@
 BIN = $(HOME)/bin
 B = $(BIN)
 
-P = append bop circle util score score0
+P = append bop bop0 circle util score score0
 
 # prefix
 p = u.punto
