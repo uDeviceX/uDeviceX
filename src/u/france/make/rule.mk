@@ -76,9 +76,8 @@ $B/sdf/imp.o: $S/sdf/imp.cu; $N -I$S/. -I$S/sdf
 $B/sdf/label/imp.o: $S/sdf/label/imp.cu; $N -I$S/. -I$S/sdf/label
 $B/sim/imp.o: $S/sim/imp.cu; $N -I$S/. -I$S/sim
 $B/utils/cc.o: $S/utils/cc.cpp; $X -I$S/. -I$S/utils
-$B/utils/efopen.o: $S/utils/efopen.cpp; $X -I$S/. -I$S/utils
 $B/utils/error.o: $S/utils/error.cpp; $X -I$S/. -I$S/utils
-$B/utils/halloc.o: $S/utils/halloc.cpp; $X -I$S/. -I$S/utils
+$B/utils/imp.o: $S/utils/imp.cpp; $X -I$S/. -I$S/utils
 $B/utils/mc.o: $S/utils/mc.cpp; $X -I$S/. -I$S/utils
 $B/utils/os.o: $S/utils/os.cpp; $X -I$S/. -I$S/utils
 $B/wall/exch/imp.o: $S/wall/exch/imp.cpp; $X -I$S/. -I$S/wall/exch
