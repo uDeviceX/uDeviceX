@@ -4,7 +4,7 @@
 #include <vector_types.h>
 
 #include "utils/error.h"
-#include "utils/halloc.h"
+#include "utils/imp.h"
 
 #include "rbc/edg/imp.h"
 #include "msg.h"

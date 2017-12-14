@@ -11,7 +11,7 @@
 
 #include "utils/os.h"
 #include "utils/error.h"
-#include "utils/halloc.h"
+#include "utils/imp.h"
 #include "mpi/glb.h"
 #include "inc/type.h"
 #include "write/imp.h"

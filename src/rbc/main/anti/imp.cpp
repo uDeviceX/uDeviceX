@@ -5,7 +5,7 @@
 
 #include "msg.h"
 #include "utils/error.h"
-#include "utils/halloc.h"
+#include "utils/imp.h"
 
 #include "rbc/adj/type/common.h"
 #include "rbc/adj/type/hst.h"

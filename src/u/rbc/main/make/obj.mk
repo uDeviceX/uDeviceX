@@ -9,5 +9,5 @@ O = $B/d/api.o $B/glob/imp.o $B/io/bop/imp.o $B/io/com.o $B/io/diag.o \
     $B/scheme/force/imp.o $B/scheme/move/imp.o $B/scheme/restrain/imp.o \
     $B/scheme/restrain/sub/imp.o $B/scheme/restrain/sub/stat/imp.o \
     $B/scheme/restrain/sub/sum/imp.o $B/u/rbc/main/lib/imp.o \
-    $B/u/rbc/main/main.o $B/utils/cc.o $B/utils/efopen.o $B/utils/error.o \
-    $B/utils/halloc.o $B/utils/mc.o $B/utils/os.o
+    $B/u/rbc/main/main.o $B/utils/cc.o $B/utils/error.o $B/utils/imp.o \
+    $B/utils/mc.o $B/utils/os.o

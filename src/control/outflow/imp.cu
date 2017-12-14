@@ -4,7 +4,7 @@
 #include "inc/conf.h"
 
 #include "utils/error.h"
-#include "utils/halloc.h"
+#include "utils/imp.h"
 #include "utils/cc.h"
 #include "utils/kl.h"
 #include "d/api.h"

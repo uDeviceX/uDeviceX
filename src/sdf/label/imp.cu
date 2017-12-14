@@ -7,7 +7,7 @@
 #include "msg.h"
 #include "utils/cc.h"
 #include "utils/error.h"
-#include "utils/halloc.h"
+#include "utils/imp.h"
 
 #include "d/q.h"
 #include "d/ker.h"

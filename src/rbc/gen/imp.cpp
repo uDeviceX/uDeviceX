@@ -12,8 +12,8 @@
 #include "msg.h"
 
 #include "utils/error.h"
-#include "utils/halloc.h"
-#include "utils/efopen.h"
+#include "utils/imp.h"
+#include "utils/imp.h"
 #include "utils/mc.h"
 #include "mpi/wrapper.h"
 #include "mpi/glb.h"

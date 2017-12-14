@@ -6,7 +6,7 @@
 #include "mpi/glb.h"
 
 #include "utils/error.h"
-#include "utils/halloc.h"
+#include "utils/imp.h"
 
 #include "io/field/h5/imp.h"
 #include "io/field/xmf/imp.h"

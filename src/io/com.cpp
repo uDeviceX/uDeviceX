@@ -12,7 +12,7 @@
 #include "glob/type.h"
 #include "glob/imp.h"
 
-#include "utils/halloc.h"
+#include "utils/imp.h"
 #include "utils/os.h"
 #include "utils/error.h"
 
