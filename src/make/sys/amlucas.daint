@@ -10,6 +10,13 @@ MPI_LIBS     =
 HDF5_CXXFLAGS = -I${HDF5_DIR}/include
 HDF5_LIBS = -L${HDF5_DIR}/lib -Wl,-rpath -Wl,${HDF5_DIR}/lib -lhdf5
 
+libconfigL  = `pkg-config --libs-only-l libconfig`
+libconfigID = `pkg-config --variable=includedir libconfig`
+libconfigLD = `pkg-config --variable=libdir libconfig`
+
+LIBCONFIG_CXXFLAGS = -I${libconfigID}
+LIBCONFIG_LIBS     = -L${libconfigLD} -Wl,-rpath -Wl,${libconfigLD} ${libconfigL}
+
 NVCC_LIBS = -L${CRAY_CUDATOOLKIT_DIR}/lib64 -Wl,-rpath -Wl,${CRAY_CUDATOOLKIT_DIR}/lib64
 
 ARCH         = -arch compute_60 -code sm_60
