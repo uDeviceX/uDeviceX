@@ -1,5 +1,6 @@
 # TEST: build.0
 set -eu
+rm -fr abcd
 S=`pwd` U=u/x C="$S/conf/default.h"
 UDX=abcd S="$S" u.build $U "$C" <<!
 run
