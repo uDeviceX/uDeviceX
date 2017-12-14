@@ -47,7 +47,7 @@ void conf_read_args(int argc, char **argv, /**/ Config *cfg) {
     concatenate(argc, argv, /**/ args);
 
     if (!config_read_string(c, args))
-        ERR( "%s:%d - %s\n", config_error_file(c),
+        ERR( "arguments: %d - %s\n",
              config_error_line(c), config_error_text(c));
     
     delete[] args;    
