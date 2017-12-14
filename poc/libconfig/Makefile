@@ -4,7 +4,7 @@ CXXFLAGS += -Wall -O3
 CXXFLAGS += `pkg-config --cflags libconfig`
 
 libconfigL  = `pkg-config --libs-only-l libconfig`
-libconfigD  =`pkg-config --variable=libdir libconfig`
+libconfigD  = `pkg-config --variable=libdir libconfig`
 
 LDFLAGS += -L${libconfigD} -Wl,-rpath -Wl,${libconfigD} ${libconfigL}
 
