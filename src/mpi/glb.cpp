@@ -16,9 +16,26 @@ static const bool reorder = false;
 int rank, size, coords[d], dims[d];
 
 static void set_dims(int *argc, char ***argv) {
-    int i;
+    int i, d;
+    char **av;
+    int ac;
+
+    ac = *argc;
+    av = *argv;
+    
     dims[0] = dims[1] = dims[2] = 1;
-    for (i = 1; i < *argc && i <= 3; i++) dims[i - 1] = atoi((*argv)[i]);
+
+    d = 1;
+    for (i = 1; d > 0 && i < ac && i <= 3; i++) {
+        d = atoi(av[i]);
+        if (d > 0) dims[i - 1] = d;
+    }
+
+    ac -= i - 1;
+    av += i - 1;
+
+    *argc = ac;
+    *argv = av;
 }
 void ini(int *argc, char ***argv) {
     if (m::Init(argc, argv) != MPI_SUCCESS) {
