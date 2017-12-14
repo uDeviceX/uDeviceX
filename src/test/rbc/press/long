@@ -7,6 +7,7 @@ set -eu
 S=`pwd` U=u/x C="$S/conf/lina.h"
 cd "$S"/test/rbc/press
 ae  ()   { awk "BEGIN {print $*}"; }
+mv0 ()   { if test -d "$2"; then rm -r "$2"; fi; mv "$1" "$2"; }
 make0 () { make clean && u.make -j; }
 ic  () {
     local x y z cs si
@@ -43,7 +44,7 @@ wall () {
     ic
     u.strtdir
     sh runfile
-    mv r r.wall
+    mv0 r r.wall
 }
 down () {
     u.conf "$S" "$U" "$C" <<!
@@ -51,14 +52,15 @@ down () {
     pushflu=false
     walls wall_creation=0
     RESTART=true
-    FORCE_CONSTANT FORCE_PAR_A=10.0
+    FORCE_CONSTANT FORCE_PAR_A=$A
     strt_dumps strt_freq=$inf
     tend=2.1 part_freq=500
     run
 !
     make0 > .make
     FORCE_PAR_EX=0 FORCE_PAR_EY=-1 FORCE_PAR_EZ=0 sh runfile
-    mv r r.down
+    mv0 com com.down
+    mv0   r   r.down
 }
 up () {
     u.conf "$S" "$U" "$C" <<!
@@ -73,9 +75,10 @@ up () {
     make0 > .make
     FORCE_PAR_EX=0 FORCE_PAR_EY=1 FORCE_PAR_EZ=0 sh runfile
     mkdir -p r.up
-    mv r r.up/$A
+    mv0 r     r.up/$A
+    mv0 com com.up/$A
 }
 ini
 wall
-down
-A=1.0 up
+A=1e2 down
+A=0.0 up
