@@ -7,14 +7,23 @@
 
 #include "imp.h"
 
-void conf_ini(/**/ Config *c) {
-    config_init(&c->args);
-    config_init(&c->file);
+struct Config {
+    config_t args;
+    config_t file;
+};
+
+void conf_ini(/**/ Config **c) {
+    UC(emalloc(sizeof(Config), (void**) c));
+
+    Config *cfg = *c;
+    config_init(&cfg->args);
+    config_init(&cfg->file);
 }
 
 void conf_destroy(/**/ Config *c) {
     config_destroy(&c->args);
     config_destroy(&c->file);
+    UC(efree(c));
 }
 
 static void concatenate(int n, char **ss, /**/ char *a) {

@@ -14,7 +14,7 @@ int main(int argc, char **argv) {
     MSG("mpi size: %d", m::size);
 
     d::ini();
-    sim::ini();
+    sim::ini(argc, argv);
     if (RESTART) sim::sim_strt();
     else         sim::sim_gen();
     sim::fin();
