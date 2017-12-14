@@ -11,4 +11,10 @@ c=colors_solvent
 if ! match "$d"/$s-*.bop; then err "no bop files matching $1/$s-*.bop"; fi
 if ! match "$d"/$c-*.bop; then err "no bop files matching $1/$c-*.bop"; fi
 
-e bops2txts o "$d"/$s-*.bop -- "$d"/$c-*.bop
+t=/tmp/punto.bop.$$; trap 'e rm -r $t' 0 1 2 3 15
+if ! e mkdir "$t"; then err "fail to create dir `$s`"; fi
+
+e bops2txts "$t" "$d"/$s-*.bop -- "$d"/$c-*.bop
+if test $? -ne 0; then err 'bops2txts failed'; fi
+if ! match "$t"/$s-*.txt; then err "no txt files matching $t/$s-*.txt"; fi
+
