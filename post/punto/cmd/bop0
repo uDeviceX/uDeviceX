@@ -11,13 +11,11 @@ c=colors_solvent
 if ! match "$d"/$s-*.bop; then err "no bop files matching $1/$s-*.bop"; fi
 if ! match "$d"/$c-*.bop; then err "no bop files matching $1/$c-*.bop"; fi
 
-t=/tmp/punto.bop.$$; trap 'e rm -r $t' 0 1 2 3 15
-if ! e mkdir "$t"; then err "fail to create dir `$s`"; fi
+main0 () {
+    e bops2txts "$t" "$d"/$s-*.bop -- "$d"/$c-*.bop
+    if test $? -ne 0; then err 'bops2txts failed'; fi
 
-e bops2txts "$t" "$d"/$s-*.bop -- "$d"/$c-*.bop
-if test $? -ne 0; then err 'bops2txts failed'; fi
-
-if ! match "$t"/$s-*.txt; then err "no txt files matching $t/$s-*.txt"; fi
+    if ! match "$t"/$s-*.txt; then err "no txt files matching $t/$s-*.txt"; fi
 
 "${AWK-awk}" '
 function nxt_file() {return FNR == 1 && NR != 1}
@@ -25,3 +23,14 @@ BEGIN      { color = 7   }
 nxt_file() { printf "\n" }
            { print $1, $2, $3, $color }
 ' "$t"/$s-*.txt
+
+    e rm -r $t
+}
+
+main () {
+    t=/tmp/punto.bop.$$; trap 'e rm -r $t' 1 2 3 15
+    if ! e mkdir "$t"; then err "fail to create dir `$s`"; fi
+    main0 "$@"
+}
+
+main "$@"
