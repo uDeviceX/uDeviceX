@@ -6,7 +6,7 @@
 
 #include "msg.h"
 #include "d/api.h"
-#include "utils/halloc.h"
+#include "utils/imp.h"
 #include "utils/cc.h"
 #include "utils/kl.h"
 #include "utils/error.h"

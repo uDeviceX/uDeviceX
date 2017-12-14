@@ -9,7 +9,7 @@
 #include "ply.h"
 
 #include "utils/error.h"
-#include "utils/efopen.h"
+#include "utils/imp.h"
 
 #ifdef PLY_WRITE_ASCII
   #include "io/ply/ascii.h"

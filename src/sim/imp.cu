@@ -20,7 +20,7 @@
 #include "inc/def.h"
 #include "msg.h"
 #include "mpi/glb.h"
-#include "utils/halloc.h"
+#include "utils/imp.h"
 #include "utils/cc.h"
 #include "utils/mc.h"
 

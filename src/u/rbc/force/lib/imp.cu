@@ -6,7 +6,7 @@
 #include "inc/conf.h"
 
 #include "utils/error.h"
-#include "utils/halloc.h"
+#include "utils/imp.h"
 
 #include "d/api.h"
 #include "msg.h"

@@ -16,7 +16,7 @@
 #include "inc/dev.h"
 #include "inc/macro.h"
 
-#include "utils/halloc.h"
+#include "utils/imp.h"
 
 #include "glob/type.h"
 #include "wvel/type.h"

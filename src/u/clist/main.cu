@@ -10,7 +10,7 @@
 #include "inc/dev.h"
 #include "inc/type.h"
 #include "utils/error.h"
-#include "utils/halloc.h"
+#include "utils/imp.h"
 #include "utils/cc.h"
 
 #include "partlist/imp.h"

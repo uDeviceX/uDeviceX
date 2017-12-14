@@ -8,7 +8,7 @@
 #include "mpi/glb.h"
 #include "inc/type.h"
 #include "utils/error.h"
-#include "utils/efopen.h"
+#include "utils/imp.h"
 #include "diag.h"
 
 static float sq(float x) { return x*x; }
