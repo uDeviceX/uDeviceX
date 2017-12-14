@@ -74,7 +74,7 @@ up () {
 !
     make0 > .make
     FORCE_PAR_EX=0 FORCE_PAR_EY=1 FORCE_PAR_EZ=0 sh runfile
-    mkdir -p r.up
+    mkdir -p r.up com.up
     mv0 r     r.up/$A
     mv0 com com.up/$A
 }
