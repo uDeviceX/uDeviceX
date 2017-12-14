@@ -1,3 +1,30 @@
 #!/bin/sh
 
-echo 42
+set -eu
+
+. u.punto.util
+
+xl="$1"; shift; xh="$1"; shift
+yl="$1"; shift; yh="$1"; shift
+zl="$1"; shift; zh="$1"; shift
+
+"$AWK" -v xl=$xl -v xh=$xh \
+       -v yl=$yl -v yh=$yh \
+       -v zl=$zl -v zh=$zh \
+'
+    BEGIN { Empty = 1 }
+    function roi0(r, l, h) { return l < r && r < h }
+    function roi() {
+	x = $1; y = $2; z = $3
+	return roi0(x, xl, xh) && roi0(y, yl, yh) && roi0(z, zl, zh)
+    }
+    function nxt_snap() { return NF == 0    }
+    function msg(s)     { printf "%s\n", s | "cat >&2" }
+    nxt_snap()          {
+			  if (!Empty) printf "\n"
+			  else        msg("u.punto.roi: empty set")
+			  Empty = 1
+			  next
+			}
+    roi()               { Empty = 0; print }
+' "$@"

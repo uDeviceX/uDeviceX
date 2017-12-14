@@ -6,8 +6,8 @@
 [source, sh]
 ----
 v=1.7.1
-wget https://github.com/hyperrealm/libconfig/archive/v$v.tar.gz
-tar zxvf v$v.tar.gz
+wget https://hyperrealm.github.io/libconfig/dist/libconfig-$v.tar.gz
+tar zxvf libconfig-$v.tar.gz
 cd libconfig-$v
 ./configure --prefix=${HOME}/prefix/libconfig --disable-cxx
 make -j
