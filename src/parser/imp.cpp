@@ -7,10 +7,12 @@
 
 #include "imp.h"
 
+// tag::struct[]
 struct Config {
     config_t args;
     config_t file;
 };
+// end::struct[]
 
 void conf_ini(/**/ Config **c) {
     UC(emalloc(sizeof(Config), (void**) c));
