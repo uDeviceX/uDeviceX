@@ -21,7 +21,7 @@ static void concatenate(int n, char **ss, /**/ char *a) {
     char *s;
     a[0] = '\0';
 
-    for(int i = 0; i < argc; ++i) {
+    for(int i = 0; i < n; ++i) {
         s = ss[i];
         strcat(a, s);
         strcat(s, " ");
@@ -36,7 +36,6 @@ void conf_read_args(int argc, char **argv, /**/ Config *cfg) {
     UC(emalloc(MAX_CHAR * sizeof(char), (void **) &args));
 
     concatenate(argc, argv, /**/ args);
-    config_read_string(&c->args, args);
 
     if (!config_read_string(c, args))
         ERR( "%s:%d - %s\n", config_error_file(c),
@@ -65,13 +64,17 @@ void conf_lookup_int(const Config *c, const char *desc, int *a) {
 
 void conf_lookup_float(const Config *c, const char *desc, float *a) {
     int s;
-    s = config_lookup_float(&c->args, desc, a);
+    double d;
+    s = config_lookup_float(&c->args, desc, &d);
+    *a = d;
     if ( found(s) ) return;
-    s = config_lookup_float(&c->file, desc, a);
+
+    s = config_lookup_float(&c->file, desc, &d);
+    *a = d;
     if ( found(s) ) return;
 }
 
-void conf_lookup_bool(const Config *c, const char *desc, bool *a) {
+void conf_lookup_bool(const Config *c, const char *desc, int *a) {
     int s;
     s = config_lookup_bool(&c->args, desc, a);
     if ( found(s) ) return;
