@@ -1,9 +1,6 @@
-struct Config {
-    config_t args;
-    config_t file;
-};
+struct Config;
 
-void conf_ini(/**/ Config *c);
+void conf_ini(/**/ Config **c);
 void conf_destroy(/**/ Config *c);
 
 void conf_read_args(int argc, char **argv, /**/ Config *c);
