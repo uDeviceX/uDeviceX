@@ -16,5 +16,12 @@ if ! e mkdir "$t"; then err "fail to create dir `$s`"; fi
 
 e bops2txts "$t" "$d"/$s-*.bop -- "$d"/$c-*.bop
 if test $? -ne 0; then err 'bops2txts failed'; fi
+
 if ! match "$t"/$s-*.txt; then err "no txt files matching $t/$s-*.txt"; fi
 
+"${AWK-awk}" '
+function nxt_file() {return FNR == 1 && NR != 1}
+BEGIN      { color = 7   }
+nxt_file() { printf "\n" }
+           { print $1, $2, $3, $color }
+' "$t"/$s-*.txt
