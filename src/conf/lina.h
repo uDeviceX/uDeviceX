@@ -35,8 +35,6 @@
 
 /* FLOW TYPE */
 #define WVEL_FLAT               true
-#define driving_force           0.001
-#define           shear_y       true
 
 /* DUMPS */
 #define dump_all_fields         true
