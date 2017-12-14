@@ -4,7 +4,7 @@
 #### 3. detach cell from the wall
 # sTEST: rbc.press.long
 set -eu
-S=`pwd` U=u/x C="$S/conf/poiseuille.h"
+S=`pwd` U=u/x C="$S/conf/lina.h"
 cd "$S"/test/rbc/press
 ae  ()   { awk "BEGIN {print $*}"; }
 make0 () { make clean && u.make -j; }
@@ -28,7 +28,7 @@ ini () {
     cp $c0          rbc.stress.free
     cp $c1          rbc.off
     cp "$S/data/sdf/yplates1/yplates.dat" sdf.dat
-    Rbc="multi_solvent color_freq=100 rbcs rbc_ids rbc_com_dumps RBC_STRESS_FREE RBCnv=$nv RBCtotArea=$area RBCtotVolume=$volume pushrbc"
+    Rbc="rbc_ids rbc_com_dumps RBC_STRESS_FREE RBCnv=$nv RBCtotArea=$area RBCtotVolume=$volume pushrbc"
     Domain="XS=$XS YS=$YS ZS=$ZS"
 }
 wall () {
@@ -53,7 +53,7 @@ down () {
     RESTART=true
     FORCE_CONSTANT FORCE_PAR_A=2.0
     strt_dumps strt_freq=$inf
-    tend=2.1 part_dumps part_freq=200
+    tend=2.1 part_freq=200
     run
 !
     make0 > .make
@@ -67,7 +67,7 @@ up () {
     walls wall_creation=0
     RESTART=true
     FORCE_CONSTANT FORCE_PAR_A=$A
-    tend=2.1 part_dumps part_freq=200
+    tend=2.1 part_freq=200
     run
 !
     make0 > .make
