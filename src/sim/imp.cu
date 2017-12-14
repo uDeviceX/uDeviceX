@@ -4,6 +4,8 @@
 #include <curand_kernel.h>
 #include "inc/conf.h"
 
+#include "parser/imp.h"
+
 #include "utils/error.h"
 #include "utils/os.h"
 
