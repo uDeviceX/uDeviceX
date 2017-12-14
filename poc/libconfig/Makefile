@@ -1,13 +1,16 @@
-CXX=g++
+CXX = g++
 
-LIBCONFIG = ${HOME}/prefix/libconfig
-
-CXXFLAGS= -Wall -O3
+CXXFLAGS += -Wall -O3
 CXXFLAGS += `pkg-config --cflags libconfig`
-LDFLAGS  += `pkg-config --libs libconfig`
+
+libconfigL  = `pkg-config --libs-only-l libconfig`
+libconfigD  =`pkg-config --variable=libdir libconfig`
+
+LDFLAGS += -L${libconfigD} -Wl,-rpath -Wl,${libconfigD} ${libconfigL}
 
 main: main.cpp
 	$(CXX) $(CXXFLAGS) -o $@ $< $(LDFLAGS)
 
-.PHONY: clean
+.PHONY: clean test
 clean: ; rm -rf main
+test:  ; atest main.cpp
