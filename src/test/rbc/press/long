@@ -10,7 +10,7 @@ ae  ()   { awk "BEGIN {print $*}"; }
 make0 () { make clean && u.make -j; }
 ic  () {
     local x y z cs si
-    x=`ae $XS/2` y=3 z=`ae $ZS/2`
+    x=`ae $XS/2` y=`ae $YS/2` z=`ae $ZS/2`
     cs=0 si=1
     echo 1   0    0  $x \
 	 0 $cs -$si  $y \
@@ -19,16 +19,16 @@ ic  () {
     > rbcs-ic.txt
 }
 ini () {
-    nv=642
     inf=999999999
-    XS=12 YS=12 ZS=12
+    nv=2562
+    XS=20 YS=20 ZS=20
     c0=$S/data/cells/rbc/$nv.off
     c1=$S/data/cells/rbc/$nv.off
     volume=`off.volume $c1` area=`off.area $c1`
     cp $c0          rbc.stress.free
     cp $c1          rbc.off
     cp "$S/data/sdf/yplates1/yplates.dat" sdf.dat
-    Rbc="rbc_ids rbc_com_dumps RBC_STRESS_FREE RBCnv=$nv RBCtotArea=$area RBCtotVolume=$volume pushrbc"
+    Rbc="dt=1e-4 rbc_ids rbc_com_dumps RBC_STRESS_FREE RBCnv=$nv RBCtotArea=$area RBCtotVolume=$volume pushrbc"
     Domain="XS=$XS YS=$YS ZS=$ZS"
 }
 wall () {
@@ -53,7 +53,7 @@ down () {
     RESTART=true
     FORCE_CONSTANT FORCE_PAR_A=2.0
     strt_dumps strt_freq=$inf
-    tend=2.1 part_freq=200
+    tend=2.1 part_freq=500
     run
 !
     make0 > .make
@@ -67,7 +67,7 @@ up () {
     walls wall_creation=0
     RESTART=true
     FORCE_CONSTANT FORCE_PAR_A=$A
-    tend=2.1 part_freq=200
+    tend=2.1 part_freq=500
     run
 !
     make0 > .make
