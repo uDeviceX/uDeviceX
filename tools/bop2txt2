@@ -1,4 +1,5 @@
 # transient interface to bop2txt
+set -e
 
 usg () {
     printf \
