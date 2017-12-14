@@ -1,3 +1,14 @@
 #!/bin/sh
 
-echo 42
+. u.punto.util
+prog=u.punto.bop0
+
+d="$1"; shift
+
+s=solvent
+c=colors_solvent
+
+if ! match "$d"/$s-*.bop; then err "no bop files matching $1/$s-*.bop"; fi
+if ! match "$d"/$c-*.bop; then err "no bop files matching $1/$c-*.bop"; fi
+
+e bops2txts o "$d"/$s-*.bop -- "$d"/$c-*.bop
