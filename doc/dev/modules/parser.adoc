@@ -6,9 +6,9 @@
 
 * wrapper for the `libconfig` library
 * holds configurations from 3 sources:
-** arguments (priority 1)
+** arguments (priority 3)
 ** configuration file (priority 2)
-** default parameters (priority 3)
+** default parameters (priority 1)
 
 When retrieving a value, the source with higher priority is used.
 If not found in a source, the value is retrieved from the next highest
