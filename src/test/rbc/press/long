@@ -51,7 +51,7 @@ down () {
     pushflu=false
     walls wall_creation=0
     RESTART=true
-    FORCE_CONSTANT FORCE_PAR_A=2.0
+    FORCE_CONSTANT FORCE_PAR_A=10.0
     strt_dumps strt_freq=$inf
     tend=2.1 part_freq=500
     run

@@ -1,3 +1,14 @@
 #!/bin/sh
 
+. u.punto.util
+
+usg () {
+    msg "$prog"' [BOP DIR]'
+    msg 'convert a directory with bop files to punto format'
+    exit
+}
+
+prog=u.punto.bop
+if test $# -ne 0 -a "$1" = -h; then usg; fi
+
 exec u.punto.bop0 "$@"
