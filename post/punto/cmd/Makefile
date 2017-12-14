@@ -1,7 +1,7 @@
 BIN = $(HOME)/bin
 B = $(BIN)
 
-P = append awk awk0 bop bop0 circle util score score0
+P = append awk awk0 bop bop0 circle util roi score score0
 
 # prefix
 p = u.punto
