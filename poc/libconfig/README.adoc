@@ -2,6 +2,7 @@
 
 == installation
 
+=== from source
 [source, sh]
 ----
 git clone git@github.com:hyperrealm/libconfig.git
@@ -10,6 +11,12 @@ autoreconf
 ./configure --prefix=${HOME}/prefix/libconfig
 make -j
 make install
+----
+
+=== from apt
+[source, sh]
+----
+sudo apt install libconfig-dev
 ----
 
 == pkgconfig
@@ -27,4 +34,3 @@ export PKG_CONFIG_PATH=${PKG_CONFIG_PATH}:${HOME}/prefix/libconfig/lib/pkgconfig
 ----
 export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${HOME}/prefix/libconfig/lib
 ----
-
