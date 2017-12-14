@@ -33,8 +33,9 @@ static void concatenate(int n, char **ss, /**/ char *a) {
     for(int i = 0; i < n; ++i) {
         s = ss[i];
         strcat(a, s);
-        strcat(s, " ");
-    }    
+        strcat(a, " ");
+    }
+    printf("%s\n", a);
 }
 
 void conf_read_args(int argc, char **argv, /**/ Config *cfg) {
