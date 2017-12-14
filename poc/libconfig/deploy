@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# install libconfig to derectory $p
+# install libconfig to directory $p
 
 set -eu
 
