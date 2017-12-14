@@ -72,8 +72,6 @@ cat solid_diag_0000.txt | awk '{print $2, $5, $8}' | uscale 5 > sdiag.out.txt
 #### two solids around cylinder with one solid removed by the wall on 2 ranks
 # nTEST: solid.t5
 rm -rf h5 bop diag.txt solid_diag.txt
-export PATH=../tools:$PATH
-(cd ../cmd; make ) > /dev/null
 cp data/sdf/cyl1/cyl.dat sdf.dat
 cp data/rig/sphere_R1.ply mesh_solid.ply
 x=0.75 y=3 z=9; echo $x $y $z >  rigs-ic.txt

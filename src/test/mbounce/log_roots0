@@ -1,7 +1,5 @@
 #### sphere in a flow at rest, no fsi
 # sTEST: mbounce.t0
-export PATH=../tools:$PATH
-(cd ../cmd; make ) > /dev/null
 rm -rf h5 bop diag.txt solid_diag.txt
 echo -e "8 16 8" > rigs-ic.txt
 cp data/rig/sphere.ply mesh_solid.ply
@@ -20,8 +18,6 @@ cat solid_diag_0000.txt | awk '{print $2, $5, $8}' | uscale 5 > sdiag.out.txt
 
 #### Double poiseuille non pinned sphere
 # nTEST: mbounce.t1
-export PATH=../tools:$PATH
-(cd ../cmd; make ) > /dev/null
 rm -rf h5 bop diag.txt solid_diag.txt
 echo -e "8 16 8" > rigs-ic.txt
 cp data/rig/sphere.ply mesh_solid.ply

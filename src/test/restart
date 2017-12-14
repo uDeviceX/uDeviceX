@@ -62,8 +62,6 @@ u.avgh5 0 u 1 h5/flowfields-0000.h5 | uscale 0.1 > h5.out.txt
 #### RBC in a periodic box
 # nTEST: rstrt.t3
 rm -rf bop diag.txt h5 r rbc.off
-export PATH=../tools:$PATH
-(cd ../cmd; make ) > /dev/null
 :
 cp data/cells/rbc/498.off rbc.off
 x=0.75 y=8 z=12; echo 1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 > rbcs-ic.txt
@@ -93,8 +91,6 @@ ply2punto r/00003.ply | uscale 100 > ply.out.txt
 #### two RBCs around cylinder with one RBC removed by the wall
 # nTEST: rstrt.t4
 rm -rf bop diag.txt h5 ply rbc.off bin.1 bin.2
-export PATH=../tools:$PATH
-(cd ../cmd; make ) > /dev/null
 :
 cp data/cells/rbc/498.off rbc.off
 cp data/sdf/cyl1/cyl.dat  sdf.dat
@@ -125,8 +121,6 @@ ply2punto r/00001.ply | uscale 100 > ply.out.txt
 
 #### 3 rigid ellipsoids in double poiseuille, contact
 # nTEST: rstrt.t5
-export PATH=../tools:$PATH
-(cd ../cmd; make ) > /dev/null
 :
 cp data/cells/rbc/498.off rbc.off
 rm -rf h5 diag.txt solid_diag.txt
