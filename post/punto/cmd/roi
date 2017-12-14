@@ -1,0 +1,6 @@
+#!/bin/sh
+
+. u.punto.util
+
+u.punto.roi0 "$@"
+
