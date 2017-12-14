@@ -1,7 +1,5 @@
 CXX=g++
 
-LIBCONFIG = ${HOME}/prefix/libconfig
-
 CXXFLAGS= -Wall -O3
 CXXFLAGS += `pkg-config --cflags libconfig`
 LDFLAGS  += `pkg-config --libs libconfig`
