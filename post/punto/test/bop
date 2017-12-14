@@ -1,0 +1,2 @@
+# TEST: bop
+u.punto.bop data/bop | awk 'NR % 100 == 0' > bop.out.txt
