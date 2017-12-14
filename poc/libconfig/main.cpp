@@ -24,7 +24,7 @@ int main(int argc, char **argv) {
     conf_lookup_int(&c, "a", &a);
     conf_lookup_int(&c, "b", &b);
 
-    printf("a = %d, b = %d\n", a, b);
+    printf("%d\n%d\n", a, b);
     
     conf_destroy(&c);
     return 0;
@@ -70,3 +70,19 @@ void conf_destroy(/**/ Config *c) {
     config_destroy(&c->args);
     config_destroy(&c->file);
 }
+
+/*
+
+# TEST: default.t0
+make -s
+./main > res.out.txt
+
+# TEST: b.t0
+make -s
+./main b=4 > res.out.txt
+
+# TEST: ab.t0
+make -s
+./main a=2 b=4 > res.out.txt
+
+*/
