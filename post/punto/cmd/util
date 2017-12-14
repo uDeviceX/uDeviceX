@@ -10,3 +10,5 @@ e () {
 
 msg () { echo >&2 "$*"; }
 err () { msg "$prog: $@"; exit 2; }
+
+match () { test -f "$1"; }

@@ -1,0 +1,4 @@
+60023
+DATA_FILE: solvent-00041.values
+DATA_FORMAT: float
+VARIABLES: x y z vx vy vz
