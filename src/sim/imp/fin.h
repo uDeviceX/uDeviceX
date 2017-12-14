@@ -153,6 +153,7 @@ void fin() {
     if (rbcs) fin_rbc(/**/ &rbc);
 
     UC(fin_coords(/**/ &coords));
-    
+
+    conf_destroy(config);
     datatype::fin();
 }
