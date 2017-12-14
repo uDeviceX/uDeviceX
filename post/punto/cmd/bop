@@ -8,8 +8,6 @@ usg () {
     exit
 }
 
-match () { test -f "$1"; }
-
 prog=u.punto.bop
 if test $# -ne 0 -a "$1" = -h; then usg; fi
 
