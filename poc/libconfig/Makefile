@@ -11,5 +11,6 @@ LDFLAGS += -L${libconfigD} -Wl,-rpath -Wl,${libconfigD} ${libconfigL}
 main: main.cpp
 	$(CXX) $(CXXFLAGS) -o $@ $< $(LDFLAGS)
 
-.PHONY: clean
+.PHONY: clean test
 clean: ; rm -rf main
+test:  ; atest main.cpp
