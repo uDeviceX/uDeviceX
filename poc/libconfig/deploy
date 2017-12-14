@@ -18,6 +18,6 @@ make check
 
 echo
 echo '****** add to ~/.bashrc ******'
-echo 'PKG_CONFIG_PATH=$PKG_CONFIG_PATH:'"$p0"
+echo 'PKG_CONFIG_PATH=$PKG_CONFIG_PATH:'"$p0/lib/pkgconfig"
 echo 'export PKG_CONFIG_PATH'
 echo '******************************'
