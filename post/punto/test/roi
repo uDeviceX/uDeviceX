@@ -1,0 +1,2 @@
+# TEST: roi
+u.punto.roi -2 2  -2 2  -2 2 data/center.txt > roi.out.txt
