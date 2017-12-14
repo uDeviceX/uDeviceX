@@ -37,6 +37,7 @@ static void set_dims(int *argc, char ***argv) {
     *argc = ac;
     *argv = av;
 }
+
 void ini(int *argc, char ***argv) {
     if (m::Init(argc, argv) != MPI_SUCCESS) {
         fprintf(stderr, ": m::Init failed\n");

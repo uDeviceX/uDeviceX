@@ -11,6 +11,7 @@ void conf_ini(/**/ Config *c);
 void conf_read_args(int argc, char **argv, /**/ Config *c);
 void conf_read_file(const char *fname, /**/ Config *c);
 void conf_lookup_int(const Config *c, const char *desc, int *a);
+
 void conf_destroy(/**/ Config *c);
 
 int main(int argc, char **argv) {
@@ -20,11 +21,16 @@ int main(int argc, char **argv) {
     conf_read_args(argc-1, argv + 1, &c);
     conf_read_file("default.cfg", &c);
     
-    int a, b;
+    int a, b, x, y;
+    
     conf_lookup_int(&c, "a", &a);
     conf_lookup_int(&c, "b", &b);
 
+    conf_lookup_int(&c, "p.x", &x);
+    conf_lookup_int(&c, "p.y", &y);
+
     printf("%d\n%d\n", a, b);
+    printf("%d\n%d\n", x, y);
     
     conf_destroy(&c);
     return 0;
@@ -53,8 +59,12 @@ void conf_read_args(int argc, char **argv, /**/ Config *c) {
     delete[] args;    
 }
 
-void conf_read_file(const char *fname, /**/ Config *c) {
-    config_read_file(&c->file, fname);
+void conf_read_file(const char *fname, /**/ Config *cfg) {
+    config_t *c = &cfg->file;
+
+    if (!config_read_file(c, fname))
+        fprintf(stderr, "%s:%d - %s\n", config_error_file(c),
+                config_error_line(c), config_error_text(c));
 }
 
 static bool found(int s) {return s == CONFIG_TRUE;}
@@ -64,7 +74,10 @@ void conf_lookup_int(const Config *c, const char *desc, int *a) {
     s = config_lookup_int(&c->args, desc, a);
     if ( found(s) ) return;
     s = config_lookup_int(&c->file, desc, a);
+    if ( found(s) ) return;
+    printf("could not find <%s>\n", desc);
 }
+
 
 void conf_destroy(/**/ Config *c) {
     config_destroy(&c->args);
@@ -84,5 +97,9 @@ make -s
 # TEST: ab.t0
 make -s
 ./main a=2 b=4 > res.out.txt
+
+# TEST: p.t0
+make -s
+./main p = {x=34 y=68} > res.out.txt
 
 */
