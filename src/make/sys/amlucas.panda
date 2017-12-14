@@ -10,4 +10,12 @@ HDF5_CXXFLAGS = -I${HDF5_DIR}/include
 HDF5_LIBS     = -L${HDF5_DIR}/lib -Wl,-rpath -Wl,${HDF5_DIR}/lib -lhdf5
 NVCC_LIBS = -L${NVCC_DIR}/lib64 -Wl,-rpath -Wl,${NVCC_DIR}/lib64
 
+libconfigL  = `pkg-config --libs-only-l libconfig`
+libconfigI  = `pkg-config --variable=includedir libconfig`
+libconfigD  = `pkg-config --variable=libdir libconfig`
+
+LIBCONFIG_CXXFLAGS = -I${libconfigI}
+LIBCONFIG_LIBS     = -L${libconfigD} -Wl,-rpath -Wl,${libconfigD} ${libconfigL}
+
+
 CXXFLAGS += -Wall -Wextra -Wno-unused-parameter -Wno-unused-function
