@@ -179,7 +179,7 @@ static void ini_objinter(MPI_Comm cart, /**/ ObjInter *o) {
 
 void ini(int argc, char **argv) {
     datatype::ini();
-    conf_ini(&config);
+    UC(conf_ini(&config));
 
     UC(ini_coords(m::cart, /**/ &coords));
     
