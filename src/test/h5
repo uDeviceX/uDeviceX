@@ -1,5 +1,4 @@
 # TEST: h5.t0
-(cd ..; make ) > /dev/null
 u.conf0 u/h5
 { make clean && u.make -j; } > .make.log
 :
