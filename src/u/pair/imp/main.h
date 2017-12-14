@@ -81,7 +81,7 @@ void main0() {
 }
 
 int main(int argc, char **argv) {
-    m::ini(argc, argv);
+    m::ini(&argc, &argv);
     main0();
     m::fin();
 }

@@ -15,15 +15,30 @@ static int periods[d] = {true, true, true};
 static const bool reorder = false;
 int rank, size, coords[d], dims[d];
 
-static void set_dims(int argc, char **argv) {
-    int i;
-    dims[0] = dims[1] = dims[2] = 1;
-    for (i = 1; i < argc && i <= 3; i++) dims[i - 1] = atoi(argv[i]);
-}
-void ini(int argc, char **argv) {
-    set_dims(argc, argv);
+static void set_dims(int *argc, char ***argv) {
+    int i, d;
+    char **av;
+    int ac;
 
-    if (m::Init(&argc, &argv) != MPI_SUCCESS) {
+    ac = *argc;
+    av = *argv;
+    
+    dims[0] = dims[1] = dims[2] = 1;
+
+    d = 1;
+    for (i = 1; d > 0 && i < ac && i <= 3; i++) {
+        d = atoi(av[i]);
+        if (d > 0) dims[i - 1] = d;
+    }
+
+    ac -= i - 1;
+    av += i - 1;
+
+    *argc = ac;
+    *argv = av;
+}
+void ini(int *argc, char ***argv) {
+    if (m::Init(argc, argv) != MPI_SUCCESS) {
         fprintf(stderr, ": m::Init failed\n");
         exit(2);
     }
@@ -32,6 +47,8 @@ void ini(int argc, char **argv) {
         exit(2);
     }
 
+    set_dims(argc, argv);
+    
     MC(m::Comm_rank(MPI_COMM_WORLD,   &rank));
     MC(m::Comm_size(MPI_COMM_WORLD,   &size));
     MC(m::Cart_create(MPI_COMM_WORLD, d, dims, periods, reorder,   &m::cart));

@@ -21,7 +21,7 @@ void main0() {
 }
 
 int main(int argc, char **argv) {
-    m::ini(argc, argv);
+    m::ini(&argc, &argv);
     MSG("mpi size: %d", m::size);
     main0();
     MSG("Hello world!");

@@ -62,7 +62,7 @@ void foo(int kind) {
 }
 
 int main(int argc, char **argv) {
-    m::ini(argc, argv);
+    m::ini(&argc, &argv);
 
     const char *ckind = getenv("ERR_KIND");
     int k = atoi(ckind);

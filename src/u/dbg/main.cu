@@ -68,7 +68,7 @@ void check() {
 }
 
 int main(int argc, char **argv) {
-    m::ini(argc, argv);
+    m::ini(&argc, &argv);
     alloc();
     fill_bugs();
     check();

@@ -65,7 +65,7 @@ void ini_part(/**/ Part *p) {
 void main2() {
     Part p;
     ini_part(/**/ &p);
-    m::ini(argc, argv);
+    m::ini(&argc, &argv);
     UC(main1(&p));
     m::fin();
 }

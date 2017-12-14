@@ -59,7 +59,7 @@ static void main1() {
 }
 
 int main(int argc, char **argv) {
-    m::ini(argc, argv);
+    m::ini(&argc, &argv);
     main1();
     m::fin();
 }

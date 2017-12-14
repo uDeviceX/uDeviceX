@@ -10,7 +10,7 @@
 #include "sim/imp.h"
 
 int main(int argc, char **argv) {
-    m::ini(argc, argv);
+    m::ini(&argc, &argv);
     MSG("mpi size: %d", m::size);
 
     d::ini();
