@@ -154,6 +154,6 @@ void fin() {
 
     UC(fin_coords(/**/ &coords));
 
-    conf_destroy(config);
+    UC(conf_destroy(config));
     datatype::fin();
 }
