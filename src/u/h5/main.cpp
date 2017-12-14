@@ -70,7 +70,7 @@ void main0(const char *path) {
 void main1() {
     const char *path;
     path = argv[argc - 1]; lshift();
-    m::ini(argc, argv);
+    m::ini(&argc, &argv);
     main0(path);
     m::fin();
 }

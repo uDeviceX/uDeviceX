@@ -47,7 +47,7 @@ void compare(const hBags *sb, const hBags *rb) {
 }
 
 int main(int argc, char **argv) {
-    m::ini(argc, argv);
+    m::ini(&argc, &argv);
     MSG("mpi size: %d", m::size);
     MSG("Comm unit test!");
 

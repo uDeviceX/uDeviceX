@@ -31,7 +31,7 @@ void main1() {
     ic   = argv[argc - 1]; lshift();
     cell = argv[argc - 1]; lshift();
     if (eq(cell, "-h") || eq(ic, "-h")) usg();
-    m::ini(argc, argv);
+    m::ini(&argc, &argv);
     run(cell, ic);
     m::fin();
 }

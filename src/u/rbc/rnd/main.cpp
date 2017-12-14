@@ -46,7 +46,7 @@ void main1() {
 }
 
 void main2() {
-    m::ini(argc, argv);
+    m::ini(&argc, &argv);
     MSG("mpi size: %d", m::size);
     main1();
     m::fin();

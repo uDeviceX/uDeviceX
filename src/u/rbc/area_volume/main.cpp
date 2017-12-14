@@ -7,7 +7,7 @@
 #include "lib/imp.h"
 
 int main(int argc, char **argv) {
-    m::ini(argc, argv);
+    m::ini(&argc, &argv);
     run("rbc.off", "rbcs-ic.txt");
     m::fin();
 }

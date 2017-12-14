@@ -203,7 +203,7 @@ static void main8() {
     const char *path;
     path = argv[argc - 1]; lshift();
 
-    m::ini(argc, argv);
+    m::ini(&argc, &argv);
     main7(path);
     m::fin();
 }
