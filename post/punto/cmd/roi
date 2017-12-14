@@ -12,9 +12,7 @@ prog=u.punto.roi
 if test $# -ne 0 -a "$1" = -h; then usg; fi
 
 case $# in
-    0|1|2|3|4|5|6) err 'not enough arguments' ;;
+    0|1|2|3|4|5) err 'not enough arguments' ;;
 esac
-
-if ! test -r "$7"; then err "not a file '$7'"; fi
 
 exec u.punto.roi0 "$@"
