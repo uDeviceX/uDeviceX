@@ -1,0 +1,31 @@
+= parser
+
+:src: ../../../src
+
+== purpose
+
+* wrapper for the `libconfig` library
+* holds configurations from 3 sources:
+** arguments (priority 1)
+** configuration file (priority 2)
+** default parameters (priority 3)
+
+When retrieving a value, the source with higher priority is used.
+If not found in a source, the value is retrieved from the next highest
+priority.
+If no source contains the parmeter, an error is raised.
+
+== data structure
+
+[source, c++]
+----
+include::{src}/parser/imp.cpp[tag:struct]
+----
+
+== interface
+
+[source, c++]
+----
+include::{src}/parser/imp.h[tag:interface]
+----
+
