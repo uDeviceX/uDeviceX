@@ -8,7 +8,13 @@ usg () {
     exit
 }
 
+match () { test -f "$1"; }
+
 prog=u.punto.bop
 if test $# -ne 0 -a "$1" = -h; then usg; fi
+
+if test $# -eq 0; then err 'not enougth args'; fi
+if ! test -d "$1"; then err "not a directory $1"; fi
+if ! match "$1"/*.bop; then err "no bop files matching $1/*.bop"; fi
 
 exec u.punto.bop0 "$@"
