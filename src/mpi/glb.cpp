@@ -15,24 +15,32 @@ static int periods[d] = {true, true, true};
 static const bool reorder = false;
 int rank, size, coords[d], dims[d];
 
-static void set_dims(int *argc, char ***argv) {
-    int i, d;
-    char **av;
-    int ac;
+static void shift(int *argc, char ***argv) {
+    (*argc)--;
+    (*argv)++;
+}
 
+static void set_dims(int *argc, char ***argv) {
+    int i, d, ac;
+    char **av;
+
+    // default values
+    dims[0] = dims[1] = dims[2] = 1;
+    
     ac = *argc;
     av = *argv;
-    
-    dims[0] = dims[1] = dims[2] = 1;
+
+    // skip executable
+    shift(&ac, &av);
 
     d = 1;
-    for (i = 1; d > 0 && i < ac && i <= 3; i++) {
-        d = atoi(av[i]);
-        if (d > 0) dims[i - 1] = d;
+    for (i = 0; d > 0 && ac > 0 && i <= 3; i++) {
+        d = atoi(av[0]);
+        if (d > 0) {
+            dims[i] = d;
+            shift(&ac, &av);
+        }
     }
-
-    ac -= i - 1;
-    av += i - 1;
 
     *argc = ac;
     *argv = av;
