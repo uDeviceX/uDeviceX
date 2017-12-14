@@ -19,13 +19,13 @@ If no source contains the parmeter, an error is raised.
 
 [source, c++]
 ----
-include::{src}/parser/imp.cpp[tag:struct]
+include::{src}/parser/imp.cpp[tag=struct]
 ----
 
 == interface
 
 [source, c++]
 ----
-include::{src}/parser/imp.h[tag:interface]
+include::{src}/parser/imp.h[tags=interface]
 ----
 

@@ -15,6 +15,7 @@
 * link:./dev/modules/distr{lext}[]
 * link:./dev/modules/d{lext}[]
 * link:./dev/modules/fluforces{lext}[]
+* link:./dev/modules/parser{lext}[]
 * link:./dev/modules/partlist{lext}[]
 * link:./dev/modules/sdf{lext}[]
 * link:./dev/modules/utils/main{lext}[]
