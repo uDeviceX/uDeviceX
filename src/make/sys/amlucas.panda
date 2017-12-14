@@ -11,8 +11,8 @@ HDF5_LIBS     = -L${HDF5_DIR}/lib -Wl,-rpath -Wl,${HDF5_DIR}/lib -lhdf5
 NVCC_LIBS = -L${NVCC_DIR}/lib64 -Wl,-rpath -Wl,${NVCC_DIR}/lib64
 
 libconfigL  = `pkg-config --libs-only-l libconfig`
-libconfigID  = `pkg-config --variable=includedir libconfig`
-libconfigLD  = `pkg-config --variable=libdir libconfig`
+libconfigID = `pkg-config --variable=includedir libconfig`
+libconfigLD = `pkg-config --variable=libdir libconfig`
 
 LIBCONFIG_CXXFLAGS = -I${libconfigID}
 LIBCONFIG_LIBS     = -L${libconfigLD} -Wl,-rpath -Wl,${libconfigLD} ${libconfigL}
