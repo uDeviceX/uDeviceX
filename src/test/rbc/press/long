@@ -2,7 +2,7 @@
 #### 1. generate wall
 #### 2. press cell to the wall
 #### 3. detach cell from the wall
-# cTEST: rbc.press.long
+# sTEST: rbc.press.long
 set -eu
 S=`pwd` U=u/x C="$S/conf/poiseuille.h"
 cd "$S"/test/rbc/press
@@ -10,7 +10,7 @@ ae  ()   { awk "BEGIN {print $*}"; }
 make0 () { make clean && u.make -j; }
 ic  () {
     local x y z cs si
-    x=`ae 0.5*$XS` y=`ae 0.5*$YS` z=`ae 0.8*$ZS`
+    x=`ae $XS/2` y=3 z=`ae $ZS/2`
     cs=0 si=1
     echo 1   0    0  $x \
 	 0 $cs -$si  $y \
@@ -21,7 +21,7 @@ ic  () {
 ini () {
     nv=642
     inf=999999999
-    XS=12 YS=12 ZS=8
+    XS=12 YS=12 ZS=12
     c0=$S/data/cells/rbc/$nv.off
     c1=$S/data/cells/rbc/$nv.off
     volume=`off.volume $c1` area=`off.area $c1`
@@ -29,11 +29,11 @@ ini () {
     cp $c1          rbc.off
     cp "$S/data/sdf/yplates1/yplates.dat" sdf.dat
     Rbc="rbcs rbc_ids rbc_com_dumps RBC_STRESS_FREE RBCnv=$nv RBCtotArea=$area RBCtotVolume=$volume pushrbc"
+    Domain="XS=$XS YS=$YS ZS=$ZS"
 }
 wall () {
     u.conf "$S" "$U" "$C" <<!
-    MESH_SHIFT_CENTER
-    $Rbc
+    MESH_SHIFT_CENTER $Rbc $Domain
     walls wall_creation=1000
     strt_dumps strt_freq=$inf
     tend=0.11
@@ -43,12 +43,11 @@ wall () {
     ic
     u.strtdir
     sh runfile
+    mv r r.wall
 }
 down () {
     u.conf "$S" "$U" "$C" <<!
-    MESH_SHIFT_CENTER
-    rbcs rbc_ids rbc_com_dumps RBC_STRESS_FREE
-    $Rbc
+    MESH_SHIFT_CENTER $Rbc $Domain
     pushflu=false
     walls wall_creation=0
     RESTART=true
@@ -63,8 +62,7 @@ down () {
 }
 up () {
     u.conf "$S" "$U" "$C" <<!
-    MESH_SHIFT_CENTER
-    $Rbc
+    MESH_SHIFT_CENTER $Rbc $Domain
     pushflu=false
     walls wall_creation=0
     RESTART=true
