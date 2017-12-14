@@ -2,5 +2,19 @@
 
 . u.punto.util
 
-u.punto.roi0 "$@"
+usg () {
+    msg "$prog"' xl xh   yl yh   zl zh [PUNTO FILE]'
+    msg '[r]egion [o]f [i]nterest'
+    exit
+}
 
+prog=u.punto.roi
+if test $# -ne 0 -a "$1" = -h; then usg; fi
+
+case $# in
+    0|1|2|3|4|5|6) err 'not enough arguments' ;;
+esac
+
+if ! test -r "$7"; then err "not a file '$7'"; fi
+
+exec u.punto.roi0 "$@"
