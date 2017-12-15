@@ -85,7 +85,7 @@ FILE* efopen(const char *p, const char *m) {
     FILE *f;
     f = fopen(p, m);
     if (f == NULL) {
-        fprintf(stderr, "ply2punto: fail to open %s\n", p);
+        fprintf(stderr, "ply2off: fail to open %s\n", p);
         exit(2);
     }
     return f;
