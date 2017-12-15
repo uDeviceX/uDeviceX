@@ -2,7 +2,7 @@
 
 #include "msg.h"
 #include "mpi/glb.h"
-#include "utils/errors.h"
+#include "utils/error.h"
 #include "parser/imp.h"
 
 int main(int argc, char **argv) {
