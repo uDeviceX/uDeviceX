@@ -181,7 +181,7 @@ void ini(int argc, char **argv) {
     datatype::ini();
 
     UC(conf_ini(&config));
-    // UC(conf_read(argc, argv, /**/ config));
+    UC(conf_read(argc, argv, /**/ config));
     
     UC(ini_coords(m::cart, /**/ &coords));
     
