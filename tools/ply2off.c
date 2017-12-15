@@ -107,6 +107,10 @@ void help(int c, const char** a) {
 
 int main(int argc, const char** argv) {
     help(argc, argv);
+    if (argc != 2) {
+        fprintf(stderr, "ply2off: wrong number of arguments: %d\n", argc);
+        exit(2);
+    }
     file(argv[1]);
     return 0;
 }
