@@ -4,7 +4,7 @@
 #include <assert.h>
 
 void usg() {
-    fprintf(stderr, "ply2punto 1.ply 2.ply .. > punto.dat\n");
+    fprintf(stderr, "ply2off FILE.ply\n");
     exit(0);
 }
 
@@ -12,7 +12,7 @@ void usg() {
 #define NVAR  6 /* x, y, z, vx, vy, vz */
 FILE* fd;
 
-char line[1024]; /* a line from a file */
+char line[BUFSIZ]; /* a line from a file */
 int nv, nt; /* number of vertices and triangles */
 
 int commentp() { return strcmp("comment", line) == 0; }
@@ -21,7 +21,6 @@ void read_header() {
     nl(); /* ply */
     nl(); /* format binary_little_endian 1.0 */
     do nl(); while (commentp());
-    /* element vertex %nv% */
     sscanf(line, "element vertex %d\n", &nv);
     nl(); nl(); nl(); nl(); nl(); nl(); /* property float [xyzuvw] */
     nl(); sscanf(line, "element face %d\n", &nt);
@@ -85,7 +84,7 @@ FILE* efopen(const char *p, const char *m) {
     FILE *f;
     f = fopen(p, m);
     if (f == NULL) {
-        fprintf(stderr, "ply2punto: fail to open %s\n", p);
+        fprintf(stderr, "ply2off: fail to open %s\n", p);
         exit(2);
     }
     return f;
@@ -107,6 +106,10 @@ void help(int c, const char** a) {
 
 int main(int argc, const char** argv) {
     help(argc, argv);
+    if (argc != 2) {
+        fprintf(stderr, "ply2off: wrong number of arguments: %d\n", argc);
+        exit(2);
+    }
     file(argv[1]);
     return 0;
 }

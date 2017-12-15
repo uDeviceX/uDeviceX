@@ -23,7 +23,7 @@ ini () {
     local a b c
     inf=999999999
     nv=2562
-    XS=20 YS=20 ZS=20
+    XS=28 YS=28 ZS=28
     p=5.0 x0=0.5 ka=0.05 kb=0.0001 kd=0.002 kv=0.05 kbt=1e-7 gamma=0
     a="RBCp=$p RBCx0=$x0 RBCkb=$kb RBCgammaC=$gamma"
     b="RBCka=$ka RBCkv=$kv RBCkd=$kd"
@@ -87,4 +87,5 @@ up () {
 ini
 wall
 A=10.0 down
-A=0.0  up
+A=2.0  up
+ply2punto r.up/$A/*.ply    >   p
