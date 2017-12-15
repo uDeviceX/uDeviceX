@@ -4,10 +4,7 @@
 BEGIN {
     OK = 1
     f = ARGV[1]
-    head()
-    vert()
-    tri()
-    write()
+    head(); vert(); tri(); write()
 }
 
 function head() {
@@ -39,14 +36,14 @@ function write(   i) {
 	write0(i)
     }
 }
-
+function point(x, y, z, i) { print x, y, z, i }
 function write0(i) {
     decode_tri(f0[i], f1[i], f2[i])
-    print x0, y0, z0
-    print x1, y1, z1    
+    point(x0, y0, z0, i)
+    point(x1, y1, z1, i)
     printf "\n"
-    print x2, y2, z2
-    print x2, y2, z2
+    point(x2, y2, z2, i)
+    point(x2, y2, z2, i)
 }
 
 function decode_tri(f0, f1, f2) {
