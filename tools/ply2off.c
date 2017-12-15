@@ -12,7 +12,7 @@ void usg() {
 #define NVAR  6 /* x, y, z, vx, vy, vz */
 FILE* fd;
 
-char line[1024]; /* a line from a file */
+char line[BUFSIZ]; /* a line from a file */
 int nv, nt; /* number of vertices and triangles */
 
 int commentp() { return strcmp("comment", line) == 0; }
@@ -21,7 +21,6 @@ void read_header() {
     nl(); /* ply */
     nl(); /* format binary_little_endian 1.0 */
     do nl(); while (commentp());
-    /* element vertex %nv% */
     sscanf(line, "element vertex %d\n", &nv);
     nl(); nl(); nl(); nl(); nl(); nl(); /* property float [xyzuvw] */
     nl(); sscanf(line, "element face %d\n", &nt);
