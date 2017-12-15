@@ -1,11 +1,11 @@
 ### parse from opt file
-# cTEST: parse.opt.t0
+# TEST: opt.t0
 t=opt.cfg
 u=u/parser
 s=`pwd`
 echo "a=42"   >  $t
 echo "f=3.14" >> $t
-
+:
 u.conf "$s" "$u" "$s/conf/default.h" <<!
   run
 !
