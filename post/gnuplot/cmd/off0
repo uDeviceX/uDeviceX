@@ -1,3 +1,5 @@
 #!/bin/sh
 
-echo 42
+"${AWK-awk}" '
+{ print }
+' "$@"
