@@ -9,8 +9,9 @@
 
 // tag::struct[]
 struct Config {
-    config_t args;
-    config_t file;
+    config_t args; /* from arguments       */
+    config_t file; /* from additional file */
+    config_t def;  /* from default file    */
 };
 // end::struct[]
 
@@ -20,11 +21,13 @@ void conf_ini(/**/ Config **c) {
     Config *cfg = *c;
     config_init(&cfg->args);
     config_init(&cfg->file);
+    config_init(&cfg->def);
 }
 
 void conf_destroy(/**/ Config *c) {
     config_destroy(&c->args);
     config_destroy(&c->file);
+    config_destroy(&c->def);
     UC(efree(c));
 }
 
@@ -37,6 +40,14 @@ static void concatenate(int n, char **ss, /**/ char *a) {
         strcat(a, s);
         strcat(a, " ");
     }
+}
+
+void conf_read_file(const char *fname, /**/ Config *cfg) {
+    config_t *c = &cfg->file;
+
+    if (!config_read_file(c, fname))
+        ERR( "%s:%d - %s\n", config_error_file(c),
+             config_error_line(c), config_error_text(c));
 }
 
 void conf_read_args(int argc, char **argv, /**/ Config *cfg) {
@@ -55,14 +66,6 @@ void conf_read_args(int argc, char **argv, /**/ Config *cfg) {
     delete[] args;    
 }
 
-void conf_read_file(const char *fname, /**/ Config *cfg) {
-    config_t *c = &cfg->file;
-
-    if (!config_read_file(c, fname))
-        ERR( "%s:%d - %s\n", config_error_file(c),
-             config_error_line(c), config_error_text(c));
-}
-
 static bool found(int s) {return s == CONFIG_TRUE;}
 
 void conf_lookup_int(const Config *c, const char *desc, int *a) {
@@ -70,6 +73,8 @@ void conf_lookup_int(const Config *c, const char *desc, int *a) {
     s = config_lookup_int(&c->args, desc, a);
     if ( found(s) ) return;
     s = config_lookup_int(&c->file, desc, a);
+    if ( found(s) ) return;
+    s = config_lookup_int(&c->def, desc, a);
     if ( found(s) ) return;
 }
 
@@ -83,6 +88,10 @@ void conf_lookup_float(const Config *c, const char *desc, float *a) {
     s = config_lookup_float(&c->file, desc, &d);
     *a = d;
     if ( found(s) ) return;
+
+    s = config_lookup_float(&c->def, desc, &d);
+    *a = d;
+    if ( found(s) ) return;
 }
 
 void conf_lookup_bool(const Config *c, const char *desc, int *a) {
@@ -91,6 +100,8 @@ void conf_lookup_bool(const Config *c, const char *desc, int *a) {
     if ( found(s) ) return;
     s = config_lookup_bool(&c->file, desc, a);
     if ( found(s) ) return;
+    s = config_lookup_bool(&c->def, desc, a);
+    if ( found(s) ) return;
 }
 
 void conf_lookup_string(const Config *c, const char *desc, const char **a) {
@@ -98,5 +109,7 @@ void conf_lookup_string(const Config *c, const char *desc, const char **a) {
     s = config_lookup_string(&c->args, desc, a);
     if ( found(s) ) return;
     s = config_lookup_string(&c->file, desc, a);
+    if ( found(s) ) return;
+    s = config_lookup_string(&c->def, desc, a);
     if ( found(s) ) return;
 }
