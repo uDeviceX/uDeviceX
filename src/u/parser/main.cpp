@@ -7,12 +7,12 @@
 
 static void extract(const Config *c) {
     int a;
-    const char *s;
+    float f;
 
     UC(conf_lookup_int(c, "a", &a));
-    UC(conf_lookup_string(c, "s", &s));
+    UC(conf_lookup_float(c, "f", &f));
 
-    printf("%d %s\n", a, s);
+    printf("%d %g\n", a, f);
 }
 
 int main(int argc, char **argv) {
