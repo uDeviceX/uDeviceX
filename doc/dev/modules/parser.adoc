@@ -22,10 +22,14 @@ If no source contains the parmeter, an error is raised.
 include::{src}/parser/imp.cpp[tag=struct]
 ----
 
+Consists of an array of `config_t` descriptors, ordered by priority.
+Indices correspond to the `enum` keys.
+The first key has the highest priority, second key has second highest
+priority etc.
+
 == interface
 
 [source, c++]
 ----
 include::{src}/parser/imp.h[tags=interface]
 ----
-
