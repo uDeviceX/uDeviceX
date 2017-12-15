@@ -12,7 +12,7 @@ void usg() {
 #define NVAR  6 /* x, y, z, vx, vy, vz */
 FILE* fd;
 
-char line[1024]; /* a line from a file */
+char line[BUFSIZ]; /* a line from a file */
 int nv, nt; /* number of vertices and triangles */
 
 int commentp() { return strcmp("comment", line) == 0; }
