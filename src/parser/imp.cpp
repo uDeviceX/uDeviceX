@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <libconfig.h>
 
@@ -64,6 +65,16 @@ void conf_read_args(int argc, char **argv, /**/ Config *cfg) {
              config_error_line(c), config_error_text(c));
     
     delete[] args;    
+}
+
+void conf_read(int argc, char **argv, /**/ Config *cfg) {
+    char *home, defname[1024] = {0};
+    home = getenv("HOME");
+
+    strcpy(defname, home);
+    strcat(defname, "/.udx/default.cfg");
+
+    printf("%s\n", defname);
 }
 
 static bool found(int s) {return s == CONFIG_TRUE;}
