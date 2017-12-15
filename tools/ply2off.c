@@ -4,7 +4,7 @@
 #include <assert.h>
 
 void usg() {
-    fprintf(stderr, "ply2punto 1.ply 2.ply .. > punto.dat\n");
+    fprintf(stderr, "ply2off FILE.ply\n");
     exit(0);
 }
 
