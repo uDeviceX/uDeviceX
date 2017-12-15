@@ -4,8 +4,7 @@ struct Config;
 void conf_ini(/**/ Config **c);
 void conf_destroy(/**/ Config *c);
 
-void conf_read_args(int argc, char **argv, /**/ Config *c);
-void conf_read_file(const char *fname, /**/ Config *c);
+void conf_read(int argc, char **argv, /**/ Config *cfg);
 
 void conf_lookup_int(const Config *c, const char *desc, int *a);
 void conf_lookup_float(const Config *c, const char *desc, float *a);
