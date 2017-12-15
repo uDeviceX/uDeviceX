@@ -7,11 +7,24 @@ BEGIN {
     nxt(); if ($0 !~ "OFF") err("not an off file: " f)
     nxt();
     nv = $1; nf = $2
+    vert()
+    tri()
+}
+
+function vert(   i) {
     for (i = 0; i < nv && OK; i++) {
 	nxt()
 	x[i] = $1; y[i] = $2; z[i] = $3
-	print x[i], y[i], z[i]
     }
+    if (!OK) err("error reading vertices: " f)
+}
+
+function tri(   i) {
+    for (i = 0; i < nf && OK; i++) {
+	nxt()
+	f1[i] = $2; f2[i] = $3; f3[i] = $4
+    }
+    if (!OK) err("error reading faces: " f)
 }
 
 function nxt() {
