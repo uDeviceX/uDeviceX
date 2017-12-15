@@ -1,5 +1,37 @@
 #!/bin/sh
 
 "${AWK-awk}" '
-{ print }
+BEGIN {
+    OK = 1
+    f = ARGV[1]
+    nxt(); if ($0 !~ "OFF") err("not an off file: " f)
+    nxt();
+    nv = $1; nf = $2
+    for (i = 0; i < nv && OK; i++) {
+	nxt()
+	x[i] = $1; y[i] = $2; z[i] = $3
+	print x[i], y[i], z[i]
+    }
+}
+
+function nxt() {
+    for (;;) {
+	nxt0()
+	if (!OK) break
+	rm_comment()
+	if (!empty()) break
+    }
+}
+function nxt0(   rc) {
+    if (!OK) return
+    rc = getline < f > 0
+    if (!rc) {
+	OK = 0
+	return
+    }
+}
+function msg(s) { printf "u.gnuplot.off: %s\n", s | "cat >&2" }
+function err(s) { msg(s); exit 2 }
+function rm_comment() { gsub(/^#.*/, "") }
+function empty() { return length($0) == 0 }
 ' "$@"
