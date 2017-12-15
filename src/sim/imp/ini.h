@@ -179,8 +179,10 @@ static void ini_objinter(MPI_Comm cart, /**/ ObjInter *o) {
 
 void ini(int argc, char **argv) {
     datatype::ini();
-    UC(conf_ini(&config));
 
+    UC(conf_ini(&config));
+    // UC(conf_read(argc, argv, /**/ config));
+    
     UC(ini_coords(m::cart, /**/ &coords));
     
     UC(emalloc(3 * MAX_PART_NUM * sizeof(Particle), (void**) &a::pp_hst));
