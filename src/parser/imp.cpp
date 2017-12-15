@@ -5,6 +5,7 @@
 
 #include "utils/error.h"
 #include "utils/imp.h"
+#include "msg.h"
 
 #include "imp.h"
 
@@ -43,18 +44,16 @@ static void concatenate(int n, char **ss, /**/ char *a) {
     }
 }
 
-void conf_read_file(const char *fname, /**/ Config *cfg) {
-    config_t *c = &cfg->file;
-
+static void read_file(const char *fname, /**/ config_t *c) {
+    MSG("read config from <%s>", fname);
     if (!config_read_file(c, fname))
         ERR( "%s:%d - %s\n", config_error_file(c),
              config_error_line(c), config_error_text(c));
 }
 
-void conf_read_args(int argc, char **argv, /**/ Config *cfg) {
-    enum {MAX_CHAR = 100000};
+static void read_args(int argc, char **argv, /**/ config_t *c) {
+   enum {MAX_CHAR = 100000};
     char *args;
-    config_t *c = &cfg->args;
     
     UC(emalloc(MAX_CHAR * sizeof(char), (void **) &args));
 
@@ -64,17 +63,48 @@ void conf_read_args(int argc, char **argv, /**/ Config *cfg) {
         ERR( "arguments: %d - %s\n",
              config_error_line(c), config_error_text(c));
     
-    delete[] args;    
+    delete[] args;
+}
+
+static void shift(int *c, char ***v) {
+    (*c) --;
+    (*v) ++;
+}
+
+static int get_opt_file(int *argc, char ***argv, /**/ char fname[]) {
+    char *lastpnt, *a;
+    int differ;
+
+    if (*argc) {
+        a = (*argv)[0];
+        lastpnt = strrchr(a, '.');
+        
+        if (lastpnt != NULL) {
+            differ = strcmp(lastpnt, ".cfg");
+            if (differ) return 0;
+            strcpy(fname, a);
+            shift(argc, argv);
+            return 1;
+        }
+    }
+    return 0;
 }
 
 void conf_read(int argc, char **argv, /**/ Config *cfg) {
-    char *home, defname[1024] = {0};
+    char *home, defname[1024] = {0}, optname[1024];
     home = getenv("HOME");
 
     strcpy(defname, home);
     strcat(defname, "/.udx/default.cfg");
 
-    printf("%s\n", defname);
+    UC(read_file(defname, /**/ &cfg->def)); 
+    
+    if (get_opt_file(&argc, &argv, /**/ optname)) {
+        UC(read_file(optname, /**/ &cfg->file));
+    }
+
+    if (argc)
+        UC(read_args(argc, argv, /**/ &cfg->args));
 }
 
 static bool found(int s) {return s == CONFIG_TRUE;}
