@@ -11,7 +11,7 @@ mv0 ()   { if test -d "$2"; then rm -r "$2"; fi; mv "$1" "$2"; }
 make0 () { make clean && u.make -j; }
 ic  () {
     local x y z cs si
-    x=`ae $XS/2` y=`ae $YS/2` z=6
+    x=`ae $XS/2` y=6 z=`ae $ZS/2`
     cs=0 si=1
     echo 1   0    0  $x \
 	 0 $cs -$si  $y \
@@ -24,7 +24,7 @@ ini () {
     inf=999999999
     nv=2562
     XS=28 YS=28 ZS=28
-    p=5.0 x0=0.5 ka=0.05 kb=0.0001 kd=0.002 kv=0.05 kbt=1e-8 gamma=0
+    p=5.0 x0=0.5 ka=0.05 kb=0.0001 kd=0.002 kv=0.05 kbt=8.56e-6 gamma=1
     a="RBCp=$p RBCx0=$x0 RBCkb=$kb RBCgammaC=$gamma"
     b="RBCka=$ka RBCkv=$kv RBCkd=$kd"
     c="RBC_RND=false kBT=$kbt"
