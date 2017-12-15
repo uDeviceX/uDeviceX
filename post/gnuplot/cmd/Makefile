@@ -1,7 +1,7 @@
 BIN = $(HOME)/bin
 B = $(BIN)
 
-P = ply ply0
+P = off off0 ply ply0
 
 # prefix
 p = u.gnuplot

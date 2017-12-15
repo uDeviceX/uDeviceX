@@ -1,0 +1,74 @@
+#!/bin/sh
+
+"${AWK-awk}" '
+BEGIN {
+    OK = 1
+    f = ARGV[1]
+    head(); vert(); tri(); write()
+}
+
+function head() {
+    nxt(); if ($0 !~ "OFF") err("not an off file: " f)
+    nxt()
+    nv = $1; nf = $2
+    if (!OK) err("error reading header: " f)
+}
+
+function vert(   i) {
+    for (i = 0; i < nv && OK; i++) {
+	nxt()
+	x[i] = $1; y[i] = $2; z[i] = $3
+    }
+    if (!OK) err("error reading vertices: " f)
+}
+
+function tri(   i) {
+    for (i = 0; i < nf && OK; i++) {
+	nxt()
+	f0[i] = $2; f1[i] = $3; f2[i] = $4
+    }
+    if (!OK) err("error reading faces: " f)
+}
+
+function write(   i) {
+    for (i = 0; i < nf; i++) {
+	if (i != 0) printf "\n\n"
+	write0(i)
+    }
+}
+function point(x, y, z, i) { print x, y, z, i }
+function write0(i) {
+    decode_tri(f0[i], f1[i], f2[i])
+    point(x0, y0, z0, i)
+    point(x1, y1, z1, i)
+    printf "\n"
+    point(x2, y2, z2, i)
+    point(x2, y2, z2, i)
+}
+
+function decode_tri(f0, f1, f2) {
+    x0 = x[f0]; y0 = y[f0]; z0 = z[f0]
+    x1 = x[f1]; y1 = y[f1]; z1 = z[f1]
+    x2 = x[f2]; y2 = y[f2]; z2 = z[f2]
+}
+function nxt() {
+    for (;;) {
+	nxt0()
+	if (!OK) break
+	rm_comment()
+	if (!empty()) break
+    }
+}
+function nxt0(   rc) {
+    if (!OK) return
+    rc = getline < f > 0
+    if (!rc) {
+	OK = 0
+	return
+    }
+}
+function msg(s) { printf "u.gnuplot.off: %s\n", s | "cat >&2" }
+function err(s) { msg(s); exit 2 }
+function rm_comment() { gsub(/^#.*/, "") }
+function empty() { return length($0) == 0 }
+' "$@"

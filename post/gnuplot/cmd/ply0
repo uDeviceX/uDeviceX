@@ -1,3 +1,11 @@
 #!/bin/sh
 
-echo 42
+i="$1"; shift
+
+o=/tmp/gnuplot.$$.off; >$o
+trap 'rm -f $o' 1 2 3 15
+
+ply2off "$i" > $o
+cat $o
+
+rm -f $o
