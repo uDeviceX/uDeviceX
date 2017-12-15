@@ -88,3 +88,4 @@ ini
 wall
 A=10.0 down
 A=2.0  up
+ply2punto r.up/$A/*.ply    >   p
