@@ -9,6 +9,7 @@
 
 #include "imp.h"
 
+// tag::struct[]
 enum {
     ARG, /* from arguments       */
     OPT, /* from additional file */
@@ -16,7 +17,6 @@ enum {
     NCFG
 };
 
-// tag::struct[]
 struct Config {
     config_t c[NCFG];
 };
