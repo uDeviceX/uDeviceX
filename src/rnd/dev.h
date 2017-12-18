@@ -42,23 +42,14 @@ template<int N> __inline__ __device__ float __logistic_core( float x )
     float r = FMA( FMA( 8.0, x2, -8.0 ), x2, 1.0 );
     return __logistic_core < N - 2 > ( r );
 }
-template<int N> struct __logistic_core_flops_counter {
-    const static unsigned long long FLOPS = 5 + __logistic_core_flops_counter<N-2>::FLOPS;
-};
 
 template<> __inline__ __device__ float __logistic_core<1>( float x ) {
     return FMA( 2.0 * x, x, -1.0 );
 }
-template<> struct __logistic_core_flops_counter<1> {
-    const static unsigned long long FLOPS = 3;
-};
 
 template<> __inline__ __device__ float __logistic_core<0>( float x ) {
     return x;
 }
-template<> struct __logistic_core_flops_counter<0> {
-    const static unsigned long long FLOPS = 0;
-};
 
 inline __device__ float mean0var1ii( float seed, int u, int v )
 {
