@@ -79,17 +79,17 @@ static void ini_denoutflow(DCont **d, DContMap **m) {
     UC(ini(m));
 }
 
-static void ini_inflow(Inflow **i) {
+static void ini_inflow(Coords coords, Inflow **i) {
     int2 nc = make_int2(YS, ZS/2);
     ini(nc, /**/ i);
 
     // hack for now
-    // ini_params_plate(make_float3(0, YS/2, 0), 0, YS/2, ZS,
+    // ini_params_plate(coords, make_float3(0, YS/2, 0), 0, YS/2, ZS,
     //                  make_float3(10.f, 0, 0), true, false,
     //                   /**/ *i);
 
     float3 o = make_float3(INFLOW_CIRCLE_OX, INFLOW_CIRCLE_OY, INFLOW_CIRCLE_OZ);
-    ini_params_circle(o, INFLOW_CIRCLE_R, INFLOW_CIRCLE_H, INFLOW_CIRCLE_U, INFLOW_CIRCLE_POISEUILLE, /**/ *i);
+    ini_params_circle(coords, o, INFLOW_CIRCLE_R, INFLOW_CIRCLE_H, INFLOW_CIRCLE_U, INFLOW_CIRCLE_POISEUILLE, /**/ *i);
     
     ini_velocity(*i);
 }
@@ -191,7 +191,7 @@ void ini(int argc, char **argv) {
 
     if (VCON)    UC(ini_vcont(m::cart, /**/ &vcont));
     if (OUTFLOW) UC(ini_outflow(/**/ &outflow));
-    if (INFLOW)  UC(ini_inflow(/**/ &inflow));
+    if (INFLOW)  UC(ini_inflow(coords, /**/ &inflow));
     if (OUTFLOW_DEN) UC(ini_denoutflow(/**/ &denoutflow, &mapoutflow));
     
     if (rbcs || solids)
