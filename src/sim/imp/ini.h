@@ -62,7 +62,7 @@ static void ini_vcont(MPI_Comm comm, /**/ PidVCont *c) {
     UC(ini(comm, L, V, VCON_FACTOR, /**/ c));
 }
 
-static void ini_outflow(Outflow **o) {
+static void ini_outflow(Coords coords, Outflow **o) {
     UC(ini(MAX_PART_NUM, /**/ o));
 
     if (OUTFLOW_CIRCLE) {
@@ -70,7 +70,7 @@ static void ini_outflow(Outflow **o) {
         float3 c = make_float3(XS/2, YS/2, ZS/2);
         ini_params_circle(c, OUTFLOW_CIRCLE_R, /**/ *o);
     } else {
-        ini_params_plane(0, XS/2-1, *o);
+        ini_params_plane(coords, 0, XS/2-1, *o);
     }
 }
 
@@ -190,7 +190,7 @@ void ini(int argc, char **argv) {
     if (rbcs) UC(ini_rbc(m::cart, /**/ &rbc));
 
     if (VCON)    UC(ini_vcont(m::cart, /**/ &vcont));
-    if (OUTFLOW) UC(ini_outflow(/**/ &outflow));
+    if (OUTFLOW) UC(ini_outflow(coords, /**/ &outflow));
     if (INFLOW)  UC(ini_inflow(coords, /**/ &inflow));
     if (OUTFLOW_DEN) UC(ini_denoutflow(/**/ &denoutflow, &mapoutflow));
     
