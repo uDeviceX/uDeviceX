@@ -11,7 +11,7 @@ static float3 crop(float3 r, float3 lo, float3 hi) {
     return r;
 }
 
-void ini_params_plate(float3 o, int dir, float L1, float L2,
+void ini_params_plate(Coords c, float3 o, int dir, float L1, float L2,
                       float3 u, bool upoiseuille, bool vpoiseuille,
                       /**/ Inflow *i) {
     enum {X, Y, Z};
@@ -19,8 +19,6 @@ void ini_params_plate(float3 o, int dir, float L1, float L2,
     plate::VParams *vpp;
     float3 a, b, lo, hi;
     float3 co, ca, cb; // corners of the local plane : co (origin), ca, cb
-    int mi[3], L[3] = {XS, YS, ZS};
-    for (int c = 0; c < 3; ++c) mi[c] = (m::coords[c] + 0.5) * L[c];
 
     lo = make_float3(-XS/2, -YS/2, -ZS/2);
     hi = make_float3( XS/2,  YS/2,  ZS/2);
@@ -49,9 +47,7 @@ void ini_params_plate(float3 o, int dir, float L1, float L2,
     };
 
     // shift to local coordinates
-    o.x -= mi[X];
-    o.y -= mi[Y];
-    o.z -= mi[Z];
+    global2local(c, o, /**/ &o);
 
     co = ca = cb = o;
     add(&a, /**/ &ca);
