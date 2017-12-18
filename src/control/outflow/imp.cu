@@ -12,6 +12,9 @@
 #include "math/dev.h"
 #include "mpi/glb.h"
 
+#include "glob/type.h"
+#include "glob/imp.h"
+
 #include "inc/dev.h"
 #include "inc/type.h"
 

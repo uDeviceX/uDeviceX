@@ -14,20 +14,24 @@ static int is_plus(const int d[3]) {
 }
 
 static void get_interrank_infos(MPI_Comm cart, int fid, /**/ rnd::KISS* trunks[], bool masks[]) {
-    int coordsneighbor[3], c, indx[3], dstrank;
-    int seed, seed_base, seed_offset; 
+    int coordsneighbor[3], c, indx[3], rank, dstrank;
+    int seed, seed_base, seed_offset;
+    int dims[3], periods[3], coords[3];
     int d[3] = frag_i2d3(fid);
+
+    MC(m::Cart_get(cart, 3, dims, periods, coords));    
+    MC(m::Cart_rank(cart, coords, /**/ &rank));
     
     for (c = 0; c < 3; ++c)
-        coordsneighbor[c] = (m::coords[c] + d[c] + m::dims[c]) % m::dims[c];
+        coordsneighbor[c] = (coords[c] + d[c] + dims[c]) % dims[c];
 
-    MC(m::Cart_rank(cart, m::coords, /**/ &dstrank));
+    MC(m::Cart_rank(cart, coordsneighbor, /**/ &dstrank));
 
-    for ( c = 0; c < 3; ++c)
-        indx[c] = min(m::coords[c], coordsneighbor[c]) * m::dims[c] +
-            max(m::coords[c], coordsneighbor[c]);
+    for (c = 0; c < 3; ++c)
+        indx[c] = min(coords[c], coordsneighbor[c]) * dims[c] +
+            max(coords[c], coordsneighbor[c]);
 
-    seed_base = indx[0] + m::dims[0] * m::dims[0] * (indx[1] + m::dims[1] * m::dims[1] * indx[2]);
+    seed_base = indx[0] + dims[0] * dims[0] * (indx[1] + dims[1] * dims[1] * indx[2]);
 
     {
         int mysign = 2 * is_plus(d) - 1;
@@ -39,12 +43,15 @@ static void get_interrank_infos(MPI_Comm cart, int fid, /**/ rnd::KISS* trunks[]
 
     trunks[fid] = new rnd::KISS(390 + seed, seed + 615, 12309, 23094);
     
-    if (dstrank != m::rank)
-        masks[fid] = min(dstrank, m::rank) == m::rank;
+    if (dstrank != rank)
+        masks[fid] = min(dstrank, rank) == rank;
     else {
         int alter_ego = frag_anti(fid);
         masks[fid] = min(fid, alter_ego) == fid;
     }
+
+    // MSG("%d %d %d [%d %d %d]", fid, seed, masks[fid],
+    //     frag_i2dx(fid), frag_i2dy(fid), frag_i2dz(fid));
 }
 
 void ini(MPI_Comm cart, /**/ HaloData **hd) {

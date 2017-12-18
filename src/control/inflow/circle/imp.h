@@ -1,4 +1,4 @@
-void ini_params_circle(float3 o, float R, float H, float u, bool poiseuille,
+void ini_params_circle(Coords c, float3 o, float R, float H, float u, bool poiseuille,
                        /**/ Inflow *i) {
     enum {X, Y, Z};
     circle::Params *pp;
@@ -7,13 +7,7 @@ void ini_params_circle(float3 o, float R, float H, float u, bool poiseuille,
     pp  = &i->p.circle;
     vpp = &i->vp.circle;
 
-    float3 mi;
-    mi.x = (m::coords[X] + 0.5) * XS;
-    mi.y = (m::coords[Y] + 0.5) * YS;
-    mi.z = (m::coords[Z] + 0.5) * ZS;
-
-    // shift to local referential
-    axpy(-1.0, &mi, /**/ &o);
+    global2local(c, o, /**/ &o);
     
     pp->o = o;
     pp->R = R;

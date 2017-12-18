@@ -17,6 +17,7 @@
 #include "utils/cc.h"
 #include "utils/mc.h"
 
+#include "msg.h"
 #include "mpi/wrapper.h"
 #include "mpi/glb.h"
 #include "frag/imp.h"
