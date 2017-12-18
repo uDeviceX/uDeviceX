@@ -55,7 +55,7 @@ static __device__ Fo i2f(const int *ii, float *ff, int i) {
     return f;
 }
 
-static __device__ Fo sfrag2f(const flu::LFrag frag, float *ff, int i) {
+static __device__ Fo Lfrag2f(const flu::LFrag frag, float *ff, int i) {
     return i2f(frag.ii, ff, i);
 }
 
@@ -63,7 +63,7 @@ static __device__ void force3(const flu::LFrag afrag, const flu::RFrag bfrag, co
     forces::Pa p;
     Fo f;
     cloud_get(afrag.c, i, &p);
-    f = sfrag2f(afrag, ff, i);
+    f = Lfrag2f(afrag, ff, i);
     force2(bfrag, rnd, p, i, f);
 }
 
