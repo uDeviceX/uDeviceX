@@ -49,6 +49,9 @@ static void get_interrank_infos(MPI_Comm cart, int fid, /**/ rnd::KISS* trunks[]
         int alter_ego = frag_anti(fid);
         masks[fid] = min(fid, alter_ego) == fid;
     }
+
+    // MSG("%d %d %d [%d %d %d]", fid, seed, masks[fid],
+    //     frag_i2dx(fid), frag_i2dy(fid), frag_i2dz(fid));
 }
 
 void ini(MPI_Comm cart, /**/ HaloData **hd) {
