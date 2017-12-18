@@ -1,0 +1,38 @@
+### parse from opt file
+# TEST: parse.t0
+t=opt.cfg
+u=u/parser
+s=`pwd`
+echo "a=42"   >  $t
+echo "f=3.14" >> $t
+:
+u.conf "$s" "$u" "$s/conf/default.h" <<!
+  run
+!
+{ u.make clean && u.make -j; } > /dev/null
+./udx $t > parser.out.txt
+
+### parse from args
+# TEST: parse.t1
+u=u/parser
+s=`pwd`
+:
+u.conf "$s" "$u" "$s/conf/default.h" <<!
+  run
+!
+{ u.make clean && u.make -j; } > /dev/null
+./udx a=42 f=3.14 > parser.out.txt
+
+### parse from opt and args
+# TEST: parse.t2
+t=opt.cfg
+echo "a=42"   >  $t
+echo "f=3.14" >> $t
+u=u/parser
+s=`pwd`
+:
+u.conf "$s" "$u" "$s/conf/default.h" <<!
+  run
+!
+{ u.make clean && u.make -j; } > /dev/null
+./udx $t a=5 > parser.out.txt

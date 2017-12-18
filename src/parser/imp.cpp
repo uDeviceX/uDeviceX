@@ -10,10 +10,15 @@
 #include "imp.h"
 
 // tag::struct[]
+enum {
+    ARG, /* from arguments       */
+    OPT, /* from additional file */
+    DEF, /* from default file    */
+    NCFG
+};
+
 struct Config {
-    config_t args; /* from arguments       */
-    config_t file; /* from additional file */
-    config_t def;  /* from default file    */
+    config_t c[NCFG];
 };
 // end::struct[]
 
@@ -21,15 +26,13 @@ void conf_ini(/**/ Config **c) {
     UC(emalloc(sizeof(Config), (void**) c));
 
     Config *cfg = *c;
-    config_init(&cfg->args);
-    config_init(&cfg->file);
-    config_init(&cfg->def);
+    for (int i = 0; i < NCFG; ++i)
+        config_init(cfg->c + i);
 }
 
 void conf_destroy(/**/ Config *c) {
-    config_destroy(&c->args);
-    config_destroy(&c->file);
-    config_destroy(&c->def);
+    for (int i = 0; i < NCFG; ++i)
+        config_destroy(c->c + i);
     UC(efree(c));
 }
 
@@ -97,60 +100,53 @@ void conf_read(int argc, char **argv, /**/ Config *cfg) {
     strcpy(defname, home);
     strcat(defname, "/.udx/default.cfg");
 
-    UC(read_file(defname, /**/ &cfg->def)); 
+    UC(read_file(defname, /**/ &cfg->c[DEF])); 
     
     if (get_opt_file(&argc, &argv, /**/ optname)) {
-        UC(read_file(optname, /**/ &cfg->file));
+        UC(read_file(optname, /**/ &cfg->c[OPT]));
     }
 
     if (argc)
-        UC(read_args(argc, argv, /**/ &cfg->args));
+        UC(read_args(argc, argv, /**/ &cfg->c[ARG]));
 }
 
 static bool found(int s) {return s == CONFIG_TRUE;}
 
 void conf_lookup_int(const Config *c, const char *desc, int *a) {
-    int s;
-    s = config_lookup_int(&c->args, desc, a);
-    if ( found(s) ) return;
-    s = config_lookup_int(&c->file, desc, a);
-    if ( found(s) ) return;
-    s = config_lookup_int(&c->def, desc, a);
-    if ( found(s) ) return;
+    int i, s;
+    for (i = 0; i < NCFG; ++i) {
+        s = config_lookup_int(c->c + i, desc, /**/ a);
+        if ( found(s) ) return;
+    }
+    ERR("Could not find the field <%s>\n", desc);
 }
 
 void conf_lookup_float(const Config *c, const char *desc, float *a) {
-    int s;
+    int i, s;
     double d;
-    s = config_lookup_float(&c->args, desc, &d);
-    *a = d;
-    if ( found(s) ) return;
 
-    s = config_lookup_float(&c->file, desc, &d);
-    *a = d;
-    if ( found(s) ) return;
-
-    s = config_lookup_float(&c->def, desc, &d);
-    *a = d;
-    if ( found(s) ) return;
+    for (i = 0; i < NCFG; ++i) {
+        s = config_lookup_float(c->c + i, desc, /**/ &d);
+        *a = d;
+        if ( found(s) ) return;
+    }
+    ERR("Could not find the field <%s>\n", desc);
 }
 
 void conf_lookup_bool(const Config *c, const char *desc, int *a) {
-    int s;
-    s = config_lookup_bool(&c->args, desc, a);
-    if ( found(s) ) return;
-    s = config_lookup_bool(&c->file, desc, a);
-    if ( found(s) ) return;
-    s = config_lookup_bool(&c->def, desc, a);
-    if ( found(s) ) return;
+    int i, s;
+    for (i = 0; i < NCFG; ++i) {
+        s = config_lookup_bool(c->c + i, desc, a);
+        if ( found(s) ) return;
+    }
+    ERR("Could not find the field <%s>\n", desc);
 }
 
 void conf_lookup_string(const Config *c, const char *desc, const char **a) {
-    int s;
-    s = config_lookup_string(&c->args, desc, a);
-    if ( found(s) ) return;
-    s = config_lookup_string(&c->file, desc, a);
-    if ( found(s) ) return;
-    s = config_lookup_string(&c->def, desc, a);
-    if ( found(s) ) return;
+    int i, s;
+    for (i = 0; i < NCFG; ++i) {
+        s = config_lookup_string(c->c + i, desc, a);
+        if ( found(s) ) return;
+    }
+    ERR("Could not find the field <%s>\n", desc);
 }
