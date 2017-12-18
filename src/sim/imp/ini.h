@@ -68,7 +68,7 @@ static void ini_outflow(Coords coords, Outflow **o) {
     if (OUTFLOW_CIRCLE) {
         // TODO read from conf
         float3 c = make_float3(XS/2, YS/2, ZS/2);
-        ini_params_circle(c, OUTFLOW_CIRCLE_R, /**/ *o);
+        ini_params_circle(coords, c, OUTFLOW_CIRCLE_R, /**/ *o);
     } else {
         ini_params_plane(coords, 0, XS/2-1, *o);
     }
