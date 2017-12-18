@@ -24,7 +24,7 @@ p_lina                   # p_[test|lina|stick]
 
 Domain="XS=$xs YS=$ys ZS=$zs walls wall_creation=1000"
 u.conf "$s" "$u" "$c" <<!
-    dt=1e-4 part_freq=$freq contactforces numberdensity=8 RBC_RND
+    dt=1e-4 part_freq=$freq contactforces RBC_RND
     $Domain
     $Force
     $Rbc
