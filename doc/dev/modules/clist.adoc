@@ -2,8 +2,37 @@
 :lext: .adoc
 :src: ../../../src
 
-Cell lists
-Purpose: reorder data according to particle positions into cells
+* reorder data according to particle positions into cells
+* access particles within a given cell
+
+== example
+
+consider a 1D example of particles with positions in domain `[0, 4)`
+
+----
+pp: 2.5 0.1 1.1 0.5 1.6
+----
+
+After cell list building (we take 1 as cell size), the above data becomes
+
+----
+pp: 0.1 0.5 1.1 1.6 2.5  -
+cc: 2       2       1    0
+ss: 0       2       4    5
+----
+where `pp` is the particle array, `cc` (counts) is the number of particles per
+cell and `ss` (starts) is the prefix sum of `cc`.
+
+Accessing all particles in cell `i=1` (`[1,2)`) can be done as follows:
+
+```
+loop: j = 0, ..., cc[i]
+      id = ss[i] + j
+      p = pp[id]
+      work(p)
+```
+
+The above can be easily extended in 3D, only ordering changes.
 
 == data structures
 
@@ -23,7 +52,7 @@ include::{src}/clist/imp.h[tag=clist]
 
 === Map
 
-Helper to reorder the arrays
+Helper to build the cell lists
 
 [source,cpp]
 ----
