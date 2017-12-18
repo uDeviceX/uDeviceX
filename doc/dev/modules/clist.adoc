@@ -72,8 +72,8 @@ include::{src}/clist/imp.h[tag=map]
 
 == algorithm
 
-The cell build process is linear in number of particles and `n log(n)`
-in number of cells.
+The cell build process is linear in number of particles `np` and `n log(n)`
+in number of cells `n`.
 The process to build cell lists is as follows:
 
 ----
