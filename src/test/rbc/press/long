@@ -11,7 +11,7 @@ mv0 ()   { if test -d "$2"; then rm -r "$2"; fi; mv "$1" "$2"; }
 make0 () { make clean && u.make -j; }
 ic  () {
     local x y z cs si
-    x=`ae $XS/2` y=6 z=`ae $ZS/2`
+    x=`ae $XS/2` y=`ae $YS/3` z=`ae $ZS/2`
     cs=0 si=1
     echo 1   0    0  $x \
 	 0 $cs -$si  $y \
@@ -23,7 +23,7 @@ ini () {
     local a b c
     inf=999999999
     nv=2562
-    XS=28 YS=28 ZS=28
+    XS=32 YS=32 ZS=32
     p=5.0 x0=0.5 ka=0.05 kb=0.0001 kd=0.002 kv=0.05 kbt=8.56e-6 gamma=1
     a="RBCp=$p RBCx0=$x0 RBCkb=$kb RBCgammaC=$gamma"
     b="RBCka=$ka RBCkv=$kv RBCkd=$kd"
@@ -35,7 +35,7 @@ ini () {
     cp $c0          rbc.stress.free
     cp $c1          rbc.off
     cp "$S/data/sdf/yplates1/yplates.dat" sdf.dat
-    Rbc="dt=1e-4 rbc_ids rbc_com_dumps RBC_STRESS_FREE RBCnv=$nv RBCtotArea=$area RBCtotVolume=$volume pushrbc"
+    Rbc="dt=1e-2 rbc_ids rbc_com_dumps RBC_STRESS_FREE RBCnv=$nv RBCtotArea=$area RBCtotVolume=$volume pushrbc"
     Domain="XS=$XS YS=$YS ZS=$ZS"
 }
 wall () {
@@ -43,7 +43,7 @@ wall () {
     MESH_SHIFT_CENTER $Memb $Rbc $Domain
     walls wall_creation=1000
     strt_dumps strt_freq=$inf
-    tend=0.11
+    tend=100.1
     run
 !
     make0 > .make
@@ -60,7 +60,7 @@ down () {
     RESTART=true
     FORCE_CONSTANT FORCE_PAR_A=$A
     strt_dumps strt_freq=$inf
-    tend=16.1 part_freq=5000
+    tend=1600.1 part_freq=5000
     run
 !
     make0 > .make
@@ -75,7 +75,7 @@ up () {
     walls wall_creation=0
     RESTART=true
     FORCE_CONSTANT FORCE_PAR_A=$A
-    tend=16.1 part_freq=5000
+    tend=1600.1 part_freq=5000
     run
 !
     make0 > .make
@@ -86,6 +86,6 @@ up () {
 }
 ini
 wall
-A=15.0 down
+A=0.15 down
 A=0.0  up
 ply2punto r.up/$A/*.ply    > p
