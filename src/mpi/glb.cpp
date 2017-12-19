@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <string.h>
 #include <mpi.h>
 
 #include <conf.h>
@@ -19,6 +20,7 @@ static void shift(int *argc, char ***argv) {
     (*argc)--;
     (*argv)++;
 }
+static int eq(const char *a, const char *b) { return strcmp(a, b) == 0; }
 
 static void set_dims(int *argc, char ***argv) {
     int i, d, ac;
