@@ -48,6 +48,7 @@ if test "$F" -ne 0; then err 'u.case: wrong args for -f'; fi
 link () {
     if test ! -r "$from"; then err "u.case: not a file '$from'"; fi
     e ln -s -- "$from" "$d/$to"
+    if test $? -ne 0; then err "u.case: fail to create symlink '$from' to '$d/$to'"; fi
 }
 from= to= F=0
 for c
