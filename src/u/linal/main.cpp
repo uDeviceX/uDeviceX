@@ -30,7 +30,7 @@ static void dump(float *r) {
 
 static void main0(float *m) {
     float r[6];
-    linal::inv3x3(m, /**/ r);
+    linal_inv3x3(m, /**/ r);
     dump(r);
 }
 
