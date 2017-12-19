@@ -1,18 +1,24 @@
-SCRATCH=/scratch/snx3000/lisergey
+if test `h.host` = panda
+then
+    PACH=/scratch/lisergey/geoms/pachinko
+else
+    PACH=/scratch/snx3000/lisergey/pachinko    
+fi
+
 g_big  () {
-    safe_cp $SCRATCH/pachinko/big/sdf.dat sdf.dat
+    sdf=$PACH/big/sdf.dat
     xs=64 ys=52 zs=56
     geom
 }
 
 g_oneA () { # sizes from the file
-    safe_cp $SCRATCH/pachinko/post/sdf.dat sdf.dat
+    sdf=$PACH/post/sdf.dat
     xs=32 ys=56 zs=60
     geom
 }
 
 g_oneB () { # sizes from big sdf
-    safe_cp $SCRATCH/pachinko/post/sdf.dat sdf.dat
+    sdf=$PACH/post/sdf.dat
     xs=64 ys=52 zs=56
     geom
 }
@@ -65,27 +71,8 @@ msg () { printf ': %s\n' "$*" >&2; }
 p_lina () { Param=                            ; }
 p_test () { Param=                            ; }
 
-exec0 () { msg "$@"; "$@"; }
-safe_cp () {
-    # from/to and host
-    local f t h
-
-    h=`u.host`
-    if test $h != daint; then return; fi
-
-    f="$1"; shift
-    t="$1"; shift
-    if test ! -f "$f"
-    then msg "not a file: $f"
-	 exit 1
-    fi
-    if test -f "$t"; then exec0 rm -f "$t"; fi
-    exec0 ln -s "$f" "$t"
-}
-
 strt0 () {
     Restart=
-    u.strtdir . $nx $ny $nz
 }
 strt1 () {
     local h
@@ -145,10 +132,5 @@ sfree0() { Sfree=; }
 sfree1() { Sfree="RBC_STRESS_FREE"; }
 
 run () {
-    local h
-    h=`u.host`
-    if test $h = panda
-    then u.run     $nx $ny $nz ./udx
-    else u.batch   $nx $ny $nz ./udx 08:00:00
-    fi
+    Run="u.batch     $nx $ny $nz ./udx 01:00:00"
 }
