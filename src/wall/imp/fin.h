@@ -4,7 +4,7 @@ void free_quants(Quants *q) {
 }
 
 void free_ticket(Ticket *t) {
-    delete t->rnd;
+    UC(rnd_fin(t->rnd));
     destroy(&t->texstart);
     destroy(&t->texpp);
     fin(&t->cells);
