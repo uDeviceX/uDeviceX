@@ -1,8 +1,8 @@
-#include <assert.h>
+#include "utils/error.h"
 #include "imp.h"
 
 /* inverts symmetric matrix m[6] (see poc/3x3) */
-void inv3x3(float *m, /**/ float *r) {
+void linal_inv3x3(float *m, /**/ float *r) {
     enum {XX, XY, XZ, YY, YZ, ZZ};
     double eps = 1e-8;
 
@@ -19,7 +19,9 @@ void inv3x3(float *m, /**/ float *r) {
     mx  = yy*zz-yz2;
     my  = xy*zz-xz*yz;
     mz  = xy*yz-xz*yy;
-    d   = mz*xz-my*xy+mx*xx;   assert(d > eps || d < -eps);
+    d   = mz*xz-my*xy+mx*xx;
+    if (d < eps && d > -eps)
+        ERR("Matrix is singular, determinant %g\n", d);
     i   = 1/d;
 
     r[XX] =  mx*i;
