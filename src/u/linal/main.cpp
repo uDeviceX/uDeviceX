@@ -13,7 +13,7 @@ static void shift(int *argc, char ***argv) {
 
 static void assert_c(int c, const char *s) {
     if (c > 0) return;
-    ERR("not enought args, %s", s);
+    ERR("not enough args, %s", s);
 }
 
 static void dump(float *r) {
