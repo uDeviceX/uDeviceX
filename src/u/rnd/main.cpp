@@ -20,9 +20,8 @@ static void assert_n(int c) {
 void main0(int n) {
     int i;
     rnd::KISS r(42, 42, 42, 42);
-    for (i = 0; i < n; i++) {
+    for (i = 0; i < n; i++)
         printf("%10.6e\n", r.get_float());
-    }
 }
 
 void main1(int c, char **v) {
