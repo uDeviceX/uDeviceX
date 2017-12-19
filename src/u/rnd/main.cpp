@@ -20,10 +20,10 @@ static void assert_n(int c) {
 void main0(int n) {
     int i;
     RNDunif *r;
-    rnd_ini(42, 42, 42, 42, /**/ &r);
+    UC(rnd_ini(42, 42, 42, 42, /**/ &r));
     for (i = 0; i < n; i++)
         printf("%10.6e\n", rnd_get(r));
-    rnd_fin(r);
+    UC(rnd_fin(r));
 }
 
 void main1(int c, char **v) {
