@@ -1,5 +1,7 @@
 = Math
 
+:src: ../../../../src
+
 Helpers for math operations and random number generation
 
 include::linal.inc.adoc[]
