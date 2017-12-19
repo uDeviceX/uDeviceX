@@ -2,7 +2,7 @@ void ini(int maxp, /**/ BulkData **bd) {
     BulkData *b = new BulkData;
     Dalloc(&b->zipped_pp, 2 * maxp);
     Dalloc(&b->zipped_rr,     maxp);
-    b->rnd = new rnd::KISS(0, 0, 0, 0);
+    UC(rnd_ini(0, 0, 0, 0, /**/ &b->rnd));
     b->colors = NULL;
     *bd = b;
 }
@@ -13,7 +13,7 @@ static int is_plus(const int d[3]) {
         d[X] + d[Y] + d[Z] == 0 && (d[X] > 0 || d[X] == 0 && (d[Y] > 0 || d[Y] == 0 && d[Z] > 0));
 }
 
-static void get_interrank_infos(MPI_Comm cart, int fid, /**/ rnd::KISS* trunks[], bool masks[]) {
+static void get_interrank_infos(MPI_Comm cart, int fid, /**/ RNDunif* trunks[], bool masks[]) {
     int coordsneighbor[3], c, indx[3], rank, dstrank;
     int seed, seed_base, seed_offset;
     int dims[3], periods[3], coords[3];
@@ -41,7 +41,7 @@ static void get_interrank_infos(MPI_Comm cart, int fid, /**/ rnd::KISS* trunks[]
 
     seed = seed_base + seed_offset;
 
-    trunks[fid] = new rnd::KISS(390 + seed, seed + 615, 12309, 23094);
+    UC(rnd_ini(390 + seed, seed + 615, 12309, 23094, /**/ &trunks[fid]));
     
     if (dstrank != rank)
         masks[fid] = min(dstrank, rank) == rank;

@@ -23,7 +23,7 @@
 
 #include "inc/macro.h"
 
-#include "rnd/imp.h"
+#include "math/rnd/imp.h"
 #include "rnd/dev.h"
 
 #include "glob/type.h"

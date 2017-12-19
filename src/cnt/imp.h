@@ -3,7 +3,7 @@ namespace cnt {
 struct Contact {
     clist::Clist cells;
     clist::Map cmap;
-    rnd::KISS *rgen;
+    RNDunif *rgen;
 };
 
 void ini(Contact *c);

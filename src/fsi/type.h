@@ -9,6 +9,6 @@ struct SolventWrap {
 
 struct Fsi {
     SolventWrap* wo;
-    rnd::KISS* rgen;
+    RNDunif* rgen;
 };
 }

@@ -13,7 +13,7 @@
 #include "d/api.h"
 #include "utils/error.h"
 
-#include "rnd/imp.h"
+#include "math/rnd/imp.h"
 #include "rnd/dev.h"
 #include "inc/dev.h"
 #include "inc/type.h"

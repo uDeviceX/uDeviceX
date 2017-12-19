@@ -3,7 +3,7 @@ void halo(Fsi *fsi, Pap26 PP, Fop26 FF, int counts[26]) {
     int27 starts;
     SolventWrap *wo = fsi->wo;
     const Cloud cloud = wo->c;
-    float rnd = fsi->rgen->get_float();
+    float rnd = rnd_get(fsi->rgen);
 
     starts.d[0] = 0;
     for (i = s = 0; i < 26; ++i) starts.d[i + 1] = (s += counts[i]);

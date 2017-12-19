@@ -21,7 +21,7 @@ void bulk(const Contact *c, int nw, PaWrap *pw, FoWrap *fw) {
     for (int i = 0; i < nw; ++i) {
         PaWrap pit = pw[i];
         FoWrap fit = fw[i];
-        rnd = c->rgen->get_float();
+        rnd = rnd_get(c->rgen);
         KL(dev::bulk, (k_cnf(3 * pit.n)),
            (c->cells.starts, c->cmap.ii, pit.n, (const float2*)pit.pp, lpp, rnd, i, /**/ lff, (float*)fit.ff));
     }

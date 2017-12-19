@@ -1,10 +1,10 @@
 void ini(Fsi *fsi) {
-    fsi->rgen = new rnd::KISS(1908 - m::rank, 1409 + m::rank, 290, 12968);
+    UC(rnd_ini(1908 - m::rank, 1409 + m::rank, 290, 12968, /**/ &fsi->rgen));
     fsi->wo   = new SolventWrap;
 }
 
 void fin(Fsi *fsi) {
-    delete fsi->rgen;
+    UC(rnd_fin(fsi->rgen));
     delete fsi->wo;
 }
 

@@ -23,7 +23,7 @@
 #include "utils/te.h"
 #include "inc/macro.h"
 
-#include "rnd/imp.h"
+#include "math/rnd/imp.h"
 
 #include "glob/type.h"
 #include "wvel/type.h"

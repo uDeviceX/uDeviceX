@@ -8,9 +8,10 @@
 #include "d/q.h"
 #include "d/ker.h"
 
+#include "utils/error.h"
 #include "algo/scan/imp.h"
 
-#include "rnd/imp.h"
+#include "math/rnd/imp.h"
 #include "rnd/dev.h"
 
 #include "inc/def.h"

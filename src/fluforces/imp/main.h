@@ -25,7 +25,7 @@ void prepare(flu::LFrag26 lfrags, flu::RFrag26 rfrags, /**/ HaloData *h) {
 
     for (int i = 0; i < 26; ++i) {
         h->rndfrags.d[i] = {
-            .seed = h->trunks[i]->get_float(),
+            .seed = rnd_get(h->trunks[i]),
             .mask = h->masks[i]
         };
     }

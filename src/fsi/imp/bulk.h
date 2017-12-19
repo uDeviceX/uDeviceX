@@ -5,7 +5,7 @@ static void bulk_one_wrap(PaWrap *pw, FoWrap *fw, Fsi *fsi) {
     SolventWrap *wo = fsi->wo;
     Cloud cloud = wo->c;
     
-    rnd = fsi->rgen->get_float();
+    rnd = rnd_get(fsi->rgen);
     n0 = pw->n;
     n1 = wo->n;
 

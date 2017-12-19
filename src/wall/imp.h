@@ -5,7 +5,7 @@ struct Quants {
 };
 
 struct Ticket {
-    rnd::KISS *rnd;
+    RNDunif *rnd;
     clist::Clist cells;
     clist::Map mcells;
     Texo<int> texstart;

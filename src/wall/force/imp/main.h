@@ -1,5 +1,5 @@
-void force(Wvel_v wv, Coords c, Cloud cloud, int n, rnd::KISS *rnd, Wa wa, /**/ Force *ff) {
+void force(Wvel_v wv, Coords c, Cloud cloud, int n, RNDunif *rnd, Wa wa, /**/ Force *ff) {
     KL(dev::force,
        (k_cnf(3*n)),
-       (wv, c, cloud, n, rnd->get_float(), wa, /**/ (float*)ff));
+       (wv, c, cloud, n, rnd_get(rnd), wa, /**/ (float*)ff));
 }
