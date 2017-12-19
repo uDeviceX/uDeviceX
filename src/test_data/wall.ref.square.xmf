@@ -1,0 +1,22 @@
+<?xml version="1.0" ?>
+<!DOCTYPE Xdmf SYSTEM "Xdmf.dtd" []>
+<Xdmf Version="2.0">
+ <Domain>
+   <Grid Name="mesh" GridType="Uniform">
+     <Topology TopologyType="3DCORECTMesh" Dimensions="9 9 9"/>
+     <Geometry GeometryType="ORIGIN_DXDYDZ">
+       <DataItem Name="Origin" Dimensions="3" NumberType="Float" Precision="4" Format="XML">
+        0.000000e+00 0.000000e+00 0.000000e+00
+       </DataItem>
+       <DataItem Name="Spacing" Dimensions="3" NumberType="Float" Precision="4" Format="XML">
+        1.000000e+00 1.000000e+00 1.000000e+00
+       </DataItem>
+     </Geometry>
+     <Attribute Name="wall" AttributeType="Scalar" Center="Cell">
+       <DataItem Dimensions="8 8 8 1" NumberType="Float" Precision="4" Format="HDF">
+        wall.h5:/wall
+       </DataItem>
+     </Attribute>
+   </Grid>
+ </Domain>
+</Xdmf>

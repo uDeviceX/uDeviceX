@@ -1,14 +1,15 @@
-# sTEST: using gitlab:ugeom
+## using gitlab:ugeom
+# TEST: square
 set -eu
 S=`pwd` U=u/x C="$S/conf/test.h"
-XS=8 YS=12 ZS=16 a=3
+XS=8 YS=8 ZS=8 a=3
 ugeom.square $XS $YS $ZS $a sdf.dat
 u.conf "$S" "$U" "$C" <<!
-  tend=0.1 part_freq=30 walls wall_creation=1
-  field_dumps part_dumps field_freq=300
+  KL_SYNC
+  dt=1e-4 tend=1e-4 walls wall_creation=1
   XS=$XS YS=$YS ZS=$ZS
   run
 !
 { u.make clean && u.make -j; } > .make.log
 u.run ./udx
-u.avgh5 1 u 2 h5/flowfields-0003.h5 | uscale 0.1 > h5.out.txt
+cp h5/wall.xmf wall.out.xmf
