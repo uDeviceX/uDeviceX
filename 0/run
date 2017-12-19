@@ -14,8 +14,7 @@ nv=642 sc=0.55 radius=3.2
 strt0
 rbc1
 
-freq=20000
-com1
+freq=20000 com1
 
 sfree1
 
@@ -25,13 +24,15 @@ p_lina                   # p_[test|lina|stick]
 Domain="XS=$xs YS=$ys ZS=$zs walls wall_creation=1000"
 d=0
 
+run
+
 export S="$s"
 u.case                             \
 -d "$d"                            \
 -f rbc.off rbc.off                 \
 -b "u.strtdir . $nx $ny $nz"       \
 -l $sdf    sdf.dat                 \
--a "u.run     $nx $ny $nz ./udx"   \
+-a $Run                            \
 "$u" "$c" <<!
     dt=1e-4 part_freq=$freq contactforces RBC_RND
     $Domain
@@ -45,5 +46,3 @@ u.case                             \
     run
 !
 { make clean && u.make -j; } > .make.log
-
-RBC_RND=123456 run

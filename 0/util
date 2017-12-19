@@ -132,10 +132,5 @@ sfree0() { Sfree=; }
 sfree1() { Sfree="RBC_STRESS_FREE"; }
 
 run () {
-    local h
-    h=`u.host`
-    if test $h = panda
-    then u.run     $nx $ny $nz ./udx
-    else u.batch   $nx $ny $nz ./udx 08:00:00
-    fi
+    Run="u.batch     $nx $ny $nz ./udx 01:00:00"
 }
