@@ -2,7 +2,7 @@
 #include "imp.h"
 
 /* inverts symmetric matrix m[6] (see poc/3x3) */
-void linal_inv3x3(float *m, /**/ float *r) {
+void linal_inv3x3(const float *m, /**/ float *r) {
     enum {XX, XY, XZ, YY, YZ, ZZ};
     double eps = 1e-8;
 
