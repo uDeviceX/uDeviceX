@@ -35,6 +35,7 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/io/mesh                  && \
     d $B/io/mesh/write            && \
     d $B/math                     && \
+    d $B/math/rnd                 && \
     d $B/mesh                     && \
     d $B/meshbb                   && \
     d $B/mpi                      && \
@@ -52,7 +53,6 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/rbc/stretch              && \
     d $B/rig                      && \
     d $B/rigid                    && \
-    d $B/rnd                      && \
     d $B/scheme/force             && \
     d $B/scheme/move              && \
     d $B/scheme/restrain          && \
