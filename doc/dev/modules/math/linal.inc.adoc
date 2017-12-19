@@ -1,6 +1,6 @@
 == linal
 
-linear algebra helpers
+Linear algebra helpers on host
 
 === interface
 
