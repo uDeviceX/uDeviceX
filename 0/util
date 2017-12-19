@@ -53,7 +53,7 @@ bop1 () { Bop="part_dumps=true force_dumps=true";  }
 rbc0 () { Rbc="rbcs=false";                        }
 rbc1 () {
     Rbc="RBCnv=$nv rbcs"
-    cp ../src/data/cells/rbc/$nv.off  rbc.off
+    cp ../src/data/cells/rbc/sc/$nv.off  rbc.off
     plcmt $radius $sc
 }
 
@@ -129,7 +129,10 @@ com1 () {
 }
 
 sfree0() { Sfree=; }
-sfree1() { Sfree="RBC_STRESS_FREE"; }
+sfree1() {
+    Sfree="RBC_STRESS_FREE"
+    cp ../src/data/cells/rbc/sc/$nv.off  rbc.stress.free
+}
 
 run () {
     Run="u.batch     $nx $ny $nz ./udx 01:00:00"

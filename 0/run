@@ -28,6 +28,7 @@ run
 export S="$s"
 u.case                             \
 -d "$d"                            \
+-f rbc.stress.free rbc.stress.free \
 -f rbc.off rbc.off                 \
 -b "u.strtdir . $nx $ny $nz"       \
 -l "$sdf"    sdf.dat               \
