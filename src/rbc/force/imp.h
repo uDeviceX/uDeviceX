@@ -4,5 +4,4 @@ void gen_ticket(const Quants q, TicketT *t);
 void fin_ticket(TicketT *t);
 void apply(const Quants q, const TicketT t, /**/ Force *ff);
 void stat(/**/ float *pArea, float *pVolume);
-
 }} /* namespace */
