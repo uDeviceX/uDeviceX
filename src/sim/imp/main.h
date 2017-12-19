@@ -48,7 +48,7 @@ void sim_gen() {
         solids0 = false;  /* global */
         gen(/**/ &wall);
         dSync();
-        if (walls && wall.q.n) wall::gen_ticket(wall.q, &wall.t);
+        if (walls && wall.q.n) UC(wall::gen_ticket(wall.q, &wall.t));
         solids0 = solids;
         if (rbcs && multi_solvent) gen_colors(&rbc, &colorer, /**/ &flu);
         run(wall_creation, nsteps);
@@ -75,8 +75,8 @@ void sim_strt() {
     if (walls) wall::strt_quants(MAXNWALL, &wall.q);
 
     /*T*/
-    if (rbcs)            rbc::force::gen_ticket(rbc.q, &rbc.tt);
-    if (walls && wall.q.n) wall::gen_ticket(wall.q, &wall.t);
+    if (rbcs)            UC(rbc::force::gen_ticket(rbc.q, &rbc.tt));
+    if (walls && wall.q.n) UC(wall::gen_ticket(wall.q, &wall.t));
 
     MC(m::Barrier(m::cart));
     if (walls) {
