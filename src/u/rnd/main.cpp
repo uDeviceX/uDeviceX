@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdint.h>
+#include <stdio.h>
 
 #include "msg.h"
 #include "rnd/imp.h"
@@ -16,13 +17,23 @@ static void assert_n(int c) {
     ERR("not enough args");
 }
 
-void main0(int c, char **v) {
+void main0(int n) {
+    int i;
+    rnd::KISS r(42, 42, 42, 42);
+    for (i = 0; i < n; i++) {
+        printf("%10.6e\n", r.get_float());
+    }
+}
+
+void main1(int c, char **v) {
     int n;
-    assert_n(c); n = atoi(v[0]);
+    UC(assert_n(c)); n = atoi(v[0]);
+    if (n == 0) ERR("expecting an a positive number");
+    main0(n);
 }
 
 int main(int argc, char **argv) {
     m::ini(&argc, &argv);
-    UC(main0(argc, argv));
+    UC(main1(argc, argv));
     m::fin();
 }
