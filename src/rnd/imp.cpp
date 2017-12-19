@@ -3,7 +3,6 @@
 #include "rnd/imp.h"
 
 namespace rnd {
-KISS::KISS() { x = y = z = c = 0; }
 KISS::KISS(integer x_, integer y_, integer z_, integer c_) {
     x = x_; y = y_; z = z_; c = c_;
 }
