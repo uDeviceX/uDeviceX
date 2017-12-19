@@ -1,0 +1,8 @@
+= Math
+
+Helpers for math operations and random number generation
+
+include::linal.inc.adoc[]
+
+include::rnd.inc.adoc[]
+
