@@ -16,8 +16,23 @@ static void assert_c(int c, const char *s) {
     ERR("not enought args, %s", s);
 }
 
+static void dump(float *r) {
+    int i;
+    #define f "%10.6e"
+    enum {XX, XY, XZ,   YY, YZ,  ZZ};
+    printf(f " ", r[XX]);
+    printf(f " ", r[XY]);
+    printf(f " ", r[XZ]);
+    printf(f " ", r[YY]);
+    printf(f " ", r[YZ]);
+    printf(f "\n", r[ZZ]);
+    #undef f
+}
+
 static void main0(float *m) {
-    
+    float r[6];
+    linal::inv3x3(m, /**/ r);
+    dump(r);
 }
 
 static void main1(int c, char **v) {
