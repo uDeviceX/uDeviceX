@@ -32,7 +32,7 @@ void fin(Ticket *t) {
     delete[] t->w_pp;
 }
 
-static void copy_shift(const Particle *pp, const long n, const int mi[3], /**/ float *w) {
+static void copy_shift(const Particle *pp, long n, const int mi[3], /**/ float *w) {
     for (int j = 0; j < n; ++j)
     for (int d = 0; d < 3; ++d) {
         w[6 * j + d]     = pp[j].r[d] + mi[d];
@@ -40,7 +40,7 @@ static void copy_shift(const Particle *pp, const long n, const int mi[3], /**/ f
     }
 }
 
-static void copy_shift_with_forces(const Particle *pp, const Force *ff, const long n, const int mi[3], /**/ float *w) {
+static void copy_shift_with_forces(const Particle *pp, const Force *ff, long n, const int mi[3], /**/ float *w) {
     for (int j = 0; j < n; ++j)
     for (int d = 0; d < 3; ++d) {
         w[9 * j + d]     = pp[j].r[d] + mi[d];
@@ -51,7 +51,7 @@ static void copy_shift_with_forces(const Particle *pp, const Force *ff, const lo
 
 #define PATTERN "%s-%05d"
     
-static void header(const long n, const char *name, const int step, const char *type, const char *fields) {
+static void header(long n, const char *name, int step, const char *type, const char *fields) {
     char fname[256] = {0};
     FILE *f;
     
@@ -67,15 +67,15 @@ static void header(const long n, const char *name, const int step, const char *t
     UC(efclose(f));
 }
 
-static void header_pp(const long n, const char *name, const int step) {
+static void header_pp(long n, const char *name, int step) {
     header(n, name, step, "float", "x y z vx vy vz");
 }
 
-static void header_pp_ff(const long n, const char *name, const int step) {
+static void header_pp_ff(long n, const char *name, int step) {
     header(n, name, step, "float", "x y z vx vy vz fx fy fz");
 }
 
-static void header_ii(const long n, const char *name, const char *fields, const int step) {
+static void header_ii(long n, const char *name, const char *fields, int step) {
     header(n, name, step, "int", fields);
 }
 
@@ -97,7 +97,7 @@ static long write_data(MPI_Comm cart, const void *data, long n, size_t bytesperd
     return ntot;
 }
     
-void parts(MPI_Comm cart, const Particle *pp, const long n, const char *name, const int step, Ticket *t) {
+void parts(MPI_Comm cart, const Particle *pp, long n, const char *name, int step, Ticket *t) {
     copy_shift(pp, n, t->mi, /**/ t->w_pp);
         
     char fname[256] = {0};
@@ -107,7 +107,7 @@ void parts(MPI_Comm cart, const Particle *pp, const long n, const char *name, co
     if (m::rank == 0) header_pp(ntot, name, step);
 }
 
-void parts_forces(MPI_Comm cart, const Particle *pp, const Force *ff, const long n, const char *name, const int step, /*w*/ Ticket *t) {
+void parts_forces(MPI_Comm cart, const Particle *pp, const Force *ff, long n, const char *name, int step, /*w*/ Ticket *t) {
     copy_shift_with_forces(pp, ff, n, t->mi, /**/ t->w_pp);
             
     char fname[256] = {0};
@@ -118,7 +118,7 @@ void parts_forces(MPI_Comm cart, const Particle *pp, const Force *ff, const long
     if (m::rank == 0) header_pp_ff(ntot, name, step);
 }
 
-static void intdata(MPI_Comm cart, const int *ii, const long n, const char *name, const char *fields, const int step) {
+static void intdata(MPI_Comm cart, const int *ii, long n, const char *name, const char *fields, int step) {
     char fname[256] = {0};
     sprintf(fname, DUMP_BASE "/bop/" PATTERN ".values", name, step / part_freq);
 
@@ -127,11 +127,11 @@ static void intdata(MPI_Comm cart, const int *ii, const long n, const char *name
     if (m::rank == 0) header_ii(ntot, name, fields, step);
 }
 
-void ids(MPI_Comm cart, const int *ii, const long n, const char *name, const int step) {
+void ids(MPI_Comm cart, const int *ii, long n, const char *name, int step) {
     intdata(cart, ii, n, name, "id", step);
 }
 
-void colors(MPI_Comm cart, const int *ii, const long n, const char *name, const int step) {
+void colors(MPI_Comm cart, const int *ii, long n, const char *name, int step) {
     intdata(cart, ii, n, name, "color", step);
 }
 
