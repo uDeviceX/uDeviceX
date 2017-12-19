@@ -17,7 +17,6 @@ static void assert_c(int c, const char *s) {
 }
 
 static void dump(float *r) {
-    int i;
     #define f "%10.6e"
     enum {XX, XY, XZ,   YY, YZ,  ZZ};
     printf(f " ", r[XX]);
