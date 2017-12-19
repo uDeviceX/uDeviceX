@@ -61,9 +61,11 @@ done
 
 build () (
     local U C
-    if test  "$DRYRUN" != 0; then return; fi
+    if test $# -eq 0; then err 'u.case: expecting unit'; fi
     U="$1"; shift
+    if test $# -eq 0; then err 'u.case: expecting config file'; fi
     C="$1"; shift
+    if test  "$DRYRUN" != 0; then return; fi
     S=`to_abs "$S"`
     C=`to_abs "$C"`
     cd "$d"
