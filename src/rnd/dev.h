@@ -1,4 +1,7 @@
 namespace rnd {
+/* random number from the ArcSine distribution on [-sqrt(2),sqrt(2)]
+   mean = 0, variance = 1 */
+
 // passes of logistic map
 static __const__ int N = 18;
 // spacing coefficints for low discrepancy numbers
