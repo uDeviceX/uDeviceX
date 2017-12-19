@@ -10,7 +10,7 @@
 #include "d/ker.h"
 
 #include "math/rnd/imp.h"
-#include "rnd/dev.h"
+#include "math/rnd/dev.h"
 
 #include "inc/def.h"
 #include "msg.h"

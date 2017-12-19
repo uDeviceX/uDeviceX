@@ -8,7 +8,7 @@
 #include "utils/error.h"
 
 #include "math/rnd/imp.h"
-#include "rnd/dev.h"
+#include "math/rnd/dev.h"
 
 #include "inc/type.h"
 #include "inc/dev.h"

@@ -24,7 +24,7 @@
 #include "inc/macro.h"
 
 #include "math/rnd/imp.h"
-#include "rnd/dev.h"
+#include "math/rnd/dev.h"
 
 #include "glob/type.h"
 #include "glob/dev.h"
