@@ -1,4 +1,4 @@
-# sTEST: square
+# sTEST: using gitlab:ugeom
 set -eu
 S=`pwd` U=u/x C="$S/conf/test.h"
 XS=8 YS=12 ZS=16 a=3
