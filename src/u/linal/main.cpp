@@ -6,5 +6,5 @@
 int main(int argc, char **argv) {
     m::ini(&argc, &argv);
     MSG("Hello world!");
-    m::fin();    
+    m::fin();
 }
