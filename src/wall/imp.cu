@@ -53,7 +53,6 @@ namespace dev {
 
 #include "imp/ini.h"
 #include "imp/fin.h"
-#include "imp/main.h"
 #include "imp/strt.h"
 #include "imp/generate.h"
 
