@@ -1,8 +1,8 @@
 if test `h.host` = panda
 then
-    PACH=/scratch/snx3000/lisergey/pachinko
-else
     PACH=/scratch/lisergey/geoms/pachinko
+else
+    PACH=/scratch/snx3000/lisergey/pachinko    
 fi
 
 g_big  () {

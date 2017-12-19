@@ -22,8 +22,7 @@ v=$1; shift=inf; force
 p_lina                   # p_[test|lina|stick]
 
 Domain="XS=$xs YS=$ys ZS=$zs walls wall_creation=1000"
-d=0
-
+d=$SCRATCH/0
 run
 
 export S="$s"
@@ -31,8 +30,8 @@ u.case                             \
 -d "$d"                            \
 -f rbc.off rbc.off                 \
 -b "u.strtdir . $nx $ny $nz"       \
--l $sdf    sdf.dat                 \
--a $Run                            \
+-l "$sdf"    sdf.dat               \
+-a "$Run"                          \
 "$u" "$c" <<!
     dt=1e-4 part_freq=$freq contactforces RBC_RND
     $Domain
@@ -45,4 +44,3 @@ u.case                             \
     $Restart
     run
 !
-{ make clean && u.make -j; } > .make.log
