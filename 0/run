@@ -14,7 +14,8 @@ nv=642 sc=0.55 radius=3.2
 strt0
 rbc1
 
-freq=20000 com1
+freq=20000
+com1
 
 sfree1
 
