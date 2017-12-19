@@ -26,26 +26,24 @@ static void set_dims(int *argc, char ***argv) {
     int i, d, ac;
     char **av;
 
-    // default values
+    // defaults
     dims[0] = dims[1] = dims[2] = 1;
-    
-    ac = *argc;
-    av = *argv;
+    ac = *argc; av = *argv;
 
     // skip executable
     shift(&ac, &av);
 
-    d = 1;
-    for (i = 0; d > 0 && ac > 0 && i <= 3; i++) {
-        d = atoi(av[0]);
-        if (d > 0) {
-            dims[i] = d;
+    for (i = 0; ac > 0 && i <= 3; i++) {
+        if (eq(av[0], "--")) {
             shift(&ac, &av);
+            break;
         }
+        if ( (d = atoi(av[0])) == 0 ) break;
+        dims[i] = d;
+        shift(&ac, &av);
     }
 
-    *argc = ac;
-    *argv = av;
+    *argc = ac; *argv = av;
 }
 
 void ini(int *argc, char ***argv) {
@@ -59,7 +57,7 @@ void ini(int *argc, char ***argv) {
     }
 
     set_dims(argc, argv);
-    
+
     MC(m::Comm_rank(MPI_COMM_WORLD,   &rank));
     MC(m::Comm_size(MPI_COMM_WORLD,   &size));
     MC(m::Cart_create(MPI_COMM_WORLD, d, dims, periods, reorder,   &m::cart));
