@@ -8,15 +8,18 @@
 ./dev/modules/clist.html: ./dev/modules/clist.adoc 
 ./dev/modules/color/main.html: ./dev/modules/color/main.adoc ./dev/modules/color/main.inc.adoc ./dev/modules/color/main.inc.adoc ./dev/modules/color/modules.inc.adoc ./dev/modules/color/modules.inc.adoc
 ./dev/modules/comm.html: ./dev/modules/comm.adoc 
+./dev/modules/contact.html: ./dev/modules/contact.adoc 
 ./dev/modules/d.html: ./dev/modules/d.adoc 
 ./dev/modules/distr.html: ./dev/modules/distr.adoc 
 ./dev/modules/fluforces.html: ./dev/modules/fluforces.adoc 
+./dev/modules/math/main.html: ./dev/modules/math/main.adoc ./dev/modules/math/linal.inc.adoc ./dev/modules/math/linal.inc.adoc ./dev/modules/math/rnd.inc.adoc ./dev/modules/math/rnd.inc.adoc
 ./dev/modules/parser.html: ./dev/modules/parser.adoc 
 ./dev/modules/partlist.html: ./dev/modules/partlist.adoc 
 ./dev/modules/sdf.html: ./dev/modules/sdf.adoc 
 ./dev/modules/utils/main.html: ./dev/modules/utils/main.adoc ./dev/modules/utils/cc.inc.adoc ./dev/modules/utils/cc.inc.adoc ./dev/modules/utils/error.inc.adoc ./dev/modules/utils/error.inc.adoc ./dev/modules/utils/kl.inc.adoc ./dev/modules/utils/kl.inc.adoc ./dev/modules/utils/mc.inc.adoc ./dev/modules/utils/mc.inc.adoc
 ./dev/modules/wvel.html: ./dev/modules/wvel.adoc 
 ./dev/rbc/forces.html: ./dev/rbc/forces.adoc 
+./dev/rbc/main.html: ./dev/rbc/main.adoc 
 ./dev/wrap.html: ./dev/wrap.adoc 
 ./index.html: ./index.adoc 
 ./main.html: ./main.adoc 
@@ -24,6 +27,7 @@
 ./units/error.html: ./units/error.adoc 
 ./units/hw/dev.html: ./units/hw/dev.adoc 
 ./units/hw/hst.html: ./units/hw/hst.adoc 
+./units/linal.html: ./units/linal.adoc 
 ./units/main.html: ./units/main.adoc 
 ./units/meshbb.html: ./units/meshbb.adoc 
 ./units/mpi.html: ./units/mpi.adoc 

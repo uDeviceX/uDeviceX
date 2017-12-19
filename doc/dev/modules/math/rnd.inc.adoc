@@ -1,0 +1,14 @@
+== Host random number generation
+
+Generate uniform random numbers on host in floating point precision
+
+=== interface
+
+[source,cpp]
+----
+include::{src}/math/rnd/imp.h[tags=interface]
+----
+<1> hidden structure containing state of the rng
+<2> allocate and initialize the rng (`x`, `y`, `z` and `c` are states of the rng)
+<3> deallocate rng states
+<4> generate a random number in single precision; modify the state
