@@ -3,7 +3,7 @@
 #include <stdio.h>
 
 #include "msg.h"
-#include "rnd/imp.h"
+#include "math/rnd/imp.h"
 #include "mpi/glb.h"
 #include "utils/error.h"
 
@@ -19,9 +19,11 @@ static void assert_n(int c) {
 
 void main0(int n) {
     int i;
-    rnd::KISS r(42, 42, 42, 42);
+    RNDunif *r;
+    rnd_ini(42, 42, 42, 42, /**/ &r);
     for (i = 0; i < n; i++)
-        printf("%10.6e\n", r.get_float());
+        printf("%10.6e\n", rnd_get(r));
+    rnd_fin(r);
 }
 
 void main1(int c, char **v) {
