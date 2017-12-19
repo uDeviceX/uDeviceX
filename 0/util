@@ -1,4 +1,4 @@
-if test `h.host` = panda
+if test `u.host` = panda
 then
     PACH=/scratch/lisergey/geoms/pachinko
 else
