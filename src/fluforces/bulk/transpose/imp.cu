@@ -8,6 +8,7 @@
 #include "msg.h"
 #include "utils/cc.h"
 #include "d/q.h"
+#include "d/api.h"
 #include "d/ker.h"
 
 #include "inc/dev.h"
