@@ -18,7 +18,7 @@
 
 #include "inc/type.h"
 
-#include "math/linal.h"
+#include "math/linal/imp.h"
 #include "mesh/props.h"
 #include "mesh/dist.h"
 #include "mesh/bbox.h"

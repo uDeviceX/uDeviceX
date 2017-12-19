@@ -34,7 +34,7 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/io/field/xmf             && \
     d $B/io/mesh                  && \
     d $B/io/mesh/write            && \
-    d $B/math                     && \
+    d $B/math/linal               && \
     d $B/math/rnd                 && \
     d $B/mesh                     && \
     d $B/meshbb                   && \

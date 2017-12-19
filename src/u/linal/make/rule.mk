@@ -1,7 +1,7 @@
 $B/comm/imp.o: $S/comm/imp.cu; $N -I$S/. -I$S/comm
 $B/d/api.o: $S/d/api.cu; $N -I$S/. -I$S/d
 $B/frag/imp.o: $S/frag/imp.cpp; $X -I$S/. -I$S/frag
-$B/math/linal.o: $S/math/linal.cpp; $X -I$S/. -I$S/math
+$B/math/linal/imp.o: $S/math/linal/imp.cpp; $X -I$S/. -I$S/math/linal
 $B/math/rnd/imp.o: $S/math/rnd/imp.cpp; $X -I$S/. -I$S/math/rnd
 $B/mpi/glb.o: $S/mpi/glb.cpp; $X -I$S/. -I$S/mpi
 $B/mpi/type.o: $S/mpi/type.cpp; $X -I$S/. -I$S/mpi

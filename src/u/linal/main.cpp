@@ -4,7 +4,7 @@
 #include "mpi/glb.h"
 #include "msg.h"
 #include "utils/error.h"
-#include "math/linal.h"
+#include "math/linal/imp.h"
 
 static void shift(int *argc, char ***argv) {
     (*argc)--;

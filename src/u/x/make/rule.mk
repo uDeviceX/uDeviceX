@@ -40,7 +40,7 @@ $B/io/ply.o: $S/io/ply.cpp; $X -I$S/. -I$S/io
 $B/io/restart.o: $S/io/restart.cpp; $X -I$S/. -I$S/io
 $B/io/rig.o: $S/io/rig.cpp; $X -I$S/. -I$S/io
 $B/main.o: $S/main.cpp; $X -I$S/.
-$B/math/linal.o: $S/math/linal.cpp; $X -I$S/. -I$S/math
+$B/math/linal/imp.o: $S/math/linal/imp.cpp; $X -I$S/. -I$S/math/linal
 $B/math/rnd/imp.o: $S/math/rnd/imp.cpp; $X -I$S/. -I$S/math/rnd
 $B/mesh/bbox.o: $S/mesh/bbox.cu; $N -I$S/. -I$S/mesh
 $B/mesh/collision.o: $S/mesh/collision.cu; $N -I$S/. -I$S/mesh

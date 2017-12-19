@@ -13,7 +13,7 @@ $B/io/off.o: $S/io/off.cpp; $X -I$S/. -I$S/io
 $B/io/ply.o: $S/io/ply.cpp; $X -I$S/. -I$S/io
 $B/io/restart.o: $S/io/restart.cpp; $X -I$S/. -I$S/io
 $B/io/rig.o: $S/io/rig.cpp; $X -I$S/. -I$S/io
-$B/math/linal.o: $S/math/linal.cpp; $X -I$S/. -I$S/math
+$B/math/linal/imp.o: $S/math/linal/imp.cpp; $X -I$S/. -I$S/math/linal
 $B/math/rnd/imp.o: $S/math/rnd/imp.cpp; $X -I$S/. -I$S/math/rnd
 $B/mpi/glb.o: $S/mpi/glb.cpp; $X -I$S/. -I$S/mpi
 $B/mpi/type.o: $S/mpi/type.cpp; $X -I$S/. -I$S/mpi

@@ -13,7 +13,7 @@ $B/io/off.o: $S/io/off.h $S/io/off/imp.h $S/utils/error.h $S/utils/imp.h
 $B/io/ply.o: $S/inc/def.h $S/inc/type.h $S/io/ply.h $S/io/ply/ascii.h $S/io/ply/bin.h $S/io/ply/common.h $S/msg.h $S/utils/error.h $S/utils/imp.h
 $B/io/restart.o: $B/conf.h $S/inc/conf.h $S/inc/def.h $S/inc/type.h $S/io/restart.h $S/mpi/glb.h $S/msg.h $S/utils/error.h $S/utils/imp.h
 $B/io/rig.o: $B/conf.h $S/glob/imp.h $S/glob/type.h $S/inc/conf.h $S/inc/type.h $S/utils/error.h $S/utils/imp.h
-$B/math/linal.o: $S/math/linal.h
+$B/math/linal/imp.o: $S/math/linal/imp.h $S/utils/error.h
 $B/math/rnd/imp.o: $S/math/rnd/imp.h $S/utils/error.h $S/utils/imp.h
 $B/mpi/glb.o: $B/conf.h $S/inc/conf.h $S/mpi/glb.h $S/mpi/wrapper.h $S/utils/mc.h
 $B/mpi/type.o: $S/inc/conf.h $S/inc/type.h $S/mpi/type.h $S/utils/mc.h
