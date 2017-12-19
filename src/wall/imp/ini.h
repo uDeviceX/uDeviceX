@@ -8,4 +8,3 @@ void alloc_ticket(Ticket *t) {
     ini(XS + 2 * XWM, YS + 2 * YWM, ZS + 2 * ZWM, /**/ &t->cells);
     ini_map(1, &t->cells, /**/ &t->mcells);
 }
-
