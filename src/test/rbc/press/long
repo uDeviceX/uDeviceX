@@ -11,7 +11,7 @@ mv0 ()   { if test -d "$2"; then rm -r "$2"; fi; mv "$1" "$2"; }
 make0 () { make clean && u.make -j; }
 ic  () {
     local x y z cs si
-    x=`ae $XS/2` y=`ae 0.28*$YS` z=`ae $ZS/2`
+    x=`ae $XS/2` y=`ae 0.3*$YS` z=`ae $ZS/2`
     cs=0 si=1
     echo 1   0    0  $x \
 	 0 $cs -$si  $y \
@@ -24,7 +24,7 @@ ini () {
     inf=999999999
     nv=2562
     XS=32 YS=32 ZS=32
-    kb=0.1 gamma=0
+    kb=2 gamma=0
     a="RBCkb=$kb RBCgammaC=$gamma"
     b="RBC_RND=false"
     Memb="$a $b"
@@ -74,7 +74,7 @@ up () {
     walls wall_creation=0
     RESTART=true
     FORCE_CONSTANT FORCE_PAR_A=$A
-    tend=16.1 part_freq=10000
+    tend=32.1 part_freq=10000
     run
 !
     make0 > .make
@@ -85,8 +85,9 @@ up () {
 }
 ini
 wall
-A=1  down
+A=1.5 down
 A=0    up
 A=0.05 up
 A=0.1  up
-A=1    up
+A=1.0  up
+

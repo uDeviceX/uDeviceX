@@ -72,20 +72,14 @@ box    () { nx=1   ny=1 nz=1; g_box;    full; bop1; }
 msg ()    { echo >&2 ": $@"; }
 
 strt0 () {
-    Restart=
+    Restart="strt_dumps strt_freq=100000"
+    RestartB1="u.strtdir . $nx $ny $nz"
+    RestartB2=:
 }
 strt1 () {
-    local h
-    h=`u.host`
-    Restart="RESTART=true strt_freq=100000"
-    if test $h = acer; then return; fi
-    mkdir -p h5                         # TODO
-
-    if test -d strt; then rm -r strt; fi
-    if test `u.host` = daint
-    then cp -r /scratch/snx3000/lisergey/s0 strt
-    else cp -r /scratch/lisergey/s0         strt
-    fi
+    Restart="strt_dumps strt_freq=100000 RESTART=true"
+    RestartB1="mkdir -p h5"
+    RestartB2="cp -r /scratch/snx3000/lisergey/s0 strt"
 }
 
 ae () { awk 'BEGIN {print '"$@"'}'; }
@@ -135,5 +129,5 @@ sfree1() {
 }
 
 run () {
-    Run="u.batch     $nx $ny $nz ./udx 10:00:00"
+    Run="u.batch     $nx $ny $nz ./udx 00:10:00"
 }

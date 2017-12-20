@@ -23,7 +23,7 @@ sfree1
 v=$1; shift=inf; force
 
 Domain="XS=$xs YS=$ys ZS=$zs walls wall_creation=1000"
-d=$SCRATCH/big_kb$kb/$v
+d=$SCRATCH/big/kb$kb/$v
 run
 
 export S="$s"
@@ -32,7 +32,8 @@ u.case                             \
 -f rbc.stress.free rbc.stress.free \
 -f rbc.off     rbc.off             \
 -f rbcs-ic.txt rbcs-ic.txt         \
--b "u.strtdir . $nx $ny $nz"       \
+-b "$RestartB1"                    \
+-b "$RestartB2"                    \
 -l "$sdf"    sdf.dat               \
 -a "$Run"                          \
 "$u" "$c" <<!
