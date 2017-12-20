@@ -20,7 +20,6 @@ com1
 sfree1
 
 v=$1; shift=inf; force
-p_lina                   # p_[test|lina|stick]
 
 Domain="XS=$xs YS=$ys ZS=$zs walls wall_creation=1000"
 d=$SCRATCH/small/$v
@@ -41,9 +40,10 @@ u.case                             \
     $Force
     $Rbc
     $Sfree
-    $Param
     $Bop
     $Com
     $Restart
     run
 !
+
+msg "running in $d"

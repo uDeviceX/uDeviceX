@@ -48,12 +48,14 @@ g_box () { #
 }
 
 geom () { lx=`ae $nx*$xs` ly=`ae $ny*$ys` lz=`ae $nz*$zs`; }
-bop0 () { Bop= ; }
-bop1 () { Bop="part_dumps=true force_dumps=true";  }
+bop0 () { Bop="part_dumps=false force_dumps=false" ; }
+bop1 () { Bop="part_dumps=true  force_dumps=true"  ; }
 rbc0 () { Rbc="rbcs=false";                        }
 rbc1 () {
-    Rbc="RBCnv=$nv rbcs"
+    local a v
     cp ../src/data/cells/rbc/sc/$nv.off  rbc.off
+    a=`off.area rbc.off` v=`off.volume rbc.off`
+    Rbc="RBCnv=$nv rbcs RBCtotArea=$a RBCtotVolume=$v RBCphi=0 color_freq=10000"
     plcmt $radius $sc
 }
 
@@ -67,9 +69,7 @@ cyl3   () { nx=1   ny=1 nz=1; g_cyl3;   full; bop1; }
 narrow () { nx=1   ny=1 nz=1; g_narrow; full; bop1; }
 box    () { nx=1   ny=1 nz=1; g_box;    full; bop1; }
 
-msg () { printf ': %s\n' "$*" >&2; }
-p_lina () { Param=                            ; }
-p_test () { Param=                            ; }
+msg ()    { echo >&2 ": $@"; }
 
 strt0 () {
     Restart=
@@ -77,7 +77,7 @@ strt0 () {
 strt1 () {
     local h
     h=`u.host`
-    Restart="RESTART=true"
+    Restart="RESTART=true strt_freq=100000"
     if test $h = acer; then return; fi
     mkdir -p h5                         # TODO
 
@@ -105,7 +105,7 @@ plcmt () { # uses rx, ry, rz: [r]bc region
 
 force0 () { # uses $vx $vy
     local a b c
-    a="VCON=true VCON_SAMPLE_FREQ=1 VCON_LOG_FREQ=500 VCON_ADJUST_FREQ=1000"
+    a="VCON=true VCON_SAMPLE_FREQ=100 VCON_LOG_FREQ=500 VCON_ADJUST_FREQ=1000"
     b="VCON_VX=$vx VCON_VY=$vy"
     c="FORCE_CONSTANT FORCE_PAR_A=0"
     Force="$a $b $c"
@@ -135,5 +135,5 @@ sfree1() {
 }
 
 run () {
-    Run="u.batch     $nx $ny $nz ./udx 01:00:00"
+    Run="u.batch     $nx $ny $nz ./udx 10:00:00"
 }
