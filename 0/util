@@ -48,8 +48,8 @@ g_box () { #
 }
 
 geom () { lx=`ae $nx*$xs` ly=`ae $ny*$ys` lz=`ae $nz*$zs`; }
-bop0 () { Bop= ; }
-bop1 () { Bop="part_dumps=true force_dumps=true";  }
+bop0 () { Bop="part_dumps=false force_dumps=false" ; }
+bop1 () { Bop="part_dumps=true  force_dumps=true"  ; }
 rbc0 () { Rbc="rbcs=false";                        }
 rbc1 () {
     local a v
@@ -69,9 +69,7 @@ cyl3   () { nx=1   ny=1 nz=1; g_cyl3;   full; bop1; }
 narrow () { nx=1   ny=1 nz=1; g_narrow; full; bop1; }
 box    () { nx=1   ny=1 nz=1; g_box;    full; bop1; }
 
-msg () { printf ': %s\n' "$*" >&2; }
-p_lina () { Param=                            ; }
-p_test () { Param=                            ; }
+msg ()    { echo >&2 ": $@"; }
 
 strt0 () {
     Restart=

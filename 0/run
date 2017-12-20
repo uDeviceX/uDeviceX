@@ -8,7 +8,7 @@ u=u/safe
 c=$s/conf/lina.h
 
 # domain types: oneA,    oneB, cyl, cyl3, narrow small, normal, big
-big
+small
 
 nv=642 sc=0.55 radius=3.2
 strt0
@@ -20,10 +20,9 @@ com1
 sfree1
 
 v=$1; shift=inf; force
-p_lina                   # p_[test|lina|stick]
 
 Domain="XS=$xs YS=$ys ZS=$zs walls wall_creation=1000"
-d=$SCRATCH/big/$v
+d=$SCRATCH/small/$v
 run
 
 export S="$s"
@@ -41,9 +40,10 @@ u.case                             \
     $Force
     $Rbc
     $Sfree
-    $Param
     $Bop
     $Com
     $Restart
     run
 !
+
+msg "running in $d"
