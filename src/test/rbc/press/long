@@ -87,5 +87,8 @@ up () {
 ini
 wall
 A=0.15 down
-A=0.0  up
-ply2punto r.up/$A/*.ply    > p
+A=0     up
+A=1e-4  up
+A=1e-3  up
+A=1e-2  up
+A=1e-1  up
