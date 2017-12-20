@@ -55,7 +55,7 @@ rbc1 () {
     local a v
     cp ../src/data/cells/rbc/sc/$nv.off  rbc.off
     a=`off.area rbc.off` v=`off.volume rbc.off`
-    Rbc="RBCnv=$nv rbcs RBCtotArea=$a RBCtotVolume=$v RBCphi=0"
+    Rbc="RBCnv=$nv rbcs RBCtotArea=$a RBCtotVolume=$v RBCphi=0 color_freq=10000"
     plcmt $radius $sc
 }
 
