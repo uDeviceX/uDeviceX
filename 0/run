@@ -8,10 +8,11 @@ u=u/safe
 c=$s/conf/lina.h
 
 # domain types: oneA,    oneB, cyl, cyl3, narrow small, normal, big
-small
+big
 
 nv=642 sc=0.55 radius=3.2
 strt0
+kb=$1; shift
 rbc1
 
 freq=20000
@@ -22,7 +23,7 @@ sfree1
 v=$1; shift=inf; force
 
 Domain="XS=$xs YS=$ys ZS=$zs walls wall_creation=1000"
-d=$SCRATCH/small/$v
+d=$SCRATCH/big_kb$kb/$v
 run
 
 export S="$s"
