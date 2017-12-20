@@ -52,8 +52,10 @@ bop0 () { Bop= ; }
 bop1 () { Bop="part_dumps=true force_dumps=true";  }
 rbc0 () { Rbc="rbcs=false";                        }
 rbc1 () {
-    Rbc="RBCnv=$nv rbcs"
+    local a v
     cp ../src/data/cells/rbc/sc/$nv.off  rbc.off
+    a=`off.area rbc.off` v=`off.volume rbc.off`
+    Rbc="RBCnv=$nv rbcs RBCtotArea=$a RBCtotVolume=$v RBCphi=0"
     plcmt $radius $sc
 }
 
