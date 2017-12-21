@@ -1,7 +1,7 @@
 = bug?
 
 ----
-daint:/scratch/snx3000/lisergey/big_kb2
+daint:/scratch/snx3000/lisergey/big_kb2/1.0
 ----
 
 ----
