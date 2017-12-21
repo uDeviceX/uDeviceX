@@ -1,12 +1,12 @@
 ## using gitlab:ugeom
-# sTEST: square.in
+# cTEST: square.out
 set -eu
 S=`pwd` U=u/x C="$S/conf/test.h"
 XS=8 YS=8 ZS=8 a=3
 ugeom.square $XS $YS $ZS $a sdf.dat
 u.conf "$S" "$U" "$C" <<!
   KL_SYNC
-  dt=1e-4 tend=1e-4 walls wall_creation=1
+  dt=1e-4 tend=8e-4 walls wall_creation=1
   XS=$XS YS=$YS ZS=$ZS
   run
 !
