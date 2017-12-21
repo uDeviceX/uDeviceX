@@ -2,9 +2,8 @@
 
 "${AWK-awk}" '
 function read(   i) {
-    getline < f > 0
+    getline < f
     n = split($0, a)
-
 }
 function repl(   i) {
     for (i = 1; i <= n; i++)
@@ -16,4 +15,7 @@ BEGIN {
     read()
     repl()
 }
+
+function msg(s) { printf "%s\n", s | "cat >&2" }
+function err(s) { msg(s); exit 2 }
 ' "$@"
