@@ -9,15 +9,15 @@ static void subindex(bool project, int n, const PartList lp, int3 dims, /**/ int
 }
 
 void subindex(bool project, int aid, int n, const PartList lp, /**/ Clist *c, Map *m) {
-    subindex(project, n, lp, c->dims, /**/ c->counts, m->ee[aid]);
+    UC(subindex(project, n, lp, c->dims, /**/ c->counts, m->ee[aid]));
 }
 
 void subindex_local(int n, const PartList lp, /**/ Clist *c, Map *m) {
-    subindex(false, LOCAL, n, lp, /**/ c, m);
+    UC(subindex(false, LOCAL, n, lp, /**/ c, m));
 }
 
 void subindex_remote(int n, const PartList lp, /**/ Clist *c, Map *m) {
-    subindex(false, REMOTE, n, lp, /**/ c, m);
+    UC(subindex(false, REMOTE, n, lp, /**/ c, m));
 }
 
 void build_map(const int nn[], /**/ Clist *c, Map *m) {
