@@ -20,7 +20,7 @@ static int reduce(MPI_Comm comm, const void *sendbuf0, void *recvbuf, int count,
 }
 
 static int sum3(MPI_Comm comm, double *v) {
-    return reduce(comm, &v, m::rank == 0 ? &v : NULL, 3, MPI_DOUBLE, MPI_SUM);
+    return reduce(comm, v, m::rank == 0 ? v : NULL, 3, MPI_DOUBLE, MPI_SUM);
 }
 
 static int sum_d(MPI_Comm comm, double *v) {
@@ -41,7 +41,7 @@ void diagnostics(MPI_Comm comm, int n, const Particle *pp, int id) {
     double k, km, ke; /* particle, total, and maximum kinetic energies */
     double kbt;
     FILE * f;
-    double v[] = {0, 0, 0};
+    double v[3] = {0};
     for (i = 0; i < n; ++i) for (c = 0; c < 3; ++c) v[c] += pp[i].v[c];
     sum3(comm, v);
 
