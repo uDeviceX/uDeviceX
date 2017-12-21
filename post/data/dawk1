@@ -1,0 +1,13 @@
+#!/bin/sh
+
+# program and file
+p="$1"; shift
+f="$1"; shift
+
+t=/tmp/dawk.$$; >$t
+trap 'rm $t' 1 2 3 4 15
+
+u.dawk0 "$f" "$p" > $t
+cat $t
+
+rm $t

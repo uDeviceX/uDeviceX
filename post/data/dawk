@@ -1,12 +1,3 @@
 #!/bin/sh
 
-prog="$1"; shift
-
-t=/tmp/dawk.$$
-
->$t
-trap 'rm $t' 1 2 3 4 15
-
-exec u.dawk0 "$@"
-
-rm $t
+u.dawk1 "$@"

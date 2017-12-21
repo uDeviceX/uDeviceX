@@ -1,4 +1,4 @@
-P = dawk dawk0
+P = dawk dawk0 dawk1
 BIN = $(HOME)/bin
 B = $(BIN)
 
