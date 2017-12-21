@@ -12,7 +12,7 @@ void ini(Quants *q) {
     Dalloc(&q->pp, MAX_PART_NUM);
     Dalloc(&q->pp0, MAX_PART_NUM);
     ini(XS, YS, ZS, /**/ &q->cells);
-    ini_map(2, &q->cells, /**/ &q->mcells);
+    ini_map(MAX_PART_NUM, 2, &q->cells, /**/ &q->mcells);
     sz = MAX_PART_NUM * sizeof(Particle);
     UC(emalloc(sz, /**/ (void **) &q->pp_hst));
 

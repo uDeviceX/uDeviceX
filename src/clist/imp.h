@@ -26,7 +26,7 @@ struct Map {
 void ini(int LX, int LY, int LZ, /**/ Clist *c);
 void fin(/**/ Clist *c);
 
-void ini_map(int nA, const Clist *c, /**/ Map *m);
+void ini_map(int maxp, int nA, const Clist *c, /**/ Map *m);
 void fin_map(Map *m);
 
 void ini_counts(Clist *c);

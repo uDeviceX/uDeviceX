@@ -9,11 +9,11 @@ void ini(int LX, int LY, int LZ, /**/ Clist *c) {
     CC(d::Malloc((void **) &c->counts, size));
 }
 
-void ini_map(int nA, const Clist *c, /**/ Map *m) {
+void ini_map(int maxp, int nA, const Clist *c, /**/ Map *m) {
     size_t size;
     UC(scan::alloc_work(c->ncells, /**/ &m->scan));
 
-    size = MAX_PART_NUM * sizeof(uchar4);
+    size = maxp * sizeof(uchar4);
 
     m->nA = nA;
     if (nA > MAXA)
@@ -22,6 +22,6 @@ void ini_map(int nA, const Clist *c, /**/ Map *m) {
     for (int i = 0; i < nA; ++i)
         CC(d::Malloc((void **) &m->ee[i], size));
 
-    size = nA * MAX_PART_NUM * sizeof(uint);
+    size = nA * maxp * sizeof(uint);
     CC(d::Malloc((void **) &m->ii, size));
 }
