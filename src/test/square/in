@@ -1,5 +1,5 @@
 ## using gitlab:ugeom
-# cTEST: square.in
+# TEST: square.in
 set -eu
 S=`pwd` U=u/x C="$S/conf/test.h"
 XS=8 YS=8 ZS=8 a=3
