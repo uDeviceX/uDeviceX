@@ -20,6 +20,7 @@ struct Map {
     uchar4 *ee[MAXA];    /* cell entries */
     uint *ii;            /* codes containing: indices of data to fetch and array id from which to fetch */
     scan::Work scan;     /* scan workspace */
+    long capacity;       /* maximum number of particles in the new cell list */
 };
 // end::map[]
 
