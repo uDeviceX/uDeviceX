@@ -7,17 +7,17 @@ void ini(int LX, int LY, int LZ, /**/ Clist *c) {
     size_t size = (c->ncells + 16) * sizeof(int);
     CC(d::Malloc((void **) &c->starts, size));
     CC(d::Malloc((void **) &c->counts, size));
-    
 }
 
 void ini_map(int nA, const Clist *c, /**/ Map *m) {
     size_t size;
-    scan::alloc_work(c->ncells, /**/ &m->scan);
+    UC(scan::alloc_work(c->ncells, /**/ &m->scan));
 
     size = MAX_PART_NUM * sizeof(uchar4);
 
     m->nA = nA;
-    assert(nA <= MAXA);
+    if (nA > MAXA)
+        ERR("Too many inputs (%d / %d)", nA, MAXA);
     
     for (int i = 0; i < nA; ++i)
         CC(d::Malloc((void **) &m->ee[i], size));
