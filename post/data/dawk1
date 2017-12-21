@@ -8,6 +8,6 @@ t=/tmp/dawk.$$; >$t
 trap 'rm $t' 1 2 3 4 15
 
 u.dawk0 "$f" "$p" > $t
-cat $t
+"${AWK-awk}" -f "$t" "$f"
 
 rm $t

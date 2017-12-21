@@ -1,12 +1,19 @@
 #!/bin/sh
 
 "${AWK-awk}" '
-function read() {
+function read(   i) {
     getline < f > 0
-    print $0
+    n = split($0, a)
+
+}
+function repl(   i) {
+    for (i = 1; i <= n; i++)
+	gsub("[$]" a[i] "[$]", "$" i, p)
+    print p
 }
 BEGIN {
     f = ARGV[1]; p = ARGV[2]
     read()
+    repl()
 }
 ' "$@"
