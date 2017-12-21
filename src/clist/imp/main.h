@@ -38,23 +38,24 @@ void build_map(const int nn[], /**/ Clist *c, Map *m) {
     }
 }
 
+static void check_map_capacity(long n, const Map *m) {
+    long cap = m->maxp * m->nA;
+    if (n > cap)
+        ERR("Too many particles for this cell list (%ld / %ld)", n, cap);     
+}
+
 void gather_pp(const Particle *pplo, const Particle *ppre, const Map *m, long nout, /**/ Particle *ppout) {
     Sarray <const Particle*, 2> src = {pplo, ppre};
-    long cap = m->maxp * m->nA;
-    if (nout > cap)
-        ERR("Too many particles for this cell list (%ld / %ld)", nout, cap); 
-
+    UC(check_map_capacity(nout, m));
     if (nout)
         KL(dev::gather, (k_cnf(nout)), (src, m->ii, nout, /**/ ppout));
 }
 
 void gather_ii(const int *iilo, const int *iire, const Map *m, int nout, /**/ int *iiout) {
     Sarray <const int*, 2> src = {iilo, iire};
-    long cap = m->maxp * m->nA;
-    if (nout > cap)
-        ERR("Too many particles for this cell list (%ld / %ld)", nout, cap);
-    
-    if (nout) KL(dev::gather, (k_cnf(nout)), (src, m->ii, nout, /**/ iiout));
+    UC(check_map_capacity(nout, m));    
+    if (nout)
+        KL(dev::gather, (k_cnf(nout)), (src, m->ii, nout, /**/ iiout));
 }
 
 void build(int nlo, int nout, const Particle *pplo, /**/ Particle *ppout, Clist *c, Map *m) {
