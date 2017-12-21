@@ -37,7 +37,7 @@ static void build_cells(const int n, float4 *pp4, clist::Clist *cells, clist::Ma
     CC(d::Malloc((void **) &pp0, n * sizeof(Particle)));
 
     KL(dev::float42particle, (k_cnf(n)), (pp4, n, /**/ pp));
-    clist::build(n, n, pp, /**/ pp0, cells, mcells);
+    UC(clist::build(n, n, pp, /**/ pp0, cells, mcells));
     KL(dev::particle2float4, (k_cnf(n)), (pp0, n, /**/ pp4));
 
     CC(d::Free(pp));
