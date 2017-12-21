@@ -4,12 +4,19 @@ void ini_counts(/**/ Clist *c) {
     if (c->ncells) CC(d::MemsetAsync(c->counts, 0, (c->ncells + 16) * sizeof(int)));
 }
 
-static void subindex(bool project, int n, const PartList lp, int3 dims, /**/ int *cc, uchar4 *ee) {
+static void check_input_size(int id, long n, const Map *m) {
+    long cap = m->maxp;
+    if (n > cap)
+        ERR("Too many input particles for array %d (%ld / %ld)", id, n, cap);
+}
+
+static void comp_subindices(bool project, int n, const PartList lp, int3 dims, /**/ int *cc, uchar4 *ee) {
     if (n) KL(dev::subindex, (k_cnf(n)), (project, dims, n, lp, /*io*/ cc, /**/ ee));
 }
 
 void subindex(bool project, int aid, int n, const PartList lp, /**/ Clist *c, Map *m) {
-    UC(subindex(project, n, lp, c->dims, /**/ c->counts, m->ee[aid]));
+    UC(check_input_size(aid, n, m));
+    UC(comp_subindices(project, n, lp, c->dims, /**/ c->counts, m->ee[aid]));
 }
 
 void subindex_local(int n, const PartList lp, /**/ Clist *c, Map *m) {
@@ -34,6 +41,7 @@ void build_map(const int nn[], /**/ Clist *c, Map *m) {
     for (i = 0; i < m->nA; ++i) {
         n = nn[i];
         ee = m->ee[i];
+        UC(check_input_size(i, n, m));
         if (n) KL(dev::get_ids, (k_cnf(n)), (i, dims, n, ss, ee, /**/ ii));
     }
 }
