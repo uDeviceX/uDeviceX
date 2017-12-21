@@ -8,5 +8,4 @@ void free_ticket(Ticket *t) {
     destroy(&t->texstart);
     destroy(&t->texpp);
     fin(&t->cells);
-    fin_map(&t->mcells);
 }
