@@ -59,7 +59,7 @@ void gather_pp(const Particle *pplo, const Particle *ppre, const Map *m, long no
         KL(dev::gather, (k_cnf(nout)), (src, m->ii, nout, /**/ ppout));
 }
 
-void gather_ii(const int *iilo, const int *iire, const Map *m, int nout, /**/ int *iiout) {
+void gather_ii(const int *iilo, const int *iire, const Map *m, long nout, /**/ int *iiout) {
     Sarray <const int*, 2> src = {iilo, iire};
     UC(check_map_capacity(nout, m));    
     if (nout)
