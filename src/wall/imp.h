@@ -1,15 +1,15 @@
 namespace wall {
 struct Quants {
-    float4 *pp;
-    int n;
+    float4 *pp; /* particle positions xyzo xyzo ... */
+    int n;      /* number of particles              */
 };
 
 struct Ticket {
-    RNDunif *rnd;
-    clist::Clist cells;
-    clist::Map mcells;
-    Texo<int> texstart;
-    Texo<float4> texpp;
+    RNDunif *rnd;        /* rng on host                                        */
+    clist::Clist cells;  /* cell lists (always the same, no need to store map) */
+    clist::Map mcells;   /* TODO remove this from here                         */
+    Texo<int> texstart;  /* texture of starts from clist                       */
+    Texo<float4> texpp;  /* texture of particle positions                      */
 };
 
 namespace grey {
