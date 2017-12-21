@@ -53,8 +53,8 @@ void build(int nlo, int nout, const Particle *pplo, /**/ Particle *ppout, Clist 
     PartList lp;
     lp.pp = pplo;
     lp.deathlist = NULL;
-    ini_counts(/**/ c);
-    subindex_local (nlo, lp, /**/ c, m);
-    build_map(nn, /**/ c, m);    
-    gather_pp(pplo, NULL, m, nout, ppout);
+    UC(ini_counts(/**/ c));
+    UC(subindex_local (nlo, lp, /**/ c, m));
+    UC(build_map(nn, /**/ c, m));
+    UC(gather_pp(pplo, NULL, m, nout, ppout));
 }
