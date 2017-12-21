@@ -40,11 +40,18 @@ void build_map(const int nn[], /**/ Clist *c, Map *m) {
 
 void gather_pp(const Particle *pplo, const Particle *ppre, const Map *m, int nout, /**/ Particle *ppout) {
     Sarray <const Particle*, 2> src = {pplo, ppre};
-    if (nout) KL(dev::gather, (k_cnf(nout)), (src, m->ii, nout, /**/ ppout));
+    if (nout >= m->capacity)
+        ERR("Too many particles for this cell list (%ld / %ld)", (long) nout, m->capacity); 
+
+    if (nout)
+        KL(dev::gather, (k_cnf(nout)), (src, m->ii, nout, /**/ ppout));
 }
 
 void gather_ii(const int *iilo, const int *iire, const Map *m, int nout, /**/ int *iiout) {
     Sarray <const int*, 2> src = {iilo, iire};
+    if (nout >= m->capacity)
+        ERR("Too many particles for this cell list (%ld / %ld)", (long) nout, m->capacity);
+    
     if (nout) KL(dev::gather, (k_cnf(nout)), (src, m->ii, nout, /**/ iiout));
 }
 
