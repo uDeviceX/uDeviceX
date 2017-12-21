@@ -98,7 +98,6 @@ int main(int argc, char **argv) {
     dims.z = ZS;
     
     ini(dims.x, dims.y, dims.z, /**/ &clist);
-    ini_map(1, &clist, /**/ &m);
 
     UC(emalloc(MAXN * sizeof(Particle), (void**) &pp_hst));
     UC(emalloc(clist.ncells * sizeof(int), (void**) &counts));
@@ -107,6 +106,9 @@ int main(int argc, char **argv) {
     CC(d::Malloc((void**) &ppout, MAXN * sizeof(Particle)));
 
     read(&n, pp_hst);
+
+    ini_map(n, 1, &clist, /**/ &m);
+    
     CC(d::Memcpy(pp, pp_hst, n * sizeof(Particle), H2D));
     
     build(n, n, pp, /**/ ppout, &clist, &m);
