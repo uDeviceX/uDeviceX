@@ -143,7 +143,7 @@ static void main3(MeshDev m, int n, Particle *pp, Force *ff, Particle *pp0) {
     clist::Map  mcells;
 
     clist::ini(XS, YS, ZS, /**/ &cells);
-    clist::ini_map(2, &cells, /**/ &mcells);
+    clist::ini_map(n, 2, &cells, /**/ &mcells);
     clist::build(n, n, pp, /**/ pp0, &cells, &mcells);
 
     main2(m, n, pp, ff, cells);
