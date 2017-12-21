@@ -15,7 +15,7 @@ void ini_map(int maxp, int nA, const Clist *c, /**/ Map *m) {
 
     size = maxp * sizeof(uchar4);
 
-    m->capacity = maxp * nA;
+    m->maxp = maxp;
     
     m->nA = nA;
     if (nA > MAXA)

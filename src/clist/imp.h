@@ -20,7 +20,7 @@ struct Map {
     uchar4 *ee[MAXA];    /* cell entries */
     uint *ii;            /* codes containing: indices of data to fetch and array id from which to fetch */
     scan::Work scan;     /* scan workspace */
-    long capacity;       /* maximum number of particles in the new cell list */
+    long maxp;           /* maximum number of particles per input vector */
 };
 // end::map[]
 
@@ -38,8 +38,8 @@ void build_map(const int nn[], /**/ Clist *c, Map *m);
 void subindex_local(int n, const PartList lp, /**/ Clist *c, Map *m);
 void subindex_remote(int n, const PartList lp, /**/ Clist *c, Map *m);
 
-void gather_pp(const Particle *pplo, const Particle *ppre, const Map *m, int nout, /**/ Particle *ppout);
-void gather_ii(const int *iilo, const int *iire, const Map *m, int nout, /**/ int *iiout);
+void gather_pp(const Particle *pplo, const Particle *ppre, const Map *m, long nout, /**/ Particle *ppout);
+void gather_ii(const int *iilo, const int *iire, const Map *m, long nout, /**/ int *iiout);
 
 /* quick cell build for single array */
 void build(int nlo, int nout, const Particle *pplo, /**/ Particle *ppout, Clist *c, Map *m);
