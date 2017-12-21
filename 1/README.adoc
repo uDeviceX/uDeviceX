@@ -1,0 +1,14 @@
+= bug?
+
+----
+daint:/scratch/snx3000/lisergey/big_kb2
+----
+
+----
+recolor
+/users/lisergey/udx/src/comm/imp/main.h: 20: udx error: sending more than capacity in fragment 4 : (180 / 90)
+backtrace:
+: /users/lisergey/udx/src/sim/imp/step.h: 15:
+: /users/lisergey/udx/src/sim/imp/distr.h: 30:
+: /users/lisergey/udx/src/distr/flu/imp/com.h: 8:
+----
