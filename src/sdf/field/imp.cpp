@@ -115,7 +115,7 @@ static void scale0(int N[3], float s, int x, int y, int z, /**/ float *D) {
     D[i] *= s;
 }
 
-void scale(int N[3], float s, /**/ float *D) {
+void scale(const int N[3], float s, /**/ float *D) {
     enum {X, Y, Z};
     int x, y, z;
     for (z = 0; z < N[Z]; ++z)
