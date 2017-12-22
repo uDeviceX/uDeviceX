@@ -1,6 +1,7 @@
 set -eu
 
 : ${DBG=0}
+prog=u.strt.cp
 
 usg () {
     msg 'u.strt.cp [strt dir] [new strt dir]'
@@ -11,7 +12,7 @@ usg () {
 }
 
 msg () { echo >&2 "$*"; }
-err () { msg "$@"; exit 2; }
+err () { msg "$prog: $@"; exit 2; }
 e   () {
     if test ! "$DBG" = 0; then msg "cmd: $*"; fi
     eval "$@"
@@ -105,4 +106,7 @@ if test $# -ne 2; then err need two arguments; fi
 
 i="$1"; shift
 o="$1"; shift
+
+if test ! -d "$i"; then err "not a directory '$i'"; fi
+
 main .
