@@ -1,7 +1,16 @@
 = data file awk
 
-Like awk but interpreted `$v$` as field.
+Like awk(1) but interpreted `$v$` as a field.
 
 ----
 u.dawk 'NR < 10 {print $A$, $r1$}' data/data_fac1.txt
+----
+
+data/data_fac1.txt
+----
+        xo      kBT/p         gC         kb      score          A         r1         r2
+       0.1        100         10         41   0.168624          0    1.04357    1.04384
+       0.2        100         10         41   0.156554          0    1.02291    1.03455
+...
+...
 ----
