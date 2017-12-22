@@ -1,8 +1,8 @@
 #!/bin/sh
 
 "${AWK-awk}" '
-function read(   i) {
-    getline < f
+function read(   i, rc) {
+    rc = getline < f
     n = split($0, a)
 }
 function repl(   i) {

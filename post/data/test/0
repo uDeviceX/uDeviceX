@@ -1,0 +1,2 @@
+# TEST: 0
+u.dawk 'NR < 10 {print $A$, $r1$}' data/data_fac1.txt > data.out.txt
