@@ -20,7 +20,7 @@ static void ini(tex3Dca *to, cudaArray *ca) {
 }
 
 static void fin(tex3Dca *to) {
-    CC(cudaDestroyTextureObject(*to));
+    //CC(cudaDestroyTextureObject(*to));
 }
 
 
