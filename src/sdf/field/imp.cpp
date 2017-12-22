@@ -1,5 +1,4 @@
 #include <mpi.h>
-#include <stdio.h>
 #include <math.h>
 
 #include <conf.h>
@@ -7,7 +6,6 @@
 
 #include "utils/error.h"
 #include "utils/imp.h"
-#include "inc/type.h"
 #include "io/field/imp.h"
 #include "mpi/glb.h"
 #include "msg.h"
@@ -108,14 +106,14 @@ void sample(const float org[3], const float spa[3], const int N0[3], const float
 #undef i2z
 }
 
-static void scale0(int N[3], float s, int x, int y, int z, /**/ float *D) {
+static void scale0(const int N[3], float s, int x, int y, int z, /**/ float *D) {
     enum {X, Y};
     int i;
     i = x + N[X] * (y + N[Y] * z);
     D[i] *= s;
 }
 
-void scale(int N[3], float s, /**/ float *D) {
+void scale(const int N[3], float s, /**/ float *D) {
     enum {X, Y, Z};
     int x, y, z;
     for (z = 0; z < N[Z]; ++z)

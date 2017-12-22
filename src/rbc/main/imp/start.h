@@ -38,11 +38,10 @@ static void strt_dump_ii(const int id, const int nc, const int *ii) {
 }
 
 
-void strt_dump(const int id, const Quants q) {
-    strt_dump(id, q.n, q.pp, /*w*/ q.pp_hst);
-
+void strt_dump(const int id, const Quants *q) {
+    strt_dump(id, q->n, q->pp, /*w*/ q->pp_hst);
     if (rbc_ids)
-        strt_dump_ii(id, q.nc, q.ii);
+        strt_dump_ii(id, q->nc, q->ii);
 }
 
 #undef CODE

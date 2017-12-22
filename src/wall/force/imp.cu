@@ -19,8 +19,7 @@
 #include "utils/texo.h"
 #include "utils/texo.dev.h"
 #include "utils/te.h"
-
-#include "inc/macro.h"
+#include "sdf/def.h"
 
 #include "math/rnd/imp.h"
 #include "math/rnd/dev.h"

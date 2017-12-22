@@ -1,5 +1,8 @@
 set -eu
 
+: ${DBG=0}
+prog=u.strt.cp
+
 usg () {
     msg 'u.strt.cp [strt dir] [new strt dir]'
     msg 'copies restart directory'
@@ -9,8 +12,11 @@ usg () {
 }
 
 msg () { echo >&2 "$*"; }
-err () { msg "$@"; exit 2; }
-e   () { msg "cmd: $*"; eval "$@"; }
+err () { msg "$prog: $@"; exit 2; }
+e   () {
+    if test ! "$DBG" = 0; then msg "cmd: $*"; fi
+    eval "$@"
+}
 main ()  { dir "$@"; }
 mkdir0 () {
     d="$1"; shift
@@ -31,7 +37,7 @@ bop_cp () {
     ' "$f" > "$t"
 }
 bopp () { # bop?
-    echo "$1" | grep -s '\.bop$'
+    echo "$1" | grep -q '\.bop$'
 }
 cp0 () {
     local f t
@@ -86,8 +92,10 @@ dir ()  {
 dir0 () {
     local d b
     d="$1"; shift;
-    for f in `ls -rd "$i/$d"/*`
-    do  b=`basename "$f"`
+    if test ! -d "$i/$d"; then return; fi
+    for f in `e ls -rd "$i/$d"/'*'`
+    do  if test ! -r "$f"; then continue; fi
+	b=`basename "$f"`
 	if   test -d "$f"; then dir  "$d/$b"
 	elif test -r "$f"; then file "$d" "$b"
 	fi
@@ -99,4 +107,7 @@ if test $# -ne 2; then err need two arguments; fi
 
 i="$1"; shift
 o="$1"; shift
+
+if test ! -d "$i"; then err "not a directory '$i'"; fi
+
 main .

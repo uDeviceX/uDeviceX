@@ -1,8 +1,12 @@
 = signed distance function (sdf)
 :lext: .adoc
-:src: ../../../src
+:src: ../../../../src
 
 == purpose
+
+Signed distance function is interpolated from a uniform grid.
+
+== implementation
 
 == components
 

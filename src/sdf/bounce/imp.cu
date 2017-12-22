@@ -9,11 +9,9 @@
 
 #include "d/q.h"
 #include "d/ker.h"
-#include "d/api.h"
 
 #include "inc/type.h"
 #include "inc/dev.h"
-#include "inc/macro.h"
 
 #include "utils/kl.h"
 
@@ -21,9 +19,9 @@
 #include "glob/dev.h"
 #include "wvel/type.h"
 #include "wvel/dev.h"
-
 #include "math/dev.h"
 
+#include "sdf/def.h"
 #include "sdf/type.h"
 #include "sdf/dev.h"
 

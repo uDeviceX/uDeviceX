@@ -1,0 +1,24 @@
+#!/bin/sh
+
+prog=u.dawk
+
+msg () { echo >&2 "$@"; }
+err () { msg "$@"; exit 2; }
+
+usg () {
+    msg "$prog 'program' [file ...]"
+    exit
+}
+
+if test $# -ne 0 -a "$1" = -h; then usg; fi
+
+case $# in
+    0|1) err 'needs at least two arguments' ;;
+esac
+
+p="$1"; shift
+f="$1"; shift
+
+if ! test -f "$f"; then err "not a file '$f'"; fi
+
+u.dawk1 "$p" "$f" "$@"

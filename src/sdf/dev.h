@@ -1,8 +1,7 @@
 __device__ __forceinline__
-float fetch(const tex3Dca sdf, const float i, const float j, const float k) {
+float fetch(const tex3Dca sdf, float i, float j, float k) {
     return Ttex3D(float, sdf.to, i, j, k);
 }
-
 
 static __device__ float3 ugrad_sdf(const tex3Dca texsdf, const float3 *pos) {
     int L[3] = {XS, YS, ZS};
