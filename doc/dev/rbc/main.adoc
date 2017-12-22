@@ -1,8 +1,8 @@
-= Intro
+= Red blood cell
 
 Red blood cell. link:type.h[src/rbc/type.h] defines `struct rbc::Quants`
 
-= Components
+== components
 
 * adj adjacency list: a structure to pack mesh to read on device
 * com compute center of mass
@@ -19,6 +19,6 @@ a file `rbc.stretch`
 
 See also src/u/rbc, src/test/rbccom, src/test/rbc
 
-= Cell templates
+== cell templates
 
-See src/data/cells
+See `src/data/cells`
