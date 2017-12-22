@@ -1,4 +1,4 @@
 struct Sdf {
-    cudaArray *arrsdf;
-    tex3Dca   texsdf;
+    cudaArray *arr;
+    tex3Dca    tex;
 };

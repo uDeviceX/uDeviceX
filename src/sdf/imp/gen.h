@@ -2,11 +2,11 @@ static void gen0(float *D, /**/ Sdf *sdf) {
     cudaMemcpy3DParms copyParams;
     memset(&copyParams, 0, sizeof(copyParams));
     copyParams.srcPtr = make_cudaPitchedPtr((void*)D, XTE * sizeof(float), XTE, YTE);
-    copyParams.dstArray = sdf->arrsdf;
+    copyParams.dstArray = sdf->arr;
     copyParams.extent = make_cudaExtent(XTE, YTE, ZTE);
     copyParams.kind = H2D;
     CC(cudaMemcpy3D(&copyParams));
-    sdf->texsdf.setup(sdf->arrsdf);
+    sdf->texsdf.setup(sdf->arr);
 }
 
 static void gen1(int N[3], float *D0, float *D1, /**/ Sdf *sdf) {
