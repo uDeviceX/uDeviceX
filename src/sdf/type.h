@@ -1,6 +1,6 @@
 /* 3D texture object binded to  cuda array */
 typedef cudaTextureObject_t tex3Dca;
-static void ini(tex3Dca to, cudaArray *ca) {
+static void ini(tex3Dca *to, cudaArray *ca) {
     cudaResourceDesc resD;
     cudaTextureDesc  texD;
 
@@ -16,7 +16,7 @@ static void ini(tex3Dca to, cudaArray *ca) {
     texD.addressMode[1] = cudaAddressModeWrap;
     texD.addressMode[2] = cudaAddressModeWrap;
     
-    CC(cudaCreateTextureObject(&to, &resD, &texD, NULL));
+    CC(cudaCreateTextureObject(to, &resD, &texD, NULL));
 }
 
 static void fin(tex3Dca *to) {
