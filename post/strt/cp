@@ -37,7 +37,7 @@ bop_cp () {
     ' "$f" > "$t"
 }
 bopp () { # bop?
-    echo "$1" | grep -s '\.bop$'
+    echo "$1" | grep -q '\.bop$'
 }
 cp0 () {
     local f t
