@@ -21,6 +21,7 @@
 * link:./dev/modules/partlist{lext}[]
 * link:./dev/modules/rbc/forces{lext}[]
 * link:./dev/modules/rbc/main{lext}[]
+* link:./dev/modules/rbc/rnd{lext}[]
 * link:./dev/modules/sdf/main{lext}[]
 * link:./dev/modules/utils/main{lext}[]
 * link:./dev/modules/wvel{lext}[]

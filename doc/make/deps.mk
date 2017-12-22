@@ -3,6 +3,7 @@
 ./dev/main.html: ./dev/main.adoc 
 ./dev/modules/rbc/forces.html: ./dev/modules/rbc/forces.adoc 
 ./dev/modules/rbc/main.html: ./dev/modules/rbc/main.adoc 
+./dev/modules/rbc/rnd.html: ./dev/modules/rbc/rnd.adoc 
 ./dev/modules/comm.html: ./dev/modules/comm.adoc 
 ./dev/modules/parser.html: ./dev/modules/parser.adoc 
 ./dev/modules/contact.html: ./dev/modules/contact.adoc 
