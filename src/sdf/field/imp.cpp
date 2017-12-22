@@ -106,20 +106,11 @@ void sample(const float org[3], const float spa[3], const int N0[3], const float
 #undef i2z
 }
 
-static void scale0(const int N[3], float s, int x, int y, int z, /**/ float *D) {
-    enum {X, Y};
-    int i;
-    i = x + N[X] * (y + N[Y] * z);
-    D[i] *= s;
-}
-
 void scale(const int N[3], float s, /**/ float *D) {
     enum {X, Y, Z};
-    int x, y, z;
-    for (z = 0; z < N[Z]; ++z)
-        for (y = 0; y < N[Y]; ++y)
-            for (x = 0; x < N[X]; ++x)
-                scale0(N, s, x, y, z, /**/ D);
+    int i, n;
+    n = N[X]*N[Y]*N[Z];
+    for (i = 0; i < n; i++) D[i] *= s;
 }
 
 static void dump0(const int N0[3], const float* D0, /**/ float* D1) {
