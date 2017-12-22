@@ -1,8 +1,8 @@
-./dev/rbc/forces.html: ./dev/rbc/forces.adoc 
-./dev/rbc/main.html: ./dev/rbc/main.adoc 
 ./dev/cstyle/emacs.html: ./dev/cstyle/emacs.adoc 
 ./dev/wrap.html: ./dev/wrap.adoc 
 ./dev/main.html: ./dev/main.adoc 
+./dev/modules/rbc/forces.html: ./dev/modules/rbc/forces.adoc 
+./dev/modules/rbc/main.html: ./dev/modules/rbc/main.adoc 
 ./dev/modules/comm.html: ./dev/modules/comm.adoc 
 ./dev/modules/parser.html: ./dev/modules/parser.adoc 
 ./dev/modules/contact.html: ./dev/modules/contact.adoc 

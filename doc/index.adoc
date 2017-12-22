@@ -19,11 +19,11 @@
 * link:./dev/modules/math/main{lext}[]
 * link:./dev/modules/parser{lext}[]
 * link:./dev/modules/partlist{lext}[]
+* link:./dev/modules/rbc/forces{lext}[]
+* link:./dev/modules/rbc/main{lext}[]
 * link:./dev/modules/sdf/main{lext}[]
 * link:./dev/modules/utils/main{lext}[]
 * link:./dev/modules/wvel{lext}[]
-* link:./dev/rbc/forces{lext}[]
-* link:./dev/rbc/main{lext}[]
 * link:./dev/wrap{lext}[]
 
 == ./user
