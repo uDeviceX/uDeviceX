@@ -42,7 +42,7 @@ void lshift() {
 void main0(Sdf *sdf, Part *p) {
     float x, y, z;
     x = p->x; y = p->y; z = p->z;
-    KL(dev::main, (1, 1), (sdf->texsdf, x, y, z));
+    KL(dev::main, (1, 1), (sdf->tex, x, y, z));
 }
 
 void main1(Part *p) {
