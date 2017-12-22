@@ -7,7 +7,7 @@ Red blood cell. link:type.h[src/rbc/type.h] defines `struct rbc::Quants`
 * adj adjacency list: a structure to pack mesh to read on device
 * com compute center of mass
 * edg store information for every edge (host)
-* force internal forces
+* internal forces: link:forces{lext}[forces]
 * gen generate `pp` from cell template (`rbc.off`) and initial condition
 files (`rbcs-ic.txt`)
 * link:com[main] initialization, restart
@@ -17,7 +17,7 @@ files (`rbcs-ic.txt`)
 * stretch apply a force to every vertex of every cell, force is set from
 a file `rbc.stretch`
 
-See also src/u/rbc, src/test/rbccom, src/test/rbc
+See also `src/u/rbc`, `src/test/rbccom`, `src/test/rbc`
 
 == cell templates
 
