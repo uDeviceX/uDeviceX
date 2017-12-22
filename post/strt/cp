@@ -92,6 +92,7 @@ dir ()  {
 dir0 () {
     local d b
     d="$1"; shift;
+    if test ! -d "$d"; then return; fi
     for f in `ls -rd "$i/$d"/*`
     do  if test ! -r "$f"; then continue; fi
 	b=`basename "$f"`
