@@ -33,7 +33,7 @@ static void bulk_wall(const tex3Dca texsdf, /*io*/ Particle *s_pp, int* s_n,
 }
 
 void bulk_wall(const Sdf* sdf, /*io*/ Particle *s_pp, int *s_n, /*o*/ Particle *w_pp, int *w_n) {
-    UC(bulk_wall(sdf->texsdf, /*io*/ s_pp, s_n, /*o*/ w_pp, w_n));
+    UC(bulk_wall(sdf->tex, /*io*/ s_pp, s_n, /*o*/ w_pp, w_n));
 }
 
 
@@ -60,5 +60,5 @@ int who_stays(const tex3Dca texsdf, Particle *pp, int n, int nc, int nv, /**/ in
 }
 
 int who_stays(const Sdf *sdf, Particle *pp, int n, int nc, int nv, int *stay) {
-    return who_stays(sdf->texsdf, pp, n, nc, nv, /**/ stay);
+    return who_stays(sdf->tex, pp, n, nc, nv, /**/ stay);
 }

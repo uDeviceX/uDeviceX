@@ -10,10 +10,10 @@ void ini(Sdf **pq) {
 
 void fin(Sdf *q) {
     CC(cudaFreeArray(q->arr));
-    q->texsdf.destroy();
+    q->tex.destroy();
     UC(efree(q));
 }
 
 void bounce(Wvel_v wv, Coords c, const Sdf *q, int n, /**/ Particle *pp) {
-    UC(bounce_back(wv, c, q->texsdf, n, /**/ pp));
+    UC(bounce_back(wv, c, q->tex, n, /**/ pp));
 }
