@@ -13,7 +13,7 @@
 
 #include "inc/type.h"
 #include "inc/dev.h"
-#include "inc/macro.h"
+#include "sdf/def.h"
 
 #include "utils/kl.h"
 
