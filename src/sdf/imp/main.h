@@ -10,7 +10,7 @@ void ini(Sdf **pq) {
 
 void fin(Sdf *q) {
     CC(cudaFreeArray(q->arrsdf));
-    q->texsdf.fin();
+    fin(q);
     UC(efree(q));
 }
 
