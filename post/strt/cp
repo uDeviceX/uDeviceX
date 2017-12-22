@@ -1,5 +1,7 @@
 set -eu
 
+: ${DBG=0}
+
 usg () {
     msg 'u.strt.cp [strt dir] [new strt dir]'
     msg 'copies restart directory'
@@ -10,7 +12,10 @@ usg () {
 
 msg () { echo >&2 "$*"; }
 err () { msg "$@"; exit 2; }
-e   () { msg "cmd: $*"; eval "$@"; }
+e   () {
+    if test ! "$DBG" = 0; then msg "cmd: $*"; fi
+    eval "$@"
+}
 main ()  { dir "$@"; }
 mkdir0 () {
     d="$1"; shift
