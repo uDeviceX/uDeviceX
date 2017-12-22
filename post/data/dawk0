@@ -1,8 +1,17 @@
 #!/bin/sh
 
-"${AWK-awk}" '
+prog=u.dawk "${AWK-awk}" '
+function ini() {
+    prog = ENVIRON["prog"]
+    f = ARGV[1]; p = ARGV[2]
+}
+function read_err(   s) {
+    s = sprintf("file %s is empty", f)
+    err(s)
+}
 function read(   i, rc) {
     rc = getline < f
+    if (rc <= 0) read_err()
     n = split($0, a)
 }
 function repl(   i) {
@@ -11,11 +20,11 @@ function repl(   i) {
     print p
 }
 BEGIN {
-    f = ARGV[1]; p = ARGV[2]
+    ini()
     read()
     repl()
 }
 
-function msg(s) { printf "%s\n", s | "cat >&2" }
+function msg(s) { printf "%s: %s\n", prog, s | "cat >&2" }
 function err(s) { msg(s); exit 2 }
 ' "$@"
