@@ -6,7 +6,7 @@ static void gen0(float *D, /**/ Sdf *sdf) {
     copyParams.extent = make_cudaExtent(XTE, YTE, ZTE);
     copyParams.kind = H2D;
     CC(cudaMemcpy3D(&copyParams));
-    sdf->texsdf.setup(sdf->arrsdf);
+    sdf->texsdf.ini(sdf->arrsdf);
 }
 
 static void gen1(int N[3], float *D0, float *D1, /**/ Sdf *sdf) {

@@ -2,7 +2,7 @@
 struct tex3Dca {
     cudaTextureObject_t to;
     
-    void setup(cudaArray *ca) {
+    void ini(cudaArray *ca) {
         cudaResourceDesc resD;
         cudaTextureDesc  texD;
 
@@ -21,6 +21,6 @@ struct tex3Dca {
         CC(cudaCreateTextureObject(&to, &resD, &texD, NULL));
     }
 
-    void destroy() {CC(cudaDestroyTextureObject(to));}
+    void fin() {CC(cudaDestroyTextureObject(to));}
 };
 
