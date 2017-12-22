@@ -31,11 +31,13 @@ void pack(const Quants *q, /**/ Pack *p) {
 }
 
 void download(Pack *p) {
-    dSync(); /* wait for pack kernels */
     const size_t sz = NFRAGS * sizeof(int);
-    memcpy(p->hpp.counts, p->map.hcounts, sz);
-    if (global_ids)    memcpy(p->hii.counts, p->map.hcounts, sz);
-    if (multi_solvent) memcpy(p->hcc.counts, p->map.hcounts, sz);
+    const int *counts = p->map.hcounts;
 
-    p->nhalo = reduce(NFRAGS, p->hpp.counts);
+    dSync(); /* wait for pack kernels */
+    memcpy(p->hpp.counts, counts, sz);
+    if (global_ids)    memcpy(p->hii.counts, counts, sz);
+    if (multi_solvent) memcpy(p->hcc.counts, counts, sz);
+
+    p->nhalo = reduce(NFRAGS, counts);
 }
