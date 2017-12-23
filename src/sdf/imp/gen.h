@@ -3,6 +3,7 @@ static void gen0(float *D, /**/ Sdf *sdf) {
     sdf->tex.setup(sdf->arr->a);
 
     tex3d_copy(sdf->arr, /**/ sdf->tex.t);
+    sdf->tex.to = sdf->tex.t->t;
 }
 
 static void gen1(int N[3], float *D0, float *D1, /**/ Sdf *sdf) {
