@@ -1,4 +1,5 @@
 struct tex3Dca {
+    Tex3d *te;
     cudaTextureObject_t to;
 
     void setup(cudaArray *ca) {

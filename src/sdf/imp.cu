@@ -17,6 +17,7 @@
 #include "glob/type.h"
 #include "wvel/type.h"
 
+#include "tex3d/type.h"
 #include "type.h"
 #include "array3d/type.h"
 #include "array3d/imp.h"
