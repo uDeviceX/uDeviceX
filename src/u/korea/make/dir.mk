@@ -64,6 +64,7 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/sdf/bounce               && \
     d $B/sdf/field                && \
     d $B/sdf/label                && \
+    d $B/sdf/tex3d                && \
     d $B/sim                      && \
     d $B/utils                    && \
     d $B/wall                     && \
