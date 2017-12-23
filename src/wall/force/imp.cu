@@ -30,10 +30,9 @@
 #include "wvel/dev.h"
 
 #include "sdf/type.h"
-
+#include "sdf/dev.h"
 #include "sdf/tex3d/type.h"
 #include "sdf/tex3d/dev.h"
-
 #include "sdf/imp.h"
 
 #include "forces/type.h"
