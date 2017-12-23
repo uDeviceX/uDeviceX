@@ -5,4 +5,4 @@ struct tex3Dca {
 };
 
 /* view */
-struct Sdf_v { cudaTextureObject_t to; };
+struct Sdf_v { cudaTextureObject_t t; };
