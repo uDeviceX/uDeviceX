@@ -1,8 +1,12 @@
+#include "sdf/tex3d/imp.h"
+
 struct tex3Dca {
-    Tex3d *te;
+    Tex3d *t;
     cudaTextureObject_t to;
 
     void setup(cudaArray *ca) {
+        tex3d_ini(&t);
+
         cudaResourceDesc resD;
         cudaTextureDesc  texD;
 
@@ -21,5 +25,8 @@ struct tex3Dca {
         CC(cudaCreateTextureObject(&to, &resD, &texD, NULL));
     }
 
-    void destroy() {CC(cudaDestroyTextureObject(to));}
+    void destroy() {
+        tex3d_fin(t);
+        CC(cudaDestroyTextureObject(to));
+    }
 };
