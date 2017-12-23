@@ -18,7 +18,9 @@
 #include "wvel/type.h"
 
 #include "type.h"
+#include "array3d/type.h"
 #include "array3d/imp.h"
+
 #include "field/imp.h"
 #include "bounce/imp.h"
 #include "label/imp.h"
