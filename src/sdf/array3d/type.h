@@ -1,1 +1,1 @@
-struct Array3d { cudaArray a; }
+struct Array3d { cudaArray_t a; };

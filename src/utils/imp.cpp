@@ -26,5 +26,6 @@ int efopen(const char *fname, const char *mode, /**/ FILE **f) {
     return 0;
 }
 
-void efclose(FILE *f) {fclose(f);}
-    
+void efclose(FILE *f) {
+    fclose(f);
+}

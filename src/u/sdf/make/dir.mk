@@ -8,6 +8,7 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/math/rnd     && \
     d $B/mpi          && \
     d $B/sdf          && \
+    d $B/sdf/array3d  && \
     d $B/sdf/bounce   && \
     d $B/sdf/field    && \
     d $B/sdf/label    && \
