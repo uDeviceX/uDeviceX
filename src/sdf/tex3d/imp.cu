@@ -1,7 +1,11 @@
 #include <stdio.h>
 
+#include "conf.h"
+#include "inc/conf.h"
+
 #include "utils/imp.h"
 #include "utils/error.h"
+#include "utils/cc.h"
 
 #include "sdf/array3d/type.h"
 
@@ -15,6 +19,7 @@ void tex3d_ini(Tex3d **pq) {
 }
 
 void tex3d_fin(Tex3d *q) {
+    CC(cudaDestroyTextureObject(q->t));
     UC(efree(q));
 }
 
