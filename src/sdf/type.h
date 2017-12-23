@@ -1,4 +1,3 @@
-/* 3D texture object binded to  cuda array */
 struct tex3Dca {
     cudaTextureObject_t to;
 
