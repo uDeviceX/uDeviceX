@@ -3,7 +3,6 @@
 #include <conf.h>
 #include "inc/conf.h"
 
-#include "d/ker.h"
 #include "d/api.h"
 
 #include "utils/error.h"
@@ -14,8 +13,6 @@
 
 #include "inc/type.h"
 #include "inc/dev.h"
-#include "sdf/def.h"
-
 #include "utils/imp.h"
 
 #include "glob/type.h"
@@ -27,6 +24,7 @@
 #include "label/imp.h"
 
 #include "imp.h"
+#include "def.h"
 
 #include "imp/type.h"
 #include "imp/gen.h"
