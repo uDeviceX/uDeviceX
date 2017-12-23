@@ -9,7 +9,7 @@ $B/mpi/glb.o: $S/inc/conf.h $S/mpi/wrapper.h $S/utils/mc.h $B/conf.h $S/mpi/glb.
 $B/mpi/type.o: $S/inc/conf.h $S/inc/type.h $S/mpi/type.h $S/utils/mc.h
 $B/mpi/wrapper.o: $S/mpi/wrapper.h
 $B/msg.o: $S/msg.h $S/mpi/glb.h
-$B/sdf/array3d/imp.o: $S/utils/imp.h $S/utils/error.h $S/sdf/array3d/imp.h $S/sdf/array3d/type.h
+$B/sdf/array3d/imp.o: $S/utils/imp.h $S/inc/conf.h $S/utils/error.h $S/sdf/array3d/imp.h $S/utils/cc.h $B/conf.h $S/sdf/array3d/type.h
 $B/sdf/bounce/imp.o: $S/inc/conf.h $S/utils/error.h $S/inc/type.h $S/d/q.h $S/sdf/bounce/imp.h $S/wvel/type.h $S/wvel/dev.h $S/glob/dev.h $S/utils/cc.h $S/sdf/type.h $S/inc/dev.h $S/d/api.h $S/msg.h $B/conf.h $S/sdf/bounce/imp/main.h $S/sdf/def.h $S/glob/type.h $S/utils/kl.h $S/math/dev.h $S/sdf/dev.h $S/sdf/bounce/dev/main.h $S/d/ker.h
 $B/sdf/field/imp.o: $S/utils/imp.h $S/inc/conf.h $S/io/field/imp.h $S/utils/error.h $S/sdf/field/imp.h $S/msg.h $B/conf.h $S/mpi/glb.h
 $B/sdf/imp.o: $S/utils/imp.h $S/inc/conf.h $S/utils/error.h $S/sdf/label/imp.h $S/inc/type.h $S/sdf/imp.h $S/wvel/type.h $S/utils/cc.h $S/inc/def.h $S/sdf/imp/split.h $S/sdf/imp/gen.h $S/inc/dev.h $S/msg.h $S/d/api.h $B/conf.h $S/sdf/imp/main.h $S/sdf/field/imp.h $S/sdf/imp/type.h $S/sdf/type.h $S/glob/type.h $S/sdf/def.h $S/sdf/bounce/imp.h $S/mpi/glb.h $S/d/ker.h
