@@ -1,15 +1,12 @@
 void ini(Sdf **pq) {
     Sdf *q;
     UC(emalloc(sizeof(Sdf), (void**)&q));
-
-    cudaChannelFormatDesc fmt = cudaCreateChannelDesc<float>();
-    CC(cudaMalloc3DArray(&q->arr, &fmt, make_cudaExtent(XTE, YTE, ZTE)));
-
+    UC(array3d_ini(&q->arr, XTE, YTE, ZTE));
     *pq = q;
 }
 
 void fin(Sdf *q) {
-    CC(cudaFreeArray(q->arr));
+    UC(array3d_fin(q->arr));
     q->tex.destroy();
     UC(efree(q));
 }

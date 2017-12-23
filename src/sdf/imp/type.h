@@ -1,4 +1,5 @@
+struct Array3d;
 struct Sdf {
-    cudaArray *arr;
+    Array3d   *arr;
     tex3Dca    tex;
 };

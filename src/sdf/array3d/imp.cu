@@ -23,6 +23,7 @@ void array3d_ini(Array3d **pq, int x, int y, int z) {
 }
 
 void array3d_fin(Array3d *q) {
+    CC(cudaFreeArray(q->a));
     UC(efree(q));
 }
 
