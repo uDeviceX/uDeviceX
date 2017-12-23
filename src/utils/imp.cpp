@@ -27,5 +27,5 @@ int efopen(const char *fname, const char *mode, /**/ FILE **f) {
 }
 
 void efclose(FILE *f) {
-    fclose(f);
+    if (fclose(f)) != 0) ERR("Failed to close");
 }
