@@ -19,6 +19,9 @@
 
 #include "utils/kl.h"
 
+#include "sdf/tex3d/type.h"
+#include "sdf/tex3d/dev.h"
+
 #include "sdf/type.h"
 #include "sdf/dev.h"
 
