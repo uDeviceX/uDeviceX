@@ -1,7 +1,7 @@
 /* 3D texture object binded to  cuda array */
 struct tex3Dca {
     cudaTextureObject_t to;
-    
+
     void setup(cudaArray *ca) {
         cudaResourceDesc resD;
         cudaTextureDesc  texD;
@@ -9,7 +9,7 @@ struct tex3Dca {
         memset(&resD, 0, sizeof(resD));
         resD.resType = cudaResourceTypeArray;
         resD.res.array.array = ca;
-        
+
         memset(&texD, 0, sizeof(texD));
         texD.normalizedCoords = 0;
         texD.filterMode = cudaFilterModePoint;
@@ -23,4 +23,3 @@ struct tex3Dca {
 
     void destroy() {CC(cudaDestroyTextureObject(to));}
 };
-
