@@ -1,7 +1,7 @@
 static void gen0(float *D, /**/ Sdf *sdf) {
     array3d_copy(XTE, YTE, ZTE, D, sdf->arr);
-    sdf->tex.setup(sdf->arr->a);
 
+    tex3d_ini(&sdf->tex.t);
     tex3d_copy(sdf->arr, /**/ sdf->tex.t);
     sdf->tex.to = sdf->tex.t->t;
 }

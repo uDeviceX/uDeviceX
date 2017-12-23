@@ -7,7 +7,8 @@ void ini(Sdf **pq) {
 
 void fin(Sdf *q) {
     UC(array3d_fin(q->arr));
-    q->tex.destroy();
+    UC(tex3d_fin(q->tex.t));
+    
     UC(efree(q));
 }
 
