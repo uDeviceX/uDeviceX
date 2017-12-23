@@ -4,12 +4,14 @@
 #include "type.h"
 #include "imp.h"
 
+#include "utils/error.h"
+
 void ini(Array3d **pq) {
     Array3d *q;
-    emalloc(sizeof(Array3d), /**/ (void**)&q);
+    UC(emalloc(sizeof(Array3d), /**/ (void**)&q));
     *pq = q;
 }
 
 void fin(Array3d *q) {
-    efree(q);
+    UC(efree(q));
 }
