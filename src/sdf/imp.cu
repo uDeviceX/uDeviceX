@@ -15,7 +15,6 @@
 #include "utils/imp.h"
 
 #include "glob/type.h"
-#include "wvel/type.h"
 
 #include "tex3d/type.h"
 #include "type.h"
