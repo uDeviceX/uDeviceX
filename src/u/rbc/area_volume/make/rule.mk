@@ -1,5 +1,5 @@
 $B/d/api.o: $S/d/api.cu; $N -I$S/d -I$S/.
-$B/glob/imp.o: $S/glob/imp.cu; $N -I$S/glob -I$S/.
+$B/glob/imp.o: $S/glob/imp.cpp; $X -I$S/glob -I$S/.
 $B/io/bop/imp.o: $S/io/bop/imp.cpp; $X -I$S/io/bop -I$S/.
 $B/io/com.o: $S/io/com.cpp; $X -I$S/io -I$S/.
 $B/io/diag.o: $S/io/diag.cpp; $X -I$S/io -I$S/.

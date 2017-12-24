@@ -24,7 +24,7 @@ $B/flu/imp.o: $S/flu/imp.cpp; $X -I$S/flu -I$S/.
 $B/frag/imp.o: $S/frag/imp.cpp; $X -I$S/frag -I$S/.
 $B/fsi/imp.o: $S/fsi/imp.cu; $N -I$S/fsi -I$S/.
 $B/generate/rig/imp.o: $S/generate/rig/imp.cu; $N -I$S/generate/rig -I$S/.
-$B/glob/imp.o: $S/glob/imp.cu; $N -I$S/glob -I$S/.
+$B/glob/imp.o: $S/glob/imp.cpp; $X -I$S/glob -I$S/.
 $B/inter/imp.o: $S/inter/imp.cu; $N -I$S/inter -I$S/inter/_bangladesh -I$S/.
 $B/io/bop/imp.o: $S/io/bop/imp.cpp; $X -I$S/io/bop -I$S/.
 $B/io/com.o: $S/io/com.cpp; $X -I$S/io -I$S/.

@@ -1,3 +1,4 @@
+#include <vector_types.h>
 #include <mpi.h>
 
 #include <conf.h>
