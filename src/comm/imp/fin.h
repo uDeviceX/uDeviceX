@@ -1,12 +1,13 @@
 static void free_counts(int **hc) {
-    free(*hc); *hc = NULL;
+    UC(efree(*hc));
+    *hc = NULL;
 }
 
 static void free_pair(int i, AllocMod mod, /**/ hBags *hb, dBags *db) {
     switch (mod) {
     case HST_ONLY:
         if (hb->data[i])
-            free(hb->data[i]);
+            UC(efree(hb->data[i]));
         break;
     case DEV_ONLY:
         if (db->data[i])
