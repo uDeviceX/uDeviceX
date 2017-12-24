@@ -6,10 +6,6 @@
 
 #define dSync() CC(d::DeviceSynchronize())
 
-/* test if inside device function                                 */
-/* useful for small differences in __device__ __host__ functions */
-#define DEVICE_FUNC (defined (__CUDA_ARCH__) && (__CUDA_ARCH__ > 0))
-
 #define D2D cudaMemcpyDeviceToDevice
 #define D2H cudaMemcpyDeviceToHost
 #define H2D cudaMemcpyHostToDevice
