@@ -15,6 +15,6 @@ void to_view(Sdf *q, /**/ Sdf_v *v) {
     v->t = q->tex.to;
 }
 
-void bounce(Wvel_v wv, Coords c, const Sdf *q, int n, /**/ Particle *pp) {
-    UC(bounce_back(wv, c, q->tex, n, /**/ pp));
+void bounce(Wvel_v *wv, Coords *c, Sdf *sdf, int n, /**/ Particle *pp) {
+    UC(bounce_back(wv, c, sdf, n, /**/ pp));
 }

@@ -27,7 +27,7 @@ static __device__ void crop(float *t) {
         if (*t >   0) *t = 0;
 }
 
-static __device__ void rescue(Wvel_v wv, Coords c, const tex3Dca texsdf, float currsdf, /* io */ float3 *r, float3 *v) {
+static __device__ void rescue(Wvel_v wv, Coords c, const Sdf_v texsdf, float currsdf, /* io */ float3 *r, float3 *v) {
     float sdf0, jump;
     float3 dsdf;
     int l;
@@ -47,7 +47,7 @@ static __device__ void rescue(Wvel_v wv, Coords c, const tex3Dca texsdf, float c
     }
 }
 
-static __device__ void bounce_back_1p(Wvel_v wv, Coords c, const tex3Dca texsdf, float currsdf, /* io */ float3 *r, float3 *v) {
+static __device__ void bounce_back_1p(Wvel_v wv, Coords c, const Sdf_v texsdf, float currsdf, /* io */ float3 *r, float3 *v) {
     float3 r0, rc, rw, dsdf;
     float phi, dphi, t;
     int l;
@@ -86,7 +86,7 @@ static __device__ void bounce_back_1p(Wvel_v wv, Coords c, const tex3Dca texsdf,
         *r = r0;    
 }
 
-__global__ void bounce_back(Wvel_v wv, Coords c, const tex3Dca texsdf, int n, /**/ Particle *pp) {
+__global__ void bounce_back(Wvel_v wv, Coords c, const Sdf_v texsdf, int n, /**/ Particle *pp) {
     float s, currsdf;
     float3 r, v;
     int i;

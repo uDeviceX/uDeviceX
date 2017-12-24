@@ -1,6 +1,6 @@
 namespace wall {
 struct Wa { /* local wall data */
-    tex3Dca sdf;
+    Sdf_v sdf_v;
     Texo<int> start;
     Texo<float4> pp;
     int n;

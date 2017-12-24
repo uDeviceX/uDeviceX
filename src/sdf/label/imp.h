@@ -4,6 +4,6 @@ enum {
     WALL,  /* becomes wall particle */
     DEEP   /* deep inside the wall */
 };
-void dev(const tex3Dca, int n, const Particle*, /**/ int *labels);
-void hst(const tex3Dca, int n, const Particle*, /**/ int *labels);
+void dev(Sdf *sdf, int n, const Particle*, /**/ int *labels);
+void hst(Sdf *sdf, int n, const Particle*, /**/ int *labels);
 }

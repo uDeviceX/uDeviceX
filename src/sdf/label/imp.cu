@@ -23,6 +23,7 @@
 #include "sdf/tex3d/dev.h"
 
 #include "sdf/type.h"
+#include "sdf/imp.h"
 #include "sdf/dev.h"
 
 #include "imp.h"

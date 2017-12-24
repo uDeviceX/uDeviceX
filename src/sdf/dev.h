@@ -1,9 +1,9 @@
 __device__ __forceinline__
-float fetch(const tex3Dca sdf, float i, float j, float k) {
-    return Ttex3D(float, sdf.to, i, j, k);
+float fetch(const Sdf_v sdf, float i, float j, float k) {
+    return Ttex3D(float, sdf.t, i, j, k);
 }
 
-static __device__ float3 ugrad_sdf(const tex3Dca texsdf, const float3 *pos) {
+static __device__ float3 ugrad_sdf(const Sdf_v texsdf, const float3 *pos) {
     int L[3] = {XS, YS, ZS};
     int M[3] = {XWM, YWM, ZWM};
     int T[3] = {XTE, YTE, ZTE};
@@ -26,7 +26,7 @@ static __device__ float3 ugrad_sdf(const tex3Dca texsdf, const float3 *pos) {
     return make_float3(gx, gy, gz);
 }
 
-static __device__ float3 grad_sdf(const tex3Dca texsdf, const float3 *pos) {
+static __device__ float3 grad_sdf(const Sdf_v texsdf, const float3 *pos) {
     float gx, gy, gz;
     int L[3] = {XS, YS, ZS};
     int M[3] = {XWM, YWM, ZWM};
@@ -52,7 +52,7 @@ static __device__ int iround(float x) {
 }
 
 /* within the rescaled texel width error */
-static __device__ float cheap_sdf(const tex3Dca texsdf, float x, float y, float z)  {
+static __device__ float cheap_sdf(const Sdf_v texsdf, float x, float y, float z)  {
     int L[3] = {XS, YS, ZS};
     int M[3] = {XWM, YWM, ZWM};
     int T[3] = {XTE, YTE, ZTE};
@@ -63,7 +63,7 @@ static __device__ float cheap_sdf(const tex3Dca texsdf, float x, float y, float 
     return fetch(texsdf, tc[0], tc[1], tc[2]);
 }
 
-static __device__ float sdf(const tex3Dca texsdf, float x, float y, float z) {
+static __device__ float sdf(const Sdf_v texsdf, float x, float y, float z) {
     int c;
     float t;
     float s000, s001, s010, s100, s101, s011, s110, s111;
