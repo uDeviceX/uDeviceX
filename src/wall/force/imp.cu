@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <assert.h>
-#include <mpi.h>
 
 #include <conf.h>
 #include "inc/conf.h"
@@ -20,7 +19,6 @@
 #include "utils/texo.h"
 #include "utils/texo.dev.h"
 #include "utils/te.h"
-#include "sdf/def.h"
 
 #include "math/rnd/imp.h"
 #include "math/rnd/dev.h"
@@ -30,9 +28,9 @@
 #include "wvel/type.h"
 #include "wvel/dev.h"
 
+#include "sdf/def.h"
 #include "sdf/type.h"
 #include "sdf/dev.h"
-#include "sdf/imp.h"
 
 #include "forces/type.h"
 #include "forces/use.h"
