@@ -26,7 +26,7 @@ static void gen1(int N[3], float *D0, float *D1, /**/ Sdf *sdf) {
 static void gen2(int N[3], float* D0, /**/ Sdf *sdf) {
     int sz;
     float *D1;
-    sz = sizeof(float)*XTE*YTE*ZTE;
+    sz = sizeof(D1[0])*XTE*YTE*ZTE;
     UC(emalloc(sz, (void**)&D1));
     UC(gen1(N, D0, D1, /**/ sdf));
     UC(efree(D1));
@@ -48,12 +48,12 @@ void gen(MPI_Comm cart, Sdf *sdf) {
     int N[3];     /* size of D */
     float ext[3]; /* extent */
     int n;
-    char f[] = "sdf.dat";
+    const char *f = "sdf.dat";
 
     UC(field::ini_dims(f, /**/ N, ext));
     n = N[X] * N[Y] * N[Z];
-    D = new float[n];
+    UC(emalloc(n*sizeof(D[0]), (void**)&D));
     UC(field::ini_data(f, n, /**/ D));
     UC(gen3(cart, N, ext, D, /**/ sdf));
-    delete[] D;
+    UC(efree(D));
 }
