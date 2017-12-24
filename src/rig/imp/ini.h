@@ -1,8 +1,8 @@
 static void load_rigid_mesh(const char *fname, int *nt, int *nv, int4 **tt_hst, int4 **tt_dev, float **vv_hst, float **vv_dev) {
     ply::read(fname, /**/ nt, nv, tt_hst, vv_hst);
 
-    CC(cudaMalloc(tt_dev, *nt * sizeof(int4)));
-    CC(cudaMalloc(vv_dev, 3 * *nv * sizeof(float)));
+    CC(d::Malloc((void**)tt_dev,     (*nt) * sizeof(int4)));
+    CC(d::Malloc((void**)vv_dev, 3 * (*nv) * sizeof(float)));
 
     cH2D(*tt_dev, *tt_hst,     *nt);
     cH2D(*vv_dev, *vv_hst, 3 * *nv);
