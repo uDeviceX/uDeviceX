@@ -25,6 +25,8 @@
 #include "d/ker.h"
 #include "d/api.h"
 #include "utils/cc.h"
+
+#include "utils/texo.h"
 #include "mesh/collision.h"
 
 #include "imp.h"
