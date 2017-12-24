@@ -1,5 +1,5 @@
 struct Array3d;
 struct Sdf {
     Array3d   *arr;
-    tex3Dca    tex;
+    Tex3d     *tex;
 };
