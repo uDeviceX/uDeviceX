@@ -51,7 +51,6 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/rbc/rnd                  && \
     d $B/rbc/rnd/api              && \
     d $B/rbc/stretch              && \
-    d $B/rig                      && \
     d $B/rigid                    && \
     d $B/scheme/force             && \
     d $B/scheme/move              && \
