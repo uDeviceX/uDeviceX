@@ -23,7 +23,7 @@ static void gen1(int N[3], float *D0, float *D1, /**/ Sdf *sdf) {
     UC(gen0(D1, sdf));
 }
 
-static void gen2(int N[3], float* D0, /**/ Sdf *sdf) {
+static void gen2(int N[3], float *D0, /**/ Sdf *sdf) {
     int sz;
     float *D1;
     sz = sizeof(D1[0])*XTE*YTE*ZTE;
@@ -32,7 +32,7 @@ static void gen2(int N[3], float* D0, /**/ Sdf *sdf) {
     UC(efree(D1));
 }
 
-static void gen3(MPI_Comm cart, int N[3], float ext[3], float* D, /**/ Sdf *sdf) {
+static void gen3(MPI_Comm cart, int N[3], float ext[3], float *D, /**/ Sdf *sdf) {
     enum {X, Y, Z};
     float sc, G; /* domain size in x ([G]lobal) */
     G = m::dims[X] * XS;
