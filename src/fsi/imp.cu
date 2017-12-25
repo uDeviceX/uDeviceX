@@ -1,5 +1,4 @@
 #include <assert.h>
-#include <mpi.h>
 #include <conf.h>
 #include "inc/conf.h"
 
@@ -21,13 +20,7 @@
 
 #include "utils/kl.h"
 #include "inc/type.h"
-#include "mpi/type.h"
 #include "inc/dev.h"
-
-#include "utils/texo.h"
-#include "utils/te.h"
-
-#include "sim/imp.h"
 #include "dbg/imp.h"
 
 #include "forces/type.h"
