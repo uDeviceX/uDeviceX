@@ -1,3 +1,4 @@
+struct RNDunif;
 namespace fsi {
 struct SolventWrap {
     Particle *pp;

@@ -1,3 +1,4 @@
+struct RNDunif;
 namespace fsi {
 void ini(Fsi *fsi);
 void fin(Fsi *fsi);

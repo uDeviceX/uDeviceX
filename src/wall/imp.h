@@ -1,3 +1,5 @@
+struct RNDunif;
+
 namespace wall {
 struct Quants {
     float4 *pp; /* particle positions xyzo xyzo ... */

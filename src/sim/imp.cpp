@@ -17,7 +17,6 @@
 #include "glob/imp.h"
 
 #include "mpi/wrapper.h"
-#include "math/rnd/imp.h"
 
 #include "inc/def.h"
 #include "msg.h"
