@@ -1,3 +1,6 @@
+struct Force;
+struct Particle;
+
 namespace dbg {
 /* check if particles are inside domain (size L) */
 void check_pos(const Particle *pp, int n, const char *file, int line, const char *M);

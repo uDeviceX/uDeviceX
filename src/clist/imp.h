@@ -1,10 +1,6 @@
 namespace clist {
 
 enum {MAXA=2};                                /* maximum number of array */
-typedef Sarray<uchar4*, MAXA> uchar4pA;       /* uchar4 pointers array               */
-typedef Sarray<int, MAXA> intA;               /* int array                           */
-typedef Sarray<Particle *, MAXA> ParticlepA;  /* particle pointers array             */
-typedef Sarray<int *, MAXA> intpA;            /* particle pointers array             */ 
 
 // tag::clist[]
 struct Clist {
