@@ -16,8 +16,6 @@
 #include "inc/type.h"
 #include "inc/def.h"
 
-#include "utils/texo.h"
-
 #include "rbc/type.h"
 
 #include "frag/dev.h"
