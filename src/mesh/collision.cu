@@ -15,6 +15,7 @@
 #include "inc/type.h"
 #include "inc/dev.h"
 #include "utils/texo.h"
+#include "utils/te.h"
 #include "utils/texo.dev.h"
 
 #include "utils/kl.h"
@@ -31,15 +32,15 @@ static __host__ __device__ bool same_side(const float *x, const float *p, const 
 
     const float ndx = n[X] * (x[X] - inplane[X]) + n[Y] * (x[Y] - inplane[Y]) + n[Z] * (x[Z] - inplane[Z]);
     const float ndp = n[X] * (p[X] - inplane[X]) + n[Y] * (p[Y] - inplane[Y]) + n[Z] * (p[Z] - inplane[Z]);
-        
+
     return ndx * ndp > 0;
 }
-    
+
 static __host__ __device__ bool in_tetrahedron(const float *x, const float *A, const float *B, const float *C, const float *D) {
     const float AB[3] = {B[X] - A[X], B[Y] - A[Y], B[Z] - A[Z]};
     const float AC[3] = {C[X] - A[X], C[Y] - A[Y], C[Z] - A[Z]};
     const float AD[3] = {D[X] - A[X], D[Y] - A[Y], D[Z] - A[Z]};
-    
+
     const float BC[3] = {C[X] - B[X], C[Y] - B[Y], C[Z] - B[Z]};
     const float BD[3] = {D[X] - B[X], D[Y] - B[Y], D[Z] - B[Z]};
 
@@ -49,14 +50,14 @@ static __host__ __device__ bool in_tetrahedron(const float *x, const float *A, c
         same_side(x, C, AB, BD, D) &&
         same_side(x, D, AB, AC, A);
 }
-    
+
 int inside_1p(const float *r, const float *vv, const int4 *tt, const int nt) {
     int c = 0;
     float origin[3] = {0, 0, 0};
 #ifdef spdir
     origin[spdir] = r[spdir];
 #endif
-        
+
     for (int i = 0; i < nt; ++i) {
         int4 t = tt[i];
         if (in_tetrahedron(r, vv + 3*t.x, vv + 3*t.y, vv + 3*t.z, origin)) ++c;
@@ -77,7 +78,7 @@ static int inside_1p(const float *r, const Particle *vv, const int4 *tt, const i
     }
     return c%2;
 }
-    
+
 void inside_hst(const Particle *pp, const int n, int nt, int nv, const int4 *tt, const Particle *i_pp, const int ns, /**/ int *tags) {
     for (int i = 0; i < n; ++i) {
         tags[i] = -1;
@@ -111,7 +112,7 @@ __global__ void compute_tags(const Particle *pp, const int n, const Particle *vv
     origin[spdir] = p.r[spdir];
 #endif
 
-        
+
     for (int i = 0; i < nt; ++i) {
         int4 t = tt[i];
         const int t1 = sid * nv + t.x;
@@ -121,7 +122,7 @@ __global__ void compute_tags(const Particle *pp, const int n, const Particle *vv
         const float a[3] = {vv[t1].r[0], vv[t1].r[1], vv[t1].r[2]};
         const float b[3] = {vv[t2].r[0], vv[t2].r[1], vv[t2].r[2]};
         const float c[3] = {vv[t3].r[0], vv[t3].r[1], vv[t3].r[2]};
-            
+
         if (in_tetrahedron(p.r, a, b, c, origin)) ++count;
     }
 
@@ -166,7 +167,7 @@ __global__ void compute_colors_tex(const Particle *pp, const int n, const Texo<f
     lo = minext[sid];
     hi = maxext[sid];
     if (!inside_box(p.r, lo, hi)) return;
-    
+
     float origin[3] = {0, 0, 0};
 #ifdef spdir
     origin[spdir] = p.r[spdir];
@@ -179,7 +180,7 @@ __global__ void compute_colors_tex(const Particle *pp, const int n, const Texo<f
         const Pos a = tex2Pos(texvert, mbase + t.x);
         const Pos b = tex2Pos(texvert, mbase + t.y);
         const Pos c = tex2Pos(texvert, mbase + t.z);
-            
+
         if (in_tetrahedron(p.r, a.r, b.r, c.r, origin)) ++count;
     }
 
@@ -187,10 +188,10 @@ __global__ void compute_colors_tex(const Particle *pp, const int n, const Texo<f
     if (count % 2) atomicExch(cc + gid, IN);
 }
 }
-    
+
 void inside_dev(const Particle *pp, const int n, int nt, int nv, const int4 *tt, const Particle *i_pp, const int ns, /**/ int *tags) {
     if (ns == 0 || n == 0) return;
-        
+
     KL(kernels::init_tags, (k_cnf(n)), (n, -1, /**/ tags));
 
     enum {THR = 128};
@@ -200,14 +201,16 @@ void inside_dev(const Particle *pp, const int n, int nt, int nv, const int4 *tt,
     KL(kernels::compute_tags, (blck, thrd), (pp, n, i_pp, nv, tt, nt, /**/ tags));
 }
 
-/* 
+/*
    n:  number of particles
-   nm: number of meshes 
+   nm: number of meshes
    nt: number of triangles per mesh
    nv: number of vertices per mesh
 */
-void get_colors(const Particle *pp, int n, const Texo<float2> texvert, const int4 *tri, int nt,
-                int nv, int nm, const float3 *minext, const float3 *maxext, /**/ int *cc) {
+void get_colors0(const Particle *pp, int n,
+                 const Texo<float2> texvert, const int4 *tri,
+                 int nt, int nv, int nm,
+                 const float3 *minext, const float3 *maxext, /**/ int *cc) {
     if (nm == 0 || n == 0) return;
 
     KL(kernels::init_tags, (k_cnf(n)), (n, OUT, /**/ cc));
@@ -218,4 +221,19 @@ void get_colors(const Particle *pp, int n, const Texo<float2> texvert, const int
 
     KL(kernels::compute_colors_tex, (blck, thrd), (pp, n, texvert, nv, tri, nt, minext, maxext, /**/ cc));
 }
+
+void get_colors(const Particle *pp, int n,
+                const Particle *i_pp, const int4 *tri,
+                int nt, int nv, int nm,
+                const float3 *minext, const float3 *maxext, /**/ int *cc) {
+    Texo<float2> texvert;
+    if (nm == 0 || n == 0) return;
+    TE(&texvert, (float2*) i_pp, 3 * nm * nv);
+    UC(get_colors0(pp, n, texvert, tri,
+                   nt, nv, nm,
+                   minext, maxext, /**/ cc));
+    destroy(&texvert);
+}
+
+
 }

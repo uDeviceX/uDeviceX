@@ -31,7 +31,6 @@
 #include "inc/dev.h"
 
 #include "utils/texo.h"
-#include "utils/te.h"
 #include "algo/scan/imp.h"
 #include "algo/minmax/imp.h"
 

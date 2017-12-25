@@ -9,7 +9,7 @@ void inside_hst(const Particle *pp, const int n, int nt, int nv, const int4 *tt,
 void inside_dev(const Particle *pp, const int n, int nt, int nv, const int4 *tt, const Particle *i_pp, const int ns, /**/ int *tags);
 
 void get_colors(const Particle *pp, int n,
-                const Texo<float2> texvert, const int4 *tri,
+                const Particle *i_pp, const int4 *tri,
                 int nt, int nv, int nm,
                 const float3 *minext, const float3 *maxext, /**/ int *cc);
 }

@@ -22,14 +22,10 @@ void gen_colors(const Rbc *r, Colorer *c, Flu *f) {
 
     /* compute extents */
     minmax(c->pp, nv, nm, /**/ c->minext, c->maxext);
-
-    /* tmp texture object; TODO: make a ticket? */
-    Texo<float2> texvert;
-    TE(&texvert, (float2*) c->pp, 3 * nm * nv);
-
-    collision::get_colors(f->q.pp, f->q.n, texvert, r->q.tri,
-                          r->q.nt, nv, nm, c->minext, c->maxext, /**/ f->q.cc);
-    destroy(&texvert);
+    collision::get_colors(f->q.pp, f->q.n,
+                          c->pp, r->q.tri,
+                          r->q.nt, nv, nm,
+                          c->minext, c->maxext, /**/ f->q.cc);
 }
 
 void recolor_flux(Flu *f) {
