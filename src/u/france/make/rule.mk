@@ -64,6 +64,7 @@ $B/rbc/rnd/api/imp.o: $S/rbc/rnd/api/imp.cpp; $X -I$S/rbc/rnd/api -I$S/.
 $B/rbc/rnd/imp.o: $S/rbc/rnd/imp.cpp; $X -I$S/rbc/rnd -I$S/.
 $B/rbc/stretch/imp.o: $S/rbc/stretch/imp.cu; $N -I$S/rbc/stretch -I$S/.
 $B/rigid/imp.o: $S/rigid/imp.cu; $N -I$S/rigid -I$S/.
+$B/rig/imp.o: $S/rig/imp.cpp; $X -I$S/rig -I$S/.
 $B/scheme/force/imp.o: $S/scheme/force/imp.cu; $N -I$S/scheme/force -I$S/.
 $B/scheme/move/imp.o: $S/scheme/move/imp.cu; $N -I$S/scheme/move -I$S/.
 $B/scheme/restrain/imp.o: $S/scheme/restrain/imp.cpp; $X -I$S/scheme/restrain -I$S/.
