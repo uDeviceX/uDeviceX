@@ -3,7 +3,7 @@ $B/algo/scan/imp.o: $S/inc/conf.h $S/d/q.h $S/algo/scan/imp.h $S/utils/cc.h $S/i
 $B/d/api.o: $S/d/cpu/imp.h $S/utils/imp.h $S/inc/conf.h $S/utils/error.h $S/d/common.h $S/d/api.h $B/conf.h $S/d/cuda/imp.h
 $B/io/off.o: $S/io/off/imp.h $S/utils/imp.h $S/utils/error.h $S/io/off.h
 $B/mesh/bbox.o: $S/inc/type.h $S/algo/minmax/imp.h $S/mesh/bbox.h
-$B/mesh/collision.o: $S/inc/conf.h $S/utils/error.h $S/inc/type.h $S/d/q.h $S/utils/cc.h $S/inc/def.h $S/inc/dev.h $S/d/api.h $S/msg.h $B/conf.h $S/utils/texo.h $S/utils/kl.h $S/utils/texo.dev.h $S/mesh/collision.h $S/d/ker.h
+$B/mesh/collision.o: $S/inc/conf.h $S/utils/error.h $S/inc/type.h $S/d/q.h $S/utils/cc.h $S/inc/def.h $S/inc/dev.h $S/d/api.h $S/msg.h $B/conf.h $S/utils/texo.h $S/utils/kl.h $S/utils/texo.dev.h $S/utils/te.h $S/mesh/collision.h $S/d/ker.h
 $B/mesh/dist.o: $S/inc/type.h $S/mesh/dist.h
 $B/mesh/props.o: $S/mesh/props.h $S/inc/type.h
 $B/mpi/glb.o: $S/inc/conf.h $S/mpi/wrapper.h $S/utils/mc.h $B/conf.h $S/mpi/glb.h
