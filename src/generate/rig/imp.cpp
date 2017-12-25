@@ -2,6 +2,7 @@
 #include <assert.h>
 #include <stdio.h>
 #include <vector>
+#include <vector_types.h>
 
 #include <conf.h>
 #include "inc/conf.h"
@@ -25,8 +26,6 @@
 #include "d/ker.h"
 #include "d/api.h"
 #include "utils/cc.h"
-
-#include "utils/texo.h"
 #include "mesh/collision.h"
 
 #include "imp.h"
