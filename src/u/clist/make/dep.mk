@@ -1,5 +1,5 @@
 $B/algo/scan/imp.o: $S/inc/conf.h $S/d/q.h $S/algo/scan/imp.h $S/utils/cc.h $S/inc/def.h $S/algo/scan/dev.h $S/algo/scan/cpu/imp.h $S/d/api.h $S/msg.h $S/inc/dev.h $B/conf.h $S/utils/kl.h $S/algo/scan/cuda/imp.h $S/d/ker.h
-$B/clist/imp.o: $S/clist/imp/fin.h $S/clist/code.h $S/inc/conf.h $S/utils/error.h $S/inc/type.h $S/partlist/dev.h $S/clist/imp.h $S/algo/scan/imp.h $S/partlist/imp.h $S/utils/cc.h $S/inc/def.h $S/clist/dev.h $S/clist/imp/ini.h $S/d/api.h $S/inc/dev.h $S/msg.h $B/conf.h $S/clist/imp/main.h $S/utils/kl.h
+$B/clist/imp.o: $S/clist/imp/fin.h $S/clist/code.h $S/inc/conf.h $S/utils/error.h $S/inc/type.h $S/partlist/dev.h $S/clist/imp.h $S/algo/scan/imp.h $S/partlist/imp.h $S/utils/cc.h $S/inc/def.h $S/clist/dev.h $S/clist/imp/ini.h $S/d/api.h $S/inc/dev.h $S/msg.h $B/conf.h $S/clist/imp/main.h $S/clist/imp/type.h $S/utils/kl.h
 $B/d/api.o: $S/d/cpu/imp.h $S/utils/imp.h $S/inc/conf.h $S/utils/error.h $S/d/common.h $S/d/api.h $B/conf.h $S/d/cuda/imp.h
 $B/mpi/glb.o: $S/inc/conf.h $S/mpi/wrapper.h $S/utils/mc.h $B/conf.h $S/mpi/glb.h
 $B/mpi/type.o: $S/inc/conf.h $S/inc/type.h $S/mpi/type.h $S/utils/mc.h
