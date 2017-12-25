@@ -2,6 +2,7 @@ struct Sdf;
 struct Sdf_v;
 struct Wvel_v;
 struct Coords;
+struct Particle;
 
 void ini(Sdf**);
 void fin(Sdf*);
