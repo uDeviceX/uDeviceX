@@ -8,7 +8,7 @@ struct SolventWrap {
 };
 
 struct Fsi {
-    SolventWrap* wo;
-    RNDunif* rgen;
+    SolventWrap *wo;
+    RNDunif     *rgen;
 };
 }
