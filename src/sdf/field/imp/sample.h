@@ -1,10 +1,10 @@
 struct Fi { /* field */
     const float *org, *spa;
     const int *n;
-    const float *D;
+    float *D;
 };
 
-static void fi_ini(const float *org, const float *spa, const int *n, const float *D,
+static void fi_ini(const float *org, const float *spa, const int *n, float *D,
                    /**/ Fi *fi) {
     fi->org = org; fi->spa = spa; fi->n = n; fi->D = D;
 }
@@ -18,14 +18,14 @@ static void fi_r(const Fi *fi, int ix, int iy, int iz, /**/ float *r) {
     r[Z] = org[Z] + (iz + 0.5) * spa[Z] - 0.5;
 }
 
-static float fi_get(const Fi *fi, int ix, int iy, int iz) {
+static void fi_set(const Fi *fi, int ix, int iy, int iz, float v) {
     enum {X, Y};
-    const float *D;
+    float *D;
     const int *n;
     int i;
     D = fi->D; n = fi->n;
     i = ix + n[X] * (iy + n[Y] * iz);
-    return D[i];
+    D[i] = v;
 }
 
 static float spl(float x) { /* b-spline (see poc/spline/main.mac) */
@@ -46,7 +46,6 @@ void sample(const float org[3], const float spa[3], const int N0[3], const float
     Fi fi;
     fi_ini(org, spa, N1, D1, /**/ &fi);
     enum {X, Y, Z};
-#define OOO(ix, iy, iz) (D1 [ix + N1[X] * (iy + N1[Y] * iz)])
 #define DDD(ix, iy, iz) (D0 [ix + N0[X] * (iy + N0[Y] * iz)])
     int iz, iy, ix, i, c, sx, sy, sz, anchor[3], g[3];
     float val, s, r[3], w[3][4], tmp[4][4], partial[4];
@@ -76,6 +75,6 @@ void sample(const float org[3], const float spa[3], const int N0[3], const float
                 }
                 val = 0;
                 for (sz = 0; sz < 4; ++sz) val += w[2][sz] * partial[sz];
-                OOO(ix, iy, iz) = val;
+                fi_set(&fi, ix, iy, iz, val);
             }
 }
