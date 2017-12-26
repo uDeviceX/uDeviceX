@@ -3,6 +3,8 @@
 import sys
 
 prog = "u.wall.dump"
+fmt  = "%16.10e"
+
 def msg(s): sys.stderr.write(s)
 def err(s):
     msg("%s: %s\n" % (prog, s))
@@ -38,7 +40,7 @@ z, y, x, u = size(w, fname)
 
 print x, y, z
 # `z' is slowest, `x' is fastest
-w.value.tofile(sys.stdout, sep="\n", format="%16.10e\n")
+w.value.tofile(sys.stdout, sep="\n", format=fmt)
 print
 
 f.close()
