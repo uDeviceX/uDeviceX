@@ -1,0 +1,6 @@
+#!/bin/sh
+
+h=`u.host`
+. u.post.load.$h
+
+exec u.wall.dump0 "$@"
