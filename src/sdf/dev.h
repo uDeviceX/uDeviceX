@@ -1,5 +1,4 @@
-__device__ __forceinline__
-float fetch(const Sdf_v sdf, float i, float j, float k) {
+static __device__ float fetch(const Sdf_v sdf, float i, float j, float k) {
     return Ttex3D(float, sdf.t, i, j, k);
 }
 
@@ -7,20 +6,21 @@ static __device__ float3 ugrad_sdf(const Sdf_v texsdf, const float3 *pos) {
     int L[3] = {XS, YS, ZS};
     int M[3] = {XWM, YWM, ZWM};
     int T[3] = {XTE, YTE, ZTE};
-    int tc[3];
+    int c, tc[3];
     float fcts[3], r[3] = {pos->x, pos->y, pos->z};
+    float myval, gx, gy, gz;
 
-    for (int c = 0; c < 3; ++c)
+    for (c = 0; c < 3; ++c)
         tc[c] = T[c] * (r[c] + L[c] / 2 + M[c]) / (L[c] + 2 * M[c]);
 
-    for (int c = 0; c < 3; ++c)
+    for (c = 0; c < 3; ++c)
         fcts[c] = T[c] / (2 * M[c] + L[c]);
 
 #define tex0(ix, iy, iz) (fetch(texsdf, tc[0] + ix, tc[1] + iy, tc[2] + iz))
-    float myval = tex0(0, 0, 0);
-    float gx = fcts[0] * (tex0(1, 0, 0) - myval);
-    float gy = fcts[1] * (tex0(0, 1, 0) - myval);
-    float gz = fcts[2] * (tex0(0, 0, 1) - myval);
+    myval = tex0(0, 0, 0);
+    gx = fcts[0] * (tex0(1, 0, 0) - myval);
+    gy = fcts[1] * (tex0(0, 1, 0) - myval);
+    gz = fcts[2] * (tex0(0, 0, 1) - myval);
 #undef tex0
 
     return make_float3(gx, gy, gz);
