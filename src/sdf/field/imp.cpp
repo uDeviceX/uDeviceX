@@ -65,15 +65,12 @@ void sample(const float org[3], const float spa[3], const int N0[3], const float
         for (iy = 0; iy < N1[Y]; ++iy)
             for (ix = 0; ix < N1[X]; ++ix) {
                 float r[3] = {(float) i2x(ix), (float) i2y(iy), (float) i2z(iz)};
-
                 int anchor[3];
                 for (c = 0; c < 3; ++c) anchor[c] = (int)floor(r[c]);
-
                 float w[3][4];
                 for (c = 0; c < 3; ++c)
                     for (i = 0; i < 4; ++i)
                         w[c][i] = spl(r[c] - (anchor[c] - 1 + i) + 2);
-
                 float tmp[4][4];
                 for (sz = 0; sz < 4; ++sz)
                     for (sy = 0; sy < 4; ++sy) {
@@ -83,7 +80,6 @@ void sample(const float org[3], const float spa[3], const int N0[3], const float
                             int g[3];
                             for (c = 0; c < 3; ++c)
                                 g[c] = (l[c] - 1 + anchor[c] + N0[c]) % N0[c];
-
                             s += w[0][sx] * DDD(g[X], g[Y], g[Z]);
                         }
                         tmp[sz][sy] = s;
