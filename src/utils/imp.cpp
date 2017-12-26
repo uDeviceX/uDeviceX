@@ -40,3 +40,10 @@ void efwrite(const void *ptr, size_t size, size_t nmemb, FILE *stream) {
         ERR("`fwrite` failed: nmemb0=%ld   !=    nmemb=%lds, size=%ld",
             nmemb0, nmemb, size);
 }
+
+void efgets(char *s, int size, FILE *stream) {
+    char *p;
+    p = fgets(s, size, stream);
+    if (p == NULL)
+        ERR("`fgets` fails: size=%d", size);
+}
