@@ -11,7 +11,7 @@ do
    u.run ./udx $x 0 0
 done > sdf.out.txt
 
-# cTEST: sdf.1
+# TEST: sdf.1
 set -eu
 S=`pwd` U=u/sdf C=conf/default.h
 u.conf "$S" "$U" "$C" <<!
@@ -21,3 +21,4 @@ u.make clean && u.make -j
 cp "$S"/data/sdf/cyl1/cyl.dat  sdf.dat
 u.run ./udx 0 0 0
 u.wall.dump h5/wall.h5     > wall.out.txt
+
