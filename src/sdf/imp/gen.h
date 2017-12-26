@@ -1,8 +1,8 @@
 static void gen0(float *D, /**/ Sdf *sdf) {
-    array3d_copy(XTE, YTE, ZTE, D, sdf->arr);
+    UC(array3d_copy(XTE, YTE, ZTE, D, sdf->arr));
 
-    tex3d_ini(&sdf->tex);
-    tex3d_copy(sdf->arr, /**/ sdf->tex);
+    UC(tex3d_ini(&sdf->tex));
+    UC(tex3d_copy(sdf->arr, /**/ sdf->tex));
 }
 
 static void gen1(int N[3], float *D0, float *D1, /**/ Sdf *sdf) {

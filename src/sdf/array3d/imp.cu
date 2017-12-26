@@ -12,7 +12,7 @@
 #include "type.h"
 #include "imp.h"
 
-void array3d_ini(Array3d **pq, int x, int y, int z) {
+void array3d_ini(Array3d **pq, size_t x, size_t y, size_t z) {
     Array3d *q;
     cudaChannelFormatDesc fmt;
 
@@ -34,7 +34,7 @@ static int good(size_t x, size_t y, size_t z, Array3d *q) {
     return x == q->x && y == q->y && z == q->z;
 }
 
-void array3d_copy(int x, int y, int z, float *D, /**/ Array3d *q) {
+void array3d_copy(size_t x, size_t y, size_t z, float *D, /**/ Array3d *q) {
     cudaMemcpy3DParms copyParams;
     if (!good(x, y, z, q))
         ERR("wrong size: %ld, %ld, %ld   !=   %ld, %ld, %ld",
