@@ -42,5 +42,4 @@ for iz in xrange(z):
         for ix in xrange(x):
             print "%16.10e" % w[iz, iy, ix, u - 1]
 
-
 f.close()
