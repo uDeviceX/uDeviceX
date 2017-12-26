@@ -25,7 +25,7 @@ void efclose(FILE *f) {
     if (fclose(f) != 0) ERR("Failed to close");
 }
 
-void efread(void *ptr, size_t size, size_t nmemb, FILE* stream) {
+void efread(void *ptr, size_t size, size_t nmemb, FILE *stream) {
     size_t nmemb0;
     nmemb0 = fread(ptr, size, nmemb, stream);
     if (nmemb != nmemb0)
@@ -33,11 +33,10 @@ void efread(void *ptr, size_t size, size_t nmemb, FILE* stream) {
             nmemb0, nmemb, size);
 }
 
-void efwrite(const void *ptr, size_t size, size_t nmemb, FILE* stream) {
+void efwrite(const void *ptr, size_t size, size_t nmemb, FILE *stream) {
     size_t nmemb0;
     nmemb0 = fwrite(ptr, size, nmemb, stream);
     if (nmemb != nmemb0)
         ERR("`fwrite` failed: nmemb0=%ld   !=    nmemb=%lds, size=%ld",
             nmemb0, nmemb, size);
 }
-
