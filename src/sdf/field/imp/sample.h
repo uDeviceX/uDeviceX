@@ -77,10 +77,5 @@ void sample(const float org[3], const float spa[3], const int N0[3], const float
                 for (sz = 0; sz < 4; ++sz) val += w[2][sz] * partial[sz];
                 OOO(ix, iy, iz) = val;
             }
-#undef DDD
 #undef OOO
-#undef i2r
-#undef i2x
-#undef i2y
-#undef i2z
 }
