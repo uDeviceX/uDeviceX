@@ -28,7 +28,7 @@ void efclose(FILE *f) {
 void efread(void *ptr, size_t size, size_t nmemb, FILE* stream) {
     size_t nmemb0;
     nmemb0 = fread(ptr, size, nmemb, stream);
-    if (nmemb != nmemb0)
+    if (nmemb == nmemb0)
         ERR("`fread` failed: nmemb0=%ld   !=    nmemb=%lds, size=%ld",
             nmemb0, nmemb, size);
 }
