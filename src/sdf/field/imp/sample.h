@@ -39,10 +39,6 @@ static float spl(float x) { /* b-spline (see poc/spline/main.mac) */
 }
 
 void sample(const float org[3], const float spa[3], const int N0[3], const float *D0, const int N1[3], float *D1) {
-    /* org: origin, spa: spacing, N[01]: number of points; D[01]: data
-       sample from grid `0' to `1'
-       org, spa: are for `1'
-    */
     Fi fi;
     fi_ini(org, spa, N1, D1, /**/ &fi);
     enum {X, Y, Z};
