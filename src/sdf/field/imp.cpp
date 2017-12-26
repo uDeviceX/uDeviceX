@@ -12,5 +12,6 @@
 
 #include "imp.h"
 namespace field {
+#include "imp/sample.h"
 #include "imp/main.h"
 }
