@@ -41,12 +41,13 @@ static float spl(float x) { /* b-spline (see poc/spline/main.mac) */
 void sample(const float org[3], const float spa[3], const int N0[3], const float *D0, const int N1[3], float *D1) {
     /* org: origin, spa: spacing, N[01]: number of points; D[01]: data
        sample from grid `0' to `1'
-       org, spa: are for `0'
+       org, spa: are for `1'
     */
     Fi fi;
-    fi_ini(org, spa, N0, D0, /**/ &fi);
+    fi_ini(org, spa, N1, D1, /**/ &fi);
     enum {X, Y, Z};
 #define OOO(ix, iy, iz) (D1 [ix + N1[X] * (iy + N1[Y] * iz)])
+#define DDD(ix, iy, iz) (D0 [ix + N0[X] * (iy + N0[Y] * iz)])
     int iz, iy, ix, i, c, sx, sy, sz, anchor[3], g[3];
     float val, s, r[3], w[3][4], tmp[4][4], partial[4];
     for (iz = 0; iz < N1[Z]; ++iz)
@@ -64,7 +65,7 @@ void sample(const float org[3], const float spa[3], const int N0[3], const float
                             int l[3] = {sx, sy, sz};
                             for (c = 0; c < 3; ++c)
                                 g[c] = (l[c] - 1 + anchor[c] + N0[c]) % N0[c];
-                            s += w[0][sx] * fi_get(&fi, g[X], g[Y], g[Z]);
+                            s += w[0][sx] * DDD(g[X], g[Y], g[Z]);
                         }
                         tmp[sz][sy] = s;
                     }
@@ -77,5 +78,4 @@ void sample(const float org[3], const float spa[3], const int N0[3], const float
                 for (sz = 0; sz < 4; ++sz) val += w[2][sz] * partial[sz];
                 OOO(ix, iy, iz) = val;
             }
-#undef OOO
 }
