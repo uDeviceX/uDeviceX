@@ -11,11 +11,12 @@ do
    u.run ./udx $x 0 0
 done > sdf.out.txt
 
-# cTEST: sdf.1
+# TEST: sdf.1
 set -eu
 S=`pwd` U=u/sdf C=conf/default.h
 u.conf "$S" "$U" "$C" <<!
-field_dumps run
+field_dumps
+run
 !
 u.make clean && u.make -j
 cp "$S"/data/sdf/cyl1/cyl.dat  sdf.dat
