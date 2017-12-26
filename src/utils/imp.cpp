@@ -15,14 +15,10 @@ void efree(void *ptr) {
     ptr = NULL;
 }
 
-int efopen(const char *fname, const char *mode, /**/ FILE **f) {
+void efopen(const char *fname, const char *mode, /**/ FILE **f) {
     *f = fopen(fname, mode);
-
-    if (NULL == *f) {
+    if (NULL == *f)
         ERR("Could not open file <%s> with mode <%s>", fname, mode);
-        return 1;
-    }
-    return 0;
 }
 
 void efclose(FILE *f) {
