@@ -45,5 +45,5 @@ void efgets(char *s, int size, FILE *stream) {
     char *p;
     p = fgets(s, size, stream);
     if (p == NULL)
-        ERR("`fgets` fails: size=%d", size);
+        ERR("`fgets` failed: size=%d", size);
 }
