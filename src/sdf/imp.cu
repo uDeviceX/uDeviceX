@@ -14,10 +14,7 @@
 #include "inc/dev.h"
 #include "utils/imp.h"
 
-#include "glob/type.h"
-
 #include "tex3d/type.h"
-#include "type.h"
 #include "array3d/type.h"
 #include "array3d/imp.h"
 #include "tex3d/imp.h"
@@ -28,6 +25,7 @@
 
 #include "imp.h"
 #include "def.h"
+#include "type.h"
 
 #include "imp/type.h"
 #include "imp/gen.h"
