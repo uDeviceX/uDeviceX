@@ -19,5 +19,5 @@ field_dumps run
 !
 u.make clean && u.make -j
 cp "$S"/data/sdf/cyl1/cyl.dat  sdf.dat
-u.run 0 0 0
+u.run ./udx 0 0 0
 u.wall.dump h5/wall.h5     > wall.out.txt
