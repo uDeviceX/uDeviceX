@@ -1,3 +1,19 @@
-#!/bin/sh
+#!/usr/bin/env python2
 
-echo "$@"
+import sys
+
+prog = "u.wall.dump"
+def err(s):
+    sys.stderr.write("%s: %s\n" % (prog, s))
+    sys.exit(2)
+
+try: import h5py as h5
+except ImportError: err("fail to import python module `h5py`")
+
+def shift(a): return a.pop(0)
+def fopen(n):
+    try: f = h5.File(fname, "r")
+    except IOError: err("fails to open `%s`" % n)
+    return f
+
+argv = sys.argv
