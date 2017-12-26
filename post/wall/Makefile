@@ -11,4 +11,6 @@ install:
 	install0 () ( cp $$f $B/$p.$$f; )    ;  \
 	for f in $P; do install0; done
 
-.PHONY: install
+test:; atest test/*
+
+.PHONY: install test
