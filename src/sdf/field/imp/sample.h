@@ -12,7 +12,6 @@ static void fi_ini(const float *org, const float *spa, const int *n, const float
 static void fi_r(const Fi *fi, int ix, int iy, int iz, /**/ float *r) {
     enum {X, Y, Z};
     const float *org, *spa;
-    const int *n;
     org = fi->org; spa = fi->spa;
     r[X] = org[X] + (ix + 0.5) * spa[X] - 0.5;
     r[Y] = org[Y] + (iy + 0.5) * spa[Y] - 0.5;
