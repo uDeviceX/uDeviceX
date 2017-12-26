@@ -22,7 +22,7 @@ if argc < 4:
     err("usage: %s <direction [0/1/2]> <[density/u/v/w]> <file0.h5> <file1.h5> ...\n" % argv[0])
     exit(0)
 
-shift(argv);
+shift(argv)
 adir = int(shift(argv))
 field = shift(argv)
 
