@@ -1,8 +1,13 @@
 struct Fi { /* field */
-    float *org, *spa;
-    int *N;
-    float *D;
+    const float *org, *spa;
+    const int *n;
+    const float *D;
 };
+
+static void fi_ini(const float *org, const float *spa, const int *n, const float *D,
+                   /**/ Fi *fi) {
+    fi->org = org; fi->spa = spa; fi->n = n; fi->D = D;
+}
 
 static float spl(float x) { /* b-spline (see poc/spline/main.mac) */
     return
@@ -19,6 +24,9 @@ void sample(const float org[3], const float spa[3], const int N0[3], const float
        sample from grid `0' to `1'
        org, spa: are for `0'
     */
+    Fi fi;
+    fi_ini(org, spa, N0, D0, /**/ &fi);
+
     enum {X, Y, Z};
 #define OOO(ix, iy, iz) (D1 [ix + N1[X] * (iy + N1[Y] * iz)])
 #define DDD(ix, iy, iz) (D0 [ix + N0[X] * (iy + N0[Y] * iz)])
