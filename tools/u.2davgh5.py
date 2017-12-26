@@ -1,4 +1,4 @@
-#!/usr/bin/env python2 
+#!/usr/bin/env python2
 
 import sys
 import numpy as np
@@ -34,9 +34,9 @@ for fname in argv:
     ff = f[field]
     (nz, ny, nx, nu) = ff.shape
     nn = [nx, ny, nz]
-    
+
     av=(adir+1)%3
-    
+
     ff = ff.value
     ff = ff.reshape(nz, ny, nx)
     ff = np.sum(ff, (2-av)) / (nn[av])
@@ -45,7 +45,7 @@ for fname in argv:
         fff = ff
     else:
         fff = fff + ff
-        
+
     t += 1
 
 fff = fff * (1.0 / t)
