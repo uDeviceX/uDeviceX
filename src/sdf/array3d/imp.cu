@@ -20,6 +20,7 @@ void array3d_ini(Array3d **pq, int x, int y, int z) {
 
     fmt = cudaCreateChannelDesc<float>();
     CC(cudaMalloc3DArray(&q->a, &fmt, make_cudaExtent(x, y, z)));
+    q->x = x; q->y = y; q->z = z;
 
     *pq = q;
 }
@@ -29,8 +30,15 @@ void array3d_fin(Array3d *q) {
     UC(efree(q));
 }
 
+static int good(size_t x, size_t y, size_t z, Array3d *q) {
+    return x == q->x && y == q->y && z == q->z;
+}
+
 void array3d_copy(int x, int y, int z, float *D, /**/ Array3d *q) {
     cudaMemcpy3DParms copyParams;
+    if (!good(x, y, z, q))
+        ERR("wrong size: %ld, %ld, %ld   !=   %ld, %ld, %ld",
+            x, y, z, q->x, q->y, q->z);
     memset(&copyParams, 0, sizeof(copyParams));
     copyParams.srcPtr = make_cudaPitchedPtr((void*)D, x*sizeof(float), x, y);
     copyParams.dstArray = q->a;
