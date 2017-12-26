@@ -18,6 +18,16 @@ static void fi_r(const Fi *fi, int ix, int iy, int iz, /**/ float *r) {
     r[Z] = org[Z] + (iz + 0.5) * spa[Z] - 0.5;
 }
 
+static float fi_get(const Fi *fi, int ix, int iy, int iz) {
+    enum {X, Y};
+    const float *D;
+    const int *n;
+    int i;
+    D = fi->D; n = fi->n;
+    i = ix + n[X] * (iy + n[Y] * iz);
+    return D[i];
+}
+
 static float spl(float x) { /* b-spline (see poc/spline/main.mac) */
     return
         x <= 0 ? 0.0 :
@@ -37,7 +47,6 @@ void sample(const float org[3], const float spa[3], const int N0[3], const float
     fi_ini(org, spa, N0, D0, /**/ &fi);
     enum {X, Y, Z};
 #define OOO(ix, iy, iz) (D1 [ix + N1[X] * (iy + N1[Y] * iz)])
-#define DDD(ix, iy, iz) (D0 [ix + N0[X] * (iy + N0[Y] * iz)])
     int iz, iy, ix, i, c, sx, sy, sz, anchor[3], g[3];
     float val, s, r[3], w[3][4], tmp[4][4], partial[4];
     for (iz = 0; iz < N1[Z]; ++iz)
@@ -55,7 +64,7 @@ void sample(const float org[3], const float spa[3], const int N0[3], const float
                             int l[3] = {sx, sy, sz};
                             for (c = 0; c < 3; ++c)
                                 g[c] = (l[c] - 1 + anchor[c] + N0[c]) % N0[c];
-                            s += w[0][sx] * DDD(g[X], g[Y], g[Z]);
+                            s += w[0][sx] * fi_get(&fi, g[X], g[Y], g[Z]);
                         }
                         tmp[sz][sy] = s;
                     }
