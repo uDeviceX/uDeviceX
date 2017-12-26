@@ -14,7 +14,10 @@ int emalloc(size_t size, /**/ void **data) {
     return 0;
 }
 
-void efree(void *ptr) { free(ptr); }
+void efree(void *ptr) {
+    free(ptr);
+    ptr = NULL;
+}
 
 int efopen(const char *fname, const char *mode, /**/ FILE **f) {
     *f = fopen(fname, mode);
