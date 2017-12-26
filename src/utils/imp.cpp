@@ -4,14 +4,10 @@
 #include "imp.h"
 #include "utils/error.h"
 
-int emalloc(size_t size, /**/ void **data) {
+void emalloc(size_t size, /**/ void **data) {
     *data = malloc(size);
-
-    if (NULL == *data) {
+    if (NULL == *data)
         ERR("Failed to allocate array of size %ld\n", size);
-        return 1;
-    }
-    return 0;
 }
 
 void efree(void *ptr) {
