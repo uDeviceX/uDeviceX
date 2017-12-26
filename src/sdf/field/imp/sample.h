@@ -38,39 +38,47 @@ static float spl(float x) { /* b-spline (see poc/spline/main.mac) */
         0.0;
 }
 
+static float get(const int N[3], const float *D, const float *r) {
+    enum {X, Y, Z};
+#define DDD(ix, iy, iz) (D [ix + N[X] * (iy + N[Y] * iz)])
+    int i, c, sx, sy, sz, anchor[3], g[3];
+    float val, s, w[3][4], tmp[4][4], partial[4];
+    for (c = 0; c < 3; ++c) anchor[c] = (int)floor(r[c]);
+    for (c = 0; c < 3; ++c)
+        for (i = 0; i < 4; ++i)
+            w[c][i] = spl(r[c] - (anchor[c] - 1 + i) + 2);
+    for (sz = 0; sz < 4; ++sz)
+        for (sy = 0; sy < 4; ++sy) {
+            s = 0;
+            for (sx = 0; sx < 4; ++sx) {
+                int l[3] = {sx, sy, sz};
+                for (c = 0; c < 3; ++c)
+                    g[c] = (l[c] - 1 + anchor[c] + N[c]) % N[c];
+                s += w[0][sx] * DDD(g[X], g[Y], g[Z]);
+            }
+            tmp[sz][sy] = s;
+        }
+    for (sz = 0; sz < 4; ++sz) {
+        s = 0;
+        for (sy = 0; sy < 4; ++sy) s += w[1][sy] * tmp[sz][sy];
+        partial[sz] = s;
+    }
+    val = 0;
+    for (sz = 0; sz < 4; ++sz) val += w[2][sz] * partial[sz];
+    return val;
+}
+
 void sample(const float org[3], const float spa[3], const int N0[3], const float *D0, const int N1[3], float *D1) {
+    enum {X, Y, Z};
+    int ix, iy, iz;
+    float val, r[3];
     Fi fi;
     fi_ini(org, spa, N1, D1, /**/ &fi);
-    enum {X, Y, Z};
-#define DDD(ix, iy, iz) (D0 [ix + N0[X] * (iy + N0[Y] * iz)])
-    int iz, iy, ix, i, c, sx, sy, sz, anchor[3], g[3];
-    float val, s, r[3], w[3][4], tmp[4][4], partial[4];
     for (iz = 0; iz < N1[Z]; ++iz)
         for (iy = 0; iy < N1[Y]; ++iy)
             for (ix = 0; ix < N1[X]; ++ix) {
                 fi_r(&fi, ix, iy, iz, /**/ r);
-                for (c = 0; c < 3; ++c) anchor[c] = (int)floor(r[c]);
-                for (c = 0; c < 3; ++c)
-                    for (i = 0; i < 4; ++i)
-                        w[c][i] = spl(r[c] - (anchor[c] - 1 + i) + 2);
-                for (sz = 0; sz < 4; ++sz)
-                    for (sy = 0; sy < 4; ++sy) {
-                        s = 0;
-                        for (sx = 0; sx < 4; ++sx) {
-                            int l[3] = {sx, sy, sz};
-                            for (c = 0; c < 3; ++c)
-                                g[c] = (l[c] - 1 + anchor[c] + N0[c]) % N0[c];
-                            s += w[0][sx] * DDD(g[X], g[Y], g[Z]);
-                        }
-                        tmp[sz][sy] = s;
-                    }
-                for (sz = 0; sz < 4; ++sz) {
-                    s = 0;
-                    for (sy = 0; sy < 4; ++sy) s += w[1][sy] * tmp[sz][sy];
-                    partial[sz] = s;
-                }
-                val = 0;
-                for (sz = 0; sz < 4; ++sz) val += w[2][sz] * partial[sz];
+                val = get(N0, D0, r);
                 fi_set(&fi, ix, iy, iz, val);
             }
 }
