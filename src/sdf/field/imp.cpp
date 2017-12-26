@@ -43,7 +43,7 @@ void ini_data(const char *path, int n, /**/ float *D) { /* read sdf file */
     FILE *f;
     UC(efopen(path, "r", /**/ &f));
     skip_line(f); skip_line(f);
-    fread(D, sizeof(D[0]), n, f);
+    UC(efread(D, sizeof(D[0]), n, f));
     UC(efclose(f));
 }
 

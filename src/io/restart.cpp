@@ -109,7 +109,7 @@ template <typename T>
 void data(const char *name, const long n, T *dat) {
     FILE *f;
     UC(efopen(name, "r", /**/ &f));
-    fread(dat, sizeof(T), n, f);
+    UC(efread(dat, sizeof(T), n, f));
     UC(efclose(f));
 }
 } // namespace bopread
@@ -189,7 +189,7 @@ void read_ss(const char *code, const int id, Solid *ss, int *n) {
 
     UC(efopen(fname, "r", /**/ &f));
     fscanf(f, "%ld\n", &ns);
-    fread(ss, sizeof(Solid), ns, f);
+    UC(fread(ss, sizeof(Solid), ns, f));
     UC(efclose(f));
     *n = ns;
     DBG("I have read %ld ss.", ns);
