@@ -189,7 +189,7 @@ void read_ss(const char *code, const int id, Solid *ss, int *n) {
 
     UC(efopen(fname, "r", /**/ &f));
     fscanf(f, "%ld\n", &ns);
-    UC(fread(ss, sizeof(Solid), ns, f));
+    UC(efread(ss, sizeof(Solid), ns, f));
     UC(efclose(f));
     *n = ns;
     DBG("I have read %ld ss.", ns);
