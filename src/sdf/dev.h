@@ -45,13 +45,10 @@ static __device__ float3 grad_sdf(const Sdf_v texsdf, const float3 *pos) {
     return make_float3(gx, gy, gz);
 }
 
-
-
 static __device__ int iround(float x) {
     return (x > 0.5) ? (x + 0.5) : (x - 0.5);
 }
 
-/* within the rescaled texel width error */
 static __device__ float cheap_sdf(const Sdf_v texsdf, float x, float y, float z)  {
     int L[3] = {XS, YS, ZS};
     int M[3] = {XWM, YWM, ZWM};
