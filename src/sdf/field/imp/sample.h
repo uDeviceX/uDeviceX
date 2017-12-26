@@ -21,7 +21,7 @@ void sample(const float org[3], const float spa[3], const int N0[3], const float
 #define i2y(i)    i2r(i,Y)
 #define i2z(i)    i2r(i,Z)
     int iz, iy, ix, i, c, sx, sy, sz, anchor[3], g[3];
-    float s, w[3][4], tmp[4][4], partial[4], val;
+    float val, s, w[3][4], tmp[4][4], partial[4];
     for (iz = 0; iz < N1[Z]; ++iz)
         for (iy = 0; iy < N1[Y]; ++iy)
             for (ix = 0; ix < N1[X]; ++ix) {
