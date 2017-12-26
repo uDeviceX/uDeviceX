@@ -3,9 +3,6 @@ void write(const char *fname, int nt, int nv, const int *tt, const float *vv) {
     FILE *f;
 
     UC(efopen(fname, "wb", /**/ &f));
-
-    assert(f != NULL);
-
     {
         char header[1024];
         sprintf(header,
@@ -20,10 +17,10 @@ void write(const char *fname, int nt, int nv, const int *tt, const float *vv) {
                 "end_header\n",
                 nv, nt);
 
-        fwrite(header, sizeof(char), strlen(header), f);
+        UC(efwrite(header, sizeof(char), strlen(header), f));
     }
 
-    fwrite(vv, sizeof(float), 3 * nv, f);
+    UC(efwrite(vv, sizeof(float), 3 * nv, f));
 
     int *ibuf = new int[4 * nt];
 
@@ -35,7 +32,7 @@ void write(const char *fname, int nt, int nv, const int *tt, const float *vv) {
             ibuf[4*i + 3] = tt[3*i + 2];
         }
 
-    fwrite(ibuf, sizeof(int), 4 * nt, f);
+    UC(efwrite(ibuf, sizeof(int), 4 * nt, f));
 
     delete[] ibuf;
 

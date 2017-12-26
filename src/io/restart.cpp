@@ -92,7 +92,7 @@ template <typename T>
 void data(const char *val, const T *dat, const long n) {
     FILE *f;
     UC(efopen(val, "w", /**/ &f));
-    fwrite(dat, sizeof(T), n, f);
+    UC(efwrite(dat, sizeof(T), n, f));
     UC(efclose(f));
 }
 } // namespace bopwrite
@@ -176,7 +176,7 @@ void write_ss(const char *code, const int id, const Solid *ss, const long n) {
         
     UC(efopen(fname, "w", /**/ &f));
     fprintf(f, "%ld\n", n);
-    fwrite(ss, sizeof(Solid), n, f);
+    UC(efwrite(ss, sizeof(Solid), n, f));
     UC(efclose(f));
 }
 
