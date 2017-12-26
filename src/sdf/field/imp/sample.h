@@ -9,6 +9,16 @@ static void fi_ini(const float *org, const float *spa, const int *n, const float
     fi->org = org; fi->spa = spa; fi->n = n; fi->D = D;
 }
 
+static void fi_r(const Fi *fi, int ix, int iy, int iz, /**/ float *r) {
+    enum {X, Y, Z};
+    const float *org, *spa;
+    const int *n;
+    org = fi->org; spa = fi->spa;
+    r[X] = org[X] + (ix + 0.5) * spa[X] - 0.5;
+    r[Y] = org[Y] + (iy + 0.5) * spa[Y] - 0.5;
+    r[Z] = org[Z] + (iz + 0.5) * spa[Z] - 0.5;
+}
+
 static float spl(float x) { /* b-spline (see poc/spline/main.mac) */
     return
         x <= 0 ? 0.0 :
@@ -26,20 +36,15 @@ void sample(const float org[3], const float spa[3], const int N0[3], const float
     */
     Fi fi;
     fi_ini(org, spa, N0, D0, /**/ &fi);
-
     enum {X, Y, Z};
 #define OOO(ix, iy, iz) (D1 [ix + N1[X] * (iy + N1[Y] * iz)])
 #define DDD(ix, iy, iz) (D0 [ix + N0[X] * (iy + N0[Y] * iz)])
-#define i2r(i, d) (org[d] + (i + 0.5) * spa[d] - 0.5)
-#define i2x(i)    i2r(i,X)
-#define i2y(i)    i2r(i,Y)
-#define i2z(i)    i2r(i,Z)
     int iz, iy, ix, i, c, sx, sy, sz, anchor[3], g[3];
-    float val, s, w[3][4], tmp[4][4], partial[4];
+    float val, s, r[3], w[3][4], tmp[4][4], partial[4];
     for (iz = 0; iz < N1[Z]; ++iz)
         for (iy = 0; iy < N1[Y]; ++iy)
             for (ix = 0; ix < N1[X]; ++ix) {
-                float r[3] = {(float) i2x(ix), (float) i2y(iy), (float) i2z(iz)};
+                fi_r(&fi, ix, iy, iz, /**/ r);
                 for (c = 0; c < 3; ++c) anchor[c] = (int)floor(r[c]);
                 for (c = 0; c < 3; ++c)
                     for (i = 0; i < 4; ++i)
