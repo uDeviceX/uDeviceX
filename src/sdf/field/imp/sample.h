@@ -1,3 +1,9 @@
+struct Fi { /* field */
+    float *org, *spa;
+    int *N;
+    float *D;
+};
+
 static float spl(float x) { /* b-spline (see poc/spline/main.mac) */
     return
         x <= 0 ? 0.0 :
