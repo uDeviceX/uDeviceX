@@ -1,3 +1,0 @@
-o="$1"; shift
-
-for f; do printf "%s\n" "$f"; done | u.avg0 "$o"
