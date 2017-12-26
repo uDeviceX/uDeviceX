@@ -3,8 +3,9 @@
 import sys
 
 prog = "u.wall.dump"
+def msg(s): sys.stderr.write(s)
 def err(s):
-    sys.stderr.write("%s: %s\n" % (prog, s))
+    msg("%s: %s\n" % (prog, s))
     sys.exit(2)
 
 try: import h5py as h5
@@ -16,4 +17,30 @@ def fopen(n):
     except IOError: err("fails to open `%s`" % n)
     return f
 
+def wall(f, name):
+    fi = "wall"
+    try: w = f[fi]
+    except KeyError: err("not field `%s` in file `%s`" % (fi, name))
+    return w
+
+def size(w, name):
+    try: z, y, x, u = w.shape
+    except ValueError: err("expecting 4 dimensions in file `%s`" % name)
+    return z, y, x, u
+
 argv = sys.argv
+shift(argv)
+
+fname = shift(argv)
+f = fopen(fname)
+w = wall(f, fname)
+z, y, x, u = size(w, fname)
+
+print x, y, z
+for iz in xrange(z):
+    for iy in xrange(y):
+        for ix in xrange(x):
+            print "%16.10e" % w[iz, iy, ix, u - 1]
+
+
+f.close()
