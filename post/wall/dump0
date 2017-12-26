@@ -37,9 +37,8 @@ w = wall(f, fname)
 z, y, x, u = size(w, fname)
 
 print x, y, z
-for iz in xrange(z):
-    for iy in xrange(y):
-        for ix in xrange(x):
-            print "%16.10e" % w[iz, iy, ix, u - 1]
+# `z' is slowest, `x' is fastest
+w.value.tofile(sys.stdout, sep="\n", format="%16.10e\n")
+print
 
 f.close()
