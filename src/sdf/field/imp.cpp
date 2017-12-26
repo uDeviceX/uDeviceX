@@ -25,16 +25,16 @@ static float spl(float x) { /* b-spline (see poc/spline/main.mac) */
 
 static void skip_line(FILE *f) {
     char l[BUFSIZ];
-    fgets(l, sizeof(l), f);
+    UC(efgets(l, sizeof(l), f));
 }
 
 void ini_dims(const char *path, /**/ int N[3], float ext[3]) {
     FILE *f;
     char l[BUFSIZ];
     UC(efopen(path, "r", /**/ &f));
-    fgets(l, sizeof(l), f);
+    UC(efgets(l, sizeof(l), f));
     sscanf(l, "%f %f %f", &ext[0], &ext[1], &ext[2]);
-    fgets(l, sizeof(l), f);
+    UC(efgets(l, sizeof(l), f));
     sscanf(l, "%d %d %d", &N[0], &N[1], &N[2]);
     UC(efclose(f));
 }

@@ -14,8 +14,7 @@ void faces(const char *f, int max, /**/ int *pnf, int4 *faces) {
     int4 t;
 
     UC(efopen(f, "r", /**/ &fd));
-
-    fgets(buf, sizeof buf, fd); /* skip OFF */
+    UC(efgets(buf, sizeof(buf), fd));
     if (!eq(buf, "OFF\n"))
         ERR("expecting [OFF] <%s> : [%s]", f, buf);
 
@@ -48,7 +47,7 @@ void vert(const char *f, int max, /**/ int *pnv, float *vert) {
 
     UC(efopen(f, "r", /**/ &fd));
 
-    fgets(buf, sizeof buf, fd); /* skip OFF */
+    UC(efgets(buf, sizeof buf, fd));
     if (!eq(buf, "OFF\n"))
         ERR("expecting [OFF] <%s> : [%s]", f, buf);
 
