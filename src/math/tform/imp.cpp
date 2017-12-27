@@ -4,6 +4,8 @@
 #include "utils/imp.h"
 #include "utils/error.h"
 
+#include "imp.h"
+
 struct Tform { float o[3], s[3]; };
 void tform_ini(Tform **pq) {
     Tform *q;
@@ -35,10 +37,10 @@ void tform_vector(float a0[3], float a1[3],   float b0[3], float b1[3], /**/ Tfo
     enum {X, Y, Z};
     r = os(a0[X], a1[X], b0[X], b1[X], /**/ &t->o[X], &t->s[X]);
     if (r != OK) { report(a0, a1,   b0, b1); ERR("tform_vector failed"); }
-        
+
     r = os(a0[Y], a1[Y], b0[Y], b1[Y], /**/ &t->o[Y], &t->s[Y]);
     if (r != OK) { report(a0, a1,   b0, b1); ERR("tform_vector failed"); }
-    
+
     r = os(a0[Z], a1[Z], b0[Z], b1[Z], /**/ &t->o[Z], &t->s[Z]);
     if (r != OK) { report(a0, a1,   b0, b1); ERR("tform_vector failed"); }
 }
@@ -50,4 +52,18 @@ void tform_convert(Tform *t, float a0[3], /**/ float a1[3]) {
     a1[X] = s[X]*a0[X] + o[X];
     a1[Y] = s[Y]*a0[Y] + o[Y];
     a1[Z] = s[Z]*a0[Z] + o[Z];
+}
+
+void tform_chain(Tform *t1, Tform *t2, /**/ Tform *t) {
+    float a0[3] = {0, 0, 0};
+    float b0[3] = {0, 0, 0};
+    float a1[3], b1[3], a2[3], b2[3];
+
+    tform_convert(t1, a0, /**/ a1);
+    tform_convert(t1, b0, /**/ b1);
+
+    tform_convert(t2, a1, /**/ a2);
+    tform_convert(t2, b1, /**/ b2);
+
+    UC(tform_vector(a0, a2, b0, b2, t));
 }
