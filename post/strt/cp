@@ -93,7 +93,7 @@ dir0 () {
     local d b
     d="$1"; shift;
     if test ! -d "$i/$d"; then return; fi
-    for f in `e ls -rd "$i/$d"/'*' '>' /dev/null`
+    for f in `e ls -rd "$i/$d"/'*' '2>' /dev/null`
     do  if test ! -r "$f"; then break; fi
 	b=`basename "$f"`
 	if   test -d "$f"; then dir  "$d/$b"
