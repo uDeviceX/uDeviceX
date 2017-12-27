@@ -1,4 +1,4 @@
-(load("sample.u.mac"), 'done);
+(load("u.mac"), 'done);
 'done$
 
 block([f],

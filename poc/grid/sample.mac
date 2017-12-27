@@ -1,7 +1,7 @@
 /* g: global */
 
 load("format") $
-load("sample.u.mac") $
+load("u.mac") $
 fmt0(e, r):=format(fullratsimp(e), %factor, %poly(r), %factor);
 fmt(f):=fmt0(f('r), 'r);
 
