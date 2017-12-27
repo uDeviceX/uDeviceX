@@ -2,7 +2,7 @@
 
 load("format") $
 load("u.mac") $
-fmt0(e, r):=format(fullratsimp(e), %factor, %poly(r), %factor);
+fmt0(e, r):=format(fullratsimp(e), %poly(r), %factor);
 fmt(f):=fmt0(f('r), 'r);
 
 [sdf2g, g2sdf]: genfi(0,    0,        N, G ) $
@@ -10,4 +10,7 @@ fmt(f):=fmt0(f('r), 'r);
 [sub2g, g2sub]: genfi(-L/2, lo,       0, lo + L/2) $
 
 tex2sdf: chain(tex2g, g2sdf) $
+sdf2tex: chain(sdf2g, g2tex) $
 sub2tex: chain(sub2g, g2tex) $
+
+fmt(sub2tex);
