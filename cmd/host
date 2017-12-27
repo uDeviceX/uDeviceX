@@ -18,6 +18,7 @@ dh=panda # default host
 h=`hostname`
 case "$h" in
     daint*)    h=daint    ;;
+    asp)       h=acer     ;;
     acer)                 ;;
     lo-login*) h=leonhard ;;
     *)         h=$dh
