@@ -23,7 +23,7 @@ sfree1
 v=$1; shift=inf; force
 
 Domain="XS=$xs YS=$ys ZS=$zs walls wall_creation=1000"
-d=$SCRATCH/big/kb$kb/$v
+d=$SCRATCH/big_r/kb$kb/$v
 run
 
 export S="$s"
