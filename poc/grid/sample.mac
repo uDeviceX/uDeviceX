@@ -15,3 +15,7 @@ sub2tex: chain(sub2g, g2tex) $
 
 fmt(tex2sdf);
 fmt(sub2tex);
+
+/* from `sdf/dev.h` */
+e: T * ('r + L / 2 + M) / (L + 2 * M) $
+fmt0(e, 'r);
