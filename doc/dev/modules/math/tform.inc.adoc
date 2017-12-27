@@ -1,0 +1,9 @@
+== linar coordinate transformation
+
+
+=== interface
+
+[source,cpp]
+----
+include::{src}/math/tform/imp.h[tags=interface]
+----
