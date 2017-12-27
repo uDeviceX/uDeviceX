@@ -94,7 +94,7 @@ dir0 () {
     d="$1"; shift;
     if test ! -d "$i/$d"; then return; fi
     for f in `e ls -rd "$i/$d"/'*' '>' /dev/null`
-    do  if test ! -r "$f"; then continue; fi
+    do  if test ! -r "$f"; then break; fi
 	b=`basename "$f"`
 	if   test -d "$f"; then dir  "$d/$b"
 	elif test -r "$f"; then file "$d" "$b"
