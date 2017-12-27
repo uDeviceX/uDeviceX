@@ -13,5 +13,5 @@ tex2sdf: chain(tex2g, g2sdf) $
 sdf2tex: chain(sdf2g, g2tex) $
 sub2tex: chain(sub2g, g2tex) $
 
+fmt(tex2sdf);
 fmt(sub2tex);
-fmt(sdf2tex);
