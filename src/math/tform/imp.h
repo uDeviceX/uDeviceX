@@ -10,6 +10,7 @@ void tform_chain(Tform*, Tform*, /**/ Tform*);
 void tform_convert(Tform*, float a0[3], /**/ float a1[3]);
 
 void tform_log(Tform*);
+void tform_dump(Tform*, FILE*);
 
 void tform_2view(Tform*, Tform_v*);
 // end::interface[]

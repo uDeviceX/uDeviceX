@@ -26,9 +26,7 @@ static void main0(TVec *v) {
     a0 = v->a0; a1 = v->a1; b0 = v->b0; b1 = v->b1;
     tform_ini(&t);
     tform_vector(a0, a1,   b0, b1, t);
-
-    tform_log(t);
-    
+    tform_dump(t, stdout);
     tform_fin(t);
 }
 
