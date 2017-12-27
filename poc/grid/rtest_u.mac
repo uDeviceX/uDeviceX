@@ -3,7 +3,7 @@
 
 block([f],
   f: genf(0, a, 1, b),
-  [f(0), f(1)]);
+  ratsimp([f(0), f(1)]));
 [a, b]$
 
 block([f],
@@ -14,7 +14,7 @@ block([f],
 block([f, g],
   f: genf(0, a, 1, b),
   g: invf(f),
-  [g(a), g(b)]);
+  ratsimp([g(a), g(b)]));
 [0, 1]$
 
 block([f, g],
@@ -26,5 +26,5 @@ block([f, g],
 
 block([f, g],
   [f, g]: genfi(0,  a0,   1, a1),
-  [f(0), f(1), g(a0), g(a1)]);
+  ratsimp([f(0), f(1), g(a0), g(a1)]));
 [a0, a1, 0, 1]$

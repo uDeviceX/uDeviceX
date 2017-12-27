@@ -15,7 +15,6 @@ genf(xf, xt, yf, yt)::=buildq(
     e: [ss(xf, xt), ss(yf, yt)],
     s: linsolve(e, ['a, 'b]),
     f: subst(s, f),
-    f: ratsimp(f),
     subst('f = f, lambda([r], f))));
 
 /* return an inverse of linear function `f' */
