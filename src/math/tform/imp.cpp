@@ -16,10 +16,10 @@ void tform_fin(Tform *q) { UC(efree(q)); }
 
 static void report(float a0[3], float a1[3],   float b0[3], float b1[3]) {
     enum {X, Y, Z};
-    MSG("a0: %g %g %g\n", a0[X], a0[Y], a0[Z]);
-    MSG("a1: %g %g %g\n", a1[X], a1[Y], a1[Z]);
-    MSG("b0: %g %g %g\n", b0[X], b0[Y], b0[Z]);
-    MSG("b1: %g %g %g\n", b1[X], b1[Y], b1[Z]);
+    MSG("a0: %g %g %g", a0[X], a0[Y], a0[Z]);
+    MSG("a1: %g %g %g", a1[X], a1[Y], a1[Z]);
+    MSG("b0: %g %g %g", b0[X], b0[Y], b0[Z]);
+    MSG("b1: %g %g %g", b1[X], b1[Y], b1[Z]);
 }
 enum {OK, ZERO};
 static int os(float a0, float a1,   float b0, float b1, /**/ float *o, float *s) {
@@ -74,4 +74,12 @@ void tform_log(Tform *t) {
     o = t->o; s = t->s;
     MSG("tform: o = [%g %g %g]", o[X], o[Y], o[Z]);
     MSG("tform: s = [%g %g %g]", s[X], s[Y], s[Z]);
+}
+
+void tform_dump(Tform *t, FILE *f) {
+    enum {X, Y, Z};
+    float *o, *s;
+    o = t->o; s = t->s;
+    fprintf(f, "%16.10e %16.10e %16.10e\n", o[X], o[Y], o[Z]);
+    fprintf(f, "%16.10e %16.10e %16.10e\n", s[X], s[Y], s[Z]);
 }
