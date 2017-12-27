@@ -56,7 +56,7 @@ void tform_convert(Tform *t, float a0[3], /**/ float a1[3]) {
 
 void tform_chain(Tform *t1, Tform *t2, /**/ Tform *t) {
     float a0[3] = {0, 0, 0};
-    float b0[3] = {0, 0, 0};
+    float b0[3] = {1, 1, 1};
     float a1[3], b1[3], a2[3], b2[3];
 
     tform_convert(t1, a0, /**/ a1);
