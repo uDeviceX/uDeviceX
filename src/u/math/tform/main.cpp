@@ -20,17 +20,26 @@ static void assert_c(int c, const char *s) {
     ERR("not enough args, %s", s);
 }
 
-static void main0(TVec *v) {
+static void main0(Tform *t) {
+    enum {X, Y, Z};
+    float a[3] = {1, 1, 1};
+    float b[3];
+    tform_dump(t, stdout);
+    tform_convert(t, a, /**/ b);
+    printf("%g %g %g\n", b[X], b[Y], b[Z]);
+}
+
+static void main1(TVec *v) {
     Tform *t;
     float *a0, *a1, *b0, *b1;
     a0 = v->a0; a1 = v->a1; b0 = v->b0; b1 = v->b1;
-    tform_ini(&t);
-    tform_vector(a0, a1,   b0, b1, t);
-    tform_dump(t, stdout);
+    UC(tform_ini(&t));
+    UC(tform_vector(a0, a1,   b0, b1, t));
+    main0(t);
     tform_fin(t);
 }
 
-static void main1(int c, char **v) {
+static void main2(int c, char **v) {
     enum {X, Y, Z};
     TVec ve;
     float *a0, *a1, *b0, *b1;
@@ -51,11 +60,11 @@ static void main1(int c, char **v) {
     assert_c(c, "b1[Y]"); b1[Y] = atof(v[0]); shift(&c, &v);
     assert_c(c, "b1[Z]"); b1[Z] = atof(v[0]); shift(&c, &v);
 
-    main0(&ve);
+    main1(&ve);
 }
 
 int main(int argc, char **argv) {
     m::ini(&argc, &argv);
-    main1(argc, argv);
+    main2(argc, argv);
     m::fin();
 }
