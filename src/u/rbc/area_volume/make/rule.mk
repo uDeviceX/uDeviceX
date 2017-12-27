@@ -15,6 +15,7 @@ $B/io/restart.o: $S/io/restart.cpp; $X -I$S/io -I$S/.
 $B/io/rig.o: $S/io/rig.cpp; $X -I$S/io -I$S/.
 $B/math/linal/imp.o: $S/math/linal/imp.cpp; $X -I$S/math/linal -I$S/.
 $B/math/rnd/imp.o: $S/math/rnd/imp.cpp; $X -I$S/math/rnd -I$S/.
+$B/math/tform/imp.o: $S/math/tform/imp.cpp; $X -I$S/math/tform -I$S/.
 $B/mpi/glb.o: $S/mpi/glb.cpp; $X -I$S/mpi -I$S/.
 $B/mpi/type.o: $S/mpi/type.cpp; $X -I$S/mpi -I$S/.
 $B/mpi/wrapper.o: $S/mpi/wrapper.cpp; $X -I$S/mpi -I$S/.
