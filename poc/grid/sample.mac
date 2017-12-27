@@ -2,6 +2,9 @@
 
 load("format") $
 load("sample.u.mac") $
+fmt0(e, r):=format(fullratsimp(e), %factor, %poly(r), %factor);
+fmt(f):=fmt0(f('r), 'r);
+
 [sdf2g, g2sdf]: genfi(0,    0,        N, G ) $
 [tex2g, g2tex]: genfi(0,    lo - M,   T, lo + L + M) $
 [sub2g, g2sub]: genfi(-L/2, lo,       0, lo + L/2) $
