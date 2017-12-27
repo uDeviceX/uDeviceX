@@ -8,15 +8,6 @@ fmt(f):=fmt0(f('r), 'r);
 [sdf2g, g2sdf]: genfi(0,    0,        N, G ) $
 [tex2g, g2tex]: genfi(0,    lo - M,   T, lo + L + M) $
 [sub2g, g2sub]: genfi(-L/2, lo,       0, lo + L/2) $
-[dum2g, g2dum]: genfi(0,    lo,       L, lo + L) $
-
-dum2sdf: chain(dum2g, g2sdf) $
-factor(dum2sdf(1) - dum2sdf(0));
-factor(dum2sdf(0));
 
 tex2sdf: chain(tex2g, g2sdf) $
-factor(tex2sdf(1) - tex2sdf(0));
-factor(tex2sdf(0));
-
 sub2tex: chain(sub2g, g2tex) $
-format(factor(sub2tex(r)), %poly('r));
