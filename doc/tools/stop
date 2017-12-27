@@ -2,5 +2,7 @@
 
 e () { echo >&2 "cmd: $@"; eval "$@"; }
 
-pid=`cat .pid`
+if e test ! -f .pid; then exit 0; fi
+
+pid=`e cat .pid`
 e kill $pid
