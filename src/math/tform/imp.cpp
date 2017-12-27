@@ -73,5 +73,5 @@ void tform_log(Tform *t) {
     float *o, *s;
     o = t->o; s = t->s;
     MSG("tform: o = [%g %g %g]", o[X], o[Y], o[Z]);
-    MSG("tform: o = [%g %g %g]", s[X], s[Y], s[Z]);
+    MSG("tform: s = [%g %g %g]", s[X], s[Y], s[Z]);
 }
