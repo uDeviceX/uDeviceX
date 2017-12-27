@@ -46,9 +46,7 @@ void ini_props(int n, const Particle *pp, float pmass, const float *com, int nt,
     init_I_fromm(pmass, nt, tt, vv, /**/ I);
     s->mass = mesh::volume(nt, tt, vv) * numberdensity * pmass;
 #endif
-        
-    linal_inv3x3(I, /**/ s->Iinv);
-        
+    UC(linal_inv3x3(I, /**/ s->Iinv));
     /* initial positions */
     for (int ip = 0; ip < n; ++ip) {
         float *ro = &rr0[3*ip];
