@@ -67,3 +67,11 @@ void tform_chain(Tform *t1, Tform *t2, /**/ Tform *t) {
 
     UC(tform_vector(a0, a2, b0, b2, t));
 }
+
+void tform_log(Tform *t) {
+    enum {X, Y, Z};
+    float *o, *s;
+    o = t->o; s = t->s;
+    MSG("tform: o = [%g %g %g]", o[X], o[Y], o[Z]);
+    MSG("tform: o = [%g %g %g]", s[X], s[Y], s[Z]);
+}
