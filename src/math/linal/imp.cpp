@@ -21,7 +21,7 @@ void linal_inv3x3(const float *m, /**/ float *r) {
     mz  = xy*yz-xz*yy;
     d   = mz*xz-my*xy+mx*xx;
     if (d < eps && d > -eps)
-        ERR("Matrix is singular, determinant %g\n", d);
+        ERR("Matrix is singular, determinant %g", d);
     i   = 1/d;
 
     r[XX] =  mx*i;
