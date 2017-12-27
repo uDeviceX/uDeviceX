@@ -129,5 +129,5 @@ sfree1() {
 }
 
 run () {
-    Run="u.batch     $nx $ny $nz ./udx 00:10:00"
+    Run="u.batch     $nx $ny $nz ./udx 24:00:00"
 }
