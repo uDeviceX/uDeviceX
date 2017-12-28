@@ -2,7 +2,7 @@
 
 see link:bootstrap[bootstrap]
 
-= install toolls
+= install tools
 
 ....
 make
