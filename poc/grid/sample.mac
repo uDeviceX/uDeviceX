@@ -1,5 +1,6 @@
 /* g: global */
 
+load("scifac") $
 load("format") $
 load("u.mac") $
 fmt0(e, r):=format(fullratsimp(e), %poly(r), %factor) $
@@ -13,9 +14,16 @@ tex2sdf: chain(tex2g, g2sdf) $
 sdf2tex: chain(sdf2g, g2tex) $
 sub2tex: chain(sub2g, g2tex) $
 
-fmt(tex2sdf);
-fmt(sub2tex);
+u: map('gcfac, fmt(tex2sdf));
+gcfac(fmt(sub2tex));
 
 /* from `sdf/dev.h` */
-e: T * ('r + L / 2 + M) / (L + 2 * M) $
+e: T * (r + L / 2 + M) / (L + 2 * M) - 1/2;
 fmt0(e, 'r);
+
+/* from field/imp/sample.h and sdf/imp/gen.h */
+s: N * (L + 2 * M) / G / T;
+o: N * (lo - M) / G;
+e: o + ('r + 1/2) * s - 1/2;
+e: fmt0(e, 'r);
+
