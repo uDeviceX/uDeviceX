@@ -8,7 +8,8 @@
 #include "math/tform/imp.h"
 
 struct TVec {
-    float a0[3], a1[3], b0[3], b1[3];
+    float a0[3], b0[3];
+    float a1[3], b1[3];
 };
 
 static int Inv;
