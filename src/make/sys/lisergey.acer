@@ -2,10 +2,11 @@ LINK = g++
 NVCC = nvcc
 OPT = -O0 -g
 
-MPI_CXXFLAGS = `pkg-config --cflags mpi`
-MPI_LIBS  = `pkg-config --libs mpi`
+MPI_VARIANT = mpi
+MPI_CXXFLAGS = `pkg-config --cflags ${MPI_VARIANT}`
+MPI_LIBS  = `pkg-config --libs ${MPI_VARIANT}`
 
-HDF5_VARIANT=hdf5-mpich
+HDF5_VARIANT = hdf5-mpich
 HDF5_CXXFLAGS = `pkg-config  --cflags  ${HDF5_VARIANT}`
 HDF5_LIBS  = `pkg-config --libs ${HDF5_VARIANT}`
 
