@@ -4,9 +4,11 @@
 #include "utils/imp.h"
 #include "utils/error.h"
 
+#include "type.h"
 #include "imp.h"
 
 struct Tform { float o[3], s[3]; };
+
 void tform_ini(Tform **pq) {
     Tform *q;
     UC(emalloc(sizeof(Tform), (void**)&q));
@@ -94,3 +96,10 @@ void tform_dump(Tform *t, FILE *f) {
     fprintf(f, "%16.10e %16.10e %16.10e\n", o[X], o[Y], o[Z]);
     fprintf(f, "%16.10e %16.10e %16.10e\n", s[X], s[Y], s[Z]);
 }
+
+void tform_view_ini(Tform_v **pv) {
+    Tform_v *v;
+    UC(emalloc(sizeof(Tform_v), (void**)&v));
+    *pv = v;
+}
+void tform_view_fin(Tform *v) { UC(efree(v)); }
