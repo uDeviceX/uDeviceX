@@ -8,7 +8,6 @@
 # commands
 # D: create directories
 # N: nvcc compile
-# NN: special nvcc compile command
 # X: c++ compile
 # L: link
 
