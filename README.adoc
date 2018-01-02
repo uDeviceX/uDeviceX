@@ -1,3 +1,10 @@
+= dependencies
+
+== cuda
+== mpi
+== hdf5
+== libconf
+
 = download
 
 see link:bootstrap[bootstrap]
