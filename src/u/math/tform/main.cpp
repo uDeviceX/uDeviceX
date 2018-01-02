@@ -10,9 +10,12 @@
 struct TVec {
     float a0[3], b0[3];
     float a1[3], b1[3];
+
+    float a2[3], b2[3];
+    float a3[3], b3[3];
 };
 
-static int Inv;
+static int Inv, Chain;
 
 static void usg0() {
     fprintf(stderr, "./udx -- OPTIONS.. < FILE\n");
@@ -138,7 +141,8 @@ static int flag(const char *a, int* pc, char ***pv) {
 int main(int argc, char **argv) {
     m::ini(&argc, &argv);
     usg(argc, argv);
-    Inv = flag("-i", &argc, &argv);
+    Inv   = flag("-i", &argc, &argv);
+    Chain = flag("-c", &argc, &argv);
     main2(argc, argv);
     m::fin();
 }
