@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "mpi/glb.h"
 #include "msg.h"
@@ -9,6 +10,12 @@
 struct TVec {
     float a0[3], a1[3], b0[3], b1[3];
 };
+
+static void usg0() {
+    fprintf(stderr, "./udx -- OPTIONS.. < FILE\n");
+    exit(0);
+}
+static int eq(const char *a, const char *b) { return strcmp(a, b) == 0; }
 
 static float eatof(const char *s) {
     int n0;
@@ -81,8 +88,14 @@ static void main2(int c, char **v) {
     main1(&ve);
 }
 
+static void usg(int c, char **v) {
+    if (c > 0 && eq(v[0], "-h"))
+        usg0();
+}
+
 int main(int argc, char **argv) {
     m::ini(&argc, &argv);
+    usg(argc, argv);
     main2(argc, argv);
     m::fin();
 }
