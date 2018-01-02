@@ -52,6 +52,3 @@ int wait_send(Stamp *s) {
     MC(m::Waitall(NFRAGS, s->sreq, ss));
     return 0;
 }
-
-int mpi_error() { MC(m::Barrier(-1234)); return 0; }
-int comm_error() { return 1; }
