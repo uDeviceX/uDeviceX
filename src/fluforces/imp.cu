@@ -1,5 +1,6 @@
 #include <mpi.h>
 #include <assert.h>
+#include <mma.h>
 
 #include <conf.h>
 #include "inc/conf.h"
