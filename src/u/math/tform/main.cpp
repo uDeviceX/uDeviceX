@@ -78,13 +78,27 @@ static void inv(Tform **pt) {
     *pt = t2;
 }
 
+static void chain(TVec *v, Tform **pt) {
+    Tform *t, *t1, *t2;
+    t = *pt;
+
+    UC(tform_ini(&t1));
+    UC(tform_ini(&t2));
+    UC(tform_vector(v->a2, v->a3,   v->b2, v->b3, /**/ t1));
+    UC(tform_chain(t, t1, /**/ t2));
+    tform_fin(t1);
+    tform_fin(t);
+    tform_log(t2);
+
+    *pt = t2;
+}
+
 static void main1(TVec *v) {
     Tform *t;
-    float *a0, *a1, *b0, *b1;
-    a0 = v->a0; a1 = v->a1; b0 = v->b0; b1 = v->b1;
     UC(tform_ini(&t));
-    UC(tform_vector(a0, a1,   b0, b1, t));
-    if (Inv) inv(&t);
+    UC(tform_vector(v->a0, v->a1,   v->b0, v->b1, /**/ t));
+    if (Chain) chain(v, &t);
+    if (Inv)   inv(&t);
     main0(t);
     tform_fin(t);
 }
@@ -106,12 +120,16 @@ static void read_vec(int *pc, char ***pv, float *r) {
 static void main2(int c, char **v) {
     enum {X, Y, Z};
     TVec ve;
-    float *a0, *a1, *b0, *b1;
-    a0 = ve.a0; a1 = ve.a1; b0 = ve.b0; b1 = ve.b1;
-    read_vec(&c, &v, a0);
-    read_vec(&c, &v, a1);
-    read_vec(&c, &v, b0);
-    read_vec(&c, &v, b1);
+    read_vec(&c, &v, ve.a0);
+    read_vec(&c, &v, ve.a1);
+    read_vec(&c, &v, ve.b0);
+    read_vec(&c, &v, ve.b1);
+    if (Chain) {
+        read_vec(&c, &v, ve.a2);
+        read_vec(&c, &v, ve.a3);
+        read_vec(&c, &v, ve.b2);
+        read_vec(&c, &v, ve.b3);
+    }
     main1(&ve);
 }
 
@@ -136,7 +154,6 @@ static int flag(const char *a, int* pc, char ***pv) {
     *pc = c; *pv = v;
     return Flag;
 }
-
 
 int main(int argc, char **argv) {
     m::ini(&argc, &argv);
