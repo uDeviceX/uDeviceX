@@ -15,5 +15,5 @@ void tform_dump(Tform*, FILE*);
 
 void tform_view_ini(Tform_v**);
 void tform_view_fin(Tform_v*);
-void tform_2view(Tform*, Tform_v*);
+void tform_2view(Tform*, /**/ Tform_v*);
 // end::interface[]
