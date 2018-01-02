@@ -1,8 +1,15 @@
 #include <stdio.h>
 
+#include <conf.h>
+#include "inc/conf.h"
+
 #include "msg.h"
 #include "utils/imp.h"
 #include "utils/error.h"
+
+#include "d/api.h"
+#include "inc/dev.h"
+#include "utils/cc.h"
 
 #include "type.h"
 #include "imp.h"
@@ -100,6 +107,18 @@ void tform_dump(Tform *t, FILE *f) {
 void tform_view_ini(Tform_v **pv) {
     Tform_v *v;
     UC(emalloc(sizeof(Tform_v), (void**)&v));
+    Dalloc(&v->o, 3);
+    Dalloc(&v->s, 3);
     *pv = v;
 }
-void tform_view_fin(Tform *v) { UC(efree(v)); }
+
+void tform_view_fin(Tform *v) {
+    Dfree(v->o);
+    Dfree(v->s);
+    UC(efree(v));
+}
+
+void tform_2view(Tform *f, Tform_v *t) {
+    cH2D(t->o, f->o, 3);
+    cH2D(t->s, f->s, 3);
+}
