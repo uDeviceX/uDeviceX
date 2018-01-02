@@ -28,13 +28,23 @@ static void assert_c(int c, const char *s) {
     ERR("not enough args, %s", s);
 }
 
+enum {OK, END};
+static int read(float *r) {
+    enum {X, Y, Z};
+    int n;
+    n = scanf("%f %f %f", &r[X], &r[Y], &r[Z]);
+    return (n == 3) ? OK : END;
+}
+
 static void main0(Tform *t) {
     enum {X, Y, Z};
-    float a[3] = {1, 1, 1};
-    float b[3];
-    tform_dump(t, stdout);
-    tform_convert(t, a, /**/ b);
-    printf("%g %g %g\n", b[X], b[Y], b[Z]);
+    float a[3], b[3];
+    tform_log(t);
+    while (read(/**/ a) == OK) {
+        tform_convert(t, a, /**/ b);
+        printf("%g %g %g %g %g %g\n",
+               a[X], a[Y], a[Z], b[X], b[Y], b[Z]);
+    }
 }
 
 static void main1(TVec *v) {
