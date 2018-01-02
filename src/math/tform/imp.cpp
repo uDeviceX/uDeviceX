@@ -118,7 +118,7 @@ void tform_view_fin(Tform *v) {
     UC(efree(v));
 }
 
-void tform_2view(Tform *f, Tform_v *t) {
+void tform_2view(Tform *f, /**/ Tform_v *t) {
     cH2D(t->o, f->o, 3);
     cH2D(t->s, f->s, 3);
 }
