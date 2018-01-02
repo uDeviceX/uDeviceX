@@ -86,27 +86,29 @@ static void main1(TVec *v) {
     tform_fin(t);
 }
 
+static void read_vec(int *pc, char ***pv, float *r) {
+    enum {X, Y, Z};
+    int c;
+    char **v;
+
+    c = *pc; v = *pv;
+
+    assert_c(c, "X"); r[X] = eatof(v[0]); shift(&c, &v);
+    assert_c(c, "Y"); r[Y] = eatof(v[0]); shift(&c, &v);
+    assert_c(c, "Z"); r[Z] = eatof(v[0]); shift(&c, &v);
+
+    *pc = c; *pv = v;
+}
+
 static void main2(int c, char **v) {
     enum {X, Y, Z};
     TVec ve;
     float *a0, *a1, *b0, *b1;
     a0 = ve.a0; a1 = ve.a1; b0 = ve.b0; b1 = ve.b1;
-    assert_c(c, "a0[X]"); a0[X] = eatof(v[0]); shift(&c, &v);
-    assert_c(c, "a0[Y]"); a0[Y] = eatof(v[0]); shift(&c, &v);
-    assert_c(c, "a0[Z]"); a0[Z] = eatof(v[0]); shift(&c, &v);
-
-    assert_c(c, "a1[X]"); a1[X] = eatof(v[0]); shift(&c, &v);
-    assert_c(c, "a1[Y]"); a1[Y] = eatof(v[0]); shift(&c, &v);
-    assert_c(c, "a1[Z]"); a1[Z] = eatof(v[0]); shift(&c, &v);
-
-    assert_c(c, "b0[X]"); b0[X] = eatof(v[0]); shift(&c, &v);
-    assert_c(c, "b0[Y]"); b0[Y] = eatof(v[0]); shift(&c, &v);
-    assert_c(c, "b0[Z]"); b0[Z] = eatof(v[0]); shift(&c, &v);
-
-    assert_c(c, "b1[X]"); b1[X] = eatof(v[0]); shift(&c, &v);
-    assert_c(c, "b1[Y]"); b1[Y] = eatof(v[0]); shift(&c, &v);
-    assert_c(c, "b1[Z]"); b1[Z] = eatof(v[0]); shift(&c, &v);
-
+    read_vec(&c, &v, a0);
+    read_vec(&c, &v, a1);
+    read_vec(&c, &v, b0);
+    read_vec(&c, &v, b1);
     main1(&ve);
 }
 
