@@ -8,9 +8,7 @@ static void gen0(MPI_Comm comm, int nt, const int4 *tt, const float *vv, int nso
         if (!npsolid) ERR("No particles remaining in root node.\n");
         for (int d = 0; d < 3; ++d)
             model.com[d] = coms[idmax*3 + d];
-
-            ini_props(npsolid, r_pp, solid_mass, model.com, nt, tt, vv, /**/ rr0, &model);
-
+        ini_props(npsolid, r_pp, solid_mass, model.com, nt, tt, vv, /**/ rr0, &model);
         if (empty_solid_particles)
             empty_solid(nt, tt, vv, /* io */ rr0, &npsolid);
     }
