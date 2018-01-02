@@ -55,12 +55,16 @@ static int read(float *r) {
     return (n == 3) ? OK : END;
 }
 
+static void convert(Tform *t, float a[3], /**/ float b[3]) {
+    tform_convert(t, a, /**/ b);
+}
+
 static void main0(Tform *t) {
     enum {X, Y, Z};
     float a[3], b[3];
     tform_log(t);
     while (read(/**/ a) == OK) {
-        tform_convert(t, a, /**/ b);
+        convert(t, a, /**/ b);
         printf("%g %g %g %g %g %g\n",
                a[X], a[Y], a[Z], b[X], b[Y], b[Z]);
     }
