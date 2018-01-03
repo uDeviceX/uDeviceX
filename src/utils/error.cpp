@@ -3,7 +3,6 @@
 #include <string.h>
 #include <stdarg.h>
 #include <assert.h>
-#include <string>
 
 #include "msg.h"
 #include "error.h"
