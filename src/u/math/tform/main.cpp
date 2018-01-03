@@ -17,7 +17,7 @@ struct TVec {
     float a3[3], b3[3];
 };
 
-static int Inv, Chain, Dev;
+static int Inv, Chain, Dev, Grid;
 
 static void usg0() {
     fprintf(stderr, "./udx -- OPTIONS.. < FILE\n");
@@ -62,7 +62,7 @@ static void convert(Tform *t, float a[3], /**/ float b[3]) {
     else     tform_convert(t, a, /**/ b);
 }
 
-static void main0(Tform *t) {
+static void process(Tform *t) {
     enum {X, Y, Z};
     float a[3], b[3];
     tform_log(t);
@@ -100,13 +100,17 @@ static void chain(TVec *v, Tform **pt) {
     *pt = t2;
 }
 
+static void vec2form(TVec *v, Tform **t) {
+    UC(tform_vector(v->a0, v->a1,   v->b0, v->b1, /**/ *t));
+    if (Chain) chain(v, t);
+    if (Inv)   inv(t);
+}
+
 static void main1(TVec *v) {
     Tform *t;
     UC(tform_ini(&t));
-    UC(tform_vector(v->a0, v->a1,   v->b0, v->b1, /**/ t));
-    if (Chain) chain(v, &t);
-    if (Inv)   inv(&t);
-    main0(t);
+    vec2form(v, /**/ &t);
+    process(t);
     tform_fin(t);
 }
 
@@ -168,6 +172,7 @@ int main(int argc, char **argv) {
     Inv   = flag("-i", &argc, &argv);
     Chain = flag("-c", &argc, &argv);
     Dev   = flag("-d", &argc, &argv);
+    Grid  = flag("-g", &argc, &argv);
     main2(argc, argv);
     m::fin();
 }
