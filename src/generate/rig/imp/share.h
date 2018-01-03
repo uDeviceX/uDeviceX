@@ -1,12 +1,14 @@
 static void share0(MPI_Comm comm, const int root, /**/ Particle *pp, int *n) {
-    std::vector<int> counts(m::size), displs(m::size);
+    int rank, size;
+    MC(m::Comm_rank(comm, &rank));
+    MC(m::Comm_size(comm, &size));
+    std::vector<int> counts(size), displs(size);
     std::vector<Particle> recvbuf(MAX_PSOLID_NUM);
     MC(MPI_Gather(n, 1, MPI_INT, counts.data(), 1, MPI_INT, root, comm) );
 
-    if (m::rank == root)
-    {
+    if (rank == root) {
         displs[0] = 0;
-        for (int j = 0; j < m::size - 1; ++j)
+        for (int j = 0; j < size - 1; ++j)
             displs[j+1] = displs[j] + counts[j];
     }
 
@@ -14,7 +16,7 @@ static void share0(MPI_Comm comm, const int root, /**/ Particle *pp, int *n) {
                    datatype::particle, recvbuf.data(), counts.data(), displs.data(),
                    datatype::particle, root, comm) );
 
-    if (m::rank == root) {
+    if (rank == root) {
         *n = displs.back() + counts.back();
         for (int i = 0; i < *n; ++i) pp[i] = recvbuf[i];
     }
