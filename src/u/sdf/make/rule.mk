@@ -16,6 +16,7 @@ $B/sdf/field/imp.o: $S/sdf/field/imp.cpp; $X -I$S/sdf/field -I$S/.
 $B/sdf/imp.o: $S/sdf/imp.cu; $N -I$S/sdf -I$S/.
 $B/sdf/label/imp.o: $S/sdf/label/imp.cu; $N -I$S/sdf/label -I$S/.
 $B/sdf/tex3d/imp.o: $S/sdf/tex3d/imp.cu; $N -I$S/sdf/tex3d -I$S/.
+$B/sdf/tform/imp.o: $S/sdf/tform/imp.cpp; $X -I$S/sdf/tform -I$S/.
 $B/u/sdf/main.o: $S/u/sdf/main.cu; $N -I$S/u/sdf -I$S/.
 $B/utils/cc.o: $S/utils/cc.cpp; $X -I$S/utils -I$S/.
 $B/utils/error.o: $S/utils/error.cpp; $X -I$S/utils -I$S/.

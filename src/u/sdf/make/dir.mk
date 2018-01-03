@@ -14,6 +14,7 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/sdf/field    && \
     d $B/sdf/label    && \
     d $B/sdf/tex3d    && \
+    d $B/sdf/tform    && \
     d $B/u/sdf        && \
     d $B/utils        && \
     d $B/wvel        
