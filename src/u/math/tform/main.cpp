@@ -7,6 +7,8 @@
 #include "utils/error.h"
 #include "math/tform/imp.h"
 
+#include "lib/imp.h"
+
 struct TVec {
     float a0[3], b0[3];
     float a1[3], b1[3];
@@ -15,7 +17,7 @@ struct TVec {
     float a3[3], b3[3];
 };
 
-static int Inv, Chain;
+static int Inv, Chain, Dev;
 
 static void usg0() {
     fprintf(stderr, "./udx -- OPTIONS.. < FILE\n");
@@ -56,7 +58,8 @@ static int read(float *r) {
 }
 
 static void convert(Tform *t, float a[3], /**/ float b[3]) {
-    tform_convert(t, a, /**/ b);
+    if (Dev) convert_dev(t, a, /**/ b);
+    else     tform_convert(t, a, /**/ b);
 }
 
 static void main0(Tform *t) {
@@ -164,6 +167,7 @@ int main(int argc, char **argv) {
     usg(argc, argv);
     Inv   = flag("-i", &argc, &argv);
     Chain = flag("-c", &argc, &argv);
+    Dev   = flag("-d", &argc, &argv);
     main2(argc, argv);
     m::fin();
 }

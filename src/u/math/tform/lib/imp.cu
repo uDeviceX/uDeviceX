@@ -1,17 +1,21 @@
+#include <stdio.h>
+
 #include <conf.h>
 #include "inc/conf.h"
 
 #include "d/api.h"
 #include "inc/dev.h"
 #include "utils/cc.h"
+#include "utils/kl.h"
 
 #include "math/tform/type.h"
 #include "math/tform/dev.h"
 
-#include "main.h"
+#include "imp.h"
 
 static __global__ void convert(Tform t, float *a, /**/ float *b) {
-    tform_convert_dev(t, a, /**/ b);
+    enum {X, Y, Z};
+    tform_convert_dev(&t, a, /**/ b);
 }
 
 void convert_dev(Tform *t, float a_hst[3], /**/ float b_hst[3]) {
@@ -21,8 +25,8 @@ void convert_dev(Tform *t, float a_hst[3], /**/ float b_hst[3]) {
     Dalloc(&b_dev, dim);
 
     cH2D(a_dev, a_hst, dim);
-    convert(&T, a_dev, b_dev);
-    cD2H(a_hst, a_dev, dim);
+    KL(convert, (1, 1), (*t, a_dev, /**/ b_dev));
+    cD2H(b_hst, b_dev, dim);
 
     Dfree(a_dev);
     Dfree(b_dev);
