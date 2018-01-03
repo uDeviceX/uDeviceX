@@ -1,5 +1,4 @@
 /* domain sizes */
-
 int xdomain(const Coords c);
 int ydomain(const Coords c);
 int zdomain(const Coords c);
@@ -32,6 +31,14 @@ float yg2yl(const Coords c, float yg);
 float zg2zl(const Coords c, float zg);
 void global2local(const Coords c, float3 rg, /**/ float3 *rl);
 
+/* edges of the sub-domain in global coordinates */
+
+int xlo(const Coords c);
+int ylo(const Coords c);
+int zlo(const Coords c);
+int xhi(const Coords c);
+int yhi(const Coords c);
+int zhi(const Coords c);
 
 /* rank predicates */
 

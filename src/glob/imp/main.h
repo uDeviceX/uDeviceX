@@ -29,7 +29,6 @@ int zdomain(const Coords c) {
     return ZS * c.zd;
 }
 
-
 /* [l]ocal to [c]enter */
 
 float xl2xc(const Coords c, float xl) {
@@ -109,6 +108,16 @@ void global2local(const Coords c, float3 rg, /**/ float3 *rl) {
     rl->y = yg2yl(c, rg.y);
     rl->z = zg2zl(c, rg.z);
 }
+
+/* edges of the sub-domain in global coordinates */
+
+int xlo(const Coords c) { return xl2xg(c, 0) - 0.5*XS; };
+int ylo(const Coords c) { return yl2yg(c, 0) - 0.5*YS; };
+int zlo(const Coords c) { return yl2yg(c, 0) - 0.5*ZS; };
+
+int xhi(const Coords c) { return xl2xg(c, 0) + 0.5*XS; };
+int yhi(const Coords c) { return yl2yg(c, 0) + 0.5*YS; };
+int zhi(const Coords c) { return yl2yg(c, 0) + 0.5*ZS; };
 
 /* rank predicates */
 
