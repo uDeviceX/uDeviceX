@@ -2,10 +2,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include <conf.h>
+#include "inc/conf.h"
+
 #include "msg.h"
 #include "mpi/glb.h"
 
 #include "utils/error.h"
+#include "utils/mc.h"
 #include "utils/imp.h"
 
 #include "io/field/h5/imp.h"
@@ -27,10 +31,13 @@ void lshift() {
 
 void dump(MPI_Comm comm, const char *path, int sx, int sy, int sz) {
     enum {X, Y, Z};
+    int rank;
     size_t size, nc;
     float *rho, *u[3];
     const char *names[] = { "density", "u", "v", "w" };
 
+    MC(m::Comm_rank(comm, &rank));
+    
     nc = sx * sy * sz;
     size = nc*sizeof(rho[0]);
     UC(emalloc(size, (void**) &rho));
@@ -41,7 +48,7 @@ void dump(MPI_Comm comm, const char *path, int sx, int sy, int sz) {
     float *data[] = { rho, u[X], u[Y], u[Z] };
     UC(h5::write(comm, path, data, names, 4, sx, sy, sz));
     free(rho); free(u[X]); free(u[Y]); free(u[Z]);
-    if (m::rank == 0) xmf::write(path, names, 4, sx, sy, sz);
+    if (rank == 0) xmf::write(path, names, 4, sx, sy, sz);
 }
 
 int ienv(const char *name, int def) {

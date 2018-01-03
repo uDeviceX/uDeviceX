@@ -1,7 +1,7 @@
-void ini(Contact *c) {
+void ini(int rank, /**/ Contact *c) {
     clist::ini(XS, YS, ZS, /**/ &c->cells);
     clist::ini_map(MAX_PART_NUM, MAX_OBJ_TYPES, &c->cells, /**/ &c->cmap);
-    UC(rnd_ini(7119 - m::rank, 187 + m::rank, 18278, 15674, /**/ &c->rgen));
+    UC(rnd_ini(7119 - rank, 187 + rank, 18278, 15674, /**/ &c->rgen));
 }
 
 void fin(Contact *c) {

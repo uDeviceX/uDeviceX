@@ -6,7 +6,7 @@ struct Contact {
     RNDunif *rgen;
 };
 
-void ini(Contact *c);
+void ini(int rank, /**/ Contact *c);
 void fin(Contact *c);
 
 void build_cells(int nw, const PaWrap *pw, /**/ Contact *c);

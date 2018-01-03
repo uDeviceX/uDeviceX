@@ -172,9 +172,11 @@ static void ini_wall(Wall *w) {
 }
 
 static void ini_objinter(MPI_Comm cart, /**/ ObjInter *o) {
-    UC(ini_obj_exch(cart, &o->e));    
-    if (contactforces) cnt::ini(&o->cnt);
-    if (fsiforces)     fsi::ini(&o->fsi);
+    int rank;
+    MC(m::Comm_rank(cart, &rank));
+    UC(ini_obj_exch(cart, &o->e));
+    if (contactforces) cnt::ini(rank, /**/ &o->cnt);
+    if (fsiforces)     fsi::ini(rank, /**/ &o->fsi);
 }
 
 void ini(int argc, char **argv) {
@@ -197,7 +199,7 @@ void ini(int argc, char **argv) {
     if (rbcs || solids)
         UC(ini_objinter(m::cart, /**/ &objinter));        
     
-    UC(bop::ini(&dumpt));
+    UC(bop::ini(m::cart, &dumpt));
 
     if (walls) ini_wall(&wall);
     

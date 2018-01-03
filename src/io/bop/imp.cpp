@@ -1,4 +1,5 @@
 #include <mpi.h>
+#include <vector_types.h>
 
 #include "conf.h"
 #include "inc/conf.h"
@@ -15,16 +16,16 @@
 #include "utils/os.h"
 #include "utils/error.h"
 #include "utils/imp.h"
+#include "glob/type.h"
+#include "glob/imp.h"
 
 #include "imp.h"
 
 namespace bop
 {
-void ini(Ticket *t) {
-    if (m::rank == 0) UC(os::mkdir(DUMP_BASE "/bop"));
-    const int L[3] = {XS, YS, ZS};        
-    for (int c = 0; c < 3; ++c) t->mi[c] = (m::coords[c] + 0.5) * L[c];
-
+void ini(MPI_Comm comm, Ticket *t) {
+    if (m::is_master(comm))
+        UC(os::mkdir(DUMP_BASE "/bop"));
     t->w_pp = new float[9*MAX_PART_NUM];
 }
 
@@ -32,20 +33,41 @@ void fin(Ticket *t) {
     delete[] t->w_pp;
 }
 
-static void copy_shift(const Particle *pp, long n, const int mi[3], /**/ float *w) {
-    for (int j = 0; j < n; ++j)
-    for (int d = 0; d < 3; ++d) {
-        w[6 * j + d]     = pp[j].r[d] + mi[d];
-        w[6 * j + 3 + d] = pp[j].v[d];
+static void p2f3(const Particle p, /**/ float3 *r, float3 *v) {
+    enum {X, Y, Z};
+    r->x = p.r[X];
+    r->y = p.r[Y];
+    r->z = p.r[Z];
+
+    v->x = p.v[X];
+    v->y = p.v[Y];
+    v->z = p.v[Z];
+}
+
+static void f2f3(const Force fo, /**/ float3 *f) {
+    enum {X, Y, Z};
+    f->x = fo.f[X];
+    f->y = fo.f[Y];
+    f->z = fo.f[Z];
+}
+
+static void copy_shift(Coords coords, const Particle *pp, long n, /**/ float3 *w) {
+    float3 r, v;
+    for (int j = 0; j < n; ++j) {
+        p2f3(pp[j], /**/ &r, &v);
+        local2global(coords, r, /**/ &w[2*j]);
+        w[2*j + 1] = v;
     }
 }
 
-static void copy_shift_with_forces(const Particle *pp, const Force *ff, long n, const int mi[3], /**/ float *w) {
-    for (int j = 0; j < n; ++j)
-    for (int d = 0; d < 3; ++d) {
-        w[9 * j + d]     = pp[j].r[d] + mi[d];
-        w[9 * j + 3 + d] = pp[j].v[d];
-        w[9 * j + 6 + d] = ff[j].f[d];
+static void copy_shift_with_forces(Coords coords, const Particle *pp, const Force *ff, long n, /**/ float3 *w) {
+    float3 r, v, f;
+    for (int j = 0; j < n; ++j) {
+        p2f3(pp[j], /**/ &r, &v);
+        f2f3(ff[j], /**/ &f);
+        local2global(coords, r, /**/ &w[3*j]);
+        w[3*j + 1] = v;
+        w[3*j + 2] = f;
     }
 }
 
@@ -97,25 +119,27 @@ static long write_data(MPI_Comm cart, const void *data, long n, size_t bytesperd
     return ntot;
 }
     
-void parts(MPI_Comm cart, const Particle *pp, long n, const char *name, int step, Ticket *t) {
-    copy_shift(pp, n, t->mi, /**/ t->w_pp);
+void parts(MPI_Comm cart, Coords coords, const Particle *pp, long n, const char *name, int step, Ticket *t) {
+    copy_shift(coords, pp, n, /**/ (float3*) t->w_pp);
         
     char fname[256] = {0};
     sprintf(fname, DUMP_BASE "/bop/" PATTERN ".values", name, step / part_freq);
 
     long ntot = write_data(cart, t->w_pp, n, sizeof(Particle), datatype::particle, fname);
-    if (m::rank == 0) header_pp(ntot, name, step);
+    if (m::is_master(cart))
+        header_pp(ntot, name, step);
 }
 
-void parts_forces(MPI_Comm cart, const Particle *pp, const Force *ff, long n, const char *name, int step, /*w*/ Ticket *t) {
-    copy_shift_with_forces(pp, ff, n, t->mi, /**/ t->w_pp);
+void parts_forces(MPI_Comm cart, Coords coords, const Particle *pp, const Force *ff, long n, const char *name, int step, /*w*/ Ticket *t) {
+    copy_shift_with_forces(coords, pp, ff, n, /**/ (float3*) t->w_pp);
             
     char fname[256] = {0};
     sprintf(fname, DUMP_BASE "/bop/" PATTERN ".values", name, step / part_freq);
 
     long ntot = write_data(cart, t->w_pp, n, sizeof(Particle) + sizeof(Force), datatype::partforce, fname);
     
-    if (m::rank == 0) header_pp_ff(ntot, name, step);
+    if (m::is_master(cart))
+        header_pp_ff(ntot, name, step);
 }
 
 static void intdata(MPI_Comm cart, const int *ii, long n, const char *name, const char *fields, int step) {
@@ -124,7 +148,8 @@ static void intdata(MPI_Comm cart, const int *ii, long n, const char *name, cons
 
     long ntot = write_data(cart, ii, n, sizeof(int), MPI_INT, fname);
     
-    if (m::rank == 0) header_ii(ntot, name, fields, step);
+    if (m::is_master(cart))
+        header_ii(ntot, name, fields, step);
 }
 
 void ids(MPI_Comm cart, const int *ii, long n, const char *name, int step) {

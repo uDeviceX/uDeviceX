@@ -11,11 +11,9 @@ void all(MPI_Comm cart, const void * const ptr, const int nbytes32, File *fp) {
     MC(MPI_Allreduce(&nbytes, &ntotal, 1, MPI_OFFSET, MPI_SUM, cart) );
     MC(MPI_File_seek(f, ntotal, MPI_SEEK_CUR));
 }
-/* root predicate */
-int rootp() { return m::rank == 0; }
 int one(MPI_Comm cart, const void * const ptr, int sz0, File *fp) {
     int sz;
-    sz = rootp() ? sz0 : 0;
+    sz = m::is_master(cart) ? sz0 : 0;
     all(cart, ptr, sz, fp);
     return 0;
 }
