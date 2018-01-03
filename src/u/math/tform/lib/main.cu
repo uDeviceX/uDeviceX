@@ -11,7 +11,7 @@
 #include "main.h"
 
 static __global__ void convert(Tform t, float *a, /**/ float *b) {
-
+    tform_convert_dev(T, a, /**/ b);
 }
 
 void convert_dev(Tform *t, float a_hst[3], /**/ float b_hst[3]) {
