@@ -42,7 +42,7 @@ $B/io/rig.o: $S/utils/imp.h $S/inc/conf.h $S/utils/error.h $S/inc/type.h $S/glob
 $B/main.o: $S/inc/conf.h $S/d/api.h $S/msg.h $B/conf.h $S/sim/imp.h $S/mpi/glb.h
 $B/math/linal/imp.o: $S/utils/error.h $S/math/linal/imp.h
 $B/math/rnd/imp.o: $S/utils/imp.h $S/utils/error.h $S/math/rnd/imp.h
-$B/math/tform/imp.o: $S/utils/imp.h $S/inc/conf.h $S/utils/error.h $S/math/tform/imp.h $S/utils/cc.h $S/inc/dev.h $S/d/api.h $S/msg.h $B/conf.h $S/math/tform/type.h
+$B/math/tform/imp.o: $S/utils/imp.h $S/inc/conf.h $S/utils/error.h $S/math/tform/imp.h $S/msg.h $B/conf.h $S/math/tform/type.h
 $B/meshbb/imp.o: $S/meshbb/bbstates.h $S/inc/conf.h $S/meshbb/imp/find_collisions/log_root1.h $S/meshbb/dev/collect.h $S/inc/type.h $S/meshbb/dev/cubic_root/main.h $S/meshbb/imp.h $S/meshbb/dev/roots.h $S/utils/cc.h $S/meshbb/dev/cubic_root/log_root0.h $S/d/api.h $S/inc/dev.h $S/msg.h $B/conf.h $S/meshbb/imp/main.h $S/meshbb/type.h $S/utils/kl.h $S/meshbb/imp/find_collisions/log_root0.h $S/math/dev.h $S/meshbb/dev/intersection.h $S/meshbb/dev/utils.h $S/meshbb/dev/main.h $S/meshbb/dev/cubic_root/log_root1.h
 $B/mesh/bbox.o: $S/inc/type.h $S/algo/minmax/imp.h $S/mesh/bbox.h
 $B/mesh/collision.o: $S/inc/conf.h $S/utils/error.h $S/inc/type.h $S/d/q.h $S/utils/cc.h $S/inc/def.h $S/inc/dev.h $S/d/api.h $S/msg.h $B/conf.h $S/utils/texo.h $S/utils/kl.h $S/utils/texo.dev.h $S/utils/te.h $S/mesh/collision.h $S/d/ker.h
