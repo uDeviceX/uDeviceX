@@ -1,3 +1,5 @@
+#include <stdio.h>
+
 #include <conf.h>
 #include "inc/conf.h"
 
@@ -14,6 +16,7 @@
 static __global__ void convert(Tform t, float *a, /**/ float *b) {
     enum {X, Y, Z};
     b[X] = b[Y] = b[Z] = 42.0;
+    printf("b: %g %g %g\n", b[X], b[Y], b[Z]);
     tform_convert_dev(&t, a, /**/ b);
 }
 
