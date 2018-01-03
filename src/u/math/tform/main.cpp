@@ -129,6 +129,8 @@ static void input2form(TInput *v, Tform **t) {
     if (Grid) {
         from = &v->f;
         to   = &v->t;
+        grid_log(from);
+        grid_log(to);
         tform_grid2grid(from->lo, from->hi, from->n,
                           to->lo, to->hi,   to->n, /**/ *t);
     } else {
