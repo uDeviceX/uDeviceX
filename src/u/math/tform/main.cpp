@@ -131,14 +131,16 @@ static void input2form(TInput *v, Tform **t) {
     if (Grid) {
         from = &v->f;
         to   = &v->t;
+        grid_log(from);
+        grid_log(to);
         tform_grid2grid(from->lo, from->hi, from->n,
                           to->lo, to->hi,   to->n, /**/ *t);
     } else {
         UC(tform_vector(v->v.a0, v->v.a1,
                         v->v.b0, v->v.b1, /**/ *t));
         if (Chain) chain(v, t);
-        if (Inv)   inv(t);
     }
+    if (Inv)   inv(t);
 }
 
 static void main1(TInput *v) {
