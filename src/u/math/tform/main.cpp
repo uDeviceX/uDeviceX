@@ -116,7 +116,7 @@ static void chain(TInput *v, Tform **pt) {
     *pt = t2;
 }
 
-static void vec2form(TInput *v, Tform **t) {
+static void input2form(TInput *v, Tform **t) {
     UC(tform_vector(v->v.a0, v->v.a1,
                     v->v.b0, v->v.b1, /**/ *t));
     if (Chain) chain(v, t);
@@ -126,7 +126,7 @@ static void vec2form(TInput *v, Tform **t) {
 static void main1(TInput *v) {
     Tform *t;
     UC(tform_ini(&t));
-    UC(vec2form(v, /**/ &t));
+    UC(input2form(v, /**/ &t));
     UC(process(t));
     tform_fin(t);
 }
