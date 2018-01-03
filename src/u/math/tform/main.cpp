@@ -117,10 +117,18 @@ static void chain(TInput *v, Tform **pt) {
 }
 
 static void input2form(TInput *v, Tform **t) {
-    UC(tform_vector(v->v.a0, v->v.a1,
-                    v->v.b0, v->v.b1, /**/ *t));
-    if (Chain) chain(v, t);
-    if (Inv)   inv(t);
+    TGrid *from, *to;
+    if (Grid) {
+        from = &v->f;
+        to   = &v->t;
+        tform_grid2grid(from->lo, from->hi, from->n,
+                          to->lo, to->hi,   to->n, /**/ *t);
+    } else {
+        UC(tform_vector(v->v.a0, v->v.a1,
+                        v->v.b0, v->v.b1, /**/ *t));
+        if (Chain) chain(v, t);
+        if (Inv)   inv(t);
+    }
 }
 
 static void main1(TInput *v) {
