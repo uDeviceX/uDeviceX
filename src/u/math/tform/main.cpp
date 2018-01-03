@@ -144,6 +144,11 @@ static void read_vecs(int *c, char ***v, TVec *ve) {
     read_vec(c, v, ve->b1);
 }
 
+static void read_grid(int *c, char ***v, TGrid *g) {
+    read_vec(c, v, g->lo);
+    read_vec(c, v, g->hi);
+}
+
 static void main2(int c, char **v) {
     enum {X, Y, Z};
     TInput ve;
@@ -151,6 +156,8 @@ static void main2(int c, char **v) {
         read_vecs(&c, &v, &ve.v);
         read_vecs(&c, &v, &ve.u);
     } else if (Grid) {
+        read_grid(&c, &v, &ve.f);
+        read_grid(&c, &v, &ve.f);
     } else {
         read_vecs(&c, &v, &ve.v);
     }
