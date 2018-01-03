@@ -17,7 +17,7 @@ struct TVec {
     float a3[3], b3[3];
 };
 
-static int Inv, Chain, Dev;
+static int Inv, Chain, Dev, Grid;
 
 static void usg0() {
     fprintf(stderr, "./udx -- OPTIONS.. < FILE\n");
@@ -168,6 +168,7 @@ int main(int argc, char **argv) {
     Inv   = flag("-i", &argc, &argv);
     Chain = flag("-c", &argc, &argv);
     Dev   = flag("-d", &argc, &argv);
+    Grid  = flag("-g", &argv, &argv);
     main2(argc, argv);
     m::fin();
 }
