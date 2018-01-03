@@ -1,9 +1,14 @@
 #include <mpi.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <vector_types.h>
 
 #include <conf.h>
 #include "inc/conf.h"
+
+#include "glob/type.h"
+#include "glob/ini.h"
+#include "glob/imp.h"
 
 #include "msg.h"
 #include "mpi/glb.h"
@@ -32,10 +37,12 @@ void lshift() {
 void dump(MPI_Comm comm, const char *path, int sx, int sy, int sz) {
     enum {X, Y, Z};
     int rank;
+    Coords coords;
     size_t size, nc;
     float *rho, *u[3];
     const char *names[] = { "density", "u", "v", "w" };
 
+    UC(ini_coords(comm, /**/ &coords));
     MC(m::Comm_rank(comm, &rank));
     
     nc = sx * sy * sz;
@@ -46,9 +53,10 @@ void dump(MPI_Comm comm, const char *path, int sx, int sy, int sz) {
     UC(emalloc(size, (void**) &u[Z]));
 
     float *data[] = { rho, u[X], u[Y], u[Z] };
-    UC(h5::write(comm, path, data, names, 4, sx, sy, sz));
+    UC(h5::write(coords, comm, path, data, names, 4, sx, sy, sz));
     free(rho); free(u[X]); free(u[Y]); free(u[Z]);
     if (rank == 0) xmf::write(path, names, 4, sx, sy, sz);
+    UC(fin_coords(/**/ &coords));
 }
 
 int ienv(const char *name, int def) {
