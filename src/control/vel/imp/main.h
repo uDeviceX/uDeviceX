@@ -1,14 +1,13 @@
-static void ini_dump(FILE **f) {
+static void ini_dump(int rank, /**/ FILE **f) {
     *f = NULL;
-    if (m::rank) return;
+    if (rank) return;
     UC(efopen(DUMP_BASE "/vcont.txt", "w", /**/ f));
     fprintf(*f, "#vx vy vz fx fy fz\n");
     MSG("Velocity controller: dump to " DUMP_BASE "/vcont.txt");
 }
 
 static void fin_dump(FILE *f) {
-    if (m::rank) return;
-    UC(efclose(f));
+    if (f) UC(efclose(f));
 }
 
 static void reini_sampler(/**/ PidVCont *c) {
@@ -21,7 +20,10 @@ static void reini_sampler(/**/ PidVCont *c) {
 }
 
 void ini(MPI_Comm comm, int3 L, float3 vtarget, float factor, /**/ PidVCont *c) {
-    int ncells, nchunks;
+    int ncells, nchunks, rank;
+
+    MC(m::Comm_rank(comm, &rank));
+    
     c->L = L;
     c->target = vtarget;
     c->current = make_float3(0, 0, 0);
@@ -47,7 +49,7 @@ void ini(MPI_Comm comm, int3 L, float3 vtarget, float factor, /**/ PidVCont *c) 
     
     reini_sampler(/**/ c);
 
-    ini_dump(&c->fdump);
+    ini_dump(rank, /**/ &c->fdump);
 }
 
 void fin(/**/ PidVCont *c) {
@@ -109,7 +111,7 @@ float3 adjustF(/**/ PidVCont *c) {
 }
 
 void log(const PidVCont *c) {
-    if (m::rank) return;
+    if (c->fdump == NULL) return;
     float3 v = c->current;
     float3 f = c->f;
     fprintf(c->fdump, "%.g %.g %.g %.g %.g %.g\n",
