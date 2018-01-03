@@ -3,7 +3,7 @@
 #include <string.h>
 
 #include "mpi/glb.h"
-#include "msg.h"
+#include "utils/msg.h"
 #include "utils/error.h"
 #include "math/tform/imp.h"
 

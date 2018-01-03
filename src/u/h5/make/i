@@ -1,10 +1,5 @@
-find $U  -name '*.cu' -o -name '*.cpp' -o -name '*.h'
-find glob  -name '*.cu' -o -name '*.cpp' -o -name '*.h'
+f0 () { find "$1" -name '*.cu' -o -name '*.cpp' -o -name '*.h' -type f ; }
+f () ( for d; do f0 "$d"; done )
 
-echo \
-io/field/h5/imp.cpp  io/field/h5/imp.h                          \
-io/field/xmf/imp.cpp io/field/xmf/imp.h                         \
-d/api.cu d/api.h d/common.h d/cpu/imp.h d/cuda/imp.h            \
-inc/conf.h mpi/glb.cpp mpi/glb.h mpi/wrapper.cpp mpi/wrapper.h  \
-mpi/wrapper.h msg.cpp msg.h utils/mc.cpp utils/mc.h             \
-utils/imp.cpp utils/imp.h utils/error.cpp utils/error.h
+echo . $U
+f $U glob utils d mpi io/field inc

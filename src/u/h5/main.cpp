@@ -10,7 +10,7 @@
 #include "glob/ini.h"
 #include "glob/imp.h"
 
-#include "msg.h"
+#include "utils/msg.h"
 #include "mpi/glb.h"
 
 #include "utils/error.h"

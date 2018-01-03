@@ -3,7 +3,7 @@
 #include "inc/conf.h"
 
 #include "d/api.h"
-#include "msg.h"
+#include "utils/msg.h"
 
 #include "mpi/glb.h"
 #include "inc/dev.h"

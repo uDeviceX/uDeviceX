@@ -2,7 +2,7 @@
 #include <stdlib.h>
 
 #include "mpi/glb.h"
-#include "msg.h"
+#include "utils/msg.h"
 #include "utils/error.h"
 #include "math/linal/imp.h"
 

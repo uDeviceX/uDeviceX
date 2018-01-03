@@ -7,7 +7,6 @@ $B/math/tform/imp.o: $S/math/tform/imp.cpp; $X -I$S/. -I$S/math/tform
 $B/mpi/glb.o: $S/mpi/glb.cpp; $X -I$S/. -I$S/mpi
 $B/mpi/type.o: $S/mpi/type.cpp; $X -I$S/. -I$S/mpi
 $B/mpi/wrapper.o: $S/mpi/wrapper.cpp; $X -I$S/. -I$S/mpi
-$B/msg.o: $S/msg.cpp; $X -I$S/.
 $B/u/math/linal/main.o: $S/u/math/linal/main.cpp; $X -I$S/.
 $B/utils/cc.o: $S/utils/cc.cpp; $X -I$S/. -I$S/utils
 $B/utils/error.o: $S/utils/error.cpp; $X -I$S/. -I$S/utils

@@ -1,6 +1,6 @@
 #include <stdio.h>
 
-#include "msg.h"
+#include "utils/msg.h"
 #include "mpi/glb.h"
 
 int main(int argc, char **argv) {

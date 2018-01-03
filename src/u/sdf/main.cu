@@ -5,7 +5,7 @@
 
 #include "d/ker.h"
 #include "d/api.h"
-#include "msg.h"
+#include "utils/msg.h"
 
 #include "mpi/glb.h"
 #include "mpi/wrapper.h"

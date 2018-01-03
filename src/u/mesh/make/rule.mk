@@ -9,7 +9,6 @@ $B/mesh/props.o: $S/mesh/props.cpp; $X -I$S/. -I$S/mesh
 $B/mpi/glb.o: $S/mpi/glb.cpp; $X -I$S/. -I$S/mpi
 $B/mpi/type.o: $S/mpi/type.cpp; $X -I$S/. -I$S/mpi
 $B/mpi/wrapper.o: $S/mpi/wrapper.cpp; $X -I$S/. -I$S/mpi
-$B/msg.o: $S/msg.cpp; $X -I$S/.
 $B/u/mesh/main.o: $S/u/mesh/main.cu; $N -I$S/. -I$S/u/mesh
 $B/utils/cc.o: $S/utils/cc.cpp; $X -I$S/. -I$S/utils
 $B/utils/error.o: $S/utils/error.cpp; $X -I$S/. -I$S/utils

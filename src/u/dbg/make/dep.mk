@@ -3,3 +3,10 @@ $B/dbg/imp.o: $B/conf.h $S/d/api.h $S/dbg/dev/clist.h $S/dbg/dev/color.h $S/dbg/
 $B/mpi/glb.o: $B/conf.h $S/inc/conf.h $S/mpi/glb.h $S/mpi/wrapper.h $S/utils/mc.h
 $B/mpi/type.o: $S/inc/conf.h $S/inc/type.h $S/mpi/type.h $S/utils/mc.h
 $B/mpi/wrapper.o: $S/mpi/wrapper.h
+$B/u/dbg/main.o: $B/conf.h $S/d/api.h $S/dbg/imp.h $S/inc/conf.h $S/inc/dev.h $S/inc/type.h $S/mpi/glb.h $S/mpi/wrapper.h $S/utils/cc.h $S/utils/kl.h $S/utils/msg.h
+$B/utils/cc.o: $B/conf.h $S/d/api.h $S/inc/conf.h $S/utils/cc/common.h $S/utils/error.h
+$B/utils/error.o: $S/utils/error.h $S/utils/msg.h
+$B/utils/imp.o: $S/utils/error.h $S/utils/imp.h
+$B/utils/mc.o: $B/conf.h $S/inc/conf.h $S/utils/error.h $S/utils/mc.h
+$B/utils/msg.o: $S/utils/msg.h
+$B/utils/os.o: $S/utils/error.h $S/utils/msg.h $S/utils/os.h

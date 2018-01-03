@@ -4,7 +4,7 @@
 #include <conf.h>
 #include "inc/conf.h"
 
-#include "msg.h"
+#include "utils/msg.h"
 #include "mpi/glb.h" /* mini-MPI and -device */
 #include "d/api.h"
 

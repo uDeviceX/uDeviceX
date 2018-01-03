@@ -3,7 +3,7 @@
 #include <mpi.h>
 #include "inc/conf.h"
 
-#include "msg.h"
+#include "utils/msg.h"
 
 #include "utils/mc.h"
 #include "mpi/wrapper.h"
