@@ -21,6 +21,12 @@
 
 #include "imp.h"
 
+static bool is_master(MPI_Comm comm) {
+    int rank;
+    MC(m::Comm_rank(comm, &rank));
+    return rank == 0;
+}
+
 namespace bop
 {
 void ini(Ticket *t) {
@@ -125,7 +131,8 @@ void parts(MPI_Comm cart, Coords coords, const Particle *pp, long n, const char 
     sprintf(fname, DUMP_BASE "/bop/" PATTERN ".values", name, step / part_freq);
 
     long ntot = write_data(cart, t->w_pp, n, sizeof(Particle), datatype::particle, fname);
-    if (m::rank == 0) header_pp(ntot, name, step);
+    if (is_master(cart))
+        header_pp(ntot, name, step);
 }
 
 void parts_forces(MPI_Comm cart, Coords coords, const Particle *pp, const Force *ff, long n, const char *name, int step, /*w*/ Ticket *t) {
@@ -136,7 +143,8 @@ void parts_forces(MPI_Comm cart, Coords coords, const Particle *pp, const Force 
 
     long ntot = write_data(cart, t->w_pp, n, sizeof(Particle) + sizeof(Force), datatype::partforce, fname);
     
-    if (m::rank == 0) header_pp_ff(ntot, name, step);
+    if (is_master(cart))
+        header_pp_ff(ntot, name, step);
 }
 
 static void intdata(MPI_Comm cart, const int *ii, long n, const char *name, const char *fields, int step) {
@@ -145,7 +153,8 @@ static void intdata(MPI_Comm cart, const int *ii, long n, const char *name, cons
 
     long ntot = write_data(cart, ii, n, sizeof(int), MPI_INT, fname);
     
-    if (m::rank == 0) header_ii(ntot, name, fields, step);
+    if (is_master(cart))
+        header_ii(ntot, name, fields, step);
 }
 
 void ids(MPI_Comm cart, const int *ii, long n, const char *name, int step) {
