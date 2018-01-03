@@ -58,8 +58,9 @@ static void id2str(const int id, char *str) {
 static void gen_name(Coords coords, const bool read, const char *code, const int id, const char *ext, /**/ char *name) {
     char idcode[BS] = {0};
     id2str(id, /**/ idcode);
-    
-    if (m::size == 1)
+    int size;
+    size = coords.xd * coords.yd * coords.zd;
+    if (size == 1)
         CSPR(sprintf(name, DIR_S, read ? BASE_STRT_READ : BASE_STRT_DUMP, code, idcode, ext));
     else
         CSPR(sprintf(name, DIR_M, read ? BASE_STRT_READ : BASE_STRT_DUMP, code, coords.xc, coords.yc, coords.zc, idcode, ext));
