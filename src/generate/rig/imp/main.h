@@ -2,8 +2,9 @@ static void gen0(MPI_Comm comm, int nt, const int4 *tt, const float *vv, int nso
                  int *ns, int *nps, float *rr0, Solid *ss, Particle *r_pp) {
     Solid model;
     // share model to everyone
-    int npsolid = 0;
-    if (m::rank == root) {
+    int npsolid = 0, rank;
+    MC(m::Comm_rank(comm, &rank));
+    if (rank == root) {
         npsolid = rcount;
         if (!npsolid) ERR("No particles remaining in root node.\n");
         for (int d = 0; d < 3; ++d)

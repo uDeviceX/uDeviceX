@@ -105,7 +105,9 @@ static void count_pp_inside(const Particle *s_pp, const int n, const float *coms
 }
 
 static void elect(MPI_Comm comm, const int *rcounts, const int ns, /**/ int *root, int *idmax) {
-    int j, localmax[2] = {0, m::rank}, globalmax[2] = {0, m::rank}, idmax_ = 0;
+    int rank;
+    MC(m::Comm_rank(comm, &rank));
+    int j, localmax[2] = {0, rank}, globalmax[2] = {0, rank}, idmax_ = 0;
 
     for (j = 0; j < ns; ++j)
         if (localmax[0] < rcounts[j]) {
