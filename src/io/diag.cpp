@@ -20,7 +20,7 @@ static int reduce(MPI_Comm comm, const void *sendbuf0, void *recvbuf, int count,
 }
 
 static int sum3(MPI_Comm comm, double *v) {
-    return reduce(comm, v, m::rank == 0 ? v : NULL, 3, MPI_DOUBLE, MPI_SUM);
+    return reduce(comm, v, m::is_master(comm) ? v : NULL, 3, MPI_DOUBLE, MPI_SUM);
 }
 
 static int sum_d(MPI_Comm comm, double *v) {
