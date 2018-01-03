@@ -9,7 +9,7 @@
 
 #include "lib/imp.h"
 
-struct TVec {
+struct TInput {
     float a0[3], b0[3];
     float a1[3], b1[3];
 
@@ -85,7 +85,7 @@ static void inv(Tform **pt) {
     *pt = t2;
 }
 
-static void chain(TVec *v, Tform **pt) {
+static void chain(TInput *v, Tform **pt) {
     Tform *t, *t1, *t2;
     t = *pt;
 
@@ -100,13 +100,13 @@ static void chain(TVec *v, Tform **pt) {
     *pt = t2;
 }
 
-static void vec2form(TVec *v, Tform **t) {
+static void vec2form(TInput *v, Tform **t) {
     UC(tform_vector(v->a0, v->a1,   v->b0, v->b1, /**/ *t));
     if (Chain) chain(v, t);
     if (Inv)   inv(t);
 }
 
-static void main1(TVec *v) {
+static void main1(TInput *v) {
     Tform *t;
     UC(tform_ini(&t));
     vec2form(v, /**/ &t);
@@ -128,14 +128,14 @@ static void read_vec(int *pc, char ***pv, float *r) {
     *pc = c; *pv = v;
 }
 
-static void read_vecs0(int *c, char ***v, TVec *ve) {
+static void read_vecs0(int *c, char ***v, TInput *ve) {
     read_vec(c, v, ve->a0);
     read_vec(c, v, ve->a1);
     read_vec(c, v, ve->b0);
     read_vec(c, v, ve->b1);
 }
 
-static void read_vecs1(int *c, char ***v, TVec *ve) {
+static void read_vecs1(int *c, char ***v, TInput *ve) {
     read_vec(c, v, ve->a2);
     read_vec(c, v, ve->a3);
     read_vec(c, v, ve->b2);
@@ -144,7 +144,7 @@ static void read_vecs1(int *c, char ***v, TVec *ve) {
 
 static void main2(int c, char **v) {
     enum {X, Y, Z};
-    TVec ve;
+    TInput ve;
     if (Chain) {
         read_vecs0(&c, &v, &ve);
         read_vecs1(&c, &v, &ve);
