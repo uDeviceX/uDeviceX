@@ -22,8 +22,8 @@ void convert_dev(Tform *t, float a_hst[3], /**/ float b_hst[3]) {
     Dalloc(&b_dev, dim);
 
     cH2D(a_dev, a_hst, dim);
-    KL(convert, (1, 1), (*t, a_dev, b_dev));
-    cD2H(a_hst, a_dev, dim);
+    KL(convert, (1, 1), (*t, a_dev, /**/ b_dev));
+    cD2H(b_hst, b_dev, dim);
 
     Dfree(a_dev);
     Dfree(b_dev);
