@@ -5,7 +5,7 @@
 
 #include "inc/type.h"
 #include "inc/def.h"
-#include "msg.h"
+#include "utils/msg.h"
 #include "mpi/glb.h"
 #include "utils/error.h"
 #include "utils/imp.h"
@@ -13,7 +13,7 @@
 
 #include "restart.h"
 
-//#define DBG(...) MSG(__VA_ARGS__)
+//#define DBG(...) msg_print(__VA_ARGS__)
 #define DBG(...) 
 
 namespace restart {
@@ -129,7 +129,7 @@ void read_pp(Coords coords, const char *code, const int id, Particle *pp, int *n
     char bop[BS] = {0}, val[BS] = {0};
     gen_name(coords, READ, code, id, "bop"   , /**/ bop);
     gen_name(coords, READ, code, id, "values", /**/ val);
-    MSG("reading <%s> and <%s>", bop, val);
+    msg_print("reading <%s> and <%s>", bop, val);
     read_n(bop, &np);
     read_data(val, np, pp);
     *n = np;

@@ -43,7 +43,7 @@ void sim_gen() {
     MC(m::Barrier(m::cart));
 
     long nsteps = (long)(tend / dt);
-    MSG("will take %ld steps", nsteps);
+    msg_print("will take %ld steps", nsteps);
     if (walls || solids) {
         solids0 = false;  /* global */
         gen(coords, /**/ &wall);
@@ -87,7 +87,7 @@ void sim_strt() {
 
     solids0 = solids;
 
-    MSG("will take %ld steps", nsteps - wall_creation);
+    msg_print("will take %ld steps", nsteps - wall_creation);
     run(wall_creation, nsteps);
 
     if (strt_dumps) dump_strt(coords, restart::FINAL);

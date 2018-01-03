@@ -4,7 +4,7 @@
 #include "inc/conf.h"
 
 #include "inc/def.h"
-#include "msg.h"
+#include "utils/msg.h"
 #include "d/q.h"
 #include "d/ker.h"
 #include "d/api.h"

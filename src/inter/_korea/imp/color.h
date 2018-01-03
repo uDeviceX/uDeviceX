@@ -51,6 +51,6 @@ static void color(Coords coords, Particle *pp, int n, /**/ int *cc) {
         else if (red (coords, x, y, z)) {cc[i] = R; r++;}
         else                            {cc[i] = W; w++;}
     }
-    MSG("color scheme: Korea");
-    MSG("white/blue/red : %d/%d/%d", w, b, r);
+    msg_print("color scheme: Korea");
+    msg_print("white/blue/red : %d/%d/%d", w, b, r);
 }

@@ -9,4 +9,4 @@ find $D \
     grep -v '^\.\/u/'
 done
 
-echo msg.cpp msg.h
+echo .

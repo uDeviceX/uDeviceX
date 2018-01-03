@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#include "msg.h"
+#include "utils/msg.h"
 #include "math/rnd/imp.h"
 #include "mpi/glb.h"
 #include "utils/error.h"

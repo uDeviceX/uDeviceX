@@ -1,6 +1,6 @@
 f0 () { find "$1" -name '*.cu' -o -name '*.cpp' -o -name '*.h' -type f ; }
 f () ( for d; do f0 "$d"; done )
 
-echo $U msg.h msg.cpp
+echo $U .
 f $U d inc mpi utils
 

@@ -47,9 +47,9 @@ static int read_rv(float *r, float *v) {
 }
 static void write_particle(Particle p) {
     enum {X, Y, Z};
-    MSG("%g %g %g %g %g %g",
-        p.r[X], p.r[Y], p.r[Z],
-        p.v[X], p.v[Y], p.v[Z]);
+    msg_print("%g %g %g %g %g %g",
+              p.r[X], p.r[Y], p.r[Z],
+              p.v[X], p.v[Y], p.v[Z]);
 }
 
 static void read_off(const char *path, /**/ MeshHst *M) {
@@ -108,10 +108,10 @@ static void main0(int n, meshbb::BBdata bdb) {
 
     for (i = 0; i < n; i++) {
         if (!ncols[i]) continue;
-        MSG("ncols[%d] = %d", i, ncols[i]    );
-        MSG("t    [%d] = %.16e", i, datacol[i].x);
-        MSG("u    [%d] = %.16e", i, datacol[i].y);
-        MSG("v    [%d] = %.16e", i, datacol[i].z);
+        msg_print("ncols[%d] = %d", i, ncols[i]    );
+        msg_print("t    [%d] = %.16e", i, datacol[i].x);
+        msg_print("u    [%d] = %.16e", i, datacol[i].y);
+        msg_print("v    [%d] = %.16e", i, datacol[i].z);
     }
 }
 
@@ -209,6 +209,7 @@ static void main8() {
 }
 
 int main(int argc0, char **argv0) {
+    msg_ini(0);
     argc = argc0;
     argv = argv0;
     main8();

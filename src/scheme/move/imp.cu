@@ -8,7 +8,7 @@
 #include "d/ker.h"
 
 #include "inc/def.h"
-#include "msg.h"
+#include "utils/msg.h"
 #include "utils/cc.h"
 
 #include "utils/kl.h"

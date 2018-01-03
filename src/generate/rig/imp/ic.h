@@ -1,6 +1,6 @@
 enum {X, Y, Z};
 
-//#define DBG(frmt, ...) MSG(frmt, ##__VA_ARGS__)
+//#define DBG(frmt, ...) msg_print(frmt, ##__VA_ARGS__)
 #define DBG(frmt, ...)
 
 static int read_coms(const char *fname, /**/ float* coms) {
@@ -158,6 +158,6 @@ static void empty_solid(int nt, const int4 *tt, const float *vv, /* io */ float 
         }
     }
     if (j == 0) ERR("No particle remaining in solid template\n");
-    MSG("Template solid: keep %d out of %d particles", j, n0);
+    msg_print("Template solid: keep %d out of %d particles", j, n0);
     *npsolid = j;
 }

@@ -3,7 +3,7 @@
 #include <conf.h>
 #include "inc/conf.h"
 
-#include "msg.h"
+#include "utils/msg.h"
 #include "mpi/glb.h"
 #include "d/api.h"
 
@@ -11,7 +11,8 @@
 
 int main(int argc, char **argv) {
     m::ini(&argc, &argv);
-    MSG("mpi size: %d", m::size);
+    msg_ini(m::rank);
+    msg_print("mpi size: %d", m::size);
 
     d::ini();
     sim::ini(argc, argv);
@@ -19,5 +20,5 @@ int main(int argc, char **argv) {
     else         sim::sim_gen();
     sim::fin();
     m::fin();
-    MSG("end");
+    msg_print("end");
 }

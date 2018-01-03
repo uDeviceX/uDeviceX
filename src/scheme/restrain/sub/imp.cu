@@ -7,7 +7,7 @@
 #include "d/q.h"
 #include "d/ker.h"
 
-#include "msg.h"
+#include "utils/msg.h"
 #include "utils/cc.h"
 
 #include "utils/kl.h"

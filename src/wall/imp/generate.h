@@ -1,9 +1,9 @@
 static void freeze0(int maxn, Sdf *qsdf, /*io*/ Particle *pp, int *n, /*o*/ Particle *dev, int *w_n, /*w*/ Particle *hst) {
     bulk_wall(qsdf, /*io*/ pp, n, /*o*/ hst, w_n); /* sort into bulk-frozen */
-    MSG("before exch: bulk/frozen : %d/%d", *n, *w_n);
+    msg_print("before exch: bulk/frozen : %d/%d", *n, *w_n);
     UC(exch(maxn, /*io*/ hst, w_n));
     cH2D(dev, hst, *w_n);
-    MSG("after  exch: bulk/frozen : %d/%d", *n, *w_n);
+    msg_print("after  exch: bulk/frozen : %d/%d", *n, *w_n);
 }
 
 static void freeze(int maxn, Sdf *qsdf, /*io*/ Particle *pp, int *n, /*o*/ Particle *dev, int *w_n) {
@@ -17,7 +17,7 @@ static void gen_quants(int maxn, Sdf *qsdf, /**/ int *o_n, Particle *o_pp, int *
     Particle *frozen;
     CC(d::Malloc((void **) &frozen, maxn * sizeof(Particle)));
     UC(freeze(maxn, qsdf, o_pp, o_n, frozen, w_n));
-    MSG("consolidating wall");
+    msg_print("consolidating wall");
     CC(d::Malloc((void **) w_pp, *w_n * sizeof(float4)));
     KL(dev::particle2float4, (k_cnf(*w_n)), (frozen, *w_n, /**/ *w_pp));
     

@@ -10,7 +10,7 @@
 #include "math/dev.h"
 
 #include "utils/error.h"
-#include "msg.h"
+#include "utils/msg.h"
 
 #include "d/api.h"
 #include "d/ker.h"

@@ -5,7 +5,7 @@
 
 #include "d/ker.h"
 #include "d/api.h"
-#include "msg.h"
+#include "utils/msg.h"
 
 #include "mpi/glb.h"
 #include "mpi/wrapper.h"
@@ -19,7 +19,6 @@
 
 #include "glob/type.h"
 #include "glob/ini.h"
-
 #include "wvel/type.h"
 
 #include "sdf/imp.h"
@@ -54,12 +53,15 @@ void main0(Sdf *sdf, Part *p) {
 void main1(Part *p) {
     Coords coords;
     Sdf *sdf;
+    Coords coords;
+    ini_coords(m::cart, &coords);
     UC(ini(&sdf));
     UC(ini_coords(m::cart, /**/ &coords));
     UC(gen(coords, m::cart, sdf));
     UC(main0(sdf, p));
     UC(fin(sdf));
-    dSync();
+    fin_coords(&coords);
+    dSync();    
 }
 
 void ini_part(/**/ Part *p) {

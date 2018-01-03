@@ -25,6 +25,6 @@ static void color(Coords coords, Particle *pp, int n, /**/ int *cc) {
         if (inside) {cc[i] = R; r++;}
         else        {cc[i] = G; g++;}
     }
-    MSG("color scheme: Bangladesh");
-    MSG("red/green : %d/%d", r, g);
+    msg_print("color scheme: Bangladesh");
+    msg_print("red/green : %d/%d", r, g);
 }

@@ -12,7 +12,7 @@
 #include "utils/imp.h"
 #include "io/field/imp.h"
 #include "mpi/glb.h"
-#include "msg.h"
+#include "utils/msg.h"
 
 #include "imp.h"
 namespace field {

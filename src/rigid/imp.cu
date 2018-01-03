@@ -3,7 +3,7 @@
 
 #include <conf.h>
 #include "inc/conf.h"
-#include "msg.h"
+#include "utils/msg.h"
 
 #include "inc/type.h"
 #include "inc/dev.h"

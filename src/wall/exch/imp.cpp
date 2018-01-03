@@ -13,7 +13,7 @@
 #include "inc/type.h"
 
 #include "utils/error.h"
-#include "msg.h"
+#include "utils/msg.h"
 
 using namespace comm;
 

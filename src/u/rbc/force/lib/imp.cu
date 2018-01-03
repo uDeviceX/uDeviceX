@@ -5,11 +5,14 @@
 #include <conf.h>
 #include "inc/conf.h"
 
+#include "glob/type.h"
+#include "glob/ini.h"
+
 #include "utils/error.h"
 #include "utils/imp.h"
 
 #include "d/api.h"
-#include "msg.h"
+#include "utils/msg.h"
 
 #include "inc/def.h"
 #include "inc/type.h"

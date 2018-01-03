@@ -5,7 +5,7 @@
 #include <conf.h>
 #include "inc/conf.h"
 #include "inc/def.h"
-#include "msg.h"
+#include "utils/msg.h"
 
 #include "utils/error.h"
 #include "utils/imp.h"

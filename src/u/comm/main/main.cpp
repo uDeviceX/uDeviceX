@@ -2,7 +2,7 @@
 #include <assert.h>
 #include <mpi.h>
 
-#include "msg.h"
+#include "utils/msg.h"
 #include "mpi/glb.h"
 #include "mpi/wrapper.h"
 
@@ -48,8 +48,8 @@ void compare(const hBags *sb, const hBags *rb) {
 
 int main(int argc, char **argv) {
     m::ini(&argc, &argv);
-    MSG("mpi size: %d", m::size);
-    MSG("Comm unit test!");
+    msg_ini(m::rank);
+    msg_print("mpi size: %d", m::size);
 
     hBags sendB, recvB;
     Stamp stamp;
@@ -71,7 +71,7 @@ int main(int argc, char **argv) {
 
     compare(&sendB, &recvB);
 
-    MSG("Passed");
+    msg_print("Passed");
     
     UC(fin(HST_ONLY, NONE, &sendB, NULL));
     UC(fin(HST_ONLY, NONE, &recvB, NULL));

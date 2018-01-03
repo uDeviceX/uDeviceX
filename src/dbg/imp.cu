@@ -7,7 +7,7 @@
 #include "inc/dev.h"
 
 #include "utils/cc.h"
-#include "msg.h"
+#include "utils/msg.h"
 #include "d/api.h"
 
 #include "utils/kl.h"

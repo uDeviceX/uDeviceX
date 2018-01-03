@@ -5,7 +5,7 @@
 #include <conf.h>
 
 #include "utils/error.h"
-#include "msg.h"
+#include "utils/msg.h"
 
 #include "glob/type.h"
 #include "glob/imp.h"

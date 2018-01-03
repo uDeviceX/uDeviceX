@@ -10,7 +10,7 @@ static void remove_rbcs(rbc::Quants *q, Sdf *qsdf) {
     q->nc = who_stays(qsdf, q->pp, q->n, nc0 = q->nc, q->nv, /**/ stay);
     q->n = q->nc * q->nv;
     remove(q->pp, q->nv, stay, q->nc);
-    MSG("%d/%d RBCs survived", q->nc, nc0);
+    msg_print("%d/%d RBCs survived", q->nc, nc0);
 }
 
 static void create_solids(Coords coords, MPI_Comm cart, flu::Quants* qflu, rig::Quants* qrig) {
@@ -19,7 +19,7 @@ static void create_solids(Coords coords, MPI_Comm cart, flu::Quants* qflu, rig::
     MC(m::Barrier(cart));
     cH2D(qflu->pp, qflu->pp_hst, qflu->n);
     MC(m::Barrier(cart));
-    MSG("created %d solids.", qrig->ns);
+    msg_print("created %d solids.", qrig->ns);
 }
 
 static void remove_solids(rig::Quants *q, Sdf *sdf) {
@@ -36,14 +36,14 @@ static void remove_solids(rig::Quants *q, Sdf *sdf) {
 
     remove(q->i_pp,     q->nv, stay, q->ns);
     remove(q->i_pp_hst, q->nv, stay, q->ns);
-    MSG("sim.impl: %d/%d Solids survived", q->ns, ns0);
+    msg_print("sim.impl: %d/%d Solids survived", q->ns, ns0);
 }
 
 void create_walls(int maxn, Sdf *sdf, flu::Quants* qflu, wall::Quants *qwall) {
     int nold = qflu->n;
     UC(wall::gen_quants(maxn, sdf, /**/ &qflu->n, qflu->pp, qwall));
     flu::build_cells(qflu);
-    MSG("solvent particles survived: %d/%d", qflu->n, nold);
+    msg_print("solvent particles survived: %d/%d", qflu->n, nold);
 }
 
 void freeze(Coords coords, MPI_Comm cart, Sdf *sdf, flu::Quants *qflu, rig::Quants *qrig, rbc::Quants *qrbc) {

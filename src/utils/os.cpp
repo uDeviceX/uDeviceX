@@ -18,7 +18,7 @@ void mkdir(const char *path) {
     rc = ::mkdir(path, mode);
     ok = (rc == 0 || errno == EEXIST);
     if (!ok) {
-        MSG("os::mkdir: cannot create directory ‘%s’", path);
+        msg_print("os::mkdir: cannot create directory ‘%s’", path);
         ERR("errno: %d\n", errno);
         exit(1);
     }
@@ -42,7 +42,7 @@ void env2float(const char *key, float *px) {
     const char *val;
     status = env2float0(key, /**/ &val, px);
     if (status == OK)
-        MSG("env %s = %g", key, *px);
+        msg_print("env %s = %g", key, *px);
     else if (status == NOT_SET)
         ERR("env. variable is not set: `%s`", key, val);
     else if (status == NOT_FLOAT)
@@ -56,10 +56,10 @@ void env2float_d(const char *key, float def, /**/ float *px) { /* with default *
     const char *val;
     status = env2float0(key, /**/ &val, px);
     if (status == OK)
-        MSG("env %s = %g", key, *px);
+        msg_print("env %s = %g", key, *px);
     else if (status == NOT_SET) {
         *px = def;
-        MSG("env %s = %g (default)", key, *px);
+        msg_print("env %s = %g (default)", key, *px);
     } else if  (status == NOT_FLOAT)
         ERR("env. variable `%s = %s` is not float", key, val);
     else

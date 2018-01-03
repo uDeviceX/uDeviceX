@@ -7,7 +7,7 @@
 #include "utils/imp.h"
 
 #include "rbc/edg/imp.h"
-#include "msg.h"
+#include "utils/msg.h"
 
 #include "type/common.h"
 #include "type/hst.h"

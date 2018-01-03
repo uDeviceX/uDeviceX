@@ -9,7 +9,7 @@
 #include "utils/imp.h"
 
 #include "d/api.h"
-#include "msg.h"
+#include "utils/msg.h"
 
 #include "inc/def.h"
 #include "inc/type.h"
@@ -20,6 +20,7 @@
 #include "utils/cc.h"
 
 #include "glob/type.h"
+#include "glob/ini.h"
 
 #include "rbc/type.h"
 #include "rbc/main/imp.h"

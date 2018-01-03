@@ -5,7 +5,7 @@
 #include <assert.h>
 #include "inc/type.h"
 #include "inc/def.h"
-#include "msg.h"
+#include "utils/msg.h"
 #include "ply.h"
 
 #include "utils/error.h"

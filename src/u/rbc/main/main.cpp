@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 
+#include "utils/msg.h"
 #include "mpi/wrapper.h"
 #include "mpi/glb.h"
 #include "glob/type.h"
@@ -12,6 +13,7 @@
 
 int main(int argc, char **argv) {
     m::ini(&argc, &argv);
+    msg_ini(m::rank);
     Coords coords;
     ini_coords(m::cart, &coords);
     run(coords, "rbc.off", "rbcs-ic.txt");

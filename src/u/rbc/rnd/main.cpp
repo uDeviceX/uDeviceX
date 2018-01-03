@@ -4,7 +4,7 @@
 #include <conf.h>
 #include "inc/conf.h"
 
-#include "msg.h"
+#include "utils/msg.h"
 #include "mpi/glb.h"
 #include "d/api.h"
 #include "inc/dev.h"
@@ -47,7 +47,8 @@ void main1() {
 
 void main2() {
     m::ini(&argc, &argv);
-    MSG("mpi size: %d", m::size);
+    msg_ini(m::rank);
+    msg_print("mpi size: %d", m::size);
     main1();
     m::fin();
 }

@@ -1,6 +1,6 @@
 #include <stdio.h>
 
-#include "msg.h"
+#include "utils/msg.h"
 #include "mpi/glb.h"
 #include "utils/error.h"
 #include "parser/imp.h"

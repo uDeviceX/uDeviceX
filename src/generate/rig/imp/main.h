@@ -96,9 +96,9 @@ void gen(Coords coords, MPI_Comm comm, const char *fname, int nt, int nv, const 
 void gen_rig_from_solvent(Coords coords, MPI_Comm comm, int nt, int nv, const int4 *tt, const float *vv, /* io */ Particle *opp, int *on,
                           /* o */ int *ns, int *nps, int *n, float *rr0_hst, Solid *ss_hst, Particle *pp_hst) {
     // generate models
-    MSG("start rigid gen");
+    msg_print("start rigid gen");
     gen(coords, comm, "rigs-ic.txt", nt, nv, tt, vv, /**/ ns, nps, rr0_hst, ss_hst, on, opp, pp_hst);
-    MSG("done rigid gen");
+    msg_print("done rigid gen");
 
     *n = *ns * (*nps);
 }
