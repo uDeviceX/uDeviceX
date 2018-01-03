@@ -131,8 +131,6 @@ static void input2form(TInput *v, Tform **t) {
     if (Grid) {
         from = &v->f;
         to   = &v->t;
-        grid_log(from);
-        grid_log(to);
         tform_grid2grid(from->lo, from->hi, from->n,
                           to->lo, to->hi,   to->n, /**/ *t);
     } else {
@@ -189,6 +187,7 @@ static void read_vecs(int *c, char ***v, TVec *ve) {
 static void read_grid(int *c, char ***v, TGrid *g) {
     read_float(c, v, g->lo);
     read_float(c, v, g->hi);
+    read_int  (c, v, g->n);
 }
 
 static void main2(int c, char **v) {
@@ -199,7 +198,7 @@ static void main2(int c, char **v) {
         read_vecs(&c, &v, &ve.u);
     } else if (Grid) {
         read_grid(&c, &v, &ve.f);
-        read_grid(&c, &v, &ve.f);
+        read_grid(&c, &v, &ve.t);
     } else {
         read_vecs(&c, &v, &ve.v);
     }
