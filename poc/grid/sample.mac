@@ -1,4 +1,10 @@
-/* g: global */
+/* G: domain size
+   N: number of cells in sdf files
+   lo: low edge of a subdomain
+   L:  subdomain size
+   T: number of cells in texture
+   M: texture margin
+*/
 
 load("scifac") $
 load("format") $
