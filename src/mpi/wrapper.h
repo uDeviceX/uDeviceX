@@ -32,4 +32,6 @@ int Type_contiguous(int count, MPI_Datatype oldtype, MPI_Datatype *newtype);
 int Waitall(int count, MPI_Request array_of_requests[], MPI_Status *array_of_statuses);
 int Probe(int source, int tag, MPI_Comm comm, MPI_Status *status);
 int Get_count(const MPI_Status *status, MPI_Datatype datatype, int *count);
+
+bool is_master(MPI_Comm comm);
 }
