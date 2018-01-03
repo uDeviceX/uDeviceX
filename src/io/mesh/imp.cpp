@@ -13,6 +13,7 @@
 #include "utils/error.h"
 #include "utils/imp.h"
 #include "mpi/glb.h"
+#include "mpi/wrapper.h"
 #include "inc/type.h"
 #include "write/imp.h"
 

@@ -20,7 +20,7 @@ static void header(MPI_Comm cart, int nc0, int nv, int nt, write::File *f) {
     int sz = 0;
     char s[BUFSIZ] = {0};
     write::reduce(cart, nc0, &nc);
-    if (write::rootp())
+    if (m::is_master(cart))
         sz = sprintf(s,
                      "ply\n"
                      "format binary_little_endian 1.0\n"
@@ -96,7 +96,7 @@ void rbc(MPI_Comm cart, Coords coords, const Particle *pp, const int4 *faces, in
     const char *fmt = DUMP_BASE "/r/%05d.ply";
     char f[BUFSIZ]; /* file name */
     sprintf(f, fmt, id);
-    if (write::rootp()) UC(os::mkdir(DUMP_BASE "/r"));
+    if (m::is_master(cart)) UC(os::mkdir(DUMP_BASE "/r"));
     main(cart, coords, pp, faces, nc, nv, nt, f);
 }
 
@@ -104,6 +104,6 @@ void rig(MPI_Comm cart, Coords coords, const Particle *pp, const int4 *faces, in
     const char *fmt = DUMP_BASE "/s/%05d.ply";
     char f[BUFSIZ]; /* file name */
     sprintf(f, fmt, id);
-    if (write::rootp()) UC(os::mkdir(DUMP_BASE "/s"));
+    if (m::is_master(cart)) UC(os::mkdir(DUMP_BASE "/s"));
     main(cart, coords, pp, faces, nc, nv, nt, f);
 }
