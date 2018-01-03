@@ -1,5 +1,8 @@
 #include <hdf5.h>
+#include <vector_types.h>
 
+#include "glob/type.h"
+#include "glob/imp.h"
 #include "mpi/glb.h"
 #include "mpi/wrapper.h"
 #include "imp.h"
@@ -48,7 +51,7 @@ static void write_float(hid_t dataset_id,
         ERR("fail to write data set");
 }
 
-static void write0(hid_t file_id,
+static void write0(Coords coords, hid_t file_id,
                    float *channeldata[],
                    const char **channelnames,
                    int nchannels,
@@ -65,7 +68,9 @@ static void write0(hid_t file_id,
 
         H5Pset_dxpl_mpio(plist_id, H5FD_MPIO_COLLECTIVE);
 
-        hsize_t start[4]  = { (hsize_t) m::coords[2] * L[2], (hsize_t) m::coords[1] * L[1], (hsize_t) m::coords[0] * L[0], 0};
+        hsize_t start[4]  = { (hsize_t) zl2zg(coords, -L[2]/2),
+                              (hsize_t) yl2yg(coords, -L[1]/2),
+                              (hsize_t) xl2xg(coords, -L[0]/2), 0};
         hsize_t extent[4] = { (hsize_t) L[2], (hsize_t) L[1], (hsize_t) L[0],  1};
         hid_t filespace = H5Dget_space(dset_id);
         H5Sselect_hyperslab(filespace, H5S_SELECT_SET, start, NULL, extent, NULL);
@@ -82,14 +87,14 @@ static void write0(hid_t file_id,
     H5Sclose(filespace_simple);
 }
 
-void write(MPI_Comm cart, const char *path, float **data,
+void write(Coords coords, MPI_Comm cart, const char *path, float **data,
            const char **names, int ncomp,
            int sx, int sy, int sz) {
     /* ncomp: number of component,
        sx, sy, sz: sizes */
     IDs ids;
     UC(create(cart, path, /**/ &ids));
-    UC(write0(ids.file, data, names, ncomp, sx, sy, sz));
+    UC(write0(coords, ids.file, data, names, ncomp, sx, sy, sz));
     UC(close(ids, path));
 }
 

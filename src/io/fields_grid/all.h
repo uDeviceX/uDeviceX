@@ -1,4 +1,4 @@
-void fields_grid(MPI_Comm comm, QQ qq, NN nn, /*w*/ Particle *hst) {
+void fields_grid(Coords coords, MPI_Comm comm, QQ qq, NN nn, /*w*/ Particle *hst) {
 
     Particle *o, *s, *r;
     o = qq.o;
@@ -12,5 +12,5 @@ void fields_grid(MPI_Comm comm, QQ qq, NN nn, /*w*/ Particle *hst) {
     cD2H(hst + start, s, nn.s); start += nn.s;
     cD2H(hst + start, r, nn.r); start += nn.r;
 
-    UC(io::field::dump(comm, hst, n));
+    UC(io::field::dump(coords, comm, hst, n));
 }

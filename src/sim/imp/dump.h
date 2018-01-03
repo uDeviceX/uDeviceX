@@ -51,12 +51,12 @@ static void dump_rbc_coms(Rbc *r) {
     dump_com(m::cart, coords, id++, nc, r->q.ii, r->com.hrr);
 }
 
-static void dump_grid() {
+static void dump_grid(Coords coords) {
     QQ qq; /* pack for io/field_dumps */
     NN nn;
     qq.o = flu.q.pp; qq.s = rig.q.pp; qq.r = rbc.q.pp;
     nn.o = flu.q.n ; nn.s = rig.q.n ;  nn.r = rbc.q.n;
-    fields_grid(m::cart, qq, nn, /*w*/ a::pp_hst);
+    fields_grid(coords, m::cart, qq, nn, /*w*/ a::pp_hst);
 }
 
 void dump_diag_after(int it, bool wall0, bool solid0) { /* after wall */
@@ -93,7 +93,7 @@ void dump_diag0(Coords coords, int it) { /* generic dump */
         if (rbcs)       dump_rbcs(&rbc);
         diag(it);
     }
-    if (field_dumps && it % field_freq == 0) dump_grid();
+    if (field_dumps && it % field_freq == 0) dump_grid(coords);
     if (strt_dumps  && it % strt_freq == 0)  dump_strt(it / strt_freq);
     if (rbc_com_dumps && it % rbc_com_freq == 0) dump_rbc_coms(&rbc);
 }

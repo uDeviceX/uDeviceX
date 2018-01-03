@@ -1,5 +1,6 @@
 #include <math.h>
 #include <mpi.h>
+#include <vector_types.h>
 
 #include <conf.h>
 #include "inc/conf.h"
@@ -10,6 +11,9 @@
 #include "mpi/wrapper.h"
 #include "utils/mc.h"
 #include "inc/type.h"
+#include "glob/type.h"
+#include "glob/imp.h"
+
 
 #include "xmf/imp.h"
 #include "h5/imp.h"

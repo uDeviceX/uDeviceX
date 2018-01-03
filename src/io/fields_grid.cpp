@@ -1,9 +1,13 @@
 #include <stdio.h>
 #include <math.h>
 #include <mpi.h>
+#include <vector_types.h>
 
 #include <conf.h>
 #include "inc/conf.h"
+
+#include "glob/type.h"
+#include "glob/imp.h"
 
 #include "inc/type.h"
 #include "msg.h"

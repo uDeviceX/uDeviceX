@@ -47,14 +47,14 @@ static void dump0(const int N0[3], const float* D0, /**/ float* D1) {
     sample(org, spa, N0, D0,   N1, /**/ D1);
 }
 
-static void dump1(MPI_Comm cart, const int N[3], const float* D, /*w*/ float* W) {
+static void dump1(Coords coords, MPI_Comm cart, const int N[3], const float* D, /*w*/ float* W) {
     dump0(N, D, /**/ W);
-    UC(io::field::scalar(cart, W, "wall"));
+    UC(io::field::scalar(coords, cart, W, "wall"));
 }
 
-void dump(MPI_Comm cart, const int N[], const float* D) {
+void dump(Coords coords, MPI_Comm cart, const int N[], const float* D) {
     float *W;
     UC(emalloc(XS*YS*ZS*sizeof(float), (void**) &W));
-    UC(dump1(cart, N, D, /*w*/ W));
+    UC(dump1(coords, cart, N, D, /*w*/ W));
     efree(W);
 }
