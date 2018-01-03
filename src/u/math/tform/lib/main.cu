@@ -11,17 +11,18 @@
 #include "main.h"
 
 static __global__ void convert(Tform t, float *a, /**/ float *b) {
-    
+
 }
 
-void convert_dev(Tform *t, float a[3], /**/ float b[3]) {
+void convert_dev(Tform *t, float a_hst[3], /**/ float b_hst[3]) {
     enum {dim = 3};
     float *a_dev, *b_dev;
     Dalloc(&a_dev, dim);
     Dalloc(&b_dev, dim);
 
-    cH2D(a_dev, a, dim);
-    cH2D(b_dev, b, dim);
+    cH2D(a_dev, a_hst, dim);
+    convert(&T, a_dev, b_dev);
+    cD2H(a_hst, a_dev, dim);
 
     Dfree(a_dev);
     Dfree(b_dev);
