@@ -12,6 +12,8 @@
 #include "imp.h"
 
 static __global__ void convert(Tform t, float *a, /**/ float *b) {
+    enum {X, Y, Z};
+    b[X] = b[Y] = b[Z] = 42.0;
     tform_convert_dev(&t, a, /**/ b);
 }
 
