@@ -3,7 +3,7 @@ struct Ticket {
     float *w_pp;    // particle workspace
 };
 
-void ini(Ticket *t);
+void ini(MPI_Comm comm, Ticket *t);
 void fin(Ticket *t);
 
 void parts(MPI_Comm cart, Coords coords, const Particle *pp, long n, const char *name, int step, /*w*/ Ticket *t);

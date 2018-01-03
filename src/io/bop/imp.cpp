@@ -29,8 +29,9 @@ static bool is_master(MPI_Comm comm) {
 
 namespace bop
 {
-void ini(Ticket *t) {
-    if (m::rank == 0) UC(os::mkdir(DUMP_BASE "/bop"));
+void ini(MPI_Comm comm, Ticket *t) {
+    if (is_master(comm))
+        UC(os::mkdir(DUMP_BASE "/bop"));
     t->w_pp = new float[9*MAX_PART_NUM];
 }
 

@@ -199,7 +199,7 @@ void ini(int argc, char **argv) {
     if (rbcs || solids)
         UC(ini_objinter(m::cart, /**/ &objinter));        
     
-    UC(bop::ini(&dumpt));
+    UC(bop::ini(m::cart, &dumpt));
 
     if (walls) ini_wall(&wall);
     
