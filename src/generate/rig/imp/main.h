@@ -40,7 +40,7 @@ static void gen0(MPI_Comm comm, int nt, const int4 *tt, const float *vv, int nso
     set_rig_ids(comm, nsolid, /**/ ss);
 }
 
-static void gen1(MPI_Comm comm, int nt, const int4 *tt, const float *vv, int nsolid, float *coms, /**/
+static void gen1(Coords coords, MPI_Comm comm, int nt, const int4 *tt, const float *vv, int nsolid, float *coms, /**/
                  int *ns, int *nps, float *rr0, Solid *ss, int *s_n, Particle *s_pp, Particle *r_pp,
                  /*w*/ int *tags, int *rcounts) {
     int root, idmax;
@@ -51,24 +51,24 @@ static void gen1(MPI_Comm comm, int nt, const int4 *tt, const float *vv, int nso
     kill(idmax, tags, /**/ s_n, s_pp, &rcount, r_pp);
     DBG("after kill: %d", rcount);
 
-    share(comm, root, /**/ r_pp, &rcount);
+    share(coords, comm, root, /**/ r_pp, &rcount);
     DBG("after share: %d", rcount);
 
     gen0(comm, nt, tt, vv, nsolid, rcount, idmax, root, coms, /**/ ns, nps, rr0, ss, r_pp);
 }
 
-static void gen2(MPI_Comm comm, int nt, const int4 *tt, const float *vv, int nsolid, float *coms, /**/
+static void gen2(Coords coords, MPI_Comm comm, int nt, const int4 *tt, const float *vv, int nsolid, float *coms, /**/
                  int *ns, int *nps, float *rr0, Solid *ss, int *s_n, Particle *s_pp, Particle *r_pp,
                  /*w*/ int *tags, int *rcounts) {
     count_pp_inside(s_pp, *s_n, coms, nsolid, tt, vv, nt, /**/ tags, rcounts);
-    gen1(comm, nt, tt, vv, nsolid, coms, /**/ ns, nps, rr0, ss, s_n, s_pp, r_pp, /*w*/ tags, rcounts);
+    gen1(coords, comm, nt, tt, vv, nsolid, coms, /**/ ns, nps, rr0, ss, s_n, s_pp, r_pp, /*w*/ tags, rcounts);
 }
 
-static void gen3(MPI_Comm comm, int nt, const int4 *tt, const float *vv, int nsolid, float *coms, /**/
+static void gen3(Coords coords, MPI_Comm comm, int nt, const int4 *tt, const float *vv, int nsolid, float *coms, /**/
                  int *ns, int *nps, float *rr0, Solid *ss, int *s_n, Particle *s_pp, Particle *r_pp) {
     int *tags = new int[*s_n];
     int *rcounts = new int[nsolid];
-    gen2(comm, nt, tt, vv, nsolid, coms, /**/ ns, nps, rr0, ss, s_n, s_pp, r_pp, /*w*/ tags, rcounts);
+    gen2(coords, comm, nt, tt, vv, nsolid, coms, /**/ ns, nps, rr0, ss, s_n, s_pp, r_pp, /*w*/ tags, rcounts);
     delete[] rcounts;
     delete[] tags;
 }
@@ -82,7 +82,7 @@ static void gen4(Coords coords, MPI_Comm comm, const char *fname, int nt, int nv
     mesh::get_bbox(vv, nv, /**/ &minbb, &maxbb);
     nsolid = duplicate_PBC(minbb, maxbb, nsolid, /**/ coms);
     make_local(coords, nsolid, /**/ coms);
-    gen3(comm, nt, tt, vv, nsolid, coms, /**/ ns, nps, rr0, ss, s_n, s_pp, r_pp);
+    gen3(coords, comm, nt, tt, vv, nsolid, coms, /**/ ns, nps, rr0, ss, s_n, s_pp, r_pp);
 }
 
 void gen(Coords coords, MPI_Comm comm, const char *fname, int nt, int nv, const int4 *tt, const float *vv, /**/
