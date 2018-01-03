@@ -50,7 +50,7 @@ static void get_interrank_infos(MPI_Comm cart, int fid, /**/ RNDunif* trunks[], 
         masks[fid] = min(fid, alter_ego) == fid;
     }
 
-    // MSG("%d %d %d [%d %d %d]", fid, seed, masks[fid],
+    // msg_print("%d %d %d [%d %d %d]", fid, seed, masks[fid],
     //     frag_i2dx(fid), frag_i2dy(fid), frag_i2dz(fid));
 }
 

@@ -13,7 +13,7 @@
 
 #include "restart.h"
 
-//#define DBG(...) MSG(__VA_ARGS__)
+//#define DBG(...) msg_print(__VA_ARGS__)
 #define DBG(...) 
 
 namespace restart {

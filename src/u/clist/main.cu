@@ -63,7 +63,7 @@ bool valid_cell(int3 d, int cid, int s, int c, const Particle *pp) {
     for (i = 0; i < c; ++i) {
         j = s + i;
         p = pp[j];
-        // MSG("%3f %3f %3f at %d %d %d",
+        // msg_print("%3f %3f %3f at %d %d %d",
         //     p.r[X], p.r[Y], p.r[Z], cell.x, cell.y, cell.z);
         if ( ! valid(cell.x, d.x, p.r[X]) ||
              ! valid(cell.y, d.y, p.r[Y]) ||
@@ -85,7 +85,7 @@ bool valid(int3 d, const int *starts, const int *counts, const Particle *pp, int
 }
 
 int main(int argc, char **argv) {
-    
+    msg_ini(0);    
     Particle *pp, *ppout;
     Particle *pp_hst;
     int n = 0, *starts, *counts;

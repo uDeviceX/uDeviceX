@@ -14,11 +14,14 @@ static void run0(rbc::Quants q, rbc::force::TicketT t) {
 }
 
 static void run1(const char *cell, const char *ic, rbc::Quants q) {
+    Coords coords;
+    ini_coords(m::cart, &coords);
     rbc::force::TicketT t;
-    rbc::main::gen_quants(m::cart, cell, ic, /**/ &q);
+    rbc::main::gen_quants(coords, m::cart, cell, ic, /**/ &q);
     rbc::force::gen_ticket(q, &t);
     run0(q, t);
     rbc::force::fin_ticket(&t);
+    fin_coords(&coords);
 }
 
 void run(const char *cell, const char *ic) {

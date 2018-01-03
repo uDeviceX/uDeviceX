@@ -17,6 +17,6 @@ static void color(Coords coords, Particle *pp, int n, /**/ int *cc) {
         else if (y < 2 * ly) {cc[i] = W; w++;}
         else                 {cc[i] = R; r++;}
     }
-    MSG("color scheme: France");
-    MSG("blue/white/red : %d/%d/%d", b, w, r);
+    msg_print("color scheme: France");
+    msg_print("blue/white/red : %d/%d/%d", b, w, r);
 }

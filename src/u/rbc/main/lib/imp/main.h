@@ -27,7 +27,7 @@ static void dump(Coords coords, rbc::Quants q, rbc::force::TicketT t) {
     io::mesh::rbc(m::cart, coords, pp, q.tri_hst, q.nc, q.nv, q.nt, i++);
     rbc::force::stat(/**/ &area0, &volume0);
     garea_volume(q, /**/ &area, &volume);
-    MSG("av: %g %g", area/area0, volume/volume0);
+    msg_print("av: %g %g", area/area0, volume/volume0);
     diagnostics(m::cart, n, pp, i);
     free(pp);
 }
@@ -46,7 +46,7 @@ static int body_force(Coords coords, rbc::Quants q, Force *f) {
 static void run0(Coords coords, rbc::Quants q, rbc::force::TicketT t, rbc::stretch::Fo* stretch, Force *f) {
     long i;
     long nsteps = (long)(tend / dt);
-    MSG("will take %ld steps", nsteps);
+    msg_print("will take %ld steps", nsteps);
     for (i = 0; i < nsteps; i++) {
         Dzero(f, q.n);
         rbc::force::apply(q, t, /**/ f);
@@ -72,7 +72,7 @@ static void run1(Coords coords, rbc::Quants q, rbc::force::TicketT t,
 static void run2(Coords coords, const char *cell, const char *ic, rbc::Quants q) {
     rbc::stretch::Fo *stretch;
     rbc::force::TicketT t;
-    rbc::main::gen_quants(m::cart, cell, ic, /**/ &q);
+    rbc::main::gen_quants(coords, m::cart, cell, ic, /**/ &q);
     UC(stretch::ini("rbc.stretch", q.nv, /**/ &stretch));
     rbc::force::gen_ticket(q, &t);
     run1(coords, q, t, stretch);

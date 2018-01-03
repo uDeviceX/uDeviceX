@@ -66,7 +66,7 @@ int ienv(const char *name, int def) {
 }
 
 void report(int i, int n, const char *path) {
-    MSG("write %s", path);
+    msg_print("write %s", path);
 }
 
 void main0(const char *path) {
@@ -86,6 +86,7 @@ void main1() {
     const char *path;
     path = argv[argc - 1]; lshift();
     m::ini(&argc, &argv);
+    msg_ini(m::rank);
     main0(path);
     m::fin();
 }

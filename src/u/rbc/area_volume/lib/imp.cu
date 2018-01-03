@@ -20,6 +20,7 @@
 #include "utils/cc.h"
 
 #include "glob/type.h"
+#include "glob/ini.h"
 
 #include "rbc/type.h"
 #include "rbc/main/imp.h"

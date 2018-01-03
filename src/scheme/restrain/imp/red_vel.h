@@ -3,7 +3,7 @@ static void report0() {
     int n;
     float v[3];
     stats(/**/ &n, v);
-    MSG("restrain RED: n = %d [% .3e % .3e % .3e]", n, v[X], v[Y], v[Z]);
+    msg_print("restrain RED: n = %d [% .3e % .3e % .3e]", n, v[X], v[Y], v[Z]);
 }
 
 static void report(int it) {
