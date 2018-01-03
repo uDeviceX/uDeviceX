@@ -1,5 +1,5 @@
-void ini(Fsi *fsi) {
-    UC(rnd_ini(1908 - m::rank, 1409 + m::rank, 290, 12968, /**/ &fsi->rgen));
+void ini(int rank, /**/ Fsi *fsi) {
+    UC(rnd_ini(1908 - rank, 1409 + rank, 290, 12968, /**/ &fsi->rgen));
     fsi->wo   = new SolventWrap;
 }
 
