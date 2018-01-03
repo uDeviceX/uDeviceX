@@ -35,7 +35,7 @@ static void usg0() {
 
 static void grid_log(TGrid *g) {
     enum {X, Y, Z};
-    MSG("lo: %g %g %g", g->lo[X], g->lo[Y], g->lo[Z]);
+    msg_print("lo: %g %g %g", g->lo[X], g->lo[Y], g->lo[Z]);
 }
 
 static int eq(const char *a, const char *b) { return strcmp(a, b) == 0; }
@@ -225,6 +225,7 @@ static int flag(const char *a, int* pc, char ***pv) {
 
 int main(int argc, char **argv) {
     m::ini(&argc, &argv);
+    msg_ini(m::rank);
     usg(argc, argv);
     Inv   = flag("-i", &argc, &argv);
     Chain = flag("-c", &argc, &argv);
