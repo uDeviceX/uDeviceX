@@ -23,6 +23,8 @@
 #include "bounce/imp.h"
 #include "label/imp.h"
 
+#include "tform/imp.h"
+
 #include "imp.h"
 #include "def.h"
 #include "type.h"
