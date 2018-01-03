@@ -48,7 +48,7 @@ void dump(MPI_Comm comm, const char *path, int sx, int sy, int sz) {
     float *data[] = { rho, u[X], u[Y], u[Z] };
     UC(h5::write(comm, path, data, names, 4, sx, sy, sz));
     free(rho); free(u[X]); free(u[Y]); free(u[Z]);
-    if (m::rank == 0) xmf::write(path, names, 4, sx, sy, sz);
+    if (rank == 0) xmf::write(path, names, 4, sx, sy, sz);
 }
 
 int ienv(const char *name, int def) {
