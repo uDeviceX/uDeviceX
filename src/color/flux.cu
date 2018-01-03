@@ -10,6 +10,8 @@
 #include "d/api.h"
 #include "inc/dev.h"
 #include "mpi/glb.h"
+#include "glob/type.h"
+#include "glob/imp.h"
 
 #include "flux.h"
 
@@ -29,11 +31,11 @@ __global__ void linear_flux(int dir, int color, int n, const Particle *pp, int *
 }
 } // dev
 
-void linear_flux(int dir, int color, int n, const Particle *pp, int *cc) {
+void linear_flux(Coords coords, int dir, int color, int n, const Particle *pp, int *cc) {
     assert(dir >= 0 && dir <= 2);
     assert(multi_solvent);
         
-    if (m::coords[dir] == m::dims[dir] - 1)
+    if (is_end(coords, dir))
         KL(dev::linear_flux, (k_cnf(n)), (dir, color, n, pp, cc));
 }
 } // recolor
