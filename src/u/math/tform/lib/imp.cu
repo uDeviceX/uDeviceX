@@ -16,7 +16,7 @@ static __global__ void convert(Tform t, float *a, /**/ float *b) {
 }
 
 void convert_dev(Tform *t, float a_hst[3], /**/ float b_hst[3]) {
-    enum {dim = 3, nt = 1};
+    enum {dim = 3};
     float *a_dev, *b_dev;
     Dalloc(&a_dev, dim);
     Dalloc(&b_dev, dim);
