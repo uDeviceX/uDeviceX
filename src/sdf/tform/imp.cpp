@@ -9,8 +9,30 @@
 
 #include "imp.h"
 
-void ini_tex2sdf(Coords *coords, /**/ Tform *t) {
+struct TGrid {
+    float lo[3], hi[3];
+    const int *n;
+};
 
+void ini_tex2sdf(const Coords *c,
+                 const int *T, const int *N, const int *M,
+                 /**/ Tform *t) {
+    enum {X, Y, Z};
+    TGrid tex, sdf;
+
+    tex.lo[X] = xlo(*c) - M[X];
+    tex.lo[Y] = ylo(*c) - M[Y];
+    tex.lo[Z] = zlo(*c) - M[Z];
+    tex.hi[X] = xhi(*c) + M[X];
+    tex.hi[Y] = yhi(*c) + M[Y];
+    tex.hi[Z] = zhi(*c) + M[Z];
+    tex.n = N;
+
+    sdf.lo[X] = sdf.lo[Y] = sdf.lo[Z] = 0;
+    sdf.hi[X] = xdomain(*c);
+    sdf.hi[Y] = ydomain(*c);
+    sdf.hi[Z] = zdomain(*c);
+    sdf.n = T;
 }
 
 void ini_sub2tex(/**/ Tform*) {
