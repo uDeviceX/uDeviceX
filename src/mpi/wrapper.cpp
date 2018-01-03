@@ -124,4 +124,10 @@ int Probe(int source, int tag, MPI_Comm comm, MPI_Status *status) {
 int Get_count(const MPI_Status *status, MPI_Datatype datatype, int *count) {
     return MPI_Get_count(status, datatype, count);
 }
+
+bool is_master(MPI_Comm comm) {
+    int rank;
+    Comm_rank(comm, &rank);
+    return rank == 0;
+}
 }

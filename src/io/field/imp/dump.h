@@ -49,7 +49,8 @@ static void dump0(MPI_Comm cart, Particle *pp, int n, int nc, /*w*/
 
     avg(pp, n, nc, rho, u);
     if (!directory_exists) {
-        if (m::rank == 0) UC(os::mkdir(DUMP_BASE "/h5"));
+        if (m::is_master(cart))
+            UC(os::mkdir(DUMP_BASE "/h5"));
         directory_exists = true;
         MC(m::Barrier(cart));
     }
@@ -57,7 +58,8 @@ static void dump0(MPI_Comm cart, Particle *pp, int n, int nc, /*w*/
     sprintf(path, DUMP_BASE "/h5/flowfields-%04d.h5", id++);
     float *data[] = { rho, u[X], u[Y], u[Z] };
     UC(h5::write(cart, path, data, names, 4, XS, YS, ZS));
-    if (m::rank == 0) xmf::write(path, names, 4, XS, YS, ZS);
+    if (m::is_master(cart))
+        xmf::write(path, names, 4, XS, YS, ZS);
 }
 
 void dump(MPI_Comm cart, Particle *pp, int n) {

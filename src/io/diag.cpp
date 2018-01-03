@@ -15,12 +15,12 @@ static float sq(float x) { return x*x; }
 
 static int reduce(MPI_Comm comm, const void *sendbuf0, void *recvbuf, int count, MPI_Datatype datatype, MPI_Op op) {
     int root = 0;
-    const void *sendbuf = (m::rank == 0 ? MPI_IN_PLACE : sendbuf0);
+    const void *sendbuf = (m::is_master(comm) ? MPI_IN_PLACE : sendbuf0);
     return m::Reduce(sendbuf, recvbuf, count, datatype, op, root, comm);
 }
 
 static int sum3(MPI_Comm comm, double *v) {
-    return reduce(comm, v, m::rank == 0 ? v : NULL, 3, MPI_DOUBLE, MPI_SUM);
+    return reduce(comm, v, m::is_master(comm) ? v : NULL, 3, MPI_DOUBLE, MPI_SUM);
 }
 
 static int sum_d(MPI_Comm comm, double *v) {
@@ -55,7 +55,7 @@ void diagnostics(MPI_Comm comm, int n, const Particle *pp, int id) {
     sum_d(comm, &ke); max_d(comm, &km);
     sum_i(comm, &n);
 
-    if (m::rank == 0) {
+    if (m::is_master(comm)) {
         kbt = n ? 0.5 * ke / (n * 3. / 2) : 0;
         static bool firsttime = true;
         UC(efopen(DUMP_BASE "/diag.txt", firsttime ? "w" : "a", /**/ &f));
