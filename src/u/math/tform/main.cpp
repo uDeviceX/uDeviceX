@@ -100,16 +100,16 @@ static void chain(TVec *v, Tform **pt) {
     *pt = t2;
 }
 
-static void vec2form(TVec *v, Tform *t) {
-    UC(tform_vector(v->a0, v->a1,   v->b0, v->b1, /**/ t));
-    if (Chain) chain(v, &t);
-    if (Inv)   inv(&t);
+static void vec2form(TVec *v, Tform **t) {
+    UC(tform_vector(v->a0, v->a1,   v->b0, v->b1, /**/ *t));
+    if (Chain) chain(v, t);
+    if (Inv)   inv(t);
 }
 
 static void main1(TVec *v) {
     Tform *t;
     UC(tform_ini(&t));
-    vec2form(v, /**/ t);
+    vec2form(v, /**/ &t);
     process(t);
     tform_fin(t);
 }
