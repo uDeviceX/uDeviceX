@@ -123,7 +123,7 @@ static void main1(TInput *v) {
     tform_fin(t);
 }
 
-static void read_vec(int *pc, char ***pv, float *r) {
+static void read_float(int *pc, char ***pv, float *r) {
     enum {X, Y, Z};
     int c;
     char **v;
@@ -138,15 +138,15 @@ static void read_vec(int *pc, char ***pv, float *r) {
 }
 
 static void read_vecs(int *c, char ***v, TVec *ve) {
-    read_vec(c, v, ve->a0);
-    read_vec(c, v, ve->a1);
-    read_vec(c, v, ve->b0);
-    read_vec(c, v, ve->b1);
+    read_float(c, v, ve->a0);
+    read_float(c, v, ve->a1);
+    read_float(c, v, ve->b0);
+    read_float(c, v, ve->b1);
 }
 
 static void read_grid(int *c, char ***v, TGrid *g) {
-    read_vec(c, v, g->lo);
-    read_vec(c, v, g->hi);
+    read_float(c, v, g->lo);
+    read_float(c, v, g->hi);
 }
 
 static void main2(int c, char **v) {
