@@ -40,6 +40,14 @@ static float eatof(const char *s) {
     return v;
 }
 
+static int eatoi(const char *s) {
+    int n0;
+    int v;
+    n0 = sscanf(s, "%d", &v);
+    if (n0 != 1) ERR("not an integer: '%s'", s);
+    return v;
+}
+
 static void shift(int *c, char ***v) { (*c)--; (*v)++; }
 static void shift_i(int *pc, char ***pv, int i) {
     /* delete argument v[i] */
@@ -133,6 +141,20 @@ static void read_float(int *pc, char ***pv, float *r) {
     assert_c(c, "X"); r[X] = eatof(v[0]); shift(&c, &v);
     assert_c(c, "Y"); r[Y] = eatof(v[0]); shift(&c, &v);
     assert_c(c, "Z"); r[Z] = eatof(v[0]); shift(&c, &v);
+
+    *pc = c; *pv = v;
+}
+
+static void read_int(int *pc, char ***pv, int *r) {
+    enum {X, Y, Z};
+    int c;
+    char **v;
+
+    c = *pc; v = *pv;
+
+    assert_c(c, "X"); r[X] = eatoi(v[0]); shift(&c, &v);
+    assert_c(c, "Y"); r[Y] = eatoi(v[0]); shift(&c, &v);
+    assert_c(c, "Z"); r[Z] = eatoi(v[0]); shift(&c, &v);
 
     *pc = c; *pv = v;
 }
