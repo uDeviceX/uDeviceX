@@ -6,6 +6,8 @@
 #include "imp.h"
 
 static void ini_tex2sdf0(Tform *tex2g, Tform *sdf2g, Tform *g2sdf, /**/ Tform *tex2sdf) {
+    /* [G, T, L, M, N, lo] */
+
 }
 
 void ini_tex2sdf(/**/ Tform *tex2sdf) {
