@@ -58,7 +58,9 @@ static void write0(Coords coords, hid_t file_id,
                    int xs, int ys, int zs) {
     int i;
     const int L[3] = { xs, ys, zs};
-    hsize_t globalsize[4] = {(hsize_t) m::dims[2] * L[2], (hsize_t) m::dims[1] * L[1], (hsize_t) m::dims[0] * L[0], 1};
+    hsize_t globalsize[4] = {(hsize_t) coords.zd * L[2],
+                             (hsize_t) coords.yd * L[1],
+                             (hsize_t) coords.xd * L[0], 1};
     hid_t filespace_simple = H5Screate_simple(4, globalsize, NULL);
 
     for(i = 0; i < nchannels; ++i) {
@@ -68,9 +70,9 @@ static void write0(Coords coords, hid_t file_id,
 
         H5Pset_dxpl_mpio(plist_id, H5FD_MPIO_COLLECTIVE);
 
-        hsize_t start[4]  = { (hsize_t) zl2zg(coords, -L[2]/2),
-                              (hsize_t) yl2yg(coords, -L[1]/2),
-                              (hsize_t) xl2xg(coords, -L[0]/2), 0};
+        hsize_t start[4]  = { (hsize_t) coords.zc * L[2],
+                              (hsize_t) coords.yc * L[1],
+                              (hsize_t) coords.xc * L[0], 0};
         hsize_t extent[4] = { (hsize_t) L[2], (hsize_t) L[1], (hsize_t) L[0],  1};
         hid_t filespace = H5Dget_space(dset_id);
         H5Sselect_hyperslab(filespace, H5S_SELECT_SET, start, NULL, extent, NULL);
