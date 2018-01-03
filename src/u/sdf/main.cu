@@ -18,6 +18,8 @@
 #include "utils/error.h"
 
 #include "glob/type.h"
+#include "glob/ini.h"
+
 #include "wvel/type.h"
 
 #include "sdf/imp.h"
@@ -27,7 +29,6 @@
 
 #include "sdf/dev.h"
 #include "sdf/imp/type.h"
-
 
 namespace dev {
 #include "dev.h"
@@ -51,9 +52,11 @@ void main0(Sdf *sdf, Part *p) {
 }
 
 void main1(Part *p) {
+    Coords coords;
     Sdf *sdf;
     UC(ini(&sdf));
-    UC(gen(m::cart, sdf));
+    UC(ini_coords(m::cart, /**/ &coords));
+    UC(gen(coords, m::cart, sdf));
     UC(main0(sdf, p));
     UC(fin(sdf));
     dSync();
