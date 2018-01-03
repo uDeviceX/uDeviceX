@@ -109,3 +109,15 @@ void global2local(const Coords c, float3 rg, /**/ float3 *rl) {
     rl->y = yg2yl(c, rg.y);
     rl->z = zg2zl(c, rg.z);
 }
+
+/* rank predicates */
+
+bool is_end(Coords c, int dir) {
+    enum {X, Y, Z};
+    switch (dir) {
+    case X: return c.xc == c.xd - 1;
+    case Y: return c.yc == c.yd - 1;
+    case Z: return c.zc == c.zd - 1;
+    }
+    return false;
+}

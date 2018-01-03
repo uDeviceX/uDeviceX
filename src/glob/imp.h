@@ -31,3 +31,8 @@ float xg2xl(const Coords c, float xg);
 float yg2yl(const Coords c, float yg);
 float zg2zl(const Coords c, float zg);
 void global2local(const Coords c, float3 rg, /**/ float3 *rl);
+
+
+/* rank predicates */
+
+bool is_end(Coords c, int dir);
