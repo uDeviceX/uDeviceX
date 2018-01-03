@@ -36,6 +36,8 @@ static void usg0() {
 static void grid_log(TGrid *g) {
     enum {X, Y, Z};
     msg_print("lo: %g %g %g", g->lo[X], g->lo[Y], g->lo[Z]);
+    msg_print("hi: %g %g %g", g->hi[X], g->hi[Y], g->hi[Z]);
+    msg_print("n: %d %d %d", g->n[X], g->n[Y], g->n[Z]);
 }
 
 static int eq(const char *a, const char *b) { return strcmp(a, b) == 0; }
