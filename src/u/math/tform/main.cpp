@@ -14,8 +14,14 @@ struct TVec {
     float a1[3], b1[3];
 };
 
+struct TGrid {
+    float lo[3], hi[3];
+    int n[3];
+};
+
 struct TInput {
-    TVec v, u;
+    TVec  v, u;
+    TGrid f, t;
 };
 
 static int Inv, Chain, Dev, Grid;
