@@ -64,10 +64,12 @@ int ini(AllocMod fmod, AllocMod bmod, size_t bsize, const int capacity[NBAGS], /
 
 int ini(MPI_Comm comm, /**/ Stamp *s) {
     int i, c, crd_rnk[3];
+    int coords[3], periods[3], dims[3];
+    MC(m::Cart_get(comm, 3, dims, periods, coords));
     
     for (i = 0; i < NFRAGS; ++i) {
         for (c = 0; c < 3; ++c)
-            crd_rnk[c] = m::coords[c] + frag_i2d(i,c);
+            crd_rnk[c] = coords[c] + frag_i2d(i,c);
         MC(m::Cart_rank(comm, crd_rnk, s->ranks + i));
         s->tags[i] = frag_anti(i);
     }
