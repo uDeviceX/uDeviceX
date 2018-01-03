@@ -16,7 +16,7 @@ $B/sdf/imp.o: $B/conf.h $S/d/api.h $S/glob/imp.h $S/glob/type.h $S/inc/conf.h $S
 $B/sdf/label/imp.o: $B/conf.h $S/d/api.h $S/d/ker.h $S/d/q.h $S/inc/conf.h $S/inc/def.h $S/inc/dev.h $S/inc/type.h $S/mpi/glb.h $S/sdf/def.h $S/sdf/dev.h $S/sdf/imp.h $S/sdf/label/dev/main.h $S/sdf/label/imp.h $S/sdf/label/imp/main.h $S/sdf/type.h $S/utils/cc.h $S/utils/error.h $S/utils/imp.h $S/utils/kl.h $S/utils/msg.h
 $B/sdf/tex3d/imp.o: $B/conf.h $S/d/api.h $S/inc/conf.h $S/sdf/array3d/type.h $S/sdf/tex3d/imp.h $S/sdf/tex3d/type.h $S/utils/cc.h $S/utils/error.h $S/utils/imp.h
 $B/sdf/tform/imp.o: $S/math/tform/imp.h $S/sdf/tform/imp.h $S/utils/error.h
-$B/u/sdf/main.o: $B/conf.h $S/d/api.h $S/d/ker.h $S/glob/type.h $S/inc/conf.h $S/inc/dev.h $S/inc/type.h $S/mpi/glb.h $S/mpi/wrapper.h $S/sdf/def.h $S/sdf/dev.h $S/sdf/imp.h $S/sdf/imp/type.h $S/sdf/tex3d/type.h $S/sdf/type.h $S/u/sdf/dev.h $S/utils/cc.h $S/utils/error.h $S/utils/kl.h $S/utils/msg.h $S/wvel/type.h
+$B/u/sdf/main.o: $B/conf.h $S/d/api.h $S/d/ker.h $S/glob/ini.h $S/glob/type.h $S/inc/conf.h $S/inc/dev.h $S/inc/type.h $S/mpi/glb.h $S/mpi/wrapper.h $S/sdf/def.h $S/sdf/dev.h $S/sdf/imp.h $S/sdf/imp/type.h $S/sdf/tex3d/type.h $S/sdf/type.h $S/u/sdf/dev.h $S/utils/cc.h $S/utils/error.h $S/utils/kl.h $S/utils/msg.h $S/wvel/type.h
 $B/utils/cc.o: $B/conf.h $S/d/api.h $S/inc/conf.h $S/utils/cc/common.h $S/utils/error.h
 $B/utils/error.o: $S/utils/error.h $S/utils/msg.h
 $B/utils/imp.o: $S/utils/error.h $S/utils/imp.h
