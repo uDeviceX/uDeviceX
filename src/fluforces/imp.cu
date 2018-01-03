@@ -1,6 +1,7 @@
 #include <mpi.h>
 #include <assert.h>
-#include <mma.h>
+// TODO: cuda 9.0
+// #include <mma.h>
 
 #include <conf.h>
 #include "inc/conf.h"
