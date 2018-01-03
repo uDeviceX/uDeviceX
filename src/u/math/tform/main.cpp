@@ -58,7 +58,8 @@ static int read(float *r) {
 }
 
 static void convert(Tform *t, float a[3], /**/ float b[3]) {
-    tform_convert(t, a, /**/ b);
+    if (Dev) convert_dev(t, a, /**/ b);
+    else     tform_convert(t, a, /**/ b);
 }
 
 static void main0(Tform *t) {
