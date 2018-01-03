@@ -101,14 +101,14 @@ void tform_dump(Tform *t, FILE *f) {
 static void to_grid(float a0[3], float b0[3], int n[3], /**/ Tform* t) {
     enum {X, Y, Z};
     float a1[3], b1[3];
-    a1[X] = a1[Y] = a1[Z] = 0.5;
+    a1[X] = a1[Y] = a1[Z] = -0.5;
     b1[X] = n[X] - 0.5; b1[Y] = n[Y] - 0.5; b1[Z] = n[Z] - 0.5;
     UC(tform_vector(a0, a1,   b0, b1, /**/ t));
 }
 static void from_grid(float a0[3], float b0[3], int n[3], /**/ Tform* t) {
     enum {X, Y, Z};
     float a1[3], b1[3];
-    a1[X] = a1[Y] = a1[Z] = 0.5;
+    a1[X] = a1[Y] = a1[Z] = -0.5;
     b1[X] = n[X] - 0.5; b1[Y] = n[Y] - 0.5; b1[Z] = n[Z] - 0.5;
     UC(tform_vector(a1, a0,   b1, b0, /**/ t));
 }
@@ -120,8 +120,8 @@ void tform_grid2grid(float f_lo[3], float f_hi[3], int f_n[3],
     UC(tform_ini(&f2g));
     UC(tform_ini(&g2t));
     
-    to_grid(f_lo, f_hi, f_n, /**/ f2g);
-    from_grid  (t_lo, t_hi, t_n, /**/ g2t);
+    from_grid(f_lo, f_hi, f_n, /**/ f2g);
+    to_grid  (t_lo, t_hi, t_n, /**/ g2t);
     tform_chain(f2g, g2t, /**/ t);
     
     tform_fin(g2t);
