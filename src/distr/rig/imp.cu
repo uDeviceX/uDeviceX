@@ -18,6 +18,7 @@
 #include "frag/imp.h"
 #include "comm/imp.h"
 #include "comm/utils.h"
+#include "glob/type.h"
 
 #include "rig/imp.h"
 

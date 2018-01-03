@@ -10,6 +10,9 @@
 #include "mpi/wrapper.h"
 #include "algo/scan/imp.h"
 
+#include "glob/type.h"
+#include "glob/imp.h"
+
 #include "inc/def.h"
 #include "msg.h"
 #include "utils/error.h"
@@ -30,8 +33,6 @@
 #include "partlist/imp.h"
 #include "clist/imp.h"
 
-#include "glob/type.h"
-#include "glob/imp.h"
 #include "wvel/type.h"
 
 #include "sdf/imp.h"

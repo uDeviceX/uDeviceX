@@ -16,6 +16,9 @@
 #include "io/ply.h"
 #include "io/restart.h"
 
+#include "glob/type.h"
+#include "glob/imp.h"
+
 #include "imp.h"
 
 #include "generate/rig/imp.h"

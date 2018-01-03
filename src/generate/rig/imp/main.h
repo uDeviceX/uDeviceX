@@ -73,7 +73,7 @@ static void gen3(MPI_Comm comm, int nt, const int4 *tt, const float *vv, int nso
     delete[] tags;
 }
 
-static void gen4(MPI_Comm comm, const char *fname, int nt, int nv, const int4 *tt, const float *vv, /**/
+static void gen4(Coords coords, MPI_Comm comm, const char *fname, int nt, int nv, const int4 *tt, const float *vv, /**/
                  int *ns, int *nps, float *rr0, Solid *ss, int *s_n, Particle *s_pp, Particle *r_pp,
                  /*w*/ float *coms) {
     float3 minbb, maxbb;
@@ -81,22 +81,22 @@ static void gen4(MPI_Comm comm, const char *fname, int nt, int nv, const int4 *t
     if (nsolid == 0) ERR("No solid provided.\n");
     mesh::get_bbox(vv, nv, /**/ &minbb, &maxbb);
     nsolid = duplicate_PBC(minbb, maxbb, nsolid, /**/ coms);
-    make_local(nsolid, /**/ coms);
+    make_local(coords, nsolid, /**/ coms);
     gen3(comm, nt, tt, vv, nsolid, coms, /**/ ns, nps, rr0, ss, s_n, s_pp, r_pp);
 }
 
-void gen(MPI_Comm comm, const char *fname, int nt, int nv, const int4 *tt, const float *vv, /**/
+void gen(Coords coords, MPI_Comm comm, const char *fname, int nt, int nv, const int4 *tt, const float *vv, /**/
          int *ns, int *nps, float *rr0, Solid *ss, int *s_n, Particle *s_pp, Particle *r_pp) {
     float *coms = new float[MAX_SOLIDS * 3 * 10];
-    gen4(comm, fname, nt, nv, tt, vv, /**/ ns, nps, rr0, ss, s_n, s_pp, r_pp, /*w*/ coms);
+    gen4(coords, comm, fname, nt, nv, tt, vv, /**/ ns, nps, rr0, ss, s_n, s_pp, r_pp, /*w*/ coms);
     delete[] coms;
 }
 
-void gen_rig_from_solvent(MPI_Comm comm, int nt, int nv, const int4 *tt, const float *vv, /* io */ Particle *opp, int *on,
+void gen_rig_from_solvent(Coords coords, MPI_Comm comm, int nt, int nv, const int4 *tt, const float *vv, /* io */ Particle *opp, int *on,
                           /* o */ int *ns, int *nps, int *n, float *rr0_hst, Solid *ss_hst, Particle *pp_hst) {
     // generate models
     MSG("start rigid gen");
-    gen(comm, "rigs-ic.txt", nt, nv, tt, vv, /**/ ns, nps, rr0_hst, ss_hst, on, opp, pp_hst);
+    gen(coords, comm, "rigs-ic.txt", nt, nv, tt, vv, /**/ ns, nps, rr0_hst, ss_hst, on, opp, pp_hst);
     MSG("done rigid gen");
 
     *n = *ns * (*nps);

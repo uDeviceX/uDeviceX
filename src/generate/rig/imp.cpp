@@ -13,6 +13,9 @@
 #include "mpi/glb.h"
 #include "utils/mc.h"
 
+#include "glob/type.h"
+#include "glob/imp.h"
+
 #include "msg.h"
 #include "utils/error.h"
 #include "utils/imp.h"

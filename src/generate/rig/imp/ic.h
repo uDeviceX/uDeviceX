@@ -65,14 +65,13 @@ static int duplicate_PBC(const float3 minbb, const float3 maxbb, int n, /**/ flo
     return id;
 }
 
-static void make_local(const int n, /**/ float *coms) {
-    const int L[3] = {XS, YS, ZS};
-    int mi[3];
-    for (int c = 0; c < 3; ++c) mi[c] = (m::coords[c] + 0.5) * L[c];
+static void make_local(Coords coords, const int n, /**/ float *coms) {
+    float3 cg, *cc = (float3*) coms;
 
-    for (int j = 0; j < n; ++j)
-        for (int d = 0; d < 3; ++d)
-            coms[3*j + d] -= mi[d];
+    for (int i = 0; i < n; ++i) {
+        cg = cc[i];
+        global2local(coords, cg, /**/ &cc[i]);
+    }
 }
 
 static void count_pp_inside(const Particle *s_pp, const int n, const float *coms, const int ns,

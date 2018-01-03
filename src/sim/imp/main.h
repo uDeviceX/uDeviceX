@@ -9,7 +9,7 @@ enum {
     MAXNWALL = NCELLSWALL * numberdensity
 };
 
-void gen(Wall *w) { /* generate */
+void gen(Coords coords, Wall *w) { /* generate */
     run_eq(wall_creation);
     if (walls) {
         dSync();
@@ -17,7 +17,7 @@ void gen(Wall *w) { /* generate */
         MC(m::Barrier(m::cart));
         inter::create_walls(MAXNWALL, w->sdf, /*io*/ &flu.q, /**/ &w->q);
     }
-    inter::freeze(m::cart, w->sdf, /*io*/ &flu.q, /**/ &rig.q, &rbc.q);
+    inter::freeze(coords, m::cart, w->sdf, /*io*/ &flu.q, /**/ &rig.q, &rbc.q);
     clear_vel();
 
     if (multi_solvent) {
@@ -46,7 +46,7 @@ void sim_gen() {
     MSG("will take %ld steps", nsteps);
     if (walls || solids) {
         solids0 = false;  /* global */
-        gen(/**/ &wall);
+        gen(coords, /**/ &wall);
         dSync();
         if (walls && wall.q.n) UC(wall::gen_ticket(wall.q, &wall.t));
         solids0 = solids;
