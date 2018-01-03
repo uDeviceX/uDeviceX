@@ -98,3 +98,13 @@ void tform_dump(Tform *t, FILE *f) {
     fprintf(f, "%16.10e %16.10e %16.10e\n", s[X], s[Y], s[Z]);
 }
 
+void tform_grid2grid(float f_lo[3], float f_hi[3], int f_n[3],
+                     float t_lo[3], float t_hi[3], int t_n[3], /**/
+                     Tform *t) {
+    Tform *f2g, *g2t;
+    UC(tform_ini(&f2g));
+    UC(tform_ini(&g2t));
+
+    tform_fin(g2t);
+    tform_fin(f2g);
+}
