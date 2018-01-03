@@ -9,7 +9,7 @@
 #include "math/tform/type.h"
 #include "math/tform/dev.h"
 
-#include "main.h"
+#include "imp.h"
 
 static __global__ void convert(Tform t, float *a, /**/ float *b) {
     tform_convert_dev(&t, a, /**/ b);

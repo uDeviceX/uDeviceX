@@ -8,7 +8,7 @@ $B/mpi/glb.o: $S/mpi/glb.cpp; $X -I$S/mpi -I$S/.
 $B/mpi/type.o: $S/mpi/type.cpp; $X -I$S/mpi -I$S/.
 $B/mpi/wrapper.o: $S/mpi/wrapper.cpp; $X -I$S/mpi -I$S/.
 $B/msg.o: $S/msg.cpp; $X -I$S/.
-$B/u/math/tform/lib/main.o: $S/u/math/tform/lib/main.cu; $N -I$S/u/math/tform/lib -I$S/.
+$B/u/math/tform/lib/imp.o: $S/u/math/tform/lib/imp.cu; $N -I$S/u/math/tform/lib -I$S/.
 $B/u/math/tform/main.o: $S/u/math/tform/main.cpp; $X -I$S/.
 $B/utils/cc.o: $S/utils/cc.cpp; $X -I$S/utils -I$S/.
 $B/utils/error.o: $S/utils/error.cpp; $X -I$S/utils -I$S/.

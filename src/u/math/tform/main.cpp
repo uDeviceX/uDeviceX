@@ -7,6 +7,8 @@
 #include "utils/error.h"
 #include "math/tform/imp.h"
 
+#include "lib/imp.h"
+
 struct TVec {
     float a0[3], b0[3];
     float a1[3], b1[3];
