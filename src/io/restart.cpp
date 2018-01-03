@@ -40,7 +40,7 @@ enum {X, Y, Z};
         ERR("Buffer too small to handle this format\n");    \
     } while (0)
 
-void id2str(const int id, char *str) {
+static void id2str(const int id, char *str) {
     switch (id) {
     case TEMPL:
         CSPR(sprintf(str, "templ"));
@@ -54,7 +54,7 @@ void id2str(const int id, char *str) {
     }
 }
 
-void gen_name(const bool read, const char *code, const int id, const char *ext, /**/ char *name) {
+static void gen_name(const bool read, const char *code, const int id, const char *ext, /**/ char *name) {
     char idcode[BS] = {0};
     id2str(id, /**/ idcode);
     
@@ -64,8 +64,7 @@ void gen_name(const bool read, const char *code, const int id, const char *ext, 
         CSPR(sprintf(name, DIR_M, read ? BASE_STRT_READ : BASE_STRT_DUMP, code, m::coords[X], m::coords[Y], m::coords[Z], idcode, ext));
 }
 
-namespace bopwrite {
-void header_pp(const char *bop, const char *rel, const long n) {
+static void write_header_pp(const char *bop, const char *rel, const long n) {
     FILE *f;
     UC(efopen(bop, "w", /**/ &f));
     
@@ -77,7 +76,7 @@ void header_pp(const char *bop, const char *rel, const long n) {
     UC(efclose(f));
 }
 
-void header_ii(const char *bop, const char *rel, const long n) {
+static void write_header_ii(const char *bop, const char *rel, const long n) {
     FILE *f;
     UC(efopen(bop, "w", /**/ &f));
     
@@ -89,16 +88,14 @@ void header_ii(const char *bop, const char *rel, const long n) {
 }
 
 template <typename T>
-void data(const char *val, const T *dat, const long n) {
+static void write_data(const char *val, const T *dat, const long n) {
     FILE *f;
     UC(efopen(val, "w", /**/ &f));
     UC(efwrite(dat, sizeof(T), n, f));
     UC(efclose(f));
 }
-} // namespace bopwrite
 
-namespace bopread {
-void read_n(const char *name, long *n) {
+static void read_n(const char *name, long *n) {
     FILE *f;
     UC(efopen(name, "r", /**/ &f));
     if (fscanf(f, "%ld\n", n) != 1) ERR("wrong format\n");
@@ -106,13 +103,12 @@ void read_n(const char *name, long *n) {
 }
 
 template <typename T>
-void data(const char *name, const long n, T *dat) {
+static void read_data(const char *name, const long n, T *dat) {
     FILE *f;
     UC(efopen(name, "r", /**/ &f));
     UC(efread(dat, sizeof(T), n, f));
     UC(efclose(f));
 }
-} // namespace bopread
 
 void write_pp(const char *code, const int id, const Particle *pp, const long n) {
     char bop[BS] = {0}, rel[BS] = {0}, val[BS] = {0}, idcode[BS] = {0};
@@ -122,8 +118,8 @@ void write_pp(const char *code, const int id, const Particle *pp, const long n) 
     id2str(id, /**/ idcode);
     CSPR(sprintf(rel, PF, idcode, "values"));    
 
-    bopwrite::header_pp(bop, rel, n);
-    bopwrite::data(val, pp, n);
+    write_header_pp(bop, rel, n);
+    write_data(val, pp, n);
 }
 
 void read_pp(const char *code, const int id, Particle *pp, int *n) {
@@ -132,8 +128,8 @@ void read_pp(const char *code, const int id, Particle *pp, int *n) {
     gen_name(READ, code, id, "bop"   , /**/ bop);
     gen_name(READ, code, id, "values", /**/ val);
     MSG("reading <%s> and <%s>", bop, val);
-    bopread::read_n(bop, &np);
-    bopread::data(val, np, pp);
+    read_n(bop, &np);
+    read_data(val, np, pp);
     *n = np;
     DBG("I have read %ld pp", np);
 }
@@ -150,8 +146,8 @@ void write_ii(const char *code, const char *subext, const int id, const int *ii,
     id2str(id, /**/ idcode);
     CSPR(sprintf(rel, PF, idcode, "id.values"));    
 
-    bopwrite::header_ii(bop, rel, n);
-    bopwrite::data(val, ii, n);
+    write_header_ii(bop, rel, n);
+    write_data(val, ii, n);
 }
 
 void read_ii(const char *code, const char *subext, const int id, int *ii, int *n) {
@@ -163,8 +159,8 @@ void read_ii(const char *code, const char *subext, const int id, int *ii, int *n
     gen_name(READ, code, id, extbop, /**/ bop);
     gen_name(READ, code, id, extval, /**/ val);
     DBG("reading <%s> and <%s>", bop, val);
-    bopread::read_n(bop, &np);
-    bopread::data(val, np, ii);
+    read_n(bop, &np);
+    read_data(val, np, ii);
     *n = np;
     DBG("I have read %ld pp", np);
 }
