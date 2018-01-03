@@ -74,17 +74,17 @@ static void diag(int it) {
     diagnostics(m::cart, n, a::pp_hst, it);
 }
 
-void dump_strt_templ(Wall *w) { /* template dumps (wall, solid) */
+void dump_strt_templ(Coords coords, Wall *w) { /* template dumps (wall, solid) */
     if (strt_dumps) {
-        if (walls) wall::strt_dump_templ(w->q);
-        if (solids) rig::strt_dump_templ(rig.q);
+        if (walls) wall::strt_dump_templ(coords, w->q);
+        if (solids) rig::strt_dump_templ(coords, rig.q);
     }
 }
 
-void dump_strt(int id) {
-    flu::strt_dump(id, flu.q);
-    if (rbcs)       rbc::main::strt_dump(id, &rbc.q);
-    if (solids)     rig::strt_dump(id, rig.q);
+void dump_strt(Coords coords, int id) {
+    flu::strt_dump(coords, id, flu.q);
+    if (rbcs)       rbc::main::strt_dump(coords, id, &rbc.q);
+    if (solids)     rig::strt_dump(coords, id, rig.q);
 }
 
 void dump_diag0(Coords coords, int it) { /* generic dump */
@@ -94,6 +94,6 @@ void dump_diag0(Coords coords, int it) { /* generic dump */
         diag(it);
     }
     if (field_dumps && it % field_freq == 0) dump_grid(coords);
-    if (strt_dumps  && it % strt_freq == 0)  dump_strt(it / strt_freq);
+    if (strt_dumps  && it % strt_freq == 0)  dump_strt(coords, it / strt_freq);
     if (rbc_com_dumps && it % rbc_com_freq == 0) dump_rbc_coms(&rbc);
 }

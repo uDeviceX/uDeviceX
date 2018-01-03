@@ -1,9 +1,9 @@
-static void read(int maxn, /**/ float4 *pp, int *n) {
+static void read(Coords coords, int maxn, /**/ float4 *pp, int *n) {
     Particle *pphst, *ppdev;
     size_t sz = maxn * sizeof(Particle);
     UC(emalloc(sz, (void**) &pphst));
 
-    restart::read_pp("wall", restart::TEMPL, /**/ pphst, n);
+    restart::read_pp(coords, "wall", restart::TEMPL, /**/ pphst, n);
 
     if (*n) {
         CC(d::Malloc((void **) &ppdev, sz));
@@ -14,7 +14,7 @@ static void read(int maxn, /**/ float4 *pp, int *n) {
     free(pphst);
 }
 
-static void write(int n, const float4 *pp) {
+static void write(Coords coords, int n, const float4 *pp) {
     Particle *pphst, *ppdev;
     size_t sz = n * sizeof(Particle);
 
@@ -25,15 +25,15 @@ static void write(int n, const float4 *pp) {
         cD2H(pphst, ppdev, n);
         CC(d::Free(ppdev));
     }
-    restart::write_pp("wall", restart::TEMPL, /**/ pphst, n);
+    restart::write_pp(coords, "wall", restart::TEMPL, /**/ pphst, n);
 
     free(pphst);
 }
 
-static void strt_quants(int maxn, int *w_n, float4 **w_pp) {
+static void strt_quants(Coords coords, int maxn, int *w_n, float4 **w_pp) {
     float4 * pptmp;
     CC(d::Malloc((void **) &pptmp, maxn * sizeof(float4)));
-    read(maxn, pptmp, w_n);
+    read(coords, maxn, pptmp, w_n);
 
     if (*w_n) {
         CC(d::Malloc((void **) w_pp, *w_n * sizeof(float4)));
@@ -42,10 +42,10 @@ static void strt_quants(int maxn, int *w_n, float4 **w_pp) {
     CC(d::Free(pptmp));
 }
 
-void strt_quants(int maxn, Quants *q) {
-    strt_quants(maxn, &q->n, &q->pp);
+void strt_quants(Coords coords, int maxn, Quants *q) {
+    strt_quants(coords, maxn, &q->n, &q->pp);
 }
 
-void strt_dump_templ(const Quants q) {
-    write(q.n, q.pp);
+void strt_dump_templ(Coords coords, const Quants q) {
+    write(coords, q.n, q.pp);
 }

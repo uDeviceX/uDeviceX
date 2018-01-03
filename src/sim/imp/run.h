@@ -8,7 +8,7 @@ void run_eq(long te) { /* equilibrate */
 
 void run(long ts, long te) {
     long it; /* current timestep */
-    dump_strt_templ(&wall); /* :TODO: is it the right place? */
+    dump_strt_templ(coords, &wall); /* :TODO: is it the right place? */
 
     BForce bforce;
     // TODO

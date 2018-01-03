@@ -57,22 +57,22 @@ void sim_gen() {
         run(            0, nsteps);
     }
     /* final strt dump*/
-    if (strt_dumps) dump_strt(restart::FINAL);
+    if (strt_dumps) dump_strt(coords, restart::FINAL);
 }
 
 void sim_strt() {
     long nsteps = (long)(tend / dt);
 
     /*Q*/
-    flu::strt_quants(restart::BEGIN, &flu.q);
+    flu::strt_quants(coords, restart::BEGIN, &flu.q);
     flu::build_cells(&flu.q);
 
-    if (rbcs) rbc::main::strt_quants("rbc.off", restart::BEGIN, &rbc.q);
+    if (rbcs) rbc::main::strt_quants(coords, "rbc.off", restart::BEGIN, &rbc.q);
     dSync();
 
-    if (solids) rig::strt_quants(restart::BEGIN, &rig.q);
+    if (solids) rig::strt_quants(coords, restart::BEGIN, &rig.q);
 
-    if (walls) wall::strt_quants(MAXNWALL, &wall.q);
+    if (walls) wall::strt_quants(coords, MAXNWALL, &wall.q);
 
     /*T*/
     if (rbcs)            UC(rbc::force::gen_ticket(rbc.q, &rbc.tt));
@@ -90,5 +90,5 @@ void sim_strt() {
     MSG("will take %ld steps", nsteps - wall_creation);
     run(wall_creation, nsteps);
 
-    if (strt_dumps) dump_strt(restart::FINAL);
+    if (strt_dumps) dump_strt(coords, restart::FINAL);
 }

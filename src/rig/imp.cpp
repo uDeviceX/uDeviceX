@@ -6,6 +6,9 @@
 #include <conf.h>
 #include "inc/conf.h"
 
+#include "glob/type.h"
+#include "glob/imp.h"
+
 #include "d/api.h"
 #include "inc/dev.h"
 #include "inc/def.h"
@@ -15,9 +18,6 @@
 #include "msg.h"
 #include "io/ply.h"
 #include "io/restart.h"
-
-#include "glob/type.h"
-#include "glob/imp.h"
 
 #include "imp.h"
 

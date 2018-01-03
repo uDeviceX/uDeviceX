@@ -20,11 +20,11 @@ void ini(Quants *q);
 void fin(Quants *q);
 
 void gen_quants(Coords coords, MPI_Comm comm, Particle *opp, int *on, Quants *q);
-void strt_quants(const int id, Quants *q);
+void strt_quants(Coords coords, const int id, Quants *q);
 
 void set_ids(MPI_Comm comm, Quants q);
 
-void strt_dump_templ(const Quants q);
-void strt_dump(const int id, const Quants q);
+void strt_dump_templ(Coords coords, const Quants q);
+void strt_dump(Coords coords, const int id, const Quants q);
 
 } // rig

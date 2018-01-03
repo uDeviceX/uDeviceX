@@ -28,10 +28,10 @@ void free_quants(Quants *q);
 void free_ticket(Ticket *t);
 
 void gen_quants(int maxn, Sdf *qsdf, /**/ int *n, Particle* pp, Quants *q);
-void strt_quants(int maxn, Quants *q);
+void strt_quants(Coords coords, int maxn, Quants *q);
 
 void gen_ticket(const Quants q, Ticket *t);
 
-void strt_dump_templ(const Quants q);
+void strt_dump_templ(Coords coords, const Quants q);
 
 }

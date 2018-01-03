@@ -9,6 +9,7 @@
 #include "mpi/glb.h"
 #include "utils/error.h"
 #include "utils/imp.h"
+#include "glob/type.h"
 
 #include "restart.h"
 
@@ -54,14 +55,14 @@ static void id2str(const int id, char *str) {
     }
 }
 
-static void gen_name(const bool read, const char *code, const int id, const char *ext, /**/ char *name) {
+static void gen_name(Coords coords, const bool read, const char *code, const int id, const char *ext, /**/ char *name) {
     char idcode[BS] = {0};
     id2str(id, /**/ idcode);
     
     if (m::size == 1)
         CSPR(sprintf(name, DIR_S, read ? BASE_STRT_READ : BASE_STRT_DUMP, code, idcode, ext));
     else
-        CSPR(sprintf(name, DIR_M, read ? BASE_STRT_READ : BASE_STRT_DUMP, code, m::coords[X], m::coords[Y], m::coords[Z], idcode, ext));
+        CSPR(sprintf(name, DIR_M, read ? BASE_STRT_READ : BASE_STRT_DUMP, code, coords.xc, coords.yc, coords.zc, idcode, ext));
 }
 
 static void write_header_pp(const char *bop, const char *rel, const long n) {
@@ -110,10 +111,10 @@ static void read_data(const char *name, const long n, T *dat) {
     UC(efclose(f));
 }
 
-void write_pp(const char *code, const int id, const Particle *pp, const long n) {
+void write_pp(Coords coords, const char *code, const int id, const Particle *pp, const long n) {
     char bop[BS] = {0}, rel[BS] = {0}, val[BS] = {0}, idcode[BS] = {0};
-    gen_name(DUMP, code, id, "bop"   , /**/ bop);
-    gen_name(DUMP, code, id, "values", /**/ val);
+    gen_name(coords, DUMP, code, id, "bop"   , /**/ bop);
+    gen_name(coords, DUMP, code, id, "values", /**/ val);
 
     id2str(id, /**/ idcode);
     CSPR(sprintf(rel, PF, idcode, "values"));    
@@ -122,11 +123,11 @@ void write_pp(const char *code, const int id, const Particle *pp, const long n) 
     write_data(val, pp, n);
 }
 
-void read_pp(const char *code, const int id, Particle *pp, int *n) {
+void read_pp(Coords coords, const char *code, const int id, Particle *pp, int *n) {
     long np = 0;
     char bop[BS] = {0}, val[BS] = {0};
-    gen_name(READ, code, id, "bop"   , /**/ bop);
-    gen_name(READ, code, id, "values", /**/ val);
+    gen_name(coords, READ, code, id, "bop"   , /**/ bop);
+    gen_name(coords, READ, code, id, "values", /**/ val);
     MSG("reading <%s> and <%s>", bop, val);
     read_n(bop, &np);
     read_data(val, np, pp);
@@ -134,14 +135,14 @@ void read_pp(const char *code, const int id, Particle *pp, int *n) {
     DBG("I have read %ld pp", np);
 }
 
-void write_ii(const char *code, const char *subext, const int id, const int *ii, const long n) {
+void write_ii(Coords coords, const char *code, const char *subext, const int id, const int *ii, const long n) {
     char bop[BS] = {0}, rel[BS] = {0}, val[BS] = {0}, idcode[BS] = {0},
         extbop[BS] = {0}, extval[BS] = {0};
     CSPR(sprintf(extbop, "%s.bop",    subext));
     CSPR(sprintf(extval, "%s.values", subext));
     
-    gen_name(DUMP, code, id, extbop, /**/ bop);
-    gen_name(DUMP, code, id, extval, /**/ val);
+    gen_name(coords, DUMP, code, id, extbop, /**/ bop);
+    gen_name(coords, DUMP, code, id, extval, /**/ val);
 
     id2str(id, /**/ idcode);
     CSPR(sprintf(rel, PF, idcode, "id.values"));    
@@ -150,14 +151,14 @@ void write_ii(const char *code, const char *subext, const int id, const int *ii,
     write_data(val, ii, n);
 }
 
-void read_ii(const char *code, const char *subext, const int id, int *ii, int *n) {
+void read_ii(Coords coords, const char *code, const char *subext, const int id, int *ii, int *n) {
     long np = 0;
     char bop[BS] = {0}, val[BS] = {0}, extbop[BS] = {0}, extval[BS] = {0};
     CSPR(sprintf(extbop, "%s.bop",    subext));
     CSPR(sprintf(extval, "%s.values", subext));
     
-    gen_name(READ, code, id, extbop, /**/ bop);
-    gen_name(READ, code, id, extval, /**/ val);
+    gen_name(coords, READ, code, id, extbop, /**/ bop);
+    gen_name(coords, READ, code, id, extval, /**/ val);
     DBG("reading <%s> and <%s>", bop, val);
     read_n(bop, &np);
     read_data(val, np, ii);
@@ -165,10 +166,10 @@ void read_ii(const char *code, const char *subext, const int id, int *ii, int *n
     DBG("I have read %ld pp", np);
 }
 
-void write_ss(const char *code, const int id, const Solid *ss, const long n) {
+void write_ss(Coords coords, const char *code, const int id, const Solid *ss, const long n) {
     char fname[BS] = {0};
     FILE *f;
-    gen_name(DUMP, code, id, "solid", /**/ fname);
+    gen_name(coords, DUMP, code, id, "solid", /**/ fname);
         
     UC(efopen(fname, "w", /**/ &f));
     fprintf(f, "%ld\n", n);
@@ -176,11 +177,11 @@ void write_ss(const char *code, const int id, const Solid *ss, const long n) {
     UC(efclose(f));
 }
 
-void read_ss(const char *code, const int id, Solid *ss, int *n) {
+void read_ss(Coords coords, const char *code, const int id, Solid *ss, int *n) {
     long ns = 0;
     char fname[BS] = {0};
     FILE *f;
-    gen_name(READ, code, id, "solid", /**/ fname);
+    gen_name(coords, READ, code, id, "solid", /**/ fname);
     fprintf(stderr, "reading %s\n", fname);
 
     UC(efopen(fname, "r", /**/ &f));

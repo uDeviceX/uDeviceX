@@ -22,8 +22,8 @@ void fin(Quants *q);
 void gen_quants(Coords coords, Quants *q);
 void gen_ids(MPI_Comm comm, const int n, Quants *q);
 
-void strt_quants(const int id, Quants *q);
-void strt_dump(const int id, const Quants q);
+void strt_quants(Coords coords, const int id, Quants *q);
+void strt_dump(Coords coords, const int id, const Quants q);
 
 /* build cells only from one array of particles fully contained in the domain */
 /* warning: this will delete particles which are outside                      */
