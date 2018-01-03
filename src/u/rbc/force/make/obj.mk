@@ -8,4 +8,4 @@ O = $B/d/api.o $B/glob/imp.o $B/io/bop/imp.o $B/io/com.o $B/io/diag.o \
     $B/rbc/main/anti/imp.o $B/rbc/main/imp.o $B/rbc/rnd/api/imp.o \
     $B/rbc/rnd/imp.o $B/rbc/stretch/imp.o $B/u/rbc/force/lib/imp.o \
     $B/u/rbc/force/main.o $B/utils/cc.o $B/utils/error.o $B/utils/imp.o \
-    $B/utils/mc.o $B/utils/os.o
+    $B/utils/mc.o $B/utils/msg.o $B/utils/os.o

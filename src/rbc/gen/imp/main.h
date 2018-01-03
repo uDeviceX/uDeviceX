@@ -62,7 +62,7 @@ static int main0(Coords coords, float *rr0, const char *ic, int nv, Particle *pp
     }
     assert_nc(nc);
     UC(efclose(f));
-    MSG("read %d rbcs", nc);
+    msg_print("read %d rbcs", nc);
     return nc;
 }
 

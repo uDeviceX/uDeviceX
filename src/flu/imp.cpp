@@ -7,7 +7,7 @@
 #include "inc/conf.h"
 
 #include "utils/os.h"
-#include "msg.h"
+#include "utils/msg.h"
 #include "inc/def.h"
 #include "inc/dev.h"
 #include "inc/type.h"

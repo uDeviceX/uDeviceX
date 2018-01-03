@@ -5,7 +5,7 @@
 #include "inc/conf.h"
 #include "inc/def.h"
 #include "utils/error.h"
-#include "msg.h"
+#include "utils/msg.h"
 #include "utils/cc.h"
 
 #include "d/q.h"

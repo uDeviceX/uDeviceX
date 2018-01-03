@@ -33,7 +33,7 @@ static void setup_edg1(int md, int nv, adj::Hst *adj, float *rr, /**/
     }
     totArea /= 3; /* seen every face three times */
 
-    MSG("totArea: %g", totArea);
+    msg_print("totArea: %g", totArea);
     *ptotArea = totArea;
 }
 
@@ -44,7 +44,7 @@ static void setup_edg(int md, int nv, adj::Hst *adj, /**/ Edg *dev, float *totAr
 
     UC(emalloc(md*nv*sizeof(Edg), (void**) &hst));
     UC(emalloc(3*nv*sizeof(float), (void**) &rr));
-    MSG("reading <%s>", fn);
+    msg_print("reading <%s>", fn);
     UC(evert(fn, nv, /**/ rr));
     UC(setup_edg1(md, nv, adj, rr, /**/ hst, totArea));
 

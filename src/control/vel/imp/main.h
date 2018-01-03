@@ -3,7 +3,7 @@ static void ini_dump(int rank, /**/ FILE **f) {
     if (rank) return;
     UC(efopen(DUMP_BASE "/vcont.txt", "w", /**/ f));
     fprintf(*f, "#vx vy vz fx fy fz\n");
-    MSG("Velocity controller: dump to " DUMP_BASE "/vcont.txt");
+    msg_print("Velocity controller: dump to " DUMP_BASE "/vcont.txt");
 }
 
 static void fin_dump(FILE *f) {

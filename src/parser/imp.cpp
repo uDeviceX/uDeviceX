@@ -5,7 +5,7 @@
 
 #include "utils/error.h"
 #include "utils/imp.h"
-#include "msg.h"
+#include "utils/msg.h"
 
 #include "imp.h"
 
@@ -48,7 +48,7 @@ static void concatenate(int n, char **ss, /**/ char *a) {
 }
 
 static void read_file(const char *fname, /**/ config_t *c) {
-    MSG("read config from <%s>", fname);
+    msg_print("read config from <%s>", fname);
     if (!config_read_file(c, fname))
         ERR( "%s:%d - %s\n", config_error_file(c),
              config_error_line(c), config_error_text(c));

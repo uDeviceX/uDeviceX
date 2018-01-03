@@ -22,7 +22,7 @@ static int gen0(Particle *pp) { /* generate particle positions and velocities */
             pp[n++] = p;
         }
     }
-    MSG("ic::gen: %d solvent particles", n);
+    msg_print("ic::gen: %d solvent particles", n);
     return n;
 }
 

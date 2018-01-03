@@ -158,6 +158,6 @@ static void empty_solid(int nt, const int4 *tt, const float *vv, /* io */ float 
         }
     }
     if (j == 0) ERR("No particle remaining in solid template\n");
-    MSG("Template solid: keep %d out of %d particles", j, n0);
+    msg_print("Template solid: keep %d out of %d particles", j, n0);
     *npsolid = j;
 }

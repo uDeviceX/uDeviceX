@@ -12,7 +12,7 @@
 #include "inc/def.h"
 #include "inc/type.h"
 
-#include "msg.h"
+#include "utils/msg.h"
 
 #include "utils/error.h"
 #include "utils/imp.h"

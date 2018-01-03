@@ -8,7 +8,7 @@
 #include "inc/type.h"
 #include "inc/dev.h"
 
-#include "msg.h"
+#include "utils/msg.h"
 
 #include "d/q.h"
 #include "d/api.h"

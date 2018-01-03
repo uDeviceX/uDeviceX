@@ -15,7 +15,7 @@ static void read(FILE *f, int n, /**/ float *h) {
     if (i != n) ERR("got %d != %d lines", i, n);
 }
 void ini0(const char* path, int n, float *h, /**/ float *d) {
-    MSG("reading <%s>", path);
+    msg_print("reading <%s>", path);
     FILE *f;
     UC(efopen(path, "r", /**/ &f));
     read(f, n , /**/ h);

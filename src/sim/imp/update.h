@@ -90,7 +90,7 @@ void update_solvent(long it, /**/ Flu *f) {
 void update_rbc(long it, Rbc *r) {
     bool cond;
     cond = multi_solvent && color_freq && it % color_freq == 0;
-    if (cond) {MSG("recolor"); gen_colors(r, &colorer, /**/ &flu);}; /* TODO: does not belong here*/
+    if (cond) {msg_print("recolor"); gen_colors(r, &colorer, /**/ &flu);}; /* TODO: does not belong here*/
     scheme::move::main(rbc_mass, r->q.n, r->ff, r->q.pp);
 }
 

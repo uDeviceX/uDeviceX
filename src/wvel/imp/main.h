@@ -28,7 +28,7 @@ static void set_dev(long it, WvelShearSin p, Wvel_v *wv) {
     
     cond = p.log_freq > 0 && it % p.log_freq == 0;
     if (cond)
-        MSG("WVEL_SIN: gd = %6.3g", gdot);
+        msg_print("WVEL_SIN: gd = %6.3g", gdot);
 }
 
 static void set_dev(long it, WvelHS p, Wvel_v *wv) {

@@ -20,7 +20,7 @@ static FILE* open(const char *path) {
     }
 }
 
-static void is_master(int r) {return r == 0;}
+static bool is_master(int r) {return r == 0;}
 static void print(const char *msg, FILE *f) {
     fprintf(f, "%s\n", msg);
     if (is_master(rank))
@@ -41,8 +41,8 @@ void msg_print(const char *fmt, ...) {
     va_end(ap);
 
     // print the message
-    f = open(n);
-    print(f);
+    f = open(name);
+    print(msg, f);
     fclose(f);
 }
 

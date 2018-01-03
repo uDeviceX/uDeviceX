@@ -19,7 +19,7 @@
 #include "mpi/wrapper.h"
 
 #include "inc/def.h"
-#include "msg.h"
+#include "utils/msg.h"
 #include "mpi/glb.h"
 #include "utils/imp.h"
 #include "utils/cc.h"

@@ -5,7 +5,7 @@
 #include "inc/conf.h"
 
 #include "inc/def.h"
-#include "msg.h"
+#include "utils/msg.h"
 
 #include "inc/type.h"
 #include "sub/imp.h"

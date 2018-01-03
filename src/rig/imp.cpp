@@ -15,7 +15,7 @@
 #include "inc/type.h"
 #include "utils/cc.h"
 
-#include "msg.h"
+#include "utils/msg.h"
 #include "io/ply.h"
 #include "io/restart.h"
 
