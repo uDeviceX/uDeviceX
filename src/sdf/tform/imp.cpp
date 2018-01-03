@@ -1,7 +1,12 @@
 #include <stdio.h>
 
+#include "utils/error.h"
+
 #include "math/tform/imp.h"
 #include "imp.h"
+
+static void ini_tex2sdf0(Tform *tex2g, Tform *sdf2g, Tform *g2sdf, /**/ Tform *tex2sdf) {
+}
 
 void ini_tex2sdf(/**/ Tform *tex2sdf) {
     /*
@@ -10,10 +15,11 @@ void ini_tex2sdf(/**/ Tform *tex2sdf) {
        tex2sdf: chain(tex2g, g2sdf)
     */
     Tform *tex2g, *sdf2g, *g2sdf;
-    tform_ini(&tex2g);
-    tform_ini(&sdf2g);
-    tform_ini(&g2sdf);
+    UC(tform_ini(&tex2g));
+    UC(tform_ini(&sdf2g));
+    UC(tform_ini(&g2sdf));
 
+    UC(ini_tex2sdf0(tex2g, sdf2g, g2sdf, /**/ tex2sdf));
 
     tform_fin(tex2g);
     tform_fin(sdf2g);
