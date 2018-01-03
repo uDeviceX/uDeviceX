@@ -7,6 +7,8 @@
 #include "utils/error.h"
 #include "math/tform/imp.h"
 
+#include "utils/msg.h"
+
 #include "lib/imp.h"
 
 struct TVec {
@@ -30,6 +32,12 @@ static void usg0() {
     fprintf(stderr, "./udx -- OPTIONS.. < FILE\n");
     exit(0);
 }
+
+static void grid_log(TGrid *g) {
+    enum {X, Y, Z};
+    MSG("lo: %g %g %g", g->lo[X], g->lo[Y], g->lo[Z]);
+}
+
 static int eq(const char *a, const char *b) { return strcmp(a, b) == 0; }
 
 static float eatof(const char *s) {
