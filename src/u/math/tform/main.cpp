@@ -126,8 +126,8 @@ static void vec2form(TInput *v, Tform **t) {
 static void main1(TInput *v) {
     Tform *t;
     UC(tform_ini(&t));
-    vec2form(v, /**/ &t);
-    process(t);
+    UC(vec2form(v, /**/ &t));
+    UC(process(t));
     tform_fin(t);
 }
 
@@ -184,7 +184,7 @@ static void main2(int c, char **v) {
         read_vecs(&c, &v, &ve.v);
     }
 
-    main1(&ve);
+    UC(main1(&ve));
 }
 
 static void usg(int c, char **v) {
