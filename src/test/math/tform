@@ -43,7 +43,7 @@ u.run >tform.txt ./udx -- -c $t1    $t2  <<!
 !
 mv tform.txt tform.out.txt
 
-# cTEST: math.tform.3
+# TEST: math.tform.3
 set -e -u
 S=`pwd` U=u/math/tform C="$S/conf/default.h"
 u.conf "$S" "$U" "$C" <<!
