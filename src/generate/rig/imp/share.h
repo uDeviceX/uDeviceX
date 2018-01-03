@@ -23,15 +23,23 @@ static void share0(MPI_Comm comm, const int root, /**/ Particle *pp, int *n) {
 static void share(Coords coords, MPI_Comm comm, const int root, /**/ Particle *pp, int *n) {
     if (*n >= MAX_PSOLID_NUM) ERR("Number of solid particles too high for the buffer\n");
     // set to global coordinates and then convert back to local
-    int i, c;
-    const int L[3] = {XS, YS, ZS};
-    int mi[3];
+    int i;
+    Particle p;
+    enum {X, Y, Z};
 
-    for (c = 0; c < 3; ++c) mi[c] = (m::coords[c] + 0.5) * L[c];
-    for (i = 0; i < *n; ++i) for (c = 0; c < 3; ++c) pp[i].r[c] += mi[c];
-
+    for (i = 0; i < *n; ++i) {
+        p = pp[i];
+        p.r[X] = xl2xg(coords, p.r[X]);
+        p.r[Y] = yl2yg(coords, p.r[Y]);
+        p.r[Z] = zl2zg(coords, p.r[Z]);
+    }
+    
     share0(comm, root, /**/ pp, n);
 
-    for (i = 0; i < *n; ++i) for (c = 0; c < 3; ++c) pp[i].r[c] -= mi[c];
-
+    for (i = 0; i < *n; ++i) {
+        p = pp[i];
+        p.r[X] = xg2xl(coords, p.r[X]);
+        p.r[Y] = yg2yl(coords, p.r[Y]);
+        p.r[Z] = zg2zl(coords, p.r[Z]);
+    }    
 }
