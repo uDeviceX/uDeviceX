@@ -21,16 +21,10 @@
 
 #include "imp.h"
 
-static bool is_master(MPI_Comm comm) {
-    int rank;
-    MC(m::Comm_rank(comm, &rank));
-    return rank == 0;
-}
-
 namespace bop
 {
 void ini(MPI_Comm comm, Ticket *t) {
-    if (is_master(comm))
+    if (m::is_master(comm))
         UC(os::mkdir(DUMP_BASE "/bop"));
     t->w_pp = new float[9*MAX_PART_NUM];
 }
@@ -132,7 +126,7 @@ void parts(MPI_Comm cart, Coords coords, const Particle *pp, long n, const char 
     sprintf(fname, DUMP_BASE "/bop/" PATTERN ".values", name, step / part_freq);
 
     long ntot = write_data(cart, t->w_pp, n, sizeof(Particle), datatype::particle, fname);
-    if (is_master(cart))
+    if (m::is_master(cart))
         header_pp(ntot, name, step);
 }
 
@@ -144,7 +138,7 @@ void parts_forces(MPI_Comm cart, Coords coords, const Particle *pp, const Force 
 
     long ntot = write_data(cart, t->w_pp, n, sizeof(Particle) + sizeof(Force), datatype::partforce, fname);
     
-    if (is_master(cart))
+    if (m::is_master(cart))
         header_pp_ff(ntot, name, step);
 }
 
@@ -154,7 +148,7 @@ static void intdata(MPI_Comm cart, const int *ii, long n, const char *name, cons
 
     long ntot = write_data(cart, ii, n, sizeof(int), MPI_INT, fname);
     
-    if (is_master(cart))
+    if (m::is_master(cart))
         header_ii(ntot, name, fields, step);
 }
 
