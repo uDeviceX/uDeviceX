@@ -26,13 +26,15 @@ void ini_tex2sdf(const Coords *c,
     tex.hi[X] = xhi(*c) + M[X];
     tex.hi[Y] = yhi(*c) + M[Y];
     tex.hi[Z] = zhi(*c) + M[Z];
-    tex.n = N;
+    tex.n = T;
 
     sdf.lo[X] = sdf.lo[Y] = sdf.lo[Z] = 0;
     sdf.hi[X] = xdomain(*c);
     sdf.hi[Y] = ydomain(*c);
     sdf.hi[Z] = zdomain(*c);
-    sdf.n = T;
+    sdf.n = N;
+
+    //    grid2grid(&tex, &sdf, /**/ t);
 }
 
 void ini_sub2tex(/**/ Tform*) {
