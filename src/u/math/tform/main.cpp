@@ -145,8 +145,14 @@ static void read_vecs1(int *c, char ***v, TVec *ve) {
 static void main2(int c, char **v) {
     enum {X, Y, Z};
     TVec ve;
-    read_vecs0(&c, &v, &ve);
-    if (Chain) read_vecs1(&c, &v, &ve);
+    if (Chain) {
+        read_vecs0(&c, &v, &ve);
+        read_vecs1(&c, &v, &ve);
+    } else if (Grid) {
+    } else {
+        read_vecs0(&c, &v, &ve);
+    }
+
     main1(&ve);
 }
 
