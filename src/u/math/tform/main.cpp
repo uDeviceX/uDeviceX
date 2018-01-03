@@ -135,16 +135,18 @@ static void read_vecs0(int *c, char ***v, TVec *ve) {
     read_vec(c, v, ve->b1);
 }
 
+static void read_vecs1(int *c, char ***v, TVec *ve) {
+    read_vec(c, v, ve->a2);
+    read_vec(c, v, ve->a3);
+    read_vec(c, v, ve->b2);
+    read_vec(c, v, ve->b3);
+}
+
 static void main2(int c, char **v) {
     enum {X, Y, Z};
     TVec ve;
     read_vecs0(&c, &v, &ve);
-    if (Chain) {
-        read_vec(&c, &v, ve.a2);
-        read_vec(&c, &v, ve.a3);
-        read_vec(&c, &v, ve.b2);
-        read_vec(&c, &v, ve.b3);
-    }
+    if (Chain) read_vecs1(&c, &v, &ve);
     main1(&ve);
 }
 
