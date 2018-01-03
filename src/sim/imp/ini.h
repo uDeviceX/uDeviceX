@@ -74,9 +74,9 @@ static void ini_outflow(Coords coords, Outflow **o) {
     }
 }
 
-static void ini_denoutflow(DCont **d, DContMap **m) {
+static void ini_denoutflow(Coords coords, DCont **d, DContMap **m) {
     UC(ini(MAX_PART_NUM, /**/ d));
-    UC(ini(m));
+    UC(ini(coords, /**/ m));
 }
 
 static void ini_inflow(Coords coords, Inflow **i) {
@@ -194,7 +194,7 @@ void ini(int argc, char **argv) {
     if (VCON)    UC(ini_vcont(m::cart, /**/ &vcont));
     if (OUTFLOW) UC(ini_outflow(coords, /**/ &outflow));
     if (INFLOW)  UC(ini_inflow(coords, /**/ &inflow));
-    if (OUTFLOW_DEN) UC(ini_denoutflow(/**/ &denoutflow, &mapoutflow));
+    if (OUTFLOW_DEN) UC(ini_denoutflow(coords, /**/ &denoutflow, &mapoutflow));
     
     if (rbcs || solids)
         UC(ini_objinter(m::cart, /**/ &objinter));        
