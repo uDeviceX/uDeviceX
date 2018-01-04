@@ -1,7 +1,11 @@
-static void gen0(float *D, /**/ Sdf *sdf) {
+static void gen0(Coords *coords, float *D, /**/ Sdf *sdf) {
+    int M[3] = {XWM, YWM, ZWM}; /* margin and texture */
+    int T[3] = {XTE, YTE, ZTE};
+
     UC(array3d_copy(XTE, YTE, ZTE, D, /**/ sdf->arr));
     UC(tex3d_ini(&sdf->tex));
     UC(tex3d_copy(sdf->arr, /**/ sdf->tex));
+    UC(sub2tex_ini(coords, T, M, /**/ sdf->t));
 }
 
 static void gen1(Coords *coords, int N[3], float *D0, float *D1, /**/ Sdf *sdf) {
@@ -12,7 +16,7 @@ static void gen1(Coords *coords, int N[3], float *D0, float *D1, /**/ Sdf *sdf) 
     UC(tform_ini(&t));
     UC(tex2sdf_ini(coords, T, N, M, /**/ t));
     UC(field::sample(t, N, D0,   T, /**/ D1));
-    UC(gen0(D1, sdf));
+    UC(gen0(coords, D1, sdf));
 
     UC(tform_fin(t));
 }
