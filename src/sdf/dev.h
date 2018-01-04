@@ -22,7 +22,6 @@ static __device__ float3 ugrad_sdf(const Sdf_v texsdf, const float3 *pos) {
     gy = fcts[1] * (tex0(0, 1, 0) - myval);
     gz = fcts[2] * (tex0(0, 0, 1) - myval);
 #undef tex0
-
     return make_float3(gx, gy, gz);
 }
 
