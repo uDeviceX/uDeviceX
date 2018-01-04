@@ -36,7 +36,7 @@ $B/io/fields_grid.o: $B/conf.h $S/d/api.h $S/glob/imp.h $S/glob/type.h $S/inc/co
 $B/io/mesh/imp.o: $B/conf.h $S/glob/imp.h $S/glob/type.h $S/inc/conf.h $S/inc/type.h $S/io/mesh/imp.h $S/io/mesh/imp/main.h $S/io/mesh/imp/shift/center.h $S/io/mesh/imp/shift/edge.h $S/io/mesh/write/imp.h $S/mpi/glb.h $S/mpi/wrapper.h $S/utils/error.h $S/utils/imp.h $S/utils/os.h
 $B/io/mesh/write/imp.o: $B/conf.h $S/inc/conf.h $S/io/mesh/write/imp.h $S/io/mesh/write/imp/main.h $S/mpi/glb.h $S/mpi/wrapper.h $S/utils/mc.h
 $B/io/off/imp.o: $S/io/off/imp.h $S/utils/error.h $S/utils/imp.h
-$B/io/ply.o: $S/inc/def.h $S/inc/type.h $S/io/ply.h $S/io/ply/ascii.h $S/io/ply/bin.h $S/io/ply/common.h $S/utils/error.h $S/utils/imp.h $S/utils/msg.h
+$B/io/ply/imp.o: $S/inc/def.h $S/inc/type.h $S/io/ply/imp.h $S/io/ply/imp/ascii.h $S/io/ply/imp/bin.h $S/io/ply/imp/common.h $S/utils/error.h $S/utils/imp.h $S/utils/msg.h
 $B/io/restart.o: $B/conf.h $S/glob/type.h $S/inc/conf.h $S/inc/def.h $S/inc/type.h $S/io/restart.h $S/mpi/glb.h $S/utils/error.h $S/utils/imp.h $S/utils/msg.h
 $B/io/rig.o: $B/conf.h $S/glob/imp.h $S/glob/type.h $S/inc/conf.h $S/inc/type.h $S/utils/error.h $S/utils/imp.h
 $B/main.o: $B/conf.h $S/d/api.h $S/inc/conf.h $S/mpi/glb.h $S/sim/imp.h $S/utils/msg.h
@@ -63,7 +63,7 @@ $B/rbc/main/imp.o: $B/conf.h $S/d/api.h $S/glob/type.h $S/inc/conf.h $S/inc/def.
 $B/rbc/rnd/api/imp.o: $B/conf.h $S/inc/conf.h $S/rbc/rnd/api/imp.h $S/rbc/rnd/api/imp/cpu.h $S/rbc/rnd/api/imp/cuda.h $S/rbc/rnd/api/imp/gaussrand.h $S/rbc/rnd/api/type.h $S/utils/error.h $S/utils/imp.h
 $B/rbc/rnd/imp.o: $B/conf.h $S/d/api.h $S/inc/conf.h $S/inc/dev.h $S/mpi/glb.h $S/rbc/rnd/api/imp.h $S/rbc/rnd/api/type.h $S/rbc/rnd/imp.h $S/rbc/rnd/imp/cu.h $S/rbc/rnd/imp/main.h $S/rbc/rnd/imp/seed.h $S/rbc/rnd/type.h $S/utils/cc.h $S/utils/error.h $S/utils/imp.h $S/utils/msg.h $S/utils/os.h
 $B/rbc/stretch/imp.o: $B/conf.h $S/d/api.h $S/d/ker.h $S/d/q.h $S/inc/conf.h $S/inc/def.h $S/inc/dev.h $S/inc/type.h $S/rbc/stretch/dev/main.h $S/rbc/stretch/imp.h $S/rbc/stretch/imp/main.h $S/rbc/stretch/imp/type.h $S/utils/cc.h $S/utils/error.h $S/utils/imp.h $S/utils/kl.h $S/utils/msg.h
-$B/rig/imp.o: $B/conf.h $S/d/api.h $S/generate/rig/imp.h $S/glob/imp.h $S/glob/type.h $S/inc/conf.h $S/inc/def.h $S/inc/dev.h $S/inc/type.h $S/io/ply.h $S/io/restart.h $S/rig/imp.h $S/rig/imp/common.h $S/rig/imp/fin.h $S/rig/imp/generate.h $S/rig/imp/ini.h $S/rig/imp/start.h $S/utils/cc.h $S/utils/msg.h
+$B/rig/imp.o: $B/conf.h $S/d/api.h $S/generate/rig/imp.h $S/glob/imp.h $S/glob/type.h $S/inc/conf.h $S/inc/def.h $S/inc/dev.h $S/inc/type.h $S/io/ply/imp.h $S/io/restart.h $S/rig/imp.h $S/rig/imp/common.h $S/rig/imp/fin.h $S/rig/imp/generate.h $S/rig/imp/ini.h $S/rig/imp/start.h $S/utils/cc.h $S/utils/msg.h
 $B/rigid/imp.o: $B/conf.h $S/d/api.h $S/inc/conf.h $S/inc/dev.h $S/inc/type.h $S/rigid/dev/main.h $S/rigid/dev/utils.h $S/rigid/imp.h $S/rigid/imp/main.h $S/utils/cc.h $S/utils/kl.h $S/utils/msg.h
 $B/scheme/force/imp.o: $B/conf.h $S/d/api.h $S/glob/dev.h $S/glob/type.h $S/inc/conf.h $S/inc/dev.h $S/inc/type.h $S/scheme/force/dev/main.h $S/scheme/force/imp/ini.h $S/scheme/force/imp/main.h $S/scheme/force/type.h $S/utils/cc.h $S/utils/error.h $S/utils/kl.h
 $B/scheme/move/imp.o: $B/conf.h $S/d/api.h $S/d/ker.h $S/d/q.h $S/inc/conf.h $S/inc/def.h $S/inc/dev.h $S/inc/type.h $S/scheme/move/dev/euler.h $S/scheme/move/dev/main.h $S/scheme/move/dev/vv.h $S/scheme/move/imp.h $S/scheme/move/imp/main.h $S/utils/cc.h $S/utils/kl.h $S/utils/msg.h
