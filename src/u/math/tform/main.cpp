@@ -2,10 +2,19 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <mpi.h>
+
+#include <vector_types.h>
+
 #include "mpi/glb.h"
+#include "mpi/wrapper.h"
 #include "utils/msg.h"
 #include "utils/error.h"
 #include "math/tform/imp.h"
+
+#include "glob/type.h"
+#include "glob/ini.h"
+#include "glob/imp.h"
 
 #include "utils/msg.h"
 
@@ -31,6 +40,7 @@ struct TInput {
 };
 
 static int Inv, Chain, Dev, Grid, Tex;
+static Coords coords;
 
 static void usg0() {
     fprintf(stderr, "./udx -- OPTIONS.. < FILE\n");
@@ -246,6 +256,7 @@ static int flag(const char *a, int* pc, char ***pv) {
 int main(int argc, char **argv) {
     m::ini(&argc, &argv);
     msg_ini(m::rank);
+    ini_coords(m::cart, /**/ &coords);
     usg(argc, argv);
     Inv   = flag("-i", &argc, &argv);
     Chain = flag("-c", &argc, &argv);
@@ -253,5 +264,6 @@ int main(int argc, char **argv) {
     Grid  = flag("-g", &argc, &argv);
     Tex   = flag("-t", &argc, &argv);
     main2(argc, argv);
+    fin_coords(/**/ &coords);
     m::fin();
 }
