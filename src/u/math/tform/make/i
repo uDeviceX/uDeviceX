@@ -1,7 +1,7 @@
 f0 () { find "$1" -name '*.cu' -o -name '*.cpp' -o -name '*.h' -type f ; }
 f () ( for d; do f0 "$d"; done )
 
-f $U glob comm inc mpi d frag utils math
+f $U comm d frag glob inc math mpi sdf/tform utils
 
 # add dir
 echo $U $U/lib .

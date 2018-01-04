@@ -17,6 +17,7 @@
 #include "glob/imp.h"
 
 #include "utils/msg.h"
+#include "sdf/tform/imp.h"
 
 #include "lib/imp.h"
 
@@ -152,7 +153,7 @@ static void input2form(TInput *v, Tform **t) {
                           to->lo, to->hi,   to->n, /**/ *t);
     } else if (Tex) {
         tex = &v->tex;
-        //ini_tex2sdf(const Coords, tex->T, tex->N, tex->M, /**/ *t);
+        ini_tex2sdf(&coords, tex->T, tex->N, tex->M, /**/ *t);
     } else {
         UC(tform_vector(v->v.a0, v->v.a1,
                         v->v.b0, v->v.b1, /**/ *t));
