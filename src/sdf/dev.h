@@ -25,7 +25,7 @@ static __device__ float3 grad(const Sdf_v texsdf, const float3 *pos) {
     return make_float3(gx, gy, gz);
 }
 
-static __device__ float3 grad_sdf(const Sdf_v texsdf, const float3 *r) {
+static __device__ float3 ugrad(const Sdf_v texsdf, const float3 *r) {
     float mag, eps;
     float3 g;
     eps = 1e-6;

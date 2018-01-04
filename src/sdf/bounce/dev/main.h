@@ -32,7 +32,7 @@ static __device__ void rescue(Wvel_v wv, Coords c, const Sdf_v texsdf, float cur
     float3 dsdf;
     int l;
     
-    dsdf = grad_sdf(texsdf, r);
+    dsdf = ugrad(texsdf, r);
     sdf0 = currsdf;
 
     axpy(-sdf0, &dsdf, /**/ r);
