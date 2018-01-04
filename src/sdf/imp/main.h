@@ -12,7 +12,7 @@ void fin(Sdf *q) {
 }
 
 void to_view(Sdf *q, /**/ Sdf_v *v) {
-    v->t = q->tex->t;
+    v->D = q->tex->t;
 }
 
 void bounce(Wvel_v *wv, Coords *c, Sdf *sdf, int n, /**/ Particle *pp) {
