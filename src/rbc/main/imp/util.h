@@ -1,7 +1,7 @@
 static void efaces(const char *f, int n0, /**/ int4 *faces) {
     /* get faces */
     int n;
-    UC(off::faces(f, n0, /**/ &n, faces));
+    UC(off_read_faces(f, n0, /**/ &n, faces));
     if (n0 != n)
         ERR("wrong faces number in <%s> : %d != %d", f, n0, n);
 }
@@ -9,7 +9,7 @@ static void efaces(const char *f, int n0, /**/ int4 *faces) {
 static void evert(const char *f, int n0, /**/ float *vert) {
     /* get vertices */
     int n;
-    UC(off::vert(f, n0, /**/ &n, vert));
+    UC(off_read_vert(f, n0, /**/ &n, vert));
     if (n0 != n)
         ERR("wrong vert number in <%s> : %d != %d", f, n0, n);
 }

@@ -21,6 +21,6 @@
 #include "utils/texo.h"
 #include "mesh/collision.h"
 
-#include "io/off.h"
+#include "io/off/imp.h"
 
 #include "imp/main.h"

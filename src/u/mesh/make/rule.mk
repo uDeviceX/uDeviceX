@@ -1,7 +1,7 @@
 $B/algo/minmax/imp.o: $S/algo/minmax/imp.cu; $N -I$S/. -I$S/algo/minmax
 $B/algo/scan/imp.o: $S/algo/scan/imp.cu; $N -I$S/. -I$S/algo/scan
 $B/d/api.o: $S/d/api.cu; $N -I$S/. -I$S/d
-$B/io/off.o: $S/io/off.cpp; $X -I$S/. -I$S/io
+$B/io/off/imp.o: $S/io/off/imp.cpp; $X -I$S/. -I$S/io/off
 $B/mesh/bbox.o: $S/mesh/bbox.cu; $N -I$S/. -I$S/mesh
 $B/mesh/collision.o: $S/mesh/collision.cu; $N -I$S/. -I$S/mesh
 $B/mesh/dist.o: $S/mesh/dist.cpp; $X -I$S/. -I$S/mesh

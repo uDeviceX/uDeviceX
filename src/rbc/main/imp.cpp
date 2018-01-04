@@ -24,7 +24,7 @@
 #include "mpi/wrapper.h"
 #include "mpi/glb.h"
 
-#include "io/off.h"
+#include "io/off/imp.h"
 #include "io/restart.h"
 
 #include "rbc/type.h"

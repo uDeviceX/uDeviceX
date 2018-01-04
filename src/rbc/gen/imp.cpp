@@ -21,7 +21,7 @@
 #include "mpi/wrapper.h"
 #include "mpi/glb.h"
 
-#include "io/off.h"
+#include "io/off/imp.h"
 #include "imp.h"
 
 namespace rbc { namespace gen {

@@ -24,6 +24,6 @@
 #include "clist/imp.h"
 #include "meshbb/imp.h"
 
-#include "io/off.h"
+#include "io/off/imp.h"
 
 #include "imp/main.h"
