@@ -129,6 +129,12 @@ struct Sim {
     Colorer colorer;
     PidVCont vcont;
 
+    /* open bc tools */
+    Outflow *outflow;
+    Inflow *inflow;
+    DCont    *denoutflow;
+    DContMap *mapoutflow;
+    
     /* particles on host for dump */
     Particle *pp_dump;
 };

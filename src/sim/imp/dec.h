@@ -4,9 +4,7 @@ bop::Ticket dumpt;
 
 Coords coords;
 
-Colorer colorer;
-// PidVCont vcont;
-Outflow *outflow;
+// Outflow *outflow;
 Inflow *inflow;
 
 DCont    *denoutflow;

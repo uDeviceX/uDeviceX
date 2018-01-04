@@ -1,10 +1,10 @@
 /* the following functions will need to be splitted in the future 
    for performance reasons */
 
-void distribute_flu(Flu *f) {
+void distribute_flu(Sim *s) {
     PartList lp;
-    flu::Quants *q = &f->q;
-    FluDistr *d = &f->d;
+    flu::Quants *q = &s->flu.q;
+    FluDistr *d = &s->flu.d;
     int ndead;
     
     lp.pp        = q->pp;
@@ -14,8 +14,8 @@ void distribute_flu(Flu *f) {
         ndead = get_ndead(denoutflow);
     }
     else if (OUTFLOW) {
-        lp.deathlist = get_deathlist(outflow);
-        ndead = get_ndead(outflow);
+        lp.deathlist = get_deathlist(s->outflow);
+        ndead = get_ndead(s->outflow);
     } else {
         lp.deathlist = NULL;
         ndead = 0;

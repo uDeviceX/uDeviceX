@@ -4,7 +4,7 @@ void run_eq(long te, Sim *s) { /* equilibrate */
     ini_none(/**/ &bforce);    
     bool wall0 = false;
     for (long it = 0; it < te; ++it) step(&bforce, wall0, it, s);
-    UC(distribute_flu(/**/ &s->flu));
+    UC(distribute_flu(/**/ s));
 }
 
 // TODO
@@ -53,5 +53,5 @@ void run(long ts, long te, Sim *s) {
         step2params(it - ts, &wall->vel, /**/ &wall->vview);
         step(&bforce, walls, it, s);
     }
-    UC(distribute_flu(/**/ &s->flu));
+    UC(distribute_flu(/**/ s));
 }

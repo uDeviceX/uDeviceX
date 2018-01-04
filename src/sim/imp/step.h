@@ -17,7 +17,7 @@ void step(BForce *bforce, bool wall0, int it, Sim *s) {
     
     UC(check_sizes(s));
     
-    UC(distribute_flu(flu));
+    UC(distribute_flu(s));
     if (solids0) UC(distribute_rig(/**/ rig));
     if (rbcs)    UC(distribute_rbc(/**/ rbc));
 
@@ -46,7 +46,7 @@ void step(BForce *bforce, bool wall0, int it, Sim *s) {
 
     if (wall0) {
         if (INFLOW)  apply_inflow(inflow, flu);
-        if (OUTFLOW) mark_outflow(flu, /**/ outflow);
+        if (OUTFLOW) mark_outflow(flu, /**/ s->outflow);
         if (OUTFLOW_DEN) mark_outflowden(flu, mapoutflow, /**/ denoutflow);
     }
 }

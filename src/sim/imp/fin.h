@@ -130,7 +130,7 @@ void sim_fin(Sim *s) {
         fin_objinter(&s->objinter);
 
     if (VCON)    UC(fin(/**/ &s->vcont));
-    if (OUTFLOW) UC(fin_outflow(/**/ outflow));
+    if (OUTFLOW) UC(fin_outflow(/**/ s->outflow));
     if (INFLOW) UC(fin_inflow(/**/ inflow));
     if (OUTFLOW_DEN) UC(fin_denoutflow(/**/ denoutflow, mapoutflow));
     
@@ -139,7 +139,7 @@ void sim_fin(Sim *s) {
     fin_flu(&s->flu);
 
     if (multi_solvent && rbcs)
-        fin_colorer(/**/ &colorer);
+        fin_colorer(/**/ &s->colorer);
 
     if (solids) {
         fin_rig(/**/ &s->rig);

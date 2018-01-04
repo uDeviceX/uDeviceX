@@ -196,7 +196,7 @@ void sim_ini(int argc, char **argv, /**/ Sim **sim) {
     if (rbcs) UC(ini_rbc(m::cart, /**/ &s->rbc));
 
     if (VCON)    UC(ini_vcont(m::cart, /**/ &s->vcont));
-    if (OUTFLOW) UC(ini_outflow(coords, /**/ &outflow));
+    if (OUTFLOW) UC(ini_outflow(coords, /**/ &s->outflow));
     if (INFLOW)  UC(ini_inflow(coords, /**/ &inflow));
     if (OUTFLOW_DEN) UC(ini_denoutflow(coords, /**/ &denoutflow, &mapoutflow));
     
@@ -210,7 +210,7 @@ void sim_ini(int argc, char **argv, /**/ Sim **sim) {
     UC(ini_flu(m::cart, /**/ &s->flu));
    
     if (multi_solvent && rbcs)
-        UC(ini_colorer(s->rbc.q.nv, m::cart, /**/ &colorer));
+        UC(ini_colorer(s->rbc.q.nv, m::cart, /**/ &s->colorer));
     
     if (solids) {
         UC(ini_rig(m::cart, /**/ &s->rig));

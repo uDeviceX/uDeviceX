@@ -46,7 +46,7 @@ void sim_gen(Sim *s) {
         rbc::main::gen_quants(coords, m::cart, "rbc.off", "rbcs-ic.txt", /**/ &rbc->q);
         rbc::force::gen_ticket(rbc->q, &rbc->tt);
 
-        if (multi_solvent) gen_colors(rbc, &colorer, /**/ flu);
+        if (multi_solvent) gen_colors(rbc, &s->colorer, /**/ flu);
     }
     MC(m::Barrier(m::cart));
 
@@ -58,7 +58,7 @@ void sim_gen(Sim *s) {
         dSync();
         if (walls && wall->q.n) UC(wall::gen_ticket(wall->q, &wall->t));
         solids0 = solids;
-        if (rbcs && multi_solvent) gen_colors(rbc, &colorer, /**/ flu);
+        if (rbcs && multi_solvent) gen_colors(rbc, &s->colorer, /**/ flu);
         run(wall_creation, nsteps, s);
     } else {
         solids0 = solids;
