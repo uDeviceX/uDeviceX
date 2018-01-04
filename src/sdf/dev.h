@@ -2,7 +2,7 @@ static __device__ float fetch(const Sdf_v sdf, float i, float j, float k) {
     return Ttex3D(float, sdf.t, i, j, k);
 }
 
-static __device__ float3 ugrad_sdf(const Sdf_v texsdf, const float3 *pos) {
+static __device__ float3 grad(const Sdf_v texsdf, const float3 *pos) {
     int L[3] = {XS, YS, ZS};
     int M[3] = {XWM, YWM, ZWM};
     int T[3] = {XTE, YTE, ZTE};
@@ -29,7 +29,7 @@ static __device__ float3 grad_sdf(const Sdf_v texsdf, const float3 *r) {
     float mag, eps;
     float3 g;
     eps = 1e-6;
-    g = ugrad_sdf(texsdf, r);
+    g = grad(texsdf, r);
     mag = sqrt(g.x*g.x + g.y*g.y + g.z*g.z);
     if (mag > eps) {
         g.x /= mag;

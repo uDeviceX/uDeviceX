@@ -65,7 +65,7 @@ static __device__ void bounce_back_1p(Wvel_v wv, Coords c, const Sdf_v texsdf, f
         rc = *r;
         axpy(t, v, /**/ &rc);
         phi = sdf(texsdf, rc.x, rc.y, rc.z);
-        dsdf = ugrad_sdf(texsdf, &rc);
+        dsdf = grad(texsdf, &rc);
         dphi = dot<float> (v, &dsdf);
 
         if (is_small(dphi))
