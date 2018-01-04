@@ -35,14 +35,14 @@ void step(BForce *bforce, bool wall0, int it, Sim *s) {
     if (rbcs)    update_rbc(it, rbc, s);
 
     if (VCON && wall0) {
-        sample(it, flu, /**/ &vcont);
-        adjust(it, /**/ &vcont, bforce);
-        log(it, &vcont);
+        sample(it, flu, /**/ &s->vcont);
+        adjust(it, /**/ &s->vcont, bforce);
+        log(it, &s->vcont);
     }
 
     if (wall0) bounce_wall(coords, wall, /**/ flu, rbc);
 
-    if (sbounce_back && solids0) bounce_solid(it, /**/ &bb, rig, flu);
+    if (sbounce_back && solids0) bounce_solid(it, /**/ &s->bb, rig, flu);
 
     if (wall0) {
         if (INFLOW)  apply_inflow(inflow, flu);

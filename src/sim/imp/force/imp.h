@@ -12,7 +12,7 @@ void forces(bool wall0, Sim *s) {
     if (wall0 && wall->q.n) forces_wall(wall, s);
     if (rbcs) forces_rbc(rbc);
 
-    UC(forces_objects(&objinter, flu, rbc, rig));
+    UC(forces_objects(&s->objinter, flu, rbc, rig));
     
     dSync();
 }

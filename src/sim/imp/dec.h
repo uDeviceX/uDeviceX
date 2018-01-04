@@ -4,10 +4,8 @@ bop::Ticket dumpt;
 
 Coords coords;
 
-ObjInter objinter;
-BounceBack bb;
 Colorer colorer;
-PidVCont vcont;
+// PidVCont vcont;
 Outflow *outflow;
 Inflow *inflow;
 

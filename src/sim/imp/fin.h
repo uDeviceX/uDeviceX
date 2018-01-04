@@ -127,9 +127,9 @@ void sim_fin(Sim *s) {
 
     bop::fin(&dumpt);
     if (rbcs || solids)
-        fin_objinter(&objinter);
+        fin_objinter(&s->objinter);
 
-    if (VCON)    UC(fin(/**/ &vcont));
+    if (VCON)    UC(fin(/**/ &s->vcont));
     if (OUTFLOW) UC(fin_outflow(/**/ outflow));
     if (INFLOW) UC(fin_inflow(/**/ inflow));
     if (OUTFLOW_DEN) UC(fin_denoutflow(/**/ denoutflow, mapoutflow));
@@ -145,7 +145,7 @@ void sim_fin(Sim *s) {
         fin_rig(/**/ &s->rig);
         
         if (sbounce_back)
-            fin_bounce_back(&bb);
+            fin_bounce_back(&s->bb);
     }
 
     UC(efree(a::pp_hst));

@@ -195,13 +195,13 @@ void sim_ini(int argc, char **argv, /**/ Sim **sim) {
     
     if (rbcs) UC(ini_rbc(m::cart, /**/ &s->rbc));
 
-    if (VCON)    UC(ini_vcont(m::cart, /**/ &vcont));
+    if (VCON)    UC(ini_vcont(m::cart, /**/ &s->vcont));
     if (OUTFLOW) UC(ini_outflow(coords, /**/ &outflow));
     if (INFLOW)  UC(ini_inflow(coords, /**/ &inflow));
     if (OUTFLOW_DEN) UC(ini_denoutflow(coords, /**/ &denoutflow, &mapoutflow));
     
     if (rbcs || solids)
-        UC(ini_objinter(m::cart, /**/ &objinter));        
+        UC(ini_objinter(m::cart, /**/ &s->objinter));        
     
     UC(bop::ini(m::cart, &dumpt));
 
@@ -216,7 +216,7 @@ void sim_ini(int argc, char **argv, /**/ Sim **sim) {
         UC(ini_rig(m::cart, /**/ &s->rig));
 
         if (sbounce_back)
-            UC(ini_bounce_back(m::cart, &s->rig, /**/ &bb));
+            UC(ini_bounce_back(m::cart, &s->rig, /**/ &s->bb));
     }
 
     MC(MPI_Barrier(m::cart));
