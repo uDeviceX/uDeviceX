@@ -264,6 +264,6 @@ int main(int argc, char **argv) {
     Grid  = flag("-g", &argc, &argv);
     Tex   = flag("-t", &argc, &argv);
     main2(argc, argv);
-    fin_coords(/**/ &coords);
+    coords_fin(/**/ &coords);
     m::fin();
 }

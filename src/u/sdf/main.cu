@@ -58,7 +58,7 @@ void main1(Part *p) {
     UC(gen(coords, m::cart, sdf));
     UC(main0(sdf, p));
     UC(fin(sdf));
-    UC(fin_coords(&coords));
+    UC(coords_fin(&coords));
     dSync();    
 }
 

@@ -49,7 +49,7 @@ static void run2(const char *cell, const char *ic, rbc::Quants q) {
     rbc::force::gen_ticket(q, &t);
     run1(q, t);
     rbc::force::fin_ticket(&t);
-    fin_coords(&coords);
+    coords_fin(&coords);
 }
 
 void run(const char *cell, const char *ic) {

@@ -13,7 +13,7 @@ void coords_ini(MPI_Comm cart, Coords *c) {
     c->zd = dims[Z];
 }
 
-void fin_coords(Coords *) {/*empty*/}
+void coords_fin(Coords *) {/*empty*/}
 
 /* domain sizes */
 
