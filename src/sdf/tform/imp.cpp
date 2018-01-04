@@ -14,16 +14,28 @@ struct TGrid {
     int *n;
 };
 
+enum {OK, BAD};
+static int goodp(int n[3]) {
+    enum {X, Y, Z};
+    const int H = 1000000;
+    int cl, ch;
+    cl = n[X] > 0 && n[Y] > 0 && n[Z] > 0;
+    ch = n[X] < H && n[Y] < H && n[Z] < H;
+    return (cl && ch) ? OK : BAD;
+}
 static void grid2grid(TGrid *from, TGrid *to, /**/ Tform *t) {
     tform_grid2grid(from->lo, from->hi, from->n,
                     to->lo, to->hi,   to->n, /**/ t);
 }
-
 void ini_tex2sdf(const Coords *c,
                  int T[3], int N[3], int M[3],
                  /**/ Tform *t) {
     enum {X, Y, Z};
     TGrid tex, sdf;
+
+    if (goodp(N) == BAD) ERR("bad N = [%d %d %d]", N[X], N[Y], N[Z]);
+    if (goodp(M) == BAD) ERR("bad M = [%d %d %d]", M[X], M[Y], M[Z]);
+    if (goodp(T) == BAD) ERR("bad T = [%d %d %d]", T[X], T[Y], T[Z]);
 
     tex.lo[X] = xlo(*c) - M[X];
     tex.lo[Y] = ylo(*c) - M[Y];
@@ -39,7 +51,7 @@ void ini_tex2sdf(const Coords *c,
     sdf.hi[Z] = zdomain(*c);
     sdf.n = N;
 
-    grid2grid(&tex, &sdf, /**/ t);
+    UC(grid2grid(&tex, &sdf, /**/ t));
 }
 
 void ini_sub2tex(/**/ Tform*) {
