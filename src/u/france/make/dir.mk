@@ -27,13 +27,13 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/generate/rig             && \
     d $B/glob                     && \
     d $B/inter                    && \
-    d $B/io                       && \
     d $B/io/bop                   && \
     d $B/io/com                   && \
     d $B/io/diag                  && \
     d $B/io/field                 && \
     d $B/io/field/h5              && \
     d $B/io/field/xmf             && \
+    d $B/io/fields_grid           && \
     d $B/io/mesh                  && \
     d $B/io/mesh/write            && \
     d $B/io/off                   && \
