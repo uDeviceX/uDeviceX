@@ -204,7 +204,7 @@ void sim_ini(int argc, char **argv, /**/ Sim **sim) {
     if (rbcs || solids)
         UC(ini_objinter(m::cart, /**/ &s->objinter));        
     
-    UC(bop::ini(m::cart, &dumpt));
+    UC(bop::ini(m::cart, &s->dumpt));
 
     if (walls) ini_wall(&s->wall);
     

@@ -138,6 +138,7 @@ struct Sim {
     
     /* particles on host for dump */
     Particle *pp_dump;
+    bop::Ticket dumpt;
 
     /* runtime config */
     Config *cfg;

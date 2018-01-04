@@ -125,7 +125,7 @@ static void fin_objinter(ObjInter *o) {
 
 void sim_fin(Sim *s) {
 
-    bop::fin(&dumpt);
+    bop::fin(&s->dumpt);
     if (rbcs || solids)
         fin_objinter(&s->objinter);
 
