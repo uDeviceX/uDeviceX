@@ -28,4 +28,4 @@ void tex3d_copy(Array3d *a, /**/ Tex3d *t) {
     CC(cudaCreateTextureObject(&t->t, &resD, &texD, NULL));
 }
 
-void tex3d_to_view(Tex3d *t, /**/ Tex3d_v *v) { t->t = t->t; }
+void tex3d_to_view(Tex3d *t, /**/ Tex3d_v *v) { v->t = t->t; }
