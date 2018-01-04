@@ -10,6 +10,8 @@
 #include "type.h"
 #include "imp.h"
 
+struct Tform   { float o[3], s[3]; };
+
 void tform_ini(Tform **pq) {
     Tform *q;
     UC(emalloc(sizeof(Tform), (void**)&q));
