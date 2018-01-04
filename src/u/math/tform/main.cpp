@@ -22,13 +22,13 @@
 #include "lib/imp.h"
 
 struct TVec {
-    float a0[3], b0[3];
-    float a1[3], b1[3];
+    const float a0[3], b0[3];
+    const float a1[3], b1[3];
 };
 
 struct TGrid {
-    float lo[3], hi[3];
-    int n[3];
+    const float lo[3], hi[3];
+    const int n[3];
 };
 
 /* texture: */

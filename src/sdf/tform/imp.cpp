@@ -10,12 +10,12 @@
 #include "imp.h"
 
 struct TGrid {
-    const float lo[3], hi[3];
-    const int *n;
+    float lo[3], hi[3];
+    int n[3];
 };
 
 enum {OK, BAD};
-static int goodp(int n[3]) {
+static int goodp(const int n[3]) {
     enum {X, Y, Z};
     const int H = 1000000;
     int cl, ch;
@@ -35,7 +35,8 @@ static void sdf_ini(const Coords *c, const int N[3], /**/ TGrid *t) {
     t->hi[X] = xdomain(*c);
     t->hi[Y] = ydomain(*c);
     t->hi[Z] = zdomain(*c);
-    t->n = N;
+    
+    t->n[X] = N[X]; t->n[Y] = N[Y]; t->n[Z] = N[Z];
 }
 
 static void tex_ini(const Coords *c, const int T[3], const int M[3], /**/ TGrid *t) {
@@ -46,7 +47,8 @@ static void tex_ini(const Coords *c, const int T[3], const int M[3], /**/ TGrid 
     t->hi[X] = xhi(*c) + M[X];
     t->hi[Y] = yhi(*c) + M[Y];
     t->hi[Z] = zhi(*c) + M[Z];
-    t->n = T;
+    
+    t->n[X] = T[X]; t->n[Y] = T[Y]; t->n[Z] = T[Z];
 }
 
 static void sub_ini(const Coords *c, /**/ TGrid *t) {
