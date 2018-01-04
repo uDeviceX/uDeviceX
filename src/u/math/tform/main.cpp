@@ -21,9 +21,8 @@ struct TGrid {
     int n[3];
 };
 
-struct TTex { /* texture: */
-    int T[3], N[3], M[3];
-};
+/* texture: */
+struct TTex { int T[3], N[3], M[3]; };
 
 struct TInput {
     TVec  v, u;
@@ -133,6 +132,7 @@ static void chain(TInput *v, Tform **pt) {
 
 static void input2form(TInput *v, Tform **t) {
     TGrid *from, *to;
+    TTex  *tex;
     if (Grid) {
         from = &v->f;
         to   = &v->t;
@@ -141,7 +141,8 @@ static void input2form(TInput *v, Tform **t) {
         tform_grid2grid(from->lo, from->hi, from->n,
                           to->lo, to->hi,   to->n, /**/ *t);
     } else if (Tex) {
-        
+        tex = &v->tex;
+        //ini_tex2sdf(const Coords, tex->T, tex->N, tex->M, /**/ *t);
     } else {
         UC(tform_vector(v->v.a0, v->v.a1,
                         v->v.b0, v->v.b1, /**/ *t));
