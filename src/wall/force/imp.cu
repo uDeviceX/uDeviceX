@@ -27,6 +27,7 @@
 #include "wvel/type.h"
 #include "wvel/dev.h"
 
+#include "math/tform/type.h"
 #include "sdf/def.h"
 #include "sdf/type.h"
 #include "sdf/dev.h"
