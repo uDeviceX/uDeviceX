@@ -70,4 +70,4 @@ M="3 30 300"
 u.run >tform.txt ./udx -- -t $T $N $M  <<!
 4 40 400
 !
-mv tform.txt tform.out.tx
+mv tform.txt tform.out.txt
