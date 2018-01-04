@@ -16,8 +16,8 @@
 #include "utils/cc.h"
 
 #include "utils/msg.h"
-#include "io/ply.h"
-#include "io/restart.h"
+#include "io/ply/imp.h"
+#include "io/restart/imp.h"
 
 #include "imp.h"
 

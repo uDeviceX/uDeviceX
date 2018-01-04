@@ -25,7 +25,7 @@
 #include "mpi/glb.h"
 
 #include "io/off/imp.h"
-#include "io/restart.h"
+#include "io/restart/imp.h"
 
 #include "rbc/type.h"
 #include "rbc/adj/type/common.h"

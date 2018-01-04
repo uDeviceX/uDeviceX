@@ -36,9 +36,9 @@ $B/io/fields_grid.o: $S/io/fields_grid.cpp; $X -I$S/. -I$S/io
 $B/io/mesh/imp.o: $S/io/mesh/imp.cpp; $X -I$S/. -I$S/io/mesh
 $B/io/mesh/write/imp.o: $S/io/mesh/write/imp.cpp; $X -I$S/. -I$S/io/mesh/write
 $B/io/off/imp.o: $S/io/off/imp.cpp; $X -I$S/. -I$S/io/off
-$B/io/ply.o: $S/io/ply.cpp; $X -I$S/. -I$S/io
-$B/io/restart.o: $S/io/restart.cpp; $X -I$S/. -I$S/io
-$B/io/rig.o: $S/io/rig.cpp; $X -I$S/. -I$S/io
+$B/io/ply/imp.o: $S/io/ply/imp.cpp; $X -I$S/. -I$S/io/ply
+$B/io/restart/imp.o: $S/io/restart/imp.cpp; $X -I$S/. -I$S/io/restart
+$B/io/rig/imp.o: $S/io/rig/imp.cpp; $X -I$S/. -I$S/io/rig
 $B/main.o: $S/main.cpp; $X -I$S/.
 $B/math/linal/imp.o: $S/math/linal/imp.cpp; $X -I$S/. -I$S/math/linal
 $B/math/rnd/imp.o: $S/math/rnd/imp.cpp; $X -I$S/. -I$S/math/rnd
