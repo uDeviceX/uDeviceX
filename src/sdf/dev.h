@@ -55,7 +55,7 @@ static __device__ float3 ugrad(const Sdf_v texsdf, const float3 *r) {
     if (mag > eps) {
         g.x /= mag;
         g.y /= mag;
-        g.z /= mag; 
+        g.z /= mag;
     }
     return g;
 }
@@ -92,8 +92,8 @@ static __device__ float sdf(const Sdf_v texsdf, float x, float y, float z) {
     s11x = wavrg(s110, s111, lmbd[0]);
 
     s0yx = wavrg(s00x, s01x, lmbd[1]);
-
     s1yx = wavrg(s10x, s11x, lmbd[1]);
+
     szyx = wavrg(s0yx, s1yx, lmbd[2]);
 #undef wavrg
     return szyx;
