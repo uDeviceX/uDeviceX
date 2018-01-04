@@ -1,5 +1,5 @@
 /* view */
 struct Sdf_v {
-    cudaTextureObject_t D;
+    Tex3d   D;
     Tform_v t;
 };

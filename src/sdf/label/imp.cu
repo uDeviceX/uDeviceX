@@ -20,6 +20,7 @@
 #include "utils/kl.h"
 
 #include "math/tform/type.h"
+#include "sdf/tex3d/type.h"
 #include "sdf/type.h"
 #include "sdf/imp.h"
 #include "sdf/dev.h"
