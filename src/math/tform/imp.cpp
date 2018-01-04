@@ -112,11 +112,27 @@ static void from_grid(float a0[3], float b0[3], int n[3], /**/ Tform* t) {
     b1[X] = n[X] - 0.5; b1[Y] = n[Y] - 0.5; b1[Z] = n[Z] - 0.5;
     UC(tform_vector(a1, a0,   b1, b0, /**/ t));
 }
+enum {LH_OK, LH_BAD};
+static int assert_lh(float lo[3], float hi[3]) {
+    enum {X, Y, Z};
+    int c;
+    c = lo[X] < hi[X] && lo[X] < hi[X] && lo[X] < hi[X];
+    return c ? LH_OK : LH_BAD;
+}
 void tform_grid2grid(float f_lo[3], float f_hi[3], int f_n[3],
                      float t_lo[3], float t_hi[3], int t_n[3], /**/
                      Tform *t) {
+    enum {X, Y, Z};
     /* f: from, t: to, g: global */
     Tform *f2g, *g2t;
+    if (assert_lh(f_lo, f_hi) == LH_BAD)
+        ERR("wrong f_[lo|hi]: [%g %g %g] [%g %g %g]",
+            f_lo[X], f_lo[Y], f_lo[X], f_hi[X], f_hi[Y], f_hi[Z]);
+
+    if (assert_lh(t_lo, t_hi) == LH_BAD)
+        ERR("wrong f_[lo|hi]: [%g %g %g] [%g %g %g]",
+            t_lo[X], t_lo[Y], t_lo[X], t_hi[X], t_hi[Y], t_hi[Z]);
+    
     UC(tform_ini(&f2g));
     UC(tform_ini(&g2t));
     
