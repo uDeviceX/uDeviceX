@@ -34,9 +34,9 @@ static void fi_r(const Fi *fi, int ix, int iy, int iz, /**/ float *r) {
     r[Z] = org[Z] + (iz + 0.5) * spa[Z] - 0.5;
 
     tform_convert(t, a, /**/ b);
-    if (!small_diff(b, r)) ERR("wrong convert [%g %g %g] != [%g %g %g]",
-                               b[X], b[Y], b[Z],
-                               r[X], r[Y], r[Z]);
+    if (small_diff(b, r)) ERR("wrong convert [%g %g %g] != [%g %g %g]",
+                              b[X], b[Y], b[Z],
+                              r[X], r[Y], r[Z]);
 }
 
 static void fi_set(const Fi *fi, int ix, int iy, int iz, float v) {
