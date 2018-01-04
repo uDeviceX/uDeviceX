@@ -4,9 +4,6 @@
 #include "inc/conf.h"
 
 #include "d/api.h"
-
-#include "glob/type.h"
-
 #include "utils/error.h"
 #include "inc/def.h"
 #include "utils/msg.h"
