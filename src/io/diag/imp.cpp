@@ -9,7 +9,8 @@
 #include "inc/type.h"
 #include "utils/error.h"
 #include "utils/imp.h"
-#include "diag.h"
+
+#include "imp.h"
 
 static float sq(float x) { return x*x; }
 
