@@ -190,16 +190,16 @@ void sim_ini(int argc, char **argv, /**/ Sim **sim) {
     UC(conf_ini(&cfg)); s->cfg = cfg;
     UC(conf_read(argc, argv, /**/ cfg));
     
-    UC(coords_ini(m::cart, /**/ &coords));
+    UC(coords_ini(m::cart, /**/ &s->coords));
     
     UC(emalloc(3 * MAX_PART_NUM * sizeof(Particle), (void**) &s->pp_dump));
     
     if (rbcs) UC(ini_rbc(m::cart, /**/ &s->rbc));
 
     if (VCON)    UC(ini_vcont(m::cart, /**/ &s->vcont));
-    if (OUTFLOW) UC(ini_outflow(coords, /**/ &s->outflow));
-    if (INFLOW)  UC(ini_inflow(coords, /**/ &s->inflow));
-    if (OUTFLOW_DEN) UC(ini_denoutflow(coords, /**/ &s->denoutflow, &s->mapoutflow));
+    if (OUTFLOW) UC(ini_outflow(s->coords, /**/ &s->outflow));
+    if (INFLOW)  UC(ini_inflow(s->coords, /**/ &s->inflow));
+    if (OUTFLOW_DEN) UC(ini_denoutflow(s->coords, /**/ &s->denoutflow, &s->mapoutflow));
     
     if (rbcs || solids)
         UC(ini_objinter(m::cart, /**/ &s->objinter));        

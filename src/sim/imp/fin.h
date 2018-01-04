@@ -152,7 +152,7 @@ void sim_fin(Sim *s) {
     
     if (rbcs) fin_rbc(/**/ &s->rbc);
 
-    UC(coords_fin(/**/ &coords));
+    UC(coords_fin(/**/ &s->coords));
 
     UC(conf_destroy(s->cfg));
     datatype::fin();

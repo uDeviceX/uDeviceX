@@ -124,6 +124,7 @@ struct Sim {
     Wall wall;
 
     /* helpers */
+    Coords coords;
     ObjInter objinter;
     BounceBack bb;
     Colorer colorer;

@@ -4,7 +4,7 @@ static bool valid_step(long id, const int freq) {
     return (freq != 0) && (id % freq == 0);
 }
 
-void sample(long id, const Flu *f, /**/ PidVCont *c) {
+void sample(Coords coords, long id, const Flu *f, /**/ PidVCont *c) {
     if (valid_step(id, VCON_SAMPLE_FREQ)) {
         const flu::Quants *q = &f->q;
         sample(coords, q->n, q->pp, q->cells.starts, q->cells.counts, /**/ c);

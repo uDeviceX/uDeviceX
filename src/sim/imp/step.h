@@ -25,7 +25,7 @@ void step(BForce *bforce, bool wall0, int it, Sim *s) {
     
     forces(wall0, s);
 
-    dump_diag0(coords, it, s);
+    dump_diag0(s->coords, it, s);
     dump_diag_after(it, wall0, solids0, s);
     body_force(it, *bforce, s);
 
@@ -35,12 +35,12 @@ void step(BForce *bforce, bool wall0, int it, Sim *s) {
     if (rbcs)    update_rbc(it, rbc, s);
 
     if (VCON && wall0) {
-        sample(it, flu, /**/ &s->vcont);
+        sample(s->coords, it, flu, /**/ &s->vcont);
         adjust(it, /**/ &s->vcont, bforce);
         log(it, &s->vcont);
     }
 
-    if (wall0) bounce_wall(coords, wall, /**/ flu, rbc);
+    if (wall0) bounce_wall(s->coords, wall, /**/ flu, rbc);
 
     if (sbounce_back && solids0) bounce_solid(it, /**/ &s->bb, rig, flu);
 

@@ -43,7 +43,7 @@ static void ini_bforce(BForce *bforce) {
 void run(long ts, long te, Sim *s) {
     long it; /* current timestep */
     Wall *wall = &s->wall;
-    dump_strt_templ(coords, wall, s); /* :TODO: is it the right place? */
+    dump_strt_templ(s->coords, wall, s); /* :TODO: is it the right place? */
 
     BForce bforce;
     ini_bforce(&bforce);

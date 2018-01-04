@@ -49,14 +49,15 @@ static void dump_rbcs(Sim *s) {
     const Rbc *r = &s->rbc;
     static int id = 0;
     cD2H(s->pp_dump, r->q.pp, r->q.n);
-    io::mesh::rbc(m::cart, coords, s->pp_dump, r->q.tri_hst, r->q.nc, r->q.nv, r->q.nt, id++);
+    io::mesh::rbc(m::cart, s->coords, s->pp_dump, r->q.tri_hst, r->q.nc, r->q.nv, r->q.nt, id++);
 }
 
-static void dump_rbc_coms(Rbc *r) {
+static void dump_rbc_coms(Sim *s) {
     static int id = 0;
+    Rbc *r = &s->rbc;
     int nc = r->q.nc;
     rbc::com::get(r->q.nc, r->q.nv, r->q.pp, /**/ &r->com);
-    dump_com(m::cart, coords, id++, nc, r->q.ii, r->com.hrr);
+    dump_com(m::cart, s->coords, id++, nc, r->q.ii, r->com.hrr);
 }
 
 static void dump_grid(Coords coords, const Sim *s) {
@@ -76,10 +77,10 @@ void dump_diag_after(int it, bool wall0, bool solid0, Sim *s) { /* after wall */
 
     if (solid0 && it % part_freq == 0) {
         static int id = 0;
-        rig_dump(it, rig->q.ss_dmp, rig->q.ss_dmp_bb, rig->q.ns, coords);
+        rig_dump(it, rig->q.ss_dmp, rig->q.ss_dmp_bb, rig->q.ns, s->coords);
 
         cD2H(s->pp_dump, rig->q.i_pp, rig->q.ns * rig->q.nv);
-        io::mesh::rig(m::cart, coords, s->pp_dump, rig->q.htt, rig->q.ns, rig->q.nv, rig->q.nt, id++);
+        io::mesh::rig(m::cart, s->coords, s->pp_dump, rig->q.htt, rig->q.ns, rig->q.nv, rig->q.nt, id++);
     }
 }
 
@@ -116,5 +117,5 @@ void dump_diag0(Coords coords, int it, Sim *s) { /* generic dump */
     }
     if (field_dumps && it % field_freq == 0) dump_grid(coords, s);
     if (strt_dumps  && it % strt_freq == 0)  dump_strt(coords, it / strt_freq, s);
-    if (rbc_com_dumps && it % rbc_com_freq == 0) dump_rbc_coms(&s->rbc);
+    if (rbc_com_dumps && it % rbc_com_freq == 0) dump_rbc_coms(s);
 }
