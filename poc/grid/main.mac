@@ -14,17 +14,17 @@ fmt(f):=fmt0(f('r), 'r)                               $
 
 [sdf2g, g2sdf]: genfi(-1/2,      0,   N-1/2,          G) $
 [tex2g, g2tex]: genfi(-1/2, lo - M,   T-1/2, lo + L + M) $
-[sub2g, g2sub]: genfi(-L/2, lo,       0, lo + L/2)    $
+[sub2g, g2sub]: genfi(-L/2, lo,       0, lo + L/2)       $
+[out2g, g2out]: genfi(-1/2, lo,   L-1/2, lo + L)         $
 
 tex2sdf: chain(tex2g, g2sdf) $
 sdf2tex: chain(sdf2g, g2tex) $
 sub2tex: chain(sub2g, g2tex) $
-sub2sdf: chain(sub2g, g2sdf) $
+out2sdf: chain(out2g, g2sdf) $
+fmt(out2sdf);
 
 u: map('gcfac, fmt(tex2sdf));
 gcfac(fmt(sub2tex));
-
-fmt(sub2sdf);
 
 /* from `sdf/dev.h` */
 e: T * (r + L / 2 + M) / (L + 2 * M) - 1/2;
@@ -33,6 +33,12 @@ fmt0(e, 'r);
 /* from field/imp/sample.h and sdf/imp/gen.h */
 s: N * (L + 2 * M) / G / T;
 o: N * (lo - M) / G;
+e: o + ('r + 1/2) * s - 1/2;
+e: fmt0(e, 'r);
+
+/* from dump */
+s: N/G;
+o: lo / G * N;
 e: o + ('r + 1/2) * s - 1/2;
 e: fmt0(e, 'r);
 
