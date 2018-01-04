@@ -55,7 +55,7 @@ void main1(Part *p) {
     Coords coords;
     UC(ini(&sdf));
     UC(coords_ini(m::cart, /**/ &coords));
-    UC(gen(coords, m::cart, sdf));
+    UC(gen(&coords, m::cart, sdf));
     UC(main0(sdf, p));
     UC(fin(sdf));
     UC(coords_fin(&coords));
