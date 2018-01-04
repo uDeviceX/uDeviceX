@@ -2,13 +2,30 @@ static __device__ float fetch(const Sdf_v sdf, float i, float j, float k) {
     return Ttex3D(float, sdf.t, i, j, k);
 }
 
+static __device__ int iround(float x) { return (x > 0.5) ? (x + 0.5) : (x - 0.5); }
 static __device__ void convert(const float a[3], /**/ float b[3]) {
     int c;
     int L[3] = {XS, YS, ZS};
     int M[3] = {XWM, YWM, ZWM};
     int T[3] = {XTE, YTE, ZTE};
     for (c = 0; c < 3; ++c)
-        b[c] = T[c] * (a[c] + L[c] / 2 + M[c]) / (L[c] + 2 * M[c]);
+        b[c] = T[c] * (a[c] + L[c] / 2 + M[c]) / (L[c] + 2 * M[c]) - 0.5;
+}
+static __device__ void convert_floor(const float a[3], /**/ int i[3]) {
+    enum {X, Y, Z};
+    float f[3];
+    convert(a, /**/ f);
+    i[X] = int(f[X]);
+    i[Y] = int(f[Y]);
+    i[Z] = int(f[Z]);
+}
+static __device__ void convert_round(const float a[3], /**/ int i[3]) {
+    enum {X, Y, Z};
+    float f[3];
+    convert(a, /**/ f);
+    i[X] = iround(f[X]);
+    i[Y] = iround(f[Y]);
+    i[Z] = iround(f[Z]);
 }
 
 static __device__ float3 grad(const Sdf_v texsdf, const float3 *pos) {
@@ -46,10 +63,6 @@ static __device__ float3 ugrad(const Sdf_v texsdf, const float3 *r) {
         g.z /= mag; 
     }
     return g;
-}
-
-static __device__ int iround(float x) {
-    return (x > 0.5) ? (x + 0.5) : (x - 0.5);
 }
 
 static __device__ float cheap_sdf(const Sdf_v texsdf, float x, float y, float z)  {
