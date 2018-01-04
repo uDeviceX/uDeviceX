@@ -48,10 +48,21 @@ void tform_vector(float a0[3], float a1[3],   float b0[3], float b1[3], /**/ Tfo
     if (r != OK) { report(a0, a1,   b0, b1); ERR("tform_vector failed"); }
 }
 
+int smallp(float s[3]) {
+    enum {X, Y, Z};
+    const float eps = 1e-12;
+    int cx, cy, cz;
+    cx = -eps < s[X] && s[X] < eps;
+    cy = -eps < s[Y] && s[Y] < eps;
+    cz = -eps < s[Z] && s[Z] < eps;
+    return cx && cy && cz;
+}
 void tform_convert(Tform *t, float a0[3], /**/ float a1[3]) {
     enum {X, Y, Z};
     float *o, *s;
     o = t->o; s = t->s;
+    if (smallp(s))
+        ERR("tform_convert failed: s = [%g %g %g]\n", s[X], s[Y], s[Z]);
     a1[X] = s[X]*a0[X] + o[X];
     a1[Y] = s[Y]*a0[Y] + o[Y];
     a1[Z] = s[Z]*a0[Z] + o[Z];
