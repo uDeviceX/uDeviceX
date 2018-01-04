@@ -121,9 +121,9 @@ int zhi(const Coords c) { return yl2yg(c, 0) + 0.5*ZS; }
 
 /* sizes of the sub-domain */
 
-int xs(const Coords c) { return XS; }
-int ys(const Coords c) { return YS; }
-int zs(const Coords c) { return ZS; }
+int xs(const Coords) { return XS; }
+int ys(const Coords) { return YS; }
+int zs(const Coords) { return ZS; }
 
 /* rank predicates */
 
