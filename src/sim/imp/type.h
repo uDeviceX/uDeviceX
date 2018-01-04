@@ -121,6 +121,7 @@ struct Sim {
     Flu flu;
     Rbc rbc;
     Rig rig;
+    Wall wall;
 
     /* helpers */
     ObjInter objinter;

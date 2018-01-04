@@ -4,8 +4,6 @@ bop::Ticket dumpt;
 
 Coords coords;
 
-Wall wall;
-
 ObjInter objinter;
 BounceBack bb;
 Colorer colorer;

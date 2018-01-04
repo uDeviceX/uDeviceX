@@ -134,7 +134,7 @@ void sim_fin(Sim *s) {
     if (INFLOW) UC(fin_inflow(/**/ inflow));
     if (OUTFLOW_DEN) UC(fin_denoutflow(/**/ denoutflow, mapoutflow));
     
-    if (walls) fin_wall(&wall);
+    if (walls) fin_wall(&s->wall);
 
     fin_flu(&s->flu);
 

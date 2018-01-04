@@ -205,7 +205,7 @@ void sim_ini(int argc, char **argv, /**/ Sim **sim) {
     
     UC(bop::ini(m::cart, &dumpt));
 
-    if (walls) ini_wall(&wall);
+    if (walls) ini_wall(&s->wall);
     
     UC(ini_flu(m::cart, /**/ &s->flu));
    

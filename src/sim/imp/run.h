@@ -9,7 +9,8 @@ void run_eq(long te, Sim *s) { /* equilibrate */
 
 void run(long ts, long te, Sim *s) {
     long it; /* current timestep */
-    dump_strt_templ(coords, &wall, s); /* :TODO: is it the right place? */
+    Wall *wall = &s->wall;
+    dump_strt_templ(coords, wall, s); /* :TODO: is it the right place? */
 
     BForce bforce;
     // TODO
@@ -45,7 +46,7 @@ void run(long ts, long te, Sim *s) {
     
     /* ts, te: time start and end */
     for (it = ts; it < te; ++it) {
-        step2params(it - ts, &wall.vel, /**/ &wall.vview);
+        step2params(it - ts, &wall->vel, /**/ &wall->vview);
         step(&bforce, walls, it, s);
     }
     UC(distribute_flu(/**/ &s->flu));

@@ -13,6 +13,7 @@ void step(BForce *bforce, bool wall0, int it, Sim *s) {
     Flu *flu = &s->flu;
     Rbc *rbc = &s->rbc;
     Rig *rig = &s->rig;
+    Wall *wall = &s->wall;
     
     UC(check_sizes(s));
     
@@ -39,7 +40,7 @@ void step(BForce *bforce, bool wall0, int it, Sim *s) {
         log(it, &vcont);
     }
 
-    if (wall0) bounce_wall(coords, &wall, /**/ flu, rbc);
+    if (wall0) bounce_wall(coords, wall, /**/ flu, rbc);
 
     if (sbounce_back && solids0) bounce_solid(it, /**/ &bb, rig, flu);
 

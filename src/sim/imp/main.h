@@ -37,6 +37,7 @@ static void gen(Coords coords, Wall *w, Sim *s) { /* generate */
 void sim_gen(Sim *s) {
     Flu *flu = &s->flu;
     Rbc *rbc = &s->rbc;
+    Wall *wall = &s->wall;
     
     flu::gen_quants(coords, &flu->q);
     flu::build_cells(&flu->q);
@@ -53,9 +54,9 @@ void sim_gen(Sim *s) {
     msg_print("will take %ld steps", nsteps);
     if (walls || solids) {
         solids0 = false;  /* global */
-        gen(coords, /**/ &wall, s);
+        gen(coords, /**/ wall, s);
         dSync();
-        if (walls && wall.q.n) UC(wall::gen_ticket(wall.q, &wall.t));
+        if (walls && wall->q.n) UC(wall::gen_ticket(wall->q, &wall->t));
         solids0 = solids;
         if (rbcs && multi_solvent) gen_colors(rbc, &colorer, /**/ flu);
         run(wall_creation, nsteps, s);
@@ -72,6 +73,7 @@ void sim_strt(Sim *s) {
     Flu *flu = &s->flu;
     Rbc *rbc = &s->rbc;
     Rig *rig = &s->rig;
+    Wall *wall = &s->wall;
     
     /*Q*/
     flu::strt_quants(coords, restart::BEGIN, &flu->q);
@@ -82,16 +84,16 @@ void sim_strt(Sim *s) {
 
     if (solids) rig::strt_quants(coords, restart::BEGIN, &rig->q);
 
-    if (walls) wall::strt_quants(coords, MAXNWALL, &wall.q);
+    if (walls) wall::strt_quants(coords, MAXNWALL, &wall->q);
 
     /*T*/
     if (rbcs)            UC(rbc::force::gen_ticket(rbc->q, &rbc->tt));
-    if (walls && wall.q.n) UC(wall::gen_ticket(wall.q, &wall.t));
+    if (walls && wall->q.n) UC(wall::gen_ticket(wall->q, &wall->t));
 
     MC(m::Barrier(m::cart));
     if (walls) {
         dSync();
-        UC(gen(&coords, m::cart, /**/ wall.sdf));
+        UC(gen(&coords, m::cart, /**/ wall->sdf));
         MC(m::Barrier(m::cart));
     }
 
