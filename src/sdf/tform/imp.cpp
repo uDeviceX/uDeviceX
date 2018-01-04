@@ -54,4 +54,4 @@ void tex2sdf_ini(const Coords *c,
     UC(grid2grid(&tex, &sdf, /**/ t));
 }
 
-void ini_sub2tex(/**/ Tform*) { ERR("not implimented"); }
+void sub2tex_ini(/**/ Tform*) { ERR("not implimented"); }
