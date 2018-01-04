@@ -15,13 +15,10 @@ fmt(f):=fmt0(f('r), 'r)                               $
 [sdf2g, g2sdf]: genfi(-1/2,      0,   N-1/2,          G) $
 [tex2g, g2tex]: genfi(-1/2, lo - M,   T-1/2, lo + L + M) $
 [sub2g, g2sub]: genfi(-L/2, lo,       0, lo + L/2)       $
-[out2g, g2out]: genfi(-1/2, lo,   L-1/2, lo + L)         $
 
 tex2sdf: chain(tex2g, g2sdf) $
 sdf2tex: chain(sdf2g, g2tex) $
 sub2tex: chain(sub2g, g2tex) $
-out2sdf: chain(out2g, g2sdf) $
-fmt(out2sdf);
 
 u: map('gcfac, fmt(tex2sdf));
 gcfac(fmt(sub2tex));
