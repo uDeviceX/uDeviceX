@@ -27,9 +27,8 @@
 #include "glob/type.h"
 #include "wvel/type.h"
 
-#include "sdf/tex3d/type.h"
+#include "math/tform/type.h"
 #include "sdf/type.h"
-#include "sdf/imp/type.h"
 #include "sdf/imp.h"
 
 #include "partlist/type.h"

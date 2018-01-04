@@ -35,7 +35,7 @@ static void sdf_ini(const Coords *c, const int N[3], /**/ TGrid *t) {
     t->hi[X] = xdomain(*c);
     t->hi[Y] = ydomain(*c);
     t->hi[Z] = zdomain(*c);
-    
+
     t->n[X] = N[X]; t->n[Y] = N[Y]; t->n[Z] = N[Z];
 }
 
@@ -47,7 +47,7 @@ static void tex_ini(const Coords *c, const int T[3], const int M[3], /**/ TGrid 
     t->hi[X] = xhi(*c) + M[X];
     t->hi[Y] = yhi(*c) + M[Y];
     t->hi[Z] = zhi(*c) + M[Z];
-    
+
     t->n[X] = T[X]; t->n[Y] = T[Y]; t->n[Z] = T[Z];
 }
 
@@ -72,9 +72,9 @@ void tex2sdf_ini(const Coords *c,
     enum {X, Y, Z};
     TGrid tex, sdf;
 
+    if (goodp(T) == BAD) ERR("bad T = [%d %d %d]", T[X], T[Y], T[Z]);
     if (goodp(N) == BAD) ERR("bad N = [%d %d %d]", N[X], N[Y], N[Z]);
     if (goodp(M) == BAD) ERR("bad M = [%d %d %d]", M[X], M[Y], M[Z]);
-    if (goodp(T) == BAD) ERR("bad T = [%d %d %d]", T[X], T[Y], T[Z]);
 
     tex_ini(c, T, M, /**/ &tex);
     sdf_ini(c, N, /**/ &sdf);
@@ -91,4 +91,13 @@ void sub2sdf_ini(const Coords *c, const int N[3], /**/ Tform* t) {
     UC(grid2grid(&sub, &sdf, /**/ t));
 }
 
-void sub2tex_ini(/**/ Tform*) { ERR("not implimented"); }
+void sub2tex_ini(const Coords *c, const int T[3], const int M[3], /**/ Tform *t) {
+    enum {X, Y, Z};
+    TGrid sub, tex;
+    if (goodp(T) == BAD) ERR("bad T = [%d %d %d]", T[X], T[Y], T[Z]);
+    if (goodp(M) == BAD) ERR("bad M = [%d %d %d]", M[X], M[Y], M[Z]);
+
+    sub_ini(c,       /**/ &sub);
+    tex_ini(c, T, M, /**/ &tex);
+    grid2grid(&sub, &tex, /**/ t);
+}

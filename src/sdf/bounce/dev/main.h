@@ -23,8 +23,8 @@ static __device__ void rv2p(float3 r, float3 v, int i, /**/ Particle *pp) {
 
 static __device__ bool is_small(float f) {return fabs(f) < 1e-6f;}
 static __device__ void crop(float *t) {
-        if (*t < -dt) *t = -dt;
-        if (*t >   0) *t = 0;
+    if (*t < -dt) *t = -dt;
+    if (*t >   0) *t = 0;
 }
 
 static __device__ void rescue(Wvel_v wv, Coords c, const Sdf_v texsdf, float currsdf, /* io */ float3 *r, float3 *v) {
@@ -32,7 +32,7 @@ static __device__ void rescue(Wvel_v wv, Coords c, const Sdf_v texsdf, float cur
     float3 dsdf;
     int l;
     
-    dsdf = grad_sdf(texsdf, r);
+    dsdf = ugrad(texsdf, r);
     sdf0 = currsdf;
 
     axpy(-sdf0, &dsdf, /**/ r);
@@ -65,7 +65,7 @@ static __device__ void bounce_back_1p(Wvel_v wv, Coords c, const Sdf_v texsdf, f
         rc = *r;
         axpy(t, v, /**/ &rc);
         phi = sdf(texsdf, rc.x, rc.y, rc.z);
-        dsdf = ugrad_sdf(texsdf, &rc);
+        dsdf = grad(texsdf, &rc);
         dphi = dot<float> (v, &dsdf);
 
         if (is_small(dphi))

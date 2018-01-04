@@ -23,6 +23,7 @@
 #include "wvel/dev.h"
 #include "math/dev.h"
 
+#include "math/tform/type.h"
 #include "sdf/def.h"
 #include "sdf/type.h"
 #include "sdf/imp.h"

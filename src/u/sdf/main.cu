@@ -21,6 +21,7 @@
 #include "glob/ini.h"
 #include "wvel/type.h"
 
+#include "math/tform/type.h"
 #include "sdf/imp.h"
 #include "sdf/type.h"
 
