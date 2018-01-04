@@ -183,11 +183,12 @@ void sim_ini(int argc, char **argv, /**/ Sim **sim) {
     Sim *s;
     UC(emalloc(sizeof(Sim), (void**) sim));
     s = *sim;
-    
+
+    Config *cfg = s->cfg;    
     datatype::ini();
 
-    UC(conf_ini(&config));
-    UC(conf_read(argc, argv, /**/ config));
+    UC(conf_ini(&cfg));
+    UC(conf_read(argc, argv, /**/ cfg));
     
     UC(coords_ini(m::cart, /**/ &coords));
     

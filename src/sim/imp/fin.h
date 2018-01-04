@@ -154,7 +154,7 @@ void sim_fin(Sim *s) {
 
     UC(coords_fin(/**/ &coords));
 
-    UC(conf_destroy(config));
+    UC(conf_destroy(s->cfg));
     datatype::fin();
 
     UC(efree(s));
