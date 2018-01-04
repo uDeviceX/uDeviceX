@@ -20,11 +20,11 @@
 #include "inc/dev.h"
 #include "mpi/wrapper.h"
 
-#include "fields_grid.h"
+#include "imp.h"
 
 /* body */
 #if dump_all_fields
-  #include "fields_grid/all.h"
+  #include "imp/all.h"
 #else
-  #include "fields_grid/solvent.h"
+  #include "imp/solvent.h"
 #endif
