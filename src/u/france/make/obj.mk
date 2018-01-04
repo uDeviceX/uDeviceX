@@ -5,7 +5,7 @@ O = $B/algo/minmax/imp.o $B/algo/scan/imp.o $B/clist/imp.o $B/cnt/imp.o \
     $B/exch/mesh/imp.o $B/exch/obj/imp.o $B/flu/imp.o $B/fluforces/bulk/imp.o \
     $B/fluforces/bulk/transpose/imp.o $B/fluforces/halo/imp.o $B/fluforces/imp.o \
     $B/frag/imp.o $B/fsi/imp.o $B/generate/rig/imp.o $B/glob/imp.o $B/inter/imp.o \
-    $B/io/bop/imp.o $B/io/com.o $B/io/diag.o $B/io/field/h5/imp.o \
+    $B/io/bop/imp.o $B/io/com/imp.o $B/io/diag.o $B/io/field/h5/imp.o \
     $B/io/field/imp.o $B/io/field/xmf/imp.o $B/io/fields_grid.o $B/io/mesh/imp.o \
     $B/io/mesh/write/imp.o $B/io/off.o $B/io/ply.o $B/io/restart.o $B/io/rig.o \
     $B/main.o $B/math/linal/imp.o $B/math/rnd/imp.o $B/math/tform/imp.o \
