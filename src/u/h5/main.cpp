@@ -42,7 +42,7 @@ void dump(MPI_Comm comm, const char *path, int sx, int sy, int sz) {
     float *rho, *u[3];
     const char *names[] = { "density", "u", "v", "w" };
 
-    UC(ini_coords(comm, /**/ &coords));
+    UC(coords_ini(comm, /**/ &coords));
     MC(m::Comm_rank(comm, &rank));
     
     nc = sx * sy * sz;

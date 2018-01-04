@@ -44,7 +44,7 @@ static void run1(rbc::Quants q, rbc::force::TicketT t) {
 static void run2(const char *cell, const char *ic, rbc::Quants q) {
     Coords coords;
     rbc::force::TicketT t;
-    ini_coords(m::cart, &coords);
+    coords_ini(m::cart, &coords);
     rbc::main::gen_quants(coords, m::cart, cell, ic, /**/ &q);
     rbc::force::gen_ticket(q, &t);
     run1(q, t);

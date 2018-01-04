@@ -15,7 +15,7 @@ int main(int argc, char **argv) {
     m::ini(&argc, &argv);
     msg_ini(m::rank);
     Coords coords;
-    ini_coords(m::cart, &coords);
+    coords_ini(m::cart, &coords);
     run(coords, "rbc.off", "rbcs-ic.txt");
     fin_coords(&coords);
     m::fin();

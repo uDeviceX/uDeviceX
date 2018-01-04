@@ -1,6 +1,6 @@
 enum {X, Y, Z, D};
     
-void ini_coords(MPI_Comm cart, Coords *c) {
+void coords_ini(MPI_Comm cart, Coords *c) {
     int dims[D], periods[D], coords[D];
     MC(m::Cart_get(cart, D, dims, periods, coords));
 

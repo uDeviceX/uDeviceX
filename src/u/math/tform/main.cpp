@@ -256,7 +256,7 @@ static int flag(const char *a, int* pc, char ***pv) {
 int main(int argc, char **argv) {
     m::ini(&argc, &argv);
     msg_ini(m::rank);
-    ini_coords(m::cart, /**/ &coords);
+    coords_ini(m::cart, /**/ &coords);
     usg(argc, argv);
     Inv   = flag("-i", &argc, &argv);
     Chain = flag("-c", &argc, &argv);
