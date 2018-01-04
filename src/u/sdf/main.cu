@@ -21,12 +21,10 @@
 #include "glob/ini.h"
 #include "wvel/type.h"
 
+#include "sdf/imp.h"
 #include "math/tform/type.h"
 #include "sdf/tex3d/type.h"
 #include "sdf/type.h"
-#include "sdf/imp.h"
-
-#include "sdf/tex3d/type.h"
 
 #include "sdf/dev.h"
 #include "sdf/imp/type.h"
