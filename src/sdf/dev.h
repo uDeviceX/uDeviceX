@@ -3,7 +3,12 @@ static __device__ float fetch(const Sdf_v sdf, float i, float j, float k) {
 }
 
 static __device__ void convert(const float a[3], /**/ float b[3]) {
-    enum {X, Y, Z};
+    int c;
+    int L[3] = {XS, YS, ZS};
+    int M[3] = {XWM, YWM, ZWM};
+    int T[3] = {XTE, YTE, ZTE};
+    for (c = 0; c < 3; ++c)
+        b[c] = T[c] * (a[c] + L[c] / 2 + M[c]) / (L[c] + 2 * M[c]);
 }
 
 static __device__ float3 grad(const Sdf_v texsdf, const float3 *pos) {
