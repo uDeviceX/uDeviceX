@@ -4,7 +4,6 @@ bop::Ticket dumpt;
 
 Coords coords;
 
-Flu flu;
 Rbc rbc;
 Rig rig;
 Wall wall;

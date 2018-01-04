@@ -1,6 +1,8 @@
-static void dev2hst() { /* device to host  data transfer */
+static void dev2hst(Sim *s) { /* device to host  data transfer */
     int start = 0;
-    cD2H(a::pp_hst + start, flu.q.pp, flu.q.n); start += flu.q.n;
+    Flu *flu = &s->flu;
+
+    cD2H(a::pp_hst + start, flu->q.pp, flu->q.n); start += flu->q.n;
     if (solids0) {
         cD2H(a::pp_hst + start, rig.q.pp, rig.q.n); start += rig.q.n;
     }
@@ -9,22 +11,23 @@ static void dev2hst() { /* device to host  data transfer */
     }
 }
 
-static void dump_part(Coords coords, int step) {
-    cD2H(flu.q.pp_hst, flu.q.pp, flu.q.n);
+static void dump_part(Coords coords, int step, const Sim *s) {
+    const Flu *flu = &s->flu;    
+    cD2H(flu->q.pp_hst, flu->q.pp, flu->q.n);
     if (global_ids) {
-        cD2H(flu.q.ii_hst, flu.q.ii, flu.q.n);
-        bop::ids(m::cart, flu.q.ii_hst, flu.q.n, "id_solvent", step);
+        cD2H(flu->q.ii_hst, flu->q.ii, flu->q.n);
+        bop::ids(m::cart, flu->q.ii_hst, flu->q.n, "id_solvent", step);
     }
     if (multi_solvent) {
-        cD2H(flu.q.cc_hst, flu.q.cc, flu.q.n);
-        bop::colors(m::cart, flu.q.cc_hst, flu.q.n, "colors_solvent", step);
+        cD2H(flu->q.cc_hst, flu->q.cc, flu->q.n);
+        bop::colors(m::cart, flu->q.cc_hst, flu->q.n, "colors_solvent", step);
     }
 
     if (force_dumps) {
-        cD2H(flu.ff_hst, flu.ff, flu.q.n);
-        bop::parts_forces(m::cart, coords, flu.q.pp_hst, flu.ff_hst, flu.q.n, "solvent", step, /**/ &dumpt);
+        cD2H(flu->ff_hst, flu->ff, flu->q.n);
+        bop::parts_forces(m::cart, coords, flu->q.pp_hst, flu->ff_hst, flu->q.n, "solvent", step, /**/ &dumpt);
     } else {
-        bop::parts(m::cart, coords, flu.q.pp_hst, flu.q.n, "solvent", step, /**/ &dumpt);
+        bop::parts(m::cart, coords, flu->q.pp_hst, flu->q.n, "solvent", step, /**/ &dumpt);
     }
 
     if(solids0) {
@@ -51,11 +54,12 @@ static void dump_rbc_coms(Rbc *r) {
     dump_com(m::cart, coords, id++, nc, r->q.ii, r->com.hrr);
 }
 
-static void dump_grid(Coords coords) {
+static void dump_grid(Coords coords, const Sim *s) {
+    const Flu *flu = &s->flu;
     QQ qq; /* pack for io/field_dumps */
     NN nn;
-    qq.o = flu.q.pp; qq.s = rig.q.pp; qq.r = rbc.q.pp;
-    nn.o = flu.q.n ; nn.s = rig.q.n ;  nn.r = rbc.q.n;
+    qq.o = flu->q.pp; qq.s = rig.q.pp; qq.r = rbc.q.pp;
+    nn.o = flu->q.n ; nn.s = rig.q.n ;  nn.r = rbc.q.n;
     fields_grid(coords, m::cart, qq, nn, /*w*/ a::pp_hst);
 }
 
@@ -69,8 +73,9 @@ void dump_diag_after(int it, bool wall0, bool solid0) { /* after wall */
     }
 }
 
-static void diag(int it) {
-    int n = flu.q.n + rig.q.n + rbc.q.n; dev2hst();
+static void diag(int it, Sim *s) {
+    const Flu *flu = &s->flu;
+    int n = flu->q.n + rig.q.n + rbc.q.n; dev2hst(s);
     diagnostics(m::cart, n, a::pp_hst, it);
 }
 
@@ -81,19 +86,20 @@ void dump_strt_templ(Coords coords, Wall *w) { /* template dumps (wall, solid) *
     }
 }
 
-void dump_strt(Coords coords, int id) {
-    flu::strt_dump(coords, id, flu.q);
+void dump_strt(Coords coords, int id, Sim *s) {
+    Flu *flu = &s->flu;
+    flu::strt_dump(coords, id, flu->q);
     if (rbcs)       rbc::main::strt_dump(coords, id, &rbc.q);
     if (solids)     rig::strt_dump(coords, id, rig.q);
 }
 
-void dump_diag0(Coords coords, int it) { /* generic dump */
+void dump_diag0(Coords coords, int it, Sim *s) { /* generic dump */
     if (it % part_freq  == 0) {
-        if (part_dumps) dump_part(coords, it);
+        if (part_dumps) dump_part(coords, it, s);
         if (rbcs)       dump_rbcs(&rbc);
-        diag(it);
+        diag(it, s);
     }
-    if (field_dumps && it % field_freq == 0) dump_grid(coords);
-    if (strt_dumps  && it % strt_freq == 0)  dump_strt(coords, it / strt_freq);
+    if (field_dumps && it % field_freq == 0) dump_grid(coords, s);
+    if (strt_dumps  && it % strt_freq == 0)  dump_strt(coords, it / strt_freq, s);
     if (rbc_com_dumps && it % rbc_com_freq == 0) dump_rbc_coms(&rbc);
 }

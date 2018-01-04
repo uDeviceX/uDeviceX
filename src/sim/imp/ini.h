@@ -207,7 +207,7 @@ void sim_ini(int argc, char **argv, /**/ Sim **sim) {
 
     if (walls) ini_wall(&wall);
     
-    UC(ini_flu(m::cart, /**/ &flu));
+    UC(ini_flu(m::cart, /**/ &s->flu));
    
     if (multi_solvent && rbcs)
         UC(ini_colorer(rbc.q.nv, m::cart, /**/ &colorer));

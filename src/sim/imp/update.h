@@ -1,5 +1,6 @@
-void clear_vel() {
-    scheme::move::clear_vel(flu.q.n, flu.q.pp);
+void clear_vel(Sim *s) {
+    Flu *flu = &s->flu;
+    scheme::move::clear_vel(flu->q.n, flu->q.pp);
     if (solids) scheme::move::clear_vel(rig.q.n, rig.q.pp);
     if (rbcs  ) scheme::move::clear_vel(rbc.q.n, rbc.q.pp);
 }
@@ -15,7 +16,7 @@ void update_solid(Rig *s) {
     rig::reinit_ft(q->ns, /**/ q->ss);
 }
 
-void bounce_solid(long it, BounceBack *bb, Rig *s) {
+void bounce_solid(long it, BounceBack *bb, Rig *s, Flu *flu) {
     int n, nm, nt, nv, *ss, *cc, nmhalo, counts[comm::NFRAGS];
     int4 *tt;
     Particle *pp, *i_pp;
@@ -30,10 +31,10 @@ void bounce_solid(long it, BounceBack *bb, Rig *s) {
     tt = qs->dtt;
     i_pp = qs->i_pp;
 
-    n  = flu.q.n;
-    pp = flu.q.pp;
-    cc = flu.q.cells.counts;
-    ss = flu.q.cells.starts;
+    n  = flu->q.n;
+    pp = flu->q.pp;
+    cc = flu->q.cells.counts;
+    ss = flu->q.cells.starts;
 
     /* send meshes to frags */
 
@@ -56,9 +57,9 @@ void bounce_solid(long it, BounceBack *bb, Rig *s) {
     if (nm + nmhalo)
         CC(d::MemsetAsync(bb->mm, 0, nt * (nm + nmhalo) * sizeof(Momentum)));
 
-    meshbb::find_collisions(nm + nmhalo, nt, nv, tt, i_pp, L, ss, cc, pp, flu.ff, /**/ bb->d);
+    meshbb::find_collisions(nm + nmhalo, nt, nv, tt, i_pp, L, ss, cc, pp, flu->ff, /**/ bb->d);
     meshbb::select_collisions(n, /**/ bb->d);
-    meshbb::bounce(n, bb->d, flu.ff, nt, nv, tt, i_pp, /**/ pp, bb->mm);
+    meshbb::bounce(n, bb->d, flu->ff, nt, nv, tt, i_pp, /**/ pp, bb->mm);
 
     /* send momentum back */
 
@@ -87,10 +88,10 @@ void update_solvent(long it, /**/ Flu *f) {
     scheme::move::main(flu_mass, f->q.n, f->ff, f->q.pp);
 }
 
-void update_rbc(long it, Rbc *r) {
+void update_rbc(long it, Rbc *r, Sim *s) {
     bool cond;
     cond = multi_solvent && color_freq && it % color_freq == 0;
-    if (cond) {msg_print("recolor"); gen_colors(r, &colorer, /**/ &flu);}; /* TODO: does not belong here*/
+    if (cond) {msg_print("recolor"); gen_colors(r, &colorer, /**/ &s->flu);}; /* TODO: does not belong here*/
     scheme::move::main(rbc_mass, r->q.n, r->ff, r->q.pp);
 }
 

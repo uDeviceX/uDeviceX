@@ -1,12 +1,13 @@
-void run_eq(long te) { /* equilibrate */
+void run_eq(long te, Sim *s) { /* equilibrate */
     BForce bforce;
+    
     ini_none(/**/ &bforce);    
     bool wall0 = false;
-    for (long it = 0; it < te; ++it) step(&bforce, wall0, it);
-    UC(distribute_flu(/**/ &flu));
+    for (long it = 0; it < te; ++it) step(&bforce, wall0, it, s);
+    UC(distribute_flu(/**/ &s->flu));
 }
 
-void run(long ts, long te) {
+void run(long ts, long te, Sim *s) {
     long it; /* current timestep */
     dump_strt_templ(coords, &wall); /* :TODO: is it the right place? */
 
@@ -45,7 +46,7 @@ void run(long ts, long te) {
     /* ts, te: time start and end */
     for (it = ts; it < te; ++it) {
         step2params(it - ts, &wall.vel, /**/ &wall.vview);
-        step(&bforce, walls, it);
+        step(&bforce, walls, it, s);
     }
-    UC(distribute_flu(/**/ &flu));
+    UC(distribute_flu(/**/ &s->flu));
 }

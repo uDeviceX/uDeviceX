@@ -9,36 +9,40 @@ enum {
     MAXNWALL = NCELLSWALL * numberdensity
 };
 
-static void gen(Coords coords, Wall *w) { /* generate */
-    run_eq(wall_creation);
+static void gen(Coords coords, Wall *w, Sim *s) { /* generate */
+    Flu *flu = &s->flu;
+    
+    run_eq(wall_creation, s);
     if (walls) {
         dSync();
         UC(gen(&coords, m::cart, /**/ w->sdf));
         MC(m::Barrier(m::cart));
-        inter::create_walls(MAXNWALL, w->sdf, /*io*/ &flu.q, /**/ &w->q);
+        inter::create_walls(MAXNWALL, w->sdf, /*io*/ &flu->q, /**/ &w->q);
     }
-    inter::freeze(coords, m::cart, w->sdf, /*io*/ &flu.q, /**/ &rig.q, &rbc.q);
-    clear_vel();
+    inter::freeze(coords, m::cart, w->sdf, /*io*/ &flu->q, /**/ &rig.q, &rbc.q);
+    clear_vel(s);
 
     if (multi_solvent) {
-        Particle *pp = flu.q.pp;
-        int n = flu.q.n;
-        int *cc = flu.q.cc;
+        Particle *pp = flu->q.pp;
+        int n = flu->q.n;
+        int *cc = flu->q.cc;
         Particle *pp_hst = a::pp_hst;
-        int *cc_hst = flu.q.cc_hst;
+        int *cc_hst = flu->q.cc_hst;
         inter::color_dev(coords, pp, n, /*o*/ cc, /*w*/ pp_hst, cc_hst);
     }
 }
 
-void sim_gen(Sim *sim) {
-    flu::gen_quants(coords, &flu.q);
-    flu::build_cells(&flu.q);
-    if (global_ids)    flu::gen_ids  (m::cart, flu.q.n, &flu.q);
+void sim_gen(Sim *s) {
+    Flu *flu = &s->flu;
+    
+    flu::gen_quants(coords, &flu->q);
+    flu::build_cells(&flu->q);
+    if (global_ids)    flu::gen_ids  (m::cart, flu->q.n, &flu->q);
     if (rbcs) {
         rbc::main::gen_quants(coords, m::cart, "rbc.off", "rbcs-ic.txt", /**/ &rbc.q);
         rbc::force::gen_ticket(rbc.q, &rbc.tt);
 
-        if (multi_solvent) gen_colors(&rbc, &colorer, /**/ &flu);
+        if (multi_solvent) gen_colors(&rbc, &colorer, /**/ flu);
     }
     MC(m::Barrier(m::cart));
 
@@ -46,26 +50,27 @@ void sim_gen(Sim *sim) {
     msg_print("will take %ld steps", nsteps);
     if (walls || solids) {
         solids0 = false;  /* global */
-        gen(coords, /**/ &wall);
+        gen(coords, /**/ &wall, s);
         dSync();
         if (walls && wall.q.n) UC(wall::gen_ticket(wall.q, &wall.t));
         solids0 = solids;
-        if (rbcs && multi_solvent) gen_colors(&rbc, &colorer, /**/ &flu);
-        run(wall_creation, nsteps);
+        if (rbcs && multi_solvent) gen_colors(&rbc, &colorer, /**/ flu);
+        run(wall_creation, nsteps, s);
     } else {
         solids0 = solids;
-        run(            0, nsteps);
+        run(            0, nsteps, s);
     }
     /* final strt dump*/
-    if (strt_dumps) dump_strt(coords, restart::FINAL);
+    if (strt_dumps) dump_strt(coords, restart::FINAL, s);
 }
 
-void sim_strt(Sim *sim) {
+void sim_strt(Sim *s) {
     long nsteps = (long)(tend / dt);
-
+    Flu *flu = &s->flu;
+    
     /*Q*/
-    flu::strt_quants(coords, restart::BEGIN, &flu.q);
-    flu::build_cells(&flu.q);
+    flu::strt_quants(coords, restart::BEGIN, &flu->q);
+    flu::build_cells(&flu->q);
 
     if (rbcs) rbc::main::strt_quants(coords, "rbc.off", restart::BEGIN, &rbc.q);
     dSync();
@@ -88,7 +93,7 @@ void sim_strt(Sim *sim) {
     solids0 = solids;
 
     msg_print("will take %ld steps", nsteps - wall_creation);
-    run(wall_creation, nsteps);
+    run(wall_creation, nsteps, s);
 
-    if (strt_dumps) dump_strt(coords, restart::FINAL);
+    if (strt_dumps) dump_strt(coords, restart::FINAL, s);
 }

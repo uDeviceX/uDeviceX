@@ -123,7 +123,7 @@ static void fin_objinter(ObjInter *o) {
     if (fsiforces)     fsi::fin(&o->fsi);
 }
 
-void sim_fin(Sim *sim) {
+void sim_fin(Sim *s) {
 
     bop::fin(&dumpt);
     if (rbcs || solids)
@@ -136,7 +136,7 @@ void sim_fin(Sim *sim) {
     
     if (walls) fin_wall(&wall);
 
-    fin_flu(&flu);
+    fin_flu(&s->flu);
 
     if (multi_solvent && rbcs)
         fin_colorer(/**/ &colorer);
@@ -157,5 +157,5 @@ void sim_fin(Sim *sim) {
     UC(conf_destroy(config));
     datatype::fin();
 
-    UC(efree(sim));
+    UC(efree(s));
 }

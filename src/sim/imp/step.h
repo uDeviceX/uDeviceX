@@ -3,45 +3,47 @@ static void check_size(long n, long nmax) {
         ERR("wrong size: %ld / %ld", n, nmax);
 }
 
-static void check_sizes() {
+static void check_sizes(Sim *s) {
     UC(check_size(rbc.q.nc, MAX_CELL_NUM));
     UC(check_size(rbc.q.n , MAX_CELL_NUM * RBCnv));
-    UC(check_size(flu.q.n , MAX_PART_NUM)); 
+    UC(check_size(s->flu.q.n , MAX_PART_NUM)); 
 }
 
-void step(BForce *bforce, bool wall0, int it) {
-    UC(check_sizes());
+void step(BForce *bforce, bool wall0, int it, Sim *s) {
+    Flu *flu = &s->flu;
     
-    UC(distribute_flu(&flu));
+    UC(check_sizes(s));
+    
+    UC(distribute_flu(flu));
     if (solids0) UC(distribute_rig(/**/ &rig));
     if (rbcs)    UC(distribute_rbc(/**/ &rbc));
 
-    UC(check_sizes());
+    UC(check_sizes(s));
     
-    forces(wall0);
+    forces(wall0, s);
 
-    dump_diag0(coords, it);
+    dump_diag0(coords, it, s);
     dump_diag_after(it, wall0, solids0);
-    body_force(it, *bforce);
+    body_force(it, *bforce, s);
 
-    restrain(it, /**/ &flu, &rbc);
-    update_solvent(it, /**/ &flu);
+    restrain(it, /**/ flu, &rbc);
+    update_solvent(it, /**/ flu);
     if (solids0) update_solid(/**/ &rig);
-    if (rbcs)    update_rbc(it, &rbc);
+    if (rbcs)    update_rbc(it, &rbc, s);
 
     if (VCON && wall0) {
-        sample(it, &flu, /**/ &vcont);
+        sample(it, flu, /**/ &vcont);
         adjust(it, /**/ &vcont, bforce);
         log(it, &vcont);
     }
 
-    if (wall0) bounce_wall(coords, &wall, /**/ &flu, &rbc);
+    if (wall0) bounce_wall(coords, &wall, /**/ flu, &rbc);
 
-    if (sbounce_back && solids0) bounce_solid(it, /**/ &bb, &rig);
+    if (sbounce_back && solids0) bounce_solid(it, /**/ &bb, &rig, flu);
 
     if (wall0) {
-        if (INFLOW)  apply_inflow(inflow, &flu);
-        if (OUTFLOW) mark_outflow(&flu, /**/ outflow);
-        if (OUTFLOW_DEN) mark_outflowden(&flu, mapoutflow, /**/ denoutflow);
+        if (INFLOW)  apply_inflow(inflow, flu);
+        if (OUTFLOW) mark_outflow(flu, /**/ outflow);
+        if (OUTFLOW_DEN) mark_outflowden(flu, mapoutflow, /**/ denoutflow);
     }
 }
