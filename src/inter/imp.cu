@@ -30,7 +30,7 @@
 
 #include "utils/texo.h"
 
-#include "partlist/imp.h"
+#include "partlist/type.h"
 #include "clist/imp.h"
 
 #include "wvel/type.h"

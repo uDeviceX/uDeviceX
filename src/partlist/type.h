@@ -1,6 +1,6 @@
 enum {
     ALIVE = 0,
-    DEAD = 1
+    DEAD  = 1
 };
 
 /* structure of particle                           */

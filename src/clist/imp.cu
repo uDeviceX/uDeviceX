@@ -16,7 +16,7 @@
 #include "utils/cc.h"
 #include "utils/kl.h"
 
-#include "partlist/imp.h"
+#include "partlist/type.h"
 #include "partlist/dev.h"
 
 #include "imp.h"
