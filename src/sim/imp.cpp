@@ -113,7 +113,7 @@
 #include "color/flux.h"
 
 #include "imp.h"
-namespace sim {
+
 #include "imp/type.h"
 #include "imp/force/common.h"
 #include "imp/force/dpd.h"
@@ -133,5 +133,3 @@ namespace sim {
 #include "imp/step.h"
 #include "imp/run.h"
 #include "imp/main.h"
-} // sim
-
