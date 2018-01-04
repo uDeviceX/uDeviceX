@@ -40,7 +40,7 @@ struct TInput {
     TTex  tex;
 };
 
-static int Inv, Chain, Dev, Grid, Tex;
+static int Chain, Dev, Grid, Tex;
 static Coords coords;
 
 static void usg0() {
@@ -113,18 +113,6 @@ static void process(Tform *t) {
     }
 }
 
-static void inv(Tform **pt) {
-    Tform *t1, *t2;
-    t1 = *pt;
-
-    UC(tform_ini(&t2));
-    UC(tform_inv(t1, /**/ t2));
-    UC(tform_fin(t1));
-    tform_log(t2);
-
-    *pt = t2;
-}
-
 static void chain(TInput *v, Tform **pt) {
     Tform *t, *t1, *t2;
     t = *pt;
@@ -159,7 +147,6 @@ static void input2form(TInput *v, Tform **t) {
                         v->v.b0, v->v.b1, /**/ *t));
         if (Chain) chain(v, t);
     }
-    if (Inv)   inv(t);
 }
 
 static void main1(TInput *v) {
@@ -259,7 +246,6 @@ int main(int argc, char **argv) {
     msg_ini(m::rank);
     coords_ini(m::cart, /**/ &coords);
     usg(argc, argv);
-    Inv   = flag("-i", &argc, &argv);
     Chain = flag("-c", &argc, &argv);
     Dev   = flag("-d", &argc, &argv);
     Grid  = flag("-g", &argc, &argv);

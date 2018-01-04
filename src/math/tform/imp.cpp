@@ -82,17 +82,6 @@ void tform_chain(Tform *t1, Tform *t2, /**/ Tform *t) {
     UC(tform_vector(a0, a2, b0, b2, t));
 }
 
-void tform_inv(Tform *t1, /**/ Tform *t) {
-    float a0[3] = {0, 0, 0};
-    float b0[3] = {1, 1, 1};
-    float a1[3], b1[3];
-
-    tform_convert(t1, a0, /**/ a1);
-    tform_convert(t1, b0, /**/ b1);
-
-    UC(tform_vector(a1, a0,    b1, b0, t)); /* invert */
-}
-
 void tform_log(Tform *t) {
     enum {X, Y, Z};
     float *o, *s;
