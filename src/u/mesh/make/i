@@ -1,9 +1,7 @@
 f0 () { find "$1" -name '*.cu' -o -name '*.cpp' -o -name '*.h' -type f ; }
 f () ( for d; do f0 "$d"; done )
 
-f algo utils d mpi mesh inc $U
-
-echo io/off.h io/off.cpp io/off/imp.h
+f algo utils d mpi mesh inc io/off $U
 
 # directories
 echo $U $U/imp .

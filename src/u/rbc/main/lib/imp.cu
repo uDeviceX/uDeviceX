@@ -33,7 +33,7 @@
 #include "scheme/force/imp.h"
 
 #include "io/mesh/imp.h"
-#include "io/diag.h"
+#include "io/diag/imp.h"
 
 #include "mpi/wrapper.h"
 #include "mpi/glb.h"

@@ -68,7 +68,7 @@ static int main0(Coords coords, float *rr0, const char *ic, int nv, Particle *pp
 
 static void vert(const char *f, int n0, /**/ float *vert) {
     int n;
-    UC(off::vert(f, n0, /**/ &n, vert));
+    UC(off_read_vert(f, n0, /**/ &n, vert));
     if (n0 != n)
         ERR("wrong vert number in <%s> : %d != %d", f, n0, n);
 }

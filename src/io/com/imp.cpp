@@ -16,6 +16,8 @@
 #include "utils/os.h"
 #include "utils/error.h"
 
+#include "imp.h"
+
 enum {MAX_CHAR_PER_LINE = 128};
 
 static int swrite(Coords coords, int n, const int *ii, const float3 *rr, /**/ char *s) {

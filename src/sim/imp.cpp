@@ -39,8 +39,8 @@
 #include "io/fields_grid.h"
 #include "io/mesh/imp.h"
 #include "io/rig.h"
-#include "io/diag.h"
-#include "io/com.h"
+#include "io/diag/imp.h"
+#include "io/com/imp.h"
 
 #include "wvel/type.h"
 #include "wvel/imp.h"
