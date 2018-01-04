@@ -19,9 +19,12 @@ fmt(f):=fmt0(f('r), 'r)                               $
 tex2sdf: chain(tex2g, g2sdf) $
 sdf2tex: chain(sdf2g, g2tex) $
 sub2tex: chain(sub2g, g2tex) $
+sub2sdf: chain(sub2g, g2sdf) $
 
 u: map('gcfac, fmt(tex2sdf));
 gcfac(fmt(sub2tex));
+
+fmt(sub2sdf);
 
 /* from `sdf/dev.h` */
 e: T * (r + L / 2 + M) / (L + 2 * M) - 1/2;
