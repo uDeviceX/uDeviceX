@@ -65,8 +65,9 @@ void tex2sdf_ini(const Coords *c,
     UC(grid2grid(&tex, &sdf, /**/ t));
 }
 
-void sub2sdf_ini(const Coords*, int N[3], /**/ Tform* t) {
+void sub2sdf_ini(const Coords *c, int N[3], /**/ Tform* t) {
     TGrid sub, sdf;
+    sdf_ini(c, N, /**/ &sdf);
     UC(grid2grid(&sub, &sdf, /**/ t));
 }
 
