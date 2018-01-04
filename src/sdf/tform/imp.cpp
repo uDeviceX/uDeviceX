@@ -68,13 +68,13 @@ static void sub_ini(const Coords *c, /**/ TGrid *t) {
 
 static void out_ini(const Coords *c, /**/ TGrid *t) {
     enum {X, Y, Z};
-    t->lo[X] = xlo(*c);
-    t->lo[Y] = ylo(*c);
-    t->lo[Z] = zlo(*c);
+    t->lo[X] = xlo(*c) + xs(*c)/2;
+    t->lo[Y] = ylo(*c) + ys(*c)/2;
+    t->lo[Z] = zlo(*c) + zs(*c)/2;
 
-    t->hi[X] = xhi(*c);
-    t->hi[Y] = yhi(*c);
-    t->hi[Z] = zhi(*c);
+    t->hi[X] = xhi(*c) + xs(*c)/2;
+    t->hi[Y] = yhi(*c) + ys(*c)/2;
+    t->hi[Z] = zhi(*c) + zs(*c)/2;
 
     t->n[X] = xs(*c);
     t->n[Y] = ys(*c);
