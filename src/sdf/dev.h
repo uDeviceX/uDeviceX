@@ -1,5 +1,5 @@
 static __device__ float fetch(const Sdf_v sdf, float i, float j, float k) {
-    return Ttex3D(float, sdf.D.t, i, j, k);
+    return Ttex3D(float, sdf.tex.t, i, j, k);
 }
 static __device__ int iround(float x) { return (x > 0.5) ? (x + 0.5) : (x - 0.5); }
 static __device__ void convert(const float a[3], /**/ float b[3]) {
