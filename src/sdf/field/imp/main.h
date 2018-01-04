@@ -29,7 +29,7 @@ void scale(const int N[3], float s, /**/ float *D) {
     for (i = 0; i < n; i++) D[i] *= s;
 }
 
-static void dump0(const int N0[3], const float* D0, /**/ float* D1) {
+static void dump0(const int N0[3], const float *D0, /**/ float *D1) {
     float org[3], spa[3];
     int c;
     float G; /* domain size ([g]lobal) */
