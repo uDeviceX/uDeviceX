@@ -150,7 +150,7 @@ void sim_fin(Sim *s) {
 
     UC(efree(a::pp_hst));
     
-    if (rbcs) fin_rbc(/**/ &rbc);
+    if (rbcs) fin_rbc(/**/ &s->rbc);
 
     UC(coords_fin(/**/ &coords));
 

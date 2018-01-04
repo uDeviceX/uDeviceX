@@ -1,13 +1,14 @@
 static void dev2hst(Sim *s) { /* device to host  data transfer */
     int start = 0;
     Flu *flu = &s->flu;
-
+    Rbc *rbc = &s->rbc;
+    
     cD2H(a::pp_hst + start, flu->q.pp, flu->q.n); start += flu->q.n;
     if (solids0) {
         cD2H(a::pp_hst + start, rig.q.pp, rig.q.n); start += rig.q.n;
     }
     if (rbcs) {
-        cD2H(a::pp_hst + start, rbc.q.pp, rbc.q.n); start += rbc.q.n;
+        cD2H(a::pp_hst + start, rbc->q.pp, rbc->q.n); start += rbc->q.n;
     }
 }
 
@@ -56,10 +57,11 @@ static void dump_rbc_coms(Rbc *r) {
 
 static void dump_grid(Coords coords, const Sim *s) {
     const Flu *flu = &s->flu;
+    const Rbc *rbc = &s->rbc;
     QQ qq; /* pack for io/field_dumps */
     NN nn;
-    qq.o = flu->q.pp; qq.s = rig.q.pp; qq.r = rbc.q.pp;
-    nn.o = flu->q.n ; nn.s = rig.q.n ;  nn.r = rbc.q.n;
+    qq.o = flu->q.pp; qq.s = rig.q.pp; qq.r = rbc->q.pp;
+    nn.o = flu->q.n ; nn.s = rig.q.n ;  nn.r = rbc->q.n;
     fields_grid(coords, m::cart, qq, nn, /*w*/ a::pp_hst);
 }
 
@@ -75,7 +77,9 @@ void dump_diag_after(int it, bool wall0, bool solid0) { /* after wall */
 
 static void diag(int it, Sim *s) {
     const Flu *flu = &s->flu;
-    int n = flu->q.n + rig.q.n + rbc.q.n; dev2hst(s);
+    const Rbc *rbc = &s->rbc;
+    
+    int n = flu->q.n + rig.q.n + rbc->q.n; dev2hst(s);
     diagnostics(m::cart, n, a::pp_hst, it);
 }
 
@@ -88,18 +92,19 @@ void dump_strt_templ(Coords coords, Wall *w) { /* template dumps (wall, solid) *
 
 void dump_strt(Coords coords, int id, Sim *s) {
     Flu *flu = &s->flu;
+    Rbc *rbc = &s->rbc;
     flu::strt_dump(coords, id, flu->q);
-    if (rbcs)       rbc::main::strt_dump(coords, id, &rbc.q);
+    if (rbcs)       rbc::main::strt_dump(coords, id, &rbc->q);
     if (solids)     rig::strt_dump(coords, id, rig.q);
 }
 
 void dump_diag0(Coords coords, int it, Sim *s) { /* generic dump */
     if (it % part_freq  == 0) {
         if (part_dumps) dump_part(coords, it, s);
-        if (rbcs)       dump_rbcs(&rbc);
+        if (rbcs)       dump_rbcs(&s->rbc);
         diag(it, s);
     }
     if (field_dumps && it % field_freq == 0) dump_grid(coords, s);
     if (strt_dumps  && it % strt_freq == 0)  dump_strt(coords, it / strt_freq, s);
-    if (rbc_com_dumps && it % rbc_com_freq == 0) dump_rbc_coms(&rbc);
+    if (rbc_com_dumps && it % rbc_com_freq == 0) dump_rbc_coms(&s->rbc);
 }

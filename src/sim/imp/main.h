@@ -11,6 +11,7 @@ enum {
 
 static void gen(Coords coords, Wall *w, Sim *s) { /* generate */
     Flu *flu = &s->flu;
+    Rbc *rbc = &s->rbc;
     
     run_eq(wall_creation, s);
     if (walls) {
@@ -19,7 +20,7 @@ static void gen(Coords coords, Wall *w, Sim *s) { /* generate */
         MC(m::Barrier(m::cart));
         inter::create_walls(MAXNWALL, w->sdf, /*io*/ &flu->q, /**/ &w->q);
     }
-    inter::freeze(coords, m::cart, w->sdf, /*io*/ &flu->q, /**/ &rig.q, &rbc.q);
+    inter::freeze(coords, m::cart, w->sdf, /*io*/ &flu->q, /**/ &rig.q, &rbc->q);
     clear_vel(s);
 
     if (multi_solvent) {
@@ -34,15 +35,16 @@ static void gen(Coords coords, Wall *w, Sim *s) { /* generate */
 
 void sim_gen(Sim *s) {
     Flu *flu = &s->flu;
+    Rbc *rbc = &s->rbc;
     
     flu::gen_quants(coords, &flu->q);
     flu::build_cells(&flu->q);
     if (global_ids)    flu::gen_ids  (m::cart, flu->q.n, &flu->q);
     if (rbcs) {
-        rbc::main::gen_quants(coords, m::cart, "rbc.off", "rbcs-ic.txt", /**/ &rbc.q);
-        rbc::force::gen_ticket(rbc.q, &rbc.tt);
+        rbc::main::gen_quants(coords, m::cart, "rbc.off", "rbcs-ic.txt", /**/ &rbc->q);
+        rbc::force::gen_ticket(rbc->q, &rbc->tt);
 
-        if (multi_solvent) gen_colors(&rbc, &colorer, /**/ flu);
+        if (multi_solvent) gen_colors(rbc, &colorer, /**/ flu);
     }
     MC(m::Barrier(m::cart));
 
@@ -54,7 +56,7 @@ void sim_gen(Sim *s) {
         dSync();
         if (walls && wall.q.n) UC(wall::gen_ticket(wall.q, &wall.t));
         solids0 = solids;
-        if (rbcs && multi_solvent) gen_colors(&rbc, &colorer, /**/ flu);
+        if (rbcs && multi_solvent) gen_colors(rbc, &colorer, /**/ flu);
         run(wall_creation, nsteps, s);
     } else {
         solids0 = solids;
@@ -67,12 +69,13 @@ void sim_gen(Sim *s) {
 void sim_strt(Sim *s) {
     long nsteps = (long)(tend / dt);
     Flu *flu = &s->flu;
+    Rbc *rbc = &s->rbc;
     
     /*Q*/
     flu::strt_quants(coords, restart::BEGIN, &flu->q);
     flu::build_cells(&flu->q);
 
-    if (rbcs) rbc::main::strt_quants(coords, "rbc.off", restart::BEGIN, &rbc.q);
+    if (rbcs) rbc::main::strt_quants(coords, "rbc.off", restart::BEGIN, &rbc->q);
     dSync();
 
     if (solids) rig::strt_quants(coords, restart::BEGIN, &rig.q);
@@ -80,7 +83,7 @@ void sim_strt(Sim *s) {
     if (walls) wall::strt_quants(coords, MAXNWALL, &wall.q);
 
     /*T*/
-    if (rbcs)            UC(rbc::force::gen_ticket(rbc.q, &rbc.tt));
+    if (rbcs)            UC(rbc::force::gen_ticket(rbc->q, &rbc->tt));
     if (walls && wall.q.n) UC(wall::gen_ticket(wall.q, &wall.t));
 
     MC(m::Barrier(m::cart));

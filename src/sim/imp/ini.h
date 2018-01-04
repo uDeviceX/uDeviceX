@@ -193,7 +193,7 @@ void sim_ini(int argc, char **argv, /**/ Sim **sim) {
     
     UC(emalloc(3 * MAX_PART_NUM * sizeof(Particle), (void**) &a::pp_hst));
     
-    if (rbcs) UC(ini_rbc(m::cart, /**/ &rbc));
+    if (rbcs) UC(ini_rbc(m::cart, /**/ &s->rbc));
 
     if (VCON)    UC(ini_vcont(m::cart, /**/ &vcont));
     if (OUTFLOW) UC(ini_outflow(coords, /**/ &outflow));
@@ -210,7 +210,7 @@ void sim_ini(int argc, char **argv, /**/ Sim **sim) {
     UC(ini_flu(m::cart, /**/ &s->flu));
    
     if (multi_solvent && rbcs)
-        UC(ini_colorer(rbc.q.nv, m::cart, /**/ &colorer));
+        UC(ini_colorer(s->rbc.q.nv, m::cart, /**/ &colorer));
     
     if (solids) {
         UC(ini_rig(m::cart, /**/ &rig));

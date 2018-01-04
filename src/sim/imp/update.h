@@ -1,8 +1,9 @@
 void clear_vel(Sim *s) {
     Flu *flu = &s->flu;
+    Rbc *rbc = &s->rbc;
     scheme::move::clear_vel(flu->q.n, flu->q.pp);
     if (solids) scheme::move::clear_vel(rig.q.n, rig.q.pp);
-    if (rbcs  ) scheme::move::clear_vel(rbc.q.n, rbc.q.pp);
+    if (rbcs  ) scheme::move::clear_vel(rbc->q.n, rbc->q.pp);
 }
 
 void update_solid(Rig *s) {
