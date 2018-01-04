@@ -47,7 +47,7 @@ static void dump0(const Coords *coords, const int N0[3], const float *D0, /**/ f
     }
 
     tform_ini(&t);
-    sample(org, spa, N0, D0,   N1, /**/ D1);
+    sample(t, org, spa, N0, D0,   N1, /**/ D1);
     tform_fin(t);
 }
 

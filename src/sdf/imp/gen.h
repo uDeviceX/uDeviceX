@@ -23,7 +23,7 @@ static void gen1(Coords *coords, int N[3], float *D0, float *D1, /**/ Sdf *sdf) 
 
     UC(tform_ini(&t));
     UC(tex2sdf_ini(coords, T, N, M, /**/ t));
-    UC(field::sample(org, spa, N, D0,   T, /**/ D1));
+    UC(field::sample(t, org, spa, N, D0,   T, /**/ D1));
     UC(gen0(D1, sdf));
 
     UC(tform_fin(t));
