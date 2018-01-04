@@ -14,7 +14,7 @@ static void fi_ini(Tform *t,
 
 static int small_diff(const float a[3], const float b[3]) {
     enum {X, Y, Z};
-    const float eps = 1e-6;
+    const float eps = 1e-4;
     int cx, cy, cz;
     cx = -eps < a[X] - b[X] && a[X] - b[X] < eps;
     cy = -eps < a[Y] - b[Y] && a[Y] - b[Y] < eps;
