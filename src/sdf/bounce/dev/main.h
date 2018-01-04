@@ -23,8 +23,8 @@ static __device__ void rv2p(float3 r, float3 v, int i, /**/ Particle *pp) {
 
 static __device__ bool is_small(float f) {return fabs(f) < 1e-6f;}
 static __device__ void crop(float *t) {
-        if (*t < -dt) *t = -dt;
-        if (*t >   0) *t = 0;
+    if (*t < -dt) *t = -dt;
+    if (*t >   0) *t = 0;
 }
 
 static __device__ void rescue(Wvel_v wv, Coords c, const Sdf_v texsdf, float currsdf, /* io */ float3 *r, float3 *v) {
