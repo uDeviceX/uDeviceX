@@ -48,7 +48,7 @@ void tform_vector(float a0[3], float a1[3],   float b0[3], float b1[3], /**/ Tfo
     if (r != OK) { report(a0, a1,   b0, b1); ERR("tform_vector failed"); }
 }
 
-int smallp(float s[3]) {
+static int smallp(float s[3]) {
     enum {X, Y, Z};
     const float eps = 1e-12;
     int cx, cy, cz;
