@@ -1,5 +1,6 @@
 # drop in poiseuille flow
 # nTEST: color.drop.mpi.t1
+set -eu
 rm -rf bop diag.txt h5
 s=.
 u=u/bangladesh
