@@ -1,7 +1,6 @@
 static __device__ float fetch(const Sdf_v sdf, float i, float j, float k) {
     return Ttex3D(float, sdf.t, i, j, k);
 }
-
 static __device__ int iround(float x) { return (x > 0.5) ? (x + 0.5) : (x - 0.5); }
 static __device__ void convert(const float a[3], /**/ float b[3]) {
     int c;
@@ -23,17 +22,20 @@ static __device__ void convert_round(const float a[3], /**/ int i[3]) {
     convert(a, /**/ f);
     i[X] = iround(f[X]); i[Y] = iround(f[Y]); i[Z] = iround(f[Z]);
 }
-
-static __device__ float3 grad(const Sdf_v texsdf, const float3 *pos) {
+static __device__ void inv_space(float isp[3]) {
+    int c;
     int L[3] = {XS, YS, ZS};
     int M[3] = {XWM, YWM, ZWM};
     int T[3] = {XTE, YTE, ZTE};
-    int c, tc[3];
+    for (c = 0; c < 3; ++c) isp[c] = T[c]/(2*M[c] + L[c]);
+}
+
+static __device__ float3 grad(const Sdf_v texsdf, const float3 *pos) {
+    int tc[3];
     float fcts[3], r[3] = {pos->x, pos->y, pos->z};
     float myval, gx, gy, gz;
     convert_floor(r, /**/ tc);
-    for (c = 0; c < 3; ++c)
-        fcts[c] = T[c] / (2 * M[c] + L[c]);
+    inv_space(/**/ fcts);
 
 #define tex0(ix, iy, iz) (fetch(texsdf, tc[0] + ix, tc[1] + iy, tc[2] + iz))
     myval = tex0(0, 0, 0);
