@@ -19,7 +19,7 @@
 #include "frag/dev.h"
 #include "frag/imp.h"
 
-#include "partlist/imp.h"
+#include "partlist/type.h"
 #include "partlist/dev.h"
 
 #include "algo/scan/imp.h"

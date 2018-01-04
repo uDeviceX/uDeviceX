@@ -13,7 +13,7 @@
 #include "utils/imp.h"
 #include "utils/cc.h"
 
-#include "partlist/imp.h"
+#include "partlist/type.h"
 
 #include "algo/scan/imp.h"
 #include "clist/imp.h"

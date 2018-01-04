@@ -32,7 +32,7 @@
 #include "forces/pack.h"
 #include "forces/imp.h"
 
-#include "partlist/imp.h"
+#include "partlist/type.h"
 
 #include "clist/imp.h"
 #include "clist/code.h"
