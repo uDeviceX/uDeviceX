@@ -1,19 +1,3 @@
-#include <stdio.h>
-
-#include "conf.h"
-#include "inc/conf.h"
-
-#include "d/api.h"
-
-#include "utils/imp.h"
-#include "utils/error.h"
-#include "utils/cc.h"
-
-#include "sdf/array3d/type.h"
-
-#include "type.h"
-#include "imp.h"
-
 void tex3d_ini(Tex3d **pq) {
     Tex3d *q;
     UC(emalloc(sizeof(Tex3d), /**/ (void**)&q));
