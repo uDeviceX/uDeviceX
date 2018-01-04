@@ -120,9 +120,9 @@ void tform_grid2grid(float f_lo[3], float f_hi[3], int f_n[3],
     UC(tform_ini(&f2g));
     UC(tform_ini(&g2t));
     
-    from_grid(f_lo, f_hi, f_n, /**/ f2g);
-    to_grid  (t_lo, t_hi, t_n, /**/ g2t);
-    tform_chain(f2g, g2t, /**/ t);
+    UC(from_grid(f_lo, f_hi, f_n, /**/ f2g));
+    UC(to_grid  (t_lo, t_hi, t_n, /**/ g2t));
+    UC(tform_chain(f2g, g2t, /**/ t));
     
     tform_fin(g2t);
     tform_fin(f2g);
