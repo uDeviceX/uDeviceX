@@ -38,7 +38,7 @@
 
 #include "io/fields_grid.h"
 #include "io/mesh/imp.h"
-#include "io/rig.h"
+#include "io/rig/imp.h"
 #include "io/diag/imp.h"
 #include "io/com/imp.h"
 
