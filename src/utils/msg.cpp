@@ -28,7 +28,7 @@ static void print(const char *msg, FILE *f) {
 }
 
 void msg_print(const char *fmt, ...) {
-    char msg[BUFSIZ], name[64];
+    char msg[BUFSIZ] = {0}, name[64];
     va_list ap;
     FILE *f;
 

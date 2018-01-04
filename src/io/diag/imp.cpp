@@ -40,8 +40,8 @@ void diagnostics(MPI_Comm comm, int n, const Particle *pp, int id) {
     enum {X, Y, Z};
     int i, c;
     double k, km, ke; /* particle, total, and maximum kinetic energies */
-    double kbt;
-    FILE * f;
+    double kbt = 0;
+    FILE *f = NULL;
     double v[3] = {0};
     for (i = 0; i < n; ++i) for (c = 0; c < 3; ++c) v[c] += pp[i].v[c];
     sum3(comm, v);
@@ -57,7 +57,7 @@ void diagnostics(MPI_Comm comm, int n, const Particle *pp, int id) {
     sum_i(comm, &n);
 
     if (m::is_master(comm)) {
-        kbt = n ? 0.5 * ke / (n * 3. / 2) : 0;
+        if (n) kbt = 0.5 * ke / (n * 3. / 2);
         static bool firsttime = true;
         UC(efopen(DUMP_BASE "/diag.txt", firsttime ? "w" : "a", /**/ &f));
         firsttime = false;
