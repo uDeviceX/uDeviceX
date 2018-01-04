@@ -45,8 +45,8 @@ void step(BForce *bforce, bool wall0, int it, Sim *s) {
     if (sbounce_back && solids0) bounce_solid(it, /**/ &s->bb, rig, flu);
 
     if (wall0) {
-        if (INFLOW)  apply_inflow(inflow, flu);
+        if (INFLOW)  apply_inflow(s->inflow, flu);
         if (OUTFLOW) mark_outflow(flu, /**/ s->outflow);
-        if (OUTFLOW_DEN) mark_outflowden(flu, mapoutflow, /**/ denoutflow);
+        if (OUTFLOW_DEN) mark_outflowden(flu, s->mapoutflow, /**/ s->denoutflow);
     }
 }

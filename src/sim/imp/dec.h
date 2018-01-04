@@ -4,12 +4,6 @@ bop::Ticket dumpt;
 
 Coords coords;
 
-// Outflow *outflow;
-Inflow *inflow;
-
-DCont    *denoutflow;
-DContMap *mapoutflow;
-
 Config *config;
 
 namespace a /* all */

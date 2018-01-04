@@ -197,8 +197,8 @@ void sim_ini(int argc, char **argv, /**/ Sim **sim) {
 
     if (VCON)    UC(ini_vcont(m::cart, /**/ &s->vcont));
     if (OUTFLOW) UC(ini_outflow(coords, /**/ &s->outflow));
-    if (INFLOW)  UC(ini_inflow(coords, /**/ &inflow));
-    if (OUTFLOW_DEN) UC(ini_denoutflow(coords, /**/ &denoutflow, &mapoutflow));
+    if (INFLOW)  UC(ini_inflow(coords, /**/ &s->inflow));
+    if (OUTFLOW_DEN) UC(ini_denoutflow(coords, /**/ &s->denoutflow, &s->mapoutflow));
     
     if (rbcs || solids)
         UC(ini_objinter(m::cart, /**/ &s->objinter));        
