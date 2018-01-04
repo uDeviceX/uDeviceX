@@ -29,7 +29,7 @@ static void grid2grid(TGrid *from, TGrid *to, /**/ Tform *t) {
                     to->lo, to->hi,   to->n, /**/ t);
 }
 
-static void sdf_ini(const Coords *c, int N[3], /**/ TGrid *t) {
+static void sdf_ini(const Coords *c, const int N[3], /**/ TGrid *t) {
     enum {X, Y, Z};
     t->lo[X] = t->lo[Y] = t->lo[Z] = 0;
     t->hi[X] = xdomain(*c);
@@ -38,7 +38,7 @@ static void sdf_ini(const Coords *c, int N[3], /**/ TGrid *t) {
     t->n = N;
 }
 
-static void tex_ini(const Coords *c, int T[3], int M[3], /**/ TGrid *t) {
+static void tex_ini(const Coords *c, const int T[3], const int M[3], /**/ TGrid *t) {
     enum {X, Y, Z};
     t->lo[X] = xlo(*c) - M[X];
     t->lo[Y] = ylo(*c) - M[Y];
@@ -65,7 +65,7 @@ static void sub_ini(const Coords *c, /**/ TGrid *t) {
 }
 
 void tex2sdf_ini(const Coords *c,
-                 int T[3], int N[3], int M[3],
+                 const int T[3], const int N[3], const int M[3],
                  /**/ Tform *t) {
     enum {X, Y, Z};
     TGrid tex, sdf;
@@ -80,7 +80,7 @@ void tex2sdf_ini(const Coords *c,
     UC(grid2grid(&tex, &sdf, /**/ t));
 }
 
-void sub2sdf_ini(const Coords *c, int N[3], /**/ Tform* t) {
+void sub2sdf_ini(const Coords *c, const int N[3], /**/ Tform* t) {
     enum {X, Y, Z};
     TGrid sub, sdf;
     if (goodp(N) == BAD) ERR("bad N = [%d %d %d]", N[X], N[Y], N[Z]);
