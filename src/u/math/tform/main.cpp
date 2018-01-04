@@ -21,12 +21,17 @@ struct TGrid {
     int n[3];
 };
 
+struct TTex { /* texture: */
+    int T[3], N[3], M[3];
+};
+
 struct TInput {
     TVec  v, u;
     TGrid f, t;
+    TTex  tex;
 };
 
-static int Inv, Chain, Dev, Grid;
+static int Inv, Chain, Dev, Grid, Tex;
 
 static void usg0() {
     fprintf(stderr, "./udx -- OPTIONS.. < FILE\n");
@@ -135,6 +140,8 @@ static void input2form(TInput *v, Tform **t) {
         grid_log(to);
         tform_grid2grid(from->lo, from->hi, from->n,
                           to->lo, to->hi,   to->n, /**/ *t);
+    } else if (Tex) {
+        
     } else {
         UC(tform_vector(v->v.a0, v->v.a1,
                         v->v.b0, v->v.b1, /**/ *t));
@@ -192,6 +199,12 @@ static void read_grid(int *c, char ***v, TGrid *g) {
     read_int  (c, v, g->n);
 }
 
+static void read_tex(int *c, char ***v, TTex *t) {
+    read_int(c, v, t->T);
+    read_int(c, v, t->N);
+    read_int(c, v, t->M);
+}
+
 static void main2(int c, char **v) {
     enum {X, Y, Z};
     TInput ve;
@@ -201,6 +214,8 @@ static void main2(int c, char **v) {
     } else if (Grid) {
         read_grid(&c, &v, &ve.f);
         read_grid(&c, &v, &ve.t);
+    } else if (Tex) {
+        read_tex(&c, &v, &ve.tex);
     } else {
         read_vecs(&c, &v, &ve.v);
     }
@@ -227,7 +242,6 @@ static int flag(const char *a, int* pc, char ***pv) {
     *pc = c; *pv = v;
     return Flag;
 }
-
 int main(int argc, char **argv) {
     m::ini(&argc, &argv);
     msg_ini(m::rank);
@@ -236,6 +250,7 @@ int main(int argc, char **argv) {
     Chain = flag("-c", &argc, &argv);
     Dev   = flag("-d", &argc, &argv);
     Grid  = flag("-g", &argc, &argv);
+    Tex   = flag("-t", &argc, &argv);
     main2(argc, argv);
     m::fin();
 }
