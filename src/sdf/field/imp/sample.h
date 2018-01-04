@@ -1,5 +1,6 @@
 struct Fi { /* field */
     const float *org, *spa;
+    Tform *t;
     const int *n;
     float *D;
 };
