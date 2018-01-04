@@ -91,4 +91,13 @@ void sub2sdf_ini(const Coords *c, const int N[3], /**/ Tform* t) {
     UC(grid2grid(&sub, &sdf, /**/ t));
 }
 
+void out2sdf_ini(const Coords *c, const int N[3], /**/ Tform* t) {
+    enum {X, Y, Z};
+    TGrid sub, sdf;
+    if (goodp(N) == BAD) ERR("bad N = [%d %d %d]", N[X], N[Y], N[Z]);
+    sub_ini(c, /**/ &sub);
+    sdf_ini(c, N, /**/ &sdf);
+    UC(grid2grid(&sub, &sdf, /**/ t));
+}
+
 void sub2tex_ini(/**/ Tform*) { ERR("not implimented"); }
