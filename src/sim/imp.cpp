@@ -115,7 +115,6 @@
 #include "imp.h"
 namespace sim {
 #include "imp/type.h"
-#include "imp/dec.h"
 #include "imp/force/common.h"
 #include "imp/force/dpd.h"
 #include "imp/force/objects.h"
