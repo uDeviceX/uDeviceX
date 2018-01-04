@@ -47,6 +47,7 @@ static void dump0(const Coords *coords, const int N0[3], const float *D0, /**/ f
     }
 
     UC(tform_ini(&t));
+    UC(sub2sdf_ini(coords, N0, t));
     UC(sample(t, org, spa, N0, D0,   N1, /**/ D1));
     tform_fin(t);
 }
