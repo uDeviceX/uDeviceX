@@ -2,6 +2,10 @@ static __device__ float fetch(const Sdf_v sdf, float i, float j, float k) {
     return Ttex3D(float, sdf.t, i, j, k);
 }
 
+static __device__ void convert(const float a[3], /**/ float b[3]) {
+    enum {X, Y, Z};
+}
+
 static __device__ float3 grad(const Sdf_v texsdf, const float3 *pos) {
     int L[3] = {XS, YS, ZS};
     int M[3] = {XWM, YWM, ZWM};
