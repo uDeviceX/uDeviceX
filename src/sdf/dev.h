@@ -15,17 +15,13 @@ static __device__ void convert_floor(const float a[3], /**/ int i[3]) {
     enum {X, Y, Z};
     float f[3];
     convert(a, /**/ f);
-    i[X] = int(f[X]);
-    i[Y] = int(f[Y]);
-    i[Z] = int(f[Z]);
+    i[X] = int(f[X]); i[Y] = int(f[Y]); i[Z] = int(f[Z]);
 }
 static __device__ void convert_round(const float a[3], /**/ int i[3]) {
     enum {X, Y, Z};
     float f[3];
     convert(a, /**/ f);
-    i[X] = iround(f[X]);
-    i[Y] = iround(f[Y]);
-    i[Z] = iround(f[Z]);
+    i[X] = iround(f[X]); i[Y] = iround(f[Y]); i[Z] = iround(f[Z]);
 }
 
 static __device__ float3 grad(const Sdf_v texsdf, const float3 *pos) {
@@ -35,10 +31,7 @@ static __device__ float3 grad(const Sdf_v texsdf, const float3 *pos) {
     int c, tc[3];
     float fcts[3], r[3] = {pos->x, pos->y, pos->z};
     float myval, gx, gy, gz;
-
-    for (c = 0; c < 3; ++c)
-        tc[c] = T[c] * (r[c] + L[c] / 2 + M[c]) / (L[c] + 2 * M[c]);
-
+    convert_floor(r, /**/ tc);
     for (c = 0; c < 3; ++c)
         fcts[c] = T[c] / (2 * M[c] + L[c]);
 
@@ -66,33 +59,23 @@ static __device__ float3 ugrad(const Sdf_v texsdf, const float3 *r) {
 }
 
 static __device__ float cheap_sdf(const Sdf_v texsdf, float x, float y, float z)  {
-    int L[3] = {XS, YS, ZS};
-    int M[3] = {XWM, YWM, ZWM};
-    int T[3] = {XTE, YTE, ZTE};
     int tc[3];
     float r[3] = {x, y, z};
-    for (int c = 0; c < 3; ++c)
-        tc[c] = iround(T[c] * (r[c] + L[c] / 2 + M[c]) / (L[c] + 2 * M[c]));
+    convert_round(r, /**/ tc);
     return fetch(texsdf, tc[0], tc[1], tc[2]);
 }
 
 static __device__ float sdf(const Sdf_v texsdf, float x, float y, float z) {
     int c;
-    float t;
     float s000, s001, s010, s100, s101, s011, s110, s111;
     float s00x, s01x, s10x, s11x;
     float s0yx, s1yx;
     float szyx;
-
-    float tc[3], lmbd[3], r[3] = {x, y, z};
-    int L[3] = {XS, YS, ZS};
-    int M[3] = {XWM, YWM, ZWM}; /* margin */
-    int T[3] = {XTE, YTE, ZTE}; /* texture */
-
+    float tc0[3], tc[3], lmbd[3], r[3] = {x, y, z};
+    convert(r, /**/ tc0);
     for (c = 0; c < 3; ++c) {
-        t = T[c] * (r[c] + L[c] / 2 + M[c]) / (L[c] + 2 * M[c]) - 0.5;
-        lmbd[c] = t - (int)t;
-        tc[c] = (int)t + 0.5;
+        lmbd[c] = tc0[c] - (int)tc0[c];
+        tc[c] = (int)tc0[c] + 0.5;
     }
 #define tex0(ix, iy, iz) (fetch(texsdf, tc[0] + ix, tc[1] + iy, tc[2] + iz))
     s000 = tex0(0, 0, 0), s001 = tex0(1, 0, 0), s010 = tex0(0, 1, 0);
