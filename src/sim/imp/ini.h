@@ -180,6 +180,10 @@ static void ini_objinter(MPI_Comm cart, /**/ ObjInter *o) {
 }
 
 void sim_ini(int argc, char **argv, /**/ Sim **sim) {
+    Sim *s;
+    UC(emalloc(sizeof(Sim), (void**) sim));
+    s = *sim;
+    
     datatype::ini();
 
     UC(conf_ini(&config));

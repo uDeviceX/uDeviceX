@@ -156,4 +156,6 @@ void sim_fin(Sim *sim) {
 
     UC(conf_destroy(config));
     datatype::fin();
+
+    UC(efree(sim));
 }
