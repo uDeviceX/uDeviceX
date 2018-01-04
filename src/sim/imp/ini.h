@@ -192,7 +192,7 @@ void sim_ini(int argc, char **argv, /**/ Sim **sim) {
     
     UC(coords_ini(m::cart, /**/ &coords));
     
-    UC(emalloc(3 * MAX_PART_NUM * sizeof(Particle), (void**) &a::pp_hst));
+    UC(emalloc(3 * MAX_PART_NUM * sizeof(Particle), (void**) &s->pp_dump));
     
     if (rbcs) UC(ini_rbc(m::cart, /**/ &s->rbc));
 

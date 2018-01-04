@@ -28,7 +28,7 @@ static void gen(Coords coords, Wall *w, Sim *s) { /* generate */
         Particle *pp = flu->q.pp;
         int n = flu->q.n;
         int *cc = flu->q.cc;
-        Particle *pp_hst = a::pp_hst;
+        Particle *pp_hst = s->pp_dump;
         int *cc_hst = flu->q.cc_hst;
         inter::color_dev(coords, pp, n, /*o*/ cc, /*w*/ pp_hst, cc_hst);
     }

@@ -148,7 +148,7 @@ void sim_fin(Sim *s) {
             fin_bounce_back(&s->bb);
     }
 
-    UC(efree(a::pp_hst));
+    UC(efree(s->pp_dump));
     
     if (rbcs) fin_rbc(/**/ &s->rbc);
 

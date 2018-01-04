@@ -4,12 +4,12 @@ static void dev2hst(Sim *s) { /* device to host  data transfer */
     Rbc *rbc = &s->rbc;
     Rig *rig = &s->rig;
     
-    cD2H(a::pp_hst + start, flu->q.pp, flu->q.n); start += flu->q.n;
+    cD2H(s->pp_dump + start, flu->q.pp, flu->q.n); start += flu->q.n;
     if (solids0) {
-        cD2H(a::pp_hst + start, rig->q.pp, rig->q.n); start += rig->q.n;
+        cD2H(s->pp_dump + start, rig->q.pp, rig->q.n); start += rig->q.n;
     }
     if (rbcs) {
-        cD2H(a::pp_hst + start, rbc->q.pp, rbc->q.n); start += rbc->q.n;
+        cD2H(s->pp_dump + start, rbc->q.pp, rbc->q.n); start += rbc->q.n;
     }
 }
 
@@ -45,10 +45,11 @@ static void dump_part(Coords coords, int step, const Sim *s) {
     }
 }
 
-static void dump_rbcs(const Rbc *r) {
+static void dump_rbcs(Sim *s) {
+    const Rbc *r = &s->rbc;
     static int id = 0;
-    cD2H(a::pp_hst, r->q.pp, r->q.n);
-    io::mesh::rbc(m::cart, coords, a::pp_hst, r->q.tri_hst, r->q.nc, r->q.nv, r->q.nt, id++);
+    cD2H(s->pp_dump, r->q.pp, r->q.n);
+    io::mesh::rbc(m::cart, coords, s->pp_dump, r->q.tri_hst, r->q.nc, r->q.nv, r->q.nt, id++);
 }
 
 static void dump_rbc_coms(Rbc *r) {
@@ -67,7 +68,7 @@ static void dump_grid(Coords coords, const Sim *s) {
     NN nn;
     qq.o = flu->q.pp; qq.s = rig->q.pp; qq.r = rbc->q.pp;
     nn.o = flu->q.n ; nn.s = rig->q.n ;  nn.r = rbc->q.n;
-    fields_grid(coords, m::cart, qq, nn, /*w*/ a::pp_hst);
+    fields_grid(coords, m::cart, qq, nn, /*w*/ s->pp_dump);
 }
 
 void dump_diag_after(int it, bool wall0, bool solid0, Sim *s) { /* after wall */
@@ -77,8 +78,8 @@ void dump_diag_after(int it, bool wall0, bool solid0, Sim *s) { /* after wall */
         static int id = 0;
         rig_dump(it, rig->q.ss_dmp, rig->q.ss_dmp_bb, rig->q.ns, coords);
 
-        cD2H(a::pp_hst, rig->q.i_pp, rig->q.ns * rig->q.nv);
-        io::mesh::rig(m::cart, coords, a::pp_hst, rig->q.htt, rig->q.ns, rig->q.nv, rig->q.nt, id++);
+        cD2H(s->pp_dump, rig->q.i_pp, rig->q.ns * rig->q.nv);
+        io::mesh::rig(m::cart, coords, s->pp_dump, rig->q.htt, rig->q.ns, rig->q.nv, rig->q.nt, id++);
     }
 }
 
@@ -87,7 +88,7 @@ static void diag(int it, Sim *s) {
     const Rbc *rbc = &s->rbc;
     const Rig *rig = &s->rig;
     int n = flu->q.n + rig->q.n + rbc->q.n; dev2hst(s);
-    diagnostics(m::cart, n, a::pp_hst, it);
+    diagnostics(m::cart, n, s->pp_dump, it);
 }
 
 void dump_strt_templ(Coords coords, Wall *w, Sim *s) { /* template dumps (wall, solid) */
@@ -110,7 +111,7 @@ void dump_strt(Coords coords, int id, Sim *s) {
 void dump_diag0(Coords coords, int it, Sim *s) { /* generic dump */
     if (it % part_freq  == 0) {
         if (part_dumps) dump_part(coords, it, s);
-        if (rbcs)       dump_rbcs(&s->rbc);
+        if (rbcs)       dump_rbcs(s);
         diag(it, s);
     }
     if (field_dumps && it % field_freq == 0) dump_grid(coords, s);
