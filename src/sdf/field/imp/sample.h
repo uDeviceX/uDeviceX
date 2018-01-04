@@ -8,15 +8,6 @@ static void fi_ini(Tform *t, const int *n, float *D, /**/ Fi *fi) {
     fi->t = t; fi->n = n; fi->D = D;
 }
 
-static int small_diff(const float a[3], const float b[3]) {
-    enum {X, Y, Z};
-    const float eps = 1e-4;
-    int cx, cy, cz;
-    cx = -eps < a[X] - b[X] && a[X] - b[X] < eps;
-    cy = -eps < a[Y] - b[Y] && a[Y] - b[Y] < eps;
-    cz = -eps < a[Z] - b[Z] && a[Z] - b[Z] < eps;
-    return cx && cy && cz;
-}
 static void fi_r(const Fi *fi, int ix, int iy, int iz, /**/ float *r) {
     enum {X, Y, Z};
     Tform *t;
