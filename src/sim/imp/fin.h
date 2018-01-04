@@ -142,7 +142,7 @@ void sim_fin(Sim *s) {
         fin_colorer(/**/ &colorer);
 
     if (solids) {
-        fin_rig(/**/ &rig);
+        fin_rig(/**/ &s->rig);
         
         if (sbounce_back)
             fin_bounce_back(&bb);

@@ -213,10 +213,10 @@ void sim_ini(int argc, char **argv, /**/ Sim **sim) {
         UC(ini_colorer(s->rbc.q.nv, m::cart, /**/ &colorer));
     
     if (solids) {
-        UC(ini_rig(m::cart, /**/ &rig));
+        UC(ini_rig(m::cart, /**/ &s->rig));
 
         if (sbounce_back)
-            UC(ini_bounce_back(m::cart, &rig, /**/ &bb));
+            UC(ini_bounce_back(m::cart, &s->rig, /**/ &bb));
     }
 
     MC(MPI_Barrier(m::cart));

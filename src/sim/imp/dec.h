@@ -4,7 +4,6 @@ bop::Ticket dumpt;
 
 Coords coords;
 
-Rig rig;
 Wall wall;
 
 ObjInter objinter;

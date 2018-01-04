@@ -12,6 +12,7 @@ enum {
 static void gen(Coords coords, Wall *w, Sim *s) { /* generate */
     Flu *flu = &s->flu;
     Rbc *rbc = &s->rbc;
+    Rig *rig = &s->rig;
     
     run_eq(wall_creation, s);
     if (walls) {
@@ -20,7 +21,7 @@ static void gen(Coords coords, Wall *w, Sim *s) { /* generate */
         MC(m::Barrier(m::cart));
         inter::create_walls(MAXNWALL, w->sdf, /*io*/ &flu->q, /**/ &w->q);
     }
-    inter::freeze(coords, m::cart, w->sdf, /*io*/ &flu->q, /**/ &rig.q, &rbc->q);
+    inter::freeze(coords, m::cart, w->sdf, /*io*/ &flu->q, /**/ &rig->q, &rbc->q);
     clear_vel(s);
 
     if (multi_solvent) {
@@ -70,6 +71,7 @@ void sim_strt(Sim *s) {
     long nsteps = (long)(tend / dt);
     Flu *flu = &s->flu;
     Rbc *rbc = &s->rbc;
+    Rig *rig = &s->rig;
     
     /*Q*/
     flu::strt_quants(coords, restart::BEGIN, &flu->q);
@@ -78,7 +80,7 @@ void sim_strt(Sim *s) {
     if (rbcs) rbc::main::strt_quants(coords, "rbc.off", restart::BEGIN, &rbc->q);
     dSync();
 
-    if (solids) rig::strt_quants(coords, restart::BEGIN, &rig.q);
+    if (solids) rig::strt_quants(coords, restart::BEGIN, &rig->q);
 
     if (walls) wall::strt_quants(coords, MAXNWALL, &wall.q);
 
