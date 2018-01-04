@@ -1,6 +1,5 @@
 static void gen0(float *D, /**/ Sdf *sdf) {
     UC(array3d_copy(XTE, YTE, ZTE, D, /**/ sdf->arr));
-
     UC(tex3d_ini(&sdf->tex));
     UC(tex3d_copy(sdf->arr, /**/ sdf->tex));
 }
