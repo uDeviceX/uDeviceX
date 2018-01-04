@@ -42,4 +42,7 @@ map('gcfac, fmt(f2t));
 (t_lo: 400, t_hi: 500, t_n: 600);
 float(f2t(700));
 
+(T: 100, N: 200, M: 300, lo: 0, L: 16, G: 16);
+float(tex2sdf(400));
+
 
