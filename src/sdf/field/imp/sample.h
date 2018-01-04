@@ -5,18 +5,38 @@ struct Fi { /* field */
     float *D;
 };
 
-static void fi_ini(const float *org, const float *spa, const int *n, float *D,
+static void fi_ini(Tform *t,
+                   const float *org, const float *spa, const int *n, float *D,
                    /**/ Fi *fi) {
+    fi->t = t;
     fi->org = org; fi->spa = spa; fi->n = n; fi->D = D;
 }
 
+static int small_diff(const float a[3], const float b[3]) {
+    enum {X, Y, Z};
+    const float eps = 1e-10;
+    int cx, cy, cz;
+    cx = -eps < a[X] - b[X] && a[X] - b[X] < eps;
+    cy = -eps < a[Y] - b[Y] && a[Y] - b[Y] < eps;
+    cz = -eps < a[Z] - b[Z] && a[Z] - b[Z] < eps;
+    return cx && cy && cz;
+}
 static void fi_r(const Fi *fi, int ix, int iy, int iz, /**/ float *r) {
     enum {X, Y, Z};
     const float *org, *spa;
-    org = fi->org; spa = fi->spa;
+    Tform *t;
+
+    float a[3] = {(float)ix, (float)iy, (float)iz}, b[3];
+
+    org = fi->org; spa = fi->spa; t = fi->t;
     r[X] = org[X] + (ix + 0.5) * spa[X] - 0.5;
     r[Y] = org[Y] + (iy + 0.5) * spa[Y] - 0.5;
     r[Z] = org[Z] + (iz + 0.5) * spa[Z] - 0.5;
+
+    tform_convert(t, a, /**/ b);
+    if (!small_diff(b, r)) ERR("wrong convert [%g %g %g] != [%g %g %g]",
+                               b[X], b[Y], b[Z],
+                               r[X], r[Y], r[Z]);
 }
 
 static void fi_set(const Fi *fi, int ix, int iy, int iz, float v) {
@@ -74,7 +94,7 @@ void sample(Tform *t, const float org[3], const float spa[3], const int N0[3], c
     int ix, iy, iz;
     float val, r[3];
     Fi fi;
-    fi_ini(org, spa, N1, D1, /**/ &fi);
+    fi_ini(t, org, spa, N1, D1, /**/ &fi);
     for (iz = 0; iz < N1[Z]; ++iz)
         for (iy = 0; iy < N1[Y]; ++iy)
             for (ix = 0; ix < N1[X]; ++ix) {
