@@ -32,17 +32,17 @@ static void gen2(int N[3], float *D0, /**/ Sdf *sdf) {
     UC(efree(D1));
 }
 
-static void gen3(Coords coords, MPI_Comm cart, int N[3], float ext[3], float *D, /**/ Sdf *sdf) {
+static void gen3(Coords *coords, MPI_Comm cart, int N[3], float ext[3], float *D, /**/ Sdf *sdf) {
     enum {X, Y, Z};
     float sc, G; /* domain size in x ([G]lobal) */
     G = m::dims[X] * XS;
     sc = G / ext[X];
     UC(field::scale(N, sc, /**/ D));
-    if (field_dumps) UC(field::dump(coords, cart, N, D));
+    if (field_dumps) UC(field::dump(*coords, cart, N, D));
     UC(gen2(N, D, /**/ sdf));
 }
 
-void gen(Coords coords, MPI_Comm cart, Sdf *sdf) {
+void gen(Coords *coords, MPI_Comm cart, Sdf *sdf) {
     enum {X, Y, Z};
     float *D;     /* data */
     int N[3];     /* size of D */
