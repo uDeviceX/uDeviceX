@@ -11,11 +11,16 @@
 
 struct TGrid {
     float lo[3], hi[3];
-    const int *n;
+    int *n;
 };
 
+static void grid2grid(TGrid *from, TGrid *to, /**/ Tform *t) {
+    tform_grid2grid(from->lo, from->hi, from->n,
+                    to->lo, to->hi,   to->n, /**/ t);
+}
+
 void ini_tex2sdf(const Coords *c,
-                 const int *T, const int *N, const int *M,
+                 int T[3], int N[3], int M[3],
                  /**/ Tform *t) {
     enum {X, Y, Z};
     TGrid tex, sdf;
@@ -34,7 +39,7 @@ void ini_tex2sdf(const Coords *c,
     sdf.hi[Z] = zdomain(*c);
     sdf.n = N;
 
-    //    grid2grid(&tex, &sdf, /**/ t);
+    grid2grid(&tex, &sdf, /**/ t);
 }
 
 void ini_sub2tex(/**/ Tform*) {
