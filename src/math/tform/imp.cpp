@@ -132,14 +132,28 @@ void tform_grid2grid(const float f_lo[3], const float f_hi[3], const int f_n[3],
     if (assert_lh(t_lo, t_hi) == LH_BAD)
         ERR("wrong f_[lo|hi]: [%g %g %g] [%g %g %g]",
             t_lo[X], t_lo[Y], t_lo[X], t_hi[X], t_hi[Y], t_hi[Z]);
-    
+
     UC(tform_ini(&f2g));
     UC(tform_ini(&g2t));
-    
+
     UC(from_grid(f_lo, f_hi, f_n, /**/ f2g));
     UC(to_grid  (t_lo, t_hi, t_n, /**/ g2t));
     UC(tform_chain(f2g, g2t, /**/ t));
-    
+
     tform_fin(g2t);
     tform_fin(f2g);
+}
+
+void tform_to_view(Tform *t, Tform_v *v) {
+    enum {X, Y, Z};
+    if (smallp(t->s))
+        ERR("tform_to_view failed: t->s = [%g %g %g]\n", t->s[X], t->s[Y], t->s[Z]);
+
+    v->o[X] = t->o[X];
+    v->o[Y] = t->o[Y];
+    v->o[Z] = t->o[Z];
+
+    v->s[X] = t->s[X];
+    v->s[Y] = t->s[Y];
+    v->s[Z] = t->s[Z];
 }
