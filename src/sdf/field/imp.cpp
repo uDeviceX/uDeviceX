@@ -14,6 +14,9 @@
 #include "mpi/glb.h"
 #include "utils/msg.h"
 
+#include "math/tform/imp.h"
+#include "sdf/tform/imp.h"
+
 #include "imp.h"
 namespace field {
 #include "imp/sample.h"
