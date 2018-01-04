@@ -5,25 +5,13 @@ static void gen0(float *D, /**/ Sdf *sdf) {
 }
 
 static void gen1(Coords *coords, int N[3], float *D0, float *D1, /**/ Sdf *sdf) {
-    int c;
-    int L[3] = {XS, YS, ZS};
+    Tform *t;
     int M[3] = {XWM, YWM, ZWM}; /* margin and texture */
     int T[3] = {XTE, YTE, ZTE};
-    float G; /* domain size ([g]lobal) */
-    float lo; /* left edge of subdomain */
-    float org[3], spa[3]; /* origin and spacing */
-    Tform *t;
-
-    for (c = 0; c < 3; ++c) {
-        G = m::dims[c] * L[c];
-        lo = m::coords[c] * L[c];
-        spa[c] = N[c] * (L[c] + 2 * M[c]) / G / T[c];
-        org[c] = N[c] * (lo - M[c]) / G;
-    }
 
     UC(tform_ini(&t));
     UC(tex2sdf_ini(coords, T, N, M, /**/ t));
-    UC(field::sample(t, org, spa, N, D0,   T, /**/ D1));
+    UC(field::sample(t, N, D0,   T, /**/ D1));
     UC(gen0(D1, sdf));
 
     UC(tform_fin(t));

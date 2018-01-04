@@ -75,8 +75,7 @@ static float get(const int N[3], const float *D, const float *r) {
     return val;
 }
 
-void sample(Tform *t,
-            const float*, const float*, const int N0[3], const float *D0, const int N1[3], float *D1) {
+void sample(Tform *t, const int N0[3], const float *D0, const int N1[3], float *D1) {
     enum {X, Y, Z};
     int ix, iy, iz;
     float val, r[3];

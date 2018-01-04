@@ -30,25 +30,11 @@ void scale(const int N[3], float s, /**/ float *D) {
 }
 
 static void dump0(const Coords *coords, const int N0[3], const float *D0, /**/ float *D1) {
-    float org[3], spa[3];
-    int c;
-    float G; /* domain size ([g]lobal) */
-    float lo; /* left edge of subdomain */
     int L[3] = {XS, YS, ZS};
-    int *N1;
     Tform *t;
-
-    N1 = L;
-    for (c = 0; c < 3; ++c) {
-        G = m::dims[c] * L[c];
-        lo = m::coords[c] * L[c];
-        spa[c] = N0[c] / G ;
-        org[c] = lo / G * N0[c];
-    }
-
     UC(tform_ini(&t));
     UC(sub2sdf_ini(coords, N0, t));
-    UC(sample(t, org, spa, N0, D0,   N1, /**/ D1));
+    UC(sample(t, N0, D0,   L, /**/ D1));
     tform_fin(t);
 }
 
