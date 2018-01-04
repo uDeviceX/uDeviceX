@@ -17,7 +17,7 @@ void tform_ini(Tform **pq) {
 }
 void tform_fin(Tform *q) { UC(efree(q)); }
 
-static void report(float a0[3], float a1[3],   float b0[3], float b1[3]) {
+static void report(const float a0[3], const float a1[3],   const float b0[3], const float b1[3]) {
     enum {X, Y, Z};
     msg_print("a0: %g %g %g", a0[X], a0[Y], a0[Z]);
     msg_print("a1: %g %g %g", a1[X], a1[Y], a1[Z]);
@@ -35,7 +35,7 @@ static int os(float a0, float a1,   float b0, float b1, /**/ float *o, float *s)
     *s = (b1-a1)      /(b0-a0);
     return OK;
 }
-void tform_vector(float a0[3], float a1[3],   float b0[3], float b1[3], /**/ Tform* t) {
+void tform_vector(const float a0[3], const float a1[3],   const float b0[3], const float b1[3], /**/ Tform* t) {
     int r;
     enum {X, Y, Z};
     r = os(a0[X], a1[X], b0[X], b1[X], /**/ &t->o[X], &t->s[X]);
@@ -57,7 +57,7 @@ static int smallp(float s[3]) {
     cz = -eps < s[Z] && s[Z] < eps;
     return cx && cy && cz;
 }
-void tform_convert(Tform *t, float a0[3], /**/ float a1[3]) {
+void tform_convert(Tform *t, const float a0[3], /**/ float a1[3]) {
     enum {X, Y, Z};
     float *o, *s;
     o = t->o; s = t->s;
@@ -109,14 +109,14 @@ void tform_dump(Tform *t, FILE *f) {
     fprintf(f, "%16.10e %16.10e %16.10e\n", s[X], s[Y], s[Z]);
 }
 
-static void to_grid(float a0[3], float b0[3], int n[3], /**/ Tform* t) {
+static void to_grid(const float a0[3], const float b0[3], const int n[3], /**/ Tform* t) {
     enum {X, Y, Z};
     float a1[3], b1[3];
     a1[X] = a1[Y] = a1[Z] = -0.5;
     b1[X] = n[X] - 0.5; b1[Y] = n[Y] - 0.5; b1[Z] = n[Z] - 0.5;
     UC(tform_vector(a0, a1,   b0, b1, /**/ t));
 }
-static void from_grid(float a0[3], float b0[3], int n[3], /**/ Tform* t) {
+static void from_grid(const float a0[3], const float b0[3], const int n[3], /**/ Tform* t) {
     enum {X, Y, Z};
     float a1[3], b1[3];
     a1[X] = a1[Y] = a1[Z] = -0.5;
@@ -124,14 +124,14 @@ static void from_grid(float a0[3], float b0[3], int n[3], /**/ Tform* t) {
     UC(tform_vector(a1, a0,   b1, b0, /**/ t));
 }
 enum {LH_OK, LH_BAD};
-static int assert_lh(float lo[3], float hi[3]) {
+static int assert_lh(const float lo[3], const float hi[3]) {
     enum {X, Y, Z};
     int c;
     c = lo[X] < hi[X] && lo[X] < hi[X] && lo[X] < hi[X];
     return c ? LH_OK : LH_BAD;
 }
-void tform_grid2grid(float f_lo[3], float f_hi[3], int f_n[3],
-                     float t_lo[3], float t_hi[3], int t_n[3], /**/
+void tform_grid2grid(const float f_lo[3], const float f_hi[3], const int f_n[3],
+                     const float t_lo[3], const float t_hi[3], const int t_n[3], /**/
                      Tform *t) {
     enum {X, Y, Z};
     /* f: from, t: to, g: global */

@@ -10,8 +10,8 @@
 #include "imp.h"
 
 struct TGrid {
-    float lo[3], hi[3];
-    int *n;
+    const float lo[3], hi[3];
+    const int *n;
 };
 
 enum {OK, BAD};
