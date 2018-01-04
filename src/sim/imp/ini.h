@@ -187,7 +187,7 @@ void sim_ini(int argc, char **argv, /**/ Sim **sim) {
     Config *cfg = s->cfg;    
     datatype::ini();
 
-    UC(conf_ini(&cfg));
+    UC(conf_ini(&cfg)); s->cfg = cfg;
     UC(conf_read(argc, argv, /**/ cfg));
     
     UC(coords_ini(m::cart, /**/ &coords));
