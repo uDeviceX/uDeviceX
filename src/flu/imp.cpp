@@ -27,7 +27,7 @@
 #include "algo/scan/imp.h"
 #include "clist/imp.h"
 
-#include "io/restart.h"
+#include "io/restart/imp.h"
 #include "inter/color.h"
 
 #include "imp.h"

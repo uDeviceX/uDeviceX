@@ -46,7 +46,7 @@
 #include "wvel/imp.h"
 
 #include "dbg/imp.h"
-#include "io/restart.h"
+#include "io/restart/imp.h"
 #include "clist/imp.h"
 
 #include "flu/imp.h"

@@ -36,7 +36,7 @@
 #include "algo/scan/imp.h"
 #include "clist/imp.h"
 
-#include "io/restart.h"
+#include "io/restart/imp.h"
 
 #include "forces/type.h"
 #include "cloud/imp.h"
