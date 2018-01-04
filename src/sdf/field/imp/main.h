@@ -46,14 +46,14 @@ static void dump0(const Coords *coords, const int N0[3], const float *D0, /**/ f
         org[c] = lo / G * N0[c];
     }
 
-    tform_ini(&t);
-    sample(t, org, spa, N0, D0,   N1, /**/ D1);
+    UC(tform_ini(&t));
+    UC(sample(t, org, spa, N0, D0,   N1, /**/ D1));
     tform_fin(t);
 }
 
 static void dump1(Coords *coords, MPI_Comm cart, const int N[3], const float* D, /*w*/ float* W) {
-        dump0(coords, N, D, /**/ W);
-        UC(io::field::scalar(*coords, cart, W, "wall"));
+    UC(dump0(coords, N, D, /**/ W));
+    UC(io::field::scalar(*coords, cart, W, "wall"));
 }
 
 void dump(Coords *coords, MPI_Comm cart, const int N[], const float* D) {
