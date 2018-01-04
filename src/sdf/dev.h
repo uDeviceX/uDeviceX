@@ -25,23 +25,18 @@ static __device__ float3 ugrad_sdf(const Sdf_v texsdf, const float3 *pos) {
     return make_float3(gx, gy, gz);
 }
 
-static __device__ float3 grad_sdf(const Sdf_v texsdf, const float3 *pos) {
-    float gx, gy, gz;
-    int L[3] = {XS, YS, ZS};
-    int M[3] = {XWM, YWM, ZWM};
-    int T[3] = {XTE, YTE, ZTE};
-    float tc[3], r[3] = {pos->x, pos->y, pos->z};
-    for (int c = 0; c < 3; ++c)
-        tc[c] = T[c] * (r[c] + L[c] / 2 + M[c]) / (L[c] + 2 * M[c]) - 0.5;
-
-#define tex0(ix, iy, iz) (fetch(texsdf, tc[0] + ix, tc[1] + iy, tc[2] + iz))
-    gx = tex0(1, 0, 0) - tex0(-1,  0,  0);
-    gy = tex0(0, 1, 0) - tex0( 0, -1,  0);
-    gz = tex0(0, 0, 1) - tex0( 0,  0, -1);
-#undef tex0
-    float ggmag = sqrt(gx*gx + gy*gy + gz*gz);
-    if (ggmag > 1e-6) { gx /= ggmag; gy /= ggmag; gz /= ggmag; }
-    return make_float3(gx, gy, gz);
+static __device__ float3 grad_sdf(const Sdf_v texsdf, const float3 *r) {
+    float mag, eps;
+    float3 g;
+    eps = 1e-6;
+    g = ugrad_sdf(texsdf, r);
+    mag = sqrt(g.x*g.x + g.y*g.y + g.z*g.z);
+    if (mag > eps) {
+        g.x /= mag;
+        g.y /= mag;
+        g.z /= mag; 
+    }
+    return g;
 }
 
 static __device__ int iround(float x) {
