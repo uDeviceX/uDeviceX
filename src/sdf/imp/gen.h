@@ -44,7 +44,7 @@ static void gen3(Coords *coords, MPI_Comm cart, int N[3], float ext[3], float *D
     G = m::dims[X] * XS;
     sc = G / ext[X];
     UC(field::scale(N, sc, /**/ D));
-    if (field_dumps) UC(field::dump(*coords, cart, N, D));
+    if (field_dumps) UC(field::dump(coords, cart, N, D));
     UC(gen2(coords, N, D, /**/ sdf));
 }
 
