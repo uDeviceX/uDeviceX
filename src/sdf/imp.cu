@@ -15,7 +15,6 @@
 #include "utils/imp.h"
 
 #include "tex3d/type.h"
-#include "array3d/type.h"
 #include "array3d/imp.h"
 #include "tex3d/imp.h"
 
