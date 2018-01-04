@@ -9,7 +9,7 @@ enum {
     MAXNWALL = NCELLSWALL * numberdensity
 };
 
-void gen(Coords coords, Wall *w) { /* generate */
+static void gen(Coords coords, Wall *w) { /* generate */
     run_eq(wall_creation);
     if (walls) {
         dSync();
@@ -30,7 +30,7 @@ void gen(Coords coords, Wall *w) { /* generate */
     }
 }
 
-void sim_gen() {
+void sim_gen(Sim *sim) {
     flu::gen_quants(coords, &flu.q);
     flu::build_cells(&flu.q);
     if (global_ids)    flu::gen_ids  (m::cart, flu.q.n, &flu.q);
@@ -60,7 +60,7 @@ void sim_gen() {
     if (strt_dumps) dump_strt(coords, restart::FINAL);
 }
 
-void sim_strt() {
+void sim_strt(Sim *sim) {
     long nsteps = (long)(tend / dt);
 
     /*Q*/

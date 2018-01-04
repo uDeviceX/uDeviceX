@@ -123,7 +123,7 @@ static void fin_objinter(ObjInter *o) {
     if (fsiforces)     fsi::fin(&o->fsi);
 }
 
-void fin() {
+void sim_fin(Sim *sim) {
 
     bop::fin(&dumpt);
     if (rbcs || solids)

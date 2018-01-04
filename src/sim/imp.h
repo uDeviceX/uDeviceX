@@ -1,6 +1,7 @@
 namespace sim {
-void ini(int argc, char **argv);
-void sim_gen();
-void sim_strt();
-void fin();
+struct Sim; 
+void sim_ini(int argc, char **argv, /**/ Sim **sim);
+void sim_gen(Sim *sim);
+void sim_strt(Sim *sim);
+void sim_fin(Sim *sim);
 }

@@ -179,7 +179,7 @@ static void ini_objinter(MPI_Comm cart, /**/ ObjInter *o) {
     if (fsiforces)     fsi::ini(rank, /**/ &o->fsi);
 }
 
-void ini(int argc, char **argv) {
+void sim_ini(int argc, char **argv, /**/ Sim **sim) {
     datatype::ini();
 
     UC(conf_ini(&config));
