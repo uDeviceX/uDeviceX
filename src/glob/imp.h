@@ -33,12 +33,17 @@ void global2local(const Coords c, float3 rg, /**/ float3 *rl);
 
 /* edges of the sub-domain in global coordinates */
 
-int xlo(const Coords c);
-int ylo(const Coords c);
-int zlo(const Coords c);
-int xhi(const Coords c);
-int yhi(const Coords c);
-int zhi(const Coords c);
+int xlo(const Coords);
+int ylo(const Coords);
+int zlo(const Coords);
+int xhi(const Coords);
+int yhi(const Coords);
+int zhi(const Coords);
+
+/* sizes of the  sub-domain */
+int xs(const Coords);
+int ys(const Coords);
+int zs(const Coords);
 
 /* rank predicates */
 
