@@ -8,15 +8,19 @@ void forces_fsi(ObjInter *oi, fsi::SolventWrap *w_s, int nw, PaWrap *pw, FoWrap 
     fsi::bulk(&oi->fsi, nw, pw, fw);
 }
 
-void forces_objects(ObjInter *oi, Flu *f, Rbc *r, Rig *s) {
+void forces_objects(Sim *sim) {
     fsi::SolventWrap w_s;
     Cloud cloud;
     PaWrap pw[MAX_OBJ_TYPES];
     FoWrap fw[MAX_OBJ_TYPES];
     int nw = 0;
+    ObjInter *oi = &sim->objinter;
+    Flu *f = &sim->flu;
+    Rbc *r = &sim->rbc;
+    Rig *s = &sim->rig;
     ObjExch *e = &oi->e;
     
-    if (solids0) {
+    if (sim->solids0) {
         pw[nw] = {s->q.n, s->q.pp};
         fw[nw] = {s->q.n, s->ff};
         ++nw;

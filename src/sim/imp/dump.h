@@ -5,7 +5,7 @@ static void dev2hst(Sim *s) { /* device to host  data transfer */
     Rig *rig = &s->rig;
     
     cD2H(s->pp_dump + start, flu->q.pp, flu->q.n); start += flu->q.n;
-    if (solids0) {
+    if (s->solids0) {
         cD2H(s->pp_dump + start, rig->q.pp, rig->q.n); start += rig->q.n;
     }
     if (rbcs) {
@@ -35,7 +35,7 @@ static void dump_part(Coords coords, int step, Sim *s) {
         bop::parts(m::cart, coords, flu->q.pp_hst, flu->q.n, "solvent", step, /**/ dumpt);
     }
 
-    if(solids0) {
+    if(s->solids0) {
         cD2H(rig->q.pp_hst, rig->q.pp, rig->q.n);
         if (force_dumps) {
             cD2H(rig->ff_hst, rig->ff, rig->q.n);

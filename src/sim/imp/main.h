@@ -53,15 +53,15 @@ void sim_gen(Sim *s) {
     long nsteps = (long)(tend / dt);
     msg_print("will take %ld steps", nsteps);
     if (walls || solids) {
-        solids0 = false;  /* global */
+        s->solids0 = false;
         gen(s->coords, /**/ wall, s);
         dSync();
         if (walls && wall->q.n) UC(wall::gen_ticket(wall->q, &wall->t));
-        solids0 = solids;
+        s->solids0 = solids;
         if (rbcs && multi_solvent) gen_colors(rbc, &s->colorer, /**/ flu);
         run(wall_creation, nsteps, s);
     } else {
-        solids0 = solids;
+        s->solids0 = solids;
         run(            0, nsteps, s);
     }
     /* final strt dump*/
@@ -97,7 +97,7 @@ void sim_strt(Sim *s) {
         MC(m::Barrier(m::cart));
     }
 
-    solids0 = solids;
+    s->solids0 = solids;
 
     msg_print("will take %ld steps", nsteps - wall_creation);
     run(wall_creation, nsteps, s);

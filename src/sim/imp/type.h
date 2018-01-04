@@ -142,4 +142,6 @@ struct Sim {
 
     /* runtime config */
     Config *cfg;
+
+    bool solids0;
 };

@@ -18,21 +18,21 @@ void step(BForce *bforce, bool wall0, int it, Sim *s) {
     UC(check_sizes(s));
     
     UC(distribute_flu(s));
-    if (solids0) UC(distribute_rig(/**/ rig));
-    if (rbcs)    UC(distribute_rbc(/**/ rbc));
+    if (s->solids0) UC(distribute_rig(/**/ rig));
+    if (rbcs)       UC(distribute_rbc(/**/ rbc));
 
     UC(check_sizes(s));
     
     forces(wall0, s);
 
     dump_diag0(s->coords, it, s);
-    dump_diag_after(it, wall0, solids0, s);
+    dump_diag_after(it, wall0, s->solids0, s);
     body_force(it, *bforce, s);
 
     restrain(it, /**/ flu, rbc);
     update_solvent(it, /**/ flu);
-    if (solids0) update_solid(/**/ rig);
-    if (rbcs)    update_rbc(it, rbc, s);
+    if (s->solids0) update_solid(/**/ rig);
+    if (rbcs)       update_rbc(it, rbc, s);
 
     if (VCON && wall0) {
         sample(s->coords, it, flu, /**/ &s->vcont);
@@ -42,7 +42,7 @@ void step(BForce *bforce, bool wall0, int it, Sim *s) {
 
     if (wall0) bounce_wall(s->coords, wall, /**/ flu, rbc);
 
-    if (sbounce_back && solids0) bounce_solid(it, /**/ &s->bb, rig, flu);
+    if (sbounce_back && s->solids0) bounce_solid(it, /**/ &s->bb, rig, flu);
 
     if (wall0) {
         if (INFLOW)  apply_inflow(s->inflow, flu);
