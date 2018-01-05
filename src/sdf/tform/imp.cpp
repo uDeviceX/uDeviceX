@@ -51,7 +51,7 @@ static void tex_ini(const Coords *c, const int T[3], const int M[3], /**/ TGrid 
     t->n[X] = T[X]; t->n[Y] = T[Y]; t->n[Z] = T[Z];
 }
 
-static void sub_ini(const Coords *c, /**/ TGrid *t) {
+static void out_ini(const Coords *c, /**/ TGrid *t) {
     enum {X, Y, Z};
     t->lo[X] = xlo(*c);
     t->lo[Y] = ylo(*c);
@@ -82,11 +82,11 @@ void tex2sdf_ini(const Coords *c,
     UC(grid2grid(&tex, &sdf, /**/ t));
 }
 
-void sub2sdf_ini(const Coords *c, const int N[3], /**/ Tform* t) {
+void out2sdf_ini(const Coords *c, const int N[3], /**/ Tform* t) {
     enum {X, Y, Z};
     TGrid sub, sdf;
     if (goodp(N) == BAD) ERR("bad N = [%d %d %d]", N[X], N[Y], N[Z]);
-    sub_ini(c, /**/ &sub);
+    out_ini(c, /**/ &sub);
     sdf_ini(c, N, /**/ &sdf);
     UC(grid2grid(&sub, &sdf, /**/ t));
 }
@@ -97,7 +97,7 @@ void sub2tex_ini(const Coords *c, const int T[3], const int M[3], /**/ Tform *t)
     if (goodp(T) == BAD) ERR("bad T = [%d %d %d]", T[X], T[Y], T[Z]);
     if (goodp(M) == BAD) ERR("bad M = [%d %d %d]", M[X], M[Y], M[Z]);
 
-    sub_ini(c,       /**/ &sub);
+    out_ini(c,       /**/ &sub); /* TODO */
     tex_ini(c, T, M, /**/ &tex);
     grid2grid(&sub, &tex, /**/ t);
 }

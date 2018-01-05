@@ -26,9 +26,9 @@ gcfac(fmt(sub2tex));
 e: T * (r + L / 2 + M) / (L + 2 * M) - 1/2;
 fmt0(e, 'r);
 
-/* from field/imp/sample.h and sdf/imp/gen.h */
-s: N * (L + 2 * M) / G / T;
-o: N * (lo - M) / G;
-e: o + ('r + 1/2) * s - 1/2;
-e: fmt0(e, 'r);
+[f2g, g2f]: genfi(-L/2,        lo,    0,           lo + L/2) $
+[t2g, g2t]: genfi(-1/2,      t_lo,   t_n-1/2,          t_hi) $
+f2t       : chain(f2g, g2t);
 
+(t_lo: lo - M, t_hi: lo + L + M, t_n: T);
+map('gcfac, fmt(f2t));
