@@ -7,6 +7,6 @@ e ()   { msg ": $@"; eval "$@"; }
 
 h=`u.host`
 if test $h = acer
-then e xdg-open localhost:8000/"${1-main.html}"
-else e open -a Firefox http://localhost:8000/"${1-main.html}"
+then e xdg-open localhost:8000/"${1-index.html}"
+else e open -a Firefox http://localhost:8000/"${1-index.html}"
 fi
