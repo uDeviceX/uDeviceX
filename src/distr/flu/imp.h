@@ -28,12 +28,15 @@ void wait_send(Comm *c);
 
 /* unpack */
 void unpack(/**/ Unpack *u);
+// end::interface[]
 
+
+// tag::clist[]
 /* cell lists */
 void bulk(PartList lp, /**/ Quants *q);
 void halo(const Unpack *u, /**/ Quants *q);
 void gather(int ndead, const Pack *p, const Unpack *u, /**/ Quants *q);
-// end::interface[]
+// end::clist[]
 
 } // flu
 } // distr

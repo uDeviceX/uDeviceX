@@ -59,6 +59,21 @@ include::{src}/distr/flu/type.h[tag=struct]
 include::{src}/distr/flu/imp.h[tag=interface]
 ----
 
+The map is build from link:partlist{lext}[partlist], allowing the
+process to delete particles.
+
+The solvent distribution also include cell list generation (see
+link:clist{lext}[cell lists]).
+It is done in two phases:
+* subindices, independant for bulk and remote particles
+* gather, which needs the subindices to be computed
+Bulk subindices can be computed while comunicating remote particles.
+
+[source,cpp]
+----
+include::{src}/distr/flu/imp.h[tag=clist]
+----
+
 == rbc
 TODO
 
