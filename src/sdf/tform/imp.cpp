@@ -72,7 +72,7 @@ static void out_ini(const Coords *c, /**/ TGrid *t) {
 
 static void sub_ini(const Coords *c, /**/ Tform *t) {
     enum {X, Y, Z};
-    float a0[3], a1[2], b0[3], b1[3];
+    float a0[3], a1[3], b0[3], b1[3];
     a0[X] = -xs(*c)/2; a0[Y] = -ys(*c)/2; a0[Z] = -zs(*c)/2;
     b0[X] =  xs(*c)/2; b0[Y] =  ys(*c)/2; b0[Z] =  zs(*c)/2;
 
