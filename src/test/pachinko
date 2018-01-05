@@ -7,12 +7,12 @@ S=`pwd`
 cp "$S"/data/sdf/pachinko/sdf.dat sdf.dat
 :
 u.conf conf/test.h <<!!!
-   XS=32 YS=56 ZS=60 numberdensity=3
+   XS=32 YS=56 ZS=60 
    tend=1.0 part_freq=300 walls wall_creation=100
    field_dumps part_dumps field_freq=300
    FORCE_CONSTANT FORCE_PAR_A=100
    run
 !!!
 { make clean && u.make -j; } > /dev/null
-u.run 1 1 3 ./udx
-u.avgh5 1 u 2 h5/flowfields-0003.h5 | uscale 0.1 > h5.out.txt
+u.run ./udx
+u.avgh5 1 u 2 h5/flowfields-0003.h5 > h5.out.txt
