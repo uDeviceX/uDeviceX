@@ -6,10 +6,10 @@
 ----
 include::{src}/math/tform/imp.h[tags=interface]
 ----
-<1> allocate/deallocate
+<I> allocate/deallocate
 
-<2> initialize from two pairs of vectors
-<3> initialize from a chain of transformations
+<C> create `Tform`
 
-<4> log and dump the state of the transform
-<5> convert to a structure which can be used on device
+<U> using `Tform` to transform coordinates
+
+<L> loging and dump of the `Tform` state
