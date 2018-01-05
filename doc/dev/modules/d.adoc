@@ -1,12 +1,26 @@
 = generic [d]evice API
 
+:lext: .adoc
+:src: ../../../src
+
 The goal is to make cuda API and kernel functions generic. Meaning
 they can be replaced by CPU calls.
+
+== interface
+
+Wrappers for cuda functions:
+
+[source,cpp]
+----
+include::{src}/d/api.h[]
+----
 
 generic files of the interface
 * `d/api.h` API calls
 * `d/q.h` function and variable type qualifiers
 * `d/ker.h`
+
+== configuration
 
 Generic device can by implemented by `cuda` and by `cpu`
 * `d/cuda`
