@@ -3,6 +3,7 @@
 :src: ../../../../src
 
 compute extends of chunks of particles
+
 * input is an array of particles, the number of chunks and the number of particles per chunk.
 * output is the bounding box in for each chunk of particles.
 
