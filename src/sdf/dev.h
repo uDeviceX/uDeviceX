@@ -2,6 +2,16 @@ static __device__ float fetch(Sdf_v *sdf, float i, float j, float k) {
     return Ttex3D(float, sdf->tex.t, i, j, k);
 }
 static __device__ int iround(float x) { return (x > 0.5) ? (x + 0.5) : (x - 0.5); }
+
+static __device__ int small_diff(const float a[3], const float b[3]) {
+    enum {X, Y, Z};
+    const float eps = 1e-4;
+    int cx, cy, cz;
+    cx = -eps < a[X] - b[X] && a[X] - b[X] < eps;
+    cy = -eps < a[Y] - b[Y] && a[Y] - b[Y] < eps;
+    cz = -eps < a[Z] - b[Z] && a[Z] - b[Z] < eps;
+    return cx && cy && cz;
+}
 static __device__ void convert(Sdf_v *sdf, const float a[3], /**/ float b[3]) {
     int c;
     int L[3] = {XS, YS, ZS};
