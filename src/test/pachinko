@@ -1,5 +1,5 @@
 #### "Pachinko"
-# sTEST: pachinko
+# cTEST: pachinko
 rm -rf bop h5 diag.txt rbc.off
 :
 set -eu
@@ -7,7 +7,7 @@ S=`pwd`
 cp "$S"/data/sdf/pachinko/sdf.dat sdf.dat
 :
 u.conf conf/test.h <<!!!
-   XS=32 YS=56 ZS=60
+   XS=32 YS=56 ZS=60 numberdensity=3
    tend=1.0 part_freq=300 walls wall_creation=100
    field_dumps part_dumps field_freq=300
    FORCE_CONSTANT FORCE_PAR_A=100
