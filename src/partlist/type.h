@@ -6,9 +6,9 @@ enum {
 /* structure of particle                           */
 /* optional "deathlist" for particles to be killed */
 
-// tag::partlist[]
+// tag::type[]
 struct PartList {
-    const Particle *pp;
-    const int *deathlist;
+    const Particle *pp;   /* particles array          */
+    const int *deathlist; /* what pp is dead or alive */
 };
-// end::partlist[]
+// end::type[]

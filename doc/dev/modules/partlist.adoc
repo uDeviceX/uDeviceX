@@ -9,13 +9,12 @@ Purpose: kill particles during redistribution or cell lists build
 
 [source,cpp]
 ----
-include::{src}/partlist/imp.h[tag=partlist]
+include::{src}/partlist/type.h[tag=type]
 ----
 
-* `pp` particle array
-* `deathlist` state of particles: dead or alive
-
 == interface
+
+contains only device interface:
 
 [source,cpp]
 ----
