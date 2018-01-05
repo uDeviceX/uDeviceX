@@ -37,7 +37,23 @@ This can be allocated on device or on host memory (see interface).
 
 === interface
 
-TODO
+Host interface:
+
+[source,cpp]
+----
+include::{src}/distr/map/imp.h[]
+----
+
+
+Device interface:
+
+[source,cpp]
+----
+include::{src}/distr/map/dev.h[tag=int]
+----
+<1> prefix sum on counts to obtain starts
+<2> get fragment id from position
+<3> add a quantity to the map
 
 == flu
 

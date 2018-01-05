@@ -1,6 +1,9 @@
+// tag::int[]
 /* exclusive scan */
 template <int NCOUNTS> 
-static __global__ void dmap_scan(/**/ DMap m) {
+static __global__ void dmap_scan(/**/ DMap m)              // <1>
+// end::int[]
+{
     int tid, val, cnt;
     tid = threadIdx.x;
     val = 0, cnt = 0;    
@@ -10,7 +13,10 @@ static __global__ void dmap_scan(/**/ DMap m) {
     if (tid <= NCOUNTS) m.starts[tid] = val - cnt;
 }
 
-static __device__ int dmap_get_fid(const float r[3]) {
+// tag::int[]
+static __device__ int dmap_get_fid(const float r[3])       // <2>
+// end::int[]
+{
     enum {X, Y, Z};
     int x, y, z;
     x = -1 + (r[X] >= -XS/2) + (r[X] >= XS/2);
@@ -19,7 +25,10 @@ static __device__ int dmap_get_fid(const float r[3]) {
     return frag_d2i(x, y, z);
 }
 
-static __device__ void dmap_add(int pid, int fid, DMap m) {
+// tag::int[]
+static __device__ void dmap_add(int pid, int fid, DMap m)  // <3>
+// end::int[]
+{
     int entry;
     entry = atomicAdd(m.counts + fid, 1);
     m.ids[fid][entry] = pid;
