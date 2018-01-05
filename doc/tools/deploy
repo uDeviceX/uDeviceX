@@ -2,6 +2,8 @@
 
 T="./public"
 H=`find . -type f -name "*.html"`
+C=`find . -type f -name "*.css"`
+I=`find . -type f -name "*.jpeg"`
 D=`find . -type d`
 
 mkdir -p $T
@@ -10,6 +12,12 @@ for d in $D; do
      mkdir -p "${T}/${d}"
 done
 
-for h in $H; do
+for h in $H $C $I; do
     cp -f $h "${T}/${h}"
 done
+
+# TODO
+D=~/udoc/
+rm -rf $D/*
+mv $T/* $D
+rm -rf public
