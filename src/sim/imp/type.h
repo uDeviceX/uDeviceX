@@ -129,6 +129,7 @@ struct Sim {
     BounceBack bb;
     Colorer colorer;
     PidVCont vcont;
+    MPI_Comm cart;
 
     /* open bc tools */
     Outflow *outflow;
