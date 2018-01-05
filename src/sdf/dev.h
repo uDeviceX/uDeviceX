@@ -1,51 +1,29 @@
 static __device__ float fetch(Sdf_v *sdf, float i, float j, float k) {
     return Ttex3D(float, sdf->tex.t, i, j, k);
 }
+
 static __device__ int iround(float x) { return (x > 0.5) ? (x + 0.5) : (x - 0.5); }
 
-static __device__ int small_diff(const float a[3], const float b[3]) {
-    enum {X, Y, Z};
-    const float eps = 1e-3;
-    int cx, cy, cz;
-    cx = -eps < a[X] - b[X] && a[X] - b[X] < eps;
-    cy = -eps < a[Y] - b[Y] && a[Y] - b[Y] < eps;
-    cz = -eps < a[Z] - b[Z] && a[Z] - b[Z] < eps;
-    return cx && cy && cz;
-}
 static __device__ void convert(Sdf_v *sdf, const float a[3], /**/ float b[3]) {
-    enum {X, Y, Z};
-    int c;
-    int L[3] = {XS, YS, ZS};
-    int M[3] = {XWM, YWM, ZWM};
-    int T[3] = {XTE, YTE, ZTE};
-    for (c = 0; c < 3; ++c)
-        b[c] = T[c] * (a[c] + L[c] / 2 + M[c]) / (L[c] + 2 * M[c]) - 0.5;
-
-    float q[3];
-    tform_convert_dev(&sdf->t, a, /**/ q);
-    if (!small_diff(b, q)) {
-        printf("convert failed: [%g %g %g] != [%g %g %g]\n", b[X], b[Y], b[Z], q[X], q[Y], q[Z]);
-        assert(0);
-    }
+    tform_convert_dev(&sdf->t, a, /**/ b);
 }
+
 static __device__ void convert_floor(Sdf_v *sdf, const float a[3], /**/ int i[3]) {
     enum {X, Y, Z};
     float f[3];
     convert(sdf, a, /**/ f);
     i[X] = int(f[X]); i[Y] = int(f[Y]); i[Z] = int(f[Z]);
 }
+
 static __device__ void convert_round(Sdf_v *sdf, const float a[3], /**/ int i[3]) {
     enum {X, Y, Z};
     float f[3];
     convert(sdf, a, /**/ f);
     i[X] = iround(f[X]); i[Y] = iround(f[Y]); i[Z] = iround(f[Z]);
 }
-static __device__ void spacing(Sdf_v *sdf, float isp[3]) {
-    int c;
-    int L[3] = {XS, YS, ZS};
-    int M[3] = {XWM, YWM, ZWM};
-    int T[3] = {XTE, YTE, ZTE};
-    for (c = 0; c < 3; ++c) isp[c] = T[c]/(2*M[c] + L[c]);
+
+static __device__ void spacing(Sdf_v *sdf, float s[3]) {
+    tform_spacing_dev(&sdf->t, /**/ s);
 }
 
 static __device__ float3 grad(Sdf_v *sdf, const float3 *pos) {
