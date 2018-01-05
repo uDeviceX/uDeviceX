@@ -19,7 +19,7 @@ struct Unpack {
     hBags hpp, hii, hcc;
     Particle *ppre;
     int *iire, *ccre;
-    int nhalo;
+    int nhalo; /* number of received particles */
 };
 // end::struct[]
 

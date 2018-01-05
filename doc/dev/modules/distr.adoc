@@ -52,6 +52,10 @@ contains the three generic data structures:
 include::{src}/distr/flu/type.h[tag=struct]
 ----
 
+where `[d,h]xx` means quantities on `[device,host]` and `pp`
+corresponds to particles, `cc` to colors and `ii` to global ids.
+The `xxre` variables in `Unpack` are buffer for remote quantities.
+
 === interface
 
 [source,cpp]
