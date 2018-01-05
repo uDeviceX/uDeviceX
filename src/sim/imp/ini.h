@@ -184,41 +184,43 @@ void sim_ini(int argc, char **argv, MPI_Comm cart, /**/ Sim **sim) {
     UC(emalloc(sizeof(Sim), (void**) sim));
     s = *sim;
 
+    MC(m::Comm_dup(cart, &s->cart));
+    
     Config *cfg = s->cfg;    
     datatype::ini();
 
     UC(conf_ini(&cfg)); s->cfg = cfg;
     UC(conf_read(argc, argv, /**/ cfg));
     
-    UC(coords_ini(m::cart, /**/ &s->coords));
+    UC(coords_ini(s->cart, /**/ &s->coords));
     
     UC(emalloc(3 * MAX_PART_NUM * sizeof(Particle), (void**) &s->pp_dump));
     
-    if (rbcs) UC(ini_rbc(m::cart, /**/ &s->rbc));
+    if (rbcs) UC(ini_rbc(s->cart, /**/ &s->rbc));
 
-    if (VCON)    UC(ini_vcont(m::cart, /**/ &s->vcont));
+    if (VCON)    UC(ini_vcont(s->cart, /**/ &s->vcont));
     if (OUTFLOW) UC(ini_outflow(s->coords, /**/ &s->outflow));
     if (INFLOW)  UC(ini_inflow(s->coords, /**/ &s->inflow));
     if (OUTFLOW_DEN) UC(ini_denoutflow(s->coords, /**/ &s->denoutflow, &s->mapoutflow));
     
     if (rbcs || solids)
-        UC(ini_objinter(m::cart, /**/ &s->objinter));        
+        UC(ini_objinter(s->cart, /**/ &s->objinter));        
     
-    UC(bop::ini(m::cart, &s->dumpt));
+    UC(bop::ini(s->cart, &s->dumpt));
 
     if (walls) ini_wall(&s->wall);
     
-    UC(ini_flu(m::cart, /**/ &s->flu));
+    UC(ini_flu(s->cart, /**/ &s->flu));
    
     if (multi_solvent && rbcs)
-        UC(ini_colorer(s->rbc.q.nv, m::cart, /**/ &s->colorer));
+        UC(ini_colorer(s->rbc.q.nv, s->cart, /**/ &s->colorer));
     
     if (solids) {
         UC(ini_rig(m::cart, /**/ &s->rig));
 
         if (sbounce_back)
-            UC(ini_bounce_back(m::cart, &s->rig, /**/ &s->bb));
+            UC(ini_bounce_back(s->cart, &s->rig, /**/ &s->bb));
     }
 
-    MC(MPI_Barrier(m::cart));
+    MC(MPI_Barrier(s->cart));
 }

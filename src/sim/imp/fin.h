@@ -157,5 +157,6 @@ void sim_fin(Sim *s) {
     UC(conf_destroy(s->cfg));
     datatype::fin();
 
+    MC(m::Comm_free(&s->cart));
     UC(efree(s));
 }
