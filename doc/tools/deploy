@@ -1,1 +1,15 @@
 #!/bin/sh
+
+T="./public"
+H=`find . -type f -name "*.html"`
+D=`find . -type d`
+
+mkdir -p $T
+
+for d in $D; do
+     mkdir -p "${T}/${d}"
+done
+
+for h in $H; do
+    cp -f $h "${T}/${h}"
+done
