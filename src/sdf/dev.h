@@ -5,7 +5,7 @@ static __device__ int iround(float x) { return (x > 0.5) ? (x + 0.5) : (x - 0.5)
 
 static __device__ int small_diff(const float a[3], const float b[3]) {
     enum {X, Y, Z};
-    const float eps = 1e-4;
+    const float eps = 1e-3;
     int cx, cy, cz;
     cx = -eps < a[X] - b[X] && a[X] - b[X] < eps;
     cy = -eps < a[Y] - b[Y] && a[Y] - b[Y] < eps;
