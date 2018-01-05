@@ -1,5 +1,5 @@
-static __device__ float fetch(const Sdf_v sdf, float i, float j, float k) {
-    return Ttex3D(float, sdf.tex.t, i, j, k);
+static __device__ float fetch(Sdf_v *sdf, float i, float j, float k) {
+    return Ttex3D(float, sdf->tex.t, i, j, k);
 }
 static __device__ int iround(float x) { return (x > 0.5) ? (x + 0.5) : (x - 0.5); }
 static __device__ void convert(const float a[3], /**/ float b[3]) {
@@ -30,7 +30,7 @@ static __device__ void inv_space(float isp[3]) {
     for (c = 0; c < 3; ++c) isp[c] = T[c]/(2*M[c] + L[c]);
 }
 
-static __device__ float3 grad(const Sdf_v texsdf, const float3 *pos) {
+static __device__ float3 grad(Sdf_v *texsdf, const float3 *pos) {
     int tc[3];
     float fcts[3], r[3] = {pos->x, pos->y, pos->z};
     float myval, gx, gy, gz;
@@ -46,7 +46,7 @@ static __device__ float3 grad(const Sdf_v texsdf, const float3 *pos) {
     return make_float3(gx, gy, gz);
 }
 
-static __device__ float3 ugrad(const Sdf_v texsdf, const float3 *r) {
+static __device__ float3 ugrad(Sdf_v *texsdf, const float3 *r) {
     float mag, eps;
     float3 g;
     eps = 1e-6;
@@ -60,14 +60,14 @@ static __device__ float3 ugrad(const Sdf_v texsdf, const float3 *r) {
     return g;
 }
 
-static __device__ float cheap_sdf(const Sdf_v texsdf, float x, float y, float z)  {
+static __device__ float cheap_sdf(Sdf_v *texsdf, float x, float y, float z)  {
     int tc[3];
     float r[3] = {x, y, z};
     convert_round(r, /**/ tc);
     return fetch(texsdf, tc[0], tc[1], tc[2]);
 }
 
-static __device__ float sdf(const Sdf_v texsdf, float x, float y, float z) {
+static __device__ float sdf(Sdf_v *texsdf, float x, float y, float z) {
     int c;
     float s000, s001, s010, s100, s101, s011, s110, s111;
     float s00x, s01x, s10x, s11x;

@@ -27,7 +27,7 @@ static __device__ void crop(float *t) {
     if (*t >   0) *t = 0;
 }
 
-static __device__ void rescue(Wvel_v wv, Coords c, const Sdf_v texsdf, float currsdf, /* io */ float3 *r, float3 *v) {
+static __device__ void rescue(Wvel_v wv, Coords c, Sdf_v *texsdf, float currsdf, /* io */ float3 *r, float3 *v) {
     float sdf0, jump;
     float3 dsdf;
     int l;
@@ -47,7 +47,8 @@ static __device__ void rescue(Wvel_v wv, Coords c, const Sdf_v texsdf, float cur
     }
 }
 
-static __device__ void bounce_back_1p(Wvel_v wv, Coords c, const Sdf_v texsdf, float currsdf, /* io */ float3 *r, float3 *v) {
+static __device__ void bounce_back_1p(Wvel_v wv, Coords c, Sdf_v *texsdf, float currsdf,
+                                      /* io */ float3 *r, float3 *v) {
     float3 r0, rc, rw, dsdf;
     float phi, dphi, t;
     int l;
@@ -88,7 +89,7 @@ static __device__ void bounce_back_1p(Wvel_v wv, Coords c, const Sdf_v texsdf, f
         *r = r0;    
 }
 
-__global__ void bounce_back(Wvel_v wv, Coords c, const Sdf_v texsdf, int n, /**/ Particle *pp) {
+__global__ void bounce_back(Wvel_v wv, Coords c, Sdf_v texsdf, int n, /**/ Particle *pp) {
     float s, currsdf;
     float3 r, v;
     int i;
@@ -97,12 +98,12 @@ __global__ void bounce_back(Wvel_v wv, Coords c, const Sdf_v texsdf, int n, /**/
 
     p2rv(pp, i, /**/ &r, &v);
 
-    s = cheap_sdf(texsdf, r.x, r.y, r.z);
+    s = cheap_sdf(&texsdf, r.x, r.y, r.z);
 
     if (s >= -1.7320 * XSIZE_WALLCELLS / XTE) {
-        currsdf = sdf(texsdf, r.x, r.y, r.z);
+        currsdf = sdf(&texsdf, r.x, r.y, r.z);
         if (currsdf >= 0) {
-            bounce_back_1p(wv, c, texsdf, currsdf, /*io*/ &r, &v);
+            bounce_back_1p(wv, c, &texsdf, currsdf, /*io*/ &r, &v);
             rv2p(r, v, i, /**/ pp);
         }
     }

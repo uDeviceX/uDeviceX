@@ -20,7 +20,7 @@ static __device__ void force0(Wvel_v wv, Coords c, forces::Pa a, int aid, int zp
     forces::p2r3(&a, /**/ &x, &y, &z);
     threshold =
         -1 - 1.7320f * ((float)XSIZE_WALLCELLS / (float)XTE);
-    if (cheap_sdf(wa.sdf_v, x, y, z) <= threshold) return;
+    if (cheap_sdf(&wa.sdf_v, x, y, z) <= threshold) return;
 
     map::ini(zplane, wa.start, wa.n, x, y, z, /**/ &m);
     float xforce = 0, yforce = 0, zforce = 0;
