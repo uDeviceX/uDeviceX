@@ -1,5 +1,5 @@
 static void build_map(int n, const float3 *minext, const float3 *maxext, /**/ Map m) {
-    reini_map(NBAGS, /**/ m);
+    map_reini(NBAGS, /**/ m);
     KL(dev::build_map, (k_cnf(n)), (n, minext, maxext, /**/ m));
     KL(dev::scan_map<NBAGS>, (1, 32), (/**/ m));
 }

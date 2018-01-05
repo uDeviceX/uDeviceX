@@ -28,7 +28,7 @@ void pack(const rbc::Quants *q, /**/ Pack *p) {
     pack_pp(p->map, q->nc, q->nv, q->pp, /**/ p->dpp);
 
     if (rbc_ids) {
-        mapD2H(NBAGS, &p->map, /**/ &p->hmap);
+        map_D2H(NBAGS, &p->map, /**/ &p->hmap);
         dSync();
         pack_ii(p->hmap, q->nc, q->ii, /**/ p->hii);
     }

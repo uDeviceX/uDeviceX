@@ -1,7 +1,7 @@
 static void build_map(int n, const PartList lp, Map m) {
-    UC(reini_map(NFRAGS, /**/ m));
+    UC(map_reini(NFRAGS, /**/ m));
     KL(dev::build_map, (k_cnf(n)), (lp, n, /**/ m));
-    UC(download_counts(NFRAGS, /**/ &m)); /* async */
+    UC(map_download_counts(NFRAGS, /**/ &m)); /* async */
     KL(dev::scan_map<NFRAGS>, (1, 32), (/**/ m));
 }
 

@@ -1,5 +1,5 @@
 void fin(Pack *p) {
-    fin_map(NBAGS, /**/ &p->map);
+    map_fin(NBAGS, /**/ &p->map);
     fin(PINNED, DEV_ONLY, /**/ &p->hipp, &p->dipp);
     fin(PINNED, DEV_ONLY, /**/ &p->hss, &p->dss);
 }

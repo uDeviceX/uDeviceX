@@ -1,4 +1,4 @@
-void ini_map(int nfrags, const int capacity[], /**/ Map *m) {
+void map_ini(int nfrags, const int capacity[], /**/ Map *m) {
     CC(d::Malloc((void**) &m->counts,  nfrags      * sizeof(int)));
     CC(d::Malloc((void**) &m->starts, (nfrags + 1) * sizeof(int)));
 
@@ -12,7 +12,7 @@ void ini_map(int nfrags, const int capacity[], /**/ Map *m) {
     
 }
 
-void fin_map(int nfrags, /**/ Map *m) {
+void map_fin(int nfrags, /**/ Map *m) {
     CC(d::Free(m->counts));
     CC(d::Free(m->starts));
     CC(d::FreeHost(m->hcounts));    
@@ -20,15 +20,15 @@ void fin_map(int nfrags, /**/ Map *m) {
         CC(d::Free(m->ids[i]));
 }
 
-void reini_map(int nfrags, /**/ Map m) {
+void map_reini(int nfrags, /**/ Map m) {
     CC(d::MemsetAsync(m.counts, 0, nfrags * sizeof(int)));
 }
 
-void download_counts(int nfrags, /**/ Map *m) {
+void map_download_counts(int nfrags, /**/ Map *m) {
     CC(d::MemcpyAsync(m->hcounts, m->counts, nfrags * sizeof(int), D2H));
 }
 
-void ini_host_map(int nfrags, const int capacity[], /**/ Map *m) {
+void map_ini_host(int nfrags, const int capacity[], /**/ Map *m) {
     UC(emalloc( nfrags      * sizeof(int), (void**) &m->counts));
     UC(emalloc((nfrags + 1) * sizeof(int), (void**) &m->starts));
 
@@ -40,18 +40,18 @@ void ini_host_map(int nfrags, const int capacity[], /**/ Map *m) {
     }
 }
 
-void fin_host_map(int nfrags, /**/ Map *m) {
+void map_fin_host(int nfrags, /**/ Map *m) {
     free(m->counts);
     free(m->starts);    
     for (int i = 0; i < nfrags; ++i)
         free(m->ids[i]);
 }
 
-void reini_host_map(int nfrags, /**/ Map m) {
+void map_reini_host(int nfrags, /**/ Map m) {
     memset(m.counts, 0, nfrags * sizeof(int));
 }
 
-void mapD2H(int nfrags, const Map *d, /**/ Map *h) {
+void map_D2H(int nfrags, const Map *d, /**/ Map *h) {
     CC(d::MemcpyAsync(h->counts, d->counts,  nfrags      * sizeof(int), D2H));
     CC(d::MemcpyAsync(h->starts, d->starts, (nfrags + 1) * sizeof(int), D2H));
 

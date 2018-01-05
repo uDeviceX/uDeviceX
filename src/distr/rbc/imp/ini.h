@@ -8,7 +8,7 @@ void ini(int maxnc, int nv, Pack *p) {
     int numc[NBAGS];
     get_num_capacity(maxnc, /**/ numc);
 
-    UC(ini_map(NBAGS, numc, /**/ &p->map));
+    UC(map_ini(NBAGS, numc, /**/ &p->map));
 
     /* one datum is here a full RBC, so bsize is nv * sizeof(Particle) */
     UC(ini(PINNED, DEV_ONLY, nv * sizeof(Particle), numc, /**/ &p->hpp, &p->dpp));
@@ -17,7 +17,7 @@ void ini(int maxnc, int nv, Pack *p) {
     CC(d::Malloc((void**) &p->maxext, maxnc * sizeof(float3)));
 
     if (rbc_ids) {
-        UC(ini_host_map(NBAGS, numc, /**/ &p->hmap));
+        UC(map_ini_host(NBAGS, numc, /**/ &p->hmap));
         UC(ini(HST_ONLY, HST_ONLY, sizeof(int), numc, /**/ &p->hii, NULL));
     }
 }
