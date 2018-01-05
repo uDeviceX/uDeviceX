@@ -17,11 +17,11 @@ static void gen(Coords coords, Wall *w, Sim *s) { /* generate */
     run_eq(wall_creation, s);
     if (walls) {
         dSync();
-        UC(gen(&coords, m::cart, /**/ w->sdf));
-        MC(m::Barrier(m::cart));
+        UC(gen(&coords, s->cart, /**/ w->sdf));
+        MC(m::Barrier(s->cart));
         inter::create_walls(MAXNWALL, w->sdf, /*io*/ &flu->q, /**/ &w->q);
     }
-    inter::freeze(coords, m::cart, w->sdf, /*io*/ &flu->q, /**/ &rig->q, &rbc->q);
+    inter::freeze(coords, s->cart, w->sdf, /*io*/ &flu->q, /**/ &rig->q, &rbc->q);
     clear_vel(s);
 
     if (multi_solvent) {
@@ -41,14 +41,14 @@ void sim_gen(Sim *s) {
     
     flu::gen_quants(s->coords, &flu->q);
     flu::build_cells(&flu->q);
-    if (global_ids)    flu::gen_ids  (m::cart, flu->q.n, &flu->q);
+    if (global_ids)    flu::gen_ids  (s->cart, flu->q.n, &flu->q);
     if (rbcs) {
-        rbc::main::gen_quants(s->coords, m::cart, "rbc.off", "rbcs-ic.txt", /**/ &rbc->q);
+        rbc::main::gen_quants(s->coords, s->cart, "rbc.off", "rbcs-ic.txt", /**/ &rbc->q);
         rbc::force::gen_ticket(rbc->q, &rbc->tt);
 
         if (multi_solvent) gen_colors(rbc, &s->colorer, /**/ flu);
     }
-    MC(m::Barrier(m::cart));
+    MC(m::Barrier(s->cart));
 
     long nsteps = (long)(tend / dt);
     msg_print("will take %ld steps", nsteps);
@@ -90,11 +90,11 @@ void sim_strt(Sim *s) {
     if (rbcs)            UC(rbc::force::gen_ticket(rbc->q, &rbc->tt));
     if (walls && wall->q.n) UC(wall::gen_ticket(wall->q, &wall->t));
 
-    MC(m::Barrier(m::cart));
+    MC(m::Barrier(s->cart));
     if (walls) {
         dSync();
-        UC(gen(&s->coords, m::cart, /**/ wall->sdf));
-        MC(m::Barrier(m::cart));
+        UC(gen(&s->coords, s->cart, /**/ wall->sdf));
+        MC(m::Barrier(s->cart));
     }
 
     s->solids0 = solids;

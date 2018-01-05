@@ -216,7 +216,7 @@ void sim_ini(int argc, char **argv, MPI_Comm cart, /**/ Sim **sim) {
         UC(ini_colorer(s->rbc.q.nv, s->cart, /**/ &s->colorer));
     
     if (solids) {
-        UC(ini_rig(m::cart, /**/ &s->rig));
+        UC(ini_rig(s->cart, /**/ &s->rig));
 
         if (sbounce_back)
             UC(ini_bounce_back(s->cart, &s->rig, /**/ &s->bb));
