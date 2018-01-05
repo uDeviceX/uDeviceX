@@ -17,7 +17,7 @@ void ini(int maxnc, int nv, Pack *p) {
     CC(d::Malloc((void**) &p->maxext, maxnc * sizeof(float3)));
 
     if (rbc_ids) {
-        UC(map_ini_host(NBAGS, numc, /**/ &p->hmap));
+        UC(dmap_ini_host(NBAGS, numc, /**/ &p->hmap));
         UC(ini(HST_ONLY, HST_ONLY, sizeof(int), numc, /**/ &p->hii, NULL));
     }
 }

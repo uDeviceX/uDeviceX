@@ -33,14 +33,15 @@
 #include "type.h"
 #include "imp.h"
 
+#include "distr/map/dev.h"
+#include "distr/map/imp.h"
+
 namespace distr {
 namespace flu {
 using namespace comm;
 
 #include "imp/type.h"
-#include "distr/map/dev.h"
 #include "distr/common/dev.h"
-#include "distr/map/imp.h"
 #include "dev.h"
 #include "imp/ini.h"
 #include "imp/fin.h"

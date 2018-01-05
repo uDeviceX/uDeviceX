@@ -1,3 +1,17 @@
+#include <stdlib.h>
+#include <stdio.h>
+
+#include <conf.h>
+#include "inc/conf.h"
+#include "inc/dev.h"
+
+#include "d/api.h"
+#include "utils/cc.h"
+#include "utils/error.h"
+#include "utils/imp.h"
+
+#include "type.h"
+
 void dmap_ini(int nfrags, const int capacity[], /**/ DMap *m) {
     CC(d::Malloc((void**) &m->counts,  nfrags      * sizeof(int)));
     CC(d::Malloc((void**) &m->starts, (nfrags + 1) * sizeof(int)));

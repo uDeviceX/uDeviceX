@@ -8,10 +8,10 @@ __global__ void build_map(const PartList lp, const int n, /**/ DMap m) {
 
     const Particle p = lp.pp[pid];
 
-    fid = get_fid(p.r);
+    fid = dmap_get_fid(p.r);
 
     if (fid != frag_bulk)
-        add_to_map(pid, fid, /**/ m);
+        dmap_add(pid, fid, /**/ m);
 }
 
 template <typename T, int STRIDE>

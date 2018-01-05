@@ -15,8 +15,8 @@ __global__ void build_map(int n, const float3 *minext, const float3 *maxext, /**
     r[Y] = 0.5f * (mine.y + maxe.y);
     r[Z] = 0.5f * (mine.z + maxe.z);
     
-    fid = get_fid(r);
-    add_to_map(i, fid, /**/ m);
+    fid = dmap_get_fid(r);
+    dmap_add(i, fid, /**/ m);
 }
 
 } //dev

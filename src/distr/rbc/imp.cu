@@ -26,6 +26,9 @@
 #include "algo/minmax/imp.h"
 
 #include "distr/map/type.h"
+#include "distr/map/dev.h"
+#include "distr/map/imp.h"
+
 #include "type.h"
 #include "imp.h"
 
@@ -33,9 +36,7 @@ namespace distr {
 namespace rbc {
 using namespace comm;
 
-#include "distr/map/dev.h"
 #include "distr/common/dev.h"
-#include "distr/map/imp.h"
 #include "dev.h"
 #include "imp/ini.h"
 #include "imp/fin.h"

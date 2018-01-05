@@ -11,8 +11,8 @@ __global__ void build_map(int n, const Solid *ss, /**/ DMap m) {
     r[Y] = ss[i].com[Y];
     r[Z] = ss[i].com[Z];
     
-    fid = get_fid(r);
-    add_to_map(i, fid, /**/ m);
+    fid = dmap_get_fid(r);
+    dmap_add(i, fid, /**/ m);
 }
 
 __global__ void pack_ss(const Solid *ss, DMap m, /**/ Sarray<Solid*, 27> buf) {
