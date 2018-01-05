@@ -27,7 +27,7 @@ void alloc_ticket(Ticket *t);
 void free_quants(Quants *q);
 void free_ticket(Ticket *t);
 
-void gen_quants(int maxn, Sdf *qsdf, /**/ int *n, Particle* pp, Quants *q);
+void gen_quants(MPI_Comm cart, int maxn, Sdf *qsdf, /**/ int *n, Particle* pp, Quants *q);
 void strt_quants(Coords coords, int maxn, Quants *q);
 
 void gen_ticket(const Quants q, Ticket *t);

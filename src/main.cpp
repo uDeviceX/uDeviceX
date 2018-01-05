@@ -1,3 +1,4 @@
+#include <mpi.h>
 #include <stdio.h>
 
 #include <conf.h>
@@ -5,6 +6,7 @@
 
 #include "utils/msg.h"
 #include "mpi/glb.h"
+#include "mpi/wrapper.h"
 #include "d/api.h"
 
 #include "sim/imp.h"
@@ -17,7 +19,7 @@ int main(int argc, char **argv) {
     msg_print("mpi size: %d", m::size);
     d::ini();
     
-    sim_ini(argc, argv, /**/ &sim);
+    sim_ini(argc, argv, m::cart, /**/ &sim);
     if (RESTART) sim_strt(sim);
     else         sim_gen(sim);
     sim_fin(sim);

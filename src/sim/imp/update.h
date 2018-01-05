@@ -97,15 +97,16 @@ void update_rbc(long it, Rbc *r, Sim *s) {
     scheme::move::main(rbc_mass, r->q.n, r->ff, r->q.pp);
 }
 
-void restrain(long it, Flu *f, Rbc *r) {
+void restrain(long it, Sim *s) {
     scheme::restrain::QQ qq;
     scheme::restrain::NN nn;
-    qq.o = f->q.pp;
-    qq.r = r->q.pp;
+    
+    qq.o = s->flu.q.pp;
+    qq.r = s->rbc.q.pp;
 
-    nn.o = f->q.n;
-    nn.r = r->q.n;
-    scheme::restrain::main(m::cart, f->q.cc, nn, it, /**/ qq);
+    nn.o = s->flu.q.n;
+    nn.r = s->rbc.q.n;
+    scheme::restrain::main(s->cart, s->flu.q.cc, nn, it, /**/ qq);
 }
 
 void bounce_wall(Coords c, Wall *w, /**/ Flu *f, Rbc *r) {

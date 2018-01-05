@@ -29,7 +29,7 @@ void step(BForce *bforce, bool wall0, int it, Sim *s) {
     dump_diag_after(it, wall0, s->solids0, s);
     body_force(it, *bforce, s);
 
-    restrain(it, /**/ flu, rbc);
+    restrain(it, /**/ s);
     update_solvent(it, /**/ flu);
     if (s->solids0) update_solid(/**/ rig);
     if (rbcs)       update_rbc(it, rbc, s);
