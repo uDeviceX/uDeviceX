@@ -1,0 +1,34 @@
+= minmax
+:lext: .adoc
+:src: ../../../../src
+
+compute extends of chunks of particles
+* input is an array of particles, the number of chunks and the number of particles per chunk.
+* output is the bounding box in for each chunk of particles.
+
+== example
+
+Consider the simple case on 1D:
+
+----
+input:
+	particles positions:
+	0.1 0.5 0.2   0.3 1.2 1.0
+	number of chunks: 2
+	number of particles per chunk: 3
+
+output:
+	minext:
+	0.1 0.3
+	maxext:
+	0.5 1.0
+----
+
+
+== interface
+
+[source,cpp]
+----
+include::{src}/algo/minmax/imp.h[tag=interface]
+----
+
