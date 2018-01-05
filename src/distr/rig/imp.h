@@ -1,6 +1,7 @@
 namespace distr {
 namespace rig {
 
+// tag::interface[]
 void ini(int maxns, int nv, Pack *p);
 void ini(MPI_Comm comm, /**/ Comm *c);
 void ini(int maxns, int nv, Unpack *u);
@@ -21,6 +22,7 @@ void wait_send(Comm *c);
 using namespace ::rig;
 void unpack_bulk(const Pack *p, /**/ rig::Quants *q);
 void unpack_halo(const Unpack *u, /**/ rig::Quants *q);
+// end::interface[]
 
 } // rig
 } // distr

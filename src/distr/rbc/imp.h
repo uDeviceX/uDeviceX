@@ -1,6 +1,7 @@
 namespace distr {
 namespace rbc {
 
+// tag::interface[]
 void ini(int maxc, int nv, Pack *p);
 void ini(MPI_Comm comm, /**/ Comm *c);
 void ini(int maxc, int nv, Unpack *u);
@@ -22,6 +23,7 @@ void wait_send(Comm *c);
 
 void unpack_bulk(const Pack *p, /**/ rbc::Quants *q);
 void unpack_halo(const Unpack *u, /**/ rbc::Quants *q);
+// end::interface[]
 
 } // rbc
 } // distr

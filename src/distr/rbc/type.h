@@ -3,6 +3,7 @@ namespace rbc {
 
 using namespace comm;
 
+// tag::struct[]
 struct Pack {
     Map map;
     float3 *minext, *maxext;
@@ -27,6 +28,7 @@ struct Unpack {
     /* optional: ids */
     hBags hii;
 };
+// end::struct[]
 
 } // rbc
 } // distr

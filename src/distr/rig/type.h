@@ -3,6 +3,8 @@ namespace rig {
 
 using namespace comm;
 
+// tag::struct[]
+
 /* 
  ipp: particles of the mesh
  ss:  "Solid" structures 
@@ -21,6 +23,7 @@ struct Comm {
 struct Unpack {
     hBags hipp, hss;
 };
+// end::struct[]
 
 } // rig
 } // distr
