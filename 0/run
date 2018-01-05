@@ -7,8 +7,9 @@ s=../src
 u=u/safe
 c=$s/conf/lina.h
 
-# domain types: oneA,    oneB, cyl, cyl3, narrow small, normal, big
-big
+# domain types: oneA,    oneB, cyl, cyl3, narrow small, normal, big, ath_big
+ath_big
+ath_dpd
 
 nv=642 sc=0.55 radius=3.2
 strt0
@@ -23,7 +24,7 @@ sfree1
 v=$1; shift=inf; force
 
 Domain="XS=$xs YS=$ys ZS=$zs walls wall_creation=1000"
-d=$SCRATCH/big_r/kb$kb/$v
+d=$SCRATCH/big_ath/kb$kb/$v
 run
 
 export S="$s"
@@ -37,7 +38,8 @@ u.case                             \
 -l "$sdf"    sdf.dat               \
 -a "$Run"                          \
 "$u" "$c" <<!
-    dt=1e-4 part_freq=$freq contactforces RBC_RND
+    part_freq=$freq contactforces RBC_RND
+    $DPD
     $Domain
     $Force
     $Rbc
