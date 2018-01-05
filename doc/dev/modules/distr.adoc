@@ -78,8 +78,58 @@ Bulk subindices can be computed while comunicating remote particles.
 include::{src}/distr/flu/imp.h[tag=clist]
 ----
 
+
+
 == rbc
-TODO
+
+Redistribute red blood cells accross nodes according to the center of
+mass of their bounding box (see link:algo/minmax{lext}[minmax]).
+
+=== data structures
+
+RBC distribution follows the common workflow described above and
+contains the three generic data structures:
+
+[source,cpp]
+----
+include::{src}/distr/rbc/type.h[tag=struct]
+----
+
+where `minext` and `maxext` contain the bounding box informations of
+each RBC. Other variables have the same naming conventions than `distr::flu`.
+
+=== interface
+
+[source,cpp]
+----
+include::{src}/distr/rbc/imp.h[tag=interface]
+----
+
+Note that `unpack_bulk` can be done before unpacking halo quantities.
+
+
+
 
 == rig
-TODO
+
+Redistribute rigid objects accross nodes according to their center of
+mass.
+
+=== data structures
+
+Rigid bodies distribution is very similar to the above. The data
+structures fits again in the general workflow:
+
+[source,cpp]
+----
+include::{src}/distr/rig/type.h[tag=struct]
+----
+
+=== interface
+
+[source,cpp]
+----
+include::{src}/distr/rig/imp.h[tag=interface]
+----
+
+Note that `unpack_bulk` can be done before unpacking halo quantities.
