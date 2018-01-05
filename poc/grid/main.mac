@@ -20,7 +20,6 @@ tex2sdf: chain(tex2g, g2sdf) $
 sdf2tex: chain(sdf2g, g2tex) $
 sub2tex: chain(sub2g, g2tex) $
 
-u: map('gcfac, fmt(tex2sdf));
 gcfac(fmt(sub2tex));
 
 /* from `sdf/dev.h` */
@@ -33,20 +32,3 @@ o: N * (lo - M) / G;
 e: o + ('r + 1/2) * s - 1/2;
 e: fmt0(e, 'r);
 
-/* from dump */
-s: N/G;
-o: lo / G * N;
-e: o + ('r + 1/2) * s - 1/2;
-e: fmt0(e, 'r);
-
-[f2g, g2f]: genfi(-1/2,      f_lo,   f_n-1/2,          f_hi) ;
-[t2g, g2t]: genfi(-1/2,      t_lo,   t_n-1/2,          t_hi) ;
-f2t       : chain(f2g, g2t);
-map('gcfac, fmt(f2t));
-
-(f_lo: 100, f_hi: 200, f_n: 300);
-(t_lo: 400, t_hi: 500, t_n: 600);
-float(f2t(700));
-
-(T: 100, N: 200, M: 300, lo: 0, L: 16, G: 16);
-float(tex2sdf(400));
