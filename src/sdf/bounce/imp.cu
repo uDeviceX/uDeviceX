@@ -25,6 +25,7 @@
 
 #include "sdf/def.h"
 #include "math/tform/type.h"
+#include "math/tform/dev.h"
 #include "sdf/tex3d/type.h"
 #include "sdf/type.h"
 #include "sdf/imp.h"
