@@ -53,7 +53,7 @@ void dump(MPI_Comm comm, const char *path, int sx, int sy, int sz) {
     UC(emalloc(size, (void**) &u[Z]));
 
     float *data[] = { rho, u[X], u[Y], u[Z] };
-    UC(h5::write(coords, comm, path, data, names, 4, sx, sy, sz));
+    UC(h5::write(coords, comm, path, data, names, 4));
     free(rho); free(u[X]); free(u[Y]); free(u[Z]);
     if (rank == 0) xmf::write(path, names, 4, sx, sy, sz);
     UC(coords_fin(/**/ &coords));
@@ -75,7 +75,7 @@ void main0(const char *path) {
     
     ndump = ienv("ndump", 5);
     
-    sx = 4; sy = 8; sz = 16;
+    sx = XS; sy = YS; sz = ZS;
     for (i = 0; i < ndump; i++) {
         report(i, ndump, path);
         dump(m::cart, path, sx, sy, sz);

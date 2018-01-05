@@ -1,5 +1,8 @@
 # TEST: h5.t0
-u.conf0 u/h5
+u.conf . u/h5 conf/default.h <<!!!
+   XS=4 YS=8 ZS=16
+   run
+!!!
 { make clean && u.make -j; } > .make.log
 :
 u.run 1 2 2 ./udx o.h5

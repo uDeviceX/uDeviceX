@@ -54,13 +54,11 @@ static void write_float(hid_t dataset_id,
 static void write0(Coords coords, hid_t file_id,
                    float *channeldata[],
                    const char **channelnames,
-                   int nchannels,
-                   int xs, int ys, int zs) {
+                   int nchannels) {
     int i;
-    const int L[3] = { xs, ys, zs};
-    hsize_t globalsize[4] = {(hsize_t) coords.zd * L[2],
-                             (hsize_t) coords.yd * L[1],
-                             (hsize_t) coords.xd * L[0], 1};
+    hsize_t globalsize[4] = {(hsize_t) zdomain(coords),
+                             (hsize_t) ydomain(coords),
+                             (hsize_t) xdomain(coords), 1};
     hid_t filespace_simple = H5Screate_simple(4, globalsize, NULL);
 
     for(i = 0; i < nchannels; ++i) {
@@ -70,10 +68,10 @@ static void write0(Coords coords, hid_t file_id,
 
         H5Pset_dxpl_mpio(plist_id, H5FD_MPIO_COLLECTIVE);
 
-        hsize_t start[4]  = { (hsize_t) coords.zc * L[2],
-                              (hsize_t) coords.yc * L[1],
-                              (hsize_t) coords.xc * L[0], 0};
-        hsize_t extent[4] = { (hsize_t) L[2], (hsize_t) L[1], (hsize_t) L[0],  1};
+        hsize_t start[4]  = { (hsize_t) zlo(coords),
+                              (hsize_t) ylo(coords),
+                              (hsize_t) xlo(coords), 0};
+        hsize_t extent[4] = { (hsize_t) zs(coords), (hsize_t) ys(coords), (hsize_t) xs(coords),  1};
         hid_t filespace = H5Dget_space(dset_id);
         H5Sselect_hyperslab(filespace, H5S_SELECT_SET, start, NULL, extent, NULL);
 
@@ -90,13 +88,12 @@ static void write0(Coords coords, hid_t file_id,
 }
 
 void write(Coords coords, MPI_Comm cart, const char *path, float **data,
-           const char **names, int ncomp,
-           int sx, int sy, int sz) {
+           const char **names, int ncomp) {
     /* ncomp: number of component,
        sx, sy, sz: sizes */
     IDs ids;
     UC(create(cart, path, /**/ &ids));
-    UC(write0(coords, ids.file, data, names, ncomp, sx, sy, sz));
+    UC(write0(coords, ids.file, data, names, ncomp));
     UC(close(ids, path));
 }
 
