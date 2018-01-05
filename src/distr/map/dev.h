@@ -2,7 +2,7 @@ namespace dev {
 
 /* exclusive scan */
 template <int NCOUNTS> 
-__global__ void scan_map(/**/ Map m) {
+__global__ void scan_map(/**/ DMap m) {
     int tid, val, cnt;
     tid = threadIdx.x;
     val = 0, cnt = 0;    
@@ -21,7 +21,7 @@ __device__ int get_fid(const float r[3]) {
     return frag_d2i(x, y, z);
 }
 
-__device__ void add_to_map(int pid, int fid, Map m) {
+__device__ void add_to_map(int pid, int fid, DMap m) {
     int entry;
     entry = atomicAdd(m.counts + fid, 1);
     m.ids[fid][entry] = pid;

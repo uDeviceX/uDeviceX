@@ -1,4 +1,4 @@
-static void pack_pp(const Map m, int nc, int nv, const Particle *pp, /**/ dBags bags) {
+static void pack_pp(const DMap m, int nc, int nv, const Particle *pp, /**/ dBags bags) {
     Sarray<Particle*, NBAGS> wrap;
     bag2Sarray(bags, &wrap);
 
@@ -10,7 +10,7 @@ static void pack_pp(const Map m, int nc, int nv, const Particle *pp, /**/ dBags 
 }
 
 /* all data (including map) on host */
-static void pack_ii(const Map m, int nc, const int *ii, /**/ hBags bags) {
+static void pack_ii(const DMap m, int nc, const int *ii, /**/ hBags bags) {
     Sarray<int*, NBAGS> wrap;
     bag2Sarray(bags, &wrap);
 
@@ -28,7 +28,7 @@ void pack(const rbc::Quants *q, /**/ Pack *p) {
     pack_pp(p->map, q->nc, q->nv, q->pp, /**/ p->dpp);
 
     if (rbc_ids) {
-        map_D2H(NBAGS, &p->map, /**/ &p->hmap);
+        UC(dmap_D2H(NBAGS, &p->map, /**/ &p->hmap));
         dSync();
         pack_ii(p->hmap, q->nc, q->ii, /**/ p->hii);
     }

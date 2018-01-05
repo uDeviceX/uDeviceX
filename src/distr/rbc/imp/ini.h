@@ -8,7 +8,7 @@ void ini(int maxnc, int nv, Pack *p) {
     int numc[NBAGS];
     get_num_capacity(maxnc, /**/ numc);
 
-    UC(map_ini(NBAGS, numc, /**/ &p->map));
+    UC(dmap_ini(NBAGS, numc, /**/ &p->map));
 
     /* one datum is here a full RBC, so bsize is nv * sizeof(Particle) */
     UC(ini(PINNED, DEV_ONLY, nv * sizeof(Particle), numc, /**/ &p->hpp, &p->dpp));

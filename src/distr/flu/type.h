@@ -5,7 +5,7 @@ using namespace comm;
 
 // tag::struct[]
 struct Pack {
-    Map map;
+    DMap map;
     dBags dpp, dii, dcc;
     hBags hpp, hii, hcc;
     int nhalo; /* number of sent particles */

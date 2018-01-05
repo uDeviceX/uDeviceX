@@ -15,7 +15,7 @@ void ini(int maxdensity, Pack *p) {
     int capacity[NBAGS];
     get_capacity(maxdensity, /**/ capacity);
 
-    UC(map_ini(NFRAGS, capacity, /**/ &p->map));
+    UC(dmap_ini(NFRAGS, capacity, /**/ &p->map));
     
     UC(ini(PINNED, NONE, sizeof(Particle), capacity, /**/ &p->hpp, &p->dpp));
     if (global_ids)    UC(ini(PINNED, NONE, sizeof(int), capacity, /**/ &p->hii, &p->dii));

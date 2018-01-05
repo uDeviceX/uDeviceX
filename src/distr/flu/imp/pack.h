@@ -4,7 +4,7 @@ static int reduce(int n, const int d[]) {
     return s;
 }
 
-static void pack_pp(const Map m, const Particle *pp, /**/ dBags bags) {
+static void pack_pp(const DMap m, const Particle *pp, /**/ dBags bags) {
     int n;
     const int S = sizeof(Particle) / sizeof(float2);
     float2p26 wrap;
@@ -14,7 +14,7 @@ static void pack_pp(const Map m, const Particle *pp, /**/ dBags bags) {
     KL((dev::pack<float2, S>), (k_cnf(S*n)), ((const float2*)pp, m, /**/ wrap));
 }
 
-static void pack_ii(const Map m, const int *ii, /**/ dBags bags) {
+static void pack_ii(const DMap m, const int *ii, /**/ dBags bags) {
     int n;
     const int S = 1;
     intp26 wrap;

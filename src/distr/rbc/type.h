@@ -5,13 +5,13 @@ using namespace comm;
 
 // tag::struct[]
 struct Pack {
-    Map map;
+    DMap map;
     float3 *minext, *maxext;
     dBags dpp;
     hBags hpp;
 
     /* optional: ids */
-    Map hmap;
+    DMap hmap;
     hBags hii;
 };
 

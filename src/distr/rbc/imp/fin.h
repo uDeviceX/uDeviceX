@@ -1,11 +1,11 @@
 void fin(Pack *p) {
-    map_fin(NBAGS, /**/ &p->map);
+    UC(dmap_fin(NBAGS, /**/ &p->map));
     fin(PINNED, DEV_ONLY, /**/ &p->hpp, &p->dpp);
     CC(d::Free(p->minext));
     CC(d::Free(p->maxext));
 
     if (rbc_ids) {
-        map_fin_host(NBAGS, /**/ &p->hmap);
+        UC(dmap_fin_host(NBAGS, /**/ &p->hmap));
         fin(HST_ONLY, HST_ONLY, /**/ &p->hii, NULL);
     }
 }

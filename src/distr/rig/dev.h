@@ -1,6 +1,6 @@
 namespace dev {
 
-__global__ void build_map(int n, const Solid *ss, /**/ Map m) {
+__global__ void build_map(int n, const Solid *ss, /**/ DMap m) {
     enum {X, Y, Z};
     int i, fid;
     i = threadIdx.x + blockIdx.x * blockDim.x;
@@ -15,7 +15,7 @@ __global__ void build_map(int n, const Solid *ss, /**/ Map m) {
     add_to_map(i, fid, /**/ m);
 }
 
-__global__ void pack_ss(const Solid *ss, Map m, /**/ Sarray<Solid*, 27> buf) {
+__global__ void pack_ss(const Solid *ss, DMap m, /**/ Sarray<Solid*, 27> buf) {
     int i, fid; /* [f]ragment [id] */
     int d, s;
     

@@ -11,7 +11,7 @@ using namespace comm;
 */
 
 struct Pack {
-    Map map;
+    DMap map;
     dBags dipp, dss;
     hBags hipp, hss;
 };

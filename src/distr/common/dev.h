@@ -1,7 +1,7 @@
 namespace dev {
 
 /* pack packets of nv particles into 27 buffers according to map  */
-__global__ void pack_pp_packets(int nv, const Particle *pp, Map m, /**/ Sarray<Particle*, 27> buf) {
+__global__ void pack_pp_packets(int nv, const Particle *pp, DMap m, /**/ Sarray<Particle*, 27> buf) {
     int i, cid, fid, scid;
     int dst, src, offset;
     i   = threadIdx.x + blockDim.x * blockIdx.x;

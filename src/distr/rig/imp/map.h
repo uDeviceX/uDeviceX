@@ -1,5 +1,5 @@
-static void build_map(int n, const Solid *ss, /**/ Map m) {
-    UC(map_reini(NBAGS, /**/ m));
+static void build_map(int n, const Solid *ss, /**/ DMap m) {
+    UC(dmap_reini(NBAGS, /**/ m));
     KL(dev::build_map, (k_cnf(n)), (n, ss, /**/ m));
     KL(dev::scan_map<NBAGS>, (1, 32), (/**/ m));
 }

@@ -1,6 +1,6 @@
 namespace dev {
 
-__global__ void build_map(const PartList lp, const int n, /**/ Map m) {
+__global__ void build_map(const PartList lp, const int n, /**/ DMap m) {
     int pid, fid;
     pid = threadIdx.x + blockIdx.x * blockDim.x;
     if (pid >= n) return;
@@ -15,7 +15,7 @@ __global__ void build_map(const PartList lp, const int n, /**/ Map m) {
 }
 
 template <typename T, int STRIDE>
-__global__ void pack(const T *data, Map m, /**/ Sarray<T*, 26> buf) {
+__global__ void pack(const T *data, DMap m, /**/ Sarray<T*, 26> buf) {
     int gid, slot;
     int fid; /* [f]ragment [id] */
     int offset, pid, c, d, s;

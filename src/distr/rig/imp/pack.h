@@ -1,4 +1,4 @@
-static void pack_pp(const Map m, int ns, int nv, const Particle *ipp, /**/ dBags bags) {
+static void pack_pp(const DMap m, int ns, int nv, const Particle *ipp, /**/ dBags bags) {
     Sarray<Particle*, NBAGS> wrap;
     bag2Sarray(bags, &wrap);
 
@@ -9,7 +9,7 @@ static void pack_pp(const Map m, int ns, int nv, const Particle *ipp, /**/ dBags
     KL((dev::pack_pp_packets), (blck, thrd), (nv, ipp, m, /**/ wrap));
 }
 
-static void pack_ss(const Map m, int n, const Solid *ss, /**/ dBags bags) {
+static void pack_ss(const DMap m, int n, const Solid *ss, /**/ dBags bags) {
 
     Sarray<Solid*, 27> wrap;
     bag2Sarray(bags, &wrap);
