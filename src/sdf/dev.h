@@ -40,7 +40,7 @@ static __device__ void convert_round(Sdf_v *sdf, const float a[3], /**/ int i[3]
     convert(sdf, a, /**/ f);
     i[X] = iround(f[X]); i[Y] = iround(f[Y]); i[Z] = iround(f[Z]);
 }
-static __device__ void inv_space(Sdf_v *sdf, float isp[3]) {
+static __device__ void spacing(Sdf_v *sdf, float isp[3]) {
     int c;
     int L[3] = {XS, YS, ZS};
     int M[3] = {XWM, YWM, ZWM};
@@ -53,7 +53,7 @@ static __device__ float3 grad(Sdf_v *sdf, const float3 *pos) {
     float fcts[3], r[3] = {pos->x, pos->y, pos->z};
     float myval, gx, gy, gz;
     convert_floor(sdf, r, /**/ tc);
-    inv_space(sdf, /**/ fcts);
+    spacing(sdf, /**/ fcts);
 
 #define tex0(ix, iy, iz) (fetch(sdf, tc[0] + ix, tc[1] + iy, tc[2] + iz))
     myval = tex0(0, 0, 0);
