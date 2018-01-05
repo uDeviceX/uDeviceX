@@ -24,8 +24,8 @@ static __device__ void convert(Sdf_v *sdf, const float a[3], /**/ float b[3]) {
     float q[3];
     tform_convert_dev(&sdf->t, a, /**/ q);
     if (!small_diff(b, q)) {
-        //        printf("convert failed: [%g %g %g] != [%g %g %g]\n", b[X], b[Y], b[Z], q[X], q[Y], q[Z]);
-        //        assert(1);
+        printf("convert failed: [%g %g %g] != [%g %g %g]\n", b[X], b[Y], b[Z], q[X], q[Y], q[Z]);
+        assert(1);
     }
 }
 static __device__ void convert_floor(Sdf_v *sdf, const float a[3], /**/ int i[3]) {
