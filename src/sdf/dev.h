@@ -13,6 +13,7 @@ static __device__ int small_diff(const float a[3], const float b[3]) {
     return cx && cy && cz;
 }
 static __device__ void convert(Sdf_v *sdf, const float a[3], /**/ float b[3]) {
+    enum {X, Y, Z};
     int c;
     int L[3] = {XS, YS, ZS};
     int M[3] = {XWM, YWM, ZWM};
@@ -22,6 +23,10 @@ static __device__ void convert(Sdf_v *sdf, const float a[3], /**/ float b[3]) {
 
     float q[3];
     tform_convert_dev(&sdf->t, a, /**/ q);
+    if (!small_diff(b, q)) {
+        printf("convert faild: [%g %g %g] != [%g %g %g]\n", b[X], b[Y], b[Z], q[X], q[Y], q[Z]);
+        assert(1);
+    }
 }
 static __device__ void convert_floor(Sdf_v *sdf, const float a[3], /**/ int i[3]) {
     enum {X, Y, Z};
