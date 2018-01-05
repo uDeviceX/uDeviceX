@@ -1,6 +1,7 @@
 namespace distr {
 namespace flu {
 
+// tag::interface[]
 void ini(int maxdensity, Pack *p);
 void ini(MPI_Comm comm, /**/ Comm *c);
 void ini(int maxdensity, Unpack *u);
@@ -32,6 +33,7 @@ void unpack(/**/ Unpack *u);
 void bulk(PartList lp, /**/ Quants *q);
 void halo(const Unpack *u, /**/ Quants *q);
 void gather(int ndead, const Pack *p, const Unpack *u, /**/ Quants *q);
+// end::interface[]
 
 } // flu
 } // distr

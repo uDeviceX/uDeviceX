@@ -18,10 +18,46 @@ The workflow is very similar for every quantity to redistribute:
   link:comm{lext}[generic communicator].
 * Unpack the data from `Unpack` to quantities.
 
+== map
+
+Helper for packing data to send buffers. This is common to all quantities.
+
+=== data structure
+
+The structure to map local data from an array to packed data in 27
+arrays is implemented as:
+
+[source,cpp]
+----
+include::{src}/distr/map/type.h[tag=struct]
+----
+
+This can be allocated on device or on host memory (see interface).
+
+=== interface
+
+TODO
+
 == flu
 
 Redistribute solvent particles accross nodes.
 
+=== data structures
+
+Solvent distribution follow the common workflow described above and
+contains the three generic data structures:
+
+[source,cpp]
+----
+include::{src}/distr/flu/type.h[tag=struct]
+----
+
+=== interface
+
+[source,cpp]
+----
+include::{src}/distr/flu/imp.h[tag=interface]
+----
 
 == rbc
 TODO

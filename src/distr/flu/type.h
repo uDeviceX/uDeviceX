@@ -3,6 +3,7 @@ namespace flu {
 
 using namespace comm;
 
+// tag::struct[]
 struct Pack {
     Map map;
     dBags dpp, dii, dcc;
@@ -20,6 +21,7 @@ struct Unpack {
     int *iire, *ccre;
     int nhalo;
 };
+// end::struct[]
 
 } // flu
 } // distr

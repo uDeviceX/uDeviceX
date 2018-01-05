@@ -1,5 +1,5 @@
 namespace distr {
-
+// tag::struct[]
 struct Map {
     int *counts;  /* number of entities leaving in each fragment */
     int *starts;  /* cumulative sum of the above                 */
@@ -7,5 +7,5 @@ struct Map {
 
     int *hcounts; /* counts on host (pinned) */
 };
-
+// end::struct[]
 } // distr
