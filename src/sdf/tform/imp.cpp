@@ -108,7 +108,7 @@ void out2sdf_ini(const Coords *c, const int N[3], /**/ Tform* t) {
 
 void sub2tex_ini(const Coords *c, const int T[3], const int M[3], /**/ Tform *t) {
     enum {X, Y, Z};
-    TGrid g_sub, g_tex;
+    TGrid g_tex;
     Tform *sub, *tex;
     
     if (goodp(T) == BAD) ERR("bad T = [%d %d %d]", T[X], T[Y], T[Z]);
