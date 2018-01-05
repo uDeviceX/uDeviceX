@@ -58,10 +58,12 @@ bop0 () { Bop="part_dumps=false force_dumps=false" ; }
 bop1 () { Bop="part_dumps=true  force_dumps=true"  ; }
 rbc0 () { Rbc="rbcs=false";                        }
 rbc1 () {
-    local a v
+    local a v r1 r2
     cp ../src/data/cells/rbc/sc/$nv.off  rbc.off
     a=`off.area rbc.off` v=`off.volume rbc.off`
-    Rbc="RBCnv=$nv rbcs RBCtotArea=$a RBCtotVolume=$v RBCkb=$kb RBCphi=0 color_freq=10000"
+    r1="RBCnv=$nv rbcs RBCtotArea=$a RBCtotVolume=$v color_freq=10000"
+    r2="RBCx0=0.457 RBCp=0.00135997 RBCkbT=0.00444302 RBCphi=0 RBCkb=$kb RBCkv=5000 RBCka=4900 RBCkd=100 RBCgammaC=1"
+    Rbc="$r1 $r2"
     plcmt $radius $sc
 }
 
@@ -75,7 +77,9 @@ cyl3   () { nx=1   ny=1 nz=1; g_cyl3;   full; bop1; }
 narrow () { nx=1   ny=1 nz=1; g_narrow; full; bop1; }
 box    () { nx=1   ny=1 nz=1; g_box;    full; bop1; }
 
-ath_big () { nx=20 ny=5 nz=1; ath_g_big; full; bop0; }
+ath_small  () { nx=5  ny=2 nz=1; ath_g_big; full; bop0; }
+ath_normal () { nx=10 ny=3 nz=1; ath_g_big; full; bop0; }
+ath_big    () { nx=20 ny=5 nz=1; ath_g_big; full; bop0; }
 
 msg ()    { echo >&2 ": $@"; }
 

@@ -11,7 +11,7 @@ c=$s/conf/lina.h
 ath_big
 ath_dpd
 
-nv=642 sc=0.55 radius=3.2
+nv=642 sc=0.60 radius=3.2
 strt0
 kb=$1; shift
 rbc1
