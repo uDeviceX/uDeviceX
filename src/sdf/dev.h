@@ -9,6 +9,9 @@ static __device__ void convert(Sdf_v *sdf, const float a[3], /**/ float b[3]) {
     int T[3] = {XTE, YTE, ZTE};
     for (c = 0; c < 3; ++c)
         b[c] = T[c] * (a[c] + L[c] / 2 + M[c]) / (L[c] + 2 * M[c]) - 0.5;
+
+    float q[3];
+    tform_convert_dev(&sdf->t, a, /**/ q);
 }
 static __device__ void convert_floor(Sdf_v *sdf, const float a[3], /**/ int i[3]) {
     enum {X, Y, Z};
