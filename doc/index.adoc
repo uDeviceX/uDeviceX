@@ -7,6 +7,7 @@
 * link:./dev/cstyle/emacs{lext}[]
 * link:./dev/gource{lext}[]
 * link:./dev/main{lext}[]
+* link:./dev/modules/algo/minmax{lext}[]
 * link:./dev/modules/algo/scan{lext}[]
 * link:./dev/modules/bforce{lext}[]
 * link:./dev/modules/clist{lext}[]

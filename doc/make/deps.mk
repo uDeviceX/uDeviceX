@@ -3,6 +3,7 @@
 ./dev/cstyle/emacs.html: ./dev/cstyle/emacs.adoc 
 ./dev/gource.html: ./dev/gource.adoc 
 ./dev/main.html: ./dev/main.adoc 
+./dev/modules/algo/minmax.html: ./dev/modules/algo/minmax.adoc 
 ./dev/modules/algo/scan.html: ./dev/modules/algo/scan.adoc 
 ./dev/modules/bforce.html: ./dev/modules/bforce.adoc 
 ./dev/modules/clist.html: ./dev/modules/clist.adoc 
