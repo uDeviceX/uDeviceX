@@ -10,6 +10,7 @@ A quantity is sent to a neighboring rank if its position is outside of
 the subdomain.
 
 The workflow is very similar for every quantity to redistribute:
+
 * build a map from the positions of the quatities and store it in a
   `Map` structure.
 * pack the data using `Map` in a `Pack` structure
@@ -69,8 +70,10 @@ process to delete particles.
 The solvent distribution also include cell list generation (see
 link:clist{lext}[cell lists]).
 It is done in two phases:
+
 * subindices, independant for bulk and remote particles
 * gather, which needs the subindices to be computed
+
 Bulk subindices can be computed while comunicating remote particles.
 
 [source,cpp]
