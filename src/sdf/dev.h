@@ -40,12 +40,20 @@ static __device__ void convert_round(Sdf_v *sdf, const float a[3], /**/ int i[3]
     convert(sdf, a, /**/ f);
     i[X] = iround(f[X]); i[Y] = iround(f[Y]); i[Z] = iround(f[Z]);
 }
-static __device__ void spacing(Sdf_v *sdf, float isp[3]) {
+static __device__ void spacing(Sdf_v *sdf, float s[3]) {
+    enum {X, Y, Z};
     int c;
     int L[3] = {XS, YS, ZS};
     int M[3] = {XWM, YWM, ZWM};
     int T[3] = {XTE, YTE, ZTE};
-    for (c = 0; c < 3; ++c) isp[c] = T[c]/(2*M[c] + L[c]);
+    for (c = 0; c < 3; ++c) s[c] = T[c]/(2*M[c] + L[c]);
+
+    float q[3];
+    tform_spacing_dev(&sdf->t, /**/ q);
+    if (!small_diff(s, q)) {
+        printf("spacing failed: [%g %g %g] != [%g %g %g]\n", s[X], s[Y], s[Z], q[X], q[Y], q[Z]);
+        assert(0);
+    }
 }
 
 static __device__ float3 grad(Sdf_v *sdf, const float3 *pos) {
