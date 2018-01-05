@@ -19,7 +19,7 @@ static void gen(Coords coords, Wall *w, Sim *s) { /* generate */
         dSync();
         UC(gen(&coords, s->cart, /**/ w->sdf));
         MC(m::Barrier(s->cart));
-        inter::create_walls(MAXNWALL, w->sdf, /*io*/ &flu->q, /**/ &w->q);
+        inter::create_walls(s->cart, MAXNWALL, w->sdf, /*io*/ &flu->q, /**/ &w->q);
     }
     inter::freeze(coords, s->cart, w->sdf, /*io*/ &flu->q, /**/ &rig->q, &rbc->q);
     clear_vel(s);
