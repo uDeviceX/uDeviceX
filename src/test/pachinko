@@ -15,4 +15,4 @@ u.conf conf/test.h <<!!!
 !!!
 { make clean && u.make -j; } > /dev/null
 u.run ./udx
-u.avgh5 1 u 2 h5/flowfields-0003.h5 > h5.out.txt
+u.avgh5 1 u 2 h5/flowfields-0003.h5 | uscale 0.1 > h5.out.txt
