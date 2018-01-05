@@ -24,7 +24,7 @@
 ./dev/modules/wvel.html: ./dev/modules/wvel.adoc 
 ./dev/wrap.html: ./dev/wrap.adoc 
 ./index.html: ./index.adoc 
-./main.html: ./main.adoc 
+./summary.html: ./summary.adoc 
 ./units/comm.html: ./units/comm.adoc 
 ./units/error.html: ./units/error.adoc 
 ./units/hw/dev.html: ./units/hw/dev.adoc 
