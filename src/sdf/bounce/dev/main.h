@@ -60,6 +60,8 @@ static __device__ void bounce_back_1p(Wvel_v wv, Coords c, const Sdf_v texsdf, f
         return;
     }
 
+    /* use Newton iterations to solve sdf(rw) = 0 */
+    /* where rw = r + t * v, t in [-dt, 0]        */
     t = 0;
     for (l = 0; l < MAX_NEWTON; ++l) {
         rc = *r;
