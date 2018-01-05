@@ -1,10 +1,27 @@
 = distr
 :lext: .adoc
+:src: ../../../src
 
-redistribution of quantities across nodes
+Redistribution of quantities across nodes.
+Each node has a local coordinate system. The origin is the center of a
+"subdomain" of size `Sx`, `Sy`, `Sz`.
+
+A quantity is sent to a neighboring rank if its position is outside of
+the subdomain.
+
+The workflow is very similar for every quantity to redistribute:
+* build a map from the positions of the quatities and store it in a
+  `Map` structure.
+* pack the data using `Map` in a `Pack` structure
+* communicaion: exchange packed data with neighbors, receive data into
+  `Unpack` structure. This is done using the
+  link:comm{lext}[generic communicator].
+* Unpack the data from `Unpack` to quantities.
 
 == flu
-TODO
+
+Redistribute solvent particles accross nodes.
+
 
 == rbc
 TODO
