@@ -12,7 +12,7 @@ ath_big
 ath_dpd
 
 nv=642 sc=0.60 radius=3.2
-strt0
+strt1
 kb=$1; shift
 rbc1
 
@@ -24,8 +24,8 @@ sfree1
 v=$1; shift=inf; force
 
 Domain="XS=$xs YS=$ys ZS=$zs walls wall_creation=1000"
-d=$SCRATCH/big_ath/kb$kb/$v
-run
+d=$SCRATCH/big_ath_fast/kb$kb/$v
+time=00:30:00 run
 
 export S="$s"
 u.case                             \

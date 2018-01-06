@@ -77,9 +77,9 @@ cyl3   () { nx=1   ny=1 nz=1; g_cyl3;   full; bop1; }
 narrow () { nx=1   ny=1 nz=1; g_narrow; full; bop1; }
 box    () { nx=1   ny=1 nz=1; g_box;    full; bop1; }
 
-ath_small  () { nx=5  ny=2 nz=1; ath_g_big; full; bop0; }
-ath_normal () { nx=10 ny=3 nz=1; ath_g_big; full; bop0; }
-ath_big    () { nx=20 ny=5 nz=1; ath_g_big; full; bop0; }
+ath_small  () { nx=5  ny=1 nz=1; ath_g_big; part; bop0; }
+ath_normal () { nx=10 ny=3 nz=1; ath_g_big; part; bop0; }
+ath_big    () { nx=20 ny=5 nz=1; ath_g_big; part; bop0; }
 
 msg ()    { echo >&2 ": $@"; }
 
@@ -96,7 +96,7 @@ strt0 () {
 strt1 () {
     Restart="strt_dumps strt_freq=100000 RESTART=true"
     RestartB1="mkdir -p h5"
-    RestartB2="cp -r /scratch/snx3000/lisergey/s1 strt"
+    RestartB2="cp -r /scratch/snx3000/lisergey/s_ath strt"
 }
 
 ae () { awk 'BEGIN {print '"$@"'}'; }
@@ -146,5 +146,5 @@ sfree1() {
 }
 
 run () {
-    Run="u.batch     $nx $ny $nz ./udx 00:30:00"
+    Run="u.batch     $nx $ny $nz ./udx $time"
 }
