@@ -14,12 +14,12 @@ struct Desc {
 
 union ParamsU {
     plate::Params plate;
-    circle::Params circle;
+    ParamsCircle circle;
 };
 
 union VParamsU {
     plate::VParams plate;
-    circle::VParams circle;
+    VParamsCircle circle;
 };
 
 struct Inflow {

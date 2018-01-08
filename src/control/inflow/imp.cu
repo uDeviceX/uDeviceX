@@ -32,10 +32,8 @@ namespace plate {
 #include "plate/dev.h"
 }
 
-namespace circle {
 #include "circle/type.h"
 #include "circle/dev.h"
-}
 
 #include "dev/main.h"
 

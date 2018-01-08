@@ -1,4 +1,4 @@
-static __device__ void coords2pos(Params p, float2 xi, /**/ float3 *r) {
+static __device__ void coords2pos(ParamsCircle p, float2 xi, /**/ float3 *r) {
     float th, h, cth, sth;
     th = xi.x * 2 * M_PI;
     h = xi.y * p.H;
@@ -11,7 +11,7 @@ static __device__ void coords2pos(Params p, float2 xi, /**/ float3 *r) {
     r->z += h;
 }
 
-static __device__ float3 get_normal(Params p, int2 nc, int i, int j) {
+static __device__ float3 get_normal(ParamsCircle p, int2 nc, int i, int j) {
     float3 n;
     float th, cth, sth, area;
     th = (i + 0.5f) / (nc.x) * 2 * M_PI;
@@ -24,7 +24,7 @@ static __device__ float3 get_normal(Params p, int2 nc, int i, int j) {
     return n;
 }
 
-static __device__ void coords2vel(VParams vp, Params p, float2 xi, /**/ float3 *u) {
+static __device__ void coords2vel(VParamsCircle vp, ParamsCircle p, float2 xi, /**/ float3 *u) {
     float th, cth, sth, fact;
     th = xi.x * 2 * M_PI;
     cth = cos(th);
