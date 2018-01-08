@@ -1,6 +1,6 @@
 void ini_params_plane(Coords c, int dir, float r0, Outflow *o) {
     enum {X, Y, Z};
-    plane::Params p = {0, 0, 0, 0};    
+    ParamsPlane p = {0, 0, 0, 0};    
 
     switch (dir) {
     case X:

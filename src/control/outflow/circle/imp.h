@@ -1,6 +1,6 @@
 void ini_params_circle(Coords coords, float3 c, float R, Outflow *o) {
     enum {X, Y, Z};
-    circle::Params p;
+    ParamsCircle p;
     p.Rsq = R*R;
     
     // shift to local referential

@@ -1,9 +1,9 @@
 /* plane is described as a*x + b*y + c*z + d = 0 */
-struct Params {
+struct ParamsPlane {
     float a, b, c, d;
 };
 
-__device__ int predicate(Params p, const float r[3]) {
+__device__ int predicate(ParamsPlane p, const float r[3]) {
     enum {X, Y, Z};
     float s;
     

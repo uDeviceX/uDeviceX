@@ -5,8 +5,8 @@ enum {
 };
 
 union ParamsU {
-    plane::Params plane;
-    circle::Params circle;
+    ParamsPlane plane;
+    ParamsCircle circle;
 };
 
 struct Outflow {
