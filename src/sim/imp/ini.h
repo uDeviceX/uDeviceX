@@ -1,3 +1,7 @@
+static bool same(const char *a, const char *b) {
+    return 0 == strcmp(a, b);
+}
+
 static void ini_flu_exch(MPI_Comm comm, /**/ FluExch *e) {
     using namespace exch::flu;
     int maxd = HSAFETY_FACTOR * numberdensity;
@@ -67,7 +71,7 @@ static void ini_outflow(Coords coords, const Config *cfg, Outflow **o) {
     const char *type = NULL;
     UC(conf_lookup_string(cfg, "outflow.type", &type));
     
-    if (0 == strcmp(type, "circle")) {
+    if (same(type, "circle")) {
         int n;
         float R = 0, c[3] = {0};
         UC(conf_lookup_float(cfg, "outflow.R", &R));
