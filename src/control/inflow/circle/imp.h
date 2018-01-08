@@ -14,7 +14,7 @@ void ini_params_circle(Coords c, float3 o, float R, float H, float u, bool poise
     pp->H = H;
 
     if (R > XS/2 || R > YS/2 || R > ZS/2)
-        ERR("not implemented for this  configuration");
+        ERR("radius should be smaller");
     
     // TODO
     pp->th0 = 0;
