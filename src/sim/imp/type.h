@@ -118,6 +118,7 @@ struct ObjInter {
 
 /* optional features */
 struct Opt {
+    bool inflow;
     bool outflow;
 };
 

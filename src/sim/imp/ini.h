@@ -1,3 +1,7 @@
+static bool same(const char *a, const char *b) {
+    return 0 == strcmp(a, b);
+}
+
 static void ini_flu_exch(MPI_Comm comm, /**/ FluExch *e) {
     using namespace exch::flu;
     int maxd = HSAFETY_FACTOR * numberdensity;
@@ -67,7 +71,7 @@ static void ini_outflow(Coords coords, const Config *cfg, Outflow **o) {
     const char *type = NULL;
     UC(conf_lookup_string(cfg, "outflow.type", &type));
     
-    if (0 == strcmp(type, "circle")) {
+    if (same(type, "circle")) {
         int n;
         float R = 0, c[3] = {0};
         UC(conf_lookup_float(cfg, "outflow.R", &R));
@@ -87,17 +91,37 @@ static void ini_denoutflow(Coords coords, DCont **d, DContMap **m) {
     UC(ini(coords, /**/ m));
 }
 
-static void ini_inflow(Coords coords, Inflow **i) {
+static void ini_inflow(Coords coords, const Config *cfg, Inflow **i) {
+    const char *type;
+    UC(conf_lookup_string(cfg, "outflow.type", &type));
+    
+    /* number of cells */
     int2 nc = make_int2(YS, ZS/2);
     ini(nc, /**/ i);
 
-    // hack for now
-    // ini_params_plate(coords, make_float3(0, YS/2, 0), 0, YS/2, ZS,
-    //                  make_float3(10.f, 0, 0), true, false,
-    //                   /**/ *i);
+    if      (same(type, "circle")) {
+        float c[3], R, H, U;
+        int poiseuille;
+        int n;
+        float3 center;
 
-    float3 o = make_float3(INFLOW_CIRCLE_OX, INFLOW_CIRCLE_OY, INFLOW_CIRCLE_OZ);
-    UC(ini_params_circle(coords, o, INFLOW_CIRCLE_R, INFLOW_CIRCLE_H, INFLOW_CIRCLE_U, INFLOW_CIRCLE_POISEUILLE, /**/ *i));
+        UC(conf_lookup_float(cfg, "inflow.R", &R));
+        UC(conf_lookup_float(cfg, "inflow.H", &H));
+        UC(conf_lookup_float(cfg, "inflow.U", &U));
+        UC(conf_lookup_bool(cfg, "inflow.poiseuille", &poiseuille));
+        UC(conf_lookup_vfloat(cfg, "inflow.center", &n, c));        
+        center = make_float3(c[0], c[1], c[2]);
+        UC(ini_params_circle(coords, center, R, H, U, poiseuille, /**/ *i));
+    }
+    else if (same(type, "plate")) {
+        // TODO
+        // ini_params_plate(coords, make_float3(0, YS/2, 0), 0, YS/2, ZS,
+        //                  make_float3(10.f, 0, 0), true, false,
+        //                   /**/ *i);
+    }
+    else {
+        ERR("unknown inflow type <%s>", type);
+    }
     
     UC(ini_velocity(*i));
 }
@@ -191,6 +215,8 @@ static void read_opt(const Config *c, Opt *o) {
     int b;
     UC(conf_lookup_bool(c, "outflow.active", &b));
     o->outflow = b;
+    UC(conf_lookup_bool(c, "inflow.active", &b));
+    o->inflow = b;
 }
 
 void sim_ini(int argc, char **argv, MPI_Comm cart, /**/ Sim **sim) {
@@ -216,7 +242,7 @@ void sim_ini(int argc, char **argv, MPI_Comm cart, /**/ Sim **sim) {
 
     if (VCON)    UC(ini_vcont(s->cart, /**/ &s->vcont));
     if (s->opt.outflow) UC(ini_outflow(s->coords, s->cfg, /**/ &s->outflow));
-    if (INFLOW)  UC(ini_inflow(s->coords, /**/ &s->inflow));
+    if (s->opt.inflow)  UC(ini_inflow (s->coords, s->cfg, /**/ &s->inflow ));
     if (OUTFLOW_DEN) UC(ini_denoutflow(s->coords, /**/ &s->denoutflow, &s->mapoutflow));
     
     if (rbcs || solids)
