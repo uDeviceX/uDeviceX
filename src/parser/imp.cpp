@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <libconfig.h>
+#include <vector_types.h>
 
 #include "utils/error.h"
 #include "utils/imp.h"
@@ -184,6 +185,18 @@ static bool lookup_vfloat(const Config *c, const char *desc, int *n, float a[]) 
     return false;
 }
 
+static bool lookup_float3(const Config *c, const char *desc, float3 *a) {
+    enum {X, Y, Z};
+    int n;
+    float f[3];
+    bool ret = lookup_vfloat(c, desc, &n, f);
+    if (n != 3) ERR("float3 must have 3 components");
+    a->x = f[X];
+    a->y = f[Y];
+    a->z = f[Z];
+    return ret;
+}
+
 void conf_lookup_int(const Config *c, const char *desc, int *a) {
     bool found = lookup_int(c, desc, a);
     if (!found) ERR("Could not find the field <%s>\n", desc);
@@ -214,6 +227,10 @@ void conf_lookup_vfloat(const Config *c, const char *desc, int *n, float a[]) {
     if (!found) ERR("Could not find the field <%s>\n", desc);
 }
 
+void conf_lookup_float3(const Config *c, const char *desc, float3 *a) {
+    bool found = lookup_float3(c, desc, a);
+    if (!found) ERR("Could not find the field <%s>\n", desc);
+}
 
 bool conf_opt_int(const Config *c, const char *desc, int *a) {
     return lookup_int(c, desc, a);
@@ -239,3 +256,6 @@ bool conf_opt_vfloat(const Config *c, const char *desc, int *n, float a[]) {
     return lookup_vfloat(c, desc, n, a);
 }
 
+bool conf_opt_float3(const Config *c, const char *desc, float3 *a) {
+    return lookup_float3(c, desc, a);
+}
