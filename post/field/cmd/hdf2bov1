@@ -1,0 +1,9 @@
+#!/bin/sh
+set -eu
+
+h=`u.host`
+. u.post.load.$h
+
+prog0=u.hdf2bov0
+
+exec "$prog0" "$@"

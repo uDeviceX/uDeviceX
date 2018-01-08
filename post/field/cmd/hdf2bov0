@@ -1,7 +1,7 @@
 #!/usr/bin/env python2
 
 import sys
-from os.path import splitext
+from os.path import splitext, basename
 
 prog = "u.hdf2bov0"
 
@@ -11,10 +11,33 @@ try: import h5py as h5
 except ImportError: err("fail to import python module `h5py`")
 
 def shift(a): return a.pop(0)
-def fopen(n):
+def hdf_open(n):
     try: f = h5.File(n, "r")
-    except IOError: err("%s fails to open `%s`" % (prog, n))
+    except IOError: err("fails to open '%s'" % n)
     return f
+
+def fopen(n, mode):
+    try: f = open(n, mode)
+    except IOError: err("fails to open '%s'" % n)
+    return f
+
+def bov_write(b, d, v_base, x, y, z):
+    f = fopen(b, "w")
+    def w(*args): return f.write(*args)
+    w("TIME: 0\n")
+    w("DATA_FILE: %s\n" % v_base)
+    w("DATA_SIZE: %d %d %d\n" % (x, y, z))
+    w("DATA_FORMAT: FLOAT\n")
+    w("VARIABLE: %s\n" % d)
+    w("DATA_ENDIAN: LITTLE\n")
+    w("BRICK_ORIGIN: 0.5 0.5 0.5\n")
+    w("BRICK_SIZE: %d %d %d\n" % (x, y, z))
+    f.close()
+
+def val_write(v_path, D):
+    f = fopen(v_path, "w")
+    D.value.tofile(f)
+    f.close()
 
 argv = sys.argv
 argc = len(argv)
@@ -24,7 +47,7 @@ b = shift(argv) # [b]ov [h]df [d]ataset [v]alue
 h = shift(argv)
 d = shift(argv)
 
-f = fopen(h)
+f = hdf_open(h)
 if not d in f:
     k = ' '.join(f.keys())
     msg("no dataset '%s' in file '%s'" % (d, h))
@@ -32,13 +55,15 @@ if not d in f:
     err(k)
 
 D = f[d] # data
-
 try: z, y, x, u = D.shape
 except ValueError:
     msg("expecting four dimensions for dataset '%s' in file '%s' " % (d, h))
     err("found %s" % str(D.shape))
 
-v = splitext(b)[0] + ".values"
-print b, v
+v_path = splitext(b)[0] + ".values"
+v_base = basename(v_path)
+
+bov_write(b, d, v_base, x, y, z)
+val_write(v_path, D)
 
 f.close()
