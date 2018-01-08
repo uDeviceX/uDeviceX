@@ -1,0 +1,7 @@
+usg () {
+    exit
+}
+e ()   { msg "cmd: $*"; eval "$@"; }
+msg () { echo >&2 "$@"; }
+
+echo 42
