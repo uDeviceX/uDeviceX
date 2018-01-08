@@ -68,20 +68,26 @@ static void ini_vcont(MPI_Comm comm, /**/ PidVCont *c) {
 
 static void ini_outflow(Coords coords, const Config *cfg, Outflow **o) {
     UC(ini(MAX_PART_NUM, /**/ o));
-    const char *type = NULL;
+    const char *type;
     UC(conf_lookup_string(cfg, "outflow.type", &type));
     
-    if (same(type, "circle")) {
+    if      (same(type, "circle")) {
         float3 center;
         float R;
         UC(conf_lookup_float(cfg, "outflow.R", &R));
         UC(conf_lookup_float3(cfg, "outflow.center", &center));
         
         ini_params_circle(coords, center, R, /**/ *o);
-    } else {
+    }
+    else if (same(type, "plate")) {
+        int dir;
+        float r0;
+        UC(conf_lookup_int(cfg, "outflow.direction", &dir));
+        UC(conf_lookup_float(cfg, "outflow.position", &r0));
+        ini_params_plane(coords, dir, r0, /**/ *o);
+    }
+    else {
         ERR("Unrecognized type <%s>", type);
-        // TODO
-        //ini_params_plane(coords, 0, XS/2-1, *o);
     }
 }
 
