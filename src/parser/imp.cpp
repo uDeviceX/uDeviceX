@@ -112,41 +112,77 @@ void conf_read(int argc, char **argv, /**/ Config *cfg) {
 
 static bool found(int s) {return s == CONFIG_TRUE;}
 
-void conf_lookup_int(const Config *c, const char *desc, int *a) {
+static bool lookup_int(const Config *c, const char *desc, int *a) {
     int i, s;
     for (i = 0; i < NCFG; ++i) {
         s = config_lookup_int(c->c + i, desc, /**/ a);
-        if ( found(s) ) return;
+        if ( found(s) ) return true;
     }
-    ERR("Could not find the field <%s>\n", desc);
+    return false;
 }
 
-void conf_lookup_float(const Config *c, const char *desc, float *a) {
+static bool lookup_float(const Config *c, const char *desc, float *a) {
     int i, s;
     double d;
 
     for (i = 0; i < NCFG; ++i) {
         s = config_lookup_float(c->c + i, desc, /**/ &d);
         *a = d;
-        if ( found(s) ) return;
+        if ( found(s) ) return true;
     }
-    ERR("Could not find the field <%s>\n", desc);
+    return false;
 }
 
-void conf_lookup_bool(const Config *c, const char *desc, int *a) {
+static bool lookup_bool(const Config *c, const char *desc, int *a) {
     int i, s;
     for (i = 0; i < NCFG; ++i) {
         s = config_lookup_bool(c->c + i, desc, a);
-        if ( found(s) ) return;
+        if ( found(s) ) return true;
     }
-    ERR("Could not find the field <%s>\n", desc);
+    return false;
 }
 
-void conf_lookup_string(const Config *c, const char *desc, const char **a) {
+static bool lookup_string(const Config *c, const char *desc, const char **a) {
     int i, s;
     for (i = 0; i < NCFG; ++i) {
         s = config_lookup_string(c->c + i, desc, a);
-        if ( found(s) ) return;
+        if ( found(s) ) return true;
     }
-    ERR("Could not find the field <%s>\n", desc);
+    return false;
+}
+
+void conf_lookup_int(const Config *c, const char *desc, int *a) {
+    bool found = lookup_int(c, desc, a);
+    if (!found) ERR("Could not find the field <%s>\n", desc);
+}
+
+void conf_lookup_float(const Config *c, const char *desc, float *a) {
+    bool found = lookup_float(c, desc, a);
+    if (!found) ERR("Could not find the field <%s>\n", desc);
+}
+
+void conf_lookup_bool(const Config *c, const char *desc, int *a) {
+    bool found = lookup_bool(c, desc, a);
+    if (!found) ERR("Could not find the field <%s>\n", desc);
+}
+
+void conf_lookup_string(const Config *c, const char *desc, const char **a) {
+    bool found = lookup_string(c, desc, a);
+    if (!found) ERR("Could not find the field <%s>\n", desc);
+}
+
+bool conf_opt_int(const Config *c, const char *desc, int *a) {
+    return lookup_int(c, desc, a);
+}
+
+bool conf_opt_float(const Config *c, const char *desc, float *a)  {
+    return lookup_float(c, desc, a);
+}
+
+bool conf_opt_bool(const Config *c, const char *desc, int *a)  {
+    return lookup_bool(c, desc, a);
+}
+
+bool conf_opt_string(const Config *c, const char *desc, const char **a)  {
+    return lookup_string(c, desc, a);
 }
