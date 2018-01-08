@@ -19,7 +19,7 @@ static void reini_sampler(/**/ PidVCont *c) {
     c->nsamples = 0;
 }
 
-void vcont_ini(MPI_Comm comm, int3 L, float3 vtarget, float factor, /**/ PidVCont *c) {
+static void ini(MPI_Comm comm, int3 L, float3 vtarget, float factor, /**/ PidVCont *c) {
     int ncells, nchunks, rank;
 
     MC(m::Comm_rank(comm, &rank));
@@ -52,11 +52,19 @@ void vcont_ini(MPI_Comm comm, int3 L, float3 vtarget, float factor, /**/ PidVCon
     ini_dump(rank, /**/ &c->fdump);
 }
 
+void vcont_ini(MPI_Comm comm, int3 L, float3 vtarget, float factor, /**/ PidVCont **c) {
+    PidVCont *vc;
+    UC(emalloc(sizeof(PidVCont), (void**) c));
+    vc = *c;
+    UC(ini(comm, L, vtarget, factor, /**/ vc));
+}
+
 void vcont_fin(/**/ PidVCont *c) {
     CC(d::Free(c->gridvel));
     CC(d::FreeHost(c->avgvel));
     MC(m::Comm_free(&c->comm));
     fin_dump(c->fdump);
+    UC(efree(c));
 }
 
 void vcont_sample(Coords coords, int n, const Particle *pp, const int *starts, const int *counts, /**/ PidVCont *c) {

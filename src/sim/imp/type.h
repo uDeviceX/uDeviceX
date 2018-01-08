@@ -134,7 +134,7 @@ struct Sim {
     ObjInter objinter;
     BounceBack bb;
     Colorer colorer;
-    PidVCont vcont;
+    PidVCont *vcont;
     MPI_Comm cart;
 
     /* open bc tools */

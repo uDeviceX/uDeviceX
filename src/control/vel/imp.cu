@@ -38,4 +38,5 @@ namespace dev {
 #include "dev/sample.h"
 } // dev
 
+#include "imp/type.h"
 #include "imp/main.h"

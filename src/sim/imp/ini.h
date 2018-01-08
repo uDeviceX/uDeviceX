@@ -60,7 +60,7 @@ static void ini_rig_distr(int nv, MPI_Comm comm, /**/ RigDistr *d) {
     UC(ini(MAX_SOLIDS, nv, /**/ &d->u));
 }
 
-static void ini_vcont(MPI_Comm comm, /**/ PidVCont *c) {
+static void ini_vcont(MPI_Comm comm, /**/ PidVCont **c) {
     int3 L = {XS, YS, ZS};
     float3 V = {VCON_VX, VCON_VY, VCON_VZ};
     UC(vcont_ini(comm, L, V, VCON_FACTOR, /**/ c));
