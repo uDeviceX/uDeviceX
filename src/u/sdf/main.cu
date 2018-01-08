@@ -29,6 +29,7 @@
 #include "sdf/tex3d/type.h"
 #include "sdf/type.h"
 
+#include "sdf/def.h"
 #include "sdf/dev.h"
 #include "sdf/imp/type.h"
 
