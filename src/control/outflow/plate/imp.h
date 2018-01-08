@@ -1,6 +1,6 @@
-void ini_params_plane(Coords c, int dir, float r0, Outflow *o) {
+void ini_params_plate(Coords c, int dir, float r0, Outflow *o) {
     enum {X, Y, Z};
-    ParamsPlane p = {0, 0, 0, 0};    
+    ParamsPlate p = {0, 0, 0, 0};    
 
     switch (dir) {
     case X:
@@ -20,6 +20,6 @@ void ini_params_plane(Coords c, int dir, float r0, Outflow *o) {
         break;
     };    
     
-    o->params.plane = p;
-    o->type = TYPE_PLANE;
+    o->params.plate = p;
+    o->type = TYPE_PLATE;
 }

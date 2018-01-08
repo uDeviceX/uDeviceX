@@ -2,7 +2,7 @@ struct Outflow;
 
 void ini(int maxp, /**/ Outflow **o);
 void ini_params_circle(Coords coords, float3 c, float R, Outflow *o);
-void ini_params_plane(Coords c, int dir, float r0, Outflow *o);
+void ini_params_plate(Coords c, int dir, float r0, Outflow *o);
 
 void fin(/**/ Outflow *o);
 
