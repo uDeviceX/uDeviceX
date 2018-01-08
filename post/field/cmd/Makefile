@@ -1,7 +1,7 @@
 BIN = $(HOME)/bin
 B = $(BIN)
 
-P = hdf2bov hdf2bov0
+P = hdf2bov hdf2bov0 hdf2bov1
 
 # prefix
 p = u
