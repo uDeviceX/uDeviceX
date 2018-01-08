@@ -170,3 +170,19 @@ void conf_lookup_string(const Config *c, const char *desc, const char **a) {
     bool found = lookup_string(c, desc, a);
     if (!found) ERR("Could not find the field <%s>\n", desc);
 }
+
+bool conf_opt_int(const Config *c, const char *desc, int *a) {
+    return lookup_int(c, desc, a);
+}
+
+bool conf_opt_float(const Config *c, const char *desc, float *a)  {
+    return lookup_float(c, desc, a);
+}
+
+bool conf_opt_bool(const Config *c, const char *desc, int *a)  {
+    return lookup_bool(c, desc, a);
+}
+
+bool conf_opt_string(const Config *c, const char *desc, const char **a)  {
+    return lookup_string(c, desc, a);
+}
