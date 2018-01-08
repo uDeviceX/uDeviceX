@@ -21,7 +21,7 @@ enum {BLUE_COLOR, RED_COLOR, /* solvent colors */
 #define MAX_OBJ_DENSITY (30)
 
 /* maximum number of red blood cells per node */
-#define MAX_CELL_NUM 1000
+#define MAX_CELL_NUM 1500
 
 /* maximum texture size in bytes */
 #define MAX_TEXO_SIZE (100000000)
