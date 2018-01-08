@@ -24,7 +24,6 @@ def fopen(n, mode):
 def bov_write(b, d, v_base, x, y, z):
     f = fopen(b, "w")
     def w(*args): return f.write(*args)
-    w("TIME: 0\n")
     w("DATA_FILE: %s\n" % v_base)
     w("DATA_SIZE: %d %d %d\n" % (x, y, z))
     w("DATA_FORMAT: FLOAT\n")
