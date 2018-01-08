@@ -18,13 +18,21 @@ def fopen(n):
     except IOError: err("%s fails to open `%s`" % (prog, n))
     return f
 
+def size(w, name):
+    try: z, y, x, u = w.shape
+    except ValueError: err("expecting 4 dimensions in file `%s`" % name)
+    return z, y, x, u
+
 argv = sys.argv
 argc = len(argv)
 shift(argv)
 
+b = shift(argv) # bov and hdf
 h = shift(argv)
-b = shift(argv)
 
 print h, b
 
-f = fopen(b)
+f = fopen(h)
+print f.keys()
+
+z, y, x, u = size(f['u'], h)
