@@ -17,7 +17,6 @@
 
 #include "inc/type.h"
 #include "inc/dev.h"
-#include "sdf/def.h"
 
 #include "utils/kl.h"
 

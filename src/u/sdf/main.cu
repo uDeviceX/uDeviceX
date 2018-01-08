@@ -15,7 +15,6 @@
 #include "inc/type.h"
 #include "inc/dev.h"
 #include "utils/cc.h"
-#include "sdf/def.h"
 #include "utils/kl.h"
 #include "utils/error.h"
 
@@ -30,6 +29,7 @@
 #include "sdf/tex3d/type.h"
 #include "sdf/type.h"
 
+#include "sdf/def.h"
 #include "sdf/dev.h"
 #include "sdf/imp/type.h"
 
