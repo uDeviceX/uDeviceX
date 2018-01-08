@@ -7,13 +7,15 @@ s=../src
 u=u/safe
 c=$s/conf/lina.h
 
+kb=$1; shift
+v=$1;  shift
+
 # domain types: oneA,    oneB, cyl, cyl3, narrow small, normal, big, ath_big
 ath_big
-ath_dpd
+dt=0.001 ath_dpd
 
 nv=642 sc=0.60 radius=3.2
 strt1
-kb=$1; shift
 rbc1
 
 freq=20000
@@ -21,11 +23,11 @@ com1
 
 sfree1
 
-v=$1; shift=inf; force
+shift=inf; force
 
 Domain="XS=$xs YS=$ys ZS=$zs walls wall_creation=1000"
-d=$SCRATCH/big_ath_fast/kb$kb/$v
-time=00:30:00 run
+d=$SCRATCH/ath/kb$kb/$v/d
+time=24:00:00 run
 
 export S="$s"
 u.case                             \
