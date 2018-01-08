@@ -1,15 +1,25 @@
 #!/bin/sh
 
+set -u
+
 prog=u.ply2box
+prog0=u.ply2box0
+: ${FMT=%04d}
+: ${DBG=0}
 
 usg () {
-    msg "$prog" 'out_dir nv xl xh   yl yh   zl zh in_dir'
+    msg "$prog" 'out_dir nv xl xh   yl yh   zl zh [FILES]..'
     msg 'nv: number of vertices in one cell'
     msg '[xl:xh][yl:yh][zl:zh]: box'
-    msg 'out_dir/in_dir: input output directories'
+    msg '[FILES]..: ply files'
+    msg 'out_dir: output directories, create files out_dir/0000.vtk out_dir/0001.vtk ...'
+    msg 'env. variable FMT: default value %04d'
     exit
 }
-e ()   { msg "cmd: $*"; eval "$@"; }
+e ()   {
+    if test ! "$DBG" = 0; then msg "cmd: $*"; fi
+    eval "$@"
+}
 msg () { echo >&2 "$@"; }
 err () { msg "$prog: $@"; exit 2; }
 
@@ -27,21 +37,23 @@ numberp () { # number?
     awk -v n="$1" 'BEGIN  {r = !(n + 0 == n); exit r }'
 }
 
+inc () {
+    awk -v n="$1" 'BEGIN { print n + 1}'
+}
+
 intp () { # integer?
     awk -v n="$1" 'BEGIN  {r = !(int(n) == n); exit r }'
 }
 
-assert $# 'expecting out_dir' ; o="$1"; shift
-assert $# 'expecting nv'      ; nv="$1"; shift
-assert $# 'expecting xl'      ; xl="$1"; shift
-assert $# 'expecting xh'      ; xh="$1"; shift
-assert $# 'eypecting yl'      ; yl="$1"; shift
-assert $# 'eypecting yh'      ; yh="$1"; shift
-assert $# 'ezpecting zl'      ; zl="$1"; shift
-assert $# 'ezpecting zh'      ; zh="$1"; shift
-assert $# 'ezpecting in_dir'  ;  i="$1"; shift
-
-if test ! -d "$i"; then err "not a directory: '$i'"; fi
+assert $# 'expect out_dir' ; o="$1"; shift
+assert $# 'expect nv'      ; nv="$1"; shift
+assert $# 'expect xl'      ; xl="$1"; shift
+assert $# 'expect xh'      ; xh="$1"; shift
+assert $# 'expect yl'      ; yl="$1"; shift
+assert $# 'expect yh'      ; yh="$1"; shift
+assert $# 'expect zl'      ; zl="$1"; shift
+assert $# 'expect zh'      ; zh="$1"; shift
+assert $# 'expect [FILE]..'
 
 if ! intp    "$nv"; then err "not an integer: '$nv'"; fi
 
@@ -51,3 +63,14 @@ if ! numberp "$yl"; then err "not a number: '$yl'"; fi
 if ! numberp "$yh"; then err "not a number: '$yh'"; fi
 if ! numberp "$zl"; then err "not a number: '$zl'"; fi
 if ! numberp "$zh"; then err "not a number: '$zh'"; fi
+
+mkdir 2>/dev/null -p "$o"
+if ! test -d "$o"; then err "fail to create directory '$o'"; fi
+
+c=0
+for i
+do
+    v=`printf "$o/${FMT}.vtk\n" "$c"`
+    e nb=$nv xp1=$xl xp2=$xh yp1=$yl yp2=$yh zp1=$zl zp2=$zh $prog0 "$i" "$v"
+    c=`inc $c`
+done
