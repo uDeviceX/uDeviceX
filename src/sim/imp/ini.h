@@ -72,12 +72,11 @@ static void ini_outflow(Coords coords, const Config *cfg, Outflow **o) {
     UC(conf_lookup_string(cfg, "outflow.type", &type));
     
     if (same(type, "circle")) {
-        int n;
-        float R = 0, c[3] = {0};
+        float3 center;
+        float R;
         UC(conf_lookup_float(cfg, "outflow.R", &R));
-        UC(conf_lookup_vfloat(cfg, "outflow.center", &n, c));
+        UC(conf_lookup_float3(cfg, "outflow.center", &center));
         
-        float3 center = make_float3(c[0], c[1], c[2]);
         ini_params_circle(coords, center, R, /**/ *o);
     } else {
         ERR("Unrecognized type <%s>", type);
@@ -100,24 +99,31 @@ static void ini_inflow(Coords coords, const Config *cfg, Inflow **i) {
     ini(nc, /**/ i);
 
     if      (same(type, "circle")) {
-        float c[3], R, H, U;
+        float R, H, U;
         int poiseuille;
-        int n;
         float3 center;
 
         UC(conf_lookup_float(cfg, "inflow.R", &R));
         UC(conf_lookup_float(cfg, "inflow.H", &H));
         UC(conf_lookup_float(cfg, "inflow.U", &U));
         UC(conf_lookup_bool(cfg, "inflow.poiseuille", &poiseuille));
-        UC(conf_lookup_vfloat(cfg, "inflow.center", &n, c));        
-        center = make_float3(c[0], c[1], c[2]);
+        UC(conf_lookup_float3(cfg, "inflow.center", &center));        
         UC(ini_params_circle(coords, center, R, H, U, poiseuille, /**/ *i));
     }
     else if (same(type, "plate")) {
-        // TODO
-        // ini_params_plate(coords, make_float3(0, YS/2, 0), 0, YS/2, ZS,
-        //                  make_float3(10.f, 0, 0), true, false,
-        //                   /**/ *i);
+        int upois, vpois, dir;
+        float3 origin, u;
+        float L1, L2;
+
+        UC(conf_lookup_float(cfg, "inflow.L1", &L1));
+        UC(conf_lookup_float(cfg, "inflow.L2", &L2));
+        UC(conf_lookup_int(cfg, "inflow.direction", &dir));
+        UC(conf_lookup_bool(cfg, "inflow.upoiseuille", &upois));
+        UC(conf_lookup_bool(cfg, "inflow.vpoiseuille", &vpois));
+        UC(conf_lookup_float3(cfg, "inflow.origin", &origin));
+        UC(conf_lookup_float3(cfg, "inflow.u", &u));
+        
+        ini_params_plate(coords, origin, dir, L1, L2, u, upois, vpois, /**/ *i);
     }
     else {
         ERR("unknown inflow type <%s>", type);
