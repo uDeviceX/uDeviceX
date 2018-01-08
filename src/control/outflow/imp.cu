@@ -22,13 +22,12 @@
 
 namespace circle {
 #include "circle/dev.h"
-#include "dev/filter.h"
 }
 
 namespace plane {
 #include "plane/dev.h"
-#include "dev/filter.h"
 }
+#include "dev/filter.h"
 
 #include "imp/type.h"
 #include "imp/main.h"
