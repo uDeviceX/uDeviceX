@@ -29,7 +29,8 @@ def bov_write(b, d, v_base, x, y, z):
     w("DATA_FORMAT: FLOAT\n")
     w("VARIABLE: %s\n" % d)
     w("DATA_ENDIAN: LITTLE\n")
-    w("BRICK_ORIGIN: 0.5 0.5 0.5\n")
+    w("CENTERING: zonal\n")
+    w("BRICK_ORIGIN: 0 0 0\n")
     w("BRICK_SIZE: %d %d %d\n" % (x, y, z))
     f.close()
 
