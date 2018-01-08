@@ -15,7 +15,7 @@ except ImportError: err("fail to import python module `h5py`")
 
 def shift(a): return a.pop(0)
 def fopen(n):
-    try: f = h5.File(fname, "r")
+    try: f = h5.File(n, "r")
     except IOError: err("fails to open `%s`" % n)
     return f
 
