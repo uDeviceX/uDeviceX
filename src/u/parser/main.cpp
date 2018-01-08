@@ -6,13 +6,16 @@
 #include "parser/imp.h"
 
 static void extract(const Config *c) {
-    int a;
+    int a, opt;
     float f;
 
     UC(conf_lookup_int(c, "a", &a));
     UC(conf_lookup_float(c, "f", &f));
 
     printf("%d %g\n", a, f);
+
+    if (conf_opt_int(c, "opt", &opt))
+        printf("%d\n", opt);
 }
 
 int main(int argc, char **argv) {
