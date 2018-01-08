@@ -1,6 +1,6 @@
 /*
 
-Keep only RBCs with at least one vertex in the box:
+keep only RBCs with at least one vertex in the box:
 [xp1:xp2][yp1:yp2][zp1:zp2]
 
 Usage:
@@ -12,8 +12,18 @@ nb=498 xp1=80 xp2=140 yp1=15 yp2=16 zp1=120 zp2=1000 \
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <string.h>
+
 #include "endian.h"
 #include "util.h"
+
+const char *prog_name = "u.ply2box0";
+
+void usg0() {
+    fprintf(stderr, "%s: keep only RBCs with at least one vertex in the box\n", prog_name);
+    fprintf(stderr, "usage:\n");
+    fprintf(stderr, "nb=498 xp1=80 xp2=140 yp1=15 yp2=16 zp1=120 zp2=1000 %s r.ply r.vtk\n", prog_name);
+}
 
 int nb ; /* number of vertices in one RBC (number of beads) */
 float xp1, xp2, yp1, yp2, zp1, zp2;
@@ -45,6 +55,8 @@ void init() {
   yp1  = env2f("yp1"); yp2  = env2f("yp2");
   zp1  = env2f("zp1"); zp2  = env2f("zp2");
 }
+
+int eq(const char *a, const char *b) { return strcmp(a, b) == 0; }
 
 FILE* fd_nl;
 char line[1024];
@@ -278,7 +290,15 @@ void bbr2bbv() { /* ban all vertices of banned RBCs */
   }
 }
 
+void usg(int c, const char **v) {
+    if (c >= 1 && eq(v[1], "-h")) {
+        usg0();
+        exit(0);
+    }
+}
+
 int main(int argc, const char** argv) {
+  usg(argc, argv);
   init();
 
   read_file(argv[1]);
