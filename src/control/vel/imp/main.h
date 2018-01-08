@@ -19,7 +19,7 @@ static void reini_sampler(/**/ PidVCont *c) {
     c->nsamples = 0;
 }
 
-void ini(MPI_Comm comm, int3 L, float3 vtarget, float factor, /**/ PidVCont *c) {
+void vcont_ini(MPI_Comm comm, int3 L, float3 vtarget, float factor, /**/ PidVCont *c) {
     int ncells, nchunks, rank;
 
     MC(m::Comm_rank(comm, &rank));
@@ -52,14 +52,14 @@ void ini(MPI_Comm comm, int3 L, float3 vtarget, float factor, /**/ PidVCont *c) 
     ini_dump(rank, /**/ &c->fdump);
 }
 
-void fin(/**/ PidVCont *c) {
+void vcont_fin(/**/ PidVCont *c) {
     CC(d::Free(c->gridvel));
     CC(d::FreeHost(c->avgvel));
     MC(m::Comm_free(&c->comm));
     fin_dump(c->fdump);
 }
 
-void sample(Coords coords, int n, const Particle *pp, const int *starts, const int *counts, /**/ PidVCont *c) {
+void vcont_sample(Coords coords, int n, const Particle *pp, const int *starts, const int *counts, /**/ PidVCont *c) {
     int3 L = c->L;
     
     dim3 block(8, 8, 1);
@@ -72,7 +72,7 @@ void sample(Coords coords, int n, const Particle *pp, const int *starts, const i
     c->nsamples ++;
 }
 
-float3 adjustF(/**/ PidVCont *c) {
+float3 vcont_adjustF(/**/ PidVCont *c) {
     int3 L = c->L;
     int ncells, nchunks;
     ncells = L.x * L.y * L.z;
@@ -110,7 +110,7 @@ float3 adjustF(/**/ PidVCont *c) {
     return c->f;
 }
 
-void log(const PidVCont *c) {
+void vcont_log(const PidVCont *c) {
     if (c->fdump == NULL) return;
     float3 v = c->current;
     float3 f = c->f;
