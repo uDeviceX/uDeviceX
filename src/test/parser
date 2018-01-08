@@ -36,3 +36,18 @@ u.conf "$s" "$u" "$s/conf/default.h" <<!
 !
 { u.make clean && u.make -j; } > /dev/null
 u.run ./udx $t a=5 > parser.out.txt
+
+### parse from opt file with opt argument
+# TEST: parse.t3
+t=opt.cfg
+u=u/parser
+s=`pwd`
+echo "a=42"   >  $t
+echo "f=3.14" >> $t
+echo "opt=6"  >> $t
+:
+u.conf "$s" "$u" "$s/conf/default.h" <<!
+  run
+!
+{ u.make clean && u.make -j; } > /dev/null
+u.run ./udx $t > parser.out.txt
