@@ -1,1 +1,2 @@
-echo 42
+set -e
+exec u.hdf2bov0 "$@"
