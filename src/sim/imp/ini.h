@@ -64,19 +64,21 @@ static void ini_vcont(MPI_Comm comm, /**/ PidVCont *c) {
 
 static void ini_outflow(Coords coords, const Config *cfg, Outflow **o) {
     UC(ini(MAX_PART_NUM, /**/ o));
-
-    if (OUTFLOW_CIRCLE) {
-        float R = 0;
-        // TODO read from conf
-        // for now: domain center
-        float3 c = make_float3(0, 0, 0);
-        center2local(coords, c, /**/ &c);
-        local2global(coords, c, /**/ &c);
-
+    const char *type = NULL;
+    UC(conf_lookup_string(cfg, "outflow.type", &type));
+    
+    if (0 == strcmp(type, "circle")) {
+        int n;
+        float R = 0, c[3] = {0};
         UC(conf_lookup_float(cfg, "outflow.R", &R));
-        msg_print("R = %g\n", R);
-        ini_params_circle(coords, c, R, /**/ *o);
+        UC(conf_lookup_vfloat(cfg, "outflow.center", &n, c));
+        // msg_print("R = %g", R);
+        // msg_print("c = %g %g %g", c[0], c[1], c[2]);
+        
+        float3 center = make_float3(c[0], c[1], c[2]);
+        ini_params_circle(coords, center, R, /**/ *o);
     } else {
+        ERR("Unrecognized type <%s>", type);
         ini_params_plane(coords, 0, XS/2-1, *o);
     }
 }
