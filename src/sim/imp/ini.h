@@ -91,9 +91,21 @@ static void ini_outflow(Coords coords, const Config *cfg, Outflow **o) {
     }
 }
 
-static void ini_denoutflow(Coords coords, DCont **d, DContMap **m) {
+static void ini_denoutflow(Coords coords, const Config *cfg, DCont **d, DContMap **m) {
+    const char *type;
     UC(den_ini(MAX_PART_NUM, /**/ d));
-    UC(den_ini_map(coords, /**/ m));
+
+    UC(conf_lookup_string(cfg, "denoutflow.type", &type));
+    if (same(type, "none")) {
+        UC(den_ini_map_none(coords, /**/ m));
+    }
+    else if (same(type, "circle")) {
+        float R;
+        UC(conf_lookup_float(cfg, "denoutflow.R", &R));
+        UC(den_ini_map_circle(coords, R, /**/ m));
+    } else {
+        ERR("Unrecognized type <%s>", type);
+    }
 }
 
 static void ini_inflow(Coords coords, const Config *cfg, Inflow **i) {
@@ -229,6 +241,8 @@ static void read_opt(const Config *c, Opt *o) {
     o->outflow = b;
     UC(conf_lookup_bool(c, "inflow.active", &b));
     o->inflow = b;
+    UC(conf_lookup_bool(c, "denoutflow.active", &b));
+    o->denoutflow = b;
 }
 
 void sim_ini(int argc, char **argv, MPI_Comm cart, /**/ Sim **sim) {
@@ -252,10 +266,10 @@ void sim_ini(int argc, char **argv, MPI_Comm cart, /**/ Sim **sim) {
     
     if (rbcs) UC(ini_rbc(s->cart, /**/ &s->rbc));
 
-    if (VCON)    UC(ini_vcont(s->cart, /**/ &s->vcont));
-    if (s->opt.outflow) UC(ini_outflow(s->coords, s->cfg, /**/ &s->outflow));
-    if (s->opt.inflow)  UC(ini_inflow (s->coords, s->cfg, /**/ &s->inflow ));
-    if (OUTFLOW_DEN) UC(ini_denoutflow(s->coords, /**/ &s->denoutflow, &s->mapoutflow));
+    if (VCON)              UC(ini_vcont(s->cart, /**/ &s->vcont));
+    if (s->opt.outflow)    UC(ini_outflow(s->coords, s->cfg, /**/ &s->outflow));
+    if (s->opt.inflow)     UC(ini_inflow (s->coords, s->cfg, /**/ &s->inflow ));
+    if (s->opt.denoutflow) UC(ini_denoutflow(s->coords, s->cfg, /**/ &s->denoutflow, &s->mapoutflow));
     
     if (rbcs || solids)
         UC(ini_objinter(s->cart, /**/ &s->objinter));        
