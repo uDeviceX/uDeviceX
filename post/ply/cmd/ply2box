@@ -1,3 +1,5 @@
+#!/bin/sh
+
 prog=u.ply2box
 
 usg () {
@@ -21,6 +23,14 @@ assert () {
     fi
 }
 
+numberp () { # number?
+    awk -v n="$1" 'BEGIN  {r = !(n + 0 == n); exit r }'
+}
+
+intp () { # integer?
+    awk -v n="$1" 'BEGIN  {r = !(int(n) == n); exit r }'
+}
+
 assert $# 'expecting out_dir' ; o="$1"; shift
 assert $# 'expecting nv'      ; nv="$1"; shift
 assert $# 'expecting xl'      ; xl="$1"; shift
@@ -32,3 +42,12 @@ assert $# 'ezpecting zh'      ; zh="$1"; shift
 assert $# 'ezpecting in_dir'  ;  i="$1"; shift
 
 if test ! -d "$i"; then err "not a directory: '$i'"; fi
+
+if ! intp    "$nv"; then err "not an integer: '$nv'"; fi
+
+if ! numberp "$xl"; then err "not a number: '$xl'"; fi
+if ! numberp "$xh"; then err "not a number: '$xh'"; fi
+if ! numberp "$yl"; then err "not a number: '$yl'"; fi
+if ! numberp "$yh"; then err "not a number: '$yh'"; fi
+if ! numberp "$zl"; then err "not a number: '$zl'"; fi
+if ! numberp "$zh"; then err "not a number: '$zh'"; fi
