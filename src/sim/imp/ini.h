@@ -182,8 +182,19 @@ static void ini_objinter(MPI_Comm cart, /**/ ObjInter *o) {
     if (fsiforces)     fsi::ini(rank, /**/ &o->fsi);
 }
 
+struct Opt {
+    bool outflow;
+};
+
+static void read_opt(const Config *c, Opt *o) {
+    int b;
+    UC(conf_lookup_bool(c, "outflow", &b));
+    o->outflow = b;
+}
+
 void sim_ini(int argc, char **argv, MPI_Comm cart, /**/ Sim **sim) {
     Sim *s;
+    Opt opt;
     UC(emalloc(sizeof(Sim), (void**) sim));
     s = *sim;
 
@@ -194,6 +205,8 @@ void sim_ini(int argc, char **argv, MPI_Comm cart, /**/ Sim **sim) {
 
     UC(conf_ini(&cfg)); s->cfg = cfg;
     UC(conf_read(argc, argv, /**/ cfg));
+
+    UC(read_opt(s->cfg, &opt));
     
     UC(coords_ini(s->cart, /**/ &s->coords));
     
@@ -202,7 +215,7 @@ void sim_ini(int argc, char **argv, MPI_Comm cart, /**/ Sim **sim) {
     if (rbcs) UC(ini_rbc(s->cart, /**/ &s->rbc));
 
     if (VCON)    UC(ini_vcont(s->cart, /**/ &s->vcont));
-    if (OUTFLOW) UC(ini_outflow(s->coords, /**/ &s->outflow));
+    if (opt.outflow) UC(ini_outflow(s->coords, /**/ &s->outflow));
     if (INFLOW)  UC(ini_inflow(s->coords, /**/ &s->inflow));
     if (OUTFLOW_DEN) UC(ini_denoutflow(s->coords, /**/ &s->denoutflow, &s->mapoutflow));
     
