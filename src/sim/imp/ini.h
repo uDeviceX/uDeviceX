@@ -67,7 +67,10 @@ static void ini_outflow(Coords coords, Outflow **o) {
 
     if (OUTFLOW_CIRCLE) {
         // TODO read from conf
-        float3 c = make_float3(XS/2, YS/2, ZS/2);
+        // for now: domain center
+        float3 c = make_float3(0, 0, 0);
+        center2local(coords, c, /**/ &c);
+        local2global(coords, c, /**/ &c);
         ini_params_circle(coords, c, OUTFLOW_CIRCLE_R, /**/ *o);
     } else {
         ini_params_plane(coords, 0, XS/2-1, *o);
