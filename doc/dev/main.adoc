@@ -12,6 +12,7 @@ A list of coding conventions can be found link:conventions{lext}[here].
 * prefix sum: link:modules/algo/scan{lext}[scan]
 * body forces: link:modules/bforce{lext}[bforce]
 * cell lists: link:modules/clist{lext}[clist]
+* controlers, open bc: link:modules/control/main{lext}[control]
 * red blood cell: link:modules/rbc/main{lext}[rbc]
 * math helpers: link:modules/math/main{lext}[math]
 * link:modules/algo/minmax{lext}[minmax]

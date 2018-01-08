@@ -11,3 +11,44 @@ allocate, deallocate:
 include::{src}/control/inflow/imp.h[tags=mem]
 ----
 
+initialize the inflow structure (to be done only once):
+
+[source,cpp]
+----
+include::{src}/control/inflow/imp.h[tags=ini]
+----
+depending on the type of inflow, call the appropriate
+`ini_params_xxx`.
+`ini_velocity` must be called after initializing the parameters.
+it is used to setup the inlet velocity from parameters.
+
+
+create particles (at every time step):
+
+[source,cpp]
+----
+include::{src}/control/inflow/imp.h[tags=int]
+----
+this will add particles to the array `pp` and increase `n` accordingly.
+
+=== configuration
+
+
+==== circle
+
+cylinder inflow
+
+example:
+
+[source,cfg]
+----
+inflow = {
+    active = true;
+    type   = "circle";
+    R      = 1.0;
+    H      = 16.0;
+    U      = 1.0;
+    center = [8.0, 8.0, 8.0];
+    poiseuille = false;
+};
+----
