@@ -9,7 +9,7 @@ void distribute_flu(Sim *s) {
     
     lp.pp        = q->pp;
 
-    if (OUTFLOW_DEN) {
+    if (s->opt.denoutflow) {
         lp.deathlist = den_get_deathlist(s->denoutflow);
         ndead        = den_get_ndead(s->denoutflow);
     }

@@ -351,21 +351,6 @@
   #define VCON_FACTOR (0.08f)
 #endif
 
-/* outflow: density control */
-
-#ifndef OUTFLOW_DEN
-  #define OUTFLOW_DEN (false)
-#endif
-
-/* den outflow */
-
-#ifndef OUTFLOW_CIRCLE
-#define OUTFLOW_CIRCLE (true)
-#endif
-
-#ifndef OUTFLOW_CIRCLE_R
-#define OUTFLOW_CIRCLE_R (8.f)
-#endif
 
 /* how mass affects dpd forces: like "gravity" ~ mi*mj or like
    "charge" -- no dependencies on mass */
