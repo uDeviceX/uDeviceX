@@ -366,38 +366,6 @@
 #ifndef OUTFLOW_CIRCLE_R
 #define OUTFLOW_CIRCLE_R (8.f)
 #endif
-/* inflow */
-
-#ifndef INFLOW
-  #define INFLOW (false)
-#endif
-
-#ifndef INFLOW_CIRCLE_R
-#define INFLOW_CIRCLE_R (1)
-#endif
-    
-#ifndef INFLOW_CIRCLE_H
-  #define INFLOW_CIRCLE_H (1)
-#endif
-
-#ifndef INFLOW_CIRCLE_U
-  #define INFLOW_CIRCLE_U (1)
-#endif
-
-#ifndef INFLOW_CIRCLE_OX
-  #define INFLOW_CIRCLE_OX (0)
-#endif
-#ifndef INFLOW_CIRCLE_OY
-  #define INFLOW_CIRCLE_OY (0)
-#endif
-#ifndef INFLOW_CIRCLE_OZ
-  #define INFLOW_CIRCLE_OZ (0)
-#endif
-
-#ifndef INFLOW_CIRCLE_POISEUILLE
-  #define INFLOW_CIRCLE_POISEUILLE (false)
-#endif
-
 
 /* how mass affects dpd forces: like "gravity" ~ mi*mj or like
    "charge" -- no dependencies on mass */

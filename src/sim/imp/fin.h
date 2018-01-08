@@ -131,7 +131,7 @@ void sim_fin(Sim *s) {
 
     if (VCON)    UC(fin(/**/ &s->vcont));
     if (s->opt.outflow) UC(fin_outflow(/**/ s->outflow));
-    if (INFLOW) UC(fin_inflow(/**/ s->inflow));
+    if (s->opt.inflow)  UC(fin_inflow (/**/ s->inflow ));
     if (OUTFLOW_DEN) UC(fin_denoutflow(/**/ s->denoutflow, s->mapoutflow));
     
     if (walls) fin_wall(&s->wall);
