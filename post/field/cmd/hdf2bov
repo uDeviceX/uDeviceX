@@ -6,7 +6,7 @@ prog1=u.hdf2bov1
 : ${DBG=0}
 
 usg () {
-    msg "$prog" 'file.bov file.h5'
+    msg "$prog" 'file.bov file.h5 dataset'
     exit
 }
 
@@ -23,10 +23,12 @@ assert () {
     if test "$c" -eq 0; then err "$@"; fi
 }
 
+# [b]ov, [h]df, [d]ataset
 if test $# -ge 1 && test "$1" = -h; then usg; fi
 assert $# 'expect file.bov'; b="$1"; shift
 assert $# 'expect file.h5' ; h="$1"; shift
+assert $# 'expect dataset' ; d="$1"; shift
 
 if test ! -r "$h"; then err "not a file: '$h'"; fi
 
-exec "$prog1" "$b" "$h"
+exec "$prog1" "$b" "$h" "$d"

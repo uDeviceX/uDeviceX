@@ -4,11 +4,8 @@ import sys
 
 prog = "u.hdf2bov0"
 
-def msg(s): sys.stderr.write(s)
-def err(s):
-    msg("%s: %s\n" % (prog, s))
-    sys.exit(2)
-
+def msg(s): sys.stderr.write('%s: %s\n' % (prog, s))
+def err(s): msg(s); sys.exit(2)
 try: import h5py as h5
 except ImportError: err("fail to import python module `h5py`")
 
@@ -18,13 +15,24 @@ def fopen(n):
     except IOError: err("%s fails to open `%s`" % (prog, n))
     return f
 
+def size(w, name):
+    try: z, y, x, u = w.shape
+    except ValueError: err("expecting 4 dimensions in file `%s`" % name)
+    return z, y, x, u
+
 argv = sys.argv
 argc = len(argv)
 shift(argv)
 
+b = shift(argv) # [b]ov [h]df[d]ataset
 h = shift(argv)
-b = shift(argv)
+d = shift(argv)
 
-print h, b
+f = fopen(h)
+if not d in f:
+    k = ' '.join(f.keys())
+    msg("no dataset '%s' in file '%s'" % (d, h))
+    msg("datasets are")
+    err(k)
 
-f = fopen(b)
+z, y, x, u = size(f['u'], h)
