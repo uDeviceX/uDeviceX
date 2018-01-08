@@ -66,12 +66,16 @@ static void ini_outflow(Coords coords, const Config *cfg, Outflow **o) {
     UC(ini(MAX_PART_NUM, /**/ o));
 
     if (OUTFLOW_CIRCLE) {
+        float R = 0;
         // TODO read from conf
         // for now: domain center
         float3 c = make_float3(0, 0, 0);
         center2local(coords, c, /**/ &c);
         local2global(coords, c, /**/ &c);
-        ini_params_circle(coords, c, OUTFLOW_CIRCLE_R, /**/ *o);
+
+        UC(conf_lookup_float(cfg, "outflow.R", &R));
+        msg_print("R = %g\n", R);
+        ini_params_circle(coords, c, R, /**/ *o);
     } else {
         ini_params_plane(coords, 0, XS/2-1, *o);
     }
@@ -182,19 +186,14 @@ static void ini_objinter(MPI_Comm cart, /**/ ObjInter *o) {
     if (fsiforces)     fsi::ini(rank, /**/ &o->fsi);
 }
 
-struct Opt {
-    bool outflow;
-};
-
 static void read_opt(const Config *c, Opt *o) {
     int b;
-    UC(conf_lookup_bool(c, "outflow", &b));
+    UC(conf_lookup_bool(c, "outflow.active", &b));
     o->outflow = b;
 }
 
 void sim_ini(int argc, char **argv, MPI_Comm cart, /**/ Sim **sim) {
     Sim *s;
-    Opt opt;
     UC(emalloc(sizeof(Sim), (void**) sim));
     s = *sim;
 
@@ -206,7 +205,7 @@ void sim_ini(int argc, char **argv, MPI_Comm cart, /**/ Sim **sim) {
     UC(conf_ini(&cfg)); s->cfg = cfg;
     UC(conf_read(argc, argv, /**/ cfg));
 
-    UC(read_opt(s->cfg, &opt));
+    UC(read_opt(s->cfg, &s->opt));
     
     UC(coords_ini(s->cart, /**/ &s->coords));
     
@@ -215,7 +214,7 @@ void sim_ini(int argc, char **argv, MPI_Comm cart, /**/ Sim **sim) {
     if (rbcs) UC(ini_rbc(s->cart, /**/ &s->rbc));
 
     if (VCON)    UC(ini_vcont(s->cart, /**/ &s->vcont));
-    if (opt.outflow) UC(ini_outflow(s->coords, s->cfg, /**/ &s->outflow));
+    if (s->opt.outflow) UC(ini_outflow(s->coords, s->cfg, /**/ &s->outflow));
     if (INFLOW)  UC(ini_inflow(s->coords, /**/ &s->inflow));
     if (OUTFLOW_DEN) UC(ini_denoutflow(s->coords, /**/ &s->denoutflow, &s->mapoutflow));
     

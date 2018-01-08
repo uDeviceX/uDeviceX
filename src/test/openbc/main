@@ -10,11 +10,11 @@ u.conf conf/default.h <<!!!
    run
 !!!
 (make clean && u.make -j) > /dev/null
-u.run ./udx
+u.run ./udx test/openbc/out.cfg
 u.avgh5 0 u 0 h5/flowfields-0001.h5 | uscale 10 > h5.out.txt
 
 #### rest with deleting cylinder, multi nodes
-# nTEST: out.t2
+# snTEST: out.t2
 :
 u.conf conf/default.h <<!!!
    tend=2.01 part_freq=4000
@@ -30,7 +30,7 @@ u.run 2 2 1 ./udx
 u.avgh5 0 u 0 h5/flowfields-0001.h5 | uscale 10 > h5.out.txt
 
 #### rest with deleting cylinder and cylinder inflow 
-# nTEST: inout.t1
+# snTEST: inout.t1
 u.conf conf/default.h <<!!!
    tend=2.01 part_freq=4000
    field_dumps part_dumps
@@ -50,7 +50,7 @@ u.run ./udx
 u.avgh5 0 u 0 h5/flowfields-0001.h5 | uscale 10 > h5.out.txt
 
 #### rest with deleting cylinder and cylinder inflow 
-# nTEST: inout.t2
+# snTEST: inout.t2
 u.conf conf/default.h <<!!!
    tend=2.01 part_freq=4000
    field_dumps part_dumps

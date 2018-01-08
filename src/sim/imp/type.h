@@ -116,6 +116,11 @@ struct ObjInter {
     fsi::Fsi     fsi;
 };
 
+/* optional features */
+struct Opt {
+    bool outflow;
+};
+
 struct Sim {
     /* quantities */
     Flu flu;
@@ -147,4 +152,6 @@ struct Sim {
     /* state */
     bool solids0;
     bool equilibrating;
+
+    Opt opt;
 };
