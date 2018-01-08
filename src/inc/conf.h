@@ -357,11 +357,7 @@
   #define OUTFLOW_DEN (false)
 #endif
 
-/* outflow */
-
-#ifndef OUTFLOW
-  #define OUTFLOW (false)
-#endif
+/* den outflow */
 
 #ifndef OUTFLOW_CIRCLE
 #define OUTFLOW_CIRCLE (true)
@@ -370,6 +366,7 @@
 #ifndef OUTFLOW_CIRCLE_R
 #define OUTFLOW_CIRCLE_R (8.f)
 #endif
+/* inflow */
 
 #ifndef INFLOW
   #define INFLOW (false)
