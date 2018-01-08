@@ -34,6 +34,11 @@ def bov_write(b, d, v_base, x, y, z):
     w("BRICK_SIZE: %d %d %d\n" % (x, y, z))
     f.close()
 
+def val_write(v_path, D):
+    f = fopen(v_path, "w")
+    D.value.tofile(f)
+    f.close()
+
 argv = sys.argv
 argc = len(argv)
 shift(argv)
@@ -50,7 +55,6 @@ if not d in f:
     err(k)
 
 D = f[d] # data
-
 try: z, y, x, u = D.shape
 except ValueError:
     msg("expecting four dimensions for dataset '%s' in file '%s' " % (d, h))
@@ -60,5 +64,6 @@ v_path = splitext(b)[0] + ".values"
 v_base = basename(v_path)
 
 bov_write(b, d, v_base, x, y, z)
+val_write(v_path, D)
 
 f.close()
