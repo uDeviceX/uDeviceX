@@ -33,6 +33,20 @@ assert () {
     fi
 }
 
+lessp () {
+    awk -v a="$1" -v b="$2" \
+	'BEGIN  {r = !(a < b); exit r }'
+}
+
+assert_less () {
+    local a b
+    a="$1"; shift
+    b="$1"; shift
+    if ! lessp "$a" "$b"
+    then err "$@"
+    fi
+}
+
 numberp () { # number?
     awk -v n="$1" 'BEGIN  {r = !(n + 0 == n); exit r }'
 }
@@ -54,6 +68,10 @@ assert $# 'expect yh'      ; yh="$1"; shift
 assert $# 'expect zl'      ; zl="$1"; shift
 assert $# 'expect zh'      ; zh="$1"; shift
 assert $# 'expect [FILE]..'
+
+assert_less "$xl" "$xh" "fails xl=$xl < xh=$xh"
+assert_less "$yl" "$yh" "fails yl=$yl < yh=$yh"
+assert_less "$zl" "$zh" "fails zl=$zl < zh=$zh"
 
 if ! intp    "$nv"; then err "not an integer: '$nv'"; fi
 
