@@ -15,8 +15,8 @@ void ini_params_plate(Coords c, float3 o, int dir, float L1, float L2,
                       float3 u, bool upoiseuille, bool vpoiseuille,
                       /**/ Inflow *i) {
     enum {X, Y, Z};
-    plate::Params *pp;
-    plate::VParams *vpp;
+    ParamsPlate *pp;
+    VParamsPlate *vpp;
     float3 a, b, lo, hi;
     float3 co, ca, cb; // corners of the local plane : co (origin), ca, cb
 

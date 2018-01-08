@@ -13,12 +13,12 @@ struct Desc {
 };
 
 union ParamsU {
-    plate::Params plate;
+    ParamsPlate plate;
     ParamsCircle circle;
 };
 
 union VParamsU {
-    plate::VParams plate;
+    VParamsPlate plate;
     VParamsCircle circle;
 };
 

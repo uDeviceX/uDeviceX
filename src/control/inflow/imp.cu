@@ -27,10 +27,8 @@ namespace dev {
 #include "dev/common.h"
 }
 
-namespace plate {
 #include "plate/type.h"
 #include "plate/dev.h"
-}
 
 #include "circle/type.h"
 #include "circle/dev.h"

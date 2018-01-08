@@ -1,8 +1,8 @@
-struct Params {
+struct ParamsPlate {
     float3 o, a, b;
 };
 
-struct VParams {
+struct VParamsPlate {
     float3 u;
     bool upoiseuille, vpoiseuille;
 };
