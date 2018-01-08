@@ -30,6 +30,7 @@
 #include "sdf/type.h"
 #include "sdf/imp.h"
 
+#include "sdf/def.h"
 #include "sdf/dev.h"
 
 #include "imp.h"
