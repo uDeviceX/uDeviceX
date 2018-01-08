@@ -51,3 +51,19 @@ u.conf "$s" "$u" "$s/conf/default.h" <<!
 !
 { u.make clean && u.make -j; } > /dev/null
 u.run ./udx $t > parser.out.txt
+
+### parse optional int and float arrays
+# nTEST: parse.t4
+t=opt.cfg
+u=u/parser
+s=`pwd`
+echo "a=42"   >  $t
+echo "f=3.14" >> $t
+echo "ivec=[1, 2, 3, 4]"  >> $t
+echo "fvec=[0.1, 0.2, 0.3, 0.4]"  >> $t
+:
+u.conf "$s" "$u" "$s/conf/default.h" <<!
+  run
+!
+{ u.make clean && u.make -j; } > /dev/null
+u.run ./udx $t > parser.out.txt

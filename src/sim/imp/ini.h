@@ -62,18 +62,23 @@ static void ini_vcont(MPI_Comm comm, /**/ PidVCont *c) {
     UC(ini(comm, L, V, VCON_FACTOR, /**/ c));
 }
 
-static void ini_outflow(Coords coords, Outflow **o) {
+static void ini_outflow(Coords coords, const Config *cfg, Outflow **o) {
     UC(ini(MAX_PART_NUM, /**/ o));
-
-    if (OUTFLOW_CIRCLE) {
-        // TODO read from conf
-        // for now: domain center
-        float3 c = make_float3(0, 0, 0);
-        center2local(coords, c, /**/ &c);
-        local2global(coords, c, /**/ &c);
-        ini_params_circle(coords, c, OUTFLOW_CIRCLE_R, /**/ *o);
+    const char *type = NULL;
+    UC(conf_lookup_string(cfg, "outflow.type", &type));
+    
+    if (0 == strcmp(type, "circle")) {
+        int n;
+        float R = 0, c[3] = {0};
+        UC(conf_lookup_float(cfg, "outflow.R", &R));
+        UC(conf_lookup_vfloat(cfg, "outflow.center", &n, c));
+        
+        float3 center = make_float3(c[0], c[1], c[2]);
+        ini_params_circle(coords, center, R, /**/ *o);
     } else {
-        ini_params_plane(coords, 0, XS/2-1, *o);
+        ERR("Unrecognized type <%s>", type);
+        // TODO
+        //ini_params_plane(coords, 0, XS/2-1, *o);
     }
 }
 
@@ -182,6 +187,12 @@ static void ini_objinter(MPI_Comm cart, /**/ ObjInter *o) {
     if (fsiforces)     fsi::ini(rank, /**/ &o->fsi);
 }
 
+static void read_opt(const Config *c, Opt *o) {
+    int b;
+    UC(conf_lookup_bool(c, "outflow.active", &b));
+    o->outflow = b;
+}
+
 void sim_ini(int argc, char **argv, MPI_Comm cart, /**/ Sim **sim) {
     Sim *s;
     UC(emalloc(sizeof(Sim), (void**) sim));
@@ -194,6 +205,8 @@ void sim_ini(int argc, char **argv, MPI_Comm cart, /**/ Sim **sim) {
 
     UC(conf_ini(&cfg)); s->cfg = cfg;
     UC(conf_read(argc, argv, /**/ cfg));
+
+    UC(read_opt(s->cfg, &s->opt));
     
     UC(coords_ini(s->cart, /**/ &s->coords));
     
@@ -202,7 +215,7 @@ void sim_ini(int argc, char **argv, MPI_Comm cart, /**/ Sim **sim) {
     if (rbcs) UC(ini_rbc(s->cart, /**/ &s->rbc));
 
     if (VCON)    UC(ini_vcont(s->cart, /**/ &s->vcont));
-    if (OUTFLOW) UC(ini_outflow(s->coords, /**/ &s->outflow));
+    if (s->opt.outflow) UC(ini_outflow(s->coords, s->cfg, /**/ &s->outflow));
     if (INFLOW)  UC(ini_inflow(s->coords, /**/ &s->inflow));
     if (OUTFLOW_DEN) UC(ini_denoutflow(s->coords, /**/ &s->denoutflow, &s->mapoutflow));
     
