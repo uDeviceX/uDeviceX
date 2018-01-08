@@ -14,7 +14,7 @@ void mark_outflowden(const Flu *f, const DContMap *m, /**/ DCont *d) {
     ss = f->q.cells.starts;
     cc = f->q.cells.counts;
 
-    UC(reset(n, /**/ d));
-    UC(filter_particles(m, ss, cc, /**/ d));
-    UC(download_ndead(/**/ d));
+    UC(den_reset(n, /**/ d));
+    UC(den_filter_particles(m, ss, cc, /**/ d));
+    UC(den_download_ndead(/**/ d));
 }

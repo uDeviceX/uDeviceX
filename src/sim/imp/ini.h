@@ -92,8 +92,8 @@ static void ini_outflow(Coords coords, const Config *cfg, Outflow **o) {
 }
 
 static void ini_denoutflow(Coords coords, DCont **d, DContMap **m) {
-    UC(ini(MAX_PART_NUM, /**/ d));
-    UC(ini(coords, /**/ m));
+    UC(den_ini(MAX_PART_NUM, /**/ d));
+    UC(den_ini_map(coords, /**/ m));
 }
 
 static void ini_inflow(Coords coords, const Config *cfg, Inflow **i) {

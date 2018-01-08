@@ -43,7 +43,7 @@ static void ini_map(Coords coords, int **ids, int *nids) {
     UC(efree(ii));
 }
 
-void ini(Coords coords, DContMap **m0) {
+void den_ini_map(Coords coords, DContMap **m0) {
     DContMap *m;
     
     UC(emalloc(sizeof(DContMap), (void**) m0));
@@ -52,7 +52,7 @@ void ini(Coords coords, DContMap **m0) {
     ini_map(coords, &m->cids, &m->n);
 }
 
-void fin(DContMap *m) {
+void den_fin_map(DContMap *m) {
     CC(d::Free(m->cids));
     UC(efree(m));
 }
