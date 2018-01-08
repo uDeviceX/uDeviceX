@@ -4,11 +4,8 @@ import sys
 
 prog = "u.hdf2bov0"
 
-def msg(s): sys.stderr.write(s)
-def err(s):
-    msg("%s: %s\n" % (prog, s))
-    sys.exit(2)
-
+def msg(s): sys.stderr.write('%s: %s\n' % (prog, s))
+def err(s): msg(s); sys.exit(2)
 try: import h5py as h5
 except ImportError: err("fail to import python module `h5py`")
 
@@ -27,12 +24,15 @@ argv = sys.argv
 argc = len(argv)
 shift(argv)
 
-b = shift(argv) # bov and hdf
+b = shift(argv) # [b]ov [h]df[d]ataset
 h = shift(argv)
-
-print h, b
+d = shift(argv)
 
 f = fopen(h)
-print f.keys()
+if not d in f:
+    k = ' '.join(f.keys())
+    msg("no dataset '%s' in file '%s'" % (d, h))
+    msg("datasets are")
+    err(k)
 
 z, y, x, u = size(f['u'], h)
