@@ -111,6 +111,7 @@ void conf_read(int argc, char **argv, /**/ Config *cfg) {
 }
 
 static bool found(int s) {return s == CONFIG_TRUE;}
+static bool found(const config_setting_t *s) {return s != NULL;}
 
 static bool lookup_int(const Config *c, const char *desc, int *a) {
     int i, s;
@@ -151,6 +152,38 @@ static bool lookup_string(const Config *c, const char *desc, const char **a) {
     return false;
 }
 
+static bool lookup_vint(const Config *c, const char *desc, int *n, int a[]) {
+    int i, j;
+    config_setting_t *s;
+    *n = 0;
+    for (i = 0; i < NCFG; ++i) {
+        s = config_lookup(c->c + i, desc);
+        if ( found(s) ) {
+            *n = config_setting_length(s);
+            for (j = 0; j < *n; ++j)
+                a[j] = config_setting_get_int_elem(s, j);
+            return true;
+        }
+    }
+    return false;
+}
+
+static bool lookup_vfloat(const Config *c, const char *desc, int *n, float a[]) {
+    int i, j;
+    config_setting_t *s;
+    *n = 0;
+    for (i = 0; i < NCFG; ++i) {
+        s = config_lookup(c->c + i, desc);
+        if ( found(s) ) {
+            *n = config_setting_length(s);
+            for (j = 0; j < *n; ++j)
+                a[j] = config_setting_get_float_elem(s, j);
+            return true;
+        }
+    }
+    return false;
+}
+
 void conf_lookup_int(const Config *c, const char *desc, int *a) {
     bool found = lookup_int(c, desc, a);
     if (!found) ERR("Could not find the field <%s>\n", desc);
@@ -171,6 +204,17 @@ void conf_lookup_string(const Config *c, const char *desc, const char **a) {
     if (!found) ERR("Could not find the field <%s>\n", desc);
 }
 
+void conf_lookup_vint(const Config *c, const char *desc, int *n, int a[]) {
+    bool found = lookup_vint(c, desc, n, a);
+    if (!found) ERR("Could not find the field <%s>\n", desc);
+}
+
+void conf_lookup_vfloat(const Config *c, const char *desc, int *n, float a[]) {
+    bool found = lookup_vfloat(c, desc, n, a);
+    if (!found) ERR("Could not find the field <%s>\n", desc);
+}
+
+
 bool conf_opt_int(const Config *c, const char *desc, int *a) {
     return lookup_int(c, desc, a);
 }
@@ -186,3 +230,12 @@ bool conf_opt_bool(const Config *c, const char *desc, int *a)  {
 bool conf_opt_string(const Config *c, const char *desc, const char **a)  {
     return lookup_string(c, desc, a);
 }
+
+bool conf_opt_vint(const Config *c, const char *desc, int *n, int a[]) {
+    return lookup_vint(c, desc, n, a);
+}
+
+bool conf_opt_vfloat(const Config *c, const char *desc, int *n, float a[]) {
+    return lookup_vfloat(c, desc, n, a);
+}
+
