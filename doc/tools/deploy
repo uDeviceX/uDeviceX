@@ -1,13 +1,17 @@
 #!/bin/sh
+G="git@github.com:amlucas/udoc.git"
+
+DOC=doc_
 
 T="./public"
+rm -rf $T
+# html, css, include, directories
 H=`find . -type f -name "*.html"`
 C=`find . -type f -name "*.css"`
-I=`find . -type f -name "*.jpeg"`
+I=`find include -type f`
 D=`find . -type d`
 
-mkdir -p $T
-
+# create tmp doc direcory
 for d in $D; do
      mkdir -p "${T}/${d}"
 done
@@ -16,8 +20,22 @@ for h in $H $C $I; do
     cp -f $h "${T}/${h}"
 done
 
-# TODO
-D=~/udoc/
-rm -rf $D/*
-mv $T/* $D
-rm -rf public
+# copy to remote git repo
+
+git clone $G ${DOC}
+
+rm -rf ${DOC}/*
+mv $T/* ${DOC}
+
+# push to remote
+mydir=`pwd`
+cd ${DOC}
+# upd readme
+echo "https://amlucas.github.io/udoc/" > README.adoc
+git add *
+git commit -a -m "automatic deploy"
+git push origin master
+
+# cleanup
+cd ${mydir}
+rm -rf $T ${DOC}
