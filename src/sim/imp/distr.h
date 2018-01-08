@@ -13,7 +13,7 @@ void distribute_flu(Sim *s) {
         lp.deathlist = get_deathlist(s->denoutflow);
         ndead = get_ndead(s->denoutflow);
     }
-    else if (OUTFLOW) {
+    else if (s->opt.outflow) {
         lp.deathlist = get_deathlist(s->outflow);
         ndead = get_ndead(s->outflow);
     } else {

@@ -72,14 +72,13 @@ static void ini_outflow(Coords coords, const Config *cfg, Outflow **o) {
         float R = 0, c[3] = {0};
         UC(conf_lookup_float(cfg, "outflow.R", &R));
         UC(conf_lookup_vfloat(cfg, "outflow.center", &n, c));
-        // msg_print("R = %g", R);
-        // msg_print("c = %g %g %g", c[0], c[1], c[2]);
         
         float3 center = make_float3(c[0], c[1], c[2]);
         ini_params_circle(coords, center, R, /**/ *o);
     } else {
         ERR("Unrecognized type <%s>", type);
-        ini_params_plane(coords, 0, XS/2-1, *o);
+        // TODO
+        //ini_params_plane(coords, 0, XS/2-1, *o);
     }
 }
 

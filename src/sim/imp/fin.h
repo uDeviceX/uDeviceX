@@ -130,7 +130,7 @@ void sim_fin(Sim *s) {
         fin_objinter(&s->objinter);
 
     if (VCON)    UC(fin(/**/ &s->vcont));
-    if (OUTFLOW) UC(fin_outflow(/**/ s->outflow));
+    if (s->opt.outflow) UC(fin_outflow(/**/ s->outflow));
     if (INFLOW) UC(fin_inflow(/**/ s->inflow));
     if (OUTFLOW_DEN) UC(fin_denoutflow(/**/ s->denoutflow, s->mapoutflow));
     
