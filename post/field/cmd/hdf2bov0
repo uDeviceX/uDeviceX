@@ -15,11 +15,6 @@ def fopen(n):
     except IOError: err("%s fails to open `%s`" % (prog, n))
     return f
 
-def size(w, name):
-    try: z, y, x, u = w.shape
-    except ValueError: err("expecting 4 dimensions in file `%s`" % name)
-    return z, y, x, u
-
 argv = sys.argv
 argc = len(argv)
 shift(argv)
@@ -35,4 +30,11 @@ if not d in f:
     msg("datasets are")
     err(k)
 
-z, y, x, u = size(f['u'], h)
+D = f[d] # data
+
+try: z, y, x, u = D.shape
+except ValueError:
+    msg("expecting four dimensions for dataset '%s' in file '%s' " % (d, h))
+    err("found %s" % str(D.shape))
+
+f.close()
