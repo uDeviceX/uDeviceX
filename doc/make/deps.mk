@@ -10,6 +10,7 @@
 ./dev/modules/color/main.html: ./dev/modules/color/main.adoc ./dev/modules/color/main.inc.adoc ./dev/modules/color/main.inc.adoc ./dev/modules/color/modules.inc.adoc ./dev/modules/color/modules.inc.adoc
 ./dev/modules/comm.html: ./dev/modules/comm.adoc 
 ./dev/modules/contact.html: ./dev/modules/contact.adoc 
+./dev/modules/control/main.html: ./dev/modules/control/main.adoc ./dev/modules/control/den.inc.adoc ./dev/modules/control/den.inc.adoc ./dev/modules/control/inflow.inc.adoc ./dev/modules/control/inflow.inc.adoc ./dev/modules/control/outflow.inc.adoc ./dev/modules/control/outflow.inc.adoc ./dev/modules/control/vel.inc.adoc ./dev/modules/control/vel.inc.adoc
 ./dev/modules/d.html: ./dev/modules/d.adoc 
 ./dev/modules/distr.html: ./dev/modules/distr.adoc 
 ./dev/modules/fluforces.html: ./dev/modules/fluforces.adoc 
