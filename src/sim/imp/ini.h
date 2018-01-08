@@ -87,7 +87,8 @@ static void ini_denoutflow(Coords coords, DCont **d, DContMap **m) {
     UC(ini(coords, /**/ m));
 }
 
-static void ini_inflow(Coords coords, Inflow **i) {
+static void ini_inflow(Coords coords, const Config *cfg, Inflow **i) {
+    /* number of cells */
     int2 nc = make_int2(YS, ZS/2);
     ini(nc, /**/ i);
 
@@ -216,7 +217,7 @@ void sim_ini(int argc, char **argv, MPI_Comm cart, /**/ Sim **sim) {
 
     if (VCON)    UC(ini_vcont(s->cart, /**/ &s->vcont));
     if (s->opt.outflow) UC(ini_outflow(s->coords, s->cfg, /**/ &s->outflow));
-    if (INFLOW)  UC(ini_inflow(s->coords, /**/ &s->inflow));
+    if (INFLOW)  UC(ini_inflow(s->coords, s->cfg, /**/ &s->inflow));
     if (OUTFLOW_DEN) UC(ini_denoutflow(s->coords, /**/ &s->denoutflow, &s->mapoutflow));
     
     if (rbcs || solids)
