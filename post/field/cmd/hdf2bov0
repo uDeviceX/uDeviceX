@@ -1,6 +1,7 @@
 #!/usr/bin/env python2
 
 import sys
+from os.path import splitext
 
 prog = "u.hdf2bov0"
 
@@ -19,7 +20,7 @@ argv = sys.argv
 argc = len(argv)
 shift(argv)
 
-b = shift(argv) # [b]ov [h]df[d]ataset
+b = shift(argv) # [b]ov [h]df [d]ataset [v]alue
 h = shift(argv)
 d = shift(argv)
 
@@ -36,5 +37,8 @@ try: z, y, x, u = D.shape
 except ValueError:
     msg("expecting four dimensions for dataset '%s' in file '%s' " % (d, h))
     err("found %s" % str(D.shape))
+
+v = splitext(b)[0] + ".values"
+print b, v
 
 f.close()
