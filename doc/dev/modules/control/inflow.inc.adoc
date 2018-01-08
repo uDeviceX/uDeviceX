@@ -1,0 +1,13 @@
+== Inflow
+
+Mass rate inflow
+
+=== interface
+
+allocate, deallocate:
+
+[source,cpp]
+----
+include::{src}/control/inflow/imp.h[tags=mem]
+----
+
