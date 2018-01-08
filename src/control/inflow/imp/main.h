@@ -49,6 +49,7 @@ static void ini_velocity(Type t, int2 nc, const ParamsU *p, const VParamsU *vp, 
         KL(circle::ini_vel, (k_cnf(n)), (vp->circle, p->circle, nc, /**/ uu));
         break;
     case TYPE_NONE:
+        break;
     default:
         ERR("No inflow type is set");
         break;
@@ -91,6 +92,7 @@ void create_pp(Inflow *i, int *n, Particle *pp) {
            (i->p.circle, nc, d->uu, /*io*/ d->rnds, d->cumflux, /**/ d->ndev, pp));    
         break;
     case TYPE_NONE:
+        break;
     default:
         ERR("No inflow type is set");
         break;

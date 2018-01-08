@@ -89,9 +89,9 @@ static void ini_inflow(Coords coords, Inflow **i) {
     //                   /**/ *i);
 
     float3 o = make_float3(INFLOW_CIRCLE_OX, INFLOW_CIRCLE_OY, INFLOW_CIRCLE_OZ);
-    ini_params_circle(coords, o, INFLOW_CIRCLE_R, INFLOW_CIRCLE_H, INFLOW_CIRCLE_U, INFLOW_CIRCLE_POISEUILLE, /**/ *i);
+    UC(ini_params_circle(coords, o, INFLOW_CIRCLE_R, INFLOW_CIRCLE_H, INFLOW_CIRCLE_U, INFLOW_CIRCLE_POISEUILLE, /**/ *i));
     
-    ini_velocity(*i);
+    UC(ini_velocity(*i));
 }
 
 static void ini_colorer(int nv, MPI_Comm comm, /**/ Colorer *c) {
