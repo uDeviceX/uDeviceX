@@ -192,6 +192,8 @@ static void read_opt(const Config *c, Opt *o) {
     int b;
     UC(conf_lookup_bool(c, "outflow.active", &b));
     o->outflow = b;
+    UC(conf_lookup_bool(c, "inflow.active", &b));
+    o->inflow = b;
 }
 
 void sim_ini(int argc, char **argv, MPI_Comm cart, /**/ Sim **sim) {
@@ -217,7 +219,7 @@ void sim_ini(int argc, char **argv, MPI_Comm cart, /**/ Sim **sim) {
 
     if (VCON)    UC(ini_vcont(s->cart, /**/ &s->vcont));
     if (s->opt.outflow) UC(ini_outflow(s->coords, s->cfg, /**/ &s->outflow));
-    if (INFLOW)  UC(ini_inflow(s->coords, s->cfg, /**/ &s->inflow));
+    if (s->opt.inflow)  UC(ini_inflow (s->coords, s->cfg, /**/ &s->inflow ));
     if (OUTFLOW_DEN) UC(ini_denoutflow(s->coords, /**/ &s->denoutflow, &s->mapoutflow));
     
     if (rbcs || solids)
