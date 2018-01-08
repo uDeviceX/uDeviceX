@@ -23,7 +23,7 @@ e ()   {
 msg () { echo >&2 "$@"; }
 err () { msg "$prog: $@"; exit 2; }
 
-if test $# -ge 0 && test "$1" = -h; then usg; fi
+if test $# -ge 1 && test "$1" = -h; then usg; fi
 
 assert () {
     local c

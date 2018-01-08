@@ -1,2 +1,31 @@
-set -e
-exec u.hdf2bov0 "$@"
+set -eu
+
+prog=u.hdf2bov
+prog0=u.hdf2bov0
+: ${DBG=0}
+
+usg () {
+    msg "$prog" 'file.bov file.h5'
+    exit
+}
+
+e ()   {
+    if test ! "$DBG" = 0; then msg "cmd: $*"; fi
+    eval "$@"
+}
+msg () { echo >&2 "$@"; }
+err () { msg "$prog: $@"; exit 2; }
+
+assert () {
+    local c
+    c="$1"; shift
+    if test "$c" -eq 0; then err "$@"; fi
+}
+
+if test $# -ge 1 && test "$1" = -h; then usg; fi
+assert $# 'expect file.bov'; b="$1"; shift
+assert $# 'expect file.h5' ; h="$1"; shift
+
+if test ! -r "$h"; then err "not a file: '$h'"; fi
+
+#exec u.hdf2bov0 "$@"
