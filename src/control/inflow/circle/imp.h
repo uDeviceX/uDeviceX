@@ -25,10 +25,6 @@ void ini_params_circle(Coords c, float3 o, float R, float H, float u, bool poise
         if (R > XS/2 || R > YS/2 || R > ZS/2)
             ERR("radius should be smaller");
     
-        // TODO
-        pp->th0 = 0;
-        pp->dth = 2 * M_PI;
-    
         vpp->u = u;
         vpp->poiseuille = poiseuille;
 
