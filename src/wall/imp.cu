@@ -20,7 +20,6 @@
 #include "utils/kl.h"
 #include "utils/texo.h"
 #include "utils/te.h"
-#include "sdf/def.h"
 
 #include "math/rnd/imp.h"
 

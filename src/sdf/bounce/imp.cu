@@ -24,7 +24,6 @@
 #include "wvel/dev.h"
 #include "math/dev.h"
 
-#include "sdf/def.h"
 #include "math/tform/type.h"
 #include "math/tform/dev.h"
 #include "sdf/tex3d/type.h"
