@@ -62,7 +62,7 @@ static void ini_vcont(MPI_Comm comm, /**/ PidVCont *c) {
     UC(ini(comm, L, V, VCON_FACTOR, /**/ c));
 }
 
-static void ini_outflow(Coords coords, Outflow **o) {
+static void ini_outflow(Coords coords, const Config *cfg, Outflow **o) {
     UC(ini(MAX_PART_NUM, /**/ o));
 
     if (OUTFLOW_CIRCLE) {
@@ -215,7 +215,7 @@ void sim_ini(int argc, char **argv, MPI_Comm cart, /**/ Sim **sim) {
     if (rbcs) UC(ini_rbc(s->cart, /**/ &s->rbc));
 
     if (VCON)    UC(ini_vcont(s->cart, /**/ &s->vcont));
-    if (opt.outflow) UC(ini_outflow(s->coords, /**/ &s->outflow));
+    if (opt.outflow) UC(ini_outflow(s->coords, s->cfg, /**/ &s->outflow));
     if (INFLOW)  UC(ini_inflow(s->coords, /**/ &s->inflow));
     if (OUTFLOW_DEN) UC(ini_denoutflow(s->coords, /**/ &s->denoutflow, &s->mapoutflow));
     
