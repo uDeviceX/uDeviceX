@@ -84,7 +84,7 @@ static void ini_outflow(Coords coords, const Config *cfg, Outflow **o) {
         float r0;
         UC(conf_lookup_int(cfg, "outflow.direction", &dir));
         UC(conf_lookup_float(cfg, "outflow.position", &r0));
-        ini_params_plane(coords, dir, r0, /**/ *o);
+        ini_params_plate(coords, dir, r0, /**/ *o);
     }
     else {
         ERR("Unrecognized type <%s>", type);

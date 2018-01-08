@@ -1,11 +1,11 @@
 enum {
     TYPE_NONE,
-    TYPE_PLANE,
+    TYPE_PLATE,
     TYPE_CIRCLE
 };
 
 union ParamsU {
-    ParamsPlane plane;
+    ParamsPlate plate;
     ParamsCircle circle;
 };
 
