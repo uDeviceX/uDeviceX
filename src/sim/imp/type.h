@@ -144,5 +144,7 @@ struct Sim {
     /* runtime config */
     Config *cfg;
 
+    /* state */
     bool solids0;
+    bool equilibrating;
 };

@@ -1,5 +1,6 @@
 void run_eq(long te, Sim *s) { /* equilibrate */
     BForce bforce;
+    s->equilibrating = true;
     
     ini_none(/**/ &bforce);    
     bool wall0 = false;
@@ -43,6 +44,9 @@ static void ini_bforce(BForce *bforce) {
 void run(long ts, long te, Sim *s) {
     long it; /* current timestep */
     Wall *wall = &s->wall;
+
+    s->equilibrating = false;
+
     dump_strt_templ(s->coords, wall, s); /* :TODO: is it the right place? */
 
     BForce bforce;
