@@ -29,7 +29,36 @@ priority etc.
 
 == interface
 
+Allocate and free the structure:
+
 [source, c++]
 ----
-include::{src}/parser/imp.h[tags=interface]
+include::{src}/parser/imp.h[tags=mem]
 ----
+
+
+Read data from the default, optional and command line config:
+
+[source, c++]
+----
+include::{src}/parser/imp.h[tags=ini]
+----
+
+
+Lookup variables from the configuration:
+
+[source, c++]
+----
+include::{src}/parser/imp.h[tags=lookup]
+----
+Note that the program raises an error if the argument is not found.
+
+
+Lookup variables from the configuration:
+
+[source, c++]
+----
+include::{src}/parser/imp.h[tags=opt]
+----
+The program does not raise error if the variable is not found.
+The return value is `true` if the variable has been found and `false` otherwise.
