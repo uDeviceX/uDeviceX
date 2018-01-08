@@ -43,10 +43,10 @@ static void ini_velocity(Type t, int2 nc, const ParamsU *p, const VParamsU *vp, 
     int n = nc.x * nc.y;
     switch(t) {
     case TYPE_PLATE:
-        KL(plate::ini_vel, (k_cnf(n)), (vp->plate, p->plate, nc, /**/ uu));
+        KL(ini_vel, (k_cnf(n)), (vp->plate, p->plate, nc, /**/ uu));
         break;
     case TYPE_CIRCLE:
-        KL(circle::ini_vel, (k_cnf(n)), (vp->circle, p->circle, nc, /**/ uu));
+        KL(ini_vel, (k_cnf(n)), (vp->circle, p->circle, nc, /**/ uu));
         break;
     case TYPE_NONE:
         break;
@@ -82,13 +82,13 @@ void create_pp(Inflow *i, int *n, Particle *pp) {
 
     switch(i->t) {
     case TYPE_PLATE:
-        KL(plate::cumulative_flux, (k_cnf(nctot)), (i->p.plate, nc, d->uu, /**/ d->cumflux));
-        KL(plate::create_particles, (k_cnf(nctot)),
+        KL(cumulative_flux, (k_cnf(nctot)), (i->p.plate, nc, d->uu, /**/ d->cumflux));
+        KL(create_particles, (k_cnf(nctot)),
            (i->p.plate, nc, d->uu, /*io*/ d->rnds, d->cumflux, /**/ d->ndev, pp));    
         break;
     case TYPE_CIRCLE:
-        KL(circle::cumulative_flux, (k_cnf(nctot)), (i->p.circle, nc, d->uu, /**/ d->cumflux));
-        KL(circle::create_particles, (k_cnf(nctot)),
+        KL(cumulative_flux, (k_cnf(nctot)), (i->p.circle, nc, d->uu, /**/ d->cumflux));
+        KL(create_particles, (k_cnf(nctot)),
            (i->p.circle, nc, d->uu, /*io*/ d->rnds, d->cumflux, /**/ d->ndev, pp));    
         break;
     case TYPE_NONE:

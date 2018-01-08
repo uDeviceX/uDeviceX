@@ -30,14 +30,14 @@ namespace dev {
 namespace plate {
 #include "plate/type.h"
 #include "plate/dev.h"
-#include "dev/main.h"
 }
 
 namespace circle {
 #include "circle/type.h"
 #include "circle/dev.h"
-#include "dev/main.h"
 }
+
+#include "dev/main.h"
 
 #include "imp/type.h"
 
