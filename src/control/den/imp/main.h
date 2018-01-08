@@ -35,7 +35,7 @@ void filter_particles(const DContMap *m, const int *starts, const int *counts, /
 
 void download_ndead(DCont *d) {
     CC(d::Memcpy(&d->ndead, d->ndead_dev, sizeof(int), D2H));
-    // printf("killed %d particles\n", o->ndead);
+    // msg_print("killed %d particles", o->ndead);
 }
 
 
