@@ -34,7 +34,7 @@ void step(BForce *bforce, bool wall0, int it, Sim *s) {
     if (s->solids0) update_solid(/**/ rig);
     if (rbcs)       update_rbc(it, rbc, s);
 
-    if (VCON && wall0) {
+    if (s->opt.vcon && !s->equilibrating) {
         sample(s->coords, it, flu, /**/ s->vcont);
         adjust(it, /**/ s->vcont, bforce);
         log(it, s->vcont);

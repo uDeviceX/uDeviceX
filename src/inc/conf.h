@@ -314,14 +314,6 @@
 #endif
 
 /*           Velocity controller           */
-#ifndef VCON
-  #define VCON (false)
-#endif
-
-// default transformation
-#if !defined(VCON_CART) && !defined(VCON_RAD)
-  #define VCON_CART
-#endif
 
 #ifndef VCON_SAMPLE_FREQ
   #define VCON_SAMPLE_FREQ (10)
@@ -333,22 +325,6 @@
 
 #ifndef VCON_LOG_FREQ
   #define VCON_LOG_FREQ (0)
-#endif
-
-#ifndef VCON_VX
-  #define VCON_VX (1.f)
-#endif
-
-#ifndef VCON_VY
-  #define VCON_VY (0.f)
-#endif
-
-#ifndef VCON_VZ
-  #define VCON_VZ (0.f)
-#endif
-
-#ifndef VCON_FACTOR
-  #define VCON_FACTOR (0.08f)
 #endif
 
 

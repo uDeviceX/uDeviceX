@@ -129,7 +129,7 @@ void sim_fin(Sim *s) {
     if (rbcs || solids)
         fin_objinter(&s->objinter);
 
-    if (VCON)              UC(vcont_fin(/**/ s->vcont));
+    if (s->opt.vcon)       UC(vcont_fin(/**/ s->vcont));
     if (s->opt.outflow)    UC(fin_outflow(/**/ s->outflow));
     if (s->opt.inflow)     UC(fin_inflow (/**/ s->inflow ));
     if (s->opt.denoutflow) UC(fin_denoutflow(/**/ s->denoutflow, s->mapoutflow));
