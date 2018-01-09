@@ -9,6 +9,6 @@ usg () {
     exit
 }
 
-if test $# -eq 0 -o "$1" = -h; then usg; fi
+if test $# -eq 0 && test "$1" = -h; then usg; fi
 
 eval u.adoc2html0 "$@"
