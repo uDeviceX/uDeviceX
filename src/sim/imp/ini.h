@@ -64,6 +64,7 @@ static void ini_vcont(MPI_Comm comm, /**/ PidVCont **c) {
     int3 L = {XS, YS, ZS};
     float3 V = {VCON_VX, VCON_VY, VCON_VZ};
     UC(vcont_ini(comm, L, V, VCON_FACTOR, /**/ c));
+    UC(vcon_set_cart(/**/ *c));
 }
 
 static void ini_outflow(Coords coords, const Config *cfg, Outflow **o) {
