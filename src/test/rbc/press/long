@@ -73,12 +73,12 @@ up () {
     pushflu=false
     walls wall_creation=0
     RESTART=true
-    FORCE_CONSTANT FORCE_PAR_A=$A
     tend=32.1 part_freq=10000
     run
 !
     make0 > .make
-    FORCE_PAR_EX=0 FORCE_PAR_EY=1 FORCE_PAR_EZ=0 sh runfile
+    Force="bforce={type=\"constant\"; f=[0., ${A}, 0.];};"
+    u.run ./udx $Force
     mkdir -p r.up com.up
     mv0 r     r.up/$A
     mv0 com com.up/$A

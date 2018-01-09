@@ -53,13 +53,14 @@ cp data/cells/rbc/498.off rbc.off
 cp data/sdf/cyl1/cyl.dat sdf.dat
 x=0.75 y=8 z=9; echo 1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 > rbcs-ic.txt
 :
+Force="bforce={type=\"constant\"; f=[1.6666667,0.,0.];};"
 u.conf conf/around.h <<!!!
    kBT=1e-7 rbcs tend=3.0 part_freq=5000 walls wall_creation=1000
    field_dumps part_dumps field_freq=5000 FORCE_CONSTANT pushrbc
    run
 !!!
 { make clean && u.make -j ; } > /dev/null
-sh runfile
+u.run ./udx $Force
 ply2punto r/00001.ply | uscale 100 > ply.out.txt
 
 #### two RBCs around cylinder
@@ -70,11 +71,12 @@ x=0.75  y=3 z=9; echo 1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 >  rbcs-ic.txt
 x=0.75 y=13 z=9; echo 1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 >> rbcs-ic.txt
 cp data/sdf/cyl1/cyl.dat sdf.dat
 :
+Force="bforce={type=\"constant\"; f=[1.6666667,0.,0.];};"
 u.conf conf/around.h <<!!!
    rbcs tend=3.0 part_freq=5000 walls wall_creation=1000 kBT=1e-7
    field_dumps part_dumps field_freq=5000 FORCE_CONSTANT pushrbc
    run
 !!!
 { make clean && u.make -j ; } > /dev/null
-sh runfile
+u.run ./udx $Force
 ply2punto r/00001.ply | uscale 10 > ply.out.txt

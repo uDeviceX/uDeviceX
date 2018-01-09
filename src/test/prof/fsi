@@ -3,15 +3,15 @@ rm -rf bop diag.txt h5 ply rbc.off
 cp data/cells/rbc/498.off rbc.off
 x=5 y=17 z=8; echo 1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 >  rbcs-ic.txt
 :
+Force="bforce={type=\"double_poiseuille\"; a=6.666667;};"
 u.conf conf/double.poiseuille.h <<!!!
    numberdensity=10
    XS=4 YS=4 ZS=4
    tend=1.0 part_freq=1500
    part_dumps   field_freq=1500
-   FORCE_DOUBLE_POISEUILLE
    pushrbc=false fsiforces=true multi_solvent=true
    run
 !!!
 { make clean &&  u.make -j ; } > /dev/null
-sh runfile
+u.run ./udx $Force
 ply2punto r/00001.ply > ply.out.txt
