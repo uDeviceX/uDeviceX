@@ -33,22 +33,40 @@ this will add particles to the array `pp` and increase `n` accordingly.
 
 === configuration
 
+==== plate
+
+syntax for a `8.0 x 16.0` plate perpendicular to the x axis passing by
+the point `(1, 2, 3)`:
+
+[source,cfg]
+----
+inflow = {
+    active      = true;
+    type        = "plate";
+    L1          = 1.0;
+    L2          = 16.0;
+    direction   = 0;                # [0,1,2] = [X,Y,Z]
+    origin      = [1.0, 2.0, 3.0];
+    upoiseuille = false;            # true for parabolic profile along L1
+    vpoiseuille = false;            # true for parabolic profile along L2
+    u           = [10.0, 0.0, 0.0];
+};
+----
+
 
 ==== circle
 
-cylinder inflow
-
-example:
+syntax for cylinder:
 
 [source,cfg]
 ----
 inflow = {
     active = true;
     type   = "circle";
-    R      = 1.0;
-    H      = 16.0;
-    U      = 1.0;
+    R      = 1.0;              # radius
+    H      = 16.0;             # hight of the cylinder
+    U      = 1.0;              # maximum velocity
     center = [8.0, 8.0, 8.0];
-    poiseuille = false;
+    poiseuille = false;        # parabolic profile along H if true
 };
 ----
