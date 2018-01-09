@@ -60,22 +60,24 @@ static void ini_rig_distr(int nv, MPI_Comm comm, /**/ RigDistr *d) {
     UC(ini(MAX_SOLIDS, nv, /**/ &d->u));
 }
 
-static void ini_vcont(MPI_Comm comm, const Config *cfg, /**/ PidVCont **c) {
+static void ini_vcon(MPI_Comm comm, const Config *cfg, /**/ Vcon *c) {
     int3 L = {XS, YS, ZS};
     const char *type;
     float3 U;
     float factor;
-
+    PidVCont *vc;
+    
     UC(conf_lookup_string(cfg, "vcon.type", &type));
     UC(conf_lookup_float3(cfg, "vcon.U", &U));
     UC(conf_lookup_float(cfg, "vcon.factor", &factor));
     
-    UC(vcont_ini(comm, L, U, factor, /**/ c));
+    UC(vcont_ini(comm, L, U, factor, /**/ &c->vcont));
+    vc = c->vcont;
 
     if      (same(type, "cart"))
-        UC(vcon_set_cart(/**/ *c));
+        UC(vcon_set_cart(/**/ vc));
     else if (same(type, "rad"))
-        UC(vcon_set_radial(/**/ *c));
+        UC(vcon_set_radial(/**/ vc));
     else
         ERR("Unrecognised type <%s>", type);
 }
@@ -282,7 +284,7 @@ void sim_ini(int argc, char **argv, MPI_Comm cart, /**/ Sim **sim) {
     
     if (rbcs) UC(ini_rbc(s->cart, /**/ &s->rbc));
 
-    if (s->opt.vcon)       UC(ini_vcont(s->cart, s->cfg, /**/ &s->vcont));
+    if (s->opt.vcon)       UC(ini_vcon(s->cart, s->cfg, /**/ &s->vcon));
     if (s->opt.outflow)    UC(ini_outflow(s->coords, s->cfg, /**/ &s->outflow));
     if (s->opt.inflow)     UC(ini_inflow (s->coords, s->cfg, /**/ &s->inflow ));
     if (s->opt.denoutflow) UC(ini_denoutflow(s->coords, s->cfg, /**/ &s->denoutflow, &s->mapoutflow));

@@ -116,6 +116,14 @@ struct ObjInter {
     fsi::Fsi     fsi;
 };
 
+/* velocity controller */
+struct Vcon {
+    PidVCont *vcont;
+    int log_freq;
+    int adjust_freq;
+    int sample_freq;
+};
+
 /* optional features */
 struct Opt {
     bool inflow, outflow, denoutflow, vcon;
@@ -133,7 +141,7 @@ struct Sim {
     ObjInter objinter;
     BounceBack bb;
     Colorer colorer;
-    PidVCont *vcont;
+    Vcon vcon;
     MPI_Comm cart;
 
     /* open bc tools */

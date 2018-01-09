@@ -35,9 +35,10 @@ void step(BForce *bforce, bool wall0, int it, Sim *s) {
     if (rbcs)       update_rbc(it, rbc, s);
 
     if (s->opt.vcon && !s->equilibrating) {
-        sample(s->coords, it, flu, /**/ s->vcont);
-        adjust(it, /**/ s->vcont, bforce);
-        log(it, s->vcont);
+        PidVCont *vc = s->vcon.vcont;
+        sample(s->coords, it, flu, /**/ vc);
+        adjust(it, /**/ vc, bforce);
+        log(it, vc);
     }
 
     if (wall0) bounce_wall(s->coords, wall, /**/ flu, rbc);
