@@ -1,5 +1,0 @@
-#!/bin/sh
-
-. u.punto.util
-
-echo 42

@@ -1,0 +1,26 @@
+#!/bin/sh
+
+set -eu
+
+prog=u.punto.disp
+prog0=u.punto.disp0
+
+. u.punto.util
+
+usg () {
+    msg "$prog"' [PUNTO FILE]'
+    msg 'add [disp]acement from initial position'
+    msg 'asummes colums:'
+    msg 'id x y z ...'
+    exit
+}
+
+if test $# -ne 0 && test "$1" = -h; then usg; fi
+if test $# -eq 0; then err 'not enough args'; fi
+
+i="$1"; shift
+for c; do shift; set -- "$@" "$i"; i="$c"; done
+
+if test ! -r "$i"; then err "not a file '$i'"; fi
+
+exec "$prog0" "$i" "$@"

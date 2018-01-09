@@ -1,0 +1,2 @@
+# TEST: disp
+u.punto.disp data/circle/01 > punt.out.txt
