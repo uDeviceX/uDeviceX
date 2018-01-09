@@ -8,37 +8,41 @@ void run_eq(long te, Sim *s) { /* equilibrate */
     UC(distribute_flu(/**/ s));
 }
 
-// TODO
-static void ini_bforce(BForce *bforce) {
-#if   defined(FORCE_NONE)
-    ini_none(/**/ bforce);
-#elif defined(FORCE_CONSTANT)
-    BForce_cste par;
-    float ex, ey, ez;
-    os::env2float_d("FORCE_PAR_EX", 1, &ex);
-    os::env2float_d("FORCE_PAR_EY", 0, &ey);
-    os::env2float_d("FORCE_PAR_EZ", 0, &ez);
-    par.a = make_float3(FORCE_PAR_A*ex, FORCE_PAR_A*ey, FORCE_PAR_A*ez);
-    UC(ini(par, /**/ bforce));
-#elif defined(FORCE_DOUBLE_POISEUILLE)
-    BForce_dp par;
-    par.a = FORCE_PAR_A;
-    UC(ini(par, /**/ bforce));
-#elif defined(FORCE_SHEAR)
-    BForce_shear par;
-    par.a = FORCE_PAR_A;
-    UC(ini(par, /**/ bforce));
-#elif defined(FORCE_4ROLLER)
-    BForce_rol par;
-    par.a = FORCE_PAR_A;
-    UC(ini(par, /**/ bforce));
-#elif defined(FORCE_RADIAL)
-    BForce_rad par;
-    par.a = FORCE_PAR_A;
-    UC(ini(par, /**/ bforce));
-#else
-#error FORCE_* is undefined
-#endif
+static void ini_bforce(const Config *cfg, BForce *bforce) {
+    const char *type;
+    UC(conf_lookup_string(cfg, "bforce.type", /**/ &type));
+
+    if      (same_str(type, "none")) {
+        ini_none(/**/ bforce);
+    }
+    else if (same_str(type, "constant")) {
+        BForce_cste par;
+        UC(conf_lookup_float3(cfg, "bforce.f", /**/ &par.a));
+        UC(ini(par, /**/ bforce));
+    }
+    else if (same_str(type, "double_poiseuille")) {
+        BForce_dp par;
+        UC(conf_lookup_float(cfg, "bforce.a", /**/ &par.a));
+        UC(ini(par, /**/ bforce));
+    }
+    else if (same_str(type, "shear")) {
+        BForce_shear par;
+        UC(conf_lookup_float(cfg, "bforce.a", /**/ &par.a));
+        UC(ini(par, /**/ bforce));
+    }
+    else if (same_str(type, "four_roller")) {
+        BForce_rol par;
+        UC(conf_lookup_float(cfg, "bforce.a", /**/ &par.a));
+        UC(ini(par, /**/ bforce));
+    }
+    else if (same_str(type, "shear")) {
+        BForce_rad par;
+        UC(conf_lookup_float(cfg, "bforce.a", /**/ &par.a));
+        UC(ini(par, /**/ bforce));
+    }
+    else {
+        ERR("Unrecognized type <%s>", type);
+    }
 }
 
 void run(long ts, long te, Sim *s) {
@@ -50,7 +54,7 @@ void run(long ts, long te, Sim *s) {
     dump_strt_templ(s->coords, wall, s); /* :TODO: is it the right place? */
 
     BForce bforce;
-    ini_bforce(&bforce);
+    ini_bforce(s->cfg, &bforce);
     
     /* ts, te: time start and end */
     for (it = ts; it < te; ++it) {
