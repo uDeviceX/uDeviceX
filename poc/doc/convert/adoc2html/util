@@ -1,5 +1,8 @@
 #!/bin/sh
 
+: ${DBG=0}
+: ${ADOC=asciidoctor}
+
 msg () { echo >&2 "$@"; }
 e0 () {
    if test "$DBG" != 0; then msg "cmd: $@"; fi
