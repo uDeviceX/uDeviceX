@@ -27,13 +27,86 @@ They are used to initialise the `BForce` object:
 include::{src}/scheme/force/imp.h[tag=ini]
 ----
 
-
 == interface 
 
-Host code is responsible for initialisation of `BForce` and convert
+Host is responsible for initialisation of `BForce` and convert
 `BForce` to a view at a given timestep.
+The view version is passed to kernel calls.
 
 [source, c++]
 ----
 include::{src}/scheme/force/imp.h[tag=interface]
+----
+
+== configuration
+
+=== none
+
+no body force (default value)
+
+[source, cfg]
+----
+bforce {
+    type = "none";
+};
+----
+
+=== constant
+
+constant force
+
+[source, cfg]
+----
+bforce {
+    type = "constant";
+    f    = [1.0, 0.0, 0.0];
+};
+----
+
+=== double poiseuille
+
+`fx = y > yc ? a : -a`
+
+[source, cfg]
+----
+bforce {
+    type = "double_poiseuille";
+    a    = 1.0;
+};
+----
+
+=== shear
+
+`fx = a * (y - yc)`
+
+[source, cfg]
+----
+bforce {
+    type = "shear";
+    a    = 1.0;
+};
+----
+
+=== 4 roller mill
+
+
+[source, cfg]
+----
+bforce {
+    type = "four_roller";
+    a    = 1.0;
+};
+----
+
+=== radial
+
+`fr = a * er / r`, where `fr` is radial force, `er` is unit radial
+vector at position `r` and `r` is radial position.
+
+[source, cfg]
+----
+bforce {
+    type = "rad";
+    a    = 1.0;
+};
 ----
