@@ -18,12 +18,6 @@
   #define WVEL_PAR_Z (false)
 #endif
 
-/* magnituted of body force
-   see doc/body_force.md */
-#ifndef FORCE_PAR_A
-  #define FORCE_PAR_A (2.0)
-#endif
-
 /* object-object, cell-object, and cell-cell contact force */
 #ifndef contactforces
 #define contactforces (false)
@@ -279,13 +273,6 @@
 /* who plays as device? */
 #if !defined(DEV_CUDA) && !defined(DEV_CPU)
   #define DEV_CUDA
-#endif
-
-/* body force */
-#if !defined(FORCE_NONE) && !defined(FORCE_DOUBLE_POISEUILLE) && \
-    !defined(FORCE_4ROLLER) && !defined(FORCE_CONSTANT) && !defined(FORCE_SHEAR) && \
-    !defined(FORCE_RADIAL)
-  #define FORCE_NONE
 #endif
 
 /* a radius of the spherical drop */
