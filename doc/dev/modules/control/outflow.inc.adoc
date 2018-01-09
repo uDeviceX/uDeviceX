@@ -1,1 +1,67 @@
 == Outflow
+
+Delete particles satisfying a predicate
+
+=== interface
+
+allocate, deallocate:
+
+[source,cpp]
+----
+include::{src}/control/outflow/imp.h[tags=mem]
+----
+
+initialize the outflow structure (to be done only once):
+
+[source,cpp]
+----
+include::{src}/control/outflow/imp.h[tags=ini]
+----
+depending on the geometry of outflow, call the appropriate
+`ini_params_xxx`.
+
+
+filter and mark particles (at every time step):
+
+[source,cpp]
+----
+include::{src}/control/outflow/imp.h[tags=int]
+----
+<1> store dying particles infos inside Outflow struct
+<2> copy from device to host number of dead particles
+<3> return the list of dead marks (dead=1, alive=0)
+<4> return the number of dead particles
+
+
+=== configuration
+
+==== plate
+
+will delete particles crossing a plate along the positive direction.
+syntax for the plate `y=4`:
+
+[source,cfg]
+----
+outflow = {
+    active     = true;
+    type       = "plate";
+    direction  = 1;      # [0,1,2] = [X,Y,Z]
+    position   = 4.0;    # position along "direction"
+};
+----
+
+
+==== circle
+
+delete particles going out of the cylinder.
+syntax for a cylinder of radius 8 centered at `(8, 8, 8)`:
+
+[source,cfg]
+----
+outflow = {
+    active = true;
+    type   = "circle";
+    R      = 8.0;
+    center = [8.0, 8.0, 8.0];
+};
+----
