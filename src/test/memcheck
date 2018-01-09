@@ -4,12 +4,13 @@ rm -rf bop h5 diag.txt solid_diag*.txt
 echo -e "4.1 21.5 8\n4.1 10.5 8\n11.9 16 8" > rigs-ic.txt
 cp data/rig/sphere.ply mesh_solid.ply
 :
+Force="bforce={type=\"double_poiseuille\"; a=6.666667;};"
 u.conf . u/safe conf/double.poiseuille.h <<!!!
   KL_SYNC
   solids tend=0.005 part_freq=100
-  FORCE_DOUBLE_POISEUILLE field_dumps part_dumps
+  field_dumps part_dumps
   wall_creation=0 contactforces=true field_freq=100
   run
 !!!
 { make clean && u.make -j ; } > /dev/null
-MEM= sh runfile | awk '/========= ERROR SUMMARY:/'         > mem.out.txt
+MEM= u.run ./udx $Force | awk '/========= ERROR SUMMARY:/'         > mem.out.txt
