@@ -21,4 +21,4 @@ for c; do shift; set -- "$@" "$i"; i="$c"; done
 
 if test ! -r "$i"; then err "not a file '$i'"; fi
 
-exec "$prog0" "$@" "$i"
+exec "$prog0" "$i" "$@"
