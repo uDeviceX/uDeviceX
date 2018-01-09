@@ -118,7 +118,7 @@ struct ObjInter {
 
 /* optional features */
 struct Opt {
-    bool inflow, outflow, denoutflow;
+    bool inflow, outflow, denoutflow, vcon;
 };
 
 struct Sim {
