@@ -66,6 +66,10 @@ static void ini_vcon(MPI_Comm comm, const Config *cfg, /**/ Vcon *c) {
     float3 U;
     float factor;
     PidVCont *vc;
+
+    UC(conf_lookup_int(cfg, "vcon.log_freq", &c->log_freq));
+    UC(conf_lookup_int(cfg, "vcon.adjust_freq", &c->adjust_freq));
+    UC(conf_lookup_int(cfg, "vcon.sample_freq", &c->sample_freq));
     
     UC(conf_lookup_string(cfg, "vcon.type", &type));
     UC(conf_lookup_float3(cfg, "vcon.U", &U));
