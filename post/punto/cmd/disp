@@ -9,7 +9,9 @@ prog0=u.punto.disp0
 
 usg () {
     msg "$prog"' [PUNTO FILE]'
-    msg '[disp]acement from initial position'
+    msg 'add [disp]acement from initial position'
+    msg 'asummes colums:'
+    msg 'id x y z ...'
     exit
 }
 
