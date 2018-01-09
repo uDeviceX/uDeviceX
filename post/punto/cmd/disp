@@ -17,6 +17,8 @@ if test $# -ne 0 && test "$1" = -h; then usg; fi
 if test $# -eq 0; then err 'not enough args'; fi
 
 i="$1"; shift
-for c; do shift; set -- "$@" "$i"; f="$c"; done
+for c; do shift; set -- "$@" "$i"; i="$c"; done
 
-exec "$prog0" "$@"
+if test ! -r "$i"; then err "not a file '$i'"; fi
+
+exec "$prog0" "$@" "$i"
