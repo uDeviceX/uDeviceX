@@ -1,4 +1,4 @@
-static __device__ bool valid(int3 L, int3 c) {
+static __device__ bool valid_cell(int3 L, int3 c) {
     return c.x < L.x && c.y < L.y && c.z < L.z;
 }
 
@@ -15,7 +15,7 @@ __global__ void sample(Coords coords, int3 L, const int *cellsstart, const int *
                              threadIdx.y + blockIdx.y * blockDim.y,
                              threadIdx.z + blockIdx.z * blockDim.z);
 
-    if (valid(L, c)) {
+    if (valid_cell(L, c)) {
         cid = get_cid(L, c);
         num = cellscount[cid];
         
