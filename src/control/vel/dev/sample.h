@@ -6,7 +6,8 @@ static __device__ int get_cid(int3 L, int3 c) {
     return c.x + L.x * (c.y + L.y * c.z);
 }
 
-__global__ void sample(Coords coords, int3 L, const int *cellsstart, const int *cellscount, const Particle *pp,
+template<typename Trans>
+__global__ void sample(Coords coords, Trans t, int3 L, const int *cellsstart, const int *cellscount, const Particle *pp,
                        /**/ float3 *gridv) {
     Particle p;
     float3 u;
@@ -21,7 +22,7 @@ __global__ void sample(Coords coords, int3 L, const int *cellsstart, const int *
         
         for (pid = cellsstart[cid]; pid < cellsstart[cid] + num; pid++) {
             p = pp[pid];
-            u = transform(coords, p);
+            u = transform(coords, t, p);
 
             gridv[cid].x += u.x / num;
             gridv[cid].y += u.y / num;

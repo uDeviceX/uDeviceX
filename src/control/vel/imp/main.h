@@ -50,6 +50,8 @@ static void ini(MPI_Comm comm, int3 L, float3 vtarget, float factor, /**/ PidVCo
     reini_sampler(/**/ c);
 
     ini_dump(rank, /**/ &c->fdump);
+
+    c->type = TYPE_NONE;
 }
 
 void vcont_ini(MPI_Comm comm, int3 L, float3 vtarget, float factor, /**/ PidVCont **c) {
@@ -67,6 +69,14 @@ void vcont_fin(/**/ PidVCont *c) {
     UC(efree(c));
 }
 
+void vcon_set_cart(/**/ PidVCont *cont) {
+    cont->type = TYPE_CART;
+}
+
+void vcon_set_radial(/**/ PidVCont *cont) {
+    cont->type = TYPE_RAD;
+}
+
 void vcont_sample(Coords coords, int n, const Particle *pp, const int *starts, const int *counts, /**/ PidVCont *c) {
     int3 L = c->L;
     
@@ -75,7 +85,19 @@ void vcont_sample(Coords coords, int n, const Particle *pp, const int *starts, c
               ceiln(L.y, block.y),
               ceiln(L.z, block.z));
 
-    KL(dev::sample, (grid, block), (coords, L, starts, counts, pp, /**/ c->gridvel));
+    switch (c->type) {
+    case TYPE_NONE:
+        break;
+    case TYPE_CART:
+        KL(dev::sample, (grid, block), (coords, c->trans.cart, L, starts, counts, pp, /**/ c->gridvel));
+        break;
+    case TYPE_RAD:
+        KL(dev::sample, (grid, block), (coords, c->trans.rad, L, starts, counts, pp, /**/ c->gridvel));
+        break;
+    default:
+        ERR("Unknown type");
+        break;
+    };
     
     c->nsamples ++;
 }

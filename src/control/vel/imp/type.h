@@ -4,14 +4,14 @@ enum {
     TYPE_RAD
 };
 
+// empty for now
 struct TCart {};
-struct TRad {
-    float Rlo, Rhi;
-};
+struct TRad {};
 
 /* parameters for transformation */
 union Trans {
-    
+    TCart cart;
+    TRad  rad;
 };
 
 /* pid velocity controller */
