@@ -5,7 +5,7 @@
 usg () {
     msg 'u.adoc2html [ascidoctor options] [FILE.adoc]'
     msg 'write html to FILE.html'
-    msg 'DBG is set logs the ascidoctor command'
+    msg 'if DBG is set logs the ascidoctor command'
     exit
 }
 
