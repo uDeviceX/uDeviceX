@@ -1,7 +1,3 @@
-static bool same(const char *a, const char *b) {
-    return 0 == strcmp(a, b);
-}
-
 static void ini_flu_exch(MPI_Comm comm, /**/ FluExch *e) {
     using namespace exch::flu;
     int maxd = HSAFETY_FACTOR * numberdensity;
@@ -78,9 +74,9 @@ static void ini_vcon(MPI_Comm comm, const Config *cfg, /**/ Vcon *c) {
     UC(vcont_ini(comm, L, U, factor, /**/ &c->vcont));
     vc = c->vcont;
 
-    if      (same(type, "cart"))
+    if      (same_str(type, "cart"))
         UC(vcon_set_cart(/**/ vc));
-    else if (same(type, "rad"))
+    else if (same_str(type, "rad"))
         UC(vcon_set_radial(/**/ vc));
     else
         ERR("Unrecognised type <%s>", type);
@@ -91,7 +87,7 @@ static void ini_outflow(Coords coords, const Config *cfg, Outflow **o) {
     const char *type;
     UC(conf_lookup_string(cfg, "outflow.type", &type));
     
-    if      (same(type, "circle")) {
+    if      (same_str(type, "circle")) {
         float3 center;
         float R;
         UC(conf_lookup_float(cfg, "outflow.R", &R));
@@ -99,7 +95,7 @@ static void ini_outflow(Coords coords, const Config *cfg, Outflow **o) {
         
         ini_params_circle(coords, center, R, /**/ *o);
     }
-    else if (same(type, "plate")) {
+    else if (same_str(type, "plate")) {
         int dir;
         float r0;
         UC(conf_lookup_int(cfg, "outflow.direction", &dir));
@@ -116,10 +112,10 @@ static void ini_denoutflow(Coords coords, const Config *cfg, DCont **d, DContMap
     UC(den_ini(MAX_PART_NUM, /**/ d));
 
     UC(conf_lookup_string(cfg, "denoutflow.type", &type));
-    if (same(type, "none")) {
+    if (same_str(type, "none")) {
         UC(den_ini_map_none(coords, /**/ m));
     }
-    else if (same(type, "circle")) {
+    else if (same_str(type, "circle")) {
         float R;
         UC(conf_lookup_float(cfg, "denoutflow.R", &R));
         UC(den_ini_map_circle(coords, R, /**/ m));
@@ -136,7 +132,7 @@ static void ini_inflow(Coords coords, const Config *cfg, Inflow **i) {
     int2 nc = make_int2(YS, ZS/2);
     ini(nc, /**/ i);
 
-    if      (same(type, "circle")) {
+    if      (same_str(type, "circle")) {
         float R, H, U;
         int poiseuille;
         float3 center;
@@ -148,7 +144,7 @@ static void ini_inflow(Coords coords, const Config *cfg, Inflow **i) {
         UC(conf_lookup_float3(cfg, "inflow.center", &center));        
         UC(ini_params_circle(coords, center, R, H, U, poiseuille, /**/ *i));
     }
-    else if (same(type, "plate")) {
+    else if (same_str(type, "plate")) {
         int upois, vpois, dir;
         float3 origin, u;
         float L1, L2;

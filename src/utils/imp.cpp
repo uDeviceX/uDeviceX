@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "imp.h"
 #include "utils/error.h"
@@ -46,4 +47,8 @@ void efgets(char *s, int size, FILE *stream) {
     p = fgets(s, size, stream);
     if (p == NULL)
         ERR("`fgets` failed: size=%d", size);
+}
+
+bool same_str(const char *a, const char *b) {
+    return 0 == strcmp(a, b);
 }
