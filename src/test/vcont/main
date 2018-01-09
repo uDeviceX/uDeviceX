@@ -9,8 +9,6 @@ cp data/sdf/cyl1/cyl.dat sdf.dat
 u.conf conf/double.poiseuille.h <<!!!
    numberdensity=1
    tend=2.01 part_freq=4000 walls wall_creation=1
-   VCON_SAMPLE_FREQ=1 VCON_LOG_FREQ=500
-   VCON_ADJUST_FREQ=500
    FORCE_CONSTANT FORCE_PAR_A=0
    field_dumps part_dumps
    field_freq=4000
@@ -32,8 +30,6 @@ cp data/sdf/cyl1/cyl.dat sdf.dat
 u.conf conf/double.poiseuille.h <<!!!
    numberdensity=1
    tend=2.01 part_freq=4000 walls wall_creation=1
-   VCON_SAMPLE_FREQ=1 VCON_LOG_FREQ=500
-   VCON_ADJUST_FREQ=500
    FORCE_CONSTANT FORCE_PAR_A=0
    field_dumps part_dumps
    field_freq=4000
