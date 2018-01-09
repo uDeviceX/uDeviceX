@@ -4,6 +4,7 @@ rm -rf bop h5 diag.txt rbc.off
 :
 cp data/sdf/cyl1/cyl.dat sdf.dat
 :
+Force="bforce={type=\"constant\"; f=[0.0333333, 0.0, 0.0];};"
 u.conf conf/poiseuille.h <<!!!
    tend=4.0 part_freq=300 walls wall_creation=100
    field_dumps part_dumps field_freq=300 FORCE_CONSTANT
@@ -11,7 +12,7 @@ u.conf conf/poiseuille.h <<!!!
 !!!
 :
 (make clean && u.make -j) > /dev/null
-sh runfile
+u.run ./udx $Force
 u.avgh5 1 u 1 h5/flowfields-0026.h5 > h5.out.txt
 
 #### 4 roller mills
@@ -20,14 +21,13 @@ rm -rf bop h5 diag.txt rbc.off
 :
 (cd ../cmd; make ) > /dev/null
 :
+Force="bforce={type=\"four_roller\"; a=0.2;};"
 u.conf conf/default.h <<!!!
    tend=2.01 part_freq=4000
-   FORCE_4ROLLER
-   FORCE_PAR_A=0.2
    field_dumps part_dumps
    field_freq=4000
    run
 !!!
 (make clean && u.make -j) > /dev/null
-sh runfile
+u.run ./udx $Force
 u.avgh5 0 u 1 h5/flowfields-0001.h5 | uscale 0.1 > h5.out.txt

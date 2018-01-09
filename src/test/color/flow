@@ -5,14 +5,14 @@ rm -rf bop h5 diag.txt rbc.off
 (cd ../cmd; make ) > /dev/null
 s=.
 u=u/france
+Force="bforce={type=\"double_poiseuille\"; a=0.6;};"
 u.conf $s $u conf/zurich.h <<!!!
    tend=4.01 part_freq=8000
    XS=4 YS=32 ZS=4
-   FORCE_DOUBLE_POISEUILLE
    field_dumps part_dumps
    field_freq=8000
    run
 !!!
 (make clean && u.make -j) > /dev/null
-sh runfile
+u.run ./udx $Force
 u.avgh5 0 u 1 h5/flowfields-0001.h5 | uscale 0.1 > h5.out.txt

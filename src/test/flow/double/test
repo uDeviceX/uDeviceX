@@ -1,13 +1,13 @@
 #### Double poiseuille
 # nTEST: flow.t1
 :
+Force="bforce={type=\"double_poiseuille\"; a=6.6666667;};"
 u.conf conf/double.poiseuille.h <<!!!
    tend=2.01 part_freq=4000
-   FORCE_DOUBLE_POISEUILLE
    field_dumps part_dumps
    field_freq=4000
    run
 !!!
 (make clean && u.make -j) > /dev/null
-sh runfile
+u.run ./udx $Force
 u.avgh5 0 u 1 h5/flowfields-0001.h5 | uscale 0.1 > h5.out.txt
