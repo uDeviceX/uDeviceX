@@ -35,7 +35,7 @@ static void ini_bforce(const Config *cfg, BForce *bforce) {
         UC(conf_lookup_float(cfg, "bforce.a", /**/ &par.a));
         UC(ini(par, /**/ bforce));
     }
-    else if (same_str(type, "shear")) {
+    else if (same_str(type, "rad")) {
         BForce_rad par;
         UC(conf_lookup_float(cfg, "bforce.a", /**/ &par.a));
         UC(ini(par, /**/ bforce));
