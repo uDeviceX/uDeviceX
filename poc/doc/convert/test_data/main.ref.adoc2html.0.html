@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 1.5.6.1">
+<title>rbc</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+<link rel="stylesheet" href="./coderay-asciidoctor.css">
+</head>
+<body class="article toc2 toc-left">
+<div id="header">
+<h1>rbc</h1>
+<div id="toc" class="toc2">
+<div id="toctitle">Table of Contents</div>
+<ul class="sectlevel1">
+<li><a href="#_intro">Intro</a></li>
+<li><a href="#_components">Components</a></li>
+<li><a href="#_cell_templates">Cell templates</a></li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="_intro">Intro</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Red blood cell. <a href="type.h">src/rbc/type.h</a> defines <code>struct rbc::Quants</code></p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_components">Components</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p><a href="adj">adj</a> adjacency list --- a structure to pack mesh to read on device</p>
+</li>
+<li>
+<p><a href="com">com</a> compute center of mass</p>
+</li>
+<li>
+<p><a href="edg">edg</a> store information for every edge (host)</p>
+</li>
+<li>
+<p><a href="force">force</a> internal forces</p>
+</li>
+<li>
+<p><a href="gen">gen</a> generate <code>pp</code> from cell template (<code>rbc.off</code>) and
+initial condition files (<code>rbcs-ic.txt</code>)</p>
+</li>
+<li>
+<p><a href="com">main</a> initialization, restart</p>
+</li>
+<li>
+<p><a href="rnd">rnd</a> random numbers for internal forces</p>
+</li>
+<li>
+<p><a href="rnd/api">rnd/api</a> low level api for random number generator</p>
+</li>
+<li>
+<p><a href="force/area_volume">force/area_volume</a> compute area and volume</p>
+</li>
+<li>
+<p><a href="stretch">stretch</a> apply a force to every vertex of every cell,
+force is set from a file <code>rbc.stretch</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>See also <a href="src/u/rbc" class="bare">src/u/rbc</a>, <a href="src/test/rbccom" class="bare">src/test/rbccom</a>, <a href="src/test/rbc" class="bare">src/test/rbc</a></p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_cell_templates">Cell templates</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>See <a href="src/data/cells">src/data/cells</a></p>
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>
