@@ -11,4 +11,4 @@ usg () {
 
 if test $# -ne 0 && test "$1" = -h; then usg; fi
 
-eval u.adoc2html0 "$@"
+u.adoc2html0 "$@"
