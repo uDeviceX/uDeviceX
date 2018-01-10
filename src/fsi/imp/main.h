@@ -4,12 +4,12 @@ void fsi_ini(int rank, /**/ Fsi **fsi) {
     f = *fsi;
     
     UC(rnd_ini(1908 - rank, 1409 + rank, 290, 12968, /**/ &f->rgen));
-    f->wo   = new SolventWrap;
+    UC(emalloc(sizeof(SolventWrap), (void**) &f->wo));
 }
 
 void fsi_fin(Fsi *fsi) {
     UC(rnd_fin(fsi->rgen));
-    delete fsi->wo;
+    UC(efree(fsi->wo));
     UC(efree(fsi));
 }
 
