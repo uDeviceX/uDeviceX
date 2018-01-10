@@ -111,3 +111,13 @@ void inflow_create_pp(Inflow *i, int *n, Particle *pp) {
 
     create_solvent(i, n, wrap);
 }
+
+void inflow_create_pp_cc(Inflow *i, int *n, Particle *pp, int *cc) {
+    SolventWrap wrap;
+
+    wrap.pp = pp;
+    wrap.cc = cc;
+    wrap.multisolvent = true;
+
+    create_solvent(i, n, wrap);
+}
