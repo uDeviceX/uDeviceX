@@ -7,8 +7,8 @@ static void fin_ii(int *ii, int *ii0, int *ii_hst) {
 void fin(Quants *q) {
     CC(d::Free(q->pp));
     CC(d::Free(q->pp0));
-    fin(&q->cells);
-    fin_map(&q->mcells);
+    clist_fin(&q->cells);
+    clist_fin_map(&q->mcells);
     UC(efree(q->pp_hst));
 
     if (global_ids)    fin_ii(q->ii, q->ii0, q->ii_hst);

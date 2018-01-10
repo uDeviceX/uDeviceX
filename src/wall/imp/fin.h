@@ -7,5 +7,5 @@ void free_ticket(Ticket *t) {
     UC(rnd_fin(t->rnd));
     destroy(&t->texstart);
     destroy(&t->texpp);
-    fin(&t->cells);
+    clist_fin(&t->cells);
 }

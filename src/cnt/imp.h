@@ -1,8 +1,8 @@
 namespace cnt {
 
 struct Contact {
-    clist::Clist cells;
-    clist::Map cmap;
+    Clist cells;
+    ClistMap cmap;
     RNDunif *rgen;
 };
 

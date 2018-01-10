@@ -41,7 +41,7 @@ namespace flu {
 
 /* TODO does it belong here? */
 void build_cells(/**/ Quants *q) {
-    clist::build(q->n, q->n, q->pp, /**/ q->pp0, &q->cells, &q->mcells);
+    clist_build(q->n, q->n, q->pp, /**/ q->pp0, &q->cells, &q->mcells);
     // swap
     Particle *tmp = q->pp;
     q->pp = q->pp0; q->pp0 = tmp;
