@@ -68,7 +68,7 @@ static void fin_denoutflow(DCont *d, DContMap *m) {
 }
 
 static void fin_inflow(Inflow *i) {
-    fin(/**/ i);
+    UC(inflow_fin(/**/ i));
 }
 
 

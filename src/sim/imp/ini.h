@@ -130,7 +130,7 @@ static void ini_inflow(Coords coords, const Config *cfg, Inflow **i) {
     
     /* number of cells */
     int2 nc = make_int2(YS, ZS/2);
-    ini(nc, /**/ i);
+    inflow_ini(nc, /**/ i);
 
     if      (same_str(type, "circle")) {
         float R, H, U;
@@ -142,7 +142,7 @@ static void ini_inflow(Coords coords, const Config *cfg, Inflow **i) {
         UC(conf_lookup_float(cfg, "inflow.U", &U));
         UC(conf_lookup_bool(cfg, "inflow.poiseuille", &poiseuille));
         UC(conf_lookup_float3(cfg, "inflow.center", &center));        
-        UC(ini_params_circle(coords, center, R, H, U, poiseuille, /**/ *i));
+        UC(inflow_ini_params_circle(coords, center, R, H, U, poiseuille, /**/ *i));
     }
     else if (same_str(type, "plate")) {
         int upois, vpois, dir;
@@ -157,13 +157,13 @@ static void ini_inflow(Coords coords, const Config *cfg, Inflow **i) {
         UC(conf_lookup_float3(cfg, "inflow.origin", &origin));
         UC(conf_lookup_float3(cfg, "inflow.u", &u));
         
-        ini_params_plate(coords, origin, dir, L1, L2, u, upois, vpois, /**/ *i);
+        UC(inflow_ini_params_plate(coords, origin, dir, L1, L2, u, upois, vpois, /**/ *i));
     }
     else {
         ERR("unknown inflow type <%s>", type);
     }
     
-    UC(ini_velocity(*i));
+    UC(inflow_ini_velocity(*i));
 }
 
 static void ini_colorer(int nv, MPI_Comm comm, /**/ Colorer *c) {

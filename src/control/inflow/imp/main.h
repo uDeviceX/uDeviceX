@@ -7,7 +7,7 @@ static void ini_flux(int n, curandState_t *rr, float *cumflux) {
     KL(dev::ini_flux, (k_cnf(n)), (n, rr, cumflux));
 }
 
-void ini(int2 nc, Inflow **i) {
+void inflow_ini(int2 nc, Inflow **i) {
     int n;
     size_t sz;
     Inflow *ip;
@@ -56,11 +56,11 @@ static void ini_velocity(Type t, int2 nc, const ParamsU *p, const VParamsU *vp, 
     };
 }
 
-void ini_velocity(Inflow *i) {
+void inflow_ini_velocity(Inflow *i) {
     ini_velocity(i->t, i->d.nc, &i->p, &i->vp, /**/ i->d.uu);
 }
 
-void fin(Inflow *i) {
+void inflow_fin(Inflow *i) {
     Desc *d = &i->d;
     CC(d::Free(d->rnds));
     CC(d::Free(d->uu));
@@ -69,7 +69,7 @@ void fin(Inflow *i) {
     UC(efree(i));
 }
 
-void create_pp(Inflow *i, int *n, Particle *pp) {
+void inflow_create_pp(Inflow *i, int *n, Particle *pp) {
     int2 nc;
     Desc *d;
     int nctot;
