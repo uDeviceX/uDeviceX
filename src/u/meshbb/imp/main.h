@@ -14,8 +14,8 @@ struct MeshDev {
     int4  *faces;
 };
 
-static clist::Clist cells;
-static clist::Map  mcells;
+static Clist cells;
+static ClistMap  *mcells;
 static meshbb::BBdata bbd;
 
 static int    argc;
@@ -115,7 +115,7 @@ static void main0(int n, meshbb::BBdata bdb) {
     }
 }
 
-static void main1(MeshDev m, int n, Particle *pp, Force *ff, clist::Clist cells,
+static void main1(MeshDev m, int n, Particle *pp, Force *ff, Clist cells,
                   meshbb::BBdata bdb) {
     int ns;
     ns = 1;
@@ -131,7 +131,7 @@ static void main1(MeshDev m, int n, Particle *pp, Force *ff, clist::Clist cells,
     meshbb::fin(&bbd);
 }
 
-static void main2(MeshDev m, int n, Particle *pp, Force *ff, clist::Clist cells) {
+static void main2(MeshDev m, int n, Particle *pp, Force *ff, Clist cells) {
     meshbb::BBdata bbd;
     meshbb::ini(MAX_PART_NUM, /**/ &bbd);
     main1(m, n, pp, ff, cells, /**/ bbd);
@@ -139,17 +139,17 @@ static void main2(MeshDev m, int n, Particle *pp, Force *ff, clist::Clist cells)
 }
 
 static void main3(MeshDev m, int n, Particle *pp, Force *ff, Particle *pp0) {
-    clist::Clist cells;
-    clist::Map  mcells;
+    Clist cells;
+    ClistMap  *mcells;
 
-    clist::ini(XS, YS, ZS, /**/ &cells);
-    clist::ini_map(n, 2, &cells, /**/ &mcells);
-    clist::build(n, n, pp, /**/ pp0, &cells, &mcells);
+    clist_ini(XS, YS, ZS, /**/ &cells);
+    clist_ini_map(n, 2, &cells, /**/ &mcells);
+    clist_build(n, n, pp, /**/ pp0, &cells, mcells);
 
     main2(m, n, pp, ff, cells);
 
-    clist::fin(&cells);
-    clist::fin_map(&mcells);
+    clist_fin(&cells);
+    clist_fin_map(mcells);
 }
 
 static void main4(MeshDev m, int n, Particle* pp) {
