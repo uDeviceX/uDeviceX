@@ -1,4 +1,8 @@
 struct Inflow;
+struct Config;
+struct Particle;
+struct int2;
+struct float3;
 
 // tag::mem[]
 void inflow_ini(int2 nc, Inflow **i);
@@ -14,6 +18,10 @@ void inflow_ini_params_plate(Coords c, float3 o, int dir, float L1, float L2,
 void inflow_ini_params_circle(Coords c, float3 o, float R, float H, float u, bool poiseuille,
                        /**/ Inflow *i);
 // end::ini[]
+
+// tag::cnf[]
+void inflow_ini_conf(Coords coords, const Config *cfg, /**/ Inflow *i);
+// end::cnf[]
 
 // tag::int[]
 void inflow_create_pp(Inflow *i, int *n, Particle *pp);
