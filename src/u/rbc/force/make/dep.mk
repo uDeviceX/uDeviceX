@@ -19,6 +19,7 @@ $B/math/tform/imp.o: $B/conf.h $S/inc/conf.h $S/math/tform/imp.h $S/math/tform/i
 $B/mpi/glb.o: $B/conf.h $S/inc/conf.h $S/mpi/glb.h $S/mpi/wrapper.h $S/utils/mc.h
 $B/mpi/type.o: $S/inc/conf.h $S/inc/type.h $S/mpi/type.h $S/utils/mc.h
 $B/mpi/wrapper.o: $S/mpi/wrapper.h
+$B/parser/imp.o: $S/parser/imp.h $S/utils/error.h $S/utils/imp.h $S/utils/msg.h
 $B/rbc/adj/imp.o: $S/rbc/adj/imp.h $S/rbc/adj/imp/fin.h $S/rbc/adj/imp/ini.h $S/rbc/adj/imp/map.h $S/rbc/adj/type/common.h $S/rbc/adj/type/hst.h $S/rbc/edg/imp.h $S/utils/error.h $S/utils/imp.h $S/utils/msg.h
 $B/rbc/com/imp.o: $B/conf.h $S/d/api.h $S/d/ker.h $S/d/q.h $S/inc/conf.h $S/inc/def.h $S/inc/dev.h $S/inc/type.h $S/math/dev.h $S/rbc/com/dev/main.h $S/rbc/com/imp.h $S/rbc/com/imp/com.h $S/rbc/com/imp/fin.h $S/rbc/com/imp/ini.h $S/utils/cc.h $S/utils/kl.h $S/utils/msg.h
 $B/rbc/edg/imp.o: $S/rbc/edg/imp.h $S/utils/error.h
