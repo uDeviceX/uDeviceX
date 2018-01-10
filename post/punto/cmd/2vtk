@@ -14,6 +14,33 @@ usg () {
     exit
 }
 
+assert_arg () {
+    local m
+    m="$1"; shift
+    if test $# -eq 0; then err $m; fi
+}
+
 if test $# -ne 0 && test "$1" = -h; then usg; fi
+
+assert_arg "expect DIR" "$@"; o="$1"; shift
+assert_arg "expect PUNTO.FILE" "$@"; i="$1"; shift
+assert_arg "expect field names" "$@"
+
+if ! test -r "$i"; then err "not a file '$i'"; fi
+
+X=0 Y=0 Z=0
+for c
+do  shift
+    set -- "$@" "$c"
+    case "$c" in
+	x) X=1 ;;
+	y) Y=1 ;;
+	z) Z=1 ;;
+    esac
+done
+
+if test $X = 0; then err "not field 'x'"; fi
+if test $Y = 0; then err "not field 'y'"; fi
+if test $Z = 0; then err "not field 'z'"; fi
 
 exec "$prog0" "$@"
