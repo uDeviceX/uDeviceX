@@ -88,7 +88,7 @@ function dataset(f, k,   i) {
 function coordp(k) { return eq(k, "x") || eq(k, "y") || eq(k, "z") }
 function fieldp(k) { return !coordp(k) && !eq(k, "-") }
 function write0(f) {
-    if (eq(dbg, "0")) msg(f)
+    if (!eq(dbg, "0")) msg(f)
     touch(f)
     header(f)
     topo(f)
