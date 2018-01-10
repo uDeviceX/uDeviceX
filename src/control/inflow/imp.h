@@ -20,7 +20,7 @@ void inflow_ini_params_circle(Coords c, float3 o, float R, float H, float u, boo
 // end::ini[]
 
 // tag::cnf[]
-void inflow_ini_conf(Coords coords, const Config *cfg, /**/ Inflow *i);
+void inflow_ini_params_conf(Coords coords, const Config *cfg, /**/ Inflow *i);
 // end::cnf[]
 
 // tag::int[]

@@ -128,7 +128,7 @@ static void ini_inflow(Coords coords, const Config *cfg, Inflow **i) {
     /* number of cells */
     int2 nc = make_int2(YS, ZS/2);
     UC(inflow_ini(nc, /**/ i));
-    UC(inflow_ini_conf(coords, cfg, *i));    
+    UC(inflow_ini_params_conf(coords, cfg, *i));    
     UC(inflow_ini_velocity(*i));
 }
 
