@@ -19,6 +19,7 @@ $B/math/tform/imp.o: $S/math/tform/imp.cpp; $X -I$S/. -I$S/math/tform
 $B/mpi/glb.o: $S/mpi/glb.cpp; $X -I$S/. -I$S/mpi
 $B/mpi/type.o: $S/mpi/type.cpp; $X -I$S/. -I$S/mpi
 $B/mpi/wrapper.o: $S/mpi/wrapper.cpp; $X -I$S/. -I$S/mpi
+$B/parser/imp.o: $S/parser/imp.cpp; $X -I$S/. -I$S/parser
 $B/rbc/adj/imp.o: $S/rbc/adj/imp.cpp; $X -I$S/. -I$S/rbc/adj
 $B/rbc/com/imp.o: $S/rbc/com/imp.cu; $N -I$S/. -I$S/rbc/com
 $B/rbc/edg/imp.o: $S/rbc/edg/imp.cpp; $X -I$S/. -I$S/rbc/edg

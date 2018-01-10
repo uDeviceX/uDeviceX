@@ -3,7 +3,7 @@ struct float3;
 
 // tag::mem[]
 void conf_ini(/**/ Config **c);
-void conf_destroy(/**/ Config *c);
+void conf_fin(/**/ Config *c);
 // end::mem[]
 
 // tag::ini[]

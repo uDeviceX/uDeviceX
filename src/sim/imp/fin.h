@@ -158,7 +158,7 @@ void sim_fin(Sim *s) {
 
     UC(coords_fin(/**/ &s->coords));
 
-    UC(conf_destroy(s->cfg));
+    UC(conf_fin(s->cfg));
     datatype::fin();
 
     MC(m::Comm_free(&s->cart));
