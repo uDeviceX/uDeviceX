@@ -32,10 +32,18 @@ function nxt(   r) {
     return OK
 }
 
+function assert_fi(f,   s) {
+    if (f <= NF) return
+    msg("fail to read file " i)
+    msg(sprintf("expecting field: %d, found %d fields", f, NF))
+    err("line: " $0)
+}
+
 function read_line(r,   k, v, i) {
     # global snap
     for (k in idx) {
 	i = idx[k]
+	assert_fi(i)
 	snap[k, r] = $i
     }
 }
