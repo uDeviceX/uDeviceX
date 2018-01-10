@@ -8,7 +8,6 @@
 #include "d/ker.h"
 
 #include "utils/error.h"
-#include "algo/scan/imp.h"
 
 #include "math/rnd/imp.h"
 #include "math/rnd/dev.h"

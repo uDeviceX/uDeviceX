@@ -8,7 +8,6 @@
 #include "d/ker.h"
 
 #include "mpi/wrapper.h"
-#include "algo/scan/imp.h"
 
 #include "glob/type.h"
 #include "glob/imp.h"
