@@ -24,6 +24,6 @@ void inflow_ini_conf(Coords coords, const Config *cfg, /**/ Inflow *i);
 // end::cnf[]
 
 // tag::int[]
-void inflow_create_pp(Inflow *i, int *n, Particle *pp);
-void inflow_create_pp_cc(int newcolor, Inflow *i, int *n, Particle *pp, int *cc);
+void inflow_create_pp(Inflow *i, int *n, Particle *pp); // <1>
+void inflow_create_pp_cc(int newcolor, Inflow *i, int *n, Particle *pp, int *cc); // <2>
 // end::int[]
