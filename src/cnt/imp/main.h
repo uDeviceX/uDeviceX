@@ -1,4 +1,6 @@
-void cnt_ini(int rank, /**/ Contact *c) {
+void cnt_ini(int rank, /**/ Contact **cnt) {
+    UC(emalloc(sizeof(Contact), (void**) cnt));
+    Contact *c = *cnt;
     clist_ini(XS, YS, ZS, /**/ &c->cells);
     clist_ini_map(MAX_PART_NUM, MAX_OBJ_TYPES, &c->cells, /**/ &c->cmap);
     UC(rnd_ini(7119 - rank, 187 + rank, 18278, 15674, /**/ &c->rgen));
@@ -8,6 +10,7 @@ void cnt_fin(Contact *c) {
     clist_fin(/**/ &c->cells);
     clist_fin_map(/**/ c->cmap);
     UC(rnd_fin(c->rgen));
+    UC(efree(c));
 }
 
 void cnt_build_cells(int nw, const PaWrap *pw, /**/ Contact *c) {
