@@ -12,6 +12,7 @@ A list of coding conventions can be found link:conventions{lext}[here].
 * prefix sum: link:modules/algo/scan{lext}[scan]
 * body forces: link:modules/bforce{lext}[bforce]
 * cell lists: link:modules/clist{lext}[clist]
+* contact interactions: link:modules/cnt{lext}[cnt]
 * controlers, open bc: link:modules/control/main{lext}[control]
 * flow structure interactions: link:modules/fsi{lext}[fsi]
 * generic communicator: link:modules/comm{lext}[comm]
