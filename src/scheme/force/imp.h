@@ -1,3 +1,5 @@
+struct Particle;
+struct Force;
 struct BForce;
 
 // tag::params[]
