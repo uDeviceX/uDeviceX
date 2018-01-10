@@ -73,8 +73,6 @@
 #include "distr/rig/imp.h"
 
 #include "cnt/imp.h"
-
-#include "fsi/type.h"
 #include "fsi/imp.h"
 
 #include "exch/map/type.h"

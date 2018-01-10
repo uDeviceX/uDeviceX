@@ -4,7 +4,7 @@ void forces_cnt(ObjInter *oi, int nw, PaWrap *pw, FoWrap *fw) {
 }
 
 void forces_fsi(ObjInter *oi, int nw, PaWrap *pw, FoWrap *fw) {
-    fsi_bulk(&oi->fsi, nw, pw, fw);
+    fsi_bulk(oi->fsi, nw, pw, fw);
 }
 
 void forces_objects(Sim *sim) {
@@ -46,7 +46,7 @@ void forces_objects(Sim *sim) {
     if (multi_solvent) ini_cloud_color(f->q.cc, &cloud);
 
     if (fsiforces)
-        fsi_bind_solvent(cloud, f->ff, f->q.n, f->q.cells.starts, /**/ &oi->fsi);
+        fsi_bind_solvent(cloud, f->ff, f->q.n, f->q.cells.starts, /**/ oi->fsi);
 
     if (contactforces) forces_cnt(oi, nw, pw, fw);
     if (fsiforces)     forces_fsi(oi, nw, pw, fw);
@@ -60,7 +60,7 @@ void forces_objects(Sim *sim) {
     Pap26 hpp = upload_shift(&e->u);
     Fop26 hff = reini_ff(&e->u, &e->pf);
 
-    if (fsiforces)     fsi_halo(&oi->fsi, hpp, hff, hcc.d);
+    if (fsiforces)     fsi_halo(oi->fsi, hpp, hff, hcc.d);
     if (contactforces) cnt_halo(oi->cnt, nw, pw, fw, hpp, hff, hcc.d);
 
     /* send the forces back */ 

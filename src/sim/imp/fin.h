@@ -120,7 +120,7 @@ static void fin_wall(Wall *w) {
 static void fin_objinter(ObjInter *o) {
     UC(fin_obj_exch(&o->e));
     if (contactforces) cnt_fin(o->cnt);
-    if (fsiforces)     fsi_fin(&o->fsi);
+    if (fsiforces)     fsi_fin(o->fsi);
 }
 
 static void fin_vcon(Vcon *c) {

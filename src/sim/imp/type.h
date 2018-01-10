@@ -113,7 +113,7 @@ struct Wall {
 struct ObjInter {
     ObjExch e;
     Contact *cnt;
-    Fsi     fsi;
+    Fsi     *fsi;
 };
 
 /* velocity controller */

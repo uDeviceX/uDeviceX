@@ -1,6 +1,7 @@
 struct RNDunif;
+struct Fsi;
 
-void fsi_ini(int rank, /**/ Fsi *fsi);
+void fsi_ini(int rank, /**/ Fsi **fsi);
 void fsi_fin(Fsi *fsi);
 
 void fsi_bind_solvent(Cloud c, Force *ff, int n, int *starts, /**/ Fsi *fsi);
