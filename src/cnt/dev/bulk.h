@@ -37,7 +37,7 @@ __global__ void bulk(const int *cellstarts, const uint *ids, int n, const float2
     for (i = 0; !endp(m, i); ++i) {
         slot = m2id(m, i);
         code = ids[slot];
-        clist::decode_id(code, &objid, &bid);
+        clist_decode_id(code, &objid, &bid);
         if (objid0 < objid || objid0 == objid && aid <= bid)
             continue;
 

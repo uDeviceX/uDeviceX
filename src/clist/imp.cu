@@ -5,8 +5,9 @@
 #include "inc/conf.h"
 
 #include "utils/error.h"
-
 #include "utils/msg.h"
+#include "utils/imp.h"
+
 #include "inc/def.h"
 #include "inc/type.h"
 #include "inc/dev.h"
@@ -22,10 +23,8 @@
 #include "imp.h"
 #include "code.h"
 
-namespace clist {
-#include "dev.h"
 #include "imp/type.h"
+#include "dev.h"
 #include "imp/ini.h"
 #include "imp/fin.h"
 #include "imp/main.h"
-} // clist

@@ -1,4 +1,4 @@
-void ini(int LX, int LY, int LZ, /**/ Clist *c) {
+void clist_ini(int LX, int LY, int LZ, /**/ Clist *c) {
     c->dims.x = LX;
     c->dims.y = LY;
     c->dims.z = LZ;
@@ -9,8 +9,11 @@ void ini(int LX, int LY, int LZ, /**/ Clist *c) {
     CC(d::Malloc((void **) &c->counts, size));
 }
 
-void ini_map(int maxp, int nA, const Clist *c, /**/ Map *m) {
+void clist_ini_map(int maxp, int nA, const Clist *c, /**/ ClistMap **map) {
     size_t size;
+    UC(emalloc(sizeof(ClistMap), (void**) map));
+    ClistMap *m = *map;
+    
     UC(scan::alloc_work(c->ncells, /**/ &m->scan));
 
     size = maxp * sizeof(uchar4);

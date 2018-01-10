@@ -14,7 +14,7 @@ static void bulk_one_wrap(PaWrap *pw, FoWrap *fw, Fsi *fsi) {
                                   rnd, (float*)fw->ff, (float*)wo->ff));
 }
 
-void bulk(Fsi *fsi, int nw, PaWrap *pw, FoWrap *fw) {
+void fsi_bulk(Fsi *fsi, int nw, PaWrap *pw, FoWrap *fw) {
     if (nw == 0)
         return;
 

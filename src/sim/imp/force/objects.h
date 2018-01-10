@@ -1,15 +1,13 @@
 void forces_cnt(ObjInter *oi, int nw, PaWrap *pw, FoWrap *fw) {
-    cnt::build_cells(nw, pw, /**/ &oi->cnt);
-    cnt::bulk(&oi->cnt, nw, pw, fw);
+    cnt_build_cells(nw, pw, /**/ oi->cnt);
+    cnt_bulk(oi->cnt, nw, pw, fw);
 }
 
-void forces_fsi(ObjInter *oi, fsi::SolventWrap *w_s, int nw, PaWrap *pw, FoWrap *fw) {
-    fsi::bind(*w_s, &oi->fsi);
-    fsi::bulk(&oi->fsi, nw, pw, fw);
+void forces_fsi(ObjInter *oi, int nw, PaWrap *pw, FoWrap *fw) {
+    fsi_bulk(oi->fsi, nw, pw, fw);
 }
 
 void forces_objects(Sim *sim) {
-    fsi::SolventWrap w_s;
     Cloud cloud;
     PaWrap pw[MAX_OBJ_TYPES];
     FoWrap fw[MAX_OBJ_TYPES];
@@ -47,14 +45,11 @@ void forces_objects(Sim *sim) {
     ini_cloud(f->q.pp, &cloud);
     if (multi_solvent) ini_cloud_color(f->q.cc, &cloud);
 
-    w_s.pp = f->q.pp;
-    w_s.c  = cloud;
-    w_s.ff = f->ff;
-    w_s.n  = f->q.n;
-    w_s.starts = f->q.cells.starts;
+    if (fsiforces)
+        fsi_bind_solvent(cloud, f->ff, f->q.n, f->q.cells.starts, /**/ oi->fsi);
 
     if (contactforces) forces_cnt(oi, nw, pw, fw);
-    if (fsiforces)     forces_fsi(oi, &w_s, nw, pw, fw);
+    if (fsiforces)     forces_fsi(oi, nw, pw, fw);
 
     /* recv data and halo interactions  */
 
@@ -65,8 +60,8 @@ void forces_objects(Sim *sim) {
     Pap26 hpp = upload_shift(&e->u);
     Fop26 hff = reini_ff(&e->u, &e->pf);
 
-    if (fsiforces)     fsi::halo(&oi->fsi, hpp, hff, hcc.d);
-    if (contactforces) cnt::halo(&oi->cnt, nw, pw, fw, hpp, hff, hcc.d);
+    if (fsiforces)     fsi_halo(oi->fsi, hpp, hff, hcc.d);
+    if (contactforces) cnt_halo(oi->cnt, nw, pw, fw, hpp, hff, hcc.d);
 
     /* send the forces back */ 
     
