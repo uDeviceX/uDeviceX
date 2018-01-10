@@ -28,3 +28,9 @@ struct Inflow {
     ParamsU p;
     VParamsU vp;
 };
+
+struct SolventWrap {
+    Particle *pp;
+    int *cc;
+    bool multisolvent;
+};
