@@ -29,14 +29,44 @@ include::{src}/scheme/force/imp.h[tag=ini]
 
 == interface 
 
-Host is responsible for initialisation of `BForce` and convert
-`BForce` to a view at a given timestep.
-The view version is passed to kernel calls.
+
+allocate/deallocate the structure:
+
+[source, c++]
+----
+include::{src}/scheme/force/imp.h[tag=mem]
+----
+
+initialize to a given force function:
+
+[source, c++]
+----
+include::{src}/scheme/force/imp.h[tag=ini]
+----
+
+<1> no force
+<2> constant force `f`
+<3> double poiseuille
+<4> shear
+<5> 4 roller mill
+<6> radial force
+
+initialize from configuration:
+
+[source, c++]
+----
+include::{src}/scheme/force/conf.h[tag=ini]
+----
+
+interface:
 
 [source, c++]
 ----
 include::{src}/scheme/force/imp.h[tag=interface]
 ----
+<1> change value of the force
+<2> apply body force to particles
+
 
 == configuration
 
