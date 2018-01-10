@@ -1,9 +1,13 @@
 struct RNDunif;
 struct Fsi;
 
+// tag::mem[]
 void fsi_ini(int rank, /**/ Fsi **fsi);
 void fsi_fin(Fsi *fsi);
+// end::mem[]
 
-void fsi_bind_solvent(Cloud c, Force *ff, int n, int *starts, /**/ Fsi *fsi);
-void fsi_bulk(Fsi *fsi, int nw, PaWrap *pw, FoWrap *fw);
-void fsi_halo(Fsi *fsi, Pap26 PP, Fop26 FF, int counts[26]);
+// tag::int[]
+void fsi_bind_solvent(Cloud c, Force *ff, int n, int *starts, /**/ Fsi *fsi); // <1>
+void fsi_bulk(Fsi *fsi, int nw, PaWrap *pw, FoWrap *fw);                      // <2>
+void fsi_halo(Fsi *fsi, Pap26 PP, Fop26 FF, int counts[26]);                  // <3>
+// end::int[]

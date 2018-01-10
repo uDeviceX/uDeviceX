@@ -14,6 +14,7 @@
 ./dev/modules/d.html: ./dev/modules/d.adoc 
 ./dev/modules/distr.html: ./dev/modules/distr.adoc 
 ./dev/modules/fluforces.html: ./dev/modules/fluforces.adoc 
+./dev/modules/fsi.html: ./dev/modules/fsi.adoc 
 ./dev/modules/math/main.html: ./dev/modules/math/main.adoc ./dev/modules/math/linal.inc.adoc ./dev/modules/math/linal.inc.adoc ./dev/modules/math/rnd.inc.adoc ./dev/modules/math/rnd.inc.adoc ./dev/modules/math/tform.inc.adoc ./dev/modules/math/tform.inc.adoc
 ./dev/modules/parser.html: ./dev/modules/parser.adoc 
 ./dev/modules/partlist.html: ./dev/modules/partlist.adoc 

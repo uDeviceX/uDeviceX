@@ -13,6 +13,7 @@ A list of coding conventions can be found link:conventions{lext}[here].
 * body forces: link:modules/bforce{lext}[bforce]
 * cell lists: link:modules/clist{lext}[clist]
 * controlers, open bc: link:modules/control/main{lext}[control]
+* flow structure interactions: link:modules/fsi{lext}[fsi]
 * generic communicator: link:modules/comm{lext}[comm]
 * generic device API: link:modules/d{lext}[d]
 * math helpers: link:modules/math/main{lext}[math]
