@@ -110,7 +110,7 @@ u.conf conf/around.h <<!!!
    RESTART=false
    run
    RESTART=true
-   FORCE_CONSTANT pushrbc tend=3.0
+   pushrbc tend=3.0
    BASE_STRT_READ=\"bin.1/strt\"
    BASE_STRT_DUMP=\"bin.2/strt\"
    run

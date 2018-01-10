@@ -19,8 +19,7 @@ cellt=data/cells/rbc/$nv.off
 :
 cp $S/data/sdf/yplates1/yplates.dat sdf.dat
 Wall="walls wall_creation=1000 WVEL_PAR_Y WVEL_PAR_A=10"
-: Force="FORCE_SHEAR FORCE_PAR_A=$alpha"
-Force=
+Force="bforce={type=\"shear\"; a=${alpha}"
 :
 cp              $cell           rbc.off
 cp              $cell0          rbc.stress.free
@@ -43,7 +42,7 @@ echo 1   0    0  $x \
 u.conf $S $U $C <<!
    rbcs
    RESTRAIN_RBC_VEL RBC_STRESS_FREE MESH_SHIFT_CENTER
-   $Force $Wall
+   $Wall
    RBCtotArea=$area RBCtotVolume=$volume RBCnv=$nv RBCp=$p
    RBC_RND RBCkb=$kb RBCgammaC=1000
    XS=$XS YS=$YS ZS=$ZS
@@ -53,5 +52,5 @@ u.conf $S $U $C <<!
 { make clean && u.make -j; } > /dev/null
 u.strtdir .
 :
-u.run ./udx
+u.run ./udx $Force
 ply2punto r/00009.ply | uscale 1 > ply.out.txt

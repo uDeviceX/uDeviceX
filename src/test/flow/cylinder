@@ -7,7 +7,7 @@ cp data/sdf/cyl1/cyl.dat sdf.dat
 Force="bforce={type=\"constant\"; f=[0.0333333, 0.0, 0.0];};"
 u.conf conf/poiseuille.h <<!!!
    tend=4.0 part_freq=300 walls wall_creation=100
-   field_dumps part_dumps field_freq=300 FORCE_CONSTANT
+   field_dumps part_dumps field_freq=300
    run
 !!!
 :

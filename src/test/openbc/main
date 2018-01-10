@@ -6,7 +6,6 @@ u.conf conf/default.h <<!!!
    field_dumps part_dumps
    field_freq=4000
    OUTFLOW_CIRCLE OUTFLOW_CIRCLE_R=8
-   FORCE_PAR_A=0
    run
 !!!
 (make clean && u.make -j) > /dev/null
@@ -21,7 +20,6 @@ u.conf conf/default.h <<!!!
    field_dumps part_dumps
    field_freq=4000
    OUTFLOW_CIRCLE OUTFLOW_CIRCLE_R=8
-   FORCE_PAR_A=0
    XS=8 YS=8
    run
 !!!
@@ -36,7 +34,6 @@ u.conf conf/default.h <<!!!
    field_dumps part_dumps
    field_freq=4000
    OUTFLOW_CIRCLE OUTFLOW_CIRCLE_R=8
-   FORCE_PAR_A=0
    run
 !!!
 (make clean && u.make -j) > /dev/null
@@ -50,7 +47,6 @@ u.conf conf/default.h <<!!!
    field_dumps part_dumps
    field_freq=4000
    OUTFLOW_CIRCLE OUTFLOW_CIRCLE_R=8
-   FORCE_PAR_A=0
    XS=8 YS=8
    run
 !!!

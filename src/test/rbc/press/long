@@ -57,13 +57,13 @@ down () {
     pushflu=false
     walls wall_creation=0
     RESTART=true
-    FORCE_CONSTANT FORCE_PAR_A=$A
     strt_dumps strt_freq=$inf
     tend=32.1 part_freq=10000
     run
 !
     make0 > .make
-    FORCE_PAR_EX=0 FORCE_PAR_EY=-1 FORCE_PAR_EZ=0 sh runfile
+    Force="bforce={type=\"constant\"; f=[0., ${A}, 0.];};"
+    u.run ./udx $Force
     mv0 com com.down
     mv0   r   r.down
 }
