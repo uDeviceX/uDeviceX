@@ -8,6 +8,11 @@ void fsi_fin(Fsi *fsi) {
     delete fsi->wo;
 }
 
-void fsi_bind(SolventWrap wrap, /**/ Fsi *fsi) {
-    *(fsi->wo) = wrap;
+void fsi_bind_solvent(Cloud c, Force *ff, int n, int *starts, /**/ Fsi *fsi) {
+    SolventWrap *w = fsi->wo;
+    w->c = c;
+    w->n = n;
+    w->ff = ff;
+    w->starts = starts;
 }
+
