@@ -247,7 +247,7 @@ static void ini_objinter(MPI_Comm cart, /**/ ObjInter *o) {
     int rank;
     MC(m::Comm_rank(cart, &rank));
     UC(ini_obj_exch(cart, &o->e));
-    if (contactforces) cnt::ini(rank, /**/ &o->cnt);
+    if (contactforces) cnt_ini(rank, /**/ &o->cnt);
     if (fsiforces)     fsi::ini(rank, /**/ &o->fsi);
 }
 

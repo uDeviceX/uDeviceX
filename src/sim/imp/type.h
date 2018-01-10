@@ -112,7 +112,7 @@ struct Wall {
 /* helper for computing object interactions */
 struct ObjInter {
     ObjExch e;
-    cnt::Contact cnt;
+    Contact cnt;
     fsi::Fsi     fsi;
 };
 

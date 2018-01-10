@@ -1,4 +1,4 @@
-void halo(const Contact *c, int nw, PaWrap *pw, FoWrap *fw, Pap26 PP, Fop26 FF, int counts[26]) {
+void cnt_halo(const Contact *c, int nw, PaWrap *pw, FoWrap *fw, Pap26 PP, Fop26 FF, int counts[26]) {
     int i, s, n;
     int27 starts;
     starts.d[0] = 0;

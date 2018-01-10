@@ -1,16 +1,16 @@
-void ini(int rank, /**/ Contact *c) {
+void cnt_ini(int rank, /**/ Contact *c) {
     clist_ini(XS, YS, ZS, /**/ &c->cells);
     clist_ini_map(MAX_PART_NUM, MAX_OBJ_TYPES, &c->cells, /**/ &c->cmap);
     UC(rnd_ini(7119 - rank, 187 + rank, 18278, 15674, /**/ &c->rgen));
 }
 
-void fin(Contact *c) {
+void cnt_fin(Contact *c) {
     clist_fin(/**/ &c->cells);
     clist_fin_map(/**/ c->cmap);
     UC(rnd_fin(c->rgen));
 }
 
-void build_cells(int nw, const PaWrap *pw, /**/ Contact *c) {
+void cnt_build_cells(int nw, const PaWrap *pw, /**/ Contact *c) {
     const PaWrap *w;
     PartList lp;
     int i, cc[MAX_OBJ_TYPES] = {0};

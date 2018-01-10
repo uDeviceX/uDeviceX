@@ -119,7 +119,7 @@ static void fin_wall(Wall *w) {
     
 static void fin_objinter(ObjInter *o) {
     UC(fin_obj_exch(&o->e));
-    if (contactforces) cnt::fin(&o->cnt);
+    if (contactforces) cnt_fin(&o->cnt);
     if (fsiforces)     fsi::fin(&o->fsi);
 }
 

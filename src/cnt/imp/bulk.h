@@ -12,7 +12,7 @@ static ForcepWraps convert(int nw, FoWrap *fw) {
     return w;
 }
 
-void bulk(const Contact *c, int nw, PaWrap *pw, FoWrap *fw) {
+void cnt_bulk(const Contact *c, int nw, PaWrap *pw, FoWrap *fw) {
     float rnd;
     if (nw == 0) return;
     float2pWraps lpp = convert(nw, pw);
