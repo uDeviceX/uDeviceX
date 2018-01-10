@@ -10,7 +10,7 @@ prog=u.punto.2vtk0
 o="$1"; shift
 i="$1"; shift
 
-"$AWK" -v o="$o" -v i="$i" -v prog="$prog" -v fmt="$FMT" -v q="'" '
+"$AWK" -v o="$o" -v i="$i"   -v dbg="$DBG" -v prog="$prog" -v fmt="$FMT" -v q="'" '
 BEGIN {
     ini()
     arg()
@@ -88,7 +88,7 @@ function dataset(f, k,   i) {
 function coordp(k) { return eq(k, "x") || eq(k, "y") || eq(k, "z") }
 function fieldp(k) { return !coordp(k) && !eq(k, "-") }
 function write0(f) {
-    msg(f)
+    if (eq(dbg, "0")) msg(f)
     touch(f)
     header(f)
     topo(f)
