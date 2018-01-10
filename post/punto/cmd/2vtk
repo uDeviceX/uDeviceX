@@ -1,5 +1,5 @@
 #!/bin/sh
-set -eu
+set -u
 
 prog=u.punto.2vtk
 prog0=u.punto.2vtk0
@@ -43,4 +43,7 @@ if test $X = 0; then err "not field 'x'"; fi
 if test $Y = 0; then err "not field 'y'"; fi
 if test $Z = 0; then err "not field 'z'"; fi
 
-exec "$prog0" "$@"
+e mkdir '2>/dev/null' -p "$o"
+if test ! -d "$o"; then err "fail to create directory '$o'"; fi
+
+exec "$prog0" "$o" "$i" "$@"
