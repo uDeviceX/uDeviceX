@@ -86,15 +86,14 @@ function dataset(f, k,   i) {
 	print snap[k, i]           > f
 }
 function coordp(k) { return eq(k, "x") || eq(k, "y") || eq(k, "z") }
+function fieldp(k) { return !coordp(k) && !eq(k, "-") }
 function write0(f) {
     msg(f)
     touch(f)
     header(f)
     topo(f)
-    for (k in idx) {
-	if (coordp(k)) continue
-	dataset(f, k)
-    }
+    for (k in idx)
+	if (fieldp(k)) dataset(f, k)
 }
 function write() { # fn: file number (global)
     f = sprintf("%s/" fmt ".vtk", o, fn++)

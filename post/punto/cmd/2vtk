@@ -10,7 +10,9 @@ usg () {
     msg "$prog"' DIR PUNTO.FILE [fields]...'
     msg 'convert PUNTO.FILE to several vtk files in DIR'
     msg '[fields].. names in vtk files'
+    msg "skip field if it is '-'"
     msg "$prog"' out punto.txt    id x y z'
+    msg "$prog"' out punto.txt     - x y z'
     exit
 }
 
