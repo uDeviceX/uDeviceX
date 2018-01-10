@@ -1,0 +1,17 @@
+#!/bin/sh
+set -eu
+
+prog=u.punto.2vtk
+prog0=u.punto.2vtk0
+
+. u.punto.util
+
+usg () {
+    msg "$prog"' DIR PUNTO.FILE [fields]...'
+    msg 'convert PUNTO.FILE to several vtk files in DIR'
+    msg '[fields].. names in vtk files'
+    msg "$prog"' out punto.txt    id x y z'
+    exit
+}
+
+exec "$prog0" "$@"
