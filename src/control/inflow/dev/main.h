@@ -86,7 +86,7 @@ __global__ void create_particles(Par params, int2 nc, const float3 *flux, /* io 
     for (j = strt; j < strt + nnew; ++j) {
         wrap.pp[j] = create_particle(params, nc, xcid, ycid, f, /*io*/ &rndstate);
         if (wrap.multisolvent)
-            wrap.cc[j] = 0; // TODO
+            wrap.cc[j] = wrap.color;
     }
 
     rnds[i] = rndstate;

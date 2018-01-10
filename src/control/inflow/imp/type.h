@@ -30,7 +30,8 @@ struct Inflow {
 };
 
 struct SolventWrap {
-    Particle *pp;
-    int *cc;
-    bool multisolvent;
+    Particle *pp;       /* particles               */
+    int *cc;            /* colors                  */
+    bool multisolvent;  /* true if color activated */
+    int color;          /* color of new particles  */
 };
