@@ -1,5 +1,5 @@
 struct RNDunif;
-namespace fsi {
+
 struct SolventWrap {
     Cloud c;
     Force *ff;
@@ -11,4 +11,3 @@ struct Fsi {
     SolventWrap *wo;
     RNDunif     *rgen;
 };
-}

@@ -1,4 +1,4 @@
-void halo(Fsi *fsi, Pap26 PP, Fop26 FF, int counts[26]) {
+void fsi_halo(Fsi *fsi, Pap26 PP, Fop26 FF, int counts[26]) {
     int i, n, s;
     int27 starts;
     SolventWrap *wo = fsi->wo;

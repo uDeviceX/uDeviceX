@@ -34,7 +34,6 @@
 #include "imp.h"
 
 /* body */
-namespace fsi {
 namespace dev {
 #include "dev/type.h"
 #include "dev/common.h"
@@ -49,4 +48,3 @@ namespace dev {
 #include "imp/main.h"
 #include "imp/bulk.h"
 #include "imp/halo.h"
-}

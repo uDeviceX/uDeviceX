@@ -248,7 +248,7 @@ static void ini_objinter(MPI_Comm cart, /**/ ObjInter *o) {
     MC(m::Comm_rank(cart, &rank));
     UC(ini_obj_exch(cart, &o->e));
     if (contactforces) cnt_ini(rank, /**/ &o->cnt);
-    if (fsiforces)     fsi::ini(rank, /**/ &o->fsi);
+    if (fsiforces)     fsi_ini(rank, /**/ &o->fsi);
 }
 
 static void read_opt(const Config *c, Opt *o) {
