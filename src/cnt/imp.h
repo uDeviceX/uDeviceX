@@ -2,7 +2,7 @@ namespace cnt {
 
 struct Contact {
     Clist cells;
-    ClistMap cmap;
+    ClistMap *cmap;
     RNDunif *rgen;
 };
 

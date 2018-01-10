@@ -4,7 +4,7 @@ struct Quants {
     Particle *pp, *pp0;    /* particles on device  */
     int       n;           /* particle number      */
     Clist      cells;      /* cell lists           */
-    ClistMap  mcells;      /* cell lists map       */
+    ClistMap *mcells;      /* cell lists map       */
     Particle *pp_hst;      /* particles on host    */
 
     /* optional data */

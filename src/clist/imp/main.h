@@ -1,5 +1,7 @@
 enum {LOCAL, REMOTE};
 
+const uint* clist_get_ids(const ClistMap *m) {return m->ii;}
+
 void clist_ini_counts(/**/ Clist *c) {
     if (c->ncells) CC(d::MemsetAsync(c->counts, 0, (c->ncells + 16) * sizeof(int)));
 }

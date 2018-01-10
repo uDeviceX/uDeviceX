@@ -9,8 +9,11 @@ void clist_ini(int LX, int LY, int LZ, /**/ Clist *c) {
     CC(d::Malloc((void **) &c->counts, size));
 }
 
-void clist_ini_map(int maxp, int nA, const Clist *c, /**/ ClistMap *m) {
+void clist_ini_map(int maxp, int nA, const Clist *c, /**/ ClistMap **map) {
     size_t size;
+    UC(emalloc(sizeof(ClistMap), (void**) map));
+    ClistMap *m = *map;
+    
     UC(scan::alloc_work(c->ncells, /**/ &m->scan));
 
     size = maxp * sizeof(uchar4);

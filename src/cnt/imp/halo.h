@@ -8,5 +8,5 @@ void halo(const Contact *c, int nw, PaWrap *pw, FoWrap *fw, Pap26 PP, Fop26 FF, 
     auto lpp = convert(nw, pw);
     auto lff = convert(nw, fw);
     
-    KL(dev::halo, (k_cnf(n)), (c->cells.starts, c->cmap.ii, rnd_get(c->rgen), starts, lpp, n, PP, /**/ lff, FF));
+    KL(dev::halo, (k_cnf(n)), (c->cells.starts, clist_get_ids(c->cmap), rnd_get(c->rgen), starts, lpp, n, PP, /**/ lff, FF));
 }

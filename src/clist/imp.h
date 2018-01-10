@@ -1,5 +1,3 @@
-enum {MAXA=2};                                /* maximum number of array */
-
 // tag::clist[]
 struct Clist {
     int3 dims;
@@ -8,21 +6,15 @@ struct Clist {
 };
 // end::clist[]
 
-// tag::map[]
-struct ClistMap {
-    int nA;              /* number of source arrays to build the cell lists, e.g remote+bulk -> 2 */
-    uchar4 *ee[MAXA];    /* cell entries */
-    uint *ii;            /* codes containing: indices of data to fetch and array id from which to fetch */
-    scan::Work scan;     /* scan workspace */
-    long maxp;           /* maximum number of particles per input vector */
-};
-// end::map[]
+struct ClistMap;
 
 void clist_ini(int LX, int LY, int LZ, /**/ Clist *c);
 void clist_fin(/**/ Clist *c);
 
-void clist_ini_map(int maxp, int nA, const Clist *c, /**/ ClistMap *m);
+void clist_ini_map(int maxp, int nA, const Clist *c, /**/ ClistMap **m);
 void clist_fin_map(ClistMap *m);
+
+const uint* clist_get_ids(const ClistMap *m);
 
 void clist_ini_counts(Clist *c);
 void clist_subindex(bool project, int aid, int n, const PartList lp, /**/ Clist *c, ClistMap *m);

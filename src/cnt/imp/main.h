@@ -6,7 +6,7 @@ void ini(int rank, /**/ Contact *c) {
 
 void fin(Contact *c) {
     clist_fin(/**/ &c->cells);
-    clist_fin_map(/**/ &c->cmap);
+    clist_fin_map(/**/ c->cmap);
     UC(rnd_fin(c->rgen));
 }
 
@@ -23,7 +23,7 @@ void build_cells(int nw, const PaWrap *pw, /**/ Contact *c) {
         cc[i] = w->n;
         lp.pp = w->pp;
         lp.deathlist = NULL;
-        clist_subindex(project, i, w->n, lp, /**/ &c->cells, &c->cmap);
+        clist_subindex(project, i, w->n, lp, /**/ &c->cells, c->cmap);
     }
-    clist_build_map(cc, /**/ &c->cells, &c->cmap);
+    clist_build_map(cc, /**/ &c->cells, c->cmap);
 }

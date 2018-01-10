@@ -91,7 +91,7 @@ int main(int argc, char **argv) {
     int n = 0, *starts, *counts;
     int3 dims;
     Clist clist;
-    ClistMap m;
+    ClistMap *m;
 
     dims.x = XS;
     dims.y = YS;
@@ -111,7 +111,7 @@ int main(int argc, char **argv) {
     
     CC(d::Memcpy(pp, pp_hst, n * sizeof(Particle), H2D));
     
-    clist_build(n, n, pp, /**/ ppout, &clist, &m);
+    clist_build(n, n, pp, /**/ ppout, &clist, m);
     
     CC(d::Memcpy(counts, clist.counts, clist.ncells * sizeof(int), D2H));
     CC(d::Memcpy(starts, clist.starts, clist.ncells * sizeof(int), D2H));
@@ -131,5 +131,5 @@ int main(int argc, char **argv) {
     free(pp_hst);
 
     clist_fin(/**/ &clist);
-    clist_fin_map(/**/ &m);
+    clist_fin_map(/**/ m);
 }

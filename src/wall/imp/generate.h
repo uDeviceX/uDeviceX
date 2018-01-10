@@ -45,13 +45,13 @@ static void build_cells(const int n, float4 *pp4, Clist *cells, ClistMap *mcells
 }
 
 static void gen_ticket(const int w_n, float4 *w_pp, Clist *cells, Texo<int> *texstart, Texo<float4> *texpp) {
-    ClistMap mcells;
+    ClistMap *mcells;
     UC(clist_ini_map(w_n, 1, cells, /**/ &mcells));
-    UC(build_cells(w_n, /**/ w_pp, cells, &mcells));
+    UC(build_cells(w_n, /**/ w_pp, cells, mcells));
     
     TE(texstart, cells->starts, cells->ncells);
     TE(texpp, w_pp, w_n);
-    UC(clist_fin_map(&mcells));
+    UC(clist_fin_map(mcells));
 }
 
 void gen_ticket(const Quants q, Ticket *t) {
