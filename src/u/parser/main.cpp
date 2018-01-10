@@ -41,7 +41,7 @@ int main(int argc, char **argv) {
 
     UC(extract(cfg));
     
-    conf_destroy(/**/ cfg);    
+    conf_fin(/**/ cfg);    
 
     m::fin();
 }

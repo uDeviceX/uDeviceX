@@ -31,7 +31,7 @@ void conf_ini(/**/ Config **c) {
         config_init(cfg->c + i);
 }
 
-void conf_destroy(/**/ Config *c) {
+void conf_fin(/**/ Config *c) {
     for (int i = 0; i < NCFG; ++i)
         config_destroy(c->c + i);
     UC(efree(c));
