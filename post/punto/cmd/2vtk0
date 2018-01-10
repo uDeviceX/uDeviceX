@@ -5,5 +5,61 @@ prog=u.punto.2vtk0
 
 . u.punto.util
 
-echo 42
-echo "$@"
+o="$1"; shift
+i="$1"; shift
+
+"$AWK" -v o="$o" -v i="$i" -v prog="$prog" '
+BEGIN {
+    ini()
+    arg()
+    while (1) {
+	r = read()
+	write()
+	if (r == EOF) break
+    }
+}
+
+function ini() {
+    id = 0
+    # end of file/snapshot
+    OK = 0; EOF = 1; EOS = 2
+}
+
+function nxt(   r) {
+    r = getline < i
+    if (r <= 0)  return EOF
+    if (NF == 0) return EOS
+    return OK
+}
+
+function read_line(r,   k, v, i) {
+    # global snap
+    for (k in idx) {
+	i = idx[k]
+	snap[k, r] = $i
+    }
+}
+function read(   r, s) { # s: status
+    n = 0 # global number of particles
+    while (1) {
+	r = nxt()
+	if (r == EOF) {s = EOF; break}
+	if (r == EOS) {s = OK ; break}
+	read_line(n++)
+    }
+    return s
+}
+function write(   i) { # uses n, snap
+    for (i = 0; i < n; i++) {
+	msg(i " " snap["id", i] " " snap["x", i])
+    }
+}
+
+function arg(   i, k) {
+    for (i = 1; i in ARGV; i++) {
+	k = ARGV[i]; idx[k] = i; key[i] = k
+    }
+}
+function msg(s) { printf "%s: %s\n", prog, s | "cat >&2" }
+function err(s) { msg(s); exit(2) }
+' "$@"
