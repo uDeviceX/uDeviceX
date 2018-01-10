@@ -101,3 +101,7 @@ void inflow_create_pp(Inflow *i, int *n, Particle *pp) {
     CC(d::MemcpyAsync(n, d->ndev, sizeof(int), D2H));
     dSync(); // wait for n
 }
+
+void inflow_color_new_pp() {
+    
+}
