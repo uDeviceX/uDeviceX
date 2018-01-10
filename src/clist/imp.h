@@ -8,14 +8,19 @@ struct Clist {
 
 struct ClistMap;
 
+// tag::mem[]
 void clist_ini(int LX, int LY, int LZ, /**/ Clist *c);
 void clist_fin(/**/ Clist *c);
 
 void clist_ini_map(int maxp, int nA, const Clist *c, /**/ ClistMap **m);
 void clist_fin_map(ClistMap *m);
+// end::mem[]
 
+// tag::access[]
 const uint* clist_get_ids(const ClistMap *m);
+// end::access[]
 
+// tag::int[]
 void clist_ini_counts(Clist *c);
 void clist_subindex(bool project, int aid, int n, const PartList lp, /**/ Clist *c, ClistMap *m);
 void clist_build_map(const int nn[], /**/ Clist *c, ClistMap *m);
@@ -29,3 +34,4 @@ void clist_gather_ii(const int *iilo, const int *iire, const ClistMap *m, long n
 
 /* quick cell build for single array */
 void clist_build(int nlo, int nout, const Particle *pplo, /**/ Particle *ppout, Clist *c, ClistMap *m);
+// end::int[]
