@@ -10,7 +10,7 @@ Defined by two structures:
 
 * `BForce`, contains all informations needed for the  force
   field. It is hold and maintained on host.
-* `BForce_v` (`BForce view`), containing only the information needed at
+* `BForce_v` (`BForce view'), containing only the information needed at
    a specific time. It is passed to device kernels.
 
 The parameters are listed in the following structures:
