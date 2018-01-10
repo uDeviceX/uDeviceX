@@ -18,29 +18,29 @@ static void ini_bforce(const Config *cfg, BForce *bforce) {
         bforce_ini_none(/**/ bforce);
     }
     else if (same_str(type, "constant")) {
-        BForce_cste par;
-        UC(conf_lookup_float3(cfg, "bforce.f", /**/ &par.a));
-        UC(bforce_ini(par, /**/ bforce));
+        float3 f;
+        UC(conf_lookup_float3(cfg, "bforce.f", /**/ &f));
+        UC(bforce_ini_cste(f, /**/ bforce));
     }
     else if (same_str(type, "double_poiseuille")) {
-        BForce_dp par;
-        UC(conf_lookup_float(cfg, "bforce.a", /**/ &par.a));
-        UC(bforce_ini(par, /**/ bforce));
+        float a;
+        UC(conf_lookup_float(cfg, "bforce.a", /**/ &a));
+        UC(bforce_ini_dp(a, /**/ bforce));
     }
     else if (same_str(type, "shear")) {
-        BForce_shear par;
-        UC(conf_lookup_float(cfg, "bforce.a", /**/ &par.a));
-        UC(bforce_ini(par, /**/ bforce));
+        float a;
+        UC(conf_lookup_float(cfg, "bforce.a", /**/ &a));
+        UC(bforce_ini_shear(a, /**/ bforce));
     }
     else if (same_str(type, "four_roller")) {
-        BForce_rol par;
-        UC(conf_lookup_float(cfg, "bforce.a", /**/ &par.a));
-        UC(bforce_ini(par, /**/ bforce));
+        float a;
+        UC(conf_lookup_float(cfg, "bforce.a", /**/ &a));
+        UC(bforce_ini_rol(a, /**/ bforce));
     }
     else if (same_str(type, "rad")) {
-        BForce_rad par;
-        UC(conf_lookup_float(cfg, "bforce.a", /**/ &par.a));
-        UC(bforce_ini(par, /**/ bforce));
+        float a;
+        UC(conf_lookup_float(cfg, "bforce.a", /**/ &a));
+        UC(bforce_ini_rad(a, /**/ bforce));
     }
     else {
         ERR("Unrecognized type <%s>", type);
