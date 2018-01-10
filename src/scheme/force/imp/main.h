@@ -1,29 +1,24 @@
-void bforce_apply(Coords c, float mass, BForce_v view, int n, const Particle *pp, /**/ Force *ff) {
+void bforce_adjust(float3 f, /**/ BForce *bforce) {
     int type;
-    BForceParam_v p;
-    type = view.type;
-    p    = view.p;
+    BForceParam *p;
+    type = bforce->type;
+    p    = &bforce->p;
 
     switch (type) {
-    case BODY_FORCE_V_NONE:
+    case BODY_FORCE_NONE:
         break;
-    case BODY_FORCE_V_CSTE:
-        KL(force, (k_cnf(n)), (c, p.cste, mass, n, pp, /**/ ff));
+    case BODY_FORCE_CSTE:
+        p->cste.a = f;
         break;
-    case BODY_FORCE_V_DP:
-        KL(force, (k_cnf(n)), (c, p.dp, mass, n, pp, /**/ ff));
+    case BODY_FORCE_RAD:
+        /* do not control radial and z directions */
+        p->rad.a = f.x;
         break;
-    case BODY_FORCE_V_SHEAR:
-        KL(force, (k_cnf(n)), (c, p.shear, mass, n, pp, /**/ ff));
-        break;
-    case BODY_FORCE_V_ROL:
-        KL(force, (k_cnf(n)), (c, p.rol, mass, n, pp, /**/ ff));
-        break;
-    case BODY_FORCE_V_RAD:
-        KL(force, (k_cnf(n)), (c, p.rad, mass, n, pp, /**/ ff));
-        break;
+    case BODY_FORCE_DP:
+    case BODY_FORCE_SHEAR:
+    case BODY_FORCE_ROL:
     default:
-        ERR("wrong type <%d>", type);
+        ERR("not implemented");
         break;
     };
 }
@@ -53,11 +48,11 @@ static void get_view(BForce_rad bf, BForce_v *v) {
     v->p.rad.a = bf.a;
 }
 
-void bforce_get_view(long it, BForce bforce, /**/ BForce_v *view) {
+static void bforce_get_view(long it, const BForce *bforce, /**/ BForce_v *view) {
     int type;
     BForceParam p;
-    type = bforce.type;
-    p    = bforce.p;    
+    type = bforce->type;
+    p    = bforce->p;    
 
     switch (type) {
     case BODY_FORCE_NONE:
@@ -84,27 +79,37 @@ void bforce_get_view(long it, BForce bforce, /**/ BForce_v *view) {
     };    
 }
 
-void bforce_adjust(float3 f, /**/ BForce *bforce) {
+void bforce_apply(long it, Coords c, float mass, const BForce *bf, int n, const Particle *pp, /**/ Force *ff) {
     int type;
-    BForceParam *p;
-    type = bforce->type;
-    p    = &bforce->p;
+    BForce_v view;
+    BForceParam_v p;
+
+    view.type = BODY_FORCE_V_NONE;
+    bforce_get_view(it, bf, /**/ &view);
+    
+    type = view.type;
+    p    = view.p;
 
     switch (type) {
-    case BODY_FORCE_NONE:
+    case BODY_FORCE_V_NONE:
         break;
-    case BODY_FORCE_CSTE:
-        p->cste.a = f;
+    case BODY_FORCE_V_CSTE:
+        KL(force, (k_cnf(n)), (c, p.cste, mass, n, pp, /**/ ff));
         break;
-    case BODY_FORCE_RAD:
-        /* do not control radial and z directions */
-        p->rad.a = f.x;
+    case BODY_FORCE_V_DP:
+        KL(force, (k_cnf(n)), (c, p.dp, mass, n, pp, /**/ ff));
         break;
-    case BODY_FORCE_DP:
-    case BODY_FORCE_SHEAR:
-    case BODY_FORCE_ROL:
+    case BODY_FORCE_V_SHEAR:
+        KL(force, (k_cnf(n)), (c, p.shear, mass, n, pp, /**/ ff));
+        break;
+    case BODY_FORCE_V_ROL:
+        KL(force, (k_cnf(n)), (c, p.rol, mass, n, pp, /**/ ff));
+        break;
+    case BODY_FORCE_V_RAD:
+        KL(force, (k_cnf(n)), (c, p.rad, mass, n, pp, /**/ ff));
+        break;
     default:
-        ERR("not implemented");
+        ERR("wrong type <%d>", type);
         break;
     };
 }

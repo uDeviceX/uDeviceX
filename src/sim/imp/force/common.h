@@ -1,17 +1,14 @@
-void body_force(long it, BForce bforce, Sim *s) {
-    BForce_v view;
-    UC(bforce_get_view(it, bforce, /**/ &view));
-
+void body_force(long it, const BForce *bforce, Sim *s) {
     Flu *flu = &s->flu;
     Rbc *rbc = &s->rbc;
     Rig *rig = &s->rig;
 
     if (pushflu)
-        UC(bforce_apply(s->coords, flu_mass, view, flu->q.n, flu->q.pp, /**/ flu->ff));
+        UC(bforce_apply(it, s->coords, flu_mass, bforce, flu->q.n, flu->q.pp, /**/ flu->ff));
     if (pushsolid && s->solids0)
-        UC(bforce_apply(s->coords, solid_mass, view, rig->q.n, rig->q.pp, /**/ rig->ff));
+        UC(bforce_apply(it, s->coords, solid_mass, bforce, rig->q.n, rig->q.pp, /**/ rig->ff));
     if (pushrbc && rbcs)
-        UC(bforce_apply(s->coords, rbc_mass, view, rbc->q.n, rbc->q.pp, /**/ rbc->ff));
+        UC(bforce_apply(it, s->coords, rbc_mass, bforce, rbc->q.n, rbc->q.pp, /**/ rbc->ff));
 }
 
 void forces_rbc (Rbc *r) {

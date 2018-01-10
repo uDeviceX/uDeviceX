@@ -1,11 +1,13 @@
 void run_eq(long te, Sim *s) { /* equilibrate */
-    BForce bforce;
+    BForce *bforce;
+    UC(bforce_ini(&bforce));
     s->equilibrating = true;
     
-    bforce_ini_none(/**/ &bforce);    
+    bforce_ini_none(/**/ bforce);    
     bool wall0 = false;
-    for (long it = 0; it < te; ++it) step(&bforce, wall0, it, s);
+    for (long it = 0; it < te; ++it) step(bforce, wall0, it, s);
     UC(distribute_flu(/**/ s));
+    UC(bforce_fin(bforce));
 }
 
 static void ini_bforce(const Config *cfg, BForce *bforce) {
@@ -48,18 +50,19 @@ static void ini_bforce(const Config *cfg, BForce *bforce) {
 void run(long ts, long te, Sim *s) {
     long it; /* current timestep */
     Wall *wall = &s->wall;
-
-    s->equilibrating = false;
+    BForce *bforce;
+    
+    UC(bforce_ini(&bforce));
+    UC(ini_bforce(s->cfg, bforce));
 
     dump_strt_templ(s->coords, wall, s); /* :TODO: is it the right place? */
-
-    BForce bforce;
-    ini_bforce(s->cfg, &bforce);
+    s->equilibrating = false;   
     
     /* ts, te: time start and end */
     for (it = ts; it < te; ++it) {
         step2params(it - ts, &wall->vel, /**/ &wall->vview);
-        step(&bforce, walls, it, s);
+        step(bforce, walls, it, s);
     }
     UC(distribute_flu(/**/ s));
+    UC(bforce_fin(bforce));
 }
