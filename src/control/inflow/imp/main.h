@@ -12,15 +12,15 @@ void inflow_ini(int2 nc, Inflow **i) {
     size_t sz;
     Inflow *ip;
     Desc *d;
-        
+
     UC(emalloc(sizeof(Inflow), (void**) i));
-    
+
     ip = *i;
     d = &ip->d;
 
     n = nc.x * nc.y;
     d->nc = nc;
-    
+
     sz = n * sizeof(curandState_t);
     CC(d::Malloc((void**) &d->rnds, sz));
 
@@ -36,7 +36,7 @@ void inflow_ini(int2 nc, Inflow **i) {
     ini_rnd(n, d->rnds);
     ini_flux(n, d->rnds, d->cumflux);
 
-    ip->t = TYPE_NONE;    
+    ip->t = TYPE_NONE;
 }
 
 static void ini_velocity(Type t, int2 nc, const ParamsU *p, const VParamsU *vp, /**/ float3 *uu) {
@@ -77,19 +77,19 @@ static void create_solvent(Inflow *i, int *n, SolventWrap wrap) {
     d = &i->d;
     nc = d->nc;
     nctot = nc.x * nc.y;
-    
+
     CC(d::MemcpyAsync(d->ndev, n, sizeof(int), H2D));
 
     switch(i->t) {
     case TYPE_PLATE:
         KL(dev::cumulative_flux, (k_cnf(nctot)), (i->p.plate, nc, d->uu, /**/ d->cumflux));
         KL(dev::create_particles, (k_cnf(nctot)),
-           (i->p.plate, nc, d->uu, /*io*/ d->rnds, d->cumflux, /**/ d->ndev, wrap));    
+           (i->p.plate, nc, d->uu, /*io*/ d->rnds, d->cumflux, /**/ d->ndev, wrap));
         break;
     case TYPE_CIRCLE:
         KL(dev::cumulative_flux, (k_cnf(nctot)), (i->p.circle, nc, d->uu, /**/ d->cumflux));
         KL(dev::create_particles, (k_cnf(nctot)),
-           (i->p.circle, nc, d->uu, /*io*/ d->rnds, d->cumflux, /**/ d->ndev, wrap));    
+           (i->p.circle, nc, d->uu, /*io*/ d->rnds, d->cumflux, /**/ d->ndev, wrap));
         break;
     case TYPE_NONE:
         break;
@@ -97,7 +97,7 @@ static void create_solvent(Inflow *i, int *n, SolventWrap wrap) {
         ERR("No inflow type is set");
         break;
     };
-    
+
     CC(d::MemcpyAsync(n, d->ndev, sizeof(int), D2H));
     dSync(); // wait for n
 }
@@ -120,7 +120,7 @@ void inflow_create_pp_cc(int newcolor, Inflow *i, int *n, Particle *pp, int *cc)
     wrap.cc = cc;
     wrap.multisolvent = true;
     wrap.color = newcolor;
-    
+
 
     create_solvent(i, n, wrap);
 }
