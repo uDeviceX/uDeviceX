@@ -10,11 +10,40 @@ i="$1"; shift
 
 "$AWK" -v o="$o" -v i="$i" -v prog="$prog" '
 BEGIN {
-    print o, i
+    ini()
     arg()
+    while (1) {
+	r = read()
+	write()
+	if (r == EOF) break
+    }
 }
 
-function arg(   k) {
+function ini() {
+    id = 0
+    # end of file/snapshot
+    OK = 0; EOF = 1; EOS = 2
+}
+
+function nxt(   r) {
+    r = getline < i
+    if (r <= 0)  return EOF
+    if (NF == 0) return EOS
+    return OK
+}
+
+function read(   r) {
+    while (1) {
+	r = nxt()
+	if (r == EOF) return EOF
+	if (r == EOS) return OK
+    }
+}
+function write() {
+    msg("preved")
+}
+
+function arg(   i, k) {
     for (i = 1; i in ARGV; i++) {
 	k = ARGV[i]; idx[k] = i; key[i] = k
     }
