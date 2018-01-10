@@ -1,7 +1,10 @@
 #!/bin/sh
 G="git@github.com:amlucas/udoc.git"
 
+ROOT="/udoc"
 DOC=doc_
+
+make clean && make ROOT=${ROOT} -j
 
 T="./public"
 rm -rf $T
