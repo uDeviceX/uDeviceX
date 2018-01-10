@@ -120,8 +120,8 @@ u.strtdir bin.1
 u.strtdir bin.2
 :
 { make clean && u.make -j ; } > /dev/null
-u.run ./bin1/udx
-u.run ./bin2/udx $Force
+u.run ./bin.1/udx
+u.run ./bin.2/udx $Force
 ply2punto r/00001.ply | uscale 100 > ply.out.txt
 
 #### 3 rigid ellipsoids in double poiseuille, contact
@@ -148,8 +148,8 @@ u.conf conf/double.poiseuille.h <<!!!
    run
 !!!
 :
-u.run ./bin1/udx
-u.run ./bin2/udx $Force
+u.run ./bin.1/udx
+u.run ./bin.2/udx $Force
 :
 { make clean && u.make -j ; } > /dev/null
 cat solid_diag_0000.txt | awk '{print $2, $5, $8}' | uscale 2.5 > sdiag.out.txt
