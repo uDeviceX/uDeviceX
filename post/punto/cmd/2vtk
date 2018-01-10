@@ -14,4 +14,6 @@ usg () {
     exit
 }
 
+if test $# -ne 0 && test "$1" = -h; then usg; fi
+
 exec "$prog0" "$@"
