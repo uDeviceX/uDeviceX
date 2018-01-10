@@ -1,3 +1,5 @@
+#include <stdio.h>
+
 #include <conf.h>
 #include "inc/conf.h"
 #include "inc/type.h"
@@ -10,7 +12,9 @@
 #include "utils/error.h"
 #include "utils/kl.h"
 #include "utils/cc.h"
+#include "utils/imp.h"
 
+#include "imp.h"
 #include "type.h"
 #include "dev/main.h"
 #include "imp/ini.h"

@@ -1,17 +1,23 @@
+struct Particle;
+struct Force;
+struct BForce;
+struct float3;
+
+// tag::mem[]
+void bforce_ini(BForce **p);
+void bforce_fin(BForce *p);
+// end::mem[]
+
 // tag::ini[]
-void ini_none(/**/ BForce *p);
-void ini(BForce_cste par, /**/ BForce *p);
-void ini(BForce_dp par, /**/ BForce *p);
-void ini(BForce_shear par, /**/ BForce *p);
-void ini(BForce_rol par, /**/ BForce *p);
-void ini(BForce_rad par, /**/ BForce *p);
+void bforce_ini_none(/**/ BForce *p);
+void bforce_ini_cste(float3 f, /**/ BForce *p);
+void bforce_ini_dp(float a, /**/ BForce *p);
+void bforce_ini_shear(float a, /**/ BForce *p);
+void bforce_ini_rol(float a, /**/ BForce *p);
+void bforce_ini_rad(float a, /**/ BForce *p);
 // end::ini[]
 
 // tag::interface[]
-/* TODO not polymorphic for now   */
-/* related to velocity controller */
-void adjust(float3 f, /**/ BForce *fpar);
-
-void get_view(long it, BForce bforce, /**/ BForce_v *view);
-void body_force(Coords c, float mass, BForce_v fpar, int n, const Particle *pp, /**/ Force *ff);
+void bforce_adjust(float3 f, /**/ BForce *fpar);
+void bforce_apply(long it, Coords c, float mass, const BForce *bf, int n, const Particle *pp, /**/ Force *ff);
 // end::interface[]

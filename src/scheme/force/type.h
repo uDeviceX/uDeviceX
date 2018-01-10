@@ -50,7 +50,6 @@ struct BForce_v {
 /* structure containing parameters on host */
 
 // tag::params[]
-
 /* constant force f */
 struct BForce_cste {
     float3 a; // acceleration vector
@@ -75,7 +74,6 @@ struct BForce_rol {
 struct BForce_rad {
     float a; // radial acceleartion is a / r
 };
-
 // end::params[]
 
 enum {

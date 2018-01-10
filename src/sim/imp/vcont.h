@@ -15,7 +15,7 @@ void adjust(long id, /**/ Vcon *c, BForce *bforce) {
     if (valid_step(id, c->adjust_freq)) {
         float3 f;
         f = vcont_adjustF(/**/ c->vcont);
-        adjust(f, /**/ bforce);
+        bforce_adjust(f, /**/ bforce);
     }
 }
 
