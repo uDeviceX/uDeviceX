@@ -29,12 +29,13 @@
 #include "circle/type.h"
 #include "circle/dev.h"
 
+
+#include "imp/type.h"
+
 namespace dev {
 #include "dev/ini.h"
 #include "dev/main.h"
 }
-
-#include "imp/type.h"
 
 #include "plate/imp.h"
 #include "circle/imp.h"

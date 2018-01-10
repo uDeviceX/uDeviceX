@@ -69,11 +69,11 @@ void inflow_fin(Inflow *i) {
     UC(efree(i));
 }
 
-void inflow_create_pp(Inflow *i, int *n, Particle *pp) {
+static void create_solvent(Inflow *i, int *n, SolventWrap wrap) {
     int2 nc;
     Desc *d;
     int nctot;
-    
+
     d = &i->d;
     nc = d->nc;
     nctot = nc.x * nc.y;
@@ -84,12 +84,12 @@ void inflow_create_pp(Inflow *i, int *n, Particle *pp) {
     case TYPE_PLATE:
         KL(dev::cumulative_flux, (k_cnf(nctot)), (i->p.plate, nc, d->uu, /**/ d->cumflux));
         KL(dev::create_particles, (k_cnf(nctot)),
-           (i->p.plate, nc, d->uu, /*io*/ d->rnds, d->cumflux, /**/ d->ndev, pp));    
+           (i->p.plate, nc, d->uu, /*io*/ d->rnds, d->cumflux, /**/ d->ndev, wrap));    
         break;
     case TYPE_CIRCLE:
         KL(dev::cumulative_flux, (k_cnf(nctot)), (i->p.circle, nc, d->uu, /**/ d->cumflux));
         KL(dev::create_particles, (k_cnf(nctot)),
-           (i->p.circle, nc, d->uu, /*io*/ d->rnds, d->cumflux, /**/ d->ndev, pp));    
+           (i->p.circle, nc, d->uu, /*io*/ d->rnds, d->cumflux, /**/ d->ndev, wrap));    
         break;
     case TYPE_NONE:
         break;
@@ -100,4 +100,14 @@ void inflow_create_pp(Inflow *i, int *n, Particle *pp) {
     
     CC(d::MemcpyAsync(n, d->ndev, sizeof(int), D2H));
     dSync(); // wait for n
+}
+
+void inflow_create_pp(Inflow *i, int *n, Particle *pp) {
+    SolventWrap wrap;
+
+    wrap.pp = pp;
+    wrap.cc = NULL;
+    wrap.multisolvent = false;
+
+    create_solvent(i, n, wrap);
 }
