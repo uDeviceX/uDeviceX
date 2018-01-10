@@ -2,6 +2,8 @@
 :lext: .adoc
 :src: ../../../src
 
+Helpers to find which particles are in a given cell.
+
 * reorder data according to particle positions into cells
 * access particles within a given cell
 
@@ -38,8 +40,6 @@ The above can be easily extended in 3D, only ordering changes.
 
 === Clist
 
-Helpers to find which particles are in which cells.
-
 [source,cpp]
 ----
 include::{src}/clist/imp.h[tag=clist]
@@ -52,11 +52,11 @@ include::{src}/clist/imp.h[tag=clist]
 
 === Map
 
-Helper to build the cell lists
+Helper to build the cell lists (hidden from client)
 
 [source,cpp]
 ----
-include::{src}/clist/imp.h[tag=map]
+include::{src}/clist/imp/type.h[tag=map]
 ----
 
 * `nA` number of source arrays
@@ -69,6 +69,38 @@ include::{src}/clist/imp.h[tag=map]
 * `ii` indices of particles to fetch. can be decoded into the source
   array id and the particle id inside this array
 * `scan` scan workspace, see link:algo/scan{lext}[scan]
+
+The ids can be accessed from
+
+[source,cpp]
+----
+include::{src}/clist/imp.h[tag=access]
+----
+
+
+== interface
+
+allocate/deallocate
+
+[source,cpp]
+----
+include::{src}/clist/imp.h[tag=mem]
+----
+
+build interface:
+
+[source,cpp]
+----
+include::{src}/clist/imp.h[tag=int]
+----
+
+Device interface: code/decode map ids
+
+[source,cpp]
+----
+include::{src}/clist/code.h[tag=int]
+----
+
 
 == algorithm
 
