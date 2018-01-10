@@ -5,12 +5,16 @@
 == hdf5
 == libconf
 
-= bootstrap
+== bootstrap
 
 see link:bootstrap[bootstrap]
 
-= build and install tools
+== build and install tools
 
 ....
 make
 ....
+
+== Documentation
+
+link:https://amlucas.github.io/udoc/[]
