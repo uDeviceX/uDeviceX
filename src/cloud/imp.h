@@ -3,10 +3,10 @@ struct Cloud {
     const int *cc;   /* colors */
 };
 
-static void ini_cloud(Particle *pp, Cloud *c) {
-    c->pp = (float*)pp;
+static void ini_cloud(const Particle *pp, Cloud *c) {
+    c->pp = (const float*)pp;
 };
 
-static void ini_cloud_color(int *cc, Cloud *c) {
+static void ini_cloud_color(const int *cc, Cloud *c) {
     c->cc = cc;
 };
