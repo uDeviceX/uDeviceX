@@ -47,7 +47,6 @@ void forces_objects(Sim *sim) {
     ini_cloud(f->q.pp, &cloud);
     if (multi_solvent) ini_cloud_color(f->q.cc, &cloud);
 
-    w_s.pp = f->q.pp;
     w_s.c  = cloud;
     w_s.ff = f->ff;
     w_s.n  = f->q.n;

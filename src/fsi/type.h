@@ -1,7 +1,6 @@
 struct RNDunif;
 namespace fsi {
 struct SolventWrap {
-    Particle *pp;
     Cloud c;
     Force *ff;
     int n; 
