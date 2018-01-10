@@ -1,4 +1,4 @@
-void body_force(Coords c, float mass, BForce_v view, int n, const Particle *pp, /**/ Force *ff) {
+void bforce_apply(Coords c, float mass, BForce_v view, int n, const Particle *pp, /**/ Force *ff) {
     int type;
     BForceParam_v p;
     type = view.type;
@@ -53,7 +53,7 @@ static void get_view(BForce_rad bf, BForce_v *v) {
     v->p.rad.a = bf.a;
 }
 
-void get_view(long it, BForce bforce, /**/ BForce_v *view) {
+void bforce_get_view(long it, BForce bforce, /**/ BForce_v *view) {
     int type;
     BForceParam p;
     type = bforce.type;
@@ -84,7 +84,7 @@ void get_view(long it, BForce bforce, /**/ BForce_v *view) {
     };    
 }
 
-void adjust(float3 f, /**/ BForce *bforce) {
+void bforce_adjust(float3 f, /**/ BForce *bforce) {
     int type;
     BForceParam *p;
     type = bforce->type;
