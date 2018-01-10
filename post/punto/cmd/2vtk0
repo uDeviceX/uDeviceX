@@ -1,5 +1,7 @@
 #!/bin/sh
-set -eu
+set -u
+
+: ${FMT="%05d"}
 
 prog=u.punto.2vtk0
 
@@ -8,7 +10,7 @@ prog=u.punto.2vtk0
 o="$1"; shift
 i="$1"; shift
 
-"$AWK" -v o="$o" -v i="$i" -v prog="$prog" '
+"$AWK" -v o="$o" -v i="$i" -v prog="$prog" -v fmt="$FMT" '
 BEGIN {
     ini()
     arg()
@@ -57,10 +59,19 @@ function read(   r, s) { # s: status
     }
     return s
 }
-function write(   i) { # uses n, snap
-    for (i = 0; i < n; i++) {
-	msg(i " " snap["id", i] " " snap["x", i])
-    }
+function header(f) {
+    print "# vtk DataFile Version 2.0" > f
+    print "created with " prog         > f
+    print "ASCII"                      > f
+}
+function write0(f) {
+    msg(f)
+    header(f)
+}
+function write() { # fn: file number (global)
+    f = sprintf("%s/" fmt ".vtk", o, fn++)
+    write0(f)
+    close(f)
 }
 
 function arg(   i, k) {
@@ -71,3 +82,5 @@ function arg(   i, k) {
 function msg(s) { printf "%s: %s\n", prog, s | "cat >&2" }
 function err(s) { msg(s); exit(2) }
 ' "$@"
+
+if test $? -ne 0; then err 'awk part failed'; fi
