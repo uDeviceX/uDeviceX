@@ -1,0 +1,36 @@
+#!/bin/sh
+
+. u.punto.util
+prog=u.punto.disp
+
+i="$1"; shift
+
+"$AWK" -v prog="$prog" '
+BEGIN    {
+    s = i = 0
+}
+NF == 0  { s++; i = 0; printf "\n" ; next }
+	 { i ++ }
+s  == 0  {
+    if (i in x0) same_id(i)
+    x0[i] = $2; y0[i] = $3; z0[i] = $4
+}
+{
+    if (!(i in x0)) no_id(i)
+    x = $2; y = $3; z = $4
+    dx = x - x0[i]; dy = y - y0[i]; dz = z - z0[i]
+    print $0, dx, dy, dz
+}
+function msg(s) { printf "%s: %s\n", prog, s | "cat >&2" }
+function err(s) { msg(s); exit(2) }
+function same_id(i,   s) {
+    s = sprintf("same id = %d, file = %s, line = %d",
+		i, FILENAME, NR)
+    err(s)
+}
+function no_id(i,   s) {
+    s = sprintf("no id = %d, file = %s, line = %d",
+		i, FILENAME, NR)
+    err(s)
+}
+' "$i"
