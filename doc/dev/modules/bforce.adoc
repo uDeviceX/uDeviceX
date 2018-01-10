@@ -55,7 +55,7 @@ initialize from configuration:
 
 [source, c++]
 ----
-include::{src}/scheme/force/conf.h[tag=ini]
+include::{src}/scheme/force/imp.h[tag=cnf]
 ----
 
 interface:

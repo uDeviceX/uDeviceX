@@ -5,6 +5,7 @@ $B/cnt/imp.o: $S/cnt/imp.cu; $N -I$S/. -I$S/cnt
 $B/color/flux.o: $S/color/flux.cu; $N -I$S/. -I$S/color
 $B/comm/imp.o: $S/comm/imp.cpp; $X -I$S/. -I$S/comm
 $B/control/den/imp.o: $S/control/den/imp.cu; $N -I$S/. -I$S/control/den
+$B/control/inflow/conf.o: $S/control/inflow/conf.cpp; $X -I$S/. -I$S/control/inflow
 $B/control/inflow/imp.o: $S/control/inflow/imp.cu; $N -I$S/. -I$S/control/inflow
 $B/control/outflow/imp.o: $S/control/outflow/imp.cu; $N -I$S/. -I$S/control/outflow
 $B/control/vel/imp.o: $S/control/vel/imp.cu; $N -I$S/. -I$S/control/vel

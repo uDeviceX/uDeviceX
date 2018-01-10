@@ -28,3 +28,10 @@ struct Inflow {
     ParamsU p;
     VParamsU vp;
 };
+
+struct SolventWrap {
+    Particle *pp;       /* particles               */
+    int *cc;            /* colors                  */
+    bool multisolvent;  /* true if color activated */
+    int color;          /* color of new particles  */
+};

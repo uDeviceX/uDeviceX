@@ -99,7 +99,6 @@
 #include "inter/imp.h"
 #include "inter/color.h"
 #include "scheme/force/imp.h"
-#include "scheme/force/conf.h"
 #include "scheme/move/imp.h"
 #include "scheme/restrain/imp.h"
 

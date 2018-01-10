@@ -11,7 +11,6 @@
 #include "glob/ini.h"
 #include "parser/imp.h"
 #include "scheme/force/imp.h"
-#include "scheme/force/conf.h"
 
 /* local */
 #include "lib/imp.h"

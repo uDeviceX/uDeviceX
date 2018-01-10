@@ -8,7 +8,6 @@
 #include "utils/error.h"
 
 #include "imp.h"
-#include "conf.h"
 
 void bforce_ini_conf(const Config *cfg, /**/ BForce *bf) {
     const char *type;

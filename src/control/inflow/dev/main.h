@@ -59,7 +59,7 @@ static __device__ Particle create_particle(Par params, int2 nc, int xcid, int yc
 }
 
 template <typename Par>
-__global__ void create_particles(Par params, int2 nc, const float3 *flux, /* io */ curandState_t *rnds, float *cumflux, /**/ int *n, Particle *pp) {
+__global__ void create_particles(Par params, int2 nc, const float3 *flux, /* io */ curandState_t *rnds, float *cumflux, /**/ int *n, SolventWrap wrap) {
     int i, xcid, ycid, j, nnew, strt;
     float c;
     float3 f;
@@ -83,8 +83,11 @@ __global__ void create_particles(Par params, int2 nc, const float3 *flux, /* io 
     
     strt = atomicAdd(n, nnew);
     
-    for (j = strt; j < strt + nnew; ++j)
-        pp[j] = create_particle(params, nc, xcid, ycid, f, /*io*/ &rndstate);
+    for (j = strt; j < strt + nnew; ++j) {
+        wrap.pp[j] = create_particle(params, nc, xcid, ycid, f, /*io*/ &rndstate);
+        if (wrap.multisolvent)
+            wrap.cc[j] = wrap.color;
+    }
 
     rnds[i] = rndstate;
 }
