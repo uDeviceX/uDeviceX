@@ -5,5 +5,20 @@ prog=u.punto.2vtk0
 
 . u.punto.util
 
-echo 42
-echo "$@"
+o="$1"; shift
+i="$1"; shift
+
+"$AWK" -v o="$o" -v i="$i" -v prog="$prog" '
+BEGIN {
+    print o, i
+    arg()
+}
+
+function arg(   k) {
+    for (i = 1; i in ARGV; i++) {
+	k = ARGV[i]; idx[k] = i; key[i] = k
+    }
+}
+function msg(s) { printf "%s: %s\n", prog, s | "cat >&2" }
+function err(s) { msg(s); exit(2) }
+' "$@"
