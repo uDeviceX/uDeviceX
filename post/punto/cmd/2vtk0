@@ -32,15 +32,27 @@ function nxt(   r) {
     return OK
 }
 
-function read(   r) {
-    while (1) {
-	r = nxt()
-	if (r == EOF) return EOF
-	if (r == EOS) return OK
+function read_line(r,   k, v, i) {
+    # global snap
+    for (k in idx) {
+	i = idx[k]
+	snap[k, r] = $i
     }
 }
-function write() {
-    msg("preved")
+function read(   r, s) { # s: status
+    n = 0 # global number of particles
+    while (1) {
+	r = nxt()
+	if (r == EOF) {s = EOF; break}
+	if (r == EOS) {s = OK ; break}
+	read_line(n++)
+    }
+    return s
+}
+function write(   i) { # uses n, snap
+    for (i = 0; i < n; i++) {
+	msg(i " " snap["id", i] " " snap["x", i])
+    }
 }
 
 function arg(   i, k) {
