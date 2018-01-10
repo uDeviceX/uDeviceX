@@ -1,5 +1,5 @@
 void apply_inflow(Inflow *i, Flu *f) {
-    UC(create_pp(i, &f->q.n, f->q.pp));
+    UC(inflow_create_pp(i, &f->q.n, f->q.pp));
 }
 
 void mark_outflow(const Flu *f, Outflow *o) {
