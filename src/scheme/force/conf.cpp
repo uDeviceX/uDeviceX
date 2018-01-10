@@ -12,7 +12,7 @@
 
 void bforce_ini_conf(const Config *cfg, /**/ BForce *bf) {
     const char *type;
-    UC(conf_lookup_string(cfg, "bf.type", /**/ &type));
+    UC(conf_lookup_string(cfg, "bforce.type", /**/ &type));
 
     if      (same_str(type, "none")) {
         bforce_ini_none(/**/ bf);
