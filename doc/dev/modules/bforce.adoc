@@ -44,12 +44,6 @@ initialize to a given force function:
 include::{src}/scheme/force/imp.h[tag=ini]
 ----
 
-initialize from configuration:
-
-[source, c++]
-----
-include::{src}/scheme/force/conf.h[tag=ini]
-----
 <1> no force
 <2> constant force `f`
 <3> double poiseuille
@@ -57,7 +51,15 @@ include::{src}/scheme/force/conf.h[tag=ini]
 <5> 4 roller mill
 <6> radial force
 
+initialize from configuration:
+
+[source, c++]
+----
+include::{src}/scheme/force/conf.h[tag=ini]
+----
+
 interface:
+
 [source, c++]
 ----
 include::{src}/scheme/force/imp.h[tag=interface]
