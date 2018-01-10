@@ -1,3 +1,11 @@
+#if defined(VCON) || defined(VCON_CART) || defined (VCON_RAD) || \
+    defined(VCON_VX) || defined(VCON_VY) || defined(VCON_VZ)  || \
+    defined(VCON_FACTOR) || defined(VCON_SAMPLE_FREQ) || \
+    defined(VCON_ADJUST_FREQ) || defined(VCON_LOG_FREQ)
+#error vcon has runtime parameters now!
+#endif
+
+
 /* how wall velocity is changing in time?  */
 #if !defined(WVEL_FLAT) && !defined(WVEL_DUPIRE_UP) && !defined(WVEL_DUPIRE_DOWN) && !defined(WVEL_SIN)
   #define WVEL_FLAT
@@ -298,20 +306,6 @@
 /* MSG frequency */
 #ifndef RESTRAIN_REPORT_FREQ
   #define RESTRAIN_REPORT_FREQ (1000)
-#endif
-
-/*           Velocity controller           */
-
-#ifndef VCON_SAMPLE_FREQ
-  #define VCON_SAMPLE_FREQ (10)
-#endif
-
-#ifndef VCON_ADJUST_FREQ
-  #define VCON_ADJUST_FREQ (500)
-#endif
-
-#ifndef VCON_LOG_FREQ
-  #define VCON_LOG_FREQ (0)
 #endif
 
 
