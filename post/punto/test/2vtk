@@ -1,0 +1,6 @@
+# TEST: 2vtk
+t=/tmp/2vtk.$$; mkdir $t
+trap 'rm -r $t' 1 2 3 15
+u.punto.2vtk $t data/circle/01 id x y z
+cat $t/* > 2vtk.out.vtk
+rm -r $t
