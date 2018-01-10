@@ -9,4 +9,5 @@ void clist_fin_map(ClistMap *m) {
     for (int i = 0; i < m->nA; ++i)
         CC(d::Free(m->ee[i]));
     CC(d::Free(m->ii));
+    UC(efree(m));
 }
