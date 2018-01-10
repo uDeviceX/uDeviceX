@@ -1,6 +1,7 @@
 struct Particle;
 struct Force;
 struct BForce;
+struct float3;
 
 // tag::mem[]
 void bforce_ini(BForce **p);

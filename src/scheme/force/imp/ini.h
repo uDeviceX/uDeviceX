@@ -1,7 +1,6 @@
 void bforce_ini(BForce **p) { UC(emalloc(sizeof(BForce), (void**) p));}
 void bforce_fin(BForce *p)  {UC(efree(p));}
 
-
 void bforce_ini_none(/**/ BForce *p) {
     p->type = BODY_FORCE_NONE;
 }
