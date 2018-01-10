@@ -78,11 +78,23 @@ function topo(f,   i, x, y, z) { # toplology
 	print x, y, z             > f
     }
 }
+function dataset(f, k,   i) {
+    printf "POINT_DATA %d\n",    n > f
+    printf "SCALARS %s float\n", k > f
+    print  "LOOKUP_TABLE default"  > f
+    for (i = 0; i < n; i++)
+	print snap[k, i]           > f
+}
+function coordp(k) { return eq(k, "x") || eq(k, "y") || eq(k, "z") }
 function write0(f) {
     msg(f)
     touch(f)
     header(f)
     topo(f)
+    for (k in idx) {
+	if (coordp(k)) continue
+	dataset(f, k)
+    }
 }
 function write() { # fn: file number (global)
     f = sprintf("%s/" fmt ".vtk", o, fn++)
@@ -97,4 +109,5 @@ function arg(   i, k) {
 }
 function msg(s) { printf "%s: %s\n", prog, s | "cat >&2" }
 function err(s) { msg(s); exit(2) }
+function eq(a, b) { return a "" ==  b ""}
 ' "$@"
