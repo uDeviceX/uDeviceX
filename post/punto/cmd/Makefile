@@ -1,7 +1,7 @@
 BIN = $(HOME)/bin
 B = $(BIN)
 
-P = append bop bop0 circle disp disp0 util roi roi0 score score0
+P = 2vtk 2vtk0 append bop bop0 circle disp disp0 util roi roi0 score score0
 
 # prefix
 p = u.punto

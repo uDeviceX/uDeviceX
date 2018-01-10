@@ -1,0 +1,9 @@
+#!/bin/sh
+set -eu
+
+prog=u.punto.2vtk0
+
+. u.punto.util
+
+echo 42
+echo "$@"
