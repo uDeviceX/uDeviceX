@@ -1,10 +1,10 @@
 enum {LOCAL, REMOTE};
 
-void ini_counts(/**/ Clist *c) {
+void clist_ini_counts(/**/ Clist *c) {
     if (c->ncells) CC(d::MemsetAsync(c->counts, 0, (c->ncells + 16) * sizeof(int)));
 }
 
-static void check_input_size(int id, long n, const Map *m) {
+static void check_input_size(int id, long n, const ClistMap *m) {
     long cap = m->maxp;
     if (n > cap)
         ERR("Too many input particles for array %d (%ld / %ld)", id, n, cap);
@@ -14,20 +14,20 @@ static void comp_subindices(bool project, int n, const PartList lp, int3 dims, /
     if (n) KL(dev::subindex, (k_cnf(n)), (project, dims, n, lp, /*io*/ cc, /**/ ee));
 }
 
-void subindex(bool project, int aid, int n, const PartList lp, /**/ Clist *c, Map *m) {
+void clist_subindex(bool project, int aid, int n, const PartList lp, /**/ Clist *c, ClistMap *m) {
     UC(check_input_size(aid, n, m));
     UC(comp_subindices(project, n, lp, c->dims, /**/ c->counts, m->ee[aid]));
 }
 
-void subindex_local(int n, const PartList lp, /**/ Clist *c, Map *m) {
-    UC(subindex(false, LOCAL, n, lp, /**/ c, m));
+void clist_subindex_local(int n, const PartList lp, /**/ Clist *c, ClistMap *m) {
+    UC(clist_subindex(false, LOCAL, n, lp, /**/ c, m));
 }
 
-void subindex_remote(int n, const PartList lp, /**/ Clist *c, Map *m) {
-    UC(subindex(false, REMOTE, n, lp, /**/ c, m));
+void clist_subindex_remote(int n, const PartList lp, /**/ Clist *c, ClistMap *m) {
+    UC(clist_subindex(false, REMOTE, n, lp, /**/ c, m));
 }
 
-void build_map(const int nn[], /**/ Clist *c, Map *m) {
+void clist_build_map(const int nn[], /**/ Clist *c, ClistMap *m) {
     int nc, *cc, *ss, n, i;
     const uchar4 *ee;
     uint *ii = m->ii;
@@ -46,33 +46,33 @@ void build_map(const int nn[], /**/ Clist *c, Map *m) {
     }
 }
 
-static void check_map_capacity(long n, const Map *m) {
+static void check_map_capacity(long n, const ClistMap *m) {
     long cap = m->maxp * m->nA;
     if (n > cap)
         ERR("Too many particles for this cell list (%ld / %ld)", n, cap);     
 }
 
-void gather_pp(const Particle *pplo, const Particle *ppre, const Map *m, long nout, /**/ Particle *ppout) {
+void clist_gather_pp(const Particle *pplo, const Particle *ppre, const ClistMap *m, long nout, /**/ Particle *ppout) {
     Sarray <const Particle*, 2> src = {pplo, ppre};
     UC(check_map_capacity(nout, m));
     if (nout)
         KL(dev::gather, (k_cnf(nout)), (src, m->ii, nout, /**/ ppout));
 }
 
-void gather_ii(const int *iilo, const int *iire, const Map *m, long nout, /**/ int *iiout) {
+void clist_gather_ii(const int *iilo, const int *iire, const ClistMap *m, long nout, /**/ int *iiout) {
     Sarray <const int*, 2> src = {iilo, iire};
     UC(check_map_capacity(nout, m));    
     if (nout)
         KL(dev::gather, (k_cnf(nout)), (src, m->ii, nout, /**/ iiout));
 }
 
-void build(int nlo, int nout, const Particle *pplo, /**/ Particle *ppout, Clist *c, Map *m) {
+void clist_build(int nlo, int nout, const Particle *pplo, /**/ Particle *ppout, Clist *c, ClistMap *m) {
     const int nn[] = {nlo, 0};
     PartList lp;
     lp.pp = pplo;
     lp.deathlist = NULL;
-    UC(ini_counts(/**/ c));
-    UC(subindex_local (nlo, lp, /**/ c, m));
-    UC(build_map(nn, /**/ c, m));
-    UC(gather_pp(pplo, NULL, m, nout, ppout));
+    UC(clist_ini_counts(/**/ c));
+    UC(clist_subindex_local (nlo, lp, /**/ c, m));
+    UC(clist_build_map(nn, /**/ c, m));
+    UC(clist_gather_pp(pplo, NULL, m, nout, ppout));
 }

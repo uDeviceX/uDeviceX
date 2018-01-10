@@ -22,10 +22,8 @@
 #include "imp.h"
 #include "code.h"
 
-namespace clist {
 #include "dev.h"
 #include "imp/type.h"
 #include "imp/ini.h"
 #include "imp/fin.h"
 #include "imp/main.h"
-} // clist

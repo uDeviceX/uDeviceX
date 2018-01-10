@@ -84,14 +84,14 @@ __global__ void get_ids(int array_id, int3 L, int n, const int *starts, const uc
     if (e.w != INVALID) {
         start = starts[cid];
         id = start + e.w;
-        ii[id] = encode_id(array_id, i);
+        ii[id] = clist_encode_id(array_id, i);
     }
 }
 
 template <typename T, int N>
 __device__ void fetch(const Sarray<const T*, N> src, uint i, /**/ T *d) {
     int src_id, array_id;
-    decode_id(i, /**/ &array_id, &src_id);
+    clist_decode_id(i, /**/ &array_id, &src_id);
     *d = src.d[array_id][src_id];
 }
 
