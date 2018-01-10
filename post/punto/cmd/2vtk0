@@ -10,7 +10,7 @@ prog=u.punto.2vtk0
 o="$1"; shift
 i="$1"; shift
 
-"$AWK" -v o="$o" -v i="$i" -v prog="$prog" -v fmt="$FMT" '
+"$AWK" -v o="$o" -v i="$i" -v prog="$prog" -v fmt="$FMT" -v q="'" '
 BEGIN {
     ini()
     arg()
@@ -59,14 +59,30 @@ function read(   r, s) { # s: status
     }
     return s
 }
+function touch(f,   r, c) {
+    c = sprintf("2>/dev/null >%s", q f q)
+    r = system(c)
+    return r
+    if (r != 0) err("fail to create " q f q)
+}
 function header(f) {
     print "# vtk DataFile Version 2.0" > f
     print "created with " prog         > f
     print "ASCII"                      > f
 }
+function topo(f,   i, x, y, z) { # toplology
+    print  "DATASET POLYDATA"     > f
+    printf "POINTS %d float\n", n > f
+    for (i = 0; i < n; i++) {
+	x = snap["x", i]; y = snap["y", i];  z = snap["z", i]
+	print x, y, z             > f
+    }
+}
 function write0(f) {
     msg(f)
+    touch(f)
     header(f)
+    topo(f)
 }
 function write() { # fn: file number (global)
     f = sprintf("%s/" fmt ".vtk", o, fn++)
@@ -82,5 +98,3 @@ function arg(   i, k) {
 function msg(s) { printf "%s: %s\n", prog, s | "cat >&2" }
 function err(s) { msg(s); exit(2) }
 ' "$@"
-
-if test $? -ne 0; then err 'awk part failed'; fi
