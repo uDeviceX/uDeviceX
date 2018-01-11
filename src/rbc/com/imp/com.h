@@ -19,7 +19,7 @@ static void normalize(int nm, int nv, /**/ float3 *hrr) {
         scal(fac, hrr + i);
 }
 
-void get(int nm, int nv, const Particle *pp, /**/ Helper *com) {
+void get(int nm, int nv, const Particle *pp, /**/ ComProps *com) {
     reini(nm, /**/ com->drr);
     reduce(nm, nv, pp, /**/ com->drr);
     download(nm, com->drr, /**/ com->hrr); /* blocking */
