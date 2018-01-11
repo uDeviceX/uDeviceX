@@ -1,0 +1,2 @@
+# TEST: cat
+u.punto.cat data/circle/[01] > dat.out.punto
