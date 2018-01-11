@@ -150,7 +150,7 @@ static void ini_rbc(MPI_Comm cart, /**/ Rbc *r) {
     UC(rbc::main::ini(&r->q));
 
     UC(ini_rbc_distr(r->q.nv, cart, /**/ &r->d));
-    if (rbc_com_dumps) UC(rbc::com::ini(MAX_CELL_NUM, /**/ &r->com));
+    if (rbc_com_dumps) UC(rbc::com::rbc_com_ini(MAX_CELL_NUM, /**/ &r->com));
     if (RBC_STRETCH)   UC(rbc::stretch::ini("rbc.stretch", r->q.nv, /**/ &r->stretch));
 }
 

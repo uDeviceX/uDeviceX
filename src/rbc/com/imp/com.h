@@ -19,7 +19,7 @@ static void normalize(int nm, int nv, /**/ float3 *h) {
         scal(fac, h + i);
 }
 
-void get(int nm, int nv, const Particle *pp, /**/ ComProps *com) {
+void rbc_com_get(int nm, int nv, const Particle *pp, /**/ RbcComProps *com) {
     reini(nm, /**/ com->drr);
     reini(nm, /**/ com->dvv);
     

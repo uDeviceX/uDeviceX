@@ -85,7 +85,7 @@ static void fin_rbc(Rbc *r) {
         
     Dfree(r->ff);
 
-    if (rbc_com_dumps) rbc::com::fin(/**/ &r->com);
+    if (rbc_com_dumps) rbc::com::rbc_com_fin(/**/ &r->com);
     if (RBC_STRETCH)   rbc::stretch::fin(/**/ r->stretch);
 }
 
