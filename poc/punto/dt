@@ -1,16 +1,26 @@
 #!/bin/sh
-set -eu
+set -u
+
+prog=u.punto.dt
 
 # input, sorted, rest
+. u.punto.util
 
 n="$1"; shift
 i="$1"; shift
 
-s=/tmp/s.dt.$$; >$s; trap 'rm $s' 1 2 3 4 15
-r=/tmp/r.dt.$$; >$r; trap 'rm $r' 1 2 3 4 15
+if ! test -r "$i"; then err "not a file '$i'"; fi
 
-u.punto.sort "$i"     > $s
-u.punto.rest  $n "$s" > $r
-u.punto.diff  "$r" "$s"
+s=/tmp/s.dt.$$; >$s; trap 'e rm $s' 1 2 3 4 15
+r=/tmp/r.dt.$$; >$r; trap 'e rm $r' 1 2 3 4 15
 
-rm $s $r
+e u.punto.sort "$i"    '>' $s
+if test $? -ne 0; then err 'u.punto.sort failed'; fi
+
+e u.punto.rest  $n  $s '>' $r
+if test $? -ne 0; then err 'u.punto.rest failed'; fi
+
+e u.punto.diff  $r $s
+if test $? -ne 0; then err 'u.punto.diff failed'; fi
+
+e rm $s $r
