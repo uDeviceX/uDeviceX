@@ -30,10 +30,10 @@
 #include "distr/map/imp.h"
 #include "distr/common/imp.h"
 
-#include "type.h"
 #include "imp.h"
 
 #include "dev.h"
+#include "imp/type.h"
 #include "imp/ini.h"
 #include "imp/fin.h"
 #include "imp/map.h"

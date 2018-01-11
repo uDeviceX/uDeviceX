@@ -4,8 +4,12 @@ static void get_num_capacity(int maxnc, /**/ int numc[NBAGS]) {
         numc[i] = maxnc;
 }
 
-void drbc_pack_ini(int maxnc, int nv, DRbcPack *p) {
+void drbc_pack_ini(int maxnc, int nv, DRbcPack **pack) {
     int numc[NBAGS];
+    DRbcPack *p;
+    UC(emalloc(sizeof(DRbcPack), (void**) pack));
+    p = *pack;
+    
     get_num_capacity(maxnc, /**/ numc);
 
     UC(dmap_ini(NBAGS, numc, /**/ &p->map));
@@ -22,14 +26,22 @@ void drbc_pack_ini(int maxnc, int nv, DRbcPack *p) {
     }
 }
 
-void drbc_comm_ini(MPI_Comm comm, /**/ DRbcComm *c) {
-    UC(comm_ini(comm, /**/ &c->pp));
+void drbc_comm_ini(MPI_Comm cart, /**/ DRbcComm **com) {
+    DRbcComm *c;
+    UC(emalloc(sizeof(DRbcComm), (void**) com));
+    c = *com;
+    
+    UC(comm_ini(cart, /**/ &c->pp));
     if (rbc_ids)
-        UC(comm_ini(comm, /**/ &c->ii));
+        UC(comm_ini(cart, /**/ &c->ii));
 }
 
-void drbc_unpack_ini(int maxnc, int nv, DRbcUnpack *u) {
+void drbc_unpack_ini(int maxnc, int nv, DRbcUnpack **unpack) {
     int numc[NBAGS];
+    DRbcUnpack *u;
+    UC(emalloc(sizeof(DRbcUnpack), (void**) unpack));
+    u = *unpack;
+
     get_num_capacity(maxnc, /**/ numc);
 
     /* one datum is here a full RBC, so bsize is nv * sizeof(Particle) */

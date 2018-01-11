@@ -47,19 +47,19 @@ void distribute_rbc(Rbc *r) {
     rbc::Quants *q = &r->q;
     RbcDistr *d    = &r->d;
     
-    drbc_build_map(q->nc, q->nv, q->pp, /**/ &d->p);
-    drbc_pack(q, /**/ &d->p);
-    drbc_download(/**/&d->p);
+    drbc_build_map(q->nc, q->nv, q->pp, /**/ d->p);
+    drbc_pack(q, /**/ d->p);
+    drbc_download(/**/d->p);
 
-    UC(drbc_post_send(&d->p, &d->c));
-    UC(drbc_post_recv(&d->c, &d->u));
+    UC(drbc_post_send(d->p, d->c));
+    UC(drbc_post_recv(d->c, d->u));
 
-    drbc_unpack_bulk(&d->p, /**/ q);
+    drbc_unpack_bulk(d->p, /**/ q);
 
-    drbc_wait_send(&d->c);
-    drbc_wait_recv(&d->c, &d->u);
+    drbc_wait_send(d->c);
+    drbc_wait_recv(d->c, d->u);
 
-    drbc_unpack_halo(&d->u, /**/ q);
+    drbc_unpack_halo(d->u, /**/ q);
     dSync();
 }
 
