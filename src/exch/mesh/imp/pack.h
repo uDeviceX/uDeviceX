@@ -2,13 +2,13 @@ static void pack_mesh(int nv, const Particle *pp, EMap map, /**/ Pap26 buf) {
     KL(dev::pack_mesh, (14 * 16, 128), (nv, pp, map, /**/ buf));
 }
 
-void emesh_pack(int nv, const Particle *pp, /**/ Pack *p) {
+void emesh_pack(int nv, const Particle *pp, /**/ EMeshPack *p) {
     Pap26 wrap;
     bag2Sarray(p->dpp, &wrap);
     pack_mesh(nv, pp, p->map, /**/ wrap);
 }
 
-void emesh_download(Pack *p) {
+void emesh_download(EMeshPack *p) {
     int nw = 1;
     emap_download_counts(nw, NFRAGS, p->map, /**/ p->hpp.counts);
 }
@@ -40,11 +40,11 @@ static void pack_mom(int nt, const int counts[NFRAGS], const Momentum *mm,
     }
 }
 
-void emesh_packM(int nt, const int counts[NFRAGS], const Momentum *mm, /**/ PackM *p) {
+void emesh_packM(int nt, const int counts[NFRAGS], const Momentum *mm, /**/ EMeshPackM *p) {
     pack_mom(nt, counts, mm, /**/ p->maps, (int **) p->dii.data, (Momentum **) p->dmm.data);
 }
 
-void emesh_downloadM(const int counts[NFRAGS], PackM *p) {
+void emesh_downloadM(const int counts[NFRAGS], EMeshPackM *p) {
     MMap26 mm;
     int26 ii;
     size_t sz;

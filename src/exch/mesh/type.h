@@ -1,18 +1,18 @@
 namespace exch {
 namespace mesh {
 
-struct Pack {
+struct EMeshPack {
     EMap map;
     float3 *minext, *maxext;
     dBags dpp;
     hBags hpp;
 };
 
-struct Comm {
+struct EMeshComm {
     comm::Comm pp;
 };
 
-struct Unpack {
+struct EMeshUnpack {
     hBags hpp;
     dBags dpp;
 };
@@ -23,18 +23,18 @@ struct MMap { /* map for compression of Momentum (support structure only) */
     int *cc, *ss, *subids;
 };
 
-struct PackM {
+struct EMeshPackM {
     MMap maps[NFRAGS];
     int *cchst, *ccdev; /* helper to collect counts */
     dBags dmm, dii;
     hBags hmm, hii;
 };
 
-struct CommM {
+struct EMeshCommM {
     comm::Comm mm, ii;
 };
 
-struct UnpackM {
+struct EMeshUnpackM {
     dBags dmm, dii;
     hBags hmm, hii;
 };
