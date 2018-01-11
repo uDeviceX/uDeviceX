@@ -6,13 +6,20 @@ prog=u.punto.dt
 # input, sorted, rest
 . u.punto.util
 
-n="$1"; shift
-i="$1"; shift
+assert_arg () {
+    local m
+    m="$1"; shift
+    if test $# -eq 0; then err $m; fi
+}
+
+assert_arg "expect n" "$@";          n="$1"; shift
+assert_arg "expect PUNTO.FILE" "$@"; i="$1"; shift
 
 if ! test -r "$i"; then err "not a file '$i'"; fi
+if ! intp    "$n"; then err "not an integer '$n'"; fi
 
-s=/tmp/s.dt.$$; >$s; trap 'e rm $s' 1 2 3 4 15
-r=/tmp/r.dt.$$; >$r; trap 'e rm $r' 1 2 3 4 15
+s=/tmp/s.dt.$$; >$s; trap 'e rm -f $s' 1 2 3 4 15
+r=/tmp/r.dt.$$; >$r; trap 'e rm -f $r' 1 2 3 4 15
 
 e u.punto.sort "$i"    '>' $s
 if test $? -ne 0; then err 'u.punto.sort failed'; fi
@@ -23,4 +30,4 @@ if test $? -ne 0; then err 'u.punto.rest failed'; fi
 e u.punto.diff  $r $s
 if test $? -ne 0; then err 'u.punto.diff failed'; fi
 
-e rm $s $r
+e rm -f $s $r
