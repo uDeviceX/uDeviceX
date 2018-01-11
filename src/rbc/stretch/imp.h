@@ -1,10 +1,10 @@
 namespace rbc { namespace stretch {
 
 /* force */
-struct Fo;
+struct StretchForce;
 
-void ini(const char* path, int nv, /**/ Fo **fp); /* `nv` is for error check */
-void fin(Fo *f);
-void apply(int nm, const Fo*, /**/ Force*);
+void ini(const char* path, int nv, /**/ StretchForce **fp); /* `nv` is for error check */
+void fin(StretchForce *f);
+void apply(int nm, const StretchForce*, /**/ Force*);
 
 }} /* namespace */

@@ -1,5 +1,5 @@
-static void   alloc(int n, Fo *f) { Dalloc(&f->f, 3*n); }
-static void   dealloc(Fo *f) { Dfree(f->f); }
+static void alloc(int n, StretchForce *f) { Dalloc(&f->f, 3*n); }
+static void dealloc(StretchForce *f) { Dfree(f->f); }
 
 static int read3(FILE *f, float *h) {
     enum {X, Y, Z};
@@ -22,7 +22,7 @@ void ini0(const char* path, int n, float *h, /**/ float *d) {
     cH2D(d, h, 3*n);
     fclose(f);
 }
-void ini1(const char* path, int n, /**/ Fo *f) {
+void ini1(const char* path, int n, /**/ StretchForce *f) {
     float *d, *h; /* device and host */
     alloc(n, f);
     d = f->f;
@@ -30,20 +30,20 @@ void ini1(const char* path, int n, /**/ Fo *f) {
     UC(ini0(path, n, /*w*/ h, /**/ d));
     free(h);
 }
-void ini(const char* path, int nv, /**/ Fo **fp) {
-    Fo *f;
-    UC(emalloc(sizeof(Fo), (void**) &f));
+void ini(const char* path, int nv, /**/ StretchForce **fp) {
+    StretchForce *f;
+    UC(emalloc(sizeof(StretchForce), (void**) &f));
     UC(ini1(path, nv, f));
     f->nv = nv;
     *fp = f;
 }
 
-void fin(Fo *f) {
+void fin(StretchForce *f) {
     dealloc(f);
     free(f);
 }
 
-void apply(int nm, const Fo *f, /**/ Force *ff) {
+void apply(int nm, const StretchForce *f, /**/ Force *ff) {
     int n, nv;
     nv = f->nv;
     n  = nm * nv;
