@@ -71,8 +71,6 @@
 #include "cnt/imp.h"
 #include "fsi/imp.h"
 
-#include "exch/map/type.h"
-#include "exch/obj/type.h"
 #include "exch/obj/imp.h"
 #include "exch/mesh/imp.h"
 
