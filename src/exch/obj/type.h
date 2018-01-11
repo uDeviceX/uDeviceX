@@ -1,6 +1,3 @@
-namespace exch {
-namespace obj {
-
 struct EObjPack {
     EMap map;
     dBags dpp;
@@ -25,6 +22,3 @@ struct EObjUnpackF {
     hBags hff;
     dBags dff;
 };
-
-} // obj
-} // exch

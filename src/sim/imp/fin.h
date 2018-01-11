@@ -6,7 +6,6 @@ static void fin_flu_exch(/**/ FluExch *e) {
 }
 
 static void fin_obj_exch(/**/ ObjExch *e) {
-    using namespace exch::obj;
     UC(eobj_pack_fin(/**/ &e->p));
     UC(eobj_comm_fin(/**/ &e->c));
     UC(eobj_unpack_fin(/**/ &e->u));

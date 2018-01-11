@@ -30,11 +30,11 @@ struct RigDistr {
 
 /* object exchanger for forces */
 struct ObjExch {
-    exch::obj::EObjPack p;
-    exch::obj::EObjUnpack u;
-    exch::obj::EObjPackF pf;
-    exch::obj::EObjUnpackF uf;
-    exch::obj::EObjComm c;
+    EObjPack p;
+    EObjUnpack u;
+    EObjPackF pf;
+    EObjUnpackF uf;
+    EObjComm c;
 };
 
 /* mesh exchanger */

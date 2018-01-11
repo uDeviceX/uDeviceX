@@ -1,6 +1,3 @@
-namespace exch {
-namespace obj {
-
 void eobj_pack_ini(int nw, int maxd, int maxpsolid, EObjPack *p);
 void eobj_comm_ini(MPI_Comm comm, /**/ EObjComm *c);
 void eobj_unpack_ini(int maxd, int maxpsolid, EObjUnpack *u);
@@ -34,6 +31,3 @@ void eobj_wait_recv_ff(EObjComm *c, EObjUnpackF *u);
 void eobj_wait_send_ff(EObjComm *c);
 
 void eobj_unpack_ff(const EObjUnpackF *u, const EObjPack *p, int nw, /**/ FoWrap *ww);
-
-} // obj
-} // exch

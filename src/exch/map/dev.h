@@ -2,7 +2,8 @@ namespace dev {
 
 enum { MAX_DSTS = 7 };
 
-__device__ int map_code(int3 L, const float r[3]) {
+//
+static __device__ int map_code(int3 L, const float r[3]) {
     int x, y, z;
     enum {X, Y, Z};
     x = -1 + (r[X] >= -L.x / 2) + (r[X] >= L.x / 2);
@@ -12,7 +13,8 @@ __device__ int map_code(int3 L, const float r[3]) {
     return frag_d2i(x, y, z);
 }
 
-__device__ int map_code_box(int3 L, float3 lo, float3 hi) {
+//
+static __device__ int map_code_box(int3 L, float3 lo, float3 hi) {
     int x, y, z;
     x = -1 + (lo.x >= -L.x / 2) + (hi.x >= L.x / 2);
     y = -1 + (lo.y >= -L.y / 2) + (hi.y >= L.y / 2);
@@ -55,7 +57,8 @@ static __device__ int add_cornr(int j, const int d[3], /**/ int fids[MAX_DSTS]) 
     return j;
 }
 
-__device__ int map_decode(int code, /**/ int fids[MAX_DSTS]) {
+//
+static __device__ int map_decode(int code, /**/ int fids[MAX_DSTS]) {
     int j = 0;
     const int d[3] = frag_i2d3(code);
     j = add_faces(j, d, /**/ fids);

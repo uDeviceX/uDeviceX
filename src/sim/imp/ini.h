@@ -8,7 +8,6 @@ static void ini_flu_exch(MPI_Comm comm, /**/ FluExch *e) {
 }
 
 static void ini_obj_exch(MPI_Comm comm, /**/ ObjExch *e) {
-    using namespace exch::obj;
     int maxpsolid = MAX_PSOLID_NUM;
     
     UC(eobj_pack_ini(MAX_OBJ_TYPES, MAX_OBJ_DENSITY, maxpsolid, &e->p));

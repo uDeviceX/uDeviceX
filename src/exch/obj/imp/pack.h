@@ -10,7 +10,7 @@ static void pack_pp(int nfrags, int nw, const PaWrap *ww, EMap map, /**/ Pap26 b
         ph.offsets = map.offsets + i * stride;
         memcpy(ph.indices, map.ids, nfrags * sizeof(int*));
 
-        KL(dev::pack_pp, (14 * 16, 128), (w->pp, ph, /**/ buf));
+        KL(eobj::dev::pack_pp, (14 * 16, 128), (w->pp, ph, /**/ buf));
     }
 }
 
