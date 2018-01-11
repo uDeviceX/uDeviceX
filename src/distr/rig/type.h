@@ -10,17 +10,17 @@ using namespace comm;
  ss:  "Solid" structures 
 */
 
-struct Pack {
+struct DRigPack {
     DMap map;
     dBags dipp, dss;
     hBags hipp, hss;
 };
 
-struct Comm {
+struct DRigComm {
     comm::Comm ipp, ss;
 };
 
-struct Unpack {
+struct DRigUnpack {
     hBags hipp, hss;
 };
 // end::struct[]

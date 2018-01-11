@@ -1,4 +1,4 @@
-void drig_unpack_bulk(const Pack *p, /**/ rig::Quants *q) {
+void drig_unpack_bulk(const DRigPack *p, /**/ rig::Quants *q) {
     int ns, nv, n;
     ns = p->hipp.counts[frag_bulk];
     nv = q->nv;
@@ -22,7 +22,7 @@ static void shift_ss_one_frag(int n, int fid, Solid *ss) {
     for (int i = 0; i < n; ++i) shift(fid, ss[i].com);
 }
 
-void drig_unpack_halo(const Unpack *u, /**/ rig::Quants *q) {
+void drig_unpack_halo(const DRigUnpack *u, /**/ rig::Quants *q) {
     int ns, nv, n, i, strtp, strts;
     size_t szp, szs;
     nv = q->nv;

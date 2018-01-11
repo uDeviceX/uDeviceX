@@ -4,7 +4,7 @@ static void get_num_capacity(int maxns, /**/ int numc[NBAGS]) {
         numc[i] = maxns;
 }
 
-void drig_pack_ini(int maxns, int nv, Pack *p) {
+void drig_pack_ini(int maxns, int nv, DRigPack *p) {
     int numc[NBAGS];
     get_num_capacity(maxns, /**/ numc);
 
@@ -16,12 +16,12 @@ void drig_pack_ini(int maxns, int nv, Pack *p) {
     UC(bags_ini(PINNED, DEV_ONLY, sizeof(Solid), numc, /**/ &p->hss, &p->dss));
 }
 
-void drig_comm_ini(MPI_Comm comm, /**/ Comm *c) {
+void drig_comm_ini(MPI_Comm comm, /**/ DRigComm *c) {
     UC(comm_ini(comm, /**/ &c->ipp));
     UC(comm_ini(comm, /**/ &c->ss));
 }
 
-void drig_unpack_ini(int maxns, int nv, Unpack *u) {
+void drig_unpack_ini(int maxns, int nv, DRigUnpack *u) {
     int numc[NBAGS];
     get_num_capacity(maxns, /**/ numc);
 

@@ -23,9 +23,9 @@ struct RbcDistr {
 
 /* rigid distribution */
 struct RigDistr {
-    distr::rig::Pack p;
-    distr::rig::Comm c;
-    distr::rig::Unpack u;
+    distr::rig::DRigPack p;
+    distr::rig::DRigComm c;
+    distr::rig::DRigUnpack u;
 };
 
 /* object exchanger for forces */

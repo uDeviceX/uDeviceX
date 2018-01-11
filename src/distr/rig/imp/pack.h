@@ -18,12 +18,12 @@ static void pack_ss(const DMap m, int n, const Solid *ss, /**/ dBags bags) {
 }
 
 
-void drig_pack(int ns, int nv, const Solid *ss, const Particle *ipp, /**/ Pack *p) {
+void drig_pack(int ns, int nv, const Solid *ss, const Particle *ipp, /**/ DRigPack *p) {
     pack_pp(p->map, ns, nv, ipp, /**/ p->dipp);
     pack_ss(p->map, ns, ss, /**/ p->dss);
 }
 
-void drig_download(Pack *p) {
+void drig_download(DRigPack *p) {
     CC(d::Memcpy(p->hipp.counts, p->map.counts, NBAGS * sizeof(int), D2H));
     CC(d::Memcpy(p->hss.counts, p->map.counts, NBAGS * sizeof(int), D2H));
 }
