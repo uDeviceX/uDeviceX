@@ -41,7 +41,7 @@ Host interface:
 
 [source,cpp]
 ----
-include::{src}/distr/map/imp.h[]
+include::{src}/distr/map/imp.h[tag=int]
 ----
 
 
@@ -62,11 +62,11 @@ Redistribute solvent particles accross nodes.
 === data structures
 
 Solvent distribution follow the common workflow described above and
-contains the three generic data structures:
+contains the three _hidden_ generic data structures:
 
 [source,cpp]
 ----
-include::{src}/distr/flu/type.h[tag=struct]
+include::{src}/distr/flu/imp/type.h[tag=struct]
 ----
 
 where `[d,h]xx` means quantities on `[device,host]` and `pp`
@@ -107,11 +107,11 @@ mass of their bounding box (see link:algo/minmax{lext}[minmax]).
 === data structures
 
 RBC distribution follows the common workflow described above and
-contains the three generic data structures:
+contains the three _hidden_ generic data structures:
 
 [source,cpp]
 ----
-include::{src}/distr/rbc/type.h[tag=struct]
+include::{src}/distr/rbc/imp/type.h[tag=struct]
 ----
 
 where `minext` and `maxext` contain the bounding box informations of
@@ -136,12 +136,12 @@ mass.
 
 === data structures
 
-Rigid bodies distribution is very similar to the above. The data
-structures fits again in the general workflow:
+Rigid bodies distribution is very similar to the above. The _hidden_ data
+structures fit again in the general workflow:
 
 [source,cpp]
 ----
-include::{src}/distr/rig/type.h[tag=struct]
+include::{src}/distr/rig/imp/type.h[tag=struct]
 ----
 
 === interface
@@ -152,3 +152,17 @@ include::{src}/distr/rig/imp.h[tag=interface]
 ----
 
 Note that `unpack_bulk` can be done before unpacking halo quantities.
+
+
+== common
+
+helpers: common kernels
+
+[source,cpp]
+----
+include::{src}/distr/common/imp.h[tag=int]
+----
+<1> pack `nc`  packets of `nv` particles into 27 buffers `buf` according to map
+<2> shift particles in the fragment direction
+<3> shift all particles according to the fragment direction
+

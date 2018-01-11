@@ -23,11 +23,11 @@ include::{src}/comm/imp.h[tag=hBags]
 include::{src}/comm/imp.h[tag=dBags]
 ----
 
-`Stamp`: contains the communication related variables:
+`Comm`: contains the communication related variables:
 
 [source,cpp]
 ----
-include::{src}/comm/imp.h[tag=stamp]
+include::{src}/comm/imp.h[tag=comm]
 ----
 
 == allocation mod
@@ -54,7 +54,7 @@ include::{src}/comm/imp.h[tag=alloc]
 * *bags alloc:* Given two structures `hBags` and `dBags`, `ini` allocates the buffers on host and device. `ini` expects 2 allocation modes:
 ** `fmod`: allocation mode for fragment buffers
 ** `bmod`: allocation mode for bulk buffer
-* *stamp alloc*: initialize `Stamp` structure
+* *comm alloc*: initialize `Comm` structure
 
 === communication
 
@@ -63,7 +63,7 @@ It needs 3 entities:
 
 * receiver bags
 * sender bags
-* a `Stamp` for communicating through MPI
+* a `Comm` for communicating through MPI
 
 The interface is as follows:
 

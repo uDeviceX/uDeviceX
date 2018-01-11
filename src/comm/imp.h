@@ -33,7 +33,7 @@ struct hBags {
 };
 // end::hBags[]
 
-// tag::stamp[]
+// tag::comm[]
 struct Comm {
     MPI_Request sreq[NBAGS]; /* send requests */
     MPI_Request rreq[NBAGS]; /* recv requests */
@@ -41,14 +41,12 @@ struct Comm {
     int ranks[NFRAGS];       /* ranks of neighbors     */
     int  tags[NFRAGS];       /* tags in bt coordinates */
 };
-// end::stamp[]
+// end::comm[]
 
 // tag::alloc[]
-/* bags alloc */
 int bags_ini(AllocMod fmod, AllocMod bmod, size_t bsize, const int capacity[NBAGS], /**/ hBags *hb, dBags *db);
 int bags_fin(AllocMod fmod, AllocMod bmod, /**/ hBags *hb, dBags *db);
 
-/* stamp alloc */
 int comm_ini(MPI_Comm cart, /**/ Comm *c);
 int comm_fin(/**/ Comm *c);
 // end::alloc[]
