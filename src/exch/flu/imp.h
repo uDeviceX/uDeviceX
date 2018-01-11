@@ -1,33 +1,32 @@
 namespace exch {
 namespace flu {
 
-void ini(int maxd, Pack *p);
-void ini(MPI_Comm comm, /**/ Comm *c);
-void ini(int maxd, Unpack *u);
+void eflu_pack_ini(int maxd, Pack *p);
+void eflu_comm_ini(MPI_Comm comm, /**/ Comm *c);
+void eflu_unpack_ini(int maxd, Unpack *u);
 
-void fin(Pack *p);
-void fin(Comm *c);
-void fin(Unpack *u);
+void eflu_pack_fin(Pack *p);
+void eflu_comm_fin(Comm *c);
+void eflu_unpack_fin(Unpack *u);
 
+void eflu_compute_map(const int *start, const int *count, /**/ Pack *p);
+void eflu_download_cell_starts(/**/ Pack *p);
 
-void compute_map(const int *start, const int *count, /**/ Pack *p);
-void download_cell_starts(/**/ Pack *p);
+void eflu_pack(const Cloud *cloud, /**/ Pack *p);
+void eflu_download_data(Pack *p);
 
-void pack(const Cloud *cloud, /**/ Pack *p);
-void download_data(Pack *p);
+void eflu_post_recv(Comm *c, Unpack *u);
+void eflu_post_send(Pack *p, Comm *c);
+void eflu_wait_recv(Comm *c, Unpack *u);
+void eflu_wait_send(Comm *c);
 
-void post_recv(Comm *c, Unpack *u);
-void post_send(Pack *p, Comm *c);
-void wait_recv(Comm *c, Unpack *u);
-void wait_send(Comm *c);
-
-void unpack(Unpack *u);
+void eflu_unpack(Unpack *u);
 
 using ::flu::LFrag26;
 using ::flu::RFrag26;
 
-void get_local_frags(const Pack *p, /**/ LFrag26 *lfrags);
-void get_remote_frags(const Unpack *u, /**/ RFrag26 *rfrags);
+void eflu_get_local_frags(const Pack *p, /**/ LFrag26 *lfrags);
+void eflu_get_remote_frags(const Unpack *u, /**/ RFrag26 *rfrags);
     
 } // flu
 } // exch

@@ -2,9 +2,9 @@ static void ini_flu_exch(MPI_Comm comm, /**/ FluExch *e) {
     using namespace exch::flu;
     int maxd = HSAFETY_FACTOR * numberdensity;
     
-    UC(ini(maxd, /**/ &e->p));
-    UC(ini(comm, /**/ &e->c));
-    UC(ini(maxd, /**/ &e->u));
+    UC(eflu_pack_ini(maxd, /**/ &e->p));
+    UC(eflu_comm_ini(comm, /**/ &e->c));
+    UC(eflu_unpack_ini(maxd, /**/ &e->u));
 }
 
 static void ini_obj_exch(MPI_Comm comm, /**/ ObjExch *e) {
