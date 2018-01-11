@@ -21,8 +21,6 @@ if test $# -ne 0 && test "$1" = -h; then usg; fi
 if test $# -eq 0; then err 'not enough args'; fi
 
 i="$1"; shift
-for c; do shift; set -- "$@" "$i"; i="$c"; done
-
 if test ! -r "$i"; then err "not a file '$i'"; fi
 
 # field present?
@@ -37,5 +35,10 @@ do  shift
 	id) ID=1 ;;
     esac
 done
+
+if test $X  = 0; then err "no field 'x'"; fi
+if test $Y  = 0; then err "no field 'y'"; fi
+if test $Z  = 0; then err "no field 'z'"; fi
+if test $ID = 0; then err "no field 'id'"; fi
 
 exec "$prog0" "$i" "$@"
