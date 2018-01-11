@@ -25,7 +25,7 @@ static int hst0(int md, int nv, int i, int *adj0, int *adj1, /**/ Map *m) {
     return 1;
 }
 
-int hst(int md, int nv, int i, Hst *A, /**/ Map *m) {
+int hst(int md, int nv, int i, Adj *A, /**/ Map *m) {
     int *adj0, *adj1;
     adj0 = A->adj0;
     adj1 = A->adj1;

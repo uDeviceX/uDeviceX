@@ -18,7 +18,7 @@ static void setup_edg0(float *rr, adj::Map m, /**/ Edg *edg) {
     edg->a = a; edg->A = A;
 }
 
-static void setup_edg1(int md, int nv, adj::Hst *adj, float *rr, /**/
+static void setup_edg1(int md, int nv, adj::Adj *adj, float *rr, /**/
                        Edg *edg, float *ptotArea) {
     int valid, i;
     adj::Map m;
@@ -37,7 +37,7 @@ static void setup_edg1(int md, int nv, adj::Hst *adj, float *rr, /**/
     *ptotArea = totArea;
 }
 
-static void setup_edg(int md, int nv, adj::Hst *adj, /**/ Edg *dev, float *totArea) {
+static void setup_edg(int md, int nv, adj::Adj *adj, /**/ Edg *dev, float *totArea) {
     float *rr;
     Edg *hst;
     const char *fn = "rbc.stress.free";
@@ -53,7 +53,7 @@ static void setup_edg(int md, int nv, adj::Hst *adj, /**/ Edg *dev, float *totAr
     UC(efree(hst)); UC(efree(rr));
 }
 
-static void setup_anti(int md, int nv, adj::Hst *adj, /**/ int *dev) {
+static void setup_anti(int md, int nv, adj::Adj *adj, /**/ int *dev) {
     int n;
     int *hst;
     n = md*nv;
@@ -67,7 +67,7 @@ static void setup_anti(int md, int nv, adj::Hst *adj, /**/ int *dev) {
 
 static void setup0(int md, int nt, int nv, int4 *faces, /**/
                    int *anti, Edg *edg, float *totArea, int *adj0, int *adj1) {
-    adj::Hst adj;
+    adj::Adj adj;
     adj::ini(md, nt, nv, faces, /**/ &adj);
 
     if (RBC_STRESS_FREE) UC(setup_edg(md,  nv, &adj, /**/ edg, totArea));
