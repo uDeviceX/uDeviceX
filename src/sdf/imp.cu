@@ -28,7 +28,6 @@
 
 #include "imp.h"
 #include "def.h"
-#include "type.h"
 
 #include "imp/type.h"
 #include "imp/gen.h"
