@@ -3,14 +3,14 @@ void dflu_bulk(PartList lp, /**/ Quants *q) {
     clist_subindex_local(q->n, lp, /**/ &q->cells, q->mcells);
 }
 
-void dflu_halo(const Unpack *u, /**/ Quants *q) {
+void dflu_halo(const DFluUnpack *u, /**/ Quants *q) {
     PartList lp;
     lp.pp = u->ppre;
     lp.deathlist = NULL;
     clist_subindex_remote(u->nhalo, lp, /**/ &q->cells, q->mcells);
 }
 
-void dflu_gather(int ndead, const Pack *p, const Unpack *u, /**/ Quants *q) {
+void dflu_gather(int ndead, const DFluPack *p, const DFluUnpack *u, /**/ Quants *q) {
     int n, nold, nhalo, nbulk;
     Particle *pp, *pp0;
     nold = q->n;

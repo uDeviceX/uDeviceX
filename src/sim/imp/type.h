@@ -2,9 +2,9 @@
 
 /* solvent distribution */
 struct FluDistr {
-    distr::flu::Pack p;
-    distr::flu::Comm c;
-    distr::flu::Unpack u;
+    distr::flu::DFluPack p;
+    distr::flu::DFluComm c;
+    distr::flu::DFluUnpack u;
 };
 
 /* particle exchanger for solvent forces */

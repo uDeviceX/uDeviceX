@@ -24,13 +24,13 @@ static void pack_ii(const DMap m, const int *ii, /**/ dBags bags) {
     KL((dev::pack<int, S>), (k_cnf(S*n)), (ii, m, /**/ wrap));
 }
 
-void dflu_pack(const Quants *q, /**/ Pack *p) {
+void dflu_pack(const Quants *q, /**/ DFluPack *p) {
     pack_pp(p->map, q->pp, /**/ p->dpp);
     if (global_ids)    pack_ii(p->map, q->ii, /**/ p->dii);
     if (multi_solvent) pack_ii(p->map, q->cc, /**/ p->dcc);
 }
 
-void dflu_download(Pack *p) {
+void dflu_download(DFluPack *p) {
     const size_t sz = NFRAGS * sizeof(int);
     const int *counts = p->map.hcounts;
 
