@@ -1,4 +1,4 @@
-static void fin_common(Quants *q) {
+static void fin_common(RbcQuants *q) {
     Dfree(q->pp);
     Dfree(q->av);
 
@@ -10,11 +10,11 @@ static void fin_common(Quants *q) {
     free(q->pp_hst);
 }
 
-static void fin_ids(Quants *q) { free(q->ii);   }
-static void fin_edg(Quants *q) { Dfree(q->shape.edg);  }
-static void fin_rnd(Quants *q) { Dfree(q->shape.anti); }
+static void fin_ids(RbcQuants *q) { free(q->ii);   }
+static void fin_edg(RbcQuants *q) { Dfree(q->shape.edg);  }
+static void fin_rnd(RbcQuants *q) { Dfree(q->shape.anti); }
 
-void fin(Quants *q) {
+void fin(RbcQuants *q) {
     fin_common(q);
     if (rbc_ids) fin_ids(q);
     if (RBC_STRESS_FREE) fin_edg(q);

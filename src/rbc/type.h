@@ -10,7 +10,7 @@ struct Shape {
     float totArea;
 };
 
-struct Quants {
+struct RbcQuants {
     int n, nc;             /* number of particles, cells            */
     Particle *pp, *pp_hst; /* vertices particles on host and device */
     float *av;             /* area and volume on device             */
