@@ -1,4 +1,4 @@
-void ini_map(int nw, int nfrags, int cap[], /**/ Map *map) {
+void emap_ini(int nw, int nfrags, int cap[], /**/ Map *map) {
     int i, c;
     size_t sz;
     sz = (nw + 1) * (nfrags + 1) * sizeof(int);
@@ -13,7 +13,7 @@ void ini_map(int nw, int nfrags, int cap[], /**/ Map *map) {
     }
 }
 
-void fin_map(int nfrags, Map *map) {
+void emap_fin(int nfrags, Map *map) {
     CC(d::Free(map->counts));
     CC(d::Free(map->starts));
     CC(d::Free(map->offsets));
@@ -22,7 +22,7 @@ void fin_map(int nfrags, Map *map) {
         CC(d::Free(map->ids[i]));
 }
 
-void reini_map(int nw, int nfrags, /**/ Map map) {
+void emap_reini(int nw, int nfrags, /**/ Map map) {
     size_t sz;
     sz = (nw + 1) * (nfrags + 1) * sizeof(int);
     if (sz == 0) return;
@@ -31,7 +31,7 @@ void reini_map(int nw, int nfrags, /**/ Map map) {
     CC(d::MemsetAsync(map.offsets, 0, sz));
 }
 
-void scan_map(int nw, int nfrags, /**/ Map map) {
+void emap_scan(int nw, int nfrags, /**/ Map map) {
     int i, *cc, *ss, *oo, *oon, stride;
     stride = nfrags + 1;
     for (i = 0; i < nw; ++i) {
@@ -43,7 +43,7 @@ void scan_map(int nw, int nfrags, /**/ Map map) {
     }
 }
 
-void download_counts(int nw, int nfrags, Map map, /**/ int counts[]) {
+void emap_download_counts(int nw, int nfrags, Map map, /**/ int counts[]) {
     int *src, stride;
     size_t sz = nfrags * sizeof(int);
     stride = nfrags + 1;

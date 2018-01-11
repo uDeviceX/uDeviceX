@@ -22,7 +22,7 @@ void pack(int nw, const PaWrap *ww, /**/ Pack *p) {
 
 void download(int nw, Pack *p) {
     if (!nw) return;
-    download_counts(nw, NFRAGS, p->map, /**/ p->hpp.counts);
+    emap_download_counts(nw, NFRAGS, p->map, /**/ p->hpp.counts);
 }
 
 static void clear_forces(int nfrags, /**/ PackF *p) {

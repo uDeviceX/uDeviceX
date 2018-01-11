@@ -12,9 +12,9 @@ static void fill_map(int nw, const PaWrap *ww, /**/ Map map) {
 }
 
 static void build_map(int nw, const PaWrap *ww, /**/ Map map) {
-    reini_map(nw, NFRAGS, /**/ map);
+    emap_reini(nw, NFRAGS, /**/ map);
     fill_map(nw, ww, /**/ map);
-    scan_map(nw, NFRAGS, /**/ map);
+    emap_scan(nw, NFRAGS, /**/ map);
 }
 
 void build_map(int nw, const PaWrap *ww, /**/ Pack *p) {

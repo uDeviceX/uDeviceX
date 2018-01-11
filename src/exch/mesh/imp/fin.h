@@ -1,5 +1,5 @@
 void fin(Pack *p) {
-    UC(fin_map(NFRAGS, /**/ &p->map));
+    UC(emap_fin(NFRAGS, /**/ &p->map));
     UC(bags_fin(PINNED, NONE, /**/ &p->hpp, &p->dpp));
     CC(d::Free(p->minext));
     CC(d::Free(p->maxext));

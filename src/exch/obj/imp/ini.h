@@ -18,7 +18,7 @@ void ini(int nw, int maxd, int maxpsolid, Pack *p) {
     int cap[NFRAGS];
     estimates(NFRAGS, maxd, maxpsolid, /**/ cap);
 
-    UC(ini_map(nw, NFRAGS, cap, /**/ &p->map));
+    UC(emap_ini(nw, NFRAGS, cap, /**/ &p->map));
     UC(bags_ini(PINNED, NONE, sizeof(Particle), cap, /**/ &p->hpp, &p->dpp));
 }
 
