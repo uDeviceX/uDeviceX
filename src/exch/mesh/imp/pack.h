@@ -1,4 +1,4 @@
-static void pack_mesh(int nv, const Particle *pp, Map map, /**/ Pap26 buf) {
+static void pack_mesh(int nv, const Particle *pp, EMap map, /**/ Pap26 buf) {
     KL(dev::pack_mesh, (14 * 16, 128), (nv, pp, map, /**/ buf));
 }
 
@@ -10,7 +10,7 @@ void pack(int nv, const Particle *pp, /**/ Pack *p) {
 
 void download(Pack *p) {
     int nw = 1;
-    download_counts(nw, NFRAGS, p->map, /**/ p->hpp.counts);
+    emap_download_counts(nw, NFRAGS, p->map, /**/ p->hpp.counts);
 }
 
 

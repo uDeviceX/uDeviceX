@@ -2,8 +2,8 @@ O = $B/algo/minmax/imp.o $B/algo/scan/imp.o $B/clist/imp.o $B/cnt/imp.o \
     $B/color/flux.o $B/comm/imp.o $B/control/den/imp.o $B/control/inflow/conf.o \
     $B/control/inflow/imp.o $B/control/outflow/imp.o $B/control/vel/imp.o \
     $B/d/api.o $B/dbg/imp.o $B/distr/flu/imp.o $B/distr/map/imp.o \
-    $B/distr/rbc/imp.o $B/distr/rig/imp.o $B/exch/flu/imp.o $B/exch/mesh/imp.o \
-    $B/exch/obj/imp.o $B/flu/imp.o $B/fluforces/bulk/imp.o \
+    $B/distr/rbc/imp.o $B/distr/rig/imp.o $B/exch/flu/imp.o $B/exch/map/imp.o \
+    $B/exch/mesh/imp.o $B/exch/obj/imp.o $B/flu/imp.o $B/fluforces/bulk/imp.o \
     $B/fluforces/bulk/transpose/imp.o $B/fluforces/halo/imp.o $B/fluforces/imp.o \
     $B/frag/imp.o $B/fsi/imp.o $B/generate/rig/imp.o $B/glob/imp.o $B/inter/imp.o \
     $B/io/bop/imp.o $B/io/com/imp.o $B/io/diag/imp.o $B/io/field/h5/imp.o \

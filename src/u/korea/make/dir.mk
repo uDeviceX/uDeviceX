@@ -16,6 +16,7 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/distr/rbc                && \
     d $B/distr/rig                && \
     d $B/exch/flu                 && \
+    d $B/exch/map                 && \
     d $B/exch/mesh                && \
     d $B/exch/obj                 && \
     d $B/flu                      && \

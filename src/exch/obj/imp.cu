@@ -19,6 +19,7 @@
 #include "comm/utils.h"
 
 #include "exch/map/type.h"
+#include "exch/map/imp.h"
 #include "type.h"
 #include "imp.h"
 
@@ -30,7 +31,6 @@ using namespace comm;
 #include "exch/common/dev.h"
 #include "dev.h"
 
-#include "exch/map/imp.h"
 #include "imp/ini.h"
 #include "imp/fin.h"
 #include "imp/map.h"

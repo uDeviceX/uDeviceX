@@ -9,7 +9,7 @@ void ini(int nv, int max_mesh_num, Pack *p) {
     size_t msz = nv * sizeof(Particle);
     get_capacity(NFRAGS, max_mesh_num, /**/ cap);
 
-    UC(ini_map(1, NFRAGS, cap, /**/ &p->map));
+    UC(emap_ini(1, NFRAGS, cap, /**/ &p->map));
     UC(bags_ini(PINNED, NONE, msz, cap, /**/ &p->hpp, &p->dpp));
 
     CC(d::Malloc((void**) &p->minext, max_mesh_num * sizeof(float3)));

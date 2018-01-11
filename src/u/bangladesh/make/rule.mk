@@ -16,6 +16,7 @@ $B/distr/map/imp.o: $S/distr/map/imp.cu; $N -I$S/. -I$S/distr/map
 $B/distr/rbc/imp.o: $S/distr/rbc/imp.cu; $N -I$S/. -I$S/distr/rbc
 $B/distr/rig/imp.o: $S/distr/rig/imp.cu; $N -I$S/. -I$S/distr/rig
 $B/exch/flu/imp.o: $S/exch/flu/imp.cu; $N -I$S/. -I$S/exch/flu
+$B/exch/map/imp.o: $S/exch/map/imp.cu; $N -I$S/. -I$S/exch/map
 $B/exch/mesh/imp.o: $S/exch/mesh/imp.cu; $N -I$S/. -I$S/exch/mesh
 $B/exch/obj/imp.o: $S/exch/obj/imp.cu; $N -I$S/. -I$S/exch/obj
 $B/flu/imp.o: $S/flu/imp.cpp; $X -I$S/. -I$S/flu

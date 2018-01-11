@@ -21,7 +21,7 @@ __device__ int map_code_box(int3 L, float3 lo, float3 hi) {
     return frag_d2i(x, y, z);
 }
 
-static __device__ void add_to_map(int soluteid, int pid, int fid, Map m) {
+static __device__ void add_to_map(int soluteid, int pid, int fid, EMap m) {
     int ientry, centry;
     centry = soluteid * NBAGS + fid;
     ientry = atomicAdd(m.counts + centry, 1);
@@ -62,33 +62,6 @@ __device__ int map_decode(int code, /**/ int fids[MAX_DSTS]) {
     j = add_edges(j, d, /**/ fids);
     j = add_cornr(j, d, /**/ fids);
     return j;
-}
-
-static __device__ void warpexscan(int cnt, int t, /**/ int *starts) {
-    int L, scan;
-    scan = cnt;
-    for (L = 1; L < 32; L <<= 1) scan += (t >= L) * __shfl_up(scan, L);
-    if (t < 27) starts[t] = scan - cnt;
-}
-
-__global__ void scan2d(const int *counts, const int *oldtcounts, /**/ int *tcounts, int *starts) {
-    int t, cnt, newcnt;
-    t = threadIdx.x;
-    cnt = 0;
-    if (t < 26) {
-        cnt = counts[t];
-        newcnt = cnt + oldtcounts[t];
-        tcounts[t] = newcnt;
-    }
-    if (starts) warpexscan(cnt, t, /**/ starts);
-}
-
-__global__ void scan1d(const int *count, /**/ int *starts) {
-    int t, cnt;
-    t = threadIdx.x;
-    cnt = 0;
-    if (t < 26) cnt = count[t];
-    if (starts) warpexscan(cnt, t, /**/ starts);
 }
 
 } // dev

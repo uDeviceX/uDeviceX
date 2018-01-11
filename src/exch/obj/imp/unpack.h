@@ -41,7 +41,7 @@ Pap26 upload_shift(Unpack *u) {
     return wrap;
 }
 
-static void unpack_ff(int nfrags, Fop26 ff, Map map, int nw, /**/ FoWrap *ww) {
+static void unpack_ff(int nfrags, Fop26 ff, EMap map, int nw, /**/ FoWrap *ww) {
     int i, stride;
     stride = nfrags + 1;
     const FoWrap *w;
