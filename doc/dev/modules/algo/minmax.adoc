@@ -19,9 +19,9 @@ input:
 	number of particles per chunk: 3
 
 output:
-	minext:
+	min:
 	0.1 0.3
-	maxext:
+	max:
 	0.5 1.0
 ----
 
