@@ -7,6 +7,7 @@ i="$1"; shift
 
 "$AWK" -v prog="$prog" -v dbg="$DBG" '
 BEGIN    {
+    args()
     s = 0
 }
 NF == 0  {
@@ -36,8 +37,20 @@ function no_id(i,   s) {
 		i, FILENAME, NR)
     err(s)
 }
-function read_line() { i = $1; x = $2; y = $3; z = $4 }
+function read_line() {
+    i = $idx["id"]
+    x = $idx["x"]
+    y = $idx["y"]
+    z = $idx["z"]
+}
 function msg(s) { printf "%s: %s\n", prog, s | "cat >&2" }
 function err(s) { msg(s); exit(2) }
 function eq(a, b) { return a "" ==  b ""}
-' "$i"
+function args(   i, k)   { # fill idx
+    for (i = 0; i < ARGC; i++) {
+	k = ARGV[i]
+	idx[k] = i - 1
+    }
+    ARGC = 2 # read only one argument as a file
+}
+' "$i" "$@"
