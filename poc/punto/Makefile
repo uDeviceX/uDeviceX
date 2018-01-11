@@ -1,7 +1,7 @@
 BIN = $(HOME)/bin
 B = $(BIN)
 
-P = head tail nsnap rest
+P = diff rest
 
 # prefix
 p = u.punto

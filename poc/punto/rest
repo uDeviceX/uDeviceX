@@ -3,10 +3,8 @@ set -eu
 
 n="$1"; shift
 i="$1"; shift
-m=`u.punto.nsnap "$i"`
 
-awk -v n=$n -v m=$m '
-NF == 0     { i++   }
-i  == m - n { exit  }
-            { print }
+awk -v m=$m '
+i  >= m { print }
+NF == 0 { i++   }
 ' "$i"
