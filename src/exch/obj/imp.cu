@@ -24,12 +24,9 @@
 #include "imp.h"
 
 using namespace comm;
-#include "exch/map/dev.h"
 
-#include "exch/common/type.h"
-namespace eobj {
-#include "exch/common/dev.h"
-}
+#include "exch/map/dev.h"
+#include "exch/common/imp.h"
 
 #include "dev.h"
 
