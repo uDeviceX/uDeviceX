@@ -7,7 +7,7 @@ static __device__ void pack_p(const Particle *pp, int offset, int *indices, int 
     buf[dst] = pp[src];
 }
 
-__global__ void pack_pp(const Particle *pp, PackHelper ph, /**/ Pap26 buf) {
+__global__ void ecommon_pack_pp(const Particle *pp, PackHelper ph, /**/ Pap26 buf) {
     int gid, fid, frag_i, hi, step;
     gid = threadIdx.x + blockDim.x * blockIdx.x;
     hi = ph.starts[26];
@@ -38,7 +38,7 @@ static  __device__ void shift_1p(const int s[3], /**/ Particle *p) {
     p->r[Z] += s[Z];
 }
 
-__global__ void shift_one_frag(int n, const int fid, /**/ Particle *pp) {
+__global__ void ecommon_shift_one_frag(int n, const int fid, /**/ Particle *pp) {
     int i, s[3];
     i = threadIdx.x + blockDim.x * blockIdx.x;
     if (i >= n) return;
