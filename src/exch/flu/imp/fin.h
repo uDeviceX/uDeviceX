@@ -6,11 +6,11 @@ void fin(Pack *p) {
         CC(d::Free(p->bii.d[i]));
     }
     
-    fin(PINNED_DEV, NONE, /**/ &p->hpp, &p->dpp);
+    UC(bags_fin(PINNED_DEV, NONE, /**/ &p->hpp, &p->dpp));
     if (multi_solvent)
-        fin(PINNED_DEV, NONE, /**/ &p->hcc, &p->dcc);
+        UC(bags_fin(PINNED_DEV, NONE, /**/ &p->hcc, &p->dcc));
 
-    fin(PINNED_HST, NONE, /**/ &p->hfss, NULL);
+    UC(bags_fin(PINNED_HST, NONE, /**/ &p->hfss, NULL));
 
     CC(d::Free(p->counts_dev));
 }
@@ -23,10 +23,10 @@ void fin(Comm *c) {
 }
 
 void fin(Unpack *u) {
-    fin(PINNED_DEV, NONE, /**/ &u->hpp, &u->dpp);
+    UC(bags_fin(PINNED_DEV, NONE, /**/ &u->hpp, &u->dpp));
     if (multi_solvent)
-        fin(PINNED_DEV, NONE, /**/ &u->hcc, &u->dcc);
+        UC(bags_fin(PINNED_DEV, NONE, /**/ &u->hcc, &u->dcc));
 
-    fin(PINNED_HST, NONE, /**/ &u->hfss, &u->dfss);
+    UC(bags_fin(PINNED_HST, NONE, /**/ &u->hfss, &u->dfss));
 }
 

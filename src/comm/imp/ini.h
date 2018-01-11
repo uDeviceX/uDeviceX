@@ -45,7 +45,7 @@ static void alloc_pair(int i, AllocMod mod, /**/ hBags *hb, dBags *db) {
     }
 }
 
-int ini(AllocMod fmod, AllocMod bmod, size_t bsize, const int capacity[NBAGS], /**/ hBags *hb, dBags *db) {
+int bags_ini(AllocMod fmod, AllocMod bmod, size_t bsize, const int capacity[NBAGS], /**/ hBags *hb, dBags *db) {
     hb->bsize = bsize;
     memcpy(hb->capacity, capacity, NBAGS * sizeof(int));
 

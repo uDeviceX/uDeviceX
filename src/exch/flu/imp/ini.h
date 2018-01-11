@@ -18,11 +18,11 @@ void ini(int maxd, Pack *p) {
     }
     ncs[BULK] = 0;
     
-    UC(ini(PINNED_DEV, NONE, sizeof(Particle), cap, /**/ &p->hpp, &p->dpp));
+    UC(bags_ini(PINNED_DEV, NONE, sizeof(Particle), cap, /**/ &p->hpp, &p->dpp));
     if (multi_solvent)
-        UC(ini(PINNED_DEV, NONE,  sizeof(int), cap, /**/ &p->hcc, &p->dcc));
+        UC(bags_ini(PINNED_DEV, NONE,  sizeof(int), cap, /**/ &p->hcc, &p->dcc));
 
-    UC(ini(PINNED_HST, NONE, sizeof(int), ncs, /**/ &p->hfss, NULL));
+    UC(bags_ini(PINNED_HST, NONE, sizeof(int), ncs, /**/ &p->hfss, NULL));
 
     memcpy(p->hfss.counts, ncs, sizeof(ncs));
     
@@ -47,10 +47,10 @@ void ini(int maxd, Unpack *u) {
         ncs[i] = frag_ncell(i) + 1;
     ncs[BULK] = 0;
     
-    UC(ini(PINNED_DEV, NONE, sizeof(Particle), cap, /**/ &u->hpp, &u->dpp));
+    UC(bags_ini(PINNED_DEV, NONE, sizeof(Particle), cap, /**/ &u->hpp, &u->dpp));
     if (multi_solvent)
-        UC(ini(PINNED_DEV, NONE,  sizeof(int), cap, /**/ &u->hcc, &u->dcc));
+        UC(bags_ini(PINNED_DEV, NONE,  sizeof(int), cap, /**/ &u->hcc, &u->dcc));
 
-    UC(ini(PINNED_DEV, NONE, sizeof(int), ncs, /**/ &u->hfss, &u->dfss));
+    UC(bags_ini(PINNED_DEV, NONE, sizeof(int), ncs, /**/ &u->hfss, &u->dfss));
 }
 

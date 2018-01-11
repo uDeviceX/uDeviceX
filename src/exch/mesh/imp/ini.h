@@ -10,7 +10,7 @@ void ini(int nv, int max_mesh_num, Pack *p) {
     get_capacity(NFRAGS, max_mesh_num, /**/ cap);
 
     UC(ini_map(1, NFRAGS, cap, /**/ &p->map));
-    UC(ini(PINNED, NONE, msz, cap, /**/ &p->hpp, &p->dpp));
+    UC(bags_ini(PINNED, NONE, msz, cap, /**/ &p->hpp, &p->dpp));
 
     CC(d::Malloc((void**) &p->minext, max_mesh_num * sizeof(float3)));
     CC(d::Malloc((void**) &p->maxext, max_mesh_num * sizeof(float3)));
@@ -25,7 +25,7 @@ void ini(int nv, int max_mesh_num, Unpack *u) {
     size_t msz = nv * sizeof(Particle);
     get_capacity(NFRAGS, max_mesh_num, /**/ cap);
 
-    UC(ini(PINNED_DEV, NONE, msz, cap, /**/ &u->hpp, &u->dpp));
+    UC(bags_ini(PINNED_DEV, NONE, msz, cap, /**/ &u->hpp, &u->dpp));
 }
 
 
@@ -52,8 +52,8 @@ void ini(int nt, int max_mesh_num, PackM *p) {
     for (i = 0; i < NFRAGS; ++i)
         UC(ini_map(nt, cap[i], /**/ &p->maps[i]));
     
-    UC(ini(PINNED,   NONE, sizeof(Momentum), mcap, /**/ &p->hmm, &p->dmm));
-    UC(ini(PINNED,   NONE, sizeof(int)     , mcap, /**/ &p->hii, &p->dii));
+    UC(bags_ini(PINNED,   NONE, sizeof(Momentum), mcap, /**/ &p->hmm, &p->dmm));
+    UC(bags_ini(PINNED,   NONE, sizeof(int)     , mcap, /**/ &p->hii, &p->dii));
 
     CC(d::alloc_pinned((void**) &p->cchst, 26 * sizeof(int)));
     CC(d::HostGetDevicePointer((void**) &p->ccdev, p->cchst, 0));
@@ -70,6 +70,6 @@ void ini(int nt, int max_mesh_num, UnpackM *u) {
     get_capacity(NFRAGS, max_mesh_num, /**/ cap);
     get_mcap(NFRAGS, nt, cap, /**/ mcap);
 
-    UC(ini(PINNED_DEV, NONE, sizeof(Momentum), mcap, /**/ &u->hmm, &u->dmm));
-    UC(ini(PINNED_DEV, NONE, sizeof(int)     , mcap, /**/ &u->hii, &u->dii));
+    UC(bags_ini(PINNED_DEV, NONE, sizeof(Momentum), mcap, /**/ &u->hmm, &u->dmm));
+    UC(bags_ini(PINNED_DEV, NONE, sizeof(int)     , mcap, /**/ &u->hii, &u->dii));
 }

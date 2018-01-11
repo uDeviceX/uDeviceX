@@ -11,9 +11,9 @@ void ini(int maxns, int nv, Pack *p) {
     UC(dmap_ini(NBAGS, numc, /**/ &p->map));
 
     /* one datum is here a full mesh, so bsize is nv * sizeof(Particle) */
-    UC(ini(PINNED, DEV_ONLY, nv * sizeof(Particle), numc, /**/ &p->hipp, &p->dipp));
+    UC(bags_ini(PINNED, DEV_ONLY, nv * sizeof(Particle), numc, /**/ &p->hipp, &p->dipp));
     
-    UC(ini(PINNED, DEV_ONLY, sizeof(Solid), numc, /**/ &p->hss, &p->dss));
+    UC(bags_ini(PINNED, DEV_ONLY, sizeof(Solid), numc, /**/ &p->hss, &p->dss));
 }
 
 void ini(MPI_Comm comm, /**/ Comm *c) {
@@ -26,7 +26,7 @@ void ini(int maxns, int nv, Unpack *u) {
     get_num_capacity(maxns, /**/ numc);
 
     /* one datum is here a full mesh, so bsize is nv * sizeof(Particle) */
-    UC(ini(HST_ONLY, NONE, nv * sizeof(Particle), numc, /**/ &u->hipp, NULL));
+    UC(bags_ini(HST_ONLY, NONE, nv * sizeof(Particle), numc, /**/ &u->hipp, NULL));
 
-    UC(ini(HST_ONLY, NONE, sizeof(Solid), numc, /**/ &u->hss, NULL));
+    UC(bags_ini(HST_ONLY, NONE, sizeof(Solid), numc, /**/ &u->hss, NULL));
 }

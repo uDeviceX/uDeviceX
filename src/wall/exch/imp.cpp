@@ -97,8 +97,8 @@ void exch(MPI_Comm cart, int maxn, /*io*/ Particle *pp, int *n) {
     int i, capacity[NBAGS];
 
     for (i = 0; i < NBAGS; ++i) capacity[i] = maxn;
-    UC(ini(HST_ONLY, NONE, sizeof(Particle), capacity, &send, NULL));
-    UC(ini(HST_ONLY, NONE, sizeof(Particle), capacity, &recv, NULL));
+    UC(bags_ini(HST_ONLY, NONE, sizeof(Particle), capacity, &send, NULL));
+    UC(bags_ini(HST_ONLY, NONE, sizeof(Particle), capacity, &recv, NULL));
     UC(ini(cart, &stamp));
 
     fill_bags(*n, pp, /**/ &send);
@@ -106,7 +106,7 @@ void exch(MPI_Comm cart, int maxn, /*io*/ Particle *pp, int *n) {
     check_counts(maxn, *n, &recv);
     unpack(maxn, &recv, /**/ n, pp);
     
-    fin(HST_ONLY, NONE, &send, NULL);
-    fin(HST_ONLY, NONE, &recv, NULL);
+    UC(bags_fin(HST_ONLY, NONE, &send, NULL));
+    UC(bags_fin(HST_ONLY, NONE, &recv, NULL));
     fin(&stamp);
 }

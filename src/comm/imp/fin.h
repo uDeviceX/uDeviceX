@@ -30,7 +30,7 @@ static void free_pair(int i, AllocMod mod, /**/ hBags *hb, dBags *db) {
     }
 }
 
-int fin(AllocMod fmod, AllocMod bmod, /**/ hBags *hb, dBags *db) {
+int bags_fin(AllocMod fmod, AllocMod bmod, /**/ hBags *hb, dBags *db) {
     /* fragments */
     for (int i = 0; i < NFRAGS; ++i)
         free_pair(i, fmod, /**/ hb, db);

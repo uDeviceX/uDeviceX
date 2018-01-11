@@ -47,8 +47,8 @@ struct Stamp {
 
 // tag::alloc[]
 /* bags alloc */
-int ini(AllocMod fmod, AllocMod bmod, size_t bsize, const int capacity[NBAGS], /**/ hBags *hb, dBags *db);
-int fin(AllocMod fmod, AllocMod bmod, /**/ hBags *hb, dBags *db);
+int bags_ini(AllocMod fmod, AllocMod bmod, size_t bsize, const int capacity[NBAGS], /**/ hBags *hb, dBags *db);
+int bags_fin(AllocMod fmod, AllocMod bmod, /**/ hBags *hb, dBags *db);
 
 /* stamp alloc */
 int ini(MPI_Comm comm, /**/ Stamp *s);

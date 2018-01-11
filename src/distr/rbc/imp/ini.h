@@ -11,14 +11,14 @@ void ini(int maxnc, int nv, Pack *p) {
     UC(dmap_ini(NBAGS, numc, /**/ &p->map));
 
     /* one datum is here a full RBC, so bsize is nv * sizeof(Particle) */
-    UC(ini(PINNED, DEV_ONLY, nv * sizeof(Particle), numc, /**/ &p->hpp, &p->dpp));
+    UC(bags_ini(PINNED, DEV_ONLY, nv * sizeof(Particle), numc, /**/ &p->hpp, &p->dpp));
 
     CC(d::Malloc((void**) &p->minext, maxnc * sizeof(float3)));
     CC(d::Malloc((void**) &p->maxext, maxnc * sizeof(float3)));
 
     if (rbc_ids) {
         UC(dmap_ini_host(NBAGS, numc, /**/ &p->hmap));
-        UC(ini(HST_ONLY, HST_ONLY, sizeof(int), numc, /**/ &p->hii, NULL));
+        UC(bags_ini(HST_ONLY, HST_ONLY, sizeof(int), numc, /**/ &p->hii, NULL));
     }
 }
 
@@ -33,8 +33,8 @@ void ini(int maxnc, int nv, Unpack *u) {
     get_num_capacity(maxnc, /**/ numc);
 
     /* one datum is here a full RBC, so bsize is nv * sizeof(Particle) */
-    UC(ini(HST_ONLY, NONE, nv * sizeof(Particle), numc, /**/ &u->hpp, NULL));
+    UC(bags_ini(HST_ONLY, NONE, nv * sizeof(Particle), numc, /**/ &u->hpp, NULL));
 
     if (rbc_ids)
-        UC(ini(HST_ONLY, NONE, sizeof(int), numc, /**/ &u->hii, NULL));
+        UC(bags_ini(HST_ONLY, NONE, sizeof(int), numc, /**/ &u->hii, NULL));
 }

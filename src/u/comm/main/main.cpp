@@ -57,8 +57,8 @@ int main(int argc, char **argv) {
     float maxdensity = 26.f;
     frag_estimates(NBAGS, maxdensity, /**/ capacity);
 
-    UC(ini(HST_ONLY, NONE, sizeof(int), capacity, /**/ &sendB, NULL));
-    UC(ini(HST_ONLY, NONE,sizeof(int), capacity, /**/ &recvB, NULL));
+    UC(bags_ini(HST_ONLY, NONE, sizeof(int), capacity, /**/ &sendB, NULL));
+    UC(bags_ini(HST_ONLY, NONE, sizeof(int), capacity, /**/ &recvB, NULL));
     UC(ini(m::cart, /**/ &stamp));
 
     fill_bags(&sendB);
@@ -73,8 +73,8 @@ int main(int argc, char **argv) {
 
     msg_print("Passed");
     
-    UC(fin(HST_ONLY, NONE, &sendB, NULL));
-    UC(fin(HST_ONLY, NONE, &recvB, NULL));
+    UC(bags_fin(HST_ONLY, NONE, &sendB, NULL));
+    UC(bags_fin(HST_ONLY, NONE, &recvB, NULL));
     UC(fin(/**/ &stamp));
     
     m::fin();

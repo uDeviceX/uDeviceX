@@ -1,6 +1,6 @@
 void fin(Pack *p) {
-    fin_map(NFRAGS, /**/ &p->map);
-    fin(PINNED, NONE, /**/ &p->hpp, &p->dpp);
+    UC(fin_map(NFRAGS, /**/ &p->map));
+    UC(bags_fin(PINNED, NONE, /**/ &p->hpp, &p->dpp));
     CC(d::Free(p->minext));
     CC(d::Free(p->maxext));
 }
@@ -10,7 +10,7 @@ void fin(Comm *c) {
 }
 
 void fin(Unpack *u) {
-    fin(PINNED_DEV, NONE, /**/ &u->hpp, &u->dpp);
+    UC(bags_fin(PINNED_DEV, NONE, /**/ &u->hpp, &u->dpp));
 }
 
 /* Momentum struct */
@@ -22,8 +22,8 @@ static void fin_map(/**/ MMap *map) {
 }
 
 void fin(PackM *p) {
-    fin(PINNED, NONE, /**/ &p->hmm, &p->dmm);
-    fin(PINNED, NONE, /**/ &p->hii, &p->dii);
+    UC(bags_fin(PINNED, NONE, /**/ &p->hmm, &p->dmm));
+    UC(bags_fin(PINNED, NONE, /**/ &p->hii, &p->dii));
 
     for (int i = 0; i < NFRAGS; ++i)
         fin_map(&p->maps[i]);
@@ -37,6 +37,6 @@ void fin(CommM *c) {
 }
 
 void fin(UnpackM *u) {
-    fin(PINNED_DEV, NONE, /**/ &u->hmm, &u->dmm);
-    fin(PINNED_DEV, NONE, /**/ &u->hii, &u->dii);
+    UC(bags_fin(PINNED_DEV, NONE, /**/ &u->hmm, &u->dmm));
+    UC(bags_fin(PINNED_DEV, NONE, /**/ &u->hii, &u->dii));
 }
