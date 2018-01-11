@@ -18,5 +18,5 @@ numberp () { # number?
 }
 
 intp () { # integer?
-    awk -v n="$1" 'BEGIN  {r = !(int(n) == n); exit r }'
+    awk -v n="$1" 'BEGIN  {r = !("" int(n) == "" n); exit r }'
 }
