@@ -28,7 +28,8 @@ static float vabs(float *a) {
     return sqrt(r);
 }
 
-static float heron(float a, float b, float c) {
+/* heron formula for triangle area */
+static float area_heron(float a, float b, float c) {
   float s;
   s = (a+b+c)/2;
   return sqrt(s*(s-a)*(s-b)*(s-c));

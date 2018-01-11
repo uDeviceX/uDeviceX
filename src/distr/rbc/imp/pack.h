@@ -20,7 +20,7 @@ static void pack_ii(const DMap m, int nc, const int *ii, /**/ hBags bags) {
     }
 }
 
-void drbc_pack(const rbc::Quants *q, /**/ DRbcPack *p) {
+void drbc_pack(const rbc::RbcQuants *q, /**/ DRbcPack *p) {
     pack_pp(p->map, q->nc, q->nv, q->pp, /**/ p->dpp);
 
     if (rbc_ids) {

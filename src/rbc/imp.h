@@ -1,10 +1,10 @@
 namespace rbc { namespace main {
 
-void ini(Quants *q);
-void fin(Quants *q);
+void rbc_ini(RbcQuants *q);
+void rbc_fin(RbcQuants *q);
 
-void gen_quants(Coords coords, MPI_Comm comm, const char *cell, const char *ic, Quants *q);
-void strt_quants(Coords coords, const char *cell, const int id, Quants *q);
-void strt_dump(Coords coords, const int id, const Quants *q);
+void rbc_gen_quants(Coords coords, MPI_Comm comm, const char *cell, const char *ic, RbcQuants *q);
+void rbc_strt_quants(Coords coords, const char *cell, const int id, RbcQuants *q);
+void rbc_strt_dump(Coords coords, const int id, const RbcQuants *q);
 
 }} /* namespace */

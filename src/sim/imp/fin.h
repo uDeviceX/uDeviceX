@@ -78,7 +78,7 @@ static void fin_flu(Flu *f) {
 }
 
 static void fin_rbc(Rbc *r) {
-    rbc::main::fin(&r->q);
+    rbc::main::rbc_fin(&r->q);
     rbc::force::fin_ticket(&r->tt);
 
     fin_rbc_distr(/**/ &r->d);

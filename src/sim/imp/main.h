@@ -43,7 +43,7 @@ void sim_gen(Sim *s) {
     flu_build_cells(&flu->q);
     if (global_ids)  flu_gen_ids  (s->cart, flu->q.n, &flu->q);
     if (rbcs) {
-        rbc::main::gen_quants(s->coords, s->cart, "rbc.off", "rbcs-ic.txt", /**/ &rbc->q);
+        rbc::main::rbc_gen_quants(s->coords, s->cart, "rbc.off", "rbcs-ic.txt", /**/ &rbc->q);
         rbc::force::gen_ticket(rbc->q, &rbc->tt);
 
         if (multi_solvent) gen_colors(rbc, &s->colorer, /**/ flu);
@@ -79,7 +79,7 @@ void sim_strt(Sim *s) {
     flu_strt_quants(s->coords, restart::BEGIN, &flu->q);
     flu_build_cells(&flu->q);
 
-    if (rbcs) rbc::main::strt_quants(s->coords, "rbc.off", restart::BEGIN, &rbc->q);
+    if (rbcs) rbc::main::rbc_strt_quants(s->coords, "rbc.off", restart::BEGIN, &rbc->q);
     dSync();
 
     if (solids) rig::strt_quants(s->coords, restart::BEGIN, &rig->q);

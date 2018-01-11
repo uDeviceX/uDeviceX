@@ -6,7 +6,7 @@ static void setup_rnd(int md, int nv, rbc::rnd::D **prnd) {
     rbc::rnd::ini(prnd, n, seed);
 }
 
-void gen_ticket(const Quants q, TicketT *t) {
+void gen_ticket(const RbcQuants q, TicketT *t) {
     int md, nv;
     md = RBCmd;
     nv = RBCnv;
