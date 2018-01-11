@@ -1,0 +1,16 @@
+#!/bin/sh
+set -eu
+
+# input, sorted, rest
+
+n="$1"; shift
+i="$1"; shift
+
+s=/tmp/s.dt.$$; >$s; trap 'rm $s' 1 2 3 4 15
+r=/tmp/r.dt.$$; >$r; trap 'rm $r' 1 2 3 4 15
+
+u.punto.sort "$i"     > $s
+u.punto.rest  $n "$s" > $r
+u.punto.diff  "$r" "$s"
+
+rm $s $r

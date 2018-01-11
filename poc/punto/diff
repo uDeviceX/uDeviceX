@@ -11,17 +11,19 @@ function read_line(q,   s, n) {
     return n
 }
 BEGIN {
-    ra = getline a < A
-    rb = getline b < B
-    if (ra <= 0) exit
-    if (rb <= 0) exit
-    n = read_line(a); xa = x; ya = y; za = z
-    if (n > 0) {
-	read_line(b); xb = x; yb = y; zb = z
-	dx = xb - xa; dy = yb - ya; dz = zb - za
-	print dx, dy, dz
-    } else {
-	printf "\n"
+    while (1) {
+	ra = getline a < A
+	rb = getline b < B
+	if (ra <= 0) break
+	if (rb <= 0) break
+	n = read_line(a); xa = x; ya = y; za = z
+	if (n > 0) {
+	    read_line(b); xb = x; yb = y; zb = z
+	    dx = xb - xa; dy = yb - ya; dz = zb - za
+	    print a, dx, dy, dz
+	} else {
+	    printf "\n"
+	}
     }
 }
 '

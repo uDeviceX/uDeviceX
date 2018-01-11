@@ -1,7 +1,7 @@
 BIN = $(HOME)/bin
 B = $(BIN)
 
-P = diff rest
+P = diff rest sort dt
 
 # prefix
 p = u.punto
