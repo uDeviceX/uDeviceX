@@ -40,18 +40,18 @@ void bounce_solid(long it, BounceBack *bb, Rig *s, Flu *flu) {
 
     /* send meshes to frags */
 
-    emesh_build_map(nm, nv, i_pp, /**/ &e->p);
-    emesh_pack(nv, i_pp, /**/ &e->p);
-    emesh_download(&e->p);
+    emesh_build_map(nm, nv, i_pp, /**/ e->p);
+    emesh_pack(nv, i_pp, /**/ e->p);
+    emesh_download(e->p);
 
-    UC(emesh_post_send(&e->p, &e->c));
-    UC(emesh_post_recv(&e->c, &e->u));
+    UC(emesh_post_send(e->p, e->c));
+    UC(emesh_post_recv(e->c, e->u));
 
-    emesh_wait_send(&e->c);
-    emesh_wait_recv(&e->c, &e->u);
+    emesh_wait_send(e->c);
+    emesh_wait_recv(e->c, e->u);
 
     /* unpack at the end of current mesh buffer */
-    emesh_unpack(nv, &e->u, /**/ &nmhalo, i_pp + nm * nv);
+    emesh_unpack(nv, e->u, /**/ &nmhalo, i_pp + nm * nv);
     
     /* perform bounce back */
     
@@ -65,18 +65,18 @@ void bounce_solid(long it, BounceBack *bb, Rig *s, Flu *flu) {
 
     /* send momentum back */
 
-    emesh_get_num_frag_mesh(&e->u, /**/ counts);
+    emesh_get_num_frag_mesh(e->u, /**/ counts);
     
-    emesh_packM(nt, counts, bb->mm + nm * nt, /**/ &e->pm);
-    emesh_downloadM(counts, /**/ &e->pm);
+    emesh_packM(nt, counts, bb->mm + nm * nt, /**/ e->pm);
+    emesh_downloadM(counts, /**/ e->pm);
 
-    UC(emesh_post_recv(&e->cm, &e->um));
-    UC(emesh_post_send(&e->pm, &e->cm));
-    emesh_wait_recv(&e->cm, &e->um);
-    emesh_wait_send(&e->cm);
+    UC(emesh_post_recv(e->cm, e->um));
+    UC(emesh_post_send(e->pm, e->cm));
+    emesh_wait_recv(e->cm, e->um);
+    emesh_wait_send(e->cm);
 
-    emesh_upload(&e->um);
-    emesh_unpack_mom(nt, &e->p, &e->um, /**/ bb->mm);
+    emesh_upload(e->um);
+    emesh_unpack_mom(nt, e->p, e->um, /**/ bb->mm);
     
     /* gather bb momentum */
     meshbb::collect_rig_momentum(nm, nt, nv, tt, i_pp, bb->mm, /**/ qs->ss);

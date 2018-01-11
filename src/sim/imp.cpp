@@ -74,8 +74,6 @@
 #include "exch/map/type.h"
 #include "exch/obj/type.h"
 #include "exch/obj/imp.h"
-
-#include "exch/mesh/type.h"
 #include "exch/mesh/imp.h"
 
 #include "flu/type.h"

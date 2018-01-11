@@ -1,8 +1,15 @@
+struct EMeshPack;
+struct EMeshComm;
+struct EMeshUnpack;
+struct EMeshPackM;
+struct EMeshCommM;
+struct EMeshUnpackM;
+
 /* mesh exchanger */
 
-void emesh_pack_ini(int nv, int max_mesh_num, EMeshPack *p);
-void emesh_comm_ini(MPI_Comm comm, /**/ EMeshComm *c);
-void emesh_unpack_ini(int nv, int max_mesh_num, EMeshUnpack *u);
+void emesh_pack_ini(int nv, int max_mesh_num, EMeshPack **p);
+void emesh_comm_ini(MPI_Comm comm, /**/ EMeshComm **c);
+void emesh_unpack_ini(int nv, int max_mesh_num, EMeshUnpack **u);
 
 void emesh_pack_fin(EMeshPack *p);
 void emesh_comm_fin(EMeshComm *c);
@@ -24,9 +31,9 @@ void emesh_unpack(int nv, const EMeshUnpack *u, /**/ int *nmhalo, Particle *pp);
 
 void emesh_get_num_frag_mesh(const EMeshUnpack *u, /**/ int cc[NFRAGS]);
 
-void emesh_packm_ini(int num_mom_per_mesh, int max_mesh_num, EMeshPackM *p);
-void emesh_commm_ini(MPI_Comm comm, /**/ EMeshCommM *c);
-void emesh_unpackm_ini(int num_mom_per_mesh, int max_mesh_num, EMeshUnpackM *u);
+void emesh_packm_ini(int num_mom_per_mesh, int max_mesh_num, EMeshPackM **p);
+void emesh_commm_ini(MPI_Comm comm, /**/ EMeshCommM **c);
+void emesh_unpackm_ini(int num_mom_per_mesh, int max_mesh_num, EMeshUnpackM **u);
 
 void emesh_packm_fin(EMeshPackM *p);
 void emesh_commm_fin(EMeshCommM *c);
