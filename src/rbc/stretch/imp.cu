@@ -19,11 +19,8 @@
 #include "utils/kl.h"
 
 #include "imp.h"
-namespace rbc { namespace stretch {
 namespace dev {
 #include "dev/main.h"
 }
 #include "imp/type.h"
 #include "imp/main.h"
-
-}} /* namespace */
