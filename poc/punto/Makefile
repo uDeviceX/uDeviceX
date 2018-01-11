@@ -1,7 +1,7 @@
 BIN = $(HOME)/bin
 B = $(BIN)
 
-P = dt
+P = head tail
 
 # prefix
 p = u.punto
