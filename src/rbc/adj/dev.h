@@ -1,6 +1,6 @@
 namespace adj {
 static __device__ int fetch(const int *a, int i) { return a[i]; }
-static __device__ int dev(int md, int nv, int i, const int *adj0, const int *adj1, /**/ Map *m) {
+static __device__ int dev(int md, int nv, int i, const int *adj0, const int *adj1, /**/ AdjMap *m) {
     int i0, i1, i2, i3, i4;
     int rbc, offset, j, k;
 

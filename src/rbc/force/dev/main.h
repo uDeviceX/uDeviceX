@@ -23,7 +23,7 @@ static __device__ Part tex2Part(const Particle *pp, int i) {
 
 static __device__ float3 adj_tris(const Particle *pp,  const Part p0, const float *av,
                                   const Shape0 shape, const Rnd0 rnd,
-                                  adj::Map *m) {
+                                  adj::AdjMap *m) {
     float3 f, fv, fr;
     int i1, i2, rbc;
     float area, volume;
@@ -45,7 +45,7 @@ static __device__ float3 adj_tris(const Particle *pp,  const Part p0, const floa
 
 static __device__ float3 adj_dihedrals(const Particle *pp, float3 r0,
                                        const Shape0 shape,
-                                       adj::Map *m) {
+                                       adj::AdjMap *m) {
     Pos r1, r2, r3, r4;
     r1 = tex2Pos(pp, m->i1);
     r2 = tex2Pos(pp, m->i2);
@@ -62,7 +62,7 @@ __global__ void force(int md, int nv, int nc, const Particle *pp, float *rnd,
     assert(nv == RBCnv);
     int i, pid;
     float3 f, fd;
-    adj::Map m;
+    adj::AdjMap m;
     Shape0 shape0;
     Rnd0   rnd0;
     int valid;

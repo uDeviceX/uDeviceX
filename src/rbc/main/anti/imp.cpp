@@ -16,7 +16,7 @@
 
 namespace anti {
 static void set(int md, int nv, adj::Adj *adj, /**/ int *hx, int *hy) {
-    adj::Map m;
+    adj::AdjMap m;
     int valid, i, i0, i1;
     for (i = 0; i < md*nv; i++) {
         valid = adj::hst(md, nv, i, adj, /**/ &m);
@@ -27,7 +27,7 @@ static void set(int md, int nv, adj::Adj *adj, /**/ int *hx, int *hy) {
 }
 
 static void get(int md, int nv, adj::Adj *adj, int *hx, int *hy, /**/ int *anti) {
-    adj::Map m;
+    adj::AdjMap m;
     int valid, i, j, i0, i1;
     for (i = 0; i < md*nv; i++) {
         valid = adj::hst(md, nv, i, adj, /**/ &m);

@@ -1,4 +1,4 @@
-static void setup_edg0(float *rr, adj::Map m, /**/ Edg *edg) {
+static void setup_edg0(float *rr, adj::AdjMap m, /**/ Edg *edg) {
     int i0, i1, i2;
     float *r0, *r1, *r2;
     float r01[3], r12[3], r20[3];
@@ -21,7 +21,7 @@ static void setup_edg0(float *rr, adj::Map m, /**/ Edg *edg) {
 static void setup_edg1(int md, int nv, adj::Adj *adj, float *rr, /**/
                        Edg *edg, float *ptotArea) {
     int valid, i;
-    adj::Map m;
+    adj::AdjMap m;
     float totArea;
 
     totArea = 0;
