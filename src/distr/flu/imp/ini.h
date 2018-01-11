@@ -11,8 +11,13 @@ static void get_capacity(int maxd, /**/ int capacity[NBAGS]) {
     capacity[frag_bulk] = 0;
 }
 
-void dflu_pack_ini(int maxdensity, DFluPack *p) {
+void dflu_pack_ini(int maxdensity, DFluPack **pack) {
+    DFluPack *p;
     int capacity[NBAGS];
+
+    UC(emalloc(sizeof(DFluPack), (void**) pack));
+    p = *pack;
+    
     get_capacity(maxdensity, /**/ capacity);
 
     UC(dmap_ini(NFRAGS, capacity, /**/ &p->map));
@@ -22,10 +27,13 @@ void dflu_pack_ini(int maxdensity, DFluPack *p) {
     if (multi_solvent) UC(bags_ini(PINNED, NONE, sizeof(int), capacity, /**/ &p->hcc, &p->dcc));
 }
 
-void dflu_comm_ini(MPI_Comm comm, /**/ DFluComm *c) {
-    UC(comm_ini(comm, /**/ &c->pp));
-    if (global_ids)    UC(comm_ini(comm, /**/ &c->ii));
-    if (multi_solvent) UC(comm_ini(comm, /**/ &c->cc));
+void dflu_comm_ini(MPI_Comm cart, /**/ DFluComm **com) {
+    DFluComm *c;
+    UC(emalloc(sizeof(DFluComm), (void**) com));
+    c = *com;
+    UC(comm_ini(cart, /**/ &c->pp));
+    if (global_ids)    UC(comm_ini(cart, /**/ &c->ii));
+    if (multi_solvent) UC(comm_ini(cart, /**/ &c->cc));
 }
 
 static int nhalocells() {
@@ -36,8 +44,13 @@ static int nhalocells() {
         2 * YS * ZS;
 }
 
-void dflu_unpack_ini(int maxdensity, DFluUnpack *u) {
+void dflu_unpack_ini(int maxdensity, DFluUnpack **unpack) {
     int capacity[NBAGS];
+    DFluUnpack *u;
+
+    UC(emalloc(sizeof(DFluUnpack), (void**) unpack));
+    u = *unpack;
+    
     get_capacity(maxdensity, /**/ capacity);
 
     UC(bags_ini(HST_ONLY, NONE, sizeof(Particle), capacity, /**/ &u->hpp, NULL));

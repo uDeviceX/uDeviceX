@@ -1,7 +1,11 @@
+struct DFluPack;
+struct DFluComm;
+struct DFluUnpack;
+
 // tag::interface[]
-void dflu_pack_ini(int maxdensity, DFluPack *p);
-void dflu_comm_ini(MPI_Comm comm, /**/ DFluComm *c);
-void dflu_unpack_ini(int maxdensity, DFluUnpack *u);
+void dflu_pack_ini(int maxdensity, DFluPack **p);
+void dflu_comm_ini(MPI_Comm comm, /**/ DFluComm **c);
+void dflu_unpack_ini(int maxdensity, DFluUnpack **u);
 
 void dflu_pack_fin(DFluPack *p);
 void dflu_comm_fin(DFluComm *c);

@@ -30,7 +30,6 @@
 #include "comm/utils.h"
 
 #include "distr/map/type.h"
-#include "type.h"
 #include "imp.h"
 
 #include "distr/map/dev.h"
