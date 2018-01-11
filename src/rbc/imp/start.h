@@ -13,7 +13,7 @@ static void ids_from_strt(Coords coords, const int id, /**/ int *ii) {
     restart::read_ii(coords, CODE, IDEXT, id, ii, &nc);
 }
 
-void strt_quants(Coords coords, const char *cell, const int id, RbcQuants *q) {
+void rbc_strt_quants(Coords coords, const char *cell, const int id, RbcQuants *q) {
     int md, nt, nv;
     md = RBCmd;
     nt = RBCnt;
@@ -38,7 +38,7 @@ static void strt_dump_ii(Coords coords, const int id, const int nc, const int *i
 }
 
 
-void strt_dump(Coords coords, const int id, const RbcQuants *q) {
+void rbc_strt_dump(Coords coords, const int id, const RbcQuants *q) {
     strt_dump(coords, id, q->n, q->pp, /*w*/ q->pp_hst);
     if (rbc_ids)
         strt_dump_ii(coords, id, q->nc, q->ii);

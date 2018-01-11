@@ -14,7 +14,7 @@ static void gen_ids(MPI_Comm comm, long nc, /**/ int *ii) {
         ii[i] = i + i0;
 }
 
-void gen_quants(Coords coords, MPI_Comm comm, const char *cell, const char *ic, /**/ RbcQuants *q) {
+void rbc_gen_quants(Coords coords, MPI_Comm comm, const char *cell, const char *ic, /**/ RbcQuants *q) {
     int md, nt, nv;
     md = RBCmd;
     nt = RBCnt;

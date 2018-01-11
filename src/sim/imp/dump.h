@@ -106,7 +106,7 @@ void dump_strt(Coords coords, int id, Sim *s) {
     Rbc *rbc = &s->rbc;
     Rig *rig = &s->rig;
     flu_strt_dump(coords, id, flu->q);
-    if (rbcs)       rbc::main::strt_dump(coords, id, &rbc->q);
+    if (rbcs)       rbc::main::rbc_strt_dump(coords, id, &rbc->q);
     if (solids)     rig::strt_dump(coords, id, rig->q);
 }
 
