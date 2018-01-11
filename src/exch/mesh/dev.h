@@ -1,6 +1,6 @@
 namespace dev {
 
-__global__ void build_map(int3 L, int n, const float3 *minext, const float3 *maxext, /**/ Map map) {
+__global__ void build_map(int3 L, int n, const float3 *minext, const float3 *maxext, /**/ EMap map) {
     int i, fid, fids[MAX_DSTS], ndsts, j;
     float3 lo, hi;
     i = threadIdx.x + blockIdx.x * blockDim.x;
@@ -24,7 +24,7 @@ static __device__ void pack_p(int nv, const Particle *pp, int vid, int frag_mid,
     buf[dst] = pp[src];
 }
 
-__global__ void pack_mesh(int nv, const Particle *pp, Map map, /**/ Pap26 buf) {
+__global__ void pack_mesh(int nv, const Particle *pp, EMap map, /**/ Pap26 buf) {
     int gid, hi, step, fid, mid, vid, frag_mid;
     gid = threadIdx.x + blockDim.x * blockIdx.x;
     hi = map.starts[26] * nv;
@@ -172,7 +172,7 @@ static __device__ void unpack_mom_frag(int nt, int i, const int *hii, const Mome
     addMom(hmm[i], /**/ mm + lid);
 }
 
-__global__ void unpack_mom(int nt, int27 fragstarts, intp26 hii, Mop26 hmm, Map map, /**/ Momentum *mm) {
+__global__ void unpack_mom(int nt, int27 fragstarts, intp26 hii, Mop26 hmm, EMap map, /**/ Momentum *mm) {
     int i, fid;
     i = threadIdx.x + blockIdx.x * blockDim.x;
 

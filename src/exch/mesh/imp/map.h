@@ -1,4 +1,4 @@
-static void fill_map(int n, const float3 *lo, const float3 *hi, /**/ Map map) {
+static void fill_map(int n, const float3 *lo, const float3 *hi, /**/ EMap map) {
     int3 L = make_int3(XS-2, YS-2, ZS-2);
     KL(dev::build_map, (k_cnf(n)), (L, n, lo, hi, /**/ map));
 }

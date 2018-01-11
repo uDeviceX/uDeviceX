@@ -2,7 +2,7 @@ namespace exch {
 namespace obj {
 
 struct Pack {
-    Map map;
+    EMap map;
     dBags dpp;
     hBags hpp;
 };

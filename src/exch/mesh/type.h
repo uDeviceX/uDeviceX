@@ -2,7 +2,7 @@ namespace exch {
 namespace mesh {
 
 struct Pack {
-    Map map;
+    EMap map;
     float3 *minext, *maxext;
     dBags dpp;
     hBags hpp;

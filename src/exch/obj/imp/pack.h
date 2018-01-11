@@ -1,4 +1,4 @@
-static void pack_pp(int nfrags, int nw, const PaWrap *ww, Map map, /**/ Pap26 buf) {
+static void pack_pp(int nfrags, int nw, const PaWrap *ww, EMap map, /**/ Pap26 buf) {
     int i, stride;
     stride = nfrags + 1;
     const PaWrap *w;

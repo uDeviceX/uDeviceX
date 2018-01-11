@@ -1,4 +1,4 @@
-static void pack_mesh(int nv, const Particle *pp, Map map, /**/ Pap26 buf) {
+static void pack_mesh(int nv, const Particle *pp, EMap map, /**/ Pap26 buf) {
     KL(dev::pack_mesh, (14 * 16, 128), (nv, pp, map, /**/ buf));
 }
 
