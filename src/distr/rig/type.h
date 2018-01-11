@@ -1,6 +1,3 @@
-namespace distr {
-namespace rig {
-
 using namespace comm;
 
 // tag::struct[]
@@ -24,6 +21,3 @@ struct DRigUnpack {
     hBags hipp, hss;
 };
 // end::struct[]
-
-} // rig
-} // distr

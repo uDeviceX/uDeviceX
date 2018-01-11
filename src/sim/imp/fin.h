@@ -45,7 +45,6 @@ static void fin_rbc_distr(/**/ RbcDistr *d) {
 }
 
 static void fin_rig_distr(/**/ RigDistr *d) {
-    using namespace distr::rig;
     UC(drig_pack_fin(/**/ &d->p));
     UC(drig_comm_fin(/**/ &d->c));
     UC(drig_unpack_fin(/**/ &d->u));

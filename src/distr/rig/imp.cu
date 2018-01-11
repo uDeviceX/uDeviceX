@@ -29,10 +29,6 @@
 #include "type.h"
 #include "imp.h"
 
-namespace distr {
-namespace rig {
-using namespace comm;
-
 #include "distr/common/dev.h"
 #include "dev.h"
 #include "imp/ini.h"
@@ -42,5 +38,3 @@ using namespace comm;
 #include "imp/com.h"
 #include "imp/unpack.h"
 
-} // rig
-} // distr

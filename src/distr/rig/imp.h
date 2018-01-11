@@ -1,6 +1,3 @@
-namespace distr {
-namespace rig {
-
 // tag::interface[]
 void drig_pack_ini(int maxns, int nv, DRigPack *p);
 void drig_comm_ini(MPI_Comm comm, /**/ DRigComm *c);
@@ -23,6 +20,3 @@ using namespace ::rig;
 void drig_unpack_bulk(const DRigPack *p, /**/ rig::Quants *q);
 void drig_unpack_halo(const DRigUnpack *u, /**/ rig::Quants *q);
 // end::interface[]
-
-} // rig
-} // distr

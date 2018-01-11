@@ -50,7 +50,6 @@ static void ini_rbc_distr(int nv, MPI_Comm comm, /**/ RbcDistr *d) {
 }
 
 static void ini_rig_distr(int nv, MPI_Comm comm, /**/ RigDistr *d) {
-    using namespace distr::rig;
     UC(drig_pack_ini(MAX_SOLIDS, nv, /**/ &d->p));
     UC(drig_comm_ini(comm, /**/ &d->c));
     UC(drig_unpack_ini(MAX_SOLIDS, nv, /**/ &d->u));
