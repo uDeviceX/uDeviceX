@@ -16,18 +16,18 @@ static void fin_obj_exch(/**/ ObjExch *e) {
 
 static void fin_mesh_exch(/**/ Mexch *e) {
     using namespace exch::mesh;
-    fin(/**/ &e->p);
-    fin(/**/ &e->c);
-    fin(/**/ &e->u);
+    UC(emesh_pack_fin(/**/ &e->p));
+    UC(emesh_comm_fin(/**/ &e->c));
+    UC(emesh_unpack_fin(/**/ &e->u));
 }
 
 static void fin_bb_exch(/**/ BBexch *e) {
     fin_mesh_exch(/**/ e);
     
     using namespace exch::mesh;
-    fin(/**/ &e->pm);
-    fin(/**/ &e->cm);
-    fin(/**/ &e->um);
+    UC(emesh_packm_fin(/**/ &e->pm));
+    UC(emesh_commm_fin(/**/ &e->cm));
+    UC(emesh_unpackm_fin(/**/ &e->um));
 }
 
 static void fin_flu_distr(/**/ FluDistr *d) {
