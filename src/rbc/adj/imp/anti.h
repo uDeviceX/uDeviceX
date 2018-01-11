@@ -1,4 +1,4 @@
-static void set(int md, int nv, Adj *adj, /**/ int *hx, int *hy) {
+static void set(int md, int nv, const Adj *adj, /**/ int *hx, int *hy) {
     AdjMap m;
     int valid, i, i0, i1;
     for (i = 0; i < md*nv; i++) {
@@ -9,7 +9,7 @@ static void set(int md, int nv, Adj *adj, /**/ int *hx, int *hy) {
     }
 }
 
-static void get(int md, int nv, Adj *adj, int *hx, int *hy, /**/ int *anti) {
+static void get(int md, int nv, const Adj *adj, const int *hx, const int *hy, /**/ int *anti) {
     AdjMap m;
     int valid, i, j, i0, i1;
     for (i = 0; i < md*nv; i++) {
@@ -22,13 +22,13 @@ static void get(int md, int nv, Adj *adj, int *hx, int *hy, /**/ int *anti) {
     }
 }
 
-static void ini0(int md, int nv, Adj *adj, /**/ int *anti, /*w*/ int *hx, int *hy) {
+static void ini0(int md, int nv, const Adj *adj, /**/ int *anti, /*w*/ int *hx, int *hy) {
     edg_ini(md, nv, /**/ hx);
     set(md, nv, adj, /**/ hx, hy);
     get(md, nv, adj, hx, hy, /**/ anti);
 }
 
-void adj_get_anti(int md, int nv, Adj *adj, /**/ int *anti) {
+void adj_get_anti(int md, int nv, const Adj *adj, /**/ int *anti) {
     int n;
     int *hx, *hy;
     n = md*nv;
