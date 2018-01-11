@@ -25,4 +25,17 @@ for c; do shift; set -- "$@" "$i"; i="$c"; done
 
 if test ! -r "$i"; then err "not a file '$i'"; fi
 
+# field present?
+X=0 Y=0 Z=0 ID=0
+for c
+do  shift
+    set -- "$@" "$c"
+    case "$c" in
+	x)  X=1  ;;
+	y)  Y=1  ;;
+	z)  Z=1  ;;
+	id) ID=1 ;;
+    esac
+done
+
 exec "$prog0" "$i" "$@"
