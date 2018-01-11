@@ -17,7 +17,7 @@ static void build_map(int nw, const PaWrap *ww, /**/ EMap map) {
     emap_scan(nw, NFRAGS, /**/ map);
 }
 
-void eobj_build_map(int nw, const PaWrap *ww, /**/ Pack *p) {
+void eobj_build_map(int nw, const PaWrap *ww, /**/ EObjPack *p) {
     if (!nw) return;
     build_map(nw, ww, /**/ p->map);
 }
