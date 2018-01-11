@@ -4,7 +4,7 @@ static void get_num_capacity(int maxnc, /**/ int numc[NBAGS]) {
         numc[i] = maxnc;
 }
 
-void ini(int maxnc, int nv, Pack *p) {
+void drbc_pack_ini(int maxnc, int nv, Pack *p) {
     int numc[NBAGS];
     get_num_capacity(maxnc, /**/ numc);
 
@@ -22,13 +22,13 @@ void ini(int maxnc, int nv, Pack *p) {
     }
 }
 
-void ini(MPI_Comm comm, /**/ Comm *c) {
+void drbc_comm_ini(MPI_Comm comm, /**/ Comm *c) {
     UC(comm_ini(comm, /**/ &c->pp));
     if (rbc_ids)
         UC(comm_ini(comm, /**/ &c->ii));
 }
 
-void ini(int maxnc, int nv, Unpack *u) {
+void drbc_unpack_ini(int maxnc, int nv, Unpack *u) {
     int numc[NBAGS];
     get_num_capacity(maxnc, /**/ numc);
 
