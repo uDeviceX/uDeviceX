@@ -1,4 +1,4 @@
-static void setup_rnd(int md, int nv, rbc::rnd::D **prnd) {
+static void setup_rnd(int md, int nv, rbc::rnd::RbcRnd **prnd) {
     int n;
     long seed;
     n = nv*md*MAX_CELL_NUM;

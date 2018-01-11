@@ -1,8 +1,8 @@
 namespace rbc { namespace rnd {
-struct D;
+struct RbcRnd;
 enum {ENV = -2, TIME = -1}; /* special seeds */
-void ini(D**, int n, long seed);
-void fin(D*);
-void gen(D*, int n);
-float get_hst(const D*, int i);
+void ini(RbcRnd**, int n, long seed);
+void fin(RbcRnd*);
+void gen(RbcRnd*, int n);
+float get_hst(const RbcRnd*, int i);
 }} /* namespace */

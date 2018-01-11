@@ -1,4 +1,4 @@
-static void fin_rnd(rbc::rnd::D *rnd) {
+static void fin_rnd(rbc::rnd::RbcRnd *rnd) {
     rbc::rnd::fin(rnd);
 }
 
