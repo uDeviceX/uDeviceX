@@ -23,7 +23,7 @@
 #include "utils/cc.h"
 
 #include "rbc/type.h"
-#include "rbc/main/imp.h"
+#include "rbc/imp.h"
 #include "rbc/rnd/imp.h"
 #include "rbc/force/imp.h"
 

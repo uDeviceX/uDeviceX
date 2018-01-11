@@ -59,7 +59,7 @@ static void setup_anti(int md, int nv, Adj *adj, /**/ int *dev) {
     n = md*nv;
     UC(emalloc(n*sizeof(int), (void**) &hst));
 
-    anti::ini(md, nv, adj, /**/ hst);
+    adj_get_anti(md, nv, adj, /**/ hst);
     cH2D(dev, hst, n);
 
     free(hst);

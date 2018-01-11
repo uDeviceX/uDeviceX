@@ -1,20 +1,3 @@
-#include <stdlib.h>
-#include <stdio.h>
-#include <assert.h>
-#include <vector_types.h>
-
-#include "utils/msg.h"
-#include "utils/error.h"
-#include "utils/imp.h"
-
-#include "rbc/adj/type/common.h"
-#include "rbc/adj/type/hst.h"
-#include "rbc/adj/imp.h"
-#include "rbc/edg/imp.h"
-
-#include "imp.h"
-
-namespace anti {
 static void set(int md, int nv, Adj *adj, /**/ int *hx, int *hy) {
     AdjMap m;
     int valid, i, i0, i1;
@@ -45,7 +28,7 @@ static void ini0(int md, int nv, Adj *adj, /**/ int *anti, /*w*/ int *hx, int *h
     get(md, nv, adj, hx, hy, /**/ anti);
 }
 
-void ini(int md, int nv, Adj *adj, /**/ int *anti) {
+void adj_get_anti(int md, int nv, Adj *adj, /**/ int *anti) {
     int n;
     int *hx, *hy;
     n = md*nv;
@@ -54,6 +37,4 @@ void ini(int md, int nv, Adj *adj, /**/ int *anti) {
     ini0(md, nv, adj, /**/ anti, /*w*/ hx, hy);
     free(hx); free(hy);
 }
-
-} /* namespace */
 

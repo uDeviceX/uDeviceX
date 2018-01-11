@@ -15,10 +15,9 @@ O = $B/algo/minmax/imp.o $B/algo/scan/imp.o $B/clist/imp.o $B/cnt/imp.o \
     $B/mesh/props.o $B/meshbb/imp.o $B/mpi/glb.o $B/mpi/type.o $B/mpi/wrapper.o \
     $B/parser/imp.o $B/rbc/adj/imp.o $B/rbc/com/imp.o $B/rbc/edg/imp.o \
     $B/rbc/force/area_volume/imp.o $B/rbc/force/imp.o $B/rbc/gen/imp.o \
-    $B/rbc/main/anti/imp.o $B/rbc/main/imp.o $B/rbc/rnd/api/imp.o \
-    $B/rbc/rnd/imp.o $B/rbc/stretch/imp.o $B/rig/imp.o $B/rigid/imp.o \
-    $B/scheme/force/conf.o $B/scheme/force/imp.o $B/scheme/move/imp.o \
-    $B/scheme/restrain/imp.o $B/scheme/restrain/sub/imp.o \
+    $B/rbc/imp.o $B/rbc/rnd/api/imp.o $B/rbc/rnd/imp.o $B/rbc/stretch/imp.o \
+    $B/rig/imp.o $B/rigid/imp.o $B/scheme/force/conf.o $B/scheme/force/imp.o \
+    $B/scheme/move/imp.o $B/scheme/restrain/imp.o $B/scheme/restrain/sub/imp.o \
     $B/scheme/restrain/sub/stat/imp.o $B/scheme/restrain/sub/sum/imp.o \
     $B/sdf/array3d/imp.o $B/sdf/bounce/imp.o $B/sdf/dev.o $B/sdf/field/imp.o \
     $B/sdf/imp.o $B/sdf/label/imp.o $B/sdf/tex3d/imp.o $B/sdf/tform/imp.o \
