@@ -6,27 +6,27 @@ static void area_volume_hst(int nt, int nv, int nc, const Particle *pp, const in
     Dfree(dev);
 }
 
-static void run0(rbc::Quants q, rbc::force::TicketT t) {
+static void run0(RbcQuants q, RbcForce t) {
     float area, volume, av[2];
     area_volume_hst(q.nt, q.nv, q.nc, q.pp, q.tri, /**/ av);
     area = av[0]; volume = av[1];
     printf("%g %g\n", area, volume);
 }
 
-static void run1(const char *cell, const char *ic, rbc::Quants q) {
+static void run1(const char *cell, const char *ic, RbcQuants q) {
     Coords coords;
     coords_ini(m::cart, &coords);
-    rbc::force::TicketT t;
-    rbc::main::gen_quants(coords, m::cart, cell, ic, /**/ &q);
-    rbc::force::gen_ticket(q, &t);
+    RbcForce t;
+    rbc_gen_quants(coords, m::cart, cell, ic, /**/ &q);
+    rbcforce_gen(q, &t);
     run0(q, t);
-    rbc::force::fin_ticket(&t);
+    rbcforce_fin(&t);
     coords_fin(&coords);
 }
 
 void run(const char *cell, const char *ic) {
-    rbc::Quants q;
-    rbc::main::ini(&q);
+    RbcQuants q;
+    rbc_ini(&q);
     run1(cell, ic, q);
-    rbc::main::fin(&q);
+    rbc_fin(&q);
 }

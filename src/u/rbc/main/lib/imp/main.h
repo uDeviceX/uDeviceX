@@ -1,4 +1,4 @@
-static void garea_volume(rbc::Quants q, /**/ float *a, float *v) {
+static void garea_volume(RbcQuants q, /**/ float *a, float *v) {
     int nt, nv, nc;
     const Particle *pp;
     const int4 *tri;
@@ -16,7 +16,7 @@ static void garea_volume(rbc::Quants q, /**/ float *a, float *v) {
     *a = hst[0]; *v = hst[1];
 }
 
-static void dump(Coords coords, rbc::Quants q, rbc::force::TicketT t) {
+static void dump(Coords coords, RbcQuants q, RbcForce t) {
     int n;
     Particle *pp;
     float area, volume, area0, volume0;
@@ -25,25 +25,25 @@ static void dump(Coords coords, rbc::Quants q, rbc::force::TicketT t) {
     UC(emalloc(n*sizeof(Particle), (void**)&pp));
     cD2H(pp, q.pp, q.n);
     io::mesh::rbc(m::cart, coords, pp, q.tri_hst, q.nc, q.nv, q.nt, i++);
-    rbc::force::stat(/**/ &area0, &volume0);
+    rbcforce_stat(/**/ &area0, &volume0);
     garea_volume(q, /**/ &area, &volume);
     msg_print("av: %g %g", area/area0, volume/volume0);
     diagnostics(m::cart, n, pp, i);
     free(pp);
 }
 
-static int body_force(Coords coords, const BForce *bf, rbc::Quants q, Force *f) {
+static int body_force(Coords coords, const BForce *bf, RbcQuants q, Force *f) {
     UC(bforce_apply(0, coords, rbc_mass, bf, q.n, q.pp, /**/ f));
     return 0;
 }
 
-static void run0(Coords coords, const BForce *bforce, rbc::Quants q, rbc::force::TicketT t, rbc::stretch::Fo* stretch, Force *f) {
+static void run0(Coords coords, const BForce *bforce, RbcQuants q, RbcForce t, rbc::stretch::Fo* stretch, Force *f) {
     long i;
     long nsteps = (long)(tend / dt);
     msg_print("will take %ld steps", nsteps);
     for (i = 0; i < nsteps; i++) {
         Dzero(f, q.n);
-        rbc::force::apply(q, t, /**/ f);
+        rbcforce_apply(q, t, /**/ f);
         stretch::apply(q.nc, stretch, /**/ f);
         if (pushrbc) body_force(coords, bforce, q, /**/ f);
         scheme::move::main(rbc_mass, q.n, f, q.pp);
@@ -54,7 +54,7 @@ static void run0(Coords coords, const BForce *bforce, rbc::Quants q, rbc::force:
     }
 }
 
-static void run1(Coords coords, const BForce *bforce, rbc::Quants q, rbc::force::TicketT t,
+static void run1(Coords coords, const BForce *bforce, RbcQuants q, RbcForce t,
                  rbc::stretch::Fo *stretch) {
     Force *f;
     Dalloc(&f, q.n);
@@ -63,20 +63,20 @@ static void run1(Coords coords, const BForce *bforce, rbc::Quants q, rbc::force:
     Dfree(f);
 }
 
-static void run2(Coords coords, const BForce *bforce, const char *cell, const char *ic, rbc::Quants q) {
+static void run2(Coords coords, const BForce *bforce, const char *cell, const char *ic, RbcQuants q) {
     rbc::stretch::Fo *stretch;
-    rbc::force::TicketT t;
-    rbc::main::gen_quants(coords, m::cart, cell, ic, /**/ &q);
+    RbcForce t;
+    rbc_gen_quants(coords, m::cart, cell, ic, /**/ &q);
     UC(stretch::ini("rbc.stretch", q.nv, /**/ &stretch));
-    rbc::force::gen_ticket(q, &t);
+    rbcforce_gen(q, &t);
     run1(coords, bforce, q, t, stretch);
     stretch::fin(stretch);
-    rbc::force::fin_ticket(&t);
+    rbcforce_fin(&t);
 }
 
 void run(Coords coords, const BForce *bforce, const char *cell, const char *ic) {
-    rbc::Quants q;
-    rbc::main::ini(&q);
+    RbcQuants q;
+    rbc_ini(&q);
     run2(coords, bforce, cell, ic, q);
-    rbc::main::fin(&q);
+    rbc_fin(&q);
 }
