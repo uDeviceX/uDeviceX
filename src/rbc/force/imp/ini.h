@@ -6,7 +6,7 @@ static void setup_rnd(int md, int nv, RbcRnd **prnd) {
     rbc_rnd_ini(prnd, n, seed);
 }
 
-void rbcforce_gen(const RbcQuants q, RbcForce *t) {
+void rbc_force_gen(const RbcQuants q, RbcForce *t) {
     int md, nv;
     md = RBCmd;
     nv = RBCnv;

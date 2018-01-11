@@ -18,9 +18,9 @@ static void run1(const char *cell, const char *ic, RbcQuants q) {
     coords_ini(m::cart, &coords);
     RbcForce t;
     rbc_gen_quants(coords, m::cart, cell, ic, /**/ &q);
-    rbcforce_gen(q, &t);
+    rbc_force_gen(q, &t);
     run0(q, t);
-    rbcforce_fin(&t);
+    rbc_force_fin(&t);
     coords_fin(&coords);
 }
 

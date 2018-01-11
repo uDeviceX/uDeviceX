@@ -1,5 +1,5 @@
 struct RbcForce { RbcRnd *rnd; };
-void rbcforce_gen(const RbcQuants q, RbcForce *t);
-void rbcforce_fin(RbcForce *t);
-void rbcforce_apply(const RbcQuants q, const RbcForce t, /**/ Force *ff);
-void rbcforce_stat(/**/ float *pArea, float *pVolume);
+void rbc_force_gen(const RbcQuants q, RbcForce *t);
+void rbc_force_fin(RbcForce *t);
+void rbc_force_apply(const RbcQuants q, const RbcForce t, /**/ Force *ff);
+void rbc_force_stat(/**/ float *pArea, float *pVolume);

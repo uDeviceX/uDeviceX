@@ -25,7 +25,7 @@ static void dump(Coords coords, RbcQuants q, RbcForce t) {
     UC(emalloc(n*sizeof(Particle), (void**)&pp));
     cD2H(pp, q.pp, q.n);
     io::mesh::rbc(m::cart, coords, pp, q.tri_hst, q.nc, q.nv, q.nt, i++);
-    rbcforce_stat(/**/ &area0, &volume0);
+    rbc_force_stat(/**/ &area0, &volume0);
     garea_volume(q, /**/ &area, &volume);
     msg_print("av: %g %g", area/area0, volume/volume0);
     diagnostics(m::cart, n, pp, i);
@@ -43,7 +43,7 @@ static void run0(Coords coords, const BForce *bforce, RbcQuants q, RbcForce t, R
     msg_print("will take %ld steps", nsteps);
     for (i = 0; i < nsteps; i++) {
         Dzero(f, q.n);
-        rbcforce_apply(q, t, /**/ f);
+        rbc_force_apply(q, t, /**/ f);
         stretch::apply(q.nc, stretch, /**/ f);
         if (pushrbc) body_force(coords, bforce, q, /**/ f);
         scheme::move::main(rbc_mass, q.n, f, q.pp);
@@ -68,10 +68,10 @@ static void run2(Coords coords, const BForce *bforce, const char *cell, const ch
     RbcForce t;
     rbc_gen_quants(coords, m::cart, cell, ic, /**/ &q);
     UC(rbc_stretch_ini("rbc.stretch", q.nv, /**/ &stretch));
-    rbcforce_gen(q, &t);
+    rbc_force_gen(q, &t);
     run1(coords, bforce, q, t, stretch);
     rbc_stretch_fin(stretch);
-    rbcforce_fin(&t);
+    rbc_force_fin(&t);
 }
 
 void run(Coords coords, const BForce *bforce, const char *cell, const char *ic) {

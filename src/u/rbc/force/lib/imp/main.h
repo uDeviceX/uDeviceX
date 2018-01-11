@@ -28,7 +28,7 @@ static void write(int n, Particle *p, Force *f) {
 }
 
 static void run0(RbcQuants q, RbcForce t, Force *f) {
-    rbcforce_apply(q, t, /**/ f);
+    rbc_force_apply(q, t, /**/ f);
     write(q.n, q.pp, f);
 }
 
@@ -46,9 +46,9 @@ static void run2(const char *cell, const char *ic, RbcQuants q) {
     RbcForce t;
     coords_ini(m::cart, &coords);
     rbc_gen_quants(coords, m::cart, cell, ic, /**/ &q);
-    rbcforce_gen(q, &t);
+    rbc_force_gen(q, &t);
     run1(q, t);
-    rbcforce_fin(&t);
+    rbc_force_fin(&t);
     coords_fin(&coords);
 }
 
