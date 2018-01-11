@@ -68,19 +68,19 @@ void distribute_rig(Rig *s) {
     RigDistr    *d = &s->d;
     int nv = q->nv;
 
-    build_map(q->ns, q->ss, /**/ &d->p);
-    pack(q->ns, nv, q->ss, q->i_pp, /**/ &d->p);
-    download(/**/&d->p);
+    drig_build_map(q->ns, q->ss, /**/ &d->p);
+    drig_pack(q->ns, nv, q->ss, q->i_pp, /**/ &d->p);
+    drig_download(/**/&d->p);
 
-    UC(post_send(&d->p, &d->c));
-    UC(post_recv(&d->c, &d->u));
+    UC(drig_post_send(&d->p, &d->c));
+    UC(drig_post_recv(&d->c, &d->u));
 
-    unpack_bulk(&d->p, /**/ q);
+    drig_unpack_bulk(&d->p, /**/ q);
     
-    wait_send(&d->c);
-    wait_recv(&d->c, &d->u);
+    UC(drig_wait_send(&d->c));
+    UC(drig_wait_recv(&d->c, &d->u));
 
-    unpack_halo(&d->u, /**/ q);
+    drig_unpack_halo(&d->u, /**/ q);
 
     q->n = q->ns * q->nps;
     rig::generate(q->ns, q->ss, q->nps, q->rr0, /**/ q->pp);

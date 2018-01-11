@@ -2,26 +2,26 @@ namespace distr {
 namespace rig {
 
 // tag::interface[]
-void ini(int maxns, int nv, Pack *p);
-void ini(MPI_Comm comm, /**/ Comm *c);
-void ini(int maxns, int nv, Unpack *u);
+void drig_pack_ini(int maxns, int nv, Pack *p);
+void drig_comm_ini(MPI_Comm comm, /**/ Comm *c);
+void drig_unpack_ini(int maxns, int nv, Unpack *u);
 
-void fin(Pack *p);
-void fin(Comm *c);
-void fin(Unpack *u);
+void drig_pack_fin(Pack *p);
+void drig_comm_fin(Comm *c);
+void drig_unpack_fin(Unpack *u);
 
-void build_map(int ns, const Solid *ss, /**/ Pack *p);
-void pack(int ns, int nv, const Solid *ss, const Particle *ipp, /**/ Pack *p);
-void download(Pack *p);
+void drig_build_map(int ns, const Solid *ss, /**/ Pack *p);
+void drig_pack(int ns, int nv, const Solid *ss, const Particle *ipp, /**/ Pack *p);
+void drig_download(Pack *p);
 
-void post_recv(Comm *c, Unpack *u);
-void post_send(Pack *p, Comm *c);
-void wait_recv(Comm *c, Unpack *u);
-void wait_send(Comm *c);
+void drig_post_recv(Comm *c, Unpack *u);
+void drig_post_send(Pack *p, Comm *c);
+void drig_wait_recv(Comm *c, Unpack *u);
+void drig_wait_send(Comm *c);
 
 using namespace ::rig;
-void unpack_bulk(const Pack *p, /**/ rig::Quants *q);
-void unpack_halo(const Unpack *u, /**/ rig::Quants *q);
+void drig_unpack_bulk(const Pack *p, /**/ rig::Quants *q);
+void drig_unpack_halo(const Unpack *u, /**/ rig::Quants *q);
 // end::interface[]
 
 } // rig
