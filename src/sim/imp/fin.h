@@ -66,7 +66,7 @@ static void fin_inflow(Inflow *i) {
 
 
 static void fin_flu(Flu *f) {
-    flu::flu_fin(&f->q);
+    flu_fin(&f->q);
     fin(/**/ f->bulkdata);
     fin(/**/ f->halodata);
  

@@ -14,8 +14,6 @@ void dflu_unpack_fin(DFluUnpack *u);
 /* map */
 void dflu_build_map(int n, const PartList lp, DFluPack *p);
 
-using namespace flu;
-
 /* pack */
 void dflu_pack(const FluQuants *q, /**/ DFluPack *p);
 

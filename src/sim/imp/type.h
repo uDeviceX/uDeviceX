@@ -66,7 +66,7 @@ struct BounceBack {
 
 /* data holder for solvent */
 struct Flu {
-    flu::FluQuants q;
+    FluQuants q;
 
     FluDistr d;
     FluExch e;

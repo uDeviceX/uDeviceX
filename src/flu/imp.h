@@ -1,5 +1,3 @@
-namespace flu {
-
 struct FluQuants {
     Particle *pp, *pp0;    /* particles on device  */
     int       n;           /* particle number      */
@@ -28,5 +26,3 @@ void flu_strt_dump(Coords coords, const int id, const FluQuants q);
 /* build cells only from one array of particles fully contained in the domain */
 /* warning: this will delete particles which are outside                      */
 void flu_build_cells(/**/ FluQuants *q);
-
-} // flu

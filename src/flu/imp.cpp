@@ -32,7 +32,6 @@
 
 #include "imp.h"
 
-namespace flu {
 
 #include "imp/ini.h"
 #include "imp/fin.h"
@@ -46,5 +45,3 @@ void flu_build_cells(/**/ FluQuants *q) {
     Particle *tmp = q->pp;
     q->pp = q->pp0; q->pp0 = tmp;
 }
-
-} // flu
