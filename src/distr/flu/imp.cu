@@ -36,8 +36,6 @@
 #include "distr/map/dev.h"
 #include "distr/map/imp.h"
 
-using namespace comm;
-
 #include "imp/type.h"
 
 namespace dflu {

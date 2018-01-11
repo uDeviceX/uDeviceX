@@ -1,5 +1,3 @@
-using namespace comm;
-
 // tag::struct[]
 struct DRbcPack {
     DMap map;
@@ -14,7 +12,7 @@ struct DRbcPack {
 
 struct DRbcComm {
     /* optional: ids */
-    comm::Comm pp, ii;
+    Comm pp, ii;
 };
 
 struct DRbcUnpack {

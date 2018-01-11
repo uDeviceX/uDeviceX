@@ -32,8 +32,6 @@
 #include "type.h"
 #include "imp.h"
 
-using namespace comm;
-
 namespace drbc {
 #include "distr/common/dev.h"
 } // drbc

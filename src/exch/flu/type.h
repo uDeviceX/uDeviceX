@@ -14,15 +14,15 @@ struct EFluPack {
     int *counts_dev;
     int26 cap;
 
-    comm::dBags dpp, dcc;
-    comm::hBags hpp, hcc, hfss;
+    dBags dpp, dcc;
+    hBags hpp, hcc, hfss;
 };
 
 struct EFluComm {
-    comm::Comm pp, cc, fss;
+    Comm pp, cc, fss;
 };
 
 struct EFluUnpack {
-    comm::hBags hpp, hcc, hfss;
-    comm::dBags dpp, dcc, dfss;
+    hBags hpp, hcc, hfss;
+    dBags dpp, dcc, dfss;
 };

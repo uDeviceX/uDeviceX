@@ -15,8 +15,6 @@
 #include "utils/error.h"
 #include "utils/msg.h"
 
-using namespace comm;
-
 enum {
     LX = XS + 2 * XWM,
     LY = YS + 2 * YWM,

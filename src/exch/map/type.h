@@ -1,5 +1,3 @@
-using namespace comm;
-
 // [E]xchange map
 struct EMap {
     int *counts;      /* number of entities leaving in each fragment */

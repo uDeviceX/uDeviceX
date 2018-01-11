@@ -1,7 +1,7 @@
 struct PackHelper {
     int *starts;
     int *offsets;
-    int *indices[comm::NFRAGS];
+    int *indices[NFRAGS];
 };
 
 void ecommon_pack_pp(const Particle *pp, PackHelper ph, /**/ Pap26 buf);

@@ -1,5 +1,3 @@
-namespace comm {
-
 typedef void data_t;
 
 enum {
@@ -62,5 +60,3 @@ int post_send(const hBags *b, Comm *c);     // <2>
 int wait_recv(Comm *c, /**/ hBags *b);      // <3>
 int wait_send(Comm *c);                     // <4>
 // end::communication[]
-
-} // comm

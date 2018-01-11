@@ -23,8 +23,6 @@
 #include "type.h"
 #include "imp.h"
 
-using namespace comm;
-
 #include "exch/map/dev.h"
 #include "exch/common/imp.h"
 

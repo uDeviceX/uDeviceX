@@ -6,7 +6,7 @@ struct EMeshPack {
 };
 
 struct EMeshComm {
-    comm::Comm pp;
+    Comm pp;
 };
 
 struct EMeshUnpack {
@@ -28,7 +28,7 @@ struct EMeshPackM {
 };
 
 struct EMeshCommM {
-    comm::Comm mm, ii;
+    Comm mm, ii;
 };
 
 struct EMeshUnpackM {

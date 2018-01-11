@@ -24,8 +24,6 @@
 #include "type.h"
 #include "imp.h"
 
-using namespace comm;
-
 namespace dev {
 #include "dev/map.h"
 #include "dev/pack.h"

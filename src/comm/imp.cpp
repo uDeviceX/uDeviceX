@@ -18,9 +18,6 @@
 
 #include "imp.h"
 
-// imp
-namespace comm {
 #include "imp/ini.h"
 #include "imp/fin.h"
 #include "imp/main.h"
-} // comm

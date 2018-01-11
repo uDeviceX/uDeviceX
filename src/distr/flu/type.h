@@ -1,5 +1,3 @@
-using namespace comm;
-
 // tag::struct[]
 struct DFluPack {
     DMap map;
@@ -9,7 +7,7 @@ struct DFluPack {
 };
 
 struct DFluComm {
-    comm::Comm pp, ii, cc;
+    Comm pp, ii, cc;
 };
 
 struct DFluUnpack {

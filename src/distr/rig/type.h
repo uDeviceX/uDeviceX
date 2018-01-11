@@ -1,5 +1,3 @@
-using namespace comm;
-
 // tag::struct[]
 
 /* 
@@ -14,7 +12,7 @@ struct DRigPack {
 };
 
 struct DRigComm {
-    comm::Comm ipp, ss;
+    Comm ipp, ss;
 };
 
 struct DRigUnpack {

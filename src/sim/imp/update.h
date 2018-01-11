@@ -19,7 +19,7 @@ void update_solid(Rig *s) {
 }
 
 void bounce_solid(long it, BounceBack *bb, Rig *s, Flu *flu) {
-    int n, nm, nt, nv, *ss, *cc, nmhalo, counts[comm::NFRAGS];
+    int n, nm, nt, nv, *ss, *cc, nmhalo, counts[NFRAGS];
     int4 *tt;
     Particle *pp, *i_pp;
     int3 L = make_int3(XS, YS, ZS);
