@@ -45,7 +45,7 @@ static int unpack_halo_pp(int nc0, int nv, const hBags *hpp, /**/ Particle *pp) 
             n = c * nv;
             sz = c * bsz;
             CC(d::MemcpyAsync(dst, src, sz, H2D));
-            KL(drbc::dev::shift_one_frag, (k_cnf(n)), (n, i, /**/ dst));
+            dcommon_shift_one_frag(n, i, /**/ dst);
         }
         s += c;
     }

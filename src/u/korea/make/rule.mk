@@ -11,6 +11,7 @@ $B/control/outflow/imp.o: $S/control/outflow/imp.cu; $N -I$S/. -I$S/control/outf
 $B/control/vel/imp.o: $S/control/vel/imp.cu; $N -I$S/. -I$S/control/vel
 $B/d/api.o: $S/d/api.cu; $N -I$S/. -I$S/d
 $B/dbg/imp.o: $S/dbg/imp.cu; $N -I$S/. -I$S/dbg
+$B/distr/common/imp.o: $S/distr/common/imp.cu; $N -I$S/. -I$S/distr/common
 $B/distr/flu/imp.o: $S/distr/flu/imp.cu; $N -I$S/. -I$S/distr/flu
 $B/distr/map/imp.o: $S/distr/map/imp.cu; $N -I$S/. -I$S/distr/map
 $B/distr/rbc/imp.o: $S/distr/rbc/imp.cu; $N -I$S/. -I$S/distr/rbc

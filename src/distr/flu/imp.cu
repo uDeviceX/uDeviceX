@@ -35,12 +35,9 @@
 
 #include "distr/map/dev.h"
 #include "distr/map/imp.h"
+#include "distr/common/imp.h"
 
 #include "imp/type.h"
-
-namespace dflu {
-#include "distr/common/dev.h"
-}
 
 #include "dev.h"
 #include "imp/ini.h"

@@ -11,6 +11,7 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/control/vel              && \
     d $B/d                        && \
     d $B/dbg                      && \
+    d $B/distr/common             && \
     d $B/distr/flu                && \
     d $B/distr/map                && \
     d $B/distr/rbc                && \

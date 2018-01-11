@@ -2,11 +2,7 @@ static void pack_pp(const DMap m, int ns, int nv, const Particle *ipp, /**/ dBag
     Sarray<Particle*, NBAGS> wrap;
     bag2Sarray(bags, &wrap);
 
-    enum {THR=128};
-    dim3 thrd(THR, 1);
-    dim3 blck(ceiln(nv, THR), ns);
-        
-    KL((drig::dev::pack_pp_packets), (blck, thrd), (nv, ipp, m, /**/ wrap));
+    dcommon_pack_pp_packets(ns, nv, ipp, m, /**/ wrap);
 }
 
 static void pack_ss(const DMap m, int n, const Solid *ss, /**/ dBags bags) {

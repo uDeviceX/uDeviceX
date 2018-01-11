@@ -1,7 +1,7 @@
 namespace dev {
 
 /* pack packets of nv particles into 27 buffers according to map  */
-__global__ void pack_pp_packets(int nv, const Particle *pp, DMap m, /**/ Sarray<Particle*, 27> buf) {
+__global__ void dcommon_pack_pp_packets(int nv, const Particle *pp, DMap m, /**/ Sarray<Particle*, 27> buf) {
     int i, cid, fid, scid;
     int dst, src, offset;
     i   = threadIdx.x + blockDim.x * blockIdx.x;
@@ -33,7 +33,7 @@ static  __device__ void shift_1p(const int s[3], /**/ Particle *p) {
     p->r[Z] += s[Z];
 }
 
-__global__ void shift_one_frag(int n, const int fid, /**/ Particle *pp) {
+__global__ void dcommon_shift_one_frag(int n, const int fid, /**/ Particle *pp) {
     int i, s[3];
     i = threadIdx.x + blockDim.x * blockIdx.x;
     if (i >= n) return;
@@ -42,7 +42,7 @@ __global__ void shift_one_frag(int n, const int fid, /**/ Particle *pp) {
     shift_1p(s, /**/ pp + i);
 }
 
-__global__ void shift_halo(const Sarray<int, 27> starts, /**/ Particle *pp) {
+__global__ void dcommon_shift_halo(const Sarray<int, 27> starts, /**/ Particle *pp) {
     int pid, fid, s[3];
 
     pid = threadIdx.x + blockDim.x * blockIdx.x;

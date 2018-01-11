@@ -29,7 +29,7 @@ static int unpack_pp(const hBags bags, /**/ Particle *pp) {
     nhalo = scan_hst(NFRAGS, bags.counts, &starts);    
     unpack(bags, starts, /**/ pp);
 
-    KL(dflu::dev::shift_halo, (k_cnf(nhalo)), (starts, /**/ pp));
+    dcommon_shift_halo(nhalo, starts, /**/ pp);
     
     return nhalo;
 }
