@@ -1,2 +1,8 @@
 = RBC membrane forces
 :lext: .adoc
+:stem: latexmath
+
+[stem]
+++++
+e^{i\pi} = -1
+++++
