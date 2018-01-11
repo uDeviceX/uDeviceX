@@ -26,7 +26,7 @@ $B/rbc/edg/imp.o: $S/rbc/edg/imp.cpp; $X -I$S/. -I$S/rbc/edg
 $B/rbc/force/area_volume/imp.o: $S/rbc/force/area_volume/imp.cu; $N -I$S/. -I$S/rbc/force/area_volume
 $B/rbc/force/imp.o: $S/rbc/force/imp.cu; $N -I$S/. -I$S/rbc/force
 $B/rbc/gen/imp.o: $S/rbc/gen/imp.cpp; $X -I$S/. -I$S/rbc/gen
-$B/rbc/main/imp.o: $S/rbc/main/imp.cpp; $X -I$S/. -I$S/rbc/main
+$B/rbc/imp.o: $S/rbc/imp.cpp; $X -I$S/. -I$S/rbc
 $B/rbc/rnd/api/imp.o: $S/rbc/rnd/api/imp.cpp; $X -I$S/. -I$S/rbc/rnd/api
 $B/rbc/rnd/imp.o: $S/rbc/rnd/imp.cpp; $X -I$S/. -I$S/rbc/rnd
 $B/rbc/stretch/imp.o: $S/rbc/stretch/imp.cu; $N -I$S/. -I$S/rbc/stretch

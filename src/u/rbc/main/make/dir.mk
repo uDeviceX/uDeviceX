@@ -19,13 +19,13 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/math/tform               && \
     d $B/mpi                      && \
     d $B/parser                   && \
+    d $B/rbc                      && \
     d $B/rbc/adj                  && \
     d $B/rbc/com                  && \
     d $B/rbc/edg                  && \
     d $B/rbc/force                && \
     d $B/rbc/force/area_volume    && \
     d $B/rbc/gen                  && \
-    d $B/rbc/main                 && \
     d $B/rbc/rnd                  && \
     d $B/rbc/rnd/api              && \
     d $B/rbc/stretch              && \

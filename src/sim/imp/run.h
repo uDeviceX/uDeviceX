@@ -5,7 +5,7 @@ void run_eq(long te, Sim *s) { /* equilibrate */
     
     bforce_ini_none(/**/ bforce);    
     bool wall0 = false;
-    for (long it = 0; it < te; ++it) step(bforce, wall0, it, s);
+    for (long it = 0; it < te; ++it) UC(step(bforce, wall0, it, s));
     UC(distribute_flu(/**/ s));
     UC(bforce_fin(bforce));
 }
@@ -24,7 +24,7 @@ void run(long ts, long te, Sim *s) {
     /* ts, te: time start and end */
     for (it = ts; it < te; ++it) {
         step2params(it - ts, &wall->vel, /**/ &wall->vview);
-        step(bforce, walls, it, s);
+        UC(step(bforce, walls, it, s));
     }
     UC(distribute_flu(/**/ s));
     UC(bforce_fin(bforce));

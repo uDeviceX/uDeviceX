@@ -23,7 +23,7 @@
 #include "glob/ini.h"
 
 #include "rbc/type.h"
-#include "rbc/main/imp.h"
+#include "rbc/imp.h"
 #include "rbc/rnd/imp.h"
 #include "rbc/force/area_volume/imp.h"
 #include "rbc/force/imp.h"
