@@ -1,4 +1,26 @@
 #!/bin/sh
 set -u
 
-echo "$@"
+. u.punto.util
+
+i="$1"; shift
+xlo="$1"; shift
+xhi="$1"; shift
+
+ylo="$1"; shift
+yhi="$1"; shift
+
+zlo="$1"; shift
+zhi="$1"; shift
+
+"$AWK" -v i="$i" \
+       -v xlo="$xlo" -v xhi="$xhi" \
+       -v ylo="$ylo" -v yhi="$yhi" \
+       -v zlo="$zlo" -v zhi="$zhi" '
+BEGIN {
+    print xlo, xhi
+    print ylo, yhi
+    print zlo, zhi
+}
+' "$i"
+
