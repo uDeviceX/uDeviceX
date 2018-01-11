@@ -1,6 +1,6 @@
 namespace flu {
 
-struct Quants {
+struct FluQuants {
     Particle *pp, *pp0;    /* particles on device  */
     int       n;           /* particle number      */
     Clist      cells;      /* cell lists           */
@@ -16,17 +16,17 @@ struct Quants {
     int *cc_hst;    /* colors on host   */    
 }; 
 
-void ini(Quants *q);
-void fin(Quants *q);
+void ini(FluQuants *q);
+void fin(FluQuants *q);
 
-void gen_quants(Coords coords, Quants *q);
-void gen_ids(MPI_Comm comm, const int n, Quants *q);
+void gen_quants(Coords coords, FluQuants *q);
+void gen_ids(MPI_Comm comm, const int n, FluQuants *q);
 
-void strt_quants(Coords coords, const int id, Quants *q);
-void strt_dump(Coords coords, const int id, const Quants q);
+void strt_quants(Coords coords, const int id, FluQuants *q);
+void strt_dump(Coords coords, const int id, const FluQuants q);
 
 /* build cells only from one array of particles fully contained in the domain */
 /* warning: this will delete particles which are outside                      */
-void build_cells(/**/ Quants *q);
+void build_cells(/**/ FluQuants *q);
 
 } // flu

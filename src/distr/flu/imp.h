@@ -17,7 +17,7 @@ void dflu_build_map(int n, const PartList lp, DFluPack *p);
 using namespace flu;
 
 /* pack */
-void dflu_pack(const Quants *q, /**/ DFluPack *p);
+void dflu_pack(const FluQuants *q, /**/ DFluPack *p);
 
 void dflu_download(DFluPack *p);
 
@@ -34,7 +34,7 @@ void dflu_unpack(/**/ DFluUnpack *u);
 
 // tag::clist[]
 /* cell lists */
-void dflu_bulk(PartList lp, /**/ Quants *q);
-void dflu_halo(const DFluUnpack *u, /**/ Quants *q);
-void dflu_gather(int ndead, const DFluPack *p, const DFluUnpack *u, /**/ Quants *q);
+void dflu_bulk(PartList lp, /**/ FluQuants *q);
+void dflu_halo(const DFluUnpack *u, /**/ FluQuants *q);
+void dflu_gather(int ndead, const DFluPack *p, const DFluUnpack *u, /**/ FluQuants *q);
 // end::clist[]

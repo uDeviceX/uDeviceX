@@ -3,7 +3,7 @@
 
 void distribute_flu(Sim *s) {
     PartList lp;
-    flu::Quants *q = &s->flu.q;
+    flu::FluQuants *q = &s->flu.q;
     FluDistr *d = &s->flu.d;
     int ndead;
     
