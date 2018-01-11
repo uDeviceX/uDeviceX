@@ -44,8 +44,8 @@ void distribute_flu(Sim *s) {
 }
 
 void distribute_rbc(Rbc *r) {
-    rbc::RbcQuants *q = &r->q;
-    RbcDistr *d    = &r->d;
+    RbcQuants *q = &r->q;
+    RbcDistr  *d = &r->d;
     
     drbc_build_map(q->nc, q->nv, q->pp, /**/ d->p);
     drbc_pack(q, /**/ d->p);

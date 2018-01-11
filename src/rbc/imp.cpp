@@ -35,7 +35,6 @@
 
 #include "imp.h"
 
-namespace rbc { namespace main {
 #include "imp/util.h"
 #include "imp/ini.h"
 #include "imp/fin.h"
@@ -43,5 +42,3 @@ namespace rbc { namespace main {
 #include "imp/setup.h"
 #include "imp/generate.h"
 #include "imp/start.h"
-
-}} /* namespace */

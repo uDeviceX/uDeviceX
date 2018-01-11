@@ -31,7 +31,6 @@
 
 #include "imp.h"
 
-namespace rbc { namespace force {
 namespace dev {
 #if   defined(RBC_PARAMS_TEST)
   #include "params/test.h"
@@ -64,4 +63,3 @@ namespace dev {
 #include "imp/forces.h"
 #include "imp/stat.h"
 
-}} /* namespace */

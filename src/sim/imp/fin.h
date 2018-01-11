@@ -78,8 +78,8 @@ static void fin_flu(Flu *f) {
 }
 
 static void fin_rbc(Rbc *r) {
-    rbc::main::rbc_fin(&r->q);
-    rbc::force::rbcforce_fin(&r->tt);
+    rbc_fin(&r->q);
+    rbcforce_fin(&r->tt);
 
     fin_rbc_distr(/**/ &r->d);
         

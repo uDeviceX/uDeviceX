@@ -14,7 +14,7 @@ static void unpack_bulk_ii(const DRbcPack *p, /**/ int *ii) {
     memcpy(ii, src, nc * sizeof(int));
 }
 
-void drbc_unpack_bulk(const DRbcPack *p, /**/ rbc::RbcQuants *q) {
+void drbc_unpack_bulk(const DRbcPack *p, /**/ RbcQuants *q) {
     int nc, nv, n;
     nv = q->nv;
 
@@ -65,7 +65,7 @@ static void unpack_halo_ii(int nc0, const hBags *hii, /**/ int *ii) {
     }
 }
 
-void drbc_unpack_halo(const DRbcUnpack *u, /**/ rbc::RbcQuants *q) {
+void drbc_unpack_halo(const DRbcUnpack *u, /**/ RbcQuants *q) {
     int nc0, nc, nv;
 
     nc0 = q->nc;

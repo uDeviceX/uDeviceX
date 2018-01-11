@@ -1,4 +1,3 @@
-namespace rbc {
 struct Edg {
     float a; /* equilibrium edge lengths and triangle area */
     float A;
@@ -23,5 +22,3 @@ struct RbcQuants {
 
     Shape shape;
 };
-
-} /* namespace */
