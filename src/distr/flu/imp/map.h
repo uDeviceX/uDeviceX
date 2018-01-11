@@ -5,7 +5,7 @@ static void build_map(int n, const PartList lp, DMap m) {
     KL(dmap_scan<NFRAGS>, (1, 32), (/**/ m));
 }
 
-void build_map(int n, const PartList lp, Pack *p) {
+void dflu_build_map(int n, const PartList lp, Pack *p) {
     UC(build_map(n, lp, p->map));
     dSync();
 }

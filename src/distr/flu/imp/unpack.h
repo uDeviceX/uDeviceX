@@ -58,7 +58,7 @@ static void unpack_cc(/**/ Unpack *u) {
     unpack_ii(u->hcc, /**/ u->ccre);
 }
 
-void unpack(/**/ Unpack *u) {
+void dflu_unpack(/**/ Unpack *u) {
     unpack_pp(/**/ u);
     if (global_ids)    unpack_ii(/**/ u);
     if (multi_solvent) unpack_cc(/**/ u);

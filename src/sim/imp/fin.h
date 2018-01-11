@@ -32,9 +32,9 @@ static void fin_bb_exch(/**/ BBexch *e) {
 
 static void fin_flu_distr(/**/ FluDistr *d) {
     using namespace distr::flu;
-    fin(/**/ &d->p);
-    fin(/**/ &d->c);
-    fin(/**/ &d->u);
+    UC(dflu_pack_fin(/**/ &d->p));
+    UC(dflu_comm_fin(/**/ &d->c));
+    UC(dflu_unpack_fin(/**/ &d->u));
 }
 
 static void fin_rbc_distr(/**/ RbcDistr *d) {

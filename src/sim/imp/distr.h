@@ -23,22 +23,22 @@ void distribute_flu(Sim *s) {
 
     // printf("n = %d\n", q->n);
     
-    build_map(q->n, lp, /**/ &d->p);
-    pack(q, /**/ &d->p);
-    download(/**/ &d->p);
+    dflu_build_map(q->n, lp, /**/ &d->p);
+    dflu_pack(q, /**/ &d->p);
+    dflu_download(/**/ &d->p);
 
-    UC(post_send(&d->p, &d->c));
-    UC(post_recv(&d->c, &d->u));
+    UC(dflu_post_send(&d->p, &d->c));
+    UC(dflu_post_recv(&d->c, &d->u));
 
-    distr::flu::bulk(lp, /**/ q);
+    distr::flu::dflu_bulk(lp, /**/ q);
     
-    wait_send(&d->c);
-    wait_recv(&d->c, &d->u);
+    dflu_wait_send(&d->c);
+    dflu_wait_recv(&d->c, &d->u);
     
-    unpack(/**/ &d->u);
+    dflu_unpack(/**/ &d->u);
     
-    halo(&d->u, /**/ q);
-    gather(ndead, &d->p, &d->u, /**/ q);
+    dflu_halo(&d->u, /**/ q);
+    dflu_gather(ndead, &d->p, &d->u, /**/ q);
 
     dSync();
 }
