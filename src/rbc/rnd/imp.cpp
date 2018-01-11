@@ -20,8 +20,6 @@
 #include "type.h"
 #include "imp.h"
 
-namespace rbc { namespace rnd {
 #include "imp/cu.h"
 #include "imp/seed.h"
 #include "imp/main.h"
-}} /* namespace */

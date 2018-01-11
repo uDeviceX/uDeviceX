@@ -1,5 +1,5 @@
-static void fin_rnd(rbc::rnd::RbcRnd *rnd) {
-    rbc::rnd::rbc_rnd_fin(rnd);
+static void fin_rnd(RbcRnd *rnd) {
+    rbc_rnd_fin(rnd);
 }
 
 void rbcforce_fin(RbcForce *t) {
