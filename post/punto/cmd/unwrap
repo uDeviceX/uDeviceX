@@ -15,12 +15,6 @@ usg () {
 }
 if test $# -ne 0 && test "$1" = -h; then usg; fi
 
-assert_arg () {
-    local m
-    m="$1"; shift
-    if test $# -eq 0; then err $m; fi
-}
-
 assert_arg "expect PUNTO.FILE" "$@"; i="$1"; shift
 if ! test -r "$i"; then err "not a file '$i'"; fi
 

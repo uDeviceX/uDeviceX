@@ -16,12 +16,6 @@ usg () {
     exit
 }
 
-assert_arg () {
-    local m
-    m="$1"; shift
-    if test $# -eq 0; then err $m; fi
-}
-
 if test $# -ne 0 && test "$1" = -h; then usg; fi
 
 assert_arg "expect DIR" "$@"; o="$1"; shift

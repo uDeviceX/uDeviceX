@@ -20,3 +20,9 @@ numberp () { # number?
 intp () { # integer?
     awk -v n="$1" 'BEGIN  {r = !("" int(n) == "" n); exit r }'
 }
+
+assert_arg () {
+    local m
+    m="$1"; shift
+    if test $# -eq 0; then err $m; fi
+}
