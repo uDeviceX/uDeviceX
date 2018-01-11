@@ -7,25 +7,22 @@ i="$1"; shift
 
 "$AWK" -v prog="$prog" -v dbg="$DBG" '
 BEGIN    {
-    s = i = 0
+    s = 0
 }
 NF == 0  {
     s++
-    i = 0
     printf "\n"
     if (!eq(dbg, "0")) msg("snap = " s)
     next
 }
-{
-    i ++
-}
 s  == 0  {
+    read_line()
     if (i in x0) same_id(i)
-    x0[i] = $2; y0[i] = $3; z0[i] = $4
+    x0[i] = x; y0[i] = y; z0[i] = z
 }
 {
+    read_line()
     if (!(i in x0)) no_id(i)
-    x = $2; y = $3; z = $4
     dx = x - x0[i]; dy = y - y0[i]; dz = z - z0[i]
     print $0, dx, dy, dz
 }
@@ -39,6 +36,7 @@ function no_id(i,   s) {
 		i, FILENAME, NR)
     err(s)
 }
+function read_line() { i = $1; x = $2; y = $3; z = $4 }
 function msg(s) { printf "%s: %s\n", prog, s | "cat >&2" }
 function err(s) { msg(s); exit(2) }
 function eq(a, b) { return a "" ==  b ""}
