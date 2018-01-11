@@ -12,3 +12,7 @@ msg () { echo >&2 "$*"; }
 err () { msg "$prog: $@"; exit 2; }
 
 match () { test -f "$1"; }
+
+numberp () { # number?
+    "$AWK" -v n="$1" 'BEGIN  {r = !(n + 0 == n); exit r }'
+}

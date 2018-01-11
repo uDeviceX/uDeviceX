@@ -7,14 +7,51 @@ prog0=u.punto.unwrap0
 . u.punto.util
 
 usg () {
-    msg "$prog"' DIR PUNTO.FILE [fields]...'
-    msg 'convert PUNTO.FILE to several vtk files in DIR'
-    msg '[fields].. names in vtk files'
-    msg "skip field if it is '-'"
-    msg "$prog"' out punto.txt    id x y z'
-    msg "$prog"' out punto.txt     - x y z'
+    msg "$prog"' PUNTO.FILE   xlo xhi   ylo yhi   zlo zhi'
+    msg 'unwrap coordinates in periodic box for PUNTO.FILE'
+    msg '[xyz]lo [xyz]hi box'
+    msg "'-' means the boundary is not periodic"
     exit
 }
 if test $# -ne 0 && test "$1" = -h; then usg; fi
 
-exec "$prog0" "$@"
+assert_arg () {
+    local m
+    m="$1"; shift
+    if test $# -eq 0; then err $m; fi
+}
+
+assert_arg "expect PUNTO.FILE" "$@"; i="$1"; shift
+if ! test -r "$i"; then err "not a file '$i'"; fi
+
+assert_arg "expect xlo" "$@"; xlo="$1"; shift
+assert_arg "expect xhi" "$@"; xhi="$1"; shift
+
+assert_arg "expect ylo" "$@"; ylo="$1"; shift
+assert_arg "expect yhi" "$@"; yhi="$1"; shift
+
+assert_arg "expect zlo" "$@"; zlo="$1"; shift
+assert_arg "expect zhi" "$@"; zhi="$1"; shift
+
+
+lo=-1e42 hi=1e42
+if test "$xlo" = -; then xlo=$lo; fi
+if test "$xhi" = -; then xhi=$hi; fi
+if test "$ylo" = -; then ylo=$lo; fi
+if test "$yhi" = -; then yhi=$hi; fi
+if test "$zlo" = -; then zlo=$lo; fi
+if test "$zhi" = -; then zhi=$hi; fi
+
+if ! numberp "$xlo"; then err "not a number xlo='$xlo'"; fi
+if ! numberp "$xhi"; then err "not a number xhi='$xhi'"; fi
+if ! numberp "$ylo"; then err "not a number ylo='$ylo'"; fi
+if ! numberp "$yhi"; then err "not a number yhi='$yhi'"; fi
+if ! numberp "$zlo"; then err "not a number zlo='$zlo'"; fi
+if ! numberp "$zhi"; then err "not a number zhi='$zhi'"; fi
+
+for c
+do  shift
+    set -- "$@" "$c"
+done    
+
+exec "$prog0" "$i"   "$xlo" "$xhi"   "$ylo" "$yhi"   "$zlo" "$zhi"
