@@ -57,17 +57,16 @@ static void read_file(const char *fname, /**/ config_t *c) {
 
 static void read_args(int argc, char **argv, /**/ config_t *c) {
    enum {MAX_CHAR = 100000};
-    char *args;
-    
-    UC(emalloc(MAX_CHAR * sizeof(char), (void **) &args));
+   char *args;
 
-    concatenate(argc, argv, /**/ args);
+   UC(emalloc(MAX_CHAR * sizeof(char), (void **) &args));
 
-    if (!config_read_string(c, args))
-        ERR( "arguments: %d - %s\n",
-             config_error_line(c), config_error_text(c));
-    
-    delete[] args;
+   concatenate(argc, argv, /**/ args);
+   if (!config_read_string(c, args))
+       ERR( "arguments: %d - %s\n",
+            config_error_line(c), config_error_text(c));
+
+   UC(efree(args));
 }
 
 static void shift(int *c, char ***v) {
@@ -82,7 +81,7 @@ static int get_opt_file(int *argc, char ***argv, /**/ char fname[]) {
     if (*argc) {
         a = (*argv)[0];
         lastpnt = strrchr(a, '.');
-        
+
         if (lastpnt != NULL) {
             differ = strcmp(lastpnt, ".cfg");
             if (differ) return 0;
@@ -101,8 +100,8 @@ void conf_read(int argc, char **argv, /**/ Config *cfg) {
     strcpy(defname, home);
     strcat(defname, "/.udx/default.cfg");
 
-    UC(read_file(defname, /**/ &cfg->c[DEF])); 
-    
+    UC(read_file(defname, /**/ &cfg->c[DEF]));
+
     if (get_opt_file(&argc, &argv, /**/ optname)) {
         UC(read_file(optname, /**/ &cfg->c[OPT]));
     }
