@@ -4,7 +4,7 @@ namespace rbc {
 using namespace comm;
 
 // tag::struct[]
-struct Pack {
+struct DRbcPack {
     DMap map;
     float3 *minext, *maxext;
     dBags dpp;
@@ -15,12 +15,12 @@ struct Pack {
     hBags hii;
 };
 
-struct Comm {
+struct DRbcComm {
     /* optional: ids */
     comm::Comm pp, ii;
 };
 
-struct Unpack {
+struct DRbcUnpack {
     hBags hpp;
 
     /* optional: ids */

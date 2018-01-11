@@ -24,7 +24,7 @@ static void pack_ii(const DMap m, int nc, const int *ii, /**/ hBags bags) {
     }
 }
 
-void drbc_pack(const rbc::Quants *q, /**/ Pack *p) {
+void drbc_pack(const rbc::Quants *q, /**/ DRbcPack *p) {
     pack_pp(p->map, q->nc, q->nv, q->pp, /**/ p->dpp);
 
     if (rbc_ids) {
@@ -34,7 +34,7 @@ void drbc_pack(const rbc::Quants *q, /**/ Pack *p) {
     }
 }
 
-void drbc_download(Pack *p) {
+void drbc_download(DRbcPack *p) {
     size_t sz = NBAGS * sizeof(int);
     CC(d::Memcpy(p->hpp.counts, p->map.counts, sz, D2H));
     if (rbc_ids)

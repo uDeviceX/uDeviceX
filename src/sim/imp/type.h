@@ -16,9 +16,9 @@ struct FluExch {
 
 /* rbc distribution */
 struct RbcDistr {
-    distr::rbc::Pack p;
-    distr::rbc::Comm c;
-    distr::rbc::Unpack u;
+    distr::rbc::DRbcPack p;
+    distr::rbc::DRbcComm c;
+    distr::rbc::DRbcUnpack u;
 };
 
 /* rigid distribution */
