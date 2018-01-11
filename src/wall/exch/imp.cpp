@@ -61,7 +61,7 @@ static void fill_bags(int n, const Particle *pp, hBags *b) {
     }
 }
 
-static void communicate(const hBags *s, Stamp *c, hBags *r) {
+static void communicate(const hBags *s, Comm *c, hBags *r) {
     UC(post_send(s, c));
     post_recv(r, c);
     wait_send(c);
@@ -93,20 +93,20 @@ static void unpack(int maxn, const hBags *b, /*io*/ int *n, Particle *pp) {
 /* exchange pp(hst) between processors to get a wall margin */
 void exch(MPI_Comm cart, int maxn, /*io*/ Particle *pp, int *n) {
     hBags send, recv;
-    Stamp stamp;
+    Comm com;
     int i, capacity[NBAGS];
 
     for (i = 0; i < NBAGS; ++i) capacity[i] = maxn;
     UC(bags_ini(HST_ONLY, NONE, sizeof(Particle), capacity, &send, NULL));
     UC(bags_ini(HST_ONLY, NONE, sizeof(Particle), capacity, &recv, NULL));
-    UC(ini(cart, &stamp));
+    UC(ini(cart, &com));
 
     fill_bags(*n, pp, /**/ &send);
-    communicate(&send, /**/ &stamp, &recv);
+    communicate(&send, /**/ &com, &recv);
     check_counts(maxn, *n, &recv);
     unpack(maxn, &recv, /**/ n, pp);
     
     UC(bags_fin(HST_ONLY, NONE, &send, NULL));
     UC(bags_fin(HST_ONLY, NONE, &recv, NULL));
-    fin(&stamp);
+    fin(&com);
 }

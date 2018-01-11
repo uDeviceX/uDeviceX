@@ -9,7 +9,7 @@ struct Pack {
 };
 
 struct Comm {
-    Stamp pp;
+    comm::Comm pp;
 };
 
 struct Unpack {
@@ -31,7 +31,7 @@ struct PackM {
 };
 
 struct CommM {
-    Stamp mm, ii;
+    comm::Comm mm, ii;
 };
 
 struct UnpackM {

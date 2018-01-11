@@ -16,10 +16,8 @@ struct Pack {
 };
 
 struct Comm {
-    Stamp pp;
-
     /* optional: ids */
-    Stamp ii;
+    comm::Comm pp, ii;
 };
 
 struct Unpack {

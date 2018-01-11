@@ -22,7 +22,7 @@ struct Pack {
 };
 
 struct Comm {
-    comm::Stamp pp, cc, fss;
+    comm::Comm pp, cc, fss;
 };
 
 struct Unpack {

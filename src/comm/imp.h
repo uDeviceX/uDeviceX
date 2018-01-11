@@ -36,7 +36,7 @@ struct hBags {
 // end::hBags[]
 
 // tag::stamp[]
-struct Stamp {
+struct Comm {
     MPI_Request sreq[NBAGS]; /* send requests */
     MPI_Request rreq[NBAGS]; /* recv requests */
     MPI_Comm cart;           /* cartesian communicator */
@@ -51,16 +51,16 @@ int bags_ini(AllocMod fmod, AllocMod bmod, size_t bsize, const int capacity[NBAG
 int bags_fin(AllocMod fmod, AllocMod bmod, /**/ hBags *hb, dBags *db);
 
 /* stamp alloc */
-int ini(MPI_Comm comm, /**/ Stamp *s);
-int fin(/**/ Stamp *s);
+int ini(MPI_Comm comm, /**/ Comm *c);
+int fin(/**/ Comm *c);
 // end::alloc[]
 
 // tag::communication[]
-int post_recv(hBags *b, Stamp *s);           // <1>
-int post_send(const hBags *b, Stamp *s);     // <2>
+int post_recv(hBags *b, Comm *c);           // <1>
+int post_send(const hBags *b, Comm *c);     // <2>
 
-int wait_recv(Stamp *s, /**/ hBags *b);      // <3>
-int wait_send(Stamp *s);                     // <4>
+int wait_recv(Comm *c, /**/ hBags *b);      // <3>
+int wait_send(Comm *c);                     // <4>
 // end::communication[]
 
 } // comm

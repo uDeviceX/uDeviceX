@@ -8,7 +8,7 @@ struct Pack {
 };
 
 struct Comm {
-    Stamp pp, ff;
+    comm::Comm pp, ff;
 };
 
 struct Unpack {

@@ -12,7 +12,7 @@ struct Pack {
 };
 
 struct Comm {
-    Stamp pp, ii, cc;
+    comm::Comm pp, ii, cc;
 };
 
 struct Unpack {

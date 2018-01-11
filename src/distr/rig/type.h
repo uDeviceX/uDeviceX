@@ -17,7 +17,7 @@ struct Pack {
 };
 
 struct Comm {
-    Stamp ipp, ss;
+    comm::Comm ipp, ss;
 };
 
 struct Unpack {

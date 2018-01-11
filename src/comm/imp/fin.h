@@ -41,7 +41,7 @@ int bags_fin(AllocMod fmod, AllocMod bmod, /**/ hBags *hb, dBags *db) {
     return 0;
 }
 
-int fin(/**/ Stamp *s) {
-    MC(m::Comm_free(&s->cart));
+int fin(/**/ Comm *c) {
+    MC(m::Comm_free(&c->cart));
     return 0;
 }
