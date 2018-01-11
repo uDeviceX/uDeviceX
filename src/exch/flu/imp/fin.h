@@ -1,4 +1,4 @@
-void eflu_pack_fin(Pack *p) {
+void eflu_pack_fin(EFluPack *p) {
     for (int i = 0; i < NFRAGS; ++i) {
         CC(d::Free(p->bcc.d[i]));
         CC(d::Free(p->bss.d[i]));
@@ -15,14 +15,14 @@ void eflu_pack_fin(Pack *p) {
     CC(d::Free(p->counts_dev));
 }
 
-void eflu_comm_fin(Comm *c) {
+void eflu_comm_fin(EFluComm *c) {
     UC(comm_fin(/**/ &c->pp));
     UC(comm_fin(/**/ &c->fss));
     if (multi_solvent)
         UC(comm_fin(/**/ &c->cc));
 }
 
-void eflu_unpack_fin(Unpack *u) {
+void eflu_unpack_fin(EFluUnpack *u) {
     UC(bags_fin(PINNED_DEV, NONE, /**/ &u->hpp, &u->dpp));
     if (multi_solvent)
         UC(bags_fin(PINNED_DEV, NONE, /**/ &u->hcc, &u->dcc));

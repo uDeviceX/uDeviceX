@@ -1,4 +1,4 @@
-void eflu_compute_map(const int *start, const int *count, /**/ Pack *p) {
+void eflu_compute_map(const int *start, const int *count, /**/ EFluPack *p) {
     int nc;
     int26 cc;
     int27 ss;
@@ -20,7 +20,7 @@ static void download_cell_starts(intp26 src, /**/ intp26 dst) {
     }
 }
 
-void eflu_download_cell_starts(/**/ Pack *p) {
+void eflu_download_cell_starts(/**/ EFluPack *p) {
     intp26 fss_hst;
     bag2Sarray(p->hfss, /**/ &fss_hst);
     download_cell_starts(p->fss, /**/ fss_hst);
