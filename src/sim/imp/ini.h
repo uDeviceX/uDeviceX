@@ -134,7 +134,7 @@ static void ini_colorer(int nv, MPI_Comm comm, /**/ Colorer *c) {
 
 static void ini_flu(MPI_Comm cart, /**/ Flu *f) {
 
-    flu::ini(&f->q);
+    flu_ini(&f->q);
     ini(MAX_PART_NUM, /**/ &f->bulkdata);
     ini(cart, /**/ &f->halodata);
     

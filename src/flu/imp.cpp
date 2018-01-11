@@ -32,7 +32,6 @@
 
 #include "imp.h"
 
-namespace flu {
 
 #include "imp/ini.h"
 #include "imp/fin.h"
@@ -40,11 +39,9 @@ namespace flu {
 #include "imp/start.h"
 
 /* TODO does it belong here? */
-void build_cells(/**/ Quants *q) {
+void flu_build_cells(/**/ FluQuants *q) {
     clist_build(q->n, q->n, q->pp, /**/ q->pp0, &q->cells, q->mcells);
     // swap
     Particle *tmp = q->pp;
     q->pp = q->pp0; q->pp0 = tmp;
 }
-
-} // flu

@@ -6,7 +6,7 @@ static void ini_ii(int **ii, int **ii0, int **ii_hst) {
     UC(emalloc(sz, /**/ (void **) ii_hst));
 }
 
-void ini(Quants *q) {
+void flu_ini(FluQuants *q) {
     size_t sz;
     q->n = 0;
     Dalloc(&q->pp, MAX_PART_NUM);
