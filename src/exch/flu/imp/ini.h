@@ -1,4 +1,4 @@
-void ini(int maxd, Pack *p) {
+void eflu_pack_ini(int maxd, EFluPack *p) {
     int i, nc, cap[NBAGS], ncs[NBAGS];
     size_t sz;
 
@@ -30,14 +30,14 @@ void ini(int maxd, Pack *p) {
     CC(d::Malloc((void**) &p->counts_dev, sz));
 }
 
-void ini(MPI_Comm comm, /**/ Comm *c) {
+void eflu_comm_ini(MPI_Comm comm, /**/ EFluComm *c) {
     UC(comm_ini(comm, /**/ &c->pp));
     UC(comm_ini(comm, /**/ &c->fss));
     if (multi_solvent)
         UC(comm_ini(comm, /**/ &c->cc));
 }
 
-void ini(int maxd, Unpack *u) {
+void eflu_unpack_ini(int maxd, EFluUnpack *u) {
     int i, cap[NBAGS], ncs[NBAGS];
 
     frag_estimates(NFRAGS, maxd, /**/ cap);

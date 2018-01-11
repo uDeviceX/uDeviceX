@@ -1,27 +1,27 @@
 namespace exch {
 namespace obj {
 
-struct Pack {
+struct EObjPack {
     EMap map;
     dBags dpp;
     hBags hpp;
 };
 
-struct Comm {
+struct EObjComm {
     comm::Comm pp, ff;
 };
 
-struct Unpack {
+struct EObjUnpack {
     hBags hpp;
     dBags dpp;
 };
 
-struct PackF {
+struct EObjPackF {
     dBags dff;
     hBags hff;
 };
 
-struct UnpackF {
+struct EObjUnpackF {
     hBags hff;
     dBags dff;
 };

@@ -14,18 +14,18 @@ static void pack_pp(int nfrags, int nw, const PaWrap *ww, EMap map, /**/ Pap26 b
     }
 }
 
-void pack(int nw, const PaWrap *ww, /**/ Pack *p) {
+void eobj_pack(int nw, const PaWrap *ww, /**/ EObjPack *p) {
     Pap26 wrap;
     bag2Sarray(p->dpp, &wrap);
     pack_pp(NFRAGS, nw, ww, p->map, /**/ wrap);
 }
 
-void download(int nw, Pack *p) {
+void eobj_download(int nw, EObjPack *p) {
     if (!nw) return;
     emap_download_counts(nw, NFRAGS, p->map, /**/ p->hpp.counts);
 }
 
-static void clear_forces(int nfrags, /**/ PackF *p) {
+static void clear_forces(int nfrags, /**/ EObjPackF *p) {
     int i, c;
     size_t sz;
     for (i = 0; i < nfrags; ++i) {
@@ -35,7 +35,7 @@ static void clear_forces(int nfrags, /**/ PackF *p) {
     }   
 }
 
-Fop26 reini_ff(const Unpack *u, PackF *pf) {
+Fop26 eobj_reini_ff(const EObjUnpack *u, EObjPackF *pf) {
     size_t sz = NBAGS * sizeof(int);
     memcpy(pf->hff.counts, u->hpp.counts, sz);
     clear_forces(NFRAGS, /**/ pf);
@@ -45,7 +45,7 @@ Fop26 reini_ff(const Unpack *u, PackF *pf) {
     return wrap;
 }
 
-void download_ff(PackF *p) {
+void eobj_download_ff(EObjPackF *p) {
     int i, c;
     size_t sz;
     data_t *src, *dst;

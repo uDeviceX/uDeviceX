@@ -12,7 +12,7 @@ namespace flu {
   bii: indices of the particles in bulk coordinates
 */
 
-struct Pack {
+struct EFluPack {
     intp26 bcc, bss, bii, fss;
     int *counts_dev;
     int26 cap;
@@ -21,11 +21,11 @@ struct Pack {
     comm::hBags hpp, hcc, hfss;
 };
 
-struct Comm {
+struct EFluComm {
     comm::Comm pp, cc, fss;
 };
 
-struct Unpack {
+struct EFluUnpack {
     comm::hBags hpp, hcc, hfss;
     comm::dBags dpp, dcc, dfss;
 };

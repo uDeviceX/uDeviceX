@@ -1,4 +1,4 @@
-int26 get_counts(Unpack *u) {
+int26 eobj_get_counts(EObjUnpack *u) {
     int26 cc;
     memcpy(cc.d, u->hpp.counts, NFRAGS * sizeof(int));
     return cc;
@@ -33,7 +33,7 @@ static void shift_pp(int nfrags, const int counts[], /**/ dBags d) {
     }    
 }
 
-Pap26 upload_shift(Unpack *u) {
+Pap26 eobj_upload_shift(EObjUnpack *u) {
     upload(NFRAGS, u->hpp, /**/ u->dpp);
     shift_pp(NFRAGS, u->hpp.counts, /**/ u->dpp);    
     Pap26 wrap;
@@ -57,7 +57,7 @@ static void unpack_ff(int nfrags, Fop26 ff, EMap map, int nw, /**/ FoWrap *ww) {
     }
 }
 
-void unpack_ff(const UnpackF *u, const Pack *p, int nw, /**/ FoWrap *ww) {
+void eobj_unpack_ff(const EObjUnpackF *u, const EObjPack *p, int nw, /**/ FoWrap *ww) {
     Fop26 wrap;
     upload(NFRAGS, u->hff, /**/ u->dff);
     bag2Sarray(u->dff, &wrap);

@@ -33,12 +33,12 @@ void forces_objects(Sim *sim) {
 
     /* Prepare and send the data */
     
-    build_map(nw, pw, /**/ &e->p);
-    pack(nw, pw, /**/ &e->p);
-    download(nw, /**/ &e->p);
+    eobj_build_map(nw, pw, /**/ &e->p);
+    eobj_pack(nw, pw, /**/ &e->p);
+    eobj_download(nw, /**/ &e->p);
 
-    UC(post_send(&e->p, &e->c));
-    UC(post_recv(&e->c, &e->u));
+    UC(eobj_post_send(&e->p, &e->c));
+    UC(eobj_post_recv(&e->c, &e->u));
 
     /* bulk interactions */
     
@@ -53,26 +53,26 @@ void forces_objects(Sim *sim) {
 
     /* recv data and halo interactions  */
 
-    wait_send(&e->c);
-    wait_recv(&e->c, &e->u);
+    UC(eobj_wait_send(&e->c));
+    UC(eobj_wait_recv(&e->c, &e->u));
 
-    int26 hcc = get_counts(&e->u);
-    Pap26 hpp = upload_shift(&e->u);
-    Fop26 hff = reini_ff(&e->u, &e->pf);
+    int26 hcc = eobj_get_counts(&e->u);
+    Pap26 hpp = eobj_upload_shift(&e->u);
+    Fop26 hff = eobj_reini_ff(&e->u, &e->pf);
 
     if (fsiforces)     fsi_halo(oi->fsi, hpp, hff, hcc.d);
     if (contactforces) cnt_halo(oi->cnt, nw, pw, fw, hpp, hff, hcc.d);
 
     /* send the forces back */ 
     
-    download_ff(&e->pf);
+    eobj_download_ff(&e->pf);
 
-    UC(post_send_ff(&e->pf, &e->c));
-    UC(post_recv_ff(&e->c, &e->uf));
+    UC(eobj_post_send_ff(&e->pf, &e->c));
+    UC(eobj_post_recv_ff(&e->c, &e->uf));
 
-    wait_send_ff(&e->c);    
-    wait_recv_ff(&e->c, &e->uf);
+    UC(eobj_wait_send_ff(&e->c));
+    UC(eobj_wait_recv_ff(&e->c, &e->uf));
 
-    unpack_ff(&e->uf, &e->p, nw, /**/ fw);
+    eobj_unpack_ff(&e->uf, &e->p, nw, /**/ fw);
 }
 
