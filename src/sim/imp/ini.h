@@ -35,7 +35,6 @@ static void ini_bb_exch(int nt, int nv, int max_m, MPI_Comm comm, /**/ BBexch *e
 }
 
 static void ini_flu_distr(MPI_Comm comm, /**/ FluDistr *d) {
-    using namespace distr::flu;
     float maxdensity = ODSTR_FACTOR * numberdensity;
     UC(dflu_pack_ini(maxdensity, /**/ &d->p));
     UC(dflu_comm_ini(comm, /**/ &d->c));

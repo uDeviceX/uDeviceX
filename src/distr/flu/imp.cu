@@ -36,12 +36,14 @@
 #include "distr/map/dev.h"
 #include "distr/map/imp.h"
 
-namespace distr {
-namespace flu {
 using namespace comm;
 
 #include "imp/type.h"
+
+namespace dflu {
 #include "distr/common/dev.h"
+}
+
 #include "dev.h"
 #include "imp/ini.h"
 #include "imp/fin.h"
@@ -50,6 +52,3 @@ using namespace comm;
 #include "imp/com.h"
 #include "imp/unpack.h"
 #include "imp/gather.h"
-
-} // flu
-} // distr

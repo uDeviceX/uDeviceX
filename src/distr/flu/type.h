@@ -1,6 +1,3 @@
-namespace distr {
-namespace flu {
-
 using namespace comm;
 
 // tag::struct[]
@@ -22,6 +19,3 @@ struct DFluUnpack {
     int nhalo; /* number of received particles */
 };
 // end::struct[]
-
-} // flu
-} // distr

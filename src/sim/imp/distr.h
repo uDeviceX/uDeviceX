@@ -30,7 +30,7 @@ void distribute_flu(Sim *s) {
     UC(dflu_post_send(&d->p, &d->c));
     UC(dflu_post_recv(&d->c, &d->u));
 
-    distr::flu::dflu_bulk(lp, /**/ q);
+    dflu_bulk(lp, /**/ q);
     
     dflu_wait_send(&d->c);
     dflu_wait_recv(&d->c, &d->u);

@@ -1,4 +1,4 @@
-static int scan(const int n, const int *counts, int27 *starts) {
+static int scan_hst(const int n, const int *counts, int27 *starts) {
     int i, s;
     starts->d[0] = 0;
     for (i = 0, s = 0; i < n; ++i)
@@ -26,10 +26,10 @@ static int unpack_pp(const hBags bags, /**/ Particle *pp) {
     int nhalo;
     int27 starts;
 
-    nhalo = scan(NFRAGS, bags.counts, &starts);    
+    nhalo = scan_hst(NFRAGS, bags.counts, &starts);    
     unpack(bags, starts, /**/ pp);
 
-    KL(dev::shift_halo, (k_cnf(nhalo)), (starts, /**/ pp));
+    KL(dflu::dev::shift_halo, (k_cnf(nhalo)), (starts, /**/ pp));
     
     return nhalo;
 }
@@ -38,7 +38,7 @@ static int unpack_ii(const hBags bags, /**/ int *ii) {
     int nhalo;
     int27 starts;
 
-    nhalo = scan(NFRAGS, bags.counts, &starts);    
+    nhalo = scan_hst(NFRAGS, bags.counts, &starts);    
     unpack(bags, starts, /**/ ii);
     
     return nhalo;

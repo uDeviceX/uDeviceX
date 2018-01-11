@@ -1,6 +1,3 @@
-namespace distr {
-namespace flu {
-
 // tag::interface[]
 void dflu_pack_ini(int maxdensity, DFluPack *p);
 void dflu_comm_ini(MPI_Comm comm, /**/ DFluComm *c);
@@ -37,6 +34,3 @@ void dflu_bulk(PartList lp, /**/ Quants *q);
 void dflu_halo(const DFluUnpack *u, /**/ Quants *q);
 void dflu_gather(int ndead, const DFluPack *p, const DFluUnpack *u, /**/ Quants *q);
 // end::clist[]
-
-} // flu
-} // distr
