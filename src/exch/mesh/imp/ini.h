@@ -4,7 +4,7 @@ static void get_capacity(int nfrags, int max_mesh_num, /**/ int cap[]) {
         cap[i] = max_mesh_num;
 }
 
-void ini(int nv, int max_mesh_num, Pack *p) {
+void emesh_pack_ini(int nv, int max_mesh_num, EMeshPack *p) {
     int cap[NFRAGS];
     size_t msz = nv * sizeof(Particle);
     get_capacity(NFRAGS, max_mesh_num, /**/ cap);
@@ -16,11 +16,11 @@ void ini(int nv, int max_mesh_num, Pack *p) {
     CC(d::Malloc((void**) &p->maxext, max_mesh_num * sizeof(float3)));
 }
 
-void ini(MPI_Comm comm, /**/ Comm *c) {
+void emesh_comm_ini(MPI_Comm comm, /**/ EMeshComm *c) {
     UC(comm_ini(comm, /**/ &c->pp));
 }
 
-void ini(int nv, int max_mesh_num, Unpack *u) {
+void emesh_unpack_ini(int nv, int max_mesh_num, EMeshUnpack *u) {
     int cap[NFRAGS];
     size_t msz = nv * sizeof(Particle);
     get_capacity(NFRAGS, max_mesh_num, /**/ cap);
@@ -43,7 +43,7 @@ static void ini_map(int nt, int max_mesh_num, MMap *map) {
     CC(d::Malloc((void**) &map->subids, sz * nt));
 }
 
-void ini(int nt, int max_mesh_num, PackM *p) {
+void emesh_packm_ini(int nt, int max_mesh_num, EMeshPackM *p) {
     int i, cap[NFRAGS], mcap[NFRAGS];
 
     get_capacity(NFRAGS, max_mesh_num, /**/ cap);
@@ -59,12 +59,12 @@ void ini(int nt, int max_mesh_num, PackM *p) {
     CC(d::HostGetDevicePointer((void**) &p->ccdev, p->cchst, 0));
 }
 
-void ini(MPI_Comm comm, /**/ CommM *c) {
+void emesh_commm_ini(MPI_Comm comm, /**/ EMeshCommM *c) {
     UC(comm_ini(comm, /**/ &c->mm));
     UC(comm_ini(comm, /**/ &c->ii));
 }
 
-void ini(int nt, int max_mesh_num, UnpackM *u) {
+void emesh_unpackm_ini(int nt, int max_mesh_num, EMeshUnpackM *u) {
     int cap[NFRAGS], mcap[NFRAGS];
 
     get_capacity(NFRAGS, max_mesh_num, /**/ cap);

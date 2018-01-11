@@ -1,6 +1,3 @@
-namespace exch {
-namespace flu {
-
 /*
   pp: exchanged particles 
   cc: colors of the above
@@ -29,6 +26,3 @@ struct EFluUnpack {
     comm::hBags hpp, hcc, hfss;
     comm::dBags dpp, dcc, dfss;
 };
-
-} // flu
-} // exch

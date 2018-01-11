@@ -1,4 +1,4 @@
-void unpack(int nv, const Unpack *u, /**/ int *nmhalo, Particle *pp) {
+void emesh_unpack(int nv, const EMeshUnpack *u, /**/ int *nmhalo, Particle *pp) {
     int i, nm, n, s = 0, nmtot = 0;
     size_t sz;
     
@@ -8,7 +8,7 @@ void unpack(int nv, const Unpack *u, /**/ int *nmhalo, Particle *pp) {
         sz = n * sizeof(Particle);
         if (nm) {
             CC(d::MemcpyAsync(pp + s, u->hpp.data[i], sz, H2D));
-            KL(dev::shift_one_frag, (k_cnf(n)), (n, i, /**/ pp + s));
+            ecommon_shift_one_frag(n, i, /**/ pp + s);
         }
         s += n;
         nmtot += nm;
@@ -16,7 +16,7 @@ void unpack(int nv, const Unpack *u, /**/ int *nmhalo, Particle *pp) {
     *nmhalo = nmtot;
 }
 
-void get_num_frag_mesh(const Unpack *u, /**/ int cc[NFRAGS]) {
+void emesh_get_num_frag_mesh(const EMeshUnpack *u, /**/ int cc[NFRAGS]) {
     memcpy(cc, u->hpp.counts, NFRAGS * sizeof(int));
 }
 
@@ -35,7 +35,7 @@ static void upload_bags(const hBags *h, dBags *d) {
     }
 }
 
-void upload(UnpackM *u) {
+void emesh_upload(EMeshUnpackM *u) {
     upload_bags(&u->hmm, &u->dmm);
     upload_bags(&u->hii, &u->dii);
 }
@@ -48,7 +48,7 @@ static int get_fragstarts(int nfrags, const int cc[], /**/ int *starts) {
     return s;
 }
 
-void unpack_mom(int nt, const Pack *p, const UnpackM *u, /**/ Momentum *mm) {
+void emesh_unpack_mom(int nt, const EMeshPack *p, const EMeshUnpackM *u, /**/ Momentum *mm) {
     intp26 wrapii;
     Mop26 wrapmm;
     int27 fragstarts;

@@ -23,12 +23,11 @@
 #include "type.h"
 #include "imp.h"
 
-namespace exch {
-namespace obj {
 using namespace comm;
+
 #include "exch/map/dev.h"
-#include "exch/common/type.h"
-#include "exch/common/dev.h"
+#include "exch/common/imp.h"
+
 #include "dev.h"
 
 #include "imp/ini.h"
@@ -37,6 +36,3 @@ using namespace comm;
 #include "imp/pack.h"
 #include "imp/com.h"
 #include "imp/unpack.h"
-
-} // obj
-} // exch

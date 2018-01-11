@@ -1,5 +1,4 @@
 static void ini_flu_exch(MPI_Comm comm, /**/ FluExch *e) {
-    using namespace exch::flu;
     int maxd = HSAFETY_FACTOR * numberdensity;
     
     UC(eflu_pack_ini(maxd, /**/ &e->p));
@@ -8,7 +7,6 @@ static void ini_flu_exch(MPI_Comm comm, /**/ FluExch *e) {
 }
 
 static void ini_obj_exch(MPI_Comm comm, /**/ ObjExch *e) {
-    using namespace exch::obj;
     int maxpsolid = MAX_PSOLID_NUM;
     
     UC(eobj_pack_ini(MAX_OBJ_TYPES, MAX_OBJ_DENSITY, maxpsolid, &e->p));
@@ -19,19 +17,17 @@ static void ini_obj_exch(MPI_Comm comm, /**/ ObjExch *e) {
 }
 
 static void ini_mesh_exch(int nv, int max_m, MPI_Comm comm, /**/ Mexch *e) {
-    using namespace exch::mesh;
-    UC(ini(nv, max_m, /**/ &e->p));
-    UC(ini(comm, /**/ &e->c));
-    UC(ini(nv, max_m, /**/ &e->u));
+    UC(emesh_pack_ini(nv, max_m, /**/ &e->p));
+    UC(emesh_comm_ini(comm, /**/ &e->c));
+    UC(emesh_unpack_ini(nv, max_m, /**/ &e->u));
 }
 
 static void ini_bb_exch(int nt, int nv, int max_m, MPI_Comm comm, /**/ BBexch *e) {
     UC(ini_mesh_exch(nv, max_m, comm, /**/ e));
 
-    using namespace exch::mesh;
-    UC(ini(nt, max_m, /**/ &e->pm));
-    UC(ini(comm, /**/ &e->cm));
-    UC(ini(nt, max_m, /**/ &e->um));
+    UC(emesh_packm_ini(nt, max_m, /**/ &e->pm));
+    UC(emesh_commm_ini(comm, /**/ &e->cm));
+    UC(emesh_unpackm_ini(nt, max_m, /**/ &e->um));
 }
 
 static void ini_flu_distr(MPI_Comm comm, /**/ FluDistr *d) {

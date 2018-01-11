@@ -9,9 +9,9 @@ struct FluDistr {
 
 /* particle exchanger for solvent forces */
 struct FluExch {
-    exch::flu::EFluPack p;
-    exch::flu::EFluComm c;
-    exch::flu::EFluUnpack u;
+    EFluPack p;
+    EFluComm c;
+    EFluUnpack u;
 };
 
 /* rbc distribution */
@@ -30,25 +30,25 @@ struct RigDistr {
 
 /* object exchanger for forces */
 struct ObjExch {
-    exch::obj::EObjPack p;
-    exch::obj::EObjUnpack u;
-    exch::obj::EObjPackF pf;
-    exch::obj::EObjUnpackF uf;
-    exch::obj::EObjComm c;
+    EObjPack p;
+    EObjUnpack u;
+    EObjPackF pf;
+    EObjUnpackF uf;
+    EObjComm c;
 };
 
 /* mesh exchanger */
 struct Mexch {
-    exch::mesh::Pack p;
-    exch::mesh::Comm c;
-    exch::mesh::Unpack u;
+    EMeshPack p;
+    EMeshComm c;
+    EMeshUnpack u;
 };
 
 /* bounce back exchanger */
 struct BBexch : Mexch {
-    exch::mesh::PackM pm;
-    exch::mesh::CommM cm;
-    exch::mesh::UnpackM um;
+    EMeshPackM pm;
+    EMeshCommM cm;
+    EMeshUnpackM um;
 };
 
 struct Colorer {

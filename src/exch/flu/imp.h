@@ -1,6 +1,3 @@
-namespace exch {
-namespace flu {
-
 void eflu_pack_ini(int maxd, EFluPack *p);
 void eflu_comm_ini(MPI_Comm comm, /**/ EFluComm *c);
 void eflu_unpack_ini(int maxd, EFluUnpack *u);
@@ -27,6 +24,3 @@ using ::flu::RFrag26;
 
 void eflu_get_local_frags(const EFluPack *p, /**/ LFrag26 *lfrags);
 void eflu_get_remote_frags(const EFluUnpack *u, /**/ RFrag26 *rfrags);
-    
-} // flu
-} // exch
