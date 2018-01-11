@@ -1,3 +1,3 @@
 namespace anti {
-void ini(int md, int nv, adj::Adj*, /**/ int*);
+void ini(int md, int nv, Adj*, /**/ int*);
 }
