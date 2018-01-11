@@ -11,11 +11,11 @@ static void ini_obj_exch(MPI_Comm comm, /**/ ObjExch *e) {
     using namespace exch::obj;
     int maxpsolid = MAX_PSOLID_NUM;
     
-    UC(ini(MAX_OBJ_TYPES, MAX_OBJ_DENSITY, maxpsolid, &e->p));
-    UC(ini(comm, /**/ &e->c));
-    UC(ini(MAX_OBJ_DENSITY, maxpsolid, /**/ &e->u));
-    UC(ini(MAX_OBJ_DENSITY, maxpsolid, /**/ &e->pf));
-    UC(ini(MAX_OBJ_DENSITY, maxpsolid, /**/ &e->uf));
+    UC(eobj_pack_ini(MAX_OBJ_TYPES, MAX_OBJ_DENSITY, maxpsolid, &e->p));
+    UC(eobj_comm_ini(comm, /**/ &e->c));
+    UC(eobj_unpack_ini(MAX_OBJ_DENSITY, maxpsolid, /**/ &e->u));
+    UC(eobj_packf_ini(MAX_OBJ_DENSITY, maxpsolid, /**/ &e->pf));
+    UC(eobj_unpackf_ini(MAX_OBJ_DENSITY, maxpsolid, /**/ &e->uf));
 }
 
 static void ini_mesh_exch(int nv, int max_m, MPI_Comm comm, /**/ Mexch *e) {

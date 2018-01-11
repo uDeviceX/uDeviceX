@@ -7,11 +7,11 @@ static void fin_flu_exch(/**/ FluExch *e) {
 
 static void fin_obj_exch(/**/ ObjExch *e) {
     using namespace exch::obj;
-    fin(/**/ &e->p);
-    fin(/**/ &e->c);
-    fin(/**/ &e->u);
-    fin(/**/ &e->pf);
-    fin(/**/ &e->uf);
+    UC(eobj_pack_fin(/**/ &e->p));
+    UC(eobj_comm_fin(/**/ &e->c));
+    UC(eobj_unpack_fin(/**/ &e->u));
+    UC(eobj_packf_fin(/**/ &e->pf));
+    UC(eobj_unpackf_fin(/**/ &e->uf));
 }
 
 static void fin_mesh_exch(/**/ Mexch *e) {
