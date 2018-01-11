@@ -1,5 +1,4 @@
 static void ini_flu_exch(MPI_Comm comm, /**/ FluExch *e) {
-    using namespace exch::flu;
     int maxd = HSAFETY_FACTOR * numberdensity;
     
     UC(eflu_pack_ini(maxd, /**/ &e->p));

@@ -24,8 +24,6 @@
 #include "type.h"
 #include "imp.h"
 
-namespace exch {
-namespace flu {
 using namespace comm;
 
 namespace dev {
@@ -41,6 +39,3 @@ namespace dev {
 #include "imp/com.h"
 #include "imp/unpack.h"
 #include "imp/get.h"
-
-} // flu
-} // exch
