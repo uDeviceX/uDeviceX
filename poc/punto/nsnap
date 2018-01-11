@@ -1,0 +1,9 @@
+#!/bin/sh
+set -eu
+
+i="$1"; shift
+
+awk '
+NF == 0 { i++         }
+END     { print i + 1 }
+' "$i"
