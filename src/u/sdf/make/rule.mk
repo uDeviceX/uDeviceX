@@ -11,8 +11,9 @@ $B/mpi/type.o: $S/mpi/type.cpp; $X -I$S/. -I$S/mpi
 $B/mpi/wrapper.o: $S/mpi/wrapper.cpp; $X -I$S/. -I$S/mpi
 $B/sdf/array3d/imp.o: $S/sdf/array3d/imp.cu; $N -I$S/. -I$S/sdf/array3d
 $B/sdf/bounce/imp.o: $S/sdf/bounce/imp.cu; $N -I$S/. -I$S/sdf/bounce
+$B/sdf/dev.o: $S/sdf/dev.cu; $N -I$S/. -I$S/sdf
 $B/sdf/field/imp.o: $S/sdf/field/imp.cpp; $X -I$S/. -I$S/sdf/field
-$B/sdf/imp.o: $S/sdf/imp.cu; $N -I$S/. -I$S/sdf
+$B/sdf/imp.o: $S/sdf/imp.cpp; $X -I$S/. -I$S/sdf
 $B/sdf/label/imp.o: $S/sdf/label/imp.cu; $N -I$S/. -I$S/sdf/label
 $B/sdf/tex3d/imp.o: $S/sdf/tex3d/imp.cu; $N -I$S/. -I$S/sdf/tex3d
 $B/sdf/tform/imp.o: $S/sdf/tform/imp.cpp; $X -I$S/. -I$S/sdf/tform

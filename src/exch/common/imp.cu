@@ -1,8 +1,12 @@
 #include <mpi.h>
+
 #include <conf.h>
 #include "inc/conf.h"
 
+#include "d/api.h"
+#include "utils/cc.h"
 #include "utils/kl.h"
+
 #include "inc/dev.h"
 #include "inc/type.h"
 #include "frag/dev.h"
