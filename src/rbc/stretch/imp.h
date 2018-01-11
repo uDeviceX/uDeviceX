@@ -1,5 +1,5 @@
-struct StretchForce;
+struct RbcStretch;
 
-void rbc_stretch_ini(const char* path, int nv, /**/ StretchForce **fp); /* `nv` is for error check */
-void rbc_stretch_fin(StretchForce *f);
-void rbc_stretch_apply(int nm, const StretchForce*, /**/ Force*);
+void rbc_stretch_ini(const char* path, int nv, /**/ RbcStretch **fp); /* `nv` is for error check */
+void rbc_stretch_fin(RbcStretch *f);
+void rbc_stretch_apply(int nm, const RbcStretch*, /**/ Force*);

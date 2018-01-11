@@ -37,7 +37,7 @@ static int body_force(Coords coords, const BForce *bf, RbcQuants q, Force *f) {
     return 0;
 }
 
-static void run0(Coords coords, const BForce *bforce, RbcQuants q, RbcForce t, rbc::stretch::Fo* stretch, Force *f) {
+static void run0(Coords coords, const BForce *bforce, RbcQuants q, RbcForce t, RbcStretch* stretch, Force *f) {
     long i;
     long nsteps = (long)(tend / dt);
     msg_print("will take %ld steps", nsteps);
@@ -55,7 +55,7 @@ static void run0(Coords coords, const BForce *bforce, RbcQuants q, RbcForce t, r
 }
 
 static void run1(Coords coords, const BForce *bforce, RbcQuants q, RbcForce t,
-                 rbc::stretch::Fo *stretch) {
+                 RbcStretch *stretch) {
     Force *f;
     Dalloc(&f, q.n);
     Dzero(f, q.n);
@@ -64,13 +64,13 @@ static void run1(Coords coords, const BForce *bforce, RbcQuants q, RbcForce t,
 }
 
 static void run2(Coords coords, const BForce *bforce, const char *cell, const char *ic, RbcQuants q) {
-    rbc::stretch::Fo *stretch;
+    RbcStretch *stretch;
     RbcForce t;
     rbc_gen_quants(coords, m::cart, cell, ic, /**/ &q);
-    UC(stretch::ini("rbc.stretch", q.nv, /**/ &stretch));
+    UC(rbc_stretch_ini("rbc.stretch", q.nv, /**/ &stretch));
     rbcforce_gen(q, &t);
     run1(coords, bforce, q, t, stretch);
-    stretch::fin(stretch);
+    rbc_stretch_fin(stretch);
     rbcforce_fin(&t);
 }
 

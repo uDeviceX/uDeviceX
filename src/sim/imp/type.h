@@ -87,8 +87,8 @@ struct Rbc {
 
     Force *ff;
 
-    RbcComProps  com;       /* helper to compute center of masses */
-    StretchForce *stretch;  /* helper to apply stretching [fo]rce to cells */
+    RbcComProps  com;     /* helper to compute center of masses */
+    RbcStretch *stretch;  /* helper to apply stretching [fo]rce to cells */
 };
 
 /* data holder for rigid objects */
