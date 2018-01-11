@@ -7,10 +7,10 @@ void fin(Pack *p) {
 }
 
 void fin(Comm *c) {
-    fin(&c->pp);
+    UC(comm_fin(&c->pp));
 
-    if (global_ids)    fin(&c->ii);
-    if (multi_solvent) fin(&c->cc);
+    if (global_ids)    UC(comm_fin(&c->ii));
+    if (multi_solvent) UC(comm_fin(&c->cc));
 }
 
 void fin(Unpack *u) {

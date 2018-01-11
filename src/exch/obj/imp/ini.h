@@ -23,8 +23,8 @@ void ini(int nw, int maxd, int maxpsolid, Pack *p) {
 }
 
 void ini(MPI_Comm comm, /**/ Comm *c) {
-    UC(ini(comm, /**/ &c->pp));
-    UC(ini(comm, /**/ &c->ff));
+    UC(comm_ini(comm, /**/ &c->pp));
+    UC(comm_ini(comm, /**/ &c->ff));
 }
 
 void ini(int maxd, int maxpsolid, Unpack *u) {

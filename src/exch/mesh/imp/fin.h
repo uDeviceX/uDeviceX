@@ -6,7 +6,7 @@ void fin(Pack *p) {
 }
 
 void fin(Comm *c) {
-    fin(&c->pp);
+    UC(comm_fin(&c->pp));
 }
 
 void fin(Unpack *u) {
@@ -32,8 +32,8 @@ void fin(PackM *p) {
 }
 
 void fin(CommM *c) {
-    fin(&c->mm);
-    fin(&c->ii);
+    UC(comm_fin(&c->mm));
+    UC(comm_fin(&c->ii));
 }
 
 void fin(UnpackM *u) {

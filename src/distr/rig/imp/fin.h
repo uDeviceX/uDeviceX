@@ -5,8 +5,8 @@ void fin(Pack *p) {
 }
 
 void fin(Comm *c) {
-    fin(&c->ipp);
-    fin(&c->ss);
+    UC(comm_fin(&c->ipp));
+    UC(comm_fin(&c->ss));
 }
 
 void fin(Unpack *u) {

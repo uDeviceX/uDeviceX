@@ -17,8 +17,8 @@ void ini(int maxns, int nv, Pack *p) {
 }
 
 void ini(MPI_Comm comm, /**/ Comm *c) {
-    UC(ini(comm, /**/ &c->ipp));
-    UC(ini(comm, /**/ &c->ss));
+    UC(comm_ini(comm, /**/ &c->ipp));
+    UC(comm_ini(comm, /**/ &c->ss));
 }
 
 void ini(int maxns, int nv, Unpack *u) {

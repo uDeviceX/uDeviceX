@@ -4,8 +4,8 @@ void fin(Pack *p) {
 }
 
 void fin(Comm *c) {
-    fin(&c->pp);
-    fin(&c->ff);
+    UC(comm_fin(&c->pp));
+    UC(comm_fin(&c->ff));
 }
 
 void fin(Unpack *u) {

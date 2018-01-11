@@ -62,7 +62,7 @@ int bags_ini(AllocMod fmod, AllocMod bmod, size_t bsize, const int capacity[NBAG
 
 /* comm allocation */
 
-int ini(MPI_Comm cart, /**/ Comm *com) {
+int comm_ini(MPI_Comm cart, /**/ Comm *com) {
     int i, c, crd_rnk[3];
     int coords[3], periods[3], dims[3];
     MC(m::Cart_get(cart, 3, dims, periods, coords));

@@ -31,10 +31,10 @@ void ini(int maxd, Pack *p) {
 }
 
 void ini(MPI_Comm comm, /**/ Comm *c) {
-    UC(ini(comm, /**/ &c->pp));
-    UC(ini(comm, /**/ &c->fss));
+    UC(comm_ini(comm, /**/ &c->pp));
+    UC(comm_ini(comm, /**/ &c->fss));
     if (multi_solvent)
-        UC(ini(comm, /**/ &c->cc));
+        UC(comm_ini(comm, /**/ &c->cc));
 }
 
 void ini(int maxd, Unpack *u) {

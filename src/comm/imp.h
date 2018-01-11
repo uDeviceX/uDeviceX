@@ -51,8 +51,8 @@ int bags_ini(AllocMod fmod, AllocMod bmod, size_t bsize, const int capacity[NBAG
 int bags_fin(AllocMod fmod, AllocMod bmod, /**/ hBags *hb, dBags *db);
 
 /* stamp alloc */
-int ini(MPI_Comm comm, /**/ Comm *c);
-int fin(/**/ Comm *c);
+int comm_ini(MPI_Comm cart, /**/ Comm *c);
+int comm_fin(/**/ Comm *c);
 // end::alloc[]
 
 // tag::communication[]

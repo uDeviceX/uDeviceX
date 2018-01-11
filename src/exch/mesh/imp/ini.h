@@ -17,7 +17,7 @@ void ini(int nv, int max_mesh_num, Pack *p) {
 }
 
 void ini(MPI_Comm comm, /**/ Comm *c) {
-    UC(ini(comm, /**/ &c->pp));
+    UC(comm_ini(comm, /**/ &c->pp));
 }
 
 void ini(int nv, int max_mesh_num, Unpack *u) {
@@ -60,8 +60,8 @@ void ini(int nt, int max_mesh_num, PackM *p) {
 }
 
 void ini(MPI_Comm comm, /**/ CommM *c) {
-    UC(ini(comm, /**/ &c->mm));
-    UC(ini(comm, /**/ &c->ii));
+    UC(comm_ini(comm, /**/ &c->mm));
+    UC(comm_ini(comm, /**/ &c->ii));
 }
 
 void ini(int nt, int max_mesh_num, UnpackM *u) {

@@ -23,9 +23,9 @@ void ini(int maxdensity, Pack *p) {
 }
 
 void ini(MPI_Comm comm, /**/ Comm *c) {
-    UC(ini(comm, /**/ &c->pp));
-    if (global_ids)    UC(ini(comm, /**/ &c->ii));
-    if (multi_solvent) UC(ini(comm, /**/ &c->cc));
+    UC(comm_ini(comm, /**/ &c->pp));
+    if (global_ids)    UC(comm_ini(comm, /**/ &c->ii));
+    if (multi_solvent) UC(comm_ini(comm, /**/ &c->cc));
 }
 
 static int nhalocells() {

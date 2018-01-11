@@ -23,9 +23,9 @@ void ini(int maxnc, int nv, Pack *p) {
 }
 
 void ini(MPI_Comm comm, /**/ Comm *c) {
-    UC(ini(comm, /**/ &c->pp));
+    UC(comm_ini(comm, /**/ &c->pp));
     if (rbc_ids)
-        UC(ini(comm, /**/ &c->ii));
+        UC(comm_ini(comm, /**/ &c->ii));
 }
 
 void ini(int maxnc, int nv, Unpack *u) {

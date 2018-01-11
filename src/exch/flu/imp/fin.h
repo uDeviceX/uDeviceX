@@ -16,10 +16,10 @@ void fin(Pack *p) {
 }
 
 void fin(Comm *c) {
-    fin(/**/ &c->pp);
-    fin(/**/ &c->fss);
+    UC(comm_fin(/**/ &c->pp));
+    UC(comm_fin(/**/ &c->fss));
     if (multi_solvent)
-        fin(/**/ &c->cc);
+        UC(comm_fin(/**/ &c->cc));
 }
 
 void fin(Unpack *u) {

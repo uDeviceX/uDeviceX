@@ -11,9 +11,9 @@ void fin(Pack *p) {
 }
 
 void fin(Comm *c) {
-    fin(&c->pp);
+    UC(comm_fin(&c->pp));
     if (rbc_ids)
-        fin(&c->ii);
+        UC(comm_fin(&c->ii));
 }
 
 void fin(Unpack *u) {
