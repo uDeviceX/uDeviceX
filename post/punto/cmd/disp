@@ -8,10 +8,12 @@ prog0=u.punto.disp0
 . u.punto.util
 
 usg () {
-    msg "$prog"' [PUNTO FILE]'
+    msg "$prog"' PUNTO.FILE [fields]...'
     msg 'add [disp]acement from initial position'
-    msg 'asummes colums:'
-    msg 'id x y z ...'
+    msg '[fields].. where are x, y, z, id?'
+    msg "skip fields if it is '-'"
+    msg "$prog PUNTO.FILE id x y z"
+    msg "$prog PUNTO.FILE id - x y z"
     exit
 }
 
