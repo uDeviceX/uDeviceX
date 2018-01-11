@@ -80,7 +80,7 @@ $B/sdf/array3d/imp.o: $S/sdf/array3d/imp.cu; $N -I$S/sdf/array3d -I$S/.
 $B/sdf/bounce/imp.o: $S/sdf/bounce/imp.cu; $N -I$S/sdf/bounce -I$S/.
 $B/sdf/dev.o: $S/sdf/dev.cu; $N -I$S/sdf -I$S/.
 $B/sdf/field/imp.o: $S/sdf/field/imp.cpp; $X -I$S/sdf/field -I$S/.
-$B/sdf/imp.o: $S/sdf/imp.cu; $N -I$S/sdf -I$S/.
+$B/sdf/imp.o: $S/sdf/imp.cpp; $X -I$S/sdf -I$S/.
 $B/sdf/label/imp.o: $S/sdf/label/imp.cu; $N -I$S/sdf/label -I$S/.
 $B/sdf/tex3d/imp.o: $S/sdf/tex3d/imp.cu; $N -I$S/sdf/tex3d -I$S/.
 $B/sdf/tform/imp.o: $S/sdf/tform/imp.cpp; $X -I$S/sdf/tform -I$S/.

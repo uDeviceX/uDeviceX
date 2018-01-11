@@ -14,7 +14,6 @@
 #include "inc/dev.h"
 #include "utils/imp.h"
 
-#include "tex3d/type.h"
 #include "array3d/imp.h"
 #include "tex3d/imp.h"
 
@@ -22,7 +21,6 @@
 #include "bounce/imp.h"
 #include "label/imp.h"
 
-#include "math/tform/type.h"
 #include "math/tform/imp.h"
 #include "tform/imp.h"
 
