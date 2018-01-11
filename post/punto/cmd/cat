@@ -2,3 +2,29 @@
 set -u
 
 prog=u.punto.cat
+
+. u.punto.util
+
+usg () {
+    msg "$prog"' [PUNTO.FILE]...'
+    msg 'concatenate PUNTO.FILE(s) to standard output'
+    exit
+}
+
+if test $# -ne 0 && test "$1" = -h; then usg; fi
+
+for f
+do if test ! -r "$f"
+   then err "not a file '$f'"
+   fi
+done
+
+First=0
+for f
+do
+    if test $First -eq 0
+    then First=1
+    else echo
+    fi
+    e cat "$f"
+done
