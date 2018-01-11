@@ -13,7 +13,7 @@ static void setup_edg0(float *rr, AdjMap m, /**/ Edg *edg) {
     diff(r2, r0, /**/ r20);
 
     a = vabs(r01); b = vabs(r12); c = vabs(r20);
-    A = heron(a, b, c);
+    A = area_heron(a, b, c);
 
     edg->a = a; edg->A = A;
 }
