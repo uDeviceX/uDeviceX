@@ -19,7 +19,7 @@ static void apply0(int nc,
                                        adj0, adj1, shape, av, /**/ (float*)ff));
 }
 
-void apply(const RbcQuants q, const TicketT t, /**/ Force *ff) {
+void apply(const RbcQuants q, const RbcForce t, /**/ Force *ff) {
     if (q.nc <= 0) return;
     area_volume::main(q.nt, q.nv, q.nc, q.pp, q.tri, /**/ q.av);
     apply0(q.nc, q.pp, t.rnd,

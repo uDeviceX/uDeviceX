@@ -24,6 +24,4 @@
 #include "io/off/imp.h"
 #include "imp.h"
 
-namespace rbc { namespace gen {
 #include "imp/main.h"
-}} /* namespace */

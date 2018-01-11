@@ -1,7 +1,7 @@
 static void setup_from_pos(Coords coords, MPI_Comm comm, const char *cell, const char *ic, int nv, /**/
                            Particle *pp, int *pnc, int *pn, /* storage */ Particle *pp_hst) {
     int nc;
-    nc = rbc::gen::rbc_gen(coords, cell, ic, nv, pp_hst);
+    nc = rbc_gen(coords, cell, ic, nv, pp_hst);
     if (nc) cH2D(pp, pp_hst, nv * nc);
     MC(m::Barrier(comm));
     *pnc = nc; *pn = nc * nv;

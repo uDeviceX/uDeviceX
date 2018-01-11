@@ -81,7 +81,7 @@ struct Flu {
 /* data holder for red blood cells */
 struct Rbc {
     rbc::RbcQuants q;
-    rbc::force::TicketT tt;
+    rbc::force::RbcForce tt;
 
     RbcDistr d;
 
