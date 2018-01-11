@@ -1,6 +1,3 @@
-namespace distr {
-namespace rbc {
-
 using namespace comm;
 
 // tag::struct[]
@@ -27,6 +24,3 @@ struct DRbcUnpack {
     hBags hii;
 };
 // end::struct[]
-
-} // rbc
-} // distr

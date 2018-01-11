@@ -1,6 +1,3 @@
-namespace distr {
-namespace rbc {
-
 // tag::interface[]
 void drbc_pack_ini(int maxc, int nv, DRbcPack *p);
 void drbc_comm_ini(MPI_Comm comm, /**/ DRbcComm *c);
@@ -24,6 +21,3 @@ void drbc_wait_send(DRbcComm *c);
 void drbc_unpack_bulk(const DRbcPack *p, /**/ rbc::Quants *q);
 void drbc_unpack_halo(const DRbcUnpack *u, /**/ rbc::Quants *q);
 // end::interface[]
-
-} // rbc
-} // distr

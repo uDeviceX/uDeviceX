@@ -29,7 +29,10 @@
 #include "type.h"
 #include "imp.h"
 
+namespace drig {
 #include "distr/common/dev.h"
+}
+
 #include "dev.h"
 #include "imp/ini.h"
 #include "imp/fin.h"

@@ -43,7 +43,6 @@ static void ini_flu_distr(MPI_Comm comm, /**/ FluDistr *d) {
 }
 
 static void ini_rbc_distr(int nv, MPI_Comm comm, /**/ RbcDistr *d) {
-    using namespace distr::rbc;
     UC(drbc_pack_ini(MAX_CELL_NUM, nv, /**/ &d->p));
     UC(drbc_comm_ini(comm, /**/ &d->c));
     UC(drbc_unpack_ini(MAX_CELL_NUM, nv, /**/ &d->u));

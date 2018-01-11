@@ -32,11 +32,12 @@
 #include "type.h"
 #include "imp.h"
 
-namespace distr {
-namespace rbc {
 using namespace comm;
 
+namespace drbc {
 #include "distr/common/dev.h"
+} // drbc
+
 #include "dev.h"
 #include "imp/ini.h"
 #include "imp/fin.h"
@@ -44,6 +45,3 @@ using namespace comm;
 #include "imp/pack.h"
 #include "imp/com.h"
 #include "imp/unpack.h"
-
-} // rbc
-} // distr

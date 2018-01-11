@@ -6,7 +6,7 @@ static void pack_pp(const DMap m, int nc, int nv, const Particle *pp, /**/ dBags
     dim3 thrd(THR, 1);
     dim3 blck(ceiln(nv, THR), nc);
         
-    KL((dev::pack_pp_packets), (blck, thrd), (nv, pp, m, /**/ wrap));
+    KL((drbc::dev::pack_pp_packets), (blck, thrd), (nv, pp, m, /**/ wrap));
 }
 
 /* all data (including map) on host */

@@ -38,7 +38,6 @@ static void fin_flu_distr(/**/ FluDistr *d) {
 }
 
 static void fin_rbc_distr(/**/ RbcDistr *d) {
-    using namespace distr::rbc;
     UC(drbc_pack_fin(/**/ &d->p));
     UC(drbc_comm_fin(/**/ &d->c));
     UC(drbc_unpack_fin(/**/ &d->u));

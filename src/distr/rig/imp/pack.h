@@ -6,7 +6,7 @@ static void pack_pp(const DMap m, int ns, int nv, const Particle *ipp, /**/ dBag
     dim3 thrd(THR, 1);
     dim3 blck(ceiln(nv, THR), ns);
         
-    KL((dev::pack_pp_packets), (blck, thrd), (nv, ipp, m, /**/ wrap));
+    KL((drig::dev::pack_pp_packets), (blck, thrd), (nv, ipp, m, /**/ wrap));
 }
 
 static void pack_ss(const DMap m, int n, const Solid *ss, /**/ dBags bags) {
