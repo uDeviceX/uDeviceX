@@ -41,9 +41,9 @@ do  shift
     esac
 done
 
-if test $X = 0; then err "not field 'x'"; fi
-if test $Y = 0; then err "not field 'y'"; fi
-if test $Z = 0; then err "not field 'z'"; fi
+if test $X = 0; then err "no field 'x'"; fi
+if test $Y = 0; then err "no field 'y'"; fi
+if test $Z = 0; then err "no field 'z'"; fi
 
 e mkdir '2>/dev/null' -p "$o"
 if test ! -d "$o"; then err "fail to create directory '$o'"; fi
