@@ -6,12 +6,6 @@ prog=u.punto.dt
 # input, sorted, rest
 . u.punto.util
 
-assert_arg () {
-    local m
-    m="$1"; shift
-    if test $# -eq 0; then err $m; fi
-}
-
 assert_arg "expect n" "$@";          n="$1"; shift
 assert_arg "expect PUNTO.FILE" "$@"; i="$1"; shift
 
