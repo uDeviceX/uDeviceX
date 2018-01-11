@@ -1,6 +1,6 @@
 static void random(int n, rbc::rnd::RbcRnd *rnd, /**/ float **r) {
     if (RBC_RND) {
-        rbc::rnd::gen(rnd, n);
+        rbc::rnd::rbc_rnd_gen(rnd, n);
         *r = rnd->r;
     } else  {
         *r = NULL;

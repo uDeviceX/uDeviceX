@@ -3,7 +3,7 @@ static void setup_rnd(int md, int nv, rbc::rnd::RbcRnd **prnd) {
     long seed;
     n = nv*md*MAX_CELL_NUM;
     seed = rbc::rnd::ENV;
-    rbc::rnd::ini(prnd, n, seed);
+    rbc::rnd::rbc_rnd_ini(prnd, n, seed);
 }
 
 void rbcforce_gen(const RbcQuants q, RbcForce *t) {
