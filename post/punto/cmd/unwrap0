@@ -22,5 +22,5 @@ BEGIN {
     print ylo, yhi
     print zlo, zhi
 }
-' "$i"
+'
 
