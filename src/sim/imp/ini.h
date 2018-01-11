@@ -19,7 +19,6 @@ static void ini_obj_exch(MPI_Comm comm, /**/ ObjExch *e) {
 }
 
 static void ini_mesh_exch(int nv, int max_m, MPI_Comm comm, /**/ Mexch *e) {
-    using namespace exch::mesh;
     UC(emesh_pack_ini(nv, max_m, /**/ &e->p));
     UC(emesh_comm_ini(comm, /**/ &e->c));
     UC(emesh_unpack_ini(nv, max_m, /**/ &e->u));
@@ -28,7 +27,6 @@ static void ini_mesh_exch(int nv, int max_m, MPI_Comm comm, /**/ Mexch *e) {
 static void ini_bb_exch(int nt, int nv, int max_m, MPI_Comm comm, /**/ BBexch *e) {
     UC(ini_mesh_exch(nv, max_m, comm, /**/ e));
 
-    using namespace exch::mesh;
     UC(emesh_packm_ini(nt, max_m, /**/ &e->pm));
     UC(emesh_commm_ini(comm, /**/ &e->cm));
     UC(emesh_unpackm_ini(nt, max_m, /**/ &e->um));

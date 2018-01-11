@@ -1,6 +1,3 @@
-namespace exch {
-namespace mesh {
-
 struct EMeshPack {
     EMap map;
     float3 *minext, *maxext;
@@ -40,6 +37,3 @@ struct EMeshUnpackM {
 };
 
 typedef Sarray<MMap, 26> MMap26;
-
-} // mesh
-} // exch

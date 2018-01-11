@@ -1,6 +1,3 @@
-namespace exch {
-namespace mesh {
-
 /* mesh exchanger */
 
 void emesh_pack_ini(int nv, int max_mesh_num, EMeshPack *p);
@@ -45,6 +42,3 @@ void emesh_wait_send(EMeshCommM *c);
 
 void emesh_upload(EMeshUnpackM *u);
 void emesh_unpack_mom(int nt, const EMeshPack *p, const EMeshUnpackM *u, /**/ Momentum *mm);
-
-} // mesh
-} // exch

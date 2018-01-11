@@ -39,16 +39,16 @@ struct ObjExch {
 
 /* mesh exchanger */
 struct Mexch {
-    exch::mesh::EMeshPack p;
-    exch::mesh::EMeshComm c;
-    exch::mesh::EMeshUnpack u;
+    EMeshPack p;
+    EMeshComm c;
+    EMeshUnpack u;
 };
 
 /* bounce back exchanger */
 struct BBexch : Mexch {
-    exch::mesh::EMeshPackM pm;
-    exch::mesh::EMeshCommM cm;
-    exch::mesh::EMeshUnpackM um;
+    EMeshPackM pm;
+    EMeshCommM cm;
+    EMeshUnpackM um;
 };
 
 struct Colorer {

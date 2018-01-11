@@ -26,12 +26,14 @@
 #include "type.h"
 #include "imp.h"
 
-namespace exch {
-namespace mesh {
 using namespace comm;
 #include "exch/map/dev.h"
+
+namespace emesh {
 #include "exch/common/type.h"
 #include "exch/common/dev.h"
+}
+
 #include "dev.h"
 
 #include "imp/ini.h"
@@ -40,6 +42,3 @@ using namespace comm;
 #include "imp/pack.h"
 #include "imp/com.h"
 #include "imp/unpack.h"
-
-} // mesh
-} // exch
