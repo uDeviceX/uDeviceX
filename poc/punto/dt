@@ -1,0 +1,8 @@
+#!/usr/bin/env octave-qf
+
+f = argv(){1};
+
+D = dlmread(f);
+size(D);
+
+
