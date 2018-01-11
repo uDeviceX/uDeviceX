@@ -64,10 +64,8 @@
 #include "wall/imp.h"
 
 #include "comm/imp.h"
-#include "distr/map/type.h"
 #include "distr/flu/imp.h"
 #include "distr/rbc/imp.h"
-#include "distr/rig/type.h"
 #include "distr/rig/imp.h"
 
 #include "cnt/imp.h"

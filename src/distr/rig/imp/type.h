@@ -1,5 +1,4 @@
 // tag::struct[]
-
 /* 
  ipp: particles of the mesh
  ss:  "Solid" structures 

@@ -1,7 +1,11 @@
+struct DRigPack;
+struct DRigComm;
+struct DRigUnpack;
+
 // tag::interface[]
-void drig_pack_ini(int maxns, int nv, DRigPack *p);
-void drig_comm_ini(MPI_Comm comm, /**/ DRigComm *c);
-void drig_unpack_ini(int maxns, int nv, DRigUnpack *u);
+void drig_pack_ini(int maxns, int nv, DRigPack **p);
+void drig_comm_ini(MPI_Comm comm, /**/ DRigComm **c);
+void drig_unpack_ini(int maxns, int nv, DRigUnpack **u);
 
 void drig_pack_fin(DRigPack *p);
 void drig_comm_fin(DRigComm *c);
