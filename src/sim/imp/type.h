@@ -9,9 +9,9 @@ struct FluDistr {
 
 /* particle exchanger for solvent forces */
 struct FluExch {
-    EFluPack p;
-    EFluComm c;
-    EFluUnpack u;
+    EFluPack *p;
+    EFluComm *c;
+    EFluUnpack *u;
 };
 
 /* rbc distribution */

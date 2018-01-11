@@ -1,7 +1,7 @@
 static void fin_flu_exch(/**/ FluExch *e) {
-    UC(eflu_pack_fin(/**/ &e->p));
-    UC(eflu_comm_fin(/**/ &e->c));
-    UC(eflu_unpack_fin(/**/ &e->u));
+    UC(eflu_pack_fin(/**/ e->p));
+    UC(eflu_comm_fin(/**/ e->c));
+    UC(eflu_unpack_fin(/**/ e->u));
 }
 
 static void fin_obj_exch(/**/ ObjExch *e) {

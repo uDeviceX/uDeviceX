@@ -11,6 +11,7 @@
 
 #include "d/api.h"
 #include "utils/error.h"
+#include "utils/imp.h"
 #include "utils/cc.h"
 #include "utils/kl.h"
 
@@ -21,7 +22,6 @@
 #include "cloud/imp.h"
 #include "flu/type.h"
 
-#include "type.h"
 #include "imp.h"
 
 namespace dev {
@@ -29,6 +29,7 @@ namespace dev {
 #include "dev/pack.h"
 } // dev
 
+#include "imp/type.h"
 #include "imp/ini.h"
 #include "imp/fin.h"
 #include "imp/common.h"

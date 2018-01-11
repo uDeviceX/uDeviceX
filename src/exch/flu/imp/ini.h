@@ -1,6 +1,10 @@
-void eflu_pack_ini(int maxd, EFluPack *p) {
+void eflu_pack_ini(int maxd, EFluPack **pack) {
     int i, nc, cap[NBAGS], ncs[NBAGS];
     size_t sz;
+    EFluPack *p;
+
+    UC(emalloc(sizeof(EFluPack), (void**) pack));
+    p = *pack;
 
     frag_estimates(NFRAGS, maxd, /**/ cap);
     cap[BULK] = 0;
@@ -30,15 +34,23 @@ void eflu_pack_ini(int maxd, EFluPack *p) {
     CC(d::Malloc((void**) &p->counts_dev, sz));
 }
 
-void eflu_comm_ini(MPI_Comm comm, /**/ EFluComm *c) {
-    UC(comm_ini(comm, /**/ &c->pp));
-    UC(comm_ini(comm, /**/ &c->fss));
+void eflu_comm_ini(MPI_Comm cart, /**/ EFluComm **com) {
+    EFluComm *c;
+    UC(emalloc(sizeof(EFluComm), (void**) com));
+    c = *com;
+    
+    UC(comm_ini(cart, /**/ &c->pp));
+    UC(comm_ini(cart, /**/ &c->fss));
     if (multi_solvent)
-        UC(comm_ini(comm, /**/ &c->cc));
+        UC(comm_ini(cart, /**/ &c->cc));
 }
 
-void eflu_unpack_ini(int maxd, EFluUnpack *u) {
+void eflu_unpack_ini(int maxd, EFluUnpack **unpack) {
     int i, cap[NBAGS], ncs[NBAGS];
+    EFluUnpack *u;
+
+    UC(emalloc(sizeof(EFluUnpack), (void**) unpack));
+    u = *unpack;
 
     frag_estimates(NFRAGS, maxd, /**/ cap);
     cap[BULK] = 0;
