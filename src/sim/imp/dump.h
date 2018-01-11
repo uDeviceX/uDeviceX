@@ -58,7 +58,7 @@ static void dump_rbc_coms(Sim *s) {
     Rbc *r = &s->rbc;
     int nc = r->q.nc;
     rbc::com::get(r->q.nc, r->q.nv, r->q.pp, /**/ &r->com);
-    dump_com(s->cart, s->coords, id++, nc, r->q.ii, r->com.hrr);
+    dump_com(s->cart, s->coords, id++, nc, r->q.ii, r->com.hrr, r->com.hvv);
 }
 
 static void dump_grid(Coords coords, const Sim *s) {

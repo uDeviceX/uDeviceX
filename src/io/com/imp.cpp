@@ -20,14 +20,14 @@
 
 enum {MAX_CHAR_PER_LINE = 128};
 
-static int swrite(Coords coords, int n, const int *ii, const float3 *rr, /**/ char *s) {
+static int swrite(Coords coords, int n, const int *ii, const float3 *rr, const float3 *vv, /**/ char *s) {
     int i, id, c, start;
-    float3 r, rg;
+    float3 r, v, rg;
     for (i = start = 0; i < n; ++i) {
         id = ii[i];
         r  = rr[i];
         local2global(coords, r, /**/ &rg);
-        c = sprintf(s + start, "%d %g %g %g\n", id, rg.x, rg.y, rg.z);
+        c = sprintf(s + start, "%d %g %g %g %g %g %g\n", id, rg.x, rg.y, rg.z, v.x, v.y, v.z);
         if (c >= MAX_CHAR_PER_LINE)
             ERR("buffer too small : %d / %d", c, MAX_CHAR_PER_LINE);
         start += c;
@@ -51,7 +51,7 @@ static void write_mpi(MPI_Comm comm, const char *fname, long n, const char *data
 }
 
 
-void dump_com(MPI_Comm comm, Coords coords, long id, int n, const int *ii, const float3 *rr) {
+void dump_com(MPI_Comm comm, Coords coords, long id, int n, const int *ii, const float3 *rr, const float3 *vv) {
     char fname[256] = {0}, *data;
     long nchar = 0;
     
@@ -62,7 +62,7 @@ void dump_com(MPI_Comm comm, Coords coords, long id, int n, const int *ii, const
 
     sprintf(fname, DUMP_BASE "/com/%04ld.txt", id);
     
-    UC(nchar = swrite(coords, n, ii, rr, /**/ data));
+    UC(nchar = swrite(coords, n, ii, rr, vv, /**/ data));
     write_mpi(comm, fname, nchar, data);
     
     efree(data);
