@@ -40,7 +40,7 @@ static int genGrey(/*o*/ Particle *dev, /*w*/ Particle *hst) {
     return n;
 }
 
-void gen_quants(Coords coords, FluQuants *q) {
+void flu_gen_quants(Coords coords, FluQuants *q) {
     if (multi_solvent)
         q->n = genColor(coords, q->pp, q->cc, /*w*/ q->pp_hst, q->cc_hst);
     else
@@ -58,6 +58,6 @@ static void ii_gen(MPI_Comm comm, const int n, int *ii_dev, int *ii_hst) {
     cH2D(ii_dev, ii_hst, n);
 }
 
-void gen_ids(MPI_Comm comm, const int n, FluQuants *q) {
+void flu_gen_ids(MPI_Comm comm, const int n, FluQuants *q) {
     ii_gen(comm, n, q->ii, q->ii_hst);
 }

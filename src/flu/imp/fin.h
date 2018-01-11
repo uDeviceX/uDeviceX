@@ -4,7 +4,7 @@ static void fin_ii(int *ii, int *ii0, int *ii_hst) {
     UC(efree(ii_hst));
 }
 
-void fin(FluQuants *q) {
+void flu_fin(FluQuants *q) {
     CC(d::Free(q->pp));
     CC(d::Free(q->pp0));
     clist_fin(&q->cells);
