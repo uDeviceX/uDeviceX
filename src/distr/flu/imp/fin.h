@@ -9,10 +9,10 @@ void dflu_pack_fin(DFluPack *p) {
 }
 
 void dflu_comm_fin(DFluComm *c) {
-    UC(comm_fin(&c->pp));
+    UC(comm_fin(c->pp));
 
-    if (global_ids)    UC(comm_fin(&c->ii));
-    if (multi_solvent) UC(comm_fin(&c->cc));
+    if (global_ids)    UC(comm_fin(c->ii));
+    if (multi_solvent) UC(comm_fin(c->cc));
 
     UC(efree(c));
 }

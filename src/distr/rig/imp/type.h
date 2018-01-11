@@ -11,7 +11,7 @@ struct DRigPack {
 };
 
 struct DRigComm {
-    Comm ipp, ss;
+    Comm *ipp, *ss;
 };
 
 struct DRigUnpack {

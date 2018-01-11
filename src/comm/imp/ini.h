@@ -62,9 +62,14 @@ int bags_ini(AllocMod fmod, AllocMod bmod, size_t bsize, const int capacity[NBAG
 
 /* comm allocation */
 
-int comm_ini(MPI_Comm cart, /**/ Comm *com) {
+int comm_ini(MPI_Comm cart, /**/ Comm **com_p) {
     int i, c, crd_rnk[3];
     int coords[3], periods[3], dims[3];
+    Comm *com;
+
+    UC(emalloc(sizeof(Comm), (void**) com_p));
+    com = *com_p;
+    
     MC(m::Cart_get(cart, 3, dims, periods, coords));
     
     for (i = 0; i < NFRAGS; ++i) {

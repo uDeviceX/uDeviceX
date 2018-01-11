@@ -43,5 +43,6 @@ int bags_fin(AllocMod fmod, AllocMod bmod, /**/ hBags *hb, dBags *db) {
 
 int comm_fin(/**/ Comm *c) {
     MC(m::Comm_free(&c->cart));
+    UC(efree(c));
     return 0;
 }

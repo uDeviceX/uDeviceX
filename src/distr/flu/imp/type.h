@@ -10,7 +10,7 @@ struct DFluPack {
 };
 
 struct DFluComm {
-    Comm pp, ii, cc;
+    Comm *pp, *ii, *cc;
 };
 
 struct DFluUnpack {

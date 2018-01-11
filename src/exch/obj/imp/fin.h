@@ -4,8 +4,8 @@ void eobj_pack_fin(EObjPack *p) {
 }
 
 void eobj_comm_fin(EObjComm *c) {
-    UC(comm_fin(&c->pp));
-    UC(comm_fin(&c->ff));
+    UC(comm_fin(c->pp));
+    UC(comm_fin(c->ff));
 }
 
 void eobj_unpack_fin(EObjUnpack *u) {

@@ -11,7 +11,7 @@ void drbc_pack_fin(DRbcPack *p);
 void drbc_comm_fin(DRbcComm *c);
 void drbc_unpack_fin(DRbcUnpack *u);
 
-using namespace ::rbc;
+using namespace rbc;
 
 void drbc_build_map(int nc, int nv, const Particle *pp, DRbcPack *p);
 void drbc_pack(const rbc::Quants *q, /**/ DRbcPack *p);

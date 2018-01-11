@@ -19,7 +19,7 @@ struct EFluPack {
 };
 
 struct EFluComm {
-    Comm pp, cc, fss;
+    Comm *pp, *cc, *fss;
 };
 
 struct EFluUnpack {

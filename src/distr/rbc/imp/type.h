@@ -12,7 +12,7 @@ struct DRbcPack {
 
 struct DRbcComm {
     /* optional: ids */
-    Comm pp, ii;
+    Comm *pp, *ii;
 };
 
 struct DRbcUnpack {

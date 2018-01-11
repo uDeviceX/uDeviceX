@@ -50,7 +50,7 @@ int main(int argc, char **argv) {
     msg_print("mpi size: %d", m::size);
 
     hBags sendB, recvB;
-    Comm comm;
+    Comm *comm;
     int capacity[NBAGS];
     float maxdensity = 26.f;
     frag_estimates(NBAGS, maxdensity, /**/ capacity);
@@ -61,11 +61,11 @@ int main(int argc, char **argv) {
 
     fill_bags(&sendB);
 
-    UC(post_recv(&recvB, &comm));
-    UC(post_send(&sendB, &comm));
+    UC(post_recv(&recvB, comm));
+    UC(post_send(&sendB, comm));
 
-    UC(wait_recv(&comm, &recvB));
-    UC(wait_send(&comm));
+    UC(wait_recv(comm, &recvB));
+    UC(wait_send(comm));
 
     compare(&sendB, &recvB);
 
@@ -73,7 +73,7 @@ int main(int argc, char **argv) {
     
     UC(bags_fin(HST_ONLY, NONE, &sendB, NULL));
     UC(bags_fin(HST_ONLY, NONE, &recvB, NULL));
-    UC(comm_fin(/**/ &comm));
+    UC(comm_fin(/**/ comm));
     
     m::fin();
 }

@@ -5,7 +5,7 @@ struct EObjPack {
 };
 
 struct EObjComm {
-    Comm pp, ff;
+    Comm *pp, *ff;
 };
 
 struct EObjUnpack {

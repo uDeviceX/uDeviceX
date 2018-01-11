@@ -17,10 +17,10 @@ void eflu_pack_fin(EFluPack *p) {
 }
 
 void eflu_comm_fin(EFluComm *c) {
-    UC(comm_fin(/**/ &c->pp));
-    UC(comm_fin(/**/ &c->fss));
+    UC(comm_fin(/**/ c->pp));
+    UC(comm_fin(/**/ c->fss));
     if (multi_solvent)
-        UC(comm_fin(/**/ &c->cc));
+        UC(comm_fin(/**/ c->cc));
     UC(efree(c));
 }
 
