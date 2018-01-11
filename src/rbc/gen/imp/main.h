@@ -73,7 +73,7 @@ static void vert(const char *f, int n0, /**/ float *vert) {
         ERR("wrong vert number in <%s> : %d != %d", f, n0, n);
 }
 
-int main(Coords coords, const char *cell, const char *ic, int nv, /**/ Particle *pp) {
+int rbc_gen(Coords coords, const char *cell, const char *ic, int nv, /**/ Particle *pp) {
     float *rr0;
     int nc;
     UC(emalloc(3*nv*sizeof(float), (void**) &rr0));
