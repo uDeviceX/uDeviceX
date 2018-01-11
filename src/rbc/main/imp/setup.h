@@ -68,7 +68,7 @@ static void setup_anti(int md, int nv, adj::Adj *adj, /**/ int *dev) {
 static void setup0(int md, int nt, int nv, int4 *faces, /**/
                    int *anti, Edg *edg, float *totArea, int *adj0, int *adj1) {
     adj::Adj adj;
-    adj::ini(md, nt, nv, faces, /**/ &adj);
+    adj::adj_ini(md, nt, nv, faces, /**/ &adj);
 
     if (RBC_STRESS_FREE) UC(setup_edg(md,  nv, &adj, /**/ edg, totArea));
     if (RBC_RND)         UC(setup_anti(md, nv, &adj, /**/ anti));
@@ -76,7 +76,7 @@ static void setup0(int md, int nt, int nv, int4 *faces, /**/
     cH2D(adj0, adj.adj0, nv*md); /* TODO */
     cH2D(adj1, adj.adj1, nv*md);
 
-    adj::fin(&adj);
+    adj::adj_fin(&adj);
 }
 
 static void setup(int md, int nt, int nv, const char *cell, /**/

@@ -36,7 +36,7 @@ static void alloc(int n, Adj *A) {
     UC(emalloc(n*sizeof(int), (void**) &A->adj1));
 }
 
-void ini(int md, int nt, int nv, int4 *faces, /**/ Adj *A) {
+void adj_ini(int md, int nt, int nv, int4 *faces, /**/ Adj *A) {
     int *a1, *a2;
     alloc(nv*nt, /**/ A);
     a1 = A->adj0; /* sic */
