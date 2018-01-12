@@ -84,7 +84,10 @@ ath_big    () { nx=20 ny=5 nz=1; ath_g_big; part; bop0; }
 msg ()    { echo >&2 ": $@"; }
 
 ath_dpd ()    {
-    DPD="gdpd_b=16.0 gdpd_r=80.0 gdpd_br=48.0 dt=$dt"
+    local dt0 f0 f
+    dt0=0.001 f0=20000
+    f=`ae "int(${f0}*${dt0}/${dt})"`
+    DPD="gdpd_b=16.0 gdpd_r=80.0 gdpd_br=48.0    adpd_b=$adpd adpd_br=$adpd adpd_r=$adpd dt=$dt part_freq=$f"
 }
 dpd () { DPD="dt=1e-4" ; }
 
@@ -96,7 +99,7 @@ strt0 () {
 strt1 () {
     Restart="strt_dumps strt_freq=100000 RESTART=true"
     RestartB1="mkdir -p h5"
-    RestartB2="cp -r /scratch/snx3000/lisergey/ath/kb$kb/$v/s2 strt"
+    RestartB2="cp -r /scratch/snx3000/lisergey/$rst strt"
 }
 
 ae () { awk 'BEGIN {print '"$@"'}'; }
