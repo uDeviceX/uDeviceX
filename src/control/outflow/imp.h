@@ -1,14 +1,21 @@
 struct Outflow;
 
+// tag::mem[]
 void ini(int maxp, /**/ Outflow **o);
-void ini_params_circle(Coords coords, float3 c, float R, Outflow *o);
-void ini_params_plane(Coords c, int dir, float r0, Outflow *o);
-
 void fin(/**/ Outflow *o);
+// end::mem[]
 
-void filter_particles(int n, const Particle *pp, /**/ Outflow *o);
+// tag::ini[]
+void ini_params_circle(Coords coords, float3 c, float R, Outflow *o);
+void ini_params_plate(Coords c, int dir, float r0, Outflow *o);
+// end::ini[]
 
-void download_ndead(Outflow *o);
+// tag::int[]
+void filter_particles(int n, const Particle *pp, /**/ Outflow *o); // <1>
 
-int* get_deathlist(Outflow *o);
-int  get_ndead(Outflow *o);
+void download_ndead(Outflow *o);                                   // <2>
+
+int* get_deathlist(Outflow *o);                                    // <3>
+int  get_ndead(Outflow *o);                                        // <4>
+// tag::int[]
+

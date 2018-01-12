@@ -1,0 +1,45 @@
+#!/bin/sh
+set -u
+
+prog=u.punto.2vtk
+prog0=u.punto.2vtk0
+
+. u.punto.util
+
+usg () {
+    msg "$prog"' DIR PUNTO.FILE [fields]...'
+    msg 'convert PUNTO.FILE to several vtk files in DIR'
+    msg '[fields].. names in vtk files'
+    msg "skip field if it is '-'"
+    msg "$prog"' out punto.txt    id x y z'
+    msg "$prog"' out punto.txt     - x y z'
+    exit
+}
+
+if test $# -ne 0 && test "$1" = -h; then usg; fi
+
+assert_arg "expect DIR" "$@"; o="$1"; shift
+assert_arg "expect PUNTO.FILE" "$@"; i="$1"; shift
+assert_arg "expect field names" "$@"
+
+if ! test -r "$i"; then err "not a file '$i'"; fi
+
+X=0 Y=0 Z=0
+for c
+do  shift
+    set -- "$@" "$c"
+    case "$c" in
+	x) X=1 ;;
+	y) Y=1 ;;
+	z) Z=1 ;;
+    esac
+done
+
+if test $X = 0; then err "no field 'x'"; fi
+if test $Y = 0; then err "no field 'y'"; fi
+if test $Z = 0; then err "no field 'z'"; fi
+
+e mkdir '2>/dev/null' -p "$o"
+if test ! -d "$o"; then err "fail to create directory '$o'"; fi
+
+exec "$prog0" "$o" "$i" "$@"

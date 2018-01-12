@@ -25,16 +25,12 @@
 #include "distr/map/type.h"
 #include "distr/map/dev.h"
 #include "distr/map/imp.h"
+#include "distr/common/imp.h"
 
-#include "type.h"
 #include "imp.h"
 
-namespace distr {
-namespace rig {
-using namespace comm;
-
-#include "distr/common/dev.h"
 #include "dev.h"
+#include "imp/type.h"
 #include "imp/ini.h"
 #include "imp/fin.h"
 #include "imp/map.h"
@@ -42,5 +38,3 @@ using namespace comm;
 #include "imp/com.h"
 #include "imp/unpack.h"
 
-} // rig
-} // distr

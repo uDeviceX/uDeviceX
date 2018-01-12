@@ -1,5 +1,3 @@
-namespace comm {
-
 typedef void data_t;
 
 enum {
@@ -35,32 +33,20 @@ struct hBags {
 };
 // end::hBags[]
 
-// tag::stamp[]
-struct Stamp {
-    MPI_Request sreq[NBAGS]; /* send requests */
-    MPI_Request rreq[NBAGS]; /* recv requests */
-    MPI_Comm cart;           /* cartesian communicator */
-    int ranks[NFRAGS];       /* ranks of neighbors     */
-    int  tags[NFRAGS];       /* tags in bt coordinates */
-};
-// end::stamp[]
+struct Comm;
 
 // tag::alloc[]
-/* bags alloc */
-int ini(AllocMod fmod, AllocMod bmod, size_t bsize, const int capacity[NBAGS], /**/ hBags *hb, dBags *db);
-int fin(AllocMod fmod, AllocMod bmod, /**/ hBags *hb, dBags *db);
+int bags_ini(AllocMod fmod, AllocMod bmod, size_t bsize, const int capacity[NBAGS], /**/ hBags *hb, dBags *db);
+int bags_fin(AllocMod fmod, AllocMod bmod, /**/ hBags *hb, dBags *db);
 
-/* stamp alloc */
-int ini(MPI_Comm comm, /**/ Stamp *s);
-int fin(/**/ Stamp *s);
+int comm_ini(MPI_Comm cart, /**/ Comm **c);
+int comm_fin(/**/ Comm *c);
 // end::alloc[]
 
 // tag::communication[]
-int post_recv(hBags *b, Stamp *s);           // <1>
-int post_send(const hBags *b, Stamp *s);     // <2>
+int post_recv(hBags *b, Comm *c);           // <1>
+int post_send(const hBags *b, Comm *c);     // <2>
 
-int wait_recv(Stamp *s, /**/ hBags *b);      // <3>
-int wait_send(Stamp *s);                     // <4>
+int wait_recv(Comm *c, /**/ hBags *b);      // <3>
+int wait_send(Comm *c);                     // <4>
 // end::communication[]
-
-} // comm

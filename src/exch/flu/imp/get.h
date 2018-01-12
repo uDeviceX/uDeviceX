@@ -1,4 +1,4 @@
-void get_local_frags(const Pack *p, /**/ LFrag26 *lfrags) {
+void eflu_get_local_frags(const EFluPack *p, /**/ LFrag26 *lfrags) {
     Cloud clouda = {0, 0};    
     
     for (int i = 0; i < 26; ++i) {
@@ -14,7 +14,7 @@ void get_local_frags(const Pack *p, /**/ LFrag26 *lfrags) {
     }
 }
 
-void get_remote_frags(const Unpack *u, /**/ RFrag26 *rfrags) {
+void eflu_get_remote_frags(const EFluUnpack *u, /**/ RFrag26 *rfrags) {
     enum {X, Y, Z};
     int i, dx, dy, dz, xcells, ycells, zcells;
     Cloud cloudb = {0, 0};

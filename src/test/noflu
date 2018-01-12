@@ -4,12 +4,13 @@ S=`pwd` C="$S/conf/poiseuille.h"
 :
 cp data/sdf/cyl1/cyl.dat sdf.dat
 :
+Force="bforce={type=\"constant\"; f=[0.0333333,0.,0.];};"
 u.conf $C <<!
    numberdensity=0 dt=5e-4 tend=0.4  walls wall_creation=100
-   field_dumps part_dumps part_freq=500 field_freq=500 FORCE_CONSTANT
+   field_dumps part_dumps part_freq=500 field_freq=500
    run
 !
 :
 (make clean && u.make -j) > .make.log
-sh runfile
+u.run ./udx $Force
 cp bop/solvent-00001.bop bop.out.txt

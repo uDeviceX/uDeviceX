@@ -1,0 +1,25 @@
+= cnt
+:lext: .adoc
+:src: ../../../src
+
+_contact_ interactions between objects (rigid objects, rbc membranes)
+
+== interface
+
+allocate/deallocate
+
+[source,cpp]
+----
+include::{src}/cnt/imp.h[tag=mem]
+----
+
+computing forces:
+
+[source,cpp]
+----
+include::{src}/cnt/imp.h[tag=int]
+----
+<1> build cell lists for local objects
+<2> compute the interactions between local objects particles
+<3> compute the interactions between local and remote objects particles
+

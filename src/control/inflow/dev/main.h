@@ -1,4 +1,5 @@
-__global__ void ini_vel(VParams vparams, Params params, int2 nc, /**/ float3 *uu) {
+template <typename Par, typename VPar>
+__global__ void ini_vel(VPar vparams, Par params, int2 nc, /**/ float3 *uu) {
     int i, xcid, ycid;
     float3 u;
     float2 xi;
@@ -17,7 +18,8 @@ __global__ void ini_vel(VParams vparams, Params params, int2 nc, /**/ float3 *uu
     uu[i] = u;
 }
 
-__global__ void cumulative_flux(Params params, int2 nc, const float3 *uu, /**/ float *cumflux) {
+template <typename Par>
+__global__ void cumulative_flux(Par params, int2 nc, const float3 *uu, /**/ float *cumflux) {
     int i, xcid, ycid;
     float dn;
     float3 normal, u;
@@ -36,7 +38,8 @@ __global__ void cumulative_flux(Params params, int2 nc, const float3 *uu, /**/ f
     cumflux[i] += dn;
 }
 
-static __device__ Particle create_particle(Params params, int2 nc, int xcid, int ycid, float3 u, curandState_t *rg) {
+template <typename Par>
+static __device__ Particle create_particle(Par params, int2 nc, int xcid, int ycid, float3 u, curandState_t *rg) {
     float2 xi;
     float3 r;
     float sigma;
@@ -55,7 +58,8 @@ static __device__ Particle create_particle(Params params, int2 nc, int xcid, int
     return Particle({r.x, r.y, r.z, u.x, u.y, u.z});
 }
 
-__global__ void create_particles(Params params, int2 nc, const float3 *flux, /* io */ curandState_t *rnds, float *cumflux, /**/ int *n, Particle *pp) {
+template <typename Par>
+__global__ void create_particles(Par params, int2 nc, const float3 *flux, /* io */ curandState_t *rnds, float *cumflux, /**/ int *n, SolventWrap wrap) {
     int i, xcid, ycid, j, nnew, strt;
     float c;
     float3 f;
@@ -79,8 +83,11 @@ __global__ void create_particles(Params params, int2 nc, const float3 *flux, /* 
     
     strt = atomicAdd(n, nnew);
     
-    for (j = strt; j < strt + nnew; ++j)
-        pp[j] = create_particle(params, nc, xcid, ycid, f, /*io*/ &rndstate);
+    for (j = strt; j < strt + nnew; ++j) {
+        wrap.pp[j] = create_particle(params, nc, xcid, ycid, f, /*io*/ &rndstate);
+        if (wrap.multisolvent)
+            wrap.cc[j] = wrap.color;
+    }
 
     rnds[i] = rndstate;
 }

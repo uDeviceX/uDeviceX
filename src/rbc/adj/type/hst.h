@@ -1,7 +1,4 @@
-namespace adj {
-struct Hst { /* adjacency lists */
+struct Adj { /* adjacency lists */
     int *adj0;
     int *adj1;
 };
-
-} /* namespace */

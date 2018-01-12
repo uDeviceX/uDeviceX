@@ -5,10 +5,10 @@
 usg () {
     msg 'u.adoc2html [ascidoctor options] [FILE.adoc]'
     msg 'write html to FILE.html'
-    msg 'DBG is set logs the ascidoctor command'
+    msg 'if DBG is set logs the ascidoctor command'
     exit
 }
 
-if test $# -eq 0 -o "$1" = -h; then usg; fi
+if test $# -ne 0 && test "$1" = -h; then usg; fi
 
-eval u.adoc2html0 "$@"
+e u.adoc2html0 "$@"

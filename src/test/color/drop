@@ -6,11 +6,10 @@ u=u/bangladesh
 cp $s/data/sdf/yplates1/yplates.dat sdf.dat
 Domain="XS=16 YS=16 ZS=16"
 Walls="walls wall_creation=1"
-Force="FORCE_CONSTANT"
+Force="bforce={type=\"constant\"; f=[0.6, 0.0, 0.0];};"
 u.conf $s $u conf/zurich.h <<!!!
    $Domain
    $Walls
-   $Force
    numberdensity=2
    tend=4.01 part_freq=8000 field_freq=8000
    kBT=0.00444302
@@ -18,7 +17,7 @@ u.conf $s $u conf/zurich.h <<!!!
    run
 !!!
 { make clean && u.make -j; } > make.log
-sh runfile
+u.run ./udx $Force
 cm() { awk '$7 == 1 {n++; x+=$1; y+=$2; z+=$3} END {print x/n, y/n, z/n}'; }
  ../tools/bop2txt2 bop/solvent-00001.bop -- bop/colors_solvent-00001.bop | \
             cm > drop.out.txt

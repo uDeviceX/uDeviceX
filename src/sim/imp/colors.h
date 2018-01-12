@@ -5,19 +5,19 @@ void gen_colors(const Rbc *r, Colorer *c, Flu *f) {
     nm = r->q.nc;
     nv = r->q.nv;
 
-    build_map(nm, nv, r->q.pp, /**/ &c->e.p);
-    pack(nv, r->q.pp, /**/ &c->e.p);
-    download(&c->e.p);
+    emesh_build_map(nm, nv, r->q.pp, /**/ c->e.p);
+    emesh_pack(nv, r->q.pp, /**/ c->e.p);
+    emesh_download(c->e.p);
 
-    UC(post_send(&c->e.p, &c->e.c));
-    UC(post_recv(&c->e.c, &c->e.u));
+    UC(emesh_post_send(c->e.p, c->e.c));
+    UC(emesh_post_recv(c->e.c, c->e.u));
 
     if (nm * nv) CC(d::MemcpyAsync(c->pp, r->q.pp, nm * nv * sizeof(Particle), D2D));
     
-    wait_send(&c->e.c);
-    wait_recv(&c->e.c, &c->e.u);
+    UC(emesh_wait_send(c->e.c));
+    UC(emesh_wait_recv(c->e.c, c->e.u));
 
-    unpack(nv, &c->e.u, /**/ &nmhalo, c->pp + nm * nv);
+    emesh_unpack(nv, c->e.u, /**/ &nmhalo, c->pp + nm * nv);
     nm += nmhalo;
 
     /* compute extents */

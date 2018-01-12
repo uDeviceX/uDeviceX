@@ -11,12 +11,12 @@ static float3 crop(float3 r, float3 lo, float3 hi) {
     return r;
 }
 
-void ini_params_plate(Coords c, float3 o, int dir, float L1, float L2,
-                      float3 u, bool upoiseuille, bool vpoiseuille,
-                      /**/ Inflow *i) {
+void inflow_ini_params_plate(Coords c, float3 o, int dir, float L1, float L2,
+                             float3 u, bool upoiseuille, bool vpoiseuille,
+                             /**/ Inflow *i) {
     enum {X, Y, Z};
-    plate::Params *pp;
-    plate::VParams *vpp;
+    ParamsPlate *pp;
+    VParamsPlate *vpp;
     float3 a, b, lo, hi;
     float3 co, ca, cb; // corners of the local plane : co (origin), ca, cb
 
@@ -60,10 +60,6 @@ void ini_params_plate(Coords c, float3 o, int dir, float L1, float L2,
     pp->o = co;
     diff(&ca, &co, /**/ &pp->a);
     diff(&cb, &co, /**/ &pp->b);
-
-    // printf("%g %g %g\n", co.x, co.y, co.z);
-    // printf("%g %g %g\n", pp->a.x, pp->a.y, pp->a.z);
-    // printf("%g %g %g\n", pp->b.x, pp->b.y, pp->b.z);
     
     vpp->u = u;
     vpp->upoiseuille = upoiseuille;

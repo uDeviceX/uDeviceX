@@ -19,7 +19,7 @@ void update_solid(Rig *s) {
 }
 
 void bounce_solid(long it, BounceBack *bb, Rig *s, Flu *flu) {
-    int n, nm, nt, nv, *ss, *cc, nmhalo, counts[comm::NFRAGS];
+    int n, nm, nt, nv, *ss, *cc, nmhalo, counts[NFRAGS];
     int4 *tt;
     Particle *pp, *i_pp;
     int3 L = make_int3(XS, YS, ZS);
@@ -40,18 +40,18 @@ void bounce_solid(long it, BounceBack *bb, Rig *s, Flu *flu) {
 
     /* send meshes to frags */
 
-    exch::mesh::build_map(nm, nv, i_pp, /**/ &e->p);
-    exch::mesh::pack(nv, i_pp, /**/ &e->p);
-    exch::mesh::download(&e->p);
+    emesh_build_map(nm, nv, i_pp, /**/ e->p);
+    emesh_pack(nv, i_pp, /**/ e->p);
+    emesh_download(e->p);
 
-    UC(exch::mesh::post_send(&e->p, &e->c));
-    UC(exch::mesh::post_recv(&e->c, &e->u));
+    UC(emesh_post_send(e->p, e->c));
+    UC(emesh_post_recv(e->c, e->u));
 
-    exch::mesh::wait_send(&e->c);
-    exch::mesh::wait_recv(&e->c, &e->u);
+    emesh_wait_send(e->c);
+    emesh_wait_recv(e->c, e->u);
 
     /* unpack at the end of current mesh buffer */
-    exch::mesh::unpack(nv, &e->u, /**/ &nmhalo, i_pp + nm * nv);
+    emesh_unpack(nv, e->u, /**/ &nmhalo, i_pp + nm * nv);
     
     /* perform bounce back */
     
@@ -65,18 +65,18 @@ void bounce_solid(long it, BounceBack *bb, Rig *s, Flu *flu) {
 
     /* send momentum back */
 
-    exch::mesh::get_num_frag_mesh(&e->u, /**/ counts);
+    emesh_get_num_frag_mesh(e->u, /**/ counts);
     
-    exch::mesh::packM(nt, counts, bb->mm + nm * nt, /**/ &e->pm);
-    exch::mesh::downloadM(counts, /**/ &e->pm);
+    emesh_packM(nt, counts, bb->mm + nm * nt, /**/ e->pm);
+    emesh_downloadM(counts, /**/ e->pm);
 
-    UC(exch::mesh::post_recv(&e->cm, &e->um));
-    UC(exch::mesh::post_send(&e->pm, &e->cm));
-    exch::mesh::wait_recv(&e->cm, &e->um);
-    exch::mesh::wait_send(&e->cm);
+    UC(emesh_post_recv(e->cm, e->um));
+    UC(emesh_post_send(e->pm, e->cm));
+    emesh_wait_recv(e->cm, e->um);
+    emesh_wait_send(e->cm);
 
-    exch::mesh::upload(&e->um);
-    exch::mesh::unpack_mom(nt, &e->p, &e->um, /**/ bb->mm);
+    emesh_upload(e->um);
+    emesh_unpack_mom(nt, e->p, e->um, /**/ bb->mm);
     
     /* gather bb momentum */
     meshbb::collect_rig_momentum(nm, nt, nv, tt, i_pp, bb->mm, /**/ qs->ss);

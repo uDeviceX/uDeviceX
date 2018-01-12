@@ -1,0 +1,44 @@
+#!/bin/sh
+
+set -eu
+
+prog=u.punto.disp
+prog0=u.punto.disp0
+
+. u.punto.util
+
+usg () {
+    msg "$prog"' PUNTO.FILE [fields]...'
+    msg 'add [disp]acement from initial position'
+    msg '[fields].. where are x, y, z, id?'
+    msg "skip fields if it is '-'"
+    msg "$prog PUNTO.FILE id x y z"
+    msg "$prog PUNTO.FILE id - x y z"
+    exit
+}
+
+if test $# -ne 0 && test "$1" = -h; then usg; fi
+if test $# -eq 0; then err 'not enough args'; fi
+
+i="$1"; shift
+if test ! -r "$i"; then err "not a file '$i'"; fi
+
+# field present?
+X=0 Y=0 Z=0 ID=0
+for c
+do  shift
+    set -- "$@" "$c"
+    case "$c" in
+	x)  X=1  ;;
+	y)  Y=1  ;;
+	z)  Z=1  ;;
+	id) ID=1 ;;
+    esac
+done
+
+if test $X  = 0; then err "no field 'x'"; fi
+if test $Y  = 0; then err "no field 'y'"; fi
+if test $Z  = 0; then err "no field 'z'"; fi
+if test $ID = 0; then err "no field 'id'"; fi
+
+exec "$prog0" "$i" "$@"

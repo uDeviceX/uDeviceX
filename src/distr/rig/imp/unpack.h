@@ -1,4 +1,4 @@
-void unpack_bulk(const Pack *p, /**/ rig::Quants *q) {
+void drig_unpack_bulk(const DRigPack *p, /**/ rig::Quants *q) {
     int ns, nv, n;
     ns = p->hipp.counts[frag_bulk];
     nv = q->nv;
@@ -22,7 +22,7 @@ static void shift_ss_one_frag(int n, int fid, Solid *ss) {
     for (int i = 0; i < n; ++i) shift(fid, ss[i].com);
 }
 
-void unpack_halo(const Unpack *u, /**/ rig::Quants *q) {
+void drig_unpack_halo(const DRigUnpack *u, /**/ rig::Quants *q) {
     int ns, nv, n, i, strtp, strts;
     size_t szp, szs;
     nv = q->nv;
@@ -38,7 +38,7 @@ void unpack_halo(const Unpack *u, /**/ rig::Quants *q) {
         if (ns) {
             /* particles */
             CC(d::MemcpyAsync(q->i_pp + strtp, u->hipp.data[i], szp, H2D));
-            KL(dev::shift_one_frag, (k_cnf(n)), (n, i, /**/ q->i_pp + strtp));
+            dcommon_shift_one_frag(n, i, /**/ q->i_pp + strtp);
             /* solid */
             shift_ss_one_frag(ns, i, /**/ (Solid*) u->hss.data[i]);
             CC(d::MemcpyAsync(q->ss + strts, u->hss.data[i], szs, H2D));

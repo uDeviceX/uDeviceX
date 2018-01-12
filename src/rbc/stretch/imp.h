@@ -1,10 +1,5 @@
-namespace rbc { namespace stretch {
+struct RbcStretch;
 
-/* force */
-struct Fo;
-
-void ini(const char* path, int nv, /**/ Fo **fp); /* `nv` is for error check */
-void fin(Fo *f);
-void apply(int nm, const Fo*, /**/ Force*);
-
-}} /* namespace */
+void rbc_stretch_ini(const char* path, int nv, /**/ RbcStretch **fp); /* `nv` is for error check */
+void rbc_stretch_fin(RbcStretch *f);
+void rbc_stretch_apply(int nm, const RbcStretch*, /**/ Force*);

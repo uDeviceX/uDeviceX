@@ -1,4 +1,7 @@
+#include <stdio.h>
 #include <assert.h>
+
+
 #include <conf.h>
 #include "inc/conf.h"
 
@@ -12,6 +15,8 @@
 
 #include "inc/def.h"
 #include "utils/msg.h"
+#include "utils/imp.h"
+
 #include "mpi/glb.h"
 #include "utils/cc.h"
 #include "utils/mc.h"
@@ -30,11 +35,10 @@
 #include "cloud/dev.h"
 
 /* local */
-#include "type.h"
+
 #include "imp.h"
 
 /* body */
-namespace fsi {
 namespace dev {
 #include "dev/type.h"
 #include "dev/common.h"
@@ -46,7 +50,7 @@ namespace dev {
 #include "dev/halo.h"
 }
 
+#include "imp/type.h"
 #include "imp/main.h"
 #include "imp/bulk.h"
 #include "imp/halo.h"
-}

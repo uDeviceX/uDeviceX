@@ -1,4 +1,4 @@
-void fin(Pack *p) {
+void eflu_pack_fin(EFluPack *p) {
     for (int i = 0; i < NFRAGS; ++i) {
         CC(d::Free(p->bcc.d[i]));
         CC(d::Free(p->bss.d[i]));
@@ -6,27 +6,30 @@ void fin(Pack *p) {
         CC(d::Free(p->bii.d[i]));
     }
     
-    fin(PINNED_DEV, NONE, /**/ &p->hpp, &p->dpp);
+    UC(bags_fin(PINNED_DEV, NONE, /**/ &p->hpp, &p->dpp));
     if (multi_solvent)
-        fin(PINNED_DEV, NONE, /**/ &p->hcc, &p->dcc);
+        UC(bags_fin(PINNED_DEV, NONE, /**/ &p->hcc, &p->dcc));
 
-    fin(PINNED_HST, NONE, /**/ &p->hfss, NULL);
+    UC(bags_fin(PINNED_HST, NONE, /**/ &p->hfss, NULL));
 
     CC(d::Free(p->counts_dev));
+    UC(efree(p));
 }
 
-void fin(Comm *c) {
-    fin(/**/ &c->pp);
-    fin(/**/ &c->fss);
+void eflu_comm_fin(EFluComm *c) {
+    UC(comm_fin(/**/ c->pp));
+    UC(comm_fin(/**/ c->fss));
     if (multi_solvent)
-        fin(/**/ &c->cc);
+        UC(comm_fin(/**/ c->cc));
+    UC(efree(c));
 }
 
-void fin(Unpack *u) {
-    fin(PINNED_DEV, NONE, /**/ &u->hpp, &u->dpp);
+void eflu_unpack_fin(EFluUnpack *u) {
+    UC(bags_fin(PINNED_DEV, NONE, /**/ &u->hpp, &u->dpp));
     if (multi_solvent)
-        fin(PINNED_DEV, NONE, /**/ &u->hcc, &u->dcc);
+        UC(bags_fin(PINNED_DEV, NONE, /**/ &u->hcc, &u->dcc));
 
-    fin(PINNED_HST, NONE, /**/ &u->hfss, &u->dfss);
+    UC(bags_fin(PINNED_HST, NONE, /**/ &u->hfss, &u->dfss));
+    UC(efree(u));
 }
 

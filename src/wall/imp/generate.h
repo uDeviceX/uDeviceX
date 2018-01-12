@@ -29,7 +29,7 @@ void gen_quants(MPI_Comm cart, int maxn, Sdf *sdf, /**/ int *n, Particle* pp, Qu
     UC(gen_quants(cart, maxn, sdf, n, pp, &q->n, &q->pp));
 }
 
-static void build_cells(const int n, float4 *pp4, clist::Clist *cells, clist::Map *mcells) {
+static void build_cells(const int n, float4 *pp4, Clist *cells, ClistMap *mcells) {
     if (n == 0) return;
 
     Particle *pp, *pp0;
@@ -37,21 +37,21 @@ static void build_cells(const int n, float4 *pp4, clist::Clist *cells, clist::Ma
     CC(d::Malloc((void **) &pp0, n * sizeof(Particle)));
 
     KL(dev::float42particle, (k_cnf(n)), (pp4, n, /**/ pp));
-    UC(clist::build(n, n, pp, /**/ pp0, cells, mcells));
+    UC(clist_build(n, n, pp, /**/ pp0, cells, mcells));
     KL(dev::particle2float4, (k_cnf(n)), (pp0, n, /**/ pp4));
 
     CC(d::Free(pp));
     CC(d::Free(pp0));
 }
 
-static void gen_ticket(const int w_n, float4 *w_pp, clist::Clist *cells, Texo<int> *texstart, Texo<float4> *texpp) {
-    clist::Map mcells;
-    UC(ini_map(w_n, 1, cells, /**/ &mcells));
-    UC(build_cells(w_n, /**/ w_pp, cells, &mcells));
+static void gen_ticket(const int w_n, float4 *w_pp, Clist *cells, Texo<int> *texstart, Texo<float4> *texpp) {
+    ClistMap *mcells;
+    UC(clist_ini_map(w_n, 1, cells, /**/ &mcells));
+    UC(build_cells(w_n, /**/ w_pp, cells, mcells));
     
     TE(texstart, cells->starts, cells->ncells);
     TE(texpp, w_pp, w_n);
-    UC(fin_map(&mcells));
+    UC(clist_fin_map(mcells));
 }
 
 void gen_ticket(const Quants q, Ticket *t) {

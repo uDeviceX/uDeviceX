@@ -1,12 +1,12 @@
-static void setup_rnd(int md, int nv, rbc::rnd::D **prnd) {
+static void setup_rnd(int md, int nv, RbcRnd **prnd) {
     int n;
     long seed;
     n = nv*md*MAX_CELL_NUM;
-    seed = rbc::rnd::ENV;
-    rbc::rnd::ini(prnd, n, seed);
+    seed = ENV;
+    rbc_rnd_ini(prnd, n, seed);
 }
 
-void gen_ticket(const Quants q, TicketT *t) {
+void rbc_force_gen(const RbcQuants q, RbcForce *t) {
     int md, nv;
     md = RBCmd;
     nv = RBCnv;

@@ -1,0 +1,112 @@
+#!/bin/sh
+set -u
+
+: ${FMT="%05d"}
+
+prog=u.punto.2vtk0
+
+. u.punto.util
+
+o="$1"; shift
+i="$1"; shift
+
+"$AWK" -v o="$o" -v i="$i"   -v dbg="$DBG" -v prog="$prog" -v fmt="$FMT" -v q="'" '
+BEGIN {
+    ini()
+    arg()
+    while (1) {
+	r = read()
+	write()
+	if (r == EOF) break
+    }
+}
+
+function ini() {
+    id = 0
+    # end of file/snapshot
+    OK = 0; EOF = 1; EOS = 2
+}
+
+function nxt(   r) {
+    r = getline < i
+    if (r <= 0)  return EOF
+    if (NF == 0) return EOS
+    return OK
+}
+
+function assert_fi(f,   s) {
+    if (f <= NF) return
+    msg("fail to read file " i)
+    msg(sprintf("expecting field: %d, found %d fields", f, NF))
+    err("line: " $0)
+}
+
+function read_line(r,   k, v, i) {
+    # global snap
+    for (k in idx) {
+	i = idx[k]
+	assert_fi(i)
+	snap[k, r] = $i
+    }
+}
+function read(   r, s) { # s: status
+    n = 0 # global number of particles
+    while (1) {
+	r = nxt()
+	if (r == EOF) {s = EOF; break}
+	if (r == EOS) {s = OK ; break}
+	read_line(n++)
+    }
+    return s
+}
+function touch(f,   r, c) {
+    c = sprintf("2>/dev/null >%s", q f q)
+    r = system(c)
+    return r
+    if (r != 0) err("fail to create " q f q)
+}
+function header(f) {
+    print "# vtk DataFile Version 2.0" > f
+    print "created with " prog         > f
+    print "ASCII"                      > f
+}
+function topo(f,   i, x, y, z) { # toplology
+    print  "DATASET POLYDATA"     > f
+    printf "POINTS %d float\n", n > f
+    for (i = 0; i < n; i++) {
+	x = snap["x", i]; y = snap["y", i];  z = snap["z", i]
+	print x, y, z             > f
+    }
+}
+function dataset(f, k,   i) {
+    printf "POINT_DATA %d\n",    n > f
+    printf "SCALARS %s float\n", k > f
+    print  "LOOKUP_TABLE default"  > f
+    for (i = 0; i < n; i++)
+	print snap[k, i]           > f
+}
+function coordp(k) { return eq(k, "x") || eq(k, "y") || eq(k, "z") }
+function fieldp(k) { return !coordp(k) && !eq(k, "-") }
+function write0(f) {
+    if (!eq(dbg, "0")) msg(f)
+    touch(f)
+    header(f)
+    topo(f)
+    for (k in idx)
+	if (fieldp(k)) dataset(f, k)
+}
+function write() { # fn: file number (global)
+    f = sprintf("%s/" fmt ".vtk", o, fn++)
+    write0(f)
+    close(f)
+}
+
+function arg(   i, k) {
+    for (i = 1; i in ARGV; i++) {
+	k = ARGV[i]; idx[k] = i; key[i] = k
+    }
+}
+function msg(s) { printf "%s: %s\n", prog, s | "cat >&2" }
+function err(s) { msg(s); exit(2) }
+function eq(a, b) { return a "" ==  b ""}
+' "$@"

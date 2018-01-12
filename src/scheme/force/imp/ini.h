@@ -1,28 +1,31 @@
-void ini_none(/**/ BForce *p) {
+void bforce_ini(BForce **p) { UC(emalloc(sizeof(BForce), (void**) p));}
+void bforce_fin(BForce *p)  {UC(efree(p));}
+
+void bforce_ini_none(/**/ BForce *p) {
     p->type = BODY_FORCE_NONE;
 }
 
-void ini(BForce_cste par, /**/ BForce *p) {
+void bforce_ini_cste(float3 f, /**/ BForce *p) {
     p->type = BODY_FORCE_CSTE;
-    p->p.cste = par;
+    p->p.cste.a = f;
 }
 
-void ini(BForce_dp par, /**/ BForce *p) {
+void bforce_ini_dp(float a, /**/ BForce *p) {
     p->type = BODY_FORCE_DP;
-    p->p.dp = par;
+    p->p.dp.a = a;
 }
 
-void ini(BForce_shear par, /**/ BForce *p) {
+void bforce_ini_shear(float a, /**/ BForce *p) {
     p->type = BODY_FORCE_SHEAR;
-    p->p.shear = par;
+    p->p.shear.a = a;
 }
 
-void ini(BForce_rol par, /**/ BForce *p) {
+void bforce_ini_rol(float a, /**/ BForce *p) {
     p->type = BODY_FORCE_ROL;
-    p->p.rol = par;
+    p->p.rol.a = a;
 }
 
-void ini(BForce_rad par, /**/ BForce *p) {
+void bforce_ini_rad(float a, /**/ BForce *p) {
     p->type = BODY_FORCE_RAD;
-    p->p.rad = par;
+    p->p.rad.a = a;
 }

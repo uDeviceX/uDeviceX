@@ -20,7 +20,7 @@ void edg_set(int md, int f, int x, int y,  /**/ int *hx, int *hy) {
     hx[j] = x; hy[j] = y;
 }
 
-int edg_get(int md, int i, int x, int *hx, int *hy) { /* next */
+int edg_get(int md, int i, int x, const int *hx, const int *hy) { /* next */
     int d;
     i *= md; d = 0;
     while (hx[i] != x) {

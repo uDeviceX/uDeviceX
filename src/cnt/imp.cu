@@ -8,7 +8,7 @@
 #include "d/ker.h"
 
 #include "utils/error.h"
-#include "algo/scan/imp.h"
+#include "utils/imp.h"
 
 #include "math/rnd/imp.h"
 #include "math/rnd/dev.h"
@@ -39,8 +39,6 @@
 
 #include "imp.h"
 
-namespace cnt {
-
 typedef Sarray<const float2*, MAX_OBJ_TYPES> float2pWraps;
 typedef Sarray<      float *, MAX_OBJ_TYPES>  ForcepWraps;
 
@@ -59,8 +57,7 @@ namespace dev {
 #include "dev/halo.h"
 }
 
+#include "imp/type.h"
 #include "imp/bulk.h"
 #include "imp/halo.h"
 #include "imp/main.h"
-
-} /* namespace */

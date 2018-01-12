@@ -12,8 +12,6 @@
 
 #include "comm/imp.h"
 
-using namespace comm;
-
 /* generate a unique sequence given a unique val */
 void fill_bag(int val, int sz, int *ii) {
     for (int i = 0; i < sz; ++i) ii[i] = -2*val + val*val;
@@ -52,30 +50,30 @@ int main(int argc, char **argv) {
     msg_print("mpi size: %d", m::size);
 
     hBags sendB, recvB;
-    Stamp stamp;
+    Comm *comm;
     int capacity[NBAGS];
     float maxdensity = 26.f;
     frag_estimates(NBAGS, maxdensity, /**/ capacity);
 
-    UC(ini(HST_ONLY, NONE, sizeof(int), capacity, /**/ &sendB, NULL));
-    UC(ini(HST_ONLY, NONE,sizeof(int), capacity, /**/ &recvB, NULL));
-    UC(ini(m::cart, /**/ &stamp));
+    UC(bags_ini(HST_ONLY, NONE, sizeof(int), capacity, /**/ &sendB, NULL));
+    UC(bags_ini(HST_ONLY, NONE, sizeof(int), capacity, /**/ &recvB, NULL));
+    UC(comm_ini(m::cart, /**/ &comm));
 
     fill_bags(&sendB);
 
-    UC(post_recv(&recvB, &stamp));
-    UC(post_send(&sendB, &stamp));
+    UC(post_recv(&recvB, comm));
+    UC(post_send(&sendB, comm));
 
-    UC(wait_recv(&stamp, &recvB));
-    UC(wait_send(&stamp));
+    UC(wait_recv(comm, &recvB));
+    UC(wait_send(comm));
 
     compare(&sendB, &recvB);
 
     msg_print("Passed");
     
-    UC(fin(HST_ONLY, NONE, &sendB, NULL));
-    UC(fin(HST_ONLY, NONE, &recvB, NULL));
-    UC(fin(/**/ &stamp));
+    UC(bags_fin(HST_ONLY, NONE, &sendB, NULL));
+    UC(bags_fin(HST_ONLY, NONE, &recvB, NULL));
+    UC(comm_fin(/**/ comm));
     
     m::fin();
 }

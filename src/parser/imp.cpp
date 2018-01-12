@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <libconfig.h>
+#include <vector_types.h>
 
 #include "utils/error.h"
 #include "utils/imp.h"
@@ -30,7 +31,7 @@ void conf_ini(/**/ Config **c) {
         config_init(cfg->c + i);
 }
 
-void conf_destroy(/**/ Config *c) {
+void conf_fin(/**/ Config *c) {
     for (int i = 0; i < NCFG; ++i)
         config_destroy(c->c + i);
     UC(efree(c));
@@ -56,17 +57,16 @@ static void read_file(const char *fname, /**/ config_t *c) {
 
 static void read_args(int argc, char **argv, /**/ config_t *c) {
    enum {MAX_CHAR = 100000};
-    char *args;
-    
-    UC(emalloc(MAX_CHAR * sizeof(char), (void **) &args));
+   char *args;
 
-    concatenate(argc, argv, /**/ args);
+   UC(emalloc(MAX_CHAR * sizeof(char), (void **) &args));
 
-    if (!config_read_string(c, args))
-        ERR( "arguments: %d - %s\n",
-             config_error_line(c), config_error_text(c));
-    
-    delete[] args;
+   concatenate(argc, argv, /**/ args);
+   if (!config_read_string(c, args))
+       ERR( "arguments: %d - %s\n",
+            config_error_line(c), config_error_text(c));
+
+   UC(efree(args));
 }
 
 static void shift(int *c, char ***v) {
@@ -81,7 +81,7 @@ static int get_opt_file(int *argc, char ***argv, /**/ char fname[]) {
     if (*argc) {
         a = (*argv)[0];
         lastpnt = strrchr(a, '.');
-        
+
         if (lastpnt != NULL) {
             differ = strcmp(lastpnt, ".cfg");
             if (differ) return 0;
@@ -100,8 +100,8 @@ void conf_read(int argc, char **argv, /**/ Config *cfg) {
     strcpy(defname, home);
     strcat(defname, "/.udx/default.cfg");
 
-    UC(read_file(defname, /**/ &cfg->c[DEF])); 
-    
+    UC(read_file(defname, /**/ &cfg->c[DEF]));
+
     if (get_opt_file(&argc, &argv, /**/ optname)) {
         UC(read_file(optname, /**/ &cfg->c[OPT]));
     }
@@ -184,6 +184,18 @@ static bool lookup_vfloat(const Config *c, const char *desc, int *n, float a[]) 
     return false;
 }
 
+static bool lookup_float3(const Config *c, const char *desc, float3 *a) {
+    enum {X, Y, Z};
+    int n;
+    float f[3];
+    bool ret = lookup_vfloat(c, desc, &n, f);
+    if (n != 3) ERR("float3 must have 3 components");
+    a->x = f[X];
+    a->y = f[Y];
+    a->z = f[Z];
+    return ret;
+}
+
 void conf_lookup_int(const Config *c, const char *desc, int *a) {
     bool found = lookup_int(c, desc, a);
     if (!found) ERR("Could not find the field <%s>\n", desc);
@@ -214,6 +226,10 @@ void conf_lookup_vfloat(const Config *c, const char *desc, int *n, float a[]) {
     if (!found) ERR("Could not find the field <%s>\n", desc);
 }
 
+void conf_lookup_float3(const Config *c, const char *desc, float3 *a) {
+    bool found = lookup_float3(c, desc, a);
+    if (!found) ERR("Could not find the field <%s>\n", desc);
+}
 
 bool conf_opt_int(const Config *c, const char *desc, int *a) {
     return lookup_int(c, desc, a);
@@ -239,3 +255,6 @@ bool conf_opt_vfloat(const Config *c, const char *desc, int *n, float a[]) {
     return lookup_vfloat(c, desc, n, a);
 }
 
+bool conf_opt_float3(const Config *c, const char *desc, float3 *a) {
+    return lookup_float3(c, desc, a);
+}

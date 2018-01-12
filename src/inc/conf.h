@@ -1,3 +1,11 @@
+#if defined(VCON) || defined(VCON_CART) || defined (VCON_RAD) || \
+    defined(VCON_VX) || defined(VCON_VY) || defined(VCON_VZ)  || \
+    defined(VCON_FACTOR) || defined(VCON_SAMPLE_FREQ) || \
+    defined(VCON_ADJUST_FREQ) || defined(VCON_LOG_FREQ)
+#error vcon has runtime parameters now!
+#endif
+
+
 /* how wall velocity is changing in time?  */
 #if !defined(WVEL_FLAT) && !defined(WVEL_DUPIRE_UP) && !defined(WVEL_DUPIRE_DOWN) && !defined(WVEL_SIN)
   #define WVEL_FLAT
@@ -16,12 +24,6 @@
 
 #ifndef WVEL_PAR_Z
   #define WVEL_PAR_Z (false)
-#endif
-
-/* magnituted of body force
-   see doc/body_force.md */
-#ifndef FORCE_PAR_A
-  #define FORCE_PAR_A (2.0)
 #endif
 
 /* object-object, cell-object, and cell-cell contact force */
@@ -281,13 +283,6 @@
   #define DEV_CUDA
 #endif
 
-/* body force */
-#if !defined(FORCE_NONE) && !defined(FORCE_DOUBLE_POISEUILLE) && \
-    !defined(FORCE_4ROLLER) && !defined(FORCE_CONSTANT) && !defined(FORCE_SHEAR) && \
-    !defined(FORCE_RADIAL)
-  #define FORCE_NONE
-#endif
-
 /* a radius of the spherical drop */
 #ifndef BANGLADESH_R
   #define BANGLADESH_R (4)
@@ -313,59 +308,6 @@
   #define RESTRAIN_REPORT_FREQ (1000)
 #endif
 
-/*           Velocity controller           */
-#ifndef VCON
-  #define VCON (false)
-#endif
-
-// default transformation
-#if !defined(VCON_CART) && !defined(VCON_RAD)
-  #define VCON_CART
-#endif
-
-#ifndef VCON_SAMPLE_FREQ
-  #define VCON_SAMPLE_FREQ (10)
-#endif
-
-#ifndef VCON_ADJUST_FREQ
-  #define VCON_ADJUST_FREQ (500)
-#endif
-
-#ifndef VCON_LOG_FREQ
-  #define VCON_LOG_FREQ (0)
-#endif
-
-#ifndef VCON_VX
-  #define VCON_VX (1.f)
-#endif
-
-#ifndef VCON_VY
-  #define VCON_VY (0.f)
-#endif
-
-#ifndef VCON_VZ
-  #define VCON_VZ (0.f)
-#endif
-
-#ifndef VCON_FACTOR
-  #define VCON_FACTOR (0.08f)
-#endif
-
-/* outflow: density control */
-
-#ifndef OUTFLOW_DEN
-  #define OUTFLOW_DEN (false)
-#endif
-
-/* den outflow */
-
-#ifndef OUTFLOW_CIRCLE
-#define OUTFLOW_CIRCLE (true)
-#endif
-
-#ifndef OUTFLOW_CIRCLE_R
-#define OUTFLOW_CIRCLE_R (8.f)
-#endif
 
 /* how mass affects dpd forces: like "gravity" ~ mi*mj or like
    "charge" -- no dependencies on mass */

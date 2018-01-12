@@ -6,13 +6,13 @@ set -eu
 S=`pwd`
 cp "$S"/data/sdf/pachinko/sdf.dat sdf.dat
 :
+Force="bforce={type=\"constant\"; f=[10.,0.,0.];};"
 u.conf conf/test.h <<!!!
    XS=32 YS=56 ZS=60 
    tend=1.0 part_freq=300 walls wall_creation=100
    field_dumps part_dumps field_freq=300
-   FORCE_CONSTANT FORCE_PAR_A=10
    run
 !!!
 { make clean && u.make -j; } > /dev/null
-u.run ./udx
+u.run ./udx $Force
 u.avgh5 1 u 2 h5/flowfields-0003.h5 | uscale 0.1 > h5.out.txt

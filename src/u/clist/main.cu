@@ -90,14 +90,14 @@ int main(int argc, char **argv) {
     Particle *pp_hst;
     int n = 0, *starts, *counts;
     int3 dims;
-    clist::Clist clist;
-    clist::Map m;
+    Clist clist;
+    ClistMap *m;
 
     dims.x = XS;
     dims.y = YS;
     dims.z = ZS;
     
-    ini(dims.x, dims.y, dims.z, /**/ &clist);
+    clist_ini(dims.x, dims.y, dims.z, /**/ &clist);
 
     UC(emalloc(MAXN * sizeof(Particle), (void**) &pp_hst));
     UC(emalloc(clist.ncells * sizeof(int), (void**) &counts));
@@ -107,11 +107,11 @@ int main(int argc, char **argv) {
 
     read(&n, pp_hst);
 
-    ini_map(n, 1, &clist, /**/ &m);
+    clist_ini_map(n, 1, &clist, /**/ &m);
     
     CC(d::Memcpy(pp, pp_hst, n * sizeof(Particle), H2D));
     
-    build(n, n, pp, /**/ ppout, &clist, &m);
+    clist_build(n, n, pp, /**/ ppout, &clist, m);
     
     CC(d::Memcpy(counts, clist.counts, clist.ncells * sizeof(int), D2H));
     CC(d::Memcpy(starts, clist.starts, clist.ncells * sizeof(int), D2H));
@@ -130,6 +130,6 @@ int main(int argc, char **argv) {
     free(starts);
     free(pp_hst);
 
-    fin(/**/ &clist);
-    fin_map(/**/ &m);
+    clist_fin(/**/ &clist);
+    clist_fin_map(/**/ m);
 }

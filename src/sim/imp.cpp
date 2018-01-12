@@ -53,7 +53,7 @@
 
 #include "rbc/rnd/imp.h"
 #include "rbc/type.h"
-#include "rbc/main/imp.h"
+#include "rbc/imp.h"
 #include "rbc/force/imp.h"
 #include "rbc/stretch/imp.h"
 #include "rbc/com/imp.h"
@@ -64,28 +64,17 @@
 #include "wall/imp.h"
 
 #include "comm/imp.h"
-#include "distr/map/type.h"
-#include "distr/flu/type.h"
 #include "distr/flu/imp.h"
-#include "distr/rbc/type.h"
 #include "distr/rbc/imp.h"
-#include "distr/rig/type.h"
 #include "distr/rig/imp.h"
 
 #include "cnt/imp.h"
-
-#include "fsi/type.h"
 #include "fsi/imp.h"
 
-#include "exch/map/type.h"
-#include "exch/obj/type.h"
 #include "exch/obj/imp.h"
-
-#include "exch/mesh/type.h"
 #include "exch/mesh/imp.h"
 
 #include "flu/type.h"
-#include "exch/flu/type.h"
 #include "exch/flu/imp.h"
 
 #include "fluforces/imp.h"
@@ -100,7 +89,6 @@
 
 #include "inter/imp.h"
 #include "inter/color.h"
-#include "scheme/force/type.h"
 #include "scheme/force/imp.h"
 #include "scheme/move/imp.h"
 #include "scheme/restrain/imp.h"

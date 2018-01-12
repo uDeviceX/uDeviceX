@@ -1,0 +1,2 @@
+# TEST: adoc2html.0
+u.adoc2html data/main.adoc -o main.out.html

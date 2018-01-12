@@ -1,12 +1,12 @@
 enum {
     TYPE_NONE,
-    TYPE_PLANE,
+    TYPE_PLATE,
     TYPE_CIRCLE
 };
 
 union ParamsU {
-    plane::Params plane;
-    circle::Params circle;
+    ParamsPlate plate;
+    ParamsCircle circle;
 };
 
 struct Outflow {

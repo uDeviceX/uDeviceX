@@ -1,5 +1,5 @@
-static void   alloc(int n, Fo *f) { Dalloc(&f->f, 3*n); }
-static void   dealloc(Fo *f) { Dfree(f->f); }
+static void alloc(int n, RbcStretch *f) { Dalloc(&f->f, 3*n); }
+static void dealloc(RbcStretch *f) { Dfree(f->f); }
 
 static int read3(FILE *f, float *h) {
     enum {X, Y, Z};
@@ -7,6 +7,7 @@ static int read3(FILE *f, float *h) {
     n = fscanf(f, "%f %f %f\n", &h[X], &h[Y], &h[Z]);
     return n;
 }
+
 static void read(FILE *f, int n, /**/ float *h) {
     int i;
     i = 0;
@@ -14,7 +15,8 @@ static void read(FILE *f, int n, /**/ float *h) {
         ;
     if (i != n) ERR("got %d != %d lines", i, n);
 }
-void ini0(const char* path, int n, float *h, /**/ float *d) {
+
+static void ini0(const char* path, int n, float *h, /**/ float *d) {
     msg_print("reading <%s>", path);
     FILE *f;
     UC(efopen(path, "r", /**/ &f));
@@ -22,7 +24,8 @@ void ini0(const char* path, int n, float *h, /**/ float *d) {
     cH2D(d, h, 3*n);
     fclose(f);
 }
-void ini1(const char* path, int n, /**/ Fo *f) {
+
+static void ini1(const char* path, int n, /**/ RbcStretch *f) {
     float *d, *h; /* device and host */
     alloc(n, f);
     d = f->f;
@@ -30,20 +33,21 @@ void ini1(const char* path, int n, /**/ Fo *f) {
     UC(ini0(path, n, /*w*/ h, /**/ d));
     free(h);
 }
-void ini(const char* path, int nv, /**/ Fo **fp) {
-    Fo *f;
-    UC(emalloc(sizeof(Fo), (void**) &f));
+
+void rbc_stretch_ini(const char* path, int nv, /**/ RbcStretch **fp) {
+    RbcStretch *f;
+    UC(emalloc(sizeof(RbcStretch), (void**) &f));
     UC(ini1(path, nv, f));
     f->nv = nv;
     *fp = f;
 }
 
-void fin(Fo *f) {
+void rbc_stretch_fin(RbcStretch *f) {
     dealloc(f);
     free(f);
 }
 
-void apply(int nm, const Fo *f, /**/ Force *ff) {
+void rbc_stretch_apply(int nm, const RbcStretch *f, /**/ Force *ff) {
     int n, nv;
     nv = f->nv;
     n  = nm * nv;

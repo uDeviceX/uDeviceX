@@ -2,11 +2,7 @@ static void pack_pp(const DMap m, int nc, int nv, const Particle *pp, /**/ dBags
     Sarray<Particle*, NBAGS> wrap;
     bag2Sarray(bags, &wrap);
 
-    enum {THR=128};
-    dim3 thrd(THR, 1);
-    dim3 blck(ceiln(nv, THR), nc);
-        
-    KL((dev::pack_pp_packets), (blck, thrd), (nv, pp, m, /**/ wrap));
+    dcommon_pack_pp_packets(nc, nv, pp, m, /**/ wrap);
 }
 
 /* all data (including map) on host */
@@ -24,7 +20,7 @@ static void pack_ii(const DMap m, int nc, const int *ii, /**/ hBags bags) {
     }
 }
 
-void pack(const rbc::Quants *q, /**/ Pack *p) {
+void drbc_pack(const RbcQuants *q, /**/ DRbcPack *p) {
     pack_pp(p->map, q->nc, q->nv, q->pp, /**/ p->dpp);
 
     if (rbc_ids) {
@@ -34,7 +30,7 @@ void pack(const rbc::Quants *q, /**/ Pack *p) {
     }
 }
 
-void download(Pack *p) {
+void drbc_download(DRbcPack *p) {
     size_t sz = NBAGS * sizeof(int);
     CC(d::Memcpy(p->hpp.counts, p->map.counts, sz, D2H));
     if (rbc_ids)

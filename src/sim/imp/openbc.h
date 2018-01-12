@@ -1,5 +1,8 @@
 void apply_inflow(Inflow *i, Flu *f) {
-    UC(create_pp(i, &f->q.n, f->q.pp));
+    if (multi_solvent)
+        UC(inflow_create_pp_cc(RED_COLOR, i, &f->q.n, f->q.pp, f->q.cc));
+    else
+        UC(inflow_create_pp(i, &f->q.n, f->q.pp));
 }
 
 void mark_outflow(const Flu *f, Outflow *o) {
@@ -14,7 +17,7 @@ void mark_outflowden(const Flu *f, const DContMap *m, /**/ DCont *d) {
     ss = f->q.cells.starts;
     cc = f->q.cells.counts;
 
-    UC(reset(n, /**/ d));
-    UC(filter_particles(m, ss, cc, /**/ d));
-    UC(download_ndead(/**/ d));
+    UC(den_reset(n, /**/ d));
+    UC(den_filter_particles(m, ss, cc, /**/ d));
+    UC(den_download_ndead(/**/ d));
 }

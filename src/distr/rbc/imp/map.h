@@ -4,7 +4,7 @@ static void build_map(int n, const float3 *minext, const float3 *maxext, /**/ DM
     KL(dmap_scan<NBAGS>, (1, 32), (/**/ m));
 }
 
-void build_map(int nc, int nv, const Particle *pp, Pack *p) {
+void drbc_build_map(int nc, int nv, const Particle *pp, DRbcPack *p) {
     minmax(pp, nv, nc, /**/ p->minext, p->maxext);
     build_map(nc, p->minext, p->maxext, /**/  p->map);
 }

@@ -1,7 +1,10 @@
 #!/bin/sh
 G="git@github.com:amlucas/udoc.git"
 
+ROOT="/udoc"
 DOC=doc_
+
+make clean && make ROOT=${ROOT} -j
 
 T="./public"
 rm -rf $T
@@ -28,12 +31,13 @@ rm -rf ${DOC}/*
 mv $T/* ${DOC}
 
 # push to remote
+COMMITID=`git rev-parse HEAD`
 mydir=`pwd`
 cd ${DOC}
 # upd readme
 echo "https://amlucas.github.io/udoc/" > README.adoc
 git add *
-git commit -a -m "automatic deploy"
+git commit -a -m "automatic deploy from commit ${COMMITID}"
 git push origin master
 
 # cleanup

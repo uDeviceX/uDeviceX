@@ -13,7 +13,7 @@
 #include "type.h"
 #include "imp.h"
 
-namespace rbc { namespace rnd { namespace api {
+namespace rnd_api {
 
 #if   defined(DEV_CUDA)
   #include "imp/cuda.h"
@@ -24,4 +24,4 @@ namespace rbc { namespace rnd { namespace api {
   #error DEV_* is undefined
 #endif
 
-}}} /* namespace */
+} /* namespace */

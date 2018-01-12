@@ -3,8 +3,7 @@
 set -u
 . u.adoc2html.util
 
-: ${DBG=0}
-: ${ADOC=asciidoctor}
+if test $# -eq 0; then exec "$ADOC"; fi
 
 i="$1"; shift
 for c; do shift; set -- "$@" "$i"; i="$c"; done

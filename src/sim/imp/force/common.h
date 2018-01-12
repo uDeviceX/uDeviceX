@@ -1,22 +1,19 @@
-void body_force(long it, BForce bforce, Sim *s) {
-    BForce_v view;
-    UC(get_view(it, bforce, /**/ &view));
-
+void body_force(long it, const BForce *bforce, Sim *s) {
     Flu *flu = &s->flu;
     Rbc *rbc = &s->rbc;
     Rig *rig = &s->rig;
 
     if (pushflu)
-        UC(body_force(s->coords, flu_mass, view, flu->q.n, flu->q.pp, /**/ flu->ff));
+        UC(bforce_apply(it, s->coords, flu_mass, bforce, flu->q.n, flu->q.pp, /**/ flu->ff));
     if (pushsolid && s->solids0)
-        UC(body_force(s->coords, solid_mass, view, rig->q.n, rig->q.pp, /**/ rig->ff));
+        UC(bforce_apply(it, s->coords, solid_mass, bforce, rig->q.n, rig->q.pp, /**/ rig->ff));
     if (pushrbc && rbcs)
-        UC(body_force(s->coords, rbc_mass, view, rbc->q.n, rbc->q.pp, /**/ rbc->ff));
+        UC(bforce_apply(it, s->coords, rbc_mass, bforce, rbc->q.n, rbc->q.pp, /**/ rbc->ff));
 }
 
 void forces_rbc (Rbc *r) {
-    rbc::force::apply(r->q, r->tt, /**/ r->ff);
-    if (RBC_STRETCH) rbc::stretch::apply(r->q.nc, r->stretch, /**/ r->ff);
+    rbc_force_apply(r->q, r->tt, /**/ r->ff);
+    if (RBC_STRETCH) rbc_stretch_apply(r->q.nc, r->stretch, /**/ r->ff);
 }
 
 void clear_forces(Force* ff, int n) {

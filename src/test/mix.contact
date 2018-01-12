@@ -6,16 +6,17 @@ x=11 y=15 z=8; echo $x $y $z                              > rigs-ic.txt
 cp data/rig/sphere_R2.ply mesh_solid.ply
 cp data/cells/rbc/498.off rbc.off
 :
+Force="bforce={type=\"double_poiseuille\"; a=6.666667;};"
 u.conf conf/double.poiseuille.h <<!!!
    rbcs tend=2.0 part_freq=1500
    solids sbounce_back wall_creation=1
    part_dumps field_freq=1500
-   pushrbc FORCE_DOUBLE_POISEUILLE
+   pushrbc
    contactforces
    run
 !!!
 { make clean &&  u.make -j ; } > /dev/null
-sh runfile
+u.run ./udx $Force
 ply2punto r/00002.ply | uscale 1 > ply.out.txt
 
 #### no contact force: RBC and sphere in double Poiseuille
@@ -26,13 +27,14 @@ x=11 y=15 z=8; echo $x $y $z                              > rigs-ic.txt
 cp data/rig/sphere_R2.ply mesh_solid.ply
 cp data/cells/rbc/498.off rbc.off
 :
+Force="bforce={type=\"double_poiseuille\"; a=6.666667;};"
 u.conf conf/double.poiseuille.h <<!!!
    rbcs tend=2.0 part_freq=1500
    solids sbounce_back wall_creation=1
    part_dumps field_freq=1500
-   pushrbc FORCE_DOUBLE_POISEUILLE
+   pushrbc
    run
 !!!
 { make clean &&  u.make -j ; } > /dev/null
-sh runfile
+u.run ./udx $Force
 ply2punto r/00002.ply | uscale 1 > ply.out.txt

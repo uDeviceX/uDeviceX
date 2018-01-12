@@ -1,4 +1,5 @@
-__global__ void filter(int n, const Particle *pp, Params params, /**/ int *ndead, int *kk) {
+template <typename Par>
+__global__ void filter(int n, const Particle *pp, Par params, /**/ int *ndead, int *kk) {
     int i = threadIdx.x + blockIdx.x * blockDim.x;
     int dead;
     Particle p;

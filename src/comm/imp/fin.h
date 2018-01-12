@@ -30,7 +30,7 @@ static void free_pair(int i, AllocMod mod, /**/ hBags *hb, dBags *db) {
     }
 }
 
-int fin(AllocMod fmod, AllocMod bmod, /**/ hBags *hb, dBags *db) {
+int bags_fin(AllocMod fmod, AllocMod bmod, /**/ hBags *hb, dBags *db) {
     /* fragments */
     for (int i = 0; i < NFRAGS; ++i)
         free_pair(i, fmod, /**/ hb, db);
@@ -41,7 +41,8 @@ int fin(AllocMod fmod, AllocMod bmod, /**/ hBags *hb, dBags *db) {
     return 0;
 }
 
-int fin(/**/ Stamp *s) {
-    MC(m::Comm_free(&s->cart));
+int comm_fin(/**/ Comm *c) {
+    MC(m::Comm_free(&c->cart));
+    UC(efree(c));
     return 0;
 }

@@ -1,0 +1,26 @@
+= fsi
+:lext: .adoc
+:src: ../../../src
+
+flow-structure interactions between solvent and objects (rigid objects, rbc membranes)
+
+
+== interface
+
+allocate/deallocate
+
+[source,cpp]
+----
+include::{src}/fsi/imp.h[tag=mem]
+----
+
+computing forces:
+
+[source,cpp]
+----
+include::{src}/fsi/imp.h[tag=int]
+----
+<1> store solvent interactions inside hidden structure `Fsi`
+<2> compute the interactions between local objects and local solvent
+<3> compute the interactions between remote objects and local solvent
+

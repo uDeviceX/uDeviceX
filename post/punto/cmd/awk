@@ -1,5 +1,0 @@
-#!/bin/sh
-
-. u.punto.util
-
-exec u.punto.awk0 "$@"

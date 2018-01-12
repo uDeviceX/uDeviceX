@@ -13,13 +13,13 @@ struct Desc {
 };
 
 union ParamsU {
-    plate::Params plate;
-    circle::Params circle;
+    ParamsPlate plate;
+    ParamsCircle circle;
 };
 
 union VParamsU {
-    plate::VParams plate;
-    circle::VParams circle;
+    VParamsPlate plate;
+    VParamsCircle circle;
 };
 
 struct Inflow {
@@ -27,4 +27,11 @@ struct Inflow {
     Type t;
     ParamsU p;
     VParamsU vp;
+};
+
+struct SolventWrap {
+    Particle *pp;       /* particles               */
+    int *cc;            /* colors                  */
+    bool multisolvent;  /* true if color activated */
+    int color;          /* color of new particles  */
 };

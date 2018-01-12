@@ -6,11 +6,11 @@ static bool is_inside_subdomain(Coords c, float3 r) {
     return inside;
 }
 
-void ini_params_circle(Coords c, float3 o, float R, float H, float u, bool poiseuille,
+void inflow_ini_params_circle(Coords c, float3 o, float R, float H, float u, bool poiseuille,
                        /**/ Inflow *i) {
     enum {X, Y, Z};
-    circle::Params *pp;
-    circle::VParams *vpp;
+    ParamsCircle *pp;
+    VParamsCircle *vpp;
 
     if (is_inside_subdomain(c, o)) {    
         pp  = &i->p.circle;

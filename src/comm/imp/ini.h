@@ -45,7 +45,7 @@ static void alloc_pair(int i, AllocMod mod, /**/ hBags *hb, dBags *db) {
     }
 }
 
-int ini(AllocMod fmod, AllocMod bmod, size_t bsize, const int capacity[NBAGS], /**/ hBags *hb, dBags *db) {
+int bags_ini(AllocMod fmod, AllocMod bmod, size_t bsize, const int capacity[NBAGS], /**/ hBags *hb, dBags *db) {
     hb->bsize = bsize;
     memcpy(hb->capacity, capacity, NBAGS * sizeof(int));
 
@@ -60,19 +60,24 @@ int ini(AllocMod fmod, AllocMod bmod, size_t bsize, const int capacity[NBAGS], /
     return 0;
 }
 
-/* stamp allocation */
+/* comm allocation */
 
-int ini(MPI_Comm cart, /**/ Stamp *s) {
+int comm_ini(MPI_Comm cart, /**/ Comm **com_p) {
     int i, c, crd_rnk[3];
     int coords[3], periods[3], dims[3];
+    Comm *com;
+
+    UC(emalloc(sizeof(Comm), (void**) com_p));
+    com = *com_p;
+    
     MC(m::Cart_get(cart, 3, dims, periods, coords));
     
     for (i = 0; i < NFRAGS; ++i) {
         for (c = 0; c < 3; ++c)
             crd_rnk[c] = coords[c] + frag_i2d(i,c);
-        MC(m::Cart_rank(cart, crd_rnk, s->ranks + i));
-        s->tags[i] = frag_anti(i);
+        MC(m::Cart_rank(cart, crd_rnk, com->ranks + i));
+        com->tags[i] = frag_anti(i);
     }
-    MC(m::Comm_dup(cart, &s->cart));
+    MC(m::Comm_dup(cart, &com->cart));
     return 0;
 }

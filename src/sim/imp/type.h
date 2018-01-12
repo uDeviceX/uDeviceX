@@ -2,53 +2,53 @@
 
 /* solvent distribution */
 struct FluDistr {
-    distr::flu::Pack p;
-    distr::flu::Comm c;
-    distr::flu::Unpack u;
+    DFluPack *p;
+    DFluComm *c;
+    DFluUnpack *u;
 };
 
 /* particle exchanger for solvent forces */
 struct FluExch {
-    exch::flu::Pack p;
-    exch::flu::Comm c;
-    exch::flu::Unpack u;
+    EFluPack *p;
+    EFluComm *c;
+    EFluUnpack *u;
 };
 
 /* rbc distribution */
 struct RbcDistr {
-    distr::rbc::Pack p;
-    distr::rbc::Comm c;
-    distr::rbc::Unpack u;
+    DRbcPack *p;
+    DRbcComm *c;
+    DRbcUnpack *u;
 };
 
 /* rigid distribution */
 struct RigDistr {
-    distr::rig::Pack p;
-    distr::rig::Comm c;
-    distr::rig::Unpack u;
+    DRigPack *p;
+    DRigComm *c;
+    DRigUnpack *u;
 };
 
 /* object exchanger for forces */
 struct ObjExch {
-    exch::obj::Pack p;
-    exch::obj::Unpack u;
-    exch::obj::PackF pf;
-    exch::obj::UnpackF uf;
-    exch::obj::Comm c;
+    EObjPack *p;
+    EObjUnpack *u;
+    EObjPackF *pf;
+    EObjUnpackF *uf;
+    EObjComm *c;
 };
 
 /* mesh exchanger */
 struct Mexch {
-    exch::mesh::Pack p;
-    exch::mesh::Comm c;
-    exch::mesh::Unpack u;
+    EMeshPack *p;
+    EMeshComm *c;
+    EMeshUnpack *u;
 };
 
 /* bounce back exchanger */
 struct BBexch : Mexch {
-    exch::mesh::PackM pm;
-    exch::mesh::CommM cm;
-    exch::mesh::UnpackM um;
+    EMeshPackM *pm;
+    EMeshCommM *cm;
+    EMeshUnpackM *um;
 };
 
 struct Colorer {
@@ -66,7 +66,7 @@ struct BounceBack {
 
 /* data holder for solvent */
 struct Flu {
-    flu::Quants q;
+    FluQuants q;
 
     FluDistr d;
     FluExch e;
@@ -80,15 +80,15 @@ struct Flu {
 
 /* data holder for red blood cells */
 struct Rbc {
-    rbc::Quants q;
-    rbc::force::TicketT tt;
+    RbcQuants q;
+    RbcForce tt;
 
     RbcDistr d;
 
     Force *ff;
 
-    rbc::com::Helper  com;      /* helper to compute center of masses */
-    rbc::stretch::Fo *stretch;  /* helper to apply stretching [fo]rce to cells */
+    RbcComProps  com;     /* helper to compute center of masses */
+    RbcStretch *stretch;  /* helper to apply stretching [fo]rce to cells */
 };
 
 /* data holder for rigid objects */
@@ -112,14 +112,21 @@ struct Wall {
 /* helper for computing object interactions */
 struct ObjInter {
     ObjExch e;
-    cnt::Contact cnt;
-    fsi::Fsi     fsi;
+    Contact *cnt;
+    Fsi     *fsi;
+};
+
+/* velocity controller */
+struct Vcon {
+    PidVCont *vcont;
+    int log_freq;
+    int adjust_freq;
+    int sample_freq;
 };
 
 /* optional features */
 struct Opt {
-    bool inflow;
-    bool outflow;
+    bool inflow, outflow, denoutflow, vcon;
 };
 
 struct Sim {
@@ -134,7 +141,7 @@ struct Sim {
     ObjInter objinter;
     BounceBack bb;
     Colorer colorer;
-    PidVCont vcont;
+    Vcon vcon;
     MPI_Comm cart;
 
     /* open bc tools */

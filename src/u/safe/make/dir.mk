@@ -11,11 +11,14 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/control/vel              && \
     d $B/d                        && \
     d $B/dbg                      && \
+    d $B/distr/common             && \
     d $B/distr/flu                && \
     d $B/distr/map                && \
     d $B/distr/rbc                && \
     d $B/distr/rig                && \
+    d $B/exch/common              && \
     d $B/exch/flu                 && \
+    d $B/exch/map                 && \
     d $B/exch/mesh                && \
     d $B/exch/obj                 && \
     d $B/flu                      && \
@@ -48,14 +51,13 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/meshbb                   && \
     d $B/mpi                      && \
     d $B/parser                   && \
+    d $B/rbc                      && \
     d $B/rbc/adj                  && \
     d $B/rbc/com                  && \
     d $B/rbc/edg                  && \
     d $B/rbc/force                && \
     d $B/rbc/force/area_volume    && \
     d $B/rbc/gen                  && \
-    d $B/rbc/main                 && \
-    d $B/rbc/main/anti            && \
     d $B/rbc/rnd                  && \
     d $B/rbc/rnd/api              && \
     d $B/rbc/stretch              && \

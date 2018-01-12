@@ -1,4 +1,4 @@
-void pack(const Cloud *cloud, /**/ Pack *p) {
+void eflu_pack(const Cloud *cloud, /**/ EFluPack *p) {
     int nc;
     int26 cc;
     int27 ss;
@@ -37,7 +37,7 @@ static void copy(int n, const int counts[], const dBags *d, /**/ hBags *h) {
     }
 }
 
-void download_data(Pack *p) {
+void eflu_download_data(EFluPack *p) {
     int counts[NFRAGS];
     size_t sz = sizeof(counts);
 

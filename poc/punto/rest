@@ -1,0 +1,10 @@
+#!/bin/sh
+set -eu
+
+n="$1"; shift
+i="$1"; shift
+
+awk -v n=$n '
+i  >= n { print }
+NF == 0 { i++   }
+' "$i"

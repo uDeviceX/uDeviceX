@@ -1,42 +1,38 @@
-namespace distr {
-namespace flu {
+struct DFluPack;
+struct DFluComm;
+struct DFluUnpack;
 
 // tag::interface[]
-void ini(int maxdensity, Pack *p);
-void ini(MPI_Comm comm, /**/ Comm *c);
-void ini(int maxdensity, Unpack *u);
+void dflu_pack_ini(int maxdensity, DFluPack **p);
+void dflu_comm_ini(MPI_Comm comm, /**/ DFluComm **c);
+void dflu_unpack_ini(int maxdensity, DFluUnpack **u);
 
-void fin(Pack *p);
-void fin(Comm *c);
-void fin(Unpack *u);
+void dflu_pack_fin(DFluPack *p);
+void dflu_comm_fin(DFluComm *c);
+void dflu_unpack_fin(DFluUnpack *u);
 
 /* map */
-void build_map(int n, const PartList lp, Pack *p);
-
-using namespace ::flu;
+void dflu_build_map(int n, const PartList lp, DFluPack *p);
 
 /* pack */
-void pack(const Quants *q, /**/ Pack *p);
+void dflu_pack(const FluQuants *q, /**/ DFluPack *p);
 
-void download(Pack *p);
+void dflu_download(DFluPack *p);
 
 /* communication */
-void post_recv(Comm *c, Unpack *u);
-void post_send(Pack *p, Comm   *c);
-void wait_recv(Comm *c, Unpack *u);
-void wait_send(Comm *c);
+void dflu_post_recv(DFluComm *c, DFluUnpack *u);
+void dflu_post_send(DFluPack *p, DFluComm   *c);
+void dflu_wait_recv(DFluComm *c, DFluUnpack *u);
+void dflu_wait_send(DFluComm *c);
 
 /* unpack */
-void unpack(/**/ Unpack *u);
+void dflu_unpack(/**/ DFluUnpack *u);
 // end::interface[]
 
 
 // tag::clist[]
 /* cell lists */
-void bulk(PartList lp, /**/ Quants *q);
-void halo(const Unpack *u, /**/ Quants *q);
-void gather(int ndead, const Pack *p, const Unpack *u, /**/ Quants *q);
+void dflu_bulk(PartList lp, /**/ FluQuants *q);
+void dflu_halo(const DFluUnpack *u, /**/ FluQuants *q);
+void dflu_gather(int ndead, const DFluPack *p, const DFluUnpack *u, /**/ FluQuants *q);
 // end::clist[]
-
-} // flu
-} // distr

@@ -1,6 +1,10 @@
-void ini(int maxd, Pack *p) {
+void eflu_pack_ini(int maxd, EFluPack **pack) {
     int i, nc, cap[NBAGS], ncs[NBAGS];
     size_t sz;
+    EFluPack *p;
+
+    UC(emalloc(sizeof(EFluPack), (void**) pack));
+    p = *pack;
 
     frag_estimates(NFRAGS, maxd, /**/ cap);
     cap[BULK] = 0;
@@ -18,11 +22,11 @@ void ini(int maxd, Pack *p) {
     }
     ncs[BULK] = 0;
     
-    UC(ini(PINNED_DEV, NONE, sizeof(Particle), cap, /**/ &p->hpp, &p->dpp));
+    UC(bags_ini(PINNED_DEV, NONE, sizeof(Particle), cap, /**/ &p->hpp, &p->dpp));
     if (multi_solvent)
-        UC(ini(PINNED_DEV, NONE,  sizeof(int), cap, /**/ &p->hcc, &p->dcc));
+        UC(bags_ini(PINNED_DEV, NONE,  sizeof(int), cap, /**/ &p->hcc, &p->dcc));
 
-    UC(ini(PINNED_HST, NONE, sizeof(int), ncs, /**/ &p->hfss, NULL));
+    UC(bags_ini(PINNED_HST, NONE, sizeof(int), ncs, /**/ &p->hfss, NULL));
 
     memcpy(p->hfss.counts, ncs, sizeof(ncs));
     
@@ -30,15 +34,23 @@ void ini(int maxd, Pack *p) {
     CC(d::Malloc((void**) &p->counts_dev, sz));
 }
 
-void ini(MPI_Comm comm, /**/ Comm *c) {
-    UC(ini(comm, /**/ &c->pp));
-    UC(ini(comm, /**/ &c->fss));
+void eflu_comm_ini(MPI_Comm cart, /**/ EFluComm **com) {
+    EFluComm *c;
+    UC(emalloc(sizeof(EFluComm), (void**) com));
+    c = *com;
+    
+    UC(comm_ini(cart, /**/ &c->pp));
+    UC(comm_ini(cart, /**/ &c->fss));
     if (multi_solvent)
-        UC(ini(comm, /**/ &c->cc));
+        UC(comm_ini(cart, /**/ &c->cc));
 }
 
-void ini(int maxd, Unpack *u) {
+void eflu_unpack_ini(int maxd, EFluUnpack **unpack) {
     int i, cap[NBAGS], ncs[NBAGS];
+    EFluUnpack *u;
+
+    UC(emalloc(sizeof(EFluUnpack), (void**) unpack));
+    u = *unpack;
 
     frag_estimates(NFRAGS, maxd, /**/ cap);
     cap[BULK] = 0;
@@ -47,10 +59,10 @@ void ini(int maxd, Unpack *u) {
         ncs[i] = frag_ncell(i) + 1;
     ncs[BULK] = 0;
     
-    UC(ini(PINNED_DEV, NONE, sizeof(Particle), cap, /**/ &u->hpp, &u->dpp));
+    UC(bags_ini(PINNED_DEV, NONE, sizeof(Particle), cap, /**/ &u->hpp, &u->dpp));
     if (multi_solvent)
-        UC(ini(PINNED_DEV, NONE,  sizeof(int), cap, /**/ &u->hcc, &u->dcc));
+        UC(bags_ini(PINNED_DEV, NONE,  sizeof(int), cap, /**/ &u->hcc, &u->dcc));
 
-    UC(ini(PINNED_DEV, NONE, sizeof(int), ncs, /**/ &u->hfss, &u->dfss));
+    UC(bags_ini(PINNED_DEV, NONE, sizeof(int), ncs, /**/ &u->hfss, &u->dfss));
 }
 

@@ -128,7 +128,6 @@ void balloc() {
 }
 
 void read_file(const char* fn) {
-  fprintf(stderr, "(box) reading: %s\n", fn);
   FILE* fd = safe_fopen(fn, "r");
   read_header(fd);
   balloc();
@@ -216,8 +215,7 @@ void write_cells_attributes(FILE* fd) {
 }
 
 void write_file(const char* fn) {
-  fprintf(stderr, "(rw) writing: %s\n", fn);
-  FILE* fd = safe_fopen(fn, "w");
+  FILE *fd = safe_fopen(fn, "w");
   write_file_version(fd);
   write_header(fd);
   write_format(fd);

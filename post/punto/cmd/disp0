@@ -1,0 +1,56 @@
+#!/bin/sh
+
+. u.punto.util
+prog=u.punto.disp0
+
+i="$1"; shift
+
+"$AWK" -v prog="$prog" -v dbg="$DBG" '
+BEGIN    {
+    args()
+    s = 0
+}
+NF == 0  {
+    s++
+    printf "\n"
+    if (!eq(dbg, "0")) msg("snap = " s)
+    next
+}
+s  == 0  {
+    read_line()
+    if (i in x0) same_id(i)
+    x0[i] = x; y0[i] = y; z0[i] = z
+}
+{
+    read_line()
+    if (!(i in x0)) no_id(i)
+    dx = x - x0[i]; dy = y - y0[i]; dz = z - z0[i]
+    print $0, dx, dy, dz
+}
+function same_id(i,   s) {
+    s = sprintf("same id = %d, file = %s, line = %d",
+		i, FILENAME, NR)
+    err(s)
+}
+function no_id(i,   s) {
+    s = sprintf("no id = %d, file = %s, line = %d",
+		i, FILENAME, NR)
+    err(s)
+}
+function read_line() {
+    i = $idx["id"]
+    x = $idx["x"]
+    y = $idx["y"]
+    z = $idx["z"]
+}
+function msg(s) { printf "%s: %s\n", prog, s | "cat >&2" }
+function err(s) { msg(s); exit(2) }
+function eq(a, b) { return a "" ==  b ""}
+function args(   i, k)   { # fill idx
+    for (i = 0; i < ARGC; i++) {
+	k = ARGV[i]
+	idx[k] = i - 1
+    }
+    ARGC = 2 # read only one argument as a file
+}
+' "$i" "$@"

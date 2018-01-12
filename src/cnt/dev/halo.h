@@ -38,7 +38,7 @@ __device__ void halo0(const int *cellstarts, const uint *ids, const float2pWraps
         for (i = 0; !endp(m, i); ++i) {
             slot = m2id(m, i);
             code = ids[slot];
-            clist::decode_id(code, &objid, &bid);
+            clist_decode_id(code, &objid, &bid);
             fetch_b(lpp.d[objid], bid, /**/ &b);
             rnd = rnd::mean0var1ii(seed, aid, bid);
             pair(a, b, rnd, /**/ &fx, &fy, &fz);

@@ -1,4 +1,4 @@
-static int unpack_bulk_pp(const Pack *p, /**/ Particle *pp) {
+static int unpack_bulk_pp(const DRbcPack *p, /**/ Particle *pp) {
     int nc = p->hpp.counts[frag_bulk];
     void *src = p->dpp.data[frag_bulk];
     size_t sz = nc * p->hpp.bsize;
@@ -8,13 +8,13 @@ static int unpack_bulk_pp(const Pack *p, /**/ Particle *pp) {
     return nc;
 }
 
-static void unpack_bulk_ii(const Pack *p, /**/ int *ii) {
+static void unpack_bulk_ii(const DRbcPack *p, /**/ int *ii) {
     int nc = p->hii.counts[frag_bulk];
     void *src = p->hii.data[frag_bulk];
     memcpy(ii, src, nc * sizeof(int));
 }
 
-void unpack_bulk(const Pack *p, /**/ rbc::Quants *q) {
+void drbc_unpack_bulk(const DRbcPack *p, /**/ RbcQuants *q) {
     int nc, nv, n;
     nv = q->nv;
 
@@ -45,7 +45,7 @@ static int unpack_halo_pp(int nc0, int nv, const hBags *hpp, /**/ Particle *pp) 
             n = c * nv;
             sz = c * bsz;
             CC(d::MemcpyAsync(dst, src, sz, H2D));
-            KL(dev::shift_one_frag, (k_cnf(n)), (n, i, /**/ dst));
+            dcommon_shift_one_frag(n, i, /**/ dst);
         }
         s += c;
     }
@@ -65,7 +65,7 @@ static void unpack_halo_ii(int nc0, const hBags *hii, /**/ int *ii) {
     }
 }
 
-void unpack_halo(const Unpack *u, /**/ rbc::Quants *q) {
+void drbc_unpack_halo(const DRbcUnpack *u, /**/ RbcQuants *q) {
     int nc0, nc, nv;
 
     nc0 = q->nc;

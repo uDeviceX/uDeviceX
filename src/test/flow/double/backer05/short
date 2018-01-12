@@ -1,14 +1,14 @@
 # nTEST: flow.double.backer05.short
 :
 rm -rf bop h5
+Force="bforce={type=\"double_poiseuille\"; a=0.055;};"
 u.conf conf/double.poiseuille.h <<!!!
    S_LEVEL=0 kBT=0.5 numberdensity=6 adpd_b=0 gdpd_b=20.25 dt=0.001
-   FORCE_DOUBLE_POISEUILLE FORCE_PAR_A=0.055
    XS=24 YS=12 ZS=24
    field_dumps part_dumps
    tend=8.01 part_freq=400 field_freq=400
    run
 !!!
 { make clean && u.make -j; } > /dev/null
-sh runfile
+u.run ./udx $Force
 u.avgh5 1 u 1 h5/flowfields-001[0-9].h5 > h5.out.txt

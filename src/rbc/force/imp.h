@@ -1,7 +1,5 @@
-namespace rbc { namespace force {
-struct TicketT { rbc::rnd::D *rnd; };
-void gen_ticket(const Quants q, TicketT *t);
-void fin_ticket(TicketT *t);
-void apply(const Quants q, const TicketT t, /**/ Force *ff);
-void stat(/**/ float *pArea, float *pVolume);
-}} /* namespace */
+struct RbcForce { RbcRnd *rnd; };
+void rbc_force_gen(const RbcQuants q, RbcForce *t);
+void rbc_force_fin(RbcForce *t);
+void rbc_force_apply(const RbcQuants q, const RbcForce t, /**/ Force *ff);
+void rbc_force_stat(/**/ float *pArea, float *pVolume);

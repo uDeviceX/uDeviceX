@@ -22,7 +22,6 @@
 #include "rbc/type.h"
 
 #include "rbc/adj/type/common.h"
-#include "rbc/adj/type/dev.h"
 #include "rbc/adj/dev.h"
 
 #include "rbc/rnd/api/imp.h"
@@ -32,7 +31,6 @@
 
 #include "imp.h"
 
-namespace rbc { namespace force {
 namespace dev {
 #if   defined(RBC_PARAMS_TEST)
   #include "params/test.h"
@@ -65,4 +63,3 @@ namespace dev {
 #include "imp/forces.h"
 #include "imp/stat.h"
 
-}} /* namespace */

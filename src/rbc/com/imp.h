@@ -1,11 +1,8 @@
-namespace rbc { namespace com {
-struct Helper {
-    float3 *drr;  /* helper to compute centers of mass on device */
-    float3 *hrr;  /* centers of mass on host                     */
+struct RbcComProps {
+    float3 *drr, *dvv;  /* positions, velocities on device */
+    float3 *hrr, *hvv;  /* positions, velocities on host   */
 };
 
-void ini(int maxcells, /**/ Helper *com);
-void fin(/**/ Helper *com);
-void get(int nm, int nv, const Particle *pp, /**/ Helper *com);
-
-}} /* namespace */
+void rbc_com_ini(int maxcells, /**/ RbcComProps *com);
+void rbc_com_fin(/**/ RbcComProps *com);
+void rbc_com_get(int nm, int nv, const Particle *pp, /**/ RbcComProps *com);

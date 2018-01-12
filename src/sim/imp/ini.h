@@ -1,129 +1,128 @@
-static bool same(const char *a, const char *b) {
-    return 0 == strcmp(a, b);
-}
-
 static void ini_flu_exch(MPI_Comm comm, /**/ FluExch *e) {
-    using namespace exch::flu;
     int maxd = HSAFETY_FACTOR * numberdensity;
     
-    UC(ini(maxd, /**/ &e->p));
-    UC(ini(comm, /**/ &e->c));
-    UC(ini(maxd, /**/ &e->u));
+    UC(eflu_pack_ini(maxd, /**/ &e->p));
+    UC(eflu_comm_ini(comm, /**/ &e->c));
+    UC(eflu_unpack_ini(maxd, /**/ &e->u));
 }
 
 static void ini_obj_exch(MPI_Comm comm, /**/ ObjExch *e) {
-    using namespace exch::obj;
     int maxpsolid = MAX_PSOLID_NUM;
     
-    UC(ini(MAX_OBJ_TYPES, MAX_OBJ_DENSITY, maxpsolid, &e->p));
-    UC(ini(comm, /**/ &e->c));
-    UC(ini(MAX_OBJ_DENSITY, maxpsolid, /**/ &e->u));
-    UC(ini(MAX_OBJ_DENSITY, maxpsolid, /**/ &e->pf));
-    UC(ini(MAX_OBJ_DENSITY, maxpsolid, /**/ &e->uf));
+    UC(eobj_pack_ini(MAX_OBJ_TYPES, MAX_OBJ_DENSITY, maxpsolid, &e->p));
+    UC(eobj_comm_ini(comm, /**/ &e->c));
+    UC(eobj_unpack_ini(MAX_OBJ_DENSITY, maxpsolid, /**/ &e->u));
+    UC(eobj_packf_ini(MAX_OBJ_DENSITY, maxpsolid, /**/ &e->pf));
+    UC(eobj_unpackf_ini(MAX_OBJ_DENSITY, maxpsolid, /**/ &e->uf));
 }
 
 static void ini_mesh_exch(int nv, int max_m, MPI_Comm comm, /**/ Mexch *e) {
-    using namespace exch::mesh;
-    UC(ini(nv, max_m, /**/ &e->p));
-    UC(ini(comm, /**/ &e->c));
-    UC(ini(nv, max_m, /**/ &e->u));
+    UC(emesh_pack_ini(nv, max_m, /**/ &e->p));
+    UC(emesh_comm_ini(comm, /**/ &e->c));
+    UC(emesh_unpack_ini(nv, max_m, /**/ &e->u));
 }
 
 static void ini_bb_exch(int nt, int nv, int max_m, MPI_Comm comm, /**/ BBexch *e) {
     UC(ini_mesh_exch(nv, max_m, comm, /**/ e));
 
-    using namespace exch::mesh;
-    UC(ini(nt, max_m, /**/ &e->pm));
-    UC(ini(comm, /**/ &e->cm));
-    UC(ini(nt, max_m, /**/ &e->um));
+    UC(emesh_packm_ini(nt, max_m, /**/ &e->pm));
+    UC(emesh_commm_ini(comm, /**/ &e->cm));
+    UC(emesh_unpackm_ini(nt, max_m, /**/ &e->um));
 }
 
 static void ini_flu_distr(MPI_Comm comm, /**/ FluDistr *d) {
-    using namespace distr::flu;
     float maxdensity = ODSTR_FACTOR * numberdensity;
-    UC(ini(maxdensity, /**/ &d->p));
-    UC(ini(comm, /**/ &d->c));
-    UC(ini(maxdensity, /**/ &d->u));
+    UC(dflu_pack_ini(maxdensity, /**/ &d->p));
+    UC(dflu_comm_ini(comm, /**/ &d->c));
+    UC(dflu_unpack_ini(maxdensity, /**/ &d->u));
 }
 
 static void ini_rbc_distr(int nv, MPI_Comm comm, /**/ RbcDistr *d) {
-    using namespace distr::rbc;
-    UC(ini(MAX_CELL_NUM, nv, /**/ &d->p));
-    UC(ini(comm, /**/ &d->c));
-    UC(ini(MAX_CELL_NUM, nv, /**/ &d->u));
+    UC(drbc_pack_ini(MAX_CELL_NUM, nv, /**/ &d->p));
+    UC(drbc_comm_ini(comm, /**/ &d->c));
+    UC(drbc_unpack_ini(MAX_CELL_NUM, nv, /**/ &d->u));
 }
 
 static void ini_rig_distr(int nv, MPI_Comm comm, /**/ RigDistr *d) {
-    using namespace distr::rig;
-    UC(ini(MAX_SOLIDS, nv, /**/ &d->p));
-    UC(ini(comm, /**/ &d->c));
-    UC(ini(MAX_SOLIDS, nv, /**/ &d->u));
+    UC(drig_pack_ini(MAX_SOLIDS, nv, /**/ &d->p));
+    UC(drig_comm_ini(comm, /**/ &d->c));
+    UC(drig_unpack_ini(MAX_SOLIDS, nv, /**/ &d->u));
 }
 
-static void ini_vcont(MPI_Comm comm, /**/ PidVCont *c) {
+static void ini_vcon(MPI_Comm comm, const Config *cfg, /**/ Vcon *c) {
     int3 L = {XS, YS, ZS};
-    float3 V = {VCON_VX, VCON_VY, VCON_VZ};
-    UC(ini(comm, L, V, VCON_FACTOR, /**/ c));
+    const char *type;
+    float3 U;
+    float factor;
+    PidVCont *vc;
+
+    UC(conf_lookup_int(cfg, "vcon.log_freq", &c->log_freq));
+    UC(conf_lookup_int(cfg, "vcon.adjust_freq", &c->adjust_freq));
+    UC(conf_lookup_int(cfg, "vcon.sample_freq", &c->sample_freq));
+    
+    UC(conf_lookup_string(cfg, "vcon.type", &type));
+    UC(conf_lookup_float3(cfg, "vcon.U", &U));
+    UC(conf_lookup_float(cfg, "vcon.factor", &factor));
+    
+    UC(vcont_ini(comm, L, U, factor, /**/ &c->vcont));
+    vc = c->vcont;
+
+    if      (same_str(type, "cart"))
+        UC(vcon_set_cart(/**/ vc));
+    else if (same_str(type, "rad"))
+        UC(vcon_set_radial(/**/ vc));
+    else
+        ERR("Unrecognised type <%s>", type);
 }
 
 static void ini_outflow(Coords coords, const Config *cfg, Outflow **o) {
     UC(ini(MAX_PART_NUM, /**/ o));
-    const char *type = NULL;
-    UC(conf_lookup_string(cfg, "outflow.type", &type));
-    
-    if (same(type, "circle")) {
-        int n;
-        float R = 0, c[3] = {0};
-        UC(conf_lookup_float(cfg, "outflow.R", &R));
-        UC(conf_lookup_vfloat(cfg, "outflow.center", &n, c));
-        
-        float3 center = make_float3(c[0], c[1], c[2]);
-        ini_params_circle(coords, center, R, /**/ *o);
-    } else {
-        ERR("Unrecognized type <%s>", type);
-        // TODO
-        //ini_params_plane(coords, 0, XS/2-1, *o);
-    }
-}
-
-static void ini_denoutflow(Coords coords, DCont **d, DContMap **m) {
-    UC(ini(MAX_PART_NUM, /**/ d));
-    UC(ini(coords, /**/ m));
-}
-
-static void ini_inflow(Coords coords, const Config *cfg, Inflow **i) {
     const char *type;
     UC(conf_lookup_string(cfg, "outflow.type", &type));
     
-    /* number of cells */
-    int2 nc = make_int2(YS, ZS/2);
-    ini(nc, /**/ i);
-
-    if      (same(type, "circle")) {
-        float c[3], R, H, U;
-        int poiseuille;
-        int n;
+    if      (same_str(type, "circle")) {
         float3 center;
-
-        UC(conf_lookup_float(cfg, "inflow.R", &R));
-        UC(conf_lookup_float(cfg, "inflow.H", &H));
-        UC(conf_lookup_float(cfg, "inflow.U", &U));
-        UC(conf_lookup_bool(cfg, "inflow.poiseuille", &poiseuille));
-        UC(conf_lookup_vfloat(cfg, "inflow.center", &n, c));        
-        center = make_float3(c[0], c[1], c[2]);
-        UC(ini_params_circle(coords, center, R, H, U, poiseuille, /**/ *i));
+        float R;
+        UC(conf_lookup_float(cfg, "outflow.R", &R));
+        UC(conf_lookup_float3(cfg, "outflow.center", &center));
+        
+        ini_params_circle(coords, center, R, /**/ *o);
     }
-    else if (same(type, "plate")) {
-        // TODO
-        // ini_params_plate(coords, make_float3(0, YS/2, 0), 0, YS/2, ZS,
-        //                  make_float3(10.f, 0, 0), true, false,
-        //                   /**/ *i);
+    else if (same_str(type, "plate")) {
+        int dir;
+        float r0;
+        UC(conf_lookup_int(cfg, "outflow.direction", &dir));
+        UC(conf_lookup_float(cfg, "outflow.position", &r0));
+        ini_params_plate(coords, dir, r0, /**/ *o);
     }
     else {
-        ERR("unknown inflow type <%s>", type);
+        ERR("Unrecognized type <%s>", type);
     }
-    
-    UC(ini_velocity(*i));
+}
+
+static void ini_denoutflow(Coords coords, const Config *cfg, DCont **d, DContMap **m) {
+    const char *type;
+    UC(den_ini(MAX_PART_NUM, /**/ d));
+
+    UC(conf_lookup_string(cfg, "denoutflow.type", &type));
+    if (same_str(type, "none")) {
+        UC(den_ini_map_none(coords, /**/ m));
+    }
+    else if (same_str(type, "circle")) {
+        float R;
+        UC(conf_lookup_float(cfg, "denoutflow.R", &R));
+        UC(den_ini_map_circle(coords, R, /**/ m));
+    } else {
+        ERR("Unrecognized type <%s>", type);
+    }
+}
+
+static void ini_inflow(Coords coords, const Config *cfg, Inflow **i) {
+    /* number of cells */
+    int2 nc = make_int2(YS, ZS/2);
+    UC(inflow_ini(nc, /**/ i));
+    UC(inflow_ini_params_conf(coords, cfg, *i));    
+    UC(inflow_ini_velocity(*i));
 }
 
 static void ini_colorer(int nv, MPI_Comm comm, /**/ Colorer *c) {
@@ -135,7 +134,7 @@ static void ini_colorer(int nv, MPI_Comm comm, /**/ Colorer *c) {
 
 static void ini_flu(MPI_Comm cart, /**/ Flu *f) {
 
-    flu::ini(&f->q);
+    flu_ini(&f->q);
     ini(MAX_PART_NUM, /**/ &f->bulkdata);
     ini(cart, /**/ &f->halodata);
     
@@ -148,11 +147,11 @@ static void ini_flu(MPI_Comm cart, /**/ Flu *f) {
 
 static void ini_rbc(MPI_Comm cart, /**/ Rbc *r) {
     Dalloc(&r->ff, MAX_CELL_NUM * RBCnv);
-    UC(rbc::main::ini(&r->q));
+    UC(rbc_ini(&r->q));
 
     UC(ini_rbc_distr(r->q.nv, cart, /**/ &r->d));
-    if (rbc_com_dumps) UC(rbc::com::ini(MAX_CELL_NUM, /**/ &r->com));
-    if (RBC_STRETCH)   UC(rbc::stretch::ini("rbc.stretch", r->q.nv, /**/ &r->stretch));
+    if (rbc_com_dumps) UC(rbc_com_ini(MAX_CELL_NUM, /**/ &r->com));
+    if (RBC_STRETCH)   UC(rbc_stretch_ini("rbc.stretch", r->q.nv, /**/ &r->stretch));
 }
 
 static void ini_rig(MPI_Comm cart, /**/ Rig *s) {
@@ -207,8 +206,8 @@ static void ini_objinter(MPI_Comm cart, /**/ ObjInter *o) {
     int rank;
     MC(m::Comm_rank(cart, &rank));
     UC(ini_obj_exch(cart, &o->e));
-    if (contactforces) cnt::ini(rank, /**/ &o->cnt);
-    if (fsiforces)     fsi::ini(rank, /**/ &o->fsi);
+    if (contactforces) cnt_ini(rank, /**/ &o->cnt);
+    if (fsiforces)     fsi_ini(rank, /**/ &o->fsi);
 }
 
 static void read_opt(const Config *c, Opt *o) {
@@ -217,6 +216,10 @@ static void read_opt(const Config *c, Opt *o) {
     o->outflow = b;
     UC(conf_lookup_bool(c, "inflow.active", &b));
     o->inflow = b;
+    UC(conf_lookup_bool(c, "denoutflow.active", &b));
+    o->denoutflow = b;
+    UC(conf_lookup_bool(c, "vcon.active", &b));
+    o->vcon = b;
 }
 
 void sim_ini(int argc, char **argv, MPI_Comm cart, /**/ Sim **sim) {
@@ -240,10 +243,10 @@ void sim_ini(int argc, char **argv, MPI_Comm cart, /**/ Sim **sim) {
     
     if (rbcs) UC(ini_rbc(s->cart, /**/ &s->rbc));
 
-    if (VCON)    UC(ini_vcont(s->cart, /**/ &s->vcont));
-    if (s->opt.outflow) UC(ini_outflow(s->coords, s->cfg, /**/ &s->outflow));
-    if (s->opt.inflow)  UC(ini_inflow (s->coords, s->cfg, /**/ &s->inflow ));
-    if (OUTFLOW_DEN) UC(ini_denoutflow(s->coords, /**/ &s->denoutflow, &s->mapoutflow));
+    if (s->opt.vcon)       UC(ini_vcon(s->cart, s->cfg, /**/ &s->vcon));
+    if (s->opt.outflow)    UC(ini_outflow(s->coords, s->cfg, /**/ &s->outflow));
+    if (s->opt.inflow)     UC(ini_inflow (s->coords, s->cfg, /**/ &s->inflow ));
+    if (s->opt.denoutflow) UC(ini_denoutflow(s->coords, s->cfg, /**/ &s->denoutflow, &s->mapoutflow));
     
     if (rbcs || solids)
         UC(ini_objinter(s->cart, /**/ &s->objinter));        

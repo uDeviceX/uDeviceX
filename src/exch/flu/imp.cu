@@ -11,6 +11,7 @@
 
 #include "d/api.h"
 #include "utils/error.h"
+#include "utils/imp.h"
 #include "utils/cc.h"
 #include "utils/kl.h"
 
@@ -21,18 +22,14 @@
 #include "cloud/imp.h"
 #include "flu/type.h"
 
-#include "type.h"
 #include "imp.h"
-
-namespace exch {
-namespace flu {
-using namespace comm;
 
 namespace dev {
 #include "dev/map.h"
 #include "dev/pack.h"
 } // dev
 
+#include "imp/type.h"
 #include "imp/ini.h"
 #include "imp/fin.h"
 #include "imp/common.h"
@@ -41,6 +38,3 @@ namespace dev {
 #include "imp/com.h"
 #include "imp/unpack.h"
 #include "imp/get.h"
-
-} // flu
-} // exch

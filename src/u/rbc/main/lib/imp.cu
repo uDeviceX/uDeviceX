@@ -23,13 +23,12 @@
 
 #include "rbc/type.h"
 #include "rbc/force/area_volume/imp.h"
-#include "rbc/main/imp.h"
+#include "rbc/imp.h"
 #include "rbc/rnd/imp.h"
 #include "rbc/force/imp.h"
 #include "rbc/stretch/imp.h"
 
 #include "scheme/move/imp.h"
-#include "scheme/force/type.h"
 #include "scheme/force/imp.h"
 
 #include "io/mesh/imp.h"

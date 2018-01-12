@@ -4,28 +4,40 @@ static void get_capacity(int nfrags, int max_mesh_num, /**/ int cap[]) {
         cap[i] = max_mesh_num;
 }
 
-void ini(int nv, int max_mesh_num, Pack *p) {
+void emesh_pack_ini(int nv, int max_mesh_num, EMeshPack **pack) {
     int cap[NFRAGS];
     size_t msz = nv * sizeof(Particle);
+    EMeshPack *p;
+
+    UC(emalloc(sizeof(EMeshPack), (void **) pack));
+    p = *pack;
+    
     get_capacity(NFRAGS, max_mesh_num, /**/ cap);
 
-    UC(ini_map(1, NFRAGS, cap, /**/ &p->map));
-    UC(ini(PINNED, NONE, msz, cap, /**/ &p->hpp, &p->dpp));
+    UC(emap_ini(1, NFRAGS, cap, /**/ &p->map));
+    UC(bags_ini(PINNED, NONE, msz, cap, /**/ &p->hpp, &p->dpp));
 
     CC(d::Malloc((void**) &p->minext, max_mesh_num * sizeof(float3)));
     CC(d::Malloc((void**) &p->maxext, max_mesh_num * sizeof(float3)));
 }
 
-void ini(MPI_Comm comm, /**/ Comm *c) {
-    UC(ini(comm, /**/ &c->pp));
+void emesh_comm_ini(MPI_Comm cart, /**/ EMeshComm **com) {
+    EMeshComm *c;
+    UC(emalloc(sizeof(EMeshComm), (void**) com));
+    c = *com;
+    UC(comm_ini(cart, /**/ &c->pp));
 }
 
-void ini(int nv, int max_mesh_num, Unpack *u) {
+void emesh_unpack_ini(int nv, int max_mesh_num, EMeshUnpack **unpack) {
     int cap[NFRAGS];
     size_t msz = nv * sizeof(Particle);
+    EMeshUnpack *u;
+    UC(emalloc(sizeof(EMeshUnpack), (void**) unpack));
+    u = *unpack;
+    
     get_capacity(NFRAGS, max_mesh_num, /**/ cap);
 
-    UC(ini(PINNED_DEV, NONE, msz, cap, /**/ &u->hpp, &u->dpp));
+    UC(bags_ini(PINNED_DEV, NONE, msz, cap, /**/ &u->hpp, &u->dpp));
 }
 
 
@@ -43,8 +55,12 @@ static void ini_map(int nt, int max_mesh_num, MMap *map) {
     CC(d::Malloc((void**) &map->subids, sz * nt));
 }
 
-void ini(int nt, int max_mesh_num, PackM *p) {
+void emesh_packm_ini(int nt, int max_mesh_num, EMeshPackM **pack) {
     int i, cap[NFRAGS], mcap[NFRAGS];
+    EMeshPackM *p;
+
+    UC(emalloc(sizeof(EMeshPackM), (void**) pack));
+    p = *pack;
 
     get_capacity(NFRAGS, max_mesh_num, /**/ cap);
     get_mcap(NFRAGS, nt, cap, /**/ mcap);
@@ -52,24 +68,31 @@ void ini(int nt, int max_mesh_num, PackM *p) {
     for (i = 0; i < NFRAGS; ++i)
         UC(ini_map(nt, cap[i], /**/ &p->maps[i]));
     
-    UC(ini(PINNED,   NONE, sizeof(Momentum), mcap, /**/ &p->hmm, &p->dmm));
-    UC(ini(PINNED,   NONE, sizeof(int)     , mcap, /**/ &p->hii, &p->dii));
+    UC(bags_ini(PINNED,   NONE, sizeof(Momentum), mcap, /**/ &p->hmm, &p->dmm));
+    UC(bags_ini(PINNED,   NONE, sizeof(int)     , mcap, /**/ &p->hii, &p->dii));
 
     CC(d::alloc_pinned((void**) &p->cchst, 26 * sizeof(int)));
     CC(d::HostGetDevicePointer((void**) &p->ccdev, p->cchst, 0));
 }
 
-void ini(MPI_Comm comm, /**/ CommM *c) {
-    UC(ini(comm, /**/ &c->mm));
-    UC(ini(comm, /**/ &c->ii));
+void emesh_commm_ini(MPI_Comm cart, /**/ EMeshCommM **com) {
+    EMeshCommM *c;
+    UC(emalloc(sizeof(EMeshCommM), (void**) com));
+    c = *com;
+    
+    UC(comm_ini(cart, /**/ &c->mm));
+    UC(comm_ini(cart, /**/ &c->ii));
 }
 
-void ini(int nt, int max_mesh_num, UnpackM *u) {
+void emesh_unpackm_ini(int nt, int max_mesh_num, EMeshUnpackM **unpack) {
     int cap[NFRAGS], mcap[NFRAGS];
+    EMeshUnpackM *u;
+    UC(emalloc(sizeof(EMeshUnpackM), (void**) unpack));
+    u = *unpack;
 
     get_capacity(NFRAGS, max_mesh_num, /**/ cap);
     get_mcap(NFRAGS, nt, cap, /**/ mcap);
 
-    UC(ini(PINNED_DEV, NONE, sizeof(Momentum), mcap, /**/ &u->hmm, &u->dmm));
-    UC(ini(PINNED_DEV, NONE, sizeof(int)     , mcap, /**/ &u->hii, &u->dii));
+    UC(bags_ini(PINNED_DEV, NONE, sizeof(Momentum), mcap, /**/ &u->hmm, &u->dmm));
+    UC(bags_ini(PINNED_DEV, NONE, sizeof(int)     , mcap, /**/ &u->hii, &u->dii));
 }

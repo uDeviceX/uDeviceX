@@ -1,54 +1,47 @@
 static void fin_flu_exch(/**/ FluExch *e) {
-    using namespace exch::flu;
-    fin(/**/ &e->p);
-    fin(/**/ &e->c);
-    fin(/**/ &e->u);
+    UC(eflu_pack_fin(/**/ e->p));
+    UC(eflu_comm_fin(/**/ e->c));
+    UC(eflu_unpack_fin(/**/ e->u));
 }
 
 static void fin_obj_exch(/**/ ObjExch *e) {
-    using namespace exch::obj;
-    fin(/**/ &e->p);
-    fin(/**/ &e->c);
-    fin(/**/ &e->u);
-    fin(/**/ &e->pf);
-    fin(/**/ &e->uf);
+    UC(eobj_pack_fin(/**/ e->p));
+    UC(eobj_comm_fin(/**/ e->c));
+    UC(eobj_unpack_fin(/**/ e->u));
+    UC(eobj_packf_fin(/**/ e->pf));
+    UC(eobj_unpackf_fin(/**/ e->uf));
 }
 
 static void fin_mesh_exch(/**/ Mexch *e) {
-    using namespace exch::mesh;
-    fin(/**/ &e->p);
-    fin(/**/ &e->c);
-    fin(/**/ &e->u);
+    UC(emesh_pack_fin(/**/ e->p));
+    UC(emesh_comm_fin(/**/ e->c));
+    UC(emesh_unpack_fin(/**/ e->u));
 }
 
 static void fin_bb_exch(/**/ BBexch *e) {
     fin_mesh_exch(/**/ e);
     
-    using namespace exch::mesh;
-    fin(/**/ &e->pm);
-    fin(/**/ &e->cm);
-    fin(/**/ &e->um);
+    UC(emesh_packm_fin(/**/ e->pm));
+    UC(emesh_commm_fin(/**/ e->cm));
+    UC(emesh_unpackm_fin(/**/ e->um));
 }
 
 static void fin_flu_distr(/**/ FluDistr *d) {
-    using namespace distr::flu;
-    fin(/**/ &d->p);
-    fin(/**/ &d->c);
-    fin(/**/ &d->u);
+    UC(dflu_pack_fin(/**/ d->p));
+    UC(dflu_comm_fin(/**/ d->c));
+    UC(dflu_unpack_fin(/**/ d->u));
 }
 
 static void fin_rbc_distr(/**/ RbcDistr *d) {
-    using namespace distr::rbc;
-    fin(/**/ &d->p);
-    fin(/**/ &d->c);
-    fin(/**/ &d->u);
+    UC(drbc_pack_fin(/**/ d->p));
+    UC(drbc_comm_fin(/**/ d->c));
+    UC(drbc_unpack_fin(/**/ d->u));
 }
 
 static void fin_rig_distr(/**/ RigDistr *d) {
-    using namespace distr::rig;
-    fin(/**/ &d->p);
-    fin(/**/ &d->c);
-    fin(/**/ &d->u);
+    UC(drig_pack_fin(/**/ d->p));
+    UC(drig_comm_fin(/**/ d->c));
+    UC(drig_unpack_fin(/**/ d->u));
 }
 
 static void fin_colorer(Colorer *c) {
@@ -63,17 +56,17 @@ static void fin_outflow(Outflow *o) {
 }
 
 static void fin_denoutflow(DCont *d, DContMap *m) {
-    UC(fin(d));
-    UC(fin(m));
+    UC(den_fin(d));
+    UC(den_fin_map(m));
 }
 
 static void fin_inflow(Inflow *i) {
-    fin(/**/ i);
+    UC(inflow_fin(/**/ i));
 }
 
 
 static void fin_flu(Flu *f) {
-    flu::fin(&f->q);
+    flu_fin(&f->q);
     fin(/**/ f->bulkdata);
     fin(/**/ f->halodata);
  
@@ -85,15 +78,15 @@ static void fin_flu(Flu *f) {
 }
 
 static void fin_rbc(Rbc *r) {
-    rbc::main::fin(&r->q);
-    rbc::force::fin_ticket(&r->tt);
+    rbc_fin(&r->q);
+    rbc_force_fin(&r->tt);
 
     fin_rbc_distr(/**/ &r->d);
         
     Dfree(r->ff);
 
-    if (rbc_com_dumps) rbc::com::fin(/**/ &r->com);
-    if (RBC_STRETCH)   rbc::stretch::fin(/**/ r->stretch);
+    if (rbc_com_dumps) rbc_com_fin(/**/ &r->com);
+    if (RBC_STRETCH)   rbc_stretch_fin(/**/ r->stretch);
 }
 
 static void fin_rig(Rig *s) {
@@ -119,8 +112,12 @@ static void fin_wall(Wall *w) {
     
 static void fin_objinter(ObjInter *o) {
     UC(fin_obj_exch(&o->e));
-    if (contactforces) cnt::fin(&o->cnt);
-    if (fsiforces)     fsi::fin(&o->fsi);
+    if (contactforces) cnt_fin(o->cnt);
+    if (fsiforces)     fsi_fin(o->fsi);
+}
+
+static void fin_vcon(Vcon *c) {
+    UC(vcont_fin(c->vcont));
 }
 
 void sim_fin(Sim *s) {
@@ -129,10 +126,10 @@ void sim_fin(Sim *s) {
     if (rbcs || solids)
         fin_objinter(&s->objinter);
 
-    if (VCON)    UC(fin(/**/ &s->vcont));
-    if (s->opt.outflow) UC(fin_outflow(/**/ s->outflow));
-    if (s->opt.inflow)  UC(fin_inflow (/**/ s->inflow ));
-    if (OUTFLOW_DEN) UC(fin_denoutflow(/**/ s->denoutflow, s->mapoutflow));
+    if (s->opt.vcon)       UC(fin_vcon(/**/ &s->vcon));
+    if (s->opt.outflow)    UC(fin_outflow(/**/ s->outflow));
+    if (s->opt.inflow)     UC(fin_inflow (/**/ s->inflow ));
+    if (s->opt.denoutflow) UC(fin_denoutflow(/**/ s->denoutflow, s->mapoutflow));
     
     if (walls) fin_wall(&s->wall);
 
@@ -154,7 +151,7 @@ void sim_fin(Sim *s) {
 
     UC(coords_fin(/**/ &s->coords));
 
-    UC(conf_destroy(s->cfg));
+    UC(conf_fin(s->cfg));
     datatype::fin();
 
     MC(m::Comm_free(&s->cart));

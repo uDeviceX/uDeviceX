@@ -24,12 +24,12 @@ void lshift() {
     }
 }
 
-void main0(rbc::rnd::D *rnd, int n) {
+void main0(RbcRnd *rnd, int n) {
     int i;
     float x;
-    rbc::rnd::gen(rnd, n);
+    rbc_rnd_gen(rnd, n);
     for (i = 0; i < n; i++) {
-        x = rbc::rnd::get_hst(rnd, i);
+        x = rbc_rnd_get_hst(rnd, i);
         printf("%g\n", x);
     }
 }
@@ -38,11 +38,11 @@ void main1() {
     int n;
     long seed;
     n = 10;
-    seed = rbc::rnd::ENV;
-    rbc::rnd::D *rnd;
-    rbc::rnd::ini(&rnd, n, seed);
+    seed = ENV;
+    RbcRnd *rnd;
+    rbc_rnd_ini(&rnd, n, seed);
     main0(rnd, n);
-    rbc::rnd::fin(rnd);
+    rbc_rnd_fin(rnd);
 }
 
 void main2() {

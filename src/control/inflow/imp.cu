@@ -23,23 +23,19 @@
 
 #include "imp.h"
 
-namespace dev {
-#include "dev/common.h"
-}
-
-namespace plate {
 #include "plate/type.h"
 #include "plate/dev.h"
-#include "dev/main.h"
-}
 
-namespace circle {
 #include "circle/type.h"
 #include "circle/dev.h"
-#include "dev/main.h"
-}
+
 
 #include "imp/type.h"
+
+namespace dev {
+#include "dev/ini.h"
+#include "dev/main.h"
+}
 
 #include "plate/imp.h"
 #include "circle/imp.h"

@@ -11,21 +11,29 @@ static void get_capacity(int maxd, /**/ int capacity[NBAGS]) {
     capacity[frag_bulk] = 0;
 }
 
-void ini(int maxdensity, Pack *p) {
+void dflu_pack_ini(int maxdensity, DFluPack **pack) {
+    DFluPack *p;
     int capacity[NBAGS];
+
+    UC(emalloc(sizeof(DFluPack), (void**) pack));
+    p = *pack;
+    
     get_capacity(maxdensity, /**/ capacity);
 
     UC(dmap_ini(NFRAGS, capacity, /**/ &p->map));
     
-    UC(ini(PINNED, NONE, sizeof(Particle), capacity, /**/ &p->hpp, &p->dpp));
-    if (global_ids)    UC(ini(PINNED, NONE, sizeof(int), capacity, /**/ &p->hii, &p->dii));
-    if (multi_solvent) UC(ini(PINNED, NONE, sizeof(int), capacity, /**/ &p->hcc, &p->dcc));
+    UC(bags_ini(PINNED, NONE, sizeof(Particle), capacity, /**/ &p->hpp, &p->dpp));
+    if (global_ids)    UC(bags_ini(PINNED, NONE, sizeof(int), capacity, /**/ &p->hii, &p->dii));
+    if (multi_solvent) UC(bags_ini(PINNED, NONE, sizeof(int), capacity, /**/ &p->hcc, &p->dcc));
 }
 
-void ini(MPI_Comm comm, /**/ Comm *c) {
-    UC(ini(comm, /**/ &c->pp));
-    if (global_ids)    UC(ini(comm, /**/ &c->ii));
-    if (multi_solvent) UC(ini(comm, /**/ &c->cc));
+void dflu_comm_ini(MPI_Comm cart, /**/ DFluComm **com) {
+    DFluComm *c;
+    UC(emalloc(sizeof(DFluComm), (void**) com));
+    c = *com;
+    UC(comm_ini(cart, /**/ &c->pp));
+    if (global_ids)    UC(comm_ini(cart, /**/ &c->ii));
+    if (multi_solvent) UC(comm_ini(cart, /**/ &c->cc));
 }
 
 static int nhalocells() {
@@ -36,13 +44,18 @@ static int nhalocells() {
         2 * YS * ZS;
 }
 
-void ini(int maxdensity, Unpack *u) {
+void dflu_unpack_ini(int maxdensity, DFluUnpack **unpack) {
     int capacity[NBAGS];
+    DFluUnpack *u;
+
+    UC(emalloc(sizeof(DFluUnpack), (void**) unpack));
+    u = *unpack;
+    
     get_capacity(maxdensity, /**/ capacity);
 
-    UC(ini(HST_ONLY, NONE, sizeof(Particle), capacity, /**/ &u->hpp, NULL));
-    if (global_ids)    UC(ini(HST_ONLY, NONE, sizeof(int), capacity, /**/ &u->hii, NULL));
-    if (multi_solvent) UC(ini(HST_ONLY, NONE, sizeof(int), capacity, /**/ &u->hcc, NULL));
+    UC(bags_ini(HST_ONLY, NONE, sizeof(Particle), capacity, /**/ &u->hpp, NULL));
+    if (global_ids)    UC(bags_ini(HST_ONLY, NONE, sizeof(int), capacity, /**/ &u->hii, NULL));
+    if (multi_solvent) UC(bags_ini(HST_ONLY, NONE, sizeof(int), capacity, /**/ &u->hcc, NULL));
 
     int maxparts = (int) (nhalocells() * maxdensity) + 1;
     CC(d::Malloc((void**) &u->ppre, maxparts * sizeof(Particle)));

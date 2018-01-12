@@ -1,29 +1,25 @@
-namespace distr {
-namespace rbc {
+struct DRbcPack;
+struct DRbcComm;
+struct DRbcUnpack;
 
 // tag::interface[]
-void ini(int maxc, int nv, Pack *p);
-void ini(MPI_Comm comm, /**/ Comm *c);
-void ini(int maxc, int nv, Unpack *u);
+void drbc_pack_ini(int maxc, int nv, DRbcPack **p);
+void drbc_comm_ini(MPI_Comm comm, /**/ DRbcComm **c);
+void drbc_unpack_ini(int maxc, int nv, DRbcUnpack **u);
 
-void fin(Pack *p);
-void fin(Comm *c);
-void fin(Unpack *u);
+void drbc_pack_fin(DRbcPack *p);
+void drbc_comm_fin(DRbcComm *c);
+void drbc_unpack_fin(DRbcUnpack *u);
 
-using namespace ::rbc;
+void drbc_build_map(int nc, int nv, const Particle *pp, DRbcPack *p);
+void drbc_pack(const RbcQuants *q, /**/ DRbcPack *p);
+void drbc_download(DRbcPack *p);
 
-void build_map(int nc, int nv, const Particle *pp, Pack *p);
-void pack(const rbc::Quants *q, /**/ Pack *p);
-void download(Pack *p);
+void drbc_post_recv(DRbcComm *c, DRbcUnpack *u);
+void drbc_post_send(DRbcPack *p, DRbcComm *c);
+void drbc_wait_recv(DRbcComm *c, DRbcUnpack *u);
+void drbc_wait_send(DRbcComm *c);
 
-void post_recv(Comm *c, Unpack *u);
-void post_send(Pack *p, Comm *c);
-void wait_recv(Comm *c, Unpack *u);
-void wait_send(Comm *c);
-
-void unpack_bulk(const Pack *p, /**/ rbc::Quants *q);
-void unpack_halo(const Unpack *u, /**/ rbc::Quants *q);
+void drbc_unpack_bulk(const DRbcPack *p, /**/ RbcQuants *q);
+void drbc_unpack_halo(const DRbcUnpack *u, /**/ RbcQuants *q);
 // end::interface[]
-
-} // rbc
-} // distr

@@ -24,17 +24,12 @@
 
 #include "imp.h"
 
+#include "imp/type.h"
+
 namespace dev {
 #include "dev/common.h"
-
-#if   defined(VCON_CART)
 #include "dev/cart.h"
-#elif defined(VCON_RAD)
 #include "dev/radial.h"
-#else
-#error VCON_* transformation undefined
-#endif
-
 #include "dev/sample.h"
 } // dev
 

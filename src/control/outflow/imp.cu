@@ -20,18 +20,12 @@
 
 #include "imp.h"
 
-namespace circle {
 #include "circle/dev.h"
+#include "plate/dev.h"
 #include "dev/filter.h"
-}
-
-namespace plane {
-#include "plane/dev.h"
-#include "dev/filter.h"
-}
 
 #include "imp/type.h"
 #include "imp/main.h"
 
 #include "circle/imp.h"
-#include "plane/imp.h"
+#include "plate/imp.h"

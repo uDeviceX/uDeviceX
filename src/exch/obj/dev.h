@@ -1,6 +1,6 @@
 namespace dev {
 
-__global__ void build_map(int3 L, int soluteid, int n, const Particle *pp, /**/ Map map) {
+__global__ void build_map(int3 L, int soluteid, int n, const Particle *pp, /**/ EMap map) {
     int pid, fid, fids[MAX_DSTS], ndsts, j;
     pid = threadIdx.x + blockIdx.x * blockDim.x;
     if (pid >= n) return;

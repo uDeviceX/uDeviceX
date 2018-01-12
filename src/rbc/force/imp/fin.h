@@ -1,7 +1,7 @@
-void fin_rnd(rbc::rnd::D *rnd) {
-    rbc::rnd::fin(rnd);
+static void fin_rnd(RbcRnd *rnd) {
+    rbc_rnd_fin(rnd);
 }
 
-void fin_ticket(TicketT *t) {
+void rbc_force_fin(RbcForce *t) {
     if (RBC_RND) fin_rnd(t->rnd);
 }

@@ -1,5 +1,5 @@
-static void dealloc(Hst* A) {
+static void dealloc(Adj* A) {
     free(A->adj0);
     free(A->adj1);
 }
-void fin(Hst* A) { dealloc(A); }
+void adj_fin(Adj* A) { dealloc(A); }

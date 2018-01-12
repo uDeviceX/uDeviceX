@@ -4,12 +4,12 @@ rm -rf bop h5 diag.txt rbc.off
 :
 cp data/sdf/wall1/wall.dat sdf.dat
 :
+Force="bforce={type=\"constant\"; f=[0.0333333, 0.0, 0.0];};"
 u.conf conf/poiseuille.h <<!!!
    tend=2.0 part_freq=300 walls wall_creation=100
    field_dumps part_dumps field_freq=300
-   FORCE_CONSTANT
    run
 !!!
 (make clean && u.make -j) > /dev/null
-sh runfile
+u.run ./udx $Force
 u.avgh5 1 u 2 h5/flowfields-0013.h5 > h5.out.txt
