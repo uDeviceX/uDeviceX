@@ -14,14 +14,16 @@ exec1() { # "ultimate" : respects DRYRUN
 }
 
 exec_stdin() { # +dump stdin
-    local t
+    local t r
     t=/tmp/u.$$.stdin; >$t
     trap 'rm $t' 1 2 3 4 15
     msg cmd: "$@"
-    cat >$t
-    cat >&2 $t
+    cat          >$t
+    "${AWK-awk}" >&1 '{print ":", $0}' $t
     exec0 "$@" $t
+    r=$?
     rm $t
+    return $r
 }
 
 module1() { # "ultimate" : respects DRYRUN
