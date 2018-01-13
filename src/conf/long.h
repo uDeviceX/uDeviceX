@@ -41,9 +41,6 @@
 //#define TE_TRACE
 //#define FORCE0
 
-/* FLOW TYPE */
-#define FORCE_PAR_A       0.18
-
 /* DUMPS */
 #define part_freq           10000
 #define field_dumps         false

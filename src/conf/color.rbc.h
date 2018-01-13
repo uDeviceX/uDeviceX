@@ -39,7 +39,6 @@
 /* FLOW TYPE */
 #define pushsolid               true
 #define pushrbc                 false
-#define FORCE_PAR_A           0.2
 
 /* DUMPS */
 #define dump_all_fields         true
