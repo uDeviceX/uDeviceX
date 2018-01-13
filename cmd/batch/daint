@@ -13,10 +13,10 @@ then                   shift
 else Time="--time $1"; shift
 fi
 
-Args="--output=out.txt --error=err.txt -C gpu $Time $@"
-exec1 sbatch -N $n $Args /dev/stdin <<EOF
+Args="--output=out.txt --error=err.txt -C gpu $Time"
+exec_stdin sbatch -N $n $Args <<EOF
 #!/bin/bash
 
 . u.load.daint
-srun `u.wrap "$e"` $x $y $z
+srun `u.wrap "$e"` $x $y $z   $@
 EOF

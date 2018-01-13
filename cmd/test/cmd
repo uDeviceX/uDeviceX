@@ -16,7 +16,7 @@ u.run ./udx  2> cmd.out.txt
 
 # TEST: cmd.t4
 export UHOST=daint DRYRUN= MEM="-a -b"
-u.batch ./udx 2> cmd.out.txt
+u.batch ./udx 2>&1 | awk '{gsub(/\.[0-9]*\./, ""); print}' > cmd.out.txt
 
 # TEST: cmd.t5
 export UHOST=daint DRYRUN= VAL=
