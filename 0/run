@@ -26,8 +26,8 @@ sfree1
 shift=inf; force
 
 Domain="XS=$xs YS=$ys ZS=$zs walls wall_creation=1000"
-d=$SCRATCH/ath/a$adpd/kb$kb/$v/e
-time=24:00:00; run
+d=$SCRATCH/ath/a$adpd/kb$kb/$v/f
+time=01:00:00; run
 
 export S="$s"
 u.case                             \

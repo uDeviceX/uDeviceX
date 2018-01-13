@@ -103,6 +103,11 @@ strt1 () {
 }
 
 ae () { awk 'BEGIN {print '"$@"'}'; }
+fe () { # float expression
+    local r
+    r=`ae "$@"`
+    printf "%12.6e" "$r"
+}
 
 ## fill with RBCs
 part () { rx=$lx          ry=`ae $ly/3`   rz=$lz; }
@@ -122,7 +127,7 @@ force0 () { # uses $vx $vy
 vcon = {
      active = true;
      type   = "cart";
-     U      = [$vx, $vy, 0.0];
+     U      = [`fe $vx`, `fe $vy`, `fe 0`];
      log_freq    = 500;
      adjust_freq = 1000;
      sample_freq = 100;
@@ -156,5 +161,5 @@ sfree1() {
 }
 
 run () {
-    Run="u.batch     $nx $ny $nz ./udx $time"
+    Run="u.batch     $nx $ny $nz ./udx $time conf.cfg"
 }
