@@ -23,7 +23,7 @@ int post_send(const hBags *b, Comm *com) {
         cap = b->capacity[i];
         n = c * b->bsize;
         tag = i;
-        //      if (c > cap) UC(fail_over(i, c, cap));
+        if (c > cap) UC(fail_over(i, c, cap));
         MC(m::Isend(b->data[i], n, MPI_BYTE, com->ranks[i], tag, com->cart, com->sreq + i));
     }
     return 0;
