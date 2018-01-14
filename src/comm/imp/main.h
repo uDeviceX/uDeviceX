@@ -23,7 +23,7 @@ int post_send(const hBags *b, Comm *com) {
         cap = b->capacity[i];
         n = c * b->bsize;
         tag = i;
-        //if (c > cap) UC(fail_over(i, c, cap));
+        if (c > cap) UC(fail_over(i, c, cap));
         MC(m::Isend(b->data[i], n, MPI_BYTE, com->ranks[i], tag, com->cart, com->sreq + i));
     }
     return 0;
@@ -53,6 +53,7 @@ static void fail_wait_normal(int code) {
     ERR(msg);
 }
 static void fail_wait_status(int n, MPI_Status *ss) {
+    /* get error message from status */
     enum {X, Y, Z};
     int i, sz, code, d[3];
     char msg[BUFSIZ];
