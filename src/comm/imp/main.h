@@ -9,8 +9,12 @@ int post_recv(hBags *b, Comm *com) {
 }
 
 static void assert_over(int i, long c, long cap) {
+    enum {X, Y, Z};
+    int d[3];
     if (c <= cap) return;
-    ERR("sending more than capacity in fragment %d : %ld/%ld", i, c, cap);
+    d[X] = frag_i2dx(i); d[Y] = frag_i2dy(i); d[Z] = frag_i2dz(i);
+    ERR("over capacity in send, fragment %d = [%d %d %d]: %ld/%ld",
+        i, d[X], d[Y], d[Z], c, cap);
 }
 int post_send(const hBags *b, Comm *com) {
     int i, n, c, cap, tag;
