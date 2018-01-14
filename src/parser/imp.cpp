@@ -189,7 +189,8 @@ static bool lookup_float3(const Config *c, const char *desc, float3 *a) {
     int n;
     float f[3];
     bool ret = lookup_vfloat(c, desc, &n, f);
-    if (n != 3) ERR("fail to read `%s`: float3 must have 3 components, found %d", desc, n);
+    if (n != 3)
+        ERR("fail to read `%s`: float3 must have 3 components, found %d", desc, n);
     a->x = f[X];
     a->y = f[Y];
     a->z = f[Z];
