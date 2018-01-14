@@ -60,9 +60,8 @@ static void fail_wait_status(int n, MPI_Status *ss) {
         code = ss[i].MPI_ERROR;
         if (m::is_success(code) || m::is_pending(code)) continue;
         m::Error_string(code, msg, &sz);
-        msg_print(msg);
+        ERR(msg);
     }
-    ERR("0");
 }
 static void fail_wait(int code, int n, MPI_Status *ss) {
     if (m::is_err_in_status(code)) UC(fail_wait_status(n, ss));
