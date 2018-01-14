@@ -1,0 +1,15 @@
+#### Double poiseuille
+# cTEST: fail.capacity
+:
+set -eu
+S=`pwd` U=u/x C=conf/double.poiseuille.h
+Force="bforce={type=\"double_poiseuille\"; a=6.6666667;};"
+u.conf $S $U $C <<!
+   tend=2.01
+   part_dumps part_freq=4000
+   field_dumps field_freq=4000
+   run
+!
+{ make clean && u.make -j; } > .make.log
+u.run ./udx $Force
+u.avgh5 0 u 1 h5/flowfields-0001.h5 | uscale 0.1 > h5.out.txt
