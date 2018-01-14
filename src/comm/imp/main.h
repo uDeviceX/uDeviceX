@@ -53,14 +53,17 @@ static void fail_wait_normal(int code) {
     ERR(msg);
 }
 static void fail_wait_status(int n, MPI_Status *ss) {
-    int i, sz, code;
+    enum {X, Y, Z};
+    int i, sz, code, d[3];
     char msg[BUFSIZ];
     MPI_Status s;
     for (i = 0; i < n; i++) {
         code = ss[i].MPI_ERROR;
         if (m::is_success(code) || m::is_pending(code)) continue;
+        d[X] = frag_i2dx(i); d[Y] = frag_i2dy(i); d[Z] = frag_i2dz(i);
         m::Error_string(code, msg, &sz);
-        ERR("mpi error in frag = %d, %s", i, msg);
+        ERR("mpi error in fragment %d = [%d %d %d], %s", i,
+            d[X], d[Y], d[Z], msg);
     }
 }
 static void fail_wait(int code, int n, MPI_Status *ss) {
