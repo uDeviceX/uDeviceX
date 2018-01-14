@@ -63,7 +63,7 @@ static void read_args(int argc, char **argv, /**/ config_t *c) {
 
    concatenate(argc, argv, /**/ args);
    if (!config_read_string(c, args)) {
-       msg_print("read_args: %s", args);
+       msg_print("read args: %s", args);
        ERR("arguments: %d - %s\n",
            config_error_line(c), config_error_text(c));
    }
