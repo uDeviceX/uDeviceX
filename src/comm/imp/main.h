@@ -24,7 +24,7 @@ int post_send(const hBags *b, Comm *com) {
         n = c * b->bsize;
         tag = i;
 
-        UC(assert_over(i, c, cap));
+        //        UC(assert_over(i, c, cap));
         MC(m::Isend(b->data[i], n, MPI_BYTE, com->ranks[i], tag, com->cart, com->sreq + i));
     }
     return 0;
