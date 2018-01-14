@@ -23,7 +23,7 @@ int post_send(const hBags *b, Comm *com) {
         cap = b->capacity[i];
         n = c * b->bsize;
         tag = i;
-        if (c > cap) UC(fail_over(i, c, cap));
+        //      if (c > cap) UC(fail_over(i, c, cap));
         MC(m::Isend(b->data[i], n, MPI_BYTE, com->ranks[i], tag, com->cart, com->sreq + i));
     }
     return 0;
@@ -58,13 +58,14 @@ static void fail_wait_status(int n, MPI_Status *ss) {
     int i, sz, code, d[3];
     char msg[BUFSIZ];
     for (i = 0; i < n; i++) {
-        code = ss[i].MPI_ERROR;
+        code = m::status2errcode(&ss[i]);
         if (m::is_success(code) || m::is_pending(code)) continue;
         d[X] = frag_i2dx(i); d[Y] = frag_i2dy(i); d[Z] = frag_i2dz(i);
         m::Error_string(code, msg, &sz);
         ERR("mpi error in fragment %d = [%d %d %d], %s", i,
             d[X], d[Y], d[Z], msg);
     }
+    ERR("assert");
 }
 static void fail_wait(int code, int n, MPI_Status *ss) {
     if (m::is_err_in_status(code)) UC(fail_wait_status(n, ss));

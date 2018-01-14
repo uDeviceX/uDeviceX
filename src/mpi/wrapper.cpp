@@ -139,4 +139,5 @@ int is_success(int errorcode) { return errorcode == MPI_SUCCESS; }
 int is_pending(int errorcode) { return errorcode == MPI_ERR_PENDING; }
 int is_err_in_status(int errorcode) { return errorcode == MPI_ERR_IN_STATUS; }
 
+int status2errcode(MPI_Status *status) { return status->MPI_ERROR; }
 }

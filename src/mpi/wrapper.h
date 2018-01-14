@@ -34,7 +34,10 @@ int Get_count(const MPI_Status *status, MPI_Datatype datatype, int *count);
 int Error_string(int errorcode, char *string, int *resultlen);
 
 bool is_master(MPI_Comm comm);
+
 int is_success(int errorcode);
 int is_pending(int errorcode);
 int is_err_in_status(int errorcode);
+
+int status2errcode(MPI_Status *status);
 }
