@@ -8,6 +8,10 @@ int post_recv(hBags *b, Comm *com) {
     return 0;
 }
 
+static void assert_over(int i, long c, long cap) {
+    if (c <= cap) return;
+    ERR("sending more than capacity in fragment %d : %ld/%ld", i, c, cap);
+}
 int post_send(const hBags *b, Comm *com) {
     int i, n, c, cap, tag;
     for (i = 0; i < NFRAGS; ++i) {
@@ -16,8 +20,7 @@ int post_send(const hBags *b, Comm *com) {
         n = c * b->bsize;
         tag = i;
 
-        if (c > cap)
-            ERR("sending more than capacity in fragment %d : (%ld / %ld)", i, (long) c, (long) cap);
+        UC(assert_over(i, c, cap));
         MC(m::Isend(b->data[i], n, MPI_BYTE, com->ranks[i], tag, com->cart, com->sreq + i));
     }
     return 0;
