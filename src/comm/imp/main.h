@@ -52,8 +52,18 @@ static void fail_wait_normal(int code) {
     m::Error_string(code, msg, &sz);
     ERR(msg);
 }
+static void fail_wait_status(int n, MPI_Status *ss) {
+    int i, sz;
+    char msg[BUFSIZ];
+    MPI_Status s;
+    for (i = 0; i < n; i++) {
+        s = ss[i];
+        msg_print("MPI_ERROR: %d", s.MPI_ERROR);
+    }
+}
 static void fail_wait(int code, int n, MPI_Status *ss) {
-    if (m::is_err_in_status(code)) UC(fail_wait_normal(code));
+    if (m::is_err_in_status(code)) UC(fail_wait_status(n, ss));
+    else  UC(fail_wait_normal(code));
 }
 int wait_recv(Comm *com, /**/ hBags *b) {
     int errorcode;
