@@ -125,6 +125,10 @@ int Get_count(const MPI_Status *status, MPI_Datatype datatype, int *count) {
     return MPI_Get_count(status, datatype, count);
 }
 
+int Error_string(int errorcode, char *string, int *resultlen) {
+    return MPI_Error_string(errorcode, string, resultlen);
+}
+
 bool is_master(MPI_Comm comm) {
     int rank;
     Comm_rank(comm, &rank);
