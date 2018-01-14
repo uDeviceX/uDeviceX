@@ -57,7 +57,6 @@ static void fail_wait_status(int n, MPI_Status *ss) {
     enum {X, Y, Z};
     int i, sz, code, d[3];
     char msg[BUFSIZ];
-    MPI_Status s;
     for (i = 0; i < n; i++) {
         code = ss[i].MPI_ERROR;
         if (m::is_success(code) || m::is_pending(code)) continue;
