@@ -34,4 +34,5 @@ int Get_count(const MPI_Status *status, MPI_Datatype datatype, int *count);
 int Error_string(int errorcode, char *string, int *resultlen);
 
 bool is_master(MPI_Comm comm);
+int  is_success(int errorcode);
 }

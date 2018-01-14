@@ -134,4 +134,7 @@ bool is_master(MPI_Comm comm) {
     Comm_rank(comm, &rank);
     return rank == 0;
 }
+
+int is_success(int errorcode) { return errorcode == MPI_SUCCESS; }
+
 }
