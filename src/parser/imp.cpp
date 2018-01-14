@@ -62,9 +62,11 @@ static void read_args(int argc, char **argv, /**/ config_t *c) {
    UC(emalloc(MAX_CHAR * sizeof(char), (void **) &args));
 
    concatenate(argc, argv, /**/ args);
-   if (!config_read_string(c, args))
-       ERR( "arguments: %d - %s\n",
-            config_error_line(c), config_error_text(c));
+   if (!config_read_string(c, args)) {
+       msg_print("reading: %s", args);
+       ERR("arguments: %d - %s\n",
+           config_error_line(c), config_error_text(c));
+   }
 
    UC(efree(args));
 }
