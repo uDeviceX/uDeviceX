@@ -136,5 +136,6 @@ bool is_master(MPI_Comm comm) {
 }
 
 int is_success(int errorcode) { return errorcode == MPI_SUCCESS; }
+int is_err_in_status(int errorcode) { return errorcode == MPI_ERR_IN_STATUS; }
 
 }

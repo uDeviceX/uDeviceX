@@ -46,9 +46,21 @@ static void get_counts(const MPI_Status ss[NFRAGS], /**/ hBags *b) {
     }
 }
 
+static void fail_wait(int code, int n, MPI_Status *ss) {
+    int sz;
+    char msg[BUFSIZ];
+    if (m::is_err_in_status(code)) {
+        m::Error_string(code, msg, &sz);
+        ERR(msg);
+    } else {
+        
+    }
+}
 int wait_recv(Comm *com, /**/ hBags *b) {
+    int errorcode;
     MPI_Status ss[NFRAGS];
-    MC(m::Waitall(NFRAGS, com->rreq, /**/ ss));
+    errorcode = m::Waitall(NFRAGS, com->rreq, /**/ ss);
+    if (!m::is_success(errorcode)) fail_wait(errorcode, NFRAGS, ss);
     get_counts(ss, /**/ b);
     return 0;
 }
