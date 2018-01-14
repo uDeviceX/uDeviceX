@@ -125,9 +125,19 @@ int Get_count(const MPI_Status *status, MPI_Datatype datatype, int *count) {
     return MPI_Get_count(status, datatype, count);
 }
 
+int Error_string(int errorcode, char *string, int *resultlen) {
+    return MPI_Error_string(errorcode, string, resultlen);
+}
+
 bool is_master(MPI_Comm comm) {
     int rank;
     Comm_rank(comm, &rank);
     return rank == 0;
 }
+
+int is_success(int errorcode) { return errorcode == MPI_SUCCESS; }
+int is_pending(int errorcode) { return errorcode == MPI_ERR_PENDING; }
+int is_err_in_status(int errorcode) { return errorcode == MPI_ERR_IN_STATUS; }
+
+int status2errcode(MPI_Status *status) { return status->MPI_ERROR; }
 }

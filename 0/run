@@ -7,15 +7,15 @@ s=../src
 u=u/safe
 c=$s/conf/lina.h
 
-kb=$1; shift
-v=$1;  shift
+kb="$1"; shift
+v="$1";  shift
 
 # domain types: oneA,    oneB, cyl, cyl3, narrow small, normal, big, ath_big
 ath_big
-dt=0.001 ath_dpd
+dt=0.001; adpd=8; ath_dpd
 
 nv=642 sc=0.60 radius=3.2
-strt1
+rst=ath/s/kb$kb/7; strt1
 rbc1
 
 freq=20000
@@ -26,14 +26,15 @@ sfree1
 shift=inf; force
 
 Domain="XS=$xs YS=$ys ZS=$zs walls wall_creation=1000"
-d=$SCRATCH/ath/kb$kb/$v/d
-time=24:00:00 run
+d=$SCRATCH/ath/a$adpd/kb$kb/$v/f
+time=01:00:00; run
 
 export S="$s"
 u.case                             \
 -d "$d"                            \
 -f rbc.stress.free rbc.stress.free \
 -f rbc.off     rbc.off             \
+-f conf.cfg    conf.cfg            \
 -f rbcs-ic.txt rbcs-ic.txt         \
 -b "$RestartB1"                    \
 -b "$RestartB2"                    \

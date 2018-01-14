@@ -62,9 +62,11 @@ static void read_args(int argc, char **argv, /**/ config_t *c) {
    UC(emalloc(MAX_CHAR * sizeof(char), (void **) &args));
 
    concatenate(argc, argv, /**/ args);
-   if (!config_read_string(c, args))
-       ERR( "arguments: %d - %s\n",
-            config_error_line(c), config_error_text(c));
+   if (!config_read_string(c, args)) {
+       msg_print("read args: %s", args);
+       ERR("%d - %s\n",
+           config_error_line(c), config_error_text(c));
+   }
 
    UC(efree(args));
 }
@@ -189,7 +191,8 @@ static bool lookup_float3(const Config *c, const char *desc, float3 *a) {
     int n;
     float f[3];
     bool ret = lookup_vfloat(c, desc, &n, f);
-    if (n != 3) ERR("float3 must have 3 components");
+    if (n != 3)
+        ERR("fail to read `%s`: float3 must have 3 components, found %d", desc, n);
     a->x = f[X];
     a->y = f[Y];
     a->z = f[Z];

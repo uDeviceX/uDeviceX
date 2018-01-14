@@ -4,13 +4,33 @@ msg ()  { printf '%s\n' "$*" >&2; }
 err ()  { msg "$@"; exit 1; }
 
 # "intermediate"
-exec0() { exec "$@"; }
+exec0 () { exec "$@"; }
 
-exec1() { # "ultimate" : respects DRYRUN
+exec1 () { # "ultimate" : respects DRYRUN
     msg cmd: "$@"
     if test -z ${DRYRUN+x}
     then exec "$@"
     fi
+}
+
+exec2 () { # "intermediate" : respects DRYRUN
+    msg cmd: "$@"
+    if test -z "${DRYRUN+x}"
+    then eval "$@"
+    fi
+}
+
+exec_stdin() { # +dump stdin
+    local t r
+    t=/tmp/u.$$.stdin; >$t
+    trap 'rm $t' 1 2 3 4 15
+    msg cmd: "$@"
+    cat          >$t
+    "${AWK-awk}" >&1 '{print ":", $0}' $t
+    exec2 "$@" $t
+    r=$?
+    rm $t
+    return $r
 }
 
 module1() { # "ultimate" : respects DRYRUN

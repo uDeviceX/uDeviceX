@@ -222,6 +222,12 @@ static void read_opt(const Config *c, Opt *o) {
     o->vcon = b;
 }
 
+static void coords_log(Coords *c) {
+    msg_print("domain: %d %d %d", xdomain(*c), ydomain(*c), zdomain(*c));
+    msg_print("subdomain: [%d:%d][%d:%d][%d:%d]",
+              xlo(*c), xhi(*c), ylo(*c), yhi(*c), zlo(*c), zhi(*c));
+}
+
 void sim_ini(int argc, char **argv, MPI_Comm cart, /**/ Sim **sim) {
     Sim *s;
     UC(emalloc(sizeof(Sim), (void**) sim));
@@ -238,6 +244,7 @@ void sim_ini(int argc, char **argv, MPI_Comm cart, /**/ Sim **sim) {
     UC(read_opt(s->cfg, &s->opt));
     
     UC(coords_ini(s->cart, /**/ &s->coords));
+    coords_log(&s->coords);
     
     UC(emalloc(3 * MAX_PART_NUM * sizeof(Particle), (void**) &s->pp_dump));
     

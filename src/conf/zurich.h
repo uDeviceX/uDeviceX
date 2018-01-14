@@ -16,7 +16,6 @@
 #define rbc_mass         0.5        /* RBC particle mass     */
 #define solid_mass       0.5        /* solid particle mass   */
 #define WVEL_PAR_A        5.0        /* shear rate */
-#define FORCE_PAR_A      0.6        /* flow acceleration */
 
 #define adpd_b         2
 #define adpd_r          2

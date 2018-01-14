@@ -5,9 +5,12 @@
 #error vcon has runtime parameters now!
 #endif
 
+#if defined(FORCE_PAR_A)
+#error bforce has runtime parameters now!
+#endif
 
 /* how wall velocity is changing in time?  */
-#if !defined(WVEL_FLAT) && !defined(WVEL_DUPIRE_UP) && !defined(WVEL_DUPIRE_DOWN) && !defined(WVEL_SIN)
+#if !defined(WVEL_FLAT) && !defined(WVEL_SIN)
   #define WVEL_FLAT
 #endif
 #ifndef WVEL_LOG_FREQ

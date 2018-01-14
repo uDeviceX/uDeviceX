@@ -13,6 +13,6 @@ $B/u/mesh/main.o: $B/conf.h $S/d/api.h $S/inc/conf.h $S/inc/def.h $S/inc/dev.h $
 $B/utils/cc.o: $B/conf.h $S/d/api.h $S/inc/conf.h $S/utils/cc/common.h $S/utils/error.h
 $B/utils/error.o: $S/utils/error.h $S/utils/msg.h
 $B/utils/imp.o: $S/utils/error.h $S/utils/imp.h
-$B/utils/mc.o: $B/conf.h $S/inc/conf.h $S/utils/error.h $S/utils/mc.h
+$B/utils/mc.o: $B/conf.h $S/inc/conf.h $S/mpi/wrapper.h $S/utils/error.h $S/utils/mc.h
 $B/utils/msg.o: $S/utils/msg.h
 $B/utils/os.o: $S/utils/error.h $S/utils/msg.h $S/utils/os.h

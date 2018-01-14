@@ -8,6 +8,14 @@ int post_recv(hBags *b, Comm *com) {
     return 0;
 }
 
+static void fail_over(int i, long c, long cap) {
+    enum {X, Y, Z};
+    int d[3];
+    d[X] = frag_i2dx(i); d[Y] = frag_i2dy(i); d[Z] = frag_i2dz(i);
+    ERR("over capacity, fragment %d = [%d %d %d]: %ld/%ld",
+        i, d[X], d[Y], d[Z], c, cap);
+}
+
 int post_send(const hBags *b, Comm *com) {
     int i, n, c, cap, tag;
     for (i = 0; i < NFRAGS; ++i) {
@@ -15,9 +23,7 @@ int post_send(const hBags *b, Comm *com) {
         cap = b->capacity[i];
         n = c * b->bsize;
         tag = i;
-
-        if (c > cap)
-            ERR("sending more than capacity in fragment %d : (%ld / %ld)", i, (long) c, (long) cap);
+        if (c > cap) UC(fail_over(i, c, cap));
         MC(m::Isend(b->data[i], n, MPI_BYTE, com->ranks[i], tag, com->cart, com->sreq + i));
     }
     return 0;
@@ -29,20 +35,47 @@ static void get_counts_bytes(const MPI_Status ss[NFRAGS], /**/ int counts[NFRAGS
 }
 
 static void get_counts(const MPI_Status ss[NFRAGS], /**/ hBags *b) {
-    int i, c, cc[NFRAGS];
+    int cap, i, c, cc[NFRAGS];
     get_counts_bytes(ss, /**/ cc);
 
     for (i = 0; i < NFRAGS; ++i) {
         c = cc[i] / b->bsize;
         b->counts[i] = c;
-        if (c > b->capacity[i])
-            ERR("recv more than capacity in fragment %d : (%ld / %ld)", i, (long) c, (long) b->capacity[i]);
+        cap = b->capacity[i];
+        if (c > cap) UC(fail_over(i, c, cap));
     }
 }
 
+static void fail_wait_normal(int code) {
+    int sz;
+    char msg[BUFSIZ];
+    m::Error_string(code, msg, &sz);
+    ERR(msg);
+}
+static void fail_wait_status(int n, MPI_Status *ss) {
+    /* get error message from status */
+    enum {X, Y, Z};
+    int i, sz, code, d[3];
+    char msg[BUFSIZ];
+    for (i = 0; i < n; i++) {
+        code = m::status2errcode(&ss[i]);
+        if (m::is_success(code) || m::is_pending(code)) continue;
+        d[X] = frag_i2dx(i); d[Y] = frag_i2dy(i); d[Z] = frag_i2dz(i);
+        m::Error_string(code, msg, &sz);
+        ERR("mpi error in fragment %d = [%d %d %d], %s", i,
+            d[X], d[Y], d[Z], msg);
+    }
+    ERR("assert");
+}
+static void fail_wait(int code, int n, MPI_Status *ss) {
+    if (m::is_err_in_status(code)) UC(fail_wait_status(n, ss));
+    else  UC(fail_wait_normal(code));
+}
 int wait_recv(Comm *com, /**/ hBags *b) {
+    int errorcode;
     MPI_Status ss[NFRAGS];
-    MC(m::Waitall(NFRAGS, com->rreq, /**/ ss));
+    errorcode = m::Waitall(NFRAGS, com->rreq, /**/ ss);
+    if (!m::is_success(errorcode)) fail_wait(errorcode, NFRAGS, ss);
     get_counts(ss, /**/ b);
     return 0;
 }

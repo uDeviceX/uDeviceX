@@ -6,6 +6,14 @@ prog=u.punto.dt
 # input, sorted, rest
 . u.punto.util
 
+usg () {
+    msg "$prog"' n PUNTO.FILE'
+    msg 'add dx, dy, dz to the PUNTO.FILE'
+    msg 'd[xyz] = [xyz](time=n) - [xyz](time=0)'
+    exit
+}
+if test $# -ne 0 && test "$1" = -h; then usg; fi
+
 assert_arg "expect n" "$@";          n="$1"; shift
 assert_arg "expect PUNTO.FILE" "$@"; i="$1"; shift
 

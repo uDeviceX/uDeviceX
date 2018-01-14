@@ -2,7 +2,7 @@ if test `u.host` = panda
 then
     PACH=/scratch/lisergey/geoms/pachinko
 else
-    PACH=/scratch/snx3000/lisergey/pachinko    
+    PACH=/scratch/snx3000/lisergey/pachinko
 fi
 
 ath_g_big () {
@@ -84,7 +84,10 @@ ath_big    () { nx=20 ny=5 nz=1; ath_g_big; part; bop0; }
 msg ()    { echo >&2 ": $@"; }
 
 ath_dpd ()    {
-    DPD="gdpd_b=16.0 gdpd_r=80.0 gdpd_br=48.0 dt=$dt"
+    local dt0 f0 f
+    dt0=0.001 f0=20000
+    f=`ae "int(${f0}*${dt0}/${dt})"`
+    DPD="gdpd_b=16.0 gdpd_r=80.0 gdpd_br=48.0    adpd_b=$adpd adpd_br=$adpd adpd_r=$adpd dt=$dt part_freq=$f"
 }
 dpd () { DPD="dt=1e-4" ; }
 
@@ -96,10 +99,15 @@ strt0 () {
 strt1 () {
     Restart="strt_dumps strt_freq=100000 RESTART=true"
     RestartB1="mkdir -p h5"
-    RestartB2="cp -r /scratch/snx3000/lisergey/ath/kb$kb/$v/s2 strt"
+    RestartB2="cp -r /scratch/snx3000/lisergey/$rst strt"
 }
 
 ae () { awk 'BEGIN {print '"$@"'}'; }
+fe () { # float expression
+    local r
+    r=`ae "$@"`
+    printf "%12.6e" "$r"
+}
 
 ## fill with RBCs
 part () { rx=$lx          ry=`ae $ly/3`   rz=$lz; }
@@ -115,11 +123,18 @@ plcmt () { # uses rx, ry, rz: [r]bc region
 }
 
 force0 () { # uses $vx $vy
-    local a b c
-    a="VCON=true VCON_SAMPLE_FREQ=100 VCON_LOG_FREQ=500 VCON_ADJUST_FREQ=1000"
-    b="VCON_VX=$vx VCON_VY=$vy"
-    c="FORCE_CONSTANT FORCE_PAR_A=0"
-    Force="$a $b $c"
+    cat > conf.cfg <<!
+vcon = {
+     active = true;
+     type   = "cart";
+     U      = [`fe $vx`, `fe $vy`, `fe 0`];
+     log_freq    = 500;
+     adjust_freq = 1000;
+     sample_freq = 100;
+};
+!
+    local a b
+    Force="FORCE_CONSTANT FORCE_PAR_A=0"
 }
 force () { # uses $v and $shift
     if test $shift = inf
@@ -146,5 +161,5 @@ sfree1() {
 }
 
 run () {
-    Run="u.batch     $nx $ny $nz ./udx $time"
+    Run="u.batch     $nx $ny $nz ./udx $time conf.cfg"
 }
