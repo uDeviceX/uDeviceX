@@ -58,7 +58,7 @@ static void fail_wait_status(int n, MPI_Status *ss) {
     MPI_Status s;
     for (i = 0; i < n; i++) {
         code = ss[i].MPI_ERROR;
-        if (m::is_success(code)) continue;
+        if (m::is_success(code) || m::is_pending(code)) continue;
         m::Error_string(code, msg, &sz);
         msg_print(msg);
     }
