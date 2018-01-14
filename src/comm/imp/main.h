@@ -60,7 +60,7 @@ static void fail_wait_status(int n, MPI_Status *ss) {
         code = ss[i].MPI_ERROR;
         if (m::is_success(code) || m::is_pending(code)) continue;
         m::Error_string(code, msg, &sz);
-        ERR("mpi error in frag = %d, %s", msg);
+        ERR("mpi error in frag = %d, %s", i, msg);
     }
 }
 static void fail_wait(int code, int n, MPI_Status *ss) {
