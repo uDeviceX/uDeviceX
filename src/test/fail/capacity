@@ -3,7 +3,7 @@
 :
 set -eu
 S=`pwd` U=u/x C=conf/double.poiseuille.h
-Force="bforce={type=\"double_poiseuille\"; a=6.6666667;};"
+Force="bforce={type=\"constant\"; f = [1e5, 0.0, 0.0];};"
 u.conf $S $U $C <<!
    tend=2.01
    part_dumps part_freq=4000
