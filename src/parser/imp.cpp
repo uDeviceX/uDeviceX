@@ -12,6 +12,7 @@
 
 // tag::struct[]
 enum {
+    EXE, /* from program         */
     ARG, /* from arguments       */
     OPT, /* from additional file */
     DEF, /* from default file    */
