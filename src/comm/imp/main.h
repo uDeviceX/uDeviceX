@@ -60,7 +60,7 @@ static void fail_wait_status(int n, MPI_Status *ss) {
     for (i = 0; i < n; i++) {
         code = ss[i].MPI_ERROR;
         if (m::is_success(code) || m::is_pending(code)) continue;
-        d[X] = frag_i2dx(13); d[Y] = frag_i2dy(13); d[Z] = frag_i2dz(13);
+        d[X] = frag_i2dx(i); d[Y] = frag_i2dy(i); d[Z] = frag_i2dz(i);
         m::Error_string(code, msg, &sz);
         ERR("mpi error in fragment %d = [%d %d %d], %s", i,
             d[X], d[Y], d[Z], msg);
