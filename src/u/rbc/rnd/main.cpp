@@ -12,18 +12,6 @@
 
 #include "rbc/rnd/imp.h"
 
-static int    argc;
-static char **argv;
-
-/* left shift */
-void lshift() {
-    argc--;
-    if (argc < 1) {
-        fprintf(stderr, "u/rbc/rnd: not enough args\n");
-        exit(2);
-    }
-}
-
 void main0(RbcRnd *rnd, int n) {
     int i;
     float x;
@@ -45,16 +33,10 @@ void main1() {
     rbc_rnd_fin(rnd);
 }
 
-void main2() {
+int main(int argc, char **argv) {
     m::ini(&argc, &argv);
     msg_ini(m::rank);
     msg_print("mpi size: %d", m::size);
     main1();
-    m::fin();
-}
-
-int main(int argc0, char **argv0) {
-    argc = argc0;
-    argv = argv0;
-    main2();
+    m::fin();    
 }
