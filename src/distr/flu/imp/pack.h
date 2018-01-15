@@ -39,8 +39,6 @@ static int check_counts(int nfrags, const int *counts, const hBags *hpp, /**/ Ex
         cap = comm_get_number_capacity(fid, hpp);
         if (cnt > cap) {
             e->cap = cap; e->cnt = cnt; e->fid = fid;
-            msg_print("cnt: %d", e->cnt);
-            msg_print("cap: %d", e->cap);
             return FAIL;
         }        
     }
@@ -51,7 +49,7 @@ static void fail_exceed(ExceedData *e) {
     int cap, cnt, fid, d[3];
     cap = e->cap; cnt = e->cnt; fid = e->fid;
     d[X] = frag_i2dx(fid); d[Y] = frag_i2dy(fid); d[Z] = frag_i2dz(fid);
-    ERR("exceed capacity, fragment %d = [%d %d %d]: %ld/%ld",
+    ERR("exceed capacity, fragment %d = [%d %d %d]: %d/%d",
         fid, d[X], d[Y], d[Z], cnt, cap);
 }
 static void dflu_download0(DFluPack *p) {
