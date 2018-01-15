@@ -43,8 +43,7 @@ static void check_counts(int nfrags, const int *counts, const hBags *hpp) {
                 i, f[X], f[Y], f[Z], c, cap);
     }
 }
-
-void dflu_download(DFluPack *p) {
+void dflu_download(DFluPack *p, DFluStatus *s) {
     const size_t sz = NFRAGS * sizeof(int);
     const int *counts = p->map.hcounts;
     check_counts(NFRAGS, counts, &p->hpp);

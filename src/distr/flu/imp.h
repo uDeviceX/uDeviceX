@@ -1,6 +1,7 @@
 struct DFluPack;
 struct DFluComm;
 struct DFluUnpack;
+struct DFluStatus;
 
 // tag::interface[]
 void dflu_pack_ini(int maxdensity, DFluPack **p);
@@ -16,8 +17,7 @@ void dflu_build_map(int n, const PartList lp, DFluPack *p);
 
 /* pack */
 void dflu_pack(const FluQuants *q, /**/ DFluPack *p);
-
-void dflu_download(DFluPack *p);
+void dflu_download(DFluPack *p, /**/ DFluStatus *s);
 
 /* communication */
 void dflu_post_recv(DFluComm *c, DFluUnpack *u);
