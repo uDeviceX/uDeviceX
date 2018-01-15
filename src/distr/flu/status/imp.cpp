@@ -28,7 +28,6 @@ int  dflu_status_success(DFluStatus *s) {
     return s->errorcode == SUCCESS;
 }
 
-static void success() { msg_print("DFluStatus: SUCCESS"); }
 static void pack_failure(DFluStatus *s) {
     enum {X, Y, Z};
     int cap, cnt, fid, d[3];
@@ -39,10 +38,10 @@ static void pack_failure(DFluStatus *s) {
 }
 void dflu_status_log(DFluStatus *s) {
     int code;
-    if (s == NULL) success();
+    if (s == NULL) msg_print("DFluStatus: s == NULL");
     else {
         code = s->errorcode;
-        if      (code == SUCCESS)      success();
+        if      (code == SUCCESS)      msg_print("DFluStatus: SUCCESS");
         else if (code == PACK_FAILURE) pack_failure(s);
         else ERR("unknown errorcode = %d\n", code);
     }
