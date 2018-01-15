@@ -30,7 +30,7 @@ static __device__ float3 fspring(RbcParams_v par, float3 x21, float l0) {
     float m;
     float  r, fwlc, fpow, lmax, kbT, p, x0;
     float3 f;
-    kbT = par.kBT0; p = par.p; m = RBCmpow; x0 = par.x0;
+    kbT = par.kBT0; p = par.p; m = par.mpow; x0 = par.x0;
     r = sqrtf(dot<float>(&x21, &x21));
     lmax = l0 / x0;
     fwlc =   wlc_r(r); /* make fwlc + fpow = 0 for r = l0 */
@@ -62,7 +62,7 @@ static __device__ float3 tri0(RbcParams_v par, float3 r1, float3 r2, float3 r3,
 }
 
 static __device__ float3 visc(RbcParams_v par, float3 r1, float3 r2, float3 u1, float3 u2) {
-    const float gammaC = par.gammaC, gammaT = RBCgammaT;
+    const float gammaC = par.gammaC, gammaT = par.gammaT;
     float3 du, dr, f = make_float3(0, 0, 0);
     diff(&u2, &u1, /**/ &du);
     diff(&r1, &r2, /**/ &dr);
