@@ -39,7 +39,7 @@ void rbc_params_set_area_volume(float ka, float kd, float kv, RbcParams *p) {
 RbcParams_v rbc_params_get_view(const RbcParams *p) {
     RbcParams_v v;
     v.gammaC = p->gammaC;
-    v.kBT = p->kBT;
+    v.kBT0 = p->kBT;
     v.kb = p->kb;
     v.phi = p->phi;
     v.Cp = p->Cp;
