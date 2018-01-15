@@ -19,4 +19,9 @@ struct DFluUnpack {
     int *iire, *ccre;
     int nhalo; /* number of received particles */
 };
+
+struct DFluStatus {
+    int success;
+    int cap, count;
+};
 // end::struct[]
