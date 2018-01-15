@@ -27,12 +27,12 @@ static void write(int n, Particle *p, Force *f) {
     free(f_hst);
 }
 
-static void run0(RbcQuants q, RbcForce t, RbcParams *par, Force *f) {
+static void run0(RbcQuants q, RbcForce t, const RbcParams *par, Force *f) {
     rbc_force_apply(q, t, par, /**/ f);
     write(q.n, q.pp, f);
 }
 
-static void run1(RbcQuants q, RbcForce t, RbcParams *par) {
+static void run1(RbcQuants q, RbcForce t, const RbcParams *par) {
     Force *f;
     Dalloc(&f, q.n);
     Dzero(f, q.n);
@@ -41,24 +41,20 @@ static void run1(RbcQuants q, RbcForce t, RbcParams *par) {
     Dfree(f);
 }
 
-static void run2(const char *cell, const char *ic, RbcQuants q) {
+static void run2(const char *cell, const char *ic, const RbcParams *par, RbcQuants q) {
     Coords coords;
-    RbcParams *par;
     RbcForce t;
     coords_ini(m::cart, &coords);
     rbc_gen_quants(coords, m::cart, cell, ic, /**/ &q);
     rbc_force_gen(q, &t);
-    rbc_params_ini(&par);
-    ini_rbc_params(par); // TODO
     run1(q, t, par);
     rbc_force_fin(&t);
     coords_fin(&coords);
-    rbc_params_fin(par);
 }
 
-void run(const char *cell, const char *ic) {
+void run(const char *cell, const char *ic, const RbcParams *par) {
     RbcQuants q;
     rbc_ini(&q);
-    run2(cell, ic, q);
+    run2(cell, ic, par, q);
     rbc_fin(&q);
 }

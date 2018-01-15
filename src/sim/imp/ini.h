@@ -156,7 +156,6 @@ static void ini_rbc(const Config *cfg, MPI_Comm cart, /**/ Rbc *r) {
 
     UC(rbc_params_ini(&r->params));
     UC(rbc_params_set_conf(cfg, r->params));
-    ini_rbc_params(r->params); // TODO: remove
 }
 
 static void ini_rig(MPI_Comm cart, /**/ Rig *s) {

@@ -10,4 +10,9 @@ u.conf $S $U $C <<!!!
        run
 !!!
 { u.make -j;     } > /dev/null
-u.run ./udx data/cells/rbc/$nv.off data/ic/two  >  forces.out.txt
+u.run ./udx "
+rbc = {
+    cell = \"data/cells/rbc/$nv.off\"
+    ic = \"data/ic/two\"
+    @include \"rbc.test.cfg\"
+}" >  forces.out.txt

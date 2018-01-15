@@ -3,41 +3,29 @@
 #include <string.h>
 
 #include "mpi/glb.h"
+#include "parser/imp.h"
+#include "rbc/params/imp.h"
 
 /* local */
 #include "lib/imp.h"
 
-static int    argc;
-static char **argv;
-
-void usg() {
-    fprintf(stderr, "usage: ./udx cell.off ic.dat\n");
-    fprintf(stderr, "rbc client\n");
-    exit(1);
-}
-
-/* left shift */
-void lshift() {
-    argc--;
-    if (argc < 1) {
-        fprintf(stderr, "u/rbc/force: not enough args\n");
-        exit(2);
-    }
-}
-
-int eq(const char *a, const char *b) { return strcmp(a, b) == 0; }
-void main1() {
+int main(int argc, char **argv) {
+    Config *cfg;
+    RbcParams *par;
     const char *cell, *ic;
-    ic   = argv[argc - 1]; lshift();
-    cell = argv[argc - 1]; lshift();
-    if (eq(cell, "-h") || eq(ic, "-h")) usg();
     m::ini(&argc, &argv);
-    run(cell, ic);
-    m::fin();
-}
+    conf_ini(&cfg);
+    conf_read(argc, argv, cfg);
 
-int main(int argc0, char **argv0) {
-    argc = argc0;
-    argv = argv0;
-    main1();
+    conf_lookup_string(cfg, "rbc.cell", &cell);
+    conf_lookup_string(cfg, "rbc.ic", &ic);
+
+    rbc_params_ini(&par);
+    rbc_params_set_conf(cfg, par);
+    
+    run(cell, ic, par);
+
+    rbc_params_fin(par);
+    conf_fin(cfg);
+    m::fin();
 }
