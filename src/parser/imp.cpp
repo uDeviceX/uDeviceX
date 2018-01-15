@@ -282,13 +282,16 @@ static config_setting_t* get_subgroup_setting(int n, const char *desc[], config_
 
 void conf_set_int(int n, const char *desc[], int a, Config *cfg) {
     config_t *c;
-    config_setting_t *group, *s;
+    config_setting_t *group, *setting;
+    int status;
     c = &cfg->c[EXE];
     
     group = get_subgroup_setting(n-1, desc, /**/ c);
-    s = subsetting(desc[n-1], CONFIG_TYPE_INT, /**/ group);
+    setting = subsetting(desc[n-1], CONFIG_TYPE_INT, /**/ group);
     
-    config_setting_set_int(s, a);
+    status = config_setting_set_int(setting, a);
+    if (CONFIG_TRUE != status)
+        ERR("could not set <%s>", desc[n-1]);
 }
 
 void conf_write_exe(const Config *cfg, FILE *stream) {
