@@ -38,9 +38,9 @@ static int check_counts(int nfrags, const int *counts, const hBags *hpp, /**/ Ex
         cnt = counts[fid];
         cap = comm_get_number_capacity(fid, hpp);
         if (cnt > cap) {
-            msg_print("cnt: %d", cnt);
-            msg_print("cap: %d", cap);
             e->cap = cap; e->cnt = cnt; e->fid = fid;
+            msg_print("cnt: %d", e->cnt);
+            msg_print("cap: %d", e->cap);
             return FAIL;
         }        
     }
