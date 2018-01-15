@@ -4,7 +4,7 @@ struct RbcParams {
     float kBT;    /* temperature */
     float kb;     /* bending */
     float phi;
-    float Cp;
+    float p;
     float x0;
     float ka;
     float kd;
