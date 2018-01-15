@@ -30,9 +30,24 @@ void dflu_pack(const FluQuants *q, /**/ DFluPack *p) {
     if (multi_solvent) pack_ii(p->map, q->cc, /**/ p->dcc);
 }
 
+static void check_counts(int nfrags, const int *counts, const hBags *hpp) {
+    int i, c, cap;
+    enum {X, Y, Z};
+    
+    for (i = 0; i < nfrags; ++i) {
+        c = counts[i];
+        cap = comm_get_number_capacity(i, hpp);
+        int f[3] = frag_i2d3(i);
+        if (c > cap)
+            ERR("exceed capacity in frag %d = [%d %d %d] : %d / %d",
+                i, f[X], f[Y], f[Z], c, cap);
+    }
+}
+
 void dflu_download(DFluPack *p) {
     const size_t sz = NFRAGS * sizeof(int);
     const int *counts = p->map.hcounts;
+    check_counts(NFRAGS, counts, &p->hpp);
 
     dSync(); /* wait for pack kernels */
     memcpy(p->hpp.counts, counts, sz);
