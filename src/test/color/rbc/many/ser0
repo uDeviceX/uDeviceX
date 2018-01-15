@@ -20,4 +20,4 @@ u.conf $s $u $c <<!
    run
 !
 { make clean && u.make -j; } > make.log
-TIM='-f %e' sh runfile
+TIM='-f %e' u.run ./udx @include \"rbc.test.cfg\"

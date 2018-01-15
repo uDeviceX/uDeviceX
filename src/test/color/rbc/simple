@@ -13,7 +13,7 @@ u.conf conf/double.poiseuille.h <<!!!
    run
 !!!
 { make clean && u.make -j; } > make.log
-sh runfile
+u.run ./udx @include \"rbc.test.cfg\"
 :
 bop2txt2 bop/solvent-00001.bop -- bop/colors_solvent-00001.bop |
   awk '{print $7}' | sort -g > color.out.txt
@@ -35,7 +35,7 @@ u.conf conf/double.poiseuille.h <<!!!
    run
 !!!
 { make clean && u.make -j; } > make.log
-sh runfile
+u.run ./udx @include \"rbc.test.cfg\"
 :
 bop2txt2 bop/solvent-00001.bop -- bop/colors_solvent-00001.bop |
   awk '{print $7}' | sort -g > color.out.txt
