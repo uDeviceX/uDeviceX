@@ -4,13 +4,17 @@
 
 #include "imp.h"
 
+enum {SUCCESS, PACK_FAILURE};
 struct DFluStatus {
-    int success;
+    int errorcode;
     int cap, count;
 };
 
-void dflu_status_ini(DFluStatus **s) {
-    UC(emalloc(sizeof(DFluStatus), (void**)s));
+void dflu_status_ini(DFluStatus **ps) {
+    DFluStatus *s;
+    UC(emalloc(sizeof(DFluStatus), (void**)&s));
+    s->errorcode = 0;
+    *ps = s;
 }
 
 void dflu_status_fin(DFluStatus *s) {
