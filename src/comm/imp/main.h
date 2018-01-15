@@ -85,3 +85,11 @@ int wait_send(Comm *com) {
     MC(m::Waitall(NFRAGS, com->sreq, ss));
     return 0;
 }
+
+int comm_get_number_capacity(int i, const hBags *b) {
+    return b->capacity[i];
+}
+
+size_t comm_get_byte_capacity(int i, const hBags *b) {
+    return b->bsize * comm_get_number_capacity(i, b);
+}

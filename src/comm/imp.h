@@ -50,3 +50,6 @@ int post_send(const hBags *b, Comm *c);     // <2>
 int wait_recv(Comm *c, /**/ hBags *b);      // <3>
 int wait_send(Comm *c);                     // <4>
 // end::communication[]
+
+int    comm_get_number_capacity(int i, const hBags *b);
+size_t comm_get_byte_capacity(int i, const hBags *b);
