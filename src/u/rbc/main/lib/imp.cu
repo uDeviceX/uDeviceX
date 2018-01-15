@@ -21,6 +21,7 @@
 
 #include "glob/type.h"
 
+#include "rbc/params/imp.h"
 #include "rbc/type.h"
 #include "rbc/force/area_volume/imp.h"
 #include "rbc/imp.h"

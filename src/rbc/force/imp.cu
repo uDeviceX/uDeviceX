@@ -18,6 +18,8 @@
 #include "utils/cc.h"
 #include "utils/kl.h"
 
+#include "rbc/params/imp.h"
+
 #include "rbc/rnd/imp.h"
 #include "rbc/type.h"
 

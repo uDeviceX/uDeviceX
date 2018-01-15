@@ -15,35 +15,39 @@ void rbc_params_fin(RbcParams *p) {
     UC(efree(p));
 }
 
-void rbc_params_set_fluct(float gammaC, float kBT, RbcParams *p) {
-    p->gammaC = gammaC;
-    p->kBT = kBT;
+void rbc_params_set_fluct(float gammaC, float gammaT, float kBT, RbcParams *par) {
+    par->gammaC = gammaC;
+    par->gammaT = gammaT;
+    par->kBT = kBT;
 }
 
-void rbc_params_set_bending(float kb, float phi, RbcParams *p) {
-    p->kb = kb;
-    p->phi = phi;
+void rbc_params_set_bending(float kb, float phi, RbcParams *par) {
+    par->kb = kb;
+    par->phi = phi;
 }
 
-void rbc_params_set_spring(float Cp, float x0, RbcParams *p) {
-    p->Cp = Cp;
-    p->x0 = x0;
+void rbc_params_set_spring(float p, float x0, float mpow, RbcParams *par) {
+    par->p  = p;
+    par->x0 = x0;
+    par->mpow = mpow;
 }
 
-void rbc_params_set_area_volume(float ka, float kd, float kv, RbcParams *p) {
-    p->ka = ka;
-    p->kv = kv;
-    p->kd = kd;
+void rbc_params_set_area_volume(float ka, float kd, float kv, RbcParams *par) {
+    par->ka = ka;
+    par->kv = kv;
+    par->kd = kd;
 }
 
 RbcParams_v rbc_params_get_view(const RbcParams *p) {
     RbcParams_v v;
     v.gammaC = p->gammaC;
-    v.kBT = p->kBT;
+    v.gammaT = p->gammaT;
+    v.kBT0 = p->kBT;
     v.kb = p->kb;
     v.phi = p->phi;
-    v.Cp = p->Cp;
+    v.p = p->p;
     v.x0 = p->x0;
+    v.mpow = p->mpow;
     v.ka = p->ka;
     v.kd = p->kd;
     v.kv = p->kv;

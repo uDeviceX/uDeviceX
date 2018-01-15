@@ -152,6 +152,9 @@ static void ini_rbc(MPI_Comm cart, /**/ Rbc *r) {
     UC(ini_rbc_distr(r->q.nv, cart, /**/ &r->d));
     if (rbc_com_dumps) UC(rbc_com_ini(MAX_CELL_NUM, /**/ &r->com));
     if (RBC_STRETCH)   UC(rbc_stretch_ini("rbc.stretch", r->q.nv, /**/ &r->stretch));
+
+    UC(rbc_params_ini(&r->params));
+    ini_rbc_params(r->params); // TODO: remove
 }
 
 static void ini_rig(MPI_Comm cart, /**/ Rig *s) {

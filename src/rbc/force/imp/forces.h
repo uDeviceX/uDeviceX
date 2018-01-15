@@ -7,7 +7,7 @@ static void random(int n, RbcRnd *rnd, /**/ float **r) {
     }
 }
 
-static void apply0(int nc,
+static void apply0(RbcParams_v parv, int nc,
                    const Particle *pp, RbcRnd *rnd,
                    const int *adj0, const int *adj1, const Shape shape,
                    float *av, /**/ Force *ff){
@@ -15,13 +15,25 @@ static void apply0(int nc,
     int md, nv;
     md = RBCmd; nv = RBCnv;
     random(nc * md * nv, rnd, /**/ &rnd0);
-    KL(dev::force, (k_cnf(nc*nv*md)), (md, nv, nc, pp, rnd0,
+    KL(dev::force, (k_cnf(nc*nv*md)), (parv, md, nv, nc, pp, rnd0,
                                        adj0, adj1, shape, av, /**/ (float*)ff));
 }
 
-void rbc_force_apply(const RbcQuants q, const RbcForce t, /**/ Force *ff) {
+/* temporary hack; TODO: remove this */
+void ini_rbc_params(RbcParams *p) {
+    rbc_params_set_fluct(RBCgammaC, RBCgammaT, RBCkbT, p);
+    rbc_params_set_bending(RBCkb, RBCphi, p);
+    rbc_params_set_spring(RBCp, RBCx0, RBCmpow, p);
+    rbc_params_set_area_volume(RBCka, RBCkd, RBCkv, p);
+}
+
+void rbc_force_apply(const RbcQuants q, const RbcForce t, const RbcParams *par, /**/ Force *ff) {
+    RbcParams_v parv;
     if (q.nc <= 0) return;
+
+    parv = rbc_params_get_view(par);
+    
     area_volume::main(q.nt, q.nv, q.nc, q.pp, q.tri, /**/ q.av);
-    apply0(q.nc, q.pp, t.rnd,
+    apply0(parv, q.nc, q.pp, t.rnd,
            q.adj0, q.adj1, q.shape, q.av, /**/ ff);
 }
