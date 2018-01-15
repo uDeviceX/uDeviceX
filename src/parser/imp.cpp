@@ -263,20 +263,30 @@ bool conf_opt_float3(const Config *c, const char *desc, float3 *a) {
     return lookup_float3(c, desc, a);
 }
 
+static config_setting_t* get_subgroup_setting(int n, const char *desc[], config_t *c) {
+    config_setting_t *group, *sub;
+    group = config_root_setting(c);
 
+    for (int i = 0; i < n; ++i) {
+        sub = config_setting_lookup(group, desc[i]);
+        if (NULL == sub)
+            sub = config_setting_add(group, desc[i], CONFIG_TYPE_GROUP);
+        group = sub;
+    }
+    return group;    
+}
 
 void conf_set_int(int n, const char *desc[], int a, Config *cfg) {
     config_t *c;
-    config_setting_t *root, *group, *s;
+    config_setting_t *group, *s;
     c = &cfg->c[EXE];
     
-    root  = config_root_setting(c);
-    group = root;
+    group = get_subgroup_setting(n-1, desc, /**/ c);
 
-    for (int i = 0; i < n - 1; ++i)
-        group = config_setting_add(group, desc[i], CONFIG_TYPE_GROUP);
+    s = config_setting_lookup(group, desc[n-1]);
+    if (NULL == s)
+        s = config_setting_add(group, desc[n-1], CONFIG_TYPE_INT);
     
-    s = config_setting_add(group, desc[n-1], CONFIG_TYPE_INT);
     config_setting_set_int(s, a);
 }
 

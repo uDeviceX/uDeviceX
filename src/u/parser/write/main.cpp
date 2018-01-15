@@ -8,10 +8,10 @@
 enum {MAX_VEC=128};
 
 static void set(Config *c) {
-    // {
-    //     const char *desc[] = {"group", "a"};
-    //     conf_set_int(2, desc, 0, c);
-    // }
+    {
+        const char *desc[] = {"group", "a"};
+        conf_set_int(2, desc, 0, c);
+    }
 
     {
         const char *desc[] = {"group", "subgroup", "a"};
