@@ -1,3 +1,5 @@
+struct DFluStatus;
+
 /* ini */
 void dflu_status_ini(DFluStatus **s);
 void dflu_status_fin(DFluStatus  *s);

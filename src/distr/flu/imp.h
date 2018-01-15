@@ -1,7 +1,6 @@
 struct DFluPack;
 struct DFluComm;
 struct DFluUnpack;
-struct DFluStatus;
 
 // tag::interface[]
 void dflu_pack_ini(int maxdensity, DFluPack **p);
