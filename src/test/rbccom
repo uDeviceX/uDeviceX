@@ -10,7 +10,10 @@ u.conf conf/couette.h <<!!!
    run
 !!!
 { make clean && u.make -j ; } > /dev/null
-sh runfile
+u.run ./udx '
+rbc = {
+    @include "rbc.test.cfg"
+}'
 sort com/0003.txt | awk '{print $1, $2, $3, $4}' | uscale 100 > com.out.txt
 
 
@@ -28,7 +31,10 @@ u.conf conf/couette.h <<!!!
    run
 !!!
 { make clean && u.make -j ; } > /dev/null
-sh runfile
+u.run ./udx '
+rbc = {
+    @include "rbc.test.cfg"
+}'
 sort com/0003.txt | awk '{print $1, $2, $3, $4}' | uscale 100 > com.out.txt
 
 
@@ -46,5 +52,8 @@ u.conf conf/couette.h <<!!!
    run
 !!!
 { make clean && u.make -j ; } > /dev/null
-u.run 2 1 1 ./udx
+u.run 2 1 1 ./udx '
+rbc = {
+    @include "rbc.test.cfg"
+}'
 sort com/0003.txt | awk '{print $1, $2, $3, $4}' | uscale 100 > com.out.txt
