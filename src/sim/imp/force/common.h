@@ -12,7 +12,7 @@ void body_force(long it, const BForce *bforce, Sim *s) {
 }
 
 void forces_rbc (Rbc *r) {
-    rbc_force_apply(r->q, r->tt, /**/ r->ff);
+    rbc_force_apply(r->q, r->tt, r->params, /**/ r->ff);
     if (RBC_STRETCH) rbc_stretch_apply(r->q.nc, r->stretch, /**/ r->ff);
 }
 

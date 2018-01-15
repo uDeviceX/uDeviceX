@@ -87,6 +87,7 @@ static void fin_rbc(Rbc *r) {
 
     if (rbc_com_dumps) rbc_com_fin(/**/ &r->com);
     if (RBC_STRETCH)   rbc_stretch_fin(/**/ r->stretch);
+    rbc_params_fin(r->params);
 }
 
 static void fin_rig(Rig *s) {
