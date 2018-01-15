@@ -58,6 +58,7 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/rbc/force                && \
     d $B/rbc/force/area_volume    && \
     d $B/rbc/gen                  && \
+    d $B/rbc/params               && \
     d $B/rbc/rnd                  && \
     d $B/rbc/rnd/api              && \
     d $B/rbc/stretch              && \
