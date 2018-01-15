@@ -26,12 +26,6 @@ void dflu_post_send(DFluPack *p, DFluComm   *c);
 void dflu_wait_recv(DFluComm *c, DFluUnpack *u);
 void dflu_wait_send(DFluComm *c);
 
-/* status */
-void dflu_status_ini(DFluStatus **s);
-void dflu_status_fin(DFluStatus  *s);
-int  dflu_status_success(DFluStatus *s);
-void dflu_status_log(DFluStatus *s);
-
 /* unpack */
 void dflu_unpack(/**/ DFluUnpack *u);
 // end::interface[]

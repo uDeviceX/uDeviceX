@@ -35,6 +35,7 @@
 #include "distr/map/dev.h"
 #include "distr/map/imp.h"
 #include "distr/common/imp.h"
+#include "status/imp.h"
 
 #include "imp/type.h"
 
