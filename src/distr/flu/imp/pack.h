@@ -31,8 +31,8 @@ void dflu_pack(const FluQuants *q, /**/ DFluPack *p) {
 }
 
 static void check_counts(int nfrags, const int *counts, const hBags *hpp) {
-    int i, c, cap;
     enum {X, Y, Z};
+    int i, c, cap;
     
     for (i = 0; i < nfrags; ++i) {
         c = counts[i];
