@@ -22,6 +22,7 @@
 #include "utils/texo.h"
 #include "utils/cc.h"
 
+#include "rbc/params/imp.h"
 #include "rbc/type.h"
 #include "rbc/imp.h"
 #include "rbc/rnd/imp.h"
