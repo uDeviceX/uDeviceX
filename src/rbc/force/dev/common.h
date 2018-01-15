@@ -1,37 +1,36 @@
-static __device__ float3 fvolume(float3 r2, float3 r3, float v) {
-    float kv, v0, f0;
+static __device__ float3 fvolume(RbcParams_v par, float3 r2, float3 r3, float v) {
+    float v0, f0;
     float3 f, n;
-    kv = RBCkv; v0 = RBCtotVolume;
+    v0 = RBCtotVolume;
 
     cross(&r3, &r2, /**/ &n);
-    f0 = kv * (v - v0) / (6 * v0);
+    f0 = par.kv * (v - v0) / (6 * v0);
     axpy(f0, &n, /**/ &f);
     return f;
 }
 
-static __device__ float3 farea(float3 x21, float3 x31, float3 x32,   float a0, float A0, float A) {
+static __device__ float3 farea(RbcParams_v par, float3 x21, float3 x31, float3 x32,   float a0, float A0, float A) {
     float3 nn, nnx32, f;
-    float a, f0, fa, fA, ka, kA;
-    ka = RBCkd; kA = RBCka;
-
+    float a, f0, fa, fA;
+    
     cross(&x21, &x31, /**/ &nn); /* normal */
     cross(&nn, &x32, /**/ &nnx32);
     a = 0.5 * sqrtf(dot<float>(&nn, &nn));
 
-    fA = - kA * (A - A0) / (4 * A0 * a);
-    fa = - ka * (a - a0) / (4 * a0 * a);
+    fA = - par.ka * (A - A0) / (4 * A0 * a);
+    fa = - par.kd * (a - a0) / (4 * a0 * a);
     f0 = fA + fa;
     axpy(f0, &nnx32, /**/ &f);
     return f;
 }
 
 static __device__ float sq(float x) { return x * x; }
-static __device__ float3 fspring(float3 x21, float l0) {
+static __device__ float3 fspring(RbcParams_v par, float3 x21, float l0) {
   #define wlc_r(r) (kbT*(4*sq(r)-9*lmax*r+6*sq(lmax)))/(4*lmax*p*sq(r-lmax))
     float m;
     float  r, fwlc, fpow, lmax, kbT, p, x0;
     float3 f;
-    kbT = RBCkbT; p = RBCp; m = RBCmpow; x0 = RBCx0;
+    kbT = par.kBT0; p = par.p; m = RBCmpow; x0 = par.x0;
     r = sqrtf(dot<float>(&x21, &x21));
     lmax = l0 / x0;
     fwlc =   wlc_r(r); /* make fwlc + fpow = 0 for r = l0 */
@@ -40,7 +39,7 @@ static __device__ float3 fspring(float3 x21, float l0) {
     return f;
 }
 
-static __device__ float3 tri0(float3 r1, float3 r2, float3 r3,
+static __device__ float3 tri0(RbcParams_v par, float3 r1, float3 r2, float3 r3,
                               float l0, float A0, float totArea,
                               float area, float volume) {
     float3 fv, fa, fs;
@@ -50,20 +49,20 @@ static __device__ float3 tri0(float3 r1, float3 r2, float3 r3,
     diff(&r3, &r2, /**/ &x32);
     diff(&r3, &r1, /**/ &x31);
 
-    fa = farea(x21, x31, x32,   A0, totArea, area);
+    fa = farea(par, x21, x31, x32,   A0, totArea, area);
     add(&fa, /**/ &f);
 
-    fv = fvolume(r2, r3, volume);
+    fv = fvolume(par, r2, r3, volume);
     add(&fv, /**/ &f);
 
-    fs = fspring(x21,  l0);
+    fs = fspring(par, x21,  l0);
     add(&fs, /**/ &f);
 
     return f;
 }
 
-static __device__ float3 visc(float3 r1, float3 r2, float3 u1, float3 u2) {
-    const float gammaC = RBCgammaC, gammaT = RBCgammaT;
+static __device__ float3 visc(RbcParams_v par, float3 r1, float3 r2, float3 u1, float3 u2) {
+    const float gammaC = par.gammaC, gammaT = RBCgammaT;
     float3 du, dr, f = make_float3(0, 0, 0);
     diff(&u2, &u1, /**/ &du);
     diff(&r1, &r2, /**/ &dr);
@@ -77,7 +76,7 @@ static __device__ float3 visc(float3 r1, float3 r2, float3 u1, float3 u2) {
 }
 
 /* forces from one dihedral */
-template <int update> __device__ float3 dih0(float3 r1, float3 r2, float3 r3, float3 r4) {
+template <int update> __device__ float3 dih0(RbcParams_v par, float3 r1, float3 r2, float3 r3, float3 r4) {
     float overIksiI, overIdzeI, cosTheta, IsinThetaI2, sinTheta_1,
         beta, b11, b12, phi, sint0kb, cost0kb;
 
@@ -103,9 +102,9 @@ template <int update> __device__ float3 dih0(float3 r1, float3 r2, float3 r3, fl
         (rsqrtf(max(IsinThetaI2, 1.0e-6f)),
          dot<float>(&ksimdze, &r41)); // ">" because the normals look inside
 
-    phi = RBCphi / 180.0 * M_PI;
-    sint0kb = sin(phi) * RBCkb;
-    cost0kb = cos(phi) * RBCkb;
+    phi = par.phi / 180.0 * M_PI;
+    sint0kb = sin(phi) * par.kb;
+    cost0kb = cos(phi) * par.kb;
     beta = cost0kb - cosTheta * sint0kb * sinTheta_1;
 
     b11 = -beta *  cosTheta * overIksiI * overIksiI;

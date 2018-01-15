@@ -21,7 +21,7 @@ static __device__ Part tex2Part(const Particle *pp, int i) {
     return p;
 }
 
-static __device__ float3 adj_tris(const Particle *pp,  const Part p0, const float *av,
+static __device__ float3 adj_tris(RbcParams_v par, const Particle *pp,  const Part p0, const float *av,
                                   const Shape0 shape, const Rnd0 rnd,
                                   AdjMap *m) {
     float3 f, fv, fr;
@@ -33,9 +33,9 @@ static __device__ float3 adj_tris(const Particle *pp,  const Part p0, const floa
     const Pos  r2 = tex2Pos(pp,  i2);
 
     area = av[2*rbc]; volume = av[2 * rbc + 1];
-    f  = tri(p0.r, p1.r, r2.r, shape, area, volume);
+    f  = tri(par, p0.r, p1.r, r2.r, shape, area, volume);
     
-    fv = visc(p0.r, p1.r, p0.v, p1.v);
+    fv = visc(par, p0.r, p1.r, p0.v, p1.v);
     add(&fv, /**/ &f);
 
     fr = frnd(p0.r, p1.r, rnd);
@@ -43,7 +43,7 @@ static __device__ float3 adj_tris(const Particle *pp,  const Part p0, const floa
     return f;
 }
 
-static __device__ float3 adj_dihedrals(const Particle *pp, float3 r0,
+static __device__ float3 adj_dihedrals(RbcParams_v par, const Particle *pp, float3 r0,
                                        const Shape0 shape,
                                        AdjMap *m) {
     Pos r1, r2, r3, r4;
@@ -51,10 +51,10 @@ static __device__ float3 adj_dihedrals(const Particle *pp, float3 r0,
     r2 = tex2Pos(pp, m->i2);
     r3 = tex2Pos(pp, m->i3);
     r4 = tex2Pos(pp, m->i4);
-    return dih(r0, r1.r, r2.r, r3.r, r4.r);
+    return dih(par, r0, r1.r, r2.r, r3.r, r4.r);
 }
 
-__global__ void force(int md, int nv, int nc, const Particle *pp, float *rnd,
+__global__ void force(RbcParams_v par, int md, int nv, int nc, const Particle *pp, float *rnd,
                       const int *adj0, const int *adj1,
                       const Shape shape,
                       const float *__restrict__ av, /**/ float *ff) {
@@ -78,8 +78,8 @@ __global__ void force(int md, int nv, int nc, const Particle *pp, float *rnd,
 
     const Part p0 = tex2Part(pp, m.i0);
 
-    f  = adj_tris(pp, p0, av,    shape0, rnd0, &m);
-    fd = adj_dihedrals(pp, p0.r, shape0,       &m);
+    f  = adj_tris(par, pp, p0, av,    shape0, rnd0, &m);
+    fd = adj_dihedrals(par, pp, p0.r, shape0,       &m);
     add(&fd, /**/ &f);
 
     atomicAdd(&ff[3 * pid + 0], f.x);
