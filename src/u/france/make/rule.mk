@@ -13,7 +13,7 @@ $B/d/api.o: $S/d/api.cu; $N -I$S/d -I$S/.
 $B/dbg/imp.o: $S/dbg/imp.cu; $N -I$S/dbg -I$S/.
 $B/distr/common/imp.o: $S/distr/common/imp.cu; $N -I$S/distr/common -I$S/.
 $B/distr/flu/imp.o: $S/distr/flu/imp.cu; $N -I$S/distr/flu -I$S/.
-$B/distr/flu/status/imp.o: $S/distr/flu/status/imp.cpp; $X -I$S/.
+$B/distr/flu/status/imp.o: $S/distr/flu/status/imp.cpp; $X -I$S/distr/flu/status -I$S/.
 $B/distr/map/imp.o: $S/distr/map/imp.cu; $N -I$S/distr/map -I$S/.
 $B/distr/rbc/imp.o: $S/distr/rbc/imp.cu; $N -I$S/distr/rbc -I$S/.
 $B/distr/rig/imp.o: $S/distr/rig/imp.cu; $N -I$S/distr/rig -I$S/.
