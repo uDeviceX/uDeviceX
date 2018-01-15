@@ -28,7 +28,7 @@ int  dflu_status_success(DFluStatus *s) {
     return s->errorcode == SUCCESS;
 }
 
-static void success() { msg_print("dflustatus: SUCCESS"); }
+static void success() { msg_print("DFluStatus: SUCCESS"); }
 static void pack_failure(DFluStatus *s) {
     enum {X, Y, Z};
     int cap, cnt, fid, d[3];
@@ -49,6 +49,7 @@ void dflu_status_log(DFluStatus *s) {
 }
 
 void dflu_status_over(int fid, int cnt, int cap, /**/ DFluStatus *s) {
+    if (s == NULL) ERR("status == NULL");
     s->fid = fid; s->cnt = cnt; s->cap = cap;
     s->errorcode = PACK_FAILURE;
 }
