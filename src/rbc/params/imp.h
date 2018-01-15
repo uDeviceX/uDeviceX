@@ -1,3 +1,4 @@
+struct Config;
 struct RbcParams;
 struct RbcParams_v {
     float gammaC, kBT;
@@ -14,6 +15,6 @@ void rbc_params_set_bending(float kb, float phi, RbcParams *p);
 void rbc_params_set_spring(float Cp, float x0, RbcParams *p);
 void rbc_params_set_area_volume(float ka, float kd, float kv, RbcParams *p);
 
-void rbc_params_set_conf(RbcParams *p);
+void rbc_params_set_conf(const Config *c, RbcParams *p);
 
 RbcParams_v rbc_params_get_view(const RbcParams *p);
