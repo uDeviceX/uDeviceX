@@ -294,6 +294,49 @@ void conf_set_int(int n, const char *desc[], int a, Config *cfg) {
         ERR("could not set <%s>", desc[n-1]);
 }
 
+void conf_set_float(int n, const char *desc[], float a, Config *cfg) {
+    config_t *c;
+    config_setting_t *group, *setting;
+    int status;
+    c = &cfg->c[EXE];
+    
+    group = get_subgroup_setting(n-1, desc, /**/ c);
+    setting = subsetting(desc[n-1], CONFIG_TYPE_FLOAT, /**/ group);
+    
+    status = config_setting_set_float(setting, a);
+    if (CONFIG_TRUE != status)
+        ERR("could not set <%s>", desc[n-1]);
+}
+
+void conf_set_bool(int n, const char *desc[], int a, Config *cfg) {
+    config_t *c;
+    config_setting_t *group, *setting;
+    int status;
+    c = &cfg->c[EXE];
+    
+    group = get_subgroup_setting(n-1, desc, /**/ c);
+    setting = subsetting(desc[n-1], CONFIG_TYPE_BOOL, /**/ group);
+    
+    status = config_setting_set_bool(setting, a);
+    if (CONFIG_TRUE != status)
+        ERR("could not set <%s>", desc[n-1]);
+}
+
+void conf_set_string(int n, const char *desc[], const char *a, Config *cfg) {
+    config_t *c;
+    config_setting_t *group, *setting;
+    int status;
+    c = &cfg->c[EXE];
+    
+    group = get_subgroup_setting(n-1, desc, /**/ c);
+    setting = subsetting(desc[n-1], CONFIG_TYPE_STRING, /**/ group);
+    
+    status = config_setting_set_string(setting, a);
+    if (CONFIG_TRUE != status)
+        ERR("could not set <%s>", desc[n-1]);
+}
+
+
 void conf_write_exe(const Config *cfg, FILE *stream) {
     config_write(&cfg->c[EXE], stream);
 }

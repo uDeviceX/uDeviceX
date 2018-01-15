@@ -5,14 +5,19 @@
 #include "utils/error.h"
 #include "parser/imp.h"
 
-enum {MAX_VEC=128};
-
 static void set(Config *c) {
     {
         const char *desc[] = {"group", "a"};
         conf_set_int(2, desc, 0, c);
     }
 
+    // test: overwrite
+    {
+        const char *desc[] = {"group", "a"};
+        conf_set_int(2, desc, 3, c);
+    }
+
+    // test: subgroup in existing group
     {
         const char *desc[] = {"group", "subgroup", "a"};
         conf_set_int(3, desc, 5, c);
