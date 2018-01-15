@@ -26,3 +26,11 @@ backtrace:
 : /users/lisergey/udx/src/sim/imp/distr.h: 30:
 : /users/lisergey/udx/src/distr/flu/imp/com.h: 8:
 ----
+
+== test/fail/capacity
+
+: /home/lisergey/udx/src/distr/flu/imp/pack.h: 43: udx error: exceed capacity in frag 18 = [1 1 0] : 964 / 960
+backtrace:
+: /home/lisergey/udx/src/sim/imp/run.h: 27:
+: /home/lisergey/udx/src/sim/imp/step.h: 20:
+: /home/lisergey/udx/src/sim/imp/distr.h: 28:
