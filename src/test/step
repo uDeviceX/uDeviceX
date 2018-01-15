@@ -1,7 +1,7 @@
 #### Double poiseuille
 # scTEST: step.0
 set -e
-rm -rf bop h5 diag.txt rbc.off
+rm -rf bop h5 diag.txt
 :
 (cd ../cmd; make ) > /dev/null
 :

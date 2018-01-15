@@ -1,7 +1,7 @@
 #### velocity controller for flow around cylinder
 # nTEST: vcon.t0
 set -eu
-rm -rf bop h5 diag.txt rbc.off
+rm -rf bop h5 diag.txt
 :
 cp data/sdf/cyl1/cyl.dat sdf.dat
 (cd ../cmd; make ) > /dev/null
@@ -21,7 +21,7 @@ u.avgh5 0 u 2 h5/flowfields-0001.h5 | uscale 0.1 > h5.out.txt
 #### velocity controller for flow around cylinder (2 nodes)
 # nTEST: vcon.t1
 set -eu
-rm -rf bop h5 diag.txt rbc.off
+rm -rf bop h5 diag.txt
 :
 cp data/sdf/cyl1/cyl.dat sdf.dat
 (cd ../cmd; make ) > /dev/null
