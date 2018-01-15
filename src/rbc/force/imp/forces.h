@@ -21,9 +21,9 @@ static void apply0(RbcParams_v parv, int nc,
 
 /* temporary hack; TODO: remove this */
 void ini_rbc_params(RbcParams *p) {
-    rbc_params_set_fluct(RBCgammaC, RBCkbT, p);
+    rbc_params_set_fluct(RBCgammaC, RBCgammaT, RBCkbT, p);
     rbc_params_set_bending(RBCkb, RBCphi, p);
-    rbc_params_set_spring(RBCp, RBCx0, p);
+    rbc_params_set_spring(RBCp, RBCx0, RBCmpow, p);
     rbc_params_set_area_volume(RBCka, RBCkd, RBCkv, p);
 }
 
