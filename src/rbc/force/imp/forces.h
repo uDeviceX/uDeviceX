@@ -19,7 +19,15 @@ static void apply0(int nc,
                                        adj0, adj1, shape, av, /**/ (float*)ff));
 }
 
-void rbc_force_apply(const RbcQuants q, const RbcForce t, /**/ Force *ff) {
+/* temporary hack; TODO: remove this */
+static void ini_rbc_params(RbcParams *p) {
+    rbc_params_set_fluct(RBCgammaC, RBCkbT, p);
+    rbc_params_set_bending(RBCkb, RBCphi, p);
+    rbc_params_set_spring(RBCp, RBCx0, p);
+    rbc_params_set_area_volume(RBCka, RBCkd, RBCkv, p);
+}
+
+void rbc_force_apply(const RbcQuants q, const RbcForce t, const RbcParams *p, /**/ Force *ff) {
     if (q.nc <= 0) return;
     area_volume::main(q.nt, q.nv, q.nc, q.pp, q.tri, /**/ q.av);
     apply0(q.nc, q.pp, t.rnd,
