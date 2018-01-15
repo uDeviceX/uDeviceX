@@ -96,10 +96,21 @@ static int get_opt_file(int *argc, char ***argv, /**/ char fname[]) {
     return 0;
 }
 
+static void set_include_dir(const char *path, Config *cfg) {
+    for (int i = 0; i < NCFG; ++i)
+        config_set_include_dir(&cfg->c[i], path);
+}
+
 void conf_read(int argc, char **argv, /**/ Config *cfg) {
-    char *home, defname[1024] = {0}, optname[1024];
+    char *home, defname[1024] = {0}, optname[1024], definclude[1024] = {0};
     home = getenv("HOME");
 
+    // default include dir
+    strcpy(definclude, home);
+    strcat(defname, "/.udx");
+    set_include_dir(definclude, cfg);
+    
+    // default parameters file
     strcpy(defname, home);
     strcat(defname, "/.udx/default.cfg");
 
