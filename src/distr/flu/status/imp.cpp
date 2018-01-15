@@ -9,8 +9,7 @@
 enum {SUCCESS, PACK_FAILURE};
 struct DFluStatus {
     int errorcode;
-    int cap, cnt; /* capacity and count */
-    int fid;      /* fragment id */
+    int cap, cnt, fid; /* capacity, count, fragment */
 };
 
 void dflu_status_ini(DFluStatus **ps) {
