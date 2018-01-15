@@ -29,3 +29,5 @@ bool conf_opt_vint(const Config *c, const char *desc, int *n, int a[]);
 bool conf_opt_vfloat(const Config *c, const char *desc, int *n, float a[]);
 bool conf_opt_float3(const Config *c, const char *desc, float3 *a);
 // end::opt[]
+
+void conf_set_int(int n, const char *desc[], int a, Config *c);
