@@ -48,7 +48,10 @@ wall () {
     make0 > .make
     ic
     u.strtdir
-    sh runfile
+    u.run ./udx '
+    rbc = {
+        @include "rbc.test.cfg"
+    }'
     mv0 r r.wall
 }
 down () {
@@ -62,8 +65,14 @@ down () {
     run
 !
     make0 > .make
-    Force="bforce={type=\"constant\"; f=[0., ${A}, 0.];};"
-    u.run ./udx $Force
+    u.run ./udx '
+    rbc = {
+        @include "rbc.test.cfg"
+    }
+    bforce = {
+        type = "constant";
+	f = [0., ${A}, 0.];
+    };'
     mv0 com com.down
     mv0   r   r.down
 }
@@ -77,8 +86,14 @@ up () {
     run
 !
     make0 > .make
-    Force="bforce={type=\"constant\"; f=[0., ${A}, 0.];};"
-    u.run ./udx $Force
+    u.run ./udx '
+    rbc = {
+        @include "rbc.test.cfg"
+    }
+    bforce = {
+        type = "constant";
+	f = [0., ${A}, 0.];
+    };'
     mkdir -p r.up com.up
     mv0 r     r.up/$A
     mv0 com com.up/$A

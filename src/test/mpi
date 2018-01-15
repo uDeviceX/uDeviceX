@@ -10,7 +10,10 @@ u.conf conf/couette.h <<!!!
    run
 !!!
 { make clean && u.make -j; } > /dev/null
-u.run 2 1 1 ./udx
+u.run 2 1 1 ./udx '
+rbc = {
+    @include "rbc.test.cfg"
+}'
 awk '{print 10000*$2}' diag.txt > diag.out.txt
 
 #### double Poiseuille
@@ -18,7 +21,6 @@ awk '{print 10000*$2}' diag.txt > diag.out.txt
 rm -rf diag.txt h5 bop ply rbc.off
 :
 (cd ../cmd; make ) > /dev/null
-cp data/cells/rbc/498.off  rbc.off
 :
 Force="bforce={type=\"double_poiseuille\"; a=6.666667;};"
 u.conf conf/double.poiseuille.h <<!!!
@@ -40,14 +42,20 @@ cp data/cells/rbc/498.off  rbc.off
 cp data/sdf/cyl1/cyl.dat sdf.dat
 x=0.75 y=8 z=9; echo 1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 > rbcs-ic.txt
 :
-Force="bforce={type=\"constant\"; f=[1.6666667,0.0,0.0];};"
 u.conf conf/around.h <<!!!
    kBT=1e-7 rbcs tend=4.0 part_freq=5000 walls wall_creation=1000
    field_dumps part_dumps field_freq=5000 pushrbc DBG_PEEK
    run
 !!!
 { make clean && u.make -j; } > /dev/null
-u.run 3 1 1 ./udx $Force
+u.run 3 1 1 ./udx '
+rbc = {
+    @include "rbc.test.cfg"
+}
+bforce = {
+    type = "constant";
+    f = [1.6666667,0.0,0.0];
+};'
 u.avgh5 1 u 2 h5/flowfields-0001.h5 > h5.out.txt
 
 #### Poiseuille
@@ -55,7 +63,6 @@ u.avgh5 1 u 2 h5/flowfields-0001.h5 > h5.out.txt
 rm -rf diag.txt h5 bop ply
 :
 (cd ../cmd; make ) > /dev/null
-cp data/cells/rbc/498.off  rbc.off
 cp data/sdf/wall1/wall.dat sdf.dat
 :
 Force="bforce={type=\"constant\"; f=[0.0333333,0.0,0.0];};"

@@ -1,9 +1,8 @@
 #### solvent only restart
 # nTEST: rstrt.t1
-rm -rf bop h5 diag.txt rbc.off bin.1 bin.2
+rm -rf bop h5 diag.txt bin.1 bin.2
 :
 (cd ../cmd; make ) > /dev/null
-cp data/cells/rbc/498.off  rbc.off
 :
 Force="bforce={type=\"double_poiseuille\"; a=6.666667;};"
 u.conf conf/double.poiseuille.h <<!!!
@@ -29,12 +28,12 @@ u.run ./bin.1/udx
 u.run ./bin.2/udx $Force
 u.avgh5 0 u 1 h5/flowfields-0000.h5 | uscale 0.1 > h5.out.txt
 
+
 #### solvent with wall restart
 # nTEST: rstrt.t2
-rm -rf bop h5 diag.txt rbc.off bin.1 bin.2 sdf.dat
+rm -rf bop h5 diag.txt bin.1 bin.2 sdf.dat
 :
 (cd ../cmd; make ) > /dev/null
-cp data/cells/rbc/498.off  rbc.off
 cp data/sdf/wall1/wall.dat sdf.dat
 :
 Force="bforce={type=\"constant\"; f=[3.333e-2, 0., 0.];};"
@@ -61,6 +60,7 @@ u.run ./bin.1/udx
 u.run ./bin.2/udx $Force
 u.avgh5 0 u 1 h5/flowfields-0000.h5 | uscale 0.1 > h5.out.txt
 
+
 #### RBC in a periodic box
 # nTEST: rstrt.t3
 rm -rf bop diag.txt h5 r rbc.off
@@ -68,7 +68,6 @@ rm -rf bop diag.txt h5 r rbc.off
 cp data/cells/rbc/498.off rbc.off
 x=0.75 y=8 z=12; echo 1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 > rbcs-ic.txt
 :
-Force="bforce={type=\"constant\"; f=[3.333e-2, 0., 0.];};"
 u.conf conf/couette.h <<!!!
    rbcs tend=0.5 part_freq=300
    wall_creation=0
@@ -87,9 +86,20 @@ u.conf conf/couette.h <<!!!
 u.strtdir bin.1
 u.strtdir bin.2
 { make clean && u.make -j ; } > /dev/null
-u.run ./bin.1/udx
-u.run ./bin.2/udx $Force
+u.run ./bin.1/udx '
+rbc = {
+    @include "rbc.test.cfg"
+}'
+u.run ./bin.2/udx '
+rbc = {
+    @include "rbc.test.cfg"
+}
+bforce = {
+    type = "constant";
+    f = [3.333e-2, 0., 0.];
+};'
 ply2punto r/00003.ply | uscale 100 > ply.out.txt
+
 
 #### two RBCs around cylinder with one RBC removed by the wall
 # nTEST: rstrt.t4
@@ -100,7 +110,6 @@ cp data/sdf/cyl1/cyl.dat  sdf.dat
 x=0.75 y=3 z=9; echo 1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 >  rbcs-ic.txt
 x=8    y=8 z=8; echo 1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 >> rbcs-ic.txt
 :
-Force="bforce={type=\"constant\"; f=[1.666667, 0., 0.];};"
 u.conf conf/around.h <<!!!
   rbcs tend=0.5 part_freq=5000
    wall_creation=999 walls kBT=1e-7
@@ -120,14 +129,24 @@ u.strtdir bin.1
 u.strtdir bin.2
 :
 { make clean && u.make -j ; } > /dev/null
-u.run ./bin.1/udx
-u.run ./bin.2/udx $Force
+u.run ./bin.1/udx '
+rbc = {
+    @include "rbc.test.cfg"
+}'
+u.run ./bin.2/udx '
+rbc = {
+    @include "rbc.test.cfg"
+}
+bforce = {
+    type = "constant";
+    f = [1.666667, 0., 0.];
+};'
 ply2punto r/00001.ply | uscale 100 > ply.out.txt
+
 
 #### 3 rigid ellipsoids in double poiseuille, contact
 # nTEST: rstrt.t5
 :
-cp data/cells/rbc/498.off rbc.off
 rm -rf h5 diag.txt solid_diag.txt
 echo -e "4.1 21.5 8\n4.1 10.5 8\n11.9 16 8" > rigs-ic.txt
 cp data/rig/ellipsoid.ply mesh_solid.ply
@@ -148,8 +167,12 @@ u.conf conf/double.poiseuille.h <<!!!
    run
 !!!
 :
+{ make clean && u.make -j ; } > /dev/null
+:
+u.strtdir bin.1
+u.strtdir bin.2
+:
 u.run ./bin.1/udx
 u.run ./bin.2/udx $Force
 :
-{ make clean && u.make -j ; } > /dev/null
 cat solid_diag_0000.txt | awk '{print $2, $5, $8}' | uscale 2.5 > sdiag.out.txt

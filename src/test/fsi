@@ -4,7 +4,6 @@ rm -rf bop diag.txt h5 ply rbc.off
 cp data/cells/rbc/498.off rbc.off
  x=5 y=17 z=8; echo 1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 >  rbcs-ic.txt
 :
-Force="bforce={type=\"double_poiseuille\"; a=6.6666667;};"
 u.conf conf/double.poiseuille.h <<!!!
    rbcs tend=2.0 part_freq=1500
    part_dumps   field_freq=1500
@@ -12,7 +11,14 @@ u.conf conf/double.poiseuille.h <<!!!
    run
 !!!
 { make clean &&  u.make -j ; } > /dev/null
-u.run ./udx $Force
+u.run ./udx '
+rbc = {
+    @include "rbc.test.cfg"
+}
+bforce = {
+    type = "double_poiseuille";
+    a = 6.6666667;
+};'
 ply2punto r/00002.ply | uscale 100 > ply.out.txt
 
 #### with fsi
@@ -21,7 +27,6 @@ rm -rf bop diag.txt h5 ply rbc.off
 cp data/cells/rbc/498.off rbc.off
 x=5 y=17 z=8; echo 1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 >  rbcs-ic.txt
 :
-Force="bforce={type=\"double_poiseuille\"; a=6.6666667;};"
 u.conf conf/double.poiseuille.h <<!!!
    rbcs tend=2.0 part_freq=1500
    part_dumps   field_freq=1500
@@ -29,7 +34,14 @@ u.conf conf/double.poiseuille.h <<!!!
    run
 !!!
 { make clean &&  u.make -j ; } > /dev/null
-u.run ./udx $Force
+u.run ./udx '
+rbc = {
+    @include "rbc.test.cfg"
+}
+bforce = {
+    type = "double_poiseuille"; 
+    a = 6.6666667;
+};'
 ply2punto r/00002.ply > ply.out.txt
 
 #### with fsi and mpi
@@ -38,7 +50,6 @@ rm -rf bop diag.txt h5 ply rbc.off
 cp data/cells/rbc/498.off rbc.off
  x=5 y=17 z=8; echo 1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 >  rbcs-ic.txt
 :
-Force="bforce={type=\"double_poiseuille\"; a=6.6666667;};"
 u.conf conf/double.poiseuille.h <<!!!
    YS=16
    rbcs tend=2.0 part_freq=1500
@@ -47,5 +58,12 @@ u.conf conf/double.poiseuille.h <<!!!
    run
 !!!
 { make clean &&  u.make -j ; } > /dev/null
-u.run 1 2 1 ./udx $Force
+u.run 1 2 1 ./udx '
+rbc = {
+    @include "rbc.test.cfg"
+}
+bforce = {
+    type = "double_poiseuille";
+    a = 6.6666667;
+};'
 ply2punto r/00002.ply > ply.out.txt
