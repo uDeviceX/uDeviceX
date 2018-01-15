@@ -52,3 +52,5 @@ void dflu_status_over(int fid, int cnt, int cap, /**/ DFluStatus *s) {
     s->fid = fid; s->cnt = cnt; s->cap = cap;
     s->errorcode = PACK_FAILURE;
 }
+
+int dflu_status_nullp(DFluStatus *s) { return s == NULL; }
