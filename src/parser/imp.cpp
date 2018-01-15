@@ -107,7 +107,7 @@ void conf_read(int argc, char **argv, /**/ Config *cfg) {
 
     // default include dir
     strcpy(definclude, home);
-    strcat(defname, "/.udx");
+    strcat(definclude, "/.udx/");
     set_include_dir(definclude, cfg);
     
     // default parameters file
