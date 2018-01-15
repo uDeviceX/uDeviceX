@@ -5,6 +5,7 @@ struct FluDistr {
     DFluPack *p;
     DFluComm *c;
     DFluUnpack *u;
+    DFluStatus *s;
 };
 
 /* particle exchanger for solvent forces */
