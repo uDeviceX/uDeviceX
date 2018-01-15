@@ -20,9 +20,6 @@ void distribute_flu(Sim *s) {
         lp.deathlist = NULL;
         ndead = 0;
     }
-
-    // printf("n = %d\n", q->n);
-    
     UC(dflu_build_map(q->n, lp, /**/ d->p));
     UC(dflu_pack(q, /**/ d->p));
     UC(dflu_download(/**/ d->p, NULL));

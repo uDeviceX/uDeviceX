@@ -10,4 +10,4 @@ int  dflu_status_success(DFluStatus *s);
 void dflu_status_log(DFluStatus *s);
 
 /* set */
-void dflu_status_over(int count, int cap, /**/ DFluStatus *s);
+void dflu_status_exceed(int fid, int cnt, int cap, /**/ DFluStatus *s);

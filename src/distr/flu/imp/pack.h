@@ -30,28 +30,50 @@ void dflu_pack(const FluQuants *q, /**/ DFluPack *p) {
     if (multi_solvent) pack_ii(p->map, q->cc, /**/ p->dcc);
 }
 
-static void check_counts(int nfrags, const int *counts, const hBags *hpp) {
-    enum {X, Y, Z};
-    int i, c, cap;
-    
-    for (i = 0; i < nfrags; ++i) {
-        c = counts[i];
-        cap = comm_get_number_capacity(i, hpp);
-        int f[3] = frag_i2d3(i);
-        if (c > cap)
-            ERR("exceed capacity in frag %d = [%d %d %d] : %d / %d",
-                i, f[X], f[Y], f[Z], c, cap);
+struct ExceedData { int cap, cnt, fid; };
+enum   {OK, FAIL};
+static int check_counts(int nfrags, const int *counts, const hBags *hpp, /**/ ExceedData *e) {
+    int fid, cnt, cap;
+    for (fid = 0; fid < nfrags; ++fid) {
+        cnt = counts[fid];
+        cap = comm_get_number_capacity(fid, hpp);
+        if (cnt > cap) {
+            e->cap = cap; e->cnt = cnt; e->fid = fid;
+            return FAIL;
+        }        
     }
+    return OK;
 }
-void dflu_download(DFluPack *p, DFluStatus *s) {
-    const size_t sz = NFRAGS * sizeof(int);
-    const int *counts = p->map.hcounts;
-    check_counts(NFRAGS, counts, &p->hpp);
-
+static void fail_exceed(ExceedData *e) {
+    enum {X, Y, Z};
+    int cap, cnt, fid, d[3];
+    cap = e->cap; cnt = e->cnt; fid = e->fid;
+    d[X] = frag_i2dx(fid); d[Y] = frag_i2dy(fid); d[Z] = frag_i2dz(fid);
+    ERR("exceed capacity, fragment %d = [%d %d %d]: %d/%d",
+        fid, d[X], d[Y], d[Z], cnt, cap);
+}
+static void dflu_download0(DFluPack *p) {
+    size_t sz;
+    int *cnt;
+    sz = NFRAGS * sizeof(int);
+    cnt = p->map.hcounts;
     dSync(); /* wait for pack kernels */
-    memcpy(p->hpp.counts, counts, sz);
-    if (global_ids)    memcpy(p->hii.counts, counts, sz);
-    if (multi_solvent) memcpy(p->hcc.counts, counts, sz);
-
-    p->nhalo = reduce(NFRAGS, counts);
+    memcpy(p->hpp.counts, cnt, sz);
+    if (global_ids)    memcpy(p->hii.counts, cnt, sz);
+    if (multi_solvent) memcpy(p->hcc.counts, cnt, sz);
+    p->nhalo = reduce(NFRAGS, cnt);
+}
+void dflu_download(DFluPack *p, /**/ DFluStatus *s) {
+    ExceedData e;
+    int r;
+    int *cnt;
+    cnt = p->map.hcounts;    
+    r = check_counts(NFRAGS, cnt, &p->hpp, /**/ &e);
+    if (r == OK) {
+        UC(dflu_download0(p));
+    }
+    else {
+        if   (dflu_status_nullp(s)) UC(fail_exceed(&e));
+        else UC(dflu_status_exceed(e.fid, e.cnt, e.cap, /**/ s));
+    } 
 }
