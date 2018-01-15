@@ -19,14 +19,6 @@ static void apply0(RbcParams_v parv, int nc,
                                        adj0, adj1, shape, av, /**/ (float*)ff));
 }
 
-/* temporary hack; TODO: remove this */
-void ini_rbc_params(RbcParams *p) {
-    rbc_params_set_fluct(RBCgammaC, RBCgammaT, RBCkbT, p);
-    rbc_params_set_bending(RBCkb, RBCphi, p);
-    rbc_params_set_spring(RBCp, RBCx0, RBCmpow, p);
-    rbc_params_set_area_volume(RBCka, RBCkd, RBCkv, p);
-}
-
 void rbc_force_apply(const RbcQuants q, const RbcForce t, const RbcParams *par, /**/ Force *ff) {
     RbcParams_v parv;
     if (q.nc <= 0) return;
