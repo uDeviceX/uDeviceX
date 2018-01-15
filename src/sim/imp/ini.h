@@ -145,7 +145,7 @@ static void ini_flu(MPI_Comm cart, /**/ Flu *f) {
     UC(emalloc(MAX_PART_NUM * sizeof(Force), /**/ (void**) &f->ff_hst));
 }
 
-static void ini_rbc(MPI_Comm cart, /**/ Rbc *r) {
+static void ini_rbc(const Config *cfg, MPI_Comm cart, /**/ Rbc *r) {
     Dalloc(&r->ff, MAX_CELL_NUM * RBCnv);
     UC(rbc_ini(&r->q));
 
@@ -154,6 +154,7 @@ static void ini_rbc(MPI_Comm cart, /**/ Rbc *r) {
     if (RBC_STRETCH)   UC(rbc_stretch_ini("rbc.stretch", r->q.nv, /**/ &r->stretch));
 
     UC(rbc_params_ini(&r->params));
+    UC(rbc_params_set_conf(cfg, r->params));
     ini_rbc_params(r->params); // TODO: remove
 }
 
@@ -251,7 +252,7 @@ void sim_ini(int argc, char **argv, MPI_Comm cart, /**/ Sim **sim) {
     
     UC(emalloc(3 * MAX_PART_NUM * sizeof(Particle), (void**) &s->pp_dump));
     
-    if (rbcs) UC(ini_rbc(s->cart, /**/ &s->rbc));
+    if (rbcs) UC(ini_rbc(cfg, s->cart, /**/ &s->rbc));
 
     if (s->opt.vcon)       UC(ini_vcon(s->cart, s->cfg, /**/ &s->vcon));
     if (s->opt.outflow)    UC(ini_outflow(s->coords, s->cfg, /**/ &s->outflow));
