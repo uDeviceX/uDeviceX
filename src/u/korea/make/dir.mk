@@ -13,6 +13,7 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/dbg                      && \
     d $B/distr/common             && \
     d $B/distr/flu                && \
+    d $B/distr/flu/status         && \
     d $B/distr/map                && \
     d $B/distr/rbc                && \
     d $B/distr/rig                && \

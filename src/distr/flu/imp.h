@@ -17,20 +17,13 @@ void dflu_build_map(int n, const PartList lp, DFluPack *p);
 
 /* pack */
 void dflu_pack(const FluQuants *q, /**/ DFluPack *p);
-
-void dflu_download(DFluPack *p);
+void dflu_download(DFluPack *p, /**/ DFluStatus *s);
 
 /* communication */
 void dflu_post_recv(DFluComm *c, DFluUnpack *u);
 void dflu_post_send(DFluPack *p, DFluComm   *c);
 void dflu_wait_recv(DFluComm *c, DFluUnpack *u);
 void dflu_wait_send(DFluComm *c);
-
-/* status */
-void dflu_status_ini(DFluStatus **s);
-void dflu_status_fin(DFluStatus  *s);
-int  dflu_status_success(DFluStatus *s);
-void dflu_status_log(DFluStatus *s);
 
 /* unpack */
 void dflu_unpack(/**/ DFluUnpack *u);

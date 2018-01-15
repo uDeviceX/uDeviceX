@@ -25,7 +25,7 @@ void distribute_flu(Sim *s) {
     
     UC(dflu_build_map(q->n, lp, /**/ d->p));
     UC(dflu_pack(q, /**/ d->p));
-    UC(dflu_download(/**/ d->p));
+    UC(dflu_download(/**/ d->p, NULL));
 
     UC(dflu_post_send(d->p, d->c));
     UC(dflu_post_recv(d->c, d->u));
