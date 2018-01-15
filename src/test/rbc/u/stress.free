@@ -18,4 +18,5 @@ u.run ./udx '
 rbc = {
     cell = "rbc.off"
     ic = "data/ic/two"
+    @include "rbc.test.cfg"
 }' | uscale 0.1 >  forces.out.txt

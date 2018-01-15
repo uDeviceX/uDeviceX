@@ -15,4 +15,5 @@ u.run ./udx "
 rbc = {
     cell = \"data/cells/rbc/$nv.off\"
     ic = \"data/ic/two\"
+    @include \"rbc.test.cfg\"
 }" | uscale 0.1 >  forces.out.txt

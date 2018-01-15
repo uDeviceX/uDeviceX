@@ -4,12 +4,14 @@
 
 #include "mpi/glb.h"
 #include "parser/imp.h"
+#include "rbc/params/imp.h"
 
 /* local */
 #include "lib/imp.h"
 
 int main(int argc, char **argv) {
     Config *cfg;
+    RbcParams *par;
     const char *cell, *ic;
     m::ini(&argc, &argv);
     conf_ini(&cfg);
@@ -18,8 +20,12 @@ int main(int argc, char **argv) {
     conf_lookup_string(cfg, "rbc.cell", &cell);
     conf_lookup_string(cfg, "rbc.ic", &ic);
 
-    run(cell, ic);
+    rbc_params_ini(&par);
+    rbc_params_set_conf(cfg, par);
     
+    run(cell, ic, par);
+
+    rbc_params_fin(par);
     conf_fin(cfg);
     m::fin();
 }
