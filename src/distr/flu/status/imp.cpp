@@ -46,7 +46,7 @@ void dflu_status_log(DFluStatus *s) {
     }
 }
 
-void dflu_status_over(int fid, int cnt, int cap, /**/ DFluStatus *s) {
+void dflu_status_exceed(int fid, int cnt, int cap, /**/ DFluStatus *s) {
     if (s == NULL) ERR("status == NULL");
     s->fid = fid; s->cnt = cnt; s->cap = cap;
     s->errorcode = PACK_FAILURE;
