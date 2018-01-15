@@ -31,3 +31,5 @@ bool conf_opt_float3(const Config *c, const char *desc, float3 *a);
 // end::opt[]
 
 void conf_set_int(int n, const char *desc[], int a, Config *c);
+
+void conf_write_exe(const Config *cfg, FILE *stream);

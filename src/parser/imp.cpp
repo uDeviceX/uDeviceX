@@ -278,5 +278,8 @@ void conf_set_int(int n, const char *desc[], int a, Config *cfg) {
     
     s = config_setting_add(group, desc[n-1], CONFIG_TYPE_INT);
     config_setting_set_int(s, a);
-    config_write(c, stderr);
+}
+
+void conf_write_exe(const Config *cfg, FILE *stream) {
+    config_write(&cfg->c[EXE], stream);
 }
