@@ -35,6 +35,7 @@ static void ini_flu_distr(MPI_Comm comm, /**/ FluDistr *d) {
     UC(dflu_pack_ini(maxdensity, /**/ &d->p));
     UC(dflu_comm_ini(comm, /**/ &d->c));
     UC(dflu_unpack_ini(maxdensity, /**/ &d->u));
+    UC(dflu_status_ini(&d->s));
 }
 
 static void ini_rbc_distr(int nv, MPI_Comm comm, /**/ RbcDistr *d) {
