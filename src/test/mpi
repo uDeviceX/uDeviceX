@@ -10,7 +10,7 @@ u.conf conf/couette.h <<!!!
    run
 !!!
 { make clean && u.make -j; } > /dev/null
-u.run 2 1 1 ./udx
+u.run 2 1 1 ./udx @include \"rbc.test.cfg\"
 awk '{print 10000*$2}' diag.txt > diag.out.txt
 
 #### double Poiseuille
@@ -18,7 +18,6 @@ awk '{print 10000*$2}' diag.txt > diag.out.txt
 rm -rf diag.txt h5 bop ply rbc.off
 :
 (cd ../cmd; make ) > /dev/null
-cp data/cells/rbc/498.off  rbc.off
 :
 Force="bforce={type=\"double_poiseuille\"; a=6.666667;};"
 u.conf conf/double.poiseuille.h <<!!!
@@ -47,7 +46,7 @@ u.conf conf/around.h <<!!!
    run
 !!!
 { make clean && u.make -j; } > /dev/null
-u.run 3 1 1 ./udx $Force
+u.run 3 1 1 ./udx @include \"rbc.test.cfg\" $Force
 u.avgh5 1 u 2 h5/flowfields-0001.h5 > h5.out.txt
 
 #### Poiseuille
@@ -55,7 +54,6 @@ u.avgh5 1 u 2 h5/flowfields-0001.h5 > h5.out.txt
 rm -rf diag.txt h5 bop ply
 :
 (cd ../cmd; make ) > /dev/null
-cp data/cells/rbc/498.off  rbc.off
 cp data/sdf/wall1/wall.dat sdf.dat
 :
 Force="bforce={type=\"constant\"; f=[0.0333333,0.0,0.0];};"

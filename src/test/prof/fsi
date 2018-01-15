@@ -13,5 +13,5 @@ u.conf conf/double.poiseuille.h <<!!!
    run
 !!!
 { make clean &&  u.make -j ; } > /dev/null
-u.run ./udx $Force
+u.run ./udx @include \"rbc.test.cfg\" $Force
 ply2punto r/00001.ply > ply.out.txt
