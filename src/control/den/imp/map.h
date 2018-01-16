@@ -10,11 +10,13 @@ struct None {};
 
 static int predicate(Coords c, Circle p, int i, int j, int k) {
     enum {X, Y, Z};
-    // TODO: for now assume centered
+    // TODO: for now assume centered at the center of the domain
     float3 r;
     float R;
 
-    r = make_float3(i, j, k);
+    r = make_float3(i + (1 - XS) * 0.5f,
+                    j + (1 - YS) * 0.5f,
+                    k + (1 - ZS) * 0.5f);
     local2center(c, r, /**/ &r);
     
     R = sqrt(r.x * r.x + r.y * r.y);
