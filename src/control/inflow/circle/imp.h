@@ -22,8 +22,8 @@ void inflow_ini_params_circle(Coords c, float3 o, float R, float H, float u, boo
         pp->R = R;
         pp->H = H;
 
-        if (R > XS/2 || R > YS/2 || R > ZS/2)
-            ERR("radius should be smaller");
+        if (R > XS/2 || R > YS/2 || H > ZS)
+            ERR("dimensions should be smaller");
     
         vpp->u = u;
         vpp->poiseuille = poiseuille;
