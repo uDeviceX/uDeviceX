@@ -1,22 +1,19 @@
 #!/usr/bin/awk -f
 function ssqrt(x) { return (x > 0) ? sqrt(x) : 0 }
 
-function rbc(    ans, rr, D, R, a0, a1, a2, neg) {
-    # rescale x, y, z
-    neg = z < 0
-    D = 7.82; R = D/2
+function rbc(r,    rr, D, a0, a1, a2, z) {
+    D = 7.82
     a0 = 0.0518; a1 = 2.0026; a2 = -4.491
 
-    x *= R; y *= R
-    rr  = x^2 + y^2; rr /= D^2
+    rr  = r*r
+    rr /= D^2
     z  = ssqrt(1 - 4*rr) * (a0 + a1*rr + a2*rr^2)
-
     z *= D
-    if (neg) z = -z
+    return z
 }
 
 {
-    x = $1; y = $2; z = $3
-    rbc()
-    print x, y, z
+    r = $1
+    z = rbc(r)
+    print r, z
 }
