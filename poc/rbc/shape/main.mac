@@ -1,0 +1,5 @@
+/* rr: x^2; */
+e: y = sqrt(1 - 4*rr) * (a0 + a1*rr + a2*rr^2);
+s: solve(e, rr);
+
+grind(s);

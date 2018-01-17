@@ -4,7 +4,6 @@ function ssqrt(x) { return (x > 0) ? sqrt(x) : 0 }
 function rbc(r,    rr, D, a0, a1, a2, z) {
     D = 7.82
     a0 = 0.0518; a1 = 2.0026; a2 = -4.491
-
     rr  = r*r
     rr /= D^2
     z  = ssqrt(1 - 4*rr) * (a0 + a1*rr + a2*rr^2)
