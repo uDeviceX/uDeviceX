@@ -1,4 +1,4 @@
-void scan_work_ini(int, ScanWork*) { }
+void scan_work_ini(int, ScanWork**) { }
 void scan_work_fin(ScanWork*) { }
 
 void scan_apply(const int* input, int size, /**/ int* output, /*w*/ ScanWork*) {

@@ -4,7 +4,7 @@ void clist_fin(/**/ Clist *c) {
 }
 
 void clist_fin_map(ClistMap *m) {
-    scan_work_fin(/**/ &m->scan);
+    scan_work_fin(/**/ m->scan);
 
     for (int i = 0; i < m->nA; ++i)
         CC(d::Free(m->ee[i]));

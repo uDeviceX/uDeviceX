@@ -17,7 +17,7 @@
 void set(/**/ int*, int*);
 #define M 9999
 
-static ScanWork w;
+static ScanWork *w;
 static int *x, *y;
 
 static void dump0(int *hst, int n) {
@@ -36,9 +36,9 @@ static void scan0(int *hst, int n) { /* local scan wrapper */
     scan_work_ini(n, &w);
 
     cH2D(x, hst, n);
-    scan_apply(x, n, y,  &w);
+    scan_apply(x, n, y,  w);
 
-    scan_work_fin(&w);
+    scan_work_fin(w);
 }
 
 static void main0() {

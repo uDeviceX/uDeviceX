@@ -13,7 +13,10 @@ void scan_apply(const int *input, int size, /**/ int *output, /*w*/ ScanWork *w)
     scan0(w->compressed, size, /**/ (uint*) output, /*w*/ w->tmp);
 }
 
-void scan_work_ini(int size, /**/ ScanWork *w) {
+void scan_work_ini(int size, /**/ ScanWork **work) {
+    ScanWork *w;
+    UC(emalloc(sizeof(ScanWork), (void**) work));
+    w = *work;
     Dalloc(&w->tmp, 64 * 64 * 64 / THREADS);
     Dalloc(&w->compressed, 4 * size);
 }
@@ -21,5 +24,6 @@ void scan_work_ini(int size, /**/ ScanWork *w) {
 void scan_work_fin(/**/ ScanWork *w) {
     Dfree(w->tmp);
     Dfree(w->compressed);
+    UC(efree(w));
 }
 
