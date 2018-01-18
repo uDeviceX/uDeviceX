@@ -19,12 +19,4 @@ __global__ void scan2d(const int *counts, const int *oldtcounts, /**/ int *tcoun
     if (starts) warpexscan(cnt, t, /**/ starts);
 }
 
-__global__ void scan1d(const int *count, /**/ int *starts) {
-    int t, cnt;
-    t = threadIdx.x;
-    cnt = 0;
-    if (t < 26) cnt = count[t];
-    if (starts) warpexscan(cnt, t, /**/ starts);
-}
-
 } // dev
