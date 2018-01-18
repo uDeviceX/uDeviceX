@@ -17,7 +17,7 @@
 void set(/**/ int*, int*);
 #define M 9999
 
-static scan::Work w;
+static scan::ScanWork w;
 static int *x, *y;
 
 static void dump0(int *hst, int n) {
