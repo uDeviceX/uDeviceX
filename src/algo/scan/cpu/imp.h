@@ -1,5 +1,5 @@
-void alloc_work(int, Work*) { }
-void free_work(Work*) { }
+void scan_work_ini(int, Work*) { }
+void scan_work_fin(Work*) { }
 
 void scan(const int* input, int size, /**/ int* output, /*w*/ Work*) {
     int i, s;

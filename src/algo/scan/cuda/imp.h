@@ -12,12 +12,12 @@ void scan(const int *input, int size, /**/ int *output, /*w*/ Work *w) {
     scan0(w->compressed, size, /**/ (uint*) output, /*w*/ w->tmp);
 }
 
-void alloc_work(int size, /**/ Work *w) {
+void scan_work_ini(int size, /**/ Work *w) {
     Dalloc(&w->tmp, 64 * 64 * 64 / THREADS);
     Dalloc(&w->compressed, 4 * size);
 }
 
-void free_work(/**/ Work *w) {
+void scan_work_fin(/**/ Work *w) {
     Dfree(w->tmp);
     Dfree(w->compressed);
 }

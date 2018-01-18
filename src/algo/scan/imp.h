@@ -10,8 +10,8 @@ struct Work {
 // tag::interface[]
 void scan(const int *input, int size, /**/ int *output, /*w*/ Work *w); // <1>
 
-void alloc_work(int size, /**/ Work *w);                                // <2>
-void free_work(/**/ Work *w);                                           // <3>
+void scan_work_ini(int size, /**/ Work *w);                             // <2>
+void scan_work_fin(/**/ Work *w);                                       // <3>
 // end::interface[]
 
 } // scan
