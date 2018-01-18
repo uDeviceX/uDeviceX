@@ -38,7 +38,7 @@ void clist_build_map(const int nn[], /**/ Clist *c, ClistMap *m) {
     cc = c->counts;
     ss = c->starts;
         
-    scan::scan(cc, nc + 16, /**/ ss, /*w*/ &m->scan);
+    scan::scan_apply(cc, nc + 16, /**/ ss, /*w*/ &m->scan);
 
     for (i = 0; i < m->nA; ++i) {
         n = nn[i];

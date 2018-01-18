@@ -33,12 +33,12 @@ static void dump(int *dev, int n) {
 }
 
 static void scan0(int *hst, int n) { /* local scan wrapper */
-    alloc_work(n, &w);
+    scan_work_ini(n, &w);
 
     cH2D(x, hst, n);
-    scan::scan(x, n, y,  &w);
+    scan::scan_apply(x, n, y,  &w);
 
-    free_work(&w);
+    scan_work_fin(&w);
 }
 
 static void main0() {

@@ -7,7 +7,7 @@ static void scan0(const unsigned char *input, int size, /**/ uint *output, /*w*/
     KL(dev::gexscan<THREADS/32>, (nblocks, THREADS                ), ((uint4 *)input, tmp, (uint4 *)output, size / 16));
 }
 
-void scan(const int *input, int size, /**/ int *output, /*w*/ Work *w) {
+void scan_apply(const int *input, int size, /**/ int *output, /*w*/ Work *w) {
     KL(dev::compress, (k_cnf(size)), (size, (const int4*) input, /**/ (uchar4 *) w->compressed));
     scan0(w->compressed, size, /**/ (uint*) output, /*w*/ w->tmp);
 }
