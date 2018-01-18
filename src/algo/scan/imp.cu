@@ -14,7 +14,6 @@
 #include "algo/scan/imp.h"
 #include "algo/scan/dev.h"
 
-namespace scan {
 #if   defined(DEV_CUDA)
   #include "algo/scan/cuda/imp.h"
 #elif defined(DEV_CPU)
@@ -22,4 +21,3 @@ namespace scan {
 #else
   #error DEV_* is undefined
 #endif
-}

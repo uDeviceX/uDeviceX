@@ -160,7 +160,7 @@ static void ini_rbc(const Config *cfg, MPI_Comm cart, /**/ Rbc *r) {
 
 static void ini_rig(MPI_Comm cart, /**/ Rig *s) {
     rig::ini(&s->q);
-    scan::scan_work_ini(XS * YS * ZS, /**/ &s->ws);
+    scan_work_ini(XS * YS * ZS, /**/ &s->ws);
     UC(emalloc(sizeof(&s->ff_hst)*MAX_PART_NUM, (void**) &s->ff_hst));
     Dalloc(&s->ff, MAX_PART_NUM);
 
