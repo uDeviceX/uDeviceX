@@ -9,7 +9,7 @@ static void load_rigid_mesh(const char *fname, int *nt, int *nv, int4 **tt_hst, 
 }
 
 
-void ini(RigQuants *q) {
+void rig_ini(RigQuants *q) {
     q->n = q->ns = q->nps = 0;
     
     Dalloc(&q->pp ,     MAX_PART_NUM);

@@ -15,7 +15,7 @@ static void remove_rbcs(RbcQuants *q, Sdf *qsdf) {
 
 static void create_solids(Coords coords, MPI_Comm cart, FluQuants* qflu, rig::RigQuants* qrig) {
     cD2H(qflu->pp_hst, qflu->pp, qflu->n);
-    rig::gen_quants(coords, cart, /*io*/ qflu->pp_hst, &qflu->n, /**/ qrig);
+    rig::rig_gen_quants(coords, cart, /*io*/ qflu->pp_hst, &qflu->n, /**/ qrig);
     MC(m::Barrier(cart));
     cH2D(qflu->pp, qflu->pp_hst, qflu->n);
     MC(m::Barrier(cart));
@@ -51,7 +51,7 @@ void freeze(Coords coords, MPI_Comm cart, Sdf *sdf, FluQuants *qflu, rig::RigQua
     if (solids)           create_solids(coords, cart, qflu, qrig);
     if (walls && rbcs  )  remove_rbcs(qrbc, sdf);
     if (walls && solids)  remove_solids(qrig, sdf);
-    if (solids)           rig::set_ids(cart, *qrig);
+    if (solids)           rig::rig_set_ids(cart, *qrig);
 }
 
 void color_hst(Coords coords, Particle *pp, int n, /**/ int *cc) {

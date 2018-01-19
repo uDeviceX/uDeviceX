@@ -97,7 +97,7 @@ void dump_strt_templ(Coords coords, Wall *w, Sim *s) { /* template dumps (wall, 
     Rig *rig = &s->rig;
     if (strt_dumps) {
         if (walls) wall::strt_dump_templ(coords, w->q);
-        if (solids) rig::strt_dump_templ(coords, rig->q);
+        if (solids) rig::rig_strt_dump_templ(coords, rig->q);
     }
 }
 
@@ -107,7 +107,7 @@ void dump_strt(Coords coords, int id, Sim *s) {
     Rig *rig = &s->rig;
     flu_strt_dump(coords, id, flu->q);
     if (rbcs)       rbc_strt_dump(coords, id, &rbc->q);
-    if (solids)     rig::strt_dump(coords, id, rig->q);
+    if (solids)     rig::rig_strt_dump(coords, id, rig->q);
 }
 
 void dump_diag0(Coords coords, int it, Sim *s) { /* generic dump */
