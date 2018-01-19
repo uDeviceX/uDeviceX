@@ -1,5 +1,30 @@
+struct Dbg;
+
+struct Config;
 struct Force;
 struct Particle;
+struct int3;
+
+enum {
+    DBG_POS,
+    DBG_POS_SOFT,
+    DBG_VEL,
+    DBG_FORCES,
+    DBG_COLORS,
+    DBG_CLIST
+};
+
+void dbg_ini(Dbg**);
+void dbg_fin(Dbg*);
+void dbg_set(int kind, Dbg*);
+void dbg_set_conf(const Config*, Dbg*);
+
+void dbg_check_pos(int n, const Particle *pp);
+void dbg_check_pos_soft(int n, const Particle *pp);
+void dbg_check_vel(int n, const Particle *pp);
+void dbg_check_forces(int n, const Force *ff);
+void dbg_check_colors(int n, const int *ff);
+void dbg_check_clist(int3 L, const int *starts, const int *counts, int n, const Particle *pp);
 
 namespace dbg {
 /* check if particles are inside domain (size L) */
