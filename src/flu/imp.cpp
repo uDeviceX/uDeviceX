@@ -30,13 +30,15 @@
 #include "io/restart/imp.h"
 #include "inter/color.h"
 
-#include "imp.h"
+#include "io/punto/imp.h"
 
+#include "imp.h"
 
 #include "imp/ini.h"
 #include "imp/fin.h"
 #include "imp/generate.h"
 #include "imp/start.h"
+#include "imp/punto.h"
 
 /* TODO does it belong here? */
 void flu_build_cells(/**/ FluQuants *q) {
