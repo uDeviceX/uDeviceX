@@ -1,0 +1,14 @@
+= TODO
+
+== refactor sdf
+
+should be "Shape"
+
+device interface:
+bounce, inout, far
+
+
+== refactor Wall
+
+has a shape, wvel
+no namespace, hidden struct

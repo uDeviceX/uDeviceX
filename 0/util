@@ -132,9 +132,11 @@ vcon = {
      adjust_freq = 1000;
      sample_freq = 100;
 };
+bforce = {
+    type = "constant";
+    f = [0., 0., 0.];
+};
 !
-    local a b
-    Force="FORCE_CONSTANT FORCE_PAR_A=0"
 }
 force () { # uses $v and $shift
     if test $shift = inf
