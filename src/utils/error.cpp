@@ -51,7 +51,7 @@ static void stack_dump() {
         nchar = sprintf(bt, "backtrace:\n");
         bt += nchar;
     }
-    for (i = 0; i < stack_sz; ++i) {
+    for (i = stack_sz-1; i >= 0; --i) {
         nchar = sprintf(bt, "%s\n", stack[i]);
         assert(nchar >= 0);
         bt += nchar;
