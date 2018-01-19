@@ -1,5 +1,5 @@
 cmd: ./udx dbg={pos=true}
-DBG: x = 24 (L = 16)
+DBG: pos pu: p = [24, 0 0], [nan, 0, 0]
 : dbg/imp/main.h: 35: udx error: dbg error: INVALID
 backtrace:
 : dbg/imp/main.h: 43:
