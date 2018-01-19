@@ -298,8 +298,8 @@
 #endif
 
 /* RBC membrain parameter sets */
-#if !defined(RBC_PARAMS_TEST) && !defined(RBC_PARAMS_LINA)
-  #define RBC_PARAMS_TEST
+#if defined(RBC_PARAMS_TEST) || defined(RBC_PARAMS_LINA)
+   #error RBC_PARAMS is runtime!
 #endif
 
 #ifndef RBC_STRESS_FREE
