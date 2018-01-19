@@ -7,7 +7,7 @@ cd test/fail/capacity/dbg1/serial
 
 Dbg="dbg={forces=true; pos=true; vel=true};"
 Force="bforce={type=\"constant\"; f = [1e5, 1e5, 0.0];};"
-u.conf $S $U $C <<!
+u.conf "$S" "$U" "$C" <<!
    tend=2.01
    part_dumps part_freq=4000
    field_dumps field_freq=4000
