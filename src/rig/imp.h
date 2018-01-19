@@ -1,5 +1,3 @@
-namespace rig {
-
 struct RigQuants {
     int n, ns, nps;              /* number of particles (total), solid, particle per solid        */
     Particle *pp_hst, *pp;       /* particles on hst and device                                   */
@@ -26,5 +24,3 @@ void rig_set_ids(MPI_Comm comm, RigQuants q);
 
 void rig_strt_dump_templ(Coords coords, const RigQuants q);
 void rig_strt_dump(Coords coords, const int id, const RigQuants q);
-
-} // rig

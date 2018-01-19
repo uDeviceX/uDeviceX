@@ -23,10 +23,8 @@
 
 #include "generate/rig/imp.h"
 
-namespace rig {
 #include "imp/ini.h"
 #include "imp/fin.h"
 #include "imp/common.h"
 #include "imp/generate.h"
 #include "imp/start.h"
-} // rig

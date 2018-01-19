@@ -91,7 +91,7 @@ static void fin_rbc(Rbc *r) {
 }
 
 static void fin_rig(Rig *s) {
-    rig::rig_fin(&s->q);
+    rig_fin(&s->q);
     scan_work_fin(/**/ s->ws);
     Dfree(s->ff);
     UC(efree(s->ff_hst));

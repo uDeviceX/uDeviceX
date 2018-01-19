@@ -20,7 +20,6 @@ void drig_post_send(DRigPack *p, DRigComm *c);
 void drig_wait_recv(DRigComm *c, DRigUnpack *u);
 void drig_wait_send(DRigComm *c);
 
-using namespace rig;
-void drig_unpack_bulk(const DRigPack *p, /**/ rig::RigQuants *q);
-void drig_unpack_halo(const DRigUnpack *u, /**/ rig::RigQuants *q);
+void drig_unpack_bulk(const DRigPack *p, /**/ RigQuants *q);
+void drig_unpack_halo(const DRigUnpack *u, /**/ RigQuants *q);
 // end::interface[]

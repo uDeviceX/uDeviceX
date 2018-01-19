@@ -82,7 +82,7 @@ void sim_strt(Sim *s) {
     if (rbcs) rbc_strt_quants(s->coords, "rbc.off", restart::BEGIN, &rbc->q);
     dSync();
 
-    if (solids) rig::rig_strt_quants(s->coords, restart::BEGIN, &rig->q);
+    if (solids) rig_strt_quants(s->coords, restart::BEGIN, &rig->q);
 
     if (walls) wall::strt_quants(s->coords, MAXNWALL, &wall->q);
 

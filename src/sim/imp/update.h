@@ -9,7 +9,7 @@ void clear_vel(Sim *s) {
 
 void update_solid(Rig *s) {
     if (!s->q.n) return;
-    rig::RigQuants *q = &s->q;
+    RigQuants *q = &s->q;
     
     rig::rig_update(q->n, s->ff, q->rr0, q->ns, /**/ q->pp, q->ss);
     rig::rig_update_mesh(q->ns, q->ss, q->nv, q->dvv, /**/ q->i_pp);
@@ -24,8 +24,8 @@ void bounce_solid(long it, BounceBack *bb, Rig *s, Flu *flu) {
     Particle *pp, *i_pp;
     int3 L = make_int3(XS, YS, ZS);
 
-    rig::RigQuants *qs = &s->q;
-    BBexch       *e = &bb->e; 
+    RigQuants *qs = &s->q;
+    BBexch     *e = &bb->e; 
     
     nm = qs->ns;
     nt = qs->nt;
