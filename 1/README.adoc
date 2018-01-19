@@ -41,6 +41,9 @@ backtrace:
 
 ----
 $ cat .016
+domain: 1680 390 42
+subdomain: [252:336][78:156][0:42]
+
 RBC_RND is not set
 will take 999999000 steps
 recolor
