@@ -1,3 +1,0 @@
-# dbg
-
-Debugging tools
