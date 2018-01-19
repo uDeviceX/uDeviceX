@@ -19,6 +19,8 @@ void dbg_ini(Dbg**);
 void dbg_fin(Dbg*);
 void dbg_enable(int kind, Dbg *dbg);
 void dbg_disable(int kind, Dbg *dbg);
+void dbg_set_verbose(bool, Dbg *dbg);
+
 void dbg_set_conf(const Config*, Dbg*);
 
 void dbg_check_pos(const Dbg *dbg, int n, const Particle *pp);

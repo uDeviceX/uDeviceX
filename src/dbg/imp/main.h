@@ -24,6 +24,8 @@ void dbg_disable(int kind, Dbg *dbg) {
     UC(set(kind, 0, dbg));
 }
 
+void dbg_set_verbose(bool tf, Dbg *dbg) {dbg->verbose = tf;}
+
 static int check(const Dbg *dbg, int kind) {return dbg->state[kind];}
 
 static void handle() {

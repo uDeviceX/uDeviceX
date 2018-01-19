@@ -19,4 +19,8 @@ void dbg_set_conf(const Config *cfg, Dbg *dbg) {
     set(cfg, "dbg.forces",   DBG_FORCES,   dbg);
     set(cfg, "dbg.colors",   DBG_COLORS,   dbg);
     set(cfg, "dbg.clist",    DBG_CLIST,    dbg);
+
+    int v;
+    UC(conf_lookup_bool(cfg, "dbg.verbose", &v));
+    dbg_set_verbose(v, dbg);
 }
