@@ -2,9 +2,12 @@
    for performance reasons */
 
 static void log_and_fail(Coords *c, DFluStatus *s, FluQuants *q) {
+    unsigned int time;
+    time = 10;
     UC(dflu_status_log(s));
     UC(flu_punto_dump(c, q));
-    os::sleep(10); /* hope all ranks dump */
+    msg_print("sleep for %d seconds", time);
+    os::sleep(time); /* hope all ranks dump */
     ERR("dflu_download failed");
 }
 void distribute_flu(Sim *s) {
