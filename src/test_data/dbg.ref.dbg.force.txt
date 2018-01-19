@@ -1,5 +1,4 @@
 cmd: ./udx dbg={forces=true}
-: read config from </home/amlucas/.udx/default.cfg>
 : dbg/imp/main.h: 35: udx error: dbg error: INF_VAL
 backtrace:
 : dbg/imp/main.h: 67:

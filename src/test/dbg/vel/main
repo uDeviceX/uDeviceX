@@ -1,4 +1,4 @@
 # TEST: dbg.vel
 u.conf0 u/dbg
 { u.make -j;     } > /dev/null
-u.run ./udx dbg={vel=true} &> dbg.out.txt
+u.run ./udx dbg={vel=true}  2>&1 | grep -v read >  dbg.out.txt
