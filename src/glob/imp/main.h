@@ -136,3 +136,9 @@ bool is_end(Coords c, int dir) {
     }
     return false;
 }
+
+void coord_stamp(Coords c, /**/ char *s) {
+    int r;
+    r = sprintf(s, "%03d.%03d.%03d", c.xc, c.yc, c.zc);
+    if (r < 0) ERR("sprintf failed");
+}
