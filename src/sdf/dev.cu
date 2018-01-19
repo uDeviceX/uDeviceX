@@ -11,7 +11,7 @@
 #include "type.h"
 #include "imp.h"
 
-void to_view(Sdf *q, /**/ Sdf_v *v) {
+void sdf_to_view(Sdf *q, /**/ Sdf_v *v) {
     tex3d_to_view(q->tex, &v->tex);
     tform_to_view(q->t  , &v->t);
 }

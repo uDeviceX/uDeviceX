@@ -50,7 +50,7 @@ void main0(Sdf *sdf, Part *p) {
     Sdf_v sdf_v;
     float x, y, z;
     x = p->x; y = p->y; z = p->z;
-    to_view(sdf, &sdf_v);
+    sdf_to_view(sdf, &sdf_v);
     KL(dev::main, (1, 1), (sdf_v, x, y, z));
 }
 
@@ -59,7 +59,7 @@ void main1(Part *p) {
     Coords coords;
     UC(sdf_ini(&sdf));
     UC(coords_ini(m::cart, /**/ &coords));
-    UC(gen(&coords, m::cart, sdf));
+    UC(sdf_gen(&coords, m::cart, sdf));
     UC(main0(sdf, p));
     UC(sdf_fin(sdf));
     UC(coords_fin(&coords));

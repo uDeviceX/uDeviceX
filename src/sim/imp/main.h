@@ -17,7 +17,7 @@ static void gen(Coords coords, Wall *w, Sim *s) { /* generate */
     run_eq(wall_creation, s);
     if (walls) {
         dSync();
-        UC(gen(&coords, s->cart, /**/ w->sdf));
+        UC(sdf_gen(&coords, s->cart, /**/ w->sdf));
         MC(m::Barrier(s->cart));
         inter::create_walls(s->cart, MAXNWALL, w->sdf, /*io*/ &flu->q, /**/ &w->q);
     }
@@ -93,7 +93,7 @@ void sim_strt(Sim *s) {
     MC(m::Barrier(s->cart));
     if (walls) {
         dSync();
-        UC(gen(&s->coords, s->cart, /**/ wall->sdf));
+        UC(sdf_gen(&s->coords, s->cart, /**/ wall->sdf));
         MC(m::Barrier(s->cart));
     }
 
