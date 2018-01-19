@@ -1,6 +1,1 @@
-cmd: ./udx dbg={vel=true}
-: dbg/imp/main.h: 35: udx error: dbg error: NAN_VAL
-backtrace:
-: dbg/imp/main.h: 59:
-: u/dbg/main.cu: 67:
-
+: dbg/imp/main.h: 35: udx error: DBG: error: NAN_VAL
