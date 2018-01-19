@@ -40,7 +40,7 @@ static void gen3(Coords *coords, MPI_Comm cart, int N[3], float ext[3], float *D
     UC(gen2(coords, N, D, /**/ sdf));
 }
 
-void gen(Coords *coords, MPI_Comm cart, Sdf *sdf) {
+void sdf_gen(Coords *coords, MPI_Comm cart, Sdf *sdf) {
     enum {X, Y, Z};
     float *D;     /* data */
     int N[3];     /* size of D */
