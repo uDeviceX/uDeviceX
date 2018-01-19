@@ -14,7 +14,6 @@ $B/dbg/conf.o: $S/dbg/conf.cpp; $X -I$S/. -I$S/dbg
 $B/dbg/imp.o: $S/dbg/imp.cu; $N -I$S/. -I$S/dbg
 $B/distr/common/imp.o: $S/distr/common/imp.cu; $N -I$S/. -I$S/distr/common
 $B/distr/flu/imp.o: $S/distr/flu/imp.cu; $N -I$S/. -I$S/distr/flu
-$B/distr/flu/status/conf.o: $S/distr/flu/status/conf.cpp; $X -I$S/. -I$S/distr/flu/status
 $B/distr/flu/status/imp.o: $S/distr/flu/status/imp.cpp; $X -I$S/. -I$S/distr/flu/status
 $B/distr/map/imp.o: $S/distr/map/imp.cu; $N -I$S/. -I$S/distr/map
 $B/distr/rbc/imp.o: $S/distr/rbc/imp.cu; $N -I$S/. -I$S/distr/rbc
@@ -45,6 +44,7 @@ $B/io/mesh/imp.o: $S/io/mesh/imp.cpp; $X -I$S/. -I$S/io/mesh
 $B/io/mesh/write/imp.o: $S/io/mesh/write/imp.cpp; $X -I$S/. -I$S/io/mesh/write
 $B/io/off/imp.o: $S/io/off/imp.cpp; $X -I$S/. -I$S/io/off
 $B/io/ply/imp.o: $S/io/ply/imp.cpp; $X -I$S/. -I$S/io/ply
+$B/io/punto/imp.o: $S/io/punto/imp.cpp; $X -I$S/. -I$S/io/punto
 $B/io/restart/imp.o: $S/io/restart/imp.cpp; $X -I$S/. -I$S/io/restart
 $B/io/rig/imp.o: $S/io/rig/imp.cpp; $X -I$S/. -I$S/io/rig
 $B/main.o: $S/main.cpp; $X -I$S/.

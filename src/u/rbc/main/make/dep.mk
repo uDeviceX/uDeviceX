@@ -11,6 +11,7 @@ $B/io/mesh/imp.o: $B/conf.h $S/glob/imp.h $S/glob/type.h $S/inc/conf.h $S/inc/ty
 $B/io/mesh/write/imp.o: $B/conf.h $S/inc/conf.h $S/io/mesh/write/imp.h $S/io/mesh/write/imp/main.h $S/mpi/glb.h $S/mpi/wrapper.h $S/utils/mc.h
 $B/io/off/imp.o: $S/io/off/imp.h $S/utils/error.h $S/utils/imp.h
 $B/io/ply/imp.o: $S/inc/def.h $S/inc/type.h $S/io/ply/imp.h $S/io/ply/imp/ascii.h $S/io/ply/imp/bin.h $S/io/ply/imp/common.h $S/utils/error.h $S/utils/imp.h $S/utils/msg.h
+$B/io/punto/imp.o: $S/inc/type.h $S/io/punto/imp.h $S/utils/error.h $S/utils/imp.h $S/utils/msg.h
 $B/io/restart/imp.o: $B/conf.h $S/glob/type.h $S/inc/conf.h $S/inc/def.h $S/inc/type.h $S/io/restart/imp.h $S/mpi/glb.h $S/utils/error.h $S/utils/imp.h $S/utils/msg.h
 $B/io/rig/imp.o: $B/conf.h $S/glob/imp.h $S/glob/type.h $S/inc/conf.h $S/inc/type.h $S/utils/error.h $S/utils/imp.h
 $B/math/linal/imp.o: $S/math/linal/imp.h $S/utils/error.h
