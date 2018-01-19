@@ -1,9 +1,9 @@
 static __device__ err_type valid_color(int c, bool verbose) {
     if (c != BLUE_COLOR && c != RED_COLOR) {
         if (verbose) printf("DBG: color = %d\n", c);
-        return err::INVALID;
+        return ERR_INVALID;
     }
-    return err::NONE;
+    return ERR_NONE;
 }
 
 __global__ void check_cc(const int *cc, int n, bool verbose = true) {

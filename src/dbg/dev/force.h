@@ -21,9 +21,9 @@ static __device__ err_type valid_f(const Force *f, bool verbose) {
     err_type e;
     fx = f->f[X]; fy = f->f[Y]; fz = f->f[Z];
     e = check_float3(f->f);
-    if (e != err::NONE) return e;
-    if (valid_unpacked_f(fx, fy, fz, verbose)) e = err::NONE;
-    else                                       e = err::INVALID;
+    if (e != ERR_NONE) return e;
+    if (valid_unpacked_f(fx, fy, fz, verbose)) e = ERR_NONE;
+    else                                       e = ERR_INVALID;
     return e;
 }
 

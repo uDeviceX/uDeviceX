@@ -20,9 +20,9 @@ static __device__ err_type valid_vv(const Particle *p, bool verbose) {
     err_type e;
     const float *v = p->v;
     e = check_float3(v);
-    if (e != err::NONE) return e;
-    if ( valid_vel3(v[X], v[Y], v[Z], verbose)) e = err::NONE;
-    else                                        e = err::INVALID;
+    if (e != ERR_NONE) return e;
+    if ( valid_vel3(v[X], v[Y], v[Z], verbose)) e = ERR_NONE;
+    else                                        e = ERR_INVALID;
     return e;
 }
 

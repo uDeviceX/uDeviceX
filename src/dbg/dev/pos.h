@@ -20,9 +20,9 @@ static __device__ err_type valid_pos(const Particle *p, bool verbose) {
     err_type e;
     x  = p->r[X];  y = p->r[Y];  z = p->r[Z];
     e = check_float3(p->r);
-    if (e != err::NONE) return e;
-    if (valid_unpacked_pos(x, y, z, verbose)) e = err::NONE;
-    else                                      e = err::INVALID;
+    if (e != ERR_NONE) return e;
+    if (valid_unpacked_pos(x, y, z, verbose)) e = ERR_NONE;
+    else                                      e = ERR_INVALID;
     return e;
 }
 
@@ -47,9 +47,9 @@ static __device__ err_type valid_pos_pu(const Particle *p, bool verbose) {
     err_type e;
     x  = p->r[X];  y = p->r[Y];  z = p->r[Z];
     e = check_float3(p->r);
-    if (e != err::NONE) return e;
-    if (valid_unpacked_pos_pu(x, y, z, verbose)) e = err::NONE;
-    else                                         e = err::INVALID;
+    if (e != ERR_NONE) return e;
+    if (valid_unpacked_pos_pu(x, y, z, verbose)) e = ERR_NONE;
+    else                                         e = ERR_INVALID;
     return e;
 }
 

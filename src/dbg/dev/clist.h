@@ -25,25 +25,25 @@ static __device__ bool at_coords(const float r[3], int3 coords, int3 L, bool ver
 
 static __device__ err_type valid_particle(int3 L, int cid, const Particle *p, bool verbose) {
     err_type e;
-    e = check_float3(p->r); if (e != err::NONE) return e;
-    e = check_float3(p->v); if (e != err::NONE) return e;
+    e = check_float3(p->r); if (e != ERR_NONE) return e;
+    e = check_float3(p->v); if (e != ERR_NONE) return e;
 
     int3 coords = cell_coords(L, cid);
     bool valid = at_coords(p->r, coords, L, verbose);
-    if (!valid) e = err::INVALID;
+    if (!valid) e = ERR_INVALID;
     
     return e;
 }
 
 static __device__ err_type valid_cell(int3 L, int cid, int s, int c, const Particle *pp, bool verbose) {
-    err_type e = err::NONE;
+    err_type e = ERR_NONE;
     int i;
     Particle p;
     
     for (i = 0; i < c; ++i) {
         p = pp[s + i];
         e = valid_particle(L, cid, &p, verbose);
-        if (e != err::NONE) return e;
+        if (e != ERR_NONE) return e;
     }
     return e;
 }
