@@ -11,11 +11,11 @@ void update_solid(Rig *s) {
     if (!s->q.n) return;
     rig::RigQuants *q = &s->q;
     
-    rig::update(q->n, s->ff, q->rr0, q->ns, /**/ q->pp, q->ss);
-    rig::update_mesh(q->ns, q->ss, q->nv, q->dvv, /**/ q->i_pp);
+    rig::rig_update(q->n, s->ff, q->rr0, q->ns, /**/ q->pp, q->ss);
+    rig::rig_update_mesh(q->ns, q->ss, q->nv, q->dvv, /**/ q->i_pp);
     // for dump
     cD2H(q->ss_dmp, q->ss, q->ns);
-    rig::reinit_ft(q->ns, /**/ q->ss);
+    rig::rig_reinit_ft(q->ns, /**/ q->ss);
 }
 
 void bounce_solid(long it, BounceBack *bb, Rig *s, Flu *flu) {
