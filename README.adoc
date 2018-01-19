@@ -17,4 +17,4 @@ make
 
 == Documentation
 
-link:https://amlucas.github.io/udoc/[]
+link:https://amlucas.github.io/udoc[]
