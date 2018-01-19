@@ -28,5 +28,5 @@ void mkdir(const char *path) {
 long time() { return ::time(NULL); }
 void   srand(long int seedval) { srand48(seedval); }
 double drand() { return drand48(); }
-void sleep(unsigned int time) { ::sleep(time); }
+void sleep(unsigned int seconds) { ::sleep(seconds); }
 } /* namespace */

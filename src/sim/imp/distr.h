@@ -1,6 +1,12 @@
 /* the following functions will need to be splitted in the future
    for performance reasons */
 
+static void log_and_fail(Coords *c, DFluStatus *s, FluQuants *q) {
+    UC(dflu_status_log(s));
+    UC(flu_punto_dump(c, q));
+    os::sleep(10); /* hope all ranks dump */
+    ERR("dflu_download failed");
+}
 void distribute_flu(Sim *s) {
     PartList lp;
     FluQuants *q = &s->flu.q;
@@ -24,11 +30,8 @@ void distribute_flu(Sim *s) {
     UC(dflu_pack(q, /**/ d->p));
 
     UC(dflu_download(/**/ d->p, d->s));
-    if (!dflu_status_success(d->s)) {
-        UC(dflu_status_log(d->s));
-        UC(flu_punto_dump(&s->coords, q));
-        ERR("dflu_download failed");
-    }
+    if (!dflu_status_success(d->s))
+        UC(log_and_fail(&s->coords, d->s, q));
 
     UC(dflu_post_send(d->p, d->c));
     UC(dflu_post_recv(d->c, d->u));
