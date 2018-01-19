@@ -47,7 +47,7 @@ interface:
 
 [source, c++]
 ----
-include::{src}/scheme/force/imp.h[tag=int]
+include::{src}/dbg/imp.h[tag=int]
 ----
 
 
