@@ -12,5 +12,5 @@ u.conf "$S" "$U" "$C" <<!
    run
 !
 { make clean && u.make -j; } > .make.log
-u.run 2 1 1 ./udx main.cfg
+u.run ./udx main.cfg
 u.avgh5 0 u 1 h5/flowfields-0001.h5 | uscale 0.1 > h5.out.txt
