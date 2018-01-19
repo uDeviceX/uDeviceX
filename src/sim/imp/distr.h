@@ -1,4 +1,4 @@
-/* the following functions will need to be splitted in the future 
+/* the following functions will need to be splitted in the future
    for performance reasons */
 
 void distribute_flu(Sim *s) {
@@ -6,7 +6,7 @@ void distribute_flu(Sim *s) {
     FluQuants *q = &s->flu.q;
     FluDistr *d = &s->flu.d;
     int ndead;
-    
+
     lp.pp        = q->pp;
 
     if (s->opt.denoutflow) {
@@ -22,18 +22,23 @@ void distribute_flu(Sim *s) {
     }
     UC(dflu_build_map(q->n, lp, /**/ d->p));
     UC(dflu_pack(q, /**/ d->p));
-    UC(dflu_download(/**/ d->p, NULL));
+
+    UC(dflu_download(/**/ d->p, d->s));
+    if (!dflu_status_success(d->s)) {
+        UC(dflu_status_log(d->s));
+        ERR("dflu_download failed");
+    }
 
     UC(dflu_post_send(d->p, d->c));
     UC(dflu_post_recv(d->c, d->u));
 
     UC(dflu_bulk(lp, /**/ q));
-    
+
     UC(dflu_wait_send(d->c));
     UC(dflu_wait_recv(d->c, d->u));
-    
+
     UC(dflu_unpack(/**/ d->u));
-    
+
     UC(dflu_halo(d->u, /**/ q));
     UC(dflu_gather(ndead, d->p, d->u, /**/ q));
 
@@ -43,7 +48,7 @@ void distribute_flu(Sim *s) {
 void distribute_rbc(Rbc *r) {
     RbcQuants *q = &r->q;
     RbcDistr  *d = &r->d;
-    
+
     drbc_build_map(q->nc, q->nv, q->pp, /**/ d->p);
     drbc_pack(q, /**/ d->p);
     drbc_download(/**/d->p);
@@ -73,7 +78,7 @@ void distribute_rig(Rig *s) {
     UC(drig_post_recv(d->c, d->u));
 
     drig_unpack_bulk(d->p, /**/ q);
-    
+
     UC(drig_wait_send(d->c));
     UC(drig_wait_recv(d->c, d->u));
 
