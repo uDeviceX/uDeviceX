@@ -5,8 +5,6 @@ set -eu
 S=`pwd` U=u/x C="$S/conf/double.poiseuille.h"
 cd test/fail/capacity/dbg1/serial
 
-Dbg="dbg={forces=true; pos=true; vel=true};"
-Force="bforce={type=\"constant\"; f = [1e5, 1e5, 0.0];};"
 u.conf "$S" "$U" "$C" <<!
    tend=2.01
    part_dumps part_freq=4000
@@ -14,5 +12,5 @@ u.conf "$S" "$U" "$C" <<!
    run
 !
 { make clean && u.make -j; } > .make.log
-u.run 2 1 1 ./udx "$Dbg" "$Force"
+u.run 2 1 1 ./udx main.cfg
 u.avgh5 0 u 1 h5/flowfields-0001.h5 | uscale 0.1 > h5.out.txt
