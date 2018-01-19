@@ -1,0 +1,7 @@
+cmd: ./udx dbg={vel=true}
+: read config from </home/amlucas/.udx/default.cfg>
+: dbg/imp/main.h: 35: udx error: dbg error: NAN_VAL
+backtrace:
+: dbg/imp/main.h: 59:
+: u/dbg/main.cu: 67:
+
