@@ -23,12 +23,8 @@ include::{src}/comm/imp.h[tag=hBags]
 include::{src}/comm/imp.h[tag=dBags]
 ----
 
-`Comm`: contains the communication related variables:
-
-[source,cpp]
-----
-include::{src}/comm/imp.h[tag=comm]
-----
+`Comm`: contains the communication related variables. It is hidden
+from user.
 
 == allocation mod
 
