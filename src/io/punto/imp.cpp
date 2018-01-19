@@ -24,4 +24,5 @@ void punto_dump(long n, Particle *pp, const char *name) {
         if (rcode < 0) ERR("fprintf to file '%s' failed", name);
     }
     UC(efclose(f));
+    msg_print("dump %ld particles to '%s'", n, name);
 }
