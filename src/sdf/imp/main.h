@@ -1,4 +1,4 @@
-void ini(Sdf **pq) {
+void sdf_ini(Sdf **pq) {
     Sdf *q;
     UC(emalloc(sizeof(Sdf), (void**)&q));
     UC(array3d_ini(&q->arr, XTE, YTE, ZTE));
@@ -6,7 +6,7 @@ void ini(Sdf **pq) {
     *pq = q;
 }
 
-void fin(Sdf *q) {
+void sdf_fin(Sdf *q) {
     UC(array3d_fin(q->arr));
     UC(  tex3d_fin(q->tex));
     UC(  tform_fin(q->t));

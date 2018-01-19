@@ -4,8 +4,8 @@ struct Wvel_v;
 struct Coords;
 struct Particle;
 
-void ini(Sdf**);
-void fin(Sdf*);
+void sdf_ini(Sdf**);
+void sdf_fin(Sdf*);
 void gen(Coords*, MPI_Comm cart, Sdf*);
 void to_view(Sdf*, /**/ Sdf_v*);
 

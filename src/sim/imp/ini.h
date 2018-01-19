@@ -175,7 +175,7 @@ static void ini_bounce_back(MPI_Comm cart, Rig *s, /**/ BounceBack *bb) {
 }
 
 static void ini_wall(Wall *w) {
-    ini(&w->sdf);
+    sdf_ini(&w->sdf);
     wall::alloc_quants(&w->q);
     wall::alloc_ticket(&w->t);
     Wvel *vw = &w->vel;

@@ -57,11 +57,11 @@ void main0(Sdf *sdf, Part *p) {
 void main1(Part *p) {
     Sdf *sdf;
     Coords coords;
-    UC(ini(&sdf));
+    UC(sdf_ini(&sdf));
     UC(coords_ini(m::cart, /**/ &coords));
     UC(gen(&coords, m::cart, sdf));
     UC(main0(sdf, p));
-    UC(fin(sdf));
+    UC(sdf_fin(sdf));
     UC(coords_fin(&coords));
     dSync();    
 }
