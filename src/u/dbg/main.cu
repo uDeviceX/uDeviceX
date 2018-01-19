@@ -10,6 +10,7 @@
 
 #include "d/api.h"
 
+#include "utils/error.h"
 #include "utils/cc.h"
 #include "utils/kl.h"
 #include "inc/type.h"
@@ -61,17 +62,22 @@ void fill_bugs() {
     KL(dev::fill_bugs, (k_cnf(n)), (ff, n));
 }
 
-void check() {
-    dbg::check_pos(pp, n, __FILE__, __LINE__, "pos");
-    dbg::check_vv (pp, n, __FILE__, __LINE__, "vel");
-    dbg::check_ff (ff, n, __FILE__, __LINE__, "acc");
+void check(Dbg *dbg) {
+    UC(dbg_check_pos    (dbg, n, pp));
+    UC(dbg_check_vel    (dbg, n, pp));
+    UC(dbg_check_forces (dbg, n, ff));
 }
 
 int main(int argc, char **argv) {
+    Dbg *dbg;
     m::ini(&argc, &argv);
+
+    UC(dbg_ini(&dbg));
     alloc();
     fill_bugs();
-    check();
+    check(dbg);
     free();
+    UC(dbg_fin(dbg));
+
     m::fin();
 }
