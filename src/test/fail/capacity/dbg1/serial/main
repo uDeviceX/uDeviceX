@@ -3,6 +3,8 @@
 :
 set -eu
 S=`pwd` U=u/x C=conf/double.poiseuille.h
+cd fail/capacity/dbg1/serial
+
 Dbg="dbg={forces=true; pos=true; vel=true};"
 Force="bforce={type=\"constant\"; f = [1e5, 1e5, 0.0];};"
 u.conf $S $U $C <<!
