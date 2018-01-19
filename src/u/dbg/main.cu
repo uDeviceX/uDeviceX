@@ -13,10 +13,10 @@
 #include "utils/error.h"
 #include "utils/cc.h"
 #include "utils/kl.h"
+#include "parser/imp.h"
 #include "inc/type.h"
 #include "inc/dev.h"
 #include "dbg/imp.h"
-
 
 const int n = 100;
 Particle *pp;
@@ -70,14 +70,18 @@ void check(Dbg *dbg) {
 
 int main(int argc, char **argv) {
     Dbg *dbg;
+    Config *cfg;
     m::ini(&argc, &argv);
-
+    UC(conf_ini(&cfg));
     UC(dbg_ini(&dbg));
+    UC(conf_read(argc, argv, cfg));
+    UC(dbg_set_conf(cfg, dbg));
+    
     alloc();
     fill_bugs();
     check(dbg);
     free();
     UC(dbg_fin(dbg));
-
+    UC(conf_fin(cfg));
     m::fin();
 }
