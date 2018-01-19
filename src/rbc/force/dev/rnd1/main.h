@@ -10,19 +10,19 @@ static __device__ void edg_rnd(Shape shape, int i0, float* rnd, int  j, /**/ Rnd
     rnd0->r = rnd[j];
 }
 
-static __device__ float  frnd0(float rnd) {
+static __device__ float  frnd0(RbcParams_v par, float rnd) {
     float f, g, T;
-    g = RBCgammaC; T = RBCkbT;
+    g = par.gammaC; T = par.kBT0;
     f  = sqrtf(2*g*T/dt)*rnd;
     return f;
 }
 
-static __device__ float3 frnd(float3 r1, float3 r2, const Rnd0 rnd) { /* random force */
+static __device__ float3 frnd(RbcParams_v par, float3 r1, float3 r2, const Rnd0 rnd) { /* random force */
     float3 dr, f;
     float r, f0;
     diff(&r1, &r2, /**/ &dr);
     r = sqrtf(dot<float>(&dr, &dr));
-    f0 = frnd0(rnd.r);
+    f0 = frnd0(par, rnd.r);
     axpy(f0/r, &dr, /**/ &f);
     return f;
 }

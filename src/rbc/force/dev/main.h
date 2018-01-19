@@ -38,7 +38,7 @@ static __device__ float3 adj_tris(RbcParams_v par, const Particle *pp,  const Pa
     fv = visc(par, p0.r, p1.r, p0.v, p1.v);
     add(&fv, /**/ &f);
 
-    fr = frnd(p0.r, p1.r, rnd);
+    fr = frnd(par, p0.r, p1.r, rnd);
     add(&fr, /**/ &f);
     return f;
 }
