@@ -1,15 +1,15 @@
-static __device__ bool valid_vel(float v, int L, bool verbose) {
+static __device__ bool valid_vel(float v, int L) {
     float dx = fabs(v * dt);
     if (dx > L/2)
         return false;
     return true;
 }
 
-static __device__ bool valid_vel3(float vx, float vy, float vz, bool verbose) {
+static __device__ bool valid_vel3(float vx, float vy, float vz) {
     bool ok = true;
-    ok &= valid_vel(vx, XS, verbose);
-    ok &= valid_vel(vy, YS, verbose);
-    ok &= valid_vel(vz, ZS, verbose);
+    ok &= valid_vel(vx, XS);
+    ok &= valid_vel(vy, YS);
+    ok &= valid_vel(vz, ZS);
 
     return ok;
 }
@@ -20,8 +20,8 @@ static __device__ err_type valid_vv(const Particle p, bool verbose) {
     const float *v = p.v;
     e = check_float3(v);
     if (e != ERR_NONE) return e;
-    if ( valid_vel3(v[X], v[Y], v[Z], verbose)) e = ERR_NONE;
-    else                                        e = ERR_INVALID;
+    if ( valid_vel3(v[X], v[Y], v[Z])) e = ERR_NONE;
+    else                               e = ERR_INVALID;
 
     if (verbose && e != ERR_NONE)
         printf("DBG: vel: p = [%g, %g %g], [%g, %g, %g]\n",
