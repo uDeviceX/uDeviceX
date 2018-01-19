@@ -34,3 +34,33 @@ backtrace:
 : /home/lisergey/udx/src/sim/imp/run.h: 27:
 : /home/lisergey/udx/src/sim/imp/step.h: 20:
 : /home/lisergey/udx/src/sim/imp/distr.h: 28:
+
+== with dbg activated
+
+`/scratch/snx3000/lisergey/ath/a8/kb2/0.4/f`
+
+----
+$ cat .016
+RBC_RND is not set
+will take 999999000 steps
+recolor
+recolor
+recolor
+/users/lisergey/udx/src/dbg/imp/main.h: 35: udx error: DBG: error: INVALID
+backtrace:
+: /users/lisergey/udx/src/dbg/imp/main.h: 59:
+: /users/lisergey/udx/src/sim/imp/check.h: 21:
+: /users/lisergey/udx/src/sim/imp/step.h: 29:
+: /users/lisergey/udx/src/sim/imp/run.h: 27:
+----
+
+----
+$ cat out.txt
+DBG: vel: p = [25.2264, 38.3215 37.5742], [7732.74, -594.019, 54001.6]
+DBG: vel: p = [76.3458, 51.1552 0.441968], [82799.9, 9640.99, -11968.3]
+DBG: vel: p = [70.5114, -5.25673 7.2918], [67269.5, -47920.6, 3872.09]
+DBG: vel: p = [11.8811, 28.3489 38.4757], [6690.66, -16738.6, 36424.4]
+DBG: vel: p = [-8.38836, 20.8824 -11.9317], [-13868.4, -20091.7, -21549.9]
+DBG: vel: p = [-3.30438, 34.1343 30.3012], [-12817.8, -8344.18, 28070.7]
+DBG: vel: p = [-130.121, 83.5231 -60.1666], [-147906, 47675.6, -69084]
+----
