@@ -14,6 +14,7 @@ A list of coding conventions can be found link:conventions{lext}[here].
 * cell lists: link:modules/clist{lext}[clist]
 * contact interactions: link:modules/cnt{lext}[cnt]
 * controlers, open bc: link:modules/control/main{lext}[control]
+* debug configuration: link:modules/dbg{lext}[dbg]
 * flow structure interactions: link:modules/fsi{lext}[fsi]
 * generic communicator: link:modules/comm{lext}[comm]
 * generic device API: link:modules/d{lext}[d]
