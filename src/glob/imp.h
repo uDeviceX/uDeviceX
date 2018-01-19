@@ -48,3 +48,6 @@ int zs(const Coords);
 /* rank predicates */
 
 bool is_end(Coords c, int dir);
+
+/* a string unique for a rank */
+void coord_stamp(Coords c, /**/ char *s);
