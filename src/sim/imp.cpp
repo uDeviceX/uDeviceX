@@ -112,6 +112,7 @@
 
 #include "imp/ini.h"
 #include "imp/fin.h"
+#include "imp/check.h"
 #include "imp/dump.h"
 
 #include "imp/colors.h"
