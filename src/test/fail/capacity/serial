@@ -1,5 +1,5 @@
 #### Double poiseuille
-# sTEST: fail.capacity
+# sTEST: fail.capacity.serial
 :
 set -eu
 S=`pwd` U=u/x C=conf/double.poiseuille.h
