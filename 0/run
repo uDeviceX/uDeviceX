@@ -27,7 +27,7 @@ shift=inf; force
 
 Domain="XS=$xs YS=$ys ZS=$zs walls wall_creation=1000"
 d=$SCRATCH/ath/a$adpd/kb$kb/$v/f
-time=01:00:00; run
+time=24:00:00; run
 
 export S="$s"
 u.case                             \
@@ -44,7 +44,6 @@ u.case                             \
     part_freq=$freq contactforces RBC_RND
     $DPD
     $Domain
-    $Force
     $Rbc
     $Sfree
     $Bop
