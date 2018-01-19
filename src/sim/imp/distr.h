@@ -1,6 +1,13 @@
 /* the following functions will need to be splitted in the future
    for performance reasons */
 
+static void download(FluDistr *d) {
+    UC(dflu_download(/**/ d->p, d->s));
+    if (!dflu_status_success(d->s)) {
+        UC(dflu_status_log(d->s));
+        ERR("dflu_download failed");
+    }
+}
 void distribute_flu(Sim *s) {
     PartList lp;
     FluQuants *q = &s->flu.q;
@@ -23,11 +30,7 @@ void distribute_flu(Sim *s) {
     UC(dflu_build_map(q->n, lp, /**/ d->p));
     UC(dflu_pack(q, /**/ d->p));
 
-    UC(dflu_download(/**/ d->p, d->s));
-    if (!dflu_status_success(d->s)) {
-        UC(dflu_status_log(d->s));
-        ERR("dflu_download failed");
-    }
+    UC(download(d));
 
     UC(dflu_post_send(d->p, d->c));
     UC(dflu_post_recv(d->c, d->u));
