@@ -5,13 +5,15 @@
 #include <conf.h>
 #include "inc/conf.h"
 
-#include "utils/msg.h"
-
 #include "mpi/glb.h"
 #include "mpi/wrapper.h"
 
 #include "d/api.h"
 
+#include "parser/imp.h"
+
+#include "utils/msg.h"
+#include "utils/imp.h"
 #include "utils/mc.h"
 #include "utils/cc.h"
 #include "utils/error.h"
@@ -61,12 +63,31 @@ void foo(int kind) {
     };
 }
 
+int parse_kind(const Config *c) {
+    const char *kind;
+    int k = -1;
+    conf_lookup_string(c, "err_kind", &kind);
+
+    if      (same_str(kind, "udx"))      k = UDX_;
+    else if (same_str(kind, "mpi"))      k = MPI_;
+    else if (same_str(kind, "cuda"))     k = CUDA_;
+    else if (same_str(kind, "maxstack")) k = MAX_STACK_;
+    else ERR("unrecognised error kind <%s>", kind);
+
+    return k;
+}
+
 int main(int argc, char **argv) {
     m::ini(&argc, &argv);
+    Config *cfg;
+    int k;
+    conf_ini(&cfg);
+    conf_read(argc, argv, cfg);
 
-    const char *ckind = getenv("ERR_KIND");
-    int k = atoi(ckind);
+    k = parse_kind(cfg);
     
     UC(foo(k));
+
+    conf_fin(cfg);
     m::fin();
 }
