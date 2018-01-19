@@ -1,7 +1,2 @@
-cmd: ./udx dbg={pos=true}
 DBG: pos pu: p = [24, 0 0], [nan, 0, 0]
-: dbg/imp/main.h: 35: udx error: dbg error: INVALID
-backtrace:
-: dbg/imp/main.h: 43:
-: u/dbg/main.cu: 66:
-
+: dbg/imp/main.h: 35: udx error: DBG: error: INVALID

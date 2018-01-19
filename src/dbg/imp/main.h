@@ -32,7 +32,7 @@ static void handle() {
     err_type e;
     UC(e = err_get());
     if (e != ERR_NONE)
-        ERR("dbg error: %s", get_err_str(e));
+        ERR("DBG: error: %s", get_err_str(e));
 } 
 
 void dbg_check_pos(const Dbg *dbg, int n, const Particle *pp) {

@@ -1,6 +1,1 @@
-cmd: ./udx dbg={forces=true}
-: dbg/imp/main.h: 35: udx error: dbg error: INF_VAL
-backtrace:
-: dbg/imp/main.h: 67:
-: u/dbg/main.cu: 68:
-
+: dbg/imp/main.h: 35: udx error: DBG: error: INF_VAL
