@@ -1,0 +1,95 @@
+= debug
+
+:src: ../../../src
+:stem: latexmath
+
+Helper to check the particle positions, velocities, forces and
+cell-lists from device arrays
+
+The hidden structure `Dbg` holds the debugging configuration.
+Configuration is encoded using the following enum values:
+
+[source, c++]
+----
+include::{src}/dbg/imp.h[tag=kind]
+----
+<1> positions are inside subdomain
+<2> positions are inside subdomain plus a margin
+<3> velocities
+<4> forces
+<5> colors
+<6> cell lists
+
+Consider subdomain of dimensions stem:[(L_x, Ly, Lz)].
+A position stem:[(r_x, r_y, r_z)] is valid if
+
+[stem]
+++++
+-\frac{L_\alpha - M} {2}  \leq r_\alpha < \frac{L_\alpha + M} 2,
+++++
+
+where stem:[M] is the margin. It is stem:[M = 0] for `DBG_POS` and
+stem:[M = 3] for `DBG_POS_SOFT`.
+
+For a given timestep stem:[dt], the velocity stem:[(v_x, v_y, v_z)] is
+valid if
+
+[stem]
+++++
+2 |v_\alpha| dt \leq L_\alpha.
+++++
+
+The force stem:[(f_x, f_y, f_z)] is valid if
+
+[stem]
+++++
+2 |f_\alpha| dt^2 \leq L_\alpha.
+++++
+
+
+== interface 
+
+allocate/deallocate the structure:
+
+[source, c++]
+----
+include::{src}/dbg/imp.h[tag=mem]
+----
+
+set debugging modes and verbosity:
+
+[source, c++]
+----
+include::{src}/dbg/imp.h[tag=ini]
+----
+
+initialize from configuration:
+
+[source, c++]
+----
+include::{src}/dbg/imp.h[tag=cnf]
+----
+
+interface:
+
+[source, c++]
+----
+include::{src}/dbg/imp.h[tag=int]
+----
+
+
+== configuration
+
+[source, cfg]
+----
+dbg = {
+    verbose  = true;
+    pos      = false;
+    pos_soft = false;
+    vel      = false;
+    forces   = false;
+    colors   = false;
+    clist    = false;
+};
+----
+

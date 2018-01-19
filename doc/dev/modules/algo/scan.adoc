@@ -12,23 +12,12 @@ input:  4 5 1  2  3  -
 output: 0 4 9 10 12 15
 ----
 
-== data structures
-
-[source,cpp]
-----
-include::{src}/algo/scan/imp.h[tag=work]
-----
-
-Workspace needed for cuda implementation
-
-
 == interface
-
 
 [source,cpp]
 ----
 include::{src}/algo/scan/imp.h[tag=interface]
 ----
 <1> perform scan operation on `input` of size `size`
-<2> allocate work for performing scan of size `size`
+<2> allocate workspace for performing scan of size `size`
 <3> free workspace

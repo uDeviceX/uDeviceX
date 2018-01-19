@@ -16,6 +16,7 @@
 * link:./dev/modules/comm{lext}[]
 * link:./dev/modules/contact{lext}[]
 * link:./dev/modules/control/main{lext}[]
+* link:./dev/modules/dbg{lext}[]
 * link:./dev/modules/distr{lext}[]
 * link:./dev/modules/d{lext}[]
 * link:./dev/modules/fluforces{lext}[]

@@ -13,6 +13,7 @@
 ./dev/modules/contact.html: ./dev/modules/contact.adoc 
 ./dev/modules/control/main.html: ./dev/modules/control/main.adoc ./dev/modules/control/den.inc.adoc ./dev/modules/control/den.inc.adoc ./dev/modules/control/inflow.inc.adoc ./dev/modules/control/inflow.inc.adoc ./dev/modules/control/outflow.inc.adoc ./dev/modules/control/outflow.inc.adoc ./dev/modules/control/vel.inc.adoc ./dev/modules/control/vel.inc.adoc
 ./dev/modules/d.html: ./dev/modules/d.adoc 
+./dev/modules/dbg.html: ./dev/modules/dbg.adoc 
 ./dev/modules/distr.html: ./dev/modules/distr.adoc 
 ./dev/modules/fluforces.html: ./dev/modules/fluforces.adoc 
 ./dev/modules/fsi.html: ./dev/modules/fsi.adoc 
