@@ -58,4 +58,3 @@ namespace dev {
 #include "imp/fin.h"
 #include "imp/forces.h"
 #include "imp/stat.h"
-
