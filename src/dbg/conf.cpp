@@ -8,7 +8,8 @@
 static void set(const Config *cfg, const char *desc, int kind, Dbg *dbg) {
     int enabled = 0;
     UC(conf_lookup_bool(cfg, desc, &enabled));
-    if (enabled) dbg_set(kind, dbg);
+    if (enabled) dbg_enable (kind, dbg);
+    else         dbg_disable(kind, dbg);
 }
 
 void dbg_set_conf(const Config *cfg, Dbg *dbg) {

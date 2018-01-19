@@ -4,15 +4,24 @@ void dbg_ini(Dbg **dbg) {
     UC(emalloc(sizeof(Dbg), (void**) dbg));
     d = *dbg;
     for (i = 0; i < DBG_NKIND_; ++i) d->state[i] = 0;
+    d->verbose = false;
 }
 void dbg_fin(Dbg *dbg) {
     UC(efree(dbg));
 }
 
-void dbg_set(int kind, Dbg *dbg) {
+static void set(int kind, int val, Dbg *dbg) {
     if (kind < 0 || kind >= DBG_NKIND_)
         ERR("Unrecognised kind of id <%d>", kind);
-    dbg->state[kind] = 1;
+    dbg->state[kind] = val;
+}
+
+void dbg_enable(int kind, Dbg *dbg) {
+    UC(set(kind, 1, dbg));
+}
+
+void dbg_disable(int kind, Dbg *dbg) {
+    UC(set(kind, 0, dbg));
 }
 
 static int check(const Dbg *dbg, int kind) {return dbg->state[kind];}
