@@ -12,7 +12,7 @@ static long decode_seed_env() {
 }
 static long decode_seed_time() {
     long t;
-    t = os::time();
+    t = os_time();
     msg_print("t: %ld", t);
     return t;
 }

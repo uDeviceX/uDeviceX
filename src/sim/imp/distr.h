@@ -7,7 +7,7 @@ static void log_and_fail(Coords *c, DFluStatus *s, FluQuants *q) {
     UC(dflu_status_log(s));
     UC(flu_punto_dump(c, q));
     msg_print("sleep for %d seconds", time);
-    os::sleep(time); /* hope all ranks dump */
+    os_sleep(time); /* hope all ranks dump */
     ERR("dflu_download failed");
 }
 void distribute_flu(Sim *s) {

@@ -25,7 +25,7 @@ namespace bop
 {
 void ini(MPI_Comm comm, Ticket *t) {
     if (m::is_master(comm))
-        UC(os::mkdir(DUMP_BASE "/bop"));
+        UC(os_mkdir(DUMP_BASE "/bop"));
     t->w_pp = new float[9*MAX_PART_NUM];
 }
 

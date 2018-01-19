@@ -50,7 +50,7 @@ static void dump0(Coords coords, MPI_Comm cart, Particle *pp, int n, int nc, /*w
     avg(pp, n, nc, rho, u);
     if (!directory_exists) {
         if (m::is_master(cart))
-            UC(os::mkdir(DUMP_BASE "/h5"));
+            UC(os_mkdir(DUMP_BASE "/h5"));
         directory_exists = true;
         MC(m::Barrier(cart));
     }

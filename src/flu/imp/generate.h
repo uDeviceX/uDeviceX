@@ -5,7 +5,7 @@ static void assert_np(int n, int m) {
 static int gen0(Particle *pp) { /* generate particle positions and velocities */
     enum {X, Y, Z};
     UC(assert_np(XS * YS * ZS * numberdensity, MAX_PART_NUM));
-    os::srand(123456);
+    os_srand(123456);
     int iz, iy, ix, l, nd = numberdensity;
     int n = 0; /* particle index */
     float x, y, z, dr = 0.99;
@@ -16,7 +16,7 @@ static int gen0(Particle *pp) { /* generate particle positions and velocities */
         int xlo = -0.5*XS + ix, ylo = -0.5*YS + iy, zlo = -0.5*ZS + iz;
         for (l = 0; l < nd; l++) {
             Particle p;
-            x = xlo + dr * os::drand(), y = ylo + dr * os::drand(), z = zlo + dr * os::drand();
+            x = xlo + dr * os_drand(), y = ylo + dr * os_drand(), z = zlo + dr * os_drand();
             p.r[X] = x; p.r[Y] = y; p.r[Z] = z;
             p.v[X] = 0; p.v[Y] = 0; p.v[Z] = 0;
             pp[n++] = p;
