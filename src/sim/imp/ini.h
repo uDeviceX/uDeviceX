@@ -30,12 +30,12 @@ static void ini_bb_exch(int nt, int nv, int max_m, MPI_Comm comm, /**/ BBexch *e
     UC(emesh_unpackm_ini(nt, max_m, /**/ &e->um));
 }
 
-static void ini_flu_distr(MPI_Comm comm, /**/ FluDistr *d) {
+static void ini_flu_distr(MPI_Comm comm, const Config *cfg, /**/ FluDistr *d) {
     float maxdensity = ODSTR_FACTOR * numberdensity;
     UC(dflu_pack_ini(maxdensity, /**/ &d->p));
     UC(dflu_comm_ini(comm, /**/ &d->c));
     UC(dflu_unpack_ini(maxdensity, /**/ &d->u));
-    //    UC(dflu_status_ini(&d->s));
+    UC(dflu_status_ini_conf(cfg, /**/ &d->s));
 }
 
 static void ini_rbc_distr(int nv, MPI_Comm comm, /**/ RbcDistr *d) {
@@ -133,13 +133,13 @@ static void ini_colorer(int nv, MPI_Comm comm, /**/ Colorer *c) {
     Dalloc(&c->maxext, MAX_CELL_NUM);
 }
 
-static void ini_flu(MPI_Comm cart, /**/ Flu *f) {
+static void ini_flu(MPI_Comm cart, const Config *c, /**/ Flu *f) {
 
     flu_ini(&f->q);
     ini(MAX_PART_NUM, /**/ &f->bulkdata);
     ini(cart, /**/ &f->halodata);
     
-    UC(ini_flu_distr(cart, /**/ &f->d));
+    UC(ini_flu_distr(cart, c, /**/ &f->d));
     UC(ini_flu_exch(cart, /**/ &f->e));
     
     UC(Dalloc(&f->ff, MAX_PART_NUM));
@@ -266,7 +266,7 @@ void sim_ini(int argc, char **argv, MPI_Comm cart, /**/ Sim **sim) {
 
     if (walls) ini_wall(&s->wall);
     
-    UC(ini_flu(s->cart, /**/ &s->flu));
+    UC(ini_flu(s->cart, s->cfg, /**/ &s->flu));
    
     if (multi_solvent && rbcs)
         UC(ini_colorer(s->rbc.q.nv, s->cart, /**/ &s->colorer));

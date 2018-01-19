@@ -66,6 +66,7 @@
 
 #include "comm/imp.h"
 #include "distr/flu/imp.h"
+#include "distr/flu/status/imp.h"
 #include "distr/rbc/imp.h"
 #include "distr/rig/imp.h"
 
