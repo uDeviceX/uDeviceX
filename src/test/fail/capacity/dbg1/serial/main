@@ -2,7 +2,7 @@
 # sTEST: fail.capacity.serial
 :
 set -eu
-S=`pwd` U=u/x C=conf/double.poiseuille.h
+S=`pwd` U=u/x C="$S/conf/double.poiseuille.h"
 cd test/fail/capacity/dbg1/serial
 
 Dbg="dbg={forces=true; pos=true; vel=true};"
