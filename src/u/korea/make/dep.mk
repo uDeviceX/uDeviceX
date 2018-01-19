@@ -43,6 +43,7 @@ $B/io/mesh/imp.o: $S/utils/imp.h $S/utils/os.h $S/inc/conf.h $S/io/mesh/imp/shif
 $B/io/mesh/write/imp.o: $S/inc/conf.h $S/mpi/wrapper.h $S/io/mesh/write/imp.h $S/utils/mc.h $B/conf.h $S/io/mesh/write/imp/main.h $S/mpi/glb.h
 $B/io/off/imp.o: $S/utils/imp.h $S/utils/error.h $S/io/off/imp.h
 $B/io/ply/imp.o: $S/utils/imp.h $S/utils/error.h $S/io/ply/imp/ascii.h $S/inc/type.h $S/io/ply/imp.h $S/inc/def.h $S/io/ply/imp/common.h $S/io/ply/imp/bin.h $S/utils/msg.h
+$B/io/punto/imp.o: $S/utils/imp.h $S/utils/error.h $S/inc/type.h $S/io/punto/imp.h $S/utils/msg.h
 $B/io/restart/imp.o: $S/utils/imp.h $S/inc/conf.h $S/utils/error.h $S/inc/type.h $S/io/restart/imp.h $S/inc/def.h $B/conf.h $S/glob/type.h $S/mpi/glb.h $S/utils/msg.h
 $B/io/rig/imp.o: $S/utils/imp.h $S/inc/conf.h $S/utils/error.h $S/inc/type.h $S/glob/imp.h $B/conf.h $S/glob/type.h
 $B/main.o: $S/inc/conf.h $S/mpi/wrapper.h $S/d/api.h $B/conf.h $S/sim/imp.h $S/mpi/glb.h $S/utils/msg.h

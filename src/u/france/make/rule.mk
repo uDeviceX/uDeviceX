@@ -43,6 +43,7 @@ $B/io/mesh/imp.o: $S/io/mesh/imp.cpp; $X -I$S/io/mesh -I$S/.
 $B/io/mesh/write/imp.o: $S/io/mesh/write/imp.cpp; $X -I$S/io/mesh/write -I$S/.
 $B/io/off/imp.o: $S/io/off/imp.cpp; $X -I$S/io/off -I$S/.
 $B/io/ply/imp.o: $S/io/ply/imp.cpp; $X -I$S/io/ply -I$S/.
+$B/io/punto/imp.o: $S/io/punto/imp.cpp; $X -I$S/io/punto -I$S/.
 $B/io/restart/imp.o: $S/io/restart/imp.cpp; $X -I$S/io/restart -I$S/.
 $B/io/rig/imp.o: $S/io/rig/imp.cpp; $X -I$S/io/rig -I$S/.
 $B/main.o: $S/main.cpp; $X -I$S/.

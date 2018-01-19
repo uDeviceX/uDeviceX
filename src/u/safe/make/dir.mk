@@ -43,6 +43,7 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/io/mesh/write            && \
     d $B/io/off                   && \
     d $B/io/ply                   && \
+    d $B/io/punto                 && \
     d $B/io/restart               && \
     d $B/io/rig                   && \
     d $B/math/linal               && \
