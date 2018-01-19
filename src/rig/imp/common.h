@@ -52,7 +52,7 @@ static void gen_ipp_hst(const Solid *ss_hst, const int ns, int nv, const float *
     mesh2pp_hst(ss_hst, ns, nv, vv, /**/ i_pp_hst);
 }
 
-static void cpy_H2D(const Quants *q) {
+static void cpy_H2D(const RigQuants *q) {
     cH2D(q->i_pp, q->i_pp_hst, q->ns * q->nv);
     cH2D(q->ss,   q->ss_hst,   q->ns);
     cH2D(q->rr0,  q->rr0_hst,  q->nps * 3);

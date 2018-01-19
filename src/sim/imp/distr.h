@@ -61,7 +61,7 @@ void distribute_rbc(Rbc *r) {
 }
 
 void distribute_rig(Rig *s) {
-    rig::Quants *q = &s->q;
+    rig::RigQuants *q = &s->q;
     RigDistr    *d = &s->d;
     int nv = q->nv;
 

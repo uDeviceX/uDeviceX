@@ -95,7 +95,7 @@ struct Rbc {
 
 /* data holder for rigid objects */
 struct Rig {
-    rig::Quants q;
+    rig::RigQuants q;
     ScanWork *ws; /* work for scan */
     Force *ff, *ff_hst;
 

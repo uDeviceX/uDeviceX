@@ -1,4 +1,4 @@
-void fin(Quants *q) {
+void fin(RigQuants *q) {
     delete[] q->pp_hst;
     delete[] q->ss_hst;
     delete[] q->rr0_hst;
