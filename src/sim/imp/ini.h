@@ -278,5 +278,8 @@ void sim_ini(int argc, char **argv, MPI_Comm cart, /**/ Sim **sim) {
             UC(ini_bounce_back(s->cart, &s->rig, /**/ &s->bb));
     }
 
+    UC(dbg_ini(&s->dbg));
+    UC(dbg_set_conf(s->cfg, s->dbg));
+    
     MC(MPI_Barrier(s->cart));
 }

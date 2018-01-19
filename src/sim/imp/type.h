@@ -144,6 +144,7 @@ struct Sim {
     BounceBack bb;
     Colorer colorer;
     Vcon vcon;
+    Dbg *dbg;
     MPI_Comm cart;
 
     /* open bc tools */

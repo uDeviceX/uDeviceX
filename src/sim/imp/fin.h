@@ -152,6 +152,7 @@ void sim_fin(Sim *s) {
 
     UC(coords_fin(/**/ &s->coords));
 
+    UC(dbg_fin(s->dbg));
     UC(conf_fin(s->cfg));
     datatype::fin();
 
