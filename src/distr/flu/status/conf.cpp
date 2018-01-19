@@ -11,6 +11,5 @@ void dflu_status_ini_conf(const Config *cfg, DFluStatus **ps) {
     UC(conf_lookup_bool(cfg, "dflu.debug", /**/ &dbg));
     msg_print("dflu.debug = %d", dbg);
 
-    if (dbg) dflu_status_ini(ps);
-    else     *ps = NULL;
+    dflu_status_ini(ps);
 }
