@@ -15,28 +15,60 @@ void dbg_set(int kind, Dbg *dbg) {
     dbg->state[kind] = 1;
 }
 
+static int check(const Dbg *dbg, int kind) {return dbg->state[kind];}
+
+static void handle() {
+    err_type e;
+    UC(e = err_get());
+    if (e != ERR_NONE)
+        ERR("dbg error: %s", get_err_str(e));
+} 
 
 void dbg_check_pos(const Dbg *dbg, int n, const Particle *pp) {
+    if (!check(dbg, DBG_POS))
+        return;
+    UC(err_ini());
     KL(devdbg::check_pos, (k_cnf(n)), (pp, n));
+    UC(handle());
 }
 
 void dbg_check_pos_soft(const Dbg *dbg, int n, const Particle *pp) {
+    if (!check(dbg, DBG_POS_SOFT))
+        return;
+    UC(err_ini());
     KL(devdbg::check_pos_pu, (k_cnf(n)), (pp, n));
+    UC(handle());
 }
 
 void dbg_check_vel(const Dbg *dbg, int n, const Particle *pp) {
+    if (!check(dbg, DBG_VEL))
+        return;
+    UC(err_ini());
     KL(devdbg::check_vv, (k_cnf(n)), (pp, n));
+    UC(handle());
 }
 
 void dbg_check_forces(const Dbg *dbg, int n, const Force *ff) {
+    if (!check(dbg, DBG_FORCES))
+        return;
+    UC(err_ini());
     KL(devdbg::check_ff, (k_cnf(n)), (ff, n));
+    UC(handle());
 }
 
 void dbg_check_colors(const Dbg *dbg, int n, const int *cc) {
+    if (!check(dbg, DBG_COLORS))
+        return;
+    UC(err_ini());
     KL(devdbg::check_cc, (k_cnf(n)), (cc, n));
+    UC(handle());
 }
 
 void dbg_check_clist(const Dbg *dbg, int3 L, const int *starts, const int *counts, const Particle *pp) {
+    if (!check(dbg, DBG_CLIST))
+        return;
     int n = L.x * L.y * L.z;
+    UC(err_ini());
     KL(devdbg::check_clist, (k_cnf(n)), (L, starts, counts, pp));
+    UC(handle());
 }
