@@ -1,0 +1,4 @@
+# TEST: dbg.vel
+u.conf0 u/dbg
+{ u.make -j;     } > /dev/null
+u.run ./udx dbg={vel=true} &> dbg.out.txt
