@@ -16,6 +16,7 @@ static __device__ bool at_coord(float x, int c, int L, bool verbose, const char 
 }
 
 static __device__ bool at_coords(const float r[3], int3 coords, int3 L, bool verbose) {
+    enum {X, Y, Z};
     bool ok = true;
     ok &= at_coord(r[X], coords.x, L.x, verbose, "x");
     ok &= at_coord(r[Y], coords.y, L.y, verbose, "y");

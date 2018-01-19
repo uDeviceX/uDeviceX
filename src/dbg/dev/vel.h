@@ -17,6 +17,7 @@ static __device__ bool valid_vel3(float vx, float vy, float vz, bool verbose) {
 }
 
 static __device__ err_type valid_vv(const Particle *p, bool verbose) {
+    enum {X, Y, Z};
     err_type e;
     const float *v = p->v;
     e = check_float3(v);

@@ -17,6 +17,7 @@ static __device__ bool valid_unpacked_f(float fx, float fy, float fz, bool verbo
 }
 
 static __device__ err_type valid_f(const Force *f, bool verbose) {
+    enum {X, Y, Z};
     float fx, fy, fz;
     err_type e;
     fx = f->f[X]; fy = f->f[Y]; fz = f->f[Z];

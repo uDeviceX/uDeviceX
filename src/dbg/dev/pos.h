@@ -16,6 +16,7 @@ static __device__ bool valid_unpacked_pos(float  x, float  y, float  z, bool ver
 }
 
 static __device__ err_type valid_pos(const Particle *p, bool verbose) {
+    enum {X, Y, Z};
     float x, y, z;
     err_type e;
     x  = p->r[X];  y = p->r[Y];  z = p->r[Z];
@@ -43,6 +44,7 @@ static __device__ bool valid_unpacked_pos_pu(float x, float y, float z, bool ver
 }
 
 static __device__ err_type valid_pos_pu(const Particle *p, bool verbose) {
+    enum {X, Y, Z};
     float x, y, z;
     err_type e;
     x  = p->r[X];  y = p->r[Y];  z = p->r[Z];
