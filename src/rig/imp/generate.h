@@ -10,6 +10,6 @@ static void set_ids(MPI_Comm comm, const int ns, /**/ Solid *ss_hst, Solid *ss_d
     if (ns) cH2D(ss_dev, ss_hst, ns);
 }
 
-void rig_set_ids(MPI_Comm comm, RigQuants q) {
-    set_ids(comm, q.ns, q.ss_hst, q.ss);
+void rig_set_ids(MPI_Comm comm, RigQuants *q) {
+    set_ids(comm, q->ns, q->ss_hst, q->ss);
 }

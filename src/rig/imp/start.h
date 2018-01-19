@@ -38,8 +38,8 @@ static void strt_dump_templ0(Coords coords, const int nps, const float *rr0_hst)
     delete[] pp;
 }
 
-void rig_strt_dump_templ(Coords coords, RigQuants q) {
-    strt_dump_templ0(coords, q.nps, q.rr0_hst);
+void rig_strt_dump_templ(Coords coords, const RigQuants *q) {
+    strt_dump_templ0(coords, q->nps, q->rr0_hst);
 }
 
 
@@ -47,6 +47,6 @@ static void strt_dump(Coords coords, const int id, const int ns, const Solid *ss
     restart::write_ss(coords, "rig", id, ss, ns);
 }
 
-void rig_strt_dump(Coords coords, const int id, const RigQuants q) {
-    strt_dump(coords, id, q.ns, q.ss_hst);
+void rig_strt_dump(Coords coords, const int id, const RigQuants *q) {
+    strt_dump(coords, id, q->ns, q->ss_hst);
 }

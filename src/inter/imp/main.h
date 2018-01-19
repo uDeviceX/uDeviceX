@@ -51,7 +51,7 @@ void freeze(Coords coords, MPI_Comm cart, Sdf *sdf, FluQuants *qflu, RigQuants *
     if (solids)           create_solids(coords, cart, qflu, qrig);
     if (walls && rbcs  )  remove_rbcs(qrbc, sdf);
     if (walls && solids)  remove_solids(qrig, sdf);
-    if (solids)           rig_set_ids(cart, *qrig);
+    if (solids)           rig_set_ids(cart, qrig);
 }
 
 void color_hst(Coords coords, Particle *pp, int n, /**/ int *cc) {
