@@ -1,0 +1,68 @@
+= debug
+
+:src: ../../../src
+
+Helper to check the particle positions, velocities, forces and
+cell-lists from device arrays
+
+The hidden structure `Dbg` holds the debugging configuration.
+Configuration is encoded using the following enum values:
+
+[source, c++]
+----
+include::{src}/dbg/imp.h[tag=kind]
+----
+<1> positions are inside subdomain
+<2> positions are inside subdomain plus a margin
+<3> velocities
+<4> forces
+<5> colors
+<6> cell lists
+
+
+== interface 
+
+allocate/deallocate the structure:
+
+[source, c++]
+----
+include::{src}/dbg/imp.h[tag=mem]
+----
+
+set debugging modes and verbosity:
+
+[source, c++]
+----
+include::{src}/dbg/imp.h[tag=ini]
+----
+
+initialize from configuration:
+
+[source, c++]
+----
+include::{src}/dbg/imp.h[tag=cnf]
+----
+
+interface:
+
+[source, c++]
+----
+include::{src}/scheme/force/imp.h[tag=int]
+----
+
+
+== configuration
+
+[source, cfg]
+----
+dbg = {
+    verbose  = true;
+    pos      = false;
+    pos_soft = false;
+    vel      = false;
+    forces   = false;
+    colors   = false;
+    clist    = false;
+};
+----
+
