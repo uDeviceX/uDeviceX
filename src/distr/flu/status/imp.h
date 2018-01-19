@@ -1,7 +1,9 @@
 struct DFluStatus;
+struct Config;
 
 /* ini */
 void dflu_status_ini(DFluStatus **s);
+void dflu_status_ini_conf(const Config *cfg, DFluStatus **s);
 void dflu_status_fin(DFluStatus  *s);
 
 /* get */
