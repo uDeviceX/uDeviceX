@@ -11,8 +11,8 @@ static void check_sizes(Sim *s) {
 
 static void check_pos_soft(Sim *s) {
     UC(dbg_check_pos_soft(s->dbg, s->flu.q.n, s->flu.q.pp));
-    if (s->solids0) UC(dbg_check_pos_soft(s->dbg, s->rig.q.n, s->rig.q.pp));
-    if (rbcs)       UC(dbg_check_pos_soft(s->dbg, s->rbc.q.n, s->rbc.q.pp));
+    // if (s->solids0) UC(dbg_check_pos_soft(s->dbg, s->rig.q.n, s->rig.q.pp));
+    // if (rbcs)       UC(dbg_check_pos_soft(s->dbg, s->rbc.q.n, s->rbc.q.pp));
 }
 
 static void check_vel(Sim *s) {
