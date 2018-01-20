@@ -23,6 +23,12 @@ Summarize time used to compile
 ...
 ----
 
+== Arch Linux
+
+....
+u.make MPI_VARIANT=ompi-cxx HDF5_CXXFLAGS= HDF5_LIBS=-lhdf5 NVCC_LIBS=-L/opt/cuda/lib64
+....
+
 == after adding files
 
 run from src/
