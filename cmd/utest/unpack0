@@ -6,6 +6,8 @@ d="$1"; shift
 
 "$AWK" -v d="$d" '
 /^# FILE: / {
-    print d, $0
+    f = $0; sub(/^# FILE: /, "", f)
+    print f
+    next
 }
 ' "$@"
