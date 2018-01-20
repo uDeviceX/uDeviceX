@@ -1,4 +1,3 @@
-./dev/compile.html: ./dev/compile.adoc 
 ./dev/conventions.html: ./dev/conventions.adoc 
 ./dev/cstyle/emacs.html: ./dev/cstyle/emacs.adoc 
 ./dev/gource.html: ./dev/gource.adoc 
