@@ -1,0 +1,7 @@
+. u.test.util
+
+prog=u.test.unpack0
+
+d="$1"; shift
+
+echo "$@"

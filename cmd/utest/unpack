@@ -22,4 +22,4 @@ do if ! test -f "$i"
    fi
 done
 
-exec $prog0 "$@"
+exec $prog0 "$d" "$@"
