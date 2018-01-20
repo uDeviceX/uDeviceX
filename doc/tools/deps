@@ -1,5 +1,7 @@
 #!/bin/sh
 
+set -eu
+
 usg() {
     echo "usg: u.doc.deps <doc dir> > deps.mk"
     exit 1
