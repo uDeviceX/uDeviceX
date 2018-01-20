@@ -1,0 +1,3 @@
+. u.test.util
+
+echo 42

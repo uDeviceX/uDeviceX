@@ -1,0 +1,6 @@
+. u.test.util
+
+prog=u.test.pack
+prog0=u.test.pack0
+
+exec $prog0
