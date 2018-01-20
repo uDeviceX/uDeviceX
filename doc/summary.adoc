@@ -2,11 +2,12 @@
 :lext: .adoc
 
 == ./dev
-* link:./dev/compile{lext}[]
+* link:./dev/build{lext}[]
 * link:./dev/conventions{lext}[]
 * link:./dev/cstyle/emacs{lext}[]
 * link:./dev/gource{lext}[]
 * link:./dev/main{lext}[]
+* link:./dev/third{lext}[]
 * link:./dev/modules/algo/minmax{lext}[]
 * link:./dev/modules/algo/scan{lext}[]
 * link:./dev/modules/bforce{lext}[]
