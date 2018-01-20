@@ -4,8 +4,8 @@ prog=u.test.pack
 prog0=u.test.pack0
 
 usg () {
-    msg "$prog DIR"
-    msg 'pack all files in [DIR..] to one file'
+    msg "$prog [DIR].."
+    msg 'pack all files in [DIR].. to one file'
     exit 0
 }
 
