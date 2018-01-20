@@ -55,7 +55,7 @@ void dump(MPI_Comm comm, const char *path, int sx, int sy, int sz) {
     float *data[] = { rho, u[X], u[Y], u[Z] };
     UC(h5::write(coords, comm, path, data, names, 4));
     free(rho); free(u[X]); free(u[Y]); free(u[Z]);
-    if (rank == 0) xmf::write(path, names, 4, sx, sy, sz);
+    if (rank == 0) xmf_write(path, names, 4, sx, sy, sz);
     UC(coords_fin(/**/ &coords));
 }
 

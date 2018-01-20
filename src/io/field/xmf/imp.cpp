@@ -7,7 +7,6 @@
 
 #include "imp.h"
 
-namespace xmf {
 static void header(FILE *f) {
     fprintf(f, "<?xml version=\"1.0\" ?>\n");
     fprintf(f, "<!DOCTYPE Xdmf SYSTEM \"Xdmf.dtd\" []>\n");
@@ -64,7 +63,7 @@ static void basename(const char *i, /**/ char *o) {
     strcpy(o, p);
 }
 
-void write(const char *path, const char **names, int ncomp, int sx, int sy, int sz) {
+void xmf_write(const char *path, const char **names, int ncomp, int sx, int sy, int sz) {
     char w[BUFSIZ];
     FILE *f;
 
@@ -77,5 +76,3 @@ void write(const char *path, const char **names, int ncomp, int sx, int sy, int 
     epilogue(f);
     UC(efclose(f));
 }
-
-} /* namespace */
