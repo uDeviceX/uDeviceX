@@ -85,8 +85,8 @@ static void write0(Coords coords, hid_t file_id,
     H5Sclose(filespace_simple);
 }
 
-void write(Coords coords, MPI_Comm cart, const char *path, float **data,
-           const char **names, int ncomp) {
+void h5_write(Coords coords, MPI_Comm cart, const char *path, float **data,
+              const char **names, int ncomp) {
     /* ncomp: number of component,
        sx, sy, sz: sizes */
     IDs ids;
