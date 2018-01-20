@@ -3,9 +3,11 @@
 prog=u.argp
 
 usg () {
-     msg "$prog"' conf.def.h A=1 B=2 ... > conf.h'
-     msg 'conf.h generator'
-     exit
+    msg "$prog  [FILE] [DEFS]"
+    msg "$prog  conf.def.h A=1 B=2"
+    msg "$prog  conf.def.h S='\"string\"'"
+    msg 'conf.h generator: append definitions to FILE'
+    exit
 }
 
 good () {
