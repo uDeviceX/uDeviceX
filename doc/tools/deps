@@ -11,7 +11,7 @@ if test $# -ne 0 -a "$1" = -h; then usg; fi
 
 d=$1
 
-FF=`find $d -type f \( -iname "*.adoc" ! -iname "*.inc.adoc" \)`
+FF=`find $d -type f \( -name "*.adoc" ! -name "*.inc.adoc" \)`
 
 make_path() {
     dir=$1; shift
