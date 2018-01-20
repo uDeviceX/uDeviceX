@@ -29,6 +29,13 @@ Summarize time used to compile
 u.make MPI_VARIANT=ompi-cxx HDF5_CXXFLAGS= HDF5_LIBS=-lhdf5 NVCC_LIBS=-L/opt/cuda/lib64
 ....
 
+or
+
+....
+MAKEFLAGS="MPI_VARIANT=ompi-cxx HDF5_CXXFLAGS= HDF5_LIBS=-lhdf5 NVCC_LIBS=-L/opt/cuda/lib64" \
+				u.test test/compile
+....
+
 == after adding files
 
 run from src/
