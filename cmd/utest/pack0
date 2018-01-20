@@ -1,3 +1,6 @@
 . u.test.util
 
-find "$@" -type f
+for i in `e find "$@" -type f`
+do echo "# FILE: $i"
+   e cat "$i"
+done
