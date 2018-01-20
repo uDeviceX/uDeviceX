@@ -31,7 +31,7 @@ L  = $(LOG) $(NVCC)  $(ARCH) -dlink $O $(NVCCLIBS) -o $B/gpuCode.o && \
 
 $B/udx: $O; $L
 $O:  $B/.cookie
-$B/.cookie:;       $D ; touch $@
+$B/.cookie:; $D; touch $@
 
 clean:; -rm -f $B/udx $O $B/gpuCode.o $B/.cookie
 
