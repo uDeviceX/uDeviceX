@@ -7,7 +7,6 @@
 * link:./dev/cstyle/emacs{lext}[]
 * link:./dev/gource{lext}[]
 * link:./dev/main{lext}[]
-* link:./dev/third{lext}[]
 * link:./dev/modules/algo/minmax{lext}[]
 * link:./dev/modules/algo/scan{lext}[]
 * link:./dev/modules/bforce{lext}[]
@@ -31,6 +30,7 @@
 * link:./dev/modules/sdf/main{lext}[]
 * link:./dev/modules/utils/main{lext}[]
 * link:./dev/modules/wvel{lext}[]
+* link:./dev/third{lext}[]
 * link:./dev/wrap{lext}[]
 
 == ./user
