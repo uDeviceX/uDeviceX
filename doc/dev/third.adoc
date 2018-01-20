@@ -30,7 +30,7 @@ pkg-config hdf5-mpich --libs
 
 To build from source
 
-https://support.hdfgroup.org/ftp/HDF5/releases/hdf5-1.8.17/src/hdf5-1.8.17.tar.gz
+link:https://support.hdfgroup.org/ftp/HDF5/releases/hdf5-1.8.17/src/hdf5-1.8.17.tar.gz
 
 Configuration options
 ....
