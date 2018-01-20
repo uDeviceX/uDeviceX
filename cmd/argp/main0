@@ -11,7 +11,7 @@ function getk(s) {sub(/^-/, "", s); sub(/=.*/, "", s); return s}
 function getv(s) {sub(/^-/, "", s); sub(/.*=/, "", s); return s}
 
 # c language id?
-function cid(s)      { return s ~ /^[A-Za-z_][A-Za-z_0-9]*/ }
+function cid(s)      { return s ~ /^[A-Za-z_][A-Za-z_0-9]*$/ }
 function assert_k(k, cur) {
     if   (cid(k)) return
     err("u.argp: invalid parameter: " cur)

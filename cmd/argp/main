@@ -8,6 +8,31 @@ usg () {
      exit
 }
 
+good () {
+    "${AWK-awk}" -v a="$1" '
+BEGIN {
+    k = getk(a)
+    exit !cid(k)
+}
+# key
+function getk(s) {sub(/^-/, "", s); sub(/=.*/, "", s); return s}
+# c language id?
+function cid(s)  { return s ~ /^[A-Za-z_][A-Za-z_0-9]*$/ }
+'
+}
+
+check0 () {
+    if ! good "$1"
+    then err "$prog: invalid argument '$1'"
+    fi
+}
+
+check () {
+    for i
+    do check0 "$i"
+    done
+}
+
 if test $# -ne 0 && test "$1" = -h; then usg; fi
 
 if test $# -eq 0
@@ -19,5 +44,7 @@ f="$1"; shift
 if test ! -f "$f"
 then err "$prog: not a file '$f'"
 fi
+
+check "$@"
 
 exec u.argp0 "$f" "$@"
