@@ -5,7 +5,7 @@ prog=u.test.unpack0
 d="$1"; shift
 
 "$AWK" -v d="$d" '
-/# FILE: / {
+/^# FILE: / {
     print d, $0
 }
 ' "$@"

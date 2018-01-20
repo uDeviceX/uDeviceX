@@ -2,9 +2,23 @@
 
 prog=u.test.pack0
 
-cat0 () { "$AWK" '{print}' "$1"; }
+cat0 () {
+    "$AWK" '
+/^# FILE: / { err(FILENAME ":" NR ": " $0) }
+            { print   }
+function msg(s) { printf "%s\n", s | "cat >&2" }
+function err(s) {
+    printf s "\n" | "cat >&2"
+    exit(2)
+}
+
+' "$1"
+}
 
 for i in `e find "$@" -type f`
 do echo "# FILE: $i"
    e cat0 "$i"
+   if test $?  -ne 0
+   then err "fail to process '$i'"
+   fi
 done
