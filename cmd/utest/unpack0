@@ -4,4 +4,8 @@ prog=u.test.unpack0
 
 d="$1"; shift
 
-echo "$@"
+"$AWK" -v d="$d" '
+/# FILE: / {
+    print d, $0
+}
+' "$@"
