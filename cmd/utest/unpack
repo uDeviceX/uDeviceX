@@ -1,0 +1,14 @@
+. u.test.util
+
+prog=u.test.unpack
+prog0=u.test.unpack0
+
+usg () {
+    msg "$prog DIR [FILE].."
+    msg 'unpack [FILE].. to DIR'
+    exit 0
+}
+
+if test $# -ne 0 && test "$1" = -h; then usg; fi
+
+exec $prog0 "$@"
