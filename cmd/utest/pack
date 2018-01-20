@@ -3,4 +3,20 @@
 prog=u.test.pack
 prog0=u.test.pack0
 
+usg () {
+    msg "$prog DIR"
+    msg 'pack all files in [DIR..] to one file'
+    exit 0
+}
+
+if test $# -ne 0 && test "$1" = -h; then usg; fi
+if test $# -eq 0; then err 'missing argument DIR'; fi
+
+for i
+do if ! test -d "$i"
+   then err "not a directory '$i'"
+   fi
+done
+
+
 exec $prog0
