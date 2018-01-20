@@ -1,26 +1,23 @@
 . u.utils
 
+prog=u.argp
+
 usg () {
-     msg 'u.argp conf.def.h A=1 B=2 ... > conf.h'
+     msg "$prog"' conf.def.h A=1 B=2 ... > conf.h'
      msg 'conf.h generator'
      exit
 }
 
-good () {
-     local f
-     if test $# -eq 0
-     then err 'u.argp: needs an argument'
-     fi
+if test $# -ne 0 && test "$1" = -h; then usg; fi
 
-     f="$1"; shift
-
-     if test "$f" = -h; then usg; fi
-
-     if test ! -r "$f"
-     then err 'u.argp: not a file: '"$f"
-     fi
-}
-
-if good "$@"
-then exec u.argp0 "$@"
+if test $# -eq 0
+then err "$prog: needs an argument"
 fi
+
+f="$1"; shift
+
+if test ! -f "$f"
+then err "$prog: not a file '$f'"
+fi
+
+exec u.argp0 "$f" "$@"
