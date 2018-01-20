@@ -19,7 +19,7 @@ static void epilogue(FILE *f) {
     fprintf(f, "</Xdmf>\n");
 }
 
-static void grid(FILE * f, const char *path, const char **names, int n, int sx, int sy, int sz) {
+static void grid(FILE *f, const char *path, const char **names, int n, int sx, int sy, int sz) {
     enum {X, Y, Z};
     int i;
     int *d, G[3]; /* domain size */
