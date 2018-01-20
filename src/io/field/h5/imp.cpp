@@ -8,8 +8,6 @@
 #include "imp.h"
 #include "utils/error.h"
 
-namespace h5 {
-
 struct IDs {
     hid_t plist;
     hid_t file;
@@ -96,5 +94,3 @@ void write(Coords coords, MPI_Comm cart, const char *path, float **data,
     UC(write0(coords, ids.file, data, names, ncomp));
     UC(close(ids, path));
 }
-
-} /* namespace */
