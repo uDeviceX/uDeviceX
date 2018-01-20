@@ -2,7 +2,9 @@
 
 prog=u.test.pack0
 
+cat0 () { "$AWK" '{print}' "$1"; }
+
 for i in `e find "$@" -type f`
 do echo "# FILE: $i"
-   e cat "$i"
+   e cat0 "$i"
 done
