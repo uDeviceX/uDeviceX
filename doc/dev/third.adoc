@@ -1,0 +1,7 @@
+= Third party dependencies
+:lext: .adoc
+
+== cuda sdk
+== mpi
+== libconf
+== hdf5
