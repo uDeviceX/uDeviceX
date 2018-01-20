@@ -5,9 +5,11 @@ prog=u.test.unpack0
 d="$1"; shift
 
 "$AWK" -v d="$d" '
-/^# FILE: / {
-    f = $0; sub(/^# FILE: /, "", f)
-    print f
+/^# FILE:.*: / {
+    f = p = $0 # file and permission
+    sub(/^# FILE:.*: /, "", f)
+    sub(/^# FILE:/, "", p); sub(/:.*/, "", p)
+    print f, p
     next
 }
 ' "$@"

@@ -4,8 +4,8 @@ prog=u.test.pack0
 
 cat0 () {
     "$AWK" '
-/^# FILE: / { err(FILENAME ":" NR ": " $0) }
-            { print   }
+/^# FILE:.*: / { err(FILENAME ":" NR ": " $0) }
+              { print   }
 function msg(s) { printf "%s\n", s | "cat >&2" }
 function err(s) {
     printf s "\n" | "cat >&2"
@@ -15,10 +15,16 @@ function err(s) {
 ' "$1"
 }
 
+perm () { # permission
+    ls -l "$1" | sed 's/ .*//'
+}
+
 for i in `e find "$@" -type f`
-do echo "# FILE: $i"
+do
+   p=`e perm "$i"`
+   echo "# FILE:$p: $i"
    e cat0 "$i"
    if test $?  -ne 0
-   then err "fail to process '$i'"
+   then err "cannot pack '$i'"
    fi
 done
