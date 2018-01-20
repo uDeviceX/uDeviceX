@@ -1,7 +1,9 @@
 #include <mpi.h>
 #include <assert.h>
-// TODO: cuda 9.0
-// #include <mma.h>
+
+#if __CUDACC_VER_MAJOR__ >= 9
+#include <cuda_fp16.h>
+#endif
 
 #include <conf.h>
 #include "inc/conf.h"
