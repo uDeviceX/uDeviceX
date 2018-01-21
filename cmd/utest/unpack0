@@ -11,7 +11,8 @@ d="$1"; shift
     sub(/^# FILE:/, "", p); sub(/:.*/, "", p)
     if (empty(f)) {msg("empty file"); err(FILENAME ":" NR ": " $0) }
     if (empty(p)) {msg("empty permission"); err(FILENAME ":" NR ": " $0) }
-    cmd("u.test.touch" " " p " " quote(d "/" f))
+    f = d "/" f
+    cmd("u.test.touch" " " p " " quote(f))
     next
 }
 function msg(s) { printf "%s\n", s | "cat >&2" }
@@ -20,7 +21,7 @@ function  eq(a, b) { return a "" == b "" }
 function  empty(a) { return eq(a, "")    }
 function  quote(s) { return q s q }
 function cmd(s) {
-    if (eq(dbg, "0")) msg(s)
+    if (!eq(dbg, "0")) msg(": " s)
     r = system(s)
     if (r != 0) err("command failed: " s)
 }
