@@ -11,4 +11,13 @@ usg () {
 }
 
 if test $# -ne 0 && test "$1" = -h; then usg; fi
-exec $prog0 "$@"
+
+if test $# -eq 0; then err 'missing MODE argument'; fi
+m="$1"; shift
+
+case $m in
+    -[r-][w-][x-][r-][w-][x-][r-][w-][x-]) ;;
+    *) err "wrong MODE argument $m"        ;;
+esac
+
+exec $prog0 "$m"
