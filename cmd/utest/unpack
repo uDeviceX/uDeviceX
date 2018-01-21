@@ -13,8 +13,10 @@ if test $# -ne 0 && test "$1" = -h; then usg; fi
 if test $# -eq 0; then err 'missing argument DIR'; fi
 
 d="$1"; shift
-if test ! -d "$d"; then err "not a directory '$d'"; fi
 if test $# -eq 0; then err 'missing argument FILE'; fi
+
+e mkdir -p "$d"
+if test ! -d "$d"; then err "fail to create directory '$d'"; fi
 
 for i
 do if ! test -f "$i"
