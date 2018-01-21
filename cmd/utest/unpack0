@@ -12,4 +12,7 @@ d="$1"; shift
     print f, p
     next
 }
+{
+    print
+}
 ' "$@"

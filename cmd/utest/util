@@ -3,7 +3,7 @@
 
 e () {
   if test ! "$DBG" = 0
-  then msg "cmd: $*"
+  then msg ": $*"
   fi
   eval "$@"
 }
