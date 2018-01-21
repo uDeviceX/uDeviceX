@@ -4,15 +4,24 @@ prog=u.test.unpack0
 
 d="$1"; shift
 
-"$AWK" -v d="$d" '
+"$AWK" -v q="'" -v prog=$prog -v dbg="$DBG" -v d="$d" '
 /^# FILE:.*: / {
     f = p = $0 # file and permission
     sub(/^# FILE:.*: /, "", f)
     sub(/^# FILE:/, "", p); sub(/:.*/, "", p)
-    print f, p
+    if (empty(f)) {msg("empty file"); err(FILENAME ":" NR ": " $0) }
+    if (empty(p)) {msg("empty permission"); err(FILENAME ":" NR ": " $0) }
+    cmd("u.test.touch" " " p " " quote(d "/" f))
     next
 }
-{
-    print
+function msg(s) { printf "%s\n", s | "cat >&2" }
+function err(s) { msg(prog ": " s); exit 2 }
+function  eq(a, b) { return a "" == b "" }
+function  empty(a) { return eq(a, "")    }
+function  quote(s) { return q s q }
+function cmd(s) {
+    if (eq(dbg, "0")) msg(s)
+    r = system(s)
+    if (r != 0) err("command failed: " s)
 }
 ' "$@"
