@@ -1,2 +1,2 @@
-# TEST: test.pack
+# TEST: test.unpack
 u.test.pack data/a > test.out.txt
