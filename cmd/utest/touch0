@@ -3,13 +3,16 @@
 prog=u.test.touch0
 
 # owner, group, all, file
-o=$1; shift
+u=$1; shift
 g=$1; shift
-a=$1; shift
+o=$1; shift
 f=$1; shift
-
 d=`dirname "$f"`
 
 e mkdir '2>/dev/null' -p "$d"
-
 if test ! -d "$d"; then err "fail to create directory '$d'"; fi
+
+e touch "$f"      || err "fail to touch file '$f'"
+e chmod u=$u "$f" || err "fail to chmod file '$f'"
+e chmod g=$g "$f" || err "fail to chmod file '$f'"
+e chmod o=$o "$f" || err "fail to chmod file '$f'"
