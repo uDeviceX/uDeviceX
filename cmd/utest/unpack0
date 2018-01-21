@@ -11,9 +11,10 @@ BEGIN { First = 1 }
     f = p = $0 # file and permission
     sub(/^# FILE:.*: /, "", f)
     sub(/^# FILE:/, "", p); sub(/:.*/, "", p)
-    if (empty(f)) {msg("empty file"); err(FILENAME ":" NR ": " $0) }
-    if (empty(p)) {msg("empty permission"); err(FILENAME ":" NR ": " $0) }
-    f = d "/" f
+    if (empty(f))   {msg("empty file");       err(FILENAME ":" NR ": " $0)}
+    if (empty(p))   {msg("empty permission"); err(FILENAME ":" NR ": " $0)}
+    if (f in Flist) {msg("see file again");   err(FILENAME ":" NR ": " $0)}
+    Flist[f]; f = d "/" f
     cmd("u.test.touch " p " " quote(f))
     next
 }
