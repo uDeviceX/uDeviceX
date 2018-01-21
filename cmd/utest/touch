@@ -5,7 +5,7 @@ prog0=u.test.touch0
 
 usg () {
     msg "$prog MODE [FILE].."
-    msg 'create empty [FILE].. with MODE'
+    msg 'create empty [FILE].. with MODE (a line returned by ls -l)'
     msg "$prog -rw-rw-r-- file.txt"
     exit 0
 }
