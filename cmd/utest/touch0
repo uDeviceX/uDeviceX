@@ -1,0 +1,3 @@
+. u.test.util
+
+prog=u.test.touch0
