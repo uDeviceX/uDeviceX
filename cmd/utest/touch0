@@ -1,3 +1,15 @@
 . u.test.util
 
 prog=u.test.touch0
+
+# owner, group, all, file
+o=$1; shift
+g=$1; shift
+a=$1; shift
+f=$1; shift
+
+d=`dirname "$f"`
+
+e mkdir '2>/dev/null' -p "$d"
+
+if test ! -d "$d"; then err "fail to create directory '$d'"; fi

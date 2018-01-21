@@ -10,6 +10,23 @@ usg () {
     exit 0
 }
 
+split0 () {
+    "$AWK" -v m="$1" '
+BEGIN { split(m, a, "")
+	++i
+	print a[++i] a[++i] a[++i],
+	    a[++i] a[++i] a[++i],
+	    a[++i] a[++i] a[++i]
+}'
+}
+
+split () { # set [o]wner, [g]roup, [a]ll
+    local p
+    p=`split0 $1`
+    set -- $p
+    o=$1 g=$2 a=$3
+}
+
 if test $# -ne 0 && test "$1" = -h; then usg; fi
 
 if test $# -eq 0; then err 'missing MODE argument'; fi
@@ -17,7 +34,13 @@ m="$1"; shift
 
 case $m in
     -[r-][w-][x-][r-][w-][x-][r-][w-][x-]) ;;
-    *) err "wrong MODE argument $m"        ;;
+    *) err "wrong MODE argument '$m'"        ;;
 esac
 
-exec $prog0 "$m"
+# set o, g, a
+split $m
+
+for f
+do $prog0 $o $g $a $f
+   if test $? -ne 0; then err "$prog0 faild"; fi
+done
