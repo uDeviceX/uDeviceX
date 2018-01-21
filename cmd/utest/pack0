@@ -19,7 +19,7 @@ perm () { # permission
     ls -l "$1" | sed 's/ .*//'
 }
 
-for i in `e find "$@" -type f`
+for i in `e find "$@" -type f | sort`
 do
    p=`e perm "$i"`
    echo "# FILE:$p: $i"
