@@ -5,28 +5,14 @@
 #error vcon has runtime parameters now!
 #endif
 
+#if defined(WVEL_PAR_A) || defined(WVEL_PAR_U) || defined(WVEL_PAR_U) || \
+    defined(WVEL_PAR_H) || defined(WVEL_PAR_W) || defined(WVEL_PAR_Z) || \
+    defined(WVEL_PAR_Y) || defined(WVEL_SIN) || defined(WVEL_PAR_LOG_FREQ)
+#error wvel is runtime now!
+#endif
+
 #if defined(FORCE_PAR_A)
 #error bforce has runtime parameters now!
-#endif
-
-/* how wall velocity is changing in time?  */
-#if !defined(WVEL_FLAT) && !defined(WVEL_SIN)
-  #define WVEL_FLAT
-#endif
-#ifndef WVEL_LOG_FREQ
-  #define WVEL_LOG_FREQ (1000)
-#endif
-
-#ifndef WVEL_PAR_A
-  #define WVEL_PAR_A (0.0)
-#endif
-
-#ifndef WVEL_PAR_Y
-  #define WVEL_PAR_Y (false)
-#endif
-
-#ifndef WVEL_PAR_Z
-  #define WVEL_PAR_Z (false)
 #endif
 
 /* object-object, cell-object, and cell-cell contact force */
