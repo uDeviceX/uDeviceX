@@ -14,4 +14,3 @@ mkdir $t
   { make clean && u.make -j; } > /dev/null
 )
 echo $?  > make.out.status
-

@@ -15,4 +15,3 @@ u.conf "$s" $u conf/double.poiseuille.h <<!!!
 (make clean && u.make -j) > /dev/null
 sh runfile
 u.avgh5 0 u 1 h5/flowfields-0001.h5 | uscale 0.1 > h5.out.txt
-
