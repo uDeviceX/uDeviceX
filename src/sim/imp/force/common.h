@@ -21,7 +21,6 @@ void clear_forces(Force* ff, int n) {
 }
 
 void forces_wall(Wall *w, Sim *s) {
-    using namespace wall;
     Cloud co, cs, cr;
     Flu *flu = &s->flu;
     Rbc *rbc = &s->rbc;

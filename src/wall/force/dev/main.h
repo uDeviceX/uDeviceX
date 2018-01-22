@@ -9,5 +9,5 @@ __global__ void force(Wvel_v wv, Coords c, Cloud cloud, int np, float seed, Wall
     fetch(cloud, aid, /**/ &a);
 
     /* call generic function from polymorphic */
-    wall::dev::force0(wv, c, a, aid, zplane, seed, wa, /**/ ff);
+    ::wf_dev::force0(wv, c, a, aid, zplane, seed, wa, /**/ ff);
 }

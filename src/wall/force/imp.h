@@ -1,4 +1,3 @@
-namespace wall {
 struct WallForce { /* local wall data */
     Sdf_v sdf_v;
     Texo<int> start;
@@ -13,5 +12,3 @@ void wall_force_apply(Wvel_v wv, Coords c, Cloud cloud, int n, RNDunif *rnd, Wal
 namespace color {
 void wall_force_apply(Wvel_v wv, Coords c, Cloud cloud, int n, RNDunif *rnd, WallForce wa, /**/ Force *ff);
 }
-
-} /* namespace */

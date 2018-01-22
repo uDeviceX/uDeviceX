@@ -46,9 +46,8 @@
 #include "utils/kl.h"
 #include "imp.h"
 
-namespace wall {
 /*** generic ***/
-namespace dev {
+namespace wf_dev {
   namespace map {
     #include "dev/map/type.h"
     #include "dev/map/ini.h"
@@ -59,7 +58,7 @@ namespace dev {
 
 /*** polymorphic ***/
 namespace grey {
-  namespace dev {
+  namespace wf_dev {
     #include "dev/fetch/grey.h"
     #include "dev/main.h"
   }
@@ -67,10 +66,9 @@ namespace grey {
 }
 
 namespace color {
-  namespace dev {
+  namespace wf_dev {
     #include "dev/fetch/color.h"
     #include "dev/main.h"
   }
   #include "imp/main.h"
-}
 }

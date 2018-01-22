@@ -96,7 +96,7 @@ static void diag(int it, Sim *s) {
 void dump_strt_templ(Coords coords, Wall *w, Sim *s) { /* template dumps (wall, solid) */
     Rig *rig = &s->rig;
     if (strt_dumps) {
-        if (walls) wall::wall_strt_dump_templ(coords, &w->q);
+        if (walls) wall_strt_dump_templ(coords, &w->q);
         if (solids) rig_strt_dump_templ(coords, &rig->q);
     }
 }

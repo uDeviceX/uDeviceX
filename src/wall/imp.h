@@ -1,6 +1,5 @@
 struct RNDunif;
 
-namespace wall {
 struct WallQuants {
     float4 *pp; /* particle positions xyzo xyzo ... */
     int n;      /* number of particles              */
@@ -33,5 +32,3 @@ void wall_strt_quants(Coords coords, int maxn, WallQuants *q);
 void wall_gen_ticket(const WallQuants *q, WallTicket *t);
 
 void wall_strt_dump_templ(Coords coords, const WallQuants *q);
-
-}
