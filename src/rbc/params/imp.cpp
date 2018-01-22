@@ -38,6 +38,10 @@ void rbc_params_set_area_volume(float ka, float kd, float kv, RbcParams *par) {
     par->kd = kd;
 }
 
+void rbc_params_set_timestep(float dt0, RbcParams *par) {
+    par->dt0 = dt0;
+}
+
 RbcParams_v rbc_params_get_view(const RbcParams *p) {
     RbcParams_v v;
     v.gammaC = p->gammaC;
@@ -51,5 +55,6 @@ RbcParams_v rbc_params_get_view(const RbcParams *p) {
     v.ka = p->ka;
     v.kd = p->kd;
     v.kv = p->kv;
+    v.dt0 = p->dt0;
     return v;
 }

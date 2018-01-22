@@ -2,4 +2,22 @@
 
 prog=u.test.pack0
 
-echo D: $D
+f="$1"; shift
+t="$1"; shift
+
+Found=0
+for p in "$D/cells/$f" "$D/cells/$f.off"
+do if e test -f "$p"
+   then Found=1
+	break
+   fi
+done
+
+if test $Found -eq 0
+then err "cannot find cell '$f=$p'"
+fi
+
+e cp '2>/dev/null' "$p" "$t"
+if test $? -ne 0
+then err "fail to copy to '$t'"
+fi

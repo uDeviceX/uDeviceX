@@ -1,7 +1,7 @@
 # two steps of rbcs with colors crossing subdomain
 # TEST: color.rbc.t2
 rm -rf bop diag.txt h5 ply rbc.off
-cp data/cells/rbc/498.off rbc.off
+u.cp.rbc rbc/498.off rbc.off
 x=7.5 y=4 z=2.5; echo 1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 >  rbcs-ic.txt
 x=0.1 y=0.1 z=5.5; echo 1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 >> rbcs-ic.txt
 x=4 y=4 z=7.5; echo 1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 >> rbcs-ic.txt

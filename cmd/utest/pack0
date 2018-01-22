@@ -15,8 +15,8 @@ function err(s) {
 ' "$1"
 }
 
-perm () { # permission
-    ls -l "$1" | sed 's/ .*//'
+perm () { # permission: first word
+    ls -l "$1" | sed 's/ .*//g' | sed 's/\.$//g'
 }
 
 for i in `e find "$@" -type f | sort`
