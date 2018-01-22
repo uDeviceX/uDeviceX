@@ -14,11 +14,11 @@ struct WallTicket {
 };
 
 namespace grey {
-void wall_force(Wvel_v wv, Coords c, Sdf *qsdf, const WallQuants *q, const WallTicket *t, Cloud cloud, const int n, Force *ff);
+void wall_force(Wvel_v wv, Coords c, Sdf *qsdf, const WallQuants *q, const WallTicket *t, int n, Cloud cloud, Force *ff);
 }
 
 namespace color {
-void wall_force(Wvel_v wv, Coords c, Sdf *qsdf, const WallQuants *q, const WallTicket *t, Cloud cloud, const int n, Force *ff);
+void wall_force(Wvel_v wv, Coords c, Sdf *qsdf, const WallQuants *q, const WallTicket *t, int n, Cloud cloud, Force *ff);
 }
 
 void wall_ini_quants(WallQuants *q);
