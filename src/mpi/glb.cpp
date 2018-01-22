@@ -11,10 +11,10 @@
 #include "mpi/glb.h"
 
 namespace m { /* MPI */
-static const int d = 3;
-static int periods[d] = {true, true, true};
+static const int D = 3;
+static int periods[D] = {true, true, true};
 static const bool reorder = false;
-int rank, size, dims[d];
+int rank, size, dims[D];
 
 static void shift(int *argc, char ***argv) {
     (*argc)--;
@@ -60,7 +60,7 @@ void ini(int *argc, char ***argv) {
 
     MC(m::Comm_rank(MPI_COMM_WORLD,   &rank));
     MC(m::Comm_size(MPI_COMM_WORLD,   &size));
-    MC(m::Cart_create(MPI_COMM_WORLD, d, dims, periods, reorder,   &m::cart));
+    MC(m::Cart_create(MPI_COMM_WORLD, D, dims, periods, reorder,   &m::cart));
 }
 
 void fin() {
