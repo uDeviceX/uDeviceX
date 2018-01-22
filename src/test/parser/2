@@ -1,0 +1,13 @@
+### parse from opt and args
+# TEST: parse.t2
+t=opt.cfg
+echo "a=42"   >  $t
+echo "f=3.14" >> $t
+u=u/parser/read
+s=`pwd`
+:
+u.conf "$s" "$u" "$s/conf/default.h" <<!
+  run
+!
+{ u.make clean && u.make -j; } > /dev/null
+u.run ./udx $t a=5 > parser.out.txt
