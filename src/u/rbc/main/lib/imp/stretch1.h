@@ -1,7 +1,7 @@
 void ini(const char* path, int nv, /**/ RbcStretch** fp) {
     rbc_stretch_ini(path, nv, fp);
-    
 }
+
 void fin(RbcStretch* f) {
     rbc_stretch_fin(f);
 }

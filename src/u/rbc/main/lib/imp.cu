@@ -47,5 +47,4 @@ namespace stretch {
   #include "imp/stretch0.h"
 #endif
 }
-
 #include "imp/main.h"
