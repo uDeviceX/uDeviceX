@@ -1,15 +1,15 @@
-struct BulkData;
-struct HaloData;
+struct FluForcesBulk;
+struct FluForcesHalo;
 
-void ini(int maxp, /**/ BulkData **b);
-void fin(/**/ BulkData *b);
+void fluforces_bulk_ini(int maxp, /**/ FluForcesBulk **b);
+void fluforces_bulk_fin(/**/ FluForcesBulk *b);
 
-void prepare(int n, const Cloud *c, /**/ BulkData *b);
-void bulk_forces(int n, const BulkData *b, const int *start, const int *count, /**/ Force *ff);
+void fluforces_bulk_prepare(int n, const Cloud *c, /**/ FluForcesBulk *b);
+void fluforces_bulk_apply(int n, const FluForcesBulk *b, const int *start, const int *count, /**/ Force *ff);
 
 
-void ini(MPI_Comm cart, /**/ HaloData **hd);
-void fin(/**/ HaloData *h);
+void fluforces_halo_ini(MPI_Comm cart, /**/ FluForcesHalo **hd);
+void fluforces_halo_fin(/**/ FluForcesHalo *h);
 
-void prepare(flu::LFrag26 lfrags, flu::RFrag26 rfrags, /**/ HaloData *h);
-void halo_forces(const HaloData *h, /**/ Force *ff);
+void fluforces_halo_prepare(flu::LFrag26 lfrags, flu::RFrag26 rfrags, /**/ FluForcesHalo *h);
+void fluforces_halo_apply(const FluForcesHalo *h, /**/ Force *ff);

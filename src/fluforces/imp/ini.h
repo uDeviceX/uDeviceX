@@ -1,10 +1,11 @@
-void ini(int maxp, /**/ BulkData **bd) {
-    BulkData *b = new BulkData;
+void fluforces_bulk_ini(int maxp, /**/ FluForcesBulk **bd) {
+    FluForcesBulk *b;
+    UC(emalloc(sizeof(FluForcesBulk), (void**) bd));
+    b = *bd;
     Dalloc(&b->zipped_pp, 2 * maxp);
     Dalloc(&b->zipped_rr,     maxp);
     UC(rnd_ini(0, 0, 0, 0, /**/ &b->rnd));
     b->colors = NULL;
-    *bd = b;
 }
 
 static int is_plus(const int d[3]) {
@@ -54,9 +55,10 @@ static void get_interrank_infos(MPI_Comm cart, int fid, /**/ RNDunif* trunks[], 
     //     frag_i2dx(fid), frag_i2dy(fid), frag_i2dz(fid));
 }
 
-void ini(MPI_Comm cart, /**/ HaloData **hd) {
-    HaloData *h = new HaloData;
+void fluforces_halo_ini(MPI_Comm cart, /**/ FluForcesHalo **hd) {
+    FluForcesHalo *h;
+    UC(emalloc(sizeof(FluForcesHalo), (void**) hd));
+    h = *hd;
     for (int i = 0; i < 26; ++i)
         get_interrank_infos(cart, i, /**/ h->trunks, h->masks);
-    *hd = h;
 }

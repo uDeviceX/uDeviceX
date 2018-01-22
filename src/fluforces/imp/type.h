@@ -1,11 +1,11 @@
-struct BulkData {
+struct FluForcesBulk {
     float4  *zipped_pp;  /* xyzouvwo xyzouvwo xyzouvwo ...          */
     ushort4 *zipped_rr;  /* xyzo xyzo xyzo...  in half precision    */
     RNDunif *rnd;        /* random generator per timestep           */
     const int *colors;   /* pointer to colors, not to be allocated  */
 };
 
-struct HaloData {
+struct FluForcesHalo {
     RNDunif *trunks[26];   /* interrank rng (1 per fragment) */
     bool masks[26];        /* interrank masks                */
     

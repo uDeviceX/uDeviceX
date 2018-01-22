@@ -1,5 +1,5 @@
 namespace m { /* mini MPI */
-extern int rank, size, coords[], dims[];
+extern int rank, size, dims[];
 
 void ini(int *argc, char ***argv);
 void fin();

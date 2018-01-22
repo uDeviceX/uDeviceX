@@ -9,6 +9,7 @@
 #include "inc/conf.h"
 
 #include "utils/error.h"
+#include "utils/imp.h"
 
 #include "math/rnd/imp.h"
 #include "math/rnd/dev.h"
