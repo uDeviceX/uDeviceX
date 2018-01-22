@@ -1,6 +1,15 @@
 = coding conventions
 :lext: .adoc
 
+== modules
+
+_uDeviceX_ consists of modules.
+Modules are as independant as possible.
+They consist of a folder with one or more compilation units, and an
+interface.
+Whenever it is possible, the structures are hidden from the client of
+the module.
+
 == naming
 
 === variables
@@ -45,10 +54,11 @@ void forward_euler(int n, const Force *ff, /* io */ Particle *pp);
 * no include guards; no "headers in headers" if easily avoidable.
 * all cuda kernels are in a separate header `.h` file.
 * a module is implemented inside its own directory `A`
-** it has its own object `A/imp.cu` or `A/imp.cpp`
+** it has its own object `A/imp.cu` or `A/imp.cpp`(`.cpp` prefered if possible)
 ** interface `A/imp.h`
 ** implementation can be done in separate files inside `A/imp/` directory
-** cuda code should be inside `A/dev.h` or, if multiple files, `A/dev/` directory
+** internal cuda (private to module) code are inside `A/dev/` directory
+** cuda interface inside `A/dev.h` (for client use)
 * modules can have submodules, which follow the same structure as above, e.g. submodule `B` inside module `A` belongs to `A/B/` directory
 
 == style
