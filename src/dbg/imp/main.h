@@ -5,6 +5,7 @@ void dbg_ini(Dbg **dbg) {
     d = *dbg;
     for (i = 0; i < DBG_NKIND_; ++i) d->state[i] = 0;
     d->verbose = false;
+    d->dump = false;
 }
 void dbg_fin(Dbg *dbg) {
     UC(efree(dbg));
@@ -24,7 +25,8 @@ void dbg_disable(int kind, Dbg *dbg) {
     UC(set(kind, 0, dbg));
 }
 
-void dbg_set_verbose(bool tf, Dbg *dbg) {dbg->verbose = tf;}
+void dbg_set_verbose(bool active, Dbg *dbg) {dbg->verbose = active;}
+void dbg_set_dump(bool active, Dbg *dbg) {dbg->dump = active;}
 
 static int check(const Dbg *dbg, int kind) {return dbg->state[kind];}
 

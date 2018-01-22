@@ -27,6 +27,7 @@ void dbg_fin(Dbg*);
 void dbg_enable(int kind, Dbg *dbg);
 void dbg_disable(int kind, Dbg *dbg);
 void dbg_set_verbose(bool, Dbg *dbg);
+void dbg_set_dump(bool, Dbg *dbg);
 // end::ini[]
 
 // tag::cnf[]

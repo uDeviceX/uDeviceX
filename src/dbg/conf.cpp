@@ -23,4 +23,6 @@ void dbg_set_conf(const Config *cfg, Dbg *dbg) {
     int v;
     UC(conf_lookup_bool(cfg, "dbg.verbose", &v));
     dbg_set_verbose(v, dbg);
+    UC(conf_lookup_bool(cfg, "dbg.dump", &v));
+    dbg_set_dump(v, dbg);
 }
