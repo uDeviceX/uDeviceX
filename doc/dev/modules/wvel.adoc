@@ -1,6 +1,7 @@
 = wvel
 
 :src: ../../../src
+:stem: latexmath
 
 wall velocity field
 
@@ -64,4 +65,65 @@ position and velocity of particle.
 [source, c++]
 ----
 include::{src}/wvel/dev.h[tag=dev]
+----
+
+== Configuration
+
+=== constant
+
+constant velocity stem:[u = (1, 0, 0)]:
+
+[source, cfg]
+----
+wvel {
+    type = "constant";
+    u    = [1.0, 0.0, 0.0];
+};
+----
+
+=== shear
+
+shear velocity stem:[u = (3 y, 0, 0)]:
+
+[source, cfg]
+----
+wvel {
+    type = "shear";
+    gdot = 3.0;
+    vdir = 0;
+    gdir = 1;
+    half = 0;
+};
+----
+
+=== sinusoidal shear
+
+shear velocity stem:[u(t) = (3 y \sin(5 t), 0, 0)]:
+
+[source, cfg]
+----
+wvel {
+    type = "shear sin";
+    gdot = 3.0;
+    vdir = 0;
+    gdir = 1;
+    half = 0;
+    w = 5.0;
+    log_freq = 1000;
+};
+----
+
+in this case, the value stem:[3 * \sin(5 t)] is printed every 1000 iterations.
+
+=== Hele Shaw 
+
+velocity stem:[u_r = \frac u r \left(1 - \frac {4 z^2}{h^2}\right)]:
+
+[source, cfg]
+----
+wvel {
+    type = "hele shaw";
+    u = 1.0;
+    h = 8.0;
+};
 ----
