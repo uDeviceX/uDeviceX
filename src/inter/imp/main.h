@@ -41,7 +41,7 @@ static void remove_solids(RigQuants *q, Sdf *sdf) {
 
 void create_walls(MPI_Comm cart, int maxn, Sdf *sdf, FluQuants* qflu, wall::WallQuants *qwall) {
     int nold = qflu->n;
-    UC(wall::gen_quants(cart, maxn, sdf, /**/ &qflu->n, qflu->pp, qwall));
+    UC(wall::wall_gen_quants(cart, maxn, sdf, /**/ &qflu->n, qflu->pp, qwall));
     flu_build_cells(qflu);
     msg_print("solvent particles survived: %d/%d", qflu->n, nold);
 }

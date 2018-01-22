@@ -107,8 +107,8 @@ static void fin_bounce_back(BounceBack *bb) {
 
 static void fin_wall(Wall *w) {
     sdf_fin(w->sdf);
-    wall::free_quants(&w->q);
-    wall::free_ticket(&w->t);
+    wall::wall_fin_quants(&w->q);
+    wall::wall_fin_ticket(&w->t);
 }
     
 static void fin_objinter(ObjInter *o) {

@@ -1,9 +1,9 @@
-void free_quants(WallQuants *q) {
+void wall_fin_quants(WallQuants *q) {
     if (q->pp) Dfree(q->pp);
     q->n = 0;
 }
 
-void free_ticket(Ticket *t) {
+void wall_fin_ticket(Ticket *t) {
     UC(rnd_fin(t->rnd));
     destroy(&t->texstart);
     destroy(&t->texpp);
