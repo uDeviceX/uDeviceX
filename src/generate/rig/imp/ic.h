@@ -90,7 +90,7 @@ static void count_pp_inside(const Particle *s_pp, const int n, const float *coms
 
             const float r2 = r[X]*r[X] + r[Y]*r[Y] + r[Z]*r[Z];
 
-            if (r2 < R*R && collision::inside_1p(r, vv, tt, nt)) {
+            if (r2 < R*R && collision_inside_1p(r, vv, tt, nt)) {
                 ++rcounts[j];
                 tags[ip] = tag = j;
             }
