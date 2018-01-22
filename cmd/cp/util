@@ -1,5 +1,6 @@
 : ${AWK=awk}
 : ${DBG=0}
+: ${D=$HOME/.udx/data}
 
 e () {
   if test ! "$DBG" = 0

@@ -10,6 +10,7 @@ usg () {
     msg 'copy cell template to template.to'
     msg "$prog sc/498.off rbc.off"
     msg "$prog 2562.off   rbc.off"
+    exit
 }
 
 if test $# -ne 0 && test "$1" = -h; then usg; fi

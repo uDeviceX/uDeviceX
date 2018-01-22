@@ -1,5 +1,5 @@
-. u.test.util
+. u.cp.util
 
 prog=u.test.pack0
 
-echo 42
+echo D: $D
