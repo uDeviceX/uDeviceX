@@ -14,5 +14,5 @@ u.conf conf/double.poiseuille.h <<!!!
    run
 !!!
 (make clean && u.make -j) > /dev/null
-u.run 1 1 2 ./udx test/vcont/vcon.cfg
+u.run 1 1 2 ./udx test/vcont/main/vcon.cfg
 u.avgh5 0 u 2 h5/flowfields-0001.h5 | uscale 0.1 > h5.out.txt
