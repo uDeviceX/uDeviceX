@@ -100,7 +100,7 @@ static void fin_rig(Rig *s) {
 }
 
 static void fin_bounce_back(BounceBack *bb) {
-    meshbb_fin(/**/ &bb->d);
+    meshbb_fin(/**/ bb->d);
     Dfree(bb->mm);
     UC(fin_bb_exch(/**/ &bb->e));
 }

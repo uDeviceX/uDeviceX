@@ -5,6 +5,8 @@
 #include "inc/conf.h"
 
 #include "utils/msg.h"
+#include "utils/imp.h"
+#include "utils/error.h"
 #include "inc/dev.h"
 #include "utils/kl.h"
 #include "utils/cc.h"
@@ -14,6 +16,7 @@
 #include "math/dev.h"
 
 #include "imp.h"
+#include "imp/type.h"
 
 /* conf */
 enum {MAX_COL = 4};

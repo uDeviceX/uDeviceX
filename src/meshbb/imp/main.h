@@ -1,10 +1,14 @@
-void meshbb_ini(int maxpp, /**/ MeshBB *d) {
+void meshbb_ini(int maxpp, /**/ MeshBB **mbb) {
+    MeshBB *d;
+    UC(emalloc(sizeof(MeshBB), (void**) mbb));
+    d = *mbb;
     CC(d::Malloc((void**) &d->ncols,   maxpp * sizeof(int)));
     CC(d::Malloc((void**) &d->datacol, maxpp * MAX_COL * sizeof(float4)));
     CC(d::Malloc((void**) &d->idcol,   maxpp * MAX_COL * sizeof(int)));
 }
 
 void meshbb_fin(/**/ MeshBB *d) {
+    UC(efree(d));
     CC(d::Free(d->ncols));
     CC(d::Free(d->datacol));
     CC(d::Free(d->idcol));    
