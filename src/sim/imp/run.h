@@ -23,7 +23,7 @@ void run(long ts, long te, Sim *s) {
     
     /* ts, te: time start and end */
     for (it = ts; it < te; ++it) {
-        UC(wvel_get_view(it - ts, wall->vel, /**/ &wall->vview));
+        if (walls) UC(wvel_get_view(it - ts, wall->vel, /**/ &wall->vview));
         UC(step(bforce, walls, it, s));
     }
     UC(distribute_flu(/**/ s));

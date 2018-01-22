@@ -195,6 +195,7 @@ static void ini_wall(Wall *w) {
 #else
     wvel_set_shear(WVEL_PAR_A, 0, gdir, 0, wv);
 #endif
+    wvel_set_shear(WVEL_PAR_A, 0, gdir, 0, wv);
 #endif
 }
 
