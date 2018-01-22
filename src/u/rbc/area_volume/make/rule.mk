@@ -1,5 +1,5 @@
+$B/coords/imp.o: $S/coords/imp.cpp; $X -I$S/. -I$S/coords
 $B/d/api.o: $S/d/api.cu; $N -I$S/. -I$S/d
-$B/glob/imp.o: $S/glob/imp.cpp; $X -I$S/. -I$S/glob
 $B/io/bop/imp.o: $S/io/bop/imp.cpp; $X -I$S/. -I$S/io/bop
 $B/io/com/imp.o: $S/io/com/imp.cpp; $X -I$S/. -I$S/io/com
 $B/io/diag/imp.o: $S/io/diag/imp.cpp; $X -I$S/. -I$S/io/diag

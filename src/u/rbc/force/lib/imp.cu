@@ -5,8 +5,8 @@
 #include <conf.h>
 #include "inc/conf.h"
 
-#include "glob/type.h"
-#include "glob/ini.h"
+#include "coords/type.h"
+#include "coords/ini.h"
 
 #include "utils/error.h"
 #include "utils/imp.h"

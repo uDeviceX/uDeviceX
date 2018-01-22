@@ -9,6 +9,7 @@ $B/control/inflow/conf.o: $S/control/inflow/conf.cpp; $X -I$S/. -I$S/control/inf
 $B/control/inflow/imp.o: $S/control/inflow/imp.cu; $N -I$S/. -I$S/control/inflow
 $B/control/outflow/imp.o: $S/control/outflow/imp.cu; $N -I$S/. -I$S/control/outflow
 $B/control/vel/imp.o: $S/control/vel/imp.cu; $N -I$S/. -I$S/control/vel
+$B/coords/imp.o: $S/coords/imp.cpp; $X -I$S/. -I$S/coords
 $B/d/api.o: $S/d/api.cu; $N -I$S/. -I$S/d
 $B/dbg/conf.o: $S/dbg/conf.cpp; $X -I$S/. -I$S/dbg
 $B/dbg/imp.o: $S/dbg/imp.cu; $N -I$S/. -I$S/dbg
@@ -31,7 +32,6 @@ $B/fluforces/imp.o: $S/fluforces/imp.cu; $N -I$S/. -I$S/fluforces
 $B/frag/imp.o: $S/frag/imp.cpp; $X -I$S/. -I$S/frag
 $B/fsi/imp.o: $S/fsi/imp.cu; $N -I$S/. -I$S/fsi
 $B/generate/rig/imp.o: $S/generate/rig/imp.cpp; $X -I$S/. -I$S/generate/rig
-$B/glob/imp.o: $S/glob/imp.cpp; $X -I$S/. -I$S/glob
 $B/inter/imp.o: $S/inter/imp.cu; $N -I$S/. -I$S/inter -I$S/inter/_ussr
 $B/io/bop/imp.o: $S/io/bop/imp.cpp; $X -I$S/. -I$S/io/bop
 $B/io/com/imp.o: $S/io/com/imp.cpp; $X -I$S/. -I$S/io/com

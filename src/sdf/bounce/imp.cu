@@ -18,8 +18,8 @@
 
 #include "utils/kl.h"
 
-#include "glob/type.h"
-#include "glob/dev.h"
+#include "coords/type.h"
+#include "coords/dev.h"
 #include "wvel/type.h"
 #include "wvel/dev.h"
 #include "math/dev.h"

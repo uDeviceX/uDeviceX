@@ -16,10 +16,9 @@
 #include "inc/dev.h"
 #include "utils/cc.h"
 #include "utils/kl.h"
-#include "utils/error.h"
-
-#include "glob/type.h"
-#include "glob/ini.h"
+#include "utils/error.h" 
+#include "coords/type.h"
+#include "coords/ini.h"
 #include "wvel/type.h"
 
 #include "sdf/imp.h"

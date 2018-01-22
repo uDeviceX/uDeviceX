@@ -23,7 +23,7 @@
 
 #include "math/rnd/imp.h"
 
-#include "glob/type.h"
+#include "coords/type.h"
 #include "wvel/type.h"
 
 #include "math/tform/type.h"

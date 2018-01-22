@@ -6,7 +6,7 @@
 
 #include "utils/msg.h"
 
-#include "glob/type.h"
+#include "coords/type.h"
 
 #include "utils/imp.h"
 #include "utils/cc.h"

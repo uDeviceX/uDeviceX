@@ -5,8 +5,8 @@
 #include "inc/type.h"
 #include "inc/dev.h"
 
-#include "glob/type.h"
-#include "glob/dev.h"
+#include "coords/type.h"
+#include "coords/dev.h"
 
 #include "d/api.h"
 #include "utils/error.h"

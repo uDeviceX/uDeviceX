@@ -12,7 +12,7 @@
 #include "inc/dev.h"
 #include "inc/type.h"
 
-#include "glob/type.h"
+#include "coords/type.h"
 
 #include "d/api.h"
 #include "mpi/wrapper.h"
@@ -30,7 +30,7 @@
 #include "io/restart/imp.h"
 #include "inter/color.h"
 
-#include "glob/imp.h"
+#include "coords/imp.h"
 #include "io/punto/imp.h"
 
 #include "imp.h"

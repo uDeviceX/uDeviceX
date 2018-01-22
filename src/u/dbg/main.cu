@@ -17,8 +17,8 @@
 #include "inc/type.h"
 #include "inc/dev.h"
 #include "dbg/imp.h"
-#include "glob/type.h"
-#include "glob/ini.h"
+#include "coords/type.h"
+#include "coords/ini.h"
 
 const int n = 10;
 Particle *pp;

@@ -1,4 +1,4 @@
-O = $B/d/api.o $B/glob/imp.o $B/io/field/h5/imp.o $B/io/field/imp.o \
+O = $B/coords/imp.o $B/d/api.o $B/io/field/h5/imp.o $B/io/field/imp.o \
     $B/io/field/xmf/imp.o $B/math/linal/imp.o $B/math/rnd/imp.o \
     $B/math/tform/imp.o $B/mpi/glb.o $B/mpi/type.o $B/mpi/wrapper.o \
     $B/sdf/array3d/imp.o $B/sdf/bounce/imp.o $B/sdf/dev.o $B/sdf/field/imp.o \

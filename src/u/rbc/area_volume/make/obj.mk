@@ -1,4 +1,4 @@
-O = $B/d/api.o $B/glob/imp.o $B/io/bop/imp.o $B/io/com/imp.o $B/io/diag/imp.o \
+O = $B/coords/imp.o $B/d/api.o $B/io/bop/imp.o $B/io/com/imp.o $B/io/diag/imp.o \
     $B/io/field/h5/imp.o $B/io/field/imp.o $B/io/field/xmf/imp.o \
     $B/io/fields_grid/imp.o $B/io/mesh/imp.o $B/io/mesh/write/imp.o \
     $B/io/off/imp.o $B/io/ply/imp.o $B/io/punto/imp.o $B/io/restart/imp.o \
