@@ -20,7 +20,7 @@
 #include "glob/type.h"
 #include "glob/ini.h"
 
-const int n = 100;
+const int n = 10;
 Particle *pp;
 Force *ff;
 
@@ -43,8 +43,8 @@ __global__ void fill_bugs(Particle *pp, int n) {
     p.v[0] = p.v[1] = p.v[2] = 0;
 
     if (i >= n) return;
-    if (i < 1) p.r[0] = 1.5 * XS;
-    if (i < 1) p.v[0] = 0.f / 0.f; // nan
+    if (i == 1) p.r[0] = 1.5 * XS;  // invalid position
+    if (i <  1) p.v[0] = 0.f / 0.f; // nan
     pp[i] = p;
 }
 
