@@ -57,20 +57,3 @@ bforce = {
     f = [1.6666667,0.0,0.0];
 };'
 u.avgh5 1 u 2 h5/flowfields-0001.h5 > h5.out.txt
-
-#### Poiseuille
-# sTEST: mpi.t4
-rm -rf diag.txt h5 bop ply
-:
-(cd ../cmd; make ) > /dev/null
-cp data/sdf/wall1/wall.dat sdf.dat
-:
-Force="bforce={type=\"constant\"; f=[0.0333333,0.0,0.0];};"
-u.conf conf/poiseuille.h <<!!!
-   tend=4.0 part_freq=600 walls wall_creation=100
-   field_dumps part_dumps field_freq=600
-   run
-!!!
-{ make clean && u.make -j; } > /dev/null
-u.run 1 1 2 ./udx $Force
-u.avgh5 1 u 2 h5/flowfields-0013.h5 | uscale 100 > h5.out.txt
