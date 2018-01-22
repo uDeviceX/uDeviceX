@@ -174,29 +174,12 @@ static void ini_bounce_back(MPI_Comm cart, Rig *s, /**/ BounceBack *bb) {
     UC(ini_bb_exch(s->q.nt, s->q.nv, MAX_CELL_NUM, cart, /**/ &bb->e));
 }
 
-static void ini_wall(Wall *w) {
+static void ini_wall(const Config *cfg, Wall *w) {
     UC(sdf_ini(&w->sdf));
     UC(wall_ini_quants(&w->q));
     UC(wall_ini_ticket(&w->t));
     UC(wvel_ini(&w->vel));
-
-    Wvel *wv = w->vel;
-    
-#if defined(WVEL_HS)
-    wvel_set_hs(WVEL_PAR_U, WVEL_PAR_H, vw);
-#else
-    int gdir = 0;
-    if (WVEL_PAR_Y)
-        gdir = 1;
-    else if (WVEL_PAR_Z)
-        gdir = 2;
-#if   defined(WVEL_SIN)
-    wvel_set_shear_sin(WVEL_PAR_A, 0, gdir, 1, WVEL_PAR_W, WVEL_LOG_FREQ, wv);
-#else
-    wvel_set_shear(WVEL_PAR_A, 0, gdir, 0, wv);
-#endif
-    wvel_set_shear(WVEL_PAR_A, 0, gdir, 0, wv);
-#endif
+    UC(wvel_set_conf(cfg, w->vel));
 }
 
 static void ini_objinter(MPI_Comm cart, /**/ ObjInter *o) {
@@ -257,7 +240,7 @@ void sim_ini(int argc, char **argv, MPI_Comm cart, /**/ Sim **sim) {
     
     UC(bop::ini(s->cart, &s->dumpt));
 
-    if (walls) ini_wall(&s->wall);
+    if (walls) ini_wall(cfg, &s->wall);
     
     UC(ini_flu(s->cart, /**/ &s->flu));
    
