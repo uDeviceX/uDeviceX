@@ -26,18 +26,42 @@ Interface is splitted between host and device
 Host code is responsible for initialisation of `Wvel` and convert
 `Wvel` to a view at a given timestep.
 
+alloc, free structure:
+
 [source, c++]
 ----
-include::{src}/wvel/imp.h[tag=interface]
+include::{src}/wvel/imp.h[tag=mem]
 ----
+
+Set velocity type from parameters:
+
+[source, c++]
+----
+include::{src}/wvel/imp.h[tag=ini]
+----
+
+Set velocity type from configuration:
+
+[source, c++]
+----
+include::{src}/wvel/imp.h[tag=cnf]
+----
+
+Get _view_ structure:
+
+[source, c++]
+----
+include::{src}/wvel/imp.h[tag=int]
+----
+
 
 === Device
 
 Device code contains the functions describing the field.
-Also contains bouncer function: gives bounce back velocity from
-position and velocity.
+Also contains bouncer function: gives bounced-back velocity from
+position and velocity of particle.
 
 [source, c++]
 ----
-include::{src}/wvel/dev.h[tag=interface]
+include::{src}/wvel/dev.h[tag=dev]
 ----

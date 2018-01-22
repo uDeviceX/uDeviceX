@@ -7,7 +7,7 @@ struct Config;
 // tag::mem[]
 void wvel_ini(Wvel **wv);
 void wvel_fin(Wvel *wv);
-// end::ini[]
+// end::mem[]
 
 // tag::ini[]
 void wvel_set_cste(float3 u, Wvel *vw);
