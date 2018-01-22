@@ -5,6 +5,8 @@
 #include "inc/conf.h"
 
 #include "utils/msg.h"
+#include "utils/imp.h"
+#include "utils/error.h"
 #include "inc/dev.h"
 #include "utils/kl.h"
 #include "utils/cc.h"
@@ -14,13 +16,12 @@
 #include "math/dev.h"
 
 #include "imp.h"
-
-namespace meshbb {
+#include "imp/type.h"
 
 /* conf */
 enum {MAX_COL = 4};
 
-#include "type.h"
+#include "dev/type.h"
 #include "bbstates.h"
 #include "dev/roots.h"
 #include "dev/utils.h"
@@ -40,4 +41,4 @@ enum {MAX_COL = 4};
   #include "imp/find_collisions/log_root0.h"
 #endif
 #include "imp/main.h"
-} /* meshbb */
+
