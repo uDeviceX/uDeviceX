@@ -41,11 +41,12 @@
 #include "imp.h"
 
 namespace stretch {
-#if RBC_STRETCH==true
+#if   RBC_STRETCH == true
   #include "imp/stretch1.h"
-#else
+#elif RBC_STRETCH == false
   #include "imp/stretch0.h"
+#else
+  #error RBC_STRETCH is undefined
 #endif
 }
-
 #include "imp/main.h"
