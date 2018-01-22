@@ -8,7 +8,7 @@ prog0=u.cp.rbc0
 usg () {
     msg "$prog [-l] template.from template.to"
     msg 'copy cell template to template.to'
-    msg '-l list all deplates'
+    msg '-l list all templates'
     msg "$prog sc/498.off rbc.off"
     msg "$prog 2562.off   rbc.off"
     exit
