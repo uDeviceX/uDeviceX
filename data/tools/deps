@@ -1,0 +1,7 @@
+#!/bin/sh
+
+set -eu
+
+echo 'D = \'
+find . -type f -name '*.off'
+echo '\'
