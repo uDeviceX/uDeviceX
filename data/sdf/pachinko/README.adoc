@@ -1,0 +1,3 @@
+= "pachinko" post
+
+Dimensions: 32 56 60
