@@ -2,8 +2,6 @@
 # nTEST: rstrt.t1
 rm -rf bop h5 diag.txt bin.1 bin.2
 :
-(cd ../cmd; make ) > /dev/null
-:
 Force="bforce={type=\"double_poiseuille\"; a=6.666667;};"
 u.conf conf/double.poiseuille.h <<!!!
    tend=0.01 part_freq=4000

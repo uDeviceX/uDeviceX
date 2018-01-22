@@ -4,7 +4,6 @@ set -eu
 rm -rf bop h5 diag.txt
 :
 cp data/sdf/cyl1/cyl.dat sdf.dat
-(cd ../cmd; make ) > /dev/null
 :
 u.conf conf/double.poiseuille.h <<!!!
    numberdensity=1

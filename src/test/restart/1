@@ -2,7 +2,6 @@
 # nTEST: rstrt.t2
 rm -rf bop h5 diag.txt bin.1 bin.2 sdf.dat
 :
-(cd ../cmd; make ) > /dev/null
 cp data/sdf/wall1/wall.dat sdf.dat
 :
 Force="bforce={type=\"constant\"; f=[3.333e-2, 0., 0.];};"

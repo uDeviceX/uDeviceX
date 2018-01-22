@@ -2,7 +2,6 @@
 # TEST: freeze.wall.t0
 rm -rf bop h5 diag.txt rbc.off bin.1 bin.2 sdf.dat
 :
-(cd ../cmd; make ) > /dev/null
 cp data/cells/rbc/498.off  rbc.off
 cp data/sdf/wall1/wall.dat sdf.dat
 :
