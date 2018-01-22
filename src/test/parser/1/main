@@ -1,0 +1,10 @@
+### parse from args
+# TEST: parse.t1
+u=u/parser/read
+s=`pwd`
+:
+u.conf "$s" "$u" "$s/conf/default.h" <<!
+  run
+!
+{ u.make clean && u.make -j; } > /dev/null
+u.run ./udx a=42 f=3.14 > parser.out.txt

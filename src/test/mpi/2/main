@@ -1,0 +1,23 @@
+####
+# nTEST: mpi.t3
+rm -rf diag.txt h5 bop ply rbc.off
+:
+cp data/cells/rbc/498.off  rbc.off
+cp data/sdf/cyl1/cyl.dat sdf.dat
+x=0.75 y=8 z=9; echo 1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 > rbcs-ic.txt
+:
+u.conf conf/around.h <<!!!
+   kBT=1e-7 rbcs tend=4.0 part_freq=5000 walls wall_creation=1000
+   field_dumps part_dumps field_freq=5000 pushrbc DBG_PEEK
+   run
+!!!
+{ make clean && u.make -j; } > /dev/null
+u.run 3 1 1 ./udx '
+rbc = {
+    @include "rbc.test.cfg"
+}
+bforce = {
+    type = "constant";
+    f = [1.6666667,0.0,0.0];
+};'
+u.avgh5 1 u 2 h5/flowfields-0001.h5 > h5.out.txt

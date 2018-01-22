@@ -1,0 +1,5 @@
+# TEST: pair.0
+s=. b=.
+u.conf0 u/pair
+{ u.make clean && u.make -j;     } > /dev/null
+u.run $b/udx < $s/data/pair/2 > pair.out.txt
