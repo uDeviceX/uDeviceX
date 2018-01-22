@@ -46,6 +46,6 @@ void strt_quants(Coords coords, int maxn, WallQuants *q) {
     strt_quants(coords, maxn, &q->n, &q->pp);
 }
 
-void strt_dump_templ(Coords coords, const WallQuants q) {
-    write(coords, q.n, q.pp);
+void strt_dump_templ(Coords coords, const WallQuants *q) {
+    write(coords, q->n, q->pp);
 }
