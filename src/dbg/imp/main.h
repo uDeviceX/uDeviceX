@@ -52,7 +52,7 @@ static void dump_pp(Coords c, const char *base, int n, const Particle *dev) {
     UC(emalloc(sz, (void**) &hst));
     UC(d::Memcpy(hst, dev, sz, D2H));
     UC(gen_name(c, base, name));
-    UC(punto_dump(n, hst, name));
+    UC(punto_dump_pp(n, hst, name));
     UC(efree(hst));    
 }
 
