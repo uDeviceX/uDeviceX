@@ -1,4 +1,4 @@
-void ini(int maxp, /**/ FluForcesBulk **bd) {
+void fluforces_bulk_ini(int maxp, /**/ FluForcesBulk **bd) {
     FluForcesBulk *b;
     UC(emalloc(sizeof(FluForcesBulk), (void**) bd));
     b = *bd;
@@ -55,7 +55,7 @@ static void get_interrank_infos(MPI_Comm cart, int fid, /**/ RNDunif* trunks[], 
     //     frag_i2dx(fid), frag_i2dy(fid), frag_i2dz(fid));
 }
 
-void ini(MPI_Comm cart, /**/ FluForcesHalo **hd) {
+void fluforces_halo_ini(MPI_Comm cart, /**/ FluForcesHalo **hd) {
     FluForcesHalo *h;
     UC(emalloc(sizeof(FluForcesHalo), (void**) hd));
     h = *hd;

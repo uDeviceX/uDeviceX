@@ -19,8 +19,8 @@ void forces_dpd(Flu *f) {
     UC(eflu_post_recv(e->c, e->u));
     UC(eflu_post_send(e->p, e->c));
     
-    UC(prepare(f->q.n, &cloud, /**/ f->bulk));
-    UC(bulk_forces(f->q.n, f->bulk, start, count, /**/ f->ff));
+    UC(fluforces_bulk_prepare(f->q.n, &cloud, /**/ f->bulk));
+    UC(fluforces_bulk_apply(f->q.n, f->bulk, start, count, /**/ f->ff));
 
     dSync();
     UC(eflu_wait_recv(e->c, e->u));
@@ -31,6 +31,6 @@ void forces_dpd(Flu *f) {
     UC(eflu_get_local_frags(e->p, /**/ &lfrags));
     UC(eflu_get_remote_frags(e->u, /**/ &rfrags));
 
-    UC(prepare(lfrags, rfrags, /**/ f->halo));
-    UC(halo_forces(f->halo, /**/ f->ff));
+    UC(fluforces_halo_prepare(lfrags, rfrags, /**/ f->halo));
+    UC(fluforces_halo_apply(f->halo, /**/ f->ff));
 }

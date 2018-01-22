@@ -66,9 +66,9 @@ static void fin_inflow(Inflow *i) {
 
 
 static void fin_flu(Flu *f) {
-    flu_fin(&f->q);
-    fin(/**/ f->bulk);
-    fin(/**/ f->halo);
+    UC(flu_fin(&f->q));
+    UC(fluforces_bulk_fin(/**/ f->bulk));
+    UC(fluforces_halo_fin(/**/ f->halo));
  
     fin_flu_distr(/**/ &f->d);
     fin_flu_exch(/**/ &f->e);
