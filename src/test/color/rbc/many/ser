@@ -1,7 +1,0 @@
-# many rbcs with colors and fsi, and contact
-# sTEST: color.rbc.many.ser
-set -eu
-d=test/color/rbc/many
-s=`pwd`
-( cd $d ; s=$s sh ser0 )
-ply2punto $d/r/00002.ply > ply.out.txt
