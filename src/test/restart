@@ -145,7 +145,7 @@ ply2punto r/00001.ply | uscale 100 > ply.out.txt
 
 
 #### 3 rigid ellipsoids in double poiseuille, contact
-# cTEST: rstrt.t5
+# nTEST: rstrt.t5
 :
 rm -rf h5 diag.txt solid_diag.txt
 echo -e "4.1 21.5 8\n4.1 10.5 8\n11.9 16 8" > rigs-ic.txt
