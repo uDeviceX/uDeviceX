@@ -56,6 +56,29 @@ static void dump_pp(Coords c, const char *base, int n, const Particle *dev) {
     UC(efree(hst));    
 }
 
+static void dump_pp_ff(Coords c, const char *base, int n, const Particle *ppdev, const Force *ffdev) {
+    Particle *pphst;
+    Force *ffhst;
+    size_t szp, szf;
+    char name[FILENAME_MAX];
+
+    szp = n*sizeof(Particle);
+    szf = n*sizeof(Force);
+
+    UC(emalloc(szp, (void**) &pphst));
+    UC(emalloc(szf, (void**) &ffhst));
+
+    UC(d::Memcpy(pphst, ppdev, szp, D2H));
+    UC(d::Memcpy(ffhst, ffdev, szf, D2H));
+
+    UC(gen_name(c, base, name));
+
+    UC(punto_dump_pp_ff(n, pphst, ffhst, name));
+
+    UC(efree(pphst));
+    UC(efree(ffhst));
+}
+
 static void print() {
     err_type e;
     UC(e = err_get());
@@ -98,12 +121,14 @@ void dbg_check_vel(Coords c, const char *base, const Dbg *dbg, int n, const Part
     }
 }
 
-void dbg_check_forces(Coords c, const Dbg *dbg, int n, const Force *ff) {
+void dbg_check_forces(Coords c, const char *base, const Dbg *dbg, int n, const Particle *pp, const Force *ff) {
     if (!check(dbg, DBG_FORCES))
         return;
     UC(err_ini());
     KL(devdbg::check_ff, (k_cnf(n)), (ff, n));
     if (error()) {
+        if (dbg->dump)
+            dump_pp_ff(c, base, n, pp, ff);
         UC(print());
     }
 }

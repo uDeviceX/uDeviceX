@@ -24,7 +24,7 @@ void check_vel(Sim *s) {
 
 void check_forces(Sim *s) {
     Coords c = s->coords;
-    UC(dbg_check_forces(c, s->dbg, s->flu.q.n, s->flu.ff));
-    if (s->solids0) UC(dbg_check_forces(c, s->dbg, s->rig.q.n, s->rig.ff));
-    if (rbcs)       UC(dbg_check_forces(c, s->dbg, s->rbc.q.n, s->rbc.ff));
+    UC(dbg_check_forces(c, "flu.ff", s->dbg, s->flu.q.n, s->flu.q.pp, s->flu.ff));
+    if (s->solids0) UC(dbg_check_forces(c, "rig.ff", s->dbg, s->rig.q.n, s->rig.q.pp, s->rig.ff));
+    if (rbcs)       UC(dbg_check_forces(c, "rbc.ff", s->dbg, s->rbc.q.n, s->rbc.q.pp, s->rbc.ff));
 }
