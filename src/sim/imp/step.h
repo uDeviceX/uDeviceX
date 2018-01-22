@@ -1,8 +1,11 @@
-void step(BForce *bforce, bool wall0, int it, Sim *s) {
+void step(BForce *bforce, bool wall0, int ts, int it, Sim *s) {
     Flu *flu = &s->flu;
     Rbc *rbc = &s->rbc;
     Rig *rig = &s->rig;
     Wall *wall = &s->wall;
+
+    if (walls && !s->equilibrating)
+        UC(wvel_get_view(it - ts, wall->vel, /**/ &wall->vview));
     
     UC(check_sizes(s));
     UC(check_pos_soft(s));
