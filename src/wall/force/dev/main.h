@@ -1,4 +1,4 @@
-__global__ void force(Wvel_v wv, Coords c, Cloud cloud, int np, float seed, Wa wa, /**/ float *ff) {
+__global__ void force(Wvel_v wv, Coords c, Cloud cloud, int np, float seed, WallForce wa, /**/ float *ff) {
     forces::Pa a; /* bulk particle */
     int gid, aid, zplane;
     gid = threadIdx.x + blockDim.x * blockIdx.x;
