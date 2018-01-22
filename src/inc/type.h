@@ -44,4 +44,3 @@ struct FoWrap {
     int n;
     Force *ff;
 };
-
