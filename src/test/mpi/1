@@ -1,0 +1,16 @@
+#### double Poiseuille
+# nTEST: mpi.t2
+rm -rf diag.txt h5 bop ply rbc.off
+:
+(cd ../cmd; make ) > /dev/null
+:
+Force="bforce={type=\"double_poiseuille\"; a=6.666667;};"
+u.conf conf/double.poiseuille.h <<!!!
+   kBT=1e-7 tend=2.1 part_freq=100 field_freq=300
+   DBG_PEEK
+   field_dumps part_dumps
+   run
+!!!
+{ make clean && u.make -j; } > /dev/null
+u.run 2 1 1 ./udx $Force
+u.avgh5 0 u 1 h5/flowfields-0013.h5 | uscale 10 > h5.out.txt

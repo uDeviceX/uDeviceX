@@ -1,0 +1,15 @@
+### Build out of source tree
+# TEST: make.t1
+(cd ../cmd; make ) > /dev/null
+t=/tmp/udx.$$
+trap 'rm -rf $t' 0 1 2 3 15
+:
+s=`pwd`
+mkdir $t
+( cd $t
+  u.conf "$s" "$s/conf/default.h" <<!
+  run
+!
+  { make clean && u.make -j; } > /dev/null
+)
+echo $?  > make.out.status
