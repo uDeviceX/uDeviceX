@@ -98,7 +98,7 @@ Device interface: code/decode map ids
 
 [source,cpp]
 ----
-include::{src}/clist/code.h[tag=int]
+include::{src}/clist/dev.h[tag=int]
 ----
 
 

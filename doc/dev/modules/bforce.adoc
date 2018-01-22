@@ -13,19 +13,6 @@ Defined by two structures:
 * `BForce_v` (_BForce view_), containing only the information needed at
    a specific time. It is passed to device kernels.
 
-The parameters are listed in the following structures:
-
-[source, c++]
-----
-include::{src}/scheme/force/type.h[tag=params]
-----
-
-They are used to initialise the `BForce` object:
-
-[source, c++]
-----
-include::{src}/scheme/force/imp.h[tag=ini]
-----
 
 == interface 
 
