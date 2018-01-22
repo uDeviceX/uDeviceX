@@ -1,9 +1,3 @@
-# TEST: pair.0
-s=. b=.
-u.conf0 u/pair
-{ u.make clean && u.make -j;     } > /dev/null
-u.run $b/udx < $s/data/pair/2 > pair.out.txt
-
 # nTEST: pair.1
 s=. b=. c=conf/default.h
 u.conf $s u/pair $c <<!
