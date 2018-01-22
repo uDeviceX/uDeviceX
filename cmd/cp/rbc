@@ -6,12 +6,28 @@ prog=u.cp.rbc
 prog0=u.cp.rbc0
 
 usg () {
-    msg "$prog template.from template.to"
+    msg "$prog [-l] template.from template.to"
     msg 'copy cell template to template.to'
+    msg '-l list all deplates'
     msg "$prog sc/498.off rbc.off"
     msg "$prog 2562.off   rbc.off"
     exit
 }
 
+list () (
+    cd "$D/cells"
+    find . -type f | sort | \
+	sed -e 's,^\./,,g' -e 's,\.off$,,g'
+)
+
 if test $# -ne 0 && test "$1" = -h; then usg; fi
+if test ! -d "$D"; then err "not a directory $D"; fi
+
+if test $# -eq 1 && test "$1" = -l
+then list
+     exit
+fi
+
+if test $# -ne 2 ; then err "needs two arguments"; fi
+
 exec $prog0 "$@"
