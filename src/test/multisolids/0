@@ -1,0 +1,17 @@
+#### spheres in double poiseuille, no contact
+# nTEST: multisolid.t1
+rm -rf bop h5 diag.txt solid_diag*.txt rbc.off
+echo -e "4.1 21.5 8\n4.1 10.5 8\n11.9 16 8" > rigs-ic.txt
+cp data/rig/sphere.ply   mesh_solid.ply
+cp data/cells/rbc/498.off rbc.off
+:
+Force="bforce={type=\"double_poiseuille\"; a=6.666667;};"
+u.conf conf/double.poiseuille.h <<!!!
+  solids sbounce_back tend=0.5 part_freq=100
+  field_dumps part_dumps
+  wall_creation=0 contactforces=false field_freq=100
+  run
+!!!
+{ make clean && u.make -j ; } > /dev/null
+u.run ./udx $Force
+cat solid_diag_0000.txt | awk '{print $2, $5, $8}' | uscale 5 > sdiag.out.txt
