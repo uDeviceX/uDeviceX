@@ -21,8 +21,7 @@
 #include "utils/kl.h"
 #include "mesh/collision.h"
 
-namespace collision
-{
+enum {OUT=BLUE_COLOR, IN=RED_COLOR};
 enum {X, Y, Z};
 
 static __host__ __device__ bool same_side(const float *x, const float *p, const float *a, const float *b, const float *inplane) {
@@ -51,7 +50,7 @@ static __host__ __device__ bool in_tetrahedron(const float *x, const float *A, c
         same_side(x, D, AB, AC, A);
 }
 
-int inside_1p(const float *r, const float *vv, const int4 *tt, const int nt) {
+int collision_inside_1p(const float *r, const float *vv, const int4 *tt, const int nt) {
     int c = 0;
     float origin[3] = {0, 0, 0};
 #ifdef spdir
@@ -79,7 +78,7 @@ static int inside_1p(const float *r, const Particle *vv, const int4 *tt, const i
     return c%2;
 }
 
-void inside_hst(const Particle *pp, const int n, int nt, int nv, const int4 *tt, const Particle *i_pp, const int ns, /**/ int *tags) {
+void collision_inside_hst(const Particle *pp, const int n, int nt, int nv, const int4 *tt, const Particle *i_pp, const int ns, /**/ int *tags) {
     for (int i = 0; i < n; ++i) {
         tags[i] = -1;
         for (int sid = 0; sid < ns; ++sid)
@@ -90,7 +89,7 @@ void inside_hst(const Particle *pp, const int n, int nt, int nv, const int4 *tt,
     }
 }
 
-namespace kernels
+namespace collisiondev
 {
 __global__ void init_tags(const int n, const int color, /**/ int *tags) {
     const int gid = threadIdx.x + blockIdx.x * blockDim.x;
@@ -189,16 +188,16 @@ __global__ void compute_colors_tex(const Particle *pp, const int n, const Texo<f
 }
 }
 
-void inside_dev(const Particle *pp, const int n, int nt, int nv, const int4 *tt, const Particle *i_pp, const int ns, /**/ int *tags) {
+void collision_inside_dev(const Particle *pp, const int n, int nt, int nv, const int4 *tt, const Particle *i_pp, const int ns, /**/ int *tags) {
     if (ns == 0 || n == 0) return;
 
-    KL(kernels::init_tags, (k_cnf(n)), (n, -1, /**/ tags));
+    KL(collisiondev::init_tags, (k_cnf(n)), (n, -1, /**/ tags));
 
     enum {THR = 128};
     dim3 thrd(THR, 1);
     dim3 blck(ceiln(n, THR), ns);
 
-    KL(kernels::compute_tags, (blck, thrd), (pp, n, i_pp, nv, tt, nt, /**/ tags));
+    KL(collisiondev::compute_tags, (blck, thrd), (pp, n, i_pp, nv, tt, nt, /**/ tags));
 }
 
 /*
@@ -207,22 +206,22 @@ void inside_dev(const Particle *pp, const int n, int nt, int nv, const int4 *tt,
    nt: number of triangles per mesh
    nv: number of vertices per mesh
 */
-void get_colors0(const Particle *pp, int n,
+static void get_colors0(const Particle *pp, int n,
                  const Texo<float2> texvert, const int4 *tri,
                  int nt, int nv, int nm,
                  const float3 *minext, const float3 *maxext, /**/ int *cc) {
     if (nm == 0 || n == 0) return;
 
-    KL(kernels::init_tags, (k_cnf(n)), (n, OUT, /**/ cc));
+    KL(collisiondev::init_tags, (k_cnf(n)), (n, OUT, /**/ cc));
 
     enum {THR = 128};
     dim3 thrd(THR, 1);
     dim3 blck(ceiln(n, THR), nm);
 
-    KL(kernels::compute_colors_tex, (blck, thrd), (pp, n, texvert, nv, tri, nt, minext, maxext, /**/ cc));
+    KL(collisiondev::compute_colors_tex, (blck, thrd), (pp, n, texvert, nv, tri, nt, minext, maxext, /**/ cc));
 }
 
-void get_colors(const Particle *pp, int n,
+void collision_get_colors(const Particle *pp, int n,
                 const Particle *i_pp, const int4 *tri,
                 int nt, int nv, int nm,
                 const float3 *minext, const float3 *maxext, /**/ int *cc) {
@@ -235,5 +234,3 @@ void get_colors(const Particle *pp, int n,
     destroy(&texvert);
 }
 
-
-}

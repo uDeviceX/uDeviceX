@@ -20,8 +20,8 @@ static void init_I_frompp(const Particle *pp, int n, float pmass, const float *c
 #else
 static void init_I_fromm(float pmass, int nt, const int4 *tt, const float *vv, /**/ float *I) {
     float com[3] = {0};
-    mesh::center_of_mass(nt, tt, vv, /**/ com);
-    mesh::inertia_tensor(nt, tt, vv, com, numberdensity, /**/ I);
+    mesh_center_of_mass(nt, tt, vv, /**/ com);
+    mesh_inertia_tensor(nt, tt, vv, com, numberdensity, /**/ I);
 
     for (int c = 0; c < 6; ++c) I[c] *= pmass;
 }
@@ -44,7 +44,7 @@ void ini_props(int n, const Particle *pp, float pmass, const float *com, int nt,
     s->mass = n * pmass;
 #else
     init_I_fromm(pmass, nt, tt, vv, /**/ I);
-    s->mass = mesh::volume(nt, tt, vv) * numberdensity * pmass;
+    s->mass = mesh_volume(nt, tt, vv) * numberdensity * pmass;
 #endif
     UC(linal_inv3x3(I, /**/ s->Iinv));
     /* initial positions */

@@ -90,7 +90,7 @@ static void count_pp_inside(const Particle *s_pp, const int n, const float *coms
 
             const float r2 = r[X]*r[X] + r[Y]*r[Y] + r[Z]*r[Z];
 
-            if (r2 < R*R && collision::inside_1p(r, vv, tt, nt)) {
+            if (r2 < R*R && collision_inside_1p(r, vv, tt, nt)) {
                 ++rcounts[j];
                 tags[ip] = tag = j;
             }
@@ -148,7 +148,7 @@ static void empty_solid(int nt, const int4 *tt, const float *vv, /* io */ float 
 
     for (i = j = 0; i < n0; ++i) {
         const float *r0 = rr0 + 3*i;
-        const float d = mesh::dist_from_mesh(nt, tt, vv, r0);
+        const float d = dist_from_mesh(nt, tt, vv, r0);
         //if (d> 5) ERR("d = %f", d);
         if (d <= 1) {
             rr0[3*j + X] = r0[X];

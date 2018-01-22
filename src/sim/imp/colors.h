@@ -22,10 +22,10 @@ void gen_colors(const Rbc *r, Colorer *c, Flu *f) {
 
     /* compute extents */
     UC(minmax(c->pp, nv, nm, /**/ c->minext, c->maxext));
-    UC(collision::get_colors(f->q.pp, f->q.n,
-                             c->pp, r->q.tri,
-                             r->q.nt, nv, nm,
-                             c->minext, c->maxext, /**/ f->q.cc));
+    UC(collision_get_colors(f->q.pp, f->q.n,
+                            c->pp, r->q.tri,
+                            r->q.nt, nv, nm,
+                            c->minext, c->maxext, /**/ f->q.cc));
 }
 
 void recolor_flux(Coords coords, Flu *f) {
