@@ -3,8 +3,6 @@
 
 #include "mesh/bbox.h"
 
-namespace mesh {
-
 static void T2r(const int i, const Particle *pp, const float **r) {*r = pp[i].r;}
 static void T2r(const int i, const float *rr,    const float **r) {*r = rr + 3*i;}
 
@@ -27,17 +25,16 @@ static void get_bbox_(const T *vv, const int n, /**/ float3 *minbb, float3 *maxb
     *minbb = minb; *maxbb = maxb;
 }
 
-void get_bbox(const float *rr, const int n, /**/ float3 *minbb, float3 *maxbb) {
+void mesh_get_bbox(const float *rr, const int n, /**/ float3 *minbb, float3 *maxbb) {
     get_bbox_(rr, n, /**/ minbb, maxbb);
 }
 
-void get_bboxes_hst(const Particle *pp, const int nps, const int ns, /**/ float3 *minbb, float3 *maxbb) {
+void mesh_get_bboxes_hst(const Particle *pp, const int nps, const int ns, /**/ float3 *minbb, float3 *maxbb) {
     for (int i = 0; i < ns; ++i)
     get_bbox_(pp + i*nps, nps, /**/ minbb + i, maxbb + i);
 }
 
-void get_bboxes_dev(const Particle *pp, const int nps, const int ns, /**/ float3 *minbb, float3 *maxbb) {
+void mesh_get_bboxes_dev(const Particle *pp, const int nps, const int ns, /**/ float3 *minbb, float3 *maxbb) {
     if (ns == 0) return;
     minmax(pp, nps, ns, /**/ minbb, maxbb);
-}
 }
