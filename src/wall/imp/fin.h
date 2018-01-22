@@ -3,7 +3,7 @@ void wall_fin_quants(WallQuants *q) {
     q->n = 0;
 }
 
-void wall_fin_ticket(Ticket *t) {
+void wall_fin_ticket(WallTicket *t) {
     UC(rnd_fin(t->rnd));
     destroy(&t->texstart);
     destroy(&t->texpp);

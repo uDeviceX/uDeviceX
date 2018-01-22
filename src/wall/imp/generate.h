@@ -54,6 +54,6 @@ static void gen_ticket(const int w_n, float4 *w_pp, Clist *cells, Texo<int> *tex
     UC(clist_fin_map(mcells));
 }
 
-void wall_gen_ticket(const WallQuants *q, Ticket *t) {
+void wall_gen_ticket(const WallQuants *q, WallTicket *t) {
     UC(gen_ticket(q->n, q->pp, &t->cells, &t->texstart, &t->texpp));
 }

@@ -106,7 +106,7 @@ struct Rig {
 struct Wall {
     Sdf *sdf;
     wall::WallQuants q;
-    wall::Ticket t;
+    wall::WallTicket t;
     Wvel vel;
     Wvel_v vview;
 };
