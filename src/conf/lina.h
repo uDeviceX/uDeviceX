@@ -53,4 +53,3 @@
 #define             RBCnv       642
 
 #define     wall_creation       1000
-#define        WVEL_PAR_A        (0)
