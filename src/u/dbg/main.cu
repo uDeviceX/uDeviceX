@@ -17,6 +17,8 @@
 #include "inc/type.h"
 #include "inc/dev.h"
 #include "dbg/imp.h"
+#include "glob/type.h"
+#include "glob/ini.h"
 
 const int n = 100;
 Particle *pp;
@@ -62,16 +64,19 @@ void fill_bugs() {
     KL(dev::fill_bugs, (k_cnf(n)), (ff, n));
 }
 
-void check(Dbg *dbg) {
-    UC(dbg_check_pos    (dbg, n, pp));
-    UC(dbg_check_vel    (dbg, n, pp));
-    UC(dbg_check_forces (dbg, n, ff));
+void check(Coords c, Dbg *dbg) {
+    UC(dbg_check_pos    (c, dbg, n, pp));
+    UC(dbg_check_vel    (c, dbg, n, pp));
+    UC(dbg_check_forces (c, dbg, n, ff));
 }
 
 int main(int argc, char **argv) {
     Dbg *dbg;
     Config *cfg;
+    Coords coords;
     m::ini(&argc, &argv);
+    UC(coords_ini(m::cart, &coords));
+    
     UC(conf_ini(&cfg));
     UC(dbg_ini(&dbg));
     UC(conf_read(argc, argv, cfg));
@@ -79,9 +84,10 @@ int main(int argc, char **argv) {
     
     alloc();
     fill_bugs();
-    check(dbg);
+    check(coords, dbg);
     free();
     UC(dbg_fin(dbg));
     UC(conf_fin(cfg));
+    UC(coords_fin(&coords));
     m::fin();
 }
