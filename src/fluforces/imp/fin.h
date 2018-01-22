@@ -5,8 +5,8 @@ void fin(/**/ FluForcesBulk *b) {
     UC(efree(b));;
 }
 
-void fin(/**/ HaloData *h) {
+void fin(/**/ FluForcesHalo *h) {
     for (int i = 0; i < 26; ++i)
         UC(rnd_fin(h->trunks[i]));
-    delete h;
+    UC(efree(h));
 }

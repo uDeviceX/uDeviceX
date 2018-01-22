@@ -19,7 +19,7 @@ void bulk_forces(int n, const FluForcesBulk *b, const int *start, const int *cou
 }
 
 
-void prepare(flu::LFrag26 lfrags, flu::RFrag26 rfrags, /**/ HaloData *h) {
+void prepare(flu::LFrag26 lfrags, flu::RFrag26 rfrags, /**/ FluForcesHalo *h) {
     h->lfrags = lfrags;
     h->rfrags = rfrags;
 
@@ -31,6 +31,6 @@ void prepare(flu::LFrag26 lfrags, flu::RFrag26 rfrags, /**/ HaloData *h) {
     }
 }
 
-void halo_forces(const HaloData *h, /**/ Force *ff) {
+void halo_forces(const FluForcesHalo *h, /**/ Force *ff) {
     hforces::interactions(h->lfrags, h->rfrags, h->rndfrags, (float*)ff);
 }

@@ -55,9 +55,10 @@ static void get_interrank_infos(MPI_Comm cart, int fid, /**/ RNDunif* trunks[], 
     //     frag_i2dx(fid), frag_i2dy(fid), frag_i2dz(fid));
 }
 
-void ini(MPI_Comm cart, /**/ HaloData **hd) {
-    HaloData *h = new HaloData;
+void ini(MPI_Comm cart, /**/ FluForcesHalo **hd) {
+    FluForcesHalo *h;
+    UC(emalloc(sizeof(FluForcesHalo), (void**) hd));
+    h = *hd;
     for (int i = 0; i < 26; ++i)
         get_interrank_infos(cart, i, /**/ h->trunks, h->masks);
-    *hd = h;
 }

@@ -5,7 +5,7 @@ struct FluForcesBulk {
     const int *colors;   /* pointer to colors, not to be allocated  */
 };
 
-struct HaloData {
+struct FluForcesHalo {
     RNDunif *trunks[26];   /* interrank rng (1 per fragment) */
     bool masks[26];        /* interrank masks                */
     

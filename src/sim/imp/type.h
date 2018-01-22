@@ -73,7 +73,7 @@ struct Flu {
     FluExch e;
 
     FluForcesBulk *bulk;
-    HaloData *halodata;
+    FluForcesHalo *halo;
 
     Force *ff;
     Force *ff_hst; /* solvent forces on host    */

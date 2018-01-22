@@ -31,6 +31,6 @@ void forces_dpd(Flu *f) {
     UC(eflu_get_local_frags(e->p, /**/ &lfrags));
     UC(eflu_get_remote_frags(e->u, /**/ &rfrags));
 
-    UC(prepare(lfrags, rfrags, /**/ f->halodata));
-    UC(halo_forces(f->halodata, /**/ f->ff));
+    UC(prepare(lfrags, rfrags, /**/ f->halo));
+    UC(halo_forces(f->halo, /**/ f->ff));
 }

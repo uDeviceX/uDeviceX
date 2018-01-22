@@ -137,7 +137,7 @@ static void ini_flu(MPI_Comm cart, /**/ Flu *f) {
 
     flu_ini(&f->q);
     ini(MAX_PART_NUM, /**/ &f->bulk);
-    ini(cart, /**/ &f->halodata);
+    ini(cart, /**/ &f->halo);
     
     UC(ini_flu_distr(cart, /**/ &f->d));
     UC(ini_flu_exch(cart, /**/ &f->e));
