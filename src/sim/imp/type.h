@@ -107,7 +107,7 @@ struct Wall {
     Sdf *sdf;
     WallQuants q;
     WallTicket *t;
-    Wvel vel;
+    Wvel *vel;
     Wvel_v vview;
 };
 

@@ -24,4 +24,4 @@ $B/utils/imp.o: $S/utils/error.h $S/utils/imp.h
 $B/utils/mc.o: $B/conf.h $S/inc/conf.h $S/mpi/wrapper.h $S/utils/error.h $S/utils/mc.h
 $B/utils/msg.o: $S/utils/msg.h
 $B/utils/os.o: $S/utils/error.h $S/utils/msg.h $S/utils/os.h
-$B/wvel/imp.o: $B/conf.h $S/coords/imp.h $S/coords/type.h $S/utils/error.h $S/utils/msg.h $S/wvel/imp.h $S/wvel/imp/ini.h $S/wvel/imp/main.h $S/wvel/type.h
+$B/wvel/imp.o: $B/conf.h $S/coords/imp.h $S/coords/type.h $S/utils/error.h $S/utils/imp.h $S/utils/msg.h $S/wvel/imp.h $S/wvel/imp/main.h $S/wvel/imp/type.h $S/wvel/type.h

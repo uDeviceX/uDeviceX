@@ -178,32 +178,24 @@ static void ini_wall(Wall *w) {
     sdf_ini(&w->sdf);
     wall_ini_quants(&w->q);
     wall_ini_ticket(&w->t);
-    Wvel *vw = &w->vel;
+    wvel_ini(&w->vel);
 
+    Wvel *wv = w->vel;
+    
 #if defined(WVEL_HS)
-    WvelHS p;
-    p.u = WVEL_PAR_U;
-    p.h = WVEL_PAR_H;
+    wvel_set_hs(WVEL_PAR_U, WVEL_PAR_H, vw);
 #else
-#if   defined(WVEL_SIN)
-    WvelShearSin p;
-    p.log_freq = WVEL_LOG_FREQ;
-    p.w = WVEL_PAR_W;
-    p.half = 1;
-#else
-    WvelShear p;
-    p.half = 0;
-#endif
-    p.gdot = WVEL_PAR_A;
-    p.vdir = 0;
-
-    p.gdir = 0;
+    int gdir = 0;
     if (WVEL_PAR_Y)
-        p.gdir = 1;
+        gdir = 1;
     else if (WVEL_PAR_Z)
-        p.gdir = 2;
+        gdir = 2;
+#if   defined(WVEL_SIN)
+    wvel_set_shear_sin(WVEL_PAR_A, 0, gdir, 1, WVEL_PAR_W, WVEL_LOG_FREQ, wv);
+#else
+    wvel_set_shear(WVEL_PAR_A, 0, gdir, 0, wv);
 #endif
-    ini(p, vw);
+#endif
 }
 
 static void ini_objinter(MPI_Comm cart, /**/ ObjInter *o) {

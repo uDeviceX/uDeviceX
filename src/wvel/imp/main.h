@@ -1,3 +1,51 @@
+void wvel_ini(Wvel **wv) {
+    UC(emalloc(sizeof(Wvel), (void**) wv));
+}
+
+void wvel_fin(Wvel *wv) {
+    UC(efree(wv));
+}
+
+void wvel_set_cste(float3 u, Wvel *vw) {
+    WvelCste p;
+    p.u = u;
+    vw->type = WALL_VEL_CSTE;
+    vw->p.cste = p;
+}
+
+void wvel_set_shear(float gdot, int vdir, int gdir, int half, Wvel *vw) {
+    WvelShear p;
+    p.gdot = gdot;
+    p.vdir = vdir;
+    p.gdir = gdir;
+    p.half = half;
+    
+    vw->type = WALL_VEL_SHEAR;
+    vw->p.shear = p;
+}
+
+void wvel_set_shear_sin(float gdot, int vdir, int gdir, int half, float w, int log_freq, Wvel *vw) {
+    WvelShearSin p;
+    p.gdot     = gdot;
+    p.vdir     = vdir;
+    p.gdir     = gdir;
+    p.half     = half;
+    p.w        = w;
+    p.log_freq = log_freq;
+    
+    vw->type = WALL_VEL_SHEAR_SIN;
+    vw->p.shearsin = p;
+}
+
+void wvel_set_hs(float u, float h, Wvel *vw) {
+    WvelHS p;
+    p.u = u;
+    p.h = h;
+    vw->type = WALL_VEL_HS;
+    vw->p.hs = p;
+}
+
+
 static void set_dev(WvelCste p, Wvel_v *wv) {
     wv->type = WALL_VEL_V_CSTE;
     wv->p.cste.u = p.u;
@@ -37,7 +85,7 @@ static void set_dev(long it, WvelHS p, Wvel_v *wv) {
     wv->p.hs.h = p.h;
 }
 
-void step2params(long it, const Wvel *wv, /**/ Wvel_v *view) {
+void wvel_get_view(long it, const Wvel *wv, /**/ Wvel_v *view) {
     switch (wv->type) {
     case WALL_VEL_CSTE:
         set_dev(wv->p.cste, /**/ view);

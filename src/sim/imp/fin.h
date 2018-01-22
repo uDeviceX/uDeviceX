@@ -106,9 +106,10 @@ static void fin_bounce_back(BounceBack *bb) {
 }
 
 static void fin_wall(Wall *w) {
-    sdf_fin(w->sdf);
-    wall_fin_quants(&w->q);
-    wall_fin_ticket(w->t);
+    UC(sdf_fin(w->sdf));
+    UC(wall_fin_quants(&w->q));
+    UC(wall_fin_ticket(w->t));
+    UC(wvel_fin(w->vel));
 }
     
 static void fin_objinter(ObjInter *o) {
