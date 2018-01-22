@@ -1,4 +1,4 @@
-void alloc_quants(Quants *q) {
+void alloc_quants(WallQuants *q) {
     q->n = 0;
     q->pp = NULL;
 }

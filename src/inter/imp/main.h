@@ -39,7 +39,7 @@ static void remove_solids(RigQuants *q, Sdf *sdf) {
     msg_print("sim.impl: %d/%d Solids survived", q->ns, ns0);
 }
 
-void create_walls(MPI_Comm cart, int maxn, Sdf *sdf, FluQuants* qflu, wall::Quants *qwall) {
+void create_walls(MPI_Comm cart, int maxn, Sdf *sdf, FluQuants* qflu, wall::WallQuants *qwall) {
     int nold = qflu->n;
     UC(wall::gen_quants(cart, maxn, sdf, /**/ &qflu->n, qflu->pp, qwall));
     flu_build_cells(qflu);

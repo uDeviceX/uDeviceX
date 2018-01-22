@@ -1,4 +1,4 @@
-void free_quants(Quants *q) {
+void free_quants(WallQuants *q) {
     if (q->pp) Dfree(q->pp);
     q->n = 0;
 }

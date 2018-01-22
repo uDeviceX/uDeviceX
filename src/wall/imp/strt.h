@@ -42,10 +42,10 @@ static void strt_quants(Coords coords, int maxn, int *w_n, float4 **w_pp) {
     CC(d::Free(pptmp));
 }
 
-void strt_quants(Coords coords, int maxn, Quants *q) {
+void strt_quants(Coords coords, int maxn, WallQuants *q) {
     strt_quants(coords, maxn, &q->n, &q->pp);
 }
 
-void strt_dump_templ(Coords coords, const Quants q) {
+void strt_dump_templ(Coords coords, const WallQuants q) {
     write(coords, q.n, q.pp);
 }

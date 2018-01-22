@@ -1,4 +1,4 @@
-void force(Wvel_v wv, Coords c, Sdf *sdf, const Quants q, const Ticket t, Cloud cloud, const int n, Force *ff) {
+void force(Wvel_v wv, Coords c, Sdf *sdf, const WallQuants q, const Ticket t, Cloud cloud, const int n, Force *ff) {
     Wa wa; /* local wall data */
 
     sdf_to_view(sdf, &wa.sdf_v);
