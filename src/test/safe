@@ -1,6 +1,5 @@
 ### Build u/safe out of source
 # TEST: safe.t1
-(cd ../cmd; make ) > /dev/null
 t=/tmp/udx.$$
 trap 'rm -rf $t' 0 1 2 3 15
 :

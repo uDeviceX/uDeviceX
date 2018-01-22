@@ -2,7 +2,6 @@
 # nTEST: color.t1
 rm -rf bop h5 diag.txt rbc.off
 :
-(cd ../cmd; make ) > /dev/null
 s=.
 u=u/france
 Force="bforce={type=\"double_poiseuille\"; a=0.6;};"

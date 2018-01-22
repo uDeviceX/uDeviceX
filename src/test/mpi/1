@@ -2,8 +2,6 @@
 # nTEST: mpi.t2
 rm -rf diag.txt h5 bop ply rbc.off
 :
-(cd ../cmd; make ) > /dev/null
-:
 Force="bforce={type=\"double_poiseuille\"; a=6.666667;};"
 u.conf conf/double.poiseuille.h <<!!!
    kBT=1e-7 tend=2.1 part_freq=100 field_freq=300
