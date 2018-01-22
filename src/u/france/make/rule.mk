@@ -99,4 +99,5 @@ $B/utils/os.o: $S/utils/os.cpp; $X -I$S/. -I$S/utils
 $B/wall/exch/imp.o: $S/wall/exch/imp.cpp; $X -I$S/. -I$S/wall/exch
 $B/wall/force/imp.o: $S/wall/force/imp.cu; $N -I$S/. -I$S/wall/force
 $B/wall/imp.o: $S/wall/imp.cu; $N -I$S/. -I$S/wall
+$B/wvel/conf.o: $S/wvel/conf.cpp; $X -I$S/. -I$S/wvel
 $B/wvel/imp.o: $S/wvel/imp.cpp; $X -I$S/. -I$S/wvel

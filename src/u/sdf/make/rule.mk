@@ -9,6 +9,7 @@ $B/math/tform/imp.o: $S/math/tform/imp.cpp; $X -I$S/. -I$S/math/tform
 $B/mpi/glb.o: $S/mpi/glb.cpp; $X -I$S/. -I$S/mpi
 $B/mpi/type.o: $S/mpi/type.cpp; $X -I$S/. -I$S/mpi
 $B/mpi/wrapper.o: $S/mpi/wrapper.cpp; $X -I$S/. -I$S/mpi
+$B/parser/imp.o: $S/parser/imp.cpp; $X -I$S/. -I$S/parser
 $B/sdf/array3d/imp.o: $S/sdf/array3d/imp.cu; $N -I$S/. -I$S/sdf/array3d
 $B/sdf/bounce/imp.o: $S/sdf/bounce/imp.cu; $N -I$S/. -I$S/sdf/bounce
 $B/sdf/dev.o: $S/sdf/dev.cu; $N -I$S/. -I$S/sdf
@@ -24,4 +25,5 @@ $B/utils/imp.o: $S/utils/imp.cpp; $X -I$S/. -I$S/utils
 $B/utils/mc.o: $S/utils/mc.cpp; $X -I$S/. -I$S/utils
 $B/utils/msg.o: $S/utils/msg.cpp; $X -I$S/. -I$S/utils
 $B/utils/os.o: $S/utils/os.cpp; $X -I$S/. -I$S/utils
+$B/wvel/conf.o: $S/wvel/conf.cpp; $X -I$S/. -I$S/wvel
 $B/wvel/imp.o: $S/wvel/imp.cpp; $X -I$S/. -I$S/wvel

@@ -25,4 +25,4 @@ O = $B/algo/minmax/imp.o $B/algo/scan/imp.o $B/clist/imp.o $B/cnt/imp.o \
     $B/sdf/imp.o $B/sdf/label/imp.o $B/sdf/tex3d/imp.o $B/sdf/tform/imp.o \
     $B/sim/imp.o $B/utils/cc.o $B/utils/error.o $B/utils/imp.o $B/utils/mc.o \
     $B/utils/msg.o $B/utils/os.o $B/wall/exch/imp.o $B/wall/force/imp.o \
-    $B/wall/imp.o $B/wvel/imp.o
+    $B/wall/imp.o $B/wvel/conf.o $B/wvel/imp.o
