@@ -16,7 +16,7 @@ function err(s) {
 }
 
 perm () { # permission
-    ls -l "$1" | sed 's/ .*//'
+    ls -l "$1" | sed 's/ .*//g' | sed 's/\.$//g'
 }
 
 for i in `e find "$@" -type f | sort`
