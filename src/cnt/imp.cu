@@ -35,7 +35,7 @@
 #include "partlist/type.h"
 
 #include "clist/imp.h"
-#include "clist/code.h"
+#include "clist/dev.h"
 
 #include "imp.h"
 
