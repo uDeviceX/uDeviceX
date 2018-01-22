@@ -45,8 +45,7 @@
 
 #include "imp.h"
 
-namespace wall {
-namespace dev {
+namespace wall_dev {
   #include "dev.h"
 }
 
@@ -62,5 +61,3 @@ namespace grey {
 namespace color {
   #include "imp/force.h"
 }
-
-} // wall

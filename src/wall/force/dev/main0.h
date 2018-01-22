@@ -8,7 +8,7 @@ static __device__ void fetch_wall(Wvel_v wv, Coords c, Texo<float4> pp, int i, /
 }
 
 static __device__ void force0(Wvel_v wv, Coords c, forces::Pa a, int aid, int zplane,
-                              float seed, Wa wa, /**/ float *ff) {
+                              float seed, WallForce wa, /**/ float *ff) {
     map::Map m;
     forces::Pa b;  /* wall particles */
     float rnd;

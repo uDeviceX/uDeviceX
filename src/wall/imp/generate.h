@@ -1,7 +1,7 @@
 static void freeze0(MPI_Comm cart, int maxn, Sdf *qsdf, /*io*/ Particle *pp, int *n, /*o*/ Particle *dev, int *w_n, /*w*/ Particle *hst) {
     sdf_bulk_wall(qsdf, /*io*/ pp, n, /*o*/ hst, w_n); /* sort into bulk-frozen */
     msg_print("before exch: bulk/frozen : %d/%d", *n, *w_n);
-    UC(exch(cart, maxn, /*io*/ hst, w_n));
+    UC(wall_exch_pp(cart, maxn, /*io*/ hst, w_n));
     cH2D(dev, hst, *w_n);
     msg_print("after  exch: bulk/frozen : %d/%d", *n, *w_n);
 }
@@ -19,13 +19,13 @@ static void gen_quants(MPI_Comm cart, int maxn, Sdf *qsdf, /**/ int *o_n, Partic
     UC(freeze(cart, maxn, qsdf, o_pp, o_n, frozen, w_n));
     msg_print("consolidating wall");
     CC(d::Malloc((void **) w_pp, *w_n * sizeof(float4)));
-    KL(dev::particle2float4, (k_cnf(*w_n)), (frozen, *w_n, /**/ *w_pp));
+    KL(wall_dev::particle2float4, (k_cnf(*w_n)), (frozen, *w_n, /**/ *w_pp));
     
     CC(d::Free(frozen));
     dSync();
 }
 
-void gen_quants(MPI_Comm cart, int maxn, Sdf *sdf, /**/ int *n, Particle* pp, Quants *q) {
+void wall_gen_quants(MPI_Comm cart, int maxn, Sdf *sdf, /**/ int *n, Particle* pp, WallQuants *q) {
     UC(gen_quants(cart, maxn, sdf, n, pp, &q->n, &q->pp));
 }
 
@@ -36,9 +36,9 @@ static void build_cells(const int n, float4 *pp4, Clist *cells, ClistMap *mcells
     CC(d::Malloc((void **) &pp,  n * sizeof(Particle)));
     CC(d::Malloc((void **) &pp0, n * sizeof(Particle)));
 
-    KL(dev::float42particle, (k_cnf(n)), (pp4, n, /**/ pp));
+    KL(wall_dev::float42particle, (k_cnf(n)), (pp4, n, /**/ pp));
     UC(clist_build(n, n, pp, /**/ pp0, cells, mcells));
-    KL(dev::particle2float4, (k_cnf(n)), (pp0, n, /**/ pp4));
+    KL(wall_dev::particle2float4, (k_cnf(n)), (pp0, n, /**/ pp4));
 
     CC(d::Free(pp));
     CC(d::Free(pp0));
@@ -54,6 +54,6 @@ static void gen_ticket(const int w_n, float4 *w_pp, Clist *cells, Texo<int> *tex
     UC(clist_fin_map(mcells));
 }
 
-void gen_ticket(const Quants q, Ticket *t) {
-    UC(gen_ticket(q.n, q.pp, &t->cells, &t->texstart, &t->texpp));
+void wall_gen_ticket(const WallQuants *q, WallTicket *t) {
+    UC(gen_ticket(q->n, q->pp, &t->cells, &t->texstart, &t->texpp));
 }

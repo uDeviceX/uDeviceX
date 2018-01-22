@@ -21,7 +21,6 @@ void clear_forces(Force* ff, int n) {
 }
 
 void forces_wall(Wall *w, Sim *s) {
-    using namespace wall;
     Cloud co, cs, cr;
     Flu *flu = &s->flu;
     Rbc *rbc = &s->rbc;
@@ -31,7 +30,7 @@ void forces_wall(Wall *w, Sim *s) {
     ini_cloud(rbc->q.pp, &cr);
     if (multi_solvent) ini_cloud_color(flu->q.cc, &co);
     
-    if (flu->q.n)               color::force(w->vview, s->coords, w->sdf, w->q, w->t, co, flu->q.n, /**/ flu->ff);
-    if (s->solids0 && rig->q.n) grey::force(w->vview, s->coords, w->sdf, w->q, w->t, cs, rig->q.n, /**/ rig->ff);
-    if (rbcs && rbc->q.n)       grey::force(w->vview, s->coords, w->sdf, w->q, w->t, cr, rbc->q.n, /**/ rbc->ff);
+    if (flu->q.n)               color::wall_force(w->vview, s->coords, w->sdf, &w->q, &w->t, flu->q.n, co, /**/ flu->ff);
+    if (s->solids0 && rig->q.n) grey::wall_force(w->vview, s->coords, w->sdf, &w->q, &w->t, rig->q.n, cs, /**/ rig->ff);
+    if (rbcs && rbc->q.n)       grey::wall_force(w->vview, s->coords, w->sdf, &w->q, &w->t, rbc->q.n, cr, /**/ rbc->ff);
 }
