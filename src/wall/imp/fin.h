@@ -7,5 +7,6 @@ void wall_fin_ticket(WallTicket *t) {
     UC(rnd_fin(t->rnd));
     destroy(&t->texstart);
     destroy(&t->texpp);
-    clist_fin(&t->cells);
+    UC(clist_fin(&t->cells));
+    UC(efree(t));
 }
