@@ -111,7 +111,7 @@ int main(int argc, char **argv) {
     
     CC(d::Memcpy(pp, pp_hst, n * sizeof(Particle), H2D));
     
-    clist_build(n, n, pp, /**/ ppout, &clist, m);
+    UC(clist_build(n, n, pp, /**/ ppout, &clist, m));
     
     CC(d::Memcpy(counts, clist.counts, clist.ncells * sizeof(int), D2H));
     CC(d::Memcpy(starts, clist.starts, clist.ncells * sizeof(int), D2H));
