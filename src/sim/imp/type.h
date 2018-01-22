@@ -60,7 +60,7 @@ struct Colorer {
 
 /* holder for bounce back tools and work */
 struct BounceBack {
-    meshbb::BBdata d;
+    meshbb::MeshBB d;
     Momentum *mm;
     BBexch e;
 };

@@ -55,13 +55,13 @@ void bounce_solid(long it, BounceBack *bb, Rig *s, Flu *flu) {
     
     /* perform bounce back */
     
-    meshbb::reini(n, /**/ bb->d);
+    meshbb::meshbb_reini(n, /**/ bb->d);
     if (nm + nmhalo)
         CC(d::MemsetAsync(bb->mm, 0, nt * (nm + nmhalo) * sizeof(Momentum)));
 
-    meshbb::find_collisions(nm + nmhalo, nt, nv, tt, i_pp, L, ss, cc, pp, flu->ff, /**/ bb->d);
-    meshbb::select_collisions(n, /**/ bb->d);
-    meshbb::bounce(n, bb->d, flu->ff, nt, nv, tt, i_pp, /**/ pp, bb->mm);
+    meshbb::meshbb_find_collisions(nm + nmhalo, nt, nv, tt, i_pp, L, ss, cc, pp, flu->ff, /**/ bb->d);
+    meshbb::meshbb_select_collisions(n, /**/ bb->d);
+    meshbb::meshbb_bounce(n, bb->d, flu->ff, nt, nv, tt, i_pp, /**/ pp, bb->mm);
 
     /* send momentum back */
 
@@ -79,7 +79,7 @@ void bounce_solid(long it, BounceBack *bb, Rig *s, Flu *flu) {
     emesh_unpack_mom(nt, e->p, e->um, /**/ bb->mm);
     
     /* gather bb momentum */
-    meshbb::collect_rig_momentum(nm, nt, nv, tt, i_pp, bb->mm, /**/ qs->ss);
+    meshbb::meshbb_collect_rig_momentum(nm, nt, nv, tt, i_pp, bb->mm, /**/ qs->ss);
 
     /* for dump */
     cD2H(qs->ss_dmp_bb, qs->ss, nm);

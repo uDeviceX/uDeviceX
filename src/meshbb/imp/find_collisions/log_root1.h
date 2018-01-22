@@ -19,7 +19,7 @@ static void log_cubic_dump() {
     log_cubic_dump0(n, cci);
 }
 
-void find_collisions(int nm, int nt, int nv, const int4 *tt, const Particle *i_pp, int3 L,
+void meshbb_find_collisions(int nm, int nt, int nv, const int4 *tt, const Particle *i_pp, int3 L,
                      const int *starts, const int *counts, const Particle *pp, const Force *ff,
                      /**/ BBdata d) {
     log_cubic_reset();    
