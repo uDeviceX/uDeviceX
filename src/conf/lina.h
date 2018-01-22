@@ -34,7 +34,7 @@
 #define tend                    1000000
 
 /* FLOW TYPE */
-#define WVEL_FLAT               true
+// #define WVEL_FLAT               true
 
 /* DUMPS */
 #define dump_all_fields         true

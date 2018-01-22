@@ -15,7 +15,7 @@
 #define flu_mass         1.0        /* solvent particle mass */
 #define rbc_mass         0.5        /* RBC particle mass     */
 #define solid_mass       0.5        /* solid particle mass   */
-#define WVEL_PAR_A       5.0        /* shear rate */
+// #define WVEL_PAR_A       5.0        /* shear rate */
 
 #define adpd_b         2.6666667  /* aij for the solvent */
 #define adpd_r          2.6666667  /* aij for the RBC membrane */
