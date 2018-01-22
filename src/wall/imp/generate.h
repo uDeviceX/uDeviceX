@@ -1,7 +1,7 @@
 static void freeze0(MPI_Comm cart, int maxn, Sdf *qsdf, /*io*/ Particle *pp, int *n, /*o*/ Particle *dev, int *w_n, /*w*/ Particle *hst) {
     sdf_bulk_wall(qsdf, /*io*/ pp, n, /*o*/ hst, w_n); /* sort into bulk-frozen */
     msg_print("before exch: bulk/frozen : %d/%d", *n, *w_n);
-    UC(exch(cart, maxn, /*io*/ hst, w_n));
+    UC(wall_exch_pp(cart, maxn, /*io*/ hst, w_n));
     cH2D(dev, hst, *w_n);
     msg_print("after  exch: bulk/frozen : %d/%d", *n, *w_n);
 }
