@@ -1,31 +1,31 @@
-void meshbb_ini(int maxpp, /**/ MeshBB **mbb) {
-    MeshBB *d;
-    UC(emalloc(sizeof(MeshBB), (void**) mbb));
-    d = *mbb;
-    CC(d::Malloc((void**) &d->ncols,   maxpp * sizeof(int)));
-    CC(d::Malloc((void**) &d->datacol, maxpp * MAX_COL * sizeof(float4)));
-    CC(d::Malloc((void**) &d->idcol,   maxpp * MAX_COL * sizeof(int)));
+void meshbb_ini(int maxpp, /**/ MeshBB **meshbb) {
+    MeshBB *mbb;
+    UC(emalloc(sizeof(MeshBB), (void**) meshbb));
+    mbb = *meshbb;
+    CC(d::Malloc((void**) &mbb->ncols,   maxpp * sizeof(int)));
+    CC(d::Malloc((void**) &mbb->datacol, maxpp * MAX_COL * sizeof(float4)));
+    CC(d::Malloc((void**) &mbb->idcol,   maxpp * MAX_COL * sizeof(int)));
 }
 
-void meshbb_fin(/**/ MeshBB *d) {
-    UC(efree(d));
-    CC(d::Free(d->ncols));
-    CC(d::Free(d->datacol));
-    CC(d::Free(d->idcol));    
+void meshbb_fin(/**/ MeshBB *mbb) {
+    CC(d::Free(mbb->ncols));
+    CC(d::Free(mbb->datacol));
+    CC(d::Free(mbb->idcol));
+    UC(efree(mbb));
 }
 
-void meshbb_reini(int n, /**/ MeshBB *d) {
-    CC(d::MemsetAsync(d->ncols, 0, n * sizeof(int)));
+void meshbb_reini(int n, /**/ MeshBB *mbb) {
+    CC(d::MemsetAsync(mbb->ncols, 0, n * sizeof(int)));
 }
 
-void meshbb_select_collisions(int n, /**/ MeshBB *d) {
-    KL(dev::select_collisions, (k_cnf(n)), (n, /**/ d->ncols, d->datacol, d->idcol));
+void meshbb_select_collisions(int n, /**/ MeshBB *mbb) {
+    KL(dev::select_collisions, (k_cnf(n)), (n, /**/ mbb->ncols, mbb->datacol, mbb->idcol));
 }
 
-void meshbb_bounce(int n, const MeshBB *d, const Force *ff, int nt, int nv, const int4 *tt, const Particle *i_pp,
+void meshbb_bounce(int n, const MeshBB *mbb, const Force *ff, int nt, int nv, const int4 *tt, const Particle *i_pp,
             /**/ Particle *pp, Momentum *mm) {
     KL(dev::perform_collisions, (k_cnf(n)),
-       (n, d->ncols, d->datacol, d->idcol, ff, nt, nv, tt, i_pp, /**/ pp, mm));
+       (n, mbb->ncols, mbb->datacol, mbb->idcol, ff, nt, nv, tt, i_pp, /**/ pp, mm));
 }
 
 void meshbb_collect_rig_momentum(int ns, int nt, int nv, const int4 *tt, const Particle *pp, const Momentum *mm, /**/ Solid *ss) {
