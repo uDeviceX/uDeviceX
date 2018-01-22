@@ -21,7 +21,7 @@
 #include "partlist/dev.h"
 
 #include "imp.h"
-#include "code.h"
+#include "dev.h"
 
 #include "imp/type.h"
 namespace clistdev {
