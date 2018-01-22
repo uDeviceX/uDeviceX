@@ -1,11 +1,11 @@
-struct BulkData;
+struct FluForcesBulk;
 struct HaloData;
 
-void ini(int maxp, /**/ BulkData **b);
-void fin(/**/ BulkData *b);
+void ini(int maxp, /**/ FluForcesBulk **b);
+void fin(/**/ FluForcesBulk *b);
 
-void prepare(int n, const Cloud *c, /**/ BulkData *b);
-void bulk_forces(int n, const BulkData *b, const int *start, const int *count, /**/ Force *ff);
+void prepare(int n, const Cloud *c, /**/ FluForcesBulk *b);
+void bulk_forces(int n, const FluForcesBulk *b, const int *start, const int *count, /**/ Force *ff);
 
 
 void ini(MPI_Comm cart, /**/ HaloData **hd);

@@ -72,7 +72,7 @@ struct Flu {
     FluDistr d;
     FluExch e;
 
-    BulkData *bulkdata;
+    FluForcesBulk *bulk;
     HaloData *halodata;
 
     Force *ff;

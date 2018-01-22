@@ -1,10 +1,11 @@
-void ini(int maxp, /**/ BulkData **bd) {
-    BulkData *b = new BulkData;
+void ini(int maxp, /**/ FluForcesBulk **bd) {
+    FluForcesBulk *b;
+    UC(emalloc(sizeof(FluForcesBulk), (void**) bd));
+    b = *bd;
     Dalloc(&b->zipped_pp, 2 * maxp);
     Dalloc(&b->zipped_rr,     maxp);
     UC(rnd_ini(0, 0, 0, 0, /**/ &b->rnd));
     b->colors = NULL;
-    *bd = b;
 }
 
 static int is_plus(const int d[3]) {

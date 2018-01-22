@@ -19,8 +19,8 @@ void forces_dpd(Flu *f) {
     UC(eflu_post_recv(e->c, e->u));
     UC(eflu_post_send(e->p, e->c));
     
-    UC(prepare(f->q.n, &cloud, /**/ f->bulkdata));
-    UC(bulk_forces(f->q.n, f->bulkdata, start, count, /**/ f->ff));
+    UC(prepare(f->q.n, &cloud, /**/ f->bulk));
+    UC(bulk_forces(f->q.n, f->bulk, start, count, /**/ f->ff));
 
     dSync();
     UC(eflu_wait_recv(e->c, e->u));

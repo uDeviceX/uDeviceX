@@ -1,4 +1,4 @@
-struct BulkData {
+struct FluForcesBulk {
     float4  *zipped_pp;  /* xyzouvwo xyzouvwo xyzouvwo ...          */
     ushort4 *zipped_rr;  /* xyzo xyzo xyzo...  in half precision    */
     RNDunif *rnd;        /* random generator per timestep           */
