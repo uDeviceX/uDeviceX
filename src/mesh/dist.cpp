@@ -4,8 +4,6 @@
 #include "inc/type.h"
 #include "mesh/dist.h"
 
-namespace mesh
-{
 enum {X, Y, Z};
 
 static float min(float a, float b) {return a < b ? a : b;}
@@ -88,5 +86,4 @@ float dist_from_mesh(int nt, const int4 *tt, const float *vv, const float *r0) {
         dmin = min(d, dmin);
     }
     return dmin;
-}
 }
