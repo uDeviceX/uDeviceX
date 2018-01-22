@@ -1,0 +1,32 @@
+#### 3 rigid ellipsoids in double poiseuille, contact
+# nTEST: rstrt.t5
+:
+rm -rf h5 diag.txt solid_diag.txt
+echo -e "4.1 21.5 8\n4.1 10.5 8\n11.9 16 8" > rigs-ic.txt
+cp data/rig/ellipsoid.ply mesh_solid.ply
+:
+Force="bforce={type=\"double_poiseuille\"; a=6.666667;};"
+u.conf conf/double.poiseuille.h <<!!!
+   solids contactforces tend=0.1 part_freq=100
+   wall_creation=199 part_dumps
+   BASE_STRT_DUMP=\"bin.1/strt\"
+   strt_dumps=true
+   strt_freq=10000
+   RESTART=false
+   run
+   RESTART=true
+   tend=0.7
+   BASE_STRT_READ=\"bin.1/strt\"
+   BASE_STRT_DUMP=\"bin.2/strt\"
+   run
+!!!
+:
+{ make clean && u.make -j ; } > /dev/null
+:
+u.strtdir bin.1
+u.strtdir bin.2
+:
+u.run ./bin.1/udx
+u.run ./bin.2/udx $Force
+:
+cat solid_diag_0000.txt | awk '{print $2, $5, $8}' | uscale 2.5 > sdiag.out.txt
