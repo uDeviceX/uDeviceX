@@ -18,7 +18,7 @@
 /* conf */
 enum {MAX_COL = 4};
 
-#include "type.h"
+#include "dev/type.h"
 #include "bbstates.h"
 #include "dev/roots.h"
 #include "dev/utils.h"
