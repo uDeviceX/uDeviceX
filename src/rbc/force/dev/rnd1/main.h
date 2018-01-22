@@ -11,9 +11,9 @@ static __device__ void edg_rnd(Shape shape, int i0, float* rnd, int  j, /**/ Rnd
 }
 
 static __device__ float  frnd0(RbcParams_v par, float rnd) {
-    float f, g, T;
-    g = par.gammaC; T = par.kBT0;
-    f  = sqrtf(2*g*T/dt)*rnd;
+    float f, g, T, dt0;
+    g = par.gammaC; T = par.kBT0; dt0 = par.dt0;
+    f  = sqrtf(2*g*T/dt0)*rnd;
     return f;
 }
 
