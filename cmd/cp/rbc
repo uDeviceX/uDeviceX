@@ -3,7 +3,7 @@
 . u.cp.util
 
 prog=u.cp.rbc
-prog0=u.cp.rbc
+prog0=u.cp.rbc0
 
 usg () {
     msg "$prog template.from template.to"
