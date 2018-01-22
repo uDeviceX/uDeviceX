@@ -4,6 +4,7 @@ struct Config;
 struct Force;
 struct Particle;
 struct int3;
+struct Coords;
 
 // tag::kind[]
 enum {
@@ -33,10 +34,10 @@ void dbg_set_conf(const Config*, Dbg*);
 // end::cnf[]
 
 // tag::int[]
-void dbg_check_pos(const Dbg *dbg, int n, const Particle *pp);
-void dbg_check_pos_soft(const Dbg *dbg, int n, const Particle *pp);
-void dbg_check_vel(const Dbg *dbg, int n, const Particle *pp);
-void dbg_check_forces(const Dbg *dbg, int n, const Force *ff);
-void dbg_check_colors(const Dbg *dbg, int n, const int *cc);
-void dbg_check_clist(const Dbg *dbg, int3 L, const int *starts, const int *counts, int n, const Particle *pp);
+void dbg_check_pos(Coords c, const Dbg *dbg, int n, const Particle *pp);
+void dbg_check_pos_soft(Coords c, const Dbg *dbg, int n, const Particle *pp);
+void dbg_check_vel(Coords c, const Dbg *dbg, int n, const Particle *pp);
+void dbg_check_forces(Coords c, const Dbg *dbg, int n, const Force *ff);
+void dbg_check_colors(Coords c, const Dbg *dbg, int n, const int *cc);
+void dbg_check_clist(Coords c, const Dbg *dbg, int3 L, const int *starts, const int *counts, int n, const Particle *pp);
 // end::int[]

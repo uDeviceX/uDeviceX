@@ -12,6 +12,7 @@
 #include "utils/kl.h"
 #include "utils/msg.h"
 #include "d/api.h"
+#include "glob/type.h"
 
 #include "dbg/imp.h"
 #include "dbg/error.h"
