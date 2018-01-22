@@ -1,4 +1,5 @@
 # TEST: dbg.pos
 u.conf0 u/dbg
 { u.make -j;     } > /dev/null
-u.run ./udx dbg={pos=true} 2>&1 | grep DBG > dbg.out.txt
+u.run ./udx dbg={pos=true}
+echo $? > dbg.out.txt
