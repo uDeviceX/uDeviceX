@@ -1,4 +1,13 @@
-== linar coordinate transformation
+== linar coordinate transformation for 3D vector
+
+Transform vector `a[3]` to `b[3]` using
+
+----
+    b[X] = s[X]*a[X] + o[X]
+    b[Y] = s[Y]*a[Y] + o[Y]
+    b[Z] = s[Z]*a[Z] + o[Z]
+----
+Coefficient `s` and `o` are defined implicitly by API calls.
 
 === interface
 
