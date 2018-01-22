@@ -44,7 +44,7 @@ static void run0(Coords coords, const BForce *bforce, RbcQuants q, RbcForce t, c
     for (i = 0; i < nsteps; i++) {
         Dzero(f, q.n);
         rbc_force_apply(q, t, par, /**/ f);
-        apply(q.nc, stretch, /**/ f);
+        stretch::apply(q.nc, stretch, /**/ f);
         if (pushrbc) body_force(coords, bforce, q, /**/ f);
         scheme::move::main(rbc_mass, q.n, f, q.pp);
         if (i % part_freq  == 0) dump(coords, q, t);
@@ -67,10 +67,10 @@ static void run2(Coords coords, const BForce *bforce, const char *cell, const ch
     RbcStretch *stretch;
     RbcForce t;
     rbc_gen_quants(coords, m::cart, cell, ic, /**/ &q);
-    UC(ini("rbc.stretch", q.nv, /**/ &stretch));
+    UC(stretch::ini("rbc.stretch", q.nv, /**/ &stretch));
     rbc_force_gen(q, &t);
     run1(coords, bforce, q, t, par, stretch);
-    fin(stretch);
+    stretch::fin(stretch);
     rbc_force_fin(&t);
 }
 
