@@ -1,4 +1,5 @@
 # TEST: dbg.force
 u.conf0 u/dbg
 { u.make -j;     } > /dev/null
-u.run ./udx dbg={forces=true}  2>&1 | grep DBG > dbg.out.txt
+u.run ./udx dbg={forces=true}
+echo $? > dbg.out.txt

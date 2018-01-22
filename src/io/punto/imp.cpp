@@ -8,7 +8,7 @@
 
 #include "imp.h"
 
-void punto_dump(long n, Particle *pp, const char *name) {
+void punto_dump(long n, const Particle *pp, const char *name) {
     enum {X, Y, Z};
     long i;
     FILE *f;

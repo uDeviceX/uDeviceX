@@ -28,11 +28,20 @@ void dbg_set_verbose(bool tf, Dbg *dbg) {dbg->verbose = tf;}
 
 static int check(const Dbg *dbg, int kind) {return dbg->state[kind];}
 
-static void handle() {
+static bool error() {
     err_type e;
     UC(e = err_get());
-    if (e != ERR_NONE)
-        ERR("DBG: error: %s", get_err_str(e));
+    return e != ERR_NONE;
+} 
+
+static void dump() {
+    
+}
+
+static void print() {
+    err_type e;
+    UC(e = err_get());
+    ERR("DBG: error: %s", get_err_str(e));
 } 
 
 void dbg_check_pos(const Dbg *dbg, int n, const Particle *pp) {
@@ -40,7 +49,9 @@ void dbg_check_pos(const Dbg *dbg, int n, const Particle *pp) {
         return;
     UC(err_ini());
     KL(devdbg::check_pos, (k_cnf(n)), (pp, n));
-    UC(handle());
+    if (error()) {
+        UC(print());
+    }
 }
 
 void dbg_check_pos_soft(const Dbg *dbg, int n, const Particle *pp) {
@@ -48,7 +59,9 @@ void dbg_check_pos_soft(const Dbg *dbg, int n, const Particle *pp) {
         return;
     UC(err_ini());
     KL(devdbg::check_pos_pu, (k_cnf(n)), (pp, n));
-    UC(handle());
+    if (error()) {
+        UC(print());
+    }
 }
 
 void dbg_check_vel(const Dbg *dbg, int n, const Particle *pp) {
@@ -56,7 +69,9 @@ void dbg_check_vel(const Dbg *dbg, int n, const Particle *pp) {
         return;
     UC(err_ini());
     KL(devdbg::check_vv, (k_cnf(n)), (pp, n));
-    UC(handle());
+    if (error()) {
+        UC(print());
+    }
 }
 
 void dbg_check_forces(const Dbg *dbg, int n, const Force *ff) {
@@ -64,7 +79,9 @@ void dbg_check_forces(const Dbg *dbg, int n, const Force *ff) {
         return;
     UC(err_ini());
     KL(devdbg::check_ff, (k_cnf(n)), (ff, n));
-    UC(handle());
+    if (error()) {
+        UC(print());
+    }
 }
 
 void dbg_check_colors(const Dbg *dbg, int n, const int *cc) {
@@ -72,7 +89,9 @@ void dbg_check_colors(const Dbg *dbg, int n, const int *cc) {
         return;
     UC(err_ini());
     KL(devdbg::check_cc, (k_cnf(n)), (cc, n));
-    UC(handle());
+    if (error()) {
+        UC(print());
+    }
 }
 
 void dbg_check_clist(const Dbg *dbg, int3 L, const int *starts, const int *counts, const Particle *pp) {
@@ -81,5 +100,7 @@ void dbg_check_clist(const Dbg *dbg, int3 L, const int *starts, const int *count
     int n = L.x * L.y * L.z;
     UC(err_ini());
     KL(devdbg::check_clist, (k_cnf(n)), (L, starts, counts, pp));
-    UC(handle());
+    if (error()) {
+        UC(print());
+    }
 }
