@@ -15,7 +15,7 @@ function err(s) {
 ' "$1"
 }
 
-perm () { # permission
+perm () { # permission: first word
     ls -l "$1" | sed 's/ .*//g' | sed 's/\.$//g'
 }
 
