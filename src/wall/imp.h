@@ -5,12 +5,7 @@ struct WallQuants {
     int n;      /* number of particles              */
 };
 
-struct WallTicket {
-    RNDunif *rnd;        /* rng on host                                        */
-    Clist cells;         /* cell lists (always the same, no need to store map) */
-    Texo<int> texstart;  /* texture of starts from clist                       */
-    Texo<float4> texpp;  /* texture of particle positions                      */
-};
+struct WallTicket;
 
 namespace grey {
 void wall_force(Wvel_v wv, Coords c, Sdf *qsdf, const WallQuants *q, const WallTicket *t, int n, Cloud cloud, Force *ff);
@@ -21,7 +16,7 @@ void wall_force(Wvel_v wv, Coords c, Sdf *qsdf, const WallQuants *q, const WallT
 }
 
 void wall_ini_quants(WallQuants *q);
-void wall_ini_ticket(WallTicket *t);
+void wall_ini_ticket(WallTicket **t);
 
 void wall_fin_quants(WallQuants *q);
 void wall_fin_ticket(WallTicket *t);

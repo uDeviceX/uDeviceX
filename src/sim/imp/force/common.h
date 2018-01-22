@@ -30,7 +30,7 @@ void forces_wall(Wall *w, Sim *s) {
     ini_cloud(rbc->q.pp, &cr);
     if (multi_solvent) ini_cloud_color(flu->q.cc, &co);
     
-    if (flu->q.n)               color::wall_force(w->vview, s->coords, w->sdf, &w->q, &w->t, flu->q.n, co, /**/ flu->ff);
-    if (s->solids0 && rig->q.n) grey::wall_force(w->vview, s->coords, w->sdf, &w->q, &w->t, rig->q.n, cs, /**/ rig->ff);
-    if (rbcs && rbc->q.n)       grey::wall_force(w->vview, s->coords, w->sdf, &w->q, &w->t, rbc->q.n, cr, /**/ rbc->ff);
+    if (flu->q.n)               color::wall_force(w->vview, s->coords, w->sdf, &w->q, w->t, flu->q.n, co, /**/ flu->ff);
+    if (s->solids0 && rig->q.n) grey::wall_force(w->vview, s->coords, w->sdf, &w->q, w->t, rig->q.n, cs, /**/ rig->ff);
+    if (rbcs && rbc->q.n)       grey::wall_force(w->vview, s->coords, w->sdf, &w->q, w->t, rbc->q.n, cr, /**/ rbc->ff);
 }
