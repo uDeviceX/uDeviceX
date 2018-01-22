@@ -1,9 +1,11 @@
 #### random particles, some are outside
 # TEST: clist.t2
-X=4; Y=6; Z=8; N=64
+set -eu
+S=`pwd`
+X=4 Y=6 Z=8 N=64
 u.conf . u/clist conf/default.h <<!!!
        XS=$X YS=$Y ZS=$Z
        run
 !!!
 { u.make -j;     } > /dev/null
-../pre/units/gen_random 20 $Y $Z $N | u.run ./udx > clist.out.txt
+"$S"/../pre/units/gen_random 20 $Y $Z $N | u.run ./udx > clist.out.txt
