@@ -1,5 +1,3 @@
-namespace dev {
-
 enum {
     VALID   = 0,
     INVALID = 255
@@ -103,5 +101,3 @@ __global__ void gather(const Sarray<const T*, N> src, const uint *ii, int n, /**
     uint code = ii[i];
     fetch(src, code, /**/ dd + i);
 }
-
-} // dev
