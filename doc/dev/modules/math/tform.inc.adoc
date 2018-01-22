@@ -11,7 +11,7 @@ Coefficient `s` and `o` are defined implicitly by API calls.
 
 === interface
 
-Allocate/Deallocate
+==== Allocate/Deallocate
 [source,cpp]
 ----
 include::{src}/math/tform/imp.h[tags=ini]
@@ -22,19 +22,22 @@ Set parameters of the transformation
 ----
 include::{src}/math/tform/imp.h[tags=def]
 ----
+<1> transfrom which convert vectors `a0` to `a1` and `b0` to `b1`
+<2> transform is a chain of two transforms
 
-Convert vector
+===== Convert vector
 [source,cpp]
 ----
 include::{src}/math/tform/imp.h[tags=convert]
 ----
 
-Convert 'Tform*' to 'Tform_v*'
+===== convert to view
 [source,cpp]
 ----
 include::{src}/math/tform/imp.h[tags=view]
 ----
 
+===== log
 Log or dump the state of 'Tform'
 [source, cpp]
 ----

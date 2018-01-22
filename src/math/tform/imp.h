@@ -7,8 +7,8 @@ void tform_fin(Tform*);
 // end::ini[]
 
 // tag::def[]
-void tform_vector(const float a0[3], const float a1[3],   const float b0[3], const float b1[3], /**/ Tform*);
-void tform_chain(Tform*, Tform*, /**/ Tform*);
+void tform_vector(const float a0[3], const float a1[3],   const float b0[3], const float b1[3], /**/ Tform*); // <1>
+void tform_chain(Tform*, Tform*, /**/ Tform*); // <2>
 void tform_grid2grid(const float f_lo[3], const float f_hi[3], const int f_n[3],
                      const float t_lo[3], const float t_hi[3], const int t_n[3], /**/
                      Tform*);
