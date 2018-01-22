@@ -21,6 +21,7 @@
 #include "utils/kl.h"
 #include "mesh/collision.h"
 
+enum {OUT=BLUE_COLOR, IN=RED_COLOR};
 enum {X, Y, Z};
 
 static __host__ __device__ bool same_side(const float *x, const float *p, const float *a, const float *b, const float *inplane) {

@@ -1,5 +1,3 @@
-enum {OUT=BLUE_COLOR, IN=RED_COLOR};
-
 int collision_inside_1p(const float *r, const float *vv, const int4 *tt, const int nt);
 
 /* tags: -1 if outside, i if in ith solid */
