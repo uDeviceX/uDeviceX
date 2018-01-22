@@ -9,4 +9,3 @@ u.conf conf/long.h <<!!!
 (make clean && u.make -j) > /dev/null 2>&1
 sh runfile
 cat diag.txt | awk 'NR>1 {print $1}' | uscale 1 > sdiag.out.txt
-
