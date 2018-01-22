@@ -28,4 +28,4 @@ void tform_to_view(Tform*, /**/ Tform_v*);
 // tag::log[]
 void tform_log(Tform*);
 void tform_dump(Tform*, FILE*);
-// end::log
+// end::log[]

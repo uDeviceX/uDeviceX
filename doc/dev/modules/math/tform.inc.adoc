@@ -11,14 +11,32 @@ Coefficient `s` and `o` are defined implicitly by API calls.
 
 === interface
 
+Allocate/Deallocate
 [source,cpp]
 ----
-include::{src}/math/tform/imp.h[tags=interface]
+include::{src}/math/tform/imp.h[tags=ini]
 ----
-<I> allocate/deallocate
 
-<C> create `Tform`
+Set parameters of the transformation
+[source,cpp]
+----
+include::{src}/math/tform/imp.h[tags=def]
+----
 
-<U> using `Tform` to transform coordinates
+Convert vector
+[source,cpp]
+----
+include::{src}/math/tform/imp.h[tags=convert]
+----
 
-<L> loging and dump of the `Tform` state
+Convert 'Tform*' to 'Tform_v*'
+[source,cpp]
+----
+include::{src}/math/tform/imp.h[tags=view]
+----
+
+Log or dump the state of 'Tform'
+[source, cpp]
+----
+include::{src}/math/tform/imp.h[tags=log]
+----
