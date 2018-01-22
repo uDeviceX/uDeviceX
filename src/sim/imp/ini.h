@@ -159,8 +159,8 @@ static void ini_rbc(const Config *cfg, MPI_Comm cart, /**/ Rbc *r) {
 }
 
 static void ini_rig(MPI_Comm cart, /**/ Rig *s) {
-    rig_ini(&s->q);
-    scan_work_ini(XS * YS * ZS, /**/ &s->ws);
+    UC(rig_ini(&s->q));
+    UC(scan_work_ini(XS * YS * ZS, /**/ &s->ws));
     UC(emalloc(sizeof(&s->ff_hst)*MAX_PART_NUM, (void**) &s->ff_hst));
     Dalloc(&s->ff, MAX_PART_NUM);
 
@@ -175,10 +175,10 @@ static void ini_bounce_back(MPI_Comm cart, Rig *s, /**/ BounceBack *bb) {
 }
 
 static void ini_wall(Wall *w) {
-    sdf_ini(&w->sdf);
-    wall_ini_quants(&w->q);
-    wall_ini_ticket(&w->t);
-    wvel_ini(&w->vel);
+    UC(sdf_ini(&w->sdf));
+    UC(wall_ini_quants(&w->q));
+    UC(wall_ini_ticket(&w->t));
+    UC(wvel_ini(&w->vel));
 
     Wvel *wv = w->vel;
     
