@@ -13,6 +13,8 @@
 #include "utils/msg.h"
 #include "d/api.h"
 #include "glob/type.h"
+#include "glob/imp.h"
+#include "io/punto/imp.h"
 
 #include "dbg/imp.h"
 #include "dbg/error.h"

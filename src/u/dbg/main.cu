@@ -65,8 +65,8 @@ void fill_bugs() {
 }
 
 void check(Coords c, Dbg *dbg) {
-    UC(dbg_check_pos    (c, dbg, n, pp));
-    UC(dbg_check_vel    (c, dbg, n, pp));
+    UC(dbg_check_pos    (c, "flu", dbg, n, pp));
+    UC(dbg_check_vel    (c, "flu", dbg, n, pp));
     UC(dbg_check_forces (c, dbg, n, ff));
 }
 

@@ -10,16 +10,16 @@ void check_sizes(Sim *s) {
 }
 
 void check_pos_soft(Sim *s) {
-    UC(dbg_check_pos_soft(s->coords, s->dbg, s->flu.q.n, s->flu.q.pp));
-    // if (s->solids0) UC(dbg_check_pos_soft(s->dbg, s->rig.q.n, s->rig.q.pp));
-    // if (rbcs)       UC(dbg_check_pos_soft(s->dbg, s->rbc.q.n, s->rbc.q.pp));
+    UC(dbg_check_pos_soft(s->coords, "flu", s->dbg, s->flu.q.n, s->flu.q.pp));
+    // if (s->solids0) UC(dbg_check_pos_soft(s->coords, "rig",s->dbg, s->rig.q.n, s->rig.q.pp));
+    // if (rbcs)       UC(dbg_check_pos_soft(s->coords, "rbc",s->dbg, s->rbc.q.n, s->rbc.q.pp));
 }
 
 void check_vel(Sim *s) {
     Coords c = s->coords;
-    UC(dbg_check_vel(c, s->dbg, s->flu.q.n, s->flu.q.pp));
-    if (s->solids0) UC(dbg_check_vel(c, s->dbg, s->rig.q.n, s->rig.q.pp));
-    if (rbcs)       UC(dbg_check_vel(c, s->dbg, s->rbc.q.n, s->rbc.q.pp));
+    UC(dbg_check_vel(c, "flu", s->dbg, s->flu.q.n, s->flu.q.pp));
+    if (s->solids0) UC(dbg_check_vel(c, "rig", s->dbg, s->rig.q.n, s->rig.q.pp));
+    if (rbcs)       UC(dbg_check_vel(c, "rbc", s->dbg, s->rbc.q.n, s->rbc.q.pp));
 }
 
 void check_forces(Sim *s) {

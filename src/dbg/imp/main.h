@@ -36,8 +36,24 @@ static bool error() {
     return e != ERR_NONE;
 } 
 
-static void dump() {
-    
+static void gen_name(Coords c, const char *base, /**/ char *name) {
+    int r;
+    char stamp[FILENAME_MAX];
+    coord_stamp(c, /**/ stamp);
+    r = sprintf(name, "dbg.%s.%s.punto", base, stamp);
+    if (r < 0) ERR("sprintf failed");
+}
+
+static void dump_pp(Coords c, const char *base, int n, const Particle *dev) {
+    Particle *hst;
+    size_t sz;
+    char name[FILENAME_MAX];
+    sz = n*sizeof(Particle);
+    UC(emalloc(sz, (void**) &hst));
+    UC(d::Memcpy(hst, dev, sz, D2H));
+    UC(gen_name(c, base, name));
+    UC(punto_dump(n, hst, name));
+    UC(efree(hst));    
 }
 
 static void print() {
@@ -46,32 +62,38 @@ static void print() {
     ERR("DBG: error: %s", get_err_str(e));
 } 
 
-void dbg_check_pos(Coords c, const Dbg *dbg, int n, const Particle *pp) {
+void dbg_check_pos(Coords c, const char *base, const Dbg *dbg, int n, const Particle *pp) {
     if (!check(dbg, DBG_POS))
         return;
     UC(err_ini());
     KL(devdbg::check_pos, (k_cnf(n)), (pp, n));
     if (error()) {
+        if (dbg->dump)
+            dump_pp(c, base, n, pp);
         UC(print());
     }
 }
 
-void dbg_check_pos_soft(Coords c, const Dbg *dbg, int n, const Particle *pp) {
+void dbg_check_pos_soft(Coords c, const char *base, const Dbg *dbg, int n, const Particle *pp) {
     if (!check(dbg, DBG_POS_SOFT))
         return;
     UC(err_ini());
     KL(devdbg::check_pos_pu, (k_cnf(n)), (pp, n));
     if (error()) {
+        if (dbg->dump)
+            dump_pp(c, base, n, pp);
         UC(print());
     }
 }
 
-void dbg_check_vel(Coords c, const Dbg *dbg, int n, const Particle *pp) {
+void dbg_check_vel(Coords c, const char *base, const Dbg *dbg, int n, const Particle *pp) {
     if (!check(dbg, DBG_VEL))
         return;
     UC(err_ini());
     KL(devdbg::check_vv, (k_cnf(n)), (pp, n));
     if (error()) {
+        if (dbg->dump)
+            dump_pp(c, base, n, pp);
         UC(print());
     }
 }
