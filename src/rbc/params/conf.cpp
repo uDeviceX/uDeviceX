@@ -1,12 +1,15 @@
 #include <stdio.h>
 
+#include <conf.h>
+#include "inc/conf.h"
+
 #include "utils/error.h"
 #include "parser/imp.h"
 
 #include "imp.h"
 
 void rbc_params_set_conf(const Config *c, RbcParams *par) {
-    float gc, gt, kbt, kb, phi, p, mpow, x0, ka, kd, kv;
+    float gc, gt, kbt, kb, phi, p, mpow, x0, ka, kd, kv, dt0;
 
     UC(conf_lookup_float(c, "rbc.gammaC", &gc));
     UC(conf_lookup_float(c, "rbc.gammaT", &gt));
@@ -19,9 +22,12 @@ void rbc_params_set_conf(const Config *c, RbcParams *par) {
     UC(conf_lookup_float(c, "rbc.ka", &ka));
     UC(conf_lookup_float(c, "rbc.kd", &kd));
     UC(conf_lookup_float(c, "rbc.kv", &kv));
-    
+//    UC(conf_lookup_float(c, "rbc.dt", &dt0));
+    dt0 = dt;
+
     rbc_params_set_fluct(gc, gt, kbt, /**/ par);
     rbc_params_set_bending(kb, phi, /**/ par);
     rbc_params_set_spring(p, x0, mpow, /**/ par);
     rbc_params_set_area_volume(ka, kd, kv, /**/ par);
+    rbc_params_set_timestep(dt0, /**/ par);
 }

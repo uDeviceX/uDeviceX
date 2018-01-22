@@ -11,5 +11,6 @@ struct RbcParams {
     float ka;
     float kd;
     float kv;
+    float dt0;
 };
 
