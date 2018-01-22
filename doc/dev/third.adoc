@@ -16,6 +16,44 @@ pkg-config --libs mpich
 
 == libconf
 
+=== from source
+[source, sh]
+----
+v=1.7.1
+wget https://hyperrealm.github.io/libconfig/dist/libconfig-$v.tar.gz
+tar zxvf libconfig-$v.tar.gz
+cd libconfig-$v
+./configure --prefix=${HOME}/prefix/libconfig --disable-cxx
+make -j
+make install
+----
+
+=== from git
+[source, sh]
+----
+git clone git@github.com:hyperrealm/libconfig.git
+cd libconfig
+autoreconf
+./configure --prefix=${HOME}/prefix/libconfig --disable-cxx
+make -j
+make install
+----
+
+=== from apt
+[source, sh]
+----
+sudo apt install libconfig-dev
+----
+
+=== pkgconfig
+
+add path for pkg config
+
+[source, sh]
+----
+export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:$HOME/prefix/libconfig/lib/pkgconfig
+----
+
 == hdf5
 
 To get flags
