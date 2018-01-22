@@ -76,7 +76,7 @@ static void run2(Coords coords, const BForce *bforce, const char *cell, const ch
 
 void run(Coords coords, const BForce *bforce, const char *cell, const char *ic, const RbcParams *par) {
     RbcQuants q;
-    rbc_ini(&q);
+    ini(&q);
     run2(coords, bforce, cell, ic, par, q);
-    rbc_fin(&q);
+    fin(&q);
 }
