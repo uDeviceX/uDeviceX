@@ -15,15 +15,18 @@
 #include "utils/imp.h"
 
 #include "array3d/imp.h"
+#include "tex3d/type.h"
 #include "tex3d/imp.h"
 
 #include "field/imp.h"
 #include "bounce/imp.h"
 #include "label/imp.h"
 
+#include "math/tform/type.h"
 #include "math/tform/imp.h"
 #include "tform/imp.h"
 
+#include "type.h"
 #include "imp.h"
 #include "def.h"
 
