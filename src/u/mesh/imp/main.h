@@ -46,7 +46,7 @@ static void main0(const char *path) {
     int inside;
     read_off(path);
     while (read_point(r) != END) {
-        inside = collision::inside_1p(r, M.vert, M.faces, M.nf);
+        inside = collision_inside_1p(r, M.vert, M.faces, M.nf);
         write_point(r, inside);
     }
 }
