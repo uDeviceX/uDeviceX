@@ -45,7 +45,7 @@
 
 #include "imp.h"
 
-namespace dev {
+namespace wall_dev {
   #include "dev.h"
 }
 

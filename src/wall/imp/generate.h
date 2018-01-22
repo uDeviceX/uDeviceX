@@ -19,7 +19,7 @@ static void gen_quants(MPI_Comm cart, int maxn, Sdf *qsdf, /**/ int *o_n, Partic
     UC(freeze(cart, maxn, qsdf, o_pp, o_n, frozen, w_n));
     msg_print("consolidating wall");
     CC(d::Malloc((void **) w_pp, *w_n * sizeof(float4)));
-    KL(dev::particle2float4, (k_cnf(*w_n)), (frozen, *w_n, /**/ *w_pp));
+    KL(wall_dev::particle2float4, (k_cnf(*w_n)), (frozen, *w_n, /**/ *w_pp));
     
     CC(d::Free(frozen));
     dSync();
@@ -36,9 +36,9 @@ static void build_cells(const int n, float4 *pp4, Clist *cells, ClistMap *mcells
     CC(d::Malloc((void **) &pp,  n * sizeof(Particle)));
     CC(d::Malloc((void **) &pp0, n * sizeof(Particle)));
 
-    KL(dev::float42particle, (k_cnf(n)), (pp4, n, /**/ pp));
+    KL(wall_dev::float42particle, (k_cnf(n)), (pp4, n, /**/ pp));
     UC(clist_build(n, n, pp, /**/ pp0, cells, mcells));
-    KL(dev::particle2float4, (k_cnf(n)), (pp0, n, /**/ pp4));
+    KL(wall_dev::particle2float4, (k_cnf(n)), (pp0, n, /**/ pp4));
 
     CC(d::Free(pp));
     CC(d::Free(pp0));
