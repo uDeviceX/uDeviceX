@@ -1,5 +1,3 @@
-namespace meshbb {
-
 struct MeshBB {
     int *ncols;       /* number of possible collisions per particle      */
     float4 *datacol;  /* list of data related to collisions per particle */
@@ -17,5 +15,3 @@ void meshbb_bounce(int n, MeshBB d, const Force *ff, int nt, int nv, const int4 
 
 void meshbb_collect_rig_momentum(int ns, int nt, int nv, const int4 *tt, const Particle *pp, const Momentum *mm, /**/ Solid *ss);
 void meshbb_collect_rbc_momentum(int nc, int nt, int nv, const int4 *tt, const Particle *pp, const Momentum *mm, /**/ Force *ff);
-
-} // meshbb

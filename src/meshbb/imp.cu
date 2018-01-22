@@ -15,8 +15,6 @@
 
 #include "imp.h"
 
-namespace meshbb {
-
 /* conf */
 enum {MAX_COL = 4};
 
@@ -40,4 +38,4 @@ enum {MAX_COL = 4};
   #include "imp/find_collisions/log_root0.h"
 #endif
 #include "imp/main.h"
-} /* meshbb */
+

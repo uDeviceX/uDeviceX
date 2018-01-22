@@ -168,7 +168,7 @@ static void ini_rig(MPI_Comm cart, /**/ Rig *s) {
 }
 
 static void ini_bounce_back(MPI_Comm cart, Rig *s, /**/ BounceBack *bb) {
-    meshbb::meshbb_ini(MAX_PART_NUM, /**/ &bb->d);
+    meshbb_ini(MAX_PART_NUM, /**/ &bb->d);
     Dalloc(&bb->mm, MAX_PART_NUM);
 
     UC(ini_bb_exch(s->q.nt, s->q.nv, MAX_CELL_NUM, cart, /**/ &bb->e));
