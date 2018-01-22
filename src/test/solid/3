@@ -1,0 +1,18 @@
+#### two solids around cylinder with one solid removed by the wall
+# nTEST: solid.t4
+rm -rf h5 bop diag.txt solid_diag.txt
+(cd ../cmd; make ) > /dev/null
+cp data/sdf/cyl1/cyl.dat sdf.dat
+cp data/rig/sphere_R1.ply mesh_solid.ply
+x=0.75 y=3 z=9; echo $x $y $z >  rigs-ic.txt
+x=8    y=8 z=8; echo $x $y $z >> rigs-ic.txt
+:
+Force="bforce={type=\"constant\"; f=[1.6666667,0.,0.];};"
+u.conf conf/around.h <<!!!
+    solids tend=1.0 part_freq=500 walls wall_creation=100 kBT=1e-7
+    field_dumps part_dumps field_freq=500
+    run
+!!!
+{ make clean && u.make -j ; } > /dev/null
+u.run ./udx $Force
+cat solid_diag_0000.txt | awk '{print $2, $5, $8}' | uscale 5 > sdiag.out.txt

@@ -1,0 +1,17 @@
+#### RBC in a periodic box (1 node)
+# nTEST: rbccom.t0
+rm -rf bop diag.txt h5 ply com rbc.off
+cp data/cells/rbc/498.off rbc.off
+(cd ../cmd; make ) > /dev/null
+x=0.75 y=8 z=12; echo 1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 > rbcs-ic.txt
+:
+u.conf conf/couette.h <<!!!
+   rbcs tend=0.5 rbc_com_freq=300 rbc_ids=true rbc_com_dumps=true
+   run
+!!!
+{ make clean && u.make -j ; } > /dev/null
+u.run ./udx '
+rbc = {
+    @include "rbc.test.cfg"
+}'
+sort com/0003.txt | awk '{print $1, $2, $3, $4}' | uscale 100 > com.out.txt
