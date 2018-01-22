@@ -25,7 +25,7 @@ void wvel_set_conf(const Config *cfg, Wvel *vw) {
         UC(conf_lookup_int(cfg, "wvel.half", &half));
         UC(wvel_set_shear(gdot, vdir, gdir, half, vw));
     }
-    else if (same_str(type, "shear")) {
+    else if (same_str(type, "shear sin")) {
         float gdot, w;
         int vdir, gdir, half, log_freq;
         UC(conf_lookup_float(cfg, "wvel.gdot", &gdot));

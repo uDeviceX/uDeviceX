@@ -31,7 +31,7 @@ r[Z] = rz;
 
 === functions
 
-* a function name is descriptive on its own or inside its namespace
+* a function name is descriptive on its own or inside a module.
 * arguments are ordered as follow:
 ** input is at the beginning
 ** input/output come after input and start with a commented `io`
@@ -48,6 +48,10 @@ void read_int_from_file(const char *fname, /**/ int *n, int *ii);
 void forward_euler(int n, const Force *ff, /* io */ Particle *pp);
 ----
 
+Function names part of a module interface start with the module name.
+Functions private to a module do not need to contain the module name
+if the context make it clear. Use the `static` qualifier for functions
+with compilation-unit scope.
 
 == file structure
 
