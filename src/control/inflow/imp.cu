@@ -15,8 +15,8 @@
 #include "inc/dev.h"
 #include "inc/type.h"
 
-#include "glob/type.h"
-#include "glob/imp.h"
+#include "coords/type.h"
+#include "coords/imp.h"
 #include "math/dev.h"
 
 #include "cloud/imp.h"

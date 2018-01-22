@@ -13,8 +13,8 @@
 #include "mpi/glb.h"
 #include "utils/mc.h"
 
-#include "glob/type.h"
-#include "glob/imp.h"
+#include "coords/type.h"
+#include "coords/imp.h"
 
 #include "utils/msg.h"
 #include "utils/error.h"

@@ -19,7 +19,7 @@
 #include "utils/texo.h"
 #include "utils/cc.h"
 
-#include "glob/type.h"
+#include "coords/type.h"
 
 #include "rbc/params/imp.h"
 #include "rbc/type.h"

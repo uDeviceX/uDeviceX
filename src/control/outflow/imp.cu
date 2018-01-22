@@ -12,8 +12,8 @@
 #include "math/dev.h"
 #include "mpi/glb.h"
 
-#include "glob/type.h"
-#include "glob/imp.h"
+#include "coords/type.h"
+#include "coords/imp.h"
 
 #include "inc/dev.h"
 #include "inc/type.h"

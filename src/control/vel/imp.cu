@@ -19,8 +19,8 @@
 #include "utils/mc.h"
 
 #include "math/dev.h"
-#include "glob/type.h"
-#include "glob/dev.h"
+#include "coords/type.h"
+#include "coords/dev.h"
 
 #include "imp.h"
 

@@ -9,6 +9,7 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/control/inflow           && \
     d $B/control/outflow          && \
     d $B/control/vel              && \
+    d $B/coords                   && \
     d $B/d                        && \
     d $B/dbg                      && \
     d $B/distr/common             && \
@@ -30,7 +31,6 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/frag                     && \
     d $B/fsi                      && \
     d $B/generate/rig             && \
-    d $B/glob                     && \
     d $B/inter                    && \
     d $B/io/bop                   && \
     d $B/io/com                   && \

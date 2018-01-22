@@ -16,8 +16,8 @@
 #include "utils/os.h"
 #include "utils/error.h"
 #include "utils/imp.h"
-#include "glob/type.h"
-#include "glob/imp.h"
+#include "coords/type.h"
+#include "coords/imp.h"
 
 #include "imp.h"
 

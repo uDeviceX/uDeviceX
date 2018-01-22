@@ -9,8 +9,8 @@
 
 #include "mpi/wrapper.h"
 
-#include "glob/type.h"
-#include "glob/imp.h"
+#include "coords/type.h"
+#include "coords/imp.h"
 
 #include "inc/def.h"
 #include "utils/msg.h"

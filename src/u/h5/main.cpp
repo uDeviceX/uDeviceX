@@ -6,9 +6,9 @@
 #include <conf.h>
 #include "inc/conf.h"
 
-#include "glob/type.h"
-#include "glob/ini.h"
-#include "glob/imp.h"
+#include "coords/type.h"
+#include "coords/ini.h"
+#include "coords/imp.h"
 
 #include "utils/msg.h"
 #include "mpi/glb.h"

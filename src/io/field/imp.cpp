@@ -11,8 +11,8 @@
 #include "mpi/wrapper.h"
 #include "utils/mc.h"
 #include "inc/type.h"
-#include "glob/type.h"
-#include "glob/imp.h"
+#include "coords/type.h"
+#include "coords/imp.h"
 
 
 #include "xmf/imp.h"

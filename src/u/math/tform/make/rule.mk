@@ -1,7 +1,7 @@
 $B/comm/imp.o: $S/comm/imp.cpp; $X -I$S/. -I$S/comm
+$B/coords/imp.o: $S/coords/imp.cpp; $X -I$S/. -I$S/coords
 $B/d/api.o: $S/d/api.cu; $N -I$S/. -I$S/d
 $B/frag/imp.o: $S/frag/imp.cpp; $X -I$S/. -I$S/frag
-$B/glob/imp.o: $S/glob/imp.cpp; $X -I$S/. -I$S/glob
 $B/math/linal/imp.o: $S/math/linal/imp.cpp; $X -I$S/. -I$S/math/linal
 $B/math/rnd/imp.o: $S/math/rnd/imp.cpp; $X -I$S/. -I$S/math/rnd
 $B/math/tform/imp.o: $S/math/tform/imp.cpp; $X -I$S/. -I$S/math/tform

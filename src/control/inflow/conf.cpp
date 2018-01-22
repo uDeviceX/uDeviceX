@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <vector_types.h>
 
-#include "glob/type.h"
+#include "coords/type.h"
 #include "parser/imp.h"
 #include "utils/imp.h"
 #include "utils/error.h"

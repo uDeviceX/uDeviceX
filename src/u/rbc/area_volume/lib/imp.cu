@@ -19,8 +19,8 @@
 #include "utils/texo.h"
 #include "utils/cc.h"
 
-#include "glob/type.h"
-#include "glob/ini.h"
+#include "coords/type.h"
+#include "coords/ini.h"
 
 #include "rbc/type.h"
 #include "rbc/imp.h"

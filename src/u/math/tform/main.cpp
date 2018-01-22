@@ -12,9 +12,9 @@
 #include "utils/error.h"
 #include "math/tform/imp.h"
 
-#include "glob/type.h"
-#include "glob/ini.h"
-#include "glob/imp.h"
+#include "coords/type.h"
+#include "coords/ini.h"
+#include "coords/imp.h"
 
 #include "utils/msg.h"
 #include "sdf/tform/imp.h"
