@@ -1,7 +1,7 @@
 #### two RBCs around cylinder
 # nTEST: flow.around.t2
 rm -rf bop diag.txt h5 ply rbc.off
-cp data/cells/rbc/498.off rbc.off
+u.cp.rbc rbc/498.off rbc.off
 x=0.75  y=3 z=9; echo 1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 >  rbcs-ic.txt
 x=0.75 y=13 z=9; echo 1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 >> rbcs-ic.txt
 cp data/sdf/cyl1/cyl.dat sdf.dat

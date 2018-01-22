@@ -2,7 +2,7 @@
 # nTEST: rbc.nv642.0
 rm -rf bop diag.txt h5 ply rbc.off
 nv=642
-cp data/cells/rbc/$nv.off rbc.off
+u.cp.rbc data/cells/rbc/$nv.off rbc.off
 x=4 y=6 z=8
 echo 1 0 0 $x \
      0 1 0 $y \
