@@ -63,7 +63,17 @@ static __device__ float cheap_sdf(Sdf_v *sdf, float x, float y, float z)  {
     return fetch(sdf, tc[0], tc[1], tc[2]);
 }
 
-static __device__ float sdf(Sdf_v *sdf0, float x, float y, float z) {
+// tag::int[]
+static __device__ bool sdf_is_far(Sdf_v *sdf, float x, float y, float z)
+// end::int[]
+{
+    return cheap_sdf(sdf, x, y, z) <= sdf->far_threshold;
+}
+
+// tag::int[]
+static __device__ float sdf(Sdf_v *sdf0, float x, float y, float z)
+// end::int[]
+{
     int c;
     float s000, s001, s010, s100, s101, s011, s110, s111;
     float s00x, s01x, s10x, s11x;
