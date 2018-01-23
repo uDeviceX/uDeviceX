@@ -1,3 +1,4 @@
+struct AreaVolume;
 struct Edg {
     float a; /* equilibrium edge lengths and triangle area */
     float A;
@@ -19,6 +20,7 @@ struct RbcQuants {
     int nt, nv;            /* number of triangles and vertices per mesh */
     int *adj0, *adj1;      /* adjacency lists on device                 */
     int4 *tri, *tri_hst;   /* triangles: vertex indices                 */
+    AreaVolume *area_volume;
 
     Shape shape;
 };
