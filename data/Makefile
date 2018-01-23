@@ -1,7 +1,7 @@
 # data directory
 D = $(HOME)/.udx/data
 
-# defiens O:off, S:sdf, R:rigid, I:[incital condtion]
+# defiens O:off, S:sdf, R:rigid, I:[initial condtion]
 include make/dep.mk
 
 install: $P
