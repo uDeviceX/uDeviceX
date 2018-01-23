@@ -15,7 +15,7 @@ static void split_wall_solvent(const int *keys, /*io*/ int *s_n, Particle *s_pp,
     *w_n = iw;
 }
 /* sort solvent particle (dev) into remaining in solvent (dev) and turning into wall (hst)*/
-void sdf_bulk_wall(Sdf *sdf, /*io*/ Particle *s_pp, int* s_n, /*o*/ Particle *w_pp, int *w_n) {
+void sdf_bulk_wall(const Sdf *sdf, /*io*/ Particle *s_pp, int* s_n, /*o*/ Particle *w_pp, int *w_n) {
     int n = *s_n, *labels;
     Particle *s_pp_hst;
     UC(emalloc(n*sizeof(Particle), (void**) &s_pp_hst));
@@ -44,7 +44,7 @@ static int who_stays0(int *keys, int nc, int nv, /*o*/ int *stay) {
     return s;
 }
 
-int sdf_who_stays(Sdf *sdf, Particle *pp, int n, int nc, int nv, /**/ int *stay) {
+int sdf_who_stays(const Sdf *sdf, Particle *pp, int n, int nc, int nv, /**/ int *stay) {
     int *labels;
     UC(emalloc(n*sizeof(int), (void**)&labels));
     UC(label::hst(sdf, n, pp, /**/ labels));
