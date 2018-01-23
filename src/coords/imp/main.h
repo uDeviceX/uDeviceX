@@ -10,10 +10,14 @@ void coords_get_view(const Coords *c, Coords_v *v) {
     v->zd = c->zd;
 }
 
-void coords_ini(MPI_Comm cart, Coords *c) {
+void coords_ini(MPI_Comm cart, Coords **c0) {
+    Coords *c;
     int dims[D], periods[D], coords[D];
     MC(m::Cart_get(cart, D, dims, periods, coords));
 
+    UC(emalloc(sizeof(Coords), (void**) c0));
+    c = *c0;
+    
     c->xc = coords[X];
     c->yc = coords[Y];
     c->zc = coords[Z];
@@ -23,7 +27,9 @@ void coords_ini(MPI_Comm cart, Coords *c) {
     c->zd = dims[Z];
 }
 
-void coords_fin(Coords *) {/*empty*/}
+void coords_fin(Coords *c) {
+    UC(efree(c));
+}
 
 /* domain sizes */
 
