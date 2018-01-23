@@ -6,7 +6,7 @@ struct Particle;
 
 void sdf_ini(Sdf**);
 void sdf_fin(Sdf*);
-void sdf_gen(Coords*, MPI_Comm cart, Sdf*);
+void sdf_gen(const Coords*, MPI_Comm cart, Sdf*);
 void sdf_to_view(Sdf*, /**/ Sdf_v*);
 
 void sdf_bulk_wall(Sdf*, /*io*/ Particle *s_pp, int *s_n, /*o*/ Particle *w_pp, int *w_n);

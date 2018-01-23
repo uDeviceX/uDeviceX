@@ -9,7 +9,7 @@ enum {
     MAXNWALL = NCELLSWALL * numberdensity
 };
 
-static void gen(Coords coords, Wall *w, Sim *s) { /* generate */
+static void gen(const Coords *coords, Wall *w, Sim *s) { /* generate */
     Flu *flu = &s->flu;
     Rbc *rbc = &s->rbc;
     Rig *rig = &s->rig;
@@ -17,7 +17,7 @@ static void gen(Coords coords, Wall *w, Sim *s) { /* generate */
     run_eq(wall_creation, s);
     if (walls) {
         dSync();
-        UC(sdf_gen(&coords, s->cart, /**/ w->sdf));
+        UC(sdf_gen(coords, s->cart, /**/ w->sdf));
         MC(m::Barrier(s->cart));
         inter::create_walls(s->cart, MAXNWALL, w->sdf, /*io*/ &flu->q, /**/ &w->q);
     }
@@ -30,7 +30,7 @@ static void gen(Coords coords, Wall *w, Sim *s) { /* generate */
         int *cc = flu->q.cc;
         Particle *pp_hst = s->pp_dump;
         int *cc_hst = flu->q.cc_hst;
-        inter::color_dev(coords, pp, n, /*o*/ cc, /*w*/ pp_hst, cc_hst);
+        inter::color_dev(*coords, pp, n, /*o*/ cc, /*w*/ pp_hst, cc_hst);
     }
 }
 
@@ -54,7 +54,7 @@ void sim_gen(Sim *s) {
     msg_print("will take %ld steps", nsteps);
     if (walls || solids) {
         s->solids0 = false;
-        gen(s->coords, /**/ wall, s);
+        gen(&s->coords, /**/ wall, s);
         dSync();
         if (walls && wall->q.n) UC(wall_gen_ticket(&wall->q, wall->t));
         s->solids0 = solids;
@@ -65,7 +65,7 @@ void sim_gen(Sim *s) {
         run(            0, nsteps, s);
     }
     /* final strt dump*/
-    if (strt_dumps) dump_strt(s->coords, restart::FINAL, s);
+    if (strt_dumps) dump_strt(restart::FINAL, s);
 }
 
 void sim_strt(Sim *s) {
@@ -82,7 +82,7 @@ void sim_strt(Sim *s) {
     if (rbcs) rbc_strt_quants(s->coords, "rbc.off", restart::BEGIN, &rbc->q);
     dSync();
 
-    if (solids) rig_strt_quants(s->coords, restart::BEGIN, &rig->q);
+    if (solids) rig_strt_quants(&s->coords, restart::BEGIN, &rig->q);
 
     if (walls) wall_strt_quants(s->coords, MAXNWALL, &wall->q);
 
@@ -102,5 +102,5 @@ void sim_strt(Sim *s) {
     msg_print("will take %ld steps", nsteps - wall_creation);
     run(wall_creation, nsteps, s);
 
-    if (strt_dumps) dump_strt(s->coords, restart::FINAL, s);
+    if (strt_dumps) dump_strt(restart::FINAL, s);
 }

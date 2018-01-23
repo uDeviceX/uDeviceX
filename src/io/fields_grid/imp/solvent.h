@@ -1,4 +1,4 @@
-void fields_grid(Coords coords, MPI_Comm cart, QQ qq, NN nn, /*w*/ Particle *hst) {
+void fields_grid(const Coords *coords, MPI_Comm cart, QQ qq, NN nn, /*w*/ Particle *hst) {
     Particle *o;
     int n;
     o = qq.o;

@@ -4,9 +4,9 @@ static void local2global_p(Coords *c, long n, Particle *pp) {
     int i;
     for (i = 0; i < n; i++) {
         r = pp[i].r;
-        r[X] = xl2xg(*c, r[X]);
-        r[Y] = yl2yg(*c, r[Y]);
-        r[Z] = zl2zg(*c, r[Z]);
+        r[X] = xl2xg(c, r[X]);
+        r[Y] = yl2yg(c, r[Y]);
+        r[Z] = zl2zg(c, r[Z]);
     }
 }
 

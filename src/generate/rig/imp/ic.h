@@ -65,12 +65,12 @@ static int duplicate_PBC(const float3 minbb, const float3 maxbb, int n, /**/ flo
     return id;
 }
 
-static void make_local(Coords coords, const int n, /**/ float *coms) {
+static void make_local(const Coords *coords, const int n, /**/ float *coms) {
     float3 cg, *cc = (float3*) coms;
 
     for (int i = 0; i < n; ++i) {
         cg = cc[i];
-        global2local(coords, cg, /**/ &cc[i]);
+        global2local(*coords, cg, /**/ &cc[i]);
     }
 }
 

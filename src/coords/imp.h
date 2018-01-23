@@ -12,17 +12,17 @@ void local2center(const Coords *c, float3 rl, /**/ float3 *rc);
 
 /* [c]enter to [l]ocal  */
 
-float xc2xl(const Coords c, float xc);
-float yc2yl(const Coords c, float yc);
-float zc2zl(const Coords c, float zc);
-void center2local(Coords c, float3 rc, /**/ float3 *rl);
+float xc2xl(const Coords *c, float xc);
+float yc2yl(const Coords *c, float yc);
+float zc2zl(const Coords *c, float zc);
+void center2local(const Coords *c, float3 rc, /**/ float3 *rl);
 
 /* [l]ocal to [g]lobal */
 
-float xl2xg(const Coords c, float xl);
-float yl2yg(const Coords c, float yl);
-float zl2zg(const Coords c, float zl);
-void local2global(const Coords c, float3 rl, /**/ float3 *rg);
+float xl2xg(const Coords *c, float xl);
+float yl2yg(const Coords *c, float yl);
+float zl2zg(const Coords *c, float zl);
+void local2global(const Coords *c, float3 rl, /**/ float3 *rg);
 
 /* [g]lobal to [l]ocal */
 

@@ -38,12 +38,12 @@ static void dump0(const Coords *coords, const int N0[3], const float *D0, /**/ f
     tform_fin(t);
 }
 
-static void dump1(Coords *coords, MPI_Comm cart, const int N[3], const float* D, /*w*/ float* W) {
+static void dump1(const Coords *coords, MPI_Comm cart, const int N[3], const float* D, /*w*/ float* W) {
     UC(dump0(coords, N, D, /**/ W));
-    UC(io::field::scalar(*coords, cart, W, "wall"));
+    UC(io::field::scalar(coords, cart, W, "wall"));
 }
 
-void dump(Coords *coords, MPI_Comm cart, const int N[], const float* D) {
+void dump(const Coords *coords, MPI_Comm cart, const int N[], const float* D) {
     float *W;
     UC(emalloc(XS*YS*ZS*sizeof(float), (void**) &W));
     UC(dump1(coords, cart, N, D, /*w*/ W));

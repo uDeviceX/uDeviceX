@@ -51,16 +51,16 @@ static void f2f3(const Force fo, /**/ float3 *f) {
     f->z = fo.f[Z];
 }
 
-static void copy_shift(Coords coords, const Particle *pp, long n, /**/ float3 *w) {
+static void copy_shift(const Coords *c, const Particle *pp, long n, /**/ float3 *w) {
     float3 r, v;
     for (int j = 0; j < n; ++j) {
         p2f3(pp[j], /**/ &r, &v);
-        local2global(coords, r, /**/ &w[2*j]);
+        local2global(c, r, /**/ &w[2*j]);
         w[2*j + 1] = v;
     }
 }
 
-static void copy_shift_with_forces(Coords coords, const Particle *pp, const Force *ff, long n, /**/ float3 *w) {
+static void copy_shift_with_forces(const Coords *coords, const Particle *pp, const Force *ff, long n, /**/ float3 *w) {
     float3 r, v, f;
     for (int j = 0; j < n; ++j) {
         p2f3(pp[j], /**/ &r, &v);
@@ -119,7 +119,7 @@ static long write_data(MPI_Comm cart, const void *data, long n, size_t bytesperd
     return ntot;
 }
     
-void parts(MPI_Comm cart, Coords coords, const Particle *pp, long n, const char *name, int step, Ticket *t) {
+void parts(MPI_Comm cart, const Coords *coords, const Particle *pp, long n, const char *name, int step, Ticket *t) {
     copy_shift(coords, pp, n, /**/ (float3*) t->w_pp);
         
     char fname[256] = {0};
@@ -130,7 +130,7 @@ void parts(MPI_Comm cart, Coords coords, const Particle *pp, long n, const char 
         header_pp(ntot, name, step);
 }
 
-void parts_forces(MPI_Comm cart, Coords coords, const Particle *pp, const Force *ff, long n, const char *name, int step, /*w*/ Ticket *t) {
+void parts_forces(MPI_Comm cart, const Coords *coords, const Particle *pp, const Force *ff, long n, const char *name, int step, /*w*/ Ticket *t) {
     copy_shift_with_forces(coords, pp, ff, n, /**/ (float3*) t->w_pp);
             
     char fname[256] = {0};
