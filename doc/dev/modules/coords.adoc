@@ -4,7 +4,15 @@
 :stem: latexmath
 
 Coordinate transforms utility.
-Consider three coordinate systems:
+
+In _uDeviceX_, the simulation domain is decomposed into a grid of
+subdomains of equal sizes.
+Computations are performed in _local_ coordinates and all objects are
+relative to these coordinates.
+Operations, such as initialisation of the data, io, etc., need
+_global_ coordinates informations.
+
+For convenience, we consider the three coordinate systems:
 
 * _Global_: Relative to the lower corner of the full domain of size
    stem:[(G_x, G_y, G_z)]
