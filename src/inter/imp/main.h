@@ -7,7 +7,7 @@ static void remove(T *data, int nv, int *e, int nc) {
 static void remove_rbcs(RbcQuants *q, Sdf *qsdf) {
     int stay[MAX_CELL_NUM];
     int nc0;
-    q->nc = sdf_who_stays(qsdf, q->pp, q->n, nc0 = q->nc, q->nv, /**/ stay);
+    q->nc = sdf_who_stays(qsdf, q->n, q->pp, nc0 = q->nc, q->nv, /**/ stay);
     q->n = q->nc * q->nv;
     remove(q->pp, q->nv, stay, q->nc);
     msg_print("%d/%d RBCs survived", q->nc, nc0);
@@ -26,7 +26,7 @@ static void remove_solids(RigQuants *q, Sdf *sdf) {
     int stay[MAX_SOLIDS];
     int ns0;
     int nip = q->ns * q->nv;
-    q->ns = sdf_who_stays(sdf, q->i_pp, nip, ns0 = q->ns, q->nv, /**/ stay);
+    q->ns = sdf_who_stays(sdf, nip, q->i_pp, ns0 = q->ns, q->nv, /**/ stay);
     q->n  = q->ns * q->nps;
     remove(q->pp,       q->nps,      stay, q->ns);
     remove(q->pp_hst,   q->nps,      stay, q->ns);

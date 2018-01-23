@@ -1,22 +1,22 @@
-static void freeze0(MPI_Comm cart, int maxn, Sdf *qsdf, /*io*/ Particle *pp, int *n, /*o*/ Particle *dev, int *w_n, /*w*/ Particle *hst) {
-    sdf_bulk_wall(qsdf, /*io*/ pp, n, /*o*/ hst, w_n); /* sort into bulk-frozen */
+static void freeze0(MPI_Comm cart, int maxn, const Sdf *qsdf, /*io*/ int *n, Particle *pp, /*o*/ int *w_n, Particle *dev, /*w*/ Particle *hst) {
+    sdf_bulk_wall(qsdf, /*io*/ n, pp, /*o*/ w_n, hst); /* sort into bulk-frozen */
     msg_print("before exch: bulk/frozen : %d/%d", *n, *w_n);
     UC(wall_exch_pp(cart, maxn, /*io*/ hst, w_n));
     cH2D(dev, hst, *w_n);
     msg_print("after  exch: bulk/frozen : %d/%d", *n, *w_n);
 }
 
-static void freeze(MPI_Comm cart, int maxn, Sdf *qsdf, /*io*/ Particle *pp, int *n, /*o*/ Particle *dev, int *w_n) {
+static void freeze(MPI_Comm cart, int maxn, const Sdf *qsdf, /*io*/ int *n, Particle *pp, /*o*/ int *w_n, Particle *dev) {
     Particle *hst;
     UC(emalloc(maxn * sizeof(Particle), (void**) &hst));
-    UC(freeze0(cart, maxn, qsdf, /*io*/ pp, n, /*o*/ dev, w_n, /*w*/ hst));
+    UC(freeze0(cart, maxn, qsdf, /*io*/ n, pp, /*o*/ w_n, dev, /*w*/ hst));
     free(hst);
 }
 
-static void gen_quants(MPI_Comm cart, int maxn, Sdf *qsdf, /**/ int *o_n, Particle *o_pp, int *w_n, float4 **w_pp) {
+static void gen_quants(MPI_Comm cart, int maxn, const Sdf *qsdf, /**/ int *o_n, Particle *o_pp, int *w_n, float4 **w_pp) {
     Particle *frozen;
     CC(d::Malloc((void **) &frozen, maxn * sizeof(Particle)));
-    UC(freeze(cart, maxn, qsdf, o_pp, o_n, frozen, w_n));
+    UC(freeze(cart, maxn, qsdf, o_n, o_pp, w_n, frozen));
     msg_print("consolidating wall");
     CC(d::Malloc((void **) w_pp, *w_n * sizeof(float4)));
     KL(wall_dev::particle2float4, (k_cnf(*w_n)), (frozen, *w_n, /**/ *w_pp));
@@ -25,7 +25,7 @@ static void gen_quants(MPI_Comm cart, int maxn, Sdf *qsdf, /**/ int *o_n, Partic
     dSync();
 }
 
-void wall_gen_quants(MPI_Comm cart, int maxn, Sdf *sdf, /**/ int *n, Particle* pp, WallQuants *q) {
+void wall_gen_quants(MPI_Comm cart, int maxn, const Sdf *sdf, /**/ int *n, Particle* pp, WallQuants *q) {
     UC(gen_quants(cart, maxn, sdf, n, pp, &q->n, &q->pp));
 }
 

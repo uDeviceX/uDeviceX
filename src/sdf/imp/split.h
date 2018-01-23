@@ -14,8 +14,9 @@ static void split_wall_solvent(const int *keys, /*io*/ int *s_n, Particle *s_pp,
     *s_n = is;
     *w_n = iw;
 }
+
 /* sort solvent particle (dev) into remaining in solvent (dev) and turning into wall (hst)*/
-void sdf_bulk_wall(const Sdf *sdf, /*io*/ Particle *s_pp, int* s_n, /*o*/ Particle *w_pp, int *w_n) {
+void sdf_bulk_wall(const Sdf *sdf, /*io*/ int* s_n, Particle *s_pp, /*o*/ int *w_n, Particle *w_pp) {
     int n = *s_n, *labels;
     Particle *s_pp_hst;
     UC(emalloc(n*sizeof(Particle), (void**) &s_pp_hst));
@@ -33,6 +34,7 @@ void sdf_bulk_wall(const Sdf *sdf, /*io*/ Particle *s_pp, int* s_n, /*o*/ Partic
 
 /* bulk predicate : is in bulk? */
 static bool bulkp(int *keys, int i) { return keys[i] == LABEL_BULK; }
+
 static int who_stays0(int *keys, int nc, int nv, /*o*/ int *stay) {
     int c, v;  /* cell and vertex */
     int s = 0; /* how many stays? */
@@ -44,7 +46,7 @@ static int who_stays0(int *keys, int nc, int nv, /*o*/ int *stay) {
     return s;
 }
 
-int sdf_who_stays(const Sdf *sdf, const Particle *pp, int n, int nc, int nv, /**/ int *stay) {
+int sdf_who_stays(const Sdf *sdf, int n, const Particle *pp, int nc, int nv, /**/ int *stay) {
     int *labels;
     UC(emalloc(n*sizeof(int), (void**)&labels));
     UC(wall_label_hst(sdf, n, pp, /**/ labels));
