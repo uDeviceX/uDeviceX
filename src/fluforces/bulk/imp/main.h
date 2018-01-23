@@ -20,15 +20,13 @@ static void ini_flocal(const float4 *zip0, const ushort4 *zip1, int np, const in
 
 static void launch(int np) {
     int nx, ny, nz;
-    if (XS % MYCPBX == 0 && YS % MYCPBY == 0 && ZS % MYCPBZ == 0) {
-        nx = XS / MYCPBX;
-        ny = YS / MYCPBY;
-        nz = ZS / MYCPBZ;
-        KL(merged, (dim3(nx, ny, nz), dim3(32, MYWPB)), ());
-        CC(d::PeekAtLastError());
-    } else {
-        ERR("Incompatible grid: [%d %d %d]", XS, YS, ZS);
-    }
+    static_assert(XS % MYCPBX == 0 && YS % MYCPBY == 0 && ZS % MYCPBZ == 0,
+                  "Incompatible grid");
+    nx = XS / MYCPBX;
+    ny = YS / MYCPBY;
+    nz = ZS / MYCPBZ;
+    KL(merged, (dim3(nx, ny, nz), dim3(32, MYWPB)), ());
+    CC(d::PeekAtLastError());
 }
 
 static void ini_flocal_color(const int *cc, int n) {
