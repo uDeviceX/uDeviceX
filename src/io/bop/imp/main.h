@@ -7,7 +7,7 @@ void bop_ini(MPI_Comm comm, BopWork **w) {
         UC(os_mkdir(DUMP_BASE "/bop"));
 
     sz = 9 * MAX_PART_NUM * sizeof(float);
-    UC(emalloc(sz, (void**) t->w_pp));
+    UC(emalloc(sz, (void**) &t->w_pp));
 }
 
 void bop_fin(BopWork *t) {
