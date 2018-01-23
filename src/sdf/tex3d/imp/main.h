@@ -9,7 +9,7 @@ void tex3d_fin(Tex3d *q) {
     UC(efree(q));
 }
 
-void tex3d_copy(Array3d *a, /**/ Tex3d *t) {
+void tex3d_copy(const Array3d *a, /**/ Tex3d *t) {
     cudaResourceDesc resD;
     cudaTextureDesc  texD;
 
@@ -28,4 +28,4 @@ void tex3d_copy(Array3d *a, /**/ Tex3d *t) {
     CC(cudaCreateTextureObject(&t->t, &resD, &texD, NULL));
 }
 
-void tex3d_to_view(Tex3d *t, /**/ Tex3d_v *v) { v->t = t->t; }
+void tex3d_to_view(const Tex3d *t, /**/ Tex3d_v *v) { v->t = t->t; }
