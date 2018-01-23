@@ -6,8 +6,6 @@
 #include <conf.h>
 #include "inc/conf.h"
 
-#include "coords/imp.h"
-
 #include "inc/type.h"
 #include "utils/msg.h"
 #include "utils/error.h"
@@ -18,6 +16,8 @@
 #include "utils/cc.h"
 #include "inc/dev.h"
 #include "mpi/wrapper.h"
+
+#include "coords/imp.h"
 
 #include "imp.h"
 
