@@ -1,7 +1,7 @@
 /* domain sizes */
-int xdomain(const Coords c);
-int ydomain(const Coords c);
-int zdomain(const Coords c);
+int xdomain(const Coords *c);
+int ydomain(const Coords *c);
+int zdomain(const Coords *c);
 
 /* [l]ocal to [c]enter */
 

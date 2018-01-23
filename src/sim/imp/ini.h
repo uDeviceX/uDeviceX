@@ -203,7 +203,7 @@ static void read_opt(const Config *c, Opt *o) {
 }
 
 static void coords_log(Coords *c) {
-    msg_print("domain: %d %d %d", xdomain(*c), ydomain(*c), zdomain(*c));
+    msg_print("domain: %d %d %d", xdomain(c), ydomain(c), zdomain(c));
     msg_print("subdomain: [%d:%d][%d:%d][%d:%d]",
               xlo(*c), xhi(*c), ylo(*c), yhi(*c), zlo(*c), zhi(*c));
 }

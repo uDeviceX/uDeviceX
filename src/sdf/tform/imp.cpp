@@ -36,9 +36,9 @@ static void grid2grid(TGrid *from, TGrid *to, /**/ Tform *t) {
 static void sdf_ini(const Coords *c, const int N[3], /**/ TGrid *t) {
     enum {X, Y, Z};
     t->lo[X] = t->lo[Y] = t->lo[Z] = 0;
-    t->hi[X] = xdomain(*c);
-    t->hi[Y] = ydomain(*c);
-    t->hi[Z] = zdomain(*c);
+    t->hi[X] = xdomain(c);
+    t->hi[Y] = ydomain(c);
+    t->hi[Z] = zdomain(c);
 
     t->n[X] = N[X]; t->n[Y] = N[Y]; t->n[Z] = N[Z];
 }
