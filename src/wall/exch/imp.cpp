@@ -95,8 +95,8 @@ void wall_exch_pp(MPI_Comm cart, int maxn, /*io*/ Particle *pp, int *n) {
     int i, capacity[NBAGS];
 
     for (i = 0; i < NBAGS; ++i) capacity[i] = maxn;
-    UC(bags_ini(HST_ONLY, NONE, sizeof(Particle), capacity, &send, NULL));
-    UC(bags_ini(HST_ONLY, NONE, sizeof(Particle), capacity, &recv, NULL));
+    UC(comm_bags_ini(HST_ONLY, NONE, sizeof(Particle), capacity, &send, NULL));
+    UC(comm_bags_ini(HST_ONLY, NONE, sizeof(Particle), capacity, &recv, NULL));
     UC(comm_ini(cart, &com));
 
     fill_bags(*n, pp, /**/ &send);
@@ -104,7 +104,7 @@ void wall_exch_pp(MPI_Comm cart, int maxn, /*io*/ Particle *pp, int *n) {
     check_counts(maxn, *n, &recv);
     unpack(maxn, &recv, /**/ n, pp);
     
-    UC(bags_fin(HST_ONLY, NONE, &send, NULL));
-    UC(bags_fin(HST_ONLY, NONE, &recv, NULL));
+    UC(comm_bags_fin(HST_ONLY, NONE, &send, NULL));
+    UC(comm_bags_fin(HST_ONLY, NONE, &recv, NULL));
     UC(comm_fin(com));
 }

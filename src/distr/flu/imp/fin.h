@@ -1,9 +1,9 @@
 void dflu_pack_fin(DFluPack *p) {
     UC(dmap_fin(NFRAGS, /**/ &p->map));
-    UC(bags_fin(PINNED, NONE, /**/ &p->hpp, &p->dpp));
+    UC(comm_bags_fin(PINNED, NONE, /**/ &p->hpp, &p->dpp));
 
-    if (global_ids)    UC(bags_fin(PINNED, NONE, /**/ &p->hii, &p->dii));
-    if (multi_solvent) UC(bags_fin(PINNED, NONE, /**/ &p->hcc, &p->dcc));
+    if (global_ids)    UC(comm_bags_fin(PINNED, NONE, /**/ &p->hii, &p->dii));
+    if (multi_solvent) UC(comm_bags_fin(PINNED, NONE, /**/ &p->hcc, &p->dcc));
 
     UC(efree(p));
 }
@@ -18,9 +18,9 @@ void dflu_comm_fin(DFluComm *c) {
 }
 
 void dflu_unpack_fin(DFluUnpack *u) {
-    UC(bags_fin(HST_ONLY, NONE, &u->hpp, NULL));
-    if (global_ids)    UC(bags_fin(HST_ONLY, NONE, &u->hii, NULL));
-    if (multi_solvent) UC(bags_fin(HST_ONLY, NONE, &u->hcc, NULL));
+    UC(comm_bags_fin(HST_ONLY, NONE, &u->hpp, NULL));
+    if (global_ids)    UC(comm_bags_fin(HST_ONLY, NONE, &u->hii, NULL));
+    if (multi_solvent) UC(comm_bags_fin(HST_ONLY, NONE, &u->hcc, NULL));
 
     CC(d::Free(u->ppre));
     if (global_ids)    CC(d::Free(u->iire));

@@ -22,11 +22,11 @@ void eflu_pack_ini(int maxd, EFluPack **pack) {
     }
     ncs[BULK] = 0;
     
-    UC(bags_ini(PINNED_DEV, NONE, sizeof(Particle), cap, /**/ &p->hpp, &p->dpp));
+    UC(comm_bags_ini(PINNED_DEV, NONE, sizeof(Particle), cap, /**/ &p->hpp, &p->dpp));
     if (multi_solvent)
-        UC(bags_ini(PINNED_DEV, NONE,  sizeof(int), cap, /**/ &p->hcc, &p->dcc));
+        UC(comm_bags_ini(PINNED_DEV, NONE,  sizeof(int), cap, /**/ &p->hcc, &p->dcc));
 
-    UC(bags_ini(PINNED_HST, NONE, sizeof(int), ncs, /**/ &p->hfss, NULL));
+    UC(comm_bags_ini(PINNED_HST, NONE, sizeof(int), ncs, /**/ &p->hfss, NULL));
 
     memcpy(p->hfss.counts, ncs, sizeof(ncs));
     
@@ -59,10 +59,10 @@ void eflu_unpack_ini(int maxd, EFluUnpack **unpack) {
         ncs[i] = frag_ncell(i) + 1;
     ncs[BULK] = 0;
     
-    UC(bags_ini(PINNED_DEV, NONE, sizeof(Particle), cap, /**/ &u->hpp, &u->dpp));
+    UC(comm_bags_ini(PINNED_DEV, NONE, sizeof(Particle), cap, /**/ &u->hpp, &u->dpp));
     if (multi_solvent)
-        UC(bags_ini(PINNED_DEV, NONE,  sizeof(int), cap, /**/ &u->hcc, &u->dcc));
+        UC(comm_bags_ini(PINNED_DEV, NONE,  sizeof(int), cap, /**/ &u->hcc, &u->dcc));
 
-    UC(bags_ini(PINNED_DEV, NONE, sizeof(int), ncs, /**/ &u->hfss, &u->dfss));
+    UC(comm_bags_ini(PINNED_DEV, NONE, sizeof(int), ncs, /**/ &u->hfss, &u->dfss));
 }
 

@@ -36,9 +36,8 @@ struct hBags {
 struct Comm;
 
 // tag::alloc[]
-int bags_ini(AllocMod fmod, AllocMod bmod, size_t bsize, const int capacity[NBAGS], /**/ hBags *hb, dBags *db);
-int bags_fin(AllocMod fmod, AllocMod bmod, /**/ hBags *hb, dBags *db);
-
+int comm_bags_ini(AllocMod fmod, AllocMod bmod, size_t bsize, const int capacity[NBAGS], /**/ hBags *hb, dBags *db);
+int comm_bags_fin(AllocMod fmod, AllocMod bmod, /**/ hBags *hb, dBags *db);
 int comm_ini(MPI_Comm cart, /**/ Comm **c);
 int comm_fin(/**/ Comm *c);
 // end::alloc[]
