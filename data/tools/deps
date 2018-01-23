@@ -1,7 +1,18 @@
 #!/bin/sh
 
 set -eu
+# update dependencies
 
-echo 'D = \'
-find . -type f -name '*.off'
-echo '\'
+find0 () { find . -type f -name "$1"; }
+
+# O:off, S:sdf, R:rigid
+{
+    find0 '*.off' | tools/list2var O
+    echo
+    find0 '*.dat' | tools/list2var S
+    echo
+    find0 '*.ply' | tools/list2var R
+    echo
+    find0 '*.ic'  | tools/list2var I
+} > make/dep.mk
+echo >&2 "upd: make/dep.mk"

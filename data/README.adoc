@@ -1,0 +1,13 @@
+= data
+
+== intro
+
+Install data files. After adding new files update dependencies.
+
+....
+tools/deps
+....
+
+== see also
+
+`cmd/cp`

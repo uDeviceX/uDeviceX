@@ -1,0 +1,32 @@
+#!/bin/sh
+
+set -eu
+
+usg () {
+    echo >&2 'list2var VARIABLE < list > dep.mk'
+    exit
+}
+
+if test $# -ne 0 && test "$1" = -h; then usg; fi
+
+V=$1; shift
+"${AWK-awk}" -v v=$V '
+BEGIN {
+   printf "%s = \\\n", v
+}
+{ a[NR] = $0 } 
+END { 
+   for (i = q; i <= NR; i++) {
+      f = a[i]
+      l = length(f)
+      if (l > m) m = l
+   }
+   fmt = "%" m "-s"
+   for (i = 1; i <= NR; i++) {
+      f = a[i]
+      sub(/^\.\//, "", f)
+      if (i != NR) printf fmt "\\\n", f
+      else         printf "%s"  "\n", f
+   }
+}
+'
