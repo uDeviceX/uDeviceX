@@ -16,13 +16,18 @@ static void assert_tri(int nt, int nv, int4 *tri) {
     UC(efree(rank));
 }
 
-void area_volume_ini(int nt, int nv, int4 *hst, /**/ AreaVolume **pq) {
+void area_volume_setup(int nt, int nv, int4 *hst, /**/ AreaVolume *q) {
+    if (nt != q->nt) ERR("different nt in ini and setupt: %d != %d", nt, q->nt);
+    q->nv = nv;
+    UC(assert_tri(nt, nv, hst));
+    cH2D(q->tri, hst, nt);
+}
+
+void area_volume_ini(int nt, /**/ AreaVolume **pq) {
     AreaVolume *q;
     UC(emalloc(sizeof(AreaVolume), (void**)&q));
-    q->nt = nt; q->nv = nv;
-    UC(assert_tri(nt, nv, hst));
+    q->nt = nt;
     Dalloc(&q->tri, nt);
-    cH2D(q->tri, hst, nt);
     *pq = q;
 }
 
