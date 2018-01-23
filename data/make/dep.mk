@@ -60,3 +60,7 @@ rig/sphere_R1.ply             \
 rig/cylinder.ply              \
 rig/sphere_R0.7.ply           \
 rig/sphere.ply
+
+I = \
+ic/ident.ic  \
+ic/two.ic

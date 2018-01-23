@@ -3,14 +3,16 @@
 set -eu
 # update dependencies
 
-find0 () { find . -type f "$@"; }
+find0 () { find . -type f -name "$1"; }
 
 # O:off, S:sdf, R:rigid
 {
-    find0 -name '*.off' | tools/list2var O
+    find0 '*.off' | tools/list2var O
     echo
-    find0 -name '*.dat' | tools/list2var S
+    find0 '*.dat' | tools/list2var S
     echo
-    find0 -name '*.ply' | tools/list2var R
+    find0 '*.ply' | tools/list2var R
+    echo
+    find0 '*.ic'  | tools/list2var I
 } > make/dep.mk
 echo >&2 "upd: make/dep.mk"
