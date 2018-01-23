@@ -8,8 +8,8 @@ static void split_wall_solvent(const int *keys, /*io*/ int *s_n, Particle *s_pp,
         k = keys[ia];
         p = s_pp[ia];
         
-        if      (k == label::BULK) s_pp[is++] = p;
-        else if (k == label::WALL) w_pp[iw++] = p;
+        if      (k == label::LABEL_BULK) s_pp[is++] = p;
+        else if (k == label::LABEL_WALL) w_pp[iw++] = p;
     }
     *s_n = is;
     *w_n = iw;
@@ -32,7 +32,7 @@ void sdf_bulk_wall(const Sdf *sdf, /*io*/ Particle *s_pp, int* s_n, /*o*/ Partic
 }
 
 /* bulk predicate : is in bulk? */
-static bool bulkp(int *keys, int i) { return keys[i] == label::BULK; }
+static bool bulkp(int *keys, int i) { return keys[i] == label::LABEL_BULK; }
 static int who_stays0(int *keys, int nc, int nv, /*o*/ int *stay) {
     int c, v;  /* cell and vertex */
     int s = 0; /* how many stays? */
