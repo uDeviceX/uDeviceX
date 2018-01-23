@@ -1,5 +1,15 @@
 enum {X, Y, Z, D};
-    
+
+void coords_get_view(const Coords *c, Coords_v *v) {
+    v->xc = c->xc;
+    v->yc = c->yc;
+    v->zc = c->zc;
+
+    v->xd = c->xd;
+    v->yd = c->yd;
+    v->zd = c->zd;
+}
+
 void coords_ini(MPI_Comm cart, Coords *c) {
     int dims[D], periods[D], coords[D];
     MC(m::Cart_get(cart, D, dims, periods, coords));

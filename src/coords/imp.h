@@ -1,3 +1,8 @@
+struct Coords;
+struct Coords_v;
+
+void coords_get_view(const Coords *c, Coords_v *v);
+
 /* domain sizes */
 int xdomain(const Coords *c);
 int ydomain(const Coords *c);
