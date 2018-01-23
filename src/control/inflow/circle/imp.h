@@ -1,8 +1,8 @@
 static bool is_inside_subdomain(const Coords *c, float3 r) {
     bool inside = true;
-    inside &= (xlo(*c) <= r.x) && (r.x < xhi(*c));
-    inside &= (ylo(*c) <= r.y) && (r.y < yhi(*c));
-    inside &= (zlo(*c) <= r.z) && (r.z < zhi(*c));
+    inside &= (xlo(c) <= r.x) && (r.x < xhi(c));
+    inside &= (ylo(c) <= r.y) && (r.y < yhi(c));
+    inside &= (zlo(c) <= r.z) && (r.z < zhi(c));
     return inside;
 }
 

@@ -111,19 +111,19 @@ void global2local(const Coords *c, float3 rg, /**/ float3 *rl) {
 
 /* edges of the sub-domain in global coordinates */
 
-int xlo(const Coords c) { return xl2xg(&c, 0) - 0.5*XS; }
-int ylo(const Coords c) { return yl2yg(&c, 0) - 0.5*YS; }
-int zlo(const Coords c) { return zl2zg(&c, 0) - 0.5*ZS; }
+int xlo(const Coords *c) { return xl2xg(c, 0) - 0.5*XS; }
+int ylo(const Coords *c) { return yl2yg(c, 0) - 0.5*YS; }
+int zlo(const Coords *c) { return zl2zg(c, 0) - 0.5*ZS; }
 
-int xhi(const Coords c) { return xl2xg(&c, 0) + 0.5*XS; }
-int yhi(const Coords c) { return yl2yg(&c, 0) + 0.5*YS; }
-int zhi(const Coords c) { return zl2zg(&c, 0) + 0.5*ZS; }
+int xhi(const Coords *c) { return xl2xg(c, 0) + 0.5*XS; }
+int yhi(const Coords *c) { return yl2yg(c, 0) + 0.5*YS; }
+int zhi(const Coords *c) { return zl2zg(c, 0) + 0.5*ZS; }
 
 /* sizes of the sub-domain */
 
-int xs(const Coords) { return XS; }
-int ys(const Coords) { return YS; }
-int zs(const Coords) { return ZS; }
+int xs(const Coords*) { return XS; }
+int ys(const Coords*) { return YS; }
+int zs(const Coords*) { return ZS; }
 
 /* rank predicates */
 
