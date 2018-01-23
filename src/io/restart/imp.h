@@ -1,4 +1,6 @@
 struct Coords;
+struct Particle;
+struct Solid;
 
 namespace restart {
 
