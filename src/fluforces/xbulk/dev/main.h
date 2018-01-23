@@ -11,7 +11,7 @@ __device__ void fetch(BCloud c, int i, forces::Pa *p) {
         p->color = c.cc[i];
 }
 
-__global__ void main(int n, BCloud cloud, const int *start, const int *count, RNDunif *rnd, /**/ Force *ff) {
+__global__ void apply(int n, BCloud cloud, const int *start, const int *count, RNDunif *rnd, /**/ Force *ff) {
     int i;
     i = threadIdx.x + blockIdx.x * blockDim.x;
 

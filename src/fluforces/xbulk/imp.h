@@ -1,5 +1,5 @@
 struct BCloud {
-    const float4 *pp
+    const float4 *pp;
     const int *cc;
 };
 
