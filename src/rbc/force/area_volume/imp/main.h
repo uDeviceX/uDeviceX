@@ -46,3 +46,5 @@ static void compute(int nt, int nv, int nc, const Particle *pp, const int4 *tri,
 void area_volume_compute(AreaVolume *q, int nc, const Particle *pp, /**/ float *av) {
     UC(compute(q->nt, q->nv, nc, pp, q->tri, av));
 }
+
+int4* area_volume_tri(AreaVolume *q) { return q->tri; }

@@ -56,6 +56,7 @@
 #include "rbc/type.h"
 #include "rbc/imp.h"
 #include "rbc/force/imp.h"
+#include "rbc/force/area_volume/imp.h"
 #include "rbc/stretch/imp.h"
 #include "rbc/com/imp.h"
 
