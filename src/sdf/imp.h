@@ -11,4 +11,4 @@ void sdf_to_view(const Sdf*, /**/ Sdf_v*);
 
 void sdf_bulk_wall(const Sdf*, /*io*/ Particle *s_pp, int *s_n, /*o*/ Particle *w_pp, int *w_n);
 int  sdf_who_stays(const Sdf*, const Particle*, int n, int nc, int nv, /**/ int *stay);
-void sdf_bounce(Wvel_v*, const Coords*, Sdf*, int n, /**/ Particle*);
+void sdf_bounce(const Wvel_v*, const Coords*, const Sdf*, int n, /**/ Particle*);
