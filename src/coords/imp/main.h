@@ -127,18 +127,18 @@ int zs(const Coords*) { return ZS; }
 
 /* rank predicates */
 
-bool is_end(Coords c, int dir) {
+bool is_end(const Coords *c, int dir) {
     enum {X, Y, Z};
     switch (dir) {
-    case X: return c.xc == c.xd - 1;
-    case Y: return c.yc == c.yd - 1;
-    case Z: return c.zc == c.zd - 1;
+    case X: return c->xc == c->xd - 1;
+    case Y: return c->yc == c->yd - 1;
+    case Z: return c->zc == c->zd - 1;
     }
     return false;
 }
 
-void coord_stamp(Coords c, /**/ char *s) {
+void coord_stamp(const Coords *c, /**/ char *s) {
     int r;
-    r = sprintf(s, "%03d.%03d.%03d", c.xc, c.yc, c.zc);
+    r = sprintf(s, "%03d.%03d.%03d", c->xc, c->yc, c->zc);
     if (r < 0) ERR("sprintf failed");
 }

@@ -36,7 +36,7 @@ static bool error() {
     return e != ERR_NONE;
 } 
 
-static void gen_name(Coords c, const char *base, /**/ char *name) {
+static void gen_name(const Coords *c, const char *base, /**/ char *name) {
     int r;
     char stamp[FILENAME_MAX];
     coord_stamp(c, /**/ stamp);
@@ -44,7 +44,7 @@ static void gen_name(Coords c, const char *base, /**/ char *name) {
     if (r < 0) ERR("sprintf failed");
 }
 
-static void dump_pp(Coords c, const char *base, int n, const Particle *dev) {
+static void dump_pp(const Coords *c, const char *base, int n, const Particle *dev) {
     Particle *hst;
     size_t sz;
     char name[FILENAME_MAX];
@@ -56,7 +56,7 @@ static void dump_pp(Coords c, const char *base, int n, const Particle *dev) {
     UC(efree(hst));    
 }
 
-static void dump_pp_ff(Coords c, const char *base, int n, const Particle *ppdev, const Force *ffdev) {
+static void dump_pp_ff(const Coords *c, const char *base, int n, const Particle *ppdev, const Force *ffdev) {
     Particle *pphst;
     Force *ffhst;
     size_t szp, szf;
@@ -85,7 +85,7 @@ static void print() {
     ERR("DBG: error: %s", get_err_str(e));
 } 
 
-void dbg_check_pos(Coords c, const char *base, const Dbg *dbg, int n, const Particle *pp) {
+void dbg_check_pos(const Coords *c, const char *base, const Dbg *dbg, int n, const Particle *pp) {
     if (!check(dbg, DBG_POS))
         return;
     UC(err_ini());
@@ -97,7 +97,7 @@ void dbg_check_pos(Coords c, const char *base, const Dbg *dbg, int n, const Part
     }
 }
 
-void dbg_check_pos_soft(Coords c, const char *base, const Dbg *dbg, int n, const Particle *pp) {
+void dbg_check_pos_soft(const Coords *c, const char *base, const Dbg *dbg, int n, const Particle *pp) {
     if (!check(dbg, DBG_POS_SOFT))
         return;
     UC(err_ini());
@@ -109,7 +109,7 @@ void dbg_check_pos_soft(Coords c, const char *base, const Dbg *dbg, int n, const
     }
 }
 
-void dbg_check_vel(Coords c, const char *base, const Dbg *dbg, int n, const Particle *pp) {
+void dbg_check_vel(const Coords *c, const char *base, const Dbg *dbg, int n, const Particle *pp) {
     if (!check(dbg, DBG_VEL))
         return;
     UC(err_ini());
@@ -121,7 +121,7 @@ void dbg_check_vel(Coords c, const char *base, const Dbg *dbg, int n, const Part
     }
 }
 
-void dbg_check_forces(Coords c, const char *base, const Dbg *dbg, int n, const Particle *pp, const Force *ff) {
+void dbg_check_forces(const Coords *c, const char *base, const Dbg *dbg, int n, const Particle *pp, const Force *ff) {
     if (!check(dbg, DBG_FORCES))
         return;
     UC(err_ini());
@@ -133,7 +133,7 @@ void dbg_check_forces(Coords c, const char *base, const Dbg *dbg, int n, const P
     }
 }
 
-void dbg_check_colors(Coords c, const Dbg *dbg, int n, const int *cc) {
+void dbg_check_colors(const Coords *c, const Dbg *dbg, int n, const int *cc) {
     if (!check(dbg, DBG_COLORS))
         return;
     UC(err_ini());
@@ -143,7 +143,7 @@ void dbg_check_colors(Coords c, const Dbg *dbg, int n, const int *cc) {
     }
 }
 
-void dbg_check_clist(Coords c, const Dbg *dbg, int3 L, const int *starts, const int *counts, const Particle *pp) {
+void dbg_check_clist(const Coords *c, const Dbg *dbg, int3 L, const int *starts, const int *counts, const Particle *pp) {
     if (!check(dbg, DBG_CLIST))
         return;
     int n = L.x * L.y * L.z;

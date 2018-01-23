@@ -31,7 +31,7 @@ __global__ void linear_flux(int dir, int color, int n, const Particle *pp, int *
 }
 } // dev
 
-void linear_flux(Coords coords, int dir, int color, int n, const Particle *pp, int *cc) {
+void linear_flux(const Coords *coords, int dir, int color, int n, const Particle *pp, int *cc) {
     assert(dir >= 0 && dir <= 2);
     assert(multi_solvent);
         

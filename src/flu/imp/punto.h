@@ -1,4 +1,4 @@
-static void local2global_p(Coords *c, long n, Particle *pp) {
+static void local2global_p(const Coords *c, long n, Particle *pp) {
     enum {X, Y, Z};
     float *r;
     int i;
@@ -10,15 +10,15 @@ static void local2global_p(Coords *c, long n, Particle *pp) {
     }
 }
 
-static void gen_name(Coords *c, /**/ char *name) {
+static void gen_name(const Coords *c, /**/ char *name) {
     int r;
     char stamp[FILENAME_MAX];
-    coord_stamp(*c, /**/ stamp);
+    coord_stamp(c, /**/ stamp);
     r = sprintf(name, "%s.punto", stamp);
     if (r < 0) ERR("sprintf failed");
 }
 
-void flu_punto_dump(Coords *c, const FluQuants *q) {
+void flu_punto_dump(const Coords *c, const FluQuants *q) {
     Particle *dev, *hst;
     int n;
     char name[FILENAME_MAX];
