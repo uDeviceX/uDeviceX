@@ -17,7 +17,6 @@
 #include "inc/type.h"
 #include "inc/dev.h"
 #include "dbg/imp.h"
-#include "coords/type.h"
 #include "coords/ini.h"
 
 const int n = 10;
@@ -64,7 +63,7 @@ void fill_bugs() {
     KL(dev::fill_bugs, (k_cnf(n)), (ff, n));
 }
 
-void check(Coords c, Dbg *dbg) {
+void check(const Coords *c, Dbg *dbg) {
     UC(dbg_check_pos    (c, "flu", dbg, n, pp));
     UC(dbg_check_vel    (c, "flu", dbg, n, pp));
     UC(dbg_check_forces (c, "flu.ff", dbg, n, pp, ff));
@@ -73,7 +72,7 @@ void check(Coords c, Dbg *dbg) {
 int main(int argc, char **argv) {
     Dbg *dbg;
     Config *cfg;
-    Coords coords;
+    Coords *coords;
     m::ini(&argc, &argv);
     UC(coords_ini(m::cart, &coords));
     
@@ -88,6 +87,6 @@ int main(int argc, char **argv) {
     free();
     UC(dbg_fin(dbg));
     UC(conf_fin(cfg));
-    UC(coords_fin(&coords));
+    UC(coords_fin(coords));
     m::fin();
 }

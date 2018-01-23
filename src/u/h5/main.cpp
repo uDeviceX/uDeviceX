@@ -6,9 +6,7 @@
 #include <conf.h>
 #include "inc/conf.h"
 
-#include "coords/type.h"
 #include "coords/ini.h"
-#include "coords/imp.h"
 
 #include "utils/msg.h"
 #include "mpi/glb.h"
@@ -37,7 +35,7 @@ void lshift() {
 void dump(MPI_Comm comm, const char *path, int sx, int sy, int sz) {
     enum {X, Y, Z};
     int rank;
-    Coords coords;
+    Coords *coords;
     size_t size, nc;
     float *rho, *u[3];
     const char *names[] = { "density", "u", "v", "w" };
@@ -56,7 +54,7 @@ void dump(MPI_Comm comm, const char *path, int sx, int sy, int sz) {
     UC(h5_write(coords, comm, path, data, names, 4));
     free(rho); free(u[X]); free(u[Y]); free(u[Z]);
     if (rank == 0) xmf_write(path, names, 4, sx, sy, sz);
-    UC(coords_fin(/**/ &coords));
+    UC(coords_fin(/**/ coords));
 }
 
 int ienv(const char *name, int def) {
