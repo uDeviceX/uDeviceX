@@ -44,7 +44,7 @@ static int who_stays0(int *keys, int nc, int nv, /*o*/ int *stay) {
     return s;
 }
 
-int sdf_who_stays(const Sdf *sdf, Particle *pp, int n, int nc, int nv, /**/ int *stay) {
+int sdf_who_stays(const Sdf *sdf, const Particle *pp, int n, int nc, int nv, /**/ int *stay) {
     int *labels;
     UC(emalloc(n*sizeof(int), (void**)&labels));
     UC(wall_label_hst(sdf, n, pp, /**/ labels));
