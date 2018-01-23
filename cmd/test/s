@@ -1,0 +1,6 @@
+# TEST: s.0
+S=preved u.cp.s > s.out.txt
+
+# TEST: s.1
+u.cp.s
+echo $?         > s.out.txt
