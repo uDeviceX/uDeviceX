@@ -2,4 +2,12 @@
 
 . u.cp.util
 
-prog=u.cp.rbc
+prog=u.cp.s
+
+usg () {
+    msg "$prog return absolute path to udx source directory"
+    msg 'if environment variables S is set return $S'
+    msg "S=/my/path $prog"
+}
+
+if test $# -ne 0 && test "$1" = -h; then usg; fi
