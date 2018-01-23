@@ -13,3 +13,4 @@ find0 () { find . -type f "$@"; }
     echo
     find0 -name '*.ply' | tools/list2var R
 } > make/dep.mk
+echo >&2 "upd: make/dep.mk"
