@@ -8,7 +8,7 @@ static __global__ void main(Sdf_v sdf_v, int n, const Particle *pp, /**/ int *la
     p = pp[pid];
     s = sdf(&sdf_v, p.r[X], p.r[Y], p.r[Z]);
     labels[pid] =
-        s > 2 ? LABEL_DEEP :
-        s >=0 ? LABEL_WALL :
-                LABEL_BULK;
+        s >  2 ? LABEL_DEEP :
+        s >= 0 ? LABEL_WALL :
+                 LABEL_BULK;
 }
