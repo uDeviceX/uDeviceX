@@ -1,11 +1,18 @@
-void bop_ini(MPI_Comm comm, BopWork *t) {
+void bop_ini(MPI_Comm comm, BopWork **w) {
+    BopWork *t;
+    size_t sz;
+    UC(emalloc(sizeof(BopWork), (void**) w));
+    t = *w;
     if (m::is_master(comm))
         UC(os_mkdir(DUMP_BASE "/bop"));
-    t->w_pp = new float[9*MAX_PART_NUM];
+
+    sz = 9 * MAX_PART_NUM * sizeof(float);
+    UC(emalloc(sz, (void**) t->w_pp));
 }
 
 void bop_fin(BopWork *t) {
-    delete[] t->w_pp;
+    UC(efree(t->w_pp));
+    UC(efree(t));
 }
 
 static void p2f3(const Particle p, /**/ float3 *r, float3 *v) {

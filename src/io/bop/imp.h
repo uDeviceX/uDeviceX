@@ -1,8 +1,6 @@
-struct BopWork {
-    float *w_pp;    // particle workspace
-};
+struct BopWork;
 
-void bop_ini(MPI_Comm comm, BopWork *t);
+void bop_ini(MPI_Comm comm, BopWork **t);
 void bop_fin(BopWork *t);
 
 void bop_parts(MPI_Comm cart, const Coords *coords, const Particle *pp, long n, const char *name, int step, /*w*/ BopWork *t);
