@@ -31,19 +31,19 @@ int zdomain(const Coords *c) {
 
 /* [l]ocal to [c]enter */
 
-float xl2xc(const Coords c, float xl) {
-    return xl - 0.5f * XS * (c.xd - 2.f * c.xc - 1);
+float xl2xc(const Coords *c, float xl) {
+    return xl - 0.5f * XS * (c->xd - 2.f * c->xc - 1);
 }
 
-float yl2yc(const Coords c, float yl) {
-    return yl - 0.5f * YS * (c.yd - 2 * c.yc - 1);
+float yl2yc(const Coords *c, float yl) {
+    return yl - 0.5f * YS * (c->yd - 2 * c->yc - 1);
 }
 
-float zl2zc(const Coords c, float zl) {
-    return zl - 0.5f * ZS * (c.zd - 2 * c.zc - 1);
+float zl2zc(const Coords *c, float zl) {
+    return zl - 0.5f * ZS * (c->zd - 2 * c->zc - 1);
 }
 
-void local2center(Coords c, float3 rl, /**/ float3 *rc) {
+void local2center(const Coords *c, float3 rl, /**/ float3 *rc) {
     rc->x = xl2xc(c, rl.x);
     rc->y = yl2yc(c, rl.y);
     rc->z = zl2zc(c, rl.z);

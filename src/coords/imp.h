@@ -5,10 +5,10 @@ int zdomain(const Coords *c);
 
 /* [l]ocal to [c]enter */
 
-float xl2xc(const Coords c, float xl);
-float yl2yc(const Coords c, float yl);
-float zl2zc(const Coords c, float zl);
-void local2center(Coords c, float3 rl, /**/ float3 *rc);
+float xl2xc(const Coords *c, float xl);
+float yl2yc(const Coords *c, float yl);
+float zl2zc(const Coords *c, float zl);
+void local2center(const Coords *c, float3 rl, /**/ float3 *rc);
 
 /* [c]enter to [l]ocal  */
 

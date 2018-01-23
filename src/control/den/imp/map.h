@@ -8,7 +8,7 @@ struct Plate {
 
 struct None {};
 
-static int predicate(Coords c, Circle p, int i, int j, int k) {
+static int predicate(const Coords *c, Circle p, int i, int j, int k) {
     enum {X, Y, Z};
     // TODO: for now assume centered at the center of the domain
     float3 r;
@@ -23,18 +23,18 @@ static int predicate(Coords c, Circle p, int i, int j, int k) {
     return R < p.R && R >= p.R - 1;
 }
 
-static int predicate(Coords c, Plate p, int i, int j, int k) {
+static int predicate(const Coords *c, Plate p, int i, int j, int k) {
     // TODO
     return 0;
 }
 
-static int predicate(Coords c, None p, int i, int j, int k) {
+static int predicate(const Coords *c, None p, int i, int j, int k) {
     return 0;
 }
 
 
 template <typename T>
-static void ini_map(Coords coords, T p, int **ids, int *nids) {
+static void ini_map(const Coords *coords, T p, int **ids, int *nids) {
     int *ii, i, j, k, n;
     size_t sz;
     
@@ -65,17 +65,17 @@ static DContMap *alloc(DContMap **m0) {
     return *m0;
 }
 
-void den_ini_map_none(Coords coords, DContMap **m0) {
+void den_ini_map_none(const Coords *c, DContMap **m0) {
     DContMap *m = alloc(m0);
     None p;
-    ini_map(coords, p, &m->cids, &m->n);
+    ini_map(c, p, &m->cids, &m->n);
 }
 
-void den_ini_map_circle(Coords coords, float R, DContMap **m0) {
+void den_ini_map_circle(const Coords *c, float R, DContMap **m0) {
     DContMap *m = alloc(m0);
     Circle p;
     p.R = R;
-    ini_map(coords, p, &m->cids, &m->n);
+    ini_map(c, p, &m->cids, &m->n);
 }
 
 void den_fin_map(DContMap *m) {
