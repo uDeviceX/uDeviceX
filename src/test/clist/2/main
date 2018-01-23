@@ -1,7 +1,7 @@
 #### random particles, some are outside
 # TEST: clist.t2
 set -eu
-S=`pwd`
+S=`u.cp.s`
 X=4 Y=6 Z=8 N=64
 u.conf . u/clist conf/default.h <<!!!
        XS=$X YS=$Y ZS=$Z

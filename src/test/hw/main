@@ -1,7 +1,7 @@
 #### check if hello world unit compiles and runs
 # TEST: hw.0
 set -eu
-S=`pwd`
+S=`u.cp.s`
 U=u/hw/hst
 C=conf/default.h
 :

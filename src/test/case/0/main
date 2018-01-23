@@ -1,6 +1,6 @@
 # TEST: case.0
 set -eu
-S=`pwd` U=u/x C="$S/conf/default.h"
+S=`u.cp.s` U=u/x C="$S/conf/default.h"
 c="$S/data/cells/rbc/498.off"
 UDX=abcd S="$S" u.case -f $c rbc.off -b pwd -d case0 $U "$C" <<!
 run

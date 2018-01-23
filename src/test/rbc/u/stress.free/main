@@ -1,6 +1,6 @@
 #### check forces on a cell
 # nTEST: rbc.u.stree.free
-S=`pwd`
+S=`u.cp.s`
 U=u/rbc/force
 C=conf/default.h
 :

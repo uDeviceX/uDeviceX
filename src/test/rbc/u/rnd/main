@@ -1,6 +1,6 @@
 #### check forces on a cell with random force
 # nTEST: rbc.u.rnd
-S=`pwd`
+S=`u.cp.s`
 U=u/rbc/force
 C=conf/default.h
 :
