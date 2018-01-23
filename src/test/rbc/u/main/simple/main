@@ -3,7 +3,7 @@
 set -eu
 rm -rf bop diag.txt h5 ply rbc.off
 :
-S=`pwd`
+S=`u.cp.s`
 U=u/rbc/main
 C=conf/lina.h
 A=5e2 : stretching force L/S^2

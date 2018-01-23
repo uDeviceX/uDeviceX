@@ -3,7 +3,7 @@
 set -eu
 rm -rf bop diag.txt h5 ply rbc.off
 :
-S=`pwd` U=u/rbc/main C=conf/lina.h
+S=`u.cp.s` U=u/rbc/main C=conf/lina.h
 nv=642
 cell="$S"/data/cells/rbc/$nv.off
 cp $cell rbc.off

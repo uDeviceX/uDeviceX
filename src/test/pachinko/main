@@ -3,7 +3,7 @@
 rm -rf bop h5 diag.txt rbc.off
 :
 set -eu
-S=`pwd`
+S=`u.cp.s`
 cp "$S"/data/sdf/pachinko/sdf.dat sdf.dat
 :
 Force="bforce={type=\"constant\"; f=[10.,0.,0.];};"

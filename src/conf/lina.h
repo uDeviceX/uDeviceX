@@ -33,9 +33,6 @@
 #define wall_creation           1000
 #define tend                    1000000
 
-/* FLOW TYPE */
-// #define WVEL_FLAT               true
-
 /* DUMPS */
 #define dump_all_fields         true
 #define part_freq               20000
