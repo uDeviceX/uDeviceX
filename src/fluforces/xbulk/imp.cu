@@ -1,3 +1,5 @@
+#include <assert.h>
+
 #include <conf.h>
 #include "inc/conf.h"
 
@@ -8,6 +10,7 @@
 
 #include "forces/type.h"
 #include "forces/pack.h"
+#include "forces/imp.h"
 
 #include "imp.h"
 
