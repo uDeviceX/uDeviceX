@@ -12,7 +12,6 @@
 #include "d/api.h"
 #include "d/ker.h"
 
-#include "coords/type.h"
 #include "coords/ini.h"
 #include "coords/imp.h"
 
