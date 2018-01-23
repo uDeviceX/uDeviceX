@@ -4,11 +4,10 @@ rm -rf bop h5 diag.txt bin.1 bin.2 sdf.dat
 :
 cp data/sdf/wall1/wall.dat sdf.dat
 :
-Force="bforce={type=\"constant\"; f=[3.333e-2, 0., 0.];};"
 u.conf conf/couette.h <<!!!
    tend=0.5 part_freq=4000
    field_dumps part_dumps field_freq=4000
-   walls wall_creation=100 WVEL_PAR_Z
+   walls wall_creation=100
    BASE_STRT_DUMP=\"bin.1/strt\"
    strt_dumps=true
    strt_freq=10000
@@ -24,6 +23,24 @@ u.conf conf/couette.h <<!!!
 u.strtdir bin.1
 u.strtdir bin.2
 (make clean && u.make -j) > /dev/null
-u.run ./bin.1/udx
-u.run ./bin.2/udx $Force
+:
+u.run ./bin.1/udx '
+wvel = {
+    type = "shear";
+    gdot = 5.0;
+    vdir = 0;
+    gdir = 2;
+};'
+:
+u.run ./bin.2/udx '
+wvel = {
+    type = "shear";
+    gdot = 5.0;
+    vdir = 0;
+    gdir = 2;
+};
+bforce ={
+    type = "constant";
+    f = [3.333e-2, 0., 0.];
+};'
 u.avgh5 0 u 1 h5/flowfields-0000.h5 | uscale 0.1 > h5.out.txt

@@ -8,9 +8,14 @@ u.conf conf/test.h <<!!!
    XS=12 YS=12 ZS=12
    tend=1.0 part_freq=300 walls wall_creation=1
    field_dumps part_dumps field_freq=300
-   WVEL_PAR_Z
    run
 !!!
 { make clean && u.make -j; } > /dev/null
-u.run 1 1 3 ./udx
+u.run 1 1 3 ./udx '
+wvel = {
+    type = "shear";
+    gdot = 5.0;
+    vdir = 0;
+    gdir = 2;
+};'
 u.avgh5 1 u 2 h5/flowfields-0003.h5 | uscale 0.1 > h5.out.txt
