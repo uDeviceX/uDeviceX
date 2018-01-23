@@ -283,7 +283,7 @@
   #define RESTRAIN_NONE
 #endif
 
-/* RBC membrain parameter sets */
+/* RBC membrane parameter sets */
 #if defined(RBC_PARAMS_TEST) || defined(RBC_PARAMS_LINA)
    #error RBC_PARAMS is runtime!
 #endif
