@@ -1,6 +1,8 @@
 static __device__ void p2rv(const float *p, int i, /**/
                             float  *x, float  *y, float  *z,
                             float *vx, float *vy, float *vz) {
+    static_assert(sizeof(Particle) == 6 * sizeof(float),
+                  "sizeof(Particle) != 6 * sizeof(float)");
     i *= 6;
      *x = p[i++];  *y = p[i++];  *z = p[i++];
     *vx = p[i++]; *vy = p[i++]; *vz = p[i++];
