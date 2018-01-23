@@ -1,7 +1,7 @@
 BIN = $(HOME)/bin
 B = $(BIN)
 
-P = rbc rbc0 util
+P = rbc rbc0 s util
 
 p = u.cp
 
