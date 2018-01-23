@@ -32,7 +32,7 @@ void step(BForce *bforce, bool wall0, int ts, int it, Sim *s) {
     UC(check_vel(s));
     
     if (s->opt.vcon && !s->equilibrating) {
-        sample(s->coords, it, flu, /**/ &s->vcon);
+        sample(&s->coords, it, flu, /**/ &s->vcon);
         adjust(it, /**/ &s->vcon, bforce);
         log(it, &s->vcon);
     }

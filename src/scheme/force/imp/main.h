@@ -79,10 +79,13 @@ static void bforce_get_view(long it, const BForce *bforce, /**/ BForce_v *view) 
     };    
 }
 
-void bforce_apply(long it, Coords c, float mass, const BForce *bf, int n, const Particle *pp, /**/ Force *ff) {
+void bforce_apply(long it, const Coords *c, float mass, const BForce *bf, int n, const Particle *pp, /**/ Force *ff) {
     int type;
     BForce_v view;
     BForceParam_v p;
+    Coords_v coordsv;
+
+    coords_get_view(c, &coordsv);
 
     view.type = BODY_FORCE_V_NONE;
     bforce_get_view(it, bf, /**/ &view);
@@ -94,19 +97,19 @@ void bforce_apply(long it, Coords c, float mass, const BForce *bf, int n, const 
     case BODY_FORCE_V_NONE:
         break;
     case BODY_FORCE_V_CSTE:
-        KL(force, (k_cnf(n)), (c, p.cste, mass, n, pp, /**/ ff));
+        KL(force, (k_cnf(n)), (coordsv, p.cste, mass, n, pp, /**/ ff));
         break;
     case BODY_FORCE_V_DP:
-        KL(force, (k_cnf(n)), (c, p.dp, mass, n, pp, /**/ ff));
+        KL(force, (k_cnf(n)), (coordsv, p.dp, mass, n, pp, /**/ ff));
         break;
     case BODY_FORCE_V_SHEAR:
-        KL(force, (k_cnf(n)), (c, p.shear, mass, n, pp, /**/ ff));
+        KL(force, (k_cnf(n)), (coordsv, p.shear, mass, n, pp, /**/ ff));
         break;
     case BODY_FORCE_V_ROL:
-        KL(force, (k_cnf(n)), (c, p.rol, mass, n, pp, /**/ ff));
+        KL(force, (k_cnf(n)), (coordsv, p.rol, mass, n, pp, /**/ ff));
         break;
     case BODY_FORCE_V_RAD:
-        KL(force, (k_cnf(n)), (c, p.rad, mass, n, pp, /**/ ff));
+        KL(force, (k_cnf(n)), (coordsv, p.rad, mass, n, pp, /**/ ff));
         break;
     default:
         ERR("wrong type <%d>", type);

@@ -7,6 +7,7 @@
 
 #include "coords/type.h"
 #include "coords/dev.h"
+#include "coords/imp.h"
 
 #include "d/api.h"
 #include "utils/error.h"

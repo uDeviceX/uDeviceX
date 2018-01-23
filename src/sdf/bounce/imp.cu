@@ -20,6 +20,8 @@
 
 #include "coords/type.h"
 #include "coords/dev.h"
+#include "coords/imp.h"
+
 #include "wvel/type.h"
 #include "wvel/dev.h"
 #include "math/dev.h"

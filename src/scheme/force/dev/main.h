@@ -1,10 +1,10 @@
 /* cste */
-static __device__ float3 get_gp(Coords, BForce_cste_v par, Particle) {
+static __device__ float3 get_gp(Coords_v, BForce_cste_v par, Particle) {
     return par.a;
 }
 
 /* double poiseuille */
-static __device__ float3 get_gp(Coords c, BForce_dp_v par, Particle p) {
+static __device__ float3 get_gp(Coords_v c, BForce_dp_v par, Particle p) {
     enum {X, Y, Z};
     float d, f;
     d = yl2yc(c, p.r[Y]);
@@ -13,7 +13,7 @@ static __device__ float3 get_gp(Coords c, BForce_dp_v par, Particle p) {
 }
 
 /* shear */
-static __device__ float3 get_gp(Coords c, BForce_shear_v par, Particle p) {
+static __device__ float3 get_gp(Coords_v c, BForce_shear_v par, Particle p) {
     enum {X, Y, Z};
     float d, f;
     d = yl2yc(c, p.r[Y]);
@@ -22,7 +22,7 @@ static __device__ float3 get_gp(Coords c, BForce_shear_v par, Particle p) {
 }
 
 /* 4 roller mills */
-static __device__ float3 get_gp(Coords c, BForce_rol_v par, Particle p) {
+static __device__ float3 get_gp(Coords_v c, BForce_rol_v par, Particle p) {
     enum {X, Y, Z};
     float x, y, lx, ly;
     float3 f;
@@ -44,7 +44,7 @@ static __device__ float3 get_gp(Coords c, BForce_rol_v par, Particle p) {
 }
 
 /* radial */
-static __device__ float3 get_gp(Coords c, BForce_rad_v par, Particle p) {
+static __device__ float3 get_gp(Coords_v c, BForce_rad_v par, Particle p) {
     enum {X, Y, Z};
     float x, y, fact;
     float3 f;
@@ -62,7 +62,7 @@ static __device__ float3 get_gp(Coords c, BForce_rad_v par, Particle p) {
 
 /* common */
 template <typename P>
-__global__ void force(Coords c, P par, float mass, int n, const Particle *pp, /**/ Force *ff) {
+__global__ void force(Coords_v c, P par, float mass, int n, const Particle *pp, /**/ Force *ff) {
     enum {X, Y, Z};
     int i;
     Particle p;

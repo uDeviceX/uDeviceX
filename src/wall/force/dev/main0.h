@@ -1,4 +1,4 @@
-static __device__ void fetch_wall(Wvel_v wv, Coords c, Texo<float4> pp, int i, /**/ forces::Pa *a) {
+static __device__ void fetch_wall(Wvel_v wv, Coords_v c, Texo<float4> pp, int i, /**/ forces::Pa *a) {
     float3 r, v; /* wall velocity */
     float4 r0;
     r0 = fetch(pp, i);
@@ -7,7 +7,7 @@ static __device__ void fetch_wall(Wvel_v wv, Coords c, Texo<float4> pp, int i, /
     forces::r3v3k2p(r.x, r.y, r.z, v.x, v.y, v.z, WALL_KIND, /**/ a);
 }
 
-static __device__ void force0(Wvel_v wv, Coords c, forces::Pa a, int aid, int zplane,
+static __device__ void force0(Wvel_v wv, Coords_v c, forces::Pa a, int aid, int zplane,
                               float seed, WallForce wa, /**/ float *ff) {
     map::Map m;
     forces::Pa b;  /* wall particles */

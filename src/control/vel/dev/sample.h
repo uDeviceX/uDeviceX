@@ -7,7 +7,7 @@ static __device__ int get_cid(int3 L, int3 c) {
 }
 
 template<typename Trans>
-__global__ void sample(Coords coords, Trans t, int3 L, const int *cellsstart, const int *cellscount, const Particle *pp,
+__global__ void sample(Coords_v coords, Trans t, int3 L, const int *cellsstart, const int *cellscount, const Particle *pp,
                        /**/ float3 *gridv) {
     Particle p;
     float3 u;
