@@ -22,13 +22,13 @@
 
 namespace bop
 {
-void ini(MPI_Comm comm, BopWork *t) {
+void bop_ini(MPI_Comm comm, BopWork *t) {
     if (m::is_master(comm))
         UC(os_mkdir(DUMP_BASE "/bop"));
     t->w_pp = new float[9*MAX_PART_NUM];
 }
 
-void fin(BopWork *t) {
+void bop_fin(BopWork *t) {
     delete[] t->w_pp;
 }
 
@@ -118,7 +118,7 @@ static long write_data(MPI_Comm cart, const void *data, long n, size_t bytesperd
     return ntot;
 }
     
-void parts(MPI_Comm cart, const Coords *coords, const Particle *pp, long n, const char *name, int step, BopWork *t) {
+void bop_parts(MPI_Comm cart, const Coords *coords, const Particle *pp, long n, const char *name, int step, BopWork *t) {
     copy_shift(coords, pp, n, /**/ (float3*) t->w_pp);
         
     char fname[256] = {0};
@@ -129,7 +129,7 @@ void parts(MPI_Comm cart, const Coords *coords, const Particle *pp, long n, cons
         header_pp(ntot, name, step);
 }
 
-void parts_forces(MPI_Comm cart, const Coords *coords, const Particle *pp, const Force *ff, long n, const char *name, int step, /*w*/ BopWork *t) {
+void bop_parts_forces(MPI_Comm cart, const Coords *coords, const Particle *pp, const Force *ff, long n, const char *name, int step, /*w*/ BopWork *t) {
     copy_shift_with_forces(coords, pp, ff, n, /**/ (float3*) t->w_pp);
             
     char fname[256] = {0};
@@ -151,11 +151,11 @@ static void intdata(MPI_Comm cart, const int *ii, long n, const char *name, cons
         header_ii(ntot, name, fields, step);
 }
 
-void ids(MPI_Comm cart, const int *ii, long n, const char *name, int step) {
+void bop_ids(MPI_Comm cart, const int *ii, long n, const char *name, int step) {
     intdata(cart, ii, n, name, "id", step);
 }
 
-void colors(MPI_Comm cart, const int *ii, long n, const char *name, int step) {
+void bop_colors(MPI_Comm cart, const int *ii, long n, const char *name, int step) {
     intdata(cart, ii, n, name, "color", step);
 }
 
