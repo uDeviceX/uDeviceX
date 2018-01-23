@@ -1,0 +1,23 @@
+#!/bin/sh
+
+. u.cp.util
+
+prog=u.cp.s
+: ${S=-}
+
+C="$HOME/.udx"
+
+usg () {
+    msg "$prog return absolute path to udx source directory"
+    msg 'if environment variables S is set return $S'
+    msg "S=/my/path $prog"
+    exit
+}
+
+if test $# -ne 0 && test "$1" = -h; then usg; fi
+
+if test ! "$S" = -
+then echo "$S"
+else if ! test -f "$C/s"; then err "not a file '$C/s'"; fi
+     cat "$C/s"
+fi
