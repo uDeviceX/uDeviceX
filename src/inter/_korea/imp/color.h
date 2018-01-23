@@ -1,7 +1,7 @@
 static int min (int x, int y)        { return x < y ? x : y; };
 static int min3(int x, int y, int z) { return min(x, min(y, z)); }
 
-static float rad(Coords c) { /* radius */
+static float rad(const Coords *c) { /* radius */
     int lx, ly, lz; /* domain */
     lx = xdomain(c);
     ly = ydomain(c);
@@ -10,7 +10,7 @@ static float rad(Coords c) { /* radius */
 }
 
 /* red and blue spheres */
-static bool blue(Coords c, float x, float y, float z) {
+static bool blue(const Coords *c, float x, float y, float z) {
     int lx, ly, lz; /* domain */
     float x0, y0, z0, r;
 
@@ -23,7 +23,7 @@ static bool blue(Coords c, float x, float y, float z) {
     r = rad(c);
     return x*x + y*y + z*z < r*r;
 }
-static bool red(Coords c, float x, float y, float z) {
+static bool red(const Coords *c, float x, float y, float z) {
     int lx, ly, lz; /* domain */
     float x0, y0, z0, r;
     lx = xdomain(c);
@@ -35,7 +35,7 @@ static bool red(Coords c, float x, float y, float z) {
     return x*x + y*y + z*z < r*r;
 }
 
-static void color(Coords coords, Particle *pp, int n, /**/ int *cc) {
+static void color(const Coords *coords, Particle *pp, int n, /**/ int *cc) {
     enum {X, Y, Z};
     int i, w, b, r;
     float x, y, z;

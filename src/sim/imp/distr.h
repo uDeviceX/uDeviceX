@@ -34,7 +34,7 @@ void distribute_flu(Sim *s) {
 
     UC(dflu_download(/**/ d->p, d->s));
     if (!dflu_status_success(d->s))
-        UC(log_and_fail(&s->coords, d->s, q));
+        UC(log_and_fail(s->coords, d->s, q));
 
     UC(dflu_post_send(d->p, d->c));
     UC(dflu_post_recv(d->c, d->u));

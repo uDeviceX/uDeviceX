@@ -3,6 +3,7 @@ struct Config;
 struct Particle;
 struct int2;
 struct float3;
+struct Coords;
 
 // tag::mem[]
 void inflow_ini(int2 nc, Inflow **i);

@@ -224,16 +224,16 @@ void sim_ini(int argc, char **argv, MPI_Comm cart, /**/ Sim **sim) {
     UC(read_opt(s->cfg, &s->opt));
     
     UC(coords_ini(s->cart, /**/ &s->coords));
-    coords_log(&s->coords);
+    UC(coords_log(s->coords));
     
     UC(emalloc(3 * MAX_PART_NUM * sizeof(Particle), (void**) &s->pp_dump));
     
     if (rbcs) UC(ini_rbc(cfg, s->cart, /**/ &s->rbc));
 
     if (s->opt.vcon)       UC(ini_vcon(s->cart, s->cfg, /**/ &s->vcon));
-    if (s->opt.outflow)    UC(ini_outflow(&s->coords, s->cfg, /**/ &s->outflow));
-    if (s->opt.inflow)     UC(ini_inflow (&s->coords, s->cfg, /**/ &s->inflow ));
-    if (s->opt.denoutflow) UC(ini_denoutflow(&s->coords, s->cfg, /**/ &s->denoutflow, &s->mapoutflow));
+    if (s->opt.outflow)    UC(ini_outflow(s->coords, s->cfg, /**/ &s->outflow));
+    if (s->opt.inflow)     UC(ini_inflow (s->coords, s->cfg, /**/ &s->inflow ));
+    if (s->opt.denoutflow) UC(ini_denoutflow(s->coords, s->cfg, /**/ &s->denoutflow, &s->mapoutflow));
     
     if (rbcs || solids)
         UC(ini_objinter(s->cart, /**/ &s->objinter));        

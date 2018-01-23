@@ -26,7 +26,7 @@ static int gen0(Particle *pp) { /* generate particle positions and velocities */
     return n;
 }
 
-static int genColor(Coords coords, /*o*/ Particle *pp, int *color, /*w*/ Particle *pp_hst, int *color_hst) {
+static int genColor(const Coords *coords, /*o*/ Particle *pp, int *color, /*w*/ Particle *pp_hst, int *color_hst) {
     int n = gen0(pp_hst);
     inter::color_hst(coords, pp_hst, n, /**/ color_hst);
     cH2D(color, color_hst, n);
@@ -40,7 +40,7 @@ static int genGrey(/*o*/ Particle *dev, /*w*/ Particle *hst) {
     return n;
 }
 
-void flu_gen_quants(Coords coords, FluQuants *q) {
+void flu_gen_quants(const Coords *coords, FluQuants *q) {
     if (multi_solvent)
         q->n = genColor(coords, q->pp, q->cc, /*w*/ q->pp_hst, q->cc_hst);
     else

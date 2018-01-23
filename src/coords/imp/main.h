@@ -158,3 +158,8 @@ void coord_stamp(const Coords *c, /**/ char *s) {
     r = sprintf(s, "%03d.%03d.%03d", c->xc, c->yc, c->zc);
     if (r < 0) ERR("sprintf failed");
 }
+
+int coords_size(const Coords *c) {
+    return c->xd * c->yd * c->zd;
+}
+

@@ -1,4 +1,4 @@
-static void read(Coords coords, int maxn, /**/ float4 *pp, int *n) {
+static void read(const Coords *coords, int maxn, /**/ float4 *pp, int *n) {
     Particle *pphst, *ppdev;
     size_t sz = maxn * sizeof(Particle);
     UC(emalloc(sz, (void**) &pphst));
@@ -14,7 +14,7 @@ static void read(Coords coords, int maxn, /**/ float4 *pp, int *n) {
     free(pphst);
 }
 
-static void write(Coords coords, int n, const float4 *pp) {
+static void write(const Coords *coords, int n, const float4 *pp) {
     Particle *pphst, *ppdev;
     size_t sz = n * sizeof(Particle);
 
@@ -30,7 +30,7 @@ static void write(Coords coords, int n, const float4 *pp) {
     free(pphst);
 }
 
-static void strt_quants(Coords coords, int maxn, int *w_n, float4 **w_pp) {
+static void strt_quants(const Coords *coords, int maxn, int *w_n, float4 **w_pp) {
     float4 * pptmp;
     CC(d::Malloc((void **) &pptmp, maxn * sizeof(float4)));
     read(coords, maxn, pptmp, w_n);
@@ -42,10 +42,10 @@ static void strt_quants(Coords coords, int maxn, int *w_n, float4 **w_pp) {
     CC(d::Free(pptmp));
 }
 
-void wall_strt_quants(Coords coords, int maxn, WallQuants *q) {
+void wall_strt_quants(const Coords *coords, int maxn, WallQuants *q) {
     strt_quants(coords, maxn, &q->n, &q->pp);
 }
 
-void wall_strt_dump_templ(Coords coords, const WallQuants *q) {
+void wall_strt_dump_templ(const Coords *coords, const WallQuants *q) {
     write(coords, q->n, q->pp);
 }

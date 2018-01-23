@@ -1,5 +1,6 @@
 struct Coords;
 struct Coords_v;
+struct float3;
 
 void coords_get_view(const Coords *c, Coords_v *v);
 
@@ -57,3 +58,6 @@ bool is_end(const Coords *c, int dir);
 
 /* a string unique for a rank */
 void coord_stamp(const Coords *c, /**/ char *s);
+
+/* number of subdomains */
+int coords_size(const Coords *c);

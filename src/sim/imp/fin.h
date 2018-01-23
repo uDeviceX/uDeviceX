@@ -151,7 +151,7 @@ void sim_fin(Sim *s) {
     
     if (rbcs) fin_rbc(/**/ &s->rbc);
 
-    UC(coords_fin(/**/ &s->coords));
+    UC(coords_fin(/**/ s->coords));
 
     UC(dbg_fin(s->dbg));
     UC(conf_fin(s->cfg));

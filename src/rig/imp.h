@@ -13,6 +13,8 @@ struct RigQuants {
     Solid *ss_dmp, *ss_dmp_bb;
 };
 
+struct Coords;
+
 void rig_ini(RigQuants *q);
 void rig_fin(RigQuants *q);
 
