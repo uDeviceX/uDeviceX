@@ -12,7 +12,7 @@ static void assert_tri(int nt, int nv, int4 *tri) {
         rank[f0]++; rank[f1]++; rank[f2]++;
     }
     for (i = 0; i < nv; i++)
-        if (rank[i] == 0) ERR("isolated vertex: %d (nv = %d, nt = %d)", i, nv, nt);
+        if (rank[i] == 0) ERR("isolated vertex: %d (v = %d, t = %d)", i, nv, nt);
     UC(efree(rank));
 }
 
@@ -20,7 +20,7 @@ void area_volume_ini(int nt, int nv, int4 *hst, /**/ AreaVolume **pq) {
     AreaVolume *q;
     UC(emalloc(sizeof(AreaVolume), (void**)&q));
     q->nt = nt; q->nv = nv;
-    UC(assert_tri(nt, nt, hst));
+    UC(assert_tri(nt, nv, hst));
     Dalloc(&q->tri, nt);
     cH2D(q->tri, hst, nt);
     *pq = q;
