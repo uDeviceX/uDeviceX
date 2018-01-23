@@ -15,7 +15,7 @@ static void gen1(const Coords *coords, int N[3], float *D0, float *D1, /**/ Sdf 
 
     UC(tform_ini(&t));
     UC(tex2sdf_ini(coords, T, N, M, /**/ t));
-    UC(field::sample(t, N, D0,   T, /**/ D1));
+    UC(sdf_field_sample(t, N, D0,   T, /**/ D1));
     UC(gen0(coords, D1, sdf));
 
     UC(tform_fin(t));
@@ -35,8 +35,9 @@ static void gen3(const Coords *coords, MPI_Comm cart, int N[3], float ext[3], fl
     float sc, G; /* domain size in x ([G]lobal) */
     G = m::dims[X] * XS;
     sc = G / ext[X];
-    UC(field::scale(N, sc, /**/ D));
-    if (field_dumps) UC(field::dump(coords, cart, N, D));
+    UC(sdf_field_scale(N, sc, /**/ D));
+    if (field_dumps)
+        UC(sdf_field_dump(coords, cart, N, D));
     UC(gen2(coords, N, D, /**/ sdf));
 }
 
@@ -48,10 +49,10 @@ void sdf_gen(const Coords *coords, MPI_Comm cart, Sdf *sdf) {
     int n;
     const char *f = "sdf.dat";
 
-    UC(field::ini_dims(f, /**/ N, ext));
+    UC(sdf_field_ini_dims(f, /**/ N, ext));
     n = N[X] * N[Y] * N[Z];
     UC(emalloc(n*sizeof(D[0]), (void**)&D));
-    UC(field::ini_data(f, n, /**/ D));
+    UC(sdf_field_ini_data(f, n, /**/ D));
     UC(gen3(coords, cart, N, ext, D, /**/ sdf));
     UC(efree(D));
 }
