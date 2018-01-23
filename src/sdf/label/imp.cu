@@ -29,9 +29,7 @@
 
 #include "imp.h"
 
-namespace label {
-namespace dev0 {
+namespace labeldev {
 #include "dev/main.h"
 }
 #include "imp/main.h"
-}

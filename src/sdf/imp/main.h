@@ -13,12 +13,12 @@ void sdf_fin(Sdf *q) {
     UC(efree(q));
 }
 
-void sdf_bounce(Wvel_v *wv, const Coords *c, Sdf *sdf, int n, /**/ Particle *pp) {
+void sdf_bounce(const Wvel_v *wv, const Coords *c, const Sdf *sdf, int n, /**/ Particle *pp) {
     UC(bounce_back(wv, c, sdf, n, /**/ pp));
 }
 
 
-void sdf_to_view(Sdf *q, /**/ Sdf_v *v) {
+void sdf_to_view(const Sdf *q, /**/ Sdf_v *v) {
     tex3d_to_view(q->tex, &v->tex);
     tform_to_view(q->t  , &v->t);
 }

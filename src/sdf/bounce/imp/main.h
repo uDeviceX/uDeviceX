@@ -1,4 +1,4 @@
-void bounce_back(Wvel_v *wv, const Coords *c, Sdf *sdf, int n, /**/ Particle *pp) {
+void bounce_back(const Wvel_v *wv, const Coords *c, const Sdf *sdf, int n, /**/ Particle *pp) {
     Sdf_v sdf_v;
     Coords_v coordsv;
     sdf_to_view(sdf, &sdf_v);
