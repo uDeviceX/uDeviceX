@@ -9,7 +9,7 @@ static void garea_volume(RbcQuants q, /**/ float *a, float *v) {
     nt = q.nt; nv = q.nv; nc = q.nc;
     pp = q.pp;
     tri = q.tri;
-    area_volume::main(nt, nv, nc, pp, tri, /**/ dev);
+    area_volume_compute(nt, nv, nc, pp, tri, /**/ dev);
     cD2H(hst, dev, 2);
     Dfree(dev);
 

@@ -5,7 +5,6 @@
 #include "inc/conf.h"
 
 #include "inc/type.h"
-#include "inc/def.h"
 #include "inc/dev.h"
 #include "math/dev.h"
 
@@ -20,9 +19,7 @@
 
 #include "imp.h"
 
-namespace area_volume {
 namespace dev {
 #include "dev/main.h"
 }
 #include "imp/main.h"
-}

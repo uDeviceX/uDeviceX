@@ -25,7 +25,7 @@ void rbc_force_apply(const RbcQuants q, const RbcForce t, const RbcParams *par, 
 
     parv = rbc_params_get_view(par);
     
-    area_volume::main(q.nt, q.nv, q.nc, q.pp, q.tri, /**/ q.av);
+    area_volume_compute(q.nt, q.nv, q.nc, q.pp, q.tri, /**/ q.av);
     apply0(parv, q.nc, q.pp, t.rnd,
            q.adj0, q.adj1, q.shape, q.av, /**/ ff);
 }
