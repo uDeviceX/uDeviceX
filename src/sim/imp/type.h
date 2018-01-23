@@ -155,7 +155,7 @@ struct Sim {
     
     /* particles on host for dump */
     Particle *pp_dump;
-    bop::Ticket dumpt;
+    bop::BopWork dumpt;
 
     /* runtime config */
     Config *cfg;

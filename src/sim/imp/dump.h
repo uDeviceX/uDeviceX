@@ -16,7 +16,7 @@ static void dev2hst(Sim *s) { /* device to host  data transfer */
 static void dump_part(int step, Sim *s) {
     const Flu *flu = &s->flu;
     const Rig *rig = &s->rig;
-    bop::Ticket *dumpt = &s->dumpt;
+    bop::BopWork *dumpt = &s->dumpt;
     
     cD2H(flu->q.pp_hst, flu->q.pp, flu->q.n);
     if (global_ids) {
