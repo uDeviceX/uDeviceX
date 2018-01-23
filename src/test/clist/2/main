@@ -5,7 +5,9 @@ S=`pwd`
 X=4 Y=6 Z=8 N=64
 u.conf . u/clist conf/default.h <<!!!
        XS=$X YS=$Y ZS=$Z
+       KL_SYNC
        run
 !!!
 { u.make -j;     } > /dev/null
-"$S"/../pre/units/gen_random 20 $Y $Z $N | u.run ./udx > clist.out.txt
+"$S"/../pre/units/gen_random 20 $Y $Z $N > particles.out 
+u.run ./udx < particles.out > clist.out.txt
