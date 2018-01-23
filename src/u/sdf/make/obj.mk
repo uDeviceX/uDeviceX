@@ -5,4 +5,4 @@ O = $B/coords/imp.o $B/d/api.o $B/io/field/h5/imp.o $B/io/field/imp.o \
     $B/utils/mc.o $B/utils/msg.o $B/utils/os.o $B/wall/sdf/array3d/imp.o \
     $B/wall/sdf/bounce/imp.o $B/wall/sdf/field/imp.o $B/wall/sdf/imp.o \
     $B/wall/sdf/label/imp.o $B/wall/sdf/tex3d/imp.o $B/wall/sdf/tform/imp.o \
-    $B/wvel/conf.o $B/wvel/imp.o
+    $B/wall/wvel/conf.o $B/wall/wvel/imp.o

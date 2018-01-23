@@ -22,8 +22,8 @@
 #include "coords/dev.h"
 #include "coords/imp.h"
 
-#include "wvel/type.h"
-#include "wvel/dev.h"
+#include "wall/wvel/type.h"
+#include "wall/wvel/dev.h"
 #include "math/dev.h"
 
 #include "math/tform/type.h"

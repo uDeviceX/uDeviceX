@@ -19,7 +19,7 @@
 #include "utils/error.h" 
 #include "coords/type.h"
 #include "coords/ini.h"
-#include "wvel/type.h"
+#include "wall/wvel/type.h"
 
 #include "wall/sdf/imp.h"
 #include "math/tform/type.h"

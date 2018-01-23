@@ -18,4 +18,4 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/wall/sdf/label   && \
     d $B/wall/sdf/tex3d   && \
     d $B/wall/sdf/tform   && \
-    d $B/wvel            
+    d $B/wall/wvel       

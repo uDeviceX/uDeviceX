@@ -42,8 +42,8 @@
 #include "io/diag/imp.h"
 #include "io/com/imp.h"
 
-#include "wvel/type.h"
-#include "wvel/imp.h"
+#include "wall/wvel/type.h"
+#include "wall/wvel/imp.h"
 
 #include "dbg/imp.h"
 #include "io/restart/imp.h"

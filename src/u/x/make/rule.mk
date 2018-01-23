@@ -98,5 +98,5 @@ $B/wall/sdf/imp.o: $S/wall/sdf/imp.cu; $N -I$S/. -I$S/wall/sdf
 $B/wall/sdf/label/imp.o: $S/wall/sdf/label/imp.cu; $N -I$S/. -I$S/wall/sdf/label
 $B/wall/sdf/tex3d/imp.o: $S/wall/sdf/tex3d/imp.cu; $N -I$S/. -I$S/wall/sdf/tex3d
 $B/wall/sdf/tform/imp.o: $S/wall/sdf/tform/imp.cpp; $X -I$S/. -I$S/wall/sdf/tform
-$B/wvel/conf.o: $S/wvel/conf.cpp; $X -I$S/. -I$S/wvel
-$B/wvel/imp.o: $S/wvel/imp.cpp; $X -I$S/. -I$S/wvel
+$B/wall/wvel/conf.o: $S/wall/wvel/conf.cpp; $X -I$S/. -I$S/wall/wvel
+$B/wall/wvel/imp.o: $S/wall/wvel/imp.cpp; $X -I$S/. -I$S/wall/wvel

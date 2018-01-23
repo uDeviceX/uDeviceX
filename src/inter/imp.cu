@@ -31,7 +31,7 @@
 #include "partlist/type.h"
 #include "clist/imp.h"
 
-#include "wvel/type.h"
+#include "wall/wvel/type.h"
 #include "wall/sdf/imp.h"
 #include "flu/imp.h"
 
