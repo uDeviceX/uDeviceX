@@ -13,7 +13,7 @@ static void remove_rbcs(RbcQuants *q, Sdf *qsdf) {
     msg_print("%d/%d RBCs survived", q->nc, nc0);
 }
 
-static void create_solids(Coords coords, MPI_Comm cart, FluQuants* qflu, RigQuants* qrig) {
+static void create_solids(const Coords *coords, MPI_Comm cart, FluQuants* qflu, RigQuants* qrig) {
     cD2H(qflu->pp_hst, qflu->pp, qflu->n);
     rig_gen_quants(coords, cart, /*io*/ qflu->pp_hst, &qflu->n, /**/ qrig);
     MC(m::Barrier(cart));
@@ -46,7 +46,7 @@ void create_walls(MPI_Comm cart, int maxn, Sdf *sdf, FluQuants* qflu, WallQuants
     msg_print("solvent particles survived: %d/%d", qflu->n, nold);
 }
 
-void freeze(Coords coords, MPI_Comm cart, Sdf *sdf, FluQuants *qflu, RigQuants *qrig, RbcQuants *qrbc) {
+void freeze(const Coords *coords, MPI_Comm cart, Sdf *sdf, FluQuants *qflu, RigQuants *qrig, RbcQuants *qrbc) {
     MC(m::Barrier(cart));
     if (solids)           create_solids(coords, cart, qflu, qrig);
     if (walls && rbcs  )  remove_rbcs(qrbc, sdf);
@@ -54,11 +54,11 @@ void freeze(Coords coords, MPI_Comm cart, Sdf *sdf, FluQuants *qflu, RigQuants *
     if (solids)           rig_set_ids(cart, qrig);
 }
 
-void color_hst(Coords coords, Particle *pp, int n, /**/ int *cc) {
+void color_hst(const Coords *coords, Particle *pp, int n, /**/ int *cc) {
     color(coords, pp, n, /**/ cc);
 }
 
-void color_dev(Coords coords, Particle *pp, int n, /*o*/ int *cc, /*w*/ Particle *pp_hst, int *cc_hst) {
+void color_dev(const Coords *coords, Particle *pp, int n, /*o*/ int *cc, /*w*/ Particle *pp_hst, int *cc_hst) {
     cD2H(pp_hst, pp, n);
     color(coords, pp_hst, n, /**/ cc_hst);
     cH2D(cc, cc_hst, n);

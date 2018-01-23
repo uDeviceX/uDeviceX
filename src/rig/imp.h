@@ -13,13 +13,15 @@ struct RigQuants {
     Solid *ss_dmp, *ss_dmp_bb;
 };
 
+struct Coords;
+
 void rig_ini(RigQuants *q);
 void rig_fin(RigQuants *q);
 
-void rig_gen_quants(Coords coords, MPI_Comm comm, Particle *opp, int *on, RigQuants *q);
-void rig_strt_quants(Coords coords, const int id, RigQuants *q);
+void rig_gen_quants(const Coords *coords, MPI_Comm comm, Particle *opp, int *on, RigQuants *q);
+void rig_strt_quants(const Coords *coords, const int id, RigQuants *q);
 
 void rig_set_ids(MPI_Comm comm, RigQuants *q);
 
-void rig_strt_dump_templ(Coords coords, const RigQuants *q);
-void rig_strt_dump(Coords coords, const int id, const RigQuants *q);
+void rig_strt_dump_templ(const Coords *coords, const RigQuants *q);
+void rig_strt_dump(const Coords *coords, const int id, const RigQuants *q);

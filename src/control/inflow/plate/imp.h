@@ -11,7 +11,7 @@ static float3 crop(float3 r, float3 lo, float3 hi) {
     return r;
 }
 
-void inflow_ini_params_plate(Coords c, float3 o, int dir, float L1, float L2,
+void inflow_ini_params_plate(const Coords *c, float3 o, int dir, float L1, float L2,
                              float3 u, bool upoiseuille, bool vpoiseuille,
                              /**/ Inflow *i) {
     enum {X, Y, Z};

@@ -11,7 +11,6 @@
 #include "inc/def.h"
 #include "inc/type.h"
 #include "inc/dev.h"
-#include "coords/type.h"
 
 #include "utils/msg.h"
 

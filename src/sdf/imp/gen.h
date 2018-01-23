@@ -1,4 +1,4 @@
-static void gen0(Coords *coords, float *D, /**/ Sdf *sdf) {
+static void gen0(const Coords *coords, float *D, /**/ Sdf *sdf) {
     int M[3] = {XWM, YWM, ZWM}; /* margin and texture */
     int T[3] = {XTE, YTE, ZTE};
 
@@ -8,7 +8,7 @@ static void gen0(Coords *coords, float *D, /**/ Sdf *sdf) {
     UC(sub2tex_ini(coords, T, M, /**/ sdf->t));
 }
 
-static void gen1(Coords *coords, int N[3], float *D0, float *D1, /**/ Sdf *sdf) {
+static void gen1(const Coords *coords, int N[3], float *D0, float *D1, /**/ Sdf *sdf) {
     Tform *t;
     int M[3] = {XWM, YWM, ZWM}; /* margin and texture */
     int T[3] = {XTE, YTE, ZTE};
@@ -21,7 +21,7 @@ static void gen1(Coords *coords, int N[3], float *D0, float *D1, /**/ Sdf *sdf) 
     UC(tform_fin(t));
 }
 
-static void gen2(Coords *coords, int N[3], float *D0, /**/ Sdf *sdf) {
+static void gen2(const Coords *coords, int N[3], float *D0, /**/ Sdf *sdf) {
     int sz;
     float *D1;
     sz = sizeof(D1[0])*XTE*YTE*ZTE;
@@ -30,7 +30,7 @@ static void gen2(Coords *coords, int N[3], float *D0, /**/ Sdf *sdf) {
     UC(efree(D1));
 }
 
-static void gen3(Coords *coords, MPI_Comm cart, int N[3], float ext[3], float *D, /**/ Sdf *sdf) {
+static void gen3(const Coords *coords, MPI_Comm cart, int N[3], float ext[3], float *D, /**/ Sdf *sdf) {
     enum {X, Y, Z};
     float sc, G; /* domain size in x ([G]lobal) */
     G = m::dims[X] * XS;
@@ -40,7 +40,7 @@ static void gen3(Coords *coords, MPI_Comm cart, int N[3], float ext[3], float *D
     UC(gen2(coords, N, D, /**/ sdf));
 }
 
-void sdf_gen(Coords *coords, MPI_Comm cart, Sdf *sdf) {
+void sdf_gen(const Coords *coords, MPI_Comm cart, Sdf *sdf) {
     enum {X, Y, Z};
     float *D;     /* data */
     int N[3];     /* size of D */

@@ -1,4 +1,4 @@
-static void color(Coords coords, Particle *pp, int n, /**/ int *cc) {
+static void color(const Coords *coords, Particle *pp, int n, /**/ int *cc) {
     enum {X, Y};
     int ly; /* domain */
     int i, b, w, r;

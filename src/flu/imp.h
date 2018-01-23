@@ -14,16 +14,18 @@ struct FluQuants {
     int *cc_hst;    /* colors on host   */    
 }; 
 
+struct Coords;
+
 void flu_ini(FluQuants *q);
 void flu_fin(FluQuants *q);
 
-void flu_gen_quants(Coords coords, FluQuants *q);
+void flu_gen_quants(const Coords *coords, FluQuants *q);
 void flu_gen_ids(MPI_Comm comm, const int n, FluQuants *q);
 
-void flu_strt_quants(Coords coords, const int id, FluQuants *q);
-void flu_strt_dump(Coords coords, const int id, const FluQuants *q);
+void flu_strt_quants(const Coords *coords, const int id, FluQuants *q);
+void flu_strt_dump(const Coords *coords, const int id, const FluQuants *q);
 /* dump in "punto" format */
-void flu_punto_dump(Coords *coords, const FluQuants *q);
+void flu_punto_dump(const Coords *coords, const FluQuants *q);
 
 /* build cells only from one array of particles fully contained in the domain */
 /* warning: this will delete particles which are outside                      */

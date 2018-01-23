@@ -12,8 +12,6 @@
 #include "inc/dev.h"
 #include "inc/type.h"
 
-#include "coords/type.h"
-
 #include "d/api.h"
 #include "mpi/wrapper.h"
 
@@ -23,6 +21,8 @@
 #include "utils/mc.h"
 #include "utils/cc.h"
 
+#include "coords/imp.h"
+
 #include "partlist/type.h"
 #include "algo/scan/imp.h"
 #include "clist/imp.h"
@@ -30,7 +30,6 @@
 #include "io/restart/imp.h"
 #include "inter/color.h"
 
-#include "coords/imp.h"
 #include "io/punto/imp.h"
 
 #include "imp.h"

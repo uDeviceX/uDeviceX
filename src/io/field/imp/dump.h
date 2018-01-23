@@ -39,7 +39,7 @@ static void avg(Particle *pp, int n, int nc, /**/
         u[c][i] = rho[i] ? u[c][i] / rho[i] : 0;
 }
 
-static void dump0(Coords coords, MPI_Comm cart, Particle *pp, int n, int nc, /*w*/
+static void dump0(const Coords *coords, MPI_Comm cart, Particle *pp, int n, int nc, /*w*/
                   float *rho, float *u[3]) {
     enum {X, Y, Z};
     static int id = 0; /* dump id */
@@ -62,7 +62,7 @@ static void dump0(Coords coords, MPI_Comm cart, Particle *pp, int n, int nc, /*w
         xmf_write(path, names, 4, xs(coords), ys(coords), zs(coords));
 }
 
-void dump(Coords coords, MPI_Comm cart, Particle *pp, int n) {
+void dump(const Coords *coords, MPI_Comm cart, Particle *pp, int n) {
     enum {X, Y, Z};
     int nc, sz;
     float *rho, *u[3];

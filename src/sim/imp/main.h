@@ -9,7 +9,7 @@ enum {
     MAXNWALL = NCELLSWALL * numberdensity
 };
 
-static void gen(Coords coords, Wall *w, Sim *s) { /* generate */
+static void gen(const Coords *coords, Wall *w, Sim *s) { /* generate */
     Flu *flu = &s->flu;
     Rbc *rbc = &s->rbc;
     Rig *rig = &s->rig;
@@ -17,7 +17,7 @@ static void gen(Coords coords, Wall *w, Sim *s) { /* generate */
     run_eq(wall_creation, s);
     if (walls) {
         dSync();
-        UC(sdf_gen(&coords, s->cart, /**/ w->sdf));
+        UC(sdf_gen(coords, s->cart, /**/ w->sdf));
         MC(m::Barrier(s->cart));
         inter::create_walls(s->cart, MAXNWALL, w->sdf, /*io*/ &flu->q, /**/ &w->q);
     }
@@ -39,8 +39,8 @@ void sim_gen(Sim *s) {
     Rbc *rbc = &s->rbc;
     Wall *wall = &s->wall;
     
-    flu_gen_quants(s->coords, &flu->q);
-    flu_build_cells(&flu->q);
+    UC(flu_gen_quants(s->coords, &flu->q));
+    UC(flu_build_cells(&flu->q));
     if (global_ids)  flu_gen_ids  (s->cart, flu->q.n, &flu->q);
     if (rbcs) {
         rbc_gen_quants(s->coords, s->cart, "rbc.off", "rbcs-ic.txt", /**/ &rbc->q);
@@ -65,7 +65,7 @@ void sim_gen(Sim *s) {
         run(            0, nsteps, s);
     }
     /* final strt dump*/
-    if (strt_dumps) dump_strt(s->coords, restart::FINAL, s);
+    if (strt_dumps) dump_strt(restart::FINAL, s);
 }
 
 void sim_strt(Sim *s) {
@@ -93,7 +93,7 @@ void sim_strt(Sim *s) {
     MC(m::Barrier(s->cart));
     if (walls) {
         dSync();
-        UC(sdf_gen(&s->coords, s->cart, /**/ wall->sdf));
+        UC(sdf_gen(s->coords, s->cart, /**/ wall->sdf));
         MC(m::Barrier(s->cart));
     }
 
@@ -102,5 +102,5 @@ void sim_strt(Sim *s) {
     msg_print("will take %ld steps", nsteps - wall_creation);
     run(wall_creation, nsteps, s);
 
-    if (strt_dumps) dump_strt(s->coords, restart::FINAL, s);
+    if (strt_dumps) dump_strt(restart::FINAL, s);
 }

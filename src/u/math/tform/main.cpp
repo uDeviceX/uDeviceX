@@ -12,9 +12,7 @@
 #include "utils/error.h"
 #include "math/tform/imp.h"
 
-#include "coords/type.h"
 #include "coords/ini.h"
-#include "coords/imp.h"
 
 #include "utils/msg.h"
 #include "sdf/tform/imp.h"
@@ -41,7 +39,7 @@ struct TInput {
 };
 
 static int Chain, Dev, Grid, Tex;
-static Coords coords;
+static Coords *coords;
 
 static void usg0() {
     fprintf(stderr, "./udx -- OPTIONS.. < FILE\n");
@@ -141,7 +139,7 @@ static void input2form(TInput *v, Tform **t) {
                           to->lo, to->hi,   to->n, /**/ *t);
     } else if (Tex) {
         tex = &v->tex;
-        tex2sdf_ini(&coords, tex->T, tex->N, tex->M, /**/ *t);
+        tex2sdf_ini(coords, tex->T, tex->N, tex->M, /**/ *t);
     } else {
         UC(tform_vector(v->v.a0, v->v.a1,
                         v->v.b0, v->v.b1, /**/ *t));
@@ -251,6 +249,6 @@ int main(int argc, char **argv) {
     Grid  = flag("-g", &argc, &argv);
     Tex   = flag("-t", &argc, &argv);
     main2(argc, argv);
-    coords_fin(/**/ &coords);
+    coords_fin(/**/ coords);
     m::fin();
 }

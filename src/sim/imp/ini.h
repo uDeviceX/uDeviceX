@@ -76,7 +76,7 @@ static void ini_vcon(MPI_Comm comm, const Config *cfg, /**/ Vcon *c) {
         ERR("Unrecognised type <%s>", type);
 }
 
-static void ini_outflow(Coords coords, const Config *cfg, Outflow **o) {
+static void ini_outflow(const Coords *coords, const Config *cfg, Outflow **o) {
     UC(ini(MAX_PART_NUM, /**/ o));
     const char *type;
     UC(conf_lookup_string(cfg, "outflow.type", &type));
@@ -101,24 +101,24 @@ static void ini_outflow(Coords coords, const Config *cfg, Outflow **o) {
     }
 }
 
-static void ini_denoutflow(Coords coords, const Config *cfg, DCont **d, DContMap **m) {
+static void ini_denoutflow(const Coords *c, const Config *cfg, DCont **d, DContMap **m) {
     const char *type;
     UC(den_ini(MAX_PART_NUM, /**/ d));
 
     UC(conf_lookup_string(cfg, "denoutflow.type", &type));
     if (same_str(type, "none")) {
-        UC(den_ini_map_none(coords, /**/ m));
+        UC(den_ini_map_none(c, /**/ m));
     }
     else if (same_str(type, "circle")) {
         float R;
         UC(conf_lookup_float(cfg, "denoutflow.R", &R));
-        UC(den_ini_map_circle(coords, R, /**/ m));
+        UC(den_ini_map_circle(c, R, /**/ m));
     } else {
         ERR("Unrecognized type <%s>", type);
     }
 }
 
-static void ini_inflow(Coords coords, const Config *cfg, Inflow **i) {
+static void ini_inflow(const Coords *coords, const Config *cfg, Inflow **i) {
     /* number of cells */
     int2 nc = make_int2(YS, ZS/2);
     UC(inflow_ini(nc, /**/ i));
@@ -202,10 +202,10 @@ static void read_opt(const Config *c, Opt *o) {
     o->vcon = b;
 }
 
-static void coords_log(Coords *c) {
-    msg_print("domain: %d %d %d", xdomain(*c), ydomain(*c), zdomain(*c));
+static void coords_log(const Coords *c) {
+    msg_print("domain: %d %d %d", xdomain(c), ydomain(c), zdomain(c));
     msg_print("subdomain: [%d:%d][%d:%d][%d:%d]",
-              xlo(*c), xhi(*c), ylo(*c), yhi(*c), zlo(*c), zhi(*c));
+              xlo(c), xhi(c), ylo(c), yhi(c), zlo(c), zhi(c));
 }
 
 void sim_ini(int argc, char **argv, MPI_Comm cart, /**/ Sim **sim) {
@@ -224,7 +224,7 @@ void sim_ini(int argc, char **argv, MPI_Comm cart, /**/ Sim **sim) {
     UC(read_opt(s->cfg, &s->opt));
     
     UC(coords_ini(s->cart, /**/ &s->coords));
-    coords_log(&s->coords);
+    UC(coords_log(s->coords));
     
     UC(emalloc(3 * MAX_PART_NUM * sizeof(Particle), (void**) &s->pp_dump));
     

@@ -3,6 +3,7 @@ struct Config;
 struct Particle;
 struct int2;
 struct float3;
+struct Coords;
 
 // tag::mem[]
 void inflow_ini(int2 nc, Inflow **i);
@@ -12,15 +13,15 @@ void inflow_fin(Inflow *i);
 // tag::ini[]
 void inflow_ini_velocity(Inflow *i);
 
-void inflow_ini_params_plate(Coords c, float3 o, int dir, float L1, float L2,
-                      float3 u, bool upoiseuille, bool vpoiseuille,
-                      /**/ Inflow *i);
-void inflow_ini_params_circle(Coords c, float3 o, float R, float H, float u, bool poiseuille,
-                       /**/ Inflow *i);
+void inflow_ini_params_plate(const Coords *c, float3 o, int dir, float L1, float L2,
+                             float3 u, bool upoiseuille, bool vpoiseuille,
+                             /**/ Inflow *i);
+void inflow_ini_params_circle(const Coords *c, float3 o, float R, float H, float u, bool poiseuille,
+                              /**/ Inflow *i);
 // end::ini[]
 
 // tag::cnf[]
-void inflow_ini_params_conf(Coords coords, const Config *cfg, /**/ Inflow *i);
+void inflow_ini_params_conf(const Coords *coords, const Config *cfg, /**/ Inflow *i);
 // end::cnf[]
 
 // tag::int[]

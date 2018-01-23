@@ -9,7 +9,7 @@
 #include "mpi/glb.h"
 #include "utils/error.h"
 #include "utils/imp.h"
-#include "coords/type.h"
+#include "coords/imp.h"
 
 #include "imp.h"
 
@@ -25,8 +25,8 @@ enum {X, Y, Z};
    base depends on read/write
  */
 #define PF    "%s.%s"
-#define DIR_S "%s/%s/"                 PF
-#define DIR_M "%s/%s/%03d.%03d.%03d/"  PF
+#define DIR_S "%s/%s/"     PF
+#define DIR_M "%s/%s/%s/"  PF
 
 #define READ (true)
 #define DUMP (false)
@@ -55,15 +55,19 @@ static void id2str(const int id, char *str) {
     }
 }
 
-static void gen_name(Coords coords, const bool read, const char *code, const int id, const char *ext, /**/ char *name) {
+static void gen_name(const Coords *coords, const bool read, const char *code, const int id, const char *ext, /**/ char *name) {
     char idcode[BS] = {0};
     id2str(id, /**/ idcode);
     int size;
-    size = coords.xd * coords.yd * coords.zd;
-    if (size == 1)
+    size = coords_size(coords);
+    if (size == 1) {
         CSPR(sprintf(name, DIR_S, read ? BASE_STRT_READ : BASE_STRT_DUMP, code, idcode, ext));
-    else
-        CSPR(sprintf(name, DIR_M, read ? BASE_STRT_READ : BASE_STRT_DUMP, code, coords.xc, coords.yc, coords.zc, idcode, ext));
+    }
+    else {
+        char stamp[FILENAME_MAX];
+        coord_stamp(coords, stamp);
+        CSPR(sprintf(name, DIR_M, read ? BASE_STRT_READ : BASE_STRT_DUMP, code, stamp, idcode, ext));
+    }
 }
 
 static void write_header_pp(const char *bop, const char *rel, const long n) {
@@ -112,7 +116,7 @@ static void read_data(const char *name, const long n, T *dat) {
     UC(efclose(f));
 }
 
-void write_pp(Coords coords, const char *code, const int id, const Particle *pp, const long n) {
+void write_pp(const Coords *coords, const char *code, const int id, const Particle *pp, const long n) {
     char bop[BS] = {0}, rel[BS] = {0}, val[BS] = {0}, idcode[BS] = {0};
     gen_name(coords, DUMP, code, id, "bop"   , /**/ bop);
     gen_name(coords, DUMP, code, id, "values", /**/ val);
@@ -124,7 +128,7 @@ void write_pp(Coords coords, const char *code, const int id, const Particle *pp,
     write_data(val, pp, n);
 }
 
-void read_pp(Coords coords, const char *code, const int id, Particle *pp, int *n) {
+void read_pp(const Coords *coords, const char *code, const int id, Particle *pp, int *n) {
     long np = 0;
     char bop[BS] = {0}, val[BS] = {0};
     gen_name(coords, READ, code, id, "bop"   , /**/ bop);
@@ -136,7 +140,7 @@ void read_pp(Coords coords, const char *code, const int id, Particle *pp, int *n
     DBG("I have read %ld pp", np);
 }
 
-void write_ii(Coords coords, const char *code, const char *subext, const int id, const int *ii, const long n) {
+void write_ii(const Coords *coords, const char *code, const char *subext, const int id, const int *ii, const long n) {
     char bop[BS] = {0}, rel[BS] = {0}, val[BS] = {0}, idcode[BS] = {0},
         extbop[BS] = {0}, extval[BS] = {0};
     CSPR(sprintf(extbop, "%s.bop",    subext));
@@ -152,7 +156,7 @@ void write_ii(Coords coords, const char *code, const char *subext, const int id,
     write_data(val, ii, n);
 }
 
-void read_ii(Coords coords, const char *code, const char *subext, const int id, int *ii, int *n) {
+void read_ii(const Coords *coords, const char *code, const char *subext, const int id, int *ii, int *n) {
     long np = 0;
     char bop[BS] = {0}, val[BS] = {0}, extbop[BS] = {0}, extval[BS] = {0};
     CSPR(sprintf(extbop, "%s.bop",    subext));
@@ -167,7 +171,7 @@ void read_ii(Coords coords, const char *code, const char *subext, const int id, 
     DBG("I have read %ld pp", np);
 }
 
-void write_ss(Coords coords, const char *code, const int id, const Solid *ss, const long n) {
+void write_ss(const Coords *coords, const char *code, const int id, const Solid *ss, const long n) {
     char fname[BS] = {0};
     FILE *f;
     gen_name(coords, DUMP, code, id, "solid", /**/ fname);
@@ -178,7 +182,7 @@ void write_ss(Coords coords, const char *code, const int id, const Solid *ss, co
     UC(efclose(f));
 }
 
-void read_ss(Coords coords, const char *code, const int id, Solid *ss, int *n) {
+void read_ss(const Coords *coords, const char *code, const int id, Solid *ss, int *n) {
     long ns = 0;
     char fname[BS] = {0};
     FILE *f;

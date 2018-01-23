@@ -1,4 +1,4 @@
-static void setup_from_pos(Coords coords, MPI_Comm comm, const char *cell, const char *ic, int nv, /**/
+static void setup_from_pos(const Coords *coords, MPI_Comm comm, const char *cell, const char *ic, int nv, /**/
                            Particle *pp, int *pnc, int *pn, /* storage */ Particle *pp_hst) {
     int nc;
     nc = rbc_gen(coords, cell, ic, nv, pp_hst);
@@ -14,7 +14,7 @@ static void gen_ids(MPI_Comm comm, long nc, /**/ int *ii) {
         ii[i] = i + i0;
 }
 
-void rbc_gen_quants(Coords coords, MPI_Comm comm, const char *cell, const char *ic, /**/ RbcQuants *q) {
+void rbc_gen_quants(const Coords *coords, MPI_Comm comm, const char *cell, const char *ic, /**/ RbcQuants *q) {
     int md, nt, nv;
     md = RBCmd;
     nt = RBCnt;

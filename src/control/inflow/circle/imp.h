@@ -1,4 +1,4 @@
-static bool is_inside_subdomain(Coords c, float3 r) {
+static bool is_inside_subdomain(const Coords *c, float3 r) {
     bool inside = true;
     inside &= (xlo(c) <= r.x) && (r.x < xhi(c));
     inside &= (ylo(c) <= r.y) && (r.y < yhi(c));
@@ -6,8 +6,8 @@ static bool is_inside_subdomain(Coords c, float3 r) {
     return inside;
 }
 
-void inflow_ini_params_circle(Coords c, float3 o, float R, float H, float u, bool poiseuille,
-                       /**/ Inflow *i) {
+void inflow_ini_params_circle(const Coords *c, float3 o, float R, float H, float u, bool poiseuille,
+                              /**/ Inflow *i) {
     enum {X, Y, Z};
     ParamsCircle *pp;
     VParamsCircle *vpp;

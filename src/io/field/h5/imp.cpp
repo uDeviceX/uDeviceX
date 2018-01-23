@@ -1,7 +1,6 @@
 #include <hdf5.h>
 #include <vector_types.h>
 
-#include "coords/type.h"
 #include "coords/imp.h"
 #include "mpi/glb.h"
 #include "mpi/wrapper.h"
@@ -49,7 +48,7 @@ static void write_float(hid_t dataset_id,
         ERR("fail to write data set");
 }
 
-static void write0(Coords coords, hid_t file_id,
+static void write0(const Coords *coords, hid_t file_id,
                    float *channeldata[],
                    const char **channelnames,
                    int nchannels) {
@@ -85,7 +84,7 @@ static void write0(Coords coords, hid_t file_id,
     H5Sclose(filespace_simple);
 }
 
-void h5_write(Coords coords, MPI_Comm cart, const char *path, float **data,
+void h5_write(const Coords *coords, MPI_Comm cart, const char *path, float **data,
               const char **names, int ncomp) {
     /* ncomp: number of component,
        sx, sy, sz: sizes */

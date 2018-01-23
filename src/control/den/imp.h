@@ -2,8 +2,8 @@ struct DCont;
 struct DContMap;
 
 void den_ini(int maxp, /**/ DCont **d0);
-void den_ini_map_none(Coords coords, DContMap **m0);
-void den_ini_map_circle(Coords coords, float R, DContMap **m0);
+void den_ini_map_none(const Coords *c, DContMap **m0);
+void den_ini_map_circle(const Coords *c, float R, DContMap **m0);
 
 void den_fin(DCont *d);
 void den_fin_map(DContMap *m);

@@ -22,7 +22,7 @@ static void share0(MPI_Comm comm, const int root, /**/ Particle *pp, int *n) {
     }
 }
 
-static void share(Coords coords, MPI_Comm comm, const int root, /**/ Particle *pp, int *n) {
+static void share(const Coords *coords, MPI_Comm comm, const int root, /**/ Particle *pp, int *n) {
     if (*n >= MAX_PSOLID_NUM) ERR("Number of solid particles too high for the buffer\n");
     // set to global coordinates and then convert back to local
     int i;

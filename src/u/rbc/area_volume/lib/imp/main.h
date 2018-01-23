@@ -14,14 +14,14 @@ static void run0(RbcQuants q, RbcForce t) {
 }
 
 static void run1(const char *cell, const char *ic, RbcQuants q) {
-    Coords coords;
+    Coords *coords;
     coords_ini(m::cart, &coords);
     RbcForce t;
     rbc_gen_quants(coords, m::cart, cell, ic, /**/ &q);
     rbc_force_gen(q, &t);
     run0(q, t);
     rbc_force_fin(&t);
-    coords_fin(&coords);
+    coords_fin(coords);
 }
 
 void run(const char *cell, const char *ic) {

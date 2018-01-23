@@ -16,7 +16,7 @@ static void garea_volume(RbcQuants q, /**/ float *a, float *v) {
     *a = hst[0]; *v = hst[1];
 }
 
-static void dump(Coords coords, RbcQuants q, RbcForce t) {
+static void dump(const Coords *coords, RbcQuants q, RbcForce t) {
     int n;
     Particle *pp;
     float area, volume, area0, volume0;
@@ -32,12 +32,12 @@ static void dump(Coords coords, RbcQuants q, RbcForce t) {
     free(pp);
 }
 
-static int body_force(Coords coords, const BForce *bf, RbcQuants q, Force *f) {
+static int body_force(const Coords *coords, const BForce *bf, RbcQuants q, Force *f) {
     UC(bforce_apply(0, coords, rbc_mass, bf, q.n, q.pp, /**/ f));
     return 0;
 }
 
-static void run0(Coords coords, const BForce *bforce, RbcQuants q, RbcForce t, const RbcParams *par, RbcStretch* stretch, Force *f) {
+static void run0(const Coords *coords, const BForce *bforce, RbcQuants q, RbcForce t, const RbcParams *par, RbcStretch* stretch, Force *f) {
     long i;
     long nsteps = (long)(tend / dt);
     msg_print("will take %ld steps", nsteps);
@@ -54,7 +54,7 @@ static void run0(Coords coords, const BForce *bforce, RbcQuants q, RbcForce t, c
     }
 }
 
-static void run1(Coords coords, const BForce *bforce, RbcQuants q, RbcForce t, const RbcParams *par,
+static void run1(const Coords *coords, const BForce *bforce, RbcQuants q, RbcForce t, const RbcParams *par,
                  RbcStretch *stretch) {
     Force *f;
     Dalloc(&f, q.n);
@@ -63,7 +63,7 @@ static void run1(Coords coords, const BForce *bforce, RbcQuants q, RbcForce t, c
     Dfree(f);
 }
 
-static void run2(Coords coords, const BForce *bforce, const char *cell, const char *ic, const RbcParams *par, RbcQuants q) {
+static void run2(const Coords *coords, const BForce *bforce, const char *cell, const char *ic, const RbcParams *par, RbcQuants q) {
     RbcStretch *stretch;
     RbcForce t;
     rbc_gen_quants(coords, m::cart, cell, ic, /**/ &q);
@@ -74,7 +74,7 @@ static void run2(Coords coords, const BForce *bforce, const char *cell, const ch
     rbc_force_fin(&t);
 }
 
-void run(Coords coords, const BForce *bforce, const char *cell, const char *ic, const RbcParams *par) {
+void run(const Coords *coords, const BForce *bforce, const char *cell, const char *ic, const RbcParams *par) {
     RbcQuants q;
     rbc_ini(&q);
     run2(coords, bforce, cell, ic, par, q);

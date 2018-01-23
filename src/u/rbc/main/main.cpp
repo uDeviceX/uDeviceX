@@ -7,7 +7,6 @@
 #include "utils/error.h"
 #include "mpi/wrapper.h"
 #include "mpi/glb.h"
-#include "coords/type.h"
 #include "coords/ini.h"
 #include "parser/imp.h"
 #include "scheme/force/imp.h"
@@ -18,7 +17,7 @@
 
 int main(int argc, char **argv) {
     Config *cfg;
-    Coords coords;
+    Coords *coords;
     BForce *bforce;
     RbcParams *par;
     m::ini(&argc, &argv);
@@ -35,7 +34,7 @@ int main(int argc, char **argv) {
     coords_ini(m::cart, &coords);
     
     run(coords, bforce, "rbc.off", "rbcs-ic.txt", par);
-    coords_fin(&coords);
+    coords_fin(coords);
 
     UC(bforce_fin(bforce));
 

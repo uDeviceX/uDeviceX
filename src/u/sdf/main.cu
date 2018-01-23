@@ -55,13 +55,13 @@ void main0(Sdf *sdf, Part *p) {
 
 void main1(Part *p) {
     Sdf *sdf;
-    Coords coords;
+    Coords *coords;
     UC(sdf_ini(&sdf));
     UC(coords_ini(m::cart, /**/ &coords));
-    UC(sdf_gen(&coords, m::cart, sdf));
+    UC(sdf_gen(coords, m::cart, sdf));
     UC(main0(sdf, p));
     UC(sdf_fin(sdf));
-    UC(coords_fin(&coords));
+    UC(coords_fin(coords));
     dSync();    
 }
 

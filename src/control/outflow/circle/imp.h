@@ -1,4 +1,4 @@
-void ini_params_circle(Coords coords, float3 c, float R, Outflow *o) {
+void ini_params_circle(const Coords *coords, float3 c, float R, Outflow *o) {
     enum {X, Y, Z};
     ParamsCircle p;
     p.Rsq = R*R;

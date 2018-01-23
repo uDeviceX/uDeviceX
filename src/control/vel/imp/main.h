@@ -77,22 +77,24 @@ void vcon_set_radial(/**/ PidVCont *cont) {
     cont->type = TYPE_RAD;
 }
 
-void vcont_sample(Coords coords, int n, const Particle *pp, const int *starts, const int *counts, /**/ PidVCont *c) {
+void vcont_sample(const Coords *coords, int n, const Particle *pp, const int *starts, const int *counts, /**/ PidVCont *c) {
     int3 L = c->L;
-    
+    Coords_v coordsv;
     dim3 block(8, 8, 1);
     dim3 grid(ceiln(L.x, block.x),
               ceiln(L.y, block.y),
               ceiln(L.z, block.z));
 
+    coords_get_view(coords, &coordsv);
+    
     switch (c->type) {
     case TYPE_NONE:
         break;
     case TYPE_CART:
-        KL(dev::sample, (grid, block), (coords, c->trans.cart, L, starts, counts, pp, /**/ c->gridvel));
+        KL(dev::sample, (grid, block), (coordsv, c->trans.cart, L, starts, counts, pp, /**/ c->gridvel));
         break;
     case TYPE_RAD:
-        KL(dev::sample, (grid, block), (coords, c->trans.rad, L, starts, counts, pp, /**/ c->gridvel));
+        KL(dev::sample, (grid, block), (coordsv, c->trans.rad, L, starts, counts, pp, /**/ c->gridvel));
         break;
     default:
         ERR("Unknown type");

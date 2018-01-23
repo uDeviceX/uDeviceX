@@ -41,7 +41,7 @@ static void gen0(MPI_Comm comm, int nt, const int4 *tt, const float *vv, int nso
     set_rig_ids(comm, nsolid, /**/ ss);
 }
 
-static void gen1(Coords coords, MPI_Comm comm, int nt, const int4 *tt, const float *vv, int nsolid, float *coms, /**/
+static void gen1(const Coords *coords, MPI_Comm comm, int nt, const int4 *tt, const float *vv, int nsolid, float *coms, /**/
                  int *ns, int *nps, float *rr0, Solid *ss, int *s_n, Particle *s_pp, Particle *r_pp,
                  /*w*/ int *tags, int *rcounts) {
     int root, idmax;
@@ -58,14 +58,14 @@ static void gen1(Coords coords, MPI_Comm comm, int nt, const int4 *tt, const flo
     gen0(comm, nt, tt, vv, nsolid, rcount, idmax, root, coms, /**/ ns, nps, rr0, ss, r_pp);
 }
 
-static void gen2(Coords coords, MPI_Comm comm, int nt, const int4 *tt, const float *vv, int nsolid, float *coms, /**/
+static void gen2(const Coords *coords, MPI_Comm comm, int nt, const int4 *tt, const float *vv, int nsolid, float *coms, /**/
                  int *ns, int *nps, float *rr0, Solid *ss, int *s_n, Particle *s_pp, Particle *r_pp,
                  /*w*/ int *tags, int *rcounts) {
     count_pp_inside(s_pp, *s_n, coms, nsolid, tt, vv, nt, /**/ tags, rcounts);
     gen1(coords, comm, nt, tt, vv, nsolid, coms, /**/ ns, nps, rr0, ss, s_n, s_pp, r_pp, /*w*/ tags, rcounts);
 }
 
-static void gen3(Coords coords, MPI_Comm comm, int nt, const int4 *tt, const float *vv, int nsolid, float *coms, /**/
+static void gen3(const Coords *coords, MPI_Comm comm, int nt, const int4 *tt, const float *vv, int nsolid, float *coms, /**/
                  int *ns, int *nps, float *rr0, Solid *ss, int *s_n, Particle *s_pp, Particle *r_pp) {
     int *tags = new int[*s_n];
     int *rcounts = new int[nsolid];
@@ -74,7 +74,7 @@ static void gen3(Coords coords, MPI_Comm comm, int nt, const int4 *tt, const flo
     delete[] tags;
 }
 
-static void gen4(Coords coords, MPI_Comm comm, const char *fname, int nt, int nv, const int4 *tt, const float *vv, /**/
+static void gen4(const Coords *coords, MPI_Comm comm, const char *fname, int nt, int nv, const int4 *tt, const float *vv, /**/
                  int *ns, int *nps, float *rr0, Solid *ss, int *s_n, Particle *s_pp, Particle *r_pp,
                  /*w*/ float *coms) {
     float3 minbb, maxbb;
@@ -86,14 +86,14 @@ static void gen4(Coords coords, MPI_Comm comm, const char *fname, int nt, int nv
     gen3(coords, comm, nt, tt, vv, nsolid, coms, /**/ ns, nps, rr0, ss, s_n, s_pp, r_pp);
 }
 
-void gen(Coords coords, MPI_Comm comm, const char *fname, int nt, int nv, const int4 *tt, const float *vv, /**/
+void gen(const Coords *coords, MPI_Comm comm, const char *fname, int nt, int nv, const int4 *tt, const float *vv, /**/
          int *ns, int *nps, float *rr0, Solid *ss, int *s_n, Particle *s_pp, Particle *r_pp) {
     float *coms = new float[MAX_SOLIDS * 3 * 10];
     gen4(coords, comm, fname, nt, nv, tt, vv, /**/ ns, nps, rr0, ss, s_n, s_pp, r_pp, /*w*/ coms);
     delete[] coms;
 }
 
-void gen_rig_from_solvent(Coords coords, MPI_Comm comm, int nt, int nv, const int4 *tt, const float *vv, /* io */ Particle *opp, int *on,
+void gen_rig_from_solvent(const Coords *coords, MPI_Comm comm, int nt, int nv, const int4 *tt, const float *vv, /* io */ Particle *opp, int *on,
                           /* o */ int *ns, int *nps, int *n, float *rr0_hst, Solid *ss_hst, Particle *pp_hst) {
     // generate models
     msg_print("start rigid gen");

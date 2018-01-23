@@ -3,6 +3,7 @@ struct Force;
 struct BForce;
 struct float3;
 struct Config;
+struct Coords;
 
 // tag::mem[]
 void bforce_ini(BForce **p);
@@ -24,5 +25,5 @@ void bforce_ini_conf(const Config *cfg, /**/ BForce *bf);
 
 // tag::interface[]
 void bforce_adjust(float3 f, /**/ BForce *fpar); // <1>
-void bforce_apply(long it, Coords c, float mass, const BForce *bf, int n, const Particle *pp, /**/ Force *ff); // <2>
+void bforce_apply(long it, const Coords *c, float mass, const BForce *bf, int n, const Particle *pp, /**/ Force *ff); // <2>
 // end::interface[]

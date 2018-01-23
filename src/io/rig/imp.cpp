@@ -6,7 +6,6 @@
 #include "inc/conf.h"
 #include "utils/error.h"
 #include "utils/imp.h"
-#include "coords/type.h"
 #include "coords/imp.h"
 
 enum {X, Y, Z};
@@ -15,7 +14,7 @@ static void write_v(FILE *f, const float v[3]) {
     fprintf(f, "%+.6e %+.6e %+.6e ", v[X], v[Y], v[Z]);
 }
 
-void rig_dump(const int it, const Solid *ss, const Solid *ssbb, int ns, const Coords coords) {
+void rig_dump(const int it, const Solid *ss, const Solid *ssbb, int ns, const Coords *c) {
     enum {X, Y, Z};
     static bool first = true;
     char fname[256];
@@ -35,9 +34,9 @@ void rig_dump(const int it, const Solid *ss, const Solid *ssbb, int ns, const Co
         fprintf(fp, "%+.6e ", dt*it);
 
         // shift to global coordinates
-        com[X] = xl2xg(coords, s->com[X]);
-        com[Y] = yl2yg(coords, s->com[Y]);
-        com[Z] = zl2zg(coords, s->com[Z]);
+        com[X] = xl2xg(c, s->com[X]);
+        com[Y] = yl2yg(c, s->com[Y]);
+        com[Z] = zl2zg(c, s->com[Z]);
             
         write_v(fp, com);
         write_v(fp, s->v );

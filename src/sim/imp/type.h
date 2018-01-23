@@ -139,7 +139,7 @@ struct Sim {
     Wall wall;
 
     /* helpers */
-    Coords coords;
+    Coords *coords;
     ObjInter objinter;
     BounceBack bb;
     Colorer colorer;

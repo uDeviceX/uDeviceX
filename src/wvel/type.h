@@ -36,4 +36,4 @@ struct Wvel_v {
     int type;
 };
 
-typedef void (*wvel_fun) (WvelPar_v, Coords, float3, /**/ float3*); 
+typedef void (*wvel_fun) (WvelPar_v, Coords_v, float3, /**/ float3*); 
