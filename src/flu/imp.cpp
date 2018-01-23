@@ -39,11 +39,4 @@
 #include "imp/generate.h"
 #include "imp/start.h"
 #include "imp/punto.h"
-
-/* TODO does it belong here? */
-void flu_build_cells(/**/ FluQuants *q) {
-    clist_build(q->n, q->n, q->pp, /**/ q->pp0, &q->cells, q->mcells);
-    // swap
-    Particle *tmp = q->pp;
-    q->pp = q->pp0; q->pp0 = tmp;
-}
+#include "imp/cells.h"

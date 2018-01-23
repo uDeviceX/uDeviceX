@@ -7,7 +7,7 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/math/rnd         && \
     d $B/math/tform       && \
     d $B/mpi              && \
-    d $B/sdf/tform        && \
     d $B/u/math/tform     && \
     d $B/u/math/tform/lib && \
-    d $B/utils           
+    d $B/utils            && \
+    d $B/wall/sdf/tform  

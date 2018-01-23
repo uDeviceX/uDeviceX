@@ -21,8 +21,9 @@ O = $B/algo/minmax/imp.o $B/algo/scan/imp.o $B/clist/imp.o $B/cnt/imp.o \
     $B/scheme/force/conf.o $B/scheme/force/imp.o $B/scheme/move/imp.o \
     $B/scheme/restrain/imp.o $B/scheme/restrain/sub/imp.o \
     $B/scheme/restrain/sub/stat/imp.o $B/scheme/restrain/sub/sum/imp.o \
-    $B/sdf/array3d/imp.o $B/sdf/bounce/imp.o $B/sdf/field/imp.o $B/sdf/imp.o \
-    $B/sdf/label/imp.o $B/sdf/tex3d/imp.o $B/sdf/tform/imp.o $B/sim/imp.o \
-    $B/utils/cc.o $B/utils/error.o $B/utils/imp.o $B/utils/mc.o $B/utils/msg.o \
-    $B/utils/os.o $B/wall/exch/imp.o $B/wall/force/imp.o $B/wall/imp.o \
-    $B/wvel/conf.o $B/wvel/imp.o
+    $B/sim/imp.o $B/utils/cc.o $B/utils/error.o $B/utils/imp.o $B/utils/mc.o \
+    $B/utils/msg.o $B/utils/os.o $B/wall/exch/imp.o $B/wall/force/imp.o \
+    $B/wall/imp.o $B/wall/sdf/array3d/imp.o $B/wall/sdf/bounce/imp.o \
+    $B/wall/sdf/field/imp.o $B/wall/sdf/imp.o $B/wall/sdf/label/imp.o \
+    $B/wall/sdf/tex3d/imp.o $B/wall/sdf/tform/imp.o $B/wall/wvel/conf.o \
+    $B/wall/wvel/imp.o

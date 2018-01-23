@@ -23,7 +23,7 @@ void eobj_pack_ini(int nw, int maxd, int maxpsolid, EObjPack **pack) {
     estimates(NFRAGS, maxd, maxpsolid, /**/ cap);
 
     UC(emap_ini(nw, NFRAGS, cap, /**/ &p->map));
-    UC(bags_ini(PINNED, NONE, sizeof(Particle), cap, /**/ &p->hpp, &p->dpp));
+    UC(comm_bags_ini(PINNED, NONE, sizeof(Particle), cap, /**/ &p->hpp, &p->dpp));
 }
 
 void eobj_comm_ini(MPI_Comm cart, /**/ EObjComm **com) {
@@ -44,7 +44,7 @@ void eobj_unpack_ini(int maxd, int maxpsolid, EObjUnpack **unpack) {
     
     estimates(NFRAGS, maxd, maxpsolid, /**/ cap);
 
-    UC(bags_ini(PINNED_DEV, NONE, sizeof(Particle), cap, /**/ &u->hpp, &u->dpp));
+    UC(comm_bags_ini(PINNED_DEV, NONE, sizeof(Particle), cap, /**/ &u->hpp, &u->dpp));
 }
 
 void eobj_packf_ini(int maxd, int maxpsolid, EObjPackF **pack) {
@@ -56,7 +56,7 @@ void eobj_packf_ini(int maxd, int maxpsolid, EObjPackF **pack) {
     
     estimates(NFRAGS, maxd, maxpsolid, /**/ cap);
 
-    UC(bags_ini(PINNED_DEV, NONE, sizeof(Force), cap, /**/ &p->hff, &p->dff));
+    UC(comm_bags_ini(PINNED_DEV, NONE, sizeof(Force), cap, /**/ &p->hff, &p->dff));
 }
 
 void eobj_unpackf_ini(int maxd, int maxpsolid, EObjUnpackF **unpack) {
@@ -68,5 +68,5 @@ void eobj_unpackf_ini(int maxd, int maxpsolid, EObjUnpackF **unpack) {
     
     estimates(NFRAGS, maxd, maxpsolid, /**/ cap);
 
-    UC(bags_ini(PINNED_DEV, NONE, sizeof(Force), cap, /**/ &u->hff, &u->dff));
+    UC(comm_bags_ini(PINNED_DEV, NONE, sizeof(Force), cap, /**/ &u->hff, &u->dff));
 }

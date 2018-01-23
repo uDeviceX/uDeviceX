@@ -14,9 +14,9 @@ void drig_pack_ini(int maxns, int nv, DRigPack **pack) {
     UC(dmap_ini(NBAGS, numc, /**/ &p->map));
 
     /* one datum is here a full mesh, so bsize is nv * sizeof(Particle) */
-    UC(bags_ini(PINNED, DEV_ONLY, nv * sizeof(Particle), numc, /**/ &p->hipp, &p->dipp));
+    UC(comm_bags_ini(PINNED, DEV_ONLY, nv * sizeof(Particle), numc, /**/ &p->hipp, &p->dipp));
     
-    UC(bags_ini(PINNED, DEV_ONLY, sizeof(Solid), numc, /**/ &p->hss, &p->dss));
+    UC(comm_bags_ini(PINNED, DEV_ONLY, sizeof(Solid), numc, /**/ &p->hss, &p->dss));
 }
 
 void drig_comm_ini(MPI_Comm cart, /**/ DRigComm **com) {
@@ -35,7 +35,7 @@ void drig_unpack_ini(int maxns, int nv, DRigUnpack **unpack) {
     get_num_capacity(maxns, /**/ numc);
 
     /* one datum is here a full mesh, so bsize is nv * sizeof(Particle) */
-    UC(bags_ini(HST_ONLY, NONE, nv * sizeof(Particle), numc, /**/ &u->hipp, NULL));
+    UC(comm_bags_ini(HST_ONLY, NONE, nv * sizeof(Particle), numc, /**/ &u->hipp, NULL));
 
-    UC(bags_ini(HST_ONLY, NONE, sizeof(Solid), numc, /**/ &u->hss, NULL));
+    UC(comm_bags_ini(HST_ONLY, NONE, sizeof(Solid), numc, /**/ &u->hss, NULL));
 }

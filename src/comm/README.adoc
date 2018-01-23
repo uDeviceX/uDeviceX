@@ -1,3 +1,0 @@
-= Comm
-
-see link:/doc/dev/modules/comm.adoc[doc]

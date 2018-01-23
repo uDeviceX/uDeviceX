@@ -3,7 +3,7 @@ static void skip_line(FILE *f) {
     UC(efgets(l, sizeof(l), f));
 }
 
-void ini_dims(const char *path, /**/ int N[3], float ext[3]) {
+void sdf_field_ini_dims(const char *path, /**/ int N[3], float ext[3]) {
     FILE *f;
     char l[BUFSIZ];
     UC(efopen(path, "r", /**/ &f));
@@ -14,7 +14,7 @@ void ini_dims(const char *path, /**/ int N[3], float ext[3]) {
     UC(efclose(f));
 }
   
-void ini_data(const char *path, int n, /**/ float *D) { /* read sdf file */
+void sdf_field_ini_data(const char *path, int n, /**/ float *D) { /* read sdf file */
     FILE *f;
     UC(efopen(path, "r", /**/ &f));
     skip_line(f); skip_line(f);
@@ -22,7 +22,7 @@ void ini_data(const char *path, int n, /**/ float *D) { /* read sdf file */
     UC(efclose(f));
 }
 
-void scale(const int N[3], float s, /**/ float *D) {
+void sdf_field_scale(const int N[3], float s, /**/ float *D) {
     enum {X, Y, Z};
     int i, n;
     n = N[X]*N[Y]*N[Z];
@@ -34,8 +34,8 @@ static void dump0(const Coords *coords, const int N0[3], const float *D0, /**/ f
     Tform *t;
     UC(tform_ini(&t));
     UC(out2sdf_ini(coords, N0, t));
-    UC(sample(t, N0, D0,   L, /**/ D1));
-    tform_fin(t);
+    UC(sdf_field_sample(t, N0, D0,   L, /**/ D1));
+    UC(tform_fin(t));
 }
 
 static void dump1(const Coords *coords, MPI_Comm cart, const int N[3], const float* D, /*w*/ float* W) {
@@ -43,9 +43,9 @@ static void dump1(const Coords *coords, MPI_Comm cart, const int N[3], const flo
     UC(io::field::scalar(coords, cart, W, "wall"));
 }
 
-void dump(const Coords *coords, MPI_Comm cart, const int N[], const float* D) {
+void sdf_field_dump(const Coords *coords, MPI_Comm cart, const int N[], const float* D) {
     float *W;
     UC(emalloc(XS*YS*ZS*sizeof(float), (void**) &W));
     UC(dump1(coords, cart, N, D, /*w*/ W));
-    efree(W);
+    UC(efree(W));
 }

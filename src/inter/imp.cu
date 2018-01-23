@@ -31,9 +31,8 @@
 #include "partlist/type.h"
 #include "clist/imp.h"
 
-#include "wvel/type.h"
-
-#include "sdf/imp.h"
+#include "wall/wvel/type.h"
+#include "wall/sdf/imp.h"
 #include "flu/imp.h"
 
 #include "rbc/type.h"
@@ -46,8 +45,5 @@
 #include "imp.h"
 #include "color.h"
 
-/* local */
-namespace inter {
 #include "imp/color.h"
 #include "imp/main.h"
-}

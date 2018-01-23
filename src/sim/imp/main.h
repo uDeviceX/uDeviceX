@@ -19,9 +19,9 @@ static void gen(const Coords *coords, Wall *w, Sim *s) { /* generate */
         dSync();
         UC(sdf_gen(coords, s->cart, /**/ w->sdf));
         MC(m::Barrier(s->cart));
-        inter::create_walls(s->cart, MAXNWALL, w->sdf, /*io*/ &flu->q, /**/ &w->q);
+        inter_create_walls(s->cart, MAXNWALL, w->sdf, /*io*/ &flu->q, /**/ &w->q);
     }
-    inter::freeze(coords, s->cart, w->sdf, /*io*/ &flu->q, /**/ &rig->q, &rbc->q);
+    inter_freeze(coords, s->cart, w->sdf, /*io*/ &flu->q, /**/ &rig->q, &rbc->q);
     clear_vel(s);
 
     if (multi_solvent) {
@@ -30,7 +30,7 @@ static void gen(const Coords *coords, Wall *w, Sim *s) { /* generate */
         int *cc = flu->q.cc;
         Particle *pp_hst = s->pp_dump;
         int *cc_hst = flu->q.cc_hst;
-        inter::color_dev(coords, pp, n, /*o*/ cc, /*w*/ pp_hst, cc_hst);
+        inter_color_dev(coords, pp, n, /*o*/ cc, /*w*/ pp_hst, cc_hst);
     }
 }
 

@@ -55,24 +55,24 @@ int main(int argc, char **argv) {
     float maxdensity = 26.f;
     frag_estimates(NBAGS, maxdensity, /**/ capacity);
 
-    UC(bags_ini(HST_ONLY, NONE, sizeof(int), capacity, /**/ &sendB, NULL));
-    UC(bags_ini(HST_ONLY, NONE, sizeof(int), capacity, /**/ &recvB, NULL));
+    UC(comm_bags_ini(HST_ONLY, NONE, sizeof(int), capacity, /**/ &sendB, NULL));
+    UC(comm_bags_ini(HST_ONLY, NONE, sizeof(int), capacity, /**/ &recvB, NULL));
     UC(comm_ini(m::cart, /**/ &comm));
 
     fill_bags(&sendB);
 
-    UC(post_recv(&recvB, comm));
-    UC(post_send(&sendB, comm));
+    UC(comm_post_recv(&recvB, comm));
+    UC(comm_post_send(&sendB, comm));
 
-    UC(wait_recv(comm, &recvB));
-    UC(wait_send(comm));
+    UC(comm_wait_recv(comm, &recvB));
+    UC(comm_wait_send(comm));
 
     compare(&sendB, &recvB);
 
     msg_print("Passed");
     
-    UC(bags_fin(HST_ONLY, NONE, &sendB, NULL));
-    UC(bags_fin(HST_ONLY, NONE, &recvB, NULL));
+    UC(comm_bags_fin(HST_ONLY, NONE, &sendB, NULL));
+    UC(comm_bags_fin(HST_ONLY, NONE, &recvB, NULL));
     UC(comm_fin(/**/ comm));
     
     m::fin();

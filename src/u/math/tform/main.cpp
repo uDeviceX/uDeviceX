@@ -15,7 +15,7 @@
 #include "coords/ini.h"
 
 #include "utils/msg.h"
-#include "sdf/tform/imp.h"
+#include "wall/sdf/tform/imp.h"
 
 #include "lib/imp.h"
 

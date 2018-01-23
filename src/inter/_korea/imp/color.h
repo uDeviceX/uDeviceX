@@ -35,7 +35,7 @@ static bool red(const Coords *c, float x, float y, float z) {
     return x*x + y*y + z*z < r*r;
 }
 
-static void color(const Coords *coords, Particle *pp, int n, /**/ int *cc) {
+static void set_color(const Coords *coords, Particle *pp, int n, /**/ int *cc) {
     enum {X, Y, Z};
     int i, w, b, r;
     float x, y, z;
