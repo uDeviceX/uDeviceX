@@ -23,3 +23,83 @@ A _view_ structure `Coords_v` is public to device code:
 include::{src}/coords/type.h[tag=view]
 ----
 
+== Host interface
+
+=== Memory management
+
+[source,cpp]
+----
+include::{src}/coords/ini.h[tag=mem]
+----
+<1> allocate and set the data according to the cartesian communicator
+<2> deallocate the structure 
+
+
+=== Getters
+
+Obtain a view structure from `Coords`:
+
+[source,cpp]
+----
+include::{src}/coords/imp.h[tag=view]
+----
+
+Get stem:[(G_x, G_y, G_z)]:
+
+[source,cpp]
+----
+include::{src}/coords/imp.h[tag=domainsz]
+----
+
+Get stem:[(L_x, L_y, L_z)]:
+
+[source,cpp]
+----
+include::{src}/coords/imp.h[tag=subdomainsz]
+----
+
+Get (from _local_ coordinates) stem:[(-L_x/2, -L_y/2, -L_z/2)] and
+stem:[(L_x/2, L_y/2, L_z/2)] in _global_ coordinates:
+
+[source,cpp]
+----
+include::{src}/coords/imp.h[tag=bblocal]
+----
+
+
+=== Coordinate transforms
+
+From _local_ coordinates to _center_ coordinates:
+
+[source,cpp]
+----
+include::{src}/coords/imp.h[tag=local2center]
+----
+
+From _center_ coordinates to _local_ coordinates:
+
+[source,cpp]
+----
+include::{src}/coords/imp.h[tag=center2local]
+----
+
+From _local_ coordinates to _global_ coordinates:
+
+[source,cpp]
+----
+include::{src}/coords/imp.h[tag=local2global]
+----
+
+From _global_ coordinates to _local_ coordinates:
+
+[source,cpp]
+----
+include::{src}/coords/imp.h[tag=global2local]
+----
+
+=== helpers
+
+[source,cpp]
+----
+include::{src}/coords/imp.h[tag=int]
+----
