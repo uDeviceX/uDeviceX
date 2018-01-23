@@ -20,8 +20,6 @@
 
 #include "imp.h"
 
-namespace bop
-{
 void bop_ini(MPI_Comm comm, BopWork *t) {
     if (m::is_master(comm))
         UC(os_mkdir(DUMP_BASE "/bop"));
@@ -160,4 +158,3 @@ void bop_colors(MPI_Comm cart, const int *ii, long n, const char *name, int step
 }
 
 #undef PATTERN
-} // bop

@@ -124,7 +124,7 @@ static void fin_vcon(Vcon *c) {
 
 void sim_fin(Sim *s) {
 
-    bop::bop_fin(&s->dumpt);
+    bop_fin(&s->dumpt);
     if (rbcs || solids)
         fin_objinter(&s->objinter);
 
