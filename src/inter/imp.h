@@ -1,5 +1,3 @@
 struct Coords;
-namespace inter {
-void freeze(const Coords *coords, MPI_Comm cart, Sdf*, FluQuants*, RigQuants*, RbcQuants*);
-void create_walls(MPI_Comm cart, int maxn, Sdf*, FluQuants*, WallQuants*);
-}
+void inter_freeze(const Coords *coords, MPI_Comm cart, Sdf*, FluQuants*, RigQuants*, RbcQuants*);
+void inter_create_walls(MPI_Comm cart, int maxn, Sdf*, FluQuants*, WallQuants*);

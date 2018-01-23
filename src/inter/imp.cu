@@ -46,8 +46,5 @@
 #include "imp.h"
 #include "color.h"
 
-/* local */
-namespace inter {
 #include "imp/color.h"
 #include "imp/main.h"
-}
