@@ -31,6 +31,7 @@
 #include "rbc/adj/type/hst.h"
 #include "rbc/adj/imp.h"
 #include "rbc/gen/imp.h"
+#include "rbc/force/area_volume/imp.h"
 
 #include "imp.h"
 

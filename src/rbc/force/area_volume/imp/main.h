@@ -17,7 +17,7 @@ static void assert_tri(int nt, int nv, int4 *tri) {
 }
 
 void area_volume_setup(int nt, int nv, int4 *hst, /**/ AreaVolume *q) {
-    if (nt != q->nt) ERR("different nt in ini and setupt: %d != %d", nt, q->nt);
+    if (nt != q->nt) ERR("different number of triangles ini/setupt: %d != %d", nt, q->nt);
     q->nv = nv;
     UC(assert_tri(nt, nv, hst));
     cH2D(q->tri, hst, nt);
@@ -36,9 +36,13 @@ void area_volume_fin(AreaVolume *q) {
     UC(efree(q));
 }
 
-void area_volume_compute(int nt, int nv, int nc, const Particle *pp, const int4 *tri, /**/ float *av) {
+static void compute(int nt, int nv, int nc, const Particle *pp, const int4 *tri, /**/ float *av) {
     dim3 avThreads(256, 1);
     dim3 avBlocks(1, nc);
     Dzero(av, 2*nc);
     KL(dev::main, (avBlocks, avThreads), (nt, nv, pp, tri, av));
+}
+
+void area_volume_compute(AreaVolume *q, int nc, const Particle *pp, /**/ float *av) {
+    UC(compute(q->nt, q->nv, nc, pp, q->tri, av));
 }
