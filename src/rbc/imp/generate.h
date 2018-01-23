@@ -21,7 +21,7 @@ void rbc_gen_quants(const Coords *coords, MPI_Comm comm, const char *cell, const
     nv = RBCnv;
     setup(md, nt, nv, cell, /**/
           q->shape.anti, q->shape.edg, &q->shape.totArea,
-          q->tri_hst, q->tri, q->adj0, q->adj1);
+          q->tri_hst, q->area_volume, q->adj0, q->adj1);
     setup_from_pos(coords, comm, cell, ic, q->nv, /**/ q->pp, &q->nc, &q->n, /*w*/ q->pp_hst);
     if (rbc_ids)
         gen_ids(comm, q->nc, /**/ q->ii);

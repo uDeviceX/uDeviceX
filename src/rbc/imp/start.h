@@ -20,7 +20,7 @@ void rbc_strt_quants(const Coords *coords, const char *cell, const int id, RbcQu
     nv = RBCnv;
     setup(md, nt, nv, cell, /**/
           q->shape.anti, q->shape.edg, &q->shape.totArea,
-          q->tri_hst, q->tri, q->adj0, q->adj1);
+          q->tri_hst, q->area_volume, q->adj0, q->adj1);
     setup_from_strt(coords, nv, id, /**/ q->pp, &q->nc, &q->n, /*w*/ q->pp_hst);
 
     if (rbc_ids)

@@ -6,7 +6,7 @@ static void ini_common(RbcQuants *q) {
     q->nt = RBCnt;
     q->nv = RBCnv;
 
-    Dalloc(&q->tri,  q->nt);
+    UC(area_volume_ini(q->nt, /**/ &q->area_volume));
     Dalloc(&q->adj0, q->nv * RBCmd);
     Dalloc(&q->adj1, q->nv * RBCmd);
 

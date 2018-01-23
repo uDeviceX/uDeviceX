@@ -1,14 +1,14 @@
-static void area_volume_hst(int nt, int nv, int nc, const Particle *pp, const int4 *tri, /**/ float *hst) {
+static void area_volume_hst(AreaVolume *area_volume, int nc, const Particle *pp, /**/ float *hst) {
     float *dev;
     Dalloc(&dev, 2*nc);
-    area_volume_compute(nt, nv, nc, pp, tri, /**/ dev);
+    UC(area_volume_compute(area_volume, nc, pp, /**/ dev));
     cD2H(hst, dev, 2*nc);
     Dfree(dev);
 }
 
 static void run0(RbcQuants q, RbcForce t) {
     float area, volume, av[2];
-    area_volume_hst(q.nt, q.nv, q.nc, q.pp, q.tri, /**/ av);
+    UC(area_volume_hst(q.area_volume, q.nc, q.pp, /**/ av));
     area = av[0]; volume = av[1];
     printf("%g %g\n", area, volume);
 }

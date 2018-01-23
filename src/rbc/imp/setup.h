@@ -80,9 +80,8 @@ static void setup0(int md, int nt, int nv, int4 *faces, /**/
 }
 
 static void setup(int md, int nt, int nv, const char *cell, /**/
-                  int *anti, Edg *edg, float *totArea, int4 *faces, int4 *tri,
+                  int *anti, Edg *edg, float *totArea, int4 *faces, AreaVolume *tri,
                   int *adj0, int *adj1) {
     UC(efaces(cell, nt, /**/ faces));
     UC(setup0(md, nt, nv, faces, /**/ anti, edg, totArea, adj0, adj1));
-    cH2D(tri, faces, nt);
 }
