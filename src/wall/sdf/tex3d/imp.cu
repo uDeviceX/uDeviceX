@@ -9,7 +9,7 @@
 #include "utils/error.h"
 #include "utils/cc.h"
 
-#include "sdf/array3d/type.h"
+#include "wall/sdf/array3d/type.h"
 
 #include "type.h"
 #include "imp.h"

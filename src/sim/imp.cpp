@@ -62,7 +62,7 @@
 
 #include "rig/imp.h"
 
-#include "sdf/imp.h"
+#include "wall/sdf/imp.h"
 #include "wall/imp.h"
 
 #include "comm/imp.h"

@@ -72,16 +72,16 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/scheme/restrain/sub      && \
     d $B/scheme/restrain/sub/stat && \
     d $B/scheme/restrain/sub/sum  && \
-    d $B/sdf                      && \
-    d $B/sdf/array3d              && \
-    d $B/sdf/bounce               && \
-    d $B/sdf/field                && \
-    d $B/sdf/label                && \
-    d $B/sdf/tex3d                && \
-    d $B/sdf/tform                && \
     d $B/sim                      && \
     d $B/utils                    && \
     d $B/wall                     && \
     d $B/wall/exch                && \
     d $B/wall/force               && \
+    d $B/wall/sdf                 && \
+    d $B/wall/sdf/array3d         && \
+    d $B/wall/sdf/bounce          && \
+    d $B/wall/sdf/field           && \
+    d $B/wall/sdf/label           && \
+    d $B/wall/sdf/tex3d           && \
+    d $B/wall/sdf/tform           && \
     d $B/wvel                    

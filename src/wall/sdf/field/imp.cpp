@@ -12,7 +12,7 @@
 #include "utils/msg.h"
 
 #include "math/tform/imp.h"
-#include "sdf/tform/imp.h"
+#include "wall/sdf/tform/imp.h"
 
 #include "imp.h"
 

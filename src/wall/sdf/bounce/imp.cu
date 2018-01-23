@@ -28,12 +28,12 @@
 
 #include "math/tform/type.h"
 #include "math/tform/dev.h"
-#include "sdf/tex3d/type.h"
-#include "sdf/type.h"
-#include "sdf/imp.h"
+#include "wall/sdf/tex3d/type.h"
+#include "wall/sdf/type.h"
+#include "wall/sdf/imp.h"
 
-#include "sdf/def.h"
-#include "sdf/dev.h"
+#include "wall/sdf/def.h"
+#include "wall/sdf/dev.h"
 
 #include "imp.h"
 
