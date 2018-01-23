@@ -84,5 +84,4 @@ static void setup(int md, int nt, int nv, const char *cell, /**/
                   int *adj0, int *adj1) {
     UC(efaces(cell, nt, /**/ faces));
     UC(setup0(md, nt, nv, faces, /**/ anti, edg, totArea, adj0, adj1));
-    cH2D(tri, faces, nt);
 }
