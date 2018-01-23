@@ -9,7 +9,6 @@
 #include "mpi/glb.h"
 #include "utils/mc.h"
 
-#include "coords/type.h"
 #include "coords/imp.h"
 
 #include "utils/imp.h"

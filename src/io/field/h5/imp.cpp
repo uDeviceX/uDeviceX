@@ -1,7 +1,6 @@
 #include <hdf5.h>
 #include <vector_types.h>
 
-#include "coords/type.h"
 #include "coords/imp.h"
 #include "mpi/glb.h"
 #include "mpi/wrapper.h"

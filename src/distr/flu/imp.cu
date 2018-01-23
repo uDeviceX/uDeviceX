@@ -6,8 +6,6 @@
 
 #include "utils/msg.h"
 
-#include "coords/type.h"
-
 #include "utils/imp.h"
 #include "utils/cc.h"
 #include "utils/kl.h"

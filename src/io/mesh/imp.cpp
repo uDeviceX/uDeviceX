@@ -6,7 +6,6 @@
 #include <conf.h>
 #include "inc/conf.h"
 
-#include "coords/type.h"
 #include "coords/imp.h"
 
 #include "utils/os.h"

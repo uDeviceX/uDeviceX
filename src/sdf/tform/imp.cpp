@@ -2,10 +2,8 @@
 #include <vector_types.h>
 
 #include "utils/error.h"
-#include "math/tform/imp.h"
-
-#include "coords/type.h"
 #include "coords/imp.h"
+#include "math/tform/imp.h"
 
 #include "imp.h"
 
