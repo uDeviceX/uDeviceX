@@ -60,10 +60,10 @@ static void fill_bags(int n, const Particle *pp, hBags *b) {
 }
 
 static void communicate(const hBags *s, Comm *c, hBags *r) {
-    UC(post_send(s, c));
-    post_recv(r, c);
-    wait_send(c);
-    UC(wait_recv(c, /**/ r));
+    UC(comm_post_send(s, c));
+    UC(comm_post_recv(r, c));
+    UC(comm_wait_send(c));
+    UC(comm_wait_recv(c, /**/ r));
 }
 
 static void check_counts(int maxn, int n0, const hBags *b) {

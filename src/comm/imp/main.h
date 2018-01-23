@@ -1,4 +1,4 @@
-int post_recv(hBags *b, Comm *com) {
+int comm_post_recv(hBags *b, Comm *com) {
     int i, c, tag;
     for (i = 0; i < NFRAGS; ++i) {
         c = b->capacity[i] * b->bsize;
@@ -16,7 +16,7 @@ static void fail_over(int i, long c, long cap) {
         i, d[X], d[Y], d[Z], c, cap);
 }
 
-int post_send(const hBags *b, Comm *com) {
+int comm_post_send(const hBags *b, Comm *com) {
     int i, n, c, cap, tag;
     for (i = 0; i < NFRAGS; ++i) {
         c = b->counts[i];
@@ -71,7 +71,7 @@ static void fail_wait(int code, int n, MPI_Status *ss) {
     if (m::is_err_in_status(code)) UC(fail_wait_status(n, ss));
     else  UC(fail_wait_normal(code));
 }
-int wait_recv(Comm *com, /**/ hBags *b) {
+int comm_wait_recv(Comm *com, /**/ hBags *b) {
     int errorcode;
     MPI_Status ss[NFRAGS];
     errorcode = m::Waitall(NFRAGS, com->rreq, /**/ ss);
@@ -80,7 +80,7 @@ int wait_recv(Comm *com, /**/ hBags *b) {
     return 0;
 }
 
-int wait_send(Comm *com) {
+int comm_wait_send(Comm *com) {
     MPI_Status ss[NFRAGS];
     MC(m::Waitall(NFRAGS, com->sreq, ss));
     return 0;

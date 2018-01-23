@@ -43,11 +43,11 @@ int comm_fin(/**/ Comm *c);
 // end::alloc[]
 
 // tag::communication[]
-int post_recv(hBags *b, Comm *c);           // <1>
-int post_send(const hBags *b, Comm *c);     // <2>
+int comm_post_recv(hBags *b, Comm *c);           // <1>
+int comm_post_send(const hBags *b, Comm *c);     // <2>
 
-int wait_recv(Comm *c, /**/ hBags *b);      // <3>
-int wait_send(Comm *c);                     // <4>
+int comm_wait_recv(Comm *c, /**/ hBags *b);      // <3>
+int comm_wait_send(Comm *c);                     // <4>
 // end::communication[]
 
 int    comm_get_number_capacity(int i, const hBags *b);
