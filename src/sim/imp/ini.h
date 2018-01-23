@@ -76,7 +76,7 @@ static void ini_vcon(MPI_Comm comm, const Config *cfg, /**/ Vcon *c) {
         ERR("Unrecognised type <%s>", type);
 }
 
-static void ini_outflow(Coords coords, const Config *cfg, Outflow **o) {
+static void ini_outflow(const Coords *coords, const Config *cfg, Outflow **o) {
     UC(ini(MAX_PART_NUM, /**/ o));
     const char *type;
     UC(conf_lookup_string(cfg, "outflow.type", &type));
@@ -118,7 +118,7 @@ static void ini_denoutflow(const Coords *c, const Config *cfg, DCont **d, DContM
     }
 }
 
-static void ini_inflow(Coords coords, const Config *cfg, Inflow **i) {
+static void ini_inflow(const Coords *coords, const Config *cfg, Inflow **i) {
     /* number of cells */
     int2 nc = make_int2(YS, ZS/2);
     UC(inflow_ini(nc, /**/ i));
@@ -231,8 +231,8 @@ void sim_ini(int argc, char **argv, MPI_Comm cart, /**/ Sim **sim) {
     if (rbcs) UC(ini_rbc(cfg, s->cart, /**/ &s->rbc));
 
     if (s->opt.vcon)       UC(ini_vcon(s->cart, s->cfg, /**/ &s->vcon));
-    if (s->opt.outflow)    UC(ini_outflow(s->coords, s->cfg, /**/ &s->outflow));
-    if (s->opt.inflow)     UC(ini_inflow (s->coords, s->cfg, /**/ &s->inflow ));
+    if (s->opt.outflow)    UC(ini_outflow(&s->coords, s->cfg, /**/ &s->outflow));
+    if (s->opt.inflow)     UC(ini_inflow (&s->coords, s->cfg, /**/ &s->inflow ));
     if (s->opt.denoutflow) UC(ini_denoutflow(&s->coords, s->cfg, /**/ &s->denoutflow, &s->mapoutflow));
     
     if (rbcs || solids)

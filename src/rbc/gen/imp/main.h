@@ -21,7 +21,7 @@ static bool read_A(FILE *f, float A[16]) {
 }
 
 /* shift to local coordinates */
-static void shift(Coords coords, /**/ float A[16]) {
+static void shift(const Coords *coords, /**/ float A[16]) {
     enum {X_, Y_, Z_};
     enum {
         X = 4*X_ + 3,
@@ -47,7 +47,7 @@ static void assert_nc(int nc) {
     ERR("nc = %d >= MAX_CELL_NUM = %d", nc, MAX_CELL_NUM);
 }
 
-static int main0(Coords coords, float *rr0, const char *ic, int nv, Particle *pp) {
+static int main0(const Coords *coords, float *rr0, const char *ic, int nv, Particle *pp) {
     int nc = 0;
     int L[3] = {XS, YS, ZS};
 
@@ -73,7 +73,7 @@ static void vert(const char *f, int n0, /**/ float *vert) {
         ERR("wrong vert number in <%s> : %d != %d", f, n0, n);
 }
 
-int rbc_gen(Coords coords, const char *cell, const char *ic, int nv, /**/ Particle *pp) {
+int rbc_gen(const Coords *coords, const char *cell, const char *ic, int nv, /**/ Particle *pp) {
     float *rr0;
     int nc;
     UC(emalloc(3*nv*sizeof(float), (void**) &rr0));

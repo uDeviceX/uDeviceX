@@ -6,8 +6,8 @@ void fin(/**/ Outflow *o);
 // end::mem[]
 
 // tag::ini[]
-void ini_params_circle(Coords coords, float3 c, float R, Outflow *o);
-void ini_params_plate(Coords c, int dir, float r0, Outflow *o);
+void ini_params_circle(const Coords *coords, float3 c, float R, Outflow *o);
+void ini_params_plate(const Coords *c, int dir, float r0, Outflow *o);
 // end::ini[]
 
 // tag::int[]

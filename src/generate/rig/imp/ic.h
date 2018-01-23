@@ -70,7 +70,7 @@ static void make_local(const Coords *coords, const int n, /**/ float *coms) {
 
     for (int i = 0; i < n; ++i) {
         cg = cc[i];
-        global2local(*coords, cg, /**/ &cc[i]);
+        global2local(coords, cg, /**/ &cc[i]);
     }
 }
 

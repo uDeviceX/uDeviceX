@@ -40,8 +40,8 @@ static void share(const Coords *coords, MPI_Comm comm, const int root, /**/ Part
 
     for (i = 0; i < *n; ++i) {
         p = pp[i];
-        p.r[X] = xg2xl(*coords, p.r[X]);
-        p.r[Y] = yg2yl(*coords, p.r[Y]);
-        p.r[Z] = zg2zl(*coords, p.r[Z]);
+        p.r[X] = xg2xl(coords, p.r[X]);
+        p.r[Y] = yg2yl(coords, p.r[Y]);
+        p.r[Z] = zg2zl(coords, p.r[Z]);
     }    
 }

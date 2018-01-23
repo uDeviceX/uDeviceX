@@ -9,7 +9,7 @@
 
 #include "imp.h"
 
-void inflow_ini_params_conf(Coords coords, const Config *cfg, /**/ Inflow *i) {
+void inflow_ini_params_conf(const Coords *coords, const Config *cfg, /**/ Inflow *i) {
     const char *type;
     UC(conf_lookup_string(cfg, "outflow.type", &type));
     

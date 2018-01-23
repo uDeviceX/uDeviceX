@@ -26,16 +26,17 @@ void local2global(const Coords *c, float3 rl, /**/ float3 *rg);
 
 /* [g]lobal to [l]ocal */
 
-float xg2xl(const Coords c, float xg);
-float yg2yl(const Coords c, float yg);
-float zg2zl(const Coords c, float zg);
-void global2local(const Coords c, float3 rg, /**/ float3 *rl);
+float xg2xl(const Coords *c, float xg);
+float yg2yl(const Coords *c, float yg);
+float zg2zl(const Coords *c, float zg);
+void global2local(const Coords *c, float3 rg, /**/ float3 *rl);
 
 /* edges of the sub-domain in global coordinates */
 
 int xlo(const Coords);
 int ylo(const Coords);
 int zlo(const Coords);
+
 int xhi(const Coords);
 int yhi(const Coords);
 int zhi(const Coords);

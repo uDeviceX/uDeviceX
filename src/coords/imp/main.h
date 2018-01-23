@@ -91,19 +91,19 @@ void local2global(const Coords *c, float3 rl, /**/ float3 *rg) {
 
 /* [g]lobal to [l]ocal */
 
-float xg2xl(const Coords c, float xg) {
-    return xg - (c.xc + 0.5f) * XS;
+float xg2xl(const Coords *c, float xg) {
+    return xg - (c->xc + 0.5f) * XS;
 }
 
-float yg2yl(const Coords c, float yg) {
-    return yg - (c.yc + 0.5f) * YS;
+float yg2yl(const Coords *c, float yg) {
+    return yg - (c->yc + 0.5f) * YS;
 }
 
-float zg2zl(const Coords c, float zg) {
-    return zg - (c.zc + 0.5f) * ZS;
+float zg2zl(const Coords *c, float zg) {
+    return zg - (c->zc + 0.5f) * ZS;
 }
 
-void global2local(const Coords c, float3 rg, /**/ float3 *rl) {
+void global2local(const Coords *c, float3 rg, /**/ float3 *rl) {
     rl->x = xg2xl(c, rg.x);
     rl->y = yg2yl(c, rg.y);
     rl->z = zg2zl(c, rg.z);

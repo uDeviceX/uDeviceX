@@ -1,4 +1,4 @@
-void ini_params_plate(Coords c, int dir, float r0, Outflow *o) {
+void ini_params_plate(const Coords *c, int dir, float r0, Outflow *o) {
     enum {X, Y, Z};
     ParamsPlate p = {0, 0, 0, 0};    
 
