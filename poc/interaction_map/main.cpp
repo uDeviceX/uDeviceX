@@ -1,8 +1,10 @@
 #include <stdio.h>
 
-void print(int n, int x, int y, int z, bool active) {
-    //printf("%2d  %c  %+d %+d %+d\n", n, active ? '+' : ' ', x, y, z);
-    if (active) printf("%2d  %+d %+d %+d\n", n, x, y, z);
+static const char symbol[] = " +0";    
+
+void print(int n, int x, int y, int z, int pred) {
+    printf("%2d  %c  %+d %+d %+d\n", n, symbol[pred], x, y, z);
+    //if (pred) printf("%2d  %+d %+d %+d\n", n, x, y, z);
 }
 
 bool smaller(int i, int j, int k,
@@ -13,7 +15,7 @@ bool smaller(int i, int j, int k,
         (i == i_ && j == j_ && k < k_);    
 }
 
-bool pred(int i, int j, int k) {
+int pred(int i, int j, int k) {
     int i_, j_, k_;
     i_ = 2-i;
     j_ = 2-j;
@@ -21,10 +23,11 @@ bool pred(int i, int j, int k) {
 
     // always keep bulk
     if (i_ == i && j_ == j && k_ == k)
-        return true;
+        return 2;
 
-     return smaller(i, j, k, i_, j_, k_);
-    // return smaller(i_, j_, k_, i, j, k);
+    if (smaller(i, j, k, i_, j_, k_))
+        return 1;
+    return 0;
 }
 
 void walk() {
