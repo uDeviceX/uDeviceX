@@ -8,3 +8,7 @@ echo $? > sdf.out.txt
 # TEST: cp.rig
 u.cp.rig ellipsoid  rig.ply
 echo $? > rig.out.txt
+
+# TEST: cp.hdr
+u.cp.hdr test  conf.h
+echo $? > hdr.out.txt
