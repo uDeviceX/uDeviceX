@@ -26,12 +26,12 @@ __device__ bool valid_cid(int3 c) {
         (c.z >= 0) && (c.z < ZS);    
 }
 
-__device__ void one_cell(int ia, forces::Pa pa, BCloud c, int start, int count, float rnd, /**/ float fa[3], Force *ff) {
+__device__ void one_cell(int ia, forces::Pa pa, BCloud c, int start, int count, float seed, /**/ float fa[3], Force *ff) {
     enum {X, Y, Z};
     int i, ib;
     forces::Pa pb;
     forces::Fo f;
-    float *fb;
+    float *fb, rnd;
     
     for (i = 0; i < count; ++i) {
         ib = start + i;
@@ -39,7 +39,8 @@ __device__ void one_cell(int ia, forces::Pa pa, BCloud c, int start, int count, 
         
         fetch(c, ib, &pb);
         fb = ff[ib].f;
-        
+
+        rnd = rnd::mean0var1ii(seed, ia, ib);
         forces::force(pa, pb, rnd, /**/ &f);
         
         fa[X] += f.x;
@@ -52,7 +53,7 @@ __device__ void one_cell(int ia, forces::Pa pa, BCloud c, int start, int count, 
     }
 }
 
-__global__ void apply(int n, BCloud cloud, const int *start, const int *count, float rnd, /**/ Force *ff) {
+__global__ void apply(int n, BCloud cloud, const int *start, const int *count, float seed, /**/ Force *ff) {
     enum {X, Y, Z};
     int ia, ib;
     int3 ca, cb;
@@ -71,7 +72,7 @@ __global__ void apply(int n, BCloud cloud, const int *start, const int *count, f
                 if (!valid_cid(cb)) continue;
                 ib = cb.x + XS * (cb.y + YS * cb.z);
                 
-                one_cell(ia, pa, cloud, start[ib], count[ib], rnd, /**/ fa, ff);
+                one_cell(ia, pa, cloud, start[ib], count[ib], seed, /**/ fa, ff);
             }        
         }        
     }
