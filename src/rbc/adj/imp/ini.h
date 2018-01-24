@@ -1,13 +1,17 @@
 static void gen_a12(int md, int i0, int *hx, int *hy, /**/ int *a1, int *a2) {
-    int i, c0, c, lo;
-    lo = i0*md;
-    i = c = lo;
+    int lo = i0*md, hi = lo + md, mi = hx[lo];
+    int i;
+    for (i = lo + 1; (i < hi) && (hx[i] != -1); i++)
+        if (hx[i] < mi) mi = hx[i]; /* minimum */
+
+    int c = mi, c0;
+    i = lo;
     do {
         c     = edg_get(md, i0, c0 = c, hx, hy);
         a1[i] = c0;
         a2[i] = edg_get(md, c, c0, hx, hy);
         i++;
-    }  while (c != lo);
+    }  while (c != mi);
 }
 
 static void ini0(int md, int nt, int nv, int4 *faces, /**/ int *a1, int *a2) {
