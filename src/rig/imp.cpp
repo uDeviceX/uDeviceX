@@ -6,6 +6,9 @@
 #include <conf.h>
 #include "inc/conf.h"
 
+#include "utils/msg.h"
+#include "utils/error.h"
+
 #include "coords/imp.h"
 
 #include "d/api.h"

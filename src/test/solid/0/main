@@ -3,7 +3,7 @@
 rm -rf h5 bop diag.txt solid_diag.txt
 cp data/sdf/wall1/wall.dat sdf.dat
 echo -e "16 16 16" > rigs-ic.txt
-cp data/rig/sphere.ply mesh_solid.ply
+cp data/rig/sphere.ply rig.ply
 :
 u.conf conf/test.h <<!!!
    tend=2.01 part_freq=1000 walls wall_creation=1
