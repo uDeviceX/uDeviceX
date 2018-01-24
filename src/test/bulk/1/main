@@ -1,12 +1,12 @@
-#### random particles; density 1
-# nTEST: bulk.t0
-X=4; Y=4; Z=4; N=64
+#### random particles; density 10
+# nTEST: bulk.t1
+X=4; Y=4; Z=4; N=640
 u.conf . u/bulk conf/default.h <<!!!
        XS=$X YS=$Y ZS=$Z
-       kBT=0 multi_solvent=false
+       kBT=0 multi_solvent=false    
        run
 !!!
 { u.make -j;     } > /dev/null
 u.pre.gen_random $X $Y $Z $N > pp.txt
 u.run ./udx 'in = "pp.txt"; out = "ff.txt"'
-uscale 100000 ff.txt | sort > ff.out.txt
+uscale 10000 ff.txt | sort > ff.out.txt
