@@ -1,3 +1,5 @@
+struct Particle;
+
 /* quantaties */
 struct QQ {Particle *o, *s, *r;};
 
