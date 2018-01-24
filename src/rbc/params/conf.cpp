@@ -28,7 +28,7 @@ void rbc_params_set_conf(const Config *c, RbcParams *par) {
 
     rbc_params_set_fluct(gc, gt, kbt, /**/ par);
     rbc_params_set_bending(kb, phi, /**/ par);
-    rbc_params_set_spring(ks, p, x0, mpow, /**/ par);
+    rbc_params_set_spring(ks, x0, mpow, /**/ par);
     rbc_params_set_area_volume(ka, kd, kv, /**/ par);
     rbc_params_set_timestep(dt0, /**/ par);
 }
