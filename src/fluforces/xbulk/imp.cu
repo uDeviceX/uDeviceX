@@ -8,7 +8,9 @@
 #include "inc/def.h"
 #include "inc/dev.h"
 
+#include "d/api.h"
 #include "utils/kl.h"
+#include "utils/cc.h"
 
 #include "math/rnd/imp.h"
 #include "math/rnd/dev.h"
