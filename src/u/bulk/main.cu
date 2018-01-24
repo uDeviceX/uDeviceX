@@ -35,8 +35,8 @@ static void read_pp(const char *fname) {
     n = txt_read_get_n(tr);
     msg_print("have read %d particles", n);
 
-    szp = n * sizeof(Particle);
-    szf = n * sizeof(Force);
+    szp = (n + 32) * sizeof(Particle);
+    szf = (n + 32) * sizeof(Force);
     
     CC(d::Malloc((void**)&pp, szp));
     CC(d::Malloc((void**)&pp0, szp));
@@ -65,6 +65,8 @@ static void build_clist() {
 int main(int argc, char **argv) {
     Config *cfg;
     const char *fname;
+    Cloud cloud;
+    int maxp;
     
     m::ini(&argc, &argv);
     msg_ini(m::rank);
@@ -75,13 +77,18 @@ int main(int argc, char **argv) {
     UC(conf_lookup_string(cfg, "fname", &fname));
     UC(read_pp(fname));
 
+    maxp = n + 32;
+
     UC(clist_ini(XS, YS, ZS, &clist));
-    UC(clist_ini_map(n, 1, &clist, &cmap));
+    UC(clist_ini_map(maxp, 1, &clist, &cmap));
     UC(build_clist());
 
-    UC(fluforces_bulk_ini(n, &bulkforces));
+    UC(fluforces_bulk_ini(maxp, &bulkforces));
 
+    ini_cloud(pp, &cloud);
     
+    UC(fluforces_bulk_prepare(n, &cloud, /**/ bulkforces));
+    UC(fluforces_bulk_apply(n, bulkforces, clist.starts, clist.counts, /**/ ff));
     
     UC(fluforces_bulk_fin(bulkforces));
 
