@@ -9,9 +9,5 @@ u.conf . u/bulk conf/default.h <<!!!
 { u.make -j;     } > /dev/null
 u.pre.gen_random $X $Y $Z $N > pp.txt
 u.run ./udx 'in = "pp.txt"; out = "ff.txt"'
-<<<<<<< HEAD
 uscale 100 ff.txt | sort > ff.out.txt
-=======
-uscale 1000 ff.txt | sort > ff.out.txt
->>>>>>> 708e5fdcdbf44e3f986f2deb744e37f74d608b91
 
