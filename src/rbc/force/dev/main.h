@@ -1,5 +1,5 @@
-struct Part { float3 r, v; };
-struct Pos  { float3 r; };
+struct Part { real3 r, v; };
+struct Pos  { real3 r; };
 
 
 static __device__ Pos tex2Pos(const Particle *pp, int i) {
@@ -14,19 +14,19 @@ static __device__ Pos tex2Pos(const Particle *pp, int i) {
 static __device__ Part tex2Part(const Particle *pp, int i) {
     enum {X, Y, Z};
     Part p;
-    const float *r, *v;
+    const real *r, *v;
     r = pp[i].r; v = pp[i].v;
     p.r.x = r[X]; p.r.y = r[Y]; p.r.z = r[Z];
     p.v.x = v[X]; p.v.y = v[Y]; p.v.z = v[Z];
     return p;
 }
 
-static __device__ float3 adj_tris(RbcParams_v par, const Particle *pp,  const Part p0, const float *av,
+static __device__ real3 adj_tris(RbcParams_v par, const Particle *pp,  const Part p0, const real *av,
                                   const Shape0 shape, const Rnd0 rnd,
                                   AdjMap *m) {
-    float3 f, fv, fr;
+    real3 f, fv, fr;
     int i1, i2, rbc;
-    float area, volume;
+    real area, volume;
     i1 = m->i1; i2 = m->i2; rbc = m->rbc;
 
     const Part p1 = tex2Part(pp, i1);
@@ -43,7 +43,7 @@ static __device__ float3 adj_tris(RbcParams_v par, const Particle *pp,  const Pa
     return f;
 }
 
-static __device__ float3 adj_dihedrals(RbcParams_v par, const Particle *pp, float3 r0,
+static __device__ real3 adj_dihedrals(RbcParams_v par, const Particle *pp, real3 r0,
                                        const Shape0 shape,
                                        AdjMap *m) {
     Pos r1, r2, r3, r4;
@@ -54,14 +54,14 @@ static __device__ float3 adj_dihedrals(RbcParams_v par, const Particle *pp, floa
     return dih(par, r0, r1.r, r2.r, r3.r, r4.r);
 }
 
-__global__ void force(RbcParams_v par, int md, int nv, int nc, const Particle *pp, float *rnd,
+__global__ void force(RbcParams_v par, int md, int nv, int nc, const Particle *pp, real *rnd,
                       const int *adj0, const int *adj1,
                       const Shape shape,
-                      const float *__restrict__ av, /**/ float *ff) {
+                      const real *__restrict__ av, /**/ real *ff) {
     assert(md == RBCmd);
     assert(nv == RBCnv);
     int i, pid;
-    float3 f, fd;
+    real3 f, fd;
     AdjMap m;
     Shape0 shape0;
     Rnd0   rnd0;

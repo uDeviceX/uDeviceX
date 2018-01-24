@@ -34,8 +34,17 @@
 #include "imp.h"
 
 namespace dev {
-#include "params/area_volume.h"
 
+#define RBC_DOUBLE
+#if   defined(RBC_DOUBLE)
+  #include "dev/double.h"
+#elif defined(RBC_FLOAT)
+  #include "dev/float.h"
+#else
+  #error RBC_DOUBLE or RBC_FLOAT must be defined
+#endif
+
+#include "params/area_volume.h"
 #include "dev/common.h"
 
 #if   RBC_STRESS_FREE
