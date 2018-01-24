@@ -1,8 +1,9 @@
 $B/d/api.o: $S/d/api.cu; $N -I$S/. -I$S/d
+$B/io/punto/imp.o: $S/io/punto/imp.cpp; $X -I$S/. -I$S/io/punto
 $B/mpi/glb.o: $S/mpi/glb.cpp; $X -I$S/. -I$S/mpi
 $B/mpi/type.o: $S/mpi/type.cpp; $X -I$S/. -I$S/mpi
 $B/mpi/wrapper.o: $S/mpi/wrapper.cpp; $X -I$S/. -I$S/mpi
-$B/u/hw/dev/main.o: $S/u/hw/dev/main.cu; $N -I$S/. -I$S/u/hw/dev
+$B/u/bulk/main.o: $S/u/bulk/main.cu; $N -I$S/. -I$S/u/bulk
 $B/utils/cc.o: $S/utils/cc.cpp; $X -I$S/. -I$S/utils
 $B/utils/error.o: $S/utils/error.cpp; $X -I$S/. -I$S/utils
 $B/utils/imp.o: $S/utils/imp.cpp; $X -I$S/. -I$S/utils

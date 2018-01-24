@@ -7,9 +7,14 @@
 
 #include "mpi/glb.h"
 #include "inc/dev.h"
+#include "inc/type.h"
+
+#include "io/punto/imp.h"
+
 #include "utils/cc.h"
 
 #include "utils/kl.h"
+
 
 namespace dev {
 #include "dev.h"
