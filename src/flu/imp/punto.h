@@ -14,7 +14,7 @@ static void gen_name(const Coords *c, /**/ char *name) {
     int r;
     char stamp[FILENAME_MAX];
     coord_stamp(c, /**/ stamp);
-    r = sprintf(name, "%s.punto", stamp);
+    r = sprintf(name, "%s.txt", stamp);
     if (r < 0) ERR("sprintf failed");
 }
 
@@ -26,5 +26,5 @@ void flu_punto_dump(const Coords *c, const FluQuants *q) {
     if (n) cD2H(hst, dev, n);
     local2global_p(c, n, /**/ hst);
     UC(gen_name(c, /**/ name));
-    UC(punto_write_pp(n, hst, name));
+    UC(txt_write_pp(n, hst, name));
 }
