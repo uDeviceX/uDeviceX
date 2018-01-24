@@ -26,6 +26,7 @@ static Force *ff;
 static int n;
 static Clist clist;
 static ClistMap *cmap;
+static FluForcesBulk *bulkforces;
 
 static void read_pp(const char *fname) {
     TxtRead *tr;
@@ -78,8 +79,11 @@ int main(int argc, char **argv) {
     UC(clist_ini_map(n, 1, &clist, &cmap));
     UC(build_clist());
 
+    UC(fluforces_bulk_ini(n, &bulkforces));
+
     
     
+    UC(fluforces_bulk_fin(bulkforces));
 
     UC(clist_fin(&clist));
     UC(clist_fin_map(cmap));
