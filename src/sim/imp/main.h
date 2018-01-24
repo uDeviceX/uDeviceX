@@ -65,7 +65,7 @@ void sim_gen(Sim *s) {
         run(            0, nsteps, s);
     }
     /* final strt dump*/
-    if (strt_dumps) dump_strt(restart::FINAL, s);
+    if (strt_dumps) dump_strt(RESTART_FINAL, s);
 }
 
 void sim_strt(Sim *s) {
@@ -76,13 +76,13 @@ void sim_strt(Sim *s) {
     Wall *wall = &s->wall;
     
     /*Q*/
-    flu_strt_quants(s->coords, restart::BEGIN, &flu->q);
+    flu_strt_quants(s->coords, RESTART_BEGIN, &flu->q);
     flu_build_cells(&flu->q);
 
-    if (rbcs) rbc_strt_quants(s->coords, "rbc.off", restart::BEGIN, &rbc->q);
+    if (rbcs) rbc_strt_quants(s->coords, "rbc.off", RESTART_BEGIN, &rbc->q);
     dSync();
 
-    if (solids) rig_strt_quants(s->coords, restart::BEGIN, &rig->q);
+    if (solids) rig_strt_quants(s->coords, RESTART_BEGIN, &rig->q);
 
     if (walls) wall_strt_quants(s->coords, MAXNWALL, &wall->q);
 
@@ -102,5 +102,5 @@ void sim_strt(Sim *s) {
     msg_print("will take %ld steps", nsteps - wall_creation);
     run(wall_creation, nsteps, s);
 
-    if (strt_dumps) dump_strt(restart::FINAL, s);
+    if (strt_dumps) dump_strt(RESTART_FINAL, s);
 }
