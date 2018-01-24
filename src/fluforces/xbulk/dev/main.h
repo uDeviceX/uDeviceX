@@ -115,25 +115,26 @@ __global__ void apply(int n, BCloud cloud, const int *start, const int *count, f
 
     for (dz = -1; dz <= 0; ++dz) {
         cb.z = ca.z + dz;
-        enddy = dz ? 1 : 0;
         if (!valid_c(cb.z, ZS)) continue;
+        
+        enddy = dz ? 1 : 0;
             
         for (dy = -1; dy <= enddy; ++dy) {
             cb.y = ca.y + dy;
-            enddx = (dz == 0 && dy == 0) ? 0 : 1;
-
             if (!valid_c(cb.y, YS)) continue;
+
+            enddx = (dz == 0 && dy == 0) ? 0 : 1;
             
-            startx = max(0, ca.x - 1);
-            endx = 1 + min(XS-1, ca.x + enddx);
+            startx =    max(    0, ca.x - 1    );
+            endx   = 1 + min(XS-1, ca.x + enddx);
 
             cid0 = XS * (cb.y + YS * cb.z);
 
             bs = start[cid0 + startx];
             be = start[cid0 + endx];
 
-            assert(bs <= be);
-            assert(be <= n);
+            // assert(bs <= be);
+            // assert(be <= n);
             
             one_cell(ia, pa, cloud, bs, be, seed, /**/ fa, ff);
         }        
