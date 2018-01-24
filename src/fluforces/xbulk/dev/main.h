@@ -98,8 +98,7 @@ __global__ void apply_simplest(int n, BCloud cloud, const int *start, float seed
 
 __global__ void apply(int n, BCloud cloud, const int *start, float seed, /**/ Force *ff) {
     enum {X, Y, Z};
-    int ia;
-    int dy, dz;
+    int ia, dy, dz;
     int enddy, enddx;
     int startx, endx;
     int bs, be, cid0;
@@ -133,9 +132,6 @@ __global__ void apply(int n, BCloud cloud, const int *start, float seed, /**/ Fo
             bs = start[cid0 + startx];
             be = start[cid0 + endx];
 
-            // assert(bs <= be);
-            // assert(be <= n);
-            
             one_cell(ia, pa, cloud, bs, be, seed, /**/ fa, ff);
         }        
     }
