@@ -2,7 +2,7 @@
 # nTEST: wall.t0
 rm -rf bop h5 diag.txt
 :
-cp data/sdf/wall1/wall.dat sdf.dat
+u.cp.sdf wall1/wall.dat sdf.dat
 :
 u.conf conf/test.h <<!!!
    XS=12 YS=12 ZS=12

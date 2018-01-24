@@ -1,7 +1,7 @@
 #### Couette pinned cylinder
 # nTEST: solid.t3
 rm -rf h5 bop diag.txt solid_diag.txt
-cp data/sdf/yplates1/yplates.dat sdf.dat
+u.cp.sdf yplates1/yplates.dat sdf.dat
 echo -e "16 16 8" > rigs-ic.txt
 cp data/rig/cyl.ply rig.ply
 :

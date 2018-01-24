@@ -1,7 +1,7 @@
 #### two solids around cylinder with one solid removed by the wall
 # nTEST: solid.t4
 rm -rf h5 bop diag.txt solid_diag.txt
-cp data/sdf/cyl1/cyl.dat sdf.dat
+u.cp.sdf cyl1/cyl.dat sdf.dat
 cp data/rig/sphere_R1.ply rig.ply
 x=0.75 y=3 z=9; echo $x $y $z >  rigs-ic.txt
 x=8    y=8 z=8; echo $x $y $z >> rigs-ic.txt

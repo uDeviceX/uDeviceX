@@ -2,7 +2,7 @@
 # TEST: noflu
 S=`u.cp.s` C="$S/conf/poiseuille.h"
 :
-cp data/sdf/cyl1/cyl.dat sdf.dat
+u.cp.sdf cyl1/cyl.dat sdf.dat
 :
 Force="bforce={type=\"constant\"; f=[0.0333333,0.,0.];};"
 u.conf $C <<!
