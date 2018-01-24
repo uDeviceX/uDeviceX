@@ -26,8 +26,9 @@ void rbc_params_set_bending(float kb, float phi, RbcParams *par) {
     par->phi = phi;
 }
 
-void rbc_params_set_spring(float p, float x0, float mpow, RbcParams *par) {
-    par->p  = p;
+void rbc_params_set_spring(float ks, float p, float x0, float mpow, RbcParams *par) {
+    par->ks = ks;
+    par->p = p;
     par->x0 = x0;
     par->mpow = mpow;
 }
@@ -49,6 +50,7 @@ RbcParams_v rbc_params_get_view(const RbcParams *p) {
     v.kBT0 = p->kBT;
     v.kb = p->kb;
     v.phi = p->phi;
+    v.ks = p->ks;
     v.p = p->p;
     v.x0 = p->x0;
     v.mpow = p->mpow;

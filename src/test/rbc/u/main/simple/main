@@ -30,6 +30,7 @@ u.conf $S $U $C <<!
 u.run ./udx '
 rbc = {
     @include "rbc.lina.cfg"
-    kBT = 0.00444302
+    kBT = 0.00444302;
+    ks = 3.26692647;
 }'
 ply2punto r/00009.ply | uscale 1 > ply.out.txt

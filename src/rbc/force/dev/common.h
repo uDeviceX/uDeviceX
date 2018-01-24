@@ -24,17 +24,20 @@ static __device__ float3 farea(RbcParams_v par, float3 x21, float3 x31, float3 x
     return f;
 }
 
-static __device__ float sq(float x) { return x * x; }
-static __device__ float wlc0(float r) { return (4*sq(r)-9*r+6)/(4*sq(r-1)); }
-static __device__ float wlc(float kbT, float lmax, float p, float r) {
+#define real double
+static __device__ real sq(real x) { return x * x; }
+static __device__ real wlc0(real r) { return (4*sq(r)-9*r+6)/(4*sq(r-1)); }
+static __device__ real wlc(real kbT, real lmax, real p, real r) {
     return kbT/(lmax*p)*wlc0(r/lmax);
 }
 static __device__ float3 fspring(RbcParams_v par, float3 x21, float l0) {
   #define wlc_r(r) (wlc(kbT, lmax, p, r))
     float m;
-    float  r, fwlc, fpow, lmax, kbT, p, x0;
+    float r, fwlc, fpow, lmax, kbT, p, ks, x0;
     float3 f;
-    kbT = par.kBT0; p = par.p; m = par.mpow; x0 = par.x0;
+    kbT = par.kBT0; p = par.p; ks = par.ks; m = par.mpow; x0 = par.x0;
+    //assert( ks>=0.95*kbT/p && ks<=1.05*kbT/p ); //TEST FAIL IF ENABLED
+
     r = sqrtf(dot<float>(&x21, &x21));
     lmax = l0 / x0;
     fwlc =   wlc_r(r); /* make fwlc + fpow = 0 for r = l0 */

@@ -3,7 +3,7 @@ struct RbcParams;
 struct RbcParams_v {
     float gammaC, gammaT, kBT0;
     float kb, phi;
-    float p, x0, mpow;
+    float ks, p, x0, mpow;
     float ka, kd, kv;
     float dt0;
 };
@@ -13,7 +13,7 @@ void rbc_params_fin(RbcParams *);
 
 void rbc_params_set_fluct(float gammaC, float gammaT, float kBT0, RbcParams *);
 void rbc_params_set_bending(float kb, float phi, RbcParams *);
-void rbc_params_set_spring(float p, float x0, float mpow , RbcParams *);
+void rbc_params_set_spring(float ks, float p, float x0, float mpow , RbcParams *);
 void rbc_params_set_area_volume(float ka, float kd, float kv, RbcParams *);
 void rbc_params_set_timestep(float dt0, RbcParams *);
 
