@@ -24,7 +24,7 @@ static __device__ float3 farea(RbcParams_v par, float3 x21, float3 x31, float3 x
     return f;
 }
 
-#define real float
+#define real double
 static __device__ void assert_r(real a, real m) {
     if (a < m) return;
     printf("a = %g >= max = %g\n", a, m);
@@ -42,7 +42,7 @@ static __device__ float3 fspring(RbcParams_v par, float3 x21, float l0) {
     float r, fwlc, fpow, lmax, kbT, p, ks, x0;
     float3 f;
     kbT = par.kBT0; p = par.p; ks = par.ks; m = par.mpow; x0 = par.x0;
-    //    assert( ks>=0.95*kbT/p && ks<=1.05*kbT/p );
+    assert( ks>=0.95*kbT/p && ks<=1.05*kbT/p );
 
     r = sqrtf(dot<float>(&x21, &x21));
     lmax = l0 / x0;
