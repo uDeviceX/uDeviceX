@@ -1,10 +1,3 @@
-static __device__ void copy_color(int ka, int kb, int k, /**/ int *ca, int *cb) {
-    /* k: master kind: copy color from this kind */
-    if      (ka == k) *cb = *ca;
-    else if (kb == k) *ca = *cb;
-    else assert(0);
-}
-
 static __device__ float cap(float x, float lo, float hi) {
     if      (x > hi) return hi;
     else if (x < lo) return lo;
