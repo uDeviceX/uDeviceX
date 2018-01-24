@@ -5,6 +5,9 @@
 
 #include "inc/type.h"
 #include "inc/def.h"
+#include "inc/dev.h"
+
+#include "utils/kl.h"
 
 #include "math/rnd/imp.h"
 
@@ -14,4 +17,8 @@
 
 #include "imp.h"
 
+namespace flocaldev {
 #include "dev/main.h"
+}
+
+#include "imp/main.h"
