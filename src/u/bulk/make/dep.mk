@@ -1,9 +1,9 @@
 $B/d/api.o: $B/conf.h $S/d/api.h $S/d/common.h $S/d/cpu/imp.h $S/d/cuda/imp.h $S/inc/conf.h $S/utils/error.h $S/utils/imp.h
-$B/io/punto/imp.o: $S/inc/type.h $S/io/punto/imp.h $S/io/punto/imp/dump.h $S/io/punto/imp/read.h $S/io/punto/imp/type.h $S/utils/error.h $S/utils/imp.h $S/utils/msg.h
+$B/io/txt/imp.o: $S/inc/type.h $S/io/txt/imp.h $S/io/txt/imp/dump.h $S/io/txt/imp/read.h $S/io/txt/imp/type.h $S/utils/error.h $S/utils/imp.h $S/utils/msg.h
 $B/mpi/glb.o: $B/conf.h $S/inc/conf.h $S/mpi/glb.h $S/mpi/wrapper.h $S/utils/mc.h
 $B/mpi/type.o: $S/inc/conf.h $S/inc/type.h $S/mpi/type.h $S/utils/mc.h
 $B/mpi/wrapper.o: $S/mpi/wrapper.h
-$B/u/bulk/main.o: $B/conf.h $S/d/api.h $S/inc/conf.h $S/inc/dev.h $S/inc/type.h $S/io/punto/imp.h $S/mpi/glb.h $S/u/bulk/dev.h $S/utils/cc.h $S/utils/kl.h $S/utils/msg.h
+$B/u/bulk/main.o: $B/conf.h $S/d/api.h $S/inc/conf.h $S/inc/dev.h $S/inc/type.h $S/io/txt/imp.h $S/mpi/glb.h $S/u/bulk/dev.h $S/utils/cc.h $S/utils/kl.h $S/utils/msg.h
 $B/utils/cc.o: $B/conf.h $S/d/api.h $S/inc/conf.h $S/utils/cc/common.h $S/utils/error.h
 $B/utils/error.o: $S/utils/error.h $S/utils/msg.h
 $B/utils/imp.o: $S/utils/error.h $S/utils/imp.h

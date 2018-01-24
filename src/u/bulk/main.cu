@@ -9,7 +9,7 @@
 #include "inc/dev.h"
 #include "inc/type.h"
 
-#include "io/punto/imp.h"
+#include "io/txt/imp.h"
 
 #include "utils/cc.h"
 
