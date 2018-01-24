@@ -1,6 +1,6 @@
 . u.cp.util
 
-prog=u.test.pack0
+prog=u.test.rbc0
 
 f="$1"; shift
 t="$1"; shift
