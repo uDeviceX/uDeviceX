@@ -10,7 +10,7 @@
 
 #define VFRMT "%16.10e %16.10e %16.10e"
 
-void punto_dump_pp(long n, const Particle *pp, const char *name) {
+void punto_write_pp(long n, const Particle *pp, const char *name) {
     enum {X, Y, Z};
     long i;
     FILE *f;
@@ -29,7 +29,7 @@ void punto_dump_pp(long n, const Particle *pp, const char *name) {
     msg_print("dump %ld particles to '%s'", n, name);
 }
 
-void punto_dump_pp_ff(long n, const Particle *pp, const Force *ff, const char *name) {
+void punto_write_pp_ff(long n, const Particle *pp, const Force *ff, const char *name) {
     enum {X, Y, Z};
     long i;
     FILE *f;

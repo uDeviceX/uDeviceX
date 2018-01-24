@@ -26,5 +26,5 @@ void flu_punto_dump(const Coords *c, const FluQuants *q) {
     if (n) cD2H(hst, dev, n);
     local2global_p(c, n, /**/ hst);
     UC(gen_name(c, /**/ name));
-    UC(punto_dump_pp(n, hst, name));
+    UC(punto_write_pp(n, hst, name));
 }
