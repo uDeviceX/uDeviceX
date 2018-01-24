@@ -6,7 +6,7 @@ B = $(BIN)
 # path to `src`
 S = ../../src
 
-P = rbc rbc0 rig rig0 s sdf sdf0 util
+P = hdr hdr0 rbc rbc0 rig rig0 s sdf sdf0 util
 
 # prefix
 p = u.cp

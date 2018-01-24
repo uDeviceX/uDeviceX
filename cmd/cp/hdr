@@ -1,0 +1,33 @@
+#!/bin/sh
+
+. u.cp.util
+
+prog=u.cp.hdr
+prog0=u.cp.hdr0
+
+usg () {
+    msg "$prog [-l] hdr.from hdr.to"
+    msg 'copy header file to header.to'
+    msg '-l list all header files'
+    msg "$prog cyl1/cyl.dat hdr.dat"
+    msg "$prog cyl1/cyl     hdr.dat"
+    exit
+}
+
+list () (
+    cd "$D/hdr"
+    find . -type f | sort | \
+	sed -e 's,^\./,,g' -e 's,\.h$,,g'
+)
+
+if test $# -ne 0 && test "$1" = -h; then usg; fi
+if test ! -d "$D"; then err "not a directory $D"; fi
+
+if test $# -eq 1 && test "$1" = -l
+then list
+     exit
+fi
+
+if test $# -ne 2 ; then err "needs two arguments"; fi
+
+exec $prog0 "$@"
