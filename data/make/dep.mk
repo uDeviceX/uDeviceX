@@ -64,3 +64,16 @@ rig/sphere.ply
 I = \
 ic/ident.ic  \
 ic/two.ic
+
+H = \
+hdr/zurich.h             \
+hdr/long.h               \
+hdr/default.h            \
+hdr/couette.h            \
+hdr/lina.h               \
+hdr/wall.h               \
+hdr/around.h             \
+hdr/poiseuille.h         \
+hdr/color.rbc.h          \
+hdr/test.h               \
+hdr/double.poiseuille.h

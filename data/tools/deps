@@ -1,11 +1,12 @@
 #!/bin/sh
 
 set -eu
+
 # update dependencies
+# O:off, S:sdf, R:rigid, I:[initial condtion], H:[headers]
 
 find0 () { find . -type f -name "$1"; }
 
-# O:off, S:sdf, R:rigid
 {
     find0 '*.off' | tools/list2var O
     echo
@@ -14,5 +15,7 @@ find0 () { find . -type f -name "$1"; }
     find0 '*.ply' | tools/list2var R
     echo
     find0 '*.ic'  | tools/list2var I
+    echo
+    find0 '*.h'   | tools/list2var H
 } > make/dep.mk
 echo >&2 "upd: make/dep.mk"
