@@ -34,8 +34,6 @@
 #include "imp.h"
 
 namespace dev {
-
-#define RBC_DOUBLE
 #if   defined(RBC_DOUBLE)
   #include "dev/double.h"
 #elif defined(RBC_FLOAT)

@@ -82,6 +82,11 @@
   #define rbc_com_dumps (false)
 #endif
 
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
 /* stretch cell?  see doc/stretch.md */
 #ifndef RBC_STRETCH
   #define RBC_STRETCH (false)
