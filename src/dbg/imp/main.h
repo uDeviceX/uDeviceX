@@ -40,7 +40,7 @@ static void gen_name(const Coords *c, const char *base, /**/ char *name) {
     int r;
     char stamp[FILENAME_MAX];
     coord_stamp(c, /**/ stamp);
-    r = sprintf(name, "dbg.%s.%s.punto", base, stamp);
+    r = sprintf(name, "dbg.%s.%s.txt", base, stamp);
     if (r < 0) ERR("sprintf failed");
 }
 
@@ -52,7 +52,7 @@ static void dump_pp(const Coords *c, const char *base, int n, const Particle *de
     UC(emalloc(sz, (void**) &hst));
     UC(d::Memcpy(hst, dev, sz, D2H));
     UC(gen_name(c, base, name));
-    UC(punto_write_pp(n, hst, name));
+    UC(txt_write_pp(n, hst, name));
     UC(efree(hst));    
 }
 
@@ -73,7 +73,7 @@ static void dump_pp_ff(const Coords *c, const char *base, int n, const Particle 
 
     UC(gen_name(c, base, name));
 
-    UC(punto_write_pp_ff(n, pphst, ffhst, name));
+    UC(txt_write_pp_ff(n, pphst, ffhst, name));
 
     UC(efree(pphst));
     UC(efree(ffhst));

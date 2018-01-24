@@ -11,9 +11,9 @@ $B/io/mesh/imp.o: $S/io/mesh/imp.cpp; $X -I$S/. -I$S/io/mesh
 $B/io/mesh/write/imp.o: $S/io/mesh/write/imp.cpp; $X -I$S/. -I$S/io/mesh/write
 $B/io/off/imp.o: $S/io/off/imp.cpp; $X -I$S/. -I$S/io/off
 $B/io/ply/imp.o: $S/io/ply/imp.cpp; $X -I$S/. -I$S/io/ply
-$B/io/punto/imp.o: $S/io/punto/imp.cpp; $X -I$S/. -I$S/io/punto
 $B/io/restart/imp.o: $S/io/restart/imp.cpp; $X -I$S/. -I$S/io/restart
 $B/io/rig/imp.o: $S/io/rig/imp.cpp; $X -I$S/. -I$S/io/rig
+$B/io/txt/imp.o: $S/io/txt/imp.cpp; $X -I$S/. -I$S/io/txt
 $B/math/linal/imp.o: $S/math/linal/imp.cpp; $X -I$S/. -I$S/math/linal
 $B/math/rnd/imp.o: $S/math/rnd/imp.cpp; $X -I$S/. -I$S/math/rnd
 $B/math/tform/imp.o: $S/math/tform/imp.cpp; $X -I$S/. -I$S/math/tform
