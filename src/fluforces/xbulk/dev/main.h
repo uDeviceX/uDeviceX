@@ -46,7 +46,7 @@ __device__ void one_cell(int ia, forces::Pa pa, BCloud c, int start, int end, fl
     float *fb, rnd;
     
     for (ib = start; ib < end; ++ib) {
-        if (ib > ia) continue;
+        if (ib >= ia) continue;
         
         fetch(c, ib, &pb);
 
@@ -98,10 +98,11 @@ __global__ void apply_simplest(int n, BCloud cloud, const int *start, const int 
 
 __global__ void apply(int n, BCloud cloud, const int *start, const int *count, float seed, /**/ Force *ff) {
     enum {X, Y, Z};
-    int ia, ibs, ibe;
+    int ia;
     int dy, dz;
     int enddy, enddx;
     int startx, endx;
+    int bs, be, cid0;
     int3 ca, cb;
     forces::Pa pa;
     float fa[3] = {0};
@@ -119,17 +120,22 @@ __global__ void apply(int n, BCloud cloud, const int *start, const int *count, f
             
         for (dy = -1; dy <= enddy; ++dy) {
             cb.y = ca.y + dy;
-            enddx = dz || dy ? 1 : 0;
+            enddx = (dz == 0 && dy == 0) ? 0 : 1;
 
             if (!valid_c(cb.y, YS)) continue;
             
             startx = max(0, ca.x - 1);
-            endx = min(XS, ca.x + enddx);
+            endx = 1 + min(XS-1, ca.x + enddx);
 
-            ibs = startx + XS * (cb.y + YS * cb.z);
-            ibe = endx   + XS * (cb.y + YS * cb.z);
+            cid0 = XS * (cb.y + YS * cb.z);
+
+            bs = start[cid0 + startx];
+            be = start[cid0 + endx];
+
+            assert(bs <= be);
+            assert(be <= n);
             
-            one_cell(ia, pa, cloud, start[ibs], start[ibe], seed, /**/ fa, ff);
+            one_cell(ia, pa, cloud, bs, be, seed, /**/ fa, ff);
         }        
     }
 
