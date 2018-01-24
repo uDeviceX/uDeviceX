@@ -2,7 +2,7 @@
 # sTEST: mbounce.t0
 rm -rf h5 bop diag.txt solid_diag.txt
 echo -e "8 16 8" > rigs-ic.txt
-cp data/rig/sphere.ply mesh_solid.ply
+cp data/rig/sphere.ply rig.ply
 :
 u.conf conf/double.poiseuille.h <<!!!
    solids sbounce_back
@@ -20,7 +20,7 @@ cat solid_diag_0000.txt | awk '{print $2, $5, $8}' | uscale 5 > sdiag.out.txt
 # nTEST: mbounce.t1
 rm -rf h5 bop diag.txt solid_diag.txt
 echo -e "8 16 8" > rigs-ic.txt
-cp data/rig/sphere.ply mesh_solid.ply
+cp data/rig/sphere.ply rig.ply
 :
 Force="bforce={type=\"double_poiseuille\"; a=6.6666667;};"
 u.conf conf/double.poiseuille.h <<!!!

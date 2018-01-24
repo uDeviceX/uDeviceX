@@ -20,7 +20,7 @@ diag.txt
 sdf.dat
 rbc.off
 
-mesh_solid.ply
+rig.ply
 
 test_data/atest.res
 fail.*.sh

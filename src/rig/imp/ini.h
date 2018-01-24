@@ -25,6 +25,5 @@ void rig_ini(RigQuants *q) {
     q->ss_dmp    = new Solid[MAX_SOLIDS];
     q->ss_dmp_bb = new Solid[MAX_SOLIDS];
 
-    load_rigid_mesh("mesh_solid.ply", /**/ &q->nt, &q->nv,
-                    &q->htt, &q->dtt, &q->hvv, &q->dvv);
+    load_rigid_mesh("rig.ply", /**/ &q->nt, &q->nv, &q->htt, &q->dtt, &q->hvv, &q->dvv);
 }
