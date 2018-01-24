@@ -33,9 +33,9 @@ __device__ bool valid_c(int c, int hi) {
 
 __device__ bool valid_cid(int3 c) {
     return
-        (c.x >= 0) && (c.x < XS) &&
-        (c.y >= 0) && (c.y < YS) &&
-        (c.z >= 0) && (c.z < ZS);    
+        valid_c(c.x, XS) &&
+        valid_c(c.y, YS) &&
+        valid_c(c.z, ZS);    
 }
 
 __device__ void one_cell(int ia, forces::Pa pa, BCloud c, int start, int end, float seed, /**/ float fa[3], Force *ff) {
