@@ -99,7 +99,9 @@ int main(int argc, char **argv) {
     UC(fluforces_bulk_prepare(n, &cloud, /**/ bulkforces));
     UC(fluforces_bulk_apply(n, bulkforces, clist.starts, clist.counts, /**/ ff));
 
-    CC(d::Memcpy(ff_hst, ff, n*sizeof(Force), D2H));
+    // particles are reordered because of clists
+    CC(d::Memcpy(pp_hst, pp, n*sizeof(Particle), D2H));
+    CC(d::Memcpy(ff_hst, ff, n*sizeof(Force)   , D2H));
     UC(txt_write_pp_ff(n, pp_hst, ff_hst, fout));
 
     UC(fluforces_bulk_fin(bulkforces));
