@@ -20,7 +20,8 @@
 static Particle *pp, *pp0;
 static Force *ff;
 static int n;
-
+static Clist clist;
+static ClistMap *cmap;
 
 static void read_pp(const char *fname) {
     TxtRead *tr;
@@ -49,6 +50,13 @@ static void dealloc() {
     n = 0;
 }
 
+static void build_clist() {
+    UC(clist_build(n, n, pp, /**/ pp0, &clist, cmap));
+    Particle *tmp = pp;
+    pp = pp0;
+    pp0 = tmp;
+}
+
 int main(int argc, char **argv) {
     Config *cfg;
     const char *fname;
@@ -62,6 +70,14 @@ int main(int argc, char **argv) {
     UC(conf_lookup_string(cfg, "fname", &fname));
     UC(read_pp(fname));
 
+    UC(clist_ini(XS, YS, ZS, &clist));
+    UC(clist_ini_map(n, 1, &clist, &cmap));
+    UC(build_clist());
+    
+    
+
+    UC(clist_fin(&clist));
+    UC(clist_fin_map(cmap));
     UC(dealloc());
     
     UC(conf_fin(cfg));
