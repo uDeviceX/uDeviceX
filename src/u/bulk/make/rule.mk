@@ -2,7 +2,14 @@ $B/algo/scan/imp.o: $S/algo/scan/imp.cu; $N -I$S/. -I$S/algo/scan
 $B/clist/imp.o: $S/clist/imp.cu; $N -I$S/. -I$S/clist
 $B/coords/imp.o: $S/coords/imp.cpp; $X -I$S/. -I$S/coords
 $B/d/api.o: $S/d/api.cu; $N -I$S/. -I$S/d
+$B/fluforces/bulk/imp.o: $S/fluforces/bulk/imp.cu; $N -I$S/. -I$S/fluforces/bulk
+$B/fluforces/bulk/transpose/imp.o: $S/fluforces/bulk/transpose/imp.cu; $N -I$S/. -I$S/fluforces/bulk/transpose
+$B/fluforces/halo/imp.o: $S/fluforces/halo/imp.cu; $N -I$S/. -I$S/fluforces/halo
+$B/fluforces/imp.o: $S/fluforces/imp.cu; $N -I$S/. -I$S/fluforces
+$B/fluforces/xbulk/imp.o: $S/fluforces/xbulk/imp.cu; $N -I$S/. -I$S/fluforces/xbulk
+$B/frag/imp.o: $S/frag/imp.cpp; $X -I$S/. -I$S/frag
 $B/io/txt/imp.o: $S/io/txt/imp.cpp; $X -I$S/. -I$S/io/txt
+$B/math/rnd/imp.o: $S/math/rnd/imp.cpp; $X -I$S/. -I$S/math/rnd
 $B/mpi/glb.o: $S/mpi/glb.cpp; $X -I$S/. -I$S/mpi
 $B/mpi/type.o: $S/mpi/type.cpp; $X -I$S/. -I$S/mpi
 $B/mpi/wrapper.o: $S/mpi/wrapper.cpp; $X -I$S/. -I$S/mpi

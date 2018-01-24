@@ -15,6 +15,10 @@
 #include "partlist/type.h"
 #include "clist/imp.h"
 
+#include "cloud/imp.h"
+#include "flu/type.h"
+#include "fluforces/imp.h"
+
 #include "io/txt/imp.h"
 
 static Particle *pp, *pp0;
@@ -73,6 +77,7 @@ int main(int argc, char **argv) {
     UC(clist_ini(XS, YS, ZS, &clist));
     UC(clist_ini_map(n, 1, &clist, &cmap));
     UC(build_clist());
+
     
     
 
