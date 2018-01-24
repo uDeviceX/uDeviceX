@@ -1,5 +1,5 @@
-static int min (int x, int y)        { return x < y ? x : y; };
-static int min3(int x, int y, int z) { return min(x, min(y, z)); }
+static int min2(int x, int y)        { return x < y ? x : y; };
+static int min3(int x, int y, int z) { return min2(x, min2(y, z)); }
 
 static float rad(const Coords *c) { /* radius */
     int lx, ly, lz; /* domain */
