@@ -11,6 +11,14 @@ __device__ void fetch(BCloud c, int i, forces::Pa *p) {
         p->color = c.cc[i];
 }
 
+__device__ bool cutoff_range(forces::Pa pa, forces::Pa pb) {
+    float x, y, z;
+    x = pa.x - pb.x;
+    y = pa.y - pb.y;
+    z = pa.z - pb.z;
+    return x*x + y*y + z*z <= 1.f;
+}
+
 __device__ int3 get_cid(const forces::Pa *pa) {
     int3 c;
     c.x = pa->x + XS/2;
@@ -37,6 +45,9 @@ __device__ void one_cell(int ia, forces::Pa pa, BCloud c, int start, int end, fl
         if (ib > ia) continue;
         
         fetch(c, ib, &pb);
+
+        if (!cutoff_range(pa, pb)) continue;
+        
         fb = ff[ib].f;
 
         rnd = rnd::mean0var1ii(seed, ia, ib);
