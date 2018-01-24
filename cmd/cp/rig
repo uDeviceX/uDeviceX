@@ -1,0 +1,33 @@
+#!/bin/sh
+
+. u.cp.util
+
+prog=u.cp.rig
+prog0=u.cp.rig0
+
+usg () {
+    msg "$prog [-l] rig.from rig.to"
+    msg 'copy rig file to rig.to'
+    msg '-l list all rig files'
+    msg "$prog rig/cyl1/cyl.dat rig.dat"
+    msg "$prog rig/cyl1/cyl     rig.dat"
+    exit
+}
+
+list () (
+    cd "$D/rig"
+    find . -type f | sort | \
+	sed -e 's,^\./,,g' -e 's,\.ply$,,g'
+)
+
+if test $# -ne 0 && test "$1" = -h; then usg; fi
+if test ! -d "$D"; then err "not a directory $D"; fi
+
+if test $# -eq 1 && test "$1" = -l
+then list
+     exit
+fi
+
+if test $# -ne 2 ; then err "needs two arguments"; fi
+
+exec $prog0 "$@"
