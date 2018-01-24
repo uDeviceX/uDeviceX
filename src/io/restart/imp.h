@@ -2,8 +2,6 @@ struct Coords;
 struct Particle;
 struct Solid;
 
-namespace restart {
-
 enum {RESTART_TEMPL=-1,
       RESTART_FINAL=-2};
 enum {RESTART_BEGIN=RESTART_FINAL};
@@ -16,4 +14,3 @@ void restart_read_ii(const Coords *coords, const char *code, const char *subext,
 
 void restart_write_ss(const Coords *coords, const char *code, const int id, const Solid *ss, const long n);
 void restart_read_ss(const Coords *coords, const char *code, const int id, Solid *ss, int *n);
-}

@@ -2,7 +2,7 @@
 #define IDEXT "ids"
 
 static void setup_from_strt(const Coords *coords, int nv, const int id, /**/ Particle *pp, int *nc, int *n, /*w*/ Particle *pp_hst) {
-    restart::restart_read_pp(coords, CODE, id, pp_hst, n);
+    restart_read_pp(coords, CODE, id, pp_hst, n);
     *nc = *n / nv;
     
     if (*n) cH2D(pp, pp_hst, *n);
@@ -10,7 +10,7 @@ static void setup_from_strt(const Coords *coords, int nv, const int id, /**/ Par
 
 static void ids_from_strt(const Coords *coords, const int id, /**/ int *ii) {
     int nc;
-    restart::restart_read_ii(coords, CODE, IDEXT, id, ii, &nc);
+    restart_read_ii(coords, CODE, IDEXT, id, ii, &nc);
 }
 
 void rbc_strt_quants(const Coords *coords, const char *cell, const int id, RbcQuants *q) {
@@ -30,11 +30,11 @@ void rbc_strt_quants(const Coords *coords, const char *cell, const int id, RbcQu
 static void strt_dump(const Coords *coords, const int id, const int n, const Particle *pp, /*w*/ Particle *pp_hst) {
     if (n) cD2H(pp_hst, pp, n);
 
-    restart::restart_write_pp(coords, CODE, id, pp_hst, n);
+    restart_write_pp(coords, CODE, id, pp_hst, n);
 }
 
 static void strt_dump_ii(const Coords *coords, const int id, const int nc, const int *ii) {
-    restart::restart_write_ii(coords, CODE, IDEXT, id, ii, nc);
+    restart_write_ii(coords, CODE, IDEXT, id, ii, nc);
 }
 
 

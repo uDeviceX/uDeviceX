@@ -16,7 +16,6 @@
 //#define DBG(...) msg_print(__VA_ARGS__)
 #define DBG(...) 
 
-namespace restart {
 enum {X, Y, Z};
 
 /* pattern : 
@@ -205,4 +204,3 @@ void restart_read_ss(const Coords *coords, const char *code, const int id, Solid
 #undef DUMP
 
 #undef DBG
-} // namespace restart

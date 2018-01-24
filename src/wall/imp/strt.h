@@ -3,7 +3,7 @@ static void read(const Coords *coords, int maxn, /**/ float4 *pp, int *n) {
     size_t sz = maxn * sizeof(Particle);
     UC(emalloc(sz, (void**) &pphst));
 
-    restart::restart_read_pp(coords, "wall", restart::RESTART_TEMPL, /**/ pphst, n);
+    restart_read_pp(coords, "wall", RESTART_TEMPL, /**/ pphst, n);
 
     if (*n) {
         CC(d::Malloc((void **) &ppdev, sz));
@@ -25,7 +25,7 @@ static void write(const Coords *coords, int n, const float4 *pp) {
         cD2H(pphst, ppdev, n);
         CC(d::Free(ppdev));
     }
-    restart::restart_write_pp(coords, "wall", restart::RESTART_TEMPL, /**/ pphst, n);
+    restart_write_pp(coords, "wall", RESTART_TEMPL, /**/ pphst, n);
 
     free(pphst);
 }
