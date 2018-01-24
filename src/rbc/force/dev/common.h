@@ -36,7 +36,7 @@ static __device__ float3 fspring(RbcParams_v par, float3 x21, float l0) {
     float r, fwlc, fpow, lmax, kbT, p, ks, x0;
     float3 f;
     kbT = par.kBT0; p = par.p; ks = par.ks; m = par.mpow; x0 = par.x0;
-    //assert( ks>=0.95*kbT/p && ks<=1.05*kbT/p ); //TEST FAIL IF ENABLED
+    assert( ks>=0.95*kbT/p && ks<=1.05*kbT/p ); //TEST FAIL IF ENABLED
 
     r = sqrtf(dot<float>(&x21, &x21));
     lmax = l0 / x0;
