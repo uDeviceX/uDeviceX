@@ -1,0 +1,7 @@
+sq(r):=r*r;
+A: (kbT*(4*sq(r)-9*lmax*r+6*sq(lmax)))/(4*lmax*p*sq(r-lmax));
+
+w0(r):=(4*sq(r)-9*r+6)/(4*sq(r-1));
+B: kbT/(lmax*p) * w0(r/lmax);
+
+fullratsimp(B/A);

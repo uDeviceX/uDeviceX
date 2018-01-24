@@ -25,8 +25,12 @@ static __device__ float3 farea(RbcParams_v par, float3 x21, float3 x31, float3 x
 }
 
 static __device__ float sq(float x) { return x * x; }
+static __device__ float wlc0(float r) { return (4*sq(r)-9*r+6)/(4*sq(r-1)); }
+static __device__ float wlc(float kbT, float lmax, float p, float r) {
+    return kbT/(lmax*p)*wlc0(r/lmax);
+}
 static __device__ float3 fspring(RbcParams_v par, float3 x21, float l0) {
-  #define wlc_r(r) (kbT*(4*sq(r)-9*lmax*r+6*sq(lmax)))/(4*lmax*p*sq(r-lmax))
+  #define wlc_r(r) (wlc(kbT, lmax, p, r))
     float m;
     float  r, fwlc, fpow, lmax, kbT, p, x0;
     float3 f;
@@ -37,6 +41,7 @@ static __device__ float3 fspring(RbcParams_v par, float3 x21, float l0) {
     fpow = - wlc_r(l0) * powf(l0, m + 1) / powf(r, m + 1);
     axpy(fwlc + fpow, &x21, /**/ &f);
     return f;
+  #undef wlc_r
 }
 
 static __device__ float3 tri0(RbcParams_v par, float3 r1, float3 r2, float3 r3,
