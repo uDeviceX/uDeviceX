@@ -24,7 +24,7 @@ static __device__ float3 farea(RbcParams_v par, float3 x21, float3 x31, float3 x
     return f;
 }
 
-#define real double
+#define real float
 static __device__ void assert_r(real a, real m) {
     if (a < m) return;
     printf("a = %g >= max = %g\n", a, m);
