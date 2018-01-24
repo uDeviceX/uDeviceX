@@ -1,7 +1,7 @@
 # data directory
 D = $(HOME)/.udx/data
 
-# defiens O:off, S:sdf, R:rigid, I:[initial condtion]
+# defines O:off, S:sdf, R:rigid, I:[initial condtion], H:[headers]
 include make/dep.mk
 
 install: $P
@@ -13,6 +13,7 @@ install: $P
 	for f in $O; do install0 "$$f"; done; \
         for f in $S; do install0 "$$f"; done; \
         for f in $R; do install0 "$$f"; done; \
-        for f in $I; do install0 "$$f"; done
+        for f in $I; do install0 "$$f"; done; \
+        for f in $H; do install0 "$$f"; done
 
 .PHONY: install

@@ -1,0 +1,23 @@
+. u.cp.util
+
+prog=u.test.hdr0
+
+f="$1"; shift
+t="$1"; shift
+
+Found=0
+for p in "$D/hdr/$f" "$D/hdr/$f.h"
+do if e test -f "$p"
+   then Found=1
+	break
+   fi
+done
+
+if test $Found -eq 0
+then err "cannot find hdr file '$f=$p'"
+fi
+
+e cp '2>/dev/null' "$p" "$t"
+if test $? -ne 0
+then err "fail to copy to '$t'"
+fi
