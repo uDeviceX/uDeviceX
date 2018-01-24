@@ -12,19 +12,19 @@ void fluforces_bulk_prepare(int n, const Cloud *c, /**/ FluForcesBulk *b) {
         b->colors = c->cc;
 }
 
-void fluforces_bulk_apply(int n, const FluForcesBulk *b, const int *start, const int *count, /**/ Force *ff) {
+void ofluforces_bulk_apply(int n, const FluForcesBulk *b, const int *start, const int *count, /**/ Force *ff) {
     if (multi_solvent)
         flocal_color(b->zipped_pp, b->zipped_rr, b->colors, n, start, count, b->rnd, /**/ ff);
     else
         flocal(b->zipped_pp, b->zipped_rr, n, start, count, b->rnd, /**/ ff);
 }
 
-void xfluforces_bulk_apply(int n, const FluForcesBulk *b, const int *start, const int *count, /**/ Force *ff) {
+void fluforces_bulk_apply(int n, const FluForcesBulk *b, const int *start, const int *count, /**/ Force *ff) {
     BCloud c;
     c.pp = b->zipped_pp;
     c.cc = b->colors;
 
-    UC(flocal(n, c, start, count, b->rnd, /**/ ff));
+    UC(flocal(n, c, start, b->rnd, /**/ ff));
 }
 
 

@@ -67,7 +67,7 @@ __device__ void one_cell(int ia, forces::Pa pa, BCloud c, int start, int end, fl
     }
 }
 
-__global__ void apply_simplest(int n, BCloud cloud, const int *start, const int *count, float seed, /**/ Force *ff) {
+__global__ void apply_simplest(int n, BCloud cloud, const int *start, float seed, /**/ Force *ff) {
     enum {X, Y, Z};
     int ia, ib;
     int3 ca, cb;
@@ -86,7 +86,7 @@ __global__ void apply_simplest(int n, BCloud cloud, const int *start, const int 
                 if (!valid_cid(cb)) continue;
                 ib = cb.x + XS * (cb.y + YS * cb.z);
                 
-                one_cell(ia, pa, cloud, start[ib], start[ib] + count[ib], seed, /**/ fa, ff);
+                one_cell(ia, pa, cloud, start[ib], start[ib + 1], seed, /**/ fa, ff);
             }        
         }        
     }
@@ -96,7 +96,7 @@ __global__ void apply_simplest(int n, BCloud cloud, const int *start, const int 
     atomicAdd(ff[ia].f + Z, fa[Z]);
 }
 
-__global__ void apply(int n, BCloud cloud, const int *start, const int *count, float seed, /**/ Force *ff) {
+__global__ void apply(int n, BCloud cloud, const int *start, float seed, /**/ Force *ff) {
     enum {X, Y, Z};
     int ia;
     int dy, dz;
