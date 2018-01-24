@@ -18,7 +18,7 @@ static void gen_name(const Coords *c, /**/ char *name) {
     if (r < 0) ERR("sprintf failed");
 }
 
-void flu_punto_dump(const Coords *c, const FluQuants *q) {
+void flu_txt_dump(const Coords *c, const FluQuants *q) {
     Particle *dev, *hst;
     int n;
     char name[FILENAME_MAX];

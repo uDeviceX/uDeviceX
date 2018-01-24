@@ -5,7 +5,7 @@ static void log_and_fail(Coords *c, DFluStatus *s, FluQuants *q) {
     unsigned int time;
     time = 10;
     UC(dflu_status_log(s));
-    UC(flu_punto_dump(c, q));
+    UC(flu_txt_dump(c, q));
     msg_print("sleep for %d seconds", time);
     os_sleep(time); /* hope all ranks dump */
     ERR("dflu_download failed");

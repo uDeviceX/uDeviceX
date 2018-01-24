@@ -38,5 +38,5 @@
 #include "imp/fin.h"
 #include "imp/generate.h"
 #include "imp/start.h"
-#include "imp/punto.h"
+#include "imp/txt.h"
 #include "imp/cells.h"
