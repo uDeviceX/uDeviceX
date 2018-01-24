@@ -2,7 +2,7 @@
 # nTEST: freeze.t0
 rm -rf bop h5 diag.txt
 c=conf/zurich.h
-cp data/sdf/yplates1/yplates.dat sdf.dat
+u.cp.sdf yplates1/yplates.dat sdf.dat
 u.conf $c <<!!!
    numberdensity=3
    walls wall_creation=10

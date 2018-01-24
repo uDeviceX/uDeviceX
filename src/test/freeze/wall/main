@@ -3,7 +3,7 @@
 rm -rf bop h5 diag.txt rbc.off bin.1 bin.2 sdf.dat
 :
 u.cp.rbc rbc/498.off  rbc.off
-cp data/sdf/wall1/wall.dat sdf.dat
+u.cp.sdf wall1/wall.dat sdf.dat
 :
 u.conf conf/couette.h <<!!!
    tend=2e-3 part_freq=4000

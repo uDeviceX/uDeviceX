@@ -2,7 +2,7 @@
 # nTEST: flow.vwall.flat
 rm -rf bop h5 diag.txt rbc.off
 :
-cp data/sdf/wall1/wall.dat sdf.dat
+u.cp.sdf wall1/wall.dat sdf.dat
 :
 u.conf conf/poiseuille.h <<!!!
    tend=2.0 part_freq=300 walls wall_creation=100
