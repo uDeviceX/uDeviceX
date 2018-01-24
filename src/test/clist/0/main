@@ -6,4 +6,4 @@ u.conf . u/clist conf/default.h <<!!!
        run
 !!!
 { u.make -j;     } > /dev/null
-../pre/units/gen_random $X $Y $Z $N | u.run ./udx > clist.out.txt
+u.pre.gen_random $X $Y $Z $N | u.run ./udx > clist.out.txt
