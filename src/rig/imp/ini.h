@@ -1,4 +1,5 @@
 static void load_rigid_mesh(const char *fname, int *nt, int *nv, int4 **tt_hst, int4 **tt_dev, float **vv_hst, float **vv_dev) {
+    msg_print("reading: '%s'", fname);
     UC(ply::read(fname, /**/ nt, nv, tt_hst, vv_hst));
 
     CC(d::Malloc((void**)tt_dev,     (*nt) * sizeof(int4)));
