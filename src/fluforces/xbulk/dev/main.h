@@ -27,6 +27,10 @@ __device__ int3 get_cid(const forces::Pa *pa) {
     return c;
 }
 
+__device__ bool valid_c(int c, int hi) {
+    return (c >= 0) && (c < hi);
+}
+
 __device__ bool valid_cid(int3 c) {
     return
         (c.x >= 0) && (c.x < XS) &&
@@ -63,7 +67,7 @@ __device__ void one_cell(int ia, forces::Pa pa, BCloud c, int start, int end, fl
     }
 }
 
-__global__ void apply(int n, BCloud cloud, const int *start, const int *count, float seed, /**/ Force *ff) {
+__global__ void apply_simplest(int n, BCloud cloud, const int *start, const int *count, float seed, /**/ Force *ff) {
     enum {X, Y, Z};
     int ia, ib;
     int3 ca, cb;
@@ -84,6 +88,48 @@ __global__ void apply(int n, BCloud cloud, const int *start, const int *count, f
                 
                 one_cell(ia, pa, cloud, start[ib], start[ib] + count[ib], seed, /**/ fa, ff);
             }        
+        }        
+    }
+
+    atomicAdd(ff[ia].f + X, fa[X]);
+    atomicAdd(ff[ia].f + Y, fa[Y]);
+    atomicAdd(ff[ia].f + Z, fa[Z]);
+}
+
+__global__ void apply(int n, BCloud cloud, const int *start, const int *count, float seed, /**/ Force *ff) {
+    enum {X, Y, Z};
+    int ia, ibs, ibe;
+    int dy, dz;
+    int enddy, enddx;
+    int startx, endx;
+    int3 ca, cb;
+    forces::Pa pa;
+    float fa[3] = {0};
+
+    ia = threadIdx.x + blockIdx.x * blockDim.x;
+    if (ia >= n) return;
+    
+    fetch(cloud, ia, &pa);
+    ca = get_cid(&pa);
+
+    for (dz = -1; dz <= 0; ++dz) {
+        cb.z = ca.z + dz;
+        enddy = dz ? 1 : 0;
+        if (!valid_c(cb.z, ZS)) continue;
+            
+        for (dy = -1; dy <= enddy; ++dy) {
+            cb.y = ca.y + dy;
+            enddx = dz || dy ? 1 : 0;
+
+            if (!valid_c(cb.y, YS)) continue;
+            
+            startx = max(0, ca.x - 1);
+            endx = min(XS, ca.x + enddx);
+
+            ibs = startx + XS * (cb.y + YS * cb.z);
+            ibe = endx   + XS * (cb.y + YS * cb.z);
+            
+            one_cell(ia, pa, cloud, start[ibs], start[ibe], seed, /**/ fa, ff);
         }        
     }
 
