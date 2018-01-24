@@ -1,11 +1,13 @@
 #include <mpi.h>
 #include <stdio.h>
+#include <string.h>
 #include <conf.h>
 #include "inc/conf.h"
 
 #include "d/api.h"
 #include "utils/msg.h"
 #include "utils/error.h"
+#include "utils/imp.h"
 #include "utils/cc.h"
 
 #include "mpi/glb.h"
@@ -21,8 +23,8 @@
 
 #include "io/txt/imp.h"
 
-static Particle *pp, *pp0;
-static Force *ff;
+static Particle *pp, *pp0, *pp_hst;
+static Force *ff, *ff_hst;
 static int n;
 static Clist clist;
 static ClistMap *cmap;
@@ -37,12 +39,16 @@ static void read_pp(const char *fname) {
 
     szp = (n + 32) * sizeof(Particle);
     szf = (n + 32) * sizeof(Force);
-    
+
+    UC(emalloc(szp, (void**)&pp_hst));
+    UC(emalloc(szf, (void**)&ff_hst));
+
     CC(d::Malloc((void**)&pp, szp));
     CC(d::Malloc((void**)&pp0, szp));
     CC(d::Malloc((void**)&ff, szf));
 
-    CC(d::Memcpy(pp, txt_read_get_pp(tr), szp, H2D));
+    memcpy(pp_hst, txt_read_get_pp(tr), szp);
+    CC(d::Memcpy(pp, pp_hst, szp, H2D));
     CC(d::Memset(ff, 0, szf));
     
     UC(txt_read_fin(tr));
@@ -52,6 +58,8 @@ static void dealloc() {
     CC(d::Free(pp));
     CC(d::Free(pp0));
     CC(d::Free(ff));
+    UC(efree(pp_hst));
+    UC(efree(ff_hst));
     n = 0;
 }
 
@@ -64,7 +72,7 @@ static void build_clist() {
 
 int main(int argc, char **argv) {
     Config *cfg;
-    const char *fname;
+    const char *fin, *fout;
     Cloud cloud;
     int maxp;
     
@@ -74,8 +82,9 @@ int main(int argc, char **argv) {
     UC(conf_ini(&cfg));
     UC(conf_read(argc, argv, cfg));
 
-    UC(conf_lookup_string(cfg, "fname", &fname));
-    UC(read_pp(fname));
+    UC(conf_lookup_string(cfg, "in", &fin));
+    UC(conf_lookup_string(cfg, "out", &fout));
+    UC(read_pp(fin));
 
     maxp = n + 32;
 
@@ -89,9 +98,11 @@ int main(int argc, char **argv) {
     
     UC(fluforces_bulk_prepare(n, &cloud, /**/ bulkforces));
     UC(fluforces_bulk_apply(n, bulkforces, clist.starts, clist.counts, /**/ ff));
-    
-    UC(fluforces_bulk_fin(bulkforces));
 
+    CC(d::Memcpy(ff_hst, ff, n*sizeof(Force), D2H));
+    UC(txt_write_pp_ff(n, pp_hst, ff_hst, fout));
+
+    UC(fluforces_bulk_fin(bulkforces));
     UC(clist_fin(&clist));
     UC(clist_fin_map(cmap));
     UC(dealloc());
