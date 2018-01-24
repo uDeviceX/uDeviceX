@@ -4,9 +4,9 @@ struct Solid;
 
 namespace restart {
 
-enum {TEMPL=-1,
-      FINAL=-2};
-enum {BEGIN=FINAL};
+enum {RESTART_TEMPL=-1,
+      RESTART_FINAL=-2};
+enum {RESTART_BEGIN=RESTART_FINAL};
 
 void restart_write_pp(const Coords *coords, const char *code, const int id, const Particle *pp, const long n);
 void restart_read_pp(const Coords *coords, const char *code, const int id, Particle *pp, int *n);

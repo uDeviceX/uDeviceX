@@ -43,10 +43,10 @@ enum {X, Y, Z};
 
 static void id2str(const int id, char *str) {
     switch (id) {
-    case TEMPL:
+    case RESTART_TEMPL:
         CSPR(sprintf(str, "templ"));
         break;
-    case FINAL:
+    case RESTART_FINAL:
         CSPR(sprintf(str, "final"));
         break;
     default:
