@@ -29,6 +29,7 @@ $B/fluforces/bulk/imp.o: $S/fluforces/bulk/imp.cu; $N -I$S/. -I$S/fluforces/bulk
 $B/fluforces/bulk/transpose/imp.o: $S/fluforces/bulk/transpose/imp.cu; $N -I$S/. -I$S/fluforces/bulk/transpose
 $B/fluforces/halo/imp.o: $S/fluforces/halo/imp.cu; $N -I$S/. -I$S/fluforces/halo
 $B/fluforces/imp.o: $S/fluforces/imp.cu; $N -I$S/. -I$S/fluforces
+$B/fluforces/xbulk/imp.o: $S/fluforces/xbulk/imp.cu; $N -I$S/. -I$S/fluforces/xbulk
 $B/frag/imp.o: $S/frag/imp.cpp; $X -I$S/. -I$S/frag
 $B/fsi/imp.o: $S/fsi/imp.cu; $N -I$S/. -I$S/fsi
 $B/generate/rig/imp.o: $S/generate/rig/imp.cpp; $X -I$S/. -I$S/generate/rig

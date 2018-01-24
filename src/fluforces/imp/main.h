@@ -19,6 +19,14 @@ void fluforces_bulk_apply(int n, const FluForcesBulk *b, const int *start, const
         flocal(b->zipped_pp, b->zipped_rr, n, start, count, b->rnd, /**/ ff);
 }
 
+void xfluforces_bulk_apply(int n, const FluForcesBulk *b, const int *start, const int *count, /**/ Force *ff) {
+    BCloud c;
+    c.pp = b->zipped_pp;
+    c.cc = b->colors;
+
+    UC(flocal(n, c, start, count, b->rnd, /**/ ff));
+}
+
 
 void fluforces_halo_prepare(flu::LFrag26 lfrags, flu::RFrag26 rfrags, /**/ FluForcesHalo *h) {
     h->lfrags = lfrags;

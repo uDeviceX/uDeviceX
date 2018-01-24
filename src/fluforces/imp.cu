@@ -30,6 +30,7 @@
 
 #include "flu/type.h"
 #include "bulk/imp.h"
+#include "xbulk/imp.h"
 #include "halo/imp.h"
 
 #include "imp.h"
