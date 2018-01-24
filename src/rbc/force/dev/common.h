@@ -31,17 +31,16 @@ static __device__ void assert_r(real a, real m) {
 }
 static __device__ real sq(real x) { return x * x; }
 static __device__ real wlc0(real r) { return (4*sq(r)-9*r+6)/(4*sq(r-1)); }
-static __device__ real wlc(real kbT, real lmax, real p, real r) {
+static __device__ real wlc(real lmax, real ks, real r) {
     assert_r(r, lmax);
-    return kbT/(lmax*p)*wlc0(r/lmax);
+    return ks/lmax*wlc0(r/lmax);
 }
 static __device__ real3 fspring(RbcParams_v par, real3 x21, real l0) {
-  #define wlc_r(r) (wlc(kbT, lmax, p, r))
+  #define wlc_r(r) (wlc(lmax, ks, r))
     real m;
-    real r, fwlc, fpow, lmax, kbT, p, ks, x0;
+    real r, fwlc, fpow, lmax, ks, x0;
     real3 f;
-    kbT = par.kBT0; p = par.p; ks = par.ks; m = par.mpow; x0 = par.x0;
-    assert( ks>=0.95*kbT/p && ks<=1.05*kbT/p );
+    ks = par.ks; m = par.mpow; x0 = par.x0;
 
     r = sqrtf(dot<real>(&x21, &x21));
     lmax = l0 / x0;
@@ -112,7 +111,7 @@ template <int update> __device__ real3 dih0(RbcParams_v par, real3 r1, real3 r2,
     diff(&ksi, &dze, /**/ &ksimdze);
 
     sinTheta_1 = copysignf
-        (rsqrtf(max(IsinThetaI2, 1.0e-6f)),
+        (rsqrtf(max(IsinThetaI2, 1.0e-6)),
          dot<real>(&ksimdze, &r41)); // ">" because the normals look inside
 
     phi = par.phi / 180.0 * M_PI;
