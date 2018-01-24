@@ -4,3 +4,7 @@ u.cp.rbc rbc/642 rbc.out.off
 # TEST: cp.sdf
 u.cp.sdf wall1/wall sdf.dat
 echo $? > sdf.out.txt
+
+# TEST: cp.rig
+u.cp.rig ellipsoid  rig.ply
+echo $? > rig.out.txt
