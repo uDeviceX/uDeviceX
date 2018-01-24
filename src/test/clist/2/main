@@ -8,5 +8,5 @@ u.conf . u/clist conf/default.h <<!!!
        run
 !!!
 { u.make -j;     } > /dev/null
-"$S"/../pre/units/gen_random 20 $Y $Z $N > particles.out 
+u.pre.gen_random 20 $Y $Z $N > particles.out 
 u.run ./udx < particles.out > clist.out.txt
