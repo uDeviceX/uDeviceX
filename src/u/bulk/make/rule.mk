@@ -1,3 +1,6 @@
+$B/algo/scan/imp.o: $S/algo/scan/imp.cu; $N -I$S/. -I$S/algo/scan
+$B/clist/imp.o: $S/clist/imp.cu; $N -I$S/. -I$S/clist
+$B/coords/imp.o: $S/coords/imp.cpp; $X -I$S/. -I$S/coords
 $B/d/api.o: $S/d/api.cu; $N -I$S/. -I$S/d
 $B/io/txt/imp.o: $S/io/txt/imp.cpp; $X -I$S/. -I$S/io/txt
 $B/mpi/glb.o: $S/mpi/glb.cpp; $X -I$S/. -I$S/mpi

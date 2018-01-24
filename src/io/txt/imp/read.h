@@ -10,7 +10,6 @@ static int get_num_lines(FILE *f) {
     n = 0;    
     while (EOF != (c = fgetc(f)))
         if (c == '\n') ++n;
-    ++n;
     return n;
 }
 
