@@ -9,8 +9,8 @@ usg () {
     msg "$prog [-l] sdf.from sdf.to"
     msg 'copy sdf file to sdf.to'
     msg '-l list all sdf files'
-    msg "$prog sdf/cyl1/cyl.dat sdf.dat"
-    msg "$prog sdf/cyl1/cyl     sdf.dat"
+    msg "$prog cyl1/cyl.dat sdf.dat"
+    msg "$prog cyl1/cyl     sdf.dat"
     exit
 }
 

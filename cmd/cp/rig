@@ -7,10 +7,10 @@ prog0=u.cp.rig0
 
 usg () {
     msg "$prog [-l] rig.from rig.to"
-    msg 'copy rig file to rig.to'
+    msg 'copy rigid template to rig.to'
     msg '-l list all rig files'
-    msg "$prog rig/cyl1/cyl.dat rig.dat"
-    msg "$prog rig/cyl1/cyl     rig.dat"
+    msg "$prog ellipse.ply rig.ply"
+    msg "$prog ellipse     rig.ply"
     exit
 }
 

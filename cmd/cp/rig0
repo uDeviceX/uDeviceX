@@ -6,7 +6,7 @@ f="$1"; shift
 t="$1"; shift
 
 Found=0
-for p in "$D/rig/$f" "$D/rig/$f.dat" "$D/rig/$f.rig"
+for p in "$D/rig/$f" "$D/rig/$f.ply"
 do if e test -f "$p"
    then Found=1
 	break

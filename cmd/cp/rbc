@@ -9,8 +9,8 @@ usg () {
     msg "$prog [-l] template.from template.to"
     msg 'copy cell template to template.to'
     msg '-l list all templates'
-    msg "$prog rbc/sc/498 rbc.off"
-    msg "$prog rbc/2562   rbc.off"
+    msg "$prog sc/498 rbc.off"
+    msg "$prog 2562   rbc.off"
     exit
 }
 
