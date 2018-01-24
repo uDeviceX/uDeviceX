@@ -116,7 +116,7 @@ static void read_data(const char *name, const long n, T *dat) {
     UC(efclose(f));
 }
 
-void write_pp(const Coords *coords, const char *code, const int id, const Particle *pp, const long n) {
+void restart_write_pp(const Coords *coords, const char *code, const int id, const Particle *pp, const long n) {
     char bop[BS] = {0}, rel[BS] = {0}, val[BS] = {0}, idcode[BS] = {0};
     gen_name(coords, DUMP, code, id, "bop"   , /**/ bop);
     gen_name(coords, DUMP, code, id, "values", /**/ val);
@@ -128,7 +128,7 @@ void write_pp(const Coords *coords, const char *code, const int id, const Partic
     write_data(val, pp, n);
 }
 
-void read_pp(const Coords *coords, const char *code, const int id, Particle *pp, int *n) {
+void restart_read_pp(const Coords *coords, const char *code, const int id, Particle *pp, int *n) {
     long np = 0;
     char bop[BS] = {0}, val[BS] = {0};
     gen_name(coords, READ, code, id, "bop"   , /**/ bop);
@@ -140,7 +140,7 @@ void read_pp(const Coords *coords, const char *code, const int id, Particle *pp,
     DBG("I have read %ld pp", np);
 }
 
-void write_ii(const Coords *coords, const char *code, const char *subext, const int id, const int *ii, const long n) {
+void restart_write_ii(const Coords *coords, const char *code, const char *subext, const int id, const int *ii, const long n) {
     char bop[BS] = {0}, rel[BS] = {0}, val[BS] = {0}, idcode[BS] = {0},
         extbop[BS] = {0}, extval[BS] = {0};
     CSPR(sprintf(extbop, "%s.bop",    subext));
@@ -156,7 +156,7 @@ void write_ii(const Coords *coords, const char *code, const char *subext, const 
     write_data(val, ii, n);
 }
 
-void read_ii(const Coords *coords, const char *code, const char *subext, const int id, int *ii, int *n) {
+void restart_read_ii(const Coords *coords, const char *code, const char *subext, const int id, int *ii, int *n) {
     long np = 0;
     char bop[BS] = {0}, val[BS] = {0}, extbop[BS] = {0}, extval[BS] = {0};
     CSPR(sprintf(extbop, "%s.bop",    subext));
@@ -171,7 +171,7 @@ void read_ii(const Coords *coords, const char *code, const char *subext, const i
     DBG("I have read %ld pp", np);
 }
 
-void write_ss(const Coords *coords, const char *code, const int id, const Solid *ss, const long n) {
+void restart_write_ss(const Coords *coords, const char *code, const int id, const Solid *ss, const long n) {
     char fname[BS] = {0};
     FILE *f;
     gen_name(coords, DUMP, code, id, "solid", /**/ fname);
@@ -182,7 +182,7 @@ void write_ss(const Coords *coords, const char *code, const int id, const Solid 
     UC(efclose(f));
 }
 
-void read_ss(const Coords *coords, const char *code, const int id, Solid *ss, int *n) {
+void restart_read_ss(const Coords *coords, const char *code, const int id, Solid *ss, int *n) {
     long ns = 0;
     char fname[BS] = {0};
     FILE *f;
