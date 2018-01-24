@@ -1,5 +1,5 @@
 static void load_rigid_mesh(const char *fname, int *nt, int *nv, int4 **tt_hst, int4 **tt_dev, float **vv_hst, float **vv_dev) {
-    ply::read(fname, /**/ nt, nv, tt_hst, vv_hst);
+    UC(ply::read(fname, /**/ nt, nv, tt_hst, vv_hst));
 
     CC(d::Malloc((void**)tt_dev,     (*nt) * sizeof(int4)));
     CC(d::Malloc((void**)vv_dev, 3 * (*nv) * sizeof(float)));
@@ -25,5 +25,5 @@ void rig_ini(RigQuants *q) {
     q->ss_dmp    = new Solid[MAX_SOLIDS];
     q->ss_dmp_bb = new Solid[MAX_SOLIDS];
 
-    load_rigid_mesh("rig.ply", /**/ &q->nt, &q->nv, &q->htt, &q->dtt, &q->hvv, &q->dvv);
+    UC(load_rigid_mesh("rig.ply", /**/ &q->nt, &q->nv, &q->htt, &q->dtt, &q->hvv, &q->dvv));
 }
