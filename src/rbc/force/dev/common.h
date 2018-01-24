@@ -1,5 +1,7 @@
+typedef double real;
+
 static __device__ float3 fvolume(RbcParams_v par, float3 r2, float3 r3, float v) {
-    float v0, f0;
+    real v0, f0;
     float3 f, n;
     v0 = RBCtotVolume;
 
@@ -9,13 +11,13 @@ static __device__ float3 fvolume(RbcParams_v par, float3 r2, float3 r3, float v)
     return f;
 }
 
-static __device__ float3 farea(RbcParams_v par, float3 x21, float3 x31, float3 x32,   float a0, float A0, float A) {
+static __device__ float3 farea(RbcParams_v par, float3 x21, float3 x31, float3 x32,   real a0, real A0, real A) {
     float3 nn, nnx32, f;
-    float a, f0, fa, fA;
+    real a, f0, fa, fA;
     
     cross(&x21, &x31, /**/ &nn); /* normal */
     cross(&nn, &x32, /**/ &nnx32);
-    a = 0.5 * sqrtf(dot<float>(&nn, &nn));
+    a = 0.5 * sqrt(dot<float>(&nn, &nn));
 
     fA = - par.ka * (A - A0) / (4 * A0 * a);
     fa = - par.kd * (a - a0) / (4 * a0 * a);
@@ -24,7 +26,6 @@ static __device__ float3 farea(RbcParams_v par, float3 x21, float3 x31, float3 x
     return f;
 }
 
-#define real double
 static __device__ void assert_r(real a, real m) {
     if (a < m) return;
     printf("a = %g >= max = %g\n", a, m);
@@ -38,8 +39,8 @@ static __device__ real wlc(real kbT, real lmax, real p, real r) {
 }
 static __device__ float3 fspring(RbcParams_v par, float3 x21, float l0) {
   #define wlc_r(r) (wlc(kbT, lmax, p, r))
-    float m;
-    float r, fwlc, fpow, lmax, kbT, p, ks, x0;
+    real m;
+    real r, fwlc, fpow, lmax, kbT, p, ks, x0;
     float3 f;
     kbT = par.kBT0; p = par.p; ks = par.ks; m = par.mpow; x0 = par.x0;
     assert( ks>=0.95*kbT/p && ks<=1.05*kbT/p );
@@ -54,8 +55,8 @@ static __device__ float3 fspring(RbcParams_v par, float3 x21, float l0) {
 }
 
 static __device__ float3 tri0(RbcParams_v par, float3 r1, float3 r2, float3 r3,
-                              float l0, float A0, float totArea,
-                              float area, float volume) {
+                              real l0, real A0, real totArea,
+                              real area, real volume) {
     float3 fv, fa, fs;
     float3 x21, x32, x31, f = make_float3(0, 0, 0);
 
@@ -76,12 +77,12 @@ static __device__ float3 tri0(RbcParams_v par, float3 r1, float3 r2, float3 r3,
 }
 
 static __device__ float3 visc(RbcParams_v par, float3 r1, float3 r2, float3 u1, float3 u2) {
-    const float gammaC = par.gammaC, gammaT = par.gammaT;
+    const real gammaC = par.gammaC, gammaT = par.gammaT;
     float3 du, dr, f = make_float3(0, 0, 0);
     diff(&u2, &u1, /**/ &du);
     diff(&r1, &r2, /**/ &dr);
 
-    const float fac = dot<float>(&du, &dr) / dot<float>(&dr, &dr);
+    real fac = dot<float>(&du, &dr) / dot<float>(&dr, &dr);
 
     axpy(gammaT      , &du, /**/ &f);
     axpy(gammaC * fac, &dr, /**/ &f);
@@ -91,7 +92,7 @@ static __device__ float3 visc(RbcParams_v par, float3 r1, float3 r2, float3 u1, 
 
 /* forces from one dihedral */
 template <int update> __device__ float3 dih0(RbcParams_v par, float3 r1, float3 r2, float3 r3, float3 r4) {
-    float overIksiI, overIdzeI, cosTheta, IsinThetaI2, sinTheta_1,
+    real overIksiI, overIdzeI, cosTheta, IsinThetaI2, sinTheta_1,
         beta, b11, b12, phi, sint0kb, cost0kb;
 
     float3 r12, r13, r34, r24, r41, ksi, dze, ksimdze;
