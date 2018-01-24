@@ -26,16 +26,15 @@ __device__ bool valid_cid(int3 c) {
         (c.z >= 0) && (c.z < ZS);    
 }
 
-__device__ void one_cell(int ia, forces::Pa pa, BCloud c, int start, int count, float seed, /**/ float fa[3], Force *ff) {
+__device__ void one_cell(int ia, forces::Pa pa, BCloud c, int start, int end, float seed, /**/ float fa[3], Force *ff) {
     enum {X, Y, Z};
-    int i, ib;
+    int ib;
     forces::Pa pb;
     forces::Fo f;
     float *fb, rnd;
     
-    for (i = 0; i < count; ++i) {
-        ib = start + i;
-        if (ib > ia) return;
+    for (ib = start; ib < end; ++ib) {
+        if (ib > ia) continue;
         
         fetch(c, ib, &pb);
         fb = ff[ib].f;
@@ -72,7 +71,7 @@ __global__ void apply(int n, BCloud cloud, const int *start, const int *count, f
                 if (!valid_cid(cb)) continue;
                 ib = cb.x + XS * (cb.y + YS * cb.z);
                 
-                one_cell(ia, pa, cloud, start[ib], count[ib], seed, /**/ fa, ff);
+                one_cell(ia, pa, cloud, start[ib], start[ib] + count[ib], seed, /**/ fa, ff);
             }        
         }        
     }
