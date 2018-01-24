@@ -6,7 +6,7 @@ $B/fluforces/bulk/imp.o: $S/cloud/lforces/get.h $S/cloud/lforces/int.h $B/conf.h
 $B/fluforces/bulk/transpose/imp.o: $B/conf.h $S/d/api.h $S/d/ker.h $S/d/q.h $S/fluforces/bulk/transpose/dev/main.h $S/fluforces/bulk/transpose/imp.h $S/fluforces/bulk/transpose/imp/main.h $S/inc/conf.h $S/inc/def.h $S/inc/dev.h $S/inc/type.h $S/utils/cc.h $S/utils/kl.h $S/utils/msg.h
 $B/fluforces/halo/imp.o: $S/cloud/dev.h $S/cloud/imp.h $B/conf.h $S/d/api.h $S/d/ker.h $S/d/q.h $S/flu/type.h $S/fluforces/halo/dev/dbg.h $S/fluforces/halo/dev/main.h $S/fluforces/halo/dev/map.h $S/fluforces/halo/imp.h $S/fluforces/halo/imp/main.h $S/forces/imp.h $S/forces/pack.h $S/forces/type.h $S/forces/use.h $S/frag/dev.h $S/frag/imp.h $S/inc/conf.h $S/inc/def.h $S/inc/dev.h $S/inc/type.h $S/math/rnd/dev.h $S/mpi/glb.h $S/utils/cc.h $S/utils/kl.h
 $B/fluforces/imp.o: $S/cloud/imp.h $B/conf.h $S/d/api.h $S/flu/type.h $S/fluforces/bulk/imp.h $S/fluforces/dev/main.h $S/fluforces/halo/imp.h $S/fluforces/imp.h $S/fluforces/imp/fin.h $S/fluforces/imp/ini.h $S/fluforces/imp/main.h $S/fluforces/imp/type.h $S/fluforces/xbulk/imp.h $S/frag/imp.h $S/inc/conf.h $S/inc/dev.h $S/inc/type.h $S/math/rnd/dev.h $S/math/rnd/imp.h $S/mpi/glb.h $S/mpi/wrapper.h $S/utils/cc.h $S/utils/error.h $S/utils/imp.h $S/utils/kl.h $S/utils/mc.h $S/utils/msg.h
-$B/fluforces/xbulk/imp.o: $B/conf.h $S/fluforces/xbulk/dev/main.h $S/fluforces/xbulk/imp.h $S/fluforces/xbulk/imp/main.h $S/forces/imp.h $S/forces/pack.h $S/forces/type.h $S/inc/conf.h $S/inc/def.h $S/inc/dev.h $S/inc/type.h $S/math/rnd/dev.h $S/math/rnd/imp.h $S/utils/kl.h
+$B/fluforces/xbulk/imp.o: $B/conf.h $S/d/api.h $S/fluforces/xbulk/dev/main.h $S/fluforces/xbulk/imp.h $S/fluforces/xbulk/imp/main.h $S/forces/imp.h $S/forces/pack.h $S/forces/type.h $S/inc/conf.h $S/inc/def.h $S/inc/dev.h $S/inc/type.h $S/math/rnd/dev.h $S/math/rnd/imp.h $S/utils/cc.h $S/utils/kl.h
 $B/frag/imp.o: $B/conf.h $S/frag/imp.h $S/inc/conf.h
 $B/io/txt/imp.o: $S/inc/type.h $S/io/txt/imp.h $S/io/txt/imp/dump.h $S/io/txt/imp/read.h $S/io/txt/imp/type.h $S/utils/error.h $S/utils/imp.h $S/utils/msg.h
 $B/math/rnd/imp.o: $S/math/rnd/imp.h $S/utils/error.h $S/utils/imp.h
@@ -14,7 +14,7 @@ $B/mpi/glb.o: $B/conf.h $S/inc/conf.h $S/mpi/glb.h $S/mpi/wrapper.h $S/utils/mc.
 $B/mpi/type.o: $S/inc/conf.h $S/inc/type.h $S/mpi/type.h $S/utils/mc.h
 $B/mpi/wrapper.o: $S/mpi/wrapper.h
 $B/parser/imp.o: $S/parser/imp.h $S/utils/error.h $S/utils/imp.h $S/utils/msg.h
-$B/u/bulk/main.o: $S/clist/imp.h $S/cloud/imp.h $B/conf.h $S/d/api.h $S/flu/type.h $S/fluforces/imp.h $S/inc/conf.h $S/inc/dev.h $S/inc/type.h $S/io/txt/imp.h $S/mpi/glb.h $S/parser/imp.h $S/partlist/type.h $S/utils/cc.h $S/utils/error.h $S/utils/msg.h
+$B/u/bulk/main.o: $S/clist/imp.h $S/cloud/imp.h $B/conf.h $S/d/api.h $S/flu/type.h $S/fluforces/imp.h $S/inc/conf.h $S/inc/dev.h $S/inc/type.h $S/io/txt/imp.h $S/mpi/glb.h $S/parser/imp.h $S/partlist/type.h $S/utils/cc.h $S/utils/error.h $S/utils/imp.h $S/utils/msg.h
 $B/utils/cc.o: $B/conf.h $S/d/api.h $S/inc/conf.h $S/utils/cc/common.h $S/utils/error.h
 $B/utils/error.o: $S/utils/error.h $S/utils/msg.h
 $B/utils/imp.o: $S/utils/error.h $S/utils/imp.h
