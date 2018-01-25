@@ -129,6 +129,8 @@ struct Vcon {
 /* optional features */
 struct Opt {
     bool inflow, outflow, denoutflow, vcon;
+    bool dump_field, dump_parts;
+    int  freq_field, freq_parts;
 };
 
 struct Sim {

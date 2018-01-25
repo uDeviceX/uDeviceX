@@ -200,6 +200,15 @@ static void read_opt(const Config *c, Opt *o) {
     o->denoutflow = b;
     UC(conf_lookup_bool(c, "vcon.active", &b));
     o->vcon = b;
+
+    UC(conf_lookup_bool(c, "dump.field", &b));
+    o->dump_field = b;
+    UC(conf_lookup_int(c, "dump.freq_field", &o->freq_field));
+
+    UC(conf_lookup_bool(c, "dump.parts", &b));
+    o->dump_parts = b;
+    UC(conf_lookup_int(c, "dump.freq_parts", &o->freq_parts));
+        
 }
 
 static void coords_log(const Coords *c) {
