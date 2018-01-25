@@ -1,23 +1,5 @@
-script {
-    display:none!important
-}
-
 html {
     font-family:sans-serif;
-    -ms-text-size-adjust:100%;
-    -webkit-text-size-adjust:100%
-}
-
-a {
-    background:transparent
-}
-
-a:focus {
-    outline:thin dotted
-}
-
-a:active,a:hover {
-    outline:0
 }
 
 h1 {
@@ -63,17 +45,9 @@ body {
     tab-size:4
 }
 
-a:hover {
-    cursor:pointer
-}
-
 img {
     max-width:100%;
     height:auto
-}
-
-img {
-    -ms-interpolation-mode:bicubic
 }
 
 img {
