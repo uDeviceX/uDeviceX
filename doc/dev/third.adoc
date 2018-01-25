@@ -8,13 +8,13 @@ link:http://docs.nvidia.com/cuda/cuda-compiler-driver-nvcc
 == MPI library
 
 To get the flags
-....
+----
 mpicxx -show
-....
+----
 or
-....
+----
 pkg-config --libs mpich
-....
+----
 
 == libconfig
 
@@ -68,15 +68,15 @@ https://support.hdfgroup.org/HDF5
 
 To get flags
 [source, sh]
-....
+----
 h5c++ -show
-....
+----
 
 or
 [source, sh]
-....
+----
 pkg-config hdf5-mpich --libs
-....
+----
 
 To build from source
 
@@ -84,9 +84,9 @@ link:https://support.hdfgroup.org/ftp/HDF5/releases/hdf5-1.8.17/src/hdf5-1.8.17.
 
 Configuration options
 [source, sh]
-....
+----
       --prefix=$HOME/prefix/hdf5
 	  --enable-parallel
 	  CXX=/usr/lib64/mpich/bin/mpic++
 	  CC=/usr/lib64/mpich/bin/mpicc
-....
+----
