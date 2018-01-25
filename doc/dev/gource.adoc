@@ -12,7 +12,7 @@ gource -s 0.1 --file-filter 'test_data/' \
 	      --file-filter 'tcdf/' \
 	      --file-filter 'cmd/'  \
 	      --highlight-users   \
-	      --highlight-colour #FFFFFF \
+	      --highlight-colour FFFFFF \
 	      --date-format '%d %b %Y' -o $o
 ----
 
