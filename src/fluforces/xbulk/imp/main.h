@@ -2,6 +2,7 @@ enum {THR=128};
 
 void oflocal(int n, BCloud cloud, const int *start, RNDunif *rnd, /**/ Force *ff) {
     float seed;
+    if (n <= 0) return;
     seed = rnd_get(rnd);
     KL(flocaldev::apply_unroll,
        (ceiln((n), THR), THR),
@@ -19,9 +20,10 @@ static void tbcloud_fin(TBCloud *tc) {
 }
 
 // try with textures
-void flocal(int n, BCloud cloud, const int *start, RNDunif *rnd, /**/ Force *ff) {
+void flocal(int n, BCloud cloud, const int *start, RNDunif *rnd, /**/ Force *ff) {    
     float seed;
     TBCloud tc;
+    if (n <= 0) return;
     seed = rnd_get(rnd);
 
     tbcloud_ini(n, cloud, &tc);
