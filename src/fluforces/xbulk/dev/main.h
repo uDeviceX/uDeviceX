@@ -96,7 +96,7 @@ __global__ void apply_simplest(int n, BCloud cloud, const int *start, float seed
     atomicAdd(ff[ia].f + Z, fa[Z]);
 }
 
-__global__ void apply(int n, BCloud cloud, const int *start, float seed, /**/ Force *ff) {
+__global__ void apply_smarter(int n, BCloud cloud, const int *start, float seed, /**/ Force *ff) {
     enum {X, Y, Z};
     int ia, dy, dz;
     int enddy, enddx;
@@ -135,6 +135,51 @@ __global__ void apply(int n, BCloud cloud, const int *start, float seed, /**/ Fo
             one_cell(ia, pa, cloud, bs, be, seed, /**/ fa, ff);
         }        
     }
+
+    atomicAdd(ff[ia].f + X, fa[X]);
+    atomicAdd(ff[ia].f + Y, fa[Y]);
+    atomicAdd(ff[ia].f + Z, fa[Z]);
+}
+
+
+__device__ void one_row(int dz, int dy, int ia, int3 ca, forces::Pa pa, BCloud cloud, const int *start, float seed, /**/ float fa[3], Force *ff) {
+    int3 cb;
+    int enddx, startx, endx, cid0, bs, be;
+    cb.z = ca.z + dz;
+    cb.y = ca.y + dy;
+    if (!valid_c(cb.z, ZS)) return;
+    if (!valid_c(cb.y, YS)) return;
+
+    enddx = (dz == 0 && dy == 0) ? 0 : 1;
+    startx =    max(    0, ca.x - 1    );
+    endx   = 1 + min(XS-1, ca.x + enddx);
+
+    cid0 = XS * (cb.y + YS * cb.z);
+
+    bs = start[cid0 + startx];
+    be = start[cid0 + endx];
+
+    one_cell(ia, pa, cloud, bs, be, seed, /**/ fa, ff);
+}
+
+__global__ void apply(int n, BCloud cloud, const int *start, float seed, /**/ Force *ff) {
+    enum {X, Y, Z};
+    int ia;
+    int3 ca;
+    forces::Pa pa;
+    float fa[3] = {0};
+
+    ia = threadIdx.x + blockIdx.x * blockDim.x;
+    if (ia >= n) return;
+    
+    fetch(cloud, ia, &pa);
+    ca = get_cid(&pa);
+
+    one_row(-1, -1, ia, ca, pa, cloud, start, seed, /**/ fa, ff);
+    one_row(-1,  0, ia, ca, pa, cloud, start, seed, /**/ fa, ff);
+    one_row(-1,  1, ia, ca, pa, cloud, start, seed, /**/ fa, ff);
+    one_row( 0, -1, ia, ca, pa, cloud, start, seed, /**/ fa, ff);
+    one_row( 0,  0, ia, ca, pa, cloud, start, seed, /**/ fa, ff);
 
     atomicAdd(ff[ia].f + X, fa[X]);
     atomicAdd(ff[ia].f + Y, fa[Y]);
