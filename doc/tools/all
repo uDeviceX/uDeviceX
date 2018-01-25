@@ -1,7 +1,10 @@
 #!/bin/sh
 
+set -eu
+
 # exlucde
 ALL=all.adoc
+SUMMARY=summary.adoc
 
 usg() {
     echo 1>&2 'usg: u.doc.all <doc dir> > index.adoc'
@@ -14,13 +17,13 @@ if test $# -ne 0 && test "$1" = -h; then usg; fi
 d="$1"
 
 get_docs() (
-    find $1 -type f -name '*.adoc' ! -name '*.inc.adoc' ! -name $ALL
+    find $1 -type f -name '*.adoc' ! -name '*.inc.adoc' ! -name $ALL ! -name $SUMMARY
 )
 
 header() (
     echo ':lext: .adoc'
-    echo ':leveloffset:  1'
-    echo '= index'
+    echo ':toclevels: 4'
+    echo '= uDeviceX Documentation'
     echo
 )
 
@@ -31,17 +34,24 @@ make_links() (
 )
 
 section() {
-    ADOC="`get_docs $1`"
-    echo "== $1"
-    make_links $ADOC | sort
-    echo
+    local dir name
+    dir="$1"; shift
+    name="$1"; shift
+    ADOC="`get_docs $dir`"
+    echo "== $name"
+    echo ':leveloffset:  2'
+    for l in `make_links $ADOC | sort`
+    do echo $l
+       echo
+    done
+    echo ':leveloffset:  0'
 }
 
 dump() {
     header
-    section $d/dev
-    section $d/user
-    section $d/units
+    section $d/dev   Developer
+    section $d/user  User
+    section $d/units Units
 }
 
 dump

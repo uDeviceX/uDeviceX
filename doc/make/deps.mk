@@ -29,7 +29,6 @@
 ./dev/modules/utils/main.html: ./dev/modules/utils/main.adoc ./dev/modules/utils/cc.inc.adoc ./dev/modules/utils/cc.inc.adoc ./dev/modules/utils/error.inc.adoc ./dev/modules/utils/error.inc.adoc ./dev/modules/utils/kl.inc.adoc ./dev/modules/utils/kl.inc.adoc ./dev/modules/utils/mc.inc.adoc ./dev/modules/utils/mc.inc.adoc
 ./dev/conventions.html: ./dev/conventions.adoc 
 ./dev/gource.html: ./dev/gource.adoc 
-./main.html: ./main.adoc 
 ./index.html: ./index.adoc 
 ./user/main.html: ./user/main.adoc 
 ./summary.html: ./summary.adoc 

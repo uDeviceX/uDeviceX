@@ -8,8 +8,8 @@ all: $(PAGES)
 include make/deps.mk
 
 style=-a stylesheet=$(ROOT)/css/main.css -a coderay-css=style
-#style=-a stylesheet=/css/main.css
 
+all.html: all.adoc; $(ADOC) $(style) -a src=`u.cp.s` $<
 %.html: %.adoc; $(ADOC) $(style) $<
 .PHONY: clean
 

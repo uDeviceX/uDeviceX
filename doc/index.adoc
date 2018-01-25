@@ -6,6 +6,7 @@ image::include/ichip.jpeg[]
 
 == Useful links
 
+* link:all{lext}[as one page]
 * link:summary{lext}[index]
 * link:dev/main{lext}[developper documentation]
 * link:user/main{lext}[user documentation]
