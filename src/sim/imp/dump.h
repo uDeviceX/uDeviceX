@@ -17,7 +17,7 @@ static void dump_part(int step, Sim *s) {
     const Flu *flu = &s->flu;
     const Rig *rig = &s->rig;
     BopWork *dumpt = s->dumpt;
-    int id_bop = step / s->opt.freq_part;
+    int id_bop = step / s->opt.freq_parts;
     
     cD2H(flu->q.pp_hst, flu->q.pp, flu->q.n);
     if (global_ids) {
