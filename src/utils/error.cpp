@@ -7,8 +7,6 @@
 #include "msg.h"
 #include "error.h"
 
-namespace UdxError {
-
 /* context information */
 static int         err_line;
 static const char *err_file;
@@ -23,20 +21,20 @@ static char back_trace [ MAX_TRACE  * BUFSIZ ];
 static int  stack_sz = 0;
 
 
-void stack_pop() {
+void error_stack_pop() {
     --stack_sz;
     assert (stack_sz >= 0);
 }
 
 static void check_stack_overflow() {
     if (stack_sz >= MAX_TRACE) {
-        signal_error(__FILE__, __LINE__, "stack overflow (%d / %d)", stack_sz, MAX_TRACE);
-        report();
-        abort();
+        error_signal(__FILE__, __LINE__, "stack overflow (%d / %d)", stack_sz, MAX_TRACE);
+        error_report();
+        error_abort();
     }    
 }
 
-void stack_push(const char *file, int line) {
+void error_stack_push(const char *file, int line) {
     sprintf(stack[stack_sz], ": %s: %d:", file, line);
     ++stack_sz;
 
@@ -64,7 +62,7 @@ static void set_err_loc(const char *file, int line) {
     memset(err_msg, 0, sizeof(err_msg));
 }
 
-void signal_error(const char *file, int line, const char *fmt, ...) {
+void error_signal(const char *file, int line, const char *fmt, ...) {
     set_err_loc(file, line);
     err_status = 1;
     strcpy(err_kind, "udx");
@@ -75,22 +73,22 @@ void signal_error(const char *file, int line, const char *fmt, ...) {
     va_end(ap);    
 }
 
-void signal_cuda_error(const char *file, int line, const char *msg) {
+void error_signal_cuda(const char *file, int line, const char *msg) {
     set_err_loc(file, line);
     err_status = 1;
     strcpy(err_kind, "cuda");
     strcpy(err_msg, msg);
 }
 
-void signal_mpi_error(const char *file, int line, const char *msg) {
+void error_signal_mpi(const char *file, int line, const char *msg) {
     set_err_loc(file, line);
     err_status = 1;
     strcpy(err_kind, "mpi");
     strcpy(err_msg, msg);
 }
 
-bool error() {return err_status;}
-void report() {
+bool error_get() {return err_status;}
+void error_report() {
     if (err_status) {
         stack_dump();
         msg_print("%s: %d: %s error: %s\n%s",
@@ -98,6 +96,5 @@ void report() {
     }
 }
 
-void abort() { exit(1); }
+void error_abort() { exit(1); }
 
-} /* UdxError */

@@ -10,9 +10,9 @@
 namespace cc {
 void check(int rc, const char *file, int line) {
     if (rc != 0) {
-        UdxError::signal_cuda_error(file, line, d::emsg());
-        UdxError::report();
-        UdxError::abort();
+        error_signal_cuda(file, line, d::emsg());
+        error_report();
+        error_abort();
     }
 }
 }

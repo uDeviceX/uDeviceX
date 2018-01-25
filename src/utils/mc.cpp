@@ -15,8 +15,8 @@ void check(int code, const char *file, int line) {
     if (m::is_success(code)) return;
     m::Error_string(code, /**/ msg0, &n);
     sprintf(msg, "%s (%d)", msg0, code);
-    UdxError::signal_mpi_error(file, line, msg);
-    UdxError::report();
-    UdxError::abort();
+    error_signal_mpi(file, line, msg);
+    error_report();
+    error_abort();
 }
 } // mpicheck
