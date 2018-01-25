@@ -38,7 +38,7 @@ header() (
     echo '= uDeviceX Documentation'
     echo $CONTR
     echo
-    echo 'image::include/pach.jpeg[]'
+    echo 'image::include/pach.png[]'
     echo
 )
 
