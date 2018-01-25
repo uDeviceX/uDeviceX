@@ -8,7 +8,6 @@ x=4 y=4 z=7.5; echo 1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 >> rbcs-ic.txt
 u.conf conf/double.poiseuille.h <<!!!
    rbcs
    multi_solvent=true color_freq=1
-   part_dumps part_freq=1
    tend=1e-3
    numberdensity=3
    XS=8 YS=8 ZS=8
@@ -18,6 +17,10 @@ u.conf conf/double.poiseuille.h <<!!!
 u.run ./udx  '
 rbc = {
     @include "rbc.test.cfg"
-}'
+}
+dump = {
+    parts = true;
+    freq_parts = 1;
+};'
 bop2txt2 bop/solvent-00001.bop -- bop/colors_solvent-00001.bop |
   awk '{print $7}' | sort -g > color.out.txt

@@ -10,9 +10,8 @@ u.conf $s $u conf/zurich.h <<!!!
    $Domain
    $Walls
    numberdensity=2
-   tend=4.01 part_freq=8000 field_freq=8000
+   tend=4.01
    kBT=0.00444302
-   field_dumps part_dumps
    run
 !!!
 { make clean && u.make -j; } > make.log
@@ -26,6 +25,12 @@ wvel = {
     gdot = 5.0;
     vdir = 0;
     gdir = 1;
+};
+dump = {
+    field = true;
+    parts = true;
+    freq_field = 8000;
+    freq_parts = 8000;
 };'
 cm() { awk '$7 == 1 {n++; x+=$1; y+=$2; z+=$3} END {print x/n, y/n, z/n}'; }
  ../tools/bop2txt2 bop/solvent-00001.bop -- bop/colors_solvent-00001.bop | \
