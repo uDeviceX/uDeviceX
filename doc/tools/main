@@ -1,16 +1,17 @@
 #!/bin/sh
 
 usg() {
-    echo "usg: u.doc.index <doc dir> > index.adoc"
+    echo 1>&2 'usg: u.doc.main <doc dir> > index.adoc'
+    echo 1>&2 'combine all adoc files into one'
     exit 1
 }
 
-if test $# -ne 0 -a "$1" = -h; then usg; fi
+if test $# -ne 0 && test "$1" = -h; then usg; fi
 
-d=$1
+d="$1"
 
 get_docs() (
-    find $1 -type f \( -iname "*.adoc" ! -iname "*.inc.adoc" \)
+    find $1 -type f -name '*.adoc' ! -name '*.inc.adoc'
 )
 
 header() (
@@ -26,7 +27,7 @@ make_links() (
 )
 
 section() {
-    ADOC=`get_docs $1`
+    ADOC="`get_docs $1`"
     echo "== $1"
     make_links $ADOC | sort
     echo
