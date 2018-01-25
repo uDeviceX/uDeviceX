@@ -150,8 +150,10 @@ __device__ void one_row(int dz, int dy, int ia, int3 ca, forces::Pa pa, BCloud c
     if (!valid_c(cb.z, ZS)) return;
     if (!valid_c(cb.y, YS)) return;
 
+    /* dx runs from -1 to enddx */
     enddx = (dz == 0 && dy == 0) ? 0 : 1;
-    startx =    max(    0, ca.x - 1    );
+
+    startx =     max(   0, ca.x - 1    );
     endx   = 1 + min(XS-1, ca.x + enddx);
 
     cid0 = XS * (cb.y + YS * cb.z);
