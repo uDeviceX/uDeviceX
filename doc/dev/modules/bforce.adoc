@@ -14,7 +14,7 @@ Defined by two structures:
    a specific time. It is passed to device kernels.
 
 
-== interface 
+== interface
 
 
 allocate/deallocate the structure:
@@ -106,6 +106,13 @@ bforce {
 
 === 4 roller mill
 
+----
+    f.x =  2*sin(x)*cos(y) * a;
+    f.y = -2*cos(x)*sin(y) * a;
+----
+
+while `x` and `y` are coordinates relative to the domain center and
+normalized to have `x = Pi` and `x = -Pi` at the domain edges.
 
 [source, cfg]
 ----
