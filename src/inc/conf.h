@@ -1,5 +1,5 @@
 #if defined(field_dumps) || defined (field_freq) || \
-    defined(part_dumps) || defined (part_freq) ||
+    defined(part_dumps) || defined (part_freq)
 #error field and part dumps are runtime!
 #endif
 
