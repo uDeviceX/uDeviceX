@@ -17,8 +17,11 @@ Copy sdf file
 
 [source,sh]
 ----
-cp  src/data/sdf/cyl1/cyl.dat sdf.dat
+u.cp.sdf cyl1/cyl sdf.dat
 ----
+
+`cyl1/cyl` along `z` and center at the domain center and radius
+`lx/4`.
 
 Pass coordinates as arguments
 ----
@@ -28,5 +31,5 @@ u.run ./udx $x $y $z
 
 Returns
 ----
-1.45547
+0 0 2.5 1.45547
 ----
