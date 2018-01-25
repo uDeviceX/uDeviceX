@@ -21,7 +21,7 @@ __device__ void fetch(TBCloud c, int i, forces::Pa *p) {
                     SOLVENT_KIND, /**/ p);
     
     if (multi_solvent)
-        p->color = c.cc[i];
+        p->color = fetch(c.cc, i);
 }
 
 __device__ bool cutoff_range(forces::Pa pa, forces::Pa pb) {
