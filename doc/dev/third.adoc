@@ -1,9 +1,11 @@
 = Third party dependencies
 :lext: .adoc
 
-== cuda sdk
+== cuda compiler
 
-== mpi
+link:http://docs.nvidia.com/cuda/cuda-compiler-driver-nvcc
+
+== MPI library
 
 To get the flags
 ....
@@ -14,7 +16,11 @@ or
 pkg-config --libs mpich
 ....
 
-== libconf
+== libconfig
+
+a library for processing structured configuration files
+
+link:http://hyperrealm.com/libconfig/libconfig.html
 
 === from source
 [source, sh]
@@ -56,12 +62,18 @@ export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:$HOME/prefix/libconfig/lib/pkgconfig
 
 == hdf5
 
+a data model, library, and file format for storing and managing data
+
+https://support.hdfgroup.org/HDF5
+
 To get flags
+[source, sh]
 ....
 h5c++ -show
 ....
 
 or
+[source, sh]
 ....
 pkg-config hdf5-mpich --libs
 ....
@@ -71,6 +83,7 @@ To build from source
 link:https://support.hdfgroup.org/ftp/HDF5/releases/hdf5-1.8.17/src/hdf5-1.8.17.tar.gz
 
 Configuration options
+[source, sh]
 ....
       --prefix=$HOME/prefix/hdf5
 	  --enable-parallel
