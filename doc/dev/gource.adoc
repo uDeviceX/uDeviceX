@@ -1,5 +1,7 @@
 = gource commands
 
+Display git history of uDeviceX as animated tree.
+
 Dump
 
 [source, shell]
@@ -14,7 +16,7 @@ gource -s 0.1 --file-filter 'test_data/' \
 	      --date-format '%d %b %Y' -o $o
 ----
 
-Convert
+Convert to mp4
 
 [source, shell]
 ----
