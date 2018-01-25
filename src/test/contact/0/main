@@ -6,8 +6,7 @@ u.cp.rbc rbc/498.off rbc.off
 x=11 y=15 z=8; echo 1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 >> rbcs-ic.txt
 :
 u.conf conf/double.poiseuille.h <<!!!
-   rbcs tend=2.0 part_freq=1500
-   part_dumps   field_freq=1500
+   rbcs tend=2.0
    pushrbc
    contactforces
    run
@@ -20,5 +19,11 @@ rbc = {
 bforce = {
    type = "double_poiseuille";
    a = 6.6666667;
+};
+dump = {
+    field = true;
+    parts = true;
+    freq_field = 1500;
+    freq_parts = 1500;
 };'
 ply2punto r/00002.ply > ply.out.txt

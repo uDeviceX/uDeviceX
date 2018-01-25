@@ -6,8 +6,7 @@ u.cp.rbc rbc/498.off  rbc.off
 u.cp.sdf wall1/wall.dat sdf.dat
 :
 u.conf conf/couette.h <<!!!
-   tend=2e-3 part_freq=4000
-   field_dumps part_dumps field_freq=4000
+   tend=2e-3 
    walls wall_creation=1
    strt_dumps=true
    run
@@ -21,6 +20,12 @@ wvel = {
     gdot = 5.0;
     vdir = 0;
     gdir = 2;
+};
+dump = {
+    field = true;
+    parts = true;
+    freq_field = 4000;
+    freq_parts = 4000;
 };'
 : :::::: checks total wall particle number ::::::
 cp strt/wall/templ.bop wall.out.txt

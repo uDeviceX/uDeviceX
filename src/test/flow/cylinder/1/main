@@ -2,13 +2,20 @@
 # nTEST: flow.t5
 rm -rf bop h5 diag.txt rbc.off
 :
-Force="bforce={type=\"four_roller\"; a=0.2;};"
 u.conf conf/default.h <<!!!
-   tend=2.01 part_freq=4000
-   field_dumps part_dumps
-   field_freq=4000
+   tend=2.01
    run
 !!!
 (make clean && u.make -j) > /dev/null
-u.run ./udx $Force
+u.run ./udx '
+bforce = {
+    type = "four_roller";
+    a    = 0.2;
+};
+dump = {
+    field = true;
+    parts = true;
+    freq_field = 4000;
+    freq_parts = 4000;
+};'
 u.avgh5 0 u 1 h5/flowfields-0001.h5 | uscale 0.1 > h5.out.txt
