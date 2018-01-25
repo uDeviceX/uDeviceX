@@ -33,7 +33,7 @@ static void dump_part(int step, Sim *s) {
         cD2H(flu->ff_hst, flu->ff, flu->q.n);
         bop_parts_forces(s->cart, s->coords, flu->q.pp_hst, flu->ff_hst, flu->q.n, "solvent", id_bop, /**/ dumpt);
     } else {
-        bop_parts(s->cart, s->coords, flu->q.pp_hst, flu->q.n, "solvent", step, /**/ dumpt);
+        bop_parts(s->cart, s->coords, flu->q.pp_hst, flu->q.n, "solvent", id_bop, /**/ dumpt);
     }
 
     if(s->solids0) {
