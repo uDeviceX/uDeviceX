@@ -47,4 +47,4 @@
 ./units/mpi.html: ./units/mpi.adoc 
 ./units/sdf.html: ./units/sdf.adoc 
 ./units/meshbb.html: ./units/meshbb.adoc 
-./all.html: ./all.adoc 
+./all.html: ./all.adoc ./dev/modules/color/main.inc.adoc ./dev/modules/color/main.inc.adoc ./dev/modules/color/modules.inc.adoc ./dev/modules/color/modules.inc.adoc ./dev/modules/control/den.inc.adoc ./dev/modules/control/den.inc.adoc ./dev/modules/control/inflow.inc.adoc ./dev/modules/control/inflow.inc.adoc ./dev/modules/control/outflow.inc.adoc ./dev/modules/control/outflow.inc.adoc ./dev/modules/control/vel.inc.adoc ./dev/modules/control/vel.inc.adoc ./dev/modules/math/linal.inc.adoc ./dev/modules/math/linal.inc.adoc ./dev/modules/math/rnd.inc.adoc ./dev/modules/math/rnd.inc.adoc ./dev/modules/math/tform.inc.adoc ./dev/modules/math/tform.inc.adoc ./dev/modules/utils/cc.inc.adoc ./dev/modules/utils/cc.inc.adoc ./dev/modules/utils/error.inc.adoc ./dev/modules/utils/error.inc.adoc ./dev/modules/utils/kl.inc.adoc ./dev/modules/utils/kl.inc.adoc ./dev/modules/utils/mc.inc.adoc ./dev/modules/utils/mc.inc.adoc

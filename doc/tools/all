@@ -2,9 +2,7 @@
 
 set -eu
 
-# exlucde
-ALL=all.adoc
-SUMMARY=summary.adoc
+EXCLUDE="all.adoc summary.adoc dev/main.adoc user/main.adoc units/main.adoc"
 
 usg() {
     echo 1>&2 'usg: u.doc.all <doc dir> > index.adoc'
@@ -16,8 +14,21 @@ if test $# -ne 0 && test "$1" = -h; then usg; fi
 
 d="$1"
 
+find0 () { # like find(1) but exclude files
+    find "$@" | "${AWK-awk}" -v e="$EXCLUDE" '
+    BEGIN { ini() }
+    { gsub(/^\.\//, "")
+      if (!($0 in a)) print
+    }
+    function ini(  t, i, n) { 
+      n = split(e, t)
+      for (i = 1; i <= n; i++) a[t[i]]
+    }      
+    function msg(s) { print s | "cat >&2" }
+    '
+}
 get_docs() (
-    find $1 -type f -name '*.adoc' ! -name '*.inc.adoc' ! -name $ALL ! -name $SUMMARY
+    find0 $1 -type f -name '*.adoc'
 )
 
 header() (
