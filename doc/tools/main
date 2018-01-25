@@ -1,5 +1,8 @@
 #!/bin/sh
 
+# exlucde
+MAIN=main.adoc
+
 usg() {
     echo 1>&2 'usg: u.doc.main <doc dir> > index.adoc'
     echo 1>&2 'combine all adoc files into one'
@@ -11,18 +14,19 @@ if test $# -ne 0 && test "$1" = -h; then usg; fi
 d="$1"
 
 get_docs() (
-    find $1 -type f -name '*.adoc' ! -name '*.inc.adoc'
+    find $1 -type f -name '*.adoc' ! -name '*.inc.adoc' ! -name $MAIN
 )
 
 header() (
-    echo "= index"
-    echo ":lext: .adoc"
+    echo ':lext: .adoc'
+    echo ':leveloffset:  1'
+    echo '= index'
     echo
 )
 
 make_links() (
-    for f in $@; do
-	echo "* link:${f%.*}{lext}[]"
+    for f
+    do echo "include::$f[]"
     done
 )
 
