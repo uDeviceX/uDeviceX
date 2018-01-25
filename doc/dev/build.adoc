@@ -1,4 +1,4 @@
-= buildg
+= build
 :lext: .adoc
 
 Shows full compilation and linking commands
