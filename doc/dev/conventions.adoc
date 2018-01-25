@@ -20,6 +20,7 @@ the module.
   array of particles, `cc` is an array of colors, `ii` is an array of
   indices * array of small dimentionality may use an enum type for
   readability, e.g.
+
 [source,cpp]
 ----
 enum {X, Y, Z};
