@@ -55,32 +55,32 @@ static void copy_shift_with_forces(const Coords *coords, const Particle *pp, con
 
 #define PATTERN "%s-%05d"
     
-static void header(long n, const char *name, int step, const char *type, const char *fields) {
+static void header(long n, const char *name, int id, const char *type, const char *fields) {
     char fname[256] = {0};
     FILE *f;
     
-    sprintf(fname, DUMP_BASE "/bop/" PATTERN ".bop", name, step / part_freq);
+    sprintf(fname, DUMP_BASE "/bop/" PATTERN ".bop", name, id);
         
     UC(efopen(fname, "w", /**/ &f));
 
     fprintf(f, "%ld\n", n);
-    fprintf(f, "DATA_FILE: " PATTERN ".values\n", name, step / part_freq);
+    fprintf(f, "DATA_FILE: " PATTERN ".values\n", name, id);
     fprintf(f, "DATA_FORMAT: %s\n", type);
     fprintf(f, "VARIABLES: %s\n", fields);
 
     UC(efclose(f));
 }
 
-static void header_pp(long n, const char *name, int step) {
-    header(n, name, step, "float", "x y z vx vy vz");
+static void header_pp(long n, const char *name, int id) {
+    header(n, name, id, "float", "x y z vx vy vz");
 }
 
-static void header_pp_ff(long n, const char *name, int step) {
-    header(n, name, step, "float", "x y z vx vy vz fx fy fz");
+static void header_pp_ff(long n, const char *name, int id) {
+    header(n, name, id, "float", "x y z vx vy vz fx fy fz");
 }
 
-static void header_ii(long n, const char *name, const char *fields, int step) {
-    header(n, name, step, "int", fields);
+static void header_ii(long n, const char *name, const char *fields, int id) {
+    header(n, name, id, "int", fields);
 }
 
 static long write_data(MPI_Comm cart, const void *data, long n, size_t bytesperdata, MPI_Datatype datatype, const char *fname) {
@@ -101,45 +101,45 @@ static long write_data(MPI_Comm cart, const void *data, long n, size_t bytesperd
     return ntot;
 }
     
-void bop_parts(MPI_Comm cart, const Coords *coords, const Particle *pp, long n, const char *name, int step, BopWork *t) {
+void bop_parts(MPI_Comm cart, const Coords *coords, const Particle *pp, long n, const char *name, int id, BopWork *t) {
     copy_shift(coords, pp, n, /**/ (float3*) t->w_pp);
         
     char fname[256] = {0};
-    sprintf(fname, DUMP_BASE "/bop/" PATTERN ".values", name, step / part_freq);
+    sprintf(fname, DUMP_BASE "/bop/" PATTERN ".values", name, id);
 
     long ntot = write_data(cart, t->w_pp, n, sizeof(Particle), datatype::particle, fname);
     if (m::is_master(cart))
-        header_pp(ntot, name, step);
+        header_pp(ntot, name, id);
 }
 
-void bop_parts_forces(MPI_Comm cart, const Coords *coords, const Particle *pp, const Force *ff, long n, const char *name, int step, /*w*/ BopWork *t) {
+void bop_parts_forces(MPI_Comm cart, const Coords *coords, const Particle *pp, const Force *ff, long n, const char *name, int id, /*w*/ BopWork *t) {
     copy_shift_with_forces(coords, pp, ff, n, /**/ (float3*) t->w_pp);
             
     char fname[256] = {0};
-    sprintf(fname, DUMP_BASE "/bop/" PATTERN ".values", name, step / part_freq);
+    sprintf(fname, DUMP_BASE "/bop/" PATTERN ".values", name, id);
 
     long ntot = write_data(cart, t->w_pp, n, sizeof(Particle) + sizeof(Force), datatype::partforce, fname);
     
     if (m::is_master(cart))
-        header_pp_ff(ntot, name, step);
+        header_pp_ff(ntot, name, id);
 }
 
-static void intdata(MPI_Comm cart, const int *ii, long n, const char *name, const char *fields, int step) {
+static void intdata(MPI_Comm cart, const int *ii, long n, const char *name, const char *fields, int id) {
     char fname[256] = {0};
-    sprintf(fname, DUMP_BASE "/bop/" PATTERN ".values", name, step / part_freq);
+    sprintf(fname, DUMP_BASE "/bop/" PATTERN ".values", name, id);
 
     long ntot = write_data(cart, ii, n, sizeof(int), MPI_INT, fname);
     
     if (m::is_master(cart))
-        header_ii(ntot, name, fields, step);
+        header_ii(ntot, name, fields, id);
 }
 
-void bop_ids(MPI_Comm cart, const int *ii, long n, const char *name, int step) {
-    intdata(cart, ii, n, name, "id", step);
+void bop_ids(MPI_Comm cart, const int *ii, long n, const char *name, int id) {
+    intdata(cart, ii, n, name, "id", id);
 }
 
-void bop_colors(MPI_Comm cart, const int *ii, long n, const char *name, int step) {
-    intdata(cart, ii, n, name, "color", step);
+void bop_colors(MPI_Comm cart, const int *ii, long n, const char *name, int id) {
+    intdata(cart, ii, n, name, "color", id);
 }
 
 #undef PATTERN
