@@ -18,6 +18,35 @@ TODO
 compute local interactions of solvent particles, given cell starts,
 cell counts (see link:clist{lext}[clist]) and particles array
 
+The algorithm is as follows:
+
+* each particle of the array has one thread assigned.
+* the thread runs over half of the 27 cell lists overlapping one cutoff radius
+  (this makes 13 cells + the "self cell") 
+* in each cell, the particle ids are fetched from the cell starts
+  array
+* run over particles, atomic add the forces to them and gather forces
+  on the main particle
+* atomic add main forces to force array
+
+Performance is strongly related to the pattern used to run over the
+particles.
+Better performance is achieved by grouping as much as possible
+consecutive particles (row), meaning that the `x` cell index runs
+fastest.
+
+The cell run order is shown below:
+
+----
++----> x   plane dz = -1:    plane dz =  0:    plane dz = +1:
+|
+|            00 01 02          09 10 11          xx xx xx
+v y          03 04 05          12 13 xx          xx xx xx
+             06 07 08          xx xx xx          xx xx xx
+----
+
+where `xx` denotes that the cell is not used by the current thread.
+
 === fluforces: halo
 
 solvent forces with remote particles (fragments)
