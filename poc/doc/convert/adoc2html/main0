@@ -12,7 +12,7 @@ for c; do shift; set -- "$@" "$i"; i="$c"; done
 
 a="-a lext=.html
    -a toc=left
-   -a source-highlighter=coderay
+   -a source-highlighter=pygments
    -a nofooter
    -a disable-javascript
    -a linkcss"

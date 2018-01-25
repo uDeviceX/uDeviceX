@@ -1,6 +1,7 @@
 :lext: .adoc
 :toclevels: 4
 = uDeviceX Documentation
+image::include/pach.jpeg[]
 
 == Developer
 :leveloffset:  2

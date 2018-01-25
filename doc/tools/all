@@ -35,6 +35,7 @@ header() (
     echo ':lext: .adoc'
     echo ':toclevels: 4'
     echo '= uDeviceX Documentation'
+    echo 'image::include/pach.jpeg[]'
     echo
 )
 
