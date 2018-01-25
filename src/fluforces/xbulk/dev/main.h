@@ -52,7 +52,7 @@ __device__ bool valid_cid(int3 c) {
 }
 
 template<typename CL>
-__device__ void one_cell(int ia, forces::Pa pa, CL c, int start, int end, float seed, /**/ float fa[3], Force *ff) {
+__device__ void loop_pp(int ia, forces::Pa pa, CL c, int start, int end, float seed, /**/ float fa[3], Force *ff) {
     enum {X, Y, Z};
     int ib;
     forces::Pa pb;
@@ -100,7 +100,7 @@ __global__ void apply_simplest(int n, BCloud cloud, const int *start, float seed
                 if (!valid_cid(cb)) continue;
                 ib = cb.x + XS * (cb.y + YS * cb.z);
                 
-                one_cell(ia, pa, cloud, start[ib], start[ib + 1], seed, /**/ fa, ff);
+                loop_pp(ia, pa, cloud, start[ib], start[ib + 1], seed, /**/ fa, ff);
             }        
         }        
     }
@@ -146,7 +146,7 @@ __global__ void apply_smarter(int n, BCloud cloud, const int *start, float seed,
             bs = start[cid0 + startx];
             be = start[cid0 + endx];
 
-            one_cell(ia, pa, cloud, bs, be, seed, /**/ fa, ff);
+            loop_pp(ia, pa, cloud, bs, be, seed, /**/ fa, ff);
         }        
     }
 
@@ -175,7 +175,7 @@ __device__ void one_row(int dz, int dy, int ia, int3 ca, forces::Pa pa, CL cloud
     bs = start[cid0 + startx];
     be = start[cid0 + endx];
 
-    one_cell(ia, pa, cloud, bs, be, seed, /**/ fa, ff);
+    loop_pp(ia, pa, cloud, bs, be, seed, /**/ fa, ff);
 }
 
 // unroll loop
