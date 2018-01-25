@@ -1,3 +1,8 @@
+#if defined(field_dumps) || defined (field_freq) || \
+    defined(part_dumps) || defined (part_freq) ||
+#error field and part dumps are runtime!
+#endif
+
 #if defined(VCON) || defined(VCON_CART) || defined (VCON_RAD) || \
     defined(VCON_VX) || defined(VCON_VY) || defined(VCON_VZ)  || \
     defined(VCON_FACTOR) || defined(VCON_SAMPLE_FREQ) || \
@@ -58,24 +63,8 @@
 #define DUMP_BASE "."
 #endif
 
-#ifndef field_dumps
-#define field_dumps (false)
-#endif
-
-#ifndef field_freq
-#define field_freq (1000)
-#endif
-
-#ifndef part_dumps
-#define part_dumps (false)
-#endif
-
 #ifndef force_dumps
 #define force_dumps (false)
-#endif
-
-#ifndef part_freq
-#define part_freq (1000)
 #endif
 
 #ifndef rbc_com_dumps

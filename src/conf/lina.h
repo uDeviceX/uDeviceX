@@ -35,16 +35,16 @@
 
 /* DUMPS */
 #define dump_all_fields         true
-#define part_freq               20000
-#define field_dumps             true
+// #define part_freq               20000
+// #define field_dumps             true
 #define strt_dumps              true
 #define strt_freq               2000000
 
 #define           RBC_RND       true
 #define       DPD_GRAVITY       true
-#define        field_freq      10000
+// #define        field_freq      10000
 #define         fsiforces       true
-#define        part_dumps      true
+// #define        part_dumps      true
 
 #define              rbcs       true
 #define             RBCnv       642
