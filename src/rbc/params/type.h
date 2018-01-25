@@ -6,7 +6,6 @@ struct RbcParams {
     float kb;     /* bending */
     float phi;    /* spontaneous angle */
     float ks;     /* spring constant */
-    float p;      /* persistence length */
     float x0;     /* spring extension relative to max. extension */
     float mpow;   /* exponent in POW spring */
     float ka;     /* global area constant */

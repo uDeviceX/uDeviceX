@@ -1,5 +1,5 @@
 #### periodic box: stretch
-# nTEST: rbc.u.main.simple.0
+# snTEST: rbc.u.main.simple.0
 set -eu
 rm -rf bop diag.txt h5 ply rbc.off
 :

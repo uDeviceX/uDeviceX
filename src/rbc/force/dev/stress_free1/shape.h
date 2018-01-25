@@ -1,7 +1,7 @@
 struct Shape0 {
-    float a; /* edge equilibrium lengths */
-    float A; /* local area */
-    float totArea;
+    real a; /* edge equilibrium lengths */
+    real A; /* local area */
+    real totArea;
 };
 
 /* extract edge specific shape info */

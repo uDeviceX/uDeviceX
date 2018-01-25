@@ -14,7 +14,7 @@ else Time="--time $1"; shift
 fi
 
 Args="--output=out.txt --error=err.txt -C gpu $Time"
-exec_stdin sbatch -N $n $Args <<EOF
+exec_stdin sbatch --constraint=gpu -N $n $Args <<EOF
 #!/bin/bash
 
 . u.load.daint
