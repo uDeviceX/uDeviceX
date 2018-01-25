@@ -111,12 +111,14 @@ void dump_strt(int id, Sim *s) {
 }
 
 void dump_diag0(int it, Sim *s) { /* generic dump */
-    if (it % part_freq  == 0) {
-        if (part_dumps) dump_part(it, s);
-        if (rbcs)       dump_rbcs(s);
+    const Opt *o = &s->opt;
+
+    if (it % o->freq_parts == 0) {
+        if (o->dump_parts) dump_part(it, s);
+        if (rbcs)          dump_rbcs(s);
         diag(it, s);
     }
-    if (field_dumps && it % field_freq == 0) dump_grid(s);
+    if (o->dump_field && it % o->freq_field == 0) dump_grid(s);
     if (strt_dumps  && it % strt_freq == 0)  dump_strt(it / strt_freq, s);
     if (rbc_com_dumps && it % rbc_com_freq == 0) dump_rbc_coms(s);
 }
