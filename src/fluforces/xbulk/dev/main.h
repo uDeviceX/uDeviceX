@@ -162,6 +162,7 @@ __device__ void one_row(int dz, int dy, int ia, int3 ca, forces::Pa pa, BCloud c
     one_cell(ia, pa, cloud, bs, be, seed, /**/ fa, ff);
 }
 
+// unroll loop
 __global__ void apply(int n, BCloud cloud, const int *start, float seed, /**/ Force *ff) {
     enum {X, Y, Z};
     int ia;
@@ -175,11 +176,15 @@ __global__ void apply(int n, BCloud cloud, const int *start, float seed, /**/ Fo
     fetch(cloud, ia, &pa);
     ca = get_cid(&pa);
 
-    one_row(-1, -1, ia, ca, pa, cloud, start, seed, /**/ fa, ff);
-    one_row(-1,  0, ia, ca, pa, cloud, start, seed, /**/ fa, ff);
-    one_row(-1,  1, ia, ca, pa, cloud, start, seed, /**/ fa, ff);
-    one_row( 0, -1, ia, ca, pa, cloud, start, seed, /**/ fa, ff);
-    one_row( 0,  0, ia, ca, pa, cloud, start, seed, /**/ fa, ff);
+#define ONE_ROW(dz, dy) one_row (dz, dy, ia, ca, pa, cloud, start, seed, /**/ fa, ff)
+    
+    ONE_ROW(-1, -1);
+    ONE_ROW(-1,  0);
+    ONE_ROW(-1,  1);
+    ONE_ROW( 0, -1);
+    ONE_ROW( 0,  0);
+
+#undef ONE_ROW
 
     atomicAdd(ff[ia].f + X, fa[X]);
     atomicAdd(ff[ia].f + Y, fa[Y]);
