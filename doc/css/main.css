@@ -32,21 +32,6 @@ h6 { font-size:.75em }
     margin-bottom:0
 }
 
-#header .details {
-    border-bottom:1px solid #ddddd8;
-    line-height:1.45;
-    padding-top:.25em;
-    padding-bottom:.25em;
-    padding-left:.25em;
-    color:rgba(0,0,0,.6);
-    display:-ms-flexbox;
-    display:-webkit-flex;
-    display:flex;
-    -ms-flex-flow:row wrap;
-    -webkit-flex-flow:row wrap;
-    flex-flow:row wrap
-}
-
 #header .details span:first-child {
     margin-left:-.125em
 }
