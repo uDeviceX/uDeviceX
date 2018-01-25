@@ -13,11 +13,12 @@ static void gen(const Coords *coords, Wall *w, Sim *s) { /* generate */
     Flu *flu = &s->flu;
     Rbc *rbc = &s->rbc;
     Rig *rig = &s->rig;
+    bool dump_sdf = s->opt.dump_field;
     
     run_eq(wall_creation, s);
     if (walls) {
         dSync();
-        UC(sdf_gen(coords, s->cart, /**/ w->sdf));
+        UC(sdf_gen(coords, s->cart, dump_sdf, /**/ w->sdf));
         MC(m::Barrier(s->cart));
         inter_create_walls(s->cart, MAXNWALL, w->sdf, /*io*/ &flu->q, /**/ &w->q);
     }
@@ -74,6 +75,7 @@ void sim_strt(Sim *s) {
     Rbc *rbc = &s->rbc;
     Rig *rig = &s->rig;
     Wall *wall = &s->wall;
+    bool dump_sdf = s->opt.dump_field;
     
     /*Q*/
     flu_strt_quants(s->coords, RESTART_BEGIN, &flu->q);
@@ -93,7 +95,7 @@ void sim_strt(Sim *s) {
     MC(m::Barrier(s->cart));
     if (walls) {
         dSync();
-        UC(sdf_gen(s->coords, s->cart, /**/ wall->sdf));
+        UC(sdf_gen(s->coords, s->cart, dump_sdf, /**/ wall->sdf));
         MC(m::Barrier(s->cart));
     }
 
