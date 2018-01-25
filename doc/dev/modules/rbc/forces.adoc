@@ -4,5 +4,10 @@
 
 [stem]
 ++++
-e^{i\pi} = -1
+E^{spring} \propto \left( x - x_0 \right)^2 + E^{nonlin} \\
+E^{tot}_{area} \propto \left( A^{tot} - A_{0}^{tot} \right)^2 \\
+E^{local}_{area} \propto \left( A - A_{0} \right)^2 \\
+E^{local}_{area} \propto \left( A - A_{0} \right)^2 \\
+E^{tot}_{vol} \propto \left( V^{tot} - V_{0}^{tot} \right)^2 \\
+E_{bnd} \propto \left(\theta - \theta_0 \right)^2
 ++++
