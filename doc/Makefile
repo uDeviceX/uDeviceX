@@ -1,5 +1,5 @@
 # converter
-ADOC = u.adoc2html 
+ADOC = u.adoc2html
 # root on server
 ROOT =
 
