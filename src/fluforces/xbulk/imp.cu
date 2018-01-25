@@ -9,8 +9,12 @@
 #include "inc/dev.h"
 
 #include "d/api.h"
+#include "d/ker.h"
+#include "utils/error.h"
 #include "utils/kl.h"
 #include "utils/cc.h"
+#include "utils/texo.h"
+#include "utils/texo.dev.h"
 
 #include "math/rnd/imp.h"
 #include "math/rnd/dev.h"
@@ -20,6 +24,7 @@
 #include "forces/imp.h"
 
 #include "imp.h"
+#include "imp/type.h"
 
 namespace flocaldev {
 #include "dev/main.h"

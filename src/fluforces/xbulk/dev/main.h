@@ -11,6 +11,19 @@ __device__ void fetch(BCloud c, int i, forces::Pa *p) {
         p->color = c.cc[i];
 }
 
+__device__ void fetch(TBCloud c, int i, forces::Pa *p) {
+    float4 r, v;
+    r = fetch(c.pp, 2*i + 0);
+    v = fetch(c.pp, 2*i + 1);
+
+    forces::r3v3k2p(r.x, r.y, r.z,
+                    v.x, v.y, v.z,
+                    SOLVENT_KIND, /**/ p);
+    
+    if (multi_solvent)
+        p->color = c.cc[i];
+}
+
 __device__ bool cutoff_range(forces::Pa pa, forces::Pa pb) {
     float x, y, z;
     x = pa.x - pb.x;
@@ -38,7 +51,8 @@ __device__ bool valid_cid(int3 c) {
         valid_c(c.z, ZS);    
 }
 
-__device__ void one_cell(int ia, forces::Pa pa, BCloud c, int start, int end, float seed, /**/ float fa[3], Force *ff) {
+template<typename CL>
+__device__ void one_cell(int ia, forces::Pa pa, CL c, int start, int end, float seed, /**/ float fa[3], Force *ff) {
     enum {X, Y, Z};
     int ib;
     forces::Pa pb;
@@ -141,8 +155,8 @@ __global__ void apply_smarter(int n, BCloud cloud, const int *start, float seed,
     atomicAdd(ff[ia].f + Z, fa[Z]);
 }
 
-
-__device__ void one_row(int dz, int dy, int ia, int3 ca, forces::Pa pa, BCloud cloud, const int *start, float seed, /**/ float fa[3], Force *ff) {
+template<typename CL>
+__device__ void one_row(int dz, int dy, int ia, int3 ca, forces::Pa pa, CL cloud, const int *start, float seed, /**/ float fa[3], Force *ff) {
     int3 cb;
     int enddx, startx, endx, cid0, bs, be;
     cb.z = ca.z + dz;
@@ -165,7 +179,36 @@ __device__ void one_row(int dz, int dy, int ia, int3 ca, forces::Pa pa, BCloud c
 }
 
 // unroll loop
-__global__ void apply(int n, BCloud cloud, const int *start, float seed, /**/ Force *ff) {
+__global__ void apply_unroll(int n, BCloud cloud, const int *start, float seed, /**/ Force *ff) {
+    enum {X, Y, Z};
+    int ia;
+    int3 ca;
+    forces::Pa pa;
+    float fa[3] = {0};
+
+    ia = threadIdx.x + blockIdx.x * blockDim.x;
+    if (ia >= n) return;
+    
+    fetch(cloud, ia, &pa);
+    ca = get_cid(&pa);
+
+#define ONE_ROW(dz, dy) one_row (dz, dy, ia, ca, pa, cloud, start, seed, /**/ fa, ff)
+    
+    ONE_ROW(-1, -1);
+    ONE_ROW(-1,  0);
+    ONE_ROW(-1,  1);
+    ONE_ROW( 0, -1);
+    ONE_ROW( 0,  0);
+
+#undef ONE_ROW
+
+    atomicAdd(ff[ia].f + X, fa[X]);
+    atomicAdd(ff[ia].f + Y, fa[Y]);
+    atomicAdd(ff[ia].f + Z, fa[Z]);
+}
+
+// textures
+__global__ void apply(int n, TBCloud cloud, const int *start, float seed, /**/ Force *ff) {
     enum {X, Y, Z};
     int ia;
     int3 ca;
