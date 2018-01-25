@@ -3,6 +3,7 @@
 set -eu
 
 EXCLUDE="all.adoc summary.adoc dev/main.adoc user/main.adoc units/main.adoc"
+CONTR='Alexeev, D.; Amoudruz, L.; Bernaschi, M.; Bisson, M.; Conti, C.; Economides, A.; Fatica, M.; Hadjidoukas, P.; Joubert, W.; Karniadakis G.; Koumoutsakos, P.; Kulakova, L.; Litvinov, S.; Lykov, K.; Pivkin, I.; Rossinelli, D.; Tang, Y.-H.'
 
 usg() {
     echo 1>&2 'usg: u.doc.all <doc dir> > index.adoc'
@@ -35,6 +36,8 @@ header() (
     echo ':lext: .adoc'
     echo ':toclevels: 4'
     echo '= uDeviceX Documentation'
+    echo $CONTR
+    echo
     echo 'image::include/pach.jpeg[]'
     echo
 )
