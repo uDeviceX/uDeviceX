@@ -15,7 +15,6 @@ struct PairParams {
     float s[MAX_PAR]; /* sigma: random       */
     int ncol;         /* number of colors    */
 
-    bool lj;
     float lj_s; /* lennard jones sigma   */
     float lj_e; /* lennard jones epsilon */
 };
