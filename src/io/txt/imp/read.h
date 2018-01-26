@@ -73,8 +73,8 @@ void txt_read_pp_ff(const char *name, TxtRead **pr) {
 }
 
 void txt_read_fin(TxtRead *d) {
-    if (d->pp) UC(efree(d->pp));
-    if (d->ff) UC(efree(d->ff));
+    UC(efree(d->pp));
+    UC(efree(d->ff));
     UC(efree(d));
 }
 
