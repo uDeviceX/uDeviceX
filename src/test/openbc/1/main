@@ -2,13 +2,17 @@
 # nTEST: out.t2
 :
 u.conf conf/default.h <<!!!
-   tend=2.01 part_freq=4000
-   field_dumps part_dumps
-   field_freq=4000
+   tend=2.01
    OUTFLOW_CIRCLE OUTFLOW_CIRCLE_R=8
    XS=8 YS=8
    run
 !!!
 (make clean && u.make -j) > /dev/null
-u.run 2 2 1 ./udx test/openbc/out.cfg
+u.run 2 2 1 ./udx test/openbc/out.cfg '
+dump = {
+    field = true;
+    parts = true;
+    freq_field = 4000;
+    freq_parts = 4000;
+};'
 u.avgh5 0 u 0 h5/flowfields-0001.h5 | uscale 10 > h5.out.txt
