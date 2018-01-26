@@ -16,7 +16,7 @@ u.conf conf/lina.h <<!
    numberdensity=1
    RBC_STRETCH RESTRAIN_RBC_VEL MESH_SHIFT_CENTER
    XS=48 YS=32 ZS=32 RBCnv=$nv
-   dt=0.0001 tend=0.011 part_freq=100
+   dt=0.0001 tend=0.011
    run
 !
 { make clean && u.make -j; } > /dev/null
@@ -25,5 +25,9 @@ u.strtdir
 RBC_RND=$seed u.run ./udx '
 rbc = {
     @include "rbc.test.cfg"
-}'
+}
+dump = {
+    parts = true;
+    freq_parts = 100;
+};'
 ply2punto r/00001.ply | uscale 15 > ply.out.txt

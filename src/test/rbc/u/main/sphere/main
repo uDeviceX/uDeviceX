@@ -19,7 +19,7 @@ u.conf $S $U $C <<!
    RESTRAIN_RBC_VEL MESH_SHIFT_CENTER RBC_CLEAR_VEL
    RBCtotArea=$area RBCtotVolume=$volume
    XS=48 YS=32 ZS=32 RBCnv=$nv RBC_RND=false
-   dt=1e-3 tend=200.0 part_freq=50000
+   dt=1e-3 tend=200.0
    run
 !
 { make clean && u.make -j; } > /dev/null
@@ -29,5 +29,9 @@ rbc = {
     @include "rbc.lina.cfg"
     kBT = 0.00444302;
     ks = 3.26692647;
-}'
+}
+dump = {
+    parts = true;
+    freq_parts = 50000;
+};'
 ply2punto r/00003.ply | uscale 1 > ply.out.txt
