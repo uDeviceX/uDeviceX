@@ -9,6 +9,7 @@ enum {
     MAX_PAR = (MAX_COL * (MAX_COL + 1)) / 2
 };
 
+
 struct PairDPD {
     float a, g, s;
 };
@@ -22,6 +23,7 @@ struct PairDPDLJ {
     float a, g, s;
     float ljs, lje;
 };
+
 
 struct PairPa {
     float x, y, z;

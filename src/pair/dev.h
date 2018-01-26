@@ -95,6 +95,7 @@ static __device__ void pair_force(Param p, PairPa a, PairPa b, float rnd, /**/ F
     f->y = f0 * dr.y;
     f->z = f0 * dr.z;
 }
+
 static __device__ int colors2pid(int ca, int cb, int ncolors) {
     int c;
     if (cb < ca) {
