@@ -31,4 +31,4 @@ dump = {
     parts = true;
     freq_parts = 300;
 };'
-ply2punto r/00003.ply | uscale 3 > ply.out.txt
+ply2punto r/00003.ply | uscale 1 > ply.out.txt

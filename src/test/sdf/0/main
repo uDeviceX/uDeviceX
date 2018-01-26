@@ -4,6 +4,7 @@ S=`u.cp.s` U=u/sdf C=conf/default.h
 u.conf "$S" "$U" "$C" <<!
 run
 !
+mkdir -p h5
 (u.make clean && u.make -j) > /dev/null
 u.cp.sdf cyl1/cyl.dat  sdf.dat
 for x in 0.0 3.0 6.0 9.0
