@@ -1,5 +1,4 @@
 namespace d {
-inline int lane() { return 0; }
 static uint3 threadIdx, blockIdx, gridDim;
 static dim3  blockDim;
 static int   warpSize = 1;
