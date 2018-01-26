@@ -29,7 +29,7 @@
 #include "frag/imp.h"
 
 #include "flu/type.h"
-#include "xbulk/imp.h"
+#include "bulk/imp.h"
 #include "halo/imp.h"
 
 #include "imp.h"

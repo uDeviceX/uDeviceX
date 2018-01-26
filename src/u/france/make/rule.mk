@@ -25,9 +25,9 @@ $B/exch/map/imp.o: $S/exch/map/imp.cu; $N -I$S/. -I$S/exch/map
 $B/exch/mesh/imp.o: $S/exch/mesh/imp.cu; $N -I$S/. -I$S/exch/mesh
 $B/exch/obj/imp.o: $S/exch/obj/imp.cu; $N -I$S/. -I$S/exch/obj
 $B/flu/imp.o: $S/flu/imp.cpp; $X -I$S/. -I$S/flu
+$B/fluforces/bulk/imp.o: $S/fluforces/bulk/imp.cu; $N -I$S/. -I$S/fluforces/bulk
 $B/fluforces/halo/imp.o: $S/fluforces/halo/imp.cu; $N -I$S/. -I$S/fluforces/halo
 $B/fluforces/imp.o: $S/fluforces/imp.cu; $N -I$S/. -I$S/fluforces
-$B/fluforces/xbulk/imp.o: $S/fluforces/xbulk/imp.cu; $N -I$S/. -I$S/fluforces/xbulk
 $B/frag/imp.o: $S/frag/imp.cpp; $X -I$S/. -I$S/frag
 $B/fsi/imp.o: $S/fsi/imp.cu; $N -I$S/. -I$S/fsi
 $B/generate/rig/imp.o: $S/generate/rig/imp.cpp; $X -I$S/. -I$S/generate/rig
