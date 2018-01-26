@@ -36,6 +36,8 @@ $B/rbc/stretch/imp.o: $S/rbc/stretch/imp.cu; $N -I$S/. -I$S/rbc/stretch
 $B/scheme/force/conf.o: $S/scheme/force/conf.cpp; $X -I$S/. -I$S/scheme/force
 $B/scheme/force/imp.o: $S/scheme/force/imp.cu; $N -I$S/. -I$S/scheme/force
 $B/scheme/move/imp.o: $S/scheme/move/imp.cu; $N -I$S/. -I$S/scheme/move
+$B/scheme/move/params/conf.o: $S/scheme/move/params/conf.cpp; $X -I$S/. -I$S/scheme/move/params
+$B/scheme/move/params/imp.o: $S/scheme/move/params/imp.cpp; $X -I$S/. -I$S/scheme/move/params
 $B/scheme/restrain/imp.o: $S/scheme/restrain/imp.cpp; $X -I$S/. -I$S/scheme/restrain
 $B/scheme/restrain/sub/imp.o: $S/scheme/restrain/sub/imp.cu; $N -I$S/. -I$S/scheme/restrain/sub
 $B/scheme/restrain/sub/stat/imp.o: $S/scheme/restrain/sub/stat/imp.cpp; $X -I$S/. -I$S/scheme/restrain/sub/stat
