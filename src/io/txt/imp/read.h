@@ -1,7 +1,12 @@
 #define VFRMT "%g %g %g"
 
-static void ini(TxtRead **d) {
-    UC(emalloc(sizeof(TxtRead), (void**) d));
+static void ini(TxtRead **pq) {
+    TxtRead *p;
+    UC(emalloc(sizeof(TxtRead), (void**)&p));
+    p->pp = NULL;
+    p->ff = NULL;
+    p->n  = -1;
+    *pq = p;
 }
 
 static int get_num_lines(FILE *f) {
