@@ -245,7 +245,7 @@ void sim_ini(int argc, char **argv, MPI_Comm cart, /**/ Sim **sim) {
     if (s->opt.denoutflow) UC(ini_denoutflow(s->coords, s->cfg, /**/ &s->denoutflow, &s->mapoutflow));
     
     if (rbcs || solids)
-        UC(ini_objinter(s->cart, /**/ &s->objinter));        
+        UC(ini_objinter(s->cart, /**/ &s->objinter));
     
     UC(bop_ini(s->cart, &s->dumpt));
 
@@ -263,6 +263,9 @@ void sim_ini(int argc, char **argv, MPI_Comm cart, /**/ Sim **sim) {
             UC(ini_bounce_back(s->cart, &s->rig, /**/ &s->bb));
     }
 
+    UC(inter_color_ini(&s->gen_color));
+    //UC(inter_color_set_conf(s->cfg, s->gen_color));
+    
     UC(dbg_ini(&s->dbg));
     UC(dbg_set_conf(s->cfg, s->dbg));
     

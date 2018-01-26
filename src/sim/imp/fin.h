@@ -153,6 +153,7 @@ void sim_fin(Sim *s) {
 
     UC(coords_fin(/**/ s->coords));
 
+    UC(inter_color_fin(s->gen_color));
     UC(dbg_fin(s->dbg));
     UC(conf_fin(s->cfg));
     datatype::fin();
