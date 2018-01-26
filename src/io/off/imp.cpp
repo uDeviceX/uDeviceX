@@ -70,3 +70,23 @@ void off_read_vert(const char *f, int max, /**/ int *pnv, float *vert) {
 
     *pnv = nv;
 }
+
+void off_read(const char *path, OffRead**) {
+}
+
+void off_fin(OffRead*) {
+}
+
+int    off_get_n(OffRead*) {
+    return 0;
+}
+
+int4  *off_get_tri(OffRead*) {
+    int4 *q;
+    return q;
+}
+
+float *off_get_vert(OffRead*) {
+    float *q;
+    return q;
+}
