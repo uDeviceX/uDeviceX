@@ -6,6 +6,8 @@
 #include "utils/error.h"
 #include "utils/imp.h"
 
+#include "utils/msg.h"
+
 #include "imp.h"
 
 static int eq(const char *a, const char *b) { return strcmp(a, b) == 0; }
@@ -72,7 +74,7 @@ void off_read_vert(const char *f, int max, /**/ int *pnv, float *vert) {
 }
 
 struct OffRead {
-    int n;
+    int nv, nt;
     int4 *tt; /* triangles */
     int  *rr;
 };
@@ -80,18 +82,25 @@ struct OffRead {
 static void ini(OffRead **pq) {
     OffRead *p;
     UC(emalloc(sizeof(OffRead), (void**)&p));
-    p->n  = -1;
     *pq = p;
 }
 
+static void read(FILE *f, const char *path, /**/ OffRead *q) {
+    /*
+    header(f);
+    comments(f);
+    sizes(f, &nv, &nt);
+    vert(f);
+    tri(f); */
+}
 void off_read(const char *path, OffRead **pq) {
     FILE *f;
-    OffRead *p;
-    UC(ini(&p));
+    OffRead *q;
+    UC(ini(&q));
     UC(efopen(path, "r", /**/ &f));
-
+    read(f, path, /**/ q);
     UC(efclose(f));
-    *pq = p;
+    *pq = q;
 }
 
 void off_fin(OffRead* q) {
