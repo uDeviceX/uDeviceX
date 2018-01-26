@@ -1,7 +1,6 @@
 #include <mpi.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <vector_types.h>
 
 #include <conf.h>
 #include "inc/conf.h"
