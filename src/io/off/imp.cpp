@@ -84,15 +84,15 @@ static void ini(OffRead **pq) {
     *pq = p;
 }
 
-void off_read(const char *path, OffRead** pq) {
+void off_read(const char *path, OffRead **pq) {
     OffRead *p;
     UC(ini(&p));
     *pq = p;
 }
 
 void off_fin(OffRead* q) {
-    UC(efree(q->rr));
-    UC(efree(q->tt));
+    //    UC(efree(q->rr));
+    //    UC(efree(q->tt));
     UC(efree(q));
 }
 
@@ -101,11 +101,11 @@ int    off_get_n(OffRead*) {
 }
 
 int4  *off_get_tri(OffRead*) {
-    int4 *q;
+    int4 *q = NULL;
     return q;
 }
 
 float *off_get_vert(OffRead*) {
-    float *q;
+    float *q = NULL;
     return q;
 }
