@@ -5,8 +5,7 @@ rm -rf bop h5 diag.txt bin.1 bin.2 sdf.dat
 u.cp.sdf wall1/wall.dat sdf.dat
 :
 u.conf conf/couette.h <<!!!
-   tend=0.5 part_freq=4000
-   field_dumps part_dumps field_freq=4000
+   tend=0.5   
    walls wall_creation=100
    BASE_STRT_DUMP=\"bin.1/strt\"
    strt_dumps=true
@@ -30,6 +29,12 @@ wvel = {
     gdot = 5.0;
     vdir = 0;
     gdir = 2;
+};
+dump = {
+    field = true;
+    parts = true;
+    freq_field = 4000;
+    freq_parts = 4000;
 };'
 :
 u.run ./bin.2/udx '
@@ -42,5 +47,11 @@ wvel = {
 bforce ={
     type = "constant";
     f = [3.333e-2, 0., 0.];
+};
+dump = {
+    field = true;
+    parts = true;
+    freq_field = 4000;
+    freq_parts = 4000;
 };'
 u.avgh5 0 u 1 h5/flowfields-0000.h5 | uscale 0.1 > h5.out.txt
