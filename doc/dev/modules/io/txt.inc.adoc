@@ -15,3 +15,12 @@ memory and invalidated pointers returned by `txt_read_get_pp` or
 ----
 include::{src}/io/txt/imp.h[tags=read]
 ----
+
+Text format is a as follow:
+----
+x y z vx vy vz [fx fy fz]
+...
+x y z vx vy vz [fx fy fz]
+----
+
+where every row corresponds to a particle.
