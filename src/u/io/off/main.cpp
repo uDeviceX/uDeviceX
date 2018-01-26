@@ -16,13 +16,11 @@
 #include "parser/imp.h"
 
 void main0(Config *c) {
-    const char *i; /* intput */
+    OffRead *off;
+    const char *i; /* input */
     UC(conf_lookup_string(c, "i", &i));
     msg_print("i = `%s`", i);
-
-    OffRead *off;
     UC(off_read(i, &off));
-
     UC(off_fin(off));
 }
 
