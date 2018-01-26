@@ -5,7 +5,8 @@
 == purpose
 
 * wrapper for the `libconfig` library
-* holds configurations from 3 sources:
+* holds configurations from 4 sources:
+** set by program (priority 4)
 ** arguments (priority 3)
 ** configuration file (priority 2)
 ** default parameters (priority 1)
