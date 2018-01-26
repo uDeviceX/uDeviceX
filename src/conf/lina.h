@@ -39,7 +39,6 @@
 #define strt_freq               2000000
 
 #define           RBC_RND       true
-#define       DPD_GRAVITY       true
 #define         fsiforces       true
 
 #define              rbcs       true

@@ -69,7 +69,7 @@ __device__ void loop_pp(int ia, forces::Pa pa, CL c, int start, int end, float s
         fb = ff[ib].f;
 
         rnd = rnd::mean0var1ii(seed, ia, ib);
-        forces::force(pa, pb, rnd, /**/ &f);
+        forces::gen(pa, pb, rnd, /**/ &f);
         
         fa[X] += f.x;
         fa[Y] += f.y;
