@@ -15,4 +15,4 @@ rbc = {
     cell = \"data/cells/rbc/$nv.off\"
     ic = \"data/ic/two\"
     @include \"rbc.test.cfg\"
-}" >  forces.out.txt
+}" | uscale 0.1 >  forces.out.txt
