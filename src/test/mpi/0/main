@@ -6,12 +6,15 @@ u.cp.rbc rbc/498.off  rbc.off
 echo 1 0 0 8  0 1 0 8  0 0 1 8  0 0 0 1 > rbcs-ic.txt
 :
 u.conf conf/couette.h <<!!!
-   rbcs tend=0.5 part_freq=100 DBG_PEEK
+   rbcs tend=0.5 DBG_PEEK
    run
 !!!
 { make clean && u.make -j; } > /dev/null
 u.run 2 1 1 ./udx '
 rbc = {
     @include "rbc.test.cfg"
-}'
+}
+dump = {
+    freq_parts = 100;
+};'
 awk '{print 10000*$2}' diag.txt > diag.out.txt
