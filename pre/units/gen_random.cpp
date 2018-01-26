@@ -9,6 +9,10 @@ void usg() {
     printf("usage: ./gen_random <X> <Y> <Z>  <nparticles> > file.txt\n\n");
 }
 
+void srnd() {
+    srand(12345);
+}
+
 float rnd(int L) {
     return L * (-0.5f + 0.9999f * drand48());
 }
@@ -33,6 +37,8 @@ int main(int argc, char **argv) {
         return 1;
     }
     int X, Y, Z, n, iarg;
+
+    srnd();
 
     iarg = 1;
     X = atoi(argv[iarg++]);

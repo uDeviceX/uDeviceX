@@ -19,4 +19,4 @@ rbc = {
     cell = "rbc.off"
     ic = "data/ic/two"
     @include "rbc.test.cfg"
-}' | uscale 0.1 >  forces.out.txt
+}' | uscale 0.025 >  forces.out.txt
