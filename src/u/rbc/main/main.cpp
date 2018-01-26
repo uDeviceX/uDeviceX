@@ -20,6 +20,7 @@ int main(int argc, char **argv) {
     Coords *coords;
     BForce *bforce;
     RbcParams *par;
+    int part_freq;
     m::ini(&argc, &argv);
     msg_ini(m::rank);
 
@@ -31,9 +32,10 @@ int main(int argc, char **argv) {
 
     UC(bforce_ini(&bforce));
     UC(bforce_ini_conf(cfg, /**/ bforce));
+    UC(conf_lookup_int(cfg, "dump.freq_parts", &part_freq));
     coords_ini(m::cart, &coords);
     
-    run(coords, bforce, "rbc.off", "rbcs-ic.txt", par);
+    run(coords, part_freq, bforce, "rbc.off", "rbcs-ic.txt", par);
     coords_fin(coords);
 
     UC(bforce_fin(bforce));
