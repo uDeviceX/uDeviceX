@@ -78,7 +78,7 @@ static __device__ int kind2color(int k, int c) {
     return c;
 }
 
-static __device__ void force(Pa A, Pa B, float rnd, /**/ Fo *f) {
+static __device__ void gen(Pa A, Pa B, float rnd, /**/ Fo *f) {
     enum {O = SOLVENT_KIND, S = SOLID_KIND, W = WALL_KIND};
     int ljkind;
     int ka, kb;

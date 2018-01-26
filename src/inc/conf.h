@@ -292,12 +292,6 @@
 #endif
 
 
-/* how mass affects dpd forces: like "gravity" ~ mi*mj or like
-   "charge" -- no dependencies on mass */
-#if !defined(DPD_GRAVITY) && !defined(DPD_CHARGE)
-  #define DPD_CHARGE
-#endif
-
 /* DPD kernel envelop parameter: random and dissipative kernels (wd = wr^2)
    0: wr = 1 - r
    1: wr = (1 - r)^(1/2)
