@@ -1,5 +1,5 @@
 #### periodic box: stretch
-# snTEST: rbc.stretch.simple.0
+# nTEST: rbc.stretch.simple.0
 rm -rf bop diag.txt h5 ply rbc.off
 :
 A=1e4
@@ -26,4 +26,4 @@ dump = {
     parts = true;
     freq_parts = 300;
 };'
-ply2punto r/00003.ply | uscale 10 > ply.out.txt
+ply2punto r/00003.ply | uscale 3 > ply.out.txt
