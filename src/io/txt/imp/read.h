@@ -1,7 +1,12 @@
 #define VFRMT "%g %g %g"
 
-static void ini(TxtRead **d) {
-    UC(emalloc(sizeof(TxtRead), (void**) d));
+static void ini(TxtRead **pq) {
+    TxtRead *p;
+    UC(emalloc(sizeof(TxtRead), (void**)&p));
+    p->pp = NULL;
+    p->ff = NULL;
+    p->n  = -1;
+    *pq = p;
 }
 
 static int get_num_lines(FILE *f) {
@@ -68,14 +73,13 @@ void txt_read_pp_ff(const char *name, TxtRead **pr) {
 }
 
 void txt_read_fin(TxtRead *d) {
-    if (d->pp) UC(efree(d->pp));
-    if (d->ff) UC(efree(d->ff));
+    UC(efree(d->pp));
+    UC(efree(d->ff));
     UC(efree(d));
 }
 
 int txt_read_get_n(const TxtRead *d) {return d->n;}
-
-const Particle* txt_read_get_pp(const TxtRead *d) {return d->pp;}
-const Force*    txt_read_get_ff(const TxtRead *d) {return d->ff;}
+const Particle* txt_read_get_pp(const TxtRead *d) { return d->pp; }
+const Force*    txt_read_get_ff(const TxtRead *d) { return d->ff; }
 
 #undef VFRMT

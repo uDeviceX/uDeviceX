@@ -1,12 +1,26 @@
 == Text
 
-Write one row per particle in a text file `name`.
+Write one row per particle in a text file `path`.
 [source,cpp]
 ----
-include::{src}/io/text/imp.h[tags=write]
+include::{src}/io/txt/imp.h[tags=write]
 ----
+
+Read particles to a structure `TxtRead`. The `TxtRead` API returns the
+number of particles and pointers to the data. `txt_read_fin` frees the
+memory and invalidated pointers returned by `txt_read_get_pp` or
+`txt_read_get_pp_ff`.
 
 [source,cpp]
 ----
-include::{src}/io/text/imp.h[tags=read]
+include::{src}/io/txt/imp.h[tags=read]
 ----
+
+Text format is a as follow:
+----
+x y z vx vy vz [fx fy fz]
+...
+x y z vx vy vz [fx fy fz]
+----
+
+where every row corresponds to a particle.
