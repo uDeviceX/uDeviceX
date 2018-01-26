@@ -58,6 +58,7 @@ $B/meshbb/imp.o: $S/meshbb/imp.cu; $N -I$S/. -I$S/meshbb
 $B/mpi/glb.o: $S/mpi/glb.cpp; $X -I$S/. -I$S/mpi
 $B/mpi/type.o: $S/mpi/type.cpp; $X -I$S/. -I$S/mpi
 $B/mpi/wrapper.o: $S/mpi/wrapper.cpp; $X -I$S/. -I$S/mpi
+$B/pair/imp.o: $S/pair/imp.cpp; $X -I$S/. -I$S/pair
 $B/parser/imp.o: $S/parser/imp.cpp; $X -I$S/. -I$S/parser
 $B/rbc/adj/imp.o: $S/rbc/adj/imp.cpp; $X -I$S/. -I$S/rbc/adj
 $B/rbc/com/imp.o: $S/rbc/com/imp.cu; $N -I$S/. -I$S/rbc/com
