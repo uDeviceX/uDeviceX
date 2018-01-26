@@ -31,6 +31,7 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/fsi                      && \
     d $B/generate/rig             && \
     d $B/inter                    && \
+    d $B/inter/color              && \
     d $B/io/bop                   && \
     d $B/io/com                   && \
     d $B/io/diag                  && \
