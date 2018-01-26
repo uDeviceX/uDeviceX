@@ -167,4 +167,7 @@ struct Sim {
     bool equilibrating;
 
     Opt opt;
+
+    /* inter processing helpers */
+    GenColor *gen_color;
 };
