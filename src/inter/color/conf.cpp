@@ -18,4 +18,10 @@ void inter_color_set_conf(const Config *cfg, GenColor *gc) {
         UC(conf_lookup_float(cfg, "color.R", &R));
         inter_color_set_drop(R, gc);
     }
+    else if (same_str(kind, "none")) {
+        return;
+    }
+    else {
+        ERR("unrecognised kind <%s>", kind);
+    }
 }

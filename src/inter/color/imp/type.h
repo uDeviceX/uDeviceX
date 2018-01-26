@@ -1,4 +1,5 @@
 enum {
+    NONE,
     DROP,
     UNIF
 };

@@ -2,7 +2,7 @@ void inter_color_ini(GenColor **c) {
     GenColor *gc;
     UC(emalloc(sizeof(GenColor), (void**) c));
     gc = *c;
-    gc->kind = -1;
+    gc->kind = NONE;
 }
 
 void inter_color_fin(GenColor *c) {
@@ -25,6 +25,8 @@ void inter_color_apply(const Coords *coords, const GenColor *gc, int n, const Pa
         break;
     case DROP:
         set_color_drop(gc->R, coords, n, pp, /**/ cc);
+        break;
+    case NONE:
         break;
     default:
         ERR("Unrecognised kind <%d>", gc->kind);
