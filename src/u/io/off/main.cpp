@@ -11,13 +11,9 @@
 #include "mpi/glb.h"
 
 #include "utils/error.h"
-#include "utils/mc.h"
-#include "utils/imp.h"
 
 #include "io/off/imp.h"
 #include "parser/imp.h"
-
-#include "mpi/wrapper.h"
 
 void main0(Config *c) {
     const char *i; /* intput */
