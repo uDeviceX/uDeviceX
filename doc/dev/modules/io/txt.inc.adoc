@@ -3,7 +3,7 @@
 Write one row per particle in a text file `path`.
 [source,cpp]
 ----
-include::{src}/io/text/imp.h[tags=write]
+include::{src}/io/txt/imp.h[tags=write]
 ----
 
 Read particles to a structure `TxtRead`. The `TxtRead` API returns the
@@ -13,5 +13,5 @@ memory and invalidated pointers returned by `txt_read_get_pp` or
 
 [source,cpp]
 ----
-include::{src}/io/text/imp.h[tags=read]
+include::{src}/io/txt/imp.h[tags=read]
 ----
