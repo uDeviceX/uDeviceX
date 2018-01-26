@@ -7,9 +7,8 @@ cp data/rig/sphere_R2.ply rig.ply
 u.cp.rbc rbc/498.off rbc.off
 :
 u.conf conf/double.poiseuille.h <<!!!
-   rbcs tend=2.0 part_freq=1500
+   rbcs tend=2.0
    solids sbounce_back wall_creation=1
-   part_dumps field_freq=1500
    pushrbc
    run
 !!!
@@ -21,5 +20,11 @@ rbc = {
 bforce = {
     type = "double_poiseuille";
     a = 6.666667;
+};
+dump = {
+    field = true;
+    parts = true;
+    freq_field = 1500;
+    freq_parts = 1500;
 };'
 ply2punto r/00002.ply | uscale 1 > ply.out.txt
