@@ -6,12 +6,20 @@ cp data/rig/sphere_R1.ply rig.ply
 x=0.75 y=3 z=9; echo $x $y $z >  rigs-ic.txt
 x=8    y=8 z=8; echo $x $y $z >> rigs-ic.txt
 :
-Force="bforce={type=\"constant\"; f=[1.6666667,0.,0.];};"
 u.conf conf/around.h <<!!!
-   XS=8 solids tend=1.0 part_freq=500 walls wall_creation=100 kBT=1e-7
-   field_dumps part_dumps field_freq=500 
+   XS=8 solids tend=1.0 walls wall_creation=100 kBT=1e-7
    run
 !!!
 { make clean && u.make -j ; } > /dev/null
-u.run 2 1 1 ./udx $Force
+u.run 2 1 1 ./udx '
+bforce = {
+    type = "constant";
+    f    = [1.6666667,0.,0.];
+};
+dump = {
+    field = true;
+    parts = true;
+    freq_field = 500;
+    freq_parts = 500;
+};'
 cat solid_diag_0000.txt | awk '{print $2, $5, $8}' | uscale 5 > sdiag.out.txt
