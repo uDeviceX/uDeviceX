@@ -1,7 +1,6 @@
 #include <mpi.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <vector_types.h>
 
 #include <conf.h>
 #include "inc/conf.h"
@@ -20,4 +19,5 @@
 #include "mpi/wrapper.h"
 
 int main(int argc, char **argv) {
+    
 }
