@@ -1,6 +1,6 @@
-cmd: sbatch -n 1 --output=out.txt --error=err.txt -C gpu --time 00:10:00
+cmd: sbatch --constraint=gpu -N 1 --output=out.txt --error=err.txt -C gpu --time 00:10:00
 : #!/bin/bash
 : 
 : . u.load.daint
 : srun cuda-memcheck -a -b ./udx 1 1 1   
-cmd: sbatch -n 1 --output=out.txt --error=err.txt -C gpu --time 00:10:00 /tmp/ustdin
+cmd: sbatch --constraint=gpu -N 1 --output=out.txt --error=err.txt -C gpu --time 00:10:00 /tmp/ustdin
