@@ -1,4 +1,3 @@
-[[cc]]
 == cc
 
 [C]uda [C]heck.
