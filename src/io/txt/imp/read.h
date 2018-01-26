@@ -79,8 +79,7 @@ void txt_read_fin(TxtRead *d) {
 }
 
 int txt_read_get_n(const TxtRead *d) {return d->n;}
-
-const Particle* txt_read_get_pp(const TxtRead *d) {return d->pp;}
-const Force*    txt_read_get_ff(const TxtRead *d) {return d->ff;}
+const Particle* txt_read_get_pp(const TxtRead *d) { return d->pp; }
+const Force*    txt_read_get_ff(const TxtRead *d) { return d->ff; }
 
 #undef VFRMT
