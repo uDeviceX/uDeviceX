@@ -71,10 +71,29 @@ void off_read_vert(const char *f, int max, /**/ int *pnv, float *vert) {
     *pnv = nv;
 }
 
-void off_read(const char *path, OffRead**) {
+struct OffRead {
+    int n;
+    int4 *tt; /* triangles */
+    int  *rr;
+};
+
+static void ini(OffRead **pq) {
+    OffRead *p;
+    UC(emalloc(sizeof(OffRead), (void**)&p));
+    p->n  = -1;
+    *pq = p;
 }
 
-void off_fin(OffRead*) {
+void off_read(const char *path, OffRead** pq) {
+    OffRead *p;
+    UC(ini(&p));
+    *pq = p;
+}
+
+void off_fin(OffRead* q) {
+    UC(efree(q->rr));
+    UC(efree(q->tt));
+    UC(efree(q));
 }
 
 int    off_get_n(OffRead*) {
