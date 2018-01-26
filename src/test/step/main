@@ -7,11 +7,15 @@ u=u/safe
 s=`pwd`
 u.conf "$s" $u conf/double.poiseuille.h <<!!!
    dt=1e3 numberdensity=1
-   tend=1e4 part_freq=4000
-   field_dumps part_dumps
-   field_freq=4000
+   tend=1e4
    run
 !!!
 (make clean && u.make -j) > /dev/null
-sh runfile
+u.run ./udx '
+dump = {
+    field = true;
+    parts = true;
+    freq_field = 4000;
+    freq_parts = 4000;
+};'
 u.avgh5 0 u 1 h5/flowfields-0001.h5 | uscale 0.1 > h5.out.txt

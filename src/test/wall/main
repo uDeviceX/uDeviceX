@@ -6,8 +6,7 @@ u.cp.sdf wall1/wall.dat sdf.dat
 :
 u.conf conf/test.h <<!!!
    XS=12 YS=12 ZS=12
-   tend=1.0 part_freq=300 walls wall_creation=1
-   field_dumps part_dumps field_freq=300
+   tend=1.0 walls wall_creation=1
    run
 !!!
 { make clean && u.make -j; } > /dev/null
@@ -17,5 +16,11 @@ wvel = {
     gdot = 5.0;
     vdir = 0;
     gdir = 2;
+};
+dump = {
+    field = true;
+    parts = true;
+    freq_field = 300;
+    freq_parts = 300;
 };'
 u.avgh5 1 u 2 h5/flowfields-0003.h5 | uscale 0.1 > h5.out.txt

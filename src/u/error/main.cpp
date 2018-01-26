@@ -23,7 +23,7 @@ enum {UDX_, MPI_, CUDA_, MAX_STACK_, NKINDS};
 void MAX_STACK_bar() {
     int j = 0;
     for (int i = 0; i < 130; ++i) {
-        UdxError::stack_push(__FILE__, __LINE__);
+        error_stack_push(__FILE__, __LINE__);
         j ++;
     }
     printf("%d\n", j);

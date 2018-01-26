@@ -7,11 +7,15 @@ u.cp.sdf cyl1/cyl.dat sdf.dat
 :
 u.conf conf/double.poiseuille.h <<!!!
    numberdensity=1
-   tend=2.01 part_freq=4000 walls wall_creation=1
-   field_dumps part_dumps
-   field_freq=4000
+   tend=2.01 walls wall_creation=1
    run
 !!!
 (make clean && u.make -j) > /dev/null
-u.run 1 1 2 ./udx test/vcont/main/vcon.cfg
+u.run 1 1 2 ./udx test/vcont/main/vcon.cfg '
+dump = {
+    field = true;
+    parts = true;
+    freq_field = 4000;
+    freq_parts = 4000;
+};'
 u.avgh5 0 u 2 h5/flowfields-0001.h5 | uscale 0.1 > h5.out.txt
