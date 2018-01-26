@@ -1,0 +1,7 @@
+= IO
+
+:src: ../../../../src
+
+* text output
+
+include::txt.inc.adoc[]
