@@ -1,0 +1,12 @@
+== Text
+
+Write one row per particle in a text file `name`.
+[source,cpp]
+----
+include::{src}/io/text/imp.h[tags=write]
+----
+
+[source,cpp]
+----
+include::{src}/io/text/imp.h[tags=read]
+----
