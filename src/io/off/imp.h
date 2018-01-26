@@ -1,3 +1,5 @@
+struct int4;
+
 /* off files
    [1] https://en.wikipedia.org/wiki/OFF_(file_format) */
 
@@ -9,7 +11,6 @@ void off_read_faces(const char *f, int max, /**/ int *nf, int4 *faces);
 
 /***/
 struct OffRead;
-struct int4;
 void off_read(const char *path, OffRead**);
 void off_fin(OffRead*);
 
