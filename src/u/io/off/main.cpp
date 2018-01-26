@@ -19,14 +19,20 @@
 
 #include "mpi/wrapper.h"
 
+void main0(Config *c) {
+    const char *i; /* intput */
+    UC(conf_lookup_string(c, "i", &i));
+    msg_print("i = `%s`", i);
+}
+
 int main(int argc, char **argv) {
     Config *cfg;
     m::ini(&argc, &argv);
     msg_ini(m::rank);
 
-    conf_ini(/**/ &cfg);
-    conf_fin(cfg);
-    
-    msg_print("mpi rank/size: %d/%d", m::rank, m::size);
+    UC(conf_ini(/**/ &cfg));
+    UC(conf_read(argc, argv, /**/ cfg));
+    UC(main0(cfg));
+    UC(conf_fin(cfg));
     m::fin();
 }
