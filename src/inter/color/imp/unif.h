@@ -1,4 +1,4 @@
-static void set_color_unif(const Coords*, int n, const Particle*, /**/ int* cc) {
+static void set_color_unif(int n, /**/ int* cc) {
     int i;
     for (i = 0; i < n; i++) cc[i] = BLUE_COLOR;
 }
