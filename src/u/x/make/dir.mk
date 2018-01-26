@@ -25,8 +25,6 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/exch/obj                 && \
     d $B/flu                      && \
     d $B/fluforces                && \
-    d $B/fluforces/bulk           && \
-    d $B/fluforces/bulk/transpose && \
     d $B/fluforces/halo           && \
     d $B/fluforces/xbulk          && \
     d $B/frag                     && \
