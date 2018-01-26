@@ -8,11 +8,11 @@ usg () {
 
 msg () { printf '%s\n' "$@" >&2; }
 
-if test $# = 1 -a "$1" = -h; then usg; fi
+if test $# -ne 0 && test "$1" = -h; then usg; fi
 
 # integer?
 intp() { echo "$1" | grep -q '^[0-9]*$'; }
-mult () { awk -v x=$x -v y=$y -v z=$z 'BEGIN {print x*y*z}'; }
+mult () { "${AWK-awk}" -v x=$x -v y=$y -v z=$z 'BEGIN {print x*y*z}'; }
 
 x=1 y=1 z=1
 if test $# -ne 0 && intp "$1"; then x=$1; shift; fi
