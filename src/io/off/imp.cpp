@@ -85,8 +85,12 @@ static void ini(OffRead **pq) {
 }
 
 void off_read(const char *path, OffRead **pq) {
+    FILE *f;
     OffRead *p;
     UC(ini(&p));
+    UC(efopen(path, "r", /**/ &f));
+
+    UC(efclose(f));
     *pq = p;
 }
 
