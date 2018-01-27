@@ -49,3 +49,29 @@ static void assert_nv(int n, int max, const char *f) {
     if (n <= max) return;
     ERR("vert nv = %d < max = %d in <%s>", n, max, f);
 }
+
+void off_read_vert(const char *f, int max, /**/ int *pnv, float *vert) {
+    char buf[BUFSIZ];
+    FILE *fd;
+    int nv;
+    int iv = 0, ib = 0;
+    float x, y, z;
+
+    UC(efopen(f, "r", /**/ &fd));
+
+    UC(efgets(buf, sizeof buf, fd));
+    if (!eq(buf, "OFF\n"))
+        ERR("expecting [OFF] <%s> : [%s]", f, buf);
+
+    fscanf(fd, "%d %*d %*d", &nv); /* skip `nf' and `ne' */
+    assert_nv(nv, max, f);
+
+    for (/*   */ ; iv < nv;  iv++) {
+        fscanf(fd, "%e %e %e", &x, &y, &z);
+        vert[ib++] = x; vert[ib++] = y; vert[ib++] = z;
+    }
+
+    UC(efclose(fd));
+
+    *pnv = nv;
+}
