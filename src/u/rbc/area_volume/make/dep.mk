@@ -9,7 +9,7 @@ $B/io/field/xmf/imp.o: $S/io/field/xmf/imp.h $S/mpi/glb.h $S/utils/error.h $S/ut
 $B/io/fields_grid/imp.o: $B/conf.h $S/coords/imp.h $S/d/api.h $S/inc/conf.h $S/inc/dev.h $S/inc/type.h $S/io/field/imp.h $S/io/fields_grid/imp.h $S/io/fields_grid/imp/all.h $S/io/fields_grid/imp/solvent.h $S/mpi/wrapper.h $S/utils/cc.h $S/utils/error.h $S/utils/msg.h
 $B/io/mesh/imp.o: $B/conf.h $S/coords/imp.h $S/inc/conf.h $S/inc/type.h $S/io/mesh/imp.h $S/io/mesh/imp/main.h $S/io/mesh/imp/shift/center.h $S/io/mesh/imp/shift/edge.h $S/io/mesh/write/imp.h $S/mpi/glb.h $S/mpi/wrapper.h $S/utils/error.h $S/utils/imp.h $S/utils/os.h
 $B/io/mesh/write/imp.o: $B/conf.h $S/inc/conf.h $S/io/mesh/write/imp.h $S/io/mesh/write/imp/main.h $S/mpi/glb.h $S/mpi/wrapper.h $S/utils/mc.h
-$B/io/off/imp.o: $S/io/off/imp.h $S/utils/error.h $S/utils/imp.h
+$B/io/off/imp.o: $S/io/off/imp.h $S/io/off/imp/main.h $S/io/off/imp/type.h $S/utils/error.h $S/utils/imp.h $S/utils/msg.h
 $B/io/ply/imp.o: $S/inc/def.h $S/inc/type.h $S/io/ply/imp.h $S/io/ply/imp/ascii.h $S/io/ply/imp/bin.h $S/io/ply/imp/common.h $S/utils/error.h $S/utils/imp.h $S/utils/msg.h
 $B/io/restart/imp.o: $B/conf.h $S/coords/imp.h $S/inc/conf.h $S/inc/def.h $S/inc/type.h $S/io/restart/imp.h $S/mpi/glb.h $S/utils/error.h $S/utils/imp.h $S/utils/msg.h
 $B/io/rig/imp.o: $B/conf.h $S/coords/imp.h $S/inc/conf.h $S/inc/type.h $S/utils/error.h $S/utils/imp.h

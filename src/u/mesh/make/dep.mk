@@ -1,7 +1,7 @@
 $B/algo/minmax/imp.o: $S/algo/minmax/imp.h $B/conf.h $S/d/api.h $S/d/ker.h $S/d/q.h $S/inc/conf.h $S/inc/def.h $S/inc/dev.h $S/inc/type.h $S/utils/cc.h $S/utils/kl.h $S/utils/msg.h
 $B/algo/scan/imp.o: $S/algo/scan/cpu/imp.h $S/algo/scan/cpu/type.h $S/algo/scan/cuda/imp.h $S/algo/scan/cuda/type.h $S/algo/scan/dev.h $S/algo/scan/imp.h $B/conf.h $S/d/api.h $S/d/ker.h $S/d/q.h $S/inc/conf.h $S/inc/def.h $S/inc/dev.h $S/utils/cc.h $S/utils/error.h $S/utils/imp.h $S/utils/kl.h
 $B/d/api.o: $B/conf.h $S/d/api.h $S/d/common.h $S/d/cpu/imp.h $S/d/cuda/imp.h $S/inc/conf.h $S/utils/error.h $S/utils/imp.h
-$B/io/off/imp.o: $S/io/off/imp.h $S/utils/error.h $S/utils/imp.h
+$B/io/off/imp.o: $S/io/off/imp.h $S/io/off/imp/main.h $S/io/off/imp/type.h $S/utils/error.h $S/utils/imp.h $S/utils/msg.h
 $B/mesh/bbox.o: $S/algo/minmax/imp.h $S/inc/type.h $S/mesh/bbox.h
 $B/mesh/collision.o: $B/conf.h $S/d/api.h $S/d/ker.h $S/d/q.h $S/inc/conf.h $S/inc/def.h $S/inc/dev.h $S/inc/type.h $S/mesh/collision.h $S/utils/cc.h $S/utils/error.h $S/utils/kl.h $S/utils/msg.h $S/utils/te.h $S/utils/texo.dev.h $S/utils/texo.h
 $B/mesh/dist.o: $S/inc/type.h $S/mesh/dist.h
