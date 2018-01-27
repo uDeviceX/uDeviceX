@@ -14,7 +14,9 @@ void off_read_faces(const char *f, int max, /**/ int *nf, int4 *faces);
 void off_read(const char *path, OffRead**);
 void off_fin(OffRead*);
 
-int    off_get_n(OffRead*);
+int    off_get_nt(OffRead*);
+int    off_get_nv(OffRead*);
+
 int4  *off_get_tri(OffRead*);
 float *off_get_vert(OffRead*);
 /***/

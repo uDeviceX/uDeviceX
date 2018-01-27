@@ -56,11 +56,20 @@ static int vert(FILE *f, char *s, int n, float *rr) {
     }
     return 1;
 }
-static int tri(FILE *f, char *s, int n, int4 *tt) {
+static int good(int4 *t, int n) {
+    int x, y, z;
+    x = t->x; y = t->y; z = t->z;
+    return
+        (0 <= x  && x < n) &&
+        (0 <= y  && y < n) &&
+        (0 <= z  && z < n) &&
+        (x != y  && y != z);
+}
+static int tri(FILE *f, char *s, int nt, int nv, int4 *tt) {
     int i;
     int4 *t;
     int nvpt; /* number of vertices per face (triangle) */
-    for (i = 0; i < n; i++) {
+    for (i = 0; i < nt; i++) {
         if (line(f, /**/ s) == ERR) return 0;
         t = &tt[i];
         if (sscanf(s, "%d %d %d %d", &nvpt, &t->x, &t->y, &t->z) != 4) {
@@ -69,6 +78,11 @@ static int tri(FILE *f, char *s, int n, int4 *tt) {
         }
         if (nvpt != 3) {
             msg_print("expecting triangle: '%s'", s);
+            return 0;
+        }
+        if (!good(t, nv)) {
+            msg_print("wrong triangle: '%s'", s);
+            msg_print("nv = %d, nt = %d", nv, nt);
             return 0;
         }
     }
@@ -92,7 +106,7 @@ static void read(FILE *f, const char *path, /**/ OffRead *q) {
     UC(emalloc(  nt*sizeof(tt[0]), (void**)&tt));
     if (!vert(f, s, nv, /**/ rr))
         ERR("failed to read vertices: '%s'", path);
-    if (!tri(f, s, nt, /**/ tt))
+    if (!tri(f, s, nt, nv, /**/ tt))
         ERR("failed to read triangles: '%s'", path);
     q->nv = nv; q->nt = nt;
     q->rr = rr; q->tt = tt;
@@ -114,16 +128,18 @@ void off_fin(OffRead* q) {
     UC(efree(q));
 }
 
-int    off_get_n(OffRead*) {
-    return 0;
+int    off_get_nv(OffRead *q) {
+    return q->nt;
 }
 
-int4  *off_get_tri(OffRead*) {
-    int4 *q = NULL;
-    return q;
+int    off_get_nt(OffRead *q) {
+    return q->nv;
 }
 
-float *off_get_vert(OffRead*) {
-    float *q = NULL;
-    return q;
+float *off_get_vert(OffRead *q) {
+    return q->rr;
+}
+
+int4  *off_get_tri(OffRead *q) {
+    return q->tt;
 }
