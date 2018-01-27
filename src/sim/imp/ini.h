@@ -1,6 +1,6 @@
 static void ini_flu_exch(MPI_Comm comm, /**/ FluExch *e) {
     int maxd = HSAFETY_FACTOR * numberdensity;
-    
+
     UC(eflu_pack_ini(maxd, /**/ &e->p));
     UC(eflu_comm_ini(comm, /**/ &e->c));
     UC(eflu_unpack_ini(maxd, /**/ &e->u));
@@ -8,7 +8,7 @@ static void ini_flu_exch(MPI_Comm comm, /**/ FluExch *e) {
 
 static void ini_obj_exch(MPI_Comm comm, /**/ ObjExch *e) {
     int maxpsolid = MAX_PSOLID_NUM;
-    
+
     UC(eobj_pack_ini(MAX_OBJ_TYPES, MAX_OBJ_DENSITY, maxpsolid, &e->p));
     UC(eobj_comm_ini(comm, /**/ &e->c));
     UC(eobj_unpack_ini(MAX_OBJ_DENSITY, maxpsolid, /**/ &e->u));
@@ -60,11 +60,11 @@ static void ini_vcon(MPI_Comm comm, const Config *cfg, /**/ Vcon *c) {
     UC(conf_lookup_int(cfg, "vcon.log_freq", &c->log_freq));
     UC(conf_lookup_int(cfg, "vcon.adjust_freq", &c->adjust_freq));
     UC(conf_lookup_int(cfg, "vcon.sample_freq", &c->sample_freq));
-    
+
     UC(conf_lookup_string(cfg, "vcon.type", &type));
     UC(conf_lookup_float3(cfg, "vcon.U", &U));
     UC(conf_lookup_float(cfg, "vcon.factor", &factor));
-    
+
     UC(vcont_ini(comm, L, U, factor, /**/ &c->vcont));
     vc = c->vcont;
 
@@ -80,13 +80,13 @@ static void ini_outflow(const Coords *coords, const Config *cfg, Outflow **o) {
     UC(ini(MAX_PART_NUM, /**/ o));
     const char *type;
     UC(conf_lookup_string(cfg, "outflow.type", &type));
-    
+
     if      (same_str(type, "circle")) {
         float3 center;
         float R;
         UC(conf_lookup_float(cfg, "outflow.R", &R));
         UC(conf_lookup_float3(cfg, "outflow.center", &center));
-        
+
         ini_params_circle(coords, center, R, /**/ *o);
     }
     else if (same_str(type, "plate")) {
@@ -122,7 +122,7 @@ static void ini_inflow(const Coords *coords, const Config *cfg, Inflow **i) {
     /* number of cells */
     int2 nc = make_int2(YS, ZS/2);
     UC(inflow_ini(nc, /**/ i));
-    UC(inflow_ini_params_conf(coords, cfg, *i));    
+    UC(inflow_ini_params_conf(coords, cfg, *i));
     UC(inflow_ini_velocity(*i));
 }
 
@@ -138,15 +138,18 @@ static void ini_flu(MPI_Comm cart, /**/ Flu *f) {
     UC(flu_ini(&f->q));
     UC(fluforces_bulk_ini(MAX_PART_NUM, /**/ &f->bulk));
     UC(fluforces_halo_ini(cart, /**/ &f->halo));
-    
+
     UC(ini_flu_distr(cart, /**/ &f->d));
     UC(ini_flu_exch(cart, /**/ &f->e));
-    
+
     UC(Dalloc(&f->ff, MAX_PART_NUM));
     UC(emalloc(MAX_PART_NUM * sizeof(Force), /**/ (void**) &f->ff_hst));
 }
 
 static void ini_rbc(const Config *cfg, MPI_Comm cart, /**/ Rbc *r) {
+    OffRead    *cell;
+    UC(off_read("rbc.off", &off));
+
     Dalloc(&r->ff, MAX_CELL_NUM * RBCnv);
     UC(rbc_ini(&r->q));
 
@@ -156,6 +159,8 @@ static void ini_rbc(const Config *cfg, MPI_Comm cart, /**/ Rbc *r) {
 
     UC(rbc_params_ini(&r->params));
     UC(rbc_params_set_conf(cfg, r->params));
+
+    UC(off_fin(off));
 }
 
 static void ini_rig(MPI_Comm cart, /**/ Rig *s) {
@@ -164,7 +169,7 @@ static void ini_rig(MPI_Comm cart, /**/ Rig *s) {
     UC(emalloc(sizeof(&s->ff_hst)*MAX_PART_NUM, (void**) &s->ff_hst));
     Dalloc(&s->ff, MAX_PART_NUM);
 
-    UC(ini_rig_distr(s->q.nv, cart, /**/ &s->d));    
+    UC(ini_rig_distr(s->q.nv, cart, /**/ &s->d));
 }
 
 static void ini_bounce_back(MPI_Comm cart, Rig *s, /**/ BounceBack *bb) {
@@ -208,7 +213,7 @@ static void read_opt(const Config *c, Opt *o) {
     UC(conf_lookup_bool(c, "dump.parts", &b));
     o->dump_parts = b;
     UC(conf_lookup_int(c, "dump.freq_parts", &o->freq_parts));
-        
+
 }
 
 static void coords_log(const Coords *c) {
@@ -223,39 +228,39 @@ void sim_ini(int argc, char **argv, MPI_Comm cart, /**/ Sim **sim) {
     s = *sim;
 
     MC(m::Comm_dup(cart, &s->cart));
-    
-    Config *cfg = s->cfg;    
+
+    Config *cfg = s->cfg;
     datatype::ini();
 
     UC(conf_ini(&cfg)); s->cfg = cfg;
     UC(conf_read(argc, argv, /**/ cfg));
 
     UC(read_opt(s->cfg, &s->opt));
-    
+
     UC(coords_ini(s->cart, /**/ &s->coords));
     UC(coords_log(s->coords));
-    
+
     UC(emalloc(3 * MAX_PART_NUM * sizeof(Particle), (void**) &s->pp_dump));
-    
+
     if (rbcs) UC(ini_rbc(cfg, s->cart, /**/ &s->rbc));
 
     if (s->opt.vcon)       UC(ini_vcon(s->cart, s->cfg, /**/ &s->vcon));
     if (s->opt.outflow)    UC(ini_outflow(s->coords, s->cfg, /**/ &s->outflow));
     if (s->opt.inflow)     UC(ini_inflow (s->coords, s->cfg, /**/ &s->inflow ));
     if (s->opt.denoutflow) UC(ini_denoutflow(s->coords, s->cfg, /**/ &s->denoutflow, &s->mapoutflow));
-    
+
     if (rbcs || solids)
-        UC(ini_objinter(s->cart, /**/ &s->objinter));        
-    
+        UC(ini_objinter(s->cart, /**/ &s->objinter));
+
     UC(bop_ini(s->cart, &s->dumpt));
 
     if (walls) ini_wall(cfg, &s->wall);
-    
+
     UC(ini_flu(s->cart, /**/ &s->flu));
-   
+
     if (multi_solvent && rbcs)
         UC(ini_colorer(s->rbc.q.nv, s->cart, /**/ &s->colorer));
-    
+
     if (solids) {
         UC(ini_rig(s->cart, /**/ &s->rig));
 
@@ -265,6 +270,6 @@ void sim_ini(int argc, char **argv, MPI_Comm cart, /**/ Sim **sim) {
 
     UC(dbg_ini(&s->dbg));
     UC(dbg_set_conf(s->cfg, s->dbg));
-    
+
     MC(MPI_Barrier(s->cart));
 }
