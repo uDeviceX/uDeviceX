@@ -1,12 +1,12 @@
-static int eq(const char *a, const char *b) { return strcmp(a, b) == 0; }
+#define SIZE 1024
 
+static int eq(const char *a, const char *b) { return strcmp(a, b) == 0; }
 static void ini(OffRead **pq) {
     OffRead *p;
     UC(emalloc(sizeof(OffRead), (void**)&p));
     *pq = p;
 }
 
-#define SIZE 1024
 static int emptyp(char *s) {
     for (;;) {
         if      (s[0] == '\0')                return 1;
@@ -128,18 +128,43 @@ void off_fin(OffRead* q) {
     UC(efree(q));
 }
 
-int    off_get_nv(OffRead *q) {
-    return q->nt;
-}
-
-int    off_get_nt(OffRead *q) {
+int off_get_nv(OffRead *q) {
     return q->nv;
 }
 
-float *off_get_vert(OffRead *q) {
-    return q->rr;
+int off_get_nt(OffRead *q) {
+    return q->nt;
 }
 
-int4  *off_get_tri(OffRead *q) {
-    return q->tt;
+static int amax(int *a, int n) {
+    int i, m;
+    if (n <= 0) ERR("amax called with size: %d\n", n);
+    m = a[0];
+    for (i = 1; i < n; i++)
+        if (a[i] > m) m = a[i];
+    return m;
 }
+int off_get_md(OffRead *q) {
+    int *d;
+    int i, m, nt, nv;
+    int x, y, z;
+    int4 *tt;
+    nt = q->nt; nv = q->nv; tt = q->tt;
+
+    if (nv == 0) {
+        msg_print("off_get_md called for nv = 0");
+        return 0;
+    }
+    UC(emalloc(nv*sizeof(d[0]), (void**)&d));
+    for (i = 0; i < nv; i++) d[i] = 0;
+    for (i = 0; i < nt; i++) {
+        x = tt[i].x; y = tt[i].y; z = tt[i].z;
+        d[x]++; d[y]++; d[z]++;
+    }
+    m = amax(d, nv);
+    UC(efree(d));
+    return m;
+}
+
+float *off_get_vert(OffRead *q) { return q->rr; }
+int4  *off_get_tri(OffRead *q) { return q->tt; }
