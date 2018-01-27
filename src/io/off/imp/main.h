@@ -167,5 +167,5 @@ int off_get_md(OffRead *q) {
     return m;
 }
 
-float *off_get_vert(OffRead *q) { return q->rr; }
-int4  *off_get_tri(OffRead *q) { return q->tt; }
+const float *off_get_vert(OffRead *q) { return q->rr; }
+const int4  *off_get_tri(OffRead *q) { return q->tt; }

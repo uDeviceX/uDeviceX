@@ -18,6 +18,6 @@ int off_get_nt(OffRead*);
 int off_get_nv(OffRead*);
 int off_get_md(OffRead*); /* maximum vertex degree */
 
-int4  *off_get_tri(OffRead*);
-float *off_get_vert(OffRead*);
+const int4  *off_get_tri(OffRead*);
+const float *off_get_vert(OffRead*);
 /***/
