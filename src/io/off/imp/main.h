@@ -119,6 +119,7 @@ void off_read(const char *path, OffRead **pq) {
     UC(efopen(path, "r", /**/ &f));
     read(f, path, /**/ q);
     UC(efclose(f));
+    msg_print("read '%s'", path);
     *pq = q;
 }
 
