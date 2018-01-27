@@ -20,7 +20,7 @@ static void ini_anti(RbcQuants *q) { Dalloc(&q->shape.anti, q->nv * RBCmd); }
 
 void rbc_ini(RbcQuants *q) {
     UC(ini_common(q));
-    if (rbc_ids) UC(ini_ids(q));
+    if (rbc_ids)         UC(ini_ids(q));
     if (RBC_STRESS_FREE) UC(ini_edg (q));
     if (RBC_RND)         UC(ini_anti(q));
 }
