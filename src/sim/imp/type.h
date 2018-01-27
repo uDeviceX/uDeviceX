@@ -91,6 +91,7 @@ struct Rbc {
     RbcParams *params;    /* model parameters */
     RbcComProps  com;     /* helper to compute center of masses */
     RbcStretch *stretch;  /* helper to apply stretching [fo]rce to cells */
+    OffRead    *cell;     /* cell template */
 };
 
 /* data holder for rigid objects */

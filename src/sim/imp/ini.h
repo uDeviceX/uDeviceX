@@ -147,10 +147,11 @@ static void ini_flu(MPI_Comm cart, /**/ Flu *f) {
 }
 
 static void ini_rbc(const Config *cfg, MPI_Comm cart, /**/ Rbc *r) {
-    OffRead    *cell; /* one cell template */
-    UC(off_read("rbc.off", &cell));
+    int nv;
+    UC(off_read("rbc.off", &r->cell));
+    nv = off_get_nv(r->cell);
 
-    Dalloc(&r->ff, MAX_CELL_NUM * RBCnv);
+    Dalloc(&r->ff, MAX_CELL_NUM * nv);
     UC(rbc_ini(&r->q));
 
     UC(ini_rbc_distr(r->q.nv, cart, /**/ &r->d));
@@ -159,8 +160,6 @@ static void ini_rbc(const Config *cfg, MPI_Comm cart, /**/ Rbc *r) {
 
     UC(rbc_params_ini(&r->params));
     UC(rbc_params_set_conf(cfg, r->params));
-
-    UC(off_fin(cell));
 }
 
 static void ini_rig(MPI_Comm cart, /**/ Rig *s) {
