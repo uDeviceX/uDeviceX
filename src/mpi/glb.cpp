@@ -52,7 +52,7 @@ void ini(int *argc, char ***argv) {
         exit(2);
     }
     if (m::Errhandler_set(MPI_COMM_WORLD, MPI_ERRORS_RETURN) != MPI_SUCCESS) {
-        fprintf(stderr, ": m::Errhandler_set\n");
+        fprintf(stderr, ": m::Errhandler_set failed\n");
         exit(2);
     }
 
