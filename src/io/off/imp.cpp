@@ -13,7 +13,6 @@
 #include "imp/type.h"
 #include "imp/main.h"
 
-static int eq(const char *a, const char *b) { return strcmp(a, b) == 0; }
 static void assert_nf(int n, int max, const char *f) {
     if (n <= max) return;
     ERR("faces nf = %d < max = %d in <%s>", n, max, f);
