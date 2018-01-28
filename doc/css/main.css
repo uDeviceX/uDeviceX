@@ -100,14 +100,6 @@ pre,pre>code {
     clear:both
 }
 
-#content {
-    margin-top:1.25em
-}
-
-#content:before {
-    content:none
-}
-
 #header .details {
     border-bottom:1px solid #ddddd8;
     line-height:1.45;
