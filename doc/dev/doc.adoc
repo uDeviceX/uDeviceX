@@ -8,5 +8,5 @@ Requires `asciidoctor` and `pygments.rb`.
 [source,sh]
 ----
 sudo pacman -S asciidoctor
-sudo gem install pygments.rb
+gem install pygments.rb
 ----
