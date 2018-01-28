@@ -1,12 +1,3 @@
-code,pre {
-    font-family:monospace;
-    font-size:1em
-}
-
-pre {
-    white-space:pre-wrap
-}
-
 *,:before,:after {
     box-sizing:border-box
 }
@@ -78,19 +69,9 @@ h6 {
     font-size:.75em
 }
 
-h3,#toctitle {
-    font-size:1.375em
-}
-
 em {
     font-style:italic;
     line-height:inherit
-}
-
-code {
-    font-family:monospace;
-    font-weight:400;
-    color:rgba(0,0,0,.9)
 }
 
 ul,ol {
