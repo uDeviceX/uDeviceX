@@ -269,7 +269,7 @@ body.toc2 {
 .listingblock>.content {
     position:relative
 }
-s
+
 .listingblock code[data-lang]:before {
     display:none;
     content:attr(data-lang);
