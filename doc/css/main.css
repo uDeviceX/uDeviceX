@@ -2,12 +2,6 @@
     box-sizing:border-box
 }
 
-body {
-    padding:0;
-    margin:0;
-    position:relative;
-}
-
 img {
     max-width:100%;
     height:auto
