@@ -1,7 +1,3 @@
-html {
-    font-family:sans-serif;
-}
-
 h1 {
     margin:.67em 0
 }
@@ -25,10 +21,6 @@ img {
 
 *,:before,:after {
     box-sizing:border-box
-}
-
-html {
-    font-size:100%
 }
 
 body {
@@ -57,12 +49,6 @@ div,ul,ol,li,h1,h2,h3,#toctitle,h4,h5,h6,pre,p {
     margin:0;
     padding:0;
     direction:ltr
-}
-
-a {
-    color:#2156a5;
-    text-decoration:underline;
-    line-height:inherit
 }
 
 p {
