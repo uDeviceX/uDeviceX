@@ -193,8 +193,8 @@ body.toc2 {
     margin-bottom:1.25em
 }
 
-.literalblock pre,.listingblock pre:not(.highlight) {
-    background:#f7f7f8
+.literalblock pre, .listingblock pre, listingblock .pygments, .listingblock .pygments code {
+    background:#f7f7f8 !important
 }
 
 ol {
