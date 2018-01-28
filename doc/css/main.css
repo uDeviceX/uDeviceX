@@ -182,7 +182,6 @@ h1,h2,h3,#toctitle,h4,h5,h6 {
     padding:.1em .5ex;
     word-spacing:-.15em;
     background-color:#f7f7f8;
-    -webkit-border-radius:4px;
     border-radius:4px;
     line-height:1.45;
     text-rendering:optimizeSpeed;
@@ -237,11 +236,7 @@ pre,pre>code {
     padding-bottom:.25em;
     padding-left:.25em;
     color:rgba(0,0,0,.6);
-    display:-ms-flexbox;
-    display:-webkit-flex;
     display:flex;
-    -ms-flex-flow:row wrap;
-    -webkit-flex-flow:row wrap;
     flex-flow:row wrap
 }
 
