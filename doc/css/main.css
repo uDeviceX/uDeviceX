@@ -169,19 +169,6 @@ h1,h2,h3,#toctitle,h4,h5,h6 {
     word-spacing:-.05em
 }
 
-:not(pre)>code {
-    font-size:.9375em;
-    font-style:normal!important;
-    letter-spacing:0;
-    padding:.1em .5ex;
-    word-spacing:-.15em;
-    background-color:#f7f7f8;
-    border-radius:4px;
-    line-height:1.45;
-    text-rendering:optimizeSpeed;
-    word-wrap:break-word
-}
-
 pre,pre>code {
     line-height:1.45;
     color:rgba(0,0,0,.9);
