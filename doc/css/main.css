@@ -26,12 +26,7 @@ div,ul,ol,li,h1,h2,h3,#toctitle,h4,h5,h6,pre,p {
 }
 
 p {
-    font-family:inherit;
-    font-weight:400;
-    font-size:1em;
-    line-height:1.6;
     margin-bottom:1.25em;
-    text-rendering:optimizeLegibility
 }
 
 h1,h2,h3,#toctitle,h4,h5,h6 {
@@ -279,7 +274,3 @@ h1,h2,p {
     letter-spacing:-.01em
 }
 
-p {
-    font-size:1.0625rem;
-    margin-bottom:1.25rem
-}
