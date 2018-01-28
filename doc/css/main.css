@@ -170,28 +170,6 @@ ul li ul {
     font-size:1em
 }
 
-@media only screen and (min-width:768px) {
-    h1,h2,h3,#toctitle,h4,h5,h6 {
-	line-height:1.2
-    }
-
-    h1 {
-	font-size:2.75em
-    }
-
-    h2 {
-	font-size:2.3125em
-    }
-
-    h3,#toctitle {
-	font-size:1.6875em
-    }
-
-    h4 {
-	font-size:1.4375em
-    }
-}
-
 h1,h2,h3,#toctitle,h4,h5,h6 {
     line-height:1.2;
     word-spacing:-.05em
