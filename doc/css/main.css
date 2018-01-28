@@ -6,8 +6,6 @@ script {
 
 html {
     font-family:sans-serif;
-    -ms-text-size-adjust:100%;
-    -webkit-text-size-adjust:100%
 }
 
 a {
@@ -44,8 +42,6 @@ img {
 }
 
 *,:before,:after {
-    -moz-box-sizing:border-box;
-    -webkit-box-sizing:border-box;
     box-sizing:border-box
 }
 
@@ -72,10 +68,6 @@ a:hover {
 img {
     max-width:100%;
     height:auto
-}
-
-img {
-    -ms-interpolation-mode:bicubic
 }
 
 img {
@@ -380,7 +372,6 @@ pre,pre>code {
 }
 
 .literalblock pre,.listingblock pre,.listingblock pre[class] {
-    -webkit-border-radius:4px;
     border-radius:4px;
     word-wrap:break-word;
     padding:1em;
