@@ -58,27 +58,6 @@ em {
     line-height:inherit
 }
 
-ul,ol {
-    font-size:1em;
-    line-height:1.6;
-    margin-bottom:1.25em;
-    list-style-position:outside;
-    font-family:inherit;
-    margin-left:1.5em
-}
-
-ul li ul {
-    margin-left:1.25em;
-    margin-bottom:0;
-    font-size:1em
-}
-
-pre,pre>code {
-    font-family:monospace;
-    font-weight:400;
-    text-rendering:optimizeSpeed
-}
-
 #header,#content {
     width:100%;
     max-width:62.5em;
