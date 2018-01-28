@@ -1,7 +1,3 @@
-b,strong {
-    font-weight:700
-}
-
 code,pre {
     font-family:monospace;
     font-size:1em
@@ -88,11 +84,6 @@ h3,#toctitle {
 
 em {
     font-style:italic;
-    line-height:inherit
-}
-
-strong,b {
-    font-weight:700;
     line-height:inherit
 }
 
@@ -278,7 +269,7 @@ body.toc2 {
 .listingblock>.content {
     position:relative
 }
-
+s
 .listingblock code[data-lang]:before {
     display:none;
     content:attr(data-lang);
@@ -305,10 +296,6 @@ ol>li p,ul>li p,.ulist .ulist {
 
 h1,h2,p {
     letter-spacing:-.01em
-}
-
-p strong {
-    letter-spacing:-.005em
 }
 
 p {
