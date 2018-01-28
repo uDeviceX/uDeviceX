@@ -6,14 +6,6 @@ a {
     background:transparent
 }
 
-a:focus {
-    outline:thin dotted
-}
-
-a:active,a:hover {
-    outline:0
-}
-
 h1 {
     margin:.67em 0
 }
@@ -55,10 +47,6 @@ body {
     tab-size:4
 }
 
-a:hover {
-    cursor:pointer
-}
-
 img {
     max-width:100%;
     height:auto
@@ -79,10 +67,6 @@ a {
     color:#2156a5;
     text-decoration:underline;
     line-height:inherit
-}
-
-a:hover,a:focus {
-    color:#1d4b8f
 }
 
 p {
@@ -261,9 +245,6 @@ pre,pre>code {
     text-decoration:none
 }
 
-#toc a:active {
-    text-decoration:underline
-}
 
 #toctitle {
     font-size:1.375em
