@@ -26,12 +26,12 @@
 #include "io/off/imp.h"
 #include "io/restart/imp.h"
 
-#include "rbc/type.h"
-#include "rbc/adj/type/common.h"
-#include "rbc/adj/type/hst.h"
-#include "rbc/adj/imp.h"
-#include "rbc/gen/imp.h"
-#include "rbc/force/area_volume/imp.h"
+#include "type.h"
+#include "adj/type/common.h"
+#include "adj/type/hst.h"
+#include "adj/imp.h"
+#include "gen/imp.h"
+#include "force/area_volume/imp.h"
 
 #include "imp.h"
 
