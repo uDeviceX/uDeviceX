@@ -38,12 +38,8 @@ $B/scheme/force/imp.o: $S/scheme/force/imp.cu; $N -I$S/. -I$S/scheme/force
 $B/scheme/move/imp.o: $S/scheme/move/imp.cu; $N -I$S/. -I$S/scheme/move
 $B/scheme/move/params/conf.o: $S/scheme/move/params/conf.cpp; $X -I$S/. -I$S/scheme/move/params
 $B/scheme/move/params/imp.o: $S/scheme/move/params/imp.cpp; $X -I$S/. -I$S/scheme/move/params
-$B/scheme/restrain/imp.o: $S/scheme/restrain/imp.cpp; $X -I$S/. -I$S/scheme/restrain
-$B/scheme/restrain/sub/imp.o: $S/scheme/restrain/sub/imp.cu; $N -I$S/. -I$S/scheme/restrain/sub
-$B/scheme/restrain/sub/stat/imp.o: $S/scheme/restrain/sub/stat/imp.cpp; $X -I$S/. -I$S/scheme/restrain/sub/stat
-$B/scheme/restrain/sub/sum/imp.o: $S/scheme/restrain/sub/sum/imp.cpp; $X -I$S/. -I$S/scheme/restrain/sub/sum
-$B/scheme/xrestrain/conf.o: $S/scheme/xrestrain/conf.cpp; $X -I$S/. -I$S/scheme/xrestrain
-$B/scheme/xrestrain/imp.o: $S/scheme/xrestrain/imp.cu; $N -I$S/. -I$S/scheme/xrestrain
+$B/scheme/restrain/conf.o: $S/scheme/restrain/conf.cpp; $X -I$S/. -I$S/scheme/restrain
+$B/scheme/restrain/imp.o: $S/scheme/restrain/imp.cu; $N -I$S/. -I$S/scheme/restrain
 $B/u/rbc/main/lib/imp.o: $S/u/rbc/main/lib/imp.cu; $N -I$S/. -I$S/u/rbc/main/lib
 $B/u/rbc/main/main.o: $S/u/rbc/main/main.cpp; $X -I$S/. -I$S/u/rbc/main
 $B/utils/cc.o: $S/utils/cc.cpp; $X -I$S/. -I$S/utils

@@ -95,7 +95,7 @@
 #include "scheme/move/params/imp.h"
 #include "scheme/force/imp.h"
 #include "scheme/move/imp.h"
-#include "scheme/xrestrain/imp.h"
+#include "scheme/restrain/imp.h"
 
 #include "control/vel/imp.h"
 #include "control/den/imp.h"
