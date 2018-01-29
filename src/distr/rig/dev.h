@@ -1,6 +1,6 @@
 namespace dev {
 
-__global__ void build_map(int n, const Solid *ss, /**/ DMap m) {
+__global__ void build_map(int3 L, int n, const Solid *ss, /**/ DMap m) {
     enum {X, Y, Z};
     int i, fid;
     i = threadIdx.x + blockIdx.x * blockDim.x;
@@ -11,7 +11,7 @@ __global__ void build_map(int n, const Solid *ss, /**/ DMap m) {
     r[Y] = ss[i].com[Y];
     r[Z] = ss[i].com[Z];
     
-    fid = dmap_get_fid(r);
+    fid = dmap_get_fid(L, r);
     dmap_add(i, fid, /**/ m);
 }
 

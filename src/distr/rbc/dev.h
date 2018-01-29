@@ -1,6 +1,6 @@
 namespace dev {
 
-__global__ void build_map(int n, const float3 *minext, const float3 *maxext, /**/ DMap m) {
+__global__ void build_map(int3 L, int n, const float3 *minext, const float3 *maxext, /**/ DMap m) {
     enum {X, Y, Z};
     int i, fid;
     i = threadIdx.x + blockIdx.x * blockDim.x;
@@ -15,7 +15,7 @@ __global__ void build_map(int n, const float3 *minext, const float3 *maxext, /**
     r[Y] = 0.5f * (mine.y + maxe.y);
     r[Z] = 0.5f * (mine.z + maxe.z);
     
-    fid = dmap_get_fid(r);
+    fid = dmap_get_fid(L, r);
     dmap_add(i, fid, /**/ m);
 }
 

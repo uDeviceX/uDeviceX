@@ -14,14 +14,14 @@ static __global__ void dmap_scan(/**/ DMap m)              // <1>
 }
 
 // tag::int[]
-static __device__ int dmap_get_fid(const float r[3])       // <2>
+static __device__ int dmap_get_fid(int3 L, const float r[3])       // <2>
 // end::int[]
 {
     enum {X, Y, Z};
     int x, y, z;
-    x = -1 + (r[X] >= -XS/2) + (r[X] >= XS/2);
-    y = -1 + (r[Y] >= -YS/2) + (r[Y] >= YS/2);
-    z = -1 + (r[Z] >= -ZS/2) + (r[Z] >= ZS/2);
+    x = -1 + (r[X] >= -L.x/2) + (r[X] >= L.x/2);
+    y = -1 + (r[Y] >= -L.y/2) + (r[Y] >= L.y/2);
+    z = -1 + (r[Z] >= -L.z/2) + (r[Z] >= L.z/2);
     return frag_d2i(x, y, z);
 }
 

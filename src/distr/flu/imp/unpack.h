@@ -22,14 +22,14 @@ static void unpack(const hBags bags, int27 starts, /**/ T *buf) {
     }
 }
 
-static int unpack_pp(const hBags bags, /**/ Particle *pp) {
+static int unpack_pp(int3 L, const hBags bags, /**/ Particle *pp) {
     int nhalo;
     int27 starts;
 
     nhalo = scan_hst(NFRAGS, bags.counts, &starts);    
     unpack(bags, starts, /**/ pp);
 
-    dcommon_shift_halo(nhalo, starts, /**/ pp);
+    dcommon_shift_halo(L, nhalo, starts, /**/ pp);
     
     return nhalo;
 }
@@ -46,7 +46,7 @@ static int unpack_ii(const hBags bags, /**/ int *ii) {
 
 static void unpack_pp(/**/ DFluUnpack *u) {
     int nhalo;
-    nhalo = unpack_pp(u->hpp, /**/ u->ppre);
+    nhalo = unpack_pp(u->L, u->hpp, /**/ u->ppre);
     u->nhalo = nhalo;
 }
 

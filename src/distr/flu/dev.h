@@ -1,6 +1,6 @@
 namespace dev {
 
-__global__ void build_map(const PartList lp, const int n, /**/ DMap m) {
+__global__ void build_map(int3 L, const PartList lp, const int n, /**/ DMap m) {
     int pid, fid;
     pid = threadIdx.x + blockIdx.x * blockDim.x;
     if (pid >= n) return;
@@ -8,7 +8,7 @@ __global__ void build_map(const PartList lp, const int n, /**/ DMap m) {
 
     const Particle p = lp.pp[pid];
 
-    fid = dmap_get_fid(p.r);
+    fid = dmap_get_fid(L, p.r);
 
     if (fid != frag_bulk)
         dmap_add(pid, fid, /**/ m);

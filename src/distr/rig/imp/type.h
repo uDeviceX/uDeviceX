@@ -8,6 +8,7 @@ struct DRigPack {
     DMap map;
     dBags dipp, dss;
     hBags hipp, hss;
+    int3 L;  /* subdomain size */
 };
 
 struct DRigComm {
@@ -16,5 +17,6 @@ struct DRigComm {
 
 struct DRigUnpack {
     hBags hipp, hss;
+    int3 L;  /* subdomain size */
 };
 // end::struct[]

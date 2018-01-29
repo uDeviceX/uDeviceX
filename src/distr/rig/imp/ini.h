@@ -4,11 +4,13 @@ static void get_num_capacity(int maxns, /**/ int numc[NBAGS]) {
         numc[i] = maxns;
 }
 
-void drig_pack_ini(int maxns, int nv, DRigPack **pack) {
+void drig_pack_ini(int3 L, int maxns, int nv, DRigPack **pack) {
     int numc[NBAGS];
     DRigPack *p;
     UC(emalloc(sizeof(DRigPack), (void**) pack));
     p = *pack;
+
+    p->L = L;
     get_num_capacity(maxns, /**/ numc);
 
     UC(dmap_ini(NBAGS, numc, /**/ &p->map));
@@ -27,11 +29,13 @@ void drig_comm_ini(MPI_Comm cart, /**/ DRigComm **com) {
     UC(comm_ini(cart, /**/ &c->ss));
 }
 
-void drig_unpack_ini(int maxns, int nv, DRigUnpack **unpack) {
+void drig_unpack_ini(int3 L, int maxns, int nv, DRigUnpack **unpack) {
     int numc[NBAGS];
     DRigUnpack *u;
     UC(emalloc(sizeof(DRigUnpack), (void**) unpack));
     u = *unpack;
+
+    u->L = L;
     get_num_capacity(maxns, /**/ numc);
 
     /* one datum is here a full mesh, so bsize is nv * sizeof(Particle) */
