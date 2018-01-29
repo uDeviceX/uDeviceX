@@ -38,7 +38,7 @@ void drig_unpack_halo(const DRigUnpack *u, /**/ RigQuants *q) {
         if (ns) {
             /* particles */
             CC(d::MemcpyAsync(q->i_pp + strtp, u->hipp.data[i], szp, H2D));
-            dcommon_shift_one_frag(n, i, /**/ q->i_pp + strtp);
+            dcommon_shift_one_frag(u->L, n, i, /**/ q->i_pp + strtp);
             /* solid */
             shift_ss_one_frag(ns, i, /**/ (Solid*) u->hss.data[i]);
             CC(d::MemcpyAsync(q->ss + strts, u->hss.data[i], szs, H2D));

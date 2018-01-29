@@ -28,7 +28,7 @@ void drbc_unpack_bulk(const DRbcPack *p, /**/ RbcQuants *q) {
     q->n = n;
 }
 
-static int unpack_halo_pp(int nc0, int nv, const hBags *hpp, /**/ Particle *pp) {
+static int unpack_halo_pp(int3 L, int nc0, int nv, const hBags *hpp, /**/ Particle *pp) {
     void *src;
     Particle *dst;
     int i, s, c, n;
@@ -45,7 +45,7 @@ static int unpack_halo_pp(int nc0, int nv, const hBags *hpp, /**/ Particle *pp) 
             n = c * nv;
             sz = c * bsz;
             CC(d::MemcpyAsync(dst, src, sz, H2D));
-            dcommon_shift_one_frag(n, i, /**/ dst);
+            dcommon_shift_one_frag(L, n, i, /**/ dst);
         }
         s += c;
     }
@@ -71,7 +71,7 @@ void drbc_unpack_halo(const DRbcUnpack *u, /**/ RbcQuants *q) {
     nc0 = q->nc;
     nv  = q->nv;
 
-    nc = unpack_halo_pp(nc0, nv, &u->hpp, /**/ q->pp);
+    nc = unpack_halo_pp(u->L, nc0, nv, &u->hpp, /**/ q->pp);
 
     if (rbc_ids)
         unpack_halo_ii(nc0, &u->hii, /**/ q->ii);
