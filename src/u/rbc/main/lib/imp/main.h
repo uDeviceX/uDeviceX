@@ -74,13 +74,18 @@ static void run2(const Coords *coords, int part_freq, const BForce *bforce, Move
 }
 
 void run(const Coords *coords, int part_freq, const BForce *bforce, MoveParams * moveparams, const char *cell, const char *ic, const RbcParams *par) {
+    const char *directory = "r";
     RbcQuants q;
     OffRead *off;
-    off_read(cell, /**/ &off);
+    MeshWrite *mesh_write;
+    UC(off_read(cell, /**/ &off));
+    UC(mesh_write_ini_off(off, directory, /**/ &mesh_write));
+    
     
     rbc_ini(&q);
     run2(coords, part_freq, bforce, moveparams, cell, ic, par, q);
     rbc_fin(&q);
 
-    off_fin(off);
+    UC(mesh_write_fin(mesh_write));
+    UC(off_fin(off));
 }
