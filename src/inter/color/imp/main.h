@@ -47,11 +47,11 @@ void inter_color_apply_dev(const Coords *coords, const GenColor *gc, int n, cons
     UC(emalloc(szc, (void**) &cc_hst));
     UC(emalloc(szp, (void**) &pp_hst));
 
-    CC(d::Memcpy(pp_hst, pp, szp, d::MemcpyDeviceToHost));
+    CC(d::Memcpy(pp_hst, pp, szp, D2H));
 
     UC(inter_color_apply_hst(coords, gc, n, pp_hst, /**/ cc_hst));
 
-    CC(d::Memcpy(cc, cc_hst, szc, d::MemcpyHostToDevice));
+    CC(d::Memcpy(cc, cc_hst, szc, H2D));
     
     UC(efree(pp_hst));
     UC(efree(cc_hst));
