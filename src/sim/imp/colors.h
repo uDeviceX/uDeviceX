@@ -32,7 +32,8 @@ void gen_colors(const Rbc *r, Colorer *c, Flu *f) {
                             c->minext, c->maxext, /**/ f->q.cc));
 }
 
-void recolor_flux(const Coords *coords, Flu *f) {
+void recolor_flux(const Coords *c, Flu *f) {
+    int3 L = make_int3(xs(c), ys(c), zs(c));
     if (RECOLOR_FLUX)
-        recolor::linear_flux(coords, COL_FLUX_DIR, RED_COLOR, f->q.n, f->q.pp, /**/ f->q.cc);
+        recolor::linear_flux(c, L, COL_FLUX_DIR, RED_COLOR, f->q.n, f->q.pp, /**/ f->q.cc);
 }
