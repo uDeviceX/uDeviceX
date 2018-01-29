@@ -22,7 +22,7 @@ static void dump(const Coords *coords, RbcQuants q, RbcForce t) {
     n = q.nc * q.nv;
     UC(emalloc(n*sizeof(Particle), (void**)&pp));
     cD2H(pp, q.pp, q.n);
-    io::mesh::rbc(m::cart, coords, pp, q.tri_hst, q.nc, q.nv, q.nt, i++);
+    mesh_write_rbc(m::cart, coords, pp, q.tri_hst, q.nc, q.nv, q.nt, i++);
     UC(rbc_force_stat(/**/ &area0, &volume0));
     UC(garea_volume(q, /**/ &area, &volume));
     msg_print("av: %g %g", area/area0, volume/volume0);

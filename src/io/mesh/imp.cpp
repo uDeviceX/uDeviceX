@@ -18,7 +18,6 @@
 
 #include "imp.h"
 
-namespace io { namespace mesh {
 #if   defined(MESH_SHIFT_EDGE)
    #include "imp/shift/edge.h"
 #elif defined(MESH_SHIFT_CENTER)
@@ -27,5 +26,3 @@ namespace io { namespace mesh {
    #error     MESH_SHIFT_* is undefined
 #endif
 #include "imp/main.h"
-
-}} /* namespace */
