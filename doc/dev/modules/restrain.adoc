@@ -1,0 +1,50 @@
+= scheme/restrain
+
+:src: ../../../src
+
+Restrain the movement of drop or rbc membrane by shifting center of
+mass velocity
+
+== interface
+
+allocate and free host structure:
+
+[source, c++]
+----
+include::{src}/scheme/restrain/imp.h[tag=mem]
+----
+
+Set parameters:
+[source, c++]
+----
+include::{src}/scheme/restrain/imp.h[tag=set]
+----
+<1> Set to restrain the "red" solvent only
+<2> Set to restrain the rbc membrane only
+<3> Set for no restrain
+<4>  Set the diagnosis frequency (0 for no diagnosis)
+
+Set parameters from configuration file:
+[source, c++]
+----
+include::{src}/scheme/restrain/imp.h[tag=cnf]
+----
+
+Apply restrain (note: this calls collective mpi operation):
+
+[source, c++]
+----
+include::{src}/scheme/restrain/imp.h[tag=int]
+----
+
+
+== configuration
+
+[source, cfg]
+----
+restrain = {
+    kind = ["none", "red", "rbc"]
+    freq = 1000;
+}
+----
+
