@@ -13,6 +13,22 @@ void scheme_restrain_fin(Restrain *r) {
     UC(efree(r));
 }
 
+void scheme_restrain_set_red(Restrain *r) {
+    r->kind = RSTR_COL;
+}
+
+void scheme_restrain_set_rbc(Restrain *r) {
+    r->kind = RSTR_RBC;
+}
+
+void scheme_restrain_set_none(Restrain *r) {
+    r->kind = RSTR_NONE;
+}
+
+void scheme_restrain_set_freq(int freq, Restrain *r) {
+    r->freq = freq;
+}
+
 static const char* kind2tag(int i) {
     static const char *tags[] = {"NONE", "RED", "RBC"};
     return tags[i];

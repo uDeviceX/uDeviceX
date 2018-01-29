@@ -1,4 +1,5 @@
 struct Particle;
+struct Config;
 struct Restrain;
 
 /* quantities and sizes wrapper */
@@ -9,5 +10,12 @@ struct SchemeQQ {
 
 void scheme_restrain_ini(Restrain**);
 void scheme_restrain_fin(Restrain*);
+
+void scheme_restrain_set_red(Restrain*);
+void scheme_restrain_set_rbc(Restrain*);
+void scheme_restrain_set_none(Restrain*);
+void scheme_restrain_set_freq(int freq, Restrain*);
+
+void scheme_restrain_set_conf(const Config*, Restrain*);
 
 void scheme_restrain_apply(MPI_Comm, const Restrain*, const int *cc, long it, /**/ SchemeQQ);
