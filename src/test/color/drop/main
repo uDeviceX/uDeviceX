@@ -2,7 +2,7 @@
 # nTEST: color.drop.t1
 rm -rf bop diag.txt h5
 s=.
-u=u/bangladesh
+u=u/x
 u.cp.sdf yplates1/yplates.dat sdf.dat
 Domain="XS=16 YS=16 ZS=16"
 Walls="walls wall_creation=1"
