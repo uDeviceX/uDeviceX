@@ -38,12 +38,12 @@ void dflu_comm_ini(MPI_Comm cart, /**/ DFluComm **com) {
     if (multi_solvent) UC(comm_ini(cart, /**/ &c->cc));
 }
 
-static int nhalocells() {
-    return 8 +               /* corners */
-        4 * (XS + YS + ZS) + /* edges   */
-        2 * XS * YS +        /* faces   */
-        2 * XS * ZS +
-        2 * YS * ZS;
+static int nhalocells(int3 L) {
+    return 8 +                  /* corners */
+        4 * (L.x + L.y + L.z) + /* edges   */
+        2 * L.x * L.y +         /* faces   */
+        2 * L.x * L.z +
+        2 * L.y * L.z;
 }
 
 void dflu_unpack_ini(int3 L, int maxdensity, DFluUnpack **unpack) {
@@ -61,7 +61,7 @@ void dflu_unpack_ini(int3 L, int maxdensity, DFluUnpack **unpack) {
     if (global_ids)    UC(comm_bags_ini(HST_ONLY, NONE, sizeof(int), capacity, /**/ &u->hii, NULL));
     if (multi_solvent) UC(comm_bags_ini(HST_ONLY, NONE, sizeof(int), capacity, /**/ &u->hcc, NULL));
 
-    int maxparts = (int) (nhalocells() * maxdensity) + 1;
+    int maxparts = (int) (nhalocells(L) * maxdensity) + 1;
     CC(d::Malloc((void**) &u->ppre, maxparts * sizeof(Particle)));
     if (global_ids)    CC(d::Malloc((void**) &u->iire, maxparts * sizeof(int)));
     if (multi_solvent) CC(d::Malloc((void**) &u->ccre, maxparts * sizeof(int)));
