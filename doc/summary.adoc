@@ -5,6 +5,7 @@
 * link:./dev/build{lext}[]
 * link:./dev/conventions{lext}[]
 * link:./dev/cstyle/emacs{lext}[]
+* link:./dev/doc{lext}[]
 * link:./dev/gource{lext}[]
 * link:./dev/main{lext}[]
 * link:./dev/modules/algo/minmax{lext}[]

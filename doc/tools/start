@@ -1,6 +1,6 @@
 #!/bin/sh
 
-: ${PYTHON=python}
+: ${PYTHON=python2}
 
 e () { echo >&2 "cmd: $@"; eval "$@"; }
 

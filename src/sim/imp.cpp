@@ -50,6 +50,7 @@
 
 #include "flu/imp.h"
 
+#include "io/off/imp.h"
 #include "rbc/params/imp.h"
 #include "rbc/rnd/imp.h"
 #include "rbc/type.h"
@@ -91,6 +92,7 @@
 
 #include "inter/imp.h"
 #include "inter/color/imp.h"
+#include "scheme/move/params/imp.h"
 #include "scheme/force/imp.h"
 #include "scheme/move/imp.h"
 #include "scheme/restrain/imp.h"

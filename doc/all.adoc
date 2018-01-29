@@ -13,6 +13,8 @@ include::dev/conventions.adoc[]
 
 include::dev/cstyle/emacs.adoc[]
 
+include::dev/doc.adoc[]
+
 include::dev/gource.adoc[]
 
 include::dev/modules/algo/minmax.adoc[]

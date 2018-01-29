@@ -35,7 +35,7 @@ static int body_force(const Coords *coords, const BForce *bf, RbcQuants q, Force
     return 0;
 }
 
-static void run0(const Coords *coords, int part_freq, const BForce *bforce, RbcQuants q, RbcForce t, const RbcParams *par, RbcStretch* stretch, Force *f) {
+static void run0(const Coords *coords, int part_freq, const BForce *bforce, MoveParams *moveparams, RbcQuants q, RbcForce t, const RbcParams *par, RbcStretch* stretch, Force *f) {
     long i;
     long nsteps = (long)(tend / dt);
     msg_print("will take %ld steps", nsteps);
@@ -44,7 +44,7 @@ static void run0(const Coords *coords, int part_freq, const BForce *bforce, RbcQ
         rbc_force_apply(q, t, par, /**/ f);
         stretch::apply(q.nc, stretch, /**/ f);
         if (pushrbc) body_force(coords, bforce, q, /**/ f);
-        scheme::move::main(rbc_mass, q.n, f, q.pp);
+        scheme::move::main(moveparams, rbc_mass, q.n, f, q.pp);
         if (i % part_freq  == 0) dump(coords, q, t);
 #ifdef RBC_CLEAR_VEL
         scheme::move::clear_vel(q.n, /**/ q.pp);
@@ -52,29 +52,29 @@ static void run0(const Coords *coords, int part_freq, const BForce *bforce, RbcQ
     }
 }
 
-static void run1(const Coords *coords, int part_freq, const BForce *bforce, RbcQuants q, RbcForce t, const RbcParams *par,
+static void run1(const Coords *coords, int part_freq, const BForce *bforce, MoveParams *moveparams, RbcQuants q, RbcForce t, const RbcParams *par,
                  RbcStretch *stretch) {
     Force *f;
     Dalloc(&f, q.n);
     Dzero(f, q.n);
-    run0(coords, part_freq, bforce, q, t, par, stretch, f);
+    run0(coords, part_freq, bforce, moveparams, q, t, par, stretch, f);
     Dfree(f);
 }
 
-static void run2(const Coords *coords, int part_freq, const BForce *bforce, const char *cell, const char *ic, const RbcParams *par, RbcQuants q) {
+static void run2(const Coords *coords, int part_freq, const BForce *bforce, MoveParams *moveparams, const char *cell, const char *ic, const RbcParams *par, RbcQuants q) {
     RbcStretch *stretch;
     RbcForce t;
     rbc_gen_quants(coords, m::cart, cell, ic, /**/ &q);
     UC(stretch::ini("rbc.stretch", q.nv, /**/ &stretch));
     rbc_force_gen(q, &t);
-    run1(coords, part_freq, bforce, q, t, par, stretch);
+    run1(coords, part_freq, bforce, moveparams, q, t, par, stretch);
     stretch::fin(stretch);
     rbc_force_fin(&t);
 }
 
-void run(const Coords *coords, int part_freq, const BForce *bforce, const char *cell, const char *ic, const RbcParams *par) {
+void run(const Coords *coords, int part_freq, const BForce *bforce, MoveParams * moveparams, const char *cell, const char *ic, const RbcParams *par) {
     RbcQuants q;
     rbc_ini(&q);
-    run2(coords, part_freq, bforce, cell, ic, par, q);
+    run2(coords, part_freq, bforce, moveparams, cell, ic, par, q);
     rbc_fin(&q);
 }

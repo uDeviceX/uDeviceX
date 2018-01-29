@@ -1,0 +1,12 @@
+= doc
+:lext: .adoc
+
+Requires `asciidoctor` and `pygments.rb`.
+
+== Arch linux
+
+[source,sh]
+----
+sudo pacman -S asciidoctor
+gem install pygments.rb
+----

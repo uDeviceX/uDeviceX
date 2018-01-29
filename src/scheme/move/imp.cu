@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <assert.h>
 
 #include <conf.h>
 #include "inc/conf.h"
@@ -14,6 +15,8 @@
 #include "utils/kl.h"
 #include "inc/type.h"
 #include "inc/dev.h"
+
+#include "scheme/move/params/imp.h"
 
 #include "imp.h"
 

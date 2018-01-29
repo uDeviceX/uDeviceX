@@ -86,15 +86,15 @@ void bounce_solid(long it, BounceBack *bb, Rig *s, Flu *flu) {
 }
 
 
-void update_solvent(long it, /**/ Flu *f) {
-    scheme::move::main(flu_mass, f->q.n, f->ff, f->q.pp);
+void update_solvent(MoveParams * moveparams, long it, /**/ Flu *f) {
+    scheme::move::main(moveparams, flu_mass, f->q.n, f->ff, f->q.pp);
 }
 
-void update_rbc(long it, Rbc *r, Sim *s) {
+void update_rbc(MoveParams * moveparams, long it, Rbc *r, Sim *s) {
     bool cond;
     cond = multi_solvent && color_freq && it % color_freq == 0;
     if (cond) {msg_print("recolor"); gen_colors(r, &s->colorer, /**/ &s->flu);}; /* TODO: does not belong here*/
-    scheme::move::main(rbc_mass, r->q.n, r->ff, r->q.pp);
+    scheme::move::main(moveparams, rbc_mass, r->q.n, r->ff, r->q.pp);
 }
 
 void restrain(long it, Sim *s) {

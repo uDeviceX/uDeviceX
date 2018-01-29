@@ -1,4 +1,4 @@
-__global__ void update(float mass, Particle* pp, const Force *ff, int n) {
+__global__ void update(MoveParams_v parv, float mass, Particle* pp, const Force *ff, int n) {
     float *r, *v;
     const float *f;
     int pid;
@@ -8,7 +8,7 @@ __global__ void update(float mass, Particle* pp, const Force *ff, int n) {
     r = pp[pid].r;
     v = pp[pid].v;
     f = ff[pid].f;
-    update0(mass, f, /**/ r, v);
+    update0(parv, mass, f, /**/ r, v);
 }
 
 __global__ void clear_vel(int n, /**/ Particle *pp)  {

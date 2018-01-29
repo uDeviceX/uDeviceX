@@ -42,8 +42,5 @@
 //#define FORCE0
 
 /* DUMPS */
-#define part_freq           10000
-#define field_dumps         false
-#define field_freq          10000
 #define strt_dumps          false
 #define strt_freq           10000

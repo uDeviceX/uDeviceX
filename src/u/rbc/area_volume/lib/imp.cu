@@ -29,6 +29,7 @@
 #include "rbc/force/imp.h"
 #include "rbc/stretch/imp.h"
 
+#include "scheme/move/params/imp.h"
 #include "scheme/move/imp.h"
 #include "scheme/force/imp.h"
 
