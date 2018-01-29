@@ -148,8 +148,9 @@ static void ini_flu(MPI_Comm cart, /**/ Flu *f) {
 
 static void ini_rbc(const Config *cfg, MPI_Comm cart, /**/ Rbc *r) {
     int nv;
+    const char *directory = "r";
     UC(off_read("rbc.off", &r->cell));
-    UC(mesh_write_ini_off(r->cell, "r", /**/ &r->mesh_write));
+    UC(mesh_write_ini_off(r->cell, directory, /**/ &r->mesh_write));
 
     nv = off_get_nv(r->cell);
 
