@@ -97,7 +97,7 @@ void rbc(MPI_Comm cart, const Coords *coords, const Particle *pp, const int4 *fa
     char f[BUFSIZ]; /* file name */
     sprintf(f, fmt, id);
     if (m::is_master(cart)) UC(os_mkdir(DUMP_BASE "/r"));
-    main(cart, coords, pp, faces, nc, nv, nt, f);
+    UC(main(cart, coords, pp, faces, nc, nv, nt, f));
 }
 
 void rig(MPI_Comm cart, const Coords *coords, const Particle *pp, const int4 *faces, int nc, int nv, int nt, int id) {
