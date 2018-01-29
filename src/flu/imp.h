@@ -15,11 +15,12 @@ struct FluQuants {
 }; 
 
 struct Coords;
+struct GenColor;
 
 void flu_ini(FluQuants *q);
 void flu_fin(FluQuants *q);
 
-void flu_gen_quants(const Coords *coords, FluQuants *q);
+void flu_gen_quants(const Coords *coords, const GenColor *gc, FluQuants *q);
 void flu_gen_ids(MPI_Comm comm, const int n, FluQuants *q);
 
 void flu_strt_quants(const Coords *coords, const int id, FluQuants *q);

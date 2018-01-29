@@ -31,7 +31,9 @@ $B/fluforces/imp.o: $S/fluforces/imp.cu; $N -I$S/. -I$S/fluforces
 $B/frag/imp.o: $S/frag/imp.cpp; $X -I$S/. -I$S/frag
 $B/fsi/imp.o: $S/fsi/imp.cu; $N -I$S/. -I$S/fsi
 $B/generate/rig/imp.o: $S/generate/rig/imp.cpp; $X -I$S/. -I$S/generate/rig
-$B/inter/imp.o: $S/inter/imp.cu; $N -I$S/. -I$S/inter -I$S/inter/_bangladesh
+$B/inter/color/conf.o: $S/inter/color/conf.cpp; $X -I$S/. -I$S/inter/color
+$B/inter/color/imp.o: $S/inter/color/imp.cpp; $X -I$S/. -I$S/inter/color
+$B/inter/imp.o: $S/inter/imp.cu; $N -I$S/. -I$S/inter
 $B/io/bop/imp.o: $S/io/bop/imp.cpp; $X -I$S/. -I$S/io/bop
 $B/io/com/imp.o: $S/io/com/imp.cpp; $X -I$S/. -I$S/io/com
 $B/io/diag/imp.o: $S/io/diag/imp.cpp; $X -I$S/. -I$S/io/diag

@@ -29,9 +29,7 @@ static void gen(const Coords *coords, Wall *w, Sim *s) { /* generate */
         Particle *pp = flu->q.pp;
         int n = flu->q.n;
         int *cc = flu->q.cc;
-        Particle *pp_hst = s->pp_dump;
-        int *cc_hst = flu->q.cc_hst;
-        inter_color_dev(coords, pp, n, /*o*/ cc, /*w*/ pp_hst, cc_hst);
+        inter_color_apply_dev(coords, s->gen_color, n, pp, /*o*/ cc);
     }
 }
 
@@ -40,7 +38,7 @@ void sim_gen(Sim *s) {
     Rbc *rbc = &s->rbc;
     Wall *wall = &s->wall;
     
-    UC(flu_gen_quants(s->coords, &flu->q));
+    UC(flu_gen_quants(s->coords, s->gen_color, &flu->q));
     UC(flu_build_cells(&flu->q));
     if (global_ids)  flu_gen_ids  (s->cart, flu->q.n, &flu->q);
     if (rbcs) {

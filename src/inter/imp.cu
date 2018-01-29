@@ -43,7 +43,4 @@
 #include "wall/imp.h"
 
 #include "imp.h"
-#include "color.h"
-
-#include "imp/color.h"
 #include "imp/main.h"

@@ -267,8 +267,8 @@
 #endif
 
 /* a radius of the spherical drop */
-#ifndef BANGLADESH_R
-  #define BANGLADESH_R (4)
+#ifdef BANGLADESH_R
+#error BANGLADESH is runtime now. see iccolor
 #endif
 
 /* make a center of mass velocity zero? */

@@ -1,12 +1,11 @@
-static void set_color(const Coords *coords, Particle *pp, int n, /**/ int *cc) {
+static void set_color_drop(float rad, const Coords *coords, int n, const Particle *pp, /**/ int *cc) {
     enum {X, Y, Z};
     int lx, ly, lz; /* domain */
     int i, r, g;
     bool inside;
-    float x, y, z, rad;
+    float x, y, z;
     float x0, y0, z0;
     Particle p;
-    rad = BANGLADESH_R;
 
     lx = xdomain(coords);
     ly = ydomain(coords);

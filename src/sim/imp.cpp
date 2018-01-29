@@ -91,7 +91,7 @@
 #include "io/bop/imp.h"
 
 #include "inter/imp.h"
-#include "inter/color.h"
+#include "inter/color/imp.h"
 #include "scheme/move/params/imp.h"
 #include "scheme/force/imp.h"
 #include "scheme/move/imp.h"

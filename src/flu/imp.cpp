@@ -28,7 +28,7 @@
 #include "clist/imp.h"
 
 #include "io/restart/imp.h"
-#include "inter/color.h"
+#include "inter/color/imp.h"
 
 #include "io/txt/imp.h"
 
