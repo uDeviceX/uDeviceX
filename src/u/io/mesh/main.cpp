@@ -17,25 +17,32 @@
 
 #include "parser/imp.h"
 
-void main0(Config *c) {
+static void write(const char *o, OffRead *cell) {
+    MeshWrite *m;
+    UC(mesh_write_ini_off(cell, o, &m));
+    UC(mesh_write_fin(m));
+}
+
+static void main0(Config *c) {
     int nv, nt, md;
-    OffRead *off;
+    OffRead *cell;
     const char *i, *o; /* input and output */
     UC(conf_lookup_string(c, "i", &i));
     UC(conf_lookup_string(c, "o", &o));
 
     msg_print("i = '%s'", i);
     msg_print("o = '%s'", o);
+    UC(off_read(i, &cell));
 
-    UC(off_read(i, &off));
+    write(o, cell)
 
-    md = off_get_md(off);
-    nv = off_get_nv(off);
-    nt = off_get_nt(off);
+    md = cell_get_md(cell);
+    nv = cell_get_nv(cell);
+    nt = cell_get_nt(cell);
+    write(cell);
+    
     msg_print("nv, nt, max degree: %d %d %d", nv, nt, md);
-
-
-    UC(off_fin(off));
+    UC(cell_fin(cell));
 }
 
 int main(int argc, char **argv) {
