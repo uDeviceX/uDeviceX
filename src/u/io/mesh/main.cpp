@@ -13,14 +13,20 @@
 #include "utils/error.h"
 
 #include "io/off/imp.h"
+#include "io/mesh/imp.h"
+
 #include "parser/imp.h"
 
 void main0(Config *c) {
     int nv, nt, md;
     OffRead *off;
-    const char *i; /* input */
+    const char *i, *o; /* input and output */
     UC(conf_lookup_string(c, "i", &i));
+    UC(conf_lookup_string(c, "o", &o));
+
     msg_print("i = `%s`", i);
+    msg_print("o = `%s`", o);
+
     UC(off_read(i, &off));
 
     md = off_get_md(off);
