@@ -264,7 +264,7 @@ void sim_ini(int argc, char **argv, MPI_Comm cart, /**/ Sim **sim) {
     }
 
     UC(inter_color_ini(&s->gen_color));
-    //UC(inter_color_set_conf(s->cfg, s->gen_color));
+    UC(inter_color_set_conf(s->cfg, s->gen_color));
     
     UC(dbg_ini(&s->dbg));
     UC(dbg_set_conf(s->cfg, s->dbg));
