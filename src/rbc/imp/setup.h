@@ -1,6 +1,6 @@
-static void setup_edg0(float *rr, AdjMap m, /**/ Edg *edg) {
+static void setup_edg0(const float *rr, AdjMap m, /**/ Edg *edg) {
     int i0, i1, i2;
-    float *r0, *r1, *r2;
+    const float *r0, *r1, *r2;
     float r01[3], r12[3], r20[3];
     float a, b, c, A; /* edges and area */
 
@@ -18,7 +18,7 @@ static void setup_edg0(float *rr, AdjMap m, /**/ Edg *edg) {
     edg->a = a; edg->A = A;
 }
 
-static void setup_edg1(int md, int nv, Adj *adj, float *rr, /**/
+static void setup_edg1(int md, int nv, Adj *adj, const float *rr, /**/
                        Edg *edg, float *ptotArea) {
     int valid, i;
     AdjMap m;
@@ -38,19 +38,22 @@ static void setup_edg1(int md, int nv, Adj *adj, float *rr, /**/
 }
 
 static void setup_edg(int md, int nv, Adj *adj, /**/ Edg *dev, float *totArea) {
-    float *rr;
+    const float *rr;
     Edg *hst;
-    const char *fn = "rbc.stress.free";
-
+    const char *path = "rbc.stress.free";
+    OffRead *cell;
+    UC(off_read(path, &cell));
+    rr = off_get_vert(cell);
+    if (nv != off_get_nv(cell))
+        ERR("nv=%d != off_get_nv(cell)=%d", nv, off_get_nv(cell));
+    
     UC(emalloc(md*nv*sizeof(Edg), (void**) &hst));
-    UC(emalloc(3*nv*sizeof(float), (void**) &rr));
-    msg_print("reading <%s>", fn);
-    UC(evert(fn, nv, /**/ rr));
     UC(setup_edg1(md, nv, adj, rr, /**/ hst, totArea));
 
     cH2D(dev, hst, md*nv);
-
-    UC(efree(hst)); UC(efree(rr));
+    UC(efree(hst));
+    
+    off_fin(cell);
 }
 
 static void setup_anti(int md, int nv, Adj *adj, /**/ int *dev) {
