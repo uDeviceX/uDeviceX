@@ -2,9 +2,9 @@ void clear_vel(Sim *s) {
     Flu *flu = &s->flu;
     Rbc *rbc = &s->rbc;
     Rig *rig = &s->rig;
-    scheme::move::clear_vel(flu->q.n, flu->q.pp);
-    if (solids) scheme::move::clear_vel(rig->q.n, rig->q.pp);
-    if (rbcs  ) scheme::move::clear_vel(rbc->q.n, rbc->q.pp);
+    scheme_move_clear_vel(flu->q.n, flu->q.pp);
+    if (solids) scheme_move_clear_vel(rig->q.n, rig->q.pp);
+    if (rbcs  ) scheme_move_clear_vel(rbc->q.n, rbc->q.pp);
 }
 
 void update_solid(Rig *s) {
@@ -87,14 +87,14 @@ void bounce_solid(long it, BounceBack *bb, Rig *s, Flu *flu) {
 
 
 void update_solvent(MoveParams * moveparams, long it, /**/ Flu *f) {
-    scheme::move::main(moveparams, flu_mass, f->q.n, f->ff, f->q.pp);
+    scheme_move_apply(moveparams, flu_mass, f->q.n, f->ff, f->q.pp);
 }
 
 void update_rbc(MoveParams * moveparams, long it, Rbc *r, Sim *s) {
     bool cond;
     cond = multi_solvent && color_freq && it % color_freq == 0;
     if (cond) {msg_print("recolor"); gen_colors(r, &s->colorer, /**/ &s->flu);}; /* TODO: does not belong here*/
-    scheme::move::main(moveparams, rbc_mass, r->q.n, r->ff, r->q.pp);
+    scheme_move_apply(moveparams, rbc_mass, r->q.n, r->ff, r->q.pp);
 }
 
 void restrain(long it, Sim *s) {
