@@ -93,11 +93,3 @@ static void mesh_write(MPI_Comm cart, const Coords *coords, const Particle *pp, 
     UC(mesh_write1(cart, coords, pp, faces, nc, nv, nt, f));
     UC(write::fclose(f));
 }
-
-void mesh_write_rig(MPI_Comm cart, const Coords *coords, const Particle *pp, const int4 *faces, int nc, int nv, int nt, int id) {
-    const char *fmt = DUMP_BASE "/s/%05d.ply";
-    char f[FILENAME_MAX];
-    sprintf(f, fmt, id);
-    if (m::is_master(cart)) UC(os_mkdir(DUMP_BASE "/s"));
-    UC(mesh_write(cart, coords, pp, faces, nc, nv, nt, f));
-}

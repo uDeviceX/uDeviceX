@@ -5,8 +5,6 @@ static void fin_common(RbcQuants *q) {
     UC(area_volume_fin(q->area_volume));
     Dfree(q->adj0);
     Dfree(q->adj1);
-
-    free(q->tri_hst);
     free(q->pp_hst);
 }
 

@@ -9,8 +9,6 @@ static void ini_common(RbcQuants *q) {
     UC(area_volume_ini(q->nt, /**/ &q->area_volume));
     Dalloc(&q->adj0, q->nv * RBCmd);
     Dalloc(&q->adj1, q->nv * RBCmd);
-
-    UC(emalloc(RBCnt * sizeof(int4), (void**) &q->tri_hst));
     Dalloc(&q->av, 2*MAX_CELL_NUM);
 }
 

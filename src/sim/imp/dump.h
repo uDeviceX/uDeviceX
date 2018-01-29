@@ -80,9 +80,8 @@ void dump_diag_after(int it, bool wall0, bool solid0, Sim *s) { /* after wall */
     if (solid0 && it % o->freq_parts == 0) {
         static int id = 0;
         rig_dump(it, rig->q.ss_dmp, rig->q.ss_dmp_bb, rig->q.ns, s->coords);
-
         cD2H(s->pp_dump, rig->q.i_pp, rig->q.ns * rig->q.nv);
-        mesh_write_rig(s->cart, s->coords, s->pp_dump, rig->q.htt, rig->q.ns, rig->q.nv, rig->q.nt, id++);
+        UC(mesh_write_dump(rig->mesh_write, s->cart, s->coords, rig->q.ns, s->pp_dump, id++));
     }
 }
 

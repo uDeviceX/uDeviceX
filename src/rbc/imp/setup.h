@@ -83,15 +83,18 @@ static void setup1(int md, int nt, int nv, int4 *faces, /**/
 }
 
 static void setup0(int md, int nt, int nv, const char *cell, /**/
-                  int *anti, Edg *edg, float *totArea, int4 *faces, AreaVolume *area_volume,
+                  int *anti, Edg *edg, float *totArea, AreaVolume *area_volume,
                   int *adj0, int *adj1) {
-    UC(efaces(cell, nt, /**/ faces));
-    UC(area_volume_setup(nt, nv, faces, /**/ area_volume));
-    UC(setup1(md, nt, nv, faces, /**/ anti, edg, totArea, adj0, adj1));
+    int4 *tri;
+    UC(emalloc(nt*sizeof(int4), (void**)&tri));
+    UC(efaces(cell, nt, /**/ tri));
+    UC(area_volume_setup(nt, nv, tri, /**/ area_volume));
+    UC(setup1(md, nt, nv, tri, /**/ anti, edg, totArea, adj0, adj1));
+    UC(efree(tri));
 }
 
 static void setup(int md, int nt, int nv, const char *cell, /**/ RbcQuants *q) {
     setup0(md, nt, nv, cell, /**/
            q->shape.anti, q->shape.edg, &q->shape.totArea,
-           q->tri_hst, q->area_volume, q->adj0, q->adj1);
+           q->area_volume, q->adj0, q->adj1);
 }
