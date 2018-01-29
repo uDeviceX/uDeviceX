@@ -17,6 +17,7 @@
 #include "write/imp.h"
 
 #include "imp.h"
+#include "imp/type.h"
 
 #if   defined(MESH_SHIFT_EDGE)
    #include "imp/shift/edge.h"
