@@ -15,7 +15,7 @@ static void run0(RbcQuants q, RbcForce t) {
 
 static void run1(const char *cell, const char *ic, RbcQuants q) {
     Coords *coords;
-    coords_ini(m::cart, &coords);
+    coords_ini(m::cart, XS, YS, ZS, &coords);
     RbcForce t;
     rbc_gen_quants(coords, m::cart, cell, ic, /**/ &q);
     rbc_force_gen(q, &t);

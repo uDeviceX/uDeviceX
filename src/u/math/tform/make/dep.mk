@@ -9,7 +9,7 @@ $B/mpi/glb.o: $B/conf.h $S/inc/conf.h $S/mpi/glb.h $S/mpi/wrapper.h $S/utils/mc.
 $B/mpi/type.o: $S/inc/conf.h $S/inc/type.h $S/mpi/type.h $S/utils/mc.h
 $B/mpi/wrapper.o: $S/mpi/wrapper.h
 $B/u/math/tform/lib/imp.o: $B/conf.h $S/d/api.h $S/inc/conf.h $S/inc/dev.h $S/math/tform/dev.h $S/math/tform/imp.h $S/math/tform/type.h $S/u/math/tform/lib/imp.h $S/utils/cc.h $S/utils/kl.h
-$B/u/math/tform/main.o: $S/coords/ini.h $S/math/tform/imp.h $S/mpi/glb.h $S/mpi/wrapper.h $S/u/math/tform/lib/imp.h $S/utils/error.h $S/utils/msg.h $S/wall/sdf/tform/imp.h
+$B/u/math/tform/main.o: $B/conf.h $S/coords/ini.h $S/inc/conf.h $S/math/tform/imp.h $S/mpi/glb.h $S/mpi/wrapper.h $S/u/math/tform/lib/imp.h $S/utils/error.h $S/utils/msg.h $S/wall/sdf/tform/imp.h
 $B/utils/cc.o: $B/conf.h $S/d/api.h $S/inc/conf.h $S/utils/cc/common.h $S/utils/error.h
 $B/utils/error.o: $S/utils/error.h $S/utils/msg.h
 $B/utils/imp.o: $S/utils/error.h $S/utils/imp.h

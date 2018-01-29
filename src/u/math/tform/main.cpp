@@ -6,6 +6,9 @@
 
 #include <vector_types.h>
 
+#include <conf.h>
+#include "inc/conf.h"
+
 #include "mpi/glb.h"
 #include "mpi/wrapper.h"
 #include "utils/msg.h"
@@ -242,7 +245,7 @@ static int flag(const char *a, int* pc, char ***pv) {
 int main(int argc, char **argv) {
     m::ini(&argc, &argv);
     msg_ini(m::rank);
-    coords_ini(m::cart, /**/ &coords);
+    coords_ini(m::cart, XS, YS, ZS, /**/ &coords);
     usg(argc, argv);
     Chain = flag("-c", &argc, &argv);
     Dev   = flag("-d", &argc, &argv);
