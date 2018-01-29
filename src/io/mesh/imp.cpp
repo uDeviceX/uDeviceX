@@ -13,6 +13,8 @@
 #include "utils/error.h"
 #include "utils/imp.h"
 #include "utils/msg.h"
+#include "utils/mc.h"
+
 #include "mpi/glb.h"
 #include "mpi/wrapper.h"
 #include "inc/type.h"

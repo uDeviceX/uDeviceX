@@ -87,6 +87,8 @@ static void mesh_write1(MPI_Comm cart, const Coords *c, const Particle *pp, cons
 
 static void mesh_write(MPI_Comm cart, const Coords *coords, const Particle *pp, const int4 *faces, int nc, int nv, int nt, const char *fn) {
     write::File *f;
+    if (pp == NULL) ERR("pp == NULL");
+
     UC(write::fopen(cart, fn, /**/ &f));
     UC(mesh_write1(cart, coords, pp, faces, nc, nv, nt, f));
     UC(write::fclose(f));

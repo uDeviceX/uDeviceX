@@ -29,15 +29,23 @@ void mesh_write_fin(MeshWrite *q) {
 }
 
 static void mkdir(const char* directory) {
+    const char *fmt = "%s/%s";
     char directory0[FILENAME_MAX];
-    if (sprintf(directory0, "%s/%s", DUMP_BASE, directory) < 0)
+    if (sprintf(directory0, fmt, DUMP_BASE, directory) < 0)
         ERR("sprintf failed");
     UC(os_mkdir(directory0));
     msg_print("mkdir '%s'", directory0);
 }
-void mesh_write_dump(MeshWrite *q, MPI_Comm comm, const Coords *coord, int nc, const Particle *pp, int id) {
+void mesh_write_dump(MeshWrite *q, MPI_Comm comm, const Coords *coords, int nc, const Particle *pp, int id) {
+    const char *fmt = "%s/%s/%05d.ply";
+    char path[FILENAME_MAX];
     if (!q->directory_exists) {
         q->directory_exists = 1;
-        UC(mkdir(q->directory));
+        if (m::is_master(comm)) UC(mkdir(q->directory));
+        msg_print("m::Barrier");
+        MC(m::Barrier(comm));
     }
+    if (sprintf(path, fmt, DUMP_BASE, q->directory, id) < 0)
+        ERR("sprintf failed");
+    UC(mesh_write(comm, coords, pp, q->tt, nc, q->nv, q->nt, path));
 }
