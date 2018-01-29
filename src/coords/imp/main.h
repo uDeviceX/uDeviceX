@@ -153,12 +153,16 @@ bool is_end(const Coords *c, int dir) {
     return false;
 }
 
+static int bigp(int max, int x, int y, int z) {
+    return x > max || y > max || z > max;
+}
 void coord_stamp(const Coords *c, /**/ char *s) {
-    int r;
     int x, y, z;
     x = c->xc; y = c->yc; z = c->zc;
-    r = sprintf(s, "%03d.%03d.%03d", x, y, z);
-    if (r < 0) ERR("sprintf failed: [%d %d %d]", x, y, z);
+    if (bigp(999, x, y, z))
+        ERR("too big domain [%d %d %d]", x, y, z);
+    if (sprintf(s, "%03d.%03d.%03d", x, y, z) < 3)
+        ERR("sprintf failed [%d %d %d]", x, y, z);
 }
 
 int coords_size(const Coords *c) {
