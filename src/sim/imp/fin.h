@@ -89,6 +89,7 @@ static void fin_rbc(Rbc *r) {
     if (RBC_STRETCH)   rbc_stretch_fin(/**/ r->stretch);
     rbc_params_fin(r->params);
     UC(off_fin(r->cell));
+    UC(mesh_write_fin(r->mesh_write));
 }
 
 static void fin_rig(Rig *s) {
