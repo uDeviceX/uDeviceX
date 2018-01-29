@@ -71,6 +71,8 @@ include::dev/modules/math/rnd.inc.adoc[]
 
 include::dev/modules/math/tform.inc.adoc[]
 
+include::dev/modules/move.adoc[]
+
 include::dev/modules/parser.adoc[]
 
 include::dev/modules/partlist.adoc[]

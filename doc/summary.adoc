@@ -25,6 +25,7 @@
 * link:./dev/modules/fsi{lext}[]
 * link:./dev/modules/io/main{lext}[]
 * link:./dev/modules/math/main{lext}[]
+* link:./dev/modules/move{lext}[]
 * link:./dev/modules/parser{lext}[]
 * link:./dev/modules/partlist{lext}[]
 * link:./dev/modules/rbc/forces{lext}[]
