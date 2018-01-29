@@ -3,7 +3,7 @@ static void ini(const int4 *tt, int nv, int nt, const char *directory, /**/ Mesh
     MeshWrite *q;
     UC(emalloc(sizeof(MeshWrite), (void**)&q));
 
-    q->nv = nv; q->nt = nt;
+    q->nv = nv; q->nt = nt; q->directory_exists = 0;
     strncpy(q->directory, directory, FILENAME_MAX);
     UC(emalloc(nt*sizeof(q->tt[0]), (void**)&q->tt));
     for (i = 0; i < nt; i++) q->tt[i] = tt[i];

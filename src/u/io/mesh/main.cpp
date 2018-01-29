@@ -23,8 +23,15 @@ static void write(const char *o, OffRead *cell) {
     UC(mesh_write_fin(m));
 }
 
-static void main0(Config *c) {
+static void log(OffRead *cell) {
     int nv, nt, md;
+    md = off_get_md(cell);
+    nv = off_get_nv(cell);
+    nt = off_get_nt(cell);
+    msg_print("nv, nt, max degree: %d %d %d", nv, nt, md);
+}
+
+static void main0(Config *c) {
     OffRead *cell;
     const char *i, *o; /* input and output */
     UC(conf_lookup_string(c, "i", &i));
@@ -33,16 +40,9 @@ static void main0(Config *c) {
     msg_print("i = '%s'", i);
     msg_print("o = '%s'", o);
     UC(off_read(i, &cell));
-
-    write(o, cell)
-
-    md = cell_get_md(cell);
-    nv = cell_get_nv(cell);
-    nt = cell_get_nt(cell);
-    write(cell);
-    
-    msg_print("nv, nt, max degree: %d %d %d", nv, nt, md);
-    UC(cell_fin(cell));
+    UC(log(cell));
+    write(o, cell);
+    UC(off_fin(cell));
 }
 
 int main(int argc, char **argv) {
