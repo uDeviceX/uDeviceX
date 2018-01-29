@@ -24,8 +24,8 @@ void main0(Config *c) {
     UC(conf_lookup_string(c, "i", &i));
     UC(conf_lookup_string(c, "o", &o));
 
-    msg_print("i = `%s`", i);
-    msg_print("o = `%s`", o);
+    msg_print("i = '%s'", i);
+    msg_print("o = '%s'", o);
 
     UC(off_read(i, &off));
 
@@ -33,6 +33,8 @@ void main0(Config *c) {
     nv = off_get_nv(off);
     nt = off_get_nt(off);
     msg_print("nv, nt, max degree: %d %d %d", nv, nt, md);
+
+
     UC(off_fin(off));
 }
 
