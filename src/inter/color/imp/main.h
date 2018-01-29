@@ -18,7 +18,7 @@ void inter_color_set_uniform(GenColor *c) {
     c->kind = UNIF;
 }
 
-void inter_color_apply(const Coords *coords, const GenColor *gc, int n, const Particle *pp, /**/ int *cc) {
+void inter_color_apply_hst(const Coords *coords, const GenColor *gc, int n, const Particle *pp, /**/ int *cc) {
     switch (gc->kind) {
     case UNIF:
         set_color_unif(n, /**/ cc);
@@ -32,4 +32,27 @@ void inter_color_apply(const Coords *coords, const GenColor *gc, int n, const Pa
         ERR("Unrecognised kind <%d>", gc->kind);
         break;
     };
+}
+
+void inter_color_apply_dev(const Coords *coords, const GenColor *gc, int n, const Particle *pp, /**/ int *cc) {
+    int *cc_hst;
+    Particle *pp_hst;
+    size_t szc, szp;
+
+    if (gc->kind == NONE) return;
+    
+    szc = n * sizeof(int);
+    szp = n * sizeof(Particle);
+
+    UC(emalloc(szc, (void**) &cc_hst));
+    UC(emalloc(szp, (void**) &pp_hst));
+
+    CC(d::Memcpy(pp_hst, pp, szp, d::MemcpyDeviceToHost));
+
+    UC(inter_color_apply_hst(coords, gc, n, pp_hst, /**/ cc_hst));
+
+    CC(d::Memcpy(cc, cc_hst, szc, d::MemcpyHostToDevice));
+    
+    UC(efree(pp_hst));
+    UC(efree(cc_hst));
 }
