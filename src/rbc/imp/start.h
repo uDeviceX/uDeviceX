@@ -4,7 +4,7 @@
 static void setup_from_strt(const Coords *coords, int nv, const int id, /**/ Particle *pp, int *nc, int *n, /*w*/ Particle *pp_hst) {
     restart_read_pp(coords, CODE, id, pp_hst, n);
     *nc = *n / nv;
-    
+
     if (*n) cH2D(pp, pp_hst, *n);
 }
 
@@ -18,11 +18,8 @@ void rbc_strt_quants(const Coords *coords, const char *cell, const int id, RbcQu
     md = RBCmd;
     nt = RBCnt;
     nv = RBCnv;
-    setup(md, nt, nv, cell, /**/
-          q->shape.anti, q->shape.edg, &q->shape.totArea,
-          q->tri_hst, q->area_volume, q->adj0, q->adj1);
+    setup(md, nt, nv, cell, /**/ q);
     setup_from_strt(coords, nv, id, /**/ q->pp, &q->nc, &q->n, /*w*/ q->pp_hst);
-
     if (rbc_ids)
         ids_from_strt(coords, id, /**/ q->ii);
 }
