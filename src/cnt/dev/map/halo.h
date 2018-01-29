@@ -1,4 +1,4 @@
-static __device__ int tex2map(int zplane, float x, float y, float z, const int *starts, /**/ Map *m) {
+static __device__ int tex2map(int3 L, int zplane, float x, float y, float z, const int *starts, /**/ Map *m) {
     int cnt0, cnt1, cnt2, org0;
     int org1, org2;
     int xcenter, xstart, xcount;
@@ -7,34 +7,34 @@ static __device__ int tex2map(int zplane, float x, float y, float z, const int *
     int count0, count1, count2;
     int cid0, cid1, cid2;
 
-    xcenter = XOFFSET + (int)floorf(x);
+    xcenter = L.x / 2 + (int)floorf(x);
     xstart = max(0, xcenter - 1);
-    xcount = min(XS, xcenter + 2) - xstart;
+    xcount = min(L.x, xcenter + 2) - xstart;
 
-    if (xcenter - 1 >= XS || xcenter + 2 <= 0) return EMPTY;
+    if (xcenter - 1 >= L.x || xcenter + 2 <= 0) return EMPTY;
 
-    ycenter = YOFFSET + (int)floorf(y);
+    ycenter = L.y / 2 + (int)floorf(y);
 
-    zcenter = ZOFFSET + (int)floorf(z);
+    zcenter = L.z / 2 + (int)floorf(z);
     zmy = zcenter - 1 + zplane;
-    zvalid = zmy >= 0 && zmy < ZS;
+    zvalid = zmy >= 0 && zmy < L.z;
 
     count0 = count1 = count2 = 0;
 
-    if (zvalid && ycenter - 1 >= 0 && ycenter - 1 < YS) {
-        cid0 = xstart + XS * (ycenter - 1 + YS * zmy);
+    if (zvalid && ycenter - 1 >= 0 && ycenter - 1 < L.y) {
+        cid0 = xstart + L.x * (ycenter - 1 + L.y * zmy);
         org0 = starts[cid0];
         count0 = starts[cid0 + xcount] - org0;
     }
 
-    if (zvalid && ycenter >= 0 && ycenter < YS) {
-        cid1 = xstart + XS * (ycenter + YS * zmy);
+    if (zvalid && ycenter >= 0 && ycenter < L.y) {
+        cid1 = xstart + L.x * (ycenter + L.y * zmy);
         org1 = starts[cid1];
         count1 = starts[cid1 + xcount] - org1;
     }
 
-    if (zvalid && ycenter + 1 >= 0 && ycenter + 1 < YS) {
-        cid2 = xstart + XS * (ycenter + 1 + YS * zmy);
+    if (zvalid && ycenter + 1 >= 0 && ycenter + 1 < L.y) {
+        cid2 = xstart + L.x * (ycenter + 1 + L.y * zmy);
         org2 = starts[cid2];
         count2 = starts[cid2 + xcount] - org2;
     }

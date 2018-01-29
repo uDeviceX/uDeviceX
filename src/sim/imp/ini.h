@@ -189,11 +189,11 @@ static void ini_wall(const Config *cfg, Wall *w) {
     UC(wvel_set_conf(cfg, w->vel));
 }
 
-static void ini_objinter(MPI_Comm cart, /**/ ObjInter *o) {
+static void ini_objinter(MPI_Comm cart, int3 L, /**/ ObjInter *o) {
     int rank;
     MC(m::Comm_rank(cart, &rank));
     UC(ini_obj_exch(cart, &o->e));
-    if (contactforces) cnt_ini(rank, /**/ &o->cnt);
+    if (contactforces) cnt_ini(rank, L, /**/ &o->cnt);
     if (fsiforces)     fsi_ini(rank, /**/ &o->fsi);
 }
 
@@ -229,6 +229,9 @@ void sim_ini(int argc, char **argv, MPI_Comm cart, /**/ Sim **sim) {
     UC(emalloc(sizeof(Sim), (void**) sim));
     s = *sim;
 
+    // TODO this will be runtime
+    s->L = make_int3(XS, YS, ZS);
+    
     MC(m::Comm_dup(cart, &s->cart));
 
     Config *cfg = s->cfg;
@@ -252,7 +255,7 @@ void sim_ini(int argc, char **argv, MPI_Comm cart, /**/ Sim **sim) {
     if (s->opt.denoutflow) UC(ini_denoutflow(s->coords, s->cfg, /**/ &s->denoutflow, &s->mapoutflow));
 
     if (rbcs || solids)
-        UC(ini_objinter(s->cart, /**/ &s->objinter));
+        UC(ini_objinter(s->cart, s->L, /**/ &s->objinter));
 
     UC(bop_ini(s->cart, &s->dumpt));
 

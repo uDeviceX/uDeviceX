@@ -1,4 +1,4 @@
-__global__ void bulk(const int *cellstarts, const uint *ids, int n, const float2 *pp, const float2pWraps lpp,
+__global__ void bulk(int3 L, const int *cellstarts, const uint *ids, int n, const float2 *pp, const float2pWraps lpp,
                      float seed, int objid0, /**/ ForcepWraps lff, float *ff) {
     Map m; /* see map/ */
     float x, y, z;
@@ -30,7 +30,7 @@ __global__ void bulk(const int *cellstarts, const uint *ids, int n, const float2
     x = dst0.x;
     y = dst0.y;
     z = dst1.x;
-    mapstatus = r2map(zplane, n, x, y, z, cellstarts, /**/ &m);
+    mapstatus = r2map(L, zplane, n, x, y, z, cellstarts, /**/ &m);
     
     if (mapstatus == EMPTY) return;
     xforce = yforce = zforce = 0;
