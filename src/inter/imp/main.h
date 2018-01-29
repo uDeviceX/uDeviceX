@@ -53,13 +53,3 @@ void inter_freeze(const Coords *coords, MPI_Comm cart, Sdf *sdf, FluQuants *qflu
     if (walls && solids)  remove_solids(qrig, sdf);
     if (solids)           rig_set_ids(cart, qrig);
 }
-
-void inter_color_hst(const Coords *coords, Particle *pp, int n, /**/ int *cc) {
-    set_color(coords, pp, n, /**/ cc);
-}
-
-void inter_color_dev(const Coords *coords, Particle *pp, int n, /*o*/ int *cc, /*w*/ Particle *pp_hst, int *cc_hst) {
-    cD2H(pp_hst, pp, n);
-    set_color(coords, pp_hst, n, /**/ cc_hst);
-    cH2D(cc, cc_hst, n);
-}
