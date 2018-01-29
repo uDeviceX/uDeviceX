@@ -9,6 +9,7 @@
 
 #include "utils/msg.h"
 #include "mpi/glb.h"
+#include "mpi/wrapper.h"
 
 #include "utils/error.h"
 
@@ -19,7 +20,11 @@
 
 static void write(const char *o, OffRead *cell) {
     MeshWrite *m;
-    UC(mesh_write_ini_off(cell, o, &m));
+    Coords *c;
+    UC(mesh_write_ini_off(cell, o, /**/ &m));
+    UC(coords_ini(m::cart, /**/ &c));
+    
+    UC(coords_fin(c));
     UC(mesh_write_fin(m));
 }
 
