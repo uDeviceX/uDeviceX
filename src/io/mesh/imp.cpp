@@ -14,6 +14,8 @@
 #include "mpi/glb.h"
 #include "mpi/wrapper.h"
 #include "inc/type.h"
+
+#include "io/off/imp.h"
 #include "write/imp.h"
 
 #include "imp.h"
@@ -27,3 +29,4 @@
    #error     MESH_SHIFT_* is undefined
 #endif
 #include "imp/main.h"
+#include "imp/new.h"
