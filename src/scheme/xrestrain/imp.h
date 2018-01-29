@@ -1,10 +1,12 @@
+struct Particle;
+struct Restrain;
+
 /* quantities and sizes wrapper */
 struct SchemeQQ {
     Particle *o, *r;
     int on, rn;
 };
 
-struct Restrain;
 
 void scheme_restrain_ini(Restrain**);
 void scheme_restrain_fin(Restrain*);
