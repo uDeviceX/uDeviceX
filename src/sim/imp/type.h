@@ -102,7 +102,8 @@ struct Rig {
     Force *ff, *ff_hst;
 
     RigDistr d;
-};  
+    MeshWrite  *mesh_write;
+};
 
 /* data holder for walls */
 struct Wall {
@@ -157,7 +158,7 @@ struct Sim {
     Inflow *inflow;
     DCont    *denoutflow;
     DContMap *mapoutflow;
-    
+
     /* particles on host for dump */
     Particle *pp_dump;
     BopWork *dumpt;
