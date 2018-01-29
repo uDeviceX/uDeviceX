@@ -1,8 +1,9 @@
 struct RNDunif;
 struct Fsi;
+struct int3;
 
 // tag::mem[]
-void fsi_ini(int rank, /**/ Fsi **fsi);
+void fsi_ini(int rank, int3 L, /**/ Fsi **fsi);
 void fsi_fin(Fsi *fsi);
 // end::mem[]
 

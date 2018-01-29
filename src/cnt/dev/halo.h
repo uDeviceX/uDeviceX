@@ -15,7 +15,7 @@ static __device__ void fetch_b(const float2 *pp, int i, /**/ forces::Pa *b) {
     forces::f2k2p(s0, s1, s2, SOLID_KIND, /**/ b);
 }
 
-__device__ void halo0(const int *cellstarts, const uint *ids, const float2pWraps lpp, forces::Pa a, int aid, float seed,
+__device__ void halo0(int3 L, const int *cellstarts, const uint *ids, const float2pWraps lpp, forces::Pa a, int aid, float seed,
                       /**/ ForcepWraps lff, float *fA) {
     enum {X, Y, Z};
     Map m;
@@ -33,7 +33,7 @@ __device__ void halo0(const int *cellstarts, const uint *ids, const float2pWraps
 
     forces::p2r3(&a, /**/ &x, &y, &z);
     for (zplane = 0; zplane < 3; ++zplane) {
-        mapstatus = tex2map(zplane, x, y, z, cellstarts, /**/ &m);
+        mapstatus = tex2map(L, zplane, x, y, z, cellstarts, /**/ &m);
         if (mapstatus == EMPTY) continue;
         for (i = 0; !endp(m, i); ++i) {
             slot = m2id(m, i);
@@ -55,7 +55,7 @@ __device__ void halo0(const int *cellstarts, const uint *ids, const float2pWraps
     fA[X] += xforce; fA[Y] += yforce; fA[Z] += zforce;
 }
 
-__global__ void halo(const int *cellstarts, const uint *ids, float seed, const int27 starts, const float2pWraps lpp,
+__global__ void halo(int3 L, const int *cellstarts, const uint *ids, float seed, const int27 starts, const float2pWraps lpp,
                      int n, Pap26 hpp, /**/ ForcepWraps lff, Fop26 hff) {
     int aid, start;
     int fid;
@@ -69,5 +69,5 @@ __global__ void halo(const int *cellstarts, const uint *ids, float seed, const i
     start = starts.d[fid];
     pp2p(hpp.d[fid], aid - start, &a);
     fA = hff.d[fid][aid - start].f;
-    halo0(cellstarts, ids, lpp, a, aid, seed, /**/ lff, fA);
+    halo0(L, cellstarts, ids, lpp, a, aid, seed, /**/ lff, fA);
 }

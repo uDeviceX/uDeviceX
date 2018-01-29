@@ -17,25 +17,25 @@
 
 namespace recolor {
 namespace dev {
-__global__ void linear_flux(int dir, int color, int n, const Particle *pp, int *cc) {
+__global__ void linear_flux(int3 L, int dir, int color, int n, const Particle *pp, int *cc) {
     int i;
     Particle p;
     i = threadIdx.x + blockIdx.x * blockDim.x;
     if (i >= n) return;
     
     p = pp[i];
-    const int L[] = {XS/2, YS/2, ZS/2};
+    const int HL[] = {L.x/2, L.y/2, L.z/2};
 
-    if (p.r[dir] >= L[dir])
+    if (p.r[dir] >= HL[dir])
         cc[i] = color;
 }
 } // dev
 
-void linear_flux(const Coords *coords, int dir, int color, int n, const Particle *pp, int *cc) {
+void linear_flux(const Coords *coords, int3 L, int dir, int color, int n, const Particle *pp, int *cc) {
     assert(dir >= 0 && dir <= 2);
     assert(multi_solvent);
         
     if (is_end(coords, dir))
-        KL(dev::linear_flux, (k_cnf(n)), (dir, color, n, pp, cc));
+        KL(dev::linear_flux, (k_cnf(n)), (L, dir, color, n, pp, cc));
 }
 } // recolor

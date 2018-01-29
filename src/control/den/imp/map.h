@@ -14,9 +14,9 @@ static int predicate(const Coords *c, Circle p, int i, int j, int k) {
     float3 r;
     float R;
 
-    r = make_float3(i + (1 - XS) * 0.5f,
-                    j + (1 - YS) * 0.5f,
-                    k + (1 - ZS) * 0.5f);
+    r = make_float3(i + (1 - xs(c)) * 0.5f,
+                    j + (1 - ys(c)) * 0.5f,
+                    k + (1 - zs(c)) * 0.5f);
     local2center(c, r, /**/ &r);
     
     R = sqrt(r.x * r.x + r.y * r.y);
@@ -37,16 +37,18 @@ template <typename T>
 static void ini_map(const Coords *coords, T p, int **ids, int *nids) {
     int *ii, i, j, k, n;
     size_t sz;
+    int Lx, Ly, Lz;
+    Lx = xs(coords);  Ly = ys(coords);  Lz = zs(coords);
     
-    sz = XS * YS * ZS * sizeof(int);
+    sz = Lx * Ly * Lz * sizeof(int);
     UC(emalloc(sz, (void **) &ii));
 
     n = 0;
-    for (k = 0; k < ZS; ++k) {
-        for (j = 0; j < YS; ++j) {
-            for (i = 0; i < XS; ++i) {
+    for (k = 0; k < Lz; ++k) {
+        for (j = 0; j < Ly; ++j) {
+            for (i = 0; i < Lx; ++i) {
                 if (predicate(coords, p, i, j, k))
-                    ii[n++] = i + XS * (j + YS * k);
+                    ii[n++] = i + Lx * (j + Ly * k);
             }
         }
     }

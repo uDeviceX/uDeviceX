@@ -1,53 +1,51 @@
-static __device__ int r2map(const int *start, int zplane, int n, float x, float y, float z, /**/ Map *m) {
+static __device__ int r2map(int3 L, const int *start, int zplane, int n, float x, float y, float z, /**/ Map *m) {
     /* coordinate [r] to map */
     int cnt0, cnt1, cnt2, org0;
     int org1, org2;
-    enum {
-        XCELLS = XS,
-        YCELLS = YS,
-        ZCELLS = ZS,
-        XOFFSET = XCELLS / 2,
-        YOFFSET = YCELLS / 2,
-        ZOFFSET = ZCELLS / 2,
-        NCELLS  = XS*YS*ZS
-    };
+    int xoffset, yoffset, zoffset;
+    int ncells;
 
-    const int xcenter = XOFFSET + (int)floorf(x);
+    xoffset = L.x / 2;
+    yoffset = L.y / 2;
+    zoffset = L.z / 2;
+    ncells = L.x * L.y * L.z;
+
+    const int xcenter = xoffset + (int)floorf(x);
     const int xstart = max(0, xcenter - 1);
-    const int xcount = min(XCELLS, xcenter + 2) - xstart;
+    const int xcount = min(L.x, xcenter + 2) - xstart;
     
-    if (xcenter - 1 >= XCELLS || xcenter + 2 <= 0) return 0;
+    if (xcenter - 1 >= L.x || xcenter + 2 <= 0) return 0;
         
-    const int ycenter = YOFFSET + (int)floorf(y);
+    const int ycenter = yoffset + (int)floorf(y);
         
-    const int zcenter = ZOFFSET + (int)floorf(z);
+    const int zcenter = zoffset + (int)floorf(z);
     const int zmy = zcenter - 1 + zplane;
-    const bool zvalid = zmy >= 0 && zmy < ZCELLS;
+    const bool zvalid = zmy >= 0 && zmy < L.z;
     
     int count0 = 0, count1 = 0, count2 = 0;
     
-    if (zvalid && ycenter - 1 >= 0 && ycenter - 1 < YCELLS) {
-        const int cid0 = xstart + XCELLS * (ycenter - 1 + YCELLS * zmy);
+    if (zvalid && ycenter - 1 >= 0 && ycenter - 1 < L.y) {
+        const int cid0 = xstart + L.x * (ycenter - 1 + L.y * zmy);
         org0 = start[cid0];
-        count0 = ((cid0 + xcount == NCELLS)
+        count0 = ((cid0 + xcount == ncells)
                   ? n
                   : start[cid0 + xcount]) -
             org0;
     }
     
-    if (zvalid && ycenter >= 0 && ycenter < YCELLS) {
-        const int cid1 = xstart + XCELLS * (ycenter + YCELLS * zmy);
+    if (zvalid && ycenter >= 0 && ycenter < L.y) {
+        const int cid1 = xstart + L.x * (ycenter + L.y * zmy);
         org1 = start[cid1];
-        count1 = ((cid1 + xcount == NCELLS)
+        count1 = ((cid1 + xcount == ncells)
                   ? n
                   : start[cid1 + xcount]) -
             org1;
     }
     
-    if (zvalid && ycenter + 1 >= 0 && ycenter + 1 < YCELLS) {
-        const int cid2 = xstart + XCELLS * (ycenter + 1 + YCELLS * zmy);
+    if (zvalid && ycenter + 1 >= 0 && ycenter + 1 < L.y) {
+        const int cid2 = xstart + L.x * (ycenter + 1 + L.y * zmy);
         org2 = start[cid2];
-        count2 = ((cid2 + xcount == NCELLS)
+        count2 = ((cid2 + xcount == ncells)
                   ? n
                   : start[cid2 + xcount]) -
             org2;

@@ -1,7 +1,9 @@
-void cnt_ini(int rank, /**/ Contact **cnt) {
+void cnt_ini(int rank, int3 L, /**/ Contact **cnt) {
     UC(emalloc(sizeof(Contact), (void**) cnt));
     Contact *c = *cnt;
-    clist_ini(XS, YS, ZS, /**/ &c->cells);
+
+    c->L = L;
+    clist_ini(L.x, L.y, L.z, /**/ &c->cells);
     clist_ini_map(MAX_PART_NUM, MAX_OBJ_TYPES, &c->cells, /**/ &c->cmap);
     UC(rnd_ini(7119 - rank, 187 + rank, 18278, 15674, /**/ &c->rgen));
 }
