@@ -47,3 +47,13 @@ include::{src}/scheme/move/imp.h[tag=int]
 <1> apply one step of the time scheme to the particles
 <2> set velocity of particles to 0
 
+
+== configuration
+
+Set parameters:
+
+[source, cfg]
+----
+TODO: NOT YET IMPLEMENTED
+----
+

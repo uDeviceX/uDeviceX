@@ -83,6 +83,8 @@ include::dev/modules/rbc/main.adoc[]
 
 include::dev/modules/rbc/rnd.adoc[]
 
+include::dev/modules/restrain.adoc[]
+
 include::dev/modules/sdf/main.adoc[]
 
 include::dev/modules/utils/cc.inc.adoc[]

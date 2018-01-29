@@ -28,6 +28,7 @@
 ./dev/modules/rbc/forces.html: ./dev/modules/rbc/forces.adoc 
 ./dev/modules/rbc/main.html: ./dev/modules/rbc/main.adoc 
 ./dev/modules/rbc/rnd.html: ./dev/modules/rbc/rnd.adoc 
+./dev/modules/restrain.html: ./dev/modules/restrain.adoc 
 ./dev/modules/sdf/main.html: ./dev/modules/sdf/main.adoc 
 ./dev/modules/utils/main.html: ./dev/modules/utils/main.adoc ./dev/modules/utils/cc.inc.adoc ./dev/modules/utils/cc.inc.adoc ./dev/modules/utils/error.inc.adoc ./dev/modules/utils/error.inc.adoc ./dev/modules/utils/kl.inc.adoc ./dev/modules/utils/kl.inc.adoc ./dev/modules/utils/mc.inc.adoc ./dev/modules/utils/mc.inc.adoc
 ./dev/modules/wvel.html: ./dev/modules/wvel.adoc 
