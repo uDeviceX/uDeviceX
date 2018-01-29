@@ -51,7 +51,7 @@ static void dump_rbcs(Sim *s) {
     const Rbc *r = &s->rbc;
     static int id = 0;
     cD2H(s->pp_dump, r->q.pp, r->q.n);
-    UC(mesh_write_rbc(s->cart, s->coords, s->pp_dump, r->q.tri_hst, r->q.nc, r->q.nv, r->q.nt, id++));
+    UC(mesh_write_dump(r->mesh_write, s->cart, s->coords, r->q.nc, s->pp_dump, id++));
 }
 
 static void dump_rbc_coms(Sim *s) {
