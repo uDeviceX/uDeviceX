@@ -35,6 +35,7 @@
 
 #include "io/mesh/imp.h"
 #include "io/diag/imp.h"
+#include "io/off/imp.h"
 
 #include "mpi/wrapper.h"
 #include "mpi/glb.h"
