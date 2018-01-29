@@ -1,8 +1,8 @@
-# TEST: io.off
+# sTEST: io.mesh
 :
 u.cp.hdr test.h  conf.h
 u.cp.rbc rbc/642 rbc.off
 :
 echo run | S=`u.cp.s` u.build u/io/off conf.h
-u.run ./udx -- 'i="rbc.off"'
+u.run ./udx -- 'i="rbc.off" o="r"'
 echo $? > test.out.txt
