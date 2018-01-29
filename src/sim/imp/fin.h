@@ -152,6 +152,7 @@ void sim_fin(Sim *s) {
     
     if (rbcs) fin_rbc(/**/ &s->rbc);
 
+    UC(scheme_restrain_fin(s->restrain));
     UC(coords_fin(/**/ s->coords));
 
     UC(inter_color_fin(s->gen_color));

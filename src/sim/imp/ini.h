@@ -267,6 +267,9 @@ void sim_ini(int argc, char **argv, MPI_Comm cart, /**/ Sim **sim) {
             UC(ini_bounce_back(s->cart, &s->rig, /**/ &s->bb));
     }
 
+    UC(scheme_restrain_ini(&s->restrain));
+    UC(scheme_restrain_set_conf(s->cfg, s->restrain));
+    
     UC(inter_color_ini(&s->gen_color));
     UC(inter_color_set_conf(s->cfg, s->gen_color));
     
