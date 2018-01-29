@@ -20,7 +20,6 @@
 
 #include "imp.h"
 
-namespace scheme { namespace move {
 namespace dev {
 #ifdef FORWARD_EULER
   #include "dev/euler.h"
@@ -31,4 +30,3 @@ namespace dev {
 } /* namespace */
 
 #include "imp/main.h"
-}} /* namespace */
