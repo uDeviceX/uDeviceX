@@ -17,12 +17,12 @@ static void read(FILE *f, int n, /**/ float *h) {
 }
 
 static void ini0(const char* path, int n, float *h, /**/ float *d) {
-    msg_print("reading <%s>", path);
     FILE *f;
+    msg_print("read '%s'", path);
     UC(efopen(path, "r", /**/ &f));
     read(f, n , /**/ h);
     cH2D(d, h, 3*n);
-    fclose(f);
+    UC(efclose(f));
 }
 
 static void ini1(const char* path, int n, /**/ RbcStretch *f) {
