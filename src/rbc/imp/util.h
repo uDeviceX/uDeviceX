@@ -6,15 +6,7 @@ static void efaces(const char *f, int n0, /**/ int4 *faces) {
         ERR("wrong faces number in <%s> : %d != %d", f, n0, n);
 }
 
-static void evert(const char *f, int n0, /**/ float *vert) {
-    /* get vertices */
-    int n;
-    UC(off_read_vert(f, n0, /**/ &n, vert));
-    if (n0 != n)
-        ERR("wrong vert number in <%s> : %d != %d", f, n0, n);
-}
-
-static void diff(float *a, float *b, /**/ float *c) {
+static void diff(const float *a, const float *b, /**/ float *c) {
     enum {X, Y, Z};
     c[X] = a[X] - b[X];
     c[Y] = a[Y] - b[Y];
