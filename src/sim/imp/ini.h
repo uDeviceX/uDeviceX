@@ -30,11 +30,11 @@ static void ini_bb_exch(int nt, int nv, int max_m, MPI_Comm comm, /**/ BBexch *e
     UC(emesh_unpackm_ini(nt, max_m, /**/ &e->um));
 }
 
-static void ini_flu_distr(MPI_Comm comm, /**/ FluDistr *d) {
+static void ini_flu_distr(MPI_Comm comm, int3 L, /**/ FluDistr *d) {
     float maxdensity = ODSTR_FACTOR * numberdensity;
-    UC(dflu_pack_ini(maxdensity, /**/ &d->p));
+    UC(dflu_pack_ini(L, maxdensity, /**/ &d->p));
     UC(dflu_comm_ini(comm, /**/ &d->c));
-    UC(dflu_unpack_ini(maxdensity, /**/ &d->u));
+    UC(dflu_unpack_ini(L, maxdensity, /**/ &d->u));
     UC(dflu_status_ini(/**/ &d->s));
 }
 
@@ -50,8 +50,7 @@ static void ini_rig_distr(int nv, MPI_Comm comm, /**/ RigDistr *d) {
     UC(drig_unpack_ini(MAX_SOLIDS, nv, /**/ &d->u));
 }
 
-static void ini_vcon(MPI_Comm comm, const Config *cfg, /**/ Vcon *c) {
-    int3 L = {XS, YS, ZS};
+static void ini_vcon(MPI_Comm comm, int3 L, const Config *cfg, /**/ Vcon *c) {
     const char *type;
     float3 U;
     float factor;
@@ -133,13 +132,13 @@ static void ini_colorer(int nv, MPI_Comm comm, /**/ Colorer *c) {
     Dalloc(&c->maxext, MAX_CELL_NUM);
 }
 
-static void ini_flu(MPI_Comm cart, /**/ Flu *f) {
+static void ini_flu(MPI_Comm cart, int3 L, /**/ Flu *f) {
 
     UC(flu_ini(&f->q));
     UC(fluforces_bulk_ini(MAX_PART_NUM, /**/ &f->bulk));
     UC(fluforces_halo_ini(cart, /**/ &f->halo));
 
-    UC(ini_flu_distr(cart, /**/ &f->d));
+    UC(ini_flu_distr(cart, L, /**/ &f->d));
     UC(ini_flu_exch(cart, /**/ &f->e));
 
     UC(Dalloc(&f->ff, MAX_PART_NUM));
@@ -255,7 +254,7 @@ void sim_ini(int argc, char **argv, MPI_Comm cart, /**/ Sim **sim) {
 
     if (rbcs) UC(ini_rbc(cfg, s->cart, /**/ &s->rbc));
 
-    if (s->opt.vcon)       UC(ini_vcon(s->cart, s->cfg, /**/ &s->vcon));
+    if (s->opt.vcon)       UC(ini_vcon(s->cart, s->L, s->cfg, /**/ &s->vcon));
     if (s->opt.outflow)    UC(ini_outflow(s->coords, s->cfg, /**/ &s->outflow));
     if (s->opt.inflow)     UC(ini_inflow (s->coords, s->cfg, /**/ &s->inflow ));
     if (s->opt.denoutflow) UC(ini_denoutflow(s->coords, s->cfg, /**/ &s->denoutflow, &s->mapoutflow));
@@ -267,7 +266,7 @@ void sim_ini(int argc, char **argv, MPI_Comm cart, /**/ Sim **sim) {
 
     if (walls) ini_wall(cfg, &s->wall);
 
-    UC(ini_flu(s->cart, /**/ &s->flu));
+    UC(ini_flu(s->cart, s->L, /**/ &s->flu));
 
     if (multi_solvent && rbcs)
         UC(ini_colorer(s->rbc.q.nv, s->cart, /**/ &s->colorer));

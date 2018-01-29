@@ -7,6 +7,7 @@ struct DFluPack {
     dBags dpp, dii, dcc;
     hBags hpp, hii, hcc;
     int nhalo; /* number of sent particles */
+    int3 L; /* subdomain size */
 };
 
 struct DFluComm {
@@ -18,5 +19,6 @@ struct DFluUnpack {
     Particle *ppre;
     int *iire, *ccre;
     int nhalo; /* number of received particles */
+    int3 L; /* subdomain size */
 };
 // end::struct[]

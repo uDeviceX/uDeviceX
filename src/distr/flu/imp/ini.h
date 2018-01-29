@@ -11,12 +11,14 @@ static void get_capacity(int maxd, /**/ int capacity[NBAGS]) {
     capacity[frag_bulk] = 0;
 }
 
-void dflu_pack_ini(int maxdensity, DFluPack **pack) {
+void dflu_pack_ini(int3 L, int maxdensity, DFluPack **pack) {
     DFluPack *p;
     int capacity[NBAGS];
 
     UC(emalloc(sizeof(DFluPack), (void**) pack));
     p = *pack;
+
+    p->L = L;
     
     get_capacity(maxdensity, /**/ capacity);
 
@@ -44,12 +46,14 @@ static int nhalocells() {
         2 * YS * ZS;
 }
 
-void dflu_unpack_ini(int maxdensity, DFluUnpack **unpack) {
+void dflu_unpack_ini(int3 L, int maxdensity, DFluUnpack **unpack) {
     int capacity[NBAGS];
     DFluUnpack *u;
 
     UC(emalloc(sizeof(DFluUnpack), (void**) unpack));
     u = *unpack;
+
+    u->L = L;
     
     get_capacity(maxdensity, /**/ capacity);
 
