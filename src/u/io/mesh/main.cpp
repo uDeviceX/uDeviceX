@@ -27,7 +27,7 @@ static void write(const char *o, OffRead *cell) {
 
     cart = m::cart;
     UC(mesh_write_ini_off(cell, o, /**/ &mesh));
-    UC(coords_ini(cart, /**/ &c));
+    UC(coords_ini(cart, XS, YS, ZS, /**/ &c));
 
     nc = 1; pp = NULL;
     UC(mesh_write_dump(mesh, cart, c, nc, pp, 0));

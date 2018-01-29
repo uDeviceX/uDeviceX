@@ -3,6 +3,9 @@
 #include <string.h>
 #include <vector_types.h>
 
+#include <conf.h>
+#include "inc/conf.h"
+
 #include "utils/msg.h"
 #include "utils/error.h"
 #include "mpi/wrapper.h"
@@ -35,7 +38,7 @@ int main(int argc, char **argv) {
     UC(bforce_ini(&bforce));
     UC(bforce_ini_conf(cfg, /**/ bforce));
     UC(conf_lookup_int(cfg, "dump.freq_parts", &part_freq));
-    coords_ini(m::cart, &coords);
+    coords_ini(m::cart, XS, YS, ZS, &coords);
     
     UC(scheme_move_params_ini(&moveparams));
     UC(scheme_move_params_conf(cfg, /**/moveparams));

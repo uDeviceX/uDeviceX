@@ -44,7 +44,7 @@ static void run1(RbcQuants q, RbcForce t, const RbcParams *par) {
 static void run2(const char *cell, const char *ic, const RbcParams *par, RbcQuants q) {
     Coords *coords;
     RbcForce t;
-    coords_ini(m::cart, &coords);
+    coords_ini(m::cart, XS, YS, ZS, &coords);
     rbc_gen_quants(coords, m::cart, cell, ic, /**/ &q);
     rbc_force_gen(q, &t);
     run1(q, t, par);

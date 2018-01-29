@@ -57,7 +57,7 @@ void main1(Part *p) {
     Sdf *sdf;
     Coords *coords;
     UC(sdf_ini(&sdf));
-    UC(coords_ini(m::cart, /**/ &coords));
+    UC(coords_ini(m::cart, XS, YS, ZS, /**/ &coords));
     UC(sdf_gen(coords, m::cart, true, sdf));
     UC(main0(sdf, p));
     UC(sdf_fin(sdf));

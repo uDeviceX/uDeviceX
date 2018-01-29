@@ -74,7 +74,7 @@ int main(int argc, char **argv) {
     Config *cfg;
     Coords *coords;
     m::ini(&argc, &argv);
-    UC(coords_ini(m::cart, &coords));
+    UC(coords_ini(m::cart, XS, YS, ZS, &coords));
     
     UC(conf_ini(&cfg));
     UC(dbg_ini(&dbg));
