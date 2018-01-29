@@ -145,9 +145,9 @@ int zhi(const Coords *c) { return zl2zg(c, 0) + 0.5*c->Lz; }
 
 /* sizes of the sub-domain */
 
-int xs(const Coords*) { return c->Lx; }
-int ys(const Coords*) { return c->Ly; }
-int zs(const Coords*) { return c->Lz; }
+int xs(const Coords *c) { return c->Lx; }
+int ys(const Coords *c) { return c->Ly; }
+int zs(const Coords *c) { return c->Lz; }
 
 /* rank predicates */
 

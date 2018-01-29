@@ -239,7 +239,7 @@ void sim_ini(int argc, char **argv, MPI_Comm cart, /**/ Sim **sim) {
 
     UC(read_opt(s->cfg, &s->opt));
 
-    UC(coords_ini(s->cart, /**/ &s->coords));
+    UC(coords_ini(s->cart, XS, YS, ZS, /**/ &s->coords));
     UC(coords_log(s->coords));
 
     UC(emalloc(3 * MAX_PART_NUM * sizeof(Particle), (void**) &s->pp_dump));
