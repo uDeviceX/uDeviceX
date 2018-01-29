@@ -1,9 +1,21 @@
 = scheme/restrain
 
 :src: ../../../src
+:stem: latexmath
 
 Restrain the movement of drop or rbc membrane by shifting center of
-mass velocity
+mass velocity.
+
+Consider a subset of particles stem:[P] with indices stem:[I \subset \{i\}_{i = 1}^{n}].
+The `Restrain` module  shifts the center of mass velocity of stem:[P] such that
+
+[stem]
+++++
+\sum\limits_{i \in I} \mathbf{v}_i = 0.
+++++
+
+The subset stem:[I] depends on the colors of the solvent in case of a
+single drop.
 
 == interface
 
