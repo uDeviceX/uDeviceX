@@ -44,10 +44,10 @@ static void run0(const Coords *coords, int part_freq, const BForce *bforce, Move
         rbc_force_apply(q, t, par, /**/ f);
         stretch::apply(q.nc, stretch, /**/ f);
         if (pushrbc) body_force(coords, bforce, q, /**/ f);
-        scheme::move::main(moveparams, rbc_mass, q.n, f, q.pp);
+        scheme_move_main(moveparams, rbc_mass, q.n, f, q.pp);
         if (i % part_freq  == 0) dump(coords, q, t);
 #ifdef RBC_CLEAR_VEL
-        scheme::move::clear_vel(q.n, /**/ q.pp);
+        scheme_move_clear_vel(q.n, /**/ q.pp);
 #endif
     }
 }
