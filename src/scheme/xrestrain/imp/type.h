@@ -6,7 +6,8 @@ enum {
 
 struct Restrain {
     int kind;
-
+    int freq;
+    
     /* pinned */
     int *n;
     float3 *v;

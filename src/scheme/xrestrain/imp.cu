@@ -8,6 +8,7 @@
 
 #include "utils/error.h"
 #include "utils/imp.h"
+#include "utils/msg.h"
 #include "utils/cc.h"
 #include "utils/kl.h"
 

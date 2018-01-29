@@ -7,7 +7,6 @@ struct SchemeQQ {
     int on, rn;
 };
 
-
 void scheme_restrain_ini(Restrain**);
 void scheme_restrain_fin(Restrain*);
 
