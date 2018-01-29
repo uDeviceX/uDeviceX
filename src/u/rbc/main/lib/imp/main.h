@@ -35,7 +35,9 @@ static int body_force(const Coords *coords, const BForce *bf, RbcQuants q, Force
     return 0;
 }
 
-static void run0(const Coords *coords, int part_freq, const BForce *bforce, MoveParams *moveparams, RbcQuants q, RbcForce t, const RbcParams *par, RbcStretch* stretch, Force *f) {
+static void run0(const Coords *coords, int part_freq, const BForce *bforce,
+                 MoveParams *moveparams, RbcQuants q, RbcForce t,
+                 const RbcParams *par, RbcStretch* stretch, Force *f) {
     long i;
     long nsteps = (long)(tend / dt);
     msg_print("will take %ld steps", nsteps);
