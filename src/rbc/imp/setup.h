@@ -65,7 +65,7 @@ static void setup_anti(int md, int nv, Adj *adj, /**/ int *dev) {
     free(hst);
 }
 
-static void setup0(int md, int nt, int nv, int4 *faces, /**/
+static void setup1(int md, int nt, int nv, int4 *faces, /**/
                    int *anti, Edg *edg, float *totArea, int *adj0, int *adj1) {
     Adj adj;
     adj_ini(md, nt, nv, faces, /**/ &adj);
@@ -79,10 +79,16 @@ static void setup0(int md, int nt, int nv, int4 *faces, /**/
     adj_fin(&adj);
 }
 
-static void setup(int md, int nt, int nv, const char *cell, /**/
+static void setup0(int md, int nt, int nv, const char *cell, /**/
                   int *anti, Edg *edg, float *totArea, int4 *faces, AreaVolume *area_volume,
                   int *adj0, int *adj1) {
     UC(efaces(cell, nt, /**/ faces));
     UC(area_volume_setup(nt, nv, faces, /**/ area_volume));
-    UC(setup0(md, nt, nv, faces, /**/ anti, edg, totArea, adj0, adj1));
+    UC(setup1(md, nt, nv, faces, /**/ anti, edg, totArea, adj0, adj1));
+}
+
+static void setup(int md, int nt, int nv, const char *cell, /**/ RbcQuants *q) {
+    setup0(md, nt, nv, cell, /**/
+           q->shape.anti, q->shape.edg, &q->shape.totArea,
+           q->tri_hst, q->area_volume, q->adj0, q->adj1);
 }
