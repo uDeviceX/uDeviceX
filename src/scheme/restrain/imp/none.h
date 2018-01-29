@@ -1,1 +1,1 @@
-void main(MPI_Comm cart, const int*, NN, long, /**/ QQ) { }
+void scheme_restrain_apply(MPI_Comm cart, const int*, long, /**/ SchemeQQ) { }

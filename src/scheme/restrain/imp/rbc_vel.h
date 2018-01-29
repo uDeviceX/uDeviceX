@@ -14,7 +14,7 @@ static void report(int it) {
     if (cond) report0();
 }
 
-void main(MPI_Comm comm, const int*, NN nn, long it, /**/ QQ qq) {
-    grey::vel(comm, nn.r, /**/ qq.r);
+void scheme_restrain_apply(MPI_Comm comm, const int*, long it, /**/ SchemeQQ qq) {
+    grey::vel(comm, qq.rn, /**/ qq.r);
     report(it);
 }
