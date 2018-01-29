@@ -44,10 +44,10 @@ static void ini_rbc_distr(int nv, MPI_Comm comm, int3 L, /**/ RbcDistr *d) {
     UC(drbc_unpack_ini(L, MAX_CELL_NUM, nv, /**/ &d->u));
 }
 
-static void ini_rig_distr(int nv, MPI_Comm comm, /**/ RigDistr *d) {
-    UC(drig_pack_ini(MAX_SOLIDS, nv, /**/ &d->p));
+static void ini_rig_distr(int nv, MPI_Comm comm, int3 L, /**/ RigDistr *d) {
+    UC(drig_pack_ini(L, MAX_SOLIDS, nv, /**/ &d->p));
     UC(drig_comm_ini(comm, /**/ &d->c));
-    UC(drig_unpack_ini(MAX_SOLIDS, nv, /**/ &d->u));
+    UC(drig_unpack_ini(L,MAX_SOLIDS, nv, /**/ &d->u));
 }
 
 static void ini_vcon(MPI_Comm comm, int3 L, const Config *cfg, /**/ Vcon *c) {
@@ -164,7 +164,7 @@ static void ini_rbc(const Config *cfg, MPI_Comm cart, int3 L, /**/ Rbc *r) {
     UC(rbc_params_set_conf(cfg, r->params));
 }
 
-static void ini_rig(MPI_Comm cart, /**/ Rig *s) {
+static void ini_rig(MPI_Comm cart, int3 L, /**/ Rig *s) {
     const int4 *tt;
     int nv, nt;
 
@@ -176,7 +176,7 @@ static void ini_rig(MPI_Comm cart, /**/ Rig *s) {
     UC(emalloc(sizeof(&s->ff_hst)*MAX_PART_NUM, (void**) &s->ff_hst));
     Dalloc(&s->ff, MAX_PART_NUM);
 
-    UC(ini_rig_distr(s->q.nv, cart, /**/ &s->d));
+    UC(ini_rig_distr(s->q.nv, cart, L, /**/ &s->d));
 }
 
 static void ini_bounce_back(MPI_Comm cart, Rig *s, /**/ BounceBack *bb) {
@@ -272,7 +272,7 @@ void sim_ini(int argc, char **argv, MPI_Comm cart, /**/ Sim **sim) {
         UC(ini_colorer(s->rbc.q.nv, s->cart, /**/ &s->colorer));
 
     if (solids) {
-        UC(ini_rig(s->cart, /**/ &s->rig));
+        UC(ini_rig(s->cart, s->L, /**/ &s->rig));
 
         if (sbounce_back)
             UC(ini_bounce_back(s->cart, &s->rig, /**/ &s->bb));
