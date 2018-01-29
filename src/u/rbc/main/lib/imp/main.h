@@ -75,7 +75,12 @@ static void run2(const Coords *coords, int part_freq, const BForce *bforce, Move
 
 void run(const Coords *coords, int part_freq, const BForce *bforce, MoveParams * moveparams, const char *cell, const char *ic, const RbcParams *par) {
     RbcQuants q;
+    OffRead *off;
+    off_read(cell, /**/ &off);
+    
     rbc_ini(&q);
     run2(coords, part_freq, bforce, moveparams, cell, ic, par, q);
     rbc_fin(&q);
+
+    off_fin(off);
 }
