@@ -1,4 +1,4 @@
-static __device__ int tex2map(const int *start, int zplane, int n1, float x, float y, float z, /**/ Map *m) {
+static __device__ int tex2map(int3 L, const int *start, int zplane, int n1, float x, float y, float z, /**/ Map *m) {
     /* textures to map */
     int xstart, xcount;
     int zmy;
@@ -8,53 +8,50 @@ static __device__ int tex2map(const int *start, int zplane, int n1, float x, flo
     int cid0, cid1, cid2;
     int cnt0, cnt1, cnt2;
     int org0, org1, org2;
+    int xoffset, yoffset, zoffset;
+    int ncells;
 
-    enum {
-        XCELLS = XS,
-        YCELLS = YS,
-        ZCELLS = ZS,
-        XOFFSET = XCELLS / 2,
-        YOFFSET = YCELLS / 2,
-        ZOFFSET = ZCELLS / 2,
-        NCELLS  = XS*YS*ZS
-    };
+    xoffset = L.x / 2;
+    yoffset = L.y / 2;
+    zoffset = L.z / 2;
+    ncells = L.x * L.y * L.z;
 
-    xcenter = XOFFSET + (int)floorf(x);
+    xcenter = xoffset + (int)floorf(x);
     xstart = max(0, xcenter - 1);
-    xcount = min(XCELLS, xcenter + 2) - xstart;
+    xcount = min(L.x, xcenter + 2) - xstart;
 
-    if (xcenter - 1 >= XCELLS || xcenter + 2 <= 0) return 0;
+    if (xcenter - 1 >= L.x || xcenter + 2 <= 0) return 0;
 
-    ycenter = YOFFSET + (int)floorf(y);
+    ycenter = yoffset + (int)floorf(y);
 
-    zcenter = ZOFFSET + (int)floorf(z);
+    zcenter = zoffset + (int)floorf(z);
     zmy = zcenter - 1 + zplane;
-    zvalid = zmy >= 0 && zmy < ZCELLS;
+    zvalid = zmy >= 0 && zmy < L.z;
 
     count0 = count1 = count2 = 0;
 
-    if (zvalid && ycenter - 1 >= 0 && ycenter - 1 < YCELLS) {
-        cid0 = xstart + XCELLS * (ycenter - 1 + YCELLS * zmy);
+    if (zvalid && ycenter - 1 >= 0 && ycenter - 1 < L.y) {
+        cid0 = xstart + L.x * (ycenter - 1 + L.y * zmy);
         org0 = start[cid0];
-        count0 = ((cid0 + xcount == NCELLS)
+        count0 = ((cid0 + xcount == ncells)
                   ? n1
                   : start[cid0 + xcount]) -
             org0;
     }
 
-    if (zvalid && ycenter >= 0 && ycenter < YCELLS) {
-        cid1 = xstart + XCELLS * (ycenter + YCELLS * zmy);
+    if (zvalid && ycenter >= 0 && ycenter < L.y) {
+        cid1 = xstart + L.x * (ycenter + L.y * zmy);
         org1 = start[cid1];
-        count1 = ((cid1 + xcount == NCELLS)
+        count1 = ((cid1 + xcount == ncells)
                   ? n1
                   : start[cid1 + xcount]) -
             org1;
     }
 
-    if (zvalid && ycenter + 1 >= 0 && ycenter + 1 < YCELLS) {
-        cid2 = xstart + XCELLS * (ycenter + 1 + YCELLS * zmy);
+    if (zvalid && ycenter + 1 >= 0 && ycenter + 1 < L.y) {
+        cid2 = xstart + L.x * (ycenter + 1 + L.y * zmy);
         org2 = start[cid2];
-        count2 = ((cid2 + xcount == NCELLS)
+        count2 = ((cid2 + xcount == ncells)
                   ? n1
                   : start[cid2 + xcount]) -
             org2;

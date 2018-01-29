@@ -9,7 +9,7 @@ static void bulk_one_wrap(PaWrap *pw, FoWrap *fw, Fsi *fsi) {
     n0 = pw->n;
     n1 = wo->n;
 
-    KL(dev::bulk, (k_cnf(3*n0)), (wo->starts, (float*)ppA, cloud, 
+    KL(dev::bulk, (k_cnf(3*n0)), (fsi->L, wo->starts, (float*)ppA, cloud, 
                                   n0, n1,
                                   rnd, (float*)fw->ff, (float*)wo->ff));
 }

@@ -9,5 +9,5 @@ void fsi_halo(Fsi *fsi, Pap26 PP, Fop26 FF, int counts[26]) {
     for (i = s = 0; i < 26; ++i) starts.d[i + 1] = (s += counts[i]);
     n = starts.d[26];
 
-    KL(dev::halo, (k_cnf(n)), (wo->starts, starts, PP, FF, cloud, n, wo->n, rnd, /**/ (float*)wo->ff));
+    KL(dev::halo, (k_cnf(n)), (fsi->L, wo->starts, starts, PP, FF, cloud, n, wo->n, rnd, /**/ (float*)wo->ff));
 }

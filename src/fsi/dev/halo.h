@@ -8,7 +8,7 @@ static __device__ Pa warp2p(const Particle *pp, int i) {
     return p;
 }
 
-static __device__ void halo0(const int *start, Pa A, int aid, Cloud cloud, int nb, float seed, /**/ float *fA, float *ffB) {
+static __device__ void halo0(int3 L, const int *start, Pa A, int aid, Cloud cloud, int nb, float seed, /**/ float *fA, float *ffB) {
     enum {X, Y, Z};
 
     Pa B; /* remote particles */
@@ -21,7 +21,7 @@ static __device__ void halo0(const int *start, Pa A, int aid, Cloud cloud, int n
 
     fx = fy = fz = 0;
     for (zplane = 0; zplane < 3; ++zplane) {
-        if (!tex2map(start, zplane, nb, A.x, A.y, A.z, /**/ &m)) continue;
+        if (!tex2map(L, start, zplane, nb, A.x, A.y, A.z, /**/ &m)) continue;
         for (i = 0; !endp(m, i); ++i) {
             bid = m2id(m, i);
             cloud_get(cloud, bid, /**/ &B);
@@ -32,7 +32,7 @@ static __device__ void halo0(const int *start, Pa A, int aid, Cloud cloud, int n
     fA[X] += fx; fA[Y] += fy; fA[Z] += fz;
 }
 
-static __device__ void halo1(const int *cellsstart, int27 starts, Pap26 pp, Fop26 ff, int aid, Cloud cloud, int nb, float seed, /**/ float *ffB) {
+static __device__ void halo1(int3 L, const int *cellsstart, int27 starts, Pap26 pp, Fop26 ff, int aid, Cloud cloud, int nb, float seed, /**/ float *ffB) {
     int fid; /* fragment id */
     int start;
     Pa A;
@@ -46,12 +46,12 @@ static __device__ void halo1(const int *cellsstart, int27 starts, Pap26 pp, Fop2
 
     fA = ff.d[fid][aid-start].f;
 
-    halo0(cellsstart, A, aid, cloud, nb, seed, /**/ fA, ffB);
+    halo0(L, cellsstart, A, aid, cloud, nb, seed, /**/ fA, ffB);
 }
 
-__global__ void halo(const int *cellsstart, int27 starts, Pap26 pp, Fop26 ff, Cloud cloud, int na, int nb, float seed, /**/ float *ffB) {
+__global__ void halo(int3 L, const int *cellsstart, int27 starts, Pap26 pp, Fop26 ff, Cloud cloud, int na, int nb, float seed, /**/ float *ffB) {
     int aid;
     aid = threadIdx.x + blockDim.x * blockIdx.x;
     if (aid >= na) return;
-    halo1(cellsstart, starts, pp, ff, aid, cloud, nb, seed, /**/ ffB);
+    halo1(L, cellsstart, starts, pp, ff, aid, cloud, nb, seed, /**/ ffB);
 }

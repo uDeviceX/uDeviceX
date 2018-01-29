@@ -1,8 +1,9 @@
-void fsi_ini(int rank, /**/ Fsi **fsi) {
+void fsi_ini(int rank, int3 L, /**/ Fsi **fsi) {
     Fsi *f;
     UC(emalloc(sizeof(Fsi), (void**) fsi));
     f = *fsi;
-    
+
+    f->L = L;
     UC(rnd_ini(1908 - rank, 1409 + rank, 290, 12968, /**/ &f->rgen));
     UC(emalloc(sizeof(SolventWrap), (void**) &f->wo));
 }

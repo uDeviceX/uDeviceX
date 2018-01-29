@@ -10,4 +10,5 @@ struct SolventWrap {
 struct Fsi {
     SolventWrap *wo;
     RNDunif     *rgen;
+    int3 L; /* subdomain size */
 };
