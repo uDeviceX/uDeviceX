@@ -8,6 +8,8 @@ struct DRbcPack {
     /* optional: ids */
     DMap hmap;
     hBags hii;
+
+    int3 L; /* subdomain size */
 };
 
 struct DRbcComm {
@@ -20,5 +22,7 @@ struct DRbcUnpack {
 
     /* optional: ids */
     hBags hii;
+
+    int3 L; /* subdomain size */
 };
 // end::struct[]
