@@ -74,6 +74,7 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/scheme/restrain/sub      && \
     d $B/scheme/restrain/sub/stat && \
     d $B/scheme/restrain/sub/sum  && \
+    d $B/scheme/xrestrain         && \
     d $B/sim                      && \
     d $B/utils                    && \
     d $B/wall                     && \

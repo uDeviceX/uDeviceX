@@ -11,6 +11,6 @@ O = $B/coords/imp.o $B/d/api.o $B/io/bop/imp.o $B/io/com/imp.o $B/io/diag/imp.o 
     $B/scheme/move/imp.o $B/scheme/move/params/conf.o \
     $B/scheme/move/params/imp.o $B/scheme/restrain/imp.o \
     $B/scheme/restrain/sub/imp.o $B/scheme/restrain/sub/stat/imp.o \
-    $B/scheme/restrain/sub/sum/imp.o $B/u/rbc/area_volume/lib/imp.o \
-    $B/u/rbc/area_volume/main.o $B/utils/cc.o $B/utils/error.o $B/utils/imp.o \
-    $B/utils/mc.o $B/utils/msg.o $B/utils/os.o
+    $B/scheme/restrain/sub/sum/imp.o $B/scheme/xrestrain/imp.o \
+    $B/u/rbc/area_volume/lib/imp.o $B/u/rbc/area_volume/main.o $B/utils/cc.o \
+    $B/utils/error.o $B/utils/imp.o $B/utils/mc.o $B/utils/msg.o $B/utils/os.o

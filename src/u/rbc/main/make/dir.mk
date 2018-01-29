@@ -38,6 +38,7 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/scheme/restrain/sub      && \
     d $B/scheme/restrain/sub/stat && \
     d $B/scheme/restrain/sub/sum  && \
+    d $B/scheme/xrestrain         && \
     d $B/u/rbc/main               && \
     d $B/u/rbc/main/lib           && \
     d $B/utils                   
