@@ -22,7 +22,8 @@ static void dump(const Coords *coords, RbcQuants q, RbcForce t, MeshWrite *mesh_
     n = q.nc * q.nv;
     UC(emalloc(n*sizeof(Particle), (void**)&pp));
     cD2H(pp, q.pp, q.n);
-    mesh_write_rbc(m::cart, coords, pp, q.tri_hst, q.nc, q.nv, q.nt, i++);
+    UC(mesh_write_dump(mesh_write, m::cart, coords, q.nc, pp, i++));
+
     UC(rbc_force_stat(/**/ &area0, &volume0));
     UC(garea_volume(q, /**/ &area, &volume));
     msg_print("av: %g %g", area/area0, volume/volume0);
@@ -79,8 +80,8 @@ void run(const Coords *coords, int part_freq, const BForce *bforce, MoveParams *
     MeshWrite *mesh_write;
     UC(off_read(cell, /**/ &off));
     UC(mesh_write_ini_off(off, directory, /**/ &mesh_write));
-    
-    
+
+
     rbc_ini(&q);
     run2(coords, part_freq, bforce, moveparams, cell, ic, par, mesh_write, q);
     rbc_fin(&q);
