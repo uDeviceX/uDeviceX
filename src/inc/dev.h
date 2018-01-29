@@ -32,12 +32,6 @@
 #define Dalloc000(D, sz)    CC(Dalloc000000(D, sz))
 #define Dalloc(D, n)        CC(Dalloc000000(D, (n) * sizeof(**(D))))
 
-/* pinned memory  */
-#define Palloc(D, n) CC(d::alloc_pinned((void**)(void*)(D), (n) * sizeof(**(D))))
-#define Pfree(D)     CC(d::FreeHost(D))
-
-#define Link(D, H) CC(d::HostGetDevicePointer((void**)(void*)(D), H,   0))
-
 /* [d]evice set */
 #define Dset(P, v, n) CC(d::Memset(P, v, (n)*sizeof(*(P))))
 #define Dzero(P, n)   Dset(P, 0, n)

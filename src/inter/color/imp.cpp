@@ -4,6 +4,7 @@
 #include "inc/conf.h"
 
 #include "inc/def.h"
+#include "inc/dev.h"
 #include "inc/type.h"
 
 #include "d/api.h"
