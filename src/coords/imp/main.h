@@ -17,7 +17,7 @@ void coords_ini(MPI_Comm cart, Coords **c0) {
 
     UC(emalloc(sizeof(Coords), (void**) c0));
     c = *c0;
-    
+
     c->xc = coords[X];
     c->yc = coords[Y];
     c->zc = coords[Z];
@@ -153,13 +153,18 @@ bool is_end(const Coords *c, int dir) {
     return false;
 }
 
+static int bigp(int max, int x, int y, int z) {
+    return x > max || y > max || z > max;
+}
 void coord_stamp(const Coords *c, /**/ char *s) {
-    int r;
-    r = sprintf(s, "%03d.%03d.%03d", c->xc, c->yc, c->zc);
-    if (r < 0) ERR("sprintf failed");
+    int x, y, z;
+    x = c->xc; y = c->yc; z = c->zc;
+    if (bigp(999, x, y, z))
+        ERR("too big domain [%d %d %d]", x, y, z);
+    if (sprintf(s, "%03d.%03d.%03d", x, y, z) < 3)
+        ERR("sprintf failed [%d %d %d]", x, y, z);
 }
 
 int coords_size(const Coords *c) {
     return c->xd * c->yd * c->zd;
 }
-

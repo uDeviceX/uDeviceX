@@ -1,6 +1,7 @@
 #include <mpi.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <vector_types.h>
 
 #include <conf.h>
@@ -14,9 +15,12 @@
 #include "mpi/glb.h"
 #include "mpi/wrapper.h"
 #include "inc/type.h"
+
+#include "io/off/imp.h"
 #include "write/imp.h"
 
 #include "imp.h"
+#include "imp/type.h"
 
 #if   defined(MESH_SHIFT_EDGE)
    #include "imp/shift/edge.h"
@@ -26,3 +30,4 @@
    #error     MESH_SHIFT_* is undefined
 #endif
 #include "imp/main.h"
+#include "imp/new.h"

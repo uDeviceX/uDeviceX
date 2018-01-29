@@ -15,12 +15,13 @@
 #include "io/off/imp.h"
 #include "parser/imp.h"
 
+
 void main0(Config *c) {
     int nv, nt, md;
     OffRead *off;
     const char *i; /* input */
     UC(conf_lookup_string(c, "i", &i));
-    msg_print("i = `%s`", i);
+    msg_print("i = '%s'", i);
     UC(off_read(i, &off));
 
     md = off_get_md(off);

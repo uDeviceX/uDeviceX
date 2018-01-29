@@ -50,7 +50,7 @@ static void concatenate(int n, char **ss, /**/ char *a) {
 }
 
 static void read_file(const char *fname, /**/ config_t *c) {
-    msg_print("read config from <%s>", fname);
+    msg_print("read '%s'", fname);
     if (!config_read_file(c, fname))
         ERR( "%s:%d - %s\n", config_error_file(c),
              config_error_line(c), config_error_text(c));
