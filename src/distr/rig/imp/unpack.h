@@ -11,15 +11,15 @@ void drig_unpack_bulk(const DRigPack *p, /**/ RigQuants *q) {
     q->ns = ns;
 }
 
-static void shift(int fid, float r[3]) {
+static void shift(int3 L, int fid, float r[3]) {
     enum {X, Y, Z};
-    r[X] += XS * frag_i2d(fid, X);
-    r[Y] += YS * frag_i2d(fid, Y);
-    r[Z] += ZS * frag_i2d(fid, Z);
+    r[X] += L.x * frag_i2d(fid, X);
+    r[Y] += L.y * frag_i2d(fid, Y);
+    r[Z] += L.z * frag_i2d(fid, Z);
 }
 
-static void shift_ss_one_frag(int n, int fid, Solid *ss) {
-    for (int i = 0; i < n; ++i) shift(fid, ss[i].com);
+static void shift_ss_one_frag(int3 L, int n, int fid, Solid *ss) {
+    for (int i = 0; i < n; ++i) shift(L, fid, ss[i].com);
 }
 
 void drig_unpack_halo(const DRigUnpack *u, /**/ RigQuants *q) {
@@ -40,7 +40,7 @@ void drig_unpack_halo(const DRigUnpack *u, /**/ RigQuants *q) {
             CC(d::MemcpyAsync(q->i_pp + strtp, u->hipp.data[i], szp, H2D));
             dcommon_shift_one_frag(u->L, n, i, /**/ q->i_pp + strtp);
             /* solid */
-            shift_ss_one_frag(ns, i, /**/ (Solid*) u->hss.data[i]);
+            shift_ss_one_frag(u->L, ns, i, /**/ (Solid*) u->hss.data[i]);
             CC(d::MemcpyAsync(q->ss + strts, u->hss.data[i], szs, H2D));
         }
         strtp += n;
