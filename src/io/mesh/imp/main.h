@@ -67,43 +67,43 @@ static void wfaces(MPI_Comm cart, const int4 *faces, int nc, int nv, int nt, wri
     UC(efree(buf));
 }
 
-static void main0(MPI_Comm cart, const Particle *pp, const int4 *faces,
-                  int nc, int nv, int nt, write::File *f) {
+static void mesh_write0(MPI_Comm cart, const Particle *pp, const int4 *faces,
+                   int nc, int nv, int nt, write::File *f) {
     UC(header(cart, nc,        nv, nt, f));
     UC(vert(cart, pp,      nc, nv,     f));
     UC(wfaces(cart, faces, nc, nv, nt, f));
 }
 
-static void main1(MPI_Comm cart, const Coords *c, const Particle *pp, const int4 *faces, int nc, int nv, int nt, write::File *f) {
+static void mesh_write1(MPI_Comm cart, const Coords *c, const Particle *pp, const int4 *faces, int nc, int nv, int nt, write::File *f) {
     int sz, n;
     Particle *pp0;
     n = nc * nv;
     sz = n*sizeof(Particle);
     UC(emalloc(sz, (void**) &pp0));
     shift(c, pp, n, /**/ pp0); /* copy-shift to global coordinates */
-    UC(main0(cart, pp0, faces, nc, nv, nt, f));
+    UC(mesh_write0(cart, pp0, faces, nc, nv, nt, f));
     UC(efree(pp0));
 }
 
-static void main(MPI_Comm cart, const Coords *coords, const Particle *pp, const int4 *faces, int nc, int nv, int nt, const char *fn) {
+static void mesh_write(MPI_Comm cart, const Coords *coords, const Particle *pp, const int4 *faces, int nc, int nv, int nt, const char *fn) {
     write::File *f;
     UC(write::fopen(cart, fn, /**/ &f));
-    UC(main1(cart, coords, pp, faces, nc, nv, nt, f));
+    UC(mesh_write1(cart, coords, pp, faces, nc, nv, nt, f));
     UC(write::fclose(f));
 }
 
-void rbc(MPI_Comm cart, const Coords *coords, const Particle *pp, const int4 *faces, int nc, int nv, int nt, int id) {
+void mesh_write_rbc(MPI_Comm cart, const Coords *coords, const Particle *pp, const int4 *faces, int nc, int nv, int nt, int id) {
     const char *fmt = DUMP_BASE "/r/%05d.ply";
-    char f[BUFSIZ]; /* file name */
+    char f[FILENAME_MAX]; /* file name */
     sprintf(f, fmt, id);
     if (m::is_master(cart)) UC(os_mkdir(DUMP_BASE "/r"));
-    UC(main(cart, coords, pp, faces, nc, nv, nt, f));
+    UC(mesh_write(cart, coords, pp, faces, nc, nv, nt, f));
 }
 
-void rig(MPI_Comm cart, const Coords *coords, const Particle *pp, const int4 *faces, int nc, int nv, int nt, int id) {
+void mesh_write_rig(MPI_Comm cart, const Coords *coords, const Particle *pp, const int4 *faces, int nc, int nv, int nt, int id) {
     const char *fmt = DUMP_BASE "/s/%05d.ply";
     char f[FILENAME_MAX];
     sprintf(f, fmt, id);
     if (m::is_master(cart)) UC(os_mkdir(DUMP_BASE "/s"));
-    UC(main(cart, coords, pp, faces, nc, nv, nt, f));
+    UC(mesh_write(cart, coords, pp, faces, nc, nv, nt, f));
 }

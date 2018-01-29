@@ -51,7 +51,7 @@ static void dump_rbcs(Sim *s) {
     const Rbc *r = &s->rbc;
     static int id = 0;
     cD2H(s->pp_dump, r->q.pp, r->q.n);
-    io::mesh::rbc(s->cart, s->coords, s->pp_dump, r->q.tri_hst, r->q.nc, r->q.nv, r->q.nt, id++);
+    UC(mesh_write_rbc(s->cart, s->coords, s->pp_dump, r->q.tri_hst, r->q.nc, r->q.nv, r->q.nt, id++));
 }
 
 static void dump_rbc_coms(Sim *s) {
@@ -82,7 +82,7 @@ void dump_diag_after(int it, bool wall0, bool solid0, Sim *s) { /* after wall */
         rig_dump(it, rig->q.ss_dmp, rig->q.ss_dmp_bb, rig->q.ns, s->coords);
 
         cD2H(s->pp_dump, rig->q.i_pp, rig->q.ns * rig->q.nv);
-        io::mesh::rig(s->cart, s->coords, s->pp_dump, rig->q.htt, rig->q.ns, rig->q.nv, rig->q.nt, id++);
+        mesh_write_rig(s->cart, s->coords, s->pp_dump, rig->q.htt, rig->q.ns, rig->q.nv, rig->q.nt, id++);
     }
 }
 
