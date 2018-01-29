@@ -166,7 +166,13 @@ static void ini_rbc(const Config *cfg, MPI_Comm cart, /**/ Rbc *r) {
 }
 
 static void ini_rig(MPI_Comm cart, /**/ Rig *s) {
+    const int4 *tt;
+    int nv, nt;
+
     UC(rig_ini(&s->q));
+    tt = s->q.htt; nv = s->q.nv; nt = s->q.nt;
+    UC(mesh_write_ini(tt, nv, nt, "s", /**/ &s->mesh_write));
+
     UC(scan_work_ini(XS * YS * ZS, /**/ &s->ws));
     UC(emalloc(sizeof(&s->ff_hst)*MAX_PART_NUM, (void**) &s->ff_hst));
     Dalloc(&s->ff, MAX_PART_NUM);
