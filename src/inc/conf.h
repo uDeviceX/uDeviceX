@@ -273,7 +273,7 @@
 
 /* make a center of mass velocity zero? */
 #if defined(RESTRAIN_RED_VEL) || defined(RESTRAIN_RBC_VEL) ||   \
-    defined(RESTRAIN_NONE)
+    defined(RESTRAIN_NONE) || defined(RESTRAIN_REPORT_FREQ)
   #error RESTRAIN in runtime now
 #endif
 
@@ -285,12 +285,6 @@
 #ifndef RBC_STRESS_FREE
   #define RBC_STRESS_FREE (false)
 #endif
-
-/* MSG frequency */
-#ifndef RESTRAIN_REPORT_FREQ
-  #define RESTRAIN_REPORT_FREQ (1000)
-#endif
-
 
 /* DPD kernel envelop parameter: random and dissipative kernels (wd = wr^2)
    0: wr = 1 - r

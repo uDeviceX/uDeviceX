@@ -20,7 +20,7 @@ x=24 y=16 z=16; echo 1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 > rbcs-ic.txt
 :
 u.conf $S $U $C <<!
    rbcs
-   RBC_STRETCH RESTRAIN_RBC_VEL MESH_SHIFT_CENTER RBCtotArea=$area RBCtotVolume=$volume
+   RBC_STRETCH MESH_SHIFT_CENTER RBCtotArea=$area RBCtotVolume=$volume
    XS=48 YS=32 ZS=32 RBCnv=$nv RBC_RND=false
    dt=1e-4 tend=10
    run
@@ -33,6 +33,10 @@ rbc = {
     kBT = 0.00444302;
     ks = 3.26692647;
 }
+restrain = {
+    kind = "rbc";
+    freq = 1000;
+};
 dump = {
     parts = true;
     freq_parts = 10000;

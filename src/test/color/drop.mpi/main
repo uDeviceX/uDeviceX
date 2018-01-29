@@ -10,7 +10,6 @@ Walls="walls wall_creation=1"
 u.conf $s $u conf/zurich.h <<!!!
    $Domain
    $Walls
-   RESTRAIN_RED_VEL
    numberdensity=2
    tend=4.01
    kBT=0.00444302
@@ -27,6 +26,10 @@ wvel = {
     gdot = 5.0;
     vdir = 0;
     gdir = 1;
+};
+restrain = {
+    kind = "red";
+    freq = 1000;
 };
 iccolor = {
     kind = "drop";
