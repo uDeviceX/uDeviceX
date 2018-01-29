@@ -105,7 +105,7 @@ void restrain(long it, Sim *s) {
     qq.on = s->flu.q.n;
     qq.rn = s->rbc.q.n;
     
-    scheme_restrain_apply(s->cart, s->flu.q.cc, it, /**/ qq);
+    scheme_restrain_apply(s->cart, s->flu.q.cc, it, /**/ s->restrain, qq);
 }
 
 void bounce_wall(const Coords *c, Wall *w, /**/ Flu *f, Rbc *r) {

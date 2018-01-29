@@ -18,4 +18,5 @@ void scheme_restrain_set_freq(int freq, Restrain*);
 
 void scheme_restrain_set_conf(const Config*, Restrain*);
 
-void scheme_restrain_apply(MPI_Comm, const Restrain*, const int *cc, long it, /**/ SchemeQQ);
+void scheme_restrain_apply(MPI_Comm comm, const int *cc, long it, /**/ Restrain *r, SchemeQQ qq);
+
