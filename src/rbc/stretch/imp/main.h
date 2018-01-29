@@ -31,7 +31,7 @@ static void ini1(const char* path, int n, /**/ RbcStretch *f) {
     d = f->f;
     UC(emalloc(3 * n * sizeof(float), (void**) &h));
     UC(ini0(path, n, /*w*/ h, /**/ d));
-    free(h);
+    UC(efree(h));
 }
 
 void rbc_stretch_ini(const char* path, int nv, /**/ RbcStretch **fp) {
@@ -44,7 +44,7 @@ void rbc_stretch_ini(const char* path, int nv, /**/ RbcStretch **fp) {
 
 void rbc_stretch_fin(RbcStretch *f) {
     dealloc(f);
-    free(f);
+    UC(efree(f));
 }
 
 void rbc_stretch_apply(int nm, const RbcStretch *f, /**/ Force *ff) {
