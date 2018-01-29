@@ -19,11 +19,19 @@
 #include "parser/imp.h"
 
 static void write(const char *o, OffRead *cell) {
+    int nc;
     MeshWrite *m;
     Coords *c;
+    MPI_Comm cart;
+    Particle *pp;
+
+    cart = m::cart;
     UC(mesh_write_ini_off(cell, o, /**/ &m));
-    UC(coords_ini(m::cart, /**/ &c));
-    
+    UC(coords_ini(cart, /**/ &c));
+
+    nc = 1;
+    mesh_write_dump(cart, c, nc, pp, m, 0);
+
     UC(coords_fin(c));
     UC(mesh_write_fin(m));
 }
