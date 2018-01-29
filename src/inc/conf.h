@@ -272,9 +272,9 @@
 #endif
 
 /* make a center of mass velocity zero? */
-#if !defined(RESTRAIN_RED_VEL) && !defined(RESTRAIN_RBC_VEL) && \
-    !defined(RESTRAIN_NONE)
-  #define RESTRAIN_NONE
+#if defined(RESTRAIN_RED_VEL) || defined(RESTRAIN_RBC_VEL) ||   \
+    defined(RESTRAIN_NONE)
+  #error RESTRAIN in runtime now
 #endif
 
 /* RBC membrane parameter sets */
