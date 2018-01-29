@@ -27,6 +27,7 @@ A list of coding conventions can be found link:conventions{lext}[here].
 * red blood cell: link:modules/rbc/main{lext}[rbc]
 * redistribution: link:modules/distr{lext}[distr]
 * solvent interactions: link:modules/fluforces{lext}[fluforces]
+* time stepping scheme: link:modules/move{lext}[scheme/move]
 * uDevice utilities: link:modules/utils/main{lext}[utils]
 * wall velocity: link:modules/wvel{lext}[wvel]
 
