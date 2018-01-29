@@ -27,6 +27,10 @@ wvel = {
     vdir = 0;
     gdir = 1;
 };
+iccolor = {
+    kind = "drop";
+    R    = 4.0;
+};
 dump = {
     field = true;
     parts = true;
