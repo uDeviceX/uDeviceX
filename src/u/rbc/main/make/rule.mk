@@ -42,6 +42,7 @@ $B/scheme/restrain/imp.o: $S/scheme/restrain/imp.cpp; $X -I$S/. -I$S/scheme/rest
 $B/scheme/restrain/sub/imp.o: $S/scheme/restrain/sub/imp.cu; $N -I$S/. -I$S/scheme/restrain/sub
 $B/scheme/restrain/sub/stat/imp.o: $S/scheme/restrain/sub/stat/imp.cpp; $X -I$S/. -I$S/scheme/restrain/sub/stat
 $B/scheme/restrain/sub/sum/imp.o: $S/scheme/restrain/sub/sum/imp.cpp; $X -I$S/. -I$S/scheme/restrain/sub/sum
+$B/scheme/xrestrain/conf.o: $S/scheme/xrestrain/conf.cpp; $X -I$S/. -I$S/scheme/xrestrain
 $B/scheme/xrestrain/imp.o: $S/scheme/xrestrain/imp.cu; $N -I$S/. -I$S/scheme/xrestrain
 $B/u/rbc/main/lib/imp.o: $S/u/rbc/main/lib/imp.cu; $N -I$S/. -I$S/u/rbc/main/lib
 $B/u/rbc/main/main.o: $S/u/rbc/main/main.cpp; $X -I$S/. -I$S/u/rbc/main
