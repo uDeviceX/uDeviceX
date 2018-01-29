@@ -11,7 +11,6 @@
 #include "sub/imp.h"
 #include "imp.h"
 
-namespace scheme { namespace restrain {
 #if   defined(RESTRAIN_NONE)
   #include "imp/none.h"
 #elif defined(RESTRAIN_RED_VEL)
@@ -21,4 +20,3 @@ namespace scheme { namespace restrain {
 #else
   #error RESTRAIN_* is undefined
 #endif
-}} /* namespace */

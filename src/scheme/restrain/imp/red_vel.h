@@ -14,7 +14,7 @@ static void report(int it) {
     if (cond) report0();
 }
 
-void main(MPI_Comm cart, const int *cc, NN nn, long it, /**/ QQ qq) {
-    color::vel(cart, cc, RED_COLOR, nn.o, /**/ qq.o);
+void scheme_restrain_apply(MPI_Comm cart, const int *cc, long it, /**/ SchemeQQ qq) {
+    color::vel(cart, cc, RED_COLOR, qq.on, /**/ qq.o);
     report(it);
 }

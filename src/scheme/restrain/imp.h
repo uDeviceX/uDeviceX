@@ -1,6 +1,6 @@
-namespace scheme { namespace restrain {
-/* quantaties and sizes */
-struct QQ {Particle *o, *r;};
-struct NN {int o, r;};
-void main(MPI_Comm comm, const int *cc, NN, long it, /**/ QQ);
-}}  /* namespace */
+/* quantities and sizes wrapper */
+struct SchemeQQ {
+    Particle *o, *r;
+    int on, rn;
+};
+void scheme_restrain_apply(MPI_Comm comm, const int *cc, long it, /**/ SchemeQQ);

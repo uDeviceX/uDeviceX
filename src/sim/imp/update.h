@@ -98,15 +98,14 @@ void update_rbc(MoveParams * moveparams, long it, Rbc *r, Sim *s) {
 }
 
 void restrain(long it, Sim *s) {
-    scheme::restrain::QQ qq;
-    scheme::restrain::NN nn;
+    SchemeQQ qq;
     
     qq.o = s->flu.q.pp;
     qq.r = s->rbc.q.pp;
-
-    nn.o = s->flu.q.n;
-    nn.r = s->rbc.q.n;
-    scheme::restrain::main(s->cart, s->flu.q.cc, nn, it, /**/ qq);
+    qq.on = s->flu.q.n;
+    qq.rn = s->rbc.q.n;
+    
+    scheme_restrain_apply(s->cart, s->flu.q.cc, it, /**/ qq);
 }
 
 void bounce_wall(const Coords *c, Wall *w, /**/ Flu *f, Rbc *r) {
