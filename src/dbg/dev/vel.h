@@ -5,23 +5,23 @@ static __device__ bool valid_vel(float v, int L) {
     return true;
 }
 
-static __device__ bool valid_vel3(float vx, float vy, float vz) {
+static __device__ bool valid_vel3(int3 L, float vx, float vy, float vz) {
     bool ok = true;
-    ok &= valid_vel(vx, XS);
-    ok &= valid_vel(vy, YS);
-    ok &= valid_vel(vz, ZS);
+    ok &= valid_vel(vx, L.x);
+    ok &= valid_vel(vy, L.y);
+    ok &= valid_vel(vz, L.z);
 
     return ok;
 }
 
-static __device__ err_type valid_vv(const Particle p, bool verbose) {
+static __device__ err_type valid_vv(int3 L, const Particle p, bool verbose) {
     enum {X, Y, Z};
     err_type e;
     const float *v = p.v;
     e = check_float3(v);
     if (e != ERR_NONE) return e;
-    if ( valid_vel3(v[X], v[Y], v[Z])) e = ERR_NONE;
-    else                               e = ERR_INVALID;
+    if ( valid_vel3(L, v[X], v[Y], v[Z])) e = ERR_NONE;
+    else                                  e = ERR_INVALID;
 
     if (verbose && e != ERR_NONE)
         printf("DBG: vel: p = [%g, %g %g], [%g, %g, %g]\n",
@@ -30,11 +30,11 @@ static __device__ err_type valid_vv(const Particle p, bool verbose) {
     return e;
 }
 
-__global__ void check_vv(const Particle *pp, int n, bool verbose = true) {
+__global__ void check_vv(int3 L, const Particle *pp, int n, bool verbose = true) {
     int i = threadIdx.x + blockIdx.x * blockDim.x;
     Particle p;
     if (i >= n) return;
     p = pp[i];
-    err_type e = valid_vv(p, verbose);
+    err_type e = valid_vv(L, p, verbose);
     report(e);
 }

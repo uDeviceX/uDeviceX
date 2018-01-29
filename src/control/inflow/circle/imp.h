@@ -22,7 +22,7 @@ void inflow_ini_params_circle(const Coords *c, float3 o, float R, float H, float
         pp->R = R;
         pp->H = H;
 
-        if (R > XS/2 || R > YS/2 || H > ZS)
+        if (R > xs(c)/2 || R > ys(c)/2 || H > zs(c))
             ERR("dimensions should be smaller");
     
         vpp->u = u;

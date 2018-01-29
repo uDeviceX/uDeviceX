@@ -148,6 +148,13 @@ int zhi(const Coords *c) { return zl2zg(c, 0) + 0.5*c->Lz; }
 int xs(const Coords *c) { return c->Lx; }
 int ys(const Coords *c) { return c->Ly; }
 int zs(const Coords *c) { return c->Lz; }
+int3 subdomain(const Coords *c) {
+    int3 L;
+    L.x = xs(c);
+    L.y = ys(c);
+    L.z = zs(c);
+    return L;
+}
 
 /* rank predicates */
 

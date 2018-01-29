@@ -20,8 +20,8 @@ void inflow_ini_params_plate(const Coords *c, float3 o, int dir, float L1, float
     float3 a, b, lo, hi;
     float3 co, ca, cb; // corners of the local plane : co (origin), ca, cb
 
-    lo = make_float3(-XS/2, -YS/2, -ZS/2);
-    hi = make_float3( XS/2,  YS/2,  ZS/2);
+    lo = make_float3(-xs(c)/2, -ys(c)/2, -zs(c)/2);
+    hi = make_float3( xs(c)/2,  ys(c)/2,  zs(c)/2);
     
     pp = &i->p.plate;
     vpp = &i->vp.plate;

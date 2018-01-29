@@ -1,6 +1,7 @@
 struct Coords;
 struct Coords_v;
 struct float3;
+struct int3;
 
 // tag::view[]
 void coords_get_view(const Coords *c, Coords_v *v);
@@ -56,6 +57,7 @@ int zhi(const Coords*);
 int xs(const Coords*);
 int ys(const Coords*);
 int zs(const Coords*);
+int3 subdomain(const Coords*);
 // end::subdomainsz[]
 
 // tag::int[]

@@ -86,10 +86,11 @@ static void print() {
 } 
 
 void dbg_check_pos(const Coords *c, const char *base, const Dbg *dbg, int n, const Particle *pp) {
+    int3 L = subdomain(c);
     if (!check(dbg, DBG_POS))
         return;
     UC(err_ini());
-    KL(devdbg::check_pos, (k_cnf(n)), (pp, n));
+    KL(devdbg::check_pos, (k_cnf(n)), (L, pp, n));
     if (error()) {
         if (dbg->dump)
             dump_pp(c, base, n, pp);
@@ -98,10 +99,11 @@ void dbg_check_pos(const Coords *c, const char *base, const Dbg *dbg, int n, con
 }
 
 void dbg_check_pos_soft(const Coords *c, const char *base, const Dbg *dbg, int n, const Particle *pp) {
+    int3 L = subdomain(c);
     if (!check(dbg, DBG_POS_SOFT))
         return;
     UC(err_ini());
-    KL(devdbg::check_pos_pu, (k_cnf(n)), (pp, n));
+    KL(devdbg::check_pos_pu, (k_cnf(n)), (L, pp, n));
     if (error()) {
         if (dbg->dump)
             dump_pp(c, base, n, pp);
@@ -110,10 +112,12 @@ void dbg_check_pos_soft(const Coords *c, const char *base, const Dbg *dbg, int n
 }
 
 void dbg_check_vel(const Coords *c, const char *base, const Dbg *dbg, int n, const Particle *pp) {
+    int3 L = subdomain(c);
+    
     if (!check(dbg, DBG_VEL))
         return;
     UC(err_ini());
-    KL(devdbg::check_vv, (k_cnf(n)), (pp, n));
+    KL(devdbg::check_vv, (k_cnf(n)), (L, pp, n));
     if (error()) {
         if (dbg->dump)
             dump_pp(c, base, n, pp);
@@ -122,10 +126,12 @@ void dbg_check_vel(const Coords *c, const char *base, const Dbg *dbg, int n, con
 }
 
 void dbg_check_forces(const Coords *c, const char *base, const Dbg *dbg, int n, const Particle *pp, const Force *ff) {
+    int3 L = subdomain(c);
+    
     if (!check(dbg, DBG_FORCES))
         return;
     UC(err_ini());
-    KL(devdbg::check_ff, (k_cnf(n)), (ff, n));
+    KL(devdbg::check_ff, (k_cnf(n)), (L, ff, n));
     if (error()) {
         if (dbg->dump)
             dump_pp_ff(c, base, n, pp, ff);
