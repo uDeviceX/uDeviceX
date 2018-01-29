@@ -20,20 +20,20 @@
 
 static void write(const char *o, OffRead *cell) {
     int nc;
-    MeshWrite *m;
+    MeshWrite *mesh;
     Coords *c;
     MPI_Comm cart;
     Particle *pp;
 
     cart = m::cart;
-    UC(mesh_write_ini_off(cell, o, /**/ &m));
+    UC(mesh_write_ini_off(cell, o, /**/ &mesh));
     UC(coords_ini(cart, /**/ &c));
 
-    nc = 1;
-    mesh_write_dump(cart, c, nc, pp, m, 0);
+    nc = 1; pp = NULL;
+    UC(mesh_write_dump(mesh, cart, c, nc, pp, 0));
 
     UC(coords_fin(c));
-    UC(mesh_write_fin(m));
+    UC(mesh_write_fin(mesh));
 }
 
 static void log(OffRead *cell) {

@@ -28,6 +28,16 @@ void mesh_write_fin(MeshWrite *q) {
     UC(efree(q));
 }
 
-void mesh_write_dump(MPI_Comm comm, const Coords *coord, int nc, const Particle *pp, MeshWrite *q, int id) {
-
+static void mkdir(const char* directory) {
+    char directory0[FILENAME_MAX];
+    if (sprintf(directory0, "%s/%s", DUMP_BASE, directory) < 0)
+        ERR("sprintf failed");
+    UC(os_mkdir(directory0));
+    msg_print("mkdir '%s'", directory0);
+}
+void mesh_write_dump(MeshWrite *q, MPI_Comm comm, const Coords *coord, int nc, const Particle *pp, int id) {
+    if (!q->directory_exists) {
+        q->directory_exists = 1;
+        UC(mkdir(q->directory));
+    }
 }
