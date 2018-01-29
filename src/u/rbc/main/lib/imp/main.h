@@ -30,9 +30,8 @@ static void dump(const Coords *coords, RbcQuants q, RbcForce t) {
     free(pp);
 }
 
-static int body_force(const Coords *coords, const BForce *bf, RbcQuants q, Force *f) {
+static void body_force(const Coords *coords, const BForce *bf, RbcQuants q, Force *f) {
     UC(bforce_apply(0, coords, rbc_mass, bf, q.n, q.pp, /**/ f));
-    return 0;
 }
 
 static void run0(const Coords *coords, int part_freq, const BForce *bforce,
