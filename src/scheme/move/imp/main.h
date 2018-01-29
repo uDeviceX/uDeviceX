@@ -3,9 +3,9 @@ void scheme_move_apply(MoveParams * par, float mass, int n, const Force *ff, Par
     MoveParams_v parv;
     parv = scheme_move_params_get_view(par);
 
-    KL(dev::update, (k_cnf(n)), (parv, mass, pp, ff, n));
+    KL(scheme_move_dev::update, (k_cnf(n)), (parv, mass, pp, ff, n));
 }
 
 void scheme_move_clear_vel(int n, /**/ Particle *pp) {
-    KL(dev::clear_vel, (k_cnf(n)), (n, /**/ pp));
+    KL(scheme_move_dev::clear_vel, (k_cnf(n)), (n, /**/ pp));
 }

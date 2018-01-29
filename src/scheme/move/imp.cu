@@ -20,7 +20,7 @@
 
 #include "imp.h"
 
-namespace dev {
+namespace scheme_move_dev {
 #ifdef FORWARD_EULER
   #include "dev/euler.h"
 #else
