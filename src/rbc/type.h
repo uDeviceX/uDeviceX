@@ -19,7 +19,7 @@ struct RbcQuants {
 
     int nt, nv;            /* number of triangles and vertices per mesh */
     int *adj0, *adj1;      /* adjacency lists on device                 */
-    AreaVolume *area_volume; /* a structure for Area and volume computations */
+    AreaVolume *area_volume; /* a structure for area and volume computations */
 
     Shape shape;
 };
