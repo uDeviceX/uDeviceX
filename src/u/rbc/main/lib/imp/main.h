@@ -30,8 +30,8 @@ static void dump(const Coords *coords, RbcQuants q, RbcForce t) {
     free(pp);
 }
 
-static void body_force(const Coords *coords, const BForce *bf, RbcQuants q, Force *f) {
-    UC(bforce_apply(0, coords, rbc_mass, bf, q.n, q.pp, /**/ f));
+static void body_force(long it, const Coords *coords, const BForce *bf, RbcQuants q, Force *f) {
+    UC(bforce_apply(it, coords, rbc_mass, bf, q.n, q.pp, /**/ f));
 }
 
 static void run0(const Coords *coords, int part_freq, const BForce *bforce,
@@ -44,7 +44,7 @@ static void run0(const Coords *coords, int part_freq, const BForce *bforce,
         Dzero(f, q.n);
         rbc_force_apply(q, t, par, /**/ f);
         stretch::apply(q.nc, stretch, /**/ f);
-        if (pushrbc) body_force(coords, bforce, q, /**/ f);
+        if (pushrbc) body_force(i, coords, bforce, q, /**/ f);
         scheme_move_apply(moveparams, rbc_mass, q.n, f, q.pp);
         if (i % part_freq  == 0) dump(coords, q, t);
 #ifdef RBC_CLEAR_VEL
