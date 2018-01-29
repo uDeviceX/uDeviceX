@@ -1,8 +1,0 @@
-# filter out files in u/
-find . \
-     -type d       -o  \
-     -name '*.cu'  -o  \
-     -name '*.cpp' -o  \
-     -name '*.h'    |  \
-    grep -v '^\.\/u/'
-
