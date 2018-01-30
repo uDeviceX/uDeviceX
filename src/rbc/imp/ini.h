@@ -11,7 +11,7 @@ static void ini_ids(RbcQuants *q) { UC(emalloc(MAX_CELL_NUM * sizeof(int), (void
 static void ini_edg(RbcQuants *q)  { Dalloc(&q->shape.edg,  q->nv * RBCmd); }
 static void ini_anti(RbcQuants *q) { Dalloc(&q->shape.anti, q->nv * RBCmd); }
 
-void rbc_ini(RbcQuants *q) {
+void rbc_ini(OffRead *cell, RbcQuants *q) {
     q->n = q->nc = 0;
     q->nt = RBCnt;
     q->nv = RBCnv;

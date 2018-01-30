@@ -56,7 +56,7 @@ void run(const char *cell, const char *ic, const RbcParams *par) {
     OffRead *off;
     RbcQuants q;
     UC(off_read(cell, /**/ &off));
-    UC(rbc_ini(&q));
+    UC(rbc_ini(off, &q));
     UC(run2(off, ic, par, q));
     UC(rbc_fin(&q));
     UC(off_fin(off));

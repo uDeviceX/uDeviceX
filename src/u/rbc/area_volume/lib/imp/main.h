@@ -13,25 +13,23 @@ static void run0(RbcQuants q, RbcForce t) {
     printf("%g %g\n", area, volume);
 }
 
-static void run1(const char *cell, const char *ic, RbcQuants q) {
+static void run1(OffRead *off, const char *ic, RbcQuants q) {
     Coords *coords;
-    coords_ini(m::cart, XS, YS, ZS, &coords);
     RbcForce t;
-    OffRead *off;
-    UC(off_read(cell, /**/ &off));
-    
+    coords_ini(m::cart, XS, YS, ZS, &coords);
     rbc_gen_quants(coords, m::cart, off, ic, /**/ &q);
     rbc_force_gen(q, &t);
     UC(run0(q, t));
     rbc_force_fin(&t);
-
-    UC(off_fin(off));
     coords_fin(coords);
 }
 
 void run(const char *cell, const char *ic) {
     RbcQuants q;
-    UC(rbc_ini(&q));
-    UC(run1(cell, ic, q));
+    OffRead *off;
+    UC(off_read(cell, /**/ &off));
+    UC(rbc_ini(off, &q));
+    UC(run1(off, ic, q));
+    UC(off_fin(off));
     UC(rbc_fin(&q));
 }
