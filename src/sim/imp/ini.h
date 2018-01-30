@@ -262,7 +262,7 @@ void sim_ini(int argc, char **argv, MPI_Comm cart, /**/ Sim **sim) {
     if (rbcs || solids)
         UC(ini_objinter(s->cart, s->L, /**/ &s->objinter));
 
-    UC(bop_ini(s->cart, &s->dumpt));
+    UC(bop_ini(s->cart, MAX_PART_NUM, &s->dumpt));
 
     if (walls) ini_wall(cfg, &s->wall);
 
