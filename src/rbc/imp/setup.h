@@ -93,7 +93,7 @@ static void setup0(int md, int nt, int nv, const char *cell, /**/
     UC(efree(tri));
 }
 
-static void setup(int md, int nt, int nv, const char *cell, /**/ RbcQuants *q) {
+static void setup(int md, int nt, int nv, const char *cell, OffRead *off, /**/ RbcQuants *q) {
     setup0(md, nt, nv, cell, /**/
            q->shape.anti, q->shape.edg, &q->shape.totArea,
            q->area_volume, q->adj0, q->adj1);

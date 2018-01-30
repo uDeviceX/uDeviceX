@@ -19,7 +19,7 @@ void rbc_gen_quants(const Coords *coords, MPI_Comm comm, const char *cell, OffRe
     md = RBCmd;
     nt = RBCnt;
     nv = RBCnv;
-    setup(md, nt, nv, cell, /**/ q);
+    setup(md, nt, nv, cell, off, /**/ q);
     setup_from_pos(coords, comm, cell, ic, q->nv, /**/ q->pp, &q->nc, &q->n, /*w*/ q->pp_hst);
     if (rbc_ids)
         gen_ids(comm, q->nc, /**/ q->ii);
