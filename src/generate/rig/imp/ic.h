@@ -25,10 +25,10 @@ static int read_coms(const char *fname, /**/ float* coms) {
 }
 
 /* bbox: minx, maxx, miny, maxy, minz, maxz */
-static int duplicate_PBC(const float3 minbb, const float3 maxbb, int n, /**/ float *coms) {
+static int duplicate_PBC(const Coords *c, const float3 minbb, const float3 maxbb, int n, /**/ float *coms) {
     DBG("duplicating using bbox %g %g %g, %g %g %g", minbb.x, minbb.y, minbb.z, maxbb.x, maxbb.y, maxbb.z);
     struct f3 {float x[3];};
-    const int Lg[3] = {XS * m::dims[X], YS * m::dims[Y], ZS * m::dims[Z]};
+    const int Lg[3] = {xdomain(c), ydomain(c), zdomain(c)};
     int id = n;
     for (int j = 0; j < n; ++j) {
         f3 r0 = {coms[3*j + X], coms[3*j + Y], coms[3*j + Z]};
@@ -74,12 +74,17 @@ static void make_local(const Coords *coords, const int n, /**/ float *coms) {
     }
 }
 
+static int max3(int a, int b, int c) {
+    int d = a > b ? a : b;
+    return d > c ? d : c;
+}
+
 static void count_pp_inside(const Particle *s_pp, const int n, const float *coms, const int ns,
                             const int4 *tt, const float *vv, const int nt,
                             /**/ int *tags, int *rcounts) {
     for (int j = 0; j < ns; ++j) rcounts[j] = 0;
 
-    const float R = (XS > YS) ? (XS > ZS ? XS : ZS) : (YS > ZS ? YS : ZS);
+    const float R = max3(XS, YS, ZS);
 
     for (int ip = 0; ip < n; ++ip) {
         const Particle p = s_pp[ip]; const float *r0 = p.r;

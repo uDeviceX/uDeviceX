@@ -81,7 +81,7 @@ static void gen4(const Coords *coords, MPI_Comm comm, const char *fname, int nt,
     int nsolid = read_coms(fname, /**/ coms);
     if (nsolid == 0) ERR("No solid provided.\n");
     mesh_get_bbox(vv, nv, /**/ &minbb, &maxbb);
-    nsolid = duplicate_PBC(minbb, maxbb, nsolid, /**/ coms);
+    nsolid = duplicate_PBC(coords, minbb, maxbb, nsolid, /**/ coms);
     make_local(coords, nsolid, /**/ coms);
     gen3(coords, comm, nt, tt, vv, nsolid, coms, /**/ ns, nps, rr0, ss, s_n, s_pp, r_pp);
 }
