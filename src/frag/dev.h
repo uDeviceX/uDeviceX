@@ -1,4 +1,4 @@
-__device__ inline int frag_get_fid(const int a[], const int i) {
+static __device__ int frag_get_fid(const int a[], const int i) {
     /* [f]ragment [id] : where is `i' in sorted a[27]? */
     int k1, k3, k9;
     k9 = 9 * ((i >= a[9])           + (i >= a[18]));
