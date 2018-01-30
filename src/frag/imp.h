@@ -7,8 +7,8 @@ namespace fraghst {
 int i2dx(int i);
 int i2dy(int i);
 int i2dz(int i);
-int frag_i2d(int i, int dir);
-void frag_i2d3(int i, /**/ int d[3]);
+int i2d(int i, int dir);
+void i2d3(int i, /**/ int d[3]);
 
 int frag_d2i(int x, int y, int z);
 int frag_d32i(const int d[3]);

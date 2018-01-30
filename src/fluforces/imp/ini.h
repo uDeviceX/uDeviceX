@@ -20,7 +20,7 @@ static void get_interrank_infos(MPI_Comm cart, int fid, /**/ RNDunif* trunks[], 
     int seed, seed_base, seed_offset;
     int dims[3], periods[3], coords[3];
     int d[3];
-    fraghst::frag_i2d3(fid, d);
+    fraghst::i2d3(fid, d);
 
     MC(m::Cart_get(cart, 3, dims, periods, coords));    
     MC(m::Cart_rank(cart, coords, /**/ &rank));

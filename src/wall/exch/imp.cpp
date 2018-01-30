@@ -24,7 +24,7 @@ enum {
 static void shift(int fid, float r[3]) {
     enum {X, Y, Z};
     int d[3];
-    fraghst::frag_i2d3(fid, d);
+    fraghst::i2d3(fid, d);
     r[X] += d[X] * XS;
     r[Y] += d[Y] * YS;
     r[Z] += d[Z] * ZS;

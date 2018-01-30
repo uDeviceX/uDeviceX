@@ -61,7 +61,7 @@ static __device__ int add_cornr(int j, const int d[3], /**/ int fids[MAX_DSTS]) 
 static __device__ int map_decode(int code, /**/ int fids[MAX_DSTS]) {
     int j = 0;
     int d[3];
-    fragdev::frag_i2d3(code, d);
+    fragdev::i2d3(code, d);
     j = add_faces(j, d, /**/ fids);
     j = add_edges(j, d, /**/ fids);
     j = add_cornr(j, d, /**/ fids);

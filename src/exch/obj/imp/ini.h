@@ -8,7 +8,7 @@ static void estimates(int nfrags, int maxd, int maxpsolid, int *cap) {
 
     for (i = 0; i < nfrags; ++i) {
         int d[3];
-        fraghst::frag_i2d3(i, d);
+        fraghst::i2d3(i, d);
         kind = fabs(d[0]) + fabs(d[1]) + fabs(d[2]) - 1;
         e = maxpsolid * factor[kind];
         cap[i] += e;

@@ -20,7 +20,7 @@ _I_ int i2dx(int i) { return (i     + 2) % 3 - 1; }
 _I_ int i2dy(int i) { return (i / 3 + 2) % 3 - 1; }
 _I_ int i2dz(int i) { return (i / 9 + 2) % 3 - 1; }
 
-_I_ int frag_i2d(int i, int dir) {
+_I_ int i2d(int i, int dir) {
     enum {X, Y, Z};
     switch (dir) {
     case X:
@@ -34,7 +34,7 @@ _I_ int frag_i2d(int i, int dir) {
     };
 }
 
-_I_ void frag_i2d3(int i, /**/ int d[3]) {
+_I_ void i2d3(int i, /**/ int d[3]) {
     enum {X, Y, Z};
     d[X] = i2dx(i);
     d[Y] = i2dy(i);

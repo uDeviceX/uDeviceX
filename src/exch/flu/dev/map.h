@@ -2,7 +2,7 @@
 static __device__ void get_frag_box(int3 L0, int i, /**/ int org[3], int ext[3]) {
     int d[3];
     int c, L[3] = {L0.x, L0.y, L0.z};
-    fragdev::frag_i2d3(i, d);
+    fragdev::i2d3(i, d);
     for (c = 0; c < 3; ++c) {
         org[c] = (d[c] == 1) ? L[c] - 1 : 0;
         ext[c] = (d[c] == 0) ? L[c]     : 1;

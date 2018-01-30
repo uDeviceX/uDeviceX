@@ -21,9 +21,9 @@ __global__ void dcommon_pack_pp_packets(int nv, const Particle *pp, DMap m, /**/
 
 static __device__ void fid2shift(int3 L, int id, /**/ int s[3]) {
     enum {X, Y, Z};
-    s[X] = L.x * fragdev::frag_i2d(id, X);
-    s[Y] = L.y * fragdev::frag_i2d(id, Y);
-    s[Z] = L.z * fragdev::frag_i2d(id, Z);
+    s[X] = L.x * fragdev::i2d(id, X);
+    s[Y] = L.y * fragdev::i2d(id, Y);
+    s[Z] = L.z * fragdev::i2d(id, Z);
 }
 
 static  __device__ void shift_1p(const int s[3], /**/ Particle *p) {
