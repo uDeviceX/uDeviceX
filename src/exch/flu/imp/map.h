@@ -4,7 +4,7 @@ void eflu_compute_map(const int *start, const int *count, /**/ EFluPack *p) {
     int27 ss;
     nc = get_cell_num(/**/ cc.d);
     scan(NFRAGS, cc.d, /**/ ss.d);
-    KL(dev::count_cells, (k_cnf(nc)), (ss, start, count, /**/ p->bss, p->bcc));    
+    KL(dev::count_cells, (k_cnf(nc)), (p->L, ss, start, count, /**/ p->bss, p->bcc));    
     KL(dev::scan<32>, (26, 32 * 32), (cc, p->bcc, /**/ p->fss));
 }
 
