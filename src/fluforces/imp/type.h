@@ -3,6 +3,8 @@ struct FluForcesBulk {
     ushort4 *zipped_rr;  /* xyzo xyzo xyzo...  in half precision    */
     RNDunif *rnd;        /* random generator per timestep           */
     const int *colors;   /* pointer to colors, not to be allocated  */
+
+    int3 L; /* subdomain size */
 };
 
 struct FluForcesHalo {

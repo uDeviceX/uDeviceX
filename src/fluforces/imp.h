@@ -1,7 +1,7 @@
 struct FluForcesBulk;
 struct FluForcesHalo;
 
-void fluforces_bulk_ini(int maxp, /**/ FluForcesBulk **b);
+void fluforces_bulk_ini(int3 L, int maxp, /**/ FluForcesBulk **b);
 void fluforces_bulk_fin(/**/ FluForcesBulk *b);
 
 void fluforces_bulk_prepare(int n, const Cloud *c, /**/ FluForcesBulk *b);

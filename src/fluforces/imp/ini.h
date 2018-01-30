@@ -1,4 +1,4 @@
-void fluforces_bulk_ini(int maxp, /**/ FluForcesBulk **bd) {
+void fluforces_bulk_ini(int3 L, int maxp, /**/ FluForcesBulk **bd) {
     FluForcesBulk *b;
     UC(emalloc(sizeof(FluForcesBulk), (void**) bd));
     b = *bd;
@@ -6,6 +6,7 @@ void fluforces_bulk_ini(int maxp, /**/ FluForcesBulk **bd) {
     Dalloc(&b->zipped_rr,     maxp);
     UC(rnd_ini(0, 0, 0, 0, /**/ &b->rnd));
     b->colors = NULL;
+    b->L = L;
 }
 
 static int is_plus(const int d[3]) {
