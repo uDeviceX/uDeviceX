@@ -1,4 +1,4 @@
-void eflu_pack_ini(int maxd, EFluPack **pack) {
+void eflu_pack_ini(int3 L, int maxd, EFluPack **pack) {
     int i, nc, cap[NBAGS], ncs[NBAGS];
     size_t sz;
     EFluPack *p;
@@ -6,6 +6,7 @@ void eflu_pack_ini(int maxd, EFluPack **pack) {
     UC(emalloc(sizeof(EFluPack), (void**) pack));
     p = *pack;
 
+    p->L = L;
     frag_estimates(NFRAGS, maxd, /**/ cap);
     cap[BULK] = 0;
     memcpy(p->cap.d, cap, NFRAGS * sizeof(int));
@@ -45,13 +46,14 @@ void eflu_comm_ini(MPI_Comm cart, /**/ EFluComm **com) {
         UC(comm_ini(cart, /**/ &c->cc));
 }
 
-void eflu_unpack_ini(int maxd, EFluUnpack **unpack) {
+void eflu_unpack_ini(int3 L, int maxd, EFluUnpack **unpack) {
     int i, cap[NBAGS], ncs[NBAGS];
     EFluUnpack *u;
 
     UC(emalloc(sizeof(EFluUnpack), (void**) unpack));
     u = *unpack;
 
+    u->L = L;
     frag_estimates(NFRAGS, maxd, /**/ cap);
     cap[BULK] = 0;
     

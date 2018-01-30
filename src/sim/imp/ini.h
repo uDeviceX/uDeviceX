@@ -1,9 +1,9 @@
-static void ini_flu_exch(MPI_Comm comm, /**/ FluExch *e) {
+static void ini_flu_exch(MPI_Comm comm, int3 L, /**/ FluExch *e) {
     int maxd = HSAFETY_FACTOR * numberdensity;
 
-    UC(eflu_pack_ini(maxd, /**/ &e->p));
+    UC(eflu_pack_ini(L, maxd, /**/ &e->p));
     UC(eflu_comm_ini(comm, /**/ &e->c));
-    UC(eflu_unpack_ini(maxd, /**/ &e->u));
+    UC(eflu_unpack_ini(L, maxd, /**/ &e->u));
 }
 
 static void ini_obj_exch(MPI_Comm comm, /**/ ObjExch *e) {
@@ -139,7 +139,7 @@ static void ini_flu(MPI_Comm cart, int3 L, /**/ Flu *f) {
     UC(fluforces_halo_ini(cart, /**/ &f->halo));
 
     UC(ini_flu_distr(cart, L, /**/ &f->d));
-    UC(ini_flu_exch(cart, /**/ &f->e));
+    UC(ini_flu_exch(cart, L, /**/ &f->e));
 
     UC(Dalloc(&f->ff, MAX_PART_NUM));
     UC(emalloc(MAX_PART_NUM * sizeof(Force), /**/ (void**) &f->ff_hst));

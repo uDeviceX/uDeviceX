@@ -16,6 +16,8 @@ struct EFluPack {
 
     dBags dpp, dcc;
     hBags hpp, hcc, hfss;
+
+    int3 L; /* subdomain size */
 };
 
 struct EFluComm {
@@ -25,4 +27,6 @@ struct EFluComm {
 struct EFluUnpack {
     hBags hpp, hcc, hfss;
     dBags dpp, dcc, dfss;
+
+    int3 L; /* subdomain size */
 };
