@@ -42,15 +42,15 @@ _I_ void i2d3(int i, /**/ int d[3]) {
 }
 
 /* direction to fragment id                    */
-_I_ int frag_d2i(int x, int y, int z) {
+_I_ int d2i(int x, int y, int z) {
     return    ((x + 2) % 3)
         + 3 * ((y + 2) % 3)
         + 9 * ((z + 2) % 3);
 }
 
-_I_ int frag_d32i(const int d[3])  {
+_I_ int d32i(const int d[3])  {
     enum {X, Y, Z};
-    return frag_d2i(d[X], d[Y], d[Z]);
+    return d2i(d[X], d[Y], d[Z]);
 }
 
 /* number of cells in direction x, y, z        */
@@ -73,7 +73,7 @@ _I_ int frag_ncell(int3 L, int i) {
 
 /* anti direction to fragment id                */
 _I_ int frag_ad2i(int x, int y, int z) {
-    return frag_d2i(-x, -y, -z);
+    return d2i(-x, -y, -z);
 }
 
 /* anti fragment                                */

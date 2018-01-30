@@ -10,7 +10,7 @@ static __device__ int map_code(int3 L, const float r[3]) {
     y = -1 + (r[Y] >= -L.y / 2) + (r[Y] >= L.y / 2);
     z = -1 + (r[Z] >= -L.z / 2) + (r[Z] >= L.z / 2);
 
-    return fragdev::frag_d2i(x, y, z);
+    return fragdev::d2i(x, y, z);
 }
 
 //
@@ -20,7 +20,7 @@ static __device__ int map_code_box(int3 L, float3 lo, float3 hi) {
     y = -1 + (lo.y >= -L.y / 2) + (hi.y >= L.y / 2);
     z = -1 + (lo.z >= -L.z / 2) + (hi.z >= L.z / 2);
 
-    return fragdev::frag_d2i(x, y, z);
+    return fragdev::d2i(x, y, z);
 }
 
 static __device__ void add_to_map(int soluteid, int pid, int fid, EMap m) {
@@ -34,7 +34,7 @@ static __device__ int add_faces(int j, const int d[3], /**/ int fids[MAX_DSTS]) 
     for (int c = 0; c < 3; ++c) {
         if (d[c]) {
             int df[3] = {0, 0, 0}; df[c] = d[c];
-            fids[j++] = fragdev::frag_d32i(df);
+            fids[j++] = fragdev::d32i(df);
         }
     }
     return j;
@@ -45,7 +45,7 @@ static __device__ int add_edges(int j, const int d[3], /**/ int fids[MAX_DSTS]) 
     for (int c = 0; c < 3; ++c) {
         int de[3] = {d[X], d[Y], d[Z]}; de[c] = 0;
         if (de[(c + 1) % 3] && de[(c + 2) % 3])
-            fids[j++] = fragdev::frag_d32i(de);
+            fids[j++] = fragdev::d32i(de);
     }
     return j;
 }
@@ -53,7 +53,7 @@ static __device__ int add_edges(int j, const int d[3], /**/ int fids[MAX_DSTS]) 
 static __device__ int add_cornr(int j, const int d[3], /**/ int fids[MAX_DSTS]) {
     enum {X, Y, Z};
     if (d[X] && d[Y] && d[Z])
-        fids[j++] = fragdev::frag_d32i(d);
+        fids[j++] = fragdev::d32i(d);
     return j;
 }
 

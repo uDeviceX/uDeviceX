@@ -4,7 +4,7 @@ __device__ void assert_frag(int3 L, int i, const flu::RFrag frag) {
     xs = frag.xcells; ys = frag.ycells; zs = frag.zcells;
     dx = frag.dx; dy = frag.dy; dz = frag.dz;
     assert(xs * ys * zs == fragdev::frag_ncell(L, i));
-    assert(fragdev::frag_d2i(dx, dy, dz) == i);
+    assert(fragdev::d2i(dx, dy, dz) == i);
 }
 
 __device__ void assert_rc(int3 L, const flu::RFrag frag, int i, int row, int col, int jump) {
@@ -19,7 +19,7 @@ __device__ void assert_rc(int3 L, const flu::RFrag frag, int i, int row, int col
     assert(dx == -1 || dx == 0 || dx == 1);
     assert(dy == -1 || dy == 0 || dy == 1);
     assert(dz == -1 || dz == 0 || dz == 1);
-    fid  = fragdev::frag_d2i(dx, dy, dz);
+    fid  = fragdev::d2i(dx, dy, dz);
     nmax = fragdev::frag_ncell(L, fid) + 1;
 
     for (j = 0 ; j < row; j++) {

@@ -22,7 +22,7 @@ static __device__ int dmap_get_fid(int3 L, const float r[3])       // <2>
     x = -1 + (r[X] >= -L.x/2) + (r[X] >= L.x/2);
     y = -1 + (r[Y] >= -L.y/2) + (r[Y] >= L.y/2);
     z = -1 + (r[Z] >= -L.z/2) + (r[Z] >= L.z/2);
-    return fragdev::frag_d2i(x, y, z);
+    return fragdev::d2i(x, y, z);
 }
 
 // tag::int[]
