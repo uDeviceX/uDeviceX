@@ -81,7 +81,6 @@ void run(const Coords *coords, int part_freq, const BForce *bforce, MoveParams *
     UC(off_read(cell, /**/ &off));
     UC(mesh_write_ini_off(off, directory, /**/ &mesh_write));
 
-
     rbc_ini(&q);
     run2(coords, part_freq, bforce, moveparams, cell, ic, par, mesh_write, q);
     rbc_fin(&q);
