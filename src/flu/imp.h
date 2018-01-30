@@ -17,7 +17,7 @@ struct FluQuants {
 struct Coords;
 struct GenColor;
 
-void flu_ini(int3 L, FluQuants *q);
+void flu_ini(int3 L, int maxp, FluQuants *q);
 void flu_fin(FluQuants *q);
 
 void flu_gen_quants(const Coords *coords, const GenColor *gc, FluQuants *q);
