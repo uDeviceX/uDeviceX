@@ -20,7 +20,7 @@ __global__ void pack_ss(const Solid *ss, DMap m, /**/ Sarray<Solid*, 27> buf) {
     int d, s;
     
     i = threadIdx.x + blockDim.x * blockIdx.x;
-    fid = frag_get_fid(m.starts, i);
+    fid = fragdev::frag_get_fid(m.starts, i);
     if (i >= m.starts[27]) return;
 
     d = i - m.starts[fid];

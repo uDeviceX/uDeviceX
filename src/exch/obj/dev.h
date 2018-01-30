@@ -34,7 +34,7 @@ __global__ void unpack_ff(Fop26 hff, PackHelper ph, /**/ Force *ff) {
     step = gridDim.x * blockDim.x;
 
     for (  ; gid < hi; gid += step) {
-        fid = frag_get_fid(ph.starts, gid);
+        fid = fragdev::frag_get_fid(ph.starts, gid);
 
         /* index in the fragment coordinates */ 
         frag_i = gid - ph.starts[fid];

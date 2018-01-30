@@ -7,7 +7,8 @@ static void estimates(int nfrags, int maxd, int maxpsolid, int *cap) {
     float factor[3] = {safety / 2, safety / 4, safety / 8}; /* face, edge, corner */
 
     for (i = 0; i < nfrags; ++i) {
-        int d[] = frag_i2d3(i);
+        int d[3];
+        frag_i2d3(i, d);
         kind = fabs(d[0]) + fabs(d[1]) + fabs(d[2]) - 1;
         e = maxpsolid * factor[kind];
         cap[i] += e;

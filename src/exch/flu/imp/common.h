@@ -1,7 +1,7 @@
-static int get_cell_num(int *cc) {
+static int get_cell_num(int3 L, int *cc) {
     int i, nc, c;
     for (nc = i = 0; i < NFRAGS; ++i) {
-        c = cc[i] = frag_ncell(i) + 1;
+        c = cc[i] = frag_ncell(L, i) + 1;
         nc += c;
     }
     return nc;

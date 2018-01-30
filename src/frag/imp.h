@@ -1,5 +1,7 @@
 enum {frag_bulk = 26};
 
+struct int3;
+
 int frag_i2dx(int i);
 int frag_i2dy(int i);
 int frag_i2dz(int i);

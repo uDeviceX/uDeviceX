@@ -79,13 +79,13 @@ __global__ void force(int3 L, const int27 start, const flu::LFrag26 lfrags, cons
 
     gid = threadIdx.x + blockDim.x * blockIdx.x;
     if (gid >= start.d[26]) return;
-    fid = frag_get_fid(start.d, gid);
+    fid = fragdev::frag_get_fid(start.d, gid);
     i = gid - start.d[fid];
     lfrag = lfrags.d[fid];
     if (i >= lfrag.n) return;
 
     rfrag = rfrags.d[fid];
-    assert_frag(fid, rfrag);
+    assert_frag(L, fid, rfrag);
 
     rnd = rrnd.d[fid];
     force3(L, lfrag, rfrag, rnd, i, /**/ ff);

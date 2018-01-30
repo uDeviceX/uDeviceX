@@ -123,6 +123,6 @@ static __device__ Map r2map(int3 L, const flu::RFrag frag, float x, float y, flo
            xc, yc, zc,
            xs, ys, zs,
            &row, &col, &jump);
-    assert_rc(frag, id, row, col, jump);
+    assert_rc(L, frag, id, row, col, jump);
     return r2map0(frag.start, id, row, col, jump);
 }

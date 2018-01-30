@@ -1,4 +1,4 @@
-#if HOST
+#ifdef FRAG_HOST
   #define _I_
   #define _S_ static
 #else
@@ -8,6 +8,10 @@
 
 enum {BAD_DIR = -2};
 
+#ifndef FRAG_HOST
+namespace fragdev {
+#endif
+
 /* fragment id to direction                    */
 
 _I_ int frag_i2dx(int i) { return (i     + 2) % 3 - 1; }
@@ -16,19 +20,15 @@ _I_ int frag_i2dz(int i) { return (i / 9 + 2) % 3 - 1; }
 
 _I_ int frag_i2d(int i, int dir) {
     enum {X, Y, Z};
-    switch (c) {
+    switch (dir) {
     case X:
         return frag_i2dx(i);
-        break;
     case Y:
         return frag_i2dy(i);
-        break;
     case Z:
         return frag_i2dz(i);
-        break;
     default:
         return BAD_DIR;
-        break;
     };
 }
 
@@ -91,6 +91,11 @@ _I_ int frag_get_fid(const int a[], const int i) {
     k1 =      (i >= a[k9 + k3 + 1]) + (i >= a[k9 + k3 + 2]);
     return k9 + k3 + k1;
 }
+
+#ifndef FRAG_HOST
+} // namespace fragdev
+#endif
+
 
 #undef _I_
 #undef _S_

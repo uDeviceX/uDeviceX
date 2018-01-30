@@ -1,7 +1,8 @@
 /* return origin and extents of the cells of fragment i */
 static __device__ void get_frag_box(int3 L0, int i, /**/ int org[3], int ext[3]) {
-    int d[3] = frag_i2d3(i);
+    int d[3];
     int c, L[3] = {L0.x, L0.y, L0.z};
+    fragdev::frag_i2d3(i, d);
     for (c = 0; c < 3; ++c) {
         org[c] = (d[c] == 1) ? L[c] - 1 : 0;
         ext[c] = (d[c] == 0) ? L[c]     : 1;
@@ -29,7 +30,7 @@ __global__ void count_cells(int3 L, const int27 cellpackstarts, const int *start
     gid = threadIdx.x + blockDim.x * blockIdx.x;
     if (gid >= cellpackstarts.d[26]) return;
 
-    fid = frag_get_fid(cellpackstarts.d, gid);
+    fid = fragdev::frag_get_fid(cellpackstarts.d, gid);
     hci = gid - cellpackstarts.d[fid];
 
     get_frag_box(L, fid, /**/ org, ext);

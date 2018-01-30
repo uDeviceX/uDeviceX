@@ -5,7 +5,7 @@ void eflu_pack(const Cloud *cloud, /**/ EFluPack *p) {
     Pap26 fpp;
     intp26 fcc;
     
-    nc = get_cell_num(/**/ cc.d);
+    nc = get_cell_num(p->L, /**/ cc.d);
     scan(NFRAGS, cc.d, /**/ ss.d);
 
     bag2Sarray(p->dpp, /**/ &fpp);

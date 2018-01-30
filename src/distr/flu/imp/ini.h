@@ -1,13 +1,14 @@
-static int estimate_max_flux(int fid, int maxd) {
-    int e, nfaces, d[] = frag_i2d3(fid);
+static int estimate_max_flux(int3 L, int fid, int maxd) {
+    int e, nfaces, d[3];
+    frag_i2d3(fid, d);
     nfaces = abs(d[0]) + abs(d[1]) + abs(d[2]);
-    e = maxd * frag_ncell(fid) * nfaces;
+    e = maxd * frag_ncell(L, fid) * nfaces;
     return e;
 }
 
-static void get_capacity(int maxd, /**/ int capacity[NBAGS]) {
+static void get_capacity(int3 L, int maxd, /**/ int capacity[NBAGS]) {
     for (int i = 0; i < NFRAGS; ++i)
-        capacity[i] = estimate_max_flux(i, maxd);
+        capacity[i] = estimate_max_flux(L, i, maxd);
     capacity[frag_bulk] = 0;
 }
 
@@ -20,7 +21,7 @@ void dflu_pack_ini(int3 L, int maxdensity, DFluPack **pack) {
 
     p->L = L;
     
-    get_capacity(maxdensity, /**/ capacity);
+    get_capacity(L, maxdensity, /**/ capacity);
 
     UC(dmap_ini(NFRAGS, capacity, /**/ &p->map));
     
@@ -55,7 +56,7 @@ void dflu_unpack_ini(int3 L, int maxdensity, DFluUnpack **unpack) {
 
     u->L = L;
     
-    get_capacity(maxdensity, /**/ capacity);
+    get_capacity(L, maxdensity, /**/ capacity);
 
     UC(comm_bags_ini(HST_ONLY, NONE, sizeof(Particle), capacity, /**/ &u->hpp, NULL));
     if (global_ids)    UC(comm_bags_ini(HST_ONLY, NONE, sizeof(int), capacity, /**/ &u->hii, NULL));

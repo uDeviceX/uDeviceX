@@ -23,7 +23,8 @@ enum {
 
 static void shift(int fid, float r[3]) {
     enum {X, Y, Z};
-    const int d[3] = frag_i2d3(fid);
+    int d[3];
+    frag_i2d3(fid, d);
     r[X] += d[X] * XS;
     r[Y] += d[Y] * YS;
     r[Z] += d[Z] * ZS;
