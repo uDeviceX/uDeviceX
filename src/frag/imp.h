@@ -18,6 +18,6 @@ int ncell(int3 L, int i);
 int antid2i(int x, int y, int z);
 int anti(int i);
 
-void estimates(int nfrags, float maxd, /**/ int *cap);
+void estimates(int3 L, int nfrags, float maxd, /**/ int *cap);
 
 } // fraghst

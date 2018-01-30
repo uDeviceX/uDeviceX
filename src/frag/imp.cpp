@@ -10,9 +10,7 @@
 
 namespace fraghst {
 
-void estimates(int nfrags, float maxd, /**/ int *cap) {
-    int3 L;
-    L.x = XS; L.y = YS; L.z = ZS;
+void estimates(int3 L, int nfrags, float maxd, /**/ int *cap) {
     int i, e;
     for (i = 0; i < nfrags; ++i) {
         e = ncell(L, i);

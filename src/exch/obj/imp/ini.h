@@ -1,6 +1,6 @@
-static void estimates(int nfrags, int maxd, int maxpsolid, int *cap) {
+static void estimates(int3 L, int nfrags, int maxd, int maxpsolid, int *cap) {
     int i, e, kind;
-    fraghst::estimates(nfrags, maxd, /**/ cap);
+    fraghst::estimates(L, nfrags, maxd, /**/ cap);
 
     /* estimates for solid */
     const float safety = 2.;
@@ -22,7 +22,7 @@ void eobj_pack_ini(int3 L, int nw, int maxd, int maxpsolid, EObjPack **pack) {
     p = *pack;
 
     p->L = L;
-    estimates(NFRAGS, maxd, maxpsolid, /**/ cap);
+    estimates(L, NFRAGS, maxd, maxpsolid, /**/ cap);
 
     UC(emap_ini(nw, NFRAGS, cap, /**/ &p->map));
     UC(comm_bags_ini(PINNED, NONE, sizeof(Particle), cap, /**/ &p->hpp, &p->dpp));
@@ -45,31 +45,31 @@ void eobj_unpack_ini(int3 L, int maxd, int maxpsolid, EObjUnpack **unpack) {
     u = *unpack;
 
     u->L = L;
-    estimates(NFRAGS, maxd, maxpsolid, /**/ cap);
+    estimates(L, NFRAGS, maxd, maxpsolid, /**/ cap);
 
     UC(comm_bags_ini(PINNED_DEV, NONE, sizeof(Particle), cap, /**/ &u->hpp, &u->dpp));
 }
 
-void eobj_packf_ini(int maxd, int maxpsolid, EObjPackF **pack) {
+void eobj_packf_ini(int3 L, int maxd, int maxpsolid, EObjPackF **pack) {
     int cap[NFRAGS];
     EObjPackF *p;
 
     UC(emalloc(sizeof(EObjPackF), (void**) pack));
     p = *pack;
     
-    estimates(NFRAGS, maxd, maxpsolid, /**/ cap);
+    estimates(L, NFRAGS, maxd, maxpsolid, /**/ cap);
 
     UC(comm_bags_ini(PINNED_DEV, NONE, sizeof(Force), cap, /**/ &p->hff, &p->dff));
 }
 
-void eobj_unpackf_ini(int maxd, int maxpsolid, EObjUnpackF **unpack) {
+void eobj_unpackf_ini(int3 L, int maxd, int maxpsolid, EObjUnpackF **unpack) {
     int cap[NFRAGS];
     EObjUnpackF *u;
 
     UC(emalloc(sizeof(EObjUnpackF), (void**) unpack));
     u = *unpack;
     
-    estimates(NFRAGS, maxd, maxpsolid, /**/ cap);
+    estimates(L, NFRAGS, maxd, maxpsolid, /**/ cap);
 
     UC(comm_bags_ini(PINNED_DEV, NONE, sizeof(Force), cap, /**/ &u->hff, &u->dff));
 }
