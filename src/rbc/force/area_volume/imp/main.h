@@ -19,8 +19,9 @@ static void assert_tri(int nt, int nv, const int4 *tri) {
 void area_volume_ini(int nv, int nt, const int4 *hst, int max_cell, /**/ AreaVolume **pq) {
     AreaVolume *q;
     UC(emalloc(sizeof(AreaVolume), (void**)&q));
-    q->nt = nt; q->nv = nv;
+    q->nt = nt; q->nv = nv; q->max_cell = max_cell;
     Dalloc(&q->tri, nt);
+    Dalloc(&q->av , 2*max_cell);
     UC(assert_tri(nt, nv, hst));
     cH2D(q->tri, hst, nt);
     *pq = q;
@@ -28,10 +29,11 @@ void area_volume_ini(int nv, int nt, const int4 *hst, int max_cell, /**/ AreaVol
 
 void area_volume_fin(AreaVolume *q) {
     Dfree(q->tri);
+    Dfree(q->av);
     UC(efree(q));
 }
 
-static void compute(int nt, int nv, int nc, const Particle *pp, const int4 *tri, /**/ float *av) {
+static void compute(int nv, int nt, int nc, const Particle *pp, const int4 *tri, /**/ float *av) {
     dim3 avThreads(256, 1);
     dim3 avBlocks(1, nc);
     Dzero(av, 2*nc);
@@ -39,7 +41,9 @@ static void compute(int nt, int nv, int nc, const Particle *pp, const int4 *tri,
 }
 
 void area_volume_compute(AreaVolume *q, int nc, const Particle *pp, /**/ float *av) {
-    UC(compute(q->nt, q->nv, nc, pp, q->tri, av));
+    if (nc > q->max_cell)
+        ERR("nc=%d > max_cell=%d", nc, q->max_cell);
+    UC(compute(q->nv, q->nt, nc, pp, q->tri, av));
 }
 
 const int4* area_volume_tri(AreaVolume *q) { return q->tri; }
