@@ -12,7 +12,7 @@ void eflu_pack_ini(int3 L, int maxd, EFluPack **pack) {
     memcpy(p->cap.d, cap, NFRAGS * sizeof(int));
     
     for (i = 0; i < NFRAGS; ++i) {
-        ncs[i] = nc = fraghst::frag_ncell(L, i) + 1;
+        ncs[i] = nc = fraghst::ncell(L, i) + 1;
         sz = nc * sizeof(int);
         CC(d::Malloc((void**) &p->bcc.d[i], sz));
         CC(d::Malloc((void**) &p->bss.d[i], sz));
@@ -58,7 +58,7 @@ void eflu_unpack_ini(int3 L, int maxd, EFluUnpack **unpack) {
     cap[BULK] = 0;
     
     for (i = 0; i < NFRAGS; ++i)
-        ncs[i] = fraghst::frag_ncell(L, i) + 1;
+        ncs[i] = fraghst::ncell(L, i) + 1;
     ncs[BULK] = 0;
     
     UC(comm_bags_ini(PINNED_DEV, NONE, sizeof(Particle), cap, /**/ &u->hpp, &u->dpp));

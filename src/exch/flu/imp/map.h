@@ -14,7 +14,7 @@ static void download_cell_starts(int3 L, intp26 src, /**/ intp26 dst) {
     size_t sz;
 
     for(i = 0; i < NFRAGS; ++i) {
-        nc = fraghst::frag_ncell(L, i) + 1;
+        nc = fraghst::ncell(L, i) + 1;
         sz = nc * sizeof(int);
         CC(d::MemcpyAsync(dst.d[i], src.d[i], sz, D2H));
     }

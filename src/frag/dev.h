@@ -54,7 +54,7 @@ _I_ int d32i(const int d[3])  {
 }
 
 /* number of cells in direction x, y, z        */
-_S_ int frag_ncell0(int3 L, int x, int y, int z) {
+_S_ int ncell0(int3 L, int x, int y, int z) {
     int nx, ny, nz;
     nx = x ? 1 : L.x;
     ny = y ? 1 : L.y;
@@ -63,12 +63,12 @@ _S_ int frag_ncell0(int3 L, int x, int y, int z) {
 }
 
 /* number of cells in fragment i               */
-_I_ int frag_ncell(int3 L, int i) {
+_I_ int ncell(int3 L, int i) {
     int x, y, z;
     x = i2dx(i);
     y = i2dy(i);
     z = i2dz(i);
-    return frag_ncell0(L, x, y, z);
+    return ncell0(L, x, y, z);
 }
 
 /* anti direction to fragment id                */

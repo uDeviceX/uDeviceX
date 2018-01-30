@@ -13,7 +13,7 @@ void i2d3(int i, /**/ int d[3]);
 int d2i(int x, int y, int z);
 int d32i(const int d[3]);
 
-int frag_ncell(int3 L, int i);
+int ncell(int3 L, int i);
 
 int frag_ad2i(int x, int y, int z);
 int frag_anti(int i);

@@ -15,7 +15,7 @@ void frag_estimates(int nfrags, float maxd, /**/ int *cap) {
     L.x = XS; L.y = YS; L.z = ZS;
     int i, e;
     for (i = 0; i < nfrags; ++i) {
-        e = frag_ncell(L, i);
+        e = ncell(L, i);
         e = (int) (e * maxd);
         cap[i] = e;
     }

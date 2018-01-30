@@ -2,7 +2,7 @@ static int estimate_max_flux(int3 L, int fid, int maxd) {
     int e, nfaces, d[3];
     fraghst::i2d3(fid, d);
     nfaces = abs(d[0]) + abs(d[1]) + abs(d[2]);
-    e = maxd * fraghst::frag_ncell(L, fid) * nfaces;
+    e = maxd * fraghst::ncell(L, fid) * nfaces;
     return e;
 }
 
