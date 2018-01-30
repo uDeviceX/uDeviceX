@@ -13,8 +13,8 @@ static void ini_anti(RbcQuants *q) { Dalloc(&q->shape.anti, q->nv * RBCmd); }
 
 void rbc_ini(OffRead *cell, RbcQuants *q) {
     q->n = q->nc = 0;
-    q->nt = RBCnt;
-    q->nv = RBCnv;
+    q->nv = off_get_nv(cell);
+    q->nt = off_get_nt(cell);
 
     UC(ini_common(q));
     if (rbc_ids)         UC(ini_ids(q));
