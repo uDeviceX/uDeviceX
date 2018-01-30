@@ -68,10 +68,10 @@ static void setup_anti(int md, int nv, Adj *adj, /**/ int *dev) {
     free(hst);
 }
 
-static void setup1(int md, int nt, int nv, int4 *faces, /**/
+static void setup1(int md, int nt, int nv, const int4 *tt, /**/
                    int *anti, Edg *edg, float *totArea, int *adj0, int *adj1) {
     Adj adj;
-    adj_ini(md, nt, nv, faces, /**/ &adj);
+    adj_ini(md, nt, nv, tt, /**/ &adj);
 
     if (RBC_STRESS_FREE) UC(setup_edg(md,  nv, &adj, /**/ edg, totArea));
     if (RBC_RND)         UC(setup_anti(md, nv, &adj, /**/ anti));
@@ -82,19 +82,17 @@ static void setup1(int md, int nt, int nv, int4 *faces, /**/
     adj_fin(&adj);
 }
 
-static void setup0(int md, int nt, int nv, const char *cell, /**/
+static void setup0(int md, int nt, int nv, const int4 *tt, /**/
                   int *anti, Edg *edg, float *totArea, AreaVolume *area_volume,
                   int *adj0, int *adj1) {
-    int4 *tri;
-    UC(emalloc(nt*sizeof(int4), (void**)&tri));
-    UC(efaces(cell, nt, /**/ tri));
-    UC(area_volume_setup(nt, nv, tri, /**/ area_volume));
-    UC(setup1(md, nt, nv, tri, /**/ anti, edg, totArea, adj0, adj1));
-    UC(efree(tri));
+    UC(area_volume_setup(nt, nv, tt, /**/ area_volume));
+    UC(setup1(md, nt, nv, tt, /**/ anti, edg, totArea, adj0, adj1));
 }
 
-static void setup(int md, int nt, int nv, const char *cell, /**/ RbcQuants *q) {
-    setup0(md, nt, nv, cell, /**/
+static void setup(int md, int nt, int nv, OffRead *off, /**/ RbcQuants *q) {
+    const int4 *tt;
+    tt = off_get_tri(off);
+    setup0(md, nt, nv, tt, /**/
            q->shape.anti, q->shape.edg, &q->shape.totArea,
            q->area_volume, q->adj0, q->adj1);
 }

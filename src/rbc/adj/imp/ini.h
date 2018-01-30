@@ -14,7 +14,7 @@ static void gen_a12(int md, int i0, int *hx, int *hy, /**/ int *a1, int *a2) {
     }  while (c != mi);
 }
 
-static void ini0(int md, int nt, int nv, int4 *faces, /**/ int *a1, int *a2) {
+static void ini0(int md, int nt, int nv, const int4 *faces, /**/ int *a1, int *a2) {
     int hx[nv*md], hy[nv*md];
     int i;
     for (i = 0; i < nv*md; i++) a1[i] = a2[i] = -1;
@@ -36,7 +36,7 @@ static void alloc(int n, Adj *A) {
     UC(emalloc(n*sizeof(int), (void**) &A->adj1));
 }
 
-void adj_ini(int md, int nt, int nv, int4 *faces, /**/ Adj *A) {
+void adj_ini(int md, int nt, int nv, const int4 *faces, /**/ Adj *A) {
     int *a1, *a2;
     alloc(nv*nt, /**/ A);
     a1 = A->adj0; /* sic */

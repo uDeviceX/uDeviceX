@@ -44,12 +44,15 @@ static void run1(RbcQuants q, RbcForce t, const RbcParams *par) {
 static void run2(const char *cell, const char *ic, const RbcParams *par, RbcQuants q) {
     Coords *coords;
     RbcForce t;
+    OffRead *off;
+    UC(off_read(cell, /**/ &off));
     coords_ini(m::cart, XS, YS, ZS, &coords);
-    rbc_gen_quants(coords, m::cart, cell, ic, /**/ &q);
+    rbc_gen_quants(coords, m::cart, off, ic, /**/ &q);
     rbc_force_gen(q, &t);
     run1(q, t, par);
     rbc_force_fin(&t);
     coords_fin(coords);
+    UC(off_fin(off));
 }
 
 void run(const char *cell, const char *ic, const RbcParams *par) {

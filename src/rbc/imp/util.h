@@ -1,11 +1,3 @@
-static void efaces(const char *f, int n0, /**/ int4 *faces) {
-    /* get faces */
-    int n;
-    UC(off_read_faces(f, n0, /**/ &n, faces));
-    if (n0 != n)
-        ERR("wrong faces number in <%s> : %d != %d", f, n0, n);
-}
-
 static void diff(const float *a, const float *b, /**/ float *c) {
     enum {X, Y, Z};
     c[X] = a[X] - b[X];

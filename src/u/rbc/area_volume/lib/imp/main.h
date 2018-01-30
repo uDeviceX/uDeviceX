@@ -17,10 +17,15 @@ static void run1(const char *cell, const char *ic, RbcQuants q) {
     Coords *coords;
     coords_ini(m::cart, XS, YS, ZS, &coords);
     RbcForce t;
-    rbc_gen_quants(coords, m::cart, cell, ic, /**/ &q);
+    OffRead *off;
+    UC(off_read(cell, /**/ &off));
+    
+    rbc_gen_quants(coords, m::cart, off, ic, /**/ &q);
     rbc_force_gen(q, &t);
     UC(run0(q, t));
     rbc_force_fin(&t);
+
+    UC(off_fin(off));
     coords_fin(coords);
 }
 

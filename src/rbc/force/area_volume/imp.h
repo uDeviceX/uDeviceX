@@ -3,7 +3,7 @@ struct Particle;
 struct int4;
 
 void area_volume_ini(int nt, AreaVolume**);
-void area_volume_setup(int nt, int nv, int4 *tri, /**/ AreaVolume*);
+void area_volume_setup(int nt, int nv, const int4 *tri, /**/ AreaVolume*);
 void area_volume_fin(AreaVolume*);
 
 int4* area_volume_tri(AreaVolume*);

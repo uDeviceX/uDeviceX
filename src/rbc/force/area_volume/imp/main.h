@@ -1,4 +1,4 @@
-static void assert_tri(int nt, int nv, int4 *tri) {
+static void assert_tri(int nt, int nv, const int4 *tri) {
     int *rank;
     int f0, f1, f2, i;
     int4 f;
@@ -16,7 +16,7 @@ static void assert_tri(int nt, int nv, int4 *tri) {
     UC(efree(rank));
 }
 
-void area_volume_setup(int nt, int nv, int4 *hst, /**/ AreaVolume *q) {
+void area_volume_setup(int nt, int nv, const int4 *hst, /**/ AreaVolume *q) {
     if (nt != q->nt) ERR("different number of triangles ini/setupt: %d != %d", nt, q->nt);
     q->nv = nv;
     UC(assert_tri(nt, nv, hst));

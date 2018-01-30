@@ -1,8 +1,8 @@
-static void transform(float* rr0, int nv, float *A, /* output */ Particle *pp) {
+static void transform(const float* rr0, int nv, float *A, /* output */ Particle *pp) {
     /* rr0: vertices of RBC template; A: affine transformation matrix */
     for (int iv = 0; iv < nv; iv++) {
         float  *r = pp[iv].r, *v = pp[iv].v;
-        float *r0 = &rr0[3*iv];
+        const float *r0 = &rr0[3*iv];
         for (int c = 0, i = 0; c < 3; c++) {
             r[c] += A[i++]*r0[0]; /* matrix transformation */
             r[c] += A[i++]*r0[1];
@@ -47,7 +47,7 @@ static void assert_nc(int nc) {
     ERR("nc = %d >= MAX_CELL_NUM = %d", nc, MAX_CELL_NUM);
 }
 
-static int main0(const Coords *coords, float *rr0, const char *ic, int nv, Particle *pp) {
+int rbc_gen(const Coords *coords, const float *rr0, const char *ic, int nv, Particle *pp) {
     int nc = 0;
     int L[3] = {XS, YS, ZS};
 
@@ -63,24 +63,5 @@ static int main0(const Coords *coords, float *rr0, const char *ic, int nv, Parti
     assert_nc(nc);
     UC(efclose(f));
     msg_print("read %d rbcs", nc);
-    return nc;
-}
-
-static void vert(const char *f, int n0, /**/ float *vert) {
-    int n;
-    UC(off_read_vert(f, n0, /**/ &n, vert));
-    if (n0 != n)
-        ERR("wrong vert number in <%s> : %d != %d", f, n0, n);
-}
-
-int rbc_gen(const Coords *coords, const char *cell, const char *ic, int nv, /**/ Particle *pp) {
-    float *rr0;
-    int nc;
-    UC(emalloc(3*nv*sizeof(float), (void**) &rr0));
-
-    UC(vert(cell, nv, /**/ rr0));
-    nc = main0(coords, rr0, ic, nv, pp);
-
-    UC(efree(rr0));
     return nc;
 }

@@ -37,12 +37,13 @@ void sim_gen(Sim *s) {
     Flu *flu = &s->flu;
     Rbc *rbc = &s->rbc;
     Wall *wall = &s->wall;
+    OffRead *cell = s->rbc.cell;
     
     UC(flu_gen_quants(s->coords, s->gen_color, &flu->q));
     UC(flu_build_cells(&flu->q));
     if (global_ids)  flu_gen_ids  (s->cart, flu->q.n, &flu->q);
     if (rbcs) {
-        rbc_gen_quants(s->coords, s->cart, "rbc.off", "rbcs-ic.txt", /**/ &rbc->q);
+        rbc_gen_quants(s->coords, s->cart, cell, "rbcs-ic.txt", /**/ &rbc->q);
         rbc_force_gen(rbc->q, &rbc->tt);
 
         if (multi_solvent) gen_colors(rbc, &s->colorer, /**/ flu);
@@ -73,13 +74,14 @@ void sim_strt(Sim *s) {
     Rbc *rbc = &s->rbc;
     Rig *rig = &s->rig;
     Wall *wall = &s->wall;
+    OffRead *cell = s->rbc.cell;
     bool dump_sdf = s->opt.dump_field;
     
     /*Q*/
     flu_strt_quants(s->coords, RESTART_BEGIN, &flu->q);
     flu_build_cells(&flu->q);
 
-    if (rbcs) rbc_strt_quants(s->coords, "rbc.off", RESTART_BEGIN, &rbc->q);
+    if (rbcs) rbc_strt_quants(s->coords, cell, RESTART_BEGIN, &rbc->q);
     dSync();
 
     if (solids) rig_strt_quants(s->coords, RESTART_BEGIN, &rig->q);
