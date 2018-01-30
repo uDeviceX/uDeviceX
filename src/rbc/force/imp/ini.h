@@ -9,7 +9,7 @@ static void setup_rnd(int md, int nv, RbcRnd **prnd) {
 void rbc_force_gen(const RbcQuants q, RbcForce *t) {
     int md, nv;
     md = RBCmd;
-    nv = q->nv;
+    nv = q.nv;
     if (nv <= 0) ERR("nv=%d < 0", nv);
     if (RBC_RND) setup_rnd(md, nv, &t->rnd);
 }
