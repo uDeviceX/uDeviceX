@@ -89,7 +89,10 @@ static void diag(int it, Sim *s) {
     const Flu *flu = &s->flu;
     const Rbc *rbc = &s->rbc;
     const Rig *rig = &s->rig;
-    int n = flu->q.n + rig->q.n + rbc->q.n; dev2hst(s);
+    int n = flu->q.n;
+    if (rbcs)   n += rbc->q.n;
+    if (solids) n += rig->q.n;
+    dev2hst(s);
     diagnostics(s->cart, n, s->pp_dump, it);
 }
 
