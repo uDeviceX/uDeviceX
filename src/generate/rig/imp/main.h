@@ -1,8 +1,10 @@
-static void gen0(MPI_Comm comm, int nt, const int4 *tt, const float *vv, int nsolid, int rcount, int idmax, int root, float *coms, /**/
+static void gen0(const Coords *c, MPI_Comm comm, int nt, const int4 *tt, const float *vv, int nsolid, int rcount, int idmax, int root, float *coms, /**/
                  int *ns, int *nps, float *rr0, Solid *ss, Particle *r_pp) {
     Solid model;
     // share model to everyone
     int npsolid = 0, rank;
+    int3 L = subdomain(c);
+    
     MC(m::Comm_rank(comm, &rank));
     if (rank == root) {
         npsolid = rcount;
@@ -23,9 +25,9 @@ static void gen0(MPI_Comm comm, int nt, const int4 *tt, const float *vv, int nso
     for (int j = 0; j < nsolid; ++j) {
         const float *com = coms + 3*j;
 
-        if (-XS/2 <= com[X] && com[X] < XS/2 &&
-            -YS/2 <= com[Y] && com[Y] < YS/2 &&
-            -ZS/2 <= com[Z] && com[Z] < ZS/2 ) {
+        if (-L.x/2 <= com[X] && com[X] < L.x/2 &&
+            -L.y/2 <= com[Y] && com[Y] < L.y/2 &&
+            -L.z/2 <= com[Z] && com[Z] < L.z/2 ) {
             ss[id] = model;
 
             for (int d = 0; d < 3; ++d)
@@ -55,13 +57,14 @@ static void gen1(const Coords *coords, MPI_Comm comm, int nt, const int4 *tt, co
     share(coords, comm, root, /**/ r_pp, &rcount);
     DBG("after share: %d", rcount);
 
-    gen0(comm, nt, tt, vv, nsolid, rcount, idmax, root, coms, /**/ ns, nps, rr0, ss, r_pp);
+    gen0(coords, comm, nt, tt, vv, nsolid, rcount, idmax, root, coms, /**/ ns, nps, rr0, ss, r_pp);
 }
 
 static void gen2(const Coords *coords, MPI_Comm comm, int nt, const int4 *tt, const float *vv, int nsolid, float *coms, /**/
                  int *ns, int *nps, float *rr0, Solid *ss, int *s_n, Particle *s_pp, Particle *r_pp,
                  /*w*/ int *tags, int *rcounts) {
-    count_pp_inside(s_pp, *s_n, coms, nsolid, tt, vv, nt, /**/ tags, rcounts);
+    int3 L = subdomain(coords);
+    count_pp_inside(L, s_pp, *s_n, coms, nsolid, tt, vv, nt, /**/ tags, rcounts);
     gen1(coords, comm, nt, tt, vv, nsolid, coms, /**/ ns, nps, rr0, ss, s_n, s_pp, r_pp, /*w*/ tags, rcounts);
 }
 

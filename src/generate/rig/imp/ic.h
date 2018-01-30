@@ -79,12 +79,12 @@ static int max3(int a, int b, int c) {
     return d > c ? d : c;
 }
 
-static void count_pp_inside(const Particle *s_pp, const int n, const float *coms, const int ns,
+static void count_pp_inside(int3 L, const Particle *s_pp, const int n, const float *coms, const int ns,
                             const int4 *tt, const float *vv, const int nt,
                             /**/ int *tags, int *rcounts) {
     for (int j = 0; j < ns; ++j) rcounts[j] = 0;
 
-    const float R = max3(XS, YS, ZS);
+    const float R = max3(L.x, L.y, L.z);
 
     for (int ip = 0; ip < n; ++ip) {
         const Particle p = s_pp[ip]; const float *r0 = p.r;
