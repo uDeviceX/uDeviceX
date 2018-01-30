@@ -16,14 +16,14 @@ static void ini_obj_exch(MPI_Comm comm, /**/ ObjExch *e) {
     UC(eobj_unpackf_ini(MAX_OBJ_DENSITY, maxpsolid, /**/ &e->uf));
 }
 
-static void ini_mesh_exch(int nv, int max_m, MPI_Comm comm, /**/ Mexch *e) {
-    UC(emesh_pack_ini(nv, max_m, /**/ &e->p));
+static void ini_mesh_exch(int nv, int max_m, MPI_Comm comm, int3 L, /**/ Mexch *e) {
+    UC(emesh_pack_ini(L, nv, max_m, /**/ &e->p));
     UC(emesh_comm_ini(comm, /**/ &e->c));
-    UC(emesh_unpack_ini(nv, max_m, /**/ &e->u));
+    UC(emesh_unpack_ini(L, nv, max_m, /**/ &e->u));
 }
 
-static void ini_bb_exch(int nt, int nv, int max_m, MPI_Comm comm, /**/ BBexch *e) {
-    UC(ini_mesh_exch(nv, max_m, comm, /**/ e));
+static void ini_bb_exch(int nt, int nv, int max_m, MPI_Comm comm, int3 L, /**/ BBexch *e) {
+    UC(ini_mesh_exch(nv, max_m, comm, L, /**/ e));
 
     UC(emesh_packm_ini(nt, max_m, /**/ &e->pm));
     UC(emesh_commm_ini(comm, /**/ &e->cm));
@@ -125,8 +125,8 @@ static void ini_inflow(const Coords *coords, const Config *cfg, Inflow **i) {
     UC(inflow_ini_velocity(*i));
 }
 
-static void ini_colorer(int nv, MPI_Comm comm, /**/ Colorer *c) {
-    UC(ini_mesh_exch(nv, MAX_CELL_NUM, comm, &c->e));
+static void ini_colorer(int nv, MPI_Comm comm, int3 L, /**/ Colorer *c) {
+    UC(ini_mesh_exch(nv, MAX_CELL_NUM, comm, L, &c->e));
     Dalloc(&c->pp, MAX_PART_NUM);
     Dalloc(&c->minext, MAX_CELL_NUM);
     Dalloc(&c->maxext, MAX_CELL_NUM);
@@ -179,11 +179,11 @@ static void ini_rig(MPI_Comm cart, int3 L, /**/ Rig *s) {
     UC(ini_rig_distr(s->q.nv, cart, L, /**/ &s->d));
 }
 
-static void ini_bounce_back(MPI_Comm cart, Rig *s, /**/ BounceBack *bb) {
+static void ini_bounce_back(MPI_Comm cart, int3 L, Rig *s, /**/ BounceBack *bb) {
     meshbb_ini(MAX_PART_NUM, /**/ &bb->d);
     Dalloc(&bb->mm, MAX_PART_NUM);
 
-    UC(ini_bb_exch(s->q.nt, s->q.nv, MAX_CELL_NUM, cart, /**/ &bb->e));
+    UC(ini_bb_exch(s->q.nt, s->q.nv, MAX_CELL_NUM, cart, L, /**/ &bb->e));
 }
 
 static void ini_wall(const Config *cfg, Wall *w) {
@@ -269,13 +269,13 @@ void sim_ini(int argc, char **argv, MPI_Comm cart, /**/ Sim **sim) {
     UC(ini_flu(s->cart, s->L, /**/ &s->flu));
 
     if (multi_solvent && rbcs)
-        UC(ini_colorer(s->rbc.q.nv, s->cart, /**/ &s->colorer));
+        UC(ini_colorer(s->rbc.q.nv, s->cart, s->L, /**/ &s->colorer));
 
     if (solids) {
         UC(ini_rig(s->cart, s->L, /**/ &s->rig));
 
         if (sbounce_back)
-            UC(ini_bounce_back(s->cart, &s->rig, /**/ &s->bb));
+            UC(ini_bounce_back(s->cart, s->L, &s->rig, /**/ &s->bb));
     }
 
     UC(scheme_restrain_ini(&s->restrain));

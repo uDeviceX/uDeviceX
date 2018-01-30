@@ -7,9 +7,9 @@ struct EMeshUnpackM;
 
 /* mesh exchanger */
 
-void emesh_pack_ini(int nv, int max_mesh_num, EMeshPack **p);
+void emesh_pack_ini(int3 L, int nv, int max_mesh_num, EMeshPack **p);
 void emesh_comm_ini(MPI_Comm comm, /**/ EMeshComm **c);
-void emesh_unpack_ini(int nv, int max_mesh_num, EMeshUnpack **u);
+void emesh_unpack_ini(int3 L, int nv, int max_mesh_num, EMeshUnpack **u);
 
 void emesh_pack_fin(EMeshPack *p);
 void emesh_comm_fin(EMeshComm *c);

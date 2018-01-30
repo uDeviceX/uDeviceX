@@ -3,6 +3,8 @@ struct EMeshPack {
     float3 *minext, *maxext;
     dBags dpp;
     hBags hpp;
+
+    int3 L; /* subdomain size */
 };
 
 struct EMeshComm {
@@ -12,6 +14,8 @@ struct EMeshComm {
 struct EMeshUnpack {
     hBags hpp;
     dBags dpp;
+
+    int3 L; /* subdomain size */
 };
 
 /* optional structures for sending momenta back */
