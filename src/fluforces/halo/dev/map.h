@@ -99,7 +99,7 @@ static __device__  void r2size(float r, int nc, int S, /**/ int *pl, int *ps) {
     *pl = l; *ps = s;
 }
 
-static __device__ Map r2map(const flu::RFrag frag, float x, float y, float z) {
+static __device__ Map r2map(int3 L, const flu::RFrag frag, float x, float y, float z) {
     /* coordinate [r] to map */
     int id; /* base id */
     int xl, yl, zl; /* low */
@@ -112,11 +112,11 @@ static __device__ Map r2map(const flu::RFrag frag, float x, float y, float z) {
     xc = frag.xcells; yc = frag.ycells; zc = frag.zcells;
 
     id = 0; xs = 1; ys = 1; zs = 1;
-    if (dz == 0) {r2size(z, zc, ZS, /**/ &zl, &zs); id += zl;}
+    if (dz == 0) {r2size(z, zc, L.z, /**/ &zl, &zs); id += zl;}
     id *= yc;
-    if (dy == 0) {r2size(y, yc, YS, /**/ &yl, &ys); id += yl;}
+    if (dy == 0) {r2size(y, yc, L.y, /**/ &yl, &ys); id += yl;}
     id *= xc;
-    if (dx == 0) {r2size(x, xc, XS, /**/ &xl, &xs); id += xl;}
+    if (dx == 0) {r2size(x, xc, L.x, /**/ &xl, &xs); id += xl;}
 
     xyz2rc(frag.type,
            dx, dy, dz,

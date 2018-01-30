@@ -42,7 +42,7 @@ static __device__ void force2(int3 L, const flu::RFrag frag, const flu::RndFrag 
     float x, y, z;
     Map m;
     forces::p2r3(&p, /**/ &x, &y, &z);
-    m = r2map(frag, x, y, z);
+    m = r2map(L, frag, x, y, z);
     forces::shift(-frag.dx * L.x,
                   -frag.dy * L.y,
                   -frag.dz * L.z, /**/ &p);
