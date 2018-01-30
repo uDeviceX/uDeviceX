@@ -47,7 +47,7 @@ static void assert_nc(int nc) {
     ERR("nc = %d >= MAX_CELL_NUM = %d", nc, MAX_CELL_NUM);
 }
 
-static int main0(const Coords *coords, const float *rr0, const char *ic, int nv, Particle *pp) {
+int rbc_gen(const Coords *coords, const float *rr0, const char *ic, int nv, Particle *pp) {
     int nc = 0;
     int L[3] = {XS, YS, ZS};
 
@@ -63,12 +63,5 @@ static int main0(const Coords *coords, const float *rr0, const char *ic, int nv,
     assert_nc(nc);
     UC(efclose(f));
     msg_print("read %d rbcs", nc);
-    return nc;
-}
-
-int rbc_gen(const Coords *coords, const float *vv, const char *ic, int nv, /**/ Particle *pp) {
-    /* vv : vertices : x y z x y z, ... */
-    int nc;
-    nc = main0(coords, vv, ic, nv, pp);
     return nc;
 }
