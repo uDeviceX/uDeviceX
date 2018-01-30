@@ -8,7 +8,7 @@ void emesh_unpack(int nv, const EMeshUnpack *u, /**/ int *nmhalo, Particle *pp) 
         sz = n * sizeof(Particle);
         if (nm) {
             CC(d::MemcpyAsync(pp + s, u->hpp.data[i], sz, H2D));
-            ecommon_shift_one_frag(n, i, /**/ pp + s);
+            ecommon_shift_one_frag(u->L, n, i, /**/ pp + s);
         }
         s += n;
         nmtot += nm;

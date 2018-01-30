@@ -20,6 +20,6 @@ void ecommon_pack_pp(const Particle *pp, PackHelper ph, /**/ Pap26 buf) {
     KL(dev::ecommon_pack_pp, (14 * 16, 128), (pp, ph, /**/ buf));    
 }
 
-void ecommon_shift_one_frag(int n, const int fid, /**/ Particle *pp) {
-    KL(dev::ecommon_shift_one_frag, (k_cnf(n)), (n, fid, /**/ pp));
+void ecommon_shift_one_frag(int3 L, int n, const int fid, /**/ Particle *pp) {
+    KL(dev::ecommon_shift_one_frag, (k_cnf(n)), (L, n, fid, /**/ pp));
 }

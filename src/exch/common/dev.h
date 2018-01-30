@@ -24,11 +24,11 @@ __global__ void ecommon_pack_pp(const Particle *pp, PackHelper ph, /**/ Pap26 bu
 }
 
 // TODO this is copy/paste from distr/common
-static __device__ void fid2shift(int id, /**/ int s[3]) {
+static __device__ void fid2shift(int3 L, int id, /**/ int s[3]) {
     enum {X, Y, Z};
-    s[X] = XS * frag_i2d(id, X);
-    s[Y] = YS * frag_i2d(id, Y);
-    s[Z] = ZS * frag_i2d(id, Z);
+    s[X] = L.x * frag_i2d(id, X);
+    s[Y] = L.y * frag_i2d(id, Y);
+    s[Z] = L.z * frag_i2d(id, Z);
 }
 
 static  __device__ void shift_1p(const int s[3], /**/ Particle *p) {
@@ -38,12 +38,12 @@ static  __device__ void shift_1p(const int s[3], /**/ Particle *p) {
     p->r[Z] += s[Z];
 }
 
-__global__ void ecommon_shift_one_frag(int n, const int fid, /**/ Particle *pp) {
+__global__ void ecommon_shift_one_frag(int3 L, int n, const int fid, /**/ Particle *pp) {
     int i, s[3];
     i = threadIdx.x + blockDim.x * blockIdx.x;
     if (i >= n) return;
     
-    fid2shift(fid, /**/ s);
+    fid2shift(L, fid, /**/ s);
     shift_1p(s, /**/ pp + i);
 }
 

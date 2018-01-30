@@ -20,7 +20,7 @@ static void upload(int nfrags, const hBags h, /**/ dBags d) {
     }    
 }
 
-static void shift_pp(int nfrags, const int counts[], /**/ dBags d) {
+static void shift_pp(int3 L, int nfrags, const int counts[], /**/ dBags d) {
     int i, n;
     Particle *pp;
 
@@ -28,14 +28,14 @@ static void shift_pp(int nfrags, const int counts[], /**/ dBags d) {
         n = counts[i];
         if (n) {
             pp = (Particle *) d.data[i];
-            ecommon_shift_one_frag(n, i, /**/ pp);
+            ecommon_shift_one_frag(L, n, i, /**/ pp);
         }
     }    
 }
 
 Pap26 eobj_upload_shift(EObjUnpack *u) {
     upload(NFRAGS, u->hpp, /**/ u->dpp);
-    shift_pp(NFRAGS, u->hpp.counts, /**/ u->dpp);    
+    shift_pp(u->L, NFRAGS, u->hpp.counts, /**/ u->dpp);    
     Pap26 wrap;
     bag2Sarray(u->dpp, &wrap);
     return wrap;
