@@ -89,7 +89,7 @@ static void setup0(int md, int nt, int nv, const int4 *tt, /**/
     UC(setup1(md, nt, nv, tt, /**/ anti, edg, totArea, adj0, adj1));
 }
 
-static void setup(int md, int nt, int nv, const char *cell, OffRead *off, /**/ RbcQuants *q) {
+static void setup(int md, int nt, int nv, OffRead *off, /**/ RbcQuants *q) {
     const int4 *tt;
     tt = off_get_tri(off);
     setup0(md, nt, nv, tt, /**/

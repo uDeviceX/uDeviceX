@@ -18,7 +18,7 @@ void rbc_strt_quants(const Coords *coords, const char *cell, OffRead *off, const
     md = RBCmd;
     nt = RBCnt;
     nv = RBCnv;
-    setup(md, nt, nv, cell, off, /**/ q);
+    setup(md, nt, nv, off, /**/ q);
     setup_from_strt(coords, nv, id, /**/ q->pp, &q->nc, &q->n, /*w*/ q->pp_hst);
     if (rbc_ids)
         ids_from_strt(coords, id, /**/ q->ii);
