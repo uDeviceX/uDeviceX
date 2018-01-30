@@ -23,7 +23,7 @@ void area_volume_setup(int nt, int nv, const int4 *hst, /**/ AreaVolume *q) {
     cH2D(q->tri, hst, nt);
 }
 
-void area_volume_ini(int nt, /**/ AreaVolume **pq) {
+void area_volume_ini(int n, int nt, const int4 *hst, /**/ AreaVolume **pq) {
     AreaVolume *q;
     UC(emalloc(sizeof(AreaVolume), (void**)&q));
     q->nt = nt;
