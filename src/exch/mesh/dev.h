@@ -1,6 +1,7 @@
 namespace dev {
 
-__global__ void build_map(int3 L, int n, const float3 *minext, const float3 *maxext, /**/ EMap map) {
+/* L0: subdomain cropped by one cutoff radius */
+__global__ void build_map(int3 L0, int n, const float3 *minext, const float3 *maxext, /**/ EMap map) {
     int i, fid, fids[MAX_DSTS], ndsts, j;
     float3 lo, hi;
     i = threadIdx.x + blockIdx.x * blockDim.x;
@@ -9,7 +10,7 @@ __global__ void build_map(int3 L, int n, const float3 *minext, const float3 *max
     lo = minext[i];
     hi = maxext[i];
     
-    fid = map_code_box(L, lo, hi);
+    fid = map_code_box(L0, lo, hi);
     ndsts = map_decode(fid, /**/ fids);
 
     for (j = 0; j < ndsts; ++j)
