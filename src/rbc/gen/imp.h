@@ -1,1 +1,1 @@
-int rbc_gen(const Coords *coords, const char *cell, const char *ic, int nv, /**/ Particle *pp);
+int rbc_gen(const Coords *coords, const float *verts, const char *ic, int nv, /**/ Particle *pp);

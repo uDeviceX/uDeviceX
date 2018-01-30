@@ -65,7 +65,7 @@ static void run1(const Coords *coords, int part_freq, const BForce *bforce, Move
 static void run2(const Coords *coords, int part_freq, const BForce *bforce, MoveParams *moveparams, const char *cell, OffRead *off, const char *ic, const RbcParams *par, MeshWrite *mesh_write, RbcQuants q) {
     RbcStretch *stretch;
     RbcForce t;
-    rbc_gen_quants(coords, m::cart, cell, off, ic, /**/ &q);
+    rbc_gen_quants(coords, m::cart, off, ic, /**/ &q);
     UC(stretch::ini("rbc.stretch", q.nv, /**/ &stretch));
     rbc_force_gen(q, &t);
     run1(coords, part_freq, bforce, moveparams, q, t, par, mesh_write, stretch);

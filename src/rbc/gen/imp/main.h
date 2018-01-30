@@ -66,21 +66,18 @@ static int main0(const Coords *coords, float *rr0, const char *ic, int nv, Parti
     return nc;
 }
 
-static void vert(const char *f, int n0, /**/ float *vert) {
+static void vert(const char *f, int n0, /**/ const float *vert) {
     int n;
     UC(off_read_vert(f, n0, /**/ &n, vert));
     if (n0 != n)
         ERR("wrong vert number in <%s> : %d != %d", f, n0, n);
 }
 
-int rbc_gen(const Coords *coords, const char *cell, const char *ic, int nv, /**/ Particle *pp) {
+int rbc_gen(const Coords *coords, const float *vv, const char *ic, int nv, /**/ Particle *pp) {
+    /* vv : vertices : x y z x y z, ... */
     float *rr0;
     int nc;
-    UC(emalloc(3*nv*sizeof(float), (void**) &rr0));
-
     UC(vert(cell, nv, /**/ rr0));
-    nc = main0(coords, rr0, ic, nv, pp);
-
-    UC(efree(rr0));
+    nc = main0(coords, vv, ic, nv, pp);
     return nc;
 }

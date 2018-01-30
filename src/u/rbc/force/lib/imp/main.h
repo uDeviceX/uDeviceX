@@ -47,7 +47,7 @@ static void run2(const char *cell, const char *ic, const RbcParams *par, RbcQuan
     OffRead *off;
     UC(off_read(cell, /**/ &off));
     coords_ini(m::cart, XS, YS, ZS, &coords);
-    rbc_gen_quants(coords, m::cart, cell, off, ic, /**/ &q);
+    rbc_gen_quants(coords, m::cart, off, ic, /**/ &q);
     rbc_force_gen(q, &t);
     run1(q, t, par);
     rbc_force_fin(&t);
