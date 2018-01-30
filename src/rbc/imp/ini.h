@@ -6,7 +6,6 @@ static void ini_common(RbcQuants *q, const int4 *tt) {
     UC(area_volume_ini(nv, nt, tt, MAX_CELL_NUM, /**/ &q->area_volume));
     Dalloc(&q->adj0, nv * RBCmd);
     Dalloc(&q->adj1, nv * RBCmd);
-    Dalloc(&q->av, 2*MAX_CELL_NUM);
 }
 
 static void ini_ids(RbcQuants *q) { UC(emalloc(MAX_CELL_NUM * sizeof(int), (void**) &q->ii)); }

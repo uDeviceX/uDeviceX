@@ -3,14 +3,9 @@ static void garea_volume(RbcQuants q, /**/ float *a, float *v) {
     AreaVolume *area_volume;
     const Particle *pp;
     float hst[2], *dev;
-
-    Dalloc(&dev, 2);
-
     nc = q.nc; pp = q.pp; area_volume = q.area_volume;
-    UC(area_volume_compute(area_volume, nc, pp, /**/ dev));
+    UC(area_volume_compute(area_volume, nc, pp, /**/ &dev));
     cD2H(hst, dev, 2);
-    Dfree(dev);
-
     *a = hst[0]; *v = hst[1];
 }
 

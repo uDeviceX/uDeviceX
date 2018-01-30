@@ -1,9 +1,7 @@
 static void area_volume_hst(AreaVolume *area_volume, int nc, const Particle *pp, /**/ float *hst) {
     float *dev;
-    Dalloc(&dev, 2*nc);
-    UC(area_volume_compute(area_volume, nc, pp, /**/ dev));
+    UC(area_volume_compute(area_volume, nc, pp, /**/ &dev));
     cD2H(hst, dev, 2*nc);
-    Dfree(dev);
 }
 
 static void run0(RbcQuants q, RbcForce t) {

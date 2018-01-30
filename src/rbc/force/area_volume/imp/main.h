@@ -40,10 +40,11 @@ static void compute(int nv, int nt, int nc, const Particle *pp, const int4 *tri,
     KL(dev::main, (avBlocks, avThreads), (nt, nv, pp, tri, av));
 }
 
-void area_volume_compute(AreaVolume *q, int nc, const Particle *pp, /**/ float *av) {
+void area_volume_compute(AreaVolume *q, int nc, const Particle *pp, /**/ float **pav) {
     if (nc > q->max_cell)
         ERR("nc=%d > max_cell=%d", nc, q->max_cell);
-    UC(compute(q->nv, q->nt, nc, pp, q->tri, av));
+    UC(compute(q->nv, q->nt, nc, pp, q->tri, q->av));
+    *pav = q->av;
 }
 
 const int4* area_volume_tri(AreaVolume *q) { return q->tri; }
