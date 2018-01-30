@@ -1,4 +1,4 @@
-void bop_ini(MPI_Comm comm, BopWork **w) {
+void bop_ini(MPI_Comm comm, int maxp, BopWork **w) {
     BopWork *t;
     size_t sz;
     UC(emalloc(sizeof(BopWork), (void**) w));
@@ -6,7 +6,7 @@ void bop_ini(MPI_Comm comm, BopWork **w) {
     if (m::is_master(comm))
         UC(os_mkdir(DUMP_BASE "/bop"));
 
-    sz = 9 * MAX_PART_NUM * sizeof(float);
+    sz = 9 * maxp * sizeof(float);
     UC(emalloc(sz, (void**) &t->w_pp));
 }
 

@@ -2,9 +2,9 @@ static void assert_np(int n, int m) {
     if (n > m) ERR("too many particles: n = %d < m = %d", n, m);
 }
 
-static int gen0(int3 L, Particle *pp) { /* generate particle positions and velocities */
+static int gen0(int3 L, int maxp, Particle *pp) { /* generate particle positions and velocities */
     enum {X, Y, Z};
-    UC(assert_np(L.x * L.y * L.z * numberdensity, MAX_PART_NUM));
+    UC(assert_np(L.x * L.y * L.z * numberdensity, maxp));
     os_srand(123456);
     int iz, iy, ix, l, nd = numberdensity;
     int n = 0; /* particle index */
@@ -26,16 +26,16 @@ static int gen0(int3 L, Particle *pp) { /* generate particle positions and veloc
     return n;
 }
 
-static int genColor(int3 L, const Coords *coords, const GenColor *gc, /*o*/ Particle *pp, int *color, /*w*/ Particle *pp_hst, int *color_hst) {
-    int n = gen0(L, pp_hst);
+static int genColor(int3 L, int maxp, const Coords *coords, const GenColor *gc, /*o*/ Particle *pp, int *color, /*w*/ Particle *pp_hst, int *color_hst) {
+    int n = gen0(L, maxp, pp_hst);
     inter_color_apply_hst(coords, gc, n, pp_hst, /**/ color_hst);
     cH2D(color, color_hst, n);
     cH2D(   pp,    pp_hst, n);
     return n;
 }
 
-static int genGrey(int3 L, /*o*/ Particle *dev, /*w*/ Particle *hst) {
-    int n = gen0(L, hst);
+static int genGrey(int3 L, int maxp, /*o*/ Particle *dev, /*w*/ Particle *hst) {
+    int n = gen0(L, maxp, hst);
     cH2D(dev, hst, n);
     return n;
 }
@@ -43,9 +43,9 @@ static int genGrey(int3 L, /*o*/ Particle *dev, /*w*/ Particle *hst) {
 void flu_gen_quants(const Coords *coords, const GenColor *gc, FluQuants *q) {
     int3 L = subdomain(coords);
     if (multi_solvent)
-        q->n = genColor(L, coords, gc, q->pp, q->cc, /*w*/ q->pp_hst, q->cc_hst);
+        q->n = genColor(L, q->maxp, coords, gc, q->pp, q->cc, /*w*/ q->pp_hst, q->cc_hst);
     else
-        q->n = genGrey(L, q->pp, /*w*/ q->pp_hst);
+        q->n = genGrey(L, q->maxp, q->pp, /*w*/ q->pp_hst);
 }
 
 static void ii_gen0(MPI_Comm comm, const long n, int *ii) {

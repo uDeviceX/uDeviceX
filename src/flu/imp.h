@@ -11,13 +11,15 @@ struct FluQuants {
     int *ii_hst;    /* global ids on host   */
 
     int *cc, *cc0;  /* colors on device */
-    int *cc_hst;    /* colors on host   */    
+    int *cc_hst;    /* colors on host   */
+
+    int maxp; /* maximum particle number */
 }; 
 
 struct Coords;
 struct GenColor;
 
-void flu_ini(int3 L, FluQuants *q);
+void flu_ini(int3 L, int maxp, FluQuants *q);
 void flu_fin(FluQuants *q);
 
 void flu_gen_quants(const Coords *coords, const GenColor *gc, FluQuants *q);

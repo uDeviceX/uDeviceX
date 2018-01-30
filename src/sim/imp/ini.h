@@ -134,7 +134,7 @@ static void ini_colorer(int nv, MPI_Comm comm, int3 L, /**/ Colorer *c) {
 
 static void ini_flu(MPI_Comm cart, int3 L, /**/ Flu *f) {
 
-    UC(flu_ini(L, &f->q));
+    UC(flu_ini(L, MAX_PART_NUM, &f->q));
     UC(fluforces_bulk_ini(L, MAX_PART_NUM, /**/ &f->bulk));
     UC(fluforces_halo_ini(cart, L, /**/ &f->halo));
 
@@ -262,7 +262,7 @@ void sim_ini(int argc, char **argv, MPI_Comm cart, /**/ Sim **sim) {
     if (rbcs || solids)
         UC(ini_objinter(s->cart, s->L, /**/ &s->objinter));
 
-    UC(bop_ini(s->cart, &s->dumpt));
+    UC(bop_ini(s->cart, MAX_PART_NUM, &s->dumpt));
 
     if (walls) ini_wall(cfg, &s->wall);
 
