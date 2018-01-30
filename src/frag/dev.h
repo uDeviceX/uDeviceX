@@ -98,3 +98,5 @@ END
 
 #undef _I_
 #undef _S_
+#undef BEGIN
+#undef END
