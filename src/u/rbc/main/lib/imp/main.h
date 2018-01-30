@@ -62,7 +62,7 @@ static void run1(const Coords *coords, int part_freq, const BForce *bforce, Move
     Dfree(f);
 }
 
-static void run2(const Coords *coords, int part_freq, const BForce *bforce, MoveParams *moveparams, const char *cell, const char *ic, const RbcParams *par, MeshWrite *mesh_write, RbcQuants q) {
+static void run2(const Coords *coords, int part_freq, const BForce *bforce, MoveParams *moveparams, const char *cell, OffRead *off, const char *ic, const RbcParams *par, MeshWrite *mesh_write, RbcQuants q) {
     RbcStretch *stretch;
     RbcForce t;
     rbc_gen_quants(coords, m::cart, cell, ic, /**/ &q);
@@ -82,7 +82,7 @@ void run(const Coords *coords, int part_freq, const BForce *bforce, MoveParams *
     UC(mesh_write_ini_off(off, directory, /**/ &mesh_write));
 
     rbc_ini(&q);
-    run2(coords, part_freq, bforce, moveparams, cell, ic, par, mesh_write, q);
+    run2(coords, part_freq, bforce, moveparams, cell, off, ic, par, mesh_write, q);
     rbc_fin(&q);
 
     UC(mesh_write_fin(mesh_write));
