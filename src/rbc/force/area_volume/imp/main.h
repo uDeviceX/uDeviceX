@@ -16,7 +16,7 @@ static void assert_tri(int nt, int nv, const int4 *tri) {
     UC(efree(rank));
 }
 
-void area_volume_ini(int nv, int nt, const int4 *hst, /**/ AreaVolume **pq) {
+void area_volume_ini(int nv, int nt, const int4 *hst, int max_cell, /**/ AreaVolume **pq) {
     AreaVolume *q;
     UC(emalloc(sizeof(AreaVolume), (void**)&q));
     q->nt = nt; q->nv = nv;

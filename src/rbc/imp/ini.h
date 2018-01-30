@@ -3,7 +3,7 @@ static void ini_common(RbcQuants *q, const int4 *tt) {
     nv = q->nv; nt = q->nt;
     Dalloc(&q->pp, MAX_CELL_NUM * nv);
     UC(emalloc(MAX_CELL_NUM * nv * sizeof(Particle), (void**) &q->pp_hst));
-    UC(area_volume_ini(nv, nt, tt, /**/ &q->area_volume));
+    UC(area_volume_ini(nv, nt, tt, MAX_CELL_NUM, /**/ &q->area_volume));
     Dalloc(&q->adj0, nv * RBCmd);
     Dalloc(&q->adj1, nv * RBCmd);
     Dalloc(&q->av, 2*MAX_CELL_NUM);
