@@ -7,7 +7,7 @@ void eflu_pack_ini(int3 L, int maxd, EFluPack **pack) {
     p = *pack;
 
     p->L = L;
-    fraghst::frag_estimates(NFRAGS, maxd, /**/ cap);
+    fraghst::estimates(NFRAGS, maxd, /**/ cap);
     cap[BULK] = 0;
     memcpy(p->cap.d, cap, NFRAGS * sizeof(int));
     
@@ -54,7 +54,7 @@ void eflu_unpack_ini(int3 L, int maxd, EFluUnpack **unpack) {
     u = *unpack;
 
     u->L = L;
-    fraghst::frag_estimates(NFRAGS, maxd, /**/ cap);
+    fraghst::estimates(NFRAGS, maxd, /**/ cap);
     cap[BULK] = 0;
     
     for (i = 0; i < NFRAGS; ++i)
