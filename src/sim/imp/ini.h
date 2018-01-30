@@ -6,12 +6,12 @@ static void ini_flu_exch(MPI_Comm comm, int3 L, /**/ FluExch *e) {
     UC(eflu_unpack_ini(L, maxd, /**/ &e->u));
 }
 
-static void ini_obj_exch(MPI_Comm comm, /**/ ObjExch *e) {
+static void ini_obj_exch(MPI_Comm comm, int3 L, /**/ ObjExch *e) {
     int maxpsolid = MAX_PSOLID_NUM;
 
-    UC(eobj_pack_ini(MAX_OBJ_TYPES, MAX_OBJ_DENSITY, maxpsolid, &e->p));
+    UC(eobj_pack_ini(L, MAX_OBJ_TYPES, MAX_OBJ_DENSITY, maxpsolid, &e->p));
     UC(eobj_comm_ini(comm, /**/ &e->c));
-    UC(eobj_unpack_ini(MAX_OBJ_DENSITY, maxpsolid, /**/ &e->u));
+    UC(eobj_unpack_ini(L, MAX_OBJ_DENSITY, maxpsolid, /**/ &e->u));
     UC(eobj_packf_ini(MAX_OBJ_DENSITY, maxpsolid, /**/ &e->pf));
     UC(eobj_unpackf_ini(MAX_OBJ_DENSITY, maxpsolid, /**/ &e->uf));
 }
@@ -197,7 +197,7 @@ static void ini_wall(const Config *cfg, Wall *w) {
 static void ini_objinter(MPI_Comm cart, int3 L, /**/ ObjInter *o) {
     int rank;
     MC(m::Comm_rank(cart, &rank));
-    UC(ini_obj_exch(cart, &o->e));
+    UC(ini_obj_exch(cart, L, &o->e));
     if (contactforces) cnt_ini(rank, L, /**/ &o->cnt);
     if (fsiforces)     fsi_ini(rank, L, /**/ &o->fsi);
 }

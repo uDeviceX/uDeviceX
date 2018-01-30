@@ -2,6 +2,8 @@ struct EObjPack {
     EMap map;
     dBags dpp;
     hBags hpp;
+
+    int3 L; /* subdomain size */
 };
 
 struct EObjComm {
@@ -11,6 +13,8 @@ struct EObjComm {
 struct EObjUnpack {
     hBags hpp;
     dBags dpp;
+
+    int3 L; /* subdomain size */
 };
 
 struct EObjPackF {

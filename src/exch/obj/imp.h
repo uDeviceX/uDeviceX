@@ -4,9 +4,9 @@ struct EObjUnpack;
 struct EObjPackF;
 struct EObjUnpackF;
 
-void eobj_pack_ini(int nw, int maxd, int maxpsolid, EObjPack **p);
+void eobj_pack_ini(int3 L, int nw, int maxd, int maxpsolid, EObjPack **p);
 void eobj_comm_ini(MPI_Comm cart, /**/ EObjComm **c);
-void eobj_unpack_ini(int maxd, int maxpsolid, EObjUnpack **u);
+void eobj_unpack_ini(int3 L, int maxd, int maxpsolid, EObjUnpack **u);
 void eobj_packf_ini(int maxd, int maxpsolid, EObjPackF **p);
 void eobj_unpackf_ini(int maxd, int maxpsolid, EObjUnpackF **u);
 

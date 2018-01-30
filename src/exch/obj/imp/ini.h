@@ -14,12 +14,13 @@ static void estimates(int nfrags, int maxd, int maxpsolid, int *cap) {
     }
 }
 
-void eobj_pack_ini(int nw, int maxd, int maxpsolid, EObjPack **pack) {
+void eobj_pack_ini(int3 L, int nw, int maxd, int maxpsolid, EObjPack **pack) {
     int cap[NFRAGS];
     EObjPack * p;
     UC(emalloc(sizeof(EObjPack), (void**) pack));
     p = *pack;
-    
+
+    p->L = L;
     estimates(NFRAGS, maxd, maxpsolid, /**/ cap);
 
     UC(emap_ini(nw, NFRAGS, cap, /**/ &p->map));
@@ -35,13 +36,14 @@ void eobj_comm_ini(MPI_Comm cart, /**/ EObjComm **com) {
     UC(comm_ini(cart, /**/ &c->ff));
 }
 
-void eobj_unpack_ini(int maxd, int maxpsolid, EObjUnpack **unpack) {
+void eobj_unpack_ini(int3 L, int maxd, int maxpsolid, EObjUnpack **unpack) {
     int cap[NFRAGS];
     EObjUnpack *u;
 
     UC(emalloc(sizeof(EObjUnpack), (void**) unpack));
     u = *unpack;
-    
+
+    u->L = L;
     estimates(NFRAGS, maxd, maxpsolid, /**/ cap);
 
     UC(comm_bags_ini(PINNED_DEV, NONE, sizeof(Particle), cap, /**/ &u->hpp, &u->dpp));
