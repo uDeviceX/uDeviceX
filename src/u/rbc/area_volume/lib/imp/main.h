@@ -20,7 +20,7 @@ static void run1(const char *cell, const char *ic, RbcQuants q) {
     OffRead *off;
     UC(off_read(cell, /**/ &off));
     
-    rbc_gen_quants(coords, m::cart, cell, ic, /**/ &q);
+    rbc_gen_quants(coords, m::cart, cell, off, ic, /**/ &q);
     rbc_force_gen(q, &t);
     UC(run0(q, t));
     rbc_force_fin(&t);
