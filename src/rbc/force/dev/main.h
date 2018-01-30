@@ -58,8 +58,6 @@ __global__ void force(RbcParams_v par, int md, int nv, int nc, const Particle *p
                       const int *adj0, const int *adj1,
                       const Shape shape,
                       const real *__restrict__ av, /**/ real *ff) {
-    assert(md == RBCmd);
-    assert(nv == RBCnv);
     int i, pid;
     real3 f, fd;
     AdjMap m;
