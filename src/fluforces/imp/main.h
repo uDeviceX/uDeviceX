@@ -17,7 +17,7 @@ void fluforces_bulk_apply(int n, const FluForcesBulk *b, const int *start, const
     c.pp = b->zipped_pp;
     c.cc = b->colors;
 
-    UC(flocal(n, c, start, b->rnd, /**/ ff));
+    UC(flocal(b->L, n, c, start, b->rnd, /**/ ff));
 }
 
 

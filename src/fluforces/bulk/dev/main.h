@@ -32,11 +32,11 @@ __device__ bool cutoff_range(forces::Pa pa, forces::Pa pb) {
     return x*x + y*y + z*z <= 1.f;
 }
 
-__device__ int3 get_cid(const forces::Pa *pa) {
+__device__ int3 get_cid(int3 L, const forces::Pa *pa) {
     int3 c;
-    c.x = pa->x + XS/2;
-    c.y = pa->y + YS/2;
-    c.z = pa->z + ZS/2;
+    c.x = pa->x + L.x / 2;
+    c.y = pa->y + L.y / 2;
+    c.z = pa->z + L.z / 2;
     return c;
 }
 
@@ -44,11 +44,11 @@ __device__ bool valid_c(int c, int hi) {
     return (c >= 0) && (c < hi);
 }
 
-__device__ bool valid_cid(int3 c) {
+__device__ bool valid_cid(int3 L, int3 c) {
     return
-        valid_c(c.x, XS) &&
-        valid_c(c.y, YS) &&
-        valid_c(c.z, ZS);    
+        valid_c(c.x, L.x) &&
+        valid_c(c.y, L.y) &&
+        valid_c(c.z, L.z);    
 }
 
 template<typename CL>
@@ -81,7 +81,7 @@ __device__ void loop_pp(int ia, forces::Pa pa, CL c, int start, int end, float s
     }
 }
 
-__global__ void apply_simplest(int n, BCloud cloud, const int *start, float seed, /**/ Force *ff) {
+__global__ void apply_simplest(int3 L, int n, BCloud cloud, const int *start, float seed, /**/ Force *ff) {
     enum {X, Y, Z};
     int ia, ib;
     int3 ca, cb;
@@ -92,13 +92,13 @@ __global__ void apply_simplest(int n, BCloud cloud, const int *start, float seed
     if (ia >= n) return;
     
     fetch(cloud, ia, &pa);
-    ca = get_cid(&pa);
+    ca = get_cid(L, &pa);
 
     for (cb.z = ca.z - 1; cb.z <= ca.z + 1; ++cb.z) {
         for (cb.y = ca.y - 1; cb.y <= ca.y + 1; ++cb.y) {
             for (cb.x = ca.x - 1; cb.x <= ca.x + 1; ++cb.x) {
-                if (!valid_cid(cb)) continue;
-                ib = cb.x + XS * (cb.y + YS * cb.z);
+                if (!valid_cid(L, cb)) continue;
+                ib = cb.x + L.x * (cb.y + L.y * cb.z);
                 
                 loop_pp(ia, pa, cloud, start[ib], start[ib + 1], seed, /**/ fa, ff);
             }        
@@ -110,7 +110,7 @@ __global__ void apply_simplest(int n, BCloud cloud, const int *start, float seed
     atomicAdd(ff[ia].f + Z, fa[Z]);
 }
 
-__global__ void apply_smarter(int n, BCloud cloud, const int *start, float seed, /**/ Force *ff) {
+__global__ void apply_smarter(int3 L, int n, BCloud cloud, const int *start, float seed, /**/ Force *ff) {
     enum {X, Y, Z};
     int ia, dy, dz;
     int enddy, enddx;
@@ -124,7 +124,7 @@ __global__ void apply_smarter(int n, BCloud cloud, const int *start, float seed,
     if (ia >= n) return;
     
     fetch(cloud, ia, &pa);
-    ca = get_cid(&pa);
+    ca = get_cid(L, &pa);
 
     for (dz = -1; dz <= 0; ++dz) {
         cb.z = ca.z + dz;
@@ -138,10 +138,10 @@ __global__ void apply_smarter(int n, BCloud cloud, const int *start, float seed,
 
             enddx = (dz == 0 && dy == 0) ? 0 : 1;
             
-            startx =    max(    0, ca.x - 1    );
-            endx   = 1 + min(XS-1, ca.x + enddx);
+            startx =    max(     0, ca.x - 1    );
+            endx   = 1 + min(L.x-1, ca.x + enddx);
 
-            cid0 = XS * (cb.y + YS * cb.z);
+            cid0 = L.x * (cb.y + L.y * cb.z);
 
             bs = start[cid0 + startx];
             be = start[cid0 + endx];
@@ -156,7 +156,7 @@ __global__ void apply_smarter(int n, BCloud cloud, const int *start, float seed,
 }
 
 template<typename CL>
-__device__ void one_row(int dz, int dy, int ia, int3 ca, forces::Pa pa, CL cloud, const int *start, float seed, /**/ float fa[3], Force *ff) {
+__device__ void one_row(int3 L, int dz, int dy, int ia, int3 ca, forces::Pa pa, CL cloud, const int *start, float seed, /**/ float fa[3], Force *ff) {
     int3 cb;
     int enddx, startx, endx, cid0, bs, be;
     cb.z = ca.z + dz;
@@ -167,10 +167,10 @@ __device__ void one_row(int dz, int dy, int ia, int3 ca, forces::Pa pa, CL cloud
     /* dx runs from -1 to enddx */
     enddx = (dz == 0 && dy == 0) ? 0 : 1;
 
-    startx =     max(   0, ca.x - 1    );
-    endx   = 1 + min(XS-1, ca.x + enddx);
+    startx =     max(    0, ca.x - 1    );
+    endx   = 1 + min(L.x-1, ca.x + enddx);
 
-    cid0 = XS * (cb.y + YS * cb.z);
+    cid0 = L.x * (cb.y + L.y * cb.z);
 
     bs = start[cid0 + startx];
     be = start[cid0 + endx];
@@ -179,7 +179,7 @@ __device__ void one_row(int dz, int dy, int ia, int3 ca, forces::Pa pa, CL cloud
 }
 
 // unroll loop
-__global__ void apply_unroll(int n, BCloud cloud, const int *start, float seed, /**/ Force *ff) {
+__global__ void apply_unroll(int3 L, int n, BCloud cloud, const int *start, float seed, /**/ Force *ff) {
     enum {X, Y, Z};
     int ia;
     int3 ca;
@@ -190,9 +190,9 @@ __global__ void apply_unroll(int n, BCloud cloud, const int *start, float seed, 
     if (ia >= n) return;
     
     fetch(cloud, ia, &pa);
-    ca = get_cid(&pa);
+    ca = get_cid(L, &pa);
 
-#define ONE_ROW(dz, dy) one_row (dz, dy, ia, ca, pa, cloud, start, seed, /**/ fa, ff)
+#define ONE_ROW(dz, dy) one_row (L, dz, dy, ia, ca, pa, cloud, start, seed, /**/ fa, ff)
     
     ONE_ROW(-1, -1);
     ONE_ROW(-1,  0);
@@ -208,7 +208,7 @@ __global__ void apply_unroll(int n, BCloud cloud, const int *start, float seed, 
 }
 
 // textures
-__global__ void apply(int n, TBCloud cloud, const int *start, float seed, /**/ Force *ff) {
+__global__ void apply(int3 L, int n, TBCloud cloud, const int *start, float seed, /**/ Force *ff) {
     enum {X, Y, Z};
     int ia;
     int3 ca;
@@ -219,9 +219,9 @@ __global__ void apply(int n, TBCloud cloud, const int *start, float seed, /**/ F
     if (ia >= n) return;
     
     fetch(cloud, ia, &pa);
-    ca = get_cid(&pa);
+    ca = get_cid(L, &pa);
 
-#define ONE_ROW(dz, dy) one_row (dz, dy, ia, ca, pa, cloud, start, seed, /**/ fa, ff)
+#define ONE_ROW(dz, dy) one_row (L, dz, dy, ia, ca, pa, cloud, start, seed, /**/ fa, ff)
     
     ONE_ROW(-1, -1);
     ONE_ROW(-1,  0);
