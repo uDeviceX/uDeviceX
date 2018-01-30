@@ -68,11 +68,10 @@ static void setup_anti(int md, int nv, Adj *adj, /**/ int *dev) {
     free(hst);
 }
 
-static void setup1(int md, int nt, int nv, const int4 *tt, /**/
+static void setup0(int md, int nt, int nv, const int4 *tt, /**/
                    int *anti, Edg *edg, float *totArea, int *adj0, int *adj1) {
     Adj adj;
     adj_ini(md, nt, nv, tt, /**/ &adj);
-
     if (RBC_STRESS_FREE) UC(setup_edg(md,  nv, &adj, /**/ edg, totArea));
     if (RBC_RND)         UC(setup_anti(md, nv, &adj, /**/ anti));
 
@@ -82,16 +81,9 @@ static void setup1(int md, int nt, int nv, const int4 *tt, /**/
     adj_fin(&adj);
 }
 
-static void setup0(int md, int nt, int nv, const int4 *tt, /**/
-                  int *anti, Edg *edg, float *totArea, AreaVolume *area_volume,
-                  int *adj0, int *adj1) {
-    UC(setup1(md, nt, nv, tt, /**/ anti, edg, totArea, adj0, adj1));
-}
-
 static void setup(int md, int nt, int nv, OffRead *off, /**/ RbcQuants *q) {
     const int4 *tt;
     tt = off_get_tri(off);
     setup0(md, nt, nv, tt, /**/
-           q->shape.anti, q->shape.edg, &q->shape.totArea,
-           q->area_volume, q->adj0, q->adj1);
+           q->shape.anti, q->shape.edg, &q->shape.totArea, q->adj0, q->adj1);
 }
