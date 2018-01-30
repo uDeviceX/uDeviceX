@@ -37,12 +37,13 @@ void sim_gen(Sim *s) {
     Flu *flu = &s->flu;
     Rbc *rbc = &s->rbc;
     Wall *wall = &s->wall;
+    OffRead *cell = s->rbc.cell;
     
     UC(flu_gen_quants(s->coords, s->gen_color, &flu->q));
     UC(flu_build_cells(&flu->q));
     if (global_ids)  flu_gen_ids  (s->cart, flu->q.n, &flu->q);
     if (rbcs) {
-        rbc_gen_quants(s->coords, s->cart, "rbc.off", "rbcs-ic.txt", /**/ &rbc->q);
+        rbc_gen_quants(s->coords, s->cart, "rbc.off", cell, "rbcs-ic.txt", /**/ &rbc->q);
         rbc_force_gen(rbc->q, &rbc->tt);
 
         if (multi_solvent) gen_colors(rbc, &s->colorer, /**/ flu);
