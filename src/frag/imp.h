@@ -4,9 +4,9 @@ struct int3;
 
 namespace fraghst {
 
-int frag_i2dx(int i);
-int frag_i2dy(int i);
-int frag_i2dz(int i);
+int i2dx(int i);
+int i2dy(int i);
+int i2dz(int i);
 int frag_i2d(int i, int dir);
 void frag_i2d3(int i, /**/ int d[3]);
 
