@@ -15,8 +15,8 @@ int d32i(const int d[3]);
 
 int ncell(int3 L, int i);
 
-int frag_ad2i(int x, int y, int z);
-int frag_anti(int i);
+int antid2i(int x, int y, int z);
+int anti(int i);
 
 void frag_estimates(int nfrags, float maxd, /**/ int *cap);
 

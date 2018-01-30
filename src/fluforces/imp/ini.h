@@ -49,7 +49,7 @@ static void get_interrank_infos(MPI_Comm cart, int fid, /**/ RNDunif* trunks[], 
     if (dstrank != rank)
         masks[fid] = min(dstrank, rank) == rank;
     else {
-        int alter_ego = fraghst::frag_anti(fid);
+        int alter_ego = fraghst::anti(fid);
         masks[fid] = min(fid, alter_ego) == fid;
     }
 }

@@ -72,17 +72,17 @@ _I_ int ncell(int3 L, int i) {
 }
 
 /* anti direction to fragment id                */
-_I_ int frag_ad2i(int x, int y, int z) {
+_I_ int antid2i(int x, int y, int z) {
     return d2i(-x, -y, -z);
 }
 
 /* anti fragment                                */
-_I_ int frag_anti(int i) {
+_I_ int anti(int i) {
     int x, y, z;
     x = i2dx(i);
     y = i2dy(i);
     z = i2dz(i);
-    return frag_ad2i(x, y, z);
+    return antid2i(x, y, z);
 }
 
 /* [f]ragment [id] : where is `i' in sorted a[27]? */

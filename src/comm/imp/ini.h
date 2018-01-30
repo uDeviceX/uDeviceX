@@ -74,7 +74,7 @@ int comm_ini(MPI_Comm cart, /**/ Comm **com_p) {
         for (c = 0; c < 3; ++c)
             crd_rnk[c] = coords[c] + fraghst::i2d(i,c);
         MC(m::Cart_rank(cart, crd_rnk, com->ranks + i));
-        com->tags[i] = fraghst::frag_anti(i);
+        com->tags[i] = fraghst::anti(i);
     }
     MC(m::Comm_dup(cart, &com->cart));
     return 0;
