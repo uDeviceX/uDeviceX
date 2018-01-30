@@ -8,8 +8,8 @@ static void setup_from_pos(const Coords *coords, MPI_Comm comm, const float *vv,
 }
 
 static void gen_ids(MPI_Comm comm, long nc, /**/ int *ii) {
-    long i, i0 = 0;
-    MC(m::Exscan(&nc, &i0, 1, MPI_LONG, MPI_SUM, comm));
+    long i, i0 = 0, count = 1;
+    MC(m::Exscan(&nc, &i0, count, MPI_LONG, MPI_SUM, comm));
     for (i = 0; i < nc; ++i)
         ii[i] = i + i0;
 }
