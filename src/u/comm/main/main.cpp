@@ -1,6 +1,10 @@
 #include <stdio.h>
 #include <assert.h>
 #include <mpi.h>
+#include <vector_types.h>
+
+#include <conf.h>
+#include "inc/conf.h"
 
 #include "utils/msg.h"
 #include "mpi/glb.h"
@@ -35,7 +39,7 @@ void comp(const int *a, const int *b, int n) {
 void compare(const hBags *sb, const hBags *rb) {
     int i, j, cs, cr;
     for (i = 0; i < 26; ++i) {
-        j = frag_anti(i);
+        j = fraghst::anti(i);
         cs = sb->counts[i];
         cr = rb->counts[j];
         
@@ -53,7 +57,11 @@ int main(int argc, char **argv) {
     Comm *comm;
     int capacity[NBAGS];
     float maxdensity = 26.f;
-    frag_estimates(NBAGS, maxdensity, /**/ capacity);
+    int3 L;
+    L.x = XS;
+    L.y = YS;
+    L.z = ZS;
+    fraghst::estimates(L, NBAGS, maxdensity, /**/ capacity);
 
     UC(comm_bags_ini(HST_ONLY, NONE, sizeof(int), capacity, /**/ &sendB, NULL));
     UC(comm_bags_ini(HST_ONLY, NONE, sizeof(int), capacity, /**/ &recvB, NULL));
