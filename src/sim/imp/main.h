@@ -81,7 +81,7 @@ void sim_strt(Sim *s) {
     flu_strt_quants(s->coords, RESTART_BEGIN, &flu->q);
     flu_build_cells(&flu->q);
 
-    if (rbcs) rbc_strt_quants(s->coords, "rbc.off", cell, RESTART_BEGIN, &rbc->q);
+    if (rbcs) rbc_strt_quants(s->coords, cell, RESTART_BEGIN, &rbc->q);
     dSync();
 
     if (solids) rig_strt_quants(s->coords, RESTART_BEGIN, &rig->q);
