@@ -1,7 +1,7 @@
 struct Coords;
 struct OffRead;
 
-void rbc_ini(RbcQuants*);
+void rbc_ini(OffRead*, RbcQuants*);
 void rbc_fin(RbcQuants*);
 
 void rbc_gen_quants(const Coords*, MPI_Comm comm, OffRead*, const char *ic, RbcQuants*);

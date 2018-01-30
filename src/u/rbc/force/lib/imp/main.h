@@ -41,23 +41,23 @@ static void run1(RbcQuants q, RbcForce t, const RbcParams *par) {
     Dfree(f);
 }
 
-static void run2(const char *cell, const char *ic, const RbcParams *par, RbcQuants q) {
+static void run2(OffRead *off, const char *ic, const RbcParams *par, RbcQuants q) {
     Coords *coords;
     RbcForce t;
-    OffRead *off;
-    UC(off_read(cell, /**/ &off));
     coords_ini(m::cart, XS, YS, ZS, &coords);
     rbc_gen_quants(coords, m::cart, off, ic, /**/ &q);
     rbc_force_gen(q, &t);
     run1(q, t, par);
     rbc_force_fin(&t);
     coords_fin(coords);
-    UC(off_fin(off));
 }
 
 void run(const char *cell, const char *ic, const RbcParams *par) {
+    OffRead *off;
     RbcQuants q;
-    rbc_ini(&q);
-    run2(cell, ic, par, q);
-    rbc_fin(&q);
+    UC(off_read(cell, /**/ &off));
+    UC(rbc_ini(off, &q));
+    UC(run2(off, ic, par, q));
+    UC(rbc_fin(&q));
+    UC(off_fin(off));
 }
