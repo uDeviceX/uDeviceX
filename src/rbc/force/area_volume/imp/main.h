@@ -1,4 +1,4 @@
-static void assert_tri(int nt, int nv, int4 *tri) {
+static void assert_tri(int nt, int nv, const int4 *tri) {
     int *rank;
     int f0, f1, f2, i;
     int4 f;
