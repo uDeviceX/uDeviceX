@@ -1,6 +1,6 @@
 static void estimates(int nfrags, int maxd, int maxpsolid, int *cap) {
     int i, e, kind;
-    frag_estimates(nfrags, maxd, /**/ cap);
+    fraghst::frag_estimates(nfrags, maxd, /**/ cap);
 
     /* estimates for solid */
     const float safety = 2.;
@@ -8,7 +8,7 @@ static void estimates(int nfrags, int maxd, int maxpsolid, int *cap) {
 
     for (i = 0; i < nfrags; ++i) {
         int d[3];
-        frag_i2d3(i, d);
+        fraghst::frag_i2d3(i, d);
         kind = fabs(d[0]) + fabs(d[1]) + fabs(d[2]) - 1;
         e = maxpsolid * factor[kind];
         cap[i] += e;

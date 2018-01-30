@@ -1,16 +1,18 @@
 #ifdef FRAG_HOST
   #define _I_
   #define _S_ static
+  #define BEGIN namespace fraghst {
+  #define END }
 #else
   #define _I_ static __device__
   #define _S_ static __device__
+  #define BEGIN namespace fragdev {
+  #define END }
 #endif
+
+BEGIN
 
 enum {BAD_DIR = -2};
-
-#ifndef FRAG_HOST
-namespace fragdev {
-#endif
 
 /* fragment id to direction                    */
 
@@ -92,10 +94,7 @@ _I_ int frag_get_fid(const int a[], const int i) {
     return k9 + k3 + k1;
 }
 
-#ifndef FRAG_HOST
-} // namespace fragdev
-#endif
-
+END
 
 #undef _I_
 #undef _S_
