@@ -38,12 +38,14 @@ static __device__ void force1(const flu::RndFrag rnd, const flu::RFrag frag, con
     atomicAdd(f.z, z);
 }
 
-static __device__ void force2(const flu::RFrag frag, const flu::RndFrag rnd, forces::Pa p, int id, /**/ Fo f) {
+static __device__ void force2(int3 L, const flu::RFrag frag, const flu::RndFrag rnd, forces::Pa p, int id, /**/ Fo f) {
     float x, y, z;
     Map m;
     forces::p2r3(&p, /**/ &x, &y, &z);
     m = r2map(frag, x, y, z);
-    forces::shift(-frag.dx*XS, -frag.dy*YS, -frag.dz*ZS, /**/ &p);
+    forces::shift(-frag.dx * L.x,
+                  -frag.dy * L.y,
+                  -frag.dz * L.z, /**/ &p);
     force1(rnd, frag, m, p, id, /**/ f);
 }
 
@@ -59,15 +61,15 @@ static __device__ Fo Lfrag2f(const flu::LFrag frag, float *ff, int i) {
     return i2f(frag.ii, ff, i);
 }
 
-static __device__ void force3(const flu::LFrag afrag, const flu::RFrag bfrag, const flu::RndFrag rnd, int i, /**/ float *ff) {
+static __device__ void force3(int3 L, const flu::LFrag afrag, const flu::RFrag bfrag, const flu::RndFrag rnd, int i, /**/ float *ff) {
     forces::Pa p;
     Fo f;
     cloud_get(afrag.c, i, &p);
     f = Lfrag2f(afrag, ff, i);
-    force2(bfrag, rnd, p, i, f);
+    force2(L, bfrag, rnd, p, i, f);
 }
 
-__global__ void force(const int27 start, const flu::LFrag26 lfrags, const flu::RFrag26 rfrags, const flu::RndFrag26 rrnd, /**/ float *ff) {
+__global__ void force(int3 L, const int27 start, const flu::LFrag26 lfrags, const flu::RFrag26 rfrags, const flu::RndFrag26 rrnd, /**/ float *ff) {
     flu::RndFrag  rnd;
     flu::RFrag rfrag;
     flu::LFrag lfrag;
@@ -86,5 +88,5 @@ __global__ void force(const int27 start, const flu::LFrag26 lfrags, const flu::R
     assert_frag(fid, rfrag);
 
     rnd = rrnd.d[fid];
-    force3(lfrag, rfrag, rnd, i, /**/ ff);
+    force3(L, lfrag, rfrag, rnd, i, /**/ ff);
 }

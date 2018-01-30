@@ -12,4 +12,6 @@ struct FluForcesHalo {
     flu::LFrag26 lfrags;     /* local fragment infos    */
     flu::RFrag26 rfrags;     /* remote fragment infos   */
     flu::RndFrag26 rndfrags; /* rng and interrank masks */
+
+    int3 L; /* subdomain size */
 };

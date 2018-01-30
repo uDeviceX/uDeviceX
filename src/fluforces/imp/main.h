@@ -34,5 +34,5 @@ void fluforces_halo_prepare(flu::LFrag26 lfrags, flu::RFrag26 rfrags, /**/ FluFo
 }
 
 void fluforces_halo_apply(const FluForcesHalo *h, /**/ Force *ff) {
-    hforces::interactions(h->lfrags, h->rfrags, h->rndfrags, (float*)ff);
+    hforces::interactions(h->L, h->lfrags, h->rfrags, h->rndfrags, (float*)ff);
 }

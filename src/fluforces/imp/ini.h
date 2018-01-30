@@ -55,10 +55,13 @@ static void get_interrank_infos(MPI_Comm cart, int fid, /**/ RNDunif* trunks[], 
     //     frag_i2dx(fid), frag_i2dy(fid), frag_i2dz(fid));
 }
 
-void fluforces_halo_ini(MPI_Comm cart, /**/ FluForcesHalo **hd) {
+void fluforces_halo_ini(MPI_Comm cart, int3 L, /**/ FluForcesHalo **hd) {
     FluForcesHalo *h;
     UC(emalloc(sizeof(FluForcesHalo), (void**) hd));
     h = *hd;
+
+    h->L = L;
+    
     for (int i = 0; i < 26; ++i)
         get_interrank_infos(cart, i, /**/ h->trunks, h->masks);
 }

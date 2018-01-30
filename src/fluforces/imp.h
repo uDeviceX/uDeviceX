@@ -8,7 +8,7 @@ void fluforces_bulk_prepare(int n, const Cloud *c, /**/ FluForcesBulk *b);
 void fluforces_bulk_apply(int n, const FluForcesBulk *b, const int *start, const int *count, /**/ Force *ff);
 
 
-void fluforces_halo_ini(MPI_Comm cart, /**/ FluForcesHalo **hd);
+void fluforces_halo_ini(MPI_Comm cart, int3 L, /**/ FluForcesHalo **hd);
 void fluforces_halo_fin(/**/ FluForcesHalo *h);
 
 void fluforces_halo_prepare(flu::LFrag26 lfrags, flu::RFrag26 rfrags, /**/ FluForcesHalo *h);

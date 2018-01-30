@@ -14,10 +14,10 @@ static void get_start(const flu::LFrag lfrags[26], /**/ int start[27]) {
         start[i + 1] = start[i] + pad(lfrags[i].n);
 }
 
-void interactions(const flu::LFrag26 lfrags, const flu::RFrag26 rfrags, const flu::RndFrag26 rrnd, /**/ float *ff) {
+void interactions(int3 L, const flu::LFrag26 lfrags, const flu::RFrag26 rfrags, const flu::RndFrag26 rrnd, /**/ float *ff) {
     int27 start;
     int n; /* number of threads */
     get_start(lfrags.d, /**/ start.d);
     n = start.d[26];
-    KL(dev::force, (k_cnf(n)), (start, lfrags, rfrags, rrnd, /**/ ff));
+    KL(dev::force, (k_cnf(n)), (L, start, lfrags, rfrags, rrnd, /**/ ff));
 }
