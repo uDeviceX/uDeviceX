@@ -11,7 +11,9 @@ struct FluQuants {
     int *ii_hst;    /* global ids on host   */
 
     int *cc, *cc0;  /* colors on device */
-    int *cc_hst;    /* colors on host   */    
+    int *cc_hst;    /* colors on host   */
+
+    int maxp; /* maximum particle number */
 }; 
 
 struct Coords;

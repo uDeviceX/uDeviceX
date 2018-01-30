@@ -9,6 +9,7 @@ static void ini_ii(int maxp, int **ii, int **ii0, int **ii_hst) {
 void flu_ini(int3 L, int maxp, FluQuants *q) {
     size_t sz;
     q->n = 0;
+    q->maxp = maxp;
     Dalloc(&q->pp, maxp);
     Dalloc(&q->pp0, maxp);
     clist_ini(L.x, L.y, L.z, /**/ &q->cells);
