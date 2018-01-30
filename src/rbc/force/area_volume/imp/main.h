@@ -16,18 +16,13 @@ static void assert_tri(int nt, int nv, const int4 *tri) {
     UC(efree(rank));
 }
 
-void area_volume_setup(int nt, int nv, const int4 *hst, /**/ AreaVolume *q) {
-    if (nt != q->nt) ERR("different number of triangles ini/setupt: %d != %d", nt, q->nt);
-    q->nv = nv;
-    UC(assert_tri(nt, nv, hst));
-    cH2D(q->tri, hst, nt);
-}
-
-void area_volume_ini(int n, int nt, const int4 *hst, /**/ AreaVolume **pq) {
+void area_volume_ini(int nv, int nt, const int4 *hst, /**/ AreaVolume **pq) {
     AreaVolume *q;
     UC(emalloc(sizeof(AreaVolume), (void**)&q));
-    q->nt = nt;
+    q->nt = nt; q->nv = nv;
     Dalloc(&q->tri, nt);
+    UC(assert_tri(nt, nv, hst));
+    cH2D(q->tri, hst, nt);
     *pq = q;
 }
 

@@ -85,7 +85,6 @@ static void setup1(int md, int nt, int nv, const int4 *tt, /**/
 static void setup0(int md, int nt, int nv, const int4 *tt, /**/
                   int *anti, Edg *edg, float *totArea, AreaVolume *area_volume,
                   int *adj0, int *adj1) {
-    UC(area_volume_setup(nt, nv, tt, /**/ area_volume));
     UC(setup1(md, nt, nv, tt, /**/ anti, edg, totArea, adj0, adj1));
 }
 
