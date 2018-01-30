@@ -75,6 +75,7 @@ int main(int argc, char **argv) {
     const char *fin, *fout;
     Cloud cloud;
     int maxp;
+    int3 L = make_int3(XS, YS, ZS);
     
     m::ini(&argc, &argv);
     msg_ini(m::rank);
@@ -92,7 +93,7 @@ int main(int argc, char **argv) {
     UC(clist_ini_map(maxp, 1, &clist, &cmap));
     UC(build_clist());
 
-    UC(fluforces_bulk_ini(maxp, &bulkforces));
+    UC(fluforces_bulk_ini(L, maxp, &bulkforces));
 
     ini_cloud(pp, &cloud);
     
