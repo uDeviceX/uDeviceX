@@ -2,7 +2,7 @@
 
 void gen_colors(const Rbc *r, Colorer *c, Flu *f) {
     int nm, nv, nmhalo;
-    int4 *tri;
+    const int4 *tri;
     
     nm = r->q.nc;
     nv = r->q.nv;

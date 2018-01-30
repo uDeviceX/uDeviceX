@@ -42,4 +42,4 @@ void area_volume_compute(AreaVolume *q, int nc, const Particle *pp, /**/ float *
     UC(compute(q->nt, q->nv, nc, pp, q->tri, av));
 }
 
-int4* area_volume_tri(AreaVolume *q) { return q->tri; }
+const int4* area_volume_tri(AreaVolume *q) { return q->tri; }
