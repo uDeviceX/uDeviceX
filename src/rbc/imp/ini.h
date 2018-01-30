@@ -1,9 +1,11 @@
 static void ini_common(RbcQuants *q) {
-    Dalloc(&q->pp, MAX_CELL_NUM * RBCnv);
-    UC(emalloc(MAX_CELL_NUM * RBCnv * sizeof(Particle), (void**) &q->pp_hst));
-    UC(area_volume_ini(q->nt, /**/ &q->area_volume));
-    Dalloc(&q->adj0, q->nv * RBCmd);
-    Dalloc(&q->adj1, q->nv * RBCmd);
+    int nv, nt;
+    nv = q->nv; nt = q->nt;
+    Dalloc(&q->pp, MAX_CELL_NUM * nv);
+    UC(emalloc(MAX_CELL_NUM * nv * sizeof(Particle), (void**) &q->pp_hst));
+    UC(area_volume_ini(nt, /**/ &q->area_volume));
+    Dalloc(&q->adj0, nv * RBCmd);
+    Dalloc(&q->adj1, nv * RBCmd);
     Dalloc(&q->av, 2*MAX_CELL_NUM);
 }
 
@@ -15,7 +17,6 @@ void rbc_ini(OffRead *cell, RbcQuants *q) {
     q->n = q->nc = 0;
     q->nv = off_get_nv(cell);
     q->nt = off_get_nt(cell);
-
     UC(ini_common(q));
     if (rbc_ids)         UC(ini_ids(q));
     if (RBC_STRESS_FREE) UC(ini_edg (q));
