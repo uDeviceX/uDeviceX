@@ -6,12 +6,12 @@ static void ini_ii(int **ii, int **ii0, int **ii_hst) {
     UC(emalloc(sz, /**/ (void **) ii_hst));
 }
 
-void flu_ini(FluQuants *q) {
+void flu_ini(int3 L, FluQuants *q) {
     size_t sz;
     q->n = 0;
     Dalloc(&q->pp, MAX_PART_NUM);
     Dalloc(&q->pp0, MAX_PART_NUM);
-    clist_ini(XS, YS, ZS, /**/ &q->cells);
+    clist_ini(L.x, L.y, L.z, /**/ &q->cells);
     clist_ini_map(MAX_PART_NUM, 2, &q->cells, /**/ &q->mcells);
     sz = MAX_PART_NUM * sizeof(Particle);
     UC(emalloc(sz, /**/ (void **) &q->pp_hst));
