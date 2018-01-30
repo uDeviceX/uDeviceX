@@ -1,4 +1,6 @@
 struct AreaVolume;
+struct Particle;
+
 struct Edg {
     float a; /* equilibrium edge lengths and triangle area */
     float A;

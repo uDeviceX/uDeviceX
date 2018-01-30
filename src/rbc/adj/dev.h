@@ -2,10 +2,6 @@ static __device__ int fetch(const int *a, int i) { return a[i]; }
 static __device__ int adj_get_map(int md, int nv, int i, const int *adj0, const int *adj1, /**/ AdjMap *m) {
     int i0, i1, i2, i3, i4;
     int rbc, offset, j, k;
-
-    assert(md == RBCmd);
-    assert(nv == RBCnv);
-
     i0 = i / md;
     j  = i % md;
 

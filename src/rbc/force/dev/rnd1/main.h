@@ -2,11 +2,9 @@ struct Rnd0 { real r; };
 
 static __device__ void edg_rnd(Shape shape, int i0, real* rnd, int  j, /**/ Rnd0 *rnd0) {
     /* i0: edge index; j: vertex index */
-    assert(i0  < RBCnv * RBCmd); assert(j < MAX_CELL_NUM * RBCnv * RBCmd);
     int i1;
     i1 = shape.anti[i0];
     if (i1 > i0) j = j - i0 + i1;
-    assert(j < MAX_CELL_NUM * RBCnv * RBCmd);
     rnd0->r = rnd[j];
 }
 
