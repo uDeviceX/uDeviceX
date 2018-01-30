@@ -13,7 +13,7 @@ static void ids_from_strt(const Coords *coords, const int id, /**/ int *ii) {
     restart_read_ii(coords, CODE, IDEXT, id, ii, &nc);
 }
 
-void rbc_strt_quants(const Coords *coords, const char *cell, const int id, RbcQuants *q) {
+void rbc_strt_quants(const Coords *coords, const char *cell, OffRead *off, const int id, RbcQuants *q) {
     int md, nt, nv;
     md = RBCmd;
     nt = RBCnt;

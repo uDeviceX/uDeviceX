@@ -74,13 +74,14 @@ void sim_strt(Sim *s) {
     Rbc *rbc = &s->rbc;
     Rig *rig = &s->rig;
     Wall *wall = &s->wall;
+    OffRead *cell = s->rbc.cell;
     bool dump_sdf = s->opt.dump_field;
     
     /*Q*/
     flu_strt_quants(s->coords, RESTART_BEGIN, &flu->q);
     flu_build_cells(&flu->q);
 
-    if (rbcs) rbc_strt_quants(s->coords, "rbc.off", RESTART_BEGIN, &rbc->q);
+    if (rbcs) rbc_strt_quants(s->coords, "rbc.off", cell, RESTART_BEGIN, &rbc->q);
     dSync();
 
     if (solids) rig_strt_quants(s->coords, RESTART_BEGIN, &rig->q);
