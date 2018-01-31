@@ -1,7 +1,8 @@
 f0 () { find "$1" -name '*.cu' -o -name '*.cpp' -o -name '*.h' -type f ; }
 f () ( for d; do f0 "$d"; done )
 
-f forces utils d mpi inc $U
+f pair parser utils d mpi inc $U
+echo math/dev.h
 
 # directories
 echo $U $U/imp .
