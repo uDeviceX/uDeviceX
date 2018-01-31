@@ -12,5 +12,11 @@ struct RbcParams {
     float kd;     /* local area constant */
     float kv;     /* volume constant */
     float dt0;    /* timestep */
+
+    /* equilibrium */
+    float totVolume; /* total volume */
+    float totArea;   /* total area */
+    float A0;        /* area of one triangle */
+    float l0;        /* spring lengths */
 };
 
