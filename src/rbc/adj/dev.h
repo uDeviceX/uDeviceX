@@ -30,6 +30,11 @@ static __device__ int adj_get_map0(int md, int nv, int i, const int *adj0, const
     return 1;
 }
 
-static __device__ int adj_get_map(int md, int nv, int i, const int *adj0, const int *adj1, /**/ AdjMap *m) {
+static __device__ int adj_get_map(int i, Adj_v *adj, /**/ AdjMap *m) {
+    int md, nv;
+    md = adj->md;
+    nv = adj->nv;
+    const int *adj0 = adj->adj0;
+    const int *adj1 = adj->adj1;
     return adj_get_map0(md, nv, i, adj0, adj1, m);
 }

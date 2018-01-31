@@ -55,7 +55,7 @@ static __device__ real3 adj_dihedrals(RbcParams_v par, const Particle *pp, real3
 }
 
 __global__ void force(RbcParams_v par, int md, int nv, int nc, const Particle *pp, real *rnd,
-                      const int *adj0, const int *adj1,
+                      Adj_v adj,
                       const Shape shape,
                       const real *__restrict__ av, /**/ real *ff) {
     int i, pid;
@@ -69,7 +69,7 @@ __global__ void force(RbcParams_v par, int md, int nv, int nc, const Particle *p
     pid = i / md;
 
     if (pid >= nc * nv) return;
-    valid = adj_get_map(md, nv, i, adj0, adj1, /**/ &m);
+    valid = adj_get_map(i, &adj, /**/ &m);
     if (!valid) return;
     edg_shape(shape, i % (md * nv),         /**/ &shape0);
     edg_rnd(  shape, i % (md * nv), rnd, i, /**/ &rnd0);
