@@ -3,6 +3,7 @@ struct WallForce { /* local wall data */
     Texo<int> start;
     Texo<float4> pp;
     int n;
+    int3 L;
 };
 
 namespace grey {

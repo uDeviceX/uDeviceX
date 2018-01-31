@@ -19,7 +19,7 @@ static __device__ void force0(Wvel_v wv, Coords_v c, forces::Pa a, int aid, int 
     forces::p2r3(&a, /**/ &x, &y, &z);
     if (sdf_far(&wa.sdf_v, x, y, z)) return;
 
-    map::ini(zplane, wa.start, wa.n, x, y, z, /**/ &m);
+    map::ini(wa.L, zplane, wa.start, wa.n, x, y, z, /**/ &m);
     float xforce = 0, yforce = 0, zforce = 0;
     for (i = 0; !map::endp(m, i); ++i) {
         bid = map::m2id(m, i);

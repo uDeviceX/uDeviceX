@@ -17,13 +17,13 @@
 #include "utils/error.h"
 #include "utils/msg.h"
 
-static void shift(int fid, float r[3]) {
+static void shift(int3 L, int fid, float r[3]) {
     enum {X, Y, Z};
     int d[3];
     fraghst::i2d3(fid, d);
-    r[X] += d[X] * XS;
-    r[Y] += d[Y] * YS;
-    r[Z] += d[Z] * ZS;
+    r[X] += d[X] * L.x;
+    r[Y] += d[Y] * L.y;
+    r[Z] += d[Z] * L.z;
 }
 
 static bool is_inside(int3 LW, const Particle p) {
@@ -51,7 +51,7 @@ static void fill_bags(int3 L, int n, const Particle *pp, hBags *b) {
         p0 = pp[i];
         for (j = 0; j < NFRAGS; ++j) {
             p = p0;
-            shift(j, p.r);
+            shift(L, j, p.r);
             if (is_inside(LW, p)) {
                 c = cc[j] ++;
                 dst[j][c] = p;

@@ -5,6 +5,7 @@ void wall_force(Wvel_v wv, const Coords *c, Sdf *sdf, const WallQuants *q, const
     wa.start  = t->texstart;
     wa.pp     = t->texpp;
     wa.n      = q->n;
+    wa.L      = q->L;
 
     wall_force_apply(wv, c, cloud, n, t->rnd, wa, /**/ ff);
 }
