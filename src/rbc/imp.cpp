@@ -36,9 +36,8 @@
 #include "imp.h"
 
 #include "imp/util.h"
+#include "imp/setup.h"
 #include "imp/ini.h"
 #include "imp/fin.h"
-
-#include "imp/setup.h"
 #include "imp/generate.h"
 #include "imp/start.h"

@@ -16,10 +16,8 @@ static void ids_from_strt(const Coords *coords, const int id, /**/ int *ii) {
 void rbc_strt_quants(const Coords *coords, OffRead *off, const int id, RbcQuants *q) {
     int md, nt, nv;
     md = RBCmd; nt = off_get_nt(off); nv = off_get_nv(off);
-    setup(md, nt, nv, off, /**/ q);
     setup_from_strt(coords, nv, id, /**/ q->pp, &q->nc, &q->n, /*w*/ q->pp_hst);
-    if (rbc_ids)
-        ids_from_strt(coords, id, /**/ q->ii);
+    if (rbc_ids) ids_from_strt(coords, id, /**/ q->ii);
 }
 
 static void strt_dump(const Coords *coords, const int id, const int n, const Particle *pp, /*w*/ Particle *pp_hst) {
