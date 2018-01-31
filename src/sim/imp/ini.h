@@ -188,7 +188,7 @@ static void ini_bounce_back(MPI_Comm cart, int3 L, Rig *s, /**/ BounceBack *bb) 
 
 static void ini_wall(const Config *cfg, int3 L, Wall *w) {
     UC(sdf_ini(L, &w->sdf));
-    UC(wall_ini_quants(&w->q));
+    UC(wall_ini_quants(L, &w->q));
     UC(wall_ini_ticket(&w->t));
     UC(wvel_ini(&w->vel));
     UC(wvel_set_conf(cfg, w->vel));

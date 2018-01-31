@@ -17,12 +17,6 @@
 #include "utils/error.h"
 #include "utils/msg.h"
 
-enum {
-    LX = XS + 2 * XWM,
-    LY = YS + 2 * YWM,
-    LZ = ZS + 2 * ZWM
-};
-
 static void shift(int fid, float r[3]) {
     enum {X, Y, Z};
     int d[3];
@@ -32,17 +26,21 @@ static void shift(int fid, float r[3]) {
     r[Z] += d[Z] * ZS;
 }
 
-static bool is_inside(const Particle p) {
+static bool is_inside(int3 LW, const Particle p) {
     enum {X, Y, Z};
     return
-        p.r[X] >= -0.5 * LX && p.r[X] < 0.5 * LX &&
-        p.r[Y] >= -0.5 * LY && p.r[Y] < 0.5 * LY &&
-        p.r[Z] >= -0.5 * LZ && p.r[Z] < 0.5 * LZ;
+        p.r[X] >= -0.5 * LW.x && p.r[X] < 0.5 * LW.x &&
+        p.r[Y] >= -0.5 * LW.y && p.r[Y] < 0.5 * LW.y &&
+        p.r[Z] >= -0.5 * LW.z && p.r[Z] < 0.5 * LW.z;
 }
 
-static void fill_bags(int n, const Particle *pp, hBags *b) {
+static void fill_bags(int3 L, int n, const Particle *pp, hBags *b) {
     int i, j, *cc, c;
     Particle p0, p, **dst;
+    int3 LW;
+    LW.x = L.x + XWM;
+    LW.y = L.y + YWM;
+    LW.z = L.z + ZWM;
 
     cc  = b->counts;
     dst = (Particle **) b->data;
@@ -54,7 +52,7 @@ static void fill_bags(int n, const Particle *pp, hBags *b) {
         for (j = 0; j < NFRAGS; ++j) {
             p = p0;
             shift(j, p.r);
-            if (is_inside(p)) {
+            if (is_inside(LW, p)) {
                 c = cc[j] ++;
                 dst[j][c] = p;
             }
@@ -102,7 +100,7 @@ void wall_exch_pp(MPI_Comm cart, int3 L, int maxn, /*io*/ Particle *pp, int *n) 
     UC(comm_bags_ini(HST_ONLY, NONE, sizeof(Particle), capacity, &recv, NULL));
     UC(comm_ini(cart, &com));
 
-    fill_bags(*n, pp, /**/ &send);
+    fill_bags(L, *n, pp, /**/ &send);
     communicate(&send, /**/ com, &recv);
     check_counts(maxn, *n, &recv);
     unpack(maxn, &recv, /**/ n, pp);

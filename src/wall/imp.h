@@ -17,7 +17,7 @@ namespace color {
 void wall_force(Wvel_v wv, const Coords *c, Sdf *qsdf, const WallQuants *q, const WallTicket *t, int n, Cloud cloud, Force *ff);
 }
 
-void wall_ini_quants(WallQuants *q);
+void wall_ini_quants(int3 L, WallQuants *q);
 void wall_ini_ticket(WallTicket **t);
 
 void wall_fin_quants(WallQuants *q);

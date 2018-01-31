@@ -1,6 +1,7 @@
-void wall_ini_quants(WallQuants *q) {
+void wall_ini_quants(int3 L, WallQuants *q) {
     q->n = 0;
     q->pp = NULL;
+    q->L = L;
 }
 
 void wall_ini_ticket(WallTicket **ti) {
