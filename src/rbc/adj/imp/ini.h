@@ -31,15 +31,28 @@ static void ini0(int md, int nt, int nv, const int4 *faces, /**/ int *a1, int *a
     for (i = 0; i < nv; i++) gen_a12(md, i, hx, hy, /**/ a1, a2);
 }
 
-static void alloc(int n, Adj *A) {
-    UC(emalloc(n*sizeof(int), (void**) &A->adj0));
-    UC(emalloc(n*sizeof(int), (void**) &A->adj1));
-}
-
 void adj_ini(int md, int nt, int nv, const int4 *faces, /**/ Adj *A) {
     int *a1, *a2;
-    alloc(nv*nt, /**/ A);
+    EMALLOC(md*nv, &A->adj0);
+    EMALLOC(md*nv, &A->adj1);
     a1 = A->adj0; /* sic */
     a2 = A->adj1;
+    A->md = md; A->nv = nv;
     ini0(md, nt, nv, faces, /**/ a1, a2);
+}
+
+void adj_view_ini(Adj *hst, /**/ Adj_v **pq) {
+    int nv, md;
+    Adj_v *q;
+    if (hst == NULL) ERR("hst == NULL");
+    nv = hst->nv; md = hst->md;
+    EMALLOC(1, &q);
+    Dalloc(&q->adj0, md*nv);
+    Dalloc(&q->adj1, md*nv);
+
+    q->nv = nv; q->md = md;
+    cH2D(q->adj0, hst->adj0, md*nv);
+    cH2D(q->adj1, hst->adj1, md*nv);
+
+    *pq = q;
 }
