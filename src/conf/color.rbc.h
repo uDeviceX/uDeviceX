@@ -4,9 +4,6 @@
 #define XS                      16
 #define YS                      32
 #define ZS                      16
-#define XBBM                    1.f
-#define YBBM                    1.f
-#define ZBBM                    1.f
 
 /* DPD */
 #define numberdensity           10

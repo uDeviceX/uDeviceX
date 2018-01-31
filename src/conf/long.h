@@ -4,9 +4,6 @@
 #define XS                  4
 #define YS                  4
 #define ZS                  4
-#define XBBM                1.f
-#define YBBM                1.f
-#define ZBBM                1.f
 
 /* DPD */
 #define numberdensity       1

@@ -2,10 +2,6 @@
 #define YS   16
 #define ZS   16
 
-#define XBBM 1.f
-#define YBBM 1.f
-#define ZBBM 1.f
-
 #define numberdensity    10
 #define kBT              4.44302e-8
 #define dt               5e-4       /* timestep */
