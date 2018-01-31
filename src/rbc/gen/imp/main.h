@@ -49,10 +49,7 @@ static void assert_nc(int nc) {
 
 int rbc_gen(const Coords *coords, const float *rr0, const char *ic, int nv, Particle *pp) {
     int nc = 0;
-    int L[3] = {xs(coords),
-                ys(coords),
-                zs(coords)};
-
+    int L[3] = {xs(coords), ys(coords), zs(coords)};
     float A[4*4]; /* 4x4 affice transformation matrix */
     FILE *f;
     UC(efopen(ic, "r", /**/ &f));
