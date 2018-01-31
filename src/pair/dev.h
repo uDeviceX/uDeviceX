@@ -9,18 +9,18 @@ enum {NORM_OK, NORM_BIG, NORM_SMALL};
 static __device__ int norm(/*io*/ float3 *pos, /**/ float *pr, float *pinvr) {
     /* normalize r = [x, y, z], sets |r| and 1/|r| if not big */
     float x, y, z, invr, r, r2;
-    x = pos->x; y = pos->y; z = *pos->z;
+    x = pos->x; y = pos->y; z = pos->z;
 
     r2 = x*x + y*y + z*z;
     if      (r2 >= 1 )   return NORM_BIG;
     else if (r2 < EPS) {
-        *pr = pps->x = pps->y = pps->z = 0;
+        *pr = pos->x = pos->y = pos->z = 0;
         return NORM_SMALL;
     } else {
         invr = rsqrtf(r2);
         r = r2 * invr;
         x *= invr; y *= invr; z *= invr;
-        pps->x = x; pps->y = y; pps->z = z; *pr = r; *pinvr = invr;
+        pos->x = x; pos->y = y; pos->z = z; *pr = r; *pinvr = invr;
         return NORM_OK;
     }
 }
@@ -40,7 +40,7 @@ static __device__ float magn_dpd(float a, float g, float s, float rnd,
 
     rm = max(1 - r, 0.0f);
     wc = rm;
-    wr = wrf(S_LEVEL, rm);
+    wr = ker_wrf(S_LEVEL, rm);
     
     f0  = (-g * wr * ev + s * rnd) * wr;
     f0 +=                        a * wc;
@@ -65,10 +65,11 @@ static __device__ float force_magn(PairDPDLJ p, float rnd, float ev, float r, fl
     float f;
     f  = magn_dpd(p.a, p.g, p.s, rnd, r, ev);
     f += magn_lj(p.ljs, p.lje, invr);
+    return f;
 }
 
 template <typename Param>
-static __device__ void pair_force(Param p, PairPa a, PairPa b, float rnd, /**/ Fo *f) {
+static __device__ void pair_force(Param p, PairPa a, PairPa b, float rnd, /**/ PairFo *f) {
     float r, invr, ev, f0;
     float3 dr, dv;
     int vnstat; /* vector normalization status */
@@ -106,7 +107,7 @@ static __device__ int colors2pid(int ca, int cb, int ncolors) {
     return ca * ncolors + cb;
 }
 
-static __device__ void pair_force(PairDPDC pc, PairPa a, PairPa b, float rnd, /**/ Fo *f) {
+static __device__ void pair_force(PairDPDC pc, PairPa a, PairPa b, float rnd, /**/ PairFo *f) {
     PairDPD p;
     int pid;
     pid = colors2pid(a.color, b.color, pc.ncolors);
