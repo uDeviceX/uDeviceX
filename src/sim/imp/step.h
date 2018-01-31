@@ -39,7 +39,7 @@ void step(BForce *bforce, MoveParams *moveparams, bool wall0, int ts, int it, Si
 
     if (wall0) bounce_wall(s->coords, wall, /**/ flu, rbc);
     
-    if (sbounce_back && s->solids0) bounce_solid(it, /**/ &s->bb, rig, flu);
+    if (sbounce_back && s->solids0) bounce_solid(it, s->L, /**/ &s->bb, rig, flu);
 
     UC(check_pos_soft(s));
     UC(check_vel(s));

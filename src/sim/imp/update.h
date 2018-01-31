@@ -18,12 +18,11 @@ void update_solid(Rig *s) {
     rig_reinit_ft(q->ns, /**/ q->ss);
 }
 
-void bounce_solid(long it, BounceBack *bb, Rig *s, Flu *flu) {
+void bounce_solid(long it, int3 L, BounceBack *bb, Rig *s, Flu *flu) {
     int n, nm, nt, nv, *ss, *cc, nmhalo, counts[NFRAGS];
     int4 *tt;
     Particle *pp, *i_pp;
-    int3 L = make_int3(XS, YS, ZS);
-
+    
     RigQuants *qs = &s->q;
     BBexch     *e = &bb->e; 
     
