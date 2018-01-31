@@ -14,6 +14,8 @@
 #include "inc/dev.h"
 #include "utils/imp.h"
 
+#include "coords/imp.h"
+
 #include "array3d/imp.h"
 #include "tex3d/type.h"
 #include "tex3d/imp.h"

@@ -33,7 +33,7 @@ static void gen2(const Coords *coords, int N[3], float *D0, /**/ Sdf *sdf) {
 static void gen3(const Coords *coords, bool dump, MPI_Comm cart, int N[3], float ext[3], float *D, /**/ Sdf *sdf) {
     enum {X, Y, Z};
     float sc, G; /* domain size in x ([G]lobal) */
-    G = m::dims[X] * XS;
+    G = xdomain(coords);
     sc = G / ext[X];
     UC(sdf_field_scale(N, sc, /**/ D));
     if (dump)
