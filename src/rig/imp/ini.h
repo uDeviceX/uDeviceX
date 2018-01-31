@@ -19,13 +19,13 @@ void rig_ini(int maxp, RigQuants *q) {
     Dalloc(&q->rr0, 3 * maxp);
     Dalloc(&q->i_pp,    maxp);
     
-    q->pp_hst   = new Particle[maxp];
-    q->ss_hst   = new Solid[MAX_SOLIDS];
-    q->rr0_hst  = new float[3 * maxp];
-    q->i_pp_hst = new Particle[maxp];
+    EMALLOC(maxp, &q->pp_hst);
+    EMALLOC(MAX_SOLIDS, &q->ss_hst);
+    EMALLOC(3 * maxp, &q->rr0_hst);
+    EMALLOC(maxp, &q->i_pp_hst);
 
-    q->ss_dmp    = new Solid[MAX_SOLIDS];
-    q->ss_dmp_bb = new Solid[MAX_SOLIDS];
+    EMALLOC(MAX_SOLIDS, &q->ss_dmp);
+    EMALLOC(MAX_SOLIDS, &q->ss_dmp_bb);
 
     UC(load_rigid_mesh("rig.ply", /**/ &q->nt, &q->nv, &q->htt, &q->dtt, &q->hvv, &q->dvv));
 }
