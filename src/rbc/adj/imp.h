@@ -1,5 +1,6 @@
 struct Adj;
 struct AdjMap;
+struct int4;
 
 void adj_ini(int md, int nt, int nv, const int4 *faces, /**/ Adj*);
 void adj_fin(Adj*);

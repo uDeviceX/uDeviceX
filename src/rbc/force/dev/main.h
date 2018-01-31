@@ -44,8 +44,8 @@ static __device__ real3 adj_tris(RbcParams_v par, const Particle *pp,  const Par
 }
 
 static __device__ real3 adj_dihedrals(RbcParams_v par, const Particle *pp, real3 r0,
-                                       const Shape0 shape,
-                                       AdjMap *m) {
+                                      const Shape0 shape,
+                                      AdjMap *m) {
     Pos r1, r2, r3, r4;
     r1 = tex2Pos(pp, m->i1);
     r2 = tex2Pos(pp, m->i2);
