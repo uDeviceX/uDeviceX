@@ -57,7 +57,7 @@ static __device__ real3 adj_dihedrals(RbcParams_v par, const Particle *pp, real3
 __global__ void force(RbcParams_v par, int md, int nv, int nc, const Particle *pp, real *rnd,
                       Adj_v adj,
                       const Shape shape,
-                      const real *__restrict__ av, /**/ real *ff) {
+                      const real *__restrict__ av, /**/ float *ff) {
     int i, pid;
     real3 f, fd;
     AdjMap m;
