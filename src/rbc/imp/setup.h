@@ -51,7 +51,6 @@ static void setup_edg(int md, int nv, Adj *adj, /**/ Edg *dev, float *totArea) {
     UC(setup_edg1(md, nv, adj, rr, /**/ hst, totArea));
     cH2D(dev, hst, md*nv);
     EFREE(hst);
-
     off_fin(cell);
 }
 
@@ -74,9 +73,7 @@ static void setup0(int md, int nv, Adj *adj, /**/
 static void setup(int md, int nt, int nv, const int4 *tt, /**/ RbcQuants *q) {
     Adj *adj;
     UC(adj_ini(md, nt, nv, tt, /**/ &adj));
-
     UC(adj_view_ini(adj, /**/ &q->adj_v));
     UC(setup0(md, nv, adj, /**/ q->shape.anti, q->shape.edg, &q->shape.totArea));
-
     UC(adj_fin(adj));
 }
