@@ -128,13 +128,13 @@ __global__ void apply_smarter(int3 L, int n, BCloud cloud, const int *start, flo
 
     for (dz = -1; dz <= 0; ++dz) {
         cb.z = ca.z + dz;
-        if (!valid_c(cb.z, ZS)) continue;
+        if (!valid_c(cb.z, L.z)) continue;
         
         enddy = dz ? 1 : 0;
             
         for (dy = -1; dy <= enddy; ++dy) {
             cb.y = ca.y + dy;
-            if (!valid_c(cb.y, YS)) continue;
+            if (!valid_c(cb.y, L.y)) continue;
 
             enddx = (dz == 0 && dy == 0) ? 0 : 1;
             
@@ -161,8 +161,8 @@ __device__ void one_row(int3 L, int dz, int dy, int ia, int3 ca, forces::Pa pa, 
     int enddx, startx, endx, cid0, bs, be;
     cb.z = ca.z + dz;
     cb.y = ca.y + dy;
-    if (!valid_c(cb.z, ZS)) return;
-    if (!valid_c(cb.y, YS)) return;
+    if (!valid_c(cb.z, L.z)) return;
+    if (!valid_c(cb.y, L.y)) return;
 
     /* dx runs from -1 to enddx */
     enddx = (dz == 0 && dy == 0) ? 0 : 1;
