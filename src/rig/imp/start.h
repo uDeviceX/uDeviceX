@@ -5,10 +5,11 @@ static void pp2rr(const Particle *pp, const int n, float *rr) {
 }
 
 static void gen_from_strt(const Coords *coords, const int id, int *ns, int *nps, int *n, float *rr0_hst, Solid *ss_hst) {
-    Particle *pp = new Particle[MAX_PART_NUM];
+    Particle *pp;
+    EMALLOC(MAX_PART_NUM, &pp);
     restart_read_pp(coords, "rig", RESTART_TEMPL, pp, nps);
     pp2rr(pp, *nps, rr0_hst);
-    delete[] pp;
+    EFREE(pp);
 
     restart_read_ss(coords, "rig", id, ss_hst, ns);
     *n = *ns * (*nps);

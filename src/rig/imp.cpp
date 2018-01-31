@@ -7,6 +7,7 @@
 #include "inc/conf.h"
 
 #include "utils/msg.h"
+#include "utils/imp.h"
 #include "utils/error.h"
 
 #include "coords/imp.h"
