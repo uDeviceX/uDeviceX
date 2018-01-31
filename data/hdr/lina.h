@@ -2,12 +2,6 @@
 #define XS          20
 #define YS          20
 #define ZS          20
-#define XWM          6
-#define YWM          6
-#define ZWM          6
-#define XBBM         1.f
-#define YBBM         1.f
-#define ZBBM         1.f
 
 /* DPD */
 #define numberdensity      10
