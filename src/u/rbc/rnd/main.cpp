@@ -15,7 +15,8 @@
 void main0(RbcRnd *rnd, int n) {
     int i;
     float x;
-    rbc_rnd_gen(rnd, n);
+    float *dummpy;
+    rbc_rnd_gen(rnd, n, &dummpy);
     for (i = 0; i < n; i++) {
         x = rbc_rnd_get_hst(rnd, i);
         printf("%g\n", x);

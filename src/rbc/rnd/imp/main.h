@@ -8,7 +8,7 @@ static void ini0(RbcRnd *d, int n, long seed) {
 void rbc_rnd_ini(RbcRnd **pd, int n, long seed) {
     RbcRnd* d;
     UC(emalloc(sizeof(RbcRnd), (void**) &d));
-    UC(ini0(d, n, seed);)
+    UC(ini0(d, n, seed));
     *pd = d;
 }
 
@@ -26,9 +26,10 @@ static void assert_n(int n, int max, const char *s) {
         ERR("%s: n = %d > max = %d", s, n , max);
 }
 
-void rbc_rnd_gen(RbcRnd *d, int n) {
+void rbc_rnd_gen(RbcRnd *d, int n, float **pq) {
     assert_n(n, d->max, "rbc::rnd::gen");
     rnd_api::GenerateNormal(d->g, d->r, n);
+    *pq = d->r;
 }
 
 float rbc_rnd_get_hst(const RbcRnd *d, int i) {

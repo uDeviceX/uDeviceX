@@ -1,10 +1,6 @@
 static void random(int n, RbcRnd *rnd, /**/ float **r) {
-    if (RBC_RND) {
-        rbc_rnd_gen(rnd, n);
-        *r = rnd->r;
-    } else  {
-        *r = NULL;
-    }
+    if (RBC_RND) rbc_rnd_gen(rnd, n, /**/ r);
+    else *r = NULL;
 }
 
 static void apply0(RbcParams_v parv, int nc, int nv,
