@@ -2,7 +2,7 @@ struct Contact;
 struct int3;
 
 // tag::mem[]
-void cnt_ini(int rank, int3 L, /**/ Contact **c);
+void cnt_ini(int maxp, int rank, int3 L, /**/ Contact **c);
 void cnt_fin(Contact *c);
 // end::mem[]
 
