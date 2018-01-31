@@ -1,1 +1,0 @@
-/* texture size for wall */

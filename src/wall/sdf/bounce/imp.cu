@@ -32,7 +32,6 @@
 #include "wall/sdf/type.h"
 #include "wall/sdf/imp.h"
 
-#include "wall/sdf/def.h"
 #include "wall/sdf/dev.h"
 
 #include "imp.h"

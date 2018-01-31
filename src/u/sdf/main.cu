@@ -29,7 +29,6 @@
 #include "wall/sdf/tex3d/type.h"
 #include "wall/sdf/type.h"
 
-#include "wall/sdf/def.h"
 #include "wall/sdf/dev.h"
 #include "wall/sdf/imp/type.h"
 
