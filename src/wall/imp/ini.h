@@ -5,7 +5,7 @@ void wall_ini_quants(WallQuants *q) {
 
 void wall_ini_ticket(WallTicket **ti) {
     WallTicket *t;
-    UC(emalloc(sizeof(WallTicket), (void**) ti));
+    EMALLOC(1, ti);
     t = *ti;
     UC(rnd_ini(42, 42, 42, 42, /**/ &t->rnd));
     clist_ini(XS + 2 * XWM, YS + 2 * YWM, ZS + 2 * ZWM, /**/ &t->cells);

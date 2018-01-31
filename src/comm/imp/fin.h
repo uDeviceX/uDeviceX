@@ -1,5 +1,5 @@
 static void free_counts(int **hc) {
-    UC(efree(*hc));
+    EFREE(*hc);
     *hc = NULL;
 }
 
@@ -7,7 +7,7 @@ static void free_pair(int i, AllocMod mod, /**/ hBags *hb, dBags *db) {
     switch (mod) {
     case HST_ONLY:
         if (hb->data[i])
-            UC(efree(hb->data[i]));
+            EFREE(hb->data[i]);
         break;
     case DEV_ONLY:
         if (db->data[i])
@@ -43,6 +43,6 @@ int comm_bags_fin(AllocMod fmod, AllocMod bmod, /**/ hBags *hb, dBags *db) {
 
 int comm_fin(/**/ Comm *c) {
     MC(m::Comm_free(&c->cart));
-    UC(efree(c));
+    EFREE(c);
     return 0;
 }

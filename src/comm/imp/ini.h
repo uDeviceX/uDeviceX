@@ -2,7 +2,7 @@
 
 static void alloc_counts(int n, /**/ int **hc) {
     size_t sz = n * sizeof(int);
-    UC(emalloc(sz, (void**) hc));
+    EMALLOC(n, hc);
     memset(*hc, 0, sz);
 }
 
@@ -65,7 +65,7 @@ int comm_ini(MPI_Comm cart, /**/ Comm **com_p) {
     int coords[3], periods[3], dims[3];
     Comm *com;
 
-    UC(emalloc(sizeof(Comm), (void**) com_p));
+    EMALLOC(1, com_p);
     com = *com_p;
     
     MC(m::Cart_get(cart, 3, dims, periods, coords));

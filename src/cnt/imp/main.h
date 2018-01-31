@@ -1,5 +1,5 @@
 void cnt_ini(int rank, int3 L, /**/ Contact **cnt) {
-    UC(emalloc(sizeof(Contact), (void**) cnt));
+    EMALLOC(1, cnt);
     Contact *c = *cnt;
 
     c->L = L;
@@ -12,7 +12,7 @@ void cnt_fin(Contact *c) {
     clist_fin(/**/ &c->cells);
     clist_fin_map(/**/ c->cmap);
     UC(rnd_fin(c->rgen));
-    UC(efree(c));
+    EFREE(c);
 }
 
 void cnt_build_cells(int nw, const PaWrap *pw, /**/ Contact *c) {
