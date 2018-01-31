@@ -19,10 +19,18 @@ static int3 texture_grid_size(int3 L, int3 M) {
 
 void sdf_ini(int3 L, Sdf **pq) {
     Sdf *q;
+    int3 Lte, M;
+    M = make_int3(XWM, YWM, ZWM);
+    Lte = texture_grid_size(L, M);
+    
     UC(emalloc(sizeof(Sdf), (void**)&q));
-    UC(array3d_ini(&q->arr, XTE, YTE, ZTE));
+    
+    UC(array3d_ini(&q->arr, Lte.x, Lte.y, Lte.z));
     UC(  tform_ini(&q->t));
-    q->cheap_threshold = - sqrt(3.f) * ((float)XSIZE_WALLCELLS / (float)XTE);
+
+    q->Lte = Lte;
+    q->cheap_threshold = - sqrt(3.f) * ((float)XSIZE_WALLCELLS / (float)Lte.x);
+
     *pq = q;
 }
 

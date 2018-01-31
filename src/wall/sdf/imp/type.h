@@ -6,5 +6,5 @@ struct Sdf {
     Tform     *t;
     float cheap_threshold;
 
-    int3 Ltex; /* texture grid size */
+    int3 Lte; /* texture grid size */
 };

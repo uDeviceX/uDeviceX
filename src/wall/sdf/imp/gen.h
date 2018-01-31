@@ -1,22 +1,20 @@
-static void gen0(const Coords *coords, float *D, /**/ Sdf *sdf) {
+static void gen0(const Coords *coords, const int T[3], float *D, /**/ Sdf *sdf) {
     int M[3] = {XWM, YWM, ZWM}; /* margin and texture */
-    int T[3] = {XTE, YTE, ZTE};
 
-    UC(array3d_copy(XTE, YTE, ZTE, D, /**/ sdf->arr));
+    UC(array3d_copy(T[0], T[1], T[2], D, /**/ sdf->arr));
     UC(tex3d_ini(&sdf->tex));
     UC(tex3d_copy(sdf->arr, /**/ sdf->tex));
     UC(sub2tex_ini(coords, T, M, /**/ sdf->t));
 }
 
-static void gen1(const Coords *coords, int N[3], float *D0, float *D1, /**/ Sdf *sdf) {
+static void gen1(const Coords *coords, const int T[3], int N[3], float *D0, float *D1, /**/ Sdf *sdf) {
     Tform *t;
     int M[3] = {XWM, YWM, ZWM}; /* margin and texture */
-    int T[3] = {XTE, YTE, ZTE};
 
     UC(tform_ini(&t));
     UC(tex2sdf_ini(coords, T, N, M, /**/ t));
     UC(sdf_field_sample(t, N, D0,   T, /**/ D1));
-    UC(gen0(coords, D1, sdf));
+    UC(gen0(coords, T, D1, sdf));
 
     UC(tform_fin(t));
 }
@@ -24,9 +22,11 @@ static void gen1(const Coords *coords, int N[3], float *D0, float *D1, /**/ Sdf 
 static void gen2(const Coords *coords, int N[3], float *D0, /**/ Sdf *sdf) {
     int sz;
     float *D1;
-    sz = sizeof(D1[0])*XTE*YTE*ZTE;
+    int3 Lte = sdf->Lte;
+    int T[] = {Lte.x, Lte.y, Lte.z};
+    sz = sizeof(D1[0]) * Lte.x * Lte.y * Lte.z;
     UC(emalloc(sz, (void**)&D1));
-    UC(gen1(coords, N, D0, D1, /**/ sdf));
+UC(gen1(coords, T, N, D0, D1, /**/ sdf));
     UC(efree(D1));
 }
 
