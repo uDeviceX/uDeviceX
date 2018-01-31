@@ -69,19 +69,16 @@ static void setup_anti(int md, int nv, Adj *adj, /**/ int *dev) {
 }
 
 static void setup0(int md, int nv, Adj *adj, /**/
-                   int *anti, Edg *edg, float *totArea, int *adj0, int *adj1) {
+                   int *anti, Edg *edg, float *totArea) {
     if (RBC_STRESS_FREE) UC(setup_edg(md,  nv, adj, /**/ edg, totArea));
     if (RBC_RND)         UC(setup_anti(md, nv, adj, /**/ anti));
-    cH2D(adj0, adj->adj0, nv*md); /* TODO */
-    cH2D(adj1, adj->adj1, nv*md);
 }
 
 static void setup(int md, int nt, int nv, const int4 *tt, /**/ RbcQuants *q) {
     Adj adj;
     Adj_v *adj_v;
-    adj_ini(md, nt, nv, tt, /**/ &adj);
-    adj_view_ini(&adj, /**/ &adj_v);
-    setup0(md, nv, &adj, /**/
-           q->shape.anti, q->shape.edg, &q->shape.totArea, q->adj0, q->adj1);
-    adj_fin(&adj);
+    UC(adj_ini(md, nt, nv, tt, /**/ &adj));
+    UC(adj_view_ini(&adj, /**/ &adj_v));
+    setup0(md, nv, &adj, /**/ q->shape.anti, q->shape.edg, &q->shape.totArea);
+    UC(adj_fin(&adj));
 }
