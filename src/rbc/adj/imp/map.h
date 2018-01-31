@@ -34,3 +34,5 @@ int adj_get_map(int i, const Adj *q, /**/ AdjMap *m) {
     adj1 = q->adj1;
     return hst0(md, nv, i, adj0, adj1, m);
 }
+
+int adj_get_max(const Adj *q) { return q->md * q->nv; }
