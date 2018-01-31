@@ -28,9 +28,11 @@ static void ini0(int md, int nv, const Adj *adj, /**/ int *anti, /*w*/ int *hx, 
     get(md, nv, adj, hx, hy, /**/ anti);
 }
 
-void adj_get_anti(int md, int nv, const Adj *adj, /**/ int *anti) {
-    int n;
+void adj_get_anti(const Adj *adj, /**/ int *anti) {
+    int md, nv, n;
     int *hx, *hy;
+    md = adj->md;
+    nv = adj->nv;
     n = md*nv;
     UC(emalloc(n*sizeof(int), (void**) &hx));
     UC(emalloc(n*sizeof(int), (void**) &hy));

@@ -59,7 +59,7 @@ static void setup_anti(int md, int nv, Adj *adj, /**/ int *dev) {
     int *hst;
     n = md*nv;
     EMALLOC(n, &hst);
-    adj_get_anti(md, nv, adj, /**/ hst);
+    adj_get_anti(adj, /**/ hst);
     cH2D(dev, hst, n);
     EFREE(hst);
 }
