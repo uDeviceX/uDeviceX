@@ -86,7 +86,6 @@ static int tri(FILE *f, char *s, int nt, int nv, int4 *tt) {
             return 0;
         }
     }
-    msg_print("%d %d %d", tt[0].x, tt[0].y, tt[0].z);
     return 1;
 }
 static void read(FILE *f, const char *path, /**/ OffRead *q) {
