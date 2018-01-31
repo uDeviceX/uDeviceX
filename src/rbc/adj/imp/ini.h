@@ -37,12 +37,18 @@ void adj_ini(int md, int nt, int nv, const int4 *faces, /**/ Adj *A) {
     EMALLOC(md*nv, &A->adj1);
     a1 = A->adj0; /* sic */
     a2 = A->adj1;
+    A->md = md; A->nv = nv;
     ini0(md, nt, nv, faces, /**/ a1, a2);
 }
 
 void adj_view_ini(Adj *hst, /**/ Adj_v **pq) {
+    int nv, md;
     Adj_v *q;
     if (hst == NULL) ERR("hst == NULL");
+    nv = hst->nv; md = hst->md;
+    q->nv = nv; q->md = md;
     EMALLOC(1, &q);
+    Dalloc(&q->adj0, md*nv);
+    Dalloc(&q->adj1, md*nv);
     *pq = q;
 }
