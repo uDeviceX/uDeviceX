@@ -17,8 +17,8 @@ struct RbcQuants {
     int n, nc;             /* number of particles, cells            */
     int nt, nv;            /* number of triangles and vertices per mesh */
     Particle *pp, *pp_hst; /* vertices particles on host and device */
-    int *ii;               /* global ids (on host) */
-    Adj_v *adj_v;
+    int *ii;               /* global ids on host */
+    Adj_v *adj_v;          /* to walk over mesh on dev */
     AreaVolume *area_volume; /* a structure for area and volume computations */
     Shape shape;
 };
