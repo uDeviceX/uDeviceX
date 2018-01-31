@@ -33,6 +33,20 @@ void read(int *n, Particle *pp) {
     *n = i;
 }
 
+int num_parts_inside(int3 L, int n, const Particle *pp) {
+    enum {X, Y, Z};
+    int i, ni;
+    const float *r;
+    for (i = ni = 0; i < n; ++i) {
+        r = pp[i].r;
+        ni +=
+            (-L.x/2 <= r[X] && r[X] < L.x/2) &&
+            (-L.y/2 <= r[Y] && r[Y] < L.y/2) &&
+            (-L.z/2 <= r[Z] && r[Z] < L.z/2);            
+    }
+    return ni;
+}
+
 void print_cells(int3 L, const int *ss, const int *cc) {
     int i, n, s, c;
     n = L.x * L.y * L.z;
@@ -88,7 +102,7 @@ int main(int argc, char **argv) {
     msg_ini(0);    
     Particle *pp, *ppout;
     Particle *pp_hst;
-    int n = 0, *starts, *counts;
+    int n = 0, nout, *starts, *counts;
     int3 dims;
     Clist clist;
     ClistMap *m;
@@ -106,18 +120,19 @@ int main(int argc, char **argv) {
     CC(d::Malloc((void**) &ppout, MAXN * sizeof(Particle)));
 
     read(&n, pp_hst);
+    nout = num_parts_inside(dims, n, pp_hst);
 
     clist_ini_map(n, 1, &clist, /**/ &m);
     
     CC(d::Memcpy(pp, pp_hst, n * sizeof(Particle), H2D));
     
-    UC(clist_build(n, n, pp, /**/ ppout, &clist, m));
+    UC(clist_build(n, nout, pp, /**/ ppout, &clist, m));
     
     CC(d::Memcpy(counts, clist.counts, clist.ncells * sizeof(int), D2H));
     CC(d::Memcpy(starts, clist.starts, clist.ncells * sizeof(int), D2H));
-    CC(d::Memcpy(pp_hst, ppout, n * sizeof(Particle), D2H));
+    CC(d::Memcpy(pp_hst, ppout, nout * sizeof(Particle), D2H));
     
-    if (valid(dims, starts, counts, pp_hst, n))
+    if (valid(dims, starts, counts, pp_hst, nout))
         printf("0\n");
     else
         printf("1\n");
