@@ -31,12 +31,13 @@ static void rr2pp(const float *rr, const int n, Particle *pp) {
 }
 
 static void strt_dump_templ0(const Coords *coords, const int nps, const float *rr0_hst) {
-    Particle *pp = new Particle[nps];
+    Particle *pp;
+    EMALLOC(nps, &pp);
     rr2pp(rr0_hst, nps, pp);
 
     restart_write_pp(coords, "rig", RESTART_TEMPL, pp, nps);
     
-    delete[] pp;
+    EFREE(pp);
 }
 
 void rig_strt_dump_templ(const Coords *coords, const RigQuants *q) {
