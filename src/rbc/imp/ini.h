@@ -2,11 +2,11 @@ static void ini_common(RbcQuants *q, const int4 *tt) {
     int nv, nt;
     nv = q->nv; nt = q->nt;
     Dalloc(&q->pp, MAX_CELL_NUM * nv);
-    UC(emalloc(MAX_CELL_NUM * nv * sizeof(Particle), (void**) &q->pp_hst));
+    EMALLOC(MAX_CELL_NUM * nv, &q->pp_hst);
     UC(area_volume_ini(nv, nt, tt, MAX_CELL_NUM, /**/ &q->area_volume));
 }
 
-static void ini_ids(RbcQuants *q) { UC(emalloc(MAX_CELL_NUM * sizeof(int), (void**) &q->ii)); }
+static void ini_ids(RbcQuants *q) { EMALLOC(MAX_CELL_NUM, &q->ii); }
 static void ini_edg(RbcQuants *q)  { Dalloc(&q->shape.edg,  q->nv * RBCmd); }
 static void ini_anti(RbcQuants *q) { Dalloc(&q->shape.anti, q->nv * RBCmd); }
 

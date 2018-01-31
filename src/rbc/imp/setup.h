@@ -47,11 +47,10 @@ static void setup_edg(int md, int nv, Adj *adj, /**/ Edg *dev, float *totArea) {
     if (nv != off_get_nv(cell))
         ERR("nv=%d != off_get_nv(cell)=%d", nv, off_get_nv(cell));
 
-    UC(emalloc(md*nv*sizeof(Edg), (void**) &hst));
+    EMALLOC(md*nv, &hst);
     UC(setup_edg1(md, nv, adj, rr, /**/ hst, totArea));
-
     cH2D(dev, hst, md*nv);
-    UC(efree(hst));
+    EFREE(hst);
 
     off_fin(cell);
 }
@@ -60,12 +59,10 @@ static void setup_anti(int md, int nv, Adj *adj, /**/ int *dev) {
     int n;
     int *hst;
     n = md*nv;
-    UC(emalloc(n*sizeof(int), (void**) &hst));
-
+    EMALLOC(n, &hst);
     adj_get_anti(md, nv, adj, /**/ hst);
     cH2D(dev, hst, n);
-
-    free(hst);
+    EFREE(hst);
 }
 
 static void setup0(int md, int nv, Adj *adj, /**/
