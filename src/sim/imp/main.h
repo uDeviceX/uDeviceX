@@ -1,26 +1,23 @@
-enum {
-    NCELLSWALL =
-    (XS + 2*XWM) *
-    (YS + 2*YWM) *
-    (ZS + 2*ZWM)
-};
-
-enum {
-    MAXNWALL = NCELLSWALL * numberdensity
-};
+static long get_max_parts_wall(const Coords *c) {
+    return numberdensity *
+        (xs(c) + 2 * XWM) *
+        (ys(c) + 2 * YWM) *
+        (zs(c) + 2 * ZWM);
+}
 
 static void gen(const Coords *coords, Wall *w, Sim *s) { /* generate */
     Flu *flu = &s->flu;
     Rbc *rbc = &s->rbc;
     Rig *rig = &s->rig;
     bool dump_sdf = s->opt.dump_field;
+    long maxp_wall = get_max_parts_wall(coords);
     
     run_eq(wall_creation, s);
     if (walls) {
         dSync();
         UC(sdf_gen(coords, s->cart, dump_sdf, /**/ w->sdf));
         MC(m::Barrier(s->cart));
-        inter_create_walls(s->cart, MAXNWALL, w->sdf, /*io*/ &flu->q, /**/ &w->q);
+        inter_create_walls(s->cart, maxp_wall, w->sdf, /*io*/ &flu->q, /**/ &w->q);
     }
     inter_freeze(coords, s->cart, w->sdf, /*io*/ &flu->q, /**/ &rig->q, &rbc->q);
     clear_vel(s);
@@ -76,6 +73,7 @@ void sim_strt(Sim *s) {
     Wall *wall = &s->wall;
     OffRead *cell = s->rbc.cell;
     bool dump_sdf = s->opt.dump_field;
+    long maxp_wall = get_max_parts_wall(s->coords);
     
     /*Q*/
     flu_strt_quants(s->coords, RESTART_BEGIN, &flu->q);
@@ -86,7 +84,7 @@ void sim_strt(Sim *s) {
 
     if (solids) rig_strt_quants(s->coords, RESTART_BEGIN, &rig->q);
 
-    if (walls) wall_strt_quants(s->coords, MAXNWALL, &wall->q);
+    if (walls) wall_strt_quants(s->coords, maxp_wall, &wall->q);
 
     /*T*/
     if (rbcs)               UC(rbc_force_gen(rbc->q, &rbc->tt));

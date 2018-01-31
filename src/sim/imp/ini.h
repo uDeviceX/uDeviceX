@@ -172,7 +172,7 @@ static void ini_rig(MPI_Comm cart, int maxp, int3 L, /**/ Rig *s) {
     tt = s->q.htt; nv = s->q.nv; nt = s->q.nt;
     UC(mesh_write_ini(tt, nv, nt, "s", /**/ &s->mesh_write));
 
-    UC(scan_work_ini(XS * YS * ZS, /**/ &s->ws));
+    UC(scan_work_ini(L.x * L.y * L.z, /**/ &s->ws));
     EMALLOC(maxp, &s->ff_hst);
     Dalloc(&s->ff, maxp);
 
@@ -231,12 +231,13 @@ static void coords_log(const Coords *c) {
 
 void sim_ini(int argc, char **argv, MPI_Comm cart, /**/ Sim **sim) {
     Sim *s;
-    int maxp = MAX_PART_NUM;
+    int maxp;
     EMALLOC(1, sim);
     s = *sim;
 
     // TODO this will be runtime
     s->L = make_int3(XS, YS, ZS);
+    maxp = SAFETY_FACTOR_MAXP * XS * YS * ZS * numberdensity;
     
     MC(m::Comm_dup(cart, &s->cart));
 

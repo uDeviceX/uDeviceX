@@ -5,7 +5,7 @@ static void check_size(long n, long nmax) {
 
 static void check_sizes(Sim *s) {
     if (rbcs) UC(check_size(s->rbc.q.nc, MAX_CELL_NUM));
-    UC(check_size(s->flu.q.n , MAX_PART_NUM)); 
+    UC(check_size(s->flu.q.n , s->flu.q.maxp)); 
 }
 
 static void check_pos_soft(Sim *s) {
