@@ -231,12 +231,13 @@ static void coords_log(const Coords *c) {
 
 void sim_ini(int argc, char **argv, MPI_Comm cart, /**/ Sim **sim) {
     Sim *s;
-    int maxp = 3 * XS * YS * ZS * numberdensity;
+    int maxp;
     EMALLOC(1, sim);
     s = *sim;
 
     // TODO this will be runtime
     s->L = make_int3(XS, YS, ZS);
+    maxp = SAFETY_FACTOR_MAXP * XS * YS * ZS * numberdensity;
     
     MC(m::Comm_dup(cart, &s->cart));
 

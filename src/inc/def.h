@@ -7,6 +7,8 @@ enum {BLUE_COLOR, RED_COLOR, /* solvent colors */
       N_COLOR};
 
 enum {
+    SAFETY_FACTOR_MAXP = 3,
+    
     /* maximum number of particles per solid */
     MAX_PSOLID_NUM = 12000,
 
