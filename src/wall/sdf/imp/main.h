@@ -17,7 +17,7 @@ static int3 texture_grid_size(int3 L, int3 M) {
     return T;
 };
 
-void sdf_ini(Sdf **pq) {
+void sdf_ini(int3 L, Sdf **pq) {
     Sdf *q;
     UC(emalloc(sizeof(Sdf), (void**)&q));
     UC(array3d_ini(&q->arr, XTE, YTE, ZTE));

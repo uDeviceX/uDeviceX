@@ -3,8 +3,9 @@ struct Sdf_v;
 struct Wvel_v;
 struct Coords;
 struct Particle;
+struct int3;
 
-void sdf_ini(Sdf**);
+void sdf_ini(int3 L, Sdf**);
 void sdf_fin(Sdf*);
 void sdf_gen(const Coords*, MPI_Comm cart, bool dump, Sdf*);
 void sdf_to_view(const Sdf*, /**/ Sdf_v*);

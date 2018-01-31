@@ -186,8 +186,8 @@ static void ini_bounce_back(MPI_Comm cart, int3 L, Rig *s, /**/ BounceBack *bb) 
     UC(ini_bb_exch(s->q.nt, s->q.nv, MAX_CELL_NUM, cart, L, /**/ &bb->e));
 }
 
-static void ini_wall(const Config *cfg, Wall *w) {
-    UC(sdf_ini(&w->sdf));
+static void ini_wall(const Config *cfg, int3 L, Wall *w) {
+    UC(sdf_ini(L, &w->sdf));
     UC(wall_ini_quants(&w->q));
     UC(wall_ini_ticket(&w->t));
     UC(wvel_ini(&w->vel));
@@ -264,7 +264,7 @@ void sim_ini(int argc, char **argv, MPI_Comm cart, /**/ Sim **sim) {
 
     UC(bop_ini(s->cart, MAX_PART_NUM, &s->dumpt));
 
-    if (walls) ini_wall(cfg, &s->wall);
+    if (walls) ini_wall(cfg, s->L, &s->wall);
 
     UC(ini_flu(s->cart, s->L, /**/ &s->flu));
 
