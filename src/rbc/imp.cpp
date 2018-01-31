@@ -28,7 +28,6 @@
 
 #include "type.h"
 #include "adj/type/common.h"
-#include "adj/type/hst.h"
 #include "adj/imp.h"
 #include "gen/imp.h"
 #include "force/area_volume/imp.h"

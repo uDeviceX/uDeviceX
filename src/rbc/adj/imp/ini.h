@@ -31,14 +31,17 @@ static void ini0(int md, int nt, int nv, const int4 *faces, /**/ int *a1, int *a
     for (i = 0; i < nv; i++) gen_a12(md, i, hx, hy, /**/ a1, a2);
 }
 
-void adj_ini(int md, int nt, int nv, const int4 *faces, /**/ Adj *A) {
+void adj_ini(int md, int nt, int nv, const int4 *faces, /**/ Adj **pq) {
     int *a1, *a2;
-    EMALLOC(md*nv, &A->adj0);
-    EMALLOC(md*nv, &A->adj1);
-    a1 = A->adj0; /* sic */
-    a2 = A->adj1;
-    A->md = md; A->nv = nv;
+    Adj *q;
+    EMALLOC(1    , &q);
+    EMALLOC(md*nv, &q->adj0);
+    EMALLOC(md*nv, &q->adj1);
+    a1 = q->adj0; /* sic */
+    a2 = q->adj1;
+    q->md = md; q->nv = nv;
     ini0(md, nt, nv, faces, /**/ a1, a2);
+    *pq = q;
 }
 
 void adj_view_ini(Adj *hst, /**/ Adj_v **pq) {
