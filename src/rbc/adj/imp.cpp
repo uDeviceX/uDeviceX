@@ -9,9 +9,11 @@
 #include "rbc/edg/imp.h"
 #include "utils/msg.h"
 
+#include "imp.h"
+
 #include "type/common.h"
 #include "type/hst.h"
-#include "imp.h"
+#include "type/dev.h"
 
 #include "imp/ini.h"
 #include "imp/fin.h"
