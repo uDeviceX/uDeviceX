@@ -100,7 +100,7 @@ __global__ void bounce_back(Wvel_v wv, Coords_v c, Sdf_v texsdf, int n, /**/ Par
 
     s = cheap_sdf(&texsdf, r.x, r.y, r.z);
 
-    if (s >= -1.7320 * XSIZE_WALLCELLS / XTE) {
+    if (s >= texsdf.cheap_threshold) {
         currsdf = sdf(&texsdf, r.x, r.y, r.z);
         if (currsdf >= 0) {
             bounce_back_1p(wv, c, &texsdf, currsdf, /*io*/ &r, &v);
