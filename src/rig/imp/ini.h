@@ -13,12 +13,12 @@ static void load_rigid_mesh(const char *fname, int *nt, int *nv, int4 **tt_hst, 
 void rig_ini(int maxp, RigQuants *q) {
     q->n = q->ns = q->nps = 0;
     q->maxp = maxp;
-    
+
     Dalloc(&q->pp ,     maxp);
     Dalloc(&q->ss ,     MAX_SOLIDS);
     Dalloc(&q->rr0, 3 * maxp);
     Dalloc(&q->i_pp,    maxp);
-    
+
     EMALLOC(maxp, &q->pp_hst);
     EMALLOC(MAX_SOLIDS, &q->ss_hst);
     EMALLOC(3 * maxp, &q->rr0_hst);
