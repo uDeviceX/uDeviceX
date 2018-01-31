@@ -1,6 +1,6 @@
 struct Rnd0 { real r; };
 
-static __device__ void edg_rnd(Shape shape, int i0, real* rnd, int  j, /**/ Rnd0 *rnd0) {
+static __device__ void edg_rnd(Shape shape, int i0, real *rnd, int  j, /**/ Rnd0 *rnd0) {
     /* i0: edge index; j: vertex index */
     int i1;
     i1 = shape.anti[i0];
