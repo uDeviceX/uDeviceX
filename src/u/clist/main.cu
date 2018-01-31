@@ -99,9 +99,9 @@ int main(int argc, char **argv) {
     
     clist_ini(dims.x, dims.y, dims.z, /**/ &clist);
 
-    UC(emalloc(MAXN * sizeof(Particle), (void**) &pp_hst));
-    UC(emalloc(clist.ncells * sizeof(int), (void**) &counts));
-    UC(emalloc(clist.ncells * sizeof(int), (void**) &starts));
+    EMALLOC(MAXN, &pp_hst);
+    EMALLOC(clist.ncells, &counts);
+    EMALLOC(clist.ncells, &starts);
     CC(d::Malloc((void**) &pp, MAXN * sizeof(Particle)));
     CC(d::Malloc((void**) &ppout, MAXN * sizeof(Particle)));
 
@@ -126,9 +126,9 @@ int main(int argc, char **argv) {
     
     CC(d::Free(pp));
     CC(d::Free(ppout));
-    free(counts);
-    free(starts);
-    free(pp_hst);
+    EFREE(counts);
+    EFREE(starts);
+    EFREE(pp_hst);
 
     clist_fin(/**/ &clist);
     clist_fin_map(/**/ m);
