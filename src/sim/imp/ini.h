@@ -232,7 +232,7 @@ static void coords_log(const Coords *c) {
 void sim_ini(int argc, char **argv, MPI_Comm cart, /**/ Sim **sim) {
     Sim *s;
     int maxp = MAX_PART_NUM;
-    UC(emalloc(sizeof(Sim), (void**) sim));
+    EMALLOC(1, sim);
     s = *sim;
 
     // TODO this will be runtime
@@ -251,7 +251,7 @@ void sim_ini(int argc, char **argv, MPI_Comm cart, /**/ Sim **sim) {
     UC(coords_ini(s->cart, XS, YS, ZS, /**/ &s->coords));
     UC(coords_log(s->coords));
 
-    UC(emalloc(3 * maxp * sizeof(Particle), (void**) &s->pp_dump));
+    EMALLOC(3 * maxp, &s->pp_dump);
 
     if (rbcs) UC(ini_rbc(cfg, s->cart, s->L, /**/ &s->rbc));
 

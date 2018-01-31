@@ -74,7 +74,7 @@ static void fin_flu(Flu *f) {
     fin_flu_exch(/**/ &f->e);
 
     UC(Dfree(f->ff));
-    UC(efree(f->ff_hst));
+    EFREE(f->ff_hst);
 }
 
 static void fin_rbc(Rbc *r) {
@@ -96,7 +96,7 @@ static void fin_rig(Rig *s) {
     rig_fin(&s->q);
     scan_work_fin(/**/ s->ws);
     Dfree(s->ff);
-    UC(efree(s->ff_hst));
+    EFREE(s->ff_hst);
 
     UC(fin_rig_distr(/**/ &s->d));
     UC(mesh_write_fin(s->mesh_write));
@@ -150,7 +150,7 @@ void sim_fin(Sim *s) {
             fin_bounce_back(&s->bb);
     }
 
-    UC(efree(s->pp_dump));
+    EFREE(s->pp_dump);
     
     if (rbcs) fin_rbc(/**/ &s->rbc);
 
@@ -163,5 +163,5 @@ void sim_fin(Sim *s) {
     datatype::fin();
 
     MC(m::Comm_free(&s->cart));
-    UC(efree(s));
+    EFREE(s);
 }
