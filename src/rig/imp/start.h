@@ -4,9 +4,9 @@ static void pp2rr(const Particle *pp, const int n, float *rr) {
     rr[3*i + c] = pp[i].r[c];
 }
 
-static void gen_from_strt(const Coords *coords, const int id, int *ns, int *nps, int *n, float *rr0_hst, Solid *ss_hst) {
+static void gen_from_strt(int maxp, const Coords *coords, const int id, int *ns, int *nps, int *n, float *rr0_hst, Solid *ss_hst) {
     Particle *pp;
-    EMALLOC(MAX_PART_NUM, &pp);
+    EMALLOC(maxp, &pp);
     restart_read_pp(coords, "rig", RESTART_TEMPL, pp, nps);
     pp2rr(pp, *nps, rr0_hst);
     EFREE(pp);
@@ -16,7 +16,7 @@ static void gen_from_strt(const Coords *coords, const int id, int *ns, int *nps,
 }
 
 void rig_strt_quants(const Coords *coords, const int id, RigQuants *q) {
-    gen_from_strt(coords, id, /**/ &q->ns, &q->nps, &q->n, q->rr0_hst, q->ss_hst);
+    gen_from_strt(q->maxp, coords, id, /**/ &q->ns, &q->nps, &q->n, q->rr0_hst, q->ss_hst);
     gen_pp_hst(q->ns, q->rr0_hst, q->nps, /**/ q->ss_hst, q->pp_hst);
     gen_ipp_hst(q->ss_hst, q->ns, q->nv, q->hvv, /**/ q->i_pp_hst);
     cpy_H2D(q);

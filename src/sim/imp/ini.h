@@ -75,8 +75,8 @@ static void ini_vcon(MPI_Comm comm, int3 L, const Config *cfg, /**/ Vcon *c) {
         ERR("Unrecognised type <%s>", type);
 }
 
-static void ini_outflow(const Coords *coords, const Config *cfg, Outflow **o) {
-    UC(ini(MAX_PART_NUM, /**/ o));
+static void ini_outflow(const Coords *coords, int maxp, const Config *cfg, Outflow **o) {
+    UC(ini(maxp, /**/ o));
     const char *type;
     UC(conf_lookup_string(cfg, "outflow.type", &type));
 
@@ -100,9 +100,9 @@ static void ini_outflow(const Coords *coords, const Config *cfg, Outflow **o) {
     }
 }
 
-static void ini_denoutflow(const Coords *c, const Config *cfg, DCont **d, DContMap **m) {
+static void ini_denoutflow(const Coords *c, int maxp, const Config *cfg, DCont **d, DContMap **m) {
     const char *type;
-    UC(den_ini(MAX_PART_NUM, /**/ d));
+    UC(den_ini(maxp, /**/ d));
 
     UC(conf_lookup_string(cfg, "denoutflow.type", &type));
     if (same_str(type, "none")) {
@@ -125,24 +125,24 @@ static void ini_inflow(const Coords *coords, const Config *cfg, Inflow **i) {
     UC(inflow_ini_velocity(*i));
 }
 
-static void ini_colorer(int nv, MPI_Comm comm, int3 L, /**/ Colorer *c) {
-    UC(ini_mesh_exch(nv, MAX_CELL_NUM, comm, L, &c->e));
-    Dalloc(&c->pp, MAX_PART_NUM);
-    Dalloc(&c->minext, MAX_CELL_NUM);
-    Dalloc(&c->maxext, MAX_CELL_NUM);
+static void ini_colorer(int nv, MPI_Comm comm, int maxp, int3 L, /**/ Colorer *c) {
+    UC(ini_mesh_exch(nv, maxp, comm, L, &c->e));
+    Dalloc(&c->pp, maxp);
+    Dalloc(&c->minext, maxp);
+    Dalloc(&c->maxext, maxp);
 }
 
-static void ini_flu(MPI_Comm cart, int3 L, /**/ Flu *f) {
+static void ini_flu(MPI_Comm cart, int maxp, int3 L, /**/ Flu *f) {
 
-    UC(flu_ini(L, MAX_PART_NUM, &f->q));
-    UC(fluforces_bulk_ini(L, MAX_PART_NUM, /**/ &f->bulk));
+    UC(flu_ini(L, maxp, &f->q));
+    UC(fluforces_bulk_ini(L, maxp, /**/ &f->bulk));
     UC(fluforces_halo_ini(cart, L, /**/ &f->halo));
 
     UC(ini_flu_distr(cart, L, /**/ &f->d));
     UC(ini_flu_exch(cart, L, /**/ &f->e));
 
-    UC(Dalloc(&f->ff, MAX_PART_NUM));
-    UC(emalloc(MAX_PART_NUM * sizeof(Force), /**/ (void**) &f->ff_hst));
+    UC(Dalloc(&f->ff, maxp));
+    EMALLOC(maxp, /**/ &f->ff_hst);
 }
 
 static void ini_rbc(const Config *cfg, MPI_Comm cart, int3 L, /**/ Rbc *r) {
@@ -173,15 +173,15 @@ static void ini_rig(MPI_Comm cart, int maxp, int3 L, /**/ Rig *s) {
     UC(mesh_write_ini(tt, nv, nt, "s", /**/ &s->mesh_write));
 
     UC(scan_work_ini(XS * YS * ZS, /**/ &s->ws));
-    UC(emalloc(sizeof(&s->ff_hst)*MAX_PART_NUM, (void**) &s->ff_hst));
-    Dalloc(&s->ff, MAX_PART_NUM);
+    EMALLOC(maxp, &s->ff_hst);
+    Dalloc(&s->ff, maxp);
 
     UC(ini_rig_distr(s->q.nv, cart, L, /**/ &s->d));
 }
 
-static void ini_bounce_back(MPI_Comm cart, int3 L, Rig *s, /**/ BounceBack *bb) {
-    meshbb_ini(MAX_PART_NUM, /**/ &bb->d);
-    Dalloc(&bb->mm, MAX_PART_NUM);
+static void ini_bounce_back(MPI_Comm cart, int maxp, int3 L, Rig *s, /**/ BounceBack *bb) {
+    meshbb_ini(maxp, /**/ &bb->d);
+    Dalloc(&bb->mm, maxp);
 
     UC(ini_bb_exch(s->q.nt, s->q.nv, MAX_CELL_NUM, cart, L, /**/ &bb->e));
 }
@@ -194,11 +194,11 @@ static void ini_wall(const Config *cfg, int3 L, Wall *w) {
     UC(wvel_set_conf(cfg, w->vel));
 }
 
-static void ini_objinter(MPI_Comm cart, int3 L, /**/ ObjInter *o) {
+static void ini_objinter(MPI_Comm cart, int maxp, int3 L, /**/ ObjInter *o) {
     int rank;
     MC(m::Comm_rank(cart, &rank));
     UC(ini_obj_exch(cart, L, &o->e));
-    if (contactforces) cnt_ini(MAX_PART_NUM, rank, L, /**/ &o->cnt);
+    if (contactforces) cnt_ini(maxp, rank, L, /**/ &o->cnt);
     if (fsiforces)     fsi_ini(rank, L, /**/ &o->fsi);
 }
 
@@ -256,27 +256,27 @@ void sim_ini(int argc, char **argv, MPI_Comm cart, /**/ Sim **sim) {
     if (rbcs) UC(ini_rbc(cfg, s->cart, s->L, /**/ &s->rbc));
 
     if (s->opt.vcon)       UC(ini_vcon(s->cart, s->L, s->cfg, /**/ &s->vcon));
-    if (s->opt.outflow)    UC(ini_outflow(s->coords, s->cfg, /**/ &s->outflow));
+    if (s->opt.outflow)    UC(ini_outflow(s->coords, maxp, s->cfg, /**/ &s->outflow));
     if (s->opt.inflow)     UC(ini_inflow (s->coords, s->cfg, /**/ &s->inflow ));
-    if (s->opt.denoutflow) UC(ini_denoutflow(s->coords, s->cfg, /**/ &s->denoutflow, &s->mapoutflow));
+    if (s->opt.denoutflow) UC(ini_denoutflow(s->coords, maxp, s->cfg, /**/ &s->denoutflow, &s->mapoutflow));
 
     if (rbcs || solids)
-        UC(ini_objinter(s->cart, s->L, /**/ &s->objinter));
+        UC(ini_objinter(s->cart, maxp, s->L, /**/ &s->objinter));
 
     UC(bop_ini(s->cart, maxp, &s->dumpt));
 
     if (walls) ini_wall(cfg, s->L, &s->wall);
 
-    UC(ini_flu(s->cart, s->L, /**/ &s->flu));
+    UC(ini_flu(s->cart, maxp, s->L, /**/ &s->flu));
 
     if (multi_solvent && rbcs)
-        UC(ini_colorer(s->rbc.q.nv, s->cart, s->L, /**/ &s->colorer));
+        UC(ini_colorer(s->rbc.q.nv, s->cart, maxp, s->L, /**/ &s->colorer));
 
     if (solids) {
         UC(ini_rig(s->cart, maxp, s->L, /**/ &s->rig));
 
         if (sbounce_back)
-            UC(ini_bounce_back(s->cart, s->L, &s->rig, /**/ &s->bb));
+            UC(ini_bounce_back(s->cart, maxp, s->L, &s->rig, /**/ &s->bb));
     }
 
     UC(scheme_restrain_ini(&s->restrain));
