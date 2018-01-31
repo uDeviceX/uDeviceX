@@ -1,5 +1,6 @@
 struct RNDunif;
 struct Coords;
+struct int3;
 
 struct WallQuants {
     float4 *pp; /* particle positions xyzo xyzo ... */
@@ -18,7 +19,7 @@ void wall_force(Wvel_v wv, const Coords *c, Sdf *qsdf, const WallQuants *q, cons
 }
 
 void wall_ini_quants(int3 L, WallQuants *q);
-void wall_ini_ticket(WallTicket **t);
+void wall_ini_ticket(int3 L, WallTicket **t);
 
 void wall_fin_quants(WallQuants *q);
 void wall_fin_ticket(WallTicket *t);

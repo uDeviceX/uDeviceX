@@ -4,10 +4,12 @@ void wall_ini_quants(int3 L, WallQuants *q) {
     q->L = L;
 }
 
-void wall_ini_ticket(WallTicket **ti) {
+void wall_ini_ticket(int3 L, WallTicket **ti) {
     WallTicket *t;
     EMALLOC(1, ti);
     t = *ti;
     UC(rnd_ini(42, 42, 42, 42, /**/ &t->rnd));
-    clist_ini(XS + 2 * XWM, YS + 2 * YWM, ZS + 2 * ZWM, /**/ &t->cells);
+    UC(clist_ini(L.x + 2 * XWM,
+                 L.y + 2 * YWM,
+                 L.z + 2 * ZWM, /**/ &t->cells));
 }
