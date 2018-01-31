@@ -16,6 +16,10 @@
 #error wvel is runtime now!
 #endif
 
+#if defined(XWM) || defined(YWM) || defined(ZWM)
+#error [XYZ]W is set in inc/def.h and should not be set in config.h
+#endif
+
 #if defined(FORCE_PAR_A)
 #error bforce has runtime parameters now!
 #endif
