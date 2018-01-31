@@ -7,6 +7,11 @@ enum {BLUE_COLOR, RED_COLOR, /* solvent colors */
       N_COLOR};
 
 enum {
+    /* wall margins */
+    XWM = 6,
+    YWM = 6,
+    ZWM = 6,
+
     SAFETY_FACTOR_MAXP = 3,
     
     /* maximum number of particles per solid */

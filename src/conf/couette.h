@@ -1,9 +1,6 @@
 #define XS   16
 #define YS   16
 #define ZS   16
-#define XWM     6
-#define YWM     6
-#define ZWM     6
 
 #define XBBM 1.f
 #define YBBM 1.f
