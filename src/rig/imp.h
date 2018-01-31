@@ -11,11 +11,13 @@ struct RigQuants {
     Particle *i_pp_hst, *i_pp;    /* particles representing all meshes of all solids of that node  */
 
     Solid *ss_dmp, *ss_dmp_bb;
+
+    int maxp; /* maximum particle number */
 };
 
 struct Coords;
 
-void rig_ini(RigQuants *q);
+void rig_ini(int maxp, RigQuants *q);
 void rig_fin(RigQuants *q);
 
 void rig_gen_quants(const Coords *coords, MPI_Comm comm, Particle *opp, int *on, RigQuants *q);

@@ -164,11 +164,11 @@ static void ini_rbc(const Config *cfg, MPI_Comm cart, int3 L, /**/ Rbc *r) {
     UC(rbc_params_set_conf(cfg, r->params));
 }
 
-static void ini_rig(MPI_Comm cart, int3 L, /**/ Rig *s) {
+static void ini_rig(MPI_Comm cart, int maxp, int3 L, /**/ Rig *s) {
     const int4 *tt;
     int nv, nt;
 
-    UC(rig_ini(&s->q));
+    UC(rig_ini(maxp, &s->q));
     tt = s->q.htt; nv = s->q.nv; nt = s->q.nt;
     UC(mesh_write_ini(tt, nv, nt, "s", /**/ &s->mesh_write));
 
@@ -231,6 +231,7 @@ static void coords_log(const Coords *c) {
 
 void sim_ini(int argc, char **argv, MPI_Comm cart, /**/ Sim **sim) {
     Sim *s;
+    int maxp = MAX_PART_NUM;
     UC(emalloc(sizeof(Sim), (void**) sim));
     s = *sim;
 
@@ -250,7 +251,7 @@ void sim_ini(int argc, char **argv, MPI_Comm cart, /**/ Sim **sim) {
     UC(coords_ini(s->cart, XS, YS, ZS, /**/ &s->coords));
     UC(coords_log(s->coords));
 
-    UC(emalloc(3 * MAX_PART_NUM * sizeof(Particle), (void**) &s->pp_dump));
+    UC(emalloc(3 * maxp * sizeof(Particle), (void**) &s->pp_dump));
 
     if (rbcs) UC(ini_rbc(cfg, s->cart, s->L, /**/ &s->rbc));
 
@@ -262,7 +263,7 @@ void sim_ini(int argc, char **argv, MPI_Comm cart, /**/ Sim **sim) {
     if (rbcs || solids)
         UC(ini_objinter(s->cart, s->L, /**/ &s->objinter));
 
-    UC(bop_ini(s->cart, MAX_PART_NUM, &s->dumpt));
+    UC(bop_ini(s->cart, maxp, &s->dumpt));
 
     if (walls) ini_wall(cfg, s->L, &s->wall);
 
@@ -272,7 +273,7 @@ void sim_ini(int argc, char **argv, MPI_Comm cart, /**/ Sim **sim) {
         UC(ini_colorer(s->rbc.q.nv, s->cart, s->L, /**/ &s->colorer));
 
     if (solids) {
-        UC(ini_rig(s->cart, s->L, /**/ &s->rig));
+        UC(ini_rig(s->cart, maxp, s->L, /**/ &s->rig));
 
         if (sbounce_back)
             UC(ini_bounce_back(s->cart, s->L, &s->rig, /**/ &s->bb));
