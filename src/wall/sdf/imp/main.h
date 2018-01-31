@@ -29,7 +29,7 @@ void sdf_ini(int3 L, Sdf **pq) {
     UC(  tform_ini(&q->t));
 
     q->Lte = Lte;
-    q->cheap_threshold = - sqrt(3.f) * ((float)XSIZE_WALLCELLS / (float)Lte.x);
+    q->cheap_threshold = - sqrt(3.f) * ((float) (L.x + 2*M.x) / (float)Lte.x);
 
     *pq = q;
 }
