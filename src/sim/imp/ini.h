@@ -172,7 +172,7 @@ static void ini_rig(MPI_Comm cart, int maxp, int3 L, /**/ Rig *s) {
     tt = s->q.htt; nv = s->q.nv; nt = s->q.nt;
     UC(mesh_write_ini(tt, nv, nt, "s", /**/ &s->mesh_write));
 
-    UC(scan_work_ini(XS * YS * ZS, /**/ &s->ws));
+    UC(scan_work_ini(L.x * L.y * L.z, /**/ &s->ws));
     EMALLOC(maxp, &s->ff_hst);
     Dalloc(&s->ff, maxp);
 
