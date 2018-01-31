@@ -17,7 +17,7 @@
 #endif
 
 #if defined(XWM) || defined(YWM) || defined(ZWM)
-#error [XYZ]W is set in inc/def.h and should not be set in config.h
+#error [XYZ]W is set in inc/def.h and should not be set in conf.h
 #endif
 
 #if defined(FORCE_PAR_A)
