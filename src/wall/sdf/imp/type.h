@@ -5,4 +5,5 @@ struct Sdf {
     Tex3d     *tex;
     Tform     *t;
     float far_threshold;
+    int3 L; /* subdomain */
 };

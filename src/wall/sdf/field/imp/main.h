@@ -30,7 +30,7 @@ void sdf_field_scale(const int N[3], float s, /**/ float *D) {
 }
 
 static void dump0(const Coords *coords, const int N0[3], const float *D0, /**/ float *D1) {
-    int L[3] = {XS, YS, ZS};
+    int L[3] = {xs(coords), ys(coords), zs(coords)};
     Tform *t;
     UC(tform_ini(&t));
     UC(out2sdf_ini(coords, N0, t));
@@ -45,7 +45,8 @@ static void dump1(const Coords *coords, MPI_Comm cart, const int N[3], const flo
 
 void sdf_field_dump(const Coords *coords, MPI_Comm cart, const int N[], const float* D) {
     float *W;
-    UC(emalloc(XS*YS*ZS*sizeof(float), (void**) &W));
+    int ngrid = xs(coords) * ys(coords) * zs(coords);
+    UC(emalloc(ngrid*sizeof(float), (void**) &W));
     UC(dump1(coords, cart, N, D, /*w*/ W));
     UC(efree(W));
 }

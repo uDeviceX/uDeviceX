@@ -10,6 +10,7 @@
 #include "io/field/imp.h"
 #include "mpi/glb.h"
 #include "utils/msg.h"
+#include "coords/imp.h"
 
 #include "math/tform/imp.h"
 #include "wall/sdf/tform/imp.h"
