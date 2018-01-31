@@ -1,3 +1,4 @@
 struct Coords;
-int rbc_gen(const Coords *coords, const float *verts, const char *ic, int nv, /**/ Particle *pp);
+struct Particle;
+int rbc_gen(const Coords*, const float *vv, const char *ic, int nv, /**/ Particle*);
 /* vv : vertices of a template : x y z x y z, ...   */
