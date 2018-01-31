@@ -26,7 +26,7 @@ static void setup_edg1(int md, int nv, Adj *adj, const float *rr, /**/
 
     totArea = 0;
     for (i = 0; i < md*nv; i++) {
-        valid = adj_get_map(md, nv, i, adj, /**/ &m);
+        valid = adj_get_map(i, adj, /**/ &m);
         if (!valid) continue;
         setup_edg0(rr, m, /**/ &edg[i]);
         totArea += edg[i].A;

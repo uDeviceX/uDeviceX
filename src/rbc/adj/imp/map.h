@@ -25,9 +25,12 @@ static int hst0(int md, int nv, int i, const int *adj0, const int *adj1, /**/ Ad
     return 1;
 }
 
-int adj_get_map(int md, int nv, int i, const Adj *A, /**/ AdjMap *m) {
+int adj_get_map(int i, const Adj *q, /**/ AdjMap *m) {
+    int md, nv;
     const int *adj0, *adj1;
-    adj0 = A->adj0;
-    adj1 = A->adj1;
+    md = q->md;
+    nv = q->nv;
+    adj0 = q->adj0;
+    adj1 = q->adj1;
     return hst0(md, nv, i, adj0, adj1, m);
 }
