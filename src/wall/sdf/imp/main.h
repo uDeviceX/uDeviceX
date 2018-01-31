@@ -9,8 +9,8 @@ static int3 texture_grid_size(int3 L, int3 M) {
     z = L.z + 2 * M.z;
     
     T.x = PAD * PAD;
-    ty = ceiln(y * x, T.x);
-    tz = ceiln(z * x, T.x);
+    ty = ceiln(y * T.x, x);
+    tz = ceiln(z * T.x, x);
     T.y = PAD * ceiln(ty, PAD);
     T.z = PAD * ceiln(tz, PAD);
 
