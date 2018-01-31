@@ -15,9 +15,9 @@ static void ini_anti(RbcQuants *q) { Dalloc(&q->shape.anti, q->nv * RBCmd); }
 void rbc_ini(OffRead *cell, RbcQuants *q) {
     int md;
     const int4 *tt;
+    md    = RBCmd;
     q->nv = off_get_nv(cell);
     q->nt = off_get_nt(cell);
-    md    = RBCmd;
     tt = off_get_tri(cell);
 
     q->n = q->nc = 0;
@@ -25,5 +25,5 @@ void rbc_ini(OffRead *cell, RbcQuants *q) {
     if (rbc_ids)         UC(ini_ids(q));
     if (RBC_STRESS_FREE) UC(ini_edg (q));
     if (RBC_RND)         UC(ini_anti(q));
-    UC(setup(md, q->nt, q->nv, cell, /**/ q));
+    UC(setup(md, q->nt, q->nv, tt, /**/ q));
 }

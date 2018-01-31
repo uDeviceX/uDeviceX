@@ -81,9 +81,7 @@ static void setup0(int md, int nt, int nv, const int4 *tt, /**/
     adj_fin(&adj);
 }
 
-static void setup(int md, int nt, int nv, OffRead *off, /**/ RbcQuants *q) {
-    const int4 *tt;
-    tt = off_get_tri(off);
+static void setup(int md, int nt, int nv, const int4 *tt, /**/ RbcQuants *q) {
     setup0(md, nt, nv, tt, /**/
            q->shape.anti, q->shape.edg, &q->shape.totArea, q->adj0, q->adj1);
 }
