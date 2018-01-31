@@ -1,21 +1,24 @@
 static void transform(const float* rr0, int nv, float *A, /* output */ Particle *pp) {
+    int iv, c;
+    float *r;
+    const float *r0;
     /* rr0: vertices of RBC template; A: affine transformation matrix */
-    for (int iv = 0; iv < nv; iv++) {
-        float  *r = pp[iv].r, *v = pp[iv].v;
-        const float *r0 = &rr0[3*iv];
-        for (int c = 0, i = 0; c < 3; c++) {
+    for (iv = 0; iv < nv; iv++) {
+        r = pp[iv].r, *v = pp[iv].v;
+        *r0 = &rr0[3*iv];
+        for (c = i = 0; c < 3; c++) {
             r[c] += A[i++]*r0[0]; /* matrix transformation */
             r[c] += A[i++]*r0[1];
             r[c] += A[i++]*r0[2];
             r[c] += A[i++];
-
             v[c] = 0;
         }
     }
 }
 
 static bool read_A(FILE *f, float A[16]) {
-    for (int i = 0; i < 4*4; i++)
+    int i;
+    for (i = 0; i < 4*4; i++)
         if (fscanf(f, "%f", &A[i]) != 1) return false;
     return true;
 }
