@@ -20,4 +20,3 @@ LIBCONFIG_LIBS     = -L${libconfigLD} -Wl,-rpath -Wl,${libconfigLD} ${libconfigL
 # Ubuntu 16.04: https://github.com/BVLC/caffe/issues/4046
 NVCCFLAGS += -D_FORCE_INLINES
 CXXFLAGS += -Wall -Wextra
-CXXFLAGS += -Wno-unused -Wno-unused-parameter -Wno-unused-but-set-variable -Wno-unknown-pragmas

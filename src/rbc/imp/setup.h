@@ -46,13 +46,13 @@ static void setup_edg(int md, int nv, Adj *adj, /**/ Edg *dev, float *totArea) {
     rr = off_get_vert(cell);
     if (nv != off_get_nv(cell))
         ERR("nv=%d != off_get_nv(cell)=%d", nv, off_get_nv(cell));
-    
+
     UC(emalloc(md*nv*sizeof(Edg), (void**) &hst));
     UC(setup_edg1(md, nv, adj, rr, /**/ hst, totArea));
 
     cH2D(dev, hst, md*nv);
     UC(efree(hst));
-    
+
     off_fin(cell);
 }
 
@@ -81,9 +81,8 @@ static void setup0(int md, int nt, int nv, const int4 *tt, /**/
     adj_fin(&adj);
 }
 
-static void setup(int md, int nt, int nv, OffRead *off, /**/ RbcQuants *q) {
-    const int4 *tt;
-    tt = off_get_tri(off);
+static void setup(int md, int nt, int nv, const int4 *tt, /**/ RbcQuants *q) {
     setup0(md, nt, nv, tt, /**/
            q->shape.anti, q->shape.edg, &q->shape.totArea, q->adj0, q->adj1);
 }
+
