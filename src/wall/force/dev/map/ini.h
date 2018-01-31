@@ -7,34 +7,35 @@ static __device__ void ini(int3 L, int zplane, const Texo<int> texstart, int w_n
 #define   wpp_fetch(i) (fetch(texwpp,   i))
     uint cnt0, cnt1, cnt2, org0;
     int org1, org2;
+    int xcells, ycells, zcells, ncells;
+    
 
-    int xbase = (int)(x - (-XS / 2 - XWM));
-    int ybase = (int)(y - (-YS / 2 - YWM));
-    int zbase = (int)(z - (-ZS / 2 - ZWM));
+    int xbase = (int)(x - (-L.x / 2 - XWM));
+    int ybase = (int)(y - (-L.y / 2 - YWM));
+    int zbase = (int)(z - (-L.z / 2 - ZWM));
 
-    xbase = minmax(-XWM+1, XS + XWM - 2, xbase);
-    ybase = minmax(-YWM+1, YS + YWM - 2, ybase);
-    zbase = minmax(-ZWM+1, ZS + ZWM - 2, zbase);
+    xbase = minmax(-XWM+1, L.x + XWM - 2, xbase);
+    ybase = minmax(-YWM+1, L.y + YWM - 2, ybase);
+    zbase = minmax(-ZWM+1, L.z + ZWM - 2, zbase);
 
-    enum {
-        XCELLS = XS + 2 * XWM,
-        YCELLS = YS + 2 * YWM,
-        ZCELLS = ZS + 2 * ZWM,
-        NCELLS = XCELLS * YCELLS * ZCELLS
-    };
+    xcells = L.x + 2 * XWM;
+    ycells = L.y + 2 * YWM;
+    zcells = L.z + 2 * ZWM;
 
-    int cid0 = xbase - 1 + XCELLS * (ybase - 1 + YCELLS * (zbase - 1 + zplane));
+    ncells = xcells * ycells * zcells;
+
+    int cid0 = xbase - 1 + xcells * (ybase - 1 + ycells * (zbase - 1 + zplane));
 
     org0 = start_fetch(cid0);
     int count0 = start_fetch(cid0 + 3) - org0;
 
-    int cid1 = cid0 + XCELLS;
+    int cid1 = cid0 + xcells;
     org1 = start_fetch(cid1);
     int count1 = start_fetch(cid1 + 3) - org1;
 
-    int cid2 = cid0 + XCELLS * 2;
+    int cid2 = cid0 + xcells * 2;
     org2 = start_fetch(cid2);
-    int count2 = cid2 + 3 == NCELLS
+    int count2 = cid2 + 3 == ncells
         ? w_n
         : start_fetch(cid2 + 3) - org2;
 
