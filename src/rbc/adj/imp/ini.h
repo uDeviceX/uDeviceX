@@ -46,9 +46,13 @@ void adj_view_ini(Adj *hst, /**/ Adj_v **pq) {
     Adj_v *q;
     if (hst == NULL) ERR("hst == NULL");
     nv = hst->nv; md = hst->md;
-    q->nv = nv; q->md = md;
     EMALLOC(1, &q);
     Dalloc(&q->adj0, md*nv);
     Dalloc(&q->adj1, md*nv);
+
+    q->nv = nv; q->md = md;
+    cH2D(q->adj0, hst->adj0, md*nv);
+    cH2D(q->adj1, hst->adj1, md*nv);
+
     *pq = q;
 }
