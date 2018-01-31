@@ -74,6 +74,5 @@ hdr/lina.h               \
 hdr/wall.h               \
 hdr/around.h             \
 hdr/poiseuille.h         \
-hdr/color.rbc.h          \
 hdr/test.h               \
 hdr/double.poiseuille.h
