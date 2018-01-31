@@ -88,10 +88,10 @@ static __device__ real3 visc(RbcParams_v par, real3 r1, real3 r2, real3 u1, real
 }
 
 /* forces from one dihedral */
-template <int update> __device__ real3 dih0(RbcParams_v par, real3 r1, real3 r2, real3 r3, real3 r4) {
+template <int update>
+__device__ real3 dih0(RbcParams_v par, real3 r1, real3 r2, real3 r3, real3 r4) {
     real overIksiI, overIdzeI, cosTheta, IsinThetaI2, sinTheta_1,
         beta, b11, b12, phi, sint0kb, cost0kb;
-
     real3 r12, r13, r34, r24, r41, ksi, dze, ksimdze;
     diff(&r1, &r2, /**/ &r12);
     diff(&r1, &r3, /**/ &r13);
