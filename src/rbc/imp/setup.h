@@ -78,9 +78,10 @@ static void setup0(int md, int nv, Adj *adj, /**/
 
 static void setup(int md, int nt, int nv, const int4 *tt, /**/ RbcQuants *q) {
     Adj adj;
-    adj_ini(md, nt, nv, tt, /**/ &adj);    
+    Adj_v *adj_v;
+    adj_ini(md, nt, nv, tt, /**/ &adj);
+    adj_view_ini(&adj, /**/ &adj_v);
     setup0(md, nv, &adj, /**/
            q->shape.anti, q->shape.edg, &q->shape.totArea, q->adj0, q->adj1);
     adj_fin(&adj);
 }
-

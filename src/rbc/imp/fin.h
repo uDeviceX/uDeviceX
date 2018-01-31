@@ -4,6 +4,7 @@ static void fin_common(RbcQuants *q) {
     Dfree(q->adj0);
     Dfree(q->adj1);
     free(q->pp_hst);
+    UC(adj_view_fin(q->adj_v));
 }
 
 static void fin_ids(RbcQuants *q) { free(q->ii);   }

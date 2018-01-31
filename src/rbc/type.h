@@ -1,5 +1,6 @@
 struct AreaVolume;
 struct Particle;
+struct Adj_v;
 
 struct Edg {
     float a; /* equilibrium edge lengths and triangle area */
@@ -18,6 +19,7 @@ struct RbcQuants {
     Particle *pp, *pp_hst; /* vertices particles on host and device */
     int *ii;               /* global ids (on host) */
     int *adj0, *adj1;      /* adjacency lists on device                 */
+    Adj_v *adj_v;
     AreaVolume *area_volume; /* a structure for area and volume computations */
     Shape shape;
 };
