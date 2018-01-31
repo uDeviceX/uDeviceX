@@ -8,7 +8,7 @@ struct Edg {
 };
 struct Shape {
     int *anti; /* every edge is visited twice, what is the id of
-                  the other visit? */
+                  another visit? */
     Edg *edg;
     float totArea;
 };
@@ -19,6 +19,6 @@ struct RbcQuants {
     Particle *pp, *pp_hst; /* vertices particles on host and device */
     int *ii;               /* global ids on host */
     Adj_v *adj_v;          /* to walk over mesh on dev */
-    AreaVolume *area_volume; /* a structure for area and volume computations */
+    AreaVolume *area_volume; /* to compute area and volume */
     Shape shape;
 };
