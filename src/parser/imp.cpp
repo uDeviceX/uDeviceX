@@ -182,6 +182,18 @@ static bool lookup_vint(const Config *c, const char *desc, int *n, int a[]) {
     return false;
 }
 
+static bool lookup_int3(const Config *c, const char *desc, int3 *a) {
+    enum {X, Y, Z};
+    int n, f[3];
+    bool ret = lookup_vint(c, desc, &n, f);
+    if (n != 3)
+        ERR("fail to read `%s`: int3 must have 3 components, found %d", desc, n);
+    a->x = f[X];
+    a->y = f[Y];
+    a->z = f[Z];
+    return ret;
+}
+
 static bool lookup_vfloat(const Config *c, const char *desc, int *n, float a[]) {
     int i, j;
     config_setting_t *s;
@@ -236,6 +248,11 @@ void conf_lookup_vint(const Config *c, const char *desc, int *n, int a[]) {
     if (!found) ERR("Could not find the field <%s>\n", desc);
 }
 
+void conf_lookup_int3(const Config *c, const char *desc, int3 *a) {
+    bool found = lookup_int3(c, desc, a);
+    if (!found) ERR("Could not find the field <%s>\n", desc);
+}
+
 void conf_lookup_vfloat(const Config *c, const char *desc, int *n, float a[]) {
     bool found = lookup_vfloat(c, desc, n, a);
     if (!found) ERR("Could not find the field <%s>\n", desc);
@@ -264,6 +281,10 @@ bool conf_opt_string(const Config *c, const char *desc, const char **a)  {
 
 bool conf_opt_vint(const Config *c, const char *desc, int *n, int a[]) {
     return lookup_vint(c, desc, n, a);
+}
+
+bool conf_opt_int3(const Config *c, const char *desc, int3 *a) {
+    return lookup_int3(c, desc, a);
 }
 
 bool conf_opt_vfloat(const Config *c, const char *desc, int *n, float a[]) {
