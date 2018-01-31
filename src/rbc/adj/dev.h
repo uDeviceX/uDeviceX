@@ -1,5 +1,5 @@
 static __device__ int fetch(const int *a, int i) { return a[i]; }
-static __device__ int adj_get_map(int md, int nv, int i, const int *adj0, const int *adj1, /**/ AdjMap *m) {
+static __device__ int adj_get_map0(int md, int nv, int i, const int *adj0, const int *adj1, /**/ AdjMap *m) {
     int i0, i1, i2, i3, i4;
     int rbc, offset, j, k;
     i0 = i / md;
@@ -28,4 +28,8 @@ static __device__ int adj_get_map(int md, int nv, int i, const int *adj0, const 
     m->rbc = rbc;
     m->i0 = i0; m->i1 = i1; m->i2 = i2; m->i3 = i3; m->i4 = i4;
     return 1;
+}
+
+static __device__ int adj_get_map(int md, int nv, int i, const int *adj0, const int *adj1, /**/ AdjMap *m) {
+    return adj_get_map0(md, nv, i, adj0, adj1, m);
 }
