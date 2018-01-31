@@ -4,6 +4,7 @@ struct Sdf {
     Array3d   *arr;
     Tex3d     *tex;
     Tform     *t;
-    float far_threshold;
-    int3 L; /* subdomain */
+    float cheap_threshold;
+
+    int3 Ltex; /* texture grid size */
 };

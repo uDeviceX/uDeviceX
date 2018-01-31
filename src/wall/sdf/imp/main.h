@@ -22,7 +22,7 @@ void sdf_ini(Sdf **pq) {
     UC(emalloc(sizeof(Sdf), (void**)&q));
     UC(array3d_ini(&q->arr, XTE, YTE, ZTE));
     UC(  tform_ini(&q->t));
-    q->far_threshold = -1 - 1.7320f * ((float)XSIZE_WALLCELLS / (float)XTE);
+    q->cheap_threshold = - 1.7320f * ((float)XSIZE_WALLCELLS / (float)XTE);
     *pq = q;
 }
 
@@ -41,5 +41,5 @@ void sdf_bounce(const Wvel_v *wv, const Coords *c, const Sdf *sdf, int n, /**/ P
 void sdf_to_view(const Sdf *q, /**/ Sdf_v *v) {
     tex3d_to_view(q->tex, &v->tex);
     tform_to_view(q->t  , &v->t);
-    v->far_threshold = q->far_threshold;
+    v->cheap_threshold = q->cheap_threshold;
 }
