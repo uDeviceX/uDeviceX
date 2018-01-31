@@ -8,7 +8,7 @@ static void ini0(RbcRnd *d, int n, long seed) {
 void rbc_rnd_ini(RbcRnd **pd, int n, long seed) {
     RbcRnd* d;
     UC(emalloc(sizeof(RbcRnd), (void**) &d));
-    ini0(d, n, seed);
+    UC(ini0(d, n, seed);)
     *pd = d;
 }
 
