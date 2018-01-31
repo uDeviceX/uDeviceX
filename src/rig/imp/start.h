@@ -44,11 +44,6 @@ void rig_strt_dump_templ(const Coords *coords, const RigQuants *q) {
     strt_dump_templ0(coords, q->nps, q->rr0_hst);
 }
 
-
-static void strt_dump(const Coords *coords, const int id, const int ns, const Solid *ss) {
-    restart_write_ss(coords, "rig", id, ss, ns);
-}
-
 void rig_strt_dump(const Coords *coords, const int id, const RigQuants *q) {
-    strt_dump(coords, id, q->ns, q->ss_hst);
+    restart_write_ss(coords, "rig", id, q->ss_hst, q->ns);
 }
