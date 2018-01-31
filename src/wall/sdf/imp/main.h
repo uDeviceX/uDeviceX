@@ -22,7 +22,7 @@ void sdf_ini(Sdf **pq) {
     UC(emalloc(sizeof(Sdf), (void**)&q));
     UC(array3d_ini(&q->arr, XTE, YTE, ZTE));
     UC(  tform_ini(&q->t));
-    q->cheap_threshold = - 1.7320f * ((float)XSIZE_WALLCELLS / (float)XTE);
+    q->cheap_threshold = - sqrt(3.f) * ((float)XSIZE_WALLCELLS / (float)XTE);
     *pq = q;
 }
 
