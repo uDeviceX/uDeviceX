@@ -19,6 +19,7 @@
 #include "utils/error.h" 
 #include "coords/type.h"
 #include "coords/ini.h"
+#include "coords/imp.h"
 #include "wall/wvel/type.h"
 
 #include "wall/sdf/imp.h"
@@ -56,8 +57,10 @@ void main0(Sdf *sdf, Part *p) {
 void main1(Part *p) {
     Sdf *sdf;
     Coords *coords;
-    UC(sdf_ini(&sdf));
+    int3 L;
     UC(coords_ini(m::cart, XS, YS, ZS, /**/ &coords));
+    L = subdomain(coords);
+    UC(sdf_ini(L, &sdf));
     UC(sdf_gen(coords, m::cart, true, sdf));
     UC(main0(sdf, p));
     UC(sdf_fin(sdf));
