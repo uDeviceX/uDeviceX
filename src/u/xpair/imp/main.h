@@ -1,22 +1,29 @@
-typedef forces::Fo Fo;
-typedef forces::Pa Pa;
+typedef PairFo Fo;
+typedef PairPa Pa;
 
 namespace dev {
-__global__ void main(Pa a, Pa b, float rnd) {
+template <typename Param>
+__global__ void main(Param par, Pa a, Pa b, float rnd) {
     Fo f;
-    forces::gen(a, b, rnd, /**/ &f);
+    pair_force(par, a, b, rnd, /**/ &f);
     printf("%g %g %g\n", f.x, f.y, f.z);
 }
 } /* namespace */
 
-void pair(Pa a, Pa b, float rnd) {
-    KL(dev::main, (1, 1), (a, b, rnd));
+void pair(Pa a, Pa b, int ka, int kb, float rnd) {
+    // TODO hack for now
+    PairDPD par;
+    par.a = adpd_b;
+    par.g = gdpd_b;
+    par.s = sqrt(2*kBT*par.g*dt);
+    
+    KL(dev::main, (1, 1), (par, a, b, rnd));
     dSync();
 }
 
-void write_pa(Pa a) {
+void write_pa(Pa a, int kind) {
     fprintf(stderr, "[ %.2g %.2g %.2g ] [ %.2g %.2g %.2g ] [kc: %d %d]\n",
-            a.x, a.y, a.z, a.vx, a.vy, a.vz, a.kind, a.color);
+            a.x, a.y, a.z, a.vx, a.vy, a.vz, kind, a.color);
 }
 
 int eq(const char *a, const char *b) { return strcmp(a, b) == 0; }
@@ -41,21 +48,21 @@ int decode_color(char *s) {
     return r;
 }
 
-void read_pa0(const char *s, Pa *a) {
+void read_pa0(const char *s, Pa *a, int *k) {
     char kind[BUFSIZ], color[BUFSIZ];
     sscanf(s,
            "%f %f %f   %f %f %f   %s %s",
            &a->x, &a->y, &a->z, &a->vx, &a->vy, &a->vz,
            kind, color);
-    a->kind  = decode_kind(kind);
+    *k  = decode_kind(kind);
     a->color = decode_color(color);
 }
 
 enum {OK, END, FAIL};
-int read_pa(Pa *a) {
+int read_pa(Pa *a, int *k) {
     char s[BUFSIZ];
     if (fgets(s, BUFSIZ - 1, stdin) == NULL) return END;
-    read_pa0(s, /**/ a);
+    read_pa0(s, /**/ a, k);
     return OK;
 }
 
@@ -69,19 +76,16 @@ void read_rnd(/**/ float *prnd) {
     *prnd = rnd;
 }
 
-void main0() {
+int main(int argc, char **argv) {
+    m::ini(&argc, &argv);
     Pa a, b;
+    int ka, kb;
     float rnd;
     read_rnd(&rnd);
     for (;;) {
-        if (read_pa(&a) == END) break;
-        if (read_pa(&b) == END) break;
-        pair(a, b, rnd);
+        if (read_pa(&a, &ka) == END) break;
+        if (read_pa(&b, &kb) == END) break;
+        pair(a, b, ka, kb, rnd);
     }
-}
-
-int main(int argc, char **argv) {
-    m::ini(&argc, &argv);
-    main0();
     m::fin();
 }

@@ -13,8 +13,10 @@
 #include "inc/dev.h"
 #include "d/api.h"
 
-#include "forces/type.h"
-#include "forces/use.h"
-#include "forces/imp.h"
+#include "math/dev.h"
+
+#include "pair/imp.h"
+#include "pair/type.h"
+#include "pair/dev.h"
 
 #include "imp/main.h"
