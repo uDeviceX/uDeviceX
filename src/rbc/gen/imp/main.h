@@ -1,16 +1,18 @@
 static void transform(const float* rr0, int nv, float *A, /* output */ Particle *pp) {
-    int iv, c;
-    float *r;
+    int iv, c, i;
+    float *r, *v;
     const float *r0;
     /* rr0: vertices of RBC template; A: affine transformation matrix */
     for (iv = 0; iv < nv; iv++) {
-        r = pp[iv].r, *v = pp[iv].v;
-        *r0 = &rr0[3*iv];
-        for (c = i = 0; c < 3; c++) {
+        r = pp[iv].r;
+        v = pp[iv].v;
+        r0 = &rr0[3*iv];
+        for (c = 0, i = 0; c < 3; c++) {
             r[c] += A[i++]*r0[0]; /* matrix transformation */
             r[c] += A[i++]*r0[1];
             r[c] += A[i++]*r0[2];
             r[c] += A[i++];
+
             v[c] = 0;
         }
     }
