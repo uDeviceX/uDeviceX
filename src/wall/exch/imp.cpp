@@ -2,6 +2,8 @@
 #include <string.h>
 #include <mpi.h>
 
+#include <vector_types.h>
+
 #include <conf.h>
 #include "inc/conf.h"
 
@@ -90,7 +92,7 @@ static void unpack(int maxn, const hBags *b, /*io*/ int *n, Particle *pp) {
 }
 
 /* exchange pp(hst) between processors to get a wall margin */
-void wall_exch_pp(MPI_Comm cart, int maxn, /*io*/ Particle *pp, int *n) {
+void wall_exch_pp(MPI_Comm cart, int3 L, int maxn, /*io*/ Particle *pp, int *n) {
     hBags send, recv;
     Comm *com;
     int i, capacity[NBAGS];

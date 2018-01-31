@@ -1,22 +1,22 @@
-static void freeze0(MPI_Comm cart, int maxn, const Sdf *qsdf, /*io*/ int *n, Particle *pp, /*o*/ int *w_n, Particle *dev, /*w*/ Particle *hst) {
+static void freeze0(MPI_Comm cart, int3 L, int maxn, const Sdf *qsdf, /*io*/ int *n, Particle *pp, /*o*/ int *w_n, Particle *dev, /*w*/ Particle *hst) {
     sdf_bulk_wall(qsdf, /*io*/ n, pp, /*o*/ w_n, hst); /* sort into bulk-frozen */
     msg_print("before exch: bulk/frozen : %d/%d", *n, *w_n);
-    UC(wall_exch_pp(cart, maxn, /*io*/ hst, w_n));
+    UC(wall_exch_pp(cart, L, maxn, /*io*/ hst, w_n));
     cH2D(dev, hst, *w_n);
     msg_print("after  exch: bulk/frozen : %d/%d", *n, *w_n);
 }
 
-static void freeze(MPI_Comm cart, int maxn, const Sdf *qsdf, /*io*/ int *n, Particle *pp, /*o*/ int *w_n, Particle *dev) {
+static void freeze(MPI_Comm cart, int3 L, int maxn, const Sdf *qsdf, /*io*/ int *n, Particle *pp, /*o*/ int *w_n, Particle *dev) {
     Particle *hst;
     UC(emalloc(maxn * sizeof(Particle), (void**) &hst));
-    UC(freeze0(cart, maxn, qsdf, /*io*/ n, pp, /*o*/ w_n, dev, /*w*/ hst));
+    UC(freeze0(cart, L, maxn, qsdf, /*io*/ n, pp, /*o*/ w_n, dev, /*w*/ hst));
     free(hst);
 }
 
-static void gen_quants(MPI_Comm cart, int maxn, const Sdf *qsdf, /**/ int *o_n, Particle *o_pp, int *w_n, float4 **w_pp) {
+static void gen_quants(MPI_Comm cart, int3 L, int maxn, const Sdf *qsdf, /**/ int *o_n, Particle *o_pp, int *w_n, float4 **w_pp) {
     Particle *frozen;
     CC(d::Malloc((void **) &frozen, maxn * sizeof(Particle)));
-    UC(freeze(cart, maxn, qsdf, o_n, o_pp, w_n, frozen));
+    UC(freeze(cart, L, maxn, qsdf, o_n, o_pp, w_n, frozen));
     msg_print("consolidating wall");
     CC(d::Malloc((void **) w_pp, *w_n * sizeof(float4)));
     KL(wall_dev::particle2float4, (k_cnf(*w_n)), (frozen, *w_n, /**/ *w_pp));
@@ -26,7 +26,8 @@ static void gen_quants(MPI_Comm cart, int maxn, const Sdf *qsdf, /**/ int *o_n, 
 }
 
 void wall_gen_quants(MPI_Comm cart, int maxn, const Sdf *sdf, /**/ int *n, Particle* pp, WallQuants *q) {
-    UC(gen_quants(cart, maxn, sdf, n, pp, &q->n, &q->pp));
+    int3 L = q->L;
+    UC(gen_quants(cart, L, maxn, sdf, n, pp, &q->n, &q->pp));
 }
 
 static void build_cells(const int n, float4 *pp4, Clist *cells, ClistMap *mcells) {

@@ -4,6 +4,7 @@ struct Coords;
 struct WallQuants {
     float4 *pp; /* particle positions xyzo xyzo ... */
     int n;      /* number of particles              */
+    int3 L;     /* subdomain size                   */
 };
 
 struct WallTicket;
