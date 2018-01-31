@@ -16,4 +16,3 @@ void pair_set_conf(const Config *, PairParams *);
 void pair_get_view_dpd(const PairParams*, PairDPD*);
 void pair_get_view_dpd_color(const PairParams*, PairDPDC*);
 void pair_get_view_dpd_lj(const PairParams*, PairDPDLJ*);
-
