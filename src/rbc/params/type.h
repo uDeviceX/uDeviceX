@@ -17,6 +17,6 @@ struct RbcParams {
     float totVolume; /* total volume */
     float totArea;   /* total area */
     float A0;        /* area of one triangle */
-    float l0;        /* spring lengths */
+    float l0;        /* spring length */
 };
 
