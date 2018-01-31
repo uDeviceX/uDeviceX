@@ -10,14 +10,22 @@ __global__ void main(Param par, Pa a, Pa b, float rnd) {
 }
 } /* namespace */
 
-void pair(Pa a, Pa b, int ka, int kb, float rnd) {
-    // TODO hack for now
-    PairDPD par;
-    par.a = adpd_b;
-    par.g = gdpd_b;
-    par.s = sqrt(2*kBT*par.g*dt);
+void pair(PairParams *par, Pa a, Pa b, int ka, int kb, float rnd) {
+    int k0 = ka < kb ? ka : kb;
+    int k1 = ka < kb ? kb : ka;
     
-    KL(dev::main, (1, 1), (par, a, b, rnd));
+    if (k0 == SOLVENT_KIND) {
+        PairDPDC pv;
+        pair_get_view_dpd_color(par, &pv);
+        KL(dev::main, (1, 1), (pv, a, b, rnd));
+    }
+    else {
+        PairDPDLJ pv;
+        pair_get_view_dpd_lj(par, &pv);
+        if (k0 == SOLID_KIND && k1 == WALL_KIND)
+            pv.ljs *= 2;
+        KL(dev::main, (1, 1), (pv, a, b, rnd));
+    }
     dSync();
 }
 
@@ -76,16 +84,33 @@ void read_rnd(/**/ float *prnd) {
     *prnd = rnd;
 }
 
+static void set_params(PairParams *p) {
+    float a[] = {adpd_b, adpd_br, adpd_r};
+    float g[] = {gdpd_b, gdpd_br, gdpd_r};
+    float s[3];
+    for (int i = 0; i < 3; ++i)
+        s[i] = sqrt(2*kBT*g[i]*dt);
+
+    pair_set_lj(ljsigma, ljepsilon, p);
+    pair_set_dpd(2, a, g, s, p);
+}
+
 int main(int argc, char **argv) {
     m::ini(&argc, &argv);
     Pa a, b;
     int ka, kb;
     float rnd;
+    PairParams *par;
+
+    pair_ini(&par);    
+    set_params(par);
+    
     read_rnd(&rnd);
     for (;;) {
         if (read_pa(&a, &ka) == END) break;
         if (read_pa(&b, &kb) == END) break;
-        pair(a, b, ka, kb, rnd);
+        pair(par, a, b, ka, kb, rnd);
     }
+    pair_fin(par);
     m::fin();
 }
