@@ -104,7 +104,7 @@ static __device__ int colors2pid(int ca, int cb, int ncolors) {
         cb = ca;
         ca = c;
     }
-    return ca * ncolors + cb;
+    return ca * (ca+1) / 2 + cb;
 }
 
 static __device__ void pair_force(PairDPDC pc, PairPa a, PairPa b, float rnd, /**/ PairFo *f) {

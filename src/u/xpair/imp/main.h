@@ -13,6 +13,7 @@ __global__ void main(Param par, Pa a, Pa b, float rnd) {
 void pair(PairParams *par, Pa a, Pa b, int ka, int kb, float rnd) {
     int k0 = ka < kb ? ka : kb;
     int k1 = ka < kb ? kb : ka;
+
     
     if (k0 == SOLVENT_KIND) {
         PairDPDC pv;
@@ -22,7 +23,7 @@ void pair(PairParams *par, Pa a, Pa b, int ka, int kb, float rnd) {
     else {
         PairDPDLJ pv;
         pair_get_view_dpd_lj(par, &pv);
-        if (k0 == SOLID_KIND && k1 == WALL_KIND)
+        if (k0 == SOLID_KIND && k1 == SOLID_KIND)
             pv.ljs *= 2;
         KL(dev::main, (1, 1), (pv, a, b, rnd));
     }
@@ -109,6 +110,8 @@ int main(int argc, char **argv) {
     for (;;) {
         if (read_pa(&a, &ka) == END) break;
         if (read_pa(&b, &kb) == END) break;
+        // write_pa(a, ka);
+        // write_pa(b, kb);
         pair(par, a, b, ka, kb, rnd);
     }
     pair_fin(par);
