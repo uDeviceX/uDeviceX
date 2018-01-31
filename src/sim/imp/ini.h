@@ -231,7 +231,7 @@ static void coords_log(const Coords *c) {
 
 void sim_ini(int argc, char **argv, MPI_Comm cart, /**/ Sim **sim) {
     Sim *s;
-    int maxp = MAX_PART_NUM;
+    int maxp = 3 * XS * YS * ZS * numberdensity;
     EMALLOC(1, sim);
     s = *sim;
 
