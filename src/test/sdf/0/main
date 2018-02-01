@@ -9,5 +9,7 @@ mkdir -p h5
 u.cp.sdf cyl1/cyl.dat  sdf.dat
 for x in 0.0 3.0 6.0 9.0
 do
-   u.run ./udx $x 0 0
+   u.run ./udx "
+   pos = [0.0, 0.0, $x]
+   glb = {L = [16, 16, 16]}"
 done > sdf.out.txt
