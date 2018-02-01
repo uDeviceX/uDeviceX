@@ -7,7 +7,11 @@ run
 { u.make clean && u.make -j; } > .make.log
 t1="0 0 0 1 2 3    1 2 3 10 20 30"
 t2="1 2 3 0 0 0    10 20 30 1 2 3"
-u.run >tform.txt ./udx -- a=\"-c $t1    $t2\"  <<!
+u.run >tform.txt ./udx -- "
+a=\"-c $t1    $t2\"
+glb = {
+    L = [16, 16, 16]
+}"  <<!
 1 2 3
 10 20 30
 0.5 1 1.5
