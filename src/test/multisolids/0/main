@@ -7,11 +7,14 @@ u.cp.rbc rbc/498.off rbc.off
 :
 u.conf conf/double.poiseuille.h <<!!!
   solids sbounce_back tend=0.5
- wall_creation=0 contactforces=false
+  wall_creation=0 contactforces=false
   run
 !!!
 { make clean && u.make -j ; } > /dev/null
 u.run ./udx '
+glb = {
+    L = [16, 32, 16]
+}
 bforce = {
     type = "double_poiseuille";
     a    = 6.666667;
