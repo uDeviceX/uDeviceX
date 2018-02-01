@@ -20,6 +20,8 @@
 
 #include "imp.h"
 
+#include "imp/type.h"
+
 namespace dev {
 #include "dev/main.h"
 }

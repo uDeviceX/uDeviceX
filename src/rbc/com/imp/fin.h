@@ -1,6 +1,7 @@
-void rbc_com_fin(/**/ RbcCom *com) {
-    CC(d::FreeHost(com->hrr));
-    CC(d::FreeHost(com->hvv));
-    CC(d::Free(com->drr));
-    CC(d::Free(com->dvv));
+void rbc_com_fin(/**/ RbcCom *q) {
+    CC(d::FreeHost(q->hrr));
+    CC(d::FreeHost(q->hvv));
+    CC(d::Free(q->drr));
+    CC(d::Free(q->dvv));
+    EFREE(q);
 }
