@@ -42,6 +42,12 @@ include::{src}/coords/ini.h[tag=mem]
 <1> allocate and set the data according to the cartesian communicator
 <2> deallocate the structure 
 
+The resources can also be allocated using configuration informations:
+[source,cpp]
+----
+include::{src}/coords/ini.h[tag=cnf]
+----
+
 
 === Getters
 
@@ -110,4 +116,15 @@ include::{src}/coords/imp.h[tag=global2local]
 [source,cpp]
 ----
 include::{src}/coords/imp.h[tag=int]
+----
+
+== Configuration
+
+Set subdomain sizes:
+
+[source,cfg]
+----
+glb = {
+    L = [16, 12, 24]
+}
 ----
