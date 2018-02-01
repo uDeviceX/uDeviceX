@@ -4,7 +4,7 @@ G="git@github.com:amlucas/udoc.git"
 ROOT="/udoc"
 DOC=doc_
 
-make clean && make ROOT=${ROOT}
+make clean && make -j ROOT=${ROOT}
 
 T="./public"
 rm -rf $T
