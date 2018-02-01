@@ -54,7 +54,7 @@ static void write(int n, Particle *p, Force *f) {
     Force *f_hst;
 
     EMALLOC(n, &p_hst);
-    EMALOOC(n, &f_hst);
+    EMALLOC(n, &f_hst);
 
     cD2H(p_hst, p, n);
     cD2H(f_hst, f, n);
