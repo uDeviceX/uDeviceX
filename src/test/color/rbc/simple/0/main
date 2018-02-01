@@ -8,11 +8,13 @@ u.conf conf/double.poiseuille.h <<!!!
    multi_solvent=true color_freq=1
    tend=1e-3
    numberdensity=3
-   XS=8 YS=8 ZS=8
    run
 !!!
 { make clean && u.make -j; } > make.log
 u.run ./udx  '
+glb = {
+    L = [8, 8, 8]
+}
 rbc = {
     @include "rbc.test.cfg"
 }
