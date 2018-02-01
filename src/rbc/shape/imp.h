@@ -1,7 +1,8 @@
 struct RbcShape;
 struct OffRead;
+struct Adj;
 
-void rbc_shape_ini(Adj*, float *rr /**/ RbcShape**);
+void rbc_shape_ini(Adj*, float *rr, /**/ RbcShape**);
 void rbc_shape_fin(/**/ RbcShape*);
 
 void rbc_shape_edg (RbcShape*, /**/ float*);
