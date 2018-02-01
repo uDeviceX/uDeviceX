@@ -1,8 +1,3 @@
-/* DOMAIN */
-#define XS          20
-#define YS          20
-#define ZS          20
-
 /* DPD */
 #define numberdensity      10
 #define dt               1e-5
