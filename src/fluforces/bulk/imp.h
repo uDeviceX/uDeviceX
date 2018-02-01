@@ -1,3 +1,4 @@
+struct float4;
 struct int3;
 struct BCloud {
     const float4 *pp;
