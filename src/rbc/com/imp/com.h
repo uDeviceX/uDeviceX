@@ -19,7 +19,7 @@ static void normalize(int nm, int nv, /**/ float3 *h) {
         scal(fac, h + i);
 }
 
-void rbc_com_get(int nm, const Particle *pp, /**/ RbcComProps *q) {
+void rbc_com_get(int nm, const Particle *pp, /**/ RbcCom *q) {
     int nv, max_cell;
     nv = q->nv; max_cell = q->max_cell;
     if (nm > max_cell)

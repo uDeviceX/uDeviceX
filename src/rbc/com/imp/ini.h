@@ -1,4 +1,4 @@
-void rbc_com_ini(int nv, int max_cell, /**/ RbcComProps *q) {
+void rbc_com_ini(int nv, int max_cell, /**/ RbcCom *q) {
     size_t sz;
     sz = max_cell * sizeof(float3);
     CC(d::alloc_pinned((void**) &q->hrr, sz));
