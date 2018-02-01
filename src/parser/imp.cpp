@@ -225,42 +225,42 @@ static bool lookup_float3(const Config *c, const char *desc, float3 *a) {
 
 void conf_lookup_int(const Config *c, const char *desc, int *a) {
     bool found = lookup_int(c, desc, a);
-    if (!found) ERR("Could not find the field <%s>\n", desc);
+    if (!found) ERR("Could not find int <%s>\n", desc);
 }
 
 void conf_lookup_float(const Config *c, const char *desc, float *a) {
     bool found = lookup_float(c, desc, a);
-    if (!found) ERR("Could not find the field <%s>\n", desc);
+    if (!found) ERR("Could not find float  <%s>\n", desc);
 }
 
 void conf_lookup_bool(const Config *c, const char *desc, int *a) {
     bool found = lookup_bool(c, desc, a);
-    if (!found) ERR("Could not find the field <%s>\n", desc);
+    if (!found) ERR("Could not find bool <%s>\n", desc);
 }
 
 void conf_lookup_string(const Config *c, const char *desc, const char **a) {
     bool found = lookup_string(c, desc, a);
-    if (!found) ERR("Could not find the field <%s>\n", desc);
+    if (!found) ERR("Could not find string <%s>\n", desc);
 }
 
 void conf_lookup_vint(const Config *c, const char *desc, int *n, int a[]) {
     bool found = lookup_vint(c, desc, n, a);
-    if (!found) ERR("Could not find the field <%s>\n", desc);
+    if (!found) ERR("Could not find vint <%s>\n", desc);
 }
 
 void conf_lookup_int3(const Config *c, const char *desc, int3 *a) {
     bool found = lookup_int3(c, desc, a);
-    if (!found) ERR("Could not find the field <%s>\n", desc);
+    if (!found) ERR("Could not find int3 <%s>\n", desc);
 }
 
 void conf_lookup_vfloat(const Config *c, const char *desc, int *n, float a[]) {
     bool found = lookup_vfloat(c, desc, n, a);
-    if (!found) ERR("Could not find the field <%s>\n", desc);
+    if (!found) ERR("Could not find vfloat <%s>\n", desc);
 }
 
 void conf_lookup_float3(const Config *c, const char *desc, float3 *a) {
     bool found = lookup_float3(c, desc, a);
-    if (!found) ERR("Could not find the field <%s>\n", desc);
+    if (!found) ERR("Could not find float3 <%s>\n", desc);
 }
 
 bool conf_opt_int(const Config *c, const char *desc, int *a) {
