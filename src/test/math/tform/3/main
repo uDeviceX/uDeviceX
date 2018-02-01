@@ -7,7 +7,7 @@ run
 { u.make clean && u.make -j; } > .make.log
 g1="1 10 100 2 20 200    3 30 300"
 g2="4 40 400 5 50 500    6 60 600"
-u.run >tform.txt ./udx -- -g $g1    $g2  <<!
+u.run >tform.txt ./udx -- a=\"-g $g1    $g2\"  <<!
 7 70 700
 !
 mv tform.txt tform.out.txt
