@@ -1,7 +1,3 @@
-#define XS   16
-#define YS   32
-#define ZS   16
-
 #define numberdensity    10
 #define kBT              0.0444302
 #define dt               5e-4       /* timestep */
