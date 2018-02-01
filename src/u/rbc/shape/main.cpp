@@ -51,13 +51,12 @@ void run(const Coords *coords, const char *cell) {
 int main(int argc, char **argv) {
     Coords *coords;
     Config *cfg;
-
     m::ini(&argc, &argv);
 
     UC(conf_ini(&cfg));
     UC(conf_read(argc, argv, cfg));
-
     UC(coords_ini_conf(m::cart, cfg, &coords));
+
     run(coords, "rbc.off");
 
     UC(coords_fin(coords));
