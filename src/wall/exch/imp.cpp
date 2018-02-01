@@ -8,8 +8,6 @@
 #include "inc/conf.h"
 #include "inc/def.h"
 
-#include "mpi/glb.h"
-#include "mpi/wrapper.h"
 #include "frag/imp.h"
 #include "comm/imp.h"
 
