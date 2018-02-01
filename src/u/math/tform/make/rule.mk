@@ -12,6 +12,7 @@ $B/mpi/wrapper.o: $S/mpi/wrapper.cpp; $X -I$S/. -I$S/mpi
 $B/parser/imp.o: $S/parser/imp.cpp; $X -I$S/. -I$S/parser
 $B/u/math/tform/lib/imp.o: $S/u/math/tform/lib/imp.cu; $N -I$S/. -I$S/u/math/tform/lib
 $B/u/math/tform/main.o: $S/u/math/tform/main.cpp; $X -I$S/. -I$S/u/math/tform
+$B/u/math/tform/tok.o: $S/u/math/tform/tok.cpp; $X -I$S/. -I$S/u/math/tform
 $B/utils/cc.o: $S/utils/cc.cpp; $X -I$S/. -I$S/utils
 $B/utils/error.o: $S/utils/error.cpp; $X -I$S/. -I$S/utils
 $B/utils/imp.o: $S/utils/imp.cpp; $X -I$S/. -I$S/utils
