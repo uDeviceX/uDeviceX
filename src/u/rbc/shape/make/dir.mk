@@ -32,5 +32,5 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/rbc/rnd/api           && \
     d $B/rbc/shape             && \
     d $B/rbc/stretch           && \
-    d $B/u/rbc/area_volume     && \
+    d $B/u/rbc/shape           && \
     d $B/utils                
