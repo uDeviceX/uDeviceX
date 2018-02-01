@@ -4,11 +4,13 @@
 u.conf conf/default.h <<!!!
    tend=2.01
    OUTFLOW_CIRCLE OUTFLOW_CIRCLE_R=8
-   XS=8 YS=8
    run
 !!!
 (make clean && u.make -j) > /dev/null
 u.run 2 2 1 ./udx test/openbc/out.cfg '
+glb = {
+    L = [8, 8, 16]
+}
 dump = {
     field = true;
     parts = true;
