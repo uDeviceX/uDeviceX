@@ -25,18 +25,14 @@
 
 #include "mpi/glb.h"
 
-void run(const Coords *coords, const char *cell) {
-    OffRead *off;
+void run(OffRead *off) {
     Adj *adj;
     RbcShape *shape;
     int md, nt, nv;
     const int4 *tt;
     const float *rr;
-    UC(off_read(cell, /**/ &off));
-    nt = off_get_nt(off);
-    nv = off_get_nv(off);
-    tt = off_get_tri(off);
-    rr = off_get_vert(off);
+    nt = off_get_nt(off); nv = off_get_nv(off);
+    tt = off_get_tri(off); rr = off_get_vert(off);
     md = RBCmd;
     adj_ini(md, nt, nv, tt, /**/ &adj);
     rbc_shape_ini(adj, rr, /**/ &shape);
@@ -45,10 +41,11 @@ void run(const Coords *coords, const char *cell) {
 
     rbc_shape_fin(shape);
     adj_fin(adj);
-    UC(off_fin(off));
 }
 
 int main(int argc, char **argv) {
+    const char *cell = "rbc.off";
+    OffRead *off;
     Coords *coords;
     Config *cfg;
     m::ini(&argc, &argv);
@@ -56,9 +53,11 @@ int main(int argc, char **argv) {
     UC(conf_ini(&cfg));
     UC(conf_read(argc, argv, cfg));
     UC(coords_ini_conf(m::cart, cfg, &coords));
+    UC(off_read(cell, /**/ &off));
 
-    run(coords, "rbc.off");
+    run(off);
 
+    UC(off_fin(off));
     UC(coords_fin(coords));
     UC(conf_fin(cfg));
     m::fin();
