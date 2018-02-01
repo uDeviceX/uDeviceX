@@ -12,6 +12,9 @@ u.conf conf/couette.h <<!!!
 !!!
 { make clean && u.make -j ; } > /dev/null
 u.run 2 1 1 ./udx '
+glb = {
+    L = [16, 16, 16]
+}
 rbc = {
     @include "rbc.test.cfg"
 }'
