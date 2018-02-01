@@ -3,6 +3,13 @@
 
 Requires `asciidoctor` and `pygments.rb`.
 
+== Arch mac
+[source,sh]
+----
+gem install asciidoctor
+gem install pygments.rb
+----
+
 == Arch linux
 
 [source,sh]
