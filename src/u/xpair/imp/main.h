@@ -97,7 +97,7 @@ static void set_params(PairParams *p) {
     float g[] = {gdpd_b, gdpd_br, gdpd_r};
     float s[3];
     for (int i = 0; i < 3; ++i)
-        s[i] = sqrt(2*kBT*g[i]*dt);
+        s[i] = sqrt(2*kBT*g[i] / dt);
 
     pair_set_lj(ljsigma, ljepsilon, p);
     pair_set_dpd(2, a, g, s, p);

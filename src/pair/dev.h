@@ -101,7 +101,6 @@ static __device__ int colors2pid(int ca, int cb) {
     int c0, c1;
     c0 = ca < cb ? ca : cb;
     c1 = ca < cb ? cb : ca;
-
     return c1 * (c1+1) / 2 + c0;
 }
 
