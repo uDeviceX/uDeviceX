@@ -2,8 +2,11 @@
 # TEST: clist.t0
 X=4; Y=6; Z=8; N=128
 u.conf . u/clist conf/default.h <<!!!
-       XS=$X YS=$Y ZS=$Z
        run
 !!!
 { u.make -j;     } > /dev/null
-u.pre.gen_random $X $Y $Z $N | u.run ./udx > clist.out.txt
+u.pre.gen_random $X $Y $Z $N |
+u.run ./udx "
+glb = {
+    L = [$X, $Y, $Z];
+};" > clist.out.txt
