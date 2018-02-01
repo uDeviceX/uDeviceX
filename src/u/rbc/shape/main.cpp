@@ -16,10 +16,7 @@
 #include "utils/cc.h"
 #include "coords/ini.h"
 
-#include "rbc/type.h"
-#include "rbc/imp.h"
-#include "rbc/force/area_volume/imp.h"
-#include "rbc/force/imp.h"
+#include "rbc/adj/imp.h"
 
 #include "io/mesh/imp.h"
 #include "io/off/imp.h"
@@ -27,35 +24,22 @@
 
 #include "mpi/glb.h"
 
-static void area_volume_hst(AreaVolume *area_volume, int nc, const Particle *pp, /**/ float *hst) {
-    float *dev;
-    UC(area_volume_compute(area_volume, nc, pp, /**/ &dev));
-    cD2H(hst, dev, 2*nc);
-}
-
-static void run0(RbcQuants q, RbcForce t) {
-    float area, volume, av[2];
-    UC(area_volume_hst(q.area_volume, q.nc, q.pp, /**/ av));
-    area = av[0]; volume = av[1];
-    printf("%g %g\n", area, volume);
-}
-
-static void run1(const Coords *coords, OffRead *off, const char *ic, RbcQuants q) {
-    RbcForce t;
-    rbc_gen_quants(coords, m::cart, off, ic, /**/ &q);
-    rbc_force_gen(q, &t);
-    UC(run0(q, t));
-    rbc_force_fin(&t);
-}
-
-void run(const Coords *coords, const char *cell, const char *ic) {
-    RbcQuants q;
+void run(const Coords *coords, const char *cell) {
     OffRead *off;
+    Adj *adj;
+    int md, nt, nv;
+    const int4 *tt;
     UC(off_read(cell, /**/ &off));
-    UC(rbc_ini(off, &q));
-    UC(run1(coords, off, ic, q));
+
+    nt = off_get_nt(off);
+    nv = off_get_nv(off);
+    md = RBCmd;
+    adj_ini(md, nt, nv, tt, /**/ &adj);
+
+    //    UC(run1(coords, off, ic, q));
+
+    adj_fin(adj);
     UC(off_fin(off));
-    UC(rbc_fin(&q));
 }
 
 int main(int argc, char **argv) {
@@ -68,8 +52,7 @@ int main(int argc, char **argv) {
     UC(conf_read(argc, argv, cfg));
 
     UC(coords_ini_conf(m::cart, cfg, &coords));
-        
-    run(coords, "rbc.off", "rbcs-ic.txt");
+    run(coords, "rbc.off");
 
     UC(coords_fin(coords));
     UC(conf_fin(cfg));
