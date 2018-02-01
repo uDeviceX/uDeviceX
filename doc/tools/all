@@ -29,7 +29,7 @@ find0 () { # like find(1) but exclude files
     '
 }
 get_docs() (
-    find0 $1 -type f -name '*.adoc'
+    find0 "$1" -type f -name '*.adoc' ! -name '*.inc.adoc'
 )
 
 header() (
