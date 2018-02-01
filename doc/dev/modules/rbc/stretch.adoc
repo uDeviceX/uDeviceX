@@ -1,0 +1,7 @@
+= stretch RBC
+:src: ../../../../src
+
+[source,cpp]
+----
+include::{src}/rbc/stretch/imp.h[tag=interface]
+----
