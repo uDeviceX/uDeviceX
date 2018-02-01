@@ -7,8 +7,5 @@ O = $B/coords/conf.o $B/coords/imp.o $B/d/api.o $B/io/bop/imp.o $B/io/com/imp.o 
     $B/rbc/com/imp.o $B/rbc/edg/imp.o $B/rbc/force/area_volume/imp.o \
     $B/rbc/force/imp.o $B/rbc/gen/imp.o $B/rbc/imp.o $B/rbc/params/conf.o \
     $B/rbc/params/imp.o $B/rbc/rnd/api/imp.o $B/rbc/rnd/imp.o $B/rbc/shape/imp.o \
-    $B/rbc/stretch/imp.o $B/scheme/force/conf.o $B/scheme/force/imp.o \
-    $B/scheme/move/imp.o $B/scheme/move/params/conf.o \
-    $B/scheme/move/params/imp.o $B/scheme/restrain/conf.o \
-    $B/scheme/restrain/imp.o $B/u/rbc/area_volume/main.o $B/utils/cc.o \
+    $B/rbc/stretch/imp.o $B/u/rbc/area_volume/main.o $B/utils/cc.o \
     $B/utils/error.o $B/utils/imp.o $B/utils/mc.o $B/utils/msg.o $B/utils/os.o

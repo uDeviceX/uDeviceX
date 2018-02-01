@@ -35,13 +35,6 @@ $B/rbc/rnd/api/imp.o: $S/rbc/rnd/api/imp.cpp; $X -I$S/rbc/rnd/api -I$S/.
 $B/rbc/rnd/imp.o: $S/rbc/rnd/imp.cpp; $X -I$S/rbc/rnd -I$S/.
 $B/rbc/shape/imp.o: $S/rbc/shape/imp.cpp; $X -I$S/rbc/shape -I$S/.
 $B/rbc/stretch/imp.o: $S/rbc/stretch/imp.cu; $N -I$S/rbc/stretch -I$S/.
-$B/scheme/force/conf.o: $S/scheme/force/conf.cpp; $X -I$S/scheme/force -I$S/.
-$B/scheme/force/imp.o: $S/scheme/force/imp.cu; $N -I$S/scheme/force -I$S/.
-$B/scheme/move/imp.o: $S/scheme/move/imp.cu; $N -I$S/scheme/move -I$S/.
-$B/scheme/move/params/conf.o: $S/scheme/move/params/conf.cpp; $X -I$S/scheme/move/params -I$S/.
-$B/scheme/move/params/imp.o: $S/scheme/move/params/imp.cpp; $X -I$S/scheme/move/params -I$S/.
-$B/scheme/restrain/conf.o: $S/scheme/restrain/conf.cpp; $X -I$S/scheme/restrain -I$S/.
-$B/scheme/restrain/imp.o: $S/scheme/restrain/imp.cu; $N -I$S/scheme/restrain -I$S/.
 $B/u/rbc/area_volume/main.o: $S/u/rbc/area_volume/main.cu; $N -I$S/.
 $B/utils/cc.o: $S/utils/cc.cpp; $X -I$S/utils -I$S/.
 $B/utils/error.o: $S/utils/error.cpp; $X -I$S/utils -I$S/.
