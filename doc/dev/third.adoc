@@ -3,7 +3,7 @@
 
 == cuda compiler
 
-link:http://docs.nvidia.com/cuda/cuda-compiler-driver-nvcc
+http://docs.nvidia.com/cuda/cuda-compiler-driver-nvcc
 
 == MPI library
 
