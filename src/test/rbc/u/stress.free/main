@@ -15,6 +15,9 @@ u.conf $S $U $C <<!!!
 cp          $cell rbc.off
 cp          $cell rbc.stress.free
 u.run ./udx '
+glb = {
+    L = [16, 16, 16]
+}
 rbc = {
     cell = "rbc.off"
     ic = "data/ic/two"

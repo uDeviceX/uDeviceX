@@ -34,8 +34,7 @@ $B/rbc/params/imp.o: $S/rbc/params/imp.cpp; $X -I$S/. -I$S/rbc/params
 $B/rbc/rnd/api/imp.o: $S/rbc/rnd/api/imp.cpp; $X -I$S/. -I$S/rbc/rnd/api
 $B/rbc/rnd/imp.o: $S/rbc/rnd/imp.cpp; $X -I$S/. -I$S/rbc/rnd
 $B/rbc/stretch/imp.o: $S/rbc/stretch/imp.cu; $N -I$S/. -I$S/rbc/stretch
-$B/u/rbc/force/lib/imp.o: $S/u/rbc/force/lib/imp.cu; $N -I$S/. -I$S/u/rbc/force/lib
-$B/u/rbc/force/main.o: $S/u/rbc/force/main.cpp; $X -I$S/. -I$S/u/rbc/force
+$B/u/rbc/force/main.o: $S/u/rbc/force/main.cu; $N -I$S/. -I$S/u/rbc/force
 $B/utils/cc.o: $S/utils/cc.cpp; $X -I$S/. -I$S/utils
 $B/utils/error.o: $S/utils/error.cpp; $X -I$S/. -I$S/utils
 $B/utils/imp.o: $S/utils/imp.cpp; $X -I$S/. -I$S/utils

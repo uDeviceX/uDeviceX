@@ -32,5 +32,4 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/rbc/rnd/api           && \
     d $B/rbc/stretch           && \
     d $B/u/rbc/force           && \
-    d $B/u/rbc/force/lib       && \
     d $B/utils                
