@@ -38,13 +38,13 @@ int main(int argc, char **argv) {
     UC(bforce_ini(&bforce));
     UC(bforce_ini_conf(cfg, /**/ bforce));
     UC(conf_lookup_int(cfg, "dump.freq_parts", &part_freq));
-    coords_ini(m::cart, XS, YS, ZS, &coords);
+    UC(coords_ini_conf(m::cart, cfg, &coords));
     
     UC(scheme_move_params_ini(&moveparams));
     UC(scheme_move_params_conf(cfg, /**/moveparams));
 
     run(coords, part_freq, bforce, moveparams, "rbc.off", "rbcs-ic.txt", par);
-    coords_fin(coords);
+    UC(coords_fin(coords));
 
     UC(bforce_fin(bforce));
     UC(scheme_move_params_fin(moveparams));

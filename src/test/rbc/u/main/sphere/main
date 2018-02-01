@@ -18,13 +18,16 @@ u.conf $S $U $C <<!
    rbcs
    MESH_SHIFT_CENTER RBC_CLEAR_VEL
    RBCtotArea=$area RBCtotVolume=$volume
-   XS=48 YS=32 ZS=32 RBCnv=$nv RBC_RND=false
+   RBCnv=$nv RBC_RND=false
    dt=1e-3 tend=200.0
    run
 !
 { make clean && u.make -j; } > /dev/null
 :
 u.run ./udx '
+glb = {
+    L = [48, 32, 32]
+}
 rbc = {
     @include "rbc.lina.cfg"
     kBT = 0.00444302;
