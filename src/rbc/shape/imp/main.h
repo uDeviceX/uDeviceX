@@ -17,3 +17,10 @@ void rbc_shape_fin(RbcShape *q) {
     EFREE(q->anti);    
     EFREE(q);
 }
+
+void rbc_shape_edg  (RbcShape *q, /**/ float** pe) { *pe = q->edg; }
+void rbc_shape_area (RbcShape *q, /**/ float** pe) { *pe = q->area; }
+void rbc_shape_anti (RbcShape *q, /**/ int**   pe) { *pe = q->anti; }
+
+void rbc_shape_total_area(RbcShape *q, /**/ float *pe)   { *pe = q->A; }
+void rbc_shape_total_volume(RbcShape *q, /**/ float *pe) { *pe = q->V; }
