@@ -1,4 +1,6 @@
 #!/bin/sh
+set -eu
+
 G="git@github.com:amlucas/udoc.git"
 
 ROOT="/udoc"
