@@ -253,17 +253,17 @@ int main(int argc, char **argv) {
     coords_ini(m::cart, XS, YS, ZS, /**/ &coords);
     conf_ini(&cfg);
     conf_read(argc, argv, /**/ cfg);
-    
+
     tok_cat(argc, argv, /**/ arg);
     tok_ini(arg, delim, /**/ &c, &v);
-    
+
     usg(c, v);
     Chain = flag("-c", &c, &v);
     Dev   = flag("-d", &c, &v);
     Grid  = flag("-g", &c, &v);
     Tex   = flag("-t", &c, &v);
     main2(c, v);
-    
+
     tok_fin(c, v);
     coords_fin(coords);
     conf_fin(cfg);
