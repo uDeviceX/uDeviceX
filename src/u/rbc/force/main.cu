@@ -1,3 +1,41 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <assert.h>
+#include <mpi.h>
+
+#include <conf.h>
+#include "inc/conf.h"
+
+#include "inc/def.h"
+#include "inc/type.h"
+#include "inc/dev.h"
+
+#include "coords/type.h"
+#include "coords/ini.h"
+
+#include "utils/imp.h"
+#include "utils/msg.h"
+#include "utils/error.h"
+#include "utils/te.h"
+#include "utils/texo.h"
+#include "utils/cc.h"
+
+#include "d/api.h"
+
+#include "rbc/params/imp.h"
+#include "rbc/type.h"
+#include "rbc/imp.h"
+#include "rbc/rnd/imp.h"
+#include "rbc/force/imp.h"
+
+#include "io/off/imp.h"
+
+#include "mpi/glb.h"
+#include "mpi/wrapper.h"
+
+#include "parser/imp.h"
+
 static void write0(Particle p, Force f0) {
     enum {X, Y, Z};
     float *r, *f;
@@ -60,4 +98,25 @@ void run(const char *cell, const char *ic, const RbcParams *par) {
     UC(run2(off, ic, par, q));
     UC(rbc_fin(&q));
     UC(off_fin(off));
+}
+
+int main(int argc, char **argv) {
+    Config *cfg;
+    RbcParams *par;
+    const char *cell, *ic;
+    m::ini(&argc, &argv);
+    conf_ini(&cfg);
+    conf_read(argc, argv, cfg);
+
+    conf_lookup_string(cfg, "rbc.cell", &cell);
+    conf_lookup_string(cfg, "rbc.ic", &ic);
+
+    rbc_params_ini(&par);
+    rbc_params_set_conf(cfg, par);
+    
+    run(cell, ic, par);
+
+    rbc_params_fin(par);
+    conf_fin(cfg);
+    m::fin();
 }
