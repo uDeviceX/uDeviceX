@@ -58,7 +58,7 @@ static void dump_rbc_coms(Sim *s) {
     static int id = 0;
     Rbc *r = &s->rbc;
     int nc = r->q.nc;
-    rbc_com_get(r->q.nc, r->q.pp, /**/ &r->com);
+    rbc_com_compute(r->q.nc, r->q.pp, /**/ &r->com);
     dump_com(s->cart, s->coords, id++, nc, r->q.ii, r->com.hrr, r->com.hvv);
 }
 

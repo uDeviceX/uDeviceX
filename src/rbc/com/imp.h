@@ -7,4 +7,4 @@ struct RbcCom {
 
 void rbc_com_ini(int nv, int max_cell, /**/ RbcCom *com);
 void rbc_com_fin(/**/ RbcCom *com);
-void rbc_com_get(int nm, const Particle *pp, /**/ RbcCom *com);
+void rbc_com_compute(int nm, const Particle *pp, /**/ RbcCom *com);
