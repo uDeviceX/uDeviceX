@@ -56,10 +56,11 @@ static void dump_rbcs(Sim *s) {
 
 static void dump_rbc_coms(Sim *s) {
     static int id = 0;
+    float3 *rr, *vv;
     Rbc *r = &s->rbc;
     int nc = r->q.nc;
-    rbc_com_get(r->q.nc, r->q.nv, r->q.pp, /**/ &r->com);
-    dump_com(s->cart, s->coords, id++, nc, r->q.ii, r->com.hrr, r->com.hvv);
+    UC(rbc_com_compute(r->com, nc, r->q.pp, /**/ &rr, &vv));
+    UC(dump_com(s->cart, s->coords, id++, nc, r->q.ii, rr, vv));
 }
 
 static void dump_grid(const Sim *s) {

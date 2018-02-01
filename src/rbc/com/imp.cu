@@ -10,6 +10,8 @@
 #include "math/dev.h"
 
 #include "utils/msg.h"
+#include "utils/error.h"
+#include "utils/imp.h"
 
 #include "d/q.h"
 #include "d/api.h"
@@ -18,6 +20,8 @@
 #include "utils/kl.h"
 
 #include "imp.h"
+
+#include "imp/type.h"
 
 namespace dev {
 #include "dev/main.h"
