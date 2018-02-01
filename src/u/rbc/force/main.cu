@@ -53,16 +53,16 @@ static void write(int n, Particle *p, Force *f) {
     Particle *p_hst;
     Force *f_hst;
 
-    UC(emalloc(n*sizeof(Particle), (void**) &p_hst));
-    UC(emalloc(n*sizeof(Force),    (void**) &f_hst));
+    EMALLOC(n, &p_hst);
+    EMALOOC(n, &f_hst);
 
     cD2H(p_hst, p, n);
     cD2H(f_hst, f, n);
 
     write1(n, p_hst, f_hst);
 
-    free(p_hst);
-    free(f_hst);
+    EFREE(p_hst);
+    EFREE(f_hst);
 }
 
 static void run0(RbcQuants q, RbcForce t, const RbcParams *par, Force *f) {
