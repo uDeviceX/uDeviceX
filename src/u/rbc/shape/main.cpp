@@ -17,6 +17,7 @@
 #include "coords/ini.h"
 
 #include "rbc/adj/imp.h"
+#include "rbc/shape/imp.h"
 
 #include "io/mesh/imp.h"
 #include "io/off/imp.h"
@@ -27,17 +28,22 @@
 void run(const Coords *coords, const char *cell) {
     OffRead *off;
     Adj *adj;
+    RbcShape *shape;
     int md, nt, nv;
     const int4 *tt;
+    const float *rr;
     UC(off_read(cell, /**/ &off));
-
     nt = off_get_nt(off);
     nv = off_get_nv(off);
+    tt = off_get_tri(off);
+    rr = off_get_vert(off);
     md = RBCmd;
     adj_ini(md, nt, nv, tt, /**/ &adj);
+    rbc_shape_ini(adj, rr, /**/ &shape);
 
     //    UC(run1(coords, off, ic, q));
 
+    rbc_shape_fin(shape);
     adj_fin(adj);
     UC(off_fin(off));
 }

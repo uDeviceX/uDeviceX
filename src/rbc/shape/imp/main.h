@@ -1,4 +1,4 @@
-void rbc_shape_ini(Adj *adj, float *rr, /**/ RbcShape **pq) {
+void rbc_shape_ini(Adj *adj, const float *rr, /**/ RbcShape **pq) {
     int n;
     RbcShape *q;
     n = adj_get_max(adj);
