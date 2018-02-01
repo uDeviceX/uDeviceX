@@ -9,7 +9,6 @@
 #include "utils/imp.h"
 #include "utils/msg.h"
 
-#include "coords/type.h"
 #include "coords/imp.h"
 
 #include "type.h"
