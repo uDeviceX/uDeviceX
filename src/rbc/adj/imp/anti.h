@@ -39,4 +39,3 @@ void adj_get_anti(const Adj *adj, /**/ int *anti) {
     ini0(md, nv, adj, /**/ anti, /*w*/ hx, hy);
     free(hx); free(hy);
 }
-
