@@ -26,4 +26,4 @@ $B/wall/sdf/label/imp.o: $S/utils/imp.h $S/inc/conf.h $S/wall/sdf/imp.h $S/utils
 $B/wall/sdf/tex3d/imp.o: $S/utils/imp.h $S/inc/conf.h $S/utils/error.h $S/wall/sdf/tex3d/imp.h $S/utils/cc.h $S/d/api.h $B/conf.h $S/wall/sdf/tex3d/imp/main.h $S/wall/sdf/array3d/type.h $S/wall/sdf/tex3d/type.h
 $B/wall/sdf/tform/imp.o: $S/utils/error.h $S/wall/sdf/tform/imp.h $S/math/tform/imp.h $S/coords/imp.h
 $B/wall/wvel/conf.o: $S/utils/imp.h $S/utils/error.h $S/wall/wvel/imp.h $B/conf.h $S/parser/imp.h
-$B/wall/wvel/imp.o: $S/coords/type.h $S/utils/imp.h $S/utils/error.h $S/wall/wvel/imp.h $B/conf.h $S/wall/wvel/imp/main.h $S/wall/wvel/imp/type.h $S/wall/wvel/type.h $S/coords/imp.h $S/utils/msg.h
+$B/wall/wvel/imp.o: $S/utils/imp.h $S/utils/error.h $S/wall/wvel/imp.h $B/conf.h $S/wall/wvel/imp/main.h $S/wall/wvel/imp/type.h $S/wall/wvel/type.h $S/coords/imp.h $S/utils/msg.h
