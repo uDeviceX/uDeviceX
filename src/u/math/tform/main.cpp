@@ -243,8 +243,7 @@ static int flag(const char *a, int* pc, char ***pv) {
     return Flag;
 }
 int main(int argc, char **argv) {
-    char arg[2048];
-    const char *s;
+    const char *arg;
     char **v;
     int c;
     const char delim[] = " \t";
@@ -254,12 +253,8 @@ int main(int argc, char **argv) {
     coords_ini(m::cart, XS, YS, ZS, /**/ &coords);
     conf_ini(&cfg);
     conf_read(argc, argv, /**/ cfg);
-    //    conf_lookup_string(cfg, "a", &s);
-    //    msg_print("a = %s\n", s);
-
-    tok_cat(argc, argv, /**/ arg);
+    conf_lookup_string(cfg, "a", &arg);
     tok_ini(arg, delim, /**/ &c, &v);
-
     usg(c, v);
     Chain = flag("-c", &c, &v);
     Dev   = flag("-d", &c, &v);
