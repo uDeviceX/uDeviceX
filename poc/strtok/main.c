@@ -2,6 +2,17 @@
 #include <string.h>
 #include <stdlib.h>
 
+void concatenate(int n, char **ss, /**/ char *a) {
+    int i;
+    char *s;
+    a[0] = '\0';
+    for (i = 0; i < n; ++i) {
+        s = ss[i];
+        if (i > 0) strcat(a, " ");
+        strcat(a, s);
+    }
+}
+
 int cnt0(char *s, const char *del) {
     char *tok;
     int c;
@@ -51,13 +62,16 @@ void tok_fin(int c, char **pv) {
 }
 
 int main() {
-    char s[] = "a b c";
+    char a[2048];
+    char s[] = "a bcde";
     char delim[] = " \t";
     int i, c;
     char **v;
     tok_ini(s, delim, /**/ &c, &v);
     for (i = 0; i < c; i++)
         printf("tok: %s\n", v[i]);
+    concatenate(c, v, /**/ a);
+    printf("a: %s\n", a);
     tok_fin(c, v);
     return 0;
 }
