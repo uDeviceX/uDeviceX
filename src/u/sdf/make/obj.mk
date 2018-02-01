@@ -1,4 +1,4 @@
-O = $B/coords/imp.o $B/d/api.o $B/io/field/h5/imp.o $B/io/field/imp.o \
+O = $B/coords/conf.o $B/coords/imp.o $B/d/api.o $B/io/field/h5/imp.o $B/io/field/imp.o \
     $B/io/field/xmf/imp.o $B/math/linal/imp.o $B/math/rnd/imp.o \
     $B/math/tform/imp.o $B/mpi/glb.o $B/mpi/type.o $B/mpi/wrapper.o \
     $B/parser/imp.o $B/u/sdf/main.o $B/utils/cc.o $B/utils/error.o $B/utils/imp.o \

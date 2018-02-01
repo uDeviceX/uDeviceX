@@ -1,3 +1,4 @@
+$B/coords/conf.o: $S/coords/conf.cpp; $X -I$S/. -I$S/coords
 $B/coords/imp.o: $S/coords/imp.cpp; $X -I$S/. -I$S/coords
 $B/d/api.o: $S/d/api.cu; $N -I$S/. -I$S/d
 $B/io/bop/imp.o: $S/io/bop/imp.cpp; $X -I$S/. -I$S/io/bop

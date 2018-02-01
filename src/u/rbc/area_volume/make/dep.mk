@@ -1,3 +1,4 @@
+$B/coords/conf.o: $S/coords/ini.h $S/parser/imp.h $S/utils/error.h $S/utils/imp.h
 $B/coords/imp.o: $B/conf.h $S/coords/imp.h $S/coords/imp/main.h $S/coords/imp/type.h $S/coords/ini.h $S/coords/type.h $S/inc/conf.h $S/mpi/wrapper.h $S/utils/error.h $S/utils/imp.h $S/utils/mc.h
 $B/d/api.o: $B/conf.h $S/d/api.h $S/d/common.h $S/d/cpu/imp.h $S/d/cuda/imp.h $S/inc/conf.h $S/utils/error.h $S/utils/imp.h
 $B/io/bop/imp.o: $B/conf.h $S/coords/imp.h $S/d/api.h $S/inc/conf.h $S/inc/def.h $S/inc/type.h $S/io/bop/imp.h $S/io/bop/imp/main.h $S/io/bop/imp/type.h $S/mpi/glb.h $S/mpi/type.h $S/mpi/wrapper.h $S/utils/error.h $S/utils/imp.h $S/utils/mc.h $S/utils/os.h

@@ -13,7 +13,7 @@ $B/mpi/glb.o: $B/conf.h $S/inc/conf.h $S/mpi/glb.h $S/mpi/wrapper.h $S/utils/mc.
 $B/mpi/type.o: $S/inc/conf.h $S/inc/type.h $S/mpi/type.h $S/utils/mc.h
 $B/mpi/wrapper.o: $S/mpi/wrapper.h
 $B/parser/imp.o: $S/parser/imp.h $S/utils/error.h $S/utils/imp.h $S/utils/msg.h
-$B/u/bulk/main.o: $S/clist/imp.h $S/cloud/imp.h $B/conf.h $S/coords/imp.h $S/coords/ini.h $S/d/api.h $S/flu/type.h $S/fluforces/imp.h $S/inc/conf.h $S/inc/dev.h $S/inc/type.h $S/io/txt/imp.h $S/mpi/glb.h $S/parser/imp.h $S/partlist/type.h $S/utils/cc.h $S/utils/error.h $S/utils/imp.h $S/utils/msg.h
+$B/u/bulk/main.o: $S/clist/imp.h $S/cloud/imp.h $B/conf.h $S/coords/imp.h $S/coords/ini.h $S/d/api.h $S/flu/type.h $S/fluforces/imp.h $S/inc/conf.h $S/inc/dev.h $S/inc/type.h $S/io/txt/imp.h $S/mpi/glb.h $S/mpi/wrapper.h $S/parser/imp.h $S/partlist/type.h $S/utils/cc.h $S/utils/error.h $S/utils/imp.h $S/utils/msg.h
 $B/utils/cc.o: $B/conf.h $S/d/api.h $S/inc/conf.h $S/utils/cc/common.h $S/utils/error.h
 $B/utils/error.o: $S/utils/error.h $S/utils/msg.h
 $B/utils/imp.o: $S/utils/error.h $S/utils/imp.h
