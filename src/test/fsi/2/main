@@ -5,13 +5,15 @@ u.cp.rbc rbc/498.off rbc.off
  x=5 y=17 z=8; echo 1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 >  rbcs-ic.txt
 :
 u.conf conf/double.poiseuille.h <<!!!
-   YS=16
    rbcs tend=2.0
    pushrbc=false fsiforces=true
    run
 !!!
 { make clean &&  u.make -j ; } > /dev/null
 u.run 1 2 1 ./udx '
+glb = {
+    L = [16, 16, 16]
+}
 rbc = {
     @include "rbc.test.cfg"
 }
