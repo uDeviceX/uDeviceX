@@ -34,7 +34,7 @@ get_docs() (
 
 header() (
     echo ':lext: .adoc'
-    echo ':toclevels: 4'
+    echo ':toclevels: 2'
     echo '= uDeviceX Documentation'
     echo $CONTR
     echo
