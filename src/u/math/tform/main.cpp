@@ -265,7 +265,7 @@ int main(int argc, char **argv) {
 
     main3(c, v);
 
-    //    tok_fin(c, v);
+    tok_fin(c, v);
     coords_fin(coords);
     conf_fin(cfg);
     m::fin();

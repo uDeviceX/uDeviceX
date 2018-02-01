@@ -57,8 +57,6 @@ void tok_ini(const char *s0, const char *del, /**/ int *pc, char ***pv) {
     EFREE(s);
 }
 
-void tok_fin(int c, char **pv) {
-    int i;
-    for (i = 0; i < c; i++) EFREE(pv[i]);
-    EFREE(pv);
+void tok_fin(int c, char **v) {
+    /** todo **/
 }
