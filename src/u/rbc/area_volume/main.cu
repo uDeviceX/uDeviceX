@@ -7,6 +7,7 @@
 
 #include "utils/error.h"
 #include "utils/imp.h"
+#include "parser/imp.h"
 
 #include "d/api.h"
 #include "utils/msg.h"
@@ -55,29 +56,38 @@ static void run0(RbcQuants q, RbcForce t) {
     printf("%g %g\n", area, volume);
 }
 
-static void run1(OffRead *off, const char *ic, RbcQuants q) {
-    Coords *coords;
+static void run1(const Coords *coords, OffRead *off, const char *ic, RbcQuants q) {
     RbcForce t;
-    coords_ini(m::cart, XS, YS, ZS, &coords);
     rbc_gen_quants(coords, m::cart, off, ic, /**/ &q);
     rbc_force_gen(q, &t);
     UC(run0(q, t));
     rbc_force_fin(&t);
-    coords_fin(coords);
 }
 
-void run(const char *cell, const char *ic) {
+void run(const Coords *coords, const char *cell, const char *ic) {
     RbcQuants q;
     OffRead *off;
     UC(off_read(cell, /**/ &off));
     UC(rbc_ini(off, &q));
-    UC(run1(off, ic, q));
+    UC(run1(coords, off, ic, q));
     UC(off_fin(off));
     UC(rbc_fin(&q));
 }
 
 int main(int argc, char **argv) {
+    Coords *coords;
+    Config *cfg;
+
     m::ini(&argc, &argv);
-    run("rbc.off", "rbcs-ic.txt");
+
+    UC(conf_ini(&cfg));
+    UC(conf_read(argc, argv, cfg));
+
+    UC(coords_ini_conf(m::cart, cfg, &coords));
+        
+    run(coords, "rbc.off", "rbcs-ic.txt");
+
+    UC(coords_fin(coords));
+    UC(conf_fin(cfg));
     m::fin();
 }

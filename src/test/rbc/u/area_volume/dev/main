@@ -9,4 +9,6 @@ KL_SYNC RBCnv=$nv RBC_RND=false
 run
 !
 { u.make clean && u.make -j; } > /dev/null
-u.run ./udx                    > av.out.txt
+u.run ./udx '
+glb = {L = [20, 20, 20]}
+'> av.out.txt
