@@ -58,8 +58,9 @@ static void dump_rbc_coms(Sim *s) {
     static int id = 0;
     Rbc *r = &s->rbc;
     int nc = r->q.nc;
-    rbc_com_compute(r->q.nc, r->q.pp, /**/ &r->com);
-    dump_com(s->cart, s->coords, id++, nc, r->q.ii, r->com.hrr, r->com.hvv);
+    float3 *rr, *vv;
+    UC(rbc_com_compute(&r->com, r->q.nc, r->q.pp, /**/ &rr, &vv));
+    UC(dump_com(s->cart, s->coords, id++, nc, r->q.ii, rr, vv));
 }
 
 static void dump_grid(const Sim *s) {
