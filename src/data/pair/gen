@@ -15,8 +15,19 @@ function gen0()      {
     k = kind(); c = color()
 }
 
-function genA() { gen0() }
-function genB() { gen0(); if (k == "WALL") genB() }
+function genA() {
+    gen0();
+    if (k == "WALL")
+	genA()
+    ka = k
+}
+
+function genB() {
+    gen0();
+    if (ka == "WALL" && ka == "WALL")
+	genB()
+}
+
 function write() {
     print x, y, z, vx, vy, vz, k, c
 }
