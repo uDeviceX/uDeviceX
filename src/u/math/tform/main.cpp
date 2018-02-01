@@ -1,14 +1,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
 #include <mpi.h>
-
 #include <vector_types.h>
 
 #include <conf.h>
 #include "inc/conf.h"
 
+#include "parser/imp.h"
 #include "mpi/glb.h"
 #include "mpi/wrapper.h"
 #include "utils/msg.h"
@@ -20,6 +19,7 @@
 #include "utils/msg.h"
 #include "wall/sdf/tform/imp.h"
 
+#include "tok.h"
 #include "lib/imp.h"
 
 struct TVec {
@@ -219,7 +219,6 @@ static void main2(int c, char **v) {
     } else {
         read_vecs(&c, &v, &ve.v);
     }
-
     UC(main1(&ve));
 }
 
@@ -242,16 +241,32 @@ static int flag(const char *a, int* pc, char ***pv) {
     *pc = c; *pv = v;
     return Flag;
 }
+static void main3(int c, char **v) {
+    usg(c, v);
+    Chain = flag("-c", &c, &v);
+    Dev   = flag("-d", &c, &v);
+    Grid  = flag("-g", &c, &v);
+    Tex   = flag("-t", &c, &v);
+    main2(c, v);
+}
 int main(int argc, char **argv) {
+    const char *arg;
+    char **v;
+    int c;
+    const char delim[] = " \t";
+    Config *cfg;
     m::ini(&argc, &argv);
     msg_ini(m::rank);
     coords_ini(m::cart, XS, YS, ZS, /**/ &coords);
-    usg(argc, argv);
-    Chain = flag("-c", &argc, &argv);
-    Dev   = flag("-d", &argc, &argv);
-    Grid  = flag("-g", &argc, &argv);
-    Tex   = flag("-t", &argc, &argv);
-    main2(argc, argv);
-    coords_fin(/**/ coords);
+    conf_ini(&cfg);
+    conf_read(argc, argv, /**/ cfg);
+    conf_lookup_string(cfg, "a", &arg);
+    tok_ini(arg, delim, /**/ &c, &v);
+
+    main3(c, v);
+
+    tok_fin(c, v);
+    coords_fin(coords);
+    conf_fin(cfg);
     m::fin();
 }
