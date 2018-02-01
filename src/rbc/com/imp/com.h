@@ -19,16 +19,21 @@ static void normalize(int nm, int nv, /**/ float3 *h) {
         scal(fac, h + i);
 }
 
-void rbc_com_get(int nm, int nv, const Particle *pp, /**/ RbcComProps *com) {
-    reini(nm, /**/ com->drr);
-    reini(nm, /**/ com->dvv);
+void rbc_com_get(int nm, const Particle *pp, /**/ RbcComProps *q) {
+    int nv, max_cell;
+    nv = q->nv; max_cell = q->max_cell;
+    if (nm > max_cell)
+        ERR("nm=%d > max_cell=%d", nm, max_cell);
     
-    reduce(nm, nv, pp, /**/ com->drr, com->dvv);
+    reini(nm, /**/ q->drr);
+    reini(nm, /**/ q->dvv);
+    
+    reduce(nm, nv, pp, /**/ q->drr, q->dvv);
 
-    download(nm, com->drr, /**/ com->hrr);
-    download(nm, com->dvv, /**/ com->hvv);
+    download(nm, q->drr, /**/ q->hrr);
+    download(nm, q->dvv, /**/ q->hvv);
     dSync();
     
-    normalize(nm, nv, /**/ com->hrr);
-    normalize(nm, nv, /**/ com->hvv);
+    normalize(nm, nv, /**/ q->hrr);
+    normalize(nm, nv, /**/ q->hvv);
 }

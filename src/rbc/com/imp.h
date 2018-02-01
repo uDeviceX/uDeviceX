@@ -5,6 +5,6 @@ struct RbcComProps {
     float3 *hrr, *hvv;  /* positions, velocities on host   */
 };
 
-void rbc_com_ini(int maxcells, /**/ RbcComProps *com);
+void rbc_com_ini(int nv, int maxcells, /**/ RbcComProps *com);
 void rbc_com_fin(/**/ RbcComProps *com);
-void rbc_com_get(int nm, int nv, const Particle *pp, /**/ RbcComProps *com);
+void rbc_com_get(int nm, const Particle *pp, /**/ RbcComProps *com);

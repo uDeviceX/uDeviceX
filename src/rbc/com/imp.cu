@@ -10,6 +10,7 @@
 #include "math/dev.h"
 
 #include "utils/msg.h"
+#include "utils/error.h"
 
 #include "d/q.h"
 #include "d/api.h"
