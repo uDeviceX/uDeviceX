@@ -33,6 +33,7 @@ $B/rbc/params/conf.o: $B/conf.h $S/inc/conf.h $S/parser/imp.h $S/rbc/params/imp.
 $B/rbc/params/imp.o: $S/rbc/params/imp.h $S/rbc/params/type.h $S/utils/error.h $S/utils/imp.h
 $B/rbc/rnd/api/imp.o: $B/conf.h $S/inc/conf.h $S/rbc/rnd/api/imp.h $S/rbc/rnd/api/imp/cpu.h $S/rbc/rnd/api/imp/cuda.h $S/rbc/rnd/api/imp/gaussrand.h $S/rbc/rnd/api/type.h $S/utils/error.h $S/utils/imp.h
 $B/rbc/rnd/imp.o: $B/conf.h $S/d/api.h $S/inc/conf.h $S/inc/dev.h $S/mpi/glb.h $S/rbc/rnd/api/imp.h $S/rbc/rnd/api/type.h $S/rbc/rnd/imp.h $S/rbc/rnd/imp/cu.h $S/rbc/rnd/imp/main.h $S/rbc/rnd/imp/seed.h $S/rbc/rnd/type.h $S/utils/cc.h $S/utils/error.h $S/utils/imp.h $S/utils/msg.h $S/utils/os.h
+$B/rbc/shape/imp.o: $S/rbc/shape/imp.h $S/rbc/shape/imp/main.h
 $B/rbc/stretch/imp.o: $B/conf.h $S/d/api.h $S/d/ker.h $S/d/q.h $S/inc/conf.h $S/inc/def.h $S/inc/dev.h $S/inc/type.h $S/rbc/stretch/dev/main.h $S/rbc/stretch/imp.h $S/rbc/stretch/imp/main.h $S/rbc/stretch/imp/type.h $S/utils/cc.h $S/utils/error.h $S/utils/imp.h $S/utils/kl.h $S/utils/msg.h
 $B/scheme/force/conf.o: $S/parser/imp.h $S/scheme/force/imp.h $S/utils/error.h $S/utils/imp.h
 $B/scheme/force/imp.o: $B/conf.h $S/coords/dev.h $S/coords/imp.h $S/coords/type.h $S/d/api.h $S/inc/conf.h $S/inc/dev.h $S/inc/type.h $S/scheme/force/dev/main.h $S/scheme/force/imp.h $S/scheme/force/imp/ini.h $S/scheme/force/imp/main.h $S/scheme/force/imp/type.h $S/scheme/force/type.h $S/utils/cc.h $S/utils/error.h $S/utils/imp.h $S/utils/kl.h
