@@ -1,0 +1,3 @@
+struct RbcShape {
+    Adj *adj;
+};
