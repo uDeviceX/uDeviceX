@@ -1,0 +1,28 @@
+Structure:
+`dev' : general documentation files
+`dev/modules': documentation for modules
+
+
+In order to modify the documentation,
+the following packages should already be installed:
+1. asciidoctor
+2. pygments.rb
+
+
+Update general uDeviceX tools if necessary:
+1. cd ..
+2. make install
+
+
+After modifying existing files:
+1. make
+2. rm all.html
+3. ./tools/start -> starts server. do it only once
+4. ./tools/view -> to view changes locally
+5. add/commit/push to udx repo
+6. ./tools/deploy -> updates online documentation [ssh key in github account must me set!]
+
+
+If NEW files are added:
+1. Links to modules should be added in `dev/main.adoc'
+2. run ./configure and follow the procedure for modifying files
