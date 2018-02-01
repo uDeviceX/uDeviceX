@@ -116,3 +116,13 @@ static __device__ void pair_force(PairDPDC pc, PairPa a, PairPa b, float rnd, /*
     p.s = pc.s[pid];
     pair_force(p, a, b, rnd, /**/ f);
 }
+
+/* mirrored: parameters from particle a only */
+static __device__ void pair_force(PairDPDCM pc, PairPa a, PairPa b, float rnd, /**/ PairFo *f) {
+    PairDPD p;
+    int pid = a.color;
+    p.a = pc.a[pid];
+    p.g = pc.g[pid];
+    p.s = pc.s[pid];
+    pair_force(p, a, b, rnd, /**/ f);
+}
