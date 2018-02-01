@@ -24,7 +24,7 @@ function genA() {
 
 function genB() {
     gen0();
-    if (ka == "WALL" && ka == "WALL")
+    if (ka == "SOLID" && k != "WALL")
 	genB()
 }
 
