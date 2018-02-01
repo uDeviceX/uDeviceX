@@ -1,5 +1,5 @@
 :lext: .adoc
-:toclevels: 4
+:toclevels: 2
 = uDeviceX Documentation
 Alexeev, D.; Amoudruz, L.; Bernaschi, M.; Bisson, M.; Conti, C.; Economides, A.; Fatica, M.; Hadjidoukas, P.; Joubert, W.; Karniadakis G.; Koumoutsakos, P.; Kulakova, L.; Litvinov, S.; Lykov, K.; Pivkin, I.; Rossinelli, D.; Tang, Y.-H.
 
@@ -29,23 +29,11 @@ include::dev/modules/cnt.adoc[]
 
 include::dev/modules/color/main.adoc[]
 
-include::dev/modules/color/main.inc.adoc[]
-
-include::dev/modules/color/modules.inc.adoc[]
-
 include::dev/modules/comm.adoc[]
 
 include::dev/modules/contact.adoc[]
 
-include::dev/modules/control/den.inc.adoc[]
-
-include::dev/modules/control/inflow.inc.adoc[]
-
 include::dev/modules/control/main.adoc[]
-
-include::dev/modules/control/outflow.inc.adoc[]
-
-include::dev/modules/control/vel.inc.adoc[]
 
 include::dev/modules/coords.adoc[]
 
@@ -61,15 +49,7 @@ include::dev/modules/fsi.adoc[]
 
 include::dev/modules/io/main.adoc[]
 
-include::dev/modules/io/txt.inc.adoc[]
-
-include::dev/modules/math/linal.inc.adoc[]
-
 include::dev/modules/math/main.adoc[]
-
-include::dev/modules/math/rnd.inc.adoc[]
-
-include::dev/modules/math/tform.inc.adoc[]
 
 include::dev/modules/move.adoc[]
 
@@ -83,19 +63,13 @@ include::dev/modules/rbc/main.adoc[]
 
 include::dev/modules/rbc/rnd.adoc[]
 
+include::dev/modules/rbc/stretch.adoc[]
+
 include::dev/modules/restrain.adoc[]
 
 include::dev/modules/sdf/main.adoc[]
 
-include::dev/modules/utils/cc.inc.adoc[]
-
-include::dev/modules/utils/error.inc.adoc[]
-
-include::dev/modules/utils/kl.inc.adoc[]
-
 include::dev/modules/utils/main.adoc[]
-
-include::dev/modules/utils/mc.inc.adoc[]
 
 include::dev/modules/wvel.adoc[]
 

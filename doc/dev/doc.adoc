@@ -3,7 +3,7 @@
 
 Requires `asciidoctor` and `pygments.rb`.
 
-== Arch mac
+== Mac OS X
 [source,sh]
 ----
 gem install asciidoctor

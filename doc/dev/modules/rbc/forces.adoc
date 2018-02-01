@@ -1,4 +1,4 @@
-= RBC membrane forces
+= Forces
 :lext: .adoc
 :stem: latexmath
 
