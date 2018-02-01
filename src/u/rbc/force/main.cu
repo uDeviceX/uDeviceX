@@ -79,29 +79,27 @@ static void run1(RbcQuants q, RbcForce t, const RbcParams *par) {
     Dfree(f);
 }
 
-static void run2(OffRead *off, const char *ic, const RbcParams *par, RbcQuants q) {
-    Coords *coords;
+static void run2(const Coords *coords, OffRead *off, const char *ic, const RbcParams *par, RbcQuants q) {
     RbcForce t;
-    coords_ini(m::cart, XS, YS, ZS, &coords);
     rbc_gen_quants(coords, m::cart, off, ic, /**/ &q);
     rbc_force_gen(q, &t);
     run1(q, t, par);
     rbc_force_fin(&t);
-    coords_fin(coords);
 }
 
-void run(const char *cell, const char *ic, const RbcParams *par) {
+void run(const Coords *coords, const char *cell, const char *ic, const RbcParams *par) {
     OffRead *off;
     RbcQuants q;
     UC(off_read(cell, /**/ &off));
     UC(rbc_ini(off, &q));
-    UC(run2(off, ic, par, q));
+    UC(run2(coords, off, ic, par, q));
     UC(rbc_fin(&q));
     UC(off_fin(off));
 }
 
 int main(int argc, char **argv) {
     Config *cfg;
+    Coords *coords;
     RbcParams *par;
     const char *cell, *ic;
 
@@ -109,15 +107,17 @@ int main(int argc, char **argv) {
     UC(conf_ini(&cfg));
     UC(conf_read(argc, argv, cfg));
 
+    UC(coords_ini_conf(m::cart, cfg, &coords));
     UC(conf_lookup_string(cfg, "rbc.cell", &cell));
     UC(conf_lookup_string(cfg, "rbc.ic", &ic));
 
     UC(rbc_params_ini(&par));
     UC(rbc_params_set_conf(cfg, par));
     
-    UC(run(cell, ic, par));
+    UC(run(coords, cell, ic, par));
 
     UC(rbc_params_fin(par));
     UC(conf_fin(cfg));
+    UC(coords_fin(coords));
     m::fin();
 }
