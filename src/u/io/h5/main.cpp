@@ -6,6 +6,7 @@
 #include "inc/conf.h"
 
 #include "coords/ini.h"
+#include "coords/imp.h"
 
 #include "utils/msg.h"
 #include "mpi/glb.h"
@@ -14,33 +15,26 @@
 #include "utils/mc.h"
 #include "utils/imp.h"
 
+#include "parser/imp.h"
+
 #include "io/field/h5/imp.h"
 #include "io/field/xmf/imp.h"
 
 #include "mpi/wrapper.h"
 
-static int    argc;
-static char **argv;
-
-/* left shift */
-void lshift() {
-    argc--;
-    if (argc < 1) {
-        fprintf(stderr, "h5: not enough args\n");
-        exit(2);
-    }
-}
-
-void dump(MPI_Comm comm, const char *path, int sx, int sy, int sz) {
+void dump(MPI_Comm comm, const Coords *coords, const char *path) {
     enum {X, Y, Z};
     int rank;
-    Coords *coords;
     size_t size, nc;
     float *rho, *u[3];
+    int sx, sy, sz;
     const char *names[] = { "density", "u", "v", "w" };
 
-    UC(coords_ini(comm, XS, YS, ZS, /**/ &coords));
     MC(m::Comm_rank(comm, &rank));
+
+    sx = xs(coords);
+    sy = ys(coords);
+    sz = zs(coords);
     
     nc = sx * sy * sz;
     size = nc*sizeof(rho[0]);
@@ -53,42 +47,33 @@ void dump(MPI_Comm comm, const char *path, int sx, int sy, int sz) {
     UC(h5_write(coords, comm, path, data, names, 4));
     free(rho); free(u[X]); free(u[Y]); free(u[Z]);
     if (rank == 0) xmf_write(path, names, 4, sx, sy, sz);
-    UC(coords_fin(/**/ coords));
-}
-
-int ienv(const char *name, int def) {
-    char *v;
-    if ( (v = getenv(name))  == NULL ) return def;
-    else return atoi(v);
 }
 
 void report(int i, int n, const char *path) {
     msg_print("write %s", path);
 }
 
-void main0(const char *path) {
-    int ndump, i;
-    int sx, sy, sz;
-    
-    ndump = ienv("ndump", 5);
-    
-    sx = XS; sy = YS; sz = ZS;
-    for (i = 0; i < ndump; i++) {
-        report(i, ndump, path);
-        dump(m::cart, path, sx, sy, sz);
-    }
-}
-
-void main1() {
+int main(int argc, char **argv) {
     const char *path;
-    path = argv[argc - 1]; lshift();
+    Coords *coords;
+    Config *cfg;
+    int i, ndump;
     m::ini(&argc, &argv);
     msg_ini(m::rank);
-    main0(path);
-    m::fin();
-}
 
-int main(int argc0, char **argv0) {
-    argc = argc0; argv = argv0;
-    main1();
+    UC(conf_ini(&cfg));
+    UC(conf_read(argc, argv, cfg));
+    UC(coords_ini_conf(m::cart, cfg, &coords));
+
+    UC(conf_lookup_string(cfg, "path", &path));
+    UC(conf_lookup_int(cfg, "ndump", &ndump));
+    
+    for (i = 0; i < ndump; ++i) {
+        report(i, ndump, path);
+        dump(m::cart, coords, path);
+    }
+
+    UC(coords_fin(coords));
+    UC(conf_fin(cfg));
+    m::fin();
 }

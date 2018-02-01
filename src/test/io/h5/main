@@ -1,5 +1,9 @@
 # TEST: io.h5
 u.cp.hdr test.h conf.h
 echo run | S=`u.cp.s` u.build u/io/h5 conf.h
-u.run ./udx test.h5
+u.run ./udx '
+path = "test.h5"
+ndump = 1
+glb = {L = [16, 16, 16]}
+'
 echo $? > test.out.txt
