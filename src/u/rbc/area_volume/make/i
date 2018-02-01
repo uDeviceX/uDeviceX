@@ -4,4 +4,4 @@ f () ( for d; do f0 "$d"; done )
 f $U inc rbc mpi d math utils io scheme coords parser
 
 # add dir
-echo $U $U/lib .
+echo $U .

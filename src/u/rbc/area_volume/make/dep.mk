@@ -41,8 +41,7 @@ $B/scheme/move/params/conf.o: $B/conf.h $S/inc/conf.h $S/parser/imp.h $S/scheme/
 $B/scheme/move/params/imp.o: $S/scheme/move/params/imp.h $S/scheme/move/params/type.h $S/utils/error.h $S/utils/imp.h
 $B/scheme/restrain/conf.o: $S/parser/imp.h $S/scheme/restrain/imp.h $S/utils/error.h $S/utils/imp.h
 $B/scheme/restrain/imp.o: $B/conf.h $S/d/api.h $S/inc/conf.h $S/inc/def.h $S/inc/dev.h $S/inc/type.h $S/mpi/wrapper.h $S/scheme/restrain/dev/main.h $S/scheme/restrain/dev/type.h $S/scheme/restrain/imp.h $S/scheme/restrain/imp/main.h $S/scheme/restrain/imp/type.h $S/utils/cc.h $S/utils/error.h $S/utils/imp.h $S/utils/kl.h $S/utils/mc.h $S/utils/msg.h
-$B/u/rbc/area_volume/lib/imp.o: $B/conf.h $S/coords/ini.h $S/coords/type.h $S/d/api.h $S/inc/conf.h $S/inc/def.h $S/inc/dev.h $S/inc/type.h $S/io/diag/imp.h $S/io/mesh/imp.h $S/io/off/imp.h $S/mpi/glb.h $S/mpi/wrapper.h $S/rbc/force/area_volume/imp.h $S/rbc/force/imp.h $S/rbc/imp.h $S/rbc/rnd/imp.h $S/rbc/stretch/imp.h $S/rbc/type.h $S/scheme/force/imp.h $S/scheme/move/imp.h $S/scheme/move/params/imp.h $S/u/rbc/area_volume/lib/imp.h $S/u/rbc/area_volume/lib/imp/main.h $S/utils/cc.h $S/utils/error.h $S/utils/imp.h $S/utils/msg.h $S/utils/te.h $S/utils/texo.h
-$B/u/rbc/area_volume/main.o: $S/mpi/glb.h $S/u/rbc/area_volume/lib/imp.h
+$B/u/rbc/area_volume/main.o: $B/conf.h $S/coords/ini.h $S/coords/type.h $S/d/api.h $S/inc/conf.h $S/inc/def.h $S/inc/dev.h $S/inc/type.h $S/io/diag/imp.h $S/io/mesh/imp.h $S/io/off/imp.h $S/mpi/glb.h $S/mpi/wrapper.h $S/rbc/force/area_volume/imp.h $S/rbc/force/imp.h $S/rbc/imp.h $S/rbc/rnd/imp.h $S/rbc/stretch/imp.h $S/rbc/type.h $S/scheme/force/imp.h $S/scheme/move/imp.h $S/scheme/move/params/imp.h $S/utils/cc.h $S/utils/error.h $S/utils/imp.h $S/utils/msg.h $S/utils/te.h $S/utils/texo.h
 $B/utils/cc.o: $B/conf.h $S/d/api.h $S/inc/conf.h $S/utils/cc/common.h $S/utils/error.h
 $B/utils/error.o: $S/utils/error.h $S/utils/msg.h
 $B/utils/imp.o: $S/utils/error.h $S/utils/imp.h

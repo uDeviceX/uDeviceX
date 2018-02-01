@@ -41,8 +41,7 @@ $B/scheme/move/params/conf.o: $S/scheme/move/params/conf.cpp; $X -I$S/. -I$S/sch
 $B/scheme/move/params/imp.o: $S/scheme/move/params/imp.cpp; $X -I$S/. -I$S/scheme/move/params
 $B/scheme/restrain/conf.o: $S/scheme/restrain/conf.cpp; $X -I$S/. -I$S/scheme/restrain
 $B/scheme/restrain/imp.o: $S/scheme/restrain/imp.cu; $N -I$S/. -I$S/scheme/restrain
-$B/u/rbc/area_volume/lib/imp.o: $S/u/rbc/area_volume/lib/imp.cu; $N -I$S/. -I$S/u/rbc/area_volume/lib
-$B/u/rbc/area_volume/main.o: $S/u/rbc/area_volume/main.cpp; $X -I$S/. -I$S/u/rbc/area_volume
+$B/u/rbc/area_volume/main.o: $S/u/rbc/area_volume/main.cu; $N -I$S/. -I$S/u/rbc/area_volume
 $B/utils/cc.o: $S/utils/cc.cpp; $X -I$S/. -I$S/utils
 $B/utils/error.o: $S/utils/error.cpp; $X -I$S/. -I$S/utils
 $B/utils/imp.o: $S/utils/imp.cpp; $X -I$S/. -I$S/utils

@@ -36,5 +36,4 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/scheme/move/params    && \
     d $B/scheme/restrain       && \
     d $B/u/rbc/area_volume     && \
-    d $B/u/rbc/area_volume/lib && \
     d $B/utils                
