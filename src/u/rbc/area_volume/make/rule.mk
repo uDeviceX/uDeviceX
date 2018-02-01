@@ -35,7 +35,7 @@ $B/rbc/rnd/api/imp.o: $S/rbc/rnd/api/imp.cpp; $X -I$S/rbc/rnd/api -I$S/.
 $B/rbc/rnd/imp.o: $S/rbc/rnd/imp.cpp; $X -I$S/rbc/rnd -I$S/.
 $B/rbc/shape/imp.o: $S/rbc/shape/imp.cpp; $X -I$S/rbc/shape -I$S/.
 $B/rbc/stretch/imp.o: $S/rbc/stretch/imp.cu; $N -I$S/rbc/stretch -I$S/.
-$B/u/rbc/area_volume/main.o: $S/u/rbc/area_volume/main.cu; $N -I$S/.
+$B/u/rbc/area_volume/main.o: $S/u/rbc/area_volume/main.cpp; $X -I$S/.
 $B/utils/cc.o: $S/utils/cc.cpp; $X -I$S/utils -I$S/.
 $B/utils/error.o: $S/utils/error.cpp; $X -I$S/utils -I$S/.
 $B/utils/imp.o: $S/utils/imp.cpp; $X -I$S/utils -I$S/.
