@@ -24,6 +24,9 @@ u.strtdir bin.1
 u.strtdir bin.2
 { make clean && u.make -j ; } > /dev/null
 u.run ./bin.1/udx '
+glb = {
+    L = [16, 16, 16]
+}
 rbc = {
     @include "rbc.test.cfg"
 }
@@ -34,6 +37,9 @@ dump = {
 :
 :
 u.run ./bin.2/udx '
+glb = {
+    L = [16, 16, 16]
+}
 rbc = {
     @include "rbc.test.cfg"
 }
