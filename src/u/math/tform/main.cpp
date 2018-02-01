@@ -1,14 +1,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
 #include <mpi.h>
-
 #include <vector_types.h>
 
 #include <conf.h>
 #include "inc/conf.h"
 
+#include "parser/imp.h"
 #include "mpi/glb.h"
 #include "mpi/wrapper.h"
 #include "utils/msg.h"
@@ -248,6 +247,8 @@ int main(int argc, char **argv) {
     char **v;
     int c;
     const char delim[] = " \t";
+    Config *cfg;
+    conf_ini(&cfg);
     
     m::ini(&argc, &argv);
     msg_ini(m::rank);
@@ -261,7 +262,9 @@ int main(int argc, char **argv) {
     Grid  = flag("-g", &c, &v);
     Tex   = flag("-t", &c, &v);
     main2(c, v);
+    
     tok_fin(c, v);
-    coords_fin(/**/ coords);
+    coords_fin(coords);
+    conf_fin(cfg);
     m::fin();
 }
