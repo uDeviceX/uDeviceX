@@ -25,4 +25,4 @@ dump = {
     freq_field = 300;
     freq_parts = 300;
 };'
-u.avgh5 1 u 2 h5/flowfields-001[0123].h5 | uscale 0.1 > h5.out.txt
+u.avgh5 1 u 2 h5/flowfields-001[0123].h5 | uscale 0.05 > h5.out.txt
