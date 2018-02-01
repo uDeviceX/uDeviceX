@@ -242,6 +242,14 @@ static int flag(const char *a, int* pc, char ***pv) {
     *pc = c; *pv = v;
     return Flag;
 }
+void main3(int c, char **v) {
+    usg(c, v);
+    Chain = flag("-c", &c, &v);
+    Dev   = flag("-d", &c, &v);
+    Grid  = flag("-g", &c, &v);
+    Tex   = flag("-t", &c, &v);
+    main2(c, v);
+}
 int main(int argc, char **argv) {
     const char *arg;
     char **v;
@@ -255,12 +263,8 @@ int main(int argc, char **argv) {
     conf_read(argc, argv, /**/ cfg);
     conf_lookup_string(cfg, "a", &arg);
     tok_ini(arg, delim, /**/ &c, &v);
-    usg(c, v);
-    Chain = flag("-c", &c, &v);
-    Dev   = flag("-d", &c, &v);
-    Grid  = flag("-g", &c, &v);
-    Tex   = flag("-t", &c, &v);
-    main2(c, v);
+
+    main3(c, v);
 
     tok_fin(c, v);
     coords_fin(coords);
