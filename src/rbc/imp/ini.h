@@ -6,7 +6,7 @@ static void ini_common(RbcQuants *q, const int4 *tt) {
     UC(area_volume_ini(nv, nt, tt, MAX_CELL_NUM, /**/ &q->area_volume));
 }
 
-static void ini_ids(RbcQuants *q) { EMALLOC(MAX_CELL_NUM, &q->ii); }
+static void ini_ids(RbcQuants *q)  { EMALLOC(MAX_CELL_NUM, &q->ii); }
 static void ini_edg(RbcQuants *q)  { Dalloc(&q->shape.edg,  q->nv * RBCmd); }
 static void ini_anti(RbcQuants *q) { Dalloc(&q->shape.anti, q->nv * RBCmd); }
 
