@@ -15,7 +15,7 @@ u.conf conf/lina.h <<!
    rbcs
    numberdensity=1
    RBC_STRETCH MESH_SHIFT_CENTER
-   XS=48 YS=32 ZS=32 RBCnv=$nv
+   RBCnv=$nv
    dt=0.0001 tend=0.011
    run
 !
@@ -23,6 +23,9 @@ u.conf conf/lina.h <<!
 :
 u.strtdir
 RBC_RND=$seed u.run ./udx '
+glb = {
+    L = [48, 32, 32]
+}
 rbc = {
     @include "rbc.test.cfg"
 }
