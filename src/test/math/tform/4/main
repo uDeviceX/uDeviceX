@@ -8,7 +8,11 @@ run
 T="1 10 100"
 N="2 20 200"
 M="3 30 300"
-u.run >tform.txt ./udx -- a=\"-t $T $N $M\"  <<!
+u.run >tform.txt ./udx -- "
+a=\"-t $T $N $M\"
+glb = {
+    L = [16, 16, 16]
+}"  <<!
 4 40 400
 !
 mv tform.txt tform.out.txt

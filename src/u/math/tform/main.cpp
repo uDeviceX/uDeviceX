@@ -257,16 +257,16 @@ int main(int argc, char **argv) {
     Config *cfg;
     m::ini(&argc, &argv);
     msg_ini(m::rank);
-    coords_ini(m::cart, XS, YS, ZS, /**/ &coords);
-    conf_ini(&cfg);
-    conf_read(argc, argv, /**/ cfg);
-    conf_lookup_string(cfg, "a", &arg);
+    UC(conf_ini(&cfg));
+    UC(conf_read(argc, argv, /**/ cfg));
+    UC(coords_ini_conf(m::cart, cfg, /**/ &coords));
+    UC(conf_lookup_string(cfg, "a", &arg));
     tok_ini(arg, delim, /**/ &c, &v);
 
     main3(c, v);
 
     tok_fin(c, v);
-    coords_fin(coords);
-    conf_fin(cfg);
+    UC(coords_fin(coords));
+    UC(conf_fin(cfg));
     m::fin();
 }

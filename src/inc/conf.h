@@ -1,4 +1,8 @@
-#if defined(field_dumps) || defined (field_freq) || \
+#if defined(XS) || defined(YS) || defined(ZS)
+  #error Subdomain sizes are runtime
+#endif
+
+#if defined(field_dumps) || defined (field_freq) ||     \
     defined(part_dumps) || defined (part_freq)
 #error field and part dumps are runtime!
 #endif
