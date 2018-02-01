@@ -11,6 +11,9 @@ u.conf $C <<!
 :
 (make clean && u.make -j) > .make.log
 u.run ./udx '
+glb = {
+    L = [16, 16, 16]
+}
 bforce = {
     type = "constant";
     f    = [0.0333333,0.,0.];

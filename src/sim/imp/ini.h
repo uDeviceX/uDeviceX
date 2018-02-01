@@ -232,26 +232,26 @@ static void coords_log(const Coords *c) {
 void sim_ini(int argc, char **argv, MPI_Comm cart, /**/ Sim **sim) {
     Sim *s;
     int maxp;
+    Config *cfg;
+    
     EMALLOC(1, sim);
     s = *sim;
-
-    // TODO this will be runtime
-    s->L = make_int3(XS, YS, ZS);
-    maxp = SAFETY_FACTOR_MAXP * XS * YS * ZS * numberdensity;
     
     MC(m::Comm_dup(cart, &s->cart));
-
-    Config *cfg = s->cfg;
     datatype::ini();
-
-    UC(conf_ini(&cfg)); s->cfg = cfg;
+    
+    UC(conf_ini(&s->cfg));
+    cfg = s->cfg;
     UC(conf_read(argc, argv, /**/ cfg));
 
-    UC(read_opt(s->cfg, &s->opt));
-
-    UC(coords_ini(s->cart, XS, YS, ZS, /**/ &s->coords));
+    UC(coords_ini_conf(s->cart, cfg, /**/ &s->coords));
     UC(coords_log(s->coords));
 
+    s->L = subdomain(s->coords);
+    maxp = SAFETY_FACTOR_MAXP * s->L.x * s->L.y * s->L.z * numberdensity;
+    
+    UC(read_opt(s->cfg, &s->opt));
+    
     EMALLOC(3 * maxp, &s->pp_dump);
 
     if (rbcs) UC(ini_rbc(cfg, s->cart, s->L, /**/ &s->rbc));

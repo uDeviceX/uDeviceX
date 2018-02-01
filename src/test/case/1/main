@@ -9,7 +9,6 @@ W="$S/data/sdf/wall1/wall.dat"
 T=../test/case/1
 u.case -d "$D" -f "$W" sdf.dat -a "u.run ./udx $T/conf.cfg" \
 $U $C <<!
-   XS=12 YS=12 ZS=12
    tend=1.0 walls wall_creation=1
    run
 !

@@ -7,11 +7,14 @@ x=0.75 y=3 z=9; echo $x $y $z >  rigs-ic.txt
 x=8    y=8 z=8; echo $x $y $z >> rigs-ic.txt
 :
 u.conf conf/around.h <<!!!
-   XS=8 solids tend=1.0 walls wall_creation=100 kBT=1e-7
+   solids tend=1.0 walls wall_creation=100 kBT=1e-7
    run
 !!!
 { make clean && u.make -j ; } > /dev/null
 u.run 2 1 1 ./udx '
+glb = {
+    L = [8, 16, 16]
+}
 bforce = {
     type = "constant";
     f    = [1.6666667,0.,0.];

@@ -26,11 +26,17 @@ u.strtdir bin.1
 u.strtdir bin.2
 :
 u.run ./bin.1/udx '
+glb = {
+    L = [16, 32, 16]
+}
 dump = {
     parts = true;
     freq_parts = 100;
 };'
 u.run ./bin.2/udx '
+glb = {
+    L = [16, 32, 16]
+}
 bforce = {
     type = "double_poiseuille";
     a    = 6.666667;

@@ -18,7 +18,7 @@
 
 #include "parser/imp.h"
 
-static void write(const coords *c, const char *o, OffRead *cell) {
+static void write(const Coords *c, const char *o, OffRead *cell) {
     int nc;
     MeshWrite *mesh;
     MPI_Comm cart;
@@ -53,10 +53,10 @@ int main(int argc, char **argv) {
     UC(conf_ini(/**/ &cfg));
     UC(conf_read(argc, argv, /**/ cfg));
 
-    UC(coords_ini_conf(cart, cfg, /**/ &coords));
+    UC(coords_ini_conf(m::cart, cfg, /**/ &coords));
 
-    UC(conf_lookup_string(c, "i", &i));
-    UC(conf_lookup_string(c, "o", &o));
+    UC(conf_lookup_string(cfg, "i", &i));
+    UC(conf_lookup_string(cfg, "o", &o));
 
     msg_print("i = '%s'", i);
     msg_print("o = '%s'", o);

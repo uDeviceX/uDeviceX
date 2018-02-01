@@ -4,7 +4,6 @@ rm -rf h5 bop diag.txt solid_diag.txt
 echo -e "8 16 8" > rigs-ic.txt
 cp data/rig/sphere.ply rig.ply
 :
-Force="bforce={type=\"constant\"; f=[0.0333333, 0.0, 0.0];};"
 u.conf conf/double.poiseuille.h <<!!!
    kBT=1.0 solids sbounce_back
    tend=5.0 part_freq=100
@@ -14,6 +13,13 @@ u.conf conf/double.poiseuille.h <<!!!
    run
 !!!
 { make clean && u.make -j ; } > /dev/null
-u.run ./udx $Force 2>/dev/null
+u.run ./udx '
+glb = {
+    L = [16, 32, 16]
+}
+bforce = {
+    type = "constant"
+    f = [0.0333333, 0.0, 0.0]
+}' 2>/dev/null
 :
 awk '$NF == ":log_root:" { $NF = ""; print}' .000 > cubic.txt

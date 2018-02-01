@@ -7,13 +7,15 @@ ugeom.square -i $XS $YS $ZS $a sdf.dat
 u.conf "$S" "$U" "$C" <<!
   KL_SYNC
   dt=1e-4 tend=1e-4 walls wall_creation=1
-  XS=$XS YS=$YS ZS=$ZS
   run
 !
 { u.make clean && u.make -j; } > .make.log
-u.run ./udx '
+u.run ./udx "
+glb = {
+    L = [$XS, $YS, $ZS]
+}
 dump = {
     field = true;
     freq_field = 2000;
-};'
+};"
 cp h5/wall.xmf wall.out.xmf

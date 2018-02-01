@@ -11,7 +11,9 @@ u.conf conf/double.poiseuille.h <<!!!
 !!!
 { make clean && u.make -j ; } > /dev/null
 u.run ./udx '
-bforce = {
+glb = {
+    L = [16, 32, 16]
+}bforce = {
     type = "double_poiseuille";
     a    = 6.666667;
 };

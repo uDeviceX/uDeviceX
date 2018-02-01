@@ -12,12 +12,14 @@ echo 1 0 0 $x \
 u.conf conf/couette.h <<!!!
    KL_SYNC CC_SYNC
    RBCnv=$nv
-   XS=8 YS=12 ZS=16
    rbcs tend=0.5
    run
 !!!
 { make clean && u.make -j ; } > /dev/null
 u.run ./udx '
+glb = {
+    L = [8, 12, 16]
+}
 rbc = {
     @include "rbc.test.cfg"
 }

@@ -8,6 +8,9 @@ u.conf conf/default.h <<!!!
 !!!
 (make clean && u.make -j) > /dev/null
 u.run ./udx test/openbc/out.cfg '
+glb = {
+    L = [16, 16, 16]
+}
 dump = {
     field = true;
     parts = true;

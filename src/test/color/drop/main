@@ -4,10 +4,8 @@ rm -rf bop diag.txt h5
 s=.
 u=u/x
 u.cp.sdf yplates1/yplates.dat sdf.dat
-Domain="XS=16 YS=16 ZS=16"
 Walls="walls wall_creation=1"
 u.conf $s $u conf/zurich.h <<!!!
-   $Domain
    $Walls
    numberdensity=2
    tend=4.01
@@ -16,6 +14,9 @@ u.conf $s $u conf/zurich.h <<!!!
 !!!
 { make clean && u.make -j; } > make.log
 u.run ./udx '
+glb = {
+    L = [16, 16, 16]
+}
 bforce = {
     type = "constant";
     f = [0.6, 0.0, 0.0];
