@@ -39,9 +39,9 @@ static void fill_bags(int3 L, int n, const Particle *pp, hBags *b) {
     int i, j, *cc, c;
     Particle p0, p, **dst;
     int3 LW;
-    LW.x = L.x + XWM;
-    LW.y = L.y + YWM;
-    LW.z = L.z + ZWM;
+    LW.x = L.x + 2*XWM;
+    LW.y = L.y + 2*YWM;
+    LW.z = L.z + 2*ZWM;
 
     cc  = b->counts;
     dst = (Particle **) b->data;
