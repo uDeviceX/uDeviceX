@@ -1,4 +1,8 @@
 void rbc_shape_ini(Adj *adj, float *rr, /**/ RbcShape **pq) {
-    //    RbcShape *q;
-    //    EMALLOC(1, &q);
+    RbcShape *q;
+    EMALLOC(1, &q);
+}
+
+void rbc_shape_fin(RbcShape *q) {
+    EFREE(q);
 }
