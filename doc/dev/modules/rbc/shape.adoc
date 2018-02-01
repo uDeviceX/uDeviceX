@@ -1,7 +1,7 @@
 = shape RBC
 :src: ../../../../src
 
-
+Compute membrane quantities on host.
 
 [source,cpp]
 ----
