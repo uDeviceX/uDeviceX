@@ -243,7 +243,6 @@ static int flag(const char *a, int* pc, char ***pv) {
     return Flag;
 }
 void main3(int c, char **v) {
-    usg(c, v);
     Chain = flag("-c", &c, &v);
     Dev   = flag("-d", &c, &v);
     Grid  = flag("-g", &c, &v);
@@ -264,6 +263,7 @@ int main(int argc, char **argv) {
     conf_lookup_string(cfg, "a", &arg);
     tok_ini(arg, delim, /**/ &c, &v);
 
+    usg(c, v);
     main3(c, v);
 
     tok_fin(c, v);
