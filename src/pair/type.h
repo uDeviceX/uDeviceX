@@ -19,6 +19,12 @@ struct PairDPDC {
     float a[MAX_PAR], g[MAX_PAR], s[MAX_PAR];
 };
 
+/* mirrored */
+struct PairDPDCM {
+    int ncolors;
+    float a[MAX_COL], g[MAX_COL], s[MAX_COL];
+};
+
 struct PairDPDLJ {
     float a, g, s;
     float ljs, lje;

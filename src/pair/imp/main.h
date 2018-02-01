@@ -46,6 +46,10 @@ void pair_get_view_dpd_color(const PairParams *p, PairDPDC *v) {
     memcpy(v->s, p->s, sz);
 }
 
+void pair_get_view_dpd_mirrored(const PairParams*, PairDPDCM*) {
+    
+}
+
 void pair_get_view_dpd_lj(const PairParams *p, PairDPDLJ *v) {
     enum {PID=0};
     v->a = p->a[PID];
@@ -54,3 +58,4 @@ void pair_get_view_dpd_lj(const PairParams *p, PairDPDLJ *v) {
     v->ljs = p->ljs;
     v->lje = p->lje;
 }
+
