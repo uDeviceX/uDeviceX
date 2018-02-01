@@ -1,6 +1,7 @@
 struct RbcParams;
 struct RbcRnd;
 struct RbcForce { RbcRnd *rnd; };
+struct Force;
 void rbc_force_gen(const RbcQuants q, RbcForce *t);
 void rbc_force_fin(RbcForce *t);
 void rbc_force_apply(const RbcQuants q, const RbcForce t, const RbcParams *p, /**/ Force *ff);
