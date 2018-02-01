@@ -99,8 +99,8 @@ static void set_params(PairParams *p) {
     for (int i = 0; i < 3; ++i)
         s[i] = sqrt(2*kBT*g[i] / dt);
 
-    pair_set_lj(ljsigma, ljepsilon, p);
     pair_set_dpd(2, a, g, s, p);
+    pair_set_lj(ljsigma, ljepsilon, p);
 }
 
 int main(int argc, char **argv) {
