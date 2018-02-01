@@ -12,6 +12,9 @@ u.conf conf/double.poiseuille.h <<!!!
 !!!
 (make clean && u.make -j) > /dev/null
 u.run 1 1 2 ./udx test/vcont/main/vcon.cfg '
+glb = {
+    L = [16, 32, 16]
+}
 dump = {
     field = true;
     parts = true;
