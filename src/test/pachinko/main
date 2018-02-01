@@ -13,6 +13,9 @@ u.conf conf/test.h <<!!!
 !!!
 { make clean && u.make -j; } > /dev/null
 u.run ./udx '
+glb = {
+    L = [32, 56, 60]
+}
 bforce = {
     type = "constant";
     f    = [10.,0.,0.];
