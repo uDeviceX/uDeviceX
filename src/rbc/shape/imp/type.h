@@ -1,3 +1,5 @@
 struct RbcShape {
-    Adj *adj;
+    float *edg, *area;
+    int *anti;
+    float A, V;
 };
