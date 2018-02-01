@@ -25,7 +25,7 @@
 void dump(MPI_Comm comm, const Coords *coords, const char *path) {
     enum {X, Y, Z};
     int rank;
-    size_t size, nc;
+    size_t nc;
     float *rho, *u[3];
     int sx, sy, sz;
     const char *names[] = { "density", "u", "v", "w" };
@@ -37,15 +37,14 @@ void dump(MPI_Comm comm, const Coords *coords, const char *path) {
     sz = zs(coords);
     
     nc = sx * sy * sz;
-    size = nc*sizeof(rho[0]);
-    UC(emalloc(size, (void**) &rho));
-    UC(emalloc(size, (void**) &u[X]));
-    UC(emalloc(size, (void**) &u[Y]));
-    UC(emalloc(size, (void**) &u[Z]));
-
+    EMALLOC(nc, &rho);
+    EMALLOC(nc, &u[X]);
+    EMALLOC(nc, &u[Y]);
+    EMALLOC(nc, &u[Z]);
+    
     float *data[] = { rho, u[X], u[Y], u[Z] };
-    UC(h5_write(coords, comm, path, data, names, 4));
-    free(rho); free(u[X]); free(u[Y]); free(u[Z]);
+    UC(h5_write(coords, comm, path, data, names, 4));    
+    EFREE(rho); EFREE(u[X]); EFREE(u[Y]); EFREE(u[Z]);
     if (rank == 0) xmf_write(path, names, 4, sx, sy, sz);
 }
 
