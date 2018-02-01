@@ -97,27 +97,25 @@ static __device__ void pair_force(Param p, PairPa a, PairPa b, float rnd, /**/ P
     f->z = f0 * dr.z;
 }
 
-static __device__ int colors2pid(int ca, int cb, int ncolors) {
-    int c;
-    if (cb < ca) {
-        c = cb;
-        cb = ca;
-        ca = c;
-    }
-    return ca * (ca+1) / 2 + cb;
+static __device__ int colors2pid(int ca, int cb) {
+    int c0, c1;
+    c0 = ca < cb ? ca : cb;
+    c1 = ca < cb ? cb : ca;
+
+    return c1 * (c1+1) / 2 + c0;
 }
 
 static __device__ void pair_force(PairDPDC pc, PairPa a, PairPa b, float rnd, /**/ PairFo *f) {
     PairDPD p;
     int pid;
-    pid = colors2pid(a.color, b.color, pc.ncolors);
+    pid = colors2pid(a.color, b.color);
     p.a = pc.a[pid];
     p.g = pc.g[pid];
     p.s = pc.s[pid];
     pair_force(p, a, b, rnd, /**/ f);
 }
 
-/* mirrored: parameters from particle a only */
+/* mirrored: parameters from particle "a" only */
 static __device__ void pair_force(PairDPDCM pc, PairPa a, PairPa b, float rnd, /**/ PairFo *f) {
     PairDPD p;
     int pid = a.color;
