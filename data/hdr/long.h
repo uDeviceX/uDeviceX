@@ -1,10 +1,3 @@
-/* Part I (conf.base.h) */
-
-/* DOMAIN */
-#define XS                  4
-#define YS                  4
-#define ZS                  4
-
 /* DPD */
 #define numberdensity       1
 #define kBT                 1.e-8

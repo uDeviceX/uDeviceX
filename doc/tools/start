@@ -2,7 +2,7 @@
 
 : ${PYTHON=python2}
 
-e () { echo >&2 "cmd: $@"; eval "$@"; }
+e () { echo >/dev/null "cmd: $@"; eval "$@"; }
 
 e $PYTHON -m SimpleHTTPServer '&'
 e echo $! > .pid
