@@ -36,7 +36,7 @@ int cnt(const char *s0, const char *del) {
     return c;
 }
 
-void tok_ini0(char *s, char *del, /**/ int *pc, char ***pv) {
+void tok_ini0(char *s, const char *del, /**/ int *pc, char ***pv) {
     int i, c;
     char *tok;
     char **v;
@@ -50,7 +50,7 @@ void tok_ini0(char *s, char *del, /**/ int *pc, char ***pv) {
     *pc = c; *pv = v;
 }
 
-void tok_ini(const char *s0, char *del, /**/ int *pc, char ***pv) {
+void tok_ini(const char *s0, const char *del, /**/ int *pc, char ***pv) {
     char *s;
     s = strdup(s0);
     tok_ini0(s, del, /**/ pc, pv);

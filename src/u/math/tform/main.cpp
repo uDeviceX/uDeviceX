@@ -20,6 +20,7 @@
 #include "utils/msg.h"
 #include "wall/sdf/tform/imp.h"
 
+#include "tok.h"
 #include "lib/imp.h"
 
 struct TVec {
@@ -243,15 +244,24 @@ static int flag(const char *a, int* pc, char ***pv) {
     return Flag;
 }
 int main(int argc, char **argv) {
+    char arg[2048];
+    char **v;
+    int c;
+    const char delim[] = " \t";
+    
     m::ini(&argc, &argv);
     msg_ini(m::rank);
     coords_ini(m::cart, XS, YS, ZS, /**/ &coords);
-    usg(argc, argv);
-    Chain = flag("-c", &argc, &argv);
-    Dev   = flag("-d", &argc, &argv);
-    Grid  = flag("-g", &argc, &argv);
-    Tex   = flag("-t", &argc, &argv);
-    main2(argc, argv);
+    tok_cat(argc, argv, /**/ arg);
+    tok_ini(arg, delim, /**/ &c, &v);
+    
+    usg(c, v);
+    Chain = flag("-c", &c, &v);
+    Dev   = flag("-d", &c, &v);
+    Grid  = flag("-g", &c, &v);
+    Tex   = flag("-t", &c, &v);
+    main2(c, v);
+    tok_fin(c, v);
     coords_fin(/**/ coords);
     m::fin();
 }
