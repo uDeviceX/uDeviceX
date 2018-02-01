@@ -7,7 +7,11 @@ run
 (u.make clean && u.make -j) > /dev/null
 u.cp.sdf cyl1/cyl.dat  sdf.dat
 mkdir -p h5
-u.run ./udx 0 0 0 '
+u.run ./udx '
+pos = [0.0, 0.0, 0.0]
+glb = {
+    L = [16, 16, 16]
+}
 dump = {
     field = true;
     freq_field = 2000;

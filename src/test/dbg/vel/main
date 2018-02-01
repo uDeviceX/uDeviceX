@@ -1,5 +1,8 @@
 # TEST: dbg.vel
 u.conf0 u/dbg
 { u.make -j;     } > /dev/null
-u.run ./udx dbg={vel=true}
+u.run ./udx'
+dbg = { vel=true }
+glb = {L = [16, 16, 16]}
+};'
 echo $? > dbg.out.txt

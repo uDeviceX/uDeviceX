@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <mpi.h>
 #include <assert.h>
 
 #include <conf.h>
@@ -12,6 +13,12 @@
 #include "utils/error.h"
 #include "utils/imp.h"
 #include "utils/cc.h"
+
+#include "mpi/glb.h"
+#include "mpi/wrapper.h"
+#include "parser/imp.h"
+#include "coords/ini.h"
+#include "coords/imp.h"
 
 #include "partlist/type.h"
 
@@ -99,19 +106,24 @@ bool valid(int3 d, const int *starts, const int *counts, const Particle *pp, int
 }
 
 int main(int argc, char **argv) {
-    msg_ini(0);    
     Particle *pp, *ppout;
     Particle *pp_hst;
     int n = 0, nout, *starts, *counts;
     int3 dims;
     Clist clist;
     ClistMap *m;
+    Config *cfg;
+    Coords *coords;
 
-    dims.x = XS;
-    dims.y = YS;
-    dims.z = ZS;
+    m::ini(&argc, &argv);
+    msg_ini(m::rank);
     
-    clist_ini(dims.x, dims.y, dims.z, /**/ &clist);
+    UC(conf_ini(&cfg));
+    UC(conf_read(argc, argv, cfg));
+    UC(coords_ini_conf(m::cart, cfg, &coords));
+    dims = subdomain(coords);
+    
+    UC(clist_ini(dims.x, dims.y, dims.z, /**/ &clist));
 
     EMALLOC(MAXN, &pp_hst);
     EMALLOC(clist.ncells, &counts);
@@ -122,7 +134,7 @@ int main(int argc, char **argv) {
     read(&n, pp_hst);
     nout = num_parts_inside(dims, n, pp_hst);
 
-    clist_ini_map(n, 1, &clist, /**/ &m);
+    UC(clist_ini_map(n, 1, &clist, /**/ &m));
     
     CC(d::Memcpy(pp, pp_hst, n * sizeof(Particle), H2D));
     
@@ -144,7 +156,10 @@ int main(int argc, char **argv) {
     EFREE(counts);
     EFREE(starts);
     EFREE(pp_hst);
-
-    clist_fin(/**/ &clist);
-    clist_fin_map(/**/ m);
+    
+    UC(clist_fin(/**/ &clist));
+    UC(clist_fin_map(/**/ m));
+    UC(conf_fin(cfg));
+    UC(coords_fin(coords));
+    m::fin();
 }

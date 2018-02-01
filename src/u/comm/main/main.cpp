@@ -9,7 +9,9 @@
 #include "utils/msg.h"
 #include "mpi/glb.h"
 #include "mpi/wrapper.h"
-
+#include "parser/imp.h"
+#include "coords/ini.h"
+#include "coords/imp.h"
 #include "utils/error.h"
 
 #include "frag/imp.h"
@@ -49,18 +51,24 @@ void compare(const hBags *sb, const hBags *rb) {
 }
 
 int main(int argc, char **argv) {
-    m::ini(&argc, &argv);
-    msg_ini(m::rank);
-    msg_print("mpi size: %d", m::size);
-
     hBags sendB, recvB;
     Comm *comm;
     int capacity[NBAGS];
     float maxdensity = 26.f;
     int3 L;
-    L.x = XS;
-    L.y = YS;
-    L.z = ZS;
+    Config *cfg;
+    Coords *coords;
+    
+    m::ini(&argc, &argv);
+    msg_ini(m::rank);
+    msg_print("mpi size: %d", m::size);
+
+    UC(conf_ini(&cfg));
+    UC(conf_read(argc, argv, cfg));
+    UC(coords_ini_conf(m::cart, cfg, &coords));
+
+    L = subdomain(coords);
+
     fraghst::estimates(L, NBAGS, maxdensity, /**/ capacity);
 
     UC(comm_bags_ini(HST_ONLY, NONE, sizeof(int), capacity, /**/ &sendB, NULL));
@@ -82,6 +90,8 @@ int main(int argc, char **argv) {
     UC(comm_bags_fin(HST_ONLY, NONE, &sendB, NULL));
     UC(comm_bags_fin(HST_ONLY, NONE, &recvB, NULL));
     UC(comm_fin(/**/ comm));
-    
+
+    UC(coords_fin(coords));
+    UC(conf_fin(cfg));
     m::fin();
 }

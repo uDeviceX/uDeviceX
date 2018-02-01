@@ -20,6 +20,7 @@
 #include "coords/type.h"
 #include "coords/ini.h"
 #include "coords/imp.h"
+#include "parser/imp.h"
 #include "wall/wvel/type.h"
 
 #include "wall/sdf/imp.h"
@@ -37,13 +38,6 @@ namespace dev {
 }
 
 struct Part { float x, y, z; };
-static int    argc;
-static char **argv;
-/* left shift */
-void lshift() {
-    argc--;
-    if (argc < 1) ERR("u/sdf: not enough args");
-}
 
 void main0(Sdf *sdf, Part *p) {
     Sdf_v sdf_v;
@@ -53,37 +47,44 @@ void main0(Sdf *sdf, Part *p) {
     KL(dev::main, (1, 1), (sdf_v, x, y, z));
 }
 
-void main1(Part *p) {
+void main1(const Coords *c, Part *p) {
     Sdf *sdf;
-    Coords *coords;
     int3 L;
-    UC(coords_ini(m::cart, XS, YS, ZS, /**/ &coords));
-    L = subdomain(coords);
+    L = subdomain(c);
     UC(sdf_ini(L, &sdf));
-    UC(sdf_gen(coords, m::cart, true, sdf));
+    UC(sdf_gen(c, m::cart, true, sdf));
     UC(main0(sdf, p));
     UC(sdf_fin(sdf));
-    UC(coords_fin(coords));
     dSync();    
 }
 
-void ini_part(/**/ Part *p) {
-    float x, y, z;
-    x = atof(argv[argc - 1]); lshift();
-    y = atof(argv[argc - 1]); lshift();
-    z = atof(argv[argc - 1]); lshift();
-    p->x = x; p->y = y; p->z = z;
+void read_part(const Config *cfg, /**/ Part *p) {
+    enum {X, Y, Z, D};
+    float r[D];
+    int n;
+
+    UC(conf_lookup_vfloat(cfg, "pos", &n, r));
+    
+    p->x = r[X];
+    p->y = r[Y];
+    p->z = r[Z];
 }
 
-void main2() {
+int main(int argc, char **argv) {
     Part p;
-    ini_part(/**/ &p);
-    m::ini(&argc, &argv);
-    UC(main1(&p));
-    m::fin();
-}
+    Coords *coords;
+    Config *cfg;    
 
-int main(int argc0, char **argv0) {
-    argc = argc0; argv = argv0;
-    UC(main2());
+    m::ini(&argc, &argv);
+
+    UC(conf_ini(&cfg));
+    UC(conf_read(argc, argv, cfg));
+    UC(read_part(cfg, /**/ &p));
+    UC(coords_ini_conf(m::cart, cfg, &coords));
+
+    UC(main1(coords, &p));
+
+    UC(conf_fin(cfg));
+    UC(coords_fin(coords));
+    m::fin();
 }

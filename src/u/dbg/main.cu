@@ -18,6 +18,7 @@
 #include "inc/dev.h"
 #include "dbg/imp.h"
 #include "coords/ini.h"
+#include "coords/imp.h"
 
 const int n = 10;
 Particle *pp;
@@ -35,14 +36,14 @@ void free() {
 
 namespace dev {
 
-__global__ void fill_bugs(Particle *pp, int n) {
+__global__ void fill_bugs(int3 L, Particle *pp, int n) {
     int i = threadIdx.x + blockIdx.x * blockDim.x;
     Particle p;
     p.r[0] = p.r[1] = p.r[2] = 0;
     p.v[0] = p.v[1] = p.v[2] = 0;
 
     if (i >= n) return;
-    if (i == 1) p.r[0] = 1.5 * XS;  // invalid position
+    if (i == 1) p.r[0] = 1.5 * L.x;  // invalid position
     if (i <  1) p.v[0] = 0.f / 0.f; // nan
     pp[i] = p;
 }
@@ -58,8 +59,8 @@ __global__ void fill_bugs(Force *ff, int n) {
 }
 } // dev
 
-void fill_bugs() {
-    KL(dev::fill_bugs, (k_cnf(n)), (pp, n));
+void fill_bugs(int3 L) {
+    KL(dev::fill_bugs, (k_cnf(n)), (L, pp, n));
     KL(dev::fill_bugs, (k_cnf(n)), (ff, n));
 }
 
@@ -73,16 +74,19 @@ int main(int argc, char **argv) {
     Dbg *dbg;
     Config *cfg;
     Coords *coords;
+    int3 L;
     m::ini(&argc, &argv);
-    UC(coords_ini(m::cart, XS, YS, ZS, &coords));
     
     UC(conf_ini(&cfg));
     UC(dbg_ini(&dbg));
     UC(conf_read(argc, argv, cfg));
     UC(dbg_set_conf(cfg, dbg));
+    UC(coords_ini_conf(m::cart, cfg, &coords));
+
+    L = subdomain(coords);
     
     alloc();
-    fill_bugs();
+    fill_bugs(L);
     check(coords, dbg);
     free();
     UC(dbg_fin(dbg));

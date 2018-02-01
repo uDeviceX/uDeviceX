@@ -11,11 +11,15 @@
 #include "utils/cc.h"
 
 #include "mpi/glb.h"
+#include "mpi/wrapper.h"
 #include "inc/dev.h"
 #include "inc/type.h"
 #include "parser/imp.h"
 #include "partlist/type.h"
 #include "clist/imp.h"
+
+#include "coords/ini.h"
+#include "coords/imp.h"
 
 #include "cloud/imp.h"
 #include "flu/type.h"
@@ -74,8 +78,9 @@ int main(int argc, char **argv) {
     Config *cfg;
     const char *fin, *fout;
     Cloud cloud;
+    Coords *coords;
     int maxp;
-    int3 L = make_int3(XS, YS, ZS);
+    int3 L;
     
     m::ini(&argc, &argv);
     msg_ini(m::rank);
@@ -83,13 +88,16 @@ int main(int argc, char **argv) {
     UC(conf_ini(&cfg));
     UC(conf_read(argc, argv, cfg));
 
+    UC(coords_ini_conf(m::cart, cfg, &coords));
+    L = subdomain(coords);
+
     UC(conf_lookup_string(cfg, "in", &fin));
     UC(conf_lookup_string(cfg, "out", &fout));
     UC(read_pp(fin));
 
     maxp = n + 32;
 
-    UC(clist_ini(XS, YS, ZS, &clist));
+    UC(clist_ini(L.x, L.y, L.z, &clist));
     UC(clist_ini_map(maxp, 1, &clist, &cmap));
     UC(build_clist());
 
@@ -109,7 +117,8 @@ int main(int argc, char **argv) {
     UC(clist_fin(&clist));
     UC(clist_fin_map(cmap));
     UC(dealloc());
-    
+
+    UC(coords_fin(coords));
     UC(conf_fin(cfg));
     m::fin();
 }

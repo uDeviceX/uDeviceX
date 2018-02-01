@@ -9,4 +9,7 @@ u.conf . u/clist conf/default.h <<!!!
 !!!
 { u.make -j;     } > /dev/null
 u.pre.gen_random 20 $Y $Z $N > particles.out 
-u.run ./udx < particles.out > clist.out.txt
+u.run ./udx "
+glb = {
+    L = [$X, $Y, $Z];
+};" < particles.out > clist.out.txt
