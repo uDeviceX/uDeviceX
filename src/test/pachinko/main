@@ -7,7 +7,6 @@ S=`u.cp.s`
 u.cp.sdf pachinko/sdf.dat sdf.dat
 :
 u.conf conf/test.h <<!!!
-   XS=32 YS=56 ZS=60 
    tend=1.0 walls wall_creation=100
    run
 !!!
