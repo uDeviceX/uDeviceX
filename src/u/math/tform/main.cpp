@@ -219,7 +219,6 @@ static void main2(int c, char **v) {
     } else {
         read_vecs(&c, &v, &ve.v);
     }
-
     UC(main1(&ve));
 }
 
@@ -242,13 +241,6 @@ static int flag(const char *a, int* pc, char ***pv) {
     *pc = c; *pv = v;
     return Flag;
 }
-void main3(int c, char **v) {
-    Chain = flag("-c", &c, &v);
-    Dev   = flag("-d", &c, &v);
-    Grid  = flag("-g", &c, &v);
-    Tex   = flag("-t", &c, &v);
-    main2(c, v);
-}
 int main(int argc, char **argv) {
     const char *arg;
     char **v;
@@ -264,7 +256,11 @@ int main(int argc, char **argv) {
     tok_ini(arg, delim, /**/ &c, &v);
 
     usg(c, v);
-    main3(c, v);
+    Chain = flag("-c", &c, &v);
+    Dev   = flag("-d", &c, &v);
+    Grid  = flag("-g", &c, &v);
+    Tex   = flag("-t", &c, &v);
+    main2(c, v);
 
     tok_fin(c, v);
     coords_fin(coords);
