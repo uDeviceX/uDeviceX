@@ -22,8 +22,8 @@ static __device__ void rv2p(float3 r, float3 v, int i, /**/ Particle *pp) {
 }
 
 static __device__ bool is_small(float f) {return fabs(f) < 1e-6f;}
-static __device__ void crop(float *t) {
-    if (*t < -dt) *t = -dt;
+static __device__ void crop(float dt0, float *t) {
+    if (*t < -dt0) *t = -dt0;
     if (*t >   0) *t = 0;
 }
 
@@ -52,9 +52,13 @@ static __device__ void bounce_back_1p(Wvel_v wv, Coords_v c, Sdf_v *texsdf, floa
     float3 r0, rc, rw, dsdf;
     float phi, dphi, t;
     int l;
+
+    float dt0; dt0 = wv.dt0;
+    assert(dt0 >=0.95*dt && dt0 <=1.05*dt);
+
     r0 = *r;
     // get previous position
-    axpy(-dt, v, /**/ &r0);
+    axpy(-dt0, v, /**/ &r0);
 
     if (sdf(texsdf, r0.x, r0.y, r0.z) >= 0) {
         rescue(wv, c, texsdf, currsdf, /* io */ r, v);
@@ -62,7 +66,7 @@ static __device__ void bounce_back_1p(Wvel_v wv, Coords_v c, Sdf_v *texsdf, floa
     }
 
     /* use Newton iterations to solve sdf(rw) = 0 */
-    /* where rw = r + t * v, t in [-dt, 0]        */
+    /* where rw = r + t * v, t in [-dt0, 0]        */
     t = 0;
     for (l = 0; l < MAX_NEWTON; ++l) {
         rc = *r;
@@ -75,7 +79,7 @@ static __device__ void bounce_back_1p(Wvel_v wv, Coords_v c, Sdf_v *texsdf, floa
             break;
         
         t -= phi/dphi;
-        crop(&t);
+        crop(dt0, &t);
     }
 
     rw = *r;

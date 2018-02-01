@@ -103,5 +103,5 @@ $B/wall/sdf/imp.o: $S/utils/imp.h $S/inc/conf.h $S/utils/error.h $S/wall/sdf/lab
 $B/wall/sdf/label/imp.o: $S/utils/imp.h $S/inc/conf.h $S/wall/sdf/imp.h $S/utils/error.h $S/inc/type.h $S/d/q.h $S/wall/sdf/dev.h $S/wall/sdf/label/imp.h $S/utils/cc.h $S/inc/def.h $S/inc/dev.h $S/d/api.h $B/conf.h $S/wall/sdf/label/imp/main.h $S/math/tform/dev.h $S/math/tform/type.h $S/utils/kl.h $S/wall/sdf/type.h $S/wall/sdf/label/dev/main.h $S/wall/sdf/tex3d/type.h $S/d/ker.h $S/utils/msg.h $S/mpi/glb.h
 $B/wall/sdf/tex3d/imp.o: $S/utils/imp.h $S/inc/conf.h $S/utils/error.h $S/wall/sdf/tex3d/imp.h $S/utils/cc.h $S/d/api.h $B/conf.h $S/wall/sdf/tex3d/imp/main.h $S/wall/sdf/array3d/type.h $S/wall/sdf/tex3d/type.h
 $B/wall/sdf/tform/imp.o: $S/utils/error.h $S/wall/sdf/tform/imp.h $S/math/tform/imp.h $S/coords/imp.h
-$B/wall/wvel/conf.o: $S/utils/imp.h $S/utils/error.h $S/wall/wvel/imp.h $S/parser/imp.h
+$B/wall/wvel/conf.o: $S/utils/imp.h $S/utils/error.h $S/wall/wvel/imp.h $B/conf.h $S/parser/imp.h
 $B/wall/wvel/imp.o: $S/coords/type.h $S/utils/imp.h $S/utils/error.h $S/wall/wvel/imp.h $B/conf.h $S/wall/wvel/imp/main.h $S/wall/wvel/imp/type.h $S/wall/wvel/type.h $S/coords/imp.h $S/utils/msg.h

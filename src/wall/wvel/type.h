@@ -34,6 +34,7 @@ union WvelPar_v {
 struct Wvel_v {
     WvelPar_v p;
     int type;
+    float dt0;
 };
 
 typedef void (*wvel_fun) (WvelPar_v, Coords_v, float3, /**/ float3*); 

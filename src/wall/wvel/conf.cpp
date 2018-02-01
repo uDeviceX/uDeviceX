@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <vector_types.h>
 
+#include <conf.h>
+
 #include "utils/imp.h"
 #include "utils/error.h"
 #include "parser/imp.h"
@@ -11,7 +13,7 @@ void wvel_set_conf(const Config *cfg, Wvel *vw) {
     const char *type;
     UC(conf_lookup_string(cfg, "wvel.type", &type));
 
-    if      (same_str(type, "constant")) {
+    if (same_str(type, "constant")) {
         float3 u;
         UC(conf_lookup_float3(cfg, "wvel.u", &u));
         UC(wvel_set_cste(u, vw));
@@ -34,7 +36,6 @@ void wvel_set_conf(const Config *cfg, Wvel *vw) {
         UC(conf_lookup_int(cfg, "wvel.half", &half));
         UC(conf_lookup_int(cfg, "wvel.log_freq", &log_freq));
         UC(conf_lookup_float(cfg, "wvel.w", &w));
-
         UC(wvel_set_shear_sin(gdot, vdir, gdir, half, w, log_freq, vw));
     }
     else if (same_str(type, "hele shaw")) {
@@ -46,4 +47,9 @@ void wvel_set_conf(const Config *cfg, Wvel *vw) {
     else {
         ERR("unknown type <%s>\n", type);
     }
+
+    float dt0;
+    //UC(conf_lookup_float(cfg, "wvel.dt0", &dt0));
+    dt0 = dt;
+    UC(wvel_set_timestep(dt0, vw));
 }

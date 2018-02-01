@@ -43,4 +43,5 @@ union WvelPar {
 struct Wvel {
     WvelPar p;  /* parameters             */
     int type;
+    float dt0;
 };
