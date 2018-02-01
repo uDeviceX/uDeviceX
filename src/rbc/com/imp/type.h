@@ -1,4 +1,4 @@
-struct RbcComProps {
+struct RbcCom {
     int nv;
     int max_cell;
     float3 *drr, *dvv;  /* positions, velocities on device */
