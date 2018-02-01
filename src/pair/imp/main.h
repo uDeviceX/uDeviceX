@@ -46,8 +46,15 @@ void pair_get_view_dpd_color(const PairParams *p, PairDPDC *v) {
     memcpy(v->s, p->s, sz);
 }
 
-void pair_get_view_dpd_mirrored(const PairParams*, PairDPDCM*) {
-    
+void pair_get_view_dpd_mirrored(const PairParams *p, PairDPDCM *v) {
+    int i, j, nc;
+    nc = v->ncolors = p->ncolors;
+    for (i = 0; i < nc; ++i) {
+        j = (i+1) * (1+2) / 2 - 1; /* take all i-i pairs */
+        v->a[i] = p->a[j];
+        v->g[i] = p->g[j];
+        v->s[i] = p->s[j];
+    }
 }
 
 void pair_get_view_dpd_lj(const PairParams *p, PairDPDLJ *v) {
