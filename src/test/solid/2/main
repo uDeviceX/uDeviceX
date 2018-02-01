@@ -6,12 +6,15 @@ echo -e "16 16 8" > rigs-ic.txt
 cp data/rig/cyl.ply rig.ply
 :
 u.conf conf/test.h <<!!!
-   tend=2.01 walls wall_creation=100 ZS=16
+   tend=2.01 walls wall_creation=100
    solids spdir=2 sbounce_back dt=1e-3
    run
 !!!
 { make clean && u.make -j ; } > /dev/null
 u.run ./udx '
+glb = {
+    L = [32, 32, 16]
+}
 wvel = {
     type = "shear";
     gdot = 5.0;
