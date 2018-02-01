@@ -8,6 +8,9 @@ u.conf conf/long.h <<!!!
 !!!
 (make clean && u.make -j) > /dev/null 2>&1
 u.run ./udx '
+glb = {
+    L = [4, 4, 4]
+}
 dump = {
     parts = true;
     freq_parts = 10000;
