@@ -248,11 +248,12 @@ int main(int argc, char **argv) {
     int c;
     const char delim[] = " \t";
     Config *cfg;
-    conf_ini(&cfg);
-    
     m::ini(&argc, &argv);
     msg_ini(m::rank);
     coords_ini(m::cart, XS, YS, ZS, /**/ &coords);
+    conf_ini(&cfg);
+    conf_read(argc, argv, /**/ cfg);
+    
     tok_cat(argc, argv, /**/ arg);
     tok_ini(arg, delim, /**/ &c, &v);
     
