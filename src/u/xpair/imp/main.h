@@ -16,11 +16,18 @@ void pair(PairParams *par, Pa a, Pa b, int ka, int kb, float rnd) {
 
     
     if (k0 == SOLVENT_KIND) {
-        PairDPDC pv;
-        pair_get_view_dpd_color(par, &pv);
-        KL(dev::main, (1, 1), (pv, a, b, rnd));
+        if (k1 == WALL_KIND || k1 == SOLID_KIND) {
+            PairDPDCM pv;
+            pair_get_view_dpd_mirrored(par, &pv);
+            KL(dev::main, (1, 1), (pv, a, b, rnd));
+            
+        } else {
+            PairDPDC pv;
+            pair_get_view_dpd_color(par, &pv);
+            KL(dev::main, (1, 1), (pv, a, b, rnd));
+        }
     }
-    else {
+    else { // none is solvent
         PairDPDLJ pv;
         pair_get_view_dpd_lj(par, &pv);
         if (k0 == SOLID_KIND && k1 == SOLID_KIND)
