@@ -11,13 +11,18 @@ API:
   `ini()/fin()`
   `nxt(Force*)`      : called after every step
 
-  `[rbc/flu]_dump()` : true/false : should we dump?
-  `restart()`        : true/false : should we restart?
+  `[rbc/flu]_dump()` : true/false : dump?
+  `restart()`        : true/false : restart?
+  `wall()`           : create a wall?
 
   `dt()`             : a new timestep
   `t()`              : returns a current physical time
 
 How to dump/output?
   dumps are still indexed 0,1,2,...
-  But TControl dumps a file `time` for every dump?
+  But TControl dumps a file `time` for every type of the dump?
 
+  time of the dump 0
+  time of the dump 1
+  ...
+  time of the dump n  
