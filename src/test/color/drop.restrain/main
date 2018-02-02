@@ -15,6 +15,7 @@ u.conf $s $u conf/zurich.h <<!!!
 { make clean && u.make -j; } > make.log
 u.run ./udx '
 glb = {
+    dt = 5e-4
     L = [16, 16, 16]
 }
 bforce = {
