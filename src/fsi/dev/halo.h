@@ -8,7 +8,8 @@ static __device__ Pa warp2p(const Particle *pp, int i) {
     return p;
 }
 
-static __device__ void halo0(int3 L, const int *start, Pa A, int aid, Cloud cloud, int nb, float seed, /**/ float *fA, float *ffB) {
+template <typename Par>
+static __device__ void halo0(Par params, int3 L, const int *start, Pa A, int aid, Cloud cloud, int nb, float seed, /**/ float *fA, float *ffB) {
     enum {X, Y, Z};
 
     Pa B; /* remote particles */
@@ -26,13 +27,14 @@ static __device__ void halo0(int3 L, const int *start, Pa A, int aid, Cloud clou
             bid = m2id(m, i);
             cloud_get(cloud, bid, /**/ &B);
             f = ff2f(ffB, bid);
-            pair(A, B, random(aid, bid, seed), /**/ &fx, &fy, &fz,   f);
+            pair(params, A, B, random(aid, bid, seed), /**/ &fx, &fy, &fz,   f);
         }
     }
     fA[X] += fx; fA[Y] += fy; fA[Z] += fz;
 }
 
-static __device__ void halo1(int3 L, const int *cellsstart, int27 starts, Pap26 pp, Fop26 ff, int aid, Cloud cloud, int nb, float seed, /**/ float *ffB) {
+template <typename Par>
+static __device__ void halo1(Par params, int3 L, const int *cellsstart, int27 starts, Pap26 pp, Fop26 ff, int aid, Cloud cloud, int nb, float seed, /**/ float *ffB) {
     int fid; /* fragment id */
     int start;
     Pa A;
@@ -42,16 +44,16 @@ static __device__ void halo1(int3 L, const int *cellsstart, int27 starts, Pap26 
     start = starts.d[fid];
 
     A = warp2p(pp.d[fid], aid - start);
-    A.kind = SOLID_KIND;
-
+    
     fA = ff.d[fid][aid-start].f;
 
-    halo0(L, cellsstart, A, aid, cloud, nb, seed, /**/ fA, ffB);
+    halo0(params, L, cellsstart, A, aid, cloud, nb, seed, /**/ fA, ffB);
 }
 
-__global__ void halo(int3 L, const int *cellsstart, int27 starts, Pap26 pp, Fop26 ff, Cloud cloud, int na, int nb, float seed, /**/ float *ffB) {
+template <typename Par>
+__global__ void halo(Par params, int3 L, const int *cellsstart, int27 starts, Pap26 pp, Fop26 ff, Cloud cloud, int na, int nb, float seed, /**/ float *ffB) {
     int aid;
     aid = threadIdx.x + blockDim.x * blockIdx.x;
     if (aid >= na) return;
-    halo1(L, cellsstart, starts, pp, ff, aid, cloud, nb, seed, /**/ ffB);
+    halo1(params, L, cellsstart, starts, pp, ff, aid, cloud, nb, seed, /**/ ffB);
 }

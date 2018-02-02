@@ -12,6 +12,7 @@
 
 #include "math/rnd/imp.h"
 #include "math/rnd/dev.h"
+#include "math/dev.h"
 
 #include "inc/def.h"
 #include "utils/msg.h"
@@ -28,11 +29,11 @@
 #include "inc/dev.h"
 #include "dbg/imp.h"
 
-#include "forces/type.h"
-#include "forces/pack.h"
-#include "forces/imp.h"
-#include "cloud/imp.h"
-#include "cloud/dev.h"
+#include "pair/type.h"
+#include "pair/dev.h"
+#include "pair/imp.h"
+#include "xcloud/imp.h"
+#include "xcloud/dev.h"
 
 /* local */
 

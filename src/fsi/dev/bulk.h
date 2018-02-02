@@ -10,7 +10,6 @@ static __device__ void p2rv(const float *p, int i, /**/
 
 static __device__ void pp2p(const float *pp, int i, /**/ Pa *p) { /* TODO gets force::Pa directly */
     p2rv(pp, i, /**/ &p->x, &p->y, &p->z,   &p->vx, &p->vy, &p->vz);
-    p->kind = SOLID_KIND;
 }
 
 static __device__ int p2map(int3 L, const int *start, int zplane, int n, const Pa p, /**/ Map *m) {
@@ -27,7 +26,8 @@ static __device__ float dist(Pa a, Pa b) {
     return sqrt(dx*dx + dy*dy + dz*dz);
 }
 
-static __device__ void bulk0(const Pa a, Cloud cloud, int lid, const Map m, float seed, /**/
+template <typename Par>
+static __device__ void bulk0(Par params, const Pa a, Cloud cloud, int lid, const Map m, float seed, /**/
                              float *fx, float *fy, float *fz, float *ff) {
     /* "[a]ocal" and "[b]emote" particles */
     Pa b;
@@ -38,20 +38,22 @@ static __device__ void bulk0(const Pa a, Cloud cloud, int lid, const Map m, floa
         rid = m2id(m, i);
         cloud_get(cloud, rid, /**/ &b);
         f = ff2f(ff, rid);
-        pair(a, b, random(lid, rid, seed), /**/ fx, fy, fz,   f);
+        pair(params, a, b, random(lid, rid, seed), /**/ fx, fy, fz,   f);
     }
 }
 
-static __device__ void bulk1(const Pa a, Cloud cloud,
+template <typename Par>
+static __device__ void bulk1(Par params, const Pa a, Cloud cloud,
                              const Fo f, int i, const Map m, float seed, /**/ float *ff) {
     float fx, fy, fz; /* local force */
-    bulk0(a, cloud, i, m, seed, /**/ &fx, &fy, &fz, ff);
+    bulk0(params, a, cloud, i, m, seed, /**/ &fx, &fy, &fz, ff);
     atomicAdd(f.x, fx);
     atomicAdd(f.y, fy);
     atomicAdd(f.z, fz);
 }
 
-static __device__ void bulk2(int3 L, const int *start, float *ppA, Cloud cloud, int i, int zplane, int n, float seed,
+template <typename Par>
+static __device__ void bulk2(Par params, int3 L, const int *start, float *ppA, Cloud cloud, int i, int zplane, int n, float seed,
                              /**/ float *ff, float *ff0) {
     Pa p;
     Fo f; /* "local" particle */
@@ -59,14 +61,15 @@ static __device__ void bulk2(int3 L, const int *start, float *ppA, Cloud cloud, 
     pp2p(ppA, i, /**/ &p);
     f = ff2f(ff, i);
     if (!p2map(L, start, zplane, n, p, /**/ &m)) return;
-    bulk1(p, cloud, f, i, m, seed, /**/ ff0);
+    bulk1(params, p, cloud, f, i, m, seed, /**/ ff0);
 }
 
-__global__ void bulk(int3 L, const int *start, float *ppA, Cloud cloud, int n0, int n1, float seed, float *ff, float *ff0) {
+template <typename Par>
+__global__ void bulk(Par params, int3 L, const int *start, float *ppA, Cloud cloud, int n0, int n1, float seed, float *ff, float *ff0) {
     int gid, i, zplane;
     gid    = threadIdx.x + blockDim.x * blockIdx.x;
     i      = gid / 3;
     zplane = gid % 3;
     if (i >= n0) return;
-    bulk2(L, start, ppA, cloud, i, zplane, n1, seed, ff, ff0);
+    bulk2(params, L, start, ppA, cloud, i, zplane, n1, seed, ff, ff0);
 }

@@ -243,9 +243,11 @@ static void set_params(PairParams *p) {
 static void ini_pair_params(Sim *s) {
     UC(pair_ini(&s->flu.params));
     UC(pair_ini(&s->objinter.cntparams));
+    UC(pair_ini(&s->objinter.fsiparams));
 
     UC(set_params(s->flu.params));
     UC(set_params(s->objinter.cntparams));
+    UC(set_params(s->objinter.fsiparams));
 }
 
 void sim_ini(int argc, char **argv, MPI_Comm cart, /**/ Sim **sim) {
