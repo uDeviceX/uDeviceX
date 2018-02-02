@@ -10,10 +10,13 @@ static void garea_volume(RbcQuants q, /**/ float *a, float *v) {
 }
 
 static void dump(const Coords *coords, RbcQuants q, RbcForce t, MeshWrite *mesh_write) {
+    float dt0;
     int n;
     Particle *pp;
     float area, volume, area0, volume0;
     static int i = 0;
+
+    dt0 = dt;
     n = q.nc * q.nv;
     UC(emalloc(n*sizeof(Particle), (void**)&pp));
     cD2H(pp, q.pp, q.n);
@@ -22,7 +25,7 @@ static void dump(const Coords *coords, RbcQuants q, RbcForce t, MeshWrite *mesh_
     UC(rbc_force_stat(/**/ &area0, &volume0));
     UC(garea_volume(q, /**/ &area, &volume));
     msg_print("av: %g %g", area/area0, volume/volume0);
-    diagnostics(m::cart, n, pp, i);
+    diagnostics(dt0, m::cart, n, pp, i);
     free(pp);
 }
 

@@ -86,7 +86,7 @@ void dump_diag_after(float dt0, int it, bool wall0, bool solid0, Sim *s) { /* af
     }
 }
 
-static void diag(int it, Sim *s) {
+static void diag(float dt0, int it, Sim *s) {
     const Flu *flu = &s->flu;
     const Rbc *rbc = &s->rbc;
     const Rig *rig = &s->rig;
@@ -94,7 +94,7 @@ static void diag(int it, Sim *s) {
     if (rbcs)       n += rbc->q.n;
     if (s->solids0) n += rig->q.n;
     dev2hst(s);
-    diagnostics(s->cart, n, s->pp_dump, it);
+    diagnostics(dt0, s->cart, n, s->pp_dump, it);
 }
 
 void dump_strt_templ(const Coords *coords, Wall *w, Sim *s) { /* template dumps (wall, solid) */
@@ -114,13 +114,13 @@ void dump_strt(int id, Sim *s) {
     if (solids)     rig_strt_dump(s->coords, id, &rig->q);
 }
 
-void dump_diag0(int it, Sim *s) { /* generic dump */
+void dump_diag0(float dt0, int it, Sim *s) { /* generic dump */
     const Opt *o = &s->opt;
 
     if (it % o->freq_parts == 0) {
         if (o->dump_parts) dump_part(it, s);
         if (rbcs)          dump_rbcs(s);
-        diag(it, s);
+        diag(dt0, it, s);
     }
     if (o->dump_field && it % o->freq_field == 0) dump_grid(s);
     if (strt_dumps  && it % strt_freq == 0)  dump_strt(it / strt_freq, s);

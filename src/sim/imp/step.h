@@ -20,7 +20,7 @@ void step(float dt0, BForce *bforce, bool wall0, int ts, int it, Sim *s) {
 
     UC(check_forces(dt0, s));
     
-    dump_diag0(it, s);
+    dump_diag0(dt0, it, s);
     dump_diag_after(dt0, it, wall0, s->solids0, s);
     body_force(it, bforce, s);
 
