@@ -6,13 +6,14 @@ rm -rf bop h5 diag.txt
 u=u/safe
 s=`pwd`
 u.conf "$s" $u conf/double.poiseuille.h <<!!!
-   dt=1e3 numberdensity=1
+   numberdensity=1
    tend=1e4
    run
 !!!
 (make clean && u.make -j) > /dev/null
 u.run ./udx '
 glb = {
+    dt = 1e3
     L = [16, 32, 16]
 }
 dump = {

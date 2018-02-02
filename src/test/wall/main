@@ -11,6 +11,7 @@ u.conf conf/test.h <<!!!
 { make clean && u.make -j; } > /dev/null
 u.run 1 1 3 ./udx '
 glb = {
+    dt = 5e-4
     L = [12, 12, 12]
 }
 wvel = {
