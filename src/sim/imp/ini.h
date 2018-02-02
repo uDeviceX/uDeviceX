@@ -231,12 +231,13 @@ static void coords_log(const Coords *c) {
 
 // TODO: from conf
 static void set_params(PairParams *p) {
+    enum {ncolors = 2;}
     float a[] = {adpd_b, adpd_br, adpd_r};
     float g[] = {gdpd_b, gdpd_br, gdpd_r};
     float s[3];
     for (int i = 0; i < 3; ++i)
         s[i] = sqrt(2 * kBT * g[i] / dt);
-    UC(pair_set_dpd(2, a, g, s, p));
+    UC(pair_set_dpd(ncolors, a, g, s, p));
     UC(pair_set_lj(ljsigma, ljepsilon, p));
 }
 
