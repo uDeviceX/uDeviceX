@@ -87,7 +87,7 @@ static void set_dev(float dt0, long it, WvelShearSin p, Wvel_v *wv) {
         msg_print("WVEL_SIN: gd = %6.3g", gdot);
 }
 
-static void set_dev(float dt0, long it, WvelHS p, Wvel_v *wv) {
+static void set_dev(float dt0, WvelHS p, Wvel_v *wv) {
     wv->type = WALL_VEL_V_HS;    
     wv->p.hs.u = p.u;
     wv->p.hs.h = p.h;
@@ -106,7 +106,7 @@ void wvel_get_view(long it, const Wvel *wv, /**/ Wvel_v *view) {
         set_dev(wv->dt0, it, wv->p.shearsin, /**/ view);
         break;
     case WALL_VEL_HS:
-        set_dev(wv->dt0, it, wv->p.hs, /**/ view);
+        set_dev(wv->dt0, wv->p.hs, /**/ view);
         break;
     default:
         ERR("wrong type provided: <%d>", wv->type);
