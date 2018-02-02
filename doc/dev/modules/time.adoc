@@ -17,12 +17,3 @@ API:
 
   `dt()`             : a new timestep
   `t()`              : returns a current physical time
-
-How to dump/output?
-  dumps are still indexed 0,1,2,...
-  But TControl dumps a file `time` for every type of the dump?
-
-  time of the dump 0
-  time of the dump 1
-  ...
-  time of the dump n  
