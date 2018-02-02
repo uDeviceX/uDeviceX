@@ -17,7 +17,7 @@ from _fragment ids_ to _directions_.
 
 == interface
 
-The major part of the functions are avalaible to both device and host,
+The major part of the functions are available to both device and host,
 within the namespaces `fragdev` and `fraghst`, respectively.
 
 
@@ -41,7 +41,7 @@ include::{src}/frag/imp.h[tags=d2i]
 ----
 include::{src}/frag/imp.h[tags=ncell]
 ----
-<1> given subdomain sizes `L`, returns number of neighbouring cells to
+<1> given sub-domain sizes `L`, returns number of neighboring cells to
 fragment with id `i`
 
 [source, c++]
