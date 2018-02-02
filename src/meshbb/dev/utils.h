@@ -8,15 +8,15 @@ static __device__ bool valid(real dt0, real t) {return (t >= 0 && t <= dt0);}
 // TODO belongs to scheme/ ?
 // BB assumes r0 + v0 dt = r1 for now
 #ifdef FORWARD_EULER
-__device__ void rvprev(const real3_t *r1, const real3_t *v1, const float *f0, /**/ real3_t *r0, real3_t *v0) {
+__device__ void rvprev(real dt0, const real3_t *r1, const real3_t *v1, const float *f0, /**/ real3_t *r0, real3_t *v0) {
     enum {X, Y, Z};
-    v0->x = v1->x - f0[X] * dt;
-    v0->y = v1->y - f0[Y] * dt;
-    v0->z = v1->z - f0[Z] * dt;
+    v0->x = v1->x - f0[X] * dt0;
+    v0->y = v1->y - f0[Y] * dt0;
+    v0->z = v1->z - f0[Z] * dt0;
 
-    r0->x = r1->x - v0->x * dt;
-    r0->y = r1->y - v0->y * dt;
-    r0->z = r1->z - v0->z * dt;
+    r0->x = r1->x - v0->x * dt0;
+    r0->y = r1->y - v0->y * dt0;
+    r0->z = r1->z - v0->z * dt0;
 }
 #else // velocity-verlet
 __device__ void rvprev(real dt0, const real3_t *r1, const real3_t *v1, const float *, /**/ real3_t *r0, real3_t *v0) {
