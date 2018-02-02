@@ -6,12 +6,16 @@ $B/d/api.o: $S/d/api.cu; $N -I$S/d -I$S/.
 $B/fluforces/bulk/imp.o: $S/fluforces/bulk/imp.cu; $N -I$S/fluforces/bulk -I$S/.
 $B/fluforces/halo/imp.o: $S/fluforces/halo/imp.cu; $N -I$S/fluforces/halo -I$S/.
 $B/fluforces/imp.o: $S/fluforces/imp.cu; $N -I$S/fluforces -I$S/.
+$B/fluforces/xbulk/imp.o: $S/fluforces/xbulk/imp.cu; $N -I$S/fluforces/xbulk -I$S/.
+$B/fluforces/xhalo/imp.o: $S/fluforces/xhalo/imp.cu; $N -I$S/fluforces/xhalo -I$S/.
 $B/frag/imp.o: $S/frag/imp.cpp; $X -I$S/frag -I$S/.
 $B/io/txt/imp.o: $S/io/txt/imp.cpp; $X -I$S/io/txt -I$S/.
 $B/math/rnd/imp.o: $S/math/rnd/imp.cpp; $X -I$S/math/rnd -I$S/.
 $B/mpi/glb.o: $S/mpi/glb.cpp; $X -I$S/mpi -I$S/.
 $B/mpi/type.o: $S/mpi/type.cpp; $X -I$S/mpi -I$S/.
 $B/mpi/wrapper.o: $S/mpi/wrapper.cpp; $X -I$S/mpi -I$S/.
+$B/pair/conf.o: $S/pair/conf.cpp; $X -I$S/pair -I$S/.
+$B/pair/imp.o: $S/pair/imp.cpp; $X -I$S/pair -I$S/.
 $B/parser/imp.o: $S/parser/imp.cpp; $X -I$S/parser -I$S/.
 $B/u/bulk/main.o: $S/u/bulk/main.cu; $N -I$S/u/bulk -I$S/.
 $B/utils/cc.o: $S/utils/cc.cpp; $X -I$S/utils -I$S/.
