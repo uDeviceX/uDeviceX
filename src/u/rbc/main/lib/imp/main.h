@@ -36,12 +36,13 @@ static void body_force(long it, const Coords *coords, const BForce *bf, RbcQuant
 static void run0(const Coords *coords, int part_freq, const BForce *bforce,
                  MoveParams *moveparams, RbcQuants q, RbcForce t,
                  const RbcParams *par, RbcStretch *stretch, MeshWrite *mesh_write, Force *f) {
+    float dt0 = dt;
     long i;
-    long nsteps = (long)(tend / dt);
+    long nsteps = (long)(tend / dt0);
     msg_print("will take %ld steps", nsteps);
     for (i = 0; i < nsteps; i++) {
         Dzero(f, q.n);
-        rbc_force_apply(q, t, par, /**/ f);
+        rbc_force_apply(dt0, q, t, par, /**/ f);
         stretch::apply(q.nc, stretch, /**/ f);
         if (pushrbc) body_force(i, coords, bforce, q, /**/ f);
         scheme_move_apply(moveparams, rbc_mass, q.n, f, q.pp);

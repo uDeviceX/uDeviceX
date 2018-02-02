@@ -65,39 +65,40 @@ static void write(int n, Particle *p, Force *f) {
     EFREE(f_hst);
 }
 
-static void run0(RbcQuants q, RbcForce t, const RbcParams *par, Force *f) {
-    rbc_force_apply(q, t, par, /**/ f);
+static void run0(float dt0, RbcQuants q, RbcForce t, const RbcParams *par, Force *f) {
+    rbc_force_apply(dt0, q, t, par, /**/ f);
     write(q.n, q.pp, f);
 }
 
-static void run1(RbcQuants q, RbcForce t, const RbcParams *par) {
+static void run1(float dt0, RbcQuants q, RbcForce t, const RbcParams *par) {
     Force *f;
     Dalloc(&f, q.n);
     Dzero(f, q.n);
 
-    run0(q, t, par, f);
+    run0(dt0, q, t, par, f);
     Dfree(f);
 }
 
-static void run2(const Coords *coords, OffRead *off, const char *ic, const RbcParams *par, RbcQuants q) {
+static void run2(float dt0, const Coords *coords, OffRead *off, const char *ic, const RbcParams *par, RbcQuants q) {
     RbcForce t;
     rbc_gen_quants(coords, m::cart, off, ic, /**/ &q);
     rbc_force_gen(q, &t);
-    run1(q, t, par);
+    run1(dt0, q, t, par);
     rbc_force_fin(&t);
 }
 
-void run(const Coords *coords, const char *cell, const char *ic, const RbcParams *par) {
+void run(float dt0, const Coords *coords, const char *cell, const char *ic, const RbcParams *par) {
     OffRead *off;
     RbcQuants q;
     UC(off_read(cell, /**/ &off));
     UC(rbc_ini(off, &q));
-    UC(run2(coords, off, ic, par, q));
+    UC(run2(dt0, coords, off, ic, par, q));
     UC(rbc_fin(&q));
     UC(off_fin(off));
 }
 
 int main(int argc, char **argv) {
+    float dt0 = dt;
     Config *cfg;
     Coords *coords;
     RbcParams *par;
