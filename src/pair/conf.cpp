@@ -59,6 +59,14 @@ void pair_set_conf(const Config *cfg, const char *base, PairParams *par) {
         UC(pair_set_dpd(na, a, g, s, /**/ par));
     }
     if (lj) {
+        float s, e;
 
+        get_desc(base, "ljs", desc);
+        UC(conf_lookup_float(cfg, desc, &s));
+
+        get_desc(base, "lje", desc);
+        UC(conf_lookup_float(cfg, desc, &e));
+
+        UC(pair_set_lj(s, e, /**/ par));
     }
 }
