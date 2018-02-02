@@ -1,0 +1,21 @@
+= Time control
+
+Controls time step, output, restart dumps, wall creation step.
+
+Configuration:
+tstart, tene, twall : in physical units
+[rbc/flu]_dump_interval, restart_interval : in physical units
+
+API:
+  ini()/fin()
+  nxt(Force*) called after every step
+
+  [rbc/flu]_dump() : true/false
+  restart()        : true/false
+
+  dt()             : returns new timestep
+
+How to dump/output?
+  dumps are still indexed 0,1,2,...
+  But TControl dumps a file `time` for every dump?
+
