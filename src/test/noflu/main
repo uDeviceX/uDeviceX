@@ -15,12 +15,10 @@ glb = {
     dt = 5e-4
     L = [16, 16, 16]
 }
-
 bforce = {
     type = "constant"
     f    = [0.0333333,0.,0.]
 }
-
 dump = {
     field = true
     parts = true
