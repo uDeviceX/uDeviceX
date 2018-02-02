@@ -241,14 +241,14 @@ static void set_params(float dt0, PairParams *p) {
     UC(pair_set_lj(ljsigma, ljepsilon, p));
 }
 
-static void ini_pair_params(float dt0, Sim *s) {
+static void ini_pair_params(Sim *s) {
     UC(pair_ini(&s->flu.params));
     UC(pair_ini(&s->objinter.cntparams));
     UC(pair_ini(&s->objinter.fsiparams));
 
-    UC(set_params(dt0, s->flu.params));
-    UC(set_params(dt0, s->objinter.cntparams));
-    UC(set_params(dt0, s->objinter.fsiparams));
+    UC(set_params(s->dt0, s->flu.params));
+    UC(set_params(s->dt0, s->objinter.cntparams));
+    UC(set_params(s->dt0, s->objinter.fsiparams));
 }
 
 void sim_ini(int argc, char **argv, MPI_Comm cart, /**/ Sim **sim) {
@@ -271,9 +271,10 @@ void sim_ini(int argc, char **argv, MPI_Comm cart, /**/ Sim **sim) {
 
     s->L = subdomain(s->coords);
     maxp = SAFETY_FACTOR_MAXP * s->L.x * s->L.y * s->L.z * numberdensity;
+    UC(conf_lookup_float(cfg, "vcon.factor", &s->dt0));
     
     UC(read_opt(s->cfg, &s->opt));
-    UC(ini_pair_params(dt0, s));
+    UC(ini_pair_params(s));
     
     EMALLOC(3 * maxp, &s->pp_dump);
 

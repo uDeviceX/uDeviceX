@@ -31,12 +31,11 @@ static void gen(float dt0, const Coords *coords, Wall *w, Sim *s) { /* generate 
 }
 
 void sim_gen(Sim *s) {
-    float dt0 = dt;
     Flu *flu = &s->flu;
     Rbc *rbc = &s->rbc;
     Wall *wall = &s->wall;
     OffRead *cell = s->rbc.cell;
-
+    float dt0 = s->dt0;
 
     UC(flu_gen_quants(s->coords, s->gen_color, &flu->q));
     UC(flu_build_cells(&flu->q));
@@ -68,7 +67,7 @@ void sim_gen(Sim *s) {
 }
 
 void sim_strt(Sim *s) {
-    float dt0 = dt;
+    float dt0 = s->dt0;
     long nsteps = (long)(tend / dt0);
     Flu *flu = &s->flu;
     Rbc *rbc = &s->rbc;
