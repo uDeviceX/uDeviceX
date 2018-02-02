@@ -127,6 +127,8 @@ static void fin_vcon(Vcon *c) {
 
 static void fin_pair_params(Sim *s) {
     UC(pair_fin(s->flu.params));
+    UC(pair_fin(s->objinter.cntparams));
+    UC(pair_fin(s->objinter.fsiparams));
 }
 
 void sim_fin(Sim *s) {
