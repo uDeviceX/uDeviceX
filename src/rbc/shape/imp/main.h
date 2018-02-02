@@ -1,11 +1,17 @@
 void compute_edg(Adj *adj, const float *rr, /**/ float *edg) {
     int i, valid, n;
+    const float *r0, *r1;
+    float r01[3];
+    float a;
     AdjMap m;
     n = adj_get_max(adj);
     for (i = 0; i < n; i++) {
         valid = adj_get_map(i, adj, /**/ &m);
         if (!valid) continue;
-        msg_print("ijk: %d %d %d", m.i0, m.i1, m.i2);
+        r0 = &rr[3*m.i0]; r1 = &rr[3*m.i1];
+        diff(r0, r1, /**/ r01);
+        a = vabs(r01);
+        edg[i] = a;
     }
 }
 
