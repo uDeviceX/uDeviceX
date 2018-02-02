@@ -8,14 +8,14 @@ static __device__ void edg_rnd(Shape shape, int i0, real *rnd, int  j, /**/ Rnd0
     rnd0->r = rnd[j];
 }
 
-static __device__ real  frnd0(float dt0, RbcParams_v par, real rnd) {
+static __device__ real  frnd0(real dt0, RbcParams_v par, real rnd) {
     real f, g, T;
     g = par.gammaC; T = par.kBT0;
     f  = sqrtf(2*g*T/dt0)*rnd;
     return f;
 }
 
-static __device__ real3 frnd(float dt0, RbcParams_v par, real3 r1, real3 r2, const Rnd0 rnd) { /* random force */
+static __device__ real3 frnd(read dt0, RbcParams_v par, real3 r1, real3 r2, const Rnd0 rnd) { /* random force */
     real3 dr, f;
     real r, f0;
     diff(&r1, &r2, /**/ &dr);

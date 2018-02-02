@@ -21,7 +21,7 @@ static __device__ Part tex2Part(const Particle *pp, int i) {
     return p;
 }
 
-static __device__ real3 adj_tris(float dt0,
+static __device__ real3 adj_tris(real dt0,
                                  RbcParams_v par, const Particle *pp,  const Part p0, const real *av,
                                  const Shape0 shape, const Rnd0 rnd,
                                  AdjMap *m) {
