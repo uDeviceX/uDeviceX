@@ -14,7 +14,14 @@ static void halo_interactions(Par params, Fsi *fsi, Pap26 PP, Fop26 FF, int coun
 }
 
 void fsi_halo(const PairParams *params, Fsi *fsi, Pap26 PP, Fop26 FF, int counts[26]) {
-    PairDPDCM pv;
-    pair_get_view_dpd_mirrored(params, &pv);
-    halo_interactions(pv, fsi, PP, FF, counts);
+    if (multi_solvent) {
+        PairDPDCM pv;
+        pair_get_view_dpd_mirrored(params, &pv);
+        halo_interactions(pv, fsi, PP, FF, counts);
+    }
+    else {
+        PairDPD pv;
+        pair_get_view_dpd(params, &pv);
+        halo_interactions(pv, fsi, PP, FF, counts);
+    }
 }

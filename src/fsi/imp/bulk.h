@@ -15,13 +15,24 @@ static void bulk_one_wrap(Par params, PaWrap *pw, FoWrap *fw, Fsi *fsi) {
                                   rnd, (float*)fw->ff, (float*)wo->ff));
 }
 
-void fsi_bulk(const PairParams *params, Fsi *fsi, int nw, PaWrap *pw, FoWrap *fw) {
+template <typename Par>
+void bulk_interactions(Par params, Fsi *fsi, int nw, PaWrap *pw, FoWrap *fw) {
     if (nw == 0)
         return;
-
-    PairDPDCM pv;
-    pair_get_view_dpd_mirrored(params, &pv);
     
     for (int i = 0; i < nw; i++)
-        bulk_one_wrap(pv, pw++, fw++, fsi);
+        bulk_one_wrap(params, pw++, fw++, fsi);
+}
+
+void fsi_bulk(const PairParams *params, Fsi *fsi, int nw, PaWrap *pw, FoWrap *fw) {
+    if (multi_solvent) {
+        PairDPDCM pv;
+        pair_get_view_dpd_mirrored(params, &pv);
+        bulk_interactions(pv, fsi, nw, pw, fw);
+    }
+    else {
+        PairDPD pv;
+        pair_get_view_dpd(params, &pv);
+        bulk_interactions(pv, fsi, nw, pw, fw);
+    }
 }
