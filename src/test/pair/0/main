@@ -2,4 +2,4 @@
 s=. b=.
 u.conf0 u/pair
 { u.make clean && u.make -j;     } > /dev/null
-u.run $b/udx < $s/data/pair/2 > pair.out.txt
+u.run $b/udx dt=5e-5 < $s/data/pair/2 > pair.out.txt

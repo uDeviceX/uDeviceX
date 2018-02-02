@@ -7,4 +7,4 @@ gdpd_b=100.0 gdpd_r=200.0 gdpd_br=300
 run
 !
 { u.make clean && u.make -j;     } > /dev/null
-u.run $b/udx < $s/data/pair/rnd > pair.out.txt
+u.run $b/udx dt=5e-5 < $s/data/pair/rnd > pair.out.txt

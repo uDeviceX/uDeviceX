@@ -2,7 +2,7 @@
 s=. b=.
 u.conf0 u/pair
 { u.make clean && u.make -j;     } > /dev/null
-u.run $b/udx  <<!
+u.run $b/udx dt=5e-5 <<!
 0.0 0 0   0 0 0  SOLID   BLUE
 0.1 0 0   0 0 0  WALL RED
 0.1 0 0   0 0 0  SOLVENT RED
