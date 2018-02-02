@@ -16,7 +16,7 @@
 
 #include "inc/type.h"
 #include "inc/dev.h"
-#include "cloud/imp.h"
+#include "xcloud/imp.h"
 
 #include "d/api.h"
 #include "utils/kl.h"
@@ -32,7 +32,7 @@
 
 #include "flu/type.h"
 #include "xbulk/imp.h"
-#include "halo/imp.h"
+#include "xhalo/imp.h"
 
 #include "imp.h"
 
