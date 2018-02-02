@@ -17,7 +17,7 @@ int d32i(const int d[3]);     // <2>
 // end::d2i[]
 
 // tag::ncell[]
-int ncell(int3 L, int i);
+int ncell(int3 L, int i); // <1>
 // end::ncell[]
 
 // tag::anti[]
@@ -26,7 +26,7 @@ int anti(int i);                  // <2>
 // end::anti[]
 
 // tag::hst[]
-void estimates(int3 L, int nfrags, float maxd, /**/ int *cap);
+void estimates(int3 L, int nfrags, float maxd, /**/ int *cap); // <1>
 // end::hst[]
 
 } // fraghst

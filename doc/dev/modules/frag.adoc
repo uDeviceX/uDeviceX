@@ -41,7 +41,7 @@ include::{src}/frag/imp.h[tags=d2i]
 ----
 include::{src}/frag/imp.h[tags=ncell]
 ----
-Given subdomain sizes `L`, returns number of neighbouring cells to
+<1> given subdomain sizes `L`, returns number of neighbouring cells to
 fragment with id `i`
 
 [source, c++]
@@ -58,5 +58,5 @@ Only on host:
 ----
 include::{src}/frag/imp.h[tags=hst]
 ----
-given a maximum number density `maxp`, return an estimate of the
+<1> given a maximum number density `maxp`, return an estimate of the
 number of particles in each fragment layer.
