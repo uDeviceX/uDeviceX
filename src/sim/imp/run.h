@@ -12,6 +12,7 @@ void run_eq(long te, Sim *s) { /* equilibrate */
     for (long it = 0; it < te; ++it) UC(step(bforce, moveparams, wall0, 0, it, s));
     UC(distribute_flu(/**/ s));
     UC(bforce_fin(bforce));
+    UC(scheme_move_params_fin(moveparams));
 }
 
 void run(long ts, long te, Sim *s) {
