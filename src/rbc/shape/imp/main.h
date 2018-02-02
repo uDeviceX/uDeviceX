@@ -1,5 +1,12 @@
 void compute_edg(Adj *adj, const float *rr, /**/ float *edg) {
-
+    int i, valid, n;
+    AdjMap m;
+    n = adj_get_max(adj);
+    for (i = 0; i < n; i++) {
+        valid = adj_get_map(i, adj, /**/ &m);
+        if (!valid) continue;
+        msg_print("ijk: %d %d %d", m.i0, m.i1, m.i2);
+    }
 }
 
 void rbc_shape_ini(Adj *adj, const float *rr, /**/ RbcShape **pq) {
