@@ -37,6 +37,23 @@ static void compute_area(Adj *adj, const float *rr, /**/ float *o) {
     }
 }
 
+static void compute_total_area(Adj *adj, const float* area, /**/ float *pA) {
+    int n, i, valid;
+    AdjMap m;
+    double A;
+
+    A = 0;
+    n = adj_get_max(adj);
+    for (i = 0; i < n; i++) {
+        valid = adj_get_map(i, adj, /**/ &m);
+        if (!valid) continue;
+        A += area[i];
+    }
+    A /= 3;
+
+    *pA = A;
+}
+
 void rbc_shape_ini(Adj *adj, const float *rr, /**/ RbcShape **pq) {
     int n;
     RbcShape *q;
@@ -48,6 +65,8 @@ void rbc_shape_ini(Adj *adj, const float *rr, /**/ RbcShape **pq) {
 
     compute_edg(adj, rr, /**/ q->edg);
     compute_area(adj, rr, /**/ q->area);
+    compute_total_area(adj, q->area, /**/ &q->A);
+    msg_print("A: %g", q->A);
 
     *pq = q;
 }
