@@ -125,6 +125,10 @@ static void fin_vcon(Vcon *c) {
     UC(vcont_fin(c->vcont));
 }
 
+static void fin_pair_params(Sim *s) {
+    UC(pair_fin(s->flu.params));
+}
+
 void sim_fin(Sim *s) {
 
     bop_fin(s->dumpt);
@@ -158,7 +162,8 @@ void sim_fin(Sim *s) {
     UC(coords_fin(/**/ s->coords));
 
     UC(scheme_move_params_fin(s->moveparams));
-    
+
+    UC(fin_pair_params(s));
     UC(inter_color_fin(s->gen_color));
     UC(dbg_fin(s->dbg));
     UC(conf_fin(s->cfg));

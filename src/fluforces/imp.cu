@@ -28,8 +28,6 @@
 #include "mpi/glb.h"
 #include "frag/imp.h"
 
-#include "pair/imp.h"
-
 #include "flu/type.h"
 #include "bulk/imp.h"
 #include "halo/imp.h"
