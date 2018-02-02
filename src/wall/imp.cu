@@ -37,7 +37,6 @@
 
 #include "io/restart/imp.h"
 
-#include "forces/type.h"
 #include "cloud/imp.h"
 
 #include "exch/imp.h"
