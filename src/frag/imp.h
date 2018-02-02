@@ -4,19 +4,29 @@ struct int3;
 
 namespace fraghst {
 
-int i2dx(int i);
-int i2dy(int i);
-int i2dz(int i);
-void i2d3(int i, /**/ int d[3]);
+// tag::i2d[]
+int i2dx(int i);                 // <1>
+int i2dy(int i);                 // <2>
+int i2dz(int i);                 // <3>
+void i2d3(int i, /**/ int d[3]); // <4>
+// end::i2d[]
 
-int d2i(int x, int y, int z);
-int d32i(const int d[3]);
+// tag::d2i[]
+int d2i(int x, int y, int z); // <1>
+int d32i(const int d[3]);     // <2>
+// end::d2i[]
 
+// tag::ncell[]
 int ncell(int3 L, int i);
+// end::ncell[]
 
-int antid2i(int x, int y, int z);
-int anti(int i);
+// tag::anti[]
+int antid2i(int x, int y, int z); // <1>
+int anti(int i);                  // <2>
+// end::anti[]
 
+// tag::hst[]
 void estimates(int3 L, int nfrags, float maxd, /**/ int *cap);
+// end::hst[]
 
 } // fraghst

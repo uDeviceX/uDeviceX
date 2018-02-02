@@ -1,0 +1,62 @@
+= frag
+
+:src: ../../../src
+:stem: latexmath
+
+Fragment functions on host and device
+
+== purpose
+
+A _fragment designates one of the 27 directions stem:[(dx, dy, dz)],
+where stem:[dx, dy, dz \in \{-1, 0, 1\}].
+
+The fragment stem:[(0, 0, 0)] is called _bulk_.
+
+The purpose of this module is to encode and decode the _fragments_
+from _fragment ids_ to _directions_.
+
+== interface
+
+The major part of the functions are avalaible to both device and host,
+within the namespaces `fragdev` and `fraghst`, respectively.
+
+
+[source, c++]
+----
+include::{src}/frag/imp.h[tags=i2d]
+----
+<1> get stem:[dx] from fragment id
+<2> get stem:[dy] from fragment id
+<3> get stem:[dz] from fragment id
+<4> get stem:[(dx, dy, dz)] from fragment id
+
+[source, c++]
+----
+include::{src}/frag/imp.h[tags=d2i]
+----
+<1> get fragment id from stem:[(dx, dy, dz)]
+<2> idem with array as input
+
+[source, c++]
+----
+include::{src}/frag/imp.h[tags=ncell]
+----
+Given subdomain sizes `L`, returns number of neighbouring cells to
+fragment with id `i`
+
+[source, c++]
+----
+include::{src}/frag/imp.h[tags=anti]
+----
+<1> given stem:[(dx, dy, dz)], return the id of the _anti_ fragment (i.e. with direction stem:[(-dx, -dy, -dz)])
+<2> given a fragment id, returns the id of the _anti_ fragment
+
+
+Only on host:
+
+[source, c++]
+----
+include::{src}/frag/imp.h[tags=hst]
+----
+given a maximum number density `maxp`, return an estimate of the
+number of particles in each fragment layer.
