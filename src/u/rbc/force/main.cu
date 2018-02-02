@@ -98,7 +98,7 @@ void run(float dt0, const Coords *coords, const char *cell, const char *ic, cons
 }
 
 int main(int argc, char **argv) {
-    float dt0 = dt;
+    float dt0;
     Config *cfg;
     Coords *coords;
     RbcParams *par;
@@ -107,6 +107,7 @@ int main(int argc, char **argv) {
     m::ini(&argc, &argv);
     UC(conf_ini(&cfg));
     UC(conf_read(argc, argv, cfg));
+    UC(conf_lookup_float(cfg, "glb.dt", &dt0));
 
     UC(coords_ini_conf(m::cart, cfg, &coords));
     UC(conf_lookup_string(cfg, "rbc.cell", &cell));

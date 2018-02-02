@@ -12,6 +12,7 @@ u.conf $S $U $C <<!!!
 { u.make -j;     } > /dev/null
 u.run ./udx "
 glb = {
+    dt = 5e-4
     L = [16, 16, 16]
 }
 rbc = {

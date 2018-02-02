@@ -13,6 +13,7 @@ u.conf $S $U $C <<!!!
 export RBC_RND=42
 u.run ./udx "
 glb = {
+    dt = 5e-4
     L = [16, 16, 16]
 }
 rbc = {
