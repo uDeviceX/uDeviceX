@@ -18,7 +18,7 @@ void update_solid(float dt0, Rig *s) {
     rig_reinit_ft(q->ns, /**/ q->ss);
 }
 
-void bounce_solid(long it, int3 L, BounceBack *bb, Rig *s, Flu *flu) {
+void bounce_solid(float dt0, long it, int3 L, BounceBack *bb, Rig *s, Flu *flu) {
     int n, nm, nt, nv, *ss, *cc, nmhalo, counts[NFRAGS];
     int4 *tt;
     Particle *pp, *i_pp;
@@ -58,9 +58,9 @@ void bounce_solid(long it, int3 L, BounceBack *bb, Rig *s, Flu *flu) {
     if (nm + nmhalo)
         CC(d::MemsetAsync(bb->mm, 0, nt * (nm + nmhalo) * sizeof(Momentum)));
 
-    meshbb_find_collisions(nm + nmhalo, nt, nv, tt, i_pp, L, ss, cc, pp, flu->ff, /**/ bb->d);
-    meshbb_select_collisions(n, /**/ bb->d);
-    meshbb_bounce(n, bb->d, flu->ff, nt, nv, tt, i_pp, /**/ pp, bb->mm);
+    meshbb_find_collisions(dt0, nm + nmhalo, nt, nv, tt, i_pp, L, ss, cc, pp, flu->ff, /**/ bb->d);
+    meshbb_select_collisions(dt0, n, /**/ bb->d);
+    meshbb_bounce(dt0, n, bb->d, flu->ff, nt, nv, tt, i_pp, /**/ pp, bb->mm);
 
     /* send momentum back */
 
@@ -78,7 +78,7 @@ void bounce_solid(long it, int3 L, BounceBack *bb, Rig *s, Flu *flu) {
     emesh_unpack_mom(nt, e->p, e->um, /**/ bb->mm);
     
     /* gather bb momentum */
-    meshbb_collect_rig_momentum(nm, nt, nv, tt, i_pp, bb->mm, /**/ qs->ss);
+    meshbb_collect_rig_momentum(dt0, nm, nt, nv, tt, i_pp, bb->mm, /**/ qs->ss);
 
     /* for dump */
     cD2H(qs->ss_dmp_bb, qs->ss, nm);

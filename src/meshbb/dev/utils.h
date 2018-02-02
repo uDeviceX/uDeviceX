@@ -3,7 +3,7 @@ typedef double real;
 typedef double3 real3;
 enum {X, Y, Z};
 
-static __device__ bool valid(real t) {return (t >= 0 && t <= dt);}
+static __device__ bool valid(real dt0, real t) {return (t >= 0 && t <= dt0);}
 
 // TODO belongs to scheme/ ?
 // BB assumes r0 + v0 dt = r1 for now
@@ -13,16 +13,16 @@ __device__ void rvprev(const real3_t *r1, const real3_t *v1, const float *f0, /*
     v0->x = v1->x - f0[X] * dt;
     v0->y = v1->y - f0[Y] * dt;
     v0->z = v1->z - f0[Z] * dt;
-    
+
     r0->x = r1->x - v0->x * dt;
     r0->y = r1->y - v0->y * dt;
     r0->z = r1->z - v0->z * dt;
 }
 #else // velocity-verlet
-__device__ void rvprev(const real3_t *r1, const real3_t *v1, const float *, /**/ real3_t *r0, real3_t *v0) {
-    r0->x = r1->x - v1->x * dt;    
-    r0->y = r1->y - v1->y * dt;
-    r0->z = r1->z - v1->z * dt;    
+__device__ void rvprev(real dt0, const real3_t *r1, const real3_t *v1, const float *, /**/ real3_t *r0, real3_t *v0) {
+    r0->x = r1->x - v1->x * dt0;
+    r0->y = r1->y - v1->y * dt0;
+    r0->z = r1->z - v1->z * dt0;
 
     *v0 = *v1;
 }
@@ -39,20 +39,20 @@ __device__ void fetch_triangle(int id, int nt, int nv, const int4 *tt, const Par
     t.x += mid * nv;
     t.y += mid * nv;
     t.z += mid * nv;
-    
+
     *A = P2rP( i_pp + t.x );
     *B = P2rP( i_pp + t.y );
     *C = P2rP( i_pp + t.z );
 }
 
-__device__ void bounce_back(const rPa *p0, const real3_t *rw, const real3_t *vw, const real_t h, /**/ rPa *pn) {
+__device__ void bounce_back(real dt0, const rPa *p0, const real3_t *rw, const real3_t *vw, const real_t h, /**/ rPa *pn) {
     pn->v.x = 2 * vw->x - p0->v.x;
     pn->v.y = 2 * vw->y - p0->v.y;
     pn->v.z = 2 * vw->z - p0->v.z;
 
-    pn->r.x = rw->x + (dt-h) * pn->v.x;
-    pn->r.y = rw->y + (dt-h) * pn->v.y;
-    pn->r.z = rw->z + (dt-h) * pn->v.z;
+    pn->r.x = rw->x + (dt0-h) * pn->v.x;
+    pn->r.y = rw->y + (dt0-h) * pn->v.y;
+    pn->r.z = rw->z + (dt0-h) * pn->v.z;
 }
 
 __device__ void lin_mom_change(const real3_t v0, const real3_t v1, /**/ float dP[3]) {
@@ -122,8 +122,8 @@ static __device__ void inverse(const real_t A[6], /**/ real_t I[6]) {
     /* inverse determinant */
     real_t idet = mx * A[XX] - my * A[XY] + mz * A[XZ];
     assert( fabs(idet) > 1e-8f );
-    idet = 1.f / idet;    
-    
+    idet = 1.f / idet;
+
     I[XX] =  idet * mx;
     I[XY] = -idet * my;
     I[XZ] =  idet * mz;
@@ -132,21 +132,22 @@ static __device__ void inverse(const real_t A[6], /**/ real_t I[6]) {
     I[ZZ] =  idet * (A[XX] * A[YY] - A[XY] * A[XY]);
 }
 
-static __device__ void v2f(const real3_t r, const real3_t om, const real3_t v, /**/ real3_t *f) {
-    const float fac = rbc_mass / dt;
+static __device__ void v2f(real dt0, const real3_t r, const real3_t om, const real3_t v, /**/ real3_t *f) {
+    const float fac = rbc_mass / dt0;
     f->x = fac * (v.x + r.y * om.z - r.z * om.y);
     f->y = fac * (v.y + r.z * om.x - r.x * om.z);
     f->z = fac * (v.z + r.x * om.y - r.y * om.x);
 }
 
-__device__ void M2f(const Momentum m, real3_t a, real3_t b, real3_t c,
+__device__ void M2f(real dt0,
+                    const Momentum m, real3_t a, real3_t b, real3_t c,
                     /**/ real3_t *fa, real3_t *fb, real3_t *fc) {
 
     real_t I[6] = {0}, Iinv[6];
     real3_t om, v, com;
 
     const real_t fac = 1.f / (3.f * rbc_mass);
-    
+
     compute_I(a, b, c, /**/ I);
     inverse(I, /**/ Iinv);
 
@@ -169,9 +170,9 @@ __device__ void M2f(const Momentum m, real3_t a, real3_t b, real3_t c,
     a.y -= com.y;
     a.z -= com.z;
 
-    v2f(a, om, v, /**/ fa);
-    v2f(b, om, v, /**/ fb);
-    v2f(c, om, v, /**/ fc);
+    v2f(dt0, a, om, v, /**/ fa);
+    v2f(dt0, b, om, v, /**/ fb);
+    v2f(dt0, c, om, v, /**/ fc);
 }
 
 } // dev
