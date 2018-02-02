@@ -6,12 +6,13 @@ u.cp.rig sphere.ply rig.ply
 :
 u.conf conf/test.h <<!!!
    tend=2.01 walls wall_creation=1
-   solids sbounce_back pin_com dt=1e-3
+   solids sbounce_back pin_com
    run
 !!!
 { make clean && u.make -j ; } > /dev/null
 u.run ./udx '
 glb = {
+    dt = 1e-3
     L = [32, 32, 32]
 }
 wvel = {

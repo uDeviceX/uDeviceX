@@ -22,6 +22,7 @@ u.strtdir bin.2
 (make clean && u.make -j) > /dev/null
 u.run ./bin.1/udx '
 glb = {
+    dt = 5e-4
     L = [16, 32, 16]
 }
 dump = {
@@ -32,6 +33,7 @@ dump = {
 };'
 u.run ./bin.2/udx '
 glb = {
+    dt = 5e-4
     L = [16, 32, 16]
 }
 bforce = {

@@ -7,12 +7,13 @@ cp data/rig/cyl.ply rig.ply
 :
 u.conf conf/test.h <<!!!
    tend=2.01 walls wall_creation=100
-   solids spdir=2 sbounce_back dt=1e-3
+   solids spdir=2 sbounce_back
    run
 !!!
 { make clean && u.make -j ; } > /dev/null
 u.run ./udx '
 glb = {
+    dt = 1e-3
     L = [32, 32, 16]
 }
 wvel = {

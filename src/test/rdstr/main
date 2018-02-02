@@ -14,8 +14,10 @@ u.conf conf/double.poiseuille.h <<!!!
 { make clean && u.make -j; } > /dev/null
 u.run 2 1 1 ./udx '
 glb = {
+    dt = 5e-4
     L = [16, 32, 16]
-}rbc = {
+}
+rbc = {
     @include "rbc.test.cfg"
 }
 bforce = {
