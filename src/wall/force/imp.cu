@@ -21,6 +21,7 @@
 
 #include "math/rnd/imp.h"
 #include "math/rnd/dev.h"
+#include "math/dev.h"
 
 #include "coords/type.h"
 #include "coords/dev.h"
@@ -36,10 +37,9 @@
 #include "wall/sdf/type.h"
 #include "wall/sdf/dev.h"
 
-#include "forces/type.h"
-#include "forces/use.h"
-#include "forces/pack.h"
-#include "forces/imp.h"
+#include "pair/type.h"
+#include "pair/dev.h"
+#include "pair/imp.h"
 
 #include "cloud/imp.h"
 #include "cloud/dev.h"
@@ -47,29 +47,14 @@
 #include "utils/kl.h"
 #include "imp.h"
 
-/*** generic ***/
 namespace wf_dev {
-  namespace map {
-    #include "dev/map/type.h"
-    #include "dev/map/ini.h"
-    #include "dev/map/use.h"
-  }
-  #include "dev/main0.h"
+namespace map {
+#include "dev/map/type.h"
+#include "dev/map/ini.h"
+#include "dev/map/use.h"
+}
+#include "dev/fetch.h"
+#include "dev/main.h"
 }
 
-/*** polymorphic ***/
-namespace grey {
-  namespace wf_dev {
-    #include "dev/fetch/grey.h"
-    #include "dev/main.h"
-  }
-  #include "imp/main.h"
-}
-
-namespace color {
-  namespace wf_dev {
-    #include "dev/fetch/color.h"
-    #include "dev/main.h"
-  }
-  #include "imp/main.h"
-}
+#include "imp/main.h"

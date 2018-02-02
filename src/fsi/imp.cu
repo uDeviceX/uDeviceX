@@ -32,8 +32,8 @@
 #include "pair/type.h"
 #include "pair/dev.h"
 #include "pair/imp.h"
-#include "xcloud/imp.h"
-#include "xcloud/dev.h"
+#include "cloud/imp.h"
+#include "cloud/dev.h"
 
 /* local */
 

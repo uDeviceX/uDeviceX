@@ -37,7 +37,6 @@
 
 #include "io/restart/imp.h"
 
-#include "forces/type.h"
 #include "cloud/imp.h"
 
 #include "exch/imp.h"
@@ -54,11 +53,4 @@ namespace wall_dev {
 #include "imp/fin.h"
 #include "imp/strt.h"
 #include "imp/generate.h"
-
-/*** polymorphic ***/
-namespace grey {
-  #include "imp/force.h"
-}
-namespace color {
-  #include "imp/force.h"
-}
+#include "imp/force.h"

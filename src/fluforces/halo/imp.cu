@@ -27,8 +27,8 @@
 
 #include "math/rnd/dev.h"
 
-#include "xcloud/imp.h"
-#include "xcloud/dev.h"
+#include "cloud/imp.h"
+#include "cloud/dev.h"
 
 #include "flu/type.h"
 
