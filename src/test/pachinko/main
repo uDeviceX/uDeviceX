@@ -13,16 +13,17 @@ u.conf conf/test.h <<!!!
 { make clean && u.make -j; } > /dev/null
 u.run ./udx '
 glb = {
+    dt = 5e-4
     L = [32, 56, 60]
 }
 bforce = {
-    type = "constant";
-    f    = [10.,0.,0.];
-};
+    type = "constant"
+    f    = [10.,0.,0.]
+}
 dump = {
-    field = true;
-    parts = true;
-    freq_field = 300;
+    field = true
+    parts = true
+    freq_field = 300
     freq_parts = 300;
-};'
+}'
 u.avgh5 1 u 2 h5/flowfields-0003.h5 | uscale 0.1 > h5.out.txt
