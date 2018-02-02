@@ -3,7 +3,7 @@ static void random(int n, RbcRnd *rnd, /**/ float **r) {
     else *r = NULL;
 }
 
-static void apply0(RbcParams_v parv, int nc, int nv,
+static void apply0(float dt0, RbcParams_v parv, int nc, int nv,
                    const Particle *pp, RbcRnd *rnd,
                    Adj_v *adj_v, const Shape shape,
                    float *av, /**/ Force *ff){
@@ -11,16 +11,17 @@ static void apply0(RbcParams_v parv, int nc, int nv,
     int md;
     md = RBCmd;
     random(nc * md * nv, rnd, /**/ &rnd0);
-    KL(dev::force, (k_cnf(nc*nv*md)), (parv, md, nv, nc, pp, rnd0,
+    KL(dev::force, (k_cnf(nc*nv*md)), (dt0, parv, md, nv, nc, pp, rnd0,
                                        *adj_v, shape, av, /**/ (float*)ff));
 }
 
-void rbc_force_apply(const RbcQuants q, const RbcForce t, const RbcParams *par, /**/ Force *ff) {
+void rbc_force_apply(float dt0, const RbcQuants q, const RbcForce t, const RbcParams *par, /**/ Force *ff) {
     RbcParams_v parv;
     float *av;
     if (q.nc <= 0) return;
     parv = rbc_params_get_view(par);
     UC(area_volume_compute(q.area_volume, q.nc, q.pp, /**/ &av));
-    apply0(parv, q.nc, q.nv, q.pp, t.rnd,
+    apply0(dt0,
+           parv, q.nc, q.nv, q.pp, t.rnd,
            q.adj_v, q.shape, av, /**/ ff);
 }

@@ -16,7 +16,7 @@ void step(float dt0, BForce *bforce, bool wall0, int ts, int it, Sim *s) {
 
     UC(check_sizes(s));
     
-    forces(wall0, s);
+    forces(dt0, wall0, s);
 
     UC(check_forces(dt0, s));
     
