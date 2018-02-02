@@ -1,4 +1,4 @@
-void compute_edg(Adj *adj, const float *rr, /**/ float *o) {
+static void compute_edg(Adj *adj, const float *rr, /**/ float *o) {
     int i, valid, n;
     const float *r0, *r1;
     float r01[3];
@@ -15,7 +15,7 @@ void compute_edg(Adj *adj, const float *rr, /**/ float *o) {
     }
 }
 
-void compute_area(Adj *adj, const float *rr, /**/ float *o) {
+static void compute_area(Adj *adj, const float *rr, /**/ float *o) {
     int i, i0, i1, i2, valid, n;
     const float *r0, *r1, *r2;
     float r01[3], r12[3], r20[3];
