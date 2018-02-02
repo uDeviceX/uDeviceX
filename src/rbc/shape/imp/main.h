@@ -33,8 +33,24 @@ static void compute_area(Adj *adj, const float *rr, /**/ float *o) {
         a = vabs(r01); b = vabs(r12); c = vabs(r20);
         A = area_heron(a, b, c);
         o[i] = A;
-        msg_print("A: %g", A);
     }
+}
+
+static void compute_total_area(Adj *adj, const float* area, /**/ float *pA) {
+    int n, i, valid;
+    AdjMap m;
+    double A;
+
+    A = 0;
+    n = adj_get_max(adj);
+    for (i = 0; i < n; i++) {
+        valid = adj_get_map(i, adj, /**/ &m);
+        if (!valid) continue;
+        A += area[i];
+    }
+    A /= 3;
+
+    *pA = A;
 }
 
 void rbc_shape_ini(Adj *adj, const float *rr, /**/ RbcShape **pq) {
@@ -44,10 +60,11 @@ void rbc_shape_ini(Adj *adj, const float *rr, /**/ RbcShape **pq) {
     EMALLOC(1, &q);
     EMALLOC(n, &q->edg);
     EMALLOC(n, &q->area);
-    EMALLOC(n, &q->anti);
 
     compute_edg(adj, rr, /**/ q->edg);
     compute_area(adj, rr, /**/ q->area);
+    compute_total_area(adj, q->area, /**/ &q->A);
+    msg_print("A: %g", q->A);
 
     *pq = q;
 }
@@ -55,13 +72,11 @@ void rbc_shape_ini(Adj *adj, const float *rr, /**/ RbcShape **pq) {
 void rbc_shape_fin(RbcShape *q) {
     EFREE(q->edg);
     EFREE(q->area);
-    EFREE(q->anti);
     EFREE(q);
 }
 
 void rbc_shape_edg  (RbcShape *q, /**/ float** pe) { *pe = q->edg; }
 void rbc_shape_area (RbcShape *q, /**/ float** pe) { *pe = q->area; }
-void rbc_shape_anti (RbcShape *q, /**/ int**   pe) { *pe = q->anti; }
 
 void rbc_shape_total_area(RbcShape *q, /**/ float *pe)   { *pe = q->A; }
 void rbc_shape_total_volume(RbcShape *q, /**/ float *pe) { *pe = q->V; }
