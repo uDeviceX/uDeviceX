@@ -10,7 +10,7 @@ Fragment functions on host and device
 A _fragment designates one of the 27 directions stem:[(dx, dy, dz)],
 where stem:[dx, dy, dz \in \{-1, 0, 1\}].
 
-The fragment stem:[(0, 0, 0)] is called _bulk_.
+The fragment stem:[(0, 0, 0)] is called _bulk_ and has the id `frag_bulk`.
 
 The purpose of this module is to encode and decode the _fragments_
 from _fragment ids_ to _directions_.

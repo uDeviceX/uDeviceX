@@ -17,6 +17,7 @@ A list of coding conventions can be found link:conventions{lext}[here].
 * link:modules/coords{lext}[coords]
 * debug configuration: link:modules/dbg{lext}[dbg]
 * flow structure interactions: link:modules/fsi{lext}[fsi]
+* fragments encoder and decoder: link:modules/frag{lext}[frag]
 * generic communicator: link:modules/comm{lext}[comm]
 * generic device API: link:modules/d{lext}[d]
 * math helpers: link:modules/math/main{lext}[math]
