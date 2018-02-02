@@ -1,3 +1,7 @@
+#if defined(dt)
+  #error dt is runtime
+#endif
+
 #if defined(XS) || defined(YS) || defined(ZS)
   #error Subdomain sizes are runtime
 #endif
