@@ -115,7 +115,7 @@ int main(int argc, char **argv) {
     UC(rbc_params_ini(&par));
     UC(rbc_params_set_conf(cfg, par));
     
-    UC(run(coords, cell, ic, par));
+    UC(run(dt0, coords, cell, ic, par));
 
     UC(rbc_params_fin(par));
     UC(conf_fin(cfg));
