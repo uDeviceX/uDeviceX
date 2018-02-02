@@ -1,3 +1,1 @@
-struct MoveParams {
-    float dt0;
-};
+struct MoveParams { };

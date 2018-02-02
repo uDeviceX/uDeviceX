@@ -21,13 +21,13 @@ void step(float dt0, BForce *bforce, bool wall0, int ts, int it, Sim *s) {
     UC(check_forces(dt0, s));
     
     dump_diag0(dt0, it, s);
-    dump_diag_after(dt0, it, wall0, s->solids0, s);
+    dump_diag_after(dt0, it, s->solids0, s);
     body_force(it, bforce, s);
 
     restrain(it, /**/ s);
-    update_solvent(s->moveparams, it, /**/ flu);
+    update_solvent(dt0, s->moveparams, /**/ flu);
     if (s->solids0) update_solid(dt0, /**/ rig);
-    if (rbcs)       update_rbc(s->moveparams, it, rbc, s);
+    if (rbcs)       update_rbc(dt0, s->moveparams, it, rbc, s);
 
     UC(check_vel(dt0, s));
     
@@ -39,7 +39,7 @@ void step(float dt0, BForce *bforce, bool wall0, int ts, int it, Sim *s) {
 
     if (wall0) bounce_wall(dt0, s->coords, wall, /**/ flu, rbc);
     
-    if (sbounce_back && s->solids0) bounce_solid(dt0, it, s->L, /**/ &s->bb, rig, flu);
+    if (sbounce_back && s->solids0) bounce_solid(dt0, s->L, /**/ &s->bb, rig, flu);
 
     UC(check_pos_soft(s));
     UC(check_vel(dt0, s));

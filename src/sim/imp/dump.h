@@ -75,7 +75,7 @@ static void dump_grid(const Sim *s) {
     fields_grid(s->coords, s->cart, qq, nn, /*w*/ s->pp_dump);
 }
 
-void dump_diag_after(float dt0, int it, bool wall0, bool solid0, Sim *s) { /* after wall */
+void dump_diag_after(float dt0, int it, bool solid0, Sim *s) { /* after wall */
     const Rig *rig = &s->rig;
     const Opt *o = &s->opt;
     if (solid0 && it % o->freq_parts == 0) {

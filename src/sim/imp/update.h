@@ -18,7 +18,7 @@ void update_solid(float dt0, Rig *s) {
     rig_reinit_ft(q->ns, /**/ q->ss);
 }
 
-void bounce_solid(float dt0, long it, int3 L, BounceBack *bb, Rig *s, Flu *flu) {
+void bounce_solid(float dt0, int3 L, BounceBack *bb, Rig *s, Flu *flu) {
     int n, nm, nt, nv, *ss, *cc, nmhalo, counts[NFRAGS];
     int4 *tt;
     Particle *pp, *i_pp;
@@ -85,15 +85,15 @@ void bounce_solid(float dt0, long it, int3 L, BounceBack *bb, Rig *s, Flu *flu) 
 }
 
 
-void update_solvent(MoveParams * moveparams, long it, /**/ Flu *f) {
-    scheme_move_apply(moveparams, flu_mass, f->q.n, f->ff, f->q.pp);
+void update_solvent(float dt0, MoveParams * moveparams, /**/ Flu *f) {
+    scheme_move_apply(dt0, moveparams, flu_mass, f->q.n, f->ff, f->q.pp);
 }
 
-void update_rbc(MoveParams * moveparams, long it, Rbc *r, Sim *s) {
+void update_rbc(float dt0, MoveParams * moveparams, long it, Rbc *r, Sim *s) {
     bool cond;
     cond = multi_solvent && color_freq && it % color_freq == 0;
     if (cond) {msg_print("recolor"); gen_colors(r, &s->colorer, /**/ &s->flu);}; /* TODO: does not belong here*/
-    scheme_move_apply(moveparams, rbc_mass, r->q.n, r->ff, r->q.pp);
+    scheme_move_apply(dt0, moveparams, rbc_mass, r->q.n, r->ff, r->q.pp);
 }
 
 void restrain(long it, Sim *s) {
