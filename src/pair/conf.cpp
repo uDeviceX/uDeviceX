@@ -30,6 +30,8 @@ static int get_ncol(int npar) {
 }
 
 void pair_set_conf(const Config *cfg, const char *base, PairParams *par) {
+    ERR("pair_set_conf: shell not be used");
+
     int dpd, lj;
     char desc[FILENAME_MAX];
 
@@ -57,7 +59,7 @@ void pair_set_conf(const Config *cfg, const char *base, PairParams *par) {
 
         // TODO read from conf
         kBT0 = kBT;
-        dt0  = dt;
+        dt0  = -1;
         
         compute_sigma(na, g, kBT0, dt0, /**/ s);
 
