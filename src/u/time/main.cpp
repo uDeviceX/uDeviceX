@@ -5,12 +5,12 @@
 #include "scheme/time/imp.h"
 
 int main(int argc, char **argv) {
-    float te, ts, dt0;
+    float dt0;
     m::ini(&argc, &argv);
     msg_ini(m::rank);
     Time *t;
-    ts = 0; te = 1; dt0 = 0.1;
-    time_ini(ts, te, dt0, /**/ &t);
+    dt0 = 0.1;
+    time_ini(dt0, /**/ &t);
 
     time_fin(t);
     m::fin();
