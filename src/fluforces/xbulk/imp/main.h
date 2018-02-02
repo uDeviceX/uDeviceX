@@ -11,7 +11,7 @@ static void tbcloud_fin(TBCloud *tc) {
 }
 
 template<typename Par>
-void flocal_common(Par params, int3 L, int n, BCloud cloud, const int *start, RNDunif *rnd, /**/ Force *ff) {    
+static void interactions(Par params, int3 L, int n, BCloud cloud, const int *start, RNDunif *rnd, /**/ Force *ff) {    
     float seed;
     TBCloud tc;
     if (n <= 0) return;
@@ -29,11 +29,11 @@ void flocal_common(Par params, int3 L, int n, BCloud cloud, const int *start, RN
 void flocal(const PairParams *params, int3 L, int n, BCloud cloud, const int *start, RNDunif *rnd, /**/ Force *ff) {
     PairDPD pv;
     pair_get_view_dpd(params, &pv);
-    flocal_common(pv, L, n, cloud, start, rnd, /**/ ff);
+    interactions(pv, L, n, cloud, start, rnd, /**/ ff);
 }
 
 void flocal_colors(const PairParams *params, int3 L, int n, BCloud cloud, const int *start, RNDunif *rnd, /**/ Force *ff) {
     PairDPDC pv;
     pair_get_view_dpd_color(params, &pv);
-    flocal_common(pv, L, n, cloud, start, rnd, /**/ ff);
+    interactions(pv, L, n, cloud, start, rnd, /**/ ff);
 }
