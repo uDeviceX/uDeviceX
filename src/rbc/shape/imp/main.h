@@ -54,9 +54,8 @@ static void compute_total_volume(Adj *adj, const float *rr, /**/ float *pV) {
         x2 = r2[X]; y2 = r2[Y]; z2 = r2[Z];
         V += (x0*y1-x1*y0)*z2+x2*(y0*z1-y1*z0)+y2*(x1*z0-x0*z1);
     }
-
     V /= 6; /* from the formula */
-    V /= 3; /* every triangle was counted three times */
+    V /= 3; /* every triangle was visited three times */
     msg_print("V: %g", V);
     *pV = V;
 }
@@ -73,8 +72,7 @@ static void compute_total_area(Adj *adj, const float* area, /**/ float *pA) {
         if (!valid) continue;
         A += area[i];
     }
-    A /= 3; /* every triangle was counted three times */
-
+    A /= 3; /* every triangle was visited three times */
     *pA = A;
 }
 
