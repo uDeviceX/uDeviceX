@@ -20,20 +20,6 @@ _I_ int i2dx(int i) { return (i     + 2) % 3 - 1; }
 _I_ int i2dy(int i) { return (i / 3 + 2) % 3 - 1; }
 _I_ int i2dz(int i) { return (i / 9 + 2) % 3 - 1; }
 
-_I_ int i2d(int i, int dir) {
-    enum {X, Y, Z};
-    switch (dir) {
-    case X:
-        return i2dx(i);
-    case Y:
-        return i2dy(i);
-    case Z:
-        return i2dz(i);
-    default:
-        return BAD_DIR;
-    };
-}
-
 _I_ void i2d3(int i, /**/ int d[3]) {
     enum {X, Y, Z};
     d[X] = i2dx(i);
