@@ -27,7 +27,7 @@ __device__ void gram_schmidt(/**/ float *e0, float *e1, float *e2) {
     normalize(e2);
 }
 
-__device__ void rot_e(const float *om, /**/ float *e) {
+__device__ void rot_e(float dt0, const float *om, /**/ float *e) {
     enum {X, Y, Z};    
     const float omx = om[X], omy = om[Y], omz = om[Z];
     const float ex = e[X], ey = e[Y], ez = e[Z];
@@ -36,5 +36,5 @@ __device__ void rot_e(const float *om, /**/ float *e) {
     const float vy = omz*ex - omx*ez;
     const float vz = omx*ey - omy*ex;
 
-    e[X] += vx*dt; e[Y] += vy*dt; e[Z] += vz*dt;
+    e[X] += vx*dt0; e[Y] += vy*dt0; e[Z] += vz*dt0;
 }

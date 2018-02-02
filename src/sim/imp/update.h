@@ -7,12 +7,12 @@ void clear_vel(Sim *s) {
     if (rbcs  ) scheme_move_clear_vel(rbc->q.n, rbc->q.pp);
 }
 
-void update_solid(Rig *s) {
+void update_solid(float dt0, Rig *s) {
     if (!s->q.n) return;
     RigQuants *q = &s->q;
     
-    rig_update(q->n, s->ff, q->rr0, q->ns, /**/ q->pp, q->ss);
-    rig_update_mesh(q->ns, q->ss, q->nv, q->dvv, /**/ q->i_pp);
+    rig_update(dt0, q->n, s->ff, q->rr0, q->ns, /**/ q->pp, q->ss);
+    rig_update_mesh(dt0, q->ns, q->ss, q->nv, q->dvv, /**/ q->i_pp);
     // for dump
     cD2H(q->ss_dmp, q->ss, q->ns);
     rig_reinit_ft(q->ns, /**/ q->ss);

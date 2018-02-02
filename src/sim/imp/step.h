@@ -1,4 +1,4 @@
-void step(BForce *bforce, bool wall0, int ts, int it, Sim *s) {
+void step(float dt0, BForce *bforce, bool wall0, int ts, int it, Sim *s) {
     Flu *flu = &s->flu;
     Rbc *rbc = &s->rbc;
     Rig *rig = &s->rig;
@@ -26,7 +26,7 @@ void step(BForce *bforce, bool wall0, int ts, int it, Sim *s) {
 
     restrain(it, /**/ s);
     update_solvent(s->moveparams, it, /**/ flu);
-    if (s->solids0) update_solid(/**/ rig);
+    if (s->solids0) update_solid(dt0, /**/ rig);
     if (rbcs)       update_rbc(s->moveparams, it, rbc, s);
 
     UC(check_vel(s));
