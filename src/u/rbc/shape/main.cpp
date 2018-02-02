@@ -41,15 +41,15 @@ void run(OffRead *off) {
 }
 
 int main(int argc, char **argv) {
-    const char *cell;
+    const char *i; /* input */
     OffRead *off;
     Config *cfg;
     m::ini(&argc, &argv);
 
     UC(conf_ini(&cfg));
     UC(conf_read(argc, argv, cfg));
-    UC(off_read(cell, /**/ &off));
-    UC(conf_lookup_string(cfg, "i", &cell));
+    UC(conf_lookup_string(cfg, "i", &i));
+    UC(off_read(i, /**/ &off));
 
     run(off);
 

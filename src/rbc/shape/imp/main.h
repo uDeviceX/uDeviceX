@@ -31,8 +31,7 @@ static void compute_area(Adj *adj, const float *rr, /**/ float *o) {
         diff(r1, r2, /**/ r12);
         diff(r2, r0, /**/ r20);
         a = vabs(r01); b = vabs(r12); c = vabs(r20);
-        A = area_heron(a, b, c);
-        msg_print("%g", area_heron(a, b, c) - area_kahan(a, b, c));
+        A = area_kahan(a, b, c);
         o[i] = A;
     }
 }
