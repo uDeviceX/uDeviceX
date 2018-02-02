@@ -143,6 +143,9 @@ struct Sim {
     Rig rig;
     Wall wall;
 
+    /* parameters */
+    MoveParams *moveparams;
+    
     /* helpers */
     Coords *coords;
     int3 L;  /* subdomain sizes */

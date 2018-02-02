@@ -280,6 +280,9 @@ void sim_ini(int argc, char **argv, MPI_Comm cart, /**/ Sim **sim) {
             UC(ini_bounce_back(s->cart, maxp, s->L, &s->rig, /**/ &s->bb));
     }
 
+    UC(scheme_move_params_ini(&s->moveparams));
+    UC(scheme_move_params_conf(s->cfg, s->moveparams));
+    
     UC(scheme_restrain_ini(&s->restrain));
     UC(scheme_restrain_set_conf(s->cfg, s->restrain));
 

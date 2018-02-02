@@ -157,6 +157,8 @@ void sim_fin(Sim *s) {
     UC(scheme_restrain_fin(s->restrain));
     UC(coords_fin(/**/ s->coords));
 
+    UC(scheme_move_params_fin(s->moveparams));
+    
     UC(inter_color_fin(s->gen_color));
     UC(dbg_fin(s->dbg));
     UC(conf_fin(s->cfg));
