@@ -43,6 +43,7 @@ static void compute_total_volume(Adj *adj, const float *rr, /**/ float *pV) {
     float x0, y0, z0, x1, y1, z1, x2, y2, z2;
     AdjMap m;
     double V;
+    V = 0;
     n = adj_get_max(adj);
     for (i = 0; i < n; i++) {
         valid = adj_get_map(i, adj, /**/ &m);
