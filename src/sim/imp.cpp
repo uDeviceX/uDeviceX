@@ -32,6 +32,7 @@
 #include "algo/scan/imp.h"
 #include "algo/minmax/imp.h"
 
+#include "pair/imp.h"
 #include "cloud/imp.h"
 #include "partlist/type.h"
 

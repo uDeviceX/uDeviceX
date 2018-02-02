@@ -2,7 +2,7 @@ $B/d/api.o: $S/d/cpu/imp.h $S/utils/imp.h $S/inc/conf.h $S/utils/error.h $S/d/co
 $B/mpi/glb.o: $S/inc/conf.h $S/mpi/wrapper.h $S/utils/mc.h $B/conf.h $S/mpi/glb.h
 $B/mpi/type.o: $S/inc/conf.h $S/inc/type.h $S/mpi/type.h $S/utils/mc.h
 $B/mpi/wrapper.o: $S/mpi/wrapper.h
-$B/pair/conf.o: $S/pair/imp.h $S/parser/imp.h
+$B/pair/conf.o: $S/inc/conf.h $S/utils/error.h $S/pair/imp.h $B/conf.h $S/pair/type.h $S/parser/imp.h
 $B/pair/imp.o: $S/utils/imp.h $S/utils/error.h $S/pair/imp.h $S/pair/imp/main.h $S/pair/imp/type.h $S/pair/type.h
 $B/parser/imp.o: $S/utils/imp.h $S/utils/error.h $S/parser/imp.h $S/utils/msg.h
 $B/utils/cc.o: $S/utils/cc/common.h $S/inc/conf.h $S/utils/error.h $S/d/api.h $B/conf.h

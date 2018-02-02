@@ -10,6 +10,12 @@ u.pre.gen_random $X $Y $Z $N > pp.txt
 u.run ./udx "
 in = \"pp.txt\"; 
 out = \"ff.txt\";
+flu = {
+    dpd = true
+    a = [2.6666667, 2.6666667, 2.6666667]
+    g = [8.0, 8.0, 8.0]
+    lj = false
+}
 glb = {
     L = [$X, $Y, $Z];
 };"

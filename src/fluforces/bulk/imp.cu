@@ -18,10 +18,11 @@
 
 #include "math/rnd/imp.h"
 #include "math/rnd/dev.h"
+#include "math/dev.h"
 
-#include "forces/type.h"
-#include "forces/pack.h"
-#include "forces/imp.h"
+#include "pair/type.h"
+#include "pair/dev.h"
+#include "pair/imp.h"
 
 #include "imp.h"
 #include "imp/type.h"

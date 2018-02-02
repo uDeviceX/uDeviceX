@@ -229,6 +229,17 @@ static void coords_log(const Coords *c) {
               xlo(c), xhi(c), ylo(c), yhi(c), zlo(c), zhi(c));
 }
 
+// TODO: from conf
+static void ini_pair_params(Sim *s) {
+    UC(pair_ini(&s->flu.params));
+    float a[] = {adpd_b, adpd_br, adpd_r};
+    float g[] = {gdpd_b, gdpd_br, gdpd_r};
+    float sigma[3];
+    for (int i = 0; i < 3; ++i)
+        sigma[i] = sqrt(2 * kBT * g[i] / dt);
+    UC(pair_set_dpd(2, a, g, sigma, s->flu.params));
+}
+
 void sim_ini(int argc, char **argv, MPI_Comm cart, /**/ Sim **sim) {
     Sim *s;
     int maxp;
@@ -251,6 +262,7 @@ void sim_ini(int argc, char **argv, MPI_Comm cart, /**/ Sim **sim) {
     maxp = SAFETY_FACTOR_MAXP * s->L.x * s->L.y * s->L.z * numberdensity;
     
     UC(read_opt(s->cfg, &s->opt));
+    UC(ini_pair_params(s));
     
     EMALLOC(3 * maxp, &s->pp_dump);
 

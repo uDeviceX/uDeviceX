@@ -1,6 +1,6 @@
 void fluforces_bulk_ini(int3 L, int maxp, /**/ FluForcesBulk **bd) {
     FluForcesBulk *b;
-    UC(emalloc(sizeof(FluForcesBulk), (void**) bd));
+    EMALLOC(1, bd);
     b = *bd;
     Dalloc(&b->zipped_pp, 2 * maxp);
     Dalloc(&b->zipped_rr,     maxp);
@@ -56,7 +56,7 @@ static void get_interrank_infos(MPI_Comm cart, int fid, /**/ RNDunif* trunks[], 
 
 void fluforces_halo_ini(MPI_Comm cart, int3 L, /**/ FluForcesHalo **hd) {
     FluForcesHalo *h;
-    UC(emalloc(sizeof(FluForcesHalo), (void**) hd));
+    EMALLOC(1, hd);
     h = *hd;
 
     h->L = L;

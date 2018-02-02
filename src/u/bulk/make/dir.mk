@@ -10,6 +10,7 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/io/txt         && \
     d $B/math/rnd       && \
     d $B/mpi            && \
+    d $B/pair           && \
     d $B/parser         && \
     d $B/u/bulk         && \
     d $B/utils         

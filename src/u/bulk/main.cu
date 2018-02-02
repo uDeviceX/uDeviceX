@@ -17,6 +17,7 @@
 #include "parser/imp.h"
 #include "partlist/type.h"
 #include "clist/imp.h"
+#include "pair/imp.h"
 
 #include "coords/ini.h"
 #include "coords/imp.h"
@@ -81,6 +82,7 @@ int main(int argc, char **argv) {
     Coords *coords;
     int maxp;
     int3 L;
+    PairParams *params;
     
     m::ini(&argc, &argv);
     msg_ini(m::rank);
@@ -91,10 +93,13 @@ int main(int argc, char **argv) {
     UC(coords_ini_conf(m::cart, cfg, &coords));
     L = subdomain(coords);
 
+    UC(pair_ini(&params));
+    UC(pair_set_conf(cfg, "flu", params));
+    
     UC(conf_lookup_string(cfg, "in", &fin));
     UC(conf_lookup_string(cfg, "out", &fout));
     UC(read_pp(fin));
-
+    
     maxp = n + 32;
 
     UC(clist_ini(L.x, L.y, L.z, &clist));
@@ -103,10 +108,10 @@ int main(int argc, char **argv) {
 
     UC(fluforces_bulk_ini(L, maxp, &bulkforces));
 
-    ini_cloud(pp, &cloud);
+    UC(ini_cloud(pp, &cloud));
     
     UC(fluforces_bulk_prepare(n, &cloud, /**/ bulkforces));
-    UC(fluforces_bulk_apply(n, bulkforces, clist.starts, clist.counts, /**/ ff));
+    UC(fluforces_bulk_apply(params, n, bulkforces, clist.starts, clist.counts, /**/ ff));
 
     // particles are reordered because of clists
     CC(d::Memcpy(pp_hst, pp, n*sizeof(Particle), D2H));
@@ -118,6 +123,7 @@ int main(int argc, char **argv) {
     UC(clist_fin_map(cmap));
     UC(dealloc());
 
+    UC(pair_fin(params));
     UC(coords_fin(coords));
     UC(conf_fin(cfg));
     m::fin();

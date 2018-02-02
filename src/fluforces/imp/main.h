@@ -10,14 +10,19 @@ void fluforces_bulk_prepare(int n, const Cloud *c, /**/ FluForcesBulk *b) {
     zip(n, c->pp, /**/ b->zipped_pp, b->zipped_rr);
     if (multi_solvent)
         b->colors = c->cc;
+    else
+        b->colors = NULL;
 }
 
-void fluforces_bulk_apply(int n, const FluForcesBulk *b, const int *start, const int *count, /**/ Force *ff) {
+void fluforces_bulk_apply(const PairParams *par, int n, const FluForcesBulk *b, const int *start, const int *count, /**/ Force *ff) {
     BCloud c;
     c.pp = b->zipped_pp;
     c.cc = b->colors;
 
-    UC(flocal(b->L, n, c, start, b->rnd, /**/ ff));
+    if (b->colors)
+        UC(flocal_color(par, b->L, n, c, start, b->rnd, /**/ ff));
+    else
+        UC(flocal(par, b->L, n, c, start, b->rnd, /**/ ff));
 }
 
 
@@ -33,6 +38,9 @@ void fluforces_halo_prepare(flu::LFrag26 lfrags, flu::RFrag26 rfrags, /**/ FluFo
     }
 }
 
-void fluforces_halo_apply(const FluForcesHalo *h, /**/ Force *ff) {
-    hforces::interactions(h->L, h->lfrags, h->rfrags, h->rndfrags, (float*)ff);
+void fluforces_halo_apply(const PairParams *par, const FluForcesHalo *h, /**/ Force *ff) {
+    if (multi_solvent)
+        hforces::fhalo_color(par, h->L, h->lfrags, h->rfrags, h->rndfrags, (float*)ff);
+    else
+        hforces::fhalo(par, h->L, h->lfrags, h->rfrags, h->rndfrags, (float*)ff);
 }
