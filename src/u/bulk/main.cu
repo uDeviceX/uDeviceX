@@ -75,6 +75,16 @@ static void build_clist() {
     pp0 = tmp;
 }
 
+static void set_params(PairParams *p) {
+    enum {ncolors = 2};
+    float a[] = {adpd_b, adpd_br, adpd_r};
+    float g[] = {gdpd_b, gdpd_br, gdpd_r};
+    float s[3];
+    for (int i = 0; i < 3; ++i) s[i] = sqrt(2 * kBT * g[i] / dt);
+    UC(pair_set_dpd(ncolors, a, g, s, p));
+    UC(pair_set_lj(ljsigma, ljepsilon, p));
+}
+
 int main(int argc, char **argv) {
     Config *cfg;
     const char *fin, *fout;
@@ -94,7 +104,7 @@ int main(int argc, char **argv) {
     L = subdomain(coords);
 
     UC(pair_ini(&params));
-    UC(pair_set_conf(cfg, "flu", params));
+    UC(set_params(params));
     
     UC(conf_lookup_string(cfg, "in", &fin));
     UC(conf_lookup_string(cfg, "out", &fout));
