@@ -9,3 +9,4 @@ s: (a+b+c)/2;
 heron: s*(s-a)*(s-b)*(s-c)
 kahn: 1/16*(a+(b+c))*(c-(a-b))*(c+(a-b))*(a+(b-c));
 
+expand(kahn - heron);
