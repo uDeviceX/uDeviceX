@@ -67,7 +67,8 @@ void sim_gen(Sim *s) {
 }
 
 void sim_strt(Sim *s) {
-    long nsteps = (long)(tend / dt);
+    float dt0 = dt;
+    long nsteps = (long)(tend / dt0);
     Flu *flu = &s->flu;
     Rbc *rbc = &s->rbc;
     Rig *rig = &s->rig;
@@ -75,7 +76,6 @@ void sim_strt(Sim *s) {
     OffRead *cell = s->rbc.cell;
     bool dump_sdf = s->opt.dump_field;
     long maxp_wall = get_max_parts_wall(s->coords);
-    float dt0 = dt;
     
     /*Q*/
     flu_strt_quants(s->coords, RESTART_BEGIN, &flu->q);
