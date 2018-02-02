@@ -61,7 +61,7 @@ int comm_bags_ini(AllocMod fmod, AllocMod bmod, size_t bsize, const int capacity
 }
 
 int comm_ini(MPI_Comm cart, /**/ Comm **com_p) {
-    int i, c, crd_rnk[3];
+    int i, c, crd_rnk[3], d[3];
     int coords[3], periods[3], dims[3];
     Comm *com;
 
@@ -71,8 +71,9 @@ int comm_ini(MPI_Comm cart, /**/ Comm **com_p) {
     MC(m::Cart_get(cart, 3, dims, periods, coords));
     
     for (i = 0; i < NFRAGS; ++i) {
+        fraghst::i2d3(i, d);
         for (c = 0; c < 3; ++c)
-            crd_rnk[c] = coords[c] + fraghst::i2d(i,c);
+            crd_rnk[c] = coords[c] + d[c];
         MC(m::Cart_rank(cart, crd_rnk, com->ranks + i));
         com->tags[i] = fraghst::anti(i);
     }
