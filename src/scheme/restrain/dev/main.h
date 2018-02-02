@@ -56,10 +56,10 @@ __global__ void shift(Map m, float3 v, int n, /**/ Particle *pp) {
     good = (i < n) && valid_p(m, i);
 
     if (good) {
-            Particle p = pp[i];
-            p.v[X] -= v.x;
-            p.v[Y] -= v.y;
-            p.v[Z] -= v.z;
-            pp[i] = p;
+        Particle p = pp[i];
+        p.v[X] -= v.x;
+        p.v[Y] -= v.y;
+        p.v[Z] -= v.z;
+        pp[i] = p;
     }
 }
