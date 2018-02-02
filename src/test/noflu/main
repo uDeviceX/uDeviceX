@@ -5,23 +5,26 @@ S=`u.cp.s` C="$S/conf/poiseuille.h"
 u.cp.sdf cyl1/cyl.dat sdf.dat
 :
 u.conf $C <<!
-   numberdensity=0 dt=5e-4 tend=0.4  walls wall_creation=100
+   numberdensity=0 tend=0.4  walls wall_creation=100
    run
 !
 :
 (make clean && u.make -j) > .make.log
 u.run ./udx '
 glb = {
+    dt = 5e-4
     L = [16, 16, 16]
 }
+
 bforce = {
-    type = "constant";
-    f    = [0.0333333,0.,0.];
-};
+    type = "constant"
+    f    = [0.0333333,0.,0.]
+}
+
 dump = {
-    field = true;
-    parts = true;
-    freq_field = 500;
-    freq_parts = 500;
-};'
+    field = true
+    parts = true
+    freq_field = 500
+    freq_parts = 500
+}'
 cp bop/solvent-00001.bop bop.out.txt
