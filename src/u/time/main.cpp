@@ -5,13 +5,18 @@
 #include "scheme/time/imp.h"
 
 int main(int argc, char **argv) {
-    float ts;
+    float ts, dt, dump;
+    int i;
     m::ini(&argc, &argv);
     msg_ini(m::rank);
-    Time *t;
-    ts = 0;
-    time_ini(ts, /**/ &t);
+    Time *time;
+    ts = 0; dt = 0.1; dump = 0.5;
+    time_ini(ts, /**/ &time);
 
-    time_fin(t);
+    for (i = 0; i < 100; i++) {
+        time_step(time, dt);
+        printf("%g %d\n", time_current(time), time_cross(time, dump));
+    }
+    time_fin(time);
     m::fin();
 }

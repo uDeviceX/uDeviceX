@@ -20,6 +20,6 @@ int time_cross(Time *q, float t) {
     if (q->First) return 0;
     if (t <= 0)   ERR("t <= 0");
     c = q->curr; p = q->prev;
-    f = floor(c / t);
+    f = floor(c / t) * t;
     return p < f && f < c;
 }
