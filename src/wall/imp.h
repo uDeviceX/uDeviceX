@@ -1,3 +1,4 @@
+struct PairParams;
 struct RNDunif;
 struct Coords;
 struct int3;
@@ -10,13 +11,8 @@ struct WallQuants {
 
 struct WallTicket;
 
-namespace grey {
-void wall_force(Wvel_v wv, const Coords *c, Sdf *qsdf, const WallQuants *q, const WallTicket *t, int n, Cloud cloud, Force *ff);
-}
-
-namespace color {
-void wall_force(Wvel_v wv, const Coords *c, Sdf *qsdf, const WallQuants *q, const WallTicket *t, int n, Cloud cloud, Force *ff);
-}
+void wall_force      (const PairParams*, Wvel_v wv, const Coords *c, Sdf *qsdf, const WallQuants *q, const WallTicket *t, int n, Cloud cloud, Force *ff);
+void wall_force_color(const PairParams*, Wvel_v wv, const Coords *c, Sdf *qsdf, const WallQuants *q, const WallTicket *t, int n, Cloud cloud, Force *ff);
 
 void wall_ini_quants(int3 L, WallQuants *q);
 void wall_ini_ticket(int3 L, WallTicket **t);
