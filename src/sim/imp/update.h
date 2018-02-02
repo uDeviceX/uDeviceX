@@ -107,7 +107,7 @@ void restrain(long it, Sim *s) {
     scheme_restrain_apply(s->cart, s->flu.q.cc, it, /**/ s->restrain, qq);
 }
 
-void bounce_wall(const Coords *c, Wall *w, /**/ Flu *f, Rbc *r) {
-    sdf_bounce(&w->vview, c, w->sdf, f->q.n, /**/ f->q.pp);
-    if (rbcs) sdf_bounce(&w->vview, c, w->sdf, r->q.n, /**/ r->q.pp);
+void bounce_wall(float dt0, const Coords *c, Wall *w, /**/ Flu *f, Rbc *r) {
+    sdf_bounce(dt0, &w->vview, c, w->sdf, f->q.n, /**/ f->q.pp);
+    if (rbcs) sdf_bounce(dt0, &w->vview, c, w->sdf, r->q.n, /**/ r->q.pp);
 }

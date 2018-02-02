@@ -47,14 +47,11 @@ static __device__ void rescue(Wvel_v wv, Coords_v c, Sdf_v *texsdf, float currsd
     }
 }
 
-static __device__ void bounce_back_1p(Wvel_v wv, Coords_v c, Sdf_v *texsdf, float currsdf,
+static __device__ void bounce_back_1p(float dt0, Wvel_v wv, Coords_v c, Sdf_v *texsdf, float currsdf,
                                       /* io */ float3 *r, float3 *v) {
     float3 r0, rc, rw, dsdf;
     float phi, dphi, t;
     int l;
-
-    float dt0; dt0 = wv.dt0;
-    assert(dt0 >=0.95*dt && dt0 <=1.05*dt);
 
     r0 = *r;
     // get previous position
@@ -93,7 +90,7 @@ static __device__ void bounce_back_1p(Wvel_v wv, Coords_v c, Sdf_v *texsdf, floa
         *r = r0;    
 }
 
-__global__ void bounce_back(Wvel_v wv, Coords_v c, Sdf_v texsdf, int n, /**/ Particle *pp) {
+__global__ void bounce_back(float dt0, Wvel_v wv, Coords_v c, Sdf_v texsdf, int n, /**/ Particle *pp) {
     float s, currsdf;
     float3 r, v;
     int i;
@@ -107,7 +104,7 @@ __global__ void bounce_back(Wvel_v wv, Coords_v c, Sdf_v texsdf, int n, /**/ Par
     if (s >= texsdf.cheap_threshold) {
         currsdf = sdf(&texsdf, r.x, r.y, r.z);
         if (currsdf >= 0) {
-            bounce_back_1p(wv, c, &texsdf, currsdf, /*io*/ &r, &v);
+            bounce_back_1p(dt0, wv, c, &texsdf, currsdf, /*io*/ &r, &v);
             rv2p(r, v, i, /**/ pp);
         }
     }

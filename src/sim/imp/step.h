@@ -5,7 +5,7 @@ void step(float dt0, BForce *bforce, bool wall0, int ts, int it, Sim *s) {
     Wall *wall = &s->wall;
 
     if (walls && !s->equilibrating)
-        UC(wvel_get_view(it - ts, wall->vel, /**/ &wall->vview));
+        UC(wvel_get_view(dt0, it - ts, wall->vel, /**/ &wall->vview));
     
     UC(check_sizes(s));
     UC(check_pos_soft(s));
@@ -37,7 +37,7 @@ void step(float dt0, BForce *bforce, bool wall0, int ts, int it, Sim *s) {
         log(it, &s->vcon);
     }
 
-    if (wall0) bounce_wall(s->coords, wall, /**/ flu, rbc);
+    if (wall0) bounce_wall(dt0, s->coords, wall, /**/ flu, rbc);
     
     if (sbounce_back && s->solids0) bounce_solid(dt0, it, s->L, /**/ &s->bb, rig, flu);
 
