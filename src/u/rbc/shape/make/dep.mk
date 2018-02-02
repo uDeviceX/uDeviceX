@@ -10,7 +10,7 @@ $B/parser/imp.o: $S/utils/imp.h $S/utils/error.h $S/parser/imp.h $S/utils/msg.h
 $B/rbc/adj/imp.o: $S/rbc/adj/imp/fin.h $S/utils/imp.h $S/inc/conf.h $S/utils/error.h $S/rbc/adj/imp.h $S/utils/cc.h $S/rbc/adj/imp/ini.h $S/inc/dev.h $S/d/api.h $B/conf.h $S/rbc/adj/type/common.h $S/rbc/adj/imp/type.h $S/rbc/adj/type/dev.h $S/rbc/adj/imp/anti.h $S/rbc/adj/imp/map.h $S/utils/msg.h $S/rbc/edg/imp.h
 $B/rbc/edg/imp.o: $S/utils/error.h $S/rbc/edg/imp.h
 $B/rbc/shape/imp.o: $S/utils/imp.h $S/utils/error.h $S/rbc/shape/imp.h $S/rbc/shape/imp/main.h $S/rbc/shape/imp/type.h $S/rbc/adj/imp.h
-$B/u/rbc/shape/main.o: $S/utils/imp.h $S/inc/conf.h $S/utils/error.h $S/mpi/wrapper.h $S/utils/cc.h $S/rbc/shape/imp.h $S/inc/dev.h $S/d/api.h $B/conf.h $S/rbc/adj/imp.h $S/io/off/imp.h $S/parser/imp.h $S/mpi/glb.h $S/utils/msg.h
+$B/u/rbc/shape/main.o: $S/utils/imp.h $S/inc/conf.h $S/utils/error.h $S/mpi/wrapper.h $S/utils/cc.h $S/rbc/shape/imp.h $S/inc/dev.h $B/conf.h $S/rbc/adj/imp.h $S/io/off/imp.h $S/parser/imp.h $S/mpi/glb.h $S/utils/msg.h
 $B/utils/cc.o: $S/utils/cc/common.h $S/inc/conf.h $S/utils/error.h $S/d/api.h $B/conf.h
 $B/utils/error.o: $S/utils/msg.h $S/utils/error.h
 $B/utils/imp.o: $S/utils/error.h $S/utils/imp.h

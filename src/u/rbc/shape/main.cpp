@@ -9,7 +9,6 @@
 #include "utils/imp.h"
 #include "parser/imp.h"
 
-#include "d/api.h"
 #include "utils/msg.h"
 #include "inc/dev.h"
 
