@@ -1,3 +1,7 @@
+void compute_edg(Adj *adj, const float *rr, /**/ float *edg) {
+
+}
+
 void rbc_shape_ini(Adj *adj, const float *rr, /**/ RbcShape **pq) {
     int n;
     RbcShape *q;
@@ -6,6 +10,9 @@ void rbc_shape_ini(Adj *adj, const float *rr, /**/ RbcShape **pq) {
     EMALLOC(n, &q->edg);
     EMALLOC(n, &q->area);
     EMALLOC(n, &q->anti);
+
+    compute_edg(adj, rr, /**/ q->edg);
+
     *pq = q;
 }
 
