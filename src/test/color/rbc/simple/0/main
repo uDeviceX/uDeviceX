@@ -13,6 +13,7 @@ u.conf conf/double.poiseuille.h <<!!!
 { make clean && u.make -j; } > make.log
 u.run ./udx  '
 glb = {
+    dt = 4e-4
     L = [8, 8, 8]
 }
 rbc = {
@@ -24,4 +25,3 @@ dump = {
 };'
 bop2txt2 bop/solvent-00001.bop -- bop/colors_solvent-00001.bop |
   awk '{print $7}' | sort -g > color.out.txt
-

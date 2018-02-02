@@ -76,12 +76,12 @@ int main(int argc, char **argv) {
     Coords *coords;
     int3 L;
     float dt0;
-    dt0 = dt;
     m::ini(&argc, &argv);
     
     UC(conf_ini(&cfg));
     UC(dbg_ini(&dbg));
     UC(conf_read(argc, argv, cfg));
+    UC(conf_lookup_float(cfg, "glb.dt", &dt0));    
     UC(dbg_set_conf(cfg, dbg));
     UC(coords_ini_conf(m::cart, cfg, &coords));
 
