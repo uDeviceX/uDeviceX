@@ -12,12 +12,6 @@ static double vabs(float *a) {
     return sqrt(r);
 }
 
-static double area_heron(double a, double b, double c) {
-  double s;
-  s = (a+b+c)/2;
-  return sqrt(s*(s-a)*(s-b)*(s-c));
-}
-
 static void swap(double *a, double *b) {
     double t;
     t = *a; *a = *b; *b = t;
