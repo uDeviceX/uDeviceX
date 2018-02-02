@@ -15,16 +15,15 @@ void eflu_get_local_frags(const EFluPack *p, /**/ LFrag26 *lfrags) {
 }
 
 void eflu_get_remote_frags(const EFluUnpack *u, /**/ RFrag26 *rfrags) {
-    enum {X, Y, Z};
     int i, dx, dy, dz, xcells, ycells, zcells;
     int3 L;
     Cloud cloudb = {0, 0};
     L = u->L;
     
     for (i = 0; i < 26; ++i) {
-        dx = fraghst::i2d(i,X);
-        dy = fraghst::i2d(i,Y);
-        dz = fraghst::i2d(i,Z);
+        dx = fraghst::i2dx(i);
+        dy = fraghst::i2dy(i);
+        dz = fraghst::i2dz(i);
 
         xcells = dx == 0 ? L.x : 1;
         ycells = dy == 0 ? L.y : 1;
