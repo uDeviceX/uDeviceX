@@ -45,7 +45,7 @@ static void run0(const Coords *coords, int part_freq, const BForce *bforce,
         rbc_force_apply(dt0, q, t, par, /**/ f);
         stretch::apply(q.nc, stretch, /**/ f);
         if (pushrbc) body_force(i, coords, bforce, q, /**/ f);
-        scheme_move_apply(moveparams, rbc_mass, q.n, f, q.pp);
+        scheme_move_apply(dt0, moveparams, rbc_mass, q.n, f, q.pp);
         if (i % part_freq  == 0) dump(coords, q, t, mesh_write);
 #ifdef RBC_CLEAR_VEL
         scheme_move_clear_vel(q.n, /**/ q.pp);
