@@ -18,7 +18,7 @@ void step(float dt0, BForce *bforce, bool wall0, int ts, int it, Sim *s) {
     
     forces(wall0, s);
 
-    UC(check_forces(s));
+    UC(check_forces(dt0, s));
     
     dump_diag0(it, s);
     dump_diag_after(it, wall0, s->solids0, s);
@@ -29,7 +29,7 @@ void step(float dt0, BForce *bforce, bool wall0, int ts, int it, Sim *s) {
     if (s->solids0) update_solid(dt0, /**/ rig);
     if (rbcs)       update_rbc(s->moveparams, it, rbc, s);
 
-    UC(check_vel(s));
+    UC(check_vel(dt0, s));
     
     if (s->opt.vcon && !s->equilibrating) {
         sample(s->coords, it, flu, /**/ &s->vcon);
@@ -42,7 +42,7 @@ void step(float dt0, BForce *bforce, bool wall0, int ts, int it, Sim *s) {
     if (sbounce_back && s->solids0) bounce_solid(dt0, it, s->L, /**/ &s->bb, rig, flu);
 
     UC(check_pos_soft(s));
-    UC(check_vel(s));
+    UC(check_vel(dt0, s));
 
     if (! s->equilibrating) {
         if (s->opt.inflow)     apply_inflow(s->inflow, /**/ flu);
