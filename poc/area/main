@@ -1,5 +1,8 @@
 /*
 
+W. Kahan. Miscalculating Area and Angles of a Needle-like Triangle
+http://http.cs.berkeley.edu/~wkahan/Triangle.pd
+
 */
 
 s: (a+b+c)/2;
