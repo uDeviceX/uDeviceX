@@ -9,6 +9,7 @@ u.conf conf/long.h <<!!!
 (make clean && u.make -j) > /dev/null 2>&1
 u.run ./udx '
 glb = {
+    dt = 5e-4
     L = [4, 4, 4]
 }
 dump = {
