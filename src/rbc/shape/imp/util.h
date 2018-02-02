@@ -5,9 +5,9 @@ static void diff(const float *a, const float *b, /**/ float *c) {
     c[Z] = a[Z] - b[Z];
 }
 
-static float vabs(float *a) {
+static double vabs(float *a) {
     enum {X, Y, Z};
-    float r;
+    double r;
     r = a[X]*a[X] + a[Y]*a[Y] + a[Z]*a[Z];
     return sqrt(r);
 }
