@@ -15,7 +15,7 @@ static __device__ real  frnd0(real dt0, RbcParams_v par, real rnd) {
     return f;
 }
 
-static __device__ real3 frnd(read dt0, RbcParams_v par, real3 r1, real3 r2, const Rnd0 rnd) { /* random force */
+static __device__ real3 frnd(real dt0, RbcParams_v par, real3 r1, real3 r2, const Rnd0 rnd) { /* random force */
     real3 dr, f;
     real r, f0;
     diff(&r1, &r2, /**/ &dr);
