@@ -12,9 +12,12 @@ static double vabs(float *a) {
     return sqrt(r);
 }
 
-/* heron formula for triangle area */
 static double area_heron(double a, double b, double c) {
   double s;
   s = (a+b+c)/2;
   return sqrt(s*(s-a)*(s-b)*(s-c));
+}
+
+static double area_kahan(double a, double b, double c) {
+    return sqrt((a+(b+c))*(c-(a-b))*(c+(a-b))*(a+(b-c)))/4;
 }
