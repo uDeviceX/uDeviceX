@@ -11,5 +11,7 @@ int main(int argc, char **argv) {
     Time *t;
     ts = 0; te = 1; dt0 = 0.1;
     time_ini(ts, te, dt0, /**/ &t);
+
+    time_fin(t);
     m::fin();
 }
