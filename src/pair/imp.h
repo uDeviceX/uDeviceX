@@ -12,7 +12,7 @@ void pair_fin(PairParams *);
 void pair_set_lj(float sigma, float eps, PairParams *p);
 void pair_set_dpd(int ncol, const float a[], const float g[], const float s[], PairParams *p);
 
-void pair_set_conf(const Config *, PairParams *);
+void pair_set_conf(const Config *, const char *name_space, PairParams *);
 
 void pair_get_view_dpd(const PairParams*, PairDPD*);
 void pair_get_view_dpd_color(const PairParams*, PairDPDC*);
