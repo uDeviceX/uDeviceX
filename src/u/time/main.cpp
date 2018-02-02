@@ -10,10 +10,9 @@ int main(int argc, char **argv) {
     m::ini(&argc, &argv);
     msg_ini(m::rank);
     Time *time;
-    ts = 0; dt = 0.1; dump = 0.5;
+    ts = 0; dt = 0.01; dump = 0.78;
     time_ini(ts, /**/ &time);
-
-    for (i = 0; i < 100; i++) {
+    for (i = 0; i < 1000; i++) {
         time_step(time, dt);
         printf("%g %d\n", time_current(time), time_cross(time, dump));
     }
