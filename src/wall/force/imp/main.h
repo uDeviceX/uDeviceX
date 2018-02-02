@@ -20,7 +20,7 @@ void wall_force_apply(const PairParams *params, Wvel_v wv, const Coords *c, Clou
 
 void wall_force_apply_color(const PairParams *params, Wvel_v wv, const Coords *c, Cloud cloud, int n, RNDunif *rnd, WallForce wa, /**/ Force *ff) {
     if (multi_solvent) {
-        PairDPDM pv;
+        PairDPDCM pv;
         UC(pair_get_view_dpd_mirrored(params, &pv));
         interactions(pv, wv, c, cloud, n, rnd, wa, /**/ ff);
     }
