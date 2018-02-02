@@ -1,9 +1,10 @@
 struct Fo { float *x, *y, *z; }; /* force */
 
-static __device__ void pair(const forces::Pa a, const forces::Pa b, float rnd,
+template<typename Par>
+static __device__ void pair(Par params, const PairPa a, const PairPa b, float rnd,
                             /**/ float *fx, float *fy, float *fz) {
-    forces::Fo f;
-    forces::gen(a, b, rnd, /**/ &f);
+    PairFo f;
+    pair_force(params, a, b, rnd, /**/ &f);
     *fx = f.x; *fy = f.y; *fz = f.z;
 }
 
@@ -14,9 +15,10 @@ static __device__ float random(int aid, int bid, float seed, int mask) {
     return rnd::mean0var1uu(seed, a1, a2);
 }
 
-static __device__ void force0(const flu::RndFrag rnd, const flu::RFrag bfrag, const Map m, const forces::Pa a, int aid, /**/
+template<typename Par>
+static __device__ void force0(Par params, const flu::RndFrag rnd, const flu::RFrag bfrag, const Map m, const PairPa a, int aid, /**/
                               float *fx, float *fy, float *fz) {
-    forces::Pa b;
+    PairPa b;
     int i;
     int bid; /* id of b */
     float x, y, z; /* pair force */
@@ -25,28 +27,29 @@ static __device__ void force0(const flu::RndFrag rnd, const flu::RFrag bfrag, co
     for (i = 0; !endp(m, i); i ++ ) {
         bid = m2id(m, i);
         cloud_get(bfrag.c, bid, /**/ &b);
-        pair(a, b, random(aid, bid, rnd.seed, rnd.mask), &x, &y, &z);
+        pair(params, a, b, random(aid, bid, rnd.seed, rnd.mask), &x, &y, &z);
         *fx += x; *fy += y; *fz += z;
     }
 }
 
-static __device__ void force1(const flu::RndFrag rnd, const flu::RFrag frag, const Map m, const forces::Pa p, int id, Fo f) {
+template<typename Par>
+static __device__ void force1(Par params, const flu::RndFrag rnd, const flu::RFrag frag, const Map m, const PairPa p, int id, Fo f) {
     float x, y, z; /* force */
-    force0(rnd, frag, m, p, id, /**/ &x, &y, &z);
+    force0(params, rnd, frag, m, p, id, /**/ &x, &y, &z);
     atomicAdd(f.x, x);
     atomicAdd(f.y, y);
     atomicAdd(f.z, z);
 }
 
-static __device__ void force2(int3 L, const flu::RFrag frag, const flu::RndFrag rnd, forces::Pa p, int id, /**/ Fo f) {
-    float x, y, z;
-    Map m;
-    forces::p2r3(&p, /**/ &x, &y, &z);
-    m = r2map(L, frag, x, y, z);
-    forces::shift(-frag.dx * L.x,
-                  -frag.dy * L.y,
-                  -frag.dz * L.z, /**/ &p);
-    force1(rnd, frag, m, p, id, /**/ f);
+template<typename Par>
+static __device__ void force2(Par params, int3 L, const flu::RFrag frag, const flu::RndFrag rnd, PairPa p, int id, /**/ Fo f) {
+    Map m;    
+    m = r2map(L, frag, p.x, p.y, p.z);
+    p.x -= frag.dx * L.x;
+    p.y -= frag.dy * L.y;
+    p.z -= frag.dz * L.z;
+    
+    force1(params, rnd, frag, m, p, id, /**/ f);
 }
 
 static __device__ Fo i2f(const int *ii, float *ff, int i) {
@@ -61,15 +64,17 @@ static __device__ Fo Lfrag2f(const flu::LFrag frag, float *ff, int i) {
     return i2f(frag.ii, ff, i);
 }
 
-static __device__ void force3(int3 L, const flu::LFrag afrag, const flu::RFrag bfrag, const flu::RndFrag rnd, int i, /**/ float *ff) {
-    forces::Pa p;
+template<typename Par>
+static __device__ void force3(Par params, int3 L, const flu::LFrag afrag, const flu::RFrag bfrag, const flu::RndFrag rnd, int i, /**/ float *ff) {
+    PairPa p;
     Fo f;
     cloud_get(afrag.c, i, &p);
     f = Lfrag2f(afrag, ff, i);
-    force2(L, bfrag, rnd, p, i, f);
+    force2(params, L, bfrag, rnd, p, i, f);
 }
 
-__global__ void force(int3 L, const int27 start, const flu::LFrag26 lfrags, const flu::RFrag26 rfrags, const flu::RndFrag26 rrnd, /**/ float *ff) {
+template<typename Par>
+__global__ void force(Par params, int3 L, const int27 start, const flu::LFrag26 lfrags, const flu::RFrag26 rfrags, const flu::RndFrag26 rrnd, /**/ float *ff) {
     flu::RndFrag  rnd;
     flu::RFrag rfrag;
     flu::LFrag lfrag;
@@ -88,5 +93,5 @@ __global__ void force(int3 L, const int27 start, const flu::LFrag26 lfrags, cons
     assert_frag(L, fid, rfrag);
 
     rnd = rrnd.d[fid];
-    force3(L, lfrag, rfrag, rnd, i, /**/ ff);
+    force3(params, L, lfrag, rfrag, rnd, i, /**/ ff);
 }

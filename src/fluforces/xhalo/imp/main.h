@@ -14,10 +14,23 @@ static void get_start(const flu::LFrag lfrags[26], /**/ int start[27]) {
         start[i + 1] = start[i] + pad(lfrags[i].n);
 }
 
-void interactions(int3 L, const flu::LFrag26 lfrags, const flu::RFrag26 rfrags, const flu::RndFrag26 rrnd, /**/ float *ff) {
+template<typename Par>
+static void interactions(Par params, int3 L, const flu::LFrag26 lfrags, const flu::RFrag26 rfrags, const flu::RndFrag26 rrnd, /**/ float *ff) {
     int27 start;
     int n; /* number of threads */
     get_start(lfrags.d, /**/ start.d);
     n = start.d[26];
-    KL(dev::force, (k_cnf(n)), (L, start, lfrags, rfrags, rrnd, /**/ ff));
+    KL(dev::force, (k_cnf(n)), (params, L, start, lfrags, rfrags, rrnd, /**/ ff));
+}
+
+void fhalo(const PairParams *params, int3 L, const flu::LFrag26 lfrags, const flu::RFrag26 rfrags, const flu::RndFrag26 rrnd, /**/ float *ff) {
+    PairDPD pv;
+    pair_get_view_dpd(params, &pv);
+    interactions(pv, L, lfrags, rfrags, rrnd, /**/ ff);
+}
+
+void fhalo_color(const PairParams *params, int3 L, const flu::LFrag26 lfrags, const flu::RFrag26 rfrags, const flu::RndFrag26 rrnd, /**/ float *ff) {
+    PairDPDC pv;
+    pair_get_view_dpd_color(params, &pv);
+    interactions(pv, L, lfrags, rfrags, rrnd, /**/ ff);
 }
