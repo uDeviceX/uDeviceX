@@ -11,3 +11,10 @@ static float vabs(float *a) {
     r = a[X]*a[X] + a[Y]*a[Y] + a[Z]*a[Z];
     return sqrt(r);
 }
+
+/* heron formula for triangle area */
+static double area_heron(double a, double b, double c) {
+  double s;
+  s = (a+b+c)/2;
+  return sqrt(s*(s-a)*(s-b)*(s-c));
+}
