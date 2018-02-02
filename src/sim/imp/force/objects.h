@@ -1,6 +1,6 @@
 void forces_cnt(ObjInter *oi, int nw, PaWrap *pw, FoWrap *fw) {
     cnt_build_cells(nw, pw, /**/ oi->cnt);
-    cnt_bulk(oi->cnt, nw, pw, fw);
+    cnt_bulk(oi->cntparams, oi->cnt, nw, pw, fw);
 }
 
 void forces_fsi(ObjInter *oi, int nw, PaWrap *pw, FoWrap *fw) {
@@ -61,7 +61,7 @@ void forces_objects(Sim *sim) {
     Fop26 hff = eobj_reini_ff(e->u, e->pf);
 
     if (fsiforces)     fsi_halo(oi->fsi, hpp, hff, hcc.d);
-    if (contactforces) cnt_halo(oi->cnt, nw, pw, fw, hpp, hff, hcc.d);
+    if (contactforces) cnt_halo(oi->cntparams, oi->cnt, nw, pw, fw, hpp, hff, hcc.d);
 
     /* send the forces back */ 
     

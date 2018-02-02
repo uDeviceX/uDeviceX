@@ -230,14 +230,22 @@ static void coords_log(const Coords *c) {
 }
 
 // TODO: from conf
-static void ini_pair_params(Sim *s) {
-    UC(pair_ini(&s->flu.params));
+static void set_params(PairParams *p) {
     float a[] = {adpd_b, adpd_br, adpd_r};
     float g[] = {gdpd_b, gdpd_br, gdpd_r};
-    float sigma[3];
+    float s[3];
     for (int i = 0; i < 3; ++i)
-        sigma[i] = sqrt(2 * kBT * g[i] / dt);
-    UC(pair_set_dpd(2, a, g, sigma, s->flu.params));
+        s[i] = sqrt(2 * kBT * g[i] / dt);
+    UC(pair_set_dpd(2, a, g, s, p));
+    UC(pair_set_lj(ljsigma, ljepsilon, p));
+}
+
+static void ini_pair_params(Sim *s) {
+    UC(pair_ini(&s->flu.params));
+    UC(pair_ini(&s->objinter.cntparams));
+
+    UC(set_params(s->flu.params));
+    UC(set_params(s->objinter.cntparams));
 }
 
 void sim_ini(int argc, char **argv, MPI_Comm cart, /**/ Sim **sim) {
