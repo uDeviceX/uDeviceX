@@ -45,6 +45,8 @@ include::dev/modules/distr.adoc[]
 
 include::dev/modules/fluforces.adoc[]
 
+include::dev/modules/frag.adoc[]
+
 include::dev/modules/fsi.adoc[]
 
 include::dev/modules/io/main.adoc[]
@@ -62,6 +64,8 @@ include::dev/modules/rbc/forces.adoc[]
 include::dev/modules/rbc/main.adoc[]
 
 include::dev/modules/rbc/rnd.adoc[]
+
+include::dev/modules/rbc/shape.adoc[]
 
 include::dev/modules/rbc/stretch.adoc[]
 
