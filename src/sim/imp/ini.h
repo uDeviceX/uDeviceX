@@ -231,7 +231,7 @@ static void coords_log(const Coords *c) {
 
 // TODO: from conf
 static void set_params(PairParams *p) {
-    enum {ncolors = 2;}
+    enum {ncolors = 2};
     float a[] = {adpd_b, adpd_br, adpd_r};
     float g[] = {gdpd_b, gdpd_br, gdpd_r};
     float s[3];
