@@ -27,11 +27,16 @@ void pair(PairParams *par, Pa a, Pa b, int ka, int kb, float rnd) {
             KL(dev::main, (1, 1), (pv, a, b, rnd));
         }
     }
-    else { // none is solvent
+    // This is just to match the test results
+    else if (k0 == SOLID_KIND && k1 == SOLID_KIND) {
         PairDPDLJ pv;
         pair_get_view_dpd_lj(par, &pv);
-        if (k0 == SOLID_KIND && k1 == SOLID_KIND)
-            pv.ljs *= 2;
+        pv.ljs *= 2;
+        KL(dev::main, (1, 1), (pv, a, b, rnd));        
+    }
+    else { // none is solvent
+        PairDPD pv;
+        pair_get_view_dpd(par, &pv);
         KL(dev::main, (1, 1), (pv, a, b, rnd));
     }
     dSync();
