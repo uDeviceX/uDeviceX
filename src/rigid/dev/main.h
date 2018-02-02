@@ -73,6 +73,8 @@ __global__ void reinit_ft(const int ns, Solid *ss) {
 
 __global__ void update_om_v(const int ns, Solid *ss) {
     enum {X, Y, Z};
+    enum {XX, XY, XZ, YY, YZ, ZZ};
+    enum {YX = XY, ZX = XZ, ZY = YZ};
     const int gid = blockIdx.x * blockDim.x + threadIdx.x;
 
     if (gid < ns) {
