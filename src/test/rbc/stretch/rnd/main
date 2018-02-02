@@ -24,6 +24,7 @@ u.conf conf/lina.h <<!
 u.strtdir
 RBC_RND=$seed u.run ./udx '
 glb = {
+    dt = 5e-4
     L = [48, 32, 32]
 }
 rbc = {
