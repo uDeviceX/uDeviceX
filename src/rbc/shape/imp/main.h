@@ -33,7 +33,6 @@ static void compute_area(Adj *adj, const float *rr, /**/ float *o) {
         a = vabs(r01); b = vabs(r12); c = vabs(r20);
         A = area_heron(a, b, c);
         o[i] = A;
-        msg_print("A: %g", A);
     }
 }
 
