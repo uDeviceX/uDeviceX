@@ -33,7 +33,7 @@ __global__ void cumulative_flux(float dt0, Par params, int2 nc, const float3 *uu
     // normal is scaled by area of element
     normal = get_normal(params, nc, xcid, ycid);
     u      = uu[i];
-    dn = dt * numberdensity * dot<float>(&normal, &u);
+    dn = dt0 * numberdensity * dot<float>(&normal, &u);
 
     cumflux[i] += dn;
 }
