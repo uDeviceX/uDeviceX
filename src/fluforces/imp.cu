@@ -31,8 +31,8 @@
 #include "pair/imp.h"
 
 #include "flu/type.h"
-#include "xbulk/imp.h"
-#include "xhalo/imp.h"
+#include "bulk/imp.h"
+#include "halo/imp.h"
 
 #include "imp.h"
 
