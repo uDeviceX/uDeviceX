@@ -5,15 +5,17 @@ Controls time step, output, restart dumps, wall creation step.
 Configuration:
 tstart, tene, twall : in physical units
 [rbc/flu]_dump_interval, restart_interval : in physical units
+dt0: initial timestep
 
 API:
-  ini()/fin()
-  nxt(Force*) called after every step
+  `ini()/fin()`
+  `nxt(Force*)`      : called after every step
 
-  [rbc/flu]_dump() : true/false
-  restart()        : true/false
+  `[rbc/flu]_dump()` : true/false : should we dump?
+  `restart()`        : true/false : should we restart?
 
-  dt()             : returns new timestep
+  `dt()`             : a new timestep
+  `t()`              : returns a current physical time
 
 How to dump/output?
   dumps are still indexed 0,1,2,...
