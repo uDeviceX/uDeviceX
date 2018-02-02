@@ -1,6 +1,7 @@
-static __device__ void pair(forces::Pa a, forces::Pa b, float rnd, /**/
+template <typename Par>
+static __device__ void pair(Par params, PairPa a, PairPa b, float rnd, /**/
                             float *fx, float *fy, float *fz) {
-    forces::Fo f;
-    forces::gen(a, b, rnd, /**/ &f);
+    PairFo f;
+    pair_force(params, a, b, rnd, /**/ &f);
     *fx = f.x; *fy = f.y; *fz = f.z;
 }

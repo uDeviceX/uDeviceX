@@ -1,10 +1,20 @@
-__global__ void bulk(int3 L, const int *cellstarts, const uint *ids, int n, const float2 *pp, const float2pWraps lpp,
+static __device__ void f22p(float2 a, float2 b, float2 c, /**/ PairPa *p) {
+    p->x = a.x;
+    p->y = a.y;
+    p->z = b.x;
+    p->vx = b.y;
+    p->vy = c.x;
+    p->vz = c.y;
+}
+
+template <typename Par>
+__global__ void bulk(Par params, int3 L, const int *cellstarts, const uint *ids, int n, const float2 *pp, const float2pWraps lpp,
                      float seed, int objid0, /**/ ForcepWraps lff, float *ff) {
     Map m; /* see map/ */
     float x, y, z;
 
     float fx, fy, fz, rnd;
-    forces::Pa a, b;
+    PairPa a, b;
     int gid, aid, zplane;
     float2 dst0, dst1, dst2;
     float xforce, yforce, zforce;
@@ -47,9 +57,9 @@ __global__ void bulk(int3 L, const int *cellstarts, const uint *ids, int n, cons
         stmp2 = __ldg(lpp.d[objid] + sentry + 2);
 
         rnd = rnd::mean0var1ii(seed, aid, bid);
-        forces::f2k2p(dst0,   dst1,  dst2, SOLID_KIND, /**/ &a);
-        forces::f2k2p(stmp0, stmp1, stmp2, SOLID_KIND, /**/ &b);
-        pair(a, b, rnd, /**/ &fx, &fy, &fz);
+        f22p(dst0,   dst1,  dst2, /**/ &a);
+        f22p(stmp0, stmp1, stmp2, /**/ &b);
+        pair(params, a, b, rnd, /**/ &fx, &fy, &fz);
         xforce += fx;
         yforce += fy;
         zforce += fz;

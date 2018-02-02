@@ -1,28 +1,30 @@
-static __device__ void pp2p(Particle *pp, int i, /**/ forces::Pa *a) {
+static __device__ void pp2p(Particle *pp, int i, /**/ PairPa *a) {
+    enum{X, Y, Z};
     float *r, *v;
     pp += i;
     r = pp->r;
     v = pp->v;
-    forces::rvk2p(r, v, SOLID_KIND, /**/ a);
+    a->x  = r[X];  a->y  = r[Y];  a->z  = r[Z];
+    a->vx = v[X];  a->vy = v[Y];  a->vz = v[Z]; 
 }
 
-static __device__ void fetch_b(const float2 *pp, int i, /**/ forces::Pa *b) {
+static __device__ void fetch_b(const float2 *pp, int i, /**/ PairPa *b) {
     float2 s0, s1, s2;
     pp += 3*i;
     s0 = __ldg(pp++);
     s1 = __ldg(pp++);
     s2 = __ldg(pp  );
-    forces::f2k2p(s0, s1, s2, SOLID_KIND, /**/ b);
+    f22p(s0, s1, s2, /**/ b);
 }
 
-__device__ void halo0(int3 L, const int *cellstarts, const uint *ids, const float2pWraps lpp, forces::Pa a, int aid, float seed,
+template <typename Par>
+static __device__ void halo0(Par params, int3 L, const int *cellstarts, const uint *ids, const float2pWraps lpp, PairPa a, int aid, float seed,
                       /**/ ForcepWraps lff, float *fA) {
     enum {X, Y, Z};
     Map m;
     int mapstatus;
-    forces::Pa b;
+    PairPa b;
     float fx, fy, fz;
-    float x, y, z;
     float xforce = 0, yforce = 0, zforce = 0;
     int zplane;
     int i;
@@ -31,9 +33,8 @@ __device__ void halo0(int3 L, const int *cellstarts, const uint *ids, const floa
     float rnd;
     uint code;
 
-    forces::p2r3(&a, /**/ &x, &y, &z);
     for (zplane = 0; zplane < 3; ++zplane) {
-        mapstatus = tex2map(L, zplane, x, y, z, cellstarts, /**/ &m);
+        mapstatus = tex2map(L, zplane, a.x, a.y, a.z, cellstarts, /**/ &m);
         if (mapstatus == EMPTY) continue;
         for (i = 0; !endp(m, i); ++i) {
             slot = m2id(m, i);
@@ -41,7 +42,7 @@ __device__ void halo0(int3 L, const int *cellstarts, const uint *ids, const floa
             clist_decode_id(code, &objid, &bid);
             fetch_b(lpp.d[objid], bid, /**/ &b);
             rnd = rnd::mean0var1ii(seed, aid, bid);
-            pair(a, b, rnd, /**/ &fx, &fy, &fz);
+            pair(params, a, b, rnd, /**/ &fx, &fy, &fz);
             xforce += fx;
             yforce += fy;
             zforce += fz;
@@ -55,11 +56,12 @@ __device__ void halo0(int3 L, const int *cellstarts, const uint *ids, const floa
     fA[X] += xforce; fA[Y] += yforce; fA[Z] += zforce;
 }
 
-__global__ void halo(int3 L, const int *cellstarts, const uint *ids, float seed, const int27 starts, const float2pWraps lpp,
+template <typename Par>
+__global__ void halo(Par params, int3 L, const int *cellstarts, const uint *ids, float seed, const int27 starts, const float2pWraps lpp,
                      int n, Pap26 hpp, /**/ ForcepWraps lff, Fop26 hff) {
     int aid, start;
     int fid;
-    forces::Pa a;
+    PairPa a;
     float *fA;    
     
     aid = threadIdx.x + blockDim.x * blockIdx.x;
@@ -69,5 +71,5 @@ __global__ void halo(int3 L, const int *cellstarts, const uint *ids, float seed,
     start = starts.d[fid];
     pp2p(hpp.d[fid], aid - start, &a);
     fA = hff.d[fid][aid - start].f;
-    halo0(L, cellstarts, ids, lpp, a, aid, seed, /**/ lff, fA);
+    halo0(params, L, cellstarts, ids, lpp, a, aid, seed, /**/ lff, fA);
 }

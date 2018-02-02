@@ -12,6 +12,7 @@
 
 #include "math/rnd/imp.h"
 #include "math/rnd/dev.h"
+#include "math/dev.h"
 
 #include "inc/def.h"
 #include "utils/msg.h"
@@ -27,10 +28,9 @@
 
 #include "dbg/imp.h"
 
-#include "forces/type.h"
-#include "forces/use.h"
-#include "forces/pack.h"
-#include "forces/imp.h"
+#include "pair/type.h"
+#include "pair/dev.h"
+#include "pair/imp.h"
 
 #include "partlist/type.h"
 
