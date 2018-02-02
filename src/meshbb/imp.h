@@ -4,10 +4,15 @@ void meshbb_ini(int maxpp, /**/ MeshBB **d);
 void meshbb_fin(/**/ MeshBB *d);
 
 void meshbb_reini(int n, /**/ MeshBB *d);
-void meshbb_find_collisions(int nm, int nt, int nv, const int4 *tt, const Particle *i_pp, int3 L,
-                     const int *starts, const int *counts, const Particle *pp, const Force *ff, /**/ MeshBB *d);
-void meshbb_select_collisions(int n, /**/ MeshBB *d);
-void meshbb_bounce(int n, const MeshBB *d, const Force *ff, int nt, int nv, const int4 *tt, const Particle *i_pp, /**/ Particle *pp, Momentum *mm);
-
-void meshbb_collect_rig_momentum(int ns, int nt, int nv, const int4 *tt, const Particle *pp, const Momentum *mm, /**/ Solid *ss);
-void meshbb_collect_rbc_momentum(int nc, int nt, int nv, const int4 *tt, const Particle *pp, const Momentum *mm, /**/ Force *ff);
+void meshbb_find_collisions(float dt0,
+                            int nm, int nt, int nv, const int4 *tt, const Particle *i_pp, int3 L,
+                            const int *starts, const int *counts, const Particle *pp, const Force *ff, /**/ MeshBB *d);
+void meshbb_select_collisions(float dt0,
+                              int n, /**/ MeshBB *d);
+void meshbb_bounce(float dt0,
+                   int n, const MeshBB *d, const Force *ff, int nt, int nv, const int4 *tt,
+                   const Particle *i_pp, /**/ Particle *pp, Momentum *mm);
+void meshbb_collect_rig_momentum(float dt0,
+                                 int ns, int nt, int nv, const int4 *tt, const Particle *pp, const Momentum *mm, /**/ Solid *ss);
+void meshbb_collect_rbc_momentum(float dt0,
+                                 int nc, int nt, int nv, const int4 *tt, const Particle *pp, const Momentum *mm, /**/ Force *ff);

@@ -1,6 +1,7 @@
 namespace dev {
 /* see Fedosov PhD Thesis */
-static __device__ BBState intersect_triangle(const real3_t *s10, const real3_t *s20, const real3_t *s30,
+static __device__ BBState intersect_triangle(real dt0,
+                                             const real3_t *s10, const real3_t *s20, const real3_t *s30,
                                              const real3_t *vs1, const real3_t *vs2, const real3_t *vs3,
                                              const rPa *p0,  /**/ real_t *h, real_t *u, real_t *v, real_t *s) {
     
@@ -27,12 +28,12 @@ static __device__ BBState intersect_triangle(const real3_t *s10, const real3_t *
         real3 r1, s11, n1, dr1;
         real b0, b1;
         
-        apxb(&p0->r, dt, &p0->v, /**/ &r1);
-        apxb(s10, dt, vs1, /**/ &s11);
+        apxb(&p0->r, dt0, &p0->v, /**/ &r1);
+        apxb(s10, dt0, vs1, /**/ &s11);
 
-        n1.x = n0.x + dt * (nt.x + dt * ntt.x);
-        n1.y = n0.y + dt * (nt.y + dt * ntt.y);
-        n1.z = n0.z + dt * (nt.z + dt * ntt.z);
+        n1.x = n0.x + dt0 * (nt.x + dt0 * ntt.x);
+        n1.y = n0.y + dt0 * (nt.y + dt0 * ntt.y);
+        n1.z = n0.z + dt0 * (nt.z + dt0 * ntt.z);
 
         diff(&r1, &s11, /**/ &dr1);
         
@@ -60,7 +61,7 @@ static __device__ BBState intersect_triangle(const real3_t *s10, const real3_t *
         c = dot<real>(&nt,  &dr0) + dot<real>(&n0, &dv);
         d = dot<real>(&n0, &dr0);        
         
-        if (!cubic_root(a, b, c, d, &hl))
+        if (!cubic_root(dt0, a, b, c, d, &hl))
             return BB_HFAIL;
     }
 

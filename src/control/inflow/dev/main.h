@@ -19,7 +19,7 @@ __global__ void ini_vel(VPar vparams, Par params, int2 nc, /**/ float3 *uu) {
 }
 
 template <typename Par>
-__global__ void cumulative_flux(Par params, int2 nc, const float3 *uu, /**/ float *cumflux) {
+__global__ void cumulative_flux(float dt0, Par params, int2 nc, const float3 *uu, /**/ float *cumflux) {
     int i, xcid, ycid;
     float dn;
     float3 normal, u;

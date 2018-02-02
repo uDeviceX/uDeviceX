@@ -47,9 +47,5 @@ void wvel_set_conf(const Config *cfg, Wvel *vw) {
     else {
         ERR("unknown type <%s>\n", type);
     }
-
-    float dt0;
     //UC(conf_lookup_float(cfg, "wvel.dt0", &dt0));
-    dt0 = dt;
-    UC(wvel_set_timestep(dt0, vw));
 }

@@ -7,18 +7,18 @@ void clear_vel(Sim *s) {
     if (rbcs  ) scheme_move_clear_vel(rbc->q.n, rbc->q.pp);
 }
 
-void update_solid(Rig *s) {
+void update_solid(float dt0, Rig *s) {
     if (!s->q.n) return;
     RigQuants *q = &s->q;
     
-    rig_update(q->n, s->ff, q->rr0, q->ns, /**/ q->pp, q->ss);
-    rig_update_mesh(q->ns, q->ss, q->nv, q->dvv, /**/ q->i_pp);
+    rig_update(dt0, q->n, s->ff, q->rr0, q->ns, /**/ q->pp, q->ss);
+    rig_update_mesh(dt0, q->ns, q->ss, q->nv, q->dvv, /**/ q->i_pp);
     // for dump
     cD2H(q->ss_dmp, q->ss, q->ns);
     rig_reinit_ft(q->ns, /**/ q->ss);
 }
 
-void bounce_solid(long it, int3 L, BounceBack *bb, Rig *s, Flu *flu) {
+void bounce_solid(float dt0, int3 L, BounceBack *bb, Rig *s, Flu *flu) {
     int n, nm, nt, nv, *ss, *cc, nmhalo, counts[NFRAGS];
     int4 *tt;
     Particle *pp, *i_pp;
@@ -58,9 +58,9 @@ void bounce_solid(long it, int3 L, BounceBack *bb, Rig *s, Flu *flu) {
     if (nm + nmhalo)
         CC(d::MemsetAsync(bb->mm, 0, nt * (nm + nmhalo) * sizeof(Momentum)));
 
-    meshbb_find_collisions(nm + nmhalo, nt, nv, tt, i_pp, L, ss, cc, pp, flu->ff, /**/ bb->d);
-    meshbb_select_collisions(n, /**/ bb->d);
-    meshbb_bounce(n, bb->d, flu->ff, nt, nv, tt, i_pp, /**/ pp, bb->mm);
+    meshbb_find_collisions(dt0, nm + nmhalo, nt, nv, tt, i_pp, L, ss, cc, pp, flu->ff, /**/ bb->d);
+    meshbb_select_collisions(dt0, n, /**/ bb->d);
+    meshbb_bounce(dt0, n, bb->d, flu->ff, nt, nv, tt, i_pp, /**/ pp, bb->mm);
 
     /* send momentum back */
 
@@ -78,22 +78,22 @@ void bounce_solid(long it, int3 L, BounceBack *bb, Rig *s, Flu *flu) {
     emesh_unpack_mom(nt, e->p, e->um, /**/ bb->mm);
     
     /* gather bb momentum */
-    meshbb_collect_rig_momentum(nm, nt, nv, tt, i_pp, bb->mm, /**/ qs->ss);
+    meshbb_collect_rig_momentum(dt0, nm, nt, nv, tt, i_pp, bb->mm, /**/ qs->ss);
 
     /* for dump */
     cD2H(qs->ss_dmp_bb, qs->ss, nm);
 }
 
 
-void update_solvent(MoveParams * moveparams, long it, /**/ Flu *f) {
-    scheme_move_apply(moveparams, flu_mass, f->q.n, f->ff, f->q.pp);
+void update_solvent(float dt0, MoveParams * moveparams, /**/ Flu *f) {
+    scheme_move_apply(dt0, moveparams, flu_mass, f->q.n, f->ff, f->q.pp);
 }
 
-void update_rbc(MoveParams * moveparams, long it, Rbc *r, Sim *s) {
+void update_rbc(float dt0, MoveParams * moveparams, long it, Rbc *r, Sim *s) {
     bool cond;
     cond = multi_solvent && color_freq && it % color_freq == 0;
     if (cond) {msg_print("recolor"); gen_colors(r, &s->colorer, /**/ &s->flu);}; /* TODO: does not belong here*/
-    scheme_move_apply(moveparams, rbc_mass, r->q.n, r->ff, r->q.pp);
+    scheme_move_apply(dt0, moveparams, rbc_mass, r->q.n, r->ff, r->q.pp);
 }
 
 void restrain(long it, Sim *s) {
@@ -107,7 +107,7 @@ void restrain(long it, Sim *s) {
     scheme_restrain_apply(s->cart, s->flu.q.cc, it, /**/ s->restrain, qq);
 }
 
-void bounce_wall(const Coords *c, Wall *w, /**/ Flu *f, Rbc *r) {
-    sdf_bounce(&w->vview, c, w->sdf, f->q.n, /**/ f->q.pp);
-    if (rbcs) sdf_bounce(&w->vview, c, w->sdf, r->q.n, /**/ r->q.pp);
+void bounce_wall(float dt0, const Coords *c, Wall *w, /**/ Flu *f, Rbc *r) {
+    sdf_bounce(dt0, &w->vview, c, w->sdf, f->q.n, /**/ f->q.pp);
+    if (rbcs) sdf_bounce(dt0, &w->vview, c, w->sdf, r->q.n, /**/ r->q.pp);
 }

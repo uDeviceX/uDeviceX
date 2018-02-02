@@ -1,17 +1,11 @@
 struct Config;
 struct MoveParams;
-struct MoveParams_v {
-    float dt0;
-};
+struct MoveParams_v { };
 
 // tag::mem[]
 void scheme_move_params_ini(MoveParams **);
 void scheme_move_params_fin(MoveParams *);
 // end::mem[]
-
-// tag::set[]
-void scheme_move_params_set_timestep(float dt0, MoveParams *);
-// end::set[]
 
 // tag::cnf[]
 void scheme_move_params_conf(const Config *c, MoveParams *);

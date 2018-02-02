@@ -9,17 +9,14 @@
 #include "utils/imp.h"
 #include "parser/imp.h"
 
-#include "d/api.h"
 #include "utils/msg.h"
 #include "inc/dev.h"
 
 #include "utils/cc.h"
-#include "coords/ini.h"
 
 #include "rbc/adj/imp.h"
 #include "rbc/shape/imp.h"
 
-#include "io/mesh/imp.h"
 #include "io/off/imp.h"
 #include "mpi/wrapper.h"
 
@@ -46,19 +43,16 @@ void run(OffRead *off) {
 int main(int argc, char **argv) {
     const char *cell = "rbc.off";
     OffRead *off;
-    Coords *coords;
     Config *cfg;
     m::ini(&argc, &argv);
 
     UC(conf_ini(&cfg));
     UC(conf_read(argc, argv, cfg));
-    UC(coords_ini_conf(m::cart, cfg, &coords));
     UC(off_read(cell, /**/ &off));
 
     run(off);
 
     UC(off_fin(off));
-    UC(coords_fin(coords));
     UC(conf_fin(cfg));
     m::fin();
 }

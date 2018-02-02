@@ -64,10 +64,10 @@ void fill_bugs(int3 L) {
     KL(dev::fill_bugs, (k_cnf(n)), (ff, n));
 }
 
-void check(const Coords *c, Dbg *dbg) {
+void check(float dt0, const Coords *c, Dbg *dbg) {
     UC(dbg_check_pos    (c, "flu", dbg, n, pp));
-    UC(dbg_check_vel    (c, "flu", dbg, n, pp));
-    UC(dbg_check_forces (c, "flu.ff", dbg, n, pp, ff));
+    UC(dbg_check_vel    (dt0, c, "flu", dbg, n, pp));
+    UC(dbg_check_forces (dt0, c, "flu.ff", dbg, n, pp, ff));
 }
 
 int main(int argc, char **argv) {
@@ -75,6 +75,8 @@ int main(int argc, char **argv) {
     Config *cfg;
     Coords *coords;
     int3 L;
+    float dt0;
+    dt0 = dt;
     m::ini(&argc, &argv);
     
     UC(conf_ini(&cfg));
@@ -87,7 +89,7 @@ int main(int argc, char **argv) {
     
     alloc();
     fill_bugs(L);
-    check(coords, dbg);
+    check(dt0, coords, dbg);
     free();
     UC(dbg_fin(dbg));
     UC(conf_fin(cfg));

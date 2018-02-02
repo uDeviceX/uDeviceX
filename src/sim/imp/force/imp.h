@@ -1,4 +1,4 @@
-void forces(bool wall0, Sim *s) {
+void forces(float dt0, bool wall0, Sim *s) {
     Flu *flu = &s->flu;
     Rbc *rbc = &s->rbc;
     Rig *rig = &s->rig;
@@ -10,7 +10,7 @@ void forces(bool wall0, Sim *s) {
 
     UC(forces_dpd(flu));
     if (wall0 && wall->q.n) forces_wall(wall, s);
-    if (rbcs) forces_rbc(rbc);
+    if (rbcs) forces_rbc(dt0, rbc);
 
     UC(forces_objects(s));
     

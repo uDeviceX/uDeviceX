@@ -19,7 +19,7 @@
 
 enum {MAX_CHAR_PER_LINE = 128};
 
-static int swrite(const Coords *coords, int n, const int *ii, const float3 *rr, const float3 *vv, /**/ char *s) {
+static int swrite(const Coords *coords, int n, const int *ii, const float3 *rr, /**/ char *s) {
     int i, id, c, start;
     float3 r, v, rg;
     for (i = start = 0; i < n; ++i) {
@@ -50,7 +50,7 @@ static void write_mpi(MPI_Comm comm, const char *fname, long n, const char *data
 }
 
 
-void dump_com(MPI_Comm comm, const Coords *coords, long id, int n, const int *ii, const float3 *rr, const float3 *vv) {
+void dump_com(MPI_Comm comm, const Coords *coords, long id, int n, const int *ii, const float3 *rr) {
     char fname[256] = {0}, *data;
     long nchar = 0;
     
@@ -61,7 +61,7 @@ void dump_com(MPI_Comm comm, const Coords *coords, long id, int n, const int *ii
 
     sprintf(fname, DUMP_BASE "/com/%04ld.txt", id);
     
-    UC(nchar = swrite(coords, n, ii, rr, vv, /**/ data));
+    UC(nchar = swrite(coords, n, ii, rr, /**/ data));
     write_mpi(comm, fname, nchar, data);
     
     efree(data);
