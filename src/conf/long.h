@@ -1,7 +1,6 @@
 /* DPD */
 #define numberdensity       1
 #define kBT                 1.e-8
-#define dt                  0.0005
 #define adpd_b             (75.0/numberdensity)
 #define adpd_r             (75.0/numberdensity)
 #define adpd_br            (75.0/numberdensity)

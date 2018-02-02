@@ -17,6 +17,7 @@ flu = {
     lj = false
 }
 glb = {
-    L = [$X, $Y, $Z];
+    dt = 5e-4
+    L = [$X, $Y, $Z]
 };"
 uscale 10000 ff.txt | sort > ff.out.txt

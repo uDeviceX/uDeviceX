@@ -1,6 +1,5 @@
 #define numberdensity    10
 #define kBT              0.0444302
-#define dt               5e-4       /* timestep */
 #define flu_mass         1.0        /* solvent particle mass */
 #define rbc_mass         0.5        /* RBC particle mass     */
 #define solid_mass       0.5        /* solid particle mass   */

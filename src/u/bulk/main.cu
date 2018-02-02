@@ -75,12 +75,12 @@ static void build_clist() {
     pp0 = tmp;
 }
 
-static void set_params(PairParams *p) {
+static void set_params(float dt0, PairParams *p) {
     enum {ncolors = 2};
     float a[] = {adpd_b, adpd_br, adpd_r};
     float g[] = {gdpd_b, gdpd_br, gdpd_r};
     float s[3];
-    for (int i = 0; i < 3; ++i) s[i] = sqrt(2 * kBT * g[i] / dt);
+    for (int i = 0; i < 3; ++i) s[i] = sqrt(2 * kBT * g[i] / dt0);
     UC(pair_set_dpd(ncolors, a, g, s, p));
     UC(pair_set_lj(ljsigma, ljepsilon, p));
 }
@@ -93,6 +93,7 @@ int main(int argc, char **argv) {
     int maxp;
     int3 L;
     PairParams *params;
+    float dt0;
     
     m::ini(&argc, &argv);
     msg_ini(m::rank);
@@ -104,7 +105,8 @@ int main(int argc, char **argv) {
     L = subdomain(coords);
 
     UC(pair_ini(&params));
-    UC(set_params(params));
+    UC(conf_lookup_float(cfg, "glb.dt", &dt0));    
+    UC(set_params(dt0, params));
     
     UC(conf_lookup_string(cfg, "in", &fin));
     UC(conf_lookup_string(cfg, "out", &fout));
