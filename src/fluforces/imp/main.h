@@ -10,6 +10,18 @@ void fluforces_bulk_prepare(int n, const Cloud *c, /**/ FluForcesBulk *b) {
     zip(n, c->pp, /**/ b->zipped_pp, b->zipped_rr);
     if (multi_solvent)
         b->colors = c->cc;
+    else
+        b->colors = NULL;
+}
+
+// tmp
+static void set(PairParams *p) {
+    float a[] = {adpd_b, adpd_br, adpd_r};
+    float g[] = {gdpd_b, gdpd_br, gdpd_r};
+    float s[3];
+    for (int i = 0; i < 3; ++i)
+        s[i] = sqrt(2*g[i]/dt);
+    pair_set_dpd(2, a, g, s, p);
 }
 
 void fluforces_bulk_apply(int n, const FluForcesBulk *b, const int *start, const int *count, /**/ Force *ff) {
@@ -17,7 +29,16 @@ void fluforces_bulk_apply(int n, const FluForcesBulk *b, const int *start, const
     c.pp = b->zipped_pp;
     c.cc = b->colors;
 
-    UC(flocal(b->L, n, c, start, b->rnd, /**/ ff));
+    PairParams *par;
+    UC(pair_ini(&par));
+    set(par);    
+
+    if (b->colors)
+        UC(flocal_color(par, b->L, n, c, start, b->rnd, /**/ ff));
+    else
+        UC(flocal(par, b->L, n, c, start, b->rnd, /**/ ff));
+
+    UC(pair_fin(par));
 }
 
 
