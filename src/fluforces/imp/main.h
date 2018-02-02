@@ -20,7 +20,7 @@ static void set(PairParams *p) {
     float g[] = {gdpd_b, gdpd_br, gdpd_r};
     float s[3];
     for (int i = 0; i < 3; ++i)
-        s[i] = sqrt(2*g[i]/dt);
+        s[i] = sqrt(2 * kBT * g[i] / dt);
     pair_set_dpd(2, a, g, s, p);
 }
 
@@ -31,6 +31,7 @@ void fluforces_bulk_apply(int n, const FluForcesBulk *b, const int *start, const
 
     PairParams *par;
     UC(pair_ini(&par));
+
     set(par);    
 
     if (b->colors)
