@@ -37,8 +37,9 @@ void main0(int n, const Force *hst) {
     Force *dev;
     Dalloc(&dev, n);
     cH2D(dev, hst, n);
-    max = force_stat_max(n, dev);
+    UC(max = force_stat_max(n, dev));
     printf("%g\n", max);
+    Dfree(dev);
 }
 
 int main(int argc, char **argv) {

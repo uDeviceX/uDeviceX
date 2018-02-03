@@ -19,7 +19,8 @@ float force_stat_max(int n, const Force *dev) {
     try {
         m = transform_reduce(beg, end, unary, init, binary);
     } catch (system_error e) {
-        ERR("thrust::transform_reduce failed");
+        msg_print("thrust::transform_reduce failed");
+        ERR("%s", e.what());
     }
     return sqrt(m);
 }
