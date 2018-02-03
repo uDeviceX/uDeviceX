@@ -3,8 +3,7 @@ $B/d/api.o: $S/d/api.cu; $N -I$S/d -I$S/.
 $B/mpi/glb.o: $S/mpi/glb.cpp; $X -I$S/mpi -I$S/.
 $B/mpi/type.o: $S/mpi/type.cpp; $X -I$S/mpi -I$S/.
 $B/mpi/wrapper.o: $S/mpi/wrapper.cpp; $X -I$S/mpi -I$S/.
-$B/u/algo/scan/main.o: $S/u/algo/scan/main.cpp; $X -I$S/u/algo/scan -I$S/.
-$B/u/algo/scan/set.o: $S/u/algo/scan/set.cpp; $X -I$S/u/algo/scan -I$S/.
+$B/u/algo/scan/main.o: $S/u/algo/scan/main.cpp; $X -I$S/.
 $B/utils/cc.o: $S/utils/cc.cpp; $X -I$S/utils -I$S/.
 $B/utils/error.o: $S/utils/error.cpp; $X -I$S/utils -I$S/.
 $B/utils/imp.o: $S/utils/imp.cpp; $X -I$S/utils -I$S/.

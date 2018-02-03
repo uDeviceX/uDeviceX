@@ -3,18 +3,21 @@
 
 #include <conf.h>
 #include "inc/conf.h"
-
-#include "utils/msg.h"
-#include "mpi/glb.h" /* mini-MPI and -device */
+#include "mpi/glb.h"
 #include "d/api.h"
-
 #include "inc/dev.h"
 #include "utils/cc.h"
 
 #include "algo/scan/imp.h"
 
-/* see set.cpp */
-void set(/**/ int*, int*);
+void set(int *a, int *n) {
+    int x, i;
+    i = 0;
+    while (scanf("%d", &x) == 1)
+        a[i++] = x;
+    *n = i;
+}
+
 #define M 9999
 
 static Scan *w;

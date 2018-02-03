@@ -1,12 +1,5 @@
-dirs="$U d mpi algo/scan inc utils"
-for D in ${dirs}
-do
-find $D \
-     -type d       -o  \
-     -name '*.cu'  -o  \
-     -name '*.cpp' -o  \
-     -name '*.h'    |  \
-    grep -v '^\.\/u/'
-done
+f0 () { find "$1" -name '*.cu' -o -name '*.cpp' -o -name '*.h' -type f ; }
+f () ( for d; do f0 "$d"; done )
 
-echo .
+f d inc $U algo/scan utils mpi
+echo $U .
