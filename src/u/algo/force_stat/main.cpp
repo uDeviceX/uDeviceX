@@ -1,13 +1,20 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "utils/msg.h"
-#include "mpi/glb.h"
+#include <conf.h>
+#include "inc/conf.h"
 
+#include "d/api.h"
+#include "inc/dev.h"
+#include "inc/type.h"
+#include "io/txt/imp.h"
+#include "mpi/glb.h"
 #include "parser/imp.h"
+#include "parser/imp.h"
+#include "utils/cc.h"
 #include "utils/error.h"
 #include "utils/imp.h"
-#include "io/txt/imp.h"
+#include "utils/msg.h"
 
 static const char *prog_name = "./udx";
 void usg0() {
@@ -24,7 +31,9 @@ void usg(int c, char **v) {
         usg0();
 }
 
-void main0(int n, const Force *ff) {
+void main0(int n, const Force *hst) {
+    Force *dev;
+    Dalloc(&dev, n);
     msg_print("n: %d", n);
 }
 
