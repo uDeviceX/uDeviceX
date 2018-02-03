@@ -5,7 +5,7 @@ struct ClistMap {
     int nA;              /* number of source arrays to build the cell lists, e.g remote+bulk -> 2 */
     uchar4 *ee[MAXA];    /* cell entries */
     uint *ii;            /* codes containing: indices of data to fetch and array id from which to fetch */
-    ScanWork *scan;      /* scan workspace */
+    Scan *scan;      /* scan workspace */
     long maxp;           /* maximum number of particles per input vector */
 };
 // end::map[]

@@ -17,7 +17,7 @@
 void set(/**/ int*, int*);
 #define M 9999
 
-static ScanWork *w;
+static Scan *w;
 static int *x, *y;
 
 static void dump0(int *hst, int n) {

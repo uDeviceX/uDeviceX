@@ -1,1 +1,1 @@
-struct ScanWork { };
+struct Scan { };
