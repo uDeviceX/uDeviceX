@@ -1,1 +1,1 @@
-void diagnostics(float dt, MPI_Comm comm, int n, const Particle *pp, int idstep);
+void diag(MPI_Comm comm, float time, int n, const Particle *pp);

@@ -36,7 +36,7 @@ static int sum_i(MPI_Comm comm, int *v) {
     return reduce(comm, v, v, 1, MPI_INT, MPI_SUM);
 }
 
-void diagnostics(float dt, MPI_Comm comm, int n, const Particle *pp, int id) {
+void diag(MPI_Comm comm, float time, int n, const Particle *pp) {
     enum {X, Y, Z};
     int i, c;
     double k, km, ke; /* particle, total, and maximum kinetic energies */
@@ -61,9 +61,8 @@ void diagnostics(float dt, MPI_Comm comm, int n, const Particle *pp, int id) {
         static bool firsttime = true;
         UC(efopen(DUMP_BASE "/diag.txt", firsttime ? "w" : "a", /**/ &f));
         firsttime = false;
-        if (id == 0) fprintf(f, "# TSTEP\tKBT\tPX\tPY\tPZ\n");
-        msg_print("% .1e % .1e [% .1e % .1e % .1e] % .1e", id * dt, kbt, v[X], v[Y], v[Z], km);
-        fprintf(f, "%e\t%.10e\t%.10e\t%.10e\t%.10e\t%.10e\n", id * dt, kbt, v[X], v[Y], v[Z], km);
+        msg_print("% .1e % .1e [% .1e % .1e % .1e] % .1e", time, kbt, v[X], v[Y], v[Z], km);
+        fprintf(f, "%e\t%.10e\t%.10e\t%.10e\t%.10e\t%.10e\n", time, kbt, v[X], v[Y], v[Z], km);
         efclose(f);
     }
 }

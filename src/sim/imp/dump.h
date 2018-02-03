@@ -87,6 +87,7 @@ void dump_diag_after(float dt, int it, bool solid0, Sim *s) { /* after wall */
 }
 
 static void diag(float dt, int it, Sim *s) {
+    float time;
     const Flu *flu = &s->flu;
     const Rbc *rbc = &s->rbc;
     const Rig *rig = &s->rig;
@@ -94,7 +95,8 @@ static void diag(float dt, int it, Sim *s) {
     if (rbcs)       n += rbc->q.n;
     if (s->solids0) n += rig->q.n;
     dev2hst(s);
-    diagnostics(dt, s->cart, n, s->pp_dump, it);
+    time = dt * it;
+    diag(time, s->cart, n, s->pp_dump);
 }
 
 void dump_strt_templ(const Coords *coords, Wall *w, Sim *s) { /* template dumps (wall, solid) */
