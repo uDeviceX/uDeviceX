@@ -1,6 +1,4 @@
 enum { THREADS = 128 };
-using namespace scan;
-
 static void scan0(const unsigned char *input, int size, /**/ uint *output, /*w*/ uint *tmp) {
     int nblocks = ((size / 16) + THREADS - 1 ) / THREADS;
     KL(dev::breduce<THREADS/32>, (nblocks, THREADS                ), ((uint4 *)input, tmp, size / 16));
