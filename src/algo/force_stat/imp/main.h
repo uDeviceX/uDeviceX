@@ -1,10 +1,12 @@
+static __device__ float sumsq(Force f) {
+    enum {X, Y, Z};
+    float x, y, z;
+    x = f.f[X]; y = f.f[Y]; z = f.f[Z];
+    return x*x + y*y + z*z;
+}
+
 struct SumSq {
-    __device__ float operator()(const Force f) const {
-        enum {X, Y, Z};
-        float x, y, z;
-        x = f.f[X]; y = f.f[Y]; z = f.f[Z];
-        return x*x + y*y + z*z;
-    }
+    __device__ float operator()(Force f) const { return sumsq(f); }
 };
 
 float force_stat_max(int n, const Force *dev) {
