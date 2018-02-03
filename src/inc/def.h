@@ -1,4 +1,3 @@
-/* used in forces.h */
 enum {SOLVENT_KIND, SOLID_KIND, WALL_KIND};
 
 enum {BLUE_COLOR, RED_COLOR, /* solvent colors */
@@ -40,5 +39,5 @@ enum {
 };
 
 
-/* write ascii/bin in l/ply.cu */
+/* write ascii/bin */
 #define PLY_WRITE_ASCII

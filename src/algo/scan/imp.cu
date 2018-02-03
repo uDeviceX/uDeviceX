@@ -2,7 +2,6 @@
 #include <conf.h>
 #include "inc/conf.h"
 
-#include "inc/def.h"
 #include "inc/dev.h"
 #include "utils/imp.h"
 #include "utils/error.h"
