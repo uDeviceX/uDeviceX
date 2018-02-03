@@ -24,8 +24,14 @@ void usg(int c, char **v) {
         usg0();
 }
 
+void main0(int n, const Force *ff) {
+    msg_print("n: %d", n);
+}
+
 int main(int argc, char **argv) {
     const char *i; /* input file */
+    const Force *ff;
+    int n;
     Config *cfg;
     TxtRead *txt;
     usg(argc, argv);
@@ -35,7 +41,12 @@ int main(int argc, char **argv) {
     UC(conf_read(argc, argv, /**/ cfg));
 
     UC(conf_lookup_string(cfg, "i", &i));
-    UC(txt_read_pp_ff(i, &txt));
+    UC(txt_read_ff(i, &txt));
+
+    ff = txt_read_get_ff(txt);
+    n  = txt_read_get_n(txt);
+    UC(main0(n, ff));
+    
     UC(txt_read_fin(txt));
     UC(conf_fin(cfg));
     m::fin();

@@ -10,6 +10,7 @@ void txt_write_pp_ff(long n, const Particle*, const Force*, const char *path);
 // tag::read[]
 void txt_read_pp(const char *path, TxtRead **);
 void txt_read_pp_ff(const char *path, TxtRead **);
+void txt_read_ff(const char *path, TxtRead **);
 void txt_read_fin(TxtRead*);
 
 int txt_read_get_n(const TxtRead *);

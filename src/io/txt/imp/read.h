@@ -1,12 +1,12 @@
 #define VFRMT "%f %f %f"
 
 static void ini(TxtRead **pq) {
-    TxtRead *p;
-    EMALLOC(1, &p);
-    p->pp = NULL;
-    p->ff = NULL;
-    p->n  = -1;
-    *pq = p;
+    TxtRead *q;
+    EMALLOC(1, &q);
+    q->pp = NULL;
+    q->ff = NULL;
+    q->n  = -1;
+    *pq = q;
 }
 
 static int get_num_lines(FILE *f) {
@@ -18,88 +18,84 @@ static int get_num_lines(FILE *f) {
     return n;
 }
 
-void txt_read_pp(const char *name, TxtRead **pr) {
+void txt_read_pp(const char *name, TxtRead **pq) {
     enum {X, Y, Z};
-    TxtRead *d;
+    TxtRead *q;
     FILE *f;
     Particle p;
     int i;
-    UC(ini(pr));
-    d = *pr;
-    d->ff = NULL;
-
+    UC(ini(&q));
+    q->ff = NULL;
     UC(efopen(name, "r", /**/ &f));
-    d->n = get_num_lines(f);
-    EMALLOC(d->n, &d->pp);
+    q->n = get_num_lines(f);
+    EMALLOC(q->n, &q->pp);
     rewind(f);
     i = 0;
     while (6 == fscanf(f, VFRMT " " VFRMT "\n",
                        p.r + X, p.r + Y, p.r + Z,
                        p.v + X, p.v + Y, p.v + Z)) {
-        d->pp[i++] = p;
+        q->pp[i++] = p;
     }
-
     UC(efclose(f));
+    *pq = q;
 }
 
-void txt_read_pp_ff(const char *name, TxtRead **pr) {
+void txt_read_pp_ff(const char *name, TxtRead **pq) {
     enum {X, Y, Z};
-    TxtRead *d;
+    TxtRead *q;
     FILE *f;
     Particle p;
     Force fo;
     int i;
-    UC(ini(pr));
-    d = *pr;
-
+    UC(ini(&q));
     UC(efopen(name, "r", /**/ &f));
-    d->n = get_num_lines(f);
-    EMALLOC(d->n, &d->pp);
-    EMALLOC(d->n, &d->ff);
+    q->n = get_num_lines(f);
+    EMALLOC(q->n, &q->pp);
+    EMALLOC(q->n, &q->ff);
     rewind(f);
     i = 0;
     while (9 == fscanf(f, VFRMT " " VFRMT " " VFRMT "\n",
                        p.r + X, p.r + Y, p.r + Z,
                        p.v + X, p.v + Y, p.v + Z,
                        fo.f + X, fo.f + Y, fo.f + Z)) {
-        d->pp[i] = p;
-        d->ff[i] = fo;
+        q->pp[i] = p;
+        q->ff[i] = fo;
         ++i;
     }
     UC(efclose(f));
+    *pq = q;    
 }
 
-void txt_read_ff(const char *name, TxtRead **pr) {
+void txt_read_ff(const char *name, TxtRead **pq) {
     enum {X, Y, Z};
-    TxtRead *d;
+    TxtRead *q;
     FILE *f;
     Force fo;
     int i;
-    UC(ini(pr));
-    d = *pr;
-
+    UC(ini(&q));
     UC(efopen(name, "r", /**/ &f));
-    d->n = get_num_lines(f);
-    EMALLOC(d->n, &d->ff);    
+    q->n = get_num_lines(f);
+    EMALLOC(q->n, &q->ff);    
     rewind(f);
     i = 0;
     while (3 == fscanf(f, VFRMT "\n",
                        fo.f + X, fo.f + Y, fo.f + Z)) {
-        d->ff[i] = fo;
+        q->ff[i] = fo;
         ++i;
     }
     UC(efclose(f));
+    *pq = q;
 }
 
 
-void txt_read_fin(TxtRead *d) {
-    EFREE(d->pp);
-    EFREE(d->ff);
-    EFREE(d);
+void txt_read_fin(TxtRead *q) {
+    EFREE(q->pp);
+    EFREE(q->ff);
+    EFREE(q);
 }
 
-int txt_read_get_n(const TxtRead *d) {return d->n;}
-const Particle* txt_read_get_pp(const TxtRead *d) { return d->pp; }
-const Force*    txt_read_get_ff(const TxtRead *d) { return d->ff; }
+int txt_read_get_n(const TxtRead *q) {return q->n;}
+const Particle* txt_read_get_pp(const TxtRead *q) { return q->pp; }
+const Force*    txt_read_get_ff(const TxtRead *q) { return q->ff; }
 
 #undef VFRMT
