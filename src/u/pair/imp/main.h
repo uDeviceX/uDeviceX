@@ -13,8 +13,6 @@ __global__ void main(Param par, Pa a, Pa b, float rnd) {
 void pair(PairParams *par, Pa a, Pa b, int ka, int kb, float rnd) {
     int k0 = ka < kb ? ka : kb;
     int k1 = ka < kb ? kb : ka;
-
-    
     if (k0 == SOLVENT_KIND) {
         if (k1 == WALL_KIND || k1 == SOLID_KIND) {
             PairDPDCM pv;
