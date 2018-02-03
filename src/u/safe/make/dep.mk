@@ -1,4 +1,4 @@
-$B/algo/force_stat/imp.o: $S/algo/force_stat/imp.h $S/algo/force_stat/imp/main.h $S/algo/force_stat/dev/main.h
+$B/algo/force_stat/imp.o: $S/algo/force_stat/imp.h $S/algo/force_stat/imp/main.h
 $B/algo/minmax/imp.o: $S/inc/conf.h $S/inc/type.h $S/d/q.h $S/algo/minmax/imp.h $S/utils/cc.h $S/inc/def.h $S/inc/dev.h $S/d/api.h $B/conf.h $S/utils/kl.h $S/d/ker.h $S/utils/msg.h
 $B/algo/scan/imp.o: $S/algo/scan/cpu/imp.h $S/utils/imp.h $S/inc/conf.h $S/utils/error.h $S/d/q.h $S/algo/scan/imp.h $S/utils/cc.h $S/algo/scan/dev.h $S/d/api.h $S/inc/dev.h $B/conf.h $S/utils/kl.h $S/algo/scan/cuda/type.h $S/algo/scan/cpu/type.h $S/algo/scan/cuda/imp.h $S/d/ker.h
 $B/clist/imp.o: $S/clist/imp/fin.h $S/utils/imp.h $S/inc/conf.h $S/utils/error.h $S/inc/type.h $S/partlist/dev.h $S/clist/imp.h $S/partlist/type.h $S/algo/scan/imp.h $S/utils/cc.h $S/inc/def.h $S/clist/dev.h $S/clist/imp/ini.h $S/d/api.h $S/inc/dev.h $B/conf.h $S/clist/imp/main.h $S/clist/imp/type.h $S/utils/kl.h $S/clist/dev/main.h $S/utils/msg.h
