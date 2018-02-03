@@ -4,6 +4,7 @@
 #include <conf.h>
 #include "inc/conf.h"
 
+#include "algo/force_stat/imp.h"
 #include "d/api.h"
 #include "inc/dev.h"
 #include "inc/type.h"
@@ -32,9 +33,13 @@ void usg(int c, char **v) {
 }
 
 void main0(int n, const Force *hst) {
+    float max;
     Force *dev;
     Dalloc(&dev, n);
-    msg_print("n: %d", n);
+    cH2D(dev, hst, n);
+
+    max = force_stat_max(n, dev);
+    msg_print("max: %g", max);
 }
 
 int main(int argc, char **argv) {
@@ -55,7 +60,7 @@ int main(int argc, char **argv) {
     ff = txt_read_get_ff(txt);
     n  = txt_read_get_n(txt);
     UC(main0(n, ff));
-    
+
     UC(txt_read_fin(txt));
     UC(conf_fin(cfg));
     m::fin();
