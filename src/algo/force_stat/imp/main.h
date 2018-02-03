@@ -1,3 +1,19 @@
-float force_stat_max(int, Force*) {
-    return 0.0;
+struct SumSq {
+    __device__ float operator()(const Force f) const {
+        enum {X, Y, Z};
+        float x, y, z;
+        x = f.f[X]; y = f.f[Y]; z = f.f[Z];
+        return x*x + y*y + z*z;
+    }
+};
+
+float force_stat_max(int n, const Force *dev) {
+    using namespace thrust;
+    float init, m;
+    SumSq                  unary;
+    maximum<float> binary;
+    device_ptr<const Force> beg(dev), end(dev+n);
+    init = 0;
+    m = transform_reduce(beg, end, unary, init, binary);
+    return sqrt(m);
 }
