@@ -1,3 +1,4 @@
+$B/algo/force_stat/imp.o: $S/algo/force_stat/imp.cu; $N -I$S/algo/force_stat -I$S/.
 $B/algo/minmax/imp.o: $S/algo/minmax/imp.cu; $N -I$S/algo/minmax -I$S/.
 $B/algo/scan/imp.o: $S/algo/scan/imp.cu; $N -I$S/algo/scan -I$S/.
 $B/clist/imp.o: $S/clist/imp.cu; $N -I$S/clist -I$S/.
