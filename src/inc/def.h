@@ -1,5 +1,3 @@
-enum {SOLVENT_KIND, SOLID_KIND, WALL_KIND};
-
 enum {BLUE_COLOR, RED_COLOR, /* solvent colors */
       SOLID_COLOR,
       WALL_COLOR,

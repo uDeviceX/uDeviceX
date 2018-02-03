@@ -1,3 +1,4 @@
+enum {SOLVENT_KIND, SOLID_KIND, WALL_KIND};
 typedef PairFo Fo;
 typedef PairPa Pa;
 
@@ -14,7 +15,8 @@ void pair(PairParams *par, Pa a, Pa b, int ka, int kb, float rnd) {
     int k0 = ka < kb ? ka : kb;
     int k1 = ka < kb ? kb : ka;
     if (k0 == SOLVENT_KIND) {
-        if (k1 == WALL_KIND || k1 == SOLID_KIND) {
+        if (k1 == WALL_KIND || k1 ==
+            SOLID_KIND) {
             PairDPDCM pv;
             pair_get_view_dpd_mirrored(par, &pv);
             KL(dev::main, (1, 1), (pv, a, b, rnd));
