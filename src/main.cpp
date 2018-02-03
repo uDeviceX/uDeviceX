@@ -17,7 +17,6 @@ int main(int argc, char **argv) {
     m::ini(&argc, &argv);
     msg_ini(m::rank);
     msg_print("mpi rank/size: %d/%d", m::rank, m::size);
-    d::ini();
     
     sim_ini(argc, argv, m::cart, /**/ &sim);
     if (RESTART) sim_strt(sim);
