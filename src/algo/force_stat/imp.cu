@@ -2,6 +2,7 @@
 #include <thrust/transform_reduce.h>
 
 #include "inc/type.h"
+#include "utils/error.h"
 
 #include "imp.h"
 #include "imp/main.h"

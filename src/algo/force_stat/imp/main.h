@@ -16,6 +16,10 @@ float force_stat_max(int n, const Force *dev) {
     maximum<float> binary;
     device_ptr<const Force> beg(dev), end(dev+n);
     init = 0;
-    m = transform_reduce(beg, end, unary, init, binary);
+    try {
+        m = transform_reduce(beg, end, unary, init, binary);
+    } catch (system_error e) {
+        ERR("thrust::transform_reduce failed");
+    }
     return sqrt(m);
 }
