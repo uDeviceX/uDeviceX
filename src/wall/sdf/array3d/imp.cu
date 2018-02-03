@@ -8,6 +8,7 @@
 #include "utils/imp.h"
 #include "utils/error.h"
 #include "utils/cc.h"
+#include "utils/msg.h"
 
 #include "type.h"
 #include "imp.h"
@@ -18,6 +19,7 @@ void array3d_ini(Array3d **pq, size_t x, size_t y, size_t z) {
     EMALLOC(1, &q);
 
     fmt = cudaCreateChannelDesc<float>();
+    msg_print("alloc cuda 3D Array: %ld %ld %ld", x, y, z);
     CC(cudaMalloc3DArray(&q->a, &fmt, make_cudaExtent(x, y, z)));
     q->x = x; q->y = y; q->z = z;
 
