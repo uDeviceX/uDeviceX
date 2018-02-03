@@ -12,15 +12,15 @@
 #include "d/q.h"
 #include "d/ker.h"
 
-#include "algo/scan/imp.h"
-#include "algo/scan/dev.h"
+#include "imp.h"
+#include "dev.h"
 
 #if   defined(DEV_CUDA)
-  #include "algo/scan/cuda/type.h"
-  #include "algo/scan/cuda/imp.h"
+  #include "cuda/type.h"
+  #include "cuda/imp.h"
 #elif defined(DEV_CPU)
-  #include "algo/scan/cpu/type.h"
-  #include "algo/scan/cpu/imp.h"
+  #include "cpu/type.h"
+  #include "cpu/imp.h"
 #else
   #error DEV_* is undefined
 #endif
