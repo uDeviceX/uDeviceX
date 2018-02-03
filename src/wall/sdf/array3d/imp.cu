@@ -15,8 +15,7 @@
 void array3d_ini(Array3d **pq, size_t x, size_t y, size_t z) {
     Array3d *q;
     cudaChannelFormatDesc fmt;
-
-    UC(emalloc(sizeof(Array3d), /**/ (void**)&q));
+    EMALLOC(1, &q);
 
     fmt = cudaCreateChannelDesc<float>();
     CC(cudaMalloc3DArray(&q->a, &fmt, make_cudaExtent(x, y, z)));
@@ -27,7 +26,7 @@ void array3d_ini(Array3d **pq, size_t x, size_t y, size_t z) {
 
 void array3d_fin(Array3d *q) {
     CC(cudaFreeArray(q->a));
-    UC(efree(q));
+    EFREE(q);
 }
 
 static int good(size_t x, size_t y, size_t z, Array3d *q) {

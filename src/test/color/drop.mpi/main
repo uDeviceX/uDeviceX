@@ -7,6 +7,7 @@ u=u/x
 u.cp.sdf yplates1/yplates.dat sdf.dat
 Walls="walls wall_creation=1"
 u.conf $s $u conf/zurich.h <<!!!
+   KL_SYNC
    $Walls
    numberdensity=2
    tend=4.01
