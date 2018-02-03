@@ -16,8 +16,6 @@ static int R(cudaError_t e) {
     }
 }
 
-int ini() { return 0; }
-
 int alloc_pinned(void **pHost, size_t size) {
     return R(cudaHostAlloc(pHost, size, cudaHostAllocMapped));
 }

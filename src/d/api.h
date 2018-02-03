@@ -2,7 +2,6 @@ namespace d {  /* a wrapper for device API */
 typedef int Stream_t; /* TODO: streams are not supported */
 enum {MemcpyHostToHost, MemcpyHostToDevice, MemcpyDeviceToHost, MemcpyDeviceToDevice, MemcpyDefault};
 
-int ini();
 const char *emsg(); /* last error message */
 int alloc_pinned(void **pHost, size_t size);
 

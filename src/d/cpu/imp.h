@@ -1,7 +1,6 @@
 /* [v]oid add : shift by `n' number of bytes */
 #define vadd(p, n) (void*)((char*)(p) + (n))
 
-int ini() { return 0; }
 int alloc_pinned(void **pHost, size_t size) {
     UC(emalloc(size, pHost));
     return 0;
