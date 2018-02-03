@@ -1,8 +1,8 @@
-#define VFRMT "%g %g %g"
+#define VFRMT "%f %f %f"
 
 static void ini(TxtRead **pq) {
     TxtRead *p;
-    UC(emalloc(sizeof(TxtRead), (void**)&p));
+    EMALLOC(1, &p);
     p->pp = NULL;
     p->ff = NULL;
     p->n  = -1;
@@ -12,7 +12,7 @@ static void ini(TxtRead **pq) {
 static int get_num_lines(FILE *f) {
     int n;
     char c;
-    n = 0;    
+    n = 0;
     while (EOF != (c = fgetc(f)))
         if (c == '\n') ++n;
     return n;
@@ -30,8 +30,7 @@ void txt_read_pp(const char *name, TxtRead **pr) {
 
     UC(efopen(name, "r", /**/ &f));
     d->n = get_num_lines(f);
-    UC(emalloc(d->n * sizeof(Particle), (void**) &d->pp));
-    
+    EMALLOC(d->n, &d->pp);
     rewind(f);
     i = 0;
     while (6 == fscanf(f, VFRMT " " VFRMT "\n",
@@ -39,7 +38,7 @@ void txt_read_pp(const char *name, TxtRead **pr) {
                        p.v + X, p.v + Y, p.v + Z)) {
         d->pp[i++] = p;
     }
-    
+
     UC(efclose(f));
 }
 
@@ -55,9 +54,8 @@ void txt_read_pp_ff(const char *name, TxtRead **pr) {
 
     UC(efopen(name, "r", /**/ &f));
     d->n = get_num_lines(f);
-    UC(emalloc(d->n * sizeof(Particle), (void**) &d->pp));
-    UC(emalloc(d->n * sizeof(Force),    (void**) &d->ff));
-    
+    EMALLOC(d->n, &d->pp);
+    EMALLOC(d->n, &d->ff);
     rewind(f);
     i = 0;
     while (9 == fscanf(f, VFRMT " " VFRMT " " VFRMT "\n",
@@ -68,14 +66,36 @@ void txt_read_pp_ff(const char *name, TxtRead **pr) {
         d->ff[i] = fo;
         ++i;
     }
-    
     UC(efclose(f));
 }
 
+void txt_read_ff(const char *name, TxtRead **pr) {
+    enum {X, Y, Z};
+    TxtRead *d;
+    FILE *f;
+    Force fo;
+    int i;
+    UC(ini(pr));
+    d = *pr;
+
+    UC(efopen(name, "r", /**/ &f));
+    d->n = get_num_lines(f);
+    EMALLOC(d->n, &d->ff);    
+    rewind(f);
+    i = 0;
+    while (3 == fscanf(f, VFRMT "\n",
+                       fo.f + X, fo.f + Y, fo.f + Z)) {
+        d->ff[i] = fo;
+        ++i;
+    }
+    UC(efclose(f));
+}
+
+
 void txt_read_fin(TxtRead *d) {
-    UC(efree(d->pp));
-    UC(efree(d->ff));
-    UC(efree(d));
+    EFREE(d->pp);
+    EFREE(d->ff);
+    EFREE(d);
 }
 
 int txt_read_get_n(const TxtRead *d) {return d->n;}
