@@ -18,7 +18,7 @@ static int get_num_lines(FILE *f) {
     return n;
 }
 
- void txt_read_pp(const char *name, TxtRead **pr) {
+void txt_read_pp(const char *name, TxtRead **pr) {
     enum {X, Y, Z};
     TxtRead *d;
     FILE *f;
