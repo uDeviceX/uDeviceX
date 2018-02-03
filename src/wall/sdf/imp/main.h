@@ -41,8 +41,8 @@ void sdf_fin(Sdf *q) {
     UC(efree(q));
 }
 
-void sdf_bounce(float dt0, const Wvel_v *wv, const Coords *c, const Sdf *sdf, int n, /**/ Particle *pp) {
-    UC(bounce_back(dt0, wv, c, sdf, n, /**/ pp));
+void sdf_bounce(float dt, const Wvel_v *wv, const Coords *c, const Sdf *sdf, int n, /**/ Particle *pp) {
+    UC(bounce_back(dt, wv, c, sdf, n, /**/ pp));
 }
 
 

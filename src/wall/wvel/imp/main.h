@@ -58,13 +58,13 @@ static void set_dev(WvelShear p, Wvel_v *wv) {
     wv->p.shear.half = p.half;
 }
 
-static void set_dev(float dt0, long it, WvelShearSin p, Wvel_v *wv) {
+static void set_dev(float dt, long it, WvelShearSin p, Wvel_v *wv) {
     float gdot;
     float t, w;
     bool cond;
     wv->type = WALL_VEL_V_SHEAR;
     w = p.w;
-    t = it * dt0;
+    t = it * dt;
     gdot = p.gdot * sin(w * t);
     
     wv->p.shear.gdot = gdot;
@@ -83,7 +83,7 @@ static void set_dev(WvelHS p, Wvel_v *wv) {
     wv->p.hs.h = p.h;
 }
 
-void wvel_get_view(float dt0, long it, const Wvel *wv, /**/ Wvel_v *view) {
+void wvel_get_view(float dt, long it, const Wvel *wv, /**/ Wvel_v *view) {
     switch (wv->type) {
     case WALL_VEL_CSTE:
         set_dev(wv->p.cste, /**/ view);
@@ -92,7 +92,7 @@ void wvel_get_view(float dt0, long it, const Wvel *wv, /**/ Wvel_v *view) {
         set_dev(wv->p.shear, /**/ view);
         break;
     case WALL_VEL_SHEAR_SIN:
-        set_dev(dt0, it, wv->p.shearsin, /**/ view);
+        set_dev(dt, it, wv->p.shearsin, /**/ view);
         break;
     case WALL_VEL_HS:
         set_dev(wv->p.hs, /**/ view);

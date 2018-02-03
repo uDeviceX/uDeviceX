@@ -11,7 +11,7 @@ struct RbcParams {
     float ka;     /* global area constant */
     float kd;     /* local area constant */
     float kv;     /* volume constant */
-    float dt0;    /* timestep */
+    float dt;    /* timestep */
 
     /* equilibrium */
     float totVolume; /* total volume */

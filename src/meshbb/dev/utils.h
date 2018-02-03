@@ -3,26 +3,26 @@ typedef double real;
 typedef double3 real3;
 enum {X, Y, Z};
 
-static __device__ bool valid(real dt0, real t) {return (t >= 0 && t <= dt0);}
+static __device__ bool valid(real dt, real t) {return (t >= 0 && t <= dt);}
 
 // TODO belongs to scheme/ ?
 // BB assumes r0 + v0 dt = r1 for now
 #ifdef FORWARD_EULER
-__device__ void rvprev(real dt0, const real3_t *r1, const real3_t *v1, const float *f0, /**/ real3_t *r0, real3_t *v0) {
+__device__ void rvprev(real dt, const real3_t *r1, const real3_t *v1, const float *f0, /**/ real3_t *r0, real3_t *v0) {
     enum {X, Y, Z};
-    v0->x = v1->x - f0[X] * dt0;
-    v0->y = v1->y - f0[Y] * dt0;
-    v0->z = v1->z - f0[Z] * dt0;
+    v0->x = v1->x - f0[X] * dt;
+    v0->y = v1->y - f0[Y] * dt;
+    v0->z = v1->z - f0[Z] * dt;
 
-    r0->x = r1->x - v0->x * dt0;
-    r0->y = r1->y - v0->y * dt0;
-    r0->z = r1->z - v0->z * dt0;
+    r0->x = r1->x - v0->x * dt;
+    r0->y = r1->y - v0->y * dt;
+    r0->z = r1->z - v0->z * dt;
 }
 #else // velocity-verlet
-__device__ void rvprev(real dt0, const real3_t *r1, const real3_t *v1, const float *, /**/ real3_t *r0, real3_t *v0) {
-    r0->x = r1->x - v1->x * dt0;
-    r0->y = r1->y - v1->y * dt0;
-    r0->z = r1->z - v1->z * dt0;
+__device__ void rvprev(real dt, const real3_t *r1, const real3_t *v1, const float *, /**/ real3_t *r0, real3_t *v0) {
+    r0->x = r1->x - v1->x * dt;
+    r0->y = r1->y - v1->y * dt;
+    r0->z = r1->z - v1->z * dt;
 
     *v0 = *v1;
 }
@@ -45,14 +45,14 @@ __device__ void fetch_triangle(int id, int nt, int nv, const int4 *tt, const Par
     *C = P2rP( i_pp + t.z );
 }
 
-__device__ void bounce_back(real dt0, const rPa *p0, const real3_t *rw, const real3_t *vw, const real_t h, /**/ rPa *pn) {
+__device__ void bounce_back(real dt, const rPa *p0, const real3_t *rw, const real3_t *vw, const real_t h, /**/ rPa *pn) {
     pn->v.x = 2 * vw->x - p0->v.x;
     pn->v.y = 2 * vw->y - p0->v.y;
     pn->v.z = 2 * vw->z - p0->v.z;
 
-    pn->r.x = rw->x + (dt0-h) * pn->v.x;
-    pn->r.y = rw->y + (dt0-h) * pn->v.y;
-    pn->r.z = rw->z + (dt0-h) * pn->v.z;
+    pn->r.x = rw->x + (dt-h) * pn->v.x;
+    pn->r.y = rw->y + (dt-h) * pn->v.y;
+    pn->r.z = rw->z + (dt-h) * pn->v.z;
 }
 
 __device__ void lin_mom_change(const real3_t v0, const real3_t v1, /**/ float dP[3]) {
@@ -132,14 +132,14 @@ static __device__ void inverse(const real_t A[6], /**/ real_t I[6]) {
     I[ZZ] =  idet * (A[XX] * A[YY] - A[XY] * A[XY]);
 }
 
-static __device__ void v2f(real dt0, const real3_t r, const real3_t om, const real3_t v, /**/ real3_t *f) {
-    const float fac = rbc_mass / dt0;
+static __device__ void v2f(real dt, const real3_t r, const real3_t om, const real3_t v, /**/ real3_t *f) {
+    const float fac = rbc_mass / dt;
     f->x = fac * (v.x + r.y * om.z - r.z * om.y);
     f->y = fac * (v.y + r.z * om.x - r.x * om.z);
     f->z = fac * (v.z + r.x * om.y - r.y * om.x);
 }
 
-__device__ void M2f(real dt0,
+__device__ void M2f(real dt,
                     const Momentum m, real3_t a, real3_t b, real3_t c,
                     /**/ real3_t *fa, real3_t *fb, real3_t *fc) {
 
@@ -170,9 +170,9 @@ __device__ void M2f(real dt0,
     a.y -= com.y;
     a.z -= com.z;
 
-    v2f(dt0, a, om, v, /**/ fa);
-    v2f(dt0, b, om, v, /**/ fb);
-    v2f(dt0, c, om, v, /**/ fc);
+    v2f(dt, a, om, v, /**/ fa);
+    v2f(dt, b, om, v, /**/ fb);
+    v2f(dt, c, om, v, /**/ fc);
 }
 
 } // dev

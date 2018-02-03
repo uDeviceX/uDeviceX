@@ -230,13 +230,13 @@ static void coords_log(const Coords *c) {
 }
 
 // TODO: from conf
-static void set_params(float dt0, PairParams *p) {
+static void set_params(float dt, PairParams *p) {
     enum {ncolors = 2};
     float a[] = {adpd_b, adpd_br, adpd_r};
     float g[] = {gdpd_b, gdpd_br, gdpd_r};
     float s[3];
     for (int i = 0; i < 3; ++i)
-        s[i] = sqrt(2 * kBT * g[i] / dt0);
+        s[i] = sqrt(2 * kBT * g[i] / dt);
     UC(pair_set_dpd(ncolors, a, g, s, p));
     UC(pair_set_lj(ljsigma, ljepsilon, p));
 }
@@ -246,9 +246,9 @@ static void ini_pair_params(Sim *s) {
     UC(pair_ini(&s->objinter.cntparams));
     UC(pair_ini(&s->objinter.fsiparams));
 
-    UC(set_params(s->dt0, s->flu.params));
-    UC(set_params(s->dt0, s->objinter.cntparams));
-    UC(set_params(s->dt0, s->objinter.fsiparams));
+    UC(set_params(s->dt, s->flu.params));
+    UC(set_params(s->dt, s->objinter.cntparams));
+    UC(set_params(s->dt, s->objinter.fsiparams));
 }
 
 void sim_ini(int argc, char **argv, MPI_Comm cart, /**/ Sim **sim) {
@@ -271,7 +271,7 @@ void sim_ini(int argc, char **argv, MPI_Comm cart, /**/ Sim **sim) {
 
     s->L = subdomain(s->coords);
     maxp = SAFETY_FACTOR_MAXP * s->L.x * s->L.y * s->L.z * numberdensity;
-    UC(conf_lookup_float(cfg, "glb.dt", &s->dt0));
+    UC(conf_lookup_float(cfg, "glb.dt", &s->dt));
     
     UC(read_opt(s->cfg, &s->opt));
     UC(ini_pair_params(s));

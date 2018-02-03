@@ -75,18 +75,18 @@ static void dump_grid(const Sim *s) {
     fields_grid(s->coords, s->cart, qq, nn, /*w*/ s->pp_dump);
 }
 
-void dump_diag_after(float dt0, int it, bool solid0, Sim *s) { /* after wall */
+void dump_diag_after(float dt, int it, bool solid0, Sim *s) { /* after wall */
     const Rig *rig = &s->rig;
     const Opt *o = &s->opt;
     if (solid0 && it % o->freq_parts == 0) {
         static int id = 0;
-        rig_dump(dt0, it, rig->q.ss_dmp, rig->q.ss_dmp_bb, rig->q.ns, s->coords);
+        rig_dump(dt, it, rig->q.ss_dmp, rig->q.ss_dmp_bb, rig->q.ns, s->coords);
         cD2H(s->pp_dump, rig->q.i_pp, rig->q.ns * rig->q.nv);
         UC(mesh_write_dump(rig->mesh_write, s->cart, s->coords, rig->q.ns, s->pp_dump, id++));
     }
 }
 
-static void diag(float dt0, int it, Sim *s) {
+static void diag(float dt, int it, Sim *s) {
     const Flu *flu = &s->flu;
     const Rbc *rbc = &s->rbc;
     const Rig *rig = &s->rig;
@@ -94,7 +94,7 @@ static void diag(float dt0, int it, Sim *s) {
     if (rbcs)       n += rbc->q.n;
     if (s->solids0) n += rig->q.n;
     dev2hst(s);
-    diagnostics(dt0, s->cart, n, s->pp_dump, it);
+    diagnostics(dt, s->cart, n, s->pp_dump, it);
 }
 
 void dump_strt_templ(const Coords *coords, Wall *w, Sim *s) { /* template dumps (wall, solid) */
@@ -114,13 +114,13 @@ void dump_strt(int id, Sim *s) {
     if (solids)     rig_strt_dump(s->coords, id, &rig->q);
 }
 
-void dump_diag0(float dt0, int it, Sim *s) { /* generic dump */
+void dump_diag0(float dt, int it, Sim *s) { /* generic dump */
     const Opt *o = &s->opt;
 
     if (it % o->freq_parts == 0) {
         if (o->dump_parts) dump_part(it, s);
         if (rbcs)          dump_rbcs(s);
-        diag(dt0, it, s);
+        diag(dt, it, s);
     }
     if (o->dump_field && it % o->freq_field == 0) dump_grid(s);
     if (strt_dumps  && it % strt_freq == 0)  dump_strt(it / strt_freq, s);

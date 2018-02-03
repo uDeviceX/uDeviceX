@@ -22,7 +22,7 @@ void rbc_params_set_conf(const Config *c, RbcParams *par) {
     UC(conf_lookup_float(c, "rbc.ka", &ka));
     UC(conf_lookup_float(c, "rbc.kd", &kd));
     UC(conf_lookup_float(c, "rbc.kv", &kv));
-//    UC(conf_lookup_float(c, "rbc.dt", &dt0));
+//    UC(conf_lookup_float(c, "rbc.dt", &dt));
 
     rbc_params_set_fluct(gc, gt, kbt, /**/ par);
     rbc_params_set_bending(kb, phi, /**/ par);

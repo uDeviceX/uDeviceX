@@ -14,7 +14,7 @@ static void write_v(FILE *f, const float v[3]) {
     fprintf(f, "%+.6e %+.6e %+.6e ", v[X], v[Y], v[Z]);
 }
 
-void rig_dump(float dt0, const int it, const Solid *ss, const Solid *ssbb, int ns, const Coords *c) {
+void rig_dump(float dt, const int it, const Solid *ss, const Solid *ssbb, int ns, const Coords *c) {
     enum {X, Y, Z};
     static bool first = true;
     char fname[256];
@@ -31,7 +31,7 @@ void rig_dump(float dt0, const int it, const Solid *ss, const Solid *ssbb, int n
         if (first) UC(efopen(fname, "w", /**/ &fp));
         else       UC(efopen(fname, "a", /**/ &fp));
 
-        fprintf(fp, "%+.6e ", dt0*it);
+        fprintf(fp, "%+.6e ", dt*it);
 
         // shift to global coordinates
         com[X] = xl2xg(c, s->com[X]);

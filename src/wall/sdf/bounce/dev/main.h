@@ -22,8 +22,8 @@ static __device__ void rv2p(float3 r, float3 v, int i, /**/ Particle *pp) {
 }
 
 static __device__ bool is_small(float f) {return fabs(f) < 1e-6f;}
-static __device__ void crop(float dt0, float *t) {
-    if (*t < -dt0) *t = -dt0;
+static __device__ void crop(float dt, float *t) {
+    if (*t < -dt) *t = -dt;
     if (*t >   0) *t = 0;
 }
 
@@ -47,7 +47,7 @@ static __device__ void rescue(Wvel_v wv, Coords_v c, Sdf_v *texsdf, float currsd
     }
 }
 
-static __device__ void bounce_back_1p(float dt0, Wvel_v wv, Coords_v c, Sdf_v *texsdf, float currsdf,
+static __device__ void bounce_back_1p(float dt, Wvel_v wv, Coords_v c, Sdf_v *texsdf, float currsdf,
                                       /* io */ float3 *r, float3 *v) {
     float3 r0, rc, rw, dsdf;
     float phi, dphi, t;
@@ -55,7 +55,7 @@ static __device__ void bounce_back_1p(float dt0, Wvel_v wv, Coords_v c, Sdf_v *t
 
     r0 = *r;
     // get previous position
-    axpy(-dt0, v, /**/ &r0);
+    axpy(-dt, v, /**/ &r0);
 
     if (sdf(texsdf, r0.x, r0.y, r0.z) >= 0) {
         rescue(wv, c, texsdf, currsdf, /* io */ r, v);
@@ -63,7 +63,7 @@ static __device__ void bounce_back_1p(float dt0, Wvel_v wv, Coords_v c, Sdf_v *t
     }
 
     /* use Newton iterations to solve sdf(rw) = 0 */
-    /* where rw = r + t * v, t in [-dt0, 0]        */
+    /* where rw = r + t * v, t in [-dt, 0]        */
     t = 0;
     for (l = 0; l < MAX_NEWTON; ++l) {
         rc = *r;
@@ -76,7 +76,7 @@ static __device__ void bounce_back_1p(float dt0, Wvel_v wv, Coords_v c, Sdf_v *t
             break;
         
         t -= phi/dphi;
-        crop(dt0, &t);
+        crop(dt, &t);
     }
 
     rw = *r;
@@ -90,7 +90,7 @@ static __device__ void bounce_back_1p(float dt0, Wvel_v wv, Coords_v c, Sdf_v *t
         *r = r0;    
 }
 
-__global__ void bounce_back(float dt0, Wvel_v wv, Coords_v c, Sdf_v texsdf, int n, /**/ Particle *pp) {
+__global__ void bounce_back(float dt, Wvel_v wv, Coords_v c, Sdf_v texsdf, int n, /**/ Particle *pp) {
     float s, currsdf;
     float3 r, v;
     int i;
@@ -104,7 +104,7 @@ __global__ void bounce_back(float dt0, Wvel_v wv, Coords_v c, Sdf_v texsdf, int 
     if (s >= texsdf.cheap_threshold) {
         currsdf = sdf(&texsdf, r.x, r.y, r.z);
         if (currsdf >= 0) {
-            bounce_back_1p(dt0, wv, c, &texsdf, currsdf, /*io*/ &r, &v);
+            bounce_back_1p(dt, wv, c, &texsdf, currsdf, /*io*/ &r, &v);
             rv2p(r, v, i, /**/ pp);
         }
     }

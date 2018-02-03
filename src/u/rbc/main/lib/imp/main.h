@@ -9,7 +9,7 @@ static void garea_volume(RbcQuants q, /**/ float *a, float *v) {
     *a = hst[0]; *v = hst[1];
 }
 
-static void dump(float dt0, const Coords *coords, RbcQuants q, RbcForce t, MeshWrite *mesh_write) {
+static void dump(float dt, const Coords *coords, RbcQuants q, RbcForce t, MeshWrite *mesh_write) {
     int n;
     Particle *pp;
     float area, volume, area0, volume0;
@@ -22,7 +22,7 @@ static void dump(float dt0, const Coords *coords, RbcQuants q, RbcForce t, MeshW
     UC(rbc_force_stat(/**/ &area0, &volume0));
     UC(garea_volume(q, /**/ &area, &volume));
     msg_print("av: %g %g", area/area0, volume/volume0);
-    diagnostics(dt0, m::cart, n, pp, i);
+    diagnostics(dt, m::cart, n, pp, i);
     free(pp);
 }
 
@@ -30,45 +30,45 @@ static void body_force(long it, const Coords *coords, const BForce *bf, RbcQuant
     UC(bforce_apply(it, coords, rbc_mass, bf, q.n, q.pp, /**/ f));
 }
 
-static void run0(float dt0, const Coords *coords, int part_freq, const BForce *bforce,
+static void run0(float dt, const Coords *coords, int part_freq, const BForce *bforce,
                  MoveParams *moveparams, RbcQuants q, RbcForce t,
                  const RbcParams *par, RbcStretch *stretch, MeshWrite *mesh_write, Force *f) {
     long i;
-    long nsteps = (long)(tend / dt0);
+    long nsteps = (long)(tend / dt);
     msg_print("will take %ld steps", nsteps);
     for (i = 0; i < nsteps; i++) {
         Dzero(f, q.n);
-        rbc_force_apply(dt0, q, t, par, /**/ f);
+        rbc_force_apply(dt, q, t, par, /**/ f);
         stretch::apply(q.nc, stretch, /**/ f);
         if (pushrbc) body_force(i, coords, bforce, q, /**/ f);
-        scheme_move_apply(dt0, moveparams, rbc_mass, q.n, f, q.pp);
-        if (i % part_freq  == 0) dump(dt0, coords, q, t, mesh_write);
+        scheme_move_apply(dt, moveparams, rbc_mass, q.n, f, q.pp);
+        if (i % part_freq  == 0) dump(dt, coords, q, t, mesh_write);
 #ifdef RBC_CLEAR_VEL
         scheme_move_clear_vel(q.n, /**/ q.pp);
 #endif
     }
 }
 
-static void run1(float dt0, const Coords *coords, int part_freq, const BForce *bforce, MoveParams *moveparams, RbcQuants q, RbcForce t, const RbcParams *par, MeshWrite *mesh_write,  RbcStretch *stretch) {
+static void run1(float dt, const Coords *coords, int part_freq, const BForce *bforce, MoveParams *moveparams, RbcQuants q, RbcForce t, const RbcParams *par, MeshWrite *mesh_write,  RbcStretch *stretch) {
     Force *f;
     Dalloc(&f, q.n);
     Dzero(f, q.n);
-    UC(run0(dt0, coords, part_freq, bforce, moveparams, q, t, par, stretch, mesh_write, f));
+    UC(run0(dt, coords, part_freq, bforce, moveparams, q, t, par, stretch, mesh_write, f));
     Dfree(f);
 }
 
-static void run2(float dt0, const Coords *coords, int part_freq, const BForce *bforce, MoveParams *moveparams, OffRead *off, const char *ic, const RbcParams *par, MeshWrite *mesh_write, RbcQuants q) {
+static void run2(float dt, const Coords *coords, int part_freq, const BForce *bforce, MoveParams *moveparams, OffRead *off, const char *ic, const RbcParams *par, MeshWrite *mesh_write, RbcQuants q) {
     RbcStretch *stretch;
     RbcForce t;
     rbc_gen_quants(coords, m::cart, off, ic, /**/ &q);
     UC(stretch::ini("rbc.stretch", q.nv, /**/ &stretch));
     rbc_force_gen(q, &t);
-    run1(dt0, coords, part_freq, bforce, moveparams, q, t, par, mesh_write, stretch);
+    run1(dt, coords, part_freq, bforce, moveparams, q, t, par, mesh_write, stretch);
     stretch::fin(stretch);
     rbc_force_fin(&t);
 }
 
-void run(float dt0, const Coords *coords, int part_freq, const BForce *bforce, MoveParams * moveparams, const char *cell, const char *ic, const RbcParams *par) {
+void run(float dt, const Coords *coords, int part_freq, const BForce *bforce, MoveParams * moveparams, const char *cell, const char *ic, const RbcParams *par) {
     const char *directory = "r";
     RbcQuants q;
     OffRead *off;
@@ -78,7 +78,7 @@ void run(float dt0, const Coords *coords, int part_freq, const BForce *bforce, M
     UC(mesh_write_ini_off(off, directory, /**/ &mesh_write));
 
     rbc_ini(off, &q);
-    run2(dt0, coords, part_freq, bforce, moveparams, off, ic, par, mesh_write, q);
+    run2(dt, coords, part_freq, bforce, moveparams, off, ic, par, mesh_write, q);
     rbc_fin(&q);
 
     UC(mesh_write_fin(mesh_write));

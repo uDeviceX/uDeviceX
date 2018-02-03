@@ -1,7 +1,7 @@
 namespace dev {
 
 /* assume very small portion of non zero momentum changes */
-__global__ void collect_rig_mom(float dt0, int ns, int nt, int nv, const int4 *tt, const Particle *pp, const Momentum *mm, /**/ Solid *ss) {
+__global__ void collect_rig_mom(float dt, int ns, int nt, int nv, const int4 *tt, const Particle *pp, const Momentum *mm, /**/ Solid *ss) {
     int i, sid;
     i = threadIdx.x + blockDim.x * blockIdx.x;
 
@@ -31,7 +31,7 @@ __global__ void collect_rig_mom(float dt0, int ns, int nt, int nv, const int4 *t
         m.L[Y] += dr.z * m.P[X] - dr.x * m.P[Z];
         m.L[Z] += dr.x * m.P[Y] - dr.y * m.P[X];
 
-        const float fac = flu_mass / dt0;
+        const float fac = flu_mass / dt;
         
         atomicAdd(ss[sid].fo + X, fac * m.P[X]);
         atomicAdd(ss[sid].fo + Y, fac * m.P[Y]);
@@ -50,7 +50,7 @@ static __device__ void addForce(const real3_t f, int i, Force *ff) {
     atomicAdd(ff[i].f + Z, f.z);
 }
 
-__global__ void collect_rbc_mom(float dt0, int nc, int nt, int nv, const int4 *tt, const Particle *pp, const Momentum *mm, /**/ Force *ff) {
+__global__ void collect_rbc_mom(float dt, int nc, int nt, int nv, const int4 *tt, const Particle *pp, const Momentum *mm, /**/ Force *ff) {
     int i, cid, tid;
     int4 t;
     i = threadIdx.x + blockDim.x * blockIdx.x;
@@ -75,7 +75,7 @@ __global__ void collect_rbc_mom(float dt0, int nc, int nt, int nv, const int4 *t
         B = P2rP( pp + t.y );
         C = P2rP( pp + t.z );
 
-        M2f(dt0, m, A.r, B.r, C.r, /**/ &fa, &fb, &fc);
+        M2f(dt, m, A.r, B.r, C.r, /**/ &fa, &fb, &fc);
 
         addForce(fa, t.x, /**/ ff);
         addForce(fb, t.y, /**/ ff);

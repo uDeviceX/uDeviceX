@@ -47,5 +47,5 @@ void wvel_set_conf(const Config *cfg, Wvel *vw) {
     else {
         ERR("unknown type <%s>\n", type);
     }
-    //UC(conf_lookup_float(cfg, "wvel.dt0", &dt0));
+    //UC(conf_lookup_float(cfg, "wvel.dt", &dt));
 }

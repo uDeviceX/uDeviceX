@@ -47,7 +47,7 @@ static __device__ void get_cells(int3 L, float tol, real3_t A, real3_t B, real3_
     *hi = get_cidx(L, hf);
 }
 
-static __device__ void find_collisions_cell(real dt0,
+static __device__ void find_collisions_cell(real dt,
                                             int tid, int start, int count, const Particle *pp, const Force *ff,
                                             const rPa *A, const rPa *B, const rPa *C,
                                             /**/ int *ncol, float4 *datacol, int *idcol) {
@@ -59,9 +59,9 @@ static __device__ void find_collisions_cell(real dt0,
     for (i = start; i < start + count; ++i) {
         p = P2rP(pp + i);
         f = ff[i];
-        rvprev(dt0, &p.r, &p.v, f.f, /**/ &p0.r, &p0.v);
+        rvprev(dt, &p.r, &p.v, f.f, /**/ &p0.r, &p0.v);
 
-        state = intersect_triangle(dt0, &A->r, &B->r, &C->r, &A->v, &B->v, &C->v, &p0, /**/ &tc, &u, &v, &s);
+        state = intersect_triangle(dt, &A->r, &B->r, &C->r, &A->v, &B->v, &C->v, &p0, /**/ &tc, &u, &v, &s);
         
         if (state == BB_SUCCESS) {
             entry = atomicAdd(ncol + i, 1);
@@ -85,7 +85,7 @@ static __device__ void revert_r(float h, rPa *p) {
     p->r.z -= p->v.z * h;
 }
 
-__global__ void find_collisions(float dt0,
+__global__ void find_collisions(float dt,
                                 int nm, int nt, int nv, const int4 *tt, const Particle *i_pp,
                                 int3 L, const int *starts, const int *counts, const Particle *pp, const Force *ff,
                                 /**/ int *ncol, float4 *datacol, int *idcol) {
@@ -99,9 +99,9 @@ __global__ void find_collisions(float dt0,
 
     fetch_triangle(gid, nt, nv, tt, i_pp, /**/ &A, &B, &C);
 
-    revert_r(dt0, &A);
-    revert_r(dt0, &B);
-    revert_r(dt0, &C);
+    revert_r(dt, &A);
+    revert_r(dt, &B);
+    revert_r(dt, &C);
 
     get_cells(L, TOL, A.r, B.r, C.r, /**/ &str, &end);
     
@@ -110,13 +110,13 @@ __global__ void find_collisions(float dt0,
             for (ix = str.x; ix <= end.x; ++ix) {
                 cid = ix + L.x * (iy + L.y * iz);
                 
-                find_collisions_cell(dt0, gid, starts[cid], counts[cid], pp, ff, &A, &B, &C, /**/ ncol, datacol, idcol);
+                find_collisions_cell(dt, gid, starts[cid], counts[cid], pp, ff, &A, &B, &C, /**/ ncol, datacol, idcol);
             }
         }
     }
 }
 
-__global__ void select_collisions(float dt0, int n, /**/ int *ncol, float4 *datacol, int *idcol) {
+__global__ void select_collisions(float dt, int n, /**/ int *ncol, float4 *datacol, int *idcol) {
     int i, c, j, dst, src, argmin;
     float tmin;
     float4 d;
@@ -126,7 +126,7 @@ __global__ void select_collisions(float dt0, int n, /**/ int *ncol, float4 *data
 
     c = ncol[i];
 
-    argmin = 0; tmin = 2*dt0;
+    argmin = 0; tmin = 2*dt;
     for (j = 0; j < c; ++j) {
         src = MAX_COL * i + j;
         d = datacol[src];
@@ -145,14 +145,14 @@ __global__ void select_collisions(float dt0, int n, /**/ int *ncol, float4 *data
     }
 }
 
-static __device__ void get_collision_point(real dt0,
+static __device__ void get_collision_point(real dt,
                                            const float4 dcol, rPa A, rPa B, rPa C,
                                            /**/ real3_t *rw, real3_t *vw) {
     enum {X, Y, Z};
     float h, u, v, w;    
 
     /* d.x is collision time */
-    h = dt0 - dcol.x;
+    h = dt - dcol.x;
     revert_r(h, &A);
     revert_r(h, &B);
     revert_r(h, &C);
@@ -188,7 +188,7 @@ static __device__ void push_particle(const real3_t *A, const real3_t *B, const r
     r->z += l*n.z;
 }
 
-__global__ void perform_collisions(float dt0,
+__global__ void perform_collisions(float dt,
                                    int n, const int *ncol, const float4 *datacol, const int *idcol,
                                    const Force *ff, int nt, int nv, const int4 *tt, const Particle *i_pp,
                                    /**/ Particle *pp, Momentum *mm) {
@@ -211,13 +211,13 @@ __global__ void perform_collisions(float dt0,
     p1 = P2rP( pp + i );
     f  = ff[i];
     
-    rvprev(dt0, &p1.r, &p1.v, f.f, /**/ &p0.r, &p0.v);
+    rvprev(dt, &p1.r, &p1.v, f.f, /**/ &p0.r, &p0.v);
 
     fetch_triangle(id, nt, nv, tt, i_pp, /**/ &A, &B, &C);
     
-    get_collision_point(dt0, d, A, B, C, /**/ &rw, &vw);
+    get_collision_point(dt, d, A, B, C, /**/ &rw, &vw);
 
-    bounce_back(dt0, &p0, &rw, &vw, d.x, /**/ &pn);
+    bounce_back(dt, &p0, &rw, &vw, d.x, /**/ &pn);
 
     push_particle(&A.r, &B.r, &C.r, d.w * eps, /**/ &pn.r);
     

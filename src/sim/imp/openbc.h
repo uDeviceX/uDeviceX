@@ -1,8 +1,8 @@
-void apply_inflow(float dt0, Inflow *i, Flu *f) {
+void apply_inflow(float dt, Inflow *i, Flu *f) {
     if (multi_solvent)
-        UC(inflow_create_pp_cc(dt0, RED_COLOR, i, &f->q.n, f->q.pp, f->q.cc));
+        UC(inflow_create_pp_cc(dt, RED_COLOR, i, &f->q.n, f->q.pp, f->q.cc));
     else
-        UC(inflow_create_pp(dt0, i, &f->q.n, f->q.pp));
+        UC(inflow_create_pp(dt, i, &f->q.n, f->q.pp));
 }
 
 void mark_outflow(const Flu *f, Outflow *o) {

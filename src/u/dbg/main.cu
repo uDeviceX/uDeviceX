@@ -64,10 +64,10 @@ void fill_bugs(int3 L) {
     KL(dev::fill_bugs, (k_cnf(n)), (ff, n));
 }
 
-void check(float dt0, const Coords *c, Dbg *dbg) {
+void check(float dt, const Coords *c, Dbg *dbg) {
     UC(dbg_check_pos    (c, "flu", dbg, n, pp));
-    UC(dbg_check_vel    (dt0, c, "flu", dbg, n, pp));
-    UC(dbg_check_forces (dt0, c, "flu.ff", dbg, n, pp, ff));
+    UC(dbg_check_vel    (dt, c, "flu", dbg, n, pp));
+    UC(dbg_check_forces (dt, c, "flu.ff", dbg, n, pp, ff));
 }
 
 int main(int argc, char **argv) {
@@ -75,13 +75,13 @@ int main(int argc, char **argv) {
     Config *cfg;
     Coords *coords;
     int3 L;
-    float dt0;
+    float dt;
     m::ini(&argc, &argv);
     
     UC(conf_ini(&cfg));
     UC(dbg_ini(&dbg));
     UC(conf_read(argc, argv, cfg));
-    UC(conf_lookup_float(cfg, "glb.dt", &dt0));    
+    UC(conf_lookup_float(cfg, "glb.dt", &dt));    
     UC(dbg_set_conf(cfg, dbg));
     UC(coords_ini_conf(m::cart, cfg, &coords));
 
@@ -89,7 +89,7 @@ int main(int argc, char **argv) {
     
     alloc();
     fill_bugs(L);
-    check(dt0, coords, dbg);
+    check(dt, coords, dbg);
     free();
     UC(dbg_fin(dbg));
     UC(conf_fin(cfg));
