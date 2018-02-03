@@ -5,7 +5,7 @@ __global__ void compress(const int nentries, const int4 *const in, uchar4 *const
     const int gid = threadIdx.x + blockDim.x * blockIdx.x;
 
     if (4 * gid >= nentries)
-    return;
+        return;
 
     const int4 entry = in[gid];
 
@@ -32,10 +32,10 @@ __global__ void breduce(const uint4 *vin, unsigned int *vout, int n) {
 
 #pragma unroll
     for(int i = 16; i > 0; i >>= 1)
-    val.x += __shfl_down((int)val.x, i);
+        val.x += __shfl_down((int)val.x, i);
 
     if (0 == lid)
-    shtmp[wid] = val.x;
+        shtmp[wid] = val.x;
 
     __syncthreads();
     if (0 == wid) {
@@ -43,7 +43,7 @@ __global__ void breduce(const uint4 *vin, unsigned int *vout, int n) {
 
 #pragma unroll
         for(int i = 16; i > 0; i >>= 1)
-        val.x += __shfl_down((int)val.x, i);
+            val.x += __shfl_down((int)val.x, i);
     }
     if (0 == threadIdx.x) vout[blockIdx.x] = val.x;
     return;
@@ -62,7 +62,7 @@ __global__ void bexscan(unsigned int *v, int n) {
 
         __syncthreads();
         if (i > 0 && 0 == threadIdx.x)
-        shtmp[i] += shtmp[i-1];
+            shtmp[i] += shtmp[i-1];
 
         unsigned int a = 0;
 
@@ -82,7 +82,7 @@ __global__ void bexscan(unsigned int *v, int n) {
 
         __syncthreads();
         if (i > 0 && 0 == threadIdx.x)
-        shtmp[i] += shtmp[i-1];
+            shtmp[i] += shtmp[i-1];
 
         unsigned int a = 0;
         for(int j = 1; j < BDIM; j <<= 1) {
@@ -144,11 +144,11 @@ __global__ void gexscan(const uint4 *vin, unsigned int *offs, uint4 *vout, int n
     tu4.w = tmp;
 #pragma unroll
     for(int i = 1; i < 32; i <<= 1)
-    tu4.w += (lid >= i)*__shfl_up((int)tu4.w, i);
+        tu4.w += (lid >= i)*__shfl_up((int)tu4.w, i);
 
     if (lid == 31)
-    if (wid < NWARP-1) woff[wid+1] = tu4.w;
-    else               woff[0]     = (blockIdx.x > 0) ? offs[blockIdx.x-1] : 0;
+        if (wid < NWARP-1) woff[wid+1] = tu4.w;
+        else               woff[0]     = (blockIdx.x > 0) ? offs[blockIdx.x-1] : 0;
 
     tu4.w -= tmp;
 
@@ -157,7 +157,7 @@ __global__ void gexscan(const uint4 *vin, unsigned int *offs, uint4 *vout, int n
         tmp = (lid < NWARP) ? woff[lid] : 0;
 #pragma unroll
         for(int i = 1; i < NWARP; i <<= 1)
-        tmp += (lid >= i)*__shfl_up((int)tmp, i);
+            tmp += (lid >= i)*__shfl_up((int)tmp, i);
 
         if (lid < NWARP) woff[lid] = tmp;
     }
@@ -195,7 +195,7 @@ __global__ void gexscan(const uint4 *vin, unsigned int *offs, uint4 *vout, int n
 
 #pragma unroll
     for(int i = 0; i < 4; i++)
-    vout[i] = val[i];
+        vout[i] = val[i];
     return;
 }
 
