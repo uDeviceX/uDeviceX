@@ -12,7 +12,7 @@ struct SumSq {
 float force_stat_max(int n, const Force *dev) {
     using namespace thrust;
     float init, m;
-    SumSq                  unary;
+    SumSq           unary;
     maximum<float> binary;
     device_ptr<const Force> beg(dev), end(dev+n);
     init = 0;
