@@ -48,7 +48,7 @@ void main0(Config *cfg, int n, const Force *hst) {
     time_step_ini(cfg, &time_step);
     time_step_accel_ini(&accel);
     time_step_accel_push(accel, mass, n, dev);
-    time_step_accel_push(accel, mass, n, dev);    
+    time_step_accel_push(accel, mass, n, dev);
 
     dt = time_step_dt(time_step, m::cart, accel);
     time_step_log(time_step);
