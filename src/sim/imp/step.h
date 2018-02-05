@@ -17,17 +17,15 @@ static void step(Time *time, BForce *bforce, bool wall0, int ts, int it, Sim *s)
     if (rbcs)       UC(distribute_rbc(/**/ rbc));
 
     UC(check_sizes(s));
-
-    forces(dt, wall0, s);
-
+    UC(forces(dt, wall0, s));
     UC(check_forces(dt, s));
 
     dump_diag0(dt, it, s);
     dump_diag_after(dt, it, s->solids0, s);
-    body_force(it, bforce, s);
+    UC(body_force(it, bforce, s));
 
-    restrain(it, /**/ s);
-    update_solvent(dt, s->moveparams, /**/ flu);
+    UC(restrain(it, /**/ s));
+    UC(update_solvent(dt, s->moveparams, /**/ flu));
     if (s->solids0) update_solid(dt, /**/ rig);
     if (rbcs)       update_rbc(dt, s->moveparams, it, rbc, s);
 

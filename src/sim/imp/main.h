@@ -37,7 +37,6 @@ void sim_gen(Sim *s, Time *time) {
     OffRead *cell = s->rbc.cell;
     long nsteps;
     float dt0;
-    
 
     UC(flu_gen_quants(s->coords, s->gen_color, &flu->q));
     UC(flu_build_cells(&flu->q));
