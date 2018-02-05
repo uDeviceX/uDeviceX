@@ -6,9 +6,7 @@ struct Shape0 {
 
 /* extract edge specific shape info */
 static void __device__ edg_shape(Shape shape, int i, /**/ Shape0 *shape0) {
-    Edg edg;
-    edg = shape.edg[i];
-    shape0->a = edg.a;
-    shape0->A = edg.A;
+    shape0->a = shape.a[i];
+    shape0->A = shape.a[i];
     shape0->totArea = shape.totArea;
 }

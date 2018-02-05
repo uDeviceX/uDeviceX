@@ -7,7 +7,10 @@ static void ini_common(RbcQuants *q, const int4 *tt) {
 }
 
 static void ini_ids(RbcQuants *q)  { EMALLOC(MAX_CELL_NUM, &q->ii); }
-static void ini_edg(RbcQuants *q)  { Dalloc(&q->shape.edg,  q->nv * RBCmd); }
+static void ini_edg(RbcQuants *q)  {
+    Dalloc(&q->shape.a,  q->nv * RBCmd);    
+    Dalloc(&q->shape.A,  q->nv * RBCmd);
+}
 static void ini_anti(RbcQuants *q) { Dalloc(&q->shape.anti, q->nv * RBCmd); }
 
 void rbc_ini(OffRead *cell, RbcQuants *q) {
