@@ -6,7 +6,7 @@ cat >ff.txt <<!
 1 2 3
 1 1 1
 !
-u.run ./udx '
+u.run 2 2 1 ./udx '
 i = "ff.txt";
 time = { 
    type = "disp"
