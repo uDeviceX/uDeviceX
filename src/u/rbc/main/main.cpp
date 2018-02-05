@@ -32,7 +32,7 @@ int main(int argc, char **argv) {
 
     UC(conf_ini(&cfg));
     UC(conf_read(argc, argv, cfg));
-    UC(conf_lookup_float(cfg, "glb.dt", &dt));
+    UC(conf_lookup_float(cfg, "time.dt", &dt));
 
     UC(rbc_params_ini(&par));
     UC(rbc_params_set_conf(cfg, par));

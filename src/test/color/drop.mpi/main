@@ -17,7 +17,7 @@ u.conf $s $u conf/zurich.h <<!!!
 { make clean && u.make -j; } > make.log
 u.run 2 2 1 ./udx '
 time = {
-    type = "constant"
+    type = "const"
     dt = 5e-4
 }
 glb = {

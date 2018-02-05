@@ -77,16 +77,16 @@ int main(int argc, char **argv) {
     int3 L;
     float dt;
     m::ini(&argc, &argv);
-    
+
     UC(conf_ini(&cfg));
     UC(dbg_ini(&dbg));
     UC(conf_read(argc, argv, cfg));
-    UC(conf_lookup_float(cfg, "glb.dt", &dt));    
+    UC(conf_lookup_float(cfg, "time.dt", &dt));
     UC(dbg_set_conf(cfg, dbg));
     UC(coords_ini_conf(m::cart, cfg, &coords));
 
     L = subdomain(coords);
-    
+
     alloc();
     fill_bugs(L);
     check(dt, coords, dbg);
