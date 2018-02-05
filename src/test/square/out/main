@@ -12,7 +12,7 @@ u.conf "$S" "$U" "$C" <<!
 { u.make clean && u.make -j; } > .make.log
 u.run ./udx "
 time = {
-    type = "const"
+    type = \"const\"
     dt = 1e-4
 }
 glb = {
