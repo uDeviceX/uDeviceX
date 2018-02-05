@@ -22,7 +22,7 @@ static void dump(float dt, const Coords *coords, RbcQuants q, RbcForce t, MeshWr
     UC(rbc_force_stat(/**/ &area0, &volume0));
     UC(garea_volume(q, /**/ &area, &volume));
     msg_print("av: %g %g", area/area0, volume/volume0);
-    diagnostics(dt, m::cart, n, pp, i);
+    diag(m::cart, dt*i, n, pp);
     free(pp);
 }
 
