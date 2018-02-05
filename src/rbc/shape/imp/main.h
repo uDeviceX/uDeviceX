@@ -105,4 +105,7 @@ void rbc_shape_edg  (RbcShape *q, /**/ float** pe) { *pe = q->edg; }
 void rbc_shape_area (RbcShape *q, /**/ float** pe) { *pe = q->area; }
 
 void rbc_shape_total_area(RbcShape *q, /**/ float *pe)   { *pe = q->A; }
-void rbc_shape_total_volume(RbcShape *q, /**/ float *pe) { *pe = q->V; }
+void rbc_shape_total_volume(RbcShape *q, /**/ float *pe) {
+    ERR("rbc_shape_total_volume is not implimented");
+    *pe = q->V;
+}
