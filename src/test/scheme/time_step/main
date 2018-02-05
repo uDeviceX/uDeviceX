@@ -1,9 +1,16 @@
 # sTEST: scheme.time_step
-u.conf0 u/algo/force_stat
+u.conf0 u/scheme/time_step
 { u.make -j;     } > /dev/null
 cat >ff.txt <<!
 1 0 0
 1 2 3
 1 1 1
 !
-u.run ./udx i=\"ff.txt\" > force_stat.out.txt
+u.run ./udx '
+i = "ff.txt";
+time = { 
+   type = "disp"
+   dx = 0.01
+   dt = 0.1
+}
+' > force_stat.out.txt
