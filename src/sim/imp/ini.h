@@ -272,6 +272,7 @@ void sim_ini(int argc, char **argv, MPI_Comm cart, /**/ Sim **sim) {
     s->L = subdomain(s->coords);
     maxp = SAFETY_FACTOR_MAXP * s->L.x * s->L.y * s->L.z * numberdensity;
     UC(conf_lookup_float(cfg, "glb.dt", &s->dt));
+    UC(time_step_ini(cfg, &s->time_step));
     
     UC(read_opt(s->cfg, &s->opt));
     UC(ini_pair_params(s));
