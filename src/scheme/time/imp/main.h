@@ -8,8 +8,12 @@ void time_ini(float t, /**/ Time** pq) {
 void time_fin(Time *q) { EFREE(q); }
 
 void time_next(Time *q, float dt) {
-    q->First = 0;
-    q->t0 = q->t;
+    if (q->First) {
+        q->dt0 = dt;
+        q->First = 0;
+    } else  {
+        q->t0 = q->t;
+    }
     q->t  += dt;
     q->dt0 = q->dt;
     q->dt  = dt;
@@ -21,7 +25,6 @@ float time_dt(Time *q) {
     return q->dt;
 }
 float time_dt0(Time *q) { return q->dt0; }
-
 int time_cross(Time *q, float i) {
     float t, t0, f;
     if (q->First) return 0;
