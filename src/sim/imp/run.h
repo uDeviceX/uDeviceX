@@ -1,4 +1,4 @@
-void run_eq(float dt, long te, Sim *s) { /* equilibrate */
+void run_eq(Time *time, long te, Sim *s) { /* equilibrate */
     BForce *bforce;
     UC(bforce_ini(&bforce));
 
@@ -6,12 +6,12 @@ void run_eq(float dt, long te, Sim *s) { /* equilibrate */
     
     bforce_ini_none(/**/ bforce);    
     bool wall0 = false;
-    for (long it = 0; it < te; ++it) UC(step(dt, bforce, wall0, 0, it, s));
+    for (long it = 0; it < te; ++it) UC(step(time, bforce, wall0, 0, it, s));
     UC(distribute_flu(/**/ s));
     UC(bforce_fin(bforce));
 }
 
-void run(float dt, long ts, long te, Sim *s) {
+void run(Time *time, long ts, long te, Sim *s) {
     long it; /* current timestep */
     Wall *wall = &s->wall;
     BForce *bforce;
@@ -24,7 +24,7 @@ void run(float dt, long ts, long te, Sim *s) {
 
     /* ts, te: time start and end */
     for (it = ts; it < te; ++it)
-        UC(step(dt, bforce, walls, ts, it, s));
+        UC(step(time, bforce, walls, ts, it, s));
 
     UC(distribute_flu(/**/ s));
     UC(bforce_fin(bforce));

@@ -5,14 +5,14 @@ static long get_max_parts_wall(const Coords *c) {
         (zs(c) + 2 * ZWM);
 }
 
-static void gen(float dt, const Coords *coords, Wall *w, Sim *s) { /* generate */
+static void gen(Time *time, const Coords *coords, Wall *w, Sim *s) { /* generate */
     Flu *flu = &s->flu;
     Rbc *rbc = &s->rbc;
     Rig *rig = &s->rig;
     bool dump_sdf = s->opt.dump_field;
     long maxp_wall = get_max_parts_wall(coords);
 
-    run_eq(dt, wall_creation, s);
+    run_eq(time, wall_creation, s);
     if (walls) {
         dSync();
         UC(sdf_gen(coords, s->cart, dump_sdf, /**/ w->sdf));
@@ -35,7 +35,9 @@ void sim_gen(Sim *s, Time *time) {
     Rbc *rbc = &s->rbc;
     Wall *wall = &s->wall;
     OffRead *cell = s->rbc.cell;
-    float dt = time_dt(time);
+    long nsteps;
+    float dt0;
+    
 
     UC(flu_gen_quants(s->coords, s->gen_color, &flu->q));
     UC(flu_build_cells(&flu->q));
@@ -48,27 +50,28 @@ void sim_gen(Sim *s, Time *time) {
     }
     MC(m::Barrier(s->cart));
 
-    long nsteps = (long)(tend / dt);
+    dt0 = time_dt(time);
+    nsteps = (long)(tend / dt0);
     msg_print("will take %ld steps", nsteps);
     if (walls || solids) {
         s->solids0 = false;
-        gen(dt, s->coords, /**/ wall, s);
+        gen(time, s->coords, /**/ wall, s);
         dSync();
         if (walls && wall->q.n) UC(wall_gen_ticket(&wall->q, wall->t));
         s->solids0 = solids;
         if (rbcs && multi_solvent) gen_colors(rbc, &s->colorer, /**/ flu);
-        run(dt, wall_creation, nsteps, s);
+        run(time, wall_creation, nsteps, s);
     } else {
         s->solids0 = solids;
-        run(dt, 0, nsteps, s);
+        run(time, 0, nsteps, s);
     }
     /* final strt dump*/
     if (strt_dumps) dump_strt(RESTART_FINAL, s);
 }
 
 void sim_strt(Sim *s, Time *time) {
-    float dt = time_dt(time);
-    long nsteps = (long)(tend / dt);
+    float dt0 = time_dt(time);
+    long nsteps = (long)(tend / dt0);
     Flu *flu = &s->flu;
     Rbc *rbc = &s->rbc;
     Rig *rig = &s->rig;
@@ -102,7 +105,7 @@ void sim_strt(Sim *s, Time *time) {
     s->solids0 = solids;
 
     msg_print("will take %ld steps", nsteps - wall_creation);
-    run(dt, wall_creation, nsteps, s);
+    run(time, wall_creation, nsteps, s);
 
     if (strt_dumps) dump_strt(RESTART_FINAL, s);
 }

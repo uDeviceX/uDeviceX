@@ -1,25 +1,27 @@
-static void step(float dt, BForce *bforce, bool wall0, int ts, int it, Sim *s) {
+static void step(Time *time, BForce *bforce, bool wall0, int ts, int it, Sim *s) {
+    float dt;
     Flu *flu = &s->flu;
     Rbc *rbc = &s->rbc;
     Rig *rig = &s->rig;
     Wall *wall = &s->wall;
 
+    dt = time_dt(time);
     if (walls && !s->equilibrating)
         UC(wvel_get_view(dt, it - ts, wall->vel, /**/ &wall->vview));
-    
+
     UC(check_sizes(s));
     UC(check_pos_soft(s));
-    
+
     UC(distribute_flu(s));
     if (s->solids0) UC(distribute_rig(/**/ rig));
     if (rbcs)       UC(distribute_rbc(/**/ rbc));
 
     UC(check_sizes(s));
-    
+
     forces(dt, wall0, s);
 
     UC(check_forces(dt, s));
-    
+
     dump_diag0(dt, it, s);
     dump_diag_after(dt, it, s->solids0, s);
     body_force(it, bforce, s);
@@ -30,7 +32,7 @@ static void step(float dt, BForce *bforce, bool wall0, int ts, int it, Sim *s) {
     if (rbcs)       update_rbc(dt, s->moveparams, it, rbc, s);
 
     UC(check_vel(dt, s));
-    
+
     if (s->opt.vcon && !s->equilibrating) {
         sample(s->coords, it, flu, /**/ &s->vcon);
         adjust(it, /**/ &s->vcon, bforce);
@@ -38,7 +40,7 @@ static void step(float dt, BForce *bforce, bool wall0, int ts, int it, Sim *s) {
     }
 
     if (wall0) bounce_wall(dt, s->coords, wall, /**/ flu, rbc);
-    
+
     if (sbounce_back && s->solids0) bounce_solid(dt, s->L, /**/ &s->bb, rig, flu);
 
     UC(check_pos_soft(s));
