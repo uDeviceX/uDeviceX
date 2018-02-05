@@ -96,6 +96,8 @@
 #include "scheme/force/imp.h"
 #include "scheme/move/imp.h"
 #include "scheme/restrain/imp.h"
+#include "scheme/time/imp.h"
+#include "scheme/time_step/imp.h"
 
 #include "control/vel/imp.h"
 #include "control/den/imp.h"

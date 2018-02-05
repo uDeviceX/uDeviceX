@@ -183,4 +183,7 @@ struct Sim {
 
     /* inter processing helpers */
     GenColor *gen_color;
+
+    Time *time;
+    TimeStep *time_step;
 };
