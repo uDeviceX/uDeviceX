@@ -1,0 +1,9 @@
+# sTEST: scheme.time_step
+u.conf0 u/algo/force_stat
+{ u.make -j;     } > /dev/null
+cat >ff.txt <<!
+1 0 0
+1 2 3
+1 1 1
+!
+u.run ./udx i=\"ff.txt\" > force_stat.out.txt

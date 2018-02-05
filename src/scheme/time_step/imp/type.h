@@ -16,6 +16,6 @@ struct TimeStep {
 };
 
 enum {CONST, DISP};
-static float disp_dt(MPI_Comm, TimeStepAccel*, TimeStep*);
-static float const_dt(MPI_Comm, TimeStepAccel*, TimeStep*);
-static float (*dt[])(MPI_Comm, TimeStepAccel*, TimeStep*) = { const_dt,  disp_dt };
+static float disp_dt(TimeStep*, MPI_Comm, TimeStepAccel*);
+static float const_dt(TimeStep*, MPI_Comm, TimeStepAccel*);
+static float (*dt[])(TimeStep*, MPI_Comm, TimeStepAccel*) = { const_dt,  disp_dt };

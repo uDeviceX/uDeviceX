@@ -33,8 +33,8 @@ void time_step_ini(Config *c, /**/ TimeStep **pq) {
 }
 void time_step_fin(TimeStep *q) {EFREE(q); }
 
-static float const_dt(MPI_Comm, TimeStepAccel*, TimeStep *q) { return q->dt; }
-static float disp_dt(MPI_Comm comm, TimeStepAccel *a, TimeStep *q) {
+static float const_dt(TimeStep *q, MPI_Comm, TimeStepAccel*) { return q->dt; }
+static float disp_dt(TimeStep *q, MPI_Comm comm, TimeStepAccel *a) {
     float dt, dx, dt_max, accel;
     dt_max = q->dt;
     dx     = q->dx;
@@ -43,6 +43,6 @@ static float disp_dt(MPI_Comm comm, TimeStepAccel *a, TimeStep *q) {
     dt = 2*dx/(accel*accel);
     return dt > dt_max ? dt_max : dt;
 }
-float time_step_dt(MPI_Comm comm, TimeStepAccel *a, TimeStep *q) {
-    return dt[q->type](comm, a, q);
+float time_step_dt(TimeStep *q, MPI_Comm comm, TimeStepAccel *a) {
+    return dt[q->type](q, comm, a);
 }
