@@ -15,17 +15,34 @@ void time_step_accel_push(TimeStepAccel *q, float m, int n, Force *ff) {
     q->k = k + 1;
 }
 
-static float accel_max(MPI_Comm comm, TimeStepAccel *q) {
-    int n, i;
-    float accel, force, mass, max;
-    Force *ff;
-    max = 0;
-    for (i = 0; i < q->k; i++) {
-        mass = q->mm[i]; n = q->nn[i]; ff = q->fff[i];
-        force = force_stat_max(n, ff);
-        accel = force/mass;
-        if (accel > max) max = accel;
-    }
-    UC(max_float(comm, &max));
-    return max;
+void time_step_ini(Config *c, /**/ TimeStep **pq) {
+    const char *type;
+    TimeStep *q;
+    EMALLOC(1, &q);
+    UC(conf_lookup_string(c, "time.type", &type));
+    if      (same_str(type, "const")) {
+        q->type = CONST;
+        UC(conf_lookup_float(c, "time.dt", &q->dt));
+    } else if (same_str(type, "disp")) {
+        q->type = DISP;
+        UC(conf_lookup_float(c, "time.dt", &q->dt));
+        UC(conf_lookup_float(c, "time.dx", &q->dx));
+    } else
+        ERR("unrecognised type <%s>", type);
+    *pq = q;
+}
+void time_step_fin(TimeStep *q) {EFREE(q); }
+
+static float const_dt(MPI_Comm, TimeStepAccel*, TimeStep *q) { return q->dt; }
+static float disp_dt(MPI_Comm comm, TimeStepAccel *a, TimeStep *q) {
+    float dt, dx, dt_max, accel;
+    dt_max = q->dt;
+    dx     = q->dx;
+    accel = accel_max(comm, a);
+    if (accel == 0) return dt_max;
+    dt = 2*dx/(accel*accel);
+    return dt > dt_max ? dt_max : dt;
+}
+float time_step_dt(MPI_Comm comm, TimeStepAccel *a, TimeStep *q) {
+    return dt[q->type](comm, a, q);
 }

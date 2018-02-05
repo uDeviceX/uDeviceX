@@ -6,18 +6,16 @@ struct TimeStepAccel {
     int k;
 };
 
-struct Const {
-};
-
-struct Disp {
-
-};
-
-enum {CONST, DISP};
-float (*dt[]) = {NULL, NULL};
+struct Const { };
+struct Disp  { };
 
 struct TimeStep {
     int type;
-    void *q;
+    float dt;
+    float dx;
 };
 
+enum {CONST, DISP};
+static float disp_dt(MPI_Comm, TimeStepAccel*, TimeStep*);
+static float const_dt(MPI_Comm, TimeStepAccel*, TimeStep*);
+static float (*dt [])(MPI_Comm, TimeStepAccel*, TimeStep*) = { const_dt,  disp_dt };
