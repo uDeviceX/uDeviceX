@@ -13,4 +13,4 @@ time = {
    dx = 0.01
    dt = 0.1
 }
-' > force_stat.out.txt
+' > dt.out.txt
