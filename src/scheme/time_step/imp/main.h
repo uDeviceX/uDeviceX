@@ -62,3 +62,4 @@ static void  disp_log(TimeStep *q) {
     }
 }
 void time_step_log(TimeStep *q) { log[q->type](q); }
+float time_step_dt0(TimeStep *q) { return q->dt; };
