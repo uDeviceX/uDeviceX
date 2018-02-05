@@ -28,12 +28,14 @@ void run(OffRead *off) {
     int md, nt, nv;
     const int4 *tt;
     const float *rr;
+    float *A;
     nt = off_get_nt(off); nv = off_get_nv(off);
     tt = off_get_tri(off); rr = off_get_vert(off);
     md = RBCmd;
     adj_ini(md, nt, nv, tt, /**/ &adj);
     rbc_shape_ini(adj, rr, /**/ &shape);
 
+    rbc_shape_area(shape, /**/ &A);
     //    UC(run1(coords, off, ic, q));
 
     rbc_shape_fin(shape);

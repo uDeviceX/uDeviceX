@@ -4,3 +4,4 @@ u.cp.hdr test.h  conf.h
 u.cp.rbc rbc/642 rbc.off
 :
 echo run | S=`u.cp.s` u.build u/rbc/shape conf.h
+u.run ./udx
