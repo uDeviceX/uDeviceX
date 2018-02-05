@@ -1,7 +1,8 @@
 = shape RBC
 :src: ../../../../src
 
-Compute membrane quantities on host.
+Compute membrane quantities on host. `rbc_shape_edg` and
+`rbc_shape_area` return the output in the way accessible with `Adj`.
 
 [source,cpp]
 ----
