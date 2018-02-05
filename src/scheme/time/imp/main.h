@@ -19,7 +19,7 @@ void time_next(Time *q, float dt) {
     q->dt  = dt;
 }
 
-float time_t(Time *q) { return q->t; }
+float time_current(Time *q) { return q->t; }
 float time_dt(Time *q) {
     if (q->First) ERR("time_dt called before time_next");
     return q->dt;
