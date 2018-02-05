@@ -61,7 +61,6 @@
 #include "rbc/com/imp.h"
 
 #include "rig/imp.h"
-
 #include "wall/sdf/imp.h"
 #include "wall/imp.h"
 

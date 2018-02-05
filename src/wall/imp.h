@@ -1,6 +1,7 @@
 struct PairParams;
 struct RNDunif;
 struct Coords;
+struct Sdf;
 struct int3;
 
 struct WallQuants {
