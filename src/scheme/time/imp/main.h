@@ -7,7 +7,7 @@ void time_ini(float t, /**/ Time** pq) {
 }
 void time_fin(Time *q) { EFREE(q); }
 
-void time_step(Time *q, float dt) {
+void time_next(Time *q, float dt) {
     q->First = 0;
     q->t0 = q->t;
     q->t  += dt;
@@ -17,7 +17,7 @@ void time_step(Time *q, float dt) {
 
 float time_t(Time *q) { return q->t; }
 float time_dt(Time *q) {
-    if (q->First) ERR("time_dt called before time_step");
+    if (q->First) ERR("time_dt called before time_next");
     return q->dt;
 }
 float time_dt0(Time *q) { return q->dt0; }

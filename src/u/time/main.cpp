@@ -13,7 +13,7 @@ int main(int argc, char **argv) {
     ts = 0; dt = 0.01; dump = 0.25; s = 0.0001;
     time_ini(ts, /**/ &t);
     for (i = 0; i < 1000; i++) {
-        time_step(t, dt += s);
+        time_next(t, dt += s);
         if (time_cross(t, dump))
             printf("%d %g %g %g\n", i, time_t(t), time_dt(t), time_dt0(t));
     }
