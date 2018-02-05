@@ -16,8 +16,11 @@ flu = {
     g = [8.0, 8.0, 8.0]
     lj = false
 }
-glb = {
+time = {
+    type = \"constant\"
     dt = 5e-4
+}
+glb = {
     L = [$X, $Y, $Z]
 };"
 uscale 10000 ff.txt | sort > ff.out.txt

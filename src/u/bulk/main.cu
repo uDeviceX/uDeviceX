@@ -55,7 +55,7 @@ static void read_pp(const char *fname) {
     memcpy(pp_hst, txt_read_get_pp(tr), szp);
     CC(d::Memcpy(pp, pp_hst, szp, H2D));
     CC(d::Memset(ff, 0, szf));
-    
+
     UC(txt_read_fin(tr));
 }
 
@@ -94,10 +94,10 @@ int main(int argc, char **argv) {
     int3 L;
     PairParams *params;
     float dt;
-    
+
     m::ini(&argc, &argv);
     msg_ini(m::rank);
-    
+
     UC(conf_ini(&cfg));
     UC(conf_read(argc, argv, cfg));
 
@@ -105,13 +105,13 @@ int main(int argc, char **argv) {
     L = subdomain(coords);
 
     UC(pair_ini(&params));
-    UC(conf_lookup_float(cfg, "glb.dt", &dt));    
+    UC(conf_lookup_float(cfg, "time.dt", &dt));
     UC(set_params(dt, params));
-    
+
     UC(conf_lookup_string(cfg, "in", &fin));
     UC(conf_lookup_string(cfg, "out", &fout));
     UC(read_pp(fin));
-    
+
     maxp = n + 32;
 
     UC(clist_ini(L.x, L.y, L.z, &clist));
@@ -121,7 +121,7 @@ int main(int argc, char **argv) {
     UC(fluforces_bulk_ini(L, maxp, &bulkforces));
 
     UC(ini_cloud(pp, &cloud));
-    
+
     UC(fluforces_bulk_prepare(n, &cloud, /**/ bulkforces));
     UC(fluforces_bulk_apply(params, n, bulkforces, clist.starts, clist.counts, /**/ ff));
 
