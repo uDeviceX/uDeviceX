@@ -1,4 +1,4 @@
-void step(float dt, BForce *bforce, bool wall0, int ts, int it, Sim *s) {
+static void step(float dt, BForce *bforce, bool wall0, int ts, int it, Sim *s) {
     Flu *flu = &s->flu;
     Rbc *rbc = &s->rbc;
     Rig *rig = &s->rig;
