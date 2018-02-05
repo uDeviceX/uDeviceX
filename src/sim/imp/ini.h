@@ -251,7 +251,7 @@ static void ini_pair_params(Sim *s) {
     UC(set_params(s->dt, s->objinter.fsiparams));
 }
 
-void sim_ini(int argc, char **argv, MPI_Comm cart, /**/ Sim **sim) {
+void sim_ini(int argc, char **argv, MPI_Comm cart, /**/ Sim **sim, Time **time) {
     Sim *s;
     int maxp;
     Config *cfg;

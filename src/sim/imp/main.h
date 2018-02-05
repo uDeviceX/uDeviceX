@@ -30,7 +30,7 @@ static void gen(float dt, const Coords *coords, Wall *w, Sim *s) { /* generate *
     }
 }
 
-void sim_gen(Sim *s) {
+void sim_gen(Sim *s, Time* time) {
     Flu *flu = &s->flu;
     Rbc *rbc = &s->rbc;
     Wall *wall = &s->wall;
@@ -66,7 +66,7 @@ void sim_gen(Sim *s) {
     if (strt_dumps) dump_strt(RESTART_FINAL, s);
 }
 
-void sim_strt(Sim *s) {
+void sim_strt(Sim *s, Time *time) {
     float dt = s->dt;
     long nsteps = (long)(tend / dt);
     Flu *flu = &s->flu;
