@@ -1,4 +1,5 @@
 struct Time {
     int First; /* ? */
-    float prev, curr;
+    float t, t0;
+    float dt, dt0;
 };

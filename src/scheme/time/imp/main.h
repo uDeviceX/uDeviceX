@@ -1,7 +1,7 @@
 void time_ini(float t, /**/ Time** pq) {
     Time *q;
     EMALLOC(1, &q);
-    q->curr  = t;
+    q->t  = t;
     q->First = 1;
     *pq = q;
 }
@@ -9,17 +9,26 @@ void time_fin(Time *q) { EFREE(q); }
 
 void time_step(Time *q, float dt) {
     q->First = 0;
-    q->prev = q->curr;
-    q->curr += dt;
+    q->t0 = q->t;
+    q->t  += dt;
+    q->dt0 = q->dt;
+    q->dt  = dt;
 }
 
-float time_current(Time *q) { return q->curr; }
+float time_t(Time *q) { return q->t; }
+float time_dt(Time *q) {
+    if (q->First) ERR("time_dt called before time_step");
+    return q->dt;
+}
+float time_dt0(Time *q) { return q->dt0; }
 
-int time_cross(Time *q, float t) {
-    float c, p, f;
+int time_cross(Time *q, float i) {
+    float t, t0, f;
     if (q->First) return 0;
-    if (t <= 0)   ERR("t <= 0");
-    c = q->curr; p = q->prev;
-    f = floor(c / t) * t;
-    return p < f && f < c;
+    else if (i < 0)   ERR("i < 0");
+    else if (i == 0)  return 1;
+    
+    t = q->t; t0 = q->t0;
+    f = floor(t / i) * i;
+    return t0 < f && f < t;
 }
