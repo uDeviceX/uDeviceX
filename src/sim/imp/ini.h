@@ -241,17 +241,19 @@ static void set_params(float dt, PairParams *p) {
     UC(pair_set_lj(ljsigma, ljepsilon, p));
 }
 
-static void ini_pair_params(Sim *s) {
+static void ini_pair_params(Sim *s, float dt) {
     UC(pair_ini(&s->flu.params));
     UC(pair_ini(&s->objinter.cntparams));
     UC(pair_ini(&s->objinter.fsiparams));
 
-    UC(set_params(s->dt, s->flu.params));
-    UC(set_params(s->dt, s->objinter.cntparams));
-    UC(set_params(s->dt, s->objinter.fsiparams));
+    UC(set_params(dt, s->flu.params));
+    UC(set_params(dt, s->objinter.cntparams));
+    UC(set_params(dt, s->objinter.fsiparams));
 }
 
-void sim_ini(int argc, char **argv, MPI_Comm cart, /**/ Sim **sim, Time **time) {
+void sim_ini(int argc, char **argv, MPI_Comm cart, /**/ Sim **sim, Time **ptime) {
+    float dt, t0;
+    Time *time;
     Sim *s;
     int maxp;
     Config *cfg;
@@ -272,10 +274,13 @@ void sim_ini(int argc, char **argv, MPI_Comm cart, /**/ Sim **sim, Time **time) 
     s->L = subdomain(s->coords);
     maxp = SAFETY_FACTOR_MAXP * s->L.x * s->L.y * s->L.z * numberdensity;
     UC(time_step_ini(cfg, &s->time_step));
-    s->dt = time_step_dt0(s->time_step);
+
+    time_ini(t0, &time);
+    dt = time_step_dt0(s->time_step);
+    time_next(time, dt);
 
     UC(read_opt(s->cfg, &s->opt));
-    UC(ini_pair_params(s));
+    UC(ini_pair_params(s, dt));
 
     EMALLOC(3 * maxp, &s->pp_dump);
 
@@ -318,4 +323,6 @@ void sim_ini(int argc, char **argv, MPI_Comm cart, /**/ Sim **sim, Time **time) 
     UC(dbg_set_conf(s->cfg, s->dbg));
 
     MC(MPI_Barrier(s->cart));
+
+    *ptime = time;
 }

@@ -30,12 +30,12 @@ static void gen(float dt, const Coords *coords, Wall *w, Sim *s) { /* generate *
     }
 }
 
-void sim_gen(Sim *s, Time* time) {
+void sim_gen(Sim *s, Time *time) {
     Flu *flu = &s->flu;
     Rbc *rbc = &s->rbc;
     Wall *wall = &s->wall;
     OffRead *cell = s->rbc.cell;
-    float dt = s->dt;
+    float dt = time_dt(time);
 
     UC(flu_gen_quants(s->coords, s->gen_color, &flu->q));
     UC(flu_build_cells(&flu->q));
@@ -67,7 +67,7 @@ void sim_gen(Sim *s, Time* time) {
 }
 
 void sim_strt(Sim *s, Time *time) {
-    float dt = s->dt;
+    float dt = time_dt(time);
     long nsteps = (long)(tend / dt);
     Flu *flu = &s->flu;
     Rbc *rbc = &s->rbc;
