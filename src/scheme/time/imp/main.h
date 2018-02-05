@@ -1,6 +1,7 @@
 void time_ini(float t, /**/ Time** pq) {
     Time *q;
     EMALLOC(1, &q);
+    q->t0 = t0;
     q->t  = t;
     q->First = 1;
     *pq = q;
