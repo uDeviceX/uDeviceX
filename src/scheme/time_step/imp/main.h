@@ -25,6 +25,7 @@ void time_step_ini(Config *c, /**/ TimeStep **pq) {
         UC(conf_lookup_float(c, "time.dt", &q->dt));
     } else if (same_str(type, "disp")) {
         q->type = DISP;
+        q->k    = 0;
         UC(conf_lookup_float(c, "time.dt", &q->dt));
         UC(conf_lookup_float(c, "time.dx", &q->dx));
     } else
@@ -38,7 +39,8 @@ static float disp_dt(TimeStep *q, MPI_Comm comm, TimeStepAccel *a) {
     float dt, dx, dt_max, accel;
     dt_max = q->dt;
     dx     = q->dx;
-    accel = accel_max(comm, a);
+    accel = accel_max(comm, a, /**/ q->accel);
+    q->k  = a->k;
     if (accel == 0) return dt_max;
     dt = 2*dx/(accel*accel);
     return dt > dt_max ? dt_max : dt;
@@ -46,3 +48,12 @@ static float disp_dt(TimeStep *q, MPI_Comm comm, TimeStepAccel *a) {
 float time_step_dt(TimeStep *q, MPI_Comm comm, TimeStepAccel *a) {
     return dt[q->type](q, comm, a);
 }
+
+static void const_log(TimeStep *q) { msg_print("time_step: const: dt = %g", q->dt); }
+static void  disp_log(TimeStep *q) {
+    int i;
+    msg_print("time_step: disp: dt = %g dx = %g", q->dt, q->dx);
+    for (i = 0; i < q->k; i++)
+        msg_print("  accel[%d]: %g", q->accel[i]);
+}
+void time_step_log(TimeStep *q) { log[q->type](q); }

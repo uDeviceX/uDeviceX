@@ -4,6 +4,7 @@
 #include "inc/conf.h"
 
 #include "parser/imp.h"
+#include "utils/msg.h"
 #include "utils/error.h"
 #include "utils/imp.h"
 #include "utils/mc.h"

@@ -9,16 +9,16 @@ static void max_float(MPI_Comm comm, /*io*/ float *v) {
     UC(reduce(comm, v, v, count, MPI_FLOAT, MPI_MAX));
 }
 
-static float accel_max(MPI_Comm comm, TimeStepAccel *q) {
+static float accel_max(MPI_Comm comm, TimeStepAccel *q, /**/ float *accel) {
     int n, i;
-    float accel, force, mass, max;
+    float force, mass, max;
     Force *ff;
     max = 0;
     for (i = 0; i < q->k; i++) {
         mass = q->mm[i]; n = q->nn[i]; ff = q->fff[i];
         force = force_stat_max(n, ff);
-        accel = force/mass;
-        if (accel > max) max = accel;
+        accel[i] = force/mass;
+        if (accel[i] > max) max = accel[i];
     }
     UC(max_float(comm, &max));
     return max;
