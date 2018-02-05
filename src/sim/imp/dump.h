@@ -107,7 +107,7 @@ void dump_strt_templ(const Coords *coords, Wall *w, Sim *s) { /* template dumps 
     }
 }
 
-void dump_strt(int id, Sim *s) {
+static void dump_strt(int id, Sim *s) {
     Flu *flu = &s->flu;
     Rbc *rbc = &s->rbc;
     Rig *rig = &s->rig;
@@ -116,7 +116,7 @@ void dump_strt(int id, Sim *s) {
     if (solids)     rig_strt_dump(s->coords, id, &rig->q);
 }
 
-void dump_diag0(float dt, int it, Sim *s) { /* generic dump */
+static void dump_diag(float dt, int it, Sim *s) { /* generic dump */
     const Opt *o = &s->opt;
 
     if (it % o->freq_parts == 0) {
