@@ -3,6 +3,7 @@ struct RNDunif;
 struct Coords;
 struct Sdf;
 struct int3;
+struct float4;
 
 struct WallQuants {
     float4 *pp; /* particle positions xyzo xyzo ... */
