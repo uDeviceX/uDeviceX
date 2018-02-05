@@ -255,13 +255,13 @@ void sim_ini(int argc, char **argv, MPI_Comm cart, /**/ Sim **sim) {
     Sim *s;
     int maxp;
     Config *cfg;
-    
+
     EMALLOC(1, sim);
     s = *sim;
-    
+
     MC(m::Comm_dup(cart, &s->cart));
     datatype::ini();
-    
+
     UC(conf_ini(&s->cfg));
     cfg = s->cfg;
     UC(conf_read(argc, argv, /**/ cfg));
@@ -272,12 +272,12 @@ void sim_ini(int argc, char **argv, MPI_Comm cart, /**/ Sim **sim) {
     s->L = subdomain(s->coords);
     maxp = SAFETY_FACTOR_MAXP * s->L.x * s->L.y * s->L.z * numberdensity;
     UC(time_step_ini(cfg, &s->time_step));
-    
+
     UC(conf_lookup_float(cfg, "glb.dt", &s->dt));
-    
+
     UC(read_opt(s->cfg, &s->opt));
     UC(ini_pair_params(s));
-    
+
     EMALLOC(3 * maxp, &s->pp_dump);
 
     if (rbcs) UC(ini_rbc(cfg, s->cart, s->L, /**/ &s->rbc));
@@ -308,7 +308,7 @@ void sim_ini(int argc, char **argv, MPI_Comm cart, /**/ Sim **sim) {
 
     UC(scheme_move_params_ini(&s->moveparams));
     UC(scheme_move_params_conf(s->cfg, s->moveparams));
-    
+
     UC(scheme_restrain_ini(&s->restrain));
     UC(scheme_restrain_set_conf(s->cfg, s->restrain));
 
