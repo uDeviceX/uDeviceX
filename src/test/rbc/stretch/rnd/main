@@ -23,8 +23,11 @@ u.conf conf/lina.h <<!
 :
 u.strtdir
 RBC_RND=$seed u.run ./udx '
-glb = {
+time = {
+    type = "const"
     dt = 5e-4
+}
+glb = {
     L = [48, 32, 32]
 }
 rbc = {

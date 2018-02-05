@@ -25,8 +25,11 @@ u.conf $S $U $C <<!
 { make clean && u.make -j; } > /dev/null
 :
 u.run ./udx '
-glb = {
+time = {
+    type = "const"
     dt = 1e-3
+}
+glb = {
     L = [48, 32, 32]
 }
 rbc = {

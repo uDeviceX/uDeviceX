@@ -12,8 +12,11 @@ u.conf conf/test.h <<!!!
 !!!
 { make clean && u.make -j ; } > /dev/null
 u.run ./udx '
-glb = {
+time = {
+    type = "const"
     dt = 1e-3
+}
+glb = {
     L = [32, 32, 16]
 }
 wvel = {

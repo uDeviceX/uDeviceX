@@ -24,8 +24,11 @@ u.strtdir bin.2
 (make clean && u.make -j) > /dev/null
 :
 u.run ./bin.1/udx '
-glb = {
+time = {
+    type = "const"
     dt = 5e-4
+}
+glb = {
     L = [16, 16, 16]
 }
 wvel = {
@@ -42,8 +45,11 @@ dump = {
 };'
 :
 u.run ./bin.2/udx '
-glb = {
+time = {
+    type = "const"
     dt = 5e-4
+}
+glb = {
     L = [16, 16, 16]
 }
 wvel = {

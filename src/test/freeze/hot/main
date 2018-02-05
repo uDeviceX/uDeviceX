@@ -12,8 +12,11 @@ u.conf $c <<!!!
 !!!
 (make clean && u.make -j) > make.log
 u.run ./udx '
+time = {
+    type = "const"
+    dt = 5e-4
+}
 glb = {
-    dt = 0.05
     L = [12, 32, 12]
 }
 wvel = {

@@ -11,8 +11,11 @@ u.conf $C <<!
 :
 (make clean && u.make -j) > .make.log
 u.run ./udx '
-glb = {
+time = {
+    type = "const"
     dt = 5e-4
+}
+glb = {
     L = [16, 16, 16]
 }
 bforce = {

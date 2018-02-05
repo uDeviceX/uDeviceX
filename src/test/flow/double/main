@@ -7,8 +7,11 @@ u.conf conf/double.poiseuille.h <<!!!
 !!!
 (make clean && u.make -j) > /dev/null
 u.run ./udx '
-glb = {
+time = {
+    type = "const"
     dt = 5e-4
+}
+glb = {
     L = [16, 32, 16]
 }
 bforce = {

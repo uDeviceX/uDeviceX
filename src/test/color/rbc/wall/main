@@ -16,6 +16,10 @@ u.conf conf/double.poiseuille.h <<!!!
 !!!
 { make clean && u.make -j; } > make.log
 u.run ./udx  '
+time = {
+    type = "const"
+    dt = 4e-4
+}
 glb = {
     dt = 4e-4
     L = [8, 8, 8]

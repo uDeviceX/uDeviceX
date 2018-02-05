@@ -26,8 +26,11 @@ u.strtdir bin.1
 u.strtdir bin.2
 :
 u.run ./bin.1/udx '
-glb = {
+time = {
+    type = "const"
     dt = 5e-4
+}
+glb = {
     L = [16, 32, 16]
 }
 dump = {
@@ -35,8 +38,11 @@ dump = {
     freq_parts = 100;
 };'
 u.run ./bin.2/udx '
-glb = {
+time = {
+    type = "const"
     dt = 5e-4
+}
+glb = {
     L = [16, 32, 16]
 }
 bforce = {

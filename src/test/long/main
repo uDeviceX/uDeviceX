@@ -8,8 +8,11 @@ u.conf conf/long.h <<!!!
 !!!
 (make clean && u.make -j) > /dev/null 2>&1
 u.run ./udx '
-glb = {
+time = {
+    type = "const"
     dt = 5e-4
+}
+glb = {
     L = [4, 4, 4]
 }
 dump = {

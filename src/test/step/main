@@ -12,8 +12,11 @@ u.conf "$s" $u conf/double.poiseuille.h <<!!!
 !!!
 (make clean && u.make -j) > /dev/null
 u.run ./udx '
+time = {
+    type = "const"
+    dt = 1e-3
+}
 glb = {
-    dt = 1e3
     L = [16, 32, 16]
 }
 dump = {
