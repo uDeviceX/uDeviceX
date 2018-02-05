@@ -16,8 +16,11 @@ u.conf $s $u conf/zurich.h <<!!!
 !!!
 { make clean && u.make -j; } > make.log
 u.run 2 2 1 ./udx '
-glb = {
+time = {
+    type = "constant"
     dt = 5e-4
+}
+glb = {
     L = [8, 8, 16]
 }
 bforce = {
