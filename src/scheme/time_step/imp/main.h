@@ -52,8 +52,13 @@ float time_step_dt(TimeStep *q, MPI_Comm comm, TimeStepAccel *a) {
 static void const_log(TimeStep *q) { msg_print("time_step: const: dt = %g", q->dt); }
 static void  disp_log(TimeStep *q) {
     int i;
+    float accel;
+    float dx;
+    dx = q->dx;
     msg_print("time_step: disp: dt = %g dx = %g", q->dt, q->dx);
-    for (i = 0; i < q->k; i++)
-        msg_print("  accel[%d]: %g", q->accel[i]);
+    for (i = 0; i < q->k; i++) {
+        accel = q->accel[i];
+        msg_print("  accel dt: %g %g", accel, 2*dx/(accel*accel));
+    }
 }
 void time_step_log(TimeStep *q) { log[q->type](q); }
