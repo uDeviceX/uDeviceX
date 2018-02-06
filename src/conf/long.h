@@ -19,13 +19,7 @@
 #define fsiforces           true
 #define walls               false
 #define wall_creation       1000
-#define tend                100
-
-/* DEBUG */
-//#define KL_NONE
-//#define CC_PEEK
-//#define TE_TRACE
-//#define FORCE0
+//#define tend                100
 
 /* DUMPS */
 #define strt_dumps          false

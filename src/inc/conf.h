@@ -2,6 +2,10 @@
   #error dt is runtime
 #endif
 
+#if defined(tend)
+  #error tend is runtime: should be time.end
+#endif
+
 #if defined(XS) || defined(YS) || defined(ZS)
   #error Subdomain sizes are runtime
 #endif
