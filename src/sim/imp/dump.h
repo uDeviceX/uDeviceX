@@ -87,6 +87,7 @@ void dump_diag_after(float dt, int it, bool solid0, Sim *s) { /* after wall */
 }
 
 static void diag(float time, Sim *s) {
+    if (time < 0) ERR("time = %g < 0", time);
     const Flu *flu = &s->flu;
     const Rbc *rbc = &s->rbc;
     const Rig *rig = &s->rig;
