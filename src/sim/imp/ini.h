@@ -252,7 +252,7 @@ static void ini_pair_params(Sim *s, float dt) {
 }
 
 void sim_ini(int argc, char **argv, MPI_Comm cart, /**/ Sim **sim, Time **ptime, float *ptend0) {
-    float tend0;
+    float tend;
     float dt, t0;
     Time *time;
     Sim *s;
@@ -280,7 +280,7 @@ void sim_ini(int argc, char **argv, MPI_Comm cart, /**/ Sim **sim, Time **ptime,
     time_ini(t0, &time);
     dt = time_step_dt0(s->time_step);
     time_next(time, dt);
-    conf_lookup_float(cfg, "time.end", &tend0);
+    conf_lookup_float(cfg, "time.end", &tend);
 
     UC(read_opt(s->cfg, &s->opt));
     UC(ini_pair_params(s, dt));
@@ -328,5 +328,5 @@ void sim_ini(int argc, char **argv, MPI_Comm cart, /**/ Sim **sim, Time **ptime,
     MC(MPI_Barrier(s->cart));
 
     *ptime = time;
-    *ptend0 = tend0;
+    *ptend0 = tend;
 }

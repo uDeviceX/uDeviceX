@@ -14,15 +14,15 @@
 int main(int argc, char **argv) {
     Sim *sim;
     Time *time;
-    float tend0;
+    float tend;
 
     m::ini(&argc, &argv);
     msg_ini(m::rank);
     msg_print("mpi rank/size: %d/%d", m::rank, m::size);
     
-    sim_ini(argc, argv, m::cart, /**/ &sim, &time, &tend0);
-    if (RESTART) sim_strt(sim, time, tend0);
-    else         sim_gen(sim, time, tend0);
+    sim_ini(argc, argv, m::cart, /**/ &sim, &time, &tend);
+    if (RESTART) sim_strt(sim, time, tend);
+    else         sim_gen(sim, time, tend);
     sim_fin(sim, time);
     m::fin();
     msg_print("end");
