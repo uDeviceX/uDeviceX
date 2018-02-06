@@ -115,9 +115,8 @@ static void dump_strt(int id, Sim *s) {
 }
 
 static void dump_diag(float dt, int it, Sim *s) { /* generic dump */
-    if (dt < 0) ERR("dt < 0");
-    if (it < 0) ERR("it < 0");
-    msg_print("it: %ld", it);
+    if (dt < 0) ERR("dt = %g < 0", dt);
+    if (it < 0) ERR("it = %d < 0", it);
     const Opt *o = &s->opt;
     if (it % o->freq_parts == 0) {
         if (o->dump_parts) dump_part(it, s);
