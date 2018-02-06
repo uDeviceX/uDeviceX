@@ -10,7 +10,6 @@ u.conf $s $u conf/zurich.h <<!!!
    KL_SYNC
    $Walls
    numberdensity=2
-   tend=4.01
    kBT=0.00444302
    run
 !!!
@@ -19,6 +18,7 @@ u.run 2 2 1 ./udx '
 time = {
     type = "const"
     dt = 5e-4
+    end = 4.01
 }
 glb = {
     L = [8, 8, 16]
