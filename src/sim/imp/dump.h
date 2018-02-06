@@ -86,8 +86,7 @@ void dump_diag_after(float dt, int it, bool solid0, Sim *s) { /* after wall */
     }
 }
 
-static void diag(float dt, int it, Sim *s) {
-    float time;
+static void diag(float time, Sim *s) {
     const Flu *flu = &s->flu;
     const Rbc *rbc = &s->rbc;
     const Rig *rig = &s->rig;
@@ -95,7 +94,6 @@ static void diag(float dt, int it, Sim *s) {
     if (rbcs)       n += rbc->q.n;
     if (s->solids0) n += rig->q.n;
     dev2hst(s);
-    time = dt * it;
     diag(time, s->cart, n, s->pp_dump);
 }
 
@@ -123,7 +121,7 @@ static void dump_diag(float dt, int it, Sim *s) { /* generic dump */
     if (it % o->freq_parts == 0) {
         if (o->dump_parts) dump_part(it, s);
         if (rbcs)          dump_rbcs(s);
-        diag(dt, it, s);
+        diag(dt*it, s);
     }
     if (o->dump_field && it % o->freq_field == 0) dump_grid(s);
     if (strt_dumps  && it % strt_freq == 0)  dump_strt(it / strt_freq, s);
