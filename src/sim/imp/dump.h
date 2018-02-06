@@ -95,7 +95,7 @@ static void diag(float time, Sim *s) {
     if (rbcs)       n += rbc->q.n;
     if (s->solids0) n += rig->q.n;
     dev2hst(s);
-    UC(diag(time, s->cart, n, s->pp_dump));
+    UC(diag(s->cart, time, n, s->pp_dump));
 }
 
 void dump_strt_templ(const Coords *coords, Wall *w, Sim *s) { /* template dumps (wall, solid) */
