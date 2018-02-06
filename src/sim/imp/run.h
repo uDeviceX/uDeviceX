@@ -10,6 +10,7 @@ void run_eq(Time *time, float te, Sim *s) { /* equilibrate */
         dt = time_dt(time);
         UC(step(dt, bforce, wall0, 0, it, s));
         time_next(time, dt);
+        msg_print("t dt: %g %g", time_current(time), dt);
     }
     UC(distribute_flu(/**/ s));
     UC(bforce_fin(bforce));
