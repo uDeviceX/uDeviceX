@@ -20,7 +20,7 @@ u.run ./udx '
 time = {
     type = "const"
     dt = 1e-4
-    tend=0.1
+    end = 0.1
 }
 glb = {
     L = [48, 12, 12]

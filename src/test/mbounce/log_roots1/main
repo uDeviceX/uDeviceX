@@ -6,7 +6,7 @@ cp data/rig/sphere.ply rig.ply
 :
 u.conf conf/double.poiseuille.h <<!!!
    kBT=1.0 solids sbounce_back
-   tend=5.0 part_freq=100
+   part_freq=100
    MESHBB_LOG_ROOTS
    field_dumps part_dumps
    wall_creation=0 field_freq=100

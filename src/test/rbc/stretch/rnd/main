@@ -26,7 +26,7 @@ RBC_RND=$seed u.run ./udx '
 time = {
     type = "const"
     dt = 5e-4
-    tend=0.011
+    end = 0.011
 }
 glb = {
     L = [48, 32, 32]

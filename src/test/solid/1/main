@@ -5,7 +5,7 @@ echo -e "8 16 8" > rigs-ic.txt
 cp data/rig/sphere.ply rig.ply
 :
 u.conf conf/double.poiseuille.h <<!!!
-   solids sbounce_back tend=0.5
+   solids sbounce_back
    wall_creation=0
    run
 !!!
@@ -14,6 +14,7 @@ u.run ./udx '
 time = {
     type = "const"
     dt = 5e-4
+    end = 0.5
 }
 glb = {
     L = [16, 32, 16]

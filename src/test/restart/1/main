@@ -5,14 +5,12 @@ rm -rf bop h5 diag.txt bin.1 bin.2 sdf.dat
 u.cp.sdf wall1/wall.dat sdf.dat
 :
 u.conf conf/couette.h <<!!!
-   tend=0.5   
    walls wall_creation=100
    BASE_STRT_DUMP=\"bin.1/strt\"
    strt_dumps=true
    strt_freq=10000
    RESTART=false
    run
-   tend=2.01
    RESTART=true
    BASE_STRT_READ=\"bin.1/strt\"
    BASE_STRT_DUMP=\"bin.2/strt\"
@@ -27,6 +25,7 @@ u.run ./bin.1/udx '
 time = {
     type = "const"
     dt = 5e-4
+    end = 0.5
 }
 glb = {
     L = [16, 16, 16]
@@ -48,6 +47,7 @@ u.run ./bin.2/udx '
 time = {
     type = "const"
     dt = 5e-4
+    end = 2.01
 }
 glb = {
     L = [16, 16, 16]

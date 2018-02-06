@@ -11,7 +11,7 @@ u=u/x s=`pwd` c="$s/conf/default.h"
 (
    cd "$t"
    u.conf "$s" "$u" "$c" <<!
-   strt_dumps=true tend=5e-4
+   strt_dumps=true
    run
 !
    { make clean && u.make -j; } > "$s"/make.log

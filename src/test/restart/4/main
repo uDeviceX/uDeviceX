@@ -6,7 +6,7 @@ echo -e "4.1 21.5 8\n4.1 10.5 8\n11.9 16 8" > rigs-ic.txt
 cp data/rig/ellipsoid.ply rig.ply
 :
 u.conf conf/double.poiseuille.h <<!!!
-   solids contactforces tend=0.1
+   solids contactforces
    wall_creation=199
    BASE_STRT_DUMP=\"bin.1/strt\"
    strt_dumps=true
@@ -14,7 +14,6 @@ u.conf conf/double.poiseuille.h <<!!!
    RESTART=false
    run
    RESTART=true
-   tend=0.7
    BASE_STRT_READ=\"bin.1/strt\"
    BASE_STRT_DUMP=\"bin.2/strt\"
    run
@@ -29,6 +28,7 @@ u.run ./bin.1/udx '
 time = {
     type = "const"
     dt = 5e-4
+    tend = 0.1
 }
 glb = {
     L = [16, 32, 16]
@@ -41,6 +41,7 @@ u.run ./bin.2/udx '
 time = {
     type = "const"
     dt = 5e-4
+    end = 0.7
 }
 glb = {
     L = [16, 32, 16]

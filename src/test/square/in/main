@@ -6,7 +6,7 @@ XS=8 YS=8 ZS=8 a=6
 ugeom.square -i $XS $YS $ZS $a sdf.dat
 u.conf "$S" "$U" "$C" <<!
   KL_SYNC
-  tend=1e-4 walls wall_creation=1
+  walls wall_creation=1
   run
 !
 { u.make clean && u.make -j; } > .make.log
@@ -14,6 +14,7 @@ u.run ./udx "
 time = {
     type = \"const\"
     dt = 1e-4
+    end = 1e-4
 }
 glb = {
     L = [$XS, $YS, $ZS]
