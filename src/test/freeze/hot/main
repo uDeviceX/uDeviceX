@@ -13,7 +13,7 @@ u.conf $c <<!!!
 u.run ./udx '
 time = {
     type = "const"
-    dt = 5e-4
+    dt = 0.05
     end = 41.0
 }
 glb = {
@@ -32,4 +32,4 @@ dump = {
     freq_parts = 800;
 };'
 :
-u.avgh5 0 u 1 h5/flowfields-0001.h5 | uscale 0.01 > h5.out.txt
+u.avgh5 0 u 1 h5/flowfields-0002.h5 | uscale 0.01 > h5.out.txt
