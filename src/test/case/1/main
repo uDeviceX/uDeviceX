@@ -9,7 +9,7 @@ W="$S/data/sdf/wall1/wall.dat"
 T=../test/case/1
 u.case -d "$D" -f "$W" sdf.dat -a "u.run ./udx $T/conf.cfg" \
 $U $C <<!
-   tend=1.0 walls wall_creation=1
+   walls wall_creation=1
    run
 !
 u.avgh5 1 u 2 case0/h5/flowfields-0003.h5 | \
