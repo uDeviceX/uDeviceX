@@ -242,11 +242,6 @@
 #define strt_freq (1000)
 #endif
 
-// time
-#ifndef tend
-#define tend (10)
-#endif
-
 // debug
 /* dbg macros */
 #if !defined(DBG_NONE)    && !defined(DBG_TRACE) && \
