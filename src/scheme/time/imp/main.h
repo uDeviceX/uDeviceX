@@ -8,6 +8,8 @@ void time_ini(float t, /**/ Time** pq) {
 void time_fin(Time *q) { EFREE(q); }
 
 void time_next(Time *q, float dt) {
+    if (dt < 0)
+        ERR("dt = %g < 0", dt);
     if (q->First) {
         q->dt0 = dt;
         q->First = 0;
