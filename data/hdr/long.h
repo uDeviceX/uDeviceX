@@ -19,7 +19,6 @@
 #define fsiforces           true
 #define walls               false
 #define wall_creation       1000
-//#define tend                100
 
 /* DUMPS */
 #define strt_dumps          false
