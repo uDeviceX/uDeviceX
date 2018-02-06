@@ -12,8 +12,8 @@ static void gen(Time *time, const Coords *coords, Wall *w, Sim *s) { /* generate
     Rig *rig = &s->rig;
     bool dump_sdf = s->opt.dump_field;
     long maxp_wall = get_max_parts_wall(coords);
-
     dt = time_dt(time);
+    
     run_eq(time, wall_creation*dt, s);
     if (walls) {
         dSync();
@@ -33,10 +33,12 @@ static void gen(Time *time, const Coords *coords, Wall *w, Sim *s) { /* generate
 }
 
 void sim_gen(Sim *s, Time *time, float tend0) {
+    float dt;
     Flu *flu = &s->flu;
     Rbc *rbc = &s->rbc;
     Wall *wall = &s->wall;
     OffRead *cell = s->rbc.cell;
+    dt = time_dt(time);
 
     UC(flu_gen_quants(s->coords, s->gen_color, &flu->q));
     UC(flu_build_cells(&flu->q));
@@ -55,7 +57,7 @@ void sim_gen(Sim *s, Time *time, float tend0) {
         if (walls && wall->q.n) UC(wall_gen_ticket(&wall->q, wall->t));
         s->solids0 = solids;
         if (rbcs && multi_solvent) gen_colors(rbc, &s->colorer, /**/ flu);
-        run(time, wall_creation, tend0, s);
+        run(time, wall_creation*dt, tend0, s);
     } else {
         s->solids0 = solids;
         run(time, 0, tend0, s);
@@ -65,6 +67,7 @@ void sim_gen(Sim *s, Time *time, float tend0) {
 }
 
 void sim_strt(Sim *s, Time *time, float tend0) {
+    float dt;
     Flu *flu = &s->flu;
     Rbc *rbc = &s->rbc;
     Rig *rig = &s->rig;
@@ -72,6 +75,7 @@ void sim_strt(Sim *s, Time *time, float tend0) {
     OffRead *cell = s->rbc.cell;
     bool dump_sdf = s->opt.dump_field;
     long maxp_wall = get_max_parts_wall(s->coords);
+    dt = time_dt(time);    
 
     /*Q*/
     flu_strt_quants(s->coords, RESTART_BEGIN, &flu->q);
@@ -96,7 +100,7 @@ void sim_strt(Sim *s, Time *time, float tend0) {
     }
 
     s->solids0 = solids;
-    run(time, wall_creation, tend0, s);
+    run(time, wall_creation*dt, tend0, s);
 
     if (strt_dumps) dump_strt(RESTART_FINAL, s);
 }
