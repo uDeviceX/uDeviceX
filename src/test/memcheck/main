@@ -6,7 +6,7 @@ cp data/rig/sphere.ply rig.ply
 :
 u.conf . u/safe conf/double.poiseuille.h <<!!!
   KL_SYNC
-  solids tend=0.005
+  solids
   wall_creation=0 contactforces=true
   run
 !!!
@@ -15,6 +15,7 @@ MEM= u.run ./udx '
 time = {
     type = "const"
     dt = 5e-4
+    end = 0.005
 }
 glb = {
     L = [16, 32, 16]

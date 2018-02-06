@@ -7,8 +7,7 @@ x=0.1 y=0.1 z=5.5; echo 1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 >> rbcs-ic.txt
 x=4 y=4 z=7.5; echo 1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 >> rbcs-ic.txt
 u.conf conf/double.poiseuille.h <<!!!
    rbcs
-   multi_solvent=true color_freq=1
-   tend=1e-3
+   multi_solvent=true color_freq=1   
    numberdensity=3
    run
 !!!
@@ -17,6 +16,7 @@ u.run ./udx  '
 time = {
     type = "const"
     dt = 4e-4
+    end = 1e-3
 }
 glb = {
     L = [8, 8, 8]

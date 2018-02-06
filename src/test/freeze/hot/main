@@ -7,7 +7,6 @@ u.conf $c <<!!!
    numberdensity=3
    walls wall_creation=10
    S_LEVEL=0 kBT=1 adpd_b=12.5 gdpd_b=5.61125
-   tend=41
    run
 !!!
 (make clean && u.make -j) > make.log
@@ -15,6 +14,7 @@ u.run ./udx '
 time = {
     type = "const"
     dt = 5e-4
+    end = 41
 }
 glb = {
     L = [12, 32, 12]

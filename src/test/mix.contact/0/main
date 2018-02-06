@@ -7,7 +7,7 @@ cp data/rig/sphere_R2.ply rig.ply
 u.cp.rbc rbc/498.off rbc.off
 :
 u.conf conf/double.poiseuille.h <<!!!
-   rbcs tend=2.0
+   rbcs
    solids sbounce_back wall_creation=1
    pushrbc
    contactforces
@@ -18,6 +18,7 @@ u.run ./udx  '
 time = {
     type = "const"
     dt = 5e-4
+    end = 2.0
 }
 glb = {
     L = [16, 32, 16]

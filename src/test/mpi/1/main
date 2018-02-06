@@ -3,7 +3,7 @@
 rm -rf diag.txt h5 bop ply rbc.off
 :
 u.conf conf/double.poiseuille.h <<!!!
-   kBT=1e-7 tend=2.1
+   kBT=1e-7
    DBG_PEEK
    run
 !!!
@@ -12,6 +12,7 @@ u.run 2 1 1 ./udx '
 time = {
     type = "const"
     dt = 5e-4
+    end = 2.1
 }
 glb = {
     L = [16, 32, 16]

@@ -10,7 +10,6 @@ u.conf conf/double.poiseuille.h <<!!!
    rbcs
    multi_solvent=true
    color_freq=1
-   tend=1e-3
    numberdensity=1
    run
 !!!
@@ -19,6 +18,7 @@ u.run ./udx  '
 time = {
     type = "const"
     dt = 4e-4
+    end = 1e-3
 }
 glb = {
     dt = 4e-4

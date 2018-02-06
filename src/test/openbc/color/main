@@ -1,7 +1,6 @@
 #### rest with deleting cylinder and cylinder inflow 
 # nTEST: inout.color.t1
 u.conf conf/default.h <<!!!
-   tend=2.01
    OUTFLOW_CIRCLE OUTFLOW_CIRCLE_R=8
    multi_solvent
    run
@@ -11,6 +10,7 @@ u.run ./udx test/openbc/inout.cfg '
 time = {
     type = "const"
     dt = 5e-4
+    end = 2.01
 }
 glb = {
     L = [16, 16, 16]

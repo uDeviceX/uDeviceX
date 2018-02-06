@@ -6,7 +6,6 @@ u.cp.rbc rbc/498.off  rbc.off
 u.cp.sdf wall1/wall.dat sdf.dat
 :
 u.conf conf/couette.h <<!!!
-   tend=2e-3 
    walls wall_creation=1
    strt_dumps=true
    run
@@ -18,6 +17,7 @@ u.run ./udx '
 time = {
     type = "const"
     dt = 5e-4
+    end = 2e-3
 }
 glb = {
     L = [16, 16, 16]

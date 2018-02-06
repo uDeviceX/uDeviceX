@@ -2,7 +2,6 @@
 # nTEST: out.t2
 :
 u.conf conf/default.h <<!!!
-   tend=2.01
    OUTFLOW_CIRCLE OUTFLOW_CIRCLE_R=8
    run
 !!!
@@ -11,6 +10,7 @@ u.run 2 2 1 ./udx test/openbc/out.cfg '
 time = {
     type = "const"
     dt = 5e-4
+    end = 2.01
 }
 glb = {
     L = [8, 8, 16]
