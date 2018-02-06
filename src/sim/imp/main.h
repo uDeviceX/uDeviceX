@@ -6,13 +6,15 @@ static long get_max_parts_wall(const Coords *c) {
 }
 
 static void gen(Time *time, const Coords *coords, Wall *w, Sim *s) { /* generate */
+    float dt;
     Flu *flu = &s->flu;
     Rbc *rbc = &s->rbc;
     Rig *rig = &s->rig;
     bool dump_sdf = s->opt.dump_field;
     long maxp_wall = get_max_parts_wall(coords);
 
-    run_eq(time, wall_creation, s);
+    dt = time_dt(time);
+    run_eq(time, wall_creation*dt, s);
     if (walls) {
         dSync();
         UC(sdf_gen(coords, s->cart, dump_sdf, /**/ w->sdf));
