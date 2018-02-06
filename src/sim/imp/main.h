@@ -63,7 +63,6 @@ void sim_gen(Sim *s, Time *time) {
 }
 
 void sim_strt(Sim *s, Time *time) {
-    float dt0 = time_dt(time);
     Flu *flu = &s->flu;
     Rbc *rbc = &s->rbc;
     Rig *rig = &s->rig;
