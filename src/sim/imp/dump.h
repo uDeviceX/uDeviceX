@@ -121,6 +121,7 @@ static void dump_diag(float dt, int it, Sim *s) { /* generic dump */
     if (it % o->freq_parts == 0) {
         if (o->dump_parts) dump_part(it, s);
         if (rbcs)          dump_rbcs(s);
+        msg_print("dt, it: %g %d", dt, it);
         UC(diag(dt*it, s));
     }
     if (o->dump_field && it % o->freq_field == 0) dump_grid(s);
