@@ -1,11 +1,9 @@
-static void step(Time *time, BForce *bforce, bool wall0, int ts, int it, Sim *s) {
-    float dt;
+static void step(float dt, BForce *bforce, bool wall0, int ts, int it, Sim *s) {
     Flu *flu = &s->flu;
     Rbc *rbc = &s->rbc;
     Rig *rig = &s->rig;
     Wall *wall = &s->wall;
 
-    dt = time_dt(time);
     if (walls && !s->equilibrating)
         UC(wvel_get_view(dt, it - ts, wall->vel, /**/ &wall->vview));
 
