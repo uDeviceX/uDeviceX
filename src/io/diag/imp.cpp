@@ -37,6 +37,7 @@ static int sum_i(MPI_Comm comm, int *v) {
 }
 
 void diag(MPI_Comm comm, float time, int n, const Particle *pp) {
+    if (time < 0) ERR("time < 0");
     enum {X, Y, Z};
     int i, c;
     double k, km, ke; /* particle, total, and maximum kinetic energies */
