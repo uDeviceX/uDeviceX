@@ -64,7 +64,6 @@ void sim_gen(Sim *s, Time *time) {
 
 void sim_strt(Sim *s, Time *time) {
     float dt0 = time_dt(time);
-    long nsteps = (long)(tend / dt0);
     Flu *flu = &s->flu;
     Rbc *rbc = &s->rbc;
     Rig *rig = &s->rig;
@@ -96,9 +95,7 @@ void sim_strt(Sim *s, Time *time) {
     }
 
     s->solids0 = solids;
-
-    msg_print("will take %ld steps", nsteps - wall_creation);
-    run(time, wall_creation, nsteps, s);
+    run(time, wall_creation, tend, s);
 
     if (strt_dumps) dump_strt(RESTART_FINAL, s);
 }
