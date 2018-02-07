@@ -15,6 +15,7 @@
 int main(int argc, char **argv) {
     Sim *sim;
     Time *time;
+    TimeSeg *time_seg;
     Config *cfg;
     float tend, t0;
 
@@ -24,12 +25,14 @@ int main(int argc, char **argv) {
     UC(conf_ini(&cfg));
     t0 = 0;
     UC(time_ini(t0, &time));
+    UC(time_seg_ini(cfg, /**/ &time_seg));
 
-    sim_ini(cfg, m::cart, time, /**/ &sim, &tend);
-    if (RESTART) sim_strt(sim, cfg, time, tend);
-    else         sim_gen(sim, cfg, time, tend);
+    sim_ini(cfg, m::cart, time, /**/ &sim);
+    if (RESTART) sim_strt(sim, cfg, time, time_seg);
+    else         sim_gen(sim, cfg, time, time_seg);
     sim_fin(sim, time);
 
+    UC(time_seg_fin(time_seg));
     UC(time_fin(time));
     UC(conf_fin(cfg));
     m::fin();

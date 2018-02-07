@@ -251,8 +251,7 @@ static void ini_pair_params(Sim *s, float dt) {
     UC(set_params(dt, s->objinter.fsiparams));
 }
 
-void sim_ini(Config *cfg, MPI_Comm cart,  Time* time, /**/ Sim **sim, float *ptend0) {
-    float tend;
+void sim_ini(Config *cfg, MPI_Comm cart,  Time* time, /**/ Sim **sim) {
     float dt;
     Sim *s;
     int maxp;
@@ -270,8 +269,6 @@ void sim_ini(Config *cfg, MPI_Comm cart,  Time* time, /**/ Sim **sim, float *pte
     UC(time_step_ini(cfg, &s->time_step));
     dt = time_step_dt0(s->time_step);
     time_next(time, dt);
-    conf_lookup_float(cfg, "time.end", &tend);
-
     UC(read_opt(cfg, &s->opt));
     UC(ini_pair_params(s, dt));
 
@@ -316,14 +313,12 @@ void sim_ini(Config *cfg, MPI_Comm cart,  Time* time, /**/ Sim **sim, float *pte
     UC(dbg_set_conf(cfg, s->dbg));
 
     MC(MPI_Barrier(s->cart));
-
-    *ptend0 = tend;
 }
 
 void time_seg_ini(Config *cfg, /**/ TimeSeg **pq) {
     TimeSeg *q;
     EMALLOC(1, &q);
     UC(conf_lookup_float(cfg, "time.end",  &q->end));
-    UC(conf_lookup_float(cfg, "time.wall", &q->wall));
+    //    UC(conf_lookup_float(cfg, "time.wall", &q->wall));
     *pq = q;
 }

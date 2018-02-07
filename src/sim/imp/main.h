@@ -32,7 +32,7 @@ static void gen(Time *time, const Coords *coords, Wall *w, Sim *s) { /* generate
     }
 }
 
-void sim_gen(Sim *s, Config *cfg, Time *time, float tend) {
+void sim_gen(Sim *s, Config *cfg, Time *time, TimeSeg *time_seg) {
     float dt;
     Flu *flu = &s->flu;
     Rbc *rbc = &s->rbc;
@@ -57,16 +57,16 @@ void sim_gen(Sim *s, Config *cfg, Time *time, float tend) {
         if (walls && wall->q.n) UC(wall_gen_ticket(&wall->q, wall->t));
         s->solids0 = solids;
         if (rbcs && multi_solvent) gen_colors(rbc, &s->colorer, /**/ flu);
-        run(cfg, time, wall_creation*dt, tend, s);
+        run(cfg, time, wall_creation*dt, time_seg, s);
     } else {
         s->solids0 = solids;
-        run(cfg, time, 0, tend, s);
+        run(cfg, time, 0, time_seg, s);
     }
     /* final strt dump*/
     if (strt_dumps) dump_strt(RESTART_FINAL, s);
 }
 
-void sim_strt(Sim *s, Config *cfg, Time *time, float tend) {
+void sim_strt(Sim *s, Config *cfg, Time *time, TimeSeg *time_seg) {
     float dt;
     Flu *flu = &s->flu;
     Rbc *rbc = &s->rbc;
@@ -100,7 +100,6 @@ void sim_strt(Sim *s, Config *cfg, Time *time, float tend) {
     }
 
     s->solids0 = solids;
-    run(cfg, time, wall_creation*dt, tend, s);
-
+    run(cfg, time, wall_creation*dt, time_seg, s);
     if (strt_dumps) dump_strt(RESTART_FINAL, s);
 }
