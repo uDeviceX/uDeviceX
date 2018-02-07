@@ -9,7 +9,7 @@ u.conf conf/double.poiseuille.h <<!!!
    part_freq=100
    MESHBB_LOG_ROOTS
    field_dumps part_dumps
-   wall_creation=0 field_freq=100
+   field_freq=100
    run
 !!!
 { make clean && u.make -j ; } > /dev/null
