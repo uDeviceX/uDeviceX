@@ -25,7 +25,7 @@ int main(int argc, char **argv) {
     BForce *bforce;
     MoveParams *moveparams;
     RbcParams *par;
-    float dt;
+    float dt, te;
     int part_freq;
     m::ini(&argc, &argv);
     msg_ini(m::rank);
@@ -33,6 +33,7 @@ int main(int argc, char **argv) {
     UC(conf_ini(&cfg));
     UC(conf_read(argc, argv, cfg));
     UC(conf_lookup_float(cfg, "time.dt", &dt));
+    UC(conf_lookup_float(cfg, "time.end", &te));
 
     UC(rbc_params_ini(&par));
     UC(rbc_params_set_conf(cfg, par));
@@ -45,7 +46,7 @@ int main(int argc, char **argv) {
     UC(scheme_move_params_ini(&moveparams));
     UC(scheme_move_params_conf(cfg, /**/moveparams));
 
-    run(dt, coords, part_freq, bforce, moveparams, "rbc.off", "rbcs-ic.txt", par);
+    run(dt, te, coords, part_freq, bforce, moveparams, "rbc.off", "rbcs-ic.txt", par);
     UC(coords_fin(coords));
 
     UC(bforce_fin(bforce));
