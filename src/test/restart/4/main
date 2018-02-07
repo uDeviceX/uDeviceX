@@ -7,7 +7,6 @@ cp data/rig/ellipsoid.ply rig.ply
 :
 u.conf conf/double.poiseuille.h <<!!!
    solids contactforces
-   wall_creation=199
    BASE_STRT_DUMP=\"bin.1/strt\"
    strt_dumps=true
    strt_freq=10000
@@ -28,6 +27,7 @@ u.run ./bin.1/udx '
 time = {
     type = "const"
     dt = 5e-4
+    wall =  0.0595
     tend = 0.1
 }
 glb = {
