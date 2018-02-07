@@ -5,16 +5,14 @@ static long get_max_parts_wall(const Coords *c) {
         (zs(c) + 2 * ZWM);
 }
 
-static void gen(Time *time, const Coords *coords, Wall *w, Sim *s) { /* generate */
-    float dt;
+static void gen(Time *time, float tw, const Coords *coords, Wall *w, Sim *s) { /* generate */
     Flu *flu = &s->flu;
     Rbc *rbc = &s->rbc;
     Rig *rig = &s->rig;
     bool dump_sdf = s->opt.dump_field;
     long maxp_wall = get_max_parts_wall(coords);
-    dt = time_dt(time);
     
-    run_eq(time, wall_creation*dt, s);
+    run_eq(time, tw, s);
     if (walls) {
         dSync();
         UC(sdf_gen(coords, s->cart, dump_sdf, /**/ w->sdf));
@@ -33,12 +31,10 @@ static void gen(Time *time, const Coords *coords, Wall *w, Sim *s) { /* generate
 }
 
 void sim_gen(Sim *s, Config *cfg, Time *time, TimeSeg *time_seg) {
-    float dt;
     Flu *flu = &s->flu;
     Rbc *rbc = &s->rbc;
     Wall *wall = &s->wall;
     OffRead *cell = s->rbc.cell;
-    dt = time_dt(time);
 
     UC(flu_gen_quants(s->coords, s->gen_color, &flu->q));
     UC(flu_build_cells(&flu->q));
@@ -52,22 +48,21 @@ void sim_gen(Sim *s, Config *cfg, Time *time, TimeSeg *time_seg) {
     MC(m::Barrier(s->cart));
     if (walls || solids) {
         s->solids0 = false;
-        gen(time, s->coords, /**/ wall, s);
+        gen(time, time_seg->wall, s->coords, /**/ wall, s);
         dSync();
         if (walls && wall->q.n) UC(wall_gen_ticket(&wall->q, wall->t));
         s->solids0 = solids;
         if (rbcs && multi_solvent) gen_colors(rbc, &s->colorer, /**/ flu);
-        run(cfg, time, wall_creation*dt, time_seg, s);
+        run(cfg, time, time_seg->wall, time_seg->end, s);
     } else {
         s->solids0 = solids;
-        run(cfg, time, 0, time_seg, s);
+        run(cfg, time, 0, time_seg->end, s);
     }
     /* final strt dump*/
     if (strt_dumps) dump_strt(RESTART_FINAL, s);
 }
 
 void sim_strt(Sim *s, Config *cfg, Time *time, TimeSeg *time_seg) {
-    float dt;
     Flu *flu = &s->flu;
     Rbc *rbc = &s->rbc;
     Rig *rig = &s->rig;
@@ -75,7 +70,6 @@ void sim_strt(Sim *s, Config *cfg, Time *time, TimeSeg *time_seg) {
     OffRead *cell = s->rbc.cell;
     bool dump_sdf = s->opt.dump_field;
     long maxp_wall = get_max_parts_wall(s->coords);
-    dt = time_dt(time);    
 
     /*Q*/
     flu_strt_quants(s->coords, RESTART_BEGIN, &flu->q);
@@ -100,6 +94,6 @@ void sim_strt(Sim *s, Config *cfg, Time *time, TimeSeg *time_seg) {
     }
 
     s->solids0 = solids;
-    run(cfg, time, wall_creation*dt, time_seg, s);
+    run(cfg, time, time_seg->wall, time_seg->end, s);
     if (strt_dumps) dump_strt(RESTART_FINAL, s);
 }
