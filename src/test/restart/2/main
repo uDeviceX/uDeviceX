@@ -44,6 +44,7 @@ u.run ./bin.2/udx '
 time = {
     type = "const"
     dt = 5e-4
+    end = 0.5    
 }
 glb = {
     L = [16, 16, 16]

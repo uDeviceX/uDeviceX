@@ -28,7 +28,7 @@ time = {
     type = "const"
     dt = 5e-4
     wall =  0.0595
-    tend = 0.1
+    end = 0.1
 }
 glb = {
     L = [16, 32, 16]
@@ -55,4 +55,4 @@ dump = {
     freq_parts = 100;
 };'
 :
-cat solid_diag_0000.txt | awk '{print $2, $5, $8}' | uscale 2.5 > sdiag.out.txt
+awk '{print $2, $5, $8}' solid_diag_0000.txt | uscale 2.5 > sdiag.out.txt
