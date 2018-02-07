@@ -6,10 +6,10 @@ rm -rf "$D"
 :
 export S
 W="$S/data/sdf/wall1/wall.dat"
-T=../test/case/1
-u.case -d "$D" -f "$W" sdf.dat -a "u.run ./udx $T/conf.cfg" \
+T="$S/test/case/1/conf.cfg"
+u.case -d "$D" -f $T conf.cfg -f "$W" sdf.dat -a "u.run ./udx conf.cfg" \
 $U $C <<!
-   walls wall_creation=1
+   walls
    run
 !
 u.avgh5 1 u 2 case0/h5/flowfields-0003.h5 | \
