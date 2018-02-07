@@ -251,10 +251,9 @@ static void ini_pair_params(Sim *s, float dt) {
     UC(set_params(dt, s->objinter.fsiparams));
 }
 
-void sim_ini(Config *cfg, MPI_Comm cart, /**/ Sim **sim, Time **ptime, float *ptend0) {
+void sim_ini(Config *cfg, MPI_Comm cart,  Time* time, /**/ Sim **sim, float *ptend0) {
     float tend;
-    float dt, t0;
-    Time *time;
+    float dt;
     Sim *s;
     int maxp;
 
@@ -269,9 +268,6 @@ void sim_ini(Config *cfg, MPI_Comm cart, /**/ Sim **sim, Time **ptime, float *pt
     s->L = subdomain(s->coords);
     maxp = SAFETY_FACTOR_MAXP * s->L.x * s->L.y * s->L.z * numberdensity;
     UC(time_step_ini(cfg, &s->time_step));
-
-    t0 = 0.0;
-    time_ini(t0, &time);
     dt = time_step_dt0(s->time_step);
     time_next(time, dt);
     conf_lookup_float(cfg, "time.end", &tend);
@@ -321,6 +317,5 @@ void sim_ini(Config *cfg, MPI_Comm cart, /**/ Sim **sim, Time **ptime, float *pt
 
     MC(MPI_Barrier(s->cart));
 
-    *ptime = time;
     *ptend0 = tend;
 }
