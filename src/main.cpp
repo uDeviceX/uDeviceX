@@ -17,7 +17,7 @@ int main(int argc, char **argv) {
     Time *time;
     TimeSeg *time_seg;
     Config *cfg;
-    float tend, t0;
+    float t0;
 
     m::ini(&argc, &argv);
     msg_ini(m::rank);
