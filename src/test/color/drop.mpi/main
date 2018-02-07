@@ -12,7 +12,7 @@ u.conf $s $u conf/zurich.h <<!!!
    kBT=0.00444302
    run
 !!!
-{ make clean && u.make -j } > make.log
+{ make clean && u.make -j; } > make.log
 u.run 2 2 1 ./udx '
 time = {
     type = "const"
@@ -47,6 +47,6 @@ dump = {
     freq_field = 8000
     freq_parts = 8000
 }'
-cm() { awk '$7 == 1 {n++ x+=$1 y+=$2 z+=$3} END {print x/n, y/n, z/n}' }
+cm() { awk '$7 == 1 {n++; x+=$1; y+=$2; z+=$3} END {print x/n, y/n, z/n}'; }
  ../tools/bop2txt2 bop/solvent-00001.bop -- bop/colors_solvent-00001.bop | \
             cm > drop.out.txt
