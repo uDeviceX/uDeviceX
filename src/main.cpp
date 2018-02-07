@@ -23,6 +23,7 @@ int main(int argc, char **argv) {
     msg_ini(m::rank);
     msg_print("mpi rank/size: %d/%d", m::rank, m::size);
     UC(conf_ini(&cfg));
+    UC(conf_read(argc, argv, cfg));
     t0 = 0;
     UC(time_ini(t0, &time));
     UC(time_seg_ini(cfg, /**/ &time_seg));

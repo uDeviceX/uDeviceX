@@ -4,7 +4,7 @@ rm -rf bop diag.txt h5
 s=.
 u=u/x
 u.cp.sdf yplates1/yplates.dat sdf.dat
-Walls="walls wall_creation=1"
+Walls="walls"
 u.conf $s $u conf/zurich.h <<!!!
    $Walls
    numberdensity=2
