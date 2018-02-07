@@ -1,9 +1,13 @@
+#if define(wall_creation)
+  #error wall_creation is runtime: time.wall
+#endif
+
 #if defined(dt)
   #error dt is runtime
 #endif
 
 #if defined(tend)
-  #error tend is runtime: should be time.end
+  #error tend is runtime: time.end
 #endif
 
 #if defined(XS) || defined(YS) || defined(ZS)
