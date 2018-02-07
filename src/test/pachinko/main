@@ -7,7 +7,7 @@ S=`u.cp.s`
 u.cp.sdf pachinko/sdf.dat sdf.dat
 :
 u.conf conf/test.h <<!!!
-   walls wall_creation=100
+   walls
    run
 !!!
 { make clean && u.make -j; } > /dev/null
@@ -15,6 +15,7 @@ u.run ./udx '
 time = {
     type = "const"
     dt = 5e-4
+    wall = 5e-2
     end = 1.0
 }
 glb = {

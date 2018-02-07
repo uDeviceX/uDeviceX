@@ -6,7 +6,7 @@ echo -e "16 16 8" > rigs-ic.txt
 cp data/rig/cyl.ply rig.ply
 :
 u.conf conf/test.h <<!!!
-   walls wall_creation=100
+   walls
    solids spdir=2 sbounce_back
    run
 !!!
@@ -15,6 +15,7 @@ u.run ./udx '
 time = {
     type = "const"
     dt = 1e-3
+    wall = 1e-1
     end = 2.01
 }
 glb = {

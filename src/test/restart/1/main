@@ -5,7 +5,7 @@ rm -rf bop h5 diag.txt bin.1 bin.2 sdf.dat
 u.cp.sdf wall1/wall.dat sdf.dat
 :
 u.conf conf/couette.h <<!!!
-   walls wall_creation=100
+   walls
    BASE_STRT_DUMP=\"bin.1/strt\"
    strt_dumps=true
    strt_freq=10000
@@ -25,6 +25,7 @@ u.run ./bin.1/udx '
 time = {
     type = "const"
     dt = 5e-4
+    wall = 5e-2
     end = 0.5
 }
 glb = {
