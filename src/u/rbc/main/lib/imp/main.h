@@ -23,7 +23,7 @@ static void dump(float dt, const Coords *coords, RbcQuants q, RbcForce t, MeshWr
     UC(garea_volume(q, /**/ &area, &volume));
     msg_print("av: %g %g", area/area0, volume/volume0);
     diag(m::cart, dt*i, n, pp);
-    free(pp);
+    UC(efree(pp));
 }
 
 static void body_force(long it, const Coords *coords, const BForce *bf, RbcQuants q, Force *f) {
