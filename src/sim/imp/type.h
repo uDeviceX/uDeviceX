@@ -1,5 +1,3 @@
-/* types local for sim:: */
-
 /* solvent distribution */
 struct FluDistr {
     DFluPack *p;
