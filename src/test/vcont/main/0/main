@@ -7,7 +7,7 @@ u.cp.sdf cyl1/cyl.dat sdf.dat
 :
 u.conf conf/double.poiseuille.h <<!!!
    numberdensity=1
-   walls wall_creation=1
+   walls
    run
 !!!
 (make clean && u.make -j) > /dev/null
@@ -15,6 +15,7 @@ u.run ./udx test/vcont/main/vcon.cfg '
 time = {
     type = "const"
     dt = 5e-4
+    walls = 5e-4
     end = 2.01
 }
 glb = {

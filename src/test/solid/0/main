@@ -5,7 +5,7 @@ echo -e "16 16 16" > rigs-ic.txt
 u.cp.rig sphere.ply rig.ply
 :
 u.conf conf/test.h <<!!!
-   walls wall_creation=1
+   walls
    solids sbounce_back pin_com
    run
 !!!
@@ -14,6 +14,7 @@ u.run ./udx '
 time = {
     type = "const"
     dt = 1e-3
+    wall = 1e-3
     end = 2.01
 }
 glb = {
