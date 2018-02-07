@@ -7,7 +7,6 @@
 #include "utils/msg.h"
 #include "mpi/glb.h"
 #include "mpi/wrapper.h"
-#include "d/api.h"
 #include "scheme/time/imp.h"
 #include "sim/imp.h"
 
@@ -19,7 +18,7 @@ int main(int argc, char **argv) {
     m::ini(&argc, &argv);
     msg_ini(m::rank);
     msg_print("mpi rank/size: %d/%d", m::rank, m::size);
-    
+
     sim_ini(argc, argv, m::cart, /**/ &sim, &time, &tend);
     if (RESTART) sim_strt(sim, time, tend);
     else         sim_gen(sim, time, tend);
