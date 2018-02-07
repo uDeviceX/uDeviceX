@@ -1,4 +1,4 @@
-void run_eq(Time *time, float te, Sim *s) { /* equilibrate */
+static void run_eq(Time *time, float te, Sim *s) { /* equilibrate */
     long it;
     float dt;
     BForce *bforce;
@@ -15,14 +15,14 @@ void run_eq(Time *time, float te, Sim *s) { /* equilibrate */
     UC(bforce_fin(bforce));
 }
 
-void run(Time *time, long ts, float te, Sim *s) {
+static void run(Config *cfg, Time *time, long ts, float te, Sim *s) {
     float dt;
     long it; /* current timestep */
     Wall *wall = &s->wall;
     BForce *bforce;
 
     UC(bforce_ini(&bforce));
-    UC(bforce_ini_conf(s->cfg, bforce));
+    UC(bforce_ini_conf(cfg, bforce));
 
     dump_strt_templ(s->coords, wall, s); /* :TODO: is it the right place? */
     s->equilibrating = false;   

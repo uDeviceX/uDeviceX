@@ -169,7 +169,6 @@ void sim_fin(Sim *s, Time *time) {
     UC(fin_pair_params(s));
     UC(inter_color_fin(s->gen_color));
     UC(dbg_fin(s->dbg));
-    UC(conf_fin(s->cfg));
     datatype::fin();
 
     MC(m::Comm_free(&s->cart));

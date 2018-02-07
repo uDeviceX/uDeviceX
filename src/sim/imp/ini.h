@@ -251,24 +251,18 @@ static void ini_pair_params(Sim *s, float dt) {
     UC(set_params(dt, s->objinter.fsiparams));
 }
 
-void sim_ini(int argc, char **argv, MPI_Comm cart, /**/ Sim **sim, Time **ptime, float *ptend0) {
+void sim_ini(Config *cfg, MPI_Comm cart, /**/ Sim **sim, Time **ptime, float *ptend0) {
     float tend;
     float dt, t0;
     Time *time;
     Sim *s;
     int maxp;
-    Config *cfg;
 
     EMALLOC(1, sim);
     s = *sim;
 
     MC(m::Comm_dup(cart, &s->cart));
     datatype::ini();
-
-    UC(conf_ini(&s->cfg));
-    cfg = s->cfg;
-    UC(conf_read(argc, argv, /**/ cfg));
-
     UC(coords_ini_conf(s->cart, cfg, /**/ &s->coords));
     UC(coords_log(s->coords));
 
@@ -282,17 +276,17 @@ void sim_ini(int argc, char **argv, MPI_Comm cart, /**/ Sim **sim, Time **ptime,
     time_next(time, dt);
     conf_lookup_float(cfg, "time.end", &tend);
 
-    UC(read_opt(s->cfg, &s->opt));
+    UC(read_opt(cfg, &s->opt));
     UC(ini_pair_params(s, dt));
 
     EMALLOC(3 * maxp, &s->pp_dump);
 
     if (rbcs) UC(ini_rbc(cfg, s->cart, s->L, /**/ &s->rbc));
 
-    if (s->opt.vcon)       UC(ini_vcon(s->cart, s->L, s->cfg, /**/ &s->vcon));
-    if (s->opt.outflow)    UC(ini_outflow(s->coords, maxp, s->cfg, /**/ &s->outflow));
-    if (s->opt.inflow)     UC(ini_inflow (s->coords, s->L, s->cfg,  /**/ &s->inflow ));
-    if (s->opt.denoutflow) UC(ini_denoutflow(s->coords, maxp, s->cfg, /**/ &s->denoutflow, &s->mapoutflow));
+    if (s->opt.vcon)       UC(ini_vcon(s->cart, s->L, cfg, /**/ &s->vcon));
+    if (s->opt.outflow)    UC(ini_outflow(s->coords, maxp, cfg, /**/ &s->outflow));
+    if (s->opt.inflow)     UC(ini_inflow (s->coords, s->L, cfg,  /**/ &s->inflow ));
+    if (s->opt.denoutflow) UC(ini_denoutflow(s->coords, maxp, cfg, /**/ &s->denoutflow, &s->mapoutflow));
 
     if (rbcs || solids)
         UC(ini_objinter(s->cart, maxp, s->L, /**/ &s->objinter));
@@ -314,16 +308,16 @@ void sim_ini(int argc, char **argv, MPI_Comm cart, /**/ Sim **sim, Time **ptime,
     }
 
     UC(scheme_move_params_ini(&s->moveparams));
-    UC(scheme_move_params_conf(s->cfg, s->moveparams));
+    UC(scheme_move_params_conf(cfg, s->moveparams));
 
     UC(scheme_restrain_ini(&s->restrain));
-    UC(scheme_restrain_set_conf(s->cfg, s->restrain));
+    UC(scheme_restrain_set_conf(cfg, s->restrain));
 
     UC(inter_color_ini(&s->gen_color));
-    UC(inter_color_set_conf(s->cfg, s->gen_color));
+    UC(inter_color_set_conf(cfg, s->gen_color));
 
     UC(dbg_ini(&s->dbg));
-    UC(dbg_set_conf(s->cfg, s->dbg));
+    UC(dbg_set_conf(cfg, s->dbg));
 
     MC(MPI_Barrier(s->cart));
 

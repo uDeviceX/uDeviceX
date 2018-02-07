@@ -23,9 +23,9 @@ int main(int argc, char **argv) {
     msg_print("mpi rank/size: %d/%d", m::rank, m::size);
     UC(conf_ini(&cfg));
 
-    sim_ini(argc, argv, m::cart, /**/ &sim, &time, &tend);
-    if (RESTART) sim_strt(sim, time, tend);
-    else         sim_gen(sim, time, tend);
+    sim_ini(cfg, m::cart, /**/ &sim, &time, &tend);
+    if (RESTART) sim_strt(sim, cfg, time, tend);
+    else         sim_gen(sim, cfg, time, tend);
     sim_fin(sim, time);
 
     UC(conf_fin(cfg));

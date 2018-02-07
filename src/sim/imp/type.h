@@ -169,9 +169,6 @@ struct Sim {
     Particle *pp_dump;
     BopWork *dumpt;
 
-    /* runtime config */
-    Config *cfg;
-
     /* state */
     bool solids0;
     bool equilibrating;
