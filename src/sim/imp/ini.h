@@ -319,6 +319,6 @@ void time_seg_ini(Config *cfg, /**/ TimeSeg **pq) {
     TimeSeg *q;
     EMALLOC(1, &q);
     UC(conf_lookup_float(cfg, "time.end",  &q->end));
-    //    UC(conf_lookup_float(cfg, "time.wall", &q->wall));
+    UC(conf_lookup_float(cfg, "time.wall", &q->wall));
     *pq = q;
 }
