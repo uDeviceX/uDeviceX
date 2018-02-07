@@ -18,7 +18,6 @@ u.run ./udx  '
 time = {
     type = "const"
     dt = 5e-4
-    wall = 5e-4
     end = 2.0
 }
 glb = {
