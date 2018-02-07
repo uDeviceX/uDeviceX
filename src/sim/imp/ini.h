@@ -319,3 +319,11 @@ void sim_ini(Config *cfg, MPI_Comm cart,  Time* time, /**/ Sim **sim, float *pte
 
     *ptend0 = tend;
 }
+
+void time_seg_ini(Config *cfg, /**/ TimeSeg **pq) {
+    TimeSeg *q;
+    EMALLOC(1, &q);
+    UC(conf_lookup_float(cfg, "time.end",  &q->end));
+    UC(conf_lookup_float(cfg, "time.wall", &q->wall));
+    *pq = q;
+}

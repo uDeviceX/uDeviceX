@@ -138,6 +138,10 @@ struct Opt {
     int  freq_field, freq_parts;
 };
 
+struct TimeSeg {
+    float end, wall;
+};
+
 struct Sim {
     /* quantities */
     Flu flu;

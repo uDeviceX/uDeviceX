@@ -174,3 +174,5 @@ void sim_fin(Sim *s, Time *time) {
     MC(m::Comm_free(&s->cart));
     EFREE(s);
 }
+
+void time_seg_fin(TimeSeg *q) { EFREE(q); }
