@@ -5,7 +5,7 @@ c=conf/zurich.h
 u.cp.sdf yplates1/yplates.dat sdf.dat
 u.conf $c <<!!!
    numberdensity=3
-   walls wall_creation=10
+   walls
    S_LEVEL=0 kBT=1 adpd_b=12.5 gdpd_b=5.61125
    run
 !!!
@@ -14,6 +14,7 @@ u.run ./udx '
 time = {
     type = "const"
     dt = 0.05
+    wall = 0.5
     end = 41.0
 }
 glb = {

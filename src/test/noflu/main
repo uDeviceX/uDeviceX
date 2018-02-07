@@ -5,7 +5,7 @@ S=`u.cp.s` C="$S/conf/poiseuille.h"
 u.cp.sdf cyl1/cyl.dat sdf.dat
 :
 u.conf $C <<!
-   numberdensity=0  walls wall_creation=100
+   numberdensity=0  walls
    run
 !
 :
@@ -14,6 +14,7 @@ u.run ./udx '
 time = {
     type = "const"
     dt = 5e-4
+    wall = 5e-2
     end = 0.4
 }
 glb = {

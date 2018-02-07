@@ -7,7 +7,7 @@ cp data/rig/sphere.ply rig.ply
 u.conf . u/safe conf/double.poiseuille.h <<!!!
   KL_SYNC
   solids
-  wall_creation=0 contactforces=true
+  contactforces=true
   run
 !!!
 { make clean && u.make -j ; } > /dev/null

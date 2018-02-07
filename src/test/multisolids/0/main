@@ -7,7 +7,7 @@ u.cp.rbc rbc/498.off rbc.off
 :
 u.conf conf/double.poiseuille.h <<!!!
   solids sbounce_back
-  wall_creation=0 contactforces=false
+  contactforces=false
   run
 !!!
 { make clean && u.make -j ; } > /dev/null
