@@ -18,7 +18,6 @@
 #define sbounce_back        true
 #define fsiforces           true
 #define walls               false
-//#define wall_creation       1000
 
 /* DUMPS */
 #define strt_dumps          false

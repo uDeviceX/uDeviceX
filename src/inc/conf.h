@@ -220,10 +220,6 @@
 #define walls (false)
 #endif
 
-#ifndef wall_creation
-#define wall_creation (1000)
-#endif
-
 // restart
 
 #ifndef RESTART

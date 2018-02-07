@@ -25,6 +25,5 @@
 #define strt_freq        (5000)
 #define pushsolid        (false)
 #define pushrbc          (false)
-//#define wall_creation    (5000)
 #define walls            (false)
 #define RBCnv            (498)
