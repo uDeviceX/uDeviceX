@@ -19,7 +19,7 @@
 #define ljsigma                 0.3
 #define ljepsilon               0.44
 #define walls                   false
-#define wall_creation           1000
+//#define wall_creation           1000
 
 /* DUMPS */
 #define dump_all_fields         true
@@ -32,4 +32,4 @@
 #define              rbcs       true
 #define             RBCnv       642
 
-#define     wall_creation       1000
+//#define     wall_creation       1000
