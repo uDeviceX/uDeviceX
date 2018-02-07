@@ -1,4 +1,4 @@
-#if define(wall_creation)
+#if defined(wall_creation)
   #error wall_creation is runtime: time.wall
 #endif
 
