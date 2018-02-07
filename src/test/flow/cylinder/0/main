@@ -5,7 +5,7 @@ rm -rf bop h5 diag.txt rbc.off
 u.cp.sdf cyl1/cyl.dat sdf.dat
 :
 u.conf conf/poiseuille.h <<!!!
-   walls wall_creation=100
+   walls
    run
 !!!
 :
@@ -14,6 +14,7 @@ u.run ./udx '
 time = {
     type = "const"
     dt = 5e-4
+    wall = 5e-3
     end = 4.0
 }
 glb = {
