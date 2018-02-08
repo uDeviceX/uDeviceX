@@ -19,6 +19,7 @@ enum {
     NCFG
 };
 
+enum {INI = 123}; /* status */
 struct Config {
     int status;
     config_t c[NCFG];
@@ -30,13 +31,16 @@ void conf_ini(/**/ Config **pq) {
     EMALLOC(1, &q);
     for (int i = 0; i < NCFG; ++i)
         config_init(q->c + i);
+    q->status = INI;
     *pq = q;
 }
 
-void conf_fin(/**/ Config *c) {
-    for (int i = 0; i < NCFG; ++i)
-        config_destroy(c->c + i);
-    EFREE(c);
+void conf_fin(/**/ Config *q) {
+    int i;
+    if (q->status != INI) ERR("wrong conf_fin call");
+    for (i = 0; i < NCFG; ++i)
+        config_destroy(&q->c[i]);
+    EFREE(q);
 }
 
 static void concatenate(int n, char **ss, /**/ char *a) {
