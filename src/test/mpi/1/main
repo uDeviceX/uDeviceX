@@ -18,13 +18,13 @@ glb = {
     L = [16, 32, 16]
 }
 bforce = {
-    type = "double_poiseuille";
-    a    = 6.666667;
-};
+    type = "double_poiseuille"
+    a    = 6.666667
+}
 dump = {
-    field = true;
-    parts = true;
+    field = true
+    parts = true
     freq_field = 0.1500
-    freq_parts = 100;
-};'
-u.avgh5 0 u 1 h5/flowfields-0013.h5 | uscale 10 > h5.out.txt
+    freq_parts = 100
+}'
+u.avgh5 0 u 1 h5/flowfields-0011.h5 | uscale 10 > h5.out.txt

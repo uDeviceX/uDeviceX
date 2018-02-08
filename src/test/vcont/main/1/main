@@ -26,4 +26,4 @@ dump = {
     freq_field = 2.0000
     freq_parts = 4000;
 };'
-u.avgh5 0 u 2 h5/flowfields-0001.h5 | uscale 0.1 > h5.out.txt
+u.avgh5 0 u 2 h5/flowfields-0000.h5 | uscale 0.1 > h5.out.txt
