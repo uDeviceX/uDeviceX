@@ -3,7 +3,7 @@
 #endif
 
 #if defined(dt)
-  #error dt is runtime
+  #error dt is runtime: time.dt
 #endif
 
 #if defined(tend)
