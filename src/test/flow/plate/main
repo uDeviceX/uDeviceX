@@ -20,14 +20,14 @@ glb = {
     L = [16, 16, 16]
 }
 bforce = {
-    type = "constant";
-    f    = [0.0333333, 0.0, 0.0];
-};
+    type = "constant"
+    f    = [0.0333333, 0.0, 0.0]
+}
 dump = {
-    field = true;
-    parts = true;
-    freq_field = 300;
-    freq_parts = 300;
-};
+    field = true
+    parts = true
+    freq_field = 0.15
+    freq_parts = 300
+}
 '
 u.avgh5 1 u 2 h5/flowfields-0013.h5 > h5.out.txt
