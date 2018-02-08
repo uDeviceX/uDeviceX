@@ -98,7 +98,7 @@ static void diag(float time, Sim *s) {
     UC(diag(s->cart, time, n, s->pp_dump));
 }
 
-void dump_strt_templ(const Coords *coords, Wall *w, Sim *s) { /* template dumps (wall, solid) */
+static void dump_strt_templ(const Coords *coords, Wall *w, Sim *s) { /* template dumps (wall, solid) */
     Rig *rig = &s->rig;
     if (strt_dumps) {
         if (walls) wall_strt_dump_templ(coords, &w->q);
