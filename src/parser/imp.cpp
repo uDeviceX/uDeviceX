@@ -20,22 +20,23 @@ enum {
 };
 
 struct Config {
+    int status;
     config_t c[NCFG];
 };
 // end::struct[]
 
-void conf_ini(/**/ Config **c) {
-    UC(emalloc(sizeof(Config), (void**) c));
-
-    Config *cfg = *c;
+void conf_ini(/**/ Config **pq) {
+    Config *q;
+    EMALLOC(1, &q);
     for (int i = 0; i < NCFG; ++i)
-        config_init(cfg->c + i);
+        config_init(q->c + i);
+    *pq = q;
 }
 
 void conf_fin(/**/ Config *c) {
     for (int i = 0; i < NCFG; ++i)
         config_destroy(c->c + i);
-    UC(efree(c));
+    EFREE(c);
 }
 
 static void concatenate(int n, char **ss, /**/ char *a) {
