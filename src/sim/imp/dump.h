@@ -75,11 +75,13 @@ static void dump_grid(const Sim *s) {
     fields_grid(s->coords, s->cart, qq, nn, /*w*/ s->pp_dump);
 }
 
-void dump_diag_after(float dt, int it, bool solid0, Sim *s) { /* after wall */
+void dump_diag_after(Time *time, int it, bool solid0, Sim *s) { /* after wall */
+    float dt;
     const Rig *rig = &s->rig;
     const Opt *o = &s->opt;
     if (solid0 && it % o->freq_parts == 0) {
         static int id = 0;
+        dt = time_dt(time);
         rig_dump(dt, it, rig->q.ss_dmp, rig->q.ss_dmp_bb, rig->q.ns, s->coords);
         cD2H(s->pp_dump, rig->q.i_pp, rig->q.ns * rig->q.nv);
         UC(mesh_write_dump(rig->mesh_write, s->cart, s->coords, rig->q.ns, s->pp_dump, id++));
@@ -115,14 +117,14 @@ static void dump_strt(int id, Sim *s) {
     if (solids)     rig_strt_dump(s->coords, id, &rig->q);
 }
 
-static void dump_diag(float dt, int it, Sim *s) { /* generic dump */
+static void dump_diag(Time *time, int it, Sim *s) { /* generic dump */
     const Opt *o = &s->opt;
     if (it % o->freq_parts == 0) {
         if (o->dump_parts) dump_part(it, s);
         if (rbcs)          dump_rbcs(s);
-        UC(diag(dt*it, s));
+        UC(diag(time_current(time), s));
     }
-    if (o->dump_field && it % o->freq_field == 0) dump_grid(s);
+    if (o->dump_field && time_cross(o->freq_field)) dump_grid(s);
     if (strt_dumps  && it % strt_freq == 0)  dump_strt(it / strt_freq, s);
     if (rbc_com_dumps && it % rbc_com_freq == 0) dump_rbc_coms(s);
 }

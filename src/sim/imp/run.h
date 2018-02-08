@@ -7,8 +7,8 @@ static void run_eq(Time *time, float te, Sim *s) { /* equilibrate */
     bforce_ini_none(/**/ bforce);    
     bool wall0 = false;
     for (it = 0; (time_current(time) < te); ++it) {
+        UC(step(time, bforce, wall0, 0, it, s));
         dt = time_dt(time);
-        UC(step(dt, bforce, wall0, 0, it, s));
         time_next(time, dt);
     }
     UC(distribute_flu(/**/ s));
@@ -30,8 +30,8 @@ static void run(Config *cfg, Time *time, float ts, float te, Sim *s) {
     /* ts, te: time start and end */
     start = (long)(ts/time_dt(time));
     for (it = start; (time_current(time) < te); ++it) {
+        UC(step(time, bforce, walls, ts, it, s));
         dt = time_dt(time);
-        UC(step(dt, bforce, walls, ts, it, s));
         time_next(time, dt);
     }
     UC(distribute_flu(/**/ s));

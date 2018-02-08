@@ -1,8 +1,10 @@
-static void step(float dt, BForce *bforce, bool wall0, int ts, int it, Sim *s) {
+static void step(Time *time, BForce *bforce, bool wall0, int ts, int it, Sim *s) {
+    float dt;
     Flu *flu = &s->flu;
     Rbc *rbc = &s->rbc;
     Rig *rig = &s->rig;
     Wall *wall = &s->wall;
+    dt = time_dt(time);
 
     if (walls && !s->equilibrating)
         UC(wvel_get_view(dt, it - ts, wall->vel, /**/ &wall->vview));
@@ -18,8 +20,8 @@ static void step(float dt, BForce *bforce, bool wall0, int ts, int it, Sim *s) {
     UC(forces(dt, wall0, s));
     UC(check_forces(dt, s));
 
-    dump_diag(dt, it, s);
-    dump_diag_after(dt, it, s->solids0, s);
+    dump_diag(time, it, s);
+    dump_diag_after(time, it, s->solids0, s);
     UC(body_force(it, bforce, s));
 
     UC(restrain(it, /**/ s));
