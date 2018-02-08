@@ -1,0 +1,21 @@
+set -eu
+
+i="$1"; shift
+
+awk '
+/dt = / { dt = $3}
+/freq_field = / {
+    f = $3; sub(/;$/, "", f)
+    s = $0; sub(/[^ \t].*/, "", s)
+    if (f != int(f)) next
+    if (dt == 0)     next
+    $0 = sprintf("%s%s = %.4f", s, $1, f*dt)
+}
+
+{
+    print
+}
+
+' "$i" > /tmp/t
+
+mv /tmp/t "$i"
