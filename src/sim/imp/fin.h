@@ -132,7 +132,6 @@ static void fin_pair_params(Sim *s) {
 }
 
 void sim_fin(Sim *s, Time *time) {
-    time_fin(time);
     bop_fin(s->dumpt);
     if (rbcs || solids)
         fin_objinter(&s->objinter);
