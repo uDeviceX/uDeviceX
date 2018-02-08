@@ -28,7 +28,7 @@ bforce = {
 dump = {
     field = true;
     parts = true;
-    freq_field = 500;
+    freq_field = 0.2500
     freq_parts = 500;
 };'
 cat solid_diag_0000.txt | awk '{print $2, $5, $8}' | uscale 5 > sdiag.out.txt

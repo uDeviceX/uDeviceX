@@ -27,7 +27,7 @@ bforce = {
 dump = {
     field = true
     parts = true
-    freq_field = 500
+    freq_field = 0.2500
     freq_parts = 500
 }'
 cp bop/solvent-00001.bop bop.out.txt

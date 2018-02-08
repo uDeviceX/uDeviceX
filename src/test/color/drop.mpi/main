@@ -44,7 +44,7 @@ iccolor = {
 dump = {
     field = true
     parts = true
-    freq_field = 8000
+    freq_field = 4.0000
     freq_parts = 8000
 }'
 cm() { awk '$7 == 1 {n++; x+=$1; y+=$2; z+=$3} END {print x/n, y/n, z/n}'; }

@@ -24,7 +24,7 @@ bforce = {
 dump = {
     field = true;
     parts = true;
-    freq_field = 300;
+    freq_field = 0.1500
     freq_parts = 100;
 };'
 u.avgh5 0 u 1 h5/flowfields-0013.h5 | uscale 10 > h5.out.txt

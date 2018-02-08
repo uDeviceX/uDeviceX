@@ -26,7 +26,6 @@ bforce = {
 dump = {
     field = true
     parts = true
-    freq_field = 0.15
     freq_parts = 300
 }
 '

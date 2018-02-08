@@ -29,7 +29,7 @@ wvel = {
 dump = {
     field = true;
     parts = true;
-    freq_field = 800;
+    freq_field = 40.0000
     freq_parts = 800;
 };'
 :

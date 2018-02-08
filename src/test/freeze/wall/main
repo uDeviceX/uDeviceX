@@ -32,7 +32,7 @@ wvel = {
 dump = {
     field = true;
     parts = true;
-    freq_field = 4000;
+    freq_field = 2.0000
     freq_parts = 4000;
 };'
 : :::::: checks total wall particle number ::::::

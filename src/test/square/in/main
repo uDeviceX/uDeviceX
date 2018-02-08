@@ -22,6 +22,6 @@ glb = {
 }
 dump = {
     field = true;
-    freq_field = 2000;
+    freq_field = 0.2000
 };"
 cp h5/wall.xmf wall.out.xmf
