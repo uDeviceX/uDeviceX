@@ -1,6 +1,6 @@
 #### Plates : Couette
 # nTEST: flow.vwall.flat
-rm -rf bop h5 diag.txt rbc.off
+rm -rf h5
 :
 u.cp.sdf wall1/wall.dat sdf.dat
 :
@@ -20,15 +20,15 @@ glb = {
     L = [16, 16, 16]
 }
 wvel = {
-    type = "shear";
-    gdot = 10.0;
-    vdir = 0;
-    gdir = 2;
+    type = "shear"
+    gdot = 10.0
+    vdir = 0
+    gdir = 2
 };
 dump = {
-    field = true;
-    parts = true;
-    freq_field = 300;
-    freq_parts = 300;
-};'
+    field = true
+    parts = true
+    freq_field = 0.15
+    freq_parts = 300
+}'
 u.avgh5 1 u 2 h5/flowfields-001[0123].h5 | uscale 0.05 > h5.out.txt

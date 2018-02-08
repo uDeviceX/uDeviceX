@@ -124,7 +124,10 @@ static void dump_diag(Time *time, int it, Sim *s) { /* generic dump */
         if (rbcs)          dump_rbcs(s);
         UC(diag(time_current(time), s));
     }
-    if (o->dump_field && time_cross(time, o->freq_field)) dump_grid(s);
-    if (strt_dumps  && it % strt_freq == 0)  dump_strt(it / strt_freq, s);
-    if (rbc_com_dumps && it % rbc_com_freq == 0) dump_rbc_coms(s);
+    if (o->dump_field && time_cross(time, o->freq_field))
+        dump_grid(s);
+    if (strt_dumps  && it % strt_freq == 0)
+        dump_strt(it / strt_freq, s);
+    if (rbc_com_dumps && it % rbc_com_freq == 0)
+        dump_rbc_coms(s);
 }
