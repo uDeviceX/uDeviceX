@@ -30,4 +30,4 @@ dump = {
     freq_parts = 300
 }
 '
-u.avgh5 1 u 2 h5/flowfields-0013.h5 > h5.out.txt
+u.avgh5 1 u 2 h5/flowfields-0011.h5 > h5.out.txt
