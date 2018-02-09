@@ -119,7 +119,6 @@ static void dump_strt(int id, Sim *s) {
 
 static void dump_diag(Time *time, int it, Sim *s) {
     const Opt *o = &s->opt;
-    msg_print("t dt cross: %g %g %d", time_current(time), time_dt(time), time_cross(time, o->freq_parts));
     if (time_cross(time, o->freq_parts)) {
         if (o->dump_parts) dump_part(s);
         if (rbcs)          dump_rbcs(s);
