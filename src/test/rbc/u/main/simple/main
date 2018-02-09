@@ -40,4 +40,4 @@ restrain = {
 dump = {
     parts = true;
 };'
-ply2punto r/00009.ply | uscale 1 > ply.out.txt
+ply2punto r/00008.ply | uscale 1 > ply.out.txt

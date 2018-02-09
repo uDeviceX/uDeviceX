@@ -37,4 +37,4 @@ dump = {
     parts = true
     freq_parts = 0.5000
 }'
-ply2punto r/00001.ply > ply.out.txt
+ply2punto r/00000.ply > ply.out.txt
