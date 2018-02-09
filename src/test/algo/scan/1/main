@@ -1,4 +1,5 @@
 # nTEST: scan.t1
+cd test/algo/scan/1
 u.conf0 u/algo/scan
 { u.make -j;     } > /dev/null
 seq 64 | u.run ./udx >  scan.out.txt

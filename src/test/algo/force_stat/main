@@ -1,4 +1,5 @@
 # TEST: algo.force_stat
+cd test/algo/force_stat
 u.conf0 u/algo/force_stat
 { u.make -j;     } > /dev/null
 cat >ff.txt <<!
