@@ -19,4 +19,4 @@ for d
 do if test ! -d "$d"; then err "no a directory '$d'"; fi
 done
 
-exec $prog0 "$@"
+exec $prog0 "$n" "$@"

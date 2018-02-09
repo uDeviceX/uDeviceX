@@ -1,5 +1,18 @@
 . u.test.util
 
 prog=u.test.get0
+n="$1"; shift
 
-echo 42
+find "$@" -type f | "${AWK}" -v n="$n" '
+{
+    f = $0
+    while (getline < f > 0) {
+	if ($0 ~ /#[ \t]*TEST:/ || $0 ~ /#[ \t]*nTEST:/) {
+	    sub(/^.*TEST:[ \t]*/, "")
+	    sub(/[ \t]+$/, "")
+	    if (eq($0, n)) print f
+	}
+    }
+}
+function eq(a, b) { return a "" == b "" }
+'
