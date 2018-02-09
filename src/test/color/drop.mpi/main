@@ -1,52 +1,16 @@
 # drop in poiseuille flow
 # nTEST: color.drop.mpi.t1
-set -eu
-rm -rf bop diag.txt h5
-s=.
-u=u/x
+cd test/color/drop.mpi
+S=`u.cp.s`
 u.cp.sdf yplates1/yplates.dat sdf.dat
-u.conf $s $u conf/zurich.h <<!!!
-   KL_SYNC
-   walls
-   numberdensity=2
+u.conf "$S" u/x "$S/conf/default.h" <<!
    kBT=0.00444302
+   adpd_b=2 adpd_r=2 adpd_br=10 gdpd_b=1 gdpd_r=100 gdpd_br=10
+   walls multi_solvent=true numberdensity=2
    run
-!!!
-{ make clean && u.make -j; } > make.log
-u.run 2 2 1 ./udx '
-time = {
-    type = "const"
-    dt = 5e-4
-    wall = 5e-4
-    end = 4.01
-}
-glb = {
-    L = [8, 8, 16]
-}
-bforce = {
-    type = "constant"
-    f = [0.6, 0.0, 0.0]
-}
-wvel = {
-    type = "shear"
-    gdot = 5.0
-    vdir = 0
-    gdir = 1
-}
-restrain = {
-    kind = "red"
-    freq = 1000
-}
-iccolor = {
-    kind = "drop"
-    R    = 4.0
-}
-dump = {
-    field = true
-    parts = true
-    freq_field = 4.0000
-    freq_parts = 4.0000
-}'
+!
+u.make -j
+u.run 2 2 1 ./udx conf.cfg
 cm() { awk '$7 == 1 {n++; x+=$1; y+=$2; z+=$3} END {print x/n, y/n, z/n}'; }
- ../tools/bop2txt2 bop/solvent-00000.bop -- bop/colors_solvent-00000.bop | \
+ "$S/../tools/bop2txt2" bop/solvent-00001.bop -- bop/colors_solvent-00001.bop | \
             cm > drop.out.txt
