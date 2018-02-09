@@ -1,6 +1,4 @@
-/* DPD */
 #define numberdensity      10
-//#define dt               1e-5
 #define flu_mass          1.0
 #define rbc_mass         0.25
 #define solid_mass        1.0
@@ -20,7 +18,6 @@
 #define ljepsilon               0.44
 #define walls                   false
 
-/* DUMPS */
 #define dump_all_fields         true
 #define strt_dumps              true
 #define strt_freq               2000000
