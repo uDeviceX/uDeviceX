@@ -135,8 +135,7 @@ struct Vcon {
 struct Opt {
     bool inflow, outflow, denoutflow, vcon;
     bool dump_field, dump_parts;
-    float freq_field;
-    int  freq_parts;
+    float freq_field, freq_parts;
 };
 
 struct TimeSeg {
