@@ -7,11 +7,10 @@ rm -rf "$D"
 :
 export S
 W="$S/data/sdf/wall1/wall.dat"
-T="$S/test/case/1/conf.cfg"
-u.case -d "$D" -f $T conf.cfg -f "$W" sdf.dat -a "u.run ./udx conf.cfg" \
+u.case -d "$D" -f conf.cfg conf.cfg -f "$W" sdf.dat -a "u.run ./udx conf.cfg" \
 $U $C <<!
    walls
    run
 !
-u.avgh5 1 u 2 case0/h5/flowfields-0005.h5 | \
+u.avgh5 1 u 2 case0/h5/flowfields-0006.h5 | \
     uscale 0.1 > h5.out.txt
