@@ -6,7 +6,7 @@ u.cp.rbc rbc/498.off  rbc.off
 echo 1 0 0 8  0 1 0 8  0 0 1 8  0 0 0 1 > rbcs-ic.txt
 :
 u.conf conf/couette.h <<!!!
-   rbcs DBG_PEEK
+   rbcs kBT=1e-7 DBG_PEEK
    run
 !!!
 { make clean && u.make -j; } > /dev/null

@@ -6,7 +6,7 @@ u.cp.rbc rbc/498.off  rbc.off
 u.cp.sdf wall1/wall.dat sdf.dat
 :
 u.conf conf/couette.h <<!!!
-   walls
+   walls kBT=1e-7
    strt_dumps=true
    run
 !!!

@@ -12,7 +12,7 @@
 #define         gdpd_br             8.0
 
 #define         ljsigma             0.3
-#define       ljepsilon           0.444
+#define       ljepsilon            0.44
 
 #define      global_ids           false
 #define   multi_solvent           false
