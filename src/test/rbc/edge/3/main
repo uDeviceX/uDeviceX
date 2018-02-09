@@ -26,12 +26,12 @@ rbc = {
 }
 bforce = {
     type = "constant";
-    f = [1.6666667,0.,0.];
-};
+    f = [1.6666667,0.,0.]
+}
 dump = {
-    field = true;
-    parts = true;
+    field = true
+    parts = true
     freq_field = 2.5000
     freq_parts = 2.5000
-};'
+}'
 ply2punto r/00001.ply | uscale 100 > ply.out.txt

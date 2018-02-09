@@ -53,11 +53,11 @@ rbc = {
     @include "rbc.test.cfg"
 }
 bforce = {
-    type = "constant";
-    f = [3.333e-2, 0., 0.];
-};
+    type = "constant"
+    f = [3.333e-2, 0., 0.]
+}
 dump = {
-    parts = true;
+    parts = true
     freq_parts = 0.1500
-};'
+}'
 ply2punto r/00003.ply | uscale 100 > ply.out.txt
