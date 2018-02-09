@@ -35,5 +35,5 @@ int time_cross(Time *q, float i) {
     
     t = q->t; t0 = q->t0;
     f = floor(t / i) * i;
-    return t0 < f && f < t;
+    return t0 <= f && f < t;
 }

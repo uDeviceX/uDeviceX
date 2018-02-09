@@ -13,7 +13,7 @@ u.conf conf/double.poiseuille.h <<!!!
 u.run ./udx  '
 time = {
     type = "const"
-    dt = 4e-4
+    dt = 2e-4
     end = 1e-3
 }
 glb = {
@@ -24,7 +24,7 @@ rbc = {
 }
 dump = {
     parts = true
-    freq_parts = 0.0004
+    freq_parts = 4e-4
 }'
 bop2txt2 bop/solvent-00000.bop -- bop/colors_solvent-00000.bop |
   awk '{print $7}' | sort -g > color.out.txt

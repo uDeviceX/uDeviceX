@@ -3,7 +3,7 @@ static void dev2hst(Sim *s) { /* device to host  data transfer */
     Flu *flu = &s->flu;
     Rbc *rbc = &s->rbc;
     Rig *rig = &s->rig;
-    
+
     cD2H(s->pp_dump + start, flu->q.pp, flu->q.n); start += flu->q.n;
     if (s->solids0) {
         cD2H(s->pp_dump + start, rig->q.pp, rig->q.n); start += rig->q.n;
@@ -67,7 +67,7 @@ static void dump_grid(const Sim *s) {
     const Flu *flu = &s->flu;
     const Rbc *rbc = &s->rbc;
     const Rig *rig = &s->rig;
-    
+
     QQ qq; /* pack for io/field_dumps */
     NN nn;
     qq.o = flu->q.pp; qq.s = rig->q.pp; qq.r = rbc->q.pp;
@@ -117,8 +117,9 @@ static void dump_strt(int id, Sim *s) {
     if (solids)     rig_strt_dump(s->coords, id, &rig->q);
 }
 
-static void dump_diag(Time *time, int it, Sim *s) { /* generic dump */
+static void dump_diag(Time *time, int it, Sim *s) {
     const Opt *o = &s->opt;
+    msg_print("t dt cross: %g %g %d", time_current(time), time_dt(time), time_cross(time, o->freq_parts));
     if (time_cross(time, o->freq_parts)) {
         if (o->dump_parts) dump_part(s);
         if (rbcs)          dump_rbcs(s);
