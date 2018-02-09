@@ -1,9 +1,8 @@
 #### random particles in subregion only
 # TEST: clist.t1
+cd test/clist/1
 X=4 Y=6 Z=8 N=64
-u.conf . u/clist conf/default.h <<!!!
-       run kBT=4.44302e-8 fsiforces=false
-!!!
+u.conf0 u/clist
 { u.make -j;     } > /dev/null
 u.pre.gen_random 2 $Y $Z $N |
 u.run ./udx "

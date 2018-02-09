@@ -1,10 +1,10 @@
 #### random particles
 # TEST: clist.t0
+cd test/clist/0
+S=`u.cp.s`
+u.conf0 u/clist
+u.make -j
 X=4 Y=6 Z=8 N=128
-u.conf . u/clist conf/default.h <<!!!
-       run kBT=4.44302e-8 fsiforces=false
-!!!
-{ u.make -j;     } > /dev/null
 u.pre.gen_random $X $Y $Z $N |
 u.run ./udx "
 glb = {
