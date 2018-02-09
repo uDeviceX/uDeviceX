@@ -32,17 +32,17 @@ glb = {
     L = [16, 16, 16]
 }
 wvel = {
-    type = "shear";
-    gdot = 5.0;
-    vdir = 0;
-    gdir = 2;
-};
+    type = "shear"
+    gdot = 5.0
+    vdir = 0
+    gdir = 2
+}
 dump = {
-    field = true;
-    parts = true;
+    field = true
+    parts = true
     freq_field = 2.0000
-    freq_parts = 4000;
-};'
+    freq_parts = 4000
+}'
 :
 u.run ./bin.2/udx '
 time = {
@@ -54,19 +54,19 @@ glb = {
     L = [16, 16, 16]
 }
 wvel = {
-    type = "shear";
-    gdot = 5.0;
-    vdir = 0;
-    gdir = 2;
-};
-bforce ={
-    type = "constant";
-    f = [3.333e-2, 0., 0.];
+    type = "shear"
+    gdot = 5.0
+    vdir = 0
+    gdir = 2
+}
+pbforce ={
+    type = "constant"
+    f = [3.333e-2, 0., 0.]
 };
 dump = {
-    field = true;
-    parts = true;
+    field = true
+    parts = true
     freq_field = 2.0000
-    freq_parts = 4000;
-};'
+    freq_parts = 4000
+}'
 u.avgh5 0 u 1 h5/flowfields-0000.h5 | uscale 0.1 > h5.out.txt
