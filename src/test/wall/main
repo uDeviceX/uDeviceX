@@ -19,15 +19,15 @@ glb = {
     L = [12, 12, 12]
 }
 wvel = {
-    type = "shear";
-    gdot = 5.0;
-    vdir = 0;
-    gdir = 2;
-};
+    type = "shear"
+    gdot = 5.0
+    vdir = 0
+    gdir = 2
+}
 dump = {
-    field = true;
-    parts = true;
+    field = true
+    parts = true
     freq_field = 0.1500
     freq_parts = 0.1500
-};'
+}'
 u.avgh5 1 u 2 h5/flowfields-0003.h5 | uscale 0.1 > h5.out.txt
