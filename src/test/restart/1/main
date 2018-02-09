@@ -1,6 +1,6 @@
 #### solvent with wall restart
 # nTEST: rstrt.t2
-rm -rf bop h5 diag.txt bin.1 bin.2 sdf.dat
+rm -rf h5
 :
 u.cp.sdf wall1/wall.dat sdf.dat
 :
