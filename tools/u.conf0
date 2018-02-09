@@ -1,4 +1,5 @@
 # a simple interface to u.conf
 u="$1"; shift
+s=`u.cp.s`
 
-echo run | u.conf . "$u" conf/default.h
+echo run | u.conf "$s" "$u" conf/default.h
