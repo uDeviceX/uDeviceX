@@ -1,27 +1,22 @@
-#### random particles; density 10
+#### random particles; density 1
 # nTEST: bulk.t1
-X=4 Y=4 Z=4 N=640
-u.conf . u/bulk conf/default.h <<!!!
-       kBT=0 multi_solvent=false fsiforces=false
+set -eu
+cd test/bulk/1
+S=`u.cp.s`
+u.conf "$S" u/bulk "$S/conf/default.h" <<!
+       kBT=0 multi_solvent=false
        run
-!!!
-{ u.make -j;     } > /dev/null
+!
+u.make -s -j
+X=4 Y=4 Z=4 N=640
 u.pre.gen_random $X $Y $Z $N > pp.txt
-u.run ./udx "
-in = \"pp.txt\" 
+:
+u.run ./udx conf.cfg "
+in  = \"pp.txt\"
 out = \"ff.txt\"
-flu = {
-    dpd = true
-    a = [2.6666667, 2.6666667, 2.6666667]
-    g = [8.0, 8.0, 8.0]
-    lj = false
+glb = { 
+  L = [$X, $Y, $Z] 
 }
-time = {
-    type = \"const\"
-    dt = 5e-4
-}
-glb = {
-    L = [$X, $Y, $Z]
-}"
+"
+:
 uscale 100 ff.txt | sort > ff.out.txt
-
