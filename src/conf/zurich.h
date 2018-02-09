@@ -7,7 +7,6 @@
 #define          adpd_b               2
 #define          adpd_r               2
 #define         adpd_br              10
-
 #define          gdpd_b               1
 #define          gdpd_r             100
 #define         gdpd_br              10
@@ -17,11 +16,11 @@
 
 #define      global_ids           false
 #define   multi_solvent            true
-#define      color_freq            1000
 
 #define       fsiforces            true
 #define   contactforces           false
 #define      strt_dumps           false
+#define      color_freq            1000
 #define       strt_freq            5000
 #define       pushsolid           false
 #define         pushrbc           false

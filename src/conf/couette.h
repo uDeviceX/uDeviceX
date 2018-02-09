@@ -7,16 +7,15 @@
 #define          adpd_b           2.667
 #define          adpd_r           2.667
 #define         adpd_br           2.667
-
 #define          gdpd_b             8.0
 #define          gdpd_r             8.0
 #define         gdpd_br             8.0
 
-#define      global_ids           false
-#define   multi_solvent           false
-
 #define         ljsigma             0.3
 #define       ljepsilon           0.444
+
+#define      global_ids           false
+#define   multi_solvent           false
 
 #define       fsiforces            true
 #define   contactforces           false

@@ -25,5 +25,3 @@
 #define         pushrbc           false
 #define           walls           false
 #define           RBCnv             498
-
-
