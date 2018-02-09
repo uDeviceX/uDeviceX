@@ -30,4 +30,4 @@ dump = {
     freq_field = 0.2500
     freq_parts = 0.2500
 }'
-cp bop/solvent-00001.bop bop.out.txt
+cp bop/solvent-00000.bop bop.out.txt

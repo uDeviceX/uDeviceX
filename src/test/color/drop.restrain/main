@@ -46,5 +46,5 @@ dump = {
     freq_parts = 4.0000
 }'
 cm() { awk '$7 == 1 {n++; x+=$1; y+=$2; z+=$3} END {print x/n, y/n, z/n}'; }
- ../tools/bop2txt2 bop/solvent-00001.bop -- bop/colors_solvent-00001.bop | \
+ ../tools/bop2txt2 bop/solvent-00000.bop -- bop/colors_solvent-00000.bop | \
             cm > drop.out.txt
