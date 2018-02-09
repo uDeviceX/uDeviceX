@@ -71,6 +71,5 @@ hdr/couette.h            \
 hdr/default.h            \
 hdr/double.poiseuille.h  \
 hdr/lina.h               \
-hdr/poiseuille.h         \
 hdr/test.h               \
 hdr/zurich.h

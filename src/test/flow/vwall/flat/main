@@ -4,7 +4,7 @@ rm -rf h5
 :
 u.cp.sdf wall1/wall.dat sdf.dat
 :
-u.conf conf/poiseuille.h <<!!!
+u.conf conf/test.h <<!!!
    walls
    run
 !!!
