@@ -5,7 +5,7 @@ echo -e "4.1 21.5 8\n4.1 10.5 8\n11.9 16 8" > rigs-ic.txt
 cp data/rig/sphere.ply   rig.ply
 u.cp.rbc rbc/498.off rbc.off
 :
-u.conf conf/test.h <<!!!
+u.conf conf/default.h <<!!!
   solids sbounce_back
   contactforces=false
   run

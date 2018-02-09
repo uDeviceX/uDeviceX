@@ -6,7 +6,7 @@ set -eu
 S=`u.cp.s`
 u.cp.sdf pachinko/sdf.dat sdf.dat
 :
-u.conf conf/test.h <<!!!
+u.conf conf/default.h <<!!!
    walls
    run
 !!!

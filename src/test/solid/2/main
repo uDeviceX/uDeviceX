@@ -5,7 +5,7 @@ u.cp.sdf yplates1/yplates.dat sdf.dat
 echo -e "16 16 8" > rigs-ic.txt
 cp data/rig/cyl.ply rig.ply
 :
-u.conf conf/test.h <<!!!
+u.conf conf/default.h <<!!!
    walls
    solids spdir=2 sbounce_back
    run

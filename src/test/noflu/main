@@ -1,6 +1,6 @@
 #### no fluid
 # TEST: noflu
-S=`u.cp.s` C="$S/conf/test.h"
+S=`u.cp.s` C="$S/conf/default.h"
 :
 u.cp.sdf cyl1/cyl.dat sdf.dat
 :

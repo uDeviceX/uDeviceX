@@ -6,7 +6,7 @@ C=conf/default.h
 :
 nv=642
 u.conf $S $U $C <<!!!
-       RBCnv=$nv RBC_RND
+       RBCnv=$nv RBC_RND  kBT=4.44302e-8 fsiforces=false
        run
 !!!
 { u.make -j;     } > /dev/null

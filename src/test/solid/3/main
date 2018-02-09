@@ -6,7 +6,7 @@ cp data/rig/sphere_R1.ply rig.ply
 x=0.75 y=3 z=9; echo $x $y $z >  rigs-ic.txt
 x=8    y=8 z=8; echo $x $y $z >> rigs-ic.txt
 :
-u.conf conf/test.h <<!!!
+u.conf conf/default.h <<!!!
     solids walls kBT=1e-7
     run
 !!!

@@ -6,7 +6,7 @@ x=11 y=15 z=8; echo $x $y $z                              > rigs-ic.txt
 cp data/rig/sphere_R2.ply rig.ply
 u.cp.rbc rbc/498.off rbc.off
 :
-u.conf conf/test.h <<!!!
+u.conf conf/default.h <<!!!
    rbcs
    solids sbounce_back
    pushrbc

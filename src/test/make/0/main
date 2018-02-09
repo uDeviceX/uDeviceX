@@ -7,7 +7,7 @@ s=`pwd`
 mkdir $t
 ( cd $t
   u.conf "$s" "$s/conf/default.h" <<!
-  run
+  run kBT=4.44302e-8 fsiforces=false
 !
   { make clean && u.make -j; } > /dev/null
 )

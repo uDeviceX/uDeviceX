@@ -6,7 +6,7 @@ t=/tmp/udx.$$
 s=`pwd`
 mkdir $t
 ( cd $t
-  u.conf "$s" "$s"/conf/test.h <<!
+  u.conf "$s" "$s"/conf/default.h <<!
   run
   run
 !

@@ -2,7 +2,7 @@
 # nTEST: bulk.t0
 X=4 Y=4 Z=4 N=64
 u.conf . u/bulk conf/default.h <<!!!
-       kBT=0 multi_solvent=false
+       kBT=0 multi_solvent=false fsiforces=false
        run
 !!!
 u.make -j

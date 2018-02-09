@@ -4,7 +4,7 @@ rm -rf bop h5 diag.txt
 :
 u.cp.sdf wall1/wall.dat sdf.dat
 :
-u.conf conf/test.h <<!!!
+u.conf conf/default.h <<!!!
    walls
    run
 !!!

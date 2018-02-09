@@ -1,7 +1,7 @@
 # nTEST: pair.1
 s=. b=. c=conf/default.h
 u.conf $s u/pair $c <<!
-multi_solvent=true
+multi_solvent=true kBT=4.44302e-8 fsiforces=false
 adpd_b=10.0  adpd_r=20.0  adpd_br=30
 gdpd_b=100.0 gdpd_r=200.0 gdpd_br=300
 run

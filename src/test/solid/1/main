@@ -4,7 +4,7 @@ rm -rf h5 bop diag.txt solid_diag.txt
 echo -e "8 16 8" > rigs-ic.txt
 cp data/rig/sphere.ply rig.ply
 :
-u.conf conf/test.h <<!!!
+u.conf conf/default.h <<!!!
    solids sbounce_back
    run
 !!!

@@ -3,7 +3,7 @@
 rm -rf bop h5 diag.txt rbc.off
 :
 u.conf conf/default.h <<!!!
-   run
+   run kBT=4.44302e-8 fsiforces=false
 !!!
 (make clean && u.make -j) > /dev/null
 u.run ./udx '

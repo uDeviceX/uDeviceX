@@ -1,7 +1,7 @@
 # nTEST: case.1
 set -eu
 :
-D=case0 S=`u.cp.s` U=u/x C="$S/conf/test.h"
+D=case0 S=`u.cp.s` U=u/x C="$S/conf/default.h"
 rm -rf "$D"
 :
 export S

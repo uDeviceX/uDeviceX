@@ -5,7 +5,7 @@ rm -rf bop h5 diag.txt
 :
 u.cp.sdf cyl1/cyl.dat sdf.dat
 :
-u.conf conf/test.h <<!!!
+u.conf conf/default.h <<!!!
    numberdensity=1
    walls
    run

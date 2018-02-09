@@ -1,5 +1,5 @@
 #define   numberdensity              10
-#define             kBT      4.44302e-8
+#define             kBT       0.0444302
 #define        flu_mass             1.0
 #define        rbc_mass             0.5
 #define      solid_mass             0.5
@@ -17,7 +17,7 @@
 #define      global_ids           false
 #define   multi_solvent           false
 
-#define       fsiforces           false
+#define       fsiforces            true
 #define   contactforces           false
 #define      strt_dumps           false
 #define       strt_freq            5000
