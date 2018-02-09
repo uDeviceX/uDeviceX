@@ -1,43 +1,16 @@
 #### restrain memrain of RBC
 # nTEST: rbc.restrain.t0
-rm -rf bop diag.txt h5 ply rbc.off
+cd test/color/rbc/restrain
+S=`u.cp.s`
 u.cp.rbc rbc/498.off rbc.off
 u.cp.sdf wall1/wall.dat sdf.dat
 x=0.75 y=8 z=12; echo 1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 > rbcs-ic.txt
 :
-u.conf conf/default.h <<!!!
+u.conf "$S" u/x "$S/conf/default.h" <<!!!
    rbc_mass=0.5 kBT=1e-7
    rbcs walls
    run
 !!!
-{ make clean && u.make -j ; } > /dev/null
-u.run ./udx '
-time = {
-    type = "const"
-    dt = 5e-4
-    wall = 5e-2
-    end = 0.5
-}
-glb = {
-    L = [16, 16, 16]
-}
-rbc = {
-    @include "rbc.test.cfg"
-}
-wvel = {
-    type = "shear"
-    gdot = 5.0
-    vdir = 0
-    gdir = 2
-}
-restrain = {
-    kind = "rbc"
-    freq = 100
-}
-dump = {
-    field = true
-    parts = true
-    freq_field = 0.1500
-    freq_parts = 0.1500
-}'
+u.make -j
+u.run ./udx conf.cfg
 ply2punto r/00003.ply | uscale 10 > ply.out.txt
