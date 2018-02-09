@@ -35,7 +35,7 @@ glb = {
 }
 dump = {
     parts = true;
-    freq_parts = 100;
+    freq_parts = 0.0500
 };'
 u.run ./bin.2/udx '
 time = {
@@ -52,7 +52,7 @@ bforce = {
 };
 dump = {
     parts = true;
-    freq_parts = 100;
+    freq_parts = 0.0500
 };'
 :
 awk '{print $2, $5, $8}' solid_diag_0000.txt | uscale 2.5 > sdiag.out.txt

@@ -31,7 +31,7 @@ rbc = {
 dump = {
     parts = true
     field = true
-    freq_parts = 1
+    freq_parts = 0.0004
 }'
 bop2txt2 bop/solvent-00001.bop -- bop/colors_solvent-00001.bop |
   awk '{s+=$7} END {print s >= 25 && s <= 30}' > color.out.txt

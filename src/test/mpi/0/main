@@ -23,6 +23,6 @@ rbc = {
     @include "rbc.test.cfg"
 }
 dump = {
-    freq_parts = 100;
+    freq_parts = 0.0500
 };'
 awk '{print 10000*$2}' diag.txt > diag.out.txt

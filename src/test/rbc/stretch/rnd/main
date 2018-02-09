@@ -40,6 +40,6 @@ restrain = {
 };
 dump = {
     parts = true;
-    freq_parts = 100;
+    freq_parts = 0.0500
 };'
 ply2punto r/00001.ply | uscale 15 > ply.out.txt

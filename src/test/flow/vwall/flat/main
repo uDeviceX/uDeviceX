@@ -28,7 +28,7 @@ wvel = {
 dump = {
     field = true
     parts = true
-    freq_parts = 300
+    freq_parts = 0.1500
     freq_field = 0.15
 }'
 u.avgh5 1 u 2 h5/flowfields-001[0123].h5 | uscale 0.05 > h5.out.txt

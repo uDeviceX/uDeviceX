@@ -36,7 +36,7 @@ rbc = {
 }
 dump = {
     parts = true;
-    freq_parts = 300;
+    freq_parts = 0.1500
 };'
 :
 :
@@ -58,6 +58,6 @@ bforce = {
 };
 dump = {
     parts = true;
-    freq_parts = 300;
+    freq_parts = 0.1500
 };'
 ply2punto r/00003.ply | uscale 100 > ply.out.txt

@@ -28,5 +28,5 @@ dump = {
     field = true;
     parts = true;
     freq_field = 0.0500
-    freq_parts = 100;
+    freq_parts = 0.0500
 };' | awk '/========= ERROR SUMMARY:/'         > mem.out.txt
