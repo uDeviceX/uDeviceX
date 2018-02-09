@@ -1,17 +1,17 @@
 #define numberdensity    10
 #define kBT              4.44302e-8
-#define flu_mass         1.0        /* solvent particle mass */
-#define rbc_mass         0.5        /* RBC particle mass     */
-#define solid_mass       0.5        /* solid particle mass   */
+#define flu_mass         1.0
+#define rbc_mass         0.5
+#define solid_mass       0.5
 
-#define adpd_b         2.6666667  /* aij for the solvent */
-#define adpd_r          2.6666667  /* aij for the RBC membrane */
-#define adpd_br         2.6666667  /* aij for the wall */
-#define gdpd_b    8.0        /* gamma for the solvent */
-#define gdpd_r     8.0        /* gamma for the RBC membrane */
-#define gdpd_br    8.0        /* gamma for the wall */
+#define adpd_b         2.6666667
+#define adpd_r          2.6666667
+#define adpd_br         2.6666667
+#define gdpd_b    8.0
+#define gdpd_r     8.0
+#define gdpd_br    8.0
 
-#define ljsigma          0.3        /* RBC-RBC contact LJ interaction parameters */
+#define ljsigma          0.3
 #define ljepsilon        0.44
 
 #define global_ids       (false)
