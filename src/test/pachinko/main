@@ -29,6 +29,6 @@ dump = {
     field = true
     parts = true
     freq_field = 0.1500
-    freq_parts = 300;
+    freq_parts = 300
 }'
-u.avgh5 1 u 2 h5/flowfields-0003.h5 | uscale 0.1 > h5.out.txt
+u.avgh5 1 u 2 h5/flowfields-0002.h5 | uscale 0.1 > h5.out.txt
