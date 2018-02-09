@@ -1,5 +1,5 @@
 #### solvent only restart
-# cTEST: rstrt.t1
+# nTEST: rstrt.t1
 rm -rf h5
 :
 u.conf conf/double.poiseuille.h <<!!!
