@@ -1,0 +1,22 @@
+. u.test.util
+
+prog=u.test.get
+prog0=u.test.get0
+
+usg () {
+    msg "$prog NAME [DIR].."
+    msg 'return a file name which contains test NAME'
+    exit 0
+}
+
+if test $# -ne 0 && test "$1" = -h; then usg; fi
+if test $# -eq 0; then err 'missing argument NAME'; fi
+
+n="$1"; shift
+if test $# -eq 0; then err 'missing argument DIR'; fi
+
+for d
+do if test ! -d "$d"; then err "no a directory '$d'"; fi
+done
+
+exec $prog0 "$@"

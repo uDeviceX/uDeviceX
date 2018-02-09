@@ -1,7 +1,7 @@
 BIN = $(HOME)/bin
 B = $(BIN)
 
-P = util pack pack0 touch touch0 unpack unpack0
+P = util get get0 pack pack0 touch touch0 unpack unpack0
 
 p = u.test
 
