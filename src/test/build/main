@@ -1,8 +1,0 @@
-# TEST: build.0
-set -eu
-rm -fr abcd
-S=`u.cp.s` U=u/x C="$S/conf/default.h"
-UDX=abcd S="$S" u.build $U "$C" <<!
-run
-!
-if test -e abcd; then echo ok; else echo fail; fi > build.out.txt
