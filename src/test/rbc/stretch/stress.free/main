@@ -31,7 +31,7 @@ glb = {
 rbc = {
     @include "rbc.lina.cfg"
     kBT = 1e-7
-    ks = 735.294117e-7
+    ks = 7.35294117e-5
 }
 dump = {
     parts = true
