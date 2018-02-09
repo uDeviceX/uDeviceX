@@ -5,7 +5,7 @@ rm -rf bop h5 diag.txt rbc.off bin.1 bin.2 sdf.dat
 u.cp.rbc rbc/498.off  rbc.off
 u.cp.sdf wall1/wall.dat sdf.dat
 :
-u.conf conf/couette.h <<!!!
+u.conf conf/test.h <<!!!
    walls kBT=1e-7
    strt_dumps=true
    run

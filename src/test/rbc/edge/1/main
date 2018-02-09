@@ -8,7 +8,7 @@ echo     1  0   0 $x              \
          0 $s  $c $z              \
          0  0   0  1 > rbcs-ic.txt
 :
-u.conf conf/couette.h <<!!!
+u.conf conf/test.h <<!!!
    rbcs kBT=1e-7
    run
 !!!
