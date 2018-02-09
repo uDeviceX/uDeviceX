@@ -4,7 +4,7 @@ i="$1"; shift
 
 awk '
 /dt = / { dt = $3}
-/freq_field = / {
+/freq_parts = / {
     f = $3; sub(/;$/, "", f)
     s = $0; sub(/[^ \t].*/, "", s)
     if (f != int(f)) next
