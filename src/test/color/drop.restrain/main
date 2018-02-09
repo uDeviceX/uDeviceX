@@ -24,7 +24,7 @@ glb = {
 bforce = {
     type = "constant"
     f = [0.6, 0.0, 0.0]
-};
+}
 wvel = {
     type = "shear"
     gdot = 5.0

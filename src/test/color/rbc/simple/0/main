@@ -23,8 +23,8 @@ rbc = {
     @include "rbc.test.cfg"
 }
 dump = {
-    parts = true;
+    parts = true
     freq_parts = 0.0004
-};'
+}'
 bop2txt2 bop/solvent-00001.bop -- bop/colors_solvent-00001.bop |
   awk '{print $7}' | sort -g > color.out.txt

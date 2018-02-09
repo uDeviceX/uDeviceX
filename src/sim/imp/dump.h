@@ -17,7 +17,7 @@ static void dump_part(Sim *s) {
     const Flu *flu = &s->flu;
     const Rig *rig = &s->rig;
     BopWork *dumpt = s->dumpt;
-    static const int id_bop = 0;
+    static int id_bop = 0; /* TODO */
     cD2H(flu->q.pp_hst, flu->q.pp, flu->q.n);
     if (global_ids) {
         cD2H(flu->q.ii_hst, flu->q.ii, flu->q.n);
@@ -79,7 +79,7 @@ void dump_diag_after(Time *time, int it, bool solid0, Sim *s) { /* after wall */
     float dt;
     const Rig *rig = &s->rig;
     const Opt *o = &s->opt;
-    if (solid0 && (time_cross(time, o->freq_parts)) {
+    if (solid0 && (time_cross(time, o->freq_parts))) {
         static int id = 0;
         dt = time_dt(time);
         rig_dump(dt, it, rig->q.ss_dmp, rig->q.ss_dmp_bb, rig->q.ns, s->coords);
@@ -119,7 +119,7 @@ static void dump_strt(int id, Sim *s) {
 
 static void dump_diag(Time *time, int it, Sim *s) { /* generic dump */
     const Opt *o = &s->opt;
-    if (it % o->freq_parts == 0) {
+    if (time_cross(time, o->freq_parts)) {
         if (o->dump_parts) dump_part(s);
         if (rbcs)          dump_rbcs(s);
         UC(diag(time_current(time), s));

@@ -1,6 +1,6 @@
 #### random particles in subregion only
 # TEST: clist.t1
-X=4; Y=6; Z=8; N=64
+X=4 Y=6 Z=8 N=64
 u.conf . u/clist conf/default.h <<!!!
        run
 !!!
@@ -8,5 +8,5 @@ u.conf . u/clist conf/default.h <<!!!
 u.pre.gen_random 2 $Y $Z $N |
 u.run ./udx "
 glb = {
-    L = [$X, $Y, $Z];
-};" > clist.out.txt
+    L = [$X, $Y, $Z]
+}" > clist.out.txt

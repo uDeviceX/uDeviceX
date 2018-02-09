@@ -10,5 +10,5 @@ u.conf . u/clist conf/default.h <<!!!
 u.pre.gen_random 20 $Y $Z $N > particles.out 
 u.run ./udx "
 glb = {
-    L = [$X, $Y, $Z];
-};" < particles.out > clist.out.txt
+    L = [$X, $Y, $Z]
+}" < particles.out > clist.out.txt

@@ -1,6 +1,6 @@
 #### random particles; density 10
 # nTEST: bulk.t1
-X=4; Y=4; Z=4; N=640
+X=4 Y=4 Z=4 N=640
 u.conf . u/bulk conf/default.h <<!!!
        kBT=0 multi_solvent=false    
        run
@@ -8,7 +8,7 @@ u.conf . u/bulk conf/default.h <<!!!
 { u.make -j;     } > /dev/null
 u.pre.gen_random $X $Y $Z $N > pp.txt
 u.run ./udx "
-in = \"pp.txt\"; 
+in = \"pp.txt\" 
 out = \"ff.txt\"
 flu = {
     dpd = true
@@ -22,6 +22,6 @@ time = {
 }
 glb = {
     L = [$X, $Y, $Z]
-};"
+}"
 uscale 100 ff.txt | sort > ff.out.txt
 
