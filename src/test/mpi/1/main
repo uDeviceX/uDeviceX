@@ -2,7 +2,7 @@
 # nTEST: mpi.t2
 rm -rf diag.txt h5 bop ply rbc.off
 :
-u.conf conf/double.poiseuille.h <<!!!
+u.conf conf/test.h <<!!!
    kBT=1e-7
    DBG_PEEK
    run

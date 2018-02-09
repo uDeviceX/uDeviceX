@@ -5,7 +5,7 @@ rm -rf h5 diag.txt solid_diag*.txt
 echo -e "4.1 21.5 8\n4.1 10.5 8\n11.9 16 8" > rigs-ic.txt
 cp data/rig/ellipsoid.ply rig.ply
 :
-u.conf conf/double.poiseuille.h <<!!!
+u.conf conf/test.h <<!!!
   solids sbounce_back
   contactforces=true
   run

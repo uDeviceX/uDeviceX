@@ -1,7 +1,7 @@
 #### Double poiseuille
 # nTEST: flow.t1
 :
-u.conf conf/double.poiseuille.h <<!!!
+u.conf conf/test.h <<!!!
    run
 !!!
 (make clean && u.make -j) > /dev/null
