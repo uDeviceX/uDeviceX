@@ -66,7 +66,6 @@ ic/ident.ic  \
 ic/two.ic
 
 H = \
-hdr/around.h             \
 hdr/couette.h            \
 hdr/default.h            \
 hdr/double.poiseuille.h  \
