@@ -73,5 +73,4 @@ hdr/double.poiseuille.h  \
 hdr/lina.h               \
 hdr/poiseuille.h         \
 hdr/test.h               \
-hdr/wall.h               \
 hdr/zurich.h
