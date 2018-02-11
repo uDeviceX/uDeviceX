@@ -1,28 +1,10 @@
 #### 4 roller mills
-# nTEST: flow.t5
-rm -rf bop h5 diag.txt rbc.off
-:
-u.conf conf/default.h <<!!!
-   run kBT=4.44302e-8 fsiforces=false
-!!!
-(make clean && u.make -j) > /dev/null
-u.run ./udx '
-time = {
-    type = "const"
-    dt = 5e-4
-    end = 2.01
-}
-glb = {
-    L = [16, 16, 16]
-}
-bforce = {
-    type = "four_roller"
-    a    = 0.2
-}
-dump = {
-    field = true
-    parts = true
-    freq_field = 2.0000
-    freq_parts = 2.0000
-}'
+# nTEST: flow.cylnder.1
+cd test/flow/cylinder/1
+S=`u.cp.s`
+u.conf "$S" u/x "$S/conf/default.h" <<!
+   run kBT=4.44302e-8
+!
+u.make -j
+u.run ./udx conf.cfg
 u.avgh5 0 u 1 h5/flowfields-0000.h5 | uscale 0.1 > h5.out.txt
