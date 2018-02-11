@@ -67,5 +67,4 @@ ic/two.ic
 
 H = \
 hdr/default.h  \
-hdr/lina.h     \
-hdr/zurich.h
+hdr/lina.h
