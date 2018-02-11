@@ -9,6 +9,6 @@ u.conf "$S" u/x "$S/conf/default.h" <<!
    solids sbounce_back
    run
 !
-{ make clean && u.make -j ; } > /dev/null
+u.make -j
 u.run ./udx conf.cfg
 cat solid_diag_0000.txt | awk '{print $2, $5, $8}' | uscale 5 > sdiag.out.txt

@@ -11,6 +11,6 @@ u.conf "$S" u/x "$S/conf/default.h" <<!
    rbcs  rbc_com_freq=300 rbc_ids=true rbc_com_dumps=true kBT=1e-7
    run
 !
-{ make clean && u.make -j ; } > /dev/null
+u.make -j
 u.run ./udx conf.cfg
 sort com/0003.txt | awk '{print $1, $2, $3, $4}' | uscale 100 > com.out.txt
