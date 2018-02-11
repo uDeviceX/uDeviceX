@@ -1,6 +1,5 @@
 #### contact force: RBC and sphere in double Poiseuille
 # nTEST: mix.contact.t1
-rm -rf diag.txt h5 bop ply
  x=5 y=17 z=8; echo 1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 > rbcs-ic.txt
 x=11 y=15 z=8; echo $x $y $z                              > rigs-ic.txt
 cp data/rig/sphere_R2.ply rig.ply

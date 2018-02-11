@@ -2,7 +2,6 @@
 # nTEST: rbc.stretch.simple.0
 cd test/rbc/stretch/simple
 S=`u.cp.s`
-rm -rf bop diag.txt h5 ply rbc.off
 :
 A=1e4
 nv=642

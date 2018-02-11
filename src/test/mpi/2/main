@@ -2,7 +2,6 @@
 # nTEST: mpi.t3
 cd test/mpi/2
 S=`u.cp.s`
-rm -rf diag.txt h5 bop ply rbc.off
 :
 u.cp.rbc rbc/498.off  rbc.off
 u.cp.sdf cyl1/cyl.dat sdf.dat

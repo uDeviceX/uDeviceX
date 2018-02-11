@@ -2,7 +2,6 @@
 cd test/case/1
 :
 D=case0 S=`u.cp.s` U=u/x C="$S/conf/default.h"
-rm -rf "$D"
 :
 export S
 W="$S/data/sdf/wall1/wall.dat"

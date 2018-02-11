@@ -1,7 +1,6 @@
 #### velocity controller for flow around cylinder (2 nodes)
 # nTEST: vcon.t1
 set -eu
-rm -rf bop h5 diag.txt
 :
 u.cp.sdf cyl1/cyl.dat sdf.dat
 :

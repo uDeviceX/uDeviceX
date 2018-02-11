@@ -2,7 +2,6 @@
 # nTEST: solid.t5
 cd test/solid/4
 S=`u.cp.s`
-rm -rf h5 bop diag.txt solid_diag.txt
 u.cp.sdf cyl1/cyl.dat sdf.dat
 cp data/rig/sphere_R1.ply rig.ply
 x=0.75 y=3 z=9; echo $x $y $z >  rigs-ic.txt

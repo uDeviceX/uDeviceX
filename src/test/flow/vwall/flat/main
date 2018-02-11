@@ -2,7 +2,6 @@
 # nTEST: flow.vwall.flat
 cd test/flow/vwall/flat
 S=`u.cp.s`
-rm -rf h5
 :
 u.cp.sdf wall1/wall.dat sdf.dat
 :

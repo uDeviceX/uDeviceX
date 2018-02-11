@@ -2,7 +2,6 @@
 # scTEST: step.0
 cd test/step
 set -e
-rm -rf bop h5 diag.txt
 :
 u=u/safe
 s=`pwd`

@@ -2,7 +2,6 @@
 # nTEST: rbc.nv2562.0
 cd test/rbc/nv/2562
 S=`u.cp.s`
-rm -rf bop diag.txt h5 ply rbc.off
 nv=2562
 u.cp.rbc rbc/sc/$nv.off rbc.off
 x=24 y=6 z=6

@@ -1,6 +1,5 @@
 #### solvent only restart
 # nTEST: rstrt.t1
-rm -rf h5
 :
 u.conf "$S" u/x "$S/conf/default.h" <<!
    BASE_STRT_DUMP=\"bin.1/strt\"

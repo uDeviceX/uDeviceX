@@ -1,7 +1,6 @@
 #### velocity controller for flow around cylinder
 # nTEST: vcon.t0
 set -eu
-rm -rf h5
 :
 u.cp.sdf cyl1/cyl.dat sdf.dat
 :

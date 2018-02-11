@@ -1,7 +1,6 @@
 #### freeze after high temp
 # nTEST: freeze.t0
 cd test/freeze/hot
-rm -rf bop h5 diag.txt
 c=conf/zurich.h
 u.cp.sdf yplates1/yplates.dat sdf.dat
 u.conf $c <<!
