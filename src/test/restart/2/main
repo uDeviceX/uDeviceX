@@ -1,5 +1,6 @@
 #### RBC in a periodic box
 # nTEST: rstrt.t3
+S=`u.cp.s`
 :
 u.cp.rbc rbc/498.off rbc.off
 x=0.75 y=8 z=12; echo 1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 > rbcs-ic.txt
