@@ -1,6 +1,7 @@
 #### Double poiseuille
 # nTEST: flow.t1
 cd test/flow/double
+S=`u.cp.s`
 :
 u.conf "$S" u/x "$S/conf/default.h" <<!
    run

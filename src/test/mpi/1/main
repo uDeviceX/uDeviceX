@@ -1,6 +1,7 @@
 #### double Poiseuille
 # nTEST: mpi.t2
 cd test/mpi/1
+S=`u.cp.s`
 rm -rf diag.txt h5 bop ply rbc.off
 :
 u.conf "$S" u/x "$S/conf/default.h" <<!

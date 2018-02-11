@@ -1,6 +1,7 @@
 #### one RBC around cylinder
 # nTEST: flow.around.t1
 cd test/rbc/edge/3
+S=`u.cp.s`
 rm -rf bop diag.txt h5 ply rbc.off
 u.cp.rbc rbc/498.off  rbc.off
 u.cp.sdf cyl1/cyl.dat sdf.dat

@@ -1,6 +1,7 @@
 #### Double poiseuille non pinned sphere
 # nTEST: solid.t2
 cd test/solid/1
+S=`u.cp.s`
 rm -rf h5 bop diag.txt solid_diag.txt
 echo -e "8 16 8" > rigs-ic.txt
 cp data/rig/sphere.ply rig.ply

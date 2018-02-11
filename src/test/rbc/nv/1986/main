@@ -1,6 +1,7 @@
 #### periodic box: dumped relativly to domain center
 # nTEST: rbc.nv1986.0
 cd test/rbc/nv/1986
+S=`u.cp.s`
 rm -rf bop diag.txt h5 ply rbc.off
 nv=1986
 u.cp.rbc rbc/$nv.off rbc.off

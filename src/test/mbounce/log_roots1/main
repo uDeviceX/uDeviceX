@@ -1,6 +1,7 @@
 #### Double poiseuille non pinned sphere
 # snTEST: mbounce.log_roots.t1
 cd test/mbounce/log_roots1
+S=`u.cp.s`
 rm -rf h5 bop diag.txt solid_diag.txt
 echo -e "8 16 8" > rigs-ic.txt
 cp data/rig/sphere.ply rig.ply

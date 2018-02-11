@@ -1,5 +1,6 @@
 #### Plates : shear
 # nTEST: wall.t0
+S=`u.cp.s`
 cd test/wall
 rm -rf bop h5 diag.txt
 :
