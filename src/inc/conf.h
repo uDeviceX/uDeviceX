@@ -257,11 +257,6 @@
 #define KL_RELEASE
 #endif
 
-/* [m]pi [c]heck macro */
-#if !defined(MC_RELEASE)
-  #define MC_RELEASE
-#endif
-
 /* [c]uda [c]heck macro */
 #if !defined(CC_RELEASE) && !defined(CC_SYNC) && !defined(CC_TRACE) && !defined(CC_TRACE_PEEK)
   #define CC_RELEASE
