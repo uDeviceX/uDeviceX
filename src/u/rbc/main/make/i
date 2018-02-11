@@ -1,7 +1,7 @@
 f0 () { find "$1" -name '*.cu' -o -name '*.cpp' -o -name '*.h' -type f ; }
 f () ( for d; do f0 "$d"; done )
 
-f $U inc rbc mpi d math utils io scheme/force scheme/move scheme/restrain coords parser
+f $U inc rbc mpi d math utils io scheme/force scheme/move scheme/restrain scheme/time coords parser
 
 # add dir
 echo $U $U/lib .

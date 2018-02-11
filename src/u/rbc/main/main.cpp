@@ -26,7 +26,7 @@ int main(int argc, char **argv) {
     MoveParams *moveparams;
     RbcParams *par;
     float dt, te;
-    int part_freq;
+    float part_freq;
     m::ini(&argc, &argv);
     msg_ini(m::rank);
 
@@ -40,7 +40,7 @@ int main(int argc, char **argv) {
 
     UC(bforce_ini(&bforce));
     UC(bforce_ini_conf(cfg, /**/ bforce));
-    UC(conf_lookup_int(cfg, "dump.freq_parts", &part_freq));
+    UC(conf_lookup_float(cfg, "dump.freq_parts", &part_freq));
     UC(coords_ini_conf(m::cart, cfg, &coords));
     
     UC(scheme_move_params_ini(&moveparams));
