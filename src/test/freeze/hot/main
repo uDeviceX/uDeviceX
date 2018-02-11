@@ -1,9 +1,9 @@
 #### freeze after high temp
 # nTEST: freeze.t0
 cd test/freeze/hot
-c=conf/zurich.h
+S=`u.cp.s`
 u.cp.sdf yplates1/yplates.dat sdf.dat
-u.conf $c <<!
+u.conf "$S" u/x "$S/conf/default.h" <<!
    numberdensity=3
    walls
    S_LEVEL=0 kBT=1 adpd_b=12.5 gdpd_b=5.61125
@@ -12,4 +12,4 @@ u.conf $c <<!
 u.make -j
 u.run ./udx conf.cfg
 :
-u.avgh5 0 u 1 h5/flowfields-0000.h5 | uscale 0.01 > h5.out.txt
+u.avgh5 0 u 1 h5/flowfields-0001.h5 | uscale 0.01 > h5.out.txt
