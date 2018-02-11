@@ -5,9 +5,8 @@ S=`u.cp.s`
 :
 u.conf "$S" u/x "$S/conf/default.h" <<!
    kBT=1e-7
-   DBG_PEEK
    run
 !
 u.make -j
 u.run 2 1 1 ./udx conf.cfg
-u.avgh5 0 u 1 h5/flowfields-0011.h5 | uscale 10 > h5.out.txt
+u.avgh5 0 u 1 h5/flowfields-0013.h5 | uscale 10 > h5.out.txt
