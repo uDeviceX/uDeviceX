@@ -1,37 +1,17 @@
 #### contact force: two RBCs in double Poiseuille
 # nTEST: contact.t1
-rm -rf bop diag.txt h5 ply rbc.off
+cd test/contact/0
+S=`u.cp.s`
 u.cp.rbc rbc/498.off rbc.off
  x=5 y=17 z=8; echo 1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 >  rbcs-ic.txt
 x=11 y=15 z=8; echo 1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 >> rbcs-ic.txt
 :
-u.conf conf/default.h <<!!!
+u.conf "$S" u/x "$S/conf/default.h" <<!
    rbcs
    pushrbc
    contactforces
    run
-!!!
+!
 { make clean &&  u.make -j ; } > /dev/null
-u.run ./udx '
-time = {
-    type = "const"
-    dt = 5e-4
-    end = 2.0
-}
-glb = {
-    L = [16, 32, 16]
-}
-rbc = {
-    @include "rbc.test.cfg"
-}
-bforce = {
-   type = "double_poiseuille"
-   a = 6.6666667
-}
-dump = {
-    field = true
-    parts = true
-    freq_field = 0.7500
-    freq_parts = 0.7500
-}'
-ply2punto r/00001.ply > ply.out.txt
+u.run ./udx conf.cfg
+ply2punto r/00002.ply > ply.out.txt
