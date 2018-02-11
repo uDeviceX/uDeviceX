@@ -1,6 +1,7 @@
 #### velocity controller for flow around cylinder
 # nTEST: vcon.t0
-set -eu
+cd test/vcont/main/0
+S=`u.cp.s`
 :
 u.cp.sdf cyl1/cyl.dat sdf.dat
 :
@@ -10,7 +11,7 @@ u.conf "$S" u/x "$S/conf/default.h" <<!
    run
 !
 u.make -j
-u.run ./udx test/vcont/main/vcon.cfg '
+u.run ./udx ../vcon.cfg '
 time = {
     type = "const"
     dt = 5e-4

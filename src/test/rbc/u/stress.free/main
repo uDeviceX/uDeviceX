@@ -1,9 +1,7 @@
 #### check forces on a cell
 # sTEST: rbc.u.stree.free
 cd test/rbc/u/stress.free
-S=`u.cp.s`
-U=u/rbc/force
-C=conf/default.h
+S=`u.cp.s` U=u/rbc/force C="$S/conf/default.h"
 :
 nv=642
 cell=$S/data/cells/rbc/$nv.off

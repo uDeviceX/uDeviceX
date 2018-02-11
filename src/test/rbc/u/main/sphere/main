@@ -1,9 +1,7 @@
 #### periodic box: sphering
 # nTEST: rbc.u.main.sphere.0
 cd test/rbc/u/main/sphere
-set -eu
-:
-S=`u.cp.s` U=u/rbc/main C=conf/lina.h
+S=`u.cp.s` U=u/rbc/main C="$S/conf/lina.h"
 nv=642
 cell="$S"/data/cells/rbc/$nv.off
 cp $cell rbc.off

@@ -1,8 +1,6 @@
 #### check forces on a cell
 # nTEST: rbc.u.simple
-S=`u.cp.s`
-U=u/rbc/force
-C=conf/default.h
+S=`u.cp.s` U=u/rbc/force C="$S/conf/default.h"
 :
 nv=642
 u.conf $S $U $C <<!

@@ -1,6 +1,5 @@
 ## using gitlab:ugeom
 # TEST: square.out
-set -eu
 S=`u.cp.s` U=u/x C="$S/conf/default.h"
 XS=8 YS=8 ZS=8 a=7
 ugeom.square $XS $YS $ZS $a sdf.dat

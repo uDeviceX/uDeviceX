@@ -1,6 +1,5 @@
 # tform test
 # TEST: math.tform.0
-set -e -u
 u.conf0 u/math/tform
 u.make -j
 u.run >tform.txt ./udx -- '

@@ -1,7 +1,7 @@
 #### compute area and volume
 # TEST: rbc.u.area_volume.dev.0
 cd test/rbc/u/area_volume/dev
-S=`u.cp.s` U=u/rbc/area_volume C=conf/lina.h
+S=`u.cp.s` U=u/rbc/area_volume C="$S/conf/lina.h"
 nv=1986
 cp $S/data/cells/rbc/$nv.off rbc.off
 cp $S/data/ic/ident          rbcs-ic.txt
