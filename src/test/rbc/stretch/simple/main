@@ -5,7 +5,7 @@ S=`u.cp.s`
 :
 A=1e4
 nv=642
-cell=data/cells/rbc/$nv.off
+cell="$S/data/cells/rbc/$nv.off"
 cp              $cell           rbc.off
 u.stretch $A 5% $cell         > rbc.stretch
 :
