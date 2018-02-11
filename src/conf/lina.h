@@ -14,15 +14,19 @@
 #define         ljsigma             0.3
 #define       ljepsilon            0.44
 
+#define      global_ids           false
 #define   multi_solvent            true
 
 #define      color_freq             500
-#define   contactforces           false
-#define           walls           false
 #define dump_all_fields            true
+#define         RBC_RND            true
+#define            rbcs            true
+
+#define       fsiforces            true
+#define   contactforces           false
 #define      strt_dumps            true
 #define       strt_freq         2000000
-#define         RBC_RND            true
-#define       fsiforces            true
-#define            rbcs            true
+#define       pushsolid           false
+#define         pushrbc           false
+#define           walls           false
 #define           RBCnv             642
