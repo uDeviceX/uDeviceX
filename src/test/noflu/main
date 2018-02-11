@@ -1,15 +1,12 @@
 #### no fluid
 # TEST: noflu
 cd test/noflu
-S=`u.cp.s` C="$S/conf/default.h"
-:
+S=`u.cp.s`
 u.cp.sdf cyl1/cyl.dat sdf.dat
-:
-u.conf $C <<!
+u.conf "$S" u/x "$S/conf/default.h" <<!
    numberdensity=0  walls
    run
 !
-:
 u.make -j
 u.run ./udx conf.cfg
-cp bop/solvent-00000.bop bop.out.txt
+cp bop/solvent-00001.bop bop.out.txt
