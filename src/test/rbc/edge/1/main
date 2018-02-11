@@ -15,4 +15,4 @@ u.conf "$S" u/x "$S/conf/default.h" <<!
 !
 u.make -j
 u.run ./udx conf.cfg
-ply2punto r/00002.ply | uscale 100 > ply.out.txt
+ply2punto r/00003.ply | uscale 100 > ply.out.txt
