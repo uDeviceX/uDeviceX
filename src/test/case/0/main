@@ -1,5 +1,4 @@
 # TEST: case.0
-set -eu
 cd test/case/0
 S=`u.cp.s` U=u/x C="$S/conf/default.h"
 c="$S/data/cells/rbc/498.off"

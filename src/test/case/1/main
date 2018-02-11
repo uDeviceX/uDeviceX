@@ -1,5 +1,4 @@
 # nTEST: case.1
-set -eu
 cd test/case/1
 :
 D=case0 S=`u.cp.s` U=u/x C="$S/conf/default.h"

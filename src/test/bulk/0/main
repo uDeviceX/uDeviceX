@@ -1,6 +1,5 @@
 #### random particles; density 1
 # nTEST: bulk.t0
-set -eu
 cd test/bulk/0
 S=`u.cp.s`
 u.conf "$S" u/bulk "$S/conf/default.h" <<!
