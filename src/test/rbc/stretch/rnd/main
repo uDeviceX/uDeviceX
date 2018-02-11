@@ -1,5 +1,6 @@
 #### periodic box: stretch
 # scTEST: rbc.stretch.rnd.0
+cd test/rbc/stretch/rnd
 rm -rf bop diag.txt h5 ply rbc.off
 :
 A=1e6 : stretching force L/S^2

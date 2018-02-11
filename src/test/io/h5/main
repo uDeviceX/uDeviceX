@@ -1,4 +1,5 @@
 # TEST: io.h5
+cd test/io/h5
 u.cp.hdr test.h conf.h
 echo run | S=`u.cp.s` u.build u/io/h5 conf.h
 u.run ./udx conf.cfg

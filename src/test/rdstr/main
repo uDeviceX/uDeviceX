@@ -1,5 +1,6 @@
 #### 2 RBCs in a double poiseuille, crossing domain
 # nTEST: rdstr.t1
+cd test/rdstr
 rm -rf r diag.txt h5 bop ply rbc.off
 :
 u.cp.rbc rbc/498.off  rbc.off

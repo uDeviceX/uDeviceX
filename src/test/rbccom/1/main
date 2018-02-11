@@ -1,5 +1,6 @@
 #### 3 RBCs in a periodic box (1 node)
 # nTEST: rbccom.t1
+cd test/rbccom/1
 rm -rf bop diag.txt h5 ply com rbc.off
 u.cp.rbc rbc/498.off rbc.off
 x=0.75 y=8 z=12; echo 1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 >  rbcs-ic.txt

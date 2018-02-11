@@ -1,5 +1,6 @@
 #### RBC in a periodic box
 # nTEST: mpi.t1
+cd test/mpi/0
 rm -rf diag.txt h5 bop ply rbc.off
 :
 u.cp.rbc rbc/498.off  rbc.off

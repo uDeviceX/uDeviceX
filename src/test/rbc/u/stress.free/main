@@ -1,5 +1,6 @@
 #### check forces on a cell
 # sTEST: rbc.u.stree.free
+cd test/rbc/u/stress.free
 S=`u.cp.s`
 U=u/rbc/force
 C=conf/default.h

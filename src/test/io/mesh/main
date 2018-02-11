@@ -1,4 +1,5 @@
 # sTEST: io.mesh
+cd test/io/mesh
 :
 u.cp.hdr test.h  conf.h
 u.cp.rbc rbc/642 rbc.off

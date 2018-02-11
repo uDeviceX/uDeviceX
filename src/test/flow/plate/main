@@ -1,5 +1,6 @@
 #### Plates : poiseuille
 # nTEST: flow.t3
+cd test/flow/plate
 rm -rf bop h5 diag.txt rbc.off
 :
 u.cp.sdf wall1/wall.dat sdf.dat

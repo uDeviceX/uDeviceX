@@ -1,8 +1,9 @@
 for f
 do
     d=`dirname "$f"`
-    if test -f "$d/conf.cfg"; then continue; fi
-    if ! grep -q "\./udx '" $f; then continue; fi
-    ../poc/wrap/cfg0 "$f" > "$d/conf.cfg"
+    if ! test -f "$d/conf.cfg"; then continue; fi
+    if   grep -q 'cd test/' "$f"; then continue; fi
+    ../poc/wrap/cfg0 -v d="$d" "$f" > /tmp/t
+    mv /tmp/t "$f"
 done
 

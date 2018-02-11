@@ -1,5 +1,6 @@
 #### Double poiseuille
 # nTEST: flow.t1
+cd test/flow/double
 :
 u.conf conf/default.h <<!!!
    run

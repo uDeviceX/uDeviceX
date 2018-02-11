@@ -1,5 +1,6 @@
 #### double Poiseuille
 # nTEST: mpi.t2
+cd test/mpi/1
 rm -rf diag.txt h5 bop ply rbc.off
 :
 u.conf conf/default.h <<!!!

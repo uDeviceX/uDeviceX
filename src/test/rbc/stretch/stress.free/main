@@ -1,5 +1,6 @@
 #### periodic box: stretch
 # nTEST: rbc.stretch.stress.free.0
+cd test/rbc/stretch/stress.free
 :
 A=1e3
 nv=642

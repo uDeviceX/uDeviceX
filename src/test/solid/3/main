@@ -1,5 +1,6 @@
 #### two solids around cylinder with one solid removed by the wall
 # nTEST: solid.t4
+cd test/solid/3
 rm -rf h5 bop diag.txt solid_diag.txt
 u.cp.sdf cyl1/cyl.dat sdf.dat
 cp data/rig/sphere_R1.ply rig.ply
