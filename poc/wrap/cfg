@@ -1,6 +1,8 @@
-set -eux
+for f
+do
+    d=`dirname "$f"`
+    if test -f "$d/conf.cfg"; then continue; fi
+    if ! grep -q "\./udx '" $f; then continue; fi
+    ../poc/wrap/cfg0 "$f" > "$d/conf.cfg"
+done
 
-f="$1"
-d=`dirname "$f"`
-
-../poc/wrap/cfg0 "$f" > "$d/conf.cfg"
