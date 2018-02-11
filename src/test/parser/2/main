@@ -9,5 +9,5 @@ s=`pwd`
 u.conf "$s" "$u" "$s/conf/default.h" <<!
   run
 !
-{ u.make clean && u.make -j; } > /dev/null
+u.make -j
 u.run ./udx $t a=5 > parser.out.txt

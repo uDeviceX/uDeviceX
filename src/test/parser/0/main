@@ -9,5 +9,5 @@ echo "f=3.14" >> $t
 u.conf "$s" "$u" "$s/conf/default.h" <<!
   run
 !
-{ u.make clean && u.make -j; } > /dev/null
+u.make -j
 u.run ./udx $t > parser.out.txt

@@ -9,7 +9,7 @@ u.conf "$S" "$U" "$C" <<!
   walls
   run
 !
-{ u.make clean && u.make -j; } > .make.log
+u.make -j
 u.run ./udx "
 time = {
     type = \"const\"

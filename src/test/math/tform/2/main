@@ -4,7 +4,7 @@ S=`u.cp.s` U=u/math/tform C="$S/conf/default.h"
 u.conf "$S" "$U" "$C" <<!
 run
 !
-{ u.make clean && u.make -j; } > .make.log
+u.make -j
 t1="0 0 0 1 2 3    1 2 3 10 20 30"
 t2="1 2 3 0 0 0    10 20 30 1 2 3"
 u.run >tform.txt ./udx -- "

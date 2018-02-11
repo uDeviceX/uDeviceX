@@ -10,6 +10,6 @@ u.conf $C <<!
    run
 !
 :
-(make clean && u.make -j) > .make.log
+u.make -j
 u.run ./udx conf.cfg
 cp bop/solvent-00000.bop bop.out.txt

@@ -10,6 +10,6 @@ u.conf "$S" u/x "$S/conf/default.h" <<!
    rbcs kBT=1e-7 DBG_PEEK
    run
 !
-{ make clean && u.make -j; } > /dev/null
+u.make -j
 u.run 2 1 1 ./udx conf.cfg
 awk '{print 10000*$2}' diag.txt > diag.out.txt

@@ -6,6 +6,6 @@ S=`u.cp.s`
 u.conf "$S" u/x "$S/conf/default.h" <<!
    run
 !
-(make clean && u.make -j) > /dev/null
+u.make -j
 u.run ./udx conf.cfg
 u.avgh5 0 u 1 h5/flowfields-0000.h5 | uscale 0.1 > h5.out.txt

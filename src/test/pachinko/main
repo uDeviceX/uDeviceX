@@ -10,6 +10,6 @@ u.conf "$S" u/x "$S/conf/default.h" <<!
    walls
    run
 !
-{ make clean && u.make -j; } > /dev/null
+u.make -j
 u.run ./udx conf.cfg
 u.avgh5 1 u 2 h5/flowfields-0002.h5 | uscale 0.1 > h5.out.txt

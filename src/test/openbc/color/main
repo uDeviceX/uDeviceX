@@ -5,7 +5,7 @@ u.conf conf/default.h <<!
    multi_solvent
    run
 !
-(make clean && u.make -j) > /dev/null
+u.make -j
 u.run ./udx test/openbc/inout.cfg '
 time = {
     type = "const"

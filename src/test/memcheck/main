@@ -10,5 +10,5 @@ u.conf . u/safe conf/default.h <<!
   contactforces=true
   run
 !
-{ make clean && u.make -j ; } > /dev/null
+u.make -j
 MEM= u.run ./udx conf.cfg | awk '/========= ERROR SUMMARY:/'         > mem.out.txt

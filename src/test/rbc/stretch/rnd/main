@@ -20,7 +20,7 @@ u.conf "$S" u/x "$S/conf/default.h" <<!
    dt=0.0001
    run
 !
-{ make clean && u.make -j; } > /dev/null
+u.make -j
 :
 u.strtdir
 RBC_RND=$seed u.run ./udx conf.cfg

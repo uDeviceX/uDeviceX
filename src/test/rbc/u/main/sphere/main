@@ -21,7 +21,7 @@ u.conf $S $U $C <<!
    RBCnv=$nv RBC_RND=false
    run
 !
-{ make clean && u.make -j; } > /dev/null
+u.make -j
 :
 u.run ./udx conf.cfg
 ply2punto r/00002.ply | uscale 1 > ply.out.txt

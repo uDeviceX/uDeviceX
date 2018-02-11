@@ -12,6 +12,6 @@ u.conf "$S" u/x "$S/conf/default.h" <<!
    pushrbc DBG_PEEK
    run
 !
-{ make clean && u.make -j; } > /dev/null
+u.make -j
 u.run 3 1 1 ./udx conf.cfg
 u.avgh5 1 u 2 h5/flowfields-0000.h5 > h5.out.txt

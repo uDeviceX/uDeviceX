@@ -15,7 +15,7 @@ u.conf "$S" u/x "$S/conf/default.h" <<!
 :
 u.strtdir bin.1
 u.strtdir bin.2
-{ make clean && u.make -j ; } > /dev/null
+u.make -j
 u.run ./bin.1/udx '
 time = {
     type = "const"

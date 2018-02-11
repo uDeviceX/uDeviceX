@@ -17,7 +17,7 @@ u.conf "$S" u/x "$S/conf/default.h" <<!
    run
 !
 :
-{ make clean && u.make -j ; } > /dev/null
+u.make -j
 :
 u.strtdir bin.1
 u.strtdir bin.2

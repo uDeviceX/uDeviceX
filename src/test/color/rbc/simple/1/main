@@ -12,7 +12,7 @@ u.conf "$S" u/x "$S/conf/default.h" <<!
    numberdensity=3
    run
 !
-{ make clean && u.make -j; } > make.log
+u.make -j
 u.run ./udx  conf.cfg
 bop2txt2 bop/solvent-00000.bop -- bop/colors_solvent-00000.bop |
   awk '{print $7}' | sort -g > color.out.txt

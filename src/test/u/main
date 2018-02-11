@@ -5,6 +5,6 @@ S=`u.cp.s`
 for U in `u.u.list "$S"`
 do echo >&2 "compile $U"
    u.conf0 "$U"
-   { u.make clean && u.make -j; } > .make
+u.make -j
 done
 echo "$?" > status.out.txt
