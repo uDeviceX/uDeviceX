@@ -2,7 +2,7 @@
 # nTEST: rstrt.t5
 :
 echo -e "4.1 21.5 8\n4.1 10.5 8\n11.9 16 8" > rigs-ic.txt
-cp data/rig/ellipsoid.ply rig.ply
+u.cp.rig ellipsoid.ply rig.ply
 :
 u.conf "$S" u/x "$S/conf/default.h" <<!
    solids contactforces

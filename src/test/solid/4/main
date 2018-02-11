@@ -3,7 +3,7 @@
 cd test/solid/4
 S=`u.cp.s`
 u.cp.sdf cyl1/cyl.dat sdf.dat
-cp data/rig/sphere_R1.ply rig.ply
+u.cp.rig sphere_R1.ply rig.ply
 x=0.75 y=3 z=9; echo $x $y $z >  rigs-ic.txt
 x=8    y=8 z=8; echo $x $y $z >> rigs-ic.txt
 :

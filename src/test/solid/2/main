@@ -4,7 +4,7 @@ cd test/solid/2
 S=`u.cp.s`
 u.cp.sdf yplates1/yplates.dat sdf.dat
 echo -e "16 16 8" > rigs-ic.txt
-cp data/rig/cyl.ply rig.ply
+u.cp.rig cyl.ply rig.ply
 :
 u.conf "$S" u/x "$S/conf/default.h" <<!
    walls

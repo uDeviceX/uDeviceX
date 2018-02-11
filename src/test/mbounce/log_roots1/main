@@ -3,7 +3,7 @@
 cd test/mbounce/log_roots1
 S=`u.cp.s`
 echo -e "8 16 8" > rigs-ic.txt
-cp data/rig/sphere.ply rig.ply
+u.cp.rig sphere.ply rig.ply
 :
 u.conf "$S" u/x "$S/conf/default.h" <<!
    kBT=1.0 solids sbounce_back

@@ -3,7 +3,7 @@
 cd test/solid/1
 S=`u.cp.s`
 echo -e "8 16 8" > rigs-ic.txt
-cp data/rig/sphere.ply rig.ply
+u.cp.rig sphere.ply rig.ply
 :
 u.conf "$S" u/x "$S/conf/default.h" <<!
    solids sbounce_back
