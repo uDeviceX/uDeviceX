@@ -22,24 +22,5 @@ u.conf conf/lina.h <<!
 { make clean && u.make -j; } > /dev/null
 :
 u.strtdir
-RBC_RND=$seed u.run ./udx '
-time = {
-    type = "const"
-    dt = 5e-4
-    end = 0.011
-}
-glb = {
-    L = [48, 32, 32]
-}
-rbc = {
-    @include "rbc.test.cfg"
-}
-restrain = {
-    kind = "rbc";
-    freq = 1000;
-};
-dump = {
-    parts = true;
-    freq_parts = 0.0500
-};'
+RBC_RND=$seed u.run ./udx conf.cfg
 ply2punto r/00000.ply | uscale 15 > ply.out.txt

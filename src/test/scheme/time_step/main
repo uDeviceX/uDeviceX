@@ -6,11 +6,4 @@ cat >ff.txt <<!
 1 2 3
 1 1 1
 !
-u.run 2 2 1 ./udx '
-i = "ff.txt";
-time = { 
-   type = "disp"
-   dx = 0.01
-   dt = 0.1
-}
-' > dt.out.txt
+u.run 2 2 1 ./udx conf.cfg > dt.out.txt

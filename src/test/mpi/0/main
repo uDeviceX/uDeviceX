@@ -10,19 +10,5 @@ u.conf conf/default.h <<!!!
    run
 !!!
 { make clean && u.make -j; } > /dev/null
-u.run 2 1 1 ./udx '
-time = {
-    type = "const"
-    dt = 5e-4
-    end = 0.5
-}
-glb = {
-    L = [16, 16, 16]
-}
-rbc = {
-    @include "rbc.test.cfg"
-}
-dump = {
-    freq_parts = 0.0500
-};'
+u.run 2 1 1 ./udx conf.cfg
 awk '{print 10000*$2}' diag.txt > diag.out.txt

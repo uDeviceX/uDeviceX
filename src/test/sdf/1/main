@@ -6,12 +6,5 @@ run
 !
 (u.make clean && u.make -j) > /dev/null
 u.cp.sdf cyl1/cyl.dat  sdf.dat
-u.run ./udx '
-pos = [0.0, 0.0, 0.0]
-glb = {
-    L = [16, 16, 16]
-}
-dump = {
-    field = true;
-};'
+u.run ./udx conf.cfg
 u.wall.dump h5/wall.h5     > wall.out.txt

@@ -10,19 +10,5 @@ u.conf "$s" $u conf/default.h <<!!!
    run
 !!!
 (make clean && u.make -j) > /dev/null
-u.run ./udx '
-time = {
-    type = "const"
-    dt = 1e-3
-    end = 1e4
-}
-glb = {
-    L = [16, 32, 16]
-}
-dump = {
-    field = true;
-    parts = true;
-    freq_field = 4.0000
-    freq_parts = 4.0000
-};'
+u.run ./udx conf.cfg
 u.avgh5 0 u 1 h5/flowfields-0000.h5 | uscale 0.1 > h5.out.txt

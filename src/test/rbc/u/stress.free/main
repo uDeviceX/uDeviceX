@@ -14,12 +14,4 @@ u.conf $S $U $C <<!!!
 { u.make -j;     } > /dev/null
 cp          $cell rbc.off
 cp          $cell rbc.stress.free
-u.run ./udx '
-glb = {
-    L = [16, 16, 16]
-}
-rbc = {
-    cell = "rbc.off"
-    ic = "data/ic/two"
-    @include "rbc.test.cfg"
-}' | uscale 0.025 >  forces.out.txt
+u.run ./udx conf.cfg | uscale 0.025 >  forces.out.txt

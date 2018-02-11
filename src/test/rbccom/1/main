@@ -11,16 +11,5 @@ u.conf conf/default.h <<!!!
    run
 !!!
 { make clean && u.make -j ; } > /dev/null
-u.run ./udx '
-time = {
-    type = "const"
-    dt = 5e-4
-    end = 0.5
-}
-glb = {
-    L = [16, 16, 16]
-}
-rbc = {
-    @include "rbc.test.cfg"
-}'
+u.run ./udx conf.cfg
 sort com/0003.txt | awk '{print $1, $2, $3, $4}' | uscale 100 > com.out.txt

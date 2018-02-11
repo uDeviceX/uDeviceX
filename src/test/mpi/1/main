@@ -8,23 +8,5 @@ u.conf conf/default.h <<!!!
    run
 !!!
 { make clean && u.make -j; } > /dev/null
-u.run 2 1 1 ./udx '
-time = {
-    type = "const"
-    dt = 5e-4
-    end = 2.1
-}
-glb = {
-    L = [16, 32, 16]
-}
-bforce = {
-    type = "double_poiseuille"
-    a    = 6.666667
-}
-dump = {
-    field = true
-    parts = true
-    freq_field = 0.1500
-    freq_parts = 0.0500
-}'
+u.run 2 1 1 ./udx conf.cfg
 u.avgh5 0 u 1 h5/flowfields-0011.h5 | uscale 10 > h5.out.txt

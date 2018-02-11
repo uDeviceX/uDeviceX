@@ -5,15 +5,5 @@ u.conf "$S" u/dbg "$S/conf/default.h" <<!
 run
 !
 u.make -j
-u.run ./udx '
-time = {
-    dt = 5e-4
-}
-dbg = {
-    pos = true
-}
-glb = {
-    L = [16, 16, 16]
-}
-'
+u.run ./udx conf.cfg
 echo $? > dbg.out.txt

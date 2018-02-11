@@ -13,13 +13,5 @@ u.conf conf/default.h <<!!!
    run
 !!!
 { make clean && u.make -j ; } > /dev/null
-u.run ./udx '
-glb = {
-    L = [16, 32, 16]
-}
-bforce = {
-    type = "constant"
-    f = [0.0333333, 0.0, 0.0]
-}' 2>/dev/null
-:
+u.run ./udx conf.cfg
 awk '$NF == ":log_root:" { $NF = ""; print}' .000 > cubic.txt

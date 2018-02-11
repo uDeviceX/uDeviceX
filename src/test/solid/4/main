@@ -11,24 +11,5 @@ u.conf conf/default.h <<!!!
    run
 !!!
 { make clean && u.make -j ; } > /dev/null
-u.run 2 1 1 ./udx '
-time = {
-    type = "const"
-    dt = 5e-4
-    wall = 5e-2
-    end = 1.0
-}
-glb = {
-    L = [8, 16, 16]
-}
-bforce = {
-    type = "constant"
-    f    = [1.6666667,0.,0.]
-}
-dump = {
-    field = true
-    parts = true
-    freq_field = 0.2500
-    freq_parts = 0.2500
-}'
+u.run 2 1 1 ./udx conf.cfg
 cat solid_diag_0000.txt | awk '{print $2, $5, $8}' | uscale 5 > sdiag.out.txt

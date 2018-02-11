@@ -9,12 +9,4 @@ KL_SYNC RBCnv=$nv RBC_RND=false
 run
 !
 { u.make clean && u.make -j; } > /dev/null
-u.run ./udx '
-time = {
-    type = "const"
-    dt = 5e-4
-}
-glb = {
-    L = [20, 20, 20]
-}
-'> av.out.txt
+u.run ./udx conf.cfg > av.out.txt

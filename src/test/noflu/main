@@ -10,24 +10,5 @@ u.conf $C <<!
 !
 :
 (make clean && u.make -j) > .make.log
-u.run ./udx '
-time = {
-    type = "const"
-    dt = 5e-4
-    wall = 5e-2
-    end = 0.4
-}
-glb = {
-    L = [16, 16, 16]
-}
-bforce = {
-    type = "constant"
-    f    = [0.0333333,0.,0.]
-}
-dump = {
-    field = true
-    parts = true
-    freq_field = 0.2500
-    freq_parts = 0.2500
-}'
+u.run ./udx conf.cfg
 cp bop/solvent-00000.bop bop.out.txt
