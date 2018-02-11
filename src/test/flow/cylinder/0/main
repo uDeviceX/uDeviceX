@@ -1,33 +1,13 @@
 #### flow around cylinder
-# nTEST: flow.t4
-rm -rf bop h5 diag.txt rbc.off
-:
+# nTEST: flow.cylnder.0
+cd test/flow/cylinder/0
+S=`u.cp.s`
 u.cp.sdf cyl1/cyl.dat sdf.dat
-:
-u.conf conf/default.h <<!!!
+u.conf "$S" u/x "$S/conf/default.h" <<!
    walls
    run
-!!!
+!
 :
-(make clean && u.make -j) > /dev/null
-u.run ./udx '
-time = {
-    type = "const"
-    dt = 5e-4
-    wall = 5e-3
-    end = 4.0
-}
-glb = {
-    L = [16, 16, 16]
-}
-bforce = {
-    type = "constant"
-    f    = [0.0333333, 0.0, 0.0]
-}
-dump = {
-    field = true
-    parts = true
-    freq_field = 0.1500
-    freq_parts = 0.1500
-}'
+u.make -j
+u.run ./udx conf.cfg
 u.avgh5 1 u 1 h5/flowfields-0024.h5 > h5.out.txt
