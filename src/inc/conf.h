@@ -267,11 +267,6 @@
   #define CC_RELEASE
 #endif
 
-/* [te]xture macros */
-#if !defined(TE_RELEASE) && !defined(TE_TRACE)
-  #define TE_RELEASE
-#endif
-
 /* who plays as device? */
 #if !defined(DEV_CUDA) && !defined(DEV_CPU)
   #define DEV_CUDA
