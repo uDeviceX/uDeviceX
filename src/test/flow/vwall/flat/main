@@ -5,7 +5,7 @@ rm -rf h5
 :
 u.cp.sdf wall1/wall.dat sdf.dat
 :
-u.conf conf/default.h <<!!!
+u.conf "$S" u/x "$S/conf/default.h" <<!!!
    walls
    run
 !!!

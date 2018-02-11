@@ -5,7 +5,7 @@ u.cp.sdf wall1/wall.dat sdf.dat
 echo -e "16 16 16" > rigs-ic.txt
 u.cp.rig sphere.ply rig.ply
 :
-u.conf conf/default.h <<!!!
+u.conf "$S" u/x "$S/conf/default.h" <<!
    walls
    solids sbounce_back pin_com
    run

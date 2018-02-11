@@ -2,8 +2,7 @@ for f
 do
     d=`dirname "$f"`
     if ! test -f "$d/conf.cfg"; then continue; fi
-    if   grep -q 'cd test/' "$f"; then continue; fi
-    ../poc/wrap/cfg0 -v d="$d" "$f" > /tmp/t
-    mv /tmp/t "$f"
+    if   grep -q 'u\.conf $S' "$f"; then continue; fi
+    echo $f
 done
 

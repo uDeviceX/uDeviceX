@@ -2,7 +2,7 @@
 # nTEST: rstrt.t1
 rm -rf h5
 :
-u.conf conf/default.h <<!!!
+u.conf "$S" u/x "$S/conf/default.h" <<!
    BASE_STRT_DUMP=\"bin.1/strt\"
    strt_dumps=true
    strt_freq=10000

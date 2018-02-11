@@ -12,7 +12,7 @@ u.stretch $A 5% $cell         > rbc.stretch
 :
 x=4 y=6 z=8; echo 1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 > rbcs-ic.txt
 :
-u.conf conf/default.h <<!
+u.conf "$S" u/x "$S/conf/default.h" <<!
    MESH_SHIFT_CENTER RBC_STRETCH RBC_STRESS_FREE kBT=1e-7
    RBCnv=$nv
    rbcs
