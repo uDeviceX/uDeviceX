@@ -10,7 +10,7 @@ u.conf "$S" u/x "$S/conf/default.h" <<!
    walls kBT=1e-7
    strt_dumps=true
    run
-!!!
+!
 :
 u.strtdir .
 (make clean && u.make -j) > /dev/null

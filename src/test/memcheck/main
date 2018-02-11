@@ -5,11 +5,11 @@ rm -rf bop h5 diag.txt solid_diag*.txt
 echo -e "4.1 21.5 8\n4.1 10.5 8\n11.9 16 8" > rigs-ic.txt
 cp data/rig/sphere.ply rig.ply
 :
-u.conf . u/safe conf/default.h <<!!!
+u.conf . u/safe conf/default.h <<!
   KL_SYNC
   solids
   contactforces=true
   run
-!!!
+!
 { make clean && u.make -j ; } > /dev/null
 MEM= u.run ./udx conf.cfg | awk '/========= ERROR SUMMARY:/'         > mem.out.txt

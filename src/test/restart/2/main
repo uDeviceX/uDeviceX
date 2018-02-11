@@ -17,7 +17,7 @@ u.conf "$S" u/x "$S/conf/default.h" <<!
    BASE_STRT_READ=\"bin.1/strt\"
    BASE_STRT_DUMP=\"bin.2/strt\"
    run
-!!!
+!
 :
 u.strtdir bin.1
 u.strtdir bin.2

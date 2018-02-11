@@ -1,7 +1,7 @@
 #### rnd generation on host
 # TEST: rnd.t0
-u.conf . u/rnd conf/default.h <<!!!
+u.conf . u/rnd conf/default.h <<!
        run
-!!!
+!
 { u.make -j;     } > /dev/null
 u.run ./udx -- 100 > rnd.out.txt

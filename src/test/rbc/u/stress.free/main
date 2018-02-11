@@ -8,10 +8,10 @@ C=conf/default.h
 nv=642
 cell=$S/data/cells/rbc/$nv.off
 :
-u.conf $S $U $C <<!!!
+u.conf $S $U $C <<!
        RBCnv=$nv RBC_STRESS_FREE kBT=4.44302e-8 fsiforces=false
        run
-!!!
+!
 { u.make -j;     } > /dev/null
 cp          $cell rbc.off
 cp          $cell rbc.stress.free

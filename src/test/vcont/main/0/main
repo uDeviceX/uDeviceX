@@ -9,7 +9,7 @@ u.conf "$S" u/x "$S/conf/default.h" <<!
    numberdensity=1
    walls
    run
-!!!
+!
 (make clean && u.make -j) > /dev/null
 u.run ./udx test/vcont/main/vcon.cfg '
 time = {

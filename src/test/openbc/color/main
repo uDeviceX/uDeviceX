@@ -1,10 +1,10 @@
 #### rest with deleting cylinder and cylinder inflow 
 # nTEST: inout.color.t1
-u.conf conf/default.h <<!!!
+u.conf conf/default.h <<!
    OUTFLOW_CIRCLE OUTFLOW_CIRCLE_R=8 kBT=4.44302e-8 fsiforces=false
    multi_solvent
    run
-!!!
+!
 (make clean && u.make -j) > /dev/null
 u.run ./udx test/openbc/inout.cfg '
 time = {

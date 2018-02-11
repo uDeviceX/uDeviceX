@@ -1,9 +1,9 @@
 #### rest with deleting cylinder and cylinder inflow 
 # nTEST: inout.t2
-u.conf conf/default.h <<!!!
+u.conf conf/default.h <<!
    OUTFLOW_CIRCLE OUTFLOW_CIRCLE_R=8 kBT=4.44302e-8 fsiforces=false
    run
-!!!
+!
 (make clean && u.make -j) > /dev/null
 u.run 2 2 1 ./udx test/openbc/inout.cfg '
 time = {

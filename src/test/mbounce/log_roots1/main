@@ -12,7 +12,7 @@ u.conf "$S" u/x "$S/conf/default.h" <<!
    field_dumps part_dumps
    field_freq=100
    run
-!!!
+!
 { make clean && u.make -j ; } > /dev/null
 u.run ./udx conf.cfg
 awk '$NF == ":log_root:" { $NF = ""; print}' .000 > cubic.txt

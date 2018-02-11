@@ -9,7 +9,7 @@ u.conf "$S" u/x "$S/conf/default.h" <<!
    rbcs
    pushrbc=false fsiforces=true
    run
-!!!
+!
 { make clean &&  u.make -j ; } > /dev/null
 u.run 1 2 1 ./udx conf.cfg
 ply2punto r/00001.ply > ply.out.txt

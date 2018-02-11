@@ -16,7 +16,7 @@ u.conf "$S" u/x "$S/conf/default.h" <<!
    BASE_STRT_READ=\"bin.1/strt\"
    BASE_STRT_DUMP=\"bin.2/strt\"
    run
-!!!
+!
 :
 { make clean && u.make -j ; } > /dev/null
 :
