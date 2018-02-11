@@ -1,0 +1,6 @@
+set -eux
+
+f="$1"
+d=`dirname "$f"`
+
+../poc/wrap/cfg0 "$f" > "$d/conf.cfg"

@@ -1,0 +1,17 @@
+#!/usr/bin/awk -f
+
+BEGIN {
+    First=1
+    f=ARGV[1]
+    while (getline < f > 0) {
+	if (First) {
+	    First = 0
+	    s = $0
+	} else
+	    s = s "\n" $0
+    }
+    c = s
+    sub(/^.*udx '/, "", c)
+    sub(/'.*$/,     "", c)
+    print c
+}
