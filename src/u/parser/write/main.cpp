@@ -19,8 +19,8 @@ static void set(Config *c) {
 
     {
         const char *desc[] = {"group", "b"};
-        int b[] = {1, 2, 3, 4};
-        conf_set_vint(2, desc, 4, b, c);
+        float b[] = {1, 2, 3, 4};
+        conf_set_vfloat(2, desc, 4, b, c);
     }
 
     // test: subgroup in existing group
