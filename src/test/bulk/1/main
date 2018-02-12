@@ -3,7 +3,7 @@
 cd test/bulk/1
 S=`u.cp.s`
 u.conf "$S" u/bulk "$S/conf/default.h" <<!
-       kBT=0 multi_solvent=false
+       kBT=0
        run
 !
 u.make -s -j
