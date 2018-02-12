@@ -20,7 +20,7 @@ glb = {
     L = [$XS, $YS, $ZS]
 }
 dump = {
-    field = true;
+    field = true
     freq_field = 0.2000
-};"
+}"
 cp h5/wall.xmf wall.out.xmf
