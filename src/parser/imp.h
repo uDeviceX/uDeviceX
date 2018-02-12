@@ -34,6 +34,7 @@ bool conf_opt_float3(const Config *c, const char *desc, float3 *a);
 // end::opt[]
 
 void conf_set_int(int n, const char *desc[], int a, Config *c);
+void conf_set_vint(int n, const char *desc[], int nelem, const int a[], Config *cfg);
 void conf_set_float(int n, const char *desc[], float a, Config *cfg);
 void conf_set_bool(int n, const char *desc[], int a, Config *cfg);
 void conf_set_string(int n, const char *desc[], const char *a, Config *cfg);
