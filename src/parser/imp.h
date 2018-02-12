@@ -33,6 +33,7 @@ bool conf_opt_vfloat(const Config *c, const char *desc, int *n, float a[]);
 bool conf_opt_float3(const Config *c, const char *desc, float3 *a);
 // end::opt[]
 
+// tag::set[]
 void conf_set_int(int n, const char *desc[], int a, Config *c);
 void conf_set_vint(int n, const char *desc[], int nelem, const int a[], Config *cfg);
 void conf_set_int3(int n, const char *desc[], int3 a, Config *cfg);
@@ -41,5 +42,8 @@ void conf_set_vfloat(int n, const char *desc[], int nelem, const float a[], Conf
 void conf_set_float3(int n, const char *desc[], float3 a, Config *cfg);
 void conf_set_bool(int n, const char *desc[], int a, Config *cfg);
 void conf_set_string(int n, const char *desc[], const char *a, Config *cfg);
+// end::set[]
 
+// tag::dump[]
 void conf_write_exe(const Config *cfg, FILE *stream);
+// end::dump[]
