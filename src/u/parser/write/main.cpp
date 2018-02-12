@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <vector_types.h>
 
 #include "utils/msg.h"
 #include "mpi/glb.h"
@@ -22,6 +23,17 @@ static void set(Config *c) {
         float b[] = {1, 2, 3, 4};
         conf_set_vfloat(2, desc, 4, b, c);
     }
+
+    {
+        const char *desc[] = {"group", "myint3"};
+        int3 i3;
+        i3.x = 10;
+        i3.y = 20;
+        i3.z = 30;
+        conf_set_int3(2, desc, i3, c);
+    }
+
+    
 
     // test: subgroup in existing group
     {
