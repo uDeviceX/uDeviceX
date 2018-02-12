@@ -7,7 +7,6 @@ struct Shape {
                   another visit? */
     float *a, *A; /* equilibrium edge and area (stress free)*/
     float a0, A0; /* equilibrium edge and area (no stress free) */
-    float totArea, totVolume;
 };
 
 struct RbcQuants {
