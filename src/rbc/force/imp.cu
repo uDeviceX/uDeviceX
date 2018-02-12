@@ -11,6 +11,7 @@
 
 #include "utils/error.h"
 #include "utils/msg.h"
+#include "utils/imp.h"
 
 #include "d/q.h"
 #include "d/api.h"
@@ -29,6 +30,7 @@
 #include "area_volume/imp.h"
 
 #include "imp.h"
+#include "imp/type.h"
 
 namespace dev {
 #if   defined(RBC_DOUBLE)

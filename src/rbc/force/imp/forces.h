@@ -15,13 +15,13 @@ static void apply0(float dt, RbcParams_v parv, int nc, int nv,
                                        *adj_v, shape, av, /**/ (float*)ff));
 }
 
-void rbc_force_apply(float dt, const RbcQuants q, const RbcForce t, const RbcParams *par, /**/ Force *ff) {
+void rbc_force_apply(RbcForce *t, const RbcParams *par, float dt, const RbcQuants *q, /**/ Force *ff) {
     RbcParams_v parv;
     float *av;
-    if (q.nc <= 0) return;
+    if (q->nc <= 0) return;
     parv = rbc_params_get_view(par);
-    UC(area_volume_compute(q.area_volume, q.nc, q.pp, /**/ &av));
+    UC(area_volume_compute(q->area_volume, q->nc, q->pp, /**/ &av));
     apply0(dt,
-           parv, q.nc, q.nv, q.pp, t.rnd,
-           q.adj_v, q.shape, av, /**/ ff);
+           parv, q->nc, q->nv, q->pp, t->rnd,
+           q->adj_v, q->shape, av, /**/ ff);
 }
