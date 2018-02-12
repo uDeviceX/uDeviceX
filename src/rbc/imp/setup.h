@@ -23,9 +23,8 @@ static void edg_sfree1(Adj *adj, /**/ float *a_dev, float *A_dev) {
 
 static void edg_sfree0(int nt, float *pa, float *pA) {
     /* non-stress free ini */
-    double a, A, totArea;
+    double a, A;
     if (nt <= 0) ERR("nt = %d <= 0", nt);
-    totArea = RBCtotArea;
     A       = totArea / nt;
     a       = sqrt(A * 4.0 / sqrt(3.0));
     *pa = a; *pA = A;
