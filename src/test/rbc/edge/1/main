@@ -10,7 +10,7 @@ echo     1  0   0 $x              \
          0  0   0  1 > rbcs-ic.txt
 :
 u.conf "$S" u/x "$S/conf/default.h" <<!
-   rbcs kBT=1e-7
+   rbcs kBT=0
    run
 !
 u.make -j

@@ -1,7 +1,7 @@
 #### rest with deleting cylinder and cylinder inflow 
 # nTEST: inout.color.t1
 u.conf conf/default.h <<!
-   OUTFLOW_CIRCLE OUTFLOW_CIRCLE_R=8 kBT=4.44302e-8 
+   OUTFLOW_CIRCLE OUTFLOW_CIRCLE_R=8 kBT=0
    multi_solvent fsiforces
    run
 !

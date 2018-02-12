@@ -7,7 +7,7 @@ u.cp.sdf wall1/wall.dat sdf.dat
 x=0.75 y=8 z=12; echo 1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 > rbcs-ic.txt
 :
 u.conf "$S" u/x "$S/conf/default.h" <<!
-   rbcs walls kBT=1e-7
+   rbcs walls kBT=0
    run
 !
 u.make -j

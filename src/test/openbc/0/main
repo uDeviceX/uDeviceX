@@ -2,7 +2,7 @@
 # nTEST: out.t1
 :
 u.conf conf/default.h <<!   
-   OUTFLOW_CIRCLE OUTFLOW_CIRCLE_R=8  kBT=4.44302e-8 fsiforces=false
+   OUTFLOW_CIRCLE OUTFLOW_CIRCLE_R=8  kBT=0 fsiforces=false
    run
 !
 u.make -j

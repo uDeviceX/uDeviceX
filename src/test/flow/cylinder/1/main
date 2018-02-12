@@ -3,7 +3,7 @@
 cd test/flow/cylinder/1
 S=`u.cp.s`
 u.conf "$S" u/x "$S/conf/default.h" <<!
-   run kBT=4.44302e-8
+   run kBT=0
 !
 u.make -j
 u.run ./udx conf.cfg
