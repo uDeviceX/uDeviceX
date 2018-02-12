@@ -134,7 +134,7 @@ The above function behaves differently given different types:
 * `PairDPDC`: _colored_ DPD interaction: pick up parameters as a function
   of the particle colors
 * `PairDPDCM`: _mirrored_ DPD: same as _colored_ DPD considering that
-  particle `b` has the same color than particle `a`.
+  particle `b` has the same color as particle `a`.
 
 
 
