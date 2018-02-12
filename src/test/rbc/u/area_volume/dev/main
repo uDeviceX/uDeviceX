@@ -6,7 +6,7 @@ nv=1986
 cp $S/data/cells/rbc/$nv.off rbc.off
 cp $S/data/ic/ident          rbcs-ic.txt
 u.conf $S $U $C <<!
-KL_SYNC RBCnv=$nv RBC_RND=false
+KL_SYNC RBC_RND=false
 run
 !
 u.make -j

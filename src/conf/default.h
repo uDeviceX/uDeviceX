@@ -6,4 +6,3 @@
 
 #define      strt_dumps           false
 #define       strt_freq            5000
-#define           RBCnv             498

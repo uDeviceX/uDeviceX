@@ -16,7 +16,7 @@ u.conf $S $U $C <<!
    rbcs
    MESH_SHIFT_CENTER RBC_CLEAR_VEL
    RBCtotArea=$area RBCtotVolume=$volume
-   RBCnv=$nv RBC_RND=false
+   RBC_RND=false
    run
 !
 u.make -j

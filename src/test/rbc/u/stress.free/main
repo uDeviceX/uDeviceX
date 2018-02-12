@@ -10,7 +10,7 @@ u.cp.rbc rbc/sc/$nv.off rbc.stress.free
 cell=$S/data/cells/rbc/$nv.off
 :
 u.conf $S $U $C <<!
-       RBCnv=$nv RBC_STRESS_FREE kBT=0.0
+       RBC_STRESS_FREE kBT=0.0
        run
 !
 u.make -j

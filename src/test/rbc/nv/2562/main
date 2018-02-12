@@ -12,7 +12,6 @@ echo 1 0 0 $x \
 :
 u.conf "$S" u/x "$S/conf/default.h" <<!
    KL_SYNC CC_SYNC kBT=0
-   RBCnv=$nv
    rbcs
    run
 !

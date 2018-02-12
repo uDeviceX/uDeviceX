@@ -16,7 +16,6 @@ u.conf "$S" u/x "$S/conf/default.h" <<!
    rbcs
    numberdensity=1
    RBC_STRETCH MESH_SHIFT_CENTER
-   RBCnv=$nv
    dt=0.0001
    run
 !

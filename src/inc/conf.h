@@ -1,3 +1,7 @@
+#if defined(RBCnv)
+  #error RBCnv is runtime: read from rbc.off
+#endif
+
 #if defined(wall_creation)
   #error wall_creation is runtime: time.wall
 #endif
@@ -199,9 +203,6 @@
 #define rbc_mass flu_mass
 #endif
 
-#ifndef RBCnv
-#define RBCnv (498)
-#endif
 /* maximum allowed degree of a vertex */
 #define RBCmd 7
 

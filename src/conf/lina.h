@@ -21,4 +21,3 @@
 #define       pushsolid           false
 #define         pushrbc           false
 #define           walls           false
-#define           RBCnv             642
