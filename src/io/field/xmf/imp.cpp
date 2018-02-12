@@ -1,9 +1,9 @@
 #include <string.h>
 #include <stdio.h>
 
-#include "mpi/glb.h"
 #include "utils/error.h"
 #include "utils/imp.h"
+#include "coords/imp.h"
 
 #include "imp.h"
 
@@ -19,12 +19,13 @@ static void epilogue(FILE *f) {
     fprintf(f, "</Xdmf>\n");
 }
 
-static void grid(FILE *f, const char *path, const char **names, int n, int sx, int sy, int sz) {
+static void grid(const Coords *coords, FILE *f, const char *path, const char **names, int n) {
     enum {X, Y, Z};
     int i;
-    int *d, G[3]; /* domain size */
-    d = m::dims;
-    G[X] = sx*d[X]; G[Y] = sy*d[Y]; G[Z] = sz*d[Z];
+    int G[3]; /* domain size */
+    G[X] = xdomain(coords);
+    G[Y] = ydomain(coords);
+    G[Z] = zdomain(coords);
 
     fprintf(f, "   <Grid Name=\"mesh\" GridType=\"Uniform\">\n");
     fprintf(f, "     <Topology TopologyType=\"3DCORECTMesh\" Dimensions=\"%d %d %d\"/>\n", 1 + G[Z], 1 + G[Y], 1 + G[X]);
@@ -63,7 +64,7 @@ static void basename(const char *i, /**/ char *o) {
     strcpy(o, p);
 }
 
-void xmf_write(const char *path, const char **names, int ncomp, int sx, int sy, int sz) {
+void xmf_write(const Coords *coords, const char *path, const char **names, int ncomp) {
     char w[BUFSIZ];
     FILE *f;
 
@@ -72,7 +73,7 @@ void xmf_write(const char *path, const char **names, int ncomp, int sx, int sy, 
     header(f);
 
     basename(path, /**/ w);
-    grid(f, w, names, ncomp, sx, sy, sz);
+    grid(coords, f, w, names, ncomp);
     epilogue(f);
     UC(efclose(f));
 }

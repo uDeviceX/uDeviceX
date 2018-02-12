@@ -22,7 +22,7 @@ static void shift(int *argc, char ***argv) {
 }
 static int eq(const char *a, const char *b) { return strcmp(a, b) == 0; }
 
-static void set_dims(int *argc, char ***argv) {
+static void set_dims(int *argc, char ***argv, int dims[]) {
     int i, d, ac;
     char **av;
 
@@ -56,7 +56,7 @@ void ini(int *argc, char ***argv) {
         exit(2);
     }
 
-    set_dims(argc, argv);
+    set_dims(argc, argv, dims);
 
     MC(m::Comm_rank(MPI_COMM_WORLD,   &rank));
     MC(m::Comm_size(MPI_COMM_WORLD,   &size));
