@@ -45,7 +45,7 @@ static void run0(float dt, float te, const Coords *coords, float part_freq, cons
         if (time_cross(time, part_freq))
             dump(dt, coords, q, t, mesh_write);
 #ifdef RBC_CLEAR_VEL
-        scheme_move_clear_vel(q.n, /**/ q.pp);
+        scheme_move_clear_vel(q->n, /**/ q->pp);
 #endif
         time_next(time, dt);
     }
