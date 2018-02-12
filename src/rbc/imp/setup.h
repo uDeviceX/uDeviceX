@@ -1,4 +1,4 @@
-static void edg(Adj *adj, /**/ float *a_dev, float *A_dev, float *totArea) {
+static void edg_sfree1(Adj *adj, /**/ float *a_dev, float *A_dev, float *totArea) {
     const char *path = "rbc.stress.free";
     int n;
     const float *rr;
@@ -21,6 +21,10 @@ static void edg(Adj *adj, /**/ float *a_dev, float *A_dev, float *totArea) {
     UC(off_fin(cell));
 }
 
+static void edg_sfree0(int nt, float *a, float *A, float *totArea) {
+
+}
+
 static void anti(Adj *adj, /**/ int *dev) {
     int n;
     int *hst;
@@ -31,8 +35,9 @@ static void anti(Adj *adj, /**/ int *dev) {
     EFREE(hst);
 }
 
-static void setup0(Adj *adj, /**/ Shape *shape) {
-    if (RBC_STRESS_FREE) UC(edg(adj, /**/ shape->a, shape->A, &shape->totArea));
+static void setup0(int nt, Adj *adj, /**/ Shape *shape) {
+    if (RBC_STRESS_FREE) UC(edg_sfree1(adj, /**/  shape->a,   shape->A, &shape->totArea));
+    else                 UC(edg_sfree0(nt,  /**/ &shape->a0, &shape->A0, &shape->totArea));
     if (RBC_RND)         UC(anti(adj, /**/ shape->anti));
 }
 
@@ -40,6 +45,6 @@ static void setup(int md, int nt, int nv, const int4 *tt, /**/ RbcQuants *q) {
     Adj *adj;
     UC(adj_ini(md, nt, nv, tt, /**/ &adj));
     UC(adj_view_ini(adj, /**/ &q->adj_v));
-    UC(setup0(adj, /**/ &q->shape));
+    UC(setup0(nt, adj, /**/ &q->shape));
     UC(adj_fin(adj));
 }
