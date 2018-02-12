@@ -40,7 +40,7 @@ namespace dev {
 #else
   #error RBC_DOUBLE or RBC_FLOAT must be defined
 #endif
-
+/* for totVolume */
 #include "params/area_volume.h"
 #include "dev/common.h"
 
