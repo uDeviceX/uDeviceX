@@ -40,9 +40,38 @@ r_{ij} = | \mathbf{r}_{ij} |, \\
 \mathbf{v}_{ij} = \mathbf{v}_i - \mathbf{v}_j.
 ++++
 
+The viscous kernel is given by
+
+[stem]
+++++
+w(r) = r^{\frac{1}{2^s}},
+++++
+where stem:[s] is the `S_LEVEL` compile time option set to `2` by default.
 
 == repulsive LJ
 
+Repulsive forces for contact are implemented using the repulsive LJ
+potential. It is given by
+
+[stem]
+++++
+\mathbf{F}_{ij} = F_{ij}^{rLJ} \mathbf{e}_{ij}
+++++
+
+where
+
+[stem]
+++++
+F_{ij}^{rLJ} = \max \left( 0, F^{LJ}(r_{ij})\right)
+++++
+
+[stem]
+++++
+F^{LJ}(r) = 24 \epsilon \frac{1}{r} \left( 2 \left[\frac \sigma r
+\right]^12 - \left[\frac \sigma r \right]^6 \right)
+++++
+
+for numerical reasons, the magnitude is limited to stem:[10^4].
 
 == Host interface
 
