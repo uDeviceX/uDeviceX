@@ -30,7 +30,7 @@ static __device__ float ker_wrf(const int s, float x) {
     if (s == 1) return sqrtf(x);
     if (s == 2) return sqrtf(sqrtf(x));
     if (s == 3) return sqrtf(sqrtf(sqrtf(x)));
-    return powf(x, 1.f/s);
+    return powf(x, 1.f/(1+s));
 }
 
 static __device__ float magn_dpd(float a, float g, float s, float rnd,
