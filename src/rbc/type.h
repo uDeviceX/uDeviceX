@@ -5,9 +5,8 @@ struct Adj_v;
 struct Shape {
     int *anti; /* every edge is visited twice, what is the id of
                   another visit? */
-    float *a; /* equilibrium edge */
-    float *A; /* equilibrium area of an triangle adjusted to an
-                 edge */
+    float *a, *A; /* equilibrium edge and area (stress free)*/
+    float a0, A0; /* equilibrium edge and area (no stress free) */
     float totArea;
 };
 
