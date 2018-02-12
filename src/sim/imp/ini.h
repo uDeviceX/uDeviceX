@@ -1,3 +1,8 @@
+static void set_params(const Config *cfg, float kBT0, float dt, const char *name_space, PairParams *p) {
+    UC(pair_set_conf(cfg, name_space, p));
+    UC(pair_compute_dpd_sigma(kBT0, dt, /**/ p));
+}
+
 static void ini_flu_exch(MPI_Comm comm, int3 L, /**/ FluExch *e) {
     int maxd = HSAFETY_FACTOR * numberdensity;
 
@@ -229,24 +234,14 @@ static void coords_log(const Coords *c) {
               xlo(c), xhi(c), ylo(c), yhi(c), zlo(c), zhi(c));
 }
 
-// TODO: from conf
-static void set_params(float kBT0, float dt, PairParams *p) {
-    enum {ncolors = 2};
-    float a[] = {adpd_b, adpd_br, adpd_r};
-    float g[] = {gdpd_b, gdpd_br, gdpd_r};
-    UC(pair_set_dpd(ncolors, a, g, p));
-    UC(pair_compute_dpd_sigma(kBT0, dt, /**/ p));
-    UC(pair_set_lj(ljsigma, ljepsilon, p));
-}
-
-static void ini_pair_params(Sim *s, float kBT0, float dt) {
+static void ini_pair_params(const Config *cfg, float kBT0, float dt, Sim *s) {
     UC(pair_ini(&s->flu.params));
     UC(pair_ini(&s->objinter.cntparams));
     UC(pair_ini(&s->objinter.fsiparams));
 
-    UC(set_params(kBT0, dt, s->flu.params));
-    UC(set_params(kBT0, dt, s->objinter.cntparams));
-    UC(set_params(kBT0, dt, s->objinter.fsiparams));
+    UC(set_params(cfg, kBT0, dt, "flu", s->flu.params));
+    if (contactforces) UC(set_params(cfg, kBT0, dt, "cnt", s->objinter.cntparams));
+    if (fsiforces)     UC(set_params(cfg, kBT0, dt, "fsi", s->objinter.fsiparams));
 }
 
 void sim_ini(Config *cfg, MPI_Comm cart,  Time* time, /**/ Sim **sim) {
@@ -268,7 +263,7 @@ void sim_ini(Config *cfg, MPI_Comm cart,  Time* time, /**/ Sim **sim) {
     dt = time_step_dt0(s->time_step);
     time_next(time, dt);
     UC(read_opt(cfg, &s->opt));
-    UC(ini_pair_params(s, kBT, dt));
+    UC(ini_pair_params(cfg, kBT, dt, s));
 
     EMALLOC(3 * maxp, &s->pp_dump);
 
