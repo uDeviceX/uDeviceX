@@ -43,6 +43,7 @@ static void anti(Adj *adj, /**/ int *dev) {
 }
 
 static void setup0(int nt, Adj *adj, /**/ Shape *shape) {
+    shape->totVolume = RBCtotVolume;
     if (RBC_STRESS_FREE) UC(edg_sfree1(adj, /**/  shape->a,   shape->A, &shape->totArea));
     else                 UC(edg_sfree0(nt,  /**/ &shape->a0, &shape->A0, &shape->totArea));
     if (RBC_RND)         UC(anti(adj, /**/ shape->anti));
