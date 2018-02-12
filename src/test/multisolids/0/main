@@ -7,7 +7,7 @@ u.cp.rig sphere.ply  rig.ply
 u.cp.rbc rbc/498.off rbc.off
 :
 u.conf "$S" u/x "$S/conf/default.h" <<!
-  solids sbounce_back contactforces
+  solids sbounce_back
   run
 !
 u.make -j

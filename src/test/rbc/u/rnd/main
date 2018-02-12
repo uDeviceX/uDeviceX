@@ -4,7 +4,7 @@ S=`u.cp.s` U=u/rbc/force C="$S/conf/default.h"
 :
 nv=642
 u.conf $S $U $C <<!
-       RBCnv=$nv RBC_RND  kBT=0 fsiforces=false
+       RBCnv=$nv RBC_RND  kBT=0
        run
 !
 { u.make -j;     } > /dev/null
