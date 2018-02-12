@@ -1,9 +1,0 @@
-/* Navier-Stokes equation for Poiseuille flow  */
-
-e: -mu*'diff(v, x, 2)  = g $
-
-s: ode2(e, v, x) $
-s: bc2(s, x=-L/2, v=0,   x=L/2, v=0) $
-s: factor(s);
-
-grind(s);
