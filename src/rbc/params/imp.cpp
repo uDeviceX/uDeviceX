@@ -32,6 +32,11 @@ void rbc_params_set_spring(float ks, float x0, float mpow, RbcParams *par) {
     par->mpow = mpow;
 }
 
+void rbc_params_set_tot_area_volume(float totArea, float totVolume, RbcParams *par) {
+    par->totArea = totArea;
+    par->totVolume = totVolume;
+}
+
 void rbc_params_set_area_volume(float ka, float kd, float kv, RbcParams *par) {
     par->ka = ka;
     par->kv = kv;
@@ -51,5 +56,7 @@ RbcParams_v rbc_params_get_view(const RbcParams *p) {
     v.ka = p->ka;
     v.kd = p->kd;
     v.kv = p->kv;
+    v.totArea = p->totArea;
+    v.totVolume = p->totVolume;
     return v;
 }
