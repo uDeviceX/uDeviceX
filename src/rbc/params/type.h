@@ -16,4 +16,3 @@ struct RbcParams {
     float totVolume; /* total volume */
     float totArea;   /* total area */
 };
-
