@@ -6,7 +6,7 @@ u.cp.sdf yplates1/yplates.dat sdf.dat
 u.conf "$S" u/x "$S/conf/default.h" <<!
    numberdensity=3
    walls
-   S_LEVEL=0 kBT=1 adpd_b=12.5 gdpd_b=5.61125
+   S_LEVEL=0 kBT=1
    run
 !
 u.make -j
