@@ -68,8 +68,11 @@ static __device__ float force_magn(PairDPDLJ p, float rnd, float ev, float r, fl
     return f;
 }
 
+// tag::int[]
 template <typename Param>
-static __device__ void pair_force(Param p, PairPa a, PairPa b, float rnd, /**/ PairFo *f) {
+static __device__ void pair_force(Param p, PairPa a, PairPa b, float rnd, /**/ PairFo *f)
+// end::int[]
+{
     float r, invr, ev, f0;
     float3 dr, dv;
     int vnstat; /* vector normalization status */

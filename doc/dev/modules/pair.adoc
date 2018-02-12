@@ -114,6 +114,29 @@ Get the different views:
 include::{src}/pair/imp.h[tag=view]
 ----
 
+== device interface
+
+Inside a CUDA kernel, the pairwise force can be called by the generic function
+
+[source,cpp]
+----
+include::{src}/pair/dev.h[tag=int]
+----
+
+The `PairPa` structure is a generic particle with color.
+The `PairFo` structure is a generic force.
+The input parameter `Param p` is a view for pair parameters.
+
+The above function behaves differently given different types:
+
+* `PairDPD`: standard DPD interaction
+* `PairDPDLJ`: standard DPD and repulsive LJ interaction
+* `PairDPDC`: _colored_ DPD interaction: pick up parameters as a function
+  of the particle colors
+* `PairDPDCM`: _mirrored_ DPD: same as _colored_ DPD considering that
+  particle `b` has the same color than particle `a`.
+
+
 
 == Configuration
 
