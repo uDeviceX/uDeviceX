@@ -12,7 +12,7 @@ $B/math/rnd/imp.o: $S/utils/imp.h $S/utils/error.h $S/math/rnd/imp.h
 $B/mpi/glb.o: $S/inc/conf.h $S/mpi/wrapper.h $S/utils/mc.h $B/conf.h $S/mpi/glb.h
 $B/mpi/type.o: $S/inc/conf.h $S/inc/type.h $S/mpi/type.h $S/utils/mc.h
 $B/mpi/wrapper.o: $S/mpi/wrapper.h
-$B/pair/conf.o: $S/inc/conf.h $S/utils/error.h $S/pair/imp.h $B/conf.h $S/pair/type.h $S/parser/imp.h
+$B/pair/conf.o: $S/utils/error.h $S/pair/imp.h $S/pair/type.h $S/parser/imp.h
 $B/pair/imp.o: $S/utils/imp.h $S/utils/error.h $S/pair/imp.h $S/pair/imp/main.h $S/pair/imp/type.h $S/pair/type.h
 $B/parser/imp.o: $S/utils/imp.h $S/utils/error.h $S/parser/imp.h $S/utils/msg.h
 $B/u/bulk/main.o: $S/flu/type.h $S/utils/imp.h $S/inc/conf.h $S/fluforces/imp.h $S/utils/error.h $S/cloud/imp.h $S/inc/type.h $S/mpi/wrapper.h $S/partlist/type.h $S/coords/ini.h $S/utils/cc.h $S/io/txt/imp.h $S/pair/imp.h $S/inc/dev.h $S/d/api.h $B/conf.h $S/clist/imp.h $S/parser/imp.h $S/coords/imp.h $S/mpi/glb.h $S/utils/msg.h
