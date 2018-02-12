@@ -65,7 +65,7 @@ static void dump0(const Coords *coords, MPI_Comm cart, Particle *pp, int n, int 
     float *data[] = { rho, u[X], u[Y], u[Z] };
     UC(h5_write(coords, cart, path, data, names, 4));
     if (m::is_master(cart))
-        xmf_write(path, names, 4, xs(coords), ys(coords), zs(coords));
+        xmf_write(coords, path, names, 4);
 }
 
 void dump(const Coords *coords, MPI_Comm cart, Particle *pp, int n) {
