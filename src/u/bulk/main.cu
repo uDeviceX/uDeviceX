@@ -79,9 +79,8 @@ static void set_params(float dt, PairParams *p) {
     enum {ncolors = 2};
     float a[] = {adpd_b, adpd_br, adpd_r};
     float g[] = {gdpd_b, gdpd_br, gdpd_r};
-    float s[3];
-    for (int i = 0; i < 3; ++i) s[i] = sqrt(2 * kBT * g[i] / dt);
-    UC(pair_set_dpd(ncolors, a, g, s, p));
+    UC(pair_set_dpd(ncolors, a, g, p));
+    UC(pair_compute_dpd_sigma(kBT, dt, /**/ p));
     UC(pair_set_lj(ljsigma, ljepsilon, p));
 }
 

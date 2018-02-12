@@ -100,12 +100,10 @@ void read_rnd(/**/ float *prnd) {
 static void set_params(float dt, PairParams *p) {
     float a[] = {adpd_b, adpd_br, adpd_r};
     float g[] = {gdpd_b, gdpd_br, gdpd_r};
-    float s[3];
-    for (int i = 0; i < 3; ++i)
-        s[i] = sqrt(2*kBT*g[i] / dt);
-
-    pair_set_dpd(2, a, g, s, p);
-    pair_set_lj(ljsigma, ljepsilon, p);
+    
+    UC(pair_set_dpd(2, a, g, p));
+    UC(pair_compute_dpd_sigma(kBT, dt, /**/ p));
+    UC(pair_set_lj(ljsigma, ljepsilon, p));
 }
 
 int main(int argc, char **argv) {

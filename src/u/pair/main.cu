@@ -9,6 +9,7 @@
 
 #include "utils/cc.h"
 #include "utils/kl.h"
+#include "utils/error.h"
 #include "inc/def.h"
 #include "inc/dev.h"
 #include "d/api.h"
