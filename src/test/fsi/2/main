@@ -7,7 +7,7 @@ u.cp.rbc rbc/498.off rbc.off
 :
 u.conf "$S" u/x "$S/conf/default.h" <<!
    rbcs
-   pushrbc=false fsiforces=true
+   pushrbc=false
    run
 !
 u.make -j
