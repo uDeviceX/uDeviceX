@@ -4,15 +4,9 @@
 #define        rbc_mass            0.25
 #define      solid_mass             1.0
 
-#define          adpd_b       2.6666667
-#define          adpd_r       2.6666667
-#define         adpd_br       2.6666667
-#define          gdpd_b            11.5
-#define          gdpd_r               5
-#define         gdpd_br            8.25
-
-#define         ljsigma             0.3
-#define       ljepsilon            0.44
+// #define          gdpd_b            11.5
+// #define          gdpd_r               5
+// #define         gdpd_br            8.25
 
 #define      global_ids           false
 #define   multi_solvent            true

@@ -295,54 +295,16 @@
   #define S_LEVEL (2)
 #endif
 
-/*** TODO ***/
-#ifndef gdpd_s
-  #define gdpd_s gdpd_b
+
+#if defined(adpd_b) || defined(adpd_br) || defined(adpd_r)
+#error adpd* is runtime
 #endif
 
-#ifndef adpd_s
-  #define adpd_s adpd_b
-#endif
-/**********/
-
-/*** see poc/color */
-#ifndef gdpd_bw
-  #define gdpd_bw gdpd_b
+#if defined(gdpd_b) || defined(gdpd_br) || defined(gdpd_r)
+#error gdpd* is runtime
 #endif
 
-#ifndef adpd_bw
-  #define adpd_bw adpd_b
+#if defined(ljsigma) || defined(ljepsilon)
+#error lj* is runtime
 #endif
 
-#ifndef gdpd_bs
-  #define gdpd_bs gdpd_b
-#endif
-
-#ifndef adpd_bs
-  #define adpd_bs adpd_b
-#endif
-
-#ifndef gdpd_rw
-  #define gdpd_rw gdpd_r
-#endif
-
-#ifndef adpd_rw
-  #define adpd_rw adpd_r
-#endif
-
-#ifndef gdpd_rs
-  #define gdpd_rs gdpd_r
-#endif
-
-#ifndef adpd_rs
-  #define adpd_rs adpd_r
-#endif
-
-#ifndef gdpd_sw
-  #define gdpd_sw gdpd_b
-#endif
-
-#ifndef adpd_sw
-  #define adpd_sw adpd_b
-#endif
-/*** */
