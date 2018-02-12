@@ -202,8 +202,6 @@
 #ifndef RBCnv
 #define RBCnv (498)
 #endif
-/* [n]umber of [t]riangles (Euler formula) */
-#define RBCnt ( 2*(RBCnv) - 4 )
 /* maximum allowed degree of a vertex */
 #define RBCmd 7
 
