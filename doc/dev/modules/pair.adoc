@@ -1,0 +1,71 @@
+= pair
+:lext: .adoc
+:src: ../../../src
+:stem: latexmath
+
+pairwise forces.
+manages the parameters for dpd and repulsive Lennard-Jones parameters.
+
+== dpd interactions
+
+DPD particles interact via the 3 following forces:
+
+[stem]
+++++
+\mathbf{F}_{ij} = \left( F_{ij}^C + F_{ij}^R + F_{ij}^D \right) \mathbf{e_{ij}
+++++
+
+
+== repulsive LJ
+
+
+== Host interface
+
+allocate, deallocate the structure:
+
+[source,cpp]
+----
+include::{src}pair/imp.h[tag=mem]
+----
+
+set parameters:
+
+[source,cpp]
+----
+include::{src}pair/imp.h[tag=set]
+----
+
+set parameters from configuration file:
+
+[source,cpp]
+----
+include::{src}pair/imp.h[tag=cnf]
+----
+
+the argument `name_space` denotes the namespace where to look for the
+parameters (see below).
+
+
+Compute the stem:[\sigma] parameter for a given temperature and timestep:
+
+[source,cpp]
+----
+include::{src}pair/imp.h[tag=mem]
+----
+
+Get the different views:
+
+[source,cpp]
+----
+include::{src}pair/imp.h[tag=view]
+----
+
+
+== Configuration
+
+TODO
+
+[source,cfg]
+----
+TODO
+----
