@@ -14,6 +14,10 @@ u.conf "$S" u/x "$S/conf/default.h" <<!
 :
 u.strtdir .
 u.make -j
-u.run ./udx conf.cfg
+u.run ./udx conf.cfg '
+rbc = {
+     totArea = 55.553
+     totVolume = 26.986
+}'
 : :::::: checks total wall particle number ::::::
 cp strt/wall/templ.bop wall.out.txt

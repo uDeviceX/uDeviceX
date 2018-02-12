@@ -12,5 +12,9 @@ u.conf "$S" u/x "$S/conf/default.h" <<!
    run
 !
 u.make -j
-u.run 2 1 1 ./udx conf.cfg
+u.run 2 1 1 ./udx conf.cfg '
+rbc = {
+     totArea = 55.553
+     totVolume = 26.986
+}'
 sort com/0003.txt | awk '{print $1, $2, $3, $4}' | uscale 100 > com.out.txt

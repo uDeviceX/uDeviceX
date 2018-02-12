@@ -13,5 +13,9 @@ u.conf "$S" u/x "$S/conf/default.h" <<!
    run
 !
 u.make -j
-u.run 3 1 1 ./udx conf.cfg
+u.run 3 1 1 ./udx conf.cfg '
+rbc = {
+     totArea = 55.553
+     totVolume = 26.986
+}'
 u.avgh5 1 u 2 h5/0001.h5 > h5.out.txt

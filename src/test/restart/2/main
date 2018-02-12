@@ -33,6 +33,8 @@ glb = {
     L = [16, 16, 16]
 }
 rbc = {
+    totArea = 55.553
+    totVolume = 26.986
     @include "rbc.test.cfg"
 }
 fsi = {

@@ -15,6 +15,10 @@ u.conf "$S" u/x "$S/conf/default.h" <<!
    run
 !
 u.make -j
-u.run ./udx conf.cfg
+u.run ./udx conf.cfg '
+rbc = {
+     totArea = 55.553
+     totVolume = 26.986
+}'
 bop2txt2 bop/solvent-00000.bop -- bop/colors_solvent-00000.bop |
   awk '{s+=$7} END {print s >= 25 && s <= 30}' > color.out.txt

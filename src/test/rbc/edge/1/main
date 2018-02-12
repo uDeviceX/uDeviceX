@@ -16,9 +16,9 @@ u.conf "$S" u/x "$S/conf/default.h" <<!
    run
 !
 u.make -j
-u.run ./udx conf.cfg "
+u.run ./udx conf.cfg '
 rbc = {
      totArea = 55.55
      totVolume = 27.0
-}" 
+}'
 ply2punto r/00003.ply | uscale 100 > ply.out.txt
