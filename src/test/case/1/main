@@ -10,5 +10,5 @@ $U $C <<!
    walls
    run
 !
-u.avgh5 1 u 2 case0/h5/flowfields-0006.h5 | \
+u.avgh5 1 u 2 case0/h5/0006.h5 | \
     uscale 0.1 > h5.out.txt

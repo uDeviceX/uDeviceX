@@ -61,7 +61,7 @@ static void dump0(const Coords *coords, MPI_Comm cart, Particle *pp, int n, int 
         MC(m::Barrier(cart));
     }
 
-    sprintf(path, DUMP_BASE "/h5/flowfields-%04d.h5", id++);
+    sprintf(path, DUMP_BASE "/h5/%04d.h5", id++);
     float *data[] = { rho, u[X], u[Y], u[Z] };
     UC(h5_write(coords, cart, path, data, names, 4));
     if (m::is_master(cart))
