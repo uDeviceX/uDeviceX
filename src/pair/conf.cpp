@@ -21,8 +21,6 @@ static int get_ncol(int npar) {
 }
 
 void pair_set_conf(const Config *cfg, const char *base, PairParams *par) {
-    ERR("pair_set_conf: shell not be used");
-
     int dpd, lj;
     char desc[FILENAME_MAX];
 

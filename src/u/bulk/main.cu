@@ -75,13 +75,9 @@ static void build_clist() {
     pp0 = tmp;
 }
 
-static void set_params(float dt, PairParams *p) {
-    enum {ncolors = 2};
-    float a[] = {adpd_b, adpd_br, adpd_r};
-    float g[] = {gdpd_b, gdpd_br, gdpd_r};
-    UC(pair_set_dpd(ncolors, a, g, p));
+static void set_params(const Config *cfg, float dt, PairParams *p) {
+    UC(pair_set_conf(cfg, "flu", p));
     UC(pair_compute_dpd_sigma(kBT, dt, /**/ p));
-    UC(pair_set_lj(ljsigma, ljepsilon, p));
 }
 
 int main(int argc, char **argv) {
@@ -105,7 +101,7 @@ int main(int argc, char **argv) {
 
     UC(pair_ini(&params));
     UC(conf_lookup_float(cfg, "time.dt", &dt));
-    UC(set_params(dt, params));
+    UC(set_params(cfg, dt, params));
 
     UC(conf_lookup_string(cfg, "in", &fin));
     UC(conf_lookup_string(cfg, "out", &fout));
