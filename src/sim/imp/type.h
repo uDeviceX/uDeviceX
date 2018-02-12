@@ -133,6 +133,7 @@ struct Vcon {
 
 /* optional features */
 struct Opt {
+    bool fsi, cnt;
     bool inflow, outflow, denoutflow, vcon;
     bool dump_field, dump_parts;
     float freq_field, freq_parts;

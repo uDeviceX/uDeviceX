@@ -209,6 +209,11 @@ static void ini_objinter(MPI_Comm cart, int maxp, int3 L, /**/ ObjInter *o) {
 
 static void read_opt(const Config *c, Opt *o) {
     int b;
+    UC(conf_lookup_bool(c, "fsi.active", &b));
+    o->fsi = b;
+    UC(conf_lookup_bool(c, "cnt.active", &b));
+    o->cnt = b;
+    
     UC(conf_lookup_bool(c, "outflow.active", &b));
     o->outflow = b;
     UC(conf_lookup_bool(c, "inflow.active", &b));
