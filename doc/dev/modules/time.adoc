@@ -9,3 +9,9 @@ Keeps current simulation time.
 `time_cross(Time*, float interval)` true if `n*interval` is in between
 current and previus timestep. In other wards did simulation "just
 crossed" `n*interval`.
+
+[source,cpp]
+----
+include::{src}/scheme/time/imp.h[tag=interface]
+----
+
