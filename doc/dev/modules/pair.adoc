@@ -88,6 +88,11 @@ set parameters:
 ----
 include::{src}/pair/imp.h[tag=set]
 ----
+<1> set the DPD parameters. `ncol` is the number of colors. This is
+    mandatory for any view
+<2> set the Lennard-Jones parameters stem:[\sigma] and
+    stem:[\epsilon]. This may be called only when the LJ parameters are needed.
+
 
 set parameters from configuration file:
 
@@ -140,9 +145,53 @@ The above function behaves differently given different types:
 
 == Configuration
 
-TODO
+parameters are configured through 3 namespaces: `flu`, `fsi` and
+`cnt`.
+
+example:
 
 [source,cfg]
 ----
-TODO
+flu = {
+    dpd = true
+    a = [10.0, 80.0, 10.0]
+    g = [1.0, 8.0, 15.0]
+    lj = false
+}
+
+fsi = {
+    dpd = true
+    a = [10.0, 80.0, 10.0]
+    g = [1.0, 8.0, 15.0]
+    lj = false
+}
+
+cnt = {
+    dpd = true
+    a = [0.0]
+    g = [16.0]
+    lj = true
+    ljs = 0.3
+    lje = 0.44
+}
 ----
+
+The DPD parameters can be different when many colors are set.
+User provides parameters in an array following the packed symmetric
+matrix convention. For example the interaction table for 3 colors
+[stem]
+++++
+\begin{bmatrix}
+    x_{11} & x_{12} & x_{13} \\
+    x_{12} & x_{22} & x_{23} \\
+    x_{13} & x_{23} & x_{33}
+\end{bmatrix}
+++++
+becomes
+[stem]
+++++
+\begin{bmatrix}
+    x_{11} & x_{12} & x_{13} & x_{22} & x_{23} & x_{33}
+\end{bmatrix}.
+++++
+

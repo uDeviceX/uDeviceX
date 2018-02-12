@@ -12,8 +12,8 @@ void pair_fin(PairParams *);
 // end::mem[]
 
 // tag::set[]
-void pair_set_lj(float sigma, float eps, PairParams *p);
-void pair_set_dpd(int ncol, const float a[], const float g[], PairParams *p);
+void pair_set_dpd(int ncol, const float a[], const float g[], PairParams *p); // <1>
+void pair_set_lj(float sigma, float eps, PairParams *p); // <2>
 // end::set[]
 
 // tag::cnf[]
