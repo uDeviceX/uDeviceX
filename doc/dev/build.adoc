@@ -15,12 +15,10 @@ Profile compilation time
 u.make LOG='@time -f "%e $<"'
 ----
 
-Summarize time used to compile
-
+Hide compilation messages
+[source,sh]
 ----
-10.09 flu/imp.cu
-10.16 restrain/imp.cu
-...
+u.make LOG=@
 ----
 
 == Arch Linux
