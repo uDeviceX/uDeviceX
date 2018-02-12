@@ -16,8 +16,6 @@
 #define         RBC_RND            true
 #define            rbcs            true
 
-#define       fsiforces            true
-#define   contactforces           false
 #define      strt_dumps            true
 #define       strt_freq         2000000
 #define       pushsolid           false

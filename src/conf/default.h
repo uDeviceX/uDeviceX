@@ -4,7 +4,6 @@
 #define        rbc_mass             0.5
 #define      solid_mass             0.5
 
-#define       fsiforces            true
 #define      strt_dumps           false
 #define       strt_freq            5000
 #define           RBCnv             498

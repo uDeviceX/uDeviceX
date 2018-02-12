@@ -41,8 +41,8 @@
 #endif
 
 /* object-object, cell-object, and cell-cell contact force */
-#ifndef contactforces
-#define contactforces (false)
+#ifdef contactforces
+#error cnt is runtime
 #endif
 
 /* should solvent have colors? 
@@ -173,8 +173,8 @@
 #define pushsolid (false)
 #endif
 
-#ifndef fsiforces
-#define fsiforces (false)
+#ifdef fsiforces
+#error fsi is runtime
 #endif
 
 #ifndef empty_solid_particles
