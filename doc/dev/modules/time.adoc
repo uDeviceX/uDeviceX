@@ -1,19 +1,11 @@
-= Time control
+= Time
+:lext: .adoc
+:src: ../../../src
 
-Controls time step, output, restart dumps, wall creation step.
+Keeps current simulation time.
 
-Configuration:
-tstart, tene, twall : in physical units
-[rbc/flu]_dump_interval, restart_interval : in physical units
-dt0: initial timestep
+`time_next(Time*, float dt)` is called every time step and updates the state of Time*.
 
-API:
-  `ini()/fin()`
-  `nxt(Force*)`      : called after every step
-
-  `[rbc/flu]_dump()` : true/false : dump?
-  `restart()`        : true/false : restart?
-  `wall()`           : create a wall?
-
-  `dt()`             : a new timestep
-  `t()`              : returns a current physical time
+`time_cross(Time*, float interval)` true if `n*interval` is in between
+current and previus timestep. In other wards did simulation "just
+crossed" `n*interval`.
