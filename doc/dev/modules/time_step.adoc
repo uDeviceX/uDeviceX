@@ -8,3 +8,14 @@ timestep based on the maximum accelaration. `TimeStepAccel` is
 constructed using `time_step_accel_push`
 
 `float time_step_dt(TimeStep*, MPI_Comm, TimeStepAccel*);`
+
+[source,cpp]
+----
+include::{src}/scheme/time_step/imp.h[tag=accel]
+----
+
+
+[source,cpp]
+----
+include::{src}/scheme/time_step/imp.h[tag=interface]
+----
