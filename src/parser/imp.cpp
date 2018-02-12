@@ -348,6 +348,11 @@ void conf_set_vint(int n, const char *desc[], int nelem, const int a[], Config *
     }
 }
 
+void conf_set_int3(int n, const char *desc[], int3 a, Config *cfg) {
+    const int a3[] = {a.x, a.y, a.z};
+    UC(conf_set_vint(n, desc, 3, a3, cfg));
+}
+
 void conf_set_float(int n, const char *desc[], float a, Config *cfg) {
     config_t *c;
     config_setting_t *group, *setting;
@@ -377,6 +382,11 @@ void conf_set_vfloat(int n, const char *desc[], int nelem, const float a[], Conf
         if (NULL == status)
             ERR("could not set element %d/%d of <%s>", i, nelem, desc[n-1]);
     }
+}
+
+void conf_set_float3(int n, const char *desc[], float3 a, Config *cfg) {
+    const float a3[] = {a.x, a.y, a.z};
+    UC(conf_set_vfloat(n, desc, 3, a3, cfg));
 }
 
 void conf_set_bool(int n, const char *desc[], int a, Config *cfg) {
