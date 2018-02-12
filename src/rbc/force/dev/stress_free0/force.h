@@ -1,9 +1,10 @@
 __device__ real3 tri(RbcParams_v par, real3 r1, real3 r2, real3 r3, Shape0 shape0, real area, real volume) {
-    real a0, A0, totArea;
+    real a0, A0, totArea, totVolume;
     A0 = shape0.A0;
     a0 = shape0.a0;
     totArea = shape0.totArea;
-    return tri0(par, r1, r2, r3,   a0, A0, totArea,   area, volume);
+    totVolume = shape0.totVolume;
+    return tri0(par, r1, r2, r3,   a0, A0, totArea, totVolume,   area, volume);
 }
 
 __device__ real3 dih(RbcParams_v par, real3 r0, real3 r1, real3 r2, real3 r3, real3 r4) {
