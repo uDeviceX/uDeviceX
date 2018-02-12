@@ -2,10 +2,6 @@
 #include <math.h>
 #include <string.h>
 
-/*only because of kBT and dt, TODO: remove */
-#include <conf.h>
-#include "inc/conf.h"
-
 #include "utils/error.h"
 #include "parser/imp.h"
 
@@ -38,7 +34,7 @@ void pair_set_conf(const Config *cfg, const char *base, PairParams *par) {
 
     if (dpd) {
         int na, ng, nc;
-        float a[MAX_PAR], g[MAX_PAR], kBT0, dt;
+        float a[MAX_PAR], g[MAX_PAR];
 
         get_desc(base, "a", desc);
         UC(conf_lookup_vfloat(cfg, desc, &na, a));
@@ -51,15 +47,10 @@ void pair_set_conf(const Config *cfg, const char *base, PairParams *par) {
 
         if (na != ng)
             ERR("%s.a and %s.g must have the same length: %d / %d", base, base, na, ng);
-
-        // TODO read from conf
-        kBT0 = kBT;
-        dt  = -1;
         
         nc = get_ncol(na);
         
         UC(pair_set_dpd(nc, a, g, /**/ par));
-        UC(pair_compute_dpd_sigma(kBT0, dt, /**/ par));
     }
     if (lj) {
         float s, e;
