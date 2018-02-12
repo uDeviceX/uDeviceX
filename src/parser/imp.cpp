@@ -12,7 +12,7 @@
 
 // tag::struct[]
 enum {
-    EXE, /* from program         */
+    EXE, /* from program setters */
     ARG, /* from arguments       */
     OPT, /* from additional file */
     DEF, /* from default file    */
@@ -331,6 +331,23 @@ void conf_set_int(int n, const char *desc[], int a, Config *cfg) {
         ERR("could not set <%s>", desc[n-1]);
 }
 
+void conf_set_vint(int n, const char *desc[], int nelem, const int a[], Config *cfg) {
+    config_t *c;
+    config_setting_t *group, *setting, *status;
+    int i;
+    enum {APPEND = -1};
+    c = &cfg->c[EXE];
+        
+    group = get_subgroup_setting(n-1, desc, /**/ c);
+    setting = subsetting(desc[n-1], CONFIG_TYPE_ARRAY, /**/ group);
+
+    for (i = 0; i < nelem; ++i) {
+        status = config_setting_set_int_elem(setting, APPEND, a[i]);
+        if (NULL == status)
+            ERR("could not set element %d/%d of <%s>", i, nelem, desc[n-1]);
+    }
+}
+
 void conf_set_float(int n, const char *desc[], float a, Config *cfg) {
     config_t *c;
     config_setting_t *group, *setting;
@@ -343,6 +360,23 @@ void conf_set_float(int n, const char *desc[], float a, Config *cfg) {
     status = config_setting_set_float(setting, a);
     if (CONFIG_TRUE != status)
         ERR("could not set <%s>", desc[n-1]);
+}
+
+void conf_set_vfloat(int n, const char *desc[], int nelem, const float a[], Config *cfg) {
+    config_t *c;
+    config_setting_t *group, *setting, *status;
+    int i;
+    enum {APPEND = -1};
+    c = &cfg->c[EXE];
+        
+    group = get_subgroup_setting(n-1, desc, /**/ c);
+    setting = subsetting(desc[n-1], CONFIG_TYPE_ARRAY, /**/ group);
+
+    for (i = 0; i < nelem; ++i) {
+        status = config_setting_set_float_elem(setting, APPEND, a[i]);
+        if (NULL == status)
+            ERR("could not set element %d/%d of <%s>", i, nelem, desc[n-1]);
+    }
 }
 
 void conf_set_bool(int n, const char *desc[], int a, Config *cfg) {

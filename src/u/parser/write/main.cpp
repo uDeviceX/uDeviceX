@@ -17,6 +17,12 @@ static void set(Config *c) {
         conf_set_int(2, desc, 3, c);
     }
 
+    {
+        const char *desc[] = {"group", "b"};
+        float b[] = {1, 2, 3, 4};
+        conf_set_vfloat(2, desc, 4, b, c);
+    }
+
     // test: subgroup in existing group
     {
         const char *desc[] = {"group", "subgroup", "a"};
