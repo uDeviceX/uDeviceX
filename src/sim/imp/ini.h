@@ -199,12 +199,12 @@ static void ini_wall(const Config *cfg, int3 L, Wall *w) {
     UC(wvel_set_conf(cfg, w->vel));
 }
 
-static void ini_objinter(MPI_Comm cart, int maxp, int3 L, /**/ ObjInter *o) {
+static void ini_objinter(MPI_Comm cart, int maxp, int3 L, const Opt *opt, /**/ ObjInter *o) {
     int rank;
     MC(m::Comm_rank(cart, &rank));
     UC(ini_obj_exch(cart, L, &o->e));
-    if (contactforces) cnt_ini(maxp, rank, L, /**/ &o->cnt);
-    if (fsiforces)     fsi_ini(rank, L, /**/ &o->fsi);
+    if (opt->cnt) cnt_ini(maxp, rank, L, /**/ &o->cnt);
+    if (opt->fsi) fsi_ini(rank, L, /**/ &o->fsi);
 }
 
 static void read_opt(const Config *c, Opt *o) {
@@ -245,8 +245,8 @@ static void ini_pair_params(const Config *cfg, float kBT0, float dt, Sim *s) {
     UC(pair_ini(&s->objinter.fsiparams));
 
     UC(set_params(cfg, kBT0, dt, "flu", s->flu.params));
-    if (contactforces) UC(set_params(cfg, kBT0, dt, "cnt", s->objinter.cntparams));
-    if (fsiforces)     UC(set_params(cfg, kBT0, dt, "fsi", s->objinter.fsiparams));
+    if (s->opt.cnt) UC(set_params(cfg, kBT0, dt, "cnt", s->objinter.cntparams));
+    if (s->opt.fsi) UC(set_params(cfg, kBT0, dt, "fsi", s->objinter.fsiparams));
 }
 
 void sim_ini(Config *cfg, MPI_Comm cart,  Time* time, /**/ Sim **sim) {
@@ -280,7 +280,7 @@ void sim_ini(Config *cfg, MPI_Comm cart,  Time* time, /**/ Sim **sim) {
     if (s->opt.denoutflow) UC(ini_denoutflow(s->coords, maxp, cfg, /**/ &s->denoutflow, &s->mapoutflow));
 
     if (rbcs || solids)
-        UC(ini_objinter(s->cart, maxp, s->L, /**/ &s->objinter));
+        UC(ini_objinter(s->cart, maxp, s->L, &s->opt, /**/ &s->objinter));
 
     UC(bop_ini(s->cart, maxp, &s->dumpt));
 

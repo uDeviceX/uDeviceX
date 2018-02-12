@@ -9,6 +9,7 @@ void forces_fsi(ObjInter *oi, int nw, PaWrap *pw, FoWrap *fw) {
 
 void forces_objects(Sim *sim) {
     Cloud cloud;
+    Opt opt = sim->opt;
     PaWrap pw[MAX_OBJ_TYPES];
     FoWrap fw[MAX_OBJ_TYPES];
     int nw = 0;
@@ -45,11 +46,11 @@ void forces_objects(Sim *sim) {
     ini_cloud(f->q.pp, &cloud);
     if (multi_solvent) ini_cloud_color(f->q.cc, &cloud);
 
-    if (fsiforces)
+    if (opt.fsi)
         fsi_bind_solvent(cloud, f->ff, f->q.n, f->q.cells.starts, /**/ oi->fsi);
 
-    if (contactforces) forces_cnt(oi, nw, pw, fw);
-    if (fsiforces)     forces_fsi(oi, nw, pw, fw);
+    if (opt.cnt) forces_cnt(oi, nw, pw, fw);
+    if (opt.fsi) forces_fsi(oi, nw, pw, fw);
 
     /* recv data and halo interactions  */
 
@@ -60,8 +61,8 @@ void forces_objects(Sim *sim) {
     Pap26 hpp = eobj_upload_shift(e->u);
     Fop26 hff = eobj_reini_ff(e->u, e->pf);
 
-    if (fsiforces)     fsi_halo(oi->fsiparams, oi->fsi, hpp, hff, hcc.d);
-    if (contactforces) cnt_halo(oi->cntparams, oi->cnt, nw, pw, fw, hpp, hff, hcc.d);
+    if (opt.fsi) fsi_halo(oi->fsiparams, oi->fsi, hpp, hff, hcc.d);
+    if (opt.cnt) cnt_halo(oi->cntparams, oi->cnt, nw, pw, fw, hpp, hff, hcc.d);
 
     /* send the forces back */ 
     

@@ -115,10 +115,10 @@ static void fin_wall(Wall *w) {
     UC(wvel_fin(w->vel));
 }
     
-static void fin_objinter(ObjInter *o) {
+static void fin_objinter(const Opt *opt, ObjInter *o) {
     UC(fin_obj_exch(&o->e));
-    if (contactforces) cnt_fin(o->cnt);
-    if (fsiforces)     fsi_fin(o->fsi);
+    if (opt->cnt) cnt_fin(o->cnt);
+    if (opt->fsi) fsi_fin(o->fsi);
 }
 
 static void fin_vcon(Vcon *c) {
@@ -134,7 +134,7 @@ static void fin_pair_params(Sim *s) {
 void sim_fin(Sim *s, Time *time) {
     bop_fin(s->dumpt);
     if (rbcs || solids)
-        fin_objinter(&s->objinter);
+        fin_objinter(&s->opt, &s->objinter);
 
     if (s->opt.vcon)       UC(fin_vcon(/**/ &s->vcon));
     if (s->opt.outflow)    UC(fin_outflow(/**/ s->outflow));
