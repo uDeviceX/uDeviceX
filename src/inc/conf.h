@@ -2,6 +2,10 @@
   #error RBCnv is runtime: read from rbc.off
 #endif
 
+#if defined(RBCtotArea)
+  #error RBCtotArea is runtime: set rbc.totArea
+#endif
+
 #if defined(wall_creation)
   #error wall_creation is runtime: time.wall
 #endif
