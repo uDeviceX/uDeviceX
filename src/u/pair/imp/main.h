@@ -97,15 +97,6 @@ void read_rnd(/**/ float *prnd) {
     *prnd = rnd;
 }
 
-static void set_params(float dt, PairParams *p) {
-    float a[] = {adpd_b, adpd_br, adpd_r};
-    float g[] = {gdpd_b, gdpd_br, gdpd_r};
-    
-    UC(pair_set_dpd(2, a, g, p));
-    UC(pair_compute_dpd_sigma(kBT, dt, /**/ p));
-    UC(pair_set_lj(ljsigma, ljepsilon, p));
-}
-
 int main(int argc, char **argv) {
     m::ini(&argc, &argv);
     Pa a, b;
@@ -115,10 +106,11 @@ int main(int argc, char **argv) {
     Config *cfg;
     conf_ini(&cfg);
     conf_read(argc, argv, /**/ cfg);
-    conf_lookup_float(cfg, "dt", &dt);
-
-    pair_ini(&par);    
-    set_params(dt, par);
+    conf_lookup_float(cfg, "time.dt", &dt);
+    
+    UC(pair_ini(&par));
+    UC(pair_set_conf(cfg, "flu", /**/ par));
+    UC(pair_compute_dpd_sigma(kBT, dt, /**/ par));
     
     read_rnd(&rnd);
     for (;;) {
@@ -129,7 +121,7 @@ int main(int argc, char **argv) {
         pair(par, a, b, ka, kb, rnd);
     }
 
-    conf_fin(cfg);
-    pair_fin(par);
+    UC(conf_fin(cfg));
+    UC(pair_fin(par));
     m::fin();
 }

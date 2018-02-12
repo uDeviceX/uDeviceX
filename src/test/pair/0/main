@@ -1,5 +1,8 @@
 # TEST: pair.0
-s=. b=.
-u.conf0 u/pair
+cd test/pair/0
+S=`u.cp.s`
+u.conf "$S" u/pair "$S/conf/default.h" <<!
+   run
+!
 u.make -j
-u.run $b/udx dt=5e-5 < $s/data/pair/2 > pair.out.txt
+u.run ./udx conf.cfg < $S/data/pair/2 > pair.out.txt
