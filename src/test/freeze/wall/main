@@ -7,7 +7,7 @@ u.cp.rbc rbc/498.off  rbc.off
 u.cp.sdf wall1/wall.dat sdf.dat
 :
 u.conf "$S" u/x "$S/conf/default.h" <<!
-   walls kBT=1e-7
+   walls kBT=0
    strt_dumps=true
    run
 !
