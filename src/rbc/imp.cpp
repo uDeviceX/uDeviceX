@@ -33,6 +33,9 @@
 #include "shape/imp.h"
 #include "force/area_volume/imp.h"
 
+/* TODO */
+#include "rbc/force/params/area_volume.h"
+
 #include "imp.h"
 
 #include "imp/setup.h"

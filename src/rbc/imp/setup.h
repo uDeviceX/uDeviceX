@@ -1,4 +1,5 @@
 static void edg_sfree1(Adj *adj, /**/ float *a_dev, float *A_dev, float *totArea) {
+    /* stress free ini */
     const char *path = "rbc.stress.free";
     int n;
     const float *rr;
@@ -21,8 +22,14 @@ static void edg_sfree1(Adj *adj, /**/ float *a_dev, float *A_dev, float *totArea
     UC(off_fin(cell));
 }
 
-static void edg_sfree0(int nt, float *a, float *A, float *totArea) {
-
+static void edg_sfree0(int nt, float *pa, float *pA, float *ptotArea) {
+    /* non-stress free ini */
+    double a, A, totArea;
+    if (nt <= 0) ERR("nt = %d <= 0", nt);
+    totArea = RBCtotArea;
+    A       = totArea / nt;
+    a       = sqrt(A * 4.0 / sqrt(3.0));
+    *pa = a; *pA = A; *ptotArea = totArea;
 }
 
 static void anti(Adj *adj, /**/ int *dev) {
