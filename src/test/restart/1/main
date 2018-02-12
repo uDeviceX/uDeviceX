@@ -1,5 +1,6 @@
 #### solvent with wall restart
 # nTEST: rstrt.t2
+cd test/restart/1/
 S=`u.cp.s`
 :
 u.cp.sdf wall1/wall.dat sdf.dat

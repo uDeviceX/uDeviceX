@@ -1,5 +1,6 @@
 #### solvent only restart
 # nTEST: rstrt.t1
+cd test/restart/0/
 S=`u.cp.s`
 :
 u.conf "$S" u/x "$S/conf/default.h" <<!
