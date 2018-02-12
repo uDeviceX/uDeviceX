@@ -3,9 +3,9 @@
 :src: ../../../src
 
 Return time step based on the current state of the simulation. If
-`type=constant` always return the same timestep. If `type=disp` return
+`type=const` always return the same timestep. If `type=disp` return
 timestep based on the maximum accelaration. `TimeStepAccel` is
-constructed using `time_step_accel_push`
+constructed using `time_step_accel_push`.
 
 `float time_step_dt(TimeStep*, MPI_Comm, TimeStepAccel*);`
 
