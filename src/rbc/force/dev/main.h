@@ -21,7 +21,7 @@ static __device__ Part tex2Part(const Particle *pp, int i) {
     return p;
 }
 
-static __device__ real3 adj_tris(real dt,
+static __device__ real3 adj_tris(real dt, int nv,
                                  RbcParams_v par, const Particle *pp,  const Part p0, const real *av,
                                  const Shape0 shape, const Rnd0 rnd,
                                  AdjMap *m) {
@@ -34,7 +34,7 @@ static __device__ real3 adj_tris(real dt,
     const Pos  r2 = tex2Pos(pp,  i2);
 
     area = av[2*rbc]; volume = av[2 * rbc + 1];
-    f  = tri(par, p0.r, p1.r, r2.r, shape, area, volume);
+    f  = tri(par, nv, p0.r, p1.r, r2.r, shape, area, volume);
     
     fv = visc(par, p0.r, p1.r, p0.v, p1.v);
     add(&fv, /**/ &f);
@@ -78,7 +78,7 @@ __global__ void force(float dt,
 
     const Part p0 = tex2Part(pp, m.i0);
 
-    f  = adj_tris(dt, par, pp, p0, av,    shape0, rnd0, &m);
+    f  = adj_tris(dt, nv, par, pp, p0, av,    shape0, rnd0, &m);
     fd = adj_dihedrals(par, pp, p0.r, shape0,       &m);
     add(&fd, /**/ &f);
 

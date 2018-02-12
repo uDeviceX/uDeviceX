@@ -21,15 +21,6 @@ static void edg_sfree1(Adj *adj, /**/ float *a_dev, float *A_dev) {
     UC(off_fin(cell));
 }
 
-static void edg_sfree0(int nt, float *pa, float *pA) {
-    /* non-stress free ini */
-    double a, A;
-    if (nt <= 0) ERR("nt = %d <= 0", nt);
-    A       = totArea / nt;
-    a       = sqrt(A * 4.0 / sqrt(3.0));
-    *pa = a; *pA = A;
-}
-
 static void anti(Adj *adj, /**/ int *dev) {
     int n;
     int *hst;
@@ -42,7 +33,6 @@ static void anti(Adj *adj, /**/ int *dev) {
 
 static void setup0(int nt, Adj *adj, /**/ Shape *shape) {
     if (RBC_STRESS_FREE) UC(edg_sfree1(adj, /**/  shape->a,   shape->A));
-    else                 UC(edg_sfree0(nt,  /**/ &shape->a0, &shape->A0));
     if (RBC_RND)         UC(anti(adj, /**/ shape->anti));
 }
 

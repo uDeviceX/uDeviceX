@@ -6,7 +6,6 @@ struct Shape {
     int *anti; /* every edge is visited twice, what is the id of
                   another visit? */
     float *a, *A; /* equilibrium edge and area (stress free)*/
-    float a0, A0; /* equilibrium edge and area (no stress free) */
 };
 
 struct RbcQuants {
