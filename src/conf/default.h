@@ -15,10 +15,6 @@
 #define       ljepsilon            0.44
 
 #define       fsiforces            true
-#define   contactforces           false
 #define      strt_dumps           false
 #define       strt_freq            5000
-#define       pushsolid           false
-#define         pushrbc           false
-#define           walls           false
 #define           RBCnv             498
