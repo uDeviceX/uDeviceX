@@ -1,4 +1,6 @@
 struct Time;
+
+// tag::interface[]
 void time_ini(float start, /**/ Time**);
 void time_fin(Time*);
 
@@ -9,3 +11,4 @@ int  time_cross(Time*, float interval); /* did we just cross
 float time_current (Time*);   /* current time */
 float time_dt (Time*);  /* current dt */
 float time_dt0(Time*);  /* previous dt */
+// end::interface[]
