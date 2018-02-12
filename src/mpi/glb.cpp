@@ -11,7 +11,7 @@
 #include "mpi/glb.h"
 
 namespace m { /* MPI */
-enum {D = 3};
+enum {X, Y, Z, D};
 int rank, size;
 
 static void shift(int *argc, char ***argv) {
@@ -25,13 +25,13 @@ static void set_dims(int *argc, char ***argv, int dims[]) {
     char **av;
 
     // defaults
-    dims[0] = dims[1] = dims[2] = 1;
+    dims[X] = dims[Y] = dims[Z] = 1;
     ac = *argc; av = *argv;
 
     // skip executable
     shift(&ac, &av);
 
-    for (i = 0; ac > 0 && i <= 3; i++) {
+    for (i = 0; ac > 0 && i <= D; i++) {
         if (eq(av[0], "--")) {
             shift(&ac, &av);
             break;
@@ -62,7 +62,7 @@ void ini(int *argc, char ***argv) {
 
     MC(m::Comm_rank(MPI_COMM_WORLD,   &rank));
     MC(m::Comm_size(MPI_COMM_WORLD,   &size));
-    MC(m::Cart_create(MPI_COMM_WORLD, D, dims, periods, reorder,   &m::cart));
+    MC(m::Cart_create(MPI_COMM_WORLD, D, dims, periods, reorder, &m::cart));
 }
 
 void fin() {
