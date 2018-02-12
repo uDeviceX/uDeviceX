@@ -52,7 +52,8 @@ Lookup variables from the configuration:
 ----
 include::{src}/parser/imp.h[tags=lookup]
 ----
-Note that the program raises an error if the argument is not found.
+Note that the program raises an error if the argument is not found or
+if an error occured (e.g. wrong type).
 
 
 Lookup variables from the configuration:
@@ -62,4 +63,41 @@ Lookup variables from the configuration:
 include::{src}/parser/imp.h[tags=opt]
 ----
 The program does not raise error if the variable is not found.
-The return value is `true` if the variable has been found and `false` otherwise.
+The return value is `true` if the variable has been found and `false`
+otherwise.
+
+
+The client may overwrite variables in the config object:
+
+[source, c++]
+----
+include::{src}/parser/imp.h[tags=set]
+----
+`desc` is an array containing the names of the nested groups.
+`n` is the nesting level of the description (minimum is 1). It is the
+same as the size of `desc`.
+
+Example:
+
+[source, c++]
+----
+const char *desc[] = {"main", "sub", "a"};
+int n = 3;
+----
+
+will correspond to
+
+[source, c++]
+----
+main = {
+    sub = {
+        a = ...
+    }
+}
+----
+
+The written fields may be dumped in a stream using
+[source, c++]
+----
+include::{src}/parser/imp.h[tags=dump]
+----
