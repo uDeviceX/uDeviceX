@@ -17,7 +17,7 @@ void pair_set_lj(float sigma, float eps, PairParams *p) {
 
 static int get_npar(int ncol) { return (ncol * (ncol+1)) / 2; }
 
-void pair_set_dpd(int ncol, const float a[], const float g[], const float s[], PairParams *p) {
+void pair_set_dpd(int ncol, const float a[], const float g[], PairParams *p) {
     int npar = get_npar(ncol);
     size_t sz = sizeof(float) * npar;
 
@@ -27,7 +27,6 @@ void pair_set_dpd(int ncol, const float a[], const float g[], const float s[], P
     p->ncolors = ncol;
     memcpy(p->a, a, sz);
     memcpy(p->g, g, sz);
-    memcpy(p->s, s, sz);
 }
 
 void pair_compute_dpd_sigma(float kBT0, float dt, PairParams *p) {

@@ -19,11 +19,6 @@ static void get_desc(const char *base, const char *var, char *d) {
     strcat(d, var);
 }
 
-static void compute_sigma(int n, const float g[], float kBT0, float dt, float s[]) {
-    for (int i = 0; i < n; ++i)
-        s[i] = sqrt (2 * kBT0 * g[i] / dt);
-}
-
 static int get_ncol(int npar) {
     int d = lround( sqrt(1 + 8 * npar) );
     return (d - 1) / 2;
@@ -43,7 +38,7 @@ void pair_set_conf(const Config *cfg, const char *base, PairParams *par) {
 
     if (dpd) {
         int na, ng, nc;
-        float a[MAX_PAR], g[MAX_PAR], s[MAX_PAR], kBT0, dt;
+        float a[MAX_PAR], g[MAX_PAR], kBT0, dt;
 
         get_desc(base, "a", desc);
         UC(conf_lookup_vfloat(cfg, desc, &na, a));
@@ -61,11 +56,10 @@ void pair_set_conf(const Config *cfg, const char *base, PairParams *par) {
         kBT0 = kBT;
         dt  = -1;
         
-        compute_sigma(na, g, kBT0, dt, /**/ s);
-
         nc = get_ncol(na);
         
-        UC(pair_set_dpd(nc, a, g, s, /**/ par));
+        UC(pair_set_dpd(nc, a, g, /**/ par));
+        UC(pair_compute_dpd_sigma(kBT0, dt, /**/ par));
     }
     if (lj) {
         float s, e;
