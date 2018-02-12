@@ -2,7 +2,7 @@
 # nTEST: inout.color.t1
 u.conf conf/default.h <<!
    OUTFLOW_CIRCLE OUTFLOW_CIRCLE_R=8 kBT=0
-   multi_solvent fsiforces
+   multi_solvent
    run
 !
 u.make -j
