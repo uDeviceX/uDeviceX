@@ -35,6 +35,9 @@ glb = {
 rbc = {
     @include "rbc.test.cfg"
 }
+fsi = {
+    active = true
+}
 dump = {
     parts = true;
     freq_parts = 0.1500
@@ -52,6 +55,9 @@ glb = {
 }
 rbc = {
     @include "rbc.test.cfg"
+}
+fsi = {
+    active = true
 }
 bforce = {
     type = "constant"
