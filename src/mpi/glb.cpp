@@ -11,10 +11,8 @@
 #include "mpi/glb.h"
 
 namespace m { /* MPI */
-static const int D = 3;
-static int periods[D] = {true, true, true};
-static const bool reorder = false;
-int rank, size, dims[D];
+enum {D = 3};
+int rank, size;
 
 static void shift(int *argc, char ***argv) {
     (*argc)--;
@@ -47,6 +45,10 @@ static void set_dims(int *argc, char ***argv, int dims[]) {
 }
 
 void ini(int *argc, char ***argv) {
+    int dims[D];
+    const bool reorder = false;
+    const int periods[D] = {1, 1, 1};
+    
     if (m::Init(argc, argv) != MPI_SUCCESS) {
         fprintf(stderr, ": m::Init failed\n");
         exit(2);
@@ -55,7 +57,7 @@ void ini(int *argc, char ***argv) {
         fprintf(stderr, ": m::Errhandler_set failed\n");
         exit(2);
     }
-
+    
     set_dims(argc, argv, dims);
 
     MC(m::Comm_rank(MPI_COMM_WORLD,   &rank));
