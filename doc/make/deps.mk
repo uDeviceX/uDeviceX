@@ -24,6 +24,7 @@
 ./dev/modules/io/main.html: ./dev/modules/io/main.adoc ./dev/modules/io/txt.inc.adoc ./dev/modules/io/txt.inc.adoc
 ./dev/modules/math/main.html: ./dev/modules/math/main.adoc ./dev/modules/math/linal.inc.adoc ./dev/modules/math/linal.inc.adoc ./dev/modules/math/rnd.inc.adoc ./dev/modules/math/rnd.inc.adoc ./dev/modules/math/tform.inc.adoc ./dev/modules/math/tform.inc.adoc
 ./dev/modules/move.html: ./dev/modules/move.adoc 
+./dev/modules/pair.html: ./dev/modules/pair.adoc 
 ./dev/modules/parser.html: ./dev/modules/parser.adoc 
 ./dev/modules/partlist.html: ./dev/modules/partlist.adoc 
 ./dev/modules/rbc/forces.html: ./dev/modules/rbc/forces.adoc 
@@ -33,6 +34,7 @@
 ./dev/modules/rbc/stretch.html: ./dev/modules/rbc/stretch.adoc 
 ./dev/modules/restrain.html: ./dev/modules/restrain.adoc 
 ./dev/modules/sdf/main.html: ./dev/modules/sdf/main.adoc 
+./dev/modules/time.html: ./dev/modules/time.adoc 
 ./dev/modules/utils/main.html: ./dev/modules/utils/main.adoc ./dev/modules/utils/cc.inc.adoc ./dev/modules/utils/cc.inc.adoc ./dev/modules/utils/error.inc.adoc ./dev/modules/utils/error.inc.adoc ./dev/modules/utils/kl.inc.adoc ./dev/modules/utils/kl.inc.adoc ./dev/modules/utils/mc.inc.adoc ./dev/modules/utils/mc.inc.adoc
 ./dev/modules/wvel.html: ./dev/modules/wvel.adoc 
 ./dev/third.html: ./dev/third.adoc 

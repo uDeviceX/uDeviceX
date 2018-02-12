@@ -55,6 +55,8 @@ include::dev/modules/math/main.adoc[]
 
 include::dev/modules/move.adoc[]
 
+include::dev/modules/pair.adoc[]
+
 include::dev/modules/parser.adoc[]
 
 include::dev/modules/partlist.adoc[]
@@ -72,6 +74,8 @@ include::dev/modules/rbc/stretch.adoc[]
 include::dev/modules/restrain.adoc[]
 
 include::dev/modules/sdf/main.adoc[]
+
+include::dev/modules/time.adoc[]
 
 include::dev/modules/utils/main.adoc[]
 
