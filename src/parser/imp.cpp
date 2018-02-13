@@ -417,7 +417,6 @@ void conf_set_string(int n, const char *desc[], const char *a, Config *cfg) {
         ERR("could not set <%s>", desc[n-1]);
 }
 
-
 void conf_write_exe(const Config *cfg, FILE *stream) {
     config_write(&cfg->c[EXE], stream);
 }
