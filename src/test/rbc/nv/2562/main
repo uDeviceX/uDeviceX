@@ -4,9 +4,7 @@ cd test/rbc/nv/2562
 S=`u.cp.s`
 nv=2562
 u.cp.rbc rbc/sc/$nv.off rbc.off
-area=`off.area rbc.off`
-volume=`off.volume rbc.off`
-x=24 y=6 z=6
+XS=48 YS=12 ZS=12 x=24 y=6 z=6
 echo 1 0 0 $x \
      0 1 0 $y \
      0 0 1 $z \
@@ -19,9 +17,12 @@ u.conf "$S" u/x "$S/conf/default.h" <<!
 !
 u.make -j
 u.run ./udx conf.cfg "
+glb = {
+    L = [$XS, $YS, $ZS]
+}
 rbc = {
-    totArea = $area
-    totVolume = $volume
+    totArea = 1564.4922174
+    totVolume = 3812.3160399576
 }
 "
 ply2punto r/00003.ply | awk 'NR % 10 == 0' > ply.out.txt
