@@ -71,7 +71,7 @@ __global__ void reinit_ft(const int ns, Solid *ss) {
     }
 }
 
-__global__ void update_om_v(float dt, const int ns, Solid *ss) {
+__global__ void update_om_v(RigPinInfo pi, float dt, const int ns, Solid *ss) {
     enum {X, Y, Z};
     enum {XX, XY, XZ, YY, YZ, ZZ};
     enum {YX = XY, ZX = XZ, ZY = YZ};
@@ -80,7 +80,7 @@ __global__ void update_om_v(float dt, const int ns, Solid *ss) {
     if (gid < ns) {
         Solid s = ss[gid];
         const float *A = s.Iinv, *b = s.to;
-
+        const float sc = dt/s.mass;
         const float dom[3] = {A[XX]*b[X] + A[XY]*b[Y] + A[XZ]*b[Z],
                               A[YX]*b[X] + A[YY]*b[Y] + A[YZ]*b[Z],
                               A[ZX]*b[X] + A[ZY]*b[Y] + A[ZZ]*b[Z]};
@@ -89,25 +89,19 @@ __global__ void update_om_v(float dt, const int ns, Solid *ss) {
         s.om[Y] += dom[Y]*dt;
         s.om[Z] += dom[Z]*dt;
 
-        // assume always rotating around z axis
-        if (pin_axis) {
-            s.om[X] = s.om[Y] = 0.f;
-        }
+        if (pi.axis.x) s.om[X] = 0;
+        if (pi.axis.y) s.om[Y] = 0;
+        if (pi.axis.z) s.om[Z] = 0;
 
-        if (pin_com) {
-            s.v[X] = s.v[Y] = s.v[Z] = 0.f;
-        }
-        else {
-            const float sc = dt/s.mass;
-            s.v[X] += s.fo[X] * sc;
-            s.v[Y] += s.fo[Y] * sc;
-            s.v[Z] += s.fo[Z] * sc;
-
-            if (pin_comx) s.v[X] = 0.f;
-            if (pin_comy) s.v[Y] = 0.f;
-            if (pin_comz) s.v[Z] = 0.f;
-        }
-
+        
+        s.v[X] += s.fo[X] * sc;
+        s.v[Y] += s.fo[Y] * sc;
+        s.v[Z] += s.fo[Z] * sc;
+        
+        if (pi.com.x) s.v[X] = 0;
+        if (pi.com.y) s.v[Y] = 0;
+        if (pi.com.z) s.v[Z] = 0;
+        
         ss[threadIdx.x] = s;
     }
 }

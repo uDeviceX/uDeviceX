@@ -100,6 +100,7 @@ static void fin_rig(Rig *s) {
 
     UC(fin_rig_distr(/**/ &s->d));
     UC(mesh_write_fin(s->mesh_write));
+    UC(rig_fin_pininfo(s->pininfo));
 }
 
 static void fin_bounce_back(BounceBack *bb) {

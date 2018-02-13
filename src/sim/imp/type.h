@@ -100,6 +100,7 @@ struct Rig {
     Scan *ws; /* work for scan */
     Force *ff, *ff_hst;
 
+    RigPinInfo *pininfo;
     RigDistr d;
     MeshWrite  *mesh_write;
 };
