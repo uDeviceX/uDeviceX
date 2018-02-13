@@ -7,6 +7,7 @@
 #include "inc/conf.h"
 
 #include "utils/msg.h"
+#include "utils/mc.h"
 #include "mpi/glb.h"
 #include "mpi/wrapper.h"
 #include "parser/imp.h"
@@ -58,10 +59,13 @@ int main(int argc, char **argv) {
     int3 L;
     Config *cfg;
     Coords *coords;
+    int rank, size;
     
     m::ini(&argc, &argv);
-    msg_ini(m::rank);
-    msg_print("mpi size: %d", m::size);
+    MC(m::Comm_rank(m::cart, &rank));
+    MC(m::Comm_size(m::cart, &size));
+    msg_ini(rank);
+    msg_print("mpi size: %d", size);
 
     UC(conf_ini(&cfg));
     UC(conf_read(argc, argv, cfg));

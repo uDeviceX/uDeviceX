@@ -56,9 +56,10 @@ int main(int argc, char **argv) {
     const char *path;
     Coords *coords;
     Config *cfg;
-    int i, ndump;
+    int i, ndump, rank;
     m::ini(&argc, &argv);
-    msg_ini(m::rank);
+    MC(m::Comm_rank(m::cart, &rank));
+    msg_ini(rank);
 
     UC(conf_ini(&cfg));
     UC(conf_read(argc, argv, cfg));

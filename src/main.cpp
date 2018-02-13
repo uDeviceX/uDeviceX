@@ -6,6 +6,7 @@
 
 #include "utils/msg.h"
 #include "utils/error.h"
+#include "utils/mc.h"
 #include "mpi/glb.h"
 #include "mpi/wrapper.h"
 #include "scheme/time/imp.h"

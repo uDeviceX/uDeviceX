@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <mpi.h>
 
 #include <conf.h>
 #include "inc/conf.h"
@@ -13,9 +14,11 @@
 #include "parser/imp.h"
 #include "parser/imp.h"
 #include "utils/cc.h"
+#include "utils/mc.h"
 #include "utils/error.h"
 #include "utils/imp.h"
 #include "utils/msg.h"
+#include "mpi/wrapper.h"
 
 static const char *prog_name = "./udx";
 void usg0() {
@@ -45,12 +48,13 @@ void main0(int n, const Force *hst) {
 int main(int argc, char **argv) {
     const char *i; /* input file */
     const Force *ff;
-    int n;
+    int n, rank;
     Config *cfg;
     TxtRead *txt;
     usg(argc, argv);
     m::ini(&argc, &argv);
-    msg_ini(m::rank);
+    MC(m::Comm_rank(m::cart, &rank));
+    msg_ini(rank);
     UC(conf_ini(&cfg));
     UC(conf_read(argc, argv, /**/ cfg));
 

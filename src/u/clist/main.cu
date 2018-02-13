@@ -13,6 +13,7 @@
 #include "utils/error.h"
 #include "utils/imp.h"
 #include "utils/cc.h"
+#include "utils/mc.h"
 
 #include "mpi/glb.h"
 #include "mpi/wrapper.h"
@@ -114,9 +115,11 @@ int main(int argc, char **argv) {
     ClistMap *m;
     Config *cfg;
     Coords *coords;
+    int rank;
 
     m::ini(&argc, &argv);
-    msg_ini(m::rank);
+    MC(m::Comm_rank(m::cart, &rank));
+    msg_ini(rank);
     
     UC(conf_ini(&cfg));
     UC(conf_read(argc, argv, cfg));

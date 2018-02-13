@@ -12,6 +12,7 @@
 #include "mpi/wrapper.h"
 #include "utils/msg.h"
 #include "utils/error.h"
+#include "utils/mc.h"
 #include "math/tform/imp.h"
 
 #include "coords/ini.h"
@@ -252,11 +253,12 @@ static void main3(int c, char **v) {
 int main(int argc, char **argv) {
     const char *arg;
     char **v;
-    int c;
+    int rank, c;
     const char delim[] = " \t";
     Config *cfg;
     m::ini(&argc, &argv);
-    msg_ini(m::rank);
+    MC(m::Comm_rank(m::cart, &rank));
+    msg_ini(rank);
     UC(conf_ini(&cfg));
     UC(conf_read(argc, argv, /**/ cfg));
     UC(coords_ini_conf(m::cart, cfg, /**/ &coords));

@@ -8,7 +8,9 @@
 #include "coords/ini.h"
 
 #include "utils/msg.h"
+#include "utils/mc.h"
 #include "mpi/glb.h"
+#include "mpi/wrapper.h"
 
 #include "utils/error.h"
 
@@ -33,8 +35,10 @@ void main0(Config *c) {
 
 int main(int argc, char **argv) {
     Config *cfg;
+    int rank;
     m::ini(&argc, &argv);
-    msg_ini(m::rank);
+    MC(m::Comm_rank(m::cart, &rank));
+    msg_ini(rank);
 
     UC(conf_ini(/**/ &cfg));
     UC(conf_read(argc, argv, /**/ cfg));

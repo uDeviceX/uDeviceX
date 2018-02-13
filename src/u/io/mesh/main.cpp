@@ -8,10 +8,11 @@
 #include "coords/ini.h"
 
 #include "utils/msg.h"
+#include "utils/mc.h"
+#include "utils/error.h"
+
 #include "mpi/glb.h"
 #include "mpi/wrapper.h"
-
-#include "utils/error.h"
 
 #include "io/off/imp.h"
 #include "io/mesh/imp.h"
@@ -45,10 +46,12 @@ int main(int argc, char **argv) {
     Config *cfg;
     OffRead *cell;
     Coords *coords;
+    int rank;
     const char *i, *o; /* input and output */
     
     m::ini(&argc, &argv);
-    msg_ini(m::rank);
+    MC(m::Comm_rank(m::cart, &rank));
+    msg_ini(rank);
 
     UC(conf_ini(/**/ &cfg));
     UC(conf_read(argc, argv, /**/ cfg));

@@ -1,3 +1,4 @@
+#include <mpi.h>
 #include <stdio.h>
 #include <conf.h>
 #include "inc/conf.h"
@@ -6,8 +7,10 @@
 #include "utils/msg.h"
 
 #include "mpi/glb.h"
+#include "mpi/wrapper.h"
 #include "inc/dev.h"
 #include "utils/cc.h"
+#include "utils/mc.h"
 
 #include "utils/kl.h"
 
@@ -21,9 +24,12 @@ void main0() {
 }
 
 int main(int argc, char **argv) {
+    int rank, size;
     m::ini(&argc, &argv);
-    msg_ini(m::rank);
-    msg_print("mpi size: %d", m::size);
+    MC(m::Comm_rank(m::cart, &rank));
+    MC(m::Comm_size(m::cart, &size));
+    msg_ini(rank);
+    msg_print("mpi size: %d", size);
     main0();
     msg_print("Hello world!");
     m::fin();

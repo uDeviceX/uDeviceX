@@ -8,6 +8,7 @@
 
 #include "utils/msg.h"
 #include "utils/error.h"
+#include "utils/mc.h"
 #include "mpi/wrapper.h"
 #include "mpi/glb.h"
 #include "coords/ini.h"
@@ -27,8 +28,10 @@ int main(int argc, char **argv) {
     RbcParams *par;
     float dt, te;
     float part_freq;
+    int rank;
     m::ini(&argc, &argv);
-    msg_ini(m::rank);
+    MC(m::Comm_rank(m::cart, &rank));
+    msg_ini(rank);
 
     UC(conf_ini(&cfg));
     UC(conf_read(argc, argv, cfg));
