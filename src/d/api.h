@@ -6,7 +6,7 @@ enum {MemcpyHostToHost, MemcpyHostToDevice, MemcpyDeviceToHost, MemcpyDeviceToDe
 const char *emsg();
 int alloc_pinned(void **pHost, size_t size);
 int is_device_pointer(const void *ptr);
-// end::end[]
+// end::more[]
 
 // tag::api[]
 int Malloc(void **p, size_t);
