@@ -1,17 +1,21 @@
 #### check forces on a cell
 # nTEST: rbc.u.stree.free
 cd test/rbc/u/stress.free
-S=`u.cp.s` U=u/rbc/force C="$S/conf/default.h"
-:
+S=`u.cp.s`
 nv=642
 u.cp.ic   two rbcs-ic.txt
 u.cp.rbc rbc/sc/$nv.off rbc.off
 u.cp.rbc rbc/sc/$nv.off rbc.stress.free
-cell=$S/data/cells/rbc/$nv.off
+area=`off.area rbc.off`
+volume=`off.volume rbc.off`
 :
-u.conf $S $U $C <<!
+u.conf $S u/rbc/force "$S/conf/default.h" <<!
        RBC_STRESS_FREE kBT=0.0
        run
 !
 u.make -j
-u.run ./udx conf.cfg | uscale 0.025 >  forces.out.txt
+u.run ./udx conf.cfg "
+rbc = {
+    totArea = $area
+    totVolume = $volume
+}" | uscale 0.025 >  forces.out.txt

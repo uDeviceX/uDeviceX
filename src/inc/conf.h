@@ -298,7 +298,6 @@
   #define S_LEVEL (2)
 #endif
 
-
 #if defined(adpd_b) || defined(adpd_br) || defined(adpd_r)
 #error adpd* is runtime
 #endif

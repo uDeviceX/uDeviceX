@@ -5,7 +5,7 @@ S=`u.cp.s`
 A=1e3
 nv=642
 u.cp.rbc        rbc/$nv.off    rbc.off
-cp              sph/$nv.off    rbc.stress.free
+u.cp.rbc        sph/$nv.off    rbc.stress.free
 area=`off.area rbc.stress.free`
 volume=`off.volume rbc.off`
 u.stretch $A 5%  rbc.off         > rbc.stretch
