@@ -1,4 +1,6 @@
 struct RigPinInfo;
+struct int3;
+
 void rig_ini_pininfo(RigPinInfo **);
 void rig_fin_pininfo(RigPinInfo *);
 void rig_set_pininfo(int3 com, int3 axis, RigPinInfo *);

@@ -1,5 +1,19 @@
 enum {NTHRD=128};
 
+void rig_ini_pininfo(RigPinInfo **pi) {
+    EMALLOC(1, pi);
+}
+
+void rig_fin_pininfo(RigPinInfo *pi) {
+    EFREE(pi);
+}
+
+void rig_set_pininfo(int3 com, int3 axis, RigPinInfo *pi) {
+    pi->com  = com;
+    pi->axis = axis;
+}
+
+
 void rig_reinit_ft(const int nsolid, /**/ Solid *ss) {
     KL(dev::reinit_ft, (k_cnf(nsolid)), (nsolid, /**/ ss));
 }
