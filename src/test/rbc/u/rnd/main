@@ -18,5 +18,4 @@ u.run ./udx conf.cfg "
 rbc = {
     totArea = $area
     totVolume = $volume
-}
-" | uscale 0.1 >  forces.out.txt
+} " | uscale 0.1 >  forces.out.txt
