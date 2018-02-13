@@ -1,6 +1,4 @@
-struct RigPinInfo;
-
-int collision_inside_1p(const RigPinInfo *pi, const float *r, const float *vv, const int4 *tt, const int nt);
+int collision_inside_1p(int spdir, const float *r, const float *vv, const int4 *tt, const int nt);
 
 void collision_get_colors(int spdir, const Particle *pp, int n,
                           const Particle *i_pp, const int4 *tri,

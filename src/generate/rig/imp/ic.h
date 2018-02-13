@@ -83,6 +83,8 @@ static int max3(int a, int b, int c) {
 static void count_pp_inside(const RigPinInfo *pi, int3 L, const Particle *s_pp, const int n, const float *coms, const int ns,
                             const int4 *tt, const float *vv, const int nt,
                             /**/ int *tags, int *rcounts) {
+
+    int spdir = rig_get_pdir(pi);
     for (int j = 0; j < ns; ++j) rcounts[j] = 0;
 
     const float R = max3(L.x, L.y, L.z);
@@ -96,7 +98,7 @@ static void count_pp_inside(const RigPinInfo *pi, int3 L, const Particle *s_pp, 
 
             const float r2 = r[X]*r[X] + r[Y]*r[Y] + r[Z]*r[Z];
 
-            if (r2 < R*R && collision_inside_1p(pi, r, vv, tt, nt)) {
+            if (r2 < R*R && collision_inside_1p(spdir, r, vv, tt, nt)) {
                 ++rcounts[j];
                 tags[ip] = tag = j;
             }

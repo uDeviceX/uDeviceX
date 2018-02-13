@@ -51,10 +51,9 @@ static __host__ __device__ bool in_tetrahedron(const float *x, const float *A, c
         same_side(x, D, AB, AC, A);
 }
 
-int collision_inside_1p(const RigPinInfo *pi, const float *r, const float *vv, const int4 *tt, const int nt) {
+int collision_inside_1p(int spdir, const float *r, const float *vv, const int4 *tt, const int nt) {
     int c = 0;
     float origin[3] = {0, 0, 0};
-    int spdir = rig_get_pdir(pi);
 
     if (spdir != NOT_PERIODIC)
         origin[spdir] = r[spdir];
