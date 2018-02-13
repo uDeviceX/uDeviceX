@@ -32,7 +32,7 @@ $B/rbc/imp.o: $S/rbc/imp/fin.h $S/utils/imp.h $S/inc/conf.h $S/utils/error.h $S/
 $B/rbc/params/conf.o: $S/inc/conf.h $S/utils/error.h $S/rbc/params/imp.h $B/conf.h $S/parser/imp.h
 $B/rbc/params/imp.o: $S/utils/imp.h $S/utils/error.h $S/rbc/params/imp.h $S/rbc/params/type.h
 $B/rbc/rnd/api/imp.o: $S/utils/imp.h $S/inc/conf.h $S/utils/error.h $S/rbc/rnd/api/imp.h $S/rbc/rnd/api/imp/cpu.h $S/rbc/rnd/api/imp/gaussrand.h $B/conf.h $S/rbc/rnd/api/type.h $S/rbc/rnd/api/imp/cuda.h
-$B/rbc/rnd/imp.o: $S/utils/imp.h $S/utils/os.h $S/inc/conf.h $S/rbc/rnd/imp/cu.h $S/utils/error.h $S/rbc/rnd/api/imp.h $S/rbc/rnd/imp.h $S/rbc/rnd/imp/seed.h $S/utils/cc.h $S/inc/dev.h $S/d/api.h $B/conf.h $S/rbc/rnd/imp/main.h $S/rbc/rnd/api/type.h $S/rbc/rnd/type.h $S/utils/msg.h
+$B/rbc/rnd/imp.o: $S/utils/imp.h $S/utils/os.h $S/inc/conf.h $S/rbc/rnd/imp/cu.h $S/utils/error.h $S/rbc/rnd/api/imp.h $S/rbc/rnd/imp.h $S/rbc/rnd/imp/seed.h $S/utils/cc.h $S/inc/dev.h $S/d/api.h $B/conf.h $S/rbc/rnd/imp/main.h $S/rbc/rnd/api/type.h $S/rbc/rnd/imp/type.h $S/utils/msg.h
 $B/rbc/shape/imp.o: $S/utils/imp.h $S/utils/error.h $S/rbc/shape/imp/util.h $S/rbc/shape/imp.h $S/rbc/adj/type/common.h $S/rbc/shape/imp/main.h $S/rbc/shape/imp/type.h $S/rbc/adj/imp.h $S/utils/msg.h
 $B/rbc/stretch/imp.o: $S/utils/imp.h $S/inc/conf.h $S/utils/error.h $S/d/q.h $S/inc/type.h $S/rbc/stretch/imp.h $S/utils/cc.h $S/inc/def.h $S/d/api.h $S/inc/dev.h $B/conf.h $S/rbc/stretch/imp/main.h $S/rbc/stretch/imp/type.h $S/utils/kl.h $S/rbc/stretch/dev/main.h $S/d/ker.h $S/utils/msg.h
 $B/scheme/force/conf.o: $S/utils/imp.h $S/utils/error.h $S/scheme/force/imp.h $S/parser/imp.h
