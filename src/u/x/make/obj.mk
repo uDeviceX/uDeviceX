@@ -19,8 +19,8 @@ O = $B/algo/force_stat/imp.o $B/algo/minmax/imp.o $B/algo/scan/imp.o $B/clist/im
     $B/rbc/edg/imp.o $B/rbc/force/area_volume/imp.o $B/rbc/force/imp.o \
     $B/rbc/gen/imp.o $B/rbc/imp.o $B/rbc/params/conf.o $B/rbc/params/imp.o \
     $B/rbc/rnd/api/imp.o $B/rbc/rnd/imp.o $B/rbc/shape/imp.o $B/rbc/stretch/imp.o \
-    $B/rig/imp.o $B/rigid/imp.o $B/scheme/force/conf.o $B/scheme/force/imp.o \
-    $B/scheme/move/imp.o $B/scheme/move/params/conf.o \
+    $B/rig/imp.o $B/rigid/conf.o $B/rigid/imp.o $B/scheme/force/conf.o \
+    $B/scheme/force/imp.o $B/scheme/move/imp.o $B/scheme/move/params/conf.o \
     $B/scheme/move/params/imp.o $B/scheme/restrain/conf.o \
     $B/scheme/restrain/imp.o $B/scheme/time/imp.o $B/scheme/time_step/imp.o \
     $B/sim/imp.o $B/utils/cc.o $B/utils/error.o $B/utils/imp.o $B/utils/mc.o \
