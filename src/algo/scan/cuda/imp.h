@@ -7,6 +7,8 @@ static void scan0(const unsigned char *input, int size, /**/ uint *output, /*w*/
 }
 
 void scan_apply(const int *input, int size, /**/ int *output, /*w*/ Scan *w) {
+    if (size > w->size)
+        ERR(" size = %d < w->size = %d", size, w->size);
     KL(dev::compress, (k_cnf(size)), (size, (const int4*) input, /**/ (uchar4 *) w->compressed));
     scan0(w->compressed, size, /**/ (uint*) output, /*w*/ w->tmp);
 }
@@ -15,6 +17,7 @@ void scan_ini(int size, /**/ Scan **work) {
     Scan *w;
     EMALLOC(1, work);
     w = *work;
+    w->size = size;
     Dalloc(&w->tmp, 64 * 64 * 64 / THREADS);
     Dalloc(&w->compressed, 4 * size);
 }
@@ -24,4 +27,3 @@ void scan_fin(/**/ Scan *w) {
     Dfree(w->compressed);
     EFREE(w);
 }
-
