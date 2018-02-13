@@ -6,7 +6,7 @@ echo -e "8 16 8" > rigs-ic.txt
 u.cp.rig sphere.ply rig.ply
 :
 u.conf "$S" u/x "$S/conf/default.h" <<!
-   solids sbounce_back
+   solids
    run
 !
 u.make -j

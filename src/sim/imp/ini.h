@@ -299,7 +299,7 @@ void sim_ini(Config *cfg, MPI_Comm cart,  Time* time, /**/ Sim **sim) {
     if (solids) {
         UC(ini_rig(s->cart, maxp, s->L, /**/ &s->rig));
 
-        if (sbounce_back)
+        if (s->opt.sbounce)
             UC(ini_bounce_back(s->cart, maxp, s->L, &s->rig, /**/ &s->bb));
     }
 

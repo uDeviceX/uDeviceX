@@ -151,7 +151,7 @@ void sim_fin(Sim *s, Time *time) {
     if (solids) {
         fin_rig(/**/ &s->rig);
         
-        if (sbounce_back)
+        if (s->opt.sbounce)
             fin_bounce_back(&s->bb);
     }
 
