@@ -4,6 +4,7 @@ static void step(Time *time, BForce *bforce, bool wall0, int ts, int it, Sim *s)
     Rbc *rbc = &s->rbc;
     Rig *rig = &s->rig;
     Wall *wall = &s->wall;
+    const Opt *opt = &s->opt;
     dt = time_dt(time);
 
     if (walls && !s->equilibrating)
@@ -31,7 +32,7 @@ static void step(Time *time, BForce *bforce, bool wall0, int ts, int it, Sim *s)
 
     UC(check_vel(dt, s));
 
-    if (s->opt.vcon && !s->equilibrating) {
+    if (opt->vcon && !s->equilibrating) {
         sample(s->coords, it, flu, /**/ &s->vcon);
         adjust(it, /**/ &s->vcon, bforce);
         log(it, &s->vcon);
@@ -39,14 +40,14 @@ static void step(Time *time, BForce *bforce, bool wall0, int ts, int it, Sim *s)
 
     if (wall0) bounce_wall(dt, s->coords, wall, /**/ flu, rbc);
 
-    if (sbounce_back && s->solids0) bounce_solid(dt, s->L, /**/ &s->bb, rig, flu);
+    if (opt->sbounce && s->solids0) bounce_solid(dt, s->L, /**/ &s->bb, rig, flu);
 
     UC(check_pos_soft(s));
     UC(check_vel(dt, s));
 
     if (! s->equilibrating) {
-        if (s->opt.inflow)     apply_inflow(dt, s->inflow, /**/ flu);
-        if (s->opt.outflow)    mark_outflow(flu, /**/ s->outflow);
-        if (s->opt.denoutflow) mark_outflowden(flu, s->mapoutflow, /**/ s->denoutflow);
+        if (opt->inflow)     apply_inflow(dt, s->inflow, /**/ flu);
+        if (opt->outflow)    mark_outflow(flu, /**/ s->outflow);
+        if (opt->denoutflow) mark_outflowden(flu, s->mapoutflow, /**/ s->denoutflow);
     }
 }
