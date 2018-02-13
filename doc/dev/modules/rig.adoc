@@ -1,0 +1,55 @@
+= Rigid
+:lext: .adoc
+:src: ../../../src
+
+Rigid objects consist of frozen particles moving in a rigid fashion.
+Interactions with other objects are modeled via pairwise interactions
+with the frozen particles.
+
+Rigid objects also contain a surface representation on which other
+particles may bounce back.
+
+== Quantities
+
+`RigidQuants` structure contains particles of rigid objects as well as
+mesh particles.
+`Solid` structures contain center of mass, orientation, angular and
+linear velocity of the rigid object.
+
+[source, c++]
+----
+include::{src}/rig/imp.h[tag=quants]
+----
+
+== Interface
+
+allocate and deallocate the quantities:
+
+[source, c++]
+----
+include::{src}/rig/imp.h[tag=mem]
+----
+`maxp` is the maximum particle number per node.
+
+generate the quantities from solvent particles or from restart files:
+
+[source, c++]
+----
+include::{src}/rig/imp.h[tag=gen]
+----
+
+Rigid objects are numbered and need a unique id for dump.
+This is initialised using
+[source, c++]
+----
+include::{src}/rig/imp.h[tag=genid]
+----
+
+Restart files are dumped using the following functions:
+
+[source, c++]
+----
+include::{src}/rig/imp.h[tag=io]
+----
+<1> to be called only once: dump the frozen particle in local referential (common to every rigid objects)
+<2> dump `Solid` structures, describing position, orientation and velocity of the rigid objects

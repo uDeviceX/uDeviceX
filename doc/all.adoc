@@ -73,9 +73,13 @@ include::dev/modules/rbc/stretch.adoc[]
 
 include::dev/modules/restrain.adoc[]
 
+include::dev/modules/rig.adoc[]
+
 include::dev/modules/sdf/main.adoc[]
 
 include::dev/modules/time.adoc[]
+
+include::dev/modules/time_step.adoc[]
 
 include::dev/modules/utils/main.adoc[]
 

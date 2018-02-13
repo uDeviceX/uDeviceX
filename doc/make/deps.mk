@@ -33,8 +33,10 @@
 ./dev/modules/rbc/shape.html: ./dev/modules/rbc/shape.adoc 
 ./dev/modules/rbc/stretch.html: ./dev/modules/rbc/stretch.adoc 
 ./dev/modules/restrain.html: ./dev/modules/restrain.adoc 
+./dev/modules/rig.html: ./dev/modules/rig.adoc 
 ./dev/modules/sdf/main.html: ./dev/modules/sdf/main.adoc 
 ./dev/modules/time.html: ./dev/modules/time.adoc 
+./dev/modules/time_step.html: ./dev/modules/time_step.adoc 
 ./dev/modules/utils/main.html: ./dev/modules/utils/main.adoc ./dev/modules/utils/cc.inc.adoc ./dev/modules/utils/cc.inc.adoc ./dev/modules/utils/error.inc.adoc ./dev/modules/utils/error.inc.adoc ./dev/modules/utils/kl.inc.adoc ./dev/modules/utils/kl.inc.adoc ./dev/modules/utils/mc.inc.adoc ./dev/modules/utils/mc.inc.adoc
 ./dev/modules/wvel.html: ./dev/modules/wvel.adoc 
 ./dev/third.html: ./dev/third.adoc 
