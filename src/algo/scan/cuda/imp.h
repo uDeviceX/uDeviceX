@@ -8,7 +8,7 @@ static void scan0(const unsigned char *input, int size, /**/ uint *output, /*w*/
 
 void scan_apply(const int *input, int size, /**/ int *output, /*w*/ Scan *w) {
     if (size > w->size)
-        ERR(" size = %d < w->size = %d", size, w->size);
+        ERR(" size = %d > w->size = %d", size, w->size);
     KL(dev::compress, (k_cnf(size)), (size, (const int4*) input, /**/ (uchar4 *) w->compressed));
     scan0(w->compressed, size, /**/ (uint*) output, /*w*/ w->tmp);
 }
