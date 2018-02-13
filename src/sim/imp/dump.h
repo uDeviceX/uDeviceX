@@ -102,7 +102,7 @@ static void dump_strt_templ(const Coords *coords, Wall *w, Sim *s) { /* template
     Rig *rig = &s->rig;
     if (strt_dumps) {
         if (walls) wall_strt_dump_templ(coords, &w->q);
-        if (solids) rig_strt_dump_templ(coords, &rig->q);
+        if (s->opt.rig) rig_strt_dump_templ(coords, &rig->q);
     }
 }
 
@@ -112,7 +112,7 @@ static void dump_strt(int id, Sim *s) {
     Rig *rig = &s->rig;
     flu_strt_dump(s->coords, id, &flu->q);
     if (rbcs)       rbc_strt_dump(s->coords, id, &rbc->q);
-    if (solids)     rig_strt_dump(s->coords, id, &rig->q);
+    if (s->opt.rig) rig_strt_dump(s->coords, id, &rig->q);
 }
 
 static void dump_diag(Time *time, int it, Sim *s) {

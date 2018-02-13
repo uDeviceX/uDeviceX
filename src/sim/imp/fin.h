@@ -133,7 +133,7 @@ static void fin_pair_params(Sim *s) {
 
 void sim_fin(Sim *s, Time *time) {
     bop_fin(s->dumpt);
-    if (rbcs || solids)
+    if (rbcs || s->opt.rig)
         fin_objinter(&s->opt, &s->objinter);
 
     if (s->opt.vcon)       UC(fin_vcon(/**/ &s->vcon));
@@ -148,7 +148,7 @@ void sim_fin(Sim *s, Time *time) {
     if (multi_solvent && rbcs)
         fin_colorer(/**/ &s->colorer);
 
-    if (solids) {
+    if (s->opt.rig) {
         fin_rig(/**/ &s->rig);
         
         if (s->opt.sbounce)
