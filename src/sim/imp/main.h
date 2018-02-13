@@ -19,7 +19,7 @@ static void gen(Time *time, float tw, const Coords *coords, Wall *w, Sim *s) { /
         MC(m::Barrier(s->cart));
         inter_create_walls(s->cart, maxp_wall, w->sdf, /*io*/ &flu->q, /**/ &w->q);
     }
-    inter_freeze(coords, s->opt.rig, s->cart, w->sdf, /*io*/ &flu->q, /**/ &rig->q, &rbc->q);
+    inter_freeze(coords, s->rig.pininfo, s->opt.rig, s->cart, w->sdf, /*io*/ &flu->q, /**/ &rig->q, &rbc->q);
     clear_vel(s);
 
     if (multi_solvent) {

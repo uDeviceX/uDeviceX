@@ -26,7 +26,7 @@ void gen_colors(const Rbc *r, Colorer *c, Flu *f) {
     UC(minmax(c->pp, nv, nm, /**/ c->minext, c->maxext));
 
     tri = area_volume_tri(r->q.area_volume);
-    UC(collision_get_colors(f->q.pp, f->q.n,
+    UC(collision_get_colors(NOT_PERIODIC, f->q.pp, f->q.n,
                             c->pp, tri,
                             r->q.nt, nv, nm,
                             c->minext, c->maxext, /**/ f->q.cc));
