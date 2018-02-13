@@ -13,6 +13,8 @@
 
 #include "imp.h"
 
+#include "imp/type.h"
+
 namespace dev {
 #include "dev/utils.h"
 #include "dev/main.h"
