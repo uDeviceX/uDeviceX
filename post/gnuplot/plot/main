@@ -1,14 +1,25 @@
+: ${GNUPLOT=gnuplot}
+
+t=/tmp/gp.$$.txt; >$t; trap 'rm $t' 1 2 3 15
+u.gnuplot.off data/rbc.off > $t
+o=o.png
+s=2.72
+
+"${GNUPLOT}" <<!
+o = "$o"; i = "$t"; s = $s
+
 set hidden3d
 unset tics
 unset border
 unset key
 
-s = 2.7
 set view 60, 30, s, s
-set view azimuth 0
 set view  equal xyz
 
 set term png
-set output "o.png"
+set output o
 
-splot "<u.gnuplot.off data/rbc.off" w l lw 3 lc 0
+splot i w l lw 3 lc 0
+!
+
+rm $t
