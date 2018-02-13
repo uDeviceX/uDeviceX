@@ -169,7 +169,7 @@ static void ini_rbc(const Config *cfg, MPI_Comm cart, int3 L, /**/ Rbc *r) {
     UC(rbc_params_set_conf(cfg, r->params));
 }
 
-static void ini_rig(MPI_Comm cart, int maxp, int3 L, /**/ Rig *s) {
+static void ini_rig(const Config *cfg, MPI_Comm cart, int maxp, int3 L, /**/ Rig *s) {
     const int4 *tt;
     int nv, nt;
 
@@ -185,12 +185,7 @@ static void ini_rig(MPI_Comm cart, int maxp, int3 L, /**/ Rig *s) {
 
     // hack
     UC(rig_ini_pininfo(&s->pininfo));
-    int3 com, axis;
-    com.x = pin_comx;
-    com.y = pin_comy;
-    com.z = pin_comz;
-    axis.x = axis.y = axis.z = 0;
-    UC(rig_set_pininfo(com, axis, s->pininfo));
+    UC(rig_set_pininfo_conf(cfg, s->pininfo));
 }
 
 static void ini_bounce_back(MPI_Comm cart, int maxp, int3 L, Rig *s, /**/ BounceBack *bb) {
@@ -306,7 +301,7 @@ void sim_ini(Config *cfg, MPI_Comm cart,  Time* time, /**/ Sim **sim) {
         UC(ini_colorer(s->rbc.q.nv, s->cart, maxp, s->L, /**/ &s->colorer));
 
     if (s->opt.rig) {
-        UC(ini_rig(s->cart, maxp, s->L, /**/ &s->rig));
+        UC(ini_rig(cfg, s->cart, maxp, s->L, /**/ &s->rig));
 
         if (s->opt.sbounce)
             UC(ini_bounce_back(s->cart, maxp, s->L, &s->rig, /**/ &s->bb));

@@ -145,24 +145,9 @@
 #define solid_mass flu_mass
 #endif
 
-#ifndef pin_com
-#define pin_com (false)
-#endif
-
-#ifndef pin_comx
-#define pin_comx (false)
-#endif
-
-#ifndef pin_comy
-#define pin_comy (false)
-#endif
-
-#ifndef pin_comz
-#define pin_comz (false)
-#endif
-
-#ifndef pin_axis
-#define pin_axis (false)
+#if defined(pin_com) || defined(pin_comx) || defined(pin_comy) || \
+    defined(pin_comz) || defined(pin_axis)
+#error pin info are runtime
 #endif
 
 #ifdef sbounce_back
