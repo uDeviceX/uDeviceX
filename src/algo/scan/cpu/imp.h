@@ -1,5 +1,5 @@
-void scan_work_ini(int, Scan**) { }
-void scan_work_fin(Scan*) { }
+void scan_ini(int, Scan**) { }
+void scan_fin(Scan*) { }
 
 void scan_apply(const int* input, int size, /**/ int* output, /*w*/ Scan*) {
     int i, s;

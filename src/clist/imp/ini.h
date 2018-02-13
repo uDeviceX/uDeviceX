@@ -14,7 +14,7 @@ void clist_ini_map(int maxp, int nA, const Clist *c, /**/ ClistMap **map) {
     EMALLOC(1, map);
     ClistMap *m = *map;
     
-    UC(scan_work_ini(c->ncells, /**/ &m->scan));
+    UC(scan_ini(c->ncells, /**/ &m->scan));
 
     size = maxp * sizeof(uchar4);
 
