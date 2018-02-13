@@ -12,7 +12,6 @@
 
 namespace m { /* MPI */
 enum {X, Y, Z, D};
-int rank, size;
 
 static void shift(int *argc, char ***argv) {
     (*argc)--;
@@ -60,8 +59,6 @@ void ini(int *argc, char ***argv) {
     
     set_dims(argc, argv, dims);
 
-    MC(m::Comm_rank(MPI_COMM_WORLD,   &rank));
-    MC(m::Comm_size(MPI_COMM_WORLD,   &size));
     MC(m::Cart_create(MPI_COMM_WORLD, D, dims, periods, reorder, &m::cart));
 }
 

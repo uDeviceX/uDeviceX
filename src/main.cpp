@@ -18,10 +18,13 @@ int main(int argc, char **argv) {
     TimeSeg *time_seg;
     Config *cfg;
     float t0;
-
+    int rank, size;
+    
     m::ini(&argc, &argv);
-    msg_ini(m::rank);
-    msg_print("mpi rank/size: %d/%d", m::rank, m::size);
+    MC(m::Comm_rank(m::cart, &rank));
+    MC(m::Comm_size(m::cart, &size));
+    msg_ini(rank);
+    msg_print("mpi rank/size: %d/%d", rank, size);
     UC(conf_ini(&cfg));
     UC(conf_read(argc, argv, cfg));
     t0 = 0;
