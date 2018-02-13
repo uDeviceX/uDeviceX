@@ -16,11 +16,12 @@ struct RigQuants {
 };
 
 struct Coords;
+struct RigPinInfo;
 
 void rig_ini(int maxp, RigQuants *q);
 void rig_fin(RigQuants *q);
 
-void rig_gen_quants(const Coords *coords, MPI_Comm comm, Particle *opp, int *on, RigQuants *q);
+void rig_gen_quants(const Coords *coords, const RigPinInfo *pi, MPI_Comm comm, Particle *opp, int *on, RigQuants *q);
 void rig_strt_quants(const Coords *coords, const int id, RigQuants *q);
 
 void rig_set_ids(MPI_Comm comm, RigQuants *q);

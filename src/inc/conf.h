@@ -145,24 +145,9 @@
 #define solid_mass flu_mass
 #endif
 
-#ifndef pin_com
-#define pin_com (false)
-#endif
-
-#ifndef pin_comx
-#define pin_comx (false)
-#endif
-
-#ifndef pin_comy
-#define pin_comy (false)
-#endif
-
-#ifndef pin_comz
-#define pin_comz (false)
-#endif
-
-#ifndef pin_axis
-#define pin_axis (false)
+#if defined(pin_com) || defined(pin_comx) || defined(pin_comy) || \
+    defined(pin_comz) || defined(pin_axis)
+#error pin info are runtime
 #endif
 
 #ifdef sbounce_back
@@ -189,13 +174,8 @@
 #define empty_solid_particles (true)
 #endif
 
-// spdir: [s]olid [p]eriodic [dir]ection
-// example: an open cylinder along z is periodic along z, so spdir = 2
 #ifdef spdir
-#undef  pin_com
-#define pin_com (true)
-#undef  pin_axis
-#define pin_axis (true)
+#error spdir is runtime
 #endif
 
 // rbc

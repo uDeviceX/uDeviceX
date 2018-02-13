@@ -13,9 +13,9 @@ static void remove_rbcs(RbcQuants *q, Sdf *qsdf) {
     msg_print("%d/%d RBCs survived", q->nc, nc0);
 }
 
-static void create_solids(const Coords *coords, MPI_Comm cart, FluQuants* qflu, RigQuants* qrig) {
+static void create_solids(const Coords *coords, const RigPinInfo *pi, MPI_Comm cart, FluQuants* qflu, RigQuants* qrig) {
     cD2H(qflu->pp_hst, qflu->pp, qflu->n);
-    rig_gen_quants(coords, cart, /*io*/ qflu->pp_hst, &qflu->n, /**/ qrig);
+    rig_gen_quants(coords, pi, cart, /*io*/ qflu->pp_hst, &qflu->n, /**/ qrig);
     MC(m::Barrier(cart));
     cH2D(qflu->pp, qflu->pp_hst, qflu->n);
     MC(m::Barrier(cart));
@@ -46,9 +46,9 @@ void inter_create_walls(MPI_Comm cart, int maxn, Sdf *sdf, FluQuants* qflu, Wall
     msg_print("solvent particles survived: %d/%d", qflu->n, nold);
 }
 
-void inter_freeze(const Coords *coords, bool rigids, MPI_Comm cart, Sdf *sdf, FluQuants *qflu, RigQuants *qrig, RbcQuants *qrbc) {
+void inter_freeze(const Coords *coords, const RigPinInfo *pi, bool rigids, MPI_Comm cart, Sdf *sdf, FluQuants *qflu, RigQuants *qrig, RbcQuants *qrbc) {
     MC(m::Barrier(cart));
-    if (rigids)           create_solids(coords, cart, qflu, qrig);
+    if (rigids)           create_solids(coords, pi, cart, qflu, qrig);
     if (walls && rbcs  )  remove_rbcs(qrbc, sdf);
     if (walls && rigids)  remove_solids(qrig, sdf);
     if (rigids)           rig_set_ids(cart, qrig);
