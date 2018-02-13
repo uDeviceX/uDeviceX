@@ -8,7 +8,6 @@ u.cp.rig cyl.ply rig.ply
 :
 u.conf "$S" u/x "$S/conf/default.h" <<!
    walls
-   spdir=2
    run
 !
 u.make -j

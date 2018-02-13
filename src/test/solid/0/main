@@ -8,7 +8,6 @@ u.cp.rig sphere.ply rig.ply
 :
 u.conf "$S" u/x "$S/conf/default.h" <<!
    walls
-   pin_com
    run
 !
 u.make -j
