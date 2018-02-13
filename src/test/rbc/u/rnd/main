@@ -1,24 +1,22 @@
 #### check forces on a cell with random force
 # nTEST: rbc.u.rnd
-S=`u.cp.s` U=u/rbc/force C="$S/conf/default.h"
+cd test/rbc/u/rnd
+S=`u.cp.s`
 :
 nv=642
-u.conf $S $U $C <<!
+u.cp.ic  two         rbcs-ic.txt
+u.cp.rbc rbc/$nv.off rbc.off
+area=`off.area rbc.off`
+volume=`off.volume rbc.off`
+u.conf $S u/rbc/force  "$S/conf/default.h" <<!
        RBC_RND  kBT=0
        run
 !
-{ u.make -j;     } > /dev/null
+u.make -j
 export RBC_RND=42
-u.run ./udx "
-time = {
-    type = \"const\"
-    dt = 5e-4
-}
-glb = {
-    L = [16, 16, 16]
-}
+u.run ./udx conf.cfg "
 rbc = {
-    cell = \"data/cells/rbc/$nv.off\"
-    ic = \"data/ic/two\"
-    @include \"rbc.test.cfg\"
-}" | uscale 0.1 >  forces.out.txt
+    totArea = $area
+    totVolume = $volume
+}
+" | uscale 0.1 >  forces.out.txt
