@@ -31,7 +31,7 @@ static void anti(Adj *adj, /**/ int *dev) {
     EFREE(hst);
 }
 
-static void setup0(int nt, Adj *adj, /**/ Shape *shape) {
+static void setup0(Adj *adj, /**/ Shape *shape) {
     if (RBC_STRESS_FREE) UC(edg_sfree1(adj, /**/  shape->a,   shape->A));
     if (RBC_RND)         UC(anti(adj, /**/ shape->anti));
 }
@@ -40,6 +40,6 @@ static void setup(int md, int nt, int nv, const int4 *tt, /**/ RbcQuants *q) {
     Adj *adj;
     UC(adj_ini(md, nt, nv, tt, /**/ &adj));
     UC(adj_view_ini(adj, /**/ &q->adj_v));
-    UC(setup0(nt, adj, /**/ &q->shape));
+    UC(setup0(adj, /**/ &q->shape));
     UC(adj_fin(adj));
 }
