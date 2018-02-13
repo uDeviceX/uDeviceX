@@ -18,7 +18,6 @@
 #include "utils/msg.h"
 #include "utils/imp.h"
 
-#include "mpi/glb.h"
 #include "utils/cc.h"
 #include "utils/mc.h"
 #include "frag/imp.h"

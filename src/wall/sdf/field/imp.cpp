@@ -8,7 +8,6 @@
 #include "utils/error.h"
 #include "utils/imp.h"
 #include "io/field/imp.h"
-#include "mpi/glb.h"
 #include "utils/msg.h"
 #include "coords/imp.h"
 

@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <mpi.h>
 
 #include "utils/msg.h"
 #include "math/rnd/imp.h"

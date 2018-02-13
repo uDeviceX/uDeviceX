@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <mpi.h>
 
 #include <conf.h>
 #include "inc/conf.h"
@@ -6,7 +7,6 @@
 #include "inc/type.h"
 #include "inc/def.h"
 #include "utils/msg.h"
-#include "mpi/glb.h"
 #include "utils/error.h"
 #include "utils/imp.h"
 #include "coords/imp.h"

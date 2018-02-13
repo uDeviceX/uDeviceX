@@ -10,7 +10,6 @@
 
 #include "mpi/wrapper.h"
 #include "mpi/type.h"
-#include "mpi/glb.h"
 #include "utils/mc.h"
 
 #include "coords/imp.h"

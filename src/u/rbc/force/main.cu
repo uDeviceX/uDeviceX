@@ -20,6 +20,7 @@
 #include "utils/te.h"
 #include "utils/texo.h"
 #include "utils/cc.h"
+#include "utils/mc.h"
 
 #include "d/api.h"
 
@@ -79,20 +80,20 @@ static void run1(float dt, RbcQuants *q, RbcForce *t, const RbcParams *par) {
     Dfree(f);
 }
 
-static void run2(float dt, const Coords *coords, OffRead *off, const char *ic, const RbcParams *par, RbcQuants *q) {
+static void run2(MPI_Comm cart, float dt, const Coords *coords, OffRead *off, const char *ic, const RbcParams *par, RbcQuants *q) {
     RbcForce *t;
-    rbc_gen_quants(coords, m::cart, off, ic, /**/ q);
+    rbc_gen_quants(coords, cart, off, ic, /**/ q);
     rbc_force_ini(q, &t);
     run1(dt, q, t, par);
     rbc_force_fin(t);
 }
 
-void run(float dt, const Coords *coords, const char *cell, const char *ic, const RbcParams *par) {
+void run(MPI_Comm cart, float dt, const Coords *coords, const char *cell, const char *ic, const RbcParams *par) {
     OffRead *off;
     RbcQuants q;
     UC(off_read(cell, /**/ &off));
     UC(rbc_ini(off, &q));
-    UC(run2(dt, coords, off, ic, par, &q));
+    UC(run2(cart, dt, coords, off, ic, par, &q));
     UC(rbc_fin(&q));
     UC(off_fin(off));
 }
@@ -103,23 +104,30 @@ int main(int argc, char **argv) {
     Coords *coords;
     RbcParams *par;
     const char *cell, *ic;
-
+    MPI_Comm cart;
+    int dims[3];
+    
     m::ini(&argc, &argv);
+    m::get_dims(&argc, &argv, dims);
+    m::get_cart(MPI_COMM_WORLD, dims, &cart);
+
     UC(conf_ini(&cfg));
     UC(conf_read(argc, argv, cfg));
     UC(conf_lookup_float(cfg, "time.dt", &dt));
 
-    UC(coords_ini_conf(m::cart, cfg, &coords));
+    UC(coords_ini_conf(cart, cfg, &coords));
     UC(conf_lookup_string(cfg, "rbc.cell", &cell));
     UC(conf_lookup_string(cfg, "rbc.ic", &ic));
 
     UC(rbc_params_ini(&par));
     UC(rbc_params_set_conf(cfg, par));
     
-    UC(run(dt, coords, cell, ic, par));
+    UC(run(cart, dt, coords, cell, ic, par));
 
     UC(rbc_params_fin(par));
     UC(conf_fin(cfg));
     UC(coords_fin(coords));
+
+    MC(m::Barrier(cart));
     m::fin();
 }

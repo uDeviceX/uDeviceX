@@ -8,10 +8,20 @@
 #include "mpi/wrapper.h"
 #include "inc/conf.h"
 #include "utils/mc.h"
-#include "mpi/glb.h"
 
 namespace m { /* MPI */
 enum {X, Y, Z, D};
+
+void ini(int *argc, char ***argv) {
+    if (m::Init(argc, argv) != MPI_SUCCESS) {
+        fprintf(stderr, ": m::Init failed\n");
+        exit(2);
+    }
+    if (m::Errhandler_set(MPI_COMM_WORLD, MPI_ERRORS_RETURN) != MPI_SUCCESS) {
+        fprintf(stderr, ": m::Errhandler_set failed\n");
+        exit(2);
+    }
+}
 
 static void shift(int *argc, char ***argv) {
     (*argc)--;
@@ -19,7 +29,7 @@ static void shift(int *argc, char ***argv) {
 }
 static int eq(const char *a, const char *b) { return strcmp(a, b) == 0; }
 
-static void set_dims(int *argc, char ***argv, int dims[]) {
+void get_dims(int *argc, char ***argv, int dims[]) {
     int i, d, ac;
     char **av;
 
@@ -43,27 +53,14 @@ static void set_dims(int *argc, char ***argv, int dims[]) {
     *argc = ac; *argv = av;
 }
 
-void ini(int *argc, char ***argv) {
-    int dims[D];
+void get_cart(MPI_Comm comm, const int dims[3], /**/ MPI_Comm *cart) {
     const bool reorder = false;
     const int periods[D] = {1, 1, 1};
-    
-    if (m::Init(argc, argv) != MPI_SUCCESS) {
-        fprintf(stderr, ": m::Init failed\n");
-        exit(2);
-    }
-    if (m::Errhandler_set(MPI_COMM_WORLD, MPI_ERRORS_RETURN) != MPI_SUCCESS) {
-        fprintf(stderr, ": m::Errhandler_set failed\n");
-        exit(2);
-    }
-    
-    set_dims(argc, argv, dims);
 
-    MC(m::Cart_create(MPI_COMM_WORLD, D, dims, periods, reorder, &m::cart));
+    MC(m::Cart_create(comm, D, dims, periods, reorder, cart));
 }
 
 void fin() {
-    MC(m::Barrier(m::cart));
     MC(m::Finalize());
 }
 }

@@ -2,7 +2,6 @@
 #include <vector_types.h>
 
 #include "coords/imp.h"
-#include "mpi/glb.h"
 #include "mpi/wrapper.h"
 #include "imp.h"
 #include "utils/error.h"

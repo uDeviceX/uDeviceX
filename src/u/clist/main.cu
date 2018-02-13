@@ -110,23 +110,27 @@ int main(int argc, char **argv) {
     Particle *pp, *ppout;
     Particle *pp_hst;
     int n = 0, nout, *starts, *counts;
-    int3 dims;
+    int3 L;
     Clist clist;
     ClistMap *m;
     Config *cfg;
     Coords *coords;
-    int rank;
-
+    int rank, dims[3];
+    MPI_Comm cart;
+    
     m::ini(&argc, &argv);
-    MC(m::Comm_rank(m::cart, &rank));
+    m::get_dims(&argc, &argv, dims);
+    m::get_cart(MPI_COMM_WORLD, dims, &cart);
+
+    MC(m::Comm_rank(cart, &rank));
     msg_ini(rank);
     
     UC(conf_ini(&cfg));
     UC(conf_read(argc, argv, cfg));
-    UC(coords_ini_conf(m::cart, cfg, &coords));
-    dims = subdomain(coords);
+    UC(coords_ini_conf(cart, cfg, &coords));
+    L = subdomain(coords);
     
-    UC(clist_ini(dims.x, dims.y, dims.z, /**/ &clist));
+    UC(clist_ini(L.x, L.y, L.z, /**/ &clist));
 
     EMALLOC(MAXN, &pp_hst);
     EMALLOC(clist.ncells, &counts);
@@ -135,7 +139,7 @@ int main(int argc, char **argv) {
     CC(d::Malloc((void**) &ppout, MAXN * sizeof(Particle)));
 
     read(&n, pp_hst);
-    nout = num_parts_inside(dims, n, pp_hst);
+    nout = num_parts_inside(L, n, pp_hst);
 
     UC(clist_ini_map(n, 1, &clist, /**/ &m));
     
@@ -147,12 +151,12 @@ int main(int argc, char **argv) {
     CC(d::Memcpy(starts, clist.starts, clist.ncells * sizeof(int), D2H));
     CC(d::Memcpy(pp_hst, ppout, nout * sizeof(Particle), D2H));
     
-    if (valid(dims, starts, counts, pp_hst, nout))
+    if (valid(L, starts, counts, pp_hst, nout))
         printf("0\n");
     else
         printf("1\n");
 
-    print_cells(dims, starts, counts);
+    print_cells(L, starts, counts);
     
     CC(d::Free(pp));
     CC(d::Free(ppout));
@@ -164,5 +168,7 @@ int main(int argc, char **argv) {
     UC(clist_fin_map(/**/ m));
     UC(conf_fin(cfg));
     UC(coords_fin(coords));
+
+    MC(m::Barrier(cart));
     m::fin();
 }

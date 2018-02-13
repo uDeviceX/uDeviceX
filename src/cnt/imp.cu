@@ -16,7 +16,6 @@
 
 #include "inc/def.h"
 #include "utils/msg.h"
-#include "mpi/glb.h"
 #include "utils/cc.h"
 
 #include "frag/imp.h"

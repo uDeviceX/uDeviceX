@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <mpi.h>
 
 #include "utils/msg.h"
 #include "mpi/glb.h"
@@ -34,7 +35,11 @@ static void extract(const Config *c) {
 
 int main(int argc, char **argv) {
     Config *cfg;
+    int dims[3];
+
     m::ini(&argc, &argv);
+    // eat executable and dims
+    m::get_dims(&argc, &argv, dims);
 
     conf_ini(/**/ &cfg);
     conf_read(argc, argv, /**/ cfg);

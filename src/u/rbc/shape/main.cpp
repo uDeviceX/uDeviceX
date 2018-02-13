@@ -13,6 +13,7 @@
 #include "inc/dev.h"
 
 #include "utils/cc.h"
+#include "utils/mc.h"
 
 #include "rbc/adj/imp.h"
 #include "rbc/shape/imp.h"

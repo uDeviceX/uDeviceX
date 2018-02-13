@@ -9,10 +9,15 @@
 
 int main(int argc, char **argv) {
     float s, ts, dt, dump;
-    int i, rank;
+    int i, rank, dims[3];
     Time *t;
+    MPI_Comm cart;
+    
     m::ini(&argc, &argv);
-    MC(m::Comm_rank(m::cart, &rank));
+    m::get_dims(&argc, &argv, dims);
+    m::get_cart(MPI_COMM_WORLD, dims, &cart);
+
+    MC(m::Comm_rank(cart, &rank));
     msg_ini(rank);
     ts = 0; dt = 0.01; dump = 0.25; s = 0.0001;
     time_ini(ts, /**/ &t);
@@ -22,5 +27,7 @@ int main(int argc, char **argv) {
             printf("%d %g %g %g\n", i, time_current(t), time_dt(t), time_dt0(t));
     }
     time_fin(t);
+
+    MC(m::Barrier(cart));
     m::fin();
 }

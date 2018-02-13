@@ -11,6 +11,7 @@
 
 #include "d/api.h"
 #include "utils/msg.h"
+#include "utils/mc.h"
 #include "inc/dev.h"
 
 #include "utils/cc.h"
@@ -40,17 +41,17 @@ static void run0(RbcQuants q) {
     printf("%g %g\n", area, volume);
 }
 
-static void run1(const Coords *coords, OffRead *off, const char *ic, RbcQuants q) {
-    rbc_gen_quants(coords, m::cart, off, ic, /**/ &q);
+static void run1(MPI_Comm cart, const Coords *coords, OffRead *off, const char *ic, RbcQuants q) {
+    rbc_gen_quants(coords, cart, off, ic, /**/ &q);
     UC(run0(q));
 }
 
-void run(const Coords *coords, const char *cell, const char *ic) {
+void run(MPI_Comm cart, const Coords *coords, const char *cell, const char *ic) {
     RbcQuants q;
     OffRead *off;
     UC(off_read(cell, /**/ &off));
     UC(rbc_ini(off, &q));
-    UC(run1(coords, off, ic, q));
+    UC(run1(cart, coords, off, ic, q));
     UC(off_fin(off));
     UC(rbc_fin(&q));
 }
@@ -58,17 +59,23 @@ void run(const Coords *coords, const char *cell, const char *ic) {
 int main(int argc, char **argv) {
     Coords *coords;
     Config *cfg;
+    int dims[3];
+    MPI_Comm cart;
 
     m::ini(&argc, &argv);
+    m::get_dims(&argc, &argv, dims);
+    m::get_cart(MPI_COMM_WORLD, dims, &cart);
 
     UC(conf_ini(&cfg));
     UC(conf_read(argc, argv, cfg));
 
-    UC(coords_ini_conf(m::cart, cfg, &coords));
+    UC(coords_ini_conf(cart, cfg, &coords));
         
-    run(coords, "rbc.off", "rbcs-ic.txt");
+    run(cart, coords, "rbc.off", "rbcs-ic.txt");
 
     UC(coords_fin(coords));
     UC(conf_fin(cfg));
+
+    MC(m::Barrier(cart));
     m::fin();
 }

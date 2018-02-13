@@ -10,7 +10,6 @@
 #include "d/api.h"
 
 #include "math/dev.h"
-#include "mpi/glb.h"
 
 #include "coords/type.h"
 #include "coords/imp.h"

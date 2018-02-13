@@ -18,7 +18,6 @@
 #include "utils/imp.h"
 #include "utils/mc.h"
 #include "mpi/wrapper.h"
-#include "mpi/glb.h"
 
 #include "io/off/imp.h"
 #include "imp.h"

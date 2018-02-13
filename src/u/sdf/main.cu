@@ -16,6 +16,7 @@
 #include "inc/dev.h"
 #include "utils/cc.h"
 #include "utils/kl.h"
+#include "utils/mc.h"
 #include "utils/error.h" 
 #include "coords/type.h"
 #include "coords/ini.h"
@@ -47,12 +48,12 @@ void main0(Sdf *sdf, Part *p) {
     KL(dev::main, (1, 1), (sdf_v, x, y, z));
 }
 
-void main1(const Coords *c, Part *p) {
+void main1(MPI_Comm cart, const Coords *c, Part *p) {
     Sdf *sdf;
     int3 L;
     L = subdomain(c);
     UC(sdf_ini(L, &sdf));
-    UC(sdf_gen(c, m::cart, true, sdf));
+    UC(sdf_gen(c, cart, true, sdf));
     UC(main0(sdf, p));
     UC(sdf_fin(sdf));
     dSync();    
@@ -74,17 +75,23 @@ int main(int argc, char **argv) {
     Part p;
     Coords *coords;
     Config *cfg;    
+    MPI_Comm cart;
+    int dims[3];
 
     m::ini(&argc, &argv);
+    m::get_dims(&argc, &argv, dims);
+    m::get_cart(MPI_COMM_WORLD, dims, &cart);
 
     UC(conf_ini(&cfg));
     UC(conf_read(argc, argv, cfg));
     UC(read_part(cfg, /**/ &p));
-    UC(coords_ini_conf(m::cart, cfg, &coords));
+    UC(coords_ini_conf(cart, cfg, &coords));
 
-    UC(main1(coords, &p));
+    UC(main1(cart, coords, &p));
 
     UC(conf_fin(cfg));
     UC(coords_fin(coords));
+
+    MC(m::Barrier(cart));
     m::fin();
 }

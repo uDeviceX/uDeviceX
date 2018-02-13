@@ -25,7 +25,6 @@
 
 #include "utils/msg.h"
 #include "mpi/wrapper.h"
-#include "mpi/glb.h"
 #include "frag/imp.h"
 
 #include "flu/type.h"

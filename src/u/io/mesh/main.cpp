@@ -19,13 +19,11 @@
 
 #include "parser/imp.h"
 
-static void write(const Coords *c, const char *o, OffRead *cell) {
+static void write(MPI_Comm cart, const Coords *c, const char *o, OffRead *cell) {
     int nc;
     MeshWrite *mesh;
-    MPI_Comm cart;
     Particle *pp;
 
-    cart = m::cart;
     UC(mesh_write_ini_off(cell, o, /**/ &mesh));
 
     nc = 1; pp = NULL;
@@ -46,17 +44,21 @@ int main(int argc, char **argv) {
     Config *cfg;
     OffRead *cell;
     Coords *coords;
-    int rank;
+    int rank, dims[3];
+    MPI_Comm cart;
     const char *i, *o; /* input and output */
     
     m::ini(&argc, &argv);
-    MC(m::Comm_rank(m::cart, &rank));
+    m::get_dims(&argc, &argv, dims);
+    m::get_cart(MPI_COMM_WORLD, dims, &cart);
+
+    MC(m::Comm_rank(cart, &rank));
     msg_ini(rank);
 
     UC(conf_ini(/**/ &cfg));
     UC(conf_read(argc, argv, /**/ cfg));
 
-    UC(coords_ini_conf(m::cart, cfg, /**/ &coords));
+    UC(coords_ini_conf(cart, cfg, /**/ &coords));
 
     UC(conf_lookup_string(cfg, "i", &i));
     UC(conf_lookup_string(cfg, "o", &o));
@@ -66,10 +68,12 @@ int main(int argc, char **argv) {
     UC(off_read(i, &cell));
     UC(log(cell));
 
-    write(coords, o, cell);
+    write(cart, coords, o, cell);
 
     UC(coords_fin(coords));
     UC(off_fin(cell));
     UC(conf_fin(cfg));
+
+    MC(m::Barrier(cart));
     m::fin();
 }

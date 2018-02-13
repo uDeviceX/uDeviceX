@@ -12,6 +12,7 @@
 
 #include "utils/error.h"
 #include "utils/cc.h"
+#include "utils/mc.h"
 #include "utils/kl.h"
 #include "parser/imp.h"
 #include "inc/type.h"
@@ -76,14 +77,19 @@ int main(int argc, char **argv) {
     Coords *coords;
     int3 L;
     float dt;
+    int dims[3];
+    MPI_Comm cart;
+
     m::ini(&argc, &argv);
+    m::get_dims(&argc, &argv, dims);
+    m::get_cart(MPI_COMM_WORLD, dims, &cart);
 
     UC(conf_ini(&cfg));
     UC(dbg_ini(&dbg));
     UC(conf_read(argc, argv, cfg));
     UC(conf_lookup_float(cfg, "time.dt", &dt));
     UC(dbg_set_conf(cfg, dbg));
-    UC(coords_ini_conf(m::cart, cfg, &coords));
+    UC(coords_ini_conf(cart, cfg, &coords));
 
     L = subdomain(coords);
 
@@ -94,5 +100,6 @@ int main(int argc, char **argv) {
     UC(dbg_fin(dbg));
     UC(conf_fin(cfg));
     UC(coords_fin(coords));
+    MC(m::Barrier(cart));
     m::fin();
 }
