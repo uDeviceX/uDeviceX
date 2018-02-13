@@ -11,7 +11,7 @@ void update_solid(float dt, Rig *s) {
     if (!s->q.n) return;
     RigQuants *q = &s->q;
     
-    rig_update(dt, q->n, s->ff, q->rr0, q->ns, /**/ q->pp, q->ss);
+    rig_update(s->pininfo, dt, q->n, s->ff, q->rr0, q->ns, /**/ q->pp, q->ss);
     rig_update_mesh(dt, q->ns, q->ss, q->nv, q->dvv, /**/ q->i_pp);
     // for dump
     cD2H(q->ss_dmp, q->ss, q->ns);

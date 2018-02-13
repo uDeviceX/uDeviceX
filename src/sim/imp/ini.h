@@ -182,6 +182,15 @@ static void ini_rig(MPI_Comm cart, int maxp, int3 L, /**/ Rig *s) {
     Dalloc(&s->ff, maxp);
 
     UC(ini_rig_distr(s->q.nv, cart, L, /**/ &s->d));
+
+    // hack
+    UC(rig_ini_pininfo(&s->pininfo));
+    int3 com, axis;
+    com.x = pin_comx;
+    com.y = pin_comy;
+    com.z = pin_comz;
+    axis.x = axis.y = axis.z = 0;
+    UC(rig_set_pininfo(com, axis, s->pininfo));
 }
 
 static void ini_bounce_back(MPI_Comm cart, int maxp, int3 L, Rig *s, /**/ BounceBack *bb) {
