@@ -1,7 +1,10 @@
 enum {NTHRD=128};
 
 void rig_ini_pininfo(RigPinInfo **pi) {
+    RigPinInfo *p;
     EMALLOC(1, pi);
+    p = *pi;
+    p->pdir = NOT_PERIODIC;
 }
 
 void rig_fin_pininfo(RigPinInfo *pi) {
@@ -13,6 +16,13 @@ void rig_set_pininfo(int3 com, int3 axis, RigPinInfo *pi) {
     pi->axis = axis;
 }
 
+void rig_set_pdir(int pdir, RigPinInfo *pi) {
+    pi->pdir = pdir;
+}
+
+int rig_get_pdir(const RigPinInfo *pi) {
+    return pi->pdir;
+}
 
 void rig_reinit_ft(const int nsolid, /**/ Solid *ss) {
     KL(dev::reinit_ft, (k_cnf(nsolid)), (nsolid, /**/ ss));

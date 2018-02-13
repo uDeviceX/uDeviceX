@@ -2,10 +2,15 @@ struct RigPinInfo;
 struct int3;
 struct Config;
 
+enum {NOT_PERIODIC = -1};
+
 void rig_ini_pininfo(RigPinInfo **);
 void rig_fin_pininfo(RigPinInfo *);
 void rig_set_pininfo(int3 com, int3 axis, RigPinInfo *);
+void rig_set_pdir(int pdir, RigPinInfo *);
 void rig_set_pininfo_conf(const Config *cfg, RigPinInfo *);
+
+int rig_get_pdir(const RigPinInfo *);
 
 struct Particle;
 struct Solid;
