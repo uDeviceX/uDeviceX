@@ -4,6 +4,7 @@ enum {MemcpyHostToHost, MemcpyHostToDevice, MemcpyDeviceToHost, MemcpyDeviceToDe
 
 const char *emsg(); /* last error message */
 int alloc_pinned(void **pHost, size_t size);
+int is_device_pointer(const void *ptr);
 
 int Malloc(void **p, size_t);
 int MemcpyToSymbol(const void *symbol, const void *src, size_t count, size_t offset=0, int kind=MemcpyHostToDevice);
