@@ -29,6 +29,7 @@
 #include "utils/cc.h"
 #include "mesh/collision.h"
 
+#include "rigid/imp.h"
 #include "imp.h"
 
 namespace gen {

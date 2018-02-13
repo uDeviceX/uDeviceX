@@ -25,21 +25,22 @@ static int read_coms(const char *fname, /**/ float* coms) {
 }
 
 /* bbox: minx, maxx, miny, maxy, minz, maxz */
-static int duplicate_PBC(const Coords *c, const float3 minbb, const float3 maxbb, int n, /**/ float *coms) {
+static int duplicate_PBC(const Coords *c, const RigPinInfo *pi, const float3 minbb, const float3 maxbb, int n, /**/ float *coms) {
     DBG("duplicating using bbox %g %g %g, %g %g %g", minbb.x, minbb.y, minbb.z, maxbb.x, maxbb.y, maxbb.z);
     struct f3 {float x[3];};
     const int Lg[3] = {xdomain(c), ydomain(c), zdomain(c)};
-    int id = n;
-    for (int j = 0; j < n; ++j) {
+    int j, spdir, id = n;
+    spdir = rig_get_pdir(pi);
+    for (j = 0; j < n; ++j) {
         f3 r0 = {coms[3*j + X], coms[3*j + Y], coms[3*j + Z]};
         std::vector<f3> dupls;
         dupls.push_back(r0);
 
         auto duplicate = [&](int d, int sign) {
             DBG("duplicating solid %d along direction %d (%d)", j, d, sign);
-#ifdef spdir
+
             if (d == spdir) return;
-#endif
+
             auto dupls2 = dupls;
             for (f3& r : dupls2)
                 r.x[d] += Lg[d] * sign;
@@ -79,7 +80,7 @@ static int max3(int a, int b, int c) {
     return d > c ? d : c;
 }
 
-static void count_pp_inside(int3 L, const Particle *s_pp, const int n, const float *coms, const int ns,
+static void count_pp_inside(const RigPinInfo *pi, int3 L, const Particle *s_pp, const int n, const float *coms, const int ns,
                             const int4 *tt, const float *vv, const int nt,
                             /**/ int *tags, int *rcounts) {
     for (int j = 0; j < ns; ++j) rcounts[j] = 0;
@@ -95,7 +96,7 @@ static void count_pp_inside(int3 L, const Particle *s_pp, const int n, const flo
 
             const float r2 = r[X]*r[X] + r[Y]*r[Y] + r[Z]*r[Z];
 
-            if (r2 < R*R && collision_inside_1p(r, vv, tt, nt)) {
+            if (r2 < R*R && collision_inside_1p(pi, r, vv, tt, nt)) {
                 ++rcounts[j];
                 tags[ip] = tag = j;
             }

@@ -1,4 +1,3 @@
-#ifdef spdir // open geometry, use particles    
 static void init_I_frompp(const Particle *pp, int n, float pmass, const float *com, /**/ float *I) {
     enum {XX, XY, XZ, YY, YZ, ZZ};
     enum {YX = XY, ZX = XZ, ZY = YZ};
@@ -17,7 +16,7 @@ static void init_I_frompp(const Particle *pp, int n, float pmass, const float *c
     }
     for (int c = 0; c < 6; ++c) I[c] *= pmass;
 }
-#else
+
 static void init_I_fromm(float pmass, int nt, const int4 *tt, const float *vv, /**/ float *I) {
     float com[3] = {0};
     mesh_center_of_mass(nt, tt, vv, /**/ com);
@@ -25,10 +24,10 @@ static void init_I_fromm(float pmass, int nt, const int4 *tt, const float *vv, /
 
     for (int c = 0; c < 6; ++c) I[c] *= pmass;
 }
-#endif    
 
-void ini_props(int n, const Particle *pp, float pmass, const float *com, int nt, const int4 *tt, const float *vv, /**/ float *rr0, Solid *s) {
+void ini_props(const RigPinInfo *pi, int n, const Particle *pp, float pmass, const float *com, int nt, const int4 *tt, const float *vv, /**/ float *rr0, Solid *s) {
     enum {X, Y, Z};
+    int spdir = rig_get_pdir(pi);
     s->v[X] = s->v[Y] = s->v[Z] = 0; 
     s->om[X] = s->om[Y] = s->om[Z] = 0; 
 
@@ -38,14 +37,17 @@ void ini_props(int n, const Particle *pp, float pmass, const float *com, int nt,
     s->e2[X] = 0; s->e2[Y] = 0; s->e2[Z] = 1;
 
     /* ini inertia tensor */
-    float I[6]; 
-#ifdef spdir // open geometry, use particles
-    init_I_frompp(pp, n, pmass, com, /**/ I);
-    s->mass = n * pmass;
-#else
-    init_I_fromm(pmass, nt, tt, vv, /**/ I);
-    s->mass = mesh_volume(nt, tt, vv) * numberdensity * pmass;
-#endif
+    float I[6];
+
+    if (spdir == NOT_PERIODIC) {
+        init_I_fromm(pmass, nt, tt, vv, /**/ I);
+        s->mass = mesh_volume(nt, tt, vv) * numberdensity * pmass;
+    }
+    else {
+        init_I_frompp(pp, n, pmass, com, /**/ I);
+        s->mass = n * pmass;
+    }
+
     UC(linal_inv3x3(I, /**/ s->Iinv));
     /* initial positions */
     for (int ip = 0; ip < n; ++ip) {
