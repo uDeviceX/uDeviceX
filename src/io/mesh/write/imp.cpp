@@ -4,7 +4,6 @@
 #include <conf.h>
 #include "inc/conf.h"
 
-#include "mpi/glb.h"
 #include "mpi/wrapper.h"
 #include "utils/mc.h"
 

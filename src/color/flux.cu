@@ -9,7 +9,6 @@
 #include "utils/cc.h"
 #include "d/api.h"
 #include "inc/dev.h"
-#include "mpi/glb.h"
 #include "coords/type.h"
 #include "coords/imp.h"
 

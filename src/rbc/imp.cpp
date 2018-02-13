@@ -21,7 +21,6 @@
 
 #include "utils/mc.h"
 #include "mpi/wrapper.h"
-#include "mpi/glb.h"
 
 #include "io/off/imp.h"
 #include "io/restart/imp.h"

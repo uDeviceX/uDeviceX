@@ -4,8 +4,6 @@
 #include <conf.h>
 #include "inc/conf.h"
 
-#include "mpi/glb.h"
-
 #include "utils/error.h"
 #include "utils/imp.h"
 #include "utils/cc.h"

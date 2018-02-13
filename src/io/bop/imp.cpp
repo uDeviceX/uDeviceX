@@ -7,7 +7,6 @@
 
 #include "d/api.h"
 
-#include "mpi/glb.h"
 #include "mpi/wrapper.h"
 
 #include "inc/type.h"

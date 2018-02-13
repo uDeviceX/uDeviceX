@@ -7,7 +7,6 @@
 #include "utils/error.h"
 #include "inc/def.h"
 #include "utils/msg.h"
-#include "mpi/glb.h"
 #include "utils/cc.h"
 
 #include "inc/type.h"

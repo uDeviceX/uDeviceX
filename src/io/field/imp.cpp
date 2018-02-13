@@ -7,7 +7,6 @@
 #include "utils/error.h"
 #include "utils/imp.h"
 #include "utils/os.h"
-#include "mpi/glb.h"
 #include "mpi/wrapper.h"
 #include "utils/mc.h"
 #include "inc/type.h"

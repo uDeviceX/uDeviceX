@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <mpi.h>
 #include <curand.h>
 
 #include <conf.h>
@@ -7,7 +8,6 @@
 
 #include "utils/os.h"
 #include "utils/msg.h"
-#include "mpi/glb.h"
 #include "d/api.h"
 #include "inc/dev.h"
 
