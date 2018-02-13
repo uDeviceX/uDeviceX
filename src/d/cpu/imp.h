@@ -6,6 +6,8 @@ int alloc_pinned(void **pHost, size_t size) {
     return 0;
 }
 
+int is_device_pointer(const void *ptr) { return 1; }
+
 int Malloc(void **p, size_t size) {
     UC(emalloc(size, p));
     return 0;

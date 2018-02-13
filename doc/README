@@ -22,7 +22,6 @@ After modifying existing files:
 5. add/commit/push to udx repo
 6. ./tools/deploy -> updates online documentation [ssh key in github account must me set!]
 
-
 If NEW files are added:
 1. Links to modules should be added in `dev/main.adoc'
 2. run ./configure and follow the procedure for modifying files

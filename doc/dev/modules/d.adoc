@@ -8,11 +8,17 @@ they can be replaced by CPU calls.
 
 == interface
 
-Wrappers for cuda functions:
+There are two groups: functions which "mirror" cuda API:
 
 [source,cpp]
 ----
-include::{src}/d/api.h[]
+include::{src}/d/api.h[tags=api]
+----
+
+functions unique for uDeviceX:
+[source,cpp]
+----
+include::{src}/d/api.h[tags=more]
 ----
 
 generic files of the interface

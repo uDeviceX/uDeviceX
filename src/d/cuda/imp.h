@@ -20,6 +20,15 @@ int alloc_pinned(void **pHost, size_t size) {
     return R(cudaHostAlloc(pHost, size, cudaHostAllocMapped));
 }
 
+int is_device_pointer(const void *p) {
+    cudaPointerAttributes a;
+    cudaError_t e;
+    e = cudaPointerGetAttributes(&a, p);
+    if      (e == cudaErrorInvalidValue) return 0;
+    else if (a.memoryType != cudaMemoryTypeDevice) return 0;
+    else return 1;
+}
+
 int Malloc(void **devPtr, size_t size) {
     return R(cudaMalloc(devPtr, size));
 }
