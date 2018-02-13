@@ -4,6 +4,8 @@ cd test/rbc/nv/1986
 S=`u.cp.s`
 nv=1986
 u.cp.rbc rbc/$nv.off rbc.off
+area=`off.area rbc.off`
+volume=`off.volume rbc.off`
 x=4 y=6 z=8
 echo 1 0 0 $x \
      0 1 0 $y \
@@ -16,5 +18,10 @@ u.conf "$S" u/x "$S/conf/default.h" <<!
    run
 !
 u.make -j
-u.run ./udx conf.cfg
+u.run ./udx conf.cfg "
+rbc = {
+    totArea = $area
+    totVolume = $volume
+}
+"
 ply2punto r/00003.ply | uscale 10 > ply.out.txt
