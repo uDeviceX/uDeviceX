@@ -165,8 +165,8 @@
 #define pin_axis (false)
 #endif
 
-#ifndef sbounce_back
-#define sbounce_back (false)
+#ifdef sbounce_back
+#error sbounce_back is runtime: rig/sbounce in cfg
 #endif
 
 #ifndef rescue_freq
