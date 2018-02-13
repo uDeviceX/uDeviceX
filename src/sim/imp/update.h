@@ -3,7 +3,7 @@ void clear_vel(Sim *s) {
     Rbc *rbc = &s->rbc;
     Rig *rig = &s->rig;
     scheme_move_clear_vel(flu->q.n, flu->q.pp);
-    if (solids) scheme_move_clear_vel(rig->q.n, rig->q.pp);
+    if (s->opt.rig) scheme_move_clear_vel(rig->q.n, rig->q.pp);
     if (rbcs  ) scheme_move_clear_vel(rbc->q.n, rbc->q.pp);
 }
 

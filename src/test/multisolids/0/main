@@ -7,7 +7,6 @@ u.cp.rig sphere.ply  rig.ply
 u.cp.rbc rbc/498.off rbc.off
 :
 u.conf "$S" u/x "$S/conf/default.h" <<!
-  solids
   run
 !
 u.make -j

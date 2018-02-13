@@ -137,8 +137,8 @@
 
 // solid
 
-#ifndef solids
-#define solids (false)
+#ifdef solids
+#error solids: flag is runtime now, rig/active in cfg
 #endif
 
 #ifndef solid_mass

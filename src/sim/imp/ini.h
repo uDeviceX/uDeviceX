@@ -284,7 +284,7 @@ void sim_ini(Config *cfg, MPI_Comm cart,  Time* time, /**/ Sim **sim) {
     if (s->opt.inflow)     UC(ini_inflow (s->coords, s->L, cfg,  /**/ &s->inflow ));
     if (s->opt.denoutflow) UC(ini_denoutflow(s->coords, maxp, cfg, /**/ &s->denoutflow, &s->mapoutflow));
 
-    if (rbcs || solids)
+    if (rbcs || s->opt.rig)
         UC(ini_objinter(s->cart, maxp, s->L, &s->opt, /**/ &s->objinter));
 
     UC(bop_ini(s->cart, maxp, &s->dumpt));
@@ -296,7 +296,7 @@ void sim_ini(Config *cfg, MPI_Comm cart,  Time* time, /**/ Sim **sim) {
     if (multi_solvent && rbcs)
         UC(ini_colorer(s->rbc.q.nv, s->cart, maxp, s->L, /**/ &s->colorer));
 
-    if (solids) {
+    if (s->opt.rig) {
         UC(ini_rig(s->cart, maxp, s->L, /**/ &s->rig));
 
         if (s->opt.sbounce)

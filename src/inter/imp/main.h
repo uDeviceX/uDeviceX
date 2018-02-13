@@ -46,10 +46,10 @@ void inter_create_walls(MPI_Comm cart, int maxn, Sdf *sdf, FluQuants* qflu, Wall
     msg_print("solvent particles survived: %d/%d", qflu->n, nold);
 }
 
-void inter_freeze(const Coords *coords, MPI_Comm cart, Sdf *sdf, FluQuants *qflu, RigQuants *qrig, RbcQuants *qrbc) {
+void inter_freeze(const Coords *coords, bool rigids, MPI_Comm cart, Sdf *sdf, FluQuants *qflu, RigQuants *qrig, RbcQuants *qrbc) {
     MC(m::Barrier(cart));
-    if (solids)           create_solids(coords, cart, qflu, qrig);
+    if (rigids)           create_solids(coords, cart, qflu, qrig);
     if (walls && rbcs  )  remove_rbcs(qrbc, sdf);
-    if (walls && solids)  remove_solids(qrig, sdf);
-    if (solids)           rig_set_ids(cart, qrig);
+    if (walls && rigids)  remove_solids(qrig, sdf);
+    if (rigids)           rig_set_ids(cart, qrig);
 }
