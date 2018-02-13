@@ -1,0 +1,7 @@
+set hidden3d
+unset tics
+unset border
+unset key
+set view equal xyz
+
+splot "<u.gnuplot.off data/rbc.off" w l lc 0
