@@ -223,6 +223,11 @@ static void read_opt(const Config *c, Opt *o) {
     UC(conf_lookup_bool(c, "vcon.active", &b));
     o->vcon = b;
 
+    UC(conf_lookup_bool(c, "rig.active", &b));
+    o->rig = b;
+    UC(conf_lookup_bool(c, "rig.bounce", &b));
+    o->sbounce = b;
+    
     UC(conf_lookup_bool(c, "dump.field", &b));
     o->dump_field = b;
     UC(conf_lookup_float(c, "dump.freq_field", &o->freq_field));

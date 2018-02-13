@@ -135,6 +135,7 @@ struct Vcon {
 struct Opt {
     bool fsi, cnt;
     bool inflow, outflow, denoutflow, vcon;
+    bool rig, sbounce;
     bool dump_field, dump_parts;
     float freq_field, freq_parts;
 };
