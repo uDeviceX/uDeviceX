@@ -7,7 +7,6 @@ static int download_pp(Sim *s) { /* device to host  data transfer */
     if (flu->q.n) {
         cD2H(s->pp_dump + np, flu->q.pp, flu->q.n);    np += flu->q.n;
     }
-    
     if (s->solids0 && rig->q.n) {
         cD2H(s->pp_dump + np, rig->q.pp, rig->q.n);    np += rig->q.n;
     }
