@@ -9,7 +9,6 @@ u.cp.rbc rbc/498.off rbc.off
 :
 u.conf "$S" u/x "$S/conf/default.h" <<!
    rbcs
-   solids
    pushrbc
    run
 !
