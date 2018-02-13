@@ -1,16 +1,19 @@
-static void dev2hst(Sim *s) { /* device to host  data transfer */
-    int start = 0;
+static int download_pp(Sim *s) { /* device to host  data transfer */
+    int np = 0;
     Flu *flu = &s->flu;
     Rbc *rbc = &s->rbc;
     Rig *rig = &s->rig;
 
-    cD2H(s->pp_dump + start, flu->q.pp, flu->q.n); start += flu->q.n;
-    if (s->solids0) {
-        cD2H(s->pp_dump + start, rig->q.pp, rig->q.n); start += rig->q.n;
+    if (flu->q.n) {
+        cD2H(s->pp_dump + np, flu->q.pp, flu->q.n);    np += flu->q.n;
     }
-    if (rbcs) {
-        cD2H(s->pp_dump + start, rbc->q.pp, rbc->q.n); start += rbc->q.n;
+    if (s->solids0 && rig->q.n) {
+        cD2H(s->pp_dump + np, rig->q.pp, rig->q.n);    np += rig->q.n;
     }
+    if (rbcs && rbc->q.n) {
+        cD2H(s->pp_dump + np, rbc->q.pp, rbc->q.n);    np += rbc->q.n;
+    }
+    return np;
 }
 
 static void dump_part(Sim *s) {
@@ -90,13 +93,8 @@ void dump_diag_after(Time *time, int it, bool solid0, Sim *s) { /* after wall */
 
 static void diag(float time, Sim *s) {
     if (time < 0) ERR("time = %g < 0", time);
-    const Flu *flu = &s->flu;
-    const Rbc *rbc = &s->rbc;
-    const Rig *rig = &s->rig;
-    int n = flu->q.n;
-    if (rbcs)       n += rbc->q.n;
-    if (s->solids0) n += rig->q.n;
-    dev2hst(s);
+    int n;
+    n = download_pp(s);
     UC(diag(s->cart, time, n, s->pp_dump));
 }
 
