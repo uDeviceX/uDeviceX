@@ -37,7 +37,7 @@ void usg(int c, char **v) {
         usg0();
 }
 
-void main0(Config *cfg, int n, const Force *hst) {
+void main0(MPI_Comm cart, Config *cfg, int n, const Force *hst) {
     float mass, dt;
     Force *dev;
     TimeStepAccel *accel;
@@ -51,7 +51,7 @@ void main0(Config *cfg, int n, const Force *hst) {
     time_step_accel_push(accel,     mass, n, dev);
     time_step_accel_push(accel, 0.5*mass, n, dev);
 
-    dt = time_step_dt(time_step, m::cart, accel);
+    dt = time_step_dt(time_step, cart, accel);
     time_step_log(time_step);
     printf("%g\n", dt);
 
@@ -63,12 +63,17 @@ void main0(Config *cfg, int n, const Force *hst) {
 int main(int argc, char **argv) {
     const char *i; /* input file */
     const Force *ff;
-    int n, rank;
+    int n, rank, dims[3];
     Config *cfg;
     TxtRead *txt;
+    MPI_Comm cart;
+
     usg(argc, argv);
     m::ini(&argc, &argv);
-    MC(m::Comm_rank(m::cart, &rank));
+    m::get_dims(&argc, &argv, dims);
+    m::get_cart(MPI_COMM_WORLD, dims, &cart);
+
+    MC(m::Comm_rank(cart, &rank));
     msg_ini(rank);
     UC(conf_ini(&cfg));
     UC(conf_read(argc, argv, /**/ cfg));
@@ -78,9 +83,11 @@ int main(int argc, char **argv) {
 
     ff = txt_read_get_ff(txt);
     n  = txt_read_get_n(txt);
-    UC(main0(cfg, n, ff));
+    UC(main0(cart, cfg, n, ff));
 
     UC(txt_read_fin(txt));
     UC(conf_fin(cfg));
+
+    MC(m::Barrier(cart));
     m::fin();
 }

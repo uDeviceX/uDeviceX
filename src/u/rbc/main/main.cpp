@@ -28,9 +28,14 @@ int main(int argc, char **argv) {
     RbcParams *par;
     float dt, te;
     float part_freq;
-    int rank;
+    int rank, dims[3];
+    MPI_Comm cart;
+
     m::ini(&argc, &argv);
-    MC(m::Comm_rank(m::cart, &rank));
+    m::get_dims(&argc, &argv, dims);
+    m::get_cart(MPI_COMM_WORLD, dims, &cart);
+
+    MC(m::Comm_rank(cart, &rank));
     msg_ini(rank);
 
     UC(conf_ini(&cfg));
@@ -44,12 +49,12 @@ int main(int argc, char **argv) {
     UC(bforce_ini(&bforce));
     UC(bforce_ini_conf(cfg, /**/ bforce));
     UC(conf_lookup_float(cfg, "dump.freq_parts", &part_freq));
-    UC(coords_ini_conf(m::cart, cfg, &coords));
+    UC(coords_ini_conf(cart, cfg, &coords));
     
     UC(scheme_move_params_ini(&moveparams));
     UC(scheme_move_params_conf(cfg, /**/moveparams));
 
-    run(dt, te, coords, part_freq, bforce, moveparams, "rbc.off", "rbcs-ic.txt", par);
+    run(cart, dt, te, coords, part_freq, bforce, moveparams, "rbc.off", "rbcs-ic.txt", par);
     UC(coords_fin(coords));
 
     UC(bforce_fin(bforce));
@@ -57,5 +62,7 @@ int main(int argc, char **argv) {
 
     UC(rbc_params_fin(par));
     UC(conf_fin(cfg));
+
+    MC(m::Barrier(cart));
     m::fin();
 }

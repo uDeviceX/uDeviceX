@@ -59,17 +59,21 @@ int main(int argc, char **argv) {
     int3 L;
     Config *cfg;
     Coords *coords;
-    int rank, size;
+    int rank, size, dims[3];
+    MPI_Comm cart;
     
     m::ini(&argc, &argv);
-    MC(m::Comm_rank(m::cart, &rank));
-    MC(m::Comm_size(m::cart, &size));
+    m::get_dims(&argc, &argv, dims);
+    m::get_cart(MPI_COMM_WORLD, dims, &cart);
+    
+    MC(m::Comm_rank(cart, &rank));
+    MC(m::Comm_size(cart, &size));
     msg_ini(rank);
     msg_print("mpi size: %d", size);
 
     UC(conf_ini(&cfg));
     UC(conf_read(argc, argv, cfg));
-    UC(coords_ini_conf(m::cart, cfg, &coords));
+    UC(coords_ini_conf(cart, cfg, &coords));
 
     L = subdomain(coords);
 
@@ -77,7 +81,7 @@ int main(int argc, char **argv) {
 
     UC(comm_bags_ini(HST_ONLY, NONE, sizeof(int), capacity, /**/ &sendB, NULL));
     UC(comm_bags_ini(HST_ONLY, NONE, sizeof(int), capacity, /**/ &recvB, NULL));
-    UC(comm_ini(m::cart, /**/ &comm));
+    UC(comm_ini(cart, /**/ &comm));
 
     fill_bags(&sendB);
 
@@ -97,5 +101,7 @@ int main(int argc, char **argv) {
 
     UC(coords_fin(coords));
     UC(conf_fin(cfg));
+
+    MC(m::Barrier(cart));
     m::fin();
 }

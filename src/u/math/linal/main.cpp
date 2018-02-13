@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <mpi.h>
 
 #include "mpi/glb.h"
 #include "utils/msg.h"

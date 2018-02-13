@@ -90,16 +90,20 @@ int main(int argc, char **argv) {
     int3 L;
     PairParams *params;
     float dt;
-    int rank;
+    int rank, dims[3];
+    MPI_Comm cart;
     
     m::ini(&argc, &argv);
-    MC(m::Comm_rank(m::cart, &rank));
+    m::get_dims(&argc, &argv, dims);
+    m::get_cart(MPI_COMM_WORLD, dims, &cart);
+    
+    MC(m::Comm_rank(cart, &rank));
     msg_ini(rank);
 
     UC(conf_ini(&cfg));
     UC(conf_read(argc, argv, cfg));
 
-    UC(coords_ini_conf(m::cart, cfg, &coords));
+    UC(coords_ini_conf(cart, cfg, &coords));
     L = subdomain(coords);
 
     UC(pair_ini(&params));
@@ -136,5 +140,7 @@ int main(int argc, char **argv) {
     UC(pair_fin(params));
     UC(coords_fin(coords));
     UC(conf_fin(cfg));
+
+    MC(m::Barrier(cart));
     m::fin();
 }

@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <vector_types.h>
+#include <mpi.h>
 
 #include "utils/msg.h"
 #include "mpi/glb.h"

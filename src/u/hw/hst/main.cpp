@@ -8,12 +8,18 @@
 #include "utils/mc.h"
 
 int main(int argc, char **argv) {
-    int rank, size;
+    int rank, size, dims[3];
+    MPI_Comm cart;
     m::ini(&argc, &argv);
-    MC(m::Comm_rank(m::cart, &rank));
-    MC(m::Comm_size(m::cart, &size));
+    m::get_dims(&argc, &argv, dims);
+    m::get_cart(MPI_COMM_WORLD, dims, &cart);
+
+    MC(m::Comm_rank(cart, &rank));
+    MC(m::Comm_size(cart, &size));
     msg_ini(rank);
     msg_print("mpi size: %d", size);
     msg_print("Hello world!");
+
+    MC(m::Barrier(cart));
     m::fin();
 }

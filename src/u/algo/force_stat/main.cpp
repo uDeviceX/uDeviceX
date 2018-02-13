@@ -51,9 +51,16 @@ int main(int argc, char **argv) {
     int n, rank;
     Config *cfg;
     TxtRead *txt;
+    MPI_Comm cart;
+    int dims[3];
+
     usg(argc, argv);
+
     m::ini(&argc, &argv);
-    MC(m::Comm_rank(m::cart, &rank));
+    m::get_dims(&argc, &argv, dims);
+    m::get_cart(MPI_COMM_WORLD, dims, &cart);
+
+    MC(m::Comm_rank(cart, &rank));
     msg_ini(rank);
     UC(conf_ini(&cfg));
     UC(conf_read(argc, argv, /**/ cfg));
@@ -67,5 +74,7 @@ int main(int argc, char **argv) {
 
     UC(txt_read_fin(txt));
     UC(conf_fin(cfg));
+
+    MC(m::Barrier(cart));
     m::fin();
 }

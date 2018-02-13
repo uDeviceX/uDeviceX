@@ -35,14 +35,21 @@ void main0(Config *c) {
 
 int main(int argc, char **argv) {
     Config *cfg;
-    int rank;
+    int rank, dims[3];
+    MPI_Comm cart;
+    
     m::ini(&argc, &argv);
-    MC(m::Comm_rank(m::cart, &rank));
+    m::get_dims(&argc, &argv, dims);
+    m::get_cart(MPI_COMM_WORLD, dims, &cart);
+
+    MC(m::Comm_rank(cart, &rank));
     msg_ini(rank);
 
     UC(conf_ini(/**/ &cfg));
     UC(conf_read(argc, argv, /**/ cfg));
     UC(main0(cfg));
     UC(conf_fin(cfg));
+
+    MC(m::Barrier(cart));
     m::fin();
 }

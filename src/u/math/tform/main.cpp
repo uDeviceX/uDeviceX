@@ -253,15 +253,20 @@ static void main3(int c, char **v) {
 int main(int argc, char **argv) {
     const char *arg;
     char **v;
-    int rank, c;
+    int rank, c, dims[3];
     const char delim[] = " \t";
     Config *cfg;
+    MPI_Comm cart;
+    
     m::ini(&argc, &argv);
-    MC(m::Comm_rank(m::cart, &rank));
+    m::get_dims(&argc, &argv, dims);
+    m::get_cart(MPI_COMM_WORLD, dims, &cart);
+
+    MC(m::Comm_rank(cart, &rank));
     msg_ini(rank);
     UC(conf_ini(&cfg));
     UC(conf_read(argc, argv, /**/ cfg));
-    UC(coords_ini_conf(m::cart, cfg, /**/ &coords));
+    UC(coords_ini_conf(cart, cfg, /**/ &coords));
     UC(conf_lookup_string(cfg, "a", &arg));
     tok_ini(arg, delim, /**/ &c, &v);
 
@@ -270,5 +275,7 @@ int main(int argc, char **argv) {
     tok_fin(c, v);
     UC(coords_fin(coords));
     UC(conf_fin(cfg));
+
+    MC(m::Barrier(cart));
     m::fin();
 }
