@@ -8,7 +8,7 @@ they can be replaced by CPU calls.
 
 == interface
 
-There are two groups of functions: "mirrors" cuda API functions:
+There are two groups: functions which "mirror" cuda API:
 
 [source,cpp]
 ----
