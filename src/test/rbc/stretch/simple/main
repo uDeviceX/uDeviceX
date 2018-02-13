@@ -5,9 +5,10 @@ S=`u.cp.s`
 :
 A=1e4
 nv=642
-cell="$S/data/cells/rbc/$nv.off"
-cp              $cell           rbc.off
-u.stretch $A 5% $cell         > rbc.stretch
+u.cp.rbc rbc/$nv.off   rbc.off
+area=`off.area rbc.off`
+volume=`off.volume rbc.off`
+u.stretch $A 5% rbc.off         > rbc.stretch
 :
 x=4 y=6 z=8; echo 1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 > rbcs-ic.txt
 :
@@ -17,5 +18,10 @@ u.conf "$S" u/x "$S/conf/default.h" <<!
    run
 !
 u.make -j
-u.run ./udx conf.cfg
+u.run ./udx conf.cfg "
+rbc = {
+    totArea = $area
+    totVolume = $volume
+}
+"
 ply2punto r/00002.ply | uscale 0.1 > ply.out.txt
