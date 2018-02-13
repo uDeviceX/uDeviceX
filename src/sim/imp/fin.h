@@ -94,7 +94,7 @@ static void fin_rbc(Rbc *r) {
 
 static void fin_rig(Rig *s) {
     rig_fin(&s->q);
-    scan_work_fin(/**/ s->ws);
+    scan_fin(/**/ s->ws);
     Dfree(s->ff);
     EFREE(s->ff_hst);
 
