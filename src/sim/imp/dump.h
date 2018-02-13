@@ -4,12 +4,14 @@ static int download_pp(Sim *s) { /* device to host  data transfer */
     Rbc *rbc = &s->rbc;
     Rig *rig = &s->rig;
 
-    cD2H(s->pp_dump + np, flu->q.pp, flu->q.n);        np += flu->q.n;
-
-    if (s->solids0) {
+    if (flu->q.n) {
+        cD2H(s->pp_dump + np, flu->q.pp, flu->q.n);    np += flu->q.n;
+    }
+    
+    if (s->solids0 && rig->q.n) {
         cD2H(s->pp_dump + np, rig->q.pp, rig->q.n);    np += rig->q.n;
     }
-    if (rbcs) {
+    if (rbcs && rbc->q.n) {
         cD2H(s->pp_dump + np, rbc->q.pp, rbc->q.n);    np += rbc->q.n;
     }
     return np;
