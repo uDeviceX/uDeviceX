@@ -94,7 +94,7 @@ static __device__ bool inside_box(const float r[3], float3 lo, float3 hi) {
 
 /* assume nm blocks along y */
 /* if the ith particle is inside jth mesh, sets tag[i] to IN (see enum in collision.h) */
-__global__ void compute_colors_tex(int spdir, const Particle *pp, const int n, const Texo<float2> texvert, const int nv,
+__global__ void compute_colors_tex(const Particle *pp, const int n, const Texo<float2> texvert, const int nv,
                                    const int4 *tri,
                                    const int nt, const float3 *minext, const float3 *maxext, /**/ int *cc) {
     const int sid = blockIdx.y;
@@ -111,9 +111,6 @@ __global__ void compute_colors_tex(int spdir, const Particle *pp, const int n, c
     if (!inside_box(p.r, lo, hi)) return;
 
     float origin[3] = {0, 0, 0};
-
-    if (spdir != NOT_PERIODIC)
-        origin[spdir] = p.r[spdir];
 
     int mbase = nv * sid;
     for (int i = 0; i < nt; ++i) {
@@ -138,7 +135,7 @@ __global__ void compute_colors_tex(int spdir, const Particle *pp, const int n, c
    nt: number of triangles per mesh
    nv: number of vertices per mesh
 */
-static void get_colors0(int spdir, const Particle *pp, int n,
+static void get_colors0(const Particle *pp, int n,
                         const Texo<float2> texvert, const int4 *tri,
                         int nt, int nv, int nm,
                         const float3 *minext, const float3 *maxext, /**/ int *cc) {
@@ -150,17 +147,17 @@ static void get_colors0(int spdir, const Particle *pp, int n,
     dim3 thrd(THR, 1);
     dim3 blck(ceiln(n, THR), nm);
 
-    KL(collisiondev::compute_colors_tex, (blck, thrd), (spdir, pp, n, texvert, nv, tri, nt, minext, maxext, /**/ cc));
+    KL(collisiondev::compute_colors_tex, (blck, thrd), (pp, n, texvert, nv, tri, nt, minext, maxext, /**/ cc));
 }
 
-void collision_get_colors(int spdir, const Particle *pp, int n,
+void collision_get_colors(const Particle *pp, int n,
                           const Particle *i_pp, const int4 *tri,
                           int nt, int nv, int nm,
                           const float3 *minext, const float3 *maxext, /**/ int *cc) {
     Texo<float2> texvert;
     if (nm == 0 || n == 0) return;
     TE(&texvert, (float2*) i_pp, 3 * nm * nv);
-    UC(get_colors0(spdir, pp, n, texvert, tri,
+    UC(get_colors0(pp, n, texvert, tri,
                    nt, nv, nm,
                    minext, maxext, /**/ cc));
     destroy(&texvert);
