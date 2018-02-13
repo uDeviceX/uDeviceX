@@ -2,8 +2,6 @@
 #include "wrapper.h"
 
 namespace m {
-MPI_Comm cart;
-
 int Allreduce(const void *sendbuf, void *recvbuf, int count, MPI_Datatype datatype, MPI_Op op, MPI_Comm comm) {
     return MPI_Allreduce(sendbuf, recvbuf, count, datatype, op, comm);
 }
