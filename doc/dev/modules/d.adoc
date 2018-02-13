@@ -22,9 +22,9 @@ include::{src}/d/api.h[tags=more]
 ----
 
 generic files of the interface
-* `d/api.h` API calls
-* `d/q.h` function and variable type qualifiers
-* `d/ker.h`
+- `d/api.h` API calls
+- `d/q.h` function and variable type qualifiers
+- `d/ker.h`
 
 == configuration
 
