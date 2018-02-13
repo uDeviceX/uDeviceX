@@ -12,8 +12,8 @@ void flu_ini(int3 L, int maxp, FluQuants *q) {
     q->maxp = maxp;
     Dalloc(&q->pp, maxp);
     Dalloc(&q->pp0, maxp);
-    clist_ini(L.x, L.y, L.z, /**/ &q->cells);
-    clist_ini_map(maxp, 2, &q->cells, /**/ &q->mcells);
+    UC(clist_ini(L.x, L.y, L.z, /**/ &q->cells));
+    UC(clist_ini_map(maxp, 2, &q->cells, /**/ &q->mcells));
 
     sz = maxp * sizeof(Particle);
     UC(emalloc(sz, /**/ (void **) &q->pp_hst));
