@@ -2,6 +2,13 @@ set hidden3d
 unset tics
 unset border
 unset key
-set view equal xyz
 
-splot "<u.gnuplot.off data/rbc.off" w l lc 0
+s = 2.7
+set view 60, 30, s, s
+set view azimuth 0
+set view  equal xyz
+
+set term png
+set output "o.png"
+
+splot "<u.gnuplot.off data/rbc.off" w l lw 3 lc 0
