@@ -6,8 +6,6 @@
 The goal is to make cuda API and kernel functions generic. Meaning
 they can be replaced by CPU calls.
 
-== interface
-
 There are two groups: functions which "mirror" cuda API:
 
 [source,cpp]
@@ -21,17 +19,10 @@ functions unique for uDeviceX:
 include::{src}/d/api.h[tags=more]
 ----
 
-generic files of the interface
+files of the interface
 - `d/api.h` API calls
 - `d/q.h` function and variable type qualifiers
 - `d/ker.h`
 
-== configuration
-
-Generic device can by implemented by `cuda` and by `cpu`
-* `d/cuda`
-* `d/cpu`
-
-if `DEV_CUDA` defined it is `cuda`, if `DEV_CPU` is defined it is
-`cpu`. For `cpu` `KL_CPU` should be also defined.
-
+if `DEV_CUDA` is defined interfaces is implimented by cuda, if
+`DEV_CPU` is defined it is implimented by host calls.
