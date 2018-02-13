@@ -4,6 +4,7 @@ cd test/rbc/u/simple
 S=`u.cp.s`
 nv=642
 u.cp.rbc rbc/$nv.off rbc.off
+u.cp.ic  two         rbcs-ic.txt
 area=`off.area rbc.off`
 volume=`off.volume rbc.off`
 u.conf $S u/rbc/force  "$S/conf/default.h" <<!
