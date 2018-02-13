@@ -18,6 +18,11 @@ void rig_reinit_ft(const int nsolid, /**/ Solid *ss) {
     KL(dev::reinit_ft, (k_cnf(nsolid)), (nsolid, /**/ ss));
 }
 
+static bool pinned_com(const RigPinInfo *pi) {
+    int3 com = pi->com;
+    return com.x && com.y && com.z;
+}
+
 void rig_update(const RigPinInfo *pi, float dt, int n, const Force *ff, const float *rr0, int ns, /**/ Particle *pp, Solid *ss) {
     if (ns < 1) return;
 
@@ -28,7 +33,8 @@ void rig_update(const RigPinInfo *pi, float dt, int n, const Force *ff, const fl
 
     KL(dev::add_f_to, ( nblck, nthrd ), (nps, pp, ff, /**/ ss));
     KL(dev::update_om_v, (1, ns), (*pi, dt, ns, /**/ ss));
-    if (!pin_com) KL(dev::update_com, (1, 3*ns ), (dt, ns, /**/ ss));
+    if (!pinned_com(pi))
+        KL(dev::update_com, (1, 3*ns ), (dt, ns, /**/ ss));
     KL(dev::rot_referential, (1, ns), (dt, ns, /**/ ss));
 
     KL(dev::update_pp, ( nblck, nthrd ), (nps, rr0, ss, /**/ pp));
