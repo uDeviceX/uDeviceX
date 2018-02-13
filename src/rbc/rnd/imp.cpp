@@ -17,9 +17,9 @@
 
 #include "api/type.h"
 #include "api/imp.h"
-#include "type.h"
 #include "imp.h"
 
+#include "imp/type.h"
 #include "imp/cu.h"
 #include "imp/seed.h"
 #include "imp/main.h"
