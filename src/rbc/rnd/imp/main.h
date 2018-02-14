@@ -5,11 +5,11 @@ static void ini0(RbcRnd *d, int n, long seed) {
     CU(rnd_api::SetPseudoRandomGeneratorSeed(d->g,  seed));
     d->max = n;
 }
-void rbc_rnd_ini(RbcRnd **pd, int n, long seed) {
-    RbcRnd* d;
-    UC(emalloc(sizeof(RbcRnd), (void**) &d));
-    UC(ini0(d, n, seed));
-    *pd = d;
+void rbc_rnd_ini(int n, long seed, RbcRnd **pq) {
+    RbcRnd *q;
+    UC(emalloc(sizeof(RbcRnd), (void**) &q));
+    UC(ini0(q, n, seed));
+    *pq = q;
 }
 
 static void fin0(RbcRnd *d) {
