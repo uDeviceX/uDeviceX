@@ -4,18 +4,19 @@ cd test/rbc/u/rnd
 S=`u.cp.s`
 :
 nv=642
+seed=123
 u.cp.ic  two         rbcs-ic.txt
 u.cp.rbc rbc/$nv.off rbc.off
 area=`off.area rbc.off`
 volume=`off.volume rbc.off`
 u.conf $S u/rbc/force  "$S/conf/default.h" <<!
-       RBC_RND  kBT=0
+       RBC_RND kBT=0
        run
 !
 u.make -j
-export RBC_RND=42
-u.run ./udx conf.cfg "
+RBC_RND=$seed u.run ./udx conf.cfg "
 rbc = {
     totArea = $area
     totVolume = $volume
-}" | uscale 0.1 >  forces.out.txt
+    kBT = 5
+}" | uscale 10 >  forces.out.txt
