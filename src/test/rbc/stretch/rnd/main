@@ -5,7 +5,6 @@ S=`u.cp.s`
 :
 A=1e6
 nv=2562
-seed=123
 u.cp.rbc rbc/sc/$nv.off       rbc.off
 u.stretch $A 5% rbc.off  > rbc.stretch
 :
@@ -26,6 +25,7 @@ glb = {
 rbc = {
     totArea = 1564.4922174
     totVolume = 3812.3160399576
+    seed = 123
     kBT = 10.0
 }"
 ply2punto r/00001.ply | uscale 10 > ply.out.txt
