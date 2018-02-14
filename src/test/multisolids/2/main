@@ -11,8 +11,11 @@ u.conf "$S" u/x "$S/conf/default.h" <<!
 !
 u.make -j
 u.run ./udx conf.cfg '
+glb = {
+    kBT = 0.0
+}
 rbc = {
-     totArea = 55.553
-     totVolume = 26.986
+    totArea = 55.553
+    totVolume = 26.986
 }'
 cat solid_diag_0000.txt | awk '{print $2, $5, $8}' | uscale 2.5 > sdiag.out.txt

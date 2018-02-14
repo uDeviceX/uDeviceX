@@ -14,12 +14,12 @@ u.conf $S u/rbc/force  "$S/conf/default.h" <<!
 !
 u.make -j
 RBC_RND=$seed u.run ./udx conf.cfg "
-glb {
+glb = {
     kBT = 0.0
 }
 rbc = {
     totArea = $area
     totVolume = $volume
-    seed=123
-    kBT = 5
-}" | uscale 10 >  forces.out.txt
+    seed = 123
+    kBT = 5.0
+} " | uscale 10 >  forces.out.txt
