@@ -37,7 +37,6 @@
 #include "rbc/type.h"
 
 #include "rig/imp.h"
-#include "cloud/imp.h"
 #include "wall/imp.h"
 
 #include "imp.h"

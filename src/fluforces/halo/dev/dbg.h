@@ -1,4 +1,5 @@
-static __device__ void assert_frag(int3 L, int i, const flu::RFrag frag) {
+template <typename Parray>
+static __device__ void assert_frag(int3 L, int i, const RFrag_v<Parray> frag) {
     int xs, ys, zs; /* sizes */
     int dx, dy, dz;
     xs = frag.xcells; ys = frag.ycells; zs = frag.zcells;
@@ -7,7 +8,8 @@ static __device__ void assert_frag(int3 L, int i, const flu::RFrag frag) {
     assert(fragdev::d2i(dx, dy, dz) == i);
 }
 
-static __device__ void assert_rc(int3 L, const flu::RFrag frag, int i, int row, int col, int jump) {
+template <typename Parray>
+static __device__ void assert_rc(int3 L, const RFrag_v<Parray> frag, int i, int row, int col, int jump) {
     /* i: base cell id */
     int fid, nmax;
     int dx, dy, dz;

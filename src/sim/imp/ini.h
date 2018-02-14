@@ -6,9 +6,9 @@ static void set_params(const Config *cfg, float kBT0, float dt, const char *name
 static void ini_flu_exch(MPI_Comm comm, int3 L, /**/ FluExch *e) {
     int maxd = HSAFETY_FACTOR * numberdensity;
 
-    UC(eflu_pack_ini(L, maxd, /**/ &e->p));
-    UC(eflu_comm_ini(comm, /**/ &e->c));
-    UC(eflu_unpack_ini(L, maxd, /**/ &e->u));
+    UC(eflu_pack_ini(multi_solvent, L, maxd, /**/ &e->p));
+    UC(eflu_comm_ini(multi_solvent, comm, /**/ &e->c));
+    UC(eflu_unpack_ini(multi_solvent, L, maxd, /**/ &e->u));
 }
 
 static void ini_obj_exch(MPI_Comm comm, int3 L, /**/ ObjExch *e) {
@@ -37,9 +37,9 @@ static void ini_bb_exch(int nt, int nv, int max_m, MPI_Comm comm, int3 L, /**/ B
 
 static void ini_flu_distr(MPI_Comm comm, int3 L, /**/ FluDistr *d) {
     float maxdensity = ODSTR_FACTOR * numberdensity;
-    UC(dflu_pack_ini(L, maxdensity, /**/ &d->p));
-    UC(dflu_comm_ini(comm, /**/ &d->c));
-    UC(dflu_unpack_ini(L, maxdensity, /**/ &d->u));
+    UC(dflu_pack_ini(multi_solvent, global_ids, L, maxdensity, /**/ &d->p));
+    UC(dflu_comm_ini(multi_solvent, global_ids, comm, /**/ &d->c));
+    UC(dflu_unpack_ini(multi_solvent, global_ids, L, maxdensity, /**/ &d->u));
     UC(dflu_status_ini(/**/ &d->s));
 }
 

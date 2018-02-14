@@ -26,12 +26,13 @@ static void pack_ii(const DMap m, const int *ii, /**/ dBags bags) {
 
 void dflu_pack(const FluQuants *q, /**/ DFluPack *p) {
     pack_pp(p->map, q->pp, /**/ p->dpp);
-    if (global_ids)    pack_ii(p->map, q->ii, /**/ p->dii);
-    if (multi_solvent) pack_ii(p->map, q->cc, /**/ p->dcc);
+    if (p->opt.ids)    pack_ii(p->map, q->ii, /**/ p->dii);
+    if (p->opt.colors) pack_ii(p->map, q->cc, /**/ p->dcc);
 }
 
 struct ExceedData { int cap, cnt, fid; };
 enum   {OK, FAIL};
+
 static int check_counts(int nfrags, const int *counts, const hBags *hpp, /**/ ExceedData *e) {
     int fid, cnt, cap;
     for (fid = 0; fid < nfrags; ++fid) {
@@ -44,6 +45,7 @@ static int check_counts(int nfrags, const int *counts, const hBags *hpp, /**/ Ex
     }
     return OK;
 }
+
 static void fail_exceed(ExceedData *e) {
     enum {X, Y, Z};
     int cap, cnt, fid, d[3];
@@ -52,6 +54,7 @@ static void fail_exceed(ExceedData *e) {
     ERR("exceed capacity, fragment %d = [%d %d %d]: %d/%d",
         fid, d[X], d[Y], d[Z], cnt, cap);
 }
+
 static void dflu_download0(DFluPack *p) {
     size_t sz;
     int *cnt;
@@ -59,10 +62,11 @@ static void dflu_download0(DFluPack *p) {
     cnt = p->map.hcounts;
     dSync(); /* wait for pack kernels */
     memcpy(p->hpp.counts, cnt, sz);
-    if (global_ids)    memcpy(p->hii.counts, cnt, sz);
-    if (multi_solvent) memcpy(p->hcc.counts, cnt, sz);
+    if (p->opt.ids)    memcpy(p->hii.counts, cnt, sz);
+    if (p->opt.colors) memcpy(p->hcc.counts, cnt, sz);
     p->nhalo = reduce(NFRAGS, cnt);
 }
+
 void dflu_download(DFluPack *p, /**/ DFluStatus *s) {
     ExceedData e;
     int r;

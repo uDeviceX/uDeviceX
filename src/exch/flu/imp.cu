@@ -19,7 +19,6 @@
 #include "comm/imp.h"
 #include "comm/utils.h"
 
-#include "cloud/imp.h"
 #include "parray/imp.h"
 #include "flu/type.h"
 

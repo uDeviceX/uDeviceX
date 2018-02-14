@@ -26,13 +26,15 @@
 
 #include "math/rnd/dev.h"
 
-#include "cloud/imp.h"
-#include "cloud/dev.h"
+#include "parray/type.h"
+#include "parray/imp.h"
+#include "parray/dev.h"
 
 #include "flu/type.h"
 
 #include "imp.h"
 
+#include "imp/type.h"
 namespace fluforcesh_dev {
 #include "dev/dbg.h"
 #include "dev/map.h"

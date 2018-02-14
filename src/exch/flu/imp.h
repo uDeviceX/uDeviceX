@@ -3,9 +3,9 @@ struct EFluComm;
 struct EFluUnpack;
 struct PaArray;
 
-void eflu_pack_ini(int3 L, int maxd, EFluPack **p);
-void eflu_comm_ini(MPI_Comm comm, /**/ EFluComm **c);
-void eflu_unpack_ini(int3 L, int maxd, EFluUnpack **u);
+void eflu_pack_ini(bool colors, int3 L, int maxd, EFluPack **p);
+void eflu_comm_ini(bool colors, MPI_Comm comm, /**/ EFluComm **c);
+void eflu_unpack_ini(bool colors, int3 L, int maxd, EFluUnpack **u);
 
 void eflu_pack_fin(EFluPack *p);
 void eflu_comm_fin(EFluComm *c);

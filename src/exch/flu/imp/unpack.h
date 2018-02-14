@@ -13,6 +13,6 @@ static void upload_data(int n, const hBags *h, /**/ dBags *d) {
 void eflu_unpack(EFluUnpack *u) {
     upload_data(NFRAGS, &u->hfss, /**/ &u->dfss);
     upload_data(NFRAGS, &u->hpp, /**/ &u->dpp);
-    if (multi_solvent)
+    if (u->opt.colors)
         upload_data(NFRAGS, &u->hcc, /**/ &u->dcc);
 }

@@ -99,7 +99,8 @@ static __device__  void r2size(float r, int nc, int S, /**/ int *pl, int *ps) {
     *pl = l; *ps = s;
 }
 
-static __device__ Map r2map(int3 L, const flu::RFrag frag, float x, float y, float z) {
+template <typename Parray>
+static __device__ Map r2map(int3 L, const RFrag_v<Parray> frag, float x, float y, float z) {
     /* coordinate [r] to map */
     int id; /* base id */
     int xl, yl, zl; /* low */

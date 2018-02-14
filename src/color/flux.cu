@@ -32,7 +32,6 @@ __global__ void linear_flux(int3 L, int dir, int color, int n, const Particle *p
 
 void linear_flux(const Coords *coords, int3 L, int dir, int color, int n, const Particle *pp, int *cc) {
     assert(dir >= 0 && dir <= 2);
-    assert(multi_solvent);
         
     if (is_end(coords, dir))
         KL(dev::linear_flux, (k_cnf(n)), (L, dir, color, n, pp, cc));
