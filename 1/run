@@ -1,2 +1,2 @@
-echo run | S=`u.cp.s` u.build u/x conf.h
-u.run ./udx conf.cfg
+echo run | S=`u.cp.s` u.build u/x conf.base.h
+u.run 3 1 1 ./udx conf.cfg

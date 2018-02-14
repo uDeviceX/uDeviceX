@@ -9,5 +9,3 @@
 
 // Parameters that might want to be varied
 #define rbc_mass 0.25
-
-
