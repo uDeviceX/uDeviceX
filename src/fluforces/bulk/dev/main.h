@@ -1,27 +1,3 @@
-static __device__ void fetch(BPaArray a, int i, PairPa *p) {
-    float4 r, v;
-    r = a.pp[2*i + 0];
-    v = a.pp[2*i + 1];
-
-    p->x  = r.x;  p->y  = r.y;  p->z  = r.z;
-    p->vx = v.x;  p->vy = v.y;  p->vz = v.z;
-    
-    if (multi_solvent)
-        p->color = a.cc[i];
-}
-
-static __device__ void fetch(TBPaArray a, int i, PairPa *p) {
-    float4 r, v;
-    r = fetch(a.pp, 2*i + 0);
-    v = fetch(a.pp, 2*i + 1);
-
-    p->x  = r.x;  p->y  = r.y;  p->z  = r.z;
-    p->vx = v.x;  p->vy = v.y;  p->vz = v.z;
-    
-    if (multi_solvent)
-        p->color = fetch(a.cc, i);
-}
-
 static __device__ bool cutoff_range(PairPa pa, PairPa pb) {
     float x, y, z;
     x = pa.x - pb.x;
@@ -79,8 +55,8 @@ static __device__ void loop_pp(Par params, int ia, PairPa pa, Parray parray, int
     }
 }
 
-template<typename Par>
-__global__ void apply_simplest(Par params, int3 L, int n, BPaArray parray, const int *start, float seed, /**/ Force *ff) {
+template<typename Par, typename Parray>
+__global__ void apply_simplest(Par params, int3 L, int n, Parray parray, const int *start, float seed, /**/ Force *ff) {
     enum {X, Y, Z};
     int ia, ib;
     int3 ca, cb;
@@ -109,8 +85,8 @@ __global__ void apply_simplest(Par params, int3 L, int n, BPaArray parray, const
     atomicAdd(ff[ia].f + Z, fa[Z]);
 }
 
-template<typename Par>
-__global__ void apply_smarter(Par params, int3 L, int n, BPaArray parray, const int *start, float seed, /**/ Force *ff) {
+template<typename Par, typename Parray>
+__global__ void apply_smarter(Par params, int3 L, int n, Parray parray, const int *start, float seed, /**/ Force *ff) {
     enum {X, Y, Z};
     int ia, dy, dz;
     int enddy, enddx;
@@ -179,38 +155,8 @@ __device__ void one_row(Par params, int3 L, int dz, int dy, int ia, int3 ca, Pai
 }
 
 // unroll loop
-template<typename Par>
-__global__ void apply_unroll(Par params, int3 L, int n, BPaArray parray, const int *start, float seed, /**/ Force *ff) {
-    enum {X, Y, Z};
-    int ia;
-    int3 ca;
-    PairPa pa;
-    float fa[3] = {0};
-
-    ia = threadIdx.x + blockIdx.x * blockDim.x;
-    if (ia >= n) return;
-    
-    fetch(parray, ia, &pa);
-    ca = get_cid(L, &pa);
-
-#define ONE_ROW(dz, dy) one_row (params, L, dz, dy, ia, ca, pa, parray, start, seed, /**/ fa, ff)
-    
-    ONE_ROW(-1, -1);
-    ONE_ROW(-1,  0);
-    ONE_ROW(-1,  1);
-    ONE_ROW( 0, -1);
-    ONE_ROW( 0,  0);
-
-#undef ONE_ROW
-
-    atomicAdd(ff[ia].f + X, fa[X]);
-    atomicAdd(ff[ia].f + Y, fa[Y]);
-    atomicAdd(ff[ia].f + Z, fa[Z]);
-}
-
-// textures
-template<typename Par>
-__global__ void apply(Par params, int3 L, int n, TBPaArray parray, const int *start, float seed, /**/ Force *ff) {
+template<typename Par, typename Parray>
+__global__ void apply(Par params, int3 L, int n, Parray parray, const int *start, float seed, /**/ Force *ff) {
     enum {X, Y, Z};
     int ia;
     int3 ca;
