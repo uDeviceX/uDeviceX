@@ -38,7 +38,7 @@ void sim_gen(Sim *s, Config *cfg, Time *time, TimeSeg *time_seg) {
 
     UC(flu_gen_quants(s->coords, s->gen_color, &flu->q));
     UC(flu_build_cells(&flu->q));
-    if (global_ids)  flu_gen_ids  (s->cart, flu->q.n, &flu->q);
+    if (s->opt.fluids)  flu_gen_ids  (s->cart, flu->q.n, &flu->q);
     if (rbcs) {
         rbc_gen_quants(s->coords, s->cart, cell, "rbcs-ic.txt", /**/ &rbc->q);
         if (s->opt.flucolors) gen_colors(rbc, &s->colorer, /**/ flu);
