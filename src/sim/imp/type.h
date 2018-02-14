@@ -132,6 +132,7 @@ struct Vcon {
 /* optional features */
 struct Opt {
     bool fsi, cnt;
+    bool flucolors, fluids;
     bool inflow, outflow, denoutflow, vcon;
     bool rig, sbounce;
     bool dump_field, dump_parts;

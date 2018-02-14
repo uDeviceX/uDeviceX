@@ -216,6 +216,11 @@ static void read_opt(const Config *c, Opt *o) {
     UC(conf_lookup_bool(c, "cnt.active", &b));
     o->cnt = b;
 
+    UC(conf_lookup_bool(c, "flu.colors", &b));
+    o->flucolors = b;
+    UC(conf_lookup_bool(c, "flu.ids", &b));
+    o->fluids = b;
+
     UC(conf_lookup_bool(c, "outflow.active", &b));
     o->outflow = b;
     UC(conf_lookup_bool(c, "inflow.active", &b));
