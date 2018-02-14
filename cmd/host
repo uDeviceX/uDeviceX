@@ -14,8 +14,6 @@ then printf '%s\n' "$UHOST"
      exit
 fi
 
-msg `hostname`
-
 dh=panda # default host
 h=`hostname`
 case "$h" in
