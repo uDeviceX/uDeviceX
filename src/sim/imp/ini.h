@@ -154,7 +154,6 @@ static void ini_rbc(const Config *cfg, MPI_Comm cart, int3 L, /**/ Rbc *r) {
     int seed, nv;
     const char *directory = "r";
     UC(off_read("rbc.off", &r->cell));
-    UC(conf_lookup_int(cfg, "rbc.seed", &seed));
     UC(mesh_write_ini_off(r->cell, directory, /**/ &r->mesh_write));
     nv = off_get_nv(r->cell);
     Dalloc(&r->ff, MAX_CELL_NUM * nv);
@@ -164,6 +163,8 @@ static void ini_rbc(const Config *cfg, MPI_Comm cart, int3 L, /**/ Rbc *r) {
     if (RBC_STRETCH)   UC(rbc_stretch_ini("rbc.stretch", nv, /**/ &r->stretch));
     UC(rbc_params_ini(&r->params));
     UC(rbc_params_set_conf(cfg, r->params));
+    UC(conf_lookup_int(cfg, "rbc.seed", &seed));
+    UC(rbc_force_ini(nv, seed, /**/ &r->force));
 }
 
 static void ini_rig(const Config *cfg, MPI_Comm cart, int maxp, int3 L, /**/ Rig *s) {
@@ -214,7 +215,7 @@ static void read_opt(const Config *c, Opt *o) {
     o->fsi = b;
     UC(conf_lookup_bool(c, "cnt.active", &b));
     o->cnt = b;
-    
+
     UC(conf_lookup_bool(c, "outflow.active", &b));
     o->outflow = b;
     UC(conf_lookup_bool(c, "inflow.active", &b));
@@ -228,7 +229,7 @@ static void read_opt(const Config *c, Opt *o) {
     o->rig = b;
     UC(conf_lookup_bool(c, "rig.bounce", &b));
     o->sbounce = b;
-    
+
     UC(conf_lookup_bool(c, "dump.field", &b));
     o->dump_field = b;
     UC(conf_lookup_float(c, "dump.freq_field", &o->freq_field));
