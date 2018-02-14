@@ -8,11 +8,13 @@ u.cp.ic  two         rbcs-ic.txt
 area=`off.area rbc.off`
 volume=`off.volume rbc.off`
 u.conf $S u/rbc/force  "$S/conf/default.h" <<!
-       kBT=0
        run
 !
 u.make -j
 u.run ./udx conf.cfg "
+glb = {
+    kBT = 0.0
+}
 rbc = {
     totArea = $area
     totVolume = $volume

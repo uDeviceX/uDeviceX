@@ -10,11 +10,14 @@ area=`off.area rbc.off`
 volume=`off.volume rbc.off`
 :
 u.conf $S u/rbc/force "$S/conf/default.h" <<!
-       RBC_STRESS_FREE kBT=0.0
+       RBC_STRESS_FREE
        run
 !
 u.make -j
 u.run ./udx conf.cfg "
+glb = {
+    kBT = 0.0
+}
 rbc = {
     totArea = $area
     totVolume = $volume
