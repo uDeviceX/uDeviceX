@@ -59,8 +59,8 @@
 
 /* should solvent have colors? 
    see doc/color.md */
-#ifndef multi_solvent
-#define multi_solvent (false)
+#ifdef multi_solvent
+#error multi_solvent is runtime: flu/colors in cfg
 #endif
 
 /* when to re-color rbcs */
