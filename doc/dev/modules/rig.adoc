@@ -1,6 +1,7 @@
 = Rigid
 :lext: .adoc
 :src: ../../../src
+:stem: latexmath
 
 Rigid objects consist of frozen particles moving in a rigid fashion.
 Interactions with other objects are modeled via pairwise interactions
@@ -10,6 +11,8 @@ Rigid objects also contain a surface representation on which other
 particles may bounce back.
 
 == Quantities
+
+=== data structure
 
 `RigidQuants` structure contains particles of rigid objects as well as
 mesh particles.
@@ -21,7 +24,7 @@ linear velocity of the rigid object.
 include::{src}/rig/imp.h[tag=quants]
 ----
 
-== Interface
+=== Interface
 
 allocate and deallocate the quantities:
 
@@ -53,3 +56,86 @@ include::{src}/rig/imp.h[tag=io]
 ----
 <1> to be called only once: dump the frozen particle in local referential (common to every rigid objects)
 <2> dump `Solid` structures, describing position, orientation and velocity of the rigid objects
+
+
+== update
+
+Position and velocities of rigid objects are updated from forces
+exerted on the particles.
+
+=== pin info
+
+The hidden structure `RigPinInfo` is used to store information about
+constrained rigid motion.
+This can be used to disable the movement of the center of mass of the rigid object along
+stem:[x, y] or stem:[z] axis (see `com` parameter).
+User can also block the rotation along one of the axes  (see `axis`
+parameter).
+
+example:
+
+* rigid object can rotate but is only able to  move along the stem:[x] axis:
+----
+com = {0, 1, 1}
+axis = {0, 0, 0}
+----
+
+* rigid object can only rotate along the stem:[z] axis and its center
+  of mass is not able to move:
+----
+com = {1, 1, 1}
+axis = {1, 1, 0}
+----
+
+[source, c++]
+----
+include::{src}/rigid/imp.h[tag=pin]
+----
+<1> allocate the hidden structure
+<2> deallocate the hidden structure
+<3> set the motion constrains
+<4> for periodic objects, set the direction of periodicity
+    (e.g. cylinder)
+<5> set the above parameters from configuration file
+<6> get the perioid direction
+
+The periodic direction can be 0, 1 or 2 for the stem:[x, y] or
+stem:[z] axis, respectively.
+Default value for no periodicty is set via
+
+[source, c++]
+----
+include::{src}/rigid/imp.h[tag=enum]
+----
+
+The configuration has the following syntax:
+
+[source, cfg]
+----
+rig = {
+    pin_com = [0, 0, 0]
+    pin_axis = [0, 0, 0]
+    pdir = -1
+}
+----
+
+=== interface
+
+naming:
+
+* `ns`: number of rigid objects
+* `ss`: array of rigid structures `Solid`
+* `rr0`: positions of the rigid particles in the rigid object
+  reference frame
+* `nps`: number of rigid particle per rigid object 
+
+[source, c++]
+----
+include::{src}/rigid/imp.h[tag=upd]
+----
+<1> set the force and torque to 0
+<2> update particle and rigid objects positions and velocity
+<3> generate rigid particles from template positions and rigid
+    structures
+<4> update the mesh position
+
