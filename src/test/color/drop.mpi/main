@@ -5,7 +5,7 @@ S=`u.cp.s`
 u.cp.sdf yplates1/yplates.dat sdf.dat
 u.conf "$S" u/x "$S/conf/default.h" <<!
    kBT=0.00444302
-   walls multi_solvent numberdensity=2
+   walls numberdensity=2
    run
 !
 u.make -j
