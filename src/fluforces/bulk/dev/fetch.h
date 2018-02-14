@@ -1,3 +1,5 @@
+/* bulk parray fetch */
+
 template <typename Parray>
 static __device__ void bpa_fetch_p(Parray a, int i, PairPa *p) {
     float4 r, v;
@@ -17,6 +19,8 @@ static __device__ void fetch(BPaCArray_v a, int i, PairPa *p) {
     p->color = a.cc[i];
 }
 
+
+/* texture bulk parray fetch */
 
 template <typename Parray>
 static __device__ void tbpa_fetch_p(Parray a, int i, PairPa *p) {
