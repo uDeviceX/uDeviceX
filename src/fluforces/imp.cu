@@ -36,7 +36,9 @@
 /* implementation */
 
 #include "imp/type.h"
+namespace fluforces_dev {
 #include "dev/main.h"
+}
 #include "imp/ini.h"
 #include "imp/fin.h"
 #include "imp/main.h"

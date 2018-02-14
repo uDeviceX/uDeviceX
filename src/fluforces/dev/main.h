@@ -1,4 +1,3 @@
-namespace dev {
 __global__ void zip(int  n, const float *pp, /**/ float4 *zpp) {
     enum {X, Y, Z};
     static_assert(sizeof(Particle) == 6 * sizeof(float),
@@ -19,5 +18,3 @@ __global__ void zip(int  n, const float *pp, /**/ float4 *zpp) {
     zpp[2*i]     = make_float4(x,   y,  z, 0);
     zpp[2*i + 1] = make_float4(vx, vy, vz, 0);
 }
-
-} /* namespace */

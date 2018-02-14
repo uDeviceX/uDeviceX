@@ -1,7 +1,7 @@
 static void zip(const int n, const float *pp, /**/ float4 *zpp) {
     static_assert(sizeof(Particle) == 6 * sizeof(float),
                   "sizeof(Particle) != 6 * sizeof(float)");
-    KL(dev::zip, (k_cnf(n)), (n, pp, zpp));
+    KL(fluforces_dev::zip, (k_cnf(n)), (n, pp, zpp));
 }
 
 
