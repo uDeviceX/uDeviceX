@@ -1,3 +1,7 @@
+#if defined(kBT)
+  #error kBT is runtime: glb.kBT
+#endif
+
 #if defined(RBCnv)
   #error RBCnv is runtime: read from rbc.off
 #endif
