@@ -5,13 +5,13 @@ namespace flu {
 enum { BULK = 0, FACE = 1, EDGE = 2, CORNER = 3 };
 
 struct LFrag { /* "local" fragment */
-    Cloud c;
+    PaArray parray;
     const int *ii; /* index */
     int n;
 };
 
 struct RFrag { /* "remote" fragment */
-    Cloud c;
+    PaArray parray;
     const int *start;
     int dx, dy, dz, xcells, ycells, zcells;
     int type;

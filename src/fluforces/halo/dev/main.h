@@ -15,8 +15,8 @@ static __device__ float random(int aid, int bid, float seed, int mask) {
     return rnd::mean0var1uu(seed, a1, a2);
 }
 
-template<typename Par>
-static __device__ void force0(Par params, const flu::RndFrag rnd, const flu::RFrag bfrag, const Map m, const PairPa a, int aid, /**/
+template<typename Par, typename Parray>
+static __device__ void force0(Par params, const flu::RndFrag rnd, const RFrag_v<Parray> bfrag, const Map m, const PairPa a, int aid, /**/
                               float *fx, float *fy, float *fz) {
     PairPa b;
     int i;
@@ -26,14 +26,14 @@ static __device__ void force0(Par params, const flu::RndFrag rnd, const flu::RFr
     *fx = *fy = *fz = 0;
     for (i = 0; !endp(m, i); i ++ ) {
         bid = m2id(m, i);
-        cloud_get(bfrag.c, bid, /**/ &b);
+        parray_get(bfrag.parray, bid, /**/ &b);
         pair(params, a, b, random(aid, bid, rnd.seed, rnd.mask), &x, &y, &z);
         *fx += x; *fy += y; *fz += z;
     }
 }
 
-template<typename Par>
-static __device__ void force1(Par params, const flu::RndFrag rnd, const flu::RFrag frag, const Map m, const PairPa p, int id, Fo f) {
+template<typename Par, typename Parray>
+static __device__ void force1(Par params, const flu::RndFrag rnd, const RFrag_v<Parray> frag, const Map m, const PairPa p, int id, Fo f) {
     float x, y, z; /* force */
     force0(params, rnd, frag, m, p, id, /**/ &x, &y, &z);
     atomicAdd(f.x, x);
@@ -41,8 +41,8 @@ static __device__ void force1(Par params, const flu::RndFrag rnd, const flu::RFr
     atomicAdd(f.z, z);
 }
 
-template<typename Par>
-static __device__ void force2(Par params, int3 L, const flu::RFrag frag, const flu::RndFrag rnd, PairPa p, int id, /**/ Fo f) {
+template<typename Par, typename Parray>
+static __device__ void force2(Par params, int3 L, const RFrag_v<Parray> frag, const flu::RndFrag rnd, PairPa p, int id, /**/ Fo f) {
     Map m;    
     m = r2map(L, frag, p.x, p.y, p.z);
     p.x -= frag.dx * L.x;
@@ -60,24 +60,25 @@ static __device__ Fo i2f(const int *ii, float *ff, int i) {
     return f;
 }
 
-static __device__ Fo Lfrag2f(const flu::LFrag frag, float *ff, int i) {
+template <typename Parray>
+static __device__ Fo Lfrag2f(const LFrag_v<Parray> frag, float *ff, int i) {
     return i2f(frag.ii, ff, i);
 }
 
-template<typename Par>
-static __device__ void force3(Par params, int3 L, const flu::LFrag afrag, const flu::RFrag bfrag, const flu::RndFrag rnd, int i, /**/ float *ff) {
+template<typename Par, typename Parray>
+static __device__ void force3(Par params, int3 L, const LFrag_v<Parray> afrag, const RFrag_v<Parray> bfrag, const flu::RndFrag rnd, int i, /**/ float *ff) {
     PairPa p;
     Fo f;
-    cloud_get(afrag.c, i, &p);
+    parray_get(afrag.parray, i, &p);
     f = Lfrag2f(afrag, ff, i);
     force2(params, L, bfrag, rnd, p, i, f);
 }
 
-template<typename Par>
-__global__ void force(Par params, int3 L, const int27 start, const flu::LFrag26 lfrags, const flu::RFrag26 rfrags, const flu::RndFrag26 rrnd, /**/ float *ff) {
+template<typename Par, typename Parray>
+__global__ void force(Par params, int3 L, const int27 start, const LFrag_v26<Parray> lfrags, const RFrag_v26<Parray> rfrags, const flu::RndFrag26 rrnd, /**/ float *ff) {
     flu::RndFrag  rnd;
-    flu::RFrag rfrag;
-    flu::LFrag lfrag;
+    RFrag_v<Parray> rfrag;
+    LFrag_v<Parray> lfrag;
     int gid;
     int fid; /* fragment id */
     int i; /* particle id */
