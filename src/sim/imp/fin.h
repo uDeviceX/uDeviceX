@@ -146,7 +146,7 @@ void sim_fin(Sim *s, Time *time) {
 
     fin_flu(&s->flu);
 
-    if (multi_solvent && rbcs)
+    if (s->opt.flucolors && rbcs)
         fin_colorer(/**/ &s->colorer);
 
     if (s->opt.rig) {

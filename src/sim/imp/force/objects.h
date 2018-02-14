@@ -44,7 +44,7 @@ void forces_objects(Sim *sim) {
     /* bulk interactions */
     
     parray_push_pp(f->q.pp, &parray);
-    if (multi_solvent)
+    if (opt.flucolors)
         parray_push_cc(f->q.cc, &parray);
 
     if (opt.fsi)

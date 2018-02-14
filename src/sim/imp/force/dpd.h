@@ -8,7 +8,7 @@ void forces_dpd(Flu *f) {
     FluExch *e = &f->e;
     
     parray_push_pp(f->q.pp, /**/ &parray);
-    if (multi_solvent)
+    if (f->q.colors)
         parray_push_cc(f->q.cc, /**/ &parray);
 
     UC(eflu_compute_map(start, count, /**/ e->p));

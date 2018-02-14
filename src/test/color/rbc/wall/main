@@ -9,7 +9,6 @@ u.conf "$S" u/x "$S/conf/default.h" <<!
    KL_SYNC
    walls
    rbcs
-   multi_solvent
    color_freq=1
    numberdensity=1
    run

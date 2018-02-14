@@ -22,11 +22,11 @@ static void dump_part(Sim *s) {
     BopWork *dumpt = s->dumpt;
     static int id_bop = 0; /* TODO */
     cD2H(flu->q.pp_hst, flu->q.pp, flu->q.n);
-    if (global_ids) {
+    if (s->opt.fluids) {
         cD2H(flu->q.ii_hst, flu->q.ii, flu->q.n);
         bop_ids(s->cart, flu->q.ii_hst, flu->q.n, "id_solvent", id_bop);
     }
-    if (multi_solvent) {
+    if (s->opt.flucolors) {
         cD2H(flu->q.cc_hst, flu->q.cc, flu->q.n);
         bop_colors(s->cart, flu->q.cc_hst, flu->q.n, "colors_solvent", id_bop);
     }

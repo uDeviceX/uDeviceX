@@ -1,5 +1,5 @@
 static void apply_inflow(float kBT0, float dt, Inflow *i, Flu *f) {
-    if (multi_solvent)
+    if (f->q.colors)
         UC(inflow_create_pp_cc(kBT0, dt, RED_COLOR, i, &f->q.n, f->q.pp, f->q.cc));
     else
         UC(inflow_create_pp(kBT0, dt, i, &f->q.n, f->q.pp));
