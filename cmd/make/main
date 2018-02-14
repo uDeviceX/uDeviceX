@@ -1,12 +1,20 @@
 #!/bin/bash
 
-# udx commands
+prog_name=u.make
+
+usg () {
+    msg 'make wrapper: accept the same options as make(1)'
+    exit
+}
 
 msg () { printf '%s\n' "$@" >&2; }
+err () { msg "$prog_name: $@"; exit 2; }
 
-if test $# = 1 -a "$1" = -h; then msg 'udx make wrapper'; exit; fi
 
+if test $# -ne 0 && test "$1" = -h; then usg; fi
 h=`u.host`
+if test $? -ne 0; then err 'u.host failed'; fi
+
 
 . u.load."$h"
 . u.make."$h"
