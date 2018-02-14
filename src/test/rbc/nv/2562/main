@@ -11,12 +11,14 @@ echo 1 0 0 $x \
      0 0 0  1 > rbcs-ic.txt
 :
 u.conf "$S" u/x "$S/conf/default.h" <<!
-   kBT=0
    rbcs
    run
 !
 u.make -j
 u.run ./udx conf.cfg "
+glb = { 
+    kBT = 0.0
+}
 glb = {
     L = [$XS, $YS, $ZS]
 }
