@@ -29,7 +29,7 @@ void forces_wall(Wall *w, Sim *s) {
     parray_push_pp(flu->q.pp, &po);
     parray_push_pp(rig->q.pp, &ps);
     parray_push_pp(rbc->q.pp, &pr);
-    if (multi_solvent)
+    if (s->opt.flucolors)
         parray_push_cc(flu->q.cc, &po);
     
     if (flu->q.n)               wall_force(par, w->vview, s->coords, w->sdf, &w->q, w->t, flu->q.n, &po, /**/ flu->ff);

@@ -22,7 +22,7 @@ static void gen(Time *time, float tw, const Coords *coords, Wall *w, Sim *s) { /
     inter_freeze(coords, s->rig.pininfo, s->opt.rig, s->cart, w->sdf, /*io*/ &flu->q, /**/ &rig->q, &rbc->q);
     clear_vel(s);
 
-    if (multi_solvent) {
+    if (s->opt.flucolors) {
         Particle *pp = flu->q.pp;
         int n = flu->q.n;
         int *cc = flu->q.cc;
@@ -41,7 +41,7 @@ void sim_gen(Sim *s, Config *cfg, Time *time, TimeSeg *time_seg) {
     if (global_ids)  flu_gen_ids  (s->cart, flu->q.n, &flu->q);
     if (rbcs) {
         rbc_gen_quants(s->coords, s->cart, cell, "rbcs-ic.txt", /**/ &rbc->q);
-        if (multi_solvent) gen_colors(rbc, &s->colorer, /**/ flu);
+        if (s->opt.flucolors) gen_colors(rbc, &s->colorer, /**/ flu);
     }
     MC(m::Barrier(s->cart));
     if (walls || s->opt.rig) {
@@ -50,7 +50,7 @@ void sim_gen(Sim *s, Config *cfg, Time *time, TimeSeg *time_seg) {
         dSync();
         if (walls && wall->q.n) UC(wall_gen_ticket(&wall->q, wall->t));
         s->solids0 = s->opt.rig;
-        if (rbcs && multi_solvent) gen_colors(rbc, &s->colorer, /**/ flu);
+        if (rbcs && s->opt.flucolors) gen_colors(rbc, &s->colorer, /**/ flu);
         run(cfg, time, time_seg->wall, time_seg->end, s);
     } else {
         s->solids0 = s->opt.rig;

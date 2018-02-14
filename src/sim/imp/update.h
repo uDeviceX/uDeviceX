@@ -91,7 +91,7 @@ void update_solvent(float dt, MoveParams *moveparams, /**/ Flu *f) {
 
 void update_rbc(float dt, MoveParams *moveparams, long it, Rbc *r, Sim *s) {
     bool cond;
-    cond = multi_solvent && color_freq && it % color_freq == 0;
+    cond = s->opt.flucolors && color_freq && it % color_freq == 0;
     if (cond) {msg_print("recolor"); gen_colors(r, &s->colorer, /**/ &s->flu);}; /* TODO: does not belong here*/
     scheme_move_apply(dt, moveparams, rbc_mass, r->q.n, r->ff, r->q.pp);
 }
