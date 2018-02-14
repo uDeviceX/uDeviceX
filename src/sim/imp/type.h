@@ -67,7 +67,7 @@ struct BounceBack {
 struct Flu {
     FluQuants q;
     PairParams *params;
-    
+
     FluDistr d;
     FluExch e;
 
@@ -81,12 +81,9 @@ struct Flu {
 /* data holder for red blood cells */
 struct Rbc {
     RbcQuants q;
-    RbcForce *force;
-
     RbcDistr d;
-
     Force *ff;
-
+    RbcForce *force;      /* helper to compute membrane forces */
     RbcParams *params;    /* model parameters */
     RbcCom    *com;     /* helper to compute center of masses */
     RbcStretch *stretch;  /* helper to apply stretching [fo]rce to cells */
@@ -154,7 +151,7 @@ struct Sim {
 
     /* parameters */
     MoveParams *moveparams;
-    
+
     /* helpers */
     Coords *coords;
     int3 L;  /* subdomain sizes */
