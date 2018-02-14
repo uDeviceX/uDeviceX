@@ -164,6 +164,7 @@ static void ini_rbc(const Config *cfg, MPI_Comm cart, int3 L, /**/ Rbc *r) {
     if (RBC_STRETCH)   UC(rbc_stretch_ini("rbc.stretch", nv, /**/ &r->stretch));
     UC(rbc_params_ini(&r->params));
     UC(rbc_params_set_conf(cfg, r->params));
+    UC(rbc_force_ini(nv, /**/ &r->force));
 }
 
 static void ini_rig(const Config *cfg, MPI_Comm cart, int maxp, int3 L, /**/ Rig *s) {

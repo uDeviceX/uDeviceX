@@ -41,8 +41,6 @@ void sim_gen(Sim *s, Config *cfg, Time *time, TimeSeg *time_seg) {
     if (global_ids)  flu_gen_ids  (s->cart, flu->q.n, &flu->q);
     if (rbcs) {
         rbc_gen_quants(s->coords, s->cart, cell, "rbcs-ic.txt", /**/ &rbc->q);
-        rbc_force_ini(&rbc->q, &rbc->tt);
-
         if (multi_solvent) gen_colors(rbc, &s->colorer, /**/ flu);
     }
     MC(m::Barrier(s->cart));
@@ -83,7 +81,6 @@ void sim_strt(Sim *s, Config *cfg, Time *time, TimeSeg *time_seg) {
     if (walls) wall_strt_quants(s->coords, maxp_wall, &wall->q);
 
     /*T*/
-    if (rbcs)               UC(rbc_force_ini(&rbc->q, &rbc->tt));
     if (walls && wall->q.n) UC(wall_gen_ticket(&wall->q, wall->t));
 
     MC(m::Barrier(s->cart));
