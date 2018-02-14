@@ -80,25 +80,28 @@ static void run1(float dt, RbcQuants *q, RbcForce *t, const RbcParams *par) {
     Dfree(f);
 }
 
-static void run2(MPI_Comm cart, float dt, const Coords *coords, OffRead *off, const char *ic, const RbcParams *par, RbcQuants *q) {
+static void run2(MPI_Comm cart, float dt, const Coords *coords, OffRead *off, const char *ic, long seed, const RbcParams *par, RbcQuants *q) {
+    int nv;
     RbcForce *t;
+    nv = off_get_nv(off);
     rbc_gen_quants(coords, cart, off, ic, /**/ q);
-    rbc_force_ini(q, &t);
+    rbc_force_ini(nv, seed, /**/ &t);
     run1(dt, q, t, par);
     rbc_force_fin(t);
 }
 
-void run(MPI_Comm cart, float dt, const Coords *coords, const char *cell, const char *ic, const RbcParams *par) {
+void run(MPI_Comm cart, float dt, const Coords *coords, const char *cell, const char *ic, long seed, const RbcParams *par) {
     OffRead *off;
     RbcQuants q;
     UC(off_read(cell, /**/ &off));
     UC(rbc_ini(off, &q));
-    UC(run2(cart, dt, coords, off, ic, par, &q));
+    UC(run2(cart, dt, coords, off, ic, seed, par, &q));
     UC(rbc_fin(&q));
     UC(off_fin(off));
 }
 
 int main(int argc, char **argv) {
+    int seed;
     float dt;
     Config *cfg;
     Coords *coords;
@@ -118,11 +121,12 @@ int main(int argc, char **argv) {
     UC(coords_ini_conf(cart, cfg, &coords));
     UC(conf_lookup_string(cfg, "rbc.cell", &cell));
     UC(conf_lookup_string(cfg, "rbc.ic", &ic));
+    UC(conf_lookup_int(cfg, "rbc.seed", &seed));
 
     UC(rbc_params_ini(&par));
     UC(rbc_params_set_conf(cfg, par));
     
-    UC(run(cart, dt, coords, cell, ic, par));
+    UC(run(cart, dt, coords, cell, ic, seed, par));
 
     UC(rbc_params_fin(par));
     UC(conf_fin(cfg));

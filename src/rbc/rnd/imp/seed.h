@@ -17,7 +17,6 @@ static long decode_seed_time() {
     return t;
 }
 static int decode_seed(long seed) {
-    if      (seed == ENV )  return decode_seed_env();
-    else if (seed == TIME) return decode_seed_time();
+    if (seed == SEED_TIME) return decode_seed_time();
     else return seed;
 }
