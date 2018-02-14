@@ -1,0 +1,48 @@
+= parray
+:lext: .adoc
+:src: ../../../src
+:stem: latexmath
+
+Generic particle array to be passed to interaction kernels.
+
+== host interface
+
+A `PaArray` structure can be configured by pushing particles and,
+optionally, colors:
+
+[source,cpp]
+----
+include::{src}/parray/imp.h[tag=push]
+----
+WARNING: Particles must be pushed before colors
+
+Client can check if the colors has been pushed by calling
+
+[source,cpp]
+----
+include::{src}/parray/imp.h[tag=get]
+----
+
+The particle array data are meant to be passed to kernels.
+In order to inline the fetching mode (see device interface), different
+views can be generated from the `PaArray` structure:
+
+[source,cpp]
+----
+include::{src}/parray/imp.h[tag=view]
+----
+<1> Get a view to fetch particles without colors
+<2> Get a view to fetch particles with colors
+
+
+== device interface
+
+Generic particle (see _pair_ module)  can be fetched depending on the view:
+
+[source,cpp]
+----
+include::{src}/parray/dev.h[tag=int]
+----
+<1> fetch position and velocity only
+<2> fetch position, velocity and color
+

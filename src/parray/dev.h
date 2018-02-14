@@ -15,11 +15,17 @@ static __device__ void parray_get_common(PA a, int i, /**/ PairPa *p) {
     p->vz = s2.y;
 }
 
-static __device__ void parray_get(PaArray_v a, int i, /**/ PairPa *p) {
+// tag::int[]
+static __device__ void parray_get(PaArray_v a, int i, /**/ PairPa *p) // <1>
+// end::int[]
+{
     parray_get_common(a, i, /**/ p);
 }
 
-static __device__ void parray_get(PaCArray_v a, int i, /**/ PairPa *p) {
+// tag::int[]
+static __device__ void parray_get(PaCArray_v a, int i, /**/ PairPa *p) // <2>
+// end::int[]
+{
     parray_get_common(a, i, /**/ p);
     p->color = a.cc[i];
 }
