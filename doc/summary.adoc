@@ -28,6 +28,7 @@
 * link:./dev/modules/math/main{lext}[]
 * link:./dev/modules/move{lext}[]
 * link:./dev/modules/pair{lext}[]
+* link:./dev/modules/parray{lext}[]
 * link:./dev/modules/parser{lext}[]
 * link:./dev/modules/partlist{lext}[]
 * link:./dev/modules/rbc/forces{lext}[]

@@ -25,6 +25,7 @@
 ./dev/modules/math/main.html: ./dev/modules/math/main.adoc ./dev/modules/math/linal.inc.adoc ./dev/modules/math/linal.inc.adoc ./dev/modules/math/rnd.inc.adoc ./dev/modules/math/rnd.inc.adoc ./dev/modules/math/tform.inc.adoc ./dev/modules/math/tform.inc.adoc
 ./dev/modules/move.html: ./dev/modules/move.adoc 
 ./dev/modules/pair.html: ./dev/modules/pair.adoc 
+./dev/modules/parray.html: ./dev/modules/parray.adoc 
 ./dev/modules/parser.html: ./dev/modules/parser.adoc 
 ./dev/modules/partlist.html: ./dev/modules/partlist.adoc 
 ./dev/modules/rbc/forces.html: ./dev/modules/rbc/forces.adoc 
