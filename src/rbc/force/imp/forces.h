@@ -20,6 +20,8 @@ void rbc_force_apply(RbcForce *t, const RbcParams *par, float dt, const RbcQuant
     RbcParams_v parv;
     float *av;
     if (q->nc <= 0) return;
+    if (!d::is_device_pointer(q->pp))  ERR("`q->pp` is not a device pointer");
+
     parv = rbc_params_get_view(par);
     UC(area_volume_compute(q->area_volume, q->nc, q->pp, /**/ &av));
     apply(dt,
