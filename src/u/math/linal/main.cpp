@@ -50,7 +50,9 @@ static void main1(int c, char **v) {
 }
 
 int main(int argc, char **argv) {
+    int dims[3];
     m::ini(&argc, &argv);
+    m::get_dims(&argc, &argv, dims); /* eat args */
     main1(argc, argv);
     m::fin();
 }

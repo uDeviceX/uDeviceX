@@ -34,7 +34,9 @@ void main1(int c, char **v) {
 }
 
 int main(int argc, char **argv) {
+    int dims[3];
     m::ini(&argc, &argv);
+    m::get_dims(&argc, &argv, dims); /* eat arguments */
     UC(main1(argc, argv));
     m::fin();
 }

@@ -42,7 +42,7 @@ static int genGrey(int3 L, int maxp, /*o*/ Particle *dev, /*w*/ Particle *hst) {
 
 void flu_gen_quants(const Coords *coords, const GenColor *gc, FluQuants *q) {
     int3 L = subdomain(coords);
-    if (multi_solvent)
+    if (q->colors)
         q->n = genColor(L, q->maxp, coords, gc, q->pp, q->cc, /*w*/ q->pp_hst, q->cc_hst);
     else
         q->n = genGrey(L, q->maxp, q->pp, /*w*/ q->pp_hst);

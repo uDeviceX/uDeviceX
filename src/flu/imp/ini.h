@@ -6,7 +6,7 @@ static void ini_ii(int maxp, int **ii, int **ii0, int **ii_hst) {
     UC(emalloc(sz, /**/ (void **) ii_hst));
 }
 
-void flu_ini(int3 L, int maxp, FluQuants *q) {
+void flu_ini(bool colors, bool ids, int3 L, int maxp, FluQuants *q) {
     size_t sz;
     q->n = 0;
     q->maxp = maxp;
@@ -18,6 +18,9 @@ void flu_ini(int3 L, int maxp, FluQuants *q) {
     sz = maxp * sizeof(Particle);
     UC(emalloc(sz, /**/ (void **) &q->pp_hst));
 
-    if (global_ids)    ini_ii(maxp, &q->ii, &q->ii0, &q->ii_hst);
-    if (multi_solvent) ini_ii(maxp, &q->cc, &q->cc0, &q->cc_hst);
+    if (ids)    ini_ii(maxp, &q->ii, &q->ii0, &q->ii_hst);
+    if (colors) ini_ii(maxp, &q->cc, &q->cc0, &q->cc_hst);
+
+    q->ids = ids;
+    q->colors = colors;
 }
