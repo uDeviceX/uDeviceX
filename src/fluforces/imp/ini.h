@@ -3,7 +3,6 @@ void fluforces_bulk_ini(int3 L, int maxp, /**/ FluForcesBulk **bd) {
     EMALLOC(1, bd);
     b = *bd;
     Dalloc(&b->zipped_pp, 2 * maxp);
-    Dalloc(&b->zipped_rr,     maxp);
     UC(rnd_ini(0, 0, 0, 0, /**/ &b->rnd));
     b->colors = NULL;
     b->L = L;
