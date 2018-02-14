@@ -31,8 +31,10 @@
 #include "pair/type.h"
 #include "pair/dev.h"
 #include "pair/imp.h"
-#include "cloud/imp.h"
-#include "cloud/dev.h"
+
+#include "parray/type.h"
+#include "parray/imp.h"
+#include "parray/dev.h"
 
 /* local */
 

@@ -14,10 +14,10 @@ void fsi_fin(Fsi *fsi) {
     UC(efree(fsi));
 }
 
-void fsi_bind_solvent(Cloud c, Force *ff, int n, int *starts, /**/ Fsi *fsi) {
+void fsi_bind_solvent(PaArray pa, Force *ff, int n, int *starts, /**/ Fsi *fsi) {
     SolventWrap *w = fsi->wo;
-    w->c = c;
-    w->n = n;
+    w->pa = pa;
+    w->n  = n;
     w->ff = ff;
     w->starts = starts;
 }

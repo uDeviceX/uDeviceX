@@ -1,25 +1,25 @@
-static __device__ void fetch(BCloud c, int i, PairPa *p) {
+static __device__ void fetch(BPaArray a, int i, PairPa *p) {
     float4 r, v;
-    r = c.pp[2*i + 0];
-    v = c.pp[2*i + 1];
+    r = a.pp[2*i + 0];
+    v = a.pp[2*i + 1];
 
     p->x  = r.x;  p->y  = r.y;  p->z  = r.z;
     p->vx = v.x;  p->vy = v.y;  p->vz = v.z;
     
     if (multi_solvent)
-        p->color = c.cc[i];
+        p->color = a.cc[i];
 }
 
-static __device__ void fetch(TBCloud c, int i, PairPa *p) {
+static __device__ void fetch(TBPaArray a, int i, PairPa *p) {
     float4 r, v;
-    r = fetch(c.pp, 2*i + 0);
-    v = fetch(c.pp, 2*i + 1);
+    r = fetch(a.pp, 2*i + 0);
+    v = fetch(a.pp, 2*i + 1);
 
     p->x  = r.x;  p->y  = r.y;  p->z  = r.z;
     p->vx = v.x;  p->vy = v.y;  p->vz = v.z;
     
     if (multi_solvent)
-        p->color = fetch(c.cc, i);
+        p->color = fetch(a.cc, i);
 }
 
 static __device__ bool cutoff_range(PairPa pa, PairPa pb) {
@@ -80,7 +80,7 @@ static __device__ void loop_pp(Par params, int ia, PairPa pa, CL c, int start, i
 }
 
 template<typename Par>
-__global__ void apply_simplest(Par params, int3 L, int n, BCloud cloud, const int *start, float seed, /**/ Force *ff) {
+__global__ void apply_simplest(Par params, int3 L, int n, BPaArray parray, const int *start, float seed, /**/ Force *ff) {
     enum {X, Y, Z};
     int ia, ib;
     int3 ca, cb;
@@ -90,7 +90,7 @@ __global__ void apply_simplest(Par params, int3 L, int n, BCloud cloud, const in
     ia = threadIdx.x + blockIdx.x * blockDim.x;
     if (ia >= n) return;
     
-    fetch(cloud, ia, &pa);
+    fetch(parray, ia, &pa);
     ca = get_cid(L, &pa);
 
     for (cb.z = ca.z - 1; cb.z <= ca.z + 1; ++cb.z) {
@@ -99,7 +99,7 @@ __global__ void apply_simplest(Par params, int3 L, int n, BCloud cloud, const in
                 if (!valid_cid(L, cb)) continue;
                 ib = cb.x + L.x * (cb.y + L.y * cb.z);
                 
-                loop_pp(params, ia, pa, cloud, start[ib], start[ib + 1], seed, /**/ fa, ff);
+                loop_pp(params, ia, pa, parray, start[ib], start[ib + 1], seed, /**/ fa, ff);
             }        
         }        
     }
@@ -110,7 +110,7 @@ __global__ void apply_simplest(Par params, int3 L, int n, BCloud cloud, const in
 }
 
 template<typename Par>
-__global__ void apply_smarter(Par params, int3 L, int n, BCloud cloud, const int *start, float seed, /**/ Force *ff) {
+__global__ void apply_smarter(Par params, int3 L, int n, BPaArray parray, const int *start, float seed, /**/ Force *ff) {
     enum {X, Y, Z};
     int ia, dy, dz;
     int enddy, enddx;
@@ -123,7 +123,7 @@ __global__ void apply_smarter(Par params, int3 L, int n, BCloud cloud, const int
     ia = threadIdx.x + blockIdx.x * blockDim.x;
     if (ia >= n) return;
     
-    fetch(cloud, ia, &pa);
+    fetch(parray, ia, &pa);
     ca = get_cid(L, &pa);
 
     for (dz = -1; dz <= 0; ++dz) {
@@ -146,7 +146,7 @@ __global__ void apply_smarter(Par params, int3 L, int n, BCloud cloud, const int
             bs = start[cid0 + startx];
             be = start[cid0 + endx];
 
-            loop_pp(params, ia, pa, cloud, bs, be, seed, /**/ fa, ff);
+            loop_pp(params, ia, pa, parray, bs, be, seed, /**/ fa, ff);
         }        
     }
 
@@ -155,8 +155,8 @@ __global__ void apply_smarter(Par params, int3 L, int n, BCloud cloud, const int
     atomicAdd(ff[ia].f + Z, fa[Z]);
 }
 
-template<typename Par, typename CL>
-__device__ void one_row(Par params, int3 L, int dz, int dy, int ia, int3 ca, PairPa pa, CL cloud, const int *start, float seed, /**/ float fa[3], Force *ff) {
+template<typename Par, typename PArray>
+__device__ void one_row(Par params, int3 L, int dz, int dy, int ia, int3 ca, PairPa pa, PArray parray, const int *start, float seed, /**/ float fa[3], Force *ff) {
     int3 cb;
     int enddx, startx, endx, cid0, bs, be;
     cb.z = ca.z + dz;
@@ -175,12 +175,12 @@ __device__ void one_row(Par params, int3 L, int dz, int dy, int ia, int3 ca, Pai
     bs = start[cid0 + startx];
     be = start[cid0 + endx];
 
-    loop_pp(params, ia, pa, cloud, bs, be, seed, /**/ fa, ff);
+    loop_pp(params, ia, pa, parray, bs, be, seed, /**/ fa, ff);
 }
 
 // unroll loop
 template<typename Par>
-__global__ void apply_unroll(Par params, int3 L, int n, BCloud cloud, const int *start, float seed, /**/ Force *ff) {
+__global__ void apply_unroll(Par params, int3 L, int n, BPaArray parray, const int *start, float seed, /**/ Force *ff) {
     enum {X, Y, Z};
     int ia;
     int3 ca;
@@ -190,10 +190,10 @@ __global__ void apply_unroll(Par params, int3 L, int n, BCloud cloud, const int 
     ia = threadIdx.x + blockIdx.x * blockDim.x;
     if (ia >= n) return;
     
-    fetch(cloud, ia, &pa);
+    fetch(parray, ia, &pa);
     ca = get_cid(L, &pa);
 
-#define ONE_ROW(dz, dy) one_row (params, L, dz, dy, ia, ca, pa, cloud, start, seed, /**/ fa, ff)
+#define ONE_ROW(dz, dy) one_row (params, L, dz, dy, ia, ca, pa, parray, start, seed, /**/ fa, ff)
     
     ONE_ROW(-1, -1);
     ONE_ROW(-1,  0);
@@ -210,7 +210,7 @@ __global__ void apply_unroll(Par params, int3 L, int n, BCloud cloud, const int 
 
 // textures
 template<typename Par>
-__global__ void apply(Par params, int3 L, int n, TBCloud cloud, const int *start, float seed, /**/ Force *ff) {
+__global__ void apply(Par params, int3 L, int n, TBPaArray parray, const int *start, float seed, /**/ Force *ff) {
     enum {X, Y, Z};
     int ia;
     int3 ca;
@@ -220,10 +220,10 @@ __global__ void apply(Par params, int3 L, int n, TBCloud cloud, const int *start
     ia = threadIdx.x + blockIdx.x * blockDim.x;
     if (ia >= n) return;
     
-    fetch(cloud, ia, &pa);
+    fetch(parray, ia, &pa);
     ca = get_cid(L, &pa);
 
-#define ONE_ROW(dz, dy) one_row (params, L, dz, dy, ia, ca, pa, cloud, start, seed, /**/ fa, ff)
+#define ONE_ROW(dz, dy) one_row (params, L, dz, dy, ia, ca, pa, parray, start, seed, /**/ fa, ff)
     
     ONE_ROW(-1, -1);
     ONE_ROW(-1,  0);

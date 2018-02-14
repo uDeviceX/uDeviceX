@@ -1,6 +1,7 @@
 struct EFluPack;
 struct EFluComm;
 struct EFluUnpack;
+struct PaArray;
 
 void eflu_pack_ini(int3 L, int maxd, EFluPack **p);
 void eflu_comm_ini(MPI_Comm comm, /**/ EFluComm **c);
@@ -13,7 +14,7 @@ void eflu_unpack_fin(EFluUnpack *u);
 void eflu_compute_map(const int *start, const int *count, /**/ EFluPack *p);
 void eflu_download_cell_starts(/**/ EFluPack *p);
 
-void eflu_pack(const Cloud *cloud, /**/ EFluPack *p);
+void eflu_pack(const PaArray *parray, /**/ EFluPack *p);
 void eflu_download_data(EFluPack *p);
 
 void eflu_post_recv(EFluComm *c, EFluUnpack *u);

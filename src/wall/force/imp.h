@@ -1,4 +1,5 @@
 struct PairParams;
+struct PaArray;
 
 struct WallForce { /* local wall data */
     Sdf_v sdf_v;
@@ -8,5 +9,4 @@ struct WallForce { /* local wall data */
     int3 L;
 };
 
-void wall_force_apply_color(const PairParams*, Wvel_v wv, const Coords *c, Cloud cloud, int n, RNDunif *rnd, WallForce wa, /**/ Force *ff);
-void wall_force_apply(const PairParams*, Wvel_v wv, const Coords *c, Cloud cloud, int n, RNDunif *rnd, WallForce wa, /**/ Force *ff);
+void wall_force_apply(const PairParams*, Wvel_v wv, const Coords *c, const PaArray *parray, int n, RNDunif *rnd, WallForce wa, /**/ Force *ff);

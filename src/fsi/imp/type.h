@@ -1,7 +1,7 @@
 struct RNDunif;
 
 struct SolventWrap {
-    Cloud c;
+    PaArray pa;
     Force *ff;
     int n; 
     int *starts;

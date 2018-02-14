@@ -1,3 +1,8 @@
+template <typename Parray>
+static __device__ void fetch_p(Parray parray, int i, /**/ PairPa *p) {
+    parray_get(parray, i, /**/ p);
+}
+
 template<typename Par>
 static __device__ void fetch_wall(Wvel_v wv, Coords_v c, Texo<float4> pp, int i, /**/ PairPa *a) {
     float3 r, v; /* wall velocity */
@@ -35,8 +40,8 @@ static __device__ void force0(Par params, Wvel_v wv, Coords_v c, PairPa a, int a
     atomicAdd(ff + 3 * aid + 2, zforce);
 }
 
-template<typename Par>
-__global__ void force(Par params, Wvel_v wv, Coords_v c, Cloud cloud, int np, float seed, WallForce wa, /**/ float *ff) {
+template<typename Par, typename Parray>
+__global__ void force(Par params, Wvel_v wv, Coords_v c, Parray parray, int np, float seed, WallForce wa, /**/ float *ff) {
     PairPa a; /* bulk particle */
     int gid, aid, zplane;
     gid = threadIdx.x + blockDim.x * blockIdx.x;
@@ -44,7 +49,7 @@ __global__ void force(Par params, Wvel_v wv, Coords_v c, Cloud cloud, int np, fl
     zplane = gid % 3;
 
     if (aid >= np) return;
-    fetch_p(params, cloud, aid, /**/ &a);
+    fetch_p(parray, aid, /**/ &a);
 
     force0(params, wv, c, a, aid, zplane, seed, wa, /**/ ff);
 }

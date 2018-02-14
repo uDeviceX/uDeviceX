@@ -8,7 +8,7 @@ void forces_fsi(ObjInter *oi, int nw, PaWrap *pw, FoWrap *fw) {
 }
 
 void forces_objects(Sim *sim) {
-    Cloud cloud;
+    PaArray parray;
     Opt opt = sim->opt;
     PaWrap pw[MAX_OBJ_TYPES];
     FoWrap fw[MAX_OBJ_TYPES];
@@ -43,11 +43,12 @@ void forces_objects(Sim *sim) {
 
     /* bulk interactions */
     
-    ini_cloud(f->q.pp, &cloud);
-    if (multi_solvent) ini_cloud_color(f->q.cc, &cloud);
+    parray_push_pp(f->q.pp, &parray);
+    if (multi_solvent)
+        parray_push_cc(f->q.cc, &parray);
 
     if (opt.fsi)
-        fsi_bind_solvent(cloud, f->ff, f->q.n, f->q.cells.starts, /**/ oi->fsi);
+        fsi_bind_solvent(parray, f->ff, f->q.n, f->q.cells.starts, /**/ oi->fsi);
 
     if (opt.cnt) forces_cnt(oi, nw, pw, fw);
     if (opt.fsi) forces_fsi(oi, nw, pw, fw);

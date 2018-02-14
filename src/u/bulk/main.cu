@@ -24,6 +24,7 @@
 #include "coords/imp.h"
 
 #include "cloud/imp.h"
+#include "parray/imp.h"
 #include "flu/type.h"
 #include "fluforces/imp.h"
 
@@ -84,7 +85,7 @@ static void set_params(const Config *cfg, float dt, PairParams *p) {
 int main(int argc, char **argv) {
     Config *cfg;
     const char *fin, *fout;
-    Cloud cloud;
+    PaArray parray;
     Coords *coords;
     int maxp;
     int3 L;
@@ -122,9 +123,9 @@ int main(int argc, char **argv) {
 
     UC(fluforces_bulk_ini(L, maxp, &bulkforces));
 
-    UC(ini_cloud(pp, &cloud));
+    parray_push_pp(pp, &parray);
 
-    UC(fluforces_bulk_prepare(n, &cloud, /**/ bulkforces));
+    UC(fluforces_bulk_prepare(n, &parray, /**/ bulkforces));
     UC(fluforces_bulk_apply(params, n, bulkforces, clist.starts, clist.counts, /**/ ff));
 
     // particles are reordered because of clists
