@@ -21,6 +21,7 @@
 #include "lib/imp.h"
 
 int main(int argc, char **argv) {
+    int seed;
     Config *cfg;
     Coords *coords;
     BForce *bforce;
@@ -42,6 +43,7 @@ int main(int argc, char **argv) {
     UC(conf_read(argc, argv, cfg));
     UC(conf_lookup_float(cfg, "time.dt", &dt));
     UC(conf_lookup_float(cfg, "time.end", &te));
+    UC(conf_lookup_int(cfg, "rbc.seed", &seed));
 
     UC(rbc_params_ini(&par));
     UC(rbc_params_set_conf(cfg, par));
@@ -54,7 +56,7 @@ int main(int argc, char **argv) {
     UC(scheme_move_params_ini(&moveparams));
     UC(scheme_move_params_conf(cfg, /**/moveparams));
 
-    run(cart, dt, te, coords, part_freq, bforce, moveparams, "rbc.off", "rbcs-ic.txt", par);
+    run(cart, dt, te, seed, coords, part_freq, bforce, moveparams, "rbc.off", "rbcs-ic.txt", par);
     UC(coords_fin(coords));
 
     UC(bforce_fin(bforce));
