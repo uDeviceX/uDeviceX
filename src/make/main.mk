@@ -11,6 +11,7 @@
 # X: c++ compile
 # L: link
 
+BIN       = $(HOME)/bin
 NVCC     ?= nvcc
 ARCH     ?= -arch compute_35 -code sm_35
 OPT	 ?= -O3 -g
@@ -39,5 +40,6 @@ test:
 	@echo log to atest.log
 	@atest 2>&1 `find test -type f`       | tee atest.log
 
+install: $B/udx; cp $B/udx $(BIN)
 
 .PHONY: clean test all D
