@@ -100,7 +100,7 @@ void read_rnd(/**/ float *prnd) {
 int main(int argc, char **argv) {
     Pa a, b;
     int ka, kb, dims[3];
-    float rnd, dt;
+    float rnd, dt, kBT;
     PairParams *par;
     Config *cfg;
 
@@ -114,6 +114,7 @@ int main(int argc, char **argv) {
     
     UC(pair_ini(&par));
     UC(pair_set_conf(cfg, "flu", /**/ par));
+    conf_lookup_float(cfg, "glb.kBT", &kBT);
     UC(pair_compute_dpd_sigma(kBT, dt, /**/ par));
     
     read_rnd(&rnd);
