@@ -1,3 +1,5 @@
+#!/bin/sh
+
 . u.cp.util
 
 prog=u.test.hdr0

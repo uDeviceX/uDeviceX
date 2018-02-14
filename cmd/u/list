@@ -1,3 +1,5 @@
+#!/bin/sh
+
 usg () {
     msg 'u.u.list [SOURCE DIR]'
     msg 'returns a list of all units in [SORCE DIR]'
