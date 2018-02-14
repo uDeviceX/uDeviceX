@@ -5,11 +5,11 @@ static void zip(const int n, const float *pp, /**/ float4 *zpp) {
 }
 
 
-void fluforces_bulk_prepare(int n, const Cloud *c, /**/ FluForcesBulk *b) {
+void fluforces_bulk_prepare(int n, const PaArray *a, /**/ FluForcesBulk *b) {
     if (n == 0) return;
-    zip(n, c->pp, /**/ b->zipped_pp);
-    if (multi_solvent)
-        b->colors = c->cc;
+    zip(n, a->pp, /**/ b->zipped_pp);
+    if (a->colors)
+        b->colors = a->cc;
     else
         b->colors = NULL;
 }

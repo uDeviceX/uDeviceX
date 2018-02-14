@@ -33,6 +33,7 @@
 
 #include "pair/imp.h"
 #include "cloud/imp.h"
+#include "parray/imp.h"
 #include "partlist/type.h"
 
 #include "io/fields_grid/imp.h"

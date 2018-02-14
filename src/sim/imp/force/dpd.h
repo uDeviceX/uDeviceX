@@ -2,6 +2,7 @@ void forces_dpd(Flu *f) {
     const int *count = f->q.cells.counts;
     const int *start = f->q.cells.starts;
     Cloud cloud;
+    PaArray parray;
     flu::LFrag26 lfrags;
     flu::RFrag26 rfrags;
 
@@ -11,6 +12,10 @@ void forces_dpd(Flu *f) {
     if (multi_solvent)
         UC(ini_cloud_color(f->q.cc, /**/ &cloud));
 
+    parray_push_pp(f->q.pp, /**/ &parray);
+    if (multi_solvent)
+        parray_push_cc(f->q.cc, /**/ &parray);
+
     UC(eflu_compute_map(start, count, /**/ e->p));
     UC(eflu_download_cell_starts(/**/ e->p));
     UC(eflu_pack(&cloud, /**/ e->p));
@@ -19,7 +24,7 @@ void forces_dpd(Flu *f) {
     UC(eflu_post_recv(e->c, e->u));
     UC(eflu_post_send(e->p, e->c));
     
-    UC(fluforces_bulk_prepare(f->q.n, &cloud, /**/ f->bulk));
+    UC(fluforces_bulk_prepare(f->q.n, &parray, /**/ f->bulk));
     UC(fluforces_bulk_apply(f->params, f->q.n, f->bulk, start, count, /**/ f->ff));
 
     dSync();

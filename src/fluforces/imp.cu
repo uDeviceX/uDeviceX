@@ -17,6 +17,7 @@
 #include "inc/type.h"
 #include "inc/dev.h"
 #include "cloud/imp.h"
+#include "parray/imp.h"
 
 #include "d/api.h"
 #include "utils/kl.h"
