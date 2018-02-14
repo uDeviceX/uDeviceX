@@ -151,20 +151,17 @@ static void ini_flu(MPI_Comm cart, int maxp, int3 L, /**/ Flu *f) {
 }
 
 static void ini_rbc(const Config *cfg, MPI_Comm cart, int3 L, /**/ Rbc *r) {
-    int nv;
+    int seed, nv;
     const char *directory = "r";
     UC(off_read("rbc.off", &r->cell));
+    UC(conf_lookup_int(cfg, "rbc.seed", &seed));
     UC(mesh_write_ini_off(r->cell, directory, /**/ &r->mesh_write));
-
     nv = off_get_nv(r->cell);
-
     Dalloc(&r->ff, MAX_CELL_NUM * nv);
     UC(rbc_ini(r->cell, &r->q));
-
     UC(ini_rbc_distr(nv, cart, L, /**/ &r->d));
     if (rbc_com_dumps) UC(rbc_com_ini(nv, MAX_CELL_NUM, /**/ &r->com));
     if (RBC_STRETCH)   UC(rbc_stretch_ini("rbc.stretch", nv, /**/ &r->stretch));
-
     UC(rbc_params_ini(&r->params));
     UC(rbc_params_set_conf(cfg, r->params));
 }
