@@ -60,28 +60,37 @@ static void run1(MPI_Comm cart, float dt, float te, const Coords *coords, int pa
     Dfree(f);
 }
 
-static void run2(MPI_Comm cart, float dt, float te, const Coords *coords, float part_freq, const BForce *bforce, MoveParams *moveparams, OffRead *off, const char *ic, const RbcParams *par, MeshWrite *mesh_write, RbcQuants *q) {
+static void run2(MPI_Comm cart, float dt, float te, int seed,
+                 const Coords *coords, float part_freq,
+                 const BForce *bforce, MoveParams *moveparams,
+                 OffRead *off, const char *ic, const RbcParams *par, MeshWrite *mesh_write,
+                 RbcQuants *q) {
+    int nv;
     RbcStretch *stretch;
     RbcForce *t;
+    nv = off_get_nv(off);
     rbc_gen_quants(coords, cart, off, ic, /**/ q);
     UC(stretch::ini("rbc.stretch", q->nv, /**/ &stretch));
-    rbc_force_ini(q, &t);
+    rbc_force_ini(nv, seed, &t);
     run1(cart, dt, te, coords, part_freq, bforce, moveparams, q, t, par, mesh_write, stretch);
     stretch::fin(stretch);
     rbc_force_fin(t);
 }
 
-void run(MPI_Comm cart, float dt, float te, const Coords *coords, float part_freq, const BForce *bforce, MoveParams * moveparams, const char *cell, const char *ic, const RbcParams *par) {
+void run(MPI_Comm cart, float dt, float te, int seed,
+         const Coords *coords, float part_freq, const BForce *bforce, MoveParams * moveparams,
+         const char *cell, const char *ic, const RbcParams *par) {
     const char *directory = "r";
     RbcQuants q;
     OffRead *off;
     MeshWrite *mesh_write;
-    
+
     UC(off_read(cell, /**/ &off));
     UC(mesh_write_ini_off(off, directory, /**/ &mesh_write));
 
     rbc_ini(off, &q);
-    run2(cart, dt, te, coords, part_freq, bforce, moveparams, off, ic, par, mesh_write, &q);
+
+    run2(cart, dt, te, seed, coords, part_freq, bforce, moveparams, off, ic, par, mesh_write, &q);
     rbc_fin(&q);
 
     UC(mesh_write_fin(mesh_write));

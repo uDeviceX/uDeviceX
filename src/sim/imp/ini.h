@@ -261,7 +261,7 @@ static void ini_pair_params(const Config *cfg, float kBT0, float dt, Sim *s) {
     if (s->opt.fsi) UC(set_params(cfg, kBT0, dt, "fsi", s->objinter.fsiparams));
 }
 
-void sim_ini(Config *cfg, MPI_Comm cart,  Time* time, /**/ Sim **sim) {
+void sim_ini(Config *cfg, MPI_Comm cart,  Time *time, /**/ Sim **sim) {
     float dt;
     Sim *s;
     int maxp;
