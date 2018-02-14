@@ -27,4 +27,6 @@ n=`mult`
 h=`u.host`
 u.run."$h" $n $x $y $z "$@"
 
-if test $? -ne 0; then err "u.run.$h failed"; fi
+s=$?
+if test $? -ne 0; then msg "u.run.$h failed"; fi
+exit $?
