@@ -33,11 +33,9 @@
 
 #include "imp.h"
 
-namespace hforces {
-namespace dev {
+namespace fluforcesh_dev {
 #include "dev/dbg.h"
 #include "dev/map.h"
 #include "dev/main.h"
 }
 #include "imp/main.h"
-} /* namespace */ 

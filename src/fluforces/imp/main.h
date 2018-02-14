@@ -40,7 +40,7 @@ void fluforces_halo_prepare(flu::LFrag26 lfrags, flu::RFrag26 rfrags, /**/ FluFo
 
 void fluforces_halo_apply(const PairParams *par, const FluForcesHalo *h, /**/ Force *ff) {
     if (multi_solvent)
-        hforces::fhalo_color(par, h->L, h->lfrags, h->rfrags, h->rndfrags, (float*)ff);
+        fhalo_apply_color(par, h->L, h->lfrags, h->rfrags, h->rndfrags, (float*)ff);
     else
-        hforces::fhalo(par, h->L, h->lfrags, h->rfrags, h->rndfrags, (float*)ff);
+        fhalo_apply(par, h->L, h->lfrags, h->rfrags, h->rndfrags, (float*)ff);
 }
