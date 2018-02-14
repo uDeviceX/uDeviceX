@@ -54,6 +54,7 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/meshbb                && \
     d $B/mpi                   && \
     d $B/pair                  && \
+    d $B/parray                && \
     d $B/parser                && \
     d $B/rbc                   && \
     d $B/rbc/adj               && \
