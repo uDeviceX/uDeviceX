@@ -21,17 +21,18 @@ void clear_forces(Force* ff, int n) {
 }
 
 void forces_wall(Wall *w, Sim *s) {
-    Cloud co, cs, cr;
+    PaArray po, ps, pr;
     Flu *flu = &s->flu;
     Rbc *rbc = &s->rbc;
     Rig *rig = &s->rig;
     PairParams *par = flu->params;
-    ini_cloud(flu->q.pp, &co);
-    ini_cloud(rig->q.pp, &cs);
-    ini_cloud(rbc->q.pp, &cr);
-    if (multi_solvent) ini_cloud_color(flu->q.cc, &co);
+    parray_push_pp(flu->q.pp, &po);
+    parray_push_pp(rig->q.pp, &ps);
+    parray_push_pp(rbc->q.pp, &pr);
+    if (multi_solvent)
+        parray_push_cc(flu->q.cc, &po);
     
-    if (flu->q.n)               wall_force_color(par, w->vview, s->coords, w->sdf, &w->q, w->t, flu->q.n, co, /**/ flu->ff);
-    if (s->solids0 && rig->q.n) wall_force      (par, w->vview, s->coords, w->sdf, &w->q, w->t, rig->q.n, cs, /**/ rig->ff);
-    if (rbcs && rbc->q.n)       wall_force      (par, w->vview, s->coords, w->sdf, &w->q, w->t, rbc->q.n, cr, /**/ rbc->ff);
+    if (flu->q.n)               wall_force(par, w->vview, s->coords, w->sdf, &w->q, w->t, flu->q.n, &po, /**/ flu->ff);
+    if (s->solids0 && rig->q.n) wall_force(par, w->vview, s->coords, w->sdf, &w->q, w->t, rig->q.n, &ps, /**/ rig->ff);
+    if (rbcs && rbc->q.n)       wall_force(par, w->vview, s->coords, w->sdf, &w->q, w->t, rbc->q.n, &pr, /**/ rbc->ff);
 }

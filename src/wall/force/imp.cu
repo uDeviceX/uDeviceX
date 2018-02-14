@@ -41,8 +41,9 @@
 #include "pair/dev.h"
 #include "pair/imp.h"
 
-#include "cloud/imp.h"
-#include "cloud/dev.h"
+#include "parray/type.h"
+#include "parray/imp.h"
+#include "parray/dev.h"
 
 #include "utils/kl.h"
 #include "imp.h"
@@ -53,7 +54,6 @@ namespace map {
 #include "dev/map/ini.h"
 #include "dev/map/use.h"
 }
-#include "dev/fetch.h"
 #include "dev/main.h"
 }
 
