@@ -42,6 +42,10 @@ static void get_view_rfrag(const flu::RFrag26 f, RFrag_v26<Parray> *v) {
     }
 }
 
+static bool is_colored(const flu::RFrag26 f) {
+    return parray_is_colored(&(f.d[0].parray));
+}
+
 static int pad(int n) {
     return PADDING * ceiln(n, PADDING);    
 }
@@ -64,7 +68,7 @@ static void interactions(Par params, int3 L, const LFrag_v26<Parray> lfrags, con
     KL(fluforcesh_dev::force, (k_cnf(n)), (params, L, start, lfrags, rfrags, rrnd, /**/ ff));
 }
 
-void fhalo_apply(const PairParams *params, int3 L, const flu::LFrag26 lfrags, const flu::RFrag26 rfrags, const flu::RndFrag26 rrnd, /**/ float *ff) {
+static void apply_grey(const PairParams *params, int3 L, const flu::LFrag26 lfrags, const flu::RFrag26 rfrags, const flu::RndFrag26 rrnd, /**/ float *ff) {
     PairDPD pv;
     LFrag_v26<PaArray_v> lfragsv;
     RFrag_v26<PaArray_v> rfragsv;
@@ -76,7 +80,7 @@ void fhalo_apply(const PairParams *params, int3 L, const flu::LFrag26 lfrags, co
     interactions(pv, L, lfragsv, rfragsv, rrnd, /**/ ff);
 }
 
-void fhalo_apply_color(const PairParams *params, int3 L, const flu::LFrag26 lfrags, const flu::RFrag26 rfrags, const flu::RndFrag26 rrnd, /**/ float *ff) {
+static void apply_color(const PairParams *params, int3 L, const flu::LFrag26 lfrags, const flu::RFrag26 rfrags, const flu::RndFrag26 rrnd, /**/ float *ff) {
     PairDPDC pv;
     LFrag_v26<PaCArray_v> lfragsv;
     RFrag_v26<PaCArray_v> rfragsv;
@@ -86,4 +90,11 @@ void fhalo_apply_color(const PairParams *params, int3 L, const flu::LFrag26 lfra
     get_view_rfrag(rfrags, &rfragsv);
     
     interactions(pv, L, lfragsv, rfragsv, rrnd, /**/ ff);
+}
+
+void fhalo_apply(const PairParams *params, int3 L, const flu::LFrag26 lfrags, const flu::RFrag26 rfrags, const flu::RndFrag26 rrnd, /**/ float *ff) {
+    if (is_colored(rfrags))
+        apply_color(params, L, lfrags, rfrags, rrnd, /**/ ff);
+    else
+        apply_grey(params, L, lfrags, rfrags, rrnd, /**/ ff);
 }
