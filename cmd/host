@@ -2,7 +2,7 @@
 
 # udx commands
 
-msg () { printf '%s\n' "$@" | cat 1>&2; }
+msg () { printf >&2 '%s\n' "$@"; }
 if test $# != 0
 then msg 'returns udx hostname'
      msg '   if UHOST is set it is returned'
@@ -17,11 +17,10 @@ fi
 dh=panda # default host
 h=`hostname`
 case "$h" in
-    daint*)    h=daint    ;;
-    asp)       h=acer     ;;
-    acer)                 ;;
-    lo-login*) h=leonhard ;;
-    *)         h=$dh
+    daint*|nid*) h=daint    ;;
+    asp|acer)    h=acer     ;;
+    lo-login*)   h=leonhard ;;
+    *)           h=$dh
 esac
 
 printf '%s\n' "$h"
