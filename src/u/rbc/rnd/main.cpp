@@ -30,9 +30,9 @@ void main1() {
     int n;
     long seed;
     n = 10;
-    seed = ENV;
+    seed = 123;
     RbcRnd *rnd;
-    rbc_rnd_ini(&rnd, n, seed);
+    rbc_rnd_ini(n, seed, &rnd);
     main0(rnd, n);
     rbc_rnd_fin(rnd);
 }
