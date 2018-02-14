@@ -3,7 +3,7 @@ void eflu_get_local_frags(const EFluPack *p, /**/ LFrag26 *lfrags) {
     
     for (int i = 0; i < 26; ++i) {
         parray_push_pp((Particle*) p->dpp.data[i], &parraya);
-        if (multi_solvent)
+        if (p->opt.colors)
             parray_push_cc((int*) p->dcc.data[i], &parraya);
 
         lfrags->d[i] = {
@@ -29,7 +29,7 @@ void eflu_get_remote_frags(const EFluUnpack *u, /**/ RFrag26 *rfrags) {
         ycells = dy == 0 ? L.y : 1;
         zcells = dz == 0 ? L.z : 1;
         parray_push_pp((Particle*) u->dpp.data[i], &parrayb);
-        if (multi_solvent)
+        if (u->opt.colors)
             parray_push_cc((int*) u->dcc.data[i], &parrayb);
             
         rfrags->d[i] = {
