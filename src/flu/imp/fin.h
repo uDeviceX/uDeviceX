@@ -11,6 +11,6 @@ void flu_fin(FluQuants *q) {
     clist_fin_map(q->mcells);
     UC(efree(q->pp_hst));
 
-    if (global_ids)    fin_ii(q->ii, q->ii0, q->ii_hst);
-    if (multi_solvent) fin_ii(q->cc, q->cc0, q->cc_hst);
+    if (q->ids)    fin_ii(q->ii, q->ii0, q->ii_hst);
+    if (q->colors) fin_ii(q->cc, q->cc0, q->cc_hst);
 }

@@ -18,8 +18,8 @@ static int strt_ii(const Coords *coords, const char *subext, const int id, int *
 
 void flu_strt_quants(const Coords *coords, const int id, FluQuants *q) {
     q->n =             strt_pp(coords,         id, /**/ q->pp, /* w */ q->pp_hst);
-    if (global_ids)    strt_ii(coords, IDSEXT, id, /**/ q->ii, /* w */ q->ii_hst);
-    if (multi_solvent) strt_ii(coords, COLEXT, id, /**/ q->cc, /* w */ q->cc_hst);
+    if (q->ids)    strt_ii(coords, IDSEXT, id, /**/ q->ii, /* w */ q->ii_hst);
+    if (q->colors) strt_ii(coords, COLEXT, id, /**/ q->cc, /* w */ q->cc_hst);
 }
 
 static void strt_dump_pp(const Coords *coords, const int id, const int n, const Particle *dev, Particle *hst) {
@@ -34,8 +34,8 @@ static void strt_dump_ii(const Coords *coords, const char *subext, const int id,
 
 void flu_strt_dump(const Coords *coords, const int id, const FluQuants *q) {
     strt_dump_pp(coords, id, q->n, q->pp, /* w */ q->pp_hst);
-    if (global_ids)    strt_dump_ii(coords, IDSEXT, id, q->n, q->ii, /* w */ q->ii_hst);
-    if (multi_solvent) strt_dump_ii(coords, COLEXT, id, q->n, q->cc, /* w */ q->cc_hst);
+    if (q->ids)    strt_dump_ii(coords, IDSEXT, id, q->n, q->ii, /* w */ q->ii_hst);
+    if (q->colors) strt_dump_ii(coords, COLEXT, id, q->n, q->cc, /* w */ q->cc_hst);
 }
 
 #undef CODE

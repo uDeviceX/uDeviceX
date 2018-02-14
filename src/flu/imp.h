@@ -7,6 +7,8 @@ struct FluQuants {
 
     /* optional data */
 
+    bool ids, colors;
+    
     int *ii, *ii0;  /* global ids on device */
     int *ii_hst;    /* global ids on host   */
 
@@ -19,7 +21,7 @@ struct FluQuants {
 struct Coords;
 struct GenColor;
 
-void flu_ini(int3 L, int maxp, FluQuants *q);
+void flu_ini(bool colors, bool ids, int3 L, int maxp, FluQuants *q);
 void flu_fin(FluQuants *q);
 
 void flu_gen_quants(const Coords *coords, const GenColor *gc, FluQuants *q);
