@@ -6,6 +6,10 @@
   #error RBCtotArea is runtime: set rbc.totArea
 #endif
 
+#if defined(RBCtotVolume)
+  #error RBCtotVolume is runtime: set rbc.totVolume
+#endif
+
 #if defined(wall_creation)
   #error wall_creation is runtime: time.wall
 #endif
