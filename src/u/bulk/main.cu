@@ -77,6 +77,9 @@ static void build_clist() {
 }
 
 static void set_params(const Config *cfg, float dt, PairParams *p) {
+    float kBT;
+    UC(conf_lookup_float(cfg, "glb.kBT", &kBT));
+    msg_print("kBT: %g", kBT);
     UC(pair_set_conf(cfg, "flu", p));
     UC(pair_compute_dpd_sigma(kBT, dt, /**/ p));
 }

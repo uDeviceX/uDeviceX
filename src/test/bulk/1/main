@@ -3,7 +3,6 @@
 cd test/bulk/1
 S=`u.cp.s`
 u.conf "$S" u/bulk "$S/conf/default.h" <<!
-       kBT=0
        run
 !
 u.make -s -j
@@ -14,6 +13,7 @@ u.run ./udx conf.cfg "
 in  = \"pp.txt\"
 out = \"ff.txt\"
 glb = { 
+  kBT = 0.0
   L = [$X, $Y, $Z] 
 }
 "
