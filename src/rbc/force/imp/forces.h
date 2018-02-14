@@ -3,10 +3,11 @@ static void random(int n, RbcRnd *rnd, /**/ float **r) {
     else *r = NULL;
 }
 
-static void apply0(float dt, RbcParams_v parv, int nc, int nv,
-                   const Particle *pp, RbcRnd *rnd,
-                   Adj_v *adj_v, const Shape shape,
-                   float *av, /**/ Force *ff){
+static void apply(float dt, RbcParams_v parv, int nc, int nv,
+                  const Particle *pp, RbcRnd *rnd,
+                  Adj_v *adj_v, const Shape shape,
+                  float *av, /**/ Force *ff){
+    if (!d::is_device_pointer(ff))  ERR("`ff` is not a device pointer");
     float *rnd0;
     int md;
     md = RBCmd;
@@ -21,7 +22,7 @@ void rbc_force_apply(RbcForce *t, const RbcParams *par, float dt, const RbcQuant
     if (q->nc <= 0) return;
     parv = rbc_params_get_view(par);
     UC(area_volume_compute(q->area_volume, q->nc, q->pp, /**/ &av));
-    apply0(dt,
-           parv, q->nc, q->nv, q->pp, t->rnd,
-           q->adj_v, q->shape, av, /**/ ff);
+    apply(dt,
+          parv, q->nc, q->nv, q->pp, t->rnd,
+          q->adj_v, q->shape, av, /**/ ff);
 }
