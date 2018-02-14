@@ -7,7 +7,7 @@ u.cp.rbc rbc/498.off  rbc.off
 u.cp.sdf wall1/wall.dat sdf.dat
 :
 u.conf "$S" u/x "$S/conf/default.h" <<!
-   walls kBT=0
+   walls
    strt_dumps=true
    run
 !
@@ -15,6 +15,9 @@ u.conf "$S" u/x "$S/conf/default.h" <<!
 u.strtdir .
 u.make -j
 u.run ./udx conf.cfg '
+glb = { 
+  kBT = 0.0
+}
 rbc = {
      totArea = 55.553
      totVolume = 26.986

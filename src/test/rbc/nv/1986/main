@@ -13,12 +13,15 @@ echo 1 0 0 $x \
      0 0 0  1 > rbcs-ic.txt
 :
 u.conf "$S" u/x "$S/conf/default.h" <<!
-   KL_SYNC CC_SYNC kBT=0
+   KL_SYNC CC_SYNC
    rbcs
    run
 !
 u.make -j
 u.run ./udx conf.cfg "
+glb = { 
+    kBT = 0.0
+}
 rbc = {
     totArea = $area
     totVolume = $volume

@@ -2,11 +2,14 @@
 # nTEST: out.t2
 :
 u.conf conf/default.h <<!
-   OUTFLOW_CIRCLE OUTFLOW_CIRCLE_R=8 kBT=0
+   OUTFLOW_CIRCLE OUTFLOW_CIRCLE_R=8
    run
 !
 u.make -j
 u.run 2 2 1 ./udx test/openbc/out.cfg '
+glb = { 
+    kBT = 0.0
+}
 time = {
     type = "const"
     dt = 5e-4

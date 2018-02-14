@@ -8,9 +8,13 @@ x=0.75 y=3 z=9; echo $x $y $z >  rigs-ic.txt
 x=8    y=8 z=8; echo $x $y $z >> rigs-ic.txt
 :
 u.conf "$S" u/x "$S/conf/default.h" <<!
-   walls kBT=0
+   walls
    run
 !
 { make clean && u.make -j ; } > /dev/null
-u.run 2 1 1 ./udx conf.cfg
+u.run 2 1 1 ./udx conf.cfg '
+glb = {
+    kBT = 0.0
+}
+'
 cat solid_diag_0000.txt | awk '{print $2, $5, $8}' | uscale 5 > sdiag.out.txt

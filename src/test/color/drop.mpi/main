@@ -4,12 +4,15 @@ cd test/color/drop.mpi
 S=`u.cp.s`
 u.cp.sdf yplates1/yplates.dat sdf.dat
 u.conf "$S" u/x "$S/conf/default.h" <<!
-   kBT=0.00444302
    walls numberdensity=2
    run
 !
 u.make -j
-u.run 2 2 1 ./udx conf.cfg
+u.run 2 2 1 ./udx conf.cfg '
+glb = {
+    kBT = 0.00444302
+}
+'
 cm() { awk '$7 == 1 {n++; x+=$1; y+=$2; z+=$3} END {print x/n, y/n, z/n}'; }
  "$S/../tools/bop2txt2" bop/solvent-00001.bop -- bop/colors_solvent-00001.bop | \
             cm > drop.out.txt

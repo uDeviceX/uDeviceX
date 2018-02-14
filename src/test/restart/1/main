@@ -6,7 +6,7 @@ S=`u.cp.s`
 u.cp.sdf wall1/wall.dat sdf.dat
 :
 u.conf "$S" u/x "$S/conf/default.h" <<!
-   walls kBT=0
+   walls
    BASE_STRT_DUMP=\"bin.1/strt\"
    strt_dumps=true
    strt_freq=10000
@@ -30,6 +30,7 @@ time = {
     end = 0.5
 }
 glb = {
+    kBT = 0.0
     L = [16, 16, 16]
 }
 wvel = {

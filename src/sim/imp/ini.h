@@ -275,12 +275,14 @@ void sim_ini(Config *cfg, MPI_Comm cart,  Time *time, /**/ Sim **sim) {
     UC(coords_log(s->coords));
 
     s->L = subdomain(s->coords);
+    UC(conf_lookup_float(cfg, "glb.kBT", &s->kBT0));
+    
     maxp = SAFETY_FACTOR_MAXP * s->L.x * s->L.y * s->L.z * numberdensity;
     UC(time_step_ini(cfg, &s->time_step));
     dt = time_step_dt0(s->time_step);
     time_next(time, dt);
     UC(read_opt(cfg, &s->opt));
-    UC(ini_pair_params(cfg, kBT, dt, s));
+    UC(ini_pair_params(cfg, s->kBT0, dt, s));
 
     EMALLOC(3 * maxp, &s->pp_dump);
 

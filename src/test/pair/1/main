@@ -3,8 +3,11 @@ cd test/pair/1
 S=`u.cp.s`
 c=$S/conf/default.h
 u.conf $S u/pair $c <<!
-    kBT=0
     run
 !
 u.make -j
-u.run ./udx conf.cfg < $S/data/pair/rnd > pair.out.txt
+u.run ./udx conf.cfg '
+glb = { 
+    kBT = 0.0
+}
+' < $S/data/pair/rnd > pair.out.txt
