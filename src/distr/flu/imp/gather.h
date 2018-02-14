@@ -28,8 +28,8 @@ void dflu_gather(int ndead, const DFluPack *p, const DFluUnpack *u, /**/ FluQuan
     ii = q->ii; ii0 = q->ii0;
     cc = q->cc; cc0 = q->cc0;
     
-    if (global_ids)    clist_gather_ii(ii, u->iire, q->mcells, n, /**/ ii0);
-    if (multi_solvent) clist_gather_ii(cc, u->ccre, q->mcells, n, /**/ cc0);
+    if (p->opt.ids)    clist_gather_ii(ii, u->iire, q->mcells, n, /**/ ii0);
+    if (p->opt.colors) clist_gather_ii(cc, u->ccre, q->mcells, n, /**/ cc0);
 
     q->n = n;
 
@@ -38,12 +38,12 @@ void dflu_gather(int ndead, const DFluPack *p, const DFluUnpack *u, /**/ FluQuan
     q->pp = pp0;
     q->pp0 = pp;
 
-    if (global_ids) {
+    if (p->opt.ids) {
         q->ii = ii0;
         q->ii0 = ii;
     }
 
-    if (multi_solvent) {
+    if (p->opt.colors) {
         q->cc = cc0;
         q->cc0 = cc;
     }

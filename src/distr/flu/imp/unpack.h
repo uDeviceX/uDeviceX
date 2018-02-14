@@ -60,6 +60,6 @@ static void unpack_cc(/**/ DFluUnpack *u) {
 
 void dflu_unpack(/**/ DFluUnpack *u) {
     unpack_pp(/**/ u);
-    if (global_ids)    unpack_ii(/**/ u);
-    if (multi_solvent) unpack_cc(/**/ u);
+    if (u->opt.ids)    unpack_ii(/**/ u);
+    if (u->opt.colors) unpack_cc(/**/ u);
 }
