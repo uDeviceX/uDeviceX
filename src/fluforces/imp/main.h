@@ -17,13 +17,12 @@ void fluforces_bulk_prepare(int n, const PaArray *a, /**/ FluForcesBulk *b) {
 void fluforces_bulk_apply(const PairParams *par, int n, const FluForcesBulk *b, const int *start, const int *count, /**/ Force *ff) {
     BPaArray a;
     if (n == 0) return;
-    a.pp = b->zipped_pp;
-    a.cc = b->colors;
 
+    flocal_push_pp(b->zipped_pp, &a);    
     if (b->colors)
-        UC(flocal_color(par, b->L, n, a, start, b->rnd, /**/ ff));
-    else
-        UC(flocal(par, b->L, n, a, start, b->rnd, /**/ ff));
+        flocal_push_cc(b->colors, &a);
+
+    UC(flocal_apply(par, b->L, n, a, start, b->rnd, /**/ ff));
 }
 
 

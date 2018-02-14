@@ -1,39 +1,73 @@
-enum {THR=128};
-
-static void tbarray_ini(int n, BPaArray parray, TBPaArray *ta) {
-    setup0((float4*) parray.pp, 2*n, &ta->pp);
-    if (multi_solvent) setup0(   (int*) parray.cc,   n, &ta->cc);    
+void flocal_push_pp(const float4 *pp, BPaArray *a) {
+    a->pp = pp;
+    a->colors = false;
 }
 
-static void tbarray_fin(TBPaArray *ta) {
-    destroy(&ta->pp);
-    if (multi_solvent) destroy(&ta->cc);
+void flocal_push_cc(const int *cc, BPaArray *a) {
+    a->cc = cc;
+    a->colors = true;
 }
 
-template<typename Par>
-static void interactions(Par params, int3 L, int n, BPaArray parray, const int *start, RNDunif *rnd, /**/ Force *ff) {    
+static void barray_get_view(BPaArray a, BPaArray_v *v) {
+    v->pp = a.pp;
+}
+
+static void barray_get_view(BPaArray a, BPaCArray_v *v) {
+    v->pp = a.pp;
+    v->cc = a.cc;
+}
+
+static void tbarray_get_view(int n, BPaArray a, TBPaArray_v *v) {
+    setup0((float4*) a.pp, 2*n, &v->pp);
+}
+
+static void tbarray_get_view(int n, BPaArray a, TBPaCArray_v *v) {
+    setup0((float4*) a.pp, 2*n, &v->pp);
+    setup0(   (int*) a.cc,   n, &v->cc);    
+}
+
+static void tbarray_fin_view(TBPaArray_v *v) {
+    destroy(&v->pp);
+}
+
+static void tbarray_fin_view(TBPaCArray_v *v) {
+    destroy(&v->pp);
+    destroy(&v->cc);
+}
+
+template <typename Par, typename Parray>
+static void interactions(Par params, int3 L, int n, Parray parray, const int *start, RNDunif *rnd, /**/ Force *ff) {    
+    enum {THR=128};
     float seed;
-    TBPaArray ta;
     if (n <= 0) return;
     seed = rnd_get(rnd);
-
-    tbarray_ini(n, parray, &ta);
     
     KL(flocaldev::apply,
        (ceiln((n), THR), THR),
-       (params, L, n, ta, start, seed, /**/ ff));
-
-    tbarray_fin(&ta);
+       (params, L, n, parray, start, seed, /**/ ff));
 }
 
-void flocal(const PairParams *params, int3 L, int n, BPaArray parray, const int *start, RNDunif *rnd, /**/ Force *ff) {
-    PairDPD pv;
-    pair_get_view_dpd(params, &pv);
-    interactions(pv, L, n, parray, start, rnd, /**/ ff);
-}
+void flocal_apply(const PairParams *params, int3 L, int n, BPaArray parray, const int *start, RNDunif *rnd, /**/ Force *ff) {
 
-void flocal_color(const PairParams *params, int3 L, int n, BPaArray parray, const int *start, RNDunif *rnd, /**/ Force *ff) {
-    PairDPDC pv;
-    pair_get_view_dpd_color(params, &pv);
-    interactions(pv, L, n, parray, start, rnd, /**/ ff);
+    if (parray.colors) {
+        PairDPDC pv;
+        TBPaCArray_v parray_v;
+        
+        pair_get_view_dpd_color(params, &pv);
+        tbarray_get_view(n, parray, &parray_v);
+        
+        interactions(pv, L, n, parray_v, start, rnd, /**/ ff);
+
+        tbarray_fin_view(&parray_v);
+    }
+    else {
+        PairDPD pv;
+        TBPaArray_v parray_v;
+        pair_get_view_dpd(params, &pv);
+        tbarray_get_view(n, parray, &parray_v);
+        
+        interactions(pv, L, n, parray_v, start, rnd, /**/ ff);
+
+        tbarray_fin_view(&parray_v);
+    }
 }

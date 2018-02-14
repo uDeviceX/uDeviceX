@@ -28,6 +28,7 @@
 #include "imp/type.h"
 
 namespace flocaldev {
+#include "dev/fetch.h"
 #include "dev/main.h"
 }
 
