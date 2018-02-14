@@ -49,8 +49,8 @@ static __device__ bool valid_cid(int3 L, int3 c) {
         valid_c(c.z, L.z);    
 }
 
-template<typename Par, typename CL>
-static __device__ void loop_pp(Par params, int ia, PairPa pa, CL c, int start, int end, float seed, /**/ float fa[3], Force *ff) {
+template<typename Par, typename Parray>
+static __device__ void loop_pp(Par params, int ia, PairPa pa, Parray parray, int start, int end, float seed, /**/ float fa[3], Force *ff) {
     enum {X, Y, Z};
     int ib;
     PairPa pb;
@@ -60,7 +60,7 @@ static __device__ void loop_pp(Par params, int ia, PairPa pa, CL c, int start, i
     for (ib = start; ib < end; ++ib) {
         if (ib >= ia) continue;
         
-        fetch(c, ib, &pb);
+        fetch(parray, ib, &pb);
 
         if (!cutoff_range(pa, pb)) continue;
         
