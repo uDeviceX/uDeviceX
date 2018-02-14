@@ -8,7 +8,7 @@ void fsi_fin(Fsi *fsi);
 // end::mem[]
 
 // tag::int[]
-void fsi_bind_solvent(Cloud c, Force *ff, int n, int *starts, /**/ Fsi *fsi); // <1>
-void fsi_bulk(const PairParams*, Fsi *fsi, int nw, PaWrap *pw, FoWrap *fw);                      // <2>
-void fsi_halo(const PairParams*, Fsi *fsi, Pap26 PP, Fop26 FF, int counts[26]);                  // <3>
+void fsi_bind_solvent(PaArray pa, Force *ff, int n, int *starts, /**/ Fsi *fsi); // <1>
+void fsi_bulk(const PairParams*, Fsi *fsi, int nw, PaWrap *pw, FoWrap *fw);      // <2>
+void fsi_halo(const PairParams*, Fsi *fsi, Pap26 PP, Fop26 FF, int counts[26]);  // <3>
 // end::int[]
