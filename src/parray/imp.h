@@ -1,12 +1,13 @@
-struct PaArray;
+struct PaArray {
+    bool colors;
+    const float *pp;
+    const int *cc;
+};
 
 struct PaArray_v;
 struct PaCArray_v;
 
 struct Particle;
-
-void parray_ini(PaArray **);
-void parray_fin(PaArray *);
 
 void parray_push(const Particle *pp, PaArray *a);
 void parray_push_color(const Particle *pp, const int *cc, PaArray *a);
