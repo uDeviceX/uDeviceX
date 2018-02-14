@@ -6,9 +6,9 @@ static void set_params(const Config *cfg, float kBT0, float dt, const char *name
 static void ini_flu_exch(MPI_Comm comm, int3 L, /**/ FluExch *e) {
     int maxd = HSAFETY_FACTOR * numberdensity;
 
-    UC(eflu_pack_ini(L, maxd, /**/ &e->p));
-    UC(eflu_comm_ini(comm, /**/ &e->c));
-    UC(eflu_unpack_ini(L, maxd, /**/ &e->u));
+    UC(eflu_pack_ini(multi_solvent, L, maxd, /**/ &e->p));
+    UC(eflu_comm_ini(multi_solvent, comm, /**/ &e->c));
+    UC(eflu_unpack_ini(multi_solvent, L, maxd, /**/ &e->u));
 }
 
 static void ini_obj_exch(MPI_Comm comm, int3 L, /**/ ObjExch *e) {

@@ -9,8 +9,8 @@
   bii: indices of the particles in bulk coordinates
 */
 
-struct Opt opt {
-    bool colors, ids;
+struct Opt {
+    bool colors;
 };
 
 struct EFluPack {

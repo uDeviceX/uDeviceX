@@ -1,4 +1,4 @@
-void eflu_pack_ini(int3 L, int maxd, EFluPack **pack) {
+void eflu_pack_ini(bool colors, int3 L, int maxd, EFluPack **pack) {
     int i, nc, cap[NBAGS], ncs[NBAGS];
     size_t sz;
     EFluPack *p;
@@ -24,7 +24,7 @@ void eflu_pack_ini(int3 L, int maxd, EFluPack **pack) {
     ncs[BULK] = 0;
     
     UC(comm_bags_ini(PINNED_DEV, NONE, sizeof(Particle), cap, /**/ &p->hpp, &p->dpp));
-    if (multi_solvent)
+    if (colors)
         UC(comm_bags_ini(PINNED_DEV, NONE,  sizeof(int), cap, /**/ &p->hcc, &p->dcc));
 
     UC(comm_bags_ini(PINNED_HST, NONE, sizeof(int), ncs, /**/ &p->hfss, NULL));
@@ -33,20 +33,24 @@ void eflu_pack_ini(int3 L, int maxd, EFluPack **pack) {
     
     sz = 26 * sizeof(int);
     CC(d::Malloc((void**) &p->counts_dev, sz));
+
+    p->opt.colors = colors;
 }
 
-void eflu_comm_ini(MPI_Comm cart, /**/ EFluComm **com) {
+void eflu_comm_ini(bool colors, MPI_Comm cart, /**/ EFluComm **com) {
     EFluComm *c;
     UC(emalloc(sizeof(EFluComm), (void**) com));
     c = *com;
     
     UC(comm_ini(cart, /**/ &c->pp));
     UC(comm_ini(cart, /**/ &c->fss));
-    if (multi_solvent)
+    if (colors)
         UC(comm_ini(cart, /**/ &c->cc));
+
+    c->opt.colors = colors;
 }
 
-void eflu_unpack_ini(int3 L, int maxd, EFluUnpack **unpack) {
+void eflu_unpack_ini(bool colors, int3 L, int maxd, EFluUnpack **unpack) {
     int i, cap[NBAGS], ncs[NBAGS];
     EFluUnpack *u;
 
@@ -62,9 +66,11 @@ void eflu_unpack_ini(int3 L, int maxd, EFluUnpack **unpack) {
     ncs[BULK] = 0;
     
     UC(comm_bags_ini(PINNED_DEV, NONE, sizeof(Particle), cap, /**/ &u->hpp, &u->dpp));
-    if (multi_solvent)
+    if (colors)
         UC(comm_bags_ini(PINNED_DEV, NONE,  sizeof(int), cap, /**/ &u->hcc, &u->dcc));
 
     UC(comm_bags_ini(PINNED_DEV, NONE, sizeof(int), ncs, /**/ &u->hfss, &u->dfss));
+
+    u->opt.colors = colors;
 }
 
