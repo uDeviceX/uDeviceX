@@ -153,15 +153,6 @@ body.toc2 {
     padding-left:1em
 }
 
-.imageblock,.literalblock,.listingblock,.stemblock {
-    margin-bottom:1.25em
-}
-
 .literalblock pre, .listingblock pre, listingblock .pygments, .listingblock .pygments code {
     background:#f7f7f8 !important
 }
-
-ol {
-    margin-left:1.75em
-}
-
