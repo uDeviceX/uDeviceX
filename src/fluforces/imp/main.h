@@ -1,13 +1,13 @@
-static void zip(const int n, const float *pp, /**/ float4 *zipped_pp, ushort4 *zipped_rr) {
+static void zip(const int n, const float *pp, /**/ float4 *zpp) {
     static_assert(sizeof(Particle) == 6 * sizeof(float),
                   "sizeof(Particle) != 6 * sizeof(float)");
-    KL(dev::zip, (k_cnf(n)), (n, pp, zipped_pp, zipped_rr));
+    KL(dev::zip, (k_cnf(n)), (n, pp, zpp));
 }
 
 
 void fluforces_bulk_prepare(int n, const Cloud *c, /**/ FluForcesBulk *b) {
     if (n == 0) return;
-    zip(n, c->pp, /**/ b->zipped_pp, b->zipped_rr);
+    zip(n, c->pp, /**/ b->zipped_pp);
     if (multi_solvent)
         b->colors = c->cc;
     else
