@@ -9,14 +9,12 @@ u.make -j
 u.run ./udx test/openbc/out.cfg '
 glb = { 
     kBT = 0.0
+    L = [16, 16, 16]
 }
 time = {
     type = "const"
     dt = 5e-4
     end = 2.01
-}
-glb = {
-    L = [16, 16, 16]
 }
 dump = {
     field = true
