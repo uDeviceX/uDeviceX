@@ -1,7 +1,5 @@
 __global__ void zip(int  n, const float *pp, /**/ float4 *zpp) {
     enum {X, Y, Z};
-    static_assert(sizeof(Particle) == 6 * sizeof(float),
-                  "sizeof(Particle) != 6 * sizeof(float)");
     int i;
     const float *r, *v;
     float x, y, z;
