@@ -69,7 +69,7 @@ void inflow_fin(Inflow *i) {
     UC(efree(i));
 }
 
-static void create_solvent(float kBT0, float dt, Inflow *i, int *n, SolventWrap wrap) {
+static void create_solvent(float kBT, float dt, Inflow *i, int *n, SolventWrap wrap) {
     int2 nc;
     Desc *d;
     int nctot;
@@ -84,12 +84,12 @@ static void create_solvent(float kBT0, float dt, Inflow *i, int *n, SolventWrap 
     case TYPE_PLATE:
         KL(dev::cumulative_flux, (k_cnf(nctot)), (dt, i->p.plate, nc, d->uu, /**/ d->cumflux));
         KL(dev::create_particles, (k_cnf(nctot)),
-           (kBT0, i->p.plate, nc, d->uu, /*io*/ d->rnds, d->cumflux, /**/ d->ndev, wrap));
+           (kBT, i->p.plate, nc, d->uu, /*io*/ d->rnds, d->cumflux, /**/ d->ndev, wrap));
         break;
     case TYPE_CIRCLE:
         KL(dev::cumulative_flux, (k_cnf(nctot)), (dt, i->p.circle, nc, d->uu, /**/ d->cumflux));
         KL(dev::create_particles, (k_cnf(nctot)),
-           (kBT0, i->p.circle, nc, d->uu, /*io*/ d->rnds, d->cumflux, /**/ d->ndev, wrap));
+           (kBT, i->p.circle, nc, d->uu, /*io*/ d->rnds, d->cumflux, /**/ d->ndev, wrap));
         break;
     case TYPE_NONE:
         break;
@@ -102,7 +102,7 @@ static void create_solvent(float kBT0, float dt, Inflow *i, int *n, SolventWrap 
     dSync(); // wait for n
 }
 
-void inflow_create_pp(float kBT0, float dt, Inflow *i, int *n, Particle *pp) {
+void inflow_create_pp(float kBT, float dt, Inflow *i, int *n, Particle *pp) {
     SolventWrap wrap;
 
     wrap.pp = pp;
@@ -110,15 +110,15 @@ void inflow_create_pp(float kBT0, float dt, Inflow *i, int *n, Particle *pp) {
     wrap.multisolvent = false;
     wrap.color = -1;
 
-    create_solvent(kBT0, dt, i, n, wrap);
+    create_solvent(kBT, dt, i, n, wrap);
 }
 
-void inflow_create_pp_cc(float kBT0, float dt, int newcolor, Inflow *i, int *n, Particle *pp, int *cc) {
+void inflow_create_pp_cc(float kBT, float dt, int newcolor, Inflow *i, int *n, Particle *pp, int *cc) {
     SolventWrap wrap;
 
     wrap.pp = pp;
     wrap.cc = cc;
     wrap.multisolvent = true;
     wrap.color = newcolor;
-    create_solvent(kBT0, dt, i, n, wrap);
+    create_solvent(kBT, dt, i, n, wrap);
 }

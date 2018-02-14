@@ -21,7 +21,7 @@ void pair_set_conf(const Config *, const char *name_space, PairParams *);
 // end::cnf[]
 
 // tag::upd[]
-void pair_compute_dpd_sigma(float kBT0, float dt, PairParams *p);
+void pair_compute_dpd_sigma(float kBT, float dt, PairParams *p);
 // end::upd[]
 
 // tag::view[]

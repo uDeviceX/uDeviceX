@@ -10,7 +10,7 @@ static __device__ void edg_rnd(Shape shape, int i0, real *rnd, int  j, /**/ Rnd0
 
 static __device__ real  frnd0(real dt, RbcParams_v par, real rnd) {
     real f, g, T;
-    g = par.gammaC; T = par.kBT0;
+    g = par.gammaC; T = par.kBT;
     f  = sqrtf(2*g*T/dt)*rnd;
     return f;
 }

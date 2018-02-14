@@ -46,7 +46,7 @@ static void step(Time *time, BForce *bforce, bool wall0, int ts, int it, Sim *s)
     UC(check_vel(dt, s));
 
     if (! s->equilibrating) {
-        if (opt->inflow)     apply_inflow(s->kBT0, dt, s->inflow, /**/ flu);
+        if (opt->inflow)     apply_inflow(s->kBT, dt, s->inflow, /**/ flu);
         if (opt->outflow)    mark_outflow(flu, /**/ s->outflow);
         if (opt->denoutflow) mark_outflowden(flu, s->mapoutflow, /**/ s->denoutflow);
     }

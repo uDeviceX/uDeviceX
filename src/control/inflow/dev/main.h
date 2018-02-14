@@ -39,7 +39,7 @@ __global__ void cumulative_flux(float dt, Par params, int2 nc, const float3 *uu,
 }
 
 template <typename Par>
-static __device__ Particle create_particle(float kBT0, Par params, int2 nc,
+static __device__ Particle create_particle(float kBT, Par params, int2 nc,
                                            int xcid, int ycid, float3 u, curandState_t *rg) {
     float2 xi;
     float3 r;
@@ -49,7 +49,7 @@ static __device__ Particle create_particle(float kBT0, Par params, int2 nc,
 
     coords2pos(params, xi, /**/ &r);
 
-    sigma = sqrtf(kBT0);
+    sigma = sqrtf(kBT);
     u.x += curand_normal(rg) * sigma;
     u.y += curand_normal(rg) * sigma;
     u.z += curand_normal(rg) * sigma;
@@ -60,7 +60,7 @@ static __device__ Particle create_particle(float kBT0, Par params, int2 nc,
 }
 
 template <typename Par>
-__global__ void create_particles(float kBT0, Par params, int2 nc, const float3 *flux,
+__global__ void create_particles(float kBT, Par params, int2 nc, const float3 *flux,
                                  /*io*/ curandState_t *rnds, float *cumflux, /**/ int *n, SolventWrap wrap) {
     int i, xcid, ycid, j, nnew, strt;
     float c;
@@ -86,7 +86,7 @@ __global__ void create_particles(float kBT0, Par params, int2 nc, const float3 *
     strt = atomicAdd(n, nnew);
     
     for (j = strt; j < strt + nnew; ++j) {
-        wrap.pp[j] = create_particle(kBT0, params, nc, xcid, ycid, f, /*io*/ &rndstate);
+        wrap.pp[j] = create_particle(kBT, params, nc, xcid, ycid, f, /*io*/ &rndstate);
         if (wrap.multisolvent)
             wrap.cc[j] = wrap.color;
     }

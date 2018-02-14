@@ -47,7 +47,7 @@ RbcParams_v rbc_params_get_view(const RbcParams *p) {
     RbcParams_v v;
     v.gammaC = p->gammaC;
     v.gammaT = p->gammaT;
-    v.kBT0 = p->kBT;
+    v.kBT = p->kBT;
     v.kb = p->kb;
     v.phi = p->phi;
     v.ks = p->ks;

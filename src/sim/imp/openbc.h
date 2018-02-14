@@ -1,8 +1,8 @@
-static void apply_inflow(float kBT0, float dt, Inflow *i, Flu *f) {
+static void apply_inflow(float kBT, float dt, Inflow *i, Flu *f) {
     if (f->q.colors)
-        UC(inflow_create_pp_cc(kBT0, dt, RED_COLOR, i, &f->q.n, f->q.pp, f->q.cc));
+        UC(inflow_create_pp_cc(kBT, dt, RED_COLOR, i, &f->q.n, f->q.pp, f->q.cc));
     else
-        UC(inflow_create_pp(kBT0, dt, i, &f->q.n, f->q.pp));
+        UC(inflow_create_pp(kBT, dt, i, &f->q.n, f->q.pp));
 }
 
 static void mark_outflow(const Flu *f, Outflow *o) {

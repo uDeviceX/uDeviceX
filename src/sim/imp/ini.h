@@ -1,6 +1,6 @@
-static void set_params(const Config *cfg, float kBT0, float dt, const char *name_space, PairParams *p) {
+static void set_params(const Config *cfg, float kBT, float dt, const char *name_space, PairParams *p) {
     UC(pair_set_conf(cfg, name_space, p));
-    UC(pair_compute_dpd_sigma(kBT0, dt, /**/ p));
+    UC(pair_compute_dpd_sigma(kBT, dt, /**/ p));
 }
 
 static void ini_flu_exch(Opt opt, MPI_Comm comm, int3 L, /**/ FluExch *e) {
@@ -251,14 +251,14 @@ static void coords_log(const Coords *c) {
               xlo(c), xhi(c), ylo(c), yhi(c), zlo(c), zhi(c));
 }
 
-static void ini_pair_params(const Config *cfg, float kBT0, float dt, Sim *s) {
+static void ini_pair_params(const Config *cfg, float kBT, float dt, Sim *s) {
     UC(pair_ini(&s->flu.params));
     UC(pair_ini(&s->objinter.cntparams));
     UC(pair_ini(&s->objinter.fsiparams));
 
-    UC(set_params(cfg, kBT0, dt, "flu", s->flu.params));
-    if (s->opt.cnt) UC(set_params(cfg, kBT0, dt, "cnt", s->objinter.cntparams));
-    if (s->opt.fsi) UC(set_params(cfg, kBT0, dt, "fsi", s->objinter.fsiparams));
+    UC(set_params(cfg, kBT, dt, "flu", s->flu.params));
+    if (s->opt.cnt) UC(set_params(cfg, kBT, dt, "cnt", s->objinter.cntparams));
+    if (s->opt.fsi) UC(set_params(cfg, kBT, dt, "fsi", s->objinter.fsiparams));
 }
 
 void sim_ini(Config *cfg, MPI_Comm cart,  Time *time, /**/ Sim **sim) {
@@ -275,14 +275,14 @@ void sim_ini(Config *cfg, MPI_Comm cart,  Time *time, /**/ Sim **sim) {
     UC(coords_log(s->coords));
 
     s->L = subdomain(s->coords);
-    UC(conf_lookup_float(cfg, "glb.kBT", &s->kBT0));
+    UC(conf_lookup_float(cfg, "glb.kBT", &s->kBT));
     
     maxp = SAFETY_FACTOR_MAXP * s->L.x * s->L.y * s->L.z * numberdensity;
     UC(time_step_ini(cfg, &s->time_step));
     dt = time_step_dt0(s->time_step);
     time_next(time, dt);
     UC(read_opt(cfg, &s->opt));
-    UC(ini_pair_params(cfg, s->kBT0, dt, s));
+    UC(ini_pair_params(cfg, s->kBT, dt, s));
 
     EMALLOC(3 * maxp, &s->pp_dump);
 

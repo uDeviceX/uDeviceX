@@ -156,7 +156,7 @@ struct Sim {
     /* helpers */
     Coords *coords;
     int3 L;  /* subdomain sizes */
-    float kBT0;
+    float kBT;
     ObjInter objinter;
     BounceBack bb;
     Colorer colorer;

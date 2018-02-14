@@ -29,13 +29,13 @@ void pair_set_dpd(int ncol, const float a[], const float g[], PairParams *p) {
     memcpy(p->g, g, sz);
 }
 
-void pair_compute_dpd_sigma(float kBT0, float dt, PairParams *p) {
+void pair_compute_dpd_sigma(float kBT, float dt, PairParams *p) {
     int i, npar, ncol;
     ncol = p->ncolors;
     npar = get_npar(ncol);
 
     for (i = 0; i < npar; ++i)
-        p->s[i] = sqrt(2 * kBT0 * p->g[i] / dt);
+        p->s[i] = sqrt(2 * kBT * p->g[i] / dt);
 }
 
 void pair_get_view_dpd(const PairParams *p, PairDPD *v) {
