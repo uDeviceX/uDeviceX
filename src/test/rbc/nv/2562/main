@@ -18,8 +18,6 @@ u.make -j
 u.run ./udx conf.cfg "
 glb = { 
     kBT = 0.0
-}
-glb = {
     L = [$XS, $YS, $ZS]
 }
 rbc = {
