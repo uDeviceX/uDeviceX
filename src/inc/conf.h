@@ -77,8 +77,8 @@
 #endif
 
 /* ids for solvent */
-#ifndef global_ids
-#define global_ids (false)
+#ifdef global_ids
+#error  global_ids is runtime: flu/ids in cfg
 #endif
 
 /* ids for cell */

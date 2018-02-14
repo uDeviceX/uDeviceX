@@ -4,7 +4,6 @@
 #define        rbc_mass            0.25
 #define      solid_mass             1.0
 
-#define      global_ids           false
 #define   multi_solvent            true
 
 #define      color_freq             500
