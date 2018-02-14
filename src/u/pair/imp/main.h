@@ -98,12 +98,16 @@ void read_rnd(/**/ float *prnd) {
 }
 
 int main(int argc, char **argv) {
-    m::ini(&argc, &argv);
     Pa a, b;
-    int ka, kb;
+    int ka, kb, dims[3];
     float rnd, dt;
     PairParams *par;
     Config *cfg;
+
+    m::ini(&argc, &argv);
+    // eat args
+    m::get_dims(&argc, &argv, dims);
+
     conf_ini(&cfg);
     conf_read(argc, argv, /**/ cfg);
     conf_lookup_float(cfg, "time.dt", &dt);
