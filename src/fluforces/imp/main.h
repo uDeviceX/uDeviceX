@@ -15,15 +15,15 @@ void fluforces_bulk_prepare(int n, const PaArray *a, /**/ FluForcesBulk *b) {
 }
 
 void fluforces_bulk_apply(const PairParams *par, int n, const FluForcesBulk *b, const int *start, const int *count, /**/ Force *ff) {
-    BCloud c;
+    BPaArray a;
     if (n == 0) return;
-    c.pp = b->zipped_pp;
-    c.cc = b->colors;
+    a.pp = b->zipped_pp;
+    a.cc = b->colors;
 
     if (b->colors)
-        UC(flocal_color(par, b->L, n, c, start, b->rnd, /**/ ff));
+        UC(flocal_color(par, b->L, n, a, start, b->rnd, /**/ ff));
     else
-        UC(flocal(par, b->L, n, c, start, b->rnd, /**/ ff));
+        UC(flocal(par, b->L, n, a, start, b->rnd, /**/ ff));
 }
 
 
