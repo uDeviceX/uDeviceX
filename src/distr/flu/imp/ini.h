@@ -12,7 +12,7 @@ static void get_capacity(int3 L, int maxd, /**/ int capacity[NBAGS]) {
     capacity[frag_bulk] = 0;
 }
 
-void dflu_pack_ini(int3 L, int maxdensity, DFluPack **pack) {
+void dflu_pack_ini(bool colors, bool ids, int3 L, int maxdensity, DFluPack **pack) {
     DFluPack *p;
     int capacity[NBAGS];
 
@@ -26,17 +26,23 @@ void dflu_pack_ini(int3 L, int maxdensity, DFluPack **pack) {
     UC(dmap_ini(NFRAGS, capacity, /**/ &p->map));
     
     UC(comm_bags_ini(PINNED, NONE, sizeof(Particle), capacity, /**/ &p->hpp, &p->dpp));
-    if (global_ids)    UC(comm_bags_ini(PINNED, NONE, sizeof(int), capacity, /**/ &p->hii, &p->dii));
-    if (multi_solvent) UC(comm_bags_ini(PINNED, NONE, sizeof(int), capacity, /**/ &p->hcc, &p->dcc));
+    if (ids)    UC(comm_bags_ini(PINNED, NONE, sizeof(int), capacity, /**/ &p->hii, &p->dii));
+    if (colors) UC(comm_bags_ini(PINNED, NONE, sizeof(int), capacity, /**/ &p->hcc, &p->dcc));
+
+    p->opt.colors = colors;
+    p->opt.ids = ids;
 }
 
-void dflu_comm_ini(MPI_Comm cart, /**/ DFluComm **com) {
+void dflu_comm_ini(bool colors, bool ids, MPI_Comm cart, /**/ DFluComm **com) {
     DFluComm *c;
     UC(emalloc(sizeof(DFluComm), (void**) com));
     c = *com;
     UC(comm_ini(cart, /**/ &c->pp));
-    if (global_ids)    UC(comm_ini(cart, /**/ &c->ii));
-    if (multi_solvent) UC(comm_ini(cart, /**/ &c->cc));
+    if (ids)    UC(comm_ini(cart, /**/ &c->ii));
+    if (colors) UC(comm_ini(cart, /**/ &c->cc));
+
+    c->opt.colors = colors;
+    c->opt.ids = ids;
 }
 
 static int nhalocells(int3 L) {
@@ -47,7 +53,7 @@ static int nhalocells(int3 L) {
         2 * L.y * L.z;
 }
 
-void dflu_unpack_ini(int3 L, int maxdensity, DFluUnpack **unpack) {
+void dflu_unpack_ini(bool colors, bool ids, int3 L, int maxdensity, DFluUnpack **unpack) {
     int capacity[NBAGS];
     DFluUnpack *u;
 
@@ -64,6 +70,9 @@ void dflu_unpack_ini(int3 L, int maxdensity, DFluUnpack **unpack) {
 
     int maxparts = (int) (nhalocells(L) * maxdensity) + 1;
     CC(d::Malloc((void**) &u->ppre, maxparts * sizeof(Particle)));
-    if (global_ids)    CC(d::Malloc((void**) &u->iire, maxparts * sizeof(int)));
-    if (multi_solvent) CC(d::Malloc((void**) &u->ccre, maxparts * sizeof(int)));
+    if (ids)    CC(d::Malloc((void**) &u->iire, maxparts * sizeof(int)));
+    if (colors) CC(d::Malloc((void**) &u->ccre, maxparts * sizeof(int)));
+
+    u->opt.colors = colors;
+    u->opt.ids = ids;
 }
