@@ -16,6 +16,7 @@ void fluforces_bulk_prepare(int n, const Cloud *c, /**/ FluForcesBulk *b) {
 
 void fluforces_bulk_apply(const PairParams *par, int n, const FluForcesBulk *b, const int *start, const int *count, /**/ Force *ff) {
     BCloud c;
+    if (n == 0) return;
     c.pp = b->zipped_pp;
     c.cc = b->colors;
 
