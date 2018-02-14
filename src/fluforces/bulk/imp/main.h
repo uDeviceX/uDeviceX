@@ -47,7 +47,7 @@ static void interactions(Par params, int3 L, int n, Parray parray, const int *st
        (params, L, n, parray, start, seed, /**/ ff));
 }
 
-void flocal(const PairParams *params, int3 L, int n, BPaArray parray, const int *start, RNDunif *rnd, /**/ Force *ff) {
+void flocal_apply(const PairParams *params, int3 L, int n, BPaArray parray, const int *start, RNDunif *rnd, /**/ Force *ff) {
 
     if (parray.colors) {
         PairDPDC pv;
