@@ -6,7 +6,7 @@ usg () {
     exit
 }
 
-msg () { printf '%s\n' "$@" >&2; }
+msg () { printf >&2 '%s\n' "$@" ; }
 
 if test $# -ne 0 && test "$1" = -h; then usg; fi
 

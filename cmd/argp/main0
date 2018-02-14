@@ -1,3 +1,5 @@
+#!/bin/sh
+
 "${AWK-awk}" '
 function kvsplit(s, kv,    n, t, i) { # key-value split of a string
     n = split(s, t)
