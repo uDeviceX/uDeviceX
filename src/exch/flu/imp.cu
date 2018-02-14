@@ -20,6 +20,7 @@
 #include "comm/utils.h"
 
 #include "cloud/imp.h"
+#include "parray/imp.h"
 #include "flu/type.h"
 
 #include "imp.h"

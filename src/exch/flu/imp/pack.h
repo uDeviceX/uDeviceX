@@ -1,4 +1,4 @@
-void eflu_pack(const Cloud *cloud, /**/ EFluPack *p) {
+void eflu_pack(const PaArray *parray, /**/ EFluPack *p) {
     int nc;
     int26 cc;
     int27 ss;
@@ -14,14 +14,14 @@ void eflu_pack(const Cloud *cloud, /**/ EFluPack *p) {
     
     KL( dev::collect_particles,
         ((nc+1) / 2, 32),
-        (ss, (const Particle*) cloud->pp, p->bss, p->bcc, p->fss, p->cap, /**/ p->bii, fpp, p->counts_dev));
+        (ss, (const Particle*) parray->pp, p->bss, p->bcc, p->fss, p->cap, /**/ p->bii, fpp, p->counts_dev));
     
-    if (multi_solvent) {
+    if (parray->colors) {
         bag2Sarray(p->dcc, /**/ &fcc);
 
         KL( dev::collect_colors,
             ((nc+1) / 2, 32),
-            (ss, cloud->cc, p->bss, p->bcc, p->fss, p->cap, /**/ fcc));        
+            (ss, parray->cc, p->bss, p->bcc, p->fss, p->cap, /**/ fcc));        
     }
 }
 
