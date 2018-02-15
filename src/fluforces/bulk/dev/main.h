@@ -25,7 +25,7 @@ static __device__ bool valid_cid(int3 L, int3 c) {
         valid_c(c.z, L.z);    
 }
 
-template<typename Par, typename Parray>
+template <typename Par, typename Parray>
 static __device__ void loop_pp(Par params, int ia, PairPa pa, Parray parray, int start, int end, float seed, /**/ float fa[3], Force *ff) {
     enum {X, Y, Z};
     int ib;
@@ -85,7 +85,7 @@ __global__ void apply_simplest(Par params, int3 L, int n, Parray parray, const i
     atomicAdd(ff[ia].f + Z, fa[Z]);
 }
 
-template<typename Par, typename Parray>
+template <typename Par, typename Parray>
 __global__ void apply_smarter(Par params, int3 L, int n, Parray parray, const int *start, float seed, /**/ Force *ff) {
     enum {X, Y, Z};
     int ia, dy, dz;
@@ -131,7 +131,7 @@ __global__ void apply_smarter(Par params, int3 L, int n, Parray parray, const in
     atomicAdd(ff[ia].f + Z, fa[Z]);
 }
 
-template<typename Par, typename PArray>
+template <typename Par, typename PArray>
 __device__ void one_row(Par params, int3 L, int dz, int dy, int ia, int3 ca, PairPa pa, PArray parray, const int *start, float seed, /**/ float fa[3], Force *ff) {
     int3 cb;
     int enddx, startx, endx, cid0, bs, be;
@@ -155,7 +155,7 @@ __device__ void one_row(Par params, int3 L, int dz, int dy, int ia, int3 ca, Pai
 }
 
 // unroll loop
-template<typename Par, typename Parray>
+template <typename Par, typename Parray>
 __global__ void apply(Par params, int3 L, int n, Parray parray, const int *start, float seed, /**/ Force *ff) {
     enum {X, Y, Z};
     int ia;
