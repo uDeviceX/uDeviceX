@@ -40,6 +40,10 @@ struct PairPa {
 
 struct PairFo {
     float x, y, z;
-    /* optional fields */
+};
+
+struct PairSFo {
+    float x, y, z;
+    /* stress */
     float sxx, syy, szz, sxy, sxz, syz;
 };

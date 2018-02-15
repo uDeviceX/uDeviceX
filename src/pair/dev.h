@@ -74,6 +74,19 @@ static __device__ void magn2fo(float f0, float3 dr, /**/ PairFo *f) {
     f->z = f0 * dr.z;    
 }
 
+static __device__ void magn2fo(float f0, float3 dr, /**/ PairSFo *f) {
+    f->x = f0 * dr.x;
+    f->y = f0 * dr.y;
+    f->z = f0 * dr.z;
+
+    f->sxx = f->x * dr.x;
+    f->sxy = f->x * dr.y;
+    f->sxz = f->x * dr.z;
+    f->syy = f->y * dr.y;
+    f->syz = f->y * dr.z;
+    f->szz = f->z * dr.z;
+}
+
 // tag::int[]
 template <typename Param, typename Fo>
 static __device__ void pair_force(Param p, PairPa a, PairPa b, float rnd, /**/ Fo *f)
