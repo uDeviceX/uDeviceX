@@ -3,6 +3,7 @@ $B/clist/imp.o: $S/clist/imp.cu; $N -I$S/clist -I$S/.
 $B/coords/conf.o: $S/coords/conf.cpp; $X -I$S/coords -I$S/.
 $B/coords/imp.o: $S/coords/imp.cpp; $X -I$S/coords -I$S/.
 $B/d/api.o: $S/d/api.cu; $N -I$S/d -I$S/.
+$B/farray/imp.o: $S/farray/imp.cpp; $X -I$S/farray -I$S/.
 $B/fluforces/bulk/imp.o: $S/fluforces/bulk/imp.cu; $N -I$S/fluforces/bulk -I$S/.
 $B/fluforces/halo/imp.o: $S/fluforces/halo/imp.cu; $N -I$S/fluforces/halo -I$S/.
 $B/fluforces/imp.o: $S/fluforces/imp.cu; $N -I$S/fluforces -I$S/.

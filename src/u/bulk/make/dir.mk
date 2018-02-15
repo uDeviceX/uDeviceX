@@ -3,6 +3,7 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/clist          && \
     d $B/coords         && \
     d $B/d              && \
+    d $B/farray         && \
     d $B/fluforces      && \
     d $B/fluforces/bulk && \
     d $B/fluforces/halo && \
