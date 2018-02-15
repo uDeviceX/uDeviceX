@@ -72,7 +72,9 @@ template <typename Par, typename Parray>
 static void apply(Par params, int3 L, const LFrag_v26<Parray> lfrags, const RFrag_v26<Parray> rfrags, const flu::RndFrag26 rrnd, /**/ const FoArray *farray) {
 
     if (farray_has_stress(farray)) {
-        ERR("stress not implemented yet");
+        FoSArray_v farray_v;
+        farray_get_view(farray, &farray_v);
+        interactions(params, L, lfrags, rfrags, rrnd, /**/ farray_v);
     }
     else {
         FoArray_v farray_v;

@@ -1,5 +1,6 @@
+template <typename Farray>
 struct Fo {
-    FoArray_v farray;
+    Farray farray;
     int i;
 };
 
@@ -10,11 +11,11 @@ static __device__ float random(int aid, int bid, float seed, int mask) {
     return rnd::mean0var1uu(seed, a1, a2);
 }
 
-template<typename Par, typename Parray>
+template<typename Par, typename Parray, typename PFo>
 static __device__ void force0(Par params, const flu::RndFrag rnd, const RFrag_v<Parray> bfrag, const Map m, const PairPa a, int aid,
-                              /**/ PairFo *fa) {
+                              /**/ PFo *fa) {
     PairPa b;
-    PairFo f;
+    PFo f;
     int i;
     int bid; /* id of b */
     float rndval;
@@ -28,15 +29,15 @@ static __device__ void force0(Par params, const flu::RndFrag rnd, const RFrag_v<
     }
 }
 
-template<typename Par, typename Parray>
-static __device__ void force1(Par params, const flu::RndFrag rnd, const RFrag_v<Parray> frag, const Map m, const PairPa p, int id, Fo f) {
+template<typename Par, typename Parray, typename Farray>
+static __device__ void force1(Par params, const flu::RndFrag rnd, const RFrag_v<Parray> frag, const Map m, const PairPa p, int id, Fo<Farray> f) {
     auto fa = farray_fo0(f.farray);
     force0(params, rnd, frag, m, p, id, /**/ &fa);
     farray_atomic_add<1>(&fa, f.i, f.farray);
 }
 
-template<typename Par, typename Parray>
-static __device__ void force2(Par params, int3 L, const RFrag_v<Parray> frag, const flu::RndFrag rnd, PairPa p, int id, /**/ Fo f) {
+template<typename Par, typename Parray, typename Farray>
+static __device__ void force2(Par params, int3 L, const RFrag_v<Parray> frag, const flu::RndFrag rnd, PairPa p, int id, /**/ Fo<Farray> f) {
     Map m;    
     m = r2map(L, frag, p.x, p.y, p.z);
     p.x -= frag.dx * L.x;
@@ -46,32 +47,33 @@ static __device__ void force2(Par params, int3 L, const RFrag_v<Parray> frag, co
     force1(params, rnd, frag, m, p, id, /**/ f);
 }
 
-static __device__ Fo i2f(const int *ii, FoArray_v farray, int i) {
+template <typename Farray>
+static __device__ Fo<Farray> i2f(const int *ii, Farray farray, int i) {
     /* local id and index to force */
-    Fo f;
+    Fo<Farray> f;
     f.i = ii[i];
     f.farray = farray;
     return f;
 }
 
-template <typename Parray>
-static __device__ Fo Lfrag2f(const LFrag_v<Parray> frag, FoArray_v farray, int i) {
+template <typename Parray, typename Farray>
+static __device__ Fo<Farray> Lfrag2f(const LFrag_v<Parray> frag, Farray farray, int i) {
     return i2f(frag.ii, farray, i);
 }
 
-template<typename Par, typename Parray>
+template <typename Par, typename Parray, typename Farray>
 static __device__ void force3(Par params, int3 L, const LFrag_v<Parray> afrag, const RFrag_v<Parray> bfrag, const flu::RndFrag rnd, int i,
-                              /**/ FoArray_v farray) {
+                              /**/ Farray farray) {
     PairPa p;
-    Fo f;
+    Fo<Farray> f;
     parray_get(afrag.parray, i, &p);
     f = Lfrag2f(afrag, farray, i);
     force2(params, L, bfrag, rnd, p, i, f);
 }
 
-template<typename Par, typename Parray>
+template <typename Par, typename Parray, typename Farray>
 __global__ void apply(Par params, int3 L, const int27 start, const LFrag_v26<Parray> lfrags, const RFrag_v26<Parray> rfrags, const flu::RndFrag26 rrnd,
-                      /**/ FoArray_v farray) {
+                      /**/ Farray farray) {
     flu::RndFrag  rnd;
     RFrag_v<Parray> rfrag;
     LFrag_v<Parray> lfrag;
