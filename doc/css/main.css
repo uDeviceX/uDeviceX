@@ -52,7 +52,7 @@ h6 { font-size:.75em }
 }
 
 body.toc2 {
-    padding-left:15em;
+    padding-left:18em;
     padding-right:0
 }
 
@@ -60,13 +60,9 @@ body.toc2 {
     margin-top:0!important;
     background-color:#f8f8f7;
     position:fixed;
-    width:15em;
+    width:18em;
     left:0;
     top:0;
-    border-right:1px solid #efefed;
-    border-top-width:0!important;
-    border-bottom-width:0!important;
-    z-index:1000;
     padding:1.25em 1em;
     height:100%;
     overflow:auto
