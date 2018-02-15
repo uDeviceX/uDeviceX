@@ -1,5 +1,6 @@
 namespace dev {
 
+/* corner fragments are neighbor with 7 fragments */
 enum { MAX_DSTS = 7 };
 
 //
