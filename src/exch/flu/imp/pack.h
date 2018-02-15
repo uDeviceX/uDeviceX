@@ -12,14 +12,14 @@ void eflu_pack(const PaArray *parray, /**/ EFluPack *p) {
 
     CC(d::MemsetAsync(p->counts_dev, 0, NFRAGS * sizeof(int)));
     
-    KL( dev::collect_particles,
+    KL( eflu_dev::collect_particles,
         ((nc+1) / 2, 32),
         (ss, (const Particle*) parray->pp, p->bss, p->bcc, p->fss, p->cap, /**/ p->bii, fpp, p->counts_dev));
     
     if (parray->colors) {
         bag2Sarray(p->dcc, /**/ &fcc);
 
-        KL( dev::collect_colors,
+        KL( eflu_dev::collect_colors,
             ((nc+1) / 2, 32),
             (ss, parray->cc, p->bss, p->bcc, p->fss, p->cap, /**/ fcc));        
     }

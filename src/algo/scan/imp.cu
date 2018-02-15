@@ -12,7 +12,9 @@
 #include "d/ker.h"
 
 #include "imp.h"
+namespace scan_dev {
 #include "dev.h"
+}
 
 #if   defined(DEV_CUDA)
   #include "cuda/type.h"

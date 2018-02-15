@@ -24,7 +24,7 @@
 
 #include "imp.h"
 
-namespace dev {
+namespace eflu_dev {
 #include "dev/map.h"
 #include "dev/pack.h"
 } // dev

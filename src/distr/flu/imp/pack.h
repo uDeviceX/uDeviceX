@@ -11,7 +11,7 @@ static void pack_pp(const DMap m, const Particle *pp, /**/ dBags bags) {
     bag2Sarray(bags, &wrap);
     n = reduce(NFRAGS, m.hcounts);
 
-    KL((dev::pack<float2, S>), (k_cnf(S*n)), ((const float2*)pp, m, /**/ wrap));
+    KL((dflu_dev::pack<float2, S>), (k_cnf(S*n)), ((const float2*)pp, m, /**/ wrap));
 }
 
 static void pack_ii(const DMap m, const int *ii, /**/ dBags bags) {
@@ -21,7 +21,7 @@ static void pack_ii(const DMap m, const int *ii, /**/ dBags bags) {
     bag2Sarray(bags, &wrap);
     n = reduce(NFRAGS, m.hcounts);
 
-    KL((dev::pack<int, S>), (k_cnf(S*n)), (ii, m, /**/ wrap));
+    KL((dflu_dev::pack<int, S>), (k_cnf(S*n)), (ii, m, /**/ wrap));
 }
 
 void dflu_pack(const FluQuants *q, /**/ DFluPack *p) {

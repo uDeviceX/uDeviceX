@@ -1,9 +1,9 @@
 enum { THREADS = 128 };
 static void scan0(const unsigned char *input, int size, /**/ uint *output, /*w*/ uint *tmp) {
     int nblocks = ((size / 16) + THREADS - 1 ) / THREADS;
-    KL(dev::breduce<THREADS/32>, (nblocks, THREADS                ), ((uint4 *)input, tmp, size / 16));
-    KL(dev::bexscan<THREADS>   , (1, THREADS, nblocks*sizeof(uint)), (tmp, nblocks));
-    KL(dev::gexscan<THREADS/32>, (nblocks, THREADS                ), ((uint4 *)input, tmp, (uint4 *)output, size / 16));
+    KL(scan_dev::breduce<THREADS/32>, (nblocks, THREADS                ), ((uint4 *)input, tmp, size / 16));
+    KL(scan_dev::bexscan<THREADS>   , (1, THREADS, nblocks*sizeof(uint)), (tmp, nblocks));
+    KL(scan_dev::gexscan<THREADS/32>, (nblocks, THREADS                ), ((uint4 *)input, tmp, (uint4 *)output, size / 16));
 }
 
 void scan_apply(const int *input, int size, /**/ int *output, /*w*/ Scan *w) {
@@ -12,7 +12,7 @@ void scan_apply(const int *input, int size, /**/ int *output, /*w*/ Scan *w) {
     if (!d::is_device_pointer(input))  ERR("`input`  is not a device pointer");
     if (!d::is_device_pointer(output)) ERR("`output` is not a device pointer");
 
-    KL(dev::compress, (k_cnf(size)), (size, (const int4*) input, /**/ (uchar4 *) w->compressed));
+    KL(scan_dev::compress, (k_cnf(size)), (size, (const int4*) input, /**/ (uchar4 *) w->compressed));
     scan0(w->compressed, size, /**/ (uint*) output, /*w*/ w->tmp);
 }
 

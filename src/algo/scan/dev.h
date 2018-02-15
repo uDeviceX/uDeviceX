@@ -1,4 +1,3 @@
-namespace dev {
 __global__ void compress(const int nentries, const int4 *const in, uchar4 *const out) {
     const int gid = threadIdx.x + blockDim.x * blockIdx.x;
 
@@ -196,4 +195,3 @@ __global__ void gexscan(const uint4 *vin, unsigned int *offs, uint4 *vout, int n
         vout[i] = val[i];
     return;
 }
-} // dev

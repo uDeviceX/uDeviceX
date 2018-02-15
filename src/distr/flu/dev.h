@@ -1,5 +1,3 @@
-namespace dev {
-
 __global__ void build_map(int3 L, const PartList lp, const int n, /**/ DMap m) {
     int pid, fid;
     pid = threadIdx.x + blockIdx.x * blockDim.x;
@@ -34,5 +32,3 @@ __global__ void pack(const T *data, DMap m, /**/ Sarray<T*, 26> buf) {
     
     buf.d[fid][d] = data[s];
 }
-
-} // dev

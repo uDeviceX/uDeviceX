@@ -37,7 +37,9 @@
 
 #include "imp/type.h"
 
+namespace dflu_dev {
 #include "dev.h"
+}
 #include "imp/ini.h"
 #include "imp/fin.h"
 #include "imp/map.h"

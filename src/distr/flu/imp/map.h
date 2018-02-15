@@ -1,6 +1,6 @@
 static void build_map(int3 L, int n, const PartList lp, DMap m) {
     UC(dmap_reini(NFRAGS, /**/ m));
-    KL(dev::build_map, (k_cnf(n)), (L, lp, n, /**/ m));
+    KL(dflu_dev::build_map, (k_cnf(n)), (L, lp, n, /**/ m));
     UC(dmap_download_counts(NFRAGS, /**/ &m)); /* async */
     KL(dmap_scan<NFRAGS>, (1, 32), (/**/ m));
 }

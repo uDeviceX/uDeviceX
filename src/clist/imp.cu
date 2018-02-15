@@ -24,7 +24,7 @@
 #include "dev.h"
 
 #include "imp/type.h"
-namespace clistdev {
+namespace clist_dev {
 #include "dev/main.h"
 }
 #include "imp/ini.h"
