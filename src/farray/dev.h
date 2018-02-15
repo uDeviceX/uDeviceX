@@ -65,13 +65,13 @@ static __device__ void farray_atomic_add(const PairSFo *f, int i, /**/ FoSArray_
 
 
 
-static PairFo farray_fo0(FoArray_v) {
+static __device__ PairFo farray_fo0(FoArray_v) {
     PairFo f;
     f.x = f.y = f.z = 0;
     return f;
 }
 
-static PairSFo farray_fo0(FoSArray_v) {
+static __device__ PairSFo farray_fo0(FoSArray_v) {
     PairSFo f;
     f.x = f.y = f.z = 0;
     f.sxx = f.sxy = f.sxz = 0;

@@ -10,7 +10,7 @@ struct FoSArray_v;
 struct Force;
 
 // tag::push[]
-void farray_push_pp(Force *ff, FoArray *a);
+void farray_push_ff(Force *ff, FoArray *a);
 void farray_push_ss(float *ss, FoArray *a);
 // end::push[]
 

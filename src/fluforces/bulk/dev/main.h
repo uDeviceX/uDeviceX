@@ -26,12 +26,12 @@ static __device__ bool valid_cid(int3 L, int3 c) {
 }
 
 template <typename Par, typename Parray>
-static __device__ void loop_pp(Par params, int ia, PairPa pa, Parray parray, int start, int end, float seed, /**/ float fa[3], Force *ff) {
+static __device__ void loop_pp(Par params, int ia, PairPa pa, Parray parray, int start, int end, float seed, /**/ PairFo *fa, FoArray_v farray) {
     enum {X, Y, Z};
     int ib;
     PairPa pb;
     PairFo f;
-    float *fb, rnd;
+    float rnd;
     
     for (ib = start; ib < end; ++ib) {
         if (ib >= ia) continue;
@@ -40,18 +40,12 @@ static __device__ void loop_pp(Par params, int ia, PairPa pa, Parray parray, int
 
         if (!cutoff_range(pa, pb)) continue;
         
-        fb = ff[ib].f;
-
         rnd = rnd::mean0var1ii(seed, ia, ib);
         pair_force(params, pa, pb, rnd, /**/ &f);
-        
-        fa[X] += f.x;
-        fa[Y] += f.y;
-        fa[Z] += f.z;
 
-        atomicAdd(fb + X, -f.x);
-        atomicAdd(fb + Y, -f.y);
-        atomicAdd(fb + Z, -f.z);
+        pair_add(&f, /**/ fa);
+
+        farray_atomic_add<-1>(&f, ib, /**/ farray);
     }
 }
 
@@ -132,7 +126,7 @@ __global__ void apply_smarter(Par params, int3 L, int n, Parray parray, const in
 }
 
 template <typename Par, typename PArray>
-__device__ void one_row(Par params, int3 L, int dz, int dy, int ia, int3 ca, PairPa pa, PArray parray, const int *start, float seed, /**/ float fa[3], Force *ff) {
+__device__ void one_row(Par params, int3 L, int dz, int dy, int ia, int3 ca, PairPa pa, PArray parray, const int *start, float seed, /**/ PairFo *fa, FoArray_v farray) {
     int3 cb;
     int enddx, startx, endx, cid0, bs, be;
     cb.z = ca.z + dz;
@@ -151,17 +145,17 @@ __device__ void one_row(Par params, int3 L, int dz, int dy, int ia, int3 ca, Pai
     bs = start[cid0 + startx];
     be = start[cid0 + endx];
 
-    loop_pp(params, ia, pa, parray, bs, be, seed, /**/ fa, ff);
+    loop_pp(params, ia, pa, parray, bs, be, seed, /**/ fa, farray);
 }
 
 // unroll loop
 template <typename Par, typename Parray>
-__global__ void apply(Par params, int3 L, int n, Parray parray, const int *start, float seed, /**/ Force *ff) {
+__global__ void apply(Par params, int3 L, int n, Parray parray, const int *start, float seed, /**/ FoArray_v farray) {
     enum {X, Y, Z};
     int ia;
     int3 ca;
     PairPa pa;
-    float fa[3] = {0};
+    PairFo fa = farray_fo0(farray);
 
     ia = threadIdx.x + blockIdx.x * blockDim.x;
     if (ia >= n) return;
@@ -169,7 +163,7 @@ __global__ void apply(Par params, int3 L, int n, Parray parray, const int *start
     fetch(parray, ia, &pa);
     ca = get_cid(L, &pa);
 
-#define ONE_ROW(dz, dy) one_row (params, L, dz, dy, ia, ca, pa, parray, start, seed, /**/ fa, ff)
+#define ONE_ROW(dz, dy) one_row (params, L, dz, dy, ia, ca, pa, parray, start, seed, /**/ &fa, farray)
     
     ONE_ROW(-1, -1);
     ONE_ROW(-1,  0);
@@ -179,7 +173,5 @@ __global__ void apply(Par params, int3 L, int n, Parray parray, const int *start
 
 #undef ONE_ROW
 
-    atomicAdd(ff[ia].f + X, fa[X]);
-    atomicAdd(ff[ia].f + Y, fa[Y]);
-    atomicAdd(ff[ia].f + Z, fa[Z]);
+    farray_atomic_add<1>(&fa, ia, farray);
 }

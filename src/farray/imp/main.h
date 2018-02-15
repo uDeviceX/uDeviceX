@@ -1,4 +1,4 @@
-void farray_push_pp(Force *ff, FoArray *a) {
+void farray_push_ff(Force *ff, FoArray *a) {
     a->ff = (float*) ff;
     a->stress = false;
 }

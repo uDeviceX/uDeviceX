@@ -36,7 +36,7 @@ static void tbarray_fin_view(TBPaCArray_v *v) {
 }
 
 template <typename Par, typename Parray>
-static void interactions(Par params, int3 L, int n, Parray parray, const int *start, RNDunif *rnd, /**/ Force *ff) {    
+static void interactions(Par params, int3 L, int n, Parray parray, const int *start, RNDunif *rnd, /**/ FoArray_v farray) {    
     enum {THR=128};
     float seed;
     if (n <= 0) return;
@@ -44,29 +44,36 @@ static void interactions(Par params, int3 L, int n, Parray parray, const int *st
     
     KL(fbulk_dev::apply,
        (ceiln((n), THR), THR),
-       (params, L, n, parray, start, seed, /**/ ff));
+       (params, L, n, parray, start, seed, /**/ farray));
 }
 
 void flocal_apply(const PairParams *params, int3 L, int n, BPaArray parray, const int *start, RNDunif *rnd, /**/ Force *ff) {
-
+    /* hack for now */
+    FoArray farray;
+    farray_push_ff(ff, &farray);
+    
     if (parray.colors) {
         PairDPDC pv;
         TBPaCArray_v parray_v;
+        FoArray_v farray_v;
         
         pair_get_view_dpd_color(params, &pv);
         tbarray_get_view(n, parray, &parray_v);
+        farray_get_view(&farray, &farray_v);
         
-        interactions(pv, L, n, parray_v, start, rnd, /**/ ff);
+        interactions(pv, L, n, parray_v, start, rnd, /**/ farray_v);
 
         tbarray_fin_view(&parray_v);
     }
     else {
         PairDPD pv;
         TBPaArray_v parray_v;
+        FoArray_v farray_v;
         pair_get_view_dpd(params, &pv);
         tbarray_get_view(n, parray, &parray_v);
+        farray_get_view(&farray, &farray_v);
         
-        interactions(pv, L, n, parray_v, start, rnd, /**/ ff);
+        interactions(pv, L, n, parray_v, start, rnd, /**/ farray_v);
 
         tbarray_fin_view(&parray_v);
     }
