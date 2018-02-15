@@ -34,9 +34,12 @@ struct PairDPDLJ {
 struct PairPa {
     float x, y, z;
     float vx, vy, vz;
+    /* optional fields */
     int color;
 };
 
 struct PairFo {
     float x, y, z;
+    /* optional fields */
+    float sxx, syy, szz, sxy, sxz, syz;
 };
