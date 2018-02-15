@@ -61,11 +61,18 @@ static void get_start(const LFrag_v<Parray> lfrags[26], /**/ int start[27]) {
 
 template<typename Par, typename Parray>
 static void interactions(Par params, int3 L, const LFrag_v26<Parray> lfrags, const RFrag_v26<Parray> rfrags, const flu::RndFrag26 rrnd, /**/ float *ff) {
+    /* hack for now */
+    FoArray farray;
+    FoArray_v farray_v;
+
+    farray_push_ff((Force*)ff, &farray);
+    farray_get_view(&farray, &farray_v);
+    
     int27 start;
     int n; /* number of threads */
     get_start(lfrags.d, /**/ start.d);
     n = start.d[26];
-    KL(fhalo_dev::apply, (k_cnf(n)), (params, L, start, lfrags, rfrags, rrnd, /**/ ff));
+    KL(fhalo_dev::apply, (k_cnf(n)), (params, L, start, lfrags, rfrags, rrnd, /**/ farray_v));
 }
 
 static void apply_grey(const PairParams *params, int3 L, const flu::LFrag26 lfrags, const flu::RFrag26 rfrags, const flu::RndFrag26 rrnd, /**/ float *ff) {

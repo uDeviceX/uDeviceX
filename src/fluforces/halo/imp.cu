@@ -30,6 +30,10 @@
 #include "parray/imp.h"
 #include "parray/dev.h"
 
+#include "farray/type.h"
+#include "farray/imp.h"
+#include "farray/dev.h"
+
 #include "flu/type.h"
 
 #include "imp.h"
