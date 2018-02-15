@@ -11,14 +11,17 @@ h5 { font-size:.83em }
 h6 { font-size:.75em }
 #toctitle { font-size: 1.5em }
 
+#content {
+    min-width: 25em;
+    max-width: 60em;
+}
+
 #header .details br {
     display:none
 }
-
 #header .details br+span.author:before {
     content:"\00a0\22c5\00a0"
 }
-
 #toc ul { list-style-type:none }
 #toc a {
     text-decoration:none
