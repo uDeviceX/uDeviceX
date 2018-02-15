@@ -1,5 +1,3 @@
-namespace dev {
-
 static __device__ void pack_p(const Particle *pp, int offset, int *indices, int i, /**/ Particle *buf) {
     int dst, src;
     dst = offset + i;
@@ -46,5 +44,3 @@ __global__ void ecommon_shift_one_frag(int3 L, int n, const int fid, /**/ Partic
     fid2shift(L, fid, /**/ s);
     shift_1p(s, /**/ pp + i);
 }
-
-} // dev

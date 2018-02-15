@@ -14,12 +14,14 @@
 
 #include "comm/imp.h"
 #include "imp.h"
+namespace exch_dev {
 #include "dev.h"
+}
 
 void ecommon_pack_pp(const Particle *pp, PackHelper ph, /**/ Pap26 buf) {
-    KL(dev::ecommon_pack_pp, (14 * 16, 128), (pp, ph, /**/ buf));    
+    KL(exch_dev::ecommon_pack_pp, (14 * 16, 128), (pp, ph, /**/ buf));    
 }
 
 void ecommon_shift_one_frag(int3 L, int n, const int fid, /**/ Particle *pp) {
-    KL(dev::ecommon_shift_one_frag, (k_cnf(n)), (L, n, fid, /**/ pp));
+    KL(exch_dev::ecommon_shift_one_frag, (k_cnf(n)), (L, n, fid, /**/ pp));
 }
