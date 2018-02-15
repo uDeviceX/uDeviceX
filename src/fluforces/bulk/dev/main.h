@@ -25,12 +25,12 @@ static __device__ bool valid_cid(int3 L, int3 c) {
         valid_c(c.z, L.z);    
 }
 
-template <typename Par, typename Parray>
-static __device__ void loop_pp(Par params, int ia, PairPa pa, Parray parray, int start, int end, float seed, /**/ PairFo *fa, FoArray_v farray) {
+template <typename Par, typename Parray, typename Farray, typename Fo>
+static __device__ void loop_pp(Par params, int ia, PairPa pa, Parray parray, int start, int end, float seed, /**/ Fo *fa, Farray farray) {
     enum {X, Y, Z};
     int ib;
     PairPa pb;
-    PairFo f;
+    Fo f;
     float rnd;
     
     for (ib = start; ib < end; ++ib) {
@@ -49,9 +49,9 @@ static __device__ void loop_pp(Par params, int ia, PairPa pa, Parray parray, int
     }
 }
 
-template <typename Par, typename PArray>
+template <typename Par, typename PArray, typename Farray, typename Fo>
 static __device__ void one_row(Par params, int3 L, int dz, int dy, int ia, int3 ca, PairPa pa, PArray parray, const int *start, float seed,
-                               /**/ PairFo *fa, FoArray_v farray) {
+                               /**/ Fo *fa, Farray farray) {
     int3 cb;
     int enddx, startx, endx, cid0, bs, be;
     cb.z = ca.z + dz;
@@ -74,13 +74,13 @@ static __device__ void one_row(Par params, int3 L, int dz, int dy, int ia, int3 
 }
 
 // unroll loop
-template <typename Par, typename Parray>
-__global__ void apply(Par params, int3 L, int n, Parray parray, const int *start, float seed, /**/ FoArray_v farray) {
+template <typename Par, typename Parray, typename Farray>
+__global__ void apply(Par params, int3 L, int n, Parray parray, const int *start, float seed, /**/ Farray farray) {
     enum {X, Y, Z};
     int ia;
     int3 ca;
     PairPa pa;
-    PairFo fa = farray_fo0(farray);
+    auto fa = farray_fo0(farray);
 
     ia = threadIdx.x + blockIdx.x * blockDim.x;
     if (ia >= n) return;

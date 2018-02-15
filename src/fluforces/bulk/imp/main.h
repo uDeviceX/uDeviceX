@@ -50,7 +50,9 @@ static void interactions(Par params, int3 L, int n, Parray parray, const int *st
 template <typename Par, typename Parray>
 static void apply(Par params, int3 L, int n, Parray parray, const int *start, RNDunif *rnd, /**/ const FoArray *farray) {
     if (farray_has_stress(farray)) {
-        ERR("Stress: not implemented");
+        FoSArray_v farray_v;
+        farray_get_view(farray, &farray_v);
+        interactions(params, L, n, parray, start, rnd, /**/ farray_v);
     }
     else {
         FoArray_v farray_v;
