@@ -26,6 +26,12 @@ struct Config {
 };
 // end::struct[]
 
+enum {
+    OK,
+    NOTFOUND,
+    WTYPE
+};
+
 void conf_ini(/**/ Config **pq) {
     Config *q;
     EMALLOC(1, &q);
@@ -132,172 +138,176 @@ void conf_read(int argc, char **argv, /**/ Config *cfg) {
 static bool found(int s) {return s == CONFIG_TRUE;}
 static bool found(const config_setting_t *s) {return s != NULL;}
 
-static bool lookup_int(const Config *c, const char *desc, int *a) {
-    int i, s;
+static int lookup_setting(const Config *c, const char *desc, config_setting_t **s) {
+    int i;
     for (i = 0; i < NCFG; ++i) {
-        s = config_lookup_int(c->c + i, desc, /**/ a);
-        if ( found(s) ) return true;
+        *s = config_lookup(c->c + i, desc);
+        if ( found(*s) ) return OK;
     }
-    return false;
+    return NOTFOUND;
+}
+
+static int lookup_int(const Config *c, const char *desc, int *a) {
+    config_setting_t *s;
+    int status;
+    status = lookup_setting(c, desc, /**/ &s);
+    if (status != OK) return status;
+    if (config_setting_type(s) != CONFIG_TYPE_INT) return WTYPE;
+    *a = config_setting_get_int(s);
+    return status;
 }
 
 static bool lookup_float(const Config *c, const char *desc, float *a) {
-    int i, s;
-    double d;
-
-    for (i = 0; i < NCFG; ++i) {
-        s = config_lookup_float(c->c + i, desc, /**/ &d);
-        *a = d;
-        if ( found(s) ) return true;
-    }
-    return false;
+    config_setting_t *s;
+    int status;
+    status = lookup_setting(c, desc, /**/ &s);
+    if (status != OK) return status;
+    if (config_setting_type(s) != CONFIG_TYPE_FLOAT) return WTYPE;
+    *a = config_setting_get_float(s);
+    return status;
 }
 
 static bool lookup_bool(const Config *c, const char *desc, int *a) {
-    int i, s;
-    for (i = 0; i < NCFG; ++i) {
-        s = config_lookup_bool(c->c + i, desc, a);
-        if ( found(s) ) return true;
-    }
-    return false;
+    config_setting_t *s;
+    int status;
+    status = lookup_setting(c, desc, /**/ &s);
+    if (status != OK) return status;
+    if (config_setting_type(s) != CONFIG_TYPE_BOOL) return WTYPE;
+    *a = config_setting_get_bool(s);
+    return status;
 }
 
 static bool lookup_string(const Config *c, const char *desc, const char **a) {
-    int i, s;
-    for (i = 0; i < NCFG; ++i) {
-        s = config_lookup_string(c->c + i, desc, a);
-        if ( found(s) ) return true;
-    }
-    return false;
+    config_setting_t *s;
+    int status;
+    status = lookup_setting(c, desc, /**/ &s);
+    if (status != OK) return status;
+    if (config_setting_type(s) != CONFIG_TYPE_STRING) return WTYPE;
+    *a = config_setting_get_string(s);
+    return status;
 }
 
 static bool lookup_vint(const Config *c, const char *desc, int *n, int a[]) {
-    int i, j;
     config_setting_t *s;
-    *n = 0;
-    for (i = 0; i < NCFG; ++i) {
-        s = config_lookup(c->c + i, desc);
-        if ( found(s) ) {
-            *n = config_setting_length(s);
-            for (j = 0; j < *n; ++j)
-                a[j] = config_setting_get_int_elem(s, j);
-            return true;
-        }
-    }
-    return false;
+    int j, status;
+    status = lookup_setting(c, desc, /**/ &s);
+    if (status != OK) return status;
+    if (config_setting_type(s) != CONFIG_TYPE_ARRAY) return WTYPE;
+    *n = config_setting_length(s);
+    for (j = 0; j < *n; ++j)
+        a[j] = config_setting_get_int_elem(s, j);
+    return status;
 }
 
 static bool lookup_int3(const Config *c, const char *desc, int3 *a) {
     enum {X, Y, Z};
-    int n, f[3];
-    bool ret = lookup_vint(c, desc, &n, f);
+    int status, n = 0, f[3];
+    status = lookup_vint(c, desc, &n, f);
+    if (status != OK) return status;
     if (n != 3)
         ERR("fail to read `%s`: int3 must have 3 components, found %d", desc, n);
     a->x = f[X];
     a->y = f[Y];
     a->z = f[Z];
-    return ret;
+    return status;
 }
 
 static bool lookup_vfloat(const Config *c, const char *desc, int *n, float a[]) {
-    int i, j;
     config_setting_t *s;
-    *n = 0;
-    for (i = 0; i < NCFG; ++i) {
-        s = config_lookup(c->c + i, desc);
-        if ( found(s) ) {
-            *n = config_setting_length(s);
-            for (j = 0; j < *n; ++j)
-                a[j] = config_setting_get_float_elem(s, j);
-            return true;
-        }
-    }
-    return false;
+    int j, status;
+    status = lookup_setting(c, desc, /**/ &s);
+    if (status != OK) return status;
+    if (config_setting_type(s) != CONFIG_TYPE_ARRAY) return WTYPE;
+    *n = config_setting_length(s);
+    for (j = 0; j < *n; ++j)
+        a[j] = config_setting_get_float_elem(s, j);
+    return status;
 }
 
 static bool lookup_float3(const Config *c, const char *desc, float3 *a) {
     enum {X, Y, Z};
-    int n;
+    int n = 0, status;
     float f[3];
-    bool ret = lookup_vfloat(c, desc, &n, f);
+    status = lookup_vfloat(c, desc, &n, f);
+    if (status != OK) return status;
     if (n != 3)
         ERR("fail to read `%s`: float3 must have 3 components, found %d", desc, n);
     a->x = f[X];
     a->y = f[Y];
     a->z = f[Z];
-    return ret;
+    return status;
 }
 
 void conf_lookup_int(const Config *c, const char *desc, int *a) {
-    bool found = lookup_int(c, desc, a);
-    if (!found) ERR("Could not find int <%s>\n", desc);
+    int status = lookup_int(c, desc, a);
+    if (OK != status) ERR("Could not find int <%s>\n", desc);
 }
 
 void conf_lookup_float(const Config *c, const char *desc, float *a) {
-    bool found = lookup_float(c, desc, a);
-    if (!found) ERR("Could not find float  <%s>\n", desc);
+    int status = lookup_float(c, desc, a);
+    if (OK != status) ERR("Could not find float  <%s>\n", desc);
 }
 
 void conf_lookup_bool(const Config *c, const char *desc, int *a) {
-    bool found = lookup_bool(c, desc, a);
-    if (!found) ERR("Could not find bool <%s>\n", desc);
+    int status = lookup_bool(c, desc, a);
+    if (OK != status) ERR("Could not find bool <%s>\n", desc);
 }
 
 void conf_lookup_string(const Config *c, const char *desc, const char **a) {
-    bool found = lookup_string(c, desc, a);
-    if (!found) ERR("Could not find string <%s>\n", desc);
+    int status = lookup_string(c, desc, a);
+    if (OK != status) ERR("Could not find string <%s>\n", desc);
 }
 
 void conf_lookup_vint(const Config *c, const char *desc, int *n, int a[]) {
-    bool found = lookup_vint(c, desc, n, a);
-    if (!found) ERR("Could not find vint <%s>\n", desc);
+    int status = lookup_vint(c, desc, n, a);
+    if (OK != status) ERR("Could not find vint <%s>\n", desc);
 }
 
 void conf_lookup_int3(const Config *c, const char *desc, int3 *a) {
-    bool found = lookup_int3(c, desc, a);
-    if (!found) ERR("Could not find int3 <%s>\n", desc);
+    int status = lookup_int3(c, desc, a);
+    if (OK != status) ERR("Could not find int3 <%s>\n", desc);
 }
 
 void conf_lookup_vfloat(const Config *c, const char *desc, int *n, float a[]) {
-    bool found = lookup_vfloat(c, desc, n, a);
-    if (!found) ERR("Could not find vfloat <%s>\n", desc);
+    int status = lookup_vfloat(c, desc, n, a);
+    if (OK != status) ERR("Could not find vfloat <%s>\n", desc);
 }
 
 void conf_lookup_float3(const Config *c, const char *desc, float3 *a) {
-    bool found = lookup_float3(c, desc, a);
-    if (!found) ERR("Could not find float3 <%s>\n", desc);
+    int status = lookup_float3(c, desc, a);
+    if (OK != status) ERR("Could not find float3 <%s>\n", desc);
 }
 
 bool conf_opt_int(const Config *c, const char *desc, int *a) {
-    return lookup_int(c, desc, a);
+    return OK == lookup_int(c, desc, a);
 }
 
 bool conf_opt_float(const Config *c, const char *desc, float *a)  {
-    return lookup_float(c, desc, a);
+    return OK == lookup_float(c, desc, a);
 }
 
 bool conf_opt_bool(const Config *c, const char *desc, int *a)  {
-    return lookup_bool(c, desc, a);
+    return OK == lookup_bool(c, desc, a);
 }
 
 bool conf_opt_string(const Config *c, const char *desc, const char **a)  {
-    return lookup_string(c, desc, a);
+    return OK == lookup_string(c, desc, a);
 }
 
 bool conf_opt_vint(const Config *c, const char *desc, int *n, int a[]) {
-    return lookup_vint(c, desc, n, a);
+    return OK == lookup_vint(c, desc, n, a);
 }
 
 bool conf_opt_int3(const Config *c, const char *desc, int3 *a) {
-    return lookup_int3(c, desc, a);
+    return OK == lookup_int3(c, desc, a);
 }
 
 bool conf_opt_vfloat(const Config *c, const char *desc, int *n, float a[]) {
-    return lookup_vfloat(c, desc, n, a);
+    return OK == lookup_vfloat(c, desc, n, a);
 }
 
 bool conf_opt_float3(const Config *c, const char *desc, float3 *a) {
-    return lookup_float3(c, desc, a);
+    return OK == lookup_float3(c, desc, a);
 }
 
 static config_setting_t* subsetting(const char *desc, int type, config_setting_t *group) {
