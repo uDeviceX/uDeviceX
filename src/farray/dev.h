@@ -7,11 +7,11 @@ static __device__ void farray_add_common(const PairFo *f, int i, /**/ FA a) {
     af[Z] += f->z;
 }
 
-static __device__ void parray_add(const PairFo *f, int i, /**/ PaArray_v a) {
+static __device__ void farray_add(const PairFo *f, int i, /**/ PaArray_v a) {
     farray_add_common(f, i, /**/ a);
 }
 
-static __device__ void parray_add(const PairFo *f, int i, /**/ PaSArray_v a) {
+static __device__ void farray_add(const PairFo *f, int i, /**/ PaSArray_v a) {
     enum {XX, XY, XZ, YY, YZ, ZZ};
     float *s = a.ss + 6*i;
     farray_add_common(f, i, /**/ a);
@@ -33,11 +33,11 @@ static __device__ void farray_atomic_add_common(const PairFo *f, int i, /**/ FA 
     atomicAdd(&af[Z], f->z);
 }
 
-static __device__ void parray_atomic_add(const PairFo *f, int i, /**/ PaArray_v a) {
+static __device__ void farray_atomic_add(const PairFo *f, int i, /**/ PaArray_v a) {
     farray_atomic_add_common(f, i, /**/ a);
 }
 
-static __device__ void parray_atomic_add(const PairFo *f, int i, /**/ PaSArray_v a) {
+static __device__ void farray_atomic_add(const PairFo *f, int i, /**/ PaSArray_v a) {
     enum {XX, XY, XZ, YY, YZ, ZZ};
     float *s = a.ss + 6*i;
     farray_atomic_add_common(f, i, /**/ a);
