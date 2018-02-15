@@ -14,7 +14,8 @@ void fluforces_bulk_prepare(int n, const PaArray *a, /**/ FluForcesBulk *b) {
         b->colors = NULL;
 }
 
-void fluforces_bulk_apply(const PairParams *par, int n, const FluForcesBulk *b, const int *start, const int *count, /**/ Force *ff) {
+void fluforces_bulk_apply(const PairParams *par, int n, const FluForcesBulk *b, const int *start, const int *count,
+                          /**/ const FoArray *farray) {
     BPaArray a;
     if (n == 0) return;
 
@@ -22,7 +23,7 @@ void fluforces_bulk_apply(const PairParams *par, int n, const FluForcesBulk *b, 
     if (b->colors)
         flocal_push_cc(b->colors, &a);
 
-    UC(flocal_apply(par, b->L, n, a, start, b->rnd, /**/ ff));
+    UC(flocal_apply(par, b->L, n, a, start, b->rnd, /**/ farray));
 }
 
 
@@ -38,6 +39,6 @@ void fluforces_halo_prepare(flu::LFrag26 lfrags, flu::RFrag26 rfrags, /**/ FluFo
     }
 }
 
-void fluforces_halo_apply(const PairParams *par, const FluForcesHalo *h, /**/ Force *ff) {
-    fhalo_apply(par, h->L, h->lfrags, h->rfrags, h->rndfrags, (float*)ff);
+void fluforces_halo_apply(const PairParams *par, const FluForcesHalo *h, /**/ const FoArray *farray) {
+    fhalo_apply(par, h->L, h->lfrags, h->rfrags, h->rndfrags, farray);
 }

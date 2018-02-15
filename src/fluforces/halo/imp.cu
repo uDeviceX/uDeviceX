@@ -13,6 +13,7 @@
 
 #include "inc/def.h"
 #include "utils/cc.h"
+#include "utils/error.h"
 
 #include "inc/type.h"
 #include "inc/dev.h"
