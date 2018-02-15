@@ -135,7 +135,6 @@ void conf_read(int argc, char **argv, /**/ Config *cfg) {
         UC(read_args(argc, argv, /**/ &cfg->c[ARG]));
 }
 
-static bool found(int s) {return s == CONFIG_TRUE;}
 static bool found(const config_setting_t *s) {return s != NULL;}
 
 static int lookup_setting(const Config *c, const char *desc, config_setting_t **s) {
