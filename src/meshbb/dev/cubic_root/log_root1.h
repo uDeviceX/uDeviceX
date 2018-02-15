@@ -1,4 +1,3 @@
-namespace dev {
 struct CubicInfo {
     real a, b, c, d;
     real h; /* root */
@@ -21,5 +20,4 @@ static __device__ bool cubic_root(real a, real b, real c, real d, /**/ real *h) 
     rc = cubic_root0(a, b, c, d, /**/ h);
     log_cubic(a, b, c, d, *h, rc);
     return rc;
-}
 }

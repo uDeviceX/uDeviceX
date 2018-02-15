@@ -21,8 +21,10 @@
 /* conf */
 enum {MAX_COL = 4};
 
-#include "dev/type.h"
 #include "bbstates.h"
+
+namespace meshbb_dev {
+#include "dev/type.h"
 #include "dev/roots.h"
 #include "dev/utils.h"
 #include "dev/cubic_root/main.h"
@@ -34,6 +36,7 @@ enum {MAX_COL = 4};
 #include "dev/intersection.h"
 #include "dev/collect.h"
 #include "dev/main.h"
+}
 
 #ifdef MESHBB_LOG_ROOTS
   #include "imp/find_collisions/log_root1.h"

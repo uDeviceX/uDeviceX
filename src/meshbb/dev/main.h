@@ -1,5 +1,3 @@
-namespace dev {
-
 static const real_t TOL = 0.1;
 
 template <typename T> static __device__ T min3(T a, T b, T c) {return min(a, min(b, c));}
@@ -241,5 +239,3 @@ __global__ void perform_collisions(float dt,
     atomicAdd(mm[id].L + Y, m.L[Y]);
     atomicAdd(mm[id].L + Z, m.L[Z]);
 }
-
-} // dev

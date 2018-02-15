@@ -1,4 +1,3 @@
-namespace dev {
 typedef double real;
 typedef double3 real3;
 enum {X, Y, Z};
@@ -174,5 +173,3 @@ __device__ void M2f(real dt,
     v2f(dt, b, om, v, /**/ fb);
     v2f(dt, c, om, v, /**/ fc);
 }
-
-} // dev

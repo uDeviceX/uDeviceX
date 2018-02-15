@@ -16,7 +16,7 @@ void fsi_halo(const PairParams *params, Fsi *fsi, Pap26 PP, Fop26 FF, int counts
         pair_get_view_dpd_mirrored(params, &pv);
         parray_get_view(parray, &pav);
     
-        KL(dev::halo, (k_cnf(n)), (pv, fsi->L, wo->starts, starts, PP, FF, pav, n, wo->n, rnd, /**/ (float*)wo->ff));
+        KL(fsi_dev::halo, (k_cnf(n)), (pv, fsi->L, wo->starts, starts, PP, FF, pav, n, wo->n, rnd, /**/ (float*)wo->ff));
     }
     else {
         PairDPD pv;
@@ -25,6 +25,6 @@ void fsi_halo(const PairParams *params, Fsi *fsi, Pap26 PP, Fop26 FF, int counts
         pair_get_view_dpd(params, &pv);
         parray_get_view(parray, &pav);
     
-        KL(dev::halo, (k_cnf(n)), (pv, fsi->L, wo->starts, starts, PP, FF, pav, n, wo->n, rnd, /**/ (float*)wo->ff));
+        KL(fsi_dev::halo, (k_cnf(n)), (pv, fsi->L, wo->starts, starts, PP, FF, pav, n, wo->n, rnd, /**/ (float*)wo->ff));
     }
 }

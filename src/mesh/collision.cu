@@ -65,7 +65,7 @@ int collision_inside_1p(int spdir, const float *r, const float *vv, const int4 *
     return c%2;
 }
 
-namespace collisiondev
+namespace collision_dev
 {
 __global__ void init_tags(const int n, const int color, /**/ int *tags) {
     const int gid = threadIdx.x + blockIdx.x * blockDim.x;
@@ -141,13 +141,13 @@ static void get_colors0(const Particle *pp, int n,
                         const float3 *minext, const float3 *maxext, /**/ int *cc) {
     if (nm == 0 || n == 0) return;
 
-    KL(collisiondev::init_tags, (k_cnf(n)), (n, OUT, /**/ cc));
+    KL(collision_dev::init_tags, (k_cnf(n)), (n, OUT, /**/ cc));
 
     enum {THR = 128};
     dim3 thrd(THR, 1);
     dim3 blck(ceiln(n, THR), nm);
 
-    KL(collisiondev::compute_colors_tex, (blck, thrd), (pp, n, texvert, nv, tri, nt, minext, maxext, /**/ cc));
+    KL(collision_dev::compute_colors_tex, (blck, thrd), (pp, n, texvert, nv, tri, nt, minext, maxext, /**/ cc));
 }
 
 void collision_get_colors(const Particle *pp, int n,

@@ -1,4 +1,3 @@
-namespace dev {
 /* see Fedosov PhD Thesis */
 static __device__ BBState intersect_triangle(real dt,
                                              const real3_t *s10, const real3_t *s20, const real3_t *s30,
@@ -98,5 +97,3 @@ static __device__ BBState intersect_triangle(real dt,
     
     return BB_SUCCESS;
 }
-
-} // dev

@@ -1,5 +1,3 @@
-namespace dev {
-
 /* assume very small portion of non zero momentum changes */
 __global__ void collect_rig_mom(float dt, int ns, int nt, int nv, const int4 *tt, const Particle *pp, const Momentum *mm, /**/ Solid *ss) {
     int i, sid;
@@ -82,5 +80,3 @@ __global__ void collect_rbc_mom(float dt, int nc, int nt, int nv, const int4 *tt
         addForce(fc, t.z, /**/ ff);
     }
 }
-
-} // dev

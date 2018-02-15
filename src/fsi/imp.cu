@@ -41,7 +41,7 @@
 #include "imp.h"
 
 /* body */
-namespace dev {
+namespace fsi_dev {
 #include "dev/type.h"
 #include "dev/common.h"
 #include "dev/map.common.h"
