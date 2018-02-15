@@ -6,16 +6,14 @@ u.conf conf/default.h <<!
 !
 u.make -j
 u.run 2 2 1 ./udx test/openbc/inout.cfg '
-glb = { 
+glb = {
+    L = [8, 8, 16]
     kBT = 0.0
 }
 time = {
     type = "const"
     dt = 5e-4
     end = 2.01
-}
-glb = {
-    L = [8, 8, 16]
 }
 dump = {
     field = true
