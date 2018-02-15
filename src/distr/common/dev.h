@@ -1,5 +1,3 @@
-namespace dev {
-
 /* pack packets of nv particles into 27 buffers according to map  */
 __global__ void dcommon_pack_pp_packets(int nv, const Particle *pp, DMap m, /**/ Sarray<Particle*, 27> buf) {
     int i, cid, fid, scid;
@@ -52,5 +50,3 @@ __global__ void dcommon_shift_halo(int3 L, const Sarray<int, 27> starts, /**/ Pa
     fid2shift(L, fid, s);
     shift_1p(s, /**/ pp + pid);
 }
-
-} // dev
