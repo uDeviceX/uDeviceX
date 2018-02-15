@@ -1,5 +1,5 @@
-template<typename FA>
-static __device__ void farray_add_force(const PairFo *f, int i, /**/ FA a) {
+template <typename Fo, typename FA>
+static __device__ void farray_add_force(const Fo *f, int i, /**/ FA a) {
     enum {X, Y, Z};
     float *af = a.ff + 3*i;
     af[X] += f->x;
@@ -28,8 +28,8 @@ static __device__ void farray_add(const PairSFo *f, int i, /**/ FoSArray_v a) {
 }
 
 
-template<typename FA>
-static __device__ void farray_atomic_add_force(const PairFo *f, int i, /**/ FA a) {
+template <typename Fo, typename FA>
+static __device__ void farray_atomic_add_force(const Fo *f, int i, /**/ FA a) {
     enum {X, Y, Z};
     float *af = a.ff + 3*i;
     atomicAdd(&af[X], f->x);
