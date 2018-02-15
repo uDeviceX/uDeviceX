@@ -19,11 +19,9 @@ h6 { font-size:.75em }
 #header .details br {
     display:none
 }
-
 #header .details br+span.author:before {
     content:"\00a0\22c5\00a0"
 }
-
 #toc ul { list-style-type:none }
 #toc a {
     text-decoration:none
