@@ -14,10 +14,6 @@ h4 { font-size:1.12em }
 h5 { font-size:.83em }
 h6 { font-size:.75em }
 
-em {
-    font-style:italic
-}
-
 #header:before,#header:after,#content:before,#content:after {
     content:" ";
     display:table
