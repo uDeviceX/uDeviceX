@@ -3,6 +3,7 @@ struct Force;
 struct float4;
 struct int3;
 struct RNDunif;
+struct FoArray;
 
 struct BPaArray {
     bool colors;
@@ -13,5 +14,6 @@ struct BPaArray {
 void flocal_push_pp(const float4 *pp, BPaArray *a);
 void flocal_push_cc(const int *cc, BPaArray *a);
 
-void flocal_apply(const PairParams*, int3 L, int n, BPaArray parray, const int *start, RNDunif *rnd, /**/ Force *ff);
+void flocal_apply(const PairParams*, int3 L, int n, BPaArray parray, const int *start, RNDunif *rnd,
+                  /**/ const FoArray *ff);
 

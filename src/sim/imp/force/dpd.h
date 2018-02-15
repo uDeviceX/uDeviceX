@@ -2,6 +2,7 @@ void forces_dpd(Flu *f) {
     const int *count = f->q.cells.counts;
     const int *start = f->q.cells.starts;
     PaArray parray;
+    FoArray farray;
     flu::LFrag26 lfrags;
     flu::RFrag26 rfrags;
 
@@ -11,6 +12,8 @@ void forces_dpd(Flu *f) {
     if (f->q.colors)
         parray_push_cc(f->q.cc, /**/ &parray);
 
+    farray_push_ff(f->ff, /**/ &farray);
+    
     UC(eflu_compute_map(start, count, /**/ e->p));
     UC(eflu_download_cell_starts(/**/ e->p));
     UC(eflu_pack(&parray, /**/ e->p));
@@ -20,7 +23,7 @@ void forces_dpd(Flu *f) {
     UC(eflu_post_send(e->p, e->c));
     
     UC(fluforces_bulk_prepare(f->q.n, &parray, /**/ f->bulk));
-    UC(fluforces_bulk_apply(f->params, f->q.n, f->bulk, start, count, /**/ f->ff));
+    UC(fluforces_bulk_apply(f->params, f->q.n, f->bulk, start, count, /**/ &farray));
 
     dSync();
     UC(eflu_wait_recv(e->c, e->u));

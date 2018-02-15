@@ -82,13 +82,9 @@ static void apply_grey(const PairParams *params, int3 L, int n, BPaArray parray,
     tbarray_fin_view(&parray_v); 
 }
 
-void flocal_apply(const PairParams *params, int3 L, int n, BPaArray parray, const int *start, RNDunif *rnd, /**/ Force *ff) {
-    /* hack for now */
-    FoArray farray;
-    farray_push_ff(ff, &farray);
-    
+void flocal_apply(const PairParams *params, int3 L, int n, BPaArray parray, const int *start, RNDunif *rnd, /**/ const FoArray *farray) {
     if (parray.colors)
-        apply_color(params, L, n, parray, start, rnd, /**/ &farray);
+        apply_color(params, L, n, parray, start, rnd, /**/ farray);
     else
-        apply_grey(params, L, n, parray, start, rnd, /**/ &farray);
+        apply_grey(params, L, n, parray, start, rnd, /**/ farray);
 }
