@@ -10,7 +10,6 @@ img {
 div,ul,ol,h1,h2,h3,#toctitle,h4,h5,h6,pre,p {
     margin:0;
     padding:0;
-    direction:ltr
 }
 
 li {
