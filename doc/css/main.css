@@ -14,10 +14,6 @@ h4 { font-size:1.12em }
 h5 { font-size:.83em }
 h6 { font-size:.75em }
 
-em {
-    font-style:italic
-}
-
 #header:before,#header:after,#content:before,#content:after {
     content:" ";
     display:table
@@ -50,10 +46,7 @@ em {
     color:rgba(0,0,0,.85)
 }
 
-ul {
-    list-style-type:none
-}
-
+#toc ul { list-style-type:none }
 #toc a {
     text-decoration:none
 }
@@ -79,25 +72,9 @@ body.toc2 {
     overflow:auto
 }
 
-#toc.toc2 #toctitle {
-    margin-top:0;
-    margin-bottom:.8rem;
-    font-size:1.2em
-}
-
-#toc.toc2>ul {
-    font-size:.9em;
-    margin-bottom:0
-}
-
-#toc.toc2 li {
-    margin-left: 0;
-    margin-bottom:0
-}
-
 #toc.toc2 ul {
     margin-left:0;
-    padding-left:1em
+    padding-left:0;
 }
 
 .literalblock pre, .listingblock pre, listingblock .pygments, .listingblock .pygments code {

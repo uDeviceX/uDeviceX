@@ -1,5 +1,4 @@
 = uDeviceX Documentation
-// extension for linking; must be defined here because of gitlab
 :lext: .adoc
 
 image::include/pach.png[]

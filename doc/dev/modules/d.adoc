@@ -13,7 +13,7 @@ There are two groups: functions which "mirror" cuda API:
 include::{src}/d/api.h[tags=api]
 ----
 
-functions unique for uDeviceX:
+functions unique for _uDeviceX_:
 [source,cpp]
 ----
 include::{src}/d/api.h[tags=more]
