@@ -131,7 +131,7 @@ static void ini_inflow(const Coords *coords, int3 L, const Config *cfg, Inflow *
 }
 
 static void ini_colorer(int nv, MPI_Comm comm, int maxp, int3 L, /**/ Colorer *c) {
-    UC(ini_mesh_exch(nv, maxp, comm, L, &c->e));
+    UC(ini_mesh_exch(nv, MAX_CELL_NUM, comm, L, &c->e));
     Dalloc(&c->pp, maxp);
     Dalloc(&c->minext, maxp);
     Dalloc(&c->maxext, maxp);
