@@ -39,6 +39,6 @@ void fluforces_halo_prepare(flu::LFrag26 lfrags, flu::RFrag26 rfrags, /**/ FluFo
     }
 }
 
-void fluforces_halo_apply(const PairParams *par, const FluForcesHalo *h, /**/ Force *ff) {
-    fhalo_apply(par, h->L, h->lfrags, h->rfrags, h->rndfrags, (float*)ff);
+void fluforces_halo_apply(const PairParams *par, const FluForcesHalo *h, /**/ const FoArray *farray) {
+    fhalo_apply(par, h->L, h->lfrags, h->rfrags, h->rndfrags, farray);
 }

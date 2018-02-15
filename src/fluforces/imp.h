@@ -16,4 +16,4 @@ void fluforces_halo_ini(MPI_Comm cart, int3 L, /**/ FluForcesHalo **hd);
 void fluforces_halo_fin(/**/ FluForcesHalo *h);
 
 void fluforces_halo_prepare(flu::LFrag26 lfrags, flu::RFrag26 rfrags, /**/ FluForcesHalo *h);
-void fluforces_halo_apply(const PairParams*, const FluForcesHalo *h, /**/ Force *ff);
+void fluforces_halo_apply(const PairParams*, const FluForcesHalo *h, /**/ const FoArray *farray);

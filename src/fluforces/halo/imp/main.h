@@ -59,23 +59,29 @@ static void get_start(const LFrag_v<Parray> lfrags[26], /**/ int start[27]) {
         start[i + 1] = start[i] + pad(lfrags[i].n);
 }
 
-template<typename Par, typename Parray>
-static void interactions(Par params, int3 L, const LFrag_v26<Parray> lfrags, const RFrag_v26<Parray> rfrags, const flu::RndFrag26 rrnd, /**/ float *ff) {
-    /* hack for now */
-    FoArray farray;
-    FoArray_v farray_v;
-
-    farray_push_ff((Force*)ff, &farray);
-    farray_get_view(&farray, &farray_v);
-    
+template <typename Par, typename Parray, typename Farray>
+static void interactions(Par params, int3 L, const LFrag_v26<Parray> lfrags, const RFrag_v26<Parray> rfrags, const flu::RndFrag26 rrnd, /**/ Farray farray) {
     int27 start;
     int n; /* number of threads */
     get_start(lfrags.d, /**/ start.d);
     n = start.d[26];
-    KL(fhalo_dev::apply, (k_cnf(n)), (params, L, start, lfrags, rfrags, rrnd, /**/ farray_v));
+    KL(fhalo_dev::apply, (k_cnf(n)), (params, L, start, lfrags, rfrags, rrnd, /**/ farray));
 }
 
-static void apply_grey(const PairParams *params, int3 L, const flu::LFrag26 lfrags, const flu::RFrag26 rfrags, const flu::RndFrag26 rrnd, /**/ float *ff) {
+template <typename Par, typename Parray>
+static void apply(Par params, int3 L, const LFrag_v26<Parray> lfrags, const RFrag_v26<Parray> rfrags, const flu::RndFrag26 rrnd, /**/ const FoArray *farray) {
+
+    if (farray_has_stress(farray)) {
+        ERR("stress not implemented yet");
+    }
+    else {
+        FoArray_v farray_v;
+        farray_get_view(farray, &farray_v);
+        interactions(params, L, lfrags, rfrags, rrnd, /**/ farray_v);
+    }
+}
+
+static void apply_grey(const PairParams *params, int3 L, const flu::LFrag26 lfrags, const flu::RFrag26 rfrags, const flu::RndFrag26 rrnd, /**/ const FoArray *farray) {
     PairDPD pv;
     LFrag_v26<PaArray_v> lfragsv;
     RFrag_v26<PaArray_v> rfragsv;
@@ -84,10 +90,10 @@ static void apply_grey(const PairParams *params, int3 L, const flu::LFrag26 lfra
     get_view_lfrag(lfrags, &lfragsv);
     get_view_rfrag(rfrags, &rfragsv);
     
-    interactions(pv, L, lfragsv, rfragsv, rrnd, /**/ ff);
+    apply(pv, L, lfragsv, rfragsv, rrnd, /**/ farray);
 }
 
-static void apply_color(const PairParams *params, int3 L, const flu::LFrag26 lfrags, const flu::RFrag26 rfrags, const flu::RndFrag26 rrnd, /**/ float *ff) {
+static void apply_color(const PairParams *params, int3 L, const flu::LFrag26 lfrags, const flu::RFrag26 rfrags, const flu::RndFrag26 rrnd, /**/ const FoArray *farray) {
     PairDPDC pv;
     LFrag_v26<PaCArray_v> lfragsv;
     RFrag_v26<PaCArray_v> rfragsv;
@@ -96,12 +102,12 @@ static void apply_color(const PairParams *params, int3 L, const flu::LFrag26 lfr
     get_view_lfrag(lfrags, &lfragsv);
     get_view_rfrag(rfrags, &rfragsv);
     
-    interactions(pv, L, lfragsv, rfragsv, rrnd, /**/ ff);
+    apply(pv, L, lfragsv, rfragsv, rrnd, /**/ farray);
 }
 
-void fhalo_apply(const PairParams *params, int3 L, const flu::LFrag26 lfrags, const flu::RFrag26 rfrags, const flu::RndFrag26 rrnd, /**/ float *ff) {
+void fhalo_apply(const PairParams *params, int3 L, const flu::LFrag26 lfrags, const flu::RFrag26 rfrags, const flu::RndFrag26 rrnd, /**/ const FoArray *farray) {
     if (is_colored(rfrags))
-        apply_color(params, L, lfrags, rfrags, rrnd, /**/ ff);
+        apply_color(params, L, lfrags, rfrags, rrnd, /**/ farray);
     else
-        apply_grey(params, L, lfrags, rfrags, rrnd, /**/ ff);
+        apply_grey(params, L, lfrags, rfrags, rrnd, /**/ farray);
 }
