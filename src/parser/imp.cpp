@@ -188,14 +188,17 @@ static bool lookup_string(const Config *c, const char *desc, const char **a) {
 }
 
 static bool lookup_vint(const Config *c, const char *desc, int *n, int a[]) {
-    config_setting_t *s;
+    config_setting_t *s, *e;
     int j, status;
     status = lookup_setting(c, desc, /**/ &s);
     if (status != OK) return status;
     if (config_setting_type(s) != CONFIG_TYPE_ARRAY) return WTYPE;
     *n = config_setting_length(s);
-    for (j = 0; j < *n; ++j)
-        a[j] = config_setting_get_int_elem(s, j);
+    for (j = 0; j < *n; ++j) {
+        e = config_setting_get_elem(s, j);
+        if (config_setting_type(e) != CONFIG_TYPE_INT) return WTYPE;
+        a[j] = config_setting_get_int(e);
+    }
     return status;
 }
 
@@ -213,14 +216,17 @@ static bool lookup_int3(const Config *c, const char *desc, int3 *a) {
 }
 
 static bool lookup_vfloat(const Config *c, const char *desc, int *n, float a[]) {
-    config_setting_t *s;
+    config_setting_t *s, *e;
     int j, status;
     status = lookup_setting(c, desc, /**/ &s);
     if (status != OK) return status;
     if (config_setting_type(s) != CONFIG_TYPE_ARRAY) return WTYPE;
     *n = config_setting_length(s);
-    for (j = 0; j < *n; ++j)
-        a[j] = config_setting_get_float_elem(s, j);
+    for (j = 0; j < *n; ++j) {
+        e = config_setting_get_elem(s, j);
+        if (config_setting_type(e) != CONFIG_TYPE_FLOAT) return WTYPE;
+        a[j] = config_setting_get_float(e);
+    }
     return status;
 }
 
