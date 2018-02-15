@@ -50,10 +50,7 @@ em {
     color:rgba(0,0,0,.85)
 }
 
-ul {
-    list-style-type:none
-}
-
+#toc ul { list-style-type:none }
 #toc a {
     text-decoration:none
 }
