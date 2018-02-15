@@ -1,8 +1,10 @@
 /* corner fragments are neighbor with 7 fragments */
 enum { MAX_DSTS = 7 };
 
-//
-static __device__ int emap_code(int3 L, const float r[3]) {
+// tag::int[]
+static __device__ int emap_code(int3 L, const float r[3]) // <1>
+// end::int[]
+{
     int x, y, z;
     enum {X, Y, Z};
     x = -1 + (r[X] >= -L.x / 2) + (r[X] >= L.x / 2);
@@ -12,8 +14,10 @@ static __device__ int emap_code(int3 L, const float r[3]) {
     return frag_dev::d2i(x, y, z);
 }
 
-//
-static __device__ int emap_code_box(int3 L, float3 lo, float3 hi) {
+// tag::int[]
+static __device__ int emap_code_box(int3 L, float3 lo, float3 hi)  // <2>
+// end::int[]
+{
     int x, y, z;
     x = -1 + (lo.x >= -L.x / 2) + (hi.x >= L.x / 2);
     y = -1 + (lo.y >= -L.y / 2) + (hi.y >= L.y / 2);
@@ -22,7 +26,10 @@ static __device__ int emap_code_box(int3 L, float3 lo, float3 hi) {
     return frag_dev::d2i(x, y, z);
 }
 
-static __device__ void add_to_map(int soluteid, int pid, int fid, EMap m) {
+// tag::int[]
+static __device__ void add_to_map(int soluteid, int pid, int fid, EMap m) // <3>
+// end::int[]
+{
     int ientry, centry;
     centry = soluteid * NBAGS + fid;
     ientry = atomicAdd(m.counts + centry, 1);
@@ -56,8 +63,10 @@ static __device__ int add_cornr(int j, const int d[3], /**/ int fids[MAX_DSTS]) 
     return j;
 }
 
-//
-static __device__ int emap_decode(int code, /**/ int fids[MAX_DSTS]) {
+// tag::int[]
+static __device__ int emap_decode(int code, /**/ int fids[MAX_DSTS]) // <4>
+// end::int[]
+{
     int j = 0;
     int d[3];
     frag_dev::i2d3(code, d);

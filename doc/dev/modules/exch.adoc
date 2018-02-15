@@ -1,0 +1,65 @@
+= exch
+:lext: .adoc
+:src: ../../../src
+
+Exchange quantities across nodes for "ghost particles".
+
+A quantity is exchanged with a neighboring node if its position is
+within a given distance from the subdomain boundaries.
+
+The workflow is very similar for every quantity to exchange:
+
+* build a map from the positions of the quatities and store it in a
+  `Map` structure.
+* pack the data using `Map` in a `Pack` structure
+* communicaion: exchange packed data with neighbors, receive data into
+  `Unpack` structure. This is done using the
+  link:comm{lext}[generic communicator].
+* Unpack the data from `Unpack` to quantities.
+
+Optionally, other quantities can be exchanged back, e.g. forces.
+
+== map
+
+Helper for packing data to send buffers. This is common to all
+quantities.
+As opposed to the _distr_ module, the mapping is not _one to one_.
+A single quantity can be exchanged with up to 7 neighboring nodes if
+it is in a corner.
+
+=== data structure
+
+A single structure is able to build a map for up to `nw` objects
+(e.g. rbc and rigid give `nw = 2`)
+
+[source,cpp]
+----
+include::{src}/exch/map/type.h[tag=struct]
+----
+
+=== interface
+
+Host interface:
+
+
+[source,cpp]
+----
+include::{src}/exch/map/imp.h[tag=int]
+----
+<1> allocate the map structure on device
+<2> deallocate the map structure
+<3> reset the map structure
+<4> scan the map structure to get starts
+<5> copy counts from device to host
+
+Device interface:
+
+[source,cpp]
+----
+include::{src}/distr/map/dev.h[tag=int]
+----
+<1> get code (local fragment id) from position
+<2> get code (local fragment id) from box position
+<3> add a quantity to the map
+<4> get destination fragments from code
+
