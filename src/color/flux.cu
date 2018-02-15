@@ -14,8 +14,7 @@
 
 #include "flux.h"
 
-namespace recolor {
-namespace dev {
+namespace color_dev {
 __global__ void linear_flux(int3 L, int dir, int color, int n, const Particle *pp, int *cc) {
     int i;
     Particle p;
@@ -28,12 +27,11 @@ __global__ void linear_flux(int3 L, int dir, int color, int n, const Particle *p
     if (p.r[dir] >= HL[dir])
         cc[i] = color;
 }
-} // dev
+}
 
-void linear_flux(const Coords *coords, int3 L, int dir, int color, int n, const Particle *pp, int *cc) {
+void color_linear_flux(const Coords *coords, int3 L, int dir, int color, int n, const Particle *pp, int *cc) {
     assert(dir >= 0 && dir <= 2);
         
     if (is_end(coords, dir))
-        KL(dev::linear_flux, (k_cnf(n)), (L, dir, color, n, pp, cc));
+        KL(color_dev::linear_flux, (k_cnf(n)), (L, dir, color, n, pp, cc));
 }
-} // recolor
