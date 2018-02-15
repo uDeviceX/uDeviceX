@@ -6,8 +6,8 @@ __global__ void build_map(int3 L, int soluteid, int n, const Particle *pp, /**/ 
     if (pid >= n) return;
     const Particle p = pp[pid];
 
-    fid = map_code(L, p.r);
-    ndsts = map_decode(fid, /**/ fids);
+    fid = emap_code(L, p.r);
+    ndsts = emap_decode(fid, /**/ fids);
 
     for (j = 0; j < ndsts; ++j)
         add_to_map(soluteid, pid, fids[j], /**/ map);
