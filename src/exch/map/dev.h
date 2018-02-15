@@ -27,7 +27,7 @@ static __device__ int emap_code_box(int3 L, float3 lo, float3 hi)  // <2>
 }
 
 // tag::int[]
-static __device__ void add_to_map(int soluteid, int pid, int fid, EMap m) // <3>
+static __device__ void emap_add(int soluteid, int pid, int fid, EMap m) // <3>
 // end::int[]
 {
     int ientry, centry;

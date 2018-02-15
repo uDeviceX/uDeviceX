@@ -10,7 +10,7 @@ __global__ void build_map(int3 L, int soluteid, int n, const Particle *pp, /**/ 
     ndsts = emap_decode(fid, /**/ fids);
 
     for (j = 0; j < ndsts; ++j)
-        add_to_map(soluteid, pid, fids[j], /**/ map);
+        emap_add(soluteid, pid, fids[j], /**/ map);
 }
 
 static __device__ void unpack_f(const Force *hff, int offset, int *indices, int i, /**/ Force *ff) {
