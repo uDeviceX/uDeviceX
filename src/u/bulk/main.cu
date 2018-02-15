@@ -24,6 +24,7 @@
 #include "coords/imp.h"
 
 #include "parray/imp.h"
+#include "farray/imp.h"
 #include "flu/type.h"
 #include "fluforces/imp.h"
 
@@ -88,6 +89,7 @@ int main(int argc, char **argv) {
     Config *cfg;
     const char *fin, *fout;
     PaArray parray;
+    FoArray farray;
     Coords *coords;
     int maxp;
     int3 L;
@@ -126,9 +128,10 @@ int main(int argc, char **argv) {
     UC(fluforces_bulk_ini(L, maxp, &bulkforces));
 
     parray_push_pp(pp, &parray);
+    farray_push_ff(ff, &farray);
 
     UC(fluforces_bulk_prepare(n, &parray, /**/ bulkforces));
-    UC(fluforces_bulk_apply(params, n, bulkforces, clist.starts, clist.counts, /**/ ff));
+    UC(fluforces_bulk_apply(params, n, bulkforces, clist.starts, clist.counts, /**/ &farray));
 
     // particles are reordered because of clists
     CC(d::Memcpy(pp_hst, pp, n*sizeof(Particle), D2H));
