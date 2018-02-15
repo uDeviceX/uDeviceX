@@ -24,6 +24,7 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/exch/map              && \
     d $B/exch/mesh             && \
     d $B/exch/obj              && \
+    d $B/farray                && \
     d $B/flu                   && \
     d $B/fluforces             && \
     d $B/fluforces/bulk        && \

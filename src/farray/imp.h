@@ -20,5 +20,5 @@ bool farray_has_stress(const FoArray *a);
 
 // tag::view[]
 void farray_get_view(const FoArray *a, FoArray_v *v);  // <1>
-void farray_get_view(const FoArray *a, PFoSArray_v *v); // <2>
+void farray_get_view(const FoArray *a, FoSArray_v *v); // <2>
 // end::view[]

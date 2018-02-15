@@ -5,11 +5,11 @@ O = $B/algo/force_stat/imp.o $B/algo/minmax/imp.o $B/algo/scan/imp.o $B/clist/im
     $B/dbg/imp.o $B/distr/common/imp.o $B/distr/flu/imp.o \
     $B/distr/flu/status/imp.o $B/distr/map/imp.o $B/distr/rbc/imp.o \
     $B/distr/rig/imp.o $B/exch/common/imp.o $B/exch/flu/imp.o $B/exch/map/imp.o \
-    $B/exch/mesh/imp.o $B/exch/obj/imp.o $B/flu/imp.o $B/fluforces/bulk/imp.o \
-    $B/fluforces/halo/imp.o $B/fluforces/imp.o $B/frag/imp.o $B/fsi/imp.o \
-    $B/generate/rig/imp.o $B/inter/color/conf.o $B/inter/color/imp.o \
-    $B/inter/imp.o $B/io/bop/imp.o $B/io/com/imp.o $B/io/diag/imp.o \
-    $B/io/field/h5/imp.o $B/io/field/imp.o $B/io/field/xmf/imp.o \
+    $B/exch/mesh/imp.o $B/exch/obj/imp.o $B/farray/imp.o $B/flu/imp.o \
+    $B/fluforces/bulk/imp.o $B/fluforces/halo/imp.o $B/fluforces/imp.o \
+    $B/frag/imp.o $B/fsi/imp.o $B/generate/rig/imp.o $B/inter/color/conf.o \
+    $B/inter/color/imp.o $B/inter/imp.o $B/io/bop/imp.o $B/io/com/imp.o \
+    $B/io/diag/imp.o $B/io/field/h5/imp.o $B/io/field/imp.o $B/io/field/xmf/imp.o \
     $B/io/fields_grid/imp.o $B/io/mesh/imp.o $B/io/mesh/write/imp.o \
     $B/io/off/imp.o $B/io/ply/imp.o $B/io/restart/imp.o $B/io/rig/imp.o \
     $B/io/txt/imp.o $B/main.o $B/math/linal/imp.o $B/math/rnd/imp.o \

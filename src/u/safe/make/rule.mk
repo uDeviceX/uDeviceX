@@ -26,6 +26,7 @@ $B/exch/flu/imp.o: $S/exch/flu/imp.cu; $N -I$S/exch/flu -I$S/.
 $B/exch/map/imp.o: $S/exch/map/imp.cu; $N -I$S/exch/map -I$S/.
 $B/exch/mesh/imp.o: $S/exch/mesh/imp.cu; $N -I$S/exch/mesh -I$S/.
 $B/exch/obj/imp.o: $S/exch/obj/imp.cu; $N -I$S/exch/obj -I$S/.
+$B/farray/imp.o: $S/farray/imp.cpp; $X -I$S/farray -I$S/.
 $B/fluforces/bulk/imp.o: $S/fluforces/bulk/imp.cu; $N -I$S/fluforces/bulk -I$S/.
 $B/fluforces/halo/imp.o: $S/fluforces/halo/imp.cu; $N -I$S/fluforces/halo -I$S/.
 $B/fluforces/imp.o: $S/fluforces/imp.cu; $N -I$S/fluforces -I$S/.
