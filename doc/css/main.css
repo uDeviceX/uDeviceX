@@ -18,14 +18,6 @@ em {
     font-style:italic
 }
 
-#header,#content {
-    max-width:62.5em;
-    position:relative;
-    padding-left:.9375em;
-    padding-right:.9375em;
-    margin:1em auto
-}
-
 #header:before,#header:after,#content:before,#content:after {
     content:" ";
     display:table
@@ -43,10 +35,6 @@ em {
     padding-left:.25em;
     display:flex;
     flex-flow:row wrap
-}
-
-#header .details span:first-child {
-    margin-left:-.125em
 }
 
 #header .details br {
@@ -67,18 +55,8 @@ em {
     padding-bottom:.5em
 }
 
-#toc>ul {
-    margin-left:.125em
-}
-
 #toc ul {
-    font-family:sans-serif;
     list-style-type:none
-}
-
-#toc li {
-    line-height:1.3334;
-    margin-top:.3334em
 }
 
 #toc a {
