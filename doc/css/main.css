@@ -7,23 +7,6 @@ img {
     height:auto
 }
 
-div,ul,ol,h1,h2,h3,#toctitle,h4,h5,h6,pre,p {
-    margin:0;
-    padding:0;
-}
-
-li {
-    margin: 1em;
-}
-
-p {
-    margin-bottom:1.25em;
-}
-
-h1,h2,h3,h4,h5,h6,#toctitle {
-    margin-bottom:.5em;
-}
-
 h1 { font-size:2em }
 h2 { font-size:1.5em }
 h3 { font-size:1.17em }
@@ -32,8 +15,7 @@ h5 { font-size:.83em }
 h6 { font-size:.75em }
 
 em {
-    font-style:italic;
-    line-height:inherit
+    font-style:italic
 }
 
 #header,#content {
