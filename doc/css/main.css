@@ -72,25 +72,9 @@ body.toc2 {
     overflow:auto
 }
 
-#toc.toc2 #toctitle {
-    margin-top:0;
-    margin-bottom:.8rem;
-    font-size:1.2em
-}
-
-#toc.toc2>ul {
-    font-size:.9em;
-    margin-bottom:0
-}
-
-#toc.toc2 li {
-    margin-left: 0;
-    margin-bottom:0
-}
-
 #toc.toc2 ul {
     margin-left:0;
-    padding-left:1em
+    padding-left:0;
 }
 
 .literalblock pre, .listingblock pre, listingblock .pygments, .listingblock .pygments code {
