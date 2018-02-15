@@ -10,7 +10,7 @@ static void pack_ss(const DMap m, int n, const Solid *ss, /**/ dBags bags) {
     Sarray<Solid*, 27> wrap;
     bag2Sarray(bags, &wrap);
 
-    KL((dev::pack_ss), (k_cnf(n)), (ss, m, /**/ wrap));
+    KL((drig_dev::pack_ss), (k_cnf(n)), (ss, m, /**/ wrap));
 }
 
 

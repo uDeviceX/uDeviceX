@@ -1,4 +1,4 @@
-namespace dev {
+namespace drbc_dev {
 
 __global__ void build_map(int3 L, int n, const float3 *minext, const float3 *maxext, /**/ DMap m) {
     enum {X, Y, Z};
@@ -19,4 +19,4 @@ __global__ void build_map(int3 L, int n, const float3 *minext, const float3 *max
     dmap_add(i, fid, /**/ m);
 }
 
-} //dev
+}

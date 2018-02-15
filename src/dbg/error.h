@@ -19,18 +19,18 @@ static const char *err_str[NERRORS] = {ERRLIST(make_str)};
 
 typedef int err_type;
 
-namespace devdbg {
+namespace dbg_dev {
 static __device__ err_type error;
 } // dev
 
 static void err_ini() {
     err_type e = ERR_NONE;
-    CC(d::MemcpyToSymbol(&devdbg::error, &e, sizeof(err_type)));
+    CC(d::MemcpyToSymbol(&dbg_dev::error, &e, sizeof(err_type)));
 }
 
 static err_type err_get() {
     err_type e;
-    CC(d::MemcpyFromSymbol(&e, &devdbg::error, sizeof(err_type)));
+    CC(d::MemcpyFromSymbol(&e, &dbg_dev::error, sizeof(err_type)));
     return e;
 }
 

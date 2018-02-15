@@ -90,7 +90,7 @@ void dbg_check_pos(const Coords *c, const char *base, const Dbg *dbg, int n, con
     if (!check(dbg, DBG_POS))
         return;
     UC(err_ini());
-    KL(devdbg::check_pos, (k_cnf(n)), (L, pp, n));
+    KL(dbg_dev::check_pos, (k_cnf(n)), (L, pp, n));
     if (error()) {
         if (dbg->dump)
             dump_pp(c, base, n, pp);
@@ -103,7 +103,7 @@ void dbg_check_pos_soft(const Coords *c, const char *base, const Dbg *dbg, int n
     if (!check(dbg, DBG_POS_SOFT))
         return;
     UC(err_ini());
-    KL(devdbg::check_pos_pu, (k_cnf(n)), (L, pp, n));
+    KL(dbg_dev::check_pos_pu, (k_cnf(n)), (L, pp, n));
     if (error()) {
         if (dbg->dump)
             dump_pp(c, base, n, pp);
@@ -117,7 +117,7 @@ void dbg_check_vel(float dt, const Coords *c, const char *base, const Dbg *dbg, 
     if (!check(dbg, DBG_VEL))
         return;
     UC(err_ini());
-    KL(devdbg::check_vv, (k_cnf(n)), (dt, L, pp, n));
+    KL(dbg_dev::check_vv, (k_cnf(n)), (dt, L, pp, n));
     if (error()) {
         if (dbg->dump)
             dump_pp(c, base, n, pp);
@@ -131,7 +131,7 @@ void dbg_check_forces(float dt, const Coords *c, const char *base, const Dbg *db
     if (!check(dbg, DBG_FORCES))
         return;
     UC(err_ini());
-    KL(devdbg::check_ff, (k_cnf(n)), (dt, L, ff, n));
+    KL(dbg_dev::check_ff, (k_cnf(n)), (dt, L, ff, n));
     if (error()) {
         if (dbg->dump)
             dump_pp_ff(c, base, n, pp, ff);
@@ -143,7 +143,7 @@ void dbg_check_colors(const Coords *c, const Dbg *dbg, int n, const int *cc) {
     if (!check(dbg, DBG_COLORS))
         return;
     UC(err_ini());
-    KL(devdbg::check_cc, (k_cnf(n)), (cc, n));
+    KL(dbg_dev::check_cc, (k_cnf(n)), (cc, n));
     if (error()) {
         UC(print());
     }
@@ -154,7 +154,7 @@ void dbg_check_clist(const Coords *c, const Dbg *dbg, int3 L, const int *starts,
         return;
     int n = L.x * L.y * L.z;
     UC(err_ini());
-    KL(devdbg::check_clist, (k_cnf(n)), (L, starts, counts, pp));
+    KL(dbg_dev::check_clist, (k_cnf(n)), (L, starts, counts, pp));
     if (error()) {
         UC(print());
     }

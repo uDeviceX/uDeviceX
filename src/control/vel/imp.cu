@@ -26,11 +26,11 @@
 
 #include "imp/type.h"
 
-namespace dev {
+namespace vcont_dev {
 #include "dev/common.h"
 #include "dev/cart.h"
 #include "dev/radial.h"
 #include "dev/sample.h"
-} // dev
+}
 
 #include "imp/main.h"

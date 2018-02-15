@@ -19,7 +19,7 @@
 #include "dbg/imp.h"
 #include "dbg/error.h"
 
-namespace devdbg {
+namespace dbg_dev {
 #include "dev/common.h"
 #include "dev/pos.h"
 #include "dev/vel.h"

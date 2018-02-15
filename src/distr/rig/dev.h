@@ -1,4 +1,4 @@
-namespace dev {
+namespace drig_dev {
 
 __global__ void build_map(int3 L, int n, const Solid *ss, /**/ DMap m) {
     enum {X, Y, Z};
@@ -29,4 +29,4 @@ __global__ void pack_ss(const Solid *ss, DMap m, /**/ Sarray<Solid*, 27> buf) {
     buf.d[fid][d] = ss[s];
 }
 
-} //dev
+}

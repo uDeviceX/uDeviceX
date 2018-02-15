@@ -91,10 +91,10 @@ void vcont_sample(const Coords *coords, int n, const Particle *pp, const int *st
     case TYPE_NONE:
         break;
     case TYPE_CART:
-        KL(dev::sample, (grid, block), (coordsv, c->trans.cart, L, starts, counts, pp, /**/ c->gridvel));
+        KL(vcont_dev::sample, (grid, block), (coordsv, c->trans.cart, L, starts, counts, pp, /**/ c->gridvel));
         break;
     case TYPE_RAD:
-        KL(dev::sample, (grid, block), (coordsv, c->trans.rad, L, starts, counts, pp, /**/ c->gridvel));
+        KL(vcont_dev::sample, (grid, block), (coordsv, c->trans.rad, L, starts, counts, pp, /**/ c->gridvel));
         break;
     default:
         ERR("Unknown type");
@@ -110,7 +110,7 @@ float3 vcont_adjustF(/**/ PidVCont *c) {
     ncells = L.x * L.y * L.z;
     nchunks = ceiln(ncells, 32);
 
-    KL(dev::reduceByWarp, (nchunks, 32), (c->gridvel, ncells, /**/ c->davgvel));
+    KL(vcont_dev::reduceByWarp, (nchunks, 32), (c->gridvel, ncells, /**/ c->davgvel));
     dSync();
 
     float3 vcur = make_float3(0, 0, 0), e, de;

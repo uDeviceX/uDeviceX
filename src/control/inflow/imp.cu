@@ -28,7 +28,7 @@
 
 #include "imp/type.h"
 
-namespace dev {
+namespace inflow_dev {
 #include "dev/ini.h"
 #include "dev/main.h"
 }

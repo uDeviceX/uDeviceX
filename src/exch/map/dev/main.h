@@ -1,4 +1,4 @@
-namespace dev {
+namespace emap_dev {
 
 static __device__ void warpexscan(int cnt, int t, /**/ int *starts) {
     int L, scan;

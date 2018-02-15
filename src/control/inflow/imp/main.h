@@ -1,10 +1,10 @@
 static void ini_rnd(int n, curandState_t *rr) {
     long seed = 1234567;
-    KL(dev::ini_rnd, (k_cnf(n)), (seed, n, rr));
+    KL(inflow_dev::ini_rnd, (k_cnf(n)), (seed, n, rr));
 }
 
 static void ini_flux(int n, curandState_t *rr, float *cumflux) {
-    KL(dev::ini_flux, (k_cnf(n)), (n, rr, cumflux));
+    KL(inflow_dev::ini_flux, (k_cnf(n)), (n, rr, cumflux));
 }
 
 void inflow_ini(int2 nc, Inflow **i) {
@@ -43,10 +43,10 @@ static void ini_velocity(Type t, int2 nc, const ParamsU *p, const VParamsU *vp, 
     int n = nc.x * nc.y;
     switch(t) {
     case TYPE_PLATE:
-        KL(dev::ini_vel, (k_cnf(n)), (vp->plate, p->plate, nc, /**/ uu));
+        KL(inflow_dev::ini_vel, (k_cnf(n)), (vp->plate, p->plate, nc, /**/ uu));
         break;
     case TYPE_CIRCLE:
-        KL(dev::ini_vel, (k_cnf(n)), (vp->circle, p->circle, nc, /**/ uu));
+        KL(inflow_dev::ini_vel, (k_cnf(n)), (vp->circle, p->circle, nc, /**/ uu));
         break;
     case TYPE_NONE:
         break;
@@ -82,13 +82,13 @@ static void create_solvent(float kBT, float dt, Inflow *i, int *n, SolventWrap w
 
     switch(i->t) {
     case TYPE_PLATE:
-        KL(dev::cumulative_flux, (k_cnf(nctot)), (dt, i->p.plate, nc, d->uu, /**/ d->cumflux));
-        KL(dev::create_particles, (k_cnf(nctot)),
+        KL(inflow_dev::cumulative_flux, (k_cnf(nctot)), (dt, i->p.plate, nc, d->uu, /**/ d->cumflux));
+        KL(inflow_dev::create_particles, (k_cnf(nctot)),
            (kBT, i->p.plate, nc, d->uu, /*io*/ d->rnds, d->cumflux, /**/ d->ndev, wrap));
         break;
     case TYPE_CIRCLE:
-        KL(dev::cumulative_flux, (k_cnf(nctot)), (dt, i->p.circle, nc, d->uu, /**/ d->cumflux));
-        KL(dev::create_particles, (k_cnf(nctot)),
+        KL(inflow_dev::cumulative_flux, (k_cnf(nctot)), (dt, i->p.circle, nc, d->uu, /**/ d->cumflux));
+        KL(inflow_dev::create_particles, (k_cnf(nctot)),
            (kBT, i->p.circle, nc, d->uu, /*io*/ d->rnds, d->cumflux, /**/ d->ndev, wrap));
         break;
     case TYPE_NONE:
