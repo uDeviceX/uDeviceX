@@ -1,5 +1,5 @@
 static void pack_mesh(int nv, const Particle *pp, EMap map, /**/ Pap26 buf) {
-    KL(dev::pack_mesh, (14 * 16, 128), (nv, pp, map, /**/ buf));
+    KL(emesh_dev::pack_mesh, (14 * 16, 128), (nv, pp, map, /**/ buf));
 }
 
 void emesh_pack(int nv, const Particle *pp, /**/ EMeshPack *p) {
@@ -21,13 +21,13 @@ static void reini_map(int nm, /**/ MMap *m) {
 
 static void compress_mom(int nt, int nm, const Momentum *mm, /**/ MMap *m, int *ids, Momentum *mmc) {
     reini_map(nm, /**/ m);
-    KL(dev::subindex_compress, (k_cnf(nt * nm)), (nt, nm, mm, /**/ m->cc, m->subids));
+    KL(emesh_dev::subindex_compress, (k_cnf(nt * nm)), (nt, nm, mm, /**/ m->cc, m->subids));
 
     enum {NWRP=4, WRPSZ=32};
     enum {BLCK=1, THRD=NWRP*WRPSZ};
-    KL(dev::block_scan<NWRP>, (BLCK, THRD), (nm, m->cc, /**/ m->ss));
+    KL(emesh_dev::block_scan<NWRP>, (BLCK, THRD), (nm, m->cc, /**/ m->ss));
 
-    KL(dev::compress, (k_cnf(nt * nm)), (nt, nm, mm, m->ss, m->subids, /**/ ids, mmc));
+    KL(emesh_dev::compress, (k_cnf(nt * nm)), (nt, nm, mm, m->ss, m->subids, /**/ ids, mmc));
 }
 
 static void pack_mom(int nt, const int counts[NFRAGS], const Momentum *mm,
@@ -53,7 +53,7 @@ void emesh_downloadM(const int counts[NFRAGS], EMeshPackM *p) {
     memcpy(ii.d, counts, sz);
     memcpy(mm.d, p->maps, NFRAGS * sizeof(MMap));
 
-    KL(dev::collect_counts, (32, 1), (ii, mm, /**/ p->ccdev));
+    KL(emesh_dev::collect_counts, (32, 1), (ii, mm, /**/ p->ccdev));
 
     dSync();
 

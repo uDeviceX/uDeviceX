@@ -1,4 +1,4 @@
-namespace dev {
+namespace emesh_dev {
 
 /* L0: subdomain cropped by one cutoff radius */
 __global__ void build_map(int3 L0, int n, const float3 *minext, const float3 *maxext, /**/ EMap map) {
@@ -10,8 +10,8 @@ __global__ void build_map(int3 L0, int n, const float3 *minext, const float3 *ma
     lo = minext[i];
     hi = maxext[i];
     
-    fid = map_code_box(L0, lo, hi);
-    ndsts = map_decode(fid, /**/ fids);
+    fid = emap_code_box(L0, lo, hi);
+    ndsts = emap_decode(fid, /**/ fids);
 
     for (j = 0; j < ndsts; ++j)
         add_to_map(0, i, fids[j], /**/ map);

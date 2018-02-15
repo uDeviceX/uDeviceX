@@ -53,7 +53,7 @@ static void unpack_ff(int nfrags, Fop26 ff, EMap map, int nw, /**/ FoWrap *ww) {
         ph.offsets = map.offsets + i * stride;
         memcpy(ph.indices, map.ids, nfrags * sizeof(int*));
 
-        KL(dev::unpack_ff, (14 * 16, 128), (ff, ph, /**/ w->ff));
+        KL(eobj_dev::unpack_ff, (14 * 16, 128), (ff, ph, /**/ w->ff));
     }
 }
 
