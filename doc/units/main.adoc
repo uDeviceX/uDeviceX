@@ -1,7 +1,7 @@
 = units
 :lext: .adoc
 
-uDeviceX consists of units. They are implemented in link::/src/u/[/src/u/].
+_uDeviceX_ consists of units. They are implemented in link::/src/u/[/src/u/].
 
 == Build and run
 

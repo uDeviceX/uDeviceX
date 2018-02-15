@@ -37,5 +37,5 @@ A list of coding conventions can be found link:conventions{lext}[here].
 == Useful links
 
 * link:third{lext}[Third party dependencies]
-* link:build{lext}[how to compile uDeviceX ?]
+* link:build{lext}[how to compile _uDeviceX_ ?]
 * link:gource{lext}[gource]

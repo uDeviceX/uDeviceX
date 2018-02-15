@@ -1,6 +1,6 @@
 = gource commands
 
-Display git history of uDeviceX as animated tree.
+Display git history of _uDeviceX_ as animated tree.
 
 Dump
 
