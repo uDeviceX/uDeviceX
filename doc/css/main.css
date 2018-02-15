@@ -11,6 +11,11 @@ h5 { font-size:.83em }
 h6 { font-size:.75em }
 #toctitle { font-size: 1.5em }
 
+#content {
+    min-width: 25em;
+    max-width: 60em;
+}
+
 #header .details br {
     display:none
 }
