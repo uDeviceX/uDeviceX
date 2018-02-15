@@ -19,7 +19,7 @@
 #include "utils/kl.h"
 
 #include "imp.h"
-namespace dev {
+namespace rbc_stretch_dev {
 #include "dev/main.h"
 }
 #include "imp/type.h"

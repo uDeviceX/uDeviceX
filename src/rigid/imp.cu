@@ -18,7 +18,7 @@
 
 #include "imp/type.h"
 
-namespace dev {
+namespace rigid_dev {
 #include "dev/utils.h"
 #include "dev/main.h"
 }

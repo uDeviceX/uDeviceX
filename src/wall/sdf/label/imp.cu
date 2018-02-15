@@ -28,7 +28,7 @@
 
 #include "imp.h"
 
-namespace labeldev {
+namespace sdf_label_dev {
 #include "dev/main.h"
 }
 #include "imp/main.h"

@@ -23,7 +23,7 @@
 
 #include "imp/type.h"
 
-namespace dev {
+namespace rbccom_dev {
 #include "dev/main.h"
 }
 #include "imp/ini.h"

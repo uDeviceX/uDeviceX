@@ -25,7 +25,7 @@ void cnt_bulk(const PairParams *params, const Contact *c, int nw, PaWrap *pw, Fo
         PaWrap pit = pw[i];
         FoWrap fit = fw[i];
         rnd = rnd_get(c->rgen);
-        KL(dev::bulk, (k_cnf(3 * pit.n)),
+        KL(cnt_dev::bulk, (k_cnf(3 * pit.n)),
            (pv, c->L, c->cells.starts, clist_get_ids(c->cmap), pit.n, (const float2*)pit.pp, lpp, rnd, i, /**/ lff, (float*)fit.ff));
     }
 }

@@ -3,5 +3,5 @@ void bounce_back(float dt, const Wvel_v *wv, const Coords *c, const Sdf *sdf, in
     Coords_v coordsv;
     sdf_to_view(sdf, &sdf_v);
     coords_get_view(c, &coordsv);
-    KL(dev::bounce_back, (k_cnf(n)), (dt, *wv, coordsv, sdf_v, n, /**/ pp));
+    KL(sdf_bb_dev::bounce_back, (k_cnf(n)), (dt, *wv, coordsv, sdf_v, n, /**/ pp));
 }

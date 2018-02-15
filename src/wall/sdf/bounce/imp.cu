@@ -36,7 +36,7 @@
 
 #include "imp.h"
 
-namespace dev {
+namespace sdf_bb_dev {
 #include "dev/main.h"
 }
 #include "imp/main.h"

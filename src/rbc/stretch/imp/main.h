@@ -51,5 +51,5 @@ void rbc_stretch_apply(int nm, const RbcStretch *f, /**/ Force *ff) {
     int n, nv;
     nv = f->nv;
     n  = nm * nv;
-    if (n) KL(dev::apply, (k_cnf(n)), (n, nv, f->f, /**/ ff));
+    if (n) KL(rbc_stretch_dev::apply, (k_cnf(n)), (n, nv, f->f, /**/ ff));
 }

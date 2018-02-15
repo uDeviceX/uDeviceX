@@ -12,7 +12,7 @@ static void apply(float dt, RbcParams_v parv, int nc, int nv,
     int md;
     md = RBCmd;
     random(nc * md * nv, rnd, /**/ &rnd0);
-    KL(dev::force, (k_cnf(nc*nv*md)), (dt, parv, md, nv, nc, pp, rnd0,
+    KL(rbc_force_dev::force, (k_cnf(nc*nv*md)), (dt, parv, md, nv, nc, pp, rnd0,
                                        *adj_v, shape, av, /**/ (float*)ff));
 }
 

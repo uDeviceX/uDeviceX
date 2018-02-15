@@ -41,7 +41,7 @@
 typedef Sarray<const float2*, MAX_OBJ_TYPES> float2pWraps;
 typedef Sarray<      float *, MAX_OBJ_TYPES>  ForcepWraps;
 
-namespace dev {
+namespace cnt_dev {
 #include "dev/pair.h"
 #include "dev/map/common.h"
 #include "dev/map/halo.h"

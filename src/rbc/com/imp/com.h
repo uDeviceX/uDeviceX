@@ -6,7 +6,7 @@ static void reduce(int nm, int nv, const Particle *pp, /**/ float3 *rr, float3 *
     dim3 thrd(128, 1);
     dim3 blck(ceiln(nv, thrd.x), nm);
 
-    KL(dev::reduce_props, (blck, thrd), (nv, pp, /**/ rr, vv));
+    KL(rbccom_dev::reduce_props, (blck, thrd), (nv, pp, /**/ rr, vv));
 }
 
 static void download(int nm, const float3 *d, /**/ float3 *h) {

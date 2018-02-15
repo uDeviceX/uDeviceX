@@ -37,7 +37,7 @@ static void compute(int nv, int nt, int nc, const Particle *pp, const int4 *tri,
     dim3 avThreads(256, 1);
     dim3 avBlocks(1, nc);
     Dzero(av, 2*nc);
-    KL(dev::main, (avBlocks, avThreads), (nt, nv, pp, tri, av));
+    KL(rbc_force_av_dev::main, (avBlocks, avThreads), (nt, nv, pp, tri, av));
 }
 
 void area_volume_compute(AreaVolume *q, int nc, const Particle *pp, /**/ float **pav) {

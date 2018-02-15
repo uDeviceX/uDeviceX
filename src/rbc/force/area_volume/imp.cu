@@ -20,7 +20,7 @@
 
 #include "imp.h"
 
-namespace dev {
+namespace rbc_force_av_dev {
 #include "dev/main.h"
 }
 #include "imp/type.h"

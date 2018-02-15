@@ -12,6 +12,6 @@ void cnt_halo(const PairParams *params, const Contact *c, int nw, PaWrap *pw, Fo
 
     UC(pair_get_view_dpd_lj(params, &pv));
     
-    KL(dev::halo, (k_cnf(n)),
+    KL(cnt_dev::halo, (k_cnf(n)),
        (pv, c->L, c->cells.starts, clist_get_ids(c->cmap), rnd_get(c->rgen), starts, lpp, n, PP, /**/ lff, FF));
 }
