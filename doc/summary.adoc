@@ -21,6 +21,7 @@
 * link:./dev/modules/dbg{lext}[]
 * link:./dev/modules/distr{lext}[]
 * link:./dev/modules/d{lext}[]
+* link:./dev/modules/exch{lext}[]
 * link:./dev/modules/fluforces{lext}[]
 * link:./dev/modules/frag{lext}[]
 * link:./dev/modules/fsi{lext}[]

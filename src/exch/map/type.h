@@ -1,5 +1,6 @@
 // [E]xchange map
-// tag::struct
+
+// tag::struct[]
 struct EMap {
     int *counts;      /* number of entities leaving in each fragment */
     int *starts;      /* cumulative sum of the above                 */
@@ -7,3 +8,4 @@ struct EMap {
     int *ids[NFRAGS]; /* indices of leaving objects                  */
 };
 // end::struct[]
+

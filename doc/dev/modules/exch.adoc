@@ -56,7 +56,7 @@ Device interface:
 
 [source,cpp]
 ----
-include::{src}/distr/map/dev.h[tag=int]
+include::{src}/exch/map/dev.h[tag=int]
 ----
 <1> get code (local fragment id) from position
 <2> get code (local fragment id) from box position

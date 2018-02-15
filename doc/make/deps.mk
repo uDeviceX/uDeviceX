@@ -18,6 +18,7 @@
 ./dev/modules/d.html: ./dev/modules/d.adoc 
 ./dev/modules/dbg.html: ./dev/modules/dbg.adoc 
 ./dev/modules/distr.html: ./dev/modules/distr.adoc 
+./dev/modules/exch.html: ./dev/modules/exch.adoc 
 ./dev/modules/fluforces.html: ./dev/modules/fluforces.adoc 
 ./dev/modules/frag.html: ./dev/modules/frag.adoc 
 ./dev/modules/fsi.html: ./dev/modules/fsi.adoc 

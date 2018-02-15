@@ -43,6 +43,8 @@ include::dev/modules/dbg.adoc[]
 
 include::dev/modules/distr.adoc[]
 
+include::dev/modules/exch.adoc[]
+
 include::dev/modules/fluforces.adoc[]
 
 include::dev/modules/frag.adoc[]
