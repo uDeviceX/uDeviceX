@@ -47,29 +47,37 @@ static void interactions(Par params, int3 L, int n, Parray parray, const int *st
        (params, L, n, parray, start, seed, /**/ farray));
 }
 
-static void apply_color(const PairParams *params, int3 L, int n, BPaArray parray, const int *start, RNDunif *rnd, /**/ FoArray farray) {
+template <typename Par, typename Parray>
+static void apply(Par params, int3 L, int n, Parray parray, const int *start, RNDunif *rnd, /**/ const FoArray *farray) {
+    if (farray_has_stress(farray)) {
+        ERR("Stress: not implemented");
+    }
+    else {
+        FoArray_v farray_v;
+        farray_get_view(farray, &farray_v);
+        interactions(params, L, n, parray, start, rnd, /**/ farray_v);
+    }
+}
+
+static void apply_color(const PairParams *params, int3 L, int n, BPaArray parray, const int *start, RNDunif *rnd, /**/ const FoArray *farray) {
     PairDPDC pv;
     TBPaCArray_v parray_v;
-    FoArray_v farray_v;
         
     pair_get_view_dpd_color(params, &pv);
-    tbarray_get_view(n, parray, &parray_v);
-    farray_get_view(&farray, &farray_v);
+    tbarray_get_view(n, parray, &parray_v);    
         
-    interactions(pv, L, n, parray_v, start, rnd, /**/ farray_v);
+    apply(pv, L, n, parray_v, start, rnd, /**/ farray);
 
     tbarray_fin_view(&parray_v);    
 }
 
-static void apply_grey(const PairParams *params, int3 L, int n, BPaArray parray, const int *start, RNDunif *rnd, /**/ FoArray farray) {
+static void apply_grey(const PairParams *params, int3 L, int n, BPaArray parray, const int *start, RNDunif *rnd, /**/ const FoArray *farray) {
     PairDPD pv;
     TBPaArray_v parray_v;
-    FoArray_v farray_v;
     pair_get_view_dpd(params, &pv);
     tbarray_get_view(n, parray, &parray_v);
-    farray_get_view(&farray, &farray_v);
         
-    interactions(pv, L, n, parray_v, start, rnd, /**/ farray_v);
+    apply(pv, L, n, parray_v, start, rnd, /**/ farray);
 
     tbarray_fin_view(&parray_v); 
 }
@@ -80,7 +88,7 @@ void flocal_apply(const PairParams *params, int3 L, int n, BPaArray parray, cons
     farray_push_ff(ff, &farray);
     
     if (parray.colors)
-        apply_color(params, L, n, parray, start, rnd, /**/ farray);
+        apply_color(params, L, n, parray, start, rnd, /**/ &farray);
     else
-        apply_grey(params, L, n, parray, start, rnd, /**/ farray);
+        apply_grey(params, L, n, parray, start, rnd, /**/ &farray);
 }
