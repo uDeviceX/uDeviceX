@@ -50,12 +50,7 @@ em {
     color:rgba(0,0,0,.85)
 }
 
-#toc {
-    border-bottom:1px solid #efefed;
-    padding-bottom:.5em
-}
-
-#toc ul {
+ul {
     list-style-type:none
 }
 
@@ -100,7 +95,7 @@ body.toc2 {
     margin-bottom:0
 }
 
-#toc.toc2 ul ul {
+#toc.toc2 ul {
     margin-left:0;
     padding-left:1em
 }
