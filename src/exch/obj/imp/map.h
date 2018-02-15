@@ -1,6 +1,6 @@
 static void add_wrap_to_map(int3 L, int wid, int n, const Particle *pp, EMap map) {
     int3 L0 = make_int3(L.x-2, L.y-2, L.z-2);    
-    KL(dev::build_map, (k_cnf(n)), (L0, wid, n, pp, /**/ map));
+    KL(eobj_dev::build_map, (k_cnf(n)), (L0, wid, n, pp, /**/ map));
 }
 
 static void fill_map(int3 L, int nw, const PaWrap *ww, /**/ EMap map) {

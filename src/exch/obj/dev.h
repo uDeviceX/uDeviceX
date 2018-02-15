@@ -1,4 +1,4 @@
-namespace dev {
+namespace eobj_dev {
 
 __global__ void build_map(int3 L, int soluteid, int n, const Particle *pp, /**/ EMap map) {
     int pid, fid, fids[MAX_DSTS], ndsts, j;
@@ -43,4 +43,4 @@ __global__ void unpack_ff(Fop26 hff, PackHelper ph, /**/ Force *ff) {
     }
 }
 
-} // dev
+}
