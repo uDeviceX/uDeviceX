@@ -144,3 +144,23 @@ static __device__ void pair_force(PairDPDCM pc, PairPa a, PairPa b, float rnd, /
     p.s = pc.s[pid];
     pair_force(p, a, b, rnd, /**/ f);
 }
+
+
+static __device__ void pair_add(const PairFo *b, /**/ PairFo *a) {
+    a->x += b->x;
+    a->y += b->y;
+    a->z += b->z;
+}
+
+static __device__ void pair_add(const PairSFo *b, /**/ PairSFo *a) {
+    a->x += b->x;
+    a->y += b->y;
+    a->z += b->z;
+
+    a->sxx += b->sxx;
+    a->sxy += b->sxy;
+    a->sxz += b->sxz;
+    a->syy += b->syy;
+    a->syz += b->syz;
+    a->szz += b->szz;
+}
