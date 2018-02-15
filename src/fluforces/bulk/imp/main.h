@@ -35,8 +35,8 @@ static void tbarray_fin_view(TBPaCArray_v *v) {
     destroy(&v->cc);
 }
 
-template <typename Par, typename Parray>
-static void interactions(Par params, int3 L, int n, Parray parray, const int *start, RNDunif *rnd, /**/ FoArray_v farray) {    
+template <typename Par, typename Parray, typename Farray>
+static void interactions(Par params, int3 L, int n, Parray parray, const int *start, RNDunif *rnd, /**/ Farray farray) {    
     enum {THR=128};
     float seed;
     if (n <= 0) return;
@@ -47,34 +47,40 @@ static void interactions(Par params, int3 L, int n, Parray parray, const int *st
        (params, L, n, parray, start, seed, /**/ farray));
 }
 
+static void apply_color(const PairParams *params, int3 L, int n, BPaArray parray, const int *start, RNDunif *rnd, /**/ FoArray farray) {
+    PairDPDC pv;
+    TBPaCArray_v parray_v;
+    FoArray_v farray_v;
+        
+    pair_get_view_dpd_color(params, &pv);
+    tbarray_get_view(n, parray, &parray_v);
+    farray_get_view(&farray, &farray_v);
+        
+    interactions(pv, L, n, parray_v, start, rnd, /**/ farray_v);
+
+    tbarray_fin_view(&parray_v);    
+}
+
+static void apply_grey(const PairParams *params, int3 L, int n, BPaArray parray, const int *start, RNDunif *rnd, /**/ FoArray farray) {
+    PairDPD pv;
+    TBPaArray_v parray_v;
+    FoArray_v farray_v;
+    pair_get_view_dpd(params, &pv);
+    tbarray_get_view(n, parray, &parray_v);
+    farray_get_view(&farray, &farray_v);
+        
+    interactions(pv, L, n, parray_v, start, rnd, /**/ farray_v);
+
+    tbarray_fin_view(&parray_v); 
+}
+
 void flocal_apply(const PairParams *params, int3 L, int n, BPaArray parray, const int *start, RNDunif *rnd, /**/ Force *ff) {
     /* hack for now */
     FoArray farray;
     farray_push_ff(ff, &farray);
     
-    if (parray.colors) {
-        PairDPDC pv;
-        TBPaCArray_v parray_v;
-        FoArray_v farray_v;
-        
-        pair_get_view_dpd_color(params, &pv);
-        tbarray_get_view(n, parray, &parray_v);
-        farray_get_view(&farray, &farray_v);
-        
-        interactions(pv, L, n, parray_v, start, rnd, /**/ farray_v);
-
-        tbarray_fin_view(&parray_v);
-    }
-    else {
-        PairDPD pv;
-        TBPaArray_v parray_v;
-        FoArray_v farray_v;
-        pair_get_view_dpd(params, &pv);
-        tbarray_get_view(n, parray, &parray_v);
-        farray_get_view(&farray, &farray_v);
-        
-        interactions(pv, L, n, parray_v, start, rnd, /**/ farray_v);
-
-        tbarray_fin_view(&parray_v);
-    }
+    if (parray.colors)
+        apply_color(params, L, n, parray, start, rnd, /**/ farray);
+    else
+        apply_grey(params, L, n, parray, start, rnd, /**/ farray);
 }
