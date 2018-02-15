@@ -65,7 +65,7 @@ static void interactions(Par params, int3 L, const LFrag_v26<Parray> lfrags, con
     int n; /* number of threads */
     get_start(lfrags.d, /**/ start.d);
     n = start.d[26];
-    KL(fluforcesh_dev::force, (k_cnf(n)), (params, L, start, lfrags, rfrags, rrnd, /**/ ff));
+    KL(fhalo_dev::apply, (k_cnf(n)), (params, L, start, lfrags, rfrags, rrnd, /**/ ff));
 }
 
 static void apply_grey(const PairParams *params, int3 L, const flu::LFrag26 lfrags, const flu::RFrag26 rfrags, const flu::RndFrag26 rrnd, /**/ float *ff) {

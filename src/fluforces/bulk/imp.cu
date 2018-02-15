@@ -27,7 +27,7 @@
 #include "imp.h"
 #include "imp/type.h"
 
-namespace flocaldev {
+namespace fbulk_dev {
 #include "dev/fetch.h"
 #include "dev/main.h"
 }

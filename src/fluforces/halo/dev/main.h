@@ -75,7 +75,7 @@ static __device__ void force3(Par params, int3 L, const LFrag_v<Parray> afrag, c
 }
 
 template<typename Par, typename Parray>
-__global__ void force(Par params, int3 L, const int27 start, const LFrag_v26<Parray> lfrags, const RFrag_v26<Parray> rfrags, const flu::RndFrag26 rrnd, /**/ float *ff) {
+__global__ void apply(Par params, int3 L, const int27 start, const LFrag_v26<Parray> lfrags, const RFrag_v26<Parray> rfrags, const flu::RndFrag26 rrnd, /**/ float *ff) {
     flu::RndFrag  rnd;
     RFrag_v<Parray> rfrag;
     LFrag_v<Parray> lfrag;

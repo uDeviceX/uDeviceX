@@ -35,7 +35,7 @@
 #include "imp.h"
 
 #include "imp/type.h"
-namespace fluforcesh_dev {
+namespace fhalo_dev {
 #include "dev/dbg.h"
 #include "dev/map.h"
 #include "dev/main.h"

@@ -42,7 +42,7 @@ static void interactions(Par params, int3 L, int n, Parray parray, const int *st
     if (n <= 0) return;
     seed = rnd_get(rnd);
     
-    KL(flocaldev::apply,
+    KL(fbulk_dev::apply,
        (ceiln((n), THR), THR),
        (params, L, n, parray, start, seed, /**/ ff));
 }
