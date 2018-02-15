@@ -68,9 +68,15 @@ static __device__ float force_magn(PairDPDLJ p, float rnd, float ev, float r, fl
     return f;
 }
 
+static __device__ void magn2fo(float f0, float3 dr, /**/ PairFo *f) {
+    f->x = f0 * dr.x;
+    f->y = f0 * dr.y;
+    f->z = f0 * dr.z;    
+}
+
 // tag::int[]
-template <typename Param>
-static __device__ void pair_force(Param p, PairPa a, PairPa b, float rnd, /**/ PairFo *f)
+template <typename Param, typename Fo>
+static __device__ void pair_force(Param p, PairPa a, PairPa b, float rnd, /**/ Fo *f)
 // end::int[]
 {
     float r, invr, ev, f0;
@@ -94,10 +100,7 @@ static __device__ void pair_force(Param p, PairPa a, PairPa b, float rnd, /**/ P
     ev = dot<float>(&dr, &dv);
     
     f0 = force_magn(p, rnd, ev, r, invr);
-    
-    f->x = f0 * dr.x;
-    f->y = f0 * dr.y;
-    f->z = f0 * dr.z;
+    magn2fo(f0, dr, /**/ f);
 }
 
 static __device__ int colors2pid(int ca, int cb) {
@@ -107,7 +110,8 @@ static __device__ int colors2pid(int ca, int cb) {
     return c1 * (c1+1) / 2 + c0;
 }
 
-static __device__ void pair_force(PairDPDC pc, PairPa a, PairPa b, float rnd, /**/ PairFo *f) {
+template <typename Fo>
+static __device__ void pair_force(PairDPDC pc, PairPa a, PairPa b, float rnd, /**/ Fo *f) {
     PairDPD p;
     int pid;
     pid = colors2pid(a.color, b.color);
@@ -118,7 +122,8 @@ static __device__ void pair_force(PairDPDC pc, PairPa a, PairPa b, float rnd, /*
 }
 
 /* mirrored: parameters from particle "a" only */
-static __device__ void pair_force(PairDPDCM pc, PairPa a, PairPa b, float rnd, /**/ PairFo *f) {
+template <typename Fo>
+static __device__ void pair_force(PairDPDCM pc, PairPa a, PairPa b, float rnd, /**/ Fo *f) {
     PairDPD p;
     int pid = a.color;
     p.a = pc.a[pid];
