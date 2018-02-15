@@ -63,3 +63,73 @@ include::{src}/exch/map/dev.h[tag=int]
 <3> add a quantity to the map
 <4> get destination fragments from code
 
+== flu
+
+Exchange solvent particles within a cutoff radius from the neighboring
+nodes.
+
+
+=== interface
+
+allocate, deallocate the structures:
+
+[source,cpp]
+----
+include::{src}/exch/flu/imp.h[tag=mem]
+----
+
+build the map:
+
+[source,cpp]
+----
+include::{src}/exch/flu/imp.h[tag=map]
+----
+
+pack and copy data on host:
+
+[source,cpp]
+----
+include::{src}/exch/flu/imp.h[tag=pack]
+----
+
+communicate the packed data with neighbors:
+
+[source,cpp]
+----
+include::{src}/exch/flu/imp.h[tag=com]
+----
+
+unpack and get data informations needed by the _fluforces_ module:
+
+[source,cpp]
+----
+include::{src}/exch/flu/imp.h[tag=unpack]
+----
+
+== obj
+
+TODO
+
+== mesh
+
+TODO
+
+== common
+
+helper for common exchange operations
+
+[source,cpp]
+----
+include::{src}/exch/common/imp.h[tag=int]
+----
+<1> pack particles `pp` into 27 buffers `buf` according to the local map `ph`
+<2> shift particles in the fragment direction
+
+The local map is defined through the structure
+
+[source,cpp]
+----
+include::{src}/exch/common/imp.h[tag=struct]
+----
+
+which is a map for a single set of quantities.
