@@ -1,5 +1,3 @@
-namespace dev {
-
 /* corner fragments are neighbor with 7 fragments */
 enum { MAX_DSTS = 7 };
 
@@ -68,5 +66,3 @@ static __device__ int emap_decode(int code, /**/ int fids[MAX_DSTS]) {
     j = add_cornr(j, d, /**/ fids);
     return j;
 }
-
-} // dev
