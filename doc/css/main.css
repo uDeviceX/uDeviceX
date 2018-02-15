@@ -14,31 +14,8 @@ h4 { font-size:1.12em }
 h5 { font-size:.83em }
 h6 { font-size:.75em }
 
-#header:before,#header:after,#content:before,#content:after {
-    content:" ";
-    display:table
-}
-
-#header:after,#content:after {
-    clear:both
-}
-
-#header .details {
-    border-bottom:1px solid #ddddd8;
-    line-height:1.45;
-    padding-top:.25em;
-    padding-bottom:.25em;
-    padding-left:.25em;
-    display:flex;
-    flex-flow:row wrap
-}
-
 #header .details br {
     display:none
-}
-
-#header .details br+span:before {
-    content:"\00a0\2013\00a0"
 }
 
 #header .details br+span.author:before {
@@ -53,17 +30,15 @@ h6 { font-size:.75em }
 
 body.toc2 {
     padding-left:18em;
-    padding-right:0
+    font-size: 0.9em;
 }
 
 #toc.toc2 {
-    margin-top:0!important;
     background-color:#f8f8f7;
     position:fixed;
     width:18em;
     left:0;
     top:0;
-    padding:1.25em 1em;
     height:100%;
     overflow:auto
 }
