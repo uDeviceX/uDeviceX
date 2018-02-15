@@ -79,6 +79,10 @@ static void header_pp_ff(long n, const char *name, int id) {
     header(n, name, id, "float", "x y z vx vy vz fx fy fz");
 }
 
+static void header_ss(long n, const char *name, int id) {
+    header(n, name, id, "float", "sxx sxy sxz syy syz szz");
+}
+
 static void header_ii(long n, const char *name, const char *fields, int id) {
     header(n, name, id, "int", fields);
 }
@@ -122,6 +126,17 @@ void bop_parts_forces(MPI_Comm cart, const Coords *coords, const Particle *pp, c
     
     if (m::is_master(cart))
         header_pp_ff(ntot, name, id);
+}
+
+void bop_stresses(MPI_Comm cart, const Coords *coords, const float *ss, long n, const char *name, int id) {
+    char fname[256] = {0};
+    sprintf(fname, DUMP_BASE "/bop/" PATTERN ".values", name, id);
+
+    long ntot = write_data(cart, ss, 6*n, sizeof(float), MPI_FLOAT, fname);
+    ntot /= 6;
+    
+    if (m::is_master(cart))
+        header_ss(ntot, name, id);
 }
 
 static void intdata(MPI_Comm cart, const int *ii, long n, const char *name, const char *fields, int id) {
