@@ -1,12 +1,12 @@
 #ifdef FRAG_HOST
   #define _I_
   #define _S_ static
-  #define BEGIN namespace fraghst {
+  #define BEGIN namespace frag_hst {
   #define END }
 #else
   #define _I_ static __device__
   #define _S_ static __device__
-  #define BEGIN namespace fragdev {
+  #define BEGIN namespace frag_dev {
   #define END }
 #endif
 

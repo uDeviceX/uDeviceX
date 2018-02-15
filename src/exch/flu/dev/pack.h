@@ -16,7 +16,7 @@ __global__ void collect_particles(const int27 fragstart, const Particle *pp, con
 
     if (gid >= fragstart.d[26]) return;
 
-    fid = fragdev::frag_get_fid(fragstart.d, gid);
+    fid = frag_dev::frag_get_fid(fragstart.d, gid);
     hci = gid - fragstart.d[fid];
 
     src = bss.d[fid][hci];
@@ -59,7 +59,7 @@ __global__ void collect_colors(const int27 fragstart, const int *ii,
 
     if (gid >= fragstart.d[26]) return;
 
-    fid = fragdev::frag_get_fid(fragstart.d, gid);
+    fid = frag_dev::frag_get_fid(fragstart.d, gid);
     hci = gid - fragstart.d[fid];
 
     src = bss.d[fid][hci];

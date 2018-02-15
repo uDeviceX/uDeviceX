@@ -8,7 +8,7 @@ __global__ void dcommon_pack_pp_packets(int nv, const Particle *pp, DMap m, /**/
     cid = blockIdx.y;
 
     if (i >= nv) return;
-    fid = fragdev::frag_get_fid(m.starts, cid);
+    fid = frag_dev::frag_get_fid(m.starts, cid);
 
     offset = cid - m.starts[fid];
     scid   = m.ids[fid][offset];
@@ -21,9 +21,9 @@ __global__ void dcommon_pack_pp_packets(int nv, const Particle *pp, DMap m, /**/
 
 static __device__ void fid2shift(int3 L, int id, /**/ int s[3]) {
     enum {X, Y, Z};
-    s[X] = L.x * fragdev::i2dx(id);
-    s[Y] = L.y * fragdev::i2dy(id);
-    s[Z] = L.z * fragdev::i2dz(id);
+    s[X] = L.x * frag_dev::i2dx(id);
+    s[Y] = L.y * frag_dev::i2dy(id);
+    s[Z] = L.z * frag_dev::i2dz(id);
 }
 
 static  __device__ void shift_1p(const int s[3], /**/ Particle *p) {
@@ -47,7 +47,7 @@ __global__ void dcommon_shift_halo(int3 L, const Sarray<int, 27> starts, /**/ Pa
 
     pid = threadIdx.x + blockDim.x * blockIdx.x;
     if (pid >= starts.d[26]) return;
-    fid = fragdev::frag_get_fid(starts.d, pid);
+    fid = frag_dev::frag_get_fid(starts.d, pid);
     
     fid2shift(L, fid, s);
     shift_1p(s, /**/ pp + pid);

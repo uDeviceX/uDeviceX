@@ -31,9 +31,9 @@ static void pack_failure(DFluStatus *s) {
     enum {X, Y, Z};
     int cap, cnt, fid, d[3];
     cap = s->cap; cnt = s->cnt; fid = s->fid;
-    d[X] = fraghst::i2dx(fid);
-    d[Y] = fraghst::i2dy(fid);
-    d[Z] = fraghst::i2dz(fid);
+    d[X] = frag_hst::i2dx(fid);
+    d[Y] = frag_hst::i2dy(fid);
+    d[Z] = frag_hst::i2dz(fid);
     msg_print("exceed capacity, fragment %d = [%d %d %d]: %ld/%ld",
         fid, d[X], d[Y], d[Z], cnt, cap);
 }

@@ -34,7 +34,7 @@ __global__ void pack_mesh(int nv, const Particle *pp, EMap map, /**/ Pap26 buf) 
     for (  ; gid < hi; gid += step) {
         mid = gid / nv; /* mesh id   */
         vid = gid % nv; /* vertex id */
-        fid = fragdev::frag_get_fid(map.starts, mid);
+        fid = frag_dev::frag_get_fid(map.starts, mid);
 
         /* mesh index in the fragment coordinates */ 
         frag_mid = mid - map.starts[fid];
@@ -177,7 +177,7 @@ __global__ void unpack_mom(int nt, int27 fragstarts, intp26 hii, Mop26 hmm, EMap
     int i, fid;
     i = threadIdx.x + blockIdx.x * blockDim.x;
 
-    fid = fragdev::frag_get_fid(fragstarts.d, i);
+    fid = frag_dev::frag_get_fid(fragstarts.d, i);
 
     if (i >= fragstarts.d[26]) return;
 

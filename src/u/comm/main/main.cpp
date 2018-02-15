@@ -42,7 +42,7 @@ void comp(const int *a, const int *b, int n) {
 void compare(const hBags *sb, const hBags *rb) {
     int i, j, cs, cr;
     for (i = 0; i < 26; ++i) {
-        j = fraghst::anti(i);
+        j = frag_hst::anti(i);
         cs = sb->counts[i];
         cr = rb->counts[j];
         
@@ -77,7 +77,7 @@ int main(int argc, char **argv) {
 
     L = subdomain(coords);
 
-    fraghst::estimates(L, NBAGS, maxdensity, /**/ capacity);
+    frag_hst::estimates(L, NBAGS, maxdensity, /**/ capacity);
 
     UC(comm_bags_ini(HST_ONLY, NONE, sizeof(int), capacity, /**/ &sendB, NULL));
     UC(comm_bags_ini(HST_ONLY, NONE, sizeof(int), capacity, /**/ &recvB, NULL));

@@ -85,7 +85,7 @@ __global__ void apply(Par params, int3 L, const int27 start, const LFrag_v26<Par
 
     gid = threadIdx.x + blockDim.x * blockIdx.x;
     if (gid >= start.d[26]) return;
-    fid = fragdev::frag_get_fid(start.d, gid);
+    fid = frag_dev::frag_get_fid(start.d, gid);
     i = gid - start.d[fid];
     lfrag = lfrags.d[fid];
     if (i >= lfrag.n) return;

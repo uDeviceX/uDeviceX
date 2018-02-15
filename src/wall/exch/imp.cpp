@@ -19,7 +19,7 @@
 static void shift(int3 L, int fid, float r[3]) {
     enum {X, Y, Z};
     int d[3];
-    fraghst::i2d3(fid, d);
+    frag_hst::i2d3(fid, d);
     r[X] += d[X] * L.x;
     r[Y] += d[Y] * L.y;
     r[Z] += d[Z] * L.z;

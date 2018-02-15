@@ -50,7 +50,7 @@ static void fail_exceed(ExceedData *e) {
     enum {X, Y, Z};
     int cap, cnt, fid, d[3];
     cap = e->cap; cnt = e->cnt; fid = e->fid;
-    fraghst::i2d3(fid, d);
+    frag_hst::i2d3(fid, d);
     ERR("exceed capacity, fragment %d = [%d %d %d]: %d/%d",
         fid, d[X], d[Y], d[Z], cnt, cap);
 }

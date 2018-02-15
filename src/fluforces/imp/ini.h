@@ -19,7 +19,7 @@ static void get_interrank_infos(MPI_Comm cart, int fid, /**/ RNDunif* trunks[], 
     int seed, seed_base, seed_offset;
     int dims[3], periods[3], coords[3];
     int d[3];
-    fraghst::i2d3(fid, d);
+    frag_hst::i2d3(fid, d);
 
     MC(m::Cart_get(cart, 3, dims, periods, coords));    
     MC(m::Cart_rank(cart, coords, /**/ &rank));
@@ -48,7 +48,7 @@ static void get_interrank_infos(MPI_Comm cart, int fid, /**/ RNDunif* trunks[], 
     if (dstrank != rank)
         masks[fid] = min(dstrank, rank) == rank;
     else {
-        int alter_ego = fraghst::anti(fid);
+        int alter_ego = frag_hst::anti(fid);
         masks[fid] = min(fid, alter_ego) == fid;
     }
 }

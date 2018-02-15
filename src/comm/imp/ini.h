@@ -71,11 +71,11 @@ int comm_ini(MPI_Comm cart, /**/ Comm **com_p) {
     MC(m::Cart_get(cart, 3, dims, periods, coords));
     
     for (i = 0; i < NFRAGS; ++i) {
-        fraghst::i2d3(i, d);
+        frag_hst::i2d3(i, d);
         for (c = 0; c < 3; ++c)
             crd_rnk[c] = coords[c] + d[c];
         MC(m::Cart_rank(cart, crd_rnk, com->ranks + i));
-        com->tags[i] = fraghst::anti(i);
+        com->tags[i] = frag_hst::anti(i);
     }
     MC(m::Comm_dup(cart, &com->cart));
     return 0;

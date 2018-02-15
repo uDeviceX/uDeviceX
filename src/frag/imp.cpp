@@ -6,7 +6,7 @@
 #include "dev.h"
 #undef FRAG_HOST
 
-namespace fraghst {
+namespace frag_hst {
 
 void estimates(int3 L, int nfrags, float maxd, /**/ int *cap) {
     int i, e;
@@ -17,4 +17,4 @@ void estimates(int3 L, int nfrags, float maxd, /**/ int *cap) {
     }
 }
 
-} // fraghst
+} // frag_hst

@@ -11,9 +11,9 @@ int comm_post_recv(hBags *b, Comm *com) {
 static void fail_over(int i, long c, long cap) {
     enum {X, Y, Z};
     int d[3];
-    d[X] = fraghst::i2dx(i);
-    d[Y] = fraghst::i2dy(i);
-    d[Z] = fraghst::i2dz(i);
+    d[X] = frag_hst::i2dx(i);
+    d[Y] = frag_hst::i2dy(i);
+    d[Z] = frag_hst::i2dz(i);
     ERR("over capacity, fragment %d = [%d %d %d]: %ld/%ld",
         i, d[X], d[Y], d[Z], c, cap);
 }
@@ -62,9 +62,9 @@ static void fail_wait_status(int n, MPI_Status *ss) {
     for (i = 0; i < n; i++) {
         code = m::status2errcode(&ss[i]);
         if (m::is_success(code) || m::is_pending(code)) continue;
-        d[X] = fraghst::i2dx(i);
-        d[Y] = fraghst::i2dy(i);
-        d[Z] = fraghst::i2dz(i);
+        d[X] = frag_hst::i2dx(i);
+        d[Y] = frag_hst::i2dy(i);
+        d[Z] = frag_hst::i2dz(i);
         m::Error_string(code, msg, &sz);
         ERR("mpi error in fragment %d = [%d %d %d], %s", i,
             d[X], d[Y], d[Z], msg);

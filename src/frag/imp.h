@@ -2,7 +2,7 @@ enum {frag_bulk = 26};
 
 struct int3;
 
-namespace fraghst {
+namespace frag_hst {
 
 // tag::i2d[]
 int i2dx(int i);                 // <1>
@@ -29,4 +29,4 @@ int anti(int i);                  // <2>
 void estimates(int3 L, int nfrags, float maxd, /**/ int *cap); // <1>
 // end::hst[]
 
-} // fraghst
+} // frag_hst

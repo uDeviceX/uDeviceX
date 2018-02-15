@@ -40,7 +40,7 @@ static __device__ void halo1(Par params, int3 L, const int *cellsstart, int27 st
     Pa A;
     float *fA;
 
-    fid = fragdev::frag_get_fid(starts.d, aid);
+    fid = frag_dev::frag_get_fid(starts.d, aid);
     start = starts.d[fid];
 
     A = warp2p(pp.d[fid], aid - start);

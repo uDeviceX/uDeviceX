@@ -21,9 +21,9 @@ void eflu_get_remote_frags(const EFluUnpack *u, /**/ RFrag26 *rfrags) {
     L = u->L;
     
     for (i = 0; i < 26; ++i) {
-        dx = fraghst::i2dx(i);
-        dy = fraghst::i2dy(i);
-        dz = fraghst::i2dz(i);
+        dx = frag_hst::i2dx(i);
+        dy = frag_hst::i2dy(i);
+        dz = frag_hst::i2dz(i);
 
         xcells = dx == 0 ? L.x : 1;
         ycells = dy == 0 ? L.y : 1;

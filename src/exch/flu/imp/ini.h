@@ -7,12 +7,12 @@ void eflu_pack_ini(bool colors, int3 L, int maxd, EFluPack **pack) {
     p = *pack;
 
     p->L = L;
-    fraghst::estimates(L, NFRAGS, maxd, /**/ cap);
+    frag_hst::estimates(L, NFRAGS, maxd, /**/ cap);
     cap[BULK] = 0;
     memcpy(p->cap.d, cap, NFRAGS * sizeof(int));
     
     for (i = 0; i < NFRAGS; ++i) {
-        ncs[i] = nc = fraghst::ncell(L, i) + 1;
+        ncs[i] = nc = frag_hst::ncell(L, i) + 1;
         sz = nc * sizeof(int);
         CC(d::Malloc((void**) &p->bcc.d[i], sz));
         CC(d::Malloc((void**) &p->bss.d[i], sz));
@@ -58,11 +58,11 @@ void eflu_unpack_ini(bool colors, int3 L, int maxd, EFluUnpack **unpack) {
     u = *unpack;
 
     u->L = L;
-    fraghst::estimates(L, NFRAGS, maxd, /**/ cap);
+    frag_hst::estimates(L, NFRAGS, maxd, /**/ cap);
     cap[BULK] = 0;
     
     for (i = 0; i < NFRAGS; ++i)
-        ncs[i] = fraghst::ncell(L, i) + 1;
+        ncs[i] = frag_hst::ncell(L, i) + 1;
     ncs[BULK] = 0;
     
     UC(comm_bags_ini(PINNED_DEV, NONE, sizeof(Particle), cap, /**/ &u->hpp, &u->dpp));

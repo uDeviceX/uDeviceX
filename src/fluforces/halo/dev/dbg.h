@@ -4,8 +4,8 @@ static __device__ void assert_frag(int3 L, int i, const RFrag_v<Parray> frag) {
     int dx, dy, dz;
     xs = frag.xcells; ys = frag.ycells; zs = frag.zcells;
     dx = frag.dx; dy = frag.dy; dz = frag.dz;
-    assert(xs * ys * zs == fragdev::ncell(L, i));
-    assert(fragdev::d2i(dx, dy, dz) == i);
+    assert(xs * ys * zs == frag_dev::ncell(L, i));
+    assert(frag_dev::d2i(dx, dy, dz) == i);
 }
 
 template <typename Parray>
@@ -21,8 +21,8 @@ static __device__ void assert_rc(int3 L, const RFrag_v<Parray> frag, int i, int 
     assert(dx == -1 || dx == 0 || dx == 1);
     assert(dy == -1 || dy == 0 || dy == 1);
     assert(dz == -1 || dz == 0 || dz == 1);
-    fid  = fragdev::d2i(dx, dy, dz);
-    nmax = fragdev::ncell(L, fid) + 1;
+    fid  = frag_dev::d2i(dx, dy, dz);
+    nmax = frag_dev::ncell(L, fid) + 1;
 
     for (j = 0 ; j < row; j++) {
         assert(i       < nmax);

@@ -67,7 +67,7 @@ __global__ void halo(Par params, int3 L, const int *cellstarts, const uint *ids,
     aid = threadIdx.x + blockDim.x * blockIdx.x;
     if (aid >= n) return;
 
-    fid = fragdev::frag_get_fid(starts.d, aid);
+    fid = frag_dev::frag_get_fid(starts.d, aid);
     start = starts.d[fid];
     pp2p(hpp.d[fid], aid - start, &a);
     fA = hff.d[fid][aid - start].f;

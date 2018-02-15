@@ -13,9 +13,9 @@ void drig_unpack_bulk(const DRigPack *p, /**/ RigQuants *q) {
 
 static void shift(int3 L, int fid, float r[3]) {
     enum {X, Y, Z};
-    r[X] += L.x * fraghst::i2dx(fid);
-    r[Y] += L.y * fraghst::i2dy(fid);
-    r[Z] += L.z * fraghst::i2dz(fid);
+    r[X] += L.x * frag_hst::i2dx(fid);
+    r[Y] += L.y * frag_hst::i2dy(fid);
+    r[Z] += L.z * frag_hst::i2dz(fid);
 }
 
 static void shift_ss_one_frag(int3 L, int n, int fid, Solid *ss) {

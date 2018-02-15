@@ -20,7 +20,7 @@ __global__ void pack(const T *data, DMap m, /**/ Sarray<T*, 26> buf) {
     
     gid = threadIdx.x + blockDim.x * blockIdx.x;
     slot = gid / STRIDE;
-    fid = fragdev::frag_get_fid(m.starts, slot);
+    fid = frag_dev::frag_get_fid(m.starts, slot);
     if (slot >= m.starts[26]) return;
     c = gid % STRIDE;
 
