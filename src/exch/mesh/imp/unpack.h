@@ -59,5 +59,5 @@ void emesh_unpack_mom(int nt, const EMeshPack *p, const EMeshUnpackM *u, /**/ Mo
 
     n = get_fragstarts(NFRAGS, u->hii.counts, /**/ fragstarts.d);
     
-    KL(dev::unpack_mom, (k_cnf(n)), (nt, fragstarts, wrapii, wrapmm, p->map, /**/ mm));
+    KL(emesh_dev::unpack_mom, (k_cnf(n)), (nt, fragstarts, wrapii, wrapmm, p->map, /**/ mm));
 }

@@ -1,4 +1,4 @@
-namespace dev {
+namespace emesh_dev {
 
 /* L0: subdomain cropped by one cutoff radius */
 __global__ void build_map(int3 L0, int n, const float3 *minext, const float3 *maxext, /**/ EMap map) {
