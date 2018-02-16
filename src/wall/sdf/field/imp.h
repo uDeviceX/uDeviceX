@@ -11,7 +11,7 @@ void sdf_field_dump(const Coords*, MPI_Comm cart, const int N[3], const float *D
 
 /* new interface */
 void field_ini(const char *path, /**/ Field**);
-void field_sample(const Field*, const int N[3], /**/ Field**);
+void field_sample(const Field*, Tform*, const int N[3], /**/ Field**);
 
 void field_size(const Field*, /**/ int N[3]);
 void field_extension(const Field*, /**/ float ext[3]);
