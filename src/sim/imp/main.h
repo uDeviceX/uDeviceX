@@ -20,7 +20,7 @@ static void gen(Time *time, float tw, const Coords *coords, Wall *w, Sim *s) { /
     winfo.active = walls;
     winfo.sdf = w->sdf;
     finfo.q = &flu->q;
-    rinfo.active = rbcs;
+    rinfo.active = s->opt.rbc;
     rinfo.q = &rbc->q;
     sinfo.active = s->opt.rig;
     sinfo.q = &rig->q;
@@ -53,7 +53,7 @@ void sim_gen(Sim *s, Config *cfg, Time *time, TimeSeg *time_seg) {
     UC(flu_gen_quants(s->coords, s->gen_color, &flu->q));
     UC(flu_build_cells(&flu->q));
     if (s->opt.fluids)  flu_gen_ids  (s->cart, flu->q.n, &flu->q);
-    if (rbcs) {
+    if (s->opt.rbc) {
         rbc_gen_quants(s->coords, s->cart, cell, "rbcs-ic.txt", /**/ &rbc->q);
         if (s->opt.flucolors) gen_colors(rbc, &s->colorer, /**/ flu);
     }
@@ -64,7 +64,7 @@ void sim_gen(Sim *s, Config *cfg, Time *time, TimeSeg *time_seg) {
         dSync();
         if (walls && wall->q.n) UC(wall_gen_ticket(&wall->q, wall->t));
         s->solids0 = s->opt.rig;
-        if (rbcs && s->opt.flucolors) gen_colors(rbc, &s->colorer, /**/ flu);
+        if (s->opt.rbc && s->opt.flucolors) gen_colors(rbc, &s->colorer, /**/ flu);
         run(cfg, time, time_seg->wall, time_seg->end, s);
     } else {
         s->solids0 = s->opt.rig;
@@ -87,7 +87,7 @@ void sim_strt(Sim *s, Config *cfg, Time *time, TimeSeg *time_seg) {
     flu_strt_quants(s->coords, RESTART_BEGIN, &flu->q);
     flu_build_cells(&flu->q);
 
-    if (rbcs) rbc_strt_quants(s->coords, cell, RESTART_BEGIN, &rbc->q);
+    if (s->opt.rbc) rbc_strt_quants(s->coords, cell, RESTART_BEGIN, &rbc->q);
     dSync();
 
     if (s->opt.rig) rig_strt_quants(s->coords, RESTART_BEGIN, &rig->q);

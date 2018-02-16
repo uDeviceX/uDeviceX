@@ -228,6 +228,9 @@ static void read_opt(const Config *c, Opt *o) {
     UC(conf_lookup_bool(c, "flu.stresses", &b));
     o->fluss = b;
 
+    UC(conf_lookup_bool(c, "rbc.active", &b));
+    o->rbc = b;
+
     UC(conf_lookup_bool(c, "outflow.active", &b));
     o->outflow = b;
     UC(conf_lookup_bool(c, "inflow.active", &b));
@@ -293,14 +296,14 @@ void sim_ini(Config *cfg, MPI_Comm cart,  Time *time, /**/ Sim **sim) {
 
     EMALLOC(3 * maxp, &s->pp_dump);
 
-    if (rbcs) UC(ini_rbc(cfg, s->cart, s->L, /**/ &s->rbc));
+    if (s->opt.rbc)        UC(ini_rbc(cfg, s->cart, s->L, /**/ &s->rbc));
 
     if (s->opt.vcon)       UC(ini_vcon(s->cart, s->L, cfg, /**/ &s->vcon));
     if (s->opt.outflow)    UC(ini_outflow(s->coords, maxp, cfg, /**/ &s->outflow));
     if (s->opt.inflow)     UC(ini_inflow (s->coords, s->L, cfg,  /**/ &s->inflow ));
     if (s->opt.denoutflow) UC(ini_denoutflow(s->coords, maxp, cfg, /**/ &s->denoutflow, &s->mapoutflow));
 
-    if (rbcs || s->opt.rig)
+    if (s->opt.rbc || s->opt.rig)
         UC(ini_objinter(s->cart, maxp, s->L, &s->opt, /**/ &s->objinter));
 
     UC(bop_ini(s->cart, maxp, &s->dumpt));
@@ -309,7 +312,7 @@ void sim_ini(Config *cfg, MPI_Comm cart,  Time *time, /**/ Sim **sim) {
 
     UC(ini_flu(s->opt, s->cart, maxp, s->L, /**/ &s->flu));
 
-    if (s->opt.flucolors && rbcs)
+    if (s->opt.flucolors && s->opt.rbc)
         UC(ini_colorer(s->rbc.q.nv, s->cart, maxp, s->L, /**/ &s->colorer));
 
     if (s->opt.rig) {

@@ -15,7 +15,7 @@ static void step(Time *time, BForce *bforce, bool wall0, int ts, int it, Sim *s)
 
     UC(distribute_flu(s));
     if (s->solids0) UC(distribute_rig(/**/ rig));
-    if (rbcs)       UC(distribute_rbc(/**/ rbc));
+    if (s->opt.rbc) UC(distribute_rbc(/**/ rbc));
 
     UC(check_sizes(s));
     UC(forces(dt, time, wall0, s));
@@ -28,7 +28,7 @@ static void step(Time *time, BForce *bforce, bool wall0, int ts, int it, Sim *s)
     UC(restrain(it, /**/ s));
     UC(update_solvent(dt, s->moveparams, /**/ flu));
     if (s->solids0) update_solid(dt, /**/ rig);
-    if (rbcs)       update_rbc(dt, s->moveparams, it, rbc, s);
+    if (s->opt.rbc) update_rbc(dt, s->moveparams, it, rbc, s);
 
     UC(check_vel(dt, s));
 
@@ -38,7 +38,7 @@ static void step(Time *time, BForce *bforce, bool wall0, int ts, int it, Sim *s)
         log(it, &s->vcon);
     }
 
-    if (wall0) bounce_wall(dt, s->coords, wall, /**/ flu, rbc);
+    if (wall0) bounce_wall(dt, s->opt.rbc, s->coords, wall, /**/ flu, rbc);
 
     if (opt->sbounce && s->solids0) bounce_solid(dt, s->L, /**/ &s->bb, rig, flu);
 

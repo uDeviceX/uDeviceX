@@ -10,7 +10,7 @@ static int download_pp(Sim *s) { /* device to host  data transfer */
     if (s->solids0 && rig->q.n) {
         cD2H(s->pp_dump + np, rig->q.pp, rig->q.n);    np += rig->q.n;
     }
-    if (rbcs && rbc->q.n) {
+    if (s->opt.rbc && rbc->q.n) {
         cD2H(s->pp_dump + np, rbc->q.pp, rbc->q.n);    np += rbc->q.n;
     }
     return np;
@@ -115,7 +115,7 @@ static void dump_strt(int id, Sim *s) {
     Rbc *rbc = &s->rbc;
     Rig *rig = &s->rig;
     flu_strt_dump(s->coords, id, &flu->q);
-    if (rbcs)       rbc_strt_dump(s->coords, id, &rbc->q);
+    if (s->opt.rbc) rbc_strt_dump(s->coords, id, &rbc->q);
     if (s->opt.rig) rig_strt_dump(s->coords, id, &rig->q);
 }
 
@@ -123,7 +123,7 @@ static void dump_diag(Time *time, int it, Sim *s) {
     const Opt *o = &s->opt;
     if (time_cross(time, o->freq_parts)) {
         if (o->dump_parts) dump_part(s);
-        if (rbcs)          dump_rbcs(s);
+        if (s->opt.rbc)    dump_rbcs(s);
         UC(diag(time_current(time), s));
     }
     if (o->dump_field && time_cross(time, o->freq_field))

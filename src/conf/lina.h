@@ -6,7 +6,6 @@
 #define      color_freq             500
 #define dump_all_fields            true
 #define         RBC_RND            true
-#define            rbcs            true
 
 #define      strt_dumps            true
 #define       strt_freq         2000000

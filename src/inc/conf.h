@@ -187,8 +187,8 @@
 #endif
 
 // rbc
-#ifndef rbcs
-#define rbcs (false)
+#ifdef rbcs
+#error rbcs is runtime: rbc/active in cfg
 #endif
 
 #ifndef rbc_mass

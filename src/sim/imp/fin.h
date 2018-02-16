@@ -139,7 +139,7 @@ static void fin_pair_params(Sim *s) {
 
 void sim_fin(Sim *s, Time *time) {
     bop_fin(s->dumpt);
-    if (rbcs || s->opt.rig)
+    if (s->opt.rbc || s->opt.rig)
         fin_objinter(&s->opt, &s->objinter);
 
     if (s->opt.vcon)       UC(fin_vcon(/**/ &s->vcon));
@@ -151,7 +151,7 @@ void sim_fin(Sim *s, Time *time) {
 
     fin_flu(s->opt, &s->flu);
 
-    if (s->opt.flucolors && rbcs)
+    if (s->opt.flucolors && s->opt.rbc)
         fin_colorer(/**/ &s->colorer);
 
     if (s->opt.rig) {
@@ -163,7 +163,7 @@ void sim_fin(Sim *s, Time *time) {
 
     EFREE(s->pp_dump);
     
-    if (rbcs) fin_rbc(/**/ &s->rbc);
+    if (s->opt.rbc) fin_rbc(/**/ &s->rbc);
 
     UC(scheme_restrain_fin(s->restrain));
     UC(coords_fin(/**/ s->coords));

@@ -24,7 +24,7 @@ void forces_objects(Sim *sim) {
         fw[nw] = {s->q.n, s->ff};
         ++nw;
     }
-    if (rbcs) {
+    if (opt.rbc) {
         pw[nw] = {r->q.n, r->q.pp};
         fw[nw] = {r->q.n, r->ff};
         ++nw;

@@ -136,6 +136,7 @@ struct Vcon {
 struct Opt {
     bool fsi, cnt;
     bool flucolors, fluids, fluss;
+    bool rbc;
     bool inflow, outflow, denoutflow, vcon;
     bool rig, sbounce;
     bool dump_field, dump_parts;

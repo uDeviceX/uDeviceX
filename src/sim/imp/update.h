@@ -4,7 +4,7 @@ void clear_vel(Sim *s) {
     Rig *rig = &s->rig;
     scheme_move_clear_vel(flu->q.n, flu->q.pp);
     if (s->opt.rig) scheme_move_clear_vel(rig->q.n, rig->q.pp);
-    if (rbcs  ) scheme_move_clear_vel(rbc->q.n, rbc->q.pp);
+    if (s->opt.rbc) scheme_move_clear_vel(rbc->q.n, rbc->q.pp);
 }
 
 void update_solid(float dt, Rig *s) {
@@ -107,7 +107,7 @@ void restrain(long it, Sim *s) {
     scheme_restrain_apply(s->cart, s->flu.q.cc, it, /**/ s->restrain, qq);
 }
 
-void bounce_wall(float dt, const Coords *c, Wall *w, /**/ Flu *f, Rbc *r) {
+void bounce_wall(float dt, bool rbc, const Coords *c, Wall *w, /**/ Flu *f, Rbc *r) {
     sdf_bounce(dt, &w->vview, c, w->sdf, f->q.n, /**/ f->q.pp);
-    if (rbcs) sdf_bounce(dt, &w->vview, c, w->sdf, r->q.n, /**/ r->q.pp);
+    if (rbc) sdf_bounce(dt, &w->vview, c, w->sdf, r->q.n, /**/ r->q.pp);
 }
