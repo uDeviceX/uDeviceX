@@ -2,4 +2,6 @@
 
 echo run | S=`u.cp.s` u.build u/x base.h
 
-u.run ./udx conf.cfg
+PROF= u.run ./udx conf.cfg '
+time = { end = 1e-5 }
+'
