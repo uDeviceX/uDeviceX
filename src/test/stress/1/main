@@ -10,4 +10,4 @@ u.make -j
 u.run ./udx conf.cfg
 bop2txt bop/solvent-00000.bop > pp.txt
 bop2txt bop/stress_solvent-00000.bop > ss.txt
-paste -d ' ' pp.txt ss.txt | sort > stress.out.txt
+paste -d ' ' pp.txt ss.txt | sort | uscale 10000 > stress.out.txt

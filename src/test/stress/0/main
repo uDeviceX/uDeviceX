@@ -10,4 +10,4 @@ u.conf "$S" u/x "$S/conf/default.h" <<!
 u.make -j
 u.run ./udx conf.cfg
 bop2txt bop/solvent-00000.bop > pp.txt
-sort pp.txt > forces.out.txt
+sort pp.txt | uscale 10000 > forces.out.txt
