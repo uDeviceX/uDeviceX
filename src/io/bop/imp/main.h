@@ -128,7 +128,7 @@ void bop_parts_forces(MPI_Comm cart, const Coords *coords, const Particle *pp, c
         header_pp_ff(ntot, name, id);
 }
 
-void bop_stresses(MPI_Comm cart, const Coords *coords, const float *ss, long n, const char *name, int id) {
+void bop_stresses(MPI_Comm cart, const float *ss, long n, const char *name, int id) {
     char fname[256] = {0};
     sprintf(fname, DUMP_BASE "/bop/" PATTERN ".values", name, id);
 
