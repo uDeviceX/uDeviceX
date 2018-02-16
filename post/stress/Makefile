@@ -25,7 +25,7 @@ stress.avg.o: stress.avg.cpp
 .PHONY: clean install test
 clean:; rm -rf *.o $(PROGS)
 
-install:
+install: $(PROGS)
 	mkdir -p $(INST_BIN)
 	install0 () ( cp $$f $(INST_BIN)/$P.$$f; )    ;  \
 	for f in $(PI); do install0; done

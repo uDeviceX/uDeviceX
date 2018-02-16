@@ -2,13 +2,24 @@
 #include "stdlib.h"
 #include "math.h"
 #include "string.h"
+#include <assert.h>
 
 #include "bop_common.h"
 #include "bop_serial.h"
 
 #include "bov.h"
 #include "bov_serial.h"
-    
+
+#define BPC(ans) do {                                   \
+        BopStatus s = ans;                              \
+        if (!bop_success(s)) {                          \
+            fprintf(stderr, "%s: %d: Bop error: %s\n",  \
+                    __FILE__, __LINE__,                 \
+                    bob_report_error_desc(s));          \
+            exit(1);                                    \
+        }                                               \
+    } while(0)
+      
 struct Args {
     float lx, ly, lz;
     int nx, ny, nz;
@@ -64,37 +75,37 @@ enum {
 };
 
 enum {
-     XX,  XY,  XZ,  YY,  YZ,  ZZ,
+    XX,  XY,  XZ,  YY,  YZ,  ZZ,
     KXX, KXY, KXZ, KYY, KYZ, KZZ, NPG
 };
 
 // reduce field quantities in each cell
-static void binning(int n, const float *pp, const float *ss,
+static void binning(long n, const float *pp, const float *ss,
                     int nx, int ny, int nz,
                     float dx, float dy, float dz,
                     float ox, float oy, float oz,
                     /**/ float *grid, int *counts) {
-    enum {X, Y, Z};
+    enum {X, Y, Z, D};
     int i, cid;
     const float *r, *u, *s;
     float *g;
     
     for (i = 0; i < n; ++i) {
-        r = pp + NPP * i + 0;
-        u = pp + NPP * i + 3;
+        r = pp + NPP * i;
+        u = r + D;
         s = ss + NPS * i;
         
         cid = r2cid(r, nx, ny, nz, dx, dy, dz, ox, oy, oz);
-
+        
         if (cid != INVALID) {
             g = grid + NPG * cid;
             counts[cid] ++;
-            g[XX] += s[XX];
-            g[XY] += s[XY];
-            g[XZ] += s[XZ];
-            g[YY] += s[YY];
-            g[YZ] += s[YZ];
-            g[ZZ] += s[ZZ];
+            g[XX] += 0.5 * s[XX];
+            g[XY] += 0.5 * s[XY];
+            g[XZ] += 0.5 * s[XZ];
+            g[YY] += 0.5 * s[YY];
+            g[YZ] += 0.5 * s[YZ];
+            g[ZZ] += 0.5 * s[ZZ];
 
             g[KXX] += u[X] * u[X];
             g[KXY] += u[X] * u[Y];
@@ -127,7 +138,7 @@ int main(int argc, char **argv) {
     int ngrid, *counts;
     char fdname[Cbuf::SIZ];
     size_t sz;
-    long n;
+    long n, ns;
     float *pp, *ss;
     
     parse(argc, argv, /**/ &a);
@@ -142,22 +153,26 @@ int main(int argc, char **argv) {
     counts = (int*) malloc(sz);
     memset(counts, 0, sz);
 
-    bop_ini(&pp_bop);
-    bop_ini(&ss_bop);
+    BPC(bop_ini(&pp_bop));
+    BPC(bop_ini(&ss_bop));
 
-    bop_read_header(a.pp, /**/ pp_bop, fdname);
-    bop_alloc(/**/ pp_bop);
-    bop_read_values(fdname, /**/ pp_bop);
+    BPC(bop_read_header(a.pp, /**/ pp_bop, fdname));
+    BPC(bop_alloc(/**/ pp_bop));
+    BPC(bop_read_values(fdname, /**/ pp_bop));
 
-    bop_read_header(a.ss, /**/ ss_bop, fdname);
-    bop_alloc(/**/ ss_bop);
-    bop_read_values(fdname, /**/ ss_bop);
+    BPC(bop_read_header(a.ss, /**/ ss_bop, fdname));
+    BPC(bop_alloc(/**/ ss_bop));
+    BPC(bop_read_values(fdname, /**/ ss_bop));
 
     dx = a.lx / a.nx;
     dy = a.ly / a.ny;
     dz = a.lz / a.nz;
+    
+    BPC(bop_get_n(pp_bop, &n));
+    BPC(bop_get_n(ss_bop, &ns));
 
-    bop_get_n(pp_bop, &n);
+    assert(n == ns);
+    
     pp = (float*) bop_get_data(pp_bop);
     ss = (float*) bop_get_data(ss_bop);
     
@@ -177,7 +192,7 @@ int main(int argc, char **argv) {
 
     bov_alloc(sizeof(float), &bov);
 
-    memcpy(bov.data, grid, ngrid * sizeof(float));
+    memcpy(bov.data, grid, ngrid * NPG * sizeof(float));
 
     bov_write_header(a.bov, &bov);
     bov_write_values(a.bov, &bov);
@@ -185,8 +200,8 @@ int main(int argc, char **argv) {
     free(grid);
     free(counts);
     
-    bop_fin(pp_bop);
-    bop_fin(ss_bop);
+    BPC(bop_fin(pp_bop));
+    BPC(bop_fin(ss_bop));
     bov_free(&bov);
 
     return 0;
