@@ -45,6 +45,10 @@
 #include "parray/imp.h"
 #include "parray/dev.h"
 
+#include "farray/type.h"
+#include "farray/imp.h"
+#include "farray/dev.h"
+
 #include "utils/kl.h"
 #include "imp.h"
 

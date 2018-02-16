@@ -15,35 +15,33 @@ static __device__ void fetch_wall(Wvel_v wv, Coords_v c, Texo<float4> pp, int i,
     a->vx = v.x;  a->vy = v.y;   a->vz = v.z;
 }
 
-template<typename Par>
+template<typename Par, typename Fo>
 static __device__ void force0(Par params, Wvel_v wv, Coords_v c, PairPa a, int aid, int zplane,
-                              float seed, WallForce wa, /**/ float *ff) {
+                              float seed, WallForce wa, /**/ Fo *fa) {
     map::Map m;
     PairPa b;  /* wall particles */
+    Fo f;
     float rnd;
-    PairFo f;
     int i, bid;
 
     if (sdf_far(&wa.sdf_v, a.x, a.y, a.z)) return;
 
     map::ini(wa.L, zplane, wa.start, wa.n, a.x, a.y, a.z, /**/ &m);
-    float xforce = 0, yforce = 0, zforce = 0;
+
     for (i = 0; !map::endp(m, i); ++i) {
         bid = map::m2id(m, i);
         fetch_wall<Par>(wv, c, wa.pp, bid, /**/ &b);
         rnd = rnd::mean0var1ii(seed, aid, bid);
         pair_force(params, a, b, rnd, /**/ &f);
-        xforce += f.x; yforce += f.y; zforce += f.z;
+        pair_add(&f, fa);
     }
-    atomicAdd(ff + 3 * aid + 0, xforce);
-    atomicAdd(ff + 3 * aid + 1, yforce);
-    atomicAdd(ff + 3 * aid + 2, zforce);
 }
 
-template<typename Par, typename Parray>
-__global__ void force(Par params, Wvel_v wv, Coords_v c, Parray parray, int np, float seed, WallForce wa, /**/ float *ff) {
+template<typename Par, typename Parray, typename Farray>
+__global__ void force(Par params, Wvel_v wv, Coords_v c, Parray parray, int np, float seed, WallForce wa, /**/ Farray farray) {
     PairPa a; /* bulk particle */
     int gid, aid, zplane;
+    auto ftot = farray_fo0(farray);
     gid = threadIdx.x + blockDim.x * blockIdx.x;
     aid    = gid / 3;
     zplane = gid % 3;
@@ -51,5 +49,7 @@ __global__ void force(Par params, Wvel_v wv, Coords_v c, Parray parray, int np, 
     if (aid >= np) return;
     fetch_p(parray, aid, /**/ &a);
 
-    force0(params, wv, c, a, aid, zplane, seed, wa, /**/ ff);
+    force0(params, wv, c, a, aid, zplane, seed, wa, /**/ &ftot);
+
+    farray_atomic_add<1>(&ftot, aid, /**/ farray);
 }
