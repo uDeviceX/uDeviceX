@@ -76,6 +76,9 @@ struct Flu {
 
     Force *ff;
     Force *ff_hst; /* solvent forces on host    */
+
+    float *ss;     /* stresses */
+    float *ss_hst;
 };
 
 /* data holder for red blood cells */
@@ -132,7 +135,7 @@ struct Vcon {
 /* optional features */
 struct Opt {
     bool fsi, cnt;
-    bool flucolors, fluids;
+    bool flucolors, fluids, fluss;
     bool inflow, outflow, denoutflow, vcon;
     bool rig, sbounce;
     bool dump_field, dump_parts;

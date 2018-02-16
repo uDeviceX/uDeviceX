@@ -148,6 +148,11 @@ static void ini_flu(Opt opt, MPI_Comm cart, int maxp, int3 L, /**/ Flu *f) {
 
     UC(Dalloc(&f->ff, maxp));
     EMALLOC(maxp, /**/ &f->ff_hst);
+
+    if (opt.fluss) {
+        UC(Dalloc(&f->ss, 6*maxp));
+        EMALLOC(6*maxp, /**/ &f->ss_hst);        
+    }
 }
 
 static void ini_rbc(const Config *cfg, MPI_Comm cart, int3 L, /**/ Rbc *r) {
@@ -220,6 +225,8 @@ static void read_opt(const Config *c, Opt *o) {
     o->flucolors = b;
     UC(conf_lookup_bool(c, "flu.ids", &b));
     o->fluids = b;
+    UC(conf_lookup_bool(c, "flu.stresses", &b));
+    o->fluss = b;
 
     UC(conf_lookup_bool(c, "outflow.active", &b));
     o->outflow = b;

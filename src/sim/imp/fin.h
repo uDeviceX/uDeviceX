@@ -65,7 +65,7 @@ static void fin_inflow(Inflow *i) {
 }
 
 
-static void fin_flu(Flu *f) {
+static void fin_flu(Opt opt, Flu *f) {
     UC(flu_fin(&f->q));
     UC(fluforces_bulk_fin(/**/ f->bulk));
     UC(fluforces_halo_fin(/**/ f->halo));
@@ -75,6 +75,11 @@ static void fin_flu(Flu *f) {
 
     UC(Dfree(f->ff));
     EFREE(f->ff_hst);
+
+    if (opt.fluss) {
+        UC(Dfree(f->ss));
+        EFREE(f->ss_hst);        
+    }
 }
 
 static void fin_rbc(Rbc *r) {
@@ -144,7 +149,7 @@ void sim_fin(Sim *s, Time *time) {
     
     if (walls) fin_wall(&s->wall);
 
-    fin_flu(&s->flu);
+    fin_flu(s->opt, &s->flu);
 
     if (s->opt.flucolors && rbcs)
         fin_colorer(/**/ &s->colorer);
