@@ -1,4 +1,4 @@
-void forces_dpd(Flu *f) {
+void forces_dpd(bool stress, Flu *f) {
     const int *count = f->q.cells.counts;
     const int *start = f->q.cells.starts;
     PaArray parray;
@@ -13,6 +13,8 @@ void forces_dpd(Flu *f) {
         parray_push_cc(f->q.cc, /**/ &parray);
 
     farray_push_ff(f->ff, /**/ &farray);
+    if (stress)
+        farray_push_ss(f->ss, /**/ &farray);
     
     UC(eflu_compute_map(start, count, /**/ e->p));
     UC(eflu_download_cell_starts(/**/ e->p));

@@ -18,7 +18,7 @@ static void step(Time *time, BForce *bforce, bool wall0, int ts, int it, Sim *s)
     if (rbcs)       UC(distribute_rbc(/**/ rbc));
 
     UC(check_sizes(s));
-    UC(forces(dt, wall0, s));
+    UC(forces(dt, time, wall0, s));
     UC(check_forces(dt, s));
 
     dump_diag(time, it, s);
