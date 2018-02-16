@@ -13,7 +13,7 @@ void sdf_field_ini_dims(const char *path, /**/ int N[3], float ext[3]) {
     sscanf(l, "%d %d %d", &N[0], &N[1], &N[2]);
     UC(efclose(f));
 }
-  
+
 void sdf_field_ini_data(const char *path, int n, /**/ float *D) { /* read sdf file */
     FILE *f;
     UC(efopen(path, "r", /**/ &f));
@@ -71,4 +71,16 @@ void field_scale(Field *q, float scale) {
     N = q->N; D = q->D;
     n = N[X]*N[Y]*N[Z];
     for (i = 0; i < n; i++) D[i] *= scale;
+}
+
+void field_sample(const Field *F, Tform *t, const int N1[3], /**/ Field **pq) {
+    enum {X, Y, Z};
+    Field *q;
+    EMALLOC(1, &q);
+    sdf_field_sample(t, F->N, F->D, N1, /**/ q->D);
+    q->N[X] = N1[X];
+    q->N[Y] = N1[Y];
+    q->N[Z] = N1[Z];
+    /* q->ext ?  */
+    *pq = q;
 }
