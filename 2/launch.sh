@@ -39,14 +39,14 @@ mkdir -p $SCRATCH/UDEVICEX
 H=`pwd`
 
 # src dir
-S=/users/eceva/uDeviceX/uDX_web/src
+S=`u.cp.s`
 
 # compile dir
 C=`mktemp -d $SCRATCH/tmp.XXXXXXXXX`
 
 # run dir
 RNAME=`awk -v n=${RNAME} 'BEGIN {if(length(n) > 0) print n; else print "test_shear"}'`
-R=$SCRATCH/UDEVICEX/Feb15_test/${RNAME} #_`date | awk '{print $2$3"_"$4}'`
+R=$SCRATCH/UDEVICEX/Feb15_test/${RNAME}
 mkdir -p $R
 
 function gorun() {
@@ -80,7 +80,7 @@ function pre() {
 function run() {
     sbatch sbatch.sh
     #srun -u -n ${NN} ./udx ${NX} ${NY} ${NZ}
-    #./udx ${NX} ${NY} ${NZ}
+     #./udx ${NX} ${NY} ${NZ}
 }
 
 function transfer() {

@@ -14,31 +14,6 @@ import sys
 import math
 import numpy as np
 
-
-def dpd_params2(fac, G, kb, rho, Area):
-    # Uses no approximations/estimations non-convergent theory
-    kc = fac * kb * math.sqrt(3)/2. #approximation!
-    kbt = kc/70. #based on exp. data: kc = 70kBT
-
-    Ma = 0.6
-    Vth = math.sqrt(3.*kbt)
-    c = Vth/Ma
-    a = 0.101 #from fit: GW,1997
-    aij = (c*c-kbt) / (2.*a*rho)
-
-    Ro = math.sqrt(Area/(4.*math.pi))
-    Vmax = Ma*c
-    sh = Vmax/2.
-
-    Const = Ro*Ro*Ro * 2. / (kb * math.sqrt(3))
-    eta0 = G/(sh*Const)
-    a=3.09; b=7.24 #fit for nd=10!
-    gij = (eta0 - b)/a
-
-    print "For G=%7.2f, kb=%6.2f:   aij=%7.3f,  gij=%10.4f,  sh=%7.4f,  kbt=%7.4f" % (G, kb, aij, gij, sh, kbt)
-    return aij, gij, kbt, sh
-
-
 def dpd_params(fac, G, kb, rho, Area):
     kc = fac * kb * math.sqrt(3)/2. #approximation!
     kbt = kc/70. #based on exp. data: kc = 70kBT
@@ -109,9 +84,7 @@ def main():
                 for KS in KS_:
                     for X0 in X0_:
                         for sfree in sfree_:
-
-                            [aij, gij, kbt, SH] = dpd_params2(1.0, G, KB, nd, a0)
-
+                            [aij, gij, kbt, SH] = dpd_params(1.0, G, KB, nd, a0)
                             RNAME="F2_Ma0.6_kd4900_sfree%s_nv%d_xo%g_ks%g_kb%g_gc%g_G%g_SH%g_gij%g_aij%g_kbt%g" % (sfree, inv, X0, KS, KB, GC, G, SH, gij, aij, kbt)
                             print RNAME
 
