@@ -129,7 +129,10 @@ include::{src}/pair/dev.h[tag=int]
 ----
 
 The `PairPa` structure is a generic particle with color.
-The `PairFo` structure is a generic force.
+This should be used with the _parray_ module.
+The `Fo` structure is a generic force and can be either `PairFo` or
+`PairSFo`, respectively, for force or force and stress computation.
+This should be used with the _farray_ module.
 The input parameter `Param p` is a view for pair parameters.
 
 The above function behaves differently given different types:
@@ -141,6 +144,13 @@ The above function behaves differently given different types:
 * `PairDPDCM`: _mirrored_ DPD: same as _colored_ DPD considering that
   particle `b` has the same color as particle `a`.
 
+
+Inside a kernel, the generic force can be added by using
+
+[source,cpp]
+----
+include::{src}/pair/dev.h[tag=add]
+----
 
 
 == Configuration
