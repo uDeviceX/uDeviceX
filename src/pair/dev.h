@@ -87,6 +87,16 @@ static __device__ void magn2fo(float f0, float3 er, float3 dr, /**/ PairSFo *f) 
     f->szz = f->z * dr.z;
 }
 
+static __device__ void make_zero(PairFo *f) {
+    f->x = f->y = f->z = 0;
+}
+
+static __device__ void make_zero(PairSFo *f) {
+    f->x = f->y = f->z = 0;
+    f->sxx = f->sxy = f->sxz = 0;
+    f->syy = f->syz = f->szz = 0;
+}
+
 // tag::int[]
 template <typename Param, typename Fo>
 static __device__ void pair_force(Param p, PairPa a, PairPa b, float rnd, /**/ Fo *f)
@@ -108,7 +118,7 @@ static __device__ void pair_force(Param p, PairPa a, PairPa b, float rnd, /**/ F
     
     vnstat = norm(/*io*/ &er, /*o*/ &r, &invr);
     if (vnstat == NORM_BIG) {
-        f->x = f->y = f->z = 0;
+        make_zero(f);
         return;
     }
 
