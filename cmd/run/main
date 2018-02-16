@@ -3,8 +3,13 @@
 prog_name=u.run
 
 usg () {
-    msg 'usage: u.run NX NY NZ ./udx [ARGS]' >&2
-    msg '       u.run          ./udx [ARGS]' >&2
+    msg 'usage: u.run NX NY NZ ./udx [ARGS]'
+    msg '       u.run          ./udx [ARGS]'
+    msg 'how commands runs is modified by the variables:'
+    msg '  MEM: cuda-memcheck'
+    msg '  VAL: valgrind'
+    msg '  PROF: nvprof'
+    msg '  TIME: time'
     exit
 }
 

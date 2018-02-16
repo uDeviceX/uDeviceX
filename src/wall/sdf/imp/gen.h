@@ -26,7 +26,7 @@ static void gen2(const Coords *coords, int N[3], float *D0, /**/ Sdf *sdf) {
     int T[] = {Lte.x, Lte.y, Lte.z};
     sz = sizeof(D1[0]) * Lte.x * Lte.y * Lte.z;
     UC(emalloc(sz, (void**)&D1));
-UC(gen1(coords, T, N, D0, D1, /**/ sdf));
+    UC(gen1(coords, T, N, D0, D1, /**/ sdf));
     UC(efree(D1));
 }
 
