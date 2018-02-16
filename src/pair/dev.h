@@ -68,16 +68,16 @@ static __device__ float force_magn(PairDPDLJ p, float rnd, float ev, float r, fl
     return f;
 }
 
-static __device__ void magn2fo(float f0, float3 dr, /**/ PairFo *f) {
-    f->x = f0 * dr.x;
-    f->y = f0 * dr.y;
-    f->z = f0 * dr.z;    
+static __device__ void magn2fo(float f0, float3 er, float3 dr, /**/ PairFo *f) {
+    f->x = f0 * er.x;
+    f->y = f0 * er.y;
+    f->z = f0 * er.z;    
 }
 
-static __device__ void magn2fo(float f0, float3 dr, /**/ PairSFo *f) {
-    f->x = f0 * dr.x;
-    f->y = f0 * dr.y;
-    f->z = f0 * dr.z;
+static __device__ void magn2fo(float f0, float3 er, float3 dr, /**/ PairSFo *f) {
+    f->x = f0 * er.x;
+    f->y = f0 * er.y;
+    f->z = f0 * er.z;
 
     f->sxx = f->x * dr.x;
     f->sxy = f->x * dr.y;
@@ -93,7 +93,7 @@ static __device__ void pair_force(Param p, PairPa a, PairPa b, float rnd, /**/ F
 // end::int[]
 {
     float r, invr, ev, f0;
-    float3 dr, dv;
+    float3 dr, er, dv;
     int vnstat; /* vector normalization status */
 
     dr.x = a.x - b.x;
@@ -103,17 +103,19 @@ static __device__ void pair_force(Param p, PairPa a, PairPa b, float rnd, /**/ F
     dv.x = a.vx - b.vx;
     dv.y = a.vy - b.vy;
     dv.z = a.vz - b.vz;
+
+    er = dr;
     
-    vnstat = norm(/*io*/ &dr, /*o*/ &r, &invr);
+    vnstat = norm(/*io*/ &er, /*o*/ &r, &invr);
     if (vnstat == NORM_BIG) {
         f->x = f->y = f->z = 0;
         return;
     }
 
-    ev = dot<float>(&dr, &dv);
+    ev = dot<float>(&er, &dv);
     
     f0 = force_magn(p, rnd, ev, r, invr);
-    magn2fo(f0, dr, /**/ f);
+    magn2fo(f0, er, dr, /**/ f);
 }
 
 static __device__ int colors2pid(int ca, int cb) {
