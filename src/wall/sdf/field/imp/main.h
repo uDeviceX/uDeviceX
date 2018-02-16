@@ -50,3 +50,25 @@ void sdf_field_dump(const Coords *coords, MPI_Comm cart, const int N[], const fl
     UC(dump1(coords, cart, N, D, /*w*/ W));
     UC(efree(W));
 }
+
+
+/* new */
+void field_size(const Field *q, /**/ int N[3]) {
+    enum {X, Y, Z};
+    N[X] = q->N[X]; N[Y] = q->N[Y]; N[Z] = q->N[Z];
+}
+void field_extension(const Field *q, /**/ float ext[3]) {
+    enum {X, Y, Z};
+    ext[X] = q->ext[X]; ext[Y] = q->ext[Y]; ext[Z] = q->ext[Z];
+}
+void field_data(const Field *q, /**/ float **pD) {
+    *pD = q->D;
+}
+void field_scale(Field *q, float scale) {
+    enum {X, Y, Z};
+    float *D;
+    int i, n, *N;
+    N = q->N; D = q->D;
+    n = N[X]*N[Y]*N[Z];
+    for (i = 0; i < n; i++) D[i] *= scale;
+}
