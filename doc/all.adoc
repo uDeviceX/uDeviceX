@@ -8,6 +8,7 @@ image::include/pach.png[]
 == Developer
 
 :leveloffset:  2
+include::dev/intro.adoc[]
 
 include::dev/build.adoc[]
 
