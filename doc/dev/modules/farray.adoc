@@ -1,4 +1,4 @@
-= parray
+= farray
 :lext: .adoc
 :src: ../../../src
 :stem: latexmath
