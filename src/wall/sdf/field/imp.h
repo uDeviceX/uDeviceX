@@ -2,7 +2,6 @@ struct Coords;
 struct Tform;
 struct Field;
 
-/* new interface */
 void field_ini(const char *path, /**/ Field**);
 void field_sample(const Field*, Tform*, const int N[3], /**/ Field**);
 

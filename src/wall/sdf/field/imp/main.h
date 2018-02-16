@@ -20,7 +20,6 @@ static void dump(const Coords *coords, MPI_Comm cart, const int N[], const float
     UC(efree(W));
 }
 
-/* new */
 void field_size(const Field *q, /**/ int N[3]) {
     enum {X, Y, Z};
     N[X] = q->N[X]; N[Y] = q->N[Y]; N[Z] = q->N[Z];
