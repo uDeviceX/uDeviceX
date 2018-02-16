@@ -1,0 +1,10 @@
+#### Double poiseuille
+# sTEST: stress.t1
+cd test/stress/0
+S=`u.cp.s`
+:
+u.conf "$S" u/x "$S/conf/default.h" <<!
+   run
+!
+u.make -j
+u.run ./udx conf.cfg
