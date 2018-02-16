@@ -1,0 +1,12 @@
+#### Double poiseuille
+# nTEST: stress.t3
+cd test/stress/2
+S=`u.cp.s`
+:
+u.conf "$S" u/x "$S/conf/default.h" <<!
+   run
+!
+u.make -j
+u.run ./udx conf.cfg
+u.stress.avg 1 32 1   16 32 16  bop/solvent-00001.bop bop/stress_solvent-00001.bop ss
+bov2txt ss.bov > ss.out.txt
