@@ -24,7 +24,7 @@ void clear_stresses(float* ss, int n) {
     if (n) DzeroA(ss, 6*n);
 }
 
-void forces_wall(Wall *w, Sim *s) {
+void forces_wall(bool fluss, Wall *w, Sim *s) {
     PaArray po, ps, pr;
     FoArray fo, fs, fr;
     Flu *flu = &s->flu;
@@ -40,6 +40,8 @@ void forces_wall(Wall *w, Sim *s) {
     farray_push_ff(flu->ff, &fo);
     farray_push_ff(rig->ff, &fs);
     farray_push_ff(rbc->ff, &fr);
+    if (fluss)
+        farray_push_ss(flu->ss, &fo);
     
     if (flu->q.n)               wall_force(par, w->vview, s->coords, w->sdf, &w->q, w->t, flu->q.n, &po, /**/ &fo);
     if (s->solids0 && rig->q.n) wall_force(par, w->vview, s->coords, w->sdf, &w->q, w->t, rig->q.n, &ps, /**/ &fs);
