@@ -1,0 +1,70 @@
+= parray
+:lext: .adoc
+:src: ../../../src
+:stem: latexmath
+
+Generic force array to be passed to interaction kernels.
+Implemented versions:
+
+* forces only
+* forces and stresses
+
+== host interface
+
+A `FoArray` structure can be configured by pushing forces and,
+optionally, stresses:
+
+[source,cpp]
+----
+include::{src}/farray/imp.h[tag=push]
+----
+WARNING: Forces must be pushed before stresses
+
+Client can check if the stresses has been pushed by calling
+
+[source,cpp]
+----
+include::{src}/farray/imp.h[tag=get]
+----
+
+The force array data are meant to be passed to kernels.
+In order to inline the forces computations mode (see device interface), different
+views can be generated from the `FoArray` structure:
+
+[source,cpp]
+----
+include::{src}/farray/imp.h[tag=view]
+----
+<1> Get a view to compute forces only
+<2> Get a view to compute forces and stresses
+
+
+== device interface
+
+Generic forces (see _pair_ module) can be added to the generic force
+array depending on the view type:
+
+[source,cpp]
+----
+include::{src}/farray/dev.h[tag=add]
+----
+<1> add forces only to the array
+<2> add forces and stresse to the array
+
+The template parameter `S` is the sign, must be either `-1` or `1`.
+Note that it only affects the forces, stresses are always added with
+positive sign, as opposed to forces.
+
+For equivalent atomic operations, the following functions can be called:
+[source,cpp]
+----
+include::{src}/farray/dev.h[tag=atomic]
+----
+
+The generic Force structure can be initialised to 0 based on the type
+of the Generic array:
+[source,cpp]
+----
+include::{src}/farray/dev.h[tag=ini]
+----
+

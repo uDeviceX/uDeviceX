@@ -63,6 +63,8 @@ include::dev/modules/pair.adoc[]
 
 include::dev/modules/parray.adoc[]
 
+include::dev/modules/farray.adoc[]
+
 include::dev/modules/parser.adoc[]
 
 include::dev/modules/partlist.adoc[]
