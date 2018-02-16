@@ -10,7 +10,8 @@ void forces(float dt, Time *time, bool wall0, Sim *s) {
     UC(clear_forces(flu->ff, flu->q.n));
     if (s->solids0) UC(clear_forces(rig->ff, rig->q.n));
     if (rbcs)       UC(clear_forces(rbc->ff, rbc->q.n));
-
+    if (fluss)  UC(clear_stresses(flu->ss, flu->q.n));
+    
     UC(forces_dpd(fluss, flu));
     if (wall0 && wall->q.n) forces_wall(wall, s);
     if (rbcs) forces_rbc(dt, rbc);

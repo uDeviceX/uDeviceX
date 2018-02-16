@@ -20,6 +20,10 @@ void clear_forces(Force* ff, int n) {
     if (n) DzeroA(ff, n);
 }
 
+void clear_stresses(float* ss, int n) {
+    if (n) DzeroA(ss, 6*n);
+}
+
 void forces_wall(Wall *w, Sim *s) {
     PaArray po, ps, pr;
     Flu *flu = &s->flu;
