@@ -57,7 +57,7 @@ void field_size(const Field *q, /**/ int N[3]) {
     enum {X, Y, Z};
     N[X] = q->N[X]; N[Y] = q->N[Y]; N[Z] = q->N[Z];
 }
-void field_extension(const Field *q, /**/ float ext[3]) {
+void field_extend(const Field *q, /**/ float ext[3]) {
     enum {X, Y, Z};
     ext[X] = q->ext[X]; ext[Y] = q->ext[Y]; ext[Z] = q->ext[Z];
 }
