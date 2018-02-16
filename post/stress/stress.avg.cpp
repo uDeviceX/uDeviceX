@@ -2,6 +2,7 @@
 #include "stdlib.h"
 #include "math.h"
 #include "string.h"
+#include <assert.h>
 
 #include "bop_common.h"
 #include "bop_serial.h"
@@ -74,28 +75,28 @@ enum {
 };
 
 enum {
-     XX,  XY,  XZ,  YY,  YZ,  ZZ,
+    XX,  XY,  XZ,  YY,  YZ,  ZZ,
     KXX, KXY, KXZ, KYY, KYZ, KZZ, NPG
 };
 
 // reduce field quantities in each cell
-static void binning(int n, const float *pp, const float *ss,
+static void binning(long n, const float *pp, const float *ss,
                     int nx, int ny, int nz,
                     float dx, float dy, float dz,
                     float ox, float oy, float oz,
                     /**/ float *grid, int *counts) {
-    enum {X, Y, Z};
+    enum {X, Y, Z, D};
     int i, cid;
     const float *r, *u, *s;
     float *g;
     
     for (i = 0; i < n; ++i) {
-        r = pp + NPP * i + 0;
-        u = pp + NPP * i + 3;
+        r = pp + NPP * i;
+        u = r + D;
         s = ss + NPS * i;
         
         cid = r2cid(r, nx, ny, nz, dx, dy, dz, ox, oy, oz);
-
+        
         if (cid != INVALID) {
             g = grid + NPG * cid;
             counts[cid] ++;
@@ -112,9 +113,6 @@ static void binning(int n, const float *pp, const float *ss,
             g[KYY] += u[Y] * u[Y];
             g[KYZ] += u[Y] * u[Z];
             g[KZZ] += u[Z] * u[Z];
-        }
-        else {
-            printf("%g %g %g\n", r[X], r[Y], r[Z]);
         }
     }
 }
@@ -140,7 +138,7 @@ int main(int argc, char **argv) {
     int ngrid, *counts;
     char fdname[Cbuf::SIZ];
     size_t sz;
-    long n;
+    long n, ns;
     float *pp, *ss;
     
     parse(argc, argv, /**/ &a);
@@ -171,10 +169,14 @@ int main(int argc, char **argv) {
     dz = a.lz / a.nz;
     
     BPC(bop_get_n(pp_bop, &n));
+    BPC(bop_get_n(ss_bop, &ns));
+
+    assert(n == ns);
+    
     pp = (float*) bop_get_data(pp_bop);
     ss = (float*) bop_get_data(ss_bop);
     
-    binning(n, pp, ss,
+    binning(10, pp, ss,
             a.nx, a.ny, a.nz,
             dx, dy, dz, 0, 0, 0,
             /**/ grid, counts);
