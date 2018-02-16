@@ -3,7 +3,7 @@ static void dump0(const Coords *coords, const int N0[3], const float *D0, /**/ f
     Tform *t;
     UC(tform_ini(&t));
     UC(out2sdf_ini(coords, N0, t));
-    UC(sdf_field_sample(t, N0, D0,   L, /**/ D1));
+    UC(sample(t, N0, D0,   L, /**/ D1));
     UC(tform_fin(t));
 }
 
@@ -12,7 +12,7 @@ static void dump1(const Coords *coords, MPI_Comm cart, const int N[3], const flo
     UC(io::field::scalar(coords, cart, W, "wall"));
 }
 
-void sdf_field_dump(const Coords *coords, MPI_Comm cart, const int N[], const float *D) {
+static void dump(const Coords *coords, MPI_Comm cart, const int N[], const float *D) {
     float *W;
     int ngrid = xs(coords) * ys(coords) * zs(coords);
     UC(emalloc(ngrid*sizeof(float), (void**) &W));
@@ -48,7 +48,7 @@ void field_sample(const Field *F, Tform *t, const int N1[3], /**/ Field **pq) {
     EMALLOC(1, &q);
     n = N1[X]*N1[Y]*N1[Z];
     EMALLOC(n, &q->D);
-    sdf_field_sample(t, F->N, F->D, N1, /**/ q->D);
+    sample(t, F->N, F->D, N1, /**/ q->D);
     q->N[X] = N1[X];
     q->N[Y] = N1[Y];
     q->N[Z] = N1[Z];
@@ -57,5 +57,5 @@ void field_sample(const Field *F, Tform *t, const int N1[3], /**/ Field **pq) {
 }
 
 void field_dump(const Field *q, const Coords *c, MPI_Comm cart) {
-    sdf_field_dump(c, cart, q->N, q->D);
+    dump(c, cart, q->N, q->D);
 }
