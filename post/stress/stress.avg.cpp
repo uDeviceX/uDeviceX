@@ -8,7 +8,17 @@
 
 #include "bov.h"
 #include "bov_serial.h"
-    
+
+#define BPC(ans) do {                                   \
+        BopStatus s = ans;                              \
+        if (!bop_success(s)) {                          \
+            fprintf(stderr, "%s: %d: Bop error: %s\n",  \
+                    __FILE__, __LINE__,                 \
+                    bob_report_error_desc(s));          \
+            exit(1);                                    \
+        }                                               \
+    } while(0)
+      
 struct Args {
     float lx, ly, lz;
     int nx, ny, nz;
@@ -103,6 +113,9 @@ static void binning(int n, const float *pp, const float *ss,
             g[KYZ] += u[Y] * u[Z];
             g[KZZ] += u[Z] * u[Z];
         }
+        else {
+            printf("%g %g %g\n", r[X], r[Y], r[Z]);
+        }
     }
 }
 
@@ -142,22 +155,22 @@ int main(int argc, char **argv) {
     counts = (int*) malloc(sz);
     memset(counts, 0, sz);
 
-    bop_ini(&pp_bop);
-    bop_ini(&ss_bop);
+    BPC(bop_ini(&pp_bop));
+    BPC(bop_ini(&ss_bop));
 
-    bop_read_header(a.pp, /**/ pp_bop, fdname);
-    bop_alloc(/**/ pp_bop);
-    bop_read_values(fdname, /**/ pp_bop);
+    BPC(bop_read_header(a.pp, /**/ pp_bop, fdname));
+    BPC(bop_alloc(/**/ pp_bop));
+    BPC(bop_read_values(fdname, /**/ pp_bop));
 
-    bop_read_header(a.ss, /**/ ss_bop, fdname);
-    bop_alloc(/**/ ss_bop);
-    bop_read_values(fdname, /**/ ss_bop);
+    BPC(bop_read_header(a.ss, /**/ ss_bop, fdname));
+    BPC(bop_alloc(/**/ ss_bop));
+    BPC(bop_read_values(fdname, /**/ ss_bop));
 
     dx = a.lx / a.nx;
     dy = a.ly / a.ny;
     dz = a.lz / a.nz;
-
-    bop_get_n(pp_bop, &n);
+    
+    BPC(bop_get_n(pp_bop, &n));
     pp = (float*) bop_get_data(pp_bop);
     ss = (float*) bop_get_data(ss_bop);
     
@@ -185,8 +198,8 @@ int main(int argc, char **argv) {
     free(grid);
     free(counts);
     
-    bop_fin(pp_bop);
-    bop_fin(ss_bop);
+    BPC(bop_fin(pp_bop));
+    BPC(bop_fin(ss_bop));
     bov_free(&bov);
 
     return 0;
