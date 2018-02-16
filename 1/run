@@ -5,6 +5,6 @@ echo run | S=`u.cp.s` u.build u/x base.h
 o=main.prof
 
 PROF="--export-profile $o" u.run ./udx conf.cfg '
-time = { end = 1e-5 }
+time = { end = 1e-4 }
 '
 u.run nvprof -i $o
