@@ -1,4 +1,4 @@
-subdirs=build_smesh disp drop field msd binning
+subdirs=build_smesh disp drop field msd binning stress
 .PHONY: install $(subdirs)
 
 install: $(subdirs)
