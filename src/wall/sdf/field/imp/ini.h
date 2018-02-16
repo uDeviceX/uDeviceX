@@ -25,7 +25,7 @@ void field_ini(const char *path, /**/ Field **pq) {
 
     EMALLOC(1, &q);
     N = q->N; ext = q->ext;
-    msg_print("reading '%s'\n", path);
+    msg_print("reading '%s'", path);
     UC(efopen(path, "r", /**/ &f));
     get_flo3(f, /**/ &ext[X], &ext[Y], &ext[Z]);
     get_int3(f, /**/ &N[X],     &N[Y],   &N[Z]);
