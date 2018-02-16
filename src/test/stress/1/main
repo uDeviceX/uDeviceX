@@ -1,0 +1,13 @@
+#### compare stresses
+# sTEST: stress.t2
+cd test/stress/0
+S=`u.cp.s`
+:
+u.conf "$S" u/x "$S/conf/default.h" <<!
+   run
+!
+u.make -j
+u.run ./udx conf.cfg
+bop2txt bop/solvent-00000.bop > pp.txt
+bop2txt bop/stress_solvent-00000.bop > ss.txt
+paste -d ' ' pp.txt ss.txt | sort > stress.out.txt
