@@ -24,7 +24,7 @@ void field_ini(const char *path, /**/ Field **pq) {
     FILE *f;
 
     EMALLOC(1, &q);
-    N = q->N; ext = q->ext; D = q->D;
+    N = q->N; ext = q->ext;
     msg_print("reading '%s'\n", path);
     UC(efopen(path, "r", /**/ &f));
     get_flo3(f, /**/ &ext[X], &ext[Y], &ext[Z]);
@@ -32,7 +32,8 @@ void field_ini(const char *path, /**/ Field **pq) {
     msg_print("size:   %d %d %d", N[X], N[Y], N[Z]);
     msg_print("extend: %g %g %g", ext[X], ext[Y], ext[Z]);
     n = N[X]*N[Y]*N[Z];
-    EMALLOC(n, &D);
+    EMALLOC(n, &q->D);
+    D = q->D;
     UC(efread(D, sizeof(D[0]), n, f));
     msg_print("D[  0]: %g",   D[0]);
     msg_print("D[n-1]: %g", D[n-1]);

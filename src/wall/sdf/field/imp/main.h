@@ -75,8 +75,11 @@ void field_scale(Field *q, float scale) {
 
 void field_sample(const Field *F, Tform *t, const int N1[3], /**/ Field **pq) {
     enum {X, Y, Z};
+    int n;
     Field *q;
     EMALLOC(1, &q);
+    n = N1[X]*N1[Y]*N1[Z];
+    EMALLOC(n, &q->D);
     sdf_field_sample(t, F->N, F->D, N1, /**/ q->D);
     q->N[X] = N1[X];
     q->N[Y] = N1[Y];
