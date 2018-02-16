@@ -1,6 +1,6 @@
 #### compare stresses
-# sTEST: stress.t2
-cd test/stress/0
+# nTEST: stress.t2
+cd test/stress/1
 S=`u.cp.s`
 :
 u.conf "$S" u/x "$S/conf/default.h" <<!
