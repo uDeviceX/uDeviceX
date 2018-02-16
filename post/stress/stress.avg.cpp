@@ -176,7 +176,7 @@ int main(int argc, char **argv) {
     pp = (float*) bop_get_data(pp_bop);
     ss = (float*) bop_get_data(ss_bop);
     
-    binning(10, pp, ss,
+    binning(n, pp, ss,
             a.nx, a.ny, a.nz,
             dx, dy, dz, 0, 0, 0,
             /**/ grid, counts);
@@ -192,7 +192,7 @@ int main(int argc, char **argv) {
 
     bov_alloc(sizeof(float), &bov);
 
-    memcpy(bov.data, grid, ngrid * sizeof(float));
+    memcpy(bov.data, grid, ngrid * NPG * sizeof(float));
 
     bov_write_header(a.bov, &bov);
     bov_write_values(a.bov, &bov);
