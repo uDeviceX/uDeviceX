@@ -7,7 +7,7 @@ u.cp.rbc rbc/498.off  rbc.off
 echo 1 0 0 8  0 1 0 8  0 0 1 8  0 0 0 1 > rbcs-ic.txt
 :
 u.conf "$S" u/x "$S/conf/default.h" <<!
-   rbcs DBG_PEEK
+   DBG_PEEK
    run
 !
 u.make -j
@@ -16,7 +16,8 @@ glb = {
     kBT = 0.0
 }
 rbc = {
-     totArea = 55.553
-     totVolume = 26.986
+    active = true
+    totArea = 55.553
+    totVolume = 26.986
 }'
 awk '{print 10000*$2}' diag.txt > diag.out.txt

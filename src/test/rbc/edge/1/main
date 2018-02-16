@@ -12,7 +12,6 @@ echo     1  0   0 $x              \
          0  0   0  1 > rbcs-ic.txt
 :
 u.conf "$S" u/x "$S/conf/default.h" <<!
-   rbcs
    run
 !
 u.make -j
@@ -21,7 +20,8 @@ glb = {
     kBT = 0.0
 }
 rbc = {
-     totArea = 55.55
-     totVolume = 27.0
+    active = true
+    totArea = 55.55
+    totVolume = 27.0
 }'
 ply2punto r/00003.ply | uscale 100 > ply.out.txt

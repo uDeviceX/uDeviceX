@@ -6,7 +6,7 @@ u.cp.rbc rbc/498.off rbc.off
 x=0.75 y=8 z=12; echo 1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 > rbcs-ic.txt
 :
 u.conf "$S" u/x "$S/conf/default.h" <<!
-   rbcs rbc_com_freq=300 rbc_ids=true rbc_com_dumps=true
+   rbc_com_freq=300 rbc_ids=true rbc_com_dumps=true
    run
 !
 { make clean && u.make -j ; } > /dev/null
@@ -15,6 +15,7 @@ glb = {
     kBT = 0.0
 }
 rbc = {
+    active = true
     totArea = 55.553
     totVolume = 26.986
 }'

@@ -14,7 +14,6 @@ echo 1 0 0 $x \
 :
 u.conf "$S" u/x "$S/conf/default.h" <<!
    KL_SYNC CC_SYNC
-   rbcs
    run
 !
 u.make -j
@@ -23,6 +22,7 @@ glb = {
     kBT = 0.0
 }
 rbc = {
+    active = true
     totArea = $area
     totVolume = $volume
 }

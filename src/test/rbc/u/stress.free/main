@@ -19,6 +19,7 @@ glb = {
     kBT = 0.0
 }
 rbc = {
+    active = true
     totArea = $area
     totVolume = $volume
 }" | uscale 0.025 >  forces.out.txt

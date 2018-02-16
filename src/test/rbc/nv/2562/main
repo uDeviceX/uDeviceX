@@ -11,7 +11,6 @@ echo 1 0 0 $x \
      0 0 0  1 > rbcs-ic.txt
 :
 u.conf "$S" u/x "$S/conf/default.h" <<!
-   rbcs
    run
 !
 u.make -j
@@ -21,6 +20,7 @@ glb = {
     L = [$XS, $YS, $ZS]
 }
 rbc = {
+    active = true
     totArea = 1564.4922174
     totVolume = 3812.3160399576
 }

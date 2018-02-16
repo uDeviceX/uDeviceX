@@ -8,7 +8,7 @@ x=3.75 y=7 z=12; echo 1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 >> rbcs-ic.txt
 x=6.75 y=9 z=12; echo 1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 >> rbcs-ic.txt
 :
 u.conf "$S" u/x "$S/conf/default.h" <<!
-   rbcs  rbc_com_freq=300 rbc_ids=true rbc_com_dumps=true
+   rbc_com_freq=300 rbc_ids=true rbc_com_dumps=true
    run
 !
 u.make -j
@@ -17,6 +17,7 @@ glb = {
     kBT = 0.0
 }
 rbc = {
+    active = true
     totArea = 55.553
     totVolume = 26.986
 }'

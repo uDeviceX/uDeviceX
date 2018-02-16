@@ -7,7 +7,7 @@ u.cp.sdf cyl1/cyl.dat sdf.dat
 x=0.75 y=8 z=9; echo 1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 > rbcs-ic.txt
 :
 u.conf "$S" u/x "$S/conf/default.h" <<!
-   rbcs walls
+   walls
    pushrbc
    run
 !
@@ -17,7 +17,8 @@ glb = {
     kBT = 0.0
 }
 rbc = {
-     totArea = 55.553
-     totVolume = 26.986
+    active = true
+    totArea = 55.553
+    totVolume = 26.986
 }'
 ply2punto r/00001.ply | uscale 100 > ply.out.txt

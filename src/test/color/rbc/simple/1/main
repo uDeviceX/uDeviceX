@@ -7,7 +7,6 @@ x=7.5 y=4 z=2.5; echo 1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 >  rbcs-ic.txt
 x=0.1 y=0.1 z=5.5; echo 1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 >> rbcs-ic.txt
 x=4 y=4 z=7.5; echo 1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 >> rbcs-ic.txt
 u.conf "$S" u/x "$S/conf/default.h" <<!
-   rbcs
    color_freq=1   
    numberdensity=3
    run
@@ -15,8 +14,9 @@ u.conf "$S" u/x "$S/conf/default.h" <<!
 u.make -j
 u.run ./udx  conf.cfg '
 rbc = {
-     totArea = 55.553
-     totVolume = 26.986
+    active = true
+    totArea = 55.553
+    totVolume = 26.986
 }'
 bop2txt2 bop/solvent-00000.bop -- bop/colors_solvent-00000.bop |
   awk '{print $7}' | sort -g > color.out.txt
