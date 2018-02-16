@@ -84,3 +84,7 @@ void field_sample(const Field *F, Tform *t, const int N1[3], /**/ Field **pq) {
     /* q->ext ?  */
     *pq = q;
 }
+
+void field_dump(const Field *q, const Coords *c, MPI_Comm cart) {
+    sdf_field_dump(c, cart, q->N, q->D);
+}
