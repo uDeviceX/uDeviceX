@@ -2,7 +2,7 @@ enum {
     TPP = 3 /* # threads per particle */
 };
 
-template<typename Par, typename Parray, typename Farray>
+template <typename Par, typename Parray, typename Farray>
 static void interactions(Par params, Wvel_v wv, const Coords *c, Parray parray, int n, RNDunif *rnd, WallForce wa, /**/ Farray farray) {
     Coords_v coordsv;
     coords_get_view(c, &coordsv);
@@ -12,7 +12,7 @@ static void interactions(Par params, Wvel_v wv, const Coords *c, Parray parray, 
        (params, wv, coordsv, parray, n, rnd_get(rnd), wa, /**/ farray));
 }
 
-template<typename Par, typename Parray>
+template <typename Par, typename Parray>
 static void apply(Par params, Wvel_v wv, const Coords *c, Parray parray, int n, RNDunif *rnd, WallForce wa, /**/ const FoArray *farray) {
     if (farray_has_stress(farray)) {
         FoSArray_v farray_v;
@@ -26,22 +26,19 @@ static void apply(Par params, Wvel_v wv, const Coords *c, Parray parray, int n, 
     }
 }
 
-void wall_force_apply(const PairParams *params, Wvel_v wv, const Coords *c, const PaArray *parray, int n, RNDunif *rnd, WallForce wa, /**/ Force *ff) {
-    FoArray farray;
-    farray_push_ff(ff, &farray);
-    
+void wall_force_apply(const PairParams *params, Wvel_v wv, const Coords *c, const PaArray *parray, int n, RNDunif *rnd, WallForce wa, /**/ const FoArray *farray) {    
     if (parray_is_colored(parray)) {
         PairDPDCM pv;
         PaArray_v pav;        
         UC(pair_get_view_dpd_mirrored(params, &pv));
         parray_get_view(parray, &pav);
-        apply(pv, wv, c, pav, n, rnd, wa, /**/ &farray);
+        apply(pv, wv, c, pav, n, rnd, wa, /**/ farray);
     }
     else {
         PairDPD pv;
         PaArray_v pav;
         UC(pair_get_view_dpd(params, &pv));
         parray_get_view(parray, &pav);
-        apply(pv, wv, c, pav, n, rnd, wa, /**/ &farray);
+        apply(pv, wv, c, pav, n, rnd, wa, /**/ farray);
     }
 }

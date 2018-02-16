@@ -10,9 +10,9 @@ static WallForce get_wa(Wvel_v wv, Sdf *sdf, const WallQuants *q, const WallTick
     return wa;
 }
 
-void wall_force(const PairParams *params, Wvel_v wv, const Coords *c, Sdf *sdf, const WallQuants *q, const WallTicket *t, int n, const PaArray *parray, Force *ff) {
+void wall_force(const PairParams *params, Wvel_v wv, const Coords *c, Sdf *sdf, const WallQuants *q, const WallTicket *t, int n, const PaArray *parray, const FoArray *farray) {
     WallForce wa;
     wa = get_wa(wv, sdf, q, t, n);
 
-    wall_force_apply(params, wv, c, parray, n, t->rnd, wa, /**/ ff);
+    wall_force_apply(params, wv, c, parray, n, t->rnd, wa, /**/ farray);
 }

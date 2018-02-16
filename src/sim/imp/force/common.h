@@ -26,6 +26,7 @@ void clear_stresses(float* ss, int n) {
 
 void forces_wall(Wall *w, Sim *s) {
     PaArray po, ps, pr;
+    FoArray fo, fs, fr;
     Flu *flu = &s->flu;
     Rbc *rbc = &s->rbc;
     Rig *rig = &s->rig;
@@ -35,8 +36,12 @@ void forces_wall(Wall *w, Sim *s) {
     parray_push_pp(rbc->q.pp, &pr);
     if (s->opt.flucolors)
         parray_push_cc(flu->q.cc, &po);
+
+    farray_push_ff(flu->ff, &fo);
+    farray_push_ff(rig->ff, &fs);
+    farray_push_ff(rbc->ff, &fr);
     
-    if (flu->q.n)               wall_force(par, w->vview, s->coords, w->sdf, &w->q, w->t, flu->q.n, &po, /**/ flu->ff);
-    if (s->solids0 && rig->q.n) wall_force(par, w->vview, s->coords, w->sdf, &w->q, w->t, rig->q.n, &ps, /**/ rig->ff);
-    if (rbcs && rbc->q.n)       wall_force(par, w->vview, s->coords, w->sdf, &w->q, w->t, rbc->q.n, &pr, /**/ rbc->ff);
+    if (flu->q.n)               wall_force(par, w->vview, s->coords, w->sdf, &w->q, w->t, flu->q.n, &po, /**/ &fo);
+    if (s->solids0 && rig->q.n) wall_force(par, w->vview, s->coords, w->sdf, &w->q, w->t, rig->q.n, &ps, /**/ &fs);
+    if (rbcs && rbc->q.n)       wall_force(par, w->vview, s->coords, w->sdf, &w->q, w->t, rbc->q.n, &pr, /**/ &fr);
 }
