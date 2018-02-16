@@ -30,6 +30,10 @@ static void dump_part(Sim *s) {
         cD2H(flu->q.cc_hst, flu->q.cc, flu->q.n);
         bop_colors(s->cart, flu->q.cc_hst, flu->q.n, "colors_solvent", id_bop);
     }
+    if (s->opt.fluss) {
+        cD2H(flu->ss_hst, flu->ss, 6 * flu->q.n);
+        bop_stresses(s->cart, flu->ss_hst, flu->q.n, "stress_solvent", id_bop);
+    }
 
     if (force_dumps) {
         cD2H(flu->ff_hst, flu->ff, flu->q.n);
