@@ -7,7 +7,3 @@
 #define dump_all_fields            true
 #define         RBC_RND            true
 #define            rbcs            true
-
-#define       pushsolid           false
-#define         pushrbc           false
-#define           walls           false
