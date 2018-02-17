@@ -8,7 +8,6 @@ u.cp.sdf wall1/wall.dat sdf.dat
 :
 u.conf "$S" u/x "$S/conf/default.h" <<!
    walls
-   strt_dumps=true
    run
 !
 :

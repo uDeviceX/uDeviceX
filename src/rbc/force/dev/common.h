@@ -1,7 +1,6 @@
 static __device__ real3 fvolume(RbcParams_v par, real3 r2, real3 r3, real v0, real v) {
     real f0;
     real3 f, n;
-
     cross(&r3, &r2, /**/ &n);
     f0 = par.kv * (v - v0) / (6 * v0);
     axpy(f0, &n, /**/ &f);
@@ -11,7 +10,6 @@ static __device__ real3 fvolume(RbcParams_v par, real3 r2, real3 r3, real v0, re
 static __device__ real3 farea(RbcParams_v par, real3 x21, real3 x31, real3 x32,   real a0, real A0, real A) {
     real3 nn, nnx32, f;
     real a, f0, fa, fA;
-    
     cross(&x21, &x31, /**/ &nn); /* normal */
     cross(&nn, &x32, /**/ &nnx32);
     a = 0.5 * sqrt(dot<real>(&nn, &nn));

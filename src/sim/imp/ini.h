@@ -246,6 +246,10 @@ static void read_opt(const Config *c, Opt *o) {
     o->dump_field = b;
     UC(conf_lookup_float(c, "dump.freq_field", &o->freq_field));
 
+    UC(conf_lookup_bool(c, "dump.strt", &b));
+    o->dump_strt = b;
+    UC(conf_lookup_float(c, "dump.freq_strt", &o->freq_strt));
+
     UC(conf_lookup_bool(c, "dump.parts", &b));
     o->dump_parts = b;
     UC(conf_lookup_float(c, "dump.freq_parts", &o->freq_parts));
