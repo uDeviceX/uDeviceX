@@ -8,9 +8,7 @@ u.cp.sdf wall1/wall.dat sdf.dat
 u.conf "$S" u/x "$S/conf/default.h" <<!
    walls
    BASE_STRT_DUMP=\"bin.1/strt\"
-   RESTART=false
    run
-   RESTART=true
    BASE_STRT_READ=\"bin.1/strt\"
    BASE_STRT_DUMP=\"bin.2/strt\"
    run
@@ -53,6 +51,7 @@ time = {
     end = 2.01
 }
 glb = {
+    restart = true
     L = [16, 16, 16]
 }
 wvel = {
