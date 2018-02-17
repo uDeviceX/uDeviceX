@@ -235,9 +235,6 @@
 #define BASE_STRT_READ "strt"
 #endif
 
-#ifndef strt_dumps
-#define strt_dumps (false)
-#endif
 
 // debug
 /* dbg macros */
