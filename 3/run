@@ -1,4 +1,5 @@
 #!/bin/sh
 
 echo run | S=`u.cp.s` u.build u/x conf.base.h
+u.strtdir
 u.run ./udx conf.cfg
