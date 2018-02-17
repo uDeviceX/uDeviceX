@@ -110,13 +110,18 @@ static void dump_strt_templ(const Coords *coords, Wall *w, Sim *s) { /* template
     }
 }
 
-static void dump_strt(int id, Sim *s) {
+static void dump_strt0(int id, Sim *s) {
     Flu *flu = &s->flu;
     Rbc *rbc = &s->rbc;
     Rig *rig = &s->rig;
     flu_strt_dump(s->coords, id, &flu->q);
     if (rbcs)       rbc_strt_dump(s->coords, id, &rbc->q);
     if (s->opt.rig) rig_strt_dump(s->coords, id, &rig->q);
+}
+
+static void dump_strt(Sim *s) {
+    static int id = 0;
+    dump_strt0(id++, s);
 }
 
 static void dump_diag(Time *time, int it, Sim *s) {
@@ -129,7 +134,7 @@ static void dump_diag(Time *time, int it, Sim *s) {
     if (o->dump_field && time_cross(time, o->freq_field))
         dump_grid(s);
     if (strt_dumps  && it % strt_freq == 0)
-        dump_strt(it / strt_freq, s);
+        dump_strt(s);
     if (rbc_com_dumps && it % rbc_com_freq == 0)
         dump_rbc_coms(s);
 }

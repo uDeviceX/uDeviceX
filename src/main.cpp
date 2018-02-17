@@ -40,7 +40,7 @@ int main(int argc, char **argv) {
     sim_ini(cfg, cart, time, /**/ &sim);
     if (RESTART) sim_strt(sim, cfg, time, time_seg);
     else         sim_gen(sim, cfg, time, time_seg);
-    sim_fin(sim, time);
+    sim_fin(sim);
 
     UC(time_seg_fin(time_seg));
     UC(time_fin(time));

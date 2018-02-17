@@ -137,7 +137,7 @@ static void fin_pair_params(Sim *s) {
     UC(pair_fin(s->objinter.fsiparams));
 }
 
-void sim_fin(Sim *s, Time *time) {
+void sim_fin(Sim *s) {
     bop_fin(s->dumpt);
     if (rbcs || s->opt.rig)
         fin_objinter(&s->opt, &s->objinter);
