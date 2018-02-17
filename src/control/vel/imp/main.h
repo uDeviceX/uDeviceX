@@ -146,7 +146,7 @@ void vcont_log(const PidVCont *c) {
     if (c->fdump == NULL) return;
     float3 v = c->current;
     float3 f = c->f;
-    fprintf(c->fdump, "%.g %.g %.g %.g %.g %.g\n",
+    fprintf(c->fdump, "%.3e %.3e %.3e %.3e %.3e %.3e\n",
             v.x, v.y, v.z, f.x, f.y, f.z);
     fflush(c->fdump);
 }
