@@ -104,7 +104,7 @@ static void diag(float time, Sim *s) {
 
 static void dump_strt_templ(const Coords *coords, Wall *w, Sim *s) { /* template dumps (wall, solid) */
     Rig *rig = &s->rig;
-    if (strt_dumps) {
+    if (s->opt.dump_strt) {
         if (walls) wall_strt_dump_templ(coords, &w->q);
         if (s->opt.rig) rig_strt_dump_templ(coords, &rig->q);
     }
@@ -133,7 +133,7 @@ static void dump_diag(Time *time, int it, Sim *s) {
     }
     if (o->dump_field && time_cross(time, o->freq_field))
         dump_grid(s);
-    if (strt_dumps  && time_cross(time, o->freq_strt))
+    if (o->dump_strt  && time_cross(time, o->freq_strt))
         dump_strt(s);
     if (rbc_com_dumps && it % rbc_com_freq == 0)
         dump_rbc_coms(s);

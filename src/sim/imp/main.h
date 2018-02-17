@@ -92,5 +92,5 @@ void sim_strt(Sim *s, Config *cfg, Time *time, TimeSeg *time_seg) {
 
     s->solids0 = s->opt.rig;
     run(cfg, time, time_seg->wall, time_seg->end, s);
-    if (strt_dumps) dump_strt0(RESTART_FINAL, s);
+    if (s->opt.strt_dumps) dump_strt0(RESTART_FINAL, s);
 }

@@ -8,7 +8,6 @@ u.cp.sdf wall1/wall.dat sdf.dat
 u.conf "$S" u/x "$S/conf/default.h" <<!
    walls
    BASE_STRT_DUMP=\"bin.1/strt\"
-   strt_dumps=true
    RESTART=false
    run
    RESTART=true
@@ -41,6 +40,7 @@ wvel = {
 dump = {
     field = true
     parts = true
+    strt  = true
     freq_field = 2.0000
     freq_parts = 2.0000
     freq_strt  = 5.0000

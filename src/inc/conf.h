@@ -1,5 +1,10 @@
-#ifdef freq_strt
+#if defined(freq_strt)
   #error freq_strt is runtime: dump.freq_strt
+#endif
+
+
+#if defined(strt_dumps)
+  #error strt_dumps is runtime dump.strt
 #endif
 
 

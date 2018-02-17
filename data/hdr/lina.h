@@ -8,8 +8,6 @@
 #define         RBC_RND            true
 #define            rbcs            true
 
-#define      strt_dumps            true
-#define       freq_strt         2000000
 #define       pushsolid           false
 #define         pushrbc           false
 #define           walls           false

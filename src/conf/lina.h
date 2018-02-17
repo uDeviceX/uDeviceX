@@ -8,7 +8,6 @@
 #define         RBC_RND            true
 #define            rbcs            true
 
-#define      strt_dumps            true
 #define       pushsolid           false
 #define         pushrbc           false
 #define           walls           false

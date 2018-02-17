@@ -138,7 +138,7 @@ struct Opt {
     bool flucolors, fluids, fluss;
     bool inflow, outflow, denoutflow, vcon;
     bool rig, sbounce;
-    bool dump_field, dump_parts;
+    bool dump_field, dump_parts, dump_strt;
     float freq_field, freq_parts, freq_strt;
 };
 
