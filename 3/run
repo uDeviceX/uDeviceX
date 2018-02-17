@@ -2,4 +2,6 @@
 
 echo run | S=`u.cp.s` u.build u/x conf.base.h
 u.strtdir
-u.run ./udx conf.cfg
+u.run ./udx conf.cfg '
+glb = { restart = true }
+'
