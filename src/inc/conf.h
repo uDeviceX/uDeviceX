@@ -1,3 +1,8 @@
+#ifdef freq_strt
+  #error freq_strt is runtime: dump.freq_strt
+#endif
+
+
 #if defined(kBT)
   #error kBT is runtime: glb.kBT
 #endif
@@ -227,10 +232,6 @@
 
 #ifndef strt_dumps
 #define strt_dumps (false)
-#endif
-
-#ifndef freq_strt
-#define freq_strt (1000)
 #endif
 
 // debug

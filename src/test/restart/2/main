@@ -10,7 +10,7 @@ u.conf "$S" u/x "$S/conf/default.h" <<!
    rbcs
    BASE_STRT_DUMP=\"bin.1/strt\"
    strt_dumps=true
-   strt_freq=10000
+   freq_strt=10000
    RESTART=false
    run
    RESTART=true

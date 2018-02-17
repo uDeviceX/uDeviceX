@@ -133,7 +133,7 @@ static void dump_diag(Time *time, int it, Sim *s) {
     }
     if (o->dump_field && time_cross(time, o->freq_field))
         dump_grid(s);
-    if (strt_dumps  && it % freq_strt == 0)
+    if (strt_dumps  && time_cross(time, o->freq_strt))
         dump_strt(s);
     if (rbc_com_dumps && it % rbc_com_freq == 0)
         dump_rbc_coms(s);

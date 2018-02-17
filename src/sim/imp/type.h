@@ -139,7 +139,7 @@ struct Opt {
     bool inflow, outflow, denoutflow, vcon;
     bool rig, sbounce;
     bool dump_field, dump_parts;
-    float freq_field, freq_parts;
+    float freq_field, freq_parts, freq_strt;
 };
 
 struct TimeSeg {
