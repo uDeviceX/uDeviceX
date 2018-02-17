@@ -4,4 +4,4 @@
 #define      solid_mass             0.5
 
 #define      strt_dumps           false
-#define       strt_freq            5000
+#define       freq_strt            5000

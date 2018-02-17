@@ -229,8 +229,8 @@
 #define strt_dumps (false)
 #endif
 
-#ifndef strt_freq
-#define strt_freq (1000)
+#ifndef freq_strt
+#define freq_strt (1000)
 #endif
 
 // debug

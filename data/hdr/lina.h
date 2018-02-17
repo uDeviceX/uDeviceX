@@ -9,7 +9,7 @@
 #define            rbcs            true
 
 #define      strt_dumps            true
-#define       strt_freq         2000000
+#define       freq_strt         2000000
 #define       pushsolid           false
 #define         pushrbc           false
 #define           walls           false
