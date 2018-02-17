@@ -10,7 +10,6 @@
   #error strt_dumps is runtime dump.strt
 #endif
 
-
 #if defined(kBT)
   #error kBT is runtime: glb.kBT
 #endif
