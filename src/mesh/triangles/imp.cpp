@@ -16,19 +16,18 @@
 #include "imp.h"
 
 void triangles_ini(MeshRead *mesh, /**/ Triangles **pq) {
-    int nv, nt;
+    int nt;
     Triangles *q;
     const int4 *hst;
     int4 *dev;
     EMALLOC(1, &q);
     *pq = q;
-    nv = mesh_get_nv(mesh);
     nt = mesh_get_nt(mesh);
     hst = mesh_get_tri(mesh);
     Dalloc(&dev, nt);
     cH2D(dev, hst, nt);
 
-    q->nv = nv; q->nt = nt; q->tt = dev;
+    q->nt = nt; q->tt = dev;
 }
 
 void triangles_fin(Triangles *q) {
