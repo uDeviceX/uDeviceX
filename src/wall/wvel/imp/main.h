@@ -1,9 +1,17 @@
 void wvel_ini(Wvel **wv) {
-    UC(emalloc(sizeof(Wvel), (void**) wv));
+    EMALLOC(1, wv);
 }
 
 void wvel_fin(Wvel *wv) {
-    UC(efree(wv));
+    EFREE(wv);
+}
+
+void wvel_step_ini(WvelStep **wv) {
+    EMALLOC(1, wv);
+}
+
+void wvel_step_fin(WvelStep *wv) {
+    EFREE(wv);
 }
 
 void wvel_set_cste(float3 u, Wvel *vw) {

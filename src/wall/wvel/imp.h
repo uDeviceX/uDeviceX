@@ -17,6 +17,9 @@ enum {
 // tag::mem[]
 void wvel_ini(Wvel **wv);
 void wvel_fin(Wvel *wv);
+
+void wvel_step_ini(WvelStep **wv);
+void wvel_step_fin(WvelStep *wv);
 // end::mem[]
 
 // tag::ini[]
