@@ -7,7 +7,7 @@
 
 #include "imp.h"
 typedef uint32_t integer;
-struct RNDunif { integer x, y, z, c; }
+struct RNDunif { integer x, y, z, c; };
 
 void rnd_ini(int x, int y, int z, int c, /**/ RNDunif **r0) {
     RNDunif *r;
