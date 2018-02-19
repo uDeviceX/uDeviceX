@@ -12,12 +12,13 @@ wall velocity field
 
 == data structures
 
-data structures are separated into 2 kinds of data structures:
+data structures are separated into 3 kinds of data structures:
 
-* `Wvel`, which contains all informations needed for the velocity
+* `Wvel` (hidden), which contains all informations needed for the velocity
   field. It is hold and maintained on host.
-* `Wvel_v` (`Wvel view`), containing only the information needed for one
-   specific time. It is passed to device kernels.
+* `WvelStep` (hidden), containing only the information needed for one
+   specific time step. It is generated from `Wvel` structure.
+* Views, passed to kernels. They are generated from the `WvelStep` structure.
 
 == interface 
 
@@ -27,7 +28,7 @@ Interface is splitted between host and device
 Host code is responsible for initialisation of `Wvel` and convert
 `Wvel` to a view at a given timestep.
 
-alloc, free structure:
+alloc, free structures:
 
 [source, c++]
 ----
@@ -48,23 +49,51 @@ Set velocity type from configuration:
 include::{src}/wall/wvel/imp.h[tag=cnf]
 ----
 
-Get _view_ structure:
+Get _step_ structure:
 
 [source, c++]
 ----
-include::{src}/wall/wvel/imp.h[tag=int]
+include::{src}/wall/wvel/imp.h[tag=step]
+----
+
+Get _view_ structures:
+
+[source, c++]
+----
+include::{src}/wall/wvel/imp.h[tag=view]
+----
+
+The convertion to _view_ structures can be dispatch using the type of
+the parameters:
+
+[source, c++]
+----
+include::{src}/wall/wvel/imp.h[tag=enum]
+----
+which can be retrieved from the _Step_ structure using
+
+[source, c++]
+----
+include::{src}/wall/wvel/imp.h[tag=get]
 ----
 
 
 === Device
 
-Device code contains the functions describing the field.
-Also contains bouncer function: gives bounced-back velocity from
+Velocity field can be retrieved, depending on the view structure, using
+
+[source, c++]
+----
+include::{src}/wall/wvel/dev.h[tag=vel]
+----
+
+
+Bounce function: gives bounced-back velocity from
 position and velocity of particle.
 
 [source, c++]
 ----
-include::{src}/wall/wvel/dev.h[tag=dev]
+include::{src}/wall/wvel/dev.h[tag=bb]
 ----
 
 == Configuration
@@ -107,7 +136,6 @@ wvel {
     gdot = 3.0;
     vdir = 0;
     gdir = 1;
-    half = 0;
     w = 5.0;
     log_freq = 1000;
 };

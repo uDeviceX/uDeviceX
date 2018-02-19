@@ -1,8 +1,14 @@
-static __device__ void wvel(WvelCste_v p, Coords_v c, float3 r, /**/ float3 *v) {
+// tag::vel[]
+static __device__ void wvel(WvelCste_v p, Coords_v c, float3 r, /**/ float3 *v)
+// end::vel[]
+{
     *v = p.u;
 }
 
-static __device__ void wvel(WvelShear_v p, Coords_v c, float3 r, /**/ float3 *v) {
+// tag::vel[]
+static __device__ void wvel(WvelShear_v p, Coords_v c, float3 r, /**/ float3 *v)
+// end::vel[]
+{
     float3 rc; // relative to center
     float gdot, d;
     int vdir, gdir;
@@ -24,8 +30,10 @@ static __device__ void wvel(WvelShear_v p, Coords_v c, float3 r, /**/ float3 *v)
     else if (vdir == 2) v->z = d * gdot;
 }
 
-/* a hack for hele shaw */
-static __device__ void wvel(WvelHS_v p, Coords_v c, float3 r, /**/ float3 *v) {
+// tag::vel[]
+static __device__ void wvel(WvelHS_v p, Coords_v c, float3 r, /**/ float3 *v)
+// end::vel[]
+{
     float3 rc; // relative to center
     float u, h, r2inv, hfac;
 
@@ -43,10 +51,10 @@ static __device__ void wvel(WvelHS_v p, Coords_v c, float3 r, /**/ float3 *v) {
     v->z = 0;
 }
 
-// tag::dev[]
+// tag::bb[]
 template <typename Wvel_v>
 static __device__ void bounce_vel(Wvel_v wv, Coords_v c, float3 rw, /* io */ float3* v)
-// end::dev[]
+// end::bb[]
 {
     float3 vw;
     wvel(wv, c, rw, /**/ &vw);
