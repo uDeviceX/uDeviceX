@@ -11,4 +11,4 @@ u.conf "$S" u/x "$S/conf/default.h" <<!
 !
 u.make -j
 u.run ./udx conf.cfg
-u.avgh5 1 u 2 h5/0011.h5 > h5.out.txt
+cat vcont.txt > vcont.out.txt
