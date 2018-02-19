@@ -276,6 +276,7 @@ void sim_ini(Config *cfg, MPI_Comm cart,  Time *time, /**/ Sim **sim) {
 
     s->L = subdomain(s->coords);
     UC(conf_lookup_float(cfg, "glb.kBT", &s->kBT));
+    UC(diag_part_ini("diag.txt", &s->diagpart));
     
     maxp = SAFETY_FACTOR_MAXP * s->L.x * s->L.y * s->L.z * numberdensity;
     UC(time_step_ini(cfg, &s->time_step));
