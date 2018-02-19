@@ -8,6 +8,7 @@
 #include "coords/ini.h"
 
 #include "utils/msg.h"
+#include "utils/imp.h"
 #include "utils/mc.h"
 #include "mpi/glb.h"
 #include "mpi/wrapper.h"
@@ -20,19 +21,23 @@
 
 void main0(Config *c) {
     int nv, nt, md;
-    OffRead *off;
+    OffRead *cell;
     const char *i, *type; /* input */
     UC(conf_lookup_string(c, "i", &i));
     UC(conf_lookup_string(c, "type", &type));
 
-    msg_print("i = '%s'", i);
-    UC(off_read_off(i, &off));
+    if (same_str(type, "off"))
+        UC(off_read_off(i, &cell));
+    else if (same_str(type, "ply"))
+        UC(off_read_ply(i, &cell));
+    else
+        ERR("expecting `ply` or `off`: `%s`", type); 
 
-    md = off_get_md(off);
-    nv = off_get_nv(off);
-    nt = off_get_nt(off);
+    md = off_get_md(cell);
+    nv = off_get_nv(cell);
+    nt = off_get_nt(cell);
     msg_print("nv, nt, max degree: %d %d %d", nv, nt, md);
-    UC(off_fin(off));
+    UC(off_fin(cell));
 }
 
 int main(int argc, char **argv) {
