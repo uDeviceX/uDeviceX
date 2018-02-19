@@ -21,23 +21,21 @@ void wvel_set_cste(float3 u, Wvel *vw) {
     vw->p.cste = p;
 }
 
-void wvel_set_shear(float gdot, int vdir, int gdir, int half, Wvel *vw) {
+void wvel_set_shear(float gdot, int vdir, int gdir, Wvel *vw) {
     WvelShear p;
     p.gdot = gdot;
     p.vdir = vdir;
     p.gdir = gdir;
-    p.half = half;
     
     vw->type = WALL_VEL_SHEAR;
     vw->p.shear = p;
 }
 
-void wvel_set_shear_sin(float gdot, int vdir, int gdir, int half, float w, int log_freq, Wvel *vw) {
+void wvel_set_shear_sin(float gdot, int vdir, int gdir, float w, int log_freq, Wvel *vw) {
     WvelShearSin p;
     p.gdot     = gdot;
     p.vdir     = vdir;
     p.gdir     = gdir;
-    p.half     = half;
     p.w        = w;
     p.log_freq = log_freq;
     
@@ -63,7 +61,6 @@ static void set_step_shear(WvelShear p, WvelStep *wv) {
     wv->p.shear.gdot = p.gdot;
     wv->p.shear.gdir = p.gdir;
     wv->p.shear.vdir = p.vdir;
-    wv->p.shear.half = p.half;
 }
 
 static void set_step_shear(float dt, long it, WvelShearSin p, WvelStep *wv) {
@@ -78,7 +75,6 @@ static void set_step_shear(float dt, long it, WvelShearSin p, WvelStep *wv) {
     wv->p.shear.gdot = gdot;
     wv->p.shear.gdir = p.gdir;
     wv->p.shear.vdir = p.vdir;
-    wv->p.shear.half = p.half;
     
     cond = p.log_freq > 0 && it % p.log_freq == 0;
     if (cond)

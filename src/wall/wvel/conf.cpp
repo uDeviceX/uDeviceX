@@ -20,23 +20,21 @@ void wvel_set_conf(const Config *cfg, Wvel *vw) {
     }
     else if (same_str(type, "shear")) {
         float gdot;
-        int vdir, gdir, half;
+        int vdir, gdir;
         UC(conf_lookup_float(cfg, "wvel.gdot", &gdot));
         UC(conf_lookup_int(cfg, "wvel.vdir", &vdir));
         UC(conf_lookup_int(cfg, "wvel.gdir", &gdir));
-        UC(conf_lookup_int(cfg, "wvel.half", &half));
-        UC(wvel_set_shear(gdot, vdir, gdir, half, vw));
+        UC(wvel_set_shear(gdot, vdir, gdir, vw));
     }
     else if (same_str(type, "shear sin")) {
         float gdot, w;
-        int vdir, gdir, half, log_freq;
+        int vdir, gdir, log_freq;
         UC(conf_lookup_float(cfg, "wvel.gdot", &gdot));
         UC(conf_lookup_int(cfg, "wvel.vdir", &vdir));
         UC(conf_lookup_int(cfg, "wvel.gdir", &gdir));
-        UC(conf_lookup_int(cfg, "wvel.half", &half));
         UC(conf_lookup_int(cfg, "wvel.log_freq", &log_freq));
         UC(conf_lookup_float(cfg, "wvel.w", &w));
-        UC(wvel_set_shear_sin(gdot, vdir, gdir, half, w, log_freq, vw));
+        UC(wvel_set_shear_sin(gdot, vdir, gdir, w, log_freq, vw));
     }
     else if (same_str(type, "hele shaw")) {
         float u, h;
@@ -47,5 +45,4 @@ void wvel_set_conf(const Config *cfg, Wvel *vw) {
     else {
         ERR("unknown type <%s>\n", type);
     }
-    //UC(conf_lookup_float(cfg, "wvel.dt", &dt));
 }
