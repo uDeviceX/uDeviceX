@@ -122,20 +122,9 @@ void off_read_off(const char *path, OffRead **pq) {
     *pq = q;
 }
 
-void off_fin(OffRead* q) {
-    EFREE(q->rr);
-    EFREE(q->tt);
-    EFREE(q);
-}
-
-int off_get_nv(OffRead *q) {
-    return q->nv;
-}
-
-int off_get_nt(OffRead *q) {
-    return q->nt;
-}
-
+void off_fin(OffRead* q) { EFREE(q->rr); EFREE(q->tt); EFREE(q); }
+int off_get_nv(OffRead *q) { return q->nv; }
+int off_get_nt(OffRead *q) { return q->nt; }
 static int amax(int *a, int n) {
     int i, m;
     if (n <= 0) ERR("amax called with size: %d\n", n);
