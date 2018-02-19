@@ -16,6 +16,12 @@ void efree(void *ptr) {
     ptr = NULL;
 }
 
+void *ememcpy(void *dest, const void *src, size_t n) {
+    if (NULL == dest) ERR("NULL == dest");
+    if (NULL == src) ERR("NULL == src");
+    return memcpy(dest, src, n);
+}
+
 void efopen(const char *fname, const char *mode, /**/ FILE **f) {
     *f = fopen(fname, mode);
     if (NULL == *f)
