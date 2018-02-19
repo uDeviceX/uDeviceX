@@ -1,4 +1,4 @@
-static WallForce get_wa(WvelStep wv, Sdf *sdf, const WallQuants *q, const WallTicket *t, int n) {
+static WallForce get_wa(Sdf *sdf, const WallQuants *q, const WallTicket *t, int n) {
     WallForce wa; /* local wall data */
 
     sdf_to_view(sdf, &wa.sdf_v);
@@ -10,9 +10,10 @@ static WallForce get_wa(WvelStep wv, Sdf *sdf, const WallQuants *q, const WallTi
     return wa;
 }
 
-void wall_force(const PairParams *params, WvelStep wv, const Coords *c, Sdf *sdf, const WallQuants *q, const WallTicket *t, int n, const PaArray *parray, const FoArray *farray) {
+void wall_force(const PairParams *params, const WvelStep *wv, const Coords *c, Sdf *sdf,
+                const WallQuants *q, const WallTicket *t, int n, const PaArray *parray, const FoArray *farray) {
     WallForce wa;
-    wa = get_wa(wv, sdf, q, t, n);
+    wa = get_wa(sdf, q, t, n);
 
     wall_force_apply(params, wv, c, parray, n, t->rnd, wa, /**/ farray);
 }
