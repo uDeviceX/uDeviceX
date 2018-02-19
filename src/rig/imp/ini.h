@@ -1,6 +1,27 @@
+static void ply_read(const char *fname, /**/ int *pnt, int *pnv, int4 **ptt, float **pvv) {
+    int nt, nv;
+    int4 *tt;
+    float *vv;
+    OffRead *q;
+    UC(off_read_ply(fname, &q));
+
+    nt = off_get_nt(q);
+    nv = off_get_nv(q);
+
+    EMALLOC(  nt, &tt);
+    EMALLOC(3*nv, &vv);
+
+    EMEMCPY(  nt, off_get_tri(q), /**/ tt);
+    EMEMCPY(3*nv, off_get_vert(q), /**/ vv);
+
+    off_fin(q);
+    *ptt = tt; *pvv = vv;
+    *pnv = nv; *pnt = nt;
+}
+
 static void load_rigid_mesh(const char *fname, int *nt, int *nv, int4 **tt_hst, int4 **tt_dev, float **vv_hst, float **vv_dev) {
     msg_print("reading: '%s'", fname);
-    UC(ply::read(fname, /**/ nt, nv, tt_hst, vv_hst));
+    UC(ply_read(fname, /**/ nt, nv, tt_hst, vv_hst));
 
     CC(d::Malloc((void**)tt_dev,     (*nt) * sizeof(int4)));
     CC(d::Malloc((void**)vv_dev, 3 * (*nv) * sizeof(float)));
