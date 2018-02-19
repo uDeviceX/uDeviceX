@@ -21,8 +21,10 @@
 void main0(Config *c) {
     int nv, nt, md;
     OffRead *off;
-    const char *i; /* input */
+    const char *i, *type; /* input */
     UC(conf_lookup_string(c, "i", &i));
+    UC(conf_lookup_string(c, "type", &type));
+    
     msg_print("i = '%s'", i);
     UC(off_read_off(i, &off));
 
