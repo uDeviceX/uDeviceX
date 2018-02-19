@@ -62,19 +62,6 @@ static void ini_vcon(MPI_Comm comm, int3 L, const Config *cfg, /**/ Vcon *c) {
 
     UC(vcont_ini(comm, L, /**/ &c->vcont));
     UC(vcont_set_conf(cfg, /**/ c->vcont));
-    // UC(conf_lookup_string(cfg, "vcon.type", &type));
-    // UC(conf_lookup_float3(cfg, "vcon.U", &U));
-    // UC(conf_lookup_float(cfg, "vcon.factor", &factor));
-
-    // 
-    // 
-    
-    // if      (same_str(type, "cart"))
-    //     UC(vcon_set_cart(/**/ vc));
-    // else if (same_str(type, "rad"))
-    //     UC(vcon_set_radial(/**/ vc));
-    // else
-    //     ERR("Unrecognised type <%s>", type);
 }
 
 static void ini_outflow(const Coords *coords, int maxp, const Config *cfg, Outflow **o) {
@@ -202,6 +189,7 @@ static void ini_wall(const Config *cfg, int3 L, Wall *w) {
     UC(wall_ini_ticket(L, &w->t));
     UC(wvel_ini(&w->vel));
     UC(wvel_set_conf(cfg, w->vel));
+    UC(wvel_step_ini(&w->vview));
 }
 
 static void ini_objinter(MPI_Comm cart, int maxp, int3 L, const Opt *opt, /**/ ObjInter *o) {
