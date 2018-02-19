@@ -99,7 +99,7 @@ static void diag(float time, Sim *s) {
     if (time < 0) ERR("time = %g < 0", time);
     int n;
     n = download_pp(s);
-    UC(diag(s->cart, time, n, s->pp_dump));
+    UC(diag_part_apply(s->diagpart, s->cart, time, n, s->pp_dump));
 }
 
 static void dump_strt_templ(const Coords *coords, Wall *w, Sim *s) { /* template dumps (wall, solid) */

@@ -1,9 +1,11 @@
 void diag_part_ini(const char *path, /**/ DiagPart **pq) {
+    FILE *f;
     DiagPart *q;
     EMALLOC(1, &q);
     *pq = q;
-    strncpy(q->path, path, FILENAME_MAX);
-    q->First = 0;
+    snprintf(q->path, FILENAME_MAX, "%s/%s", DUMP_BASE, path);
+    UC(efopen(q->path, "w", /**/ &f));
+    UC(efclose(f));
     msg_print("DiagPart: %s", q->path);
 }
 void diag_part_fin(DiagPart *q) { EFREE(q); }
@@ -26,7 +28,7 @@ static int max_d(MPI_Comm comm, double *v) {
 static int sum_i(MPI_Comm comm, int *v) {
     return reduce(comm, v, v, 1, MPI_INT, MPI_SUM);
 }
-void diag(MPI_Comm comm, float time, int n, const Particle *pp) {
+void diag_part_apply(DiagPart *q, MPI_Comm comm, float time, int n, const Particle *pp) {
     if (time < 0) ERR("time = %g < 0", time);
     enum {X, Y, Z};
     int i, c;
@@ -49,11 +51,9 @@ void diag(MPI_Comm comm, float time, int n, const Particle *pp) {
 
     if (m::is_master(comm)) {
         if (n) kbt = 0.5 * ke / (n * 3. / 2);
-        static bool firsttime = true;
-        UC(efopen(DUMP_BASE "/diag.txt", firsttime ? "w" : "a", /**/ &f));
-        firsttime = false;
+        UC(efopen(q->path, "a", /**/ &f));
         msg_print("% .1e % .1e [% .1e % .1e % .1e] % .1e", time, kbt, v[X], v[Y], v[Z], km);
         fprintf(f, "%e\t%.10e\t%.10e\t%.10e\t%.10e\t%.10e\n", time, kbt, v[X], v[Y], v[Z], km);
-        efclose(f);
+        UC(efclose(f));
     }
 }
