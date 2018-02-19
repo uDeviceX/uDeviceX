@@ -21,7 +21,7 @@
 
 void main0(Config *c) {
     int nv, nt, md;
-    OffRead *cell;
+    MeshRead *cell;
     const char *i, *type; /* input */
     UC(conf_lookup_string(c, "i", &i));
     UC(conf_lookup_string(c, "type", &type));

@@ -2,7 +2,7 @@ static void ply_read(const char *fname, /**/ int *pnt, int *pnv, int4 **ptt, flo
     int nt, nv;
     int4 *tt;
     float *vv;
-    OffRead *q;
+    MeshRead *q;
     UC(off_read_ply(fname, &q));
 
     nt = off_get_nt(q);

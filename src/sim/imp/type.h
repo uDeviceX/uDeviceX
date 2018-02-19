@@ -90,7 +90,7 @@ struct Rbc {
     RbcParams *params;    /* model parameters */
     RbcCom    *com;     /* helper to compute center of masses */
     RbcStretch *stretch;  /* helper to apply stretching [fo]rce to cells */
-    OffRead    *cell;     /* cell template */
+    MeshRead    *cell;     /* cell template */
     MeshWrite  *mesh_write;
 };
 

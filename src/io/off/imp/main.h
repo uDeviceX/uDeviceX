@@ -1,12 +1,12 @@
-static void ini(OffRead **pq) {
-    OffRead *p;
-    UC(emalloc(sizeof(OffRead), (void**)&p));
+static void ini(MeshRead **pq) {
+    MeshRead *p;
+    UC(emalloc(sizeof(MeshRead), (void**)&p));
     *pq = p;
 }
 
-void off_read_off(const char *path, OffRead **pq) {
+void off_read_off(const char *path, MeshRead **pq) {
     FILE *f;
-    OffRead *q;
+    MeshRead *q;
     UC(ini(&q));
     UC(efopen(path, "r", /**/ &f));
     read_off(f, path, /**/ q);
@@ -15,9 +15,9 @@ void off_read_off(const char *path, OffRead **pq) {
     *pq = q;
 }
 
-void off_read_ply(const char *path, OffRead **pq) {
+void off_read_ply(const char *path, MeshRead **pq) {
     FILE *f;
-    OffRead *q;
+    MeshRead *q;
     UC(ini(&q));
     UC(efopen(path, "r", /**/ &f));
     read_ply(f, path, /**/ q);
@@ -26,9 +26,9 @@ void off_read_ply(const char *path, OffRead **pq) {
     *pq = q;
 }
 
-void off_fin(OffRead* q) { EFREE(q->rr); EFREE(q->tt); EFREE(q); }
-int off_get_nv(OffRead *q) { return q->nv; }
-int off_get_nt(OffRead *q) { return q->nt; }
+void off_fin(MeshRead* q) { EFREE(q->rr); EFREE(q->tt); EFREE(q); }
+int off_get_nv(MeshRead *q) { return q->nv; }
+int off_get_nt(MeshRead *q) { return q->nt; }
 static int amax(int *a, int n) {
     int i, m;
     if (n <= 0) ERR("amax called with size: %d\n", n);
@@ -37,7 +37,7 @@ static int amax(int *a, int n) {
         if (a[i] > m) m = a[i];
     return m;
 }
-int off_get_md(OffRead *q) {
+int off_get_md(MeshRead *q) {
     int *d;
     int i, m, nt, nv;
     int x, y, z;
@@ -59,5 +59,5 @@ int off_get_md(OffRead *q) {
     return m;
 }
 
-const float *off_get_vert(OffRead *q) { return q->rr; }
-const int4  *off_get_tri(OffRead *q) { return q->tt; }
+const float *off_get_vert(MeshRead *q) { return q->rr; }
+const int4  *off_get_tri(MeshRead *q) { return q->tt; }

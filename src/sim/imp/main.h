@@ -48,7 +48,7 @@ void sim_gen(Sim *s, Config *cfg, Time *time, TimeSeg *time_seg) {
     Flu *flu = &s->flu;
     Rbc *rbc = &s->rbc;
     Wall *wall = &s->wall;
-    OffRead *cell = s->rbc.cell;
+    MeshRead *cell = s->rbc.cell;
 
     UC(flu_gen_quants(s->coords, s->gen_color, &flu->q));
     UC(flu_build_cells(&flu->q));
@@ -79,7 +79,7 @@ void sim_strt(Sim *s, Config *cfg, Time *time, TimeSeg *time_seg) {
     Rbc *rbc = &s->rbc;
     Rig *rig = &s->rig;
     Wall *wall = &s->wall;
-    OffRead *cell = s->rbc.cell;
+    MeshRead *cell = s->rbc.cell;
     bool dump_sdf = s->opt.dump_field;
     long maxp_wall = get_max_parts_wall(s->coords);
 

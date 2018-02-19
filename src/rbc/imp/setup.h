@@ -4,7 +4,7 @@ static void edg_sfree1(Adj *adj, /**/ float *a_dev, float *A_dev) {
     int n;
     const float *rr;
     float *a_hst, *A_hst;
-    OffRead *cell;
+    MeshRead *cell;
     RbcShape *shape;
     UC(off_read_off(path, &cell));
     rr = off_get_vert(cell);

@@ -7,7 +7,7 @@ static bool prop(const char *pname, const char *str) {
     return true;
 }
 
-static void read_ply(FILE *f, const char *fname, OffRead *q) {
+static void read_ply(FILE *f, const char *fname, MeshRead *q) {
     int nv, nt;
     int4 *tt;
     float *rr;

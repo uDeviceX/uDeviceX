@@ -14,7 +14,7 @@ void mesh_write_ini(const int4 *tt, int nv, int nt, const char *directory, /**/ 
     UC(ini(tt, nv, nt, directory, /**/ pq));
 }
 
-void mesh_write_ini_off(OffRead *cell, const char *directory, /**/ MeshWrite **pq) {
+void mesh_write_ini_off(MeshRead *cell, const char *directory, /**/ MeshWrite **pq) {
     int nv, nt;
     const int4 *tt;
     nv = off_get_nv(cell);

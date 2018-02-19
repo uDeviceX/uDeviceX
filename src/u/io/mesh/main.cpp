@@ -19,7 +19,7 @@
 
 #include "parser/imp.h"
 
-static void write(MPI_Comm cart, const Coords *c, const char *o, OffRead *cell) {
+static void write(MPI_Comm cart, const Coords *c, const char *o, MeshRead *cell) {
     int nc;
     MeshWrite *mesh;
     Particle *pp;
@@ -32,7 +32,7 @@ static void write(MPI_Comm cart, const Coords *c, const char *o, OffRead *cell) 
     UC(mesh_write_fin(mesh));
 }
 
-static void log(OffRead *cell) {
+static void log(MeshRead *cell) {
     int nv, nt, md;
     md = off_get_md(cell);
     nv = off_get_nv(cell);
@@ -42,7 +42,7 @@ static void log(OffRead *cell) {
 
 int main(int argc, char **argv) {
     Config *cfg;
-    OffRead *cell;
+    MeshRead *cell;
     Coords *coords;
     int rank, dims[3];
     MPI_Comm cart;

@@ -13,7 +13,7 @@ static void ini_edg(RbcQuants *q)  {
 }
 static void ini_anti(RbcQuants *q) { Dalloc(&q->shape.anti, q->nv * RBCmd); }
 
-void rbc_ini(OffRead *cell, RbcQuants *q) {
+void rbc_ini(MeshRead *cell, RbcQuants *q) {
     int md;
     const int4 *tt;
     md    = RBCmd;

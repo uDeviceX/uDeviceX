@@ -80,7 +80,7 @@ static int tri(FILE *f, char *s, int nt, int nv, int4 *tt) {
     }
     return 1;
 }
-static void read_off(FILE *f, const char *path, /**/ OffRead *q) {
+static void read_off(FILE *f, const char *path, /**/ MeshRead *q) {
     int nv, nt;
     char s[SIZE];
     float *rr;

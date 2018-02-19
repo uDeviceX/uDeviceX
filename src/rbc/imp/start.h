@@ -13,7 +13,7 @@ static void ids_from_strt(const Coords *coords, int id, /**/ int *ii) {
     restart_read_ii(coords, CODE, IDEXT, id, ii, &nc);
 }
 
-void rbc_strt_quants(const Coords *coords, OffRead *off, int id, RbcQuants *q) {
+void rbc_strt_quants(const Coords *coords, MeshRead *off, int id, RbcQuants *q) {
     int nv;
     nv = off_get_nv(off);
     setup_from_strt(coords, nv, id, /**/ q->pp, &q->nc, &q->n, /*w*/ q->pp_hst);

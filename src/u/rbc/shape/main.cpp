@@ -23,7 +23,7 @@
 
 #include "mpi/glb.h"
 
-void run(OffRead *off) {
+void run(MeshRead *off) {
     Adj *adj;
     RbcShape *shape;
     int md, nt, nv;
@@ -45,7 +45,7 @@ void run(OffRead *off) {
 
 int main(int argc, char **argv) {
     const char *i; /* input */
-    OffRead *off;
+    MeshRead *off;
     Config *cfg;
     m::ini(&argc, &argv);
 

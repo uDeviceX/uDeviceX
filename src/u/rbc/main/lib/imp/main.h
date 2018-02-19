@@ -63,7 +63,7 @@ static void run1(MPI_Comm cart, float dt, float te, const Coords *coords, int pa
 static void run2(MPI_Comm cart, float dt, float te, int seed,
                  const Coords *coords, float part_freq,
                  const BForce *bforce, MoveParams *moveparams,
-                 OffRead *off, const char *ic, const RbcParams *par, MeshWrite *mesh_write,
+                 MeshRead *off, const char *ic, const RbcParams *par, MeshWrite *mesh_write,
                  RbcQuants *q) {
     int nv;
     RbcStretch *stretch;
@@ -82,7 +82,7 @@ void run(MPI_Comm cart, float dt, float te, int seed,
          const char *cell, const char *ic, const RbcParams *par) {
     const char *directory = "r";
     RbcQuants q;
-    OffRead *off;
+    MeshRead *off;
     MeshWrite *mesh_write;
 
     UC(off_read_off(cell, /**/ &off));
