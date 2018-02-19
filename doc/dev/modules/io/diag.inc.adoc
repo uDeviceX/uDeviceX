@@ -2,7 +2,13 @@
 
 === Particle
 
-Uses only particles values.
+Uses only particles values. Dumps output to log files and to file
+`path`.
+
+[source, c++]
+----
+include::{src}/io/diag/part/imp.h[tags=interface]
+----
 
 === Mesh
 
