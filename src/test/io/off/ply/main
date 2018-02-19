@@ -1,5 +1,6 @@
 # TEST: io.off.ply
 :
+cd test/io/off/ply
 u.cp.hdr default.h  conf.h
 u.cp.rig cylinder   rbc.ply
 :

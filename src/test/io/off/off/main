@@ -1,5 +1,6 @@
 # TEST: io.off.off
 :
+cd test/io/off/off
 u.cp.hdr default.h  conf.h
 u.cp.rbc rbc/642 rbc.off
 :
