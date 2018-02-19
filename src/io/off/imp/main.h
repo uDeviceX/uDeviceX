@@ -1,6 +1,5 @@
 #define SIZE 1024
 
-static int eq(const char *a, const char *b) { return strcmp(a, b) == 0; }
 static void ini(OffRead **pq) {
     OffRead *p;
     UC(emalloc(sizeof(OffRead), (void**)&p));
@@ -36,7 +35,7 @@ static int header(FILE *f, char *s) {
     char key[SIZE];
     if (line(f, /**/ s) == ERR) return 0;
     sscanf(s, "%s", key);
-    return eq(key, "OFF");
+    return same_str(key, "OFF");
 }
 
 static int sizes(FILE *f, char *s, /**/ int *nv, int *nt) {
