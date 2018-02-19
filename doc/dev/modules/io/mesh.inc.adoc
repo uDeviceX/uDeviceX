@@ -14,7 +14,7 @@ tt[i].x tt[i].y tt[i].z
 ----
 
 `mesh_get_nt`, `mesh_get_nv`, and `mesh_get_md` return the number of
-ntriangles, number of vertices and maximum degree.
+triangles, number of vertices and maximum degree.
 
 [source,cpp]
 ----
