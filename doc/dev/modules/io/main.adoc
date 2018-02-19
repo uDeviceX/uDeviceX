@@ -5,3 +5,5 @@
 include::txt.inc.adoc[]
 
 include::mesh.inc.adoc[]
+
+include::diag.inc.adoc[]
