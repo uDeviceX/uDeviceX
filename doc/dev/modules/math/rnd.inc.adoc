@@ -2,8 +2,6 @@
 
 Generate uniform random numbers on host in floating point precision
 
-=== interface
-
 [source,cpp]
 ----
 include::{src}/math/rnd/imp.h[tags=interface]
