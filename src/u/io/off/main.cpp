@@ -24,7 +24,7 @@ void main0(Config *c) {
     const char *i, *type; /* input */
     UC(conf_lookup_string(c, "i", &i));
     UC(conf_lookup_string(c, "type", &type));
-    
+
     msg_print("i = '%s'", i);
     UC(off_read_off(i, &off));
 
@@ -39,7 +39,7 @@ int main(int argc, char **argv) {
     Config *cfg;
     int rank, dims[3];
     MPI_Comm cart;
-    
+
     m::ini(&argc, &argv);
     m::get_dims(&argc, &argv, dims);
     m::get_cart(MPI_COMM_WORLD, dims, &cart);
