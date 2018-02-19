@@ -1,7 +1,10 @@
 == Mesh
 
-Read triangulated mesh from an off or ply file `path`. Vertices are
-packed into linear array:
+Read triangulated mesh from ascii
+link:https://en.wikipedia.org/wiki/OFF_(file_format)[off]
+or
+link:https://en.wikipedia.org/wiki/PLY_(file_format)[ply].
+Vertices are packed into linear array:
 
 ----
 x0 y0 z0 x1 y1 z1 ... x[nv-1] y[nv-1] z[nv-1]
