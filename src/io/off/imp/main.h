@@ -101,8 +101,8 @@ static void read(FILE *f, const char *path, /**/ OffRead *q) {
         msg_print("wrong sizes: '%s'", s);
         ERR("failed to read: '%s'", path);
     }
-    UC(emalloc(3*nv*sizeof(rr[0]), (void**)&rr));
-    UC(emalloc(  nt*sizeof(tt[0]), (void**)&tt));
+    EMALLOC(3*nv, &rr);
+    EMALLOC(  nt, &tt);
     if (!vert(f, s, nv, /**/ rr))
         ERR("failed to read vertices: '%s'", path);
     if (!tri(f, s, nt, nv, /**/ tt))
@@ -123,9 +123,9 @@ void off_read_off(const char *path, OffRead **pq) {
 }
 
 void off_fin(OffRead* q) {
-    UC(efree(q->rr));
-    UC(efree(q->tt));
-    UC(efree(q));
+    EFREE(q->rr);
+    EFREE(q->tt);
+    EFREE(q);
 }
 
 int off_get_nv(OffRead *q) {
