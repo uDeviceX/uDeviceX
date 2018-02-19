@@ -40,6 +40,7 @@ $B/inter/color/imp.o: $S/inter/color/imp.cpp; $X -I$S/inter/color -I$S/.
 $B/inter/imp.o: $S/inter/imp.cu; $N -I$S/inter -I$S/.
 $B/io/bop/imp.o: $S/io/bop/imp.cpp; $X -I$S/io/bop -I$S/.
 $B/io/com/imp.o: $S/io/com/imp.cpp; $X -I$S/io/com -I$S/.
+$B/io/diag/mesh/imp.o: $S/io/diag/mesh/imp.cpp; $X -I$S/io/diag/mesh -I$S/.
 $B/io/diag/part/imp.o: $S/io/diag/part/imp.cpp; $X -I$S/io/diag/part -I$S/.
 $B/io/field/h5/imp.o: $S/io/field/h5/imp.cpp; $X -I$S/io/field/h5 -I$S/.
 $B/io/field/imp.o: $S/io/field/imp.cpp; $X -I$S/io/field -I$S/.
