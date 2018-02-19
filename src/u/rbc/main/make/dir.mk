@@ -3,7 +3,7 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/d                     && \
     d $B/io/bop                && \
     d $B/io/com                && \
-    d $B/io/diag               && \
+    d $B/io/diag/part          && \
     d $B/io/field              && \
     d $B/io/field/h5           && \
     d $B/io/field/xmf          && \

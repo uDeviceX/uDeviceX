@@ -39,7 +39,7 @@
 #include "io/fields_grid/imp.h"
 #include "io/mesh/imp.h"
 #include "io/rig/imp.h"
-#include "io/diag/imp.h"
+#include "io/diag/part/imp.h"
 #include "io/com/imp.h"
 
 #include "wall/wvel/type.h"
