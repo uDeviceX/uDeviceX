@@ -11,7 +11,7 @@ $B/io/field/xmf/imp.o: $S/utils/imp.h $S/utils/error.h $S/io/field/xmf/imp.h $S/
 $B/io/mesh/imp.o: $S/utils/imp.h $S/utils/os.h $S/inc/conf.h $S/io/mesh/imp/shift/center.h $S/utils/error.h $S/io/mesh/imp/shift/edge.h $S/inc/type.h $S/mpi/wrapper.h $S/io/mesh/imp.h $S/utils/mc.h $B/conf.h $S/io/mesh/imp/main.h $S/io/mesh/imp/type.h $S/io/mesh/imp/new.h $S/io/mesh/write/imp.h $S/io/off/imp.h $S/utils/msg.h $S/coords/imp.h
 $B/io/mesh/write/imp.o: $S/inc/conf.h $S/mpi/wrapper.h $S/io/mesh/write/imp.h $S/utils/mc.h $B/conf.h $S/io/mesh/write/imp/main.h
 $B/io/off/imp.o: $S/utils/imp.h $S/utils/error.h $S/io/off/imp/ply.h $S/io/off/imp.h $S/io/off/imp/main.h $S/io/off/imp/type.h $S/io/off/imp/off.h $S/utils/msg.h
-$B/io/ply/imp.o: $S/utils/imp.h $S/utils/error.h $S/io/ply/imp/ascii.h $S/inc/type.h $S/io/ply/imp.h $S/inc/def.h $S/io/ply/imp/common.h $S/io/ply/imp/bin.h $S/utils/msg.h
+$B/io/ply/imp.o: $S/utils/imp.h $S/utils/error.h $S/io/ply/imp/ascii.h $S/inc/type.h $S/io/ply/imp.h $S/inc/def.h $S/io/ply/imp/bin.h $S/utils/msg.h
 $B/io/restart/imp.o: $S/utils/imp.h $S/inc/conf.h $S/utils/error.h $S/inc/type.h $S/io/restart/imp.h $S/inc/def.h $B/conf.h $S/coords/imp.h $S/utils/msg.h
 $B/io/rig/imp.o: $S/utils/imp.h $S/inc/conf.h $S/utils/error.h $S/inc/type.h $B/conf.h $S/coords/imp.h
 $B/io/txt/imp.o: $S/utils/imp.h $S/utils/error.h $S/inc/type.h $S/io/txt/imp.h $S/io/txt/imp/dump.h $S/io/txt/imp/read.h $S/io/txt/imp/type.h $S/utils/msg.h

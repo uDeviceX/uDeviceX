@@ -8,4 +8,4 @@ $B/utils/imp.o: $S/utils/imp.cpp; $X -I$S/utils -I$S/.
 $B/utils/mc.o: $S/utils/mc.cpp; $X -I$S/utils -I$S/.
 $B/utils/msg.o: $S/utils/msg.cpp; $X -I$S/utils -I$S/.
 $B/utils/os.o: $S/utils/os.cpp; $X -I$S/utils -I$S/.
-$B/u/utils/main.o: $S/u/utils/main.cpp; $X -I$S/u/utils -I$S/.
+$B/u/utils/main.o: $S/u/utils/main.cpp; $X -I$S/.
