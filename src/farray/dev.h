@@ -1,5 +1,8 @@
+#define _I_ static __device__
+#define _S_ static __device__
+
 template <int S, typename Fo, typename FA>
-static __device__ void farray_add_force(const Fo *f, int i, /**/ FA a) {
+_S_ void farray_add_force(const Fo *f, int i, /**/ FA a) {
     enum {X, Y, Z};
     float *af = a.ff + 3*i;
     af[X] += S * f->x;
@@ -7,7 +10,7 @@ static __device__ void farray_add_force(const Fo *f, int i, /**/ FA a) {
     af[Z] += S * f->z;
 }
 
-static __device__ void farray_add_stress(const PairSFo *f, int i, /**/ FoSArray_v a) {
+_S_ void farray_add_stress(const PairSFo *f, int i, /**/ FoSArray_v a) {
     enum {XX, XY, XZ, YY, YZ, ZZ};
     float *s = a.ss + 6*i;
     s[XX] += f->sxx;
@@ -20,7 +23,7 @@ static __device__ void farray_add_stress(const PairSFo *f, int i, /**/ FoSArray_
 
 // tag::add[]
 template <int S>
-static __device__ void farray_add(const PairFo *f, int i, /**/ FoArray_v a) // <1>
+_I_ void farray_add(const PairFo *f, int i, /**/ FoArray_v a) // <1>
 // end::add[]
 {
     farray_add_force<S>(f, i, /**/ a);
@@ -28,7 +31,7 @@ static __device__ void farray_add(const PairFo *f, int i, /**/ FoArray_v a) // <
 
 // tag::add[]
 template <int S>
-static __device__ void farray_add(const PairSFo *f, int i, /**/ FoSArray_v a) // <2>
+_I_ void farray_add(const PairSFo *f, int i, /**/ FoSArray_v a) // <2>
 // end::add[]
 {    
     farray_add_force<S>(f, i, /**/ a);
@@ -37,7 +40,7 @@ static __device__ void farray_add(const PairSFo *f, int i, /**/ FoSArray_v a) //
 
 
 template <int S, typename Fo, typename FA>
-static __device__ void farray_atomic_add_force(const Fo *f, int i, /**/ FA a) {
+_S_ void farray_atomic_add_force(const Fo *f, int i, /**/ FA a) {
     enum {X, Y, Z};
     float *af = a.ff + 3*i;
     atomicAdd(&af[X], S * f->x);
@@ -45,7 +48,7 @@ static __device__ void farray_atomic_add_force(const Fo *f, int i, /**/ FA a) {
     atomicAdd(&af[Z], S * f->z);
 }
 
-static __device__ void farray_atomic_add_stress(const PairSFo *f, int i, /**/ FoSArray_v a) {
+_S_ void farray_atomic_add_stress(const PairSFo *f, int i, /**/ FoSArray_v a) {
     enum {XX, XY, XZ, YY, YZ, ZZ};
     float *s = a.ss + 6*i;
     atomicAdd(&s[XX], f->sxx);
@@ -58,7 +61,7 @@ static __device__ void farray_atomic_add_stress(const PairSFo *f, int i, /**/ Fo
 
 // tag::atomic[]
 template <int S>
-static __device__ void farray_atomic_add(const PairFo *f, int i, /**/ FoArray_v a)
+_I_ void farray_atomic_add(const PairFo *f, int i, /**/ FoArray_v a)
 // end::atomic[]
 {
     farray_atomic_add_force<S>(f, i, /**/ a);
@@ -66,7 +69,7 @@ static __device__ void farray_atomic_add(const PairFo *f, int i, /**/ FoArray_v 
 
 // tag::atomic[]
 template <int S>
-static __device__ void farray_atomic_add(const PairSFo *f, int i, /**/ FoSArray_v a)
+_I_ void farray_atomic_add(const PairSFo *f, int i, /**/ FoSArray_v a)
 // end::atomic[]
 {    
     farray_atomic_add_force<S>(f, i, /**/ a);
@@ -75,7 +78,7 @@ static __device__ void farray_atomic_add(const PairSFo *f, int i, /**/ FoSArray_
 
 
 // tag::ini[]
-static __device__ PairFo farray_fo0(FoArray_v)
+_I_ PairFo farray_fo0(FoArray_v)
 // end::ini[]
 {
     PairFo f;
@@ -84,7 +87,7 @@ static __device__ PairFo farray_fo0(FoArray_v)
 }
 
 // tag::ini[]
-static __device__ PairSFo farray_fo0(FoSArray_v)
+_I_ PairSFo farray_fo0(FoSArray_v)
 // end::ini[]
 {
     PairSFo f;
@@ -93,3 +96,6 @@ static __device__ PairSFo farray_fo0(FoSArray_v)
     f.syy = f.syz = f.szz = 0;
     return f;
 }
+
+#undef _I_
+#undef _S_
