@@ -1,16 +1,14 @@
 == linal
 
-Linear algebra helpers on host
-
-=== interface
+Linear algebra functions
 
 [source,cpp]
 ----
 include::{src}/math/linal/imp.h[tags=interface]
 ----
-<1> inverse symmetric 3 by 3 matrix; fails and returns an error for
-    singular matrices with determinant smaller than epsilon (hardcoded
-    to `1e-8`).
+
+<1> inverse symmetric 3 by 3 matrix; fails for singular matrices with
+    determinant smaller than epsilon (hardcoded to `1e-8`).
 
 structure of the matrix is `xx, xy, yy, yz, zz`, where
 ----
