@@ -36,7 +36,7 @@ void main0(Config *c) {
     md = off_get_md(cell);
     nv = off_get_nv(cell);
     nt = off_get_nt(cell);
-    msg_print("nv, nt, max degree: %d %d %d", nv, nt, md);
+    printf("%d %d %d\n", nv, nt, md);
     UC(off_fin(cell));
 }
 
