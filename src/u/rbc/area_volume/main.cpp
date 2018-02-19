@@ -49,7 +49,7 @@ static void run1(MPI_Comm cart, const Coords *coords, OffRead *off, const char *
 void run(MPI_Comm cart, const Coords *coords, const char *cell, const char *ic) {
     RbcQuants q;
     OffRead *off;
-    UC(off_read(cell, /**/ &off));
+    UC(off_read_off(cell, /**/ &off));
     UC(rbc_ini(off, &q));
     UC(run1(cart, coords, off, ic, q));
     UC(off_fin(off));

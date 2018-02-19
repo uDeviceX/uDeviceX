@@ -52,7 +52,7 @@ int main(int argc, char **argv) {
     UC(conf_ini(&cfg));
     UC(conf_read(argc, argv, cfg));
     UC(conf_lookup_string(cfg, "i", &i));
-    UC(off_read(i, /**/ &off));
+    UC(off_read_off(i, /**/ &off));
 
     run(off);
 

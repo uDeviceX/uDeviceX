@@ -4,7 +4,8 @@ struct OffRead;
 /* off files
    [1] https://en.wikipedia.org/wiki/OFF_(file_format) */
 
-void off_read(const char *path, OffRead**);
+void off_read_off(const char *path, OffRead**);
+void off_read_ply(const char *path, OffRead**);
 void off_fin(OffRead*);
 
 int off_get_nt(OffRead*);

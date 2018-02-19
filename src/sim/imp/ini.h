@@ -155,7 +155,7 @@ static void ini_flu(Opt opt, MPI_Comm cart, int maxp, int3 L, /**/ Flu *f) {
 static void ini_rbc(const Config *cfg, MPI_Comm cart, int3 L, /**/ Rbc *r) {
     int seed, nv;
     const char *directory = "r";
-    UC(off_read("rbc.off", &r->cell));
+    UC(off_read_off("rbc.off", &r->cell));
     UC(mesh_write_ini_off(r->cell, directory, /**/ &r->mesh_write));
     nv = off_get_nv(r->cell);
     Dalloc(&r->ff, MAX_CELL_NUM * nv);
