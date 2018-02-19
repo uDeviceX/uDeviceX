@@ -111,12 +111,13 @@ void vcont_sample(const Coords *coords, int n, const Particle *pp, const int *st
 }
 
 float3 vcont_adjustF(/**/ PidVCont *c) {
+    enum {WARPSIZE = 32};
     int3 L = c->L;
     int ncells, nchunks, i;
     ncells = L.x * L.y * L.z;
-    nchunks = ceiln(ncells, 32);
+    nchunks = ceiln(ncells, WARPSIZE);
 
-    KL(vcont_dev::reduceByWarp, (nchunks, 32), (c->gridvel, c->gridnum, ncells, /**/ c->dtotvel, c->dtotnum));
+    KL(vcont_dev::reduceByWarp, (nchunks, WARPSIZE), (c->gridvel, c->gridnum, ncells, /**/ c->dtotvel, c->dtotnum));
     dSync();
 
     float3 e, de;
