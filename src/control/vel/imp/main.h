@@ -1,3 +1,5 @@
+enum {WARPSIZE = 32};
+
 static void ini_dump(int rank, /**/ FILE **f) {
     *f = NULL;
     if (rank) return;
@@ -41,7 +43,7 @@ static void ini(MPI_Comm comm, int3 L, float3 vtarget, float factor, /**/ PidVCo
     CC(d::Malloc((void **) &c->gridvel, ncells * sizeof(float3)));
     CC(d::Malloc((void **) &c->gridnum, ncells * sizeof(int)));
 
-    nchunks = ceiln(ncells, 32);
+    nchunks = ceiln(ncells, WARPSIZE);
     
     CC(d::alloc_pinned((void **) &c->totvel, nchunks * sizeof(float3)));
     CC(d::alloc_pinned((void **) &c->totnum, nchunks * sizeof(int)));
@@ -111,7 +113,6 @@ void vcont_sample(const Coords *coords, int n, const Particle *pp, const int *st
 }
 
 float3 vcont_adjustF(/**/ PidVCont *c) {
-    enum {WARPSIZE = 32};
     int3 L = c->L;
     int ncells, nchunks, i;
     ncells = L.x * L.y * L.z;
