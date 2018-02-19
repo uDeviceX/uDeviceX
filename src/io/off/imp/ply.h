@@ -23,32 +23,21 @@ static void read_ply(FILE *f, const char *fname, OffRead *q) {
         char cbuf[BUFSIZE + 1] = {0}; // + 1 for \0
 
         const int checker = fscanf(f, " %[^\n]" xstr(BUFSIZE) "c", cbuf);
-
-        if (checker != 1) {
-            fprintf(stderr, "Something went wrong reading <%s>\n", fname);
-            exit(1);
-        }
+        if (checker != 1)
+            ERR("Fail to read '%s'", fname);
 
         int ibuf;
         if    (sscanf(cbuf, "element vertex %d", &ibuf) == 1) nv = ibuf;
         else if (sscanf(cbuf, "element face %d", &ibuf) == 1) nt = ibuf;
         else if (prop("end_header", cbuf)) break;
     }
-
-    if (l >= MAXLINES || nt == -1 || nv == -1) {
-        printf("Something went wrong, did not catch end_header\n");
-        exit(1);
-    }
-
+    if (l >= MAXLINES || nt == -1 || nv == -1)
+        ERR("Fail to read '%s': did not catch end_header", fname);
     EMALLOC(  nt, &tt);
     EMALLOC(3*nv, &rr);
-
     for (int i = 0; i < nv; ++i)
         fscanf(f, "%f %f %f\n",
-               rr + 3*i + 0,
-               rr + 3*i + 1,
-               rr + 3*i + 2);
-
+               rr + 3*i + 0, rr + 3*i + 1, rr + 3*i + 2);
     int4 t; t.z = 0;
     for (int i = 0; i < nt; ++i) {
         fscanf(f, "%*d %d %d %d\n", &t.x, &t.y, &t.z);
