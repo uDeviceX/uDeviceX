@@ -16,16 +16,3 @@ struct WvelHS_v {
     float h; // height of the channel
 };
 
-union WvelPar_v {
-    WvelCste_v cste;
-    WvelShear_v shear;
-    WvelHS_v hs;
-};
-
-/* device structure: to be passed to device code */
-
-struct WvelStep {
-    WvelPar_v p;
-    int type;
-};
-
