@@ -14,7 +14,10 @@ static void reini_sampler(/**/ PidVCont *c) {
     int3 L = c->L;
     int ncells = L.x * L.y * L.z;
 
-    if (ncells) CC(d::MemsetAsync(c->gridvel, 0, ncells * sizeof(float3)));
+    if (ncells) {
+        CC(d::MemsetAsync(c->gridvel, 0, ncells * sizeof(float3)));
+        CC(d::MemsetAsync(c->gridnum, 0, ncells * sizeof(int)));
+    }
 
     c->nsamples = 0;
 }
@@ -36,16 +39,17 @@ static void ini(MPI_Comm comm, int3 L, float3 vtarget, float factor, /**/ PidVCo
 
     ncells = L.x * L.y * L.z;
     CC(d::Malloc((void **) &c->gridvel, ncells * sizeof(float3)));
+    CC(d::Malloc((void **) &c->gridnum, ncells * sizeof(int)));
 
     nchunks = ceiln(ncells, 32);
     
-    CC(d::alloc_pinned((void **) &c->avgvel, nchunks * sizeof(float3)));
-    CC(d::HostGetDevicePointer((void **) &c->davgvel, c->avgvel, 0));
+    CC(d::alloc_pinned((void **) &c->totvel, nchunks * sizeof(float3)));
+    CC(d::alloc_pinned((void **) &c->totnum, nchunks * sizeof(int)));
+    CC(d::HostGetDevicePointer((void **) &c->dtotvel, c->totvel, 0));
+    CC(d::HostGetDevicePointer((void **) &c->dtotnum, c->totnum, 0));
 
     c->f = c->sume = make_float3(0, 0, 0);
     c->olde = vtarget;
-
-    MC(m::Allreduce(&ncells, &c->totncells, 1, MPI_INT, MPI_SUM, c->comm));
     
     reini_sampler(/**/ c);
 
@@ -63,7 +67,9 @@ void vcont_ini(MPI_Comm comm, int3 L, float3 vtarget, float factor, /**/ PidVCon
 
 void vcont_fin(/**/ PidVCont *c) {
     CC(d::Free(c->gridvel));
-    CC(d::FreeHost(c->avgvel));
+    CC(d::Free(c->gridnum));
+    CC(d::FreeHost(c->totvel));
+    CC(d::FreeHost(c->totnum));
     MC(m::Comm_free(&c->comm));
     fin_dump(c->fdump);
     UC(efree(c));
@@ -91,10 +97,10 @@ void vcont_sample(const Coords *coords, int n, const Particle *pp, const int *st
     case TYPE_NONE:
         break;
     case TYPE_CART:
-        KL(vcont_dev::sample, (grid, block), (coordsv, c->trans.cart, L, starts, counts, pp, /**/ c->gridvel));
+        KL(vcont_dev::sample, (grid, block), (coordsv, c->trans.cart, L, starts, counts, pp, /**/ c->gridvel, c->gridnum));
         break;
     case TYPE_RAD:
-        KL(vcont_dev::sample, (grid, block), (coordsv, c->trans.rad, L, starts, counts, pp, /**/ c->gridvel));
+        KL(vcont_dev::sample, (grid, block), (coordsv, c->trans.rad, L, starts, counts, pp, /**/ c->gridvel, c->gridnum));
         break;
     default:
         ERR("Unknown type");
@@ -106,25 +112,30 @@ void vcont_sample(const Coords *coords, int n, const Particle *pp, const int *st
 
 float3 vcont_adjustF(/**/ PidVCont *c) {
     int3 L = c->L;
-    int ncells, nchunks;
+    int ncells, nchunks, i;
     ncells = L.x * L.y * L.z;
     nchunks = ceiln(ncells, 32);
 
-    KL(vcont_dev::reduceByWarp, (nchunks, 32), (c->gridvel, ncells, /**/ c->davgvel));
+    KL(vcont_dev::reduceByWarp, (nchunks, 32), (c->gridvel, c->gridnum, ncells, /**/ c->dtotvel, c->dtotnum));
     dSync();
 
-    float3 vcur = make_float3(0, 0, 0), e, de;
+    float3 e, de;
+    double3  vcur = make_double3(0, 0, 0);
+    long ncur = 0;
 
-    for (int i = 0; i < nchunks; ++i)
-        add(c->avgvel + i, /**/ &vcur);
+    for (i = 0; i < nchunks; ++i) {
+        add(c->totvel + i, /**/ &vcur);
+        ncur += c->totnum[i];
+    }
 
-    MC(m::Allreduce(MPI_IN_PLACE, &vcur.x, 3, MPI_FLOAT, MPI_SUM, c->comm));
+    MC(m::Allreduce(MPI_IN_PLACE, &vcur.x, 3, MPI_DOUBLE, MPI_SUM, c->comm));
+    MC(m::Allreduce(MPI_IN_PLACE, &ncur,   1, MPI_LONG,   MPI_SUM, c->comm));
 
-    const float fac = 1.0 / (c->totncells * c->nsamples);
+    const double fac = ncur ? (1.0 / ncur) : 1.0;
     
     scal(fac, /**/ &vcur);
 
-    c->current = vcur;
+    c->current = make_float3(vcur.x, vcur.y, vcur.z);
 
     diff(&c->target, &vcur, /**/ &e);
     diff(&e, &c->olde, /**/ &de);

@@ -22,11 +22,13 @@ struct PidVCont {
     float3 olde, sume;        /* previous error, sum of all previous errors      */
     float3 f;                 /* force estimate                                  */
     long nsamples;            /* number of "pending" avg on grid                 */
-    long totncells;           /* total number of cells                           */
     
-    float3 *gridvel;          /* average velocity per grid point                 */
-    float3 *avgvel;           /* chunk sums (pinned memory)                      */
-    float3 *davgvel;          /* device pointer of the above                     */
+    float3 *gridvel;          /* sum of velocity per grid point                  */
+    int    *gridnum;          /* sum of number of particles per grid point       */
+    float3 *totvel;           /* chunk sums (pinned memory)                      */
+    int    *totnum;
+    float3 *dtotvel;          /* device pointer of the above                     */
+    int    *dtotnum;
 
     MPI_Comm comm;
 
