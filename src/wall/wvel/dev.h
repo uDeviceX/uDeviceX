@@ -51,10 +51,19 @@ static __device__ void wvel_hs(WvelPar_v p, Coords_v c, float3 r, /**/ float3 *v
 static __device__ void wvel(Wvel_v wv, Coords_v c, float3 r, /**/ float3 *v)
 // end::dev[]
 {
-    int type;
-    wvel_fun wvel_funs[] = {&wvel_cste, &wvel_shear, &wvel_hs};
-    type = wv.type;
-    wvel_funs[type](wv.p, c, r, /**/ v);
+    switch(wv.type) {
+    case WALL_VEL_V_CSTE:
+        wvel_cste(wv.p, c, r, /**/ v);
+        break;
+    case WALL_VEL_V_SHEAR:
+        wvel_shear(wv.p, c, r, /**/ v);
+        break;
+    case WALL_VEL_V_HS:
+        wvel_hs(wv.p, c, r, /**/ v);
+        break;
+    default:
+        break;
+    };
 }
 
 // tag::dev[]
