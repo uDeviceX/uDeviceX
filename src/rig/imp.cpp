@@ -19,7 +19,6 @@
 #include "utils/cc.h"
 
 #include "utils/msg.h"
-#include "io/ply/imp.h"
 #include "io/off/imp.h"
 #include "io/restart/imp.h"
 
