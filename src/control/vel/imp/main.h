@@ -83,11 +83,11 @@ void vcont_set_target(float3 vtarget, /**/ PidVCont *c) {
     c->olde   = vtarget;
 }
 
-void vcon_set_cart(/**/ PidVCont *cont) {
+void vcont_set_cart(/**/ PidVCont *cont) {
     cont->type = TYPE_CART;
 }
 
-void vcon_set_radial(/**/ PidVCont *cont) {
+void vcont_set_radial(/**/ PidVCont *cont) {
     cont->type = TYPE_RAD;
 }
 

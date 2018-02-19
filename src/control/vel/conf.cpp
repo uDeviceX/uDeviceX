@@ -8,7 +8,7 @@
 
 #include "imp.h"
 
-void vcon_set_conf(const Config *cfg, /**/ PidVCont *c) {
+void vcont_set_conf(const Config *cfg, /**/ PidVCont *c) {
     const char *type;
     float3 U;
     float factor, Kp, Ki, Kd;
@@ -24,9 +24,9 @@ void vcon_set_conf(const Config *cfg, /**/ PidVCont *c) {
     UC(vcont_set_target(U, /**/ c));
     
     if      (same_str(type, "cart"))
-        UC(vcon_set_cart(/**/ c));
+        UC(vcont_set_cart(/**/ c));
     else if (same_str(type, "rad"))
-        UC(vcon_set_radial(/**/ c));
+        UC(vcont_set_radial(/**/ c));
     else
         ERR("Unrecognised type <%s>", type);
 

@@ -14,11 +14,11 @@ void vcont_set_params(float factor, float Kp, float Ki, float Kd, /**/ PidVCont 
 void vcont_set_target(float3 vtarget, /**/ PidVCont *c);
 
 // tag::ini[]
-void vcon_set_cart(/**/ PidVCont *c);
-void vcon_set_radial(/**/ PidVCont *c);
+void vcont_set_cart(/**/ PidVCont *c);
+void vcont_set_radial(/**/ PidVCont *c);
 // end::ini[]
 
-void vcon_set_conf(const Config *cfg, /**/ PidVCont *c);
+void vcont_set_conf(const Config *cfg, /**/ PidVCont *c);
 
 // tag::int[]
 void   vcont_sample(const Coords *coords, int n, const Particle *pp, const int *starts, const int *counts, /**/ PidVCont *c); // <1>
