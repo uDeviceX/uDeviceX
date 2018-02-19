@@ -46,7 +46,6 @@ static void ini(MPI_Comm comm, int3 L, /**/ PidVCont *c) {
     CC(d::HostGetDevicePointer((void **) &c->dtotnum, c->totnum, 0));
 
     c->f = c->sume = make_float3(0, 0, 0);
-    c->olde = vtarget;
     
     reini_sampler(/**/ c);
 
@@ -81,6 +80,7 @@ void vcont_set_params(float factor, float Kp, float Ki, float Kd, /**/ PidVCont 
 
 void vcont_set_target(float3 vtarget, /**/ PidVCont *c) {
     c->target = vtarget;
+    c->olde   = vtarget;
 }
 
 void vcon_set_cart(/**/ PidVCont *cont) {

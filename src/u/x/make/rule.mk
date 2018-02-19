@@ -9,6 +9,7 @@ $B/control/den/imp.o: $S/control/den/imp.cu; $N -I$S/control/den -I$S/.
 $B/control/inflow/conf.o: $S/control/inflow/conf.cpp; $X -I$S/control/inflow -I$S/.
 $B/control/inflow/imp.o: $S/control/inflow/imp.cu; $N -I$S/control/inflow -I$S/.
 $B/control/outflow/imp.o: $S/control/outflow/imp.cu; $N -I$S/control/outflow -I$S/.
+$B/control/vel/conf.o: $S/control/vel/conf.cpp; $X -I$S/control/vel -I$S/.
 $B/control/vel/imp.o: $S/control/vel/imp.cu; $N -I$S/control/vel -I$S/.
 $B/coords/conf.o: $S/coords/conf.cpp; $X -I$S/coords -I$S/.
 $B/coords/imp.o: $S/coords/imp.cpp; $X -I$S/coords -I$S/.

@@ -9,6 +9,7 @@ $B/control/den/imp.o: $S/control/den/imp.cu; $N -I$S/control/den -I$S/.
 $B/control/inflow/conf.o: $S/control/inflow/conf.cpp; $X -I$S/control/inflow -I$S/.
 $B/control/inflow/imp.o: $S/control/inflow/imp.cu; $N -I$S/control/inflow -I$S/.
 $B/control/outflow/imp.o: $S/control/outflow/imp.cu; $N -I$S/control/outflow -I$S/.
+$B/control/vel/conf.o: $S/control/vel/conf.cpp; $X -I$S/control/vel -I$S/.
 $B/control/vel/imp.o: $S/control/vel/imp.cu; $N -I$S/control/vel -I$S/.
 $B/coords/conf.o: $S/coords/conf.cpp; $X -I$S/coords -I$S/.
 $B/coords/imp.o: $S/coords/imp.cpp; $X -I$S/coords -I$S/.
@@ -56,10 +57,10 @@ $B/math/linal/imp.o: $S/math/linal/imp.cpp; $X -I$S/math/linal -I$S/.
 $B/math/rnd/imp.o: $S/math/rnd/imp.cpp; $X -I$S/math/rnd -I$S/.
 $B/math/tform/imp.o: $S/math/tform/imp.cpp; $X -I$S/math/tform -I$S/.
 $B/meshbb/imp.o: $S/meshbb/imp.cu; $N -I$S/meshbb -I$S/.
-$B/mesh/bbox.o: $S/mesh/bbox.cpp; $X -I$S/mesh -I$S/.
-$B/mesh/collision.o: $S/mesh/collision.cu; $N -I$S/mesh -I$S/.
-$B/mesh/dist.o: $S/mesh/dist.cpp; $X -I$S/mesh -I$S/.
-$B/mesh/props.o: $S/mesh/props.cpp; $X -I$S/mesh -I$S/.
+$B/mesh/bbox/imp.o: $S/mesh/bbox/imp.cpp; $X -I$S/mesh/bbox -I$S/.
+$B/mesh/collision/imp.o: $S/mesh/collision/imp.cu; $N -I$S/mesh/collision -I$S/.
+$B/mesh/dist/imp.o: $S/mesh/dist/imp.cpp; $X -I$S/mesh/dist -I$S/.
+$B/mesh/props/imp.o: $S/mesh/props/imp.cpp; $X -I$S/mesh/props -I$S/.
 $B/mpi/glb.o: $S/mpi/glb.cpp; $X -I$S/mpi -I$S/.
 $B/mpi/type.o: $S/mpi/type.cpp; $X -I$S/mpi -I$S/.
 $B/mpi/wrapper.o: $S/mpi/wrapper.cpp; $X -I$S/mpi -I$S/.
