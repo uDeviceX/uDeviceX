@@ -169,6 +169,7 @@ void sim_fin(Sim *s) {
 
     UC(scheme_restrain_fin(s->restrain));
     UC(coords_fin(/**/ s->coords));
+    UC(diag_part_fin(s->diagpart));
     UC(time_step_fin(s->time_step));
 
     UC(scheme_move_params_fin(s->moveparams));
