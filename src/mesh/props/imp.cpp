@@ -2,7 +2,7 @@
 #include <string.h>
 
 #include "inc/type.h"
-#include "mesh/props.h"
+#include "imp.h"
 
 enum {X, Y, Z};
 enum {XX, XY, XZ, YY, YZ, ZZ};

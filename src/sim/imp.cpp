@@ -81,8 +81,8 @@
 
 #include "fluforces/imp.h"
 
-#include "mesh/collision.h"
-#include "mesh/bbox.h"
+#include "mesh/collision/imp.h"
+#include "mesh/bbox/imp.h"
 
 #include "rigid/imp.h"
 
