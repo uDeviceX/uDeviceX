@@ -1,6 +1,6 @@
 == Mesh
 
-Read triangulated mesh from off or ply files.
+Read triangulated mesh from an off or ply file.
 
 [source,cpp]
 ----
