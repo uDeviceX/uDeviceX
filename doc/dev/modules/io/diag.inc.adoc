@@ -1,1 +1,9 @@
 == Diagnostics
+
+=== Particle
+
+Uses only particles values.
+
+=== Mesh
+
+Uses particle values and mesh.
