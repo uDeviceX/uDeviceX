@@ -45,12 +45,12 @@ void wvel_set_hs(float u, float h, Wvel *vw) {
     vw->p.hs = p;
 }
 
-static void set_dev_cste(WvelCste p, WvelStep *wv) {
+static void set_step_cste(WvelCste p, WvelStep *wv) {
     wv->type = WALL_VEL_V_CSTE;
     wv->p.cste.u = p.u;
 }
 
-static void set_dev_shear(WvelShear p, WvelStep *wv) {
+static void set_step_shear(WvelShear p, WvelStep *wv) {
     wv->type = WALL_VEL_V_SHEAR;
     wv->p.shear.gdot = p.gdot;
     wv->p.shear.gdir = p.gdir;
@@ -58,7 +58,7 @@ static void set_dev_shear(WvelShear p, WvelStep *wv) {
     wv->p.shear.half = p.half;
 }
 
-static void set_dev_shear(float dt, long it, WvelShearSin p, WvelStep *wv) {
+static void set_step_shear(float dt, long it, WvelShearSin p, WvelStep *wv) {
     float gdot;
     float t, w;
     bool cond;
@@ -77,25 +77,25 @@ static void set_dev_shear(float dt, long it, WvelShearSin p, WvelStep *wv) {
         msg_print("WVEL_SIN: gd = %6.3g", gdot);
 }
 
-static void set_dev_hs(WvelHS p, WvelStep *wv) {
+static void set_step_hs(WvelHS p, WvelStep *wv) {
     wv->type = WALL_VEL_V_HS;    
     wv->p.hs.u = p.u;
     wv->p.hs.h = p.h;
 }
 
-void wvel_get_view(float dt, long it, const Wvel *wv, /**/ WvelStep *view) {
+void wvel_get_step(float dt, long it, const Wvel *wv, /**/ WvelStep *view) {
     switch (wv->type) {
     case WALL_VEL_CSTE:
-        set_dev_cste(wv->p.cste, /**/ view);
+        set_step_cste(wv->p.cste, /**/ view);
         break;
     case WALL_VEL_SHEAR:
-        set_dev_shear(wv->p.shear, /**/ view);
+        set_step_shear(wv->p.shear, /**/ view);
         break;
     case WALL_VEL_SHEAR_SIN:
-        set_dev_shear(dt, it, wv->p.shearsin, /**/ view);
+        set_step_shear(dt, it, wv->p.shearsin, /**/ view);
         break;
     case WALL_VEL_HS:
-        set_dev_hs(wv->p.hs, /**/ view);
+        set_step_hs(wv->p.hs, /**/ view);
         break;
     default:
         ERR("wrong type provided: <%d>", wv->type);

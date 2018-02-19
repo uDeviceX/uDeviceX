@@ -22,5 +22,5 @@ void wvel_set_conf(const Config *cfg, Wvel *vw);
 // end::cnf[]
 
 // tag::int[]
-void wvel_get_view(float dt, long it, const Wvel *wv, /**/ WvelStep *view);
+void wvel_get_step(float dt, long it, const Wvel *wv, /**/ WvelStep *view);
 // end::int[]
