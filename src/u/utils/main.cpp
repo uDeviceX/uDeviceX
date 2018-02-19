@@ -10,13 +10,18 @@
 #include "utils/mc.h"
 
 void main0() {
-    int n;
-    float *a, *b;
-
+    int i, n;
+    int *a, *b;
     n = 5;
     EMALLOC(n, &a);
     EMALLOC(n, &b);
+    for (i = 0; i < n; i++) a[i] = 10*i;
     EMEMCPY(n, a, /**/ b);
+    for (i = 0; i < n; i++) {
+        if (i > 0) printf("%s", " ");
+        printf("%d", b[i]);
+    }
+    printf("\n");
     EFREE(a);
     EFREE(b);
 }
