@@ -1,0 +1,9 @@
+== Mesh
+
+Read triangulated mesh from off or ply files.
+
+[source,cpp]
+----
+include::{src}/io/off/imp.h[tags=interface]
+----
+
