@@ -2,7 +2,7 @@ static void assert_tri(int nt, int nv, const int4 *tri) {
     int *rank;
     int f0, f1, f2, i;
     int4 f;
-    UC(emalloc(nv*sizeof(rank), (void**)&rank));
+    EMALLOC(nv, &rank);
     for (i = 0; i < nv; i++) rank[i] = 0;
     for (i = 0; i < nt; i++) {
         f = tri[i];
