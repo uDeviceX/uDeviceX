@@ -1,20 +1,3 @@
-= dependencies
-
-== cuda
-== mpi
-== hdf5
-== libconf
-
-== bootstrap
-
-see link:bootstrap[bootstrap]
-
-== build and install tools
-
-....
-make
-....
-
 == Documentation
 
 link:https://amlucas.github.io/udoc[]
