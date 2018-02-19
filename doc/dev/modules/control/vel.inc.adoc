@@ -1,6 +1,30 @@
 == Velocity controller
 
+:stem: latexmath
+
 control velocity by modifying the imposed hydrostatic force
+the force is modified using a PID controller https://en.wikipedia.org/wiki/PID_controller.
+
+=== Controlled variables
+
+The controlled variable is the (global) body force value.
+The state of the system is represented by
+
+[stem]
+++++
+\mathbf{U} = \frac 1 n \sum\limits_{i=1}^n \mathbf{f} \left( \mathbf{r_i}, \mathbf{v_i} \right)
+++++
+where stem:[( \mathbf{r_i}, \mathbf{v_i})] are the stem:[i^{th}]
+particle position and velocity, stem:[n] is the number of particles
+and stem:[\mathbf{f}] is a given transformation.
+
+the transformation is the way of averaging the velocity:
+
+* cartesian transformation keeps the velocity and does not depends on position.
+* radial transformation returns the velocity in polar coordinates
+  scaled by the radial position. the `z` component corresponds to
+  cartesian transformation
+
 
 === interface
 
@@ -11,18 +35,24 @@ allocate, deallocate:
 include::{src}/control/vel/imp.h[tags=mem]
 ----
 
-initialize the transformation structure (to be done only once):
+set the parameters (to be done only once, before any other calls):
 
 [source,cpp]
 ----
-include::{src}/control/vel/imp.h[tags=ini]
+include::{src}/control/vel/imp.h[tags=set]
 ----
-the transformation is the way of averaging the velocity:
+<1> set the PID control variables. `factor` scales variables `Kp`, Ki`
+    and `Kd`
+<2> set the target velocity (in transformed space)
+<3> set the transformation mode to cartesian
+<4> set the transformation mode to radial
 
-* cartesian transformation keeps the velocity as it is before averaging.
-* radial transformation returns the velocity in polar coordinates
-  scaled by the radial position. the `z` component corresponds to
-  cartesian transformation
+The parameters can also be set through the configuration file:
+
+[source,cpp]
+----
+include::{src}/control/vel/imp.h[tags=cnf]
+----
 
 
 Control operations:
