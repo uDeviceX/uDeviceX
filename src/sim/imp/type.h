@@ -179,6 +179,7 @@ struct Sim {
     /* particles on host for dump */
     Particle *pp_dump;
     BopWork *dumpt;
+    DiagPart *diagpart; /* diagnostic */
 
     /* state */
     bool solids0;

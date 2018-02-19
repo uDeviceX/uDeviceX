@@ -3,9 +3,9 @@ void diag_part_ini(const char *path, /**/ DiagPart **pq) {
     EMALLOC(1, &q);
     *pq = q;
     strncpy(q->path, path, FILENAME_MAX);
+    q->First = 0;
     msg_print("DiagPart: %s", q->path);
 }
-
 void diag_part_fin(DiagPart *q) { EFREE(q); }
 
 static float sq(float x) { return x*x; }
