@@ -12,4 +12,5 @@
 
 #include "imp/type.h"
 #include "imp/off.h"
+#include "imp/ply.h"
 #include "imp/main.h"
