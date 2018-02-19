@@ -26,7 +26,6 @@ void rnd_fin(RNDunif *r) {
 
 static integer get_int(RNDunif *r) {
     uint64_t t, a = 698769069ULL;
-
     r->x = 69069 * r->x + 12345;
     r->y ^= ( r->y << 13 );
     r->y ^= ( r->y >> 17 );

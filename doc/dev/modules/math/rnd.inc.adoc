@@ -1,6 +1,7 @@
 == Host random number generation
 
-Generate uniform random numbers on host in floating point precision
+Generate uniform random numbers on host in floating point precision. Uses
+link:https://en.wikipedia.org/wiki/KISS_(algorithm)[KISS algorithm]
 
 [source,cpp]
 ----
