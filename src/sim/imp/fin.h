@@ -89,6 +89,7 @@ static void fin_rbc(Rbc *r) {
     fin_rbc_distr(/**/ &r->d);
         
     Dfree(r->ff);
+    UC(triangles_fin(r->tri));
 
     if (rbc_com_dumps) rbc_com_fin(/**/ r->com);
     if (RBC_STRETCH)   rbc_stretch_fin(/**/ r->stretch);
