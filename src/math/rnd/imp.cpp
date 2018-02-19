@@ -6,18 +6,14 @@
 #include "utils/imp.h"
 
 #include "imp.h"
-
 typedef uint32_t integer;
-
-struct RNDunif {
-    integer x, y, z, c;
-};
+struct RNDunif { integer x, y, z, c; }
 
 void rnd_ini(int x, int y, int z, int c, /**/ RNDunif **r0) {
     RNDunif *r;
-    UC(emalloc(sizeof(RNDunif), (void**) r0));
-
+    EMALLOC(1, &r);
     r = *r0;
+
     r->x = x;
     r->y = y;
     r->z = z;
@@ -30,7 +26,7 @@ void rnd_fin(RNDunif *r) {
 
 static integer get_int(RNDunif *r) {
     uint64_t t, a = 698769069ULL;
-    
+
     r->x = 69069 * r->x + 12345;
     r->y ^= ( r->y << 13 );
     r->y ^= ( r->y >> 17 );
