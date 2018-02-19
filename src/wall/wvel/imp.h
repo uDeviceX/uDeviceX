@@ -1,6 +1,10 @@
 struct Wvel;
 struct WvelStep;
 
+struct WvelCste_v;
+struct WvelShear_v;
+struct WvelHS_v;
+
 struct float3;
 struct Config;
 
@@ -24,3 +28,9 @@ void wvel_set_conf(const Config *cfg, Wvel *vw);
 // tag::int[]
 void wvel_get_step(float dt, long it, const Wvel *wv, /**/ WvelStep *view);
 // end::int[]
+
+int wvel_get_type(const WvelStep *w);
+
+void wvel_get_view(const WvelStep *w, /**/ WvelCste_v *v);
+void wvel_get_view(const WvelStep *w, /**/ WvelShear_v *v);
+void wvel_get_view(const WvelStep *w, /**/ WvelHS_v *v);

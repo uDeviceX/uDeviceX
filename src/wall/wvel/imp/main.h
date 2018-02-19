@@ -102,3 +102,19 @@ void wvel_get_step(float dt, long it, const Wvel *wv, /**/ WvelStep *view) {
         break;
     };
 }
+
+int wvel_get_type(const WvelStep *w) {
+    return w->type;
+}
+
+void wvel_get_view(const WvelStep *w, /**/ WvelCste_v *v) {
+    *v = w->p.cste;
+}
+
+void wvel_get_view(const WvelStep *w, /**/ WvelShear_v *v) {    
+    *v = w->p.shear;
+}
+
+void wvel_get_view(const WvelStep *w, /**/ WvelHS_v *v) {
+    *v = w->p.hs;
+}
