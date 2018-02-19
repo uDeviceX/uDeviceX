@@ -92,7 +92,7 @@ struct Rbc {
     RbcStretch *stretch;  /* helper to apply stretching [fo]rce to cells */
     MeshRead    *cell;     /* cell template */
     MeshWrite  *mesh_write;
-    Triangles *tri;
+    Triangles *tri; /* triangles for one cell on devices */
 };
 
 /* data holder for rigid objects */

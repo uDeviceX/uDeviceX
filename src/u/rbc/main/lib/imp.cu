@@ -35,7 +35,7 @@
 #include "scheme/time/imp.h" 
 
 #include "io/mesh/imp.h"
-#include "io/diag/imp.h"
+#include "io/diag/part/imp.h"
 #include "io/off/imp.h"
 
 #include "mpi/wrapper.h"
