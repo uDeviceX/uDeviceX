@@ -8,6 +8,12 @@ struct WvelHS_v;
 struct float3;
 struct Config;
 
+enum {
+    WALL_VEL_V_CSTE,
+    WALL_VEL_V_SHEAR,
+    WALL_VEL_V_HS,
+};
+
 // tag::mem[]
 void wvel_ini(Wvel **wv);
 void wvel_fin(Wvel *wv);

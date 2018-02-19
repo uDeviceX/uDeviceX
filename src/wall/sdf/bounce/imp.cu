@@ -23,6 +23,7 @@
 #include "coords/imp.h"
 
 #include "wall/wvel/type.h"
+#include "wall/wvel/imp.h"
 #include "wall/wvel/dev.h"
 #include "math/dev.h"
 
