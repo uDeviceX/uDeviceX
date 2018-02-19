@@ -189,7 +189,7 @@ static void ini_wall(const Config *cfg, int3 L, Wall *w) {
     UC(wall_ini_ticket(L, &w->t));
     UC(wvel_ini(&w->vel));
     UC(wvel_set_conf(cfg, w->vel));
-    UC(wvel_step_ini(&w->vview));
+    UC(wvel_step_ini(&w->velstep));
 }
 
 static void ini_objinter(MPI_Comm cart, int maxp, int3 L, const Opt *opt, /**/ ObjInter *o) {

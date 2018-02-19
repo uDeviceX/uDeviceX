@@ -120,7 +120,7 @@ static void fin_wall(Wall *w) {
     UC(wall_fin_quants(&w->q));
     UC(wall_fin_ticket(w->t));
     UC(wvel_fin(w->vel));
-    UC(wvel_step_fin(w->vview));
+    UC(wvel_step_fin(w->velstep));
 }
     
 static void fin_objinter(const Opt *opt, ObjInter *o) {

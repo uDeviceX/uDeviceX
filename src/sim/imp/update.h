@@ -108,6 +108,6 @@ void restrain(long it, Sim *s) {
 }
 
 void bounce_wall(float dt, bool rbc, const Coords *c, Wall *w, /**/ Flu *f, Rbc *r) {
-    sdf_bounce(dt, w->vview, c, w->sdf, f->q.n, /**/ f->q.pp);
-    if (rbc) sdf_bounce(dt, w->vview, c, w->sdf, r->q.n, /**/ r->q.pp);
+    sdf_bounce(dt, w->velstep, c, w->sdf, f->q.n, /**/ f->q.pp);
+    if (rbc) sdf_bounce(dt, w->velstep, c, w->sdf, r->q.n, /**/ r->q.pp);
 }
