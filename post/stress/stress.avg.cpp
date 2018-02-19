@@ -100,12 +100,12 @@ static void binning(long n, const float *pp, const float *ss,
         if (cid != INVALID) {
             g = grid + NPG * cid;
             counts[cid] ++;
-            g[XX] += 0.5 * s[XX];
-            g[XY] += 0.5 * s[XY];
-            g[XZ] += 0.5 * s[XZ];
-            g[YY] += 0.5 * s[YY];
-            g[YZ] += 0.5 * s[YZ];
-            g[ZZ] += 0.5 * s[ZZ];
+            g[XX] += s[XX];
+            g[XY] += s[XY];
+            g[XZ] += s[XZ];
+            g[YY] += s[YY];
+            g[YZ] += s[YZ];
+            g[ZZ] += s[ZZ];
 
             g[KXX] += u[X] * u[X];
             g[KXY] += u[X] * u[Y];
