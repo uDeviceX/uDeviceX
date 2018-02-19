@@ -21,13 +21,13 @@
 #include "inc/type.h"
 
 #include "math/linal/imp.h"
-#include "mesh/props.h"
-#include "mesh/dist.h"
-#include "mesh/bbox.h"
+#include "mesh/props/imp.h"
+#include "mesh/dist/imp.h"
+#include "mesh/bbox/imp.h"
 #include "d/ker.h"
 #include "d/api.h"
 #include "utils/cc.h"
-#include "mesh/collision.h"
+#include "mesh/collision/imp.h"
 
 #include "rigid/imp.h"
 #include "imp.h"

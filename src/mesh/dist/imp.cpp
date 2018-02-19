@@ -2,7 +2,7 @@
 #include <math.h>
 
 #include "inc/type.h"
-#include "mesh/dist.h"
+#include "imp.h"
 
 enum {X, Y, Z};
 

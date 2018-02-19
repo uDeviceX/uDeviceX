@@ -19,8 +19,9 @@
 #include "utils/texo.dev.h"
 
 #include "utils/kl.h"
-#include "mesh/collision.h"
 #include "rigid/imp.h"
+
+#include "imp.h"
 
 enum {OUT=BLUE_COLOR, IN=RED_COLOR};
 enum {X, Y, Z};

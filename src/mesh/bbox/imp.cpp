@@ -3,7 +3,7 @@
 #include "inc/type.h"
 #include "algo/minmax/imp.h"
 
-#include "mesh/bbox.h"
+#include "imp.h"
 
 static void T2r(const int i, const Particle *pp, const float **r) {*r = pp[i].r;}
 static void T2r(const int i, const float *rr,    const float **r) {*r = rr + 3*i;}
