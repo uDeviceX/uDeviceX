@@ -5,6 +5,7 @@
 : ${VALGRIND=valgrind}
 : ${NVPROF=nvprof}
 : ${TIME=time}
+: ${CUDA_GDB=cuda-gdb}
 
 mem () { # cuda memcheck
     echo "${CUDA_MEMCHECK}" "${MEM}" "$@"
@@ -20,6 +21,10 @@ prof() { # cuda profiler
 
 tim() { # time
     echo "${TIME}"          "${TIM}" "$@"
+}
+
+gdb() { # cuda gdb
+    echo "${CUDA_GDB}"      "${GDB}" --args "$@"
 }
 
 direct () {
@@ -39,6 +44,9 @@ then
 elif test ! -z "${TIM+x}"
 then
     tim    "$@"
+elif test ! -z "${GDB+x}"
+then
+    gdb    "$@"
 else
     direct "$@"
 fi
