@@ -44,3 +44,19 @@ struct Wvel {
     WvelPar p;  /* parameters             */
     int type;
 };
+
+/* step */
+
+union WvelPar_v {
+    WvelCste_v cste;
+    WvelShear_v shear;
+    WvelHS_v hs;
+};
+
+/* device structure: to be passed to device code */
+
+struct WvelStep {
+    WvelPar_v p;
+    int type;
+};
+

@@ -27,6 +27,7 @@ static __device__ void crop(float dt, float *t) {
     if (*t >   0) *t = 0;
 }
 
+template <typename Wvel_v>
 static __device__ void rescue(Wvel_v wv, Coords_v c, Sdf_v *texsdf, float currsdf, /* io */ float3 *r, float3 *v) {
     float sdf0, jump;
     float3 dsdf;
@@ -47,6 +48,7 @@ static __device__ void rescue(Wvel_v wv, Coords_v c, Sdf_v *texsdf, float currsd
     }
 }
 
+template <typename Wvel_v>
 static __device__ void bounce_back_1p(float dt, Wvel_v wv, Coords_v c, Sdf_v *texsdf, float currsdf,
                                       /* io */ float3 *r, float3 *v) {
     float3 r0, rc, rw, dsdf;
@@ -90,6 +92,7 @@ static __device__ void bounce_back_1p(float dt, Wvel_v wv, Coords_v c, Sdf_v *te
         *r = r0;    
 }
 
+template <typename Wvel_v>
 __global__ void bounce_back(float dt, Wvel_v wv, Coords_v c, Sdf_v texsdf, int n, /**/ Particle *pp) {
     float s, currsdf;
     float3 r, v;

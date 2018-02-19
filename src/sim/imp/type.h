@@ -112,7 +112,7 @@ struct Wall {
     WallQuants q;
     WallTicket *t;
     Wvel *vel;
-    Wvel_v vview;
+    WvelStep *velstep;
 };
 
 /* helper for computing object interactions */

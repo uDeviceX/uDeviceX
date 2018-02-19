@@ -1,15 +1,15 @@
-static __device__ void wvel_cste(WvelPar_v p, Coords_v c, float3 r, /**/ float3 *v) {
-    *v = p.cste.u;
+static __device__ void wvel(WvelCste_v p, Coords_v c, float3 r, /**/ float3 *v) {
+    *v = p.u;
 }
 
-static __device__ void wvel_shear(WvelPar_v p, Coords_v c, float3 r, /**/ float3 *v) {
+static __device__ void wvel(WvelShear_v p, Coords_v c, float3 r, /**/ float3 *v) {
     float3 rc; // relative to center
     float gdot, d;
     int vdir, gdir;
 
-    gdot = p.shear.gdot;
-    vdir = p.shear.vdir;
-    gdir = p.shear.gdir;
+    gdot = p.gdot;
+    vdir = p.vdir;
+    gdir = p.gdir;
 
     local2center(c, r, /**/ &rc);
     
@@ -25,12 +25,12 @@ static __device__ void wvel_shear(WvelPar_v p, Coords_v c, float3 r, /**/ float3
 }
 
 /* a hack for hele shaw */
-static __device__ void wvel_hs(WvelPar_v p, Coords_v c, float3 r, /**/ float3 *v) {
+static __device__ void wvel(WvelHS_v p, Coords_v c, float3 r, /**/ float3 *v) {
     float3 rc; // relative to center
     float u, h, r2inv, hfac;
 
-    u = p.hs.u;
-    h = p.hs.h;
+    u = p.u;
+    h = p.h;
 
     local2center(c, r, /**/ &rc);
 
@@ -43,30 +43,8 @@ static __device__ void wvel_hs(WvelPar_v p, Coords_v c, float3 r, /**/ float3 *v
     v->z = 0;
 }
 
-
-
-/* device interface */
-
 // tag::dev[]
-static __device__ void wvel(Wvel_v wv, Coords_v c, float3 r, /**/ float3 *v)
-// end::dev[]
-{
-    switch(wv.type) {
-    case WALL_VEL_V_CSTE:
-        wvel_cste(wv.p, c, r, /**/ v);
-        break;
-    case WALL_VEL_V_SHEAR:
-        wvel_shear(wv.p, c, r, /**/ v);
-        break;
-    case WALL_VEL_V_HS:
-        wvel_hs(wv.p, c, r, /**/ v);
-        break;
-    default:
-        break;
-    };
-}
-
-// tag::dev[]
+template <typename Wvel_v>
 static __device__ void bounce_vel(Wvel_v wv, Coords_v c, float3 rw, /* io */ float3* v)
 // end::dev[]
 {

@@ -3,7 +3,7 @@ static __device__ void fetch_p(Parray parray, int i, /**/ PairPa *p) {
     parray_get(parray, i, /**/ p);
 }
 
-template<typename Par>
+template <typename Wvel_v>
 static __device__ void fetch_wall(Wvel_v wv, Coords_v c, Texo<float4> pp, int i, /**/ PairPa *a) {
     float3 r, v; /* wall velocity */
     float4 r0;
@@ -15,7 +15,7 @@ static __device__ void fetch_wall(Wvel_v wv, Coords_v c, Texo<float4> pp, int i,
     a->vx = v.x;  a->vy = v.y;   a->vz = v.z;
 }
 
-template<typename Par, typename Fo>
+template <typename Par, typename Wvel_v, typename Fo>
 static __device__ void force0(Par params, Wvel_v wv, Coords_v c, PairPa a, int aid, int zplane,
                               float seed, WallForce wa, /**/ Fo *fa) {
     map::Map m;
@@ -30,14 +30,14 @@ static __device__ void force0(Par params, Wvel_v wv, Coords_v c, PairPa a, int a
 
     for (i = 0; !map::endp(m, i); ++i) {
         bid = map::m2id(m, i);
-        fetch_wall<Par>(wv, c, wa.pp, bid, /**/ &b);
+        fetch_wall(wv, c, wa.pp, bid, /**/ &b);
         rnd = rnd::mean0var1ii(seed, aid, bid);
         pair_force(params, a, b, rnd, /**/ &f);
         pair_add(&f, fa);
     }
 }
 
-template<typename Par, typename Parray, typename Farray>
+template <typename Par, typename Wvel_v, typename Parray, typename Farray>
 __global__ void force(Par params, Wvel_v wv, Coords_v c, Parray parray, int np, float seed, WallForce wa, /**/ Farray farray) {
     PairPa a; /* bulk particle */
     int gid, aid, zplane;

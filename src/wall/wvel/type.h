@@ -16,22 +16,3 @@ struct WvelHS_v {
     float h; // height of the channel
 };
 
-enum {
-    WALL_VEL_V_CSTE,
-    WALL_VEL_V_SHEAR,
-    WALL_VEL_V_HS,
-};
-
-union WvelPar_v {
-    WvelCste_v cste;
-    WvelShear_v shear;
-    WvelHS_v hs;
-};
-
-/* device structure: to be passed to device code */
-
-struct Wvel_v {
-    WvelPar_v p;
-    int type;
-};
-

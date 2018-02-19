@@ -1,6 +1,7 @@
 struct PairParams;
 struct PaArray;
 struct FoArray;
+struct WvelStep;
 struct RNDunif;
 struct Coords;
 struct Sdf;
@@ -15,7 +16,7 @@ struct WallQuants {
 
 struct WallTicket;
 
-void wall_force(const PairParams*, Wvel_v wv, const Coords *c, Sdf *qsdf, const WallQuants *q, const WallTicket *t, int n, const PaArray *parray, const FoArray *farray);
+void wall_force(const PairParams*, const WvelStep *, const Coords *c, Sdf *qsdf, const WallQuants *q, const WallTicket *t, int n, const PaArray *parray, const FoArray *farray);
 
 void wall_ini_quants(int3 L, WallQuants *q);
 void wall_ini_ticket(int3 L, WallTicket **t);

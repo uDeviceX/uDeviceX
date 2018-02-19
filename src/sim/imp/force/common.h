@@ -43,7 +43,7 @@ void forces_wall(bool fluss, Wall *w, Sim *s) {
     if (fluss)
         farray_push_ss(flu->ss, &fo);
     
-    if (flu->q.n)               wall_force(par, w->vview, s->coords, w->sdf, &w->q, w->t, flu->q.n, &po, /**/ &fo);
-    if (s->solids0 && rig->q.n) wall_force(par, w->vview, s->coords, w->sdf, &w->q, w->t, rig->q.n, &ps, /**/ &fs);
-    if (s->opt.rbc && rbc->q.n) wall_force(par, w->vview, s->coords, w->sdf, &w->q, w->t, rbc->q.n, &pr, /**/ &fr);
+    if (flu->q.n)               wall_force(par, w->velstep, s->coords, w->sdf, &w->q, w->t, flu->q.n, &po, /**/ &fo);
+    if (s->solids0 && rig->q.n) wall_force(par, w->velstep, s->coords, w->sdf, &w->q, w->t, rig->q.n, &ps, /**/ &fs);
+    if (s->opt.rbc && rbc->q.n) wall_force(par, w->velstep, s->coords, w->sdf, &w->q, w->t, rbc->q.n, &pr, /**/ &fr);
 }
