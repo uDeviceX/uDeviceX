@@ -4,8 +4,11 @@
 == what is _uDeviceX_?
 
 It is a dissipate particle dynamic particle (DPD) simulation code
-which can model multiphase flows, rigid and soft objects. _uDeviceX_
-was ACM 2015 Gordon Bell Award Finalist.
+which can model multiphase flows, rigid and soft objects, boundary
+conditions can be periodic or "wall". Wall boundary can be set from a
+user provided file.
+
+_uDeviceX_ was ACM 2015 Gordon Bell Award Finalist.
 
 It is written in C++ using cuda and MPI and requires NVIDIA
 GPUs. Simulation are set from a configuration file and from command
@@ -17,7 +20,24 @@ udx conf.cfg 'glb { dt = 0.1 }'
 
 Configuration files and command option follow the syntax of
 _libconfig_ library. Some parameters have default values and are set
-in '$HOME/.udx/defult.cfg'. _uDeviceX_ outputs DPD particles,
+in `$HOME/.udx/defult.cfg`. _uDeviceX_ outputs DPD particles,
 trajectories of the objects, and averaged flow fields.
 
 == code
+
+Code is organized in _units_ which are executable.  _uDeviceX_
+installs several command line tools which have prefix `u.`, for
+example `u.run`.
+
+== tests
+
+_uDeviceX_ comes with tests. Each test is a shell script with some
+conventions. To run a test
+
+----
+atest example.test
+----
+
+Typically test compiles and run one of the units and produce a text
+file. `atest` compares the text file with a previously stored
+reference and report the result. Comparision can be exact or "fuzzy".

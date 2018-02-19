@@ -1,3 +1,15 @@
+#if defined(RESTART)
+  #error RESTART is runtime: glb.restart
+#endif
+
+#if defined(freq_strt)
+  #error freq_strt is runtime: dump.freq_strt
+#endif
+
+#if defined(strt_dumps)
+  #error strt_dumps is runtime dump.strt
+#endif
+
 #if defined(kBT)
   #error kBT is runtime: glb.kBT
 #endif
@@ -211,12 +223,6 @@
 #define walls (false)
 #endif
 
-// restart
-
-#ifndef RESTART
-#define RESTART (false)
-#endif
-
 #ifndef BASE_STRT_DUMP
 #define BASE_STRT_DUMP "strt"
 #endif
@@ -225,13 +231,6 @@
 #define BASE_STRT_READ "strt"
 #endif
 
-#ifndef strt_dumps
-#define strt_dumps (false)
-#endif
-
-#ifndef strt_freq
-#define strt_freq (1000)
-#endif
 
 // debug
 /* dbg macros */

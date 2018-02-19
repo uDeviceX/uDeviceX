@@ -13,15 +13,16 @@ static void assert_tri(int nt, int nv, const int4 *tri) {
     }
     for (i = 0; i < nv; i++)
         if (rank[i] == 0) ERR("isolated vertex: %d (v = %d, t = %d)", i, nv, nt);
-    UC(efree(rank));
+    EFREE(rank);
 }
 
 void area_volume_ini(int nv, int nt, const int4 *hst, int max_cell, /**/ AreaVolume **pq) {
     AreaVolume *q;
-    UC(emalloc(sizeof(AreaVolume), (void**)&q));
-    q->nt = nt; q->nv = nv; q->max_cell = max_cell;
+    EMALLOC(1, &q);
+    q->nt = nt; q->nv = nv; q->max_cell = max_cell; q->Computed = 0;
     Dalloc(&q->tri, nt);
     Dalloc(&q->av , 2*max_cell);
+    EMALLOC(2*max_cell, &q->av_hst);
     UC(assert_tri(nt, nv, hst));
     cH2D(q->tri, hst, nt);
     *pq = q;
@@ -30,7 +31,8 @@ void area_volume_ini(int nv, int nt, const int4 *hst, int max_cell, /**/ AreaVol
 void area_volume_fin(AreaVolume *q) {
     Dfree(q->tri);
     Dfree(q->av);
-    UC(efree(q));
+    EFREE(q->av_hst);
+    EFREE(q);
 }
 
 static void compute(int nv, int nt, int nc, const Particle *pp, const int4 *tri, /**/ float *av) {
@@ -41,10 +43,17 @@ static void compute(int nv, int nt, int nc, const Particle *pp, const int4 *tri,
 }
 
 void area_volume_compute(AreaVolume *q, int nc, const Particle *pp, /**/ float **pav) {
-    if (nc > q->max_cell)
-        ERR("nc=%d > max_cell=%d", nc, q->max_cell);
+    if (nc > q->max_cell) ERR("nc=%d > max_cell=%d", nc, q->max_cell);
+    if (!d::is_device_pointer(pp)) ERR("`pp`  is not a device pointer");
     UC(compute(q->nv, q->nt, nc, pp, q->tri, q->av));
+    q->Computed = 1; q->nc = nc;
     *pav = q->av;
 }
 
 const int4* area_volume_tri(AreaVolume *q) { return q->tri; }
+
+void area_volume_host(AreaVolume *q, /**/ float **pav) {
+    if (!q->Computed) ERR("call `area_volume_host` before `area_volume_compute`");
+    cD2H(q->av_hst, q->av, 2*q->nc);
+    *pav = q->av_hst;
+}

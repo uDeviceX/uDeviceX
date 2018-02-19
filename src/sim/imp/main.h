@@ -71,7 +71,7 @@ void sim_gen(Sim *s, Config *cfg, Time *time, TimeSeg *time_seg) {
         run(cfg, time, 0, time_seg->end, s);
     }
     /* final strt dump*/
-    if (strt_dumps) dump_strt(RESTART_FINAL, s);
+    if (s->opt.dump_strt) dump_strt0(RESTART_FINAL, s);
 }
 
 void sim_strt(Sim *s, Config *cfg, Time *time, TimeSeg *time_seg) {
@@ -106,5 +106,5 @@ void sim_strt(Sim *s, Config *cfg, Time *time, TimeSeg *time_seg) {
 
     s->solids0 = s->opt.rig;
     run(cfg, time, time_seg->wall, time_seg->end, s);
-    if (strt_dumps) dump_strt(RESTART_FINAL, s);
+    if (s->opt.dump_strt) dump_strt0(RESTART_FINAL, s);
 }

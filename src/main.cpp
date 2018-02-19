@@ -21,6 +21,7 @@ int main(int argc, char **argv) {
     float t0;
     int rank, size, dims[3];
     MPI_Comm cart;
+    int restart;
     
     m::ini(&argc, &argv);
 
@@ -38,9 +39,11 @@ int main(int argc, char **argv) {
     UC(time_seg_ini(cfg, /**/ &time_seg));
 
     sim_ini(cfg, cart, time, /**/ &sim);
-    if (RESTART) sim_strt(sim, cfg, time, time_seg);
+    UC(conf_lookup_bool(cfg, "glb.restart", &restart));
+    msg_print("restart: %d", restart);
+    if (restart) sim_strt(sim, cfg, time, time_seg);
     else         sim_gen(sim, cfg, time, time_seg);
-    sim_fin(sim, time);
+    sim_fin(sim);
 
     UC(time_seg_fin(time_seg));
     UC(time_fin(time));

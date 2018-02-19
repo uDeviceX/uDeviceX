@@ -3,4 +3,7 @@ struct AreaVolume {
     int max_cell; /* max cell number */
     int4 *tri; /* triangles on device */
     float *av; /* output: [area0 volume0 area1 volume1, ..] */
+    float *av_hst;
+    int nc;       /* last nc */
+    int Computed; /* was area computed? */
 };

@@ -195,7 +195,7 @@ static void ini_bounce_back(MPI_Comm cart, int maxp, int3 L, Rig *s, /**/ Bounce
     meshbb_ini(maxp, /**/ &bb->d);
     Dalloc(&bb->mm, maxp);
 
-    UC(ini_bb_exch(s->q.nt, s->q.nv, MAX_CELL_NUM, cart, L, /**/ &bb->e));
+p    UC(ini_bb_exch(s->q.nt, s->q.nv, MAX_CELL_NUM, cart, L, /**/ &bb->e));
 }
 
 static void ini_wall(const Config *cfg, int3 L, Wall *w) {
@@ -248,6 +248,10 @@ static void read_opt(const Config *c, Opt *o) {
     UC(conf_lookup_bool(c, "dump.field", &b));
     o->dump_field = b;
     UC(conf_lookup_float(c, "dump.freq_field", &o->freq_field));
+
+    UC(conf_lookup_bool(c, "dump.strt", &b));
+    o->dump_strt = b;
+    UC(conf_lookup_float(c, "dump.freq_strt", &o->freq_strt));
 
     UC(conf_lookup_bool(c, "dump.parts", &b));
     o->dump_parts = b;

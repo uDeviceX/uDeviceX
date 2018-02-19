@@ -5,11 +5,7 @@ S=`u.cp.s`
 :
 u.conf "$S" u/x "$S/conf/default.h" <<!
    BASE_STRT_DUMP=\"bin.1/strt\"
-   strt_dumps=true
-   strt_freq=10000
-   RESTART=false
    run
-   RESTART=true
    BASE_STRT_READ=\"bin.1/strt\"
    BASE_STRT_DUMP=\"bin.2/strt\"
    run
@@ -28,10 +24,12 @@ glb = {
     L = [16, 32, 16]
 }
 dump = {
-    field = true;
-    parts = true;
+    field = true
+    parts = true
+    strt  = true
     freq_field = 2.0000
     freq_parts = 2.0000
+    freq_strt  = 5.0000
 }'
 u.run ./bin.2/udx '
 time = {
@@ -40,6 +38,7 @@ time = {
     end = 2.01
 }
 glb = {
+    restart = true
     L = [16, 32, 16]
 }
 bforce = {
