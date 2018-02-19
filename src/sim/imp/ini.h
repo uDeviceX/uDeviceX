@@ -56,28 +56,25 @@ static void ini_rig_distr(int nv, MPI_Comm comm, int3 L, /**/ RigDistr *d) {
 }
 
 static void ini_vcon(MPI_Comm comm, int3 L, const Config *cfg, /**/ Vcon *c) {
-    const char *type;
-    float3 U;
-    float factor;
-    PidVCont *vc;
-
     UC(conf_lookup_int(cfg, "vcon.log_freq", &c->log_freq));
     UC(conf_lookup_int(cfg, "vcon.adjust_freq", &c->adjust_freq));
     UC(conf_lookup_int(cfg, "vcon.sample_freq", &c->sample_freq));
 
-    UC(conf_lookup_string(cfg, "vcon.type", &type));
-    UC(conf_lookup_float3(cfg, "vcon.U", &U));
-    UC(conf_lookup_float(cfg, "vcon.factor", &factor));
+    UC(vcont_ini(comm, L, /**/ &c->vcont));
+    UC(vcont_set_conf(cfg, /**/ c->vcont));
+    // UC(conf_lookup_string(cfg, "vcon.type", &type));
+    // UC(conf_lookup_float3(cfg, "vcon.U", &U));
+    // UC(conf_lookup_float(cfg, "vcon.factor", &factor));
 
-    UC(vcont_ini(comm, L, U, factor, /**/ &c->vcont));
-    vc = c->vcont;
-
-    if      (same_str(type, "cart"))
-        UC(vcon_set_cart(/**/ vc));
-    else if (same_str(type, "rad"))
-        UC(vcon_set_radial(/**/ vc));
-    else
-        ERR("Unrecognised type <%s>", type);
+    // 
+    // 
+    
+    // if      (same_str(type, "cart"))
+    //     UC(vcon_set_cart(/**/ vc));
+    // else if (same_str(type, "rad"))
+    //     UC(vcon_set_radial(/**/ vc));
+    // else
+    //     ERR("Unrecognised type <%s>", type);
 }
 
 static void ini_outflow(const Coords *coords, int maxp, const Config *cfg, Outflow **o) {
