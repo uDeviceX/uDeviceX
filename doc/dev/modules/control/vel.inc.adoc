@@ -18,6 +18,8 @@ where stem:[( \mathbf{r_i}, \mathbf{v_i})] are the stem:[i^{th}]
 particle position and velocity, stem:[n] is the number of particles
 and stem:[\mathbf{f}] is a given transformation.
 
+There is therefore 3 (independant) controlled variables.
+
 the transformation is the way of averaging the velocity:
 
 * cartesian transformation keeps the velocity and does not depends on position.
