@@ -7,7 +7,5 @@ void area_volume_fin(AreaVolume*);
 
 /* TODO: remove */
 const int4* area_volume_tri(AreaVolume*);
-
 void area_volume_compute(AreaVolume*, int nc, const Particle*, /**/ float **av);
-
 void area_volume_host(AreaVolume*, /**/ float **av);
