@@ -6,4 +6,3 @@ Read triangulated mesh from off or ply files.
 ----
 include::{src}/io/off/imp.h[tags=interface]
 ----
-
