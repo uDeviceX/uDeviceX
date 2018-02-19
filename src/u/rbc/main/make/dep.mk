@@ -3,7 +3,7 @@ $B/coords/imp.o: $S/utils/imp.h $S/inc/conf.h $S/coords/ini.h $S/utils/error.h $
 $B/d/api.o: $S/d/cpu/imp.h $S/utils/imp.h $S/inc/conf.h $S/utils/error.h $S/d/common.h $S/d/api.h $B/conf.h $S/d/cuda/imp.h
 $B/io/bop/imp.o: $S/utils/imp.h $S/utils/os.h $S/inc/conf.h $S/utils/error.h $S/inc/type.h $S/mpi/wrapper.h $S/io/bop/imp.h $S/inc/def.h $S/mpi/type.h $S/d/api.h $S/utils/mc.h $B/conf.h $S/io/bop/imp/main.h $S/io/bop/imp/type.h $S/coords/imp.h
 $B/io/com/imp.o: $S/utils/os.h $S/utils/imp.h $S/inc/conf.h $S/utils/error.h $S/mpi/wrapper.h $S/io/com/imp.h $S/utils/mc.h $B/conf.h $S/coords/imp.h
-$B/io/diag/part/imp.o: $S/utils/imp.h $S/inc/conf.h $S/utils/error.h $S/inc/type.h $S/mpi/wrapper.h $S/io/diag/part/imp.h $B/conf.h $S/utils/msg.h
+$B/io/diag/part/imp.o: $S/utils/imp.h $S/inc/conf.h $S/utils/error.h $S/inc/type.h $S/mpi/wrapper.h $S/io/diag/part/imp.h $B/conf.h $S/io/diag/part/imp/main.h $S/io/diag/part/imp/type.h $S/utils/msg.h
 $B/io/field/h5/imp.o: $S/utils/error.h $S/mpi/wrapper.h $S/io/field/h5/imp.h $S/coords/imp.h
 $B/io/field/imp.o: $S/io/field/imp/scalar.h $S/utils/os.h $S/utils/imp.h $S/inc/conf.h $S/io/field/xmf/imp.h $S/utils/error.h $S/inc/type.h $S/mpi/wrapper.h $S/io/field/imp.h $S/io/field/h5/imp.h $S/io/field/imp/dump.h $S/utils/mc.h $B/conf.h $S/coords/imp.h
 $B/io/fields_grid/imp.o: $S/inc/conf.h $S/io/fields_grid/imp/all.h $S/io/field/imp.h $S/utils/error.h $S/inc/type.h $S/mpi/wrapper.h $S/io/fields_grid/imp.h $S/utils/cc.h $S/io/fields_grid/imp/solvent.h $S/inc/dev.h $S/d/api.h $B/conf.h $S/coords/imp.h $S/utils/msg.h
