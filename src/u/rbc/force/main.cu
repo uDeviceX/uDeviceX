@@ -83,7 +83,7 @@ static void run1(float dt, RbcQuants *q, RbcForce *t, const RbcParams *par) {
 static void run2(MPI_Comm cart, float dt, const Coords *coords, MeshRead *off, const char *ic, long seed, const RbcParams *par, RbcQuants *q) {
     int nv;
     RbcForce *t;
-    nv = off_get_nv(off);
+    nv = mesh_get_nv(off);
     rbc_gen_quants(coords, cart, off, ic, /**/ q);
     rbc_force_ini(nv, seed, /**/ &t);
     run1(dt, q, t, par);
@@ -93,11 +93,11 @@ static void run2(MPI_Comm cart, float dt, const Coords *coords, MeshRead *off, c
 void run(MPI_Comm cart, float dt, const Coords *coords, const char *cell, const char *ic, long seed, const RbcParams *par) {
     MeshRead *off;
     RbcQuants q;
-    UC(off_read_off(cell, /**/ &off));
+    UC(mesh_read_off(cell, /**/ &off));
     UC(rbc_ini(off, &q));
     UC(run2(cart, dt, coords, off, ic, seed, par, &q));
     UC(rbc_fin(&q));
-    UC(off_fin(off));
+    UC(mesh_fin(off));
 }
 
 int main(int argc, char **argv) {

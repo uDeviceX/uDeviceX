@@ -6,8 +6,8 @@ static void edg_sfree1(Adj *adj, /**/ float *a_dev, float *A_dev) {
     float *a_hst, *A_hst;
     MeshRead *cell;
     RbcShape *shape;
-    UC(off_read_off(path, &cell));
-    rr = off_get_vert(cell);
+    UC(mesh_read_off(path, &cell));
+    rr = mesh_get_vert(cell);
     UC(rbc_shape_ini(adj, rr, /**/ &shape));
     n = adj_get_max(adj);
 
@@ -18,7 +18,7 @@ static void edg_sfree1(Adj *adj, /**/ float *a_dev, float *A_dev) {
     cH2D(A_dev, A_hst, n);
 
     UC(rbc_shape_fin(shape));
-    UC(off_fin(cell));
+    UC(mesh_fin(cell));
 }
 
 static void anti(Adj *adj, /**/ int *dev) {

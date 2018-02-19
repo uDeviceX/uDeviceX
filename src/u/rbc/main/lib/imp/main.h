@@ -68,7 +68,7 @@ static void run2(MPI_Comm cart, float dt, float te, int seed,
     int nv;
     RbcStretch *stretch;
     RbcForce *t;
-    nv = off_get_nv(off);
+    nv = mesh_get_nv(off);
     rbc_gen_quants(coords, cart, off, ic, /**/ q);
     UC(stretch::ini("rbc.stretch", q->nv, /**/ &stretch));
     rbc_force_ini(nv, seed, &t);
@@ -85,7 +85,7 @@ void run(MPI_Comm cart, float dt, float te, int seed,
     MeshRead *off;
     MeshWrite *mesh_write;
 
-    UC(off_read_off(cell, /**/ &off));
+    UC(mesh_read_off(cell, /**/ &off));
     UC(mesh_write_ini_off(off, directory, /**/ &mesh_write));
 
     rbc_ini(off, &q);
@@ -94,5 +94,5 @@ void run(MPI_Comm cart, float dt, float te, int seed,
     rbc_fin(&q);
 
     UC(mesh_write_fin(mesh_write));
-    UC(off_fin(off));
+    UC(mesh_fin(off));
 }

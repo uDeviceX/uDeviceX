@@ -17,9 +17,9 @@ void rbc_ini(MeshRead *cell, RbcQuants *q) {
     int md;
     const int4 *tt;
     md    = RBCmd;
-    q->nv = off_get_nv(cell);
-    q->nt = off_get_nt(cell);
-    tt = off_get_tri(cell);
+    q->nv = mesh_get_nv(cell);
+    q->nt = mesh_get_nt(cell);
+    tt = mesh_get_tri(cell);
 
     q->n = q->nc = 0;
     UC(ini_common(q, tt));

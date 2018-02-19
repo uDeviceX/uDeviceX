@@ -3,18 +3,18 @@ static void ply_read(const char *fname, /**/ int *pnt, int *pnv, int4 **ptt, flo
     int4 *tt;
     float *vv;
     MeshRead *q;
-    UC(off_read_ply(fname, &q));
+    UC(mesh_read_ply(fname, &q));
 
-    nt = off_get_nt(q);
-    nv = off_get_nv(q);
+    nt = mesh_get_nt(q);
+    nv = mesh_get_nv(q);
 
     EMALLOC(  nt, &tt);
     EMALLOC(3*nv, &vv);
 
-    EMEMCPY(  nt, off_get_tri(q), /**/ tt);
-    EMEMCPY(3*nv, off_get_vert(q), /**/ vv);
+    EMEMCPY(  nt, mesh_get_tri(q), /**/ tt);
+    EMEMCPY(3*nv, mesh_get_vert(q), /**/ vv);
 
-    off_fin(q);
+    mesh_fin(q);
     *ptt = tt; *pvv = vv;
     *pnv = nv; *pnt = nt;
 }
