@@ -25,7 +25,7 @@ trajectories of the objects, and averaged flow fields.
 
 == code
 
-Code is organized in _units_ which are executable.  _uDeviceX_
+Code is organized in _units_ which are executables.  _uDeviceX_
 installs several command line tools which have prefix `u.`, for
 example `u.run`.
 
