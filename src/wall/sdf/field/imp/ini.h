@@ -35,8 +35,5 @@ void field_ini(const char *path, /**/ Field **pq) {
     EMALLOC(n, &q->D);
     D = q->D;
     UC(efread(D, sizeof(D[0]), n, f));
-    msg_print("D[  0]: %g",   D[0]);
-    msg_print("D[n-1]: %g", D[n-1]);
-
     *pq = q;
 }
