@@ -1,8 +1,3 @@
-template <typename Parray>
-static __device__ void fetch_p(Parray parray, int i, /**/ PairPa *p) {
-    parray_get(parray, i, /**/ p);
-}
-
 template <typename Wvel_v>
 static __device__ void fetch_wall(Wvel_v wv, Coords_v c, Texo<float4> pp, int i, /**/ PairPa *a) {
     float3 r, v; /* wall velocity */
@@ -47,7 +42,7 @@ __global__ void force(Par params, Wvel_v wv, Coords_v c, Parray parray, int np, 
     zplane = gid % 3;
 
     if (aid >= np) return;
-    fetch_p(parray, aid, /**/ &a);
+    parray_get(parray, aid, /**/ &a);
 
     force0(params, wv, c, a, aid, zplane, seed, wa, /**/ &ftot);
 
