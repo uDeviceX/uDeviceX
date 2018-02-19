@@ -6,7 +6,7 @@ static void edg_sfree1(Adj *adj, /**/ float *a_dev, float *A_dev) {
     float *a_hst, *A_hst;
     OffRead *cell;
     RbcShape *shape;
-    UC(off_read(path, &cell));
+    UC(off_read_off(path, &cell));
     rr = off_get_vert(cell);
     UC(rbc_shape_ini(adj, rr, /**/ &shape));
     n = adj_get_max(adj);

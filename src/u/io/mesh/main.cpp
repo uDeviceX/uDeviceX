@@ -65,7 +65,7 @@ int main(int argc, char **argv) {
 
     msg_print("i = '%s'", i);
     msg_print("o = '%s'", o);
-    UC(off_read(i, &cell));
+    UC(off_read_off(i, &cell));
     UC(log(cell));
 
     write(cart, coords, o, cell);

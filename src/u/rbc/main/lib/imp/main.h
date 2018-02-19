@@ -85,7 +85,7 @@ void run(MPI_Comm cart, float dt, float te, int seed,
     OffRead *off;
     MeshWrite *mesh_write;
 
-    UC(off_read(cell, /**/ &off));
+    UC(off_read_off(cell, /**/ &off));
     UC(mesh_write_ini_off(off, directory, /**/ &mesh_write));
 
     rbc_ini(off, &q);

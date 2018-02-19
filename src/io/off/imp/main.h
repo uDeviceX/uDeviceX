@@ -111,7 +111,7 @@ static void read(FILE *f, const char *path, /**/ OffRead *q) {
     q->rr = rr; q->tt = tt;
 }
 
-void off_read(const char *path, OffRead **pq) {
+void off_read_off(const char *path, OffRead **pq) {
     FILE *f;
     OffRead *q;
     UC(ini(&q));

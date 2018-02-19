@@ -24,7 +24,7 @@ void main0(Config *c) {
     const char *i; /* input */
     UC(conf_lookup_string(c, "i", &i));
     msg_print("i = '%s'", i);
-    UC(off_read(i, &off));
+    UC(off_read_off(i, &off));
 
     md = off_get_md(off);
     nv = off_get_nv(off);
