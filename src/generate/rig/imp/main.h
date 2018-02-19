@@ -16,9 +16,9 @@ static void gen0(const Coords *c, const RigPinInfo *pi, MPI_Comm comm, int nt, c
             empty_solid(nt, tt, vv, /* io */ rr0, &npsolid);
     }
 
-    MC(MPI_Bcast(&npsolid,       1,   MPI_INT, root, comm) );
-    MC(MPI_Bcast(rr0,  3 * npsolid, MPI_FLOAT, root, comm) );
-    MC(MPI_Bcast(&model, 1, datatype::solid,   root, comm) );
+    MC(m::Bcast(&npsolid,       1,   MPI_INT, root, comm) );
+    MC(m::Bcast(rr0,  3 * npsolid, MPI_FLOAT, root, comm) );
+    MC(m::Bcast(&model, 1, datatype::solid,   root, comm) );
 
     // filter coms to keep only the ones in my domain
     int id = 0;
@@ -48,7 +48,7 @@ static void gen1(const Coords *coords, const RigPinInfo *pi, MPI_Comm comm, int 
                  /*w*/ int *tags, int *rcounts) {
     int root, idmax;
     elect(comm, rcounts, nsolid, /**/ &root, &idmax);
-    MC(MPI_Bcast(&idmax, 1, MPI_INT, root, comm));
+    MC(m::Bcast(&idmax, 1, MPI_INT, root, comm));
 
     int rcount = 0;
     kill(idmax, tags, /**/ s_n, s_pp, &rcount, r_pp);

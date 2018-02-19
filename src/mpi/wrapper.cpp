@@ -10,6 +10,10 @@ int Barrier(MPI_Comm comm) {
     return MPI_Barrier(comm);
 }
 
+int Bcast(void *buffer, int count, MPI_Datatype datatype, int root, MPI_Comm comm) {
+    return MPI_Bcast(buffer, count, datatype, root, comm);
+}
+
 int Cancel(MPI_Request *request) {
     return MPI_Cancel(request);
 }

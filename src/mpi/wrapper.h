@@ -1,6 +1,7 @@
 namespace m {
 int Allreduce(const void *sendbuf, void *recvbuf, int count, MPI_Datatype datatype, MPI_Op op, MPI_Comm comm);
 int Barrier(MPI_Comm comm);
+int Bcast(void *buffer, int count, MPI_Datatype datatype, int root, MPI_Comm comm);
 int Cancel(MPI_Request *request);
 int Cart_rank(MPI_Comm comm, const int coords[], int *rank);
 int Cart_create(MPI_Comm comm_old, int ndims, const int dims[], const int periods[], int reorder, MPI_Comm *comm_cart);
