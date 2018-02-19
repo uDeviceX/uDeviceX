@@ -9,20 +9,14 @@
 typedef uint32_t integer;
 struct RNDunif { integer x, y, z, c; };
 
-void rnd_ini(int x, int y, int z, int c, /**/ RNDunif **r0) {
-    RNDunif *r;
-    EMALLOC(1, &r);
-    r = *r0;
-
-    r->x = x;
-    r->y = y;
-    r->z = z;
-    r->c = c;
+void rnd_ini(int x, int y, int z, int c, /**/ RNDunif **pq) {
+    RNDunif *q;
+    EMALLOC(1, &q);
+    *pq = q;
+    q->x = x; q->y = y; q->z = z; q->c = c;
 }
 
-void rnd_fin(RNDunif *r) {
-    UC(efree(r));
-}
+void rnd_fin(RNDunif *r) { EFREE(r); }
 
 static integer get_int(RNDunif *r) {
     uint64_t t, a = 698769069ULL;
