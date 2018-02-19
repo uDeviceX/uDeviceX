@@ -19,6 +19,7 @@ static void read_ply(FILE *f, const char *fname, OffRead *q) {
 #define xstr(s) str(s)
 #define str(s) #s
 
+    nv = nt = -1;
     while (l++ < MAXLINES) {
         char cbuf[BUFSIZE + 1] = {0}; // + 1 for \0
 
