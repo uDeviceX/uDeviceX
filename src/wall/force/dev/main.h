@@ -4,7 +4,7 @@ static __device__ void fetch_p(Parray parray, int i, /**/ PairPa *p) {
 }
 
 template<typename Par>
-static __device__ void fetch_wall(Wvel_v wv, Coords_v c, Texo<float4> pp, int i, /**/ PairPa *a) {
+static __device__ void fetch_wall(WvelStep wv, Coords_v c, Texo<float4> pp, int i, /**/ PairPa *a) {
     float3 r, v; /* wall velocity */
     float4 r0;
     r0 = fetch(pp, i);
@@ -16,7 +16,7 @@ static __device__ void fetch_wall(Wvel_v wv, Coords_v c, Texo<float4> pp, int i,
 }
 
 template<typename Par, typename Fo>
-static __device__ void force0(Par params, Wvel_v wv, Coords_v c, PairPa a, int aid, int zplane,
+static __device__ void force0(Par params, WvelStep wv, Coords_v c, PairPa a, int aid, int zplane,
                               float seed, WallForce wa, /**/ Fo *fa) {
     map::Map m;
     PairPa b;  /* wall particles */
@@ -38,7 +38,7 @@ static __device__ void force0(Par params, Wvel_v wv, Coords_v c, PairPa a, int a
 }
 
 template<typename Par, typename Parray, typename Farray>
-__global__ void force(Par params, Wvel_v wv, Coords_v c, Parray parray, int np, float seed, WallForce wa, /**/ Farray farray) {
+__global__ void force(Par params, WvelStep wv, Coords_v c, Parray parray, int np, float seed, WallForce wa, /**/ Farray farray) {
     PairPa a; /* bulk particle */
     int gid, aid, zplane;
     auto ftot = farray_fo0(farray);

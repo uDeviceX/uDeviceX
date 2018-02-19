@@ -10,4 +10,4 @@ struct WallForce { /* local wall data */
     int3 L;
 };
 
-void wall_force_apply(const PairParams*, Wvel_v wv, const Coords *c, const PaArray *parray, int n, RNDunif *rnd, WallForce wa, /**/ const FoArray *farray);
+void wall_force_apply(const PairParams*, WvelStep wv, const Coords *c, const PaArray *parray, int n, RNDunif *rnd, WallForce wa, /**/ const FoArray *farray);

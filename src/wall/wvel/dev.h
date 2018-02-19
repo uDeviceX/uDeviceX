@@ -48,7 +48,7 @@ static __device__ void wvel_hs(WvelPar_v p, Coords_v c, float3 r, /**/ float3 *v
 /* device interface */
 
 // tag::dev[]
-static __device__ void wvel(Wvel_v wv, Coords_v c, float3 r, /**/ float3 *v)
+static __device__ void wvel(WvelStep wv, Coords_v c, float3 r, /**/ float3 *v)
 // end::dev[]
 {
     switch(wv.type) {
@@ -67,7 +67,7 @@ static __device__ void wvel(Wvel_v wv, Coords_v c, float3 r, /**/ float3 *v)
 }
 
 // tag::dev[]
-static __device__ void bounce_vel(Wvel_v wv, Coords_v c, float3 rw, /* io */ float3* v)
+static __device__ void bounce_vel(WvelStep wv, Coords_v c, float3 rw, /* io */ float3* v)
 // end::dev[]
 {
     float3 vw;

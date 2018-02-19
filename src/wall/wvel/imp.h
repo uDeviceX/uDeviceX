@@ -1,5 +1,5 @@
 struct Wvel;
-struct Wvel_v;
+struct WvelStep;
 
 struct float3;
 struct Config;
@@ -22,5 +22,5 @@ void wvel_set_conf(const Config *cfg, Wvel *vw);
 // end::cnf[]
 
 // tag::int[]
-void wvel_get_view(float dt, long it, const Wvel *wv, /**/ Wvel_v *view);
+void wvel_get_view(float dt, long it, const Wvel *wv, /**/ WvelStep *view);
 // end::int[]

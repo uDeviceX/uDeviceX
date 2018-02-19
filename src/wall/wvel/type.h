@@ -30,7 +30,7 @@ union WvelPar_v {
 
 /* device structure: to be passed to device code */
 
-struct Wvel_v {
+struct WvelStep {
     WvelPar_v p;
     int type;
 };

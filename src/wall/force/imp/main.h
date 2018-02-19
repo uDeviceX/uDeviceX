@@ -3,7 +3,7 @@ enum {
 };
 
 template <typename Par, typename Parray, typename Farray>
-static void interactions(Par params, Wvel_v wv, const Coords *c, Parray parray, int n, RNDunif *rnd, WallForce wa, /**/ Farray farray) {
+static void interactions(Par params, WvelStep wv, const Coords *c, Parray parray, int n, RNDunif *rnd, WallForce wa, /**/ Farray farray) {
     Coords_v coordsv;
     coords_get_view(c, &coordsv);
     
@@ -13,7 +13,7 @@ static void interactions(Par params, Wvel_v wv, const Coords *c, Parray parray, 
 }
 
 template <typename Par, typename Parray>
-static void apply(Par params, Wvel_v wv, const Coords *c, Parray parray, int n, RNDunif *rnd, WallForce wa, /**/ const FoArray *farray) {
+static void apply(Par params, WvelStep wv, const Coords *c, Parray parray, int n, RNDunif *rnd, WallForce wa, /**/ const FoArray *farray) {
     if (farray_has_stress(farray)) {
         FoSArray_v farray_v;
         farray_get_view(farray, &farray_v);
@@ -26,7 +26,7 @@ static void apply(Par params, Wvel_v wv, const Coords *c, Parray parray, int n, 
     }
 }
 
-void wall_force_apply(const PairParams *params, Wvel_v wv, const Coords *c, const PaArray *parray, int n, RNDunif *rnd, WallForce wa, /**/ const FoArray *farray) {    
+void wall_force_apply(const PairParams *params, WvelStep wv, const Coords *c, const PaArray *parray, int n, RNDunif *rnd, WallForce wa, /**/ const FoArray *farray) {    
     if (parray_is_colored(parray)) {
         PairDPDCM pv;
         PaArray_v pav;        
