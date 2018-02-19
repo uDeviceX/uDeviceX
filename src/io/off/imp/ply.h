@@ -7,13 +7,11 @@ static bool prop(const char *pname, const char *str) {
     return true;
 }
 
-static void read_ply(const char *fname, int *nt, int *nv, int4 **tt, float **vv) {
-    FILE *f;
-    UC(efopen(fname, "r", /**/ &f));
-
+static void read_ply(FILE *f, const char *fname, OffRead *q) {
+    int nv, nt;
+    int4 *tt;
+    float *rr;
     int l = 0;
-    *nt = *nv = -1;
-
 #define BUFSIZE 256 // max number of chars per line
 #define MAXLINES 64 // max number of line for header
 
@@ -32,30 +30,30 @@ static void read_ply(const char *fname, int *nt, int *nv, int4 **tt, float **vv)
         }
 
         int ibuf;
-        if    (sscanf(cbuf, "element vertex %d", &ibuf) == 1) *nv = ibuf;
-        else if (sscanf(cbuf, "element face %d", &ibuf) == 1) *nt = ibuf;
+        if    (sscanf(cbuf, "element vertex %d", &ibuf) == 1) nv = ibuf;
+        else if (sscanf(cbuf, "element face %d", &ibuf) == 1) nt = ibuf;
         else if (prop("end_header", cbuf)) break;
     }
 
-    if (l >= MAXLINES || *nt == -1 || *nv == -1) {
+    if (l >= MAXLINES || nt == -1 || nv == -1) {
         printf("Something went wrong, did not catch end_header\n");
         exit(1);
     }
 
-    *tt = new int4[*nt];
-    *vv = new float[3 * *nv];
+    EMALLOC(  nt, &tt);
+    EMALLOC(3*nv, &rr);
 
-    for (int i = 0; i < *nv; ++i)
+    for (int i = 0; i < nv; ++i)
         fscanf(f, "%f %f %f\n",
-               *vv + 3*i + 0,
-               *vv + 3*i + 1,
-               *vv + 3*i + 2);
+               rr + 3*i + 0,
+               rr + 3*i + 1,
+               rr + 3*i + 2);
 
     int4 t; t.z = 0;
-    for (int i = 0; i < *nt; ++i) {
+    for (int i = 0; i < nt; ++i) {
         fscanf(f, "%*d %d %d %d\n", &t.x, &t.y, &t.z);
-        (*tt)[i] = t;
+        tt[i] = t;
     }
-
-    UC(efclose(f));
+    q->nv = nv; q->nt = nt;
+    q->rr = rr; q->tt = tt;
 }
