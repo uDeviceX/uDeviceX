@@ -77,6 +77,17 @@ void vcont_fin(/**/ PidVCont *c) {
     UC(efree(c));
 }
 
+void vcont_set_params(float factor, float Kp, float Ki, float Kd, /**/ PidVCont *c) {
+    c->factor = factor;
+    c->Kp = Kp;
+    c->Ki = Ki;
+    c->Kd = Kd;
+}
+
+void vcont_set_target(float3 vtarget, /**/ PidVCont *c) {
+    c->target = vtarget;
+}
+
 void vcon_set_cart(/**/ PidVCont *cont) {
     cont->type = TYPE_CART;
 }
