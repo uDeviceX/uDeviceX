@@ -2,7 +2,7 @@ struct PidVCont;
 struct Coords;
 
 // tag::mem[]
-void vcont_ini(MPI_Comm comm, int3 L, float3 vtarget, float factor, /**/ PidVCont **c);
+void vcont_ini(MPI_Comm comm, int3 L, /**/ PidVCont **c);
 void vcont_fin(/**/ PidVCont *cont);
 // end::mem[]
 

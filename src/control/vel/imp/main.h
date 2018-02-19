@@ -24,18 +24,13 @@ static void reini_sampler(/**/ PidVCont *c) {
     c->nsamples = 0;
 }
 
-static void ini(MPI_Comm comm, int3 L, float3 vtarget, float factor, /**/ PidVCont *c) {
+static void ini(MPI_Comm comm, int3 L, /**/ PidVCont *c) {
     int ncells, nchunks, rank;
 
     MC(m::Comm_rank(comm, &rank));
     
     c->L = L;
-    c->target = vtarget;
     c->current = make_float3(0, 0, 0);
-    c->factor = factor;
-    c->Kp = 2;
-    c->Ki = 1;
-    c->Kd = 8;
 
     MC(m::Comm_dup(comm, &c->comm));
 
@@ -60,11 +55,11 @@ static void ini(MPI_Comm comm, int3 L, float3 vtarget, float factor, /**/ PidVCo
     c->type = TYPE_NONE;
 }
 
-void vcont_ini(MPI_Comm comm, int3 L, float3 vtarget, float factor, /**/ PidVCont **c) {
+void vcont_ini(MPI_Comm comm, int3 L, /**/ PidVCont **c) {
     PidVCont *vc;
     UC(emalloc(sizeof(PidVCont), (void**) c));
     vc = *c;
-    UC(ini(comm, L, vtarget, factor, /**/ vc));
+    UC(ini(comm, L, /**/ vc));
 }
 
 void vcont_fin(/**/ PidVCont *c) {

@@ -71,7 +71,7 @@ static void ini_vcon(MPI_Comm comm, int3 L, const Config *cfg, /**/ Vcon *c) {
 
     UC(vcont_ini(comm, L, U, factor, /**/ &c->vcont));
     vc = c->vcont;
-
+    
     if      (same_str(type, "cart"))
         UC(vcon_set_cart(/**/ vc));
     else if (same_str(type, "rad"))
