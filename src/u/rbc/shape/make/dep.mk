@@ -1,5 +1,5 @@
 $B/d/api.o: $S/d/cpu/imp.h $S/utils/imp.h $S/inc/conf.h $S/utils/error.h $S/d/common.h $S/d/api.h $B/conf.h $S/d/cuda/imp.h
-$B/io/off/imp.o: $S/utils/imp.h $S/utils/error.h $S/io/off/imp.h $S/io/off/imp/main.h $S/io/off/imp/type.h $S/io/off/imp/off.h $S/utils/msg.h
+$B/io/off/imp.o: $S/utils/imp.h $S/utils/error.h $S/io/off/imp/ply.h $S/io/off/imp.h $S/io/off/imp/main.h $S/io/off/imp/type.h $S/io/off/imp/off.h $S/utils/msg.h
 $B/math/linal/imp.o: $S/utils/error.h $S/math/linal/imp.h
 $B/math/rnd/imp.o: $S/utils/imp.h $S/utils/error.h $S/math/rnd/imp.h
 $B/math/tform/imp.o: $S/utils/imp.h $S/inc/conf.h $S/utils/error.h $S/math/tform/imp.h $B/conf.h $S/math/tform/imp/main.h $S/math/tform/imp/type.h $S/math/tform/type.h $S/utils/msg.h

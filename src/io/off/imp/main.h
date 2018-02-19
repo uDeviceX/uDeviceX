@@ -11,7 +11,18 @@ void off_read_off(const char *path, OffRead **pq) {
     UC(efopen(path, "r", /**/ &f));
     read_off(f, path, /**/ q);
     UC(efclose(f));
-    msg_print("read '%s'", path);
+    msg_print("read off '%s'", path);
+    *pq = q;
+}
+
+void off_read_ply(const char *path, OffRead **pq) {
+    FILE *f;
+    OffRead *q;
+    UC(ini(&q));
+    UC(efopen(path, "r", /**/ &f));
+    read_ply(f, path, /**/ q);
+    UC(efclose(f));
+    msg_print("read ply '%s'", path);
     *pq = q;
 }
 
