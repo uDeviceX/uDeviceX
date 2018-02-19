@@ -1,4 +1,4 @@
-= Third party dependencies
+= third party dependencies
 :lext: .adoc
 
 == cuda compiler
@@ -64,9 +64,7 @@ export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:$HOME/prefix/libconfig/lib/pkgconfig
 
 a data model, library, and file format for storing and managing data
 
-https://support.hdfgroup.org/HDF5
-
-To get flags
+To get the compilation and linking flag the following commands flags
 [source, sh]
 ----
 h5c++ -show
@@ -78,15 +76,11 @@ or
 pkg-config hdf5-mpich --libs
 ----
 
-To build from source
-
-link:https://support.hdfgroup.org/ftp/HDF5/releases/hdf5-1.8.17/src/hdf5-1.8.17.tar.gz
+To build from the
+link:https://support.hdfgroup.org/ftp/HDF5/releases/hdf5-1.8.17/src/hdf5-1.8.17.tar.gz[source]
 
 Configuration options
 [source, sh]
 ----
-      --prefix=$HOME/prefix/hdf5
-	  --enable-parallel
-	  CXX=/usr/lib64/mpich/bin/mpic++
-	  CC=/usr/lib64/mpich/bin/mpicc
+      --prefix=$HOME/prefix/hdf5 --enable-parallel CXX=mpic++ CC=mpicc
 ----
