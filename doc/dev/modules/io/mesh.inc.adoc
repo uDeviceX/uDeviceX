@@ -1,6 +1,20 @@
 == Mesh
 
-Read triangulated mesh from an off or ply file.
+Read triangulated mesh from an off or ply file `path`. Vertices are
+packed into linear array:
+
+----
+x0 y0 z0 x1 y1 z1 ... x[nv-1] y[nv-1] z[nv-1]
+----
+
+Triangles are packed in array of `int4` with fields `w` left
+unused. For example traingle `i` is
+----
+tt[i].x tt[i].y tt[i].z
+----
+
+`mesh_get_nt`, `mesh_get_nv`, and `mesh_get_md` return the number of
+ntriangles, number of vertices and maximum degree.
 
 [source,cpp]
 ----
