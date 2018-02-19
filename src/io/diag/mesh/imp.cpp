@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <string.h>
+#include <vector_types.h>
 #include <mpi.h>
 
 #include <conf.h>
