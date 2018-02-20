@@ -39,7 +39,6 @@ static void setup0(Adj *adj, /**/ Shape *shape) {
 static void setup(int md, int nt, int nv, const int4 *tt, /**/ RbcQuants *q) {
     Adj *adj;
     UC(adj_ini(md, nt, nv, tt, /**/ &adj));
-    UC(adj_view_ini(adj, /**/ &q->adj_v));
     UC(setup0(adj, /**/ &q->shape));
     UC(adj_fin(adj));
 }

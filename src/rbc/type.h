@@ -1,6 +1,5 @@
 struct AreaVolume;
 struct Particle;
-struct Adj_v;
 
 struct Shape {
     int *anti; /* every edge is visited twice, what is the id of
@@ -15,6 +14,5 @@ struct RbcQuants {
     int *ii;               /* global ids on host */
     AreaVolume *area_volume; /* to compute area and volume */
 
-    Adj_v *adj_v;          /* to walk over mesh on dev */
     Shape shape;
 };
