@@ -34,9 +34,9 @@ static __device__ real3 adj_tris(real dt, int nv,
     const Pos  r2 = tex2Pos(pp,  i2);
 
     area = av[2*rbc]; volume = av[2 * rbc + 1];
-    f  = tri(par, nv, p0.r, p1.r, r2, shape, area, volume);
+    f  = ftri(par, nv, p0.r, p1.r, r2, shape, area, volume);
     
-    fv = visc(par, p0.r, p1.r, p0.v, p1.v);
+    fv = fvisc(par, p0.r, p1.r, p0.v, p1.v);
     add(&fv, /**/ &f);
 
     fr = frnd(dt, par, p0.r, p1.r, rnd);
@@ -54,8 +54,8 @@ static __device__ real3 adj_dihedrals(RbcParams_v par, const Particle *pp, real3
     r3 = tex2Pos(pp, m->i3);
     r4 = tex2Pos(pp, m->i4);
 
-    f1 = dih<1>(par, r0, r2, r1, r4);
-    f2 = dih<2>(par, r1, r0, r2, r3);
+    f1 = fdih<1>(par, r0, r2, r1, r4);
+    f2 = fdih<2>(par, r1, r0, r2, r3);
     add(&f1, /**/ &f2);
     return f2;
 

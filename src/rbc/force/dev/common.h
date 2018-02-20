@@ -48,7 +48,7 @@ static __device__ real3 fspring(RbcParams_v par, real3 x21, real l0) {
   #undef wlc_r
 }
 
-static __device__ real3 tri0(RbcParams_v par, real3 r1, real3 r2, real3 r3,
+static __device__ real3 ftri0(RbcParams_v par, real3 r1, real3 r2, real3 r3,
                              real l0, real A0, real totArea, real totVolume,
                              real area, real volume) {
     real3 fv, fa, fs;
@@ -70,7 +70,7 @@ static __device__ real3 tri0(RbcParams_v par, real3 r1, real3 r2, real3 r3,
     return f;
 }
 
-static __device__ real3 visc(RbcParams_v par, real3 r1, real3 r2, real3 u1, real3 u2) {
+static __device__ real3 fvisc(RbcParams_v par, real3 r1, real3 r2, real3 u1, real3 u2) {
     const real gammaC = par.gammaC, gammaT = par.gammaT;
     real3 du, dr, f = make_real3(0, 0, 0);
     diff(&u2, &u1, /**/ &du);
@@ -86,7 +86,7 @@ static __device__ real3 visc(RbcParams_v par, real3 r1, real3 r2, real3 u1, real
 
 /* forces from one dihedral */
 template <int update>
-__device__ real3 dih(RbcParams_v par, real3 r1, real3 r2, real3 r3, real3 r4) {
+__device__ real3 fdih(RbcParams_v par, real3 r1, real3 r2, real3 r3, real3 r4) {
     real overIksiI, overIdzeI, cosTheta, IsinThetaI2, sinTheta_1,
         beta, b11, b12, phi, sint0kb, cost0kb;
     real3 r12, r13, r34, r24, r41, ksi, dze, ksimdze;
