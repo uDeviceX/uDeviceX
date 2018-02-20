@@ -1,4 +1,4 @@
-static void compute_edg(Adj *adj, const float *rr, /**/ float *o) {
+static void compute_edg(const Adj *adj, const float *rr, /**/ float *o) {
     int i, valid, n;
     const float *r0, *r1;
     float r01[3];
@@ -15,7 +15,7 @@ static void compute_edg(Adj *adj, const float *rr, /**/ float *o) {
     }
 }
 
-static void compute_area(Adj *adj, const float *rr, /**/ float *o) {
+static void compute_area(const Adj *adj, const float *rr, /**/ float *o) {
     int i, i0, i1, i2, valid, n;
     const float *r0, *r1, *r2;
     float r01[3], r12[3], r20[3];
@@ -36,7 +36,7 @@ static void compute_area(Adj *adj, const float *rr, /**/ float *o) {
     }
 }
 
-static void compute_total_volume(Adj *adj, const float *rr, /**/ float *pV) {
+static void compute_total_volume(const Adj *adj, const float *rr, /**/ float *pV) {
     enum {X, Y, Z};
     int i, i0, i1, i2, valid, n;
     const float *r0, *r1, *r2;
@@ -61,7 +61,7 @@ static void compute_total_volume(Adj *adj, const float *rr, /**/ float *pV) {
     *pV = V;
 }
 
-static void compute_total_area(Adj *adj, const float* area, /**/ float *pA) {
+static void compute_total_area(const Adj *adj, const float* area, /**/ float *pA) {
     int n, i, valid;
     AdjMap m;
     double A;
@@ -77,7 +77,7 @@ static void compute_total_area(Adj *adj, const float* area, /**/ float *pA) {
     *pA = A;
 }
 
-void rbc_shape_ini(Adj *adj, const float *rr, /**/ RbcShape **pq) {
+void rbc_shape_ini(const Adj *adj, const float *rr, /**/ RbcShape **pq) {
     int n;
     RbcShape *q;
     n = adj_get_max(adj);
