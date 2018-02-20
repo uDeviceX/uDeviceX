@@ -44,6 +44,8 @@ namespace rbc_force_dev {
 #else
   #error RBC_DOUBLE or RBC_FLOAT must be defined
 #endif
+
+#include "dev/type.h"
 #include "dev/fetch.h"
 #include "dev/common.h"
 

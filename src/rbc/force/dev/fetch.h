@@ -1,7 +1,3 @@
-struct StressInfo {
-    real l0, a0;
-};
-
 static __device__ StressInfo fetch_stress_info(int, StressFul_v sv) {
     StressInfo si;
     si.l0 = sv.l0;
