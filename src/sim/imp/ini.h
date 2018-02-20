@@ -146,7 +146,7 @@ static void ini_rbc(const Config *cfg, MPI_Comm cart, int3 L, /**/ Rbc *r) {
     UC(mesh_write_ini_off(r->cell, directory, /**/ &r->mesh_write));
     nv = mesh_get_nv(r->cell);
     Dalloc(&r->ff, MAX_CELL_NUM * nv);
-    UC(triangles_ini(r->cell, /**/ &r->tri));
+    UC(trianglesx_ini(r->cell, /**/ &r->tri));
     UC(rbc_ini(r->cell, &r->q));
     UC(ini_rbc_distr(nv, cart, L, /**/ &r->d));
     if (rbc_com_dumps) UC(rbc_com_ini(nv, MAX_CELL_NUM, /**/ &r->com));
