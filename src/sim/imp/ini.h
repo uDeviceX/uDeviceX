@@ -168,6 +168,11 @@ static void ini_rbc(const Config *cfg, MPI_Comm cart, int3 L, /**/ Rbc *r) {
         UC(conf_lookup_float(cfg, "rbc.totArea", &Atot));
         UC(rbc_force_set_stressful(nt, Atot, /**/ r->force));
     }
+
+    if (RBC_RND)
+        UC(rbc_force_set_rnd1(r->force));
+    else
+        UC(rbc_force_set_rnd0(r->force));
 }
 
 static void ini_rig(const Config *cfg, MPI_Comm cart, int maxp, int3 L, /**/ Rig *s) {
