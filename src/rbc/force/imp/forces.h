@@ -13,7 +13,7 @@ static void apply(float dt, RbcParams_v parv, int nc, int nv,
     md = RBCmd;
     random(nc * md * nv, rnd, /**/ &rnd0);
     KL(rbc_force_dev::force, (k_cnf(nc*nv*md)), (dt, parv, md, nv, nc, pp, rnd0,
-                                       *adj_v, shape, av, /**/ (float*)ff));
+                                                 *adj_v, shape, av, /**/ (float*)ff));
 }
 
 void rbc_force_apply(RbcForce *t, const RbcParams *par, float dt, const RbcQuants *q, /**/ Force *ff) {
