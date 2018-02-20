@@ -34,5 +34,5 @@ void rbc_force_apply(RbcForce *t, const RbcParams *par, float dt, const RbcQuant
     UC(area_volume_compute(q->area_volume, q->nc, q->pp, /**/ &av));
     apply(dt,
           parv, q->nc, q->nv, q->pp, t->rnd,
-          q->adj_v, q->shape, av, /**/ ff);
+          t->adj_v, q->shape, av, /**/ ff);
 }
