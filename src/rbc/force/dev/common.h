@@ -49,8 +49,8 @@ static __device__ real3 fspring(RbcParams_v par, real3 x21, real l0) {
 }
 
 static __device__ real3 ftri0(RbcParams_v par, real3 r1, real3 r2, real3 r3,
-                             real l0, real A0, real totArea, real totVolume,
-                             real area, real volume) {
+                              real l0, real A0, real totArea, real totVolume,
+                              real area, real volume) {
     real3 fv, fa, fs;
     real3 x21, x32, x31, f = make_real3(0, 0, 0);
 
