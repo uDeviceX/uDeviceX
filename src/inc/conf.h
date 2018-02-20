@@ -129,8 +129,8 @@
   #define RBC_STRETCH (false)
 #endif
 
-#ifndef RBC_RND
-   #define RBC_RND (false)
+#ifdef RBC_RND
+    #error RBC_RND is runtime: rbc.rnd
 #endif
 
 /* dump meshes relative to the domain edge or domain center? */

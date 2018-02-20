@@ -5,4 +5,3 @@
 
 #define      color_freq             500
 #define dump_all_fields            true
-#define         RBC_RND            true
