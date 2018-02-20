@@ -20,9 +20,13 @@ include::{src}/rbc/adj/dev.h[tag=interface]
 
 It return 0 if thread is not `valid`. If `md * nv` is bigger than
 number of edges in the membrane some threads are not needed. `AdjMap`
-is a structure which contains five indices and ID of a mesh:
+is a structure which contains five indices and an ID of the mesh:
 
 [source,cpp]
 ----
 include::{src}/rbc/adj/type/dev.h[tag=interface]
 ----
+
+Each thread adds force to a vertices with index `0`. It considers edge
+`01`, triangle `012`, and two dihedrals `0124` and `1203`. For example
+the contribution of edge `01`.
