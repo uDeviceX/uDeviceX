@@ -60,7 +60,7 @@ void bounce_solid(float dt, int3 L, BounceBack *bb, Rig *s, Flu *flu) {
 
     meshbb_find_collisions(dt, nm + nmhalo, nt, nv, tt, i_pp, L, ss, cc, pp, flu->ff, /**/ bb->d);
     meshbb_select_collisions(dt, n, /**/ bb->d);
-    meshbb_bounce(dt, flu_mass, n, bb->d, flu->ff, nt, nv, tt, i_pp, /**/ pp, bb->mm);
+    meshbb_bounce(dt, flu->mass, n, bb->d, flu->ff, nt, nv, tt, i_pp, /**/ pp, bb->mm);
 
     /* send momentum back */
 
@@ -86,14 +86,14 @@ void bounce_solid(float dt, int3 L, BounceBack *bb, Rig *s, Flu *flu) {
 
 
 void update_solvent(float dt, MoveParams *moveparams, /**/ Flu *f) {
-    scheme_move_apply(dt, moveparams, flu_mass, f->q.n, f->ff, f->q.pp);
+    scheme_move_apply(dt, moveparams, f->mass, f->q.n, f->ff, f->q.pp);
 }
 
 void update_rbc(float dt, MoveParams *moveparams, long it, Rbc *r, Sim *s) {
     bool cond;
     cond = s->opt.flucolors && color_freq && it % color_freq == 0;
     if (cond) {msg_print("recolor"); gen_colors(r, &s->colorer, /**/ &s->flu);}; /* TODO: does not belong here*/
-    scheme_move_apply(dt, moveparams, rbc_mass, r->q.n, r->ff, r->q.pp);
+    scheme_move_apply(dt, moveparams, rbc->mass, r->q.n, r->ff, r->q.pp);
 }
 
 void restrain(long it, Sim *s) {

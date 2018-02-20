@@ -137,6 +137,8 @@ static void ini_flu(Opt opt, MPI_Comm cart, int maxp, int3 L, /**/ Flu *f) {
         UC(Dalloc(&f->ss, 6*maxp));
         EMALLOC(6*maxp, /**/ &f->ss_hst);        
     }
+
+    UC(conf_lookup_float(cfg, "flu.mass", &f->mass));
 }
 
 static void ini_rbc(const Config *cfg, MPI_Comm cart, int3 L, /**/ Rbc *r) {
@@ -158,6 +160,8 @@ static void ini_rbc(const Config *cfg, MPI_Comm cart, int3 L, /**/ Rbc *r) {
 
     UC(rbc_force_ini(r->cell, /**/ &r->force));
     UC(rbc_force_set_conf(r->cell, cfg, r->force));
+
+    UC(conf_lookup_float(cfg, "rbc.mass", &r->mass));
 }
 
 static void ini_rig(const Config *cfg, MPI_Comm cart, int maxp, int3 L, /**/ Rig *s) {

@@ -27,7 +27,7 @@ int main(int argc, char **argv) {
     BForce *bforce;
     MoveParams *moveparams;
     RbcParams *par;
-    float dt, te;
+    float dt, te, mass;
     float part_freq;
     int rank, dims[3];
     MPI_Comm cart;
@@ -44,6 +44,7 @@ int main(int argc, char **argv) {
     UC(conf_lookup_float(cfg, "time.dt", &dt));
     UC(conf_lookup_float(cfg, "time.end", &te));
     UC(conf_lookup_int(cfg, "rbc.seed", &seed));
+    UC(conf_lookup_float(cfg, "rbc.mass", &mass));
 
     UC(rbc_params_ini(&par));
     UC(rbc_params_set_conf(cfg, par));
@@ -56,7 +57,7 @@ int main(int argc, char **argv) {
     UC(scheme_move_params_ini(&moveparams));
     UC(scheme_move_params_conf(cfg, /**/moveparams));
 
-    run(cfg, cart, dt, te, seed, coords, part_freq, bforce, moveparams, "rbc.off", "rbcs-ic.txt", par);
+    run(cfg, cart, dt, mass, te, seed, coords, part_freq, bforce, moveparams, "rbc.off", "rbcs-ic.txt", par);
     UC(coords_fin(coords));
 
     UC(bforce_fin(bforce));

@@ -79,6 +79,8 @@ struct Flu {
 
     float *ss;     /* stresses */
     float *ss_hst;
+
+    float mass;  /* mass of one particle */ 
 };
 
 /* data holder for red blood cells */
@@ -93,6 +95,7 @@ struct Rbc {
     MeshRead    *cell;     /* cell template */
     MeshWrite  *mesh_write;
     Triangles *tri; /* triangles for one cell on devices */
+    float mass; /* mass of one particle */ 
 };
 
 /* data holder for rigid objects */
@@ -105,7 +108,7 @@ struct Rig {
     RigDistr d;
     MeshWrite  *mesh_write;
 
-    float mass;
+    float mass;  /* mass of one particle */ 
 };
 
 /* data holder for walls */
