@@ -2,6 +2,9 @@ struct RbcParams;
 struct RbcForce;
 struct Force;
 struct Config;
+struct MeshRead;
+struct RbcQuants;
+struct RbcParams;
 
 void rbc_force_ini(const MeshRead *cell, RbcForce**);
 void rbc_force_fin(RbcForce*);
