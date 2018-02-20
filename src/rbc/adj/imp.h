@@ -9,5 +9,5 @@ int  adj_get_map(int i, const Adj*, /**/ AdjMap *m);
 int  adj_get_max(const Adj*);
 void adj_get_anti(const Adj*, /**/ int *anti);
 
-void adj_view_ini(Adj*, Adj_v**);
+void adj_view_ini(const Adj*, Adj_v**);
 void adj_view_fin(Adj_v*);

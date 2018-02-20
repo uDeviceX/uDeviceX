@@ -44,7 +44,7 @@ void adj_ini(int md, int nt, int nv, const int4 *faces, /**/ Adj **pq) {
     *pq = q;
 }
 
-void adj_view_ini(Adj *hst, /**/ Adj_v **pq) {
+void adj_view_ini(const Adj *hst, /**/ Adj_v **pq) {
     int nv, md;
     Adj_v *q;
     if (hst == NULL) ERR("hst == NULL");
