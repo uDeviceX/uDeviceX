@@ -1,4 +1,6 @@
 = mesh adjacency structure
+:lext: .adoc
+:src: ../../../src
 
 Consider closed triangulated mesh with `nv` vertices. Degree of a
 vertex is the number of edges incident to the vertex. Let `md` is a
@@ -8,5 +10,10 @@ one vertices.  There are three types of forces: edge forces which
 depend on two vertices, triangle forces which depend on three
 vertices, and dihedral forces which depend of four vertices (edge and
 two adjusting triangles). `Adj_v` has an API call which allow for a
-given thread ID find indises of the vertices to use in force
+given thread ID to find which vertices should be used in forces
 computation.
+
+[source,cpp]
+----
+include::{src}/rbc/adj/dev.h[tag=interface]
+----
