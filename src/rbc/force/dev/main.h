@@ -48,11 +48,17 @@ static __device__ real3 adj_dihedrals(RbcParams_v par, const Particle *pp, real3
                                       const Shape0 shape,
                                       AdjMap *m) {
     Pos r1, r2, r3, r4;
+    real3 f1, f2;
     r1 = tex2Pos(pp, m->i1);
     r2 = tex2Pos(pp, m->i2);
     r3 = tex2Pos(pp, m->i3);
     r4 = tex2Pos(pp, m->i4);
-    return dih(par, r0, r1, r2, r3, r4);
+
+    f1 = dih0<1>(par, r0, r2, r1, r4);
+    f2 = dih0<2>(par, r1, r0, r2, r3);
+    add(&f1, /**/ &f2);
+    return f2;
+
 }
 
 __global__ void force(float dt,
