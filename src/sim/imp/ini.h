@@ -121,7 +121,7 @@ static void ini_colorer(int nv, MPI_Comm comm, int maxp, int3 L, /**/ Colorer *c
     Dalloc(&c->maxext, maxp);
 }
 
-static void ini_flu(Opt opt, MPI_Comm cart, int maxp, int3 L, /**/ Flu *f) {
+static void ini_flu(const Config *cfg, Opt opt, MPI_Comm cart, int maxp, int3 L, /**/ Flu *f) {
 
     UC(flu_ini(opt.flucolors, opt.fluids, L, maxp, &f->q));
     UC(fluforces_bulk_ini(L, maxp, /**/ &f->bulk));
@@ -309,7 +309,7 @@ void sim_ini(Config *cfg, MPI_Comm cart,  Time *time, /**/ Sim **sim) {
 
     if (walls) ini_wall(cfg, s->L, &s->wall);
 
-    UC(ini_flu(s->opt, s->cart, maxp, s->L, /**/ &s->flu));
+    UC(ini_flu(cfg, s->opt, s->cart, maxp, s->L, /**/ &s->flu));
 
     if (s->opt.flucolors && s->opt.rbc)
         UC(ini_colorer(s->rbc.q.nv, s->cart, maxp, s->L, /**/ &s->colorer));
