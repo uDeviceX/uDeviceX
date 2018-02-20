@@ -4,7 +4,6 @@ struct Particle;
 struct Shape {
     int *anti; /* every edge is visited twice, what is the id of
                   another visit? */
-    float *a, *A; /* equilibrium edge and area (stress free)*/
 };
 
 struct RbcQuants {
