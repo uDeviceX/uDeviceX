@@ -17,7 +17,7 @@ O = $B/algo/force_stat/imp.o $B/algo/minmax/imp.o $B/algo/scan/imp.o $B/clist/im
     $B/mesh/collision/imp.o $B/mesh/dist/imp.o $B/mesh/props/imp.o \
     $B/mesh/triangles/imp.o $B/meshbb/imp.o $B/mpi/glb.o $B/mpi/type.o \
     $B/mpi/wrapper.o $B/pair/conf.o $B/pair/imp.o $B/parray/imp.o $B/parser/imp.o \
-    $B/rbc/adj/imp.o $B/rbc/com/imp.o $B/rbc/edg/imp.o \
+    $B/rbc/adj/edg/imp.o $B/rbc/adj/imp.o $B/rbc/com/imp.o \
     $B/rbc/force/area_volume/imp.o $B/rbc/force/imp.o $B/rbc/gen/imp.o \
     $B/rbc/imp.o $B/rbc/params/conf.o $B/rbc/params/imp.o $B/rbc/rnd/api/imp.o \
     $B/rbc/rnd/imp.o $B/rbc/shape/imp.o $B/rbc/stretch/imp.o $B/rig/imp.o \
