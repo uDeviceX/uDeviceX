@@ -60,7 +60,7 @@ void bounce_solid(float dt, int3 L, BounceBack *bb, Rig *s, Flu *flu) {
 
     meshbb_find_collisions(dt, nm + nmhalo, nt, nv, tt, i_pp, L, ss, cc, pp, flu->ff, /**/ bb->d);
     meshbb_select_collisions(dt, n, /**/ bb->d);
-    meshbb_bounce(dt, n, bb->d, flu->ff, nt, nv, tt, i_pp, /**/ pp, bb->mm);
+    meshbb_bounce(dt, flu_mass, n, bb->d, flu->ff, nt, nv, tt, i_pp, /**/ pp, bb->mm);
 
     /* send momentum back */
 

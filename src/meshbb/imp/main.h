@@ -22,11 +22,11 @@ void meshbb_select_collisions(float dt, int n, /**/ MeshBB *mbb) {
     KL(meshbb_dev::select_collisions, (k_cnf(n)), (dt, n, /**/ mbb->ncols, mbb->datacol, mbb->idcol));
 }
 
-void meshbb_bounce(float dt,
+void meshbb_bounce(float dt, float mass,
                    int n, const MeshBB *mbb, const Force *ff, int nt, int nv, const int4 *tt, const Particle *i_pp,
                    /**/ Particle *pp, Momentum *mm) {
     KL(meshbb_dev::perform_collisions, (k_cnf(n)),
-       (dt, n, mbb->ncols, mbb->datacol, mbb->idcol, ff, nt, nv, tt, i_pp, /**/ pp, mm));
+       (dt, mass, n, mbb->ncols, mbb->datacol, mbb->idcol, ff, nt, nv, tt, i_pp, /**/ pp, mm));
 }
 
 void meshbb_collect_rig_momentum(float dt,

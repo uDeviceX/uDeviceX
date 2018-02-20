@@ -186,7 +186,7 @@ static __device__ void push_particle(const real3_t *A, const real3_t *B, const r
     r->z += l*n.z;
 }
 
-__global__ void perform_collisions(float dt,
+__global__ void perform_collisions(float dt, float mass,
                                    int n, const int *ncol, const float4 *datacol, const int *idcol,
                                    const Force *ff, int nt, int nv, const int4 *tt, const Particle *i_pp,
                                    /**/ Particle *pp, Momentum *mm) {
@@ -231,11 +231,11 @@ __global__ void perform_collisions(float dt,
     lin_mom_change(    p1.v, pn.v, /**/ m.P);
     ang_mom_change(rw, p1.v, pn.v, /**/ m.L);
 
-    atomicAdd(mm[id].P + X, m.P[X]);
-    atomicAdd(mm[id].P + Y, m.P[Y]);
-    atomicAdd(mm[id].P + Z, m.P[Z]);
+    atomicAdd(mm[id].P + X, mass * m.P[X]);
+    atomicAdd(mm[id].P + Y, mass * m.P[Y]);
+    atomicAdd(mm[id].P + Z, mass * m.P[Z]);
 
-    atomicAdd(mm[id].L + X, m.L[X]);
-    atomicAdd(mm[id].L + Y, m.L[Y]);
-    atomicAdd(mm[id].L + Z, m.L[Z]);
+    atomicAdd(mm[id].L + X, mass * m.L[X]);
+    atomicAdd(mm[id].L + Y, mass * m.L[Y]);
+    atomicAdd(mm[id].L + Z, mass * m.L[Z]);
 }
