@@ -273,8 +273,8 @@
    #error RBC_PARAMS is runtime!
 #endif
 
-#ifndef RBC_STRESS_FREE
-  #define RBC_STRESS_FREE (false)
+#ifdef RBC_STRESS_FREE
+#error RBC_STRESS_FREE is runtime: rbc.stress_free
 #endif
 
 /* DPD kernel envelop parameter: random and dissipative kernels (wd = wr^2)
