@@ -66,7 +66,7 @@ static void dump_rbc_coms(Sim *s) {
     float3 *rr, *vv;
     Rbc *r = &s->rbc;
     int nc = r->q.nc;
-    UC(rbc_com_compute(r->com, nc, r->q.pp, /**/ &rr, &vv));
+    UC(rbc_com_apply(r->com, nc, r->q.pp, /**/ &rr, &vv));
     UC(dump_com(s->cart, s->coords, id++, nc, r->q.ii, rr));
 }
 

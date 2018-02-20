@@ -36,7 +36,7 @@ static void compute(int nm, const Particle *pp, /**/ RbcCom *q) {
     normalize(nm, nv, /**/ q->hvv);
 }
 
-void rbc_com_compute(RbcCom *q, int nm, const Particle *pp, /**/ float3 **prr, float3 **pvv) {
+void rbc_com_apply(RbcCom *q, int nm, const Particle *pp, /**/ float3 **prr, float3 **pvv) {
     int max_cell;
     max_cell = q->max_cell;
     if (nm > max_cell)
