@@ -2,6 +2,10 @@ static bool is_stress_free(const RbcForce *f) {
     return f->stype == RBC_SFREE;
 }
 
+static bool is_rnd(const RbcForce *f) {
+    return f->rtype == RBC_RND1;
+}
+
 void rbc_force_ini(const MeshRead *cell, int seed, RbcForce **pq) {
     RbcForce *q;
     int md, nt, nv;
@@ -34,6 +38,10 @@ static void fin_stress(RbcForce *f) {
 
 void rbc_force_fin(RbcForce *q) {
     if (RBC_RND) fin_rnd(q->rnd);
+    if (is_rnd(q)) {
+        Rnd1_v v = q->rinfo.rnd1;
+        Dfree(v.anti);
+    }        
     UC(fin_stress(q));
     UC(adj_fin(q->adj));
     UC(adj_view_fin(q->adj_v));
@@ -84,6 +92,26 @@ void rbc_force_set_stressfree(const char *fname, /**/ RbcForce *f) {
     f->sinfo.sfree = v;
 }
 
-void rbc_force_set_rnd0() {
+void rbc_force_set_rnd0(RbcForce *f) {
+    Rnd0_v rnd0;
+    f->rtype = RBC_RND0;
+    f->rinfo.rnd0 = rnd0;
+}
 
+void rbc_force_set_rnd1(RbcForce *f) {
+    Rnd1_v rnd1;
+    int n;
+    int *hst;
+    Adj *adj = f->adj;
+
+    n = adj_get_max(adj);
+    Dalloc(&rnd1.anti, n);
+    
+    EMALLOC(n, &hst);
+    adj_get_anti(adj, /**/ hst);
+    cH2D(rnd1.anti, hst, n);
+    EFREE(hst);
+    
+    f->rtype = RBC_RND1;
+    f->rinfo.rnd1 = rnd1;
 }
