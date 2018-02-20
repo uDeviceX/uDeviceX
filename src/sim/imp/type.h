@@ -104,6 +104,8 @@ struct Rig {
     RigPinInfo *pininfo;
     RigDistr d;
     MeshWrite  *mesh_write;
+
+    float mass;
 };
 
 /* data holder for walls */

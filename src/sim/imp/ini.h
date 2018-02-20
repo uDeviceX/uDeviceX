@@ -174,9 +174,10 @@ static void ini_rig(const Config *cfg, MPI_Comm cart, int maxp, int3 L, /**/ Rig
 
     UC(ini_rig_distr(s->q.nv, cart, L, /**/ &s->d));
 
-    // hack
     UC(rig_ini_pininfo(&s->pininfo));
     UC(rig_set_pininfo_conf(cfg, s->pininfo));
+
+    UC(conf_lookup_float(cfg, "rig.mass", &s->mass));
 }
 
 static void ini_bounce_back(MPI_Comm cart, int maxp, int3 L, Rig *s, /**/ BounceBack *bb) {
