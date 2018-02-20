@@ -9,6 +9,8 @@
 #include "inc/dev.h"
 #include "math/dev.h"
 
+#include "io/off/imp.h"
+
 #include "utils/error.h"
 #include "utils/msg.h"
 #include "utils/imp.h"
@@ -20,6 +22,8 @@
 #include "utils/kl.h"
 
 #include "rbc/params/imp.h"
+#include "rbc/adj/imp.h"
+#include "rbc/shape/imp.h"
 
 #include "rbc/rnd/imp.h"
 #include "rbc/type.h"
@@ -58,6 +62,7 @@ namespace rbc_force_dev {
 #include "dev/main.h"
 }
 
+#include "imp/main.h"
 #include "imp/ini.h"
 #include "imp/fin.h"
 #include "imp/forces.h"

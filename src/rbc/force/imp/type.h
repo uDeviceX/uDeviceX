@@ -1,6 +1,6 @@
 enum {
-    RBC_STRESS_FUL,
-    RBC_STRESS_FREE
+    RBC_SFUL,
+    RBC_SFREE
 };
 
 struct StressFree_v {
