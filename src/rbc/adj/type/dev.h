@@ -1,5 +1,7 @@
-struct Adj_v {  /* adjacency lists */
+// tag::interface[]
+struct Adj_v {
     int *adj0;
     int *adj1;
     int nv, md;
 };
+// end::interface[]
