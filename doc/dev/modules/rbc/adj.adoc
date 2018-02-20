@@ -31,3 +31,24 @@ Each thread adds force to a vertices with index `0`. It considers edge
 `01`, triangle `012`, and two dihedrals `0124` and `1203`. For
 example, a contribution of edge force `01` to vertex `1` is added by
 another thread.
+
+`Adj_v` is initilized from a host structure `Adj`:
+[source,cpp]
+----
+include::{src}/rbc/adj/imp.h[tag=interface]
+----
+
+`Adj` can be used to pack data which can be asseced on device:
+[source,cpp]
+----
+float *A;
+n = adj_get_max(adj);
+EMALLOC(n, &A);
+for (i = 0; i < n; i++) {
+   valid = adj_get_map(i, adj, /**/ &m);
+   if (!valid) continue;
+   i0 = m.i0; i1 = m.i1; i2 = m.i2;
+   A[i] = some_function_of(i0, i1, i2)
+}
+----
+
