@@ -71,6 +71,8 @@ include::dev/modules/parser.adoc[]
 
 include::dev/modules/partlist.adoc[]
 
+include::dev/modules/rbc/adj.adoc[]
+
 include::dev/modules/rbc/forces.adoc[]
 
 include::dev/modules/rbc/main.adoc[]
