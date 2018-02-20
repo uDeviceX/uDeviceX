@@ -7,8 +7,8 @@ void rbc_force_ini(MeshRead *cell, int seed, RbcForce **pq) {
     int md, nt, nv;
     const int4 *tt;
     EMALLOC(1, &q);
-    nt = mesh_get_nv(cell);
-    nv = mesh_get_nt(cell);
+    nv = mesh_get_nv(cell);
+    nt = mesh_get_nt(cell);
     md = mesh_get_md(cell);
     tt = mesh_get_tri(cell);
 
