@@ -140,11 +140,14 @@ static void ini_flu(Opt opt, MPI_Comm cart, int maxp, int3 L, /**/ Flu *f) {
 }
 
 static void ini_rbc(const Config *cfg, MPI_Comm cart, int3 L, /**/ Rbc *r) {
-    int seed, nv;
+    int seed, nv, nt;
     const char *directory = "r";
     UC(mesh_read_off("rbc.off", &r->cell));
     UC(mesh_write_ini_off(r->cell, directory, /**/ &r->mesh_write));
+
     nv = mesh_get_nv(r->cell);
+    nt = mesh_get_nt(r->cell);
+
     Dalloc(&r->ff, MAX_CELL_NUM * nv);
     UC(triangles_ini(r->cell, /**/ &r->tri));
     UC(rbc_ini(r->cell, &r->q));
@@ -153,8 +156,18 @@ static void ini_rbc(const Config *cfg, MPI_Comm cart, int3 L, /**/ Rbc *r) {
     if (RBC_STRETCH)   UC(rbc_stretch_ini("rbc.stretch", nv, /**/ &r->stretch));
     UC(rbc_params_ini(&r->params));
     UC(rbc_params_set_conf(cfg, r->params));
+
     UC(conf_lookup_int(cfg, "rbc.seed", &seed));
     UC(rbc_force_ini(r->cell, seed, /**/ &r->force));
+
+    // TODO
+    if (RBC_STRESS_FREE)
+        UC(rbc_force_set_stressfree("rbc.stress.free", /**/ r->force));
+    else {
+        float Atot = 0;
+        UC(conf_lookup_float(cfg, "rbc.totArea", &Atot));
+        UC(rbc_force_set_stressful(nt, Atot, /**/ r->force));
+    }
 }
 
 static void ini_rig(const Config *cfg, MPI_Comm cart, int maxp, int3 L, /**/ Rig *s) {
