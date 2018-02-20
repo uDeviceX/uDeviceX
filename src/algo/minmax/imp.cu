@@ -17,10 +17,13 @@
 
 #include "imp.h"
 
-#define MAXTHREADS 1024
-#define WARPSIZE     32
-#define MAXV     100000000.
-#define MINV    -100000000.
+enum {
+    MAXTHREADS = 1024,
+    WARPSIZE   = 32
+};
+
+static const float MINV = 100000000.;
+static const float MAXV = 100000000.;
 
 typedef struct
 {
