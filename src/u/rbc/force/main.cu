@@ -80,20 +80,21 @@ static void run1(float dt, RbcQuants *q, RbcForce *t, const RbcParams *par) {
     Dfree(f);
 }
 
-static void run2(MPI_Comm cart, float dt, const Coords *coords, MeshRead *off, const char *ic, long seed, const RbcParams *par, RbcQuants *q) {
+static void run2(const Config *cfg, MPI_Comm cart, float dt, const Coords *coords, MeshRead *off, const char *ic, long seed, const RbcParams *par, RbcQuants *q) {
     RbcForce *t;
-    rbc_gen_quants(coords, cart, off, ic, /**/ q);
-    rbc_force_ini(off, /**/ &t);
-    run1(dt, q, t, par);
-    rbc_force_fin(t);
+    UC(rbc_gen_quants(coords, cart, off, ic, /**/ q));
+    UC(rbc_force_ini(off, /**/ &t));
+    UC(rbc_force_set_conf(off, cfg, t));
+    UC(run1(dt, q, t, par));
+    UC(rbc_force_fin(t));
 }
 
-void run(MPI_Comm cart, float dt, const Coords *coords, const char *cell, const char *ic, long seed, const RbcParams *par) {
+void run(const Config *cfg, MPI_Comm cart, float dt, const Coords *coords, const char *cell, const char *ic, long seed, const RbcParams *par) {
     MeshRead *off;
     RbcQuants q;
     UC(mesh_read_off(cell, /**/ &off));
     UC(rbc_ini(off, &q));
-    UC(run2(cart, dt, coords, off, ic, seed, par, &q));
+    UC(run2(cfg, cart, dt, coords, off, ic, seed, par, &q));
     UC(rbc_fin(&q));
     UC(mesh_fin(off));
 }
@@ -124,7 +125,7 @@ int main(int argc, char **argv) {
     UC(rbc_params_ini(&par));
     UC(rbc_params_set_conf(cfg, par));
     
-    UC(run(cart, dt, coords, cell, ic, seed, par));
+    UC(run(cfg, cart, dt, coords, cell, ic, seed, par));
 
     UC(rbc_params_fin(par));
     UC(conf_fin(cfg));

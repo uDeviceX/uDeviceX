@@ -56,7 +56,7 @@ int main(int argc, char **argv) {
     UC(scheme_move_params_ini(&moveparams));
     UC(scheme_move_params_conf(cfg, /**/moveparams));
 
-    run(cart, dt, te, seed, coords, part_freq, bforce, moveparams, "rbc.off", "rbcs-ic.txt", par);
+    run(cfg, cart, dt, te, seed, coords, part_freq, bforce, moveparams, "rbc.off", "rbcs-ic.txt", par);
     UC(coords_fin(coords));
 
     UC(bforce_fin(bforce));
