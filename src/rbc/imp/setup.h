@@ -1,4 +1,4 @@
-static void edg_sfree1(Adj *adj, /**/ float *a_dev, float *A_dev) {
+static void set_stress_free(Adj *adj, /**/ float *a_dev, float *A_dev) {
     /* stress free ini */
     const char *path = "rbc.stress.free";
     int n;
@@ -32,7 +32,7 @@ static void anti(Adj *adj, /**/ int *dev) {
 }
 
 static void setup0(Adj *adj, /**/ Shape *shape) {
-    if (RBC_STRESS_FREE) UC(edg_sfree1(adj, /**/  shape->a,   shape->A));
+    if (RBC_STRESS_FREE) UC(set_stress_free(adj, /**/  shape->a,   shape->A));
     if (RBC_RND)         UC(anti(adj, /**/ shape->anti));
 }
 
