@@ -9,11 +9,10 @@ u.cp.rbc rbc/$nv.off rbc.off
 area=`off.area rbc.off`
 volume=`off.volume rbc.off`
 u.conf $S u/rbc/force  "$S/conf/default.h" <<!
-       RBC_RND
-       run
+    run
 !
 u.make -j
-RBC_RND=$seed u.run ./udx conf.cfg "
+u.run ./udx conf.cfg "
 glb = {
     kBT = 0.0
 }
@@ -21,6 +20,7 @@ rbc = {
     active = true
     totArea = $area
     totVolume = $volume
+    rnd = true
     seed = 123
     kBT = 5.0
 } " | uscale 10 >  forces.out.txt

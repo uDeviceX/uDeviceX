@@ -12,13 +12,13 @@ XS=48 YS=32 ZS=32
 x=24 y=16 z=16; echo 1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 > rbcs-ic.txt
 :
 u.conf "$S" u/x "$S/conf/default.h" <<!
-   RBC_STRETCH RBC_RND MESH_SHIFT_CENTER
+   RBC_STRETCH MESH_SHIFT_CENTER
    numberdensity=1
    run
 !
 u.make -j
 :
-RBC_RND=$seed u.run ./udx conf.cfg "
+u.run ./udx conf.cfg "
 glb = {
     L = [$XS, $YS, $ZS]
 }
@@ -26,6 +26,7 @@ rbc = {
     active = true
     totArea = 1564.4922174
     totVolume = 3812.3160399576
+    rnd = true
     seed = 123
     kBT = 10.0
 }"
