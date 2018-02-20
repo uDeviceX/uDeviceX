@@ -21,6 +21,9 @@ union SFreeInfo {
 struct RbcForce {
     RbcRnd *rnd;
 
+    Adj   *adj;
+    Adj_v *adj_v;
+    
     int stype;
     SFreeInfo sinfo;
 };

@@ -2,12 +2,19 @@ static bool is_stress_free(const RbcForce *f) {
     return f->stype == RBC_SFREE;
 }
 
-void rbc_force_ini(int nv, int seed, RbcForce **pq) {
+void rbc_force_ini(MeshRead *cell, int seed, RbcForce **pq) {
     RbcForce *q;
-    int md;
-    if (nv <= 0) ERR("nv=%d < 0", nv);    
+    int md, nt, nv;
+    const int4 *tt;
     EMALLOC(1, &q);
-    md = RBCmd;
+    nt = mesh_get_nv(cell);
+    nv = mesh_get_nt(cell);
+    md = mesh_get_md(cell);
+    tt = mesh_get_tri(cell);
+
+    UC(adj_ini(md, nt, nv, tt, /**/ &q->adj));
+    UC(adj_view_ini(q->adj, /**/ &q->adj_v));
+
     if (RBC_RND) rbc_rnd_ini(nv*md*MAX_CELL_NUM, seed, &q->rnd);
     *pq = q;
 }
@@ -27,6 +34,8 @@ static void fin_stress(RbcForce *f) {
 void rbc_force_fin(RbcForce *q) {
     if (RBC_RND) fin_rnd(q->rnd);
     UC(fin_stress(q));
+    UC(adj_fin(q->adj));
+    UC(adj_view_fin(q->adj_v));
     EFREE(q);
 }
 
