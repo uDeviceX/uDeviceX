@@ -36,12 +36,13 @@ static void compute(int nm, const Particle *pp, /**/ RbcCom *q) {
     normalize(nm, nv, /**/ q->hvv);
 }
 
-void rbc_com_compute(RbcCom *q, int nm, const Particle *pp, /**/ float3 **prr, float3 **pvv) {
+void rbc_com_apply(RbcCom *q, int nm, const Particle *pp, /**/ float3 **prr, float3 **pvv) {
     int max_cell;
     max_cell = q->max_cell;
     if (nm > max_cell)
         ERR("nm=%d > max_cell=%d", nm, max_cell);
+    if (!d::is_device_pointer(pp))
+        ERR("`pp` is not a device pointer");
     compute(nm, pp, /**/ q);
-
     *prr = q->hrr; *pvv = q->hvv;
 }

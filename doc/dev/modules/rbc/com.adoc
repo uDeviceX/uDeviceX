@@ -1,0 +1,12 @@
+= RBC center of mass
+:src: ../../../../src
+
+Compute position and velocity of each mesh of the membrane.
+
+[source,cpp]
+----
+include::{src}/rbc/com/imp.h[tag=interface]
+----
+
+`max_nm` is a maximum allowed number of meshes. It is a runtime error
+if `nm` exceeds `nm_max`.
