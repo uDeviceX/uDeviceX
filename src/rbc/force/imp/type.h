@@ -25,7 +25,8 @@ enum {
 
 struct Rnd0_v {};
 struct Rnd1_v {
-    int *anti;
+    int *anti; /* indices of anti edges */
+    float *rr; /* random numbers (managed by RbcRnd) */
 };
 
 union RndInfo {

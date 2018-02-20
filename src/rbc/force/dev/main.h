@@ -21,9 +21,10 @@ static __device__ Part tex2Part(const Particle *pp, int i) {
     return p;
 }
 
+template <typename RndInfo>
 static __device__ real3 adj_tris(real dt,
                                  RbcParams_v par, const Particle *pp,  const Part p0, const real *av,
-                                 const StressInfo si, const Rnd0 rnd,
+                                 const StressInfo si, RndInfo ri,
                                  AdjMap *m) {
     real3 f, fv, fr;
     int i1, i2, rbc;
@@ -39,7 +40,7 @@ static __device__ real3 adj_tris(real dt,
     fv = fvisc(par, p0.r, p1.r, p0.v, p1.v);
     add(&fv, /**/ &f);
 
-    fr = frnd(dt, par, p0.r, p1.r, rnd);
+    fr = frnd(dt, par, p0.r, p1.r, ri);
     add(&fr, /**/ &f);
     return f;
 }
@@ -60,17 +61,16 @@ static __device__ real3 adj_dihedrals(RbcParams_v par, const Particle *pp, real3
 
 }
 
-template <typename Stress_v>
+template <typename Stress_v, typename Rnd_v>
 __global__ void force(float dt,
-                      RbcParams_v par, int md, int nv, int nc, const Particle *pp, real *rnd,
+                      RbcParams_v par, int md, int nv, int nc, const Particle *pp,
                       Adj_v adj,
-                      const Shape shape, Stress_v sv,
+                      Stress_v sv, Rnd_v rv,
                       const real *av, /**/ float *ff) {
     int i, pid;
     real3 f, fd;
     AdjMap m;
     StressInfo si;
-    Rnd0   rnd0;
     int valid;
 
     i = threadIdx.x + blockDim.x * blockIdx.x;
@@ -80,11 +80,11 @@ __global__ void force(float dt,
     valid = adj_get_map(i, &adj, /**/ &m);
     if (!valid) return;
     si = fetch_stress_info(i % (md * nv), sv);
-    edg_rnd(  shape, i % (md * nv), rnd, i, /**/ &rnd0);
+    auto ri = fetch_rnd_info(i % (md * nv), i, rv);
 
     const Part p0 = tex2Part(pp, m.i0);
 
-    f  = adj_tris(dt, par, pp, p0, av, si, rnd0, &m);
+    f  = adj_tris(dt, par, pp, p0, av, si, ri, &m);
     fd = adj_dihedrals(par, pp, p0.r, &m);
     add(&fd, /**/ &f);
 

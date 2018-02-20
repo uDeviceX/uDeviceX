@@ -6,24 +6,49 @@ static void get_stress_view(const RbcForce *f, /**/ StressFree_v *v) {
     *v = f->sinfo.sfree;
 }
 
+static void get_rnd_view(const RbcForce *f, /**/ Rnd0_v *v) {
+    *v = f->rinfo.rnd0;
+}
+
+static void get_rnd_view(const RbcForce *f, /**/ Rnd1_v *v) {
+    *v = f->rinfo.rnd1;
+}
+
 static void random(int n, RbcRnd *rnd, /**/ float **r) {
     if (RBC_RND) rbc_rnd_gen(rnd, n, /**/ r);
     else *r = NULL;
 }
 
-template <typename Stress_v>
+template <typename Stress_v, typename Rnd_v>
 static void apply(float dt, RbcParams_v parv, int nc, int nv,
-                  const Particle *pp, RbcRnd *rnd,
-                  const Adj_v *adj_v, const Shape shape, Stress_v sv,
-                  float *av, /**/ Force *ff){
+                  const Particle *pp,
+                  const Adj_v *adj_v, Stress_v sv, Rnd_v rv,
+                  float *av, /**/ Force *ff) {
     if (!d::is_device_pointer(ff))  ERR("`ff` is not a device pointer");
-    float *rnd0;
-    int md;
-    md = RBCmd;
-    random(nc * md * nv, rnd, /**/ &rnd0);
-    KL(rbc_force_dev::force, (k_cnf(nc*nv*md)), (dt, parv, md, nv, nc, pp, rnd0,
-                                                 *adj_v, shape, sv, av, /**/ (float*)ff));
+    int md = RBCmd;
+    KL(rbc_force_dev::force, (k_cnf(nc*nv*md)), (dt, parv, md, nv, nc, pp,
+                                                 *adj_v, sv, rv, av, /**/ (float*)ff));
 }
+
+template <typename Stress_v>
+static void dispatch_rnd(float dt, RbcParams_v parv, int nc, int nv,
+                         const Particle *pp, RbcRnd *rnd,
+                         const Adj_v *adj_v, RbcForce *t, Stress_v sv,
+                         float *av, /**/ Force *ff){
+    if (is_rnd(t)) {
+        Rnd1_v rv;
+        int md = RBCmd;
+        get_rnd_view(t, &rv);
+        random(nc * md * nv, rnd, /**/ &rv.rr);
+        apply(dt, parv, nc, nv, pp, adj_v, sv, rv, av, /**/ ff);
+    }
+    else {
+        Rnd0_v rv;
+        get_rnd_view(t, &rv);
+        apply(dt, parv, nc, nv, pp, adj_v, sv, rv, av, /**/ ff);
+    }
+}
+
 
 void rbc_force_apply(RbcForce *t, const RbcParams *par, float dt, const RbcQuants *q, /**/ Force *ff) {
     RbcParams_v parv;
@@ -37,15 +62,13 @@ void rbc_force_apply(RbcForce *t, const RbcParams *par, float dt, const RbcQuant
     if (is_stress_free(t)) {
         StressFree_v si;
         get_stress_view(t, &si);
-        apply(dt,
-              parv, q->nc, q->nv, q->pp, t->rnd,
-              t->adj_v, q->shape, si, av, /**/ ff);
+        dispatch_rnd(dt, parv, q->nc, q->nv, q->pp, t->rnd,
+                     t->adj_v, t, si, av, /**/ ff);
     }
     else {
         StressFul_v si;
         get_stress_view(t, &si);
-        apply(dt,
-              parv, q->nc, q->nv, q->pp, t->rnd,
-              t->adj_v, q->shape, si, av, /**/ ff);
+        dispatch_rnd(dt, parv, q->nc, q->nv, q->pp, t->rnd,
+                     t->adj_v, t, si, av, /**/ ff);
     }    
 }
