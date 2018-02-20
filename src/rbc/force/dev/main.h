@@ -1,13 +1,13 @@
 struct Part { real3 r, v; };
-struct Pos  { real3 r; };
+typedef real3 Pos;
 
 
 static __device__ Pos tex2Pos(const Particle *pp, int i) {
     enum {X, Y, Z};
     Pos r;
-    r.r.x = pp[i].r[X];
-    r.r.y = pp[i].r[Y];
-    r.r.z = pp[i].r[Z];
+    r.x = pp[i].r[X];
+    r.y = pp[i].r[Y];
+    r.z = pp[i].r[Z];
     return r;
 }
 
@@ -34,7 +34,7 @@ static __device__ real3 adj_tris(real dt, int nv,
     const Pos  r2 = tex2Pos(pp,  i2);
 
     area = av[2*rbc]; volume = av[2 * rbc + 1];
-    f  = tri(par, nv, p0.r, p1.r, r2.r, shape, area, volume);
+    f  = tri(par, nv, p0.r, p1.r, r2, shape, area, volume);
     
     fv = visc(par, p0.r, p1.r, p0.v, p1.v);
     add(&fv, /**/ &f);
@@ -52,7 +52,7 @@ static __device__ real3 adj_dihedrals(RbcParams_v par, const Particle *pp, real3
     r2 = tex2Pos(pp, m->i2);
     r3 = tex2Pos(pp, m->i3);
     r4 = tex2Pos(pp, m->i4);
-    return dih(par, r0, r1.r, r2.r, r3.r, r4.r);
+    return dih(par, r0, r1, r2, r3, r4);
 }
 
 __global__ void force(float dt,
