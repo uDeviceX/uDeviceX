@@ -1,4 +1,4 @@
-__device__ real3 ftri(RbcParams_v par, int nv, real3 r1, real3 r2, real3 r3, Shape0 shape0, real area, real volume) {
+static __device__ real3 ftri(RbcParams_v par, int nv, real3 r1, real3 r2, real3 r3, Shape0 shape0, real area, real volume) {
     int nt;
     real a0, A0, totArea, totVolume;
     nt = 2*nv - 4;

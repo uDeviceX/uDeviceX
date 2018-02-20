@@ -1,4 +1,4 @@
-__device__ real3 ftri(RbcParams_v par, int, real3 r1, real3 r2, real3 r3, Shape0 shape, real area, real volume) {
+static __device__ real3 ftri(RbcParams_v par, int, real3 r1, real3 r2, real3 r3, Shape0 shape, real area, real volume) {
     real l0, A0, totArea, totVolume;
     l0 = shape.a;
     A0 = shape.A;
