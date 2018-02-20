@@ -54,21 +54,16 @@ void rbc_force_set_stressful(int nt, float totArea, /**/ RbcForce *f) {
 void rbc_force_set_stressfree(const char *fname, /**/ RbcForce *f) {
     StressFree_v v;
     MeshRead *cell;
-    Adj *adj;
+    const Adj *adj;
     RbcShape *shape;
     const float *rr;
     float *ll_hst, *aa_hst;
-    const int4 *tt;
-    int n, nv, nt, md;
-    
+    int n;
+
+    adj = f->adj;    
     UC(mesh_read_off(fname, &cell));
     rr = mesh_get_vert(cell);
-    tt = mesh_get_tri(cell);
-    nt = mesh_get_nt(cell);
-    nv = mesh_get_nv(cell);
-    md = mesh_get_md(cell);
 
-    UC(adj_ini(md, nt, nv, tt, /**/ &adj));
     UC(rbc_shape_ini(adj, rr, /**/ &shape));
 
     n = adj_get_max(adj);
@@ -83,7 +78,6 @@ void rbc_force_set_stressfree(const char *fname, /**/ RbcForce *f) {
     cH2D(v.aa, aa_hst, n);
     
     UC(rbc_shape_fin(shape));
-    UC(adj_fin(adj));
     UC(mesh_fin(cell));
 
     f->stype = RBC_SFREE;
