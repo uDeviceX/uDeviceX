@@ -5,10 +5,8 @@ static void fin_common(RbcQuants *q) {
 }
 
 static void fin_ids(RbcQuants *q) { EFREE(q->ii);   }
-static void fin_rnd(RbcQuants *q) { Dfree(q->shape.anti); }
 
 void rbc_fin(RbcQuants *q) {
     if (rbc_ids) fin_ids(q);
-    if (RBC_RND) fin_rnd(q);
     fin_common(q);
 }

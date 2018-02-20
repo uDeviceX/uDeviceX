@@ -48,12 +48,6 @@ namespace rbc_force_dev {
 #include "dev/type.h"
 #include "dev/fetch.h"
 #include "dev/common.h"
-
-#if   RBC_RND
-  #include "dev/rnd1/main.h"
-#else
-  #include "dev/rnd0/main.h"
-#endif
 #include "dev/main.h"
 }
 

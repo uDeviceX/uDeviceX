@@ -7,7 +7,6 @@ static void ini_common(RbcQuants *q, const int4 *tt) {
 }
 
 static void ini_ids(RbcQuants *q)  { EMALLOC(MAX_CELL_NUM, &q->ii); }
-static void ini_anti(RbcQuants *q) { Dalloc(&q->shape.anti, q->nv * RBCmd); }
 
 void rbc_ini(const MeshRead *cell, RbcQuants *q) {
     int md;
@@ -20,6 +19,4 @@ void rbc_ini(const MeshRead *cell, RbcQuants *q) {
     q->n = q->nc = 0;
     UC(ini_common(q, tt));
     if (rbc_ids)         UC(ini_ids(q));
-    if (RBC_RND)         UC(ini_anti(q));
-    UC(setup(md, q->nt, q->nv, tt, /**/ q));
 }
