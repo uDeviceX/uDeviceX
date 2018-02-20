@@ -9,9 +9,10 @@ void rbc_force_ini(const MeshRead *cell, int seed, RbcForce **pq) {
     EMALLOC(1, &q);
     nv = mesh_get_nv(cell);
     nt = mesh_get_nt(cell);
-    md = mesh_get_md(cell);
+    // md = mesh_get_md(cell);
+    md = RBCmd;
     tt = mesh_get_tri(cell);
-
+    
     UC(adj_ini(md, nt, nv, tt, /**/ &q->adj));
     UC(adj_view_ini(q->adj, /**/ &q->adj_v));
 
