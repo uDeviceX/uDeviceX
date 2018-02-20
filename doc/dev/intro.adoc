@@ -19,8 +19,9 @@ udx conf.cfg 'glb { dt = 0.1 }'
 ----
 
 Configuration files and command line options follow the syntax of
-link:https://hyperrealm.github.io/libconfig[libconfig library]. Some parameters have default values and are set
-in `$HOME/.udx/defult.cfg`. _uDeviceX_ outputs DPD particles,
+link:https://hyperrealm.github.io/libconfig[libconfig library]. Some
+parameters have default values and are set in
+`$HOME/.udx/defult.cfg`. _uDeviceX_ outputs DPD particles,
 trajectories of the objects, and averaged flow fields.
 
 == code
