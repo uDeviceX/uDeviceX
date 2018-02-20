@@ -18,6 +18,21 @@ union SFreeInfo {
     StressFree_v sfree;
 };
 
+enum {
+    RBC_RND0,
+    RBC_RND1,
+};
+
+struct Rnd0_v {};
+struct Rnd1_v {
+    int *anti;
+};
+
+union RndInfo {
+    Rnd0_v rnd0;
+    Rnd1_v rnd1;
+};
+
 struct RbcForce {
     RbcRnd *rnd;
 
@@ -26,4 +41,6 @@ struct RbcForce {
     
     int stype;
     SFreeInfo sinfo;
+    int rtype;
+    RndInfo rinfo;
 };

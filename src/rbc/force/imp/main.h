@@ -83,3 +83,7 @@ void rbc_force_set_stressfree(const char *fname, /**/ RbcForce *f) {
     f->stype = RBC_SFREE;
     f->sinfo.sfree = v;
 }
+
+void rbc_force_set_rnd0() {
+
+}
