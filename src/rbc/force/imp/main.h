@@ -2,7 +2,7 @@ static bool is_stress_free(const RbcForce *f) {
     return f->stype == RBC_SFREE;
 }
 
-void rbc_force_ini(MeshRead *cell, int seed, RbcForce **pq) {
+void rbc_force_ini(const MeshRead *cell, int seed, RbcForce **pq) {
     RbcForce *q;
     int md, nt, nv;
     const int4 *tt;
