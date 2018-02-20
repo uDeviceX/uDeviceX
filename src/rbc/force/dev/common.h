@@ -48,9 +48,8 @@ static __device__ real3 fspring(RbcParams_v par, real3 x21, real l0) {
   #undef wlc_r
 }
 
-static __device__ real3 ftri0(RbcParams_v par, real3 r1, real3 r2, real3 r3,
-                              real l0, real A0, real totArea, real totVolume,
-                              real area, real volume) {
+static __device__ real3 ftri(RbcParams_v par, real3 r1, real3 r2, real3 r3,
+                             StressInfo si, real area, real volume) {
     real3 fv, fa, fs;
     real3 x21, x32, x31, f = make_real3(0, 0, 0);
 
@@ -58,13 +57,13 @@ static __device__ real3 ftri0(RbcParams_v par, real3 r1, real3 r2, real3 r3,
     diff(&r3, &r2, /**/ &x32);
     diff(&r3, &r1, /**/ &x31);
 
-    fa = farea(par, x21, x31, x32,   A0, totArea, area);
+    fa = farea(par, x21, x31, x32, si.a0, par.totArea, area);
     add(&fa, /**/ &f);
 
-    fv = fvolume(par, r2, r3, totVolume, volume);
+    fv = fvolume(par, r2, r3, par.totVolume, volume);
     add(&fv, /**/ &f);
 
-    fs = fspring(par, x21,  l0);
+    fs = fspring(par, x21, si.l0);
     add(&fs, /**/ &f);
 
     return f;

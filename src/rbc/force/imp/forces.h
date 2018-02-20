@@ -11,9 +11,10 @@ static void random(int n, RbcRnd *rnd, /**/ float **r) {
     else *r = NULL;
 }
 
+template <typename Stress_v>
 static void apply(float dt, RbcParams_v parv, int nc, int nv,
                   const Particle *pp, RbcRnd *rnd,
-                  const Adj_v *adj_v, const Shape shape,
+                  const Adj_v *adj_v, const Shape shape, Stress_v sv,
                   float *av, /**/ Force *ff){
     if (!d::is_device_pointer(ff))  ERR("`ff` is not a device pointer");
     float *rnd0;
@@ -21,7 +22,7 @@ static void apply(float dt, RbcParams_v parv, int nc, int nv,
     md = RBCmd;
     random(nc * md * nv, rnd, /**/ &rnd0);
     KL(rbc_force_dev::force, (k_cnf(nc*nv*md)), (dt, parv, md, nv, nc, pp, rnd0,
-                                                 *adj_v, shape, av, /**/ (float*)ff));
+                                                 *adj_v, shape, sv, av, /**/ (float*)ff));
 }
 
 void rbc_force_apply(RbcForce *t, const RbcParams *par, float dt, const RbcQuants *q, /**/ Force *ff) {
@@ -32,7 +33,19 @@ void rbc_force_apply(RbcForce *t, const RbcParams *par, float dt, const RbcQuant
 
     parv = rbc_params_get_view(par);
     UC(area_volume_compute(q->area_volume, q->nc, q->pp, /**/ &av));
-    apply(dt,
-          parv, q->nc, q->nv, q->pp, t->rnd,
-          t->adj_v, q->shape, av, /**/ ff);
+
+    if (is_stress_free(t)) {
+        StressFree_v si;
+        get_stress_view(t, &si);
+        apply(dt,
+              parv, q->nc, q->nv, q->pp, t->rnd,
+              t->adj_v, q->shape, si, av, /**/ ff);
+    }
+    else {
+        StressFul_v si;
+        get_stress_view(t, &si);
+        apply(dt,
+              parv, q->nc, q->nv, q->pp, t->rnd,
+              t->adj_v, q->shape, si, av, /**/ ff);
+    }    
 }

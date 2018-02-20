@@ -44,15 +44,8 @@ namespace rbc_force_dev {
 #else
   #error RBC_DOUBLE or RBC_FLOAT must be defined
 #endif
+#include "dev/fetch.h"
 #include "dev/common.h"
-
-#if   RBC_STRESS_FREE
-  #include "dev/stress_free1/shape.h"
-  #include "dev/stress_free1/force.h"
-#else
-  #include "dev/stress_free0/shape.h"
-  #include "dev/stress_free0/force.h"
-#endif
 
 #if   RBC_RND
   #include "dev/rnd1/main.h"

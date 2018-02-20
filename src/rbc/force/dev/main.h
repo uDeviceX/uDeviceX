@@ -21,9 +21,9 @@ static __device__ Part tex2Part(const Particle *pp, int i) {
     return p;
 }
 
-static __device__ real3 adj_tris(real dt, int nv,
+static __device__ real3 adj_tris(real dt,
                                  RbcParams_v par, const Particle *pp,  const Part p0, const real *av,
-                                 const Shape0 shape, const Rnd0 rnd,
+                                 const StressInfo si, const Rnd0 rnd,
                                  AdjMap *m) {
     real3 f, fv, fr;
     int i1, i2, rbc;
@@ -34,7 +34,7 @@ static __device__ real3 adj_tris(real dt, int nv,
     const Pos  r2 = tex2Pos(pp,  i2);
 
     area = av[2*rbc]; volume = av[2 * rbc + 1];
-    f  = ftri(par, nv, p0.r, p1.r, r2, shape, area, volume);
+    f  = ftri(par, p0.r, p1.r, r2, si, area, volume);
     
     fv = fvisc(par, p0.r, p1.r, p0.v, p1.v);
     add(&fv, /**/ &f);
@@ -45,7 +45,6 @@ static __device__ real3 adj_tris(real dt, int nv,
 }
 
 static __device__ real3 adj_dihedrals(RbcParams_v par, const Particle *pp, real3 r0,
-                                      const Shape0 shape,
                                       AdjMap *m) {
     Pos r1, r2, r3, r4;
     real3 f1, f2;
@@ -61,15 +60,16 @@ static __device__ real3 adj_dihedrals(RbcParams_v par, const Particle *pp, real3
 
 }
 
+template <typename Stress_v>
 __global__ void force(float dt,
                       RbcParams_v par, int md, int nv, int nc, const Particle *pp, real *rnd,
                       Adj_v adj,
-                      const Shape shape,
+                      const Shape shape, Stress_v sv,
                       const real *av, /**/ float *ff) {
     int i, pid;
     real3 f, fd;
     AdjMap m;
-    Shape0 shape0;
+    StressInfo si;
     Rnd0   rnd0;
     int valid;
 
@@ -79,13 +79,13 @@ __global__ void force(float dt,
     if (pid >= nc * nv) return;
     valid = adj_get_map(i, &adj, /**/ &m);
     if (!valid) return;
-    edg_shape(shape, i % (md * nv),         /**/ &shape0);
+    si = fetch_stress_info(i % (md * nv), sv);
     edg_rnd(  shape, i % (md * nv), rnd, i, /**/ &rnd0);
 
     const Part p0 = tex2Part(pp, m.i0);
 
-    f  = adj_tris(dt, nv, par, pp, p0, av,    shape0, rnd0, &m);
-    fd = adj_dihedrals(par, pp, p0.r, shape0,       &m);
+    f  = adj_tris(dt, par, pp, p0, av, si, rnd0, &m);
+    fd = adj_dihedrals(par, pp, p0.r, &m);
     add(&fd, /**/ &f);
 
     atomicAdd(&ff[3 * pid + 0], f.x);
