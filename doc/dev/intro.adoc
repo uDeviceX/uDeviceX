@@ -10,7 +10,7 @@ user provided file.
 
 _uDeviceX_ was ACM 2015 Gordon Bell Award Finalist.
 
-It is written in C++ using cuda and MPI and requires NVIDIA
+It is written in C++ using CUDA and MPI and requires NVIDIA
 GPUs. Simulation are set from a configuration file and from command
 line options. Here is an example
 
