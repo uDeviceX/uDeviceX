@@ -18,9 +18,9 @@ O = $B/algo/force_stat/imp.o $B/algo/minmax/imp.o $B/algo/scan/imp.o $B/clist/im
     $B/mesh/triangles/imp.o $B/meshbb/imp.o $B/mpi/glb.o $B/mpi/type.o \
     $B/mpi/wrapper.o $B/pair/conf.o $B/pair/imp.o $B/parray/imp.o $B/parser/imp.o \
     $B/rbc/adj/edg/imp.o $B/rbc/adj/imp.o $B/rbc/com/imp.o \
-    $B/rbc/force/area_volume/imp.o $B/rbc/force/imp.o $B/rbc/gen/imp.o \
-    $B/rbc/imp.o $B/rbc/params/conf.o $B/rbc/params/imp.o $B/rbc/rnd/api/imp.o \
-    $B/rbc/rnd/imp.o $B/rbc/shape/imp.o $B/rbc/stretch/imp.o $B/rig/imp.o \
+    $B/rbc/force/area_volume/imp.o $B/rbc/force/imp.o $B/rbc/force/rnd/api/imp.o \
+    $B/rbc/force/rnd/imp.o $B/rbc/gen/imp.o $B/rbc/imp.o $B/rbc/params/conf.o \
+    $B/rbc/params/imp.o $B/rbc/shape/imp.o $B/rbc/stretch/imp.o $B/rig/imp.o \
     $B/rigid/conf.o $B/rigid/imp.o $B/scheme/force/conf.o $B/scheme/force/imp.o \
     $B/scheme/move/imp.o $B/scheme/move/params/conf.o \
     $B/scheme/move/params/imp.o $B/scheme/restrain/conf.o \

@@ -25,7 +25,7 @@
 #include "rbc/adj/imp.h"
 #include "rbc/shape/imp.h"
 
-#include "rbc/rnd/imp.h"
+#include "rnd/imp.h"
 #include "rbc/type.h"
 
 #include "rbc/adj/type/common.h"

@@ -75,12 +75,12 @@ $B/rbc/adj/imp.o: $S/rbc/adj/imp.cpp; $X -I$S/rbc/adj -I$S/.
 $B/rbc/com/imp.o: $S/rbc/com/imp.cu; $N -I$S/rbc/com -I$S/.
 $B/rbc/force/area_volume/imp.o: $S/rbc/force/area_volume/imp.cu; $N -I$S/rbc/force/area_volume -I$S/.
 $B/rbc/force/imp.o: $S/rbc/force/imp.cu; $N -I$S/rbc/force -I$S/.
+$B/rbc/force/rnd/api/imp.o: $S/rbc/force/rnd/api/imp.cpp; $X -I$S/rbc/force/rnd/api -I$S/.
+$B/rbc/force/rnd/imp.o: $S/rbc/force/rnd/imp.cpp; $X -I$S/rbc/force/rnd -I$S/.
 $B/rbc/gen/imp.o: $S/rbc/gen/imp.cpp; $X -I$S/rbc/gen -I$S/.
 $B/rbc/imp.o: $S/rbc/imp.cpp; $X -I$S/rbc -I$S/.
 $B/rbc/params/conf.o: $S/rbc/params/conf.cpp; $X -I$S/rbc/params -I$S/.
 $B/rbc/params/imp.o: $S/rbc/params/imp.cpp; $X -I$S/rbc/params -I$S/.
-$B/rbc/rnd/api/imp.o: $S/rbc/rnd/api/imp.cpp; $X -I$S/rbc/rnd/api -I$S/.
-$B/rbc/rnd/imp.o: $S/rbc/rnd/imp.cpp; $X -I$S/rbc/rnd -I$S/.
 $B/rbc/shape/imp.o: $S/rbc/shape/imp.cpp; $X -I$S/rbc/shape -I$S/.
 $B/rbc/stretch/imp.o: $S/rbc/stretch/imp.cu; $N -I$S/rbc/stretch -I$S/.
 $B/rigid/conf.o: $S/rigid/conf.cpp; $X -I$S/rigid -I$S/.

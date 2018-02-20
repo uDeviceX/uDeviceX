@@ -13,7 +13,7 @@
 #include "inc/dev.h"
 #include "utils/cc.h"
 
-#include "rbc/rnd/imp.h"
+#include "rbc/force/rnd/imp.h"
 
 void main0(RbcRnd *rnd, int n) {
     int i;
