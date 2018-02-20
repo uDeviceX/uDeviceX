@@ -150,8 +150,8 @@
 
 // dpd
 
-#ifndef flu_mass
-#define flu_mass 1.0
+#ifdef flu_mass
+#error flu_mass is runtime: flu.mass
 #endif
 
 
@@ -161,7 +161,7 @@
 #error solids: flag is runtime now, rig.active in cfg
 #endif
 
-#ifndef solid_mass
+#ifdef solid_mass
 #error solid_mass is runtime: rig.mass
 #endif
 
@@ -203,8 +203,8 @@
 #error rbcs is runtime: rbc/active in cfg
 #endif
 
-#ifndef rbc_mass
-#define rbc_mass flu_mass
+#ifdef rbc_mass
+#error rbc_mass is runtime: rbc.mass
 #endif
 
 /* maximum allowed degree of a vertex */
