@@ -25,7 +25,7 @@ static void gen(Time *time, float tw, const Coords *coords, Wall *w, Sim *s) { /
     sinfo.active = s->opt.rig;
     sinfo.q = &rig->q;
     sinfo.pi = rig->pininfo;
-    sinfo.mass = solid_mass;
+    sinfo.mass = rig->mass;
     
     run_eq(time, tw, s);
     if (walls) {

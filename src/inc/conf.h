@@ -158,11 +158,11 @@
 // solid
 
 #ifdef solids
-#error solids: flag is runtime now, rig/active in cfg
+#error solids: flag is runtime now, rig.active in cfg
 #endif
 
 #ifndef solid_mass
-#define solid_mass flu_mass
+#error solid_mass is runtime: rig.mass
 #endif
 
 #if defined(pin_com) || defined(pin_comx) || defined(pin_comy) || \
