@@ -1,5 +1,5 @@
 #### check forces on a cell with random force
-# nTEST: rbc.u.rnd
+# sTEST: rbc.u.rnd
 cd test/rbc/u/rnd
 S=`u.cp.s`
 :
