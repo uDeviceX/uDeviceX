@@ -10,8 +10,7 @@ area=`off.area rbc.off`
 volume=`off.volume rbc.off`
 :
 u.conf $S u/rbc/force "$S/conf/default.h" <<!
-       RBC_STRESS_FREE
-       run
+    run
 !
 u.make -j
 u.run ./udx conf.cfg "
@@ -22,4 +21,6 @@ rbc = {
     active = true
     totArea = $area
     totVolume = $volume
+    stress_free = true
+    stress_free_file = \"rbc.stress.free\"
 }" | uscale 0.025 >  forces.out.txt
