@@ -13,7 +13,7 @@ static void random(int n, RbcRnd *rnd, /**/ float **r) {
 
 static void apply(float dt, RbcParams_v parv, int nc, int nv,
                   const Particle *pp, RbcRnd *rnd,
-                  Adj_v *adj_v, const Shape shape,
+                  const Adj_v *adj_v, const Shape shape,
                   float *av, /**/ Force *ff){
     if (!d::is_device_pointer(ff))  ERR("`ff` is not a device pointer");
     float *rnd0;
