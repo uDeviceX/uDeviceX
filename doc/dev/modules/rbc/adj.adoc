@@ -1,5 +1,54 @@
-= membrane adjacency structure
+= mesh adjacency structure
+:lext: .adoc
+:src: ../../../src
 
 Consider closed triangulated mesh with `nv` vertices. Degree of a
 vertex is the number of edges incident to the vertex. Let `md` is a
-maximum degree of the vertices.
+maximum degree of the vertices. There are three types of forces: edge
+forces which depend on two vertices, triangle forces which depend on
+three vertices, and dihedral forces which depend of four vertices
+(edge and two adjusting triangles). To compute forces in one membrane
+_uDeviceX_ launches `nv * md` threads, each thread adds forces to only
+one vertices.  `Adj_v` has an API call which allows for a given thread
+ID to find which vertices should be used in forces computation.
+
+[source,cpp]
+----
+include::{src}/rbc/adj/dev.h[tag=interface]
+----
+
+If `md * nv` is bigger than the number of edges in the membrane and
+some threads are not needed. The function returns 0 in this case.
+`AdjMap` is a structure which contains five indices and an ID of the
+mesh:
+
+[source,cpp]
+----
+include::{src}/rbc/adj/type/common.h[tag=interface]
+----
+
+Each thread adds force to a vertices with index `0`. It considers edge
+`01`, triangle `012`, and two dihedrals `0124` and `1203`. For
+example, a contribution of edge force `01` to vertex `1` is added by
+another thread.
+
+`Adj_v` is initilized from a host structure `Adj`:
+[source,cpp]
+----
+include::{src}/rbc/adj/imp.h[tag=interface]
+----
+
+`Adj` can be used to pack data which can be asseced on device:
+[source,cpp]
+----
+float *A;
+n = adj_get_max(adj);
+EMALLOC(n, &A);
+for (i = 0; i < n; i++) {
+   valid = adj_get_map(i, adj, /**/ &m);
+   if (!valid) continue;
+   i0 = m.i0; i1 = m.i1; i2 = m.i2;
+   A[i] = some_function_of(i0, i1, i2)
+}
+----
+

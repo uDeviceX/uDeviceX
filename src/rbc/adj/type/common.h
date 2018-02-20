@@ -1,4 +1,6 @@
-struct AdjMap { /* one edge info */
+// tag::interface[]
+struct AdjMap {
     int i0, i1, i2, i3, i4;
-    int rbc; /* cell id */
+    int rbc;
 };
+// end::interface[]
