@@ -15,7 +15,7 @@ static void run_eq(Time *time, float te, Sim *s) { /* equilibrate */
     UC(bforce_fin(bforce));
 }
 
-static void run(Config *cfg, Time *time, float ts, float te, Sim *s) {
+static void run(const Config *cfg, Time *time, float ts, float te, Sim *s) {
     float dt;
     long start, it; /* current timestep */
     Wall *wall = &s->wall;

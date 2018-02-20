@@ -45,7 +45,7 @@ static void gen(Time *time, float tw, const Coords *coords, Wall *w, Sim *s) { /
     }
 }
 
-void sim_gen(Sim *s, Config *cfg, Time *time, TimeSeg *time_seg) {
+void sim_gen(Sim *s, const Config *cfg, Time *time, TimeSeg *time_seg) {
     Flu *flu = &s->flu;
     Rbc *rbc = &s->rbc;
     Wall *wall = &s->wall;
@@ -75,7 +75,7 @@ void sim_gen(Sim *s, Config *cfg, Time *time, TimeSeg *time_seg) {
     if (s->opt.dump_strt) dump_strt0(RESTART_FINAL, s);
 }
 
-void sim_strt(Sim *s, Config *cfg, Time *time, TimeSeg *time_seg) {
+void sim_strt(Sim *s, const Config *cfg, Time *time, TimeSeg *time_seg) {
     Flu *flu = &s->flu;
     Rbc *rbc = &s->rbc;
     Rig *rig = &s->rig;
