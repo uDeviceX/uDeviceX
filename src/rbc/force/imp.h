@@ -2,7 +2,7 @@ struct RbcParams;
 struct RbcForce;
 struct Force;
 
-void rbc_force_ini(int nv, int seed, RbcForce**);
+void rbc_force_ini(MeshRead *cell, int seed, RbcForce**);
 void rbc_force_fin(RbcForce*);
 
 void rbc_force_set_stressful(int nt, float totArea, /**/ RbcForce*);
