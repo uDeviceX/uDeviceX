@@ -131,21 +131,21 @@ static __device__ void inverse(const real_t A[6], /**/ real_t I[6]) {
     I[ZZ] =  idet * (A[XX] * A[YY] - A[XY] * A[XY]);
 }
 
-static __device__ void v2f(real dt, const real3_t r, const real3_t om, const real3_t v, /**/ real3_t *f) {
-    const float fac = rbc_mass / dt;
+static __device__ void rbc_v2f(real dt, const real3_t r, const real3_t om, const real3_t v, /**/ real3_t *f) {
+    const float fac = 1.0 / dt;
     f->x = fac * (v.x + r.y * om.z - r.z * om.y);
     f->y = fac * (v.y + r.z * om.x - r.x * om.z);
     f->z = fac * (v.z + r.x * om.y - r.y * om.x);
 }
 
-__device__ void M2f(real dt,
-                    const Momentum m, real3_t a, real3_t b, real3_t c,
-                    /**/ real3_t *fa, real3_t *fb, real3_t *fc) {
+static __device__ void rbc_M2f(real dt,
+                               const Momentum m, real3_t a, real3_t b, real3_t c,
+                               /**/ real3_t *fa, real3_t *fb, real3_t *fc) {
 
     real_t I[6] = {0}, Iinv[6];
     real3_t om, v, com;
 
-    const real_t fac = 1.f / (3.f * rbc_mass);
+    const real_t fac = 1.f / 3.f;
 
     compute_I(a, b, c, /**/ I);
     inverse(I, /**/ Iinv);
@@ -169,7 +169,7 @@ __device__ void M2f(real dt,
     a.y -= com.y;
     a.z -= com.z;
 
-    v2f(dt, a, om, v, /**/ fa);
-    v2f(dt, b, om, v, /**/ fb);
-    v2f(dt, c, om, v, /**/ fc);
+    rbc_v2f(dt, a, om, v, /**/ fa);
+    rbc_v2f(dt, b, om, v, /**/ fb);
+    rbc_v2f(dt, c, om, v, /**/ fc);
 }

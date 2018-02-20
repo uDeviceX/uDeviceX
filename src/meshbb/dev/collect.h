@@ -73,7 +73,7 @@ __global__ void collect_rbc_mom(float dt, int nc, int nt, int nv, const int4 *tt
         B = P2rP( pp + t.y );
         C = P2rP( pp + t.z );
 
-        M2f(dt, m, A.r, B.r, C.r, /**/ &fa, &fb, &fc);
+        rbc_M2f(dt, m, A.r, B.r, C.r, /**/ &fa, &fb, &fc);
 
         addForce(fa, t.x, /**/ ff);
         addForce(fb, t.y, /**/ ff);
