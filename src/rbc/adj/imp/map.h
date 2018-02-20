@@ -2,7 +2,8 @@ static int fetch(const int *adj, int i) { return adj[i]; }
 static int hst0(int md, int nv, int i, const int *adj0, const int *adj1, /**/ AdjMap *m) {
     int i0, i1, i2, i3, i4;
     int j, k;
-    assert(i < md * nv);
+    if (i >= md * nv)
+        ERR("(i = %d) >= (md = %d) * (nv = %d)", i, md, nv);
 
     i0 = i / md;
     j  = i % md;
