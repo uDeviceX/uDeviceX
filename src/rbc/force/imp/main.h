@@ -2,12 +2,32 @@ static bool is_stress_free(const RbcForce *f) {
     return f->stype == RBC_SFREE;
 }
 
-static void get_stress_view(const RbcForce *f, /**/ StressFul_v *v) {
-    *v = f->sinfo.sful;
+void rbc_force_ini(int nv, int seed, RbcForce **pq) {
+    RbcForce *q;
+    int md;
+    if (nv <= 0) ERR("nv=%d < 0", nv);    
+    EMALLOC(1, &q);
+    md = RBCmd;
+    if (RBC_RND) rbc_rnd_ini(nv*md*MAX_CELL_NUM, seed, &q->rnd);
+    *pq = q;
 }
 
-static void get_stress_view(const RbcForce *f, /**/ StressFree_v *v) {
-    *v = f->sinfo.sfree;
+static void fin_rnd(RbcRnd *rnd) {
+    rbc_rnd_fin(rnd);
+}
+
+static void fin_stress(RbcForce *f) {
+    if (is_stress_free(f)) {
+        StressFree_v v = f->sinfo.sfree;
+        Dfree(v.ll);
+        Dfree(v.aa);
+    }
+}
+
+void rbc_force_fin(RbcForce *q) {
+    if (RBC_RND) fin_rnd(q->rnd);
+    UC(fin_stress(q));
+    EFREE(q);
 }
 
 void rbc_force_set_stressful(int nt, float totArea, /**/ RbcForce *f) {

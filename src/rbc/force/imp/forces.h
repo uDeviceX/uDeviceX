@@ -1,3 +1,11 @@
+static void get_stress_view(const RbcForce *f, /**/ StressFul_v *v) {
+    *v = f->sinfo.sful;
+}
+
+static void get_stress_view(const RbcForce *f, /**/ StressFree_v *v) {
+    *v = f->sinfo.sfree;
+}
+
 static void random(int n, RbcRnd *rnd, /**/ float **r) {
     if (RBC_RND) rbc_rnd_gen(rnd, n, /**/ r);
     else *r = NULL;
