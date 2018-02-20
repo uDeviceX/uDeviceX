@@ -14,11 +14,6 @@ static void get_rnd_view(const RbcForce *f, /**/ Rnd1_v *v) {
     *v = f->rinfo.rnd1;
 }
 
-static void random(int n, RbcRnd *rnd, /**/ float **r) {
-    if (RBC_RND) rbc_rnd_gen(rnd, n, /**/ r);
-    else *r = NULL;
-}
-
 template <typename Stress_v, typename Rnd_v>
 static void apply(float dt, RbcParams_v parv, int nc, int nv,
                   const Particle *pp,
@@ -39,7 +34,7 @@ static void dispatch_rnd(float dt, RbcParams_v parv, int nc, int nv,
         Rnd1_v rv;
         int md = RBCmd;
         get_rnd_view(t, &rv);
-        random(nc * md * nv, rnd, /**/ &rv.rr);
+        rbc_rnd_gen(rnd, nc * md * nv, /**/ &rv.rr);
         apply(dt, parv, nc, nv, pp, adj_v, sv, rv, av, /**/ ff);
     }
     else {

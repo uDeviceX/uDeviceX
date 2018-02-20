@@ -157,8 +157,7 @@ static void ini_rbc(const Config *cfg, MPI_Comm cart, int3 L, /**/ Rbc *r) {
     UC(rbc_params_ini(&r->params));
     UC(rbc_params_set_conf(cfg, r->params));
 
-    UC(conf_lookup_int(cfg, "rbc.seed", &seed));
-    UC(rbc_force_ini(r->cell, seed, /**/ &r->force));
+    UC(rbc_force_ini(r->cell, /**/ &r->force));
 
     // TODO
     if (RBC_STRESS_FREE)
@@ -169,8 +168,10 @@ static void ini_rbc(const Config *cfg, MPI_Comm cart, int3 L, /**/ Rbc *r) {
         UC(rbc_force_set_stressful(nt, Atot, /**/ r->force));
     }
 
-    if (RBC_RND)
-        UC(rbc_force_set_rnd1(r->force));
+    if (RBC_RND) {
+        UC(conf_lookup_int(cfg, "rbc.seed", &seed));
+        UC(rbc_force_set_rnd1(seed, r->force));
+    }
     else
         UC(rbc_force_set_rnd0(r->force));
 }
