@@ -9,7 +9,6 @@
 #include "utils/error.h"
 #include "utils/imp.h"
 
-#include "rbc/edg/imp.h"
 #include "utils/msg.h"
 
 #include "d/api.h"
@@ -17,6 +16,8 @@
 #include "inc/dev.h"
 
 #include "imp.h"
+
+#include "edg/imp.h"
 
 #include "type/common.h"
 #include "type/dev.h"

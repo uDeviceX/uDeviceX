@@ -70,9 +70,9 @@ $B/pair/conf.o: $S/pair/conf.cpp; $X -I$S/pair -I$S/.
 $B/pair/imp.o: $S/pair/imp.cpp; $X -I$S/pair -I$S/.
 $B/parray/imp.o: $S/parray/imp.cpp; $X -I$S/parray -I$S/.
 $B/parser/imp.o: $S/parser/imp.cpp; $X -I$S/parser -I$S/.
+$B/rbc/adj/edg/imp.o: $S/rbc/adj/edg/imp.cpp; $X -I$S/rbc/adj/edg -I$S/.
 $B/rbc/adj/imp.o: $S/rbc/adj/imp.cpp; $X -I$S/rbc/adj -I$S/.
 $B/rbc/com/imp.o: $S/rbc/com/imp.cu; $N -I$S/rbc/com -I$S/.
-$B/rbc/edg/imp.o: $S/rbc/edg/imp.cpp; $X -I$S/rbc/edg -I$S/.
 $B/rbc/force/area_volume/imp.o: $S/rbc/force/area_volume/imp.cu; $N -I$S/rbc/force/area_volume -I$S/.
 $B/rbc/force/imp.o: $S/rbc/force/imp.cu; $N -I$S/rbc/force -I$S/.
 $B/rbc/gen/imp.o: $S/rbc/gen/imp.cpp; $X -I$S/rbc/gen -I$S/.

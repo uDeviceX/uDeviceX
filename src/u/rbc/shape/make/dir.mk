@@ -7,7 +7,7 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/mpi         && \
     d $B/parser      && \
     d $B/rbc/adj     && \
-    d $B/rbc/edg     && \
+    d $B/rbc/adj/edg && \
     d $B/rbc/shape   && \
     d $B/u/rbc/shape && \
     d $B/utils      

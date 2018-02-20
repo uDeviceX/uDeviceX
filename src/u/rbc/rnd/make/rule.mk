@@ -2,8 +2,8 @@ $B/d/api.o: $S/d/api.cu; $N -I$S/d -I$S/.
 $B/mpi/glb.o: $S/mpi/glb.cpp; $X -I$S/mpi -I$S/.
 $B/mpi/type.o: $S/mpi/type.cpp; $X -I$S/mpi -I$S/.
 $B/mpi/wrapper.o: $S/mpi/wrapper.cpp; $X -I$S/mpi -I$S/.
+$B/rbc/adj/edg/imp.o: $S/rbc/adj/edg/imp.cpp; $X -I$S/rbc/adj/edg -I$S/.
 $B/rbc/adj/imp.o: $S/rbc/adj/imp.cpp; $X -I$S/rbc/adj -I$S/.
-$B/rbc/edg/imp.o: $S/rbc/edg/imp.cpp; $X -I$S/rbc/edg -I$S/.
 $B/rbc/rnd/api/imp.o: $S/rbc/rnd/api/imp.cpp; $X -I$S/rbc/rnd/api -I$S/.
 $B/rbc/rnd/imp.o: $S/rbc/rnd/imp.cpp; $X -I$S/rbc/rnd -I$S/.
 $B/u/rbc/rnd/main.o: $S/u/rbc/rnd/main.cpp; $X -I$S/.
