@@ -2,6 +2,8 @@
 :lext: .adoc
 :src: ../../../../src
 
+Host array of positions.
+
 [source,cpp]
 ----
 include::{src}/mesh/positions/imp.h[tag=interface]
