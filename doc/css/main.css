@@ -30,3 +30,21 @@ h6 { font-size:.75em }
 .literalblock pre, .listingblock pre, listingblock .pygments, .listingblock .pygments code {
     background:#f7f7f8 !important
 }
+
+.conum[data-value]{
+    display:inline-block;
+    color:#fff!important;
+    background-color:rgba(0,0,0,.8);
+    -webkit-border-radius:100px;
+    border-radius:100px;
+    text-align:center;
+    font-size:.75em;
+    width:1.67em;
+    height:1.67em;
+    line-height:1.67em;
+}
+.conum[data-value]+b{display:none}
+.conum[data-value]:after{content:attr(data-value)}
+pre .conum[data-value]{position:relative;top:-.125em}
+b.conum *{color:inherit!important}
+.conum:not([data-value]):empty{display:none}
