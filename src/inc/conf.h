@@ -41,14 +41,6 @@
 #define DUMP_BASE "."
 #endif
 
-/* recolor solvent crossing periodic boundary ? */
-#ifndef RECOLOR_FLUX
-#define RECOLOR_FLUX (false)
-#endif
-#ifndef COL_FLUX_DIR
-#define COL_FLUX_DIR (0)
-#endif
-
 // walls
 #ifndef walls
 #define walls (false)
@@ -92,6 +84,16 @@
 #ifndef empty_solid_particles
 #define empty_solid_particles (true)
 #endif
+
+/* recolor solvent crossing periodic boundary ? */
+#ifdef RECOLOR_FLUX
+#error RECOLOR_FLUX is runtime: recolor.active
+#endif
+#ifdef COL_FLUX_DIR
+#error COL_FLUX_DIR is runtime: recolor.dir
+#endif
+
+
 
 #if defined(RESTART)
   #error RESTART is runtime: glb.restart
