@@ -189,7 +189,89 @@ include::{src}/exch/obj/imp.h[tag=unpackback]
 
 == mesh
 
-TODO
+exchange full mesh particles with neighbouring nodes when bounding box
+of the mesh crosses or is close enough to the subdomain boundaries.
+This is used for mesh bounce back or solvent recoloring.
+
+It can optionally send back momentum data per triangles to original node.
+
+=== mesh exchanger interface
+
+allocate, deallocate:
+
+[source,cpp]
+----
+include::{src}/exch/mesh/imp.h[tag=mem]
+----
+
+build map:
+
+[source,cpp]
+----
+include::{src}/exch/mesh/imp.h[tag=map]
+----
+
+pack data:
+
+[source,cpp]
+----
+include::{src}/exch/mesh/imp.h[tag=pack]
+----
+
+communicate data with neigbours:
+
+[source,cpp]
+----
+include::{src}/exch/mesh/imp.h[tag=com]
+----
+
+unpack the data to a single particle array:
+
+[source,cpp]
+----
+include::{src}/exch/mesh/imp.h[tag=unpack]
+----
+
+the returned value `nmhalo` is the number of
+received meshes
+
+get number of mesh per fragment:
+
+[source,cpp]
+----
+include::{src}/exch/mesh/imp.h[tag=get]
+----
+
+=== back momentum sender interface
+
+allocate, deallocate the optional structures:
+
+[source,cpp]
+----
+include::{src}/exch/mesh/imp.h[tag=memback]
+----
+
+pack the momentum infos
+
+[source,cpp]
+----
+include::{src}/exch/mesh/imp.h[tag=packback]
+----
+
+communicate back the momentum infos:
+
+[source,cpp]
+----
+include::{src}/exch/mesh/imp.h[tag=comback]
+----
+
+unpack the momentum infos to a single array:
+
+[source,cpp]
+----
+include::{src}/exch/mesh/imp.h[tag=unpackback]
+----
+
 
 == common
 
