@@ -15,9 +15,12 @@ static void write_v(FILE *f, const float v[3]) {
     fprintf(f, "%+.6e %+.6e %+.6e ", v[X], v[Y], v[Z]);
 }
 
-void io_rig_dump(const Coords *c, int ns, float t, const Solid *ss, const Solid *ssbb) {
+static void set_created(IoRig *io) {
+    strcpy(io->mode, "a");
+}
+
+void io_rig_dump(const Coords *c, float t, int ns, const Solid *ss, const Solid *ssbb, IoRig *io) {
     enum {X, Y, Z};
-    static bool first = true;
     char fname[256];
     float com[3];
     FILE *fp;
@@ -27,11 +30,9 @@ void io_rig_dump(const Coords *c, int ns, float t, const Solid *ss, const Solid 
     for (j = 0; j < ns; ++j) {
         s   = ss   + j;
         sbb = ssbb + j;
-            
-        sprintf(fname, DUMP_BASE "/solid_diag_%04d.txt", (int) s->id);
-        if (first) UC(efopen(fname, "w", /**/ &fp));
-        else       UC(efopen(fname, "a", /**/ &fp));
 
+        sprintf(fname, DUMP_BASE "/solid_diag_%04d.txt", (int) s->id);
+        UC(efopen(fname, io->mode, /**/ &fp));
         fprintf(fp, "%+.6e ", t);
 
         // shift to global coordinates
@@ -53,6 +54,5 @@ void io_rig_dump(const Coords *c, int ns, float t, const Solid *ss, const Solid 
         
         UC(efclose(fp));
     }
-
-    first = false;
+    set_created(io);
 }

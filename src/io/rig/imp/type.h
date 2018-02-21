@@ -1,3 +1,3 @@
 struct IoRig {
-    char mode[2]; // fopen mode
+    char mode[16]; // fopen mode
 };
