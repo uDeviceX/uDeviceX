@@ -1,4 +1,4 @@
-static float get_dt(Time *time, Sim *s) {
+static float get_dt(Time *time, Sim*) {
     return time_dt(time);
 }
 
