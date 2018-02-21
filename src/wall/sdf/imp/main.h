@@ -22,9 +22,7 @@ void sdf_ini(int3 L, Sdf **pq) {
     int3 Lte, M;
     M = make_int3(XWM, YWM, ZWM);
     Lte = texture_grid_size(L, M);
-    
-    UC(emalloc(sizeof(Sdf), (void**)&q));
-    
+    EMALLOC(1, &q);
     UC(array3d_ini(&q->arr, Lte.x, Lte.y, Lte.z));
     UC(  tform_ini(&q->t));
 
@@ -38,7 +36,7 @@ void sdf_fin(Sdf *q) {
     UC(array3d_fin(q->arr));
     UC(  tex3d_fin(q->tex));
     UC(  tform_fin(q->t));
-    UC(efree(q));
+    EFREE(q);
 }
 
 void sdf_bounce(float dt, const WvelStep *wv, const Coords *c, const Sdf *sdf, int n, /**/ Particle *pp) {

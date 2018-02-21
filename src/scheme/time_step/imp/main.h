@@ -36,6 +36,7 @@ void time_step_fin(TimeStep *q) {EFREE(q); }
 
 static float const_dt(TimeStep *q, MPI_Comm, TimeStepAccel*) { return q->dt; }
 static float disp_dt(TimeStep *q, MPI_Comm comm, TimeStepAccel *a) {
+
     float dt, dx, dt_max, accel;
     dt_max = q->dt;
     dx     = q->dx;
