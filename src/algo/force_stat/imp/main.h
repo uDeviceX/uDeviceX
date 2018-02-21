@@ -11,6 +11,8 @@ struct SumSq {
 
 float force_stat_max(int n, const Force *dev) {
     using namespace thrust;
+    if (!d::is_device_pointer(dev))
+        ERR("`dev` is not a device pointer");
     float init, m;
     SumSq           unary;
     maximum<float> binary;
