@@ -1,5 +1,34 @@
-void io_field_ini(const Coords*, IoField**);
-void io_field_fin(IoField*);
+static void create_dir(MPI_Comm comm) {
+    if (m::is_master(comm))
+        UC(os_mkdir(DUMP_BASE "/h5"));
+    MC(m::Barrier(comm));
+}
+
+void io_field_ini(MPI_Comm comm, const Coords *c, IoField **iop) {
+    enum {X, Y, Z};
+    IoField *io;
+    int nc;
+    EMALLOC(1, iop);
+    io = *iop;
+
+    nc = xs(c) * ys(c) * zs(c);
+    EMALLOC(nc, &io->rho);
+    EMALLOC(nc, &io->u[X]);
+    EMALLOC(nc, &io->u[Y]);
+    EMALLOC(nc, &io->u[Z]);
+
+    io->id = 0;
+    create_dir(comm);
+}
+
+void io_field_fin(IoField *io) {
+    enum {X, Y, Z};
+    EFREE(io->rho);
+    EFREE(io->u[X]);
+    EFREE(io->u[Y]);
+    EFREE(io->u[Z]);
+    EFREE(io);
+}
 
 static int minmax(int lo, int hi, int x) {
     return \

@@ -18,5 +18,6 @@
 
 #include "imp.h"
 
+#include "imp/type.h"
 #include "imp/dump.h"
 #include "imp/scalar.h"
