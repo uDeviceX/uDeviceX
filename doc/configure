@@ -5,7 +5,6 @@ D="."
 # install tools
 make -C tools/ 
 
-u.doc.all     $D > all.adoc
 u.doc.index   $D > summary.adoc
 u.doc.targets $D > make/target.mk
 u.doc.deps    $D > make/deps.mk
