@@ -208,6 +208,13 @@ static void ini_objinter(MPI_Comm cart, int maxp, int3 L, const Opt *opt, /**/ O
     if (opt->fsi) fsi_ini(rank, L, /**/ &o->fsi);
 }
 
+static void read_color_opt(const Config *c, Recolorer *o) {
+    int b;
+    UC(conf_lookup_bool(c, "recolor.active", &b));
+    o->flux_active = b;
+    UC(conf_lookup_int(c, "recolor.dir", &o->flux_dir));
+}
+
 static void read_opt(const Config *c, Opt *o) {
     int b;
     UC(conf_lookup_bool(c, "fsi.active", &b));
@@ -310,6 +317,7 @@ void sim_ini(Config *cfg, MPI_Comm cart, /**/ Time *time, Sim **sim) {
     dt = time_step_dt0(s->time_step);
     time_next(time, dt);
     UC(read_opt(cfg, &s->opt));
+    UC(read_color_opt(cfg, &s->recolorer));
     UC(ini_pair_params(cfg, s->kBT, dt, s));
 
     UC(ini_dump(maxp, s->cart, s->coords, s->opt, /**/ &s->dump));

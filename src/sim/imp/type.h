@@ -56,6 +56,12 @@ struct Colorer {
     float3 *minext, *maxext; /* bounding boxes     */
 };
 
+/* flux colorer */
+struct Recolorer {
+    bool flux_active;
+    int flux_dir;
+};
+
 /* holder for bounce back tools and work */
 struct BounceBack {
     MeshBB *d;
@@ -183,6 +189,7 @@ struct Sim {
     ObjInter objinter;
     BounceBack bb;
     Colorer colorer;
+    Recolorer recolorer;
     Vcon vcon;
     Restrain *restrain;
     Dbg *dbg;

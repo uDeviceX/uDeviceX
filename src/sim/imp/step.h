@@ -36,6 +36,7 @@ static void step(Time *time, BForce *bforce, bool wall0, int start, int it, Sim 
 
     UC(check_vel(dt, s));
 
+    
     if (opt->vcon && !s->equilibrating) {
         sample(s->coords, it, flu, /**/ &s->vcon);
         adjust(it, /**/ &s->vcon, bforce);
@@ -50,8 +51,9 @@ static void step(Time *time, BForce *bforce, bool wall0, int start, int it, Sim 
     UC(check_vel(dt, s));
 
     if (! s->equilibrating) {
-        if (opt->inflow)     apply_inflow(s->kBT, dt, s->inflow, /**/ flu);
-        if (opt->outflow)    mark_outflow(flu, /**/ s->outflow);
-        if (opt->denoutflow) mark_outflowden(flu, s->mapoutflow, /**/ s->denoutflow);
+        if (opt->inflow)     UC(apply_inflow(s->kBT, dt, s->inflow, /**/ flu));
+        if (opt->outflow)    UC(mark_outflow(flu, /**/ s->outflow));
+        if (opt->denoutflow) UC(mark_outflowden(flu, s->mapoutflow, /**/ s->denoutflow));
+        if (opt->flucolors)  UC(recolor_flux(s->coords, &s->recolorer, flu));
     }
 }
