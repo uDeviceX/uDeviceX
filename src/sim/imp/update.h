@@ -92,7 +92,12 @@ void update_solvent(float dt, /**/ Flu *f) {
 void update_rbc(float dt, long it, Rbc *r, Sim *s) {
     bool cond;
     cond = s->opt.flucolors && color_freq && it % color_freq == 0;
-    if (cond) {msg_print("recolor"); gen_colors(r, &s->colorer, /**/ &s->flu);}; /* TODO: does not belong here*/
+    if (cond) {
+        /* TODO: does not belong here*/
+        msg_print("recolor");
+        gen_colors(r, &s->colorer, /**/ &s->flu);
+    } 
+
     scheme_move_apply(dt, r->mass, r->q.n, r->ff, r->q.pp);
 }
 

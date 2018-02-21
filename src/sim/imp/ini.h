@@ -251,6 +251,7 @@ static void read_opt(const Config *c, Opt *o) {
     o->dump_parts = b;
     UC(conf_lookup_float(c, "dump.freq_parts", &o->freq_parts));
 
+    UC(conf_lookup_int(c, "flu.recolor_freq", &o->recolor_freq));
 }
 
 static void coords_log(const Coords *c) {

@@ -147,6 +147,7 @@ struct Opt {
     bool rig, sbounce;
     bool dump_field, dump_parts, dump_strt;
     float freq_field, freq_parts, freq_strt;
+    int recolor_freq;
 };
 
 struct TimeSeg {
