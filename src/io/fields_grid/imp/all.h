@@ -12,5 +12,5 @@ void fields_grid(const Coords *coords, MPI_Comm comm, QQ qq, NN nn, /*w*/ Partic
     cD2H(hst + start, s, nn.s); start += nn.s;
     cD2H(hst + start, r, nn.r); start += nn.r;
 
-    UC(io::field::dump(coords, comm, hst, n));
+    UC(io::field::io_field_dump_pp(coords, comm, hst, n));
 }
