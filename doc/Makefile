@@ -11,7 +11,7 @@ style=-a stylesheet="$(ROOT)/css/main.css"  \
       -a toc=preamble                       \
       -a sectnums
 
-all.html: all.adoc; $(ADOC) $(style) -a src=`u.cp.s` $<
+dev/main.html: dev/main.adoc; $(ADOC) $(style) -a src=`u.cp.s` $<
 %.html: %.adoc; $(ADOC) $(style) $<
 .PHONY: clean
 
