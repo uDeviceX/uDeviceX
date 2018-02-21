@@ -9,7 +9,6 @@ x=0.75 y=8 z=12; echo 1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 > rbcs-ic.txt
 u.conf "$S" u/x "$S/conf/default.h" <<!
    BASE_STRT_DUMP=\"bin.1/strt\"
    run
-   pushrbc
    BASE_STRT_READ=\"bin.1/strt\"
    BASE_STRT_DUMP=\"bin.2/strt\"
    run
@@ -38,6 +37,7 @@ rbc = {
     active = true
     totArea = 55.553
     totVolume = 26.986
+    push = true
 }
 bforce = {
     type = "constant"

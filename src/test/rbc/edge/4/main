@@ -9,7 +9,6 @@ u.cp.sdf cyl1/cyl.dat sdf.dat
 :
 u.conf "$S" u/x "$S/conf/default.h" <<!
    walls
-   pushrbc
    run
 !
 u.make -j
