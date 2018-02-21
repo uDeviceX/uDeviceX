@@ -28,13 +28,12 @@ void wvel_set_conf(const Config *cfg, Wvel *vw) {
     }
     else if (same_str(type, "shear sin")) {
         float gdot, w;
-        int vdir, gdir, log_freq;
+        int vdir, gdir;
         UC(conf_lookup_float(cfg, "wvel.gdot", &gdot));
         UC(conf_lookup_int(cfg, "wvel.vdir", &vdir));
         UC(conf_lookup_int(cfg, "wvel.gdir", &gdir));
-        UC(conf_lookup_int(cfg, "wvel.log_freq", &log_freq));
         UC(conf_lookup_float(cfg, "wvel.w", &w));
-        UC(wvel_set_shear_sin(gdot, vdir, gdir, w, log_freq, vw));
+        UC(wvel_set_shear_sin(gdot, vdir, gdir, w, vw));
     }
     else if (same_str(type, "hele shaw")) {
         float u, h;

@@ -31,7 +31,7 @@ void wvel_set_shear(float gdot, int vdir, int gdir, Wvel *vw) {
     vw->p.shear = p;
 }
 
-void wvel_set_shear_sin(float gdot, int vdir, int gdir, float w, int log_freq, Wvel *vw) {
+void wvel_set_shear_sin(float gdot, int vdir, int gdir, float w, Wvel *vw) {
     WvelShearSin p;
     p.gdot     = gdot;
     p.vdir     = vdir;
