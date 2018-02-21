@@ -1,3 +1,4 @@
+
 static void set_params(const Config *cfg, float kBT, float dt, const char *name_space, PairParams *p) {
     UC(pair_set_conf(cfg, name_space, p));
     UC(pair_compute_dpd_sigma(kBT, dt, /**/ p));
