@@ -8,17 +8,17 @@ image::include/pach.png[]
 
 include::intro.adoc[]
 
-== User Documentation
+= User Documentation
 
 A description how to install and run _uDeviceX_ code can be found in
 the link:user/main{lext}[user documentation].
 
-== Developer Documentation
+= Developer Documentation
 
 A description of code can be found in the
 link:dev/main{lext}[developer documentation].
 
-== List of units
+= List of units
 
 A description of units can be found in the link:units/main{lext}[units
 documentation].
