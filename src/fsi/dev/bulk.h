@@ -17,7 +17,7 @@ static __device__ int p2map(int3 L, const int *start, int zplane, int n, const P
     return r2map(L, start, zplane, n, p.x, p.y, p.z, m);
 }
 
-const static float EPS = 1e-6;
+static const float EPS = 1e-6;
 static __device__ float dist(Pa a, Pa b) {
     float dx, dy, dz;
     dx = a.x - b.x;
