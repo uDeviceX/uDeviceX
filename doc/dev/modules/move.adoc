@@ -11,49 +11,10 @@ Currently implemented:
 
 == interface
 
-allocate and free host parameters:
-
-[source, c++]
-----
-include::{src}/scheme/move/params/imp.h[tag=mem]
-----
-
-Set time scheme parameters:
-[source, c++]
-----
-include::{src}/scheme/move/params/imp.h[tag=set]
-----
-
-Set parameters from configuration file:
-[source, c++]
-----
-include::{src}/scheme/move/params/imp.h[tag=cnf]
-----
-
-Convert host structure to a view, usable by kernels:
-
-[source, c++]
-----
-include::{src}/scheme/move/params/imp.h[tag=int]
-----
-
-
-Main interface:
-
 [source, c++]
 ----
 include::{src}/scheme/move/imp.h[tag=int]
 ----
 <1> apply one step of the time scheme to the particles
 <2> set velocity of particles to 0
-
-
-== configuration
-
-Set parameters:
-
-[source, cfg]
-----
-TODO: NOT YET IMPLEMENTED
-----
 
