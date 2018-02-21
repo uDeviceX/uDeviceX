@@ -37,7 +37,7 @@ void wvel_set_conf(const Config *cfg, Wvel *vw);
 // end::cnf[]
 
 // tag::step[]
-void wvel_get_step(float dt, long it, const Wvel *wv, /**/ WvelStep *);
+void wvel_get_step(float t, const Wvel *wv, /**/ WvelStep *);
 // end::step[]
 
 // tag::get[]

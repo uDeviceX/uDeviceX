@@ -12,7 +12,7 @@ static void step(Time *time, BForce *bforce, bool wall0, int start, int it, Sim 
     dt = get_dt(time, s);
 
     if (walls && !s->equilibrating)
-        UC(wvel_get_step(dt, it - start, wall->vel, /**/ wall->velstep));
+        UC(wvel_get_step(dt * (it - start), wall->vel, /**/ wall->velstep));
 
     UC(check_sizes(s));
     UC(check_pos_soft(s));

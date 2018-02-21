@@ -14,7 +14,6 @@ struct WvelShearSin {
     float gdot;     // shear rate
     int vdir, gdir; // direction of the flow and gradient
     float w;        // frequency
-    int log_freq;
 };
 
 struct WvelHS {

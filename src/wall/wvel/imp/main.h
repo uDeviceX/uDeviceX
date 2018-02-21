@@ -37,7 +37,6 @@ void wvel_set_shear_sin(float gdot, int vdir, int gdir, float w, int log_freq, W
     p.vdir     = vdir;
     p.gdir     = gdir;
     p.w        = w;
-    p.log_freq = log_freq;
     
     vw->type = WALL_VEL_SHEAR_SIN;
     vw->p.shearsin = p;
@@ -63,22 +62,16 @@ static void set_step_shear(WvelShear p, WvelStep *wv) {
     wv->p.shear.vdir = p.vdir;
 }
 
-static void set_step_shear(float dt, long it, WvelShearSin p, WvelStep *wv) {
+static void set_step_shear(float t, WvelShearSin p, WvelStep *wv) {
     float gdot;
-    float t, w;
-    bool cond;
+    float w;
     wv->type = WALL_VEL_V_SHEAR;
     w = p.w;
-    t = it * dt;
     gdot = p.gdot * sin(w * t);
     
     wv->p.shear.gdot = gdot;
     wv->p.shear.gdir = p.gdir;
     wv->p.shear.vdir = p.vdir;
-    
-    cond = p.log_freq > 0 && it % p.log_freq == 0;
-    if (cond)
-        msg_print("WVEL_SIN: gd = %6.3g", gdot);
 }
 
 static void set_step_hs(WvelHS p, WvelStep *wv) {
@@ -87,7 +80,7 @@ static void set_step_hs(WvelHS p, WvelStep *wv) {
     wv->p.hs.h = p.h;
 }
 
-void wvel_get_step(float dt, long it, const Wvel *wv, /**/ WvelStep *view) {
+void wvel_get_step(float t, const Wvel *wv, /**/ WvelStep *view) {
     switch (wv->type) {
     case WALL_VEL_CSTE:
         set_step_cste(wv->p.cste, /**/ view);
@@ -96,7 +89,7 @@ void wvel_get_step(float dt, long it, const Wvel *wv, /**/ WvelStep *view) {
         set_step_shear(wv->p.shear, /**/ view);
         break;
     case WALL_VEL_SHEAR_SIN:
-        set_step_shear(dt, it, wv->p.shearsin, /**/ view);
+        set_step_shear(t, wv->p.shearsin, /**/ view);
         break;
     case WALL_VEL_HS:
         set_step_hs(wv->p.hs, /**/ view);
