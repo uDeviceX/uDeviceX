@@ -8,7 +8,7 @@ all: $(PAGES)
 include make/deps.mk
 
 style=-a stylesheet="$(ROOT)/css/main.css"  \
-      -a toc=preamble                       \
+      -a toc=left                           \
       -a sectnums
 
 dev/main.html: dev/main.adoc; $(ADOC) $(style) -a src=`u.cp.s` $<
