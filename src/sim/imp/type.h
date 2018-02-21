@@ -148,10 +148,10 @@ struct Vcon {
 struct Opt {
     bool fsi, cnt;
     bool flucolors, fluids, fluss;
-    bool rbc;
+    bool rbc, rbcids;
     bool inflow, outflow, denoutflow, vcon;
     bool rig, sbounce;
-    bool dump_field, dump_parts, dump_strt;
+    bool dump_field, dump_parts, dump_strt, dump_rbc_com;
     float freq_field, freq_parts, freq_strt;
     int recolor_freq;
     bool push_flu, push_rbc, push_rig;

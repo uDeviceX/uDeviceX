@@ -232,6 +232,9 @@ static void read_opt(const Config *c, Opt *o) {
     UC(conf_lookup_bool(c, "rbc.active", &b));
     o->rbc = b;
 
+    UC(conf_lookup_bool(c, "rbc.ids", &b));
+    o->rbcids = b;
+
     UC(conf_lookup_bool(c, "outflow.active", &b));
     o->outflow = b;
     UC(conf_lookup_bool(c, "inflow.active", &b));
@@ -249,7 +252,7 @@ static void read_opt(const Config *c, Opt *o) {
     UC(conf_lookup_bool(c, "dump.field", &b));
     o->dump_field = b;
     UC(conf_lookup_float(c, "dump.freq_field", &o->freq_field));
-
+    
     UC(conf_lookup_bool(c, "dump.strt", &b));
     o->dump_strt = b;
     UC(conf_lookup_float(c, "dump.freq_strt", &o->freq_strt));
@@ -257,6 +260,9 @@ static void read_opt(const Config *c, Opt *o) {
     UC(conf_lookup_bool(c, "dump.parts", &b));
     o->dump_parts = b;
     UC(conf_lookup_float(c, "dump.freq_parts", &o->freq_parts));
+
+    UC(conf_lookup_bool(c, "dump.rbc_com", &b));
+    o->dump_rbc_com = b;
 
     UC(conf_lookup_int(c, "flu.recolor_freq", &o->recolor_freq));
 
