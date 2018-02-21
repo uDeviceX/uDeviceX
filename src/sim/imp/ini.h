@@ -277,6 +277,8 @@ static void ini_dump(int maxp, MPI_Comm cart, const Coords *c, Opt opt, Dump *d)
     if (opt.dump_parts) UC(io_rig_ini(&d->iorig));
     UC(bop_ini(cart, maxp, &d->bop));
     UC(diag_part_ini("diag.txt", &d->diagpart));
+
+    d->id_bop = d->id_rbc = d->id_rbc_com = d->id_rig_mesh = d->id_strt = 0;
 }
 
 void sim_ini(Config *cfg, MPI_Comm cart,  Time *time, /**/ Sim **sim) {

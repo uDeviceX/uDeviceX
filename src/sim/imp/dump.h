@@ -2,7 +2,7 @@ static void dump_part(Sim *s) {
     const Flu *flu = &s->flu;
     const Rig *rig = &s->rig;
     BopWork *bop = s->dump.bop;
-    static int id_bop = 0; /* TODO */
+    int id_bop = s->dump.id_bop;
     cD2H(flu->q.pp_hst, flu->q.pp, flu->q.n);
     if (s->opt.fluids) {
         cD2H(flu->q.ii_hst, flu->q.ii, flu->q.n);
@@ -33,23 +33,21 @@ static void dump_part(Sim *s) {
             bop_parts(s->cart, s->coords, rig->q.pp_hst, rig->q.n, "solid", id_bop, /**/ bop);
         }
     }
-    id_bop++;
+    s->dump.id_bop = ++id_bop;
 }
 
 static void dump_rbcs(Sim *s) {
     const Rbc *r = &s->rbc;
-    static int id = 0;
     cD2H(s->dump.pp, r->q.pp, r->q.n);
-    UC(mesh_write_dump(r->mesh_write, s->cart, s->coords, r->q.nc, s->dump.pp, id++));
+    UC(mesh_write_dump(r->mesh_write, s->cart, s->coords, r->q.nc, s->dump.pp, s->dump.id_rbc++));
 }
 
 static void dump_rbc_coms(Sim *s) {
-    static int id = 0;
     float3 *rr, *vv;
     Rbc *r = &s->rbc;
     int nc = r->q.nc;
     UC(rbc_com_apply(r->com, nc, r->q.pp, /**/ &rr, &vv));
-    UC(dump_com(s->cart, s->coords, id++, nc, r->q.ii, rr));
+    UC(dump_com(s->cart, s->coords, s->dump.id_rbc_com++, nc, r->q.ii, rr));
 }
 
 static void dump_grid(const Sim *s) {
@@ -63,11 +61,10 @@ void dump_diag_after(Time *time, int it, bool solid0, Sim *s) { /* after wall */
     const Rig *rig = &s->rig;
     const Opt *o = &s->opt;
     if (solid0 && (time_cross(time, o->freq_parts))) {
-        static int id = 0;
         dt = time_dt(time);
         io_rig_dump(s->coords, dt * it, rig->q.ns, rig->q.ss_dmp, rig->q.ss_dmp_bb, s->dump.iorig);
         cD2H(s->dump.pp, rig->q.i_pp, rig->q.ns * rig->q.nv);
-        UC(mesh_write_dump(rig->mesh_write, s->cart, s->coords, rig->q.ns, s->dump.pp, id++));
+        UC(mesh_write_dump(rig->mesh_write, s->cart, s->coords, rig->q.ns, s->dump.pp, s->dump.id_rig_mesh++));
     }
 }
 
@@ -114,8 +111,7 @@ static void dump_strt0(int id, Sim *s) {
 }
 
 static void dump_strt(Sim *s) {
-    static int id = 0;
-    dump_strt0(id++, s);
+    dump_strt0(s->dump.id_strt++, s);
 }
 
 static void dump_diag(Time *time, int it, Sim *s) {
