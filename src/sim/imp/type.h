@@ -161,6 +161,8 @@ struct Dump {
     IoRig *iorig;
     BopWork *bop;
     DiagPart *diagpart; /* diagnostic */
+
+    int id_bop, id_rbc, id_rbc_com, id_rig_mesh, id_strt;
 };
 
 struct Sim {
