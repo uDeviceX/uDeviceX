@@ -31,7 +31,9 @@ static void particle_get(Positions *q, int i, float r[3]) {
     r[Z] = pp[i].r[Z];
 }
 void Positions_get(Positions *q, int i, /**/ float r[3]) {
-    if (i >= q->n)
-        ERR("i = %d    >=   q->n = %d", i, q->n);
+    int n;
+    n = q->n;
+    if (i >= n) ERR("i = %d    >=   n = %d", i, n);
+    if (i < 0)  ERR("i = %d    < 0", i);
     get[q->type](q, i, r);
 }

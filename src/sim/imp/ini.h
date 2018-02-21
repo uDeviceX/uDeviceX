@@ -281,7 +281,7 @@ static void ini_dump(int maxp, MPI_Comm cart, const Coords *c, Opt opt, Dump *d)
     d->id_bop = d->id_rbc = d->id_rbc_com = d->id_rig_mesh = d->id_strt = 0;
 }
 
-void sim_ini(Config *cfg, MPI_Comm cart,  Time *time, /**/ Sim **sim) {
+void sim_ini(Config *cfg, MPI_Comm cart, /**/ Time *time, Sim **sim) {
     float dt;
     Sim *s;
     int maxp;
@@ -296,7 +296,7 @@ void sim_ini(Config *cfg, MPI_Comm cart,  Time *time, /**/ Sim **sim) {
 
     s->L = subdomain(s->coords);
     UC(conf_lookup_float(cfg, "glb.kBT", &s->kBT));
-    
+
     maxp = SAFETY_FACTOR_MAXP * s->L.x * s->L.y * s->L.z * numberdensity;
     UC(time_step_ini(cfg, &s->time_step));
     dt = time_step_dt0(s->time_step);
@@ -305,7 +305,7 @@ void sim_ini(Config *cfg, MPI_Comm cart,  Time *time, /**/ Sim **sim) {
     UC(ini_pair_params(cfg, s->kBT, dt, s));
 
     UC(ini_dump(maxp, s->cart, s->coords, s->opt, /**/ &s->dump));
-    
+
     if (s->opt.rbc)        UC(ini_rbc(cfg, s->cart, s->L, /**/ &s->rbc));
 
     if (s->opt.vcon)       UC(ini_vcon(s->cart, s->L, cfg, /**/ &s->vcon));
@@ -338,7 +338,7 @@ void sim_ini(Config *cfg, MPI_Comm cart,  Time *time, /**/ Sim **sim) {
 
     UC(dbg_ini(&s->dbg));
     UC(dbg_set_conf(cfg, s->dbg));
-    
+
     MC(MPI_Barrier(s->cart));
 }
 
