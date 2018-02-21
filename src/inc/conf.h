@@ -173,12 +173,12 @@
 #define rescue_freq (100)
 #endif
 
-#ifndef pushflu
-#define pushflu (true)
+#ifdef pushflu
+#error pushflu is runtime: flu.push
 #endif
 
-#ifndef pushsolid
-#define pushsolid (false)
+#ifdef pushsolid
+#error pushsolid is runtime: rig.push
 #endif
 
 #ifdef fsiforces
@@ -209,8 +209,8 @@
 #define rbounce_back (false)
 #endif
 
-#ifndef pushrbc
-#define pushrbc (false)
+#ifdef pushrbc
+#error pushrbc is runtime: rbc.push
 #endif
 
 // walls

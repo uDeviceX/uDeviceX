@@ -2,12 +2,13 @@ void body_force(long it, const BForce *bforce, Sim *s) {
     Flu *flu = &s->flu;
     Rbc *rbc = &s->rbc;
     Rig *rig = &s->rig;
+    Opt *opt = &s->opt;
 
-    if (pushflu)
+    if (opt->push_flu)
         UC(bforce_apply(it, s->coords, flu->mass, bforce, flu->q.n, flu->q.pp, /**/ flu->ff));
-    if (pushsolid && s->solids0)
+    if (opt->push_rig && s->solids0)
         UC(bforce_apply(it, s->coords, rig->mass, bforce, rig->q.n, rig->q.pp, /**/ rig->ff));
-    if (pushrbc && s->opt.rbc)
+    if (opt->push_rbc && s->opt.rbc)
         UC(bforce_apply(it, s->coords, rbc->mass, bforce, rbc->q.n, rbc->q.pp, /**/ rbc->ff));
 }
 
