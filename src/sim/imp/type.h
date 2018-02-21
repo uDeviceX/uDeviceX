@@ -173,7 +173,6 @@ struct Sim {
     Wall wall;
 
     /* parameters */
-    MoveParams *moveparams;
     int3 L;  /* subdomain sizes */
     float kBT;
 
