@@ -23,7 +23,7 @@ void time_next(Time *q, float dt) {
 float time_current(Time *q) { return q->t; }
 long  time_iteration(Time *q) { return q->iteration; }
 float time_dt(Time *q) {
-    if (q->iteration)
+    if (q->iteration == 0)
         ERR("time_dt called before time_next");
     return q->dt;
 }
