@@ -274,6 +274,7 @@ static void ini_dump(int maxp, MPI_Comm cart, const Coords *c, Opt opt, Dump *d)
     EMALLOC(NPARRAY * maxp, &d->pp);
     
     if (opt.dump_field) UC(io_field_ini(cart, c, &d->iofield));
+    if (opt.dump_parts) UC(io_rig_ini(&d->iorig));
     UC(bop_ini(cart, maxp, &d->bop));
     UC(diag_part_ini("diag.txt", &d->diagpart));
 }

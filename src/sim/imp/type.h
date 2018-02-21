@@ -158,6 +158,7 @@ struct Dump {
     Particle *pp;
     
     IoField *iofield;
+    IoRig *iorig;
     BopWork *bop;
     DiagPart *diagpart; /* diagnostic */
 };
