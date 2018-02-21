@@ -93,7 +93,7 @@ void run(const Config *cfg, MPI_Comm cart, float dt, const Coords *coords, const
     MeshRead *off;
     RbcQuants q;
     UC(mesh_read_off(cell, /**/ &off));
-    UC(rbc_ini(off, &q));
+    UC(rbc_ini(false, off, &q));
     UC(run2(cfg, cart, dt, coords, off, ic, seed, par, &q));
     UC(rbc_fin(&q));
     UC(mesh_fin(off));
