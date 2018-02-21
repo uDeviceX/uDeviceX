@@ -154,7 +154,13 @@ struct TimeSeg {
 };
 
 struct Dump {
+    /* host particles for dump */
+    Particle *pp;
+    
     IoField *iofield;
+    IoRig *iorig;
+    BopWork *bop;
+    DiagPart *diagpart; /* diagnostic */
 };
 
 struct Sim {
@@ -166,11 +172,11 @@ struct Sim {
 
     /* parameters */
     MoveParams *moveparams;
+    int3 L;  /* subdomain sizes */
+    float kBT;
 
     /* helpers */
     Coords *coords;
-    int3 L;  /* subdomain sizes */
-    float kBT;
     ObjInter objinter;
     BounceBack bb;
     Colorer colorer;
@@ -185,17 +191,13 @@ struct Sim {
     DCont    *denoutflow;
     DContMap *mapoutflow;
 
-    /* particles on host for dump */
-    Dump dump;
-    Particle *pp_dump;
-    BopWork *dumpt;
-    DiagPart *diagpart; /* diagnostic */
 
     /* state */
     bool solids0;
     bool equilibrating;
 
     Opt opt;
+    Dump dump;
 
     /* inter processing helpers */
     GenColor *gen_color;

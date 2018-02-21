@@ -269,8 +269,14 @@ static void ini_pair_params(const Config *cfg, float kBT, float dt, Sim *s) {
     if (s->opt.fsi) UC(set_params(cfg, kBT, dt, "fsi", s->objinter.fsiparams));
 }
 
-static void ini_dump(MPI_Comm cart, const Coords *c, Opt opt, Dump *d) {
+static void ini_dump(int maxp, MPI_Comm cart, const Coords *c, Opt opt, Dump *d) {
+    enum {NPARRAY = 3}; /* flu, rig and rbc */
+    EMALLOC(NPARRAY * maxp, &d->pp);
+    
     if (opt.dump_field) UC(io_field_ini(cart, c, &d->iofield));
+    if (opt.dump_parts) UC(io_rig_ini(&d->iorig));
+    UC(bop_ini(cart, maxp, &d->bop));
+    UC(diag_part_ini("diag.txt", &d->diagpart));
 }
 
 void sim_ini(Config *cfg, MPI_Comm cart,  Time *time, /**/ Sim **sim) {
@@ -288,7 +294,6 @@ void sim_ini(Config *cfg, MPI_Comm cart,  Time *time, /**/ Sim **sim) {
 
     s->L = subdomain(s->coords);
     UC(conf_lookup_float(cfg, "glb.kBT", &s->kBT));
-    UC(diag_part_ini("diag.txt", &s->diagpart));
     
     maxp = SAFETY_FACTOR_MAXP * s->L.x * s->L.y * s->L.z * numberdensity;
     UC(time_step_ini(cfg, &s->time_step));
@@ -297,9 +302,7 @@ void sim_ini(Config *cfg, MPI_Comm cart,  Time *time, /**/ Sim **sim) {
     UC(read_opt(cfg, &s->opt));
     UC(ini_pair_params(cfg, s->kBT, dt, s));
 
-    EMALLOC(3 * maxp, &s->pp_dump);
-
-    UC(ini_dump(s->cart, s->coords, s->opt, /**/ &s->dump));
+    UC(ini_dump(maxp, s->cart, s->coords, s->opt, /**/ &s->dump));
     
     if (s->opt.rbc)        UC(ini_rbc(cfg, s->cart, s->L, /**/ &s->rbc));
 
@@ -310,8 +313,6 @@ void sim_ini(Config *cfg, MPI_Comm cart,  Time *time, /**/ Sim **sim) {
 
     if (s->opt.rbc || s->opt.rig)
         UC(ini_objinter(s->cart, maxp, s->L, &s->opt, /**/ &s->objinter));
-
-    UC(bop_ini(s->cart, maxp, &s->dumpt));
 
     if (walls) ini_wall(cfg, s->L, &s->wall);
 

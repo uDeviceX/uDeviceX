@@ -141,10 +141,13 @@ static void fin_pair_params(Sim *s) {
 
 static void fin_dump(Opt opt, Dump *d) {
     if (opt.dump_field) UC(io_field_fin(d->iofield));
+    if (opt.dump_parts) UC(io_rig_fin(d->iorig));
+    UC(bop_fin(d->bop));
+    UC(diag_part_fin(d->diagpart));
+    EFREE(d->pp);
 }
 
 void sim_fin(Sim *s) {
-    UC(bop_fin(s->dumpt));
     if (s->opt.rbc || s->opt.rig)
         UC(fin_objinter(&s->opt, &s->objinter));
 
@@ -158,7 +161,7 @@ void sim_fin(Sim *s) {
     UC(fin_flu(s->opt, &s->flu));
 
     if (s->opt.flucolors && s->opt.rbc)
-        fin_colorer(/**/ &s->colorer);
+        UC(fin_colorer(/**/ &s->colorer));
 
     if (s->opt.rig) {
         UC(fin_rig(/**/ &s->rig));
@@ -166,15 +169,12 @@ void sim_fin(Sim *s) {
         if (s->opt.sbounce)
             UC(fin_bounce_back(&s->bb));
     }
-
-    EFREE(s->pp_dump);
     
     if (s->opt.rbc) UC(fin_rbc(/**/ &s->rbc));
 
     UC(fin_dump(s->opt, &s->dump));
     UC(scheme_restrain_fin(s->restrain));
     UC(coords_fin(/**/ s->coords));
-    UC(diag_part_fin(s->diagpart));
     UC(time_step_fin(s->time_step));
 
     UC(scheme_move_params_fin(s->moveparams));

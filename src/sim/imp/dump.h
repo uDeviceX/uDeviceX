@@ -1,7 +1,7 @@
 static void dump_part(Sim *s) {
     const Flu *flu = &s->flu;
     const Rig *rig = &s->rig;
-    BopWork *dumpt = s->dumpt;
+    BopWork *bop = s->dump.bop;
     static int id_bop = 0; /* TODO */
     cD2H(flu->q.pp_hst, flu->q.pp, flu->q.n);
     if (s->opt.fluids) {
@@ -19,18 +19,18 @@ static void dump_part(Sim *s) {
 
     if (force_dumps) {
         cD2H(flu->ff_hst, flu->ff, flu->q.n);
-        bop_parts_forces(s->cart, s->coords, flu->q.pp_hst, flu->ff_hst, flu->q.n, "solvent", id_bop, /**/ dumpt);
+        bop_parts_forces(s->cart, s->coords, flu->q.pp_hst, flu->ff_hst, flu->q.n, "solvent", id_bop, /**/ bop);
     } else {
-        bop_parts(s->cart, s->coords, flu->q.pp_hst, flu->q.n, "solvent", id_bop, /**/ dumpt);
+        bop_parts(s->cart, s->coords, flu->q.pp_hst, flu->q.n, "solvent", id_bop, /**/ bop);
     }
 
     if(s->solids0) {
         cD2H(rig->q.pp_hst, rig->q.pp, rig->q.n);
         if (force_dumps) {
             cD2H(rig->ff_hst, rig->ff, rig->q.n);
-            bop_parts_forces(s->cart, s->coords, rig->q.pp_hst, rig->ff_hst, rig->q.n, "solid", id_bop, /**/ dumpt);
+            bop_parts_forces(s->cart, s->coords, rig->q.pp_hst, rig->ff_hst, rig->q.n, "solid", id_bop, /**/ bop);
         } else {
-            bop_parts(s->cart, s->coords, rig->q.pp_hst, rig->q.n, "solid", id_bop, /**/ dumpt);
+            bop_parts(s->cart, s->coords, rig->q.pp_hst, rig->q.n, "solid", id_bop, /**/ bop);
         }
     }
     id_bop++;
@@ -39,8 +39,8 @@ static void dump_part(Sim *s) {
 static void dump_rbcs(Sim *s) {
     const Rbc *r = &s->rbc;
     static int id = 0;
-    cD2H(s->pp_dump, r->q.pp, r->q.n);
-    UC(mesh_write_dump(r->mesh_write, s->cart, s->coords, r->q.nc, s->pp_dump, id++));
+    cD2H(s->dump.pp, r->q.pp, r->q.n);
+    UC(mesh_write_dump(r->mesh_write, s->cart, s->coords, r->q.nc, s->dump.pp, id++));
 }
 
 static void dump_rbc_coms(Sim *s) {
@@ -54,8 +54,8 @@ static void dump_rbc_coms(Sim *s) {
 
 static void dump_grid(const Sim *s) {
     const Flu *flu = &s->flu;
-    cD2H(s->pp_dump, flu->q.pp, flu->q.n);
-    UC(io_field_dump_pp(s->coords, s->cart, s->dump.iofield, flu->q.n, s->pp_dump));
+    cD2H(s->dump.pp, flu->q.pp, flu->q.n);
+    UC(io_field_dump_pp(s->coords, s->cart, s->dump.iofield, flu->q.n, s->dump.pp));
 }
 
 void dump_diag_after(Time *time, int it, bool solid0, Sim *s) { /* after wall */
@@ -65,9 +65,9 @@ void dump_diag_after(Time *time, int it, bool solid0, Sim *s) { /* after wall */
     if (solid0 && (time_cross(time, o->freq_parts))) {
         static int id = 0;
         dt = time_dt(time);
-        rig_dump(dt, it, rig->q.ss_dmp, rig->q.ss_dmp_bb, rig->q.ns, s->coords);
-        cD2H(s->pp_dump, rig->q.i_pp, rig->q.ns * rig->q.nv);
-        UC(mesh_write_dump(rig->mesh_write, s->cart, s->coords, rig->q.ns, s->pp_dump, id++));
+        io_rig_dump(s->coords, dt * it, rig->q.ns, rig->q.ss_dmp, rig->q.ss_dmp_bb, s->dump.iorig);
+        cD2H(s->dump.pp, rig->q.i_pp, rig->q.ns * rig->q.nv);
+        UC(mesh_write_dump(rig->mesh_write, s->cart, s->coords, rig->q.ns, s->dump.pp, id++));
     }
 }
 
@@ -78,13 +78,13 @@ static int download_pp(Sim *s) { /* device to host  data transfer */
     Rig *rig = &s->rig;
 
     if (flu->q.n) {
-        cD2H(s->pp_dump + np, flu->q.pp, flu->q.n);    np += flu->q.n;
+        cD2H(s->dump.pp + np, flu->q.pp, flu->q.n);    np += flu->q.n;
     }
     if (s->solids0 && rig->q.n) {
-        cD2H(s->pp_dump + np, rig->q.pp, rig->q.n);    np += rig->q.n;
+        cD2H(s->dump.pp + np, rig->q.pp, rig->q.n);    np += rig->q.n;
     }
     if (s->opt.rbc && rbc->q.n) {
-        cD2H(s->pp_dump + np, rbc->q.pp, rbc->q.n);    np += rbc->q.n;
+        cD2H(s->dump.pp + np, rbc->q.pp, rbc->q.n);    np += rbc->q.n;
     }
     return np;
 }
@@ -93,7 +93,7 @@ static void diag(float time, Sim *s) {
     if (time < 0) ERR("time = %g < 0", time);
     int n;
     n = download_pp(s);
-    UC(diag_part_apply(s->diagpart, s->cart, time, n, s->pp_dump));
+    UC(diag_part_apply(s->dump.diagpart, s->cart, time, n, s->dump.pp));
 }
 
 static void dump_strt_templ(const Coords *coords, Wall *w, Sim *s) { /* template dumps (wall, solid) */
