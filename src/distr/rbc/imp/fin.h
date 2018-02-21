@@ -4,7 +4,7 @@ void drbc_pack_fin(DRbcPack *p) {
     CC(d::Free(p->minext));
     CC(d::Free(p->maxext));
 
-    if (rbc_ids) {
+    if (p->ids) {
         UC(dmap_fin_host(NBAGS, /**/ &p->hmap));
         UC(comm_bags_fin(HST_ONLY, HST_ONLY, /**/ &p->hii, NULL));
     }
@@ -13,14 +13,14 @@ void drbc_pack_fin(DRbcPack *p) {
 
 void drbc_comm_fin(DRbcComm *c) {
     UC(comm_fin(c->pp));
-    if (rbc_ids)
+    if (c->ids)
         UC(comm_fin(c->ii));
     UC(efree(c));
 }
 
 void drbc_unpack_fin(DRbcUnpack *u) {
     UC(comm_bags_fin(HST_ONLY, NONE, /**/ &u->hpp, NULL));
-    if (rbc_ids)
+    if (u->ids)
         UC(comm_bags_fin(HST_ONLY, NONE, /**/ &u->hii, NULL));
     UC(efree(u));
 }

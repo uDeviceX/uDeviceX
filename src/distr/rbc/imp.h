@@ -3,9 +3,9 @@ struct DRbcComm;
 struct DRbcUnpack;
 
 // tag::interface[]
-void drbc_pack_ini(int3 L, int maxc, int nv, DRbcPack **p);
-void drbc_comm_ini(MPI_Comm comm, /**/ DRbcComm **c);
-void drbc_unpack_ini(int3 L, int maxc, int nv, DRbcUnpack **u);
+void drbc_pack_ini(bool ids, int3 L, int maxc, int nv, DRbcPack **p);
+void drbc_comm_ini(bool ids, MPI_Comm comm, /**/ DRbcComm **c);
+void drbc_unpack_ini(bool ids, int3 L, int maxc, int nv, DRbcUnpack **u);
 
 void drbc_pack_fin(DRbcPack *p);
 void drbc_comm_fin(DRbcComm *c);

@@ -6,6 +6,7 @@ struct DRbcPack {
     hBags hpp;
 
     /* optional: ids */
+    bool ids;
     DMap hmap;
     hBags hii;
 
@@ -15,12 +16,14 @@ struct DRbcPack {
 struct DRbcComm {
     /* optional: ids */
     Comm *pp, *ii;
+    bool ids;
 };
 
 struct DRbcUnpack {
     hBags hpp;
 
     /* optional: ids */
+    bool ids;
     hBags hii;
 
     int3 L; /* subdomain size */

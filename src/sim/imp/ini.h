@@ -43,10 +43,10 @@ static void ini_flu_distr(Opt opt, MPI_Comm comm, int3 L, /**/ FluDistr *d) {
     UC(dflu_status_ini(/**/ &d->s));
 }
 
-static void ini_rbc_distr(int nv, MPI_Comm comm, int3 L, /**/ RbcDistr *d) {
-    UC(drbc_pack_ini(L, MAX_CELL_NUM, nv, /**/ &d->p));
-    UC(drbc_comm_ini(comm, /**/ &d->c));
-    UC(drbc_unpack_ini(L, MAX_CELL_NUM, nv, /**/ &d->u));
+static void ini_rbc_distr(bool ids, int nv, MPI_Comm comm, int3 L, /**/ RbcDistr *d) {
+    UC(drbc_pack_ini(ids, L, MAX_CELL_NUM, nv, /**/ &d->p));
+    UC(drbc_comm_ini(ids, comm, /**/ &d->c));
+    UC(drbc_unpack_ini(ids, L, MAX_CELL_NUM, nv, /**/ &d->u));
 }
 
 static void ini_rig_distr(int nv, MPI_Comm comm, int3 L, /**/ RigDistr *d) {
@@ -152,7 +152,7 @@ static void ini_rbc(const Config *cfg, MPI_Comm cart, int3 L, /**/ Rbc *r) {
     Dalloc(&r->ff, MAX_CELL_NUM * nv);
     UC(triangles_ini(r->cell, /**/ &r->tri));
     UC(rbc_ini(r->cell, &r->q));
-    UC(ini_rbc_distr(nv, cart, L, /**/ &r->d));
+    UC(ini_rbc_distr(rbc_ids, nv, cart, L, /**/ &r->d));
     if (rbc_com_dumps) UC(rbc_com_ini(nv, MAX_CELL_NUM, /**/ &r->com));
     if (RBC_STRETCH)   UC(rbc_stretch_ini("rbc.stretch", nv, /**/ &r->stretch));
     UC(rbc_params_ini(&r->params));
