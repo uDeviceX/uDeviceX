@@ -10,8 +10,7 @@ usg() {
 if test $# -ne 0 -a "$1" = -h; then usg; fi
 
 d=$1
-
-FF=`find $d -type f \( -name '*.adoc' ! -name '*.inc.adoc' \)`
+shift
 
 make_path() {
     dir=$1; shift
@@ -22,14 +21,14 @@ make_path() {
 
 filter_deps() {
     for i in "$@"; do
-	if echo $i | grep "inc.adoc"; then
+	if echo $i | grep "adoc"; then
 	    echo $i
 	fi
     done
 }
 
 deps() {
-    for f in $FF; do
+    for f in "$@"; do
 	target=`echo ${f%.adoc}.html`
 	DIR=`dirname $f`
 	DEPS=`grep "$f" -e "include::" | cut -d':' -f 3 | cut -d'[' -f 1`
@@ -39,5 +38,4 @@ deps() {
     done
 }
 
-deps
-#deps > make/deps.mk
+deps "$@"

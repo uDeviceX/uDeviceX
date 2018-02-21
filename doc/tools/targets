@@ -1,16 +1,14 @@
 #!/bin/sh
 
 usg() {
-    echo "usg: u.doc.targets <doc dir> > targets.mk"
+    echo "usg: u.doc.targets <doc dir> <f1.adoc f2.adoc...> > targets.mk"
     exit 1
 }
 
 if test $# -ne 0 -a "$1" = -h; then usg; fi
 
 d=$1
-
-
-ADOC=`find $d -type f \( -iname "*.adoc" ! -iname "*.inc.adoc" \)`
+shift
 
 ext_html() (
     for f in $@; do
@@ -18,6 +16,6 @@ ext_html() (
     done
 )
 
-PAGES=`ext_html $ADOC | sort | xargs`
+PAGES=`ext_html $@ | sort | xargs`
 
 echo "PAGES = $PAGES"

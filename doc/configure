@@ -1,10 +1,10 @@
 #!/bin/sh
 
 D="."
+T="all.adoc index.adoc"
 
 # install tools
 make -C tools/ 
 
-u.doc.index   $D > summary.adoc
-u.doc.targets $D > make/target.mk
-u.doc.deps    $D > make/deps.mk
+u.doc.targets $D $T > make/target.mk
+u.doc.deps    $D $T > make/deps.mk
