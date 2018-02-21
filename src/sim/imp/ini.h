@@ -274,6 +274,11 @@ static void read_opt(const Config *c, Opt *o) {
     o->push_rig = b;
 }
 
+static void check_opt(Opt opt) {
+    if (opt.dump_rbc_com && !opt.rbcids)
+        ERR("Need rbc.ids activated to dump rbc com!");
+}
+
 static void coords_log(const Coords *c) {
     msg_print("domain: %d %d %d", xdomain(c), ydomain(c), zdomain(c));
     msg_print("subdomain: [%d:%d][%d:%d][%d:%d]",
@@ -324,6 +329,7 @@ void sim_ini(Config *cfg, MPI_Comm cart, /**/ Time *time, Sim **sim) {
     time_next(time, dt);
     UC(read_opt(cfg, &s->opt));
     UC(read_color_opt(cfg, &s->recolorer));
+    UC(check_opt(s->opt));
     UC(ini_pair_params(cfg, s->kBT, dt, s));
 
     UC(ini_dump(maxp, s->cart, s->coords, s->opt, /**/ &s->dump));
