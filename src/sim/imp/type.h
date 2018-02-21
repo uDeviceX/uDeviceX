@@ -154,7 +154,12 @@ struct TimeSeg {
 };
 
 struct Dump {
+    /* host particles for dump */
+    Particle *pp;
+    
     IoField *iofield;
+    BopWork *bop;
+    DiagPart *diagpart; /* diagnostic */
 };
 
 struct Sim {
@@ -185,11 +190,7 @@ struct Sim {
     DCont    *denoutflow;
     DContMap *mapoutflow;
 
-    /* particles on host for dump */
     Dump dump;
-    Particle *pp_dump;
-    BopWork *dumpt;
-    DiagPart *diagpart; /* diagnostic */
 
     /* state */
     bool solids0;
