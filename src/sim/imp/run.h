@@ -4,17 +4,24 @@ static float get_dt0(Sim *s) {
     return time_step_dt0(time_step);
 }
 
-static float get_dt(Sim *s) {
-    TimeStep *time_step;
-    TimeStepAccel *accel;
-    MPI_Comm comm;
-    float dt;
-    comm = s->cart;
-    time_step = s->time_step;
-    time_step_accel_ini(&accel);
-    dt = time_step_dt(time_step, comm, accel);
-    time_step_accel_fin(accel);
-    return dt;
+static float get_dt(Sim* s, Time* time) {
+    /* Possibility to adapt dt only after equilibration */
+    if (s->equilibrating)
+        return time_step_dt0(s->time_step);
+    else {
+        const Flu *flu = &s->flu;
+        const Rbc *rbc = &s->rbc;
+
+        time_step_accel_reset(s->time_step_accel);
+        if (flu->q.n)
+            time_step_accel_push(s->time_step_accel, flu->mass, flu->q.n, flu->ff);
+        if (s->opt.rbc && rbc->q.n)
+            time_step_accel_push(s->time_step_accel, rbc->mass, rbc->q.n, rbc->ff);
+
+        const float dt = time_step_dt(s->time_step, s->cart, s->time_step_accel);
+        //time_step_log(s->time_step); //TODO
+        return dt;
+    }
 }
 
 static void run_eq(Time *time, float te, Sim *s) { /* equilibrate */
@@ -28,7 +35,7 @@ static void run_eq(Time *time, float te, Sim *s) { /* equilibrate */
     while (time_current(time) < te) {
         UC(step(time, dt, bforce, wall0, 0.0, s));
         time_next(time, dt);
-        dt = get_dt(s);        
+        dt = get_dt(s, time);
     }
     UC(distribute_flu(/**/ s));
     UC(bforce_fin(bforce));
@@ -50,7 +57,7 @@ static void run(const Config *cfg, Time *time, float ts, float te, Sim *s) {
     while (time_current(time) < te) {
         UC(step(time, dt, bforce, walls, ts, s));
         time_next(time, dt);
-        dt = get_dt(s);
+        dt = get_dt(s, time);
     }
     UC(distribute_flu(/**/ s));
     UC(bforce_fin(bforce));
