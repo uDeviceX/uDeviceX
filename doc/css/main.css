@@ -33,8 +33,8 @@ h6 { font-size:1em }
 
 .conum[data-value]{
     display:inline-block;
-    color:#fff!important;
-    background-color:rgba(0,0,0,.8);
+    color:#000!important;
+    background-color:rgba(230,230,230,1);
     -webkit-border-radius:100px;
     border-radius:100px;
     text-align:center;
