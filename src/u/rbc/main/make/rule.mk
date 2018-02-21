@@ -7,7 +7,6 @@ $B/io/diag/mesh/imp.o: $S/io/diag/mesh/imp.cpp; $X -I$S/io/diag/mesh -I$S/.
 $B/io/diag/part/imp.o: $S/io/diag/part/imp.cpp; $X -I$S/io/diag/part -I$S/.
 $B/io/field/h5/imp.o: $S/io/field/h5/imp.cpp; $X -I$S/io/field/h5 -I$S/.
 $B/io/field/imp.o: $S/io/field/imp.cpp; $X -I$S/io/field -I$S/.
-$B/io/fields_grid/imp.o: $S/io/fields_grid/imp.cpp; $X -I$S/io/fields_grid -I$S/.
 $B/io/field/xmf/imp.o: $S/io/field/xmf/imp.cpp; $X -I$S/io/field/xmf -I$S/.
 $B/io/mesh/imp.o: $S/io/mesh/imp.cpp; $X -I$S/io/mesh -I$S/.
 $B/io/mesh/write/imp.o: $S/io/mesh/write/imp.cpp; $X -I$S/io/mesh/write -I$S/.
