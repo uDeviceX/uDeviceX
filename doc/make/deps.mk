@@ -43,6 +43,7 @@
 ./dev/modules/time.html: ./dev/modules/time.adoc 
 ./dev/modules/frag.html: ./dev/modules/frag.adoc 
 ./dev/modules/mesh/triangles.html: ./dev/modules/mesh/triangles.adoc 
+./dev/modules/mesh/positions.html: ./dev/modules/mesh/positions.adoc 
 ./dev/modules/utils/main.html: ./dev/modules/utils/main.adoc ./dev/modules/utils/cc.inc.adoc ./dev/modules/utils/cc.inc.adoc ./dev/modules/utils/error.inc.adoc ./dev/modules/utils/error.inc.adoc ./dev/modules/utils/kl.inc.adoc ./dev/modules/utils/kl.inc.adoc ./dev/modules/utils/mc.inc.adoc ./dev/modules/utils/mc.inc.adoc
 ./dev/conventions.html: ./dev/conventions.adoc 
 ./dev/gource.html: ./dev/gource.adoc 

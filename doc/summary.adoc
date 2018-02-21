@@ -29,6 +29,7 @@
 * link:./dev/modules/fsi{lext}[]
 * link:./dev/modules/io/main{lext}[]
 * link:./dev/modules/math/main{lext}[]
+* link:./dev/modules/mesh/positions{lext}[]
 * link:./dev/modules/mesh/triangles{lext}[]
 * link:./dev/modules/move{lext}[]
 * link:./dev/modules/pair{lext}[]
