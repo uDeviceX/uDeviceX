@@ -1,3 +1,6 @@
+void io_field_ini(const Coords*, IoField**);
+void io_field_fin(IoField*);
+
 static int minmax(int lo, int hi, int x) {
     return \
         x <= lo ? lo :
