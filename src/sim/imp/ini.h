@@ -141,7 +141,7 @@ static void ini_flu(const Config *cfg, Opt opt, MPI_Comm cart, int maxp, int3 L,
     UC(conf_lookup_float(cfg, "flu.mass", &f->mass));
 }
 
-static void ini_rbc(const Config *cfg, MPI_Comm cart, int3 L, /**/ Rbc *r) {
+static void ini_rbc(const Config *cfg, Opt opt, MPI_Comm cart, int3 L, /**/ Rbc *r) {
     int nv;
     const char *directory = "r";
     UC(mesh_read_off("rbc.off", &r->cell));
@@ -151,9 +151,9 @@ static void ini_rbc(const Config *cfg, MPI_Comm cart, int3 L, /**/ Rbc *r) {
     
     Dalloc(&r->ff, MAX_CELL_NUM * nv);
     UC(triangles_ini(r->cell, /**/ &r->tri));
-    UC(rbc_ini(rbc_ids, r->cell, &r->q));
-    UC(ini_rbc_distr(rbc_ids, nv, cart, L, /**/ &r->d));
-    if (rbc_com_dumps) UC(rbc_com_ini(nv, MAX_CELL_NUM, /**/ &r->com));
+    UC(rbc_ini(opt.rbcids, r->cell, &r->q));
+    UC(ini_rbc_distr(opt.rbcids, nv, cart, L, /**/ &r->d));
+    if (opt.dump_rbc_com) UC(rbc_com_ini(nv, MAX_CELL_NUM, /**/ &r->com));
     if (RBC_STRETCH)   UC(rbc_stretch_ini("rbc.stretch", nv, /**/ &r->stretch));
     UC(rbc_params_ini(&r->params));
     UC(rbc_params_set_conf(cfg, r->params));
@@ -335,7 +335,7 @@ void sim_ini(Config *cfg, MPI_Comm cart, /**/ Time *time, Sim **sim) {
 
     UC(ini_dump(maxp, s->cart, s->coords, s->opt, /**/ &s->dump));
 
-    if (s->opt.rbc)        UC(ini_rbc(cfg, s->cart, s->L, /**/ &s->rbc));
+    if (s->opt.rbc)        UC(ini_rbc(cfg, s->opt, s->cart, s->L, /**/ &s->rbc));
 
     if (s->opt.vcon)       UC(ini_vcon(s->cart, s->L, cfg, /**/ &s->vcon));
     if (s->opt.outflow)    UC(ini_outflow(s->coords, maxp, cfg, /**/ &s->outflow));
