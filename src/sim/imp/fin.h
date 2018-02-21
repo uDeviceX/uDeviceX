@@ -142,7 +142,7 @@ static void fin_pair_params(Sim *s) {
 static void fin_dump(Opt opt, Dump *d) {
     if (opt.dump_field) UC(io_field_fin(d->iofield));
     if (opt.dump_parts) UC(io_rig_fin(d->iorig));
-    UC(bop_fin(d->bop));
+    UC(io_bop_fin(d->bop));
     UC(diag_part_fin(d->diagpart));
     EFREE(d->pp);
 }
