@@ -46,17 +46,9 @@
 #define walls (false)
 #endif
 
-/* ids for cell */
-#ifdef rbc_ids
-#error rbc_ids is runtime: rbc.ids
-#endif
 
 #ifndef force_dumps
 #define force_dumps (false)
-#endif
-
-#ifdef rbc_com_dumps
-#error rbc_com_dumps is runtime: dump.rbc_com
 #endif
 
 /* stretch cell?  see doc/stretch.md */
@@ -72,12 +64,24 @@
   #define MESH_SHIFT_EDGE
 #endif
 
-#ifdef rbc_com_freq
-#error rbc_com_freq is runtime: dump.freq_rbc_com (float)
-#endif
-
 #ifndef empty_solid_particles
 #define empty_solid_particles (true)
+#endif
+
+
+/* ========== forbidden variables ============== */
+
+/* ids for cell */
+#ifdef rbc_ids
+#error rbc_ids is runtime: rbc.ids
+#endif
+
+#ifdef rbc_com_dumps
+#error rbc_com_dumps is runtime: dump.rbc_com
+#endif
+
+#ifdef rbc_com_freq
+#error rbc_com_freq is runtime: dump.freq_rbc_com (float)
 #endif
 
 /* recolor solvent crossing periodic boundary ? */
