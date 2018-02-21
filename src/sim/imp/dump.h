@@ -1,21 +1,3 @@
-static int download_pp(Sim *s) { /* device to host  data transfer */
-    int np = 0;
-    Flu *flu = &s->flu;
-    Rbc *rbc = &s->rbc;
-    Rig *rig = &s->rig;
-
-    if (flu->q.n) {
-        cD2H(s->pp_dump + np, flu->q.pp, flu->q.n);    np += flu->q.n;
-    }
-    if (s->solids0 && rig->q.n) {
-        cD2H(s->pp_dump + np, rig->q.pp, rig->q.n);    np += rig->q.n;
-    }
-    if (s->opt.rbc && rbc->q.n) {
-        cD2H(s->pp_dump + np, rbc->q.pp, rbc->q.n);    np += rbc->q.n;
-    }
-    return np;
-}
-
 static void dump_part(Sim *s) {
     const Flu *flu = &s->flu;
     const Rig *rig = &s->rig;
@@ -93,6 +75,24 @@ void dump_diag_after(Time *time, int it, bool solid0, Sim *s) { /* after wall */
         cD2H(s->pp_dump, rig->q.i_pp, rig->q.ns * rig->q.nv);
         UC(mesh_write_dump(rig->mesh_write, s->cart, s->coords, rig->q.ns, s->pp_dump, id++));
     }
+}
+
+static int download_pp(Sim *s) { /* device to host  data transfer */
+    int np = 0;
+    Flu *flu = &s->flu;
+    Rbc *rbc = &s->rbc;
+    Rig *rig = &s->rig;
+
+    if (flu->q.n) {
+        cD2H(s->pp_dump + np, flu->q.pp, flu->q.n);    np += flu->q.n;
+    }
+    if (s->solids0 && rig->q.n) {
+        cD2H(s->pp_dump + np, rig->q.pp, rig->q.n);    np += rig->q.n;
+    }
+    if (s->opt.rbc && rbc->q.n) {
+        cD2H(s->pp_dump + np, rbc->q.pp, rbc->q.n);    np += rbc->q.n;
+    }
+    return np;
 }
 
 static void diag(float time, Sim *s) {
