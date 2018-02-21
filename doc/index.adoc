@@ -5,7 +5,8 @@ include::header.adoc[]
 image::include/pach.png[]
 
 :leveloffset:  1
-include::dev/intro.adoc[]
+
+include::intro.adoc[]
 
 == User Documentation
 

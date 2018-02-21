@@ -18,7 +18,7 @@ and requires NVIDIA GPUs. Simulation are set from a configuration file
 and from command line options. Here is an example
 
 ----
-udx conf.cfg 'glb { dt = 0.1 }'
+udx conf.cfg 'time = { dt = 0.1 }'
 ----
 
 Configuration files and command line options follow the syntax of
