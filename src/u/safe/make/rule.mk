@@ -60,7 +60,6 @@ $B/meshbb/imp.o: $S/meshbb/imp.cu; $N -I$S/meshbb -I$S/.
 $B/mesh/bbox/imp.o: $S/mesh/bbox/imp.cpp; $X -I$S/mesh/bbox -I$S/.
 $B/mesh/collision/imp.o: $S/mesh/collision/imp.cu; $N -I$S/mesh/collision -I$S/.
 $B/mesh/dist/imp.o: $S/mesh/dist/imp.cpp; $X -I$S/mesh/dist -I$S/.
-$B/mesh/positions/imp.o: $S/mesh/positions/imp.cpp; $X -I$S/mesh/positions -I$S/.
 $B/mesh/props/imp.o: $S/mesh/props/imp.cpp; $X -I$S/mesh/props -I$S/.
 $B/mesh/triangles/imp.o: $S/mesh/triangles/imp.cpp; $X -I$S/mesh/triangles -I$S/.
 $B/mpi/glb.o: $S/mpi/glb.cpp; $X -I$S/mpi -I$S/.
@@ -90,8 +89,6 @@ $B/rig/imp.o: $S/rig/imp.cpp; $X -I$S/rig -I$S/.
 $B/scheme/force/conf.o: $S/scheme/force/conf.cpp; $X -I$S/scheme/force -I$S/.
 $B/scheme/force/imp.o: $S/scheme/force/imp.cu; $N -I$S/scheme/force -I$S/.
 $B/scheme/move/imp.o: $S/scheme/move/imp.cu; $N -I$S/scheme/move -I$S/.
-$B/scheme/move/params/conf.o: $S/scheme/move/params/conf.cpp; $X -I$S/scheme/move/params -I$S/.
-$B/scheme/move/params/imp.o: $S/scheme/move/params/imp.cpp; $X -I$S/scheme/move/params -I$S/.
 $B/scheme/restrain/conf.o: $S/scheme/restrain/conf.cpp; $X -I$S/scheme/restrain -I$S/.
 $B/scheme/restrain/imp.o: $S/scheme/restrain/imp.cu; $N -I$S/scheme/restrain -I$S/.
 $B/scheme/time/imp.o: $S/scheme/time/imp.cpp; $X -I$S/scheme/time -I$S/.

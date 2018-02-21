@@ -330,9 +330,6 @@ void sim_ini(Config *cfg, MPI_Comm cart,  Time *time, /**/ Sim **sim) {
             UC(ini_bounce_back(s->cart, maxp, s->L, &s->rig, /**/ &s->bb));
     }
 
-    UC(scheme_move_params_ini(&s->moveparams));
-    UC(scheme_move_params_conf(cfg, s->moveparams));
-
     UC(scheme_restrain_ini(&s->restrain));
     UC(scheme_restrain_set_conf(cfg, s->restrain));
 

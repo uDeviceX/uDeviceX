@@ -85,15 +85,15 @@ void bounce_solid(float dt, int3 L, BounceBack *bb, Rig *s, Flu *flu) {
 }
 
 
-void update_solvent(float dt, MoveParams *moveparams, /**/ Flu *f) {
-    scheme_move_apply(dt, moveparams, f->mass, f->q.n, f->ff, f->q.pp);
+void update_solvent(float dt, /**/ Flu *f) {
+    scheme_move_apply(dt, f->mass, f->q.n, f->ff, f->q.pp);
 }
 
-void update_rbc(float dt, MoveParams *moveparams, long it, Rbc *r, Sim *s) {
+void update_rbc(float dt, long it, Rbc *r, Sim *s) {
     bool cond;
     cond = s->opt.flucolors && color_freq && it % color_freq == 0;
     if (cond) {msg_print("recolor"); gen_colors(r, &s->colorer, /**/ &s->flu);}; /* TODO: does not belong here*/
-    scheme_move_apply(dt, moveparams, r->mass, r->q.n, r->ff, r->q.pp);
+    scheme_move_apply(dt, r->mass, r->q.n, r->ff, r->q.pp);
 }
 
 void restrain(long it, Sim *s) {

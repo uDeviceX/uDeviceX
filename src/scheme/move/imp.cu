@@ -16,8 +16,6 @@
 #include "inc/type.h"
 #include "inc/dev.h"
 
-#include "scheme/move/params/imp.h"
-
 #include "imp.h"
 
 namespace scheme_move_dev {

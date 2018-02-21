@@ -177,8 +177,6 @@ void sim_fin(Sim *s) {
     UC(coords_fin(/**/ s->coords));
     UC(time_step_fin(s->time_step));
 
-    UC(scheme_move_params_fin(s->moveparams));
-
     UC(fin_pair_params(s));
     UC(inter_color_fin(s->gen_color));
     UC(dbg_fin(s->dbg));

@@ -30,9 +30,9 @@ static void step(Time *time, BForce *bforce, bool wall0, int ts, int it, Sim *s)
     UC(body_force(it, bforce, s));
 
     UC(restrain(it, /**/ s));
-    UC(update_solvent(dt, s->moveparams, /**/ flu));
+    UC(update_solvent(dt, /**/ flu));
     if (s->solids0) update_solid(dt, /**/ rig);
-    if (s->opt.rbc) update_rbc(dt, s->moveparams, it, rbc, s);
+    if (s->opt.rbc) update_rbc(dt, it, rbc, s);
 
     UC(check_vel(dt, s));
 
