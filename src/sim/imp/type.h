@@ -148,6 +148,7 @@ struct Opt {
     bool dump_field, dump_parts, dump_strt;
     float freq_field, freq_parts, freq_strt;
     int recolor_freq;
+    bool push_flu, push_rbc, push_rig;
 };
 
 struct TimeSeg {
