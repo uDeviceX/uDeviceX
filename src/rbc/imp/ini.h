@@ -8,13 +8,14 @@ static void ini_common(RbcQuants *q, const int4 *tt) {
 
 static void ini_ids(RbcQuants *q)  { EMALLOC(MAX_CELL_NUM, &q->ii); }
 
-void rbc_ini(const MeshRead *cell, RbcQuants *q) {
+void rbc_ini(bool ids, const MeshRead *cell, RbcQuants *q) {
     const int4 *tt;
     q->nv = mesh_get_nv(cell);
     q->nt = mesh_get_nt(cell);
     tt = mesh_get_tri(cell);
 
     q->n = q->nc = 0;
+    q->ids = ids;
     UC(ini_common(q, tt));
-    if (rbc_ids)         UC(ini_ids(q));
+    if (ids)         UC(ini_ids(q));
 }

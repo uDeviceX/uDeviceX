@@ -1,7 +1,7 @@
 struct Coords;
 struct MeshRead;
 
-void rbc_ini(const MeshRead*, RbcQuants*);
+void rbc_ini(bool ids, const MeshRead*, RbcQuants*);
 void rbc_fin(RbcQuants*);
 
 void rbc_gen_quants(const Coords*, MPI_Comm comm, MeshRead*, const char *ic, RbcQuants*);

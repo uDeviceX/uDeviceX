@@ -7,6 +7,6 @@ static void fin_common(RbcQuants *q) {
 static void fin_ids(RbcQuants *q) { EFREE(q->ii);   }
 
 void rbc_fin(RbcQuants *q) {
-    if (rbc_ids) fin_ids(q);
+    if (q->ids) fin_ids(q);
     fin_common(q);
 }

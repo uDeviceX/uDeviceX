@@ -17,7 +17,7 @@ void rbc_strt_quants(const Coords *coords, MeshRead *off, int id, RbcQuants *q) 
     int nv;
     nv = mesh_get_nv(off);
     setup_from_strt(coords, nv, id, /**/ q->pp, &q->nc, &q->n, /*w*/ q->pp_hst);
-    if (rbc_ids) ids_from_strt(coords, id, /**/ q->ii);
+    if (q->ids) ids_from_strt(coords, id, /**/ q->ii);
 }
 
 static void strt_dump(const Coords *coords, int id, int n, const Particle *pp, /*w*/ Particle *pp_hst) {
@@ -31,7 +31,7 @@ static void strt_dump_ii(const Coords *coords, int id, int nc, const int *ii) {
 
 void rbc_strt_dump(const Coords *coords, int id, const RbcQuants *q) {
     strt_dump(coords, id, q->n, q->pp, /*w*/ q->pp_hst);
-    if (rbc_ids)
+    if (q->ids)
         strt_dump_ii(coords, id, q->nc, q->ii);
 }
 

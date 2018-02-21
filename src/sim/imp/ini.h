@@ -151,7 +151,7 @@ static void ini_rbc(const Config *cfg, MPI_Comm cart, int3 L, /**/ Rbc *r) {
     
     Dalloc(&r->ff, MAX_CELL_NUM * nv);
     UC(triangles_ini(r->cell, /**/ &r->tri));
-    UC(rbc_ini(r->cell, &r->q));
+    UC(rbc_ini(rbc_ids, r->cell, &r->q));
     UC(ini_rbc_distr(rbc_ids, nv, cart, L, /**/ &r->d));
     if (rbc_com_dumps) UC(rbc_com_ini(nv, MAX_CELL_NUM, /**/ &r->com));
     if (RBC_STRETCH)   UC(rbc_stretch_ini("rbc.stretch", nv, /**/ &r->stretch));
