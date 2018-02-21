@@ -1,3 +1,8 @@
 = Positions
 :lext: .adoc
 :src: ../../../../src
+
+[source,cpp]
+----
+include::{src}/mesh/positions/imp.h[tag=interface]
+----
