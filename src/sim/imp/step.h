@@ -1,5 +1,12 @@
-static float get_dt(Time *time, Sim*) {
-    return time_dt(time);
+static float get_dt(Sim *s) {
+    TimeStep *time_step;
+    TimeStepAccel *accel;
+    MPI_Comm comm;
+    comm = s->cart;
+    time_step = s->time_step;
+    time_step_accel_ini(&accel);
+    time_step_accel_fin(accel);
+    return time_step_dt(time_step, comm, accel);
 }
 
 static void step(Time *time, float dt, BForce *bforce, bool wall0, float tstart, Sim *s) {
