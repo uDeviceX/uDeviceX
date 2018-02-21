@@ -56,10 +56,12 @@ static void dump_grid(const Sim *s) {
     UC(io_field_dump_pp(s->coords, s->cart, s->dump.iofield, flu->q.n, s->dump.pp));
 }
 
-void dump_diag_after(Time *time, int it, bool solid0, Sim *s) { /* after wall */
+void dump_diag_after(Time *time, bool solid0, Sim *s) { /* after wall */
+    long it;
     float dt;
     const Rig *rig = &s->rig;
     const Opt *o = &s->opt;
+    it = time_iteration(time);
     if (solid0 && (time_cross(time, o->freq_parts))) {
         dt = time_dt(time);
         io_rig_dump(s->coords, dt * it, rig->q.ns, rig->q.ss_dmp, rig->q.ss_dmp_bb, s->dump.iorig);
