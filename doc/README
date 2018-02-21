@@ -16,12 +16,10 @@ Update general uDeviceX tools if necessary:
 
 After modifying existing files:
 1. make
-2. rm all.html
-3. ./tools/start -> starts server. do it only once
-4. ./tools/view -> to view changes locally
-5. add/commit/push to udx repo
-6. ./tools/deploy -> updates online documentation [ssh key in github account must me set!]
+2. ./tools/start -> starts server. do it only once
+3. ./tools/view -> to view changes locally
+4. add/commit/push to udx repo
+5. ./tools/deploy -> updates online documentation [ssh key in github account must me set!]
 
 If NEW files are added:
-1. Links to modules should be added in `dev/main.adoc'
-2. run ./configure and follow the procedure for modifying files
+ run ./configure and follow the procedure for modifying files
