@@ -1,3 +1,7 @@
+static float get_dt(Time *time, Sim *s) {
+    return time_dt(time);
+}
+
 static void step(Time *time, BForce *bforce, bool wall0, int ts, int it, Sim *s) {
     float dt;
     Flu *flu = &s->flu;
@@ -5,7 +9,7 @@ static void step(Time *time, BForce *bforce, bool wall0, int ts, int it, Sim *s)
     Rig *rig = &s->rig;
     Wall *wall = &s->wall;
     const Opt *opt = &s->opt;
-    dt = time_dt(time);
+    dt = get_dt(time, s);
 
     if (walls && !s->equilibrating)
         UC(wvel_get_step(dt, it - ts, wall->vel, /**/ wall->velstep));
