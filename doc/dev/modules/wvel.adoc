@@ -137,11 +137,8 @@ wvel {
     vdir = 0;
     gdir = 1;
     w = 5.0;
-    log_freq = 1000;
 };
 ----
-
-in this case, the value stem:[3 * \sin(5 t)] is printed every 1000 iterations.
 
 === Hele Shaw 
 
