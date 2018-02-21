@@ -24,6 +24,22 @@
   #define DEV_CUDA
 #endif
 
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+#ifndef BASE_STRT_DUMP
+#define BASE_STRT_DUMP "strt"
+#endif
+
+#ifndef BASE_STRT_READ
+#define BASE_STRT_READ "strt"
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
 
 /* recolor solvent crossing periodic boundary ? */
 #ifndef RECOLOR_FLUX
@@ -38,21 +54,9 @@
 #define walls (false)
 #endif
 
-#ifndef BASE_STRT_DUMP
-#define BASE_STRT_DUMP "strt"
-#endif
-
-#ifndef BASE_STRT_READ
-#define BASE_STRT_READ "strt"
-#endif
-
 /* ids for cell */
 #ifndef rbc_ids
 #define rbc_ids (false)
-#endif
-
-#ifndef DUMP_BASE
-#define DUMP_BASE "."
 #endif
 
 #ifndef force_dumps
@@ -61,11 +65,6 @@
 
 #ifndef rbc_com_dumps
   #define rbc_com_dumps (false)
-#endif
-
-/* compute rbc force in double or float */
-#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
-  #define RBC_DOUBLE
 #endif
 
 /* stretch cell?  see doc/stretch.md */
