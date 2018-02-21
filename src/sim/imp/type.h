@@ -171,11 +171,11 @@ struct Sim {
 
     /* parameters */
     MoveParams *moveparams;
+    int3 L;  /* subdomain sizes */
+    float kBT;
 
     /* helpers */
     Coords *coords;
-    int3 L;  /* subdomain sizes */
-    float kBT;
     ObjInter objinter;
     BounceBack bb;
     Colorer colorer;
@@ -190,13 +190,13 @@ struct Sim {
     DCont    *denoutflow;
     DContMap *mapoutflow;
 
-    Dump dump;
 
     /* state */
     bool solids0;
     bool equilibrating;
 
     Opt opt;
+    Dump dump;
 
     /* inter processing helpers */
     GenColor *gen_color;
