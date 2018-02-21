@@ -1,12 +1,12 @@
-= uDeviceX Documentation
 :lext: .adoc
+
+include::header.adoc[]
 
 image::include/pach.png[]
 
-== Useful links
+:leveloffset:  1
+include::dev/intro.adoc[]
 
-* link:all{lext}[as one page]
-* link:summary{lext}[index]
-* link:dev/main{lext}[developper documentation]
-* link:user/main{lext}[user documentation]
-* link:units/main{lext}[units documentation]
+== Developer Documentation
+
+A description of code can be found link:dev/main{lext}[here].

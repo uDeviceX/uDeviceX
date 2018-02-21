@@ -1,5 +1,5 @@
 B = $(HOME)/bin
-P = deps index targets
+P = deps targets
 
 install:
 	@echo install doc tools to $B

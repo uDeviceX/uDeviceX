@@ -1,7 +1,9 @@
 #!/bin/sh
 
+set -eu
+
 D="."
-T="all.adoc index.adoc"
+T="all.adoc index.adoc dev/main.adoc"
 
 # install tools
 make -C tools/ 

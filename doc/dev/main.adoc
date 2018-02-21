@@ -1,41 +1,100 @@
-= developper documentaion
+= _uDeviceX_ Developer Documentaion
 :lext: .adoc
 
-uDeviceX developper documentation
+:leveloffset:  1
 
-== style and conventions
+include::build.adoc[]
 
-A list of coding conventions can be found link:conventions{lext}[here].
+include::conventions.adoc[]
 
-== source code modules
+include::cstyle/emacs.adoc[]
 
-* prefix sum: link:modules/algo/scan{lext}[scan]
-* body forces: link:modules/bforce{lext}[bforce]
-* cell lists: link:modules/clist{lext}[clist]
-* contact interactions: link:modules/cnt{lext}[cnt]
-* controlers, open bc: link:modules/control/main{lext}[control]
-* link:modules/coords{lext}[coords]
-* debug configuration: link:modules/dbg{lext}[dbg]
-* flow structure interactions: link:modules/fsi{lext}[fsi]
-* fragments encoder and decoder: link:modules/frag{lext}[frag]
-* generic communicator: link:modules/comm{lext}[comm]
-* generic device API: link:modules/d{lext}[d]
-* math helpers: link:modules/math/main{lext}[math]
-* link:modules/algo/minmax{lext}[minmax]
-* multi solvent: link:modules/color/main{lext}[color]
-* link:modules/partlist{lext}[partlist]
-* link:modules/parser{lext}[parser]
-* red blood cell: link:modules/rbc/main{lext}[rbc]
-* redistribution: link:modules/distr{lext}[distr]
-* restrain: link:modules/restrain{lext}[scheme/restrain]
-* solvent interactions: link:modules/fluforces{lext}[fluforces]
-* time stepping scheme: link:modules/move{lext}[scheme/move]
-* uDevice utilities: link:modules/utils/main{lext}[utils]
-* wall velocity: link:modules/wvel{lext}[wvel]
+include::doc.adoc[]
 
+include::gource.adoc[]
 
-== Useful links
+include::modules/algo/minmax.adoc[]
 
-* link:third{lext}[Third party dependencies]
-* link:build{lext}[how to compile _uDeviceX_ ?]
-* link:gource{lext}[gource]
+include::modules/algo/scan.adoc[]
+
+include::modules/bforce.adoc[]
+
+include::modules/clist.adoc[]
+
+include::modules/cnt.adoc[]
+
+include::modules/color/main.adoc[]
+
+include::modules/comm.adoc[]
+
+include::modules/contact.adoc[]
+
+include::modules/control/main.adoc[]
+
+include::modules/coords.adoc[]
+
+include::modules/d.adoc[]
+
+include::modules/dbg.adoc[]
+
+include::modules/distr.adoc[]
+
+include::modules/exch.adoc[]
+
+include::modules/fluforces.adoc[]
+
+include::modules/frag.adoc[]
+
+include::modules/fsi.adoc[]
+
+include::modules/io/main.adoc[]
+
+include::modules/math/main.adoc[]
+
+include::modules/move.adoc[]
+
+include::modules/pair.adoc[]
+
+include::modules/parray.adoc[]
+
+include::modules/farray.adoc[]
+
+include::modules/parser.adoc[]
+
+include::modules/partlist.adoc[]
+
+include::modules/mesh/triangles.adoc[]
+
+include::modules/rbc/adj.adoc[]
+
+include::modules/rbc/com.adoc[]
+
+include::modules/rbc/forces.adoc[]
+
+include::modules/rbc/main.adoc[]
+
+include::modules/rbc/rnd.adoc[]
+
+include::modules/rbc/shape.adoc[]
+
+include::modules/rbc/stretch.adoc[]
+
+include::modules/restrain.adoc[]
+
+include::modules/rig.adoc[]
+
+include::modules/sdf/main.adoc[]
+
+include::modules/time.adoc[]
+
+include::modules/time_step.adoc[]
+
+include::modules/utils/main.adoc[]
+
+include::modules/wvel.adoc[]
+
+include::third.adoc[]
+
+include::wrap.adoc[]
+
+:leveloffset:  0
