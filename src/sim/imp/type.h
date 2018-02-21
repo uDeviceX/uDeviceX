@@ -212,4 +212,5 @@ struct Sim {
     /* inter processing helpers */
     GenColor *gen_color;
     TimeStep *time_step;
+    TimeStepAccel *time_step_accel;
 };

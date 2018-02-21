@@ -326,6 +326,7 @@ void sim_ini(Config *cfg, MPI_Comm cart, /**/ Time *time, Sim **sim) {
 
     maxp = SAFETY_FACTOR_MAXP * s->L.x * s->L.y * s->L.z * numberdensity;
     UC(time_step_ini(cfg, &s->time_step));
+    UC(time_step_accel_ini(&s->time_step_accel));
     dt = time_step_dt0(s->time_step);
     time_next(time, dt);
     UC(read_opt(cfg, &s->opt));
