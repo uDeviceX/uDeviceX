@@ -3,7 +3,7 @@
 set -eu
 
 D="."
-T="index.adoc dev/main.adoc units/main.adoc"
+T="index.adoc dev/main.adoc user/main.adoc units/main.adoc"
 
 # install tools
 make -C tools/ 
