@@ -31,7 +31,6 @@ static void run(const Config *cfg, Time *time, float ts, float te, Sim *s) {
     start = (long)(ts/time_dt(time)); //assumes dt=const up to now.
     for (it = start; (time_current(time) < te); ++it) {
         UC(step(time, bforce, walls, start, it, s));
-        exit(0);
         dt = time_dt(time);
         time_next(time, dt);
     }
