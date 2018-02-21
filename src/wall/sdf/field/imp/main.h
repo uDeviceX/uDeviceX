@@ -9,7 +9,7 @@ static void dump0(const Coords *coords, const int N0[3], const float *D0, /**/ f
 
 static void dump1(const Coords *coords, MPI_Comm cart, const int N[3], const float *D, /*w*/ float *W) {
     UC(dump0(coords, N, D, /**/ W));
-    UC(io::field::scalar(coords, cart, W, "wall"));
+    UC(io::field::dump_scalar(coords, cart, W, "wall"));
 }
 
 static void dump(const Coords *coords, MPI_Comm cart, const int N[], const float *D) {

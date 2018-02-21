@@ -68,7 +68,7 @@ static void dump0(const Coords *coords, MPI_Comm cart, Particle *pp, int n, int 
         xmf_write(coords, path, names, 4);
 }
 
-void dump(const Coords *coords, MPI_Comm cart, Particle *pp, int n) {
+void dump_pp(const Coords *coords, MPI_Comm cart, Particle *pp, int n) {
     enum {X, Y, Z};
     int nc, sz;
     float *rho, *u[3];
