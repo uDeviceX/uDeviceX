@@ -6,13 +6,6 @@
   #define S_LEVEL (2)
 #endif
 
-// debug
-/* dbg macros */
-#if !defined(DBG_NONE)    && !defined(DBG_TRACE) && \
-    !defined(DBG_SILENT)  && !defined(DBG_PEEK)
-#define DBG_NONE
-#endif
-
 /* [k]ernel [l]aunch macros */
 #if !defined(KL_RELEASE)    && !defined(KL_TRACE)  && \
     !defined(KL_PEEK)       && !defined(KL_UNSAFE) && \
