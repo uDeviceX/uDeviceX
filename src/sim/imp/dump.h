@@ -114,7 +114,9 @@ static void dump_strt(Sim *s) {
     dump_strt0(s->dump.id_strt++, s);
 }
 
-static void dump_diag(Time *time, int it, Sim *s) {
+static void dump_diag(Time *time, Sim *s) {
+    int it;
+    it = time_iteration(time);
     const Opt *o = &s->opt;
     if (time_cross(time, o->freq_parts)) {
         if (o->dump_parts) dump_part(s);

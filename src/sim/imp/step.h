@@ -27,7 +27,7 @@ static void step(Time *time, BForce *bforce, bool wall0, float tstart, Sim *s) {
     UC(check_forces(dt, s));
 
     it = time_iteration(time);
-    dump_diag(time, it, s);
+    dump_diag(time, s);
     dump_diag_after(time, it, s->solids0, s);
     UC(body_force(it, bforce, s));
 
