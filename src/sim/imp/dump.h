@@ -55,7 +55,7 @@ static void dump_rbc_coms(Sim *s) {
 static void dump_grid(const Sim *s) {
     const Flu *flu = &s->flu;
     cD2H(s->pp_dump, flu->q.pp, flu->q.n);
-    io_field_dump_pp(s->coords, s->cart, s->dump.iofield, flu->q.n, s->pp_dump);
+    UC(io_field_dump_pp(s->coords, s->cart, s->dump.iofield, flu->q.n, s->pp_dump));
 }
 
 void dump_diag_after(Time *time, int it, bool solid0, Sim *s) { /* after wall */

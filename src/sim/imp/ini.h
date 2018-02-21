@@ -289,8 +289,6 @@ void sim_ini(Config *cfg, MPI_Comm cart,  Time *time, /**/ Sim **sim) {
     s->L = subdomain(s->coords);
     UC(conf_lookup_float(cfg, "glb.kBT", &s->kBT));
     UC(diag_part_ini("diag.txt", &s->diagpart));
-
-    UC(ini_dump(s->cart, s->coords, s->opt, /**/ &s->dump));
     
     maxp = SAFETY_FACTOR_MAXP * s->L.x * s->L.y * s->L.z * numberdensity;
     UC(time_step_ini(cfg, &s->time_step));
@@ -301,6 +299,8 @@ void sim_ini(Config *cfg, MPI_Comm cart,  Time *time, /**/ Sim **sim) {
 
     EMALLOC(3 * maxp, &s->pp_dump);
 
+    UC(ini_dump(s->cart, s->coords, s->opt, /**/ &s->dump));
+    
     if (s->opt.rbc)        UC(ini_rbc(cfg, s->cart, s->L, /**/ &s->rbc));
 
     if (s->opt.vcon)       UC(ini_vcon(s->cart, s->L, cfg, /**/ &s->vcon));
