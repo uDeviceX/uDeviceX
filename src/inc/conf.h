@@ -1,3 +1,115 @@
+/* DPD kernel envelop parameter: random and dissipative kernels (wd = wr^2)
+   0: wr = 1 - r
+   1: wr = (1 - r)^(1/2)
+   2: wr = (1 - r)^(1/4) */
+#ifndef S_LEVEL
+  #define S_LEVEL (2)
+#endif
+
+// debug
+/* dbg macros */
+#if !defined(DBG_NONE)    && !defined(DBG_TRACE) && \
+    !defined(DBG_SILENT)  && !defined(DBG_PEEK)
+#define DBG_NONE
+#endif
+
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_TRACE)  && \
+    !defined(KL_PEEK)       && !defined(KL_UNSAFE) && \
+    !defined(KL_TRACE_PEEK) && !defined(KL_NONE)   && \
+    !defined(KL_CPU)        && !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC) && !defined(CC_TRACE) && !defined(CC_TRACE_PEEK)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+
+/* recolor solvent crossing periodic boundary ? */
+#ifndef RECOLOR_FLUX
+#define RECOLOR_FLUX (false)
+#endif
+#ifndef COL_FLUX_DIR
+#define COL_FLUX_DIR (0)
+#endif
+
+// walls
+#ifndef walls
+#define walls (false)
+#endif
+
+#ifndef BASE_STRT_DUMP
+#define BASE_STRT_DUMP "strt"
+#endif
+
+#ifndef BASE_STRT_READ
+#define BASE_STRT_READ "strt"
+#endif
+
+/* ids for cell */
+#ifndef rbc_ids
+#define rbc_ids (false)
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+
+#ifndef force_dumps
+#define force_dumps (false)
+#endif
+
+#ifndef rbc_com_dumps
+  #define rbc_com_dumps (false)
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* stretch cell?  see doc/stretch.md */
+#ifndef RBC_STRETCH
+  #define RBC_STRETCH (false)
+#endif
+
+/* maximum allowed degree of a vertex */
+#define RBCmd 7
+
+#ifndef rbounce_back
+#define rbounce_back (false)
+#endif
+
+/* dump meshes relative to the domain edge or domain center? */
+#if !defined(MESH_SHIFT_EDGE) && !defined(MESH_SHIFT_CENTER)
+  #define MESH_SHIFT_EDGE
+#endif
+    
+/* assert */
+#if rbc_com_dumps && !rbc_ids
+    #error "Need rbc ids for rbc_com_dumps"
+#endif
+
+#ifndef rbc_com_freq
+#define rbc_com_freq (1000)
+#endif
+
+#ifndef empty_solid_particles
+#define empty_solid_particles (true)
+#endif
+
+// bb rescue
+#ifndef rescue_freq
+#define rescue_freq (100)
+#endif
+
 #if defined(RESTART)
   #error RESTART is runtime: glb.restart
 #endif
@@ -84,62 +196,14 @@
 #error color_freq is runtime: flu.recolor_freq (int)
 #endif
 
-/* recolor solvent crossing periodic boundary ? */
-#ifndef RECOLOR_FLUX
-#define RECOLOR_FLUX (false)
-#endif
-#ifndef COL_FLUX_DIR
-#define COL_FLUX_DIR (0)
-#endif
-
 /* ids for solvent */
 #ifdef global_ids
 #error  global_ids is runtime: flu/ids in cfg
 #endif
 
-/* ids for cell */
-#ifndef rbc_ids
-#define rbc_ids (false)
-#endif
-
-#ifndef DUMP_BASE
-#define DUMP_BASE "."
-#endif
-
-#ifndef force_dumps
-#define force_dumps (false)
-#endif
-
-#ifndef rbc_com_dumps
-  #define rbc_com_dumps (false)
-#endif
-
-/* compute rbc force in double or float */
-#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
-  #define RBC_DOUBLE
-#endif
-
-/* stretch cell?  see doc/stretch.md */
-#ifndef RBC_STRETCH
-  #define RBC_STRETCH (false)
-#endif
 
 #ifdef RBC_RND
     #error RBC_RND is runtime: rbc.rnd
-#endif
-
-/* dump meshes relative to the domain edge or domain center? */
-#if !defined(MESH_SHIFT_EDGE) && !defined(MESH_SHIFT_CENTER)
-  #define MESH_SHIFT_EDGE
-#endif
-
-/* assert */
-#if rbc_com_dumps && !rbc_ids
-    #error "Need rbc ids for rbc_com_dumps"
-#endif
-
-#ifndef rbc_com_freq
-#define rbc_com_freq (1000)
 #endif
 
 
@@ -169,10 +233,6 @@
 #error sbounce_back is runtime: rig/sbounce in cfg
 #endif
 
-#ifndef rescue_freq
-#define rescue_freq (100)
-#endif
-
 #ifdef pushflu
 #error pushflu is runtime: flu.push
 #endif
@@ -183,10 +243,6 @@
 
 #ifdef fsiforces
 #error fsi is runtime
-#endif
-
-#ifndef empty_solid_particles
-#define empty_solid_particles (true)
 #endif
 
 #ifdef spdir
@@ -202,54 +258,8 @@
 #error rbc_mass is runtime: rbc.mass
 #endif
 
-/* maximum allowed degree of a vertex */
-#define RBCmd 7
-
-#ifndef rbounce_back
-#define rbounce_back (false)
-#endif
-
 #ifdef pushrbc
 #error pushrbc is runtime: rbc.push
-#endif
-
-// walls
-#ifndef walls
-#define walls (false)
-#endif
-
-#ifndef BASE_STRT_DUMP
-#define BASE_STRT_DUMP "strt"
-#endif
-
-#ifndef BASE_STRT_READ
-#define BASE_STRT_READ "strt"
-#endif
-
-
-// debug
-/* dbg macros */
-#if !defined(DBG_NONE)    && !defined(DBG_TRACE) && \
-    !defined(DBG_SILENT)  && !defined(DBG_PEEK)
-#define DBG_NONE
-#endif
-
-/* [k]ernel [l]aunch macros */
-#if !defined(KL_RELEASE)    && !defined(KL_TRACE)  && \
-    !defined(KL_PEEK)       && !defined(KL_UNSAFE) && \
-    !defined(KL_TRACE_PEEK) && !defined(KL_NONE)   && \
-    !defined(KL_CPU)        && !defined(KL_SYNC)
-#define KL_RELEASE
-#endif
-
-/* [c]uda [c]heck macro */
-#if !defined(CC_RELEASE) && !defined(CC_SYNC) && !defined(CC_TRACE) && !defined(CC_TRACE_PEEK)
-  #define CC_RELEASE
-#endif
-
-/* who plays as device? */
-#if !defined(DEV_CUDA) && !defined(DEV_CPU)
-  #define DEV_CUDA
 #endif
 
 /* a radius of the spherical drop */
@@ -270,14 +280,6 @@
 
 #ifdef RBC_STRESS_FREE
 #error RBC_STRESS_FREE is runtime: rbc.stress_free
-#endif
-
-/* DPD kernel envelop parameter: random and dissipative kernels (wd = wr^2)
-   0: wr = 1 - r
-   1: wr = (1 - r)^(1/2)
-   2: wr = (1 - r)^(1/4) */
-#ifndef S_LEVEL
-  #define S_LEVEL (2)
 #endif
 
 #if defined(adpd_b) || defined(adpd_br) || defined(adpd_r)
