@@ -102,11 +102,6 @@
 #define rbc_ids (false)
 #endif
 
-// dump
-#ifndef dump_all_fields
-#define dump_all_fields (false)
-#endif
-
 #ifndef DUMP_BASE
 #define DUMP_BASE "."
 #endif
