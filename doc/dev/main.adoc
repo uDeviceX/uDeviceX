@@ -28,8 +28,6 @@ include::modules/color/main.adoc[]
 
 include::modules/comm.adoc[]
 
-include::modules/contact.adoc[]
-
 include::modules/control/main.adoc[]
 
 include::modules/coords.adoc[]
@@ -65,6 +63,8 @@ include::modules/parser.adoc[]
 include::modules/partlist.adoc[]
 
 include::modules/mesh/triangles.adoc[]
+
+include::modules/mesh/positions.adoc[]
 
 include::modules/rbc/adj.adoc[]
 

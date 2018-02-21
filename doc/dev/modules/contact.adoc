@@ -1,3 +1,0 @@
-= contact forces
-
-computs interactions between objects.
