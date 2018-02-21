@@ -269,6 +269,10 @@ static void ini_pair_params(const Config *cfg, float kBT, float dt, Sim *s) {
     if (s->opt.fsi) UC(set_params(cfg, kBT, dt, "fsi", s->objinter.fsiparams));
 }
 
+static void ini_dump(MPI_Comm cart, const Coords *c, Opt opt, Dump *d) {
+    if (opt.dump_field) UC(io_field_ini(cart, c, &d->iofield));
+}
+
 void sim_ini(Config *cfg, MPI_Comm cart,  Time *time, /**/ Sim **sim) {
     float dt;
     Sim *s;
@@ -285,6 +289,8 @@ void sim_ini(Config *cfg, MPI_Comm cart,  Time *time, /**/ Sim **sim) {
     s->L = subdomain(s->coords);
     UC(conf_lookup_float(cfg, "glb.kBT", &s->kBT));
     UC(diag_part_ini("diag.txt", &s->diagpart));
+
+    UC(ini_dump(s->cart, s->coords, s->opt, /**/ &s->dump));
     
     maxp = SAFETY_FACTOR_MAXP * s->L.x * s->L.y * s->L.z * numberdensity;
     UC(time_step_ini(cfg, &s->time_step));
@@ -332,7 +338,7 @@ void sim_ini(Config *cfg, MPI_Comm cart,  Time *time, /**/ Sim **sim) {
 
     UC(dbg_ini(&s->dbg));
     UC(dbg_set_conf(cfg, s->dbg));
-
+    
     MC(MPI_Barrier(s->cart));
 }
 
