@@ -80,8 +80,8 @@
 #endif
 
 /* when to re-color rbcs */
-#ifndef color_freq
-#define color_freq    (0)
+#ifdef color_freq
+#error color_freq is runtime: flu.recolor_freq (int)
 #endif
 
 /* recolor solvent crossing periodic boundary ? */
