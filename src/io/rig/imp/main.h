@@ -1,10 +1,21 @@
 enum {X, Y, Z};
 
+void io_rig_ini(IoRig **iop) {
+    IoRig *io;
+    EMALLOC(1, iop);
+    io = *iop;
+    strcpy(io->mode, "w");
+}
+
+void io_rig_fin(IoRig *io) {
+    EFREE(io);
+}
+
 static void write_v(FILE *f, const float v[3]) {
     fprintf(f, "%+.6e %+.6e %+.6e ", v[X], v[Y], v[Z]);
 }
 
-void io_rig_dump(float dt, const int it, const Solid *ss, const Solid *ssbb, int ns, const Coords *c) {
+void io_rig_dump(const Coords *c, int ns, float t, const Solid *ss, const Solid *ssbb) {
     enum {X, Y, Z};
     static bool first = true;
     char fname[256];
@@ -21,7 +32,7 @@ void io_rig_dump(float dt, const int it, const Solid *ss, const Solid *ssbb, int
         if (first) UC(efopen(fname, "w", /**/ &fp));
         else       UC(efopen(fname, "a", /**/ &fp));
 
-        fprintf(fp, "%+.6e ", dt*it);
+        fprintf(fp, "%+.6e ", t);
 
         // shift to global coordinates
         com[X] = xl2xg(c, s->com[X]);

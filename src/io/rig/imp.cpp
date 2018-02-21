@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include <vector_types.h>
+#include <string.h>
 #include "inc/type.h"
 
 #include <conf.h>

@@ -65,7 +65,7 @@ void dump_diag_after(Time *time, int it, bool solid0, Sim *s) { /* after wall */
     if (solid0 && (time_cross(time, o->freq_parts))) {
         static int id = 0;
         dt = time_dt(time);
-        io_rig_dump(dt, it, rig->q.ss_dmp, rig->q.ss_dmp_bb, rig->q.ns, s->coords);
+        io_rig_dump(s->coords, dt * it, rig->q.ns, rig->q.ss_dmp, rig->q.ss_dmp_bb);
         cD2H(s->dump.pp, rig->q.i_pp, rig->q.ns * rig->q.nv);
         UC(mesh_write_dump(rig->mesh_write, s->cart, s->coords, rig->q.ns, s->dump.pp, id++));
     }
