@@ -1,7 +1,7 @@
 = units
 :lext: .adoc
 
-_uDeviceX_ consists of units. They are implemented in link::/src/u/[/src/u/].
+_uDeviceX_ consists of units. They are implemented in `/src/u/`.
 
 == Build and run
 
@@ -53,18 +53,33 @@ u/hw/hst/make/rule.mk` to git.
 
 == list of units
 
-* link:comm{lext}[comm]
-* link:error{lext}[error]
-* hello world
-** link:hw/hst{lext}[host]
-** link:hw/dev{lext}[cuda]
-* link:meshbb{lext}[meshbb]
-* link:mpi{lext}[mpi]
-* link:pair{lext}[pair]
-* red blood cell units
-** link:rbc/force{lext}[force]
-** link:rbc/main{lext}[main]
-** link:rbc/rnd{lext}[rnd]
-* link:sdf{lext}[sdf]
-* link:scan{lext}[scan]
-* link:x{lext}[x]
+:leveloffset:  2
+
+include::comm.adoc[]
+
+include::error.adoc[]
+
+include::hw/dev.adoc[]
+
+include::hw/hst.adoc[]
+
+include::linal.adoc[]
+
+include::meshbb.adoc[]
+
+include::mpi.adoc[]
+
+include::pair.adoc[]
+
+include::rbc/force.adoc[]
+
+include::rbc/main.adoc[]
+
+include::rbc/rnd.adoc[]
+
+include::scan.adoc[]
+
+include::sdf.adoc[]
+
+include::x.adoc[]
+

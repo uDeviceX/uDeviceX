@@ -1,1 +1,1 @@
-PAGES = all.html dev/main.html index.html
+PAGES = dev/main.html index.html units/main.html
