@@ -57,14 +57,10 @@ static void dump_grid(const Sim *s) {
 }
 
 void dump_diag_after(Time *time, bool solid0, Sim *s) { /* after wall */
-    long it;
-    float dt;
     const Rig *rig = &s->rig;
     const Opt *o = &s->opt;
-    it = time_iteration(time);
     if (solid0 && (time_cross(time, o->freq_parts))) {
-        dt = time_dt(time);
-        io_rig_dump(s->coords, dt * it, rig->q.ns, rig->q.ss_dmp, rig->q.ss_dmp_bb, s->dump.iorig);
+        io_rig_dump(s->coords, time_current(time), rig->q.ns, rig->q.ss_dmp, rig->q.ss_dmp_bb, s->dump.iorig);
         cD2H(s->dump.pp, rig->q.i_pp, rig->q.ns * rig->q.nv);
         UC(mesh_write_dump(rig->mesh_write, s->cart, s->coords, rig->q.ns, s->dump.pp, s->dump.id_rig_mesh++));
     }
