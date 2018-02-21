@@ -42,7 +42,7 @@ static void run0(MPI_Comm cart, float dt, float mass, float te, const Coords *co
         Dzero(f, q->n);
         rbc_force_apply(t, par, dt, q, /**/ f);
         stretch::apply(q->nc, stretch, /**/ f);
-        if (pushrbc) body_force(mass, i, coords, bforce, q, /**/ f);
+        body_force(mass, i, coords, bforce, q, /**/ f);
         scheme_move_apply(dt, mass, q->n, f, q->pp);
         if (time_cross(time, part_freq))
             dump(cart, diagpart, dt, coords, q, t, mesh_write);
