@@ -1,0 +1,3 @@
+= Positions
+:lext: .adoc
+:src: ../../../../src
