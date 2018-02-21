@@ -47,16 +47,16 @@
 #endif
 
 /* ids for cell */
-#ifndef rbc_ids
-#define rbc_ids (false)
+#ifdef rbc_ids
+#error rbc_ids is runtime: rbc.ids
 #endif
 
 #ifndef force_dumps
 #define force_dumps (false)
 #endif
 
-#ifndef rbc_com_dumps
-  #define rbc_com_dumps (false)
+#ifdef rbc_com_dumps
+#error rbc_com_dumps is runtime: dump.rbc_com
 #endif
 
 /* stretch cell?  see doc/stretch.md */
@@ -71,14 +71,9 @@
 #if !defined(MESH_SHIFT_EDGE) && !defined(MESH_SHIFT_CENTER)
   #define MESH_SHIFT_EDGE
 #endif
-    
-/* assert */
-#if rbc_com_dumps && !rbc_ids
-    #error "Need rbc ids for rbc_com_dumps"
-#endif
 
-#ifndef rbc_com_freq
-#define rbc_com_freq (1000)
+#ifdef rbc_com_freq
+#error rbc_com_freq is runtime: dump.freq_rbc_com (float)
 #endif
 
 #ifndef empty_solid_particles
