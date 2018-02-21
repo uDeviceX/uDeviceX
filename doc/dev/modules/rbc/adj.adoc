@@ -1,6 +1,6 @@
 = mesh adjacency structure
 :lext: .adoc
-:src: ../../../src
+:src: ../../../../src
 
 Consider closed triangulated mesh with `nv` vertices. Degree of a
 vertex is the number of edges incident to the vertex. Let `md` is a

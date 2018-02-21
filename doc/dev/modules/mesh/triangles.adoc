@@ -1,6 +1,6 @@
 = Triangles
 :lext: .adoc
-:src: ../../../src
+:src: ../../../../src
 
 Triangles on device. It is created from `MeshRead*`.
 
