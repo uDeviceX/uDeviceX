@@ -91,7 +91,7 @@ void update_solvent(float dt, /**/ Flu *f) {
 
 void update_rbc(float dt, long it, Rbc *r, Sim *s) {
     bool cond;
-    cond = s->opt.flucolors && color_freq && it % color_freq == 0;
+    cond = s->opt.flucolors && s->opt.recolor_freq && it % s->opt.recolor_freq == 0;
     if (cond) {
         /* TODO: does not belong here*/
         msg_print("recolor");
