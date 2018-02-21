@@ -1,4 +1,4 @@
-void bop_ini(MPI_Comm comm, int maxp, BopWork **w) {
+void io_bop_ini(MPI_Comm comm, int maxp, BopWork **w) {
     BopWork *t;
     size_t sz;
     UC(emalloc(sizeof(BopWork), (void**) w));
@@ -10,7 +10,7 @@ void bop_ini(MPI_Comm comm, int maxp, BopWork **w) {
     UC(emalloc(sz, (void**) &t->w_pp));
 }
 
-void bop_fin(BopWork *t) {
+void io_bop_fin(BopWork *t) {
     UC(efree(t->w_pp));
     UC(efree(t));
 }
@@ -105,7 +105,7 @@ static long write_data(MPI_Comm cart, const void *data, long n, size_t bytesperd
     return ntot;
 }
     
-void bop_parts(MPI_Comm cart, const Coords *coords, const Particle *pp, long n, const char *name, int id, BopWork *t) {
+void io_bop_parts(MPI_Comm cart, const Coords *coords, const Particle *pp, long n, const char *name, int id, BopWork *t) {
     copy_shift(coords, pp, n, /**/ (float3*) t->w_pp);
         
     char fname[256] = {0};
@@ -116,7 +116,7 @@ void bop_parts(MPI_Comm cart, const Coords *coords, const Particle *pp, long n, 
         header_pp(ntot, name, id);
 }
 
-void bop_parts_forces(MPI_Comm cart, const Coords *coords, const Particle *pp, const Force *ff, long n, const char *name, int id, /*w*/ BopWork *t) {
+void io_bop_parts_forces(MPI_Comm cart, const Coords *coords, const Particle *pp, const Force *ff, long n, const char *name, int id, /*w*/ BopWork *t) {
     copy_shift_with_forces(coords, pp, ff, n, /**/ (float3*) t->w_pp);
             
     char fname[256] = {0};
@@ -128,7 +128,7 @@ void bop_parts_forces(MPI_Comm cart, const Coords *coords, const Particle *pp, c
         header_pp_ff(ntot, name, id);
 }
 
-void bop_stresses(MPI_Comm cart, const float *ss, long n, const char *name, int id) {
+void io_bop_stresses(MPI_Comm cart, const float *ss, long n, const char *name, int id) {
     char fname[256] = {0};
     sprintf(fname, DUMP_BASE "/bop/" PATTERN ".values", name, id);
 
@@ -149,11 +149,11 @@ static void intdata(MPI_Comm cart, const int *ii, long n, const char *name, cons
         header_ii(ntot, name, fields, id);
 }
 
-void bop_ids(MPI_Comm cart, const int *ii, long n, const char *name, int id) {
+void io_bop_ids(MPI_Comm cart, const int *ii, long n, const char *name, int id) {
     intdata(cart, ii, n, name, "id", id);
 }
 
-void bop_colors(MPI_Comm cart, const int *ii, long n, const char *name, int id) {
+void io_bop_colors(MPI_Comm cart, const int *ii, long n, const char *name, int id) {
     intdata(cart, ii, n, name, "color", id);
 }
 
