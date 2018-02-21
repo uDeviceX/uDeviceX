@@ -8,7 +8,6 @@ all: $(PAGES)
 include make/deps.mk
 
 style=-a stylesheet="$(ROOT)/css/main.css"  \
-      -a pygments-style=colorful            \
       -a toc=preamble                       \
       -a sectnums
 

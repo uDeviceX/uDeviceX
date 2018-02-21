@@ -12,6 +12,7 @@ for c; do shift; set -- "$@" "$i"; i="$c"; done
 
 a="-a lext=.html
    -a source-highlighter=pygments
+   -a pygments-style=colorful
    -a icons=font
    -a nofooter
    -a disable-javascript
