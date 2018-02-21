@@ -8,8 +8,4 @@ void time_next(Time*, float dt);
 int  time_cross(Time*, float interval);
 float time_current (Time*);
 long  time_iteration(Time*);
-
-/* TODO: should be removed */
-float time_dt (Time*);
-float time_dt0(Time*);
 // end::interface[]
