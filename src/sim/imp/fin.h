@@ -82,18 +82,18 @@ static void fin_flu(Opt opt, Flu *f) {
     }
 }
 
-static void fin_rbc(Rbc *r) {
-    rbc_fin(&r->q);
-    rbc_force_fin(r->force);
+static void fin_rbc(Opt opt, Rbc *r) {
+    UC(rbc_fin(&r->q));
+    UC(rbc_force_fin(r->force));
 
-    fin_rbc_distr(/**/ &r->d);
+    UC(fin_rbc_distr(/**/ &r->d));
         
     Dfree(r->ff);
     UC(triangles_fin(r->tri));
 
-    if (rbc_com_dumps) rbc_com_fin(/**/ r->com);
-    if (RBC_STRETCH)   rbc_stretch_fin(/**/ r->stretch);
-    rbc_params_fin(r->params);
+    if (opt.dump_rbc_com) UC(rbc_com_fin(/**/ r->com));
+    if (RBC_STRETCH)      UC(rbc_stretch_fin(/**/ r->stretch));
+    UC(rbc_params_fin(r->params));
     UC(mesh_fin(r->cell));
     UC(mesh_write_fin(r->mesh_write));
 }
@@ -170,7 +170,7 @@ void sim_fin(Sim *s) {
             UC(fin_bounce_back(&s->bb));
     }
     
-    if (s->opt.rbc) UC(fin_rbc(/**/ &s->rbc));
+    if (s->opt.rbc) UC(fin_rbc(s->opt, /**/ &s->rbc));
 
     UC(fin_dump(s->opt, &s->dump));
     UC(scheme_restrain_fin(s->restrain));

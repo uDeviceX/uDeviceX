@@ -141,7 +141,7 @@ static void ini_flu(const Config *cfg, Opt opt, MPI_Comm cart, int maxp, int3 L,
     UC(conf_lookup_float(cfg, "flu.mass", &f->mass));
 }
 
-static void ini_rbc(const Config *cfg, MPI_Comm cart, int3 L, /**/ Rbc *r) {
+static void ini_rbc(const Config *cfg, Opt opt, MPI_Comm cart, int3 L, /**/ Rbc *r) {
     int nv;
     const char *directory = "r";
     UC(mesh_read_off("rbc.off", &r->cell));
@@ -151,9 +151,9 @@ static void ini_rbc(const Config *cfg, MPI_Comm cart, int3 L, /**/ Rbc *r) {
     
     Dalloc(&r->ff, MAX_CELL_NUM * nv);
     UC(triangles_ini(r->cell, /**/ &r->tri));
-    UC(rbc_ini(rbc_ids, r->cell, &r->q));
-    UC(ini_rbc_distr(rbc_ids, nv, cart, L, /**/ &r->d));
-    if (rbc_com_dumps) UC(rbc_com_ini(nv, MAX_CELL_NUM, /**/ &r->com));
+    UC(rbc_ini(opt.rbcids, r->cell, &r->q));
+    UC(ini_rbc_distr(opt.rbcids, nv, cart, L, /**/ &r->d));
+    if (opt.dump_rbc_com) UC(rbc_com_ini(nv, MAX_CELL_NUM, /**/ &r->com));
     if (RBC_STRETCH)   UC(rbc_stretch_ini("rbc.stretch", nv, /**/ &r->stretch));
     UC(rbc_params_ini(&r->params));
     UC(rbc_params_set_conf(cfg, r->params));
@@ -232,6 +232,9 @@ static void read_opt(const Config *c, Opt *o) {
     UC(conf_lookup_bool(c, "rbc.active", &b));
     o->rbc = b;
 
+    UC(conf_lookup_bool(c, "rbc.ids", &b));
+    o->rbcids = b;
+
     UC(conf_lookup_bool(c, "outflow.active", &b));
     o->outflow = b;
     UC(conf_lookup_bool(c, "inflow.active", &b));
@@ -249,7 +252,7 @@ static void read_opt(const Config *c, Opt *o) {
     UC(conf_lookup_bool(c, "dump.field", &b));
     o->dump_field = b;
     UC(conf_lookup_float(c, "dump.freq_field", &o->freq_field));
-
+    
     UC(conf_lookup_bool(c, "dump.strt", &b));
     o->dump_strt = b;
     UC(conf_lookup_float(c, "dump.freq_strt", &o->freq_strt));
@@ -257,6 +260,10 @@ static void read_opt(const Config *c, Opt *o) {
     UC(conf_lookup_bool(c, "dump.parts", &b));
     o->dump_parts = b;
     UC(conf_lookup_float(c, "dump.freq_parts", &o->freq_parts));
+
+    UC(conf_lookup_bool(c, "dump.rbc_com", &b));
+    o->dump_rbc_com = b;
+    UC(conf_lookup_float(c, "dump.freq_rbc_com", &o->freq_rbc_com));
 
     UC(conf_lookup_int(c, "flu.recolor_freq", &o->recolor_freq));
 
@@ -266,6 +273,11 @@ static void read_opt(const Config *c, Opt *o) {
     o->push_rbc = b;
     UC(conf_lookup_bool(c, "rig.push", &b));
     o->push_rig = b;
+}
+
+static void check_opt(Opt opt) {
+    if (opt.dump_rbc_com && !opt.rbcids)
+        ERR("Need rbc.ids activated to dump rbc com!");
 }
 
 static void coords_log(const Coords *c) {
@@ -318,11 +330,12 @@ void sim_ini(Config *cfg, MPI_Comm cart, /**/ Time *time, Sim **sim) {
     time_next(time, dt);
     UC(read_opt(cfg, &s->opt));
     UC(read_color_opt(cfg, &s->recolorer));
+    UC(check_opt(s->opt));
     UC(ini_pair_params(cfg, s->kBT, dt, s));
 
     UC(ini_dump(maxp, s->cart, s->coords, s->opt, /**/ &s->dump));
 
-    if (s->opt.rbc)        UC(ini_rbc(cfg, s->cart, s->L, /**/ &s->rbc));
+    if (s->opt.rbc)        UC(ini_rbc(cfg, s->opt, s->cart, s->L, /**/ &s->rbc));
 
     if (s->opt.vcon)       UC(ini_vcon(s->cart, s->L, cfg, /**/ &s->vcon));
     if (s->opt.outflow)    UC(ini_outflow(s->coords, maxp, cfg, /**/ &s->outflow));

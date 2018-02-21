@@ -129,6 +129,6 @@ static void dump_diag(Time *time, Sim *s) {
         dump_grid(s);
     if (o->dump_strt  && time_cross(time, o->freq_strt))
         dump_strt(s);
-    if (rbc_com_dumps && it % rbc_com_freq == 0)
+    if (o->dump_rbc_com && time_cross(time, o->freq_rbc_com))
         dump_rbc_coms(s);
 }
