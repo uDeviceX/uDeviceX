@@ -1,4 +1,4 @@
-# sTEST: scheme.time_step
+# TEST: scheme.time_step
 cd test/scheme/time_step
 u.conf0 u/scheme/time_step
 { u.make -j;     } > /dev/null
