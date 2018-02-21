@@ -26,8 +26,8 @@ static void dump(MPI_Comm cart, DiagPart *diagpart, float dt, const Coords *coor
     UC(efree(pp));
 }
 
-static void body_force(float mass, long it, const Coords *coords, const BForce *bf, RbcQuants *q, Force *f) {
-    UC(bforce_apply(it, coords, mass, bf, q->n, q->pp, /**/ f));
+static void body_force(float mass, const Coords *coords, const BForce *bf, RbcQuants *q, Force *f) {
+    UC(bforce_apply(coords, mass, bf, q->n, q->pp, /**/ f));
 }
 
 static void run0(MPI_Comm cart, float dt, float mass, float te, const Coords *coords, float part_freq, const BForce *bforce,
@@ -42,7 +42,7 @@ static void run0(MPI_Comm cart, float dt, float mass, float te, const Coords *co
         Dzero(f, q->n);
         rbc_force_apply(t, par, dt, q, /**/ f);
         stretch::apply(q->nc, stretch, /**/ f);
-        body_force(mass, i, coords, bforce, q, /**/ f);
+        body_force(mass, coords, bforce, q, /**/ f);
         scheme_move_apply(dt, mass, q->n, f, q->pp);
         if (time_cross(time, part_freq))
             dump(cart, diagpart, dt, coords, q, t, mesh_write);
