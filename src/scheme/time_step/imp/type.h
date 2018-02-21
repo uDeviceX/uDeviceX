@@ -6,9 +6,6 @@ struct TimeStepAccel {
     int k;
 };
 
-struct Const { };
-struct Disp  { };
-
 struct TimeStep {
     int type;
     float dt;
