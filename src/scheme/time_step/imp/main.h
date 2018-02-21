@@ -14,6 +14,7 @@ void time_step_accel_push(TimeStepAccel *q, float m, int n, Force *ff) {
     q->mm[k] = m; q->nn[k] = n; q->fff[k] = ff;
     q->k = k + 1;
 }
+void time_step_accel_reset(TimeStepAccel *q) { q->k = 0; }
 
 void time_step_ini(Config *c, /**/ TimeStep **pq) {
     const char *type;
@@ -36,14 +37,14 @@ void time_step_fin(TimeStep *q) {EFREE(q); }
 
 static float const_dt(TimeStep *q, MPI_Comm, TimeStepAccel*) { return q->dt; }
 static float disp_dt(TimeStep *q, MPI_Comm comm, TimeStepAccel *a) {
-    float dt, dx, dt_max, accel;
+    float dt_new, dx, dt_max, accel;
     dt_max = q->dt;
     dx     = q->dx;
     accel = accel_max(comm, a, /**/ q->accel);
     q->k  = a->k;
     if (accel == 0) return dt_max;
-    dt = 2*dx/(accel*accel);
-    return dt > dt_max ? dt_max : dt;
+    dt_new = sqrtf(2.*dx/accel);
+    return (dt_new > dt_max ? dt_max : dt_new);
 }
 float time_step_dt(TimeStep *q, MPI_Comm comm, TimeStepAccel *a) {
     return dt[q->type](q, comm, a);
@@ -58,8 +59,8 @@ static void  disp_log(TimeStep *q) {
     msg_print("time_step: disp: dt = %g dx = %g", q->dt, q->dx);
     for (i = 0; i < q->k; i++) {
         accel = q->accel[i];
-        msg_print("  accel dt: %g %g", accel, 2*dx/(accel*accel));
+        msg_print("  accel:%g, dt_new:%g", accel, sqrtf(2.*dx/accel));
     }
 }
-void time_step_log(TimeStep *q) { log[q->type](q); }
+void time_step_log(TimeStep *q) { tlog[q->type](q); }
 float time_step_dt0(TimeStep *q) { return q->dt; };

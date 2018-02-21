@@ -7,6 +7,7 @@ struct Config;
 void time_step_accel_ini(/**/ TimeStepAccel**);
 void time_step_accel_fin(TimeStepAccel*);
 void time_step_accel_push(TimeStepAccel*, float m, int n, Force*);
+void time_step_accel_reset(TimeStepAccel*);
 // end::accel[]
 
 // tag::interface[]
