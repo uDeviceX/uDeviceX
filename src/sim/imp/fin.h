@@ -176,6 +176,7 @@ void sim_fin(Sim *s) {
     UC(scheme_restrain_fin(s->restrain));
     UC(coords_fin(/**/ s->coords));
     UC(time_step_fin(s->time_step));
+    UC(time_step_accel_fin(s->time_step_accel));
 
     UC(fin_pair_params(s));
     UC(inter_color_fin(s->gen_color));
