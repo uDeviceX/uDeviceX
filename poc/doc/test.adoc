@@ -1,5 +1,10 @@
-= test
-
-\[
-m \frac{\partial v}{\partial t} = F
-\]
+[listing]
+.Code block with title and syntax highlighting
+....
+include::ex-src.adoc[tag=src-base-co]
+....
+<1> An optional title can be added to the block.
+<2> An optional ID can be added to the block. See <<anchordef>>.
+<3> Assign the block name `source` to the first position in the attribute list.
+<4> Assign a source language to the second position.
+<5> The source block name is typically assigned to listing and literal blocks.
