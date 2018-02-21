@@ -24,7 +24,7 @@ int main(int argc, char **argv) {
     for (i = 0; i < 1000; i++) {
         time_next(t, dt += s);
         if (time_cross(t, dump))
-            printf("%d %g %g %g\n", i, time_current(t), time_dt(t), time_dt0(t));
+            printf("%d %ld %g %g %g\n", i, time_iteration(t), time_current(t), time_dt(t), time_dt0(t));
     }
     time_fin(t);
 
