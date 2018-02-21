@@ -1,4 +1,4 @@
-void scalar(const Coords *coords, MPI_Comm cart, float *D, const char *name) {
+void io_field_dump_scalar(const Coords *coords, MPI_Comm cart, float *D, const char *name) {
     char path[BUFSIZ];
     sprintf(path, DUMP_BASE "/h5/%s.h5", name);
     if (m::is_master(cart)) UC(os_mkdir(DUMP_BASE "/h5"));

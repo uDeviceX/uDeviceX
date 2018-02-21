@@ -36,7 +36,7 @@
 #include "farray/imp.h"
 #include "partlist/type.h"
 
-#include "io/fields_grid/imp.h"
+#include "io/field/imp.h"
 #include "io/mesh/imp.h"
 #include "io/rig/imp.h"
 #include "io/diag/part/imp.h"

@@ -139,34 +139,39 @@ static void fin_pair_params(Sim *s) {
     UC(pair_fin(s->objinter.fsiparams));
 }
 
+static void fin_dump(Opt opt, Dump *d) {
+    if (opt.dump_field) UC(io_field_fin(d->iofield));
+}
+
 void sim_fin(Sim *s) {
-    bop_fin(s->dumpt);
+    UC(bop_fin(s->dumpt));
     if (s->opt.rbc || s->opt.rig)
-        fin_objinter(&s->opt, &s->objinter);
+        UC(fin_objinter(&s->opt, &s->objinter));
 
     if (s->opt.vcon)       UC(fin_vcon(/**/ &s->vcon));
     if (s->opt.outflow)    UC(fin_outflow(/**/ s->outflow));
     if (s->opt.inflow)     UC(fin_inflow (/**/ s->inflow ));
     if (s->opt.denoutflow) UC(fin_denoutflow(/**/ s->denoutflow, s->mapoutflow));
     
-    if (walls) fin_wall(&s->wall);
+    if (walls) UC(fin_wall(&s->wall));
 
-    fin_flu(s->opt, &s->flu);
+    UC(fin_flu(s->opt, &s->flu));
 
     if (s->opt.flucolors && s->opt.rbc)
         fin_colorer(/**/ &s->colorer);
 
     if (s->opt.rig) {
-        fin_rig(/**/ &s->rig);
+        UC(fin_rig(/**/ &s->rig));
         
         if (s->opt.sbounce)
-            fin_bounce_back(&s->bb);
+            UC(fin_bounce_back(&s->bb));
     }
 
     EFREE(s->pp_dump);
     
-    if (s->opt.rbc) fin_rbc(/**/ &s->rbc);
+    if (s->opt.rbc) UC(fin_rbc(/**/ &s->rbc));
 
+    UC(fin_dump(s->opt, &s->dump));
     UC(scheme_restrain_fin(s->restrain));
     UC(coords_fin(/**/ s->coords));
     UC(diag_part_fin(s->diagpart));

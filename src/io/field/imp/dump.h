@@ -1,3 +1,35 @@
+static void create_dir(MPI_Comm comm) {
+    if (m::is_master(comm))
+        UC(os_mkdir(DUMP_BASE "/h5"));
+    MC(m::Barrier(comm));
+}
+
+void io_field_ini(MPI_Comm comm, const Coords *c, IoField **iop) {
+    enum {X, Y, Z};
+    IoField *io;
+    int nc;
+    EMALLOC(1, iop);
+    io = *iop;
+
+    nc = xs(c) * ys(c) * zs(c);
+    EMALLOC(nc, &io->rho);
+    EMALLOC(nc, &io->u[X]);
+    EMALLOC(nc, &io->u[Y]);
+    EMALLOC(nc, &io->u[Z]);
+
+    io->id = 0;
+    create_dir(comm);
+}
+
+void io_field_fin(IoField *io) {
+    enum {X, Y, Z};
+    EFREE(io->rho);
+    EFREE(io->u[X]);
+    EFREE(io->u[Y]);
+    EFREE(io->u[Z]);
+    EFREE(io);
+}
+
 static int minmax(int lo, int hi, int x) {
     return \
         x <= lo ? lo :
@@ -45,40 +77,19 @@ static void avg(const Coords *coords, Particle *pp, int n, int nc, /**/
         u[c][i] = rho[i] ? u[c][i] / rho[i] : 0;
 }
 
-static void dump0(const Coords *coords, MPI_Comm cart, Particle *pp, int n, int nc, /*w*/
-                  float *rho, float *u[3]) {
+void io_field_dump_pp(const Coords *coords, MPI_Comm cart, IoField *io, int n, Particle *pp) {
     enum {X, Y, Z};
-    static int id = 0; /* dump id */
-    static bool directory_exists = false;
     char path[BUFSIZ];
     const char *names[] = { "density", "u", "v", "w" };
-
-    avg(coords, pp, n, nc, rho, u);
-    if (!directory_exists) {
-        if (m::is_master(cart))
-            UC(os_mkdir(DUMP_BASE "/h5"));
-        directory_exists = true;
-        MC(m::Barrier(cart));
-    }
-
-    sprintf(path, DUMP_BASE "/h5/%04d.h5", id++);
-    float *data[] = { rho, u[X], u[Y], u[Z] };
+    int nc;
+    float *data[] = { io->rho, io->u[X], io->u[Y], io->u[Z] };
+    
+    nc = xs(coords) * ys(coords) * zs(coords);
+    avg(coords, pp, n, nc, io->rho, io->u);
+    
+    sprintf(path, DUMP_BASE "/h5/%04ld.h5", io->id++);
+    
     UC(h5_write(coords, cart, path, data, names, 4));
     if (m::is_master(cart))
         xmf_write(coords, path, names, 4);
-}
-
-void dump(const Coords *coords, MPI_Comm cart, Particle *pp, int n) {
-    enum {X, Y, Z};
-    int nc, sz;
-    float *rho, *u[3];
-    nc = xs(coords) * ys(coords) * zs(coords);
-    sz = nc*sizeof(rho[0]);
-
-    UC(emalloc(sz, (void**) &rho));
-    UC(emalloc(sz, (void**) &u[X]));
-    UC(emalloc(sz, (void**) &u[Y]));
-    UC(emalloc(sz, (void**) &u[Z]));
-    dump0(coords, cart, pp, n, nc, /*w*/ rho, u);
-    efree(rho); efree(u[X]); efree(u[Y]); efree(u[Z]);
 }

@@ -6,8 +6,7 @@ $B/io/com/imp.o: $S/utils/os.h $S/utils/imp.h $S/inc/conf.h $S/utils/error.h $S/
 $B/io/diag/mesh/imp.o: $S/utils/imp.h $S/inc/conf.h $S/utils/error.h $S/inc/type.h $S/mpi/wrapper.h $S/io/diag/mesh/imp.h $B/conf.h $S/io/diag/mesh/imp/main.h $S/io/diag/mesh/imp/type.h $S/io/off/imp.h $S/utils/msg.h
 $B/io/diag/part/imp.o: $S/utils/imp.h $S/inc/conf.h $S/utils/error.h $S/inc/type.h $S/mpi/wrapper.h $S/io/diag/part/imp.h $B/conf.h $S/io/diag/part/imp/main.h $S/io/diag/part/imp/type.h $S/utils/msg.h
 $B/io/field/h5/imp.o: $S/utils/error.h $S/mpi/wrapper.h $S/io/field/h5/imp.h $S/coords/imp.h
-$B/io/field/imp.o: $S/io/field/imp/scalar.h $S/utils/os.h $S/utils/imp.h $S/inc/conf.h $S/io/field/xmf/imp.h $S/utils/error.h $S/inc/type.h $S/mpi/wrapper.h $S/io/field/imp.h $S/io/field/h5/imp.h $S/io/field/imp/dump.h $S/utils/mc.h $B/conf.h $S/coords/imp.h
-$B/io/fields_grid/imp.o: $S/inc/conf.h $S/io/fields_grid/imp/all.h $S/io/field/imp.h $S/utils/error.h $S/inc/type.h $S/mpi/wrapper.h $S/io/fields_grid/imp.h $S/utils/cc.h $S/io/fields_grid/imp/solvent.h $S/inc/dev.h $S/d/api.h $B/conf.h $S/coords/imp.h $S/utils/msg.h
+$B/io/field/imp.o: $S/io/field/imp/scalar.h $S/utils/os.h $S/utils/imp.h $S/inc/conf.h $S/io/field/xmf/imp.h $S/utils/error.h $S/inc/type.h $S/mpi/wrapper.h $S/io/field/imp.h $S/io/field/h5/imp.h $S/io/field/imp/dump.h $S/utils/mc.h $B/conf.h $S/io/field/imp/type.h $S/coords/imp.h
 $B/io/field/xmf/imp.o: $S/utils/imp.h $S/utils/error.h $S/io/field/xmf/imp.h $S/coords/imp.h
 $B/io/mesh/imp.o: $S/utils/imp.h $S/utils/os.h $S/inc/conf.h $S/io/mesh/imp/shift/center.h $S/utils/error.h $S/io/mesh/imp/shift/edge.h $S/inc/type.h $S/mpi/wrapper.h $S/io/mesh/imp.h $S/utils/mc.h $B/conf.h $S/io/mesh/imp/main.h $S/io/mesh/imp/type.h $S/io/mesh/imp/new.h $S/io/mesh/write/imp.h $S/io/off/imp.h $S/utils/msg.h $S/coords/imp.h
 $B/io/mesh/write/imp.o: $S/inc/conf.h $S/mpi/wrapper.h $S/io/mesh/write/imp.h $S/utils/mc.h $B/conf.h $S/io/mesh/write/imp/main.h

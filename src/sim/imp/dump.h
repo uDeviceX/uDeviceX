@@ -54,14 +54,8 @@ static void dump_rbc_coms(Sim *s) {
 
 static void dump_grid(const Sim *s) {
     const Flu *flu = &s->flu;
-    const Rbc *rbc = &s->rbc;
-    const Rig *rig = &s->rig;
-
-    QQ qq; /* pack for io/field_dumps */
-    NN nn;
-    qq.o = flu->q.pp; qq.s = rig->q.pp; qq.r = rbc->q.pp;
-    nn.o = flu->q.n ; nn.s = rig->q.n ;  nn.r = rbc->q.n;
-    fields_grid(s->coords, s->cart, qq, nn, /*w*/ s->pp_dump);
+    cD2H(s->pp_dump, flu->q.pp, flu->q.n);
+    UC(io_field_dump_pp(s->coords, s->cart, s->dump.iofield, flu->q.n, s->pp_dump));
 }
 
 void dump_diag_after(Time *time, int it, bool solid0, Sim *s) { /* after wall */

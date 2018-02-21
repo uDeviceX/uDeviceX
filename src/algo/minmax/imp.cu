@@ -22,8 +22,8 @@ enum {
     WARPSIZE   = 32
 };
 
-static const float MINV = 100000000.;
-static const float MAXV = 100000000.;
+static const float MINV = -100000000.;
+static const float MAXV =  100000000.;
 
 typedef struct
 {

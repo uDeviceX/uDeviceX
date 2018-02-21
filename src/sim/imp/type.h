@@ -153,6 +153,10 @@ struct TimeSeg {
     float end, wall;
 };
 
+struct Dump {
+    IoField *iofield;
+};
+
 struct Sim {
     /* quantities */
     Flu flu;
@@ -182,6 +186,7 @@ struct Sim {
     DContMap *mapoutflow;
 
     /* particles on host for dump */
+    Dump dump;
     Particle *pp_dump;
     BopWork *dumpt;
     DiagPart *diagpart; /* diagnostic */

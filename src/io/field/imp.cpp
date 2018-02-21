@@ -18,7 +18,6 @@
 
 #include "imp.h"
 
-namespace io { namespace field {
+#include "imp/type.h"
 #include "imp/dump.h"
 #include "imp/scalar.h"
-}}
