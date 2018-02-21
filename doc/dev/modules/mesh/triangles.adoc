@@ -1,0 +1,18 @@
+= Triangles
+:lext: .adoc
+:src: ../../../src
+
+Triangles on device. It is created from `MeshRead*`.
+
+[source,cpp]
+----
+include::{src}/mesh/triangles/imp.h[tag=interface]
+----
+
+a client should include `type.h` add access fields directly.
+[source,cpp]
+----
+include::{src}/mesh/triangles/type.h[tag=interface]
+----
+
+`nt` is a number of triangles.
