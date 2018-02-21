@@ -37,8 +37,6 @@ static void step(Time *time, BForce *bforce, bool wall0, float tstart, Sim *s) {
     if (s->opt.rbc) update_rbc(dt, it, rbc, s);
 
     UC(check_vel(dt, s));
-
-    
     if (opt->vcon && !s->equilibrating) {
         sample(s->coords, it, flu, /**/ &s->vcon);
         adjust(it, /**/ &s->vcon, bforce);
