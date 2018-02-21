@@ -75,10 +75,6 @@
 /* maximum allowed degree of a vertex */
 #define RBCmd 7
 
-#ifndef rbounce_back
-#define rbounce_back (false)
-#endif
-
 /* dump meshes relative to the domain edge or domain center? */
 #if !defined(MESH_SHIFT_EDGE) && !defined(MESH_SHIFT_CENTER)
   #define MESH_SHIFT_EDGE
@@ -95,11 +91,6 @@
 
 #ifndef empty_solid_particles
 #define empty_solid_particles (true)
-#endif
-
-// bb rescue
-#ifndef rescue_freq
-#define rescue_freq (100)
 #endif
 
 #if defined(RESTART)
