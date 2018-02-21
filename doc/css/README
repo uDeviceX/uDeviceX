@@ -1,0 +1,15 @@
+.conum {
+    display: inline-block;
+    color: #fff !important;
+    background-color: rgba(0,0,0,0.8);
+    -webkit-border-radius: 100px;
+    border-radius: 100px;
+    text-align: center;
+    width: 1.67em;
+    height: 1.67em;
+    font-size: 0.75em;
+    line-height: 1.67em;
+    font-family: "Open Sans", "Sans", sans-serif;
+    font-style: normal;
+    font-weight: bold;
+}
