@@ -2,7 +2,8 @@ static float get_dt(Time *time, Sim*) {
     return time_dt(time);
 }
 
-static void step(Time *time, BForce *bforce, bool wall0, int start, int it, Sim *s) {
+static void step(Time *time, BForce *bforce, bool wall0, float tstart, Sim *s) {
+    long it;
     float dt;
     Flu *flu = &s->flu;
     Rbc *rbc = &s->rbc;
@@ -12,7 +13,7 @@ static void step(Time *time, BForce *bforce, bool wall0, int start, int it, Sim 
     dt = get_dt(time, s);
 
     if (walls && !s->equilibrating)
-        UC(wvel_get_step(dt * (it - start), wall->vel, /**/ wall->velstep));
+        UC(wvel_get_step(time_current(time) - tstart, wall->vel, /**/ wall->velstep));
 
     UC(check_sizes(s));
     UC(check_pos_soft(s));
@@ -25,6 +26,7 @@ static void step(Time *time, BForce *bforce, bool wall0, int start, int it, Sim 
     UC(forces(dt, time, wall0, s));
     UC(check_forces(dt, s));
 
+    it = time_iteration(time);
     dump_diag(time, it, s);
     dump_diag_after(time, it, s->solids0, s);
     UC(body_force(it, bforce, s));
