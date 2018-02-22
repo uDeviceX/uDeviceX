@@ -1,16 +1,16 @@
-O = $B/algo/force_stat/imp.o $B/algo/minmax/imp.o $B/algo/scan/imp.o $B/clist/imp.o \
-    $B/cnt/imp.o $B/color/flux.o $B/comm/imp.o $B/control/den/imp.o \
-    $B/control/inflow/conf.o $B/control/inflow/imp.o $B/control/outflow/imp.o \
-    $B/control/vel/conf.o $B/control/vel/imp.o $B/coords/conf.o $B/coords/imp.o \
-    $B/d/api.o $B/dbg/conf.o $B/dbg/imp.o $B/distr/common/imp.o $B/distr/flu/imp.o \
-    $B/distr/flu/status/imp.o $B/distr/map/imp.o $B/distr/rbc/imp.o \
-    $B/distr/rig/imp.o $B/exch/common/imp.o $B/exch/flu/imp.o $B/exch/map/imp.o \
-    $B/exch/mesh/imp.o $B/exch/obj/imp.o $B/farray/imp.o $B/flu/imp.o \
-    $B/fluforces/bulk/imp.o $B/fluforces/halo/imp.o $B/fluforces/imp.o \
-    $B/frag/imp.o $B/fsi/imp.o $B/generate/rig/imp.o $B/inter/color/conf.o \
-    $B/inter/color/imp.o $B/inter/imp.o $B/io/bop/imp.o $B/io/com/imp.o \
-    $B/io/diag/mesh/imp.o $B/io/diag/part/imp.o $B/io/field/h5/imp.o \
-    $B/io/field/imp.o $B/io/field/xmf/imp.o $B/io/mesh/imp.o \
+O = $B/algo/force_stat/imp.o $B/algo/kahan_sum/imp.o $B/algo/minmax/imp.o \
+    $B/algo/scan/imp.o $B/clist/imp.o $B/cnt/imp.o $B/color/flux.o $B/comm/imp.o \
+    $B/control/den/imp.o $B/control/inflow/conf.o $B/control/inflow/imp.o \
+    $B/control/outflow/imp.o $B/control/vel/conf.o $B/control/vel/imp.o \
+    $B/coords/conf.o $B/coords/imp.o $B/d/api.o $B/dbg/conf.o $B/dbg/imp.o \
+    $B/distr/common/imp.o $B/distr/flu/imp.o $B/distr/flu/status/imp.o \
+    $B/distr/map/imp.o $B/distr/rbc/imp.o $B/distr/rig/imp.o $B/exch/common/imp.o \
+    $B/exch/flu/imp.o $B/exch/map/imp.o $B/exch/mesh/imp.o $B/exch/obj/imp.o \
+    $B/farray/imp.o $B/flu/imp.o $B/fluforces/bulk/imp.o $B/fluforces/halo/imp.o \
+    $B/fluforces/imp.o $B/frag/imp.o $B/fsi/imp.o $B/generate/rig/imp.o \
+    $B/inter/color/conf.o $B/inter/color/imp.o $B/inter/imp.o $B/io/bop/imp.o \
+    $B/io/com/imp.o $B/io/diag/mesh/imp.o $B/io/diag/part/imp.o \
+    $B/io/field/h5/imp.o $B/io/field/imp.o $B/io/field/xmf/imp.o $B/io/mesh/imp.o \
     $B/io/mesh/write/imp.o $B/io/mesh_read/imp.o $B/io/restart/imp.o \
     $B/io/rig/imp.o $B/io/txt/imp.o $B/main.o $B/math/linal/imp.o \
     $B/math/rnd/imp.o $B/math/tform/imp.o $B/mesh/bbox/imp.o \
