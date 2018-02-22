@@ -58,12 +58,12 @@
   #define MESH_SHIFT_EDGE
 #endif
 
-#ifndef empty_solid_particles
-#define empty_solid_particles (true)
+/* ========== forbidden variables ============== */
+
+#ifdef empty_solid_particles
+#error empty_solid_particles is runtime: rig.empty_pp (bool)
 #endif
 
-
-/* ========== forbidden variables ============== */
 
 // walls
 #ifdef walls
