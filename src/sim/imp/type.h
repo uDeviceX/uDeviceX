@@ -175,8 +175,9 @@ struct Dump {
 };
 
 struct Params {
-    int3 L;    /* subdomain sizes */
-    float kBT; /* temperature     */
+    int3 L;          /* subdomain sizes */
+    float kBT;       /* temperature     */
+    int numdensity;  /* number density  */
 };
 
 struct Sim {
