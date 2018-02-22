@@ -41,12 +41,6 @@
 #define DUMP_BASE "."
 #endif
 
-// walls
-#ifdef walls
-#error walls is runtime: wall.active (bool)
-#endif
-
-
 #ifndef force_dumps
 #define force_dumps (false)
 #endif
@@ -70,6 +64,12 @@
 
 
 /* ========== forbidden variables ============== */
+
+// walls
+#ifdef walls
+#error walls is runtime: wall.active (bool)
+#endif
+
 
 /* ids for cell */
 #ifdef rbc_ids
