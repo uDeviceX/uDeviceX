@@ -1,4 +1,6 @@
 $B/d/api.o: $S/d/api.cu; $N -I$S/d -I$S/.
+$B/io/off/imp.o: $S/io/off/imp.cpp; $X -I$S/io/off -I$S/.
+$B/mesh/volume/imp.o: $S/mesh/volume/imp.cpp; $X -I$S/mesh/volume -I$S/.
 $B/mpi/glb.o: $S/mpi/glb.cpp; $X -I$S/mpi -I$S/.
 $B/mpi/type.o: $S/mpi/type.cpp; $X -I$S/mpi -I$S/.
 $B/mpi/wrapper.o: $S/mpi/wrapper.cpp; $X -I$S/mpi -I$S/.

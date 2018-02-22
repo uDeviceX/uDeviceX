@@ -8,10 +8,21 @@
 #include "utils/mc.h"
 #include "utils/error.h"
 #include "parser/imp.h"
+#include "io/off/imp.h"
+#include "mesh/volume/imp.h"
+
+void main0(const char *i) {
+    MeshRead *mesh;
+    MeshVolume *volume;
+    UC(mesh_read_off(i, /**/ &mesh));
+    UC(mesh_volume_ini(mesh, &volume));
+    mesh_volume_fin(volume);
+    UC(mesh_fin(mesh));
+}
 
 int main(int argc, char **argv) {
     const char *i;
-    Config *cfg;    
+    Config *cfg;
     int rank, size, dims[3];
     MPI_Comm cart;
     m::ini(&argc, &argv);
@@ -24,8 +35,9 @@ int main(int argc, char **argv) {
     UC(conf_ini(&cfg));
     UC(conf_read(argc, argv, cfg));
     UC(conf_lookup_string(cfg, "i", &i));
+    main0(i);
+
     UC(conf_fin(cfg));
-    
     MC(m::Barrier(cart));
     m::fin();
 }

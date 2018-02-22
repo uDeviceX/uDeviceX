@@ -1,3 +1,3 @@
 struct MeshVolume {
-    
+    float *rr;
 };
