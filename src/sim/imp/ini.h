@@ -316,11 +316,17 @@ static void ini_dump(int maxp, MPI_Comm cart, const Coords *c, Opt opt, Dump *d)
     d->id_bop = d->id_rbc = d->id_rbc_com = d->id_rig_mesh = d->id_strt = 0;
 }
 
+static long num_pp_estimate(Params p) {
+    int3 L = p.L;
+    return L.x * L.y * L.z * numberdensity;
+}
+
 void sim_ini(Config *cfg, MPI_Comm cart, /**/ Time *time, Sim **sim) {
     float dt;
     Sim *s;
     int maxp;
-
+    Params params;
+    
     EMALLOC(1, sim);
     s = *sim;
 
@@ -329,10 +335,10 @@ void sim_ini(Config *cfg, MPI_Comm cart, /**/ Time *time, Sim **sim) {
     UC(coords_ini_conf(s->cart, cfg, /**/ &s->coords));
     UC(coords_log(s->coords));
 
-    s->L = subdomain(s->coords);
-    UC(conf_lookup_float(cfg, "glb.kBT", &s->kBT));
+    params.L = subdomain(s->coords);
+    UC(conf_lookup_float(cfg, "glb.kBT", &params.kBT));
 
-    maxp = SAFETY_FACTOR_MAXP * s->L.x * s->L.y * s->L.z * numberdensity;
+    maxp = SAFETY_FACTOR_MAXP * num_pp_estimate(params);
     UC(time_step_ini(cfg, &s->time_step));
     UC(time_step_accel_ini(&s->time_step_accel));
     dt = time_step_dt0(s->time_step);
@@ -340,32 +346,32 @@ void sim_ini(Config *cfg, MPI_Comm cart, /**/ Time *time, Sim **sim) {
     UC(read_opt(cfg, &s->opt));
     UC(read_color_opt(cfg, &s->recolorer));
     UC(check_opt(s->opt));
-    UC(ini_pair_params(cfg, s->kBT, dt, s));
+    UC(ini_pair_params(cfg, params.kBT, dt, s));
 
     UC(ini_dump(maxp, s->cart, s->coords, s->opt, /**/ &s->dump));
 
-    if (s->opt.rbc)        UC(ini_rbc(cfg, s->opt, s->cart, s->L, /**/ &s->rbc));
+    if (s->opt.rbc)        UC(ini_rbc(cfg, s->opt, s->cart, params.L, /**/ &s->rbc));
 
-    if (s->opt.vcon)       UC(ini_vcon(s->cart, s->L, cfg, /**/ &s->vcon));
+    if (s->opt.vcon)       UC(ini_vcon(s->cart, params.L, cfg, /**/ &s->vcon));
     if (s->opt.outflow)    UC(ini_outflow(s->coords, maxp, cfg, /**/ &s->outflow));
-    if (s->opt.inflow)     UC(ini_inflow (s->coords, s->L, cfg,  /**/ &s->inflow ));
+    if (s->opt.inflow)     UC(ini_inflow (s->coords, params.L, cfg,  /**/ &s->inflow ));
     if (s->opt.denoutflow) UC(ini_denoutflow(s->coords, maxp, cfg, /**/ &s->denoutflow, &s->mapoutflow));
 
     if (s->opt.rbc || s->opt.rig)
-        UC(ini_objinter(s->cart, maxp, s->L, &s->opt, /**/ &s->objinter));
+        UC(ini_objinter(s->cart, maxp, params.L, &s->opt, /**/ &s->objinter));
 
-    if (s->opt.wall) ini_wall(cfg, s->L, &s->wall);
+    if (s->opt.wall) ini_wall(cfg, params.L, &s->wall);
 
-    UC(ini_flu(cfg, s->opt, s->cart, maxp, s->L, /**/ &s->flu));
+    UC(ini_flu(cfg, s->opt, s->cart, maxp, params.L, /**/ &s->flu));
 
     if (s->opt.flucolors && s->opt.rbc)
-        UC(ini_colorer(s->rbc.q.nv, s->cart, maxp, s->L, /**/ &s->colorer));
+        UC(ini_colorer(s->rbc.q.nv, s->cart, maxp, params.L, /**/ &s->colorer));
 
     if (s->opt.rig) {
-        UC(ini_rig(cfg, s->cart, maxp, s->L, /**/ &s->rig));
+        UC(ini_rig(cfg, s->cart, maxp, params.L, /**/ &s->rig));
 
         if (s->opt.rig_bounce)
-            UC(ini_bounce_back(s->cart, maxp, s->L, &s->rig, /**/ &s->bb));
+            UC(ini_bounce_back(s->cart, maxp, params.L, &s->rig, /**/ &s->bb));
     }
 
     UC(scheme_restrain_ini(&s->restrain));
@@ -377,6 +383,8 @@ void sim_ini(Config *cfg, MPI_Comm cart, /**/ Time *time, Sim **sim) {
     UC(dbg_ini(&s->dbg));
     UC(dbg_set_conf(cfg, s->dbg));
 
+    s->params = params;
+    
     MC(MPI_Barrier(s->cart));
 }
 

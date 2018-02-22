@@ -174,6 +174,11 @@ struct Dump {
     int id_bop, id_rbc, id_rbc_com, id_rig_mesh, id_strt;
 };
 
+struct Params {
+    int3 L;    /* subdomain sizes */
+    float kBT; /* temperature     */
+};
+
 struct Sim {
     /* quantities */
     Flu flu;
@@ -181,9 +186,7 @@ struct Sim {
     Rig rig;
     Wall wall;
 
-    /* parameters */
-    int3 L;  /* subdomain sizes */
-    float kBT;
+    Params params;
 
     /* helpers */
     Coords *coords;
