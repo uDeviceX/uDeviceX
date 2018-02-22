@@ -38,15 +38,15 @@ static void step(Time *time, float dt, BForce *bforce, bool wall0, float tstart,
 
     if (wall0) bounce_wall(dt, opt->rbc, s->coords, wall, /**/ flu, rbc);
 
-    if (opt->rig_bounce && s->solids0) bounce_solid(dt, s->L, /**/ &s->bb, rig, flu);
+    if (opt->rig_bounce && s->solids0) bounce_solid(dt, s->params.L, /**/ &s->bb, rig, flu);
 
     UC(check_pos_soft(s));
     UC(check_vel(dt, s));
 
     if (! s->equilibrating) {
-        if (opt->inflow)     UC(apply_inflow(s->kBT, numberdensity, dt, s->inflow, /**/ flu));
+        if (opt->inflow)     UC(apply_inflow(s->params.kBT, s->params.numdensity, dt, s->inflow, /**/ flu));
         if (opt->outflow)    UC(mark_outflow(flu, /**/ s->outflow));
-        if (opt->denoutflow) UC(mark_outflowden(flu, s->mapoutflow, /**/ s->denoutflow));
+        if (opt->denoutflow) UC(mark_outflowden(s->params, flu, s->mapoutflow, /**/ s->denoutflow));
         if (opt->flucolors)  UC(recolor_flux(s->coords, &s->recolorer, flu));
     }
 }

@@ -4,7 +4,6 @@ cd test/noflu
 S=`u.cp.s`
 u.cp.sdf cyl1/cyl.dat sdf.dat
 u.conf "$S" u/x "$S/conf/default.h" <<!
-   numberdensity=0
    run
 !
 u.make -j

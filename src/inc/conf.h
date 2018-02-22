@@ -53,6 +53,10 @@
 
 /* ========== forbidden variables ============== */
 
+#ifdef numberdensity
+#error numberdensity is runtime: glb.numdensity
+#endif
+
 #ifdef force_dumps
 #error force_dumps is runtime: dump.forces (bool)
 #endif
