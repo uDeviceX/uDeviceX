@@ -8,6 +8,7 @@ struct TimeStepAccel {
 
 struct TimeStep {
     int type;
+    bool screenlog;
     float dt;
     float dx;
 
