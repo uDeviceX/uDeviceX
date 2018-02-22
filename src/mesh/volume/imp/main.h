@@ -10,7 +10,7 @@ void mesh_volume_ini(MeshRead *mesh, MeshVolume **pq) {
     q->nv = nv;
     q->nt = nt;
     EMEMCPY(nt, mesh_read_get_tri(mesh), q->tt);
-    
+
     *pq = q;
 }
 
@@ -52,11 +52,12 @@ static void to_com(int nv, int offset, Positions *pos, /**/ double *rr) {
         r1[Z] = r0[Z] - com[Z];
     }
 }
-// static void M0(const float *A, const float *B, const float *C, /**/ float *res) {
-//     *res =  (+Ax * (By * Cz -Bz * Cy)
-//              -Ay * (Bx * Cz -Bz * Cx)
-//              +Az * (Bx * Cy -By * Cx)) / 6.f;
-// }
+static double M0(double a[3], double b[3], double c[3]) {
+    enum {X, Y, Z};
+    return  (+a[X]*(b[Y]*c[Z]-b[Z]*c[Y])
+             -a[Y]*(b[X]*c[Z]-b[Z]*c[X])
+             +a[Z]*(b[X]*c[Y]-b[Y]*c[X]));
+}
 static void get(double *rr, int i, double *r1) {
     enum {X, Y, Z};
     double *r0;
@@ -66,17 +67,18 @@ static void get(double *rr, int i, double *r1) {
 static double volume(int nt, int4 *tt, double *rr) {
     enum {X, Y, Z};
     int i, ia, ib, ic;
-    double sum;
-    double a[3], b[3], c[3];
-    
-    sum = 0;
+    double a[3], b[3], c[3], sum;
+    KahanSum *kahan_sum;
+    kahan_sum_ini(&kahan_sum);
     for (i = 0; i < nt; i++) {
         ia = tt[i].x; ib = tt[i].y; ic = tt[i].z;
         UC(get(rr, ia, /**/ a));
         UC(get(rr, ib, /**/ b));
         UC(get(rr, ic, /**/ c));
+        kahan_sum_add(kahan_sum, M0(a, b, c));
     }
-    return sum/nt;
+    sum = kahan_sum_get(kahan_sum);
+    return sum/6;
 }
 float mesh_volume_apply0(MeshVolume *q, Positions *p) {
     int nv, nt, offset;
