@@ -21,6 +21,7 @@ struct InterRigInfos {
     RigQuants *q;
     const RigPinInfo *pi;
     float mass;
+    int numdensity;
 };
 
 void inter_freeze(const Coords *coords, MPI_Comm cart, InterWalInfos, InterFluInfos, InterRbcInfos, InterRigInfos);

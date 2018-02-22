@@ -17,15 +17,14 @@ static void init_I_frompp(const Particle *pp, int n, float pmass, const float *c
     for (int c = 0; c < 6; ++c) I[c] *= pmass;
 }
 
-static void init_I_fromm(float pmass, int nt, const int4 *tt, const float *vv, /**/ float *I) {
+static void init_I_fromm(float density, int nt, const int4 *tt, const float *vv, /**/ float *I) {
     float com[3] = {0};
     mesh_center_of_mass(nt, tt, vv, /**/ com);
-    mesh_inertia_tensor(nt, tt, vv, com, numberdensity, /**/ I);
-
-    for (int c = 0; c < 6; ++c) I[c] *= pmass;
+    mesh_inertia_tensor(nt, tt, vv, com, density, /**/ I);
 }
 
-void ini_props(const RigPinInfo *pi, int n, const Particle *pp, float pmass, const float *com, int nt, const int4 *tt, const float *vv, /**/ float *rr0, Solid *s) {
+void ini_props(const RigPinInfo *pi, int n, const Particle *pp, float pmass, float numdensity, const float *com, int nt, const int4 *tt, const float *vv,
+               /**/ float *rr0, Solid *s) {
     enum {X, Y, Z};
     int spdir = rig_get_pdir(pi);
     s->v[X] = s->v[Y] = s->v[Z] = 0; 
@@ -40,8 +39,8 @@ void ini_props(const RigPinInfo *pi, int n, const Particle *pp, float pmass, con
     float I[6];
 
     if (spdir == NOT_PERIODIC) {
-        init_I_fromm(pmass, nt, tt, vv, /**/ I);
-        s->mass = mesh_volume0(nt, tt, vv) * numberdensity * pmass;
+        init_I_fromm(pmass * numdensity, nt, tt, vv, /**/ I);
+        s->mass = mesh_volume0(nt, tt, vv) * numdensity * pmass;
     }
     else {
         init_I_frompp(pp, n, pmass, com, /**/ I);

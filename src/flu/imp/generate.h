@@ -2,11 +2,11 @@ static void assert_np(int n, int m) {
     if (n > m) ERR("too many particles: n = %d < m = %d", n, m);
 }
 
-static int gen0(int3 L, int maxp, Particle *pp) { /* generate particle positions and velocities */
+static int gen0(int3 L, int numdensity, int maxp, Particle *pp) { /* generate particle positions and velocities */
     enum {X, Y, Z};
-    UC(assert_np(L.x * L.y * L.z * numberdensity, maxp));
+    UC(assert_np(L.x * L.y * L.z * numdensity, maxp));
     os_srand(123456);
-    int iz, iy, ix, l, nd = numberdensity;
+    int iz, iy, ix, l, nd = numdensity;
     int n = 0; /* particle index */
     float x, y, z, dr = 0.99;
     for (iz = 0; iz < L.z; iz++)
@@ -26,26 +26,26 @@ static int gen0(int3 L, int maxp, Particle *pp) { /* generate particle positions
     return n;
 }
 
-static int genColor(int3 L, int maxp, const Coords *coords, const GenColor *gc, /*o*/ Particle *pp, int *color, /*w*/ Particle *pp_hst, int *color_hst) {
-    int n = gen0(L, maxp, pp_hst);
+static int genColor(int3 L, int numdensity, int maxp, const Coords *coords, const GenColor *gc, /*o*/ Particle *pp, int *color, /*w*/ Particle *pp_hst, int *color_hst) {
+    int n = gen0(L, numdensity, maxp, pp_hst);
     inter_color_apply_hst(coords, gc, n, pp_hst, /**/ color_hst);
     cH2D(color, color_hst, n);
     cH2D(   pp,    pp_hst, n);
     return n;
 }
 
-static int genGrey(int3 L, int maxp, /*o*/ Particle *dev, /*w*/ Particle *hst) {
-    int n = gen0(L, maxp, hst);
+static int genGrey(int3 L, int numdensity, int maxp, /*o*/ Particle *dev, /*w*/ Particle *hst) {
+    int n = gen0(L, numdensity, maxp, hst);
     cH2D(dev, hst, n);
     return n;
 }
 
-void flu_gen_quants(const Coords *coords, const GenColor *gc, FluQuants *q) {
+void flu_gen_quants(const Coords *coords, int numdensity, const GenColor *gc, FluQuants *q) {
     int3 L = subdomain(coords);
     if (q->colors)
-        q->n = genColor(L, q->maxp, coords, gc, q->pp, q->cc, /*w*/ q->pp_hst, q->cc_hst);
+        q->n = genColor(L, numdensity, q->maxp, coords, gc, q->pp, q->cc, /*w*/ q->pp_hst, q->cc_hst);
     else
-        q->n = genGrey(L, q->maxp, q->pp, /*w*/ q->pp_hst);
+        q->n = genGrey(L, numdensity, q->maxp, q->pp, /*w*/ q->pp_hst);
 }
 
 static void ii_gen0(MPI_Comm comm, const long n, int *ii) {

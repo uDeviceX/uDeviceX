@@ -24,7 +24,7 @@ struct GenColor;
 void flu_ini(bool colors, bool ids, int3 L, int maxp, FluQuants *q);
 void flu_fin(FluQuants *q);
 
-void flu_gen_quants(const Coords *coords, const GenColor *gc, FluQuants *q);
+void flu_gen_quants(const Coords *coords, int numdensity, const GenColor *gc, FluQuants *q);
 void flu_gen_ids(MPI_Comm comm, const int n, FluQuants *q);
 
 void flu_strt_quants(const Coords *coords, const int id, FluQuants *q);

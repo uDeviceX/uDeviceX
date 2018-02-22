@@ -2,6 +2,7 @@ struct RigPinInfo;
 
 struct RigGenInfo {
     float mass;
+    int numdensity;
     const RigPinInfo *pi;
     int nt, nv;
     const int4 *tt;

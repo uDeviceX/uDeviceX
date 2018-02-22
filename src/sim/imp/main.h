@@ -28,6 +28,7 @@ static void gen(Time *time, float tw, const Coords *coords, Wall *w, Sim *s) { /
     sinfo.pi = rig->pininfo;
     sinfo.mass = rig->mass;
     sinfo.empty_pp = opt->rig_empty_pp;
+    sinfo.numdensity = numberdensity;
     
     run_eq(time, tw, s);
     if (opt->wall) {
@@ -54,7 +55,7 @@ void sim_gen(Sim *s, const Config *cfg, Time *time, TimeSeg *time_seg) {
     MeshRead *cell = s->rbc.cell;
     const Opt *opt = &s->opt;
     
-    UC(flu_gen_quants(s->coords, s->gen_color, &flu->q));
+    UC(flu_gen_quants(s->coords, numberdensity, s->gen_color, &flu->q));
     UC(flu_build_cells(&flu->q));
     if (opt->fluids)  flu_gen_ids  (s->cart, flu->q.n, &flu->q);
     if (opt->rbc) {
