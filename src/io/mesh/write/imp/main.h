@@ -1,7 +1,7 @@
 struct WriteFile { MPI_File f; };
 
 int write_file_open(MPI_Comm cart, const char *fn, /**/ WriteFile **fp) {
-    *fp = (WriteFile*)malloc(sizeof(WriteFile));
+    EMALLOC(1, fp);
     MC(MPI_File_open(cart, fn, MPI_MODE_WRONLY |  MPI_MODE_CREATE, MPI_INFO_NULL, &(*fp)->f));
     MC(MPI_File_set_size((*fp)->f, 0));
     return 0;
@@ -11,7 +11,7 @@ int write_file_close(WriteFile *fp) {
     MPI_File f;
     f = fp->f;
     MC(MPI_File_close(&f));
-    free(fp);
+    EFREE(fp);
     return 0;
 }
 
