@@ -1,5 +1,6 @@
-#include <mpi.h>
 #include <stdio.h>
+#include <float.h>
+#include <mpi.h>
 
 #include "utils/mc.h"
 #include "utils/msg.h"
@@ -10,8 +11,16 @@
 #include "algo/kahan_sum/imp.h"
 
 void main0() {
+    double input, sum, sum0;
     KahanSum *kahan_sum;
     kahan_sum_ini(&kahan_sum);
+    sum0 = 0;
+    while (scanf("%lf", &input) == 1) {
+        kahan_sum_add(kahan_sum, input);
+        sum0 += input;
+    }
+    sum = kahan_sum_get(kahan_sum);
+    printf("%.17e   %.17e\n",sum, sum0);
     kahan_sum_fin(kahan_sum);
 }
 
@@ -26,9 +35,6 @@ int main(int argc, char **argv) {
     MC(m::Comm_rank(cart, &rank));
     MC(m::Comm_size(cart, &size));
     msg_ini(rank);
-    msg_print("mpi size: %d", size);
-    msg_print("Hello world!");
-
     MC(m::Barrier(cart));
     m::fin();
 }

@@ -1,7 +1,7 @@
 void kahan_sum_ini(/**/ KahanSum **pq) {
     KahanSum *q;
     EMALLOC(1, &q);
-    q->c = 0;
+    q->c = q->sum = 0;
     *pq = q;
 }
 
