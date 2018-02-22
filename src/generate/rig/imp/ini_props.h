@@ -41,7 +41,7 @@ void ini_props(const RigPinInfo *pi, int n, const Particle *pp, float pmass, con
 
     if (spdir == NOT_PERIODIC) {
         init_I_fromm(pmass, nt, tt, vv, /**/ I);
-        s->mass = mesh_volume(nt, tt, vv) * numberdensity * pmass;
+        s->mass = mesh_volume0(nt, tt, vv) * numberdensity * pmass;
     }
     else {
         init_I_frompp(pp, n, pmass, com, /**/ I);
