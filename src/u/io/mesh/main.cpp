@@ -34,9 +34,9 @@ static void write(MPI_Comm cart, const Coords *c, const char *o, MeshRead *cell)
 
 static void log(MeshRead *cell) {
     int nv, nt, md;
-    md = mesh_get_md(cell);
-    nv = mesh_get_nv(cell);
-    nt = mesh_get_nt(cell);
+    md = mesh_read_get_md(cell);
+    nv = mesh_read_get_nv(cell);
+    nt = mesh_read_get_nt(cell);
     msg_print("nv, nt, max degree: %d %d %d", nv, nt, md);
 }
 
@@ -65,13 +65,13 @@ int main(int argc, char **argv) {
 
     msg_print("i = '%s'", i);
     msg_print("o = '%s'", o);
-    UC(mesh_read_off(i, &cell));
+    UC(mesh_read_ini_off(i, &cell));
     UC(log(cell));
 
     write(cart, coords, o, cell);
 
     UC(coords_fin(coords));
-    UC(mesh_fin(cell));
+    UC(mesh_read_fin(cell));
     UC(conf_fin(cfg));
 
     MC(m::Barrier(cart));

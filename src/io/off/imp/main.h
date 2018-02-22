@@ -4,7 +4,7 @@ static void ini(MeshRead **pq) {
     *pq = p;
 }
 
-void mesh_read_off(const char *path, MeshRead **pq) {
+void mesh_read_ini_off(const char *path, MeshRead **pq) {
     FILE *f;
     MeshRead *q;
     UC(ini(&q));
@@ -15,7 +15,7 @@ void mesh_read_off(const char *path, MeshRead **pq) {
     *pq = q;
 }
 
-void mesh_read_ply(const char *path, MeshRead **pq) {
+void mesh_read_ini_ply(const char *path, MeshRead **pq) {
     FILE *f;
     MeshRead *q;
     UC(ini(&q));
@@ -26,9 +26,9 @@ void mesh_read_ply(const char *path, MeshRead **pq) {
     *pq = q;
 }
 
-void mesh_fin(MeshRead* q) { EFREE(q->rr); EFREE(q->tt); EFREE(q); }
-int mesh_get_nv(const MeshRead *q) { return q->nv; }
-int mesh_get_nt(const MeshRead *q) { return q->nt; }
+void mesh_read_fin(MeshRead* q) { EFREE(q->rr); EFREE(q->tt); EFREE(q); }
+int mesh_read_get_nv(const MeshRead *q) { return q->nv; }
+int mesh_read_get_nt(const MeshRead *q) { return q->nt; }
 static int amax(int *a, int n) {
     int i, m;
     if (n <= 0) ERR("amax called with size: %d\n", n);
@@ -37,7 +37,7 @@ static int amax(int *a, int n) {
         if (a[i] > m) m = a[i];
     return m;
 }
-int mesh_get_md(const MeshRead *q) {
+int mesh_read_get_md(const MeshRead *q) {
     int *d;
     int i, m, nt, nv;
     int x, y, z;
@@ -59,5 +59,5 @@ int mesh_get_md(const MeshRead *q) {
     return m;
 }
 
-const float *mesh_get_vert(const MeshRead *q) { return q->rr; }
-const int4  *mesh_get_tri(const MeshRead *q) { return q->tt; }
+const float *mesh_read_get_vert(const MeshRead *q) { return q->rr; }
+const int4  *mesh_read_get_tri(const MeshRead *q) { return q->tt; }

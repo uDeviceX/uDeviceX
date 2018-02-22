@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 1.5.6.1">
+<title>Untitled</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css">
+<link rel="stylesheet" href="./pygments-default.css">
+</head>
+<body class="article">
+<div id="header">
+</div>
+<div id="content">
+<div class="listingblock">
+<div class="title">Code block with title and syntax highlighting</div>
+<div class="content">
+<pre>.app.rb <i class="conum" data-value="1"></i><b>(1)</b>
+[[src-listing]] <i class="conum" data-value="2"></i><b>(2)</b>
+[source,ruby] <i class="conum" data-value="3"></i><b>(3)</b> <i class="conum" data-value="4"></i><b>(4)</b>
+---- <i class="conum" data-value="5"></i><b>(5)</b>
+require 'sinatra'
+
+get '/hi' do
+  "Hello World!"
+end
+----</pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>An optional title can be added to the block.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>An optional ID can be added to the block. See <a href="#anchordef">[anchordef]</a>.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Assign the block name <code>source</code> to the first position in the attribute list.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Assign a source language to the second position.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>The source block name is typically assigned to listing and literal blocks.</td>
+</tr>
+</table>
+</div>
+</div>
+</body>
+</html>

@@ -22,8 +22,8 @@ void triangles_ini(MeshRead *mesh, /**/ Triangles **pq) {
     int4 *dev;
     EMALLOC(1, &q);
     *pq = q;
-    nt = mesh_get_nt(mesh);
-    hst = mesh_get_tri(mesh);
+    nt = mesh_read_get_nt(mesh);
+    hst = mesh_read_get_tri(mesh);
     Dalloc(&dev, nt);
     cH2D(dev, hst, nt);
 

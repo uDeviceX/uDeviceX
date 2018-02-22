@@ -145,10 +145,10 @@ static void ini_flu(const Config *cfg, Opt opt, MPI_Comm cart, int maxp, int3 L,
 static void ini_rbc(const Config *cfg, Opt opt, MPI_Comm cart, int3 L, /**/ Rbc *r) {
     int nv;
     const char *directory = "r";
-    UC(mesh_read_off("rbc.off", &r->cell));
+    UC(mesh_read_ini_off("rbc.off", &r->cell));
     UC(mesh_write_ini_off(r->cell, directory, /**/ &r->mesh_write));
 
-    nv = mesh_get_nv(r->cell);
+    nv = mesh_read_get_nv(r->cell);
     
     Dalloc(&r->ff, MAX_CELL_NUM * nv);
     UC(triangles_ini(r->cell, /**/ &r->tri));

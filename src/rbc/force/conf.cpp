@@ -19,7 +19,7 @@ void rbc_force_set_conf(const MeshRead *cell, const Config *cfg, RbcForce *f) {
     else {
         float Atot = 0;
         int nt;
-        nt = mesh_get_nt(cell);
+        nt = mesh_read_get_nt(cell);
         UC(conf_lookup_float(cfg, "rbc.totArea", &Atot));
         UC(rbc_force_set_stressful(nt, Atot, /**/ f));
     }

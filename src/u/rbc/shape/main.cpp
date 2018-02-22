@@ -30,9 +30,9 @@ void run(MeshRead *off) {
     const int4 *tt;
     const float *rr;
     float *A;
-    nt = mesh_get_nt(off); nv = mesh_get_nv(off);
-    tt = mesh_get_tri(off); rr = mesh_get_vert(off);
-    md = mesh_get_md(off);
+    nt = mesh_read_get_nt(off); nv = mesh_read_get_nv(off);
+    tt = mesh_read_get_tri(off); rr = mesh_read_get_vert(off);
+    md = mesh_read_get_md(off);
     adj_ini(md, nt, nv, tt, /**/ &adj);
     rbc_shape_ini(adj, rr, /**/ &shape);
 
@@ -52,11 +52,11 @@ int main(int argc, char **argv) {
     UC(conf_ini(&cfg));
     UC(conf_read(argc, argv, cfg));
     UC(conf_lookup_string(cfg, "i", &i));
-    UC(mesh_read_off(i, /**/ &off));
+    UC(mesh_read_ini_off(i, /**/ &off));
 
     run(off);
 
-    UC(mesh_fin(off));
+    UC(mesh_read_fin(off));
     UC(conf_fin(cfg));
     m::fin();
 }
