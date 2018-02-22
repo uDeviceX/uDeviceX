@@ -5,10 +5,7 @@ void kahan_sum_ini(/**/ KahanSum **pq) {
     *pq = q;
 }
 
-void kahan_sum_fin(KahanSum *q) {
-    EFREE(q);
-}
-
+void kahan_sum_fin(KahanSum *q) { EFREE(q); }
 void kahan_sum_add(KahanSum *q, double input) {
     double t;
     double y, c, sum;
@@ -22,10 +19,5 @@ void kahan_sum_add(KahanSum *q, double input) {
     q->y = y; q->c = c; q->sum = sum;
 }
 
-double kahan_sum_get(const KahanSum *q) {
-    return q->sum;
-}
-
-double kahan_sum_compensation(const KahanSum *q) {
-    return q->c;
-}
+double kahan_sum_get(const KahanSum *q) { return q->sum; }
+double kahan_sum_compensation(const KahanSum *q) { return q->c; }
