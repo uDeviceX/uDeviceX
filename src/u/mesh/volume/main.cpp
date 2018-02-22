@@ -6,8 +6,12 @@
 #include "mpi/glb.h"
 #include "mpi/wrapper.h"
 #include "utils/mc.h"
+#include "utils/error.h"
+#include "parser/imp.h"
 
 int main(int argc, char **argv) {
+    const char *i;
+    Config *cfg;    
     int rank, size, dims[3];
     MPI_Comm cart;
     m::ini(&argc, &argv);
@@ -16,10 +20,12 @@ int main(int argc, char **argv) {
 
     MC(m::Comm_rank(cart, &rank));
     MC(m::Comm_size(cart, &size));
-    msg_ini(rank);
-    msg_print("mpi size: %d", size);
-    msg_print("Hello world!");
 
+    UC(conf_ini(&cfg));
+    UC(conf_read(argc, argv, cfg));
+    UC(conf_lookup_string(cfg, "i", &i));
+    UC(conf_fin(cfg));
+    
     MC(m::Barrier(cart));
     m::fin();
 }
