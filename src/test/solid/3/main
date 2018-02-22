@@ -8,7 +8,6 @@ x=0.75 y=3 z=9; echo $x $y $z >  rigs-ic.txt
 x=8    y=8 z=8; echo $x $y $z >> rigs-ic.txt
 :
 u.conf "$S" u/x "$S/conf/default.h" <<!
-    walls
     run
 !
 { make clean && u.make -j ; } > /dev/null

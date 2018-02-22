@@ -4,7 +4,7 @@ cd test/color/drop
 S=`u.cp.s`
 u.cp.sdf yplates1/yplates.dat sdf.dat
 u.conf "$S" u/x "$S/conf/default.h" <<!
-   walls numberdensity=2
+   numberdensity=2
    run
 !
 u.make -j

@@ -5,7 +5,6 @@ S=`u.cp.s`
 u.cp.sdf pachinko/sdf.dat sdf.dat
 :
 u.conf "$S" u/x "$S/conf/default.h" <<!
-   walls
    run
 !
 u.make -j

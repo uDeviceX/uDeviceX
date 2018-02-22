@@ -7,7 +7,6 @@ echo -e "16 16 8" > rigs-ic.txt
 u.cp.rig cyl.ply rig.ply
 :
 u.conf "$S" u/x "$S/conf/default.h" <<!
-   walls
    run
 !
 u.make -j
