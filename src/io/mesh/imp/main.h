@@ -1,4 +1,6 @@
-static const int NVP = 3; /* number of vertices per face */
+enum {
+    NVP = 3; /* number of vertices per face */
+};
 
 static void copy_v(const Particle *f, /**/ Particle *t) {
     enum {X, Y, Z};
