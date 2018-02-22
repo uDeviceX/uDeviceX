@@ -76,11 +76,16 @@ static void gen3(const Coords *coords, MPI_Comm comm, RigGenInfo rgi, int nsolid
     delete[] tags;
 }
 
-static void gen4(const Coords *coords, MPI_Comm comm, const char *fname, RigGenInfo rgi, /**/
-                 FluInfo fluinfo, RigInfo riginfo, /*w*/ float *coms) {
+static void gen(const Coords *coords, MPI_Comm comm, const char *fname, RigGenInfo rgi, /**/
+                 FluInfo fluinfo, RigInfo riginfo) {
     float3 minbb, maxbb;
-    int nsolid = read_coms(fname, /**/ coms);
+    float *coms;
+    int nsolid;
 
+    EMALLOC(MAX_SOLIDS * 3 * 10, &coms);
+    
+    nsolid = read_coms(fname, /**/ coms);
+    
     if (nsolid == 0) ERR("No solid provided.\n");
 
     mesh_get_bbox(rgi.vv, rgi.nv, /**/ &minbb, &maxbb);
@@ -89,13 +94,8 @@ static void gen4(const Coords *coords, MPI_Comm comm, const char *fname, RigGenI
     make_local(coords, nsolid, /**/ coms);
     
     gen3(coords, comm, rgi, nsolid, coms, /**/ fluinfo, riginfo);
-}
 
-static void gen(const Coords *coords, MPI_Comm comm, const char *fname, RigGenInfo rgi, /**/
-                FluInfo fluinfo, RigInfo riginfo) {
-    float *coms = new float[MAX_SOLIDS * 3 * 10];
-    gen4(coords, comm, fname, rgi, /**/ fluinfo, riginfo, /*w*/ coms);
-    delete[] coms;
+    EFREE(coms);
 }
 
 void gen_rig_from_solvent(const Coords *coords, MPI_Comm comm, RigGenInfo rgi,
