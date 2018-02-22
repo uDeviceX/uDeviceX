@@ -13,10 +13,16 @@ struct FluInfo {
     int *n;
 };
 
+struct RigInfo {
+    int *ns, *nps, *n;
+    float *rr0;
+    Solid *ss;
+    Particle *pp;
+};
+
 namespace gen {
 void gen_rig_from_solvent(const Coords *coords, MPI_Comm comm, RigGenInfo rgi,
-                          /* io */ FluInfo fluinfo,
-                          /* o */ int *ns, int *nps, int *n, float *rr0_hst, Solid *ss_hst, Particle *pp_hst);
+                          /* io */ FluInfo fluinf, /* o */ RigInfo riginfo);
 
 void set_rig_ids(MPI_Comm comm, int n, /**/ Solid * ss);
 } // gen
