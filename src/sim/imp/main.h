@@ -82,7 +82,7 @@ void sim_strt(Sim *s, const Config *cfg, Time *time, TimeSeg *time_seg) {
     Wall *wall = &s->wall;
     MeshRead *cell = s->rbc.cell;
     const Opt *opt = &s->opt;
-    bool dump_sdf = s->opt->dump_field;
+    bool dump_sdf = s->opt.dump_field;
     long maxp_wall = get_max_parts_wall(s->coords);
 
     /*Q*/
