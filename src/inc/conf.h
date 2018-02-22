@@ -42,8 +42,8 @@
 #endif
 
 // walls
-#ifndef walls
-#define walls (false)
+#ifdef walls
+#error walls is runtime: wall.active (bool)
 #endif
 
 
