@@ -1,4 +1,4 @@
-void rig_gen_quants(const Coords *coords, float rig_mass, const RigPinInfo *pi, MPI_Comm comm, /* io */ Particle *opp, int *on, /**/ RigQuants *q) {
+void rig_gen_quants(const Coords *coords, bool empty_pp, float rig_mass, const RigPinInfo *pi, MPI_Comm comm, /* io */ Particle *opp, int *on, /**/ RigQuants *q) {
     RigGenInfo rgi;
     FluInfo fluinfo;
     RigInfo riginfo;
@@ -7,6 +7,7 @@ void rig_gen_quants(const Coords *coords, float rig_mass, const RigPinInfo *pi, 
     rgi.pi = pi;
     rgi.tt = q->htt; rgi.nt = q->nt;
     rgi.vv = q->hvv; rgi.nv = q->nv;
+    rgi.empty_pp = empty_pp;
 
     fluinfo.pp = opp;
     fluinfo.n = on;    

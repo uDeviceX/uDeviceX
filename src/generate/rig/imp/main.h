@@ -12,7 +12,7 @@ static void gen0(const Coords *c, MPI_Comm comm, RigGenInfo rgi, int nsolid, int
         for (int d = 0; d < 3; ++d)
             model.com[d] = coms[idmax*3 + d];
         ini_props(rgi.pi, npsolid, ri.pp, rgi.mass, model.com, rgi.nt, rgi.tt, rgi.vv, /**/ ri.rr0, &model);
-        if (empty_solid_particles)
+        if (rgi.empty_pp)
             empty_solid(rgi.nt, rgi.tt, rgi.vv, /* io */ ri.rr0, &npsolid);
     }
 

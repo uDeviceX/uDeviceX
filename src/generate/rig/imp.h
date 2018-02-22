@@ -6,6 +6,7 @@ struct RigGenInfo {
     int nt, nv;
     const int4 *tt;
     const float *vv;
+    bool empty_pp;
 };
 
 struct FluInfo {

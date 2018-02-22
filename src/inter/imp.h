@@ -17,6 +17,7 @@ struct InterRbcInfos {
 
 struct InterRigInfos {
     bool active;
+    bool empty_pp;
     RigQuants *q;
     const RigPinInfo *pi;
     float mass;

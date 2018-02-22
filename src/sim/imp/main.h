@@ -27,6 +27,7 @@ static void gen(Time *time, float tw, const Coords *coords, Wall *w, Sim *s) { /
     sinfo.q = &rig->q;
     sinfo.pi = rig->pininfo;
     sinfo.mass = rig->mass;
+    sinfo.empty_pp = empty_solid_particles;
     
     run_eq(time, tw, s);
     if (opt->wall) {
