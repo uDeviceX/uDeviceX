@@ -1,0 +1,9 @@
+= Kahan summation
+:lext: .adoc
+:src: ../../../../src
+
+[source,cpp]
+----
+include::{src}/algo/kahan_sum/imp.h[tag=interface]
+----
+

@@ -18,6 +18,8 @@ include::modules/algo/minmax.adoc[]
 
 include::modules/algo/scan.adoc[]
 
+include::modules/algo/kahan_sum.adoc[]
+
 include::modules/bforce.adoc[]
 
 include::modules/clist.adoc[]
