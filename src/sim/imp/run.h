@@ -11,15 +11,19 @@ static float get_dt(Sim* s, Time* time) {
     else {
         const Flu *flu = &s->flu;
         const Rbc *rbc = &s->rbc;
+        const Opt *opt = &s->opt;
 
         time_step_accel_reset(s->time_step_accel);
         if (flu->q.n)
             time_step_accel_push(s->time_step_accel, flu->mass, flu->q.n, flu->ff);
-        if (s->opt.rbc && rbc->q.n)
+        if (opt->rbc && rbc->q.n)
             time_step_accel_push(s->time_step_accel, rbc->mass, rbc->q.n, rbc->ff);
 
         const float dt = time_step_dt(s->time_step, s->cart, s->time_step_accel);
-        //time_step_log(s->time_step); //TODO
+
+        if (time_cross(time, opt->freq_parts))
+            time_step_log(s->time_step);
+
         return dt;
     }
 }
