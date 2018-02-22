@@ -2,7 +2,8 @@
 :lext: .adoc
 :src: ../../../../src
 
-Summation stable to numerical error.
+link:https://en.wikipedia.org/wiki/Kahan_summation_algorithm[Summation]
+stable to numerical error.
 
 [source,cpp]
 ----
