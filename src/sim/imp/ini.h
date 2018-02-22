@@ -270,6 +270,9 @@ static void read_opt(const Config *c, Opt *o) {
     o->dump_rbc_com = b;
     UC(conf_lookup_float(c, "dump.freq_rbc_com", &o->freq_rbc_com));
 
+    UC(conf_lookup_bool(c, "dump.forces", &b));
+    o->dump_forces = b;
+    
     UC(conf_lookup_int(c, "flu.recolor_freq", &o->recolor_freq));
 
     UC(conf_lookup_bool(c, "flu.push", &b));

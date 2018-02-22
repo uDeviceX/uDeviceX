@@ -152,7 +152,7 @@ struct Opt {
     bool rig, rig_bounce, rig_empty_pp;
     bool wall;
     bool inflow, outflow, denoutflow, vcon;
-    bool dump_field, dump_parts, dump_strt, dump_rbc_com;
+    bool dump_field, dump_parts, dump_strt, dump_rbc_com, dump_forces;
     float freq_field, freq_parts, freq_strt, freq_rbc_com;
     int recolor_freq;
     bool push_flu, push_rbc, push_rig;
