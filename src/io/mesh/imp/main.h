@@ -17,11 +17,11 @@ static void shift(const Coords *c, const Particle *f, int n, /**/ Particle *t) {
     }
 }
 
-static void header(MPI_Comm cart, int nc0, int nv, int nt, write::File *f) {
+static void header(MPI_Comm cart, int nc0, int nv, int nt, WriteFile *f) {
     int nc; /* total number of cells */
     int sz = 0;
     char s[BUFSIZ] = {0};
-    write::reduce(cart, nc0, &nc);
+    write_reduce(cart, nc0, &nc);
     if (m::is_master(cart))
         sz = sprintf(s,
                      "ply\n"
@@ -32,21 +32,21 @@ static void header(MPI_Comm cart, int nc0, int nv, int nt, write::File *f) {
                      "element face  %d  \n"
                      "property list int int vertex_index\n"
                      "end_header\n", nv*nc, nt*nc);
-    write::one(cart, s, sz, f);
+    write_master(cart, s, sz, f);
 }
 
-static void vert(MPI_Comm cart,const Particle *pp, int nc, int nv, write::File *f) {
+static void vert(MPI_Comm cart,const Particle *pp, int nc, int nv, WriteFile *f) {
     int n;
     n = nc * nv;
-    UC(write::all(cart, pp, sizeof(Particle) * n, f));
+    UC(write_all(cart, pp, sizeof(Particle) * n, f));
 }
 
-static void wfaces0(MPI_Comm cart, int *buf, const int4 *faces, int nc, int nv, int nt, write::File *f) {
+static void wfaces0(MPI_Comm cart, int *buf, const int4 *faces, int nc, int nv, int nt, WriteFile *f) {
     /* write faces */
     int c, t, b;  /* cell, triangle, buffer index */
     int n, shift;
     n = nc * nv;
-    write::shift(cart, n, &shift);
+    write_shift_indices(cart, n, &shift);
 
     int4 tri;
     for(b = c = 0; c < nc; ++c)
@@ -57,10 +57,10 @@ static void wfaces0(MPI_Comm cart, int *buf, const int4 *faces, int nc, int nv, 
             buf[b++] = shift + nv*c + tri.y;
             buf[b++] = shift + nv*c + tri.z;
         }
-    UC(write::all(cart, buf, b*sizeof(buf[0]), f));
+    UC(write_all(cart, buf, b*sizeof(buf[0]), f));
 }
 
-static void wfaces(MPI_Comm cart, const int4 *faces, int nc, int nv, int nt, write::File *f) {
+static void wfaces(MPI_Comm cart, const int4 *faces, int nc, int nv, int nt, WriteFile *f) {
     int *buf; /* buffer for faces */
     int sz;
     sz = (1 + NVP) * nc * nt * sizeof(int);
@@ -70,13 +70,13 @@ static void wfaces(MPI_Comm cart, const int4 *faces, int nc, int nv, int nt, wri
 }
 
 static void mesh_write0(MPI_Comm cart, const Particle *pp, const int4 *faces,
-                   int nc, int nv, int nt, write::File *f) {
+                   int nc, int nv, int nt, WriteFile *f) {
     UC(header(cart, nc,        nv, nt, f));
     UC(vert(cart, pp,      nc, nv,     f));
     UC(wfaces(cart, faces, nc, nv, nt, f));
 }
 
-static void mesh_write1(MPI_Comm cart, const Coords *c, const Particle *pp, const int4 *faces, int nc, int nv, int nt, write::File *f) {
+static void mesh_write1(MPI_Comm cart, const Coords *c, const Particle *pp, const int4 *faces, int nc, int nv, int nt, WriteFile *f) {
     int sz, n;
     Particle *pp0;
     n = nc * nv;
@@ -88,10 +88,10 @@ static void mesh_write1(MPI_Comm cart, const Coords *c, const Particle *pp, cons
 }
 
 static void mesh_write(MPI_Comm cart, const Coords *coords, const Particle *pp, const int4 *faces, int nc, int nv, int nt, const char *fn) {
-    write::File *f;
+    WriteFile *f;
     if (pp == NULL) ERR("pp == NULL");
 
-    UC(write::fopen(cart, fn, /**/ &f));
+    UC(write_file_open(cart, fn, /**/ &f));
     UC(mesh_write1(cart, coords, pp, faces, nc, nv, nt, f));
-    UC(write::fclose(f));
+    UC(write_file_close(f));
 }

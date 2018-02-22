@@ -8,7 +8,4 @@
 #include "utils/mc.h"
 
 #include "imp.h"
-
-namespace write {
 #include "imp/main.h"
-}
