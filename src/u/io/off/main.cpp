@@ -27,17 +27,17 @@ void main0(Config *c) {
     UC(conf_lookup_string(c, "type", &type));
 
     if (same_str(type, "off"))
-        UC(mesh_read_off(i, &cell));
+        UC(mesh_read_ini_off(i, &cell));
     else if (same_str(type, "ply"))
-        UC(mesh_read_ply(i, &cell));
+        UC(mesh_read_ini_ply(i, &cell));
     else
         ERR("expecting `ply` or `off`: `%s`", type); 
 
-    md = mesh_get_md(cell);
-    nv = mesh_get_nv(cell);
-    nt = mesh_get_nt(cell);
+    md = mesh_read_get_md(cell);
+    nv = mesh_read_get_nv(cell);
+    nt = mesh_read_get_nt(cell);
     printf("%d %d %d\n", nv, nt, md);
-    UC(mesh_fin(cell));
+    UC(mesh_read_fin(cell));
 }
 
 int main(int argc, char **argv) {

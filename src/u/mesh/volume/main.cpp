@@ -17,13 +17,13 @@ void main0(const char *i) {
     MeshRead *mesh;
     MeshVolume *volume;
     Positions  *pos;
-    UC(mesh_read_off(i, /**/ &mesh));
+    UC(mesh_read_ini_off(i, /**/ &mesh));
     UC(mesh_volume_ini(mesh, &volume));
-    nv = mesh_get_nv(mesh);
-    UC(Positions_float_ini(nv, mesh_get_vert(mesh), /**/ &pos));
+    nv = mesh_read_get_nv(mesh);
+    UC(Positions_float_ini(nv, mesh_read_get_vert(mesh), /**/ &pos));
     UC(Positions_fin(pos));       
     mesh_volume_fin(volume);
-    UC(mesh_fin(mesh));
+    UC(mesh_read_fin(mesh));
 }
 
 int main(int argc, char **argv) {

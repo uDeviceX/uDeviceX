@@ -17,9 +17,9 @@ void mesh_write_ini(const int4 *tt, int nv, int nt, const char *directory, /**/ 
 void mesh_write_ini_off(MeshRead *cell, const char *directory, /**/ MeshWrite **pq) {
     int nv, nt;
     const int4 *tt;
-    nv = mesh_get_nv(cell);
-    nt = mesh_get_nt(cell);
-    tt = mesh_get_tri(cell);
+    nv = mesh_read_get_nv(cell);
+    nt = mesh_read_get_nt(cell);
+    tt = mesh_read_get_tri(cell);
     UC(ini(tt, nv, nt, directory, /**/ pq));
 }
 

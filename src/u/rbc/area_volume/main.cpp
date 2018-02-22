@@ -49,10 +49,10 @@ static void run1(MPI_Comm cart, const Coords *coords, MeshRead *off, const char 
 void run(MPI_Comm cart, const Coords *coords, const char *cell, const char *ic) {
     RbcQuants q;
     MeshRead *off;
-    UC(mesh_read_off(cell, /**/ &off));
+    UC(mesh_read_ini_off(cell, /**/ &off));
     UC(rbc_ini(false, off, &q));
     UC(run1(cart, coords, off, ic, q));
-    UC(mesh_fin(off));
+    UC(mesh_read_fin(off));
     UC(rbc_fin(&q));
 }
 

@@ -15,7 +15,7 @@ static void ids_from_strt(const Coords *coords, int id, /**/ int *ii) {
 
 void rbc_strt_quants(const Coords *coords, MeshRead *off, int id, RbcQuants *q) {
     int nv;
-    nv = mesh_get_nv(off);
+    nv = mesh_read_get_nv(off);
     setup_from_strt(coords, nv, id, /**/ q->pp, &q->nc, &q->n, /*w*/ q->pp_hst);
     if (q->ids) ids_from_strt(coords, id, /**/ q->ii);
 }

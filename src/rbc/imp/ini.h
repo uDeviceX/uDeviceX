@@ -10,10 +10,10 @@ static void ini_ids(RbcQuants *q)  { EMALLOC(MAX_CELL_NUM, &q->ii); }
 
 void rbc_ini(bool ids, const MeshRead *cell, RbcQuants *q) {
     const int4 *tt;
-    q->nv = mesh_get_nv(cell);
-    q->nt = mesh_get_nt(cell);
-    q->md = mesh_get_md(cell);
-    tt = mesh_get_tri(cell);
+    q->nv = mesh_read_get_nv(cell);
+    q->nt = mesh_read_get_nt(cell);
+    q->md = mesh_read_get_md(cell);
+    tt = mesh_read_get_tri(cell);
 
     q->n = q->nc = 0;
     q->ids = ids;

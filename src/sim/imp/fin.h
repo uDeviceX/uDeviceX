@@ -94,7 +94,7 @@ static void fin_rbc(Opt opt, Rbc *r) {
     if (opt.dump_rbc_com) UC(rbc_com_fin(/**/ r->com));
     if (RBC_STRETCH)      UC(rbc_stretch_fin(/**/ r->stretch));
     UC(rbc_params_fin(r->params));
-    UC(mesh_fin(r->cell));
+    UC(mesh_read_fin(r->cell));
     UC(mesh_write_fin(r->mesh_write));
 }
 

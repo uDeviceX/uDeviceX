@@ -16,7 +16,7 @@ static void gen_ids(MPI_Comm comm, long nc, /**/ int *ii) {
 
 void rbc_gen_quants(const Coords *coords, MPI_Comm comm, MeshRead *off, const char *ic, /**/ RbcQuants *q) {
     const float *vv;
-    vv = mesh_get_vert(off);
+    vv = mesh_read_get_vert(off);
     setup_from_pos(coords, comm, vv, ic, q->nv, /**/ q->pp, &q->nc, &q->n, /*w*/ q->pp_hst);
     if (q->ids) gen_ids(comm, q->nc, /**/ q->ii);
 }

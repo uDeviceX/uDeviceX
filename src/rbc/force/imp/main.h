@@ -11,10 +11,10 @@ void rbc_force_ini(const MeshRead *cell, RbcForce **pq) {
     int md, nt, nv;
     const int4 *tt;
     EMALLOC(1, &q);
-    nv = mesh_get_nv(cell);
-    nt = mesh_get_nt(cell);
-    md = mesh_get_md(cell);
-    tt = mesh_get_tri(cell);
+    nv = mesh_read_get_nv(cell);
+    nt = mesh_read_get_nt(cell);
+    md = mesh_read_get_md(cell);
+    tt = mesh_read_get_tri(cell);
     
     UC(adj_ini(md, nt, nv, tt, /**/ &q->adj));
     UC(adj_view_ini(q->adj, /**/ &q->adj_v));
@@ -67,8 +67,8 @@ void rbc_force_set_stressfree(const char *fname, /**/ RbcForce *f) {
     int n;
 
     adj = f->adj;    
-    UC(mesh_read_off(fname, &cell));
-    rr = mesh_get_vert(cell);
+    UC(mesh_read_ini_off(fname, &cell));
+    rr = mesh_read_get_vert(cell);
 
     UC(rbc_shape_ini(adj, rr, /**/ &shape));
 
@@ -84,7 +84,7 @@ void rbc_force_set_stressfree(const char *fname, /**/ RbcForce *f) {
     cH2D(v.aa, aa_hst, n);
     
     UC(rbc_shape_fin(shape));
-    UC(mesh_fin(cell));
+    UC(mesh_read_fin(cell));
 
     f->stype = RBC_SFREE;
     f->sinfo.sfree = v;
