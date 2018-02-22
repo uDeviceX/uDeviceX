@@ -1,4 +1,4 @@
-$B/algo/force_stat/imp.o: $S/utils/error.h $S/inc/type.h $S/algo/force_stat/imp.h $S/algo/force_stat/imp/main.h $S/utils/msg.h
+$B/algo/force_stat/imp.o: $S/utils/error.h $S/inc/type.h $S/algo/force_stat/imp.h $S/d/api.h $S/algo/force_stat/imp/main.h $S/utils/msg.h
 $B/algo/minmax/imp.o: $S/inc/conf.h $S/inc/type.h $S/d/q.h $S/algo/minmax/imp.h $S/utils/cc.h $S/inc/def.h $S/inc/dev.h $S/d/api.h $B/conf.h $S/utils/kl.h $S/d/ker.h $S/utils/msg.h
 $B/algo/scan/imp.o: $S/algo/scan/cpu/imp.h $S/utils/imp.h $S/inc/conf.h $S/utils/error.h $S/d/q.h $S/algo/scan/imp.h $S/utils/cc.h $S/algo/scan/dev.h $S/d/api.h $S/inc/dev.h $B/conf.h $S/utils/kl.h $S/algo/scan/cuda/type.h $S/algo/scan/cpu/type.h $S/algo/scan/cuda/imp.h $S/d/ker.h
 $B/clist/imp.o: $S/clist/imp/fin.h $S/utils/imp.h $S/inc/conf.h $S/utils/error.h $S/inc/type.h $S/partlist/dev.h $S/clist/imp.h $S/partlist/type.h $S/algo/scan/imp.h $S/utils/cc.h $S/inc/def.h $S/clist/dev.h $S/clist/imp/ini.h $S/d/api.h $S/inc/dev.h $B/conf.h $S/clist/imp/main.h $S/clist/imp/type.h $S/utils/kl.h $S/clist/dev/main.h $S/utils/msg.h
@@ -62,6 +62,7 @@ $B/mesh/collision/imp.o: $S/inc/conf.h $S/utils/error.h $S/inc/type.h $S/d/q.h $
 $B/mesh/dist/imp.o: $S/inc/type.h $S/mesh/dist/imp.h
 $B/mesh/props/imp.o: $S/inc/type.h $S/mesh/props/imp.h
 $B/mesh/triangles/imp.o: $S/utils/imp.h $S/inc/conf.h $S/utils/error.h $S/mesh/triangles/imp.h $S/utils/cc.h $S/inc/dev.h $S/d/api.h $B/conf.h $S/mesh/triangles/type.h $S/io/off/imp.h
+$B/mesh/volume/imp.o: $S/utils/imp.h $S/utils/error.h $S/mesh/volume/imp.h $S/mesh/volume/imp/main.h $S/mesh/volume/imp/type.h $S/io/off/imp.h
 $B/mpi/glb.o: $S/inc/conf.h $S/mpi/wrapper.h $S/utils/mc.h $B/conf.h
 $B/mpi/type.o: $S/inc/conf.h $S/inc/type.h $S/mpi/type.h $S/utils/mc.h
 $B/mpi/wrapper.o: $S/mpi/wrapper.h

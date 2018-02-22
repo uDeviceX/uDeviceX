@@ -1,7 +1,7 @@
-#include <vector_types.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <vector_types.h>
 
 #include "utils/error.h"
 #include "utils/imp.h"

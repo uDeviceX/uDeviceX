@@ -71,7 +71,7 @@ static void M_2(const float *A, const float *B, const float *C, /**/ float *res)
 
 #define load_t(vv, tid) {vv[3*tid + 0], vv[3*tid + 1], vv[3*tid + 2]}
 
-float mesh_volume(int nt, const int4 *tt, const float *vv) {
+float mesh_volume0(int nt, const int4 *tt, const float *vv) {
     float Vtot = 0;
         
     for (int it = 0; it < nt; ++it) {
