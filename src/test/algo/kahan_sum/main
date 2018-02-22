@@ -1,0 +1,5 @@
+# TEST: algo.kahan_sum
+cd test/algo/kahan_sum
+u.conf0 u/algo/kahan_sum
+{ u.make -j;     } > /dev/null
+u.run ./udx < input.txt > sum.out.txt
