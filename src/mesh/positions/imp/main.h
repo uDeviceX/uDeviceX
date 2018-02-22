@@ -1,7 +1,7 @@
 void Positions_float_ini(int n, const float *rr, /**/ Positions **pq) {
     Positions *q;
     EMALLOC(1, &q);
-    q->type = PARTICLE; q->n = n; q->D.rr = rr;
+    q->type = FLOAT; q->n = n; q->D.rr = rr;
     *pq = q;
 }
 

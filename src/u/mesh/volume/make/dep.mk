@@ -1,7 +1,7 @@
 $B/d/api.o: $S/d/cpu/imp.h $S/utils/imp.h $S/inc/conf.h $S/utils/error.h $S/d/common.h $S/d/api.h $B/conf.h $S/d/cuda/imp.h
 $B/io/off/imp.o: $S/utils/imp.h $S/utils/error.h $S/io/off/imp/ply.h $S/io/off/imp.h $S/io/off/imp/main.h $S/io/off/imp/type.h $S/io/off/imp/off.h $S/utils/msg.h
 $B/mesh/positions/imp.o: $S/utils/imp.h $S/utils/error.h $S/inc/type.h $S/mesh/positions/imp.h $S/mesh/positions/imp/main.h $S/mesh/positions/imp/type.h
-$B/mesh/volume/imp.o: $S/utils/imp.h $S/utils/error.h $S/mesh/volume/imp.h $S/mesh/volume/imp/main.h $S/mesh/volume/imp/type.h $S/io/off/imp.h
+$B/mesh/volume/imp.o: $S/utils/imp.h $S/utils/error.h $S/mesh/volume/imp.h $S/mesh/volume/imp/main.h $S/mesh/volume/imp/type.h $S/io/off/imp.h $S/mesh/positions/imp.h $S/utils/msg.h
 $B/mpi/glb.o: $S/inc/conf.h $S/mpi/wrapper.h $S/utils/mc.h $B/conf.h
 $B/mpi/type.o: $S/inc/conf.h $S/inc/type.h $S/mpi/type.h $S/utils/mc.h
 $B/mpi/wrapper.o: $S/mpi/wrapper.h
