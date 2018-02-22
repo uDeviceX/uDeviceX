@@ -10,7 +10,7 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/io/field/xmf          && \
     d $B/io/mesh               && \
     d $B/io/mesh/write         && \
-    d $B/io/off                && \
+    d $B/io/mesh_read          && \
     d $B/io/restart            && \
     d $B/io/rig                && \
     d $B/io/txt                && \

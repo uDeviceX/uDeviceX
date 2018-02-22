@@ -43,7 +43,7 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/io/field/xmf          && \
     d $B/io/mesh               && \
     d $B/io/mesh/write         && \
-    d $B/io/off                && \
+    d $B/io/mesh_read          && \
     d $B/io/restart            && \
     d $B/io/rig                && \
     d $B/io/txt                && \
@@ -53,7 +53,6 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/mesh/bbox             && \
     d $B/mesh/collision        && \
     d $B/mesh/dist             && \
-    d $B/mesh/positions        && \
     d $B/mesh/props            && \
     d $B/mesh/triangles        && \
     d $B/mesh/volume           && \

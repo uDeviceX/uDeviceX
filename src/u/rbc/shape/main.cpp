@@ -18,7 +18,7 @@
 #include "rbc/adj/imp.h"
 #include "rbc/shape/imp.h"
 
-#include "io/off/imp.h"
+#include "io/mesh_read/imp.h"
 #include "mpi/wrapper.h"
 
 #include "mpi/glb.h"

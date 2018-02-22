@@ -30,7 +30,7 @@
 #include "rbc/force/rnd/imp.h"
 #include "rbc/force/imp.h"
 
-#include "io/off/imp.h"
+#include "io/mesh_read/imp.h"
 
 #include "mpi/glb.h"
 #include "mpi/wrapper.h"
