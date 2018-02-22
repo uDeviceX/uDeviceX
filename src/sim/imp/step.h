@@ -38,7 +38,7 @@ static void step(Time *time, float dt, BForce *bforce, bool wall0, float tstart,
 
     if (wall0) bounce_wall(dt, opt->rbc, s->coords, wall, /**/ flu, rbc);
 
-    if (opt->sbounce && s->solids0) bounce_solid(dt, s->L, /**/ &s->bb, rig, flu);
+    if (opt->rig_bounce && s->solids0) bounce_solid(dt, s->L, /**/ &s->bb, rig, flu);
 
     UC(check_pos_soft(s));
     UC(check_vel(dt, s));

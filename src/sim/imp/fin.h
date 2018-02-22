@@ -166,7 +166,7 @@ void sim_fin(Sim *s) {
     if (s->opt.rig) {
         UC(fin_rig(/**/ &s->rig));
         
-        if (s->opt.sbounce)
+        if (s->opt.rig_bounce)
             UC(fin_bounce_back(&s->bb));
     }
     

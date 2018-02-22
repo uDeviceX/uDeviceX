@@ -238,7 +238,7 @@ static void read_opt(const Config *c, Opt *o) {
     UC(conf_lookup_bool(c, "rig.active", &b));
     o->rig = b;
     UC(conf_lookup_bool(c, "rig.bounce", &b));
-    o->sbounce = b;
+    o->rig_bounce = b;
     UC(conf_lookup_bool(c, "rig.empty_pp", &b));
     o->rig_empty_pp = b;    
 
@@ -361,7 +361,7 @@ void sim_ini(Config *cfg, MPI_Comm cart, /**/ Time *time, Sim **sim) {
     if (s->opt.rig) {
         UC(ini_rig(cfg, s->cart, maxp, s->L, /**/ &s->rig));
 
-        if (s->opt.sbounce)
+        if (s->opt.rig_bounce)
             UC(ini_bounce_back(s->cart, maxp, s->L, &s->rig, /**/ &s->bb));
     }
 
