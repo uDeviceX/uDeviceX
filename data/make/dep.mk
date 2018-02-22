@@ -29,8 +29,8 @@ sdf/yplates1/yplates.dat  \
 sdf/zplates1/main.dat
 
 R = \
-rig/cyl.ply                   \
 rig/cylinder.ply              \
+rig/cyl.ply                   \
 rig/ellipse.ply               \
 rig/ellipsoid.ply             \
 rig/oscad_sphere.ply          \
@@ -46,17 +46,17 @@ rig/spheres/sphereL2_D20.ply  \
 rig/spheres/sphereL2_D21.ply  \
 rig/spheres/sphereL2_D24.ply  \
 rig/spheres/sphereL2_D27.ply  \
-rig/spheres/sphereL2_D3.ply   \
 rig/spheres/sphereL2_D30.ply  \
 rig/spheres/sphereL2_D32.ply  \
 rig/spheres/sphereL2_D36.ply  \
-rig/spheres/sphereL2_D4.ply   \
+rig/spheres/sphereL2_D3.ply   \
 rig/spheres/sphereL2_D42.ply  \
 rig/spheres/sphereL2_D45.ply  \
 rig/spheres/sphereL2_D48.ply  \
+rig/spheres/sphereL2_D4.ply   \
 rig/spheres/sphereL2_D54.ply  \
-rig/spheres/sphereL2_D6.ply   \
 rig/spheres/sphereL2_D63.ply  \
+rig/spheres/sphereL2_D6.ply   \
 rig/spheres/sphereL2_D72.ply  \
 rig/spheres/sphereL2_D8.ply   \
 rig/spheres/sphereL2_D9.ply
@@ -66,5 +66,4 @@ ic/ident.ic  \
 ic/two.ic
 
 H = \
-hdr/default.h  \
-hdr/lina.h
+hdr/default.h

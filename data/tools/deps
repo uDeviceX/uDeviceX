@@ -5,7 +5,7 @@ set -eu
 # update dependencies
 # O:off, S:sdf, R:rigid, I:[initial condtion], H:[headers]
 
-find0 () { find . -type f -name "$1"; }
+find0 () { find . -type f -name "$1" | sort; }
 
 {
     find0 '*.off' | tools/list2var O
