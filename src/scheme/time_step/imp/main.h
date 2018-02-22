@@ -30,7 +30,7 @@ void time_step_ini(Config *c, /**/ TimeStep **pq) {
         UC(conf_lookup_float(c, "time.dt", &q->dt));
         UC(conf_lookup_float(c, "time.dx", &q->dx));
     } else
-        ERR("unrecognised type <%s>", type);
+        ERR("unrecognised time.type: '%s'", type);
     *pq = q;
 }
 void time_step_fin(TimeStep *q) {EFREE(q); }
