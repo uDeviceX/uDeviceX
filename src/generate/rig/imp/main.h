@@ -67,20 +67,12 @@ static void gen2(const Coords *coords, MPI_Comm comm, RigGenInfo rgi, int nsolid
     gen1(coords, comm, rgi, nsolid, coms, /**/ fluinfo, riginfo, /*w*/ tags, rcounts);
 }
 
-static void gen3(const Coords *coords, MPI_Comm comm, RigGenInfo rgi, int nsolid, float *coms,
-                 /**/ FluInfo fluinfo, RigInfo riginfo) {
-    int *tags = new int[*fluinfo.n];
-    int *rcounts = new int[nsolid];
-    gen2(coords, comm, rgi, nsolid, coms, /**/ fluinfo, riginfo, /*w*/ tags, rcounts);
-    delete[] rcounts;
-    delete[] tags;
-}
-
 static void gen(const Coords *coords, MPI_Comm comm, const char *fname, RigGenInfo rgi, /**/
                  FluInfo fluinfo, RigInfo riginfo) {
     float3 minbb, maxbb;
     float *coms;
     int nsolid;
+    int *tags, *counts;
 
     EMALLOC(MAX_SOLIDS * 3 * 10, &coms);
     
@@ -92,10 +84,15 @@ static void gen(const Coords *coords, MPI_Comm comm, const char *fname, RigGenIn
 
     nsolid = duplicate_PBC(coords, rgi.pi, minbb, maxbb, nsolid, /**/ coms);
     make_local(coords, nsolid, /**/ coms);
+
+    EMALLOC(*fluinfo.n, &tags);
+    EMALLOC(nsolid, &counts);
     
-    gen3(coords, comm, rgi, nsolid, coms, /**/ fluinfo, riginfo);
+    gen2(coords, comm, rgi, nsolid, coms, /**/ fluinfo, riginfo, /*w*/ tags, counts);
 
     EFREE(coms);
+    EFREE(tags);
+    EFREE(counts);
 }
 
 void gen_rig_from_solvent(const Coords *coords, MPI_Comm comm, RigGenInfo rgi,
