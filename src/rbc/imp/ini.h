@@ -12,6 +12,7 @@ void rbc_ini(bool ids, const MeshRead *cell, RbcQuants *q) {
     const int4 *tt;
     q->nv = mesh_get_nv(cell);
     q->nt = mesh_get_nt(cell);
+    q->md = mesh_get_md(cell);
     tt = mesh_get_tri(cell);
 
     q->n = q->nc = 0;

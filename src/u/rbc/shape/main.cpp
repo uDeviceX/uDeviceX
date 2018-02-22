@@ -32,7 +32,7 @@ void run(MeshRead *off) {
     float *A;
     nt = mesh_get_nt(off); nv = mesh_get_nv(off);
     tt = mesh_get_tri(off); rr = mesh_get_vert(off);
-    md = RBCmd;
+    md = mesh_get_md(off);
     adj_ini(md, nt, nv, tt, /**/ &adj);
     rbc_shape_ini(adj, rr, /**/ &shape);
 

@@ -46,9 +46,6 @@
   #define RBC_STRETCH (false)
 #endif
 
-/* maximum allowed degree of a vertex */
-#define RBCmd 7
-
 /* dump meshes relative to the domain edge or domain center? */
 #if !defined(MESH_SHIFT_EDGE) && !defined(MESH_SHIFT_CENTER)
   #define MESH_SHIFT_EDGE
