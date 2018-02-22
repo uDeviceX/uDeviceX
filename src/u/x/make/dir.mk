@@ -56,7 +56,6 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/mesh/dist             && \
     d $B/mesh/props            && \
     d $B/mesh/triangles        && \
-    d $B/mesh/volume           && \
     d $B/meshbb                && \
     d $B/mpi                   && \
     d $B/pair                  && \
