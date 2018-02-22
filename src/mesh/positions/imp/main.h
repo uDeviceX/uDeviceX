@@ -16,7 +16,7 @@ void Positions_fin(Positions *q) { EFREE(q); }
 
 static void float_get(Positions *q, int i, float r[3]) {
     enum {X, Y, Z};
-    float *rr;
+    const float *rr;
     rr = q->D.rr;
     r[X] = rr[3*i + 0];
     r[Y] = rr[3*i + 1];
@@ -24,7 +24,7 @@ static void float_get(Positions *q, int i, float r[3]) {
 }
 static void particle_get(Positions *q, int i, float r[3]) {
     enum {X, Y, Z};
-    Particle *pp;
+    const Particle *pp;
     pp = q->D.pp;
     r[X] = pp[i].r[X];
     r[Y] = pp[i].r[Y];

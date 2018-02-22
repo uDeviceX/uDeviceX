@@ -13,6 +13,7 @@
 #include "mesh/volume/imp.h"
 
 void main0(const char *i) {
+    float V;
     int nv;
     MeshRead *mesh;
     MeshVolume *volume;
@@ -21,8 +22,12 @@ void main0(const char *i) {
     UC(mesh_volume_ini(mesh, &volume));
     nv = mesh_get_nv(mesh);
     UC(Positions_float_ini(nv, mesh_get_vert(mesh), /**/ &pos));
-    UC(Positions_fin(pos));       
+
+    V = mesh_volume_apply0(volume, pos);
+    printf("%g\n", V);
+        
     mesh_volume_fin(volume);
+    UC(Positions_fin(pos));
     UC(mesh_fin(mesh));
 }
 

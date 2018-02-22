@@ -60,6 +60,7 @@ $B/meshbb/imp.o: $S/meshbb/dev/type.h $S/meshbb/bbstates.h $S/utils/imp.h $S/inc
 $B/mesh/bbox/imp.o: $S/inc/type.h $S/mesh/bbox/imp.h $S/algo/minmax/imp.h
 $B/mesh/collision/imp.o: $S/inc/conf.h $S/utils/error.h $S/inc/type.h $S/d/q.h $S/rigid/imp.h $S/mesh/collision/imp.h $S/utils/cc.h $S/inc/def.h $S/inc/dev.h $S/d/api.h $B/conf.h $S/mesh/triangles/imp.h $S/utils/texo.h $S/utils/kl.h $S/mesh/triangles/type.h $S/utils/texo.dev.h $S/utils/te.h $S/d/ker.h $S/utils/msg.h
 $B/mesh/dist/imp.o: $S/inc/type.h $S/mesh/dist/imp.h
+$B/mesh/positions/imp.o: $S/utils/imp.h $S/utils/error.h $S/inc/type.h $S/mesh/positions/imp.h $S/mesh/positions/imp/main.h $S/mesh/positions/imp/type.h
 $B/mesh/props/imp.o: $S/inc/type.h $S/mesh/props/imp.h
 $B/mesh/triangles/imp.o: $S/utils/imp.h $S/inc/conf.h $S/utils/error.h $S/mesh/triangles/imp.h $S/utils/cc.h $S/inc/dev.h $S/d/api.h $B/conf.h $S/mesh/triangles/type.h $S/io/off/imp.h
 $B/mesh/volume/imp.o: $S/utils/imp.h $S/utils/error.h $S/mesh/volume/imp.h $S/mesh/volume/imp/main.h $S/mesh/volume/imp/type.h $S/io/off/imp.h

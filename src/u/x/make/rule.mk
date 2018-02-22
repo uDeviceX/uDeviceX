@@ -60,6 +60,7 @@ $B/meshbb/imp.o: $S/meshbb/imp.cu; $N -I$S/meshbb -I$S/.
 $B/mesh/bbox/imp.o: $S/mesh/bbox/imp.cpp; $X -I$S/mesh/bbox -I$S/.
 $B/mesh/collision/imp.o: $S/mesh/collision/imp.cu; $N -I$S/mesh/collision -I$S/.
 $B/mesh/dist/imp.o: $S/mesh/dist/imp.cpp; $X -I$S/mesh/dist -I$S/.
+$B/mesh/positions/imp.o: $S/mesh/positions/imp.cpp; $X -I$S/mesh/positions -I$S/.
 $B/mesh/props/imp.o: $S/mesh/props/imp.cpp; $X -I$S/mesh/props -I$S/.
 $B/mesh/triangles/imp.o: $S/mesh/triangles/imp.cpp; $X -I$S/mesh/triangles -I$S/.
 $B/mesh/volume/imp.o: $S/mesh/volume/imp.cpp; $X -I$S/mesh/volume -I$S/.
