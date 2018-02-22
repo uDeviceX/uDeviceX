@@ -4,7 +4,6 @@ cd test/freeze/hot
 S=`u.cp.s`
 u.cp.sdf yplates1/yplates.dat sdf.dat
 u.conf "$S" u/x "$S/conf/default.h" <<!
-   numberdensity=3
    S_LEVEL=0
    run
 !
