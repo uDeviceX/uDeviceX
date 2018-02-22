@@ -44,7 +44,7 @@ static void step(Time *time, float dt, BForce *bforce, bool wall0, float tstart,
     UC(check_vel(dt, s));
 
     if (! s->equilibrating) {
-        if (opt->inflow)     UC(apply_inflow(s->kBT, dt, s->inflow, /**/ flu));
+        if (opt->inflow)     UC(apply_inflow(s->kBT, numberdensity, dt, s->inflow, /**/ flu));
         if (opt->outflow)    UC(mark_outflow(flu, /**/ s->outflow));
         if (opt->denoutflow) UC(mark_outflowden(flu, s->mapoutflow, /**/ s->denoutflow));
         if (opt->flucolors)  UC(recolor_flux(s->coords, &s->recolorer, flu));

@@ -19,7 +19,7 @@ __global__ void ini_vel(VPar vparams, Par params, int2 nc, /**/ float3 *uu) {
 }
 
 template <typename Par>
-__global__ void cumulative_flux(float dt, Par params, int2 nc, const float3 *uu, /**/ float *cumflux) {
+__global__ void cumulative_flux(float nxdt, Par params, int2 nc, const float3 *uu, /**/ float *cumflux) {
     int i, xcid, ycid;
     float dn;
     float3 normal, u;
@@ -33,7 +33,7 @@ __global__ void cumulative_flux(float dt, Par params, int2 nc, const float3 *uu,
     // normal is scaled by area of element
     normal = get_normal(params, nc, xcid, ycid);
     u      = uu[i];
-    dn = dt * numberdensity * dot<float>(&normal, &u);
+    dn = nxdt * dot<float>(&normal, &u);
 
     cumflux[i] += dn;
 }

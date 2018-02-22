@@ -26,7 +26,7 @@ void rig_fin(RigQuants *q);
 // end::mem[]
 
 // tag::gen[]
-void rig_gen_quants(const Coords *coords, bool empty_pp, float rig_mass, const RigPinInfo *pi, MPI_Comm comm, Particle *opp, int *on, RigQuants *q);
+void rig_gen_quants(const Coords *coords, bool empty_pp, int numdensity, float rig_mass, const RigPinInfo *pi, MPI_Comm comm, Particle *opp, int *on, RigQuants *q);
 void rig_strt_quants(const Coords *coords, const int id, RigQuants *q);
 // end::gen[]
 

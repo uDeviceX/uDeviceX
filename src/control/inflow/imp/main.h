@@ -69,25 +69,27 @@ void inflow_fin(Inflow *i) {
     UC(efree(i));
 }
 
-static void create_solvent(float kBT, float dt, Inflow *i, int *n, SolventWrap wrap) {
+static void create_solvent(float kBT, int numdensity, float dt, Inflow *i, int *n, SolventWrap wrap) {
     int2 nc;
     Desc *d;
     int nctot;
+    float nxdt;
 
     d = &i->d;
     nc = d->nc;
     nctot = nc.x * nc.y;
-
+    nxdt = numdensity * dt;
+    
     CC(d::MemcpyAsync(d->ndev, n, sizeof(int), H2D));
 
     switch(i->t) {
     case TYPE_PLATE:
-        KL(inflow_dev::cumulative_flux, (k_cnf(nctot)), (dt, i->p.plate, nc, d->uu, /**/ d->cumflux));
+        KL(inflow_dev::cumulative_flux, (k_cnf(nctot)), (nxdt, i->p.plate, nc, d->uu, /**/ d->cumflux));
         KL(inflow_dev::create_particles, (k_cnf(nctot)),
            (kBT, i->p.plate, nc, d->uu, /*io*/ d->rnds, d->cumflux, /**/ d->ndev, wrap));
         break;
     case TYPE_CIRCLE:
-        KL(inflow_dev::cumulative_flux, (k_cnf(nctot)), (dt, i->p.circle, nc, d->uu, /**/ d->cumflux));
+        KL(inflow_dev::cumulative_flux, (k_cnf(nctot)), (nxdt, i->p.circle, nc, d->uu, /**/ d->cumflux));
         KL(inflow_dev::create_particles, (k_cnf(nctot)),
            (kBT, i->p.circle, nc, d->uu, /*io*/ d->rnds, d->cumflux, /**/ d->ndev, wrap));
         break;
@@ -102,7 +104,7 @@ static void create_solvent(float kBT, float dt, Inflow *i, int *n, SolventWrap w
     dSync(); // wait for n
 }
 
-void inflow_create_pp(float kBT, float dt, Inflow *i, int *n, Particle *pp) {
+void inflow_create_pp(float kBT, int numdensity, float dt, Inflow *i, int *n, Particle *pp) {
     SolventWrap wrap;
 
     wrap.pp = pp;
@@ -110,15 +112,15 @@ void inflow_create_pp(float kBT, float dt, Inflow *i, int *n, Particle *pp) {
     wrap.multisolvent = false;
     wrap.color = -1;
 
-    create_solvent(kBT, dt, i, n, wrap);
+    create_solvent(kBT, numdensity, dt, i, n, wrap);
 }
 
-void inflow_create_pp_cc(float kBT, float dt, int newcolor, Inflow *i, int *n, Particle *pp, int *cc) {
+void inflow_create_pp_cc(float kBT, int numdensity, float dt, int newcolor, Inflow *i, int *n, Particle *pp, int *cc) {
     SolventWrap wrap;
 
     wrap.pp = pp;
     wrap.cc = cc;
     wrap.multisolvent = true;
     wrap.color = newcolor;
-    create_solvent(kBT, dt, i, n, wrap);
+    create_solvent(kBT, numdensity, dt, i, n, wrap);
 }

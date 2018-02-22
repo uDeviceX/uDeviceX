@@ -11,7 +11,7 @@ static void gen0(const Coords *c, MPI_Comm comm, RigGenInfo rgi, int nsolid, int
         if (!npsolid) ERR("No particles remaining in root node.\n");
         for (int d = 0; d < 3; ++d)
             model.com[d] = coms[idmax*3 + d];
-        ini_props(rgi.pi, npsolid, ri.pp, rgi.mass, model.com, rgi.nt, rgi.tt, rgi.vv, /**/ ri.rr0, &model);
+        ini_props(rgi.pi, npsolid, ri.pp, rgi.mass, rgi.numdensity, model.com, rgi.nt, rgi.tt, rgi.vv, /**/ ri.rr0, &model);
         if (rgi.empty_pp)
             empty_solid(rgi.nt, rgi.tt, rgi.vv, /* io */ ri.rr0, &npsolid);
     }
