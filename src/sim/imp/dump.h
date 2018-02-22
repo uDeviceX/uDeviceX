@@ -94,8 +94,8 @@ static void diag(float time, Sim *s) {
 static void dump_strt_templ(const Coords *coords, Wall *w, Sim *s) { /* template dumps (wall, solid) */
     Rig *rig = &s->rig;
     if (s->opt.dump_strt) {
-        if (walls) wall_strt_dump_templ(coords, &w->q);
-        if (s->opt.rig) rig_strt_dump_templ(coords, &rig->q);
+        if (s->opt.wall) wall_strt_dump_templ(coords, &w->q);
+        if (s->opt.rig)  rig_strt_dump_templ(coords, &rig->q);
     }
 }
 

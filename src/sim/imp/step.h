@@ -5,7 +5,7 @@ static void step(Time *time, float dt, BForce *bforce, bool wall0, float tstart,
     Rig *rig = &s->rig;
     Wall *wall = &s->wall;
     const Opt *opt = &s->opt;
-    if (walls && !s->equilibrating)
+    if (s->opt.wall && !s->equilibrating)
         UC(wvel_get_step(time_current(time) - tstart, wall->vel, /**/ wall->velstep));
 
     UC(check_sizes(s));

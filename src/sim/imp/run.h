@@ -55,7 +55,7 @@ static void run(const Config *cfg, Time *time, float ts, float te, Sim *s) {
     /* ts, te: time start and end */
     dt = get_dt0(s);
     while (time_current(time) < te) {
-        UC(step(time, dt, bforce, walls, ts, s));
+        UC(step(time, dt, bforce, s->opt.wall, ts, s));
         time_next(time, dt);
         dt = get_dt(s, time);
     }

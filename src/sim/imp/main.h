@@ -17,7 +17,7 @@ static void gen(Time *time, float tw, const Coords *coords, Wall *w, Sim *s) { /
     InterRbcInfos rinfo;
     InterRigInfos sinfo;
 
-    winfo.active = walls;
+    winfo.active = s->opt.wall;
     winfo.sdf = w->sdf;
     finfo.q = &flu->q;
     rinfo.active = s->opt.rbc;
@@ -28,7 +28,7 @@ static void gen(Time *time, float tw, const Coords *coords, Wall *w, Sim *s) { /
     sinfo.mass = rig->mass;
     
     run_eq(time, tw, s);
-    if (walls) {
+    if (s->opt.wall) {
         dSync();
         UC(sdf_gen(coords, s->cart, dump_sdf, /**/ w->sdf));
         MC(m::Barrier(s->cart));
@@ -59,11 +59,11 @@ void sim_gen(Sim *s, const Config *cfg, Time *time, TimeSeg *time_seg) {
         if (s->opt.flucolors) gen_colors(rbc, &s->colorer, /**/ flu);
     }
     MC(m::Barrier(s->cart));
-    if (walls || s->opt.rig) {
+    if (s->opt.wall || s->opt.rig) {
         s->solids0 = false;
         gen(time, time_seg->wall, s->coords, /**/ wall, s);
         dSync();
-        if (walls && wall->q.n) UC(wall_gen_ticket(&wall->q, wall->t));
+        if (s->opt.wall && wall->q.n) UC(wall_gen_ticket(&wall->q, wall->t));
         s->solids0 = s->opt.rig;
         if (s->opt.rbc && s->opt.flucolors) gen_colors(rbc, &s->colorer, /**/ flu);
         run(cfg, time, time_seg->wall, time_seg->end, s);
@@ -93,13 +93,13 @@ void sim_strt(Sim *s, const Config *cfg, Time *time, TimeSeg *time_seg) {
 
     if (s->opt.rig) rig_strt_quants(s->coords, RESTART_BEGIN, &rig->q);
 
-    if (walls) wall_strt_quants(s->coords, maxp_wall, &wall->q);
+    if (s->opt.wall) wall_strt_quants(s->coords, maxp_wall, &wall->q);
 
     /*T*/
-    if (walls && wall->q.n) UC(wall_gen_ticket(&wall->q, wall->t));
+    if (s->opt.wall && wall->q.n) UC(wall_gen_ticket(&wall->q, wall->t));
 
     MC(m::Barrier(s->cart));
-    if (walls) {
+    if (s->opt.wall) {
         dSync();
         UC(sdf_gen(s->coords, s->cart, dump_sdf, /**/ wall->sdf));
         MC(m::Barrier(s->cart));

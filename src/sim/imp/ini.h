@@ -349,7 +349,7 @@ void sim_ini(Config *cfg, MPI_Comm cart, /**/ Time *time, Sim **sim) {
     if (s->opt.rbc || s->opt.rig)
         UC(ini_objinter(s->cart, maxp, s->L, &s->opt, /**/ &s->objinter));
 
-    if (walls) ini_wall(cfg, s->L, &s->wall);
+    if (s->opt.wall) ini_wall(cfg, s->L, &s->wall);
 
     UC(ini_flu(cfg, s->opt, s->cart, maxp, s->L, /**/ &s->flu));
 
