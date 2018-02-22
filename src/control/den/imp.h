@@ -9,7 +9,7 @@ void den_fin(DCont *d);
 void den_fin_map(DContMap *m);
 
 void den_reset(int n, /**/ DCont *d);
-void den_filter_particles(const DContMap *m, const int *starts, const int *counts, /**/ DCont *d);
+void den_filter_particles(int maxdensity, const DContMap *m, const int *starts, const int *counts, /**/ DCont *d);
 void den_download_ndead(DCont *d);
 
 int* den_get_deathlist(DCont *d);

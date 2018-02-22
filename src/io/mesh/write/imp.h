@@ -1,11 +1,12 @@
-namespace write {
-struct File;
-void all(MPI_Comm cart, const void *const, const int sz, File*);
-int one(MPI_Comm cart, const void *const, int sz, File*);
+struct WriteFile;
 
-int shift(MPI_Comm cart, int, /**/ int*);
-int reduce(MPI_Comm cart, int, /**/ int*);
+int write_file_open(MPI_Comm cart, const char*, /**/ WriteFile**);
+int write_file_close(WriteFile*);
 
-int fopen(MPI_Comm cart, const char*, /**/ File**);
-int fclose(File*);
-}
+void write_all(MPI_Comm cart, const void *const, const int sz, WriteFile*);
+int write_master(MPI_Comm cart, const void *const, int sz, WriteFile*);
+
+int write_shift_indices(MPI_Comm cart, int, /**/ int*);
+int write_reduce(MPI_Comm cart, int, /**/ int*);
+
+

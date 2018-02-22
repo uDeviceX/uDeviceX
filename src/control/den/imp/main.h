@@ -29,8 +29,8 @@ void den_reset(int n, /**/ DCont *d) {
     CC(d::MemsetAsync(d->kk, 0, n * sizeof(int)));
 }
 
-void den_filter_particles(const DContMap *m, const int *starts, const int *counts, /**/ DCont *d) {    
-    KL( kill, (k_cnf(m->n)), (numberdensity, starts, counts, m->n, m->cids, /**/ d->ndead_dev, d->kk) );
+void den_filter_particles(int maxdensity, const DContMap *m, const int *starts, const int *counts, /**/ DCont *d) {    
+    KL( den_dev::kill, (k_cnf(m->n)), (maxdensity, starts, counts, m->n, m->cids, /**/ d->ndead_dev, d->kk) );
 }
 
 void den_download_ndead(DCont *d) {

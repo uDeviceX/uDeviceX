@@ -4,10 +4,10 @@ static __device__ int warpReduceSum(int v) {
     return v;
 }
 
-__global__ void kill(int target, const int *starts, const int *counts, int n, const int *cids, /**/ int *ndead, int *kk) {
+__global__ void kill(int maxden, const int *starts, const int *counts, int n, const int *cids, /**/ int *ndead, int *kk) {
     int i, nd, cid, s, c, pid, j;
     nd = 0;
-    c = target;
+    c = maxden;
     i = threadIdx.x + blockIdx.x * blockDim.x;
     
     if (i < n) {
@@ -16,7 +16,7 @@ __global__ void kill(int target, const int *starts, const int *counts, int n, co
         s = starts[cid];
     }
 
-    nd = max(0, c - target);
+    nd = max(0, c - maxden);
 
     // TODO select randomly
     if (i < n) {
