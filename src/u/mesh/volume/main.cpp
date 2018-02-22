@@ -9,13 +9,19 @@
 #include "utils/error.h"
 #include "parser/imp.h"
 #include "io/off/imp.h"
+#include "mesh/positions/imp.h"
 #include "mesh/volume/imp.h"
 
 void main0(const char *i) {
+    int nv;
     MeshRead *mesh;
     MeshVolume *volume;
+    Positions  *pos;
     UC(mesh_read_off(i, /**/ &mesh));
     UC(mesh_volume_ini(mesh, &volume));
+    nv = mesh_get_nv(mesh);
+    UC(Positions_float_ini(nv, mesh_get_vert(mesh), /**/ &pos));
+    UC(Positions_fin(pos));       
     mesh_volume_fin(volume);
     UC(mesh_fin(mesh));
 }

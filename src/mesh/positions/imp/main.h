@@ -1,11 +1,11 @@
-void Positions_float_ini(int n, float *rr, /**/ Positions **pq) {
+void Positions_float_ini(int n, const float *rr, /**/ Positions **pq) {
     Positions *q;
     EMALLOC(1, &q);
     q->type = PARTICLE; q->n = n; q->D.rr = rr;
     *pq = q;
 }
 
-void Positions_particle_ini(int n, Particle *pp, /**/ Positions **pq) {
+void Positions_particle_ini(int n, const Particle *pp, /**/ Positions **pq) {
     Positions *q;
     EMALLOC(1, &q);
     q->type = PARTICLE; q->n = n; q->D.pp = pp;

@@ -19,3 +19,7 @@ void mesh_volume_fin(MeshVolume *q) {
     EFREE(q->tt);
     EFREE(q);
 }
+
+float mesh_volume_apply0(MeshVolume *q, Positions *p) {
+    return 0.0;
+}
