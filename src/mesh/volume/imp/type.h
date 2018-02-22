@@ -1,5 +1,5 @@
 struct MeshVolume {
-    float *rr;
+    double *rr;
     int4 *tt;
     int nv, nt;
 };
