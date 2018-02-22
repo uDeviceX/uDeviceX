@@ -17,7 +17,7 @@ static void dump_part(Sim *s) {
         io_bop_stresses(s->cart, flu->ss_hst, flu->q.n, "stress_solvent", id_bop);
     }
 
-    if (force_dumps) {
+    if (s->opt.dump_forces) {
         cD2H(flu->ff_hst, flu->ff, flu->q.n);
         io_bop_parts_forces(s->cart, s->coords, flu->q.pp_hst, flu->ff_hst, flu->q.n, "solvent", id_bop, /**/ bop);
     } else {
@@ -26,7 +26,7 @@ static void dump_part(Sim *s) {
 
     if(s->solids0) {
         cD2H(rig->q.pp_hst, rig->q.pp, rig->q.n);
-        if (force_dumps) {
+        if (s->opt.dump_forces) {
             cD2H(rig->ff_hst, rig->ff, rig->q.n);
             io_bop_parts_forces(s->cart, s->coords, rig->q.pp_hst, rig->ff_hst, rig->q.n, "solid", id_bop, /**/ bop);
         } else {

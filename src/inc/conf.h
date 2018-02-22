@@ -41,10 +41,6 @@
 #define DUMP_BASE "."
 #endif
 
-#ifndef force_dumps
-#define force_dumps (false)
-#endif
-
 /* stretch cell?  see doc/stretch.md */
 #ifndef RBC_STRETCH
   #define RBC_STRETCH (false)
@@ -59,6 +55,10 @@
 #endif
 
 /* ========== forbidden variables ============== */
+
+#ifdef force_dumps
+#error force_dumps is runtime: dump.forces (bool)
+#endif
 
 #ifdef empty_solid_particles
 #error empty_solid_particles is runtime: rig.empty_pp (bool)

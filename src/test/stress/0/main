@@ -4,7 +4,6 @@ cd test/stress/0
 S=`u.cp.s`
 :
 u.conf "$S" u/x "$S/conf/default.h" <<!
-   force_dumps
    run
 !
 u.make -j
