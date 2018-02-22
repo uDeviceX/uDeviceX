@@ -11,13 +11,13 @@ O = $B/algo/force_stat/imp.o $B/algo/minmax/imp.o $B/algo/scan/imp.o $B/clist/im
     $B/inter/color/imp.o $B/inter/imp.o $B/io/bop/imp.o $B/io/com/imp.o \
     $B/io/diag/mesh/imp.o $B/io/diag/part/imp.o $B/io/field/h5/imp.o \
     $B/io/field/imp.o $B/io/field/xmf/imp.o $B/io/mesh/imp.o \
-    $B/io/mesh/write/imp.o $B/io/off/imp.o $B/io/ply/imp.o $B/io/restart/imp.o \
-    $B/io/rig/imp.o $B/io/txt/imp.o $B/main.o $B/math/linal/imp.o \
-    $B/math/rnd/imp.o $B/math/tform/imp.o $B/mesh/bbox/imp.o \
-    $B/mesh/collision/imp.o $B/mesh/dist/imp.o $B/mesh/props/imp.o \
-    $B/mesh/triangles/imp.o $B/mesh/volume/imp.o $B/meshbb/imp.o $B/mpi/glb.o \
-    $B/mpi/type.o $B/mpi/wrapper.o $B/pair/conf.o $B/pair/imp.o $B/parray/imp.o \
-    $B/parser/imp.o $B/rbc/adj/edg/imp.o $B/rbc/adj/imp.o $B/rbc/com/imp.o \
+    $B/io/mesh/write/imp.o $B/io/off/imp.o $B/io/restart/imp.o $B/io/rig/imp.o \
+    $B/io/txt/imp.o $B/main.o $B/math/linal/imp.o $B/math/rnd/imp.o \
+    $B/math/tform/imp.o $B/mesh/bbox/imp.o $B/mesh/collision/imp.o \
+    $B/mesh/dist/imp.o $B/mesh/props/imp.o $B/mesh/triangles/imp.o \
+    $B/mesh/volume/imp.o $B/meshbb/imp.o $B/mpi/glb.o $B/mpi/type.o \
+    $B/mpi/wrapper.o $B/pair/conf.o $B/pair/imp.o $B/parray/imp.o $B/parser/imp.o \
+    $B/rbc/adj/edg/imp.o $B/rbc/adj/imp.o $B/rbc/com/imp.o \
     $B/rbc/force/area_volume/imp.o $B/rbc/force/conf.o $B/rbc/force/imp.o \
     $B/rbc/force/rnd/api/imp.o $B/rbc/force/rnd/imp.o $B/rbc/gen/imp.o \
     $B/rbc/imp.o $B/rbc/params/conf.o $B/rbc/params/imp.o $B/rbc/shape/imp.o \
