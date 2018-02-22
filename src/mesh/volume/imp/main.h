@@ -80,7 +80,7 @@ static double volume(int nt, int4 *tt, double *rr) {
     sum = kahan_sum_get(kahan_sum);
     return sum/6;
 }
-float mesh_volume_apply0(MeshVolume *q, Positions *p) {
+double mesh_volume_apply0(MeshVolume *q, Positions *p) {
     int nv, nt, offset;
     double *rr;
     int4 *tt;
