@@ -5,7 +5,7 @@ static void step(Time *time, float dt, BForce *bforce, bool wall0, float tstart,
     Rig *rig = &s->rig;
     Wall *wall = &s->wall;
     const Opt *opt = &s->opt;
-    if (s->opt.wall && !s->equilibrating)
+    if (opt.wall && !s->equilibrating)
         UC(wvel_get_step(time_current(time) - tstart, wall->vel, /**/ wall->velstep));
 
     UC(check_sizes(s));
@@ -13,7 +13,7 @@ static void step(Time *time, float dt, BForce *bforce, bool wall0, float tstart,
 
     UC(distribute_flu(s));
     if (s->solids0) UC(distribute_rig(/**/ rig));
-    if (s->opt.rbc) UC(distribute_rbc(/**/ rbc));
+    if (opt.rbc) UC(distribute_rbc(/**/ rbc));
 
     UC(check_sizes(s));
     UC(forces(dt, time, wall0, s));
@@ -27,7 +27,7 @@ static void step(Time *time, float dt, BForce *bforce, bool wall0, float tstart,
     UC(restrain(it, /**/ s));
     UC(update_solvent(dt, /**/ flu));
     if (s->solids0) update_solid(dt, /**/ rig);
-    if (s->opt.rbc) update_rbc(dt, it, rbc, s);
+    if (opt.rbc) update_rbc(dt, it, rbc, s);
 
     UC(check_vel(dt, s));
     if (opt->vcon && !s->equilibrating) {
@@ -36,7 +36,7 @@ static void step(Time *time, float dt, BForce *bforce, bool wall0, float tstart,
         log(it, &s->vcon);
     }
 
-    if (wall0) bounce_wall(dt, s->opt.rbc, s->coords, wall, /**/ flu, rbc);
+    if (wall0) bounce_wall(dt, opt.rbc, s->coords, wall, /**/ flu, rbc);
 
     if (opt->sbounce && s->solids0) bounce_solid(dt, s->L, /**/ &s->bb, rig, flu);
 
