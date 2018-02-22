@@ -25,7 +25,6 @@ static void to_com(int nv, Positions *pos, /**/ float *rr) {
     int i;
     float r[3];
     double com[3] = {0.0, 0.0, 0.0};
-    msg_print("nv: %d", nv);
     for (i = 0; i < nv; i++) {
         Positions_get(pos, i, /**/ r);
         com[X] += r[X];
