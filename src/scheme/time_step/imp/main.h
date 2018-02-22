@@ -65,7 +65,8 @@ static void  disp_log(TimeStep *q) {
     msg_print(" time_step: disp: dt=%.4e, dx=%.4e", q->dt, q->dx);
     for (i = 0; i < q->k; i++) {
         accel = q->accel[i];
-        msg_print(" accel:%.4e, dt_acc:%.4e, dt_used:%.4e", accel, sqrtf(2.*dx/accel), (sqrtf(2.*dx/accel) > q->dt ? q->dt : sqrtf(2.*dx/accel)));
+        msg_print(" accel:%.4e, dt_acc:%.4e, dt_used:%.4e",
+                  accel, sqrtf(2.*dx/accel), (sqrtf(2.*dx/accel) > q->dt ? q->dt : sqrtf(2.*dx/accel)));
     }
     msg_print("");
 }
