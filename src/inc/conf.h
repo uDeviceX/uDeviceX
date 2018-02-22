@@ -92,8 +92,6 @@
 #error COL_FLUX_DIR is runtime: recolor.dir
 #endif
 
-
-
 #if defined(RESTART)
   #error RESTART is runtime: glb.restart
 #endif
