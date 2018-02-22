@@ -18,6 +18,6 @@ static void mark_outflowden(const Flu *f, const DContMap *m, /**/ DCont *d) {
     cc = f->q.cells.counts;
 
     UC(den_reset(n, /**/ d));
-    UC(den_filter_particles(m, ss, cc, /**/ d));
+    UC(den_filter_particles(numberdensity, m, ss, cc, /**/ d));
     UC(den_download_ndead(/**/ d));
 }

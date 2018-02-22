@@ -18,7 +18,9 @@
 
 #include "imp.h"
 
+namespace den_dev {
 #include "dev/main.h"
+}
 
 #include "imp/type.h"
 #include "imp/main.h"
