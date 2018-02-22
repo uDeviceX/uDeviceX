@@ -50,17 +50,18 @@ float time_step_dt(TimeStep *q, MPI_Comm comm, TimeStepAccel *a) {
     return dt[q->type](q, comm, a);
 }
 
-static void const_log(TimeStep *q) { msg_print("time_step: const: dt = %g", q->dt); }
+static void const_log(TimeStep *q) { msg_print(" time_step: const: dt=%.4g\n", q->dt); }
 static void  disp_log(TimeStep *q) {
     int i;
     float accel;
     float dx;
     dx = q->dx;
-    msg_print("time_step: disp: dt = %g dx = %g", q->dt, q->dx);
+    msg_print(" time_step: disp: dt=%.4e, dx=%.4e", q->dt, q->dx);
     for (i = 0; i < q->k; i++) {
         accel = q->accel[i];
-        msg_print("  accel:%g, dt_new:%g", accel, sqrtf(2.*dx/accel));
+        msg_print(" accel:%.4e, dt_acc:%.4e, dt_used:%.4e", accel, sqrtf(2.*dx/accel), (sqrtf(2.*dx/accel) > q->dt ? q->dt : sqrtf(2.*dx/accel)));
     }
+    msg_print("");
 }
 void time_step_log(TimeStep *q) { tlog[q->type](q); }
 float time_step_dt0(TimeStep *q) { return q->dt; };
