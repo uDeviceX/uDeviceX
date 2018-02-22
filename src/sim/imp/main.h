@@ -1,8 +1,9 @@
-static long get_max_parts_wall(const Coords *c) {
-    return numberdensity *
-        (xs(c) + 2 * XWM) *
-        (ys(c) + 2 * YWM) *
-        (zs(c) + 2 * ZWM);
+static long get_max_parts_wall(Params params) {
+    int3 L = params.L;
+    return params.numdensity *
+        (L.x + 2 * XWM) *
+        (L.y + 2 * YWM) *
+        (L.z + 2 * ZWM);
 }
 
 static void gen(Time *time, float tw, const Coords *coords, Wall *w, Sim *s) { /* generate */
@@ -11,7 +12,7 @@ static void gen(Time *time, float tw, const Coords *coords, Wall *w, Sim *s) { /
     Rig *rig = &s->rig;
     const Opt *opt = &s->opt;
     bool dump_sdf = opt->dump_field;
-    long maxp_wall = get_max_parts_wall(coords);
+    long maxp_wall = get_max_parts_wall(s->params);
     
     InterWalInfos winfo;
     InterFluInfos finfo;
@@ -28,7 +29,7 @@ static void gen(Time *time, float tw, const Coords *coords, Wall *w, Sim *s) { /
     sinfo.pi = rig->pininfo;
     sinfo.mass = rig->mass;
     sinfo.empty_pp = opt->rig_empty_pp;
-    sinfo.numdensity = numberdensity;
+    sinfo.numdensity = s->params.numdensity;
     
     run_eq(time, tw, s);
     if (opt->wall) {
@@ -55,7 +56,7 @@ void sim_gen(Sim *s, const Config *cfg, Time *time, TimeSeg *time_seg) {
     MeshRead *cell = s->rbc.cell;
     const Opt *opt = &s->opt;
     
-    UC(flu_gen_quants(s->coords, numberdensity, s->gen_color, &flu->q));
+    UC(flu_gen_quants(s->coords, s->params.numdensity, s->gen_color, &flu->q));
     UC(flu_build_cells(&flu->q));
     if (opt->fluids)  flu_gen_ids  (s->cart, flu->q.n, &flu->q);
     if (opt->rbc) {
@@ -87,7 +88,7 @@ void sim_strt(Sim *s, const Config *cfg, Time *time, TimeSeg *time_seg) {
     MeshRead *cell = s->rbc.cell;
     const Opt *opt = &s->opt;
     bool dump_sdf = opt->dump_field;
-    long maxp_wall = get_max_parts_wall(s->coords);
+    long maxp_wall = get_max_parts_wall(s->params);
 
     /*Q*/
     flu_strt_quants(s->coords, RESTART_BEGIN, &flu->q);

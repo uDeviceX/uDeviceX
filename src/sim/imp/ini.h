@@ -4,8 +4,8 @@ static void set_params(const Config *cfg, float kBT, float dt, const char *name_
     UC(pair_compute_dpd_sigma(kBT, dt, /**/ p));
 }
 
-static void ini_flu_exch(Opt opt, MPI_Comm comm, int3 L, /**/ FluExch *e) {
-    int maxd = HSAFETY_FACTOR * numberdensity;
+static void ini_flu_exch(Opt opt, Params par, MPI_Comm comm, int3 L, /**/ FluExch *e) {
+    int maxd = HSAFETY_FACTOR * par.numdensity;
 
     UC(eflu_pack_ini(opt.flucolors, L, maxd, /**/ &e->p));
     UC(eflu_comm_ini(opt.flucolors, comm, /**/ &e->c));
@@ -36,8 +36,8 @@ static void ini_bb_exch(int nt, int nv, int max_m, MPI_Comm comm, int3 L, /**/ B
     UC(emesh_unpackm_ini(nt, max_m, /**/ &e->um));
 }
 
-static void ini_flu_distr(Opt opt, MPI_Comm comm, int3 L, /**/ FluDistr *d) {
-    float maxdensity = ODSTR_FACTOR * numberdensity;
+static void ini_flu_distr(Opt opt, Params par, MPI_Comm comm, int3 L, /**/ FluDistr *d) {
+    float maxdensity = ODSTR_FACTOR * par.numdensity;
     UC(dflu_pack_ini(opt.flucolors, opt.fluids, L, maxdensity, /**/ &d->p));
     UC(dflu_comm_ini(opt.flucolors, opt.fluids, comm, /**/ &d->c));
     UC(dflu_unpack_ini(opt.flucolors, opt.fluids, L, maxdensity, /**/ &d->u));
@@ -122,14 +122,14 @@ static void ini_colorer(int nv, MPI_Comm comm, int maxp, int3 L, /**/ Colorer *c
     Dalloc(&c->maxext, maxp);
 }
 
-static void ini_flu(const Config *cfg, Opt opt, MPI_Comm cart, int maxp, int3 L, /**/ Flu *f) {
+static void ini_flu(const Config *cfg, Opt opt, Params par, MPI_Comm cart, int maxp, int3 L, /**/ Flu *f) {
 
     UC(flu_ini(opt.flucolors, opt.fluids, L, maxp, &f->q));
     UC(fluforces_bulk_ini(L, maxp, /**/ &f->bulk));
     UC(fluforces_halo_ini(cart, L, /**/ &f->halo));
 
-    UC(ini_flu_distr(opt, cart, L, /**/ &f->d));
-    UC(ini_flu_exch(opt, cart, L, /**/ &f->e));
+    UC(ini_flu_distr(opt, par, cart, L, /**/ &f->d));
+    UC(ini_flu_exch(opt, par, cart, L, /**/ &f->e));
 
     UC(Dalloc(&f->ff, maxp));
     EMALLOC(maxp, /**/ &f->ff_hst);
@@ -318,7 +318,7 @@ static void ini_dump(int maxp, MPI_Comm cart, const Coords *c, Opt opt, Dump *d)
 
 static long num_pp_estimate(Params p) {
     int3 L = p.L;
-    return L.x * L.y * L.z * numberdensity;
+    return L.x * L.y * L.z * p.numdensity;
 }
 
 void sim_ini(Config *cfg, MPI_Comm cart, /**/ Time *time, Sim **sim) {
@@ -363,7 +363,7 @@ void sim_ini(Config *cfg, MPI_Comm cart, /**/ Time *time, Sim **sim) {
 
     if (s->opt.wall) ini_wall(cfg, params.L, &s->wall);
 
-    UC(ini_flu(cfg, s->opt, s->cart, maxp, params.L, /**/ &s->flu));
+    UC(ini_flu(cfg, s->opt, params, s->cart, maxp, params.L, /**/ &s->flu));
 
     if (s->opt.flucolors && s->opt.rbc)
         UC(ini_colorer(s->rbc.q.nv, s->cart, maxp, params.L, /**/ &s->colorer));
