@@ -20,6 +20,22 @@ void mesh_volume_fin(MeshVolume *q) {
     EFREE(q);
 }
 
+static void to_com(int nv, Positions *pos, /**/ float *rr) {
+    enum {X, Y, Z};
+    int i;
+    float r[3];
+    double com[3] = {0.0, 0.0, 0.0};
+    msg_print("nv: %d", nv);
+    for (i = 0; i < nv; i++) {
+        Positions_get(pos, i, /**/ r);
+        com[X] += r[X];
+        com[Y] += r[Y];
+        com[Z] += r[Z];
+    }
+    com[X] /= nv; com[Y] /= nv; com[X] /= nv;
+    msg_print("com: %g %g %g", com[X], com[Y], com[Z]);
+}
 float mesh_volume_apply0(MeshVolume *q, Positions *p) {
+    UC(to_com(q->nv, p, /**/ q->rr));
     return 0.0;
 }
