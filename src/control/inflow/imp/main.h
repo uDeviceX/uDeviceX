@@ -73,21 +73,23 @@ static void create_solvent(float kBT, float dt, Inflow *i, int *n, SolventWrap w
     int2 nc;
     Desc *d;
     int nctot;
+    float nxdt;
 
     d = &i->d;
     nc = d->nc;
     nctot = nc.x * nc.y;
-
+    nxdt = numberdensity * dt;
+    
     CC(d::MemcpyAsync(d->ndev, n, sizeof(int), H2D));
 
     switch(i->t) {
     case TYPE_PLATE:
-        KL(inflow_dev::cumulative_flux, (k_cnf(nctot)), (dt, i->p.plate, nc, d->uu, /**/ d->cumflux));
+        KL(inflow_dev::cumulative_flux, (k_cnf(nctot)), (nxdt, i->p.plate, nc, d->uu, /**/ d->cumflux));
         KL(inflow_dev::create_particles, (k_cnf(nctot)),
            (kBT, i->p.plate, nc, d->uu, /*io*/ d->rnds, d->cumflux, /**/ d->ndev, wrap));
         break;
     case TYPE_CIRCLE:
-        KL(inflow_dev::cumulative_flux, (k_cnf(nctot)), (dt, i->p.circle, nc, d->uu, /**/ d->cumflux));
+        KL(inflow_dev::cumulative_flux, (k_cnf(nctot)), (nxdt, i->p.circle, nc, d->uu, /**/ d->cumflux));
         KL(inflow_dev::create_particles, (k_cnf(nctot)),
            (kBT, i->p.circle, nc, d->uu, /*io*/ d->rnds, d->cumflux, /**/ d->ndev, wrap));
         break;
