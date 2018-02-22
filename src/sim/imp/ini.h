@@ -232,10 +232,17 @@ static void read_opt(const Config *c, Opt *o) {
 
     UC(conf_lookup_bool(c, "rbc.active", &b));
     o->rbc = b;
-
     UC(conf_lookup_bool(c, "rbc.ids", &b));
     o->rbcids = b;
 
+    UC(conf_lookup_bool(c, "rig.active", &b));
+    o->rig = b;
+    UC(conf_lookup_bool(c, "rig.bounce", &b));
+    o->sbounce = b;
+
+    UC(conf_lookup_bool(c, "wall.active", &b));
+    o->wall = b;
+    
     UC(conf_lookup_bool(c, "outflow.active", &b));
     o->outflow = b;
     UC(conf_lookup_bool(c, "inflow.active", &b));
@@ -244,11 +251,6 @@ static void read_opt(const Config *c, Opt *o) {
     o->denoutflow = b;
     UC(conf_lookup_bool(c, "vcon.active", &b));
     o->vcon = b;
-
-    UC(conf_lookup_bool(c, "rig.active", &b));
-    o->rig = b;
-    UC(conf_lookup_bool(c, "rig.bounce", &b));
-    o->sbounce = b;
 
     UC(conf_lookup_bool(c, "dump.field", &b));
     o->dump_field = b;
