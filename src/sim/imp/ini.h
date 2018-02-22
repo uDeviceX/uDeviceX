@@ -239,6 +239,8 @@ static void read_opt(const Config *c, Opt *o) {
     o->rig = b;
     UC(conf_lookup_bool(c, "rig.bounce", &b));
     o->sbounce = b;
+    UC(conf_lookup_bool(c, "rig.empty_pp", &b));
+    o->rig_empty_pp = b;    
 
     UC(conf_lookup_bool(c, "wall.active", &b));
     o->wall = b;

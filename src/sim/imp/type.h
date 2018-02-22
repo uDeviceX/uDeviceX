@@ -149,7 +149,7 @@ struct Opt {
     bool fsi, cnt;
     bool flucolors, fluids, fluss;
     bool rbc, rbcids;
-    bool rig, sbounce;
+    bool rig, sbounce, rig_empty_pp;
     bool wall;
     bool inflow, outflow, denoutflow, vcon;
     bool dump_field, dump_parts, dump_strt, dump_rbc_com;
