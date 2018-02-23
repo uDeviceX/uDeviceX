@@ -1,54 +1,18 @@
 #### solvent only restart
 # nTEST: rstrt.t1
 cd test/restart/0/
-S=`u.cp.s`
 :
-u.conf "$S" u/x <<!
-   BASE_STRT_DUMP=\"bin.1/strt\"
-   run
-   BASE_STRT_READ=\"bin.1/strt\"
-   BASE_STRT_DUMP=\"bin.2/strt\"
-   run
-!
-:
-u.strtdir bin.1
-u.strtdir bin.2
-u.make -j
-u.run ./bin.1/udx '
+u.strtdir .
+u.run udx conf.cfg
+u.run udx conf.cfg '
 time = {
-    type = "const"
-    dt = 5e-4
-    end = 0.01
-}
-glb = {
-    L = [16, 32, 16]
-}
-dump = {
-    field = true
-    parts = true
-    strt  = true
-    freq_field = 2.0000
-    freq_parts = 2.0000
-    freq_strt  = 5.0000
-}'
-u.run ./bin.2/udx '
-time = {
-    type = "const"
-    dt = 5e-4
     end = 2.01
 }
 glb = {
     restart = true
-    L = [16, 32, 16]
 }
 bforce = {
     type = "double_poiseuille"
     a    = 6.666667
-}
-dump = {
-    field = true
-    parts = true
-    freq_field = 2.0000
-    freq_parts = 2.0000
 }'
 u.avgh5 0 u 1 h5/0001.h5 | uscale 0.1 > h5.out.txt

@@ -1,11 +1,6 @@
 #### rest with deleting cylinder, multi nodes
 # nTEST: out.t2
-:
-u.conf <<!
-   run
-!
-u.make -j
-u.run 2 2 1 ./udx test/openbc/out.cfg '
+u.run 2 2 1 udx test/openbc/out.cfg '
 glb = { 
     kBT = 0.0
     L = [8, 8, 16]
