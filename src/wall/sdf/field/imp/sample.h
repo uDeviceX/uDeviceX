@@ -1,16 +1,16 @@
 struct Fi { /* field */
-    Tform *t;
+    const Tform *t;
     const int *n;
     float *D;
 };
 
-static void fi_ini(Tform *t, const int *n, float *D, /**/ Fi *fi) {
+static void fi_ini(const Tform *t, const int *n, float *D, /**/ Fi *fi) {
     fi->t = t; fi->n = n; fi->D = D;
 }
 
 static void fi_r(const Fi *fi, int ix, int iy, int iz, /**/ float *r) {
     enum {X, Y, Z};
-    Tform *t;
+    const Tform *t;
     t = fi->t;
     float a[3] = {(float)ix, (float)iy, (float)iz};
     tform_convert(t, a, /**/ r);
@@ -71,7 +71,7 @@ static float get(const int N[3], const float *D, const float *r) {
     return val;
 }
 
-static void sample(Tform *t, const int N0[3], const float *D0, const int N1[3], float *D1) {
+static void sample(const Tform *t, const int N0[3], const float *D0, const int N1[3], float *D1) {
     enum {X, Y, Z};
     int ix, iy, iz;
     float val, r[3];

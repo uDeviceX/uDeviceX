@@ -3,7 +3,7 @@ struct Tform;
 struct Field;
 
 void field_ini(const char *path, /**/ Field**);
-void field_sample(const Field*, Tform*, const int N[3], /**/ Field**);
+void field_sample(const Field*, const Tform*, const int N[3], /**/ Field**);
 
 void field_size(const Field*, /**/ int N[3]);
 void field_extend(const Field*, /**/ float ext[3]);
