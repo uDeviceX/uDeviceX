@@ -17,13 +17,18 @@ Coefficient `s` and `o` are defined implicitly by API calls.
 include::{src}/math/tform/imp.h[tags=ini]
 ----
 
-Set parameters of the transformation
+Set parameters of the transformation, some transfroms are for grids
+which are cell centered and defined by low and high boundaries and the
+number of cell.
 [source,cpp]
 ----
 include::{src}/math/tform/imp.h[tags=def]
 ----
-<1> transfrom which convert vectors `a0` to `a1` and `b0` to `b1`
-<2> transform is a chain of two transforms
+<1> converts vectors `a0` to `a1` and `b0` to `b1`
+<2> a chain of two transforms: C(x) is equivalent to 'B(A(x))'
+<3> transfrom to a grid: for example, it transfroms `lo` to `-1/2` and `hi` to `n - 1/2`
+<4> transfrom from a grid: for example, it transfroms `-1/2` to `lo` and `n - 1/2` to `hi`
+<5> grid to grid transform
 
 ===== Convert vector
 [source,cpp]

@@ -94,7 +94,7 @@ void tform_from_grid(const float a0[3], const float b0[3], const int n[3], /**/ 
     float a1[3], b1[3];
     a1[X] = a1[Y] = a1[Z] = -0.5;
     b1[X] = n[X] - 0.5; b1[Y] = n[Y] - 0.5; b1[Z] = n[Z] - 0.5;
-    UC(tform_vector(a1, a0,   b1, b0, /**/ t));
+    UC(tform_vector(a1, a0,   b1, b0, /**/ t)); /* inverted */
 }
 enum {LH_OK, LH_BAD};
 static int assert_lh(const float lo[3], const float hi[3]) {
