@@ -7,4 +7,5 @@ usg () {
     exit
 }
 
-echo run | u.conf "$@" conf/default.h
+S=`u.cp.s`
+echo run | u.conf "$S" u/x "$@"
