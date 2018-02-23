@@ -11,11 +11,7 @@ echo     1  0   0 $x              \
          0 $s  $c $z              \
          0  0   0  1 > rbcs-ic.txt
 :
-u.conf "$S" u/x <<!
-   run
-!
-u.make -j
-u.run ./udx conf.cfg '
+u.run udx conf.cfg '
 glb = { 
     kBT = 0.0
 }

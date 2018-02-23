@@ -6,9 +6,5 @@ u.cp.sdf wall1/wall.dat sdf.dat
 echo -e "16 16 16" > rigs-ic.txt
 u.cp.rig sphere.ply rig.ply
 :
-u.conf "$S" u/x <<!
-   run
-!
-u.make -j
-u.run ./udx conf.cfg
+u.run udx conf.cfg
 u.avgh5 1 u 2 h5/0001.h5 | sed -n '4,29p' | uscale 0.25 > h5.out.txt

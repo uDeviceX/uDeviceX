@@ -12,12 +12,7 @@ echo 1 0 0 $x \
      0 0 1 $z \
      0 0 0  1 > rbcs-ic.txt
 :
-u.conf "$S" u/x <<!
-   KL_SYNC CC_SYNC
-   run
-!
-u.make -j
-u.run ./udx conf.cfg "
+u.run udx conf.cfg "
 glb = { 
     kBT = 0.0
 }

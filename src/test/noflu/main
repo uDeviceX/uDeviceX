@@ -3,9 +3,5 @@
 cd test/noflu
 S=`u.cp.s`
 u.cp.sdf cyl1/cyl.dat sdf.dat
-u.conf "$S" u/x <<!
-   run
-!
-u.make -j
-u.run ./udx conf.cfg
+u.run udx conf.cfg
 cp bop/solvent-00001.bop bop.out.txt

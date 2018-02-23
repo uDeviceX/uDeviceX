@@ -3,11 +3,7 @@
 cd test/mpi/1
 S=`u.cp.s`
 :
-u.conf "$S" u/x <<!
-   run
-!
-u.make -j
-u.run 2 1 1 ./udx conf.cfg '
+u.run 2 1 1 udx conf.cfg '
 glb = { 
     kBT = 0.0
 }

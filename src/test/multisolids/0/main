@@ -6,11 +6,7 @@ echo -e "4.1 21.5 8\n4.1 10.5 8\n11.9 16 8" > rigs-ic.txt
 u.cp.rig sphere.ply  rig.ply
 u.cp.rbc rbc/498.off rbc.off
 :
-u.conf "$S" u/x <<!
-  run
-!
-u.make -j
-u.run ./udx conf.cfg '
+u.run udx conf.cfg '
 rbc = {
      totArea = 55.553
      totVolume = 26.986

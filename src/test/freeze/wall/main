@@ -5,13 +5,7 @@ cd test/freeze/wall
 :
 u.cp.rbc rbc/498.off  rbc.off
 u.cp.sdf wall1/wall.dat sdf.dat
-:
-u.conf "$S" u/x  <<!
-   run
-!
-:
 u.strtdir .
-u.make -j
-u.run ./udx conf.cfg
+u.run udx conf.cfg
 : :::::: checks total wall particle number ::::::
 cp strt/wall/templ.bop wall.out.txt
