@@ -2,10 +2,5 @@
 # nTEST: flow.t1
 cd test/flow/double
 S=`u.cp.s`
-:
-u.conf "$S" u/x  <<!
-   run
-!
-u.make -j
-u.run ./udx conf.cfg
+u.run udx conf.cfg
 u.avgh5 0 u 1 h5/0001.h5 | uscale 0.1 > h5.out.txt

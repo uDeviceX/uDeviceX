@@ -5,9 +5,5 @@ S=`u.cp.s`
 :
 u.cp.sdf wall1/wall.dat sdf.dat
 :
-u.conf "$S" u/x <<!
-   run
-!
-u.make -j
-u.run ./udx conf.cfg
+u.run udx conf.cfg
 u.avgh5 1 u 2 h5/0011.h5 > h5.out.txt
