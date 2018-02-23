@@ -1,4 +1,4 @@
-void get_flo3(FILE *f, /**/ float *x, float *y, float *z) {
+static void get_flo3(FILE *f, /**/ float *x, float *y, float *z) {
     int r;
     char s[2048];
     UC(efgets(s, sizeof(s), f));
@@ -7,7 +7,7 @@ void get_flo3(FILE *f, /**/ float *x, float *y, float *z) {
         ERR("expect three floats, got '%s'", s);
 }
 
-void get_int3(FILE *f, /**/ int *x, int *y, int *z) {
+static void get_int3(FILE *f, /**/ int *x, int *y, int *z) {
     int r;
     char s[2048];
     UC(efgets(s, sizeof(s), f));
