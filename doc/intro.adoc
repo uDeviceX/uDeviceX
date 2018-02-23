@@ -45,3 +45,21 @@ atest example.test
 Typically test compiles and run one of the units and produce a text
 file. `atest` compares the text file with a previously stored
 reference and report the result. Comparision can be exact or "fuzzy".
+
+== systems of coordinates
+
+There are several systems of coordinates in _uDeviceX_. Let focus on
+`X` direction, `Y` and `Z` are similar. A _global_ system is used as a
+reference and in _global_ system left edge of the simulation domain is
+0 and right edge is `xdomain()`. Each subdomain which belong to one
+MPI process has its own _local_ system of coordinates. Most of the
+calculations are done in _local_ system, for example arrays of
+`Particles` are using _local_ system. Left and right edges of the
+subdomains are `xlo()` and `xhi()` and subdomains size is `xs()`. The
+following holds:
+
+----
+xs() == xhi() - xlo()
+xdomain() == xs() * nx
+----
+where `nx` is a number of subdomains in `X` direction.
