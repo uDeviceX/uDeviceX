@@ -1,9 +1,5 @@
 # TEST: dbg.pos
 cd test/dbg/pos
 S=`u.cp.s`
-u.conf "$S" u/dbg <<!
-run
-!
-u.make -j
-u.run ./udx conf.cfg
+u.run udx conf.cfg
 echo $? > dbg.out.txt

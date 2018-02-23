@@ -108,17 +108,16 @@ void sub2tex_ini(const Coords *c, const int T[3], const int M[3], /**/ Tform *t)
     enum {X, Y, Z};
     TGrid g_tex;
     Tform *sub, *tex;
-    
+
     if (goodp(T) == BAD) ERR("bad T = [%d %d %d]", T[X], T[Y], T[Z]);
     if (goodp(M) == BAD) ERR("bad M = [%d %d %d]", M[X], M[Y], M[Z]);
     UC(tform_ini(&sub)); UC(tform_ini(&tex));
 
     UC(tex_ini(c, T, M, /**/ &g_tex));
     UC(to_grid(&g_tex, tex));
-    
+
     UC(sub_ini(c, /**/ sub));
 
     UC(tform_chain(sub, tex, /**/ t));
     tform_fin(sub); tform_fin(tex);
 }
-

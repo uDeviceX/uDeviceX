@@ -1,9 +1,5 @@
 # TEST: dbg.force
 cd test/dbg/force
 S=`u.cp.s`
-u.conf "$S" u/dbg <<!
-run
-!
-u.make -j
-u.run ./udx conf.cfg
+u.run udx conf.cfg
 echo $? > dbg.out.txt

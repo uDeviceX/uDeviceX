@@ -2,11 +2,7 @@
 # nTEST: flow.cylnder.1
 cd test/flow/cylinder/1
 S=`u.cp.s`
-u.conf "$S" u/x <<!
-   run
-!
-u.make -j
-u.run ./udx conf.cfg '
+u.run udx conf.cfg '
 glb = {
     kBT = 0.0
 }
