@@ -1,0 +1,34 @@
+#!/bin/sh
+
+gorun() {
+    cd $R
+}
+
+gocomp() {
+    cd $C
+}
+
+goback() {
+    cd $H
+}
+
+mkdirs() {
+    mkdir -p $C
+    mkdir -p $R
+    u.strtdir $R $NX $NY $NZ
+}
+
+clean() {
+    rm -rf $R/* $C/*
+}
+
+compile() {
+    u.make clean -s
+    u.make -j -s
+}
+
+transfer() {
+    cp $C/udx .
+    cp $C/conf.h .
+    cp $H/conf.cfg .
+}

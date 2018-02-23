@@ -1,0 +1,77 @@
+#!/bin/sh
+
+set -eu
+
+NX=1
+NY=1
+NZ=1
+
+XS=32
+YS=8
+ZS=8
+
+gout=8.0
+gin=8.0
+gint=8.0
+
+t="$gout,$gin"
+H=`pwd`
+
+# src dir
+S=${HOME}/udx/src/
+
+# TMP: for tmp scratch moe on daint
+h=`u.host`
+if test $h = daint
+then SCRATCH=/scratch/snx1600/amlucas
+fi    
+
+
+# compile dir
+C=${SCRATCH}/HeleShaw/$t/COMP
+
+# run dir
+R=${SCRATCH}/HeleShaw/$t/RUN
+
+. ./utils
+. ./param
+. ./walls
+
+args="
+glb = {
+    L = [$XS, $YS, $ZS]
+}
+flu = {
+    g = [$gout, $gint, $gin]
+}"
+
+run() {
+    h=`u.host`
+    if test $h = daint
+    then u.batch $NX $NY $NZ ./udx 24:00:00 conf.cfg $args
+    else u.run $NX $NY $NZ ./udx conf.cfg "$args"
+    fi
+}
+
+post() {
+    h=`u.host`
+    if test $h = daint
+    then echo "postprocessing should be launch after simulation"
+    else bops2vtks vtk/ bop/solvent-0*.bop -- bop/colors_solvent-0*.bop
+    fi    
+}
+
+clean
+mkdirs
+
+gocomp
+conf
+compile
+
+gorun
+transfer
+tsdf_plates
+run
+#post
+
+goback

@@ -1,0 +1,44 @@
+#!/bin/sh
+
+set -eu
+
+mult() (
+    awk -v x=$1 -v l=$2 'BEGIN{print x*l}'
+)
+
+domain() {
+    LX=`mult ${XS} ${NX}`
+    LY=`mult ${YS} ${NY}`
+    LZ=`mult ${ZS} ${NZ}`
+}
+
+tsdf0 () {
+    t=tsdf.conf
+    echo "$1" > "$t"
+    tsdf "$t" sdf.dat sdf.vti
+}
+
+ae () { awk 'BEGIN {print '"$@"'}'; }
+
+tsdf_plates() {
+    domain
+    set -x
+    R=5
+    nx=`ae "$R*$LX"`
+    ny=`ae "$R*$LY"`
+    nz=`ae "$R*$LZ"`
+
+    hi=`ae "$LZ - 1.0"`
+    lo=`ae "      1.0"`
+    
+    c="
+extent     $LX $LY $LZ
+N          $nx $ny $nz
+obj_margin 5.0
+
+# normal goes from inside wall to outside
+plane point xc yc $hi normal 0 0 -1
+plane point xc yc $lo normal 0 0  1
+"
+    tsdf0 "$c"
+}
