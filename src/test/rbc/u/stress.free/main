@@ -9,7 +9,7 @@ u.cp.rbc rbc/sc/$nv.off rbc.stress.free
 area=`off.area rbc.off`
 volume=`off.volume rbc.off`
 :
-u.conf $S u/rbc/force "$S/conf/default.h" <<!
+u.conf $S u/rbc/force <<!
     run
 !
 u.make -j

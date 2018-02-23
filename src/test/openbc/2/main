@@ -1,6 +1,6 @@
 #### rest with deleting cylinder and cylinder inflow 
 # nTEST: inout.t1
-u.conf conf/default.h <<!   
+u.conf <<!   
    run
 !
 u.make -j

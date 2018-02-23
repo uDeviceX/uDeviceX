@@ -1,8 +1,7 @@
 # TEST: io.off.ply
 :
 cd test/io/off/ply
-u.cp.hdr default.h  conf.h
 u.cp.rig cylinder   rbc.ply
 :
-echo run | S=`u.cp.s` u.build u/io/off conf.h
+echo run | S=`u.cp.s` u.build u/io/off
 u.run ./udx -- 'i="rbc.ply"; type="ply"' > test.out.txt

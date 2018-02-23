@@ -1,7 +1,7 @@
 #### rest with deleting cylinder
 # nTEST: out.t1
 :
-u.conf conf/default.h <<!   
+u.conf <<!   
    run
 !
 u.make -j

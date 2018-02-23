@@ -6,7 +6,6 @@
 : ${DBG=0}
 : ${TMP=/tmp}
 : ${UDX=udx}
-: ${CONF=conf.h}
 
 set -eu
 if test   -z "$S"; then err 'u.build: S is not set'; fi
@@ -16,22 +15,15 @@ if test $# -eq 0; then err 'u.build expecting unit'; fi
 U="$1"; shift
 if test ! -d "$S/$U"; then err "u.build: not an unit '$U'"; fi
 
-if test $# -eq 0; then err 'u.build expecting config file'; fi
-C="$1"; shift
-if test ! -r "$C"; then err "u.build: not a file '$C'"; fi
-
-C=`to_abs "$C"`
-
 t=$TMP/udx.$$; e mkdir "$t"
 if ! test -d $t; then err "u.build: fail to create dir `$t`"; fi
 trap 'rm0 $t' 0 1 2 3 4 15
 
 (
   e cd $t
-  e u.conf "$S" "$U" "$C" "$@"
+  e u.conf "$S" "$U" "$@"
   msg "building in $t"
   e u.make -j '>' .make.log
 )
 
-e cp $t/conf.h "$CONF"
 e cp $t/udx "$UDX"

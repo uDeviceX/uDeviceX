@@ -7,7 +7,7 @@ x=0.75  y=3 z=9; echo 1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 >  rbcs-ic.txt
 x=0.75 y=13 z=9; echo 1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 >> rbcs-ic.txt
 u.cp.sdf cyl1/cyl.dat sdf.dat
 :
-u.conf "$S" u/x "$S/conf/default.h" <<!
+u.conf "$S" u/x <<!
    run
 !
 u.make -j
