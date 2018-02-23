@@ -1,6 +1,6 @@
 M=c
 
-CFLAGS=-O0 -g -Wall
+CFLAGS=-O0 -g -Wall -Wextra
 LDFLAGS=-lm
 $M: $M.c
 	$(CC) $(CFLAGS) $(CPPFLAGS) $< $(LDFLAGS) -o $@

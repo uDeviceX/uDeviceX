@@ -46,7 +46,7 @@ qbc(A, B, C, D):=block(
     x0: X - s*r,
     if x0 # X then
     do (
-      X: x0,
+      X: x0
       [q, dq, b1, c2]: eeval(X, A, B, C, D),
       if dq = 0 then x0 : X
       else x0 : X - (q/dq)/1.000000000000001,
