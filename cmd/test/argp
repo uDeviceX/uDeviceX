@@ -1,6 +1,5 @@
 # TEST: argp.0
-c=data/double.poiseuille.h
-u.argp $c rbcs \
+u.argp \
     rbcs tend=2.0 part_freq=1500    \
     part_dumps   field_freq=1500    \
     FORCE_DOUBLE_POISEUILLE pushrbc \
@@ -8,5 +7,4 @@ u.argp $c rbcs \
     run > argp.out.txt
 
 # TEST: argp.1
-c=data/double.poiseuille.h
-u.argp $c > argp.out.txt
+u.argp > argp.out.txt

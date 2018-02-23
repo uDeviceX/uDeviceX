@@ -4,8 +4,6 @@
 
 BEGIN {
     ERR_ARGP = 6
-    
-    h = ARGV[1]; shift() # [h]eader and [c]onfig files
     c = ARGV[1]; shift()
     nr = count_runs() # [n]umber of runs
     if (nr == 1) conf1(); else confN()
@@ -13,7 +11,7 @@ BEGIN {
 
 function conf1() {
     a  = args(1)   # arguments for argp
-    s  = "u.argp " qq(h) " " a "   >    " "conf.h"
+    s  = "u.argp " a "   >  conf.h"
     rc = cmd(s)
     if (rc != 0) exit ERR_ARGP
 }

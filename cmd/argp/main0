@@ -30,15 +30,13 @@ function boolp(k) { # not = means boolean
 
 BEGIN {
     iarg = 1 #
-    file = ARGV [iarg++]
-
     while (iarg < ARGC)  {
 	cur = ARGV[iarg++]
 	k = getk(cur);                  assert_k(k, cur)
 	if (boolp(cur)) kv[k] = "true"
 	else            kv[k] = getv(cur)
     }
-    ARGC = 2 # to read the first argument as a file
+    write()
 }
 function max(a, b) {return a > b ? a : b}
 function write() {
@@ -49,33 +47,13 @@ function write() {
     }
 
     # dump output
-    printf "\n"
-    u_tmpl = sprintf("#undef  %%%ss", sk)
     d_tmpl = sprintf("#define %%%ss %%%ss", sk, sv + 2) # with brackets
-
     for (k in kv) {
-	line = sprintf(u_tmpl, k)
-	print line | "sort"
-    }
-    close("sort")
-    printf "\n"
-
-    for (k in kv) {
-	v = kv[k]; vd = kv_default[k]; vp = "(" v ")"
+	v = kv[k]; vp = "(" v ")"
 	line = sprintf(d_tmpl, k, vp)
-	if (v != vd) line = line "    /* */" # marking non-default
-					     # value
 	print line | "sort"
     }
     close("sort")
-}
-
-{
-    print
-}
-
-END {
-    if (Exit) exit(Exit); else write()
 }
 
 ' "$@"
