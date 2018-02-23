@@ -105,19 +105,20 @@ void out2sdf_ini(const Coords *c, const int N[3], /**/ Tform* t) {
 }
 
 void sub2tex_ini(const Coords *c, const int T[3], const int M[3], /**/ Tform *t) {
-    enum {X, Y, Z};
-    TGrid g_tex;
-    Tform *sub, *tex;
+    enum {X, Y, Z, D};
+    float lo[D], hi[D]; 
 
     if (goodp(T) == BAD) ERR("bad T = [%d %d %d]", T[X], T[Y], T[Z]);
     if (goodp(M) == BAD) ERR("bad M = [%d %d %d]", M[X], M[Y], M[Z]);
-    UC(tform_ini(&sub)); UC(tform_ini(&tex));
 
-    UC(tex_ini(c, T, M, /**/ &g_tex));
-    UC(to_grid(&g_tex, tex));
+    lo[X] = -xs(c)/2 - M[X];
+    lo[Y] = -ys(c)/2 - M[Y];
+    lo[Z] = -zs(c)/2 - M[Z];
 
-    UC(sub_ini(c, /**/ sub));
+    hi[X] = xs(c)/2 + M[X];
+    hi[Y] = ys(c)/2 + M[Y];
+    hi[Z] = zs(c)/2 + M[Z];
 
-    UC(tform_chain(sub, tex, /**/ t));
-    tform_fin(sub); tform_fin(tex);
+    tform_to_grid(lo, hi, T, /**/ t);
 }
+
