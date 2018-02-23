@@ -1,9 +1,5 @@
-void tform_ini(Tform **pq) {
-    Tform *q;
-    UC(emalloc(sizeof(Tform), (void**)&q));
-    *pq = q;
-}
-void tform_fin(Tform *q) { UC(efree(q)); }
+void tform_ini(Tform **pq) { EMALLOC(1, pq); }
+void tform_fin(Tform *q)   { EFREE(q);       }
 
 static void report(const float a0[3], const float a1[3],   const float b0[3], const float b1[3]) {
     enum {X, Y, Z};
