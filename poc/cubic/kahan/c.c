@@ -59,7 +59,7 @@ void qbc(double A, double B, double C, double D,
         else x0 = X - (q/dq)/1.000000000000001;
         if (s * x0 <= s * X) break;
     }
-    if (abs(A)*X*X > abs(D/X)) {
+    if (fabs(A)*X*X > fabs(D/X)) {
         c2 = -D/X; b1 = (c2 - C)/X;
     }
 fin: 
