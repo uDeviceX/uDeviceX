@@ -1,24 +1,12 @@
 #### RBC in a periodic box
 # nTEST: rstrt.t3
 cd test/restart/2/
-S=`u.cp.s`
 :
 u.cp.rbc rbc/498.off rbc.off
 x=0.75 y=8 z=12; echo 1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 > rbcs-ic.txt
 :
-u.conf "$S" u/x <<!
-   BASE_STRT_DUMP=\"bin.1/strt\"
-   run
-   BASE_STRT_READ=\"bin.1/strt\"
-   BASE_STRT_DUMP=\"bin.2/strt\"
-   run
-!
-:
-u.strtdir bin.1
-u.strtdir bin.2
-u.make -j
-:
-u.run ./bin.1/udx conf.cfg '
+u.strtdir .
+u.run udx conf.cfg '
 glb = {
     kBT = 0.0
 }
@@ -28,7 +16,7 @@ rbc = {
     totVolume = 26.986
 }'
 :
-u.run ./bin.2/udx conf.cfg '
+u.run udx conf.cfg '
 glb = {
     restart = true
     kBT = 0.0
