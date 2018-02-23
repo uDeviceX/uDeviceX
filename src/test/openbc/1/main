@@ -1,7 +1,7 @@
 #### rest with deleting cylinder, multi nodes
 # nTEST: out.t2
 :
-u.conf conf/default.h <<!
+u.conf <<!
    run
 !
 u.make -j

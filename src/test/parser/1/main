@@ -3,7 +3,7 @@
 u=u/parser/read
 s=`pwd`
 :
-u.conf "$s" "$u" "$s/conf/default.h" <<!
+u.conf "$s" "$u" <<!
   run
 !
 u.make -j

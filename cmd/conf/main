@@ -1,5 +1,7 @@
 #!/bin/sh
 
+set -eu
+
 usg() {
     echo 'usage: u.conf [source dir] [unit dir] default.h <<<!
 [variables]
@@ -28,9 +30,6 @@ if test $# -ne 0 -a -d "$1"; then S="$1"; shift; fi
 U=u/x  # default unit
 if test $# -ne 0 -a -d "$S/$1"; then U="$1"; shift; fi
 
-if test $# -eq 0 -o ! -f "$1"; then err 'wrong header file'; fi
-h="$1"; shift # header file
-
 c=/dev/stdin  # config file
 if test $# -ne 0; then c="$1"; shift; fi
 
@@ -45,7 +44,7 @@ if test $rc -eq $ERR_NO_RUNS;    then err 'no run commands in config'; fi
 if test $rc -eq $ERR_BIN_MAKE;   then err 'cannot create bin[...]/Makefile'; fi
 if test $rc -eq $ERR_MISSING_MK; then err 'cannot find system config'; fi
 
-u.conf.conf     "$h" "$c"; rc=$?
+u.conf.conf     "$c"; rc=$?
 if test $rc -eq $ERR_ARGP;       then err 'u.argp fails'; fi
 
 u.conf.run     "$c"; rc=$?

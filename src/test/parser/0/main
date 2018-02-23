@@ -6,7 +6,7 @@ s=`pwd`
 echo "a=42"   >  $t
 echo "f=3.14" >> $t
 :
-u.conf "$s" "$u" "$s/conf/default.h" <<!
+u.conf "$s" "$u" <<!
   run
 !
 u.make -j

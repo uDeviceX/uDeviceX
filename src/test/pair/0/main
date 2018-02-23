@@ -1,7 +1,7 @@
 # TEST: pair.0
 cd test/pair/0
 S=`u.cp.s`
-u.conf "$S" u/pair "$S/conf/default.h" <<!
+u.conf "$S" u/pair <<!
    run
 !
 u.make -j

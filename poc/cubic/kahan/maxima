@@ -22,7 +22,7 @@ qdrtc(A, B, C):= block(
     else (
       X1: C/r, X2: r/A)),
   [X1, Y1, X2, Y2]);
-  
+
 eeval(X, A, B, C, D):=block(
   [q0, B1, C2, dQ, Q],
   q0: A*X,
@@ -44,7 +44,7 @@ qbc(A, B, C, D):=block(
     t: q/A, r: abs(t)^(1/3), s: sgn(t),
     t: -dq/A, if t > 0 then r: 1.324718 * max(r, sqrt(t)),
     x0: X - s*r,
-    if x0 # X then 
+    if x0 # X then
     do (
       X: x0,
       [q, dq, b1, c2]: eeval(X, A, B, C, D),
@@ -54,5 +54,4 @@ qbc(A, B, C, D):=block(
     if abs(A)*X*X > abs(D/X) then (
       c2 : -D/X, b1 : (c2 - C)/X)),
   [X1, Y1, X2, Y2] : qdrtc(A, b1, c2),
-  [X, X1, Y1, X2, Y2]);      
-    
+  [X, X1, Y1, X2, Y2]);

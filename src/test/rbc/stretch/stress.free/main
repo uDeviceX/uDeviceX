@@ -12,7 +12,7 @@ u.stretch $A 5%  rbc.off         > rbc.stretch
 :
 x=4 y=6 z=8; echo 1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 > rbcs-ic.txt
 :
-u.conf "$S" u/x "$S/conf/default.h" <<!
+u.conf "$S" u/x <<!
    MESH_SHIFT_CENTER RBC_STRETCH
    run
 !

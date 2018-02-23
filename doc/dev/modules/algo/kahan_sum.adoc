@@ -1,0 +1,22 @@
+= Kahan summation
+:lext: .adoc
+:src: ../../../../src
+
+link:https://en.wikipedia.org/wiki/Kahan_summation_algorithm[Summation]
+stable to numerical error.
+
+[source,cpp]
+----
+include::{src}/algo/kahan_sum/imp.h[tag=interface]
+----
+
+Example
+[source,cpp]
+----
+kahan_sum *k;
+kahan_sum_ini(&k);
+for (i = 0; i < n; i ++)
+    kahan_sum_add(kahan_sum, a[i]);
+sum = kahan_sum_get(kahan_sum);
+kahan_sum_fin(k);
+----

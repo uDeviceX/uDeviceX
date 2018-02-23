@@ -2,7 +2,7 @@
 # nTEST: bulk.t0
 cd test/bulk/0
 S=`u.cp.s`
-u.conf "$S" u/bulk "$S/conf/default.h" <<!
+u.conf "$S" u/bulk <<!
        run
 !
 u.make -s -j

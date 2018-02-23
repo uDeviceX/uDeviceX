@@ -5,7 +5,7 @@ S=`u.cp.s`
 echo -e "8 16 8" > rigs-ic.txt
 u.cp.rig sphere.ply rig.ply
 :
-u.conf "$S" u/x "$S/conf/default.h" <<!
+u.conf "$S" u/x <<!
    kBT=1.0
    part_freq=100
    MESHBB_LOG_ROOTS

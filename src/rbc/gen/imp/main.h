@@ -1,4 +1,4 @@
-static void transform(const float* rr0, int nv, float *A, /* output */ Particle *pp) {
+static void transform(const float *rr0, int nv, float *A, /**/ Particle *pp) {
     int iv, c, i;
     float *r, *v;
     const float *r0;

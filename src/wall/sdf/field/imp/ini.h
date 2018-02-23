@@ -1,4 +1,4 @@
-void get_flo3(FILE *f, /**/ float *x, float *y, float *z) {
+static void read_extents(FILE *f, /**/ float *x, float *y, float *z) {
     int r;
     char s[2048];
     UC(efgets(s, sizeof(s), f));
@@ -7,7 +7,7 @@ void get_flo3(FILE *f, /**/ float *x, float *y, float *z) {
         ERR("expect three floats, got '%s'", s);
 }
 
-void get_int3(FILE *f, /**/ int *x, int *y, int *z) {
+static void read_grid_size(FILE *f, /**/ int *x, int *y, int *z) {
     int r;
     char s[2048];
     UC(efgets(s, sizeof(s), f));
@@ -27,11 +27,15 @@ void field_ini(const char *path, /**/ Field **pq) {
     N = q->N; ext = q->ext;
     msg_print("reading '%s'", path);
     UC(efopen(path, "r", /**/ &f));
-    get_flo3(f, /**/ &ext[X], &ext[Y], &ext[Z]);
-    get_int3(f, /**/ &N[X],     &N[Y],   &N[Z]);
+
+    read_extents  (f, /**/ &ext[X], &ext[Y], &ext[Z]);
+    read_grid_size(f, /**/ &N[X],     &N[Y],   &N[Z]);
+
     msg_print("size:   %d %d %d", N[X], N[Y], N[Z]);
     msg_print("extend: %g %g %g", ext[X], ext[Y], ext[Z]);
+
     n = N[X]*N[Y]*N[Z];
+
     EMALLOC(n, &q->D);
     D = q->D;
     UC(efread(D, sizeof(D[0]), n, f));

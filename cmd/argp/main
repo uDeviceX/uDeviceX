@@ -3,10 +3,10 @@
 prog=u.argp
 
 usg () {
-    msg "$prog  [FILE] [DEFS]"
-    msg "$prog  conf.def.h A=1 B=2"
-    msg "$prog  conf.def.h S='\"string\"'"
-    msg 'conf.h generator: append definitions to FILE'
+    msg "$prog  [DEFS]"
+    msg "$prog  A=1 B=2"
+    msg "$prog  S='\"string\"'"
+    msg 'conf.h generator'
     exit
 }
 
@@ -37,16 +37,5 @@ check () {
 
 if test $# -ne 0 && test "$1" = -h; then usg; fi
 
-if test $# -eq 0
-then err "$prog: needs an argument"
-fi
-
-f="$1"; shift
-
-if test ! -f "$f"
-then err "$prog: not a file '$f'"
-fi
-
 check "$@"
-
-exec u.argp0 "$f" "$@"
+exec u.argp0 "$@"

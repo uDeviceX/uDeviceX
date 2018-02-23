@@ -3,11 +3,10 @@
 . u.build.util
 
 usg () {
-    msg 'S=[SRC] u.build [UNIT] [CONFIG.h] [udx configuration file]'
+    msg 'S=[SRC] u.build [UNIT] [udx configuration file]'
     msg 'build udx executable'
     msg 'S must be set to udx source directory'
     msg 'UDX  is a name of executable, default is udx'
-    msg 'CONF is a name of generated conf.h, default is conf.h'
     msg 'if DBG is set log the commands and does not remove temporary directory'
     exit
 }
