@@ -30,9 +30,22 @@ void qdrtc(double A, double B, double C, /**/ double *pX1, double *pY1, double *
     *pX1 = X1; *pY1 = Y1; *pX2 = X2; *pY2 = Y2;
 }
 
+void  eeval(double X, double A, double B, double C, double D, /**/
+            double *pQ, double *pdQ, double *pB1, double *pC2) {
+    double q0, B1, C2, dQ, Q;
+    q0 = A*X;
+    B1 = q0 + B;
+    C2 = B1*X + C;
+    dQ = (q0 + B1)*X + C2;
+    Q  = C2*X + D;
+    *pQ = Q; *pdQ = dQ; *pB1 = B1; *pC2 = C2;
+}
+
 void qbc(double A, double B, double C, double D,
-         /**/ double *X, double *X1, double *Y1, double *X2, double *Y2) {
-    fprintf(stderr, "ABCD: %g\n", disc(A, B, C));
+         /**/ double *pX, double *pX1, double *pY1, double *pX2, double *pY2) {
+    double X1, Y1, X2, Y2;
+    qdrtc(A, B, C, /**/ &X1, &Y1, &X2, &Y2);
+    fprintf(stderr, "%g %g  %g %g\n", X1, Y1, X2, Y2);
 }
 
 double read_real(const char *s) {
