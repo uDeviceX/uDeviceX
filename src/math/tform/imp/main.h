@@ -32,7 +32,7 @@ void tform_vector(const float a0[3], const float a1[3],   const float b0[3], con
     if (r != OK) { report(a0, a1,   b0, b1); ERR("tform_vector failed"); }
 }
 
-static int smallp(float s[3]) {
+static int smallp(const float s[3]) {
     enum {X, Y, Z};
     const float eps = 1e-12;
     int cx, cy, cz;
@@ -43,7 +43,7 @@ static int smallp(float s[3]) {
 }
 void tform_convert(Tform *t, const float a0[3], /**/ float a1[3]) {
     enum {X, Y, Z};
-    float *o, *s;
+    const float *o, *s;
     o = t->o; s = t->s;
     if (smallp(s))
         ERR("tform_convert failed: s = [%g %g %g]\n", s[X], s[Y], s[Z]);
