@@ -18,11 +18,11 @@ void tform_grid2grid(const float f_lo[3], const float f_hi[3], const int f_n[3],
 
 
 // tag::convert[]
-void tform_convert(Tform*, const float a0[3], /**/ float a1[3]);
+void tform_convert(const Tform*, const float a0[3], /**/ float a1[3]);
 // end::convert[]
 
 // tag::view[]
-void tform_to_view(Tform*, /**/ Tform_v*);
+void tform_to_view(const Tform*, /**/ Tform_v*);
 // end::view[]
 
 // tag::log[]

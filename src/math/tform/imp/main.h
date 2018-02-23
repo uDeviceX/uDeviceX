@@ -41,7 +41,7 @@ static int smallp(const float s[3]) {
     cz = -eps < s[Z] && s[Z] < eps;
     return cx && cy && cz;
 }
-void tform_convert(Tform *t, const float a0[3], /**/ float a1[3]) {
+void tform_convert(const Tform *t, const float a0[3], /**/ float a1[3]) {
     enum {X, Y, Z};
     const float *o, *s;
     o = t->o; s = t->s;
@@ -128,7 +128,7 @@ void tform_grid2grid(const float f_lo[3], const float f_hi[3], const int f_n[3],
     tform_fin(f2g);
 }
 
-void tform_to_view(Tform *t, Tform_v *v) {
+void tform_to_view(const Tform *t, Tform_v *v) {
     enum {X, Y, Z};
     if (smallp(t->s))
         ERR("tform_to_view failed: t->s = [%g %g %g]\n", t->s[X], t->s[Y], t->s[Z]);
