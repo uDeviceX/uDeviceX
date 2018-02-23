@@ -4,75 +4,19 @@ cd test/restart/1/
 S=`u.cp.s`
 :
 u.cp.sdf wall1/wall.dat sdf.dat
+u.strtdir
+u.run udx conf.cfg
 :
-u.conf "$S" u/x <<!
-   BASE_STRT_DUMP=\"bin.1/strt\"
-   run
-   BASE_STRT_READ=\"bin.1/strt\"
-   BASE_STRT_DUMP=\"bin.2/strt\"
-   run
-!
-:
-u.strtdir bin.1
-u.strtdir bin.2
-u.make -j
-:
-u.run ./bin.1/udx '
+u.run udx conf.cfg
 time = {
-    type = "const"
-    dt = 5e-4
-    wall = 5e-2
-    end = 0.5
-}
-glb = {
-    kBT = 0.0
-    L = [16, 16, 16]
-}
-wall = {
-    active = true
-}
-wvel = {
-    type = "shear"
-    gdot = 5.0
-    vdir = 0
-    gdir = 2
-}
-dump = {
-    field = true
-    parts = true
-    strt  = true
-    freq_field = 2.0000
-    freq_parts = 2.0000
-    freq_strt  = 5.0000
-}'
-:
-u.run ./bin.2/udx '
-time = {
-    type = "const"
-    dt = 5e-4
     end = 2.01
 }
 glb = {
     restart = true
-    L = [16, 16, 16]
-}
-wall = {
-    active = true
-}
-wvel = {
-    type = "shear"
-    gdot = 5.0
-    vdir = 0
-    gdir = 2
 }
 pbforce ={
     type = "constant"
     f = [3.333e-2, 0., 0.]
-};
-dump = {
-    field = true
-    parts = true
-    freq_field = 2.0000
-    freq_parts = 2.0000
-}'
+}
+'
 u.avgh5 0 u 1 h5/0000.h5 | uscale 0.1 > h5.out.txt
