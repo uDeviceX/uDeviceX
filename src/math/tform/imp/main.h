@@ -52,7 +52,7 @@ void tform_convert(const Tform *t, const float a0[3], /**/ float a1[3]) {
     a1[Z] = s[Z]*a0[Z] + o[Z];
 }
 
-void tform_chain(Tform *t1, Tform *t2, /**/ Tform *t) {
+void tform_chain(const Tform *t1, const Tform *t2, /**/ Tform *t) {
     float a0[3] = {0, 0, 0};
     float b0[3] = {1, 1, 1};
     float a1[3], b1[3], a2[3], b2[3];
