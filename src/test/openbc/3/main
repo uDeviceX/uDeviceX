@@ -1,10 +1,6 @@
 #### rest with deleting cylinder and cylinder inflow 
 # nTEST: inout.t2
-u.conf <<!
-   run
-!
-u.make -j
-u.run 2 2 1 ./udx test/openbc/inout.cfg '
+u.run 2 2 1 udx test/openbc/inout.cfg '
 glb = {
     L = [8, 8, 16]
     kBT = 0.0
