@@ -1,8 +1,7 @@
 # nTEST: pair.1
 cd test/pair/1
 S=`u.cp.s`
-c=$S/conf/default.h
-u.conf $S u/pair $c <<!
+u.conf $S u/pair <<!
     run
 !
 u.make -j

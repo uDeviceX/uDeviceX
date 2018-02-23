@@ -1,6 +1,6 @@
 #### rnd generation on host
 # TEST: rnd.t0
-u.conf . u/rnd conf/default.h <<!
+u.conf . u/rnd <<!
        run
 !
 { u.make -j;     } > /dev/null

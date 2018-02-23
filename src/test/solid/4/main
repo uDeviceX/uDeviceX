@@ -7,7 +7,7 @@ u.cp.rig sphere_R1.ply rig.ply
 x=0.75 y=3 z=9; echo $x $y $z >  rigs-ic.txt
 x=8    y=8 z=8; echo $x $y $z >> rigs-ic.txt
 :
-u.conf "$S" u/x "$S/conf/default.h" <<!
+u.conf "$S" u/x <<!
    run
 !
 { make clean && u.make -j ; } > /dev/null
