@@ -64,7 +64,10 @@ xdomain() == xs() * nx
 ----
 where `nx` is a number of subdomains in `X` direction.
 
-Wall is defined in _sdf file_ system. In this system `-1/2` coresponds
-to `0` and `N-1/2` corresponds to `xdomain()` where `N` is a number of
-cells in `X` direction. Each MPI process projects from _sdf file_
-system to _texture_ system.
+Wall is defined in _sdf file_ system. In this system `-1/2`
+corresponds to `0` and `N-1/2` corresponds to `xdomain()` where `N` is
+a number of cells in `X` direction. Each MPI process projects from
+_sdf file_ system to _texture_ system: a grid which is used to
+interpolate a field. If `T` is a size of the texture and `M` is a wall
+margin `-1/2` in _texture_ system corresponds to `xlo() - M` and
+`T-1/2` corresponds to `xhi() + M`.
