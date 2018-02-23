@@ -15,9 +15,9 @@ static void dump1(const Coords *coords, MPI_Comm cart, const int N[3], const flo
 static void dump(const Coords *coords, MPI_Comm cart, const int N[], const float *D) {
     float *W;
     int ngrid = xs(coords) * ys(coords) * zs(coords);
-    UC(emalloc(ngrid*sizeof(float), (void**) &W));
+    EMALLOC(ngrid, &W);
     UC(dump1(coords, cart, N, D, /*w*/ W));
-    UC(efree(W));
+    EFREE(W);
 }
 
 void field_size(const Field *q, /**/ int N[3]) {
