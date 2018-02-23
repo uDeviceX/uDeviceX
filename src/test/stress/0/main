@@ -1,12 +1,7 @@
 #### compare forces
 # nTEST: stress.t1
 cd test/stress/0
-S=`u.cp.s`
 :
-u.conf "$S" u/x <<!
-   run
-!
-u.make -j
-u.run ./udx conf.cfg
+u.run udx conf.cfg
 bop2txt bop/solvent-00000.bop > pp.txt
 sort pp.txt | uscale 10000 > forces.out.txt

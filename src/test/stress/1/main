@@ -1,13 +1,8 @@
 #### compare stresses
 # nTEST: stress.t2
 cd test/stress/1
-S=`u.cp.s`
 :
-u.conf "$S" u/x <<!
-   run
-!
-u.make -j
-u.run ./udx conf.cfg
+u.run udx conf.cfg
 bop2txt bop/solvent-00000.bop > pp.txt
 bop2txt bop/stress_solvent-00000.bop > ss.txt
 paste -d ' ' pp.txt ss.txt | sort | uscale 10000 > stress.out.txt

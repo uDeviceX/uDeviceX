@@ -1,13 +1,7 @@
 #### Plates : poiseuille
 # nTEST: vcont.t3
 cd test/vcont/plates
-S=`u.cp.s`
 :
 u.cp.sdf wall1/wall.dat sdf.dat
-:
-u.conf "$S" u/x <<!
-   run
-!
-u.make -j
-u.run ./udx conf.cfg
+u.run udx conf.cfg
 cat vcont.txt > vcont.out.txt

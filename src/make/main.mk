@@ -36,10 +36,10 @@ $B/.cookie:; $D; touch $@
 
 clean:; -rm -f $B/udx $O $B/gpuCode.o $B/.cookie
 
-test:
-	@echo log to atest.log
-	@atest 2>&1 `find test -type f`       | tee atest.log
-
 install: $B/udx; cp $B/udx $(BIN)
+
+test: install
+	@echo log to atest.log
+	@atest 2>&1 `find test -name main -type f`       | tee atest.log
 
 .PHONY: clean test all D
