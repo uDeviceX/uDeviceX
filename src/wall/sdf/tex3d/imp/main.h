@@ -1,12 +1,12 @@
 void tex3d_ini(Tex3d **pq) {
     Tex3d *q;
-    UC(emalloc(sizeof(Tex3d), /**/ (void**)&q));
+    EMALLOC(1, &q);
     *pq = q;
 }
 
 void tex3d_fin(Tex3d *q) {
     CC(cudaDestroyTextureObject(q->t));
-    UC(efree(q));
+    EFREE(q);
 }
 
 void tex3d_copy(const Array3d *a, /**/ Tex3d *t) {
