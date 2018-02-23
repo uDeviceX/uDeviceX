@@ -40,7 +40,7 @@ void field_scale(Field *q, float scale) {
     for (i = 0; i < n; i++) D[i] *= scale;
 }
 
-void field_sample(const Field *F, Tform *t, const int N1[3], /**/ Field **pq) {
+void field_sample(const Field *F, const Tform *t, const int N1[3], /**/ Field **pq) {
     enum {X, Y, Z};
     int n;
     Field *q;

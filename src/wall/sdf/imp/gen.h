@@ -11,7 +11,7 @@ static void gen0(const Coords *coords, Field *F, /**/ Sdf *sdf) {
     UC(sub2tex_ini(coords, N, M, /**/ sdf->t));
 }
 
-static void gen1(const Coords *coords, const int T[3], Field *F0, /**/ Sdf *sdf) {
+static void gen1(const Coords *coords, const int T[3], const Field *F0, /**/ Sdf *sdf) {
     Tform *t;
     int N[3];
     int M[3] = {XWM, YWM, ZWM}; /* margin and texture */
@@ -27,7 +27,7 @@ static void gen1(const Coords *coords, const int T[3], Field *F0, /**/ Sdf *sdf)
     UC(tform_fin(t));
 }
 
-static void gen2(const Coords *coords, Field *F, /**/ Sdf *sdf) {
+static void gen2(const Coords *coords, const Field *F, /**/ Sdf *sdf) {
     int3 Lte = sdf->Lte;
     int T[] = {Lte.x, Lte.y, Lte.z};
     UC(gen1(coords, T, F, /**/ sdf));
