@@ -66,4 +66,3 @@ ic/ident.ic  \
 ic/two.ic
 
 H = \
-hdr/default.h
