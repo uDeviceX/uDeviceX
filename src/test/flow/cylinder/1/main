@@ -1,7 +1,6 @@
 #### 4 roller mills
 # nTEST: flow.cylnder.1
 cd test/flow/cylinder/1
-S=`u.cp.s`
 u.run udx conf.cfg '
 glb = {
     kBT = 0.0

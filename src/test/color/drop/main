@@ -1,7 +1,6 @@
 # drop in poiseuille flow
 # nTEST: color.drop.t1
 cd test/color/drop
-S=`u.cp.s`
 u.cp.sdf yplates1/yplates.dat sdf.dat
 u.run udx conf.cfg
 :

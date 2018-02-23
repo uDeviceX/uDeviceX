@@ -1,7 +1,6 @@
 #### Plates : poiseuille
 # nTEST: flow.t3
 cd test/flow/plate
-S=`u.cp.s`
 :
 u.cp.sdf wall1/wall.dat sdf.dat
 :

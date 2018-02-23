@@ -1,7 +1,6 @@
 #### spheres in double poiseuille, no contact
 # nTEST: multisolid.t1
 cd test/multisolids/0
-S=`u.cp.s`
 echo -e "4.1 21.5 8\n4.1 10.5 8\n11.9 16 8" > rigs-ic.txt
 u.cp.rig sphere.ply  rig.ply
 u.cp.rbc rbc/498.off rbc.off

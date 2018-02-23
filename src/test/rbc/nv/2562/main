@@ -1,7 +1,6 @@
 #### periodic box: dumped relativly to domain center
 # nTEST: rbc.nv2562.0
 cd test/rbc/nv/2562
-S=`u.cp.s`
 nv=2562
 u.cp.rbc rbc/sc/$nv.off rbc.off
 XS=48 YS=12 ZS=12 x=24 y=6 z=6

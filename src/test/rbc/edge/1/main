@@ -1,7 +1,6 @@
 #### RBC initialy rotated
 # nTEST: rotated.t1
 cd test/rbc/edge/1
-S=`u.cp.s`
 u.cp.rbc rbc/498.off rbc.off
 area=`off.area rbc.off`
 volume=26.98

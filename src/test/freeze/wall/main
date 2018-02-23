@@ -1,6 +1,5 @@
 #### solvent with wall restart
 # nTEST: freeze.wall.t0
-S=`u.cp.s`
 cd test/freeze/wall
 :
 u.cp.rbc rbc/498.off  rbc.off

@@ -1,7 +1,6 @@
 #### no fluid
 # TEST: noflu
 cd test/noflu
-S=`u.cp.s`
 u.cp.sdf cyl1/cyl.dat sdf.dat
 u.run udx conf.cfg
 cp bop/solvent-00001.bop bop.out.txt

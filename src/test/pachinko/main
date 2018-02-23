@@ -1,7 +1,6 @@
 #### "Pachinko"
 # nTEST: pachinko
 cd test/pachinko
-S=`u.cp.s`
 u.cp.sdf pachinko/sdf.dat sdf.dat
 :
 u.run udx conf.cfg

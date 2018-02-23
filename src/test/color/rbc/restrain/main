@@ -1,7 +1,6 @@
 #### restrain memrain of RBC
 # nTEST: rbc.restrain.t0
 cd test/color/rbc/restrain
-S=`u.cp.s`
 u.cp.rbc rbc/498.off rbc.off
 u.cp.sdf wall1/wall.dat sdf.dat
 x=0.75 y=8 z=12; echo 1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 > rbcs-ic.txt

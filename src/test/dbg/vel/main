@@ -1,5 +1,4 @@
 # TEST: dbg.vel
 cd test/dbg/vel
-S=`u.cp.s`
 u.run udx conf.cfg
 echo $? > dbg.out.txt
