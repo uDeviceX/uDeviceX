@@ -1,14 +1,10 @@
-u.run ./udx
-S = ../../src
-U = u/x
-B = .
-include $B/sys.mk
-include $B/conf.mk
-include $S/make/common.mk
-include $S/$U/make/obj.mk
+u.run bin.1/udx
+u.run bin.2/udx
+all: bin.1/udx bin.2/udx
+clean: clean.1 clean.2
 
-include $S/make/main.mk
+bin.1/udx:; u.make -f bin.1/Makefile
+bin.2/udx:; u.make -f bin.2/Makefile
 
-include $S/$U/make/rule.mk
-include $S/$U/make/dir.mk
-include $S/$U/make/dep.mk
+clean.1:; u.make -f bin.1/Makefile clean
+clean.2:; u.make -f bin.2/Makefile clean
