@@ -2,7 +2,6 @@ struct PairParams;
 struct PaArray;
 struct FoArray;
 struct WvelStep;
-struct RNDunif;
 struct Coords;
 struct Sdf;
 struct int3;
