@@ -24,7 +24,7 @@ void wall_ini_ticket(int3 L, WallTicket**);
 void wall_fin_quants(WallQuants*);
 void wall_fin_ticket(WallTicket*);
 
-void wall_gen_quants(MPI_Comm, int maxn, const Sdf *qsdf, /**/ int *n, Particle*, WallQuants*);
+void wall_gen_quants(MPI_Comm, int maxn, const Sdf*, /**/ int *n, Particle*, WallQuants*);
 void wall_strt_quants(const Coords*, int maxn, WallQuants*);
 
 void wall_gen_ticket(const WallQuants*, WallTicket*);
