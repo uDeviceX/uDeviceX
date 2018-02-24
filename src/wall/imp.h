@@ -16,17 +16,18 @@ struct WallQuants {
 
 struct WallTicket;
 
-void wall_force(const PairParams*, const WvelStep *, const Coords *c, Sdf *qsdf, const WallQuants *q, const WallTicket *t, int n, const PaArray *parray, const FoArray *farray);
+void wall_force(const PairParams*, const WvelStep *, const Coords*,
+                Sdf*, const WallQuants*, const WallTicket*, int n, const PaArray*, const FoArray*);
 
-void wall_ini_quants(int3 L, WallQuants *q);
-void wall_ini_ticket(int3 L, WallTicket **t);
+void wall_ini_quants(int3 L, WallQuants*);
+void wall_ini_ticket(int3 L, WallTicket**);
 
-void wall_fin_quants(WallQuants *q);
-void wall_fin_ticket(WallTicket *t);
+void wall_fin_quants(WallQuants*);
+void wall_fin_ticket(WallTicket*);
 
-void wall_gen_quants(MPI_Comm cart, int maxn, const Sdf *qsdf, /**/ int *n, Particle* pp, WallQuants *q);
-void wall_strt_quants(const Coords *coords, int maxn, WallQuants *q);
+void wall_gen_quants(MPI_Comm, int maxn, const Sdf *qsdf, /**/ int *n, Particle*, WallQuants*);
+void wall_strt_quants(const Coords*, int maxn, WallQuants*);
 
-void wall_gen_ticket(const WallQuants *q, WallTicket *t);
+void wall_gen_ticket(const WallQuants*, WallTicket*);
 
-void wall_strt_dump_templ(const Coords *coords, const WallQuants *q);
+void wall_strt_dump_templ(const Coords*, const WallQuants*);
