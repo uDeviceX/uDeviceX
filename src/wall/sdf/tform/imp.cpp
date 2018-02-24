@@ -22,9 +22,6 @@ static int goodp(const int n[3]) {
     return (cl && ch) ? OK : BAD;
 }
 
-static void to_grid(TGrid *g, /**/ Tform *t) {
-    tform_to_grid(g->lo, g->hi, g->n, /**/ t);
-}
 
 static void grid2grid(TGrid *from, TGrid *to, /**/ Tform *t) {
     tform_grid2grid(from->lo, from->hi, from->n,
