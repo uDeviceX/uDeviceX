@@ -56,7 +56,6 @@ void qbc(double A, double B, double C, double D,
         X = x0;
         eeval(X, A, B, C, D, /**/ &q, &dq, &b1, &c2);
         x0 = (dq == 0) ? X : X - (q/dq)/1.000000000000001;
-        double d = (s * x0 - s * X);
     } while (s * x0 > s * X);
     if (fabs(A)*X*X > fabs(D/X)) {
         c2 = -D/X; b1 = (c2 - C)/X;
