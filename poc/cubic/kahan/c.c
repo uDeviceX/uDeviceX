@@ -1,23 +1,25 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <float.h>
 
-double disc(double a, double b, double c) { return b*b - a*c; }
+double max(double a, double b) { return a > b ? b : a; }
+double disc(double a, double b, double c) {
+    return b*b - a*c;
+}
 double sgn(double x) {
     if (x > 0)       return  1;
     else if (x == 0) return  0;
     else             return -1;
 }
 
-void qdrtc(double A, double B, double C, /**/ double *pX1, double *pY1, double *pX2, double *pY2) {
+void qdrtc(double A, double B, double C, /**/
+           double *pX1, double *pY1, double *pX2, double *pY2) {
     double b, q, r, X1, Y1, X2, Y2;
-    b = -B/2;
-    q = disc(A, b, C);
+    b = -B/2; q = disc(A, b, C);
     if (q < 0) {
-        X1 = b/A;
-        X2 = X1;
-        Y1 = sqrt(-q)/A;
-        Y2 = - Y1;
+        X1 = b/A; X2 = X1;
+        Y1 = sqrt(-q)/A; Y2 = - Y1;
     } else {
         Y1 = 0; Y2 = 0;
         r = b + sgn(b)*sqrt(q);
@@ -33,19 +35,36 @@ void qdrtc(double A, double B, double C, /**/ double *pX1, double *pY1, double *
 void  eeval(double X, double A, double B, double C, double D, /**/
             double *pQ, double *pdQ, double *pB1, double *pC2) {
     double q0, B1, C2, dQ, Q;
-    q0 = A*X;
-    B1 = q0 + B;
-    C2 = B1*X + C;
-    dQ = (q0 + B1)*X + C2;
-    Q  = C2*X + D;
+    q0 = A*X; B1 = q0 + B; C2 = B1*X + C;
+    dQ = (q0 + B1)*X + C2; Q  = C2*X + D;
     *pQ = Q; *pdQ = dQ; *pB1 = B1; *pC2 = C2;
 }
 
 void qbc(double A, double B, double C, double D,
          /**/ double *pX, double *pX1, double *pY1, double *pX2, double *pY2) {
-    double X1, Y1, X2, Y2;
-    qdrtc(A, B, C, /**/ &X1, &Y1, &X2, &Y2);
-    fprintf(stderr, "%g %g  %g %g\n", X1, Y1, X2, Y2);
+    double X, X1, Y1, X2, Y2;
+    double b1, c2, q, dq, s, t, r, x0;
+    if (A == 0) { X = DBL_MAX; A = B; b1 = C; c2 = D; goto fin; }
+    if (D == 0) { X = 0; b1 = B; c2 = C; goto fin; }
+    X =  -(B/A)/3;
+    eeval(X, A, B, C, D, /**/ &q, &dq, &b1, &c2);
+    t =  q/A; r =  pow(fabs(t), 1.0/3); s =  sgn(t);
+    t =  -dq/A; if (t > 0) r = 1.324718 * max(r, sqrt(t));
+    x0 = X - s*r;
+    if (x0 == X) goto fin;
+    for (;;) {
+        X = x0;
+        eeval(X, A, B, C, D, /**/ &q, &dq, &b1, &c2);
+        if (dq == 0) x0 = X;
+        else x0 = X - (q/dq)/1.000000000000001;
+        if (s * x0 <= s * X) break;
+    }
+    if (fabs(A)*X*X > fabs(D/X)) {
+        c2 = -D/X; b1 = (c2 - C)/X;
+    }
+fin: 
+    qdrtc(A, b1, c2, /**/ &X1, &Y1, &X2, &Y2);
+    *pX = X; *pX1 = X1; *pY1 = Y1; *pX2 = X2; *pY2 = Y2;
 }
 
 double read_real(const char *s) {
@@ -71,4 +90,5 @@ int main(int c, char *v[]) {
     C = read_real(v[i++]);
     D = read_real(v[i++]);
     qbc(A, B, C, D, &X, &X1, &Y1, &X2, &Y2);
+    printf("%g   %g %g   %g %g\n", X, X1, Y1, X2, Y2);
 }

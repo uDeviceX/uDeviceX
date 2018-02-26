@@ -22,9 +22,6 @@ static int goodp(const int n[3]) {
     return (cl && ch) ? OK : BAD;
 }
 
-static void to_grid(TGrid *g, /**/ Tform *t) {
-    tform_to_grid(g->lo, g->hi, g->n, /**/ t);
-}
 
 static void grid2grid(TGrid *from, TGrid *to, /**/ Tform *t) {
     tform_grid2grid(from->lo, from->hi, from->n,
@@ -106,7 +103,7 @@ void out2sdf_ini(const Coords *c, const int N[3], /**/ Tform* t) {
 
 void sub2tex_ini(const Coords *c, const int T[3], const int M[3], /**/ Tform *t) {
     enum {X, Y, Z, D};
-    float lo[D], hi[D]; 
+    float lo[D], hi[D];
 
     if (goodp(T) == BAD) ERR("bad T = [%d %d %d]", T[X], T[Y], T[Z]);
     if (goodp(M) == BAD) ERR("bad M = [%d %d %d]", M[X], M[Y], M[Z]);
@@ -121,4 +118,3 @@ void sub2tex_ini(const Coords *c, const int T[3], const int M[3], /**/ Tform *t)
 
     tform_to_grid(lo, hi, T, /**/ t);
 }
-
