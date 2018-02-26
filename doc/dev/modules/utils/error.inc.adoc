@@ -1,16 +1,24 @@
 == error
 
-Custom error handling with context.
+_uDeviceX_ has a primitive error handling mechanism. Error is raised if
 
-=== Usage
+* `ERR(fmt, ...)` is called. Syntax of ERR is the same as one of
+  `printf(3)`.
+* a function wrapped with `CC` returns a error code
+* a function wrapped with `MC` returns a error code
 
-* an error can be raised by the use of one of the following macros:
-** `signal_error_extra(fmt, ...)` will raise an error with extra
-   information formatted by the caller in a prinf format fashion
-* use macro `UC` on any function which might contain an error signal in
-one of the subfunctions.
+If error is raised the _uDeviceX_ aborts and prints a error message
+with a function call trace. Only the function calls wrapped with `UC`
+go into trace. For example,
 
-=== Interface
+----
+void c() { ERR("c failed"); }
+void b() { UC(c()); }
+void a() { UC(b()); }
+void main () {
+    a();
+}
+----
 
-TODO
-
+produces a log with source file name and line number of two `UC` calls
+and `ERR` call.
