@@ -1,8 +1,0 @@
-#!/bin/sh
-
-conf() {
-    u.conf $S u/x <<!!!
-    KL_SYNC
-   run
-!!!
-}
