@@ -3,14 +3,14 @@
 #include <math.h>
 #include <float.h>
 
-double max(double a, double b) { return a > b ? b : a; }
+double max(double a, double b) { return a > b ? a : b; }
 double disc(double a, double b, double c) {
     return b*b - a*c;
 }
 double sgn(double x) {
-    if (x > 0)       return  1;
-    else if (x == 0) return  0;
-    else             return -1;
+    return
+        x  > 0 ? 1 :
+        x == 0 ? 0 : -1;
 }
 
 void qdrtc(double A, double B, double C, /**/
@@ -48,21 +48,20 @@ void qbc(double A, double B, double C, double D,
     if (D == 0) { X = 0; b1 = B; c2 = C; goto fin; }
     X =  -(B/A)/3;
     eeval(X, A, B, C, D, /**/ &q, &dq, &b1, &c2);
-    t =  q/A; r =  pow(fabs(t), 1.0/3); s =  sgn(t);
-    t =  -dq/A; if (t > 0) r = 1.324718 * max(r, sqrt(t));
+    t =  q/A; r =  pow(fabs(t), 1.0/3.0); s =  sgn(t);
+    t =  -dq/A; if (t > 0) r = 1.324717957244746 * max(r, sqrt(t));
     x0 = X - s*r;
     if (x0 == X) goto fin;
-    for (;;) {
+    do {
         X = x0;
         eeval(X, A, B, C, D, /**/ &q, &dq, &b1, &c2);
-        if (dq == 0) x0 = X;
-        else x0 = X - (q/dq)/1.000000000000001;
-        if (s * x0 <= s * X) break;
-    }
+        x0 = (dq == 0) ? X : X - (q/dq)/1.000000000000001;
+        double d = (s * x0 - s * X);
+    } while (s * x0 > s * X);
     if (fabs(A)*X*X > fabs(D/X)) {
         c2 = -D/X; b1 = (c2 - C)/X;
     }
-fin: 
+fin:
     qdrtc(A, b1, c2, /**/ &X1, &Y1, &X2, &Y2);
     *pX = X; *pX1 = X1; *pY1 = Y1; *pX2 = X2; *pY2 = Y2;
 }
