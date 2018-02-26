@@ -3,15 +3,16 @@
 Read triangulated mesh from ascii
 link:https://en.wikipedia.org/wiki/OFF_(file_format)[off]
 or
-link:https://en.wikipedia.org/wiki/PLY_(file_format)[ply].
-Vertices are packed into linear array:
+link:https://en.wikipedia.org/wiki/PLY_(file_format)[ply]
+files.
+Vertices coordinates are packed into array:
 
 ----
 x0 y0 z0 x1 y1 z1 ... x[nv-1] y[nv-1] z[nv-1]
 ----
 
 Triangles are packed in array of `int4` with fields `w` left
-unused. For example traingle `i` is
+unused. For example, traingle `i` is
 ----
 tt[i].x tt[i].y tt[i].z
 ----
@@ -21,5 +22,5 @@ triangles, number of vertices and maximum degree.
 
 [source,cpp]
 ----
-include::{src}/io/off/imp.h[tags=interface]
+include::{src}/io/mesh_read/imp.h[tags=interface]
 ----
