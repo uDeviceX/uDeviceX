@@ -67,7 +67,7 @@ static __device__ float cheap_sdf(Sdf_v *sdf, float x, float y, float z)  {
 static __device__ bool sdf_far(Sdf_v *sdf, float x, float y, float z)
 // end::int[]
 {
-    return cheap_sdf(sdf, x, y, z) <= -1 - sdf->cheap_threshold;
+    return cheap_sdf(sdf, x, y, z) <= sdf->cheap_threshold - 1 ;
 }
 
 // tag::int[]
