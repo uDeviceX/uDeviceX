@@ -60,7 +60,7 @@ include::modules/parray.adoc[]
 
 include::modules/farray.adoc[]
 
-include::modules/parser.adoc[]
+include::modules/conf.adoc[]
 
 include::modules/partlist.adoc[]
 
