@@ -1,0 +1,10 @@
+= affine transformation matrices
+:src: ../../../../src
+
+A an array of list transformation `4 x 4` matrices.
+
+[source,cpp]
+----
+include::{src}/rbc/matrices/imp.h[tag=interface]
+----
+

@@ -72,6 +72,8 @@ include::modules/mesh/volume.adoc[]
 
 include::modules/mesh/positions.adoc[]
 
+include::modules/rbc/matrices.adoc[]
+
 include::modules/rbc/adj.adoc[]
 
 include::modules/rbc/com.adoc[]
