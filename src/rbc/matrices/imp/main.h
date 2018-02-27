@@ -75,6 +75,4 @@ void matrices_get_r(Matrices *q, int k, /**/ double r[3]) {
 }
 
 int matrices_get_n(Matrices *q) { return q->n; }
-
-
 void matrices_fin(Matrices *q) { EFREE(q->m); EFREE(q); }
