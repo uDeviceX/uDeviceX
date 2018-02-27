@@ -10,23 +10,23 @@
 #include "parser/imp.h"
 #include "io/mesh_read/imp.h"
 #include "mesh/positions/imp.h"
-#include "mesh/volume/imp.h"
+#include "mesh/area/imp.h"
 
 void main0(const char *i) {
-    float V;
+    float A;
     int nv;
     MeshRead *mesh;
-    MeshVolume *volume;
+    MeshArea *area;
     Positions  *pos;
     UC(mesh_read_ini_off(i, /**/ &mesh));
-    UC(mesh_volume_ini(mesh, &volume));
+    UC(mesh_area_ini(mesh, &area));
     nv = mesh_read_get_nv(mesh);
     UC(positions_float_ini(nv, mesh_read_get_vert(mesh), /**/ &pos));
 
-    V = mesh_volume_apply0(volume, pos);
-    printf("%g\n", V);
+    A = mesh_area_apply0(area, pos);
+    printf("%g\n", A);
         
-    mesh_volume_fin(volume);
+    mesh_area_fin(area);
     UC(positions_fin(pos));
     UC(mesh_read_fin(mesh));
 }

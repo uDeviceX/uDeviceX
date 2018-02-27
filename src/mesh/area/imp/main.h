@@ -32,7 +32,7 @@ static double area(int nt, int4 *tt, Positions *p, int offset) {
         kahan_sum_add(kahan_sum, tri_hst::area_kahan(a, b, c));
     }
     sum = kahan_sum_get(kahan_sum);
-    return sum/6;
+    return sum;
 }
 double mesh_area_apply0(MeshArea *q, Positions *p) {
     int nt, offset;
