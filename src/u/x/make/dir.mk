@@ -7,6 +7,7 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/cnt                   && \
     d $B/color                 && \
     d $B/comm                  && \
+    d $B/conf                  && \
     d $B/control/den           && \
     d $B/control/inflow        && \
     d $B/control/outflow       && \
@@ -64,7 +65,6 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/mpi                   && \
     d $B/pair                  && \
     d $B/parray                && \
-    d $B/parser                && \
     d $B/rbc                   && \
     d $B/rbc/adj               && \
     d $B/rbc/adj/edg           && \

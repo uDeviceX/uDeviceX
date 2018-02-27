@@ -1,5 +1,6 @@
 $B/algo/scan/imp.o: $S/algo/scan/imp.cu; $N -I$S/algo/scan -I$S/.
 $B/clist/imp.o: $S/clist/imp.cu; $N -I$S/clist -I$S/.
+$B/conf/imp.o: $S/conf/imp.cpp; $X -I$S/conf -I$S/.
 $B/coords/conf.o: $S/coords/conf.cpp; $X -I$S/coords -I$S/.
 $B/coords/imp.o: $S/coords/imp.cpp; $X -I$S/coords -I$S/.
 $B/d/api.o: $S/d/api.cu; $N -I$S/d -I$S/.
@@ -16,7 +17,6 @@ $B/mpi/wrapper.o: $S/mpi/wrapper.cpp; $X -I$S/mpi -I$S/.
 $B/pair/conf.o: $S/pair/conf.cpp; $X -I$S/pair -I$S/.
 $B/pair/imp.o: $S/pair/imp.cpp; $X -I$S/pair -I$S/.
 $B/parray/imp.o: $S/parray/imp.cpp; $X -I$S/parray -I$S/.
-$B/conf/imp.o: $S/conf/imp.cpp; $X -I$S/parser -I$S/.
 $B/u/bulk/main.o: $S/u/bulk/main.cu; $N -I$S/u/bulk -I$S/.
 $B/utils/cc.o: $S/utils/cc.cpp; $X -I$S/utils -I$S/.
 $B/utils/error.o: $S/utils/error.cpp; $X -I$S/utils -I$S/.

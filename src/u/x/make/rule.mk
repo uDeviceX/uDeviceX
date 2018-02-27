@@ -6,6 +6,7 @@ $B/clist/imp.o: $S/clist/imp.cu; $N -I$S/clist -I$S/.
 $B/cnt/imp.o: $S/cnt/imp.cu; $N -I$S/cnt -I$S/.
 $B/color/flux.o: $S/color/flux.cu; $N -I$S/color -I$S/.
 $B/comm/imp.o: $S/comm/imp.cpp; $X -I$S/comm -I$S/.
+$B/conf/imp.o: $S/conf/imp.cpp; $X -I$S/conf -I$S/.
 $B/control/den/imp.o: $S/control/den/imp.cu; $N -I$S/control/den -I$S/.
 $B/control/inflow/conf.o: $S/control/inflow/conf.cpp; $X -I$S/control/inflow -I$S/.
 $B/control/inflow/imp.o: $S/control/inflow/imp.cu; $N -I$S/control/inflow -I$S/.
@@ -72,7 +73,6 @@ $B/mpi/wrapper.o: $S/mpi/wrapper.cpp; $X -I$S/mpi -I$S/.
 $B/pair/conf.o: $S/pair/conf.cpp; $X -I$S/pair -I$S/.
 $B/pair/imp.o: $S/pair/imp.cpp; $X -I$S/pair -I$S/.
 $B/parray/imp.o: $S/parray/imp.cpp; $X -I$S/parray -I$S/.
-$B/conf/imp.o: $S/conf/imp.cpp; $X -I$S/parser -I$S/.
 $B/rbc/adj/edg/imp.o: $S/rbc/adj/edg/imp.cpp; $X -I$S/rbc/adj/edg -I$S/.
 $B/rbc/adj/imp.o: $S/rbc/adj/imp.cpp; $X -I$S/rbc/adj -I$S/.
 $B/rbc/com/imp.o: $S/rbc/com/imp.cu; $N -I$S/rbc/com -I$S/.

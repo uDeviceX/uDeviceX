@@ -1,3 +1,4 @@
+$B/conf/imp.o: $S/conf/imp.cpp; $X -I$S/conf -I$S/.
 $B/coords/conf.o: $S/coords/conf.cpp; $X -I$S/coords -I$S/.
 $B/coords/imp.o: $S/coords/imp.cpp; $X -I$S/coords -I$S/.
 $B/d/api.o: $S/d/api.cu; $N -I$S/d -I$S/.
@@ -21,7 +22,6 @@ $B/math/tri/imp.o: $S/math/tri/imp.cpp; $X -I$S/math/tri -I$S/.
 $B/mpi/glb.o: $S/mpi/glb.cpp; $X -I$S/mpi -I$S/.
 $B/mpi/type.o: $S/mpi/type.cpp; $X -I$S/mpi -I$S/.
 $B/mpi/wrapper.o: $S/mpi/wrapper.cpp; $X -I$S/mpi -I$S/.
-$B/conf/imp.o: $S/conf/imp.cpp; $X -I$S/parser -I$S/.
 $B/rbc/adj/edg/imp.o: $S/rbc/adj/edg/imp.cpp; $X -I$S/rbc/adj/edg -I$S/.
 $B/rbc/adj/imp.o: $S/rbc/adj/imp.cpp; $X -I$S/rbc/adj -I$S/.
 $B/rbc/com/imp.o: $S/rbc/com/imp.cu; $N -I$S/rbc/com -I$S/.

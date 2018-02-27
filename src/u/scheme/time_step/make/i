@@ -1,7 +1,7 @@
 f0 () { find "$1" -name '*.cu' -o -name '*.cpp' -o -name '*.h' -type f ; }
 f () ( for d; do f0 "$d"; done )
 
-f $U inc mpi d utils parser scheme/time_step io/txt algo/force_stat
+f $U inc mpi d utils conf scheme/time_step io/txt algo/force_stat
 
 # add dir
 echo $U .

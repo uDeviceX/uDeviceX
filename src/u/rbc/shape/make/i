@@ -1,7 +1,7 @@
 f0 () { find "$1" -name '*.cu' -o -name '*.cpp' -o -name '*.h' -type f ; }
 f () ( for d; do f0 "$d"; done )
 
-f $U inc rbc/shape rbc/adj io/mesh_read mpi d math utils parser
+f $U inc rbc/shape rbc/adj io/mesh_read mpi d math utils conf
 
 # add dir
 echo $U .
