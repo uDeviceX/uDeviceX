@@ -7,7 +7,7 @@ static int read_matrix(FILE *f, double A[16]) {
     return 1;
 }
 
-static int read_d3(FILE *f, double A[16]) {
+static int read_r(FILE *f, double A[16]) {
     enum {X, Y, Z};
     int i;
     double r[3];
@@ -44,7 +44,7 @@ void matrices_read_r(const char *path, /**/ Matrices **pq) {
     UC(efopen(path, "r", /**/ &f));
     UC(efclose(f));
     n = 0;
-    while (read_d3(f, /**/ q->m[n++].D)) ;
+    while (read_r(f, /**/ q->m[n++].D)) ;
     q->n = n;
     *pq = q;
 }
