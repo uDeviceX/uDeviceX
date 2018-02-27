@@ -34,7 +34,7 @@ static void copy(const float f[3], double d[3]) {
 static double area(const float af[3], const float bf[3], const float cf[3]) {
     double ad[3], bd[3], cd[3];
     copy(af, ad); copy(bf, bd); copy(cf, cd);
-    return tri_hst::area_kahan(ad, bd, cd);
+    return tri_hst::kahan_area(ad, bd, cd);
 }
 static void compute_area(const Adj *adj, const float *rr, /**/ float *o) {
     int i, i0, i1, i2, valid, n;

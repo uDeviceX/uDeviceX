@@ -35,18 +35,18 @@ _S_ void  sort3(double *a, double *b, double *c) {
     if (less(c, b)) swap(c, b);
 }
 
-_I_ double area_kahan0(double a, double b, double c) {
+_I_ double kahan_area0(double a, double b, double c) {
     sort3(&c, &b, &a); /* make a > b > c */
     return sqrt((a+(b+c))*(c-(a-b))*(c+(a-b))*(a+(b-c)))/4;
 }
 
-_I_ double area_kahan(const double r0[3], const double r1[3], const double r2[3]) {
+_I_ double kahan_area(const double r0[3], const double r1[3], const double r2[3]) {
     double r01[3], r12[3], r20[3], a, b, c;
     diff(r0, r1, /**/ r01);
     diff(r1, r2, /**/ r12);
     diff(r2, r0, /**/ r20);
     a = vabs(r01); b = vabs(r12); c = vabs(r20);
-    return area_kahan0(a, b, c);
+    return kahan_area0(a, b, c);
 }
 
 END

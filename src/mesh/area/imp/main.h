@@ -29,7 +29,7 @@ static double area(int nt, int4 *tt, Positions *p, int offset) {
         UC(get(p, ia + offset, /**/ a));
         UC(get(p, ib + offset, /**/ b));
         UC(get(p, ic + offset, /**/ c));
-        kahan_sum_add(kahan_sum, tri_hst::area_kahan(a, b, c));
+        kahan_sum_add(kahan_sum, tri_hst::kahan_area(a, b, c));
     }
     sum = kahan_sum_get(kahan_sum);
     return sum;
