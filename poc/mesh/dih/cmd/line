@@ -1,0 +1,18 @@
+#!/usr/bin/awk -f
+
+BEGIN {
+    v = ARGV[1]
+    l = ARGV[2]
+
+    nv = 0
+    while (getline < v > 0) { x[nv] = $1; y[nv] = $2; nv++ }
+
+    np = 0
+    while (getline < l > 0) { p[np] = $1; np++ }
+
+    for (i = 0; i < np; i++) {
+	j = p[i]
+	print x[j], y[j]
+    }
+
+}
