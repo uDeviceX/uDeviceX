@@ -39,7 +39,6 @@ static double area(const float af[3], const float bf[3], const float cf[3]) {
 static void compute_area(const Adj *adj, const float *rr, /**/ float *o) {
     int i, i0, i1, i2, valid, n;
     const float *r0, *r1, *r2;
-    float A; /* edges and area */
     AdjMap m;
     n = adj_get_max(adj);
     for (i = 0; i < n; i++) {
@@ -47,8 +46,7 @@ static void compute_area(const Adj *adj, const float *rr, /**/ float *o) {
         if (!valid) continue;
         i0 = m.i0; i1 = m.i1; i2 = m.i2;
         r0 = &rr[3*i0]; r1 = &rr[3*i1]; r2 = &rr[3*i2];
-        A = area(r0, r1, r2);
-        o[i] = A;
+        o[i] = area(r0, r1, r2);
     }
 }
 
