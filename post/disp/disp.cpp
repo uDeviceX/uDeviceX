@@ -49,12 +49,12 @@ void outname(const char *inrr, char *out) {
     memcpy(out + strt, newext, sizeof(newext));
 }
 
-void dump(const Type type, const char *fout, const float *rr, const float *ddr, const int *tags, const int buffsize, /*w*/ float *work) {
+void dump(const BopType type, const char *fout, const float *rr, const float *ddr, const int *tags, const int buffsize, /*w*/ float *work) {
     /* fill work buffer */
-    int j = 0;
-    for (int i = 0; i < buffsize; ++i)
+    int i, c, j = 0;
+    for (i = 0; i < buffsize; ++i)
     if (tags[i] == OCCUPIED) {
-        for (int c = 0; c < 3; ++c) {
+        for (c = 0; c < 3; ++c) {
             work[6 * j + 0 + c] = rr[3 * i + c];
             work[6 * j + 3 + c] = ddr[3 * i + c];
         }
@@ -62,20 +62,20 @@ void dump(const Type type, const char *fout, const float *rr, const float *ddr, 
     }
 
     /* dump */
-    BopData d;
-    d.n = j;
-    d.nvars = 6;
-    d.type = type;
-    strcpy(d.vars, "x y z dx dy dz");
+    BopData *d;
+    BPC( bop_ini(&d) );
+    BPC( bop_set_n(j, d) );
+    BPC( bop_set_vars(6, "x y z dx dy dz", d) );
+    BPC( bop_set_type(type, d) );    
 
-    bop_alloc(&d);
+    BPC( bop_alloc(d) );
     
-    memcpy(d.data, work, d.n * d.nvars * sizeof(float));
+    memcpy(bop_get_data(d), work, j * 6 * sizeof(float));
 
-    bop_write_header(fout, &d);
-    bop_write_values(fout, &d);
-    
-    bop_free(&d);
+    BPC( bop_write_header(fout, d) );
+    BPC( bop_write_values(fout, d) );
+
+    BPC( bop_fin(d) );
 }
 
 int main(int argc, char **argv) {
@@ -84,6 +84,8 @@ int main(int argc, char **argv) {
         exit(1);
     }
     int iarg = 1;
+    long np;
+    BopType type;
     X = atoi(argv[iarg++]);
     Y = atoi(argv[iarg++]);
     Z = atoi(argv[iarg++]);
@@ -96,16 +98,20 @@ int main(int argc, char **argv) {
     char **ffpp = argv + iarg;
     char **ffii = ffpp + nin + 1;
     
-    BopData dpp, dii;
+    BopData *dpp, *dii;
     const int *ii;
     const float *pp;
-    
-    read_data(ffpp[0], &dpp, ffii[0], &dii);
 
-    pp = (const float *) dpp.data;
-    ii = (const int *) dii.data;
+    BPC( bop_ini(&dpp) );
+    BPC( bop_ini(&dii) );
     
-    const int buffsize = max_index(ii, dii.n) + 1;
+    read_data(ffpp[0], dpp, ffii[0], dii);
+
+    pp = (const float *) bop_get_data(dpp);
+    ii = (const   int *) bop_get_data(dii);
+
+    BPC( bop_get_n(dii, &np) );
+    const int buffsize = max_index(ii, np) + 1;
 
     float *rrc = new float[3*buffsize]; /* current  positions     */
     float *rrp = new float[3*buffsize]; /* previous positions     */
@@ -114,30 +120,38 @@ int main(int argc, char **argv) {
     int  *tags = new int[buffsize];     /* tags: particle with this id or not? */
 
     memset(rrp, 0, 3*buffsize*sizeof(float));
-    pp2rr_sorted(ii, pp, dpp.n, dpp.nvars, /**/ rrp);
+    pp2rr_sorted(ii, pp, np, 6, /**/ rrp);
 
     empty_tags(buffsize, /**/ tags);
-    compute_tags(ii, dii.n, /**/ tags);
+    compute_tags(ii, np, /**/ tags);
 
-    bop_free(&dpp); bop_free(&dii);
+    BPC( bop_fin(dpp) );
+    BPC( bop_fin(dii) ); 
     
     for (int i = 0; i < nin-1; ++i) {
         char fout[1024] = {0};
+        BPC( bop_ini(&dpp) );
+        BPC( bop_ini(&dii) );
+
         outname(ffpp[i], /**/ fout);
         printf("%s -- %s -> %s\n", ffpp[i], ffii[i], fout);
 
-        read_data(ffpp[i+1], &dpp, ffii[i+1], &dii);
-        pp = (const float *) dpp.data;
-        ii = (const int *) dii.data;
+        read_data(ffpp[i+1], dpp, ffii[i+1], dii);
+        pp = (const float *) bop_get_data(dpp);
+        ii = (const   int *) bop_get_data(dii);
 
-        pp2rr_sorted(ii, pp, dpp.n, dpp.nvars, /**/ rrc);
+        BPC( bop_get_n(dii, &np) );
+        BPC( bop_get_type(dpp, &type) );
+        
+        pp2rr_sorted(ii, pp, np, 6, /**/ rrc);
 
         disp(rrp, rrc, buffsize, /**/ ddr);
 
-        dump(dpp.type, fout, rrp, ddr, tags, buffsize, /*w*/ rrw);
-        compute_tags(ii, dii.n, /**/ tags);
+        dump(type, fout, rrp, ddr, tags, buffsize, /*w*/ rrw);
+        compute_tags(ii, np, /**/ tags);
         
-        bop_free(&dpp);  bop_free(&dii);
+        BPC( bop_fin(dpp) );
+        BPC( bop_fin(dii) ); 
 
         {   /* swap */
             float *const tmp = rrp;

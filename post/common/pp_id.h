@@ -5,18 +5,21 @@ static int separator(int argc, char **argv) {
 }
 
 static void read_data(const char *fpp, BopData *dpp, const char *fii, BopData *dii) {
-    char fdname[CBUFSIZE];
+    char fdname[FILENAME_MAX];
 
-    bop_read_header(fpp, dpp, fdname);
-    bop_alloc(dpp);
-    bop_read_values(fdname, dpp);
+    BPC( bop_read_header(fpp, dpp, fdname) );
+    BPC( bop_alloc(dpp) );
+    BPC( bop_read_values(fdname, dpp) );
     
-    bop_read_header(fii, dii, fdname);
-    bop_alloc(dii);
-    bop_read_values(fdname, dii);
+    BPC( bop_read_header(fii, dii, fdname) );
+    BPC( bop_alloc(dii) );
+    BPC( bop_read_values(fdname, dii) );
 
-    if (dpp->type != FLOAT && dpp->type != FASCII) ERR("expected float data form <%s>\n", fpp);
-    if (dii->type != INT   && dii->type != IASCII) ERR("expected int data form <%s>\n", fii);
+    BopType tp, ti;
+    BPC( bop_get_type(dpp, &tp) );
+    BPC( bop_get_type(dii, &ti) );
+    if (tp != BopFLOAT && tp != BopFASCII) ERR("expected float data form <%s>\n", fpp);
+    if (ti != BopINT   && ti != BopIASCII) ERR("expected int data form <%s>\n", fii);
 }
 
 static int max_index(const int *ii, const int n) {
