@@ -8,6 +8,7 @@ all: $(PAGES)
 include make/deps.mk
 
 style=-a stylesheet="$(ROOT)/css/main.css"  \
+      -a include="$(ROOT)/include"          \
       -a toc=left                           \
       -a sectnums
 

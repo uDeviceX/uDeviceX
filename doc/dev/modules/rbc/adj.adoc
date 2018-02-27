@@ -32,6 +32,8 @@ Each thread adds force to a vertices with index `0`. It considers edge
 example, a contribution of edge force `01` to vertex `1` is added by
 another thread.
 
+image::${include}/dih.png[]
+
 `Adj_v` is initilized from a host structure `Adj`:
 [source,cpp]
 ----
