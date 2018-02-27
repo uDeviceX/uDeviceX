@@ -83,6 +83,7 @@ $B/rbc/force/rnd/api/imp.o: $S/rbc/force/rnd/api/imp.cpp; $X -I$S/rbc/force/rnd/
 $B/rbc/force/rnd/imp.o: $S/rbc/force/rnd/imp.cpp; $X -I$S/rbc/force/rnd -I$S/.
 $B/rbc/gen/imp.o: $S/rbc/gen/imp.cpp; $X -I$S/rbc/gen -I$S/.
 $B/rbc/imp.o: $S/rbc/imp.cpp; $X -I$S/rbc -I$S/.
+$B/rbc/matrices/imp.o: $S/rbc/matrices/imp.cpp; $X -I$S/rbc/matrices -I$S/.
 $B/rbc/params/conf.o: $S/rbc/params/conf.cpp; $X -I$S/rbc/params -I$S/.
 $B/rbc/params/imp.o: $S/rbc/params/imp.cpp; $X -I$S/rbc/params -I$S/.
 $B/rbc/shape/imp.o: $S/rbc/shape/imp.cpp; $X -I$S/rbc/shape -I$S/.

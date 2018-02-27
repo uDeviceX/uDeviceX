@@ -29,6 +29,7 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/rbc/force/rnd         && \
     d $B/rbc/force/rnd/api     && \
     d $B/rbc/gen               && \
+    d $B/rbc/matrices          && \
     d $B/rbc/params            && \
     d $B/rbc/shape             && \
     d $B/rbc/stretch           && \
