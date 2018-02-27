@@ -24,7 +24,7 @@ _S_ void  sort3(double *a, double *b, double *c) {
 }
 
 _I_ double area_kahan(double a, double b, double c) {
-    sort3(&c, &b, &a); /* a > b > c */
+    sort3(&c, &b, &a); /* make a > b > c */
     return sqrt((a+(b+c))*(c-(a-b))*(c+(a-b))*(a+(b-c)))/4;
 }
 
