@@ -5,8 +5,10 @@
 #include "bop_common.h"
 #include "bop_serial.h"
 
-#include "bov.h"
+#include "bov_common.h"
 #include "bov_serial.h"
+
+#include "../common/macros.h"
 
 struct Args {
     float lx, ly, lz;
@@ -81,52 +83,62 @@ static void collect_p2m(long n, const float *pp, const int *cc,
 
 int main(int argc, char **argv) {
     Args a;
-    BopData bop_s, bop_c;
-    BovDesc bov;
+    BopData *bop_s, *bop_c;
+    BovData *bov;
     float *grid, dx, dy, dz;
-    char fdname[CBUFSIZE];
+    char fdname[FILENAME_MAX];
     size_t sz;
+    long np;
+    const float *pp;
+    const int *cc;
     
     parse(argc, argv, /**/ &a);
 
     sz = a.nx * a.ny * a.nz * sizeof(float);
     grid = (float*) malloc(sz);
-    
-    bop_read_header(a.bop_s, /**/ &bop_s, fdname);
-    bop_alloc(/**/ &bop_s);
-    bop_read_values(fdname, /**/ &bop_s);
 
-    bop_read_header(a.bop_c, /**/ &bop_c, fdname);
-    bop_alloc(/**/ &bop_c);
-    bop_read_values(fdname, /**/ &bop_c);
+    BPC( bop_ini(&bop_s) );
+    BPC( bop_ini(&bop_c) );
+    BVC( bov_ini(&bov) );
+    
+    BPC( bop_read_header(a.bop_s, /**/ bop_s, fdname) );
+    BPC( bop_alloc(/**/ bop_s) );
+    BPC( bop_read_values(fdname, /**/ bop_s) );
+
+    BPC( bop_read_header(a.bop_c, /**/ bop_c, fdname) );
+    BPC( bop_alloc(/**/ bop_c) );
+    BPC( bop_read_values(fdname, /**/ bop_c) );
 
     dx = a.lx / a.nx;
     dy = a.ly / a.ny;
     dz = a.lz / a.nz;
+
+    BPC( bop_get_n(bop_s, &np) );
+    pp = (const float*) bop_get_data(bop_s);
+    cc = (const   int*) bop_get_data(bop_c);
     
-    collect_p2m(bop_s.n, (const float*) bop_s.data, (const int*) bop_c.data,
-                a.nx, a.ny, a.nz, dx, dy, dz, /**/ grid);    
+    collect_p2m(np, pp, cc, a.nx, a.ny, a.nz, dx, dy, dz, /**/ grid);    
+
+    BVC( bov_set_gridsize(a.nx, a.ny, a.nz, bov) );
+    BVC( bov_set_origin(-0.5, -0.5, -0.5, bov) );
+    BVC( bov_set_extent(a.lx, a.ly, a.lz, bov) );
+    BVC( bov_set_ncomp(1, bov) );
+    BVC( bov_set_type(BovFLOAT, bov) );
+    BVC( bov_set_var("color density", bov) );
+
+    BVC( bov_alloc(bov) );
+
+    memcpy(bov_get_data(bov), grid, sz);
     
-    bov.nx = a.nx; bov.ny = a.ny; bov.nz = a.nz;
-    bov.lx = a.lx; bov.ly = a.ly; bov.lz = a.lz;
-    bov.ox = -0.5;    bov.oy = -0.5;    bov.oz = -0.5;
-    bov.data = grid;
-    sprintf(bov.var, "color density");
-    bov.ncmp = 1;    
-
-    bov_alloc(sizeof(float), &bov);
-
-    memcpy(bov.data, grid, sz);
-
-    bov_write_header(a.bov, &bov);
-    bov_write_values(a.bov, &bov);
+    BVC( bov_write_header(a.bov, bov) );
+    BVC( bov_write_values(a.bov, bov) );
     
     free(grid);
     
-    bop_free(&bop_s);
-    bop_free(&bop_c);
+    BPC( bop_fin(bop_s) );
+    BPC( bop_fin(bop_c) );
 
-    bov_free(&bov);
+    BVC( bov_fin(bov) );
 
     return 0;
 }

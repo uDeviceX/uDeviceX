@@ -2,8 +2,9 @@
 #include <stdlib.h>
 #include <assert.h>
 
-#include "bov.h"
+#include "bov_common.h"
 #include "bov_serial.h"
+#include "../common/macros.h"
 
 struct Args {
     char *bov;
@@ -45,27 +46,31 @@ static void minmax(int nx, int ny, const float *d, float T0, float T1, float XT,
 }
 
 int main(int argc, char **argv) {
+    enum {X, Y, Z, D};
     Args a;
-    BovDesc bov;
+    BovData *bov;
     const float *grid;
     char fdname[256];
     float xmin, xmax;
+    int n[D];
     
     parse(argc, argv, /**/ &a);
-    
-    bov_read_header(a.bov, /**/ &bov, fdname);
-    bov_alloc(sizeof(float), /**/ &bov);
-    bov_read_values(fdname, /**/ &bov);
 
-    assert(bov.nz == 1);
-    
-    grid = (const float*) bov.data;
+    BVC( bov_ini(&bov) );
 
-    minmax(bov.nx, bov.ny, grid, a.T0, a.T1, a.XT, /**/ &xmin, &xmax); 
+    BVC( bov_read_header(a.bov, /**/ bov, fdname) );
+    BVC( bov_alloc(/**/ bov) );
+    BVC( bov_read_values(fdname, /**/ bov) );
+    
+    grid = (const float*) bov_get_data(bov);
+
+    BVC( bov_get_gridsize(bov, n) );
+
+    minmax(n[X], n[Y], grid, a.T0, a.T1, a.XT, /**/ &xmin, &xmax); 
 
     printf("%g %g\n", xmin, xmax);
     
-    bov_free(&bov);
+    BVC( bov_fin(bov) );
 
     return 0;
 }
