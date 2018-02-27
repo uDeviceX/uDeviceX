@@ -7,18 +7,10 @@
 #include "bop_common.h"
 #include "bop_serial.h"
 
-#include "bov.h"
+#include "bov_common.h"
 #include "bov_serial.h"
 
-#define BPC(ans) do {                                   \
-        BopStatus s = ans;                              \
-        if (!bop_success(s)) {                          \
-            fprintf(stderr, "%s: %d: Bop error: %s\n",  \
-                    __FILE__, __LINE__,                 \
-                    bob_report_error_desc(s));          \
-            exit(1);                                    \
-        }                                               \
-    } while(0)
+#include "../common/macros.h"
       
 struct Args {
     float lx, ly, lz;
@@ -133,7 +125,7 @@ static void avg(int n, const int *counts, float vol, /**/ float *grid) {
 int main(int argc, char **argv) {
     Args a;
     BopData *pp_bop, *ss_bop;
-    BovDesc bov;
+    BovData *bov;
     float *grid, dx, dy, dz;
     int ngrid, *counts;
     char fdname[Cbuf::SIZ];
@@ -182,27 +174,29 @@ int main(int argc, char **argv) {
             /**/ grid, counts);
 
     avg(ngrid, counts, dx*dy*dz, /**/ grid);
+
+    BVC(bov_ini(&bov));
+
+    BVC(bov_set_gridsize(a.nx, a.ny, a.nz, bov));
+    BVC(bov_set_extent(a.lx, a.ly, a.lz, bov));
+    BVC(bov_set_origin(0, 0, 0, bov));
+    BVC(bov_set_var("sxx sxy sxz syy syz szz kxx kxy kxz kyy kyz kzz", bov));
+    BVC(bov_set_ncomp(NPG, bov));
+    BVC(bov_set_type(BovFLOAT, bov));
     
-    bov.nx = a.nx; bov.ny = a.ny; bov.nz = a.nz;
-    bov.lx = a.lx; bov.ly = a.ly; bov.lz = a.lz;
-    bov.ox = bov.oy = bov.oz = 0.f;
-    bov.data = grid;
-    sprintf(bov.var, "sxx sxy sxz syy syz szz kxx kxy kxz kyy kyz kzz");
-    bov.ncmp = NPG;
+    BVC(bov_alloc(bov));
 
-    bov_alloc(sizeof(float), &bov);
+    memcpy(bov_get_data(bov), grid, ngrid * NPG * sizeof(float));
 
-    memcpy(bov.data, grid, ngrid * NPG * sizeof(float));
-
-    bov_write_header(a.bov, &bov);
-    bov_write_values(a.bov, &bov);
+    BVC(bov_write_header(a.bov, bov));
+    BVC(bov_write_values(a.bov, bov));
     
     free(grid);
     free(counts);
     
     BPC(bop_fin(pp_bop));
     BPC(bop_fin(ss_bop));
-    bov_free(&bov);
+    BVC(bov_fin(bov));
 
     return 0;
 }
