@@ -9,6 +9,8 @@
 #include "mesh/positions/imp.h"
 #include "algo/kahan_sum/imp.h"
 
+#include "math/tri/imp.h"
+
 #include "imp.h"
 #include "imp/type.h"
 #include "imp/main.h"

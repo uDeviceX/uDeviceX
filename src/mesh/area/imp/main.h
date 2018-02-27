@@ -12,13 +12,6 @@ void mesh_area_ini(MeshRead *mesh, MeshArea **pq) {
 }
 
 void mesh_area_fin(MeshArea *q) { EFREE(q->tt); EFREE(q); }
-
-static double area0(double a[3], double b[3], double c[3]) {
-    enum {X, Y, Z};
-    return  (+a[X]*(b[Y]*c[Z]-b[Z]*c[Y])
-             -a[Y]*(b[X]*c[Z]-b[Z]*c[X])
-             +a[Z]*(b[X]*c[Y]-b[Y]*c[X]));
-}
 static void get(Positions *p, int i, double d[3]) {
     enum {X, Y, Z};
     float f[3];
@@ -36,7 +29,7 @@ static double area(int nt, int4 *tt, Positions *p, int offset) {
         UC(get(p, ia + offset, /**/ a));
         UC(get(p, ib + offset, /**/ b));
         UC(get(p, ic + offset, /**/ c));
-        kahan_sum_add(kahan_sum, area0(a, b, c));
+        kahan_sum_add(kahan_sum, tri_hst::area_kahan(a, b, c));
     }
     sum = kahan_sum_get(kahan_sum);
     return sum/6;
