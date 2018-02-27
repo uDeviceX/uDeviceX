@@ -1,3 +1,0 @@
-= generic device API
-
-see link:/doc/dev/modules/d.adoc[doc]
