@@ -1,5 +1,14 @@
 static const int MAX_N = 999999;
 
+static void matrix2r(const double A[16], double r[3]) {
+    enum {X, Y, Z};
+    int i;
+    i = 0;
+    i++; i++; i++; r[X] = A[i++];
+    i++; i++; i++; r[Y] = A[i++];
+    i++; i++; i++; r[Z] = A[i++];
+}
+
 static int read_matrix(FILE *f, double A[16]) {
     int i;
     for (i = 0; i < 16; i++)
@@ -50,6 +59,30 @@ void matrices_read_r(const char *path, /**/ Matrices **pq) {
     *pq = q;
 }
 
+int good(Coords *c, const double A[16]) {
+    double r[3];
+    matrix2r(A, /**/ r);
+    return 1;
+}
+
+void copy(const double A[16], double B[16]) {
+    int i;
+    for (i = 0; i < 16; i++) B[i] = A[i];
+}
+
+void matrices_ini_filter(Matrices *from, Coords *c, /**/ Matrices **pq) {
+    int i, m, n;
+    Matrices *to;
+    EMALLOC(1, &to);
+    EMALLOC(MAX_N, &to->m);
+    n = from->n;
+    for (i = m = 0; i < n; i++)
+        if (good(c, from->m[i].D))
+            copy(from->m[i].D, /**/ to->m[m++].D);
+    to->n = m;
+    *pq = to;
+}
+
 void matrices_get(Matrices *q, int i, /**/ double **pq) {
     int n;
     n = q->n;
@@ -59,16 +92,15 @@ void matrices_get(Matrices *q, int i, /**/ double **pq) {
 
 void matrices_get_r(Matrices *q, int k, /**/ double r[3]) {
     enum {X, Y, Z};
-    int i, n;
+    int n;
     double *A;
     n = q->n;
     if (k >= n) ERR("k=%d >= n=%d", k, n);
-    A = q->m[k].D; i = 0;
-    i++; i++; i++; r[X] = A[i++];
-    i++; i++; i++; r[Y] = A[i++];
-    i++; i++; i++; r[Z] = A[i++];
+    A = q->m[k].D;
+    matrix2r(A, /**/ r);
 }
 
 int matrices_get_n(Matrices *q) { return q->n; }
+
 
 void matrices_fin(Matrices *q) { EFREE(q->m); EFREE(q); }
