@@ -1,0 +1,13 @@
+== functions for a triangle
+
+Host and device functions for a triangle. For
+area computation
+link:https://people.eecs.berkeley.edu/~wkahan/Triangle.pdf[a formula]
+stable to numerical error is used.
+
+[source,cpp]
+----
+include::{src}/math/tri/imp.h[tags=interface]
+----
+<1> returns area of a triangle given sides
+<2> returns area of a triangle given coordinate of the vertices

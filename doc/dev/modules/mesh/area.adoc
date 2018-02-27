@@ -1,0 +1,13 @@
+= compute volume of a mesh
+:lext: .adoc
+:src: ../../../../src
+
+Compute an area of a triangulated mesh.
+
+[source,cpp]
+----
+include::{src}/mesh/volume/imp.h[tag=interface]
+----
+<1> in initialization triangles are stored
+<2> compute an area for one object
+<3> compute an area for `nm` objects

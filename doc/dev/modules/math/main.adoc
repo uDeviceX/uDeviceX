@@ -9,3 +9,5 @@ include::linal.inc.adoc[]
 include::rnd.inc.adoc[]
 
 include::tform.inc.adoc[]
+
+include::tri.inc.adoc[]

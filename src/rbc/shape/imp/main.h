@@ -1,3 +1,15 @@
+static void diff(const float *a, const float *b, /**/ float *c) {
+    enum {X, Y, Z};
+    c[X] = a[X] - b[X];
+    c[Y] = a[Y] - b[Y];
+    c[Z] = a[Z] - b[Z];
+}
+static double vabs(float *a) {
+    enum {X, Y, Z};
+    double r;
+    r = a[X]*a[X] + a[Y]*a[Y] + a[Z]*a[Z];
+    return sqrt(r);
+}
 static void compute_edg(const Adj *adj, const float *rr, /**/ float *o) {
     int i, valid, n;
     const float *r0, *r1;
@@ -15,11 +27,18 @@ static void compute_edg(const Adj *adj, const float *rr, /**/ float *o) {
     }
 }
 
+static void copy(const float f[3], double d[3]) {
+    enum {X, Y, Z};
+    d[X] = f[X]; d[Y] = f[Y]; d[Z] = f[Z];
+}
+static double area(const float af[3], const float bf[3], const float cf[3]) {
+    double ad[3], bd[3], cd[3];
+    copy(af, ad); copy(bf, bd); copy(cf, cd);
+    return tri_hst::kahan_area(ad, bd, cd);
+}
 static void compute_area(const Adj *adj, const float *rr, /**/ float *o) {
     int i, i0, i1, i2, valid, n;
     const float *r0, *r1, *r2;
-    float r01[3], r12[3], r20[3];
-    float a, b, c, A; /* edges and area */
     AdjMap m;
     n = adj_get_max(adj);
     for (i = 0; i < n; i++) {
@@ -27,12 +46,7 @@ static void compute_area(const Adj *adj, const float *rr, /**/ float *o) {
         if (!valid) continue;
         i0 = m.i0; i1 = m.i1; i2 = m.i2;
         r0 = &rr[3*i0]; r1 = &rr[3*i1]; r2 = &rr[3*i2];
-        diff(r0, r1, /**/ r01);
-        diff(r1, r2, /**/ r12);
-        diff(r2, r0, /**/ r20);
-        a = vabs(r01); b = vabs(r12); c = vabs(r20);
-        A = area_kahan(a, b, c);
-        o[i] = A;
+        o[i] = area(r0, r1, r2);
     }
 }
 
