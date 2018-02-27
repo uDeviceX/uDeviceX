@@ -1,3 +1,5 @@
+#!/bin/sh
+
 usg () {
     msg 'usage: u.batch NX NY NZ ./udx [Time] [Args..]'
     msg '       u.batch          ./udx [Time]'

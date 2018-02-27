@@ -1,3 +1,5 @@
+#!/bin/sh
+
 # utils for cmd tools
 
 msg ()  { printf '%s\n' "$*" >&2; }
