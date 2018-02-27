@@ -1,4 +1,9 @@
 struct MeshBB;
+struct Particle;
+struct Force;
+struct Momentum;
+struct Solid;
+struct int4;
 
 void meshbb_ini(int maxpp, /**/ MeshBB **d);
 void meshbb_fin(/**/ MeshBB *d);
