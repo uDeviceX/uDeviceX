@@ -6,7 +6,7 @@ void body_force(const BForce *bforce, Sim *s) {
 
     if (opt->push_flu)
         UC(bforce_apply(s->coords, flu->mass, bforce, flu->q.n, flu->q.pp, /**/ flu->ff));
-    if (opt->push_rig && s->solids0)
+    if (opt->push_rig && s->rigids)
         UC(bforce_apply(s->coords, rig->mass, bforce, rig->q.n, rig->q.pp, /**/ rig->ff));
     if (opt->push_rbc && s->opt.rbc)
         UC(bforce_apply(s->coords, rbc->mass, bforce, rbc->q.n, rbc->q.pp, /**/ rbc->ff));
@@ -45,6 +45,6 @@ void forces_wall(bool fluss, Wall *w, Sim *s) {
         farray_push_ss(flu->ss, &fo);
     
     if (flu->q.n)               wall_force(par, w->velstep, s->coords, w->sdf, &w->q, w->t, flu->q.n, &po, /**/ &fo);
-    if (s->solids0 && rig->q.n) wall_force(par, w->velstep, s->coords, w->sdf, &w->q, w->t, rig->q.n, &ps, /**/ &fs);
+    if (s->rigids  && rig->q.n) wall_force(par, w->velstep, s->coords, w->sdf, &w->q, w->t, rig->q.n, &ps, /**/ &fs);
     if (s->opt.rbc && rbc->q.n) wall_force(par, w->velstep, s->coords, w->sdf, &w->q, w->t, rbc->q.n, &pr, /**/ &fr);
 }

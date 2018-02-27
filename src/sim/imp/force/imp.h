@@ -8,7 +8,7 @@ void forces(float dt, Time *time, bool wall0, Sim *s) {
     fluss = s->opt.fluss && time_cross(time, s->opt.freq_parts);
 
     UC(clear_forces(flu->ff, flu->q.n));
-    if (s->solids0) UC(clear_forces(rig->ff, rig->q.n));
+    if (s->rigids)  UC(clear_forces(rig->ff, rig->q.n));
     if (s->opt.rbc) UC(clear_forces(rbc->ff, rbc->q.n));
     if (fluss)  UC(clear_stresses(flu->ss, flu->q.n));
     

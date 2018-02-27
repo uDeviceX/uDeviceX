@@ -19,7 +19,7 @@ void forces_objects(Sim *sim) {
     Rig *s = &sim->rig;
     ObjExch *e = &oi->e;
     
-    if (sim->solids0) {
+    if (sim->rigids) {
         pw[nw] = {s->q.n, s->q.pp};
         fw[nw] = {s->q.n, s->ff};
         ++nw;
