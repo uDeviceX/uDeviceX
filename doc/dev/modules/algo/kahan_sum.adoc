@@ -9,6 +9,9 @@ stable to numerical error.
 ----
 include::{src}/algo/kahan_sum/imp.h[tag=interface]
 ----
+<1> add `input` to the sum
+<2> return current sum
+<3> return current value of `compensation` for diagnostic
 
 Example
 [source,cpp]
