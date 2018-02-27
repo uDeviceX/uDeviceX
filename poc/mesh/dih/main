@@ -1,0 +1,3 @@
+call "inc/label"
+
+plot "<./cmd/line data/verts data/line" w lp

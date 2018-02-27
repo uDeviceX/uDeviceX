@@ -1,0 +1,16 @@
+#!/usr/bin/awk -f
+
+BEGIN {
+    v = ARGV[1]
+    o = ARGV[2]
+
+    nv = 0
+    while (getline < v > 0) { x[nv] = $1; y[nv] = $2; nv++ }
+
+    nv = 0
+    while (getline < o > 0) { ox[nv] = $1; oy[nv] = $2; nv++ }
+
+    fmt = "set label \"%d\" at %g, %g offset character %d, %d"
+    for (i = 0; i < nv; i++)
+	printf fmt "\n", i, x[i], y[i], ox[i], oy[i]
+}
