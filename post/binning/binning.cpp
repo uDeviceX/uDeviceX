@@ -6,8 +6,10 @@
 #include "bop_common.h"
 #include "bop_serial.h"
 
-#include "bov.h"
+#include "bov_common.h"
 #include "bov_serial.h"
+
+#include "../common/macros.h"
 
 typedef void (*transform_t)(const float*, const float*, float*);
 typedef float (*volume_t) (int, int, int, float, float, float);
@@ -192,12 +194,14 @@ static void den(int nx, int ny, int nz,
 
 int main(int argc, char **argv) {
     Args a;
-    BopData bop;
-    BovDesc bov;
+    BopData *bop;
+    BovData *bov;
     float *grid, dx, dy, dz;
     int ngrid, *counts;
-    char fdname[CBUFSIZE], field;
+    char fdname[FILENAME_MAX], field;
     size_t sz;
+    long np;
+    const float *pp;
     
     parse(argc, argv, /**/ &a);
 
@@ -211,16 +215,22 @@ int main(int argc, char **argv) {
     sz = ngrid * sizeof(float);
     counts = (int*) malloc(sz);
     memset(counts, 0, sz);
+
+    BPC( bop_ini(&bop) );
+    BVC( bov_ini(&bov) );
     
-    bop_read_header(a.bop, /**/ &bop, fdname);
-    bop_alloc(/**/ &bop);
-    bop_read_values(fdname, /**/ &bop);
+    BPC( bop_read_header(a.bop, /**/ bop, fdname) );
+    BPC( bop_alloc(/**/ bop) );
+    BPC( bop_read_values(fdname, /**/ bop) );
 
     dx = a.lx / a.nx;
     dy = a.ly / a.ny;
     dz = a.lz / a.nz;
 
-    binning(bop.n, (const float*) bop.data, field,
+    BPC( bop_get_n(bop, &np) );
+    pp = (const float*) bop_get_data(bop);
+    
+    binning(np, pp, field,
             a.nx, a.ny, a.nz,
             dx, dy, dz, 0, 0, 0, a.trans, a.rc,
             /**/ grid, counts);    
@@ -232,26 +242,26 @@ int main(int argc, char **argv) {
     } else { // density
         den(a.nx, a.ny, a.nz, dx, dy, dz, a.vol, /**/ grid);
     }
+
     
-    bov.nx = a.nx; bov.ny = a.ny; bov.nz = a.nz;
-    bov.lx = a.lx; bov.ly = a.ly; bov.lz = a.lz;
-    bov.ox = bov.oy = bov.oz = 0.f;
-    bov.data = grid;
-    sprintf(bov.var, a.field);
-    bov.ncmp = 1;
+    BVC( bov_set_gridsize(a.nx, a.ny, a.nz, bov) );
+    BVC( bov_set_origin(0, 0, 0, bov) );
+    BVC( bov_set_extent(a.lx, a.ly, a.lz, bov) );
+    BVC( bov_set_ncomp(1, bov) );
+    BVC( bov_set_var(a.field, bov) );
+    
+    BVC( bov_alloc(bov) );
 
-    bov_alloc(sizeof(float), &bov);
+    memcpy(bov_get_data(bov), grid, ngrid * sizeof(float));
 
-    memcpy(bov.data, grid, ngrid * sizeof(float));
-
-    bov_write_header(a.bov, &bov);
-    bov_write_values(a.bov, &bov);
+    BVC( bov_write_header(a.bov, bov) );
+    BVC( bov_write_values(a.bov, bov) );
     
     free(grid);
     free(counts);
     
-    bop_free(&bop);
-    bov_free(&bov);
+    BPC( bop_fin(bop) );
+    BVC( bov_fin(bov) );
 
     return 0;
 }
