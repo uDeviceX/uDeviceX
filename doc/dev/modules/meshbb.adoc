@@ -1,0 +1,20 @@
+= meshbb
+:lext: .adoc
+:src: ../../../src
+:stem: latexmath
+
+Bounce back particles on a moving mesh
+
+A particle stem:[\mayhbf{r}, \mathbf{v}] colliding with a surface at point stem:[\mathbf{r}_w]
+is bounced back as:
+
+TODO
+
+== interface
+
+Allocate and deallocate `MeshBB` structure:
+
+[source,cpp]
+----
+include::{src}/meshbb/imp.h[tag=mem]
+----
