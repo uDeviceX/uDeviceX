@@ -31,10 +31,14 @@ void matrices_read(const char *path, /**/ Matrices **pq) {
     *pq = q;
 }
 
-static int good(const Coords*, const double A[16]) {
+static int good(const Coords *c, const double A[16]) {
+    enum {X, Y, Z};
     double r[3];
     matrix2r(A, /**/ r);
-    return 1;
+    return
+        xlo(c) < r[X] && r[X] <= xhi(c) &&
+        ylo(c) < r[Y] && r[Y] <= yhi(c) &&
+        zlo(c) < r[Z] && r[Z] <= zhi(c);
 }
 void matrices_read_filter(const char *path, const Coords *c, /**/ Matrices **pq) {
     int n;
