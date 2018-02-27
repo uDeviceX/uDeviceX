@@ -1,0 +1,12 @@
+#!/usr/bin/awk -f
+
+BEGIN {
+    v = ARGV[1]
+    
+    nv = 0
+    while (getline < v > 0) { x[nv] = $1; y[nv] = $2; nv++ }
+
+    fmt = "set label \"%d\" at %g, %g"
+    for (i = 0; i < nv; i++)
+	printf fmt "\n", i, x[i], y[i]
+}
