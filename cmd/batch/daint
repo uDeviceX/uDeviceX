@@ -16,6 +16,10 @@ else Time="--time $1"; shift
 fi
 
 Args="--output=out.txt --error=err.txt -C gpu $Time"
+
+# quote evrery argument
+for i; do shift; set "$@" \""$i"\"; done
+
 exec_stdin sbatch --constraint=gpu -N $n $Args <<EOF
 #!/bin/bash
 
