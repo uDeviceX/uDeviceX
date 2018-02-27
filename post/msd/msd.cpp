@@ -42,15 +42,20 @@ float MSD(const float *rr0, const float *rr, const float *ddL, const int buffsiz
 
 void MSD_seq(char **ffpp, char **ffii, const int nin, /**/ float *out) {
 
-    BopData dpp0, dii0, dpp, dii;
+    BopData *dpp0, *dii0, *dpp, *dii;
     const int *ii0, *ii;
     const float *pp0, *pp;
+    long np;
+
+    BPC( bop_ini(&dpp0) );
+    BPC( bop_ini(&dii0) );
     
-    read_data(ffpp[0], &dpp0, ffii[0], &dii0);
-    pp0 = (const float *) dpp0.data;
-    ii0 = (const   int *) dii0.data;
-    
-    const int buffsize = max_index(ii0, dii0.n) + 1;
+    read_data(ffpp[0], dpp0, ffii[0], dii0);
+    pp0 = (const float *) bop_get_data(dpp0);
+    ii0 = (const   int *) bop_get_data(dii0);
+
+    BPC( bop_get_n(dii0, &np) );
+    const int buffsize = max_index(ii0, np) + 1;
 
     float *rr0 = new float[3*buffsize]; /* initial  positions     */
     float *rrc = new float[3*buffsize]; /* current  positions     */
@@ -59,28 +64,32 @@ void MSD_seq(char **ffpp, char **ffii, const int nin, /**/ float *out) {
 
     memset(rr0, 0, 3*buffsize*sizeof(float));
     memset(ddL, 0, 3*buffsize*sizeof(float));
-    pp2rr_sorted(ii0, pp0, dpp0.n, dpp0.nvars, /**/ rr0);
+    pp2rr_sorted(ii0, pp0, np, 6, /**/ rr0);
     memcpy(rrp, rr0, 3*buffsize*sizeof(float));
     
     for (int i = 1; i < nin; ++i) {
+        BPC( bop_ini(&dpp) );
+        BPC( bop_ini(&dii) );
         
-        read_data(ffpp[i], &dpp, ffii[i], &dii);
-        pp = (const float *) dpp.data;
-        ii = (const   int *) dii.data;
+        read_data(ffpp[i], dpp, ffii[i], dii);
+        pp = (const float *) bop_get_data(dpp);
+        ii = (const   int *) bop_get_data(dii);
 
         memset(rrc, 0, 3*buffsize*sizeof(float));
-        pp2rr_sorted(ii, pp, dpp.n, dpp.nvars, /**/ rrc);
+        pp2rr_sorted(ii, pp, np, 6, /**/ rrc);
         updddL(rrp, rrc, buffsize, /**/ ddL);
 
-        out[i-1] = MSD(rr0, rrc, ddL, buffsize, dpp.n);
+        out[i-1] = MSD(rr0, rrc, ddL, buffsize, np);
         
-        bop_free(&dpp);  bop_free(&dii);
+        BPC( bop_fin(dpp) );
+        BPC( bop_fin(dii) );
         memcpy(rrp, rrc, 3*buffsize*sizeof(float));
     }
 
     delete[] rr0; delete[] rrc;
     delete[] rrp; delete[] ddL;
-    bop_free(&dpp0); bop_free(&dii0);    
+    BPC( bop_fin(dpp0) );
+    BPC( bop_fin(dii0) );
 }
 
 int main(int argc, char **argv) {
