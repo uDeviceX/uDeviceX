@@ -2,7 +2,7 @@
 
 include::header.adoc[]
 
-image::include/pach.png[]
+image::{include}/pach.png[]
 
 :leveloffset:  1
 
