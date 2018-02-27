@@ -326,6 +326,7 @@ void sim_ini(Config *cfg, MPI_Comm cart, /**/ Time *time, Sim **sim) {
     Sim *s;
     int maxp;
     Params params;
+    Opt opt;
     
     EMALLOC(1, sim);
     s = *sim;
@@ -344,34 +345,35 @@ void sim_ini(Config *cfg, MPI_Comm cart, /**/ Time *time, Sim **sim) {
     UC(time_step_accel_ini(&s->time_step_accel));
     dt = time_step_dt0(s->time_step);
     time_next(time, dt);
-    UC(read_opt(cfg, &s->opt));
+    UC(read_opt(cfg, &opt));
+    s->opt = opt;
     UC(read_color_opt(cfg, &s->recolorer));
-    UC(check_opt(s->opt));
+    UC(check_opt(opt));
     UC(ini_pair_params(cfg, params.kBT, dt, s));
 
-    UC(ini_dump(maxp, s->cart, s->coords, s->opt, /**/ &s->dump));
+    UC(ini_dump(maxp, s->cart, s->coords, opt, /**/ &s->dump));
 
-    if (s->opt.rbc)        UC(ini_rbc(cfg, s->opt, s->cart, params.L, /**/ &s->rbc));
+    if (opt.rbc)        UC(ini_rbc(cfg, opt, s->cart, params.L, /**/ &s->rbc));
 
-    if (s->opt.vcon)       UC(ini_vcon(s->cart, params.L, cfg, /**/ &s->vcon));
-    if (s->opt.outflow)    UC(ini_outflow(s->coords, maxp, cfg, /**/ &s->outflow));
-    if (s->opt.inflow)     UC(ini_inflow (s->coords, params.L, cfg,  /**/ &s->inflow ));
-    if (s->opt.denoutflow) UC(ini_denoutflow(s->coords, maxp, cfg, /**/ &s->denoutflow, &s->mapoutflow));
+    if (opt.vcon)       UC(ini_vcon(s->cart, params.L, cfg, /**/ &s->vcon));
+    if (opt.outflow)    UC(ini_outflow(s->coords, maxp, cfg, /**/ &s->outflow));
+    if (opt.inflow)     UC(ini_inflow (s->coords, params.L, cfg,  /**/ &s->inflow ));
+    if (opt.denoutflow) UC(ini_denoutflow(s->coords, maxp, cfg, /**/ &s->denoutflow, &s->mapoutflow));
 
-    if (s->opt.rbc || s->opt.rig)
-        UC(ini_objinter(s->cart, maxp, params.L, &s->opt, /**/ &s->objinter));
+    if (opt.rbc || opt.rig)
+        UC(ini_objinter(s->cart, maxp, params.L, &opt, /**/ &s->objinter));
 
-    if (s->opt.wall) ini_wall(cfg, params.L, &s->wall);
+    if (opt.wall) ini_wall(cfg, params.L, &s->wall);
 
-    UC(ini_flu(cfg, s->opt, params, s->cart, maxp, params.L, /**/ &s->flu));
+    UC(ini_flu(cfg, opt, params, s->cart, maxp, params.L, /**/ &s->flu));
 
-    if (s->opt.flucolors && s->opt.rbc)
+    if (opt.flucolors && opt.rbc)
         UC(ini_colorer(s->rbc.q.nv, s->cart, maxp, params.L, /**/ &s->colorer));
 
-    if (s->opt.rig) {
+    if (opt.rig) {
         UC(ini_rig(cfg, s->cart, maxp, params.L, /**/ &s->rig));
 
-        if (s->opt.rig_bounce)
+        if (opt.rig_bounce)
             UC(ini_bounce_back(s->cart, maxp, params.L, &s->rig, /**/ &s->bb));
     }
 
