@@ -85,7 +85,7 @@ $B/rbc/gen/imp.o: $S/utils/imp.h $S/inc/conf.h $S/utils/error.h $S/inc/type.h $S
 $B/rbc/imp.o: $S/rbc/imp/fin.h $S/utils/imp.h $S/inc/conf.h $S/utils/error.h $S/rbc/gen/imp.h $S/inc/type.h $S/mpi/wrapper.h $S/rbc/imp.h $S/rbc/shape/imp.h $S/io/mesh_read/imp.h $S/utils/cc.h $S/inc/def.h $S/io/restart/imp.h $S/rbc/imp/generate.h $S/rbc/imp/ini.h $S/utils/mc.h $S/d/api.h $S/inc/dev.h $B/conf.h $S/rbc/force/area_volume/imp.h $S/rbc/adj/imp.h $S/rbc/type.h $S/rbc/adj/type/common.h $S/rbc/imp/start.h $S/utils/msg.h
 $B/rbc/params/conf.o: $S/inc/conf.h $S/utils/error.h $S/rbc/params/imp.h $B/conf.h $S/parser/imp.h
 $B/rbc/params/imp.o: $S/utils/imp.h $S/utils/error.h $S/rbc/params/imp.h $S/rbc/params/type.h
-$B/rbc/shape/imp.o: $S/utils/imp.h $S/utils/error.h $S/rbc/shape/imp/util.h $S/rbc/shape/imp.h $S/rbc/adj/type/common.h $S/rbc/shape/imp/main.h $S/rbc/shape/imp/type.h $S/rbc/adj/imp.h $S/utils/msg.h
+$B/rbc/shape/imp.o: $S/utils/imp.h $S/utils/error.h $S/math/tri/imp.h $S/rbc/shape/imp.h $S/rbc/adj/type/common.h $S/rbc/shape/imp/main.h $S/rbc/shape/imp/type.h $S/rbc/adj/imp.h $S/utils/msg.h
 $B/rbc/stretch/imp.o: $S/utils/imp.h $S/inc/conf.h $S/utils/error.h $S/d/q.h $S/inc/type.h $S/rbc/stretch/imp.h $S/utils/cc.h $S/inc/def.h $S/d/api.h $S/inc/dev.h $B/conf.h $S/rbc/stretch/imp/main.h $S/rbc/stretch/imp/type.h $S/utils/kl.h $S/rbc/stretch/dev/main.h $S/d/ker.h $S/utils/msg.h
 $B/rigid/conf.o: $S/utils/error.h $S/rigid/imp.h $S/parser/imp.h
 $B/rigid/imp.o: $S/utils/imp.h $S/inc/conf.h $S/utils/error.h $S/inc/type.h $S/rigid/imp.h $S/utils/cc.h $S/d/api.h $S/inc/dev.h $B/conf.h $S/rigid/imp/main.h $S/rigid/imp/type.h $S/utils/kl.h $S/rigid/dev/utils.h $S/rigid/dev/main.h $S/utils/msg.h
