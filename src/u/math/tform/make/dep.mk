@@ -6,6 +6,7 @@ $B/frag/imp.o: $S/frag/dev.h $S/frag/imp.h
 $B/math/linal/imp.o: $S/utils/error.h $S/math/linal/imp.h
 $B/math/rnd/imp.o: $S/utils/imp.h $S/utils/error.h $S/math/rnd/imp.h
 $B/math/tform/imp.o: $S/utils/imp.h $S/inc/conf.h $S/utils/error.h $S/math/tform/imp.h $B/conf.h $S/math/tform/imp/main.h $S/math/tform/imp/type.h $S/math/tform/type.h $S/utils/msg.h
+$B/math/tri/imp.o: $S/math/tri/imp.h $S/math/tri/dev.h
 $B/mpi/glb.o: $S/inc/conf.h $S/mpi/wrapper.h $S/utils/mc.h $B/conf.h
 $B/mpi/type.o: $S/inc/conf.h $S/inc/type.h $S/mpi/type.h $S/utils/mc.h
 $B/mpi/wrapper.o: $S/mpi/wrapper.h
