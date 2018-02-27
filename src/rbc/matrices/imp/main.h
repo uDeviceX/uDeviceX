@@ -16,20 +16,6 @@ static int read_matrix(FILE *f, double A[16]) {
     return 1;
 }
 
-static int read_r(FILE *f, double A[16]) {
-    enum {X, Y, Z};
-    int i;
-    double r[3];
-    for (i = 0; i < 3; i++)
-        if (fscanf(f, "%lf", &r[i]) != 1) return 0;
-    i = 0;
-    A[i++] = 1; A[i++] = 0; A[i++] = 0; A[i++] = r[X];
-    A[i++] = 0; A[i++] = 1; A[i++] = 0; A[i++] = r[Y];
-    A[i++] = 0; A[i++] = 0; A[i++] = 1; A[i++] = r[Z];
-    A[i++] = 0; A[i++] = 0; A[i++] = 0; A[i++] = 1;
-    return 1;
-}
-
 void matrices_read(const char *path, /**/ Matrices **pq) {
     int n;
     FILE *f;
@@ -45,7 +31,12 @@ void matrices_read(const char *path, /**/ Matrices **pq) {
     *pq = q;
 }
 
-void matrices_read_r(const char *path, /**/ Matrices **pq) {
+static int good(const Coords*, const double A[16]) {
+    double r[3];
+    matrix2r(A, /**/ r);
+    return 1;
+}
+void matrices_read_filter(const char *path, const Coords *c, /**/ Matrices **pq) {
     int n;
     FILE *f;
     Matrices *q;
@@ -54,33 +45,12 @@ void matrices_read_r(const char *path, /**/ Matrices **pq) {
     UC(efopen(path, "r", /**/ &f));
     UC(efclose(f));
     n = 0;
-    while (read_r(f, /**/ q->m[n++].D)) ;
+    while (read_matrix(f, /**/ q->m[n].D)) {
+        if (good(c, q->m[n].D)) n++;
+        if (n > MAX_N) ERR("n=%d > MAX_N=%d", n, MAX_N);
+    }
     q->n = n;
     *pq = q;
-}
-
-int good(Coords *c, const double A[16]) {
-    double r[3];
-    matrix2r(A, /**/ r);
-    return 1;
-}
-
-void copy(const double A[16], double B[16]) {
-    int i;
-    for (i = 0; i < 16; i++) B[i] = A[i];
-}
-
-void matrices_ini_filter(Matrices *from, Coords *c, /**/ Matrices **pq) {
-    int i, m, n;
-    Matrices *to;
-    EMALLOC(1, &to);
-    EMALLOC(MAX_N, &to->m);
-    n = from->n;
-    for (i = m = 0; i < n; i++)
-        if (good(c, from->m[i].D))
-            copy(from->m[i].D, /**/ to->m[m++].D);
-    to->n = m;
-    *pq = to;
 }
 
 void matrices_get(Matrices *q, int i, /**/ double **pq) {
