@@ -49,5 +49,23 @@ void matrices_read_r(const char *path, /**/ Matrices **pq) {
     *pq = q;
 }
 
+void matrices_get(Matrices *q, int i, /**/ double **pq) {
+    int n;
+    n = q->n;
+    if (i >= n) ERR("i=%d >= n=%d", i, n);
+    *pq = q->m[i].D;
+}
+
+void matrices_get_r(Matrices *q, int k, /**/ double r[3]) {
+    enum {X, Y, Z};
+    int i, n;
+    double *A;
+    n = q->n;
+    if (k >= n) ERR("k=%d >= n=%d", k, n);
+    A = q->m[k].D; i = 0;
+    i++; i++; i++; r[X] = A[i++];
+    i++; i++; i++; r[Y] = A[i++];
+    i++; i++; i++; r[Z] = A[i++];
+}
 
 void matrices_fin(Matrices *q) { EFREE(q->m); EFREE(q); }
