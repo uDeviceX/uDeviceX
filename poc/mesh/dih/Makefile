@@ -8,4 +8,4 @@ data/i:; cmd/line data/verts data/line > $@
 
 .PHONY: clean
 
-clean:; rm -f data/line data/offset main.png
+clean:; rm -f data/i inc/label main.png
