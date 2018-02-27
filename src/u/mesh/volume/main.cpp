@@ -21,13 +21,13 @@ void main0(const char *i) {
     UC(mesh_read_ini_off(i, /**/ &mesh));
     UC(mesh_volume_ini(mesh, &volume));
     nv = mesh_read_get_nv(mesh);
-    UC(Positions_float_ini(nv, mesh_read_get_vert(mesh), /**/ &pos));
+    UC(positions_float_ini(nv, mesh_read_get_vert(mesh), /**/ &pos));
 
     V = mesh_volume_apply0(volume, pos);
     printf("%g\n", V);
         
     mesh_volume_fin(volume);
-    UC(Positions_fin(pos));
+    UC(positions_fin(pos));
     UC(mesh_read_fin(mesh));
 }
 

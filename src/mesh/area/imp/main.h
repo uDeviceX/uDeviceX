@@ -25,7 +25,7 @@ static double area0(double a[3], double b[3], double c[3]) {
 static void get(Positions *p, int i, double d[3]) {
     enum {X, Y, Z};
     float f[3];
-    Positions_get(p, i, /**/ f);
+    UC(positions_get(p, i, /**/ f));
     d[X] = f[X]; d[Y] = f[Y]; d[Z] = f[Z];
 }
 static double area(int nt, int4 *tt, Positions *p, int offset) {
