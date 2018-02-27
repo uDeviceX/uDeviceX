@@ -47,12 +47,12 @@ void matrices_read_filter(const char *path, const Coords *c, /**/ Matrices **pq)
     EMALLOC(1, &q);
     EMALLOC(MAX_N, &q->m);
     UC(efopen(path, "r", /**/ &f));
-    UC(efclose(f));
     n = 0;
     while (read_matrix(f, /**/ q->m[n].D)) {
         if (good(c, q->m[n].D)) n++;
         if (n > MAX_N) ERR("n=%d > MAX_N=%d", n, MAX_N);
     }
+    UC(efclose(f));
     q->n = n;
     *pq = q;
 }
