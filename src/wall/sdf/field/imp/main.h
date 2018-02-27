@@ -2,7 +2,7 @@ static void dump0(const Coords *coords, const int N0[3], const float *D0, /**/ f
     int L[3] = {xs(coords), ys(coords), zs(coords)};
     Tform *t;
     UC(tform_ini(&t));
-    UC(out2sdf_ini(coords, N0, t));
+    UC(out2sdf_ini(coords, N0, /**/ t));
     UC(sample(t, N0, D0,   L, /**/ D1));
     UC(tform_fin(t));
 }

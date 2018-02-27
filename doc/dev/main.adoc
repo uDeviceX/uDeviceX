@@ -66,6 +66,8 @@ include::modules/partlist.adoc[]
 
 include::modules/mesh/triangles.adoc[]
 
+include::modules/mesh/volume.adoc[]
+
 include::modules/mesh/positions.adoc[]
 
 include::modules/rbc/adj.adoc[]
