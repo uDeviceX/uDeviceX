@@ -1,3 +1,15 @@
+o="main.png"
+set term png font "helvetica,30"
+
 call "inc/label"
 
-plot "<./cmd/line data/verts data/line" w lp
+set xrange [-1.1:5.1]
+set yrange [-0.1:4.1]
+
+unset tics
+unset border
+unset key
+
+set output o
+
+plot "data/i" w l lw 6
