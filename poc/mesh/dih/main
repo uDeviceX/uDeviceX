@@ -1,10 +1,10 @@
 o="main.png"
-set term png font "helvetica,30"
+set term pngcairo monochrome font "helvetica,36"
 
 call "inc/label"
 
-set xrange [-1.1:5.1]
-set yrange [-0.1:4.1]
+set xrange [-1.5:5.0]
+set yrange [-0.1:4.2]
 
 unset tics
 unset border
@@ -12,4 +12,4 @@ unset key
 
 set output o
 
-plot "data/i" w l lw 6
+plot "data/i" w lp lw 8 ps 4 pt 7
