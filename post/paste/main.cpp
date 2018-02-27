@@ -51,12 +51,12 @@ void buffer0(int n,   float *f, int nf,   int *i, int ni, /**/ long *pnw, void *
 void buffer(BopData *f, BopData *i, /**/ long *pnw, void *b) {
     long n;
     int nf, ni;
-    n = f->n;
-    nf = f->nvars;
-    ni = i->nvars;
+    bop_get_n(f, &n);
+    bop_get_nvars(f, &nf);
+    bop_get_nvars(i, &ni);
     buffer0(n,
-            (float*)f->data, nf,
-            (int*  )i->data, ni, /**/ pnw, b);
+            (float*)bop_get_data(f), nf,
+            (int*  )bop_get_data(i), ni, /**/ pnw, b);
 }
 
 
@@ -71,9 +71,9 @@ void main2(BopData *f, BopData *i) {
     long n, sz;
     int ni, nf;
     void *b; /* buffer */
-    n = f->n;
-    nf = f->nvars;
-    ni = i->nvars;
+    bop_get_n(f, &n);;
+    bop_get_nvars(f, &nf);
+    bop_get_nvars(i, &ni);
     sz = n * (nf*sizeof(float) + ni*sizeof(int));
     b = emalloc(sz);
     main1(f, i, b);
@@ -81,20 +81,34 @@ void main2(BopData *f, BopData *i) {
 }
 
 void main3(BopData *f, BopData *i) {
-    assert(f->n     == i->n);
-    assert(f->nvars == 6); /* x, y, z, vx, vy, vz */
-    assert(f->type == FLOAT);
+    long nf, ni;
+    BopType tf, ti;
+    int nvi, nvf;
 
-    assert(i->nvars == 1); /* color */
-    assert(i->type == INT);
+    bop_get_n(f, &nf);
+    bop_get_n(i, &ni);
+    bop_get_nvars(f, &nvf);
+    bop_get_nvars(i, &nvi);
+    bop_get_type(f, &tf);
+    bop_get_type(i, &ti);
+    
+    assert(nf  == ni);
+    assert(nvf == 6); /* x, y, z, vx, vy, vz */
+    assert(tf  == BopFLOAT);
+
+    assert(nvi == 1); /* color */
+    assert(ti  == BopINT);
     main2(f, i);
 }
 
 void main4(const char *f0, const char *i0) {
-    BopData f, i;
-    read_data(f0, &f, i0, &i);
-    main3(&f, &i);
-    bop_free(&f);  bop_free(&i);
+    BopData *f, *i;
+    bop_ini(&f);
+    bop_ini(&i);
+    read_data(f0, f, i0, i);
+    main3(f, i);
+    bop_fin(f);
+    bop_fin(i);
 }
 
 int main(int argc, char **argv) {
