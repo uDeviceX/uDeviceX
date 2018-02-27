@@ -1,5 +1,5 @@
 CXX=g++
-CXXFLAGS = -Wpedantic -Wall -Wextra -O3
+CXXFLAGS = -Wpedantic -Wall -Wextra -O3 -std=c++11
 
 %.o: %.cpp; $(CXX) $(CXXFLAGS) $(OPT) -c $< -o $@
 %: %.o; $(CXX) $(CXXFLAGS) $(LDFLAGS) -o $@ $^ $(LIBS)
@@ -25,10 +25,10 @@ binning.o: binning.cpp
 .PHONY: clean install test
 clean:; rm -rf *.o $(PROGS)
 
-install:
+install: $(PROGS)
 	mkdir -p $(INST_BIN)
 	install0 () ( cp $$f $(INST_BIN)/$P.$$f; )    ;  \
 	for f in $(PI); do install0; done
 
-test:
+test: install
 	atest binning.cpp
