@@ -25,10 +25,10 @@ err() { msg "$@"; usg; }
 if test $# -ne 0 && test "$1" = -h; then usg; fi
 
 S=.
-if test $# -ne 0 -a -d "$1"; then S="$1"; shift; fi
+if test $# -ne 0 && test -d "$1"; then S="$1"; shift; fi
 
 U=u/x  # default unit
-if test $# -ne 0 -a -d "$S/$1"; then U="$1"; shift; fi
+if test $# -ne 0 && test -d "$S/$1"; then U="$1"; shift; fi
 
 c=/dev/stdin  # config file
 if test $# -ne 0; then c="$1"; shift; fi

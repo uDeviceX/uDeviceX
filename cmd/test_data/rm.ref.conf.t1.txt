@@ -1,5 +1,4 @@
-u.run bin.1/udx
-u.run bin.2/udx
+u.run ./udx
 all: bin.1/udx bin.2/udx
 clean: clean.1 clean.2
 
@@ -8,7 +7,7 @@ bin.2/udx:; u.make -f bin.2/Makefile
 
 clean.1:; u.make -f bin.1/Makefile clean
 clean.2:; u.make -f bin.2/Makefile clean
-S = ../../src
+S = /home/lisergey/udx/src
 U = u/x
 B = bin.1
 include $B/sys.mk
@@ -21,7 +20,7 @@ include $S/make/main.mk
 include $S/$U/make/rule.mk
 include $S/$U/make/dir.mk
 include $S/$U/make/dep.mk
-S = ../../src
+S = /home/lisergey/udx/src
 U = u/x
 B = bin.2
 include $B/sys.mk

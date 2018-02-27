@@ -2,9 +2,9 @@
 mkdir -p tmp.conf
 (
   cd tmp.conf
-  u.conf ../../src ../../src/conf/default.h <<!!!
+  u.conf `u.cp.s` <<!
   run
-!!!
+!
 cat runfile Makefile
 ) > rm.out.txt
 
@@ -12,9 +12,9 @@ cat runfile Makefile
 mkdir -p tmp.conf
 (
   cd tmp.conf
-  u.conf ../../src ../../src/conf/default.h <<!!!
+  u.conf `u.cp.s` <<!
   run
   run
-!!!
+!
 cat runfile Makefile bin.[12]/Makefile
 ) > rm.out.txt
