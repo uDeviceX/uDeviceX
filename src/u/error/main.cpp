@@ -10,7 +10,7 @@
 
 #include "d/api.h"
 
-#include "parser/imp.h"
+#include "conf/imp.h"
 
 #include "utils/msg.h"
 #include "utils/imp.h"

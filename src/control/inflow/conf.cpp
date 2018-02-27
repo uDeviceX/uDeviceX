@@ -3,7 +3,7 @@
 #include <vector_types.h>
 
 #include "coords/type.h"
-#include "parser/imp.h"
+#include "conf/imp.h"
 #include "utils/imp.h"
 #include "utils/error.h"
 

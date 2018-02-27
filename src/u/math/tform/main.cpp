@@ -7,7 +7,7 @@
 #include <conf.h>
 #include "inc/conf.h"
 
-#include "parser/imp.h"
+#include "conf/imp.h"
 #include "mpi/glb.h"
 #include "mpi/wrapper.h"
 #include "utils/msg.h"

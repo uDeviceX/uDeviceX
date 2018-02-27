@@ -20,7 +20,7 @@ If no source contains the parmeter, an error is raised.
 
 [source, c++]
 ----
-include::{src}/parser/imp.cpp[tag=struct]
+include::{src}/conf/imp.cpp[tag=struct]
 ----
 
 Consists of an array of `config_t` descriptors, ordered by priority.
@@ -34,7 +34,7 @@ Allocate and free the structure:
 
 [source, c++]
 ----
-include::{src}/parser/imp.h[tags=mem]
+include::{src}/conf/imp.h[tags=mem]
 ----
 
 
@@ -42,7 +42,7 @@ Read data from the default, optional and command line config:
 
 [source, c++]
 ----
-include::{src}/parser/imp.h[tags=ini]
+include::{src}/conf/imp.h[tags=ini]
 ----
 
 
@@ -50,7 +50,7 @@ Lookup variables from the configuration:
 
 [source, c++]
 ----
-include::{src}/parser/imp.h[tags=lookup]
+include::{src}/conf/imp.h[tags=lookup]
 ----
 Note that the program raises an error if the argument is not found or
 if an error occured (e.g. wrong type).
@@ -60,7 +60,7 @@ Lookup variables from the configuration:
 
 [source, c++]
 ----
-include::{src}/parser/imp.h[tags=opt]
+include::{src}/conf/imp.h[tags=opt]
 ----
 The program does not raise error if the variable is not found.
 The return value is `true` if the variable has been found and `false`
@@ -71,7 +71,7 @@ The client may overwrite variables in the config object:
 
 [source, c++]
 ----
-include::{src}/parser/imp.h[tags=set]
+include::{src}/conf/imp.h[tags=set]
 ----
 `desc` is an array containing the names of the nested groups.
 `n` is the nesting level of the description (minimum is 1). It is the
@@ -99,5 +99,5 @@ main = {
 The written fields may be dumped in a stream using
 [source, c++]
 ----
-include::{src}/parser/imp.h[tags=dump]
+include::{src}/conf/imp.h[tags=dump]
 ----

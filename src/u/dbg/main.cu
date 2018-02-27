@@ -14,7 +14,7 @@
 #include "utils/cc.h"
 #include "utils/mc.h"
 #include "utils/kl.h"
-#include "parser/imp.h"
+#include "conf/imp.h"
 #include "inc/type.h"
 #include "inc/dev.h"
 #include "dbg/imp.h"

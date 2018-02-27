@@ -1,7 +1,7 @@
 ### parse optional int and float arrays
 # nTEST: parse.t4
 t=opt.cfg
-u=u/parser/read
+u=u/conf/read
 s=`pwd`
 echo "a=42"   >  $t
 echo "f=3.14" >> $t

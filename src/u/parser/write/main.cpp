@@ -5,7 +5,7 @@
 #include "utils/msg.h"
 #include "mpi/glb.h"
 #include "utils/error.h"
-#include "parser/imp.h"
+#include "conf/imp.h"
 
 static void set(Config *c) {
     {

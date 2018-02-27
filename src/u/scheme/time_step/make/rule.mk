@@ -4,7 +4,7 @@ $B/io/txt/imp.o: $S/io/txt/imp.cpp; $X -I$S/io/txt -I$S/.
 $B/mpi/glb.o: $S/mpi/glb.cpp; $X -I$S/mpi -I$S/.
 $B/mpi/type.o: $S/mpi/type.cpp; $X -I$S/mpi -I$S/.
 $B/mpi/wrapper.o: $S/mpi/wrapper.cpp; $X -I$S/mpi -I$S/.
-$B/parser/imp.o: $S/parser/imp.cpp; $X -I$S/parser -I$S/.
+$B/conf/imp.o: $S/conf/imp.cpp; $X -I$S/parser -I$S/.
 $B/scheme/time_step/imp.o: $S/scheme/time_step/imp.cpp; $X -I$S/scheme/time_step -I$S/.
 $B/u/scheme/time_step/main.o: $S/u/scheme/time_step/main.cpp; $X -I$S/.
 $B/utils/cc.o: $S/utils/cc.cpp; $X -I$S/utils -I$S/.

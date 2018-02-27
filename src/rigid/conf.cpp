@@ -2,7 +2,7 @@
 #include <vector_types.h>
 
 #include "utils/error.h"
-#include "parser/imp.h"
+#include "conf/imp.h"
 
 #include "imp.h"
 

@@ -17,7 +17,7 @@
 #include "io/mesh_read/imp.h"
 #include "io/mesh/imp.h"
 
-#include "parser/imp.h"
+#include "conf/imp.h"
 
 static void write(MPI_Comm cart, const Coords *c, const char *o, MeshRead *cell) {
     int nc;

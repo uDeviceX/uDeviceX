@@ -1,7 +1,7 @@
 #include <stdio.h>
 
 #include "utils/error.h"
-#include "parser/imp.h"
+#include "conf/imp.h"
 #include "io/mesh_read/imp.h"
 
 #include "imp.h"

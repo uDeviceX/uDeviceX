@@ -35,7 +35,7 @@
 #include "mpi/glb.h"
 #include "mpi/wrapper.h"
 
-#include "parser/imp.h"
+#include "conf/imp.h"
 
 static void write0(Particle p, Force f0) {
     enum {X, Y, Z};

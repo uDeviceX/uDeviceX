@@ -15,7 +15,7 @@
 #include "utils/mc.h"
 #include "utils/imp.h"
 
-#include "parser/imp.h"
+#include "conf/imp.h"
 
 #include "io/field/h5/imp.h"
 #include "io/field/xmf/imp.h"

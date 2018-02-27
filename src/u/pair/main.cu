@@ -15,7 +15,7 @@
 #include "inc/dev.h"
 #include "d/api.h"
 
-#include "parser/imp.h"
+#include "conf/imp.h"
 
 #include "math/dev.h"
 

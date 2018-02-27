@@ -10,7 +10,7 @@
 #include "mpi/glb.h"
 #include "mpi/wrapper.h"
 #include "scheme/time/imp.h"
-#include "parser/imp.h"
+#include "conf/imp.h"
 #include "sim/imp.h"
 
 int main(int argc, char **argv) {

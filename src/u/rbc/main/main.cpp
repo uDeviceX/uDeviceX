@@ -12,7 +12,7 @@
 #include "mpi/wrapper.h"
 #include "mpi/glb.h"
 #include "coords/ini.h"
-#include "parser/imp.h"
+#include "conf/imp.h"
 #include "scheme/force/imp.h"
 #include "rbc/params/imp.h"
 

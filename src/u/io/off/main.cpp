@@ -16,7 +16,7 @@
 #include "utils/error.h"
 
 #include "io/mesh_read/imp.h"
-#include "parser/imp.h"
+#include "conf/imp.h"
 
 
 void main0(Config *c) {

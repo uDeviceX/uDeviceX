@@ -7,7 +7,7 @@
 
 #include "utils/error.h"
 #include "utils/imp.h"
-#include "parser/imp.h"
+#include "conf/imp.h"
 
 #include "d/api.h"
 #include "utils/msg.h"

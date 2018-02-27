@@ -21,7 +21,7 @@
 #include "coords/type.h"
 #include "coords/ini.h"
 #include "coords/imp.h"
-#include "parser/imp.h"
+#include "conf/imp.h"
 #include "wall/wvel/type.h"
 
 #include "wall/sdf/imp.h"

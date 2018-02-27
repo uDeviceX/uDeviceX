@@ -10,7 +10,7 @@
 #include "utils/mc.h"
 #include "mpi/glb.h"
 #include "mpi/wrapper.h"
-#include "parser/imp.h"
+#include "conf/imp.h"
 #include "coords/ini.h"
 #include "coords/imp.h"
 #include "utils/error.h"

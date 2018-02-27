@@ -3,7 +3,7 @@
 #include <string.h>
 
 #include "utils/error.h"
-#include "parser/imp.h"
+#include "conf/imp.h"
 
 #include "type.h"
 #include "imp.h"

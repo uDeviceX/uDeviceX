@@ -16,7 +16,7 @@ $B/mpi/wrapper.o: $S/mpi/wrapper.cpp; $X -I$S/mpi -I$S/.
 $B/pair/conf.o: $S/pair/conf.cpp; $X -I$S/pair -I$S/.
 $B/pair/imp.o: $S/pair/imp.cpp; $X -I$S/pair -I$S/.
 $B/parray/imp.o: $S/parray/imp.cpp; $X -I$S/parray -I$S/.
-$B/parser/imp.o: $S/parser/imp.cpp; $X -I$S/parser -I$S/.
+$B/conf/imp.o: $S/conf/imp.cpp; $X -I$S/parser -I$S/.
 $B/u/bulk/main.o: $S/u/bulk/main.cu; $N -I$S/u/bulk -I$S/.
 $B/utils/cc.o: $S/utils/cc.cpp; $X -I$S/utils -I$S/.
 $B/utils/error.o: $S/utils/error.cpp; $X -I$S/utils -I$S/.

@@ -1,6 +1,6 @@
 ### parse from args
 # TEST: parse.t1
-u=u/parser/read
+u=u/conf/read
 s=`pwd`
 :
 u.conf "$s" "$u" <<!
