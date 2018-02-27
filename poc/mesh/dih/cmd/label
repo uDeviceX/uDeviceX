@@ -1,8 +1,9 @@
 #!/usr/bin/awk -f
 
+
 BEGIN {
-    v = ARGV[1]
-    o = ARGV[2]
+    v = ARGV[1] # vertices
+    o = ARGV[2] # offsets
 
     nv = 0
     while (getline < v > 0) { x[nv] = $1; y[nv] = $2; nv++ }
