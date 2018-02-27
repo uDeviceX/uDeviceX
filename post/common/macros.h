@@ -1,5 +1,5 @@
-#define ERR(fmt, ...) do {                       \
-        fprintf(stderr, fmt, __VA_ARGS__);         \
+#define ERR(...) do {                           \
+        fprintf(stderr, __VA_ARGS__);           \
         exit(1);                                \
     } while (0);
 
