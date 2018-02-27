@@ -1,7 +1,7 @@
 = affine transformation matrices
 :src: ../../../../src
 
-A an array of list transformation `4 x 4` matrices.
+An array of `4 x 4` affine transformation matrices.
 
 [source,cpp]
 ----
