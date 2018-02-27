@@ -12,7 +12,7 @@ BOP=$(HOME)/prefix/bop
 CXXFLAGS += -I$(BOV)/include
 LIBS     += -L$(BOV)/lib -lbov -lbov_serial
 CXXFLAGS += -I$(BOP)/include
-LIBS     += -L$(BOP)/lib -lbop
+LIBS     += -L$(BOP)/lib -lbop -lbop_serial
 
 PROGS=binning
 PI=$(PROGS)

@@ -1,5 +1,5 @@
 CXX=g++
-CXXFLAGS = -Wpedantic -Wall -Wextra -O3
+CXXFLAGS = -Wpedantic -Wall -Wextra -O3 -std=c++11
 
 %.o: %.cpp; $(CXX) $(CXXFLAGS) $(OPT) -c $< -o $@
 %: %.o; $(CXX) $(CXXFLAGS) $(LDFLAGS) -o $@ $^ $(LIBS)
@@ -12,7 +12,7 @@ BOP=$(HOME)/prefix/bop
 CXXFLAGS += -I$(BOV)/include
 LIBS     += -L$(BOV)/lib -lbov -lbov_serial
 CXXFLAGS += -I$(BOP)/include
-LIBS     += -L$(BOP)/lib -lbop
+LIBS     += -L$(BOP)/lib -lbop -lbop_serial
 
 PROGS=color.density color.minmax
 PI=$(PROGS) bops2colordensity colors2minmaxs
