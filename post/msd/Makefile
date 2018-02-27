@@ -8,7 +8,7 @@ EXECS = po.msd
 C=../common
 
 BOPDIR = $(HOME)/prefix/bop
-LIBS = -lbop
+LIBS = -lbop -lbop_serial
 LDFLAGS += -L$(BOPDIR)/lib
 CXXFLAGS += -I$(BOPDIR)/include -I$(C)
 
