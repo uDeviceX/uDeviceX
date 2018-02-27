@@ -10,5 +10,4 @@ stable to numerical error is used.
 include::{src}/math/tri/imp.h[tags=interface]
 ----
 <1> returns area of a triangle given sides
-<2> returns area of a triangle given coordinate of coordinates of the
-    vertices
+<2> returns area of a triangle given coordinate of the vertices
