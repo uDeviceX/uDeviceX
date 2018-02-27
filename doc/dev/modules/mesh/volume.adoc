@@ -8,3 +8,6 @@ Compute a volume enclosed by a triangulated mesh on host.
 ----
 include::{src}/mesh/volume/imp.h[tag=interface]
 ----
+<1> in initialization triangles are stored
+<2> compute volume for one object
+<3> compute volume for `nm` objects
