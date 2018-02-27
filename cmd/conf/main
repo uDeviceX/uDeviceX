@@ -22,7 +22,7 @@ ERR_ARGP=6
 msg() { printf '%s\n' "$*" >&2; }
 err() { msg "$@"; usg; }
 
-if test $# -ne 0 -a "$1" = -h; then usg; fi
+if test $# -ne 0 && test "$1" = -h; then usg; fi
 
 S=.
 if test $# -ne 0 -a -d "$1"; then S="$1"; shift; fi
