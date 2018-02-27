@@ -11,10 +11,7 @@ void mesh_area_ini(MeshRead *mesh, MeshArea **pq) {
     *pq = q;
 }
 
-void mesh_area_fin(MeshArea *q) {
-    EFREE(q->tt);
-    EFREE(q);
-}
+void mesh_area_fin(MeshArea *q) { EFREE(q->tt); EFREE(q); }
 
 static double area0(double a[3], double b[3], double c[3]) {
     enum {X, Y, Z};
