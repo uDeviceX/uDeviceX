@@ -1,38 +1,5 @@
 static const real_t TOL = 0.1;
 
-template <typename T> static __device__ T min3(T a, T b, T c) {return min(a, min(b, c));}
-template <typename T> static __device__ T max3(T a, T b, T c) {return max(a, max(b, c));}
-
-template <typename T3>
-static __device__ T3 min3T3(T3 a, T3 b, T3 c) {
-    T3 v;
-    v.x = min3(a.x, b.x, c.x);
-    v.y = min3(a.y, b.y, c.y);
-    v.z = min3(a.z, b.z, c.z);
-    return v;
-}
-
-template <typename T3>
-static __device__ T3 max3T3(T3 a, T3 b, T3 c) {
-    T3 v;
-    v.x = max3(a.x, b.x, c.x);
-    v.y = max3(a.y, b.y, c.y);
-    v.z = max3(a.z, b.z, c.z);
-    return v;
-}
-
-static __device__ int3 get_cidx(int3 L, real3_t r) {
-    int3 c;
-    c.x = floor((double) r.x + L.x/2);
-    c.y = floor((double) r.y + L.y/2);
-    c.z = floor((double) r.z + L.z/2);
-
-    c.x = min(L.x-1, max(0, c.x));
-    c.y = min(L.y-1, max(0, c.y));
-    c.z = min(L.z-1, max(0, c.z));
-    return c;
-}
-
 static __device__ void get_cells(int3 L, float tol, real3_t A, real3_t B, real3_t C, /**/ int3 *lo, int3 *hi) {
     real3_t lf, hf;
     lf = min3T3(A, B, C);
