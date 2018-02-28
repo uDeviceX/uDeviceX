@@ -9,7 +9,7 @@
 #include "macros.h"
 #include "pp_id.h"
 
-int X, Y, Z;
+int Lx, Ly, Lz;
 
 enum {EMPTY=0, OCCUPIED=1};
 void empty_tags(const int bufsize, int *tags) {
@@ -24,7 +24,7 @@ void compute_tags(const int *ii, const int n, int *tags) {
 }
 
 void disp0(const float *rp, const float *rc, float *dr) {
-    const int dL[3] = {X, Y, Z};
+    const int dL[3] = {Lx, Ly, Lz};
     for (int c = 0; c < 3; ++c) {
         dr[c] = rc[c] - rp[c];
         const float sign = dr[c] > 0 ? 1.f : -1.f;
@@ -80,15 +80,15 @@ void dump(const BopType type, const char *fout, const float *rr, const float *dd
 
 int main(int argc, char **argv) {
     if (argc < 7) {
-        fprintf(stderr, "Usage: po.disp <X> <Y> <Z> <rr-*.bop> -- <ii-*.bop>\n");
+        fprintf(stderr, "Usage: po.disp <Lx> <Ly> <Lz> <rr-*.bop> -- <ii-*.bop>\n");
         exit(1);
     }
     int iarg = 1;
     long np;
     BopType type;
-    X = atoi(argv[iarg++]);
-    Y = atoi(argv[iarg++]);
-    Z = atoi(argv[iarg++]);
+    Lx = atoi(argv[iarg++]);
+    Ly = atoi(argv[iarg++]);
+    Lz = atoi(argv[iarg++]);
 
     const int sep = separator(argc, argv);
     const int nin = sep - iarg;
