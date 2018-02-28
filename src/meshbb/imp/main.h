@@ -23,17 +23,16 @@ void meshbb_select_collisions(int n, /**/ MeshBB *mbb) {
 }
 
 void meshbb_bounce(float dt, float mass,
-                   int n, const MeshBB *mbb, const Force *ff, int nt, int nv, const int4 *tt, const Particle *i_pp,
+                   int n, const MeshBB *mbb, const Force *ff, MeshInfo mi, const Particle *i_pp,
                    /**/ Particle *pp, Momentum *mm) {
     KL(meshbb_dev::perform_collisions, (k_cnf(n)),
-       (dt, mass, n, mbb->ncols, mbb->datacol, mbb->idcol, ff, nt, nv, tt, i_pp, /**/ pp, mm));
+       (dt, mass, n, mbb->ncols, mbb->datacol, mbb->idcol, ff, mi.nt, mi.nv, mi.tt, i_pp, /**/ pp, mm));
 }
 
-void meshbb_collect_rig_momentum(float dt,
-                                 int ns, int nt, int nv, const int4 *tt, const Particle *pp, const Momentum *mm, /**/ Solid *ss) {
-    KL(meshbb_dev::collect_rig_mom, (k_cnf(ns * nt)), (dt, ns, nt, nv, tt, pp, mm, /**/ ss));
+void meshbb_collect_rig_momentum(float dt, int ns, MeshInfo mi, const Particle *pp, const Momentum *mm, /**/ Solid *ss) {
+    KL(meshbb_dev::collect_rig_mom, (k_cnf(ns * mi.nt)), (dt, ns, mi.nt, mi.nv, mi.tt, pp, mm, /**/ ss));
 }
 
-void meshbb_collect_rbc_momentum(float dt, int nc, int nt, int nv, const int4 *tt, const Particle *pp, const Momentum *mm, /**/ Force *ff) {
-    KL(meshbb_dev::collect_rbc_mom, (k_cnf(nc * nt)), (dt, nc, nt, nv, tt, pp, mm, /**/ ff));
+void meshbb_collect_rbc_momentum(float dt, int nc, MeshInfo mi, const Particle *pp, const Momentum *mm, /**/ Force *ff) {
+    KL(meshbb_dev::collect_rbc_mom, (k_cnf(nc * mi.nt)), (dt, nc, mi.nt, mi.nv, mi.tt, pp, mm, /**/ ff));
 }
