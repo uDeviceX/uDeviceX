@@ -6,10 +6,6 @@ x=11 y=15 z=8; echo $x $y $z                              > rigs-ic.txt
 u.cp.rig sphere_R2.ply rig.ply
 u.cp.rbc rbc/498.off rbc.off
 :
-u.run udx conf.cfg '
-rbc = {
-    active = true
-    totArea = 55.553
-    totVolume = 26.986
-}'
+u.run udx conf.cfg
+:
 ply2punto r/00002.ply | uscale 1 > ply.out.txt

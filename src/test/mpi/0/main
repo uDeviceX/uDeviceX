@@ -6,13 +6,6 @@ S=`u.cp.s`
 u.cp.rbc rbc/498.off  rbc.off
 echo 1 0 0 8  0 1 0 8  0 0 1 8  0 0 0 1 > rbcs-ic.txt
 :
-u.run 2 1 1 udx conf.cfg '
-glb = { 
-    kBT = 0.0
-}
-rbc = {
-    active = true
-    totArea = 55.553
-    totVolume = 26.986
-}'
+u.run 2 1 1 udx conf.cfg
+:
 awk '{print 10000*$2}' diag.txt > diag.out.txt

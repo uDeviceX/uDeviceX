@@ -5,12 +5,6 @@ u.cp.rbc rbc/498.off rbc.off
 echo -e "4.1 21.5 8\n4.1 10.5 8\n11.9 16 8" > rigs-ic.txt
 u.cp.rig ellipsoid.ply rig.ply
 :
-u.run udx conf.cfg '
-glb = {
-    kBT = 0.0
-}
-rbc = {
-    totArea = 55.553
-    totVolume = 26.986
-}'
+u.run udx conf.cfg
+:
 cat solid_diag_0000.txt | awk '{print $2, $5, $8}' | uscale 2.5 > sdiag.out.txt
