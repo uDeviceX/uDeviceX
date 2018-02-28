@@ -20,9 +20,9 @@ each particle has a list of a maximum of `MAX_COL` collisions. Each entry contai
 ### Gather momentum
 
 Each triangle gets a contribution of bounce back, stored in `Momentum` structure.
-Linear Momentum is straight forward but angular momentum needs a referential coordinate.  
-We choose here the center of mass of the triangle as it is independent on the domain, therefore communication 
-do not need special care.  
+Linear Momentum is straight forward but angular momentum needs a referential coordinate.
+We choose here the center of mass of the triangle as it is independent on the domain, therefore communication
+do not need special care.
 
 ### collect momentum
 
