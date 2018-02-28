@@ -18,8 +18,8 @@ void meshbb_reini(int n, /**/ MeshBB *mbb) {
     CC(d::MemsetAsync(mbb->ncols, 0, n * sizeof(int)));
 }
 
-void meshbb_select_collisions(float dt, int n, /**/ MeshBB *mbb) {
-    KL(meshbb_dev::select_collisions, (k_cnf(n)), (dt, n, /**/ mbb->ncols, mbb->datacol, mbb->idcol));
+void meshbb_select_collisions(int n, /**/ MeshBB *mbb) {
+    KL(meshbb_dev::select_collisions, (k_cnf(n)), (n, /**/ mbb->ncols, mbb->datacol, mbb->idcol));
 }
 
 void meshbb_bounce(float dt, float mass,

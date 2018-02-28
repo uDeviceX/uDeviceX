@@ -59,7 +59,7 @@ void bounce_solid(float dt, int3 L, BounceBack *bb, Rig *s, Flu *flu) {
         CC(d::MemsetAsync(bb->mm, 0, nt * (nm + nmhalo) * sizeof(Momentum)));
 
     meshbb_find_collisions(dt, nm + nmhalo, nt, nv, tt, i_pp, L, ss, cc, pp, flu->ff, /**/ bb->d);
-    meshbb_select_collisions(dt, n, /**/ bb->d);
+    meshbb_select_collisions(n, /**/ bb->d);
     meshbb_bounce(dt, flu->mass, n, bb->d, flu->ff, nt, nv, tt, i_pp, /**/ pp, bb->mm);
 
     /* send momentum back */

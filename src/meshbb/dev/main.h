@@ -81,7 +81,9 @@ __global__ void find_collisions(float dt,
     }
 }
 
-__global__ void select_collisions(float dt, int n, /**/ int *ncol, float4 *datacol, int *idcol) {
+static const float MAX_T = 1e6f;
+
+__global__ void select_collisions(int n, /**/ int *ncol, float4 *datacol, int *idcol) {
     int i, c, j, dst, src, argmin;
     float tmin;
     float4 d;
@@ -91,7 +93,7 @@ __global__ void select_collisions(float dt, int n, /**/ int *ncol, float4 *datac
 
     c = ncol[i];
 
-    argmin = 0; tmin = 2*dt;
+    argmin = 0; tmin = MAX_T;
     for (j = 0; j < c; ++j) {
         src = MAX_COL * i + j;
         d = datacol[src];
