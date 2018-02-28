@@ -8,15 +8,15 @@ struct rPa {
     real3_t r, v;
 };
 
-__device__ float3 make_real3(float a, float b, float c) {
+static __device__ float3 make_real3(float a, float b, float c) {
     return make_float3(a, b, c);
 }
 
-__device__ double3 make_real3(double a, double b, double c) {
+static __device__ double3 make_real3(double a, double b, double c) {
     return make_double3(a, b, c);
 }
 
-__device__ rPa P2rP(const Particle *p) {
+static __device__ rPa P2rP(const Particle *p) {
     enum {X, Y, Z};
     rPa rp = {
         .r = make_real3((real_t) p->r[X], (real_t) p->r[Y], (real_t) p->r[Z]),
@@ -25,7 +25,7 @@ __device__ rPa P2rP(const Particle *p) {
     return rp;
 }
 
-__device__ Particle rP2P(const rPa *rp) {
+static __device__ Particle rP2P(const rPa *rp) {
     Particle p = {
         .r = {(float) rp->r.x, (float) rp->r.y, (float) rp->r.z},
         .v = {(float) rp->v.x, (float) rp->v.y, (float) rp->v.z}
