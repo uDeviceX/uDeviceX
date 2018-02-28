@@ -22,10 +22,12 @@ void *ememcpy(void *dest, const void *src, size_t n) {
     return memcpy(dest, src, n);
 }
 
-void efopen(const char *fname, const char *mode, /**/ FILE **f) {
-    *f = fopen(fname, mode);
-    if (NULL == *f)
+void efopen(const char *fname, const char *mode, /**/ FILE **pq) {
+    FILE *q;
+    q = fopen(fname, mode);
+    if (NULL == q)
         ERR("Could not open file <%s> with mode <%s>", fname, mode);
+    *pq = q;
 }
 
 void efclose(FILE *f) {

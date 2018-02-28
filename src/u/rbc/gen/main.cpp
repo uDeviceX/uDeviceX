@@ -9,30 +9,21 @@
 #include "utils/error.h"
 #include "conf/imp.h"
 #include "io/mesh_read/imp.h"
-#include "mesh/positions/imp.h"
-#include "mesh/area/imp.h"
+#include "rbc/matrices/imp.h"
 
-void main0(const char *i) {
-    float A;
-    int nv;
+void main0(const char *cell, const char *ic) {
+    Matrices *matrices;
     MeshRead *mesh;
-    MeshArea *area;
-    Positions  *pos;
-    UC(mesh_read_ini_off(i, /**/ &mesh));
-    UC(mesh_area_ini(mesh, &area));
-    nv = mesh_read_get_nv(mesh);
-    UC(positions_float_ini(nv, mesh_read_get_vert(mesh), /**/ &pos));
+    UC(mesh_read_ini_off(cell, /**/ &mesh));
+    UC(matrices_read(ic, &matrices));
 
-    A = mesh_area_apply0(area, pos);
-    printf("%g\n", A);
-        
-    mesh_area_fin(area);
-    UC(positions_fin(pos));
+    UC(matrices_fin(matrices));
     UC(mesh_read_fin(mesh));
 }
 
 int main(int argc, char **argv) {
-    const char *i;
+    const char *cell;
+    const char *ic;
     Config *cfg;
     int rank, size, dims[3];
     MPI_Comm cart;
@@ -45,8 +36,10 @@ int main(int argc, char **argv) {
 
     UC(conf_ini(&cfg));
     UC(conf_read(argc, argv, cfg));
-    UC(conf_lookup_string(cfg, "i", &i));
-    main0(i);
+    UC(conf_lookup_string(cfg, "cell", &cell));
+    UC(conf_lookup_string(cfg, "ic", &ic));
+    
+    main0(cell, ic);
 
     UC(conf_fin(cfg));
     MC(m::Barrier(cart));

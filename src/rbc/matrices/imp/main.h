@@ -1,4 +1,4 @@
-static const int MAX_N = 999999;
+static const int MAX_N = 100000;
 
 static void matrix2r(const double A[16], double r[3]) {
     enum {X, Y, Z};
@@ -23,10 +23,10 @@ void matrices_read(const char *path, /**/ Matrices **pq) {
     EMALLOC(1, &q);
     EMALLOC(MAX_N, &q->m);
     UC(efopen(path, "r", /**/ &f));
-    UC(efclose(f));
     n = 0;
     while (read_matrix(f, /**/ q->m[n++].D))
         if (n > MAX_N) ERR("n=%d > MAX_N=%d", n, MAX_N);
+    UC(efclose(f));
     q->n = n;
     *pq = q;
 }
