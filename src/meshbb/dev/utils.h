@@ -37,12 +37,12 @@ static __device__ int3 get_cidx(int3 L, real3_t r) {
 }
 
 
-static __device__ bool valid(real dt, real t) {return (t >= 0 && t <= dt);}
+static __device__ bool valid_time(real dt, real t) {return (t >= 0 && t <= dt);}
 
 // TODO belongs to scheme/ ?
 // BB assumes r0 + v0 dt = r1 for now
 #ifdef FORWARD_EULER
-__device__ void rvprev(real dt, const real3_t *r1, const real3_t *v1, const float *f0, /**/ real3_t *r0, real3_t *v0) {
+static __device__ void rvprev(real dt, const real3_t *r1, const real3_t *v1, const float *f0, /**/ real3_t *r0, real3_t *v0) {
     enum {X, Y, Z};
     v0->x = v1->x - f0[X] * dt;
     v0->y = v1->y - f0[Y] * dt;
@@ -53,7 +53,7 @@ __device__ void rvprev(real dt, const real3_t *r1, const real3_t *v1, const floa
     r0->z = r1->z - v0->z * dt;
 }
 #else // velocity-verlet
-__device__ void rvprev(real dt, const real3_t *r1, const real3_t *v1, const float *, /**/ real3_t *r0, real3_t *v0) {
+static __device__ void rvprev(real dt, const real3_t *r1, const real3_t *v1, const float *, /**/ real3_t *r0, real3_t *v0) {
     r0->x = r1->x - v1->x * dt;
     r0->y = r1->y - v1->y * dt;
     r0->z = r1->z - v1->z * dt;
@@ -62,7 +62,7 @@ __device__ void rvprev(real dt, const real3_t *r1, const real3_t *v1, const floa
 }
 #endif
 
-__device__ void fetch_triangle(int id, int nt, int nv, const int4 *tt, const Particle *i_pp,
+static __device__ void fetch_triangle(int id, int nt, int nv, const int4 *tt, const Particle *i_pp,
                                /**/ rPa *A, rPa *B, rPa *C) {
     int4 t;
     int tid, mid;
@@ -79,7 +79,7 @@ __device__ void fetch_triangle(int id, int nt, int nv, const int4 *tt, const Par
     *C = P2rP( i_pp + t.z );
 }
 
-__device__ void bounce_back(real dt, const rPa *p0, const real3_t *rw, const real3_t *vw, const real_t h, /**/ rPa *pn) {
+static __device__ void bounce_back(real dt, const rPa *p0, const real3_t *rw, const real3_t *vw, const real_t h, /**/ rPa *pn) {
     pn->v.x = 2 * vw->x - p0->v.x;
     pn->v.y = 2 * vw->y - p0->v.y;
     pn->v.z = 2 * vw->z - p0->v.z;
@@ -89,20 +89,20 @@ __device__ void bounce_back(real dt, const rPa *p0, const real3_t *rw, const rea
     pn->r.z = rw->z + (dt-h) * pn->v.z;
 }
 
-__device__ void lin_mom_change(const real3_t v0, const real3_t v1, /**/ float dP[3]) {
+static __device__ void lin_mom_change(const real3_t v0, const real3_t v1, /**/ float dP[3]) {
     dP[X] = -(v1.x - v0.x);
     dP[Y] = -(v1.y - v0.y);
     dP[Z] = -(v1.z - v0.z);
 }
 
-__device__ void ang_mom_change(const real3_t r, const real3_t v0, const real3_t v1, /**/ float dL[3]) {
+static __device__ void ang_mom_change(const real3_t r, const real3_t v0, const real3_t v1, /**/ float dL[3]) {
     dL[X] = -(r.y * v1.z - r.z * v1.y  -  r.y * v0.z + r.z - v0.y);
     dL[Y] = -(r.z * v1.x - r.x * v1.z  -  r.z * v0.x + r.x - v0.z);
     dL[Z] = -(r.x * v1.y - r.y * v1.x  -  r.x * v0.y + r.y - v0.x);
 }
 
 /* shift origin from 0 to R for ang momentum */
-__device__ void mom_shift_ref(const real3_t r, /**/ Momentum *m) {
+static __device__ void mom_shift_ref(const real3_t r, /**/ Momentum *m) {
     m->L[X] -= r.y * m->P[Z] - r.z * m->P[Y];
     m->L[Y] -= r.z * m->P[X] - r.x * m->P[Z];
     m->L[Z] -= r.x * m->P[Y] - r.y * m->P[X];
@@ -110,7 +110,7 @@ __device__ void mom_shift_ref(const real3_t r, /**/ Momentum *m) {
 
 static __device__ bool nz(float a) {return fabs(a) > 1e-6f;}
 
-__device__ bool nonzero(const Momentum *m) {
+static __device__ bool nonzero(const Momentum *m) {
     return nz(m->P[X]) && nz(m->P[Y]) && nz(m->P[Z]) &&
         nz(m->L[X]) && nz(m->L[Y]) && nz(m->L[Z]);
 }
