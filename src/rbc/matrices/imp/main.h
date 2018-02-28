@@ -22,6 +22,7 @@ void matrices_read(const char *path, /**/ Matrices **pq) {
     Matrices *q;
     EMALLOC(1, &q);
     EMALLOC(MAX_N, &q->m);
+    msg_print("read '%s'", path);
     UC(efopen(path, "r", /**/ &f));
     n = 0;
     while (read_matrix(f, /**/ q->m[n++].D))
@@ -46,6 +47,7 @@ void matrices_read_filter(const char *path, const Coords *c, /**/ Matrices **pq)
     Matrices *q;
     EMALLOC(1, &q);
     EMALLOC(MAX_N, &q->m);
+    msg_print("read '%s'", path);
     UC(efopen(path, "r", /**/ &f));
     n = m = 0;
     while (read_matrix(f, /**/ q->m[n].D)) {
