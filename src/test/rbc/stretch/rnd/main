@@ -16,6 +16,13 @@ u.conf "$S" u/x <<!
 !
 u.make -j
 :
-u.run ./udx conf.cfg
-:
+u.run ./udx conf.cfg '
+rbc = {
+    active = true
+    totArea = 1564.4922174
+    totVolume = 3812.3160399576
+    rnd = true
+    seed = 123
+    kBT = 10.0
+}'
 ply2punto r/00001.ply | uscale 10 > ply.out.txt
