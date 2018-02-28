@@ -1,0 +1,4 @@
+8100
+DATA_FILE: colors.values
+DATA_FORMAT: int
+VARIABLES: color
