@@ -5,10 +5,26 @@
 
 Bounce back particles on a moving mesh
 
-A particle stem:[\mayhbf{r}, \mathbf{v}] colliding with a surface at point stem:[\mathbf{r}_w]
-is bounced back as:
+Let define the following quantities:
 
-TODO
+* stem:[\mathbf{r}_0, \mathbf{v}_0] : particle at time stem:[0]
+* stem:[\mathbf{r}_1, \mathbf{v}_1] : particle at time stem:[dt] if
+  there is no collision
+* stem:[\mathbf{r}_n, \mathbf{v}_n] : particle at time stem:[dt] after
+  bounce back
+* stem:[h \in [0, dt]] : collision time
+* stem:[\mathbf{r}_w, \mathbf{v}_w] : collision position and velocity
+  of the surface
+
+A particle colliding with a surface is bounced back as:
+
+[stem]
+++++
+\mathbf{v}_n = 2 \mathbf{v}_w - \mathbf{v}_0, \\
+\mathbf{r}_n = \mathbf{r}_w + (dt - h) \mathbf{v}_n.
+++++
+
+
 
 == interface
 
