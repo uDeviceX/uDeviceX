@@ -25,8 +25,10 @@ void matrices_read(const char *path, /**/ Matrices **pq) {
     msg_print("read '%s'", path);
     UC(efopen(path, "r", /**/ &f));
     n = 0;
-    while (read_matrix(f, /**/ q->m[n++].D))
+    while (read_matrix(f, /**/ q->m[n].D)) {
+        n++;
         if (n > MAX_N) ERR("n=%d > MAX_N=%d", n, MAX_N);
+    }
     UC(efclose(f));
     q->n = n;
     *pq = q;
@@ -79,4 +81,25 @@ void matrices_get_r(Matrices *q, int k, /**/ double r[3]) {
 }
 
 int matrices_get_n(Matrices *q) { return q->n; }
+
+static void log(double A[16]) {
+    int i, j;
+    double a, b, c, d;
+    for (i = j = 0; j < 4; j++) {
+        a = A[i++]; b = A[i++]; c = A[i++]; d = A[i++];
+        msg_print("%g %g %g %g", a, b, c, d);
+    }
+}
+void matrices_log(Matrices *q) {
+    int n, i;
+    n = q->n;
+    msg_print("<matrices_log");
+    msg_print("n = %d", n);
+    for (i = 0; i < n; i++) {
+        if (i > 0) msg_print("");
+        log(q->m[i].D);
+    }
+    msg_print(">matrices_log");
+}
+
 void matrices_fin(Matrices *q) { EFREE(q->m); EFREE(q); }

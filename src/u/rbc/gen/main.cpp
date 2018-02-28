@@ -16,6 +16,7 @@ void main0(const char *cell, const char *ic) {
     MeshRead *mesh;
     UC(mesh_read_ini_off(cell, /**/ &mesh));
     UC(matrices_read(ic, &matrices));
+    UC(matrices_log(matrices));
 
     UC(matrices_fin(matrices));
     UC(mesh_read_fin(mesh));
