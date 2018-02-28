@@ -1,19 +1,7 @@
 #### rest with deleting cylinder, multi nodes
 # nTEST: out.t2
-u.run 2 2 1 udx test/openbc/out.cfg '
-glb = { 
-    kBT = 0.0
-    L = [8, 8, 16]
-}
-time = {
-    type = "const"
-    dt = 5e-4
-    end = 2.01
-}
-dump = {
-    field = true
-    parts = true
-    freq_field = 2.0000
-    freq_parts = 2.0000
-}'
+cd test/openbc/1/
+:
+u.run 2 2 1 udx conf.cfg 
+:
 u.avgh5 0 u 0 h5/0001.h5 | uscale 10 > h5.out.txt
