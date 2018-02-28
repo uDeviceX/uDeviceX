@@ -96,21 +96,33 @@ static void filter(int tag, const BopData *cc, const BopData *pp, const BopData 
     }
 }
 
+static void check_type(BopType t, const BopData *d) {
+    BopType s;
+    bop_get_type(d, &s);
+    if (t != s) {
+        fprintf(stderr, "wrong type\n");
+        exit(1);
+    }
+}
+
 static void read(Args a, BopData *cc, BopData *pp, BopData *ii) {
     char fdname[FILENAME_MAX];
 
     BPC( bop_read_header(a.cc, cc, fdname) );
     BPC( bop_alloc(cc) );
     BPC( bop_read_values(fdname, cc) );
-
+    check_type(BopINT, cc);
+    
     BPC( bop_read_header(a.pp, pp, fdname) );
     BPC( bop_alloc(pp) );
     BPC( bop_read_values(fdname, pp) );
-
+    check_type(BopFLOAT, pp);
+    
     if (a.ii) {
         BPC( bop_read_header(a.ii, ii, fdname) );
         BPC( bop_alloc(ii) );
         BPC( bop_read_values(fdname, ii) );
+        check_type(BopINT, ii);
     }
 }
 
