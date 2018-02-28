@@ -48,7 +48,7 @@ static void parse(int argc, char **argv, /**/ Args *a) {
 static void get_n(int tag, long n, const int *pred, long *nmatch) {
     long i, j;
     for (i = j = 0; i < n; ++i)
-        j += pred[i] == tag;
+        j += (pred[i] == tag);
     *nmatch = j;
 }
 
@@ -163,3 +163,16 @@ int main(int argc, char **argv) {
     
     return 0;
 }
+
+/*
+
+  # TEST: color.t0
+  # rm -f *out.txt
+  # make 
+  # t=out
+  # ./color 0 $t data/test.bop data/colors.bop
+  # bop2txt $t.pp.bop > pp.out.txt
+
+*/
+
+
