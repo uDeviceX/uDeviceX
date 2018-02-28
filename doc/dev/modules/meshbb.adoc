@@ -24,6 +24,16 @@ A particle colliding with a surface is bounced back as:
 \mathbf{r}_n = \mathbf{r}_w + (dt - h) \mathbf{v}_n.
 ++++
 
+This module computes the collision time, position and velocity for a
+moving triangle.
+The motion of the triangle points are assumed to be linear:
+
+[stem]
+++++
+\mathbf{a}(t) = (1 - t) \mathbf{a}_0 + t \mathbf{a}_1, \\
+\mathbf{b}(t) = (1 - t) \mathbf{b}_0 + t \mathbf{b}_1, \\
+\mathbf{c}(t) = (1 - t) \mathbf{c}_0 + t \mathbf{c}_1.
+++++
 
 
 == interface
@@ -34,3 +44,29 @@ Allocate and deallocate `MeshBB` structure:
 ----
 include::{src}/meshbb/imp.h[tag=mem]
 ----
+
+Bouncing particles on a set of mesh:
+
+[source,cpp]
+----
+include::{src}/meshbb/imp.h[tag=int]
+----
+<1> reinitialise the structure (must be done before a new time step)
+<2> store collision informations inside the structure with a set of
+    mesh. This can be done for multiple mesh sets.
+<3> For each bouncing particle, select the collision with minimum
+    time. Must be called after finding all collisions.
+<4> bounce particles and store the momentum changes per triangle
+
+The momentum changes computed above can be collected to rigid objects
+or to membrane mesh:
+
+[source,cpp]
+----
+include::{src}/meshbb/imp.h[tag=collect]
+----
+<1> Reduce `Momentum` array into one force and torque per rigid
+    object.
+<2> Convert momentum information into forces for membrane particles.
+
+
