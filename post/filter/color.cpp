@@ -68,31 +68,39 @@ static void filter(int tag, const BopData *cc, const BopData *pp, const BopData 
                    BopData *outpp, BopData *outii) {
     long n, nout;
     const int *pred;
+    int nvars;
+    const char *vars;
 
     BPC( bop_get_n(cc, &n) );
     pred = (const int*) bop_get_data(cc);
     get_n(tag, n, pred, /**/ &nout);
+    BPC( bop_get_nvars(pp, &nvars) );
+    BPC( bop_get_vars(pp, &vars) );
+         
 
     BPC( bop_set_n(nout, outpp) );
-    BPC( bop_set_vars(6, "x y z vx vy vz", outpp) );
+    BPC( bop_set_vars(nvars, vars, outpp) );
     BPC( bop_set_type(BopFLOAT, outpp) );
     BPC( bop_alloc(outpp) );
 
     const float *pp_in  = (const float*) bop_get_data(pp);
     float       *pp_out =       (float*) bop_get_data(outpp);
 
-    collect(tag, n, pred, 6, pp_in, /**/ pp_out);
+    collect(tag, n, pred, nvars, pp_in, /**/ pp_out);
 
     if (ii) {
+        BPC( bop_get_nvars(ii, &nvars) );
+        BPC( bop_get_vars(ii, &vars) );
+
         BPC( bop_set_n(nout, outii) );
-        BPC( bop_set_vars(1, "ids", outii) );
+        BPC( bop_set_vars(nvars, vars, outii) );
         BPC( bop_set_type(BopINT, outii) );
         BPC( bop_alloc(outii) );
 
         const int *ii_in  = (const int*) bop_get_data(ii);
         int       *ii_out =       (int*) bop_get_data(outii);
 
-        collect(tag, n, pred, 1, ii_in, /**/ ii_out);        
+        collect(tag, n, pred, nvars, ii_in, /**/ ii_out);        
     }
 }
 
