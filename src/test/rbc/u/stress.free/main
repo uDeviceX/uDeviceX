@@ -14,9 +14,6 @@ u.conf $S u/rbc/force <<!
 !
 u.make -j
 u.run ./udx conf.cfg "
-glb = {
-    kBT = 0.0
-}
 rbc = {
     active = true
     totArea = $area

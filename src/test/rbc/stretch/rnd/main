@@ -8,7 +8,6 @@ nv=2562
 u.cp.rbc rbc/sc/$nv.off       rbc.off
 u.stretch $A 5% rbc.off  > rbc.stretch
 :
-XS=48 YS=32 ZS=32
 x=24 y=16 z=16; echo 1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 > rbcs-ic.txt
 :
 u.conf "$S" u/x <<!
@@ -17,16 +16,6 @@ u.conf "$S" u/x <<!
 !
 u.make -j
 :
-u.run ./udx conf.cfg "
-glb = {
-    L = [$XS, $YS, $ZS]
-}
-rbc = {
-    active = true
-    totArea = 1564.4922174
-    totVolume = 3812.3160399576
-    rnd = true
-    seed = 123
-    kBT = 10.0
-}"
+u.run ./udx conf.cfg
+:
 ply2punto r/00001.ply | uscale 10 > ply.out.txt

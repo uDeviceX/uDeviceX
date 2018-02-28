@@ -10,13 +10,6 @@ echo     1  0   0 $x              \
          0 $s  $c $z              \
          0  0   0  1 > rbcs-ic.txt
 :
-u.run udx conf.cfg '
-glb = { 
-    kBT = 0.0
-}
-rbc = {
-    active = true
-    totArea = 55.55
-    totVolume = 27.0
-}'
+u.run udx conf.cfg
+:
 ply2punto r/00003.ply | uscale 100 > ply.out.txt

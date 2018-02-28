@@ -3,21 +3,12 @@
 cd test/rbc/nv/2562
 nv=2562
 u.cp.rbc rbc/sc/$nv.off rbc.off
-XS=48 YS=12 ZS=12 x=24 y=6 z=6
+x=24 y=6 z=6
 echo 1 0 0 $x \
      0 1 0 $y \
      0 0 1 $z \
      0 0 0  1 > rbcs-ic.txt
 :
-u.run udx conf.cfg "
-glb = { 
-    kBT = 0.0
-    L = [$XS, $YS, $ZS]
-}
-rbc = {
-    active = true
-    totArea = 1564.4922174
-    totVolume = 3812.3160399576
-}
-"
+u.run udx conf.cfg
+:
 ply2punto r/00003.ply | awk 'NR % 10 == 0' > ply.out.txt

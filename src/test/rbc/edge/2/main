@@ -5,13 +5,6 @@ u.cp.rbc rbc/498.off rbc.off
 u.cp.sdf wall1/wall.dat sdf.dat
 x=0.75 y=8 z=12; echo 1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 > rbcs-ic.txt
 :
-u.run udx conf.cfg '
-glb = { 
-    kBT = 0.0
-}
-rbc = {
-    active = true
-    totArea = 55.55
-    totVolume = 27.0
-}'
+u.run udx conf.cfg
+:
 ply2punto r/00003.ply | uscale 10 > ply.out.txt

@@ -10,13 +10,6 @@ u.conf "$S" u/x <<!
    run
 !
 u.make -j
-u.run ./udx conf.cfg '
-glb = { 
-    kBT = 0.0
-}
-rbc = {
-    active = true
-    totArea = 55.553
-    totVolume = 26.986
-}'
+u.run ./udx conf.cfg
+:
 ply2punto r/00003.ply | uscale 10 > ply.out.txt
