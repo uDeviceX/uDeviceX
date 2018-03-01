@@ -7,9 +7,10 @@ prog0=u.scatter0
 
 usg () {
     msg "$prog PATTERN ACTION [ARGS].. [-- [FILE]..]"
-    msg 'construct and run commands for file lists [FILE].. like'
-    msg '  action args f0 f1 output'
-    msg '  ouput is constructed from PATTERN with % replaced by `basename file`'
+    msg 'run constructed command every file [FILE]..'
+    msg '  ACTION [ARGS] f0 g0 output0'
+    msg '  ACTION [ARGS] f1 g1 output1'
+    msg '  ouput0 is constructed from PATTERN with % replaced by `basename file0`'
     msg 'Examples:'
     msg 'u.scatter out/% echo preved -- f1 f2 -- g1 g2'
     msg 'DBG= u.scatter out/%.vtk echo preved -- in/f1 in/f2 -- in/g1 in/g2'
