@@ -9,5 +9,6 @@ install:
 	@mkdir -p $B
 	cp main  "$B/u.$m"
 	cp main0 "$B/u.$m"0
+	cp util  "$B/u.$m.util"
 
 .PHONY: install

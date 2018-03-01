@@ -1,6 +1,18 @@
 #!/bin/sh
 
-prog_name=u.scatter
-prog_name0=u.scatter0
+. u.scatter.util
 
-$prog_name0
+prog=u.scatter
+prog0=u.scatter0
+
+usg () {
+    msg "$prog PATTERN [ARGS].. [-- [FILE]..]"
+    msg "construct and run command for
+    exit
+}
+
+if test $# -ne 0 && test "$1" = -h
+then usg
+fi
+
+$prog0

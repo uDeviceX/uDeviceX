@@ -1,5 +1,5 @@
 #!/bin/sh
 
-prog_name=u.scatter0
+prog=u.scatter0
 
 echo 42
