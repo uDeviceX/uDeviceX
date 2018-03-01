@@ -9,7 +9,63 @@
 #include "macros.h"
 #include "pp_id.h"
 
+enum {X, Y, Z, D};
 enum {EMPTY=0, OCCUPIED=1};
+
+struct Args {
+    int L[D];
+    char **pp;
+    char **ii;
+    int n;
+};
+
+static void usg() {
+    fprintf(stderr, "Usage: po.disp <Lx> <Ly> <Lz> <rr-*.bop> -- <ii-*.bop>\n");
+    exit(1);
+}
+
+static int shift_args(int *c, char ***v) {
+    (*c)--;
+    (*v)++;
+    return (*c) >= 0;
+}
+
+static void parse(int argc, char **argv, Args *a) {
+    int n, found_separator;    
+
+    // skip executable
+    if (!shift_args(&argc, &argv)) usg();
+    a->L[X] = atoi(*argv);
+
+    if (!shift_args(&argc, &argv)) usg();
+    a->L[Y] = atoi(*argv);
+
+    if (!shift_args(&argc, &argv)) usg();
+    a->L[Z] = atoi(*argv);
+
+    if (!shift_args(&argc, &argv)) usg();
+    a->pp = argv;
+
+    found_separator = 0;
+    n = 0;    
+    do {
+        if (0 == strcmp(*argv, "--")) {
+            found_separator = 1;
+            break;
+        }
+        ++n;
+    } while (shift_args(&argc, &argv));
+
+    if (n <= 1) ERR("Need more than one file\n");
+    if (!found_separator) usg();
+
+    if (!shift_args(&argc, &argv)) usg();
+
+    a->n = n;
+    a->ii = argv;
+
+    if (argc != n) usg();
+}
 
 void empty_tags(const int bufsize, int *tags) {
     for (int i = 0; i < bufsize; ++i) tags[i] = EMPTY;
@@ -77,51 +133,38 @@ void dump(const BopType type, const char *fout, const float *rr, const float *dd
 }
 
 int main(int argc, char **argv) {
-    enum {X, Y, Z, D};
-    
-    if (argc < 7) {
-        fprintf(stderr, "Usage: po.disp <Lx> <Ly> <Lz> <rr-*.bop> -- <ii-*.bop>\n");
-        exit(1);
-    }
-    int iarg = 1;
-    long np;
+    Args a;
+    long np, buffsize;
+    int nvars, i;
     BopType type;
-    int L[D];
-    L[X] = atoi(argv[iarg++]);
-    L[Y] = atoi(argv[iarg++]);
-    L[Z] = atoi(argv[iarg++]);
-
-    const int sep = separator(argc, argv);
-    const int nin = sep - iarg;
-
-    if (nin < 2) ERR("Need more than one file\n");
-    
-    char **ffpp = argv + iarg;
-    char **ffii = ffpp + nin + 1;
-    
     BopData *dpp, *dii;
     const int *ii;
     const float *pp;
+    float *rrc, *rrp, *ddr, *rrw;
+    int *tags;
+    
+    parse(argc, argv, &a);
 
     BPC( bop_ini(&dpp) );
     BPC( bop_ini(&dii) );
     
-    read_data(ffpp[0], dpp, ffii[0], dii);
+    read_data(a.pp[0], dpp, a.ii[0], dii);
 
     pp = (const float *) bop_get_data(dpp);
     ii = (const   int *) bop_get_data(dii);
 
     BPC( bop_get_n(dii, &np) );
-    const int buffsize = max_index(ii, np) + 1;
+    BPC( bop_get_nvars(dpp, &nvars) );
+    buffsize = max_index(ii, np) + 1;
 
-    float *rrc = new float[3*buffsize]; /* current  positions     */
-    float *rrp = new float[3*buffsize]; /* previous positions     */
-    float *ddr = new float[3*buffsize]; /* displacements          */
-    float *rrw = new float[6*buffsize]; /* work                   */
-    int  *tags = new int[buffsize];     /* tags: particle with this id or not? */
+    rrc  = new float[D*buffsize]; /* current  positions     */
+    rrp  = new float[D*buffsize]; /* previous positions     */
+    ddr  = new float[D*buffsize]; /* displacements          */
+    rrw  = new float[6*buffsize]; /* work                   */
+    tags = new int[buffsize];     /* tags: particle with this id or not? */
 
     memset(rrp, 0, 3*buffsize*sizeof(float));
-    pp2rr_sorted(ii, pp, np, 6, /**/ rrp);
+    pp2rr_sorted(ii, pp, np, nvars, /**/ rrp);
 
     empty_tags(buffsize, /**/ tags);
     compute_tags(ii, np, /**/ tags);
@@ -129,24 +172,24 @@ int main(int argc, char **argv) {
     BPC( bop_fin(dpp) );
     BPC( bop_fin(dii) ); 
     
-    for (int i = 0; i < nin-1; ++i) {
+    for (i = 0; i < a.n-1; ++i) {
         char fout[1024] = {0};
         BPC( bop_ini(&dpp) );
         BPC( bop_ini(&dii) );
 
-        outname(ffpp[i], /**/ fout);
-        printf("%s -- %s -> %s\n", ffpp[i], ffii[i], fout);
+        outname(a.pp[i], /**/ fout);
+        printf("%s -- %s -> %s\n", a.pp[i], a.ii[i], fout);
 
-        read_data(ffpp[i+1], dpp, ffii[i+1], dii);
+        read_data(a.pp[i+1], dpp, a.ii[i+1], dii);
         pp = (const float *) bop_get_data(dpp);
         ii = (const   int *) bop_get_data(dii);
 
         BPC( bop_get_n(dii, &np) );
         BPC( bop_get_type(dpp, &type) );
         
-        pp2rr_sorted(ii, pp, np, 6, /**/ rrc);
+        pp2rr_sorted(ii, pp, np, nvars, /**/ rrc);
 
-        disp(L, rrp, rrc, buffsize, /**/ ddr);
+        disp(a.L, rrp, rrc, buffsize, /**/ ddr);
 
         dump(type, fout, rrp, ddr, tags, buffsize, /*w*/ rrw);
         compute_tags(ii, np, /**/ tags);
