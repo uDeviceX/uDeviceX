@@ -14,6 +14,13 @@ function read_arg(   a, i) {
 	arg[i++] = a
     }
 }
+function assert_block(nb, n,   c1, c2, c) {
+    if (nb == 0) return
+    c1 = (nb - 1, n - 1) in files
+    c2 = (nb - 1,     n) in files
+    c = c1 && !c2
+    if (!c) err(sprintf("wrong size=%d for file block=%d", n, nb))
+}
 function read_files0(nb,   a, i) {
     i = 0
     for (;;) {
@@ -22,6 +29,7 @@ function read_files0(nb,   a, i) {
 	if (eq(a, "--")) break
 	files[nb, i++] = a
     }
+    assert_block(nb, i)
 }
 function read_files(   nb) {
     nb = 0 # number of file blocks
