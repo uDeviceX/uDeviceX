@@ -6,8 +6,9 @@ prog=u.scatter
 prog0=u.scatter0
 
 usg () {
-    msg "$prog PATTERN [ARGS].. [-- [FILE]..]"
-    msg "construct and run command for
+    msg "$prog PATTERN ACTION [ARGS].. [-- [FILE]..]"
+    msg 'construct and run commands for file lists [FILE].. like'
+    msg '  action args f0 f1 output'
     exit
 }
 
