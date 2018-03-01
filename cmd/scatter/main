@@ -34,3 +34,5 @@ done
 if test $Found -eq 0; then err "needs at least one --"; fi
 
 $prog0 "$pat" "$act" "$@"
+
+if test $? -ne 0; then err "$prog0 failed"; fi

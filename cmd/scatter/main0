@@ -1,5 +1,30 @@
 #!/bin/sh
 
+. u.scatter.util
+
 prog=u.scatter0
 
-echo 42
+"$AWK" -v prog="$prog" '
+function read_arg(   a, i) {
+    i = 0
+    for (;;) {
+	if (ARGC < 1) break
+	a = ARGV[1]; shift()
+	if (eq(a, "--")) break
+	arg[i++] = a
+    }
+}
+BEGIN {
+    pat = ARGV[1]; shift()
+    act = ARGV[1]; shift()
+    read_arg()
+    for (i = 0; i in arg; i++) msg("a: " arg[i])
+}
+function shift(  i) { for (i = 2; i < ARGC; i++) ARGV[i-1] = ARGV[i]; ARGC-- }
+function msg(s) { printf "%s\n", s | "cat >&2" }
+function err(s) {
+    printf "%s: %s\n", prog, s | "cat >&2"
+    exit(2)
+}
+function eq(a, b) { return a "" == b "" }
+' "$@"
