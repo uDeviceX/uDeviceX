@@ -4,7 +4,7 @@
 
 prog=u.scatter0
 
-"$AWK" -v prog="$prog" '
+"$AWK" -v prog="$prog" -v dbg="$DBG" '
 function read_arg(   a, i) {
     i = 0
     for (;;) {
@@ -38,15 +38,35 @@ function read_files(   nb) {
 	read_files0(nb++)
     }
 }
+function fmt_output(f,  n, o) {
+    pat0 = pat
+    n = gsub(/%/, "%s", pat0)
+    if (n == 0)      return pat0
+    else if (n == 1) return sprintf(pat0, f)
+    else err(sprintf("invalid patern `%s`", pat))
+}
+function fmt(i,   c, ib, j, f, a, o, pat0) {
+    for (ib = 0; (ib, i) in files; ib++)
+	f = f " " q(files[ib, i])
+    for (j = 0; j in arg; j++)
+	a = a " " q(arg[j])
+    o  = q(fmt_output(files[0, i]))
+    return sprintf("%s %s %s %s", act, a, f, o)
+}
+function run(c,   r) {
+    if (!eq(dbg, "0")) msg(c)
+    r = system(c)
+    return !r
+}
 BEGIN {
     pat = ARGV[1]; shift()
     act = ARGV[1]; shift()
     read_arg()
     read_files()
-    for (ib = 0; (ib, 0) in files; ib++) {
-	for (i = 0; (ib, i) in files; i++) {
-	    print ib, i, files[ib, i]
-	}
+    for (i = 0; (0, i) in files; i++) {
+	cmd = fmt(i)
+	status = run(cmd)
+	if (!status) err(sprintf("`%s` faild", cmd))
     }
 }
 function shift(  i) { for (i = 2; i < ARGC; i++) ARGV[i-1] = ARGV[i]; ARGC-- }
@@ -55,5 +75,6 @@ function err(s) {
     printf "%s: %s\n", prog, s | "cat >&2"
     exit(2)
 }
+function q(s) { return sprintf("\"%s\"", s) }
 function eq(a, b) { return a "" == b "" }
 ' "$@"
