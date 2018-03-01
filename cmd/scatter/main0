@@ -51,8 +51,8 @@ function fmt(i,   c, ib, j, f, f0, a, o, pat0) {
     for (j = 0; j in arg; j++)
 	a = a " " q(arg[j])
     f0 = files[0, i]
-    o  = q(fmt_output(basename(f0)))
-    return sprintf("%s %s %s %s", act, a, f, o)
+    o  = fmt_output(basename(f0))
+    return sprintf("%s %s %s %s", q(act), a, f, q(o))
 }
 function run(c,   r) {
     if (!eq(dbg, "0")) msg(c)

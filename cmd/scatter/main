@@ -12,6 +12,7 @@ usg () {
     msg '  ouput is constructed from PATTERN with % replaced by `basename file`'
     msg 'Examples:'
     msg 'u.scatter out/% echo preved -- f1 f2 -- g1 g2'
+    msg 'DBG= u.scatter out/%.vtk echo preved -- in/f1 in/f2 -- in/g1 in/g2'
     exit
 }
 
