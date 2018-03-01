@@ -18,10 +18,10 @@ install: all
 	mkdir -p $(BIN)
 	cp $(EXECS) $(BIN)
 
-po.disp: disp.o
+po.disp: main.o
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $^ -o $@ -lm $(LIBS)
 
-disp.o: disp.cpp $(C)/macros.h $(C)/pp_id.h
+main.o: main.cpp $(C)/macros.h $(C)/pp_id.h
 
 %.o: %.cpp
 	$(CXX) $(CXXFLAGS) -c $< -o $@
@@ -30,6 +30,6 @@ clean:
 	rm -rf *.o $(EXECS)
 
 test:
-	atest disp.cpp
+	atest main.cpp
 
 .PHONY: clean all install test
