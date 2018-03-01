@@ -63,14 +63,14 @@ void matrices_read_filter(const char *path, const Coords *c, /**/ Matrices **pq)
     *pq = q;
 }
 
-void matrices_get(Matrices *q, int i, /**/ double **pq) {
+void matrices_get(const Matrices *q, int i, /**/ double **pq) {
     int n;
     n = q->n;
     if (i >= n) ERR("i=%d >= n=%d", i, n);
     *pq = q->m[i].D;
 }
 
-void matrices_get_r(Matrices *q, int k, /**/ double r[3]) {
+void matrices_get_r(const Matrices *q, int k, /**/ double r[3]) {
     enum {X, Y, Z};
     int n;
     double *A;
@@ -80,7 +80,7 @@ void matrices_get_r(Matrices *q, int k, /**/ double r[3]) {
     matrix2r(A, /**/ r);
 }
 
-int matrices_get_n(Matrices *q) { return q->n; }
+int matrices_get_n(const Matrices *q) { return q->n; }
 
 static void log(double A[16]) {
     int i, j;
@@ -90,7 +90,7 @@ static void log(double A[16]) {
         msg_print("%g %g %g %g", a, b, c, d);
     }
 }
-void matrices_log(Matrices *q) {
+void matrices_log(const Matrices *q) {
     int n, i;
     n = q->n;
     msg_print("<matrices_log");

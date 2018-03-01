@@ -20,6 +20,8 @@
 #include "mpi/wrapper.h"
 
 #include "io/mesh_read/imp.h"
+#include "rbc/matrices/imp.h"
+
 #include "imp.h"
 
 #include "imp/new.h"
