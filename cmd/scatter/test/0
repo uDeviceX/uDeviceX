@@ -1,0 +1,2 @@
+# TEST: 0
+u.scatter out/%.vtk echo preved -- in/f1 in/f2 -- in/g1 in/g2 > s.out.txt
