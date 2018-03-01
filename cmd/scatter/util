@@ -15,5 +15,5 @@ err () { msg "$prog: $@"; exit 2; }
 assert_arg () {
     local m
     m="$1"; shift
-    if test $# -eq 0; then err $m; fi
+    if test $# -eq 0; then err needs an argument; fi
 }
