@@ -9,9 +9,8 @@
 #include "macros.h"
 #include "pp_id.h"
 
-int Lx, Ly, Lz;
-
 enum {EMPTY=0, OCCUPIED=1};
+
 void empty_tags(const int bufsize, int *tags) {
     for (int i = 0; i < bufsize; ++i) tags[i] = EMPTY;
 }
@@ -23,21 +22,20 @@ void compute_tags(const int *ii, const int n, int *tags) {
     }
 }
 
-void disp0(const float *rp, const float *rc, float *dr) {
-    const int dL[3] = {Lx, Ly, Lz};
+void disp0(const int L[3], const float *rp, const float *rc, float *dr) {
     for (int c = 0; c < 3; ++c) {
         dr[c] = rc[c] - rp[c];
         const float sign = dr[c] > 0 ? 1.f : -1.f;
-        dr[c] -= fabs(dr[c]) > dL[c]/2 ? sign * dL[c] : 0.f;        
+        dr[c] -= fabs(dr[c]) > L[c]/2 ? sign * L[c] : 0.f;        
     }
 }
 
-void disp(const float *rrp, const float *rrc, const int buffsize, /**/ float *ddr) {
+void disp(const int L[3], const float *rrp, const float *rrc, const int buffsize, /**/ float *ddr) {
     for (int i = 0; i < buffsize; ++i) {
         const float *rp = rrp + 3*i;
         const float *rc = rrc + 3*i;
         float *dr       = ddr + 3*i;
-        disp0(rp, rc, /**/ dr);
+        disp0(L, rp, rc, /**/ dr);
     }
 }
 
@@ -79,6 +77,8 @@ void dump(const BopType type, const char *fout, const float *rr, const float *dd
 }
 
 int main(int argc, char **argv) {
+    enum {X, Y, Z, D};
+    
     if (argc < 7) {
         fprintf(stderr, "Usage: po.disp <Lx> <Ly> <Lz> <rr-*.bop> -- <ii-*.bop>\n");
         exit(1);
@@ -86,9 +86,10 @@ int main(int argc, char **argv) {
     int iarg = 1;
     long np;
     BopType type;
-    Lx = atoi(argv[iarg++]);
-    Ly = atoi(argv[iarg++]);
-    Lz = atoi(argv[iarg++]);
+    int L[D];
+    L[X] = atoi(argv[iarg++]);
+    L[Y] = atoi(argv[iarg++]);
+    L[Z] = atoi(argv[iarg++]);
 
     const int sep = separator(argc, argv);
     const int nin = sep - iarg;
@@ -145,7 +146,7 @@ int main(int argc, char **argv) {
         
         pp2rr_sorted(ii, pp, np, 6, /**/ rrc);
 
-        disp(rrp, rrc, buffsize, /**/ ddr);
+        disp(L, rrp, rrc, buffsize, /**/ ddr);
 
         dump(type, fout, rrp, ddr, tags, buffsize, /*w*/ rrw);
         compute_tags(ii, np, /**/ tags);
