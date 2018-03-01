@@ -45,12 +45,13 @@ function fmt_output(f,  n, o) {
     else if (n == 1) return sprintf(pat0, f)
     else err(sprintf("invalid patern `%s`", pat))
 }
-function fmt(i,   c, ib, j, f, a, o, pat0) {
+function fmt(i,   c, ib, j, f, f0, a, o, pat0) {
     for (ib = 0; (ib, i) in files; ib++)
 	f = f " " q(files[ib, i])
     for (j = 0; j in arg; j++)
 	a = a " " q(arg[j])
-    o  = q(fmt_output(files[0, i]))
+    f0 = files[0, i]
+    o  = q(fmt_output(basename(f0)))
     return sprintf("%s %s %s %s", act, a, f, o)
 }
 function run(c,   r) {
@@ -77,4 +78,5 @@ function err(s) {
 }
 function q(s) { return sprintf("\"%s\"", s) }
 function eq(a, b) { return a "" == b "" }
+function basename(s) { sub(/^.*\//, "", s); return s }
 ' "$@"

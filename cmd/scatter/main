@@ -9,6 +9,7 @@ usg () {
     msg "$prog PATTERN ACTION [ARGS].. [-- [FILE]..]"
     msg 'construct and run commands for file lists [FILE].. like'
     msg '  action args f0 f1 output'
+    msg '  ouput is constructed from PATTERN with % replaced by `basename file`'
     msg 'Examples:'
     msg 'u.scatter out/% echo preved -- f1 f2 -- g1 g2'
     exit
