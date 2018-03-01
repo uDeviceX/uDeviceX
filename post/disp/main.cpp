@@ -145,8 +145,6 @@ int main(int argc, char **argv) {
     
     parse(argc, argv, &a);
 
-    
-
     BPC( bop_ini(&dpp) );
     BPC( bop_ini(&dii) );
     
