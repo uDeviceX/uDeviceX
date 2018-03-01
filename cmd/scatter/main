@@ -1,0 +1,6 @@
+#!/bin/sh
+
+prog_name=u.scatter
+prog_name0=u.scatter0
+
+$prog_name0
