@@ -34,8 +34,6 @@ static void parse(int argc, char **argv, Args *a) {
     int n, found_separator;    
 
     // skip executable
-    shift_args(&argc, &argv);
-
     if (!shift_args(&argc, &argv)) usg();
     a->L[X] = atoi(*argv);
 
@@ -51,11 +49,11 @@ static void parse(int argc, char **argv, Args *a) {
     found_separator = 0;
     n = 0;    
     do {
-        ++n;
         if (0 == strcmp(*argv, "--")) {
             found_separator = 1;
             break;
         }
+        ++n;
     } while (shift_args(&argc, &argv));
 
     if (n <= 1) ERR("Need more than one file\n");
@@ -181,8 +179,8 @@ int main(int argc, char **argv) {
         BPC( bop_ini(&dpp) );
         BPC( bop_ini(&dii) );
 
-        outname(ffpp[i], /**/ fout);
-        printf("%s -- %s -> %s\n", ffpp[i], ffii[i], fout);
+        outname(a.pp[i], /**/ fout);
+        printf("%s -- %s -> %s\n", a.pp[i], a.ii[i], fout);
 
         read_data(a.pp[i+1], dpp, a.ii[i+1], dii);
         pp = (const float *) bop_get_data(dpp);
@@ -193,7 +191,7 @@ int main(int argc, char **argv) {
         
         pp2rr_sorted(ii, pp, np, nvars, /**/ rrc);
 
-        disp(L, rrp, rrc, buffsize, /**/ ddr);
+        disp(a.L, rrp, rrc, buffsize, /**/ ddr);
 
         dump(type, fout, rrp, ddr, tags, buffsize, /*w*/ rrw);
         compute_tags(ii, np, /**/ tags);
