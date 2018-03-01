@@ -2,7 +2,7 @@
 #define _I_ static __device__
 
 template<typename PA>
-_S_ void parray_get_common(PA a, int i, /**/ PairPa *p) {
+_S_ void parray_get_pp(PA a, int i, /**/ PairPa *p) {
     const float2 *pp = (const float2 *) a.pp;
     float2 s0, s1, s2;
     s0 = __ldg(pp + 3*i + 0);
@@ -22,14 +22,14 @@ _S_ void parray_get_common(PA a, int i, /**/ PairPa *p) {
 _I_ void parray_get(PaArray_v a, int i, /**/ PairPa *p) // <1>
 // end::int[]
 {
-    parray_get_common(a, i, /**/ p);
+    parray_get_pp(a, i, /**/ p);
 }
 
 // tag::int[]
 _I_ void parray_get(PaCArray_v a, int i, /**/ PairPa *p) // <2>
 // end::int[]
 {
-    parray_get_common(a, i, /**/ p);
+    parray_get_pp(a, i, /**/ p);
     p->color = a.cc[i];
 }
 
