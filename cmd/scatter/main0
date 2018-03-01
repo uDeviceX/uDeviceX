@@ -14,11 +14,32 @@ function read_arg(   a, i) {
 	arg[i++] = a
     }
 }
+function read_files0(nb,   a, i) {
+    i = 0
+    for (;;) {
+	if (ARGC == 1) break
+	a = ARGV[1]; shift()
+	if (eq(a, "--")) break
+	files[nb, i++] = a
+    }
+}
+function read_files(   nb) {
+    nb = 0 # number of file blocks
+    for (;;) {
+	if (ARGC == 1) break
+	read_files0(nb++)
+    }
+}
 BEGIN {
     pat = ARGV[1]; shift()
     act = ARGV[1]; shift()
     read_arg()
-    for (i = 0; i in arg; i++) msg("a: " arg[i])
+    read_files()
+    for (ib = 0; (ib, 0) in files; ib++) {
+	for (i = 0; (ib, i) in files; i++) {
+	    print ib, i, files[ib, i]
+	}
+    }
 }
 function shift(  i) { for (i = 2; i < ARGC; i++) ARGV[i-1] = ARGV[i]; ARGC-- }
 function msg(s) { printf "%s\n", s | "cat >&2" }
