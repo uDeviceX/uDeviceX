@@ -1,5 +1,82 @@
 #!/bin/sh
 
-prog_name=u.scatter0
+. u.scatter.util
 
-echo 42
+prog=u.scatter0
+
+"$AWK" -v prog="$prog" -v dbg="$DBG" '
+function read_arg(   a, i) {
+    i = 0
+    for (;;) {
+	if (ARGC < 1) break
+	a = ARGV[1]; shift()
+	if (eq(a, "--")) break
+	arg[i++] = a
+    }
+}
+function assert_block(nb, n,   c1, c2, c) {
+    if (nb == 0) return
+    c1 = (nb - 1, n - 1) in files
+    c2 = (nb - 1,     n) in files
+    c = c1 && !c2
+    if (!c) err(sprintf("wrong size=%d for file block=%d", n, nb))
+}
+function read_files0(nb,   a, i) {
+    i = 0
+    for (;;) {
+	if (ARGC == 1) break
+	a = ARGV[1]; shift()
+	if (eq(a, "--")) break
+	files[nb, i++] = a
+    }
+    assert_block(nb, i)
+}
+function read_files(   nb) {
+    nb = 0 # number of file blocks
+    for (;;) {
+	if (ARGC == 1) break
+	read_files0(nb++)
+    }
+}
+function fmt_output(f,  n, o) {
+    pat0 = pat
+    n = gsub(/%/, "%s", pat0)
+    if (n == 0)      return pat0
+    else if (n == 1) return sprintf(pat0, f)
+    else err(sprintf("invalid patern `%s`", pat))
+}
+function fmt(i,   c, ib, j, f, f0, a, o, pat0) {
+    for (ib = 0; (ib, i) in files; ib++)
+	f = f " " q(files[ib, i])
+    for (j = 0; j in arg; j++)
+	a = a " " q(arg[j])
+    f0 = files[0, i]
+    o  = fmt_output(basename(f0))
+    return sprintf("%s %s %s %s", q(act), a, f, q(o))
+}
+function run(c,   r) {
+    if (!eq(dbg, "0")) msg(c)
+    r = system(c)
+    return !r
+}
+BEGIN {
+    pat = ARGV[1]; shift()
+    act = ARGV[1]; shift()
+    read_arg()
+    read_files()
+    for (i = 0; (0, i) in files; i++) {
+	cmd = fmt(i)
+	status = run(cmd)
+	if (!status) err(sprintf("`%s` faild", cmd))
+    }
+}
+function shift(  i) { for (i = 2; i < ARGC; i++) ARGV[i-1] = ARGV[i]; ARGC-- }
+function msg(s) { printf "%s\n", s | "cat >&2" }
+function err(s) {
+    printf "%s: %s\n", prog, s | "cat >&2"
+    exit(2)
+}
+function q(s) { return sprintf("\"%s\"", s) }
+function eq(a, b) { return a "" == b "" }
+function basename(s) { sub(/^.*\//, "", s); return s }
+' "$@"

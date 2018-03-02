@@ -1,0 +1,2 @@
+preved in/f1 in/g1 out/f1.vtk
+preved in/f2 in/g2 out/f2.vtk

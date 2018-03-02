@@ -1,6 +1,41 @@
 #!/bin/sh
 
-prog_name=u.scatter
-prog_name0=u.scatter0
+. u.scatter.util
 
-$prog_name0
+prog=u.scatter
+prog0=u.scatter0
+
+usg () {
+    msg "$prog PATTERN ACTION [ARGS].. [-- [FILE]..]"
+    msg 'run constructed command every file [FILE]..'
+    msg '  ACTION [ARGS] f0 g0 output0'
+    msg '  ACTION [ARGS] f1 g1 output1'
+    msg '  ouput0 is constructed from PATTERN with % replaced by `basename file0`'
+    msg 'Examples:'
+    msg 'u.scatter out/% echo preved -- f1 f2 -- g1 g2'
+    msg 'DBG= u.scatter out/%.vtk echo preved -- in/f1 in/f2 -- in/g1 in/g2'
+    exit
+}
+
+if test $# -ne 0 && test "$1" = -h
+then usg
+fi
+
+if test $# -eq 0; then err 'needs PATTERN'; fi
+pat="$1"; shift
+
+if test $# -eq 0; then err 'needs ACTION'; fi
+act="$1"; shift
+
+Found=0
+for i
+do shift
+   if test "$i" = --; then Found=1; fi
+   set -- "$@" "$i"
+done
+
+if test $Found -eq 0; then err "needs at least one --"; fi
+
+$prog0 "$pat" "$act" "$@"
+
+if test $? -ne 0; then err "$prog0 failed"; fi
