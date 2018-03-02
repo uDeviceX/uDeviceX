@@ -39,9 +39,9 @@ static int good(const Coords *c, const double A[16]) {
     double r[3];
     matrix2r(A, /**/ r);
     return
-        xlo(c) < r[X] && r[X] <= xhi(c) &&
-        ylo(c) < r[Y] && r[Y] <= yhi(c) &&
-        zlo(c) < r[Z] && r[Z] <= zhi(c);
+        xlo(c) <= r[X] && r[X] < xhi(c) &&
+        ylo(c) <= r[Y] && r[Y] < yhi(c) &&
+        zlo(c) <= r[Z] && r[Z] < zhi(c);
 }
 void matrices_read_filter(const char *path, const Coords *c, /**/ Matrices **pq) {
     int m, n;
