@@ -14,12 +14,45 @@
 #include "mesh/area/imp.h"
 #include "mesh/volume/imp.h"
 #include "mesh/positions/imp.h"
+#include "utils/imp.h"
 #include "inc/type.h"
 
 #define MAX_N 99999
 #define MAX_M 20
 Particle pp[MAX_N];
 double area[MAX_M];
+
+enum {AREA, VOLUME};
+struct MeshQuant {
+    int type;
+    union {
+        MeshArea *area;
+        MeshVolume *volume;
+    };
+};
+
+void q_ini(const char *type, MeshRead *mesh, /**/ MeshQuant **pq) {
+    MeshQuant *q;
+    EMALLOC(1, &q);
+    q->type = AREA;
+    mesh_area_ini(mesh, &q->area);
+    *pq = q;
+}
+
+void q_apply(MeshQuant *q, int nm, Positions *positions, double *out) {
+    if (q->type == AREA)
+        UC(mesh_area_apply(q->area, nm, positions, /**/ out));
+    else if (q->type == VOLUME)
+        UC(mesh_volume_apply(q->volume, nm, positions, /**/ out));
+    else ERR("unknown q->type");
+}
+
+void q_fin(MeshQuant *q) {
+    if (q->type == AREA) mesh_area_fin(q->area);
+    else if (q->type == VOLUME) mesh_volume_fin(q->volume);
+    else ERR("unknown q->type");
+    EFREE(q);
+}
 
 void main0(const char *cell, const char *ic) {
     int i, nm, n, nv;
