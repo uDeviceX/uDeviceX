@@ -27,7 +27,7 @@ static void usg() {
 static int shift_args(int *c, char ***v) {
     (*c)--;
     (*v)++;
-    return (*c) >= 0;
+    return (*c) > 0;
 }
 
 static void parse(int argc, char **argv, Args *a) {
