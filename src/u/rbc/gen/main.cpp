@@ -29,8 +29,6 @@ void main0(const char *cell, const char *ic) {
     const float *verts;
     UC(mesh_read_ini_off(cell, /**/ &mesh));
     UC(matrices_read(ic, &matrices));
-    UC(matrices_log(matrices));
-
     nv = mesh_read_get_nv(mesh);
     verts = mesh_read_get_vert(mesh);
     rbc_gen0(nv, verts, matrices, /**/ &n, pp);
