@@ -50,8 +50,6 @@ void area_volume_compute(AreaVolume *q, int nc, const Particle *pp, /**/ float *
     *pav = q->av;
 }
 
-const int4* area_volume_tri(AreaVolume *q) { return q->tri; }
-
 void area_volume_host(AreaVolume *q, /**/ float **pav) {
     if (!q->Computed) ERR("call `area_volume_host` before `area_volume_compute`");
     cD2H(q->av_hst, q->av, 2*q->nc);
