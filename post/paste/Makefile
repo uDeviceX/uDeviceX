@@ -21,7 +21,7 @@ install: all
 paste: main.o
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $^ -o $@ -lm $(LIBS)
 
-main.o: main.cpp $(C)/macros.h $(C)/pp_id.h
+main.o: main.cpp $(C)/macros.h
 
 %.o: %.cpp
 	$(CXX) $(CXXFLAGS) -c $< -o $@
