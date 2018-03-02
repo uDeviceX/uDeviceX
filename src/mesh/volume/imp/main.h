@@ -88,3 +88,13 @@ double mesh_volume_apply0(MeshVolume *q, Positions *p) {
     UC(to_com(nv, offset, p, /**/ rr));
     return volume(nt, tt, rr);
 }
+
+void mesh_volume_apply(MeshVolume *q, int m, Positions *p, double *volume0) {
+    int i, nt, nv, offset;
+    int4 *tt;
+    nt = q->nt; tt = q->tt; nv = q->nv; offset = 0;
+    for (i = 0; i < m; i++) {
+        UC(volume0[i] = volume(nt, tt, p, offset));
+        offset += nv;
+    }
+}

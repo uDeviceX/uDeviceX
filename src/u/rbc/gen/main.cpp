@@ -12,6 +12,7 @@
 #include "rbc/matrices/imp.h"
 #include "rbc/gen/imp.h"
 #include "mesh/area/imp.h"
+#include "mesh/volume/imp.h"
 #include "mesh/positions/imp.h"
 #include "inc/type.h"
 

@@ -7,7 +7,7 @@ prog0=u.scatter0
 
 usg () {
     msg "$prog PATTERN ACTION [ARGS].. [-- [FILE]..]"
-    msg 'run constructed command every file [FILE]..'
+    msg 'run constructed command for every file [FILE]..'
     msg '  ACTION [ARGS] f0 g0 output0'
     msg '  ACTION [ARGS] f1 g1 output1'
     msg '  ouput0 is constructed from PATTERN with % replaced by `basename file0`'
