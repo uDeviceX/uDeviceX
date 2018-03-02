@@ -47,6 +47,8 @@ void mesh_area_apply(MeshArea *q, int m, Positions *p, double *area0) {
     int4 *tt;
     nt = q->nt; tt = q->tt; nv = q->nv; offset = 0;
 
-    for (i = 0; i < m; i++)
-        UC(area0[i] = area(nt, tt, p, offset += nv));
+    for (i = 0; i < m; i++) {
+        UC(area0[i] = area(nt, tt, p, offset));
+        offset += nv;
+    }
 }
