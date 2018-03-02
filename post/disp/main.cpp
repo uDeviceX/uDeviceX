@@ -110,11 +110,17 @@ void outname(const char *inrr, char *out) {
 
 static int collect(const float *rr, const float *ddr, int nmax, const int *tags, /**/ float *pp) {
     int i, c, j = 0;
+    const float *r, *dr;
+    float *p;
+
     for (i = 0; i < nmax; ++i)
     if (tags[i] == OCCUPIED) {
+        r  = rr  + 3 * i;
+        dr = ddr + 3 * i;
+        p = pp + 6 * j;
         for (c = 0; c < 3; ++c) {
-            pp[6 * j + 0 + c] = rr[3 * i + c];
-            pp[6 * j + 3 + c] = ddr[3 * i + c];
+            p[c + 0] = r[c];
+            p[c + 3] = dr[c];
         }
         ++j;
     }
