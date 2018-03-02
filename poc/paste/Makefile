@@ -8,8 +8,8 @@ EXECS = paste
 C=../common
 
 BOPDIR = $(HOME)/prefix/bop
-LIBS   = -lbop -lbop_serial
-LDFLAGS  += -L$(BOPDIR)/lib
+LIBS = -lbop -lbop_serial
+LDFLAGS += -L$(BOPDIR)/lib
 CXXFLAGS += -I$(BOPDIR)/include -I$(C)
 
 all: $(EXECS)
@@ -21,7 +21,7 @@ install: all
 paste: main.o
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $^ -o $@ -lm $(LIBS)
 
-main.o: main.cpp $(C)/macros.h
+main.o: main.cpp $(C)/macros.h $(C)/pp_id.h
 
 %.o: %.cpp
 	$(CXX) $(CXXFLAGS) -c $< -o $@
