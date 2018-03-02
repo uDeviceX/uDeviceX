@@ -1,0 +1,12 @@
+= RBC area and volume
+:src: ../../../../src
+
+Compute area and volume for every object.
+
+[source,cpp]
+----
+include::{src}/rbc/com/imp.h[tag=interface]
+----
+
+`max_nm` is a maximum allowed number of meshes. It is a runtime error
+if `nm` exceeds `nm_max`.
