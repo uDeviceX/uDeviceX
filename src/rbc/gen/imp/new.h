@@ -2,8 +2,7 @@ static void mult(double A[16], const double a[4], /**/ double b[4]) {
     /* b = A x a */
     enum {X, Y, Z, W};    
     int c, i;
-    i = 0;
-    for (c = 0; c < 4; c++) {
+    for (i = c = 0; c < 4; c++) {
         b[c]  = A[i++]*a[X];
         b[c] += A[i++]*a[Y];
         b[c] += A[i++]*a[Z];
@@ -20,10 +19,10 @@ static void homogenius_multi(double A[16], const float a0[3], /**/ float b0[3]) 
     b0[X] = b[X]; b0[Y] = b[Y]; b0[Z] = b[Z];
 }
 
-static void gen0(double A[16], const float *r0, Particle *p) {
+static void gen0(double A[16], const float *r, Particle *p) {
     enum {X, Y, Z};
     p->v[X] = p->v[Y] = p->v[Z] = 0;
-    homogenius_multi(A, r0, /**/ p->r);
+    homogenius_multi(A, r, /**/ p->r);
 }
 
 static void gen1(double A[16], int nv, const float *rr, Particle *pp) {
