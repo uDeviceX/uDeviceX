@@ -14,7 +14,7 @@ usg () {
     msg 'Examples:'
     msg 'u.scatter out/% echo preved -- f1 f2 -- g1 g2'
     msg 'DBG= u.scatter out/%.vtk echo preved -- in/f1 in/f2 -- in/g1 in/g2'
-    msg 'if DBG is set u.scatter logs commands'
+    msg 'if DBG is set u.scatter logs commands it executes'
     exit
 }
 
