@@ -52,20 +52,14 @@ static void assert_nc(int nc) {
     ERR("nc = %d >= MAX_CELL_NUM = %d", nc, MAX_CELL_NUM);
 }
 
-int rbc_gen(const Coords *coords, const float *rr0, const char *ic, int nv, Particle *pp) {
-    int nc = 0;
-    int L[3] = {xs(coords), ys(coords), zs(coords)};
-    float A[4*4]; /* 4x4 affice transformation matrix */
-    FILE *f;
-    UC(efopen(ic, "r", /**/ &f));
-
-    while ( read_A(f, /**/ A) ) {
-        shift(coords, /**/ A);
-        if ( inside_subdomain(L, A) )
-            transform(rr0, nv, A, &pp[nv*(nc++)]);
-    }
-    assert_nc(nc);
-    UC(efclose(f));
-    msg_print("read %d rbcs", nc);
-    return nc;
+int rbc_gen(const Coords *coords, const float *rr0, const char *path, int nv, Particle *pp) {
+    int n;
+    Matrices *matrices;
+    if (nv <= 0) ERR("nv <= 0");
+    UC(matrices_read_filter(path, coords, /**/ &matrices));
+    UC(matrices_log(matrices));
+    UC(rbc_gen0(nv, rr0, matrices, /**/ &n, pp));
+    UC(rbc_shift(coords, n, pp));
+    UC(matrices_fin(matrices));
+    return n / nv;
 }
