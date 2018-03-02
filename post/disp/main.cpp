@@ -72,26 +72,31 @@ void empty_tags(const int bufsize, int *tags) {
 }
 
 void compute_tags(const int *ii, const int n, int *tags) {
-    for (int j = 0; j < n; ++j) {
-        const int i = ii[j];
+    int j, i;
+    for (j = 0; j < n; ++j) {
+        i = ii[j];
         tags[i] = OCCUPIED;
     }
 }
 
-void disp0(const int L[3], const float *rp, const float *rc, float *dr) {
-    for (int c = 0; c < 3; ++c) {
+void disp_1p(const int L[3], const float *rp, const float *rc, float *dr) {
+    int c, sign;
+    for (c = 0; c < 3; ++c) {
         dr[c] = rc[c] - rp[c];
-        const float sign = dr[c] > 0 ? 1.f : -1.f;
+        sign = dr[c] > 0 ? 1 : -1;
         dr[c] -= fabs(dr[c]) > L[c]/2 ? sign * L[c] : 0.f;        
     }
 }
 
 void disp(const int L[3], const float *rrp, const float *rrc, const int buffsize, /**/ float *ddr) {
-    for (int i = 0; i < buffsize; ++i) {
-        const float *rp = rrp + 3*i;
-        const float *rc = rrc + 3*i;
-        float *dr       = ddr + 3*i;
-        disp0(L, rp, rc, /**/ dr);
+    int i;
+    const float *rp, *rc;
+    float *dr;
+    for (i = 0; i < buffsize; ++i) {
+        rp = rrp + 3*i;
+        rc = rrc + 3*i;
+        dr = ddr + 3*i;
+        disp_1p(L, rp, rc, /**/ dr);
     }
 }
 
