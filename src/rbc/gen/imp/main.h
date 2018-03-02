@@ -1,55 +1,57 @@
-static void transform(const float *rr0, int nv, float *A, /**/ Particle *pp) {
-    int iv, c, i;
-    float *r, *v;
-    const float *r0;
-    /* rr0: vertices of RBC template; A: affine transformation matrix */
-    for (iv = 0; iv < nv; iv++) {
-        r = pp[iv].r;
-        v = pp[iv].v;
-        r0 = &rr0[3*iv];
-        for (c = 0, i = 0; c < 3; c++) {
-            r[c] += A[i++]*r0[0]; /* matrix transformation */
-            r[c] += A[i++]*r0[1];
-            r[c] += A[i++]*r0[2];
-            r[c] += A[i++];
-
-            v[c] = 0;
-        }
+static void mult(double A[16], const double a[4], /**/ double b[4]) {
+    /* b = A x a */
+    enum {X, Y, Z, W};    
+    int c, i;
+    for (i = c = 0; c < 4; c++) {
+        b[c]  = A[i++]*a[X];
+        b[c] += A[i++]*a[Y];
+        b[c] += A[i++]*a[Z];
+        b[c] += A[i++]*a[W];
     }
 }
 
-static bool read_A(FILE *f, float A[16]) {
+static void homogenius_multi(double A[16], const float a0[3], /**/ float b0[3]) {
+    /* b = A x [a, 1] */
+    enum {X, Y, Z, W};
+    double a[4], b[4];
+    a[X] = a0[X]; a[Y] = a0[Y]; a[Z] = a0[Z]; a[W] = 1;
+    mult(A, a, /**/ b);
+    b0[X] = b[X]; b0[Y] = b[Y]; b0[Z] = b[Z];
+}
+
+static void gen0(double A[16], const float *r, Particle *p) {
+    enum {X, Y, Z};
+    p->v[X] = p->v[Y] = p->v[Z] = 0;
+    homogenius_multi(A, r, /**/ p->r);
+}
+
+static void gen1(double A[16], int nv, const float *rr, Particle *pp) {
     int i;
-    for (i = 0; i < 4*4; i++)
-        if (fscanf(f, "%f", &A[i]) != 1) return false;
-    return true;
+    for (i = 0; i < nv; i++) gen0(A, &rr[3*i], &pp[i]);
 }
-
-/* shift to local coordinates */
-static void shift(const Coords *coords, /**/ float A[16]) {
-    enum {X_, Y_, Z_};
-    enum {
-        X = 4*X_ + 3,
-        Y = 4*Y_ + 3,
-        Z = 4*Z_ + 3,
-    };
-    A[X] = xg2xl(coords, A[X]);
-    A[Y] = yg2yl(coords, A[Y]);
-    A[Z] = zg2zl(coords, A[Z]);
-}
-
-static bool inside_subdomain(const int L[3], const float A[16]) {
-    int c, j;
-    for (c = 0; c < 3; c++) {
-        j = 4 * c + 3;
-        if (2*A[j] < -L[c] || 2*A[j] >= L[c]) return false; /* not my RBC */
+void rbc_gen0(int nv, const float *rr, const Matrices *matrices, /**/ int *pn, Particle *pp) {
+    int i, n, nm;
+    double *A;
+    n = 0;
+    nm = matrices_get_n(matrices);
+    for (i = 0; i < nm; i++) {
+        matrices_get(matrices, i, &A);
+        gen1(A, nv, rr, &pp[n]); n += nv;
     }
-    return true;
+    *pn = n;
 }
 
-static void assert_nc(int nc) {
-    if (nc < MAX_CELL_NUM) return;
-    ERR("nc = %d >= MAX_CELL_NUM = %d", nc, MAX_CELL_NUM);
+static void shift(const Coords *c, Particle *p) {
+    enum {X, Y, Z};
+    float *r;
+    r = p->r;
+    r[X] = xg2xl(c, r[X]);
+    r[Y] = yg2yl(c, r[Y]);
+    r[Z] = zg2zl(c, r[Z]);
+}
+void rbc_shift(const Coords *c, int n, Particle *pp) {
+    int i;
+    for (i = 0; i < n; i++) shift(c, &pp[i]);
 }
 
 int rbc_gen(const Coords *coords, const float *rr0, const char *path, int nv, Particle *pp) {
