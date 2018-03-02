@@ -19,8 +19,8 @@
 
 #define MAX_N 99999
 #define MAX_M 20
-Particle pp[MAX_N];
-double area[MAX_M];
+static Particle pp[MAX_N];
+static double output[MAX_M];
 
 enum {AREA, VOLUME};
 struct MeshQuant {
@@ -31,15 +31,21 @@ struct MeshQuant {
     };
 };
 
-void q_ini(const char *type, MeshRead *mesh, /**/ MeshQuant **pq) {
+static void q_ini(const char *type, MeshRead *mesh, /**/ MeshQuant **pq) {
     MeshQuant *q;
     EMALLOC(1, &q);
-    q->type = AREA;
-    mesh_area_ini(mesh, &q->area);
+    if (same_str(type, "area")) {
+        q->type = AREA;
+        mesh_area_ini(mesh, &q->area);
+    } else if (same_str(type, "volume")) {
+        q->type = VOLUME;
+        mesh_volume_ini(mesh, &q->volume);
+    } else
+        ERR("unknown type '%s'", type);
     *pq = q;
 }
 
-void q_apply(MeshQuant *q, int nm, Positions *positions, double *out) {
+static void q_apply(MeshQuant *q, int nm, Positions *positions, double *out) {
     if (q->type == AREA)
         UC(mesh_area_apply(q->area, nm, positions, /**/ out));
     else if (q->type == VOLUME)
@@ -47,18 +53,18 @@ void q_apply(MeshQuant *q, int nm, Positions *positions, double *out) {
     else ERR("unknown q->type");
 }
 
-void q_fin(MeshQuant *q) {
+static void q_fin(MeshQuant *q) {
     if (q->type == AREA) mesh_area_fin(q->area);
     else if (q->type == VOLUME) mesh_volume_fin(q->volume);
     else ERR("unknown q->type");
     EFREE(q);
 }
 
-void main0(const char *cell, const char *ic) {
+void main0(const char *cell, const char *ic, const char *quant) {
     int i, nm, n, nv;
     Matrices *matrices;
     MeshRead *mesh;
-    MeshArea *mesh_area;
+    MeshQuant *mesh_quant;
     Positions *positions;
     const float *verts;
     UC(mesh_read_ini_off(cell, /**/ &mesh));
@@ -68,20 +74,19 @@ void main0(const char *cell, const char *ic) {
     rbc_gen0(nv, verts, matrices, /**/ &n, pp);
     nm = n / nv;
     positions_particle_ini(n, pp, /**/ &positions);
-    UC(mesh_area_ini(mesh, &mesh_area));
-    mesh_area_apply(mesh_area, nm, positions, /**/ area);
+    UC(q_ini(quant, mesh, &mesh_quant));
+    UC(q_apply(mesh_quant, nm, positions, /**/ output));
     for (i = 0; i < nm; i++)
-        printf("%g\n", area[i]);
+        printf("%g\n", output[i]);
     
     UC(positions_fin(positions));
-    UC(mesh_area_fin(mesh_area));
+    UC(q_fin(mesh_quant));
     UC(matrices_fin(matrices));
     UC(mesh_read_fin(mesh));
 }
 
 int main(int argc, char **argv) {
-    const char *cell;
-    const char *ic;
+    const char *cell, *ic, *quant;
     Config *cfg;
     int rank, size, dims[3];
     MPI_Comm cart;
@@ -96,8 +101,9 @@ int main(int argc, char **argv) {
     UC(conf_read(argc, argv, cfg));
     UC(conf_lookup_string(cfg, "cell", &cell));
     UC(conf_lookup_string(cfg, "ic", &ic));
+    UC(conf_lookup_string(cfg, "q", &quant));
 
-    main0(cell, ic);
+    main0(cell, ic, quant);
 
     UC(conf_fin(cfg));
     MC(m::Barrier(cart));
