@@ -42,5 +42,15 @@ void rbc_gen0(int nv, const float *rr, const Matrices *matrices, /**/ int *pn, P
     *pn = n;
 }
 
+static void shift(const Coords *c, Particle *p) {
+    enum {X, Y, Z};
+    float *r;
+    r = p->r;
+    r[X] = xg2xl(c, r[X]);
+    r[Y] = yg2yl(c, r[Y]);
+    r[Z] = zg2zl(c, r[Z]);
+}
 void rbc_shift(const Coords *c, int n, Particle *pp) {
+    int i;
+    for (i = 0; i < n; i++) shift(c, &pp[i]);
 }
