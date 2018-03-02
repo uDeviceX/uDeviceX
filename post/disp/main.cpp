@@ -108,15 +108,16 @@ void outname(const char *inrr, char *out) {
     memcpy(out + strt, newext, sizeof(newext));
 }
 
-static int collect(const float *rr, const float *ddr, int nmax, const int *tags, /**/ float *pp) {
-    int i, c, j = 0;
+static int collect(const float *rr, const float *ddr, int nmax, const int *tags, const int *ii, /**/ float *pp) {
+    int i, c, j = 0, id;
     const float *r, *dr;
     float *p;
 
     for (i = 0; i < nmax; ++i)
     if (tags[i] == OCCUPIED) {
-        r  = rr  + 3 * i;
-        dr = ddr + 3 * i;
+        id = ii[j];
+        r  = rr  + 3 * id;
+        dr = ddr + 3 * id;
         p = pp + 6 * j;
         for (c = 0; c < 3; ++c) {
             p[c + 0] = r[c];
@@ -128,9 +129,9 @@ static int collect(const float *rr, const float *ddr, int nmax, const int *tags,
 }
 
 
-void dump(const BopType type, const char *fout, const float *rr, const float *ddr, const int *tags, const int buffsize, /*w*/ float *work) {
+void dump(const BopType type, const char *fout, const float *rr, const float *ddr, const int *tags, const int *ii, const int buffsize, /*w*/ float *work) {
     BopData *d;
-    int n = collect(rr, ddr, buffsize, tags, /**/ work);
+    int n = collect(rr, ddr, buffsize, tags, ii, /**/ work);
     
     /* dump */
     
@@ -156,6 +157,7 @@ int main(int argc, char **argv) {
     BopType type;
     BopData *dpp, *dii;
     const int *ii;
+    int *iip;
     const float *pp;
     float *rrc, *rrp, *ddr, *rrw;
     int *tags;
@@ -174,6 +176,7 @@ int main(int argc, char **argv) {
     BPC( bop_get_nvars(dpp, &nvars) );
     buffsize = max_index(ii, np) + 1;
 
+    iip  = new int  [buffsize];   /* global ids of previous */
     rrc  = new float[D*buffsize]; /* current  positions     */
     rrp  = new float[D*buffsize]; /* previous positions     */
     ddr  = new float[D*buffsize]; /* displacements          */
@@ -185,6 +188,7 @@ int main(int argc, char **argv) {
 
     empty_tags(buffsize, /**/ tags);
     compute_tags(ii, np, /**/ tags);
+    memcpy(iip, ii, buffsize*sizeof(int));
 
     BPC( bop_fin(dpp) );
     BPC( bop_fin(dii) ); 
@@ -208,8 +212,9 @@ int main(int argc, char **argv) {
 
         disp(a.L, rrp, rrc, buffsize, /**/ ddr);
 
-        dump(type, fout, rrp, ddr, tags, buffsize, /*w*/ rrw);
+        dump(type, fout, rrp, ddr, tags, iip, buffsize, /*w*/ rrw);
         compute_tags(ii, np, /**/ tags);
+        memcpy(iip, ii, buffsize*sizeof(int));
         
         BPC( bop_fin(dpp) );
         BPC( bop_fin(dii) ); 
@@ -222,7 +227,7 @@ int main(int argc, char **argv) {
 
     delete[] rrp; delete[] rrc;
     delete[] ddr; delete[] rrw;
-    delete[] tags;
+    delete[] tags; delete[] iip;
     
     return 0;
 }
