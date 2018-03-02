@@ -1,11 +1,12 @@
 void mesh_area_ini(MeshRead *mesh, MeshArea **pq) {
-    int nt;
+    int nv, nt;
     MeshArea *q;
     EMALLOC(1, &q);
     nt = mesh_read_get_nt(mesh);
-    EMALLOC(  nt, &q->tt);
+    nv = mesh_read_get_nv(mesh);
+    EMALLOC(nt, &q->tt);
 
-    q->nt = nt;
+    q->nv = nv; q->nt = nt;
     EMEMCPY(nt, mesh_read_get_tri(mesh), q->tt);
 
     *pq = q;
@@ -39,4 +40,13 @@ double mesh_area_apply0(MeshArea *q, Positions *p) {
     int4 *tt;
     nt = q->nt; tt = q->tt; offset = 0;
     return area(nt, tt, p, offset);
+}
+
+void mesh_area_apply(MeshArea *q, int m, Positions *p, double *area0) {
+    int i, nt, nv, offset;
+    int4 *tt;
+    nt = q->nt; tt = q->tt; nv = q->nv; offset = 0;
+
+    for (i = 0; i < m; i++)
+        UC(area0[i] = area(nt, tt, p, offset += nv));
 }
