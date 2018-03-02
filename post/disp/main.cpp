@@ -108,28 +108,34 @@ void outname(const char *inrr, char *out) {
     memcpy(out + strt, newext, sizeof(newext));
 }
 
-void dump(const BopType type, const char *fout, const float *rr, const float *ddr, const int *tags, const int buffsize, /*w*/ float *work) {
-    /* fill work buffer */
+static int collect(const float *rr, const float *ddr, int nmax, const int *tags, /**/ float *pp) {
     int i, c, j = 0;
-    for (i = 0; i < buffsize; ++i)
+    for (i = 0; i < nmax; ++i)
     if (tags[i] == OCCUPIED) {
         for (c = 0; c < 3; ++c) {
-            work[6 * j + 0 + c] = rr[3 * i + c];
-            work[6 * j + 3 + c] = ddr[3 * i + c];
+            pp[6 * j + 0 + c] = rr[3 * i + c];
+            pp[6 * j + 3 + c] = ddr[3 * i + c];
         }
         ++j;
     }
+    return j;
+}
 
-    /* dump */
+
+void dump(const BopType type, const char *fout, const float *rr, const float *ddr, const int *tags, const int buffsize, /*w*/ float *work) {
     BopData *d;
+    int n = collect(rr, ddr, buffsize, tags, /**/ work);
+    
+    /* dump */
+    
     BPC( bop_ini(&d) );
-    BPC( bop_set_n(j, d) );
+    BPC( bop_set_n(n, d) );
     BPC( bop_set_vars(6, "x y z dx dy dz", d) );
     BPC( bop_set_type(type, d) );    
 
     BPC( bop_alloc(d) );
     
-    memcpy(bop_get_data(d), work, j * 6 * sizeof(float));
+    memcpy(bop_get_data(d), work, n * 6 * sizeof(float));
 
     BPC( bop_write_header(fout, d) );
     BPC( bop_write_values(fout, d) );
