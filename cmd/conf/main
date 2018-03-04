@@ -46,5 +46,3 @@ if test $rc -eq $ERR_MISSING_MK; then err 'cannot find system config'; fi
 
 u.conf.conf     "$c"; rc=$?
 if test $rc -eq $ERR_ARGP;       then err 'u.argp fails'; fi
-
-u.conf.run     "$c"; rc=$?
