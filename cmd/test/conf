@@ -14,7 +14,6 @@ mkdir -p tmp.conf
   cd tmp.conf
   u.conf `u.cp.s` <<!
   run
-  run
 !
 cat runfile Makefile bin.[12]/Makefile
 ) > rm.out.txt

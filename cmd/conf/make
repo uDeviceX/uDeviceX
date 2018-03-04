@@ -12,41 +12,14 @@ BEGIN {
     if (nbin > 1) make("Makefile")
 }
 
-function make(f,   i) { # makefile in .
-    printf "%s", "all:"                                             > f
-    for (i = 1; i <= nbin; i++) printf " bin.%d/udx", i             > f
-    printf "\n"                                                     > f
-
-    printf "%s", "clean:"                                           > f
-    for (i = 1; i <= nbin; i++) printf " clean.%d", i               > f
-    
-    printf "\n\n"                                                   > f
-    for (i = 1; i <= nbin; i++)
-    	printf "bin.%d/udx:; u.make -f bin.%d/Makefile\n", i, i     > f
-    printf "\n"                                                     > f
-    for (i = 1; i <= nbin; i++)
-     	printf "clean.%d:; u.make -f bin.%d/Makefile clean\n", i, i > f
-    close(f)
-}
-
 function bins() {
     if      (nbin == 0) exit ERR_NO_RUNS
-    else if (nbin == 1) bins1()
-    else                binsN()
+    else if (nbin == 1) make(".")
 }
 
-function make0(b,  sp) {
+function make(b,  sp) {
     sp = " "
     cmd("u.conf.make0" sp qq(S) sp qq(U) sp b)
-}
-
-function bins1(   b, rc) { make0(".") }
-
-function binsN(i,  b, rc) {
-    for (i = 1; i <= nbin; i++) {
-	b = "bin" "." i
-	make0(b)
-    }
 }
 
 function cmd(s,  rc) {
