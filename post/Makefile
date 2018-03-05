@@ -4,16 +4,16 @@ subdirs=disp drop field msd binning stress
 install: $(subdirs)
 
 $(subdirs):
-	make install -C $@
+	(cd $@; make install)
 
 clean:
-	make clean -C disp
-	make clean -C msd
-	make clean -C binning
+	(cd binning; make clean)
+	(cd disp;    make clean)
+	(cd msd;     make clean)
+
 
 test:
-	make test -C disp
-	make test -C binning
-
+	(cd binning; make test)
+	(cd disp;    make test)
 
 .PHONY: $(subdirs) clean install test
