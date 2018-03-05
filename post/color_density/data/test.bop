@@ -1,4 +1,0 @@
-8100
-DATA_FILE: test.values
-DATA_FORMAT: float
-VARIABLES: x y z vx vy vz
