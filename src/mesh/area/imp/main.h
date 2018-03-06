@@ -20,7 +20,6 @@ static void get(Positions *p, int i, double d[3]) {
     d[X] = f[X]; d[Y] = f[Y]; d[Z] = f[Z];
 }
 static double area(int nt, int4 *tt, Positions *p, int offset) {
-    enum {X, Y, Z};
     int i, ia, ib, ic;
     double a[3], b[3], c[3], sum;
     KahanSum *kahan_sum;
