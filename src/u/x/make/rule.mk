@@ -66,6 +66,7 @@ $B/mesh/dist/imp.o: $S/mesh/dist/imp.cpp; $X -I$S/mesh/dist -I$S/.
 $B/mesh/positions/imp.o: $S/mesh/positions/imp.cpp; $X -I$S/mesh/positions -I$S/.
 $B/mesh/props/imp.o: $S/mesh/props/imp.cpp; $X -I$S/mesh/props -I$S/.
 $B/mesh/triangles/imp.o: $S/mesh/triangles/imp.cpp; $X -I$S/mesh/triangles -I$S/.
+$B/mesh/tri_area/imp.o: $S/mesh/tri_area/imp.cpp; $X -I$S/mesh/tri_area -I$S/.
 $B/mesh/volume/imp.o: $S/mesh/volume/imp.cpp; $X -I$S/mesh/volume -I$S/.
 $B/mpi/glb.o: $S/mpi/glb.cpp; $X -I$S/mpi -I$S/.
 $B/mpi/type.o: $S/mpi/type.cpp; $X -I$S/mpi -I$S/.
