@@ -142,11 +142,39 @@ static void avg(int n, const int *counts, float vol, /**/ float *grid) {
     }
 }
 
-void read_bop(const char *name, BopData *bop) {
+static void read_bop(const char *name, BopData *bop) {
     char fdname[FILENAME_MAX];
     BPC(bop_read_header(name, /**/ bop, fdname));
     BPC(bop_alloc(/**/ bop));
     BPC(bop_read_values(fdname, /**/ bop));
+}
+
+void add_to_grid(Args a, float dx, float dy, float dz, /**/ float *grid, int *counts) {
+    BopData *pp_bop, *ss_bop;
+    long n, ns;
+    const float *pp, *ss;
+    
+    BPC(bop_ini(&pp_bop));
+    BPC(bop_ini(&ss_bop));
+
+    read_bop(a.pp, pp_bop);
+    read_bop(a.ss, ss_bop);
+    
+    BPC(bop_get_n(pp_bop, &n));
+    BPC(bop_get_n(ss_bop, &ns));
+
+    assert(n == ns);
+    
+    pp = (const float*) bop_get_data(pp_bop);
+    ss = (const float*) bop_get_data(ss_bop);
+    
+    binning(n, pp, ss,
+            a.nx, a.ny, a.nz,
+            dx, dy, dz, 0, 0, 0,
+            /**/ grid, counts);
+
+    BPC(bop_fin(pp_bop));
+    BPC(bop_fin(ss_bop));
 }
 
 void write_bov(Args a, const float *grid) {
@@ -176,12 +204,9 @@ void write_bov(Args a, const float *grid) {
 
 int main(int argc, char **argv) {
     Args a;
-    BopData *pp_bop, *ss_bop;
     float *grid, dx, dy, dz;
     int ngrid, *counts;    
     size_t sz;
-    long n, ns;
-    const float *pp, *ss;
     
     parse(argc, argv, /**/ &a);
 
@@ -195,29 +220,11 @@ int main(int argc, char **argv) {
     counts = (int*) malloc(sz);
     memset(counts, 0, sz);
 
-    BPC(bop_ini(&pp_bop));
-    BPC(bop_ini(&ss_bop));
-
-    read_bop(a.pp, pp_bop);
-    read_bop(a.ss, ss_bop);
-
     dx = a.lx / a.nx;
     dy = a.ly / a.ny;
     dz = a.lz / a.nz;
-    
-    BPC(bop_get_n(pp_bop, &n));
-    BPC(bop_get_n(ss_bop, &ns));
 
-    assert(n == ns);
-    
-    pp = (const float*) bop_get_data(pp_bop);
-    ss = (const float*) bop_get_data(ss_bop);
-    
-    binning(n, pp, ss,
-            a.nx, a.ny, a.nz,
-            dx, dy, dz, 0, 0, 0,
-            /**/ grid, counts);
-
+    add_to_grid(a, dx, dy, dz, /**/ grid, counts);
     avg(ngrid, counts, dx*dy*dz, /**/ grid);
 
     write_bov(a, grid);
@@ -225,9 +232,6 @@ int main(int argc, char **argv) {
     free(grid);
     free(counts);
     
-    BPC(bop_fin(pp_bop));
-    BPC(bop_fin(ss_bop));
-
     return 0;
 }
 
