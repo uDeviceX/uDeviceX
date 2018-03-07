@@ -23,21 +23,41 @@ static void usg() {
     exit(1);
 }
 
+static int shift_args(int *c, char ***v) {
+    (*c) --;
+    (*v) ++;
+    return (*c) > 0;
+}
+
 static void parse(int argc, char **argv, /**/ Args *a) {
-    if (argc != 10) usg();
-    int iarg = 1;
 
-    a->nx = atoi(argv[iarg++]);
-    a->ny = atoi(argv[iarg++]);
-    a->nz = atoi(argv[iarg++]);
+    // skip exe
+    if (!shift_args(&argc, &argv)) usg();
+    a->nx = atoi(*argv);
 
-    a->lx = atof(argv[iarg++]);
-    a->ly = atof(argv[iarg++]);
-    a->lz = atof(argv[iarg++]);
-    
-    a->pp = argv[iarg++];
-    a->ss = argv[iarg++];
-    a->bov = argv[iarg++];
+    if (!shift_args(&argc, &argv)) usg();
+    a->ny = atoi(*argv);
+
+    if (!shift_args(&argc, &argv)) usg();
+    a->nz = atoi(*argv);
+
+    if (!shift_args(&argc, &argv)) usg();
+    a->lx = atof(*argv);
+
+    if (!shift_args(&argc, &argv)) usg();
+    a->ly = atof(*argv);
+
+    if (!shift_args(&argc, &argv)) usg();
+    a->lz = atof(*argv);
+
+    if (!shift_args(&argc, &argv)) usg();
+    a->pp = *argv;
+
+    if (!shift_args(&argc, &argv)) usg();
+    a->ss = *argv;
+
+    if (!shift_args(&argc, &argv)) usg();
+    a->bov = *argv;
 }
 
 enum {INVALID = -1};
@@ -200,3 +220,14 @@ int main(int argc, char **argv) {
 
     return 0;
 }
+
+/*
+
+  # TEST: avg.t0
+  # rm -f *out.txt
+  # make 
+  # t=grid
+  # ./stress.avg 3 1 1   3 3 3  data/pp-0.bop data/ss-0.bop $t
+  # bov2txt $t.bov > ss.out.txt
+
+*/
