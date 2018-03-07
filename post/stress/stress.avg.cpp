@@ -181,7 +181,7 @@ int main(int argc, char **argv) {
     int ngrid, *counts;    
     size_t sz;
     long n, ns;
-    float *pp, *ss;
+    const float *pp, *ss;
     
     parse(argc, argv, /**/ &a);
 
@@ -210,8 +210,8 @@ int main(int argc, char **argv) {
 
     assert(n == ns);
     
-    pp = (float*) bop_get_data(pp_bop);
-    ss = (float*) bop_get_data(ss_bop);
+    pp = (const float*) bop_get_data(pp_bop);
+    ss = (const float*) bop_get_data(ss_bop);
     
     binning(n, pp, ss,
             a.nx, a.ny, a.nz,
