@@ -172,6 +172,8 @@ void add_to_grid(int i, Args a, float dx, float dy, float dz, /**/ float *grid, 
     BPC(bop_ini(&pp_bop));
     BPC(bop_ini(&ss_bop));
 
+    // printf("%s -- %s\n", a.ppp[i], a.sss[i]);
+
     read_bop(a.ppp[i], pp_bop);
     read_bop(a.sss[i], ss_bop);
     
@@ -259,6 +261,13 @@ int main(int argc, char **argv) {
   # make 
   # t=grid
   # ./stress.avg 3 1 1   3 3 3 $t data/pp-0.bop -- data/ss-0.bop
+  # bov2txt $t.bov > ss.out.txt
+
+  # TEST: avg.t1
+  # rm -f *out.txt
+  # make 
+  # t=grid
+  # ./stress.avg 3 1 1   3 3 3 $t data/pp-0.bop data/pp-1.bop -- data/ss-0.bop data/ss-1.bop
   # bov2txt $t.bov > ss.out.txt
 
 */
