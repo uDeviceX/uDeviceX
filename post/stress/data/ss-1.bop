@@ -1,0 +1,4 @@
+4
+DATA_FILE: ss-1.values
+DATA_FORMAT: ascii
+VARIABLES: sxx sxy sxz syy syz szz
