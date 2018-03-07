@@ -142,10 +142,34 @@ static void avg(int n, const int *counts, float vol, /**/ float *grid) {
     }
 }
 
+static void write_bov(Args a, const float *grid) {
+    BovData *bov;
+    long ngrid;
+
+    ngrid = a.nx * a.ny * a.nz;
+    
+    BVC(bov_ini(&bov));
+
+    BVC(bov_set_gridsize(a.nx, a.ny, a.nz, bov));
+    BVC(bov_set_extent(a.lx, a.ly, a.lz, bov));
+    BVC(bov_set_origin(0, 0, 0, bov));
+    BVC(bov_set_var("sxx sxy sxz syy syz szz kxx kxy kxz kyy kyz kzz", bov));
+    BVC(bov_set_ncomp(NPG, bov));
+    BVC(bov_set_type(BovFLOAT, bov));
+    
+    BVC(bov_alloc(bov));
+
+    memcpy(bov_get_data(bov), grid, ngrid * NPG * sizeof(float));
+
+    BVC(bov_write_header(a.bov, bov));
+    BVC(bov_write_values(a.bov, bov));
+
+    BVC(bov_fin(bov));
+}
+
 int main(int argc, char **argv) {
     Args a;
     BopData *pp_bop, *ss_bop;
-    BovData *bov;
     float *grid, dx, dy, dz;
     int ngrid, *counts;
     char fdname[Cbuf::SIZ];
@@ -195,28 +219,13 @@ int main(int argc, char **argv) {
 
     avg(ngrid, counts, dx*dy*dz, /**/ grid);
 
-    BVC(bov_ini(&bov));
-
-    BVC(bov_set_gridsize(a.nx, a.ny, a.nz, bov));
-    BVC(bov_set_extent(a.lx, a.ly, a.lz, bov));
-    BVC(bov_set_origin(0, 0, 0, bov));
-    BVC(bov_set_var("sxx sxy sxz syy syz szz kxx kxy kxz kyy kyz kzz", bov));
-    BVC(bov_set_ncomp(NPG, bov));
-    BVC(bov_set_type(BovFLOAT, bov));
-    
-    BVC(bov_alloc(bov));
-
-    memcpy(bov_get_data(bov), grid, ngrid * NPG * sizeof(float));
-
-    BVC(bov_write_header(a.bov, bov));
-    BVC(bov_write_values(a.bov, bov));
+    write_bov(a, grid);
     
     free(grid);
     free(counts);
     
     BPC(bop_fin(pp_bop));
     BPC(bop_fin(ss_bop));
-    BVC(bov_fin(bov));
 
     return 0;
 }
