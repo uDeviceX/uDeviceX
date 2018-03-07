@@ -15,11 +15,12 @@
 struct Args {
     float lx, ly, lz;
     int nx, ny, nz;
-    char *pp, *ss, *bov;
+    char **ppp, **sss, *bov;
+    int nsteps;
 };
 
 static void usg() {
-    fprintf(stderr, "usg: u.stress.avg nx ny nz Lx Ly Lz <particles.bop> <stress.bop> <out>\n");
+    fprintf(stderr, "usg: u.stress.avg nx ny nz Lx Ly Lz <out> <pp0.bop> <pp2.bop> ... -- <ss1.bop> <ss2.bop> ...\n");
     exit(1);
 }
 
@@ -30,7 +31,8 @@ static int shift_args(int *c, char ***v) {
 }
 
 static void parse(int argc, char **argv, /**/ Args *a) {
-
+    int nsteps;
+    
     // skip exe
     if (!shift_args(&argc, &argv)) usg();
     a->nx = atoi(*argv);
@@ -51,13 +53,26 @@ static void parse(int argc, char **argv, /**/ Args *a) {
     a->lz = atof(*argv);
 
     if (!shift_args(&argc, &argv)) usg();
-    a->pp = *argv;
-
-    if (!shift_args(&argc, &argv)) usg();
-    a->ss = *argv;
-
-    if (!shift_args(&argc, &argv)) usg();
     a->bov = *argv;
+
+    
+    if (!shift_args(&argc, &argv)) usg();
+    a->ppp = argv;
+
+    nsteps = 0;
+    while (strcmp("--", *argv)) {
+        if (!shift_args(&argc, &argv)) usg();
+        ++nsteps;
+    }
+    
+    if (!nsteps)    usg();
+    
+    if (!shift_args(&argc, &argv)) usg();
+    a->sss = argv;
+
+    if (argc != nsteps) usg();
+    
+    a->nsteps = nsteps;
 }
 
 enum {INVALID = -1};
@@ -149,7 +164,7 @@ static void read_bop(const char *name, BopData *bop) {
     BPC(bop_read_values(fdname, /**/ bop));
 }
 
-void add_to_grid(Args a, float dx, float dy, float dz, /**/ float *grid, int *counts) {
+void add_to_grid(int i, Args a, float dx, float dy, float dz, /**/ float *grid, int *counts) {
     BopData *pp_bop, *ss_bop;
     long n, ns;
     const float *pp, *ss;
@@ -157,8 +172,8 @@ void add_to_grid(Args a, float dx, float dy, float dz, /**/ float *grid, int *co
     BPC(bop_ini(&pp_bop));
     BPC(bop_ini(&ss_bop));
 
-    read_bop(a.pp, pp_bop);
-    read_bop(a.ss, ss_bop);
+    read_bop(a.ppp[i], pp_bop);
+    read_bop(a.sss[i], ss_bop);
     
     BPC(bop_get_n(pp_bop, &n));
     BPC(bop_get_n(ss_bop, &ns));
@@ -205,7 +220,7 @@ void write_bov(Args a, const float *grid) {
 int main(int argc, char **argv) {
     Args a;
     float *grid, dx, dy, dz;
-    int ngrid, *counts;    
+    int ngrid, *counts, i;
     size_t sz;
     
     parse(argc, argv, /**/ &a);
@@ -224,7 +239,9 @@ int main(int argc, char **argv) {
     dy = a.ly / a.ny;
     dz = a.lz / a.nz;
 
-    add_to_grid(a, dx, dy, dz, /**/ grid, counts);
+    for (i = 0; i < a.nsteps; ++i)
+        add_to_grid(i, a, dx, dy, dz, /**/ grid, counts);
+
     avg(ngrid, counts, dx*dy*dz, /**/ grid);
 
     write_bov(a, grid);
@@ -241,7 +258,7 @@ int main(int argc, char **argv) {
   # rm -f *out.txt
   # make 
   # t=grid
-  # ./stress.avg 3 1 1   3 3 3  data/pp-0.bop data/ss-0.bop $t
+  # ./stress.avg 3 1 1   3 3 3 $t data/pp-0.bop -- data/ss-0.bop
   # bov2txt $t.bov > ss.out.txt
 
 */
