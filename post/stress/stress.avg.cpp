@@ -142,7 +142,14 @@ static void avg(int n, const int *counts, float vol, /**/ float *grid) {
     }
 }
 
-static void write_bov(Args a, const float *grid) {
+void read_bop(const char *name, BopData *bop) {
+    char fdname[FILENAME_MAX];
+    BPC(bop_read_header(name, /**/ bop, fdname));
+    BPC(bop_alloc(/**/ bop));
+    BPC(bop_read_values(fdname, /**/ bop));
+}
+
+void write_bov(Args a, const float *grid) {
     BovData *bov;
     long ngrid;
 
@@ -171,8 +178,7 @@ int main(int argc, char **argv) {
     Args a;
     BopData *pp_bop, *ss_bop;
     float *grid, dx, dy, dz;
-    int ngrid, *counts;
-    char fdname[Cbuf::SIZ];
+    int ngrid, *counts;    
     size_t sz;
     long n, ns;
     float *pp, *ss;
@@ -192,13 +198,8 @@ int main(int argc, char **argv) {
     BPC(bop_ini(&pp_bop));
     BPC(bop_ini(&ss_bop));
 
-    BPC(bop_read_header(a.pp, /**/ pp_bop, fdname));
-    BPC(bop_alloc(/**/ pp_bop));
-    BPC(bop_read_values(fdname, /**/ pp_bop));
-
-    BPC(bop_read_header(a.ss, /**/ ss_bop, fdname));
-    BPC(bop_alloc(/**/ ss_bop));
-    BPC(bop_read_values(fdname, /**/ ss_bop));
+    read_bop(a.pp, pp_bop);
+    read_bop(a.ss, ss_bop);
 
     dx = a.lx / a.nx;
     dy = a.ly / a.ny;
