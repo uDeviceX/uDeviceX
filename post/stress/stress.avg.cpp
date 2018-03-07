@@ -19,7 +19,7 @@ struct Args {
 };
 
 static void usg() {
-    fprintf(stderr, "usg: u.stress nx ny nz Lx Ly Lz <particles.bop> <stress.bop> <out>\n");
+    fprintf(stderr, "usg: u.stress.avg nx ny nz Lx Ly Lz <particles.bop> <stress.bop> <out>\n");
     exit(1);
 }
 
