@@ -18,7 +18,8 @@ struct Args {
     float lx, ly, lz;
     float rc[3];
     int nx, ny, nz;
-    char *bop, *bov;
+    char **bop, *bov;
+    int nin;
     char *field;
     transform_t trans;
     volume_t vol;
@@ -76,7 +77,8 @@ static void parse(int argc, char **argv, /**/ Args *a) {
     a->bov = *argv;
 
     if (!shift_args(&argc, &argv)) usg();
-    a->bop = *argv;
+    a->bop = argv;
+    a->nin = argc;
     
     switch (transfcode) {
     case 'c':
@@ -264,10 +266,9 @@ static void write_bov(Args a, long ngrid, const float *grid) {
 
 int main(int argc, char **argv) {
     Args a;
-    BopData *bop;
-    
+    BopData *bop;    
     float *grid, dx, dy, dz;
-    int ngrid, *counts;
+    int i, ngrid, *counts;
     char field;
     size_t sz;
     
@@ -284,16 +285,17 @@ int main(int argc, char **argv) {
     counts = (int*) malloc(sz);
     memset(counts, 0, sz);
 
-    BPC( bop_ini(&bop) );
-
-    read_bop(a.bop, bop);
-    
     dx = a.lx / a.nx;
     dy = a.ly / a.ny;
     dz = a.lz / a.nz;
 
-    process(a, dx, dy, dz, bop, counts, grid);
-
+    for (i = 0; i < a.nin; ++i) {
+        BPC( bop_ini(&bop) );
+        read_bop(a.bop[i], bop);
+        process(a, dx, dy, dz, bop, counts, grid);
+        BPC( bop_fin(bop) );
+    }
+        
     if (field == 'u' ||
         field == 'v' ||
         field == 'w') {
@@ -306,8 +308,6 @@ int main(int argc, char **argv) {
     
     free(grid);
     free(counts);
-    
-    BPC( bop_fin(bop) );
 
     return 0;
 }
