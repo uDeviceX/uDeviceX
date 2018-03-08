@@ -25,7 +25,7 @@ struct Args {
 };
 
 static void usg() {
-    fprintf(stderr, "usg: u.binning <u/v/w/rho> <c/r> nx ny nz Lx Ly Lz rcx rcy rcz <solvent.bop> <out>\n");
+    fprintf(stderr, "usg: u.binning <u/v/w/rho> <c/r> nx ny nz Lx Ly Lz rcx rcy rcz <out> <solvent.bop>\n");
     exit(1);
 }
 
@@ -73,10 +73,11 @@ static void parse(int argc, char **argv, /**/ Args *a) {
     a->rc[Z] = atof(*argv);
 
     if (!shift_args(&argc, &argv)) usg();
-    a->bop = *argv;
-    if (!shift_args(&argc, &argv)) usg();
     a->bov = *argv;
 
+    if (!shift_args(&argc, &argv)) usg();
+    a->bop = *argv;
+    
     switch (transfcode) {
     case 'c':
         a->trans = &transform_cart;
@@ -220,8 +221,30 @@ static void den(int nx, int ny, int nz,
     }
 }
 
-static void write(Args a, long ngrid, const float *grid) {
+static void process(Args a, float dx, float dy, float dz, const BopData *bop, int *counts, float *grid) {
+    long np;
+    const float *pp;
+    char field = a.field[0];
+
+    BPC( bop_get_n(bop, &np) );
+    pp = (const float*) bop_get_data(bop);
+    
+    binning(np, pp, field,
+            a.nx, a.ny, a.nz,
+            dx, dy, dz, 0, 0, 0, a.trans, a.rc,
+            /**/ grid, counts);    
+}
+
+static void read_bop(const char *fname, BopData *bop) {
+    char fdname[FILENAME_MAX];
+    BPC( bop_read_header(fname, /**/ bop, fdname) );
+    BPC( bop_alloc(/**/ bop) );
+    BPC( bop_read_values(fdname, /**/ bop) );
+}
+
+static void write_bov(Args a, long ngrid, const float *grid) {
     BovData *bov;
+
     BVC( bov_ini(&bov) );
     BVC( bov_set_gridsize(a.nx, a.ny, a.nz, bov) );
     BVC( bov_set_origin(0, 0, 0, bov) );
@@ -245,10 +268,8 @@ int main(int argc, char **argv) {
     
     float *grid, dx, dy, dz;
     int ngrid, *counts;
-    char fdname[FILENAME_MAX], field;
+    char field;
     size_t sz;
-    long np;
-    const float *pp;
     
     parse(argc, argv, /**/ &a);
 
@@ -264,22 +285,14 @@ int main(int argc, char **argv) {
     memset(counts, 0, sz);
 
     BPC( bop_ini(&bop) );
-    
-    BPC( bop_read_header(a.bop, /**/ bop, fdname) );
-    BPC( bop_alloc(/**/ bop) );
-    BPC( bop_read_values(fdname, /**/ bop) );
 
+    read_bop(a.bop, bop);
+    
     dx = a.lx / a.nx;
     dy = a.ly / a.ny;
     dz = a.lz / a.nz;
 
-    BPC( bop_get_n(bop, &np) );
-    pp = (const float*) bop_get_data(bop);
-    
-    binning(np, pp, field,
-            a.nx, a.ny, a.nz,
-            dx, dy, dz, 0, 0, 0, a.trans, a.rc,
-            /**/ grid, counts);    
+    process(a, dx, dy, dz, bop, counts, grid);
 
     if (field == 'u' ||
         field == 'v' ||
@@ -289,7 +302,7 @@ int main(int argc, char **argv) {
         den(a.nx, a.ny, a.nz, dx, dy, dz, a.vol, /**/ grid);
     }
 
-    write(a, ngrid, grid);
+    write_bov(a, ngrid, grid);
     
     free(grid);
     free(counts);
