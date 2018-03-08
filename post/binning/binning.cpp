@@ -220,10 +220,29 @@ static void den(int nx, int ny, int nz,
     }
 }
 
+static void write(Args a, long ngrid, const float *grid) {
+    BovData *bov;
+    BVC( bov_ini(&bov) );
+    BVC( bov_set_gridsize(a.nx, a.ny, a.nz, bov) );
+    BVC( bov_set_origin(0, 0, 0, bov) );
+    BVC( bov_set_extent(a.lx, a.ly, a.lz, bov) );
+    BVC( bov_set_ncomp(1, bov) );
+    BVC( bov_set_var(a.field, bov) );
+    
+    BVC( bov_alloc(bov) );
+
+    memcpy(bov_get_data(bov), grid, ngrid * sizeof(float));
+
+    BVC( bov_write_header(a.bov, bov) );
+    BVC( bov_write_values(a.bov, bov) );
+
+    BVC( bov_fin(bov) );
+}
+
 int main(int argc, char **argv) {
     Args a;
     BopData *bop;
-    BovData *bov;
+    
     float *grid, dx, dy, dz;
     int ngrid, *counts;
     char fdname[FILENAME_MAX], field;
@@ -245,7 +264,6 @@ int main(int argc, char **argv) {
     memset(counts, 0, sz);
 
     BPC( bop_ini(&bop) );
-    BVC( bov_ini(&bov) );
     
     BPC( bop_read_header(a.bop, /**/ bop, fdname) );
     BPC( bop_alloc(/**/ bop) );
@@ -271,25 +289,12 @@ int main(int argc, char **argv) {
         den(a.nx, a.ny, a.nz, dx, dy, dz, a.vol, /**/ grid);
     }
 
-    
-    BVC( bov_set_gridsize(a.nx, a.ny, a.nz, bov) );
-    BVC( bov_set_origin(0, 0, 0, bov) );
-    BVC( bov_set_extent(a.lx, a.ly, a.lz, bov) );
-    BVC( bov_set_ncomp(1, bov) );
-    BVC( bov_set_var(a.field, bov) );
-    
-    BVC( bov_alloc(bov) );
-
-    memcpy(bov_get_data(bov), grid, ngrid * sizeof(float));
-
-    BVC( bov_write_header(a.bov, bov) );
-    BVC( bov_write_values(a.bov, bov) );
+    write(a, ngrid, grid);
     
     free(grid);
     free(counts);
     
     BPC( bop_fin(bop) );
-    BVC( bov_fin(bov) );
 
     return 0;
 }
