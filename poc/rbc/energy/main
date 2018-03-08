@@ -5,7 +5,12 @@ t131: ['R0 = 3.39, 'C0 = 6.78, 'C2 = 0.0,  'C4 = 0.0];
 rr: 'r/'R0;
 D: (1 - rr^2)^(1/2) * ('C0 + 'C2*rr^2 + 'C4*rr^4);
 
-with([L]) ::= buildq ([a : subst (":", "=",  ev (L [1])), e : rest (L)], block (a, splice (e)));
+w([L]) ::= buildq ([a : subst (":", "=",  ev (L [1])), e : rest (L)], block (a, splice (e)));
 
-with(t300,
- draw2d(explicit(D, 'r, -R0, R0), explicit(-D, 'r, -R0, R0), 'xrange=[-3/2*R0, 3/2*R0], 'yrange=[-3/2*R0, 3/2*R0]));
+L: 3/2*w(t300, R0);
+
+draw2d(
+  w(t300, explicit(''D, 'r, -R0, R0)), w(t300, explicit(-''D, 'r, -R0, R0)),
+  'color='red,
+  w(t217, explicit(''D, 'r, -R0, R0)), w(t217, explicit(-''D, 'r, -R0, R0)),
+  'xrange=[-L, L], 'yrange=[-L, L]);
