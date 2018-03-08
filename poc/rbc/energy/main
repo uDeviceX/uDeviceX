@@ -1,10 +1,6 @@
-load("expr.mac");
-
-t300: ['R0 = 3.91, 'C0 = 0.81, 'C2 = 7.83, 'C4 = -4.39];
-t217: ['R0 = 3.80, 'C0 = 2.10, 'C2 = 7.58, 'C4 = -5.59];
-t131: ['R0 = 3.39, 'C0 = 6.78, 'C2 = 0.0,  'C4 = 0.0];
-
-w([L]) ::= buildq ([a : subst (":", "=",  ev (L [1])), e : rest (L)], block (a, splice (e)));
+load("expr.mac") $
+load("tone.mac") $
+load("util.mac") $
 
 L: 3/2*w(t300, R0);
 
