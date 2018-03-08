@@ -29,6 +29,70 @@ static void usg() {
     exit(1);
 }
 
+void transform_cart(const float*, const float p0[6], /**/ float p[6]);
+void transform_cyl(const float rc[3], const float p0[6], /**/ float p[6]);
+float volume_cart(int /*i*/, int /*j*/, int /*k*/, float dx, float dy, float dz);
+float volume_cyl(int i, int /*j*/, int /*k*/, float dx, float dy, float dz);
+
+static int shift_args(int *c, char ***v) {
+    (*c) --;
+    (*v) ++;
+    return (*c) > 0;
+}
+
+static void parse(int argc, char **argv, /**/ Args *a) {
+    enum {X, Y, Z};
+    char transfcode;
+
+    // skip executable
+    if (!shift_args(&argc, &argv)) usg();
+    a->field = *argv;
+
+    if (!shift_args(&argc, &argv)) usg();
+    transfcode = (*argv)[0];
+
+    if (!shift_args(&argc, &argv)) usg();
+    a->nx = atoi(*argv);
+    if (!shift_args(&argc, &argv)) usg();
+    a->ny = atoi(*argv);
+    if (!shift_args(&argc, &argv)) usg();
+    a->nz = atoi(*argv);
+
+    if (!shift_args(&argc, &argv)) usg();
+    a->lx = atof(*argv);
+    if (!shift_args(&argc, &argv)) usg();
+    a->ly = atof(*argv);
+    if (!shift_args(&argc, &argv)) usg();
+    a->lz = atof(*argv);
+
+    if (!shift_args(&argc, &argv)) usg();
+    a->rc[X] = atof(*argv);
+    if (!shift_args(&argc, &argv)) usg();
+    a->rc[Y] = atof(*argv);
+    if (!shift_args(&argc, &argv)) usg();
+    a->rc[Z] = atof(*argv);
+
+    if (!shift_args(&argc, &argv)) usg();
+    a->bop = *argv;
+    if (!shift_args(&argc, &argv)) usg();
+    a->bov = *argv;
+
+    switch (transfcode) {
+    case 'c':
+        a->trans = &transform_cart;
+        a->vol   = &volume_cart;
+        break;
+    case 'r':
+        a->trans = &transform_cyl;
+        a->vol   = &volume_cyl;
+        break;
+    default:
+        fprintf(stderr, "wrong transformation <%c>\n", transfcode);
+        exit(1);
+    };                
+}
+
+
 /* cartesian coordinates */
 void transform_cart(const float*, const float p0[6], /**/ float p[6]) {
     for (int c = 0; c < 6; ++c) p[c] = p0[c];
@@ -66,42 +130,6 @@ float volume_cyl(int i, int /*j*/, int /*k*/, float dx, float dy, float dz) {
     return r * dx * dy * dz;
 }
 
-static void parse(int argc, char **argv, /**/ Args *a) {
-    if (argc != 14) usg();
-    int iarg = 1, c;
-    char transfcode;
-
-    a->field = argv[iarg++];
-    transfcode = argv[iarg++][0];
-    
-    a->nx = atoi(argv[iarg++]);
-    a->ny = atoi(argv[iarg++]);
-    a->nz = atoi(argv[iarg++]);
-
-    a->lx = atof(argv[iarg++]);
-    a->ly = atof(argv[iarg++]);
-    a->lz = atof(argv[iarg++]);
-
-    for (c = 0; c < 3; ++c)
-        a->rc[c] = atof(argv[iarg++]);
-    
-    a->bop = argv[iarg++];
-    a->bov = argv[iarg++];
-
-    switch (transfcode) {
-    case 'c':
-        a->trans = &transform_cart;
-        a->vol   = &volume_cart;
-        break;
-    case 'r':
-        a->trans = &transform_cyl;
-        a->vol   = &volume_cyl;
-        break;
-    default:
-        fprintf(stderr, "wrong transformation <%c>\n", transfcode);
-        exit(1);
-    };                
-}
 
 enum {INVALID = -1};
 

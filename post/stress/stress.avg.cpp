@@ -111,7 +111,7 @@ static void binning(long n, const float *pp, const float *ss,
                     int nx, int ny, int nz,
                     float dx, float dy, float dz,
                     float ox, float oy, float oz,
-                    /**/ float *grid, int *counts) {
+                    /**/ float *grid) {
     enum {X, Y, Z, D};
     int i, cid;
     const float *r, *u, *s;
@@ -126,7 +126,6 @@ static void binning(long n, const float *pp, const float *ss,
         
         if (cid != INVALID) {
             g = grid + NPG * cid;
-            counts[cid] ++;
             g[XX] += s[XX];
             g[XY] += s[XY];
             g[XZ] += s[XZ];
@@ -145,16 +144,13 @@ static void binning(long n, const float *pp, const float *ss,
 }
 
 // average: divide by counts in each cell
-static void avg(int n, const int *counts, float vol, /**/ float *grid) {
-    int i, c, j;
-    double s, svol;
-    svol = 1.0 / vol;
-    for (i = 0; i < n; ++i) {
-        c = counts[i];
-        s = c ? svol / c : svol;
+static void avg(int n, const int nsteps, float vol, /**/ float *grid) {
+    int i, j;
+    double s;
+    s = 1.0 / (nsteps * vol);
+    for (i = 0; i < n; ++i)
         for (j = 0; j < NPG; ++j)
             grid[i * NPG + j] *= s;
-    }
 }
 
 static void read_bop(const char *name, BopData *bop) {
@@ -164,7 +160,7 @@ static void read_bop(const char *name, BopData *bop) {
     BPC(bop_read_values(fdname, /**/ bop));
 }
 
-void add_to_grid(int i, Args a, float dx, float dy, float dz, /**/ float *grid, int *counts) {
+void add_to_grid(int i, Args a, float dx, float dy, float dz, /**/ float *grid) {
     BopData *pp_bop, *ss_bop;
     long n, ns;
     const float *pp, *ss;
@@ -188,7 +184,7 @@ void add_to_grid(int i, Args a, float dx, float dy, float dz, /**/ float *grid, 
     binning(n, pp, ss,
             a.nx, a.ny, a.nz,
             dx, dy, dz, 0, 0, 0,
-            /**/ grid, counts);
+            /**/ grid);
 
     BPC(bop_fin(pp_bop));
     BPC(bop_fin(ss_bop));
@@ -222,7 +218,7 @@ void write_bov(Args a, const float *grid) {
 int main(int argc, char **argv) {
     Args a;
     float *grid, dx, dy, dz;
-    int ngrid, *counts, i;
+    int ngrid, i;
     size_t sz;
     
     parse(argc, argv, /**/ &a);
@@ -232,24 +228,19 @@ int main(int argc, char **argv) {
     sz = ngrid * NPG * sizeof(float);
     grid = (float*) malloc(sz);
     memset(grid, 0, sz);
-    
-    sz = ngrid * sizeof(int);
-    counts = (int*) malloc(sz);
-    memset(counts, 0, sz);
 
     dx = a.lx / a.nx;
     dy = a.ly / a.ny;
     dz = a.lz / a.nz;
 
     for (i = 0; i < a.nsteps; ++i)
-        add_to_grid(i, a, dx, dy, dz, /**/ grid, counts);
+        add_to_grid(i, a, dx, dy, dz, /**/ grid);
 
-    avg(ngrid, counts, dx*dy*dz, /**/ grid);
+    avg(ngrid, a.nsteps, dx*dy*dz, /**/ grid);
 
     write_bov(a, grid);
     
     free(grid);
-    free(counts);
     
     return 0;
 }
