@@ -318,28 +318,28 @@ int main(int argc, char **argv) {
   # rm -f *out.txt
   # make 
   # t=grid
-  # ./binning u c 8 16 6   16 32 12  0 0 0   data/test.bop $t
+  # ./binning u c 8 16 6   16 32 12  0 0 0   $t data/test.bop
   # bov2txt $t.bov > u.out.txt
 
   # nTEST: rho.t0
   # rm -f *out.txt
   # make 
   # t=grid
-  # ./binning density c 8 16 6   16 32 12  0 0 0  data/test.bop $t
+  # ./binning density c 8 16 6   16 32 12  0 0 0  $t data/test.bop
   # bov2txt $t.bov > rho.out.txt
 
   # nTEST: v.rad.t0
   # rm -f *out.txt
   # make 
   # t=grid
-  # ./binning v r 16 1 1   0.5 6.29 1  0.5 0.5 0  data/rad.bop $t
+  # ./binning v r 16 1 1   0.5 6.29 1  0.5 0.5 0  $t data/rad.bop
   # bov2txt $t.bov > v.out.txt
 
   # nTEST: rho.rad.t0
   # rm -f *out.txt
   # make 
   # t=grid
-  # ./binning density r 16 1 1   0.5 6.29 1  0.5 0.5 0  data/rad.bop $t
+  # ./binning density r 16 1 1   0.5 6.29 1  0.5 0.5 0  $t data/rad.bop
   # bov2txt $t.bov > rho.out.txt
 
 */
