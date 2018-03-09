@@ -1,15 +1,8 @@
-static __device__ void p2rv(const float *p, int i, /**/
-                            float  *x, float  *y, float  *z,
-                            float *vx, float *vy, float *vz) {
-    static_assert(sizeof(Particle) == 6 * sizeof(float),
-                  "sizeof(Particle) != 6 * sizeof(float)");
-    i *= 6;
-     *x = p[i++];  *y = p[i++];  *z = p[i++];
-    *vx = p[i++]; *vy = p[i++]; *vz = p[i++];
-}
-
-static __device__ void pp2p(const float *pp, int i, /**/ Pa *p) { /* TODO gets force::Pa directly */
-    p2rv(pp, i, /**/ &p->x, &p->y, &p->z,   &p->vx, &p->vy, &p->vz);
+static __device__ void pp2p(const Particle *pp, int i, /**/ Pa *p) {
+    enum {X, Y, Z};
+    Particle a = pp[i];
+    p->x  = a.r[X]; p->y  = a.r[Y]; p->z  = a.r[Z];
+    p->vx = a.v[X]; p->vy = a.v[Y]; p->vz = a.v[Z];
 }
 
 static __device__ int p2map(int3 L, const int *start, int zplane, int n, const Pa p, /**/ Map *m) {
@@ -53,7 +46,7 @@ static __device__ void bulk1(Par params, const Pa a, Parray parray,
 }
 
 template <typename Par, typename Parray>
-static __device__ void bulk2(Par params, int3 L, const int *start, float *ppA, Parray parray, int i, int zplane, int n, float seed,
+static __device__ void bulk2(Par params, int3 L, const int *start, const Particle *ppA, Parray parray, int i, int zplane, int n, float seed,
                              /**/ float *ff, float *ff0) {
     Pa p;
     Fo f; /* "local" particle */
@@ -65,7 +58,7 @@ static __device__ void bulk2(Par params, int3 L, const int *start, float *ppA, P
 }
 
 template <typename Par, typename Parray>
-__global__ void bulk(Par params, int3 L, const int *start, float *ppA, Parray parray, int n0, int n1, float seed, float *ff, float *ff0) {
+__global__ void bulk(Par params, int3 L, const int *start, const Particle *ppA, Parray parray, int n0, int n1, float seed, float *ff, float *ff0) {
     int gid, i, zplane;
     gid    = threadIdx.x + blockDim.x * blockIdx.x;
     i      = gid / 3;

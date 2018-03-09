@@ -16,7 +16,7 @@ static void bulk_one_wrap(const PairParams *params, PaWrap *pw, FoWrap *fw, Fsi 
         pair_get_view_dpd_mirrored(params, &pv);
         parray_get_view(parray, &paview);
         
-        KL(fsi_dev::bulk, (k_cnf(3*n0)), (pv, fsi->L, wo->starts, (float*)ppA, paview, 
+        KL(fsi_dev::bulk, (k_cnf(3*n0)), (pv, fsi->L, wo->starts, ppA, paview, 
                                           n0, n1,
                                           rnd, (float*)fw->ff, (float*)wo->ff));
     }
@@ -27,7 +27,7 @@ static void bulk_one_wrap(const PairParams *params, PaWrap *pw, FoWrap *fw, Fsi 
         pair_get_view_dpd(params, &pv);
         parray_get_view(parray, &paview);
 
-        KL(fsi_dev::bulk, (k_cnf(3*n0)), (pv, fsi->L, wo->starts, (float*)ppA, paview, 
+        KL(fsi_dev::bulk, (k_cnf(3*n0)), (pv, fsi->L, wo->starts, ppA, paview, 
                                           n0, n1,
                                           rnd, (float*)fw->ff, (float*)wo->ff));
     }
