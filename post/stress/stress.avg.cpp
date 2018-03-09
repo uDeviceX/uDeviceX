@@ -111,7 +111,7 @@ static void binning(long n, const float *pp, const float *ss,
                     int nx, int ny, int nz,
                     float dx, float dy, float dz,
                     float ox, float oy, float oz,
-                    /**/ float *grid) {
+                    /**/ float *grid, int *counts) {
     enum {X, Y, Z, D};
     int i, cid;
     const float *r, *u, *s;
@@ -125,6 +125,7 @@ static void binning(long n, const float *pp, const float *ss,
         cid = r2cid(r, nx, ny, nz, dx, dy, dz, ox, oy, oz);
         
         if (cid != INVALID) {
+            ++counts[cid];
             g = grid + NPG * cid;
             g[XX] += s[XX];
             g[XY] += s[XY];
@@ -143,14 +144,22 @@ static void binning(long n, const float *pp, const float *ss,
     }
 }
 
-// average: divide by counts in each cell
-static void avg(int n, const int nsteps, float vol, /**/ float *grid) {
-    int i, j;
+static void count_avg(int n, const int *counts, /**/ float *grid) {
+    int i, j, c;
     double s;
-    s = 1.0 / (nsteps * vol);
-    for (i = 0; i < n; ++i)
+    for (i = 0; i < n; ++i) {
+        c = counts[i];
+        s = c ? 1.0 / c : 1.0;
         for (j = 0; j < NPG; ++j)
             grid[i * NPG + j] *= s;
+    }
+}
+
+static void time_avg(int n, const int nsteps, /**/ float *grid) {
+    int i;
+    double s = 1.0 / nsteps;
+    for (i = 0; i < n * NPG; ++i)
+        grid[i] *= s;
 }
 
 static void read_bop(const char *name, BopData *bop) {
@@ -160,7 +169,7 @@ static void read_bop(const char *name, BopData *bop) {
     BPC(bop_read_values(fdname, /**/ bop));
 }
 
-void add_to_grid(int i, Args a, float dx, float dy, float dz, /**/ float *grid) {
+void binning(int i, Args a, float dx, float dy, float dz, /**/ float *grid, int *counts) {
     BopData *pp_bop, *ss_bop;
     long n, ns;
     const float *pp, *ss;
@@ -184,10 +193,16 @@ void add_to_grid(int i, Args a, float dx, float dy, float dz, /**/ float *grid) 
     binning(n, pp, ss,
             a.nx, a.ny, a.nz,
             dx, dy, dz, 0, 0, 0,
-            /**/ grid);
+            /**/ grid, counts);
 
     BPC(bop_fin(pp_bop));
     BPC(bop_fin(ss_bop));
+}
+
+void add_to_ggrid(int n, const float *grid, float *ggrid) {
+    for (int i = 0; i < n * NPG; ++i)
+        ggrid[i] += grid[i];
+    
 }
 
 void write_bov(Args a, const float *grid) {
@@ -217,30 +232,44 @@ void write_bov(Args a, const float *grid) {
 
 int main(int argc, char **argv) {
     Args a;
-    float *grid, dx, dy, dz;
-    int ngrid, i;
-    size_t sz;
+    float *grid, *ggrid, dx, dy, dz;
+    int ngrid, i, *counts;
+    size_t szc, szg;
     
     parse(argc, argv, /**/ &a);
 
     ngrid = a.nx * a.ny * a.nz;
     
-    sz = ngrid * NPG * sizeof(float);
-    grid = (float*) malloc(sz);
-    memset(grid, 0, sz);
+    szg = ngrid * NPG * sizeof(float);
+    grid  = (float*) malloc(szg);
+    ggrid = (float*) malloc(szg);
+    memset( grid, 0, szg);
+    memset(ggrid, 0, szg);
+
+    szc = ngrid * sizeof(int);
+    counts = (int*) malloc(szc);
+    memset(counts, 0, szc);
 
     dx = a.lx / a.nx;
     dy = a.ly / a.ny;
     dz = a.lz / a.nz;
 
-    for (i = 0; i < a.nsteps; ++i)
-        add_to_grid(i, a, dx, dy, dz, /**/ grid);
+    for (i = 0; i < a.nsteps; ++i) {
+        memset(grid,   0, szg);
+        memset(counts, 0, szc);
+        
+        binning(i, a, dx, dy, dz, /**/ grid, counts);
+        count_avg(ngrid, counts, /**/ grid);
+        add_to_ggrid(ngrid, grid, /**/ ggrid);
+    }
+    
+    time_avg(ngrid, a.nsteps, /**/ ggrid);
 
-    avg(ngrid, a.nsteps, dx*dy*dz, /**/ grid);
-
-    write_bov(a, grid);
+    write_bov(a, ggrid);
     
     free(grid);
+    free(ggrid);
+    free(counts);
     
     return 0;
 }
