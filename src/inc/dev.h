@@ -25,12 +25,8 @@
 #define aH2D(D, H, n) CC(d::MemcpyAsync((D), (H), (n) * sizeof((H)[0]), H2D))
 
 /* device allocation */
-#define Dfree(D)     CC(d::Free(D))
-
-/* generic device allocation: TODO: */
-#define Dalloc000000(D, sz) d::Malloc((void**)(void*)(D), (sz))
-#define Dalloc000(D, sz)    CC(Dalloc000000(D, sz))
-#define Dalloc(D, n)        CC(Dalloc000000(D, (n) * sizeof(**(D))))
+#define Dfree(D)      CC(d::Free(D))
+#define Dalloc(D, n)  CC(d::Malloc((void**)(D), (n) * sizeof(**(D))))
 
 /* [d]evice set */
 #define Dset(P, v, n) CC(d::Memset(P, v, (n)*sizeof(*(P))))
