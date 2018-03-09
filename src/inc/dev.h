@@ -10,7 +10,7 @@
 #define D2H d::MemcpyDeviceToHost
 #define H2D d::MemcpyHostToDevice
 #define H2H d::MemcpyHostToHost
-#define A2A d::MemcpyDefault /* "[a]ll to [a]ll" */
+#define A2A d::MemcpyDefault /* "[a]ny to [a]ny" */
 
 #define cD2D(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), D2D))
 #define cH2H(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), H2H))  /* [t]to, [f]rom */
