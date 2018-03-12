@@ -1,9 +1,17 @@
-x: 'r / 'lmax $
-W: 'kbT * 'lmax / (4*'p) * (3 * x^2 - 2 * x^3) / (1 - x) $ /* Fedosov10 */
-F: factor(diff(W, 'r)) / 'r;
-define(wlc(r),  F);
-define(pow(r), -kp/r^m/r);
+lmax: 'l0 / 'x0;
+sq(x):=x*x;
+pow(a, b):=a^b;
+wlc0(r):=(4*sq(r)-9*r+6)/(4*sq(r-1));
+wlc(r):=ks/lmax*wlc0(r/lmax);
 
-e: pow(l0) = 'wlc(l0);
+fwlc: 'wlc(r);
+fpow: -'wlc(l0) * pow(l0, m+1) / pow(r, m + 1);
 
-factor(linsolve(e, kp));
+f: (fwlc + fpow)*r;
+
+Epow: l0^(m + 1) * 'wlc(l0) / r^(m - 1) / (m - 1);
+Ewlc: block([x: 'r/lmax], ('ks / 4 * lmax) * (3 * x^2 - 2 * x^3) / (1 - x));
+
+fullratsimp(diff(Epow + Ewlc, r) - f), wlc;
+
+
