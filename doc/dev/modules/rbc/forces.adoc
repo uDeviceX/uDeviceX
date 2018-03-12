@@ -7,14 +7,16 @@
 A force between neighboring beads:
 [stem]
 ++++
-F_{wlc}(r) = k_{s}/l_{max}
+F_{wlc}(r) = \frac{k_{s}}
+                  {l_{max}}
              \frac{4 r^2 - 9 r + 6}
 	          {4 * (r - 1)^2}
 ++++
 
 [stem]
 ++++
-F_{pow}(r) = k_{pow} / r^{m + 1}
+F_{pow}(r) = \frac{k_{pow}}
+                  {r^{m + 1}}
 ++++
 
 [stem]
