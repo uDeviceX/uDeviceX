@@ -1,0 +1,27 @@
+= Post
+
+postprocessing tools
+
+== install
+
+install all the tools:
+
+[source, sh]
+----
+make install
+----
+
+install specific tools `TTT`:
+
+[source, sh]
+----
+(cd TTT; make install)
+----
+
+== test
+
+[source, sh]
+----
+make test
+----
+
