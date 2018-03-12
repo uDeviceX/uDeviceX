@@ -187,7 +187,7 @@ static void binning(int n, const float *pp, const int *cc, int color,
         r = p;
         cid = r2cid(r, nx, ny, nz, dx, dy, dz, ox, oy, oz);
 
-        if (c   == color)    continue;
+        if (c   != color)    continue;
         if (cid == INVALID)  continue;
         
         grid[cid] += 1.f;
