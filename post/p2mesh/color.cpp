@@ -26,7 +26,7 @@ struct Args {
 };
 
 static void usg() {
-    fprintf(stderr, "usg: u.p2m.color <color> <c/r> nx ny nz Lx Ly Lz rcx rcy rcz <out> <pp.bop> <cc.bop>\n");
+    fprintf(stderr, "usg: u.p2m.color <color> <c/r> nx ny nz Lx Ly Lz ox oy oz <out> <pp.bop> <cc.bop>\n");
     exit(1);
 }
 
@@ -112,8 +112,10 @@ static void parse(int argc, char **argv, /**/ Args *a) {
 
 
 /* cartesian coordinates */
-void transform_cart(const float*, const float p0[6], /**/ float p[6]) {
-    for (int c = 0; c < 6; ++c) p[c] = p0[c];
+void transform_cart(const float o[3], const float p0[6], /**/ float p[6]) {
+    int c;
+    for (c = 0; c < 6; ++c) p[c] = p0[c];
+    for (c = 0; c < 3; ++c) p[c] -= o[c];
 }
 
 /* cylindrical coordinatess */
