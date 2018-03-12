@@ -2,9 +2,23 @@
 :lext: .adoc
 :stem: latexmath
 
+== Spring force
+
+A force between neighboring beads:
 [stem]
 ++++
-E^{spring} \propto \left( x - x_0 \right)^2 + E^{nonlin} \\
+F_{wlc}(r) = k_{s}/l_{max}
+             \frac{4 r^2 - 9 r + 6}
+	          {4 * (r - 1)^2}
+++++
+
+[stem]
+++++
+F_{pow}(r) = k_{pow} / r^{m + 1}
+++++
+
+[stem]
+++++
 E^{tot}_{area} \propto \left( A^{tot} - A_{0}^{tot} \right)^2 \\
 E^{local}_{area} \propto \left( A - A_{0} \right)^2 \\
 E^{local}_{area} \propto \left( A - A_{0} \right)^2 \\
