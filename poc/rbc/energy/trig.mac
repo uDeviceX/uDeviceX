@@ -1,0 +1,8 @@
+load("expr.mac") $
+
+y : a*cos(t) + b*cos(t)^3 + c*cos(t)^5;
+x : sin(t);
+
+y: subst(cos(t) = ct, y);
+
+ratsimp(3*integrate(y*ct, ct, 0, 1));
