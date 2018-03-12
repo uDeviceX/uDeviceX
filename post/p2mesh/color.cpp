@@ -296,7 +296,7 @@ int main(int argc, char **argv) {
 
 /*
 
-  # nTEST: rho.t0
+  # sTEST: rho.t0
   # set -eu
   # rm -f *out.txt
   # make 
