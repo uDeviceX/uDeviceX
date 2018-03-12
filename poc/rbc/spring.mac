@@ -1,3 +1,5 @@
+load("scifac") $
+
 lmax: 'l0 / 'x0;
 sq(x):=x*x;
 pow(a, b):=a^b;
@@ -15,6 +17,10 @@ Ewlc: block([x: 'r/lmax], ('ks / 4 * lmax) * (3 * x^2 - 2 * x^3) / (1 - x));
 E: Epow + Ewlc;
 fullratsimp(diff(E, r) - f), wlc;
 
-df0: ev(diff(E, r, 2), wlc);
+df0: ev(diff(Ewlc, r, 2), wlc);
 df0: subst(r = l0, df0);
 df0: factor(df0);
+df0: gcfac(df0);
+
+mu: sqrt(3)*kbT/(4*p*lmax*x0) * (x0 / (2*(1-x0)^3) - 1/(4*(1-x0)^2) + 1/4);
+
