@@ -12,6 +12,9 @@ f: (fwlc + fpow)*r;
 Epow: l0^(m + 1) * 'wlc(l0) / r^(m - 1) / (m - 1);
 Ewlc: block([x: 'r/lmax], ('ks / 4 * lmax) * (3 * x^2 - 2 * x^3) / (1 - x));
 
-fullratsimp(diff(Epow + Ewlc, r) - f), wlc;
+E: Epow + Ewlc;
+fullratsimp(diff(E, r) - f), wlc;
 
-
+df0: ev(diff(E, r, 2), wlc);
+df0: subst(r = l0, df0);
+df0: factor(df0);
