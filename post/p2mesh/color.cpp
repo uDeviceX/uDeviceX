@@ -18,15 +18,15 @@ struct Args {
     float lx, ly, lz;
     float rc[3];
     int nx, ny, nz;
-    char **bop, *bov;
+    char **ppp, **ccc, *bov;
     int nin;
-    char *field;
+    int color;
     transform_t trans;
     volume_t vol;
 };
 
 static void usg() {
-    fprintf(stderr, "usg: u.binning <u/v/w/rho> <c/r> nx ny nz Lx Ly Lz rcx rcy rcz <out> <solvent.bop>\n");
+    fprintf(stderr, "usg: u.p2m.color <color> <c/r> nx ny nz Lx Ly Lz rcx rcy rcz <out> <pp.bop> <cc.bop>\n");
     exit(1);
 }
 
@@ -44,10 +44,11 @@ static int shift_args(int *c, char ***v) {
 static void parse(int argc, char **argv, /**/ Args *a) {
     enum {X, Y, Z};
     char transfcode;
+    int nin;
 
     // skip executable
     if (!shift_args(&argc, &argv)) usg();
-    a->field = *argv;
+    a->color = atoi(*argv);
 
     if (!shift_args(&argc, &argv)) usg();
     transfcode = (*argv)[0];
@@ -76,9 +77,23 @@ static void parse(int argc, char **argv, /**/ Args *a) {
     if (!shift_args(&argc, &argv)) usg();
     a->bov = *argv;
 
+
     if (!shift_args(&argc, &argv)) usg();
-    a->bop = argv;
-    a->nin = argc;
+    a->ppp = argv;
+
+    nin = 0;
+    while (strcmp("--", *argv)) {
+        if (!shift_args(&argc, &argv)) usg();
+        ++nin;
+    }
+    if (!nin) usg();
+
+    if (!shift_args(&argc, &argv)) usg();
+    a->ccc = argv;
+
+    if (argc != nin) usg();
+
+    a->nin = nin;
     
     switch (transfcode) {
     case 'c':
@@ -154,52 +169,28 @@ static int r2cid(const float r[3],
     return ix + nx * (iy + ny * iz);
 }
 
-static float v2field(const float v[3], char f) {
-    enum {X, Y, Z};
-    switch(f) {
-    case 'u':
-        return v[X];
-    case 'v':
-        return v[Y];
-    case 'w':
-        return v[Z];
-    };
-    return 1.f; // default: density -> count
-}
-
 // reduce field quantities in each cell
-static void binning(int n, const float *pp, char f,
+static void binning(int n, const float *pp, const int *cc, int color,
                     int nx, int ny, int nz,
                     float dx, float dy, float dz,
                     float ox, float oy, float oz,
                     transform_t transform, const float rc[3],
-                    /**/ float *grid, int *counts) {
+                    /**/ float *grid) {
 
-    int i, cid;
+    int i, cid, c;
     float p[6];
-    float *r, *u;
+    float *r;
     
     for (i = 0; i < n; ++i) {
+        c = cc[i];
         transform(rc, pp + 6 * i, /**/ p);
-        r = p + 0;
-        u = p + 3;
+        r = p;
         cid = r2cid(r, nx, ny, nz, dx, dy, dz, ox, oy, oz);
 
-        if (cid != INVALID) {
-            counts[cid] ++;
-            grid[cid] += v2field(u, f);
-        }
-    }
-}
-
-// average: divide by counts in each cell
-static void avg(int n, const int *counts, /**/ float *grid) {
-    int i, c;
-    float s;
-    for (i = 0; i < n; ++i) {
-        c = counts[i];
-        s = c ? 1.f / c : 1;
-        grid[i] *= s;
+        if (c   == color)    continue;
+        if (cid == INVALID)  continue;
+        
+        grid[cid] += 1.f;
     }
 }
 
@@ -223,18 +214,19 @@ static void den(int nx, int ny, int nz,
     }
 }
 
-static void process(Args a, float dx, float dy, float dz, const BopData *bop, int *counts, float *grid) {
+static void process(Args a, float dx, float dy, float dz, const BopData *pp_bop, const BopData *cc_bop, float *grid) {
     long np;
     const float *pp;
-    char field = a.field[0];
+    const int *cc;
 
-    BPC( bop_get_n(bop, &np) );
-    pp = (const float*) bop_get_data(bop);
+    BPC( bop_get_n(pp_bop, &np) );
+    pp = (const float*) bop_get_data(pp_bop);
+    cc = (const   int*) bop_get_data(cc_bop);
     
-    binning(np, pp, field,
+    binning(np, pp, cc, a.color,
             a.nx, a.ny, a.nz,
             dx, dy, dz, 0, 0, 0, a.trans, a.rc,
-            /**/ grid, counts);    
+            /**/ grid);    
 }
 
 static void read_bop(const char *fname, BopData *bop) {
@@ -252,7 +244,7 @@ static void write_bov(Args a, long ngrid, const float *grid) {
     BVC( bov_set_origin(0, 0, 0, bov) );
     BVC( bov_set_extent(a.lx, a.ly, a.lz, bov) );
     BVC( bov_set_ncomp(1, bov) );
-    BVC( bov_set_var(a.field, bov) );
+    BVC( bov_set_var("color_density", bov) );
     
     BVC( bov_alloc(bov) );
 
@@ -266,80 +258,50 @@ static void write_bov(Args a, long ngrid, const float *grid) {
 
 int main(int argc, char **argv) {
     Args a;
-    BopData *bop;    
+    BopData *pp_bop, *cc_bop;
     float *grid, dx, dy, dz;
-    int i, ngrid, *counts;
-    char field;
+    int i, ngrid;
     size_t sz;
     
     parse(argc, argv, /**/ &a);
 
-    field = a.field[0];
     ngrid = a.nx * a.ny * a.nz;
     
     sz = ngrid * sizeof(float);
     grid = (float*) malloc(sz);
     memset(grid, 0, sz);
     
-    sz = ngrid * sizeof(float);
-    counts = (int*) malloc(sz);
-    memset(counts, 0, sz);
-
     dx = a.lx / a.nx;
     dy = a.ly / a.ny;
     dz = a.lz / a.nz;
 
     for (i = 0; i < a.nin; ++i) {
-        BPC( bop_ini(&bop) );
-        read_bop(a.bop[i], bop);
-        process(a, dx, dy, dz, bop, counts, grid);
-        BPC( bop_fin(bop) );
+        BPC( bop_ini(&pp_bop) );
+        BPC( bop_ini(&cc_bop) );
+        read_bop(a.ppp[i], pp_bop);
+        read_bop(a.ccc[i], cc_bop);
+        process(a, dx, dy, dz, pp_bop, cc_bop, /**/ grid);
+        BPC( bop_fin(pp_bop) );
+        BPC( bop_fin(cc_bop) );
     }
         
-    if (field == 'u' ||
-        field == 'v' ||
-        field == 'w') {
-        avg(ngrid, counts, /**/ grid);
-    } else { // density
-        den(a.nx, a.ny, a.nz, dx, dy, dz, a.vol, /**/ grid);
-    }
-
+    den(a.nx, a.ny, a.nz, dx, dy, dz, a.vol, /**/ grid);
+    
     write_bov(a, ngrid, grid);
     
     free(grid);
-    free(counts);
 
     return 0;
 }
 
 /*
 
-  # nTEST: u.t0
-  # rm -f *out.txt
-  # make 
-  # t=grid
-  # ./binning u c 8 16 6   16 32 12  0 0 0   $t data/test.bop
-  # bov2txt $t.bov > u.out.txt
-
   # nTEST: rho.t0
+  # set -eu
   # rm -f *out.txt
   # make 
   # t=grid
   # ./binning density c 8 16 6   16 32 12  0 0 0  $t data/test.bop
-  # bov2txt $t.bov > rho.out.txt
-
-  # nTEST: v.rad.t0
-  # rm -f *out.txt
-  # make 
-  # t=grid
-  # ./binning v r 16 1 1   0.5 6.29 1  0.5 0.5 0  $t data/rad.bop
-  # bov2txt $t.bov > v.out.txt
-
-  # nTEST: rho.rad.t0
-  # rm -f *out.txt
-  # make 
-  # t=grid
-  # ./binning density r 16 1 1   0.5 6.29 1  0.5 0.5 0  $t data/rad.bop
   # bov2txt $t.bov > rho.out.txt
 
 */
