@@ -1,0 +1,16 @@
+= filter
+
+select and dump particles from a `.bop` file based on a predicate.
+
+== color
+
+[source, sh]
+----
+u.filter.color <color> <out> <pp.bop> <cc.bop> (OPT:) <ii.bop>
+----
+<1> color: which color survives
+<2> out: basename of bop file outputs; generated names: <out>.pp.bop and <out>.ii.bop
+<3> pp.bop: input particles
+<4> cc.bop: input colors
+<5> (optional): input ids (if set, <out>.ii.bop will be dumped
+
