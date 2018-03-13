@@ -1,19 +1,60 @@
-= doc
+= Documentation
 :lext: .adoc
 
-Requires `asciidoctor` and `pygments.rb`.
+The `uDeviceX` documentation is written in `Asciidoc` format and converted to `html`.
+This operation requires link:https://asciidoctor.org/[asciidoctor] (converter to html) and
+link:http://pygments.org/[pygments.rb] (for code highlighting).
 
-== Mac OS X
+== installation
+
+=== Mac OS X
+
 [source,sh]
 ----
 gem install asciidoctor
 gem install pygments.rb
 ----
 
-== Arch linux
+=== Arch linux
 
 [source,sh]
 ----
 sudo pacman -S asciidoctor
 gem install pygments.rb
 ----
+
+== build
+
+When writing documentation, it is useful to build it and view it on a
+local server.
+
+From `doc/`:
+
+[source, sh]
+----
+./tools/start # <1>
+./tools/view  # <2>
+./tools/stop  # <3>
+----
+<1> start a local server (to be done only once)
+<2> open the main page in browser from local server
+<3> stop the local server
+
+
+[source, sh]
+----
+./configure # <1>
+make -j     # <2>
+----
+<1> make dependencies (to be run after adding a file to documentation)
+<2> build documentation for local server
+
+== Deploy
+
+The deploy command cleans, builds and pushes the documentation on github pages https://github.com/amlucas/udoc
+
+[source, sh]
+----
+./deploy
+----
+
