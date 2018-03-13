@@ -87,6 +87,8 @@ static void set_rank_infos(MPI_Comm comm, long n, BopData *bop) {
     MC( m::Comm_size(comm, &size) );
     BPC( bop_set_nrank(size, bop) );
     BPC( bop_set_nprank(n, bop) );
+
+    BPC( bop_set_n(n, bop) );
 }
 
 static void set_name(const char *base, int id, /**/ char *name) {
@@ -107,8 +109,6 @@ void io_bop_parts (MPI_Comm cart, const Coords *coords, long n, const Particle *
 
     copy_shift(coords, n, pp, /**/ ppout);
     UC(set_rank_infos(cart, n, bop));
-
-    BPC( bop_set_n(n, bop) );
     BPC( bop_set_vars(NVARP, VARP, bop) );
 
     write(cart, name, id, bop);
@@ -120,7 +120,6 @@ void io_bop_parts_forces(MPI_Comm cart, const Coords *coords, long n, const Part
 
     copy_shift_with_forces(coords, n, pp, ff, /**/ out);
     UC(set_rank_infos(cart, n, bop));
-
     BPC( bop_set_n(n, bop) );
     BPC( bop_set_vars(NVARP + NVARF, VARP " " VARF, bop) );
 
@@ -133,8 +132,6 @@ void io_bop_stresses(MPI_Comm cart, long n, const float *ss, const char *name, i
 
     memcpy(out, ss, n * NVARS * sizeof(float));
     UC(set_rank_infos(cart, n, bop));
-
-    BPC( bop_set_n(n, bop) );
     BPC( bop_set_vars(NVARS, VARS, bop) );
 
     write(cart, name, id, bop);
@@ -146,8 +143,6 @@ void io_bop_ids(MPI_Comm cart, long n, const int *ii, const char *name, int id, 
 
     memcpy(out, ii, n * NVARI * sizeof(int));
     UC(set_rank_infos(cart, n, bop));
-
-    BPC( bop_set_n(n, bop) );
     BPC( bop_set_vars(NVARI, VARI, bop) );
 
     write(cart, name, id, bop);
@@ -160,7 +155,6 @@ void io_bop_colors(MPI_Comm cart, long n, const int *cc, const char *name, int i
     memcpy(out, cc, n * NVARC * sizeof(int));
     UC(set_rank_infos(cart, n, bop));
 
-    BPC( bop_set_n(n, bop) );
     BPC( bop_set_vars(NVARC, VARC, bop) );
 
     write(cart, name, id, bop);

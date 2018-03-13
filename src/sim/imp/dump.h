@@ -1,36 +1,36 @@
 static void dump_part(Sim *s) {
     const Flu *flu = &s->flu;
     const Rig *rig = &s->rig;
-    BopWork *bop = s->dump.bop;
+    IoBop *bop = s->dump.bop;
     int id_bop = s->dump.id_bop;
     cD2H(flu->q.pp_hst, flu->q.pp, flu->q.n);
     if (s->opt.fluids) {
         cD2H(flu->q.ii_hst, flu->q.ii, flu->q.n);
-        io_bop_ids(s->cart, flu->q.ii_hst, flu->q.n, "id_solvent", id_bop);
+        io_bop_ids(s->cart, flu->q.n, flu->q.ii_hst, "id_solvent", id_bop, bop);
     }
     if (s->opt.flucolors) {
         cD2H(flu->q.cc_hst, flu->q.cc, flu->q.n);
-        io_bop_colors(s->cart, flu->q.cc_hst, flu->q.n, "colors_solvent", id_bop);
+        io_bop_colors(s->cart, flu->q.n, flu->q.cc_hst, "colors_solvent", id_bop, bop);
     }
     if (s->opt.fluss) {
         cD2H(flu->ss_hst, flu->ss, 6 * flu->q.n);
-        io_bop_stresses(s->cart, flu->ss_hst, flu->q.n, "stress_solvent", id_bop);
+        io_bop_stresses(s->cart, flu->q.n, flu->ss_hst, "stress_solvent", id_bop, bop);
     }
 
     if (s->opt.dump_forces) {
         cD2H(flu->ff_hst, flu->ff, flu->q.n);
-        io_bop_parts_forces(s->cart, s->coords, flu->q.pp_hst, flu->ff_hst, flu->q.n, "solvent", id_bop, /**/ bop);
+        io_bop_parts_forces(s->cart, s->coords, flu->q.n, flu->q.pp_hst, flu->ff_hst, "solvent", id_bop, bop);
     } else {
-        io_bop_parts(s->cart, s->coords, flu->q.pp_hst, flu->q.n, "solvent", id_bop, /**/ bop);
+        io_bop_parts(s->cart, s->coords, flu->q.n, flu->q.pp_hst, "solvent", id_bop, bop);
     }
 
     if(s->rigids) {
         cD2H(rig->q.pp_hst, rig->q.pp, rig->q.n);
         if (s->opt.dump_forces) {
             cD2H(rig->ff_hst, rig->ff, rig->q.n);
-            io_bop_parts_forces(s->cart, s->coords, rig->q.pp_hst, rig->ff_hst, rig->q.n, "solid", id_bop, /**/ bop);
+            io_bop_parts_forces(s->cart, s->coords, flu->q.n, rig->q.pp_hst, rig->ff_hst, "solid", id_bop, bop);
         } else {
-            io_bop_parts(s->cart, s->coords, rig->q.pp_hst, rig->q.n, "solid", id_bop, /**/ bop);
+            io_bop_parts(s->cart, s->coords, flu->q.n, rig->q.pp_hst, "solid", id_bop, bop);
         }
     }
     s->dump.id_bop = ++id_bop;

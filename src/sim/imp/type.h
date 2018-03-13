@@ -168,7 +168,7 @@ struct Dump {
     
     IoField *iofield;
     IoRig *iorig;
-    BopWork *bop;
+    IoBop *bop;
     DiagPart *diagpart; /* diagnostic */
 
     int id_bop, id_rbc, id_rbc_com, id_rig_mesh, id_strt;
