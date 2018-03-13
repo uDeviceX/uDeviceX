@@ -1,17 +1,33 @@
+struct Q { int4 *d; };
+void q_ini(int4 *d, Q *q) { q->d = d; }
+void q_push(Q *q, int i0, int i1, int i2, int i3) {
+    int4 *d;
+    d = q->d;
+    d->x = i0; d->y = i1; d->z = i2; d->w = i3;
+    (q->d)++;
+}
+
 void ini_dd(int nt, const int4 *tt, int nv, int md, int nd, /**/ int4 *dd) {
     Edg *nxt, *seen;
-        
-    int *hx, *hy, i, i0, i1, i2;
-    EMALLOC(md*nv, &hx);
-    EMALLOC(md*nv, &hy);
+    int i, j, i0, i1, i2;
     
-    //    edg_ini(md, nv, /**/ hx);
+    e_ini(md, nv, 0, &nxt);
+    e_ini(md, nv, 0, &seen);    
+    
     for (i = 0; i < nt; i++) {
         i0 = tt[i].x; i1 = tt[i].y; i2 = tt[i].z;
-        msg_print("i: %d %d %d", i0, i1, i2);
+        e_set(nxt, i0, i1, i2);
+        e_set(nxt, i1, i2, i0);
+        e_set(nxt, i2, i0, i1);
     }
-    EFREE(hx);
-    EFREE(hy);
+
+    for (i = 0; i < nt; i++) {
+        i0 = tt[i].x; i1 = tt[i].y; i2 = tt[i].z;
+        
+        j = e_get(nxt, i0, i1);
+    }
+
+    e_fin(nxt); e_fin(seen);
 }
 
 void mesh_angle_ini(MeshRead *mesh, MeshAngle **pq) {
