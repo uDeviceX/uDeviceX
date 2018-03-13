@@ -1,5 +1,5 @@
-O = $B/conf/imp.o $B/coords/conf.o $B/coords/imp.o $B/d/api.o $B/io/bop/imp.o \
-    $B/io/com/imp.o $B/io/diag/mesh/imp.o $B/io/diag/part/imp.o \
+O = $B/algo/edg/imp.o $B/conf/imp.o $B/coords/conf.o $B/coords/imp.o $B/d/api.o \
+    $B/io/bop/imp.o $B/io/com/imp.o $B/io/diag/mesh/imp.o $B/io/diag/part/imp.o \
     $B/io/field/h5/imp.o $B/io/field/imp.o $B/io/field/xmf/imp.o $B/io/mesh/imp.o \
     $B/io/mesh/write/imp.o $B/io/mesh_read/imp.o $B/io/restart/imp.o \
     $B/io/rig/imp.o $B/io/txt/imp.o $B/math/linal/imp.o $B/math/rnd/imp.o \

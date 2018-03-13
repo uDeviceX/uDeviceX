@@ -1,4 +1,4 @@
-$B/algo/edg/imp.o: $S/utils/error.h $S/algo/edg/imp.h
+$B/algo/edg/imp.o: $S/utils/error.h $S/algo/edg/imp.h $S/algo/edg/imp/main.h
 $B/algo/force_stat/imp.o: $S/utils/error.h $S/inc/type.h $S/algo/force_stat/imp.h $S/d/api.h $S/algo/force_stat/imp/main.h $S/utils/msg.h
 $B/algo/kahan_sum/imp.o: $S/utils/imp.h $S/utils/error.h $S/algo/kahan_sum/imp.h $S/algo/kahan_sum/imp/main.h $S/algo/kahan_sum/imp/type.h
 $B/algo/minmax/imp.o: $S/inc/conf.h $S/inc/type.h $S/d/q.h $S/algo/minmax/imp.h $S/utils/cc.h $S/inc/def.h $S/inc/dev.h $S/d/api.h $B/conf.h $S/utils/kl.h $S/d/ker.h $S/utils/msg.h
