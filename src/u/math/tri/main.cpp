@@ -25,13 +25,34 @@ void kahan_area0(int argc, char **v) {
     msg_print("%.17e", tri_hst::kahan_area0(a, b, c));
 }
 
+void kahan_area(int argc, char **v) {
+    enum {X, Y, Z};
+    double a[3], b[3], c[3];
+    if (argc != 3*3 + 1)
+        ERR("kahan_area needs nine arguments");
+    UC(a[X] = read_dbl(v[1])); v++;
+    UC(a[Y] = read_dbl(v[1])); v++;
+    UC(a[Z] = read_dbl(v[1])); v++;
+
+    UC(b[X] = read_dbl(v[1])); v++;
+    UC(b[Y] = read_dbl(v[1])); v++;
+    UC(b[Z] = read_dbl(v[1])); v++;
+
+    UC(c[X] = read_dbl(v[1])); v++;
+    UC(c[Y] = read_dbl(v[1])); v++;
+    UC(c[Z] = read_dbl(v[1])); v++;
+    msg_print("%.17e", tri_hst::kahan_area(a, b, c));
+}
+
 int main(int argc, char **argv) {
     m::ini(&argc, &argv);
 
     if (argc < 1) ERR("needs FUNC");
     if (same_str(argv[1], "kahan_area0"))
         UC(kahan_area0(--argc, ++argv));
-    else
+    else if (same_str(argv[1], "kahan_area"))
+        UC(kahan_area (--argc, ++argv));
+    else 
         ERR("unknown FUNC: %s", argv[1]);
     
     m::fin();
