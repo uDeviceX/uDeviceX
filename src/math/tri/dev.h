@@ -49,6 +49,16 @@ _I_ double kahan_area(const double r0[3], const double r1[3], const double r2[3]
     return kahan_area0(a, b, c);
 }
 
+_I_ double orient2d(const double a[2], const double b[2], const double c[2]) {
+    enum {X, Y};
+    double acx, bcx, acy, bcy;
+    acx = a[X] - c[X];
+    bcx = b[X] - c[X];
+    acy = a[Y] - c[Y];
+    bcy = b[Y] - c[Y];
+    return acx * bcy - acy * bcx;
+}
+
 END
 
 #undef _I_
