@@ -1,3 +1,4 @@
+$B/algo/edg/imp.o: $S/algo/edg/imp.cpp; $X -I$S/algo/edg -I$S/.
 $B/algo/force_stat/imp.o: $S/algo/force_stat/imp.cu; $N -I$S/algo/force_stat -I$S/.
 $B/algo/kahan_sum/imp.o: $S/algo/kahan_sum/imp.cpp; $X -I$S/algo/kahan_sum -I$S/.
 $B/algo/minmax/imp.o: $S/algo/minmax/imp.cu; $N -I$S/algo/minmax -I$S/.
@@ -58,6 +59,7 @@ $B/math/linal/imp.o: $S/math/linal/imp.cpp; $X -I$S/math/linal -I$S/.
 $B/math/rnd/imp.o: $S/math/rnd/imp.cpp; $X -I$S/math/rnd -I$S/.
 $B/math/tform/imp.o: $S/math/tform/imp.cpp; $X -I$S/math/tform -I$S/.
 $B/math/tri/imp.o: $S/math/tri/imp.cpp; $X -I$S/math/tri -I$S/.
+$B/mesh/angle/imp.o: $S/mesh/angle/imp.cpp; $X -I$S/mesh/angle -I$S/.
 $B/mesh/area/imp.o: $S/mesh/area/imp.cpp; $X -I$S/mesh/area -I$S/.
 $B/meshbb/imp.o: $S/meshbb/imp.cu; $N -I$S/meshbb -I$S/.
 $B/mesh/bbox/imp.o: $S/mesh/bbox/imp.cpp; $X -I$S/mesh/bbox -I$S/.
@@ -74,7 +76,6 @@ $B/mpi/wrapper.o: $S/mpi/wrapper.cpp; $X -I$S/mpi -I$S/.
 $B/pair/conf.o: $S/pair/conf.cpp; $X -I$S/pair -I$S/.
 $B/pair/imp.o: $S/pair/imp.cpp; $X -I$S/pair -I$S/.
 $B/parray/imp.o: $S/parray/imp.cpp; $X -I$S/parray -I$S/.
-$B/rbc/adj/edg/imp.o: $S/rbc/adj/edg/imp.cpp; $X -I$S/rbc/adj/edg -I$S/.
 $B/rbc/adj/imp.o: $S/rbc/adj/imp.cpp; $X -I$S/rbc/adj -I$S/.
 $B/rbc/com/imp.o: $S/rbc/com/imp.cu; $N -I$S/rbc/com -I$S/.
 $B/rbc/force/area_volume/imp.o: $S/rbc/force/area_volume/imp.cu; $N -I$S/rbc/force/area_volume -I$S/.

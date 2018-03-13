@@ -17,7 +17,7 @@
 
 #include "imp.h"
 
-#include "edg/imp.h"
+#include "algo/edg/imp.h"
 
 #include "type/common.h"
 #include "type/dev.h"

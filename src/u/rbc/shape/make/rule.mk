@@ -8,7 +8,6 @@ $B/math/tri/imp.o: $S/math/tri/imp.cpp; $X -I$S/math/tri -I$S/.
 $B/mpi/glb.o: $S/mpi/glb.cpp; $X -I$S/mpi -I$S/.
 $B/mpi/type.o: $S/mpi/type.cpp; $X -I$S/mpi -I$S/.
 $B/mpi/wrapper.o: $S/mpi/wrapper.cpp; $X -I$S/mpi -I$S/.
-$B/rbc/adj/edg/imp.o: $S/rbc/adj/edg/imp.cpp; $X -I$S/rbc/adj/edg -I$S/.
 $B/rbc/adj/imp.o: $S/rbc/adj/imp.cpp; $X -I$S/rbc/adj -I$S/.
 $B/rbc/shape/imp.o: $S/rbc/shape/imp.cpp; $X -I$S/rbc/shape -I$S/.
 $B/u/rbc/shape/main.o: $S/u/rbc/shape/main.cpp; $X -I$S/.

@@ -2,8 +2,7 @@ $B/d/api.o: $S/d/cpu/imp.h $S/utils/imp.h $S/inc/conf.h $S/utils/error.h $S/d/co
 $B/mpi/glb.o: $S/inc/conf.h $S/mpi/wrapper.h $S/utils/mc.h $B/conf.h
 $B/mpi/type.o: $S/inc/conf.h $S/inc/type.h $S/mpi/type.h $S/utils/mc.h
 $B/mpi/wrapper.o: $S/mpi/wrapper.h
-$B/rbc/adj/edg/imp.o: $S/utils/error.h $S/rbc/adj/edg/imp.h
-$B/rbc/adj/imp.o: $S/rbc/adj/imp/fin.h $S/utils/imp.h $S/inc/conf.h $S/utils/error.h $S/rbc/adj/imp.h $S/utils/cc.h $S/rbc/adj/imp/ini.h $S/inc/dev.h $S/d/api.h $B/conf.h $S/rbc/adj/type/common.h $S/rbc/adj/imp/type.h $S/rbc/adj/type/dev.h $S/rbc/adj/imp/anti.h $S/rbc/adj/imp/map.h $S/rbc/adj/edg/imp.h $S/utils/msg.h
+$B/rbc/adj/imp.o: $S/rbc/adj/imp/fin.h $S/utils/imp.h $S/inc/conf.h $S/utils/error.h $S/rbc/adj/imp.h $S/utils/cc.h $S/rbc/adj/imp/ini.h $S/inc/dev.h $S/d/api.h $B/conf.h $S/rbc/adj/type/common.h $S/rbc/adj/imp/type.h $S/rbc/adj/type/dev.h $S/rbc/adj/imp/anti.h $S/rbc/adj/imp/map.h $S/utils/msg.h
 $B/rbc/force/rnd/api/imp.o: $S/utils/imp.h $S/inc/conf.h $S/utils/error.h $S/rbc/force/rnd/api/imp.h $S/rbc/force/rnd/api/imp/cpu.h $S/rbc/force/rnd/api/imp/gaussrand.h $B/conf.h $S/rbc/force/rnd/api/type.h $S/rbc/force/rnd/api/imp/cuda.h
 $B/rbc/force/rnd/imp.o: $S/utils/imp.h $S/utils/os.h $S/inc/conf.h $S/rbc/force/rnd/imp/cu.h $S/utils/error.h $S/rbc/force/rnd/api/imp.h $S/rbc/force/rnd/imp.h $S/rbc/force/rnd/imp/seed.h $S/utils/cc.h $S/inc/dev.h $S/d/api.h $B/conf.h $S/rbc/force/rnd/imp/main.h $S/rbc/force/rnd/api/type.h $S/rbc/force/rnd/imp/type.h $S/utils/msg.h
 $B/u/rbc/rnd/main.o: $S/inc/conf.h $S/mpi/wrapper.h $S/utils/cc.h $S/inc/dev.h $S/d/api.h $S/utils/mc.h $B/conf.h $S/rbc/force/rnd/imp.h $S/mpi/glb.h $S/utils/msg.h
