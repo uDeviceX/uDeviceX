@@ -49,14 +49,38 @@ _I_ double kahan_area(const double r0[3], const double r1[3], const double r2[3]
     return kahan_area0(a, b, c);
 }
 
-_I_ double orient2d(const double a[2], const double b[2], const double c[2]) {
-    enum {X, Y};
-    double acx, bcx, acy, bcy;
-    acx = a[X] - c[X];
-    bcx = b[X] - c[X];
-    acy = a[Y] - c[Y];
-    bcy = b[Y] - c[Y];
-    return acx * bcy - acy * bcx;
+_S_ double orient2d_xy(const double a[3], const double b[3], const double c[3]) {
+    enum {X, Y, Z};
+    enum {P = X, Q = Y};
+    double acp, bcp, acq, bcq;
+    acp = a[P] - c[P]; bcp = b[P] - c[P];
+    acq = a[Q] - c[Q]; bcq = b[Q] - c[Q];
+    return acp * bcq - acq * bcp;
+}
+
+_S_ double orient2d_zx(const double a[3], const double b[3], const double c[3]) {
+    enum {X, Y, Z};
+    enum {P = Z, Q = X};
+    double acp, bcp, acq, bcq;
+    acp = a[P] - c[P]; bcp = b[P] - c[P];
+    acq = a[Q] - c[Q]; bcq = b[Q] - c[Q];
+    return acp * bcq - acq * bcp;
+}
+
+_S_ double orient2d_yz(const double a[3], const double b[3], const double c[3]) {
+    enum {X, Y, Z};
+    enum {P = Y, Q = Z};
+    double acp, bcp, acq, bcq;
+    acp = a[P] - c[P]; bcp = b[P] - c[P];
+    acq = a[Q] - c[Q]; bcq = b[Q] - c[Q];
+    return acp * bcq - acq * bcp;
+}
+
+_I_ void ac_bc_cross(const double a[3], const double b[3], const double c[3], /**/ double r[3]) {
+    enum {X, Y, Z};
+    r[X] = orient2d_yz(a, b, c);
+    r[Y] = orient2d_zx(a, b, c);
+    r[Z] = orient2d_xy(a, b, c);
 }
 
 END
