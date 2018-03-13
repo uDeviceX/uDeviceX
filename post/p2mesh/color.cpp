@@ -177,7 +177,7 @@ static void binning(int n, const float *pp, const int *cc, int color,
                     float dx, float dy, float dz,
                     float ox, float oy, float oz,
                     transform_t transform, const float rc[3],
-                    /**/ float *grid) {
+                    /**/ float *gridcol, float * gridtot) {
 
     int i, cid, c;
     float p[6];
@@ -189,34 +189,48 @@ static void binning(int n, const float *pp, const int *cc, int color,
         r = p;
         cid = r2cid(r, nx, ny, nz, dx, dy, dz, ox, oy, oz);
 
-        if (c   != color)    continue;
-        if (cid == INVALID)  continue;
         
-        grid[cid] += 1.f;
+        if (cid == INVALID)  continue;
+
+        if (c == color)
+            gridcol[cid] += 1.f;
+        gridtot[cid] += 1.f;
     }
 }
 
-// density: scale by volume of each cell
-static void den(int nx, int ny, int nz,
-                float dx, float dy, float dz,
-                volume_t vol, /**/ float *grid) {
-    float s, dV;
-    int i, j, k, cid;
-
-    cid = 0;
-    for (k = 0; k < nz; ++k) {
-        for (j = 0; j < ny; ++j) {
-            for (i = 0; i < nx; ++i) {
-                dV = vol(i, j, k, dx, dy, dz);
-                s = 1.f / dV;
-
-                grid[cid ++] *= s;
-            }
-        }
+static void prop(int n, const float *gridtot, /**/ float *gridcol) {
+    float c, t;
+    for (int i = 0; i < n; ++i) {
+        c = gridcol[i];
+        t = gridtot[i];
+        if (fabs(t) > 1e-6)
+            gridcol[i] = c / t;
+        else
+            gridcol[i] = 0;
     }
 }
 
-static void process(Args a, float dx, float dy, float dz, const BopData *pp_bop, const BopData *cc_bop, float *grid) {
+// // density: scale by volume of each cell
+// static void den(int nx, int ny, int nz,
+//                 float dx, float dy, float dz,
+//                 volume_t vol, /**/ float *grid) {
+//     float s, dV;
+//     int i, j, k, cid;
+
+//     cid = 0;
+//     for (k = 0; k < nz; ++k) {
+//         for (j = 0; j < ny; ++j) {
+//             for (i = 0; i < nx; ++i) {
+//                 dV = vol(i, j, k, dx, dy, dz);
+//                 s = 1.f / dV;
+
+//                 grid[cid ++] *= s;
+//             }
+//         }
+//     }
+// }
+
+static void process(Args a, float dx, float dy, float dz, const BopData *pp_bop, const BopData *cc_bop, /**/ float *gridcol, float *gridtot) {
     long np;
     const float *pp;
     const int *cc;
@@ -228,7 +242,7 @@ static void process(Args a, float dx, float dy, float dz, const BopData *pp_bop,
     binning(np, pp, cc, a.color,
             a.nx, a.ny, a.nz,
             dx, dy, dz, 0, 0, 0, a.trans, a.rc,
-            /**/ grid);    
+            /**/ gridcol, gridtot);    
 }
 
 static void read_bop(const char *fname, BopData *bop) {
@@ -261,7 +275,7 @@ static void write_bov(Args a, long ngrid, const float *grid) {
 int main(int argc, char **argv) {
     Args a;
     BopData *pp_bop, *cc_bop;
-    float *grid, dx, dy, dz;
+    float *gridcol, *gridtot, dx, dy, dz;
     int i, ngrid;
     size_t sz;
     
@@ -270,8 +284,10 @@ int main(int argc, char **argv) {
     ngrid = a.nx * a.ny * a.nz;
     
     sz = ngrid * sizeof(float);
-    grid = (float*) malloc(sz);
-    memset(grid, 0, sz);
+    gridcol = (float*) malloc(sz);
+    gridtot = (float*) malloc(sz);
+    memset(gridcol, 0, sz);
+    memset(gridtot, 0, sz);
     
     dx = a.lx / a.nx;
     dy = a.ly / a.ny;
@@ -282,16 +298,18 @@ int main(int argc, char **argv) {
         BPC( bop_ini(&cc_bop) );
         read_bop(a.ppp[i], pp_bop);
         read_bop(a.ccc[i], cc_bop);
-        process(a, dx, dy, dz, pp_bop, cc_bop, /**/ grid);
+        process(a, dx, dy, dz, pp_bop, cc_bop, /**/ gridcol, gridtot);
         BPC( bop_fin(pp_bop) );
         BPC( bop_fin(cc_bop) );
     }
         
-    den(a.nx, a.ny, a.nz, dx, dy, dz, a.vol, /**/ grid);
+    //den(a.nx, a.ny, a.nz, dx, dy, dz, a.vol, /**/ grid);
+    prop(ngrid, gridtot, /**/ gridcol);
     
-    write_bov(a, ngrid, grid);
+    write_bov(a, ngrid, gridcol);
     
-    free(grid);
+    free(gridcol);
+    free(gridtot);
 
     return 0;
 }
