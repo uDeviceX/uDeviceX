@@ -55,6 +55,6 @@ The deploy command cleans, builds and pushes the documentation on github pages h
 
 [source, sh]
 ----
-./deploy
+./tools/deploy
 ----
 
