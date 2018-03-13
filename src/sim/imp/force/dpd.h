@@ -27,7 +27,6 @@ void forces_dpd(bool stress, Flu *f) {
     UC(fluforces_bulk_prepare(f->q.n, &parray, /**/ f->bulk));
     UC(fluforces_bulk_apply(f->params, f->q.n, f->bulk, start, count, /**/ &farray));
 
-    dSync();
     UC(eflu_wait_recv(e->c, e->u));
     UC(eflu_wait_send(e->c));
 
