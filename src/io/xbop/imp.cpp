@@ -1,4 +1,5 @@
 #include <mpi.h>
+#include <string.h>
 #include <vector_types.h>
 
 /* bop library */

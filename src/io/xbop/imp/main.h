@@ -93,23 +93,75 @@ static void set_name(const char *base, int id, /**/ char *name) {
     sprintf(name, DUMP_BASE "/bop/" PATTERN, base, id);
 }
 
-void io_bop_parts (MPI_Comm cart, const Coords *coords, long n, const Particle *pp, const char *name, int id, /*w*/ IoBop *t) {
+static void write(MPI_Comm cart, const char *base, int id, BopData *bop) {
     char fname[FILENAME_MAX];
+    set_name(base, id, fname);
+
+    BPC( bop_write_header(cart, fname, bop) );
+    BPC( bop_write_values(cart, fname, bop) );    
+}
+
+void io_bop_parts (MPI_Comm cart, const Coords *coords, long n, const Particle *pp, const char *name, int id, IoBop *t) {
     BopData *bop  = t->ff;
     float3 *ppout = (float3*) bop_get_data(bop);
 
-    set_name(name, id, fname);
     copy_shift(coords, n, pp, /**/ ppout);
     UC(set_rank_infos(cart, n, bop));
 
     BPC( bop_set_n(n, bop) );
     BPC( bop_set_vars(NVARP, VARP, bop) );
 
-    BPC( bop_write_header(cart, fname, bop) );
-    BPC( bop_write_values(cart, fname, bop) );
+    write(cart, name, id, bop);
 }
 
-void io_bop_parts_forces(MPI_Comm cart, const Coords *coords, const Particle *pp, const Force *ff, long n, const char *name, int id, /*w*/ IoBop *t);
-void io_bop_stresses(MPI_Comm cart, const float *ss, long n, const char *name, int id);
-void io_bop_ids(MPI_Comm cart, const int *ii, long n, const char *name, int id);
-void io_bop_colors(MPI_Comm cart, const int *ii, long n, const char *name, int id);
+void io_bop_parts_forces(MPI_Comm cart, const Coords *coords, long n, const Particle *pp, const Force *ff, const char *name, int id, IoBop *t) {
+    BopData *bop = t->ff;
+    float3 *out  = (float3*) bop_get_data(bop);
+
+    copy_shift_with_forces(coords, n, pp, ff, /**/ out);
+    UC(set_rank_infos(cart, n, bop));
+
+    BPC( bop_set_n(n, bop) );
+    BPC( bop_set_vars(NVARP + NVARF, VARP " " VARF, bop) );
+
+    write(cart, name, id, bop);
+}
+
+void io_bop_stresses(MPI_Comm cart, long n, const float *ss, const char *name, int id, IoBop *t) {
+    BopData *bop = t->ff;
+    float   *out = (float*) bop_get_data(bop);
+
+    memcpy(out, ss, n * NVARS * sizeof(float));
+    UC(set_rank_infos(cart, n, bop));
+
+    BPC( bop_set_n(n, bop) );
+    BPC( bop_set_vars(NVARS, VARS, bop) );
+
+    write(cart, name, id, bop);
+}
+
+void io_bop_ids(MPI_Comm cart, long n, const int *ii, const char *name, int id, IoBop *t) {
+    BopData *bop = t->ii;
+    int     *out = (int*) bop_get_data(bop);
+
+    memcpy(out, ii, n * NVARI * sizeof(int));
+    UC(set_rank_infos(cart, n, bop));
+
+    BPC( bop_set_n(n, bop) );
+    BPC( bop_set_vars(NVARI, VARI, bop) );
+
+    write(cart, name, id, bop);
+}
+
+void io_bop_colors(MPI_Comm cart, long n, const int *cc, const char *name, int id, IoBop *t) {
+    BopData *bop = t->ii;
+    int     *out = (int*) bop_get_data(bop);
+
+    memcpy(out, cc, n * NVARC * sizeof(int));
+    UC(set_rank_infos(cart, n, bop));
+
+    BPC( bop_set_n(n, bop) );
+    BPC( bop_set_vars(NVARC, VARC, bop) );
+
+    write(cart, name, id, bop);
+}
