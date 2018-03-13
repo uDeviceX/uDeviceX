@@ -6,29 +6,33 @@
 #include "mpi/glb.h"
 #include "mpi/wrapper.h"
 #include "utils/mc.h"
+#include "utils/imp.h"
 #include "utils/error.h"
 #include "conf/imp.h"
 #include "io/mesh_read/imp.h"
 #include "mesh/positions/imp.h"
-#include "mesh/area/imp.h"
+#include "mesh/angle/imp.h"
 
 void main0(const char *i) {
-    float A;
-    int nv;
+    int nv, ne, nm;
     MeshRead *mesh;
-    MeshArea *area;
+    MeshAngle *angle;
     Positions  *pos;
+    double *angles;
     UC(mesh_read_ini_off(i, /**/ &mesh));
-    UC(mesh_area_ini(mesh, &area));
+    UC(mesh_angle_ini(mesh, &angle));
     nv = mesh_read_get_nv(mesh);
+    ne = mesh_read_get_ne(mesh);
     UC(positions_float_ini(nv, mesh_read_get_vert(mesh), /**/ &pos));
 
-    A = mesh_area_apply0(area, pos);
-    printf("%g\n", A);
-        
-    mesh_area_fin(area);
+    nm = 1;
+    EMALLOC(ne, &angles);
+    mesh_angle_apply(angle, nm, pos, /**/ angles);
+    
+    mesh_angle_fin(angle);
     UC(positions_fin(pos));
     UC(mesh_read_fin(mesh));
+    EFREE(angles);
 }
 
 int main(int argc, char **argv) {
