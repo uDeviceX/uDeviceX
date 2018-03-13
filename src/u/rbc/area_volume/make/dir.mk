@@ -22,7 +22,6 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/mpi                   && \
     d $B/rbc                   && \
     d $B/rbc/adj               && \
-    d $B/rbc/adj/edg           && \
     d $B/rbc/com               && \
     d $B/rbc/force             && \
     d $B/rbc/force/area_volume && \

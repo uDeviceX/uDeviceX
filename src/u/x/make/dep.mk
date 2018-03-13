@@ -1,3 +1,4 @@
+$B/algo/edg/imp.o: $S/utils/error.h $S/algo/edg/imp.h
 $B/algo/force_stat/imp.o: $S/utils/error.h $S/inc/type.h $S/algo/force_stat/imp.h $S/d/api.h $S/algo/force_stat/imp/main.h $S/utils/msg.h
 $B/algo/kahan_sum/imp.o: $S/utils/imp.h $S/utils/error.h $S/algo/kahan_sum/imp.h $S/algo/kahan_sum/imp/main.h $S/algo/kahan_sum/imp/type.h
 $B/algo/minmax/imp.o: $S/inc/conf.h $S/inc/type.h $S/d/q.h $S/algo/minmax/imp.h $S/utils/cc.h $S/inc/def.h $S/inc/dev.h $S/d/api.h $B/conf.h $S/utils/kl.h $S/d/ker.h $S/utils/msg.h
@@ -58,6 +59,7 @@ $B/math/linal/imp.o: $S/utils/error.h $S/math/linal/imp.h
 $B/math/rnd/imp.o: $S/utils/imp.h $S/utils/error.h $S/math/rnd/imp.h
 $B/math/tform/imp.o: $S/utils/imp.h $S/inc/conf.h $S/utils/error.h $S/math/tform/imp.h $B/conf.h $S/math/tform/imp/main.h $S/math/tform/imp/type.h $S/math/tform/type.h $S/utils/msg.h
 $B/math/tri/imp.o: $S/math/tri/imp.h $S/math/tri/dev.h
+$B/mesh/angle/imp.o: $S/utils/imp.h $S/utils/error.h $S/math/tri/imp.h $S/mesh/angle/imp.h $S/algo/kahan_sum/imp.h $S/io/mesh_read/imp.h $S/mesh/angle/imp/main.h $S/mesh/angle/imp/type.h $S/mesh/positions/imp.h $S/utils/msg.h
 $B/mesh/area/imp.o: $S/utils/imp.h $S/utils/error.h $S/math/tri/imp.h $S/mesh/area/imp.h $S/algo/kahan_sum/imp.h $S/io/mesh_read/imp.h $S/mesh/area/imp/main.h $S/mesh/area/imp/type.h $S/mesh/positions/imp.h $S/utils/msg.h
 $B/meshbb/imp.o: $S/meshbb/dev/type.h $S/meshbb/bbstates.h $S/utils/imp.h $S/inc/conf.h $S/utils/error.h $S/meshbb/imp/find_collisions/log_root1.h $S/meshbb/dev/collect.h $S/inc/type.h $S/meshbb/dev/cubic_root/main.h $S/meshbb/imp.h $S/meshbb/dev/roots.h $S/utils/cc.h $S/meshbb/dev/cubic_root/log_root0.h $S/d/api.h $S/inc/dev.h $B/conf.h $S/meshbb/imp/main.h $S/meshbb/imp/type.h $S/utils/kl.h $S/meshbb/imp/find_collisions/log_root0.h $S/math/dev.h $S/meshbb/dev/intersection.h $S/meshbb/dev/utils.h $S/meshbb/dev/main.h $S/meshbb/dev/cubic_root/log_root1.h $S/utils/msg.h
 $B/mesh/bbox/imp.o: $S/inc/type.h $S/mesh/bbox/imp.h $S/algo/minmax/imp.h
@@ -74,8 +76,7 @@ $B/mpi/wrapper.o: $S/mpi/wrapper.h
 $B/pair/conf.o: $S/utils/error.h $S/conf/imp.h $S/pair/imp.h $S/pair/type.h
 $B/pair/imp.o: $S/utils/imp.h $S/utils/error.h $S/pair/imp.h $S/pair/imp/main.h $S/pair/imp/type.h $S/pair/type.h
 $B/parray/imp.o: $S/parray/imp.h $S/parray/imp/main.h $S/parray/type.h
-$B/rbc/adj/edg/imp.o: $S/utils/error.h $S/rbc/adj/edg/imp.h
-$B/rbc/adj/imp.o: $S/rbc/adj/imp/fin.h $S/utils/imp.h $S/inc/conf.h $S/utils/error.h $S/rbc/adj/imp.h $S/utils/cc.h $S/rbc/adj/imp/ini.h $S/inc/dev.h $S/d/api.h $B/conf.h $S/rbc/adj/type/common.h $S/rbc/adj/imp/type.h $S/rbc/adj/type/dev.h $S/rbc/adj/imp/anti.h $S/rbc/adj/imp/map.h $S/rbc/adj/edg/imp.h $S/utils/msg.h
+$B/rbc/adj/imp.o: $S/rbc/adj/imp/fin.h $S/utils/imp.h $S/inc/conf.h $S/utils/error.h $S/rbc/adj/imp.h $S/utils/cc.h $S/rbc/adj/imp/ini.h $S/inc/dev.h $S/d/api.h $B/conf.h $S/rbc/adj/type/common.h $S/algo/edg/imp.h $S/rbc/adj/imp/type.h $S/rbc/adj/type/dev.h $S/rbc/adj/imp/anti.h $S/rbc/adj/imp/map.h $S/utils/msg.h
 $B/rbc/com/imp.o: $S/rbc/com/imp/fin.h $S/utils/imp.h $S/inc/conf.h $S/utils/error.h $S/d/q.h $S/inc/type.h $S/rbc/com/imp.h $S/utils/cc.h $S/inc/def.h $S/rbc/com/imp/ini.h $S/d/api.h $S/inc/dev.h $B/conf.h $S/rbc/com/imp/main.h $S/rbc/com/imp/type.h $S/utils/kl.h $S/math/dev.h $S/rbc/com/dev/main.h $S/d/ker.h $S/utils/msg.h
 $B/rbc/force/area_volume/imp.o: $S/utils/imp.h $S/inc/conf.h $S/utils/error.h $S/d/q.h $S/inc/type.h $S/rbc/force/area_volume/imp.h $S/utils/cc.h $S/d/api.h $S/inc/dev.h $B/conf.h $S/rbc/force/area_volume/imp/main.h $S/rbc/force/area_volume/imp/type.h $S/utils/kl.h $S/math/dev.h $S/rbc/force/area_volume/dev/main.h $S/d/ker.h $S/utils/msg.h
 $B/rbc/force/conf.o: $S/utils/error.h $S/conf/imp.h $S/rbc/force/imp.h $S/io/mesh_read/imp.h

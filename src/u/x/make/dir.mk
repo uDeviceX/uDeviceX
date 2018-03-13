@@ -1,4 +1,5 @@
 D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
+    d $B/algo/edg              && \
     d $B/algo/force_stat       && \
     d $B/algo/kahan_sum        && \
     d $B/algo/minmax           && \
@@ -53,6 +54,7 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/math/rnd              && \
     d $B/math/tform            && \
     d $B/math/tri              && \
+    d $B/mesh/angle            && \
     d $B/mesh/area             && \
     d $B/mesh/bbox             && \
     d $B/mesh/collision        && \
@@ -68,7 +70,6 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/parray                && \
     d $B/rbc                   && \
     d $B/rbc/adj               && \
-    d $B/rbc/adj/edg           && \
     d $B/rbc/com               && \
     d $B/rbc/force             && \
     d $B/rbc/force/area_volume && \

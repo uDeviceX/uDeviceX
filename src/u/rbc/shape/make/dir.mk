@@ -8,7 +8,6 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/math/tri     && \
     d $B/mpi          && \
     d $B/rbc/adj      && \
-    d $B/rbc/adj/edg  && \
     d $B/rbc/shape    && \
     d $B/u/rbc/shape  && \
     d $B/utils       
