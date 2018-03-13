@@ -17,8 +17,9 @@ unused. For example, traingle `i` is
 tt[i].x tt[i].y tt[i].z
 ----
 
-`mesh_get_nt`, `mesh_get_nv`, and `mesh_get_md` return the number of
-triangles, number of vertices and maximum degree.
+`mesh_get_nt`, `mesh_get_nv`, `mesh_get_ne`, and `mesh_get_md` return
+the number of triangles, number of vertices, number of edges, and
+maximum degree.
 
 [source,cpp]
 ----

@@ -1,11 +1,9 @@
 void mesh_angle_ini(MeshRead *mesh, MeshAngle **pq) {
     int nv, nt, nd;
     MeshAngle *q;
-    nt = mesh_read_get_nt(mesh);
-    if (nt % 2 != 0)
-        ERR("nt=%d % 2 != 0", nt);
-    nv = mesh_read_get_nv(mesh);
-    nd = 3 * nt / 2;
+    UC(nt = mesh_read_get_nt(mesh));
+    UC(nv = mesh_read_get_nv(mesh));
+    UC(nd = mesh_read_get_ne(mesh));
     EMALLOC(1, &q);
     EMALLOC(nt, &q->tt);
     EMALLOC(nd, &q->dd);
