@@ -59,7 +59,8 @@ $B/math/linal/imp.o: $S/utils/error.h $S/math/linal/imp.h
 $B/math/rnd/imp.o: $S/utils/imp.h $S/utils/error.h $S/math/rnd/imp.h
 $B/math/tform/imp.o: $S/utils/imp.h $S/inc/conf.h $S/utils/error.h $S/math/tform/imp.h $B/conf.h $S/math/tform/imp/main.h $S/math/tform/imp/type.h $S/math/tform/type.h $S/utils/msg.h
 $B/math/tri/imp.o: $S/math/tri/imp.h $S/math/tri/dev.h
-$B/mesh/angle/imp.o: $S/utils/imp.h $S/utils/error.h $S/math/tri/imp.h $S/mesh/angle/imp.h $S/algo/kahan_sum/imp.h $S/io/mesh_read/imp.h $S/mesh/angle/imp/main.h $S/mesh/angle/imp/type.h $S/mesh/positions/imp.h $S/utils/msg.h
+$B/mesh/angle/edg/imp.o: $S/utils/imp.h $S/utils/error.h $S/mesh/angle/edg/imp/main.h $S/algo/edg/imp.h $S/mesh/angle/edg/imp/type.h $S/utils/msg.h
+$B/mesh/angle/imp.o: $S/utils/imp.h $S/utils/error.h $S/math/tri/imp.h $S/mesh/angle/imp.h $S/algo/kahan_sum/imp.h $S/io/mesh_read/imp.h $S/mesh/angle/imp/main.h $S/mesh/angle/imp/type.h $S/mesh/angle/edg/imp.h $S/mesh/positions/imp.h $S/utils/msg.h
 $B/mesh/area/imp.o: $S/utils/imp.h $S/utils/error.h $S/math/tri/imp.h $S/mesh/area/imp.h $S/algo/kahan_sum/imp.h $S/io/mesh_read/imp.h $S/mesh/area/imp/main.h $S/mesh/area/imp/type.h $S/mesh/positions/imp.h $S/utils/msg.h
 $B/meshbb/imp.o: $S/meshbb/dev/type.h $S/meshbb/bbstates.h $S/utils/imp.h $S/inc/conf.h $S/utils/error.h $S/meshbb/imp/find_collisions/log_root1.h $S/meshbb/dev/collect.h $S/inc/type.h $S/meshbb/dev/cubic_root/main.h $S/meshbb/imp.h $S/meshbb/dev/roots.h $S/utils/cc.h $S/meshbb/dev/cubic_root/log_root0.h $S/d/api.h $S/inc/dev.h $B/conf.h $S/meshbb/imp/main.h $S/meshbb/imp/type.h $S/utils/kl.h $S/meshbb/imp/find_collisions/log_root0.h $S/math/dev.h $S/meshbb/dev/intersection.h $S/meshbb/dev/utils.h $S/meshbb/dev/main.h $S/meshbb/dev/cubic_root/log_root1.h $S/utils/msg.h
 $B/mesh/bbox/imp.o: $S/inc/type.h $S/mesh/bbox/imp.h $S/algo/minmax/imp.h

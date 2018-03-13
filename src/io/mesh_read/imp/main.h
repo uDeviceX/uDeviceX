@@ -29,6 +29,13 @@ void mesh_read_ini_ply(const char *path, MeshRead **pq) {
 void mesh_read_fin(MeshRead* q) { EFREE(q->rr); EFREE(q->tt); EFREE(q); }
 int mesh_read_get_nv(const MeshRead *q) { return q->nv; }
 int mesh_read_get_nt(const MeshRead *q) { return q->nt; }
+int mesh_read_get_ne(const MeshRead *q) {
+    int nt;
+    nt = q->nt;
+    if (nt % 2 != 0) ERR("nt=%d % 2 != 0", nt);
+    return 3 * nt / 2;
+}
+
 static int amax(int *a, int n) {
     int i, m;
     if (n <= 0) ERR("amax called with size: %d\n", n);

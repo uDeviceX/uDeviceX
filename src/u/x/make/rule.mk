@@ -59,6 +59,7 @@ $B/math/linal/imp.o: $S/math/linal/imp.cpp; $X -I$S/math/linal -I$S/.
 $B/math/rnd/imp.o: $S/math/rnd/imp.cpp; $X -I$S/math/rnd -I$S/.
 $B/math/tform/imp.o: $S/math/tform/imp.cpp; $X -I$S/math/tform -I$S/.
 $B/math/tri/imp.o: $S/math/tri/imp.cpp; $X -I$S/math/tri -I$S/.
+$B/mesh/angle/edg/imp.o: $S/mesh/angle/edg/imp.cpp; $X -I$S/mesh/angle/edg -I$S/.
 $B/mesh/angle/imp.o: $S/mesh/angle/imp.cpp; $X -I$S/mesh/angle -I$S/.
 $B/mesh/area/imp.o: $S/mesh/area/imp.cpp; $X -I$S/mesh/area -I$S/.
 $B/meshbb/imp.o: $S/meshbb/imp.cu; $N -I$S/meshbb -I$S/.

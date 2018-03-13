@@ -29,3 +29,13 @@ int edg_get(int md, int i, int x, const int *hx, const int *hy) { /* next */
     }
     return hy[i];
 }
+
+int edg_valid(int md, int i, int x, const int *hx) { /* valid? */
+    int d;
+    i *= md; d = 0;
+    while (hx[i] != x) {
+        i++; d++;
+        if (d >= md) return 0;
+    }
+    return 1;
+}

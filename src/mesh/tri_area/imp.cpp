@@ -7,7 +7,6 @@
 
 #include "io/mesh_read/imp.h"
 #include "mesh/positions/imp.h"
-#include "algo/kahan_sum/imp.h"
 
 #include "math/tri/imp.h"
 
