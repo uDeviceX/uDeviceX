@@ -1,9 +1,12 @@
-void e_ini(int md, int nv, /**/ Edg **pq) {
+void e_ini(int md, int nv, int val0, /**/ Edg **pq) {
+    int i;
     Edg *q;
     EMALLOC(1, &q);
     EMALLOC(md*nv, &q->hx);
     EMALLOC(md*nv, &q->hy);
     edg_ini(md, nv, /**/ q->hx);
+    for (i = 0; i < md*nv; i++)
+        q->hy[i] = val0;
     
     q->md = md; q->nv = nv;
     *pq = q;

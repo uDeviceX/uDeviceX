@@ -1,4 +1,6 @@
 void ini_dd(int nt, const int4 *tt, int nv, int md, int nd, /**/ int4 *dd) {
+    Edg *nxt, *seen;
+        
     int *hx, *hy, i, i0, i1, i2;
     EMALLOC(md*nv, &hx);
     EMALLOC(md*nv, &hy);
