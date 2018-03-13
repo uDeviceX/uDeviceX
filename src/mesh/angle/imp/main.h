@@ -15,10 +15,10 @@ static void reg(int i1, int i2, Edg *nxt, Edg *seen, /**/ Q *q) {
     q_push(q, i0, i1, i2, i3);
     UC(e_set(seen, i1, i2, 1));
 }
-static void ini_dd(int nt, const int4 *tt, int nv, int md, int nd, /**/ int4 *dd) {
+static void ini_dd(int nt, const int4 *tt, int nv, int md, /**/ int4 *dd) {
     Q q;
     Edg *nxt, *seen;
-    int i, j, i0, i1, i2;
+    int i, i0, i1, i2;
     q.d = dd;
 
     UC(e_ini(md, nv, &nxt));
@@ -51,7 +51,7 @@ void mesh_angle_ini(MeshRead *mesh, MeshAngle **pq) {
     EMALLOC(1, &q);
     EMALLOC(nt, &q->tt);
     EMALLOC(nd, &q->dd);
-    UC(ini_dd(nt, mesh_read_get_tri(mesh), nv, md, nd, /**/ q->dd));
+    UC(ini_dd(nt, mesh_read_get_tri(mesh), nv, md, /**/ q->dd));
     q->nv = nv; q->nt = nt; q->nd = nd;
     EMEMCPY(nt, mesh_read_get_tri(mesh), q->tt);
 
