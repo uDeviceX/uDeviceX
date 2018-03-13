@@ -7,10 +7,13 @@ static void q_push(Q *q, int i0, int i1, int i2, int i3) {
 }
 
 static void reg(int i1, int i2, Edg *nxt, Edg *seen, /**/ Q *q) {
-    if (e_get(seen, i1, i2)) return;
-    //    if (e_get(seen, i2, i1)) return;
-
-    //    UC(e_set(seen, i1, i2, 1));
+    int i0, i3;
+    if (e_valid(seen, i1, i2)) return;
+    if (e_valid(seen, i2, i1)) return;
+    i0 = e_get(nxt, i1, i2);
+    i3 = e_get(nxt, i2, i1); /* previous */
+    q_push(q, i0, i1, i2, i3);
+    UC(e_set(seen, i1, i2, 1));
 }
 static void ini_dd(int nt, const int4 *tt, int nv, int md, int nd, /**/ int4 *dd) {
     Q q;
@@ -21,14 +24,14 @@ static void ini_dd(int nt, const int4 *tt, int nv, int md, int nd, /**/ int4 *dd
     UC(e_ini(md, nv, &nxt));
     UC(e_ini(md, nv, &seen));
 
-    for (i = 0; i < nt; i++) {
+    for (i = 0; i < nt; i++) { /* save who is next for every edge */
         i0 = tt[i].x; i1 = tt[i].y; i2 = tt[i].z;
         e_set(nxt, i0, i1, i2);
         e_set(nxt, i1, i2, i0);
         e_set(nxt, i2, i0, i1);
     }
 
-    for (i = 0; i < nt; i++) {
+    for (i = 0; i < nt; i++) { /* register dihidrals */
         i0 = tt[i].x; i1 = tt[i].y; i2 = tt[i].z;
         reg(i0, i1, nxt, /**/ seen, &q);
         reg(i1, i2, nxt, /**/ seen, &q);
@@ -49,7 +52,6 @@ void mesh_angle_ini(MeshRead *mesh, MeshAngle **pq) {
     EMALLOC(nt, &q->tt);
     EMALLOC(nd, &q->dd);
     UC(ini_dd(nt, mesh_read_get_tri(mesh), nv, md, nd, /**/ q->dd));
-
     q->nv = nv; q->nt = nt; q->nd = nd;
     EMEMCPY(nt, mesh_read_get_tri(mesh), q->tt);
 
