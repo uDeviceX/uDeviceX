@@ -51,10 +51,15 @@ make -j     # <2>
 
 == Deploy
 
-The deploy command cleans, builds and pushes the documentation on github pages https://github.com/amlucas/udoc
+The deploy command cleans, builds and pushes the documentation on
+github pages https://github.com/amlucas/udoc.
+The commit message on the udoc repository points on the current
+`uDeviceX` commit. It is preferable to have a clean local repository
+before deploying:
 
 [source, sh]
 ----
+git clean -xdf
 ./tools/deploy
 ----
 
