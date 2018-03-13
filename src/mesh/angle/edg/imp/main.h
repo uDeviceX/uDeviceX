@@ -27,3 +27,10 @@ int e_get(Edg *q, int i, int j) {
     md = q->md; hx = q->hx; hy = q->hy;
     return edg_get(md, i, j, hx, hy);
 }
+
+int e_valid(Edg *q, int i, int j) {
+    int md;
+    const int *hx, *hy;
+    md = q->md; hx = q->hx;
+    return edg_valid(md, i, j, hx);
+}
