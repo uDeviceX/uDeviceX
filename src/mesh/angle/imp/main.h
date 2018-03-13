@@ -1,12 +1,28 @@
+void ini_dd(int nt, const int4 *tt, int nv, int md, int nd, /**/ int4 *dd) {
+    int *hx, *hy, i, i0, i1, i2;
+    EMALLOC(md*nv, &hx);
+    EMALLOC(md*nv, &hy);
+    
+    //    edg_ini(md, nv, /**/ hx);
+    for (i = 0; i < nt; i++) {
+        i0 = tt[i].x; i1 = tt[i].y; i2 = tt[i].z;
+        msg_print("i: %d %d %d", i0, i1, i2);
+    }
+    EFREE(hx);
+    EFREE(hy);
+}
+
 void mesh_angle_ini(MeshRead *mesh, MeshAngle **pq) {
-    int nv, nt, nd;
+    int nv, nt, nd, md;
     MeshAngle *q;
     UC(nt = mesh_read_get_nt(mesh));
     UC(nv = mesh_read_get_nv(mesh));
     UC(nd = mesh_read_get_ne(mesh));
+    UC(md = mesh_read_get_md(mesh));
     EMALLOC(1, &q);
     EMALLOC(nt, &q->tt);
     EMALLOC(nd, &q->dd);
+    UC(ini_dd(nt, mesh_read_get_tri(mesh), nv, md, nd, /**/ q->dd));
 
     q->nv = nv; q->nt = nt; q->nd = nd;
     EMEMCPY(nt, mesh_read_get_tri(mesh), q->tt);
