@@ -14,6 +14,8 @@ include::doc.adoc[]
 
 include::gource.adoc[]
 
+include::modules/algo/edg.adoc[]
+
 include::modules/algo/minmax.adoc[]
 
 include::modules/algo/scan.adoc[]
