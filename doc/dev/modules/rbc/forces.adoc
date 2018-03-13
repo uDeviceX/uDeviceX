@@ -19,6 +19,8 @@ F_{pow}(r) = \frac{k_{pow}}
                   {r^{m + 1}}
 ++++
 
+== Other forces (TODO)
+
 [stem]
 ++++
 E^{tot}_{area} \propto \left( A^{tot} - A_{0}^{tot} \right)^2 \\
