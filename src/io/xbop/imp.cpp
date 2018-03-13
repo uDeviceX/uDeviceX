@@ -1,6 +1,10 @@
 #include <mpi.h>
 #include <vector_types.h>
 
+/* bop library */
+#include <bop_common.h>
+#include <bop_mpi.h>
+
 #include "conf.h"
 #include "inc/conf.h"
 #include "utils/mc.h"
