@@ -44,6 +44,27 @@ void kahan_area(int argc, char **v) {
     msg_print("%.17e", tri_hst::kahan_area(a, b, c));
 }
 
+void ac_bc_cross(int argc, char **v) {
+    enum {X, Y, Z};
+    double a[3], b[3], c[3], r[3];
+    if (argc != 3*3 + 1)
+        ERR("ac_bc_cross needs nine arguments");
+    UC(a[X] = read_dbl(v[1])); v++;
+    UC(a[Y] = read_dbl(v[1])); v++;
+    UC(a[Z] = read_dbl(v[1])); v++;
+
+    UC(b[X] = read_dbl(v[1])); v++;
+    UC(b[Y] = read_dbl(v[1])); v++;
+    UC(b[Z] = read_dbl(v[1])); v++;
+
+    UC(c[X] = read_dbl(v[1])); v++;
+    UC(c[Y] = read_dbl(v[1])); v++;
+    UC(c[Z] = read_dbl(v[1])); v++;
+
+    tri_hst::ac_bc_cross(a, b, c, /**/ r);
+    msg_print("%.17e %.17e %.17e", r[X], r[Y], r[Z]);
+}
+
 int main(int argc, char **argv) {
     m::ini(&argc, &argv);
 
@@ -52,6 +73,8 @@ int main(int argc, char **argv) {
         UC(kahan_area0(--argc, ++argv));
     else if (same_str(argv[1], "kahan_area"))
         UC(kahan_area (--argc, ++argv));
+    else if (same_str(argv[1], "ac_bc_cross"))
+        UC(ac_bc_cross (--argc, ++argv));    
     else 
         ERR("unknown FUNC: %s", argv[1]);
     
