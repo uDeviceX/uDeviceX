@@ -1,21 +1,29 @@
 = build
 :lext: .adoc
 
-Shows full compilation and linking commands
+`uDeviceX` uses a wrapper `u.make` for building the source.
+This allows to load modules when needed.
+
+== verbosity
+
+The verbosity can be controlled during the compilation process:
+
+Shows full compilation and linking commands:
 
 [source,sh]
 ----
 u.make LOG=
 ----
 
-Profile compilation time
+Profile compilation time:
 
 [source,sh]
 ----
 u.make LOG='@time -f "%e $<"'
 ----
 
-Hide compilation messages
+Hide compilation messages:
+
 [source,sh]
 ----
 u.make LOG=@
@@ -34,9 +42,10 @@ MAKEFLAGS="MPI_VARIANT=ompi-cxx HDF5_CXXFLAGS= HDF5_LIBS=-lhdf5 NVCC_LIBS=-L/opt
 				u.test test/compile
 ----
 
-== after adding files
+== dependencies
 
-run from src/
+Dependencies must be generated after adding a file or changing includes.
+Run from `src/` directory:
 
 ----
 ../tools/deps

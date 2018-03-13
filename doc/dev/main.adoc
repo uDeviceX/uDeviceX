@@ -8,8 +8,6 @@ include::build.adoc[]
 
 include::conventions.adoc[]
 
-include::cstyle/emacs.adoc[]
-
 include::doc.adoc[]
 
 include::gource.adoc[]
