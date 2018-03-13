@@ -41,7 +41,7 @@ $B/generate/rig/imp.o: $S/mesh/bbox/imp.h $S/utils/imp.h $S/inc/conf.h $S/utils/
 $B/inter/color/conf.o: $S/utils/imp.h $S/utils/error.h $S/conf/imp.h $S/inter/color/imp.h
 $B/inter/color/imp.o: $S/utils/imp.h $S/inc/conf.h $S/inter/color/imp/drop.h $S/utils/error.h $S/inc/type.h $S/inter/color/imp.h $S/utils/cc.h $S/inc/def.h $S/inter/color/imp/unif.h $S/d/api.h $S/inc/dev.h $B/conf.h $S/inter/color/imp/main.h $S/inter/color/imp/type.h $S/coords/imp.h $S/utils/msg.h
 $B/inter/imp.o: $S/inc/conf.h $S/rbc/type.h $S/flu/imp.h $S/wall/sdf/imp.h $S/utils/error.h $S/inc/type.h $S/d/q.h $S/dbg/imp.h $S/mpi/wrapper.h $S/inter/imp.h $S/partlist/type.h $S/utils/cc.h $S/inc/def.h $S/wall/imp.h $S/mpi/type.h $S/inc/dev.h $S/utils/mc.h $S/d/api.h $B/conf.h $S/inter/imp/main.h $S/rig/imp.h $S/utils/texo.h $S/utils/kl.h $S/clist/imp.h $S/frag/imp.h $S/wall/wvel/type.h $S/utils/msg.h $S/coords/imp.h $S/d/ker.h
-$B/io/bop/imp.o: $S/utils/imp.h $S/utils/os.h $S/inc/conf.h $S/utils/error.h $S/inc/type.h $S/mpi/wrapper.h $S/io/bop/imp.h $S/inc/def.h $S/mpi/type.h $S/d/api.h $S/utils/mc.h $B/conf.h $S/io/bop/imp/main.h $S/io/bop/imp/type.h $S/coords/imp.h
+$B/io/bop/imp.o: $S/utils/imp.h $S/utils/os.h $S/inc/conf.h $S/utils/error.h $S/inc/type.h $S/mpi/wrapper.h $S/io/bop/imp.h $S/inc/def.h $S/mpi/type.h $S/d/api.h $S/utils/mc.h $B/conf.h $S/io/bop/imp/main.h $S/io/bop/imp/type.h $S/io/bop/imp/macros.h $S/coords/imp.h
 $B/io/com/imp.o: $S/utils/os.h $S/utils/imp.h $S/inc/conf.h $S/utils/error.h $S/mpi/wrapper.h $S/io/com/imp.h $S/utils/mc.h $B/conf.h $S/coords/imp.h
 $B/io/diag/mesh/imp.o: $S/utils/imp.h $S/inc/conf.h $S/utils/error.h $S/inc/type.h $S/mpi/wrapper.h $S/io/diag/mesh/imp.h $S/io/mesh_read/imp.h $B/conf.h $S/io/diag/mesh/imp/main.h $S/io/diag/mesh/imp/type.h $S/utils/msg.h
 $B/io/diag/part/imp.o: $S/utils/imp.h $S/inc/conf.h $S/utils/error.h $S/inc/type.h $S/mpi/wrapper.h $S/io/diag/part/imp.h $B/conf.h $S/io/diag/part/imp/main.h $S/io/diag/part/imp/type.h $S/utils/msg.h
@@ -54,7 +54,6 @@ $B/io/mesh/write/imp.o: $S/utils/imp.h $S/inc/conf.h $S/utils/error.h $S/mpi/wra
 $B/io/restart/imp.o: $S/utils/imp.h $S/inc/conf.h $S/utils/error.h $S/inc/type.h $S/io/restart/imp.h $S/inc/def.h $B/conf.h $S/coords/imp.h $S/utils/msg.h
 $B/io/rig/imp.o: $S/utils/imp.h $S/inc/conf.h $S/utils/error.h $S/inc/type.h $S/io/rig/imp.h $B/conf.h $S/io/rig/imp/main.h $S/io/rig/imp/type.h $S/coords/imp.h
 $B/io/txt/imp.o: $S/utils/imp.h $S/utils/error.h $S/inc/type.h $S/io/txt/imp.h $S/io/txt/imp/dump.h $S/io/txt/imp/read.h $S/io/txt/imp/type.h $S/utils/msg.h
-$B/io/xbop/imp.o: $S/utils/imp.h $S/utils/os.h $S/inc/conf.h $S/utils/error.h $S/inc/type.h $S/mpi/wrapper.h $S/io/xbop/imp.h $S/inc/def.h $S/mpi/type.h $S/d/api.h $S/utils/mc.h $B/conf.h $S/io/xbop/imp/main.h $S/io/xbop/imp/type.h $S/coords/imp.h
 $B/main.o: $S/inc/conf.h $S/utils/error.h $S/conf/imp.h $S/mpi/wrapper.h $S/utils/mc.h $B/conf.h $S/sim/imp.h $S/scheme/time/imp.h $S/mpi/glb.h $S/utils/msg.h
 $B/math/linal/imp.o: $S/utils/error.h $S/math/linal/imp.h
 $B/math/rnd/imp.o: $S/utils/imp.h $S/utils/error.h $S/math/rnd/imp.h

@@ -89,7 +89,7 @@
 #include "rigid/imp.h"
 
 #include "meshbb/imp.h"
-#include "io/xbop/imp.h"
+#include "io/bop/imp.h"
 
 #include "inter/imp.h"
 #include "inter/color/imp.h"

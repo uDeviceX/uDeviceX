@@ -13,7 +13,7 @@ O = $B/algo/edg/imp.o $B/algo/force_stat/imp.o $B/algo/kahan_sum/imp.o \
     $B/io/diag/mesh/imp.o $B/io/diag/part/imp.o $B/io/field/h5/imp.o \
     $B/io/field/imp.o $B/io/field/xmf/imp.o $B/io/mesh/imp.o \
     $B/io/mesh/write/imp.o $B/io/mesh_read/imp.o $B/io/restart/imp.o \
-    $B/io/rig/imp.o $B/io/txt/imp.o $B/io/xbop/imp.o $B/main.o $B/math/linal/imp.o \
+    $B/io/rig/imp.o $B/io/txt/imp.o $B/main.o $B/math/linal/imp.o \
     $B/math/rnd/imp.o $B/math/tform/imp.o $B/math/tri/imp.o $B/mesh/angle/imp.o \
     $B/mesh/area/imp.o $B/mesh/bbox/imp.o $B/mesh/collision/imp.o \
     $B/mesh/dist/imp.o $B/mesh/positions/imp.o $B/mesh/props/imp.o \
