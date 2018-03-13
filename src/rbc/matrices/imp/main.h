@@ -94,11 +94,8 @@ void matrices_log(const Matrices *q) {
     int n, i;
     n = q->n;
     msg_print("<matrices_log");
-    msg_print("n = %d", n);
-    for (i = 0; i < n; i++) {
+    for (i = 0; i < n; i++)
         if (i > 0) msg_print("");
-        log(q->m[i].D);
-    }
     msg_print(">matrices_log");
 }
 

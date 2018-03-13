@@ -42,4 +42,4 @@ test: install
 	@echo log to atest.log
 	@atest 2>&1 `find test -name main -type f`       | tee atest.log
 
-.PHONY: clean test all D
+.PHONY: clean test all D install
