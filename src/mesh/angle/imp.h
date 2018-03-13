@@ -1,10 +1,10 @@
-struct MeshTriArea;
+struct MeshAngle;
 struct Positions;
 struct MeshRead;
 
 // tag::interface[]
-void mesh_tri_area_ini(MeshRead*, /**/ MeshTriArea**); // <1>
-void mesh_tri_area_fin(MeshTriArea*);
+void mesh_angle_ini(MeshRead*, /**/ MeshAngle**); // <1>
+void mesh_angle_fin(MeshAngle*);
 
-void  mesh_tri_area_apply(MeshTriArea*, int nm, Positions*, /**/ double*); // <2>
+void  mesh_angle_apply(MeshAngle*, int nm, Positions*, /**/ double*); // <2>
 // end::interface[]

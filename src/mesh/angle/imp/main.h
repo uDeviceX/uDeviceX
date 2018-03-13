@@ -1,6 +1,6 @@
-void mesh_tri_area_ini(MeshRead *mesh, MeshTriArea **pq) {
+void mesh_angle_ini(MeshRead *mesh, MeshAngle **pq) {
     int nv, nt;
-    MeshTriArea *q;
+    MeshAngle *q;
     EMALLOC(1, &q);
     nt = mesh_read_get_nt(mesh);
     nv = mesh_read_get_nv(mesh);
@@ -12,7 +12,7 @@ void mesh_tri_area_ini(MeshRead *mesh, MeshTriArea **pq) {
     *pq = q;
 }
 
-void mesh_tri_area_fin(MeshTriArea *q) { EFREE(q->tt); EFREE(q); }
+void mesh_angle_fin(MeshAngle *q) { EFREE(q->tt); EFREE(q); }
 static void get(Positions *p, int i, double d[3]) {
     enum {X, Y, Z};
     float f[3];
@@ -29,7 +29,7 @@ static double area(int4 t, Positions *p, int offset) {
     return tri_hst::kahan_area(a, b, c);
 }
 
-void mesh_tri_area_apply(MeshTriArea *q, int m, Positions *p, double *area0) {
+void mesh_angle_apply(MeshAngle *q, int m, Positions *p, double *area0) {
     int i, j, k, nt, nv, offset;
     int4 *tt;
     nt = q->nt; tt = q->tt; nv = q->nv; offset = 0;
