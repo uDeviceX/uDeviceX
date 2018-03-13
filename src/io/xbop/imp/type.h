@@ -1,5 +1,4 @@
 struct IoBop {
-    BopData *pp;
-    BopData *ii;
-    BopData *ss;
+    BopData *ff; /* float data */
+    BopData *ii; /*   int data */
 };

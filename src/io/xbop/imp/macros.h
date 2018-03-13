@@ -1,3 +1,4 @@
+/* [B]o[p] [c]heck */
 #define BPC(ans) do {                           \
         BopStatus s = (ans);                    \
         if (!bop_success(s)) {                  \

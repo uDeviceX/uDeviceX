@@ -22,5 +22,6 @@
 #include "coords/imp.h"
 
 #include "imp.h"
+#include "imp/macros.h"
 #include "imp/type.h"
 #include "imp/main.h"
