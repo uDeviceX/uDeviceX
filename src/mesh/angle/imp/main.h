@@ -1,18 +1,24 @@
 void mesh_angle_ini(MeshRead *mesh, MeshAngle **pq) {
-    int nv, nt;
+    int nv, nt, nd;
     MeshAngle *q;
-    EMALLOC(1, &q);
     nt = mesh_read_get_nt(mesh);
+    if (nt % 2 != 0)
+        ERR("nt=%d % 2 != 0", nt);
     nv = mesh_read_get_nv(mesh);
+    nd = 3 * nt / 2;
+    EMALLOC(1, &q);
     EMALLOC(nt, &q->tt);
+    EMALLOC(nd, &q->dd);
 
-    q->nv = nv; q->nt = nt;
+    q->nv = nv; q->nt = nt; q->nd = nd;
     EMEMCPY(nt, mesh_read_get_tri(mesh), q->tt);
 
     *pq = q;
 }
 
-void mesh_angle_fin(MeshAngle *q) { EFREE(q->tt); EFREE(q); }
+void mesh_angle_fin(MeshAngle *q) {
+    EFREE(q->dd); EFREE(q->tt); EFREE(q);
+}
 static void get(Positions *p, int i, double d[3]) {
     enum {X, Y, Z};
     float f[3];

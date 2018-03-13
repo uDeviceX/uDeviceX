@@ -1,5 +1,5 @@
 struct MeshAngle {
-    int4 *tt;
     int nv, nt, nd;
-    int4 *dih;
+    int4 *tt;
+    int4 *dd; /* dihidrals */
 };
