@@ -165,3 +165,11 @@ void io_bop_colors(MPI_Comm cart, long n, const int *cc, const char *name, int i
 
     write(cart, name, id, bop);
 }
+
+#undef VARP
+#undef VARF
+#undef VARS
+#undef VARI
+#undef VARC
+
+#undef PATTERN
