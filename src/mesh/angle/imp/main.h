@@ -1,19 +1,26 @@
 struct Q { int4 *d; };
-void q_ini(int4 *d, Q *q) { q->d = d; }
-void q_push(Q *q, int i0, int i1, int i2, int i3) {
+static void q_push(Q *q, int i0, int i1, int i2, int i3) {
     int4 *d;
     d = q->d;
     d->x = i0; d->y = i1; d->z = i2; d->w = i3;
     (q->d)++;
 }
 
-void ini_dd(int nt, const int4 *tt, int nv, int md, int nd, /**/ int4 *dd) {
+static void reg(int i1, int i2, Edg *nxt, Edg *seen, /**/ Q *q) {
+    if (e_get(seen, i1, i2)) return;
+    //    if (e_get(seen, i2, i1)) return;
+
+    //    UC(e_set(seen, i1, i2, 1));
+}
+static void ini_dd(int nt, const int4 *tt, int nv, int md, int nd, /**/ int4 *dd) {
+    Q q;
     Edg *nxt, *seen;
     int i, j, i0, i1, i2;
-    
-    e_ini(md, nv, 0, &nxt);
-    e_ini(md, nv, 0, &seen);    
-    
+    q.d = dd;
+
+    UC(e_ini(md, nv, &nxt));
+    UC(e_ini(md, nv, &seen));
+
     for (i = 0; i < nt; i++) {
         i0 = tt[i].x; i1 = tt[i].y; i2 = tt[i].z;
         e_set(nxt, i0, i1, i2);
@@ -23,8 +30,9 @@ void ini_dd(int nt, const int4 *tt, int nv, int md, int nd, /**/ int4 *dd) {
 
     for (i = 0; i < nt; i++) {
         i0 = tt[i].x; i1 = tt[i].y; i2 = tt[i].z;
-        
-        j = e_get(nxt, i0, i1);
+        reg(i0, i1, nxt, /**/ seen, &q);
+        reg(i1, i2, nxt, /**/ seen, &q);
+        reg(i2, i0, nxt, /**/ seen, &q);
     }
 
     e_fin(nxt); e_fin(seen);
