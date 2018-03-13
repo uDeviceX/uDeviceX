@@ -12,7 +12,7 @@ HDF5_LIBS = -L${HDF5_ROOT}/lib -Wl,-rpath -Wl,${HDF5_ROOT}/lib -lhdf5
 
 BOP = ${HOME}/prefix/bop
 BOP_CXXFLAGS = -I${BOP}/include
-BOP_LIBS     = -L${BOP}/include -lbop -lbop_mpi
+BOP_LIBS     = -L${BOP}/lib -lbop -lbop_mpi
 
 NVCC_LIBS = -L${CUDA_ROOT}/lib64 -Wl,-rpath -Wl,${CUDA_ROOT}/lib64
 
