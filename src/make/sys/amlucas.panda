@@ -15,5 +15,8 @@ libconfigLD = `pkg-config --variable=libdir libconfig`
 LIBCONFIG_CXXFLAGS = -I${libconfigID}
 LIBCONFIG_LIBS     = -L${libconfigLD} -Wl,-rpath -Wl,${libconfigLD} ${libconfigL}
 
+BOP = ${HOME}/prefix/bop
+BOP_CXXFLAGS = -I${BOP}/include
+BOP_LIBS     = -L${BOP}/include -lbop -lbop_mpi
 
 CXXFLAGS += -Wall -Wextra -Wno-unused-parameter -Wno-unused-function
