@@ -76,6 +76,17 @@ _S_ double orient2d_yz(const double a[3], const double b[3], const double c[3]) 
     return acp * bcq - acq * bcp;
 }
 
+_I_ double orient3d(const double a[3], const double b[3], const double c[3], const double d[3]) {
+    enum {X, Y, Z};
+    double ax, ay, az, bx, by, bz, cx, cy, cz;
+
+    ax = a[X] - d[X]; ay = a[Y] - d[Y]; az = a[Z] - d[Z];
+    bx = b[X] - d[X]; by = b[Y] - d[Y]; bz = b[Z] - d[Z];
+    cx = c[X] - d[X]; cy = c[Y] - d[Y]; cz = c[Z] - d[Z];
+    
+    return ax*(by*cz - bz*cy) + bx*(cy*az - cz*ay) + cx*(ay*bz - az*by);
+}
+
 _I_ void ac_bc_cross(const double a[3], const double b[3], const double c[3], /**/ double r[3]) {
     enum {X, Y, Z};
     r[X] = orient2d_yz(a, b, c);

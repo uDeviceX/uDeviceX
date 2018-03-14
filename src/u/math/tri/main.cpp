@@ -84,6 +84,30 @@ void ac_bc_cross(int argc, char **v) {
     msg_print("%.17e %.17e %.17e", r[X], r[Y], r[Z]);
 }
 
+void orient3d(int argc, char **v) {
+    enum {X, Y, Z};
+    double a[3], b[3], c[3], d[3];
+    if (argc != 3*4 + 1)
+        ERR("ac_bc_cross needs 12 arguments");
+    UC(a[X] = read_dbl(v[1])); v++;
+    UC(a[Y] = read_dbl(v[1])); v++;
+    UC(a[Z] = read_dbl(v[1])); v++;
+
+    UC(b[X] = read_dbl(v[1])); v++;
+    UC(b[Y] = read_dbl(v[1])); v++;
+    UC(b[Z] = read_dbl(v[1])); v++;
+
+    UC(c[X] = read_dbl(v[1])); v++;
+    UC(c[Y] = read_dbl(v[1])); v++;
+    UC(c[Z] = read_dbl(v[1])); v++;
+
+    UC(d[X] = read_dbl(v[1])); v++;
+    UC(d[Y] = read_dbl(v[1])); v++;
+    UC(d[Z] = read_dbl(v[1])); v++;
+
+    msg_print("%.17e", tri_hst::orient3d(a, b, c, d));
+}
+
 int main(int argc, char **argv) {
     m::ini(&argc, &argv);
 
@@ -93,11 +117,13 @@ int main(int argc, char **argv) {
     else if (same_str(argv[1], "kahan_area"))
         UC(kahan_area (--argc, ++argv));
     else if (same_str(argv[1], "shewchuk_area"))
-        UC(shewchuk_area (--argc, ++argv));    
+        UC(shewchuk_area (--argc, ++argv));
     else if (same_str(argv[1], "ac_bc_cross"))
-        UC(ac_bc_cross (--argc, ++argv));    
-    else 
+        UC(ac_bc_cross (--argc, ++argv));
+    else if (same_str(argv[1], "orient3d"))
+        UC(orient3d (--argc, ++argv));
+    else
         ERR("unknown FUNC: %s", argv[1]);
-    
+
     m::fin();
 }
