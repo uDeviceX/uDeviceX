@@ -7,10 +7,9 @@ EXECS = po.msd
 # common
 C=../common
 
-BOPDIR = $(HOME)/prefix/bop
-LIBS = -lbop -lbop_serial
-LDFLAGS += -L$(BOPDIR)/lib
-CXXFLAGS += -I$(BOPDIR)/include -I$(C)
+LDFLAGS  += `bop-config --libs`
+CXXFLAGS += `bop-config --cflags` 
+CXXFLAGS += -I$(C)
 
 all: $(EXECS)
 
@@ -19,7 +18,7 @@ install: all
 	cp $(EXECS) $(BIN)
 
 po.msd: msd.o
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $^ -o $@ -lm $(LIBS)
+	$(CXX) $(CXXFLAGS) $^ -o $@ -lm $(LDFLAGS)
 
 msd.o: msd.cpp $(C)/macros.h $(C)/pp_id.h
 

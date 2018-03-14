@@ -6,10 +6,9 @@ CXXFLAGS = -Wpedantic -Wall -Wextra -O3 -std=c++11
 
 
 INST_BIN=~/bin
-BOP=$(HOME)/prefix/bop
 
-CXXFLAGS += -I$(BOP)/include
-LIBS     += -L$(BOP)/lib -lbop -lbop_serial
+CXXFLAGS += `bop-config --cflags`
+LIBS     += `bop-config --libs`
 
 PROGS=color
 PI=$(PROGS)

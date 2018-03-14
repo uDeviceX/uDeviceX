@@ -6,13 +6,11 @@ CXXFLAGS = -Wpedantic -Wall -Wextra -O3 -std=c++11
 
 
 INST_BIN=~/bin
-BOV=$(HOME)/prefix/bov
-BOP=$(HOME)/prefix/bop
 
-CXXFLAGS += -I$(BOV)/include
-LIBS     += -L$(BOV)/lib -lbov -lbov_serial
-CXXFLAGS += -I$(BOP)/include
-LIBS     += -L$(BOP)/lib -lbop -lbop_serial
+CXXFLAGS += `bop-config --cflags`
+LIBS     += `bop-config --libs`
+CXXFLAGS += `bov-config --cflags`
+LIBS     += `bov-config --libs`
 
 PROGS=stress.avg
 PI=$(PROGS)
