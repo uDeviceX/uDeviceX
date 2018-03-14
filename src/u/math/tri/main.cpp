@@ -68,7 +68,7 @@ void ac_bc_cross(int argc, char **v) {
 int main(int argc, char **argv) {
     m::ini(&argc, &argv);
 
-    if (argc < 1) ERR("needs FUNC");
+    if (argc < 2) ERR("needs FUNC");
     if (same_str(argv[1], "kahan_area0"))
         UC(kahan_area0(--argc, ++argv));
     else if (same_str(argv[1], "kahan_area"))

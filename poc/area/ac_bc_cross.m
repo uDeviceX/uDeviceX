@@ -3,9 +3,11 @@
 1;
 
 function r = ac_bc_cross(a, b, c)
-  r = cross(a - c, b - c)
+  r = cross(a - c, b - c);
 endfunction
 
-a = [1, 2, 3]
-b = [4, 5, 6]
-c = [7, 8, 9]
+a = [1, 3, 2];
+b = [6, 7, 8];
+c = [9, 10, 13];
+
+ac_bc_cross(a, b, c)
