@@ -83,7 +83,7 @@ _I_ double orient3d(const double a[3], const double b[3], const double c[3], con
     ax = a[X] - d[X]; ay = a[Y] - d[Y]; az = a[Z] - d[Z];
     bx = b[X] - d[X]; by = b[Y] - d[Y]; bz = b[Z] - d[Z];
     cx = c[X] - d[X]; cy = c[Y] - d[Y]; cz = c[Z] - d[Z];
-    
+
     return ax*(by*cz - bz*cy) + bx*(cy*az - cz*ay) + cx*(ay*bz - az*by);
 }
 
@@ -105,9 +105,19 @@ _I_ double shewchuk_area(const double a[3], const double b[3], const double c[3]
 _I_ void dihedral_xy(const double a[3], const double b[3], const double c[3], const double d[3],
                        double *px, double *py) {
     enum {X, Y, Z};
-    double x, y, bc;
+    double bcx, bcy, bcz, bc;
     double k[3], l[3];
-    *px = x; *py = y;
+
+    ac_bc_cross(b, c, a, /**/ k);
+    ac_bc_cross(c, b, d, /**/ l);
+
+    bcx = b[X] - c[X];
+    bcy = b[Y] - c[Y];
+    bcz = b[Z] - c[Z];
+    bc = sqrt(bcx*bcx + bcy*bcy + bcz*bcz);
+
+    *px = -orient3d(a, b, c, d)*bc;
+    *py = k[X]*l[X] + k[Y]*l[Y] + k[Z]*l[Z];
 }
 
 END
