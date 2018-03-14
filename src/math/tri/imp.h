@@ -5,7 +5,7 @@ double kahan_area(const double a[3], const double b[3], const double c[3]); // <
 void   ac_bc_cross(const double a[3], const double b[3], const double c[3], /**/ double r[3]); // <3>
 double shewchuk_area(const double a[3], const double b[3], const double c[3]); // <4>
 double orient3d(const double a[3], const double b[3], const double c[3], const double d[3]); // <5>
-double dihedral_xy(const double a[3], const double b[3], const double c[3], const double d[3],
+void dihedral_xy(const double a[3], const double b[3], const double c[3], const double d[3],
                    double *x, double *y); // <6>
 // end::interface[]
 }

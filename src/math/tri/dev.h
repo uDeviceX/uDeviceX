@@ -102,6 +102,14 @@ _I_ double shewchuk_area(const double a[3], const double b[3], const double c[3]
     return sqrt(x*x + y*y + z*z)/2;
 }
 
+_I_ void dihedral_xy(const double a[3], const double b[3], const double c[3], const double d[3],
+                       double *px, double *py) {
+    enum {X, Y, Z};
+    double x, y, bc;
+    double k[3], l[3];
+    *px = x; *py = y;
+}
+
 END
 
 #undef _I_
