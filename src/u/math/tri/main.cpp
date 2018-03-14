@@ -108,6 +108,32 @@ void orient3d(int argc, char **v) {
     msg_print("%.17e", tri_hst::orient3d(a, b, c, d));
 }
 
+void dihedral_xy(int argc, char **v) {
+    enum {X, Y, Z};
+    double a[3], b[3], c[3], d[3];
+    double x, y;
+    if (argc != 3*4 + 1)
+        ERR("ac_bc_cross needs 12 arguments");
+    UC(a[X] = read_dbl(v[1])); v++;
+    UC(a[Y] = read_dbl(v[1])); v++;
+    UC(a[Z] = read_dbl(v[1])); v++;
+
+    UC(b[X] = read_dbl(v[1])); v++;
+    UC(b[Y] = read_dbl(v[1])); v++;
+    UC(b[Z] = read_dbl(v[1])); v++;
+
+    UC(c[X] = read_dbl(v[1])); v++;
+    UC(c[Y] = read_dbl(v[1])); v++;
+    UC(c[Z] = read_dbl(v[1])); v++;
+
+    UC(d[X] = read_dbl(v[1])); v++;
+    UC(d[Y] = read_dbl(v[1])); v++;
+    UC(d[Z] = read_dbl(v[1])); v++;
+
+    tri_hst::dihedral_xy(a, b, c, d, /**/ &x, &y);
+    msg_print("%.17e %.17e", x, y);
+}
+
 int main(int argc, char **argv) {
     m::ini(&argc, &argv);
 
@@ -122,6 +148,8 @@ int main(int argc, char **argv) {
         UC(ac_bc_cross (--argc, ++argv));
     else if (same_str(argv[1], "orient3d"))
         UC(orient3d (--argc, ++argv));
+    else if (same_str(argv[1], "dihedral_xy"))
+        UC(dihedral_xy (--argc, ++argv));
     else
         ERR("unknown FUNC: %s", argv[1]);
 
