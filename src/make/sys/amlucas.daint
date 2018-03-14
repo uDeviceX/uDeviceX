@@ -17,9 +17,8 @@ libconfigLD = `pkg-config --variable=libdir libconfig`
 LIBCONFIG_CXXFLAGS = -I${libconfigID}
 LIBCONFIG_LIBS     = -L${libconfigLD} -Wl,-rpath -Wl,${libconfigLD} ${libconfigL}
 
-BOP = ${HOME}/prefix/bop
-BOP_CXXFLAGS = -I${BOP}/include
-BOP_LIBS     = -L${BOP}/lib -lbop -lbop_mpi
+BOP_CXXFLAGS = `bop-config --cflags`
+BOP_LIBS     = `bop-config --libs-mpi`
 
 NVCC_LIBS = -L${CRAY_CUDATOOLKIT_DIR}/lib64 -Wl,-rpath -Wl,${CRAY_CUDATOOLKIT_DIR}/lib64
 
