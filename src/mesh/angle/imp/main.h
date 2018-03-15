@@ -68,10 +68,7 @@ static void get(Positions *p, int i, double d[3]) {
 static double angle(int4 t, Positions *p, int offset) {
     int ia, ib, ic, id;
     double a[3], b[3], c[3], d[3], x, y;
-    ia = t.x;
-    ib = t.y;
-    ic = t.z;
-    id = t.w;
+    ia = t.x; ib = t.y; ic = t.z; id = t.w;
 
     UC(get(p, ia + offset, /**/ a));
     UC(get(p, ib + offset, /**/ b));
