@@ -2,3 +2,5 @@
 DATA_FILE: solvent-00001.values
 DATA_FORMAT: float
 VARIABLES: x y z vx vy vz
+NRANK: 1
+0
