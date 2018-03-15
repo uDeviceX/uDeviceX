@@ -8,7 +8,7 @@ $B/io/field/xmf/imp.o: $S/utils/imp.h $S/utils/error.h $S/io/field/xmf/imp.h $S/
 $B/mpi/glb.o: $S/inc/conf.h $S/mpi/wrapper.h $S/utils/mc.h $B/conf.h
 $B/mpi/type.o: $S/inc/conf.h $S/inc/type.h $S/mpi/type.h $S/utils/mc.h
 $B/mpi/wrapper.o: $S/mpi/wrapper.h
-$B/u/io/h5/main.o: $S/utils/imp.h $S/inc/conf.h $S/utils/error.h $S/io/field/h5/imp.h $S/mpi/wrapper.h $S/conf/imp.h $S/coords/ini.h $S/utils/mc.h $B/conf.h $S/io/field/xmf/imp.h $S/mpi/glb.h $S/utils/msg.h $S/coords/imp.h
+$B/u/io/point/main.o: $S/utils/imp.h $S/inc/conf.h $S/utils/error.h $S/io/field/h5/imp.h $S/mpi/wrapper.h $S/conf/imp.h $S/coords/ini.h $S/utils/mc.h $B/conf.h $S/io/field/xmf/imp.h $S/mpi/glb.h $S/utils/msg.h $S/coords/imp.h
 $B/utils/cc.o: $S/utils/cc/common.h $S/inc/conf.h $S/utils/error.h $S/d/api.h $B/conf.h
 $B/utils/error.o: $S/utils/msg.h $S/utils/error.h
 $B/utils/imp.o: $S/utils/error.h $S/utils/imp.h
