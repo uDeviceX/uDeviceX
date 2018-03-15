@@ -13,6 +13,7 @@ $B/io/field/xmf/imp.o: $S/io/field/xmf/imp.cpp; $X -I$S/io/field/xmf -I$S/.
 $B/io/mesh/imp.o: $S/io/mesh/imp.cpp; $X -I$S/io/mesh -I$S/.
 $B/io/mesh_read/imp.o: $S/io/mesh_read/imp.cpp; $X -I$S/io/mesh_read -I$S/.
 $B/io/mesh/write/imp.o: $S/io/mesh/write/imp.cpp; $X -I$S/io/mesh/write -I$S/.
+$B/io/point/imp.o: $S/io/point/imp.cpp; $X -I$S/io/point -I$S/.
 $B/io/restart/imp.o: $S/io/restart/imp.cpp; $X -I$S/io/restart -I$S/.
 $B/io/rig/imp.o: $S/io/rig/imp.cpp; $X -I$S/io/rig -I$S/.
 $B/io/txt/imp.o: $S/io/txt/imp.cpp; $X -I$S/io/txt -I$S/.

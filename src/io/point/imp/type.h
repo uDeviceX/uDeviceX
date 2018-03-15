@@ -1,4 +1,4 @@
-#define N_MAX 100
+enum { N_MAX = 100 };
 
 struct IOPointConf {
     int nn[N_MAX];
@@ -9,5 +9,5 @@ struct IOPointConf {
 struct IOPoint {
     int maxn;
     IOPointConf c;
-    char path[FILENAME_MAX];
+    char path[N_MAX*FILENAME_MAX];
 };
