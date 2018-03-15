@@ -1,3 +1,4 @@
+struct BopData;
 enum { N_MAX = 100 };
 
 struct IOPointConf {
@@ -7,9 +8,11 @@ struct IOPointConf {
 };
 
 struct IOPoint {
-    int maxn;
-    int i;
+    int n;
     int nn[N_MAX];
-    char key[N_MAX*FILENAME_MAX];
+    char keys[N_MAX][FILENAME_MAX];
+    int maxn;
     char path[FILENAME_MAX];
+
+    BopData *bop;
 };
