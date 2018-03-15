@@ -8,6 +8,8 @@ struct IOPointConf {
 
 struct IOPoint {
     int maxn;
-    IOPointConf c;
-    char path[N_MAX*FILENAME_MAX];
+    int i;
+    int nn[N_MAX];
+    char key[N_MAX*FILENAME_MAX];
+    char path[FILENAME_MAX];
 };
