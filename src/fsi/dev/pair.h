@@ -1,7 +1,7 @@
 template <typename Par>
 static __device__ void pair0(Par params, const Pa a, const Pa b, float rnd, /**/ float *fx, float *fy, float *fz) {
     PairFo f;
-    pair_force(params, a, b, rnd, /**/ &f);
+    pair_force(&params, a, b, rnd, /**/ &f);
     *fx = f.x; *fy = f.y; *fz = f.z;
 }
 

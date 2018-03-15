@@ -26,7 +26,7 @@ static __device__ bool valid_cid(int3 L, int3 c) {
 }
 
 template <typename Par, typename Parray, typename Farray, typename Fo>
-static __device__ void loop_pp(Par params, int ia, PairPa pa, Parray parray, int start, int end, float seed, /**/ Fo *fa, Farray farray) {
+static __device__ void loop_pp(const Par *params, int ia, PairPa pa, Parray parray, int start, int end, float seed, /**/ Fo *fa, Farray farray) {
     enum {X, Y, Z};
     int ib;
     PairPa pb;
@@ -50,7 +50,7 @@ static __device__ void loop_pp(Par params, int ia, PairPa pa, Parray parray, int
 }
 
 template <typename Par, typename PArray, typename Farray, typename Fo>
-static __device__ void one_row(Par params, int3 L, int dz, int dy, int ia, int3 ca, PairPa pa, PArray parray, const int *start, float seed,
+static __device__ void one_row(const Par *params, int3 L, int dz, int dy, int ia, int3 ca, PairPa pa, PArray parray, const int *start, float seed,
                                /**/ Fo *fa, Farray farray) {
     int3 cb;
     int enddx, startx, endx, cid0, bs, be;
@@ -88,7 +88,7 @@ __global__ void apply(Par params, int3 L, int n, Parray parray, const int *start
     fetch(parray, ia, &pa);
     ca = get_cid(L, &pa);
 
-#define ONE_ROW(dz, dy) one_row (params, L, dz, dy, ia, ca, pa, parray, start, seed, /**/ &fa, farray)
+#define ONE_ROW(dz, dy) one_row (&params, L, dz, dy, ia, ca, pa, parray, start, seed, /**/ &fa, farray)
     
     ONE_ROW(-1, -1);
     ONE_ROW(-1,  0);

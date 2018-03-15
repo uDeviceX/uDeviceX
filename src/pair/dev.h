@@ -57,14 +57,14 @@ static __device__ float magn_lj(float s, float e, float invr) {
     return f;
 }
 
-static __device__ float force_magn(PairDPD p, float rnd, float ev, float r, float) {
-    return magn_dpd(p.a, p.g, p.s, rnd, r, ev);
+static __device__ float force_magn(const PairDPD *p, float rnd, float ev, float r, float) {
+    return magn_dpd(p->a, p->g, p->s, rnd, r, ev);
 }
 
-static __device__ float force_magn(PairDPDLJ p, float rnd, float ev, float r, float invr) {
+static __device__ float force_magn(const PairDPDLJ *p, float rnd, float ev, float r, float invr) {
     float f;
-    f  = magn_dpd(p.a, p.g, p.s, rnd, r, ev);
-    f += magn_lj(p.ljs, p.lje, invr);
+    f  = magn_dpd(p->a, p->g, p->s, rnd, r, ev);
+    f += magn_lj(p->ljs, p->lje, invr);
     return f;
 }
 
@@ -99,7 +99,7 @@ static __device__ void make_zero(PairSFo *f) {
 
 // tag::int[]
 template <typename Param, typename Fo>
-static __device__ void pair_force(Param p, PairPa a, PairPa b, float rnd, /**/ Fo *f)
+static __device__ void pair_force(const Param *p, PairPa a, PairPa b, float rnd, /**/ Fo *f)
 // end::int[]
 {
     float r, invr, ev, f0;
@@ -136,25 +136,25 @@ static __device__ int colors2pid(int ca, int cb) {
 }
 
 template <typename Fo>
-static __device__ void pair_force(PairDPDC pc, PairPa a, PairPa b, float rnd, /**/ Fo *f) {
+static __device__ void pair_force(const PairDPDC *pc, PairPa a, PairPa b, float rnd, /**/ Fo *f) {
     PairDPD p;
     int pid;
     pid = colors2pid(a.color, b.color);
-    p.a = pc.a[pid];
-    p.g = pc.g[pid];
-    p.s = pc.s[pid];
-    pair_force(p, a, b, rnd, /**/ f);
+    p.a = pc->a[pid];
+    p.g = pc->g[pid];
+    p.s = pc->s[pid];
+    pair_force(&p, a, b, rnd, /**/ f);
 }
 
 /* mirrored: parameters from particle "a" only */
 template <typename Fo>
-static __device__ void pair_force(PairDPDCM pc, PairPa a, PairPa b, float rnd, /**/ Fo *f) {
+static __device__ void pair_force(const PairDPDCM *pc, PairPa a, PairPa b, float rnd, /**/ Fo *f) {
     PairDPD p;
     int pid = a.color;
-    p.a = pc.a[pid];
-    p.g = pc.g[pid];
-    p.s = pc.s[pid];
-    pair_force(p, a, b, rnd, /**/ f);
+    p.a = pc->a[pid];
+    p.g = pc->g[pid];
+    p.s = pc->s[pid];
+    pair_force(&p, a, b, rnd, /**/ f);
 }
 
 

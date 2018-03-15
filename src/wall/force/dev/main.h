@@ -27,7 +27,7 @@ static __device__ void force0(Par params, Wvel_v wv, Coords_v c, PairPa a, int a
         bid = map::m2id(m, i);
         fetch_wall(wv, c, wa.pp, bid, /**/ &b);
         rnd = rnd::mean0var1ii(seed, aid, bid);
-        pair_force(params, a, b, rnd, /**/ &f);
+        pair_force(&params, a, b, rnd, /**/ &f);
         pair_add(&f, fa);
     }
 }

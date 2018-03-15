@@ -24,7 +24,7 @@ static __device__ void force0(Par params, const flu::RndFrag rnd, const RFrag_v<
         bid = m2id(m, i);
         parray_get(bfrag.parray, bid, /**/ &b);
         rndval = random(aid, bid, rnd.seed, rnd.mask);
-        pair_force(params, a, b, rndval, /**/ &f);
+        pair_force(&params, a, b, rndval, /**/ &f);
         pair_add(&f, /**/ fa);
     }
 }
