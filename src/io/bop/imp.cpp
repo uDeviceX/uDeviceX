@@ -2,7 +2,6 @@
 #include <string.h>
 #include <vector_types.h>
 
-/* bop library */
 #include <bop_common.h>
 #include <bop_mpi.h>
 

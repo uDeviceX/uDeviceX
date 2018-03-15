@@ -1,10 +1,5 @@
-static char *cat(char *dest, const char *src) {
-    return strncat(dest, src, FILENAME_MAX);
-}
-
-static char *cpy(char *dest, const char *src) {
-    return strncpy(dest, src, FILENAME_MAX);
-}
+static char *cat(char *dest, const char *src) { return strncat(dest, src, FILENAME_MAX); }
+static char *cpy(char *dest, const char *src) { return strncpy(dest, src, FILENAME_MAX); }
 
 void io_point_conf_ini(/**/ IOPointConf **pq) {
     IOPointConf *q;
@@ -22,10 +17,21 @@ void io_point_conf_push(IOPointConf *q, int nv, const char *k0) {
 
 void io_point_conf_fin(IOPointConf *q) { EFREE(q); }
 
+static void ini_bop(int maxn, int n, const char *keys, BopData **pq) {
+    BopData *q;
+    bop_ini(&q);
+    bop_set_n(maxn, q);
+    bop_set_vars(n, keys, q);
+    bop_set_type(BopDOUBLE, q);
+    bop_alloc(q);
+    
+    *pq = q;
+}
+
 void io_point_ini(int maxn, const char *path, IOPointConf *c, /**/ IOPoint **pq) {
-    int i, n;
+    int i, n, cum_n;
     IOPoint *q;
-    char name[N_MAX*(FILENAME_MAX + 1)];
+    char cum_key[N_MAX*(FILENAME_MAX + 1)];
     EMALLOC(1, &q);
     n = c->i;
     for (i = 0; i < n; i++) {
@@ -34,14 +40,23 @@ void io_point_ini(int maxn, const char *path, IOPointConf *c, /**/ IOPoint **pq)
     }
 
     for (i = 0; i < n; i++) {
-        if (i > 0) cat(name, " ");
-        cat(name, c->keys[i]);
+        if (i > 0) cat(cum_key, " ");
+        cat(cum_key, c->keys[i]);
     }
-    
+
+    cum_n = 0;
+    for (i = 0; i < n; i++)
+        cum_n += q->nn[i];
+
+    ini_bop(maxn, cum_n, cum_key, &q->bop);
+
     cpy(q->path, path);
     q->n = n;
     q->maxn = maxn;
     *pq = q;
 }
 
-void io_point_fin(IOPoint *q) { EFREE(q); }
+void io_point_fin(IOPoint *q) {
+    bop_fin(q->bop);
+    EFREE(q);
+}

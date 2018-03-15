@@ -1,6 +1,9 @@
 #include <string.h>
 #include <mpi.h>
 
+#include <bop_common.h>
+#include <bop_mpi.h>
+
 #include "utils/msg.h"
 #include "utils/error.h"
 #include "utils/imp.h"
