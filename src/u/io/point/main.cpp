@@ -19,6 +19,7 @@
 
 #include "io/field/h5/imp.h"
 #include "io/field/xmf/imp.h"
+#include "io/point/imp.h"
 
 #include "mpi/wrapper.h"
 
