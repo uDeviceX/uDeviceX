@@ -7,5 +7,7 @@ double shewchuk_area(const double a[3], const double b[3], const double c[3]); /
 double orient3d(const double a[3], const double b[3], const double c[3], const double d[3]); // <5>
 void dihedral_xy(const double a[3], const double b[3], const double c[3], const double d[3],
                    double *x, double *y); // <6>
+void dihedral_xy0(const double a[3], const double b[3], const double c[3], const double d[3],
+                   double *x, double *y); // <6>
 // end::interface[]
 }

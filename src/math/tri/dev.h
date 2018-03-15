@@ -116,8 +116,8 @@ _I_ void dihedral_xy(const double a[3], const double b[3], const double c[3], co
     bcz = b[Z] - c[Z];
     bc = sqrt(bcx*bcx + bcy*bcy + bcz*bcz);
 
-    *px = -orient3d(a, b, c, d)*bc;
-    *py = k[X]*l[X] + k[Y]*l[Y] + k[Z]*l[Z];
+    *py = -orient3d(a, b, c, d)*bc;
+    *px = k[X]*l[X] + k[Y]*l[Y] + k[Z]*l[Z];
 }
 
 END

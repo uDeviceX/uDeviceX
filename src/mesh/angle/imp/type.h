@@ -1,4 +1,4 @@
 struct MeshAngle {
-    int nd;
+    int nd, nv;
     int4 *dd; /* dihidrals */
 };

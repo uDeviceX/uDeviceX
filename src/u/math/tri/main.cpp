@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
+
 #include <mpi.h>
 
 #include "mpi/glb.h"
@@ -7,6 +9,8 @@
 #include "utils/msg.h"
 #include "utils/error.h"
 #include "math/tri/imp.h"
+
+#define PI (3.141592653589793)
 
 double read_dbl(const char *v) {
     double x;
@@ -111,7 +115,7 @@ void orient3d(int argc, char **v) {
 void dihedral_xy(int argc, char **v) {
     enum {X, Y, Z};
     double a[3], b[3], c[3], d[3];
-    double x, y;
+    double x, y, t;
     if (argc != 3*4 + 1)
         ERR("ac_bc_cross needs 12 arguments");
     UC(a[X] = read_dbl(v[1])); v++;
@@ -131,7 +135,9 @@ void dihedral_xy(int argc, char **v) {
     UC(d[Z] = read_dbl(v[1])); v++;
 
     tri_hst::dihedral_xy(a, b, c, d, /**/ &x, &y);
-    msg_print("%.17e %.17e", x, y);
+    t  = 180*atan2(y, x)/PI;
+
+    msg_print("%g", t);
 }
 
 int main(int argc, char **argv) {
