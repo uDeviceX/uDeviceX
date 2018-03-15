@@ -47,9 +47,8 @@ void io_point_ini(int maxn, const char *path, IOPointConf *c, /**/ IOPoint **pq)
     cum_n = 0;
     for (i = 0; i < n; i++)
         cum_n += q->nn[i];
-
     ini_bop(maxn, cum_n, cum_key, &q->bop);
-
+    UC(os_mkdir(DUMP_BASE "/com"));
     cpy(q->path, path);
     q->n = n;
     q->maxn = maxn;
