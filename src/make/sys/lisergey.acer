@@ -2,7 +2,7 @@ LINK = g++
 NVCC = nvcc
 OPT = -O0 -g
 
-MPI_VARIANT = mpi
+MPI_VARIANT = mpi-cxx
 MPI_CXXFLAGS = `pkg-config --cflags ${MPI_VARIANT}`
 MPI_LIBS  = `pkg-config --libs ${MPI_VARIANT}`
 
