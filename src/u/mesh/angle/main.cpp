@@ -13,13 +13,15 @@
 #include "mesh/positions/imp.h"
 #include "mesh/angle/imp.h"
 
-void main0(const char *i) {
-    int nv, ne, nm;
+#define PI (3.141592653589793)
+
+void main0(const char *path) {
+    int i, nv, ne, nm;
     MeshRead *mesh;
     MeshAngle *angle;
     Positions  *pos;
     double *angles;
-    UC(mesh_read_ini_off(i, /**/ &mesh));
+    UC(mesh_read_ini_off(path, /**/ &mesh));
     UC(mesh_angle_ini(mesh, &angle));
     nv = mesh_read_get_nv(mesh);
     ne = mesh_read_get_ne(mesh);
@@ -28,6 +30,8 @@ void main0(const char *i) {
     nm = 1;
     EMALLOC(ne, &angles);
     mesh_angle_apply(angle, nm, pos, /**/ angles);
+    for (i = 0; i < ne; i++)
+        printf("%g\n", 180*angles[i]/PI);
     
     mesh_angle_fin(angle);
     UC(positions_fin(pos));

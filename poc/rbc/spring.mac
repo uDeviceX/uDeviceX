@@ -7,7 +7,7 @@ wlc0(r):=(4*sq(r)-9*r+6)/(4*sq(r-1));
 wlc(r):=ks/lmax*wlc0(r/lmax);
 
 fwlc: 'wlc(r);
-fpow: -'wlc(l0) * pow(l0, m+1) / pow(r, m + 1);
+fpow: -'wlc(l0) * pow(l0, m + 1) / pow(r, m + 1);
 
 f: (fwlc + fpow)*r;
 

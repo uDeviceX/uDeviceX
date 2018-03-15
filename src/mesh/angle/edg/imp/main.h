@@ -1,5 +1,4 @@
 void e_ini(int md, int nv, /**/ Edg **pq) {
-    int i;
     Edg *q;
     EMALLOC(1, &q);
     EMALLOC(md*nv, &q->hx);
@@ -30,7 +29,7 @@ int e_get(Edg *q, int i, int j) {
 
 int e_valid(Edg *q, int i, int j) {
     int md;
-    const int *hx, *hy;
+    const int *hx;
     md = q->md; hx = q->hx;
     return edg_valid(md, i, j, hx);
 }
