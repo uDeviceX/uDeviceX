@@ -1,27 +1,32 @@
 void eflu_pack(const PaArray *parray, /**/ EFluPack *p) {
-    int nc;
+    int nc, i, cap;
     int26 cc;
-    int27 ss;
     Pap26 fpp;
     intp26 fcc;
-    
-    nc = get_cell_num(p->L, /**/ cc.d);
-    scan(NFRAGS, cc.d, /**/ ss.d);
-
-    bag2Sarray(p->dpp, /**/ &fpp);
+    const int *bss, *bcc, *fss;
 
     CC(d::MemsetAsync(p->counts_dev, 0, NFRAGS * sizeof(int)));
     
-    KL( eflu_dev::collect_particles,
-        ((nc+1) / 2, 32),
-        (ss, (const Particle*) parray->pp, p->bss, p->bcc, p->fss, p->cap, /**/ p->bii, fpp, p->counts_dev));
-    
-    if (parray->colors) {
-        bag2Sarray(p->dcc, /**/ &fcc);
+    get_cell_num(p->L, /**/ cc.d);
 
-        KL( eflu_dev::collect_colors,
+    bag2Sarray(p->dpp, /**/ &fpp);
+    if (parray->colors) bag2Sarray(p->dcc, /**/ &fcc);
+        
+    for (i = 0; i < 26; ++i) {
+        nc = cc.d[i];
+        bss = p->bss.d[i];
+        bcc = p->bcc.d[i];
+        fss = p->fss.d[i];
+        cap = p->cap.d[i];
+        
+        KL( eflu_dev::collect_particles,
             ((nc+1) / 2, 32),
-            (ss, parray->cc, p->bss, p->bcc, p->fss, p->cap, /**/ fcc));        
+            (i, nc, (const Particle*) parray->pp, bss, bcc, fss, cap, /**/ p->bii.d[i], fpp.d[i], p->counts_dev));
+
+        if (parray->colors)
+            KL( eflu_dev::collect_colors,
+                ((nc+1) / 2, 32),
+                (i, nc, parray->cc, bss, bcc, fss, cap, /**/ fcc.d[i]));
     }
 }
 
