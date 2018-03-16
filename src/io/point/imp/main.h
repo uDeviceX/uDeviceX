@@ -51,7 +51,7 @@ static void ini_bop(int maxn, int n, const char *keys, BopData **pq) {
     bop_set_vars(n, keys, q);
     bop_set_type(BopDOUBLE, q);
     bop_alloc(q);
-    
+
     *pq = q;
 }
 void io_point_ini(int maxn, const char *path, IOPointConf *c, /**/ IOPoint **pq) {
@@ -60,6 +60,9 @@ void io_point_ini(int maxn, const char *path, IOPointConf *c, /**/ IOPoint **pq)
     char cum_key[N_MAX*(FILENAME_MAX + 1)];
     EMALLOC(1, &q);
     n = c->i;
+    for (i = 0; i < n; i++)
+        q->seen[i] = 0;
+
     for (i = 0; i < n; i++) {
         q->nn[i] = c->nn[i];
         cpy(q->keys[i], c->keys[i]);

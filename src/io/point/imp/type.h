@@ -8,11 +8,11 @@ struct IOPointConf {
 };
 
 struct IOPoint {
+    int maxn;
     int n;
     int nn[N_MAX];
+    int seen[N_MAX];
     char keys[N_MAX][FILENAME_MAX];
-    int maxn;
     char path[FILENAME_MAX];
-
     BopData *bop;
 };
