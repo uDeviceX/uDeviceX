@@ -18,6 +18,7 @@
 enum {MAX_N = 1000};
 
 void main0(MPI_Comm comm, const char *path) {
+    int id;
     IOPointConf *c;
     IOPoint *p;
     double rr[3*MAX_N];
@@ -31,7 +32,8 @@ void main0(MPI_Comm comm, const char *path) {
 
     UC(io_point_push(p, MAX_N, rr, "x y z"));
     UC(io_point_push(p, MAX_N, density, "density"));
-    UC(io_point_write(p, comm, 0));
+    id = 0;
+    UC(io_point_write(p, comm, id));
     UC(io_point_fin(p));
 }
 
@@ -51,10 +53,9 @@ int main(int argc, char **argv) {
     UC(conf_ini(&cfg));
     UC(conf_read(argc, argv, cfg));
     UC(conf_lookup_string(cfg, "o", &path));
-    UC(conf_fin(cfg));
-
     main0(comm, path);
-
+    
+    UC(conf_fin(cfg));
     MC(m::Barrier(comm));
     m::fin();
 }

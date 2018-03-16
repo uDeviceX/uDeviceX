@@ -1,6 +1,3 @@
-static char *cat(char *dest, const char *src) { return strncat(dest, src, FILENAME_MAX); }
-static char *cpy(char *dest, const char *src) { return strncpy(dest, src, FILENAME_MAX); }
-
 void io_point_conf_ini(/**/ IOPointConf **pq) {
     IOPointConf *q;
     EMALLOC(1, &q);
@@ -55,7 +52,8 @@ void io_point_ini(int maxn, const char *path, IOPointConf *c, /**/ IOPoint **pq)
     for (i = 0; i < n; i++)
         cum_n += q->nn[i];
     ini_bop(maxn, cum_n, cum_key, &q->bop);
-    UC(os_mkdir(DUMP_BASE "/com"));
+
+    UC(mkdir(DUMP_BASE, path));
     cpy(q->path, path);
     q->n = n;
     q->maxn = maxn;
@@ -67,8 +65,21 @@ void io_point_fin(IOPoint *q) {
     EFREE(q);
 }
 
-void io_point_push(IOPoint*, int, double*, const char*) {
+void io_point_push(IOPoint *q, int ndata, double *D, const char *key) {
+    int offset, n, i;
+    if (ndata > q->maxn)
+        ERR("ndata=%d > q->maxn=%d", ndata, q->maxn);
 
+    n = q->n;
+    offset = 0;
+    for (i = 0; ; i++) {
+        if (i == n) {UC(wrong_key(q, key)); ERR(""); }
+        if (same_str(key, q->keys[i])) break;
+        offset += q->nn[i];
+    }
+    if (q->seen[i]) ERR("key '%s' already seen", key);
+    q->seen[i] = 1;
+    
 }
 
 void io_point_write(IOPoint*, MPI_Comm, int) {
