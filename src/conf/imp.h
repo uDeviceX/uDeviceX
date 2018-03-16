@@ -45,6 +45,6 @@ void conf_set_string(const char *desc, const char *a, Config *cfg);
 // end::set[]
 
 // tag::dump[]
-void conf_write_exe(const Config *cfg, FILE *stream);
-void conf_write_history(const Config *cfg, FILE *stream);
+void conf_write_exe(const Config *cfg, FILE *stream);     // <1>
+void conf_write_history(const Config *cfg, FILE *stream); // <2>
 // end::dump[]
