@@ -65,10 +65,18 @@ void io_point_fin(IOPoint *q) {
     EFREE(q);
 }
 
+static double *get_data(BopData *b) {
+    BopType type;
+    BPC(bop_get_type(b, &type));
+    if (type != BopDOUBLE) ERR("BopType is not double");
+    return (double*)bop_get_data(b);
+}
 void io_point_push(IOPoint *q, int ndata, double *D, const char *key) {
     int offset, n, i;
+    double *B;
     if (ndata > q->maxn)
-        ERR("ndata=%d > q->maxn=%d; key: '%s'", ndata, q->maxn, key);
+        ERR("ndata=%d > q->maxn=%d; key: '%s'",
+            ndata, q->maxn, key);
 
     n = q->n;
     offset = 0;
@@ -79,6 +87,7 @@ void io_point_push(IOPoint *q, int ndata, double *D, const char *key) {
     }
     if (q->seen[i]) ERR("seen key '%s' ", key);
     q->seen[i] = 1;
+    B = get_data(q->bop);
 }
 
 void io_point_write(IOPoint*, MPI_Comm, int) {

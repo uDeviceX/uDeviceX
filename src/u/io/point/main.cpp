@@ -31,7 +31,7 @@ void main0(MPI_Comm comm, const char *path) {
     UC(io_point_conf_fin(c));
 
     UC(io_point_push(p, MAX_N, rr, "x y z"));
-    UC(io_point_push(p, MAX_N + 1, density, "density"));
+    UC(io_point_push(p, MAX_N, density, "density"));
     id = 0;
     UC(io_point_write(p, comm, id));
     UC(io_point_fin(p));
