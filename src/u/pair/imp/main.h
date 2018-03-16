@@ -6,7 +6,7 @@ namespace dev {
 template <typename Param>
 __global__ void main(Param par, Pa a, Pa b, float rnd) {
     Fo f;
-    pair_force(par, a, b, rnd, /**/ &f);
+    pair_force(&par, a, b, rnd, /**/ &f);
     printf("%g %g %g\n", f.x, f.y, f.z);
 }
 } /* namespace */
