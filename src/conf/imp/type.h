@@ -9,6 +9,7 @@ enum {
 
 struct Config {
     config_t c[NCFG];
+    config_t *r; /* what have been read */
 };
 // end::struct[]
 

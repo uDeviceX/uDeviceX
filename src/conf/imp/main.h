@@ -3,6 +3,8 @@ void conf_ini(/**/ Config **pq) {
     EMALLOC(1, &q);
     for (int i = 0; i < NCFG; ++i)
         config_init(q->c + i);
+    EMALLOC(1, &q->r);
+    config_init(q->r);
     *pq = q;
 }
 
@@ -10,6 +12,8 @@ void conf_fin(/**/ Config *q) {
     int i;
     for (i = 0; i < NCFG; ++i)
         config_destroy(&q->c[i]);
+    config_destroy(q->r);
+    EFREE(q->r);
     EFREE(q);
 }
 
