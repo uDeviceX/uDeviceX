@@ -1,12 +1,8 @@
-#include <mpi.h>
 #include <stdio.h>
-#include <stdlib.h>
+#include <mpi.h>
 
 #include <conf.h>
 #include "inc/conf.h"
-
-#include "coords/ini.h"
-#include "coords/imp.h"
 
 #include "utils/msg.h"
 #include "mpi/glb.h"
@@ -16,72 +12,38 @@
 #include "utils/imp.h"
 
 #include "conf/imp.h"
-
-#include "io/field/h5/imp.h"
-#include "io/field/xmf/imp.h"
 #include "io/point/imp.h"
-
 #include "mpi/wrapper.h"
 
-void dump(MPI_Comm comm, const Coords *coords, const char *path) {
-    enum {X, Y, Z};
-    int rank;
-    size_t nc;
-    float *rho, *u[3];
-    int sx, sy, sz;
-    const char *names[] = { "density", "u", "v", "w" };
+void main0(MPI_Comm, const char*) {
+    IOPointConf *c;
 
-    MC(m::Comm_rank(comm, &rank));
+    UC(io_point_conf_ini(&c));
+    UC(io_point_conf_push(c, "x y z"));
 
-    sx = xs(coords);
-    sy = ys(coords);
-    sz = zs(coords);
-    
-    nc = sx * sy * sz;
-    EMALLOC(nc, &rho);
-    EMALLOC(nc, &u[X]);
-    EMALLOC(nc, &u[Y]);
-    EMALLOC(nc, &u[Z]);
-    
-    float *data[] = { rho, u[X], u[Y], u[Z] };
-    UC(h5_write(coords, comm, path, data, names, 4));    
-    EFREE(rho); EFREE(u[X]); EFREE(u[Y]); EFREE(u[Z]);
-    if (rank == 0) xmf_write(coords, path, names, 4);
-}
-
-void report(int i, int n, const char *path) {
-    msg_print("write %s", path);
+    UC(io_point_conf_fin(c));
 }
 
 int main(int argc, char **argv) {
     const char *path;
-    Coords *coords;
     Config *cfg;
-    int i, ndump, rank, dims[3];
-    MPI_Comm cart;
-    
+    int rank, dims[3];
+    MPI_Comm comm;
+
     m::ini(&argc, &argv);
     m::get_dims(&argc, &argv, dims);
-    m::get_cart(MPI_COMM_WORLD, dims, &cart);
+    m::get_cart(MPI_COMM_WORLD, dims, &comm);
 
-    MC(m::Comm_rank(cart, &rank));
+    MC(m::Comm_rank(comm, &rank));
     msg_ini(rank);
 
     UC(conf_ini(&cfg));
     UC(conf_read(argc, argv, cfg));
-    UC(coords_ini_conf(cart, cfg, &coords));
-
-    UC(conf_lookup_string(cfg, "path", &path));
-    UC(conf_lookup_int(cfg, "ndump", &ndump));
-    
-    for (i = 0; i < ndump; ++i) {
-        report(i, ndump, path);
-        dump(cart, coords, path);
-    }
-
-    UC(coords_fin(coords));
+    UC(conf_lookup_string(cfg, "o", &path));
     UC(conf_fin(cfg));
 
-    MC(m::Barrier(cart));
+    main0(comm, path);
+
+    MC(m::Barrier(comm));
     m::fin();
 }
