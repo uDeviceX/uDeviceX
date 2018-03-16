@@ -39,6 +39,6 @@ static void mkdir(const char *p, const char *s) {
     cpy(path, p);
     cat(path, "/");
     cat(path, s);
-    msg_print("'%s'", path);
+    msg_print("mkdir -p '%s'", path);
     UC(os_mkdir(path));
 }

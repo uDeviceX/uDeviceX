@@ -68,7 +68,7 @@ void io_point_fin(IOPoint *q) {
 void io_point_push(IOPoint *q, int ndata, double *D, const char *key) {
     int offset, n, i;
     if (ndata > q->maxn)
-        ERR("ndata=%d > q->maxn=%d", ndata, q->maxn);
+        ERR("ndata=%d > q->maxn=%d; key: '%s'", ndata, q->maxn, key);
 
     n = q->n;
     offset = 0;
@@ -77,7 +77,7 @@ void io_point_push(IOPoint *q, int ndata, double *D, const char *key) {
         if (same_str(key, q->keys[i])) break;
         offset += q->nn[i];
     }
-    if (q->seen[i]) ERR("key '%s' already seen", key);
+    if (q->seen[i]) ERR("seen key '%s' ", key);
     q->seen[i] = 1;
     
 }
