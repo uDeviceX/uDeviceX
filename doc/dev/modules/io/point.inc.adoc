@@ -1,0 +1,8 @@
+== Point
+
+Write point data to =bop= files.
+
+[source,cpp]
+----
+include::{src}/io/point/imp.h[tags=interface]
+----
