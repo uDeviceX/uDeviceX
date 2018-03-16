@@ -45,6 +45,13 @@ static void run_eq(Time *time, float te, Sim *s) { /* equilibrate */
     UC(bforce_fin(bforce));
 }
 
+static void dump_history(const Config *cfg, const char *fname) {
+    FILE *f;
+    UC(efopen(fname, "w", &f));
+    UC(conf_write_history(cfg, f));
+    UC(efclose(f));
+}
+
 static void run(const Config *cfg, Time *time, float ts, float te, Sim *s) {
     float dt;
     Wall *wall = &s->wall;
@@ -52,6 +59,8 @@ static void run(const Config *cfg, Time *time, float ts, float te, Sim *s) {
 
     UC(bforce_ini(&bforce));
     UC(bforce_ini_conf(cfg, bforce));
+
+    dump_history(cfg, "conf.history.cfg");
 
     dump_strt_templ(s->coords, wall, s); /* :TODO: is it the right place? */
     s->equilibrating = false;   
