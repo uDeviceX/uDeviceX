@@ -20,3 +20,10 @@ enum {
     WTYPE
 };
 
+enum {
+    MAX_LEVEL = 10 /* maximum level of parameters */
+};
+
+struct CBuf {
+    char c[MAX_LEVEL][FILENAME_MAX];
+};

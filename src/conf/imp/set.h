@@ -15,6 +15,33 @@ static config_setting_t* get_subgroup_setting(int n, const char *desc[], config_
     return group;    
 }
 
+static void cpy(const char *in, char *out) {
+    while (*in != '\0' && *in != '.') {
+        *out = *in;
+        ++in; ++out;
+    }
+    *out = '\0';
+}
+
+static void split_str(const char *in, int *n, CBuf *out) {
+    int i = 0;
+    cpy(in, out->c[i++]);
+
+    while (*in != '\0') {
+        if (*in == '.') cpy(++in, out->c[i++]);
+        if (i > MAX_LEVEL) ERR("Too many levels in desc <%s> : found %d/%d\n", in, i, MAX_LEVEL);
+        ++in;
+    }
+    for (int j = 0; j < i; ++j)
+        printf("%d %s\n", j, out->c[j]);
+    *n = i;
+}
+
+static void to_ptr_array(const CBuf *buf, const char *ptr[]) {
+    int i;
+    for (i = 0; i < MAX_LEVEL; ++i) ptr[i] = buf->c[i];
+}
+
 static void set_int(int n, const char *desc[], int a, config_t *c) {
     config_setting_t *group, *setting;
     int status;
@@ -104,36 +131,76 @@ static void set_string(int n, const char *desc[], const char *a, config_t *c) {
 }
 
 
-void conf_set_int(int n, const char *desc[], int a, Config *cfg) {
-    UC(set_int(n, desc, a, &cfg->c[EXE]));
+void conf_set_int(const char *desc, int a, Config *cfg) {
+    int n;
+    CBuf buf;
+    const char *descs[MAX_LEVEL];
+    UC(split_str(desc, &n, &buf));
+    to_ptr_array(&buf, descs);
+    UC(set_int(n, descs, a, &cfg->c[EXE]));
 }
 
-void conf_set_vint(int n, const char *desc[], int nelem, const int a[], Config *cfg) {
-    UC(set_vint(n, desc, nelem, a, &cfg->c[EXE]));
+void conf_set_vint(const char *desc, int nelem, const int a[], Config *cfg) {
+    int n;
+    CBuf buf;
+    const char *descs[MAX_LEVEL];
+    UC(split_str(desc, &n, &buf));
+    to_ptr_array(&buf, descs);
+    UC(set_vint(n, descs, nelem, a, &cfg->c[EXE]));
 }
 
-void conf_set_int3(int n, const char *desc[], int3 a, Config *cfg) {
-    UC(set_int3(n, desc, a, &cfg->c[EXE]));
+void conf_set_int3(const char *desc, int3 a, Config *cfg) {
+    int n;
+    CBuf buf;
+    const char *descs[MAX_LEVEL];
+    UC(split_str(desc, &n, &buf));
+    to_ptr_array(&buf, descs);
+    UC(set_int3(n, descs, a, &cfg->c[EXE]));
 }
 
-void conf_set_float(int n, const char *desc[], float a, Config *cfg) {
-    UC(set_float(n, desc, a, &cfg->c[EXE]));
+void conf_set_float(const char *desc, float a, Config *cfg) {
+    int n;
+    CBuf buf;
+    const char *descs[MAX_LEVEL];
+    UC(split_str(desc, &n, &buf));
+    to_ptr_array(&buf, descs);
+    UC(set_float(n, descs, a, &cfg->c[EXE]));
 }
 
-void conf_set_vfloat(int n, const char *desc[], int nelem, const float a[], Config *cfg) {
-    UC(set_vfloat(n, desc, nelem, a, &cfg->c[EXE]));
+void conf_set_vfloat(const char *desc, int nelem, const float a[], Config *cfg) {
+    int n;
+    CBuf buf;
+    const char *descs[MAX_LEVEL];
+    UC(split_str(desc, &n, &buf));
+    to_ptr_array(&buf, descs);
+    UC(set_vfloat(n, descs, nelem, a, &cfg->c[EXE]));
 }
 
-void conf_set_float3(int n, const char *desc[], float3 a, Config *cfg) {
-    UC(set_float3(n, desc, a, &cfg->c[EXE]));
+void conf_set_float3(const char *desc, float3 a, Config *cfg) {
+    int n;
+    CBuf buf;
+    const char *descs[MAX_LEVEL];
+    UC(split_str(desc, &n, &buf));
+    to_ptr_array(&buf, descs);
+    UC(set_float3(n, descs, a, &cfg->c[EXE]));
 }
 
-void conf_set_bool(int n, const char *desc[], int a, Config *cfg) {
-    UC(set_bool(n, desc, a, &cfg->c[EXE]));
+void conf_set_bool(const char *desc, int a, Config *cfg) {
+    int n;
+    CBuf buf;
+    const char *descs[MAX_LEVEL];
+    UC(split_str(desc, &n, &buf));
+    to_ptr_array(&buf, descs);
+    UC(set_bool(n, descs, a, &cfg->c[EXE]));
 }
 
-void conf_set_string(int n, const char *desc[], const char *a, Config *cfg) {
-    UC(set_string(n, desc, a, &cfg->c[EXE]));
+void conf_set_string(const char *desc, const char *a, Config *cfg) {
+    int n;
+    CBuf buf;
+    const char *descs[MAX_LEVEL];
+    UC(split_str(desc, &n, &buf));
+    to_ptr_array(&buf, descs);
+    UC(set_string(n, descs, a, &cfg->c[EXE]));
 }
 
 
