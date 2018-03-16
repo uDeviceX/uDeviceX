@@ -23,7 +23,7 @@ static int nword(const char *s) {
     while ((c = s[0]) != '\0') {
         if (!isalnum(c))
             ERR("not alphanumeric character '%c' in '%s'", c, s);
-        if (c == ' ' || c == '\t')
+        else if (c == ' ' || c == '\t')
             state = OUT;
         else if (state == OUT) {
             state = IN;
