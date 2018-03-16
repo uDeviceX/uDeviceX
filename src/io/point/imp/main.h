@@ -21,11 +21,11 @@ void io_point_conf_fin(IOPointConf *q) { EFREE(q); }
 
 static void ini_bop(int maxn, int n, const char *keys, BopData **pq) {
     BopData *q;
-    bop_ini(&q);
-    bop_set_n(maxn, q);
-    bop_set_vars(n, keys, q);
-    bop_set_type(BopDOUBLE, q);
-    bop_alloc(q);
+    BPC(bop_ini(&q));
+    BPC(bop_set_n(maxn, q));
+    BPC(bop_set_vars(n, keys, q));
+    BPC(bop_set_type(BopDOUBLE, q));
+    BPC(bop_alloc(q));
 
     *pq = q;
 }
@@ -61,7 +61,7 @@ void io_point_ini(int maxn, const char *path, IOPointConf *c, /**/ IOPoint **pq)
 }
 
 void io_point_fin(IOPoint *q) {
-    bop_fin(q->bop);
+    BPC(bop_fin(q->bop));
     EFREE(q);
 }
 
@@ -79,7 +79,6 @@ void io_point_push(IOPoint *q, int ndata, double *D, const char *key) {
     }
     if (q->seen[i]) ERR("seen key '%s' ", key);
     q->seen[i] = 1;
-    
 }
 
 void io_point_write(IOPoint*, MPI_Comm, int) {
