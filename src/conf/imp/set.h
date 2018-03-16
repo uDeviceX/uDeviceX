@@ -15,8 +15,11 @@ static config_setting_t* get_subgroup_setting(int n, const char *desc[], config_
     return group;    
 }
 
+static bool is_end(char c) {return c == '\0';}
+static bool is_sep(char c) {return c == '.' || c == '/';}
+
 static void cpy(const char *in, char *out) {
-    while (*in != '\0' && *in != '.') {
+    while ( !is_end(*in) && !is_sep(*in)) {
         *out = *in;
         ++in; ++out;
     }
@@ -27,8 +30,8 @@ static void split_str(const char *in, int *n, CBuf *out) {
     int i = 0;
     cpy(in, out->c[i++]);
 
-    while (*in != '\0') {
-        if (*in == '.') cpy(++in, out->c[i++]);
+    while ( !is_end(*in) ) {
+        if ( is_sep(*in) ) cpy(++in, out->c[i++]);
         if (i > MAX_LEVEL) ERR("Too many levels in desc <%s> : found %d/%d\n", in, i, MAX_LEVEL);
         ++in;
     }
