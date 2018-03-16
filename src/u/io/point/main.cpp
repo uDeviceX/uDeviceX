@@ -20,6 +20,7 @@ void main0(MPI_Comm, const char*) {
 
     UC(io_point_conf_ini(&c));
     UC(io_point_conf_push(c, "x y z"));
+    UC(io_point_conf_push(c, "density"));
 
     UC(io_point_conf_fin(c));
 }

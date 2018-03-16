@@ -16,13 +16,15 @@ static void push(IOPointConf *q, int nv, const char *k0) {
 }
 static int nword(const char *s) {
     enum {OUT, IN};
+    const char *s0;
     char c;
     int state, n;
+    s0 = s;
     state = OUT;
     n = 0;
     while ((c = *s++) != '\0') {
         if (!(isalnum(c) || isspace(c)))
-            ERR("illegal character '%c' in '%s'", c, s);
+            ERR("illegal character '%c' in '%s'", c, s0);
         else if (isspace(c))
             state = OUT;
         else if (state == OUT) {
@@ -30,13 +32,14 @@ static int nword(const char *s) {
             n++;
         }
     }
-    if (n == 0) ERR("wrong keys for bop: '%s'", s);
+    if (n == 0)
+        ERR("wrong keys for bop: '%s'", s0);
     return n;
 }
 void io_point_conf_push(IOPointConf *q, const char *key) {
     int nw;
     UC(nw = nword(key));
-    msg_print("s, nw: '%s', %d", key, nw);
+    msg_print("string, nword: '%s', %d", key, nw);
     push(q, nw, key);
 }
 
