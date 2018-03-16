@@ -1,0 +1,11 @@
+= Prof
+
+config files for profiling cases
+
+== Profiling from shell
+
+[source, sh]
+----
+PROF= u.run udx <conf.cfg>
+----
+
