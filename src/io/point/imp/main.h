@@ -37,8 +37,7 @@ void io_point_ini(int maxn, const char *path, IOPointConf *c, /**/ IOPoint **pq)
     char cum_key[N_MAX*(FILENAME_MAX + 1)];
     EMALLOC(1, &q);
     nkey = c->i;
-    for (i = 0; i < nkey; i++)
-        q->seen[i] = 0;
+    reset(q);
 
     cum_n = 0;
     for (i = 0; i < nkey; i++) {
@@ -78,17 +77,22 @@ static void push(int n, int nvar, int cum_n, const double *F, int offset, double
     int i, j, f, t; /* from/to */
     for (f = i = 0; i < n; i++) {
         for (j = 0; j < nvar; j++) {
-            t = cum_n * i + offset;
+            t = cum_n*i + offset + j;
             T[t] = F[f++];
         }
     }
 }
-void io_point_push(IOPoint *q, int ndata, const double *D, const char *key) {
+void io_point_push(IOPoint *q, int n, const double *D, const char *key) {
     int offset, nkey, i;
     double *B;
-    if (ndata > q->maxn)
-        ERR("ndata=%d > q->maxn=%d; key: '%s'",
-            ndata, q->maxn, key);
+    if (n > q->maxn)
+        ERR("n=%d > q->maxn=%d; key: '%s'",
+            n, q->maxn, key);
+
+    if (q->n == UNSET)
+        q->n = n;
+    else if (q->n != n)
+        ERR("q->n=%d != n=%d", q->n, n);
 
     nkey = q->nkey;
     offset = 0;
@@ -100,7 +104,7 @@ void io_point_push(IOPoint *q, int ndata, const double *D, const char *key) {
     if (q->seen[i]) ERR("seen key '%s' ", key);
     q->seen[i] = 1;
     UC(B = get_data(q->bop));
-    push(ndata, q->nn[i], q->cum_n, D, offset, /**/ B);
+    push(n, q->nn[i], q->cum_n, D, offset, /**/ B);
 }
 
 static void set_bop(MPI_Comm comm, long n, BopData *bop) {
@@ -113,8 +117,9 @@ static void set_bop(MPI_Comm comm, long n, BopData *bop) {
 
 void io_point_write(IOPoint *q, MPI_Comm comm, int id) {
     char name[FILENAME_MAX];
-    int i, nkey;
+    int i, nkey, n;
     nkey = q->nkey;
+    n = q->n;
     for (i = 0; i < nkey; i++)
         if (!q->seen[i])
             ERR("key '%s' was not pushed", q->keys[i]);
@@ -122,11 +127,10 @@ void io_point_write(IOPoint *q, MPI_Comm comm, int id) {
     if (snprintf(name, FILENAME_MAX, PATTERN, q->path, id) < 0)
         ERR("snprintf failed");
 
-    BPC(bop_summary(q->bop));
-    UC(set_bop(comm, 100, q->bop));
+    UC(set_bop(comm, n, q->bop));
     BPC(bop_write_header(comm, name, q->bop));
     BPC(bop_write_values(comm, name, q->bop));
+    BPC(bop_summary(q->bop));
 
-    for (i = 0; i < nkey; i++)
-        q->seen[i] = 0;
+    reset(q);
 }

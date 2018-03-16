@@ -42,3 +42,11 @@ static void mkdir(const char *p, const char *s) {
     msg_print("mkdir -p '%s'", path);
     UC(os_mkdir(path));
 }
+
+static void reset(IOPoint *q) {
+    int i, nkey;
+    nkey = q->nkey;
+    for (i = 0; i < nkey; i++)
+        q->seen[i] = 0;
+    q->n = UNSET;
+}
