@@ -3,7 +3,7 @@ void eflu_pack_ini(bool colors, int3 L, int maxd, EFluPack **pack) {
     size_t sz;
     EFluPack *p;
 
-    UC(emalloc(sizeof(EFluPack), (void**) pack));
+    EMALLOC(1, pack);
     p = *pack;
 
     p->L = L;
@@ -39,7 +39,7 @@ void eflu_pack_ini(bool colors, int3 L, int maxd, EFluPack **pack) {
 
 void eflu_comm_ini(bool colors, MPI_Comm cart, /**/ EFluComm **com) {
     EFluComm *c;
-    UC(emalloc(sizeof(EFluComm), (void**) com));
+    EMALLOC(1, com);
     c = *com;
     
     UC(comm_ini(cart, /**/ &c->pp));
@@ -54,7 +54,7 @@ void eflu_unpack_ini(bool colors, int3 L, int maxd, EFluUnpack **unpack) {
     int i, cap[NBAGS], ncs[NBAGS];
     EFluUnpack *u;
 
-    UC(emalloc(sizeof(EFluUnpack), (void**) unpack));
+    EMALLOC(1, unpack);
     u = *unpack;
 
     u->L = L;
