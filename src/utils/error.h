@@ -15,6 +15,16 @@
         error_stack_pop();                      \
     } while (0)
 
+/* [B]o[p] [c]heck */
+#define BPC(ans) do {                           \
+        BopStatus s = (ans);                    \
+        if (!bop_success(s)) {                  \
+            ERR(":%s:%d: %s\n%s\n",             \
+                __FILE__, __LINE__,             \
+                bop_report_error_desc(s),       \
+                bop_report_error_mesg());       \
+        }} while (0)
+
 void error_stack_push(const char *file, int line);
 void error_stack_pop();
 
