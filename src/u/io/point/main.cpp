@@ -16,7 +16,12 @@
 #include "mpi/wrapper.h"
 
 void main0(MPI_Comm, const char*) {
-    
+    IOPointConf *c;
+
+    UC(io_point_conf_ini(&c));
+    UC(io_point_conf_push(c, "x y z"));
+
+    UC(io_point_conf_fin(c));
 }
 
 int main(int argc, char **argv) {
@@ -24,7 +29,7 @@ int main(int argc, char **argv) {
     Config *cfg;
     int rank, dims[3];
     MPI_Comm comm;
-    
+
     m::ini(&argc, &argv);
     m::get_dims(&argc, &argv, dims);
     m::get_cart(MPI_COMM_WORLD, dims, &comm);
