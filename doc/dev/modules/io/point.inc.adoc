@@ -2,12 +2,20 @@
 
 Write point data to `bop` files.
 
+A configuration structure
 [source,cpp]
 ----
 include::{src}/io/point/imp.h[tags=conf]
 ----
 
+Push data
 [source,cpp]
 ----
 include::{src}/io/point/imp.h[tags=point]
+----
+
+Example
+[source,cpp]
+----
+include::{src}/u/io/point/main.cpp[tags=main]
 ----

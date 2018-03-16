@@ -18,10 +18,9 @@
 enum {MAX_N = 10};
 
 void main0(MPI_Comm comm, const char *path) {
+// tag::main[]
     enum {X, Y, Z};
     int i, id;
-    IOPointConf *c;
-    IOPoint *p;
     double *r;
     double rr[3*MAX_N];
     double density[MAX_N];
@@ -31,6 +30,8 @@ void main0(MPI_Comm comm, const char *path) {
         density[i] = -i;
     }
 
+    IOPointConf *c;
+    IOPoint *p;
     UC(io_point_conf_ini(&c));
     UC(io_point_conf_push(c, "x y z"));
     UC(io_point_conf_push(c, "density"));
@@ -41,6 +42,7 @@ void main0(MPI_Comm comm, const char *path) {
     UC(io_point_push(p, MAX_N, density, "density"));
     id = 0;
     UC(io_point_write(p, comm, id));
+// end::main[]    
 
     UC(io_point_push(p, MAX_N - 1, rr, "x y z"));
     UC(io_point_push(p, MAX_N - 1, density, "density"));
