@@ -54,7 +54,6 @@ static void ini_bop(int maxn, int n, const char *keys, BopData **pq) {
     
     *pq = q;
 }
-
 void io_point_ini(int maxn, const char *path, IOPointConf *c, /**/ IOPoint **pq) {
     int i, n, cum_n;
     IOPoint *q;
@@ -85,4 +84,10 @@ void io_point_ini(int maxn, const char *path, IOPointConf *c, /**/ IOPoint **pq)
 void io_point_fin(IOPoint *q) {
     bop_fin(q->bop);
     EFREE(q);
+}
+
+void io_point_push(IOPoint*, int, double*, const char*) {
+}
+
+void io_point_write(IOPoint*, MPI_Comm, int) {
 }
