@@ -42,7 +42,6 @@ void io_point_conf_push(IOPointConf *q, const char *key) {
     msg_print("string, nword: '%s', %d", key, nw);
     push(q, nw, key);
 }
-
 void io_point_conf_fin(IOPointConf *q) { EFREE(q); }
 
 static void ini_bop(int maxn, int n, const char *keys, BopData **pq) {

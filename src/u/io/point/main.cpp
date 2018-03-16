@@ -15,14 +15,24 @@
 #include "io/point/imp.h"
 #include "mpi/wrapper.h"
 
-void main0(MPI_Comm, const char*) {
+enum {MAX_N = 1000};
+
+void main0(MPI_Comm comm, const char *path) {
     IOPointConf *c;
+    IOPoint *p;
+    double rr[3*MAX_N];
+    double density[MAX_N];
 
     UC(io_point_conf_ini(&c));
     UC(io_point_conf_push(c, "x y z"));
     UC(io_point_conf_push(c, "density"));
-
+    UC(io_point_ini(MAX_N, path, c, &p));
     UC(io_point_conf_fin(c));
+
+    UC(io_point_push(p, MAX_N, rr, "x y z"));
+    UC(io_point_push(p, MAX_N, density, "density"));
+    UC(io_point_write(p, comm, 0));
+    UC(io_point_fin(p));
 }
 
 int main(int argc, char **argv) {
