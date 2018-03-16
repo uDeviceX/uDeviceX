@@ -20,13 +20,15 @@ If no source contains the parmeter, an error is raised.
 
 [source, c++]
 ----
-include::{src}/conf/imp.cpp[tag=struct]
+include::{src}/conf/imp/type.h[tag=struct]
 ----
 
 Consists of an array of `config_t` descriptors, ordered by priority.
 Indices correspond to the `enum` keys.
 The first key has the highest priority, second key has second highest
 priority etc.
+
+The `r` field is the configuration history, i.e what is read by the program.
 
 == interface
 
@@ -73,16 +75,14 @@ The client may overwrite variables in the config object:
 ----
 include::{src}/conf/imp.h[tags=set]
 ----
-`desc` is an array containing the names of the nested groups.
-`n` is the nesting level of the description (minimum is 1). It is the
-same as the size of `desc`.
+`desc` contains the names of the nested groups. separated by a `.` or
+a `/`.
 
 Example:
 
 [source, c++]
 ----
-const char *desc[] = {"main", "sub", "a"};
-int n = 3;
+const char *desc = "main.sub.a";
 ----
 
 will correspond to
@@ -96,8 +96,12 @@ main = {
 }
 ----
 
-The written fields may be dumped in a stream using
+The configuration can be dumped by using
+
 [source, c++]
 ----
 include::{src}/conf/imp.h[tags=dump]
 ----
+<1> dump the fields set by the program to a stream
+<2> dump the fields read by the program to a stream
+

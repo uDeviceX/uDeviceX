@@ -22,6 +22,7 @@ static int lookup_int(const Config *c, const char *desc, int *a) {
     if (status != OK) return status;
     if (config_setting_type(s) != CONFIG_TYPE_INT) return WTYPE;
     *a = config_setting_get_int(s);
+    set_int(desc, *a, c->r);
     return status;
 }
 
@@ -32,6 +33,7 @@ static int lookup_float(const Config *c, const char *desc, float *a) {
     if (status != OK) return status;
     if (config_setting_type(s) != CONFIG_TYPE_FLOAT) return WTYPE;
     *a = config_setting_get_float(s);
+    set_float(desc, *a, c->r);
     return status;
 }
 
@@ -42,6 +44,7 @@ static int lookup_bool(const Config *c, const char *desc, int *a) {
     if (status != OK) return status;
     if (config_setting_type(s) != CONFIG_TYPE_BOOL) return WTYPE;
     *a = config_setting_get_bool(s);
+    set_bool(desc, *a, c->r);
     return status;
 }
 
@@ -52,6 +55,7 @@ static int lookup_string(const Config *c, const char *desc, const char **a) {
     if (status != OK) return status;
     if (config_setting_type(s) != CONFIG_TYPE_STRING) return WTYPE;
     *a = config_setting_get_string(s);
+    set_string(desc, *a, c->r);
     return status;
 }
 
@@ -67,6 +71,7 @@ static int lookup_vint(const Config *c, const char *desc, int *n, int a[]) {
         if (config_setting_type(e) != CONFIG_TYPE_INT) return WTYPE;
         a[j] = config_setting_get_int(e);
     }
+    set_vint(desc, *n, a, c->r);
     return status;
 }
 
@@ -95,6 +100,7 @@ static int lookup_vfloat(const Config *c, const char *desc, int *n, float a[]) {
         if (config_setting_type(e) != CONFIG_TYPE_FLOAT) return WTYPE;
         a[j] = config_setting_get_float(e);
     }
+    set_vfloat(desc, *n, a, c->r);
     return status;
 }
 

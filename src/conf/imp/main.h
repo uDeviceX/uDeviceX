@@ -1,17 +1,31 @@
+static void set_write_options(config_t *c) {
+    config_set_option(c, CONFIG_OPTION_SEMICOLON_SEPARATORS,            CONFIG_FALSE);
+    config_set_option(c, CONFIG_OPTION_COLON_ASSIGNMENT_FOR_GROUPS,     CONFIG_FALSE);
+    config_set_option(c, CONFIG_OPTION_COLON_ASSIGNMENT_FOR_NON_GROUPS, CONFIG_FALSE);
+    config_set_option(c, CONFIG_OPTION_OPEN_BRACE_ON_SEPARATE_LINE,     CONFIG_FALSE);    
+    config_set_option(c, CONFIG_OPTION_ALLOW_SCIENTIFIC_NOTATION,       CONFIG_TRUE );
+}
+
 void conf_ini(/**/ Config **pq) {
     Config *q;
     EMALLOC(1, &q);
-    for (int i = 0; i < NCFG; ++i)
+    for (int i = 0; i < NCFG; ++i) {
         config_init(q->c + i);
-    q->status = INI;
+        set_write_options(q->c + i);
+    }
+    
+    EMALLOC(1, &q->r);
+    config_init(q->r);
+    set_write_options(q->r);
     *pq = q;
 }
 
 void conf_fin(/**/ Config *q) {
     int i;
-    if (q->status != INI) ERR("wrong conf_fin call");
     for (i = 0; i < NCFG; ++i)
         config_destroy(&q->c[i]);
+    config_destroy(q->r);
+    EFREE(q->r);
     EFREE(q);
 }
 
@@ -101,7 +115,10 @@ void conf_read(int argc, char **argv, /**/ Config *cfg) {
         UC(read_args(argc, argv, /**/ &cfg->c[ARG]));
 }
 
-
 void conf_write_exe(const Config *cfg, FILE *stream) {
     config_write(&cfg->c[EXE], stream);
+}
+
+void conf_write_history(const Config *cfg, FILE *stream) {
+    config_write(cfg->r, stream);
 }

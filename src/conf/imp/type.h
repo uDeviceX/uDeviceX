@@ -7,10 +7,9 @@ enum {
     NCFG
 };
 
-enum {INI = 123}; /* status */
 struct Config {
-    int status;
     config_t c[NCFG];
+    config_t *r; /* what have been read */
 };
 // end::struct[]
 
@@ -20,3 +19,10 @@ enum {
     WTYPE
 };
 
+enum {
+    MAX_LEVEL = 10 /* maximum level of parameters */
+};
+
+struct CBuf {
+    char c[MAX_LEVEL][FILENAME_MAX];
+};
