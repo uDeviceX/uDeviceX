@@ -16,6 +16,7 @@
 #include "mpi/wrapper.h"
 
 void main0(MPI_Comm, const char*) {
+    
 }
 
 int main(int argc, char **argv) {

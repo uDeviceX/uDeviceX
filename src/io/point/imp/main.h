@@ -8,11 +8,19 @@ void io_point_conf_ini(/**/ IOPointConf **pq) {
     *pq = q;
 }
 
-void io_point_conf_push(IOPointConf *q, int nv, const char *k0) {
+static void push(IOPointConf *q, int nv, const char *k0) {
     int i;
     i = q->i;
     cpy(q->keys[i], k0);
     q->nn[i] = nv; q->i = i + 1;
+}
+static int nword(const char*) {
+    return 0;
+}
+void io_point_conf_push(IOPointConf *q, const char *key) {
+    int nv;
+    UC(nv = nword(key));
+    push(q, nv, key);
 }
 
 void io_point_conf_fin(IOPointConf *q) { EFREE(q); }
