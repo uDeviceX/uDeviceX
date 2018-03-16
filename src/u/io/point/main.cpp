@@ -21,9 +21,7 @@ void main0(MPI_Comm comm, const char *path) {
 // tag::main[]
     enum {X, Y, Z};
     int i, id;
-    double *r;
-    double rr[3*MAX_N];
-    double density[MAX_N];
+    double *r, rr[3*MAX_N], density[MAX_N];
     for (i = 0; i < MAX_N; i++) {
         r = &rr[3*i];
         r[X] = i; r[Y] = 10*i; r[Z] = 100*i;
