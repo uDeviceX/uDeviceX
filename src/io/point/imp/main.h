@@ -14,13 +14,30 @@ static void push(IOPointConf *q, int nv, const char *k0) {
     cpy(q->keys[i], k0);
     q->nn[i] = nv; q->i = i + 1;
 }
-static int nword(const char*) {
-    return 0;
+static int nword(const char *s) {
+    enum {OUT, IN};
+    char c;
+    int state, n;
+    state = OUT;
+    n = 0;
+    while ((c = s[0]) != '\0') {
+        if (!isalnum(c))
+            ERR("not alphanumeric character '%c' in '%s'", c, s);
+        if (c == ' ' || c == '\t')
+            state = OUT;
+        else if (state == OUT) {
+            state = IN;
+            n++;
+        }
+    }
+    if (n == 0) ERR("wrong keys for bop: '%s'", s);
+    return n;
 }
 void io_point_conf_push(IOPointConf *q, const char *key) {
-    int nv;
-    UC(nv = nword(key));
-    push(q, nv, key);
+    int nw;
+    UC(nw = nword(key));
+    msg_print("s, nw: '%s', %d", key, nw);
+    push(q, nw, key);
 }
 
 void io_point_conf_fin(IOPointConf *q) { EFREE(q); }
