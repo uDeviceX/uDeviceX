@@ -2,7 +2,7 @@
   pp: exchanged particles 
   cc: colors of the above
 
-  bcc: (bulk counts): cell starts in bulk coordinates
+  bcc: (bulk counts): cell counts
   bss: (bulk starts): cell starts in bulk coordinates
   fss: (fragment starts): cell starts in fragment coordinates
 
