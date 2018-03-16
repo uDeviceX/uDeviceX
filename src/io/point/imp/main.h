@@ -20,10 +20,10 @@ static int nword(const char *s) {
     int state, n;
     state = OUT;
     n = 0;
-    while ((c = s[0]) != '\0') {
-        if (!isalnum(c))
-            ERR("not alphanumeric character '%c' in '%s'", c, s);
-        else if (c == ' ' || c == '\t')
+    while ((c = *s++) != '\0') {
+        if (!(isalnum(c) || isspace(c)))
+            ERR("illegal character '%c' in '%s'", c, s);
+        else if (isspace(c))
             state = OUT;
         else if (state == OUT) {
             state = IN;
