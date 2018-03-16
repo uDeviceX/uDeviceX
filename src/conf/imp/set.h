@@ -197,4 +197,3 @@ void conf_set_string(const char *desc, const char *a, Config *cfg) {
     UC(set_string(desc, a, &cfg->c[EXE]));
 }
 
-

@@ -3,13 +3,11 @@ void conf_ini(/**/ Config **pq) {
     EMALLOC(1, &q);
     for (int i = 0; i < NCFG; ++i)
         config_init(q->c + i);
-    q->status = INI;
     *pq = q;
 }
 
 void conf_fin(/**/ Config *q) {
     int i;
-    if (q->status != INI) ERR("wrong conf_fin call");
     for (i = 0; i < NCFG; ++i)
         config_destroy(&q->c[i]);
     EFREE(q);

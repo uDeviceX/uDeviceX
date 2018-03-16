@@ -7,9 +7,7 @@ enum {
     NCFG
 };
 
-enum {INI = 123}; /* status */
 struct Config {
-    int status;
     config_t c[NCFG];
 };
 // end::struct[]
