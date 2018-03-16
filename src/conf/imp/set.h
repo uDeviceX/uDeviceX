@@ -15,11 +15,9 @@ static config_setting_t* get_subgroup_setting(int n, const char *desc[], config_
     return group;    
 }
 
-void conf_set_int(int n, const char *desc[], int a, Config *cfg) {
-    config_t *c;
+static void set_int(int n, const char *desc[], int a, config_t *c) {
     config_setting_t *group, *setting;
     int status;
-    c = &cfg->c[EXE];
     
     group = get_subgroup_setting(n-1, desc, /**/ c);
     setting = subsetting(desc[n-1], CONFIG_TYPE_INT, /**/ group);
@@ -29,12 +27,10 @@ void conf_set_int(int n, const char *desc[], int a, Config *cfg) {
         ERR("could not set <%s>", desc[n-1]);
 }
 
-void conf_set_vint(int n, const char *desc[], int nelem, const int a[], Config *cfg) {
-    config_t *c;
+static void set_vint(int n, const char *desc[], int nelem, const int a[], config_t *c) {
     config_setting_t *group, *setting, *status;
     int i;
     enum {APPEND = -1};
-    c = &cfg->c[EXE];
         
     group = get_subgroup_setting(n-1, desc, /**/ c);
     setting = subsetting(desc[n-1], CONFIG_TYPE_ARRAY, /**/ group);
@@ -46,16 +42,14 @@ void conf_set_vint(int n, const char *desc[], int nelem, const int a[], Config *
     }
 }
 
-void conf_set_int3(int n, const char *desc[], int3 a, Config *cfg) {
+static void set_int3(int n, const char *desc[], int3 a, config_t *c) {
     const int a3[] = {a.x, a.y, a.z};
-    UC(conf_set_vint(n, desc, 3, a3, cfg));
+    UC(set_vint(n, desc, 3, a3, c));
 }
 
-void conf_set_float(int n, const char *desc[], float a, Config *cfg) {
-    config_t *c;
+static void set_float(int n, const char *desc[], float a, config_t *c) {
     config_setting_t *group, *setting;
     int status;
-    c = &cfg->c[EXE];
     
     group = get_subgroup_setting(n-1, desc, /**/ c);
     setting = subsetting(desc[n-1], CONFIG_TYPE_FLOAT, /**/ group);
@@ -65,12 +59,10 @@ void conf_set_float(int n, const char *desc[], float a, Config *cfg) {
         ERR("could not set <%s>", desc[n-1]);
 }
 
-void conf_set_vfloat(int n, const char *desc[], int nelem, const float a[], Config *cfg) {
-    config_t *c;
+void set_vfloat(int n, const char *desc[], int nelem, const float a[], config_t *c) {
     config_setting_t *group, *setting, *status;
     int i;
     enum {APPEND = -1};
-    c = &cfg->c[EXE];
         
     group = get_subgroup_setting(n-1, desc, /**/ c);
     setting = subsetting(desc[n-1], CONFIG_TYPE_ARRAY, /**/ group);
@@ -82,16 +74,14 @@ void conf_set_vfloat(int n, const char *desc[], int nelem, const float a[], Conf
     }
 }
 
-void conf_set_float3(int n, const char *desc[], float3 a, Config *cfg) {
+static void set_float3(int n, const char *desc[], float3 a, config_t *c) {
     const float a3[] = {a.x, a.y, a.z};
-    UC(conf_set_vfloat(n, desc, 3, a3, cfg));
+    UC(set_vfloat(n, desc, 3, a3, c));
 }
 
-void conf_set_bool(int n, const char *desc[], int a, Config *cfg) {
-    config_t *c;
+static void set_bool(int n, const char *desc[], int a, config_t *c) {
     config_setting_t *group, *setting;
     int status;
-    c = &cfg->c[EXE];
     
     group = get_subgroup_setting(n-1, desc, /**/ c);
     setting = subsetting(desc[n-1], CONFIG_TYPE_BOOL, /**/ group);
@@ -101,11 +91,9 @@ void conf_set_bool(int n, const char *desc[], int a, Config *cfg) {
         ERR("could not set <%s>", desc[n-1]);
 }
 
-void conf_set_string(int n, const char *desc[], const char *a, Config *cfg) {
-    config_t *c;
+static void set_string(int n, const char *desc[], const char *a, config_t *c) {
     config_setting_t *group, *setting;
     int status;
-    c = &cfg->c[EXE];
     
     group = get_subgroup_setting(n-1, desc, /**/ c);
     setting = subsetting(desc[n-1], CONFIG_TYPE_STRING, /**/ group);
@@ -114,3 +102,38 @@ void conf_set_string(int n, const char *desc[], const char *a, Config *cfg) {
     if (CONFIG_TRUE != status)
         ERR("could not set <%s>", desc[n-1]);
 }
+
+
+void conf_set_int(int n, const char *desc[], int a, Config *cfg) {
+    UC(set_int(n, desc, a, &cfg->c[EXE]));
+}
+
+void conf_set_vint(int n, const char *desc[], int nelem, const int a[], Config *cfg) {
+    UC(set_vint(n, desc, nelem, a, &cfg->c[EXE]));
+}
+
+void conf_set_int3(int n, const char *desc[], int3 a, Config *cfg) {
+    UC(set_int3(n, desc, a, &cfg->c[EXE]));
+}
+
+void conf_set_float(int n, const char *desc[], float a, Config *cfg) {
+    UC(set_float(n, desc, a, &cfg->c[EXE]));
+}
+
+void conf_set_vfloat(int n, const char *desc[], int nelem, const float a[], Config *cfg) {
+    UC(set_vfloat(n, desc, nelem, a, &cfg->c[EXE]));
+}
+
+void conf_set_float3(int n, const char *desc[], float3 a, Config *cfg) {
+    UC(set_float3(n, desc, a, &cfg->c[EXE]));
+}
+
+void conf_set_bool(int n, const char *desc[], int a, Config *cfg) {
+    UC(set_bool(n, desc, a, &cfg->c[EXE]));
+}
+
+void conf_set_string(int n, const char *desc[], const char *a, Config *cfg) {
+    UC(set_string(n, desc, a, &cfg->c[EXE]));
+}
+
+
