@@ -94,3 +94,14 @@ __global__ void apply(Par params, int3 L, const int27 start, const LFrag_v26<Par
     rnd = rrnd.d[fid];
     force3(params, L, lfrag, rfrag, rnd, i, /**/ farray);
 }
+
+template <typename Par, typename Parray, typename Farray>
+__global__ void apply(int fid, Par params, int3 L, const LFrag_v<Parray> lfrag, const RFrag_v<Parray> rfrag, const flu::RndFrag rnd,
+                      /**/ Farray farray) {
+    int i; /* particle id */
+
+    i = threadIdx.x + blockDim.x * blockIdx.x;
+    if (i >= lfrag.n) return;
+
+    force3(params, L, lfrag, rfrag, rnd, i, /**/ farray);
+}

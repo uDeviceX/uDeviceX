@@ -60,12 +60,21 @@ static void get_start(const LFrag_v<Parray> lfrags[26], /**/ int start[27]) {
 }
 
 template <typename Par, typename Parray, typename Farray>
-static void interactions(Par params, int3 L, const LFrag_v26<Parray> lfrags, const RFrag_v26<Parray> rfrags, const flu::RndFrag26 rrnd, /**/ Farray farray) {
+static void interactions_old(Par params, int3 L, const LFrag_v26<Parray> lfrags, const RFrag_v26<Parray> rfrags, const flu::RndFrag26 rrnd, /**/ Farray farray) {
     int27 start;
     int n; /* number of threads */
     get_start(lfrags.d, /**/ start.d);
     n = start.d[26];
     KL(fhalo_dev::apply, (k_cnf(n)), (params, L, start, lfrags, rfrags, rrnd, /**/ farray));
+}
+
+template <typename Par, typename Parray, typename Farray>
+static void interactions(Par params, int3 L, const LFrag_v26<Parray> lfrags, const RFrag_v26<Parray> rfrags, const flu::RndFrag26 rrnd, /**/ Farray farray) {
+    int n, i;
+    for (i = 0; i < 26; ++i) {
+        n = lfrags.d[i].n;
+        KL(fhalo_dev::apply, (k_cnf(n)), (i, params, L, lfrags.d[i], rfrags.d[i], rrnd.d[i], /**/ farray));
+    }    
 }
 
 template <typename Par, typename Parray>
