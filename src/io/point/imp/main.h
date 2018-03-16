@@ -1,3 +1,5 @@
+#define PATTERN "%s/%05d"
+
 void io_point_conf_ini(/**/ IOPointConf **pq) {
     IOPointConf *q;
     EMALLOC(1, &q);
@@ -38,8 +40,10 @@ void io_point_ini(int maxn, const char *path, IOPointConf *c, /**/ IOPoint **pq)
     for (i = 0; i < n; i++)
         q->seen[i] = 0;
 
+    cum_n = 0;
     for (i = 0; i < n; i++) {
         q->nn[i] = c->nn[i];
+        cum_n += q->nn[i];
         cpy(q->keys[i], c->keys[i]);
     }
 
@@ -48,9 +52,6 @@ void io_point_ini(int maxn, const char *path, IOPointConf *c, /**/ IOPoint **pq)
         cat(cum_key, c->keys[i]);
     }
 
-    cum_n = 0;
-    for (i = 0; i < n; i++)
-        cum_n += q->nn[i];
     ini_bop(maxn, cum_n, cum_key, &q->bop);
 
     UC(mkdir(DUMP_BASE, path));
@@ -102,5 +103,23 @@ void io_point_push(IOPoint *q, int ndata, const double *D, const char *key) {
     push(ndata, q->nn[i], q->cum_n, D, offset, /**/ B);
 }
 
-void io_point_write(IOPoint*, MPI_Comm, int) {
+void io_point_write(IOPoint *q, MPI_Comm comm, int id) {
+    char name[FILENAME_MAX];
+    int i, n;
+    n = q->n;
+
+    for (i = 0; i < n; i++)
+        if (!q->seen[i])
+            ERR("key '%s' was not pushed", q->keys[i]);
+
+    if (snprintf(name, FILENAME_MAX, PATTERN, q->path, id) < 0)
+        ERR("snprintf failed");
+
+    BPC(bop_summary(q->bop));
+    //    UC(set_rank_infos(cart, n, q->bop));
+    BPC(bop_write_header(comm, name, q->bop));
+    BPC(bop_write_values(comm, name, q->bop));
+
+    for (i = 0; i < n; i++)
+        q->seen[i] = 0;
 }
