@@ -1,8 +1,13 @@
 == Point
 
-Write point data to =bop= files.
+Write point data to `bop` files.
 
 [source,cpp]
 ----
-include::{src}/io/point/imp.h[tags=interface]
+include::{src}/io/point/imp.h[tags=conf]
+----
+
+[source,cpp]
+----
+include::{src}/io/point/imp.h[tags=point]
 ----
