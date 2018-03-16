@@ -107,3 +107,7 @@ void conf_read(int argc, char **argv, /**/ Config *cfg) {
 void conf_write_exe(const Config *cfg, FILE *stream) {
     config_write(&cfg->c[EXE], stream);
 }
+
+void conf_write_history(const Config *cfg, FILE *stream) {
+    config_write(cfg->r, stream);
+}

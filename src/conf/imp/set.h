@@ -32,8 +32,6 @@ static void split_str(const char *in, int *n, CBuf *out) {
         if (i > MAX_LEVEL) ERR("Too many levels in desc <%s> : found %d/%d\n", in, i, MAX_LEVEL);
         ++in;
     }
-    for (int j = 0; j < i; ++j)
-        printf("%d %s\n", j, out->c[j]);
     *n = i;
 }
 
