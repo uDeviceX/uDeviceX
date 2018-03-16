@@ -14,28 +14,6 @@ static void push(IOPointConf *q, int nv, const char *k0) {
     cpy(q->keys[i], k0);
     q->nn[i] = nv; q->i = i + 1;
 }
-static int nword(const char *s) {
-    enum {OUT, IN};
-    const char *s0;
-    char c;
-    int state, n;
-    s0 = s;
-    state = OUT;
-    n = 0;
-    while ((c = *s++) != '\0') {
-        if (!(isalnum(c) || isspace(c)))
-            ERR("illegal character '%c' in '%s'", c, s0);
-        else if (isspace(c))
-            state = OUT;
-        else if (state == OUT) {
-            state = IN;
-            n++;
-        }
-    }
-    if (n == 0)
-        ERR("wrong keys for bop: '%s'", s0);
-    return n;
-}
 void io_point_conf_push(IOPointConf *q, const char *key) {
     int nw;
     UC(nw = nword(key));
@@ -90,6 +68,7 @@ void io_point_fin(IOPoint *q) {
 }
 
 void io_point_push(IOPoint*, int, double*, const char*) {
+
 }
 
 void io_point_write(IOPoint*, MPI_Comm, int) {

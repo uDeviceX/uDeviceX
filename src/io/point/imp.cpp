@@ -14,4 +14,5 @@
 #include "utils/imp.h"
 
 #include "imp/type.h"
+#include "imp/util.h"
 #include "imp/main.h"
