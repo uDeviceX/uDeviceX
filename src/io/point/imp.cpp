@@ -13,6 +13,9 @@
 #include "utils/error.h"
 #include "utils/imp.h"
 
+#include "utils/mc.h"
+#include "mpi/wrapper.h"
+
 #include "imp/type.h"
 #include "imp/util.h"
 #include "imp/main.h"

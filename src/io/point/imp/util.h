@@ -25,11 +25,11 @@ static int nword(const char *s) {
 }
 
 static void wrong_key(IOPoint *q, const char *key) {
-    int i, n;
-    n = q->n;
+    int i, nkey;
+    nkey = q->nkey;
     msg_print("unkown key: '%s'", key);
     msg_print("possible values:");
-    for (i = 0; i < n; i++)
+    for (i = 0; i < nkey; i++)
         msg_print("'%s'", q->keys[i]);
     ERR("");
 }

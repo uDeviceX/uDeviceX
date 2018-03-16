@@ -32,22 +32,22 @@ static void ini_bop(int maxn, int n, const char *keys, BopData **pq) {
     *pq = q;
 }
 void io_point_ini(int maxn, const char *path, IOPointConf *c, /**/ IOPoint **pq) {
-    int i, n, cum_n;
+    int i, nkey, cum_n;
     IOPoint *q;
     char cum_key[N_MAX*(FILENAME_MAX + 1)];
     EMALLOC(1, &q);
-    n = c->i;
-    for (i = 0; i < n; i++)
+    nkey = c->i;
+    for (i = 0; i < nkey; i++)
         q->seen[i] = 0;
 
     cum_n = 0;
-    for (i = 0; i < n; i++) {
+    for (i = 0; i < nkey; i++) {
         q->nn[i] = c->nn[i];
         cum_n += q->nn[i];
         cpy(q->keys[i], c->keys[i]);
     }
 
-    for (i = 0; i < n; i++) {
+    for (i = 0; i < nkey; i++) {
         if (i > 0) cat(cum_key, " ");
         cat(cum_key, c->keys[i]);
     }
@@ -56,7 +56,7 @@ void io_point_ini(int maxn, const char *path, IOPointConf *c, /**/ IOPoint **pq)
 
     UC(mkdir(DUMP_BASE, path));
     cpy(q->path, path);
-    q->n = n;
+    q->nkey = nkey;
     q->maxn = maxn;
     q->cum_n = cum_n;
     *pq = q;
@@ -84,16 +84,16 @@ static void push(int n, int nvar, int cum_n, const double *F, int offset, double
     }
 }
 void io_point_push(IOPoint *q, int ndata, const double *D, const char *key) {
-    int offset, n, i;
+    int offset, nkey, i;
     double *B;
     if (ndata > q->maxn)
         ERR("ndata=%d > q->maxn=%d; key: '%s'",
             ndata, q->maxn, key);
 
-    n = q->n;
+    nkey = q->nkey;
     offset = 0;
     for (i = 0; ; i++) {
-        if (i == n) {UC(wrong_key(q, key)); ERR(""); }
+        if (i == nkey) {UC(wrong_key(q, key)); ERR(""); }
         if (same_str(key, q->keys[i])) break;
         offset += q->nn[i];
     }
@@ -103,12 +103,19 @@ void io_point_push(IOPoint *q, int ndata, const double *D, const char *key) {
     push(ndata, q->nn[i], q->cum_n, D, offset, /**/ B);
 }
 
+static void set_bop(MPI_Comm comm, long n, BopData *bop) {
+    int size;
+    MC(m::Comm_size(comm, &size));
+    BPC(bop_set_nrank(size, bop));
+    BPC(bop_set_nprank(n, bop));
+    BPC(bop_set_n(n, bop));
+}
+
 void io_point_write(IOPoint *q, MPI_Comm comm, int id) {
     char name[FILENAME_MAX];
-    int i, n;
-    n = q->n;
-
-    for (i = 0; i < n; i++)
+    int i, nkey;
+    nkey = q->nkey;
+    for (i = 0; i < nkey; i++)
         if (!q->seen[i])
             ERR("key '%s' was not pushed", q->keys[i]);
 
@@ -116,10 +123,10 @@ void io_point_write(IOPoint *q, MPI_Comm comm, int id) {
         ERR("snprintf failed");
 
     BPC(bop_summary(q->bop));
-    //    UC(set_rank_infos(cart, n, q->bop));
+    UC(set_bop(comm, 100, q->bop));
     BPC(bop_write_header(comm, name, q->bop));
     BPC(bop_write_values(comm, name, q->bop));
 
-    for (i = 0; i < n; i++)
+    for (i = 0; i < nkey; i++)
         q->seen[i] = 0;
 }
