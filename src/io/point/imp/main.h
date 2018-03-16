@@ -5,7 +5,7 @@ void io_point_conf_ini(/**/ IOPointConf **pq) {
     *pq = q;
 }
 
-static void push(IOPointConf *q, int nv, const char *k0) {
+static void conf_push(IOPointConf *q, int nv, const char *k0) {
     int i;
     i = q->i;
     cpy(q->keys[i], k0);
@@ -15,7 +15,7 @@ void io_point_conf_push(IOPointConf *q, const char *key) {
     int nw;
     UC(nw = nword(key));
     msg_print("string, nword: '%s', %d", key, nw);
-    push(q, nw, key);
+    conf_push(q, nw, key);
 }
 void io_point_conf_fin(IOPointConf *q) { EFREE(q); }
 
@@ -57,6 +57,7 @@ void io_point_ini(int maxn, const char *path, IOPointConf *c, /**/ IOPoint **pq)
     cpy(q->path, path);
     q->n = n;
     q->maxn = maxn;
+    q->cum_n = cum_n;
     *pq = q;
 }
 
@@ -71,7 +72,17 @@ static double *get_data(BopData *b) {
     if (type != BopDOUBLE) ERR("BopType is not double");
     return (double*)bop_get_data(b);
 }
-void io_point_push(IOPoint *q, int ndata, double *D, const char *key) {
+
+static void push(int n, int nvar, int cum_n, const double *F, int offset, double *T) {
+    int i, j, f, t; /* from/to */
+    for (f = i = 0; i < n; i++) {
+        for (j = 0; j < nvar; j++) {
+            t = cum_n * i + offset;
+            T[t] = F[f++];
+        }
+    }
+}
+void io_point_push(IOPoint *q, int ndata, const double *D, const char *key) {
     int offset, n, i;
     double *B;
     if (ndata > q->maxn)
@@ -87,7 +98,8 @@ void io_point_push(IOPoint *q, int ndata, double *D, const char *key) {
     }
     if (q->seen[i]) ERR("seen key '%s' ", key);
     q->seen[i] = 1;
-    B = get_data(q->bop);
+    UC(B = get_data(q->bop));
+    push(ndata, q->nn[i], q->cum_n, D, offset, /**/ B);
 }
 
 void io_point_write(IOPoint*, MPI_Comm, int) {

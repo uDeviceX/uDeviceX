@@ -9,10 +9,13 @@ struct IOPointConf {
 
 struct IOPoint {
     int maxn;
+    int cum_n;
+
     int n;
     int nn[N_MAX];
     int seen[N_MAX];
     char keys[N_MAX][FILENAME_MAX];
+    
     char path[FILENAME_MAX];
     BopData *bop;
 };
