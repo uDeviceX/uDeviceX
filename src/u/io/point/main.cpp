@@ -42,7 +42,7 @@ void main0(MPI_Comm comm, const char *path) {
     UC(io_point_push(p, MAX_N, density, "density"));
     id = 0;
     UC(io_point_write(p, comm, id));
-// end::main[]    
+// end::main[]
 
     UC(io_point_push(p, MAX_N - 1, rr, "x y z"));
     UC(io_point_push(p, MAX_N - 1, density, "density"));
@@ -69,7 +69,7 @@ int main(int argc, char **argv) {
     UC(conf_read(argc, argv, cfg));
     UC(conf_lookup_string(cfg, "o", &path));
     main0(comm, path);
-    
+
     UC(conf_fin(cfg));
     MC(m::Barrier(comm));
     m::fin();
