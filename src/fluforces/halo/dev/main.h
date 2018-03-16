@@ -72,30 +72,6 @@ static __device__ void force3(Par params, int3 L, const LFrag_v<Parray> afrag, c
 }
 
 template <typename Par, typename Parray, typename Farray>
-__global__ void apply(Par params, int3 L, const int27 start, const LFrag_v26<Parray> lfrags, const RFrag_v26<Parray> rfrags, const flu::RndFrag26 rrnd,
-                      /**/ Farray farray) {
-    flu::RndFrag  rnd;
-    RFrag_v<Parray> rfrag;
-    LFrag_v<Parray> lfrag;
-    int gid;
-    int fid; /* fragment id */
-    int i; /* particle id */
-
-    gid = threadIdx.x + blockDim.x * blockIdx.x;
-    if (gid >= start.d[26]) return;
-    fid = frag_dev::frag_get_fid(start.d, gid);
-    i = gid - start.d[fid];
-    lfrag = lfrags.d[fid];
-    if (i >= lfrag.n) return;
-
-    rfrag = rfrags.d[fid];
-    assert_frag(L, fid, rfrag);
-
-    rnd = rrnd.d[fid];
-    force3(params, L, lfrag, rfrag, rnd, i, /**/ farray);
-}
-
-template <typename Par, typename Parray, typename Farray>
 __global__ void apply(int fid, Par params, int3 L, const LFrag_v<Parray> lfrag, const RFrag_v<Parray> rfrag, const flu::RndFrag rnd,
                       /**/ Farray farray) {
     int i; /* particle id */

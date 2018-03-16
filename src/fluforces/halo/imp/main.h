@@ -50,24 +50,6 @@ static int pad(int n) {
     return PADDING * ceiln(n, PADDING);    
 }
 
-template <typename Parray>
-static void get_start(const LFrag_v<Parray> lfrags[26], /**/ int start[27]) {
-    /* generate padded start */
-    int i;
-    start[0] = 0;
-    for (i = 0; i < 26; ++i)
-        start[i + 1] = start[i] + pad(lfrags[i].n);
-}
-
-template <typename Par, typename Parray, typename Farray>
-static void interactions_old(Par params, int3 L, const LFrag_v26<Parray> lfrags, const RFrag_v26<Parray> rfrags, const flu::RndFrag26 rrnd, /**/ Farray farray) {
-    int27 start;
-    int n; /* number of threads */
-    get_start(lfrags.d, /**/ start.d);
-    n = start.d[26];
-    KL(fhalo_dev::apply, (k_cnf(n)), (params, L, start, lfrags, rfrags, rrnd, /**/ farray));
-}
-
 template <typename Par, typename Parray, typename Farray>
 static void interactions(Par params, int3 L, const LFrag_v26<Parray> lfrags, const RFrag_v26<Parray> rfrags, const flu::RndFrag26 rrnd, /**/ Farray farray) {
     int n, i;
