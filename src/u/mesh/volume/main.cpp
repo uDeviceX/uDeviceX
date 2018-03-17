@@ -12,7 +12,7 @@
 #include "mesh/positions/imp.h"
 #include "mesh/volume/imp.h"
 
-void main0(const char *i) {
+static void main0(const char *i) {
     float V;
     int nv;
     MeshRead *mesh;

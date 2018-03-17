@@ -15,7 +15,7 @@
 
 #define PI (3.141592653589793)
 
-void main0(const char *path) {
+static void main0(const char *path) {
     int i, nv, ne, nm;
     MeshRead *mesh;
     MeshAngle *angle;

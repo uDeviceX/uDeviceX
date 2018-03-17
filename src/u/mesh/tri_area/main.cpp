@@ -16,7 +16,11 @@
 
 #define PI (3.141592653589793)
 
-void main0(const char *path) {
+static void dump(int n, double *d) {
+    
+}
+
+static void main0(const char *path) {
     int i, nv, nt, nm;
     MeshRead *mesh;
     MeshTriArea *tri_area;
@@ -33,6 +37,7 @@ void main0(const char *path) {
     mesh_tri_area_apply(tri_area, nm, pos, /**/ tri_areas);
     for (i = 0; i < nt; i++)
         printf("%g\n", tri_areas[i]);
+    dump(nt, tri_areas);
     
     mesh_tri_area_fin(tri_area);
     UC(positions_fin(pos));
