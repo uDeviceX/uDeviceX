@@ -1,7 +1,9 @@
-int write_file_open(MPI_Comm comm, const char *fn, /**/ WriteFile **fp) {
-    EMALLOC(1, fp);
-    MC(MPI_File_open(comm, fn, MPI_MODE_WRONLY |  MPI_MODE_CREATE, MPI_INFO_NULL, &(*fp)->f));
-    MC(MPI_File_set_size((*fp)->f, 0));
+int write_file_open(MPI_Comm comm, const char *fn, /**/ WriteFile **pq) {
+    WriteFile *q;
+    EMALLOC(1, &q);
+    MC(MPI_File_open(comm, fn, MPI_MODE_WRONLY |  MPI_MODE_CREATE, MPI_INFO_NULL, &q->f));
+    MC(MPI_File_set_size(q->f, 0));
+    *pq = q;
     return 0;
 }
 
