@@ -1,5 +1,3 @@
-struct WriteFile { MPI_File f; };
-
 int write_file_open(MPI_Comm cart, const char *fn, /**/ WriteFile **fp) {
     EMALLOC(1, fp);
     MC(MPI_File_open(cart, fn, MPI_MODE_WRONLY |  MPI_MODE_CREATE, MPI_INFO_NULL, &(*fp)->f));
@@ -41,7 +39,7 @@ int write_shift_indices(MPI_Comm cart, int n, int *shift0) {
     return 0;
 }
 
-int write_reduce(MPI_Comm cart,int n0, /**/ int* n) {
+int write_reduce(MPI_Comm cart, int n0, /**/ int *n) {
     *n = 0;
     MC(m::Reduce(&n0, n, 1, MPI_INT, MPI_SUM, 0, cart));
     return 0;
