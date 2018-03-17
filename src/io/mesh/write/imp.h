@@ -1,6 +1,6 @@
 struct WriteFile;
 
-int write_file_open(MPI_Comm cart, const char*, /**/ WriteFile**);
+int write_file_open(MPI_Comm, const char*, /**/ WriteFile**);
 int write_file_close(WriteFile*);
 
 void write_all(MPI_Comm cart, const void *const, const int sz, WriteFile*);
