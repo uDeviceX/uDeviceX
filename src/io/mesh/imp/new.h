@@ -28,7 +28,7 @@ void mesh_write_fin(MeshWrite *q) {
     UC(efree(q));
 }
 
-static void mkdir(const char* directory) {
+static void mkdir(const char *directory) {
     const char *fmt = "%s/%s";
     char directory0[FILENAME_MAX];
     if (sprintf(directory0, fmt, DUMP_BASE, directory) < 0)
