@@ -8,5 +8,3 @@ int write_master(MPI_Comm, const void *const, int sz, WriteFile*);
 
 int write_shift_indices(MPI_Comm, int, /**/ int*);
 int write_reduce(MPI_Comm, int, /**/ int*);
-
-
