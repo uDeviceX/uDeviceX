@@ -10,7 +10,7 @@ $B/mesh/positions/imp.o: $S/utils/imp.h $S/utils/error.h $S/inc/type.h $S/mesh/p
 $B/mpi/glb.o: $S/inc/conf.h $S/mpi/wrapper.h $S/utils/mc.h $B/conf.h
 $B/mpi/type.o: $S/inc/conf.h $S/inc/type.h $S/mpi/type.h $S/utils/mc.h
 $B/mpi/wrapper.o: $S/mpi/wrapper.h
-$B/u/mesh/angle/main.o: $S/utils/imp.h $S/utils/error.h $S/conf/imp.h $S/mpi/wrapper.h $S/io/mesh_read/imp.h $S/utils/mc.h $S/mesh/angle/imp.h $S/mesh/positions/imp.h $S/mpi/glb.h $S/utils/msg.h
+$B/u/mesh/tri_area/main.o: $S/utils/imp.h $S/utils/error.h $S/conf/imp.h $S/mpi/wrapper.h $S/io/mesh_read/imp.h $S/utils/mc.h $S/mesh/angle/imp.h $S/mesh/positions/imp.h $S/mpi/glb.h $S/utils/msg.h
 $B/utils/cc.o: $S/utils/cc/common.h $S/inc/conf.h $S/utils/error.h $S/d/api.h $B/conf.h
 $B/utils/error.o: $S/utils/msg.h $S/utils/error.h
 $B/utils/imp.o: $S/utils/error.h $S/utils/imp.h
