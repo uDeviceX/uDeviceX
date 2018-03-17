@@ -10,33 +10,34 @@
 #include "utils/error.h"
 #include "conf/imp.h"
 #include "io/mesh_read/imp.h"
+
 #include "mesh/positions/imp.h"
-#include "mesh/angle/imp.h"
+#include "mesh/tri_area/imp.h"
 
 #define PI (3.141592653589793)
 
 void main0(const char *path) {
-    int i, nv, ne, nm;
+    int i, nv, nt, nm;
     MeshRead *mesh;
-    MeshAngle *angle;
+    MeshTriArea *tri_area;
     Positions  *pos;
-    double *angles;
+    double *tri_areas;
     UC(mesh_read_ini_off(path, /**/ &mesh));
-    UC(mesh_angle_ini(mesh, &angle));
+    UC(mesh_tri_area_ini(mesh, &tri_area));
     nv = mesh_read_get_nv(mesh);
-    ne = mesh_read_get_ne(mesh);
+    nt = mesh_read_get_nt(mesh);
     UC(positions_float_ini(nv, mesh_read_get_vert(mesh), /**/ &pos));
 
     nm = 1;
-    EMALLOC(ne, &angles);
-    mesh_angle_apply(angle, nm, pos, /**/ angles);
-    for (i = 0; i < ne; i++)
-        printf("%g\n", 180*angles[i]/PI);
+    EMALLOC(nt, &tri_areas);
+    mesh_tri_area_apply(tri_area, nm, pos, /**/ tri_areas);
+    for (i = 0; i < nt; i++)
+        printf("%g\n", tri_areas[i]);
     
-    mesh_angle_fin(angle);
+    mesh_tri_area_fin(tri_area);
     UC(positions_fin(pos));
     UC(mesh_read_fin(mesh));
-    EFREE(angles);
+    EFREE(tri_areas);
 }
 
 int main(int argc, char **argv) {
