@@ -1,5 +1,6 @@
 # drop in poiseuille flow
 # nTEST: color.drop.mpi.t1
+set -eu
 cd test/color/drop.mpi
 S=`u.cp.s`
 u.cp.sdf yplates1/yplates.dat sdf.dat
