@@ -26,10 +26,10 @@ static void header(MPI_Comm cart, int nc0, int nv, int nt, WriteFile *f) {
         sz = sprintf(s,
                      "ply\n"
                      "format binary_little_endian 1.0\n"
-                     "element vertex %d \n"
+                     "element vertex %d\n"
                      "property float x\nproperty float y\nproperty float z\n"
                      "property float u\nproperty float v\nproperty float w\n"
-                     "element face  %d  \n"
+                     "element face  %d\n"
                      "property list int int vertex_index\n"
                      "end_header\n", nv*nc, nt*nc);
     write_master(cart, s, sz, f);
