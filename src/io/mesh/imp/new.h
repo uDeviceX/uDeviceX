@@ -1,11 +1,13 @@
+static char *cpy(char *dest, const char *src) { return strncpy(dest, src, FILENAME_MAX); }
+
 static void ini(const int4 *tt, int nv, int nt, const char *directory, /**/ MeshWrite **pq) {
     int i;
     MeshWrite *q;
-    UC(emalloc(sizeof(MeshWrite), (void**)&q));
+    EMALLOC(1, &q);
 
     q->nv = nv; q->nt = nt; q->directory_exists = 0;
-    strncpy(q->directory, directory, FILENAME_MAX);
-    UC(emalloc(nt*sizeof(q->tt[0]), (void**)&q->tt));
+    cpy(q->directory, directory);
+    EMALLOC(nt, &q->tt);
     for (i = 0; i < nt; i++) q->tt[i] = tt[i];
     *pq = q;
 }
@@ -24,8 +26,8 @@ void mesh_write_ini_off(MeshRead *cell, const char *directory, /**/ MeshWrite **
 }
 
 void mesh_write_fin(MeshWrite *q) {
-    UC(efree(q->tt));
-    UC(efree(q));
+    EFREE(q->tt);
+    EFREE(q);
 }
 
 static void mkdir(const char *directory) {
