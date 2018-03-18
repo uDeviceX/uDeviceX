@@ -12,6 +12,13 @@ void vectors_particle_ini(int n, const Particle *pp, /**/ Vectors **pq) {
     *pq = q;
 }
 
+void vectors_zero_ini(int n, /**/ Vectors *pq) {
+    Vectors *q;
+    EMALLOC(1, &q);
+    q->type = ZERO; q->n = n;
+    *pq = q;
+}
+
 void vectors_fin(Vectors *q) { EFREE(q); }
 
 static void float_get(Vectors *q, int i, float r[3]) {
@@ -29,6 +36,10 @@ static void particle_get(Vectors *q, int i, float r[3]) {
     r[X] = pp[i].r[X];
     r[Y] = pp[i].r[Y];
     r[Z] = pp[i].r[Z];
+}
+static void zero_get(Vectors*, int, float r[3]) {
+    enum {X, Y, Z};
+    r[X] = r[Y] = r[Z] = 0;
 }
 void vectors_get(Vectors *q, int i, /**/ float r[3]) {
     int n;

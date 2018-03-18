@@ -1,4 +1,5 @@
-enum {FLOAT, PARTICLE};
+enum {FLOAT, PARTICLE, ZERO};
+
 struct Vectors {
     int type;
     int n;
@@ -10,4 +11,5 @@ struct Vectors {
 
 static void float_get(Vectors*, int i, float r[3]);
 static void particle_get(Vectors*, int i, float r[3]);
-static void (*get[])(Vectors*, int i, float r[3]) = { float_get,  particle_get };
+static void zero_get(Vectors*, int i, float r[3]);
+static void (*get[])(Vectors*, int i, float r[3]) = { float_get,  particle_get, zero_get };
