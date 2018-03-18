@@ -63,10 +63,10 @@ static void wfaces0(MPI_Comm cart, int *buf, const int4 *faces, int nc, int nv, 
 static void wfaces(MPI_Comm cart, const int4 *faces, int nc, int nv, int nt, WriteFile *f) {
     int *buf; /* buffer for faces */
     int sz;
-    sz = (1 + NVP) * nc * nt * sizeof(int);
-    UC(emalloc(sz, (void**) &buf));
+    sz = (1 + NVP) * nc * nt;
+    EMALLOC(sz, &buf);
     UC(wfaces0(cart, buf, faces, nc, nv, nt, f));
-    UC(efree(buf));
+    EFREE(buf);
 }
 
 static void mesh_write0(MPI_Comm cart, const Particle *pp, const int4 *faces,
