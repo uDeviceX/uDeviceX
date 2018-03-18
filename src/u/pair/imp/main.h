@@ -118,11 +118,10 @@ int main(int argc, char **argv) {
     UC(pair_compute_dpd_sigma(kBT, dt, /**/ par));
     
     read_rnd(&rnd);
+    msg_print("reading from stdin");
     for (;;) {
         if (read_pa(&a, &ka) == END) break;
         if (read_pa(&b, &kb) == END) break;
-        // write_pa(a, ka);
-        // write_pa(b, kb);
         pair(par, a, b, ka, kb, rnd);
     }
 
