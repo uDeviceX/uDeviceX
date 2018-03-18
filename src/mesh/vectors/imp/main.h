@@ -73,18 +73,16 @@ static void positions_get(Vectors *q, int i, float r[3]) {
     r[Y] = pp[i].r[Y];
     r[Z] = pp[i].r[Z];
 }
-static void positions_edge_get(Vectors *q, int i, float r[3]) {
+
+static void shift_get(Vectors *q, int i, float r[3]) {
     enum {X, Y, Z};
     const Particle *pp;
     pp = q->D.pp;
     UC(tform_convert(q->tform, pp[i].r, /**/ r));
 }
-static void positions_center_get(Vectors *q, int i, float r[3]) {
-    enum {X, Y, Z};
-    const Particle *pp;
-    pp = q->D.pp;
-    UC(tform_convert(q->tform, pp[i].r, /**/ r));
-}
+static void positions_edge_get(Vectors *q, int i, float r[3]) { shift_get(q, i, r); }
+static void positions_center_get(Vectors *q, int i, float r[3]) { shift_get(q, i, r); }
+
 static void velocities_get(Vectors *q, int i, float r[3]) {
     enum {X, Y, Z};
     const Particle *pp;
