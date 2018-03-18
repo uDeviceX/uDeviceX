@@ -5,7 +5,7 @@ void vectors_float_ini(int n, const float *rr, /**/ Vectors **pq) {
     *pq = q;
 }
 
-void vectors_particle_ini(int n, const Particle *pp, /**/ Vectors **pq) {
+void vectors_postions_ini(int n, const Particle *pp, /**/ Vectors **pq) {
     Vectors *q;
     EMALLOC(1, &q);
     q->type = PARTICLE; q->n = n; q->D.pp = pp;
