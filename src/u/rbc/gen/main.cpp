@@ -13,7 +13,7 @@
 #include "rbc/gen/imp.h"
 #include "mesh/area/imp.h"
 #include "mesh/volume/imp.h"
-#include "mesh/positions/imp.h"
+#include "mesh/vectors/imp.h"
 #include "utils/imp.h"
 #include "inc/type.h"
 

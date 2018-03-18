@@ -17,8 +17,8 @@ O = $B/algo/edg/imp.o $B/algo/force_stat/imp.o $B/algo/kahan_sum/imp.o \
     $B/math/linal/imp.o $B/math/rnd/imp.o $B/math/tform/imp.o $B/math/tri/imp.o \
     $B/mesh/angle/edg/imp.o $B/mesh/angle/imp.o $B/mesh/area/imp.o \
     $B/mesh/bbox/imp.o $B/mesh/collision/imp.o $B/mesh/dist/imp.o \
-    $B/mesh/positions/imp.o $B/mesh/props/imp.o $B/mesh/tri_area/imp.o \
-    $B/mesh/triangles/imp.o $B/mesh/volume/imp.o $B/meshbb/imp.o $B/mpi/glb.o \
+    $B/mesh/props/imp.o $B/mesh/tri_area/imp.o $B/mesh/triangles/imp.o \
+    $B/mesh/vectors/imp.o $B/mesh/volume/imp.o $B/meshbb/imp.o $B/mpi/glb.o \
     $B/mpi/type.o $B/mpi/wrapper.o $B/pair/conf.o $B/pair/imp.o $B/parray/imp.o \
     $B/rbc/adj/imp.o $B/rbc/com/imp.o $B/rbc/force/area_volume/imp.o \
     $B/rbc/force/conf.o $B/rbc/force/imp.o $B/rbc/force/rnd/api/imp.o \

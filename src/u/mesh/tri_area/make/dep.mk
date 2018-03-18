@@ -5,12 +5,12 @@ $B/d/api.o: $S/d/cpu/imp.h $S/utils/imp.h $S/inc/conf.h $S/utils/error.h $S/d/co
 $B/io/mesh_read/imp.o: $S/utils/imp.h $S/utils/error.h $S/io/mesh_read/imp/ply.h $S/io/mesh_read/imp.h $S/io/mesh_read/imp/main.h $S/io/mesh_read/imp/type.h $S/io/mesh_read/imp/off.h $S/utils/msg.h
 $B/io/point/imp.o: $S/utils/imp.h $S/utils/os.h $S/inc/conf.h $S/utils/error.h $S/io/point/imp/util.h $S/mpi/wrapper.h $S/utils/mc.h $B/conf.h $S/io/point/imp/main.h $S/io/point/imp/type.h $S/utils/msg.h
 $B/math/tri/imp.o: $S/math/tri/imp.h $S/math/tri/dev.h
-$B/mesh/positions/imp.o: $S/utils/imp.h $S/utils/error.h $S/inc/type.h $S/mesh/positions/imp.h $S/mesh/positions/imp/main.h $S/mesh/positions/imp/type.h
-$B/mesh/tri_area/imp.o: $S/utils/imp.h $S/utils/error.h $S/math/tri/imp.h $S/mesh/tri_area/imp.h $S/io/mesh_read/imp.h $S/mesh/tri_area/imp/main.h $S/mesh/tri_area/imp/type.h $S/mesh/positions/imp.h $S/utils/msg.h
+$B/mesh/tri_area/imp.o: $S/utils/imp.h $S/utils/error.h $S/math/tri/imp.h $S/mesh/vectors/imp.h $S/mesh/tri_area/imp.h $S/io/mesh_read/imp.h $S/mesh/tri_area/imp/main.h $S/mesh/tri_area/imp/type.h $S/utils/msg.h
+$B/mesh/vectors/imp.o: $S/utils/imp.h $S/utils/error.h $S/inc/type.h $S/mesh/vectors/imp.h $S/mesh/vectors/imp/main.h $S/mesh/vectors/imp/type.h
 $B/mpi/glb.o: $S/inc/conf.h $S/mpi/wrapper.h $S/utils/mc.h $B/conf.h
 $B/mpi/type.o: $S/inc/conf.h $S/inc/type.h $S/mpi/type.h $S/utils/mc.h
 $B/mpi/wrapper.o: $S/mpi/wrapper.h
-$B/u/mesh/tri_area/main.o: $S/utils/imp.h $S/utils/error.h $S/conf/imp.h $S/mpi/wrapper.h $S/mesh/tri_area/imp.h $S/io/mesh_read/imp.h $S/utils/mc.h $S/io/point/imp.h $S/mesh/positions/imp.h $S/mpi/glb.h $S/utils/msg.h
+$B/u/mesh/tri_area/main.o: $S/utils/imp.h $S/utils/error.h $S/mesh/vectors/imp.h $S/conf/imp.h $S/mpi/wrapper.h $S/mesh/tri_area/imp.h $S/io/mesh_read/imp.h $S/utils/mc.h $S/io/point/imp.h $S/mpi/glb.h $S/utils/msg.h
 $B/utils/cc.o: $S/utils/cc/common.h $S/inc/conf.h $S/utils/error.h $S/d/api.h $B/conf.h
 $B/utils/error.o: $S/utils/msg.h $S/utils/error.h
 $B/utils/imp.o: $S/utils/error.h $S/utils/imp.h

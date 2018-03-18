@@ -10,7 +10,7 @@
 #include "utils/error.h"
 #include "conf/imp.h"
 #include "io/mesh_read/imp.h"
-#include "mesh/positions/imp.h"
+#include "mesh/vectors/imp.h"
 #include "mesh/angle/imp.h"
 
 #define PI (3.141592653589793)

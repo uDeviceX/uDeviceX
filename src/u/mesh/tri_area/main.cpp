@@ -11,7 +11,7 @@
 #include "conf/imp.h"
 #include "io/mesh_read/imp.h"
 
-#include "mesh/positions/imp.h"
+#include "mesh/vectors/imp.h"
 #include "mesh/tri_area/imp.h"
 
 #include "io/point/imp.h"

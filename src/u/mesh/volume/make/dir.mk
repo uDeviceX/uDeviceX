@@ -3,7 +3,7 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/conf           && \
     d $B/d              && \
     d $B/io/mesh_read   && \
-    d $B/mesh/positions && \
+    d $B/mesh/vectors   && \
     d $B/mesh/volume    && \
     d $B/mpi            && \
     d $B/u/mesh/volume  && \

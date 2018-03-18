@@ -7,7 +7,7 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/math/tri       && \
     d $B/mesh/angle     && \
     d $B/mesh/angle/edg && \
-    d $B/mesh/positions && \
+    d $B/mesh/vectors   && \
     d $B/mpi            && \
     d $B/u/mesh/angle   && \
     d $B/utils         
