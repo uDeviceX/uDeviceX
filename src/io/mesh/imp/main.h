@@ -77,14 +77,13 @@ static void mesh_write0(MPI_Comm cart, const Particle *pp, const int4 *faces,
 }
 
 static void mesh_write1(MPI_Comm cart, const Coords *c, const Particle *pp, const int4 *faces, int nc, int nv, int nt, WriteFile *f) {
-    int sz, n;
+    int n;
     Particle *pp0;
     n = nc * nv;
-    sz = n*sizeof(Particle);
-    UC(emalloc(sz, (void**) &pp0));
+    EMALLOC(n, &pp0);
     shift(c, pp, n, /**/ pp0); /* copy-shift to global coordinates */
     UC(mesh_write0(cart, pp0, faces, nc, nv, nt, f));
-    UC(efree(pp0));
+    EFREE(pp0);
 }
 
 static void mesh_write(MPI_Comm cart, const Coords *coords, const Particle *pp, const int4 *faces, int nc, int nv, int nt, const char *fn) {
