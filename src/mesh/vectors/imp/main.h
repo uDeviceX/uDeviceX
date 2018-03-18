@@ -8,7 +8,7 @@ void vectors_float_ini(int n, const float *rr, /**/ Vectors **pq) {
 void vectors_postions_ini(int n, const Particle *pp, /**/ Vectors **pq) {
     Vectors *q;
     EMALLOC(1, &q);
-    q->type = PARTICLE; q->n = n; q->D.pp = pp;
+    q->type = POSITIONS; q->n = n; q->D.pp = pp;
     *pq = q;
 }
 
@@ -29,7 +29,7 @@ static void float_get(Vectors *q, int i, float r[3]) {
     r[Y] = rr[3*i + 1];
     r[Z] = rr[3*i + 2];
 }
-static void particle_get(Vectors *q, int i, float r[3]) {
+static void positions_get(Vectors *q, int i, float r[3]) {
     enum {X, Y, Z};
     const Particle *pp;
     pp = q->D.pp;
