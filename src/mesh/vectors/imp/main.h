@@ -12,20 +12,27 @@ void vectors_postions_ini(int n, const Particle *pp, /**/ Vectors **pq) {
     *pq = q;
 }
 
-static void xl2xg3(const Coords *coords, float a[3], /**/ float b[3]) {
+static void l2edge(const Coords *coords, float a[3], /**/ float b[3]) {
     enum {X, Y, Z};
     b[X] = xl2xg(coords, a[X]);
     b[Y] = yl2yg(coords, a[Y]);
     b[Z] = zl2zg(coords, a[Z]);
 }
-static void edge_ini_tform(const Coords *coords, Tform **pq) {
+static void l2center(const Coords *coords, float a[3], /**/ float b[3]) {
+    enum {X, Y, Z};
+    b[X] = xl2xc(coords, a[X]);
+    b[Y] = yl2yc(coords, a[Y]);
+    b[Z] = zl2zc(coords, a[Z]);
+}
+
+static void edge_ini_tform(const Coords *coords, Local2Global local2global, Tform **pq) {
     enum {X, Y, Z};
     Tform *q;
     float a0[3], a1[3], b0[3], b1[3];
     a0[X] = a0[Y] = a0[Z] = 0;
     a1[X] = a1[Y] = a1[Z] = 1;
-    xl2xg3(coords, a0, b0);
-    xl2xg3(coords, a1, b1);
+    local2global(coords, a0, b0);
+    local2global(coords, a1, b1);
     tform_ini(&q);
     UC(tform_vector(a0, a1, b0, b1, /**/ q));
     *pq = q;
@@ -34,7 +41,15 @@ void vectors_postions_edge_ini(const Coords *coords, int n, const Particle *pp, 
     Vectors *q;
     EMALLOC(1, &q);
     q->type = POSITIONS_EDGE; q->n = n; q->D.pp = pp;
-    edge_ini_tform(coords, &q->tform);
+    edge_ini_tform(coords, l2edge, /**/ &q->tform);
+    *pq = q;
+}
+
+void vectors_postions_center_ini(const Coords *coords, int n, const Particle *pp, /**/ Vectors **pq) {
+    Vectors *q;
+    EMALLOC(1, &q);
+    q->type = POSITIONS_EDGE; q->n = n; q->D.pp = pp;
+    edge_ini_tform(coords, l2center, /**/ &q->tform);
     *pq = q;
 }
 
@@ -52,10 +67,7 @@ void vectors_zero_ini(int n, /**/ Vectors **pq) {
     *pq = q;
 }
 
-void vectors_fin(Vectors *q) {
-    tform_fin(q->tform);
-    EFREE(q);
-}
+void vectors_fin(Vectors *q) { tform_fin(q->tform);  EFREE(q); }
 
 static void float_get(Vectors *q, int i, float r[3]) {
     enum {X, Y, Z};
@@ -82,7 +94,6 @@ static void shift_get(Vectors *q, int i, float r[3]) {
 }
 static void positions_edge_get(Vectors *q, int i, float r[3]) { shift_get(q, i, r); }
 static void positions_center_get(Vectors *q, int i, float r[3]) { shift_get(q, i, r); }
-
 static void velocities_get(Vectors *q, int i, float r[3]) {
     enum {X, Y, Z};
     const Particle *pp;
