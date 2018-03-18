@@ -12,7 +12,7 @@ void vectors_particle_ini(int n, const Particle *pp, /**/ Vectors **pq) {
     *pq = q;
 }
 
-void vectors_zero_ini(int n, /**/ Vectors *pq) {
+void vectors_zero_ini(int n, /**/ Vectors **pq) {
     Vectors *q;
     EMALLOC(1, &q);
     q->type = ZERO; q->n = n;
