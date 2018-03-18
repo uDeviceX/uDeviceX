@@ -17,7 +17,7 @@ static void main0(const char *i) {
     int nv;
     MeshRead *mesh;
     MeshVolume *volume;
-    Positions  *pos;
+    Vectors  *pos;
     UC(mesh_read_ini_off(i, /**/ &mesh));
     UC(mesh_volume_ini(mesh, &volume));
     nv = mesh_read_get_nv(mesh);

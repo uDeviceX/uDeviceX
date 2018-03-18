@@ -19,7 +19,7 @@ static void main0(const char *path) {
     int i, nv, ne, nm;
     MeshRead *mesh;
     MeshAngle *angle;
-    Positions  *pos;
+    Vectors  *pos;
     double *angles;
     UC(mesh_read_ini_off(path, /**/ &mesh));
     UC(mesh_angle_ini(mesh, &angle));

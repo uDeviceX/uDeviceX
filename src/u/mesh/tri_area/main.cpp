@@ -44,7 +44,7 @@ static void main0(const char *cell, Out *out) {
     int i, nv, nt, nm;
     MeshRead *mesh;
     MeshTriArea *tri_area;
-    Positions  *pos;
+    Vectors  *pos;
     double *tri_areas;
     UC(mesh_read_ini_off(cell, /**/ &mesh));
     UC(mesh_tri_area_ini(mesh, &tri_area));

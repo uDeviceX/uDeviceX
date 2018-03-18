@@ -45,7 +45,7 @@ static void q_ini(const char *type, MeshRead *mesh, /**/ MeshQuant **pq) {
     *pq = q;
 }
 
-static void q_apply(MeshQuant *q, int nm, Positions *positions, double *out) {
+static void q_apply(MeshQuant *q, int nm, Vectors *positions, double *out) {
     if (q->type == AREA)
         UC(mesh_area_apply(q->area, nm, positions, /**/ out));
     else if (q->type == VOLUME)
@@ -65,7 +65,7 @@ void main0(const char *cell, const char *ic, const char *quant) {
     Matrices *matrices;
     MeshRead *mesh;
     MeshQuant *mesh_quant;
-    Positions *positions;
+    Vectors *positions;
     const float *verts;
     UC(mesh_read_ini_off(cell, /**/ &mesh));
     UC(matrices_read(ic, &matrices));

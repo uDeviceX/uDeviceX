@@ -1,5 +1,5 @@
 enum {FLOAT, PARTICLE};
-struct Positions {
+struct Vectors {
     int type;
     int n;
     union {
@@ -8,6 +8,6 @@ struct Positions {
     } D;
 };
 
-static void float_get(Positions*, int i, float r[3]);
-static void particle_get(Positions*, int i, float r[3]);
-static void (*get[])(Positions*, int i, float r[3]) = { float_get,  particle_get };
+static void float_get(Vectors*, int i, float r[3]);
+static void particle_get(Vectors*, int i, float r[3]);
+static void (*get[])(Vectors*, int i, float r[3]) = { float_get,  particle_get };

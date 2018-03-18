@@ -20,7 +20,7 @@ void mesh_volume_fin(MeshVolume *q) {
     EFREE(q);
 }
 
-static void compute_com(int nv, Positions *pos, /**/ double *com) {
+static void compute_com(int nv, Vectors *pos, /**/ double *com) {
     enum {X, Y, Z};
     int i;
     float r[3];
@@ -37,7 +37,7 @@ static void compute_com(int nv, Positions *pos, /**/ double *com) {
     com[Z] = kahan_sum_get(sz)/nv;
     kahan_sum_fin(sx); kahan_sum_fin(sy); kahan_sum_fin(sz);
 }
-static void to_com(int nv, int offset, Positions *pos, /**/ double *rr) {
+static void to_com(int nv, int offset, Vectors *pos, /**/ double *rr) {
     enum {X, Y, Z};
     int i;
     float   r0[3]; /* from */
@@ -80,7 +80,7 @@ static double volume(int nt, int4 *tt, double *rr) {
     sum = kahan_sum_get(kahan_sum);
     return sum/6;
 }
-double mesh_volume_apply0(MeshVolume *q, Positions *positions) {
+double mesh_volume_apply0(MeshVolume *q, Vectors *positions) {
     int nv, nt, offset;
     double *rr;
     int4 *tt;
@@ -89,7 +89,7 @@ double mesh_volume_apply0(MeshVolume *q, Positions *positions) {
     return volume(nt, tt, rr);
 }
 
- void mesh_volume_apply(MeshVolume *q, int m, Positions *positions, double *volume0) {
+ void mesh_volume_apply(MeshVolume *q, int m, Vectors *positions, double *volume0) {
     int i, nt, nv, offset;
     double *rr;    
     int4 *tt;
