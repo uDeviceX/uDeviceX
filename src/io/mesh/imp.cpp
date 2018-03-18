@@ -19,6 +19,8 @@
 #include "inc/type.h"
 
 #include "io/mesh_read/imp.h"
+#include "mesh/vectors/imp.h"
+
 #include "write/imp.h"
 
 #include "imp.h"

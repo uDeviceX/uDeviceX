@@ -1,7 +1,7 @@
 f0 () { find "$1" -name '*.cu' -o -name '*.cpp' -o -name '*.h' -type f ; }
 f () ( for d; do f0 "$d"; done )
 
-f $U algo/kahan_sum inc mpi math/tri d utils conf io/mesh_read mesh/area mesh/vectors
+f $U algo/kahan_sum inc mpi math/tri d utils conf io/mesh_read mesh/area mesh/vectors math/tform coords
 
 # add dir
 echo $U .
