@@ -1,5 +1,3 @@
-enum {FLOAT, POSITIONS, ZERO};
-
 struct Vectors {
     int type;
     int n;
@@ -11,5 +9,8 @@ struct Vectors {
 
 static void float_get(Vectors*, int i, float r[3]);
 static void positions_get(Vectors*, int i, float r[3]);
+static void velocities_get(Vectors*, int i, float r[3]);
 static void zero_get(Vectors*, int i, float r[3]);
-static void (*get[])(Vectors*, int i, float r[3]) = { float_get,  positions_get, zero_get };
+
+enum {FLOAT, POSITIONS, VELOCITIES, ZERO};
+static void (*get[])(Vectors*, int i, float r[3]) = { float_get,  positions_get, velocities_get, zero_get };

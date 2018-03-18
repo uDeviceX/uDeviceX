@@ -12,6 +12,13 @@ void vectors_postions_ini(int n, const Particle *pp, /**/ Vectors **pq) {
     *pq = q;
 }
 
+void vectors_velocities_ini(int n, const Particle *pp, /**/ Vectors **pq) {
+    Vectors *q;
+    EMALLOC(1, &q);
+    q->type = VELOCITIES; q->n = n; q->D.pp = pp;
+    *pq = q;
+}
+
 void vectors_zero_ini(int n, /**/ Vectors **pq) {
     Vectors *q;
     EMALLOC(1, &q);
@@ -36,6 +43,14 @@ static void positions_get(Vectors *q, int i, float r[3]) {
     r[X] = pp[i].r[X];
     r[Y] = pp[i].r[Y];
     r[Z] = pp[i].r[Z];
+}
+static void velocities_get(Vectors *q, int i, float r[3]) {
+    enum {X, Y, Z};
+    const Particle *pp;
+    pp = q->D.pp;
+    r[X] = pp[i].v[X];
+    r[Y] = pp[i].v[Y];
+    r[Z] = pp[i].v[Z];
 }
 static void zero_get(Vectors*, int, float r[3]) {
     enum {X, Y, Z};
