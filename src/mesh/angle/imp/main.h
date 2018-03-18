@@ -62,7 +62,7 @@ void mesh_angle_fin(MeshAngle *q) {
 static void get(Vectors *p, int i, double d[3]) {
     enum {X, Y, Z};
     float f[3];
-    UC(positions_get(p, i, /**/ f));
+    UC(vectors_get(p, i, /**/ f));
     d[X] = f[X]; d[Y] = f[Y]; d[Z] = f[Z];
 }
 static double angle(int4 t, Vectors *p, int offset) {

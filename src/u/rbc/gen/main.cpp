@@ -73,13 +73,13 @@ void main0(const char *cell, const char *ic, const char *quant) {
     verts = mesh_read_get_vert(mesh);
     rbc_gen0(nv, verts, matrices, /**/ &n, pp);
     nm = n / nv;
-    positions_particle_ini(n, pp, /**/ &positions);
+    vectors_particle_ini(n, pp, /**/ &positions);
     UC(q_ini(quant, mesh, &mesh_quant));
     UC(q_apply(mesh_quant, nm, positions, /**/ output));
     for (i = 0; i < nm; i++)
         printf("%g\n", output[i]);
     
-    UC(positions_fin(positions));
+    UC(vectors_fin(positions));
     UC(q_fin(mesh_quant));
     UC(matrices_fin(matrices));
     UC(mesh_read_fin(mesh));

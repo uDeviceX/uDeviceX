@@ -50,7 +50,7 @@ static void main0(const char *cell, Out *out) {
     UC(mesh_tri_area_ini(mesh, &tri_area));
     nv = mesh_read_get_nv(mesh);
     nt = mesh_read_get_nt(mesh);
-    UC(positions_float_ini(nv, mesh_read_get_vert(mesh), /**/ &pos));
+    UC(vectors_float_ini(nv, mesh_read_get_vert(mesh), /**/ &pos));
 
     nm = 1;
     EMALLOC(nt, &tri_areas);
@@ -60,7 +60,7 @@ static void main0(const char *cell, Out *out) {
     dump(nt, tri_areas, out);
     
     mesh_tri_area_fin(tri_area);
-    UC(positions_fin(pos));
+    UC(vectors_fin(pos));
     UC(mesh_read_fin(mesh));
     EFREE(tri_areas);
 }

@@ -16,7 +16,7 @@ void mesh_area_fin(MeshArea *q) { EFREE(q->tt); EFREE(q); }
 static void get(Vectors *p, int i, double d[3]) {
     enum {X, Y, Z};
     float f[3];
-    UC(positions_get(p, i, /**/ f));
+    UC(vectors_get(p, i, /**/ f));
     d[X] = f[X]; d[Y] = f[Y]; d[Z] = f[Z];
 }
 static double area(int nt, int4 *tt, Vectors *p, int offset) {

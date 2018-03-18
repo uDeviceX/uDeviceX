@@ -1,18 +1,18 @@
-void positions_float_ini(int n, const float *rr, /**/ Vectors **pq) {
+void vectors_float_ini(int n, const float *rr, /**/ Vectors **pq) {
     Vectors *q;
     EMALLOC(1, &q);
     q->type = FLOAT; q->n = n; q->D.rr = rr;
     *pq = q;
 }
 
-void positions_particle_ini(int n, const Particle *pp, /**/ Vectors **pq) {
+void vectors_particle_ini(int n, const Particle *pp, /**/ Vectors **pq) {
     Vectors *q;
     EMALLOC(1, &q);
     q->type = PARTICLE; q->n = n; q->D.pp = pp;
     *pq = q;
 }
 
-void positions_fin(Vectors *q) { EFREE(q); }
+void vectors_fin(Vectors *q) { EFREE(q); }
 
 static void float_get(Vectors *q, int i, float r[3]) {
     enum {X, Y, Z};
@@ -30,7 +30,7 @@ static void particle_get(Vectors *q, int i, float r[3]) {
     r[Y] = pp[i].r[Y];
     r[Z] = pp[i].r[Z];
 }
-void positions_get(Vectors *q, int i, /**/ float r[3]) {
+void vectors_get(Vectors *q, int i, /**/ float r[3]) {
     int n;
     n = q->n;
     if (i >= n) ERR("i = %d    >=   n = %d", i, n);

@@ -21,13 +21,13 @@ static void main0(const char *i) {
     UC(mesh_read_ini_off(i, /**/ &mesh));
     UC(mesh_area_ini(mesh, &area));
     nv = mesh_read_get_nv(mesh);
-    UC(positions_float_ini(nv, mesh_read_get_vert(mesh), /**/ &pos));
+    UC(vectors_float_ini(nv, mesh_read_get_vert(mesh), /**/ &pos));
 
     A = mesh_area_apply0(area, pos);
     printf("%g\n", A);
         
     mesh_area_fin(area);
-    UC(positions_fin(pos));
+    UC(vectors_fin(pos));
     UC(mesh_read_fin(mesh));
 }
 

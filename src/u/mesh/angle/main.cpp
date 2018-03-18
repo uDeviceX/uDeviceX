@@ -25,7 +25,7 @@ static void main0(const char *path) {
     UC(mesh_angle_ini(mesh, &angle));
     nv = mesh_read_get_nv(mesh);
     ne = mesh_read_get_ne(mesh);
-    UC(positions_float_ini(nv, mesh_read_get_vert(mesh), /**/ &pos));
+    UC(vectors_float_ini(nv, mesh_read_get_vert(mesh), /**/ &pos));
 
     nm = 1;
     EMALLOC(ne, &angles);
@@ -34,7 +34,7 @@ static void main0(const char *path) {
         printf("%g\n", 180*angles[i]/PI);
     
     mesh_angle_fin(angle);
-    UC(positions_fin(pos));
+    UC(vectors_fin(pos));
     UC(mesh_read_fin(mesh));
     EFREE(angles);
 }

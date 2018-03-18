@@ -27,7 +27,7 @@ static void compute_com(int nv, Vectors *pos, /**/ double *com) {
     KahanSum *sx, *sy, *sz;
     kahan_sum_ini(&sx); kahan_sum_ini(&sy); kahan_sum_ini(&sz);
     for (i = 0; i < nv; i++) {
-        UC(positions_get(pos, i, /**/ r));
+        UC(vectors_get(pos, i, /**/ r));
         kahan_sum_add(sx, r[X]);
         kahan_sum_add(sy, r[Y]);
         kahan_sum_add(sz, r[Z]);
@@ -45,7 +45,7 @@ static void to_com(int nv, int offset, Vectors *pos, /**/ double *rr) {
     double com[3];
     UC(compute_com(nv, pos, /**/ com));
     for (i = 0; i < nv; i++) {
-        UC(positions_get(pos, i + offset, /**/ r0));
+        UC(vectors_get(pos, i + offset, /**/ r0));
         r1 = &rr[3*i];
         r1[X] = r0[X] - com[X];
         r1[Y] = r0[Y] - com[Y];
