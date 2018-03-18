@@ -10,6 +10,7 @@ usg () {
     msg '  VAL: valgrind'
     msg '  PROF: nvprof'
     msg '  TIME: time'
+    msg '  GDB: cuda-gdb'
     exit
 }
 
