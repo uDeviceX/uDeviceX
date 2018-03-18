@@ -2,7 +2,7 @@
 :lext: .adoc
 :src: ../../../../src
 
-Host array of positions.
+Host array of vectors for size three.
 
 [source,cpp]
 ----
