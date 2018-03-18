@@ -39,7 +39,7 @@ static void dump_part(Sim *s) {
 static void dump_rbcs(Sim *s) {
     const Rbc *r = &s->rbc;
     cD2H(s->dump.pp, r->q.pp, r->q.n);
-    UC(mesh_write_dump(r->mesh_write, s->cart, s->coords, r->q.nc, s->dump.pp, s->dump.id_rbc++));
+    UC(mesh_write_particles(r->mesh_write, s->cart, s->coords, r->q.nc, s->dump.pp, s->dump.id_rbc++));
 }
 
 static void dump_rbc_coms(Sim *s) {
@@ -62,7 +62,7 @@ void dump_diag_after(Time *time, bool solid0, Sim *s) { /* after wall */
     if (solid0 && (time_cross(time, o->freq_parts))) {
         io_rig_dump(s->coords, time_current(time), rig->q.ns, rig->q.ss_dmp, rig->q.ss_dmp_bb, s->dump.iorig);
         cD2H(s->dump.pp, rig->q.i_pp, rig->q.ns * rig->q.nv);
-        UC(mesh_write_dump(rig->mesh_write, s->cart, s->coords, rig->q.ns, s->dump.pp, s->dump.id_rig_mesh++));
+        UC(mesh_write_particles(rig->mesh_write, s->cart, s->coords, rig->q.ns, s->dump.pp, s->dump.id_rig_mesh++));
     }
 }
 

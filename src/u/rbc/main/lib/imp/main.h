@@ -17,7 +17,7 @@ static void dump(MPI_Comm cart, DiagPart *diagpart, float dt, const Coords *coor
     n = q->nc * q->nv;
     UC(emalloc(n*sizeof(Particle), (void**)&pp));
     cD2H(pp, q->pp, q->n);
-    UC(mesh_write_dump(mesh_write, cart, coords, q->nc, pp, i++));
+    UC(mesh_write_particles(mesh_write, cart, coords, q->nc, pp, i++));
 
     UC(rbc_force_stat(/**/ &area0, &volume0));
     UC(garea_volume(q, /**/ &area, &volume));

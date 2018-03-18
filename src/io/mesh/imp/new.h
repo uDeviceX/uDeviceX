@@ -38,7 +38,7 @@ static void mkdir(const char *directory) {
     UC(os_mkdir(directory0));
     msg_print("mkdir '%s'", directory0);
 }
-void mesh_write_dump(MeshWrite *q, MPI_Comm comm, const Coords *coords, int nc, const Particle *pp, int id) {
+void mesh_write_particles(MeshWrite *q, MPI_Comm comm, const Coords *coords, int nc, const Particle *pp, int id) {
     const char *fmt = "%s/%s/%05d.ply";
     char path[FILENAME_MAX];
     if (!q->directory_exists) {
