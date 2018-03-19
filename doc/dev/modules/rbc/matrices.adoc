@@ -3,6 +3,22 @@
 
 An array of `4 x 4` affine transformation matrices.
 
+[stem]
+++++
+\begin{bmatrix}
+    \vec{y} \\ 1
+\end{bmatrix}
+=
+\left[
+    \begin{array}{ccc|c}
+        \, & A & & \vec{b} \ \\ 0 & \ldots & 0 & 1
+    \end{array}
+\right]
+\begin{bmatrix}
+    \vec{x} \\ 1
+\end{bmatrix}
+++++
+
 [source,cpp]
 ----
 include::{src}/rbc/matrices/imp.h[tag=interface]
