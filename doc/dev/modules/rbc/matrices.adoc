@@ -26,7 +26,7 @@ include::{src}/rbc/matrices/imp.h[tag=interface]
 <1> read from input file
 <2> read from input file and keep only matrices which "belong" to this
 MPI rank
-<3> return matrix as double[16]
-<4> return a shift of a matrix as
+<3> return matrix as `double[16]`
+<4> return a shift of a matrix as `double[3]`
 <5> return a number of matrices
 <6> log array of matrices to `stderr` using `msg_print`
