@@ -30,9 +30,9 @@ static void edge_ini_tform(const Coords *coords, Local2Global local2global, Tfor
     Tform *q;
     float a0[3], a1[3], b0[3], b1[3];
     a0[X] = a0[Y] = a0[Z] = 0;
-    a1[X] = a1[Y] = a1[Z] = 1;
-    local2global(coords, a0, b0);
-    local2global(coords, a1, b1);
+    b0[X] = b0[Y] = b0[Z] = 1;
+    local2global(coords, a0, a1);
+    local2global(coords, b0, b1);
     tform_ini(&q);
     UC(tform_vector(a0, a1, b0, b1, /**/ q));
     *pq = q;
