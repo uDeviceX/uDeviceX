@@ -5,11 +5,9 @@ set -eu
 usg() {
     echo 'usage: u.conf [source dir] [unit dir] default.h <<<!
 [variables]
-[commands]
 ...
 !
-Creates Makefile, runfile, bin[.N] directories; populates bin[.N] with
-`components of makefiles and conf.h' >&2
+Creates Makefile, conf.h, conf.mk and sys.mk files' >&2
     exit
 }
 
