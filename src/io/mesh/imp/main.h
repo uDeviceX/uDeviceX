@@ -1,4 +1,4 @@
-#define PATTERN "%s/%s/%05d"
+#define PATTERN "%s/%s/%05d.ply"
 enum { NVP = 3 /* number of vertices per face */ };
 
 static void header(MPI_Comm comm, int nc0, int nv, int nt, WriteFile *f) {
