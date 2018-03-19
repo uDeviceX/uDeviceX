@@ -82,15 +82,6 @@ static void copy_shift_with_forces(const Coords *c, long n, const Particle *pp, 
     }
 }
 
-static void set_rank_infos(MPI_Comm comm, long n, BopData *bop) {
-    int size;
-    MC( m::Comm_size(comm, &size) );
-    BPC( bop_set_nrank(size, bop) );
-    BPC( bop_set_nprank(n, bop) );
-
-    BPC( bop_set_n(n, bop) );
-}
-
 static void set_name(const char *base, int id, /**/ char *name) {
     sprintf(name, DUMP_BASE "/bop/" PATTERN, base, id);
 }
@@ -108,7 +99,7 @@ void io_bop_parts (MPI_Comm cart, const Coords *coords, long n, const Particle *
     float3 *ppout = (float3*) bop_get_data(bop);
 
     copy_shift(coords, n, pp, /**/ ppout);
-    UC(set_rank_infos(cart, n, bop));
+    BPC( bop_set_n(n, bop) );
     BPC( bop_set_vars(NVARP, VARP, bop) );
 
     write(cart, name, id, bop);
@@ -119,7 +110,6 @@ void io_bop_parts_forces(MPI_Comm cart, const Coords *coords, long n, const Part
     float3 *out  = (float3*) bop_get_data(bop);
 
     copy_shift_with_forces(coords, n, pp, ff, /**/ out);
-    UC(set_rank_infos(cart, n, bop));
     BPC( bop_set_n(n, bop) );
     BPC( bop_set_vars(NVARP + NVARF, VARP " " VARF, bop) );
 
@@ -131,7 +121,7 @@ void io_bop_stresses(MPI_Comm cart, long n, const float *ss, const char *name, i
     float   *out = (float*) bop_get_data(bop);
 
     memcpy(out, ss, n * NVARS * sizeof(float));
-    UC(set_rank_infos(cart, n, bop));
+    BPC( bop_set_n(n, bop) );
     BPC( bop_set_vars(NVARS, VARS, bop) );
 
     write(cart, name, id, bop);
@@ -142,7 +132,7 @@ void io_bop_ids(MPI_Comm cart, long n, const int *ii, const char *name, int id, 
     int     *out = (int*) bop_get_data(bop);
 
     memcpy(out, ii, n * NVARI * sizeof(int));
-    UC(set_rank_infos(cart, n, bop));
+    BPC( bop_set_n(n, bop) );
     BPC( bop_set_vars(NVARI, VARI, bop) );
 
     write(cart, name, id, bop);
@@ -153,8 +143,7 @@ void io_bop_colors(MPI_Comm cart, long n, const int *cc, const char *name, int i
     int     *out = (int*) bop_get_data(bop);
 
     memcpy(out, cc, n * NVARC * sizeof(int));
-    UC(set_rank_infos(cart, n, bop));
-
+    BPC( bop_set_n(n, bop) );
     BPC( bop_set_vars(NVARC, VARC, bop) );
 
     write(cart, name, id, bop);

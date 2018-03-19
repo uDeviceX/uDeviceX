@@ -107,14 +107,6 @@ void io_point_push(IOPoint *q, int n, const double *D, const char *key) {
     push(n, q->nn[i], q->cum_n, D, offset, /**/ B);
 }
 
-static void set_bop(MPI_Comm comm, long n, BopData *bop) {
-    int size;
-    MC(m::Comm_size(comm, &size));
-    BPC(bop_set_nrank(size, bop));
-    BPC(bop_set_nprank(n, bop));
-    BPC(bop_set_n(n, bop));
-}
-
 void io_point_write(IOPoint *q, MPI_Comm comm, int id) {
     char name[FILENAME_MAX];
     int i, nkey, n;
@@ -127,7 +119,7 @@ void io_point_write(IOPoint *q, MPI_Comm comm, int id) {
     if (snprintf(name, FILENAME_MAX, PATTERN, q->path, id) < 0)
         ERR("snprintf failed");
 
-    UC(set_bop(comm, n, q->bop));
+    BPC(bop_set_n(n, q->bop));
     BPC(bop_write_header(comm, name, q->bop));
     BPC(bop_write_values(comm, name, q->bop));
     BPC(bop_summary(q->bop));
