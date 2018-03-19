@@ -33,9 +33,8 @@ void mesh_write_fin(MeshWrite *q) {
 }
 
 void mesh_write_particles(MeshWrite *q, MPI_Comm comm, const Coords *coords, int nc, const Particle *pp, int id) {
-    const char *fmt = "%s/%s/%05d.ply";
     char path[FILENAME_MAX];
-    if (sprintf(path, fmt, DUMP_BASE, q->directory, id) < 0)
+    if (sprintf(path, PATTERN, DUMP_BASE, q->directory, id) < 0)
         ERR("sprintf failed");
     UC(mesh_write(comm, coords, pp, q->tt, nc, q->nv, q->nt, path));
 }
