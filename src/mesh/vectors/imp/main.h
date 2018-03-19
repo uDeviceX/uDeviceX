@@ -69,7 +69,7 @@ void vectors_zero_ini(int n, /**/ Vectors **pq) {
 
 void vectors_fin(Vectors *q) { tform_fin(q->tform);  EFREE(q); }
 
-static void float_get(Vectors *q, int i, float r[3]) {
+static void float_get(const Vectors *q, int i, float r[3]) {
     enum {X, Y, Z};
     const float *rr;
     rr = q->D.rr;
@@ -77,7 +77,7 @@ static void float_get(Vectors *q, int i, float r[3]) {
     r[Y] = rr[3*i + 1];
     r[Z] = rr[3*i + 2];
 }
-static void positions_get(Vectors *q, int i, float r[3]) {
+static void positions_get(const Vectors *q, int i, float r[3]) {
     enum {X, Y, Z};
     const Particle *pp;
     pp = q->D.pp;
@@ -86,15 +86,15 @@ static void positions_get(Vectors *q, int i, float r[3]) {
     r[Z] = pp[i].r[Z];
 }
 
-static void shift_get(Vectors *q, int i, float r[3]) {
+static void shift_get(const Vectors *q, int i, float r[3]) {
     enum {X, Y, Z};
     const Particle *pp;
     pp = q->D.pp;
     UC(tform_convert(q->tform, pp[i].r, /**/ r));
 }
-static void positions_edge_get(Vectors *q, int i, float r[3]) { shift_get(q, i, r); }
-static void positions_center_get(Vectors *q, int i, float r[3]) { shift_get(q, i, r); }
-static void velocities_get(Vectors *q, int i, float r[3]) {
+static void positions_edge_get(const Vectors *q, int i, float r[3]) { shift_get(q, i, r); }
+static void positions_center_get(const Vectors *q, int i, float r[3]) { shift_get(q, i, r); }
+static void velocities_get(const Vectors *q, int i, float r[3]) {
     enum {X, Y, Z};
     const Particle *pp;
     pp = q->D.pp;
@@ -102,11 +102,11 @@ static void velocities_get(Vectors *q, int i, float r[3]) {
     r[Y] = pp[i].v[Y];
     r[Z] = pp[i].v[Z];
 }
-static void zero_get(Vectors*, int, float r[3]) {
+static void zero_get(const Vectors*, int, float r[3]) {
     enum {X, Y, Z};
     r[X] = r[Y] = r[Z] = 0;
 }
-void vectors_get(Vectors *q, int i, /**/ float r[3]) {
+void vectors_get(const Vectors *q, int i, /**/ float r[3]) {
     int n;
     n = q->n;
     if (i >= n) ERR("i = %d    >=   n = %d", i, n);

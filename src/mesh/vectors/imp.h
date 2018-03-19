@@ -11,5 +11,5 @@ void vectors_velocities_ini(int n, const Particle*, /**/ Vectors**);
 void vectors_zero_ini(int n, /**/ Vectors**);
 
 void vectors_fin(Vectors*);
-void vectors_get(Vectors*, int i, /**/ float r[3]);
+void vectors_get(const Vectors*, int i, /**/ float r[3]);
 // end::interface[]
