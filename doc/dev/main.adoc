@@ -72,7 +72,7 @@ include::modules/mesh/volume.adoc[]
 
 include::modules/mesh/tri_area.adoc[]
 
-include::modules/mesh/positions.adoc[]
+include::modules/mesh/vectors.adoc[]
 
 include::modules/meshbb.adoc[]
 
