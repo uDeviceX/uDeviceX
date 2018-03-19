@@ -9,6 +9,7 @@ static void ini(MPI_Comm comm, const int4 *tt, int nv, int nt, const char *direc
     EMALLOC(nt, &q->tt);
     for (i = 0; i < nt; i++)
         q->tt[i] = tt[i];
+    q->shift_type = get_shift_type();
     *pq = q;
 }
 

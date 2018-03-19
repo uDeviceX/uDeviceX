@@ -1,3 +1,5 @@
+static int get_shift_type() { return EDGE; }
+
 static void shift0(const Coords *c, const Particle *f, /**/ Particle *t) {
     enum {X, Y, Z};
     t->r[X] = xl2xg(c, f->r[X]);
