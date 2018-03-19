@@ -26,9 +26,12 @@ U_{wlc}(r) =
 
 stem:[l_0] is an equilibrium lenght, stem:[l_{max}] is a maximum
 lenght stem:[l_{max} = l_{0} / x_{0}], and stem:[k_p] is defined from
-condition that stem:[U_{spring}] has a maximum at stem:[r = l0].
+condition that stem:[U_{spring}] has a maximum at stem:[r = l_0].
 
 == local area constrain
+
+For every triangle with area stem:[A^{loc}] and an equilibrium area
+stem:[A_0^{loc}]
 
 [stem]
 ++++
@@ -37,32 +40,39 @@ k_d
 \frac
 {
   \left(
-    A^{loc} - A_{0}^{loc}
+    A^{loc} - A_0^{loc}
   \right)^2
 }
-{2 A_{0}^{loc}}
+{2 A_0^{loc}}
 ++++
 
 == total area constrain
+
+For whole mesh with area stem:[A^{tot}] and an equilibrium area
+stem:[A_0^{tot}]
 
 [stem]
 ++++
 E^{tot}_{area} =
 k_a
 \frac
-{\left( A^{tot} - A_{0}^{tot} \right)^2}
-{2 A_{0}^{tot} }
+{\left( A^{tot} - A_0^{tot} \right)^2}
+{2 A_0^{tot} }
 ++++
 
 == total volume constrain
 
+For whole mesh with volume stem:[V] and an equilibrium volume
+stem:[V_0]
+
+
 [stem]
 ++++
-E^{tot}_{vol} =
+E_{vol} =
 k_v
 \frac
-{\left( V^{tot} - V_{0}^{tot} \right)^2}
-{2 V_{0}^{tot}}
+{\left( V - V_0 \right)^2}
+{2 V_0}
 ++++
 
 == bending
