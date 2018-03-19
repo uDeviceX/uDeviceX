@@ -11,24 +11,16 @@ A force between neighboring consissts of repulsive worm-like-chain part
 [stem]
 ++++
 F_{wlc}(r) = \frac{k_{s}}
-                  {l_{max}}
-             \frac{4 r^2 - 9 r + 6}
-	          {4 (r - 1)^2}
+		  {l_{max}}
+	     \frac{4 r^2 - 9 r + 6}
+		  {4 (r - 1)^2}
 ++++
 
 and attractive power law part
 [stem]
 ++++
 F_{pow}(r) = \frac{k_{pow}}
-                  {r^{m + 1}}
+		  {r^{m + 1}}
 ++++
 
 == Other forces (TODO)
-
-[stem]
-++++
-E^{tot}_{area} \propto \left( A^{tot} - A_{0}^{tot} \right)^2 \\
-E^{tot}_{vol} \propto \left( V^{tot} - V_{0}^{tot} \right)^2 \\
-E^{local}_{area} \propto \left( A - A_{0} \right)^2 \\
-E_{bnd} \propto \left(\theta - \theta_0 \right)^2
-++++

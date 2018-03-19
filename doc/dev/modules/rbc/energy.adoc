@@ -1,0 +1,75 @@
+= Elastic energies
+:lext: .adoc
+:stem: latexmath
+
+== spring
+
+Spring energy is a function of distance between connected beads stem:[r]
+[stem]
+++++
+U_{spring}(r) = U_{wlc}(r) + U_{pow}(r)
+++++
+
+where worm-like chain energy:
+[stem]
+++++
+U_{wlc}(r) =
+\frac{k_s}{4 l_{max}}
+\frac{3 x^2 - 2 x^3}{1 - x}, \quad x = \frac{r}{l_{max}}
+++++
+and power-law energy:
+[stem]
+++++
+U_{wlc}(r) =
+\frac{k_p}{r^{m - 1}}
+++++
+
+stem:[l_0] is an equilibrium lenght, stem:[l_{max}] is a maximum
+lenght stem:[l_{max} = l_{0} / x_{0}], and stem:[k_p] is defined from
+condition that stem:[U_{spring}] has a maximum at stem:[r = l0].
+
+== local area constrain
+
+[stem]
+++++
+E^{loc}_{area} =
+k_d
+\frac
+{\left( A^{loc} - A_{0}^{loc} \right)^2}
+{{2 A_{0}^{loc} }
+++++
+
+== total area constrain
+
+[stem]
+++++
+E^{tot}_{area} =
+k_a
+\frac
+{\left( A^{tot} - A_{0}^{tot} \right)^2}
+{2 A_{0}^{tot} }
+++++
+
+== total volume constrain
+
+[stem]
+++++
+E^{tot}_{vol} =
+k_v
+\frac
+{\left( V^{tot} - V_{0}^{tot} \right)^2}
+{2 V_{0}^{tot}}
+++++
+
+== bending
+
+[stem]
+++++
+E_{bnd} = k_b
+\left[
+  1 - \cos
+  \left(
+    \theta - \theta_0
+  \right)
+\right]
+++++
