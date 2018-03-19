@@ -35,8 +35,12 @@ condition that stem:[U_{spring}] has a maximum at stem:[r = l0].
 E^{loc}_{area} =
 k_d
 \frac
-{\left( A^{loc} - A_{0}^{loc} \right)^2}
-{{2 A_{0}^{loc} }
+{
+  \left(
+    A^{loc} - A_{0}^{loc}
+  \right)^2
+}
+{2 A_{0}^{loc}}
 ++++
 
 == total area constrain
