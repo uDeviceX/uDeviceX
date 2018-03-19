@@ -74,7 +74,7 @@ static void mesh_write(MPI_Comm comm, int nc, int nv, int nt,
 
 void mesh_write_particles(MeshWrite *q, MPI_Comm comm, const Coords *coords, int nc, const Particle *pp, int id) {
     int nv, nt, n;
-    const int4* tt;
+    const int4 *tt;
     Vectors *pos, *vel;
     WriteFile *f;
     const char *directory;
