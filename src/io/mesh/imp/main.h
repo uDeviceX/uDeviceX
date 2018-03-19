@@ -87,7 +87,16 @@ void mesh_write_particles(MeshWrite *q, MPI_Comm comm, const Coords *coords, int
         ERR("sprintf failed");
     UC(write_file_open(comm, path, /**/ &f));
 
-    vectors_postions_edge_ini(coords, n, pp, /**/ &pos);
+    switch (q->shift_type) {
+    case EDGE:
+        vectors_postions_edge_ini(coords, n, pp, /**/ &pos);
+        break;
+    case CENTER:
+        vectors_postions_center_ini(coords, n, pp, /**/ &pos);
+        break;
+    default:
+        ERR("unkown q->type: %d", q->shift_type);
+    }
     vectors_velocities_ini(n, pp, /**/ &vel);
 
     UC(mesh_write(comm, nc, nv, nt, pos, vel, tt, f));
