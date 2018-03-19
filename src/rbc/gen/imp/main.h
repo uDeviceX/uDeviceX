@@ -59,7 +59,6 @@ int rbc_gen(const Coords *coords, const float *rr0, const char *path, int nv, Pa
     Matrices *matrices;
     if (nv <= 0) ERR("nv <= 0");
     UC(matrices_read_filter(path, coords, /**/ &matrices));
-    UC(matrices_log(matrices));
     UC(rbc_gen0(nv, rr0, matrices, /**/ &n, pp));
     UC(rbc_shift(coords, n, pp));
     UC(matrices_fin(matrices));

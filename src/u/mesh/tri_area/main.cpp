@@ -51,7 +51,7 @@ static void dump(int nt, double *d,
 }
 
 static void main0(const char *cell, Out *out) {
-    int i, nv, nt, nm;
+    int nv, nt, nm;
     MeshTriArea *tri_area;
     Vectors  *pos, *vel;
     double *tri_areas;
