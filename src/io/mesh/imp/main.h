@@ -79,13 +79,12 @@ void mesh_write_particles(MeshWrite *q, MPI_Comm comm, const Coords *coords, int
     WriteFile *f;
     const char *directory;
     char path[FILENAME_MAX];
+
     nv = q->nv; nt = q->nt; tt = q->tt; directory = q->directory;
     n = nv * nc;
-
     if (sprintf(path, PATTERN, DUMP_BASE, directory, id) < 0)
         ERR("sprintf failed");
     UC(write_file_open(comm, path, /**/ &f));
-
     switch (q->shift_type) {
     case EDGE:
         vectors_postions_edge_ini(coords, n, pp, /**/ &pos);
@@ -97,10 +96,23 @@ void mesh_write_particles(MeshWrite *q, MPI_Comm comm, const Coords *coords, int
         ERR("unkown q->type: %d", q->shift_type);
     }
     vectors_velocities_ini(n, pp, /**/ &vel);
-
     UC(mesh_write(comm, nc, nv, nt, pos, vel, tt, f));
-
     vectors_fin(pos);
     vectors_fin(vel);
+    UC(write_file_close(f));
+}
+
+void mesh_write_vectros(MeshWrite *q, MPI_Comm comm, int nc, Vectors *pos, Vectors *vel, int id) {
+    int nv, nt;
+    const int4 *tt;
+    WriteFile *f;
+    const char *directory;
+    char path[FILENAME_MAX];
+
+    nv = q->nv; nt = q->nt; tt = q->tt; directory = q->directory;
+    if (sprintf(path, PATTERN, DUMP_BASE, directory, id) < 0)
+        ERR("sprintf failed");
+    UC(write_file_open(comm, path, /**/ &f));
+    UC(mesh_write(comm, nc, nv, nt, pos, vel, tt, f));
     UC(write_file_close(f));
 }
