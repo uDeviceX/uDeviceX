@@ -1,3 +1,4 @@
+#define PATTERN "%s/%s/%05d"
 enum { NVP = 3 /* number of vertices per face */ };
 
 static void copy_v(const Particle *f, /**/ Particle *t) {
@@ -84,12 +85,20 @@ static void mesh_write1(MPI_Comm cart, const Coords *c, const Particle *pp, cons
     EFREE(pp0);
 }
 
-static void mesh_write(MPI_Comm cart, const Coords *coords, const Particle *pp, const int4 *faces,
-                       int nc, int nv, int nt, const char *fn) {
+void mesh_write_particles(MeshWrite *q, MPI_Comm comm, const Coords *coords, int nc, const Particle *pp, int id) {
+    int nv, nt;
+    const int4* tt;
+    //    Vectors *pos;
+    //    Vectors *vel;
     WriteFile *f;
-    if (pp == NULL) ERR("pp == NULL");
+    const char *directory;
+    char path[FILENAME_MAX];
+    nv = q->nv; nt = q->nt; tt = q->tt; directory = q->directory;
+    
+    if (sprintf(path, PATTERN, DUMP_BASE, directory, id) < 0)
+        ERR("sprintf failed");
+    UC(write_file_open(comm, path, /**/ &f));
 
-    UC(write_file_open(cart, fn, /**/ &f));
-    UC(mesh_write1(cart, coords, pp, faces, nc, nv, nt, f));
+    UC(mesh_write1(comm, coords, pp, tt, nc, nv, nt, f));
     UC(write_file_close(f));
 }

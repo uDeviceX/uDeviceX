@@ -1,5 +1,3 @@
-#define PATTERN "%s/%s/%05d"
-
 static void ini(MPI_Comm comm, const int4 *tt, int nv, int nt, const char *directory, /**/ MeshWrite **pq) {
     int i;
     MeshWrite *q;
@@ -30,11 +28,4 @@ void mesh_write_ini_off(MPI_Comm comm, MeshRead *cell, const char *directory, /*
 void mesh_write_fin(MeshWrite *q) {
     EFREE(q->tt);
     EFREE(q);
-}
-
-void mesh_write_particles(MeshWrite *q, MPI_Comm comm, const Coords *coords, int nc, const Particle *pp, int id) {
-    char path[FILENAME_MAX];
-    if (sprintf(path, PATTERN, DUMP_BASE, q->directory, id) < 0)
-        ERR("sprintf failed");
-    UC(mesh_write(comm, coords, pp, q->tt, nc, q->nv, q->nt, path));
 }
