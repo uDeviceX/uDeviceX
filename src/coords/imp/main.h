@@ -56,7 +56,7 @@ int zdomain(const Coords *c) {
 /* [l]ocal to [c]enter */
 
 float xl2xc(const Coords *c, float xl) {
-    return xl - 0.5f * c->Lx * (c->xd - 2.f * c->xc - 1);
+    return xl - 0.5f * c->Lx * (c->xd - 2 * c->xc - 1);
 }
 
 float yl2yc(const Coords *c, float yl) {
