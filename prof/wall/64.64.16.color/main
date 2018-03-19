@@ -1,0 +1,4 @@
+#!/bin/sh
+
+u.cp.sdf wall1/wall.dat sdf.dat
+PROF= u.run udx conf.cfg
