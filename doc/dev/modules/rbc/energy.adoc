@@ -77,6 +77,9 @@ k_v
 
 == bending
 
+stem:[\theta] is an angle between triangles with common edge,
+stem:[\theta_0] is an equilibrium angle.
+
 [stem]
 ++++
 E_{bnd} = k_b
