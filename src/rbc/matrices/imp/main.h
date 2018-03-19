@@ -96,7 +96,7 @@ void matrices_log(const Matrices *q) {
     msg_print("<matrices_log");
     for (i = 0; i < n; i++) {
         if (i > 0) msg_print("");
-        matrices_log(q->m[i]);
+        log(q->m[i].D);
     }
     msg_print(">matrices_log");
 }
