@@ -1,4 +1,4 @@
-#define PATTERN "%s/%05d"
+#define PATTERN "%s/%s/%05d"
 
 void io_point_conf_ini(/**/ IOPointConf **pq) {
     IOPointConf *q;
@@ -116,7 +116,7 @@ void io_point_write(IOPoint *q, MPI_Comm comm, int id) {
         if (!q->seen[i])
             ERR("key '%s' was not pushed", q->keys[i]);
 
-    if (snprintf(name, FILENAME_MAX, PATTERN, q->path, id) < 0)
+    if (snprintf(name, FILENAME_MAX, PATTERN, DUMP_BASE, q->path, id) < 0)
         ERR("snprintf failed");
 
     BPC(bop_set_n(n, q->bop));

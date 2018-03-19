@@ -84,7 +84,8 @@ static void mesh_write1(MPI_Comm cart, const Coords *c, const Particle *pp, cons
     EFREE(pp0);
 }
 
-static void mesh_write(MPI_Comm cart, const Coords *coords, const Particle *pp, const int4 *faces, int nc, int nv, int nt, const char *fn) {
+static void mesh_write(MPI_Comm cart, const Coords *coords, const Particle *pp, const int4 *faces,
+                       int nc, int nv, int nt, const char *fn) {
     WriteFile *f;
     if (pp == NULL) ERR("pp == NULL");
 
