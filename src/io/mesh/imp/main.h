@@ -86,19 +86,26 @@ static void mesh_write1(MPI_Comm cart, const Coords *c, const Particle *pp, cons
 }
 
 void mesh_write_particles(MeshWrite *q, MPI_Comm comm, const Coords *coords, int nc, const Particle *pp, int id) {
-    int nv, nt;
+    int nv, nt, n;
     const int4* tt;
-    //    Vectors *pos;
-    //    Vectors *vel;
+    Vectors *pos;
+    Vectors *vel;
     WriteFile *f;
     const char *directory;
     char path[FILENAME_MAX];
     nv = q->nv; nt = q->nt; tt = q->tt; directory = q->directory;
+    n = nv * nc;
     
     if (sprintf(path, PATTERN, DUMP_BASE, directory, id) < 0)
         ERR("sprintf failed");
     UC(write_file_open(comm, path, /**/ &f));
 
+    vectors_postions_edge_ini(coords, n, pp, /**/ &pos);
+    vectors_velocities_ini(n, pp, /**/ &vel);
+
     UC(mesh_write1(comm, coords, pp, tt, nc, nv, nt, f));
+
+    vectors_fin(pos);
+    vectors_fin(vel);
     UC(write_file_close(f));
 }
