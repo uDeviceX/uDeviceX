@@ -1,5 +1,3 @@
-static char *cpy(char *dest, const char *src) { return strncpy(dest, src, FILENAME_MAX); }
-
 static void ini(MPI_Comm comm, const int4 *tt, int nv, int nt, const char *directory, /**/ MeshWrite **pq) {
     int i;
     MeshWrite *q;

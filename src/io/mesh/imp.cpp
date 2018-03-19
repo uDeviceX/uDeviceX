@@ -33,5 +33,7 @@
 #else
    #error     MESH_SHIFT_* is undefined
 #endif
+
+#include "imp/util.h"
 #include "imp/main.h"
 #include "imp/new.h"
