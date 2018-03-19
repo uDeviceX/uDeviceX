@@ -67,7 +67,12 @@ void vectors_zero_ini(int n, /**/ Vectors **pq) {
     *pq = q;
 }
 
-void vectors_fin(Vectors *q) { tform_fin(q->tform);  EFREE(q); }
+void vectors_fin(Vectors *q) {
+    if (q->type == POSITIONS_EDGE ||
+        q->type == POSITIONS_CENTER)
+        tform_fin(q->tform);
+    EFREE(q);
+}
 
 static void float_get(const Vectors *q, int i, float r[3]) {
     enum {X, Y, Z};
