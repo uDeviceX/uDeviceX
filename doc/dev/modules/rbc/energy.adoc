@@ -21,12 +21,13 @@ and power-law energy:
 [stem]
 ++++
 U_{wlc}(r) =
-\frac{k_p}{r^{m - 1}}
+- \frac{k_p}{r^{m - 1}}
 ++++
 
 stem:[l_0] is an equilibrium lenght, stem:[l_{max}] is a maximum
 lenght stem:[l_{max} = l_{0} / x_{0}], and stem:[k_p] is defined from
-condition that stem:[U_{spring}] has a maximum at stem:[r = l_0].
+condition that stem:[U_{spring}] has a maximum at stem:[r = l_0], and
+stem:[m] is a power factor.
 
 == local area constrain
 
