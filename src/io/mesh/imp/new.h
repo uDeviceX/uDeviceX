@@ -1,6 +1,6 @@
 static char *cpy(char *dest, const char *src) { return strncpy(dest, src, FILENAME_MAX); }
 
-static void ini(const int4 *tt, int nv, int nt, const char *directory, /**/ MeshWrite **pq) {
+static void ini(MPI_Comm comm, const int4 *tt, int nv, int nt, const char *directory, /**/ MeshWrite **pq) {
     int i;
     MeshWrite *q;
     EMALLOC(1, &q);
@@ -12,17 +12,17 @@ static void ini(const int4 *tt, int nv, int nt, const char *directory, /**/ Mesh
     *pq = q;
 }
 
-void mesh_write_ini(const int4 *tt, int nv, int nt, const char *directory, /**/ MeshWrite **pq) {
-    UC(ini(tt, nv, nt, directory, /**/ pq));
+void mesh_write_ini(MPI_Comm comm, const int4 *tt, int nv, int nt, const char *directory, /**/ MeshWrite **pq) {
+    UC(ini(comm, tt, nv, nt, directory, /**/ pq));
 }
 
-void mesh_write_ini_off(MeshRead *cell, const char *directory, /**/ MeshWrite **pq) {
+void mesh_write_ini_off(MPI_Comm comm, MeshRead *cell, const char *directory, /**/ MeshWrite **pq) {
     int nv, nt;
     const int4 *tt;
     nv = mesh_read_get_nv(cell);
     nt = mesh_read_get_nt(cell);
     tt = mesh_read_get_tri(cell);
-    UC(ini(tt, nv, nt, directory, /**/ pq));
+    UC(ini(comm, tt, nv, nt, directory, /**/ pq));
 }
 
 void mesh_write_fin(MeshWrite *q) {
@@ -36,7 +36,7 @@ static void mkdir(const char *directory) {
     if (sprintf(directory0, fmt, DUMP_BASE, directory) < 0)
         ERR("sprintf failed");
     UC(os_mkdir(directory0));
-    msg_print("mkdir '%s'", directory0);
+    msg_print("mkdir -p '%s'", directory0);
 }
 void mesh_write_particles(MeshWrite *q, MPI_Comm comm, const Coords *coords, int nc, const Particle *pp, int id) {
     const char *fmt = "%s/%s/%05d.ply";

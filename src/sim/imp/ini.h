@@ -146,7 +146,7 @@ static void ini_rbc(const Config *cfg, Opt opt, MPI_Comm cart, int3 L, /**/ Rbc 
     int nv;
     const char *directory = "r";
     UC(mesh_read_ini_off("rbc.off", &r->cell));
-    UC(mesh_write_ini_off(r->cell, directory, /**/ &r->mesh_write));
+    UC(mesh_write_ini_off(cart, r->cell, directory, /**/ &r->mesh_write));
 
     nv = mesh_read_get_nv(r->cell);
     
@@ -171,7 +171,7 @@ static void ini_rig(const Config *cfg, MPI_Comm cart, int maxp, int3 L, /**/ Rig
 
     UC(rig_ini(maxp, &s->q));
     tt = s->q.htt; nv = s->q.nv; nt = s->q.nt;
-    UC(mesh_write_ini(tt, nv, nt, "s", /**/ &s->mesh_write));
+    UC(mesh_write_ini(cart, tt, nv, nt, "s", /**/ &s->mesh_write));
 
     UC(scan_ini(L.x * L.y * L.z, /**/ &s->ws));
     EMALLOC(maxp, &s->ff_hst);

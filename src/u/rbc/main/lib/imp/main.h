@@ -88,7 +88,7 @@ void run(const Config *cfg, MPI_Comm cart, float dt, float mass, float te, int s
     MeshWrite *mesh_write;
 
     UC(mesh_read_ini_off(cell, /**/ &off));
-    UC(mesh_write_ini_off(off, directory, /**/ &mesh_write));
+    UC(mesh_write_ini_off(cart, off, directory, /**/ &mesh_write));
 
     rbc_ini(false, off, &q);
 
