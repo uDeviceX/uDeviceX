@@ -65,8 +65,6 @@ static void main0(const char *cell, Out *out) {
     nm = 1;
     EMALLOC(nt, &tri_areas);
     mesh_tri_area_apply(tri_area, nm, pos, /**/ tri_areas);
-    for (i = 0; i < nt; i++)
-        printf("%g\n", tri_areas[i]);
     dump(nt, tri_areas, pos, vel, out);
 
     mesh_tri_area_fin(tri_area);
