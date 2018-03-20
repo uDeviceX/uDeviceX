@@ -21,7 +21,7 @@ Control simulation time.
 `end = float`::
   when to end the simulation?
 `wall = float`::
-  when create wall?
+  when to create wall?
 `screenlog = bool`::
   log time step to `stderr`?
 
