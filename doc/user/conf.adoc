@@ -2,22 +2,61 @@
 :lext: .adoc
 
 == glb
+Global parameters.
+
 == time
+Control simulation time.
+
 == flu
+Solvent parameters.
+
 == rbc
-== wall
-== fsi
-== cnt
+RBC membrane.
+
 == rig
+Rigid body.
+
+== wall
+Wall boundary condition parameters
+
+== fsi
+Fluid-structure interaction. 
+
+== cnt
+Contact between rigid objects and membranes.
+
 == bforce
+Body force: constant in time force applied to solvent, membranes, and rigid objects.
+
 == wvel
+Wall velocity.
+
 == dump
+Controls what and when to dump.
+
 == inflow
+Inflow boundary conditions for velocity.
+
 == outflow
+Outflow boundary condition for velocity.
+
 == denoutflow
+Density outflow boundary condition.
+
 == iccolor
+How to color particle of the solvent?
+
 == restrain
+Restrain some solvent particles or particles of the membranes.
+
 == vcon
+Velocity controller: apply body condition to maintain prescribed average velocity.
+
 == recolor
+Change color of some solvent particles durining the simulation.
+
 == dflu
+Parameters for solvent distribtuion between MPI processes.
+
 == dbg
+Debug options.
