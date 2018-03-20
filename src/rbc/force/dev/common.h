@@ -21,29 +21,22 @@ static __device__ real3 farea(RbcParams_v par, real3 x21, real3 x31, real3 x32, 
     return f;
 }
 
-static __device__ int good_spring(real a, real m) { return a < m; }
-static __device__ void report_spring(real r, real m, real3 v) {
-    printf("r=%g >= lmax=%g: spring [%g %g %g]\n",
-           r, m, v.x, v.y, v.z);
-    assert(0);
-}
-static __device__ void report_params(real l0, real lmax, RbcParams_v par) {
-    printf("l0=%g >= lmax=%g: x0=%g\n", l0, lmax, par.x0);
-    assert(0);
-}
+enum {SPRING_OK, SPRING_LONG};
 static __device__ real sq(real x) { return x * x; }
 static __device__ real wlc0(real r) { return (4*sq(r)-9*r+6)/(4*sq(r-1)); }
 static __device__ real wlc(real lmax, real ks, real r) { return ks/lmax*wlc0(r/lmax); }
-static __device__ real3 fspring(RbcParams_v par, real3 x21, real l0) {
+static __device__ real3 fspring(RbcParams_v par, real3 x21, real l0, /**/ int *pstatus) {
   #define wlc_r(r) (wlc(lmax, ks, r))
     real m, r, fwlc, fpow, lmax, ks, x0;
     real3 f;
+    *pstatus = SPRING_OK;
     ks = par.ks; m = par.mpow; x0 = par.x0;
     r = sqrtf(dot<real>(&x21, &x21));
     lmax = l0 / x0;
-    if (!good_spring(r,  lmax)) report_spring( r, lmax, x21);
-    if (!good_spring(l0, lmax)) report_params(l0, lmax, par);
-    
+    if (r >= lmax) {
+        *pstatus = SPRING_LONG;
+        return make_real3(0, 0, 0);
+    }
     fwlc =   wlc_r(r); /* make fwlc + fpow = 0 for r = l0 */
     fpow = - wlc_r(l0) * powf(l0, m + 1) / powf(r, m + 1);
     axpy(fwlc + fpow, &x21, /**/ &f);
@@ -51,8 +44,14 @@ static __device__ real3 fspring(RbcParams_v par, real3 x21, real l0) {
   #undef wlc_r
 }
 
+static __device__ void report_tri(real3 r1, real3 r2, real3 r3) {
+    printf("bad triangle: [%g %g %g] [%g %g %g] [%g %g %g]\n",
+           r1.x, r1.y, r1.z,   r2.x, r2.y, r2.z,   r3.x, r3.y, r3.z);
+    assert(0);
+}
 static __device__ real3 ftri(RbcParams_v par, real3 r1, real3 r2, real3 r3,
                              StressInfo si, real area, real volume) {
+    int spring_status;
     real3 fv, fa, fs;
     real3 x21, x32, x31, f = make_real3(0, 0, 0);
 
@@ -66,7 +65,10 @@ static __device__ real3 ftri(RbcParams_v par, real3 r1, real3 r2, real3 r3,
     fv = fvolume(par, r2, r3, par.totVolume, volume);
     add(&fv, /**/ &f);
 
-    fs = fspring(par, x21, si.l0);
+    fs = fspring(par, x21, si.l0, &spring_status);
+    if (spring_status != SPRING_OK)
+        report_tri(r1, r2, r3);
+    
     add(&fs, /**/ &f);
 
     return f;
