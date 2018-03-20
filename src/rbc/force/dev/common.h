@@ -23,8 +23,8 @@ static __device__ real3 farea(RbcParams_v par, real3 x21, real3 x31, real3 x32, 
 
 static __device__ int good_spring(real a, real m) { return a < m; }
 static __device__ void report_spring(real r, real m, real3 v) {
-    printf("r = %g lmax = %g\n", r, m);
-    printf("bad spring [%g %g %g]\n", v.x, v.y, v.z);
+    printf("r=%g >= lmax=%g: spring [%g %g %g]\n",
+           r, m, v.x, v.y, v.z);
     assert(0);
 }
 static __device__ real sq(real x) { return x * x; }
