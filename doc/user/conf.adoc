@@ -4,8 +4,9 @@
 == glb
 Global parameters.
 `L = [int, int, int]`::
-  a size of each of the subdomains, `restart = bool` continue from a
-  restart?
+  a size of each of the subdomains
+`restart = bool`::
+  continue from a restart?
 `kBT = float`::
   solvent temerature
 `numdensity = float`::
@@ -27,7 +28,7 @@ Rigid body.
 Wall boundary condition parameters
 
 == fsi
-Fluid-structure interaction. 
+Fluid-structure interaction.
 
 == cnt
 Contact between rigid objects and membranes.
