@@ -29,9 +29,7 @@ static __device__ void report_spring(real r, real m, real3 v) {
 }
 static __device__ real sq(real x) { return x * x; }
 static __device__ real wlc0(real r) { return (4*sq(r)-9*r+6)/(4*sq(r-1)); }
-static __device__ real wlc(real lmax, real ks, real r) {
-    return ks/lmax*wlc0(r/lmax);
-}
+static __device__ real wlc(real lmax, real ks, real r) { return ks/lmax*wlc0(r/lmax); }
 static __device__ real3 fspring(RbcParams_v par, real3 x21, real l0) {
   #define wlc_r(r) (wlc(lmax, ks, r))
     real m;
