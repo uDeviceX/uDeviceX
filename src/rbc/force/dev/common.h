@@ -21,15 +21,15 @@ static __device__ real3 farea(RbcParams_v par, real3 x21, real3 x31, real3 x32, 
     return f;
 }
 
-static __device__ void assert_r(real a, real m) {
-    if (a < m) return;
-    printf("a = %g >= max = %g\n", a, m);
+static __device__ int good_spring(real a, real m) { return a < m; }
+static __device__ void report_spring(real r, real m, real3 v) {
+    printf("r = %g lmax = %g\n", r, m);
+    printf("bad spring [%g %g %g]\n", v.x, v.y, v.z);
     assert(0);
 }
 static __device__ real sq(real x) { return x * x; }
 static __device__ real wlc0(real r) { return (4*sq(r)-9*r+6)/(4*sq(r-1)); }
 static __device__ real wlc(real lmax, real ks, real r) {
-    assert_r(r, lmax);
     return ks/lmax*wlc0(r/lmax);
 }
 static __device__ real3 fspring(RbcParams_v par, real3 x21, real l0) {
@@ -41,6 +41,8 @@ static __device__ real3 fspring(RbcParams_v par, real3 x21, real l0) {
 
     r = sqrtf(dot<real>(&x21, &x21));
     lmax = l0 / x0;
+    if (!good_spring(r, lmax)) report_spring(r, lmax, x21);
+    
     fwlc =   wlc_r(r); /* make fwlc + fpow = 0 for r = l0 */
     fpow = - wlc_r(l0) * powf(l0, m + 1) / powf(r, m + 1);
     axpy(fwlc + fpow, &x21, /**/ &f);
