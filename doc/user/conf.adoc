@@ -1,2 +1,23 @@
 = configuration files
 :lext: .adoc
+
+== glb
+== time
+== flu
+== rbc
+== wall
+== fsi
+== cnt
+== rig
+== bforce
+== wvel
+== dump
+== inflow
+== outflow
+== denoutflow
+== iccolor
+== restrain
+== vcon
+== recolor
+== dflu
+== dbg
