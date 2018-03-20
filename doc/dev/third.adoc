@@ -62,7 +62,7 @@ export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:$HOME/prefix/libconfig/lib/pkgconfig
 
 a data model, library, and file format for storing and managing data
 
-To get the compilation and linking flag the following commands flags
+To get the compilation and linking flags
 [source, sh]
 ----
 h5c++ -show
@@ -80,7 +80,7 @@ link:https://support.hdfgroup.org/ftp/HDF5/releases/hdf5-1.8.17/src/hdf5-1.8.17.
 Configuration options
 [source, sh]
 ----
-      --prefix=$HOME/prefix/hdf5 --enable-parallel CXX=mpic++ CC=mpicc
+      ./configure --prefix=$HOME/prefix/hdf5 --enable-parallel CXX=mpic++ CC=mpicc
 ----
 
 == bop

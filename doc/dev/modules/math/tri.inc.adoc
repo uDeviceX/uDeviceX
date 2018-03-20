@@ -11,7 +11,7 @@ include::{src}/math/tri/imp.h[tags=interface]
 ----
 <1> area of a triangle given sides
 <2> area of a triangle given coordinate of the vertices
-<3> smem:[\mathbf{a} - \mathbf{c} \times \mathbf{b} - mathbf{c}]
+<3> stem:[\mathbf{a} - \mathbf{c} \times \mathbf{b} - mathbf{c}]
 <4> area of a triangle given coordinate of the vertices using "Shewchuk formula"
 <5> `orient3d` from Shewchuk
 <6> dihedral angle
