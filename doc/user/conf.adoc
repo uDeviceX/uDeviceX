@@ -16,8 +16,8 @@ Global parameters.
 == time
 Control simulation time.
 
-`type = string`::
-  a strategy for time step. Possible values are `const` and `disp`
+`type = "const"|"disp"`::
+  a strategy for time step.
 `end = float`::
   when to end the simulation?
 `wall = float`::
@@ -25,20 +25,19 @@ Control simulation time.
 `screenlog = bool`::
   log time step to `stderr`?
 
-If `type = const` the time step must be set and it is constant for entire simulation
+=== `type = const`
+
+Timestep is constant
 
 `dt = float`::
   timestep
 
-If `type = disp` the time step must be set and it is constant for entire simulation
+=== `type = disp`
+
+The time step is adjusted base on the forces (TODO)
 
 `dt = float`::
-  timestep
-
-if `type = disp` the time step is adjusted base on the forces
-
-`dt = float`::
-  timestep
+  initial timestep
 `dx = float`::
   maximum displacement
 

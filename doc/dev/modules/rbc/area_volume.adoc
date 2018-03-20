@@ -11,10 +11,6 @@ include::{src}/rbc/force/area_volume/imp.h[tag=interface]
 triangles, a triangle structure *on host*, `max_nm` is a maximum
 allowed number of meshes
 <2> compute area and volume for every mesh, `nm` is a number of meshes,
-    output `av` is a devices array and is as follow
-[source, sh]
-----
-area[0] volume[0] ... area[nc-1] volume[nc-1]
-----
+    output `av` is a devices array in the form `area[0] volume[0] ... area[nc-1] volume[nc-1]`
 <3> after `area_volume_compute` call, `area_volume_host` returns a
 host version of `av` array
