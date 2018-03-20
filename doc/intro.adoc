@@ -6,9 +6,8 @@
 It is a dissipate particle dynamic particle (DPD) simulation code
 which can model multiphase flows, rigid and soft objects, boundary
 conditions can be periodic or "wall". Wall boundary can be set from a
-user provided file.
-
-_uDeviceX_ was ACM 2015 Gordon Bell Award Finalist.
+user provided file. _uDeviceX_ was ACM 2015 Gordon Bell Award
+Finalist.
 
 It is written in C++ using
 link:https://en.wikipedia.org/wiki/CUDA[CUDA]

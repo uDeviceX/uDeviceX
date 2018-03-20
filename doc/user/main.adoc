@@ -1,4 +1,6 @@
 = User Documentation
-:lext: .adoc
 
-TODO
+:lext: .adoc
+:leveloffset:  1
+
+include::conf.adoc[]
