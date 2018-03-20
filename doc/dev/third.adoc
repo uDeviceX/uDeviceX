@@ -1,9 +1,9 @@
 = third party dependencies
 :lext: .adoc
 
-== cuda compiler
+== nvcc
 
-http://docs.nvidia.com/cuda/cuda-compiler-driver-nvcc
+link:http://docs.nvidia.com/cuda/cuda-compiler-driver-nvcc[cuda compiler driver]
 
 == MPI library
 
@@ -18,9 +18,7 @@ pkg-config --libs mpich
 
 == libconfig
 
-a library for processing structured configuration files
-
-link:http://hyperrealm.com/libconfig/libconfig.html
+link:http://hyperrealm.com/libconfig/libconfig.html[a library for processing structured configuration files]
 
 === from source
 [source, sh]
