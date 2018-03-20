@@ -39,7 +39,8 @@ static __device__ real3 fspring(RbcParams_v par, real3 x21, real l0) {
 
     r = sqrtf(dot<real>(&x21, &x21));
     lmax = l0 / x0;
-    if (!good_spring(r, lmax)) report_spring(r, lmax, x21);
+    if (!good_spring(r,  lmax)) report_spring( r, lmax, x21);
+    if (!good_spring(l0, lmax)) report_spring(l0, lmax, x21);
     
     fwlc =   wlc_r(r); /* make fwlc + fpow = 0 for r = l0 */
     fpow = - wlc_r(l0) * powf(l0, m + 1) / powf(r, m + 1);
