@@ -1,8 +1,14 @@
 = configuration files
 :lext: .adoc
 
-== glb
-Global parameters.
+== glb Global parameters.
+`L = [int, int, int]`::
+  a size of each of the subdomains, `restart = bool` continue from a
+  restart?
+`kBT = float`::
+  solvent temerature
+`numdensity = float`::
+  solvent number density in initilization
 
 == time
 Control simulation time.
