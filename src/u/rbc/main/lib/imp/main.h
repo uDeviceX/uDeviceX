@@ -63,7 +63,7 @@ static void run1(MPI_Comm cart, float dt, float mass, float te, const Coords *co
     Dfree(f);
 }
 
-static void run2(const Config *cfg, MPI_Comm cart, float dt, float mass, float te, int seed,
+static void run2(const Config *cfg, MPI_Comm cart, float dt, float mass, float te,
                  const Coords *coords, float part_freq,
                  const BForce *bforce,
                  MeshRead *off, const char *ic, const RbcParams *par, MeshWrite *mesh_write,
@@ -79,7 +79,7 @@ static void run2(const Config *cfg, MPI_Comm cart, float dt, float mass, float t
     UC(rbc_force_fin(t));
 }
 
-void run(const Config *cfg, MPI_Comm cart, float dt, float mass, float te, int seed,
+void run(const Config *cfg, MPI_Comm cart, float dt, float mass, float te,
          const Coords *coords, float part_freq, const BForce *bforce,
          const char *cell, const char *ic, const RbcParams *par) {
     const char *directory = "r";
@@ -92,7 +92,7 @@ void run(const Config *cfg, MPI_Comm cart, float dt, float mass, float te, int s
 
     rbc_ini(false, off, &q);
 
-    run2(cfg, cart, dt, mass, te, seed, coords, part_freq, bforce, off, ic, par, mesh_write, &q);
+    run2(cfg, cart, dt, mass, te, coords, part_freq, bforce, off, ic, par, mesh_write, &q);
     rbc_fin(&q);
 
     UC(mesh_write_fin(mesh_write));
