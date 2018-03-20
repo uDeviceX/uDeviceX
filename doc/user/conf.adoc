@@ -1,7 +1,8 @@
 = configuration files
 :lext: .adoc
 
-== glb Global parameters.
+== glb
+Global parameters.
 `L = [int, int, int]`::
   a size of each of the subdomains, `restart = bool` continue from a
   restart?
