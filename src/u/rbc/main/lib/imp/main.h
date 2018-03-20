@@ -9,7 +9,7 @@ static void garea_volume(RbcQuants *q, /**/ float *a, float *v) {
     *a = hst[0]; *v = hst[1];
 }
 
-static void dump(MPI_Comm cart, DiagPart *diagpart, float dt, const Coords *coords, RbcQuants *q, RbcForce *t, MeshWrite *mesh_write) {
+static void dump(MPI_Comm cart, DiagPart *diagpart, float dt, const Coords *coords, RbcQuants *q, MeshWrite *mesh_write) {
     int n;
     Particle *pp;
     float area, volume, area0, volume0;
@@ -45,7 +45,7 @@ static void run0(MPI_Comm cart, float dt, float mass, float te, const Coords *co
         body_force(mass, coords, bforce, q, /**/ f);
         scheme_move_apply(dt, mass, q->n, f, q->pp);
         if (time_cross(time, part_freq))
-            dump(cart, diagpart, dt, coords, q, t, mesh_write);
+            dump(cart, diagpart, dt, coords, q, mesh_write);
 #ifdef RBC_CLEAR_VEL
         scheme_move_clear_vel(q->n, /**/ q->pp);
 #endif
