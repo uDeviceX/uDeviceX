@@ -27,20 +27,22 @@ static __device__ void report_spring(real r, real m, real3 v) {
            r, m, v.x, v.y, v.z);
     assert(0);
 }
+static __device__ void report_params(real l0, real lmax, RbcParams_v par) {
+    printf("l0=%g >= lmax=%g: x0=%g\n", l0, lmax, par.x0);
+    assert(0);
+}
 static __device__ real sq(real x) { return x * x; }
 static __device__ real wlc0(real r) { return (4*sq(r)-9*r+6)/(4*sq(r-1)); }
 static __device__ real wlc(real lmax, real ks, real r) { return ks/lmax*wlc0(r/lmax); }
 static __device__ real3 fspring(RbcParams_v par, real3 x21, real l0) {
   #define wlc_r(r) (wlc(lmax, ks, r))
-    real m;
-    real r, fwlc, fpow, lmax, ks, x0;
+    real m, r, fwlc, fpow, lmax, ks, x0;
     real3 f;
     ks = par.ks; m = par.mpow; x0 = par.x0;
-
     r = sqrtf(dot<real>(&x21, &x21));
     lmax = l0 / x0;
     if (!good_spring(r,  lmax)) report_spring( r, lmax, x21);
-    if (!good_spring(l0, lmax)) report_spring(l0, lmax, x21);
+    if (!good_spring(l0, lmax)) report_params(l0, lmax, par);
     
     fwlc =   wlc_r(r); /* make fwlc + fpow = 0 for r = l0 */
     fpow = - wlc_r(l0) * powf(l0, m + 1) / powf(r, m + 1);
