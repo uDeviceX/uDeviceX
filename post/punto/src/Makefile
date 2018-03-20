@@ -1,3 +1,4 @@
+CC=gcc
 BIN = $(HOME)/bin
 B = $(BIN)
 
