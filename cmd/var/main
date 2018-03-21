@@ -6,10 +6,19 @@ prog=u.var
 : ${LS_CONFIG=ls-config}
 
 usg () {
-    msg 'u.var FILE.cfg NAME'
+    msg 'u.var FILE.cfg NAME [INDEX]'
     msg 'get value of a variable NAME from config file FILE.cfg'
+    msg 'optional INDEX argument is an array index'
     msg '$ u.var data/default.cfg rbc.mass'
     exit
+}
+
+check_ls_config () {
+    if ! e $LS_CONFIG --help '1>/dev/null' '2>/dev/null'; then
+    err "$LS_CONFIG command is not found
+it is a part of libconfig library (contrib/ls-config)
+see https://hyperrealm.github.io/libconfig/libconfig_manual.html#Bourne-Shell"
+    fi
 }
 
 if test $# -ne 0 && test "$1" = -h; then usg; fi
@@ -21,11 +30,21 @@ if test ! -f "$f"; then err "fail to read '$f'"; fi
 if test $# -eq 0; then err 'needs NAME argument'; fi
 n="$1"; shift
 
-if ! e $LS_CONFIG --help '1>/dev/null' '2>/dev/null'; then
-    err "$LS_CONFIG command is not found
-it is a part of libconfig library (contrib/ls-config)
-see https://hyperrealm.github.io/libconfig/libconfig_manual.html#Bourne-Shell"
+i=unset
+if test $# -ne 0
+then i="$1"; shift
+     case $i in
+	 [0-9]*) ;;
+	 *) err "expecting an integer '$i'" ;;
+     esac
 fi
+check_ls_config
 
-e $LS_CONFIG -f "$f" --get="$n" --values --quiet
-if test $? -ne 0; then err "ls_config fail to read '$n'"; fi
+if test "$i" = unset
+then
+    e $LS_CONFIG -f "$f" --get="$n" --values --quiet
+    if test $? -ne 0; then err "ls_config fail to read '$n'"; fi
+else
+    c=`e $LS_CONFIG -f "$f" --get="$n" --count --quiet`
+    msg $c
+fi
