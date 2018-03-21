@@ -41,9 +41,9 @@ int main(int argc, char **argv) {
     sim_ini(cfg, cart, /**/ time, &sim);
     UC(conf_lookup_bool(cfg, "glb.restart", &restart));
     msg_print("restart: %d", restart);
-    if (restart) sim_strt(sim, cfg, time, time_seg);
-    else         sim_gen(sim, cfg, time, time_seg);
-    sim_fin(sim);
+    if (restart) UC(sim_strt(sim, cfg, time, time_seg));
+    else         UC(sim_gen(sim, cfg, time, time_seg));
+    UC(sim_fin(sim));
 
     UC(time_seg_fin(time_seg));
     UC(time_fin(time));
