@@ -1,0 +1,30 @@
+#!/bin/sh
+
+. u.var.util
+
+prog=u.var
+: ${LS_CONFIG=ls-config}
+
+usg () {
+    msg 'u.var FILE.cfg NAME'
+    msg 'get value of a variable NAME from config file FILE.cfg'
+    exit
+}
+
+if test $# -ne 0 && test "$1" = -h; then usg; fi
+
+if test $# -eq 0; then err 'needs FILE.cfg agrument'; fi
+f="$1"; shift
+if test ! -f "$f"; then err "fail to read '$f'"; fi
+
+if test $# -eq 0; then err 'needs NAME argument'; fi
+n="$1"; shift
+
+if ! e $LS_CONFIG --help '1>/dev/null' '2>/dev/null'; then
+    err "$LS_CONFIG command is not found
+it is a part of libconfig library (contrib/ls-config)
+see https://hyperrealm.github.io/libconfig/libconfig_manual.html#Bourne-Shell"
+fi
+
+e $LS_CONFIG -f "$f" --get="$n" --values --quiet
+if test $? -ne 0; then err "ls_config fail to read '$n'"; fi
