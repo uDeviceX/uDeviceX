@@ -8,6 +8,7 @@ prog=u.var
 usg () {
     msg 'u.var FILE.cfg NAME'
     msg 'get value of a variable NAME from config file FILE.cfg'
+    msg '$ u.var data/default.cfg rbc.mass'
     exit
 }
 
