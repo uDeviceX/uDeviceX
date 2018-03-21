@@ -2,12 +2,22 @@
 
 nv=1986
 u.cp.rbc rbc/sc/$nv rbc.off
-u.cp.rbc sph/sc/$nv rbc.stress.free
+u.cp.rbc rbc/sc/$nv rbc.stress.free
 
 u.strtdir
 u.run udx conf.cfg "
-glb = { restart = false }
+glb = { 
+    restart = false
+    numdensity = 0
+}
+time = { end = 30.0 }
+wvel = { gdot = 0.0 }
 rbc = {
+    ks  = 0.0
+    kb  = 1000.0
+    x0  = 0.2
+    gammaC = 0.0
+    phi =       `off.phi    $nv`
     totArea   = `off.area   rbc.off`
     totVolume = `off.volume rbc.off`
 }

@@ -13,4 +13,6 @@ install:
 	cp util   "$B/$p.$m.util"
 	cp main   "$B/$p.$m"
 
-.PHONY: install
+test:; atest test/*
+
+.PHONY: install test
