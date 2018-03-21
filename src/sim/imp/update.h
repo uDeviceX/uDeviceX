@@ -100,9 +100,8 @@ void update_rbc(float dt, long it, Rbc *r, Sim *s) {
     if (cond) {
         /* TODO: does not belong here*/
         msg_print("recolor");
-        gen_colors(r, &s->colorer, /**/ &s->flu);
+        UC(gen_colors(r, &s->colorer, /**/ &s->flu));
     } 
-
     scheme_move_apply(dt, r->mass, r->q.n, r->ff, r->q.pp);
 }
 

@@ -61,7 +61,7 @@ void sim_gen(Sim *s, const Config *cfg, Time *time, TimeSeg *time_seg) {
     if (opt->fluids)  flu_gen_ids  (s->cart, flu->q.n, &flu->q);
     if (opt->rbc) {
         rbc_gen_quants(s->coords, s->cart, cell, "rbcs-ic.txt", /**/ &rbc->q);
-        if (opt->flucolors) gen_colors(rbc, &s->colorer, /**/ flu);
+        if (opt->flucolors) UC(gen_colors(rbc, &s->colorer, /**/ flu));
     }
     MC(m::Barrier(s->cart));
     if (opt->wall || opt->rig) {
@@ -70,7 +70,7 @@ void sim_gen(Sim *s, const Config *cfg, Time *time, TimeSeg *time_seg) {
         dSync();
         if (opt->wall && wall->q.n) UC(wall_gen_ticket(&wall->q, wall->t));
         s->rigids = opt->rig;
-        if (opt->rbc && opt->flucolors) gen_colors(rbc, &s->colorer, /**/ flu);
+        if (opt->rbc && opt->flucolors) UC(gen_colors(rbc, &s->colorer, /**/ flu));
         run(cfg, time, time_seg->wall, time_seg->end, s);
     } else {
         s->rigids = opt->rig;
