@@ -18,8 +18,12 @@ usg () {
 check_ls_config () {
     if ! e $LS_CONFIG --help '1>/dev/null' '2>/dev/null'; then
     err "$LS_CONFIG command is not found
-it is a part of libconfig library (contrib/ls-config)
-see https://hyperrealm.github.io/libconfig/libconfig_manual.html#Bourne-Shell"
+$LS_CONFIG is a part of libconfig library
+
+    $ cd <libconfig source>/contrib/ls-config
+    $ f=\`pkg-config --libs --cflags libconfig\`
+    $ make CFLAGS=\"\$f\"
+    $ cp ls-config \$HOME/bin/"
     fi
 }
 
@@ -59,7 +63,7 @@ else
 	print a[i + 1]
     }
     function err(s) {
-        printf "%s: %s\n", p, s | "cat >&2"
+	printf "%s: %s\n", p, s | "cat >&2"
 	exit(2)
     }
     '
