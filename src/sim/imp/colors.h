@@ -13,7 +13,7 @@ void gen_colors(const Rbc *r, Colorer *c, Flu *f) {
     UC(emesh_post_send(c->e.p, c->e.c));
     UC(emesh_post_recv(c->e.c, c->e.u));
 
-     if (nm * nv) CC(d::MemcpyAsync(c->pp, r->pp, nm * nv * sizeof(Particle), D2D));
+    if (nm * nv) CC(d::MemcpyAsync(c->pp, r->q.pp, nm * nv * sizeof(Particle), D2D));
 
     UC(emesh_wait_send(c->e.c));
     UC(emesh_wait_recv(c->e.c, c->e.u));
