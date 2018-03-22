@@ -8,13 +8,13 @@ u.strtdir
 u.run udx conf.cfg "
 glb = { 
     restart = false
-    numdensity = 0
+    numdensity = 1
 }
 time = { end = 30.0 }
 wvel = { gdot = 0.0 }
 rbc = {
     ks  = 0.0
-    kb  = 1000.0
+    kb  = 100.0
     x0  = 0.2
     gammaC = 0.0
     phi =       `off.phi    $nv`
