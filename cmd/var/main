@@ -46,5 +46,18 @@ then
     if test $? -ne 0; then err "ls_config fail to read '$n'"; fi
 else
     c=`e $LS_CONFIG -f "$f" --get="$n" --count --quiet`
-    msg $c
+    if test $? -ne 0; then err "ls_config fail to read '$n'"; fi
+    if test $c -eq 0; then err "'$n' is a not an array"; fi
+    v=`e $LS_CONFIG -f "$f" --get="$n" --value --quiet`
+    "$AWK" -v v="$v" -v i=$c -v n="$n" -v p="$prog" '
+    BEGIN {
+	m = split(v, a, ";")
+	if (i > m)
+	    err(sprintf("wrong array index for %s: i=%d > n=%s", n, i, m)
+    }
+    function err(s) {
+        printf "%s: %s\n", p, s | "cat >&2"
+	exit(2)
+    }
+    '
 fi
