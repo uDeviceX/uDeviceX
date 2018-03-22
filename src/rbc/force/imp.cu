@@ -8,6 +8,7 @@
 #include "inc/type.h"
 #include "inc/dev.h"
 #include "math/dev.h"
+#include "math/tri/dev.h"
 
 #include "io/mesh_read/imp.h"
 
