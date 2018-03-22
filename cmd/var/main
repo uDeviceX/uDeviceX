@@ -21,8 +21,10 @@ check_ls_config () {
 $LS_CONFIG is a part of libconfig library
 
     $ cd <libconfig source>/contrib/ls-config
-    $ f=\`pkg-config --libs --cflags libconfig\`
-    $ make CFLAGS=\"\$f\"
+    $ I=\`pkg-config --cflags libconfig\`
+    $ L=\`pkg-config --variable=libdir libconfig\`
+    $ L=\"-L\$L -Wl,-rpath -Wl,\$L\"
+    $ make CFLAGS=\"\$I \$L\"
     $ cp ls-config \$HOME/bin/"
     fi
 }
