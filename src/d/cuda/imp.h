@@ -66,6 +66,12 @@ int Memset (void *devPtr, int value, size_t count) {
 int MemcpyAsync (void * dst, const void * src, size_t count, int kind0, Stream_t stream) {
     enum cudaMemcpyKind kind;
     if (stream != 0) ERR("streams are not supported");
+    switch (kind0) {
+    case MemcpyDeviceToDevice:
+        if (!is_device_pointer(dst)) ERR("`dst` is not a device pointer");
+        if (!is_device_pointer(src)) ERR("`src` is not a device pointer");
+        break;
+    }
     kind = k2k(kind0);
     return R(cudaMemcpyAsync (dst, src, count, kind));
 }
