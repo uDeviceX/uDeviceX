@@ -63,7 +63,7 @@ int Memset (void *devPtr, int value, size_t count) {
     return R(cudaMemset(devPtr, value, count));
 }
 
-int MemcpyAsync (void * dst, const void * src, size_t count, int kind0, Stream_t stream) {
+int MemcpyAsync (void *dst, const void *src, size_t count, int kind0, Stream_t stream) {
     enum cudaMemcpyKind kind;
     if (stream != 0) ERR("streams are not supported");
     switch (kind0) {
