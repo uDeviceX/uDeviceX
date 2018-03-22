@@ -31,7 +31,7 @@ static int sum_i(MPI_Comm comm, int *v) {
 }
 void diag_part_apply(DiagPart *q, MPI_Comm comm, float time, int n, const Particle *pp) {
     if (time < 0) ERR("time = %g < 0", time);
-    if (q->stamp != STAMP_GOOD) ERR("'q' was not initilized");
+    if (q->stamp != STAMP_GOOD) ERR("'q' was not initialized");
     enum {X, Y, Z};
     int i, c;
     double k, km, ke; /* particle, total, and maximum kinetic energies */
