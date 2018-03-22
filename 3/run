@@ -1,24 +1,30 @@
 #!/bin/sh
 
-nv=1986
+nv=2562
 u.cp.rbc rbc/sc/$nv rbc.off
 u.cp.rbc rbc/sc/$nv rbc.stress.free
 
 u.strtdir
+a=`off.area   rbc.off`
+v=`off.volume rbc.off`
+#p=`off.phi    $nv`
+p=0.0
+
 u.run udx conf.cfg "
 glb = { 
-    restart = false
+    restart = true
     numdensity = 1
 }
-time = { end = 30.0 }
+time = { end =  5.0 }
 wvel = { gdot = 0.0 }
 rbc = {
     ks  = 0.0
-    kb  = 100.0
+    kb  = 0.1
+    kd   = 0.0
     x0  = 0.2
-    gammaC = 0.0
-    phi =       `off.phi    $nv`
-    totArea   = `off.area   rbc.off`
-    totVolume = `off.volume rbc.off`
+    gammaC = 100.0
+    totArea   = $a
+    totVolume = $v
+    phi =       $p
 }
 "
