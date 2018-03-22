@@ -7,9 +7,11 @@ prog=u.var
 
 usg () {
     msg 'u.var FILE.cfg NAME [INDEX]'
-    msg 'get value of a variable NAME from config file FILE.cfg'
+    msg 'get value of a variable NAME from a config file FILE.cfg'
     msg 'optional INDEX argument is an array index (zero based)'
+    msg
     msg '$ u.var data/default.cfg rbc.mass'
+    msg '$ u.var data/default.cfg flu.g 1'
     exit
 }
 
