@@ -1,0 +1,2 @@
+# TEST: 1
+u.var data/default.cfg flu.g 1 > rbc.out.txt

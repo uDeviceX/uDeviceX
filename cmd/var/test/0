@@ -1,0 +1,2 @@
+# TEST: 0
+u.var data/default.cfg rbc.mass > rbc.out.txt
