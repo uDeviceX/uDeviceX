@@ -1,8 +1,9 @@
 /* set colors of particles according to the RBCs */
 
 void gen_colors(const Rbc *r, Colorer *c, Flu *f) {
-    int nm, nv, nmhalo;
+    int nm, nv, n, nmhalo;
 
+    n  = f->q.n;
     nm = r->q.nc;
     nv = r->q.nv;
 
@@ -13,8 +14,8 @@ void gen_colors(const Rbc *r, Colorer *c, Flu *f) {
     UC(emesh_post_send(c->e.p, c->e.c));
     UC(emesh_post_recv(c->e.c, c->e.u));
 
-    if (nm * nv)
-        UC(d::MemcpyAsync(c->pp, r->q.pp, nm*nv*sizeof(Particle), D2D));
+    if (nm*nv && n > 0)
+        aD2D(c->pp, r->q.pp, nm*nv);
 
     UC(emesh_wait_send(c->e.c));
     UC(emesh_wait_recv(c->e.c, c->e.u));
@@ -23,11 +24,13 @@ void gen_colors(const Rbc *r, Colorer *c, Flu *f) {
     nm += nmhalo;
 
     /* compute extents */
-    UC(minmax(c->pp, nv, nm, /**/ c->minext, c->maxext));
-    UC(collision_get_colors(f->q.pp, f->q.n, c->pp,
-                            r->tri,
-                            nv, nm,
-                            c->minext, c->maxext, /**/ f->q.cc));
+    if (n > 0) {
+        UC(minmax(c->pp, nv, nm, /**/ c->minext, c->maxext));
+        UC(collision_get_colors(f->q.pp, f->q.n, c->pp,
+                                r->tri,
+                                nv, nm,
+                                c->minext, c->maxext, /**/ f->q.cc));
+    }
 }
 
 void recolor_flux(const Coords *c, const Recolorer *opt, Flu *f) {
