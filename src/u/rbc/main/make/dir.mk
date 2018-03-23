@@ -3,21 +3,11 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/conf                  && \
     d $B/coords                && \
     d $B/d                     && \
-    d $B/io/bop                && \
-    d $B/io/com                && \
-    d $B/io/diag/mesh          && \
     d $B/io/diag/part          && \
-    d $B/io/field              && \
-    d $B/io/field/h5           && \
-    d $B/io/field/xmf          && \
     d $B/io/mesh               && \
     d $B/io/mesh/write         && \
     d $B/io/mesh_read          && \
-    d $B/io/point              && \
     d $B/io/restart            && \
-    d $B/io/rig                && \
-    d $B/io/txt                && \
-    d $B/io/vtk                && \
     d $B/math/linal            && \
     d $B/math/rnd              && \
     d $B/math/tform            && \
