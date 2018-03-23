@@ -17,8 +17,6 @@
 
 #include "io/point/imp.h"
 
-#define PI (3.141592653589793)
-
 struct Out {
     MPI_Comm comm;
     MeshRead *mesh;
