@@ -7,3 +7,6 @@
 - a library to read ply subset used by udx
 - a library-wrapper for libbop
 - a library to write vtk
+
+  face
+  data: points, point data[n], tri data[n], edge data[n]
