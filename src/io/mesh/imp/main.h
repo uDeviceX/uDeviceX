@@ -34,13 +34,13 @@ static void vert(MPI_Comm cart, int n, const Vectors *pos, const Vectors *vel, W
     EFREE(D);
 }
 
-static void wfaces0(MPI_Comm cart, int *buf, const int4 *faces, int nc, int nv, int nt, WriteFile *f) {
+static void wfaces0(MPI_Comm comm, int *buf, const int4 *faces, int nc, int nv, int nt, WriteFile *f) {
     /* write faces */
     int c, t, b;  /* cell, triangle, buffer index */
     int n, shift;
     int4 tri;
     n = nc * nv;
-    UC(write_shift_indices(cart, n, &shift));
+    UC(write_shift_indices(comm, n, &shift));
     for(b = c = 0; c < nc; ++c)
         for(t = 0; t < nt; ++t) {
             tri = faces[t];
@@ -49,7 +49,7 @@ static void wfaces0(MPI_Comm cart, int *buf, const int4 *faces, int nc, int nv, 
             buf[b++] = shift + nv*c + tri.y;
             buf[b++] = shift + nv*c + tri.z;
         }
-    UC(write_all(cart, buf, b*sizeof(buf[0]), f));
+    UC(write_all(comm, buf, b*sizeof(buf[0]), f));
 }
 
 static void wfaces(MPI_Comm cart, const int4 *faces, int nc, int nv, int nt, WriteFile *f) {
@@ -109,8 +109,8 @@ void mesh_write_vectros(MeshWrite *q, MPI_Comm comm, int nc, Vectors *pos, Vecto
     char path[FILENAME_MAX];
 
     nv = q->nv; nt = q->nt; tt = q->tt; directory = q->directory;
-    if (sprintf(path, PATTERN, DUMP_BASE, directory, id) < 0)
-        ERR("sprintf failed");
+    if (snprintf(path, FILENAME_MAX, PATTERN, DUMP_BASE, directory, id) < 0)
+        ERR("snprintf failed");
     UC(write_file_open(comm, path, /**/ &f));
     UC(mesh_write(comm, nc, nv, nt, pos, vel, tt, f));
     UC(write_file_close(f));
