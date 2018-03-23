@@ -4,22 +4,22 @@ void vtk_conf_ini(MeshRead *mesh, /**/ VTKConf **pq) {
     const int4 *tt;
     EMALLOC(1, &q);
 
+
     nv = mesh_read_get_nv(mesh);
     nt = mesh_read_get_nt(mesh);
     tt = mesh_read_get_tri(mesh);
-    EMALLOC(nt, &q->mesh->tt);
+    EMALLOC(nt, &q->mesh.tt);
     for (i = 0; i < nt; i++)
-        q->mesh->tt[i] = tt[i];
-    q->mesh->nv = nv;
-    q->mesh->nt = nt;
-
+        q->mesh.tt[i] = tt[i];
     key_list_ini(&q->tri);
+    q->mesh.nv = nv;
+    q->mesh.nt = nt;
     *pq = q;
 }
 
 void vtk_conf_fin(VTKConf *q) {
     key_list_fin(q->tri);
-    EFREE(q->mesh->tt);
+    EFREE(q->mesh.tt);
     EFREE(q);
 }
 

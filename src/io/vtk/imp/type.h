@@ -4,7 +4,7 @@ struct Mesh {
 };
 
 struct VTKConf {
-    Mesh *mesh;
+    Mesh mesh;
     KeyList *tri;
 };
 
