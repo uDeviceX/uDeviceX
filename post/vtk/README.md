@@ -10,12 +10,22 @@
 
 data: points, point data[n], tri data[n], edge data[n]
 
+
+	KeyList_ini()
+	KeyList_copy(KeyList*, /**/ KeyList**)
+	KeyList_append(keys)
+	bool KeyList_has(keys)
+	KeyList_size()
+	KeyList_offset(keys)
+	KeyList_width(i)
+	KeyList_fin()
+
 	conf_ini(MeshRead)
 	conf_push_edge(keys)
 	conf_fin()
 
 	ini(maxn, path, conf)
-	push_points(n, data)
+	push_points(n, Vectors)
 	push_edge(n, data, keys)
 	write(id)
 	fin()
