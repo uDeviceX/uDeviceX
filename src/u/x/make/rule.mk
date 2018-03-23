@@ -56,6 +56,7 @@ $B/io/point/imp.o: $S/io/point/imp.cpp; $X -I$S/io/point -I$S/.
 $B/io/restart/imp.o: $S/io/restart/imp.cpp; $X -I$S/io/restart -I$S/.
 $B/io/rig/imp.o: $S/io/rig/imp.cpp; $X -I$S/io/rig -I$S/.
 $B/io/txt/imp.o: $S/io/txt/imp.cpp; $X -I$S/io/txt -I$S/.
+$B/io/vtk/imp.o: $S/io/vtk/imp.cpp; $X -I$S/io/vtk -I$S/.
 $B/main.o: $S/main.cpp; $X -I$S/.
 $B/math/linal/imp.o: $S/math/linal/imp.cpp; $X -I$S/math/linal -I$S/.
 $B/math/rnd/imp.o: $S/math/rnd/imp.cpp; $X -I$S/math/rnd -I$S/.

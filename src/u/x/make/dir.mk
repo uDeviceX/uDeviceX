@@ -52,6 +52,7 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/io/restart            && \
     d $B/io/rig                && \
     d $B/io/txt                && \
+    d $B/io/vtk                && \
     d $B/math/linal            && \
     d $B/math/rnd              && \
     d $B/math/tform            && \

@@ -17,6 +17,7 @@ $B/io/point/imp.o: $S/utils/imp.h $S/utils/os.h $S/inc/conf.h $S/utils/error.h $
 $B/io/restart/imp.o: $S/utils/imp.h $S/inc/conf.h $S/utils/error.h $S/inc/type.h $S/io/restart/imp.h $S/inc/def.h $B/conf.h $S/coords/imp.h $S/utils/msg.h
 $B/io/rig/imp.o: $S/utils/imp.h $S/inc/conf.h $S/utils/error.h $S/inc/type.h $S/io/rig/imp.h $B/conf.h $S/io/rig/imp/main.h $S/io/rig/imp/type.h $S/coords/imp.h
 $B/io/txt/imp.o: $S/utils/imp.h $S/utils/error.h $S/inc/type.h $S/io/txt/imp.h $S/io/txt/imp/dump.h $S/io/txt/imp/read.h $S/io/txt/imp/type.h $S/utils/msg.h
+$B/io/vtk/imp.o: $S/utils/imp.h $S/utils/error.h $S/io/vtk/imp.h $S/io/vtk/imp/main.h $S/io/vtk/imp/type.h $S/utils/msg.h
 $B/math/linal/imp.o: $S/utils/error.h $S/math/linal/imp.h
 $B/math/rnd/imp.o: $S/utils/imp.h $S/utils/error.h $S/math/rnd/imp.h
 $B/math/tform/imp.o: $S/utils/imp.h $S/inc/conf.h $S/utils/error.h $S/math/tform/imp.h $B/conf.h $S/math/tform/imp/main.h $S/math/tform/imp/type.h $S/math/tform/type.h $S/utils/msg.h

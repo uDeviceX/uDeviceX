@@ -1,0 +1,2 @@
+struct VTK { };
+struct VTKConf { };
