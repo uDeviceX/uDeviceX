@@ -6,4 +6,5 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/mpi                && \
     d $B/scheme/time_step   && \
     d $B/u/scheme/time_step && \
-    d $B/utils             
+    d $B/utils              && \
+    d $B/utils/string      

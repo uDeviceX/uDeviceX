@@ -92,6 +92,7 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/scheme/time_step      && \
     d $B/sim                   && \
     d $B/utils                 && \
+    d $B/utils/string          && \
     d $B/wall                  && \
     d $B/wall/exch             && \
     d $B/wall/force            && \

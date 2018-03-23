@@ -36,4 +36,5 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/rbc/shape             && \
     d $B/rbc/stretch           && \
     d $B/u/rbc/area_volume     && \
-    d $B/utils                
+    d $B/utils                 && \
+    d $B/utils/string         

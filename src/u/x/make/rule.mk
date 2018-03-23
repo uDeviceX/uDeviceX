@@ -110,6 +110,7 @@ $B/utils/imp.o: $S/utils/imp.cpp; $X -I$S/utils -I$S/.
 $B/utils/mc.o: $S/utils/mc.cpp; $X -I$S/utils -I$S/.
 $B/utils/msg.o: $S/utils/msg.cpp; $X -I$S/utils -I$S/.
 $B/utils/os.o: $S/utils/os.cpp; $X -I$S/utils -I$S/.
+$B/utils/string/imp.o: $S/utils/string/imp.cpp; $X -I$S/utils/string -I$S/.
 $B/wall/exch/imp.o: $S/wall/exch/imp.cpp; $X -I$S/wall/exch -I$S/.
 $B/wall/force/imp.o: $S/wall/force/imp.cu; $N -I$S/wall/force -I$S/.
 $B/wall/imp.o: $S/wall/imp.cu; $N -I$S/wall -I$S/.

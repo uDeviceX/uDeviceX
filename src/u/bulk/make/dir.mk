@@ -15,4 +15,5 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/pair           && \
     d $B/parray         && \
     d $B/u/bulk         && \
-    d $B/utils         
+    d $B/utils          && \
+    d $B/utils/string  

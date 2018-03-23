@@ -53,3 +53,4 @@ $B/utils/imp.o: $S/utils/imp.cpp; $X -I$S/utils -I$S/.
 $B/utils/mc.o: $S/utils/mc.cpp; $X -I$S/utils -I$S/.
 $B/utils/msg.o: $S/utils/msg.cpp; $X -I$S/utils -I$S/.
 $B/utils/os.o: $S/utils/os.cpp; $X -I$S/utils -I$S/.
+$B/utils/string/imp.o: $S/utils/string/imp.cpp; $X -I$S/utils/string -I$S/.

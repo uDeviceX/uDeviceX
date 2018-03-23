@@ -28,8 +28,8 @@ O = $B/algo/edg/imp.o $B/algo/force_stat/imp.o $B/algo/kahan_sum/imp.o \
     $B/scheme/force/conf.o $B/scheme/force/imp.o $B/scheme/move/imp.o \
     $B/scheme/restrain/conf.o $B/scheme/restrain/imp.o $B/scheme/time/imp.o \
     $B/scheme/time_step/imp.o $B/sim/imp.o $B/utils/cc.o $B/utils/error.o \
-    $B/utils/imp.o $B/utils/mc.o $B/utils/msg.o $B/utils/os.o $B/wall/exch/imp.o \
-    $B/wall/force/imp.o $B/wall/imp.o $B/wall/sdf/array3d/imp.o \
-    $B/wall/sdf/bounce/imp.o $B/wall/sdf/field/imp.o $B/wall/sdf/imp.o \
-    $B/wall/sdf/label/imp.o $B/wall/sdf/tex3d/imp.o $B/wall/sdf/tform/imp.o \
-    $B/wall/wvel/conf.o $B/wall/wvel/imp.o
+    $B/utils/imp.o $B/utils/mc.o $B/utils/msg.o $B/utils/os.o \
+    $B/utils/string/imp.o $B/wall/exch/imp.o $B/wall/force/imp.o $B/wall/imp.o \
+    $B/wall/sdf/array3d/imp.o $B/wall/sdf/bounce/imp.o $B/wall/sdf/field/imp.o \
+    $B/wall/sdf/imp.o $B/wall/sdf/label/imp.o $B/wall/sdf/tex3d/imp.o \
+    $B/wall/sdf/tform/imp.o $B/wall/wvel/conf.o $B/wall/wvel/imp.o

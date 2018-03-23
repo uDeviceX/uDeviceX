@@ -13,4 +13,5 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/rbc/gen        && \
     d $B/rbc/matrices   && \
     d $B/u/rbc/gen      && \
-    d $B/utils         
+    d $B/utils          && \
+    d $B/utils/string  

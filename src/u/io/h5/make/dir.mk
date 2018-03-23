@@ -7,4 +7,5 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/io/field/xmf && \
     d $B/mpi          && \
     d $B/u/io/h5      && \
-    d $B/utils       
+    d $B/utils        && \
+    d $B/utils/string

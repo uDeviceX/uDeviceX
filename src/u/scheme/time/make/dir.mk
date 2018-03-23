@@ -3,4 +3,5 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/mpi           && \
     d $B/scheme/time   && \
     d $B/u/scheme/time && \
-    d $B/utils        
+    d $B/utils         && \
+    d $B/utils/string 

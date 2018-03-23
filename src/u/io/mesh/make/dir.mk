@@ -9,4 +9,5 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/mesh/vectors  && \
     d $B/mpi           && \
     d $B/u/io/mesh     && \
-    d $B/utils        
+    d $B/utils         && \
+    d $B/utils/string 

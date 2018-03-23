@@ -1,7 +1,7 @@
 $B/algo/edg/imp.o: $S/utils/error.h $S/algo/edg/imp.h $S/algo/edg/imp/main.h
 $B/algo/force_stat/imp.o: $S/utils/error.h $S/inc/type.h $S/algo/force_stat/imp.h $S/d/api.h $S/algo/force_stat/imp/main.h $S/utils/msg.h
 $B/algo/kahan_sum/imp.o: $S/utils/imp.h $S/utils/error.h $S/algo/kahan_sum/imp.h $S/algo/kahan_sum/imp/main.h $S/algo/kahan_sum/imp/type.h
-$B/algo/key_list/imp.o: $S/utils/imp.h $S/utils/error.h $S/algo/key_list/imp.h $S/algo/key_list/imp/main.h $S/algo/key_list/imp/type.h $S/utils/msg.h
+$B/algo/key_list/imp.o: $S/utils/imp.h $S/utils/error.h $S/algo/key_list/imp/util.h $S/algo/key_list/imp.h $S/algo/key_list/imp/main.h $S/algo/key_list/imp/type.h $S/utils/msg.h
 $B/algo/minmax/imp.o: $S/inc/conf.h $S/inc/type.h $S/d/q.h $S/algo/minmax/imp.h $S/utils/cc.h $S/inc/def.h $S/inc/dev.h $S/d/api.h $B/conf.h $S/utils/kl.h $S/d/ker.h $S/utils/msg.h
 $B/algo/scan/imp.o: $S/algo/scan/cpu/imp.h $S/utils/imp.h $S/inc/conf.h $S/utils/error.h $S/d/q.h $S/algo/scan/imp.h $S/utils/cc.h $S/algo/scan/dev.h $S/d/api.h $S/inc/dev.h $B/conf.h $S/utils/kl.h $S/algo/scan/cuda/type.h $S/algo/scan/cpu/type.h $S/algo/scan/cuda/imp.h $S/d/ker.h
 $B/clist/imp.o: $S/clist/imp/fin.h $S/utils/imp.h $S/inc/conf.h $S/utils/error.h $S/inc/type.h $S/partlist/dev.h $S/clist/imp.h $S/partlist/type.h $S/algo/scan/imp.h $S/utils/cc.h $S/inc/def.h $S/clist/dev.h $S/clist/imp/ini.h $S/d/api.h $S/inc/dev.h $B/conf.h $S/clist/imp/main.h $S/clist/imp/type.h $S/utils/kl.h $S/clist/dev/main.h $S/utils/msg.h
@@ -110,6 +110,7 @@ $B/utils/imp.o: $S/utils/error.h $S/utils/imp.h
 $B/utils/mc.o: $S/inc/conf.h $S/utils/error.h $S/mpi/wrapper.h $S/utils/mc.h $B/conf.h
 $B/utils/msg.o: $S/utils/msg.h
 $B/utils/os.o: $S/utils/os.h $S/utils/error.h $S/utils/msg.h
+$B/utils/string/imp.o: $S/utils/string/imp.h
 $B/wall/exch/imp.o: $S/comm/imp.h $S/inc/conf.h $S/utils/error.h $S/inc/type.h $S/inc/def.h $B/conf.h $S/frag/imp.h $S/utils/msg.h
 $B/wall/force/imp.o: $S/wall/sdf/type.h $S/farray/imp.h $S/coords/type.h $S/math/dev.h $S/wall/wvel/type.h $S/wall/force/imp/main.h $S/wall/sdf/dev.h $S/utils/texo.h $B/conf.h $S/d/api.h $S/wall/force/imp.h $S/wall/sdf/tex3d/type.h $S/parray/type.h $S/math/tform/dev.h $S/farray/type.h $S/wall/wvel/dev.h $S/inc/conf.h $S/coords/dev.h $S/inc/dev.h $S/pair/dev.h $S/parray/dev.h $S/math/rnd/dev.h $S/d/q.h $S/inc/type.h $S/wall/force/dev/map/use.h $S/wall/force/dev/map/ini.h $S/utils/kl.h $S/math/tform/type.h $S/coords/imp.h $S/wall/wvel/imp.h $S/utils/cc.h $S/utils/msg.h $S/parray/imp.h $S/farray/dev.h $S/pair/type.h $S/math/rnd/imp.h $S/utils/texo.dev.h $S/wall/force/dev/main.h $S/pair/imp.h $S/inc/def.h $S/d/ker.h $S/wall/force/dev/map/type.h $S/utils/error.h
 $B/wall/imp.o: $S/wall/imp/fin.h $S/wall/force/imp.h $S/wall/exch/imp.h $S/coords/type.h $S/utils/imp.h $S/inc/conf.h $S/utils/error.h $S/inc/type.h $S/d/q.h $S/wall/imp/strt.h $S/wall/imp.h $S/algo/scan/imp.h $S/partlist/type.h $S/wall/wvel/type.h $S/utils/cc.h $S/inc/def.h $S/io/restart/imp.h $S/math/rnd/imp.h $S/wall/imp/generate.h $S/wall/imp/ini.h $S/wall/sdf/type.h $S/inc/dev.h $S/d/api.h $B/conf.h $S/wall/imp/force.h $S/utils/texo.h $S/wall/imp/type.h $S/wall/sdf/imp.h $S/math/tform/type.h $S/utils/te.h $S/utils/kl.h $S/clist/imp.h $S/wall/sdf/tex3d/type.h $S/wall/dev/main.h $S/d/ker.h $S/utils/msg.h
