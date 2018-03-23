@@ -11,6 +11,9 @@
 #include "algo/key_list/imp.h"
 
 void main0() {
+    KeyList *k;
+    KeyList_ini(&k);
+    KeyList_fin(k);
 }
 
 int main(int argc, char **argv) {
