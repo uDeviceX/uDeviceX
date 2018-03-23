@@ -4,7 +4,7 @@ void key_list_ini(KeyList**);
 void key_list_copy(KeyList*, /**/ KeyList**);
 void key_list_fin(KeyList*);
 
-void key_list_append(KeyList*, const char*);
+void key_list_push(KeyList*, const char*);
 int key_list_has(KeyList*, const char*);
 int key_list_offset(KeyList*, const char*);
 int key_list_width(KeyList*, const char*);

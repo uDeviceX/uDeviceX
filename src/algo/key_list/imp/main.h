@@ -20,7 +20,7 @@ void key_list_copy(KeyList *a, /**/ KeyList **pq) {
 
 void key_list_fin(KeyList *q) { EFREE(q); }
 
-void key_list_append(KeyList *q, const char *k) {
+void key_list_push(KeyList *q, const char *k) {
     int nk;
     nk = q->nk;
     if (nk == MAX_NK)

@@ -13,9 +13,9 @@
 void main0() {
     KeyList *q, *p;
     key_list_ini(&q);
-    key_list_append(q, "a");
-    key_list_append(q, "b c");
-    key_list_append(q, "d");
+    key_list_push(q, "a");
+    key_list_push(q, "b c");
+    key_list_push(q, "d");
 
     key_list_copy(q, /**/ &p);
 

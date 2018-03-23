@@ -23,6 +23,6 @@ void vtk_conf_fin(VTKConf *q) {
     EFREE(q);
 }
 
-void vtk_conf_tri(VTKConf*) {
-
+void vtk_conf_tri(VTKConf *q, const char *keys) {
+    UC(key_list_push(q->tri, keys));
 }
