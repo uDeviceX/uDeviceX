@@ -13,7 +13,7 @@ $B/io/field/xmf/imp.o: $S/utils/imp.h $S/utils/error.h $S/io/field/xmf/imp.h $S/
 $B/io/mesh/imp.o: $S/utils/imp.h $S/utils/os.h $S/inc/conf.h $S/io/mesh/imp/shift/center.h $S/utils/error.h $S/io/mesh/imp/shift/edge.h $S/inc/type.h $S/io/mesh/imp/util.h $S/mesh/vectors/imp.h $S/mpi/wrapper.h $S/io/mesh/imp.h $S/io/mesh_read/imp.h $S/utils/mc.h $B/conf.h $S/io/mesh/imp/main.h $S/io/mesh/imp/type.h $S/io/mesh/imp/new.h $S/io/mesh/write/imp.h $S/utils/msg.h $S/coords/imp.h
 $B/io/mesh_read/imp.o: $S/utils/imp.h $S/utils/error.h $S/io/mesh_read/imp/ply.h $S/io/mesh_read/imp.h $S/io/mesh_read/imp/main.h $S/io/mesh_read/imp/type.h $S/io/mesh_read/imp/off.h $S/utils/msg.h
 $B/io/mesh/write/imp.o: $S/utils/imp.h $S/inc/conf.h $S/utils/error.h $S/mpi/wrapper.h $S/io/mesh/write/imp.h $S/utils/mc.h $B/conf.h $S/io/mesh/write/imp/main.h $S/io/mesh/write/imp/type.h
-$B/io/point/imp.o: $S/utils/imp.h $S/utils/os.h $S/inc/conf.h $S/utils/error.h $S/io/point/imp/util.h $S/mpi/wrapper.h $S/utils/mc.h $B/conf.h $S/io/point/imp/main.h $S/io/point/imp/type.h $S/utils/msg.h
+$B/io/point/imp.o: $S/utils/imp.h $S/utils/os.h $S/inc/conf.h $S/utils/error.h $S/io/point/imp/util.h $S/mpi/wrapper.h $S/utils/mc.h $S/utils/string/imp.h $B/conf.h $S/io/point/imp/main.h $S/io/point/imp/type.h $S/utils/msg.h
 $B/io/restart/imp.o: $S/utils/imp.h $S/inc/conf.h $S/utils/error.h $S/inc/type.h $S/io/restart/imp.h $S/inc/def.h $B/conf.h $S/coords/imp.h $S/utils/msg.h
 $B/io/rig/imp.o: $S/utils/imp.h $S/inc/conf.h $S/utils/error.h $S/inc/type.h $S/io/rig/imp.h $B/conf.h $S/io/rig/imp/main.h $S/io/rig/imp/type.h $S/coords/imp.h
 $B/io/txt/imp.o: $S/utils/imp.h $S/utils/error.h $S/inc/type.h $S/io/txt/imp.h $S/io/txt/imp/dump.h $S/io/txt/imp/read.h $S/io/txt/imp/type.h $S/utils/msg.h
@@ -53,4 +53,4 @@ $B/utils/imp.o: $S/utils/error.h $S/utils/imp.h
 $B/utils/mc.o: $S/inc/conf.h $S/utils/error.h $S/mpi/wrapper.h $S/utils/mc.h $B/conf.h
 $B/utils/msg.o: $S/utils/msg.h
 $B/utils/os.o: $S/utils/os.h $S/utils/error.h $S/utils/msg.h
-$B/utils/string/imp.o: $S/utils/string/imp.h
+$B/utils/string/imp.o: $S/utils/error.h $S/utils/string/imp.h

@@ -12,6 +12,7 @@
 #include "utils/msg.h"
 #include "utils/error.h"
 #include "utils/imp.h"
+#include "utils/string/imp.h"
 
 #include "utils/mc.h"
 #include "mpi/wrapper.h"

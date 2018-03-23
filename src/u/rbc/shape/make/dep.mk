@@ -18,4 +18,4 @@ $B/utils/imp.o: $S/utils/error.h $S/utils/imp.h
 $B/utils/mc.o: $S/inc/conf.h $S/utils/error.h $S/mpi/wrapper.h $S/utils/mc.h $B/conf.h
 $B/utils/msg.o: $S/utils/msg.h
 $B/utils/os.o: $S/utils/os.h $S/utils/error.h $S/utils/msg.h
-$B/utils/string/imp.o: $S/utils/string/imp.h
+$B/utils/string/imp.o: $S/utils/error.h $S/utils/string/imp.h

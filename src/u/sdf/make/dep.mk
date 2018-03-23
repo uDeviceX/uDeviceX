@@ -19,7 +19,7 @@ $B/utils/imp.o: $S/utils/error.h $S/utils/imp.h
 $B/utils/mc.o: $S/inc/conf.h $S/utils/error.h $S/mpi/wrapper.h $S/utils/mc.h $B/conf.h
 $B/utils/msg.o: $S/utils/msg.h
 $B/utils/os.o: $S/utils/os.h $S/utils/error.h $S/utils/msg.h
-$B/utils/string/imp.o: $S/utils/string/imp.h
+$B/utils/string/imp.o: $S/utils/error.h $S/utils/string/imp.h
 $B/wall/sdf/array3d/imp.o: $S/utils/imp.h $S/inc/conf.h $S/utils/error.h $S/wall/sdf/array3d/imp.h $S/utils/cc.h $S/d/api.h $B/conf.h $S/wall/sdf/array3d/type.h $S/utils/msg.h
 $B/wall/sdf/bounce/imp.o: $S/wall/wvel/dev.h $S/coords/type.h $S/inc/conf.h $S/wall/sdf/imp.h $S/utils/error.h $S/inc/type.h $S/d/q.h $S/wall/sdf/dev.h $S/wall/sdf/bounce/imp.h $S/utils/cc.h $S/inc/dev.h $S/d/api.h $B/conf.h $S/wall/sdf/bounce/imp/main.h $S/math/tform/dev.h $S/math/tform/type.h $S/utils/kl.h $S/math/dev.h $S/coords/dev.h $S/wall/sdf/type.h $S/wall/wvel/imp.h $S/wall/sdf/bounce/dev/main.h $S/wall/sdf/tex3d/type.h $S/wall/wvel/type.h $S/coords/imp.h $S/d/ker.h $S/utils/msg.h
 $B/wall/sdf/field/imp.o: $S/wall/sdf/field/imp/fin.h $S/utils/imp.h $S/inc/conf.h $S/io/field/imp.h $S/utils/error.h $S/wall/sdf/tform/imp.h $S/wall/sdf/field/imp.h $S/wall/sdf/field/imp/ini.h $B/conf.h $S/wall/sdf/field/imp/main.h $S/wall/sdf/field/imp/sample.h $S/wall/sdf/field/imp/type.h $S/math/tform/imp.h $S/coords/imp.h $S/utils/msg.h

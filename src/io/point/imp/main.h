@@ -15,7 +15,7 @@ static void conf_push(IOPointConf *q, int nv, const char *k0) {
 }
 void io_point_conf_push(IOPointConf *q, const char *key) {
     int nw;
-    UC(nw = nword(key));
+    UC(nw = string_nword(key));
     msg_print("string, nword: '%s', %d", key, nw);
     conf_push(q, nw, key);
 }
