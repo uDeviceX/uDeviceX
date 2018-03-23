@@ -3,6 +3,7 @@
 #include "utils/error.h"
 #include "utils/imp.h"
 #include "utils/msg.h"
+#include "io/mesh_read/imp.h"
 
 #include "imp.h"
 
