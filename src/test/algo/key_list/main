@@ -1,0 +1,6 @@
+# TEST: algo.key_list
+cd test/algo/key_list
+u.conf0 u/algo/key_list
+u.make -j
+u.run ./udx
+cp .000 log.out.txt
