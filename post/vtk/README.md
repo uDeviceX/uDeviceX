@@ -10,20 +10,6 @@
 
 data: points, point data[n], tri data[n], edge data[n]
 
-	void KeyList_ini()
-	void KeyList_copy(KeyList*, /**/ KeyList**)
-	void KeyList_append(key)
-	bool KeyList_has(key)
-	int KeyList_offset(key)
-	int KeyList_width(i)
-	int KeyList_size()
-
-	void KeyList_mark(key)
-	void KeyList_clear()
-	void KeyList_marked()
-
-	void KeyList_fin()
-
 	conf_ini(MeshRead)
 	conf_push_edge(keys)
 	conf_fin()
