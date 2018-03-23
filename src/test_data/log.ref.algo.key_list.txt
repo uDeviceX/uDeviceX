@@ -1,0 +1,16 @@
+offset: 0
+offset: 1
+offset: 3
+width: 2
+size: 4
+marked: 1
+<key_list
+'a' 1
+'b c' 1
+'d' 1
+>
+<key_list
+'a' 0
+'b c' 0
+'d' 0
+>
