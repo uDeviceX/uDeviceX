@@ -10,5 +10,6 @@ struct VTKConf {
 
 struct VTK {
     int maxn;
+    Mesh mesh;
     double *R;
 };

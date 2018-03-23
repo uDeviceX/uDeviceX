@@ -33,8 +33,14 @@ void vtk_ini(int maxn, char const *path, VTKConf*, /**/ VTK **pq) {
     EMALLOC(3*maxn, &q->R);
     UC(mkdir(DUMP_BASE, path));
     q->maxn = maxn;
-    msg_print("%d", q->maxn);
     *pq = q;
+}
+
+void vtk_points(VTK *q, int nm, const Vectors *pos) {
+    int n, i;
+    n = nm * q->mesh.nv;
+    for (i = 0; i < n; i++) {
+    }
 }
 
 void vtk_fin(VTK *q) {
