@@ -23,11 +23,16 @@ struct Out {
 
 static void dump(double *tri_area,
                  Vectors *pos, Out *out) {
+    int nv;
     VTKConf *c;
-    //    VTK     *p;
+    VTK     *p;
+    nv = mesh_read_get_nv(out->mesh);
 
     UC(vtk_conf_ini(out->mesh, &c));
     UC(vtk_conf_tri(c, "area"));
+
+    vtk_ini(nv, out->path, c, /**/ &p);
+    vtk_fin(p);
 
     UC(vtk_conf_fin(c));
 }

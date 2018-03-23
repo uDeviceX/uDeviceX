@@ -10,5 +10,5 @@ struct VTKConf {
 
 struct VTK {
     int maxn;
-    double *R;
+    //    double *R;
 };
