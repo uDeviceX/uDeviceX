@@ -15,6 +15,11 @@ void main0() {
     KeyList_ini(&q);
     KeyList_append(q, "a");
     KeyList_append(q, "b c");
+    KeyList_append(q, "d");
+
+    msg_print("offset: %d", KeyList_offset(q, "a"));
+    msg_print("offset: %d", KeyList_offset(q, "b c"));
+    msg_print("offset: %d", KeyList_offset(q, "d"));    
     
     KeyList_fin(q);
 }
