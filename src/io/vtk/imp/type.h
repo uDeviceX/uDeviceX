@@ -8,6 +8,7 @@ struct VTKConf {
     KeyList *tri;
 };
 
-
-struct VTK { };
-
+struct VTK {
+    int maxn;
+    double *R;
+};
