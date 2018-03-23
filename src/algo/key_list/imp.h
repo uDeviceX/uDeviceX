@@ -11,6 +11,7 @@ int KeyList_width(KeyList*, const char*);
 int KeyList_size(KeyList*);
 
 void KeyList_mark(KeyList*, const char*);
+int  KeyList_marked(KeyList*);
 void KeyList_unmark(KeyList*);
-int  KeyList_marked(KeyList*, const char*);
-void KeyList_log_marked(KeyList*);
+
+void KeyList_log(KeyList*);

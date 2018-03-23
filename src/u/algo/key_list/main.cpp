@@ -19,8 +19,20 @@ void main0() {
 
     msg_print("offset: %d", KeyList_offset(q, "a"));
     msg_print("offset: %d", KeyList_offset(q, "b c"));
-    msg_print("offset: %d", KeyList_offset(q, "d"));    
-    
+    msg_print("offset: %d", KeyList_offset(q, "d"));
+
+    msg_print("width: %d", KeyList_width(q, "b c"));
+    msg_print("size: %d", KeyList_size(q));
+
+    KeyList_mark(q, "a");
+    KeyList_mark(q, "b c");
+    KeyList_mark(q, "d");
+
+    msg_print("marked: %d", KeyList_marked(q));
+    //    KeyList_unmark(q);
+    KeyList_log(q);
+    msg_print("marked: %d", KeyList_marked(q));
+
     KeyList_fin(q);
 }
 
