@@ -11,11 +11,13 @@
 #include "algo/key_list/imp.h"
 
 void main0() {
-    KeyList *q;
+    KeyList *q, *p;
     KeyList_ini(&q);
     KeyList_append(q, "a");
     KeyList_append(q, "b c");
     KeyList_append(q, "d");
+
+    KeyList_copy(q, /**/ &p);
 
     msg_print("offset: %d", KeyList_offset(q, "a"));
     msg_print("offset: %d", KeyList_offset(q, "b c"));
@@ -29,10 +31,10 @@ void main0() {
     KeyList_mark(q, "d");
 
     msg_print("marked: %d", KeyList_marked(q));
-    //    KeyList_unmark(q);
     KeyList_log(q);
-    msg_print("marked: %d", KeyList_marked(q));
+    KeyList_log(p);
 
+    KeyList_fin(p);
     KeyList_fin(q);
 }
 

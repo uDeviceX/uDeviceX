@@ -4,6 +4,20 @@ void KeyList_ini(KeyList **pq) {
     q->nk = 0;
     *pq = q;
 }
+void KeyList_copy(KeyList *a, /**/ KeyList **pq) {
+    int i, nk;
+    KeyList *q;
+    EMALLOC(1, &q);
+    nk = a->nk;
+    for (i = 0; i < nk; i++) {
+        q->ww[i] = a->ww[i];
+        q->mark[i] = a->mark[i];
+        cpy(q->keys[i], a->keys[i]);
+    }
+    q->nk = nk;
+    *pq = q;
+}
+
 void KeyList_fin(KeyList *q) { EFREE(q); }
 
 void KeyList_append(KeyList *q, const char *k) {
@@ -82,7 +96,7 @@ void  KeyList_unmark(KeyList *q) {
 
 void KeyList_log(KeyList *q) {
     int i, nk;
-    nk = q->nk;    
+    nk = q->nk;
     msg_print("<key_list");
     for (i = 0; i < nk; i++)
         msg_print("'%s' %d", q->keys[i], q->mark[i]);
