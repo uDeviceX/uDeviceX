@@ -17,3 +17,13 @@ static void reset(IOPoint *q) {
         q->seen[i] = 0;
     q->n = UNSET;
 }
+
+static void wrong_key(IOPoint *q, const char *key) {
+    int i, nkey;
+    nkey = q->nkey;
+    msg_print("unkown key: '%s'", key);
+    msg_print("possible values:");
+    for (i = 0; i < nkey; i++)
+        msg_print("'%s'", q->keys[i]);
+    ERR("");
+}
