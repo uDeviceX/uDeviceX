@@ -3,4 +3,4 @@ cd test/mesh/angle
 u.conf0 u/mesh/angle
 u.make -j
 u.cp.rbc rbc/sc/2562 rbc.off
-u.run ./udx 'i="rbc.off"'
+u.run ./udx 'i="rbc.off"' > angle.out.txt
