@@ -1,6 +1,6 @@
 # Convert udx output to legacy vtk
 
-	u.vtk.face vtk ply bop
+	u.vtk.tri  vtk ply bop
 	u.vtk.edge vtk ply bop
 	u.vtk.vert vtk ply bop
 
@@ -10,12 +10,12 @@
 
 data: points, point data[n], tri data[n], edge data[n]
 
-	conf_ini(MeshRead)
-	conf_push_edge(keys)
-	conf_fin()
+	void vtk_conf_ini(MeshRead)
+	void vtk_conf_tri(keys)
+	void vtk_conf_fin()
 
-	ini(maxn, path, conf)
-	push_points(n, Vectors)
-	push_edge(n, data, keys)
-	write(id)
-	fin()
+	void vtk_ini(maxn, path, conf)
+	void vtk_points(nm, Vectors)
+	void vtk_tri(nm, data, keys)
+	void vtk_write(MPI_Comm, id)
+	void vtk_fin()
