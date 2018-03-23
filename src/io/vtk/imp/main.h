@@ -30,7 +30,7 @@ void vtk_conf_tri(VTKConf *q, const char *keys) {
 void vtk_ini(int maxn, char const *path, VTKConf*, /**/ VTK **pq) {
     VTK *q;
     EMALLOC(1, &q);
-    //    EMALLOC(3*maxn, &q->R);
+    EMALLOC(3*maxn, &q->R);
     UC(mkdir(DUMP_BASE, path));
     q->maxn = maxn;
     msg_print("%d", q->maxn);
@@ -38,6 +38,6 @@ void vtk_ini(int maxn, char const *path, VTKConf*, /**/ VTK **pq) {
 }
 
 void vtk_fin(VTK *q) {
-    //    EFREE(q->R);
+    EFREE(q->R);
     EFREE(q);
 }
