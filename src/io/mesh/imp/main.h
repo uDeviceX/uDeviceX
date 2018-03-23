@@ -38,10 +38,9 @@ static void wfaces0(MPI_Comm cart, int *buf, const int4 *faces, int nc, int nv, 
     /* write faces */
     int c, t, b;  /* cell, triangle, buffer index */
     int n, shift;
-    n = nc * nv;
-    write_shift_indices(cart, n, &shift);
-
     int4 tri;
+    n = nc * nv;
+    UC(write_shift_indices(cart, n, &shift));
     for(b = c = 0; c < nc; ++c)
         for(t = 0; t < nt; ++t) {
             tri = faces[t];
