@@ -22,7 +22,7 @@ void write_all(MPI_Comm comm, const void * const ptr, const int nbytes32, WriteF
     MPI_Status status;
     MPI_Offset ntotal = 0;
     MC(MPI_File_get_position(f, &base));
-    MC(MPI_Exscan(&nbytes, &offset, 1, MPI_OFFSET, MPI_SUM, comm));
+    MC(m::Exscan(&nbytes, &offset, 1, MPI_OFFSET, MPI_SUM, comm));
     MC(MPI_File_write_at_all(f, base + offset, ptr, nbytes, MPI_CHAR, &status));
     MC(MPI_Allreduce(&nbytes, &ntotal, 1, MPI_OFFSET, MPI_SUM, comm) );
     MC(MPI_File_seek(f, ntotal, MPI_SEEK_CUR));
