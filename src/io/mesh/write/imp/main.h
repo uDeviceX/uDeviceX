@@ -1,8 +1,8 @@
 int write_file_open(MPI_Comm comm, const char *fn, /**/ WriteFile **pq) {
     WriteFile *q;
     EMALLOC(1, &q);
-    MC(MPI_File_open(comm, fn, MPI_MODE_WRONLY |  MPI_MODE_CREATE, MPI_INFO_NULL, &q->f));
-    MC(MPI_File_set_size(q->f, 0));
+    MC(m::File_open(comm, fn, MPI_MODE_WRONLY |  MPI_MODE_CREATE, MPI_INFO_NULL, &q->f));
+    MC(m::File_set_size(q->f, 0));
     *pq = q;
     return 0;
 }
@@ -10,7 +10,7 @@ int write_file_open(MPI_Comm comm, const char *fn, /**/ WriteFile **pq) {
 int write_file_close(WriteFile *fp) {
     MPI_File f;
     f = fp->f;
-    MC(MPI_File_close(&f));
+    MC(m::File_close(&f));
     EFREE(fp);
     return 0;
 }
@@ -21,11 +21,11 @@ void write_all(MPI_Comm comm, const void * const ptr, const int nbytes32, WriteF
     MPI_Offset offset = 0, nbytes = nbytes32;
     MPI_Status status;
     MPI_Offset ntotal = 0;
-    MC(MPI_File_get_position(f, &base));
+    MC(m::File_get_position(f, &base));
     MC(m::Exscan(&nbytes, &offset, 1, MPI_OFFSET, MPI_SUM, comm));
-    MC(MPI_File_write_at_all(f, base + offset, ptr, nbytes, MPI_CHAR, &status));
-    MC(MPI_Allreduce(&nbytes, &ntotal, 1, MPI_OFFSET, MPI_SUM, comm) );
-    MC(MPI_File_seek(f, ntotal, MPI_SEEK_CUR));
+    MC(m::File_write_at_all(f, base + offset, ptr, nbytes, MPI_CHAR, &status));
+    MC(m::Allreduce(&nbytes, &ntotal, 1, MPI_OFFSET, MPI_SUM, comm) );
+    MC(m::File_seek(f, ntotal, MPI_SEEK_CUR));
 }
 
 int write_master(MPI_Comm comm, const void * const ptr, int sz0, WriteFile *fp) {
