@@ -9,5 +9,3 @@ particles data, in link:https://gitlab.ethz.ch/mavt-cse/bop[bop] format
 == output
 
 field data, in link:https://gitlab.ethz.ch/mavt-cse/bov[bov] format
-
-
