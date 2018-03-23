@@ -12,6 +12,7 @@ void KeyList_append(KeyList *q, const char *k) {
     if (nk == MAX_NK)
         ERR("nk=%d == MAX_NK=%d", nk, MAX_NK);
     cpy(q->keys[nk], k);
+    q->ww[nk] = string_nword(k);
     q->mark[nk] = 0;
     q->nk = nk + 1;
 }

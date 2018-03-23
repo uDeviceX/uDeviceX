@@ -4,6 +4,7 @@
 #include "utils/error.h"
 #include "utils/imp.h"
 #include "utils/msg.h"
+#include "utils/string/imp.h"
 
 #include "imp.h"
 #include "imp/type.h"

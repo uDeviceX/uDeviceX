@@ -13,7 +13,8 @@
 void main0() {
     KeyList *q;
     KeyList_ini(&q);
-    KeyList_append(q, "x y z");
+    KeyList_append(q, "a");
+    KeyList_append(q, "b c");
     
     KeyList_fin(q);
 }
