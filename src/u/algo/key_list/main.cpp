@@ -8,20 +8,9 @@
 #include "mpi/wrapper.h"
 #include "utils/mc.h"
 
-#include "algo/kahan_sum/imp.h"
+#include "algo/key_list/imp.h"
 
 void main0() {
-    double input, sum, sum0;
-    KahanSum *kahan_sum;
-    kahan_sum_ini(&kahan_sum);
-    sum0 = 0;
-    while (scanf("%lf", &input) == 1) {
-        kahan_sum_add(kahan_sum, input);
-        sum0 += input;
-    }
-    sum = kahan_sum_get(kahan_sum);
-    printf("%.17e   %.17e\n",sum, sum0);
-    kahan_sum_fin(kahan_sum);
 }
 
 int main(int argc, char **argv) {
