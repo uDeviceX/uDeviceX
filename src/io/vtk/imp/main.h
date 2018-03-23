@@ -13,12 +13,12 @@ void vtk_conf_ini(MeshRead *mesh, /**/ VTKConf **pq) {
     q->mesh->nv = nv;
     q->mesh->nt = nt;
 
-    KeyList_ini(&q->tri);
+    key_list_ini(&q->tri);
     *pq = q;
 }
 
 void vtk_conf_fin(VTKConf *q) {
-    KeyList_fin(q->tri);
+    key_list_fin(q->tri);
     EFREE(q->mesh->tt);
     EFREE(q);
 }

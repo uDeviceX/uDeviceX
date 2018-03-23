@@ -12,30 +12,30 @@
 
 void main0() {
     KeyList *q, *p;
-    KeyList_ini(&q);
-    KeyList_append(q, "a");
-    KeyList_append(q, "b c");
-    KeyList_append(q, "d");
+    key_list_ini(&q);
+    key_list_append(q, "a");
+    key_list_append(q, "b c");
+    key_list_append(q, "d");
 
-    KeyList_copy(q, /**/ &p);
+    key_list_copy(q, /**/ &p);
 
-    msg_print("offset: %d", KeyList_offset(q, "a"));
-    msg_print("offset: %d", KeyList_offset(q, "b c"));
-    msg_print("offset: %d", KeyList_offset(q, "d"));
+    msg_print("offset: %d", key_list_offset(q, "a"));
+    msg_print("offset: %d", key_list_offset(q, "b c"));
+    msg_print("offset: %d", key_list_offset(q, "d"));
 
-    msg_print("width: %d", KeyList_width(q, "b c"));
-    msg_print("size: %d", KeyList_size(q));
+    msg_print("width: %d", key_list_width(q, "b c"));
+    msg_print("size: %d", key_list_size(q));
 
-    KeyList_mark(q, "a");
-    KeyList_mark(q, "b c");
-    KeyList_mark(q, "d");
+    key_list_mark(q, "a");
+    key_list_mark(q, "b c");
+    key_list_mark(q, "d");
 
-    msg_print("marked: %d", KeyList_marked(q));
-    KeyList_log(q);
-    KeyList_log(p);
+    msg_print("marked: %d", key_list_marked(q));
+    key_list_log(q);
+    key_list_log(p);
 
-    KeyList_fin(p);
-    KeyList_fin(q);
+    key_list_fin(p);
+    key_list_fin(q);
 }
 
 int main(int argc, char **argv) {

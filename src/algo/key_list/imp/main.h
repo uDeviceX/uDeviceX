@@ -1,10 +1,10 @@
-void KeyList_ini(KeyList **pq) {
+void key_list_ini(KeyList **pq) {
     KeyList *q;
     EMALLOC(1, &q);
     q->nk = 0;
     *pq = q;
 }
-void KeyList_copy(KeyList *a, /**/ KeyList **pq) {
+void key_list_copy(KeyList *a, /**/ KeyList **pq) {
     int i, nk;
     KeyList *q;
     EMALLOC(1, &q);
@@ -18,9 +18,9 @@ void KeyList_copy(KeyList *a, /**/ KeyList **pq) {
     *pq = q;
 }
 
-void KeyList_fin(KeyList *q) { EFREE(q); }
+void key_list_fin(KeyList *q) { EFREE(q); }
 
-void KeyList_append(KeyList *q, const char *k) {
+void key_list_append(KeyList *q, const char *k) {
     int nk;
     nk = q->nk;
     if (nk == MAX_NK)
@@ -31,7 +31,7 @@ void KeyList_append(KeyList *q, const char *k) {
     q->nk = nk + 1;
 }
 
-int KeyList_has(KeyList *q, const char *k) {
+int key_list_has(KeyList *q, const char *k) {
     int i, nk;
     nk = q->nk;
     for (i = 0; i < nk; i++)
@@ -39,7 +39,7 @@ int KeyList_has(KeyList *q, const char *k) {
     return 0;
 }
 
-int KeyList_offset(KeyList *q, const char *k) {
+int key_list_offset(KeyList *q, const char *k) {
     int i, nk, offset;
     nk = q->nk;
     for (i = offset = 0; i < nk; i++) {
@@ -50,7 +50,7 @@ int KeyList_offset(KeyList *q, const char *k) {
     return -1;
 }
 
-int KeyList_width(KeyList *q, const char *k) {
+int key_list_width(KeyList *q, const char *k) {
     int i, nk;
     nk = q->nk;
     for (i = 0; i < nk; i++) {
@@ -60,7 +60,7 @@ int KeyList_width(KeyList *q, const char *k) {
     return -1;
 }
 
-int KeyList_size(KeyList *q) {
+int key_list_size(KeyList *q) {
     int i, nk, size;
     nk = q->nk;
     for (i = size = 0; i < nk; i++)
@@ -68,7 +68,7 @@ int KeyList_size(KeyList *q) {
     return size;
 }
 
-void KeyList_mark(KeyList *q, const char *k) {
+void key_list_mark(KeyList *q, const char *k) {
     int i, nk;
     nk = q->nk;
     for (i = 0; i < nk; i++)
@@ -79,7 +79,7 @@ void KeyList_mark(KeyList *q, const char *k) {
     ERR("key `%s` is not found", k);
 }
 
-int  KeyList_marked(KeyList *q) {
+int  key_list_marked(KeyList *q) {
     int i, nk;
     nk = q->nk;
     for (i = 0; i < nk; i++)
@@ -87,14 +87,14 @@ int  KeyList_marked(KeyList *q) {
     return 1;
 }
 
-void  KeyList_unmark(KeyList *q) {
+void  key_list_unmark(KeyList *q) {
     int i, nk;
     nk = q->nk;
     for (i = 0; i < nk; i++)
         q->mark[i] = 0;
 }
 
-void KeyList_log(KeyList *q) {
+void key_list_log(KeyList *q) {
     int i, nk;
     nk = q->nk;
     msg_print("<key_list");

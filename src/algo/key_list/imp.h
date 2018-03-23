@@ -1,17 +1,17 @@
 struct KeyList;
 
-void KeyList_ini(KeyList**);
-void KeyList_copy(KeyList*, /**/ KeyList**);
-void KeyList_fin(KeyList*);
+void key_list_ini(KeyList**);
+void key_list_copy(KeyList*, /**/ KeyList**);
+void key_list_fin(KeyList*);
 
-void KeyList_append(KeyList*, const char*);
-int KeyList_has(KeyList*, const char*);
-int KeyList_offset(KeyList*, const char*);
-int KeyList_width(KeyList*, const char*);
-int KeyList_size(KeyList*);
+void key_list_append(KeyList*, const char*);
+int key_list_has(KeyList*, const char*);
+int key_list_offset(KeyList*, const char*);
+int key_list_width(KeyList*, const char*);
+int key_list_size(KeyList*);
 
-void KeyList_mark(KeyList*, const char*);
-int  KeyList_marked(KeyList*);
-void KeyList_unmark(KeyList*);
+void key_list_mark(KeyList*, const char*);
+int  key_list_marked(KeyList*);
+void key_list_unmark(KeyList*);
 
-void KeyList_log(KeyList*);
+void key_list_log(KeyList*);
