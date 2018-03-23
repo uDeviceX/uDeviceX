@@ -10,12 +10,10 @@
 #include "utils/error.h"
 #include "conf/imp.h"
 #include "io/mesh_read/imp.h"
-#include "io/mesh/imp.h"
 
 #include "mesh/vectors/imp.h"
 #include "mesh/tri_area/imp.h"
-
-#include "io/point/imp.h"
+#include "io/vtk/imp.h"
 
 struct Out {
     MPI_Comm comm;
@@ -23,51 +21,35 @@ struct Out {
     const char *path;
 };
 
-static void dump(int nt, double *d,
-                 Vectors *pos, Vectors *vel,
-                 Out *out) {
-    int id, nm;
-    IOPointConf *c;
-    IOPoint *p;
-    MeshWrite *mesh_write;
+static void dump(double *tri_area,
+                 Vectors *pos, Out *out) {
+    VTKConf *c;
+    //    VTK     *p;
 
-    UC(io_point_conf_ini(&c));
-    UC(io_point_conf_push(c, "area"));
+    UC(vtk_conf_ini(out->mesh, &c));
+    UC(vtk_conf_tri(c, "area"));
 
-    UC(io_point_ini(nt, out->path, c, &p));
-    mesh_write_ini_off(out->comm, out->mesh, "r", &mesh_write);
-
-    UC(io_point_conf_fin(c));
-
-    UC(io_point_push(p, nt, d, "area"));
-    id = 0; nm = 1;
-    UC(io_point_write(p, out->comm, id));
-    UC(mesh_write_vectros(mesh_write, out->comm, nm, pos, vel, id));
-
-    mesh_write_fin(mesh_write);
-    UC(io_point_fin(p));
+    UC(vtk_conf_fin(c));
 }
 
 static void main0(const char *cell, Out *out) {
     int nv, nt, nm;
     MeshTriArea *tri_area;
-    Vectors  *pos, *vel;
+    Vectors  *pos;
     double *tri_areas;
     UC(mesh_read_ini_off(cell, /**/ &out->mesh));
     UC(mesh_tri_area_ini(out->mesh, &tri_area));
     nv = mesh_read_get_nv(out->mesh);
     nt = mesh_read_get_nt(out->mesh);
     UC(vectors_float_ini(nv, mesh_read_get_vert(out->mesh), /**/ &pos));
-    UC(vectors_zero_ini(nv,  /**/ &vel));
 
     nm = 1;
     EMALLOC(nt, &tri_areas);
     mesh_tri_area_apply(tri_area, nm, pos, /**/ tri_areas);
-    dump(nt, tri_areas, pos, vel, out);
+    dump(tri_areas, pos, out);
 
     mesh_tri_area_fin(tri_area);
     UC(vectors_fin(pos));
-    UC(vectors_fin(vel));
     UC(mesh_read_fin(out->mesh));
     EFREE(tri_areas);
 }

@@ -1,13 +1,12 @@
 $B/algo/edg/imp.o: $S/algo/edg/imp.cpp; $X -I$S/algo/edg -I$S/.
 $B/algo/kahan_sum/imp.o: $S/algo/kahan_sum/imp.cpp; $X -I$S/algo/kahan_sum -I$S/.
+$B/algo/key_list/imp.o: $S/algo/key_list/imp.cpp; $X -I$S/algo/key_list -I$S/.
 $B/conf/imp.o: $S/conf/imp.cpp; $X -I$S/conf -I$S/.
 $B/coords/conf.o: $S/coords/conf.cpp; $X -I$S/coords -I$S/.
 $B/coords/imp.o: $S/coords/imp.cpp; $X -I$S/coords -I$S/.
 $B/d/api.o: $S/d/api.cu; $N -I$S/d -I$S/.
-$B/io/mesh/imp.o: $S/io/mesh/imp.cpp; $X -I$S/io/mesh -I$S/.
 $B/io/mesh_read/imp.o: $S/io/mesh_read/imp.cpp; $X -I$S/io/mesh_read -I$S/.
-$B/io/mesh/write/imp.o: $S/io/mesh/write/imp.cpp; $X -I$S/io/mesh/write -I$S/.
-$B/io/point/imp.o: $S/io/point/imp.cpp; $X -I$S/io/point -I$S/.
+$B/io/vtk/imp.o: $S/io/vtk/imp.cpp; $X -I$S/io/vtk -I$S/.
 $B/math/tform/imp.o: $S/math/tform/imp.cpp; $X -I$S/math/tform -I$S/.
 $B/math/tri/imp.o: $S/math/tri/imp.cpp; $X -I$S/math/tri -I$S/.
 $B/mesh/tri_area/imp.o: $S/mesh/tri_area/imp.cpp; $X -I$S/mesh/tri_area -I$S/.
