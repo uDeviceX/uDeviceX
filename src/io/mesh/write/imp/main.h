@@ -37,7 +37,7 @@ int write_master(MPI_Comm comm, const void * const ptr, int sz0, WriteFile *fp) 
 
 int write_shift_indices(MPI_Comm comm, int n, int *shift0) {
     *shift0 = 0;
-    MC(MPI_Exscan(&n, shift0, 1, MPI_INTEGER, MPI_SUM, comm));
+    MC(m::Exscan(&n, shift0, 1, MPI_INTEGER, MPI_SUM, comm));
     return 0;
 }
 
