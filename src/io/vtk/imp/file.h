@@ -4,3 +4,4 @@ static void header(Out *o) {
     print(o, "BINARY\n");
     print(o, "DATASET POLYDATA");
 }
+
