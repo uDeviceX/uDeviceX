@@ -9,6 +9,7 @@ struct VTK {
     int nm;
     Mesh *mesh;
     double *rr; /* positions */
+    int rr_set;
     char path[FILENAME_MAX];
 };
 
@@ -16,4 +17,3 @@ struct Out {
     WriteFile *f;
     MPI_Comm comm;
 };
-
