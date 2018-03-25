@@ -45,12 +45,15 @@ void vtk_points(VTK *q, int nm, const Vectors *pos) {
 
 void vtk_write(VTK *q, MPI_Comm comm, int id) {
     char path[FILENAME_MAX];
-    WriteFile *f;
+    Out out;
     if (snprintf(path, FILENAME_MAX, PATTERN, DUMP_BASE, q->path, id) < 0)
         ERR("snprintf failed");
 
-    write_file_open(comm, path, &f);
-    write_file_close(f);
+    out.comm = comm;
+    write_file_open(comm, path, &out.f);
+    header(&out);
+    
+    write_file_close(out.f);
 }
 
 void vtk_fin(VTK *q) {

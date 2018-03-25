@@ -9,3 +9,9 @@ struct VTK {
     double *rr; /* positions */
     char path[FILENAME_MAX];
 };
+
+struct Out {
+    WriteFile *f;
+    MPI_Comm comm;
+};
+
