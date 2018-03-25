@@ -1,5 +1,4 @@
 struct Mesh;
-
 struct MeshRead;
 
 void mesh_ini(MeshRead*, /**/ Mesh**);
