@@ -16,10 +16,11 @@ void vtk_conf_tri(VTKConf *q, const char *keys) {
     UC(key_list_push(q->tri, keys));
 }
 
-void vtk_ini(int maxn, char const *path, VTKConf*, /**/ VTK **pq) {
+void vtk_ini(int maxn, char const *path, VTKConf *c, /**/ VTK **pq) {
     VTK *q;
     EMALLOC(1, &q);
     EMALLOC(3*maxn, &q->rr);
+    mesh_copy(c->mesh, /**/ &q->mesh);
     UC(mkdir(DUMP_BASE, path));
     q->maxn = maxn;
     *pq = q;
