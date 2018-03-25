@@ -11,11 +11,11 @@ static void reg(int i1, int i2, Edg *nxt, Edg *seen, /**/ Q *q) {
     if (e_valid(seen, i1, i2)) return;
     if (e_valid(seen, i2, i1)) return;
     i0 = e_get(nxt, i1, i2);
-    i3 = e_get(nxt, i2, i1); /* previous */
+    i3 = e_get(nxt, i2, i1); /* previ_ous */
     q_push(q, i0, i1, i2, i3);
     UC(e_set(seen, i1, i2, 1));
 }
-static void ini_dd(int nt, const int4 *tt, int nv, int md, /**/ int4 *dd) {
+static void ini_dd0(int nt, const int4 *tt, int nv, int md, /**/ int4 *dd) {
     Q q;
     Edg *nxt, *seen;
     int i, i0, i1, i2;
@@ -41,36 +41,46 @@ static void ini_dd(int nt, const int4 *tt, int nv, int md, /**/ int4 *dd) {
     e_fin(nxt); e_fin(seen);
 }
 
-static void ini(MeshRead **pq) {
-    MeshRead *p;
-    UC(emalloc(sizeof(MeshRead), (void**)&p));
-    *pq = p;
+static void ini_dd(/**/ MeshRead *q) {
+    int nt, nv, nd, md;
+    const int4 *tt;
+    nt = mesh_read_get_nt(q);
+    nv = mesh_read_get_nv(q);
+    nd = mesh_read_get_ne(q);
+    md = mesh_read_get_md(q);
+    tt = mesh_read_get_tri(q);
+    q->nd = nd;
+    EMALLOC(nd, &q->dd);
+    ini_dd0(nt, tt, nv, md, /**/ q->dd);
 }
-
+                   
 void mesh_read_ini_off(const char *path, MeshRead **pq) {
-    int nd;
     FILE *f;
     MeshRead *q;
-    UC(ini(&q));
+    EMALLOC(1, &q);    
     UC(efopen(path, "r", /**/ &f));
     UC(read_off(f, path, /**/ q));
     UC(efclose(f));
     msg_print("read off '%s'", path);
+    ini_dd(q);
     *pq = q;
 }
 
 void mesh_read_ini_ply(const char *path, MeshRead **pq) {
     FILE *f;
     MeshRead *q;
-    UC(ini(&q));
+    EMALLOC(1, &q);    
     UC(efopen(path, "r", /**/ &f));
     UC(read_ply(f, path, /**/ q));
     UC(efclose(f));
     msg_print("read ply '%s'", path);
+    ini_dd(q);
     *pq = q;
 }
 
-void mesh_read_fin(MeshRead* q) { EFREE(q->rr); EFREE(q->tt); EFREE(q); }
+void mesh_read_fin(MeshRead* q) {
+    EFREE(q->rr); EFREE(q->tt); EFREE(q->dd); EFREE(q);
+}
 int mesh_read_get_nv(const MeshRead *q) { return q->nv; }
 int mesh_read_get_nt(const MeshRead *q) { return q->nt; }
 int mesh_read_get_ne(const MeshRead *q) {
@@ -112,3 +122,4 @@ int mesh_read_get_md(const MeshRead *q) {
 
 const float *mesh_read_get_vert(const MeshRead *q) { return q->rr; }
 const int4  *mesh_read_get_tri(const MeshRead *q) { return q->tt; }
+const int4  *mesh_read_get_dih(const MeshRead *q) { return q->dd; }
