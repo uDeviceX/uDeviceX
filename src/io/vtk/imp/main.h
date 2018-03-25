@@ -62,13 +62,13 @@ void vtk_write(VTK *q, MPI_Comm comm, int id) {
     if (snprintf(path, FILENAME_MAX, PATTERN, DUMP_BASE, q->path, id) < 0)
         ERR("snprintf failed");
     out.comm = comm;
-    UC(write_file_open(comm, path, &out.f));
+    UC(write_file_open(comm, path, &out.file));
 
     n = q->nm * mesh_nv(q->mesh);
     header(&out);
     points(&out, n, q->rr);
 
-    UC(write_file_close(out.f));
+    UC(write_file_close(out.file));
 
     q->rr_set = 0;
     q->nm = UNSET;

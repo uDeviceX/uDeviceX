@@ -8,5 +8,5 @@ static void print(Out *out, const char *fmt, ...) {
     va_start (args, fmt);
     size = vsnprintf(s, BUF - 1, fmt, args);
     va_end (args);
-    write_master(out->comm, s, size, out->f);
+    write_master(out->comm, s, size, out->file);
 }

@@ -14,6 +14,6 @@ struct VTK {
 };
 
 struct Out {
-    WriteFile *f;
+    WriteFile *file;
     MPI_Comm comm;
 };
