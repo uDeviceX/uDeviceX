@@ -22,11 +22,11 @@ void vtk_ini(int maxn, char const *path, VTKConf *c, /**/ VTK **pq) {
     VTK *q;
     EMALLOC(1, &q);
     EMALLOC(3*maxn, &q->rr);
-    mesh_copy(c->mesh, /**/ &q->mesh);
+    UC(mesh_copy(c->mesh, /**/ &q->mesh));
     UC(mkdir(DUMP_BASE, path));
     cpy(q->path, path);
-    q->maxn = maxn;
 
+    q->maxn = maxn;
     q->nm       = UNSET;
     q->rr_set   = 0;
 
@@ -55,16 +55,20 @@ void vtk_points(VTK *q, int nm, const Vectors *pos) {
 
 void vtk_write(VTK *q, MPI_Comm comm, int id) {
     char path[FILENAME_MAX];
+    int n;
     Out out;
     if (!q->rr_set) ERR("points are unset");
 
     if (snprintf(path, FILENAME_MAX, PATTERN, DUMP_BASE, q->path, id) < 0)
         ERR("snprintf failed");
     out.comm = comm;
-    write_file_open(comm, path, &out.f);
-    header(&out);
+    UC(write_file_open(comm, path, &out.f));
 
-    write_file_close(out.f);
+    n = q->nm * mesh_nv(q->mesh);
+    header(&out);
+    points(&out, n, q->rr);
+
+    UC(write_file_close(out.f));
 
     q->rr_set = 0;
     q->nm = UNSET;

@@ -34,7 +34,7 @@ static void dump(double *tri_area,
     vtk_ini(nv, out->path, c, /**/ &vtk);
     vtk_points(vtk, nm, pos);
     id = 0;
-    vtk_write(vtk, out->comm, id);
+    UC(vtk_write(vtk, out->comm, id));
     
     UC(vtk_fin(vtk));
     UC(vtk_conf_fin(c));

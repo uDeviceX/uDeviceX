@@ -27,8 +27,8 @@ static void vert(MPI_Comm cart, int n, const Vectors *pos, const Vectors *vel, W
     for (i = j = 0; i < n; i++) {
         r = &D[j]; j += 3;
         v = &D[j]; j += 3;
-        vectors_get(pos, i, /**/ r);
-        vectors_get(vel, i, /**/ v);
+        UC(vectors_get(pos, i, /**/ r));
+        UC(vectors_get(vel, i, /**/ v));
     }
     UC(write_all(cart, D, m*sizeof(D[0]), f));
     EFREE(D);
