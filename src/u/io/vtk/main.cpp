@@ -23,9 +23,9 @@ struct Out {
 
 static void dump(double *tri_area,
                  Vectors *pos, Out *out) {
-    int nv, nm;
+    int nv, nm, id;
     VTKConf *c;
-    VTK     *vtk;
+    VTK *vtk;
     nv = mesh_read_get_nv(out->mesh);
     nm = 1;
 
@@ -33,6 +33,8 @@ static void dump(double *tri_area,
     UC(vtk_conf_tri(c, "area"));
     vtk_ini(nv, out->path, c, /**/ &vtk);
     vtk_points(vtk, nm, pos);
+    id = 0;
+    vtk_write(vtk, out->comm, id);
     
     UC(vtk_fin(vtk));
     UC(vtk_conf_fin(c));
