@@ -19,7 +19,7 @@ void vtk_conf_tri(VTKConf *q, const char *keys) {
 void vtk_ini(int maxn, char const *path, VTKConf*, /**/ VTK **pq) {
     VTK *q;
     EMALLOC(1, &q);
-    EMALLOC(3*maxn, &q->R);
+    EMALLOC(3*maxn, &q->rr);
     UC(mkdir(DUMP_BASE, path));
     q->maxn = maxn;
     *pq = q;
@@ -32,6 +32,6 @@ void vtk_points(VTK *q, int nm, const Vectors *pos) {
 }
 
 void vtk_fin(VTK *q) {
-    EFREE(q->R);
+    EFREE(q->rr);
     EFREE(q);
 }

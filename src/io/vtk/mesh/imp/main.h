@@ -23,14 +23,25 @@ void mesh_ini(MeshRead *mesh, /**/ Mesh **pq) {
         q->ee[j++] = d.y; q->ee[j++] = d.z;
     }
 
-    for (j = i = 0; i < ne; i++) {
-        int x, y;
-        x = q->ee[j++]; y = q->ee[j++];
-        msg_print("[%d %d]", x, y);
-    }
-
     q->nv = nv; q->nt = nt; q->ne = ne;
     *pq = q;
+}
+
+void mesh_copy(const Mesh *f, /**/ Mesh **pt) {
+    Mesh *t; /* to, from */
+    int nv, nt, ne;
+    EMALLOC(1, &t);
+
+    nv = f->nv; nt = f->nt; ne = f->ne;
+
+    EMALLOC(3*nt, &t->tt);
+    EMALLOC(2*ne, &t->ee);
+
+    EMEMCPY(3*nt, f->tt, t->tt);
+    EMEMCPY(2*ne, f->ee, t->ee);
+
+    t->nv = nv; t->nt = nt; t->ne = ne;
+    *pt = t;
 }
 
 void mesh_fin(Mesh *q) {
