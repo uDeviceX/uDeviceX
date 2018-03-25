@@ -10,7 +10,7 @@ if test $# -ne 0 && test "$1" = -h
 then usg
 fi
 
-if ! bop-config -h 2>/dev/null
+if ! bop-config -h 2>/dev/null 1>/dev/null
 then err "bop-config command is not found"
 fi
 
