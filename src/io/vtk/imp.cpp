@@ -12,8 +12,9 @@
 #include "utils/os.h"
 
 #include "algo/key_list/imp.h"
-#include "mesh/imp.h"
+#include "mesh/vectors/imp.h"
 
+#include "mesh/imp.h"
 #include "imp.h"
 
 #include "imp/type.h"

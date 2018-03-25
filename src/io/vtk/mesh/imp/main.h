@@ -49,3 +49,5 @@ void mesh_fin(Mesh *q) {
     EFREE(q->ee);
     EFREE(q);
 }
+
+int mesh_nv(Mesh *q) { return q->nv; }

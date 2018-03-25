@@ -27,9 +27,20 @@ void vtk_ini(int maxn, char const *path, VTKConf *c, /**/ VTK **pq) {
 }
 
 void vtk_points(VTK *q, int nm, const Vectors *pos) {
-    int n, i;
-    for (i = 0; i < n; i++) {
+    enum {X, Y, Z};
+    float r[3];
+    int nv, n, i, j;
+    nv = mesh_nv(q->mesh);
+    n = nv * nm;
+    for (i = j = 0; i < n; i++) {
+        UC(vectors_get(pos, i, r));
+        q->rr[j++] = r[X];
+        q->rr[j++] = r[Y];
+        q->rr[j++] = r[Z];
     }
+}
+
+void vtk_write(VTK*, MPI_Comm, int) {
 }
 
 void vtk_fin(VTK *q) {
