@@ -9,6 +9,7 @@ $B/io/mesh_read/edg/imp.o: $S/io/mesh_read/edg/imp.cpp; $X -I$S/io/mesh_read/edg
 $B/io/mesh_read/imp.o: $S/io/mesh_read/imp.cpp; $X -I$S/io/mesh_read -I$S/.
 $B/io/vtk/imp.o: $S/io/vtk/imp.cpp; $X -I$S/io/vtk -I$S/.
 $B/io/vtk/mesh/imp.o: $S/io/vtk/mesh/imp.cpp; $X -I$S/io/vtk/mesh -I$S/.
+$B/io/write/imp.o: $S/io/write/imp.cpp; $X -I$S/io/write -I$S/.
 $B/math/tform/imp.o: $S/math/tform/imp.cpp; $X -I$S/math/tform -I$S/.
 $B/math/tri/imp.o: $S/math/tri/imp.cpp; $X -I$S/math/tri -I$S/.
 $B/mesh/tri_area/imp.o: $S/mesh/tri_area/imp.cpp; $X -I$S/mesh/tri_area -I$S/.

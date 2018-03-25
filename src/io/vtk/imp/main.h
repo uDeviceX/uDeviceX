@@ -1,3 +1,5 @@
+#define PATTERN "%s/%s/%05d.vtk"
+
 void vtk_conf_ini(MeshRead *mesh, /**/ VTKConf **pq) {
     VTKConf *q;
     EMALLOC(1, &q);
@@ -22,6 +24,7 @@ void vtk_ini(int maxn, char const *path, VTKConf *c, /**/ VTK **pq) {
     EMALLOC(3*maxn, &q->rr);
     mesh_copy(c->mesh, /**/ &q->mesh);
     UC(mkdir(DUMP_BASE, path));
+    cpy(q->path, path);
     q->maxn = maxn;
     *pq = q;
 }
@@ -40,8 +43,14 @@ void vtk_points(VTK *q, int nm, const Vectors *pos) {
     }
 }
 
-void vtk_write(VTK*, MPI_Comm, int) {
-    
+void vtk_write(VTK *q, MPI_Comm comm, int id) {
+    char path[FILENAME_MAX];
+    WriteFile *f;
+    if (snprintf(path, FILENAME_MAX, PATTERN, DUMP_BASE, q->path, id) < 0)
+        ERR("snprintf failed");
+
+    write_file_open(comm, path, &f);
+    write_file_close(f);
 }
 
 void vtk_fin(VTK *q) {
