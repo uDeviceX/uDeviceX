@@ -8,7 +8,6 @@
 
 #include "io/mesh_read/imp.h"
 #include "mesh/vectors/imp.h"
-#include "algo/kahan_sum/imp.h"
 
 #include "math/tri/imp.h"
 #include "edg/imp.h"

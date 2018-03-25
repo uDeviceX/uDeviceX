@@ -4,6 +4,7 @@ $B/conf/imp.o: $S/conf/imp.cpp; $X -I$S/conf -I$S/.
 $B/coords/conf.o: $S/coords/conf.cpp; $X -I$S/coords -I$S/.
 $B/coords/imp.o: $S/coords/imp.cpp; $X -I$S/coords -I$S/.
 $B/d/api.o: $S/d/api.cu; $N -I$S/d -I$S/.
+$B/io/mesh_read/edg/imp.o: $S/io/mesh_read/edg/imp.cpp; $X -I$S/io/mesh_read/edg -I$S/.
 $B/io/mesh_read/imp.o: $S/io/mesh_read/imp.cpp; $X -I$S/io/mesh_read -I$S/.
 $B/math/tform/imp.o: $S/math/tform/imp.cpp; $X -I$S/math/tform -I$S/.
 $B/math/tri/imp.o: $S/math/tri/imp.cpp; $X -I$S/math/tri -I$S/.

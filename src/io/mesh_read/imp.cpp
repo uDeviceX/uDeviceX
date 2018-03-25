@@ -7,6 +7,7 @@
 #include "utils/imp.h"
 
 #include "utils/msg.h"
+#include "edg/imp.h"
 
 #include "imp.h"
 

@@ -1,6 +1,7 @@
 $B/algo/edg/imp.o: $S/algo/edg/imp.cpp; $X -I$S/algo/edg -I$S/.
 $B/conf/imp.o: $S/conf/imp.cpp; $X -I$S/conf -I$S/.
 $B/d/api.o: $S/d/api.cu; $N -I$S/d -I$S/.
+$B/io/mesh_read/edg/imp.o: $S/io/mesh_read/edg/imp.cpp; $X -I$S/io/mesh_read/edg -I$S/.
 $B/io/mesh_read/imp.o: $S/io/mesh_read/imp.cpp; $X -I$S/io/mesh_read -I$S/.
 $B/math/linal/imp.o: $S/math/linal/imp.cpp; $X -I$S/math/linal -I$S/.
 $B/math/rnd/imp.o: $S/math/rnd/imp.cpp; $X -I$S/math/rnd -I$S/.

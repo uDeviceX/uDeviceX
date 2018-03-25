@@ -50,6 +50,7 @@ $B/io/field/h5/imp.o: $S/io/field/h5/imp.cpp; $X -I$S/io/field/h5 -I$S/.
 $B/io/field/imp.o: $S/io/field/imp.cpp; $X -I$S/io/field -I$S/.
 $B/io/field/xmf/imp.o: $S/io/field/xmf/imp.cpp; $X -I$S/io/field/xmf -I$S/.
 $B/io/mesh/imp.o: $S/io/mesh/imp.cpp; $X -I$S/io/mesh -I$S/.
+$B/io/mesh_read/edg/imp.o: $S/io/mesh_read/edg/imp.cpp; $X -I$S/io/mesh_read/edg -I$S/.
 $B/io/mesh_read/imp.o: $S/io/mesh_read/imp.cpp; $X -I$S/io/mesh_read -I$S/.
 $B/io/mesh/write/imp.o: $S/io/mesh/write/imp.cpp; $X -I$S/io/mesh/write -I$S/.
 $B/io/point/imp.o: $S/io/point/imp.cpp; $X -I$S/io/point -I$S/.

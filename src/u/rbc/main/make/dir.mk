@@ -7,6 +7,7 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/io/mesh               && \
     d $B/io/mesh/write         && \
     d $B/io/mesh_read          && \
+    d $B/io/mesh_read/edg      && \
     d $B/io/restart            && \
     d $B/math/linal            && \
     d $B/math/rnd              && \
