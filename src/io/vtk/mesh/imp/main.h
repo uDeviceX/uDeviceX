@@ -23,6 +23,12 @@ void mesh_ini(MeshRead *mesh, /**/ Mesh **pq) {
         q->ee[j++] = d.y; q->ee[j++] = d.z;
     }
 
+    for (j = i = 0; i < ne; i++) {
+        int x, y;
+        x = q->ee[j++]; y = q->ee[j++];
+        msg_print("[%d %d]", x, y);
+    }
+
     q->nv = nv; q->nt = nt; q->ne = ne;
     *pq = q;
 }

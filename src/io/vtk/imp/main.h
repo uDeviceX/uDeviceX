@@ -1,25 +1,14 @@
 void vtk_conf_ini(MeshRead *mesh, /**/ VTKConf **pq) {
     VTKConf *q;
-    int nt, nv, i;
-    const int4 *tt;
     EMALLOC(1, &q);
-
-
-    nv = mesh_read_get_nv(mesh);
-    nt = mesh_read_get_nt(mesh);
-    tt = mesh_read_get_tri(mesh);
-    EMALLOC(nt, &q->mesh.tt);
-    for (i = 0; i < nt; i++)
-        q->mesh.tt[i] = tt[i];
+    mesh_ini(mesh, &q->mesh);
     key_list_ini(&q->tri);
-    q->mesh.nv = nv;
-    q->mesh.nt = nt;
     *pq = q;
 }
 
 void vtk_conf_fin(VTKConf *q) {
     key_list_fin(q->tri);
-    EFREE(q->mesh.tt);
+    mesh_fin(q->mesh);
     EFREE(q);
 }
 
@@ -38,7 +27,6 @@ void vtk_ini(int maxn, char const *path, VTKConf*, /**/ VTK **pq) {
 
 void vtk_points(VTK *q, int nm, const Vectors *pos) {
     int n, i;
-    n = nm * q->mesh.nv;
     for (i = 0; i < n; i++) {
     }
 }

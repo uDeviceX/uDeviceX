@@ -1,15 +1,10 @@
-struct Mesh {
-    int nv, nt;
-    int4 *tt;
-};
-
 struct VTKConf {
-    Mesh mesh;
+    Mesh *mesh;
     KeyList *tri;
 };
 
 struct VTK {
     int maxn;
-    Mesh mesh;
+    Mesh *mesh;
     double *R;
 };
