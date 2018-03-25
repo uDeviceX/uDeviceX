@@ -46,7 +46,6 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/io/field/h5           && \
     d $B/io/field/xmf          && \
     d $B/io/mesh               && \
-    d $B/io/mesh/write         && \
     d $B/io/mesh_read          && \
     d $B/io/mesh_read/edg      && \
     d $B/io/point              && \
@@ -55,6 +54,7 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/io/txt                && \
     d $B/io/vtk                && \
     d $B/io/vtk/mesh           && \
+    d $B/io/write              && \
     d $B/math/linal            && \
     d $B/math/rnd              && \
     d $B/math/tform            && \

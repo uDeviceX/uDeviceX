@@ -3,10 +3,8 @@ $B/conf/imp.o: $S/conf/imp.cpp; $X -I$S/conf -I$S/.
 $B/coords/conf.o: $S/coords/conf.cpp; $X -I$S/coords -I$S/.
 $B/coords/imp.o: $S/coords/imp.cpp; $X -I$S/coords -I$S/.
 $B/d/api.o: $S/d/api.cu; $N -I$S/d -I$S/.
-$B/io/mesh/imp.o: $S/io/mesh/imp.cpp; $X -I$S/io/mesh -I$S/.
 $B/io/mesh_read/edg/imp.o: $S/io/mesh_read/edg/imp.cpp; $X -I$S/io/mesh_read/edg -I$S/.
 $B/io/mesh_read/imp.o: $S/io/mesh_read/imp.cpp; $X -I$S/io/mesh_read -I$S/.
-$B/io/mesh/write/imp.o: $S/io/mesh/write/imp.cpp; $X -I$S/io/mesh/write -I$S/.
 $B/io/restart/imp.o: $S/io/restart/imp.cpp; $X -I$S/io/restart -I$S/.
 $B/math/linal/imp.o: $S/math/linal/imp.cpp; $X -I$S/math/linal -I$S/.
 $B/math/rnd/imp.o: $S/math/rnd/imp.cpp; $X -I$S/math/rnd -I$S/.
