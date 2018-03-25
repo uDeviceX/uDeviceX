@@ -20,7 +20,7 @@ void mesh_read_ini_ply(const char *path, MeshRead **pq) {
     MeshRead *q;
     UC(ini(&q));
     UC(efopen(path, "r", /**/ &f));
-    read_ply(f, path, /**/ q);
+    UC(read_ply(f, path, /**/ q));
     UC(efclose(f));
     msg_print("read ply '%s'", path);
     *pq = q;
