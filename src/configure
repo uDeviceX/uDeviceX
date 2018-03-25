@@ -1,11 +1,26 @@
 msg () { echo >&2 "$@"; }
+err () { msg "error: $@"; exit 2; }
 usg () {
-    msg  'adapts udx to systems'
-    msg  './configure [source dir] [unit dir]'
-    msg  '[source dir] : path to ./src'
-    msg  '[unit dir]   : path to unit'
+    msg  'udx configuration and system test'
+    msg  './configure'
     exit
 }
+
+if test $# -ne 0 && test "$1" = -h
+then usg
+fi
+
+if ! bop-config -h 2>/dev/null
+then err "bop-config command is not found"
+fi
+
+if ! u.cp.s -h 2>/dev/null
+then err "u.cp.s command is not found"
+fi
+
+if ! u.conf -h 2>/dev/null
+then err "u.conf command is not found"
+fi
 
 S=`u.cp.s`
 echo run | u.conf "$S" u/x "$@"
