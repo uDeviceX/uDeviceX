@@ -41,6 +41,7 @@ void vtk_points(VTK *q, int nm, const Vectors *pos) {
 }
 
 void vtk_write(VTK*, MPI_Comm, int) {
+    
 }
 
 void vtk_fin(VTK *q) {
