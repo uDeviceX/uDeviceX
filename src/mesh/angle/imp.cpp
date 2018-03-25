@@ -10,7 +10,6 @@
 #include "mesh/vectors/imp.h"
 
 #include "math/tri/imp.h"
-#include "edg/imp.h"
 
 #include "imp.h"
 #include "imp/type.h"

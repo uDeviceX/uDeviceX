@@ -8,8 +8,7 @@ $B/io/mesh_read/edg/imp.o: $S/utils/imp.h $S/utils/error.h $S/io/mesh_read/edg/i
 $B/io/mesh_read/imp.o: $S/utils/imp.h $S/utils/error.h $S/io/mesh_read/imp/ply.h $S/io/mesh_read/imp.h $S/io/mesh_read/imp/main.h $S/io/mesh_read/imp/type.h $S/io/mesh_read/edg/imp.h $S/io/mesh_read/imp/off.h $S/utils/msg.h
 $B/math/tform/imp.o: $S/utils/imp.h $S/inc/conf.h $S/utils/error.h $S/math/tform/imp.h $B/conf.h $S/math/tform/imp/main.h $S/math/tform/imp/type.h $S/math/tform/type.h $S/utils/msg.h
 $B/math/tri/imp.o: $S/math/tri/imp.h $S/math/tri/dev.h
-$B/mesh/angle/edg/imp.o: $S/utils/imp.h $S/utils/error.h $S/mesh/angle/edg/imp/main.h $S/algo/edg/imp.h $S/mesh/angle/edg/imp/type.h $S/utils/msg.h
-$B/mesh/angle/imp.o: $S/utils/imp.h $S/utils/error.h $S/math/tri/imp.h $S/mesh/vectors/imp.h $S/mesh/angle/imp.h $S/io/mesh_read/imp.h $S/mesh/angle/imp/main.h $S/mesh/angle/imp/type.h $S/mesh/angle/edg/imp.h $S/utils/msg.h
+$B/mesh/angle/imp.o: $S/utils/imp.h $S/utils/error.h $S/math/tri/imp.h $S/mesh/vectors/imp.h $S/mesh/angle/imp.h $S/io/mesh_read/imp.h $S/mesh/angle/imp/main.h $S/mesh/angle/imp/type.h $S/utils/msg.h
 $B/mesh/vectors/imp.o: $S/utils/imp.h $S/utils/error.h $S/inc/type.h $S/mesh/vectors/imp.h $S/mesh/vectors/imp/main.h $S/mesh/vectors/imp/type.h $S/math/tform/imp.h $S/coords/imp.h
 $B/mpi/glb.o: $S/inc/conf.h $S/mpi/wrapper.h $S/utils/mc.h $B/conf.h
 $B/mpi/type.o: $S/inc/conf.h $S/inc/type.h $S/mpi/type.h $S/utils/mc.h
