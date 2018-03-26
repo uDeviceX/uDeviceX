@@ -19,29 +19,19 @@ static __device__ void ini(int3 L, int zplane, const Texo<int> texstart, int w_n
     ybase = (int)(y + ycells / 2);
     zbase = (int)(z + zcells / 2);
 
-    // xbase = minmax(-XWM+1, L.x + XWM - 2, xbase);
-    // ybase = minmax(-YWM+1, L.y + YWM - 2, ybase);
-    // zbase = minmax(-ZWM+1, L.z + ZWM - 2, zbase);
-
     xbase = minmax(1, xcells - 2, xbase);
     ybase = minmax(1, ycells - 2, ybase);
     zbase = minmax(1, zcells - 2, zbase);
 
     cid0 = xbase - 1 + xcells * (ybase - 1 + ycells * (zbase - 1 + zplane));
-    assert(cid0 >= 0 && cid0 < ncells);
-
     org0 = start_fetch(cid0);
     count0 = start_fetch(cid0 + 3) - org0;
 
     cid1 = cid0 + xcells;
-    assert(cid1 >= 0 && cid1 < ncells);
-
     org1 = start_fetch(cid1);
     count1 = start_fetch(cid1 + 3) - org1;
 
     cid2 = cid0 + xcells * 2;
-    assert(cid2 >= 0 && cid2 < ncells);
-    
     org2 = start_fetch(cid2);
     count2 = cid2 + 3 == ncells
         ? w_n
