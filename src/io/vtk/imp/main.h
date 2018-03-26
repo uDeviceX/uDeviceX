@@ -96,7 +96,7 @@ void vtk_tri(VTK *q, int nm, const Scalars *sc, const char *keys) {
 
 void vtk_write(VTK *q, MPI_Comm comm, int id) {
     char path[FILENAME_MAX];
-    int i, n, nm, nv, nt, nbuf;
+    int i, nk, n, nm, nv, nt, nbuf;
     const int *tt;
     const char *keys;
     Out out;
@@ -129,10 +129,19 @@ void vtk_write(VTK *q, MPI_Comm comm, int id) {
     header(&out);
     points(&out, n, q->dbuf);
     tri(&out, nm, nv, nt, tt, q->ibuf);
-    cell_header(&out, nm*nt);
-    for (i = 0; i < key_list_size(q->tri); i++) {
+
+    UC(nk = key_list_size(q->tri));
+    if (nk > 0) cell_header(&out, nm*nt);
+    for (i = 0; i < nk; i++) {
         keys = key_list_name(q->tri, i);
         cell_data(&out, nm*nt, q->TRI[i], keys);
+    }
+
+    UC(nk = key_list_size(q->vert));
+    if (nk > 0) point_header(&out, n);
+    for (i = 0; i < nk; i++) {
+        keys = key_list_name(q->vert, i);
+        point_data(&out, n, q->VERT[i], keys);
     }
 
     UC(write_file_close(out.file));
