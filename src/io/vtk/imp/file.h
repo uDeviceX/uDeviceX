@@ -13,6 +13,7 @@ static void points(Out *o, int n, double *rr) {
     big_endian_dbl(3*n, /**/ rr);
     print(o, "POINTS %d double\n", n);
     UC(write_all(comm, rr, 3*n*sizeof(rr[0]), file));
+    print(o, "\n");
 }
 
 static void tri(Out *o, int nm, int nv, int nt, const int *tt, int *buf) {
@@ -32,8 +33,8 @@ static void tri(Out *o, int nm, int nv, int nt, const int *tt, int *buf) {
             buf[t++] = shift + nv*m + tt[3*i + 2];
         }
     big_endian_int(t, /**/ buf);
-
     UC(write_reduce(comm, nm, &nm_total));
-    print(o, "\nPOLYGONS %d %d\n", nt*nm_total, 4*nt*nm_total);
+    print(o, "POLYGONS %d %d\n", nt*nm_total, 4*nt*nm_total);
     UC(write_all(comm, buf, t*sizeof(buf[0]), file));
+    print(o, "\n");
 }

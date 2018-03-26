@@ -31,7 +31,7 @@ static void dump(double *tri_area,
 
     UC(vtk_conf_ini(out->mesh, &c));
     UC(vtk_conf_tri(c, "area"));
-    vtk_ini(nv, out->path, c, /**/ &vtk);
+    vtk_ini(out->comm, nv, out->path, c, /**/ &vtk);
     vtk_points(vtk, nm, pos);
     id = 0;
     UC(vtk_write(vtk, out->comm, id));
