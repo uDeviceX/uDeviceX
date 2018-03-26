@@ -6,12 +6,14 @@ static void header(Out *o) {
 }
 
 static void points(Out *o, int n, double *rr) {
+    int n_total;
     MPI_Comm comm;
     WriteFile *file;
     comm = o->comm;
     file = o->file;
     big_endian_dbl(3*n, /**/ rr);
-    print(o, "POINTS %d double\n", n);
+    UC(write_reduce(comm, n, &n_total));
+    print(o, "POINTS %d double\n", n_total);
     UC(write_all(comm, rr, 3*n*sizeof(rr[0]), file));
     print(o, "\n");
 }
