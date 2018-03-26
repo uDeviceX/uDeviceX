@@ -33,8 +33,9 @@ void vtk_conf_vert(VTKConf *q, const char *keys) {
 }
 
 void vtk_ini(MPI_Comm comm, int maxn, char const *path, VTKConf *c, /**/ VTK **pq) {
+    int i;
     VTK *q;
-    int nbuf;
+    int nbuf, nk;
     Mesh *mesh;
     EMALLOC(1, &q);
     mesh = c->mesh;
@@ -43,12 +44,10 @@ void vtk_ini(MPI_Comm comm, int maxn, char const *path, VTKConf *c, /**/ VTK **p
     EMALLOC(nbuf, &q->ibuf);
     UC(mkdir(comm, DUMP_BASE, path));
     cpy(q->path, path);
-    /*
-    for (i = 0; i < key_list_size(q->tri); i++)
-        EMALLOC(q->D[i]);
-    for (i = 0; i < key_list_size(q->vert); i++)
-    EMALLOC(q->D[i]); */
-    EMALLOC(nbuf, &q->D);
+    UC(nk = key_list_size(c->tri));
+    for (i = 0; i < nk; i++) EMALLOC(nbuf, &q->TRI[i]);
+    UC(nk = key_list_size(c->vert));
+    for (i = 0; i < nk; i++) EMALLOC(nbuf, &q->VERT[i]);
 
     q->nbuf = nbuf;
     q->nm       = UNSET;
@@ -81,23 +80,25 @@ void vtk_points(VTK *q, int nm, const Vectors *pos) {
 }
 
 void vtk_tri(VTK *q, int nm, const Scalars *sc, const char *keys) {
-    int i, nt, n;
+    int i, j, nt, n;
     if (!key_list_has(q->tri, keys)) {
         msg_print("unkown key '%s'", keys);
         key_list_log(q->tri);
         ERR("");
     }
+    j = key_list_offset(q->tri, keys);
     nt = mesh_nt(q->mesh);
     n = nm * nt;
     for (i = 0; i < n; i++)
-        q->D[i] = scalars_get(sc, i);
+        q->TRI[j][i] = scalars_get(sc, i);
     UC(key_list_mark(q->tri, keys));
 }
 
 void vtk_write(VTK *q, MPI_Comm comm, int id) {
     char path[FILENAME_MAX];
-    int n, nm, nv, nt, nbuf;
+    int i, nk, n, nm, nv, nt, nbuf;
     const int *tt;
+    const char *keys;
     Out out;
     if (!key_list_marked(q->tri)) {
         msg_print("missing triangle data");
@@ -128,8 +129,20 @@ void vtk_write(VTK *q, MPI_Comm comm, int id) {
     header(&out);
     points(&out, n, q->dbuf);
     tri(&out, nm, nv, nt, tt, q->ibuf);
-    cell_header(&out, nm*nt);
-    cell_data(&out, nm*nt, q->D, "area");
+
+    UC(nk = key_list_size(q->tri));
+    if (nk > 0) cell_header(&out, nm*nt);
+    for (i = 0; i < nk; i++) {
+        keys = key_list_name(q->tri, i);
+        cell_data(&out, nm*nt, q->TRI[i], keys);
+    }
+
+    UC(nk = key_list_size(q->vert));
+    if (nk > 0) point_header(&out, n);
+    for (i = 0; i < nk; i++) {
+        keys = key_list_name(q->vert, i);
+        point_data(&out, n, q->VERT[i], keys);
+    }
 
     UC(write_file_close(out.file));
 
@@ -140,10 +153,14 @@ void vtk_write(VTK *q, MPI_Comm comm, int id) {
 }
 
 void vtk_fin(VTK *q) {
-    key_list_fin(q->tri);
-    key_list_fin(q->vert);
+    int i;
     EFREE(q->dbuf);
     EFREE(q->ibuf);
-    EFREE(q->D);
+    for (i = 0; i < key_list_size(q->tri); i++)
+        EFREE(q->TRI[i]);
+    for (i = 0; i < key_list_size(q->vert); i++)
+        EFREE(q->VERT[i]);
+    key_list_fin(q->tri);
+    key_list_fin(q->vert);
     EFREE(q);
 }

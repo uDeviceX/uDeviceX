@@ -61,3 +61,24 @@ static void cell_data(Out *o, int n, double *data, const char *name) {
     UC(write_all(comm, data, n*sizeof(data[0]), file));
     print(o, "\n");
 }
+
+static void point_header(Out *o, int n) {
+    int n_total;
+    MPI_Comm comm;
+    comm = o->comm;
+    UC(write_reduce(comm, n, &n_total));
+    print(o, "POINT_DATA %d\n", n_total);
+}
+
+static void point_data(Out *o, int n, double *data, const char *name) {
+    MPI_Comm comm;
+    WriteFile *file;
+    comm = o->comm;
+    file = o->file;
+    print(o, "SCALARS %s double 1\n", name);
+    print(o, "LOOKUP_TABLE default\n");
+    
+    big_endian_dbl(n, /**/ data);
+    UC(write_all(comm, data, n*sizeof(data[0]), file));
+    print(o, "\n");
+}

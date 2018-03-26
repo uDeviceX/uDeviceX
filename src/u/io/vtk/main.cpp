@@ -34,12 +34,14 @@ static void dump(double *tri_area,
     nm = 1;
 
     UC(vtk_conf_ini(out->mesh, &c));
-    UC(vtk_conf_tri(c, "area"));
+    UC(vtk_conf_tri(c, "area0"));
+    UC(vtk_conf_tri(c, "area1"));
     vtk_ini(out->comm, nv, out->path, c, /**/ &vtk);
     vtk_points(vtk, nm, pos);
 
     scalars_double_ini(nt, tri_area, &sc);
-    vtk_tri(vtk, nm, sc, "area");
+    vtk_tri(vtk, nm, sc, "area0");
+    vtk_tri(vtk, nm, sc, "area1");
     UC(scalars_fin(sc));
 
     id = 0;
