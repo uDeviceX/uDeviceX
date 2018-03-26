@@ -41,8 +41,8 @@ static void wfaces0(MPI_Comm comm, int *buf, const int4 *faces, int nc, int nv, 
     int4 tri;
     n = nc * nv;
     UC(write_shift_indices(comm, n, &shift));
-    for(b = c = 0; c < nc; ++c)
-        for(t = 0; t < nt; ++t) {
+    for (b = c = 0; c < nc; ++c)
+        for (t = 0; t < nt; ++t) {
             tri = faces[t];
             buf[b++] = NVP;
             buf[b++] = shift + nv*c + tri.x;

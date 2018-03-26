@@ -1,14 +1,21 @@
 struct VTKConf {
     Mesh *mesh;
-    KeyList *tri;
+    KeyList *tri, *vert;
 };
 
 enum { UNSET = - 1 };
+enum { N_MAX = 100 };
 struct VTK {
-    int maxn;
-    int nm;
+    int nm; /* current number of meshes */
     Mesh *mesh;
-    double *rr; /* positions */
+    KeyList *tri, *vert;
+
+    int nbuf; /* maximum bufer size */
+    double *dbuf;
+    int *ibuf;
+
+    double *D;
+    
     int rr_set;
     char path[FILENAME_MAX];
 };

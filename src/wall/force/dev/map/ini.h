@@ -1,7 +1,4 @@
-static __device__ int minmax(int lo, int hi, int a) {
-    return min(hi, max(lo, a));
-}
-
+static __device__ int minmax(int lo, int hi, int a) { return min(hi, max(lo, a)); }
 static __device__ void ini(int3 L, int zplane, const Texo<int> texstart, int w_n, float x, float y, float z, /**/ Map *m) {
 #define start_fetch(i) (fetch(texstart, i))
 #define   wpp_fetch(i) (fetch(texwpp,   i))

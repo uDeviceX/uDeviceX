@@ -12,6 +12,7 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/io/write         && \
     d $B/math/tform       && \
     d $B/math/tri         && \
+    d $B/mesh/scalars     && \
     d $B/mesh/tri_area    && \
     d $B/mesh/vectors     && \
     d $B/mpi              && \

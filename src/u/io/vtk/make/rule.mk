@@ -12,6 +12,7 @@ $B/io/vtk/mesh/imp.o: $S/io/vtk/mesh/imp.cpp; $X -I$S/io/vtk/mesh -I$S/.
 $B/io/write/imp.o: $S/io/write/imp.cpp; $X -I$S/io/write -I$S/.
 $B/math/tform/imp.o: $S/math/tform/imp.cpp; $X -I$S/math/tform -I$S/.
 $B/math/tri/imp.o: $S/math/tri/imp.cpp; $X -I$S/math/tri -I$S/.
+$B/mesh/scalars/imp.o: $S/mesh/scalars/imp.cpp; $X -I$S/mesh/scalars -I$S/.
 $B/mesh/tri_area/imp.o: $S/mesh/tri_area/imp.cpp; $X -I$S/mesh/tri_area -I$S/.
 $B/mesh/vectors/imp.o: $S/mesh/vectors/imp.cpp; $X -I$S/mesh/vectors -I$S/.
 $B/mpi/glb.o: $S/mpi/glb.cpp; $X -I$S/mpi -I$S/.
