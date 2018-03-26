@@ -9,24 +9,24 @@ static __device__ void ini(int3 L, int zplane, const Texo<int> texstart, int w_n
     int xbase, ybase, zbase;
     int cid0, cid1, cid2;
     int count0, count1, count2;
-    
-    xbase = (int)(x + L.x / 2 + XWM);
-    ybase = (int)(y + L.y / 2 + YWM);
-    zbase = (int)(z + L.z / 2 + ZWM);
-
-    // xbase = minmax(-XWM+1, L.x + XWM - 2, xbase);
-    // ybase = minmax(-YWM+1, L.y + YWM - 2, ybase);
-    // zbase = minmax(-ZWM+1, L.z + ZWM - 2, zbase);
-
-    xbase = minmax(1, L.x + 2 * XWM - 2, xbase);
-    ybase = minmax(1, L.y + 2 * YWM - 2, ybase);
-    zbase = minmax(1, L.z + 2 * ZWM - 2, zbase);
 
     xcells = L.x + 2 * XWM;
     ycells = L.y + 2 * YWM;
     zcells = L.z + 2 * ZWM;
 
     ncells = xcells * ycells * zcells;
+
+    xbase = (int)(x + xcells / 2);
+    ybase = (int)(y + ycells / 2);
+    zbase = (int)(z + zcells / 2);
+
+    // xbase = minmax(-XWM+1, L.x + XWM - 2, xbase);
+    // ybase = minmax(-YWM+1, L.y + YWM - 2, ybase);
+    // zbase = minmax(-ZWM+1, L.z + ZWM - 2, zbase);
+
+    xbase = minmax(1, xcells - 2, xbase);
+    ybase = minmax(1, ycells - 2, ybase);
+    zbase = minmax(1, zcells - 2, zbase);
 
     cid0 = xbase - 1 + xcells * (ybase - 1 + ycells * (zbase - 1 + zplane));
     assert(cid0 >= 0 && cid0 < ncells);
