@@ -51,4 +51,6 @@ void mesh_fin(Mesh *q) {
 }
 
 int mesh_nv(Mesh *q) { return q->nv; }
+int mesh_nt(Mesh *q) { return q->nt; }
+int mesh_ne(Mesh *q) { return q->ne; }
 const int* mesh_tt(Mesh *q) { return q->tt; }

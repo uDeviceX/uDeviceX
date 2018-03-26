@@ -5,10 +5,13 @@ struct VTKConf {
 
 enum { UNSET = - 1 };
 struct VTK {
-    int maxn;
-    int nm;
+    int nm; /* current number of meshes */
     Mesh *mesh;
-    double *rr; /* positions */
+
+    int nbuf; /* maximum bufer size */
+    double *dbuf;
+    int *ibuf;
+    
     int rr_set;
     char path[FILENAME_MAX];
 };

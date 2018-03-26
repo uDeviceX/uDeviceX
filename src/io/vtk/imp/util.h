@@ -10,6 +10,17 @@ static void mkdir(const char *p, const char *s) {
     UC(os_mkdir(path));
 }
 
+static int max3(int a, int b, int c) {
+    if (a > b) b = a;
+    if (b > c) c = b;
+    return c;
+}
+static int get_nbuf(int n, int nv, int nt, int ne) {
+    int nm;
+    nm = n / nv;
+    return max3(3*n, 4*nm*nt, 3*nm*ne);
+}
+
 static int little_p0() {
     int a;
     unsigned char *b;
@@ -41,4 +52,20 @@ static void big_endian_dbl(int n, double *d) {
     int i;
     for (i = 0; i < n; i++)
         big_endian_dbl0(&d[i]);
+}
+
+static void big_endian_int0(int *px) {
+    const int n = sizeof(int);
+    int i;
+    unsigned char *c, b[n];
+    if (!little_p()) return;
+    c = (unsigned char*)px;
+    for (i = 0; i < n; i++) b[i] = c[i];
+    for (i = 0; i < n; i++) c[i] = b[n - i - 1];
+}
+
+static void big_endian_int(int n, int *d) {
+    int i;
+    for (i = 0; i < n; i++)
+        big_endian_int0(&d[i]);
 }

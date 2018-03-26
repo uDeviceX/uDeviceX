@@ -20,15 +20,19 @@ void vtk_conf_tri(VTKConf *q, const char *keys) {
 
 void vtk_ini(int maxn, char const *path, VTKConf *c, /**/ VTK **pq) {
     VTK *q;
+    int nbuf;
+    Mesh *mesh;
     EMALLOC(1, &q);
-    EMALLOC(3*maxn, &q->rr);
-    UC(mesh_copy(c->mesh, /**/ &q->mesh));
+    mesh = c->mesh;
+    nbuf = get_nbuf(maxn, mesh_nv(mesh), mesh_nt(mesh), mesh_ne(mesh));
+    EMALLOC(nbuf, &q->dbuf);
+    EMALLOC(nbuf, &q->ibuf);
     UC(mkdir(DUMP_BASE, path));
     cpy(q->path, path);
-
-    q->maxn = maxn;
+    q->nbuf = nbuf;
     q->nm       = UNSET;
     q->rr_set   = 0;
+    UC(mesh_copy(mesh, /**/ &q->mesh));
 
     *pq = q;
 }
@@ -44,9 +48,9 @@ void vtk_points(VTK *q, int nm, const Vectors *pos) {
     n = nv * nm;
     for (i = j = 0; i < n; i++) {
         UC(vectors_get(pos, i, r));
-        q->rr[j++] = r[X];
-        q->rr[j++] = r[Y];
-        q->rr[j++] = r[Z];
+        q->dbuf[j++] = r[X];
+        q->dbuf[j++] = r[Y];
+        q->dbuf[j++] = r[Z];
     }
 
     q->nm = nm;
@@ -55,7 +59,8 @@ void vtk_points(VTK *q, int nm, const Vectors *pos) {
 
 void vtk_write(VTK *q, MPI_Comm comm, int id) {
     char path[FILENAME_MAX];
-    int n;
+    int n, nm, nv, nt, nbuf;
+    const int *tt;
     Out out;
     if (!q->rr_set) ERR("points are unset");
 
@@ -64,11 +69,17 @@ void vtk_write(VTK *q, MPI_Comm comm, int id) {
     out.comm = comm;
     UC(write_file_open(comm, path, &out.file));
 
-    n = q->nm * mesh_nv(q->mesh);
-    header(&out);
-    points(&out, n, q->rr);
-    tri(&out, n, mesh_tt(q->mesh));
+    nm = q->nm; nbuf = q->nbuf; nv = mesh_nv(q->mesh);
+    nt = mesh_nt(q->mesh); tt = mesh_tt(q->mesh);
 
+    n = nm * nv;
+    if (3 * n > nbuf)
+        ERR("3*n=%d > nbuf=%d", n, nbuf);
+    if (4 * nm * nt > nbuf)
+        ERR("nm=%d * nt=%d > nbuf=%d", nm, nt, nbuf);
+    header(&out);
+    points(&out, n, q->dbuf);
+    tri(&out, nm, nv, nt, tt, q->ibuf);
     UC(write_file_close(out.file));
 
     q->rr_set = 0;
@@ -76,6 +87,7 @@ void vtk_write(VTK *q, MPI_Comm comm, int id) {
 }
 
 void vtk_fin(VTK *q) {
-    EFREE(q->rr);
+    EFREE(q->dbuf);
+    EFREE(q->ibuf);
     EFREE(q);
 }
