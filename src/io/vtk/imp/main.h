@@ -17,10 +17,18 @@ void vtk_conf_fin(VTKConf *q) {
 }
 
 void vtk_conf_tri(VTKConf *q, const char *keys) {
+    int n;
+    n = key_list_size(q->tri);
+    if (n > N_MAX)
+        ERR("n=%d > N_MAX=%d", n, N_MAX);
     UC(key_list_push(q->tri, keys));
 }
 
 void vtk_conf_vert(VTKConf *q, const char *keys) {
+    int n;
+    n = key_list_size(q->tri);
+    if (n > N_MAX)
+        ERR("n=%d > N_MAX=%d", n, N_MAX);
     UC(key_list_push(q->vert, keys));
 }
 
@@ -33,9 +41,15 @@ void vtk_ini(MPI_Comm comm, int maxn, char const *path, VTKConf *c, /**/ VTK **p
     nbuf = get_nbuf(maxn, mesh_nv(mesh), mesh_nt(mesh), mesh_ne(mesh));
     EMALLOC(nbuf, &q->dbuf);
     EMALLOC(nbuf, &q->ibuf);
-    EMALLOC(nbuf, &q->D);
     UC(mkdir(comm, DUMP_BASE, path));
     cpy(q->path, path);
+    /*
+    for (i = 0; i < key_list_size(q->tri); i++)
+        EMALLOC(q->D[i]);
+    for (i = 0; i < key_list_size(q->vert); i++)
+    EMALLOC(q->D[i]); */
+    EMALLOC(nbuf, &q->D);
+
     q->nbuf = nbuf;
     q->nm       = UNSET;
     q->rr_set   = 0;
@@ -94,7 +108,7 @@ void vtk_write(VTK *q, MPI_Comm comm, int id) {
         msg_print("missing vertices data");
         key_list_log(q->vert);
         ERR("");
-    }    
+    }
     if (!q->rr_set) ERR("points are unset");
 
     if (snprintf(path, FILENAME_MAX, PATTERN, DUMP_BASE, q->path, id) < 0)
