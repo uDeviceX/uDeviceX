@@ -8,11 +8,11 @@ static __device__ void ini(int3 L, int zplane, const Texo<int> texstart, int w_n
     uint cnt0, cnt1, cnt2, org0;
     int org1, org2;
     int xcells, ycells, zcells, ncells;
+    int xbase, ybase, zbase;    
     
-
-    int xbase = (int)(x - (-L.x / 2 - XWM));
-    int ybase = (int)(y - (-L.y / 2 - YWM));
-    int zbase = (int)(z - (-L.z / 2 - ZWM));
+    xbase = (int)(x - (-L.x / 2 - XWM));
+    ybase = (int)(y - (-L.y / 2 - YWM));
+    zbase = (int)(z - (-L.z / 2 - ZWM));
 
     xbase = minmax(-XWM+1, L.x + XWM - 2, xbase);
     ybase = minmax(-YWM+1, L.y + YWM - 2, ybase);
