@@ -40,11 +40,11 @@ static void dump(double *tri_area,
 
     scalars_double_ini(nt, tri_area, &sc);
     vtk_tri(vtk, nm, sc, "area");
+    UC(scalars_fin(sc));
 
     id = 0;
     UC(vtk_write(vtk, out->comm, id));
 
-    UC(scalars_fin(sc));
     UC(vtk_fin(vtk));
     UC(vtk_conf_fin(c));
 }

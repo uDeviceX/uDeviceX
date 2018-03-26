@@ -40,3 +40,24 @@ static void tri(Out *o, int nm, int nv, int nt, const int *tt, int *buf) {
     UC(write_all(comm, buf, t*sizeof(buf[0]), file));
     print(o, "\n");
 }
+
+static void cell_header(Out *o, int n) {
+    int n_total;
+    MPI_Comm comm;
+    comm = o->comm;
+    UC(write_reduce(comm, n, &n_total));
+    print(o, "CELL_DATA %d\n", n_total);
+}
+
+static void cell_data(Out *o, int n, double *data, const char *name) {
+    MPI_Comm comm;
+    WriteFile *file;
+    comm = o->comm;
+    file = o->file;
+    print(o, "SCALARS %s double 1\n", name);
+    print(o, "LOOKUP_TABLE default\n");
+    
+    big_endian_dbl(n, /**/ data);
+    UC(write_all(comm, data, n*sizeof(data[0]), file));
+    print(o, "\n");
+}

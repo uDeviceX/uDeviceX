@@ -8,7 +8,7 @@ void scalars_float_ini(int n, const float *rr, /**/ Scalars **pq) {
 void scalars_double_ini(int n, const double *rr, /**/ Scalars **pq) {
     Scalars *q;
     EMALLOC(1, &q);
-    q->type = FLOAT; q->n = n; q->D.dd = rr;
+    q->type = DOUBLE; q->n = n; q->D.dd = rr;
     *pq = q;
 }
 

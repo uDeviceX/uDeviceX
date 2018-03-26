@@ -27,13 +27,13 @@ void vtk_ini(MPI_Comm comm, int maxn, char const *path, VTKConf *c, /**/ VTK **p
     nbuf = get_nbuf(maxn, mesh_nv(mesh), mesh_nt(mesh), mesh_ne(mesh));
     EMALLOC(nbuf, &q->dbuf);
     EMALLOC(nbuf, &q->ibuf);
+    EMALLOC(nbuf, &q->D);
     UC(mkdir(comm, DUMP_BASE, path));
     cpy(q->path, path);
     q->nbuf = nbuf;
     q->nm       = UNSET;
     q->rr_set   = 0;
     UC(mesh_copy(mesh, /**/ &q->mesh));
-    EMALLOC(nbuf, &q->D[0]);
 
     *pq = q;
 }
@@ -58,12 +58,12 @@ void vtk_points(VTK *q, int nm, const Vectors *pos) {
     q->rr_set = 1;
 }
 
-void vtk_tri(VTK *q, int nm, const Scalars* sc, const char *keys) {
+void vtk_tri(VTK *q, int nm, const Scalars *sc, const char *keys) {
     int i, nt, n;
     nt = mesh_nt(q->mesh);
     n = nm * nt;
     for (i = 0; i < n; i++)
-        q->D[0][i] = scalars_get(sc, i);
+        q->D[i] = scalars_get(sc, i);
 }
 
 void vtk_write(VTK *q, MPI_Comm comm, int id) {
@@ -86,9 +86,13 @@ void vtk_write(VTK *q, MPI_Comm comm, int id) {
         ERR("3*n=%d > nbuf=%d", n, nbuf);
     if (4 * nm * nt > nbuf)
         ERR("nm=%d * nt=%d > nbuf=%d", nm, nt, nbuf);
+    
     header(&out);
     points(&out, n, q->dbuf);
     tri(&out, nm, nv, nt, tt, q->ibuf);
+    cell_header(&out, nm*nt);
+    cell_data(&out, nm*nt, q->D, "area");
+    
     UC(write_file_close(out.file));
 
     q->rr_set = 0;
@@ -98,6 +102,6 @@ void vtk_write(VTK *q, MPI_Comm comm, int id) {
 void vtk_fin(VTK *q) {
     EFREE(q->dbuf);
     EFREE(q->ibuf);
-    EFREE(q->D[0]);
+    EFREE(q->D);
     EFREE(q);
 }

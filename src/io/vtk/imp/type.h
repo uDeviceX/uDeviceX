@@ -13,7 +13,7 @@ struct VTK {
     double *dbuf;
     int *ibuf;
 
-    double *D[N_MAX];
+    double *D;
     
     int rr_set;
     char path[FILENAME_MAX];
