@@ -6,7 +6,9 @@ static __device__ void ini(int3 L, int zplane, const Texo<int> texstart, int w_n
     uint cnt0, cnt1, cnt2, org0;
     int org1, org2;
     int xcells, ycells, zcells, ncells;
-    int xbase, ybase, zbase;    
+    int xbase, ybase, zbase;
+    int cid0, cid1, cid2;
+    int count0, count1, count2;
     
     xbase = (int)(x + L.x / 2 + XWM);
     ybase = (int)(y + L.y / 2 + YWM);
@@ -26,23 +28,23 @@ static __device__ void ini(int3 L, int zplane, const Texo<int> texstart, int w_n
 
     ncells = xcells * ycells * zcells;
 
-    int cid0 = xbase - 1 + xcells * (ybase - 1 + ycells * (zbase - 1 + zplane));
+    cid0 = xbase - 1 + xcells * (ybase - 1 + ycells * (zbase - 1 + zplane));
     assert(cid0 >= 0 && cid0 < ncells);
 
     org0 = start_fetch(cid0);
-    int count0 = start_fetch(cid0 + 3) - org0;
+    count0 = start_fetch(cid0 + 3) - org0;
 
-    int cid1 = cid0 + xcells;
+    cid1 = cid0 + xcells;
     assert(cid1 >= 0 && cid1 < ncells);
 
     org1 = start_fetch(cid1);
-    int count1 = start_fetch(cid1 + 3) - org1;
+    count1 = start_fetch(cid1 + 3) - org1;
 
-    int cid2 = cid0 + xcells * 2;
+    cid2 = cid0 + xcells * 2;
     assert(cid2 >= 0 && cid2 < ncells);
     
     org2 = start_fetch(cid2);
-    int count2 = cid2 + 3 == ncells
+    count2 = cid2 + 3 == ncells
         ? w_n
         : start_fetch(cid2 + 3) - org2;
 
