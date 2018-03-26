@@ -2,8 +2,8 @@ static __device__ int minmax(int lo, int hi, int a) { return min(hi, max(lo, a))
 
 static __device__ void ini(int3 L, int zplane, const Texo<int> texstart, int w_n, float x, float y, float z, /**/ Map *m) {
 #define start_fetch(i) (fetch(texstart, i))
-    uint cnt0, cnt1, cnt2, org0;
-    int org1, org2;
+    int str0, str1, str2;
+    int org0, org1, org2;
     int xcells, ycells, zcells, ncells;
     int xbase, ybase, zbase;
     int cid0, cid1, cid2;
@@ -37,14 +37,14 @@ static __device__ void ini(int3 L, int zplane, const Texo<int> texstart, int w_n
         ? w_n
         : start_fetch(cid2 + 3) - org2;
 
-    cnt0 = count0;
-    cnt1 = count0 + count1;
-    cnt2 = cnt1 + count2;
+    str0 = count0;
+    str1 = count0 + count1;
+    str2 = str1 + count2;
 
-    org1 -= cnt0;
-    org2 -= cnt1;
+    org1 -= str0;
+    org2 -= str1;
 
     m->org0 = org0; m->org1 = org1; m->org2 = org2;
-    m->cnt0 = cnt0; m->cnt1 = cnt1; m->cnt2 = cnt2;
+    m->str0 = str0; m->str1 = str1; m->str2 = str2;
 #undef start_fetch
 }
