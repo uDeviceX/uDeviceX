@@ -67,6 +67,7 @@ void vtk_write(VTK *q, MPI_Comm comm, int id) {
     n = q->nm * mesh_nv(q->mesh);
     header(&out);
     points(&out, n, q->rr);
+    tri(&out, n, mesh_tt(q->mesh));
 
     UC(write_file_close(out.file));
 

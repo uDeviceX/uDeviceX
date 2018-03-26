@@ -11,8 +11,11 @@ static void points(Out *o, int n, double *rr) {
     print(o, "POINTS %d double\n", n);
     comm = o->comm;
     file = o->file;
-    
+
     big_endian_dbl(3*n, /**/ rr);
-    
     UC(write_all(comm, rr, 3*n*sizeof(rr[0]), file));
+}
+
+static void tri(Out *o, int n, const int *tt) {
+
 }

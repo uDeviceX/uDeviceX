@@ -6,3 +6,4 @@ void mesh_copy(const Mesh*, /**/ Mesh**);
 void mesh_fin(Mesh*);
 
 int mesh_nv(Mesh*);
+const int* mesh_tt(Mesh*);
