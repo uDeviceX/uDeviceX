@@ -8,9 +8,9 @@ static void freeze0(MPI_Comm cart, int3 L, int maxn, const Sdf *qsdf, /*io*/ int
 
 static void freeze(MPI_Comm cart, int3 L, int maxn, const Sdf *qsdf, /*io*/ int *n, Particle *pp, /*o*/ int *w_n, Particle *dev) {
     Particle *hst;
-    UC(emalloc(maxn * sizeof(Particle), (void**) &hst));
+    EMALLOC(maxn, &hst);
     UC(freeze0(cart, L, maxn, qsdf, /*io*/ n, pp, /*o*/ w_n, dev, /*w*/ hst));
-    free(hst);
+    EFREE(hst);
 }
 
 static void gen_quants(MPI_Comm cart, int3 L, int maxn, const Sdf *qsdf, /**/ int *o_n, Particle *o_pp, int *w_n, float4 **w_pp) {
