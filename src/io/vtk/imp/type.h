@@ -1,6 +1,6 @@
 struct VTKConf {
     Mesh *mesh;
-    KeyList *tri;
+    KeyList *tri, *vert;
 };
 
 enum { UNSET = - 1 };
@@ -8,6 +8,7 @@ enum { N_MAX = 100 };
 struct VTK {
     int nm; /* current number of meshes */
     Mesh *mesh;
+    KeyList *tri, *vert;
 
     int nbuf; /* maximum bufer size */
     double *dbuf;

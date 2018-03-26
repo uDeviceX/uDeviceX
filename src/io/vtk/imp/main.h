@@ -5,17 +5,23 @@ void vtk_conf_ini(MeshRead *mesh, /**/ VTKConf **pq) {
     EMALLOC(1, &q);
     mesh_ini(mesh, &q->mesh);
     key_list_ini(&q->tri);
+    key_list_ini(&q->vert);
     *pq = q;
 }
 
 void vtk_conf_fin(VTKConf *q) {
     key_list_fin(q->tri);
+    key_list_fin(q->vert);
     mesh_fin(q->mesh);
     EFREE(q);
 }
 
 void vtk_conf_tri(VTKConf *q, const char *keys) {
     UC(key_list_push(q->tri, keys));
+}
+
+void vtk_conf_vert(VTKConf *q, const char *keys) {
+    UC(key_list_push(q->vert, keys));
 }
 
 void vtk_ini(MPI_Comm comm, int maxn, char const *path, VTKConf *c, /**/ VTK **pq) {
@@ -34,6 +40,8 @@ void vtk_ini(MPI_Comm comm, int maxn, char const *path, VTKConf *c, /**/ VTK **p
     q->nm       = UNSET;
     q->rr_set   = 0;
     UC(mesh_copy(mesh, /**/ &q->mesh));
+    UC(key_list_copy(c->tri, &q->tri));
+    UC(key_list_copy(c->vert, &q->vert));
 
     *pq = q;
 }
@@ -60,6 +68,7 @@ void vtk_points(VTK *q, int nm, const Vectors *pos) {
 
 void vtk_tri(VTK *q, int nm, const Scalars *sc, const char *keys) {
     int i, nt, n;
+
     nt = mesh_nt(q->mesh);
     n = nm * nt;
     for (i = 0; i < n; i++)
@@ -86,13 +95,13 @@ void vtk_write(VTK *q, MPI_Comm comm, int id) {
         ERR("3*n=%d > nbuf=%d", n, nbuf);
     if (4 * nm * nt > nbuf)
         ERR("nm=%d * nt=%d > nbuf=%d", nm, nt, nbuf);
-    
+
     header(&out);
     points(&out, n, q->dbuf);
     tri(&out, nm, nv, nt, tt, q->ibuf);
     cell_header(&out, nm*nt);
     cell_data(&out, nm*nt, q->D, "area");
-    
+
     UC(write_file_close(out.file));
 
     q->rr_set = 0;
@@ -100,6 +109,8 @@ void vtk_write(VTK *q, MPI_Comm comm, int id) {
 }
 
 void vtk_fin(VTK *q) {
+    key_list_fin(q->tri);
+    key_list_fin(q->vert);
     EFREE(q->dbuf);
     EFREE(q->ibuf);
     EFREE(q->D);
