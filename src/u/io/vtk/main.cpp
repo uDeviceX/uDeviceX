@@ -11,7 +11,9 @@
 #include "conf/imp.h"
 #include "io/mesh_read/imp.h"
 
+#include "mesh/scalars/imp.h"
 #include "mesh/vectors/imp.h"
+
 #include "mesh/tri_area/imp.h"
 #include "io/vtk/imp.h"
 
@@ -23,19 +25,26 @@ struct Out {
 
 static void dump(double *tri_area,
                  Vectors *pos, Out *out) {
-    int nv, nm, id;
+    int nv, nt, nm, id;
     VTKConf *c;
     VTK *vtk;
+    Scalars *sc;
     nv = mesh_read_get_nv(out->mesh);
+    nt = mesh_read_get_nt(out->mesh);
     nm = 1;
 
     UC(vtk_conf_ini(out->mesh, &c));
     UC(vtk_conf_tri(c, "area"));
     vtk_ini(out->comm, nv, out->path, c, /**/ &vtk);
     vtk_points(vtk, nm, pos);
+
+    scalars_double_ini(nt, tri_area, &sc);
+    vtk_tri(vtk, nm, sc, "area");
+
     id = 0;
     UC(vtk_write(vtk, out->comm, id));
-    
+
+    UC(scalars_fin(sc));
     UC(vtk_fin(vtk));
     UC(vtk_conf_fin(c));
 }

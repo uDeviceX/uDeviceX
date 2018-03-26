@@ -33,6 +33,7 @@ void vtk_ini(MPI_Comm comm, int maxn, char const *path, VTKConf *c, /**/ VTK **p
     q->nm       = UNSET;
     q->rr_set   = 0;
     UC(mesh_copy(mesh, /**/ &q->mesh));
+    EMALLOC(nbuf, &q->D[0]);
 
     *pq = q;
 }
@@ -55,6 +56,14 @@ void vtk_points(VTK *q, int nm, const Vectors *pos) {
 
     q->nm = nm;
     q->rr_set = 1;
+}
+
+void vtk_tri(VTK *q, int nm, const Scalars* sc, const char *keys) {
+    int i, nt, n;
+    nt = mesh_nt(q->mesh);
+    n = nm * nt;
+    for (i = 0; i < n; i++)
+        q->D[0][i] = scalars_get(sc, i);
 }
 
 void vtk_write(VTK *q, MPI_Comm comm, int id) {
@@ -89,5 +98,6 @@ void vtk_write(VTK *q, MPI_Comm comm, int id) {
 void vtk_fin(VTK *q) {
     EFREE(q->dbuf);
     EFREE(q->ibuf);
+    EFREE(q->D[0]);
     EFREE(q);
 }

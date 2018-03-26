@@ -4,6 +4,7 @@ struct VTKConf {
 };
 
 enum { UNSET = - 1 };
+enum { N_MAX = 100 };
 struct VTK {
     int nm; /* current number of meshes */
     Mesh *mesh;
@@ -11,6 +12,8 @@ struct VTK {
     int nbuf; /* maximum bufer size */
     double *dbuf;
     int *ibuf;
+
+    double *D[N_MAX];
     
     int rr_set;
     char path[FILENAME_MAX];
