@@ -68,11 +68,16 @@ void vtk_points(VTK *q, int nm, const Vectors *pos) {
 
 void vtk_tri(VTK *q, int nm, const Scalars *sc, const char *keys) {
     int i, nt, n;
-
+    if (!key_list_has(q->tri, keys)) {
+        msg_print("unkown key '%s'", keys);
+        key_list_log(q->tri);
+        ERR("");
+    }
     nt = mesh_nt(q->mesh);
     n = nm * nt;
     for (i = 0; i < n; i++)
         q->D[i] = scalars_get(sc, i);
+    UC(key_list_mark(q->tri, keys));
 }
 
 void vtk_write(VTK *q, MPI_Comm comm, int id) {
@@ -80,6 +85,16 @@ void vtk_write(VTK *q, MPI_Comm comm, int id) {
     int n, nm, nv, nt, nbuf;
     const int *tt;
     Out out;
+    if (!key_list_marked(q->tri)) {
+        msg_print("missing triangle data");
+        key_list_log(q->tri);
+        ERR("");
+    }
+    if (!key_list_marked(q->vert)) {
+        msg_print("missing vertices data");
+        key_list_log(q->vert);
+        ERR("");
+    }    
     if (!q->rr_set) ERR("points are unset");
 
     if (snprintf(path, FILENAME_MAX, PATTERN, DUMP_BASE, q->path, id) < 0)
@@ -106,6 +121,8 @@ void vtk_write(VTK *q, MPI_Comm comm, int id) {
 
     q->rr_set = 0;
     q->nm = UNSET;
+    key_list_unmark(q->tri);
+    key_list_unmark(q->vert);
 }
 
 void vtk_fin(VTK *q) {
