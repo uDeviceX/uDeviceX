@@ -72,6 +72,7 @@ $B/mesh/collision/imp.o: $S/inc/conf.h $S/utils/error.h $S/inc/type.h $S/d/q.h $
 $B/mesh/dist/imp.o: $S/inc/type.h $S/mesh/dist/imp.h
 $B/mesh/props/imp.o: $S/inc/type.h $S/mesh/props/imp.h
 $B/mesh/scalars/imp.o: $S/utils/imp.h $S/utils/error.h $S/mesh/vectors/imp.h $S/mesh/scalars/imp.h $S/mesh/scalars/imp/main.h $S/mesh/scalars/imp/type.h
+$B/mesh/scatter/imp.o: $S/mesh/scalars/imp.h $S/utils/imp.h $S/utils/error.h $S/mesh/scatter/imp.h $S/io/mesh_read/imp.h $S/mesh/scatter/imp/main.h $S/mesh/scatter/imp/type.h $S/utils/msg.h
 $B/mesh/triangles/imp.o: $S/utils/imp.h $S/inc/conf.h $S/utils/error.h $S/mesh/triangles/imp.h $S/io/mesh_read/imp.h $S/utils/cc.h $S/inc/dev.h $S/d/api.h $B/conf.h $S/mesh/triangles/type.h
 $B/mesh/tri_area/imp.o: $S/utils/imp.h $S/utils/error.h $S/math/tri/imp.h $S/mesh/vectors/imp.h $S/mesh/tri_area/imp.h $S/io/mesh_read/imp.h $S/mesh/tri_area/imp/main.h $S/mesh/tri_area/imp/type.h $S/utils/msg.h
 $B/mesh/vectors/imp.o: $S/utils/imp.h $S/utils/error.h $S/inc/type.h $S/mesh/vectors/imp.h $S/mesh/vectors/imp/main.h $S/mesh/vectors/imp/type.h $S/math/tform/imp.h $S/coords/imp.h
