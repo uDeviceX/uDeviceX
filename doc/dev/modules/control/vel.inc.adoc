@@ -22,11 +22,29 @@ There is therefore 3 (independant) controlled variables.
 
 the transformation is the way of averaging the velocity:
 
-* cartesian transformation keeps the velocity and does not depends on position.
-* radial transformation returns the velocity in polar coordinates
-  scaled by the radial position. the `z` component corresponds to
-  cartesian transformation
 
+cartesian transformation keeps the velocity and does not depends on
+position:
+
+[stem]
+++++
+\mathbf{f} \left( \mathbf{r}, \mathbf{v} \right) = \mathbf{v}
+++++
+
+radial transformation returns the velocity in polar coordinates
+scaled by the radial position. the `z` component corresponds to
+cartesian transformation:
+
+[stem]
+++++
+\mathbf{f} \left( \mathbf{r}, \mathbf{v} \right) = \left(
+r [v_x \cos(\theta) + v_y \sin(\theta)],
+r[- v_x \sin(\theta) + v_y \cos(\theta)],
+v_z \right),
+++++
+
+with stem:[r = \sqrt{x^2 + y^2}] and stem:[\theta = \arctan(y/x)].
+stem:[x] and stem:[y] are particle position with respect to the center of the domain.
 
 === interface
 
@@ -74,15 +92,15 @@ syntax:
 [source,cfg]
 ----
 vcon = {
-     active = true;
-     type   = "cart";          # can be also "rad"
-     U      = [1.0, 1.0, 0.0]; # target velocity in transformed space
+     active = true
+     type   = "cart"          # can be also "rad"
+     U      = [1.0, 1.0, 0.0] # target velocity in transformed space
      factor = 0.08
      Kp = 2.0
      Ki = 1.0
      Kd = 8.0
-     log_freq    = 500;
-     adjust_freq = 500;
-     sample_freq = 1;
-};
+     log_freq    = 500
+     adjust_freq = 500
+     sample_freq = 1
+}
 ----
