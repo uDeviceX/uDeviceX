@@ -38,7 +38,7 @@ static void ini_dd0(int nt, const int4 *tt, int nv, int md, /**/ int4 *dd) {
         reg(i2, i0, nxt, /**/ seen, &q);
     }
 
-    e_fin(nxt); e_fin(seen);
+    UC(e_fin(nxt); e_fin(seen));
 }
 
 static void ini_dd(/**/ MeshRead *q) {
@@ -51,7 +51,7 @@ static void ini_dd(/**/ MeshRead *q) {
     tt = mesh_read_get_tri(q);
     q->nd = nd;
     EMALLOC(nd, &q->dd);
-    ini_dd0(nt, tt, nv, md, /**/ q->dd);
+    UC(ini_dd0(nt, tt, nv, md, /**/ q->dd));
 }
                    
 void mesh_read_ini_off(const char *path, MeshRead **pq) {
@@ -62,7 +62,7 @@ void mesh_read_ini_off(const char *path, MeshRead **pq) {
     UC(read_off(f, path, /**/ q));
     UC(efclose(f));
     msg_print("read off '%s'", path);
-    ini_dd(q);
+    UC(ini_dd(q));
     *pq = q;
 }
 
@@ -74,7 +74,7 @@ void mesh_read_ini_ply(const char *path, MeshRead **pq) {
     UC(read_ply(f, path, /**/ q));
     UC(efclose(f));
     msg_print("read ply '%s'", path);
-    ini_dd(q);
+    UC(ini_dd(q));
     *pq = q;
 }
 
