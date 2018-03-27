@@ -21,10 +21,11 @@ void e_set(Edg *q, int i, int j, int val) {
 }
 
 int e_get(Edg *q, int i, int j) {
-    int md;
+    int md, ans;
     const int *hx, *hy;
     md = q->md; hx = q->hx; hy = q->hy;
-    return edg_get(md, i, j, hx, hy);
+    UC(ans = edg_get(md, i, j, hx, hy));
+    return ans;
 }
 
 int e_valid(Edg *q, int i, int j) {
