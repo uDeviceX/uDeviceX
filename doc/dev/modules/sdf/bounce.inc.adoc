@@ -1,0 +1,39 @@
+= bounce
+
+Particles crossing the wall surface are bounced back into the domain.
+We define:
+
+* stem:[\mathbf{r}_0, \mathbf{v}_0] position and velocity before the particle has
+  crossed the surface 
+* stem:[\mathbf{r}_1, \mathbf{v}_1] position and velocity after the particle has
+  crossed the surface, not bounced back
+* stem:[\mathbf{r}_n, \mathbf{v}_n] position and velocity after bounce-back
+* stem:[\mathbf{r}_w, \mathbf{v}_w] position and velocity of the wall
+  at collision point
+
+The collision point is found by solving for the collision time stem:[h]
+
+[stem]
+++++
+S(\mathbf{r}_0 + h \mathbf{v}_0) = 0
+++++
+
+with Newton iterations.
+We obtain stem:[\mathbf{r}_w = \mathbf{r}_0 + h \mathbf{v}_0].
+
+The bounced particle is set to
+
+[stem]
+++++
+\mathbf{r}_n = \mathbf{r}_w + (dt - h) \mathbf{v}_n \\
+\mathbf{v}_n = 2 \mathbf{v}_w - \mathbf{v}_0
+++++
+
+== interface
+
+[source,cpp]
+----
+include::{src}/wall/sdf/bounce/imp.h[tag=int]
+----
+
+
