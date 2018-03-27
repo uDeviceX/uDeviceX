@@ -1,4 +1,5 @@
 struct Q { int4 *d; }; /* queue */
+
 static void q_push(Q *q, int i0, int i1, int i2, int i3) {
     int4 *d;
     d = q->d;
@@ -11,10 +12,11 @@ static void reg(int i1, int i2, Edg *nxt, Edg *seen, /**/ Q *q) {
     if (e_valid(seen, i1, i2)) return;
     if (e_valid(seen, i2, i1)) return;
     i0 = e_get(nxt, i1, i2);
-    i3 = e_get(nxt, i2, i1); /* previ_ous */
+    i3 = e_get(nxt, i2, i1); /* previous */
     q_push(q, i0, i1, i2, i3);
     UC(e_set(seen, i1, i2, 1));
 }
+
 static void ini_dd0(int nt, const int4 *tt, int nv, int md, /**/ int4 *dd) {
     Q q;
     Edg *nxt, *seen;
@@ -81,6 +83,7 @@ void mesh_read_ini_ply(const char *path, MeshRead **pq) {
 void mesh_read_fin(MeshRead* q) {
     EFREE(q->rr); EFREE(q->tt); EFREE(q->dd); EFREE(q);
 }
+
 int mesh_read_get_nv(const MeshRead *q) { return q->nv; }
 int mesh_read_get_nt(const MeshRead *q) { return q->nt; }
 int mesh_read_get_ne(const MeshRead *q) {
@@ -98,6 +101,7 @@ static int amax(int *a, int n) {
         if (a[i] > m) m = a[i];
     return m;
 }
+
 int mesh_read_get_md(const MeshRead *q) {
     int *d;
     int i, m, nt, nv;
