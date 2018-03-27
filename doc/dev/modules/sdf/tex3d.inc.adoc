@@ -1,0 +1,31 @@
+= tex3D
+
+a simple texture object manager for representing 3d grid scalar field
+
+== data structures
+
+[source,cpp]
+----
+include::{src}/wall/sdf/tex3d/type.h[]
+----
+<1> view, to be passed on device
+<2> Host structure
+
+== interface
+
+allocate and destroy texture object:
+
+[source,cpp]
+----
+include::{src}/wall/sdf/tex3d/imp.h[tag=mem]
+----
+
+manipulate texture object:
+
+[source,cpp]
+----
+include::{src}/wall/sdf/tex3d/imp.h[tag=int]
+----
+<1> create texture object from `Array3d` object
+<2> create a view to be passed to kernels
+

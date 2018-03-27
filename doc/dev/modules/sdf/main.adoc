@@ -79,4 +79,7 @@ include::field.inc.adoc[]
 
 include::label.inc.adoc[]
 
+include::tex3d.inc.adoc[]
+
+
 :leveloffset: -2
