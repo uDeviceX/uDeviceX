@@ -1,0 +1,33 @@
+= field
+
+read and manage a scalar field on host
+
+== interface
+
+allocate, deallocate:
+
+[source,cpp]
+----
+include::{src}/wall/sdf/field/imp.h[tag=mem]
+----
+<1> allocate and read field from file "path"
+<2> deallocate the field structure
+
+getter functions:
+
+[source,cpp]
+----
+include::{src}/wall/sdf/field/imp.h[tag=get]
+----
+<1> get grid size
+<2> get extents of the grid
+<3> get pointer to data
+
+[source,cpp]
+----
+include::{src}/wall/sdf/field/imp.h[tag=get]
+----
+<1> sample field to a new grid size `N`
+<2> dump field to "wall.h5"
+<3> scale field by `scale`
+

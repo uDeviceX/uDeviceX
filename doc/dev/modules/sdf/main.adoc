@@ -75,4 +75,6 @@ include::array3d.inc.adoc[]
 
 include::bounce.inc.adoc[]
 
+include::field.inc.adoc[]
+
 :leveloffset: -2
