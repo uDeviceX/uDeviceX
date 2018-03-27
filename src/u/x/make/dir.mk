@@ -71,6 +71,7 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/mesh/tri_area         && \
     d $B/mesh/triangles        && \
     d $B/mesh/vectors          && \
+    d $B/mesh/vert_area        && \
     d $B/mesh/volume           && \
     d $B/meshbb                && \
     d $B/mpi                   && \

@@ -1,4 +1,4 @@
-void mesh_tri_vert_ini(MeshRead *mesh, MeshVertArea **pq) {
+void mesh_vert_area_ini(MeshRead *mesh, MeshVertArea **pq) {
     int nv, nt;
     MeshVertArea *q;
     EMALLOC(1, &q);
@@ -12,7 +12,7 @@ void mesh_tri_vert_ini(MeshRead *mesh, MeshVertArea **pq) {
     *pq = q;
 }
 
-void mesh_tri_vert_fin(MeshVertArea *q) { EFREE(q->tt); EFREE(q); }
+void mesh_vert_area_fin(MeshVertArea *q) { EFREE(q->tt); EFREE(q); }
 static void get(Vectors *p, int i, double d[3]) {
     enum {X, Y, Z};
     float f[3];
@@ -29,7 +29,7 @@ static double area(int4 t, Vectors *p, int offset) {
     return tri_hst::kahan_area(a, b, c);
 }
 
-void mesh_tri_vert_apply(MeshVertArea *q, int m, Vectors *p, double *area0) {
+void mesh_vert_area_apply(MeshVertArea *q, int m, Vectors *p, double *area0) {
     int i, j, k, nt, nv, offset;
     int4 *tt;
     nt = q->nt; tt = q->tt; nv = q->nv; offset = 0;
