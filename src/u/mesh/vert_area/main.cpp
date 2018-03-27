@@ -20,8 +20,9 @@ struct Out {
     const char *path;
 };
 
-static void dump(int n, double *data, Vectors*, Out*) {
-    int i;
+static void dump(int nv, int nm, double *data, Vectors*, Out*) {
+    int i, n;
+    n = nv * nm;
     for (i = 0; i < n; i++)
         printf("%g\n", data[i]);
 }
@@ -39,7 +40,7 @@ static void main0(const char *cell, Out *out) {
     nm = 1;
     EMALLOC(nv, &vert_areas);
     mesh_vert_area_apply(vert_area, nm, pos, /**/ vert_areas);
-    dump(nv, vert_areas, pos, out);
+    dump(nv, nm, vert_areas, pos, out);
 
     mesh_vert_area_fin(vert_area);
     UC(vectors_fin(pos));
