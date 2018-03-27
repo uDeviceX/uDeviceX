@@ -1,4 +1,6 @@
 struct MeshScatter;
+struct MeshRead;
+struct Scalars;
 
 // tag::interface[]
 void mesh_scatter_ini(MeshRead*, MeshScatter**);
