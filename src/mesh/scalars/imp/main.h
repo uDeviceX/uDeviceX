@@ -38,22 +38,22 @@ void scalars_fin(Scalars *q) { EFREE(q); }
 static double float_get(const Scalars *q, int i) { return q->D.ff[i]; }
 static double double_get(const Scalars *q, int i) { return q->D.dd[i]; }
 static double vecx_get(const Scalars *q, int i)   {
-    enum { X };
+    enum {X};
     float r[3];
     vectors_get(q->D.vec, i, /**/ r);
     return r[X];
 }
 static double vecy_get(const Scalars *q, int i)   {
-    enum { X };
+    enum {X, Y};
     float r[3];
     vectors_get(q->D.vec, i, /**/ r);
-    return r[X];
+    return r[Y];
 }
 static double vecz_get(const Scalars *q, int i)   {
-    enum { X };
+    enum {X, Y, Z};
     float r[3];
     vectors_get(q->D.vec, i, /**/ r);
-    return r[X];
+    return r[Z];
 }
 
 static double zero_get(const Scalars*, int) { return 0; }

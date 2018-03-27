@@ -29,7 +29,7 @@ static void dump(double *tri_area,
     int nv, nt, nm, id;
     VTKConf *c;
     VTK *vtk;
-    Scalars *area, *x;
+    Scalars *area, *x, *y;
     nv = mesh_read_get_nv(out->mesh);
     nt = mesh_read_get_nt(out->mesh);
     nm = 1;
@@ -38,16 +38,20 @@ static void dump(double *tri_area,
     UC(vtk_conf_tri(c, "area0"));
     UC(vtk_conf_tri(c, "area1"));
     UC(vtk_conf_vert(c, "x"));
+    UC(vtk_conf_vert(c, "y"));
     vtk_ini(out->comm, nv, out->path, c, /**/ &vtk);
     vtk_points(vtk, nm, pos);
 
     scalars_double_ini(nt, tri_area, &area);
     scalars_vectors_ini(nv, pos, X, &x);
+    scalars_vectors_ini(nv, pos, Y, &y);
     vtk_tri(vtk, nm, area, "area0");
     vtk_tri(vtk, nm, area, "area1");
     vtk_vert(vtk, nm, x, "x");
+    vtk_vert(vtk, nm, y, "y");
     UC(scalars_fin(area));
     UC(scalars_fin(x));
+    UC(scalars_fin(y));
 
     id = 0;
     UC(vtk_write(vtk, out->comm, id));
