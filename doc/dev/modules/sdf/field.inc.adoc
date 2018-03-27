@@ -25,7 +25,7 @@ include::{src}/wall/sdf/field/imp.h[tag=get]
 
 [source,cpp]
 ----
-include::{src}/wall/sdf/field/imp.h[tag=get]
+include::{src}/wall/sdf/field/imp.h[tag=int]
 ----
 <1> sample field to a new grid size `N`
 <2> dump field to "wall.h5"

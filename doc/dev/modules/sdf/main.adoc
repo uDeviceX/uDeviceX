@@ -77,4 +77,6 @@ include::bounce.inc.adoc[]
 
 include::field.inc.adoc[]
 
+include::label.inc.adoc[]
+
 :leveloffset: -2

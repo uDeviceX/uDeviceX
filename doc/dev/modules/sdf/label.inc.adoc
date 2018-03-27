@@ -1,0 +1,18 @@
+= label
+
+a simple tool to mark particles in wall regions
+
+labels can be:
+
+[source,cpp]
+----
+include::{src}/wall/sdf/label/imp.h[tag=enum]
+----
+
+[source,cpp]
+----
+include::{src}/wall/sdf/label/imp.h[tag=int]
+----
+<1> set labels on an array of particles on device
+<2> set labels on an array of particles on host
+
