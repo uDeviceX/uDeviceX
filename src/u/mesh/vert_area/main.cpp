@@ -20,26 +20,26 @@ struct Out {
     const char *path;
 };
 
-static void dump(int nt, double *d, Vectors *pos, Out *out) {
-    int id, nm;
-    id = 0; nm = 1;
+static void dump(int n, double *data, Vectors*, Out*) {
+    int i;
+    for (i = 0; i < n; i++)
+        printf("%g\n", data[i]);
 }
 
 static void main0(const char *cell, Out *out) {
-    int nv, nt, nm;
+    int nv, nm;
     MeshVertArea *vert_area;
     Vectors  *pos;
     double *vert_areas;
     UC(mesh_read_ini_off(cell, /**/ &out->mesh));
     UC(mesh_vert_area_ini(out->mesh, &vert_area));
     nv = mesh_read_get_nv(out->mesh);
-    nt = mesh_read_get_nt(out->mesh);
     UC(vectors_float_ini(nv, mesh_read_get_vert(out->mesh), /**/ &pos));
 
     nm = 1;
-    EMALLOC(nt, &vert_areas);
+    EMALLOC(nv, &vert_areas);
     mesh_vert_area_apply(vert_area, nm, pos, /**/ vert_areas);
-    dump(nt, vert_areas, pos, out);
+    dump(nv, vert_areas, pos, out);
 
     mesh_vert_area_fin(vert_area);
     UC(vectors_fin(pos));
