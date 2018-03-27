@@ -64,7 +64,7 @@ void mesh_read_ini_off(const char *path, MeshRead **pq) {
     UC(read_off(f, path, /**/ q));
     UC(efclose(f));
     msg_print("read off '%s'", path);
-    UC(ini_dd(q));
+    q->dd_computed = 0;
     *pq = q;
 }
 
@@ -76,7 +76,7 @@ void mesh_read_ini_ply(const char *path, MeshRead **pq) {
     UC(read_ply(f, path, /**/ q));
     UC(efclose(f));
     msg_print("read ply '%s'", path);
-    UC(ini_dd(q));
+    q->dd = NULL;
     *pq = q;
 }
 
@@ -126,4 +126,10 @@ int mesh_read_get_md(const MeshRead *q) {
 
 const float *mesh_read_get_vert(const MeshRead *q) { return q->rr; }
 const int4  *mesh_read_get_tri(const MeshRead *q) { return q->tt; }
-const int4  *mesh_read_get_dih(const MeshRead *q) { return q->dd; }
+const int4  *mesh_read_get_dih(MeshRead *q) {
+    if (!q->dd_computed) {
+        UC(ini_dd(q));
+        q->dd_computed = 1;
+    }
+    return q->dd;
+}

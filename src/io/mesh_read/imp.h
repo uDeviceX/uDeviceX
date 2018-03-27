@@ -13,5 +13,5 @@ int mesh_read_get_md(const MeshRead*);
 
 const int4  *mesh_read_get_tri(const MeshRead*);
 const float *mesh_read_get_vert(const MeshRead*);
-const int4  *mesh_read_get_dih(const MeshRead*);
+const int4  *mesh_read_get_dih(MeshRead*);
 // end::interface[]
