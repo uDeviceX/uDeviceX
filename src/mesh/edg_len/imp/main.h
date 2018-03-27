@@ -40,7 +40,7 @@ static void len(MeshEdgLen *q, Vectors *pos, int offset_v, int offset_e, /**/ do
     for (k = i = 0; i < ne; i++) {
         a = ee[k++]; b = ee[k++];
         UC(value = len0(pos, a + offset_v, b + offset_v));
-        o[a + offset_e] += value;
+        o[i + offset_e] = value;
     }
 }
 void mesh_edg_len_apply(MeshEdgLen *q, int nm, Vectors *pos, /**/ double *o) {

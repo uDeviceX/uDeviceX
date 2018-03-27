@@ -29,14 +29,14 @@ static void main0(const char *path) {
 
     nm = 1;
     EMALLOC(ne, &lens);
-    mesh_angle_apply(len, nm, pos, /**/ lens);
+    mesh_edg_len_apply(len, nm, pos, /**/ lens);
     for (i = 0; i < ne; i++)
-        printf("%g\n", lens);
+        printf("%g\n", lens[i]);
     
-    mesh_edg_len_fin(angle);
+    mesh_edg_len_fin(len);
     UC(vectors_fin(pos));
     UC(mesh_read_fin(mesh));
-    EFREE(angles);
+    EFREE(lens);
 }
 
 int main(int argc, char **argv) {
