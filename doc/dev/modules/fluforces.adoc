@@ -5,11 +5,34 @@ solvent forces
 
 == interface
 
-TODO
+allocate and free bulk structure:
 
-== data structures
+[source,cpp]
+----
+include::{src}/fluforces/imp.h[tag=memb]
+----
 
-TODO
+compute bulk interactions:
+
+[source,cpp]
+----
+include::{src}/fluforces/imp.h[tag=intb]
+----
+
+allocate and free halo structure:
+
+[source,cpp]
+----
+include::{src}/fluforces/imp.h[tag=memh]
+----
+
+compute halo interactions:
+
+[source,cpp]
+----
+include::{src}/fluforces/imp.h[tag=inth]
+----
+
 
 == submodules
 
@@ -22,7 +45,7 @@ The algorithm is as follows:
 
 * each particle of the array has one thread assigned.
 * the thread runs over half of the 27 cell lists overlapping one cutoff radius
-  (this makes 13 cells + the "self cell") 
+  (this makes 13 cells + the "self cell")
 * in each cell, the particle ids are fetched from the cell starts
   array
 * run over particles, atomic add the forces to them and gather forces
@@ -47,17 +70,15 @@ v y          03 04 05          12 13 xx          xx xx xx
 
 where `xx` denotes that the cell is not used by the current thread.
 
-=== fluforces: halo
+=== halo
 
 solvent forces with remote particles (fragments)
 
-====  Internals
+main kernel performs interactions for a given halo:
 
-main kernel is `dev::forces` and performs all interactions:
-
-* dispatch threads along fragments
-* fetch generalized particle
+* fetch generalized particle `a`
 * build map (how to access neighboring particles?)
 * loop over neighboring particles according to map
 * compute pairwise interactions
+* accumulate to force `a` in output force array
 
