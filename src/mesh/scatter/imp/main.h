@@ -15,7 +15,7 @@ void mesh_scatter_ini(MeshRead *mesh, MeshScatter **pq) {
     const int4 *dd;
     int4 d;
     EMALLOC(1, &q);
-    
+
     nv = mesh_read_get_nv(mesh);
     ne = mesh_read_get_ne(mesh);
     dd = mesh_read_get_dih(mesh);
@@ -40,23 +40,30 @@ static void edg2vert(MeshScatter *q, Scalars *sc, int offset_v, int offset_e, /*
     ee = q->ee;
     for (k = i = 0; i < ne; i++) {
         a = ee[k++]; b = ee[k++];
-        UC(value = scalars_get(sc, k + offset_e));
+        UC(value = scalars_get(sc, i + offset_e));
         o[a + offset_v] += value;
         o[b + offset_v] += value;
     }
 }
 void mesh_scatter_edg2vert(MeshScatter *q, int nm, Scalars *sc, /**/ double *o) {
-    int i, n, nv, ne;
+    int i, j, k, d, n, nv, ne;
     int offset_v, offset_e;
     nv = q->nv;
     ne = q->ne;
     n = nv * nm;
     for (i = 0; i < n; i++) o[i] = 0;
-    for (i = 0; i < nm; i++) {
-        edg2vert(q, sc, offset_v, offset_e, /**/ o);
+    for (offset_e = offset_v = i = 0; i < nm; i++) {
+        UC(edg2vert(q, sc, offset_v, offset_e, /**/ o));
         offset_v += nv;
         offset_e += ne;
     }
+    for (i = j = 0; i < nm; i++)
+        for (k = 0; k < n; k++) {
+            d = q->deg[k];
+            if (d <= 0) ERR("wrong vert. degree: %d", d);
+            if (j >= n) ERR("j=%d >= n=%d", j, n);
+            o[j++] /= d;
+        }
 }
 
 void mesh_scatter_fin(MeshScatter *q) {

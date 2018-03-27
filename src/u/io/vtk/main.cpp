@@ -26,12 +26,13 @@ struct Out {
 };
 
 static void dump(double *tri_area,
+                 double *angle_dbl,
                  Vectors *pos, Out *out) {
     enum {X, Y, Z};
     int nv, nt, nm, id;
     VTKConf *c;
     VTK *vtk;
-    Scalars *area, *x, *y;
+    Scalars *area, *x, *angle;
     nv = mesh_read_get_nv(out->mesh);
     nt = mesh_read_get_nt(out->mesh);
     nm = 1;
@@ -40,20 +41,20 @@ static void dump(double *tri_area,
     UC(vtk_conf_tri(c, "area0"));
     UC(vtk_conf_tri(c, "area1"));
     UC(vtk_conf_vert(c, "x"));
-    UC(vtk_conf_vert(c, "y"));
+    UC(vtk_conf_vert(c, "angle"));
     vtk_ini(out->comm, nv, out->path, c, /**/ &vtk);
     vtk_points(vtk, nm, pos);
 
     scalars_double_ini(nt, tri_area, &area);
+    scalars_double_ini(nt, angle_dbl, &angle);
     scalars_vectors_ini(nv, pos, X, &x);
-    scalars_vectors_ini(nv, pos, Y, &y);
     vtk_tri(vtk, nm, area, "area0");
     vtk_tri(vtk, nm, area, "area1");
     vtk_vert(vtk, nm, x, "x");
-    vtk_vert(vtk, nm, y, "y");
+    vtk_vert(vtk, nm, angle, "angle");
     UC(scalars_fin(area));
     UC(scalars_fin(x));
-    UC(scalars_fin(y));
+    UC(scalars_fin(angle));
 
     id = 0;
     UC(vtk_write(vtk, out->comm, id));
@@ -101,7 +102,7 @@ static void main0(const char *cell, Out *out) {
     EMALLOC(nv, &angle);
     compute_angle(out->mesh, nm, pos, /**/ angle);
     mesh_tri_area_apply(tri_area, nm, pos, /**/ tri_areas);
-    dump(tri_areas, pos, out);
+    dump(tri_areas, angle, pos, out);
 
     mesh_tri_area_fin(tri_area);
     UC(vectors_fin(pos));
