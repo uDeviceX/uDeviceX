@@ -1,6 +1,27 @@
 == Inflow
 
-Mass rate inflow
+Mass rate inflow.
+
+Create particles given a surface stem:[S(u, v)], with a velocity profile
+stem:[\mathbf{U}(u,v)] with stem:[(u,v) \in (0,1) \times (0,1)].
+
+== Method
+
+Define "cumulative inflow" stem:[\phi(u, v)] in a bin of area stem:[dA
+\in S].
+
+Updated as follow:
+
+[stem]
+++++
+\phi^{n+1} = \phi^n + dt \rho dA \mathbf{u} \cdot \mathbf{n}
+++++
+
+where stem:[\rho] is the number density.
+
+When stem:[\phi \geq 1], a particle is released at the bin position
+with random velocity stem:[\mathcal{N} (\mathbf{u}, k_BT)].
+We also set stem:[\phi \leftarrow \phi - 1].
 
 === interface
 
@@ -50,32 +71,32 @@ the point `(1, 2, 3)`:
 [source,cfg]
 ----
 inflow = {
-    active      = true;
-    type        = "plate";
-    L1          = 1.0;
-    L2          = 16.0;
-    direction   = 0;                # [0,1,2] = [X,Y,Z]
-    origin      = [1.0, 2.0, 3.0];
-    upoiseuille = false;            # true for parabolic profile along L1
-    vpoiseuille = false;            # true for parabolic profile along L2
-    u           = [10.0, 0.0, 0.0];
-};
+    active      = true
+    type        = "plate"
+    L1          = 1.0
+    L2          = 16.0
+    direction   = 0                # [0,1,2] = [X,Y,Z]
+    origin      = [1.0, 2.0, 3.0]
+    upoiseuille = false            # true for parabolic profile along L1
+    vpoiseuille = false            # true for parabolic profile along L2
+    u           = [10.0, 0.0, 0.0]
+}
 ----
 
 
 ==== circle
 
-syntax for cylinder:
+syntax for cylindrical surface:
 
 [source,cfg]
 ----
 inflow = {
-    active = true;
-    type   = "circle";
-    R      = 1.0;              # radius
-    H      = 16.0;             # hight of the cylinder
-    U      = 1.0;              # maximum velocity
-    center = [8.0, 8.0, 8.0];
-    poiseuille = false;        # parabolic profile along H if true
-};
+    active = true
+    type   = "circle"
+    R      = 1.0              # radius
+    H      = 16.0             # hight of the cylinder
+    U      = 1.0              # maximum velocity
+    center = [8.0, 8.0, 8.0]
+    poiseuille = false        # parabolic profile along H if true
+}
 ----
