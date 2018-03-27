@@ -69,6 +69,8 @@ include::{src}/wall/sdf/imp.h[tag=tools]
 
 == submodules
 
+Some tasks of the SDF object are splitted into submodules:
+
 :leveloffset: +2
 
 include::array3d.inc.adoc[]
