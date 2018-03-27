@@ -2,7 +2,7 @@ f0 () { find "$1" -name '*.cu' -o -name '*.cpp' -o -name '*.h' -type f ; }
 f () ( for d; do f0 "$d"; done )
 
 f $U algo/edg conf d inc io/write io/mesh_read \
-     math/tri mesh/tri_area mesh/vectors mpi utils math/tform coords
+     math/tri mesh/vert_area mesh/vectors mpi utils math/tform coords
 
 # add dir
 echo $U .
