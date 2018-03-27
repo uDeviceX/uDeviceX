@@ -94,6 +94,21 @@ void vtk_tri(VTK *q, int nm, const Scalars *sc, const char *keys) {
     UC(key_list_mark(q->tri, keys));
 }
 
+void vtk_vert(VTK *q, int nm, const Scalars *sc, const char *keys) {
+    int i, j, nv, n;
+    if (!key_list_has(q->vert, keys)) {
+        msg_print("unkown key '%s'", keys);
+        key_list_log(q->vert);
+        ERR("");
+    }
+    j = key_list_offset(q->vert, keys);
+    nv = mesh_nv(q->mesh);
+    n = nm * nv;
+    for (i = 0; i < n; i++)
+        UC(q->VERT[j][i] = scalars_get(sc, i));
+    UC(key_list_mark(q->vert, keys));
+}
+
 void vtk_write(VTK *q, MPI_Comm comm, int id) {
     char path[FILENAME_MAX];
     int i, nk, n, nm, nv, nt, nbuf;

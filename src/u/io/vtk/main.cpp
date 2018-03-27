@@ -25,10 +25,11 @@ struct Out {
 
 static void dump(double *tri_area,
                  Vectors *pos, Out *out) {
+    enum {X, Y, Z};
     int nv, nt, nm, id;
     VTKConf *c;
     VTK *vtk;
-    Scalars *sc;
+    Scalars *area, *x;
     nv = mesh_read_get_nv(out->mesh);
     nt = mesh_read_get_nt(out->mesh);
     nm = 1;
@@ -36,13 +37,17 @@ static void dump(double *tri_area,
     UC(vtk_conf_ini(out->mesh, &c));
     UC(vtk_conf_tri(c, "area0"));
     UC(vtk_conf_tri(c, "area1"));
+    UC(vtk_conf_vert(c, "x"));
     vtk_ini(out->comm, nv, out->path, c, /**/ &vtk);
     vtk_points(vtk, nm, pos);
 
-    scalars_double_ini(nt, tri_area, &sc);
-    vtk_tri(vtk, nm, sc, "area0");
-    vtk_tri(vtk, nm, sc, "area1");
-    UC(scalars_fin(sc));
+    scalars_double_ini(nt, tri_area, &area);
+    scalars_vectors_ini(nv, pos, X, &x);
+    vtk_tri(vtk, nm, area, "area0");
+    vtk_tri(vtk, nm, area, "area1");
+    vtk_vert(vtk, nm, x, "x");
+    UC(scalars_fin(area));
+    UC(scalars_fin(x));
 
     id = 0;
     UC(vtk_write(vtk, out->comm, id));
