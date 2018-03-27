@@ -1,0 +1,12 @@
+= tform
+
+a simple set of linear transformations for sdf
+
+[source,cpp]
+----
+include::{src}/wall/sdf/tform/imp.h[tag=int]
+----
+<1> transform from texture coordinates to sdf coordinates
+<2> transform from Glbal coordinates to sdf coordinates
+<3> transform from subdomain coordinates to texture coordinates
+
