@@ -62,11 +62,34 @@ static void dump(double *tri_area,
     UC(vtk_conf_fin(c));
 }
 
+static void compute_angle(MeshRead *mesh, int nm, Vectors *pos, double *angle_vert) {
+    int ne;
+    double *angle_edg;
+    MeshAngle *angle;
+    MeshScatter *scatter;
+    Scalars *sc;
+
+    ne = mesh_read_get_ne(mesh);
+    EMALLOC(ne, &angle_edg);
+
+    UC(mesh_angle_ini(mesh, &angle));
+    UC(mesh_scatter_ini(mesh, &scatter));
+
+    mesh_angle_apply(angle, nm, pos, /**/ angle_edg);
+    UC(scalars_double_ini(ne, angle_edg, /**/ &sc));
+
+    mesh_scatter_edg2vert(scatter, nm, sc, /**/ angle_vert);
+
+    scalars_fin(sc);
+    mesh_scatter_fin(scatter);
+    mesh_angle_fin(angle);
+    EFREE(angle_edg);
+}
 static void main0(const char *cell, Out *out) {
     int nv, nt, nm;
     MeshTriArea *tri_area;
     Vectors  *pos;
-    double *tri_areas;
+    double *tri_areas, *angle;
     UC(mesh_read_ini_off(cell, /**/ &out->mesh));
     UC(mesh_tri_area_ini(out->mesh, &tri_area));
     nv = mesh_read_get_nv(out->mesh);
@@ -75,12 +98,15 @@ static void main0(const char *cell, Out *out) {
 
     nm = 1;
     EMALLOC(nt, &tri_areas);
+    EMALLOC(nv, &angle);
+    compute_angle(out->mesh, nm, pos, /**/ angle);
     mesh_tri_area_apply(tri_area, nm, pos, /**/ tri_areas);
     dump(tri_areas, pos, out);
 
     mesh_tri_area_fin(tri_area);
     UC(vectors_fin(pos));
     UC(mesh_read_fin(out->mesh));
+    EFREE(angle);
     EFREE(tri_areas);
 }
 
