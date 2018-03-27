@@ -76,6 +76,7 @@ void mesh_read_ini_ply(const char *path, MeshRead **pq) {
     UC(read_ply(f, path, /**/ q));
     UC(efclose(f));
     msg_print("read ply '%s'", path);
+    q->dd = NULL;
     *pq = q;
 }
 
