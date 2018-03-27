@@ -29,14 +29,14 @@ static double area(int4 t, Vectors *p, int offset) {
     return tri_hst::kahan_area(a, b, c);
 }
 
-void mesh_vert_area_apply(MeshVertArea *q, int m, Vectors *p, double *area0) {
+void mesh_vert_area_apply(MeshVertArea *q, int m, Vectors *p, double *o) {
     int i, j, k, nt, nv, offset;
     int4 *tt;
     nt = q->nt; tt = q->tt; nv = q->nv; offset = 0;
 
     for (k = i = 0; i < m; i++) {
         for (j = 0; j < nt; j++)
-            area0[k++] = area(tt[j], p, offset);
+            o[k++] = area(tt[j], p, offset);
         offset += nv;
     }
 }
