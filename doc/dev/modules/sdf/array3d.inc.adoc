@@ -1,0 +1,23 @@
+= array3D
+
+a simple data holder for storing a 3D cuda array scalar field.
+
+== data structure
+
+[source,cpp]
+----
+include::{src}/wall/sdf/array3d/type.h[]
+----
+<1> data on device
+<2> grid size
+
+== interface
+
+[source,cpp]
+----
+include::{src}/wall/sdf/array3d/imp.h[]
+----
+<1> allocate the structure
+<2> deallocate the structure
+<3> copy data from host to cuda array on device
+

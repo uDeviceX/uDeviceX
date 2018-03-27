@@ -101,7 +101,8 @@ include::{src}/wall/sdf/imp.h[tag=tools]
 
 == submodules
 
-* `field`: read sdf field from a file
-* `bounce`: bounce back particles
-* `label`: label which particle stays in bulk, turns into wall, or
-  deleted
+:leveloffset: +2
+
+include::array3d.inc.adoc[]
+
+:leveloffset: -2
