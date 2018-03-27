@@ -70,7 +70,7 @@ $B/meshbb/imp.o: $S/meshbb/dev/type.h $S/meshbb/bbstates.h $S/utils/imp.h $S/inc
 $B/mesh/bbox/imp.o: $S/inc/type.h $S/mesh/bbox/imp.h $S/algo/minmax/imp.h
 $B/mesh/collision/imp.o: $S/inc/conf.h $S/utils/error.h $S/inc/type.h $S/d/q.h $S/rigid/imp.h $S/mesh/collision/imp.h $S/utils/cc.h $S/inc/def.h $S/inc/dev.h $S/d/api.h $B/conf.h $S/mesh/triangles/imp.h $S/utils/texo.h $S/utils/kl.h $S/mesh/triangles/type.h $S/utils/texo.dev.h $S/utils/te.h $S/d/ker.h $S/utils/msg.h
 $B/mesh/dist/imp.o: $S/inc/type.h $S/mesh/dist/imp.h
-$B/mesh/edg_len/imp.o: $S/mesh/scalars/imp.h $S/utils/imp.h $S/utils/error.h $S/mesh/edg_len/imp.h $S/io/mesh_read/imp.h $S/mesh/edg_len/imp/main.h $S/mesh/edg_len/imp/type.h $S/utils/msg.h
+$B/mesh/edg_len/imp.o: $S/utils/imp.h $S/utils/error.h $S/mesh/vectors/imp.h $S/mesh/edg_len/imp.h $S/io/mesh_read/imp.h $S/mesh/edg_len/imp/main.h $S/mesh/edg_len/imp/type.h $S/utils/msg.h
 $B/mesh/props/imp.o: $S/inc/type.h $S/mesh/props/imp.h
 $B/mesh/scalars/imp.o: $S/utils/imp.h $S/utils/error.h $S/mesh/vectors/imp.h $S/mesh/scalars/imp.h $S/mesh/scalars/imp/main.h $S/mesh/scalars/imp/type.h
 $B/mesh/scatter/imp.o: $S/mesh/scalars/imp.h $S/utils/imp.h $S/utils/error.h $S/mesh/scatter/imp.h $S/io/mesh_read/imp.h $S/mesh/scatter/imp/main.h $S/mesh/scatter/imp/type.h $S/utils/msg.h
