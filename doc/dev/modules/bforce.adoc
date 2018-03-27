@@ -2,11 +2,8 @@
 
 :src: ../../../src
 
-force applied to every particles
-
-== data structures
-
-Defined by two structures:
+Force applied to every particles with active flag `push`.
+It is defined by two structures:
 
 * `BForce`, contains all informations needed for the  force
   field. It is hold and maintained on host.
@@ -15,7 +12,6 @@ Defined by two structures:
 
 
 == interface
-
 
 allocate/deallocate the structure:
 
@@ -54,7 +50,6 @@ include::{src}/scheme/force/imp.h[tag=interface]
 <1> change value of the force
 <2> apply body force to particles
 
-
 == configuration
 
 === none
@@ -63,9 +58,9 @@ no body force (default value)
 
 [source, cfg]
 ----
-bforce {
-    type = "none";
-};
+bforce = {
+    type = "none"
+}
 ----
 
 === constant
@@ -74,10 +69,10 @@ constant force
 
 [source, cfg]
 ----
-bforce {
-    type = "constant";
-    f    = [1.0, 0.0, 0.0];
-};
+bforce = {
+    type = "constant"
+    f    = [1.0, 0.0, 0.0]
+}
 ----
 
 === double poiseuille
@@ -86,10 +81,10 @@ bforce {
 
 [source, cfg]
 ----
-bforce {
-    type = "double_poiseuille";
-    a    = 1.0;
-};
+bforce = {
+    type = "double_poiseuille"
+    a    = 1.0
+}
 ----
 
 === shear
@@ -98,10 +93,10 @@ bforce {
 
 [source, cfg]
 ----
-bforce {
-    type = "shear";
-    a    = 1.0;
-};
+bforce = {
+    type = "shear"
+    a    = 1.0
+}
 ----
 
 === 4 roller mill
@@ -116,10 +111,10 @@ normalized to have `x = Pi` and `x = -Pi` at the domain edges.
 
 [source, cfg]
 ----
-bforce {
-    type = "four_roller";
-    a    = 1.0;
-};
+bforce = {
+    type = "four_roller"
+    a    = 1.0
+}
 ----
 
 === radial
@@ -129,8 +124,8 @@ vector at position `r` and `r` is radial position.
 
 [source, cfg]
 ----
-bforce {
-    type = "rad";
-    a    = 1.0;
-};
+bforce = {
+    type = "rad"
+    a    = 1.0
+}
 ----
