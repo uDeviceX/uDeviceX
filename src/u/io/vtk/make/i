@@ -2,7 +2,8 @@ f0 () { find "$1" -name '*.cu' -o -name '*.cpp' -o -name '*.h' -type f ; }
 f () ( for d; do f0 "$d"; done )
 
 f $U algo/edg algo/kahan_sum algo/key_list conf d inc io/mesh_read \
-     io/vtk io/write math/tri mesh/tri_area mesh/scalars mesh/vectors \
+     io/vtk io/write math/tri mesh/tri_area \
+     mesh/angle mesh/scalars mesh/scatter mesh/vectors \
      mpi utils math/tform coords
 
 # add dir

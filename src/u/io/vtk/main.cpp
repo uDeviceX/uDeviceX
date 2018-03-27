@@ -12,7 +12,9 @@
 #include "io/mesh_read/imp.h"
 
 #include "mesh/scalars/imp.h"
+#include "mesh/angle/imp.h"
 #include "mesh/vectors/imp.h"
+#include "mesh/scatter/imp.h"
 
 #include "mesh/tri_area/imp.h"
 #include "io/vtk/imp.h"

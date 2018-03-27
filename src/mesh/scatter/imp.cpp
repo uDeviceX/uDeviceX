@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <vector_types.h>
 
 #include "utils/imp.h"
 #include "utils/error.h"
