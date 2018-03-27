@@ -1,8 +1,8 @@
-= compute volume of a mesh
+= compute area of triangles in a mesh
 :lext: .adoc
 :src: ../../../../src
 
-Compute a an area for every triangle of the mesh.
+Compute the area of every triangle of the mesh.
 
 [source,cpp]
 ----
