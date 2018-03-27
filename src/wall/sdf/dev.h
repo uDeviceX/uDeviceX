@@ -67,14 +67,14 @@ _S_ float cheap_sdf(Sdf_v *sdf, float x, float y, float z)  {
 }
 
 // tag::int[]
-_I_ bool sdf_far(Sdf_v *sdf, float x, float y, float z)
+_I_ bool sdf_far(Sdf_v *sdf, float x, float y, float z) // <1>
 // end::int[]
 {
     return cheap_sdf(sdf, x, y, z) <= sdf->cheap_threshold - 1 ;
 }
 
 // tag::int[]
-_I_ float sdf(Sdf_v *sdf0, float x, float y, float z)
+_I_ float sdf(Sdf_v *sdf0, float x, float y, float z)  // <2>
 // end::int[]
 {
     int c;

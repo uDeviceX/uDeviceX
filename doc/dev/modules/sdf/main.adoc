@@ -1,12 +1,71 @@
 = signed distance function (sdf)
 :lext: .adoc
 :src: ../../../../src
+:stem: latexmath
 
-== purpose
+The Signed Distance Function (SDF) stem:[S(x, y, z)] is used to give the distance from a
+given position to the wall.
+The sign of the SDF field tells if the position is inside or outside
+the wall.
 
-Signed distance function is interpolated from a uniform grid.
+Conventions:
 
-== implementation
+* stem:[S(x,y,z) < -1] : inside domain, far from wall
+* stem:[S(x,y,z) < 0] : inside domain
+* stem:[S(x,y,z) = 0] : wall interface
+* stem:[S(x,y,z) > 0] : inside wall
+* stem:[S(x,y,z) > 1] : inside wall, far from surface
+
+Example of sdf function in 2D:
+
+image::{include}/sdf.png[pdfwidth=70%]
+
+The above example denotes a circular wall of radius 2.
+The isosurface stem:[S(x,y,z) = 0] is located at the wall interface.
+
+== interface
+
+allocate, deallocate the structure:
+
+[source,cpp]
+----
+include::{src}/wall/sdf/imp.h[tag=mem]
+----
+
+interface:
+
+[source,cpp]
+----
+include::{src}/wall/sdf/imp.h[tag=int]
+----
+<1> generate the sdf field from file "sdf.dat"
+<2> get view to be passed to kernels
+
+device interface:
+
+[source,cpp]
+----
+include::{src}/wall/sdf/dev.h[tag=int]
+----
+<1> returns true if position is far inside the domain (approximation)
+<2> returns the sdf value at given position (linear interpolation)
+
+
+Bounce back from wall:
+
+[source,cpp]
+----
+include::{src}/wall/sdf/imp.h[tag=bounce]
+----
+
+Sorting tools:
+[source,cpp]
+----
+include::{src}/wall/sdf/imp.h[tag=tools]
+----
+<1> extract wall particles from solvent particles. Solvent particles
+    which are not inside the domain are not kept.
+<2> label `nc` objects of `nv` particles to inside domain or not.
 
 == components
 
