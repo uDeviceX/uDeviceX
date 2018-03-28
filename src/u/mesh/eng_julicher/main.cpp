@@ -31,15 +31,15 @@ static void main0(const char *cell, Out *out) {
     int nv, nm;
     MeshEngJulicher *eng_julicher;
     Vectors  *pos;
-    double *eng;
-    nm = 1;
+    double *eng, kb;
+    nm = 1; kb = 1;
     UC(mesh_read_ini_off(cell, /**/ &out->mesh));
     UC(mesh_eng_julicher_ini(out->mesh, nm, /**/ &eng_julicher));
     nv = mesh_read_get_nv(out->mesh);
     UC(vectors_float_ini(nv, mesh_read_get_vert(out->mesh), /**/ &pos));
 
     EMALLOC(nv, &eng);
-    mesh_eng_julicher_apply(eng_julicher, nm, pos, /**/ eng);
+    mesh_eng_julicher_apply(eng_julicher, nm, pos, kb, /**/ eng);
     dump(nv, nm, eng, pos, out);
 
     mesh_eng_julicher_fin(eng_julicher);
