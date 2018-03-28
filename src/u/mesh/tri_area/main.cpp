@@ -42,7 +42,7 @@ static void dump(int nt, double *d,
     UC(io_point_push(p, nt, d, "area"));
     id = 0; nm = 1;
     UC(io_point_write(p, out->comm, id));
-    UC(mesh_write_vectros(mesh_write, out->comm, nm, pos, vel, id));
+    UC(mesh_write_vectors(mesh_write, out->comm, nm, pos, vel, id));
 
     mesh_write_fin(mesh_write);
     UC(io_point_fin(p));

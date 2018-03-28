@@ -134,7 +134,7 @@ void mesh_write_particles(MeshWrite *q, MPI_Comm comm, const Coords *coords, int
     UC(write_file_close(f));
 }
 
-void mesh_write_vectros(MeshWrite *q, MPI_Comm comm, int nc, Vectors *pos, Vectors *vel, int id) {
+void mesh_write_vectors(MeshWrite *q, MPI_Comm comm, int nc, Vectors *pos, Vectors *vel, int id) {
     int nv, nt;
     const int4 *tt;
     WriteFile *f;
