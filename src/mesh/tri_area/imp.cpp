@@ -6,7 +6,7 @@
 #include "utils/msg.h"
 
 #include "io/mesh_read/imp.h"
-#include "mesh/vectors/imp.h"
+#include "algo/vectors/imp.h"
 
 #include "math/tri/imp.h"
 

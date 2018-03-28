@@ -3,7 +3,7 @@
 #include "utils/imp.h"
 #include "utils/error.h"
 
-#include "mesh/vectors/imp.h"
+#include "algo/vectors/imp.h"
 
 #include "imp.h"
 #include "imp/type.h"

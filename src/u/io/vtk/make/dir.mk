@@ -16,7 +16,7 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/mesh/scalars     && \
     d $B/mesh/scatter     && \
     d $B/mesh/tri_area    && \
-    d $B/mesh/vectors     && \
+    d $B/algo/vectors     && \
     d $B/mpi              && \
     d $B/u/io/vtk         && \
     d $B/utils            && \

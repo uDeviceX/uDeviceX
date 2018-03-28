@@ -19,7 +19,7 @@
 #include "inc/type.h"
 
 #include "io/mesh_read/imp.h"
-#include "mesh/vectors/imp.h"
+#include "algo/vectors/imp.h"
 
 #include "io/write/imp.h"
 

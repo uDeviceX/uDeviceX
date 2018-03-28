@@ -3,7 +3,7 @@ f () ( for d; do f0 "$d"; done )
 
 f $U algo/edg algo/kahan_sum algo/key_list conf d inc io/mesh_read \
      io/vtk io/write math/tri mesh/tri_area \
-     mesh/angle mesh/scalars mesh/scatter mesh/vectors \
+     mesh/angle mesh/scalars mesh/scatter algo/vectors \
      mpi utils math/tform coords
 
 # add dir

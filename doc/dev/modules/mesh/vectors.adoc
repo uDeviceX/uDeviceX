@@ -6,5 +6,5 @@ Host array of vectors for size three.
 
 [source,cpp]
 ----
-include::{src}/mesh/vectors/imp.h[tag=interface]
+include::{src}/algo/vectors/imp.h[tag=interface]
 ----

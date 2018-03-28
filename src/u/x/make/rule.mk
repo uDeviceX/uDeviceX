@@ -76,7 +76,7 @@ $B/mesh/scalars/imp.o: $S/mesh/scalars/imp.cpp; $X -I$S/mesh/scalars -I$S/.
 $B/mesh/scatter/imp.o: $S/mesh/scatter/imp.cpp; $X -I$S/mesh/scatter -I$S/.
 $B/mesh/triangles/imp.o: $S/mesh/triangles/imp.cpp; $X -I$S/mesh/triangles -I$S/.
 $B/mesh/tri_area/imp.o: $S/mesh/tri_area/imp.cpp; $X -I$S/mesh/tri_area -I$S/.
-$B/mesh/vectors/imp.o: $S/mesh/vectors/imp.cpp; $X -I$S/mesh/vectors -I$S/.
+$B/algo/vectors/imp.o: $S/algo/vectors/imp.cpp; $X -I$S/algo/vectors -I$S/.
 $B/mesh/vert_area/imp.o: $S/mesh/vert_area/imp.cpp; $X -I$S/mesh/vert_area -I$S/.
 $B/mesh/volume/imp.o: $S/mesh/volume/imp.cpp; $X -I$S/mesh/volume -I$S/.
 $B/mpi/glb.o: $S/mpi/glb.cpp; $X -I$S/mpi -I$S/.

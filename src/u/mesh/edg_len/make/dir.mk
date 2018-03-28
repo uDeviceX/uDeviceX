@@ -7,7 +7,7 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/io/mesh_read/edg && \
     d $B/math/tform       && \
     d $B/mesh/edg_len     && \
-    d $B/mesh/vectors     && \
+    d $B/algo/vectors     && \
     d $B/mpi              && \
     d $B/u/mesh/edg_len   && \
     d $B/utils            && \

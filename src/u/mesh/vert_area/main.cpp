@@ -11,7 +11,7 @@
 #include "conf/imp.h"
 #include "io/mesh_read/imp.h"
 
-#include "mesh/vectors/imp.h"
+#include "algo/vectors/imp.h"
 #include "mesh/vert_area/imp.h"
 
 struct Out {
