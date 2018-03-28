@@ -1,8 +1,9 @@
 = stretch RBC
-:src: ../../../../src
 
-Apply force to every vertex of an every cell constant force. Force is
-configured from a file `path`. The format of the file:
+Apply a constant force to every vertex of every cell. The force is
+configured from the file `path`.
+
+Format of the data file:
 
 ----
 fx0 fy0 fz0
@@ -17,3 +18,4 @@ fx_nv fy_nv fz_nv
 ----
 include::{src}/rbc/stretch/imp.h[tag=interface]
 ----
+
