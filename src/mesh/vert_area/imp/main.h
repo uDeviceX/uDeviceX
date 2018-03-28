@@ -21,16 +21,16 @@ static void get(Vectors *p, int i, double d[3]) {
 }
 static void area(int4 t, Vectors *p, int offset, /**/ double *o) {
     int ia, ib, ic;
-    double a[3], b[3], c[3], A3;
+    double a[3], b[3], c[3], A;
     ia = t.x; ib = t.y; ic = t.z;
     UC(get(p, ia + offset, /**/ a));
     UC(get(p, ib + offset, /**/ b));
     UC(get(p, ic + offset, /**/ c));
-    
-    A3 = tri_hst::kahan_area(a, b, c)/3; 
-    o[ia + offset] += A3;
-    o[ib + offset] += A3;
-    o[ic + offset] += A3;
+
+    A = tri_hst::kahan_area(a, b, c)/3;
+    o[ia + offset] += A;
+    o[ib + offset] += A;
+    o[ic + offset] += A;
 }
 
 void mesh_vert_area_apply(MeshVertArea *q, int nm, Vectors *pos, double *o) {
