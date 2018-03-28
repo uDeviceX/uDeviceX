@@ -34,6 +34,7 @@ static double area0(double a[3], double b[3], double c[3]) {
 static void area(int4 t, Vectors *p, int offset, /**/ double *o) {
     int ia, ib, ic;
     double a[3], b[3], c[3], ab[3], ac[3], bc[3];
+    double A, B, C;
     ia = t.x; ib = t.y; ic = t.z;
     UC(get(p, ia + offset, /**/ a));
     UC(get(p, ib + offset, /**/ b));
@@ -43,9 +44,14 @@ static void area(int4 t, Vectors *p, int offset, /**/ double *o) {
     mid(a, c, /**/ ac);
     mid(b, c, /**/ bc);
 
-    o[ia + offset] += area0(a, ab, ac);
-    o[ib + offset] += area0(b, bc, ab);
-    o[ic + offset] += area0(c, ac, bc);
+    A = area0(a, ab, ac);
+    B = area0(b, bc, ab);
+    C = area0(c, ac, bc);
+    msg_print("g: %g", (A + B + C)/area0(a, b, c));
+
+    o[ia + offset] += A;
+    o[ib + offset] += B;
+    o[ic + offset] += C;
 }
 
 void mesh_vert_area_apply(MeshVertArea *q, int nm, Vectors *pos, double *o) {
