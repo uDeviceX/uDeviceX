@@ -13,6 +13,7 @@
 #include "mesh/edg_len/imp.h"
 #include "mesh/angle/imp.h"
 #include "mesh/vert_area/imp.h"
+#include "mesh/scatter/imp.h"
 
 #include "imp.h"
 #include "imp/type.h"

@@ -1,4 +1,5 @@
 $B/algo/edg/imp.o: $S/utils/error.h $S/algo/edg/imp.h $S/algo/edg/imp/main.h
+$B/algo/scalars/imp.o: $S/utils/imp.h $S/utils/error.h $S/algo/scalars/imp.h $S/algo/vectors/imp.h $S/algo/scalars/imp/main.h $S/algo/scalars/imp/type.h
 $B/algo/vectors/imp.o: $S/utils/imp.h $S/utils/error.h $S/inc/type.h $S/algo/vectors/imp.h $S/algo/vectors/imp/main.h $S/algo/vectors/imp/type.h $S/math/tform/imp.h $S/coords/imp.h
 $B/conf/imp.o: $S/utils/imp.h $S/utils/error.h $S/conf/imp/set.h $S/conf/imp.h $S/conf/imp/main.h $S/conf/imp/type.h $S/conf/imp/get.h $S/utils/msg.h
 $B/coords/conf.o: $S/utils/imp.h $S/coords/ini.h $S/utils/error.h $S/conf/imp.h
@@ -11,7 +12,8 @@ $B/math/tform/imp.o: $S/utils/imp.h $S/inc/conf.h $S/utils/error.h $S/math/tform
 $B/math/tri/imp.o: $S/math/tri/imp.h $S/math/tri/dev.h
 $B/mesh/angle/imp.o: $S/utils/imp.h $S/utils/error.h $S/math/tri/imp.h $S/mesh/angle/imp.h $S/io/mesh_read/imp.h $S/algo/vectors/imp.h $S/mesh/angle/imp/main.h $S/mesh/angle/imp/type.h $S/utils/msg.h
 $B/mesh/edg_len/imp.o: $S/utils/imp.h $S/utils/error.h $S/mesh/edg_len/imp.h $S/io/mesh_read/imp.h $S/algo/vectors/imp.h $S/mesh/edg_len/imp/main.h $S/mesh/edg_len/imp/type.h $S/utils/msg.h
-$B/mesh/eng_julicher/imp.o: $S/utils/imp.h $S/utils/error.h $S/math/tri/imp.h $S/mesh/eng_julicher/imp.h $S/io/mesh_read/imp.h $S/mesh/edg_len/imp.h $S/algo/vectors/imp.h $S/mesh/eng_julicher/imp/main.h $S/mesh/angle/imp.h $S/mesh/eng_julicher/imp/type.h $S/mesh/vert_area/imp.h $S/utils/msg.h
+$B/mesh/eng_julicher/imp.o: $S/utils/imp.h $S/utils/error.h $S/math/tri/imp.h $S/mesh/eng_julicher/imp.h $S/io/mesh_read/imp.h $S/mesh/scatter/imp.h $S/mesh/edg_len/imp.h $S/algo/vectors/imp.h $S/mesh/eng_julicher/imp/main.h $S/mesh/angle/imp.h $S/mesh/eng_julicher/imp/type.h $S/mesh/vert_area/imp.h $S/utils/msg.h
+$B/mesh/scatter/imp.o: $S/utils/imp.h $S/utils/error.h $S/mesh/scatter/imp.h $S/algo/scalars/imp.h $S/io/mesh_read/imp.h $S/mesh/scatter/imp/main.h $S/mesh/scatter/imp/type.h $S/utils/msg.h
 $B/mesh/vert_area/imp.o: $S/utils/imp.h $S/utils/error.h $S/math/tri/imp.h $S/mesh/vert_area/imp.h $S/io/mesh_read/imp.h $S/algo/vectors/imp.h $S/mesh/vert_area/imp/main.h $S/mesh/vert_area/imp/type.h $S/utils/msg.h
 $B/mpi/glb.o: $S/inc/conf.h $S/mpi/wrapper.h $S/utils/mc.h $B/conf.h
 $B/mpi/type.o: $S/inc/conf.h $S/inc/type.h $S/mpi/type.h $S/utils/mc.h

@@ -1,5 +1,6 @@
 D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/algo/edg            && \
+    d $B/algo/scalars        && \
     d $B/algo/vectors        && \
     d $B/conf                && \
     d $B/coords              && \
@@ -12,6 +13,7 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/mesh/angle          && \
     d $B/mesh/edg_len        && \
     d $B/mesh/eng_julicher   && \
+    d $B/mesh/scatter        && \
     d $B/mesh/vert_area      && \
     d $B/mpi                 && \
     d $B/u/mesh/eng_julicher && \

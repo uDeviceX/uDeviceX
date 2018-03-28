@@ -17,6 +17,7 @@ void mesh_eng_julicher_ini(MeshRead *mesh, int nm, /**/ MeshEngJulicher **pq) {
     mesh_edg_len_ini(mesh, /**/ &q->len);
     mesh_angle_ini(mesh, /**/ &q->angle);
     mesh_vert_area_ini(mesh, /**/ &q->area);
+    mesh_scatter_ini(mesh, /**/ &q->scatter);
 
     *pq = q;
 }
@@ -30,6 +31,7 @@ void mesh_eng_julicher_fin(MeshEngJulicher *q) {
     mesh_edg_len_fin(q->len);
     mesh_angle_fin(q->angle);
     mesh_vert_area_fin(q->area);
+    mesh_scatter_fin(q->scatter);
 
     EFREE(q);
 }

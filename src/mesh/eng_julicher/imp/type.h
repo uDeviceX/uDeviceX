@@ -4,8 +4,10 @@ struct MeshEngJulicher {
 
     /* edge lens, edge angles, vert. areas, vert. curvatures */
     double *lens, *angles, *areas, *curvs;
-    
+
     MeshEdgLen *len;
     MeshAngle  *angle;
     MeshVertArea *area;
+
+    MeshScatter *scatter;
 };
