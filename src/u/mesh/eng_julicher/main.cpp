@@ -12,7 +12,7 @@
 #include "io/mesh_read/imp.h"
 
 #include "algo/vectors/imp.h"
-#include "mesh/vert_area/imp.h"
+#include "mesh/eng_julicher/imp.h"
 
 struct Out {
     MPI_Comm comm;
@@ -29,23 +29,23 @@ static void dump(int nv, int nm, double *data, Vectors*, Out*) {
 
 static void main0(const char *cell, Out *out) {
     int nv, nm;
-    MeshVertArea *vert_area;
+    MeshEngJulicher *eng_julicher;
     Vectors  *pos;
-    double *vert_areas;
+    double *eng;
     UC(mesh_read_ini_off(cell, /**/ &out->mesh));
-    UC(mesh_vert_area_ini(out->mesh, &vert_area));
+    UC(mesh_eng_julicher_ini(out->mesh, &eng_julicher));
     nv = mesh_read_get_nv(out->mesh);
     UC(vectors_float_ini(nv, mesh_read_get_vert(out->mesh), /**/ &pos));
 
     nm = 1;
-    EMALLOC(nv, &vert_areas);
-    mesh_vert_area_apply(vert_area, nm, pos, /**/ vert_areas);
-    dump(nv, nm, vert_areas, pos, out);
+    EMALLOC(nv, &eng);
+    mesh_eng_julicher_apply(eng_julicher, nm, pos, /**/ eng);
+    dump(nv, nm, eng, pos, out);
 
-    mesh_vert_area_fin(vert_area);
+    mesh_eng_julicher_fin(eng_julicher);
     UC(vectors_fin(pos));
     UC(mesh_read_fin(out->mesh));
-    EFREE(vert_areas);
+    EFREE(eng);
 }
 
 int main(int argc, char **argv) {

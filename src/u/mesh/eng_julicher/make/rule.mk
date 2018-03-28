@@ -9,11 +9,11 @@ $B/io/mesh_read/imp.o: $S/io/mesh_read/imp.cpp; $X -I$S/io/mesh_read -I$S/.
 $B/io/write/imp.o: $S/io/write/imp.cpp; $X -I$S/io/write -I$S/.
 $B/math/tform/imp.o: $S/math/tform/imp.cpp; $X -I$S/math/tform -I$S/.
 $B/math/tri/imp.o: $S/math/tri/imp.cpp; $X -I$S/math/tri -I$S/.
-$B/mesh/vert_area/imp.o: $S/mesh/vert_area/imp.cpp; $X -I$S/mesh/vert_area -I$S/.
+$B/mesh/eng_julicher/imp.o: $S/mesh/eng_julicher/imp.cpp; $X -I$S/mesh/eng_julicher -I$S/.
 $B/mpi/glb.o: $S/mpi/glb.cpp; $X -I$S/mpi -I$S/.
 $B/mpi/type.o: $S/mpi/type.cpp; $X -I$S/mpi -I$S/.
 $B/mpi/wrapper.o: $S/mpi/wrapper.cpp; $X -I$S/mpi -I$S/.
-$B/u/mesh/vert_area/main.o: $S/u/mesh/vert_area/main.cpp; $X -I$S/.
+$B/u/mesh/eng_julicher/main.o: $S/u/mesh/eng_julicher/main.cpp; $X -I$S/.
 $B/utils/cc.o: $S/utils/cc.cpp; $X -I$S/utils -I$S/.
 $B/utils/error.o: $S/utils/error.cpp; $X -I$S/utils -I$S/.
 $B/utils/imp.o: $S/utils/imp.cpp; $X -I$S/utils -I$S/.
