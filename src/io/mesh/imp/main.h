@@ -1,7 +1,7 @@
 #define PATTERN "%s/%s/%05d.ply"
 enum { NVP = 3 /* number of vertices per face */ };
 
-static void ini(MPI_Comm comm, const int4 *tt, int nv, int nt, const char *directory, /**/ MeshWrite **pq) {
+static void ini(MPI_Comm comm, int shifttype, const int4 *tt, int nv, int nt, const char *directory, /**/ MeshWrite **pq) {
     int i;
     MeshWrite *q;
     EMALLOC(1, &q);
@@ -12,21 +12,21 @@ static void ini(MPI_Comm comm, const int4 *tt, int nv, int nt, const char *direc
     EMALLOC(nt, &q->tt);
     for (i = 0; i < nt; i++)
         q->tt[i] = tt[i];
-    q->shift_type = get_shift_type();
+    q->shift_type = shifttype;
     *pq = q;
 }
 
-void mesh_write_ini(MPI_Comm comm, const int4 *tt, int nv, int nt, const char *directory, /**/ MeshWrite **pq) {
-    UC(ini(comm, tt, nv, nt, directory, /**/ pq));
+void mesh_write_ini(MPI_Comm comm, int shifttype, const int4 *tt, int nv, int nt, const char *directory, /**/ MeshWrite **pq) {
+    UC(ini(comm, shifttype, tt, nv, nt, directory, /**/ pq));
 }
 
-void mesh_write_ini_from_mesh(MPI_Comm comm, MeshRead *cell, const char *directory, /**/ MeshWrite **pq) {
+void mesh_write_ini_from_mesh(MPI_Comm comm, int shifttype, MeshRead *cell, const char *directory, /**/ MeshWrite **pq) {
     int nv, nt;
     const int4 *tt;
     nv = mesh_read_get_nv(cell);
     nt = mesh_read_get_nt(cell);
     tt = mesh_read_get_tri(cell);
-    UC(ini(comm, tt, nv, nt, directory, /**/ pq));
+    UC(ini(comm, shifttype, tt, nv, nt, directory, /**/ pq));
 }
 
 void mesh_write_fin(MeshWrite *q) {

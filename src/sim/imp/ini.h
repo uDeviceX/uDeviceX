@@ -146,7 +146,7 @@ static void ini_rbc(const Config *cfg, Opt opt, MPI_Comm cart, int3 L, /**/ Rbc 
     int nv;
     const char *directory = "r";
     UC(mesh_read_ini_off("rbc.off", &r->cell));
-    UC(mesh_write_ini_from_mesh(cart, r->cell, directory, /**/ &r->mesh_write));
+    UC(mesh_write_ini_from_mesh(cart, opt.rbcshifttype, r->cell, directory, /**/ &r->mesh_write));
 
     nv = mesh_read_get_nv(r->cell);
     
@@ -165,13 +165,13 @@ static void ini_rbc(const Config *cfg, Opt opt, MPI_Comm cart, int3 L, /**/ Rbc 
     UC(conf_lookup_float(cfg, "rbc.mass", &r->mass));
 }
 
-static void ini_rig(const Config *cfg, MPI_Comm cart, int maxp, int3 L, /**/ Rig *s) {
+static void ini_rig(const Config *cfg, MPI_Comm cart, Opt opt, int maxp, int3 L, /**/ Rig *s) {
     const int4 *tt;
     int nv, nt;
 
     UC(rig_ini(maxp, &s->q));
     tt = s->q.htt; nv = s->q.nv; nt = s->q.nt;
-    UC(mesh_write_ini(cart, tt, nv, nt, "s", /**/ &s->mesh_write));
+    UC(mesh_write_ini(cart, opt.rigshifttype, tt, nv, nt, "s", /**/ &s->mesh_write));
 
     UC(scan_ini(L.x * L.y * L.z, /**/ &s->ws));
     EMALLOC(maxp, &s->ff_hst);
@@ -216,6 +216,16 @@ static void read_color_opt(const Config *c, Recolorer *o) {
     UC(conf_lookup_int(c, "recolor.dir", &o->flux_dir));
 }
 
+static int get_shifttype(const Config *c, const char *desc) {
+    const char *type;
+    UC(conf_lookup_string(c, desc, &type));
+    if      (same_str(type, "edge"  )) return EDGE;
+    else if (same_str(type, "center")) return CENTER;
+    else
+        ERR("Unrecognised rbc shift type <%s>", type);
+    return -1;
+}
+
 static void read_opt(const Config *c, Opt *o) {
     int b;
     UC(conf_lookup_bool(c, "fsi.active", &b));
@@ -236,13 +246,15 @@ static void read_opt(const Config *c, Opt *o) {
     o->rbcids = b;
     UC(conf_lookup_bool(c, "rbc.stretch", &b));
     o->rbcstretch = b;
+    o->rbcshifttype = get_shifttype(c, "rbc.shifttype");
 
     UC(conf_lookup_bool(c, "rig.active", &b));
     o->rig = b;
     UC(conf_lookup_bool(c, "rig.bounce", &b));
     o->rig_bounce = b;
     UC(conf_lookup_bool(c, "rig.empty_pp", &b));
-    o->rig_empty_pp = b;    
+    o->rig_empty_pp = b;
+    o->rigshifttype = get_shifttype(c, "rig.shifttype");
 
     UC(conf_lookup_bool(c, "wall.active", &b));
     o->wall = b;
@@ -373,7 +385,7 @@ void sim_ini(Config *cfg, MPI_Comm cart, /**/ Time *time, Sim **sim) {
         UC(ini_colorer(s->rbc.q.nv, s->cart, maxp, params.L, /**/ &s->colorer));
 
     if (opt.rig) {
-        UC(ini_rig(cfg, s->cart, maxp, params.L, /**/ &s->rig));
+        UC(ini_rig(cfg, s->cart, opt, maxp, params.L, /**/ &s->rig));
 
         if (opt.rig_bounce)
             UC(ini_bounce_back(s->cart, maxp, params.L, &s->rig, /**/ &s->bb));
