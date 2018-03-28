@@ -39,17 +39,16 @@
 #define DUMP_BASE "."
 #endif
 
-/* stretch cell?  see doc/stretch.md */
-#ifndef RBC_STRETCH
-  #define RBC_STRETCH (false)
-#endif
-
 /* dump meshes relative to the domain edge or domain center? */
 #if !defined(MESH_SHIFT_EDGE) && !defined(MESH_SHIFT_CENTER)
   #define MESH_SHIFT_EDGE
 #endif
 
 /* ========== forbidden variables ============== */
+
+#ifdef RBC_STRETCH
+#error RBC_STRETCH is runtime : rbc/stretch (bool)
+#endif
 
 #ifdef numberdensity
 #error numberdensity is runtime: glb.numdensity
