@@ -83,8 +83,8 @@ $B/mesh/volume/imp.o: $S/utils/imp.h $S/utils/error.h $S/mesh/volume/imp.h $S/al
 $B/mpi/glb.o: $S/inc/conf.h $S/mpi/wrapper.h $S/utils/mc.h $B/conf.h
 $B/mpi/type.o: $S/inc/conf.h $S/inc/type.h $S/mpi/type.h $S/utils/mc.h
 $B/mpi/wrapper.o: $S/mpi/wrapper.h
-$B/pair/conf.o: $S/utils/error.h $S/conf/imp.h $S/pair/imp.h $S/pair/type.h
-$B/pair/imp.o: $S/utils/imp.h $S/utils/error.h $S/pair/imp.h $S/pair/imp/main.h $S/pair/imp/type.h $S/pair/type.h
+$B/pair/conf.o: $S/utils/error.h $S/conf/imp.h $S/pair/imp.h $S/inc/def.h $S/pair/type.h
+$B/pair/imp.o: $S/utils/imp.h $S/utils/error.h $S/pair/imp.h $S/inc/def.h $S/pair/imp/main.h $S/pair/imp/type.h $S/pair/type.h
 $B/parray/imp.o: $S/parray/imp.h $S/parray/imp/main.h $S/parray/type.h
 $B/rbc/adj/imp.o: $S/rbc/adj/imp/fin.h $S/utils/imp.h $S/inc/conf.h $S/utils/error.h $S/rbc/adj/imp.h $S/utils/cc.h $S/rbc/adj/imp/ini.h $S/inc/dev.h $S/d/api.h $B/conf.h $S/rbc/adj/type/common.h $S/algo/edg/imp.h $S/rbc/adj/imp/type.h $S/rbc/adj/type/dev.h $S/rbc/adj/imp/anti.h $S/rbc/adj/imp/map.h $S/utils/msg.h
 $B/rbc/com/imp.o: $S/rbc/com/imp/fin.h $S/utils/imp.h $S/inc/conf.h $S/utils/error.h $S/d/q.h $S/inc/type.h $S/rbc/com/imp.h $S/utils/cc.h $S/inc/def.h $S/rbc/com/imp/ini.h $S/d/api.h $S/inc/dev.h $B/conf.h $S/rbc/com/imp/main.h $S/rbc/com/imp/type.h $S/utils/kl.h $S/math/dev.h $S/rbc/com/dev/main.h $S/d/ker.h $S/utils/msg.h

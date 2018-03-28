@@ -1,12 +1,6 @@
-enum {
-    BLUE,
-    RED,
-    MAX_COL
-}; 
-
 /* maximum of pairwise dpd parameters */
 enum {
-    MAX_PAR = (MAX_COL * (MAX_COL + 1)) / 2
+    MAX_PAR = (N_COLOR * (N_COLOR + 1)) / 2
 };
 
 
@@ -22,7 +16,7 @@ struct PairDPDC {
 /* mirrored */
 struct PairDPDCM {
     int ncolors;
-    float a[MAX_COL], g[MAX_COL], s[MAX_COL];
+    float a[N_COLOR], g[N_COLOR], s[N_COLOR];
 };
 
 struct PairDPDLJ {

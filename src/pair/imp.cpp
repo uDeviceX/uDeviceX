@@ -5,6 +5,7 @@
 #include "utils/error.h"
 #include "utils/imp.h"
 
+#include "inc/def.h"
 #include "imp.h"
 #include "type.h"
 
