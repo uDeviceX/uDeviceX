@@ -1,5 +1,4 @@
-= RBC center of mass
-:src: ../../../../src
+= com: center of mass
 
 Compute position and velocity of each mesh of the membrane.
 
