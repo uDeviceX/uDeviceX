@@ -1,4 +1,4 @@
-# nTEST: dbg.vel
+# TEST: dbg.vel
 cd test/dbg/vel
 S=`u.cp.s` U=u/dbg
 u.conf $S $U <<!
