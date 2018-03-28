@@ -15,6 +15,8 @@
 #include "inc/type.h"
 #include "inc/dev.h"
 
+#include "conf/imp.h"
+
 #include "utils/te.h"
 #include "utils/texo.h"
 #include "utils/cc.h"
@@ -42,13 +44,4 @@
 
 #include "imp.h"
 
-namespace stretch {
-#if   RBC_STRETCH == true
-  #include "imp/stretch1.h"
-#elif RBC_STRETCH == false
-  #include "imp/stretch0.h"
-#else
-  #error RBC_STRETCH is undefined
-#endif
-}
 #include "imp/main.h"
