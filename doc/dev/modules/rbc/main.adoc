@@ -42,9 +42,10 @@ Available mesh are stored in `src/data/cells`
 
 include::adj.inc.adoc[]
 
+include::area_volume.inc.adoc[]
+
 :leveloffset: -2
 
-* adj adjacency list: a structure to pack mesh to read on device
 * com compute center of mass
 * edg store information for every edge (host)
 * internal forces: link:forces{lext}[forces]
@@ -53,7 +54,6 @@ files (`rbcs-ic.txt`)
 * link:com[main] initialization, restart
 * rnd random numbers for internal forces
 * rnd/api low level api for random number generator
-* force/area_volume compute area and volume
 * stretch apply a force to every vertex of every cell, force is set from
 a file `rbc.stretch`
 

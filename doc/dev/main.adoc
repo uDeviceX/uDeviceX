@@ -82,8 +82,6 @@ include::modules/rbc/matrices.adoc[]
 
 include::modules/rbc/com.adoc[]
 
-include::modules/rbc/area_volume.adoc[]
-
 include::modules/rbc/energy.adoc[]
 
 include::modules/rbc/forces.adoc[]
