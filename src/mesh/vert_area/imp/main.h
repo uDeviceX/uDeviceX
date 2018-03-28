@@ -26,10 +26,6 @@ static void area(int4 t, Vectors *p, int offset, /**/ double *o) {
     UC(get(p, ia + offset, /**/ a));
     UC(get(p, ib + offset, /**/ b));
     UC(get(p, ic + offset, /**/ c));
-
-    A = area0(a, ab, ac);
-    B = area0(b, bc, ab);
-    C = area0(c, ac, bc);
     
     A3 = tri_hst::kahan_area(a, b, c)/3; 
     o[ia + offset] += A3;
