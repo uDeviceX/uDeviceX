@@ -1,0 +1,20 @@
+/* compute a part of a triangle
+x, y
+
+*/
+
+a: [0, 0];
+b: [bx, by];
+c: [cx, cy];
+p: [x, y];
+
+ab: (a + b)/2;
+ac: (a + c)/2;
+
+a_b : a - b;
+a_c : a - c;
+
+e0: (p - ac) . a_c;
+e1: (p - ab) . a_b;
+
+factor(linsolve([e0, e1], [x, y]));
