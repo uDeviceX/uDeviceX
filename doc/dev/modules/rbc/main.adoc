@@ -1,8 +1,44 @@
 = Red blood cell
 
-Red blood cell. link:type.h[src/rbc/type.h] defines `struct rbc::Quants`
+Red blood cell membranes are represented via particles with
+connectivity.
 
-== components
+This module stores the required quantities and functions for:
+
+* initializing red blood cells positions and orientations
+* managing particles and connectivity
+* membrane force computations
+
+== Quantities
+
+`RbcQuants` structure contains particles of membrane and connectivity.
+
+[source, c++]
+----
+include::{src}/rbc/type.h[tag=quants]
+----
+
+The above data structure is allocated and freed using:
+
+[source, c++]
+----
+include::{src}/rbc/imp.h[tag=mem]
+----
+
+
+[source, c++]
+----
+include::{src}/rbc/imp.h[tag=ini]
+----
+<1> Generate quantities from file "ic" (see matrices submodule)
+<2> Generate quantities from restart
+<3> Dump a restart state of the quantities
+
+Available mesh are stored in `src/data/cells`
+
+== Submodules
+
+
 
 * adj adjacency list: a structure to pack mesh to read on device
 * com compute center of mass
@@ -19,6 +55,3 @@ a file `rbc.stretch`
 
 See also `src/u/rbc`, `src/test/rbccom`, `src/test/rbc`
 
-== cell templates
-
-See `src/data/cells`
