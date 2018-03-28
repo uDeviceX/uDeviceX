@@ -20,7 +20,7 @@ void mesh_write_ini(MPI_Comm comm, const int4 *tt, int nv, int nt, const char *d
     UC(ini(comm, tt, nv, nt, directory, /**/ pq));
 }
 
-void mesh_write_ini_off(MPI_Comm comm, MeshRead *cell, const char *directory, /**/ MeshWrite **pq) {
+void mesh_write_ini_from_mesh(MPI_Comm comm, MeshRead *cell, const char *directory, /**/ MeshWrite **pq) {
     int nv, nt;
     const int4 *tt;
     nv = mesh_read_get_nv(cell);

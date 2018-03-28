@@ -146,7 +146,7 @@ static void ini_rbc(const Config *cfg, Opt opt, MPI_Comm cart, int3 L, /**/ Rbc 
     int nv;
     const char *directory = "r";
     UC(mesh_read_ini_off("rbc.off", &r->cell));
-    UC(mesh_write_ini_off(cart, r->cell, directory, /**/ &r->mesh_write));
+    UC(mesh_write_ini_from_mesh(cart, r->cell, directory, /**/ &r->mesh_write));
 
     nv = mesh_read_get_nv(r->cell);
     

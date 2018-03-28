@@ -24,7 +24,7 @@ static void write(MPI_Comm cart, const Coords *c, const char *o, MeshRead *cell)
     MeshWrite *mesh;
     Particle *pp;
 
-    UC(mesh_write_ini_off(cart, cell, o, /**/ &mesh));
+    UC(mesh_write_ini_from_mesh(cart, cell, o, /**/ &mesh));
 
     nc = 1; pp = NULL;
     UC(mesh_write_particles(mesh, cart, c, nc, pp, 0));

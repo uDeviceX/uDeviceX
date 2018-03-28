@@ -91,7 +91,7 @@ void run(const Config *cfg, MPI_Comm cart, float dt, float mass, float te,
     UC(conf_lookup_bool(cfg, "rbc.stretch", &stretch));
 
     UC(mesh_read_ini_off(cell, /**/ &off));
-    UC(mesh_write_ini_off(cart, off, directory, /**/ &mesh_write));
+    UC(mesh_write_ini_from_mesh(cart, off, directory, /**/ &mesh_write));
 
     rbc_ini(false, off, &q);
 
