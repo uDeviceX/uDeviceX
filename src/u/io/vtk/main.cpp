@@ -11,7 +11,7 @@
 #include "conf/imp.h"
 #include "io/mesh_read/imp.h"
 
-#include "mesh/scalars/imp.h"
+#include "algo/scalars/imp.h"
 #include "mesh/angle/imp.h"
 #include "algo/vectors/imp.h"
 #include "mesh/scatter/imp.h"

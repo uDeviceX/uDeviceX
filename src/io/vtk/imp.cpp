@@ -16,7 +16,7 @@
 
 #include "algo/key_list/imp.h"
 #include "algo/vectors/imp.h"
-#include "mesh/scalars/imp.h"
+#include "algo/scalars/imp.h"
 
 #include "mesh/imp.h"
 #include "io/write/imp.h"
