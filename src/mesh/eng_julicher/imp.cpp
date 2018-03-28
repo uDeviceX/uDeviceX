@@ -10,6 +10,10 @@
 
 #include "math/tri/imp.h"
 
+#include "mesh/edg_len/imp.h"
+#include "mesh/angle/imp.h"
+#include "mesh/vert_area/imp.h"
+
 #include "imp.h"
 #include "imp/type.h"
 #include "imp/main.h"
