@@ -65,6 +65,7 @@ void mesh_read_ini_off(const char *path, MeshRead **pq) {
     UC(efclose(f));
     msg_print("read off '%s'", path);
     q->dd_computed = 0;
+    q->dd = NULL;
     *pq = q;
 }
 
