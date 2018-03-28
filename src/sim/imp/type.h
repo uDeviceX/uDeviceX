@@ -97,7 +97,7 @@ struct Rbc {
     RbcForce *force;      /* helper to compute membrane forces */
     RbcParams *params;    /* model parameters */
     RbcCom    *com;     /* helper to compute center of masses */
-    RbcStretch *stretch;  /* helper to apply stretching [fo]rce to cells */
+    RbcStretch *stretch;  /* helper to apply stretching force to cells */
     MeshRead    *cell;     /* cell template */
     MeshWrite  *mesh_write;
     Triangles *tri; /* triangles for one cell on devices */
@@ -148,7 +148,7 @@ struct Vcon {
 struct Opt {
     bool fsi, cnt;
     bool flucolors, fluids, fluss;
-    bool rbc, rbcids;
+    bool rbc, rbcids, rbcstretch;
     bool rig, rig_bounce, rig_empty_pp;
     bool wall;
     bool inflow, outflow, denoutflow, vcon;

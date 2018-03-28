@@ -12,9 +12,9 @@ void body_force(const BForce *bforce, Sim *s) {
         UC(bforce_apply(s->coords, rbc->mass, bforce, rbc->q.n, rbc->q.pp, /**/ rbc->ff));
 }
 
-void forces_rbc (float dt, Rbc *r) {
+void forces_rbc (float dt, const Opt *o, Rbc *r) {
     rbc_force_apply(r->force, r->params, dt, &r->q, /**/ r->ff);
-    if (RBC_STRETCH) rbc_stretch_apply(r->q.nc, r->stretch, /**/ r->ff);
+    if (o->rbcstretch) rbc_stretch_apply(r->q.nc, r->stretch, /**/ r->ff);
 }
 
 void clear_forces(Force* ff, int n) {
