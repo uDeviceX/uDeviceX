@@ -1,5 +1,6 @@
 D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/algo/edg              && \
+    d $B/algo/vectors          && \
     d $B/conf                  && \
     d $B/coords                && \
     d $B/d                     && \
@@ -13,7 +14,6 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/math/rnd              && \
     d $B/math/tform            && \
     d $B/math/tri              && \
-    d $B/algo/vectors          && \
     d $B/mpi                   && \
     d $B/rbc                   && \
     d $B/rbc/adj               && \

@@ -3,7 +3,9 @@ $B/algo/force_stat/imp.o: $S/algo/force_stat/imp.cu; $N -I$S/algo/force_stat -I$
 $B/algo/kahan_sum/imp.o: $S/algo/kahan_sum/imp.cpp; $X -I$S/algo/kahan_sum -I$S/.
 $B/algo/key_list/imp.o: $S/algo/key_list/imp.cpp; $X -I$S/algo/key_list -I$S/.
 $B/algo/minmax/imp.o: $S/algo/minmax/imp.cu; $N -I$S/algo/minmax -I$S/.
+$B/algo/scalars/imp.o: $S/algo/scalars/imp.cpp; $X -I$S/algo/scalars -I$S/.
 $B/algo/scan/imp.o: $S/algo/scan/imp.cu; $N -I$S/algo/scan -I$S/.
+$B/algo/vectors/imp.o: $S/algo/vectors/imp.cpp; $X -I$S/algo/vectors -I$S/.
 $B/clist/imp.o: $S/clist/imp.cu; $N -I$S/clist -I$S/.
 $B/cnt/imp.o: $S/cnt/imp.cu; $N -I$S/cnt -I$S/.
 $B/color/flux.o: $S/color/flux.cu; $N -I$S/color -I$S/.
@@ -72,11 +74,9 @@ $B/mesh/collision/imp.o: $S/mesh/collision/imp.cu; $N -I$S/mesh/collision -I$S/.
 $B/mesh/dist/imp.o: $S/mesh/dist/imp.cpp; $X -I$S/mesh/dist -I$S/.
 $B/mesh/edg_len/imp.o: $S/mesh/edg_len/imp.cpp; $X -I$S/mesh/edg_len -I$S/.
 $B/mesh/props/imp.o: $S/mesh/props/imp.cpp; $X -I$S/mesh/props -I$S/.
-$B/algo/scalars/imp.o: $S/algo/scalars/imp.cpp; $X -I$S/algo/scalars -I$S/.
 $B/mesh/scatter/imp.o: $S/mesh/scatter/imp.cpp; $X -I$S/mesh/scatter -I$S/.
 $B/mesh/triangles/imp.o: $S/mesh/triangles/imp.cpp; $X -I$S/mesh/triangles -I$S/.
 $B/mesh/tri_area/imp.o: $S/mesh/tri_area/imp.cpp; $X -I$S/mesh/tri_area -I$S/.
-$B/algo/vectors/imp.o: $S/algo/vectors/imp.cpp; $X -I$S/algo/vectors -I$S/.
 $B/mesh/vert_area/imp.o: $S/mesh/vert_area/imp.cpp; $X -I$S/mesh/vert_area -I$S/.
 $B/mesh/volume/imp.o: $S/mesh/volume/imp.cpp; $X -I$S/mesh/volume -I$S/.
 $B/mpi/glb.o: $S/mpi/glb.cpp; $X -I$S/mpi -I$S/.
