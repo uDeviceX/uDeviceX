@@ -50,13 +50,14 @@ include::area_volume.inc.adoc[]
 
 include::rnd.inc.adoc[]
 
+include::shape.inc.adoc[]
+
 :leveloffset: -2
+
+== TODO
 
 * gen generate `pp` from cell template (`rbc.off`) and initial condition
 files (`rbcs-ic.txt`)
-* link:com[main] initialization, restart
-* rnd random numbers for internal forces
-* rnd/api low level api for random number generator
 * stretch apply a force to every vertex of every cell, force is set from
 a file `rbc.stretch`
 

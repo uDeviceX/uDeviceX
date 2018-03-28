@@ -84,8 +84,6 @@ include::modules/rbc/energy.adoc[]
 
 include::modules/rbc/main.adoc[]
 
-include::modules/rbc/shape.adoc[]
-
 include::modules/rbc/stretch.adoc[]
 
 include::modules/restrain.adoc[]

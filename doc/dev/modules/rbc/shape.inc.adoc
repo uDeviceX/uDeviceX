@@ -1,0 +1,23 @@
+= shape
+
+Helper for stress free state.
+Compute membrane quantities on host.
+
+Allocate, deallocate structure:
+
+[source,cpp]
+----
+include::{src}/rbc/shape/imp.h[tag=int]
+----
+
+Compute quantities (on host):
+
+[source,cpp]
+----
+include::{src}/rbc/shape/imp.h[tag=int]
+----
+<1> compute edge lengths (order: see `Adj` module
+<2> compute area of triangles
+<3> compute total area
+<4> compute total volume
+
