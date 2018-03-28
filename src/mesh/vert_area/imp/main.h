@@ -19,39 +19,18 @@ static void get(Vectors *p, int i, double d[3]) {
     UC(vectors_get(p, i, /**/ f));
     d[X] = f[X]; d[Y] = f[Y]; d[Z] = f[Z];
 }
-static void mid(double a[3], double b[3], /**/ double c[3]) {
-    enum {X, Y, Z};
-    c[X] = (a[X] + b[X])/2;
-    c[Y] = (a[Y] + b[Y])/2;
-    c[Z] = (a[Z] + b[Z])/2;
-}
-static double area0(double a[3], double b[3], double c[3]) {
-    double ans;
-    ans = tri_hst::kahan_area(a, b, c);
-    if (ans <= 0) ERR("area=%g <= 0", ans);
-    return ans;
-}
 static void area(int4 t, Vectors *p, int offset, /**/ double *o) {
     int ia, ib, ic;
-    double a[3], b[3], c[3], ab[3], ac[3], bc[3];
-    double A, B, C;
+    double a[3], b[3], c[3], A;
     ia = t.x; ib = t.y; ic = t.z;
     UC(get(p, ia + offset, /**/ a));
     UC(get(p, ib + offset, /**/ b));
     UC(get(p, ic + offset, /**/ c));
 
-    mid(a, b, /**/ ab);
-    mid(a, c, /**/ ac);
-    mid(b, c, /**/ bc);
-
-    A = area0(a, ab, ac);
-    B = area0(b, bc, ab);
-    C = area0(c, ac, bc);
-    msg_print("g: %g", (A + B + C)/area0(a, b, c));
-
+    A = tri_hst::kahan_area(a, b, c)/3;
     o[ia + offset] += A;
-    o[ib + offset] += B;
-    o[ic + offset] += C;
+    o[ib + offset] += A;
+    o[ic + offset] += A;
 }
 
 void mesh_vert_area_apply(MeshVertArea *q, int nm, Vectors *pos, double *o) {
