@@ -39,12 +39,12 @@
 #define DUMP_BASE "."
 #endif
 
-/* dump meshes relative to the domain edge or domain center? */
-#if !defined(MESH_SHIFT_EDGE) && !defined(MESH_SHIFT_CENTER)
-  #define MESH_SHIFT_EDGE
-#endif
-
 /* ========== forbidden variables ============== */
+
+/* dump meshes relative to the domain edge or domain center? */
+#if defined(MESH_SHIFT_EDGE) || defined(MESH_SHIFT_CENTER)
+#error MESH_SHIFT_* is runtime: see [rig,rbc].shifttype (string: "edge"/"center")
+#endif
 
 #ifdef RBC_STRETCH
 #error RBC_STRETCH is runtime : rbc/stretch (bool)
