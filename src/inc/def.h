@@ -1,6 +1,4 @@
 enum {BLUE_COLOR, RED_COLOR, /* solvent colors */
-      SOLID_COLOR,
-      WALL_COLOR,
       N_COLOR};
 
 enum {
