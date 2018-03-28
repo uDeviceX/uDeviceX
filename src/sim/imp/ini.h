@@ -155,7 +155,7 @@ static void ini_rbc(const Config *cfg, Opt opt, MPI_Comm cart, int3 L, /**/ Rbc 
     UC(rbc_ini(opt.rbcids, r->cell, &r->q));
     UC(ini_rbc_distr(opt.rbcids, nv, cart, L, /**/ &r->d));
     if (opt.dump_rbc_com) UC(rbc_com_ini(nv, MAX_CELL_NUM, /**/ &r->com));
-    if (RBC_STRETCH)   UC(rbc_stretch_ini("rbc.stretch", nv, /**/ &r->stretch));
+    if (opt.rbcstretch)   UC(rbc_stretch_ini("rbc.stretch", nv, /**/ &r->stretch));
     UC(rbc_params_ini(&r->params));
     UC(rbc_params_set_conf(cfg, r->params));
 
@@ -234,6 +234,8 @@ static void read_opt(const Config *c, Opt *o) {
     o->rbc = b;
     UC(conf_lookup_bool(c, "rbc.ids", &b));
     o->rbcids = b;
+    UC(conf_lookup_bool(c, "rbc.stretch", &b));
+    o->rbcstretch = b;
 
     UC(conf_lookup_bool(c, "rig.active", &b));
     o->rig = b;
