@@ -44,14 +44,14 @@ include::adj.inc.adoc[]
 
 include::com.inc.adoc[]
 
+include::forces.inc.adoc[]
+
 include::area_volume.inc.adoc[]
 
-include::forces.inc.adoc[]
+include::rnd.inc.adoc[]
 
 :leveloffset: -2
 
-* edg store information for every edge (host)
-* internal forces: link:forces{lext}[forces]
 * gen generate `pp` from cell template (`rbc.off`) and initial condition
 files (`rbcs-ic.txt`)
 * link:com[main] initialization, restart
@@ -59,6 +59,4 @@ files (`rbcs-ic.txt`)
 * rnd/api low level api for random number generator
 * stretch apply a force to every vertex of every cell, force is set from
 a file `rbc.stretch`
-
-See also `src/u/rbc`, `src/test/rbccom`, `src/test/rbc`
 

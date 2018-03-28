@@ -27,6 +27,14 @@ F_{pow}(r) = \frac{k_{pow}}
 
 === Other forces
 
+(from rnd)
+
+----
+g = gammaC; T = kBT0
+f0  = sqrtf(2*g*T/dt)*rnd
+----
+
+
 TODO
 
 ==  interface
