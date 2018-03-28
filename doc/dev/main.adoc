@@ -80,8 +80,6 @@ include::modules/meshbb.adoc[]
 
 include::modules/rbc/matrices.adoc[]
 
-include::modules/rbc/adj.adoc[]
-
 include::modules/rbc/com.adoc[]
 
 include::modules/rbc/area_volume.adoc[]

@@ -1,6 +1,5 @@
-= mesh adjacency structure
+= adj: mesh adjacency structure
 :lext: .adoc
-:src: ../../../../src
 
 Consider closed triangulated mesh with `nv` vertices. Degree of a
 vertex is the number of edges incident to the vertex. Let `md` is a
@@ -32,7 +31,7 @@ Each thread adds force to a vertices with index `0`. It considers edge
 example, a contribution of edge force `01` to vertex `1` is added by
 another thread.
 
-image::{include}/dih.png[]
+image::{include}/dih.png[width=30%]
 
 `Adj_v` is initilized from a host structure `Adj`:
 [source,cpp]
