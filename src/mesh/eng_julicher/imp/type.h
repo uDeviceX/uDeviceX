@@ -1,4 +1,7 @@
 struct MeshEngJulicher {
-    int4 *tt;
-    int nv, nt;
+    int max_nm; /* maximum number of meshes */
+    int nv, nt, ne;
+
+    /* edge lens, edge angles, vert. areas */
+    double *lens, *angles, *areas;
 };
