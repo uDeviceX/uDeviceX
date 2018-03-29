@@ -1,3 +1,4 @@
+[[rbc_matrices]]
 = matrices: affine transformation
 
 An array of `4 x 4` affine transformation matrices.

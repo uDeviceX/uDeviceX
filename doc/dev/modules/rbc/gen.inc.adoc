@@ -1,0 +1,14 @@
+= gen: generate membranes
+
+Generate membrane vertices from template mesh and affine transform
+matrices (see <<rbc_matrices, matrices submodule>>).
+
+[source,cpp]
+----
+include::{src}/rbc/gen/imp.h[tag=int]
+----
+<1> generate and filter membranes from file `ic`. Only membranes
+    belonging to subdomain are kept.
+<2> generate membranes from a matrices array
+<3> shift a set of particles from global to local coordinates
+
