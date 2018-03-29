@@ -1,5 +1,5 @@
 /* 1D texture object template */
-inline void sz_check(int n) {
+static void sz_check(int n) {
     if (n <            0 ) ERR("too small texo: %d", n);
     if (n > MAX_TEXO_SIZE) ERR("too big texo: %d > %d", n, MAX_TEXO_SIZE);
 }
@@ -10,7 +10,7 @@ struct Texo {
 };
 
 template<typename T>
-void setup0(T *data, int n, /**/ Texo<T> *to) {
+void texo_setup(int n, T *data, /**/ Texo<T> *to) {
     sz_check(n);
     
     cudaResourceDesc resD;
@@ -30,6 +30,6 @@ void setup0(T *data, int n, /**/ Texo<T> *to) {
 }
 
 template<typename T>
-void destroy(/**/ Texo<T> *to) {
+void texo_destroy(/**/ Texo<T> *to) {
     CC(cudaDestroyTextureObject(to->d));
 }
