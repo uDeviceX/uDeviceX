@@ -27,10 +27,8 @@ filter_deps() {
 deps() {
     for f
     do target="${f%.adoc}.html"
-       DIR=`dirname $f`
-       DEPS=`grep "$f" -e "include::" | cut -d':' -f 3 | cut -d'[' -f 1`
-       DEPS=`filter_deps $DEPS`
-       DEPS=`make_path $DIR $DEPS | sort | xargs`
+       DEPS=`u.doc.inc "$f" | sort | xargs`
+       if test $? -ne 0; then echo >&2 'u.doc.inc faild'; fi
        echo "$target: $f $DEPS"
     done
 }

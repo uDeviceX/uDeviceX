@@ -6,7 +6,7 @@
 * open boundary conditions
 * density controller
 
-include::ffvel.inc.adoc[]
+include::vel.inc.adoc[]
 
 include::inflow.inc.adoc[]
 
