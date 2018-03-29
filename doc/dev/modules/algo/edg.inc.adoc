@@ -1,3 +1,4 @@
+[[algo_edg]]
 = edg: mesh edge data
 
 Set and get `val` on edges of the mesh.

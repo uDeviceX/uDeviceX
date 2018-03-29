@@ -1,3 +1,4 @@
+[[rbc_adj]]
 = adj: mesh adjacency structure
 :lext: .adoc
 
