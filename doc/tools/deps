@@ -3,7 +3,7 @@
 set -eu
 
 usg() {
-    echo "usg: u.doc.deps <doc dir> > deps.mk"
+    echo "usg: u.doc.deps DIR [FILE.adoc].. > deps.mk"
     exit 1
 }
 
