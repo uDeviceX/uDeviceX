@@ -7,10 +7,9 @@ usg() {
     exit 1
 }
 
-if test $# -ne 0 -a "$1" = -h; then usg; fi
+if test $# -ne 0 && test "$1" = -h; then usg; fi
 
-d=$1
-shift
+d="$1"; shift
 
 make_path() {
     dir="$1"; shift
