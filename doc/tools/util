@@ -1,5 +1,8 @@
 #!/bin/sh
 
+: ${AWK=awk}
+: ${DBG=0}
+
 e () {
   if test ! "$DBG" = 0
   then msg ": $*"
