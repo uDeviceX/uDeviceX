@@ -19,7 +19,6 @@
 #include "inc/dev.h"
 #include "utils/kl.h"
 #include "utils/texo.h"
-#include "utils/te.h"
 
 #include "math/rnd/imp.h"
 

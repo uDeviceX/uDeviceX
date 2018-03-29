@@ -15,7 +15,6 @@
 #include "inc/type.h"
 #include "inc/dev.h"
 #include "utils/texo.h"
-#include "utils/te.h"
 #include "utils/texo.dev.h"
 #include "mesh/triangles/type.h"
 #include "mesh/triangles/imp.h"
@@ -82,8 +81,8 @@ union Pos {
 
 __device__ Pos tex2Pos(const Texo<float2> texvert, const int id) {
     Pos r;
-    r.f2[0] = fetch(texvert, 3 * id + 0);
-    r.f2[1] = fetch(texvert, 3 * id + 1);
+    r.f2[0] = texo_fetch(texvert, 3 * id + 0);
+    r.f2[1] = texo_fetch(texvert, 3 * id + 1);
     return r;
 }
 
@@ -158,10 +157,13 @@ void collision_get_colors(const Particle *pp, int n,
                           int nv, int nm,
                           const float3 *minext, const float3 *maxext, /**/ int *cc) {
     Texo<float2> texvert;
+    int ntex;
+    ntex = 3 * nm * nv;
+    
     if (nm == 0 || n == 0) return;
-    TE(&texvert, (float2*) i_pp, 3 * nm * nv);
+    texo_setup(ntex, (float2*) i_pp, /**/ &texvert);
     UC(get_colors0(pp, n, texvert, tri,
                    nv, nm,
                    minext, maxext, /**/ cc));
-    destroy(&texvert);
+    texo_destroy(&texvert);
 }

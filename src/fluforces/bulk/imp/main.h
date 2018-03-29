@@ -18,21 +18,21 @@ static void barray_get_view(BPaArray a, BPaCArray_v *v) {
 }
 
 static void tbarray_get_view(int n, BPaArray a, TBPaArray_v *v) {
-    setup0((float4*) a.pp, 2*n, &v->pp);
+    texo_setup(2*n, (float4*) a.pp, &v->pp);
 }
 
 static void tbarray_get_view(int n, BPaArray a, TBPaCArray_v *v) {
-    setup0((float4*) a.pp, 2*n, &v->pp);
-    setup0(   (int*) a.cc,   n, &v->cc);    
+    texo_setup(2*n, (float4*) a.pp, &v->pp);
+    texo_setup(n,      (int*) a.cc, &v->cc);    
 }
 
 static void tbarray_fin_view(TBPaArray_v *v) {
-    destroy(&v->pp);
+    texo_destroy(&v->pp);
 }
 
 static void tbarray_fin_view(TBPaCArray_v *v) {
-    destroy(&v->pp);
-    destroy(&v->cc);
+    texo_destroy(&v->pp);
+    texo_destroy(&v->cc);
 }
 
 template <typename Par, typename Parray, typename Farray>
