@@ -4,3 +4,56 @@
 
 set -eu
 
+prog=u.doc.inc
+
+usg () {
+    msg 'u.doc.inc FILE.adoc'
+    msg 'list all file included recursively in FILE.adoc'
+    exit
+}
+
+if test $# -ne 0 && test "$1" = -h; then usg; fi
+if test $# -eq 0; then err "needs FILE.adoc"; fi
+
+f="$1"; shift
+if test ! -f "$f"; then err "not a file '$f'"; fi
+if test $# -ne 0; then err "too many aguments"; fi					       
+					       
+
+"$AWK" -v f="$f" -v prog="$prog" '
+BEGIN {
+    max_lvl = 100
+    main(f, 0)
+}
+function main(f, lvl) {
+    if (lvl > max_lvl)
+	err(sprintf("too many levels of includes: \"%s\"", f))
+    if (!filep(f))
+	warn(sprintf("cannot read file \"%s\"", f))
+    else main0(f, lvl)
+}
+function main0(f0, f, lvl,   l) {
+    if (lvl > max_lvl)
+	err(sprintf("too many levels of includes: \"%s\"", f))    
+    while (getline l < f0 > 0)
+	if (incp(l)) {
+	    f = File
+	    main(f, lvl + 1)
+	}
+}
+function incp(l) { # sets global "File"
+    if (l !~ /^[ \t]*include::/) return 0
+    sub(/^.*::/, "", l)
+    sub(/\[.*$/, "", l)
+    File = l
+    return 1
+}
+function filep(f,   c, r) {
+    c = sprintf("test -f \"%s\"", f)
+    r = system(c)
+    return r == 0
+}
+function msg(s)  { printf "%s: %s\n", prog, s | "cat >&2" }
+function err(s)  { msg(s); exit(2) }
+function warn(s) { msg(s)          }
+'
