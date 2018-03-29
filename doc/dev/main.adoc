@@ -36,6 +36,8 @@ include::modules/distr.adoc[]
 
 include::modules/exch.adoc[]
 
+include::modules/flu.adoc[]
+
 include::modules/fluforces.adoc[]
 
 include::modules/frag.adoc[]
