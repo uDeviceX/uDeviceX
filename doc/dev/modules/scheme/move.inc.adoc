@@ -1,15 +1,10 @@
-= scheme/move
+= move
 
-:src: ../../../src
-
-Time scheme update
-
+update particles positions and velocities given forces.
 Currently implemented:
 
 * Forward Euler
 * Velocity-Verlet
-
-== interface
 
 [source, c++]
 ----

@@ -1,0 +1,53 @@
+= flu: solvent particles
+
+Manages solvent particles data.
+
+== data structure
+
+The data is stored in a visible structure. The user can access
+directly the fields.
+
+[source,cpp]
+----
+include::{src}/flu/imp.h[tag=struct]
+----
+
+== interface
+
+allocate and deallocate the data:
+
+[source,cpp]
+----
+include::{src}/flu/imp.h[tag=mem]
+----
+
+generate the quantities:
+
+[source,cpp]
+----
+include::{src}/flu/imp.h[tag=gen]
+----
+<1> generate `numberdensity` particles randomly distributed in every
+    cell with zero velocity. Colors are optionally set from `GenColor`
+    object (see <<>>).
+<2> generate unique global ids for each particle
+
+restart interface:
+
+[source,cpp]
+----
+include::{src}/flu/imp.h[tag=start]
+----
+<1> read quantities from restart files
+<2> dump quantities to restart files
+
+additional tools:
+
+[source,cpp]
+----
+include::{src}/flu/imp.h[tag=tools]
+----
+<1> dump particles to text format, one file per MPI rank (debug purpose)
+<2> build cells lists, assume that particles are inside subdomain
+
+

@@ -1,3 +1,4 @@
+// tag::struct[]
 struct FluQuants {
     Particle *pp, *pp0;    /* particles on device  */
     int       n;           /* particle number      */
@@ -17,21 +18,30 @@ struct FluQuants {
 
     int maxp; /* maximum particle number */
 }; 
+// end::struct[]
 
 struct Coords;
 struct GenColor;
 
+// tag::mem[]
 void flu_ini(bool colors, bool ids, int3 L, int maxp, FluQuants *q);
 void flu_fin(FluQuants *q);
+// end::mem[]
 
-void flu_gen_quants(const Coords *coords, int numdensity, const GenColor *gc, FluQuants *q);
-void flu_gen_ids(MPI_Comm comm, const int n, FluQuants *q);
+// tag::gen[]
+void flu_gen_quants(const Coords*, int numdensity, const GenColor *gc, FluQuants *q); // <1>
+void flu_gen_ids(MPI_Comm, const int n, FluQuants *q); // <2>
+// end::gen[]
 
-void flu_strt_quants(const Coords *coords, const int id, FluQuants *q);
-void flu_strt_dump(const Coords *coords, const int id, const FluQuants *q);
-/* dump in "txt" format */
-void flu_txt_dump(const Coords *coords, const FluQuants *q);
+// tag::start[]
+void flu_strt_quants(const Coords *, const int id, FluQuants *q);     // <1>
+void flu_strt_dump(const Coords *, const int id, const FluQuants *q); // <2>
+// end::start[]
+
+// tag::tools[]
+void flu_txt_dump(const Coords *coords, const FluQuants *q); // <1>
 
 /* build cells only from one array of particles fully contained in the domain */
 /* warning: this will delete particles which are outside                      */
-void flu_build_cells(/**/ FluQuants *q);
+void flu_build_cells(/**/ FluQuants *q); // <2>
+// end::tools[]

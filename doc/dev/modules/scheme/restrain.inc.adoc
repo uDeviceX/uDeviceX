@@ -1,6 +1,5 @@
-= scheme/restrain
+= restrain
 
-:src: ../../../src
 :stem: latexmath
 
 Restrain the movement of drop or rbc membrane by shifting center of

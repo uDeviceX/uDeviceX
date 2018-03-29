@@ -14,8 +14,6 @@ include::gource.adoc[]
 
 include::modules/algo/main.adoc[]
 
-include::modules/bforce.adoc[]
-
 include::modules/clist.adoc[]
 
 include::modules/cnt.adoc[]
@@ -36,6 +34,8 @@ include::modules/distr.adoc[]
 
 include::modules/exch.adoc[]
 
+include::modules/flu.adoc[]
+
 include::modules/fluforces.adoc[]
 
 include::modules/frag.adoc[]
@@ -47,8 +47,6 @@ include::modules/io/main.adoc[]
 include::modules/math/main.adoc[]
 
 include::modules/mesh/main.adoc[]
-
-include::modules/move.adoc[]
 
 include::modules/pair.adoc[]
 
@@ -64,15 +62,11 @@ include::modules/meshbb.adoc[]
 
 include::modules/rbc/main.adoc[]
 
-include::modules/restrain.adoc[]
-
 include::modules/rig.adoc[]
 
+include::modules/scheme/main.adoc[]
+
 include::modules/sdf/main.adoc[]
-
-include::modules/time.adoc[]
-
-include::modules/time_step.adoc[]
 
 include::modules/utils/main.adoc[]
 
