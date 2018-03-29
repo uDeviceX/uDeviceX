@@ -12,3 +12,16 @@ array, each element storing ids of the three vertices of the triangle
 More complex connectivity structures are defined in appropriate
 submodules, see <<algo_edg, edg>> or <<rbc_adj, adj>>.
 
+:leveloffset: +1
+
+include::area.inc.adoc[]
+
+include::tri_area.inc.adoc[]
+
+include::triangles.inc.adoc[]
+
+include::volume.inc.adoc[]
+
+:leveloffset: -1
+
+

@@ -46,6 +46,8 @@ include::modules/io/main.adoc[]
 
 include::modules/math/main.adoc[]
 
+include::modules/mesh/main.adoc[]
+
 include::modules/move.adoc[]
 
 include::modules/pair.adoc[]
@@ -57,14 +59,6 @@ include::modules/farray.adoc[]
 include::modules/conf.adoc[]
 
 include::modules/partlist.adoc[]
-
-include::modules/mesh/triangles.adoc[]
-
-include::modules/mesh/area.adoc[]
-
-include::modules/mesh/volume.adoc[]
-
-include::modules/mesh/tri_area.adoc[]
 
 include::modules/meshbb.adoc[]
 
