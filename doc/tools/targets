@@ -1,17 +1,21 @@
 #!/bin/sh
 
+. u.doc.util
+prog=u.test.targets
+
 usg() {
-    echo 'usg: u.doc.targets [f1.adoc].. > targets.mk'
+    msg 'usg: u.doc.targets [f1.adoc].. > targets.mk'
     exit 1
 }
 
 if test $# -ne 0 && test "$1" = -h; then usg; fi
 
-ext_html() (
+ext_html() {
     for f
-    do echo "${f%.adoc}.html"
+    do if ! test -f "$f"; then err "not a file '$f'"; fi
+       echo "${f%.adoc}.html"
     done | sort | xargs
-)
+}
 
 PAGES=`ext_html "$@"`
 echo "PAGES = $PAGES"
