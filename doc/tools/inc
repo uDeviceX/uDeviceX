@@ -18,43 +18,66 @@ if test $# -eq 0; then err "needs FILE.adoc"; fi
 f="$1"; shift
 if test ! -f "$f"; then err "not a file '$f'"; fi
 if test $# -ne 0; then err "too many aguments"; fi
-dir=`dirname "$f"`
 
-"$AWK" -v f="$f" -v dir="$dir" -v prog="$prog" '
+dir=`dirname "$f"`
+b=`basename "$f"`
+
+"$AWK" -v f="$b" -v dir="$dir" -v prog="$prog" '
 BEGIN {
     max_lvl = 100
-    main(f, 0)
+    main(f, dir, 0)
 }
-function main(f, lvl) {
+function main(f, d, lvl) {
     if (lvl > max_lvl)
 	err(sprintf("too many levels of includes: \"%s\"", f))
-    if (!filep(f))
-	warn(sprintf("cannot read file \"%s\"", f))
-    else main0(f, lvl)
+    if (!filep(f, d))
+	warn(sprintf("cannot find file \"%s\" in \"%s\"", f, d))
+    else main0(f, d, lvl)
 }
-function main0(f0, f, lvl,   l) {
+function main0(f0, d0, lvl,   f, fullname, l) {
     if (lvl > max_lvl)
 	err(sprintf("too many levels of includes: \"%s\"", f))
-    while (getline l < f0 > 0)
-	if (incp(l)) {
-	    f = File
-	    main(f, lvl + 1)
+    fullname = fullpath(d0, f0)
+    while (getline l < fullname > 0)
+	if (incp(l, d0)) {
+	    main(File, Dir, lvl + 1)
+	    print fullpath(Dir, File)
 	}
 }
-function incp(l) { # sets global "File"
+function incp(l, d) { # sets global "File"
     if (l !~ /^[ \t]*include::/) return 0
+    if (l ~ /\{.*\}/)              return 0
     sub(/^.*::/, "", l)
     sub(/\[.*$/, "", l)
-    File = fullpath(l)
+    File = basename(l)
+    Dir  = fullpath(d, dirname(l))
     return 1
 }
-function fullpath(base) { return sprintf("%s/%s", dir, base) }
-function filep(f,   c, r) {
-    c = sprintf("test -f \"%s\"", f)
+function fullpath(a, b) {
+    if (emptyp(a)) return b;
+    else if (emptyp(b)) return a
+    else return sprintf("%s/%s", a, b)
+}
+function filep(f, d,   c, r) {
+    c = sprintf("test -f \"%s\"", fullpath(d, f))
     r = system(c)
     return r == 0
 }
+function basename(s) {
+    sub(/.*\//, "", s)
+    return s
+}
+function dirname(s,   i, n, c) {
+    n = length(s)
+    for (i = n; i > 0; i--)
+	if (eq(ch(s, i), "/")) break
+    if (i == 0) return ""
+    else        return substr(s, 1, i - 1)
+}
+function ch(s, i) { return substr(s, i, 1) }
+function eq(a, b) { return "" a == "" b }
 function msg(s)  { printf "%s: %s\n", prog, s | "cat >&2" }
 function err(s)  { msg(s); exit(2) }
+function emptyp(s) { return length(s) == 0 }
 function warn(s) { msg(s)          }
 '
