@@ -28,7 +28,7 @@ $B/rbc/params/conf.o: $S/inc/conf.h $S/utils/error.h $S/conf/imp.h $S/rbc/params
 $B/rbc/params/imp.o: $S/utils/imp.h $S/utils/error.h $S/rbc/params/imp.h $S/rbc/params/type.h
 $B/rbc/shape/imp.o: $S/utils/imp.h $S/utils/error.h $S/math/tri/imp.h $S/rbc/shape/imp.h $S/rbc/adj/type/common.h $S/rbc/shape/imp/main.h $S/rbc/shape/imp/type.h $S/rbc/adj/imp.h $S/utils/msg.h
 $B/rbc/stretch/imp.o: $S/utils/imp.h $S/inc/conf.h $S/utils/error.h $S/d/q.h $S/inc/type.h $S/rbc/stretch/imp.h $S/utils/cc.h $S/inc/def.h $S/d/api.h $S/inc/dev.h $B/conf.h $S/rbc/stretch/imp/main.h $S/rbc/stretch/imp/type.h $S/utils/kl.h $S/rbc/stretch/dev/main.h $S/d/ker.h $S/utils/msg.h
-$B/u/rbc/force/main.o: $S/utils/imp.h $S/coords/type.h $S/inc/conf.h $S/rbc/type.h $S/utils/error.h $S/inc/type.h $S/conf/imp.h $S/mpi/wrapper.h $S/io/mesh_read/imp.h $S/utils/cc.h $S/coords/ini.h $S/inc/def.h $S/d/api.h $S/utils/mc.h $S/inc/dev.h $B/conf.h $S/rbc/force/rnd/imp.h $S/utils/texo.h $S/rbc/params/imp.h $S/utils/te.h $S/rbc/force/imp.h $S/mpi/glb.h $S/rbc/imp.h $S/utils/msg.h
+$B/u/rbc/force/main.o: $S/utils/imp.h $S/coords/type.h $S/inc/conf.h $S/rbc/type.h $S/utils/error.h $S/inc/type.h $S/conf/imp.h $S/mpi/wrapper.h $S/io/mesh_read/imp.h $S/utils/cc.h $S/coords/ini.h $S/inc/def.h $S/d/api.h $S/utils/mc.h $S/inc/dev.h $B/conf.h $S/rbc/force/rnd/imp.h $S/utils/texo.h $S/rbc/params/imp.h $S/rbc/force/imp.h $S/mpi/glb.h $S/rbc/imp.h $S/utils/msg.h
 $B/utils/cc.o: $S/utils/cc/common.h $S/inc/conf.h $S/utils/error.h $S/d/api.h $B/conf.h
 $B/utils/error.o: $S/utils/msg.h $S/utils/error.h
 $B/utils/imp.o: $S/utils/error.h $S/utils/imp.h

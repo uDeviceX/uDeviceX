@@ -17,7 +17,6 @@
 #include "utils/imp.h"
 #include "utils/msg.h"
 #include "utils/error.h"
-#include "utils/te.h"
 #include "utils/texo.h"
 #include "utils/cc.h"
 #include "utils/mc.h"

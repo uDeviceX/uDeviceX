@@ -12,7 +12,7 @@ $B/math/tform/imp.o: $S/utils/imp.h $S/inc/conf.h $S/utils/error.h $S/math/tform
 $B/math/tri/imp.o: $S/math/tri/imp.h $S/math/tri/dev.h
 $B/mesh/angle/imp.o: $S/utils/imp.h $S/utils/error.h $S/math/tri/imp.h $S/mesh/angle/imp.h $S/io/mesh_read/imp.h $S/algo/vectors/imp.h $S/mesh/angle/imp/main.h $S/mesh/angle/imp/type.h $S/utils/msg.h
 $B/mesh/edg_len/imp.o: $S/utils/imp.h $S/utils/error.h $S/mesh/edg_len/imp.h $S/io/mesh_read/imp.h $S/algo/vectors/imp.h $S/mesh/edg_len/imp/main.h $S/mesh/edg_len/imp/type.h $S/utils/msg.h
-$B/mesh/eng_julicher/imp.o: $S/utils/imp.h $S/utils/error.h $S/math/tri/imp.h $S/mesh/eng_julicher/imp.h $S/io/mesh_read/imp.h $S/mesh/scatter/imp.h $S/mesh/edg_len/imp.h $S/algo/vectors/imp.h $S/mesh/eng_julicher/imp/main.h $S/mesh/angle/imp.h $S/mesh/eng_julicher/imp/type.h $S/mesh/vert_area/imp.h $S/utils/msg.h
+$B/mesh/eng_julicher/imp.o: $S/utils/imp.h $S/utils/error.h $S/math/tri/imp.h $S/mesh/eng_julicher/imp.h $S/algo/scalars/imp.h $S/io/mesh_read/imp.h $S/mesh/scatter/imp.h $S/mesh/edg_len/imp.h $S/algo/vectors/imp.h $S/mesh/eng_julicher/imp/main.h $S/mesh/angle/imp.h $S/mesh/eng_julicher/imp/type.h $S/mesh/vert_area/imp.h $S/utils/msg.h
 $B/mesh/scatter/imp.o: $S/utils/imp.h $S/utils/error.h $S/mesh/scatter/imp.h $S/algo/scalars/imp.h $S/io/mesh_read/imp.h $S/mesh/scatter/imp/main.h $S/mesh/scatter/imp/type.h $S/utils/msg.h
 $B/mesh/vert_area/imp.o: $S/utils/imp.h $S/utils/error.h $S/math/tri/imp.h $S/mesh/vert_area/imp.h $S/io/mesh_read/imp.h $S/algo/vectors/imp.h $S/mesh/vert_area/imp/main.h $S/mesh/vert_area/imp/type.h $S/utils/msg.h
 $B/mpi/glb.o: $S/inc/conf.h $S/mpi/wrapper.h $S/utils/mc.h $B/conf.h
