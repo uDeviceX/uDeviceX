@@ -1,7 +1,5 @@
 [[algo_scalars]]
 = Scalars
-:lext: .adoc
-:src: ../../../../src
 
 A read-only wrapper to provide uniform accsses to an array `n`
 scalars.

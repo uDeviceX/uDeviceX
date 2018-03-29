@@ -1,6 +1,5 @@
-= scan
-:lext: .adoc
-:src: ../../../../src
+[[algo_scan]]
+= scan: prefix sum
 
 exclusive prefix sum implementation for integer data
 

@@ -1,6 +1,4 @@
-= mesh edge data
-:lext: .adoc
-:src: ../../../../src
+= edg: mesh edge data
 
 Set and get `val` on edges of the mesh.
 
@@ -13,3 +11,4 @@ include::{src}/algo/edg/imp.h[tag=interface]
 
 `md` is a maximum degree, `nv` number of vertices, `h[xy]` storage of
 size `nv*md`.
+

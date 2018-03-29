@@ -1,7 +1,5 @@
 [[algo_vectors]]
 = Vectors
-:lext: .adoc
-:src: ../../../../src
 
 A read-only wrapper to provide uniform accsses to an array `n` vectors
 of size three. The module does not copy data.

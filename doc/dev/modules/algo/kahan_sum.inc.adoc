@@ -1,6 +1,4 @@
 = Kahan summation
-:lext: .adoc
-:src: ../../../../src
 
 link:https://en.wikipedia.org/wiki/Kahan_summation_algorithm[Summation]
 stable to numerical error.
@@ -13,7 +11,7 @@ include::{src}/algo/kahan_sum/imp.h[tag=interface]
 <2> return current sum
 <3> return current value of `compensation` for diagnostic
 
-Example
+Example:
 [source,cpp]
 ----
 kahan_sum *k;

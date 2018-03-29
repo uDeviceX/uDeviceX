@@ -12,13 +12,7 @@ include::doc.adoc[]
 
 include::gource.adoc[]
 
-include::modules/algo/edg.adoc[]
-
-include::modules/algo/minmax.adoc[]
-
-include::modules/algo/scan.adoc[]
-
-include::modules/algo/kahan_sum.adoc[]
+include::modules/algo/main.adoc[]
 
 include::modules/bforce.adoc[]
 
@@ -71,10 +65,6 @@ include::modules/mesh/area.adoc[]
 include::modules/mesh/volume.adoc[]
 
 include::modules/mesh/tri_area.adoc[]
-
-include::modules/algo/vectors.adoc[]
-
-include::modules/algo/scalars.adoc[]
 
 include::modules/meshbb.adoc[]
 

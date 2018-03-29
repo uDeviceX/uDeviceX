@@ -1,6 +1,4 @@
 = minmax
-:lext: .adoc
-:src: ../../../../src
 
 compute extends of chunks of particles
 
