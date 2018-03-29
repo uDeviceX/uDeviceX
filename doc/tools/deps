@@ -3,6 +3,7 @@
 set -eu
 
 . u.doc.util
+prog=u.doc.deps
 
 usg() {
     msg 'usg: u.doc.deps [FILE.adoc].. > deps.mk'
@@ -12,8 +13,9 @@ usg() {
 if test $# -ne 0 && test "$1" = -h; then usg; fi
 
 for f
-do target="${f%.adoc}.html"
-   DEPS=`u.doc.inc "$f" | sort | xargs`
-   if test $? -ne 0; then echo >&2 'u.doc.inc failed'; exit 2; fi
-   echo "$target: $f $DEPS"
+do if test ! -f "$f"; then err "not a file '$f'"; fi
+    target="${f%.adoc}.html"
+    DEPS=`u.doc.inc "$f" | sort | xargs`
+    if test $? -ne 0; then echo >&2 'u.doc.inc failed'; exit 2; fi
+    echo "$target: $f $DEPS"
 done
