@@ -20,8 +20,8 @@ make_path() {
 
 filter_deps() {
     for i
-    do if echo $i | grep "adoc"; then
-	   echo $i
+    do if echo "$i" | grep "adoc"
+       then echo "$i"
        fi
     done
 }
