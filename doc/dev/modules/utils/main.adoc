@@ -12,5 +12,7 @@ include::mc.inc.adoc[]
 
 include::kl.inc.adoc[]
 
+include::texo.inc.adoc[]
+
 :leveloffset: -1
 

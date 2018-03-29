@@ -1,0 +1,23 @@
+= texo: texture object
+
+a simple wrapper for texture objects in cuda.
+
+[source,cpp]
+----
+include::{src}/utils/texo.h[tag=struct]
+----
+
+on host: create and destroy the texture object of a given type `T`:
+
+[source,cpp]
+----
+include::{src}/utils/texo.h[tag=int]
+----
+
+on device: fetch from texture object:
+
+[source,cpp]
+----
+include::{src}/utils/texo.dev.h[tag=int]
+----
+
