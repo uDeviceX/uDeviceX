@@ -1,4 +1,4 @@
-== error
+= error handling
 
 _uDeviceX_ has a primitive error handling mechanism. Error is raised if
 

@@ -1,10 +1,9 @@
-== mc
+= mc: mpi check
 
-[M]PI [C]heck.
+[M]PI [C]heck macro.
 
 Error handling for MPI API calls.
-
-=== Usage
+usage:
 
 [source,cpp]
 ----

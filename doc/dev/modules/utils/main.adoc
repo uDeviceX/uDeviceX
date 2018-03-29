@@ -1,4 +1,6 @@
-= Utils
+= utils
+
+:leveloffset: +1
 
 include::error.inc.adoc[]
 
@@ -7,3 +9,6 @@ include::cc.inc.adoc[]
 include::mc.inc.adoc[]
 
 include::kl.inc.adoc[]
+
+:leveloffset: -1
+
