@@ -1,5 +1,5 @@
 B = $(HOME)/bin
-P = deps targets
+P = deps targets inc unil
 
 install:
 	@echo install doc tools to $B
