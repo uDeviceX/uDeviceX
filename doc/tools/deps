@@ -29,7 +29,7 @@ filter_deps() {
 
 deps() {
     for f
-    do target=`echo ${f%.adoc}.html`
+    do target="${f%.adoc}.html"
        DIR=`dirname $f`
        DEPS=`grep "$f" -e "include::" | cut -d':' -f 3 | cut -d'[' -f 1`
        DEPS=`filter_deps $DEPS`
