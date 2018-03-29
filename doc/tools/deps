@@ -28,7 +28,7 @@ deps() {
     for f
     do target="${f%.adoc}.html"
        DEPS=`u.doc.inc "$f" | sort | xargs`
-       if test $? -ne 0; then echo >&2 'u.doc.inc faild'; fi
+       if test $? -ne 0; then echo >&2 'u.doc.inc faild'; exit 2; fi
        echo "$target: $f $DEPS"
     done
 }
