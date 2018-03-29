@@ -1,14 +1,13 @@
 #!/bin/sh
 
 usg() {
-    echo "usg: u.doc.targets <doc dir> <f1.adoc f2.adoc...> > targets.mk"
+    echo 'usg: u.doc.targets <doc dir> <f1.adoc f2.adoc...> > targets.mk'
     exit 1
 }
 
-if test $# -ne 0 -a "$1" = -h; then usg; fi
+if test $# -ne 0 && test -a "$1" = -h; then usg; fi
 
-d=$1
-shift
+d="$1"; shift
 
 ext_html() (
     for f in $@; do
