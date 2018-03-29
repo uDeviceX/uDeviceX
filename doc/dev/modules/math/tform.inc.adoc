@@ -1,4 +1,5 @@
-== linar coordinate transformation for 3D vector
+[[math_tform]]
+== tform: linar coordinate transformation for 3D vector
 
 Transform vector `a[3]` to `b[3]` using
 
