@@ -44,6 +44,8 @@ include::adj.inc.adoc[]
 
 include::com.inc.adoc[]
 
+include::matrices.inc.adoc[]
+
 include::forces.inc.adoc[]
 
 include::area_volume.inc.adoc[]
@@ -60,6 +62,4 @@ include::stretch.inc.adoc[]
 
 * gen generate `pp` from cell template (`rbc.off`) and initial condition
 files (`rbcs-ic.txt`)
-* stretch apply a force to every vertex of every cell, force is set from
-a file `rbc.stretch`
 
