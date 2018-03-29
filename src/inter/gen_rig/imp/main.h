@@ -40,7 +40,7 @@ static void gen0(const Coords *c, MPI_Comm comm, RigGenInfo rgi, int nsolid, int
     *ri.ns = nsolid = id;
     *ri.nps = npsolid;
 
-    set_rig_ids(comm, nsolid, /**/ ri.ss);
+    inter_set_rig_ids(comm, nsolid, /**/ ri.ss);
 }
 
 static void gen1(const Coords *coords, MPI_Comm comm, RigGenInfo rgi, int nsolid, float *coms, /**/
@@ -95,7 +95,7 @@ static void gen(const Coords *coords, MPI_Comm comm, const char *fname, RigGenIn
     EFREE(counts);
 }
 
-void gen_rig_from_solvent(const Coords *coords, MPI_Comm comm, RigGenInfo rgi,
+void inter_gen_rig_from_solvent(const Coords *coords, MPI_Comm comm, RigGenInfo rgi,
                           /* io */ FluInfo fluinfo, /* o */ RigInfo riginfo) {
     // generate models
     msg_print("start rigid gen");
