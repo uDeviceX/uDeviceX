@@ -60,8 +60,3 @@ include::stretch.inc.adoc[]
 
 :leveloffset: -2
 
-== TODO
-
-* gen generate `pp` from cell template (`rbc.off`) and initial condition
-files (`rbcs-ic.txt`)
-
