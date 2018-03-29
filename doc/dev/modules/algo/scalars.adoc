@@ -1,3 +1,4 @@
+[[algo_scalars]]
 = Scalars
 :lext: .adoc
 :src: ../../../../src

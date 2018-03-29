@@ -1,3 +1,4 @@
+[[algo_vectors]]
 = Vectors
 :lext: .adoc
 :src: ../../../../src
