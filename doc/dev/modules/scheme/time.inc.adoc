@@ -1,6 +1,4 @@
 = Time
-:lext: .adoc
-:src: ../../../src
 
 Keeps current simulation time.
 

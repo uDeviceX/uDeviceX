@@ -14,8 +14,6 @@ include::gource.adoc[]
 
 include::modules/algo/main.adoc[]
 
-include::modules/bforce.adoc[]
-
 include::modules/clist.adoc[]
 
 include::modules/cnt.adoc[]
@@ -64,17 +62,11 @@ include::modules/meshbb.adoc[]
 
 include::modules/rbc/main.adoc[]
 
-include::modules/restrain.adoc[]
-
 include::modules/rig.adoc[]
 
 include::modules/scheme/main.adoc[]
 
 include::modules/sdf/main.adoc[]
-
-include::modules/time.adoc[]
-
-include::modules/time_step.adoc[]
 
 include::modules/utils/main.adoc[]
 

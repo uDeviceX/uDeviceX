@@ -1,6 +1,4 @@
 = Time step
-:lext: .adoc
-:src: ../../../src
 
 Return time step based on the current state of the simulation. If
 `type=const` always return the same timestep. If `type=disp` return

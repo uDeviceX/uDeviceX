@@ -1,7 +1,5 @@
 = body forces
 
-:src: ../../../src
-
 Force applied to every particles with active flag `push`.
 It is defined by two structures:
 
