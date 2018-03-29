@@ -3,6 +3,10 @@
 
 == Model
 
+The membrane forces are computed by differentiating the <<rbc_energy,
+membrane energy>> with respect to position:
+
+
 === spring
 
 A force between two connected beads. stem:[l_0] is an equilibrium
