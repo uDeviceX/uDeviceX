@@ -74,7 +74,7 @@ include::modules/mesh/tri_area.adoc[]
 
 include::modules/algo/vectors.adoc[]
 
-include::modules/algo/vectors.adoc[]
+include::modules/algo/scalars.adoc[]
 
 include::modules/meshbb.adoc[]
 
