@@ -4,7 +4,7 @@
 prog=u.test.targets
 
 usg() {
-    echo 'usg: u.doc.targets [f1.adoc].. > targets.mk'
+    msg 'usg: u.doc.targets [f1.adoc].. > targets.mk'
     exit 1
 }
 
