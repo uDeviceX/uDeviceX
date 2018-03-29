@@ -13,28 +13,28 @@ d=$1
 shift
 
 make_path() {
-    dir=$1; shift
-    for f in $@; do
-	echo "${dir}/$f"
+    dir="$1"; shift
+    for f
+    do echo "${dir}/$f"
     done
 }
 
 filter_deps() {
-    for i in "$@"; do
-	if echo $i | grep "adoc"; then
-	    echo $i
-	fi
+    for i
+    do if echo $i | grep "adoc"; then
+	   echo $i
+       fi
     done
 }
 
 deps() {
-    for f in "$@"; do
-	target=`echo ${f%.adoc}.html`
-	DIR=`dirname $f`
-	DEPS=`grep "$f" -e "include::" | cut -d':' -f 3 | cut -d'[' -f 1`
-	DEPS=`filter_deps $DEPS`
-	DEPS=`make_path $DIR $DEPS | sort | xargs`
-	echo "$target: $f $DEPS"
+    for f
+    do target=`echo ${f%.adoc}.html`
+       DIR=`dirname $f`
+       DEPS=`grep "$f" -e "include::" | cut -d':' -f 3 | cut -d'[' -f 1`
+       DEPS=`filter_deps $DEPS`
+       DEPS=`make_path $DIR $DEPS | sort | xargs`
+       echo "$target: $f $DEPS"
     done
 }
 
