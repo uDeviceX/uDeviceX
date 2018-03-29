@@ -27,26 +27,23 @@ BEGIN {
     max_lvl = 100
     main(f, dir, 0)
 }
-function main(f, d, lvl) {
-    if (lvl > max_lvl)
-	err(sprintf("too many levels of includes: \"%s\"", f))
-    if (!filep(f, d))
-	warn(sprintf("cannot find file \"%s\" in \"%s\"", f, d))
-    else main0(f, d, lvl)
-}
-function main0(f0, d0, lvl,   f, fullname, l) {
-    if (lvl > max_lvl)
-	err(sprintf("too many levels of includes: \"%s\"", f))
+function main(f0, d0, lvl,   nr, f, fullname, l) {
     fullname = fullpath(d0, f0)
-    while (getline l < fullname > 0)
+    while (getline l < fullname > 0) {
+	nr++
 	if (incp(l, d0)) {
-	    main(File, Dir, lvl + 1)
 	    print fullpath(Dir, File)
+	    if (!filep(Dir, File))
+		warn(sprintf("%s:%d: %s", fullname, nr, "missing file: " fullpath(Dir, File)))
+	    if (lvl > max_lvl)
+		err(sprintf("%s:%d: %s", fullname, nr, "too many levels of includes"))
+	    main(File, Dir, lvl + 1)
 	}
+    }
 }
 function incp(l, d) { # sets global "File"
     if (l !~ /^[ \t]*include::/) return 0
-    if (l ~ /\{.*\}/)              return 0
+    if (l ~ /\{.*\}/)            return 0
     sub(/^.*::/, "", l)
     sub(/\[.*$/, "", l)
     File = basename(l)
@@ -58,7 +55,7 @@ function fullpath(a, b) {
     else if (emptyp(b)) return a
     else return sprintf("%s/%s", a, b)
 }
-function filep(f, d,   c, r) {
+function filep(d, f,   c, r) {
     c = sprintf("test -f \"%s\"", fullpath(d, f))
     r = system(c)
     return r == 0
@@ -76,8 +73,8 @@ function dirname(s,   i, n, c) {
 }
 function ch(s, i) { return substr(s, i, 1) }
 function eq(a, b) { return "" a == "" b }
-function msg(s)  { printf "%s: %s\n", prog, s | "cat >&2" }
-function err(s)  { msg(s); exit(2) }
+function warn(s)   { msg(s)          }
+function err(s)    { msg(s); exit(2) }
 function emptyp(s) { return length(s) == 0 }
-function warn(s) { msg(s)          }
+function msg(s)    { printf "%s\n", s | "cat >&2" }
 '
