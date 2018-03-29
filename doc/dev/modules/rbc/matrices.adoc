@@ -1,5 +1,4 @@
-= affine transformation matrices
-:src: ../../../../src
+= matrices: affine transformation
 
 An array of `4 x 4` affine transformation matrices.
 
@@ -25,8 +24,8 @@ include::{src}/rbc/matrices/imp.h[tag=interface]
 ----
 <1> read from input file
 <2> read from input file and keep only matrices which "belong" to this
-MPI rank
+    MPI rank
 <3> return matrix as `double[16]`
-<4> return a shift of a matrix as `double[3]`
-<5> return a number of matrices
-<6> log an array of matrices to `stderr` using `msg_print`
+<4> return the shift of the ith matrix as `double[3]`
+<5> return the number of matrices
+<6> print the array of matrices to `stderr` using `msg_print`
