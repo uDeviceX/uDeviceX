@@ -17,10 +17,10 @@ if test $# -eq 0; then err "needs FILE.adoc"; fi
 
 f="$1"; shift
 if test ! -f "$f"; then err "not a file '$f'"; fi
-if test $# -ne 0; then err "too many aguments"; fi					       
-					       
+if test $# -ne 0; then err "too many aguments"; fi
+dir=`dirname "$f"`
 
-"$AWK" -v f="$f" -v prog="$prog" '
+"$AWK" -v f="$f" -v dir="$dir" -v prog="$prog" '
 BEGIN {
     max_lvl = 100
     main(f, 0)
@@ -34,7 +34,7 @@ function main(f, lvl) {
 }
 function main0(f0, f, lvl,   l) {
     if (lvl > max_lvl)
-	err(sprintf("too many levels of includes: \"%s\"", f))    
+	err(sprintf("too many levels of includes: \"%s\"", f))
     while (getline l < f0 > 0)
 	if (incp(l)) {
 	    f = File
@@ -45,9 +45,10 @@ function incp(l) { # sets global "File"
     if (l !~ /^[ \t]*include::/) return 0
     sub(/^.*::/, "", l)
     sub(/\[.*$/, "", l)
-    File = l
+    File = fullpath(l)
     return 1
 }
+function fullpath(base) { return sprintf("%s/%s", dir, base) }
 function filep(f,   c, r) {
     c = sprintf("test -f \"%s\"", f)
     r = system(c)
