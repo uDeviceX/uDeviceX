@@ -9,6 +9,12 @@ This module stores the required quantities and functions for:
 * managing particles and connectivity
 * membrane force computations
 
+:leveloffset: +1
+
+include::energy.inc.adoc[]
+
+:leveloffset: -1
+
 == Quantities
 
 `RbcQuants` structure contains particles of membrane and connectivity.

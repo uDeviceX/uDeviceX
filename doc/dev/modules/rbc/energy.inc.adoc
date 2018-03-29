@@ -1,3 +1,4 @@
+[[rbc_energy]]
 = Elastic energies
 :lext: .adoc
 :stem: latexmath
@@ -91,3 +92,4 @@ E_{bnd} = k_b
   \right)
 \right]
 ++++
+

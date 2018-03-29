@@ -78,8 +78,6 @@ include::modules/algo/vectors.adoc[]
 
 include::modules/meshbb.adoc[]
 
-include::modules/rbc/energy.adoc[]
-
 include::modules/rbc/main.adoc[]
 
 include::modules/restrain.adoc[]
