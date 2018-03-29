@@ -8,11 +8,10 @@ usg() {
 if test $# -ne 0 && test "$1" = -h; then usg; fi
 
 ext_html() (
-    for f in $@; do
-	echo "${f%.*}.html"
-    done
+    for f
+    do echo "${f%.adoc}.html"
+    done | sort | xargs
 )
 
-PAGES=`ext_html $@ | sort | xargs`
-
+PAGES=`ext_html "$@"`
 echo "PAGES = $PAGES"

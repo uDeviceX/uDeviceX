@@ -1,0 +1,6 @@
+#!/bin/sh
+
+. u.doc.util
+
+set -eu
+

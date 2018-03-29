@@ -1,0 +1,11 @@
+#!/bin/sh
+
+e () {
+  if test ! "$DBG" = 0
+  then msg ": $*"
+  fi
+  eval "$@"
+}
+
+msg () { echo >&2 "$*"; }
+err () { msg "$prog: $@"; exit 2; }
