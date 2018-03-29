@@ -54,6 +54,8 @@ include::rnd.inc.adoc[]
 
 include::gen.inc.adoc[]
 
+include::params.inc.adoc[]
+
 include::shape.inc.adoc[]
 
 include::stretch.inc.adoc[]
