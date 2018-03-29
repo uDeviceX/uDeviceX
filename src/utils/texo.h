@@ -4,13 +4,18 @@ static void sz_check(int n) {
     if (n > MAX_TEXO_SIZE) ERR("too big texo: %d > %d", n, MAX_TEXO_SIZE);
 }
 
+// tag::struct[]
 template<typename T>
 struct Texo {
     cudaTextureObject_t d;
 };
+// end::struct[]
 
 template<typename T>
-void texo_setup(int n, T *data, /**/ Texo<T> *to) {
+// tag::int[]
+void texo_setup(int n, T *data, /**/ Texo<T> *to)
+// end::int[]
+{
     sz_check(n);
     
     cudaResourceDesc resD;
@@ -30,6 +35,9 @@ void texo_setup(int n, T *data, /**/ Texo<T> *to) {
 }
 
 template<typename T>
-void texo_destroy(/**/ Texo<T> *to) {
+// tag::int[]
+void texo_destroy(/**/ Texo<T> *to)
+// end::int[]
+{
     CC(cudaDestroyTextureObject(to->d));
 }
