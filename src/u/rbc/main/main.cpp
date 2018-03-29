@@ -46,7 +46,7 @@ int main(int argc, char **argv) {
     UC(rbc_params_set_conf(cfg, par));
 
     UC(bforce_ini(&bforce));
-    UC(bforce_ini_conf(cfg, /**/ bforce));
+    UC(bforce_set_conf(cfg, /**/ bforce));
     UC(conf_lookup_float(cfg, "dump.freq_parts", &part_freq));
     UC(coords_ini_conf(cart, cfg, &coords));
     
