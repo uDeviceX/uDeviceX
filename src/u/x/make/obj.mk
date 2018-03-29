@@ -9,8 +9,8 @@ O = $B/algo/edg/imp.o $B/algo/force_stat/imp.o $B/algo/kahan_sum/imp.o \
     $B/distr/rig/imp.o $B/exch/common/imp.o $B/exch/flu/imp.o $B/exch/map/imp.o \
     $B/exch/mesh/imp.o $B/exch/obj/imp.o $B/farray/imp.o $B/flu/imp.o \
     $B/fluforces/bulk/imp.o $B/fluforces/halo/imp.o $B/fluforces/imp.o \
-    $B/frag/imp.o $B/fsi/imp.o $B/generate/rig/imp.o $B/inter/color/conf.o \
-    $B/inter/color/imp.o $B/inter/imp.o $B/io/bop/imp.o $B/io/com/imp.o \
+    $B/frag/imp.o $B/fsi/imp.o $B/inter/color/conf.o $B/inter/color/imp.o \
+    $B/inter/gen_rig/imp.o $B/inter/imp.o $B/io/bop/imp.o $B/io/com/imp.o \
     $B/io/diag/mesh/imp.o $B/io/diag/part/imp.o $B/io/field/h5/imp.o \
     $B/io/field/imp.o $B/io/field/xmf/imp.o $B/io/mesh/imp.o \
     $B/io/mesh_read/edg/imp.o $B/io/mesh_read/imp.o $B/io/point/imp.o \
