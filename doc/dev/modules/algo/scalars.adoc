@@ -1,8 +1,9 @@
-= Positions
+= Scalars
 :lext: .adoc
 :src: ../../../../src
 
-Host array of scalars.
+A read-only wrapper to provide uniform accsses to an array `n`
+scalars.
 
 [source,cpp]
 ----
