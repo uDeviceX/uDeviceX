@@ -81,8 +81,8 @@ union Pos {
 
 __device__ Pos tex2Pos(const Texo<float2> texvert, const int id) {
     Pos r;
-    r.f2[0] = fetch(texvert, 3 * id + 0);
-    r.f2[1] = fetch(texvert, 3 * id + 1);
+    r.f2[0] = texo_fetch(texvert, 3 * id + 0);
+    r.f2[1] = texo_fetch(texvert, 3 * id + 1);
     return r;
 }
 

@@ -2,7 +2,7 @@ template <typename Wvel_v>
 static __device__ void fetch_wall(Wvel_v wv, Coords_v c, Texo<float4> pp, int i, /**/ PairPa *a) {
     float3 r, v; /* wall velocity */
     float4 r0;
-    r0 = fetch(pp, i);
+    r0 = texo_fetch(pp, i);
     r = make_float3(r0.x, r0.y, r0.z);
     wvel(wv, c, r, /**/ &v);
 

@@ -25,8 +25,8 @@ static __device__ void fetch(BPaCArray_v a, int i, PairPa *p) {
 template <typename Parray>
 static __device__ void tbpa_fetch_p(Parray a, int i, PairPa *p) {
     float4 r, v;
-    r = fetch(a.pp, 2*i + 0);
-    v = fetch(a.pp, 2*i + 1);
+    r = texo_fetch(a.pp, 2*i + 0);
+    v = texo_fetch(a.pp, 2*i + 1);
 
     p->x  = r.x;  p->y  = r.y;  p->z  = r.z;
     p->vx = v.x;  p->vy = v.y;  p->vz = v.z;
@@ -38,5 +38,5 @@ static __device__ void fetch(TBPaArray_v a, int i, PairPa *p) {
 
 static __device__ void fetch(TBPaCArray_v a, int i, PairPa *p) {
     tbpa_fetch_p(a, i, p);    
-    p->color = fetch(a.cc, i);
+    p->color = texo_fetch(a.cc, i);
 }
