@@ -21,14 +21,14 @@ void rig_gen_quants(const Coords *coords, bool empty_pp, int numdensity, float r
     riginfo.ss = q->ss_hst;
     riginfo.pp = q->pp_hst;
     
-    gen::inter_gen_rig_from_solvent(coords, comm, rgi, /* io */ fluinfo, /**/ riginfo);
+    inter_gen_rig_from_solvent(coords, comm, rgi, /* io */ fluinfo, /**/ riginfo);
     gen_pp_hst(q->ns, q->rr0_hst, q->nps, /**/ q->ss_hst, q->pp_hst);
     gen_ipp_hst(q->ss_hst, q->ns, q->nv, q->hvv, /**/ q->i_pp_hst);
     cpy_H2D(q);
 }
 
 static void set_ids(MPI_Comm comm, const int ns, /**/ Solid *ss_hst, Solid *ss_dev) {
-    gen::inter_set_rig_ids(comm, ns, /**/ ss_hst);
+    inter_set_rig_ids(comm, ns, /**/ ss_hst);
     if (ns) cH2D(ss_dev, ss_hst, ns);
 }
 

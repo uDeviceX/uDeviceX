@@ -22,9 +22,7 @@ struct RigInfo {
     Particle *pp;
 };
 
-namespace gen {
 void inter_gen_rig_from_solvent(const Coords *coords, MPI_Comm comm, RigGenInfo rgi,
-                          /* io */ FluInfo fluinf, /* o */ RigInfo riginfo);
+                                /* io */ FluInfo fluinf, /* o */ RigInfo riginfo);
 
 void inter_set_rig_ids(MPI_Comm comm, int n, /**/ Solid * ss);
-} // gen

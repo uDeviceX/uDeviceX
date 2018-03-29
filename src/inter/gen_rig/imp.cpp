@@ -32,10 +32,8 @@
 #include "rigid/imp.h"
 #include "imp.h"
 
-namespace gen {
 #include "imp/ids.h"
 #include "imp/ic.h"
 #include "imp/share.h"
 #include "imp/ini_props.h"
 #include "imp/main.h"
-} // gen
