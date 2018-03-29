@@ -28,3 +28,5 @@ vectors_float_ini(n, data, &pos);
 vectors_get(pos, 1, /**/ r);
 vectors_fin(pos);
 ----
+
+See also <<algo_scalars, Scalars>>.

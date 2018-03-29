@@ -10,3 +10,5 @@ scalars.
 ----
 include::{src}/mesh/scalar/imp.h[tag=interface]
 ----
+
+See also <<algo_vector, Vectors>>.
