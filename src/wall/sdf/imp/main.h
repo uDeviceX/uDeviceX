@@ -49,3 +49,73 @@ void sdf_to_view(const Sdf *q, /**/ Sdf_v *v) {
     tform_to_view(q->t  , &v->t);
     v->cheap_threshold = q->cheap_threshold;
 }
+
+enum {NTHREADS = 128};
+
+static void gen_rnd(long n, float *UU) {
+    curandGenerator_t gen;
+    curandCreateGenerator(&gen, CURAND_RNG_PSEUDO_DEFAULT);
+    curandSetPseudoRandomGeneratorSeed(gen, 1234ULL);
+    curandGenerateUniform(gen, UU, n);
+    curandDestroyGenerator(gen);
+}
+
+static void chunk_counts(int3 L, const Sdf *sdf, int nsamples, int nchunks, int *counts_hst) {
+    int *counts_dev;
+    Sdf_v view;
+    float *UU;
+    sdf_to_view(sdf, &view);
+
+    Dalloc(&UU, 3 * nsamples);
+    Dalloc(&counts_dev, nchunks);    
+    DzeroA(counts_dev, nchunks);
+
+    gen_rnd(3 * nsamples, UU);
+    
+    KL(sdf_dev::count_inside,
+       (nchunks, NTHREADS),
+       (view, L, nsamples, UU, /**/ counts_dev));
+
+    cH2D(counts_dev, counts_hst, nsamples);
+    Dfree(counts_dev);
+    Dfree(UU);
+}
+
+static long reduce(int n, int *d) {
+    long c, i;
+    for (i = c = 0; i < n; ++i) c += d[i];
+    return c;
+}
+
+static long subdomain_counts(int3 L, const Sdf *sdf, long nsamples) {
+    int *counts_hst;
+    long nin;
+    int nchunks;
+
+    nchunks = ceiln(nsamples, NTHREADS);
+    EMALLOC(nchunks, &counts_hst);
+
+    chunk_counts(L, sdf, nsamples, nchunks, counts_hst);
+    nin = reduce(nchunks, counts_hst);
+    
+    EFREE(counts_hst);
+    return nin;
+}
+
+static double subdomain_volume(int3 L, long nin, long nsamples) {
+    double V = (double) nin / (double) nsamples;
+    V *= L.x * L.y * L.z;
+    return V;
+}
+
+double sdf_compute_volume(MPI_Comm comm, int3 L, const Sdf *sdf, long nsamples) {
+    double loc, tot = 0;
+    long nin;
+
+    nin = subdomain_counts(L, sdf, nsamples);
+    loc = subdomain_volume(L, nin, nsamples);
+
+    MC(m::Allreduce(&loc, &tot, 1, MPI_DOUBLE, MPI_SUM, comm));
+
+    return tot;
+}
