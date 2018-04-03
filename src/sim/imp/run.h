@@ -57,7 +57,7 @@ static void pre_run(const Config *cfg, Sim *s) {
     s->equilibrating = false;         
 }
 
-static void run(const Config *cfg, Time *time, float ts, float te, Sim *s) {
+static void run(Time *time, float ts, float te, Sim *s) {
     float dt;
 
     /* ts, te: time start and end */

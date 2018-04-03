@@ -72,11 +72,11 @@ void sim_gen(Sim *s, const Config *cfg, Time *time, TimeSeg *time_seg) {
         s->rigids = opt->rig;
         if (opt->rbc && opt->flucolors) UC(gen_colors(rbc, &s->colorer, /**/ flu));
         pre_run(cfg, s);
-        run(cfg, time, time_seg->wall, time_seg->end, s);
+        run(time, time_seg->wall, time_seg->end, s);
     } else {
         s->rigids = opt->rig;
         pre_run(cfg, s);
-        run(cfg, time, 0, time_seg->end, s);
+        run(time, 0, time_seg->end, s);
     }
     /* final strt dump*/
     if (opt->dump_strt) dump_strt0(RESTART_FINAL, s);
@@ -115,6 +115,6 @@ void sim_strt(Sim *s, const Config *cfg, Time *time, TimeSeg *time_seg) {
 
     s->rigids = opt->rig;
     pre_run(cfg, s);
-    run(cfg, time, time_seg->wall, time_seg->end, s);
+    run(time, time_seg->wall, time_seg->end, s);
     if (opt->dump_strt) dump_strt0(RESTART_FINAL, s);
 }
