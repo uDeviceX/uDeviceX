@@ -17,7 +17,7 @@ static void pack_pp(int nfrags, int nw, const PaWrap *ww, EMap map, /**/ Pap26 b
 void eobj_pack(int nw, const PaWrap *ww, /**/ EObjPack *p) {
     Pap26 wrap;
     bag2Sarray(p->dpp, &wrap);
-    pack_pp(NFRAGS, nw, ww, p->map, /**/ wrap);
+    UC(pack_pp(NFRAGS, nw, ww, p->map, /**/ wrap));
 }
 
 void eobj_download(int nw, EObjPack *p) {
