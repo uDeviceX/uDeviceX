@@ -10,13 +10,20 @@ usg () {
 
 if test $# -ne 0 && test "$1" = -h; then usg; fi
 
+append () {
+    "$AWK" -v n="$1" '
+        NF { print $0, n }
+       !NF { printf "\n" }
+    '
+}
+
 first () {
     local a="$@"; set --
     for i in $a
     do if test "$i" = --; then break; fi
        set -- "$@" "$i"
     done
-    e ply2punto "$@"
+    e ply2punto "$@" | append 0
 }
 
 second () {
@@ -28,7 +35,7 @@ second () {
        then set -- "$@" "$i"
        fi
     done
-    e ply2punto "$@"
+    e ply2punto "$@" | append 1
 }
 
 Found=0
