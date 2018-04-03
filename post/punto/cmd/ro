@@ -1,0 +1,4 @@
+#!/bin/sh
+
+. u.punto.util
+prog=u.punto.ro

@@ -1,5 +1,5 @@
 #### contact force: several cell and rigid objects
-# nTEST: mix.contact.t3
+# sTEST: mix.contact.t3
 cd test/mix.contact/3
 X=32 Y=16 Z=16 R=7.5
 rad=3.0 fr=0.2 sc=0.5 ang=0.0
@@ -16,10 +16,8 @@ EOF
 :
 u.run udx conf.cfg "
 wall = { active = true }
-time = { wall = 0.0 }
-glb = {
-    L = [$X, $Y, $Z]
-}
+time = { wall = 0.0; end = 100.0 }
+glb = { L = [$X, $Y, $Z] }
 rbc = {
     stress_free      = true
     stress_free_file = \"ref.off\"
