@@ -14,6 +14,8 @@
 #include "algo/vectors/imp.h"
 #include "mesh/eng_julicher/imp.h"
 
+#include "io/vtk/imp.h"
+
 struct Out {
     MPI_Comm comm;
     MeshRead *mesh;
@@ -25,6 +27,8 @@ static void dump(int nv, int nm, double *data, Vectors*, Out*) {
     n = nv * nm;
     for (i = 0; i < n; i++)
         printf("%g\n", data[i]);
+
+
 }
 
 static void main0(const char *cell, Out *out) {
