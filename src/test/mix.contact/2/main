@@ -3,7 +3,7 @@
 cd test/mix.contact/2
 X=16 Y=32 Z=16
 rad=3.0 fr=0.2 sc=0.5 ang=0.0
-plcmt.ro $X $Y $Z  $rad  $fr $sc $ang        rigs-ic.txt  rbcs-ic.txt
+RND=123 plcmt.ro $X $Y $Z  $rad  $fr $sc $ang        rigs-ic.txt  rbcs-ic.txt
 u.cp.rig cylinder      rig.ply
 u.cp.rbc sph/sc/642    rbc.off
 u.cp.rbc rbc/sc/642    ref.off
