@@ -1,19 +1,21 @@
 #!/bin/sh
 
-usg0 () {
-    echo 'usage: plcmt.ro Lx Ly Lz r     f    sc ang     solid.out rbc.out'
-    echo '   ro(`rbc and solid`) : create initial conditons for rbc and solid'
-    echo '   L[xyz]: domain sizes'
-    echo '   r: radious of a sphere for packing'
-    echo '   f: fraction of solids'
-    echo '   sc: scale for RBCs'
-    echo '   ang: angle of rotation around OX ("rnd" for random)'
+. plcmt.util
+prog=plcmt.ro
+
+usg () {
+    msg "$prog Lx Ly Lz r     f    sc ang     solid.out rbc.out"
+    msg '   ro(`rbc and solid`) : create initial conditons for rbc and solid'
+    msg '   L[xyz]: domain sizes'
+    msg '   r: radious of a sphere for packing'
+    msg '   f: fraction of solids'
+    msg '   sc: scale for RBCs'
+    msg '   ang: angle of rotation around OX ("rnd" for random)'
+    exit
 }
 
-usg() { usg0 >&2; exit; }
 if test $# -ne 0 && test "$1" = -h; then usg; fi
 
-# sphere packing
 x=$1; shift; y=$1; shift; z=$1; shift; r=$1; shift
 f=$1; shift # fraction
 s=$1; shift; a=$1; shift # rbc parameters
