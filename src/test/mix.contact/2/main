@@ -1,13 +1,12 @@
-#### contact force: RBC and sphere in double Poiseuille
+#### contact force: several cell and rigid objects
 # nTEST: mix.contact.t2
 cd test/mix.contact/2
 X=16 Y=32 Z=16
 rad=3.0 fr=0.2 sc=0.5 ang=0.0
 plcmt.ro $X $Y $Z  $rad  $fr $sc $ang        rigs-ic.txt  rbcs-ic.txt
 u.cp.rig cylinder      rig.ply
-u.cp.rbc rbc/sc/642    ref.off
 u.cp.rbc sph/sc/642    rbc.off
-u.cp.rbc rbc/sc/642    rbc.stress.free
+u.cp.rbc rbc/sc/642    ref.off
 :
 u.run udx conf.cfg "
 glb = {
@@ -15,9 +14,9 @@ glb = {
 }
 rbc = {
     stress_free      = true
-    stress_free_file = \"rbc.stress.free\"
+    stress_free_file = \"ref.off\"
     totArea          = `off.area   ref.off`
     totVolume        = `off.volume ref.off`
 }"
 :
-ply2punto r/00002.ply | uscale 1 > ply.out.txt
+ply2punto r/00002.ply | uscale 0.1 > ply.out.txt
