@@ -48,12 +48,36 @@ static void dump_history(const Config *cfg, const char *fname) {
     UC(efclose(f));
 }
 
+static void compute_hematocrit(const Sim *s) {
+    const Opt *opt = &s->opt;
+    double Vdomain, Vrbc, Ht;
+    if (!opt->rbc) return;
+
+    if (opt->wall) {
+        enum {NSAMPLES = 100000};
+        Vdomain = sdf_compute_volume(s->cart, s->params.L, s->wall.sdf, NSAMPLES);
+    }
+    else {
+        const Coords *c = s->coords;
+        Vdomain = xdomain(c) * ydomain(c) * zdomain(c);
+    }
+
+    Vrbc = 0;//s->Rbc.q.nc * s->Rbc.params.
+    
+    Ht = Vrbc / Vdomain;
+
+    msg_print("Geometry volume: %g", Vdomain);
+    msg_print("Hematocrit: %g", Ht);
+}
+
 static void pre_run(const Config *cfg, Sim *s) {
     UC(bforce_set_conf(cfg, s->bforce));
 
     UC(dump_history(cfg, "conf.history.cfg"));
     UC(dump_strt_templ(s->coords, &s->wall, s));
 
+    compute_hematocrit(s);
+    
     s->equilibrating = false;         
 }
 
