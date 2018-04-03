@@ -16,13 +16,13 @@ static void pack_pp(int nfrags, int nw, const PaWrap *ww, EMap map, /**/ Pap26 b
 
 void eobj_pack(int nw, const PaWrap *ww, /**/ EObjPack *p) {
     Pap26 wrap;
-    bag2Sarray(p->dpp, &wrap);
+    UC(bag2Sarray(p->dpp, &wrap));
     UC(pack_pp(NFRAGS, nw, ww, p->map, /**/ wrap));
 }
 
 void eobj_download(int nw, EObjPack *p) {
     if (!nw) return;
-    emap_download_counts(nw, NFRAGS, p->map, /**/ p->hpp.counts);
+    UC(emap_download_counts(nw, NFRAGS, p->map, /**/ p->hpp.counts));
 }
 
 static void clear_forces(int nfrags, /**/ EObjPackF *p) {

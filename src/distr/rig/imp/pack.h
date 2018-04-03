@@ -15,8 +15,8 @@ static void pack_ss(const DMap m, int n, const Solid *ss, /**/ dBags bags) {
 
 
 void drig_pack(int ns, int nv, const Solid *ss, const Particle *ipp, /**/ DRigPack *p) {
-    pack_pp(p->map, ns, nv, ipp, /**/ p->dipp);
-    pack_ss(p->map, ns, ss, /**/ p->dss);
+    UC(pack_pp(p->map, ns, nv, ipp, /**/ p->dipp));
+    UC(pack_ss(p->map, ns, ss, /**/ p->dss));
 }
 
 void drig_download(DRigPack *p) {

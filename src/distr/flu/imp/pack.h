@@ -25,9 +25,9 @@ static void pack_ii(const DMap m, const int *ii, /**/ dBags bags) {
 }
 
 void dflu_pack(const FluQuants *q, /**/ DFluPack *p) {
-    pack_pp(p->map, q->pp, /**/ p->dpp);
-    if (p->opt.ids)    pack_ii(p->map, q->ii, /**/ p->dii);
-    if (p->opt.colors) pack_ii(p->map, q->cc, /**/ p->dcc);
+    UC(pack_pp(p->map, q->pp, /**/ p->dpp));
+    if (p->opt.ids)    UC(pack_ii(p->map, q->ii, /**/ p->dii));
+    if (p->opt.colors) UC(pack_ii(p->map, q->cc, /**/ p->dcc));
 }
 
 struct ExceedData { int cap, cnt, fid; };
