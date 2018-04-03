@@ -76,7 +76,7 @@ static void chunk_counts(int3 L, const Sdf *sdf, int nsamples, int nchunks, int 
        (nchunks, NTHREADS),
        (view, L, nsamples, UU, /**/ counts_dev));
 
-    cH2D(counts_dev, counts_hst, nsamples);
+    cD2H(counts_hst, counts_dev, nchunks);
     Dfree(counts_dev);
     Dfree(UU);
 }
