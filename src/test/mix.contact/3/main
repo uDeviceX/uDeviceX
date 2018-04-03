@@ -15,10 +15,11 @@ tsdf /dev/stdin sdf.dat sdf.vti <<EOF
 EOF
 :
 u.run udx conf.cfg "
-wall = { active = true }
-time = { wall = 0.0; end = 100.0 }
-glb = { L = [$X, $Y, $Z] }
-rbc = {
+wall   = { active = true }
+time   = { type = \"const\"; wall = 1.0; dt = 5e-4; end = 1000.0 }
+glb    = { L = [$X, $Y, $Z] }
+bforce = { type = \"constant\" ;  f = [1.0, 0.0, 0.0] }
+rbc    = {
     stress_free      = true
     stress_free_file = \"ref.off\"
     totArea          = `off.area   ref.off`
