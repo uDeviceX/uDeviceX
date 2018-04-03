@@ -1,0 +1,55 @@
+#!/bin/sh
+
+. u.punto.util
+
+prog=u.punto.append
+
+usg () {
+    msg "$prog"' [A.punto] [B.punto] > [out.punto]'
+    msg 'append snapshot B to every snapshot in A'
+    exit
+}
+if test $# -ne 0 -a "$1" = -h; then usg; fi
+
+filep () {
+    if test ! -f "$1"
+    then err 'not a file '"$1"
+    fi
+}
+
+a="$1"; shift
+filep "$a"
+
+b="$1"; shift
+filep "$b"
+
+"$AWK" -v a="$a" -v b="$b" '
+function read_b(   i) {
+    while (getline < b > 0)
+	B[++i] = $0
+    close(b)
+}
+function read_a0(   i) {
+    split("", A)
+    for (;;) {
+	rc = getline < a
+	if (rc <= 0) {EOF = 1; break}
+	if (NF == 0) break
+	A[++i] = $0
+    }
+}
+function write_a0(   i) {
+    for (i = 1; i in A; i++) print A[i]
+    for (i = 1; i in B; i++) print B[i]
+}
+
+BEGIN {
+    read_b()
+    for (;;) {
+	read_a0()
+	write_a0()
+	if (EOF == 1) break
+	printf "\n"
+    }
+}
+'
