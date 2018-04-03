@@ -1,11 +1,15 @@
 #!/bin/bash
 
 # A wrapper to tsdf.awk
-# Creates and deletes temporary directory
 
-TD=/tmp/tsdf.$$
-mkdir -p $TD
+t=/tmp/tsdf.$$
+if ! mkdir $t
+then
+    echo >&2 "tsdf: fail to create dir '$t'"
+    exit 2
+fi
 
-#trap `rm -r $TD; exit 1` 1 2 15 # hangup; interput; terminate
+trap 'rm -rf $t; exit 2' 1 2 3 15
+TD=$t tsdf.awk -- "$@"
 
-TD=$TD tsdf.awk -- "$@"
+rm -rf $t
