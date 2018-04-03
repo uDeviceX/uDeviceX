@@ -38,8 +38,8 @@ done
 
 if test $Found -eq 0; then err "no -- in arguments"; fi
 
-f=/tmp/ro.r.$$; >$f
-s=/tmp/ro.r.$$; >$s
+f=/tmp/ro.f.$$; >$f
+s=/tmp/ro.s.$$; >$s
 trap 'rm -f $f $s; exit 2' 1 2 3 15
 
 first "$@" > $f
