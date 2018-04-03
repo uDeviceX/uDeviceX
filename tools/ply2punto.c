@@ -12,7 +12,7 @@ void usg() {
 float  buf[NVAR*NVMAX];
 FILE* fd;
 
-char line[1024]; /* a line from a file */
+char line[FILENAME_MAX]; /* a line from a file */
 int nv; /* number of vertices */
 
 int comment_line() {
