@@ -1,0 +1,83 @@
+= Forces
+:stem: latexmath
+
+== Model
+
+The membrane forces are computed by differentiating the <<rbc_energy,
+membrane energy>> with respect to position:
+
+
+=== spring
+
+A force between two connected beads. stem:[l_0] is an equilibrium
+spring lenght, stem:[l_{max}] is a maximum spring lenght stem:[l_0 =
+l_0 / x_0].
+
+A force between neighboring consissts of repulsive worm-like-chain part
+[stem]
+++++
+F_{wlc}(r) = \frac{k_{s}}
+		  {l_{max}}
+	     \frac{4 r^2 - 9 r + 6}
+		  {4 (r - 1)^2}
+++++
+
+and attractive power law part
+[stem]
+++++
+F_{pow}(r) = \frac{k_{pow}}
+		  {r^{m + 1}}
+++++
+
+=== Other forces
+
+(from rnd)
+
+----
+g = gammaC; T = kBT0
+f0  = sqrtf(2*g*T/dt)*rnd
+----
+
+
+TODO
+
+==  interface
+
+Helpers are stored  in `RbcForce` structure.
+Informations about stress free state and random forces are stored
+inside.
+
+Allocate, deallocate structure:
+
+[source,cpp]
+----
+include::{src}/rbc/force/imp.h[tag=mem]
+----
+
+The following setters must be called before force computation:
+
+[source,cpp]
+----
+include::{src}/rbc/force/imp.h[tag=set]
+----
+<1> set stressful state: (no stress free shape)
+<2> set stressfree shape from file `fname`
+<3> disable random forces
+<4> enable random forces
+
+Alternatively, user can set the above options through configuration
+file:
+
+[source,cpp]
+----
+include::{src}/rbc/force/imp.h[tag=cnf]
+----
+
+The forces are computed by calling:
+[source,cpp]
+----
+include::{src}/rbc/force/imp.h[tag=apply]
+----
+<1> compute forces
+<2> report statistics
+

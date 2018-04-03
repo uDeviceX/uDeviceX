@@ -1,0 +1,27 @@
+= Mesh
+
+helpers for computation on triangle mesh.
+
+Mesh are stored with an array of vertices (`vv`) or particles (`pp`) in an array of
+structure fashion.
+The connectivity is a set of vertices indices grouped by triangles.
+For performance and convenience reasons, they are stored in a `int4`
+array, each element storing ids of the three vertices of the triangle
+(the last field is not used).
+
+More complex connectivity structures are defined in appropriate
+submodules, see <<algo_edg, edg>> or <<rbc_adj, adj>>.
+
+:leveloffset: +1
+
+include::area.inc.adoc[]
+
+include::tri_area.inc.adoc[]
+
+include::triangles.inc.adoc[]
+
+include::volume.inc.adoc[]
+
+:leveloffset: -1
+
+

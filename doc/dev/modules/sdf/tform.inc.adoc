@@ -1,6 +1,7 @@
 = tform
 
-a simple set of linear transformations for sdf
+A simple set of linear transformations for sdf.
+Based on <<math_tform, tform module>>.
 
 [source,cpp]
 ----

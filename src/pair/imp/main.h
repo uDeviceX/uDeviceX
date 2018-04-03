@@ -22,7 +22,7 @@ void pair_set_dpd(int ncol, const float a[], const float g[], PairParams *p) {
     size_t sz = sizeof(float) * npar;
 
     if (ncol <= 0)      ERR("need at least one color (given %d)\n", ncol);
-    if (ncol > MAX_COL) ERR("too many colors (given %d)\n", ncol);
+    if (ncol > N_COLOR) ERR("too many colors (given %d)\n", ncol);
     
     p->ncolors = ncol;
     memcpy(p->a, a, sz);

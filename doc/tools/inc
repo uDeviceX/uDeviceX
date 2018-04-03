@@ -1,0 +1,80 @@
+#!/bin/sh
+
+. u.doc.util
+
+set -eu
+
+prog=u.doc.inc
+
+usg () {
+    msg 'u.doc.inc FILE.adoc'
+    msg 'list all file included recursively in FILE.adoc'
+    exit
+}
+
+if test $# -ne 0 && test "$1" = -h; then usg; fi
+if test $# -eq 0; then err "needs FILE.adoc"; fi
+
+f="$1"; shift
+if test ! -f "$f"; then err "not a file '$f'"; fi
+if test $# -ne 0; then err "too many aguments"; fi
+
+dir=`dirname "$f"`
+b=`basename "$f"`
+
+"$AWK" -v f="$b" -v dir="$dir" -v prog="$prog" '
+BEGIN {
+    max_lvl = 100
+    main(f, dir, 0)
+}
+function main(f0, d0, lvl,   nr, f, fullname, l) {
+    fullname = fullpath(d0, f0)
+    while (getline l < fullname > 0) {
+	nr++
+	if (incp(l, d0)) {
+	    print fullpath(Dir, File)
+	    if (!filep(Dir, File))
+		warn(sprintf("%s:%d: %s", fullname, nr, "missing file: " fullpath(Dir, File)))
+	    if (lvl > max_lvl)
+		err(sprintf("%s:%d: %s", fullname, nr, "too many levels of includes"))
+	    main(File, Dir, lvl + 1)
+	}
+    }
+}
+function incp(l, d) { # sets global "File"
+    if (l !~ /^[ \t]*include::/) return 0
+    if (l ~ /\{.*\}/)            return 0
+    sub(/^.*::/, "", l)
+    sub(/\[.*$/, "", l)
+    File = basename(l)
+    Dir  = fullpath(d, dirname(l))
+    return 1
+}
+function fullpath(a, b) {
+    if (emptyp(a)) return b;
+    else if (emptyp(b)) return a
+    else return sprintf("%s/%s", a, b)
+}
+function filep(d, f,   c, r) {
+    c = sprintf("test -f \"%s\"", fullpath(d, f))
+    r = system(c)
+    return r == 0
+}
+function basename(s) {
+    sub(/.*\//, "", s)
+    return s
+}
+function dirname(s,   i, n, c) {
+    n = length(s)
+    for (i = n; i > 0; i--)
+	if (eq(ch(s, i), "/")) break
+    if (i == 0) return ""
+    else        return substr(s, 1, i - 1)
+}
+function ch(s, i) { return substr(s, i, 1) }
+function eq(a, b) { return "" a == "" b }
+function warn(s)   { msg(s)          }
+function err(s)    { msg(s); exit(2) }
+function emptyp(s) { return length(s) == 0 }
+function msg(s)    { printf "%s\n", s | "cat >&2" }
+'

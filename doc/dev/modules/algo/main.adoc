@@ -1,0 +1,18 @@
+= algo: algorithm helpers
+
+:leveloffset: +1
+
+include::edg.inc.adoc[]
+
+include::kahan_sum.inc.adoc[]
+
+include::minmax.inc.adoc[]
+
+include::scan.inc.adoc[]
+
+include::scalars.inc.adoc[]
+
+include::vectors.inc.adoc[]
+
+:leveloffset: -1
+

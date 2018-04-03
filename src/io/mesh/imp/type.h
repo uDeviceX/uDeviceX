@@ -1,4 +1,3 @@
-enum {EDGE, CENTER};
 struct MeshWrite {
     int4 *tt;
     int nv, nt;

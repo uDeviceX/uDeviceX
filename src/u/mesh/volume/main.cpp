@@ -9,7 +9,7 @@
 #include "utils/error.h"
 #include "conf/imp.h"
 #include "io/mesh_read/imp.h"
-#include "mesh/vectors/imp.h"
+#include "algo/vectors/imp.h"
 #include "mesh/volume/imp.h"
 
 static void main0(const char *i) {

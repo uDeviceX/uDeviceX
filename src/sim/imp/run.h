@@ -33,7 +33,7 @@ static void run_eq(Time *time, float te, Sim *s) { /* equilibrate */
     BForce *bforce;
     UC(bforce_ini(&bforce));
     s->equilibrating = true;
-    bforce_ini_none(/**/ bforce);    
+    bforce_set_none(/**/ bforce);    
     bool wall0 = false;
     dt = get_dt0(s);    
     while (time_current(time) < te) {
@@ -58,7 +58,7 @@ static void run(const Config *cfg, Time *time, float ts, float te, Sim *s) {
     BForce *bforce;
 
     UC(bforce_ini(&bforce));
-    UC(bforce_ini_conf(cfg, bforce));
+    UC(bforce_set_conf(cfg, bforce));
 
     dump_history(cfg, "conf.history.cfg");
 

@@ -17,7 +17,6 @@
 
 #include "conf/imp.h"
 
-#include "utils/te.h"
 #include "utils/texo.h"
 #include "utils/cc.h"
 

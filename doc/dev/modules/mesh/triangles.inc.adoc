@@ -1,0 +1,17 @@
+[[mesh_triangles]]
+= Triangles
+
+Triangles on device. It is created from `MeshRead*`.
+
+[source,cpp]
+----
+include::{src}/mesh/triangles/imp.h[tag=interface]
+----
+
+the client must include `type.h` and can access fields directly.
+[source,cpp]
+----
+include::{src}/mesh/triangles/type.h[tag=interface]
+----
+
+`nt` is the number of triangles.

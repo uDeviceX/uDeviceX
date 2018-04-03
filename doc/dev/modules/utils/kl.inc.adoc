@@ -1,9 +1,8 @@
-== kernel launch macros
+= kl: kernel launch
 
-[K]ernel [L]aunch.
+[K]ernel [L]aunch macro.
 
 a macro for cuds kernel launches
-
 
 All but `unsafe` skip kernels with zero thread number.
 

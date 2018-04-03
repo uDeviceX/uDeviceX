@@ -4,7 +4,9 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/algo/kahan_sum        && \
     d $B/algo/key_list         && \
     d $B/algo/minmax           && \
+    d $B/algo/scalars          && \
     d $B/algo/scan             && \
+    d $B/algo/vectors          && \
     d $B/clist                 && \
     d $B/cnt                   && \
     d $B/color                 && \
@@ -35,9 +37,9 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/fluforces/halo        && \
     d $B/frag                  && \
     d $B/fsi                   && \
-    d $B/generate/rig          && \
     d $B/inter                 && \
     d $B/inter/color           && \
+    d $B/inter/gen_rig         && \
     d $B/io/bop                && \
     d $B/io/com                && \
     d $B/io/diag/mesh          && \
@@ -65,12 +67,11 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/mesh/collision        && \
     d $B/mesh/dist             && \
     d $B/mesh/edg_len          && \
+    d $B/mesh/eng_julicher     && \
     d $B/mesh/props            && \
-    d $B/mesh/scalars          && \
     d $B/mesh/scatter          && \
     d $B/mesh/tri_area         && \
     d $B/mesh/triangles        && \
-    d $B/mesh/vectors          && \
     d $B/mesh/vert_area        && \
     d $B/mesh/volume           && \
     d $B/meshbb                && \

@@ -2,6 +2,8 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/algo/edg         && \
     d $B/algo/kahan_sum   && \
     d $B/algo/key_list    && \
+    d $B/algo/scalars     && \
+    d $B/algo/vectors     && \
     d $B/conf             && \
     d $B/coords           && \
     d $B/d                && \
@@ -13,10 +15,8 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/math/tform       && \
     d $B/math/tri         && \
     d $B/mesh/angle       && \
-    d $B/mesh/scalars     && \
     d $B/mesh/scatter     && \
     d $B/mesh/tri_area    && \
-    d $B/mesh/vectors     && \
     d $B/mpi              && \
     d $B/u/io/vtk         && \
     d $B/utils            && \

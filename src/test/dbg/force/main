@@ -1,4 +1,9 @@
 # TEST: dbg.force
 cd test/dbg/force
-u.run udx conf.cfg
-echo $? > dbg.out.txt
+S=`u.cp.s` U=u/dbg
+u.conf $S $U <<!
+   run
+!
+u.make -j
+( u.run ./udx conf.cfg )  2> tmp
+cat tmp | grep VAL | awk '{print $NF}' > dbg.out.txt

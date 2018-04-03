@@ -1,0 +1,12 @@
+[[mesh_area]]
+= area: compute area of a mesh
+
+Compute the area of a triangulated mesh.
+
+[source,cpp]
+----
+include::{src}/mesh/area/imp.h[tag=interface]
+----
+<1> in initialization triangles are stored
+<2> compute the area of one object
+<3> compute the areas of `nm` objects

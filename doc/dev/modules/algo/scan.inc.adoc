@@ -1,0 +1,22 @@
+[[algo_scan]]
+= scan: prefix sum
+
+exclusive prefix sum implementation for integer data
+
+input is of size `n`, output is of size `n + 1` as in the following
+example:
+
+----
+input:  4 5 1  2  3  -
+output: 0 4 9 10 12 15
+----
+
+== interface
+
+[source,cpp]
+----
+include::{src}/algo/scan/imp.h[tag=interface]
+----
+<1> perform scan operation on `input` of size `size`
+<2> allocate workspace for performing scan of size `size`
+<3> free workspace

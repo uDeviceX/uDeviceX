@@ -2,7 +2,7 @@
 cd test/pair/0
 S=`u.cp.s`
 u.conf "$S" u/pair <<!
-   run
+    run
 !
 u.make -j
 u.run ./udx conf.cfg < $S/data/pair/2 > pair.out.txt

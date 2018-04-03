@@ -1,0 +1,28 @@
+= force/rnd: random generator
+
+Device random number generator for random forces in rbc
+
+allocate, deallocate structure:
+
+[source,cpp]
+----
+include::{src}/rbc/force/rnd/imp.h[tag=mem]
+----
+
+The seed can be set from timeby passing the special value:
+
+[source,cpp]
+----
+include::{src}/rbc/force/rnd/imp.h[tag=enum]
+----
+
+Random number generation is clled as follows:
+
+[source,cpp]
+----
+include::{src}/rbc/force/rnd/imp.h[tag=int]
+----
+<1> generate `n` random numbers on device
+<2> get a single random number on host (debug purpose)
+
+

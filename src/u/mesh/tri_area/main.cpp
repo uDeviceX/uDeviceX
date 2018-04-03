@@ -12,7 +12,7 @@
 #include "io/mesh_read/imp.h"
 #include "io/mesh/imp.h"
 
-#include "mesh/vectors/imp.h"
+#include "algo/vectors/imp.h"
 #include "mesh/tri_area/imp.h"
 
 #include "io/point/imp.h"
@@ -35,7 +35,7 @@ static void dump(int nt, double *d,
     UC(io_point_conf_push(c, "area"));
 
     UC(io_point_ini(nt, out->path, c, &p));
-    UC(mesh_write_ini_from_mesh(out->comm, out->mesh, "r", &mesh_write));
+    UC(mesh_write_ini_from_mesh(out->comm, EDGE, out->mesh, "r", &mesh_write));
 
     UC(io_point_conf_fin(c));
 

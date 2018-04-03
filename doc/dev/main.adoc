@@ -12,15 +12,7 @@ include::doc.adoc[]
 
 include::gource.adoc[]
 
-include::modules/algo/edg.adoc[]
-
-include::modules/algo/minmax.adoc[]
-
-include::modules/algo/scan.adoc[]
-
-include::modules/algo/kahan_sum.adoc[]
-
-include::modules/bforce.adoc[]
+include::modules/algo/main.adoc[]
 
 include::modules/clist.adoc[]
 
@@ -42,6 +34,8 @@ include::modules/distr.adoc[]
 
 include::modules/exch.adoc[]
 
+include::modules/flu.adoc[]
+
 include::modules/fluforces.adoc[]
 
 include::modules/frag.adoc[]
@@ -52,7 +46,7 @@ include::modules/io/main.adoc[]
 
 include::modules/math/main.adoc[]
 
-include::modules/move.adoc[]
+include::modules/mesh/main.adoc[]
 
 include::modules/pair.adoc[]
 
@@ -64,49 +58,15 @@ include::modules/conf.adoc[]
 
 include::modules/partlist.adoc[]
 
-include::modules/mesh/triangles.adoc[]
-
-include::modules/mesh/area.adoc[]
-
-include::modules/mesh/volume.adoc[]
-
-include::modules/mesh/tri_area.adoc[]
-
-include::modules/mesh/vectors.adoc[]
-
-include::modules/mesh/vectors.adoc[]
-
 include::modules/meshbb.adoc[]
-
-include::modules/rbc/matrices.adoc[]
-
-include::modules/rbc/adj.adoc[]
-
-include::modules/rbc/com.adoc[]
-
-include::modules/rbc/area_volume.adoc[]
-
-include::modules/rbc/energy.adoc[]
-
-include::modules/rbc/forces.adoc[]
 
 include::modules/rbc/main.adoc[]
 
-include::modules/rbc/rnd.adoc[]
-
-include::modules/rbc/shape.adoc[]
-
-include::modules/rbc/stretch.adoc[]
-
-include::modules/restrain.adoc[]
-
 include::modules/rig.adoc[]
 
+include::modules/scheme/main.adoc[]
+
 include::modules/sdf/main.adoc[]
-
-include::modules/time.adoc[]
-
-include::modules/time_step.adoc[]
 
 include::modules/utils/main.adoc[]
 

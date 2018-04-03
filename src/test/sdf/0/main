@@ -2,7 +2,7 @@
 cd test/sdf/0
 S=`u.cp.s` U=u/sdf
 u.conf "$S" "$U" <<!
-run
+    run
 !
 u.make -j
 u.cp.sdf cyl1/cyl.dat  sdf.dat

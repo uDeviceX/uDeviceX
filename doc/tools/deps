@@ -2,40 +2,20 @@
 
 set -eu
 
+. u.doc.util
+prog=u.doc.deps
+
 usg() {
-    echo "usg: u.doc.deps <doc dir> > deps.mk"
-    exit 1
+    msg 'usg: u.doc.deps [FILE.adoc].. > deps.mk'
+    exit 0
 }
 
-if test $# -ne 0 -a "$1" = -h; then usg; fi
+if test $# -ne 0 && test "$1" = -h; then usg; fi
 
-d=$1
-shift
-
-make_path() {
-    dir=$1; shift
-    for f in $@; do
-	echo "${dir}/$f"
-    done
-}
-
-filter_deps() {
-    for i in "$@"; do
-	if echo $i | grep "adoc"; then
-	    echo $i
-	fi
-    done
-}
-
-deps() {
-    for f in "$@"; do
-	target=`echo ${f%.adoc}.html`
-	DIR=`dirname $f`
-	DEPS=`grep "$f" -e "include::" | cut -d':' -f 3 | cut -d'[' -f 1`
-	DEPS=`filter_deps $DEPS`
-	DEPS=`make_path $DIR $DEPS | sort | xargs`
-	echo "$target: $f $DEPS"
-    done
-}
-
-deps "$@"
+for f
+do if test ! -f "$f"; then err "not a file '$f'"; fi
+    target="${f%.adoc}.html"
+    DEPS=`u.doc.inc "$f" | sort | xargs`
+    if test $? -ne 0; then echo >&2 'u.doc.inc failed'; exit 2; fi
+    echo "$target: $f $DEPS"
+done

@@ -1,0 +1,35 @@
+[[rbc_params]]
+= params: rbc parameters
+
+Parameters for the membrane forces.
+Consists of two structures: `RbcParams` (_hidden_, on host) and
+`RbcParams_v` (_view_, to be passed to kernels).
+
+`RbcParams` are allocated and freed with
+
+[source,cpp]
+----
+include::{src}/rbc/params/imp.h[tag=mem]
+----
+
+The parameters can be set manually with:
+
+[source,cpp]
+----
+include::{src}/rbc/params/imp.h[tag=set]
+----
+
+or via the configuration file:
+
+[source,cpp]
+----
+include::{src}/rbc/params/imp.h[tag=cnf]
+----
+
+The _view_ structure can be created with:
+
+[source,cpp]
+----
+include::{src}/rbc/params/imp.h[tag=get]
+----
+

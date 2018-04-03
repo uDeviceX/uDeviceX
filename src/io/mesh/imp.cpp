@@ -19,20 +19,12 @@
 #include "inc/type.h"
 
 #include "io/mesh_read/imp.h"
-#include "mesh/vectors/imp.h"
+#include "algo/vectors/imp.h"
 
 #include "io/write/imp.h"
 
 #include "imp.h"
 #include "imp/type.h"
-
-#if   defined(MESH_SHIFT_EDGE)
-   #include "imp/shift/edge.h"
-#elif defined(MESH_SHIFT_CENTER)
-   #include "imp/shift/center.h"
-#else
-   #error     MESH_SHIFT_* is undefined
-#endif
 
 #include "imp/util.h"
 #include "imp/main.h"

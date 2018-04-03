@@ -1,10 +1,9 @@
-== cc
+= cc: cuda check
 
-[C]uda [C]heck.
+[C]uda [C]heck macro.
 
 Error handling for cuda API calls.
-
-=== Usage
+usage:
 
 [source,cpp]
 ----

@@ -2,11 +2,7 @@
 
 set -eu
 
-D="."
 T="index.adoc dev/main.adoc user/main.adoc units/main.adoc"
 
-# install tools
-make -C tools/ 
-
-u.doc.targets $D $T > make/target.mk
-u.doc.deps    $D $T > make/deps.mk
+u.doc.targets $T > make/target.mk
+u.doc.deps    $T > make/deps.mk

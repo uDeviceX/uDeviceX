@@ -50,8 +50,8 @@ static void gen_ticket(const int w_n, float4 *w_pp, Clist *cells, Texo<int> *tex
     UC(clist_ini_map(w_n, 1, cells, /**/ &mcells));
     UC(build_cells(w_n, /**/ w_pp, cells, mcells));
     
-    TE(texstart, cells->starts, cells->ncells);
-    TE(texpp, w_pp, w_n);
+    UC(texo_setup(cells->ncells, cells->starts, texstart));
+    UC(texo_setup(w_n, w_pp, texpp));
     UC(clist_fin_map(mcells));
 }
 

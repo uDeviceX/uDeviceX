@@ -1,0 +1,21 @@
+= stretch RBC
+
+Apply a constant force to every vertex of every cell. The force is
+configured from the file `path`.
+
+Format of the data file:
+
+----
+fx0 fy0 fz0
+fx1 fy1 fz1
+...
+fx_nv fy_nv fz_nv
+----
+
+`nv` is the number of vertices.
+
+[source,cpp]
+----
+include::{src}/rbc/stretch/imp.h[tag=interface]
+----
+

@@ -1,5 +1,7 @@
 == linal
 
+:stem: latexmath
+
 Linear algebra functions
 
 [source,cpp]
@@ -11,8 +13,13 @@ include::{src}/math/linal/imp.h[tags=interface]
     determinant smaller than epsilon (hardcoded to `1e-8`).
 
 structure of the matrix is `xx, xy, yy, yz, zz`, where
-----
-     ( xx xy xz)
-A =  ( xy yy yz)
-     ( xz yz zz)
-----
+
+[stem]
+++++
+A =
+\begin{bmatrix}
+    xx & xy & xz \\
+    xy & yy & yz \\
+    xz & yz & zz
+\end{bmatrix}
+++++

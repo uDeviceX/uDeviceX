@@ -1,0 +1,12 @@
+[[algo_scalars]]
+= Scalars
+
+A read-only wrapper to provide uniform accsses to an array `n`
+scalars.
+
+[source,cpp]
+----
+include::{src}/algo/scalars/imp.h[tag=interface]
+----
+
+See also <<algo_vector, Vectors>>.

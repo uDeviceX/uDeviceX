@@ -1,0 +1,67 @@
+= utility functions
+
+a set of utility functions
+
+== general tools
+
+the following functions are provided in the `imp.h` header file.
+
+memory management functions:
+
+[source,cpp]
+----
+include::{src}/utils/imp.h[tag=mem]
+----
+<1> safe `malloc`: throws an error on failure
+<2> safe `free`
+<3> safe `memcpy`
+
+convenient macros for the above functions:
+
+[source,cpp]
+----
+include::{src}/utils/imp.h[tag=macros]
+----
+
+safe versions of the `stdio` functions:
+
+[source,cpp]
+----
+include::{src}/utils/imp.h[tag=stdio]
+----
+
+additional tools:
+
+[source,cpp]
+----
+include::{src}/utils/imp.h[tag=tools]
+----
+<1> returns true if the two strings are the same
+
+
+== msg: messages
+
+a simple logging tool for many rank application.
+a message is printed in the `stderr` stream by the master rank (rank 0).
+all ranks also print the message in file `.XXX`, where `XXX` is the
+MPI rank id.
+
+[source,cpp]
+----
+include::{src}/utils/msg.h[tag=int]
+----
+<1> initialise the logger
+<2> log message. format is the same as printf
+
+== os: operating system tasks
+
+[source,cpp]
+----
+include::{src}/utils/os.h[tag=int]
+----
+<1> create a directory
+<2> returns local time
+<3> seed for `os_drand()`
+<4> returns double random number between 0 and 1
+<5> sleep for `seconds` seconds
+

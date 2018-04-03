@@ -1,0 +1,30 @@
+[[algo_vectors]]
+= Vectors
+
+A read-only wrapper to provide uniform accsses to an array `n` vectors
+of size three. The module does not copy data.
+
+[source,cpp]
+----
+include::{src}/algo/vectors/imp.h[tag=interface]
+----
+<1> array of float packed as `x0 y0 z0   x1 y1 z1`
+<2> particle positions
+<3> particle positions relative to domain edge
+<4> particle positions relative to domain center
+<5> particle velocity
+<6> array of zeros
+<7> return a vector `i`
+
+Example,
+[source,cpp]
+----
+#define n 2
+Vectors  *pos;
+float r[3], data[3*n] = {1, 2, 3,   4, 5, 6};
+vectors_float_ini(n, data, &pos);
+vectors_get(pos, 1, /**/ r);
+vectors_fin(pos);
+----
+
+See also <<algo_scalars, Scalars>>.

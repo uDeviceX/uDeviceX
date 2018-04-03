@@ -1,6 +1,7 @@
-/* [o]perating [s]ystems commands */
-void os_mkdir(const char* path);
-long os_time();
-void os_srand(long int seedval);
-double os_drand();
-void os_sleep(unsigned int seconds);
+// tag::int[]
+void os_mkdir(const char* path); // <1>
+long os_time();                  // <2>
+void os_srand(long int seedval); // <3>
+double os_drand();               // <4>
+void os_sleep(unsigned int seconds); // <5>
+// end::int[]
