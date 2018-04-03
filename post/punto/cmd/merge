@@ -2,11 +2,11 @@
 
 . u.punto.util
 
-prog=u.punto.append
+prog=u.punto.merge
 
 usg () {
-    msg "$prog"' [A.punto] [B.punto] > [out.punto]'
-    msg 'append snapshot B to every snapshot in A'
+    msg "$prog"' A.punto B.punto > out.punto'
+    msg 'merge A and B'
     exit
 }
 if test $# -ne 0 -a "$1" = -h; then usg; fi
@@ -17,19 +17,16 @@ filep () {
     fi
 }
 
+if test $# -le 0; then err "need A.punto"; fi
 a="$1"; shift
 filep "$a"
 
+if test $# -le 0; then err "need B.punto"; fi
 b="$1"; shift
 filep "$b"
 
 "$AWK" -v a="$a" -v b="$b" '
-function read_b(   i) {
-    while (getline < b > 0)
-	B[++i] = $0
-    close(b)
-}
-function read_a0(   i) {
+function read(a, A,   rc) {
     split("", A)
     for (;;) {
 	rc = getline < a
@@ -38,16 +35,14 @@ function read_a0(   i) {
 	A[++i] = $0
     }
 }
-function write_a0(   i) {
+function write(A,   i) {
     for (i = 1; i in A; i++) print A[i]
-    for (i = 1; i in B; i++) print B[i]
 }
 
 BEGIN {
-    read_b()
     for (;;) {
-	read_a0()
-	write_a0()
+        read(a, A); read(b, B)
+        write(A); write(B)
 	if (EOF == 1) break
 	printf "\n"
     }

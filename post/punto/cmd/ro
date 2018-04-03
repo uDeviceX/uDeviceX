@@ -48,7 +48,7 @@ if test $? -ne 0; then err "ply2punto failed (first)"; fi
 second "$@" > $s
 if test $? -ne 0; then err "ply2punto failed (second)"; fi
 
-e u.punto.append $f $s
+e u.punto.merge $f $s
 if test $? -ne 0; then err "u.punto.append failed"; fi
 
 rm -f $f $s
