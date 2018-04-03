@@ -2,7 +2,7 @@
 # sTEST: mix.contact.t3
 cd test/mix.contact/3
 X=32 Y=16 Z=16 R=7.5
-rad=3.0 fr=0.2 sc=0.5 ang=0.0
+rad=3.0 fr=0.1 sc=0.25 ang=0.0
 SEED=123 plcmt.ro $X $Y $Z  $rad  $fr $sc $ang        rigs-ic.txt  rbcs-ic.txt
 u.cp.rig cylinder      rig.ply
 u.cp.rbc sph/sc/642    rbc.off
@@ -14,11 +14,12 @@ tsdf /dev/stdin sdf.dat sdf.vti <<EOF
     !cylinder axis 1 0 0 point xc yc zc radius $R
 EOF
 :
+u.strtdir .
 u.run udx conf.cfg "
 wall   = { active = true }
 time   = { type = \"const\"; wall = 1.0; dt = 5e-4; end = 1000.0 }
 glb    = { L = [$X, $Y, $Z] }
-bforce = { type = \"constant\" ;  f = [1.0, 0.0, 0.0] }
+bforce = { type = \"constant\" ;  f = [0.25, 0.0, 0.0] }
 rbc    = {
     stress_free      = true
     stress_free_file = \"ref.off\"
