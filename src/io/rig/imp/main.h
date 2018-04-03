@@ -23,7 +23,7 @@ void io_rig_dump(const Coords *c, float t, int ns, const Solid *ss, const Solid 
     enum {X, Y, Z};
     char fname[256];
     float com[3];
-    FILE *fp;
+    FILE *fp = NULL;
     int j;
     const Solid *s, *sbb;
 
