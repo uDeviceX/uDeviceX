@@ -7,4 +7,5 @@ O = $B/algo/edg/imp.o $B/algo/vectors/imp.o $B/conf/imp.o $B/coords/conf.o \
     $B/rbc/gen/imp.o $B/rbc/imp.o $B/rbc/matrices/imp.o $B/rbc/params/conf.o \
     $B/rbc/params/imp.o $B/rbc/shape/imp.o $B/rbc/stretch/imp.o \
     $B/u/rbc/force/main.o $B/utils/cc.o $B/utils/error.o $B/utils/imp.o \
-    $B/utils/mc.o $B/utils/msg.o $B/utils/os.o $B/utils/string/imp.o
+    $B/utils/mc.o $B/utils/msg.o $B/utils/nvtx/imp.o $B/utils/os.o \
+    $B/utils/string/imp.o

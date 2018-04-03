@@ -12,6 +12,7 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/mpi              && \
     d $B/u/sdf            && \
     d $B/utils            && \
+    d $B/utils/nvtx       && \
     d $B/utils/string     && \
     d $B/wall/sdf         && \
     d $B/wall/sdf/array3d && \
