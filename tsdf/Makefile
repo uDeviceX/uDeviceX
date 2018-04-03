@@ -12,3 +12,5 @@ install_conf: ; mkdir -p $(CONF) && \
 	        cp processor.tmp.cpp                               $(CONF)
 
 clean: ; -rm sdf2volume sdf2vtk mergesdf
+
+.PHONY: clean install install_conf install_bin
