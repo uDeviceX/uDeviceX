@@ -1,5 +1,7 @@
+#!/bin/sh
+
 usg0 () {
-    echo 'usage: plcmt.ro <Lx> <Ly> <Lz> <r>     <f>    <sc> <ang>     <solid.out> <rbc.out>'
+    echo 'usage: plcmt.ro Lx Ly Lz r     f    sc ang     solid.out rbc.out'
     echo '   ro(`rbc and solid`) : create initial conditons for rbc and solid'
     echo '   L[xyz]: domain sizes'
     echo '   r: radious of a sphere for packing'
@@ -8,7 +10,8 @@ usg0 () {
     echo '   ang: angle of rotation around OX ("rnd" for random)'
 }
 
-usg() { usg0 > /dev/stderr; exit; }
+usg() { usg0 >&2; exit; }
+if test $# -ne 0 && test "$1" = -h; then usg; fi
 
 # sphere packing
 x=$1; shift; y=$1; shift; z=$1; shift; r=$1; shift
