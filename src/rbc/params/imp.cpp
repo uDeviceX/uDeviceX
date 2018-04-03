@@ -43,6 +43,10 @@ void rbc_params_set_area_volume(float ka, float kd, float kv, RbcParams *par) {
     par->kd = kd;
 }
 
+double rbc_params_get_tot_volume(const RbcParams *par) {
+    return par->totVolume;
+}
+
 RbcParams_v rbc_params_get_view(const RbcParams *p) {
     RbcParams_v v;
     v.gammaC = p->gammaC;
