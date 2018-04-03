@@ -55,6 +55,7 @@ void sim_gen(Sim *s, const Config *cfg, Time *time, TimeSeg *time_seg) {
     Wall *wall = &s->wall;
     MeshRead *cell = s->rbc.cell;
     const Opt *opt = &s->opt;
+    float tstart = 0;
     
     UC(flu_gen_quants(s->coords, s->params.numdensity, s->gen_color, &flu->q));
     UC(flu_build_cells(&flu->q));
@@ -71,13 +72,14 @@ void sim_gen(Sim *s, const Config *cfg, Time *time, TimeSeg *time_seg) {
         if (opt->wall && wall->q.n) UC(wall_gen_ticket(&wall->q, wall->t));
         s->rigids = opt->rig;
         if (opt->rbc && opt->flucolors) UC(gen_colors(rbc, &s->colorer, /**/ flu));
-        pre_run(cfg, s);
-        run(time, time_seg->wall, time_seg->end, s);
+        tstart = time_seg->wall;
     } else {
         s->rigids = opt->rig;
-        pre_run(cfg, s);
-        run(time, 0, time_seg->end, s);
     }
+
+    pre_run(cfg, s);
+    run(time, tstart, time_seg->end, s);
+
     /* final strt dump*/
     if (opt->dump_strt) dump_strt0(RESTART_FINAL, s);
 }
