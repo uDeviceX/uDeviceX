@@ -2,3 +2,53 @@
 
 . u.punto.util
 prog=u.punto.ro
+
+usg () {
+    msg "$prog [FILE.ply].. -- [FILE.ply].."
+    exit
+}
+
+if test $# -ne 0 && test "$1" = -h; then usg; fi
+
+first () {
+    local a="$@"; set --
+    for i in $a
+    do if test "$i" = --; then break; fi
+       set -- "$@" "$i"
+    done
+    e ply2punto "$@"
+}
+
+second () {
+    local Found=0
+    local a="$@"; set --
+    for i in $a
+    do if test "$i" = --; then Found=1; continue; fi
+       if test "$Found" -ne 0
+       then set -- "$@" "$i"
+       fi
+    done
+    e ply2punto "$@"
+}
+
+Found=0
+for i
+do if test "$i" = --; then Found=1; break; fi
+done
+
+if test $Found -eq 0; then err "no -- in arguments"; fi
+
+f=/tmp/ro.r.$$; >$f
+s=/tmp/ro.r.$$; >$s
+trap 'rm -f $f $s; exit 2' 1 2 3 15
+
+first "$@" > $f
+if test $? -ne 0; then err "ply2punto failed (first)"; fi
+
+second "$@" > $s
+if test $? -ne 0; then err "ply2punto failed (second)"; fi
+
+u.punto.append $f $s
+if test $? -ne 0; then err "u.punto.append failed"; fi
+
+rm -f $f $s
