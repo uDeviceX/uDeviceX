@@ -7,6 +7,6 @@ t=/tmp/tsdf.$$
 mkdir -p $t
 
 trap `rm -rf $t; exit 2` 1 2 3 15
-t=$t tsdf.awk -- "$@"
+TD=$t tsdf.awk -- "$@"
 
 rm -rf $t
