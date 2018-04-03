@@ -6,6 +6,7 @@
 TD=/tmp/tsdf.$$
 mkdir -p $TD
 
-#trap `rm -r $TD; exit 1` 1 2 15 # hangup; interput; terminate
-
+trap `rm -rf $TD; exit 1` 1 2 3 15
 TD=$TD tsdf.awk -- "$@"
+
+rm -rf $TD
