@@ -22,7 +22,7 @@ COMMON    +=  -std=c++11 $(OPT)
 NCFLAGS    =           $(CXXFLAGS)
 XCFLAGS    = $(COMMON) $(CXXFLAGS)
 NVCCFLAGS += $(COMMON) -use_fast_math -restrict
-LIBS      += -lcudart -lcurand
+LIBS      += -lcudart -lcurand -lnvToolsExt
 
 LOG = @echo $< $@;
 N  = $(LOG) $(NVCC)  $(ARCH) $(NVCCFLAGS) --compiler-options '$(NCFLAGS)'     $< -c -o $@

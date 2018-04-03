@@ -6,6 +6,8 @@ void forces(float dt, Time *time, bool wall0, Sim *s) {
     bool fluss;
     Opt *opt = &s->opt;
 
+    NVTX_PUSH("forces");
+    
     fluss = opt->fluss && time_cross(time, opt->freq_parts);
 
     UC(clear_forces(flu->ff, flu->q.n));
@@ -20,4 +22,6 @@ void forces(float dt, Time *time, bool wall0, Sim *s) {
     UC(forces_objects(s));
     
     dSync();
+
+    NVTX_POP();
 }

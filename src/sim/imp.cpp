@@ -22,6 +22,7 @@
 #include "utils/imp.h"
 #include "utils/cc.h"
 #include "utils/mc.h"
+#include "utils/nvtx/imp.h"
 
 #include "inc/type.h"
 #include "mpi/type.h"

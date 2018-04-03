@@ -18,6 +18,7 @@ $B/utils/error.o: $S/utils/error.cpp; $X -I$S/utils -I$S/.
 $B/utils/imp.o: $S/utils/imp.cpp; $X -I$S/utils -I$S/.
 $B/utils/mc.o: $S/utils/mc.cpp; $X -I$S/utils -I$S/.
 $B/utils/msg.o: $S/utils/msg.cpp; $X -I$S/utils -I$S/.
+$B/utils/nvtx/imp.o: $S/utils/nvtx/imp.cpp; $X -I$S/utils/nvtx -I$S/.
 $B/utils/os.o: $S/utils/os.cpp; $X -I$S/utils -I$S/.
 $B/utils/string/imp.o: $S/utils/string/imp.cpp; $X -I$S/utils/string -I$S/.
 $B/wall/sdf/array3d/imp.o: $S/wall/sdf/array3d/imp.cu; $N -I$S/wall/sdf/array3d -I$S/.
