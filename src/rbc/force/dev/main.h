@@ -2,7 +2,7 @@ struct Part { real3 r, v; };
 typedef real3 Pos;
 
 
-static __device__ Pos tex2Pos(const Particle *pp, int i) {
+static __device__ Pos fetchPos(const Particle *pp, int i) {
     enum {X, Y, Z};
     Pos r;
     r.x = pp[i].r[X];
@@ -32,7 +32,7 @@ static __device__ real3 adj_tris(real dt,
     i1 = m->i1; i2 = m->i2; rbc = m->rbc;
 
     const Part p1 = tex2Part(pp, i1);
-    const Pos  r2 = tex2Pos(pp,  i2);
+    const Pos  r2 = fetchPos(pp,  i2);
 
     area = av[2*rbc]; volume = av[2 * rbc + 1];
     f  = ftri(par, p0.r, p1.r, r2, si, area, volume);
@@ -49,10 +49,10 @@ static __device__ real3 adj_dihedrals(const RbcParams_v *par, const Particle *pp
                                       AdjMap *m) {
     Pos r1, r2, r3, r4;
     real3 f1, f2;
-    r1 = tex2Pos(pp, m->i1);
-    r2 = tex2Pos(pp, m->i2);
-    r3 = tex2Pos(pp, m->i3);
-    r4 = tex2Pos(pp, m->i4);
+    r1 = fetchPos(pp, m->i1);
+    r2 = fetchPos(pp, m->i2);
+    r3 = fetchPos(pp, m->i3);
+    r4 = fetchPos(pp, m->i4);
 
     f1 = fdih<1>(par, r0, r2, r1, r4);
     f2 = fdih<2>(par, r1, r0, r2, r3);
