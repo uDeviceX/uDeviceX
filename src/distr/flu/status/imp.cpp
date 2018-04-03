@@ -34,8 +34,8 @@ static void pack_failure(DFluStatus *s) {
     d[X] = frag_hst::i2dx(fid);
     d[Y] = frag_hst::i2dy(fid);
     d[Z] = frag_hst::i2dz(fid);
-    msg_print("exceed capacity, fragment %d = [%d %d %d]: %ld/%ld",
-        fid, d[X], d[Y], d[Z], cnt, cap);
+    msg_print("exceed capacity, fragment %d = [%d %d %d]: %d/%d",
+              fid, d[X], d[Y], d[Z], cnt, cap);
 }
 void dflu_status_log(DFluStatus *s) {
     int code;
