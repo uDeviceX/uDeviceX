@@ -19,17 +19,25 @@ if test $# -ne 0 && test "$1" = -h; then usg; fi
 if test $# -le 2; then err "expecting domain size"; fi
 x="$1"; shift; y="$1"; shift; z="$1"; shift
 
+if ! intp "$x"; then err "not an integer '$x'"; fi
+if ! intp "$y"; then err "not an integer '$y'"; fi
+if ! intp "$z"; then err "not an integer '$z'"; fi
+
 if test $# -le 0; then err "expecting packing radious"; fi
 r="$1"; shift
+if ! numberp "$r"; then err "not a number '$r'"; fi
 
 if test $# -le 0; then err "expecting fraction"; fi
 f="$1"; shift
+if ! numberp "$f"; then err "not a number '$f'"; fi
 
 if test $# -le 0; then err "expecting rbc scale"; fi
 s="$1"; shift
+if ! numberp "$s"; then err "not a number '$s'"; fi
 
 if test $# -le 0; then err "expecting RBC angle"; fi
 a="$1"; shift
+if ! numberp "$a" && test "$a" != rnd; then err "wrong angle '$a'"; fi
 
 if test $# -le 0; then err "expecting solid.out"; fi
 O="$1"; shift
@@ -38,10 +46,10 @@ if test $# -le 0; then err "expecting rbc.out"; fi
 R="$1"; shift
 
 pr=/tmp/rbc.$$; >$pr
-trap 'rm -f $pr' 1 2 3 15
+trap 'rm -f $pr; exit' 1 2 3 15
 
-plcmt.hex $x $y $z $r | plcmt.select $f "$O" "$pr"
-plcmt.p2mat $s $a     $pr > "$R"
+e plcmt.hex $x $y $z $r '|' plcmt.select $f "$O" "$pr"
+e plcmt.p2mat $s $a     $pr '>' "$R"
 
 rm -f $pr
 
