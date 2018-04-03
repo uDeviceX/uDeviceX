@@ -9,10 +9,10 @@ install: install_bin install_conf
 
 install_bin: ;  cp tsdf tsdf.awk sdf2volume sdf2volume2 sdf2vtk mergesdf    $(BIN)
 install_conf: ; mkdir -p $(CONF) && \
-	        cp processor.tmp.cpp                               $(CONF)
+	        cp processor.tmp.cpp                                        $(CONF)
 
-clean: ; -rm sdf2volume sdf2vtk mergesdf
+clean:; rm sdf2volume sdf2vtk mergesdf
 
-test: atest README.org tsdf.awk
+test: all; atest README.org tsdf.awk
 
 .PHONY: test clean install install_conf install_bin
