@@ -190,6 +190,7 @@ struct Sim {
     Wall wall;
 
     Params params;
+    BForce *bforce;
 
     /* helpers */
     Coords *coords;

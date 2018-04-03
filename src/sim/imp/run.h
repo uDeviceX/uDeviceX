@@ -30,19 +30,15 @@ static float get_dt(Sim* s, Time* time) {
 
 static void run_eq(Time *time, float te, Sim *s) { /* equilibrate */
     float dt;
-    BForce *bforce;
-    UC(bforce_ini(&bforce));
     s->equilibrating = true;
-    bforce_set_none(/**/ bforce);    
     bool wall0 = false;
     dt = get_dt0(s);    
     while (time_current(time) < te) {
-        UC(step(time, dt, bforce, wall0, 0.0, s));
+        UC(step(time, dt, wall0, 0.0, s));
         time_next(time, dt);
         dt = get_dt(s, time);
     }
     UC(distribute_flu(/**/ s));
-    UC(bforce_fin(bforce));
 }
 
 static void dump_history(const Config *cfg, const char *fname) {
@@ -53,25 +49,23 @@ static void dump_history(const Config *cfg, const char *fname) {
 }
 
 static void pre_run(const Config *cfg, Sim *s) {
-    dump_history(cfg, "conf.history.cfg");
-    dump_strt_templ(s->coords, &s->wall, s);
+    UC(bforce_set_conf(cfg, s->bforce));
+
+    UC(dump_history(cfg, "conf.history.cfg"));
+    UC(dump_strt_templ(s->coords, &s->wall, s));
+
     s->equilibrating = false;         
 }
 
 static void run(const Config *cfg, Time *time, float ts, float te, Sim *s) {
     float dt;
-    BForce *bforce;
-
-    UC(bforce_ini(&bforce));
-    UC(bforce_set_conf(cfg, bforce));
 
     /* ts, te: time start and end */
     dt = get_dt0(s);
     while (time_current(time) < te) {
-        UC(step(time, dt, bforce, s->opt.wall, ts, s));
+        UC(step(time, dt, s->opt.wall, ts, s));
         time_next(time, dt);
         dt = get_dt(s, time);
     }
     UC(distribute_flu(/**/ s));
-    UC(bforce_fin(bforce));
 }

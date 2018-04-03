@@ -1,9 +1,10 @@
-static void step(Time *time, float dt, BForce *bforce, bool wall0, float tstart, Sim *s) {
+static void step(Time *time, float dt, bool wall0, float tstart, Sim *s) {
     long it;
     Flu *flu = &s->flu;
     Rbc *rbc = &s->rbc;
     Rig *rig = &s->rig;
     Wall *wall = &s->wall;
+    BForce *bforce = s->bforce;
     const Opt *opt = &s->opt;
     if (opt->wall && !s->equilibrating)
         UC(wvel_get_step(time_current(time) - tstart, wall->vel, /**/ wall->velstep));

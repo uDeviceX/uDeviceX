@@ -172,6 +172,8 @@ void sim_fin(Sim *s) {
     
     if (s->opt.rbc) UC(fin_rbc(s->opt, /**/ &s->rbc));
 
+    UC(bforce_fin(s->bforce));
+    
     UC(fin_dump(s->opt, &s->dump));
     UC(scheme_restrain_fin(s->restrain));
     UC(coords_fin(/**/ s->coords));

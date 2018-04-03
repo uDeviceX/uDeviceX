@@ -367,6 +367,9 @@ void sim_ini(Config *cfg, MPI_Comm cart, /**/ Time *time, Sim **sim) {
 
     UC(ini_dump(maxp, s->cart, s->coords, opt, /**/ &s->dump));
 
+    UC(bforce_ini(&s->bforce));
+    UC(bforce_set_none(/**/ s->bforce));
+        
     if (opt.rbc)        UC(ini_rbc(cfg, opt, s->cart, params.L, /**/ &s->rbc));
 
     if (opt.vcon)       UC(ini_vcon(s->cart, params.L, cfg, /**/ &s->vcon));
