@@ -13,4 +13,6 @@ install_conf: ; mkdir -p $(CONF) && \
 
 clean: ; -rm sdf2volume sdf2vtk mergesdf
 
-.PHONY: clean install install_conf install_bin
+test: atest README.org tsdf.awk
+
+.PHONY: test clean install install_conf install_bin
