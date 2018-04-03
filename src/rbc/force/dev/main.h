@@ -23,7 +23,7 @@ static __device__ Part tex2Part(const Particle *pp, int i) {
 
 template <typename RndInfo>
 static __device__ real3 adj_tris(real dt,
-                                 RbcParams_v par, const Particle *pp,  const Part p0, const real *av,
+                                 const RbcParams_v *par, const Particle *pp,  const Part p0, const real *av,
                                  const StressInfo si, RndInfo ri,
                                  AdjMap *m) {
     real3 f, fv, fr;
@@ -45,7 +45,7 @@ static __device__ real3 adj_tris(real dt,
     return f;
 }
 
-static __device__ real3 adj_dihedrals(RbcParams_v par, const Particle *pp, real3 r0,
+static __device__ real3 adj_dihedrals(const RbcParams_v *par, const Particle *pp, real3 r0,
                                       AdjMap *m) {
     Pos r1, r2, r3, r4;
     real3 f1, f2;
@@ -84,8 +84,8 @@ __global__ void force(float dt,
 
     const Part p0 = tex2Part(pp, m.i0);
 
-    f  = adj_tris(dt, par, pp, p0, av, si, ri, &m);
-    fd = adj_dihedrals(par, pp, p0.r, &m);
+    f  = adj_tris(dt, &par, pp, p0, av, si, ri, &m);
+    fd = adj_dihedrals(&par, pp, p0.r, &m);
     add(&fd, /**/ &f);
 
     atomicAdd(&ff[3 * pid + 0], f.x);

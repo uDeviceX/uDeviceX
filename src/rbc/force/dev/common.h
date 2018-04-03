@@ -1,21 +1,21 @@
-static __device__ real3 fvolume(RbcParams_v par, real3 r2, real3 r3, real v0, real v) {
+static __device__ real3 fvolume(const RbcParams_v *par, real3 r2, real3 r3, real v0, real v) {
     real f0;
     real3 f, n;
     cross(&r3, &r2, /**/ &n);
-    f0 = par.kv * (v - v0) / (6 * v0);
+    f0 = par->kv * (v - v0) / (6 * v0);
     axpy(f0, &n, /**/ &f);
     return f;
 }
 
-static __device__ real3 farea(RbcParams_v par, real3 x21, real3 x31, real3 x32,   real a0, real A0, real A) {
+static __device__ real3 farea(const RbcParams_v *par, real3 x21, real3 x31, real3 x32,   real a0, real A0, real A) {
     real3 nn, nnx32, f;
     real a, f0, fa, fA;
     cross(&x21, &x31, /**/ &nn); /* normal */
     cross(&nn, &x32, /**/ &nnx32);
     a = 0.5 * sqrt(dot<real>(&nn, &nn));
 
-    fA = - par.ka * (A - A0) / (4 * A0 * a);
-    fa = - par.kd * (a - a0) / (4 * a0 * a);
+    fA = - par->ka * (A - A0) / (4 * A0 * a);
+    fa = - par->kd * (a - a0) / (4 * a0 * a);
     f0 = fA + fa;
     axpy(f0, &nnx32, /**/ &f);
     return f;
@@ -25,12 +25,12 @@ enum {SPRING_OK, SPRING_LONG};
 static __device__ real sq(real x) { return x * x; }
 static __device__ real wlc0(real r) { return (4*sq(r)-9*r+6)/(4*sq(r-1)); }
 static __device__ real wlc(real lmax, real ks, real r) { return ks/lmax*wlc0(r/lmax); }
-static __device__ real3 fspring(RbcParams_v par, real3 x21, real l0, /**/ int *pstatus) {
+static __device__ real3 fspring(const RbcParams_v *par, real3 x21, real l0, /**/ int *pstatus) {
   #define wlc_r(r) (wlc(lmax, ks, r))
     real m, r, fwlc, fpow, lmax, ks, x0;
     real3 f;
     *pstatus = SPRING_OK;
-    ks = par.ks; m = par.mpow; x0 = par.x0;
+    ks = par->ks; m = par->mpow; x0 = par->x0;
     r = sqrtf(dot<real>(&x21, &x21));
     lmax = l0 / x0;
     if (r >= lmax) {
@@ -49,7 +49,7 @@ static __device__ void report_tri(real3 r1, real3 r2, real3 r3) {
            r1.x, r1.y, r1.z,   r2.x, r2.y, r2.z,   r3.x, r3.y, r3.z);
     assert(0);
 }
-static __device__ real3 ftri(RbcParams_v par, real3 r1, real3 r2, real3 r3,
+static __device__ real3 ftri(const RbcParams_v *par, real3 r1, real3 r2, real3 r3,
                              StressInfo si, real area, real volume) {
     int spring_status;
     real3 fv, fa, fs;
@@ -59,10 +59,10 @@ static __device__ real3 ftri(RbcParams_v par, real3 r1, real3 r2, real3 r3,
     diff(&r3, &r2, /**/ &x32);
     diff(&r3, &r1, /**/ &x31);
 
-    fa = farea(par, x21, x31, x32, si.a0, par.totArea, area);
+    fa = farea(par, x21, x31, x32, si.a0, par->totArea, area);
     add(&fa, /**/ &f);
 
-    fv = fvolume(par, r2, r3, par.totVolume, volume);
+    fv = fvolume(par, r2, r3, par->totVolume, volume);
     add(&fv, /**/ &f);
 
     fs = fspring(par, x21, si.l0, &spring_status);
@@ -74,8 +74,8 @@ static __device__ real3 ftri(RbcParams_v par, real3 r1, real3 r2, real3 r3,
     return f;
 }
 
-static __device__ real3 fvisc(RbcParams_v par, real3 r1, real3 r2, real3 u1, real3 u2) {
-    const real gammaC = par.gammaC, gammaT = par.gammaT;
+static __device__ real3 fvisc(const RbcParams_v *par, real3 r1, real3 r2, real3 u1, real3 u2) {
+    const real gammaC = par->gammaC, gammaT = par->gammaT;
     real3 du, dr, f = make_real3(0, 0, 0);
     diff(&u2, &u1, /**/ &du);
     diff(&r1, &r2, /**/ &dr);
@@ -88,18 +88,18 @@ static __device__ real3 fvisc(RbcParams_v par, real3 r1, real3 r2, real3 u1, rea
     return f;
 }
 
-static __device__ real3 frnd(real, RbcParams_v, real3, real3, Rnd0Info) {
+static __device__ real3 frnd(real, const RbcParams_v*, real3, real3, Rnd0Info) {
     return make_real3(0, 0, 0);
 }
 
-static __device__ real  frnd0(real dt, RbcParams_v par, real rnd) {
+static __device__ real  frnd0(real dt, const RbcParams_v *par, real rnd) {
     real f, g, T;
-    g = par.gammaC; T = par.kBT;
+    g = par->gammaC; T = par->kBT;
     f  = sqrtf(2*g*T/dt)*rnd;
     return f;
 }
 
-static __device__ real3 frnd(real dt, RbcParams_v par, real3 r1, real3 r2, Rnd1Info rnd) {
+static __device__ real3 frnd(real dt, const RbcParams_v *par, real3 r1, real3 r2, Rnd1Info rnd) {
     real3 dr, f;
     real r, f0;
     diff(&r1, &r2, /**/ &dr);
@@ -111,7 +111,7 @@ static __device__ real3 frnd(real dt, RbcParams_v par, real3 r1, real3 r2, Rnd1I
 
 /* forces from one dihedral */
 template <int update>
-__device__ real3 fdih(RbcParams_v par, real3 r1, real3 r2, real3 r3, real3 r4) {
+__device__ real3 fdih(const RbcParams_v *par, real3 r1, real3 r2, real3 r3, real3 r4) {
     real overIksiI, overIdzeI, cosTheta, IsinThetaI2, sinTheta_1,
         beta, b11, b12, phi, sint0kb, cost0kb;
     real3 r12, r13, r34, r24, r41, ksi, dze, ksimdze;
@@ -136,9 +136,9 @@ __device__ real3 fdih(RbcParams_v par, real3 r1, real3 r2, real3 r3, real3 r4) {
         (rsqrtf(max(IsinThetaI2, 1.0e-6)),
          dot<real>(&ksimdze, &r41)); // ">" because the normals look inside
 
-    phi = par.phi / 180.0 * M_PI;
-    sint0kb = sin(phi) * par.kb;
-    cost0kb = cos(phi) * par.kb;
+    phi = par->phi / 180.0 * M_PI;
+    sint0kb = sin(phi) * par->kb;
+    cost0kb = cos(phi) * par->kb;
     beta = cost0kb - cosTheta * sint0kb * sinTheta_1;
 
     b11 = -beta *  cosTheta * overIksiI * overIksiI;
