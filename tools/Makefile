@@ -1,4 +1,4 @@
-CC = gcc
+CC = c99
 CFLAGS += -O3 -g -Wall 
 
 BIN=$(HOME)/bin

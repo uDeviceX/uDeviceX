@@ -2,8 +2,10 @@
 #include <stdio.h>
 #include <string.h>
 
+const char *prog = "ply2punto";
+
 void usg() {
-    fprintf(stderr, "ply2punto 1.ply 2.ply .. > punto.dat\n");
+    fprintf(stderr, "%s 1.ply 2.ply .. > punto.dat\n", prog);
     exit(0);
 }
 
@@ -49,7 +51,7 @@ FILE* efopen(const char *p, const char *m) {
     FILE *f;
     f = fopen(p, m);
     if (f == NULL) {
-        fprintf(stderr, "ply2punto: fail to open %s\n", p);
+        fprintf(stderr, "%s: fail to open '%s'\n", prog, p);
         exit(2);
     }
     return f;
