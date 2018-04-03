@@ -11,7 +11,7 @@ static __device__ Pos fetchPos(const Particle *pp, int i) {
     return r;
 }
 
-static __device__ Part tex2Part(const Particle *pp, int i) {
+static __device__ Part fetchPart(const Particle *pp, int i) {
     enum {X, Y, Z};
     Part p;
     const real *r, *v;
@@ -31,7 +31,7 @@ static __device__ real3 adj_tris(real dt,
     real area, volume;
     i1 = m->i1; i2 = m->i2; rbc = m->rbc;
 
-    const Part p1 = tex2Part(pp, i1);
+    const Part p1 = fetchPart(pp, i1);
     const Pos  r2 = fetchPos(pp,  i2);
 
     area = av[2*rbc]; volume = av[2 * rbc + 1];
@@ -82,7 +82,7 @@ __global__ void force(float dt,
     si = fetch_stress_info(i % (md * nv), sv);
     auto ri = fetch_rnd_info(i % (md * nv), i, rv);
 
-    const Part p0 = tex2Part(pp, m.i0);
+    const Part p0 = fetchPart(pp, m.i0);
 
     f  = adj_tris(dt, &par, pp, p0, av, si, ri, &m);
     fd = adj_dihedrals(&par, pp, p0.r, &m);
