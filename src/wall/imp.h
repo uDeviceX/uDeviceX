@@ -37,5 +37,5 @@ void wall_strt_dump_templ(const Coords*, const WallQuants*); // <2>
 
 // tag::int[]
 void wall_force(const PairParams*, const WvelStep *, const Coords*,
-                Sdf*, const WallQuants*, const WallTicket*, int n, const PaArray*, const FoArray*);
+                const Sdf*, const WallQuants*, const WallTicket*, int n, const PaArray*, const FoArray*);
 // end::int[]
