@@ -176,7 +176,7 @@ float void_wins(float so, float sn) {
 int main(int /*argc */, char **argv) {
   
   FILE * f = fopen(argv[1], "w");
-  fprintf(f, "%f %f %f\n", xextent, yextent, zextent);
+  fprintf(f, "%g %g %g\n", xextent, yextent, zextent);
   fprintf(f, "%d %d %d\n", NX, NY, NZ);
 
   for (int i = 0; i < NX; i++) {
