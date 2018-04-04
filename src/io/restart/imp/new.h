@@ -90,19 +90,19 @@ void restart_write_pp(MPI_Comm comm, const char *code, int id, long n, const Par
     write(comm, code, id, n, pp, BopFLOAT, 6, "x y z vx vy vz");
 }
 
-void restart_read_pp(MPI_Comm comm, const char *code, const int id, int *n, Particle *pp) {
+void restart_read_pp(MPI_Comm comm, const char *code, int id, int *n, Particle *pp) {
     read(comm, code, id, n, pp);
 }
 
-void restart_write_ii(MPI_Comm comm, const char *code, const int id, long n, const int *ii) {
+void restart_write_ii(MPI_Comm comm, const char *code, int id, long n, const int *ii) {
     write(comm, code, id, n, ii, BopINT, 1, "i");
 }
 
-void restart_read_ii(MPI_Comm comm, const char *code, const int id, int *n, int *ii) {
+void restart_read_ii(MPI_Comm comm, const char *code, int id, int *n, int *ii) {
     read(comm, code, id, n, ii);    
 }
 
-void restart_write_ss(MPI_Comm comm, const char *code, const int id, long n, const Solid *ss) {
+void restart_write_ss(MPI_Comm comm, const char *code, int id, long n, const Solid *ss) {
     static const char *vars =
         "Ixx Ixy Ixz Iyy Iyz Izz "
         "mass x y z vx vy vz omx omy omz "
@@ -112,7 +112,7 @@ void restart_write_ss(MPI_Comm comm, const char *code, const int id, long n, con
     write(comm, code, id, n, ss, BopFLOAT, NVARS, vars);
 }
 
-void restart_read_ss(MPI_Comm comm, const char *code, const int id, int *n, Solid *ss) {
+void restart_read_ss(MPI_Comm comm, const char *code, int id, int *n, Solid *ss) {
     read(comm, code, id, n, ss);
 }
 
