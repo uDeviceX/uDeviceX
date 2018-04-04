@@ -27,7 +27,7 @@ static void gen_quants(MPI_Comm cart, int3 L, int maxn, const Sdf *qsdf, /**/ in
 
 void wall_gen_quants(MPI_Comm cart, int maxn, const Sdf *sdf, /* io */ int *o_n, Particle *o_pp, /**/ WallQuants *q) {
     int3 L = q->L;
-    UC(gen_quants(cart, L, maxn, sdf, n, pp, &q->n, &q->pp));
+    UC(gen_quants(cart, L, maxn, sdf, o_n, o_pp, &q->n, &q->pp));
 }
 
 static void build_cells(const int n, float4 *pp4, Clist *cells, ClistMap *mcells) {
