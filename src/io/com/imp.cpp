@@ -53,7 +53,7 @@ void io_com_dump(MPI_Comm comm, const Coords *coords, long id, int n, const int 
     char fname[256] = {0}, *data;
     long nchar = 0;
     
-    UC(emalloc(MAX_CHAR_PER_LINE * n * sizeof(char), (void**) &data));
+    EMALLOC(MAX_CHAR_PER_LINE * n, &data);
 
     if (m::is_master(comm))
         UC(os_mkdir(DUMP_BASE "/com"));
@@ -63,5 +63,5 @@ void io_com_dump(MPI_Comm comm, const Coords *coords, long id, int n, const int 
     UC(nchar = swrite(coords, n, ii, rr, /**/ data));
     write_mpi(comm, fname, nchar, data);
     
-    efree(data);
+    EFREE(data);
 }

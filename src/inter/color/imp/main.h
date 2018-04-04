@@ -1,12 +1,12 @@
 void inter_color_ini(GenColor **c) {
     GenColor *gc;
-    UC(emalloc(sizeof(GenColor), (void**) c));
+    EMALLOC(1, c);
     gc = *c;
     gc->kind = NONE;
 }
 
 void inter_color_fin(GenColor *c) {
-    UC(efree(c));
+    EFREE(c);
 }
 
 void inter_color_set_drop(float R, GenColor *c) {
@@ -44,8 +44,8 @@ void inter_color_apply_dev(const Coords *coords, const GenColor *gc, int n, cons
     szc = n * sizeof(int);
     szp = n * sizeof(Particle);
 
-    UC(emalloc(szc, (void**) &cc_hst));
-    UC(emalloc(szp, (void**) &pp_hst));
+    EMALLOC(n, &cc_hst);
+    EMALLOC(n, &pp_hst);
 
     CC(d::Memcpy(pp_hst, pp, szp, D2H));
 
@@ -53,6 +53,6 @@ void inter_color_apply_dev(const Coords *coords, const GenColor *gc, int n, cons
 
     CC(d::Memcpy(cc, cc_hst, szc, H2D));
     
-    UC(efree(pp_hst));
-    UC(efree(cc_hst));
+    EFREE(pp_hst);
+    EFREE(cc_hst);
 }
