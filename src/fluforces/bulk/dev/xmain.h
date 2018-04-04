@@ -16,15 +16,16 @@ _S_ int3 get_cid(int3 L, const PairPa *pa) {
     return c;
 }
 
-template <typename Par, typename Parray, typename Farray, typename Fo>
-_S_ void loop_pp(const Par *params, int ia, PairPa pa, Parray parray, const Map *m, float seed, /**/ Fo *fa, Farray farray) {
+template <typename Par, typename Parray, typename Farray>
+_S_ void loop_pp(const Par *params, int ia, PairPa pa, Parray parray, const Map *m, float seed, /**/ Farray farray) {
     enum {X, Y, Z};
     int i, ib;
     PairPa pb;
-    Fo f;
     float rnd;
-    
-    for (i = 0; !map_end(m, i); ++i) {
+    auto f  = farray_fo0(farray);
+    auto fa = farray_fo0(farray);
+
+    for (i = 0; i < map_end(m); ++i) {
         ib = map_get_id(m, i);
         if (ib >= ia) continue;
         
@@ -35,10 +36,11 @@ _S_ void loop_pp(const Par *params, int ia, PairPa pa, Parray parray, const Map 
         rnd = rnd::mean0var1ii(seed, ia, ib);
         pair_force(params, pa, pb, rnd, /**/ &f);
 
-        pair_add(&f, /**/ fa);
-
+        pair_add(&f, /**/ &fa);
         farray_atomic_add<-1>(&f, ib, /**/ farray);
     }
+
+    farray_atomic_add<1>(&fa, ia, farray);
 }
 
 // unroll loop
@@ -49,7 +51,7 @@ __global__ void apply(Par params, int3 L, int n, Parray parray, const int *start
     int3 ca;
     PairPa pa;
     Map map;
-    auto fa = farray_fo0(farray);
+    
 
     ia = threadIdx.x + blockIdx.x * blockDim.x;
     if (ia >= n) return;
@@ -59,9 +61,7 @@ __global__ void apply(Par params, int3 L, int n, Parray parray, const int *start
 
     map_build(L, ca, start, &map);
 
-    loop_pp(&params, ia, pa, parray, &map, seed, /**/ &fa, farray);
-
-    farray_atomic_add<1>(&fa, ia, farray);
+    loop_pp(&params, ia, pa, parray, &map, seed, /**/ farray);
 }
 
 #undef _S_

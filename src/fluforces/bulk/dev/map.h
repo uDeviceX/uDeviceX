@@ -6,8 +6,8 @@ struct Map {
     int str0, str1, str2, str3, str4;
 };
 
-_I_ int map_end(const Map *m, int i) {
-    return i >= m->str4;
+_I_ int map_end(const Map *m) {
+    return m->str4;
 }
 
 _I_ int map_get_id(const Map *m, int i) {
