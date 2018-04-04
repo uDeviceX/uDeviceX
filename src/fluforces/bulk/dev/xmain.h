@@ -19,7 +19,7 @@ _S_ int3 get_cid(int3 L, const PairPa *pa) {
 template <typename Par, typename Parray, typename Farray, typename Fo>
 _S_ void loop_pp(const Par *params, int ia, PairPa pa, Parray parray, const Map *m, float seed, /**/ Fo *fa, Farray farray) {
     enum {X, Y, Z};
-    int ib;
+    int i, ib;
     PairPa pb;
     Fo f;
     float rnd;
