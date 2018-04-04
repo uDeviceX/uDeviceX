@@ -13,7 +13,7 @@ void inflow_ini(int2 nc, Inflow **i) {
     Inflow *ip;
     Desc *d;
 
-    UC(emalloc(sizeof(Inflow), (void**) i));
+    EMALLOC(1, i);
 
     ip = *i;
     d = &ip->d;
@@ -66,7 +66,7 @@ void inflow_fin(Inflow *i) {
     CC(d::Free(d->uu));
     CC(d::Free(d->cumflux));
     CC(d::Free(d->ndev));
-    UC(efree(i));
+    EFREE(i);
 }
 
 static void create_solvent(float kBT, int numdensity, float dt, Inflow *i, int *n, SolventWrap wrap) {

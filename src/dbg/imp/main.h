@@ -1,14 +1,14 @@
 void dbg_ini(Dbg **dbg) {
     Dbg *d;
     int i;
-    UC(emalloc(sizeof(Dbg), (void**) dbg));
+    EMALLOC(1, dbg);
     d = *dbg;
     for (i = 0; i < DBG_NKIND_; ++i) d->state[i] = 0;
     d->verbose = false;
     d->dump = false;
 }
 void dbg_fin(Dbg *dbg) {
-    UC(efree(dbg));
+    EFREE(dbg);
 }
 
 static void set(int kind, int val, Dbg *dbg) {
@@ -49,11 +49,11 @@ static void dump_pp(const Coords *c, const char *base, int n, const Particle *de
     size_t sz;
     char name[FILENAME_MAX];
     sz = n*sizeof(Particle);
-    UC(emalloc(sz, (void**) &hst));
+    EMALLOC(n, &hst);
     UC(d::Memcpy(hst, dev, sz, D2H));
     UC(gen_name(c, base, name));
     UC(txt_write_pp(n, hst, name));
-    UC(efree(hst));    
+    EFREE(hst);    
 }
 
 static void dump_pp_ff(const Coords *c, const char *base, int n, const Particle *ppdev, const Force *ffdev) {
@@ -65,8 +65,8 @@ static void dump_pp_ff(const Coords *c, const char *base, int n, const Particle 
     szp = n*sizeof(Particle);
     szf = n*sizeof(Force);
 
-    UC(emalloc(szp, (void**) &pphst));
-    UC(emalloc(szf, (void**) &ffhst));
+    EMALLOC(n, &pphst);
+    EMALLOC(n, &ffhst);
 
     UC(d::Memcpy(pphst, ppdev, szp, D2H));
     UC(d::Memcpy(ffhst, ffdev, szf, D2H));
@@ -75,8 +75,8 @@ static void dump_pp_ff(const Coords *c, const char *base, int n, const Particle 
 
     UC(txt_write_pp_ff(n, pphst, ffhst, name));
 
-    UC(efree(pphst));
-    UC(efree(ffhst));
+    EFREE(pphst);
+    EFREE(ffhst);
 }
 
 static void print() {

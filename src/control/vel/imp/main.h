@@ -56,7 +56,7 @@ static void ini(MPI_Comm comm, int3 L, /**/ PidVCont *c) {
 
 void vcont_ini(MPI_Comm comm, int3 L, /**/ PidVCont **c) {
     PidVCont *vc;
-    UC(emalloc(sizeof(PidVCont), (void**) c));
+    EMALLOC(1, c);
     vc = *c;
     UC(ini(comm, L, /**/ vc));
 }
@@ -67,8 +67,8 @@ void vcont_fin(/**/ PidVCont *c) {
     CC(d::FreeHost(c->totvel));
     CC(d::FreeHost(c->totnum));
     MC(m::Comm_free(&c->comm));
-    fin_dump(c->fdump);
-    UC(efree(c));
+    UC(fin_dump(c->fdump));
+    EFREE(c);
 }
 
 void vcont_set_params(float factor, float Kp, float Ki, float Kd, /**/ PidVCont *c) {

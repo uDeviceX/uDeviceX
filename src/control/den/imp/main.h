@@ -7,7 +7,7 @@ void den_ini(int maxp, /**/ DCont **d0) {
     DCont *d;
     size_t sz;
     
-    UC(emalloc(sizeof(DCont), (void**) d0));
+    EMALLOC(1, d0);
     d = *d0;
 
     sz = maxp * sizeof(int);
@@ -21,7 +21,7 @@ void den_ini(int maxp, /**/ DCont **d0) {
 void den_fin(DCont *d) {
     CC(d::Free(d->kk));
     CC(d::Free(d->ndead_dev));
-    UC(efree(d));
+    EFREE(d);
 }
 
 void den_reset(int n, /**/ DCont *d) {

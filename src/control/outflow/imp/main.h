@@ -7,7 +7,7 @@ void ini(int maxp, /**/ Outflow **o0) {
     Outflow *o;
     size_t sz;
 
-    UC(emalloc(sizeof(Outflow), (void**) o0));
+    EMALLOC(1, o0);
     o = *o0;
     
     sz = maxp * sizeof(int);
@@ -22,7 +22,7 @@ void ini(int maxp, /**/ Outflow **o0) {
 void fin(/**/ Outflow *o) {
     CC(d::Free(o->kk));
     CC(d::Free(o->ndead_dev));
-    UC(efree(o));
+    EFREE(o);
 }
 
 void filter_particles(int n, const Particle *pp, /**/ Outflow *o) {
