@@ -1,9 +1,11 @@
-static void read(const Coords *coords, int maxn, /**/ float4 *pp, int *n) {
+#define CODE "wall"
+
+static void read(MPI_Comm comm, int maxn, /**/ float4 *pp, int *n) {
     Particle *pphst, *ppdev;
     size_t sz = maxn * sizeof(Particle);
     EMALLOC(maxn, &pphst);
 
-    restart_read_pp(coords, "wall", RESTART_TEMPL, /**/ pphst, n);
+    restart_read_pp(comm, CODE, RESTART_TEMPL, n, pphst);
 
     if (*n) {
         CC(d::Malloc((void **) &ppdev, sz));
@@ -14,7 +16,7 @@ static void read(const Coords *coords, int maxn, /**/ float4 *pp, int *n) {
     EFREE(pphst);
 }
 
-static void write(const Coords *coords, int n, const float4 *pp) {
+static void write(MPI_Comm comm, int n, const float4 *pp) {
     Particle *pphst, *ppdev;
 
     EMALLOC(n, &pphst);
@@ -24,15 +26,15 @@ static void write(const Coords *coords, int n, const float4 *pp) {
         cD2H(pphst, ppdev, n);
         CC(d::Free(ppdev));
     }
-    restart_write_pp(coords, "wall", RESTART_TEMPL, /**/ pphst, n);
+    restart_write_pp(comm, CODE, RESTART_TEMPL, n, pphst);
 
     EFREE(pphst);
 }
 
-static void strt_quants(const Coords *coords, int maxn, int *w_n, float4 **w_pp) {
+static void strt_quants(MPI_Comm comm, int maxn, int *w_n, float4 **w_pp) {
     float4 * pptmp;
     CC(d::Malloc((void **) &pptmp, maxn * sizeof(float4)));
-    read(coords, maxn, pptmp, w_n);
+    read(comm, maxn, pptmp, w_n);
 
     if (*w_n) {
         CC(d::Malloc((void **) w_pp, *w_n * sizeof(float4)));
@@ -41,10 +43,10 @@ static void strt_quants(const Coords *coords, int maxn, int *w_n, float4 **w_pp)
     CC(d::Free(pptmp));
 }
 
-void wall_strt_quants(const Coords *coords, int maxn, WallQuants *q) {
-    strt_quants(coords, maxn, &q->n, &q->pp);
+void wall_strt_quants(MPI_Comm comm, int maxn, WallQuants *q) {
+    strt_quants(comm, maxn, &q->n, &q->pp);
 }
 
-void wall_strt_dump_templ(const Coords *coords, const WallQuants *q) {
-    write(coords, q->n, q->pp);
+void wall_strt_dump_templ(MPI_Comm comm, const WallQuants *q) {
+    write(comm, q->n, q->pp);
 }
