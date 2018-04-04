@@ -1,4 +1,6 @@
-static __device__ bool cutoff_range(PairPa pa, PairPa pb) {
+#define _S_ static __device__
+
+_S_ bool cutoff_range(PairPa pa, PairPa pb) {
     float x, y, z;
     x = pa.x - pb.x;
     y = pa.y - pb.y;
@@ -6,7 +8,7 @@ static __device__ bool cutoff_range(PairPa pa, PairPa pb) {
     return x*x + y*y + z*z <= 1.f;
 }
 
-static __device__ int3 get_cid(int3 L, const PairPa *pa) {
+_S_ int3 get_cid(int3 L, const PairPa *pa) {
     int3 c;
     c.x = pa->x + L.x / 2;
     c.y = pa->y + L.y / 2;
@@ -14,19 +16,12 @@ static __device__ int3 get_cid(int3 L, const PairPa *pa) {
     return c;
 }
 
-static __device__ bool valid_c(int c, int hi) {
+_S_ bool valid_c(int c, int hi) {
     return (c >= 0) && (c < hi);
 }
 
-static __device__ bool valid_cid(int3 L, int3 c) {
-    return
-        valid_c(c.x, L.x) &&
-        valid_c(c.y, L.y) &&
-        valid_c(c.z, L.z);    
-}
-
 template <typename Par, typename Parray, typename Farray, typename Fo>
-static __device__ void loop_pp(const Par *params, int ia, PairPa pa, Parray parray, int start, int end, float seed, /**/ Fo *fa, Farray farray) {
+_S_ void loop_pp(const Par *params, int ia, PairPa pa, Parray parray, int start, int end, float seed, /**/ Fo *fa, Farray farray) {
     enum {X, Y, Z};
     int ib;
     PairPa pb;
@@ -50,7 +45,7 @@ static __device__ void loop_pp(const Par *params, int ia, PairPa pa, Parray parr
 }
 
 template <typename Par, typename PArray, typename Farray, typename Fo>
-static __device__ void one_row(const Par *params, int3 L, int dz, int dy, int ia, int3 ca, PairPa pa, PArray parray, const int *start, float seed,
+_S_ void one_row(const Par *params, int3 L, int dz, int dy, int ia, int3 ca, PairPa pa, PArray parray, const int *start, float seed,
                                /**/ Fo *fa, Farray farray) {
     int3 cb;
     int enddx, startx, endx, cid0, bs, be;
@@ -100,3 +95,5 @@ __global__ void apply(Par params, int3 L, int n, Parray parray, const int *start
 
     farray_atomic_add<1>(&fa, ia, farray);
 }
+
+#undef _S_

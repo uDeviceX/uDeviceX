@@ -48,6 +48,19 @@ static void dump_history(const Config *cfg, const char *fname) {
     UC(efclose(f));
 }
 
+static double compute_volume_rbc(MPI_Comm comm, const Rbc *r) {
+    double loc, tot, V0;
+    long nc;
+    nc = r->q.nc;
+    V0 = rbc_params_get_tot_volume(r->params);
+
+    tot = 0;
+    loc = nc * V0;
+    MC(m::Allreduce(&loc, &tot, 1, MPI_DOUBLE, MPI_SUM, comm));
+    
+    return tot;
+}
+
 static void compute_hematocrit(const Sim *s) {
     const Opt *opt = &s->opt;
     double Vdomain, Vrbc, Ht;
@@ -62,7 +75,7 @@ static void compute_hematocrit(const Sim *s) {
         Vdomain = xdomain(c) * ydomain(c) * zdomain(c);
     }
 
-    Vrbc = 0;//s->Rbc.q.nc * s->Rbc.params.
+    Vrbc = compute_volume_rbc(s->cart, &s->rbc);
     
     Ht = Vrbc / Vdomain;
 

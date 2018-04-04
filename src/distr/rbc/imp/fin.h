@@ -8,19 +8,19 @@ void drbc_pack_fin(DRbcPack *p) {
         UC(dmap_fin_host(NBAGS, /**/ &p->hmap));
         UC(comm_bags_fin(HST_ONLY, HST_ONLY, /**/ &p->hii, NULL));
     }
-    UC(efree(p));
+    EFREE(p);
 }
 
 void drbc_comm_fin(DRbcComm *c) {
     UC(comm_fin(c->pp));
     if (c->ids)
         UC(comm_fin(c->ii));
-    UC(efree(c));
+    EFREE(c);
 }
 
 void drbc_unpack_fin(DRbcUnpack *u) {
     UC(comm_bags_fin(HST_ONLY, NONE, /**/ &u->hpp, NULL));
     if (u->ids)
         UC(comm_bags_fin(HST_ONLY, NONE, /**/ &u->hii, NULL));
-    UC(efree(u));
+    EFREE(u);
 }

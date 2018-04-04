@@ -66,6 +66,8 @@ include::{src}/wall/sdf/imp.h[tag=tools]
 <1> extract wall particles from solvent particles. Solvent particles
     which are not inside the domain are not kept.
 <2> label `nc` objects of `nv` particles to inside domain or not.
+<3> compute the volume between walls using monte carlo
+    integration. `nsamples` is the number of samples per subdomain.
 
 == submodules
 

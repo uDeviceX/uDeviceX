@@ -26,10 +26,17 @@ or via the configuration file:
 include::{src}/rbc/params/imp.h[tag=cnf]
 ----
 
-The _view_ structure can be created with:
+Parameters are accessible via getter functions:
 
 [source,cpp]
 ----
 include::{src}/rbc/params/imp.h[tag=get]
+----
+
+The _view_ structure can be created with:
+
+[source,cpp]
+----
+include::{src}/rbc/params/imp.h[tag=view]
 ----
 

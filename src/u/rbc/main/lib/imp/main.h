@@ -15,7 +15,7 @@ static void dump(MPI_Comm cart, DiagPart *diagpart, float dt, const Coords *coor
     float area, volume, area0, volume0;
     static int i = 0;
     n = q->nc * q->nv;
-    UC(emalloc(n*sizeof(Particle), (void**)&pp));
+    EMALLOC(n, &pp);
     cD2H(pp, q->pp, q->n);
     UC(mesh_write_particles(mesh_write, cart, coords, q->nc, pp, i++));
 
@@ -23,7 +23,7 @@ static void dump(MPI_Comm cart, DiagPart *diagpart, float dt, const Coords *coor
     UC(garea_volume(q, /**/ &area, &volume));
     msg_print("av: %g %g", area/area0, volume/volume0);
     diag_part_apply(diagpart, cart, dt*i, n, pp);
-    UC(efree(pp));
+    EFREE(pp);
 }
 
 static void body_force(float mass, const Coords *coords, const BForce *bf, RbcQuants *q, Force *f) {

@@ -7,7 +7,7 @@ static void get_num_capacity(int maxnc, /**/ int numc[NBAGS]) {
 void drbc_pack_ini(bool ids, int3 L, int maxnc, int nv, DRbcPack **pack) {
     int numc[NBAGS];
     DRbcPack *p;
-    UC(emalloc(sizeof(DRbcPack), (void**) pack));
+    EMALLOC(1, pack);
     p = *pack;
 
     p->L= L;
@@ -31,7 +31,7 @@ void drbc_pack_ini(bool ids, int3 L, int maxnc, int nv, DRbcPack **pack) {
 
 void drbc_comm_ini(bool ids, MPI_Comm cart, /**/ DRbcComm **com) {
     DRbcComm *c;
-    UC(emalloc(sizeof(DRbcComm), (void**) com));
+    EMALLOC(1, com);
     c = *com;
     
     UC(comm_ini(cart, /**/ &c->pp));
@@ -43,7 +43,7 @@ void drbc_comm_ini(bool ids, MPI_Comm cart, /**/ DRbcComm **com) {
 void drbc_unpack_ini(bool ids, int3 L, int maxnc, int nv, DRbcUnpack **unpack) {
     int numc[NBAGS];
     DRbcUnpack *u;
-    UC(emalloc(sizeof(DRbcUnpack), (void**) unpack));
+    EMALLOC(1, unpack);
     u = *unpack;
 
     u->L = L;

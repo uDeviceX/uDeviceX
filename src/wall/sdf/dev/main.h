@@ -7,12 +7,6 @@ static __device__ float3 get_r(int3 L, const float *U) {
     return r;
 }
 
-static __device__ int warpReduceSum(int v) {
-    for (int offset = warpSize>>1; offset > 0; offset >>= 1)
-        v += __shfl_down(v, offset);
-    return v;
-}
-
 __global__ void count_inside(Sdf_v sv, int3 L, int n, const float *UU, int *counts) {
     int i, c, chunkid, warpmaster;
     float3 r;

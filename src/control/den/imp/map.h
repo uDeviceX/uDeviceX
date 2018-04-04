@@ -40,8 +40,7 @@ static void ini_map(const Coords *coords, T p, int **ids, int *nids) {
     int Lx, Ly, Lz;
     Lx = xs(coords);  Ly = ys(coords);  Lz = zs(coords);
     
-    sz = Lx * Ly * Lz * sizeof(int);
-    UC(emalloc(sz, (void **) &ii));
+    EMALLOC(Lx * Ly * Lz, &ii);
 
     n = 0;
     for (k = 0; k < Lz; ++k) {
@@ -59,11 +58,11 @@ static void ini_map(const Coords *coords, T p, int **ids, int *nids) {
     CC(d::Malloc((void**) ids, sz));
     CC(d::Memcpy(*ids, ii, sz, H2D));
     
-    UC(efree(ii));
+    EFREE(ii);
 }
 
 static DContMap *alloc(DContMap **m0) {
-    UC(emalloc(sizeof(DContMap), (void**) m0));
+    EMALLOC(1, m0);
     return *m0;
 }
 
@@ -82,5 +81,5 @@ void den_ini_map_circle(const Coords *c, float R, DContMap **m0) {
 
 void den_fin_map(DContMap *m) {
     CC(d::Free(m->cids));
-    UC(efree(m));
+    EFREE(m);
 }

@@ -3,21 +3,6 @@ static __device__ int valid_p(const MapColor m, int i) {
     return m.cc[i] == m.color;
 }
 
-static __device__ float3 warpReduceSumf3(float3 v) {
-    for (int offset = warpSize>>1; offset > 0; offset >>= 1) {
-        v.x += __shfl_down(v.x, offset);
-        v.y += __shfl_down(v.y, offset);
-        v.z += __shfl_down(v.z, offset);
-    }
-    return v;
-}
-
-static __device__ int warpReduceSum(int v) {
-    for (int offset = warpSize>>1; offset > 0; offset >>= 1)
-        v += __shfl_down(v, offset);
-    return v;
-}
-
 template <typename Map>
 __global__ void sum(Map m, int n, const Particle *pp, /**/ int *ntot, float3 *vtot) {
     enum {X, Y, Z};
@@ -36,7 +21,7 @@ __global__ void sum(Map m, int n, const Particle *pp, /**/ int *ntot, float3 *vt
         v.x = v.y = v.z = 0;
     }
 
-    v  = warpReduceSumf3(v);
+    v     = warpReduceSum(v);
     ngood = warpReduceSum(good);
 
     if ((threadIdx.x % warpSize == 0) && ngood > 0) {

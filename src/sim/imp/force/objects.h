@@ -31,6 +31,7 @@ void forces_objects(Sim *sim) {
     }
 
     if (!nw) return;
+    if (nw > MAX_OBJ_TYPES) ERR("Too many objects in wrappers : %d/%d", nw, MAX_OBJ_TYPES);
 
     /* Prepare and send the data */
     

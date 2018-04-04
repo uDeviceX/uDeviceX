@@ -19,7 +19,7 @@ void coords_ini(MPI_Comm cart, int Lx, int Ly, int Lz, Coords **c0) {
     int dims[D], periods[D], coords[D];
     MC(m::Cart_get(cart, D, dims, periods, coords));
 
-    UC(emalloc(sizeof(Coords), (void**) c0));
+    EMALLOC(1, c0);
     c = *c0;
 
     c->xc = coords[X];
@@ -36,7 +36,7 @@ void coords_ini(MPI_Comm cart, int Lx, int Ly, int Lz, Coords **c0) {
 }
 
 void coords_fin(Coords *c) {
-    UC(efree(c));
+    EFREE(c);
 }
 
 /* domain sizes */

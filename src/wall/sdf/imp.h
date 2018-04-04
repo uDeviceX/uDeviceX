@@ -18,7 +18,7 @@ void sdf_to_view(const Sdf*, /**/ Sdf_v*);                   // <2>
 // tag::tools[]
 void sdf_bulk_wall(const Sdf*, /*io*/ int *s_n, Particle *s_pp, /*o*/ int *w_n, Particle *w_pp); // <1>
 int  sdf_who_stays(const Sdf*, int n, const Particle*, int nc, int nv, /**/ int *stay);          // <2>
-double sdf_compute_volume(MPI_Comm, int3 L, const Sdf*, long nsamples);
+double sdf_compute_volume(MPI_Comm, int3 L, const Sdf*, long nsamples);                          // <3>
 // end::tools[]
 
 // tag::bounce[]

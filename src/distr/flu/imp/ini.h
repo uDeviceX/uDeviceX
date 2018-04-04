@@ -16,7 +16,7 @@ void dflu_pack_ini(bool colors, bool ids, int3 L, int maxdensity, DFluPack **pac
     DFluPack *p;
     int capacity[NBAGS];
 
-    UC(emalloc(sizeof(DFluPack), (void**) pack));
+    EMALLOC(1, pack);
     p = *pack;
 
     p->L = L;
@@ -35,7 +35,7 @@ void dflu_pack_ini(bool colors, bool ids, int3 L, int maxdensity, DFluPack **pac
 
 void dflu_comm_ini(bool colors, bool ids, MPI_Comm cart, /**/ DFluComm **com) {
     DFluComm *c;
-    UC(emalloc(sizeof(DFluComm), (void**) com));
+    EMALLOC(1, com);
     c = *com;
     UC(comm_ini(cart, /**/ &c->pp));
     if (ids)    UC(comm_ini(cart, /**/ &c->ii));
@@ -57,7 +57,7 @@ void dflu_unpack_ini(bool colors, bool ids, int3 L, int maxdensity, DFluUnpack *
     int capacity[NBAGS];
     DFluUnpack *u;
 
-    UC(emalloc(sizeof(DFluUnpack), (void**) unpack));
+    EMALLOC(1, unpack);
     u = *unpack;
 
     u->L = L;

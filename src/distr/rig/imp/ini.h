@@ -7,7 +7,7 @@ static void get_num_capacity(int maxns, /**/ int numc[NBAGS]) {
 void drig_pack_ini(int3 L, int maxns, int nv, DRigPack **pack) {
     int numc[NBAGS];
     DRigPack *p;
-    UC(emalloc(sizeof(DRigPack), (void**) pack));
+    EMALLOC(1, pack);
     p = *pack;
 
     p->L = L;
@@ -23,7 +23,7 @@ void drig_pack_ini(int3 L, int maxns, int nv, DRigPack **pack) {
 
 void drig_comm_ini(MPI_Comm cart, /**/ DRigComm **com) {
     DRigComm *c;
-    UC(emalloc(sizeof(DRigComm), (void**) com));
+    EMALLOC(1, com);
     c = *com;
     UC(comm_ini(cart, /**/ &c->ipp));
     UC(comm_ini(cart, /**/ &c->ss));
@@ -32,7 +32,7 @@ void drig_comm_ini(MPI_Comm cart, /**/ DRigComm **com) {
 void drig_unpack_ini(int3 L, int maxns, int nv, DRigUnpack **unpack) {
     int numc[NBAGS];
     DRigUnpack *u;
-    UC(emalloc(sizeof(DRigUnpack), (void**) unpack));
+    EMALLOC(1, unpack);
     u = *unpack;
 
     u->L = L;

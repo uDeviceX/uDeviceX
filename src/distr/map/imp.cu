@@ -45,22 +45,22 @@ void dmap_download_counts(int nfrags, /**/ DMap *m) {
 }
 
 void dmap_ini_host(int nfrags, const int capacity[], /**/ DMap *m) {
-    UC(emalloc( nfrags      * sizeof(int), (void**) &m->counts));
-    UC(emalloc((nfrags + 1) * sizeof(int), (void**) &m->starts));
+    EMALLOC(nfrags    ,  &m->counts);
+    EMALLOC(nfrags + 1,  &m->starts);
 
     int i, c;
     for (i = 0; i < nfrags; ++i) {
         c = capacity[i];
         if (c)
-            UC(emalloc(c * sizeof(int), (void**) &m->ids[i]));
+            EMALLOC(c, &m->ids[i]);
     }
 }
 
 void dmap_fin_host(int nfrags, /**/ DMap *m) {
-    free(m->counts);
-    free(m->starts);    
+    EFREE(m->counts);
+    EFREE(m->starts);    
     for (int i = 0; i < nfrags; ++i)
-        free(m->ids[i]);
+        EFREE(m->ids[i]);
 }
 
 void dmap_reini_host(int nfrags, /**/ DMap m) {

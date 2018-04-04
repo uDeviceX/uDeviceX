@@ -1,13 +1,3 @@
-// TODO put all warpReduce/scan in one common place
-static __device__ float3 warpReduceSum(float3 v) {
-    for (int offset = warpSize>>1; offset > 0; offset >>= 1) {
-        v.x += __shfl_down(v.x, offset);
-        v.y += __shfl_down(v.y, offset);
-        v.z += __shfl_down(v.z, offset);
-    }
-    return v;
-}
-
 __global__ void reduce_props(int nv, const Particle *pp, /**/ float3 *rr, float3 *vv) {
     int mid, i;
     float3 r, v;

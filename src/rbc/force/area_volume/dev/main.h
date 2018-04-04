@@ -7,14 +7,6 @@ static __device__ float3 pp2r(const Particle *pp, const int id) {
     return r;
 }
 
-static __device__ float2 warpReduceSum(float2 val) {
-    for (int offset = warpSize / 2; offset > 0; offset /= 2) {
-        val.x += __shfl_down(val.x, offset);
-        val.y += __shfl_down(val.y, offset);
-    }
-    return val;
-}
-
 static __device__ float area(const float3 r0, const float3 r1, const float3 r2) {
     float3 x1, x2, n;
     diff(&r1, &r0, /**/ &x1);

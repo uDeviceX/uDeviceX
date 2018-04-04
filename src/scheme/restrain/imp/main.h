@@ -1,6 +1,6 @@
 void scheme_restrain_ini(Restrain **rstr) {
     Restrain *r;
-    UC(emalloc(sizeof(Restrain), (void**) rstr));
+    EMALLOC(1, rstr);
     r = *rstr;
 
     CC(d::alloc_pinned((void**) &r->n, sizeof(int)));
@@ -10,7 +10,7 @@ void scheme_restrain_ini(Restrain **rstr) {
 void scheme_restrain_fin(Restrain *r) {
     CC(d::FreeHost(r->n));
     CC(d::FreeHost(r->v));
-    UC(efree(r));
+    EFREE(r);
 }
 
 void scheme_restrain_set_red(Restrain *r) {
