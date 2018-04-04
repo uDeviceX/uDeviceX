@@ -18,7 +18,7 @@ static void estimates(int3 L, int nfrags, int maxd, int maxpsolid, int *cap) {
 void eobj_pack_ini(int3 L, int nw, int maxd, int maxpsolid, EObjPack **pack) {
     int cap[NFRAGS];
     EObjPack * p;
-    UC(emalloc(sizeof(EObjPack), (void**) pack));
+    EMALLOC(1, pack);
     p = *pack;
 
     p->L = L;
@@ -30,7 +30,7 @@ void eobj_pack_ini(int3 L, int nw, int maxd, int maxpsolid, EObjPack **pack) {
 
 void eobj_comm_ini(MPI_Comm cart, /**/ EObjComm **com) {
     EObjComm *c;
-    UC(emalloc(sizeof(EObjComm), (void**) com));
+    EMALLOC(1, com);
     c = *com;
     
     UC(comm_ini(cart, /**/ &c->pp));
@@ -41,7 +41,7 @@ void eobj_unpack_ini(int3 L, int maxd, int maxpsolid, EObjUnpack **unpack) {
     int cap[NFRAGS];
     EObjUnpack *u;
 
-    UC(emalloc(sizeof(EObjUnpack), (void**) unpack));
+    EMALLOC(1, unpack);
     u = *unpack;
 
     u->L = L;
@@ -54,7 +54,7 @@ void eobj_packf_ini(int3 L, int maxd, int maxpsolid, EObjPackF **pack) {
     int cap[NFRAGS];
     EObjPackF *p;
 
-    UC(emalloc(sizeof(EObjPackF), (void**) pack));
+    EMALLOC(1, pack);
     p = *pack;
     
     estimates(L, NFRAGS, maxd, maxpsolid, /**/ cap);
@@ -66,7 +66,7 @@ void eobj_unpackf_ini(int3 L, int maxd, int maxpsolid, EObjUnpackF **unpack) {
     int cap[NFRAGS];
     EObjUnpackF *u;
 
-    UC(emalloc(sizeof(EObjUnpackF), (void**) unpack));
+    EMALLOC(1, unpack);
     u = *unpack;
     
     estimates(L, NFRAGS, maxd, maxpsolid, /**/ cap);
