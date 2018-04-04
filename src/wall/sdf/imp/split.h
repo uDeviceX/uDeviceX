@@ -19,8 +19,8 @@ static void split_wall_solvent(const int *keys, /*io*/ int *s_n, Particle *s_pp,
 void sdf_bulk_wall(const Sdf *sdf, /*io*/ int* s_n, Particle *s_pp, /*o*/ int *w_n, Particle *w_pp) {
     int n = *s_n, *labels;
     Particle *s_pp_hst;
-    UC(emalloc(n*sizeof(Particle), (void**) &s_pp_hst));
-    UC(emalloc(n*sizeof(int),      (void**)&labels));
+    EMALLOC(n, &s_pp_hst);
+    EMALLOC(n, &labels);
     
     UC(wall_label_hst(sdf, n, s_pp, labels));
     cD2H(s_pp_hst, s_pp, n);
@@ -28,8 +28,8 @@ void sdf_bulk_wall(const Sdf *sdf, /*io*/ int* s_n, Particle *s_pp, /*o*/ int *w
     UC(split_wall_solvent(labels, /*io*/ s_n, s_pp_hst, /**/ w_n, w_pp));
     cH2D(s_pp, s_pp_hst, *s_n);
                        
-    UC(efree(s_pp_hst));
-    UC(efree(labels));
+    EFREE(s_pp_hst);
+    EFREE(labels);
 }
 
 /* bulk predicate : is in bulk? */
@@ -48,9 +48,9 @@ static int who_stays0(int *keys, int nc, int nv, /*o*/ int *stay) {
 
 int sdf_who_stays(const Sdf *sdf, int n, const Particle *pp, int nc, int nv, /**/ int *stay) {
     int *labels;
-    UC(emalloc(n*sizeof(int), (void**)&labels));
+    EMALLOC(n, &labels);
     UC(wall_label_hst(sdf, n, pp, /**/ labels));
     nc = who_stays0(labels, nc, nv, /**/ stay);
-    efree(labels);
+    EFREE(labels);
     return nc;
 }

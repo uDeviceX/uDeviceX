@@ -51,7 +51,7 @@ static void read_args(int argc, char **argv, /**/ config_t *c) {
    enum {MAX_CHAR = 100000};
    char *args;
 
-   UC(emalloc(MAX_CHAR * sizeof(char), (void **) &args));
+   EMALLOC(MAX_CHAR, &args);
 
    concatenate(argc, argv, /**/ args);
    if (!config_read_string(c, args)) {
@@ -60,7 +60,7 @@ static void read_args(int argc, char **argv, /**/ config_t *c) {
            config_error_line(c), config_error_text(c));
    }
 
-   UC(efree(args));
+   EFREE(args);
 }
 
 static void shift(int *c, char ***v) {

@@ -1,13 +1,13 @@
 void pair_ini(PairParams **par) {
     PairParams *p;
-    UC(emalloc(sizeof(PairParams), (void **) par));
+    EMALLOC(1, par);
     p = *par;
 
     p->ncolors = 0;
 }
 
 void pair_fin(PairParams *p) {
-    UC(efree(p));
+    EFREE(p);
 }
 
 void pair_set_lj(float sigma, float eps, PairParams *p) {
