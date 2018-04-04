@@ -91,11 +91,12 @@ static void diag(float time, Sim *s) {
     UC(diag_part_apply(s->dump.diagpart, s->cart, time, n, s->dump.pp));
 }
 
-static void dump_strt_templ(const Coords *coords, Wall *w, Sim *s) { /* template dumps (wall, solid) */
+static void dump_strt_templ(Sim *s) { /* template dumps (wall, solid) */
     Rig *rig = &s->rig;
+    Wall  *w = &s->wall;
     if (s->opt.dump_strt) {
-        if (s->opt.wall) wall_strt_dump_templ(coords, &w->q);
-        if (s->opt.rig)  rig_strt_dump_templ(coords, &rig->q);
+        if (s->opt.wall) wall_strt_dump_templ(s->cart, &w->q);
+        if (s->opt.rig)  rig_strt_dump_templ(s->cart, &rig->q);
     }
 }
 
@@ -103,9 +104,9 @@ static void dump_strt0(int id, Sim *s) {
     Flu *flu = &s->flu;
     Rbc *rbc = &s->rbc;
     Rig *rig = &s->rig;
-    flu_strt_dump(s->coords, id, &flu->q);
-    if (s->opt.rbc) rbc_strt_dump(s->coords, id, &rbc->q);
-    if (s->opt.rig) rig_strt_dump(s->coords, id, &rig->q);
+    flu_strt_dump(s->cart, id, &flu->q);
+    if (s->opt.rbc) rbc_strt_dump(s->cart, id, &rbc->q);
+    if (s->opt.rig) rig_strt_dump(s->cart, id, &rig->q);
 }
 
 static void dump_strt(Sim *s) {

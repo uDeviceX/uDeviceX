@@ -94,15 +94,15 @@ void sim_strt(Sim *s, const Config *cfg, Time *time, TimeSeg *time_seg) {
     long maxp_wall = get_max_parts_wall(s->params);
 
     /*Q*/
-    flu_strt_quants(s->coords, RESTART_BEGIN, &flu->q);
+    flu_strt_quants(s->cart, RESTART_BEGIN, &flu->q);
     flu_build_cells(&flu->q);
 
-    if (opt->rbc) rbc_strt_quants(s->coords, cell, RESTART_BEGIN, &rbc->q);
+    if (opt->rbc) rbc_strt_quants(s->cart, cell, RESTART_BEGIN, &rbc->q);
     dSync();
 
-    if (opt->rig) rig_strt_quants(s->coords, RESTART_BEGIN, &rig->q);
+    if (opt->rig) rig_strt_quants(s->cart, RESTART_BEGIN, &rig->q);
 
-    if (opt->wall) wall_strt_quants(s->coords, maxp_wall, &wall->q);
+    if (opt->wall) wall_strt_quants(s->cart, maxp_wall, &wall->q);
 
     /*T*/
     if (opt->wall && wall->q.n) UC(wall_gen_ticket(&wall->q, wall->t));

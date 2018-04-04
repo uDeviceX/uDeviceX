@@ -87,7 +87,7 @@ static void pre_run(const Config *cfg, Sim *s) {
     UC(bforce_set_conf(cfg, s->bforce));
 
     UC(dump_history(cfg, "conf.history.cfg"));
-    UC(dump_strt_templ(s->coords, &s->wall, s));
+    UC(dump_strt_templ(s));
 
     compute_hematocrit(s);
     
