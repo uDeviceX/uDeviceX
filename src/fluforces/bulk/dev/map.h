@@ -7,7 +7,7 @@ _I_ int map_end(const Map *m, int i) {
     return i >= m->str4;
 }
 
-_I_ int map_getid(const Map *m, int i) {
+_I_ int map_get_id(const Map *m, int i) {
     int m1, m2, m3, m4, id;
     m1 = (i >= m->str0);
     m2 = (i >= m->str1);
@@ -19,6 +19,10 @@ _I_ int map_getid(const Map *m, int i) {
               m1 ? m->org1 :
               m->org0);
     return id;
+}
+
+_S_ bool valid_c(int c, int hi) {
+    return (c >= 0) && (c < hi);
 }
 
 _S_ int2 part_map_bounds(int3 L, int dz, int dy, int3 ca, const int *start) {
