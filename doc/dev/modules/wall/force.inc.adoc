@@ -1,3 +1,19 @@
 [[wall_force]]
 = force
 
+compute interaction forces between frozen wall particles and other particles.
+
+interface:
+
+[source,cpp]
+----
+include::{src}/wall/force/imp.h[tag=int]
+----
+
+where the helper structure `WallForce` acts as a view to be passed to
+the kernel. It is defined as:
+
+[source,cpp]
+----
+include::{src}/wall/force/imp.h[tag=struct]
+----

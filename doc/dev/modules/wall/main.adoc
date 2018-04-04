@@ -36,7 +36,8 @@ include::{src}/wall/imp.h[tag=gen]
 ----
 <1> freeze the particles from a given equilibrated array of solvent particles
     occupying the subdomain. The input array of particles is resized
-    and only solvent particles remain.
+    and only solvent particles remain. Creates additional "margin
+    particles" copied from neighbouring ranks. See <<wall_exch>>.
 <2> generate `Ticket` structure from quantities
 
 restart interface:
@@ -58,6 +59,8 @@ include::{src}/wall/imp.h[tag=int]
 == submodules
 
 :leveloffset: +2
+
+include::exch.inc.adoc[]
 
 include::force.inc.adoc[]
 

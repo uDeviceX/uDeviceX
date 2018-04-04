@@ -1,0 +1,16 @@
+[[wall_exch]]
+= exch
+
+a simple module to exchange the "margin particles" between
+neighbouring ranks (on host).
+These particles are used in interactions and act as _ghost particles_.
+
+interface:
+
+[source,cpp]
+----
+include::{src}/wall/exch/imp.h[tag=struct]
+----
+
+`maxn` is the maximum number of particles that can be stored in the
+`pp` buffer.
