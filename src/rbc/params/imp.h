@@ -21,12 +21,14 @@ void rbc_params_set_area_volume(float ka, float kd, float kv, RbcParams *);
 void rbc_params_set_tot_area_volume(float totArea, float totVolume, RbcParams *);
 // end::set[]
 
+// tag::get[]
 double rbc_params_get_tot_volume(const RbcParams *);
+// end::get[]
 
 // tag::cnf[]
 void rbc_params_set_conf(const Config *c, RbcParams *);
 // end::cnf[]
 
-// tag::get[]
+// tag::view[]
 RbcParams_v rbc_params_get_view(const RbcParams *);
-// end::get[]
+// end::view[]
