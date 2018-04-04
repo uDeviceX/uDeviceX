@@ -15,5 +15,5 @@ B=.
 if test $# -ne 0; then B=${1%/}; shift; fi
 
 for code in flu.pp flu.ii flu.cc wall.pp rig.pp rig.ss rbc.pp rbc.ii; do
-    mkdir -p "$B/$code"
+    mkdir -p "$B/strt/$code"
 done
