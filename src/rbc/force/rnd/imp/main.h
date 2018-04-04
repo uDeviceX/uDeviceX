@@ -7,7 +7,7 @@ static void ini0(RbcRnd *d, int n, long seed) {
 }
 void rbc_rnd_ini(int n, long seed, RbcRnd **pq) {
     RbcRnd *q;
-    UC(emalloc(sizeof(RbcRnd), (void**) &q));
+    EMALLOC(1, &q);
     UC(ini0(q, n, seed));
     *pq = q;
 }
@@ -18,7 +18,7 @@ static void fin0(RbcRnd *d) {
 }
 void rbc_rnd_fin(RbcRnd *d) {
     fin0(d);
-    free(d);
+    EFREE(d);
 }
 
 static void assert_n(int n, int max, const char *s) {

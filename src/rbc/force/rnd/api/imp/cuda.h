@@ -6,19 +6,16 @@ static int CreateGenerator0(curandGenerator_t *g) {
 int CreateGenerator(Generator_t *pg) {
     int rc;
     Generator_st *s;
-    UC(emalloc(sizeof(Generator_st), (void**) &s));
+    EMALLOC(1, &s);
     rc = CreateGenerator0(&s->g);
     *pg = s;
     return rc;
 }
 
-static int DestroyGenerator0(curandGenerator_t g) {
-    return curandDestroyGenerator(g);
-}
 int DestroyGenerator(Generator_t s) {
     int rc;
-    rc = DestroyGenerator0(s->g);
-    free(s);
+    rc = curandDestroyGenerator(s->g);
+    EFREE(s);
     return rc;
 }
 

@@ -8,11 +8,11 @@
 #include "imp.h"
 
 void rbc_params_ini(RbcParams **p) {
-    UC(emalloc(sizeof(RbcParams), (void**) p));
+    EMALLOC(1, p);
 }
 
 void rbc_params_fin(RbcParams *p) {
-    UC(efree(p));
+    EFREE(p);
 }
 
 void rbc_params_set_fluct(float gammaC, float gammaT, float kBT, RbcParams *par) {
