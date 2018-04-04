@@ -25,7 +25,7 @@ static void gen_quants(MPI_Comm cart, int3 L, int maxn, const Sdf *qsdf, /**/ in
     dSync();
 }
 
-void wall_gen_quants(MPI_Comm cart, int maxn, const Sdf *sdf, /**/ int *n, Particle *pp, WallQuants *q) {
+void wall_gen_quants(MPI_Comm cart, int maxn, const Sdf *sdf, /* io */ int *o_n, Particle *o_pp, /**/ WallQuants *q) {
     int3 L = q->L;
     UC(gen_quants(cart, L, maxn, sdf, n, pp, &q->n, &q->pp));
 }

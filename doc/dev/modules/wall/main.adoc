@@ -1,0 +1,63 @@
+= wall
+
+Manages frozen wall particles data.
+
+== data structure
+
+The data is stored in a visible structure. The user can access
+directly the fields.
+
+[source,cpp]
+----
+include::{src}/wall/imp.h[tag=struct]
+----
+
+Only positions of the particles are stored, Their velocity can be
+computed by using the <<wall_wvel, wvel submodule>>.
+
+The `Ticket` hidden structure contains helpers (cell lists, texture objects,
+random number generator) for force interactions with external
+particles.
+
+== interface
+
+allocate and deallocate the data:
+
+[source,cpp]
+----
+include::{src}/wall/imp.h[tag=mem]
+----
+
+generate the quantities:
+
+[source,cpp]
+----
+include::{src}/wall/imp.h[tag=gen]
+----
+<1> freeze the particles from a given equilibrated array of solvent particles
+    occupying the subdomain
+<2> generate `Ticket` structure from quantities
+
+restart interface:
+
+[source,cpp]
+----
+include::{src}/wall/imp.h[tag=start]
+----
+<1> read quantities from restart files
+<2> dump quantities to restart files (set 0 velocity to particles)
+
+compute interactions with other particles (see <<wall_force, force submodule>>):
+
+[source,cpp]
+----
+include::{src}/wall/imp.h[tag=int]
+----
+
+== submodules
+
+:leveloffset: +2
+
+include::force.inc.adoc[]
+
+:leveloffset: -2
