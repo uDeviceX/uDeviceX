@@ -1,11 +1,12 @@
 #define CODE "wall"
+#define PP CODE ".pp"
 
 static void read(MPI_Comm comm, int maxn, /**/ float4 *pp, int *n) {
     Particle *pphst, *ppdev;
     size_t sz = maxn * sizeof(Particle);
     EMALLOC(maxn, &pphst);
 
-    restart_read_pp(comm, CODE, RESTART_TEMPL, n, pphst);
+    restart_read_pp(comm, PP, RESTART_TEMPL, n, pphst);
 
     if (*n) {
         CC(d::Malloc((void **) &ppdev, sz));
@@ -26,7 +27,7 @@ static void write(MPI_Comm comm, int n, const float4 *pp) {
         cD2H(pphst, ppdev, n);
         CC(d::Free(ppdev));
     }
-    restart_write_pp(comm, CODE, RESTART_TEMPL, n, pphst);
+    restart_write_pp(comm, PP, RESTART_TEMPL, n, pphst);
 
     EFREE(pphst);
 }
@@ -50,3 +51,6 @@ void wall_strt_quants(MPI_Comm comm, int maxn, WallQuants *q) {
 void wall_strt_dump_templ(MPI_Comm comm, const WallQuants *q) {
     write(comm, q->n, q->pp);
 }
+
+#undef PP
+#undef CODE

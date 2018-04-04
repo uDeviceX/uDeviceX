@@ -1,7 +1,7 @@
 #define CODE "flu"
 #define PP  CODE ".pp"
-#define COL CODE ".colors"
-#define IDS CODE ".ids"
+#define COL CODE ".cc"
+#define IDS CODE ".ii"
 
 static int strt_pp(MPI_Comm comm, const int id, Particle *dev, /*w*/ Particle *hst) {
     int n;
@@ -18,14 +18,14 @@ static int strt_ii(MPI_Comm comm, const char *code, const int id, int *dev, /*w*
 }
 
 void flu_strt_quants(MPI_Comm comm, const int id, FluQuants *q) {
-    q->n =         strt_pp(comm,      id, /**/ q->pp, /* w */ q->pp_hst);
+    q->n =         strt_pp(comm,     id, /**/ q->pp, /* w */ q->pp_hst);
     if (q->ids)    strt_ii(comm, IDS, id, /**/ q->ii, /* w */ q->ii_hst);
     if (q->colors) strt_ii(comm, COL, id, /**/ q->cc, /* w */ q->cc_hst);
 }
 
 static void strt_dump_pp(MPI_Comm comm, const int id, const int n, const Particle *dev, Particle *hst) {
     if (n) cD2H(hst, dev, n);
-    restart_write_pp(comm, CODE, id, n, hst);
+    restart_write_pp(comm, PP, id, n, hst);
 }
 
 static void strt_dump_ii(MPI_Comm comm, const char *code, const int id, const int n, const int *dev, int *hst) {
@@ -40,6 +40,6 @@ void flu_strt_dump(MPI_Comm comm, const int id, const FluQuants *q) {
 }
 
 #undef CODE
-#undef COL
+#undef COl
 #undef IDS
 #undef PP
