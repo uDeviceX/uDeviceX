@@ -34,8 +34,8 @@ void adj_get_anti(const Adj *adj, /**/ int *anti) {
     md = adj->md;
     nv = adj->nv;
     n = md*nv;
-    UC(emalloc(n*sizeof(int), (void**) &hx));
-    UC(emalloc(n*sizeof(int), (void**) &hy));
+    EMALLOC(n, &hx);
+    EMALLOC(n, &hy);
     ini0(md, nv, adj, /**/ anti, /*w*/ hx, hy);
-    free(hx); free(hy);
+    EFREE(hx); EFREE(hy);
 }

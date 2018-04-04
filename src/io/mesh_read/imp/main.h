@@ -117,14 +117,14 @@ int mesh_read_get_md(const MeshRead *q) {
         msg_print("mesh_get_md called for nv = 0");
         return 0;
     }
-    UC(emalloc(nv*sizeof(d[0]), (void**)&d));
+    EMALLOC(nv, &d);
     for (i = 0; i < nv; i++) d[i] = 0;
     for (i = 0; i < nt; i++) {
         x = tt[i].x; y = tt[i].y; z = tt[i].z;
         d[x]++; d[y]++; d[z]++;
     }
     m = amax(d, nv);
-    UC(efree(d));
+    EFREE(d);
     return m;
 }
 
