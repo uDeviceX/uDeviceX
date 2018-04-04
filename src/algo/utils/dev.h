@@ -33,3 +33,7 @@ _I_ float3 warpReduceSum(float3 val)  // <3>
     }
     return val;
 }
+
+#undef _S_
+#undef _I_
+
