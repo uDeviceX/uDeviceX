@@ -14,13 +14,13 @@ struct DFluStatus {
 
 void dflu_status_ini(DFluStatus **ps) {
     DFluStatus *s;
-    UC(emalloc(sizeof(DFluStatus), (void**)&s));
+    EMALLOC(1, &s);
     s->errorcode = SUCCESS;
     *ps = s;
 }
 
 void dflu_status_fin(DFluStatus *s) {
-    UC(efree(s));
+    EFREE(s);
 }
 
 int  dflu_status_success(DFluStatus *s) {

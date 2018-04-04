@@ -5,7 +5,7 @@ void dflu_pack_fin(DFluPack *p) {
     if (p->opt.ids)    UC(comm_bags_fin(PINNED, NONE, /**/ &p->hii, &p->dii));
     if (p->opt.colors) UC(comm_bags_fin(PINNED, NONE, /**/ &p->hcc, &p->dcc));
 
-    UC(efree(p));
+    EFREE(p);
 }
 
 void dflu_comm_fin(DFluComm *c) {
@@ -14,7 +14,7 @@ void dflu_comm_fin(DFluComm *c) {
     if (c->opt.ids)    UC(comm_fin(c->ii));
     if (c->opt.colors) UC(comm_fin(c->cc));
 
-    UC(efree(c));
+    EFREE(c);
 }
 
 void dflu_unpack_fin(DFluUnpack *u) {
@@ -26,5 +26,5 @@ void dflu_unpack_fin(DFluUnpack *u) {
     if (u->opt.ids)    CC(d::Free(u->iire));
     if (u->opt.colors) CC(d::Free(u->ccre));
 
-    UC(efree(u));
+    EFREE(u);
 }
