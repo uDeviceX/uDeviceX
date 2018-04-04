@@ -2,10 +2,9 @@
 
 msg () { echo >&2 "$@"; }
 usg() {
-    msg 'usage: u.strtdir [basedir] [NX] [NY] [NZ]'
+    msg 'usage: u.strtdir [basedir]'
     msg 'create directory tree where udx dumps restart files'
     msg '  basedir: base directory the structure (default ".")'
-    msg '  N[XYZ]  : number of MPI processes in corresponding direction (default: 1)'
     exit
 }
 
@@ -15,43 +14,6 @@ if test $# -ne 0 && test "$1" = -h; then usg; fi
 B=. 
 if test $# -ne 0; then B=${1%/}; shift; fi
 
-# default num procs
-NX=1; NY=1; NZ=1;
-
-if test $# -ne 0 -a $# -ne 3; then usg; fi
-
-if test $# = 3; then
-    if test "$1" -ge 1 -a "$2" -ge 1 -a "$3" -ge 1; then NX=$1; NY=$2; NZ=$3;
-    else usg;
-    fi
-fi
-
-NN=$((${NX}*${NY}*${NZ}))
-
-single() {
-    TMP=`printf "%s/strt/%s" $B $1` 
-    shift; $@ $TMP
-}
-
-multiple() {
-    TMP=`printf "%s/strt/%s/%03d.%03d.%03d" $B $1 $X $Y $Z`
-    shift; $@ $TMP
-}
-
-process() {
-    driver=$1; shift
-    for code in flu wall rig rbc; do
-        $driver $code $@
-    done
-}
-
-if test $NN = 1; then
-    process single mkdir -p
-else
-    NX=$((${NX}-1))
-    NY=$((${NY}-1))
-    NZ=$((${NZ}-1))
-    for X in `seq 0 $NX`; do for Y in `seq 0 $NY`; do for Z in `seq 0 $NZ`; do
-        process multiple mkdir -p
-    done; done; done
-fi
+for code in flu.pp flu.ii flu.cc wall.pp rig.pp rig.ss rbc.pp rbc.ii; do
+    mkdir -p "$B/$code"
+done
