@@ -9,7 +9,7 @@ interface:
 
 [source,cpp]
 ----
-include::{src}/wall/exch/imp.h[tag=struct]
+include::{src}/wall/exch/imp.h[tag=int]
 ----
 
 `maxn` is the maximum number of particles that can be stored in the
