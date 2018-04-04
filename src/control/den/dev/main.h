@@ -1,9 +1,3 @@
-static __device__ int warpReduceSum(int v) {
-    for (int offset = warpSize>>1; offset > 0; offset >>= 1)
-        v += __shfl_down(v, offset);
-    return v;
-}
-
 __global__ void kill(int maxden, const int *starts, const int *counts, int n, const int *cids, /**/ int *ndead, int *kk) {
     int i, nd, cid, s, c, pid, j;
     nd = 0;

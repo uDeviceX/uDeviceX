@@ -16,6 +16,7 @@
 #include "utils/cc.h"
 #include "utils/mc.h"
 #include "utils/kl.h"
+#include "algo/dev.h"
 
 #include "d/api.h"
 

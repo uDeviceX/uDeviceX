@@ -1,18 +1,3 @@
-static __device__ float3 warpReduceSum(float3 val) {
-    for (int offset = warpSize/2; offset > 0; offset /= 2) {
-        val.x += __shfl_down(val.x, offset);
-        val.y += __shfl_down(val.y, offset);
-        val.z += __shfl_down(val.z, offset);
-    }
-    return val;
-}
-
-static __device__ int warpReduceSum(int val) {
-    for (int offset = warpSize/2; offset > 0; offset /= 2)
-        val += __shfl_down(val, offset);
-    return val;
-}
-
 __global__ void reduceByWarp(const float3 *gvel, const int *gnum, const uint ncells, /**/ float3 *vel, int *num) {
     assert(blockDim.x == 32);
     int i, c;

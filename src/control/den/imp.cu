@@ -16,6 +16,8 @@
 #include "coords/type.h"
 #include "coords/imp.h"
 
+#include "algo/dev.h"
+
 #include "imp.h"
 
 namespace den_dev {
