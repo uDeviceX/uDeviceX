@@ -18,7 +18,7 @@
 #include "d/ker.h"
 #include "utils/cc.h"
 #include "utils/kl.h"
-#include "algo/dev.h"
+#include "algo/utils/dev.h"
 
 #include "imp.h"
 
