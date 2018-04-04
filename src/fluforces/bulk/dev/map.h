@@ -2,25 +2,25 @@
 #define _I_ static __device__
 
 struct Map {
-    int org0, org1, org2, org3, org4;
-    int str0, str1, str2, str3, str4;
+    int org[5];
+    int str[5];
 };
 
 _I_ int map_end(const Map *m) {
-    return m->str4;
+    return m->str[4];
 }
 
 _I_ int map_get_id(const Map *m, int i) {
     int m1, m2, m3, m4, id;
-    m1 = (i >= m->str0);
-    m2 = (i >= m->str1);
-    m3 = (i >= m->str2);
-    m4 = (i >= m->str3);
-    id = i + (m4 ? m->org4 :
-              m3 ? m->org3 :
-              m2 ? m->org2 :
-              m1 ? m->org1 :
-              m->org0);
+    m1 = (i >= m->str[0]);
+    m2 = (i >= m->str[1]);
+    m3 = (i >= m->str[2]);
+    m4 = (i >= m->str[3]);
+    id = i + (m4 ? m->org[4] :
+              m3 ? m->org[3] :
+              m2 ? m->org[2] :
+              m1 ? m->org[1] :
+              m->org[0]);
     return id;
 }
 
@@ -53,33 +53,29 @@ _S_ int2 part_map_bounds(int3 L, int dz, int dy, int3 ca, const int *start) {
 
 _I_ void map_build(int3 L, int3 ca, const int *start, Map *m) {
 #define GET_BOUNDS(dz, dy) part_map_bounds (L, dz, dy, ca, start)
+#define SET_PART(i) do {                        \
+        m->org[i] = b.x - s;                    \
+        s += b.y - b.x;                         \
+        m->str[i] = s;                          \
+    } while (0)
+
     int2 b;   /* bounds */
-    int s; /* start, count */
+    int s = 0; /* start, count */
 
     b = GET_BOUNDS(-1, -1);
-    m->org0 = b.x;
-    s = b.y - b.x;
-    m->str0 = s;
+    SET_PART(0);
     
     b = GET_BOUNDS(-1,  0);
-    m->org1 = b.x - s;
-    s += b.y - b.x;
-    m->str1 = s;
-    
+    SET_PART(1);
+ 
     b = GET_BOUNDS(-1,  1);
-    m->org2 = b.x - s;
-    s += b.y - b.x;
-    m->str2 = s;
+    SET_PART(2);
 
     b = GET_BOUNDS( 0, -1);
-    m->org3 = b.x - s;
-    s += b.y - b.x;
-    m->str3 = s;
+    SET_PART(3);
 
     b = GET_BOUNDS( 0,  0);
-    m->org4 = b.x - s;
-    s += b.y - b.x;
-    m->str4 = s;
+    SET_PART(4);
     
 #undef GET_BOUNDS    
 }
