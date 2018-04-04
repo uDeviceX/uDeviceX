@@ -20,13 +20,6 @@ _S_ bool valid_c(int c, int hi) {
     return (c >= 0) && (c < hi);
 }
 
-_S_ bool valid_cid(int3 L, int3 c) {
-    return
-        valid_c(c.x, L.x) &&
-        valid_c(c.y, L.y) &&
-        valid_c(c.z, L.z);    
-}
-
 template <typename Par, typename Parray, typename Farray, typename Fo>
 _S_ void loop_pp(const Par *params, int ia, PairPa pa, Parray parray, int start, int end, float seed, /**/ Fo *fa, Farray farray) {
     enum {X, Y, Z};
