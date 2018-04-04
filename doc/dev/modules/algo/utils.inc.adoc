@@ -1,0 +1,15 @@
+= utils
+
+helper device functions
+
+Warp reduction: sum  all elements within a warp.
+This is a collective operation, all threads of the warp must execute it.
+
+[source,cpp]
+----
+include::{src}/algo/utils/dev.h[tag=int]
+----
+<1> generic warp reduction. thread 0 of the warp gets the result.
+<2> specific implementation for `float2`
+<3> specific implementation for `float3`
+
