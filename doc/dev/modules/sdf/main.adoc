@@ -1,6 +1,6 @@
-= signed distance function (sdf)
+[[sdf]]
+= sdf: signed distance function
 :lext: .adoc
-:src: ../../../../src
 :stem: latexmath
 
 The Signed Distance Function (SDF) stem:[S(x, y, z)] is used to give the distance from a
