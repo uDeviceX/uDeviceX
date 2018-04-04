@@ -1,6 +1,6 @@
+[[wall_wvel]]
 = wvel
 
-:src: ../../../src
 :stem: latexmath
 
 Wall velocity field.

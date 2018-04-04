@@ -26,14 +26,14 @@ void wall_fin_ticket(WallTicket*);
 // end::mem[]
 
 // tag::gen[]
-void wall_gen_quants(MPI_Comm, int maxn, const Sdf*, /* io */ int *o_n, Particle *o_pp,  /**/ WallQuants*);
-void wall_gen_ticket(const WallQuants*, WallTicket*);
+void wall_gen_quants(MPI_Comm, int maxn, const Sdf*, /* io */ int *o_n, Particle *o_pp, /**/ WallQuants*); // <1>
+void wall_gen_ticket(const WallQuants*, WallTicket*); // <2>
 // end::gen[]
 
-// tag::strt[]
-void wall_strt_quants(const Coords*, int maxn, WallQuants*);
-void wall_strt_dump_templ(const Coords*, const WallQuants*);
-// end::strt[]
+// tag::start[]
+void wall_strt_quants(const Coords*, int maxn, WallQuants*); // <1>
+void wall_strt_dump_templ(const Coords*, const WallQuants*); // <2>
+// end::start[]
 
 // tag::int[]
 void wall_force(const PairParams*, const WvelStep *, const Coords*,

@@ -70,7 +70,7 @@ include::modules/sdf/main.adoc[]
 
 include::modules/utils/main.adoc[]
 
-include::modules/wvel.adoc[]
+include::modules/wall/main.adoc[]
 
 include::third.adoc[]
 
