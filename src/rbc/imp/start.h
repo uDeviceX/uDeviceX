@@ -1,8 +1,9 @@
 #define CODE "rbc"
+#define PP  CODE ".pp"
 #define IDS CODE ".ids"
 
 static void setup_from_strt(MPI_Comm comm, int nv, int id, /**/ Particle *pp, int *nc, int *n, /*w*/ Particle *pp_hst) {
-    restart_read_pp(comm, CODE, id, n, pp_hst);
+    restart_read_pp(comm, PP, id, n, pp_hst);
     *nc = *n / nv;
 
     if (*n) cH2D(pp, pp_hst, *n);
@@ -22,7 +23,7 @@ void rbc_strt_quants(MPI_Comm comm, MeshRead *off, int id, RbcQuants *q) {
 
 static void strt_dump(MPI_Comm comm, int id, int n, const Particle *pp, /*w*/ Particle *pp_hst) {
     if (n) cD2H(pp_hst, pp, n);
-    restart_write_pp(comm, CODE, id, n, pp_hst);
+    restart_write_pp(comm, PP, id, n, pp_hst);
 }
 
 static void strt_dump_ii(MPI_Comm comm, int id, int nc, const int *ii) {
@@ -36,4 +37,5 @@ void rbc_strt_dump(MPI_Comm comm, int id, const RbcQuants *q) {
 }
 
 #undef CODE
+#undef PP
 #undef IDS

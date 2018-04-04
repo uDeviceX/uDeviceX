@@ -1,10 +1,11 @@
 #define CODE "flu"
+#define PP  CODE ".pp"
 #define COL CODE ".colors"
 #define IDS CODE ".ids"
 
 static int strt_pp(MPI_Comm comm, const int id, Particle *dev, /*w*/ Particle *hst) {
     int n;
-    restart_read_pp(comm, CODE, id, &n, hst);
+    restart_read_pp(comm, PP, id, &n, hst);
     if (n) cH2D(dev, hst, n);
     return n;
 }
@@ -39,5 +40,6 @@ void flu_strt_dump(MPI_Comm comm, const int id, const FluQuants *q) {
 }
 
 #undef CODE
-#undef COLEXT
-#undef IDSEXT
+#undef COL
+#undef IDS
+#undef PP
