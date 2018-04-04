@@ -9,6 +9,11 @@ related daint commands
 salloc --constraint=gpu --time=01:00:00 -N 4
 ```
 
+debug queue:
+```
+salloc --constraint=gpu -p debug --time=00:30:00 -N 1
+```
+
 ## easy build for Octave
 
 (temporary) solution to load Octave: build it from easy-build:
