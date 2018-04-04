@@ -8,5 +8,5 @@ void wall_fin_ticket(WallTicket *t) {
     UC(texo_destroy(&t->texstart));
     UC(texo_destroy(&t->texpp));
     UC(clist_fin(&t->cells));
-    UC(efree(t));
+    EFREE(t);
 }
