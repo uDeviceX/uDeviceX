@@ -86,12 +86,12 @@ static void read(MPI_Comm comm, const char *base, const char *code, const int id
     BPC(bop_fin(bop));    
 }
 
-void restart_write_pp(MPI_Comm comm, const char *code, int id, long n, const Particle *pp) {
-    write(comm, BASE_STRT_DUMP, code, id, n, pp, BopFLOAT, 6, "x y z vx vy vz");
+void restart_write_pp(MPI_Comm comm, const char *base, const char *code, int id, long n, const Particle *pp) {
+    write(comm, base, code, id, n, pp, BopFLOAT, 6, "x y z vx vy vz");
 }
 
-void restart_read_pp(MPI_Comm comm, const char *code, int id, int *n, Particle *pp) {
-    read(comm, BASE_STRT_READ, code, id, n, pp);
+void restart_read_pp(MPI_Comm comm, const char *base, const char *code, int id, int *n, Particle *pp) {
+    read(comm, base, code, id, n, pp);
 }
 
 void restart_write_ii(MPI_Comm comm, const char *code, int id, long n, const int *ii) {

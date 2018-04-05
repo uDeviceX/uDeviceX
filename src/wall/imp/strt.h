@@ -6,7 +6,7 @@ static void read(MPI_Comm comm, int maxn, /**/ float4 *pp, int *n) {
     size_t sz = maxn * sizeof(Particle);
     EMALLOC(maxn, &pphst);
 
-    restart_read_pp(comm, PP, RESTART_TEMPL, n, pphst);
+    restart_read_pp(comm, BASE_STRT_READ, PP, RESTART_TEMPL, n, pphst);
 
     if (*n) {
         CC(d::Malloc((void **) &ppdev, sz));
@@ -27,7 +27,7 @@ static void write(MPI_Comm comm, int n, const float4 *pp) {
         cD2H(pphst, ppdev, n);
         CC(d::Free(ppdev));
     }
-    restart_write_pp(comm, PP, RESTART_TEMPL, n, pphst);
+    restart_write_pp(comm, BASE_STRT_DUMP, PP, RESTART_TEMPL, n, pphst);
 
     EFREE(pphst);
 }

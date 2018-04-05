@@ -11,7 +11,7 @@ static void pp2rr(const Particle *pp, const int n, float *rr) {
 static void gen_from_strt(int maxp, MPI_Comm comm, const int id, int *ns, int *nps, int *n, float *rr0_hst, Solid *ss_hst) {
     Particle *pp;
     EMALLOC(maxp, &pp);
-    restart_read_pp(comm, PP, RESTART_TEMPL, nps, pp);
+    restart_read_pp(comm, BASE_STRT_READ, PP, RESTART_TEMPL, nps, pp);
     pp2rr(pp, *nps, rr0_hst);
     EFREE(pp);
 
@@ -39,7 +39,7 @@ static void strt_dump_templ0(MPI_Comm comm, const int nps, const float *rr0_hst)
     EMALLOC(nps, &pp);
     rr2pp(rr0_hst, nps, pp);
 
-    restart_write_pp(comm, PP, RESTART_TEMPL, nps, pp);
+    restart_write_pp(comm, BASE_STRT_DUMP, PP, RESTART_TEMPL, nps, pp);
     
     EFREE(pp);
 }
