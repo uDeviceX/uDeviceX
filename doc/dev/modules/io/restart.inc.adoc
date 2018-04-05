@@ -1,8 +1,27 @@
 = restart
 
-dump and read restart files.
-uses the <<third_bop, bop>> library.
+Dump and read restart files to restart simulation at a given time.
+Uses the <<third_bop, bop>> file format.
 
+== naming
+
+The restart files are named as:
+
+----
+BASE/CODE/ID.bop
+BASE/CODE/ID.values
+----
+
+* `BASE`: compile time option, can be different for dump and read. See
+  `BASE_STRT_DUMP` and `BASE_STRT_READ`. Set to "strt" by default.
+* `CODE`: specified by the user, see `code` parameter in the
+  <<io_restart_int>>. By convention, it corresponds to the quantity name
+  followed by an additional specifier, such as "flu.pp" for particles
+  of the solvent.
+* `ID`: a string specific to the time step. Common value is the dump
+  index starting from 0. Special values are described in  <<io_restart_int>>
+
+[[io_restart_int]]
 == interface
 
 Writing a single file for all ranks:
