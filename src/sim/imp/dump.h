@@ -94,9 +94,10 @@ static void diag(float time, Sim *s) {
 static void dump_strt_templ(Sim *s) { /* template dumps (wall, solid) */
     Rig *rig = &s->rig;
     Wall  *w = &s->wall;
+    const char *base = s->opt.strt_base_dump;
     if (s->opt.dump_strt) {
-        if (s->opt.wall) wall_strt_dump_templ(s->cart, BASE_STRT_DUMP, &w->q);
-        if (s->opt.rig)  rig_strt_dump_templ(s->cart, BASE_STRT_DUMP, &rig->q);
+        if (s->opt.wall) wall_strt_dump_templ(s->cart, base, &w->q);
+        if (s->opt.rig)  rig_strt_dump_templ(s->cart, base, &rig->q);
     }
 }
 
@@ -104,9 +105,10 @@ static void dump_strt0(int id, Sim *s) {
     Flu *flu = &s->flu;
     Rbc *rbc = &s->rbc;
     Rig *rig = &s->rig;
-    flu_strt_dump(s->cart, BASE_STRT_DUMP, id, &flu->q);
-    if (s->opt.rbc) rbc_strt_dump(s->cart, BASE_STRT_DUMP, id, &rbc->q);
-    if (s->opt.rig) rig_strt_dump(s->cart, BASE_STRT_DUMP, id, &rig->q);
+    const char *base = s->opt.strt_base_dump;
+    flu_strt_dump(s->cart, base, id, &flu->q);
+    if (s->opt.rbc) rbc_strt_dump(s->cart, base, id, &rbc->q);
+    if (s->opt.rig) rig_strt_dump(s->cart, base, id, &rig->q);
 }
 
 static void dump_strt(Sim *s) {
