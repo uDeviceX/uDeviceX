@@ -1,12 +1,12 @@
 #define CODE "wall"
 #define PP CODE ".pp"
 
-static void read(MPI_Comm comm, int maxn, /**/ float4 *pp, int *n) {
+static void read(MPI_Comm comm, const char *base, int maxn, /**/ float4 *pp, int *n) {
     Particle *pphst, *ppdev;
     size_t sz = maxn * sizeof(Particle);
     EMALLOC(maxn, &pphst);
 
-    restart_read_pp(comm, BASE_STRT_READ, PP, RESTART_TEMPL, n, pphst);
+    restart_read_pp(comm, base, PP, RESTART_TEMPL, n, pphst);
 
     if (*n) {
         CC(d::Malloc((void **) &ppdev, sz));
@@ -17,7 +17,7 @@ static void read(MPI_Comm comm, int maxn, /**/ float4 *pp, int *n) {
     EFREE(pphst);
 }
 
-static void write(MPI_Comm comm, int n, const float4 *pp) {
+static void write(MPI_Comm comm, const char *base, int n, const float4 *pp) {
     Particle *pphst, *ppdev;
 
     EMALLOC(n, &pphst);
@@ -27,15 +27,15 @@ static void write(MPI_Comm comm, int n, const float4 *pp) {
         cD2H(pphst, ppdev, n);
         CC(d::Free(ppdev));
     }
-    restart_write_pp(comm, BASE_STRT_DUMP, PP, RESTART_TEMPL, n, pphst);
+    restart_write_pp(comm, base, PP, RESTART_TEMPL, n, pphst);
 
     EFREE(pphst);
 }
 
-static void strt_quants(MPI_Comm comm, int maxn, int *w_n, float4 **w_pp) {
+static void strt_quants(MPI_Comm comm, const char *base, int maxn, int *w_n, float4 **w_pp) {
     float4 * pptmp;
     CC(d::Malloc((void **) &pptmp, maxn * sizeof(float4)));
-    read(comm, maxn, pptmp, w_n);
+    read(comm, base, maxn, pptmp, w_n);
 
     if (*w_n) {
         CC(d::Malloc((void **) w_pp, *w_n * sizeof(float4)));
@@ -45,11 +45,11 @@ static void strt_quants(MPI_Comm comm, int maxn, int *w_n, float4 **w_pp) {
 }
 
 void wall_strt_quants(MPI_Comm comm, int maxn, WallQuants *q) {
-    strt_quants(comm, maxn, &q->n, &q->pp);
+    strt_quants(comm, BASE_STRT_READ, maxn, &q->n, &q->pp);
 }
 
 void wall_strt_dump_templ(MPI_Comm comm, const WallQuants *q) {
-    write(comm, q->n, q->pp);
+    write(comm, BASE_STRT_DUMP, q->n, q->pp);
 }
 
 #undef PP
