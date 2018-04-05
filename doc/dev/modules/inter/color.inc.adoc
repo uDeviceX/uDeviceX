@@ -1,3 +1,38 @@
+[[inter_color]]
 = color
 
+Generate colors initial conditions
+
+== interface
+
+allocate, deallocate the helper structure:
+
+[source, cpp]
+----
+include::{src}/inter/color/imp.h[tag=mem]
+----
+
+set the geometry type
+
+[source, cpp]
+----
+include::{src}/inter/color/imp.h[tag=set]
+----
+<1> color with `RED` a ball of radius `R` in the center of the domain,
+    and the rest `BLUE`
+<2> color all particles as `BLUE`
+
+this can also be set via <<conf, configuration>> file:
+
+[source, cpp]
+----
+include::{src}/inter/color/imp.h[tag=cfg]
+----
+
+Apply coloring to a set of particles host or device arrays:
+
+[source, cpp]
+----
+include::{src}/inter/color/imp.h[tag=int]
+----
 

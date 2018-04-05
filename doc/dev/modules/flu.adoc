@@ -29,7 +29,7 @@ include::{src}/flu/imp.h[tag=gen]
 ----
 <1> generate `numberdensity` particles randomly distributed in every
     cell with zero velocity. Colors are optionally set from `GenColor`
-    object (see <<>>).
+    object (see <<inter_color>>).
 <2> generate unique global ids for each particle
 
 restart interface (see <<io_restart>>):
