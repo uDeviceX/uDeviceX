@@ -27,15 +27,14 @@
   #define RBC_DOUBLE
 #endif
 
-#ifndef BASE_STRT_DUMP
-#define BASE_STRT_DUMP "strt"
-#endif
-
-#ifndef BASE_STRT_READ
-#define BASE_STRT_READ "strt"
-#endif
-
 #ifndef DUMP_BASE
 #define DUMP_BASE "."
 #endif
 
+#ifdef BASE_STRT_DUMP
+#error BASE_STRT_DUMP is runtime : dump.base_strt_dump
+#endif
+
+#ifdef BASE_STRT_READ
+#error BASE_STRT_READ  is runtime : dump.base_strt_read
+#endif
