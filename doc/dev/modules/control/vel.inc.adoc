@@ -1,11 +1,11 @@
-== Velocity controller
+= Velocity controller
 
 :stem: latexmath
 
 control velocity by modifying the imposed hydrostatic force
 the force is modified using a PID controller https://en.wikipedia.org/wiki/PID_controller.
 
-=== Controlled variables
+== Controlled variables
 
 The controlled variable is the (global) body force value.
 The state of the system is represented by
@@ -46,7 +46,7 @@ v_z \right),
 with stem:[r = \sqrt{x^2 + y^2}] and stem:[\theta = \arctan(y/x)].
 stem:[x] and stem:[y] are particle position with respect to the center of the domain.
 
-=== interface
+== interface
 
 allocate, deallocate:
 
@@ -85,7 +85,7 @@ include::{src}/control/vel/imp.h[tags=int]
 <2> reduce sampled quantities and update the controller. return the force
 <3> logging informations; dumped into the file `vcon.txt`
 
-=== configuration
+== configuration
 
 syntax:
 

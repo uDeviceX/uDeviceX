@@ -1,8 +1,8 @@
-== Outflow
+= Outflow
 
 Delete particles satisfying a predicate
 
-=== interface
+== interface
 
 allocate, deallocate:
 
@@ -11,17 +11,21 @@ allocate, deallocate:
 include::{src}/control/outflow/imp.h[tags=mem]
 ----
 
-initialize the outflow structure (to be done only once):
+set the outflow geometry type (to be done only once):
 
 [source,cpp]
 ----
-include::{src}/control/outflow/imp.h[tags=ini]
+include::{src}/control/outflow/imp.h[tags=set]
 ----
-depending on the geometry of outflow, call the appropriate
-`ini_params_xxx`.
 
+this can be done via <<conf, configuration>> file:
 
-filter and mark particles (at every time step):
+[source,cpp]
+----
+include::{src}/control/outflow/imp.h[tags=cfg]
+----
+
+filter and mark particles (to be called at every time step):
 
 [source,cpp]
 ----
@@ -33,9 +37,9 @@ include::{src}/control/outflow/imp.h[tags=int]
 <4> return the number of dead particles
 
 
-=== configuration
+== configuration
 
-==== plate
+=== plate
 
 will delete particles crossing a plate along the positive direction.
 syntax for the plate `y=4`:
@@ -43,15 +47,15 @@ syntax for the plate `y=4`:
 [source,cfg]
 ----
 outflow = {
-    active     = true;
-    type       = "plate";
-    direction  = 1;      # [0,1,2] = [X,Y,Z]
-    position   = 4.0;    # position along "direction"
-};
+    active     = true
+    type       = "plate"
+    direction  = 1      # [0,1,2] = [X,Y,Z]
+    position   = 4.0    # position along "direction"
+}
 ----
 
 
-==== circle
+=== circle
 
 delete particles going out of the cylinder.
 syntax for a cylinder of radius 8 centered at `(8, 8, 8)`:
@@ -59,9 +63,9 @@ syntax for a cylinder of radius 8 centered at `(8, 8, 8)`:
 [source,cfg]
 ----
 outflow = {
-    active = true;
-    type   = "circle";
-    R      = 8.0;
-    center = [8.0, 8.0, 8.0];
-};
+    active = true
+    type   = "circle"
+    R      = 8.0
+    center = [8.0, 8.0, 8.0]
+}
 ----

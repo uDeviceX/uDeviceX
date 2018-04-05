@@ -1,3 +1,4 @@
+[[conf]]
 = conf: runtime configuration
 
 == purpose

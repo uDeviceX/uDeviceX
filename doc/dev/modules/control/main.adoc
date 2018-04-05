@@ -1,10 +1,10 @@
 = Control
 
-:src: ../../../../src
-
 * velocity controller
 * open boundary conditions
 * density controller
+
+:leveloffset: +1
 
 include::vel.inc.adoc[]
 
@@ -13,4 +13,6 @@ include::inflow.inc.adoc[]
 include::outflow.inc.adoc[]
 
 include::den.inc.adoc[]
+
+:leveloffset: -1
 

@@ -1,10 +1,11 @@
 O = $B/algo/edg/imp.o $B/algo/force_stat/imp.o $B/algo/kahan_sum/imp.o \
     $B/algo/key_list/imp.o $B/algo/minmax/imp.o $B/algo/scalars/imp.o \
     $B/algo/scan/imp.o $B/algo/vectors/imp.o $B/clist/imp.o $B/cnt/imp.o \
-    $B/color/flux.o $B/comm/imp.o $B/conf/imp.o $B/control/den/imp.o \
-    $B/control/inflow/conf.o $B/control/inflow/imp.o $B/control/outflow/imp.o \
-    $B/control/vel/conf.o $B/control/vel/imp.o $B/coords/conf.o $B/coords/imp.o \
-    $B/d/api.o $B/dbg/conf.o $B/dbg/imp.o $B/distr/common/imp.o $B/distr/flu/imp.o \
+    $B/color/flux.o $B/comm/imp.o $B/conf/imp.o $B/control/den/conf.o \
+    $B/control/den/imp.o $B/control/inflow/conf.o $B/control/inflow/imp.o \
+    $B/control/outflow/conf.o $B/control/outflow/imp.o $B/control/vel/conf.o \
+    $B/control/vel/imp.o $B/coords/conf.o $B/coords/imp.o $B/d/api.o $B/dbg/conf.o \
+    $B/dbg/imp.o $B/distr/common/imp.o $B/distr/flu/imp.o \
     $B/distr/flu/status/imp.o $B/distr/map/imp.o $B/distr/rbc/imp.o \
     $B/distr/rig/imp.o $B/exch/common/imp.o $B/exch/flu/imp.o $B/exch/map/imp.o \
     $B/exch/mesh/imp.o $B/exch/obj/imp.o $B/farray/imp.o $B/flu/imp.o \
