@@ -3,7 +3,7 @@
 set -eu
 
 usg() {
-    echo 'usage: u.conf [source dir] [unit dir] default.h <<<!
+    echo 'usage: u.conf [source dir] [unit dir] <<<!
 [variables]
 ...
 !
