@@ -6,9 +6,7 @@
 
 static int rank;
 
-void msg_ini(int rnk) {
-    rank = rnk;
-}
+void msg_ini(int rnk) { rank = rnk; }
 
 static FILE* open(const char *path) {
     static int fst = 1;
