@@ -19,17 +19,18 @@ where
 
 [stem]
 ++++
-F_{ij}^C = \alpha \max \left( 1 - \frac{r_{ij}} {r_c}, 0 \right)
+F_{ij}^C = \alpha w(r), \\
+w(r) = \max \left( 1 - \frac{r_{ij}} {r_c}, 0 \right)
 ++++
 
 [stem]
 ++++
-F_{ij}^R = \sigma w(r_{ij}) W_{ij}
+F_{ij}^R = \sigma w^R(r_{ij}) W_{ij}
 ++++
 
 [stem]
 ++++
-F_{ij}^D = -\gamma w(r_{ij})^2 \mathbf{v}_{ij} \cdot \mathbf{r}_{ij}
+F_{ij}^D = -\gamma w^R(r_{ij})^2 \mathbf{v}_{ij} \cdot \mathbf{r}_{ij}
 ++++
 
 with
@@ -40,13 +41,14 @@ r_{ij} = | \mathbf{r}_{ij} |, \\
 \mathbf{v}_{ij} = \mathbf{v}_i - \mathbf{v}_j.
 ++++
 
-The viscous kernel is given by
+The kernel stem:{w^R} is given by
 
 [stem]
 ++++
-w(r) = r^{\frac{1}{2^s}},
+w^R(r) = (1-r)^{spow},
 ++++
-where stem:[s] is the `S_LEVEL` compile time option set to `2` by default.
+where stem:[spow] is a number between 0 and 1.
+The default value is 0.25.
 
 == repulsive LJ
 
@@ -166,6 +168,7 @@ flu = {
     dpd = true
     a = [10.0, 80.0, 10.0]
     g = [1.0, 8.0, 15.0]
+    spow = 0.25
     lj = false
 }
 
@@ -173,6 +176,7 @@ fsi = {
     dpd = true
     a = [10.0, 80.0, 10.0]
     g = [1.0, 8.0, 15.0]
+    spow = 0.25
     lj = false
 }
 
@@ -180,6 +184,7 @@ cnt = {
     dpd = true
     a = [0.0]
     g = [16.0]
+    spow = 0.25
     lj = true
     ljs = 0.3
     lje = 0.44
