@@ -1,4 +1,4 @@
-[[scatter_angle]]
+[[mesh_scatter]]
 = "scatter": distribute scalar values between different elements of the mesh
 
 

@@ -26,6 +26,8 @@ include::scatter.inc.adoc[]
 
 include::triangles.inc.adoc[]
 
+include::vert_area.inc.adoc[]
+
 include::volume.inc.adoc[]
 
 :leveloffset: -1

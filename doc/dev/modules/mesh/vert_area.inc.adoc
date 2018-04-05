@@ -1,0 +1,12 @@
+[[mesh_vert_area]]
+= vertices' area
+
+Compute area associated with every vertices. Assume every adjusting
+triangle contributes one third it its area to a vertice.
+
+[source,cpp]
+----
+include::{src}/mesh/vert_area/imp.h[tag=interface]
+----
+<1> in initialization triangles are stored
+<2> compute area
