@@ -1,4 +1,4 @@
-== Mesh
+= Mesh
 
 Read triangulated mesh from ascii
 link:https://en.wikipedia.org/wiki/OFF_(file_format)[off]

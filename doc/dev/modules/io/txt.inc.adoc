@@ -1,4 +1,4 @@
-== Text
+= Text
 
 Write one row per particle in a text file `path`.
 [source,cpp]

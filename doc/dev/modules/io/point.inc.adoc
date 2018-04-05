@@ -1,4 +1,4 @@
-== Point
+= Point
 
 Write point data to `bop` files.
 

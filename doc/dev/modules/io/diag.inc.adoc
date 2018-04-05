@@ -1,6 +1,6 @@
-== Diagnostics
+= Diagnostics
 
-=== Particle
+== Particle
 
 Uses only particles values. Dumps output to log files and to file
 `path`.
@@ -10,6 +10,6 @@ Uses only particles values. Dumps output to log files and to file
 include::{src}/io/diag/part/imp.h[tags=interface]
 ----
 
-=== Mesh
+== Mesh
 
 Uses particle values and mesh.

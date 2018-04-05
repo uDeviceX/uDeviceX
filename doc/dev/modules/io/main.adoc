@@ -1,6 +1,6 @@
 = IO
 
-:src: ../../../../src
+:leveloffset: +1
 
 include::txt.inc.adoc[]
 
@@ -9,3 +9,6 @@ include::mesh.inc.adoc[]
 include::diag.inc.adoc[]
 
 include::point.inc.adoc[]
+
+:leveloffset: -1
+
