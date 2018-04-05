@@ -11,4 +11,3 @@ include::{src}/mesh/tri_area/imp.h[tag=interface]
 <2> compute areas
 
 `nm` is the number of meshes.
-

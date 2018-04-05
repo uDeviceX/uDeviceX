@@ -18,6 +18,8 @@ include::area.inc.adoc[]
 
 include::tri_area.inc.adoc[]
 
+include::angle.inc.adoc[]
+
 include::triangles.inc.adoc[]
 
 include::volume.inc.adoc[]
