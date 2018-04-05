@@ -30,16 +30,16 @@ static void id2code(const int id, char *code) {
     }
 }
 
-static void gen_base_name_dump(const char *code, const int id, /**/ char *name) {
+static void gen_base_name_dump(const char *base, const char *code, const int id, /**/ char *name) {
     char idcode[BS] = {0};
     id2code(id, /**/ idcode);
-    CSPR(sprintf(name, PATTERN, BASE_STRT_DUMP, code, idcode));
+    CSPR(sprintf(name, PATTERN, base, code, idcode));
 }
 
-static void gen_base_name_read(const char *code, const int id, /**/ char *name) {
+static void gen_base_name_read(const char *base, const char *code, const int id, /**/ char *name) {
     char idcode[BS] = {0};
     id2code(id, /**/ idcode);
-    CSPR(sprintf(name, PATTERN ".bop", BASE_STRT_READ, code, idcode));
+    CSPR(sprintf(name, PATTERN ".bop", base, code, idcode));
 }
 
 template <typename T>
@@ -47,7 +47,7 @@ static void write(MPI_Comm comm, const char *code, int id, long n, const T *tt, 
     char name[BS];
     BopData *bop;
     T *tt_bop;
-    gen_base_name_dump(code, id, /**/ name);
+    gen_base_name_dump(BASE_STRT_DUMP, code, id, /**/ name);
 
     BPC(bop_ini(&bop));
     BPC(bop_set_n(n, bop));
@@ -70,7 +70,7 @@ static void read(MPI_Comm comm, const char *code, const int id, int *n, T *tt) {
     char hname[BS], dname[BS];
     BopData *bop;
     const T *tt_bop;
-    gen_base_name_read(code, id, /**/ hname);
+    gen_base_name_read(BASE_STRT_READ, code, id, /**/ hname);
     msg_print("reading '%s'", hname);
 
     BPC(bop_ini(&bop));
