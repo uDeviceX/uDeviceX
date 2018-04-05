@@ -37,8 +37,8 @@ include::{src}/rbc/imp.h[tag=mem]
 include::{src}/rbc/imp.h[tag=ini]
 ----
 <1> Generate quantities from file "ic" (see matrices submodule)
-<2> Generate quantities from restart
-<3> Dump a restart state of the quantities
+<2> Generate quantities from <<io_restart, restart>>
+<3> Dump a <<io_restart, restart>> state of the quantities
 
 Available mesh are stored in `src/data/cells`
 

@@ -34,7 +34,7 @@ include::{src}/rig/imp.h[tag=mem]
 ----
 `maxp` is the maximum particle number per node.
 
-generate the quantities from solvent particles or from restart files:
+generate the quantities from solvent particles or from <<io_restart, restart>> files:
 
 [source, c++]
 ----
@@ -48,7 +48,7 @@ This is initialised using
 include::{src}/rig/imp.h[tag=genid]
 ----
 
-Restart files are dumped using the following functions:
+Restart files are dumped using the following functions (see <<io_restart>>):
 
 [source, c++]
 ----

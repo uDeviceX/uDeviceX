@@ -1,6 +1,4 @@
 = comm
-:lext: .adoc
-:src: ../../../src
 
 generic communicator with "halo".
 

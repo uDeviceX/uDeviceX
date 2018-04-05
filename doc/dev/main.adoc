@@ -22,6 +22,8 @@ include::modules/color/main.adoc[]
 
 include::modules/comm.adoc[]
 
+include::modules/conf.adoc[]
+
 include::modules/control/main.adoc[]
 
 include::modules/coords.adoc[]
@@ -53,8 +55,6 @@ include::modules/pair.adoc[]
 include::modules/parray.adoc[]
 
 include::modules/farray.adoc[]
-
-include::modules/conf.adoc[]
 
 include::modules/partlist.adoc[]
 

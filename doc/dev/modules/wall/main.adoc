@@ -40,7 +40,7 @@ include::{src}/wall/imp.h[tag=gen]
     particles" copied from neighbouring ranks. See <<wall_exch>>.
 <2> generate `Ticket` structure from quantities
 
-restart interface:
+<<io_restart, restart>> interface:
 
 [source,cpp]
 ----

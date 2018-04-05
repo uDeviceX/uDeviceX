@@ -1,6 +1,4 @@
-= configuration file reader
-
-:src: ../../../src
+= conf: runtime configuration
 
 == purpose
 

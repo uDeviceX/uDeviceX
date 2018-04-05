@@ -32,7 +32,7 @@ include::{src}/flu/imp.h[tag=gen]
     object (see <<>>).
 <2> generate unique global ids for each particle
 
-restart interface:
+restart interface (see <<io_restart>>):
 
 [source,cpp]
 ----

@@ -1,3 +1,4 @@
+[[io_restart]]
 = restart
 
 Dump and read restart files to restart simulation at a given time.
