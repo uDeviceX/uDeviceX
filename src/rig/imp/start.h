@@ -15,7 +15,7 @@ static void gen_from_strt(int maxp, MPI_Comm comm, const int id, int *ns, int *n
     pp2rr(pp, *nps, rr0_hst);
     EFREE(pp);
 
-    restart_read_ss(comm, SS, id, ns, ss_hst);
+    restart_read_ss(comm, BASE_STRT_READ, SS, id, ns, ss_hst);
     *n = *ns * (*nps);
 }
 
@@ -49,7 +49,7 @@ void rig_strt_dump_templ(MPI_Comm comm, const RigQuants *q) {
 }
 
 void rig_strt_dump(MPI_Comm comm, const int id, const RigQuants *q) {
-    restart_write_ss(comm, SS, id, q->ns, q->ss_hst);
+    restart_write_ss(comm, BASE_STRT_DUMP, SS, id, q->ns, q->ss_hst);
 }
 
 #undef PP

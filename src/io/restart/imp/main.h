@@ -102,18 +102,18 @@ void restart_read_ii(MPI_Comm comm, const char *base, const char *code, int id, 
     read(comm, base, code, id, n, ii);    
 }
 
-void restart_write_ss(MPI_Comm comm, const char *code, int id, long n, const Solid *ss) {
+void restart_write_ss(MPI_Comm comm, const char *base, const char *code, int id, long n, const Solid *ss) {
     static const char *vars =
         "Ixx Ixy Ixz Iyy Iyz Izz "
         "mass x y z vx vy vz omx omy omz "
         "e0x e0y e0z e1x e1y e1z e2x e2y e2z "
         "fx fy fz tx ty tz i";
     enum {NVARS=32};
-    write(comm, BASE_STRT_DUMP, code, id, n, ss, BopFLOAT, NVARS, vars);
+    write(comm, base, code, id, n, ss, BopFLOAT, NVARS, vars);
 }
 
-void restart_read_ss(MPI_Comm comm, const char *code, int id, int *n, Solid *ss) {
-    read(comm, BASE_STRT_READ, code, id, n, ss);
+void restart_read_ss(MPI_Comm comm, const char *base, const char *code, int id, int *n, Solid *ss) {
+    read(comm, base, code, id, n, ss);
 }
 
 #undef PATTERN
