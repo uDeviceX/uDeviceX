@@ -53,7 +53,7 @@ void msg_print(const char *fmt, ...) {
     // print the message
     f = open(name);
     print(msg, f);
-    if (fclose(f) == 0) {
+    if (fclose(f) != 0) {
         fprintf(stderr, "%s:%d: fail to close: '%s'\n", __FILE__, __LINE__, name);
         exit(2);
     }
