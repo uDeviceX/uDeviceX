@@ -31,6 +31,6 @@
 #error BASE_STRT_READ  is runtime : dump.base_strt_read
 #endif
 
-#ifndef S_LEVEL
+#ifdef S_LEVEL
 #error S_LEVEL is runtime
 #endif
