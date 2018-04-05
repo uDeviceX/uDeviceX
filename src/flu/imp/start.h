@@ -12,7 +12,7 @@ static int strt_pp(MPI_Comm comm, const int id, Particle *dev, /*w*/ Particle *h
 
 static int strt_ii(MPI_Comm comm, const char *code, const int id, int *dev, /*w*/ int *hst) {
     int n;
-    restart_read_ii(comm, code, id, &n, hst);
+    restart_read_ii(comm, BASE_STRT_READ, code, id, &n, hst);
     if (n) cH2D(dev, hst, n);
     return n;
 }
@@ -30,7 +30,7 @@ static void strt_dump_pp(MPI_Comm comm, const int id, const int n, const Particl
 
 static void strt_dump_ii(MPI_Comm comm, const char *code, const int id, const int n, const int *dev, int *hst) {
     if (n) cD2H(hst, dev, n);
-    restart_write_ii(comm, code, id, n, hst);
+    restart_write_ii(comm, BASE_STRT_DUMP, code, id, n, hst);
 }
 
 void flu_strt_dump(MPI_Comm comm, const int id, const FluQuants *q) {

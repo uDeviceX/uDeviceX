@@ -11,7 +11,7 @@ static void setup_from_strt(MPI_Comm comm, int nv, int id, /**/ Particle *pp, in
 
 static void ids_from_strt(MPI_Comm comm, int id, /**/ int *ii) {
     int nc;
-    restart_read_ii(comm, IDS, id, &nc, ii);
+    restart_read_ii(comm, BASE_STRT_READ, IDS, id, &nc, ii);
 }
 
 void rbc_strt_quants(MPI_Comm comm, MeshRead *off, int id, RbcQuants *q) {
@@ -27,7 +27,7 @@ static void strt_dump(MPI_Comm comm, int id, int n, const Particle *pp, /*w*/ Pa
 }
 
 static void strt_dump_ii(MPI_Comm comm, int id, int nc, const int *ii) {
-    restart_write_ii(comm, IDS, id, nc, ii);
+    restart_write_ii(comm, BASE_STRT_DUMP, IDS, id, nc, ii);
 }
 
 void rbc_strt_dump(MPI_Comm comm, int id, const RbcQuants *q) {

@@ -94,12 +94,12 @@ void restart_read_pp(MPI_Comm comm, const char *base, const char *code, int id, 
     read(comm, base, code, id, n, pp);
 }
 
-void restart_write_ii(MPI_Comm comm, const char *code, int id, long n, const int *ii) {
-    write(comm, BASE_STRT_DUMP, code, id, n, ii, BopINT, 1, "i");
+void restart_write_ii(MPI_Comm comm, const char *base, const char *code, int id, long n, const int *ii) {
+    write(comm, base, code, id, n, ii, BopINT, 1, "i");
 }
 
-void restart_read_ii(MPI_Comm comm, const char *code, int id, int *n, int *ii) {
-    read(comm, BASE_STRT_READ, code, id, n, ii);    
+void restart_read_ii(MPI_Comm comm, const char *base, const char *code, int id, int *n, int *ii) {
+    read(comm, base, code, id, n, ii);    
 }
 
 void restart_write_ss(MPI_Comm comm, const char *code, int id, long n, const Solid *ss) {
