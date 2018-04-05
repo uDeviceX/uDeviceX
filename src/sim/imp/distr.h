@@ -25,8 +25,8 @@ void distribute_flu(Sim *s) {
         ndead        = den_get_ndead(s->denoutflow);
     }
     else if (s->opt.outflow) {
-        lp.deathlist = get_deathlist(s->outflow);
-        ndead = get_ndead(s->outflow);
+        lp.deathlist = outflow_get_deathlist(s->outflow);
+        ndead        = outflow_get_ndead    (s->outflow);
     } else {
         lp.deathlist = NULL;
         ndead = 0;

@@ -25,7 +25,7 @@ void outflow_fin(/**/ Outflow *o) {
     EFREE(o);
 }
 
-void ini_params_circle(const Coords *coords, float3 c, float R, Outflow *o) {
+void outflow_ini_params_circle(const Coords *coords, float3 c, float R, Outflow *o) {
     enum {X, Y, Z};
     ParamsCircle p;
     p.Rsq = R*R;
@@ -37,7 +37,7 @@ void ini_params_circle(const Coords *coords, float3 c, float R, Outflow *o) {
     o->type = TYPE_CIRCLE;
 }
 
-void ini_params_plate(const Coords *c, int dir, float r0, Outflow *o) {
+void outflow_ini_params_plate(const Coords *c, int dir, float r0, Outflow *o) {
     enum {X, Y, Z};
     ParamsPlate p = {0, 0, 0, 0};    
 
@@ -63,7 +63,7 @@ void ini_params_plate(const Coords *c, int dir, float r0, Outflow *o) {
     o->type = TYPE_PLATE;
 }
 
-void filter_particles(int n, const Particle *pp, /**/ Outflow *o) {
+void outflow_filter_particles(int n, const Particle *pp, /**/ Outflow *o) {
     reset_ndead(o);
 
     switch(o->type) {
@@ -80,10 +80,10 @@ void filter_particles(int n, const Particle *pp, /**/ Outflow *o) {
     };
 }
 
-void download_ndead(Outflow *o) {
+void outflow_download_ndead(Outflow *o) {
     CC(d::Memcpy(&o->ndead, o->ndead_dev, sizeof(int), D2H));
     // printf("killed %d particles\n", o->ndead);
 }
 
-int* get_deathlist(Outflow *o) {return o->kk;}
-int  get_ndead(Outflow *o)     {return o->ndead;}
+int* outflow_get_deathlist(Outflow *o) {return o->kk;}
+int  outflow_get_ndead(Outflow *o)     {return o->ndead;}
