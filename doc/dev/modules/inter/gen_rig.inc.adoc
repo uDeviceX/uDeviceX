@@ -1,3 +1,17 @@
+[[inter_gen_rig]]
 = gen_rig
 
+[source, cpp]
+----
+include::{src}/inter/gen_rig/imp.h[tag=int]
+----
+<1> generate rigidparticles from solvent
+<2> generate rigid bodies global ids
+
+To avoid long argument list, the data is packed in helper structures:
+
+[source, cpp]
+----
+include::{src}/inter/gen_rig/imp.h[tag=helpers]
+----
 

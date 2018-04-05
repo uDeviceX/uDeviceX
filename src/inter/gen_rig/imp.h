@@ -1,5 +1,6 @@
 struct RigPinInfo;
 
+// tag::helpers[]
 struct RigGenInfo {
     float mass;
     int numdensity;
@@ -21,8 +22,9 @@ struct RigInfo {
     Solid *ss;
     Particle *pp;
 };
+// end::helpers[]
 
-void inter_gen_rig_from_solvent(const Coords *coords, MPI_Comm comm, RigGenInfo rgi,
-                                /* io */ FluInfo fluinf, /* o */ RigInfo riginfo);
-
-void inter_set_rig_ids(MPI_Comm comm, int n, /**/ Solid * ss);
+// tag::int[]
+void inter_gen_rig_from_solvent(const Coords*, MPI_Comm, RigGenInfo, /* io */ FluInfo, /* o */ RigInfo); // <1>
+void inter_set_rig_ids(MPI_Comm, int n, /**/ Solid *ss); // <2>
+// end::int[]
