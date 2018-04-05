@@ -22,6 +22,8 @@ include::angle.inc.adoc[]
 
 include::edg_len.inc.adoc[]
 
+include::scatter.inc.adoc[]
+
 include::triangles.inc.adoc[]
 
 include::volume.inc.adoc[]

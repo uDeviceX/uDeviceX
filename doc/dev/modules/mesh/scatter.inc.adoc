@@ -1,0 +1,10 @@
+[[scatter_angle]]
+= "scatter": distribute scalar values between different elements of the mesh
+
+
+[source,cpp]
+----
+include::{src}/mesh/scatter/imp.h[tag=interface]
+----
+<1> in initialization triangles are stored
+<2> edges for `nm` objects, the size of the output is `nm * ne`
