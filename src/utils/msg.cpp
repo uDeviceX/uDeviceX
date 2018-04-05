@@ -12,12 +12,22 @@ void msg_ini(int rnk) {
 
 static FILE* open(const char *path) {
     static int fst = 1;
+    FILE *f;
     if (fst) {
         fst = 0;
-        return fopen(path, "w");
+        f = fopen(path, "w");
+        if (f == NULL) {
+            fprintf(stderr, "%s:%d: fail to write: '%s'\n", __FILE__, __LINE__, path);
+            exit(2);
+        }
     } else {
-        return fopen(path, "a");
+        f = fopen(path, "a");
+        if (f == NULL) {
+            fprintf(stderr, "%s:%d: fail to append: '%s'\n", __FILE__, __LINE__, path);
+            exit(2);
+        }        
     }
+    return f;
 }
 
 static bool is_master(int r) {return r == 0;}
