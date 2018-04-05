@@ -1,5 +1,20 @@
 #!/bin/sh
 
+prog=u.u
+
+if test $# -ne 0 && test "$1" = -h
+then cat >&2 <<!
+$prog UNIT.DIR
+update makefile elements for an unit
+!
+     exit
+fi
+
+if test $# -eq 0
+then echo >&2 "$prog: missing UNIT.DIR"
+     exit
+fi
+
 U="$1"; shift
 
 u.u0 "$U" | G=. c.main "$U"/make -- --
