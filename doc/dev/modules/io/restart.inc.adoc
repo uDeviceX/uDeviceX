@@ -1,0 +1,41 @@
+= restart
+
+dump and read restart files.
+
+== interface
+
+Writing a single file for all ranks:
+
+[source,cpp]
+----
+include::{src}/io/restart/imp.h[tag=write]
+----
+<1> write particle data
+<2> write integer data
+<3> write rigid data
+
+The reader functions are symmetric to the writer:
+
+[source,cpp]
+----
+include::{src}/io/restart/imp.h[tag=read]
+----
+
+The parameters are:
+
+* a communicator of all ranks dumping or reading the file
+* `code`: a string containing the directory name
+* `id`: the index of dump (starting at 0). Special values can be
+   passed:
+
+[source,cpp]
+----
+include::{src}/io/restart/imp.h[tag=id]
+----
+
+The _final_ and _begin_ special ids will replace the `id` part with the string
+"final". It is used to dump the last restart file.
+The _templ_ special id will replace the `id` part with the string
+"templ". It is used for special quantities which do not change during
+the whole simulation, such as wall frozen particles or rigid frozen particles.
+
