@@ -3,11 +3,6 @@
 cd test/freeze/hot
 S=`u.cp.s`
 u.cp.sdf yplates1/yplates.dat sdf.dat
-u.conf "$S" u/x <<!
-   S_LEVEL=0
-   run
-!
-u.make -j
-u.run ./udx conf.cfg 
+u.run udx conf.cfg 
 :
 u.avgh5 0 u 1 h5/0001.h5 | uscale 0.01 > h5.out.txt
