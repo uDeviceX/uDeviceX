@@ -1,8 +1,8 @@
-== Outflow
+= Outflow
 
 Delete particles satisfying a predicate
 
-=== interface
+== interface
 
 allocate, deallocate:
 
@@ -37,9 +37,9 @@ include::{src}/control/outflow/imp.h[tags=int]
 <4> return the number of dead particles
 
 
-=== configuration
+== configuration
 
-==== plate
+=== plate
 
 will delete particles crossing a plate along the positive direction.
 syntax for the plate `y=4`:
@@ -55,7 +55,7 @@ outflow = {
 ----
 
 
-==== circle
+=== circle
 
 delete particles going out of the cylinder.
 syntax for a cylinder of radius 8 centered at `(8, 8, 8)`:
