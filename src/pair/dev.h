@@ -1,4 +1,7 @@
-static __device__ float cap(float x, float lo, float hi) {
+#define _S_ static __device__
+#define _I_ static __device__
+
+_S_ float cap(float x, float lo, float hi) {
     if      (x > hi) return hi;
     else if (x < lo) return lo;
     else             return x;
@@ -6,7 +9,7 @@ static __device__ float cap(float x, float lo, float hi) {
 
 static const float EPS = 1e-6;
 enum {NORM_OK, NORM_BIG, NORM_SMALL};
-static __device__ int norm(/*io*/ float3 *pos, /**/ float *pr, float *pinvr) {
+_S_ int norm(/*io*/ float3 *pos, /**/ float *pr, float *pinvr) {
     /* normalize r = [x, y, z], sets |r| and 1/|r| if not big */
     float x, y, z, invr, r, r2;
     x = pos->x; y = pos->y; z = pos->z;
@@ -25,7 +28,7 @@ static __device__ int norm(/*io*/ float3 *pos, /**/ float *pr, float *pinvr) {
     }
 }
 
-static __device__ float ker_wrf(const int s, float x) {
+_S_ float ker_wrf(const int s, float x) {
     if (s == 0) return x;
     if (s == 1) return sqrtf(x);
     if (s == 2) return sqrtf(sqrtf(x));
@@ -33,7 +36,7 @@ static __device__ float ker_wrf(const int s, float x) {
     return powf(x, 1.f/(1+s));
 }
 
-static __device__ float magn_dpd(float a, float g, float s, float rnd,
+_S_ float magn_dpd(float a, float g, float s, float rnd,
                                  float r, float ev) {
     float wr, wc;
     float rm, f0;
@@ -47,7 +50,7 @@ static __device__ float magn_dpd(float a, float g, float s, float rnd,
     return f0;
 }
 
-static __device__ float magn_lj(float s, float e, float invr) {
+_S_ float magn_lj(float s, float e, float invr) {
     float t2, t4, t6, f;
     t2 = s * s * invr * invr;
     t4 = t2 * t2;
@@ -57,24 +60,24 @@ static __device__ float magn_lj(float s, float e, float invr) {
     return f;
 }
 
-static __device__ float force_magn(const PairDPD *p, float rnd, float ev, float r, float) {
+_S_ float force_magn(const PairDPD *p, float rnd, float ev, float r, float) {
     return magn_dpd(p->a, p->g, p->s, rnd, r, ev);
 }
 
-static __device__ float force_magn(const PairDPDLJ *p, float rnd, float ev, float r, float invr) {
+_S_ float force_magn(const PairDPDLJ *p, float rnd, float ev, float r, float invr) {
     float f;
     f  = magn_dpd(p->a, p->g, p->s, rnd, r, ev);
     f += magn_lj(p->ljs, p->lje, invr);
     return f;
 }
 
-static __device__ void magn2fo(float f0, float3 er, float3 dr, /**/ PairFo *f) {
+_S_ void magn2fo(float f0, float3 er, float3 dr, /**/ PairFo *f) {
     f->x = f0 * er.x;
     f->y = f0 * er.y;
     f->z = f0 * er.z;    
 }
 
-static __device__ void magn2fo(float f0, float3 er, float3 dr, /**/ PairSFo *f) {
+_S_ void magn2fo(float f0, float3 er, float3 dr, /**/ PairSFo *f) {
     f->x = f0 * er.x;
     f->y = f0 * er.y;
     f->z = f0 * er.z;
@@ -87,11 +90,11 @@ static __device__ void magn2fo(float f0, float3 er, float3 dr, /**/ PairSFo *f) 
     f->szz = 0.5f * f->z * dr.z;
 }
 
-static __device__ void make_zero(PairFo *f) {
+_S_ void make_zero(PairFo *f) {
     f->x = f->y = f->z = 0;
 }
 
-static __device__ void make_zero(PairSFo *f) {
+_S_ void make_zero(PairSFo *f) {
     f->x = f->y = f->z = 0;
     f->sxx = f->sxy = f->sxz = 0;
     f->syy = f->syz = f->szz = 0;
@@ -99,7 +102,7 @@ static __device__ void make_zero(PairSFo *f) {
 
 // tag::int[]
 template <typename Param, typename Fo>
-static __device__ void pair_force(const Param *p, PairPa a, PairPa b, float rnd, /**/ Fo *f)
+_I_ void pair_force(const Param *p, PairPa a, PairPa b, float rnd, /**/ Fo *f)
 // end::int[]
 {
     float r, invr, ev, f0;
@@ -128,7 +131,7 @@ static __device__ void pair_force(const Param *p, PairPa a, PairPa b, float rnd,
     magn2fo(f0, er, dr, /**/ f);
 }
 
-static __device__ int colors2pid(int ca, int cb) {
+_S_ int colors2pid(int ca, int cb) {
     int c0, c1;
     c0 = ca < cb ? ca : cb;
     c1 = ca < cb ? cb : ca;
@@ -136,7 +139,7 @@ static __device__ int colors2pid(int ca, int cb) {
 }
 
 template <typename Fo>
-static __device__ void pair_force(const PairDPDC *pc, PairPa a, PairPa b, float rnd, /**/ Fo *f) {
+_I_ void pair_force(const PairDPDC *pc, PairPa a, PairPa b, float rnd, /**/ Fo *f) {
     PairDPD p;
     int pid;
     pid = colors2pid(a.color, b.color);
@@ -148,7 +151,7 @@ static __device__ void pair_force(const PairDPDC *pc, PairPa a, PairPa b, float 
 
 /* mirrored: parameters from particle "a" only */
 template <typename Fo>
-static __device__ void pair_force(const PairDPDCM *pc, PairPa a, PairPa b, float rnd, /**/ Fo *f) {
+_I_ void pair_force(const PairDPDCM *pc, PairPa a, PairPa b, float rnd, /**/ Fo *f) {
     PairDPD p;
     int pid = a.color;
     p.a = pc->a[pid];
@@ -159,7 +162,7 @@ static __device__ void pair_force(const PairDPDCM *pc, PairPa a, PairPa b, float
 
 
 // tag::add[]
-static __device__ void pair_add(const PairFo *b, /**/ PairFo *a)
+_I_ void pair_add(const PairFo *b, /**/ PairFo *a)
 // end::add[]
 {
     a->x += b->x;
@@ -168,7 +171,7 @@ static __device__ void pair_add(const PairFo *b, /**/ PairFo *a)
 }
 
 // tag::add[]
-static __device__ void pair_add(const PairSFo *b, /**/ PairSFo *a)
+_I_ void pair_add(const PairSFo *b, /**/ PairSFo *a)
 // end::add[]
 {
     a->x += b->x;
@@ -182,3 +185,6 @@ static __device__ void pair_add(const PairSFo *b, /**/ PairSFo *a)
     a->syz += b->syz;
     a->szz += b->szz;
 }
+
+#undef _S_
+#undef _I_
