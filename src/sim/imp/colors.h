@@ -26,9 +26,7 @@ void gen_colors(const Rbc *r, Colorer *c, Flu *f) {
     /* compute extents */
     if (n > 0) {
         UC(minmax(c->pp, nv, nm, /**/ c->minext, c->maxext));
-        UC(collision_get_colors(f->q.pp, f->q.n, c->pp,
-                                r->tri,
-                                nv, nm,
+        UC(collision_get_colors(f->q.pp, f->q.n, c->pp, r->tri, nv, nm,
                                 c->minext, c->maxext, /**/ f->q.cc));
     }
 }
