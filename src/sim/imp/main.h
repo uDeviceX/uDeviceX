@@ -36,7 +36,7 @@ static void gen(Time *time, float tw, const Coords *coords, Wall *w, Sim *s) { /
         dSync();
         UC(sdf_gen(coords, s->cart, dump_sdf, /**/ w->sdf));
         MC(m::Barrier(s->cart));
-        inter_create_walls(s->cart, maxp_wall, w->sdf, /*io*/ &flu->q, /**/ &w->q);
+        inter_freeze_walls(s->cart, maxp_wall, w->sdf, /*io*/ &flu->q, /**/ &w->q);
     }
     inter_freeze(coords, s->cart, winfo, /*io*/ finfo, rinfo, sinfo);
     clear_vel(s);
