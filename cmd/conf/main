@@ -32,7 +32,7 @@ c=/dev/stdin  # config file
 if test $# -ne 0; then c="$1"; shift; fi
 
 t=/tmp/u.conf.$$.conf
-trap 'rm -rf $t' 0 1 2 3 15
+trap 'rm -rf $t; exit 2' 1 2 3 15
 cat "$c" > "$t"
 c=$t
 

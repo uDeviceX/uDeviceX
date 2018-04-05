@@ -1,4 +1,3 @@
-u.run ./udx
 S = /home/lisergey/udx/src
 U = u/x
 B = .

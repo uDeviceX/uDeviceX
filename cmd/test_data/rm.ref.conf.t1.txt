@@ -1,33 +1,6 @@
-u.run ./udx
 S = /home/lisergey/udx/src
 U = u/x
 B = .
-include $B/sys.mk
-include $B/conf.mk
-include $S/make/common.mk
-include $S/$U/make/obj.mk
-
-include $S/make/main.mk
-
-include $S/$U/make/rule.mk
-include $S/$U/make/dir.mk
-include $S/$U/make/dep.mk
-S = /home/lisergey/udx/src
-U = u/x
-B = bin.1
-include $B/sys.mk
-include $B/conf.mk
-include $S/make/common.mk
-include $S/$U/make/obj.mk
-
-include $S/make/main.mk
-
-include $S/$U/make/rule.mk
-include $S/$U/make/dir.mk
-include $S/$U/make/dep.mk
-S = /home/lisergey/udx/src
-U = u/x
-B = bin.2
 include $B/sys.mk
 include $B/conf.mk
 include $S/make/common.mk

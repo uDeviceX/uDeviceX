@@ -2,18 +2,18 @@
 mkdir -p tmp.conf
 (
   cd tmp.conf
-  u.conf `u.cp.s` <<!
-  run
+  u.conf `S=src u.cp.s` <<!
+  preved=1
 !
-cat runfile Makefile
+cat Makefile
 ) > rm.out.txt
 
 # TEST: conf.t1
 mkdir -p tmp.conf
 (
   cd tmp.conf
-  u.conf `u.cp.s` <<!
-  run
+  u.conf `S=src u.cp.s` <<!
+  medved
 !
-cat runfile Makefile bin.[12]/Makefile
+cat Makefile
 ) > rm.out.txt
