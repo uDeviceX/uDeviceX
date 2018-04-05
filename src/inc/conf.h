@@ -23,14 +23,3 @@
 #define DUMP_BASE "."
 #endif
 
-#ifdef BASE_STRT_DUMP
-#error BASE_STRT_DUMP is runtime : dump.base_strt_dump
-#endif
-
-#ifdef BASE_STRT_READ
-#error BASE_STRT_READ  is runtime : dump.base_strt_read
-#endif
-
-#ifdef S_LEVEL
-#error S_LEVEL is runtime
-#endif
