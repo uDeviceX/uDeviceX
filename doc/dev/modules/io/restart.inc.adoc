@@ -12,8 +12,7 @@ BASE/CODE/ID.bop
 BASE/CODE/ID.values
 ----
 
-* `BASE`: compile time option, can be different for dump and read. See
-  `BASE_STRT_DUMP` and `BASE_STRT_READ`. Set to "strt" by default.
+* `BASE`: can be different for dump and read. Set to "strt" in `default.cfg`.
 * `CODE`: specified by the user, see `code` parameter in the
   <<io_restart_int>>. By convention, it corresponds to the quantity name
   followed by an additional specifier, such as "flu.pp" for particles
@@ -44,6 +43,7 @@ include::{src}/io/restart/imp.h[tag=read]
 The parameters are:
 
 * a communicator of all ranks dumping or reading the file
+* `base`: a string representing the base directory name
 * `code`: a string containing the directory name
 * `id`: the index of dump (starting at 0). Special values can be
    passed:
