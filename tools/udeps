@@ -2,12 +2,8 @@
 
 u=u/x # default unit
 
-build0 () {
-    u.u0 "$u" | D=_ G=. c.main "$u"/make "$u"/make/_
-}
-
 build () {
-    build0
+    u.u0 "$u" | D=_ G=. c.main "$u"/make "$u"/make/_
 }
 
 
