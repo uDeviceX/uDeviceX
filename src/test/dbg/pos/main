@@ -1,9 +1,7 @@
 # TEST: dbg.pos
 cd test/dbg/pos
 S=`u.cp.s` U=u/dbg
-u.conf $S $U <<!
-   run
-!
+u.conf0 $U
 u.make -j
 ( u.run ./udx conf.cfg )  2> tmp
 cat tmp | grep VAL | awk '{print $NF}' > dbg.out.txt

@@ -8,9 +8,7 @@ u.cp.ic  two         rbcs-ic.txt
 u.cp.rbc rbc/$nv.off rbc.off
 area=`off.area rbc.off`
 volume=`off.volume rbc.off`
-u.conf $S u/rbc/force <<!
-    run
-!
+u.conf0 u/rbc/force
 u.make -j
 u.run ./udx conf.cfg "
 glb = {
