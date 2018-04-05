@@ -2,9 +2,7 @@
 # nTEST: bulk.t0
 cd test/bulk/0
 S=`u.cp.s`
-u.conf "$S" u/bulk <<!
-    run
-!
+u.conf0 u/bulk
 u.make -s -j
 X=4 Y=4 Z=4 N=64
 u.pre.gen_random $X $Y $Z $N > pp.txt

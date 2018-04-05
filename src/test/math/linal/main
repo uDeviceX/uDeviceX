@@ -1,8 +1,6 @@
 # linal test
 # TEST: math.linal
 S=`u.cp.s` U=u/math/linal
-u.conf "$S" "$U" <<!
-    run
-!
+u.conf0 "$U"
 u.make -j
 u.run ./udx -- 2 1 5   3 4   -2      > linal.out.txt

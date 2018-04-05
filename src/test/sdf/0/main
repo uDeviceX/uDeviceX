@@ -1,9 +1,7 @@
 # TEST: sdf.0
 cd test/sdf/0
 S=`u.cp.s` U=u/sdf
-u.conf "$S" "$U" <<!
-    run
-!
+u.conf0 "$U"
 u.make -j
 u.cp.sdf cyl1/cyl.dat  sdf.dat
 for x in 0.0 3.0 6.0 9.0

@@ -1,8 +1,6 @@
 # TEST: math.tform.4
 S=`u.cp.s` U=u/math/tform
-u.conf "$S" "$U" <<!
-run
-!
+u.conf0 "$U"
 u.make -j
 T="1 10 100"
 N="2 20 200"

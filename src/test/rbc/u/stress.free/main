@@ -9,9 +9,7 @@ u.cp.rbc rbc/sc/$nv.off rbc.stress.free
 area=`off.area rbc.off`
 volume=`off.volume rbc.off`
 :
-u.conf $S u/rbc/force <<!
-    run
-!
+u.conf0 u/rbc/force
 u.make -j
 u.run ./udx conf.cfg "
 rbc = {

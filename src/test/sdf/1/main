@@ -1,9 +1,7 @@
 # TEST: sdf.1
 cd test/sdf/1
 S=`u.cp.s` U=u/sdf
-u.conf "$S" "$U" <<!
-    run
-!
+u.conf0 "$U"
 u.make -j
 u.cp.sdf cyl1/cyl.dat  sdf.dat
 u.run ./udx conf.cfg
