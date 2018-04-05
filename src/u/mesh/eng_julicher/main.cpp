@@ -15,6 +15,7 @@
 #include "mesh/eng_julicher/imp.h"
 
 #include "io/vtk/imp.h"
+#include "algo/scalars/imp.h"
 
 struct Out {
     MPI_Comm comm;
@@ -22,13 +23,29 @@ struct Out {
     const char *path;
 };
 
-static void dump(int nv, int nm, double *data, Vectors*, Out*) {
-    int i, n;
-    n = nv * nm;
-    for (i = 0; i < n; i++)
-        printf("%g\n", data[i]);
+static void dump(int nv, int nm, double *eng, Vectors*, Out *out) {
+    int id;
+    VTKConf *conf;
+    VTK *vtk;
+    MeshRead *mesh;
+    const char *path;
+    MPI_Comm comm;
+    Scalars *sc;
 
+    mesh = out->mesh; comm = out->comm; path = out->path;
+    scalars_double_ini(nv, eng, /**/ &sc);
+    
+    vtk_conf_ini(mesh, &conf);
+    vtk_conf_vert(conf, "eng");
+    
+    vtk_ini(comm, nm, path, conf, &vtk);
+    vtk_vert(vtk, nm, sc, "eng");
+    id = 0;
+    vtk_write(vtk, comm, id);
 
+    scalars_fin(sc);
+    vtk_fin(vtk);
+    vtk_conf_fin(conf);
 }
 
 static void main0(const char *cell, Out *out) {

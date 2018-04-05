@@ -49,6 +49,7 @@ void vtk_ini(MPI_Comm comm, int maxn, char const *path, VTKConf *c, /**/ VTK **p
     UC(nk = key_list_size(c->vert));
     for (i = 0; i < nk; i++) EMALLOC(nbuf, &q->VERT[i]);
 
+    q->stamp = MAGIC;
     q->nbuf = nbuf;
     q->nm       = UNSET;
     q->rr_set   = 0;
@@ -115,6 +116,9 @@ void vtk_write(VTK *q, MPI_Comm comm, int id) {
     const int *tt;
     const char *keys;
     Out out;
+    if (q->stamp != MAGIC)
+        ERR("*q is not initialized");
+
     if (!key_list_marked(q->tri)) {
         msg_print("missing triangle data");
         key_list_log(q->tri);

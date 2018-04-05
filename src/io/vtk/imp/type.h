@@ -3,6 +3,7 @@ struct VTKConf {
     KeyList *tri, *vert;
 };
 
+enum { MAGIC = 1234 };
 enum { UNSET = - 1 };
 enum { N_MAX = 100 };
 struct VTK {
@@ -19,6 +20,8 @@ struct VTK {
     
     int rr_set;
     char path[FILENAME_MAX];
+
+    int stamp; /* MAGIC */
 };
 
 struct Out {
