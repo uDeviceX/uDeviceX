@@ -2,7 +2,7 @@
 mkdir -p tmp.conf
 (
   cd tmp.conf
-  u.conf `S=src u.cp.s` <<!
+  u.conf `S=src u.cp.s` u/x <<!
   preved=1
 !
 cat Makefile
@@ -12,7 +12,7 @@ cat Makefile
 mkdir -p tmp.conf
 (
   cd tmp.conf
-  u.conf `S=src u.cp.s` <<!
+  u.conf `S=src u.cp.s` u/x <<!
   medved
 !
 cat Makefile

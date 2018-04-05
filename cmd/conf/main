@@ -3,13 +3,15 @@
 set -eu
 
 usg() {
-    echo 'usage: u.conf [source dir] [unit dir] <<<!
+    echo 'usage: u.conf SRC.DIR UNIT.DIR <<<!
 [variables]
 ...
 !
 Creates Makefile, conf.h, conf.mk and sys.mk files' >&2
     exit
 }
+
+prog=u.conf
 
 ### error codes
 ERR_NO_RUNS=3
@@ -18,19 +20,17 @@ ERR_MISSING_MK=5
 ERR_ARGP=6
 
 msg() { printf '%s\n' "$*" >&2; }
-err() { msg "$@"; usg; }
+err() { msg "$prog $@"; exit 2; }
 
 if test $# -ne 0 && test "$1" = -h; then usg; fi
 
-S=.
-if test $# -ne 0 && test -d "$1"; then S="$1"; shift; fi
+if test $# -eq 0; then err 'missing SRC.DIR'; fi
+S="$1"; shift
 
-U=u/x  # default unit
-if test $# -ne 0 && test -d "$S/$1"; then U="$1"; shift; fi
+if test $# -eq 0; then err 'missing UNIT.DIR'; fi
+U="$1"; shift
 
 c=/dev/stdin  # config file
-if test $# -ne 0; then c="$1"; shift; fi
-
 t=/tmp/u.conf.$$.conf
 trap 'rm -rf $t; exit 2' 1 2 3 15
 cat "$c" > "$t"
@@ -44,3 +44,5 @@ if test $rc -eq $ERR_MISSING_MK; then err 'cannot find system config'; fi
 
 u.conf.conf     "$c"; rc=$?
 if test $rc -eq $ERR_ARGP;       then err 'u.argp fails'; fi
+
+rm -f $t
