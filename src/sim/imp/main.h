@@ -97,7 +97,7 @@ void sim_strt(Sim *s, const Config *cfg, Time *time, TimeSeg *time_seg) {
     flu_strt_quants(s->cart, BASE_STRT_READ, RESTART_BEGIN, &flu->q);
     flu_build_cells(&flu->q);
 
-    if (opt->rbc) rbc_strt_quants(s->cart, cell, RESTART_BEGIN, &rbc->q);
+    if (opt->rbc) rbc_strt_quants(s->cart, BASE_STRT_READ, cell, RESTART_BEGIN, &rbc->q);
     dSync();
 
     if (opt->rig) rig_strt_quants(s->cart, RESTART_BEGIN, &rig->q);
