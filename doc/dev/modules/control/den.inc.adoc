@@ -1,3 +1,76 @@
-= Density controller
+= den: Density controller
 
+Delete particles in high density regions
+
+== interface
+
+allocate, deallocate:
+
+[source,cpp]
+----
+include::{src}/control/den/imp.h[tags=mem]
+----
+
+set the geometry type (to be done only once):
+
+[source,cpp]
+----
+include::{src}/control/den/imp.h[tags=set]
+----
+
+this can be done via <<conf, configuration>> file:
+
+[source,cpp]
+----
+include::{src}/control/den/imp.h[tags=cfg]
+----
+
+filter and mark particles (to be called at every time step):
+
+[source,cpp]
+----
+include::{src}/control/outflow/imp.h[tags=int]
+----
+<1> reset the structure
+<2> internally mark particles in the regions with density higher than `macdensity`
+<3> internally download the number of dead particles
+
+The above functions only compute and store the results internally. The
+computed quantities can be accessed via:
+
+[source,cpp]
+----
+include::{src}/control/outflow/imp.h[tags=int]
+----
+<1> return a pointer to internal buffer with the "death list"
+<2> return the number of particles killed by the filter operation
+
+== configuration
+
+=== none
+
+disabled density control everywhere
+
+[source,cfg]
+----
+denoutflow = {
+    active = true
+    type = "none"
+}
+----
+
+=== circle
+
+delete particles going out of a cylinder centered at the center of the
+domain.
+syntax for a cylinder of radius 8:
+
+[source,cfg]
+----
+denoutflow = {
+    active = true
+    type   = "circle"
+    R      = 8.0
+}
+----
 
