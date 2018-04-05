@@ -71,21 +71,9 @@ static void ini_outflow(const Coords *coords, int maxp, const Config *cfg, Outfl
 }
 
 static void ini_denoutflow(const Coords *c, int maxp, const Config *cfg, DCont **d, DContMap **m) {
-    const char *type;
     UC(den_ini(maxp, /**/ d));
     UC(den_map_ini(/**/ m));
-
-    UC(conf_lookup_string(cfg, "denoutflow.type", &type));
-    if (same_str(type, "none")) {
-        UC(den_map_set_none(c, /**/ *m));
-    }
-    else if (same_str(type, "circle")) {
-        float R;
-        UC(conf_lookup_float(cfg, "denoutflow.R", &R));
-        UC(den_map_set_circle(c, R, /**/ *m));
-    } else {
-        ERR("Unrecognized type <%s>", type);
-    }
+    UC(den_map_set_conf(cfg, c, *m));
 }
 
 static void ini_inflow(const Coords *coords, int3 L, const Config *cfg, Inflow **i) {

@@ -11,6 +11,7 @@ $B/cnt/imp.o: $S/cnt/imp.cu; $N -I$S/cnt -I$S/.
 $B/color/flux.o: $S/color/flux.cu; $N -I$S/color -I$S/.
 $B/comm/imp.o: $S/comm/imp.cpp; $X -I$S/comm -I$S/.
 $B/conf/imp.o: $S/conf/imp.cpp; $X -I$S/conf -I$S/.
+$B/control/den/conf.o: $S/control/den/conf.cpp; $X -I$S/control/den -I$S/.
 $B/control/den/imp.o: $S/control/den/imp.cu; $N -I$S/control/den -I$S/.
 $B/control/inflow/conf.o: $S/control/inflow/conf.cpp; $X -I$S/control/inflow -I$S/.
 $B/control/inflow/imp.o: $S/control/inflow/imp.cu; $N -I$S/control/inflow -I$S/.
