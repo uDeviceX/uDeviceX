@@ -33,7 +33,7 @@ void pair_set_conf(const Config *cfg, const char *base, PairParams *par) {
 
     if (dpd) {
         int na, ng, nc;
-        float a[MAX_PAR], g[MAX_PAR];
+        float a[MAX_PAR], g[MAX_PAR], spow;
 
         get_desc(base, "a", desc);
         UC(conf_lookup_vfloat(cfg, desc, &na, a));
@@ -44,12 +44,15 @@ void pair_set_conf(const Config *cfg, const char *base, PairParams *par) {
         get_desc(base, "g", desc);
         UC(conf_lookup_vfloat(cfg, desc, &ng, g));
 
+        get_desc(base, "spow", desc);
+        UC(conf_lookup_float(cfg, desc, &spow));
+
         if (na != ng)
             ERR("%s.a and %s.g must have the same length: %d / %d", base, base, na, ng);
         
         nc = get_ncol(na);
         
-        UC(pair_set_dpd(nc, a, g, /**/ par));
+        UC(pair_set_dpd(nc, a, g, spow, /**/ par));
     }
     if (lj) {
         float s, e;
