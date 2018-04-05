@@ -39,5 +39,5 @@ void den_download_ndead(DCont *d) {
 }
 
 
-int* den_get_deathlist(DCont *d) {return d->kk;}
-int  den_get_ndead(DCont *d)     {return d->ndead;}
+const int* den_get_deathlist(DCont *d) {return d->kk;}
+int        den_get_ndead(DCont *d)     {return d->ndead;}

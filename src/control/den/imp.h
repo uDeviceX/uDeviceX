@@ -28,6 +28,6 @@ void den_download_ndead(DCont*); // <3>
 // end::int[]
 
 // tag::get[]
-int* den_get_deathlist(DCont*); // <1>
-int  den_get_ndead(DCont*); // <2>
+const int* den_get_deathlist(DCont*); // <1>
+int        den_get_ndead(DCont*); // <2>
 // end::get[]
