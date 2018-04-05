@@ -11,7 +11,8 @@
 # X: c++ compile
 # L: link
 
-BIN       = $(HOME)/bin
+PREFIX    = $(HOME)
+BIN       = $(PREFIX)/bin
 NVCC     ?= nvcc
 ARCH     ?= -arch compute_35 -code sm_35
 OPT	 ?= -O3 -g
