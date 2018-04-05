@@ -46,6 +46,8 @@ include::modules/fsi.adoc[]
 
 include::modules/io/main.adoc[]
 
+include::modules/inter/main.adoc[]
+
 include::modules/math/main.adoc[]
 
 include::modules/mesh/main.adoc[]
