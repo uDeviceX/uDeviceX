@@ -25,6 +25,3 @@
 
 #include "imp/type.h"
 #include "imp/main.h"
-
-#include "circle/imp.h"
-#include "plate/imp.h"

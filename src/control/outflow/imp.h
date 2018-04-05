@@ -1,13 +1,13 @@
 struct Outflow;
 
 // tag::mem[]
-void ini(int maxp, /**/ Outflow **o);
-void fin(/**/ Outflow *o);
+void outflow_ini(int maxp, /**/ Outflow **o);
+void outflow_fin(/**/ Outflow *o);
 // end::mem[]
 
 // tag::ini[]
-void ini_params_circle(const Coords *coords, float3 c, float R, Outflow *o);
-void ini_params_plate(const Coords *c, int dir, float r0, Outflow *o);
+void ini_params_circle(const Coords*, float3 c, float R, Outflow *o);
+void ini_params_plate(const Coords*, int dir, float r0, Outflow *o);
 // end::ini[]
 
 // tag::int[]

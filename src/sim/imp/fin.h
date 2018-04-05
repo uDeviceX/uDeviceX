@@ -52,7 +52,7 @@ static void fin_colorer(Colorer *c) {
 }
 
 static void fin_outflow(Outflow *o) {
-    UC(fin(/**/ o));
+    UC(outflow_fin(/**/ o));
 }
 
 static void fin_denoutflow(DCont *d, DContMap *m) {
