@@ -1,0 +1,10 @@
+[[edg_len_angle]]
+= edges length: compute length of the edges
+
+
+[source,cpp]
+----
+include::{src}/mesh/edg_len/imp.h[tag=interface]
+----
+<1> in initialization triangles are stored
+<2> edges for `nm` objects, the size of the output is `nm * ne`

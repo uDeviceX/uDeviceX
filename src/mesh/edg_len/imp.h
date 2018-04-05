@@ -1,6 +1,6 @@
 struct MeshEdgLen;
 struct MeshRead;
-struct Scalars;
+struct Vectors;
 
 // tag::interface[]
 void mesh_edg_len_ini(MeshRead*, MeshEdgLen**);

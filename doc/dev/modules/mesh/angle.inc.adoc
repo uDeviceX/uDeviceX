@@ -1,0 +1,10 @@
+[[mesh_angle]]
+= angle: compute angles between triangles with a common edge
+
+
+[source,cpp]
+----
+include::{src}/mesh/angle/imp.h[tag=interface]
+----
+<1> in initialization triangles are stored
+<2> triangle for `nm` objects, the size of the output is `nm * ne`
