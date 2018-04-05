@@ -5,22 +5,22 @@ enum {
 
 
 struct PairDPD {
-    float a, g, s;
+    float a, g, s, spow;
 };
 
 struct PairDPDC {
     int ncolors;
-    float a[MAX_PAR], g[MAX_PAR], s[MAX_PAR];
+    float a[MAX_PAR], g[MAX_PAR], s[MAX_PAR], spow;
 };
 
 /* mirrored */
 struct PairDPDCM {
     int ncolors;
-    float a[N_COLOR], g[N_COLOR], s[N_COLOR];
+    float a[N_COLOR], g[N_COLOR], s[N_COLOR], spow;
 };
 
 struct PairDPDLJ {
-    float a, g, s;
+    float a, g, s, spow;
     float ljs, lje;
 };
 

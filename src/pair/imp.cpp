@@ -2,6 +2,8 @@
 #include <string.h>
 #include <math.h>
 
+#include "inc/conf.h"
+
 #include "utils/error.h"
 #include "utils/imp.h"
 

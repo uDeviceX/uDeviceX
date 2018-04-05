@@ -28,22 +28,18 @@ _S_ int norm(/*io*/ float3 *pos, /**/ float *pr, float *pinvr) {
     }
 }
 
-_S_ float ker_wrf(const int s, float x) {
-    if (s == 0) return x;
-    if (s == 1) return sqrtf(x);
-    if (s == 2) return sqrtf(sqrtf(x));
-    if (s == 3) return sqrtf(sqrtf(sqrtf(x)));
-    return powf(x, 1.f/(1+s));
+_S_ float ker_wrf(float s, float x) {
+    return powf(x, s);
 }
 
-_S_ float magn_dpd(float a, float g, float s, float rnd,
-                                 float r, float ev) {
+_S_ float magn_dpd(float a, float g, float s, float kpow,
+                   float rnd, float r, float ev) {
     float wr, wc;
     float rm, f0;
 
     rm = max(1 - r, 0.0f);
     wc = rm;
-    wr = ker_wrf(S_LEVEL, rm);
+    wr = ker_wrf(kpow, rm);
     
     f0  = (-g * wr * ev + s * rnd) * wr;
     f0 +=                        a * wc;
@@ -61,12 +57,12 @@ _S_ float magn_lj(float s, float e, float invr) {
 }
 
 _S_ float force_magn(const PairDPD *p, float rnd, float ev, float r, float) {
-    return magn_dpd(p->a, p->g, p->s, rnd, r, ev);
+    return magn_dpd(p->a, p->g, p->s, p->spow, rnd, r, ev);
 }
 
 _S_ float force_magn(const PairDPDLJ *p, float rnd, float ev, float r, float invr) {
     float f;
-    f  = magn_dpd(p->a, p->g, p->s, rnd, r, ev);
+    f  = magn_dpd(p->a, p->g, p->s, p->spow, rnd, r, ev);
     f += magn_lj(p->ljs, p->lje, invr);
     return f;
 }
@@ -146,6 +142,7 @@ _I_ void pair_force(const PairDPDC *pc, PairPa a, PairPa b, float rnd, /**/ Fo *
     p.a = pc->a[pid];
     p.g = pc->g[pid];
     p.s = pc->s[pid];
+    p.spow = pc->spow;
     pair_force(&p, a, b, rnd, /**/ f);
 }
 
@@ -157,6 +154,7 @@ _I_ void pair_force(const PairDPDCM *pc, PairPa a, PairPa b, float rnd, /**/ Fo 
     p.a = pc->a[pid];
     p.g = pc->g[pid];
     p.s = pc->s[pid];
+    p.spow = pc->spow;
     pair_force(&p, a, b, rnd, /**/ f);
 }
 

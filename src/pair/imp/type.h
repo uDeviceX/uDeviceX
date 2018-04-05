@@ -3,6 +3,7 @@ struct PairParams {
     float g[MAX_PAR]; /* gamma: dissipative  */
     float s[MAX_PAR]; /* sigma: random       */
     int ncolors;      /* number of colors    */
+    float spow;       /* s level             */
 
     float ljs; /* lennard jones sigma   */
     float lje; /* lennard jones epsilon */

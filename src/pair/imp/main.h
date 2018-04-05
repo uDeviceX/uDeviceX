@@ -27,6 +27,7 @@ void pair_set_dpd(int ncol, const float a[], const float g[], PairParams *p) {
     p->ncolors = ncol;
     memcpy(p->a, a, sz);
     memcpy(p->g, g, sz);
+    p->spow = 0.25;
 }
 
 void pair_compute_dpd_sigma(float kBT, float dt, PairParams *p) {
@@ -43,6 +44,7 @@ void pair_get_view_dpd(const PairParams *p, PairDPD *v) {
     v->a = p->a[PID];
     v->g = p->g[PID];
     v->s = p->s[PID];
+    v->spow = p->spow;
 }
 
 void pair_get_view_dpd_color(const PairParams *p, PairDPDC *v) {
@@ -54,6 +56,7 @@ void pair_get_view_dpd_color(const PairParams *p, PairDPDC *v) {
     memcpy(v->a, p->a, sz);
     memcpy(v->g, p->g, sz);
     memcpy(v->s, p->s, sz);
+    v->spow = p->spow;
 }
 
 void pair_get_view_dpd_mirrored(const PairParams *p, PairDPDCM *v) {
@@ -65,6 +68,7 @@ void pair_get_view_dpd_mirrored(const PairParams *p, PairDPDCM *v) {
         v->g[i] = p->g[j];
         v->s[i] = p->s[j];
     }
+    v->spow = p->spow;
 }
 
 void pair_get_view_dpd_lj(const PairParams *p, PairDPDLJ *v) {
@@ -74,5 +78,6 @@ void pair_get_view_dpd_lj(const PairParams *p, PairDPDLJ *v) {
     v->s = p->s[PID];
     v->ljs = p->ljs;
     v->lje = p->lje;
+    v->spow = p->spow;
 }
 
