@@ -25,7 +25,7 @@ static FILE* open(const char *path) {
         if (f == NULL) {
             fprintf(stderr, "%s:%d: fail to append: '%s'\n", __FILE__, __LINE__, path);
             exit(2);
-        }        
+        }
     }
     return f;
 }
@@ -53,6 +53,8 @@ void msg_print(const char *fmt, ...) {
     // print the message
     f = open(name);
     print(msg, f);
-    fclose(f);
+    if (fclose(f) == 0) {
+        fprintf(stderr, "%s:%d: fail to close: '%s'\n", __FILE__, __LINE__, name);
+        exit(2);
+    }
 }
-
