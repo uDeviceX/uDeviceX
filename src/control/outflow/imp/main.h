@@ -25,7 +25,7 @@ void outflow_fin(/**/ Outflow *o) {
     EFREE(o);
 }
 
-void outflow_ini_params_circle(const Coords *coords, float3 c, float R, Outflow *o) {
+void outflow_set_params_circle(const Coords *coords, float3 c, float R, Outflow *o) {
     enum {X, Y, Z};
     ParamsCircle p;
     p.Rsq = R*R;
@@ -37,7 +37,7 @@ void outflow_ini_params_circle(const Coords *coords, float3 c, float R, Outflow 
     o->type = TYPE_CIRCLE;
 }
 
-void outflow_ini_params_plate(const Coords *c, int dir, float r0, Outflow *o) {
+void outflow_set_params_plate(const Coords *c, int dir, float r0, Outflow *o) {
     enum {X, Y, Z};
     ParamsPlate p = {0, 0, 0, 0};    
 
