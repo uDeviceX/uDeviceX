@@ -15,7 +15,7 @@ void outflow_set_params_circle(const Coords*, float3 c, float R, Outflow *o);
 void outflow_set_params_plate(const Coords*, int dir, float r0, Outflow *o);
 // end::ini[]
 
-void outflow_set_cfg(const Config *cfg, const Coords*, Outflow *);
+void outflow_set_conf(const Config *cfg, const Coords*, Outflow *);
 
 // tag::int[]
 void outflow_filter_particles(int n, const Particle *pp, /**/ Outflow *o); // <1>

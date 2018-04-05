@@ -7,7 +7,7 @@
 
 #include "imp.h"
 
-void outflow_set_cfg(const Config *cfg, const Coords *coords, Outflow *o) {
+void outflow_set_conf(const Config *cfg, const Coords *coords, Outflow *o) {
     const char *type;
     UC(conf_lookup_string(cfg, "outflow.type", &type));
 
