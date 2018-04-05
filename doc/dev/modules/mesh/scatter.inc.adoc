@@ -7,4 +7,4 @@
 include::{src}/mesh/scatter/imp.h[tag=interface]
 ----
 <1> in initialization triangles are stored
-<2> edges for `nm` objects, the size of the output is `nm * ne`
+<2> edge to vertices
