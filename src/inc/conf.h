@@ -1,11 +1,3 @@
-/* DPD kernel envelop parameter: random and dissipative kernels (wd = wr^2)
-   0: wr = 1 - r
-   1: wr = (1 - r)^(1/2)
-   2: wr = (1 - r)^(1/4) */
-#ifndef S_LEVEL
-  #define S_LEVEL (2)
-#endif
-
 /* [k]ernel [l]aunch macros */
 #if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
     !defined(KL_SYNC)
@@ -37,4 +29,8 @@
 
 #ifdef BASE_STRT_READ
 #error BASE_STRT_READ  is runtime : dump.base_strt_read
+#endif
+
+#ifndef S_LEVEL
+#error S_LEVEL is runtime
 #endif
