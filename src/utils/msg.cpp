@@ -38,16 +38,16 @@ static void print(const char *msg, FILE *f) {
 }
 
 void msg_print(const char *fmt, ...) {
-    char msg[BUFSIZ] = {0}, name[64];
+    char msg[BUFSIZ], name[BUFSIZ];
     va_list ap;
     FILE *f;
 
     // set name of file
-    sprintf(name, ".%03d", rank);
+    snprintf(name, BUFSIZ - 1, ".%03d", rank);
 
     // form the message
     va_start(ap, fmt);
-    vsprintf(msg, fmt, ap);
+    vsnprintf(msg, BUFSIZ - 1, fmt, ap);
     va_end(ap);
 
     // print the message
