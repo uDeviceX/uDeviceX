@@ -92,7 +92,7 @@
 #include "meshbb/imp.h"
 #include "io/bop/imp.h"
 
-#include "inter/imp.h"
+#include "inter/freeze/imp.h"
 #include "inter/color/imp.h"
 #include "scheme/force/imp.h"
 #include "scheme/move/imp.h"

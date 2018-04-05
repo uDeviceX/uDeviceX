@@ -37,8 +37,8 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/fluforces/halo        && \
     d $B/frag                  && \
     d $B/fsi                   && \
-    d $B/inter                 && \
     d $B/inter/color           && \
+    d $B/inter/freeze          && \
     d $B/inter/gen_rig         && \
     d $B/io/bop                && \
     d $B/io/com                && \
