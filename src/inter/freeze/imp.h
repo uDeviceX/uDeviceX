@@ -24,5 +24,5 @@ struct InterRigInfos {
     int numdensity;
 };
 
-void inter_freeze(const Coords *coords, MPI_Comm cart, InterWalInfos, InterFluInfos, InterRbcInfos, InterRigInfos);
-void inter_create_walls(MPI_Comm cart, int maxn, Sdf*, FluQuants*, WallQuants*);
+void inter_freeze(const Coords*, MPI_Comm, InterWalInfos, InterFluInfos, InterRbcInfos, InterRigInfos);
+void inter_freeze_walls(MPI_Comm, int maxn, Sdf*, FluQuants*, WallQuants*);

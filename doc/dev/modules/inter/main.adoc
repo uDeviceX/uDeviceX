@@ -1,0 +1,19 @@
+= inter: interprocessing tools
+
+Interprocessing tools: not pre or post processing, happens inside
+ simulation...
+
+* freeze particles into walls
+* freeze particles into solids
+* generate initial solvent colors
+
+:leveloffset: +1
+
+include::color.inc.adoc[]
+
+include::freeze.inc.adoc[]
+
+include::gen_rig.inc.adoc[]
+
+:leveloffset: -1
+
