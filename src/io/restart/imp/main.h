@@ -43,11 +43,11 @@ static void gen_base_name_read(const char *base, const char *code, const int id,
 }
 
 template <typename T>
-static void write(MPI_Comm comm, const char *code, int id, long n, const T *tt, BopType type, int nvars, const char *vars) {
+static void write(MPI_Comm comm, const char *base, const char *code, int id, long n, const T *tt, BopType type, int nvars, const char *vars) {
     char name[BS];
     BopData *bop;
     T *tt_bop;
-    gen_base_name_dump(BASE_STRT_DUMP, code, id, /**/ name);
+    gen_base_name_dump(base, code, id, /**/ name);
 
     BPC(bop_ini(&bop));
     BPC(bop_set_n(n, bop));
@@ -65,12 +65,12 @@ static void write(MPI_Comm comm, const char *code, int id, long n, const T *tt, 
 }
 
 template <typename T>
-static void read(MPI_Comm comm, const char *code, const int id, int *n, T *tt) {
+static void read(MPI_Comm comm, const char *base, const char *code, const int id, int *n, T *tt) {
     long np = 0;
     char hname[BS], dname[BS];
     BopData *bop;
     const T *tt_bop;
-    gen_base_name_read(BASE_STRT_READ, code, id, /**/ hname);
+    gen_base_name_read(base, code, id, /**/ hname);
     msg_print("reading '%s'", hname);
 
     BPC(bop_ini(&bop));
@@ -87,19 +87,19 @@ static void read(MPI_Comm comm, const char *code, const int id, int *n, T *tt) {
 }
 
 void restart_write_pp(MPI_Comm comm, const char *code, int id, long n, const Particle *pp) {
-    write(comm, code, id, n, pp, BopFLOAT, 6, "x y z vx vy vz");
+    write(comm, BASE_STRT_DUMP, code, id, n, pp, BopFLOAT, 6, "x y z vx vy vz");
 }
 
 void restart_read_pp(MPI_Comm comm, const char *code, int id, int *n, Particle *pp) {
-    read(comm, code, id, n, pp);
+    read(comm, BASE_STRT_READ, code, id, n, pp);
 }
 
 void restart_write_ii(MPI_Comm comm, const char *code, int id, long n, const int *ii) {
-    write(comm, code, id, n, ii, BopINT, 1, "i");
+    write(comm, BASE_STRT_DUMP, code, id, n, ii, BopINT, 1, "i");
 }
 
 void restart_read_ii(MPI_Comm comm, const char *code, int id, int *n, int *ii) {
-    read(comm, code, id, n, ii);    
+    read(comm, BASE_STRT_READ, code, id, n, ii);    
 }
 
 void restart_write_ss(MPI_Comm comm, const char *code, int id, long n, const Solid *ss) {
@@ -109,11 +109,11 @@ void restart_write_ss(MPI_Comm comm, const char *code, int id, long n, const Sol
         "e0x e0y e0z e1x e1y e1z e2x e2y e2z "
         "fx fy fz tx ty tz i";
     enum {NVARS=32};
-    write(comm, code, id, n, ss, BopFLOAT, NVARS, vars);
+    write(comm, BASE_STRT_DUMP, code, id, n, ss, BopFLOAT, NVARS, vars);
 }
 
 void restart_read_ss(MPI_Comm comm, const char *code, int id, int *n, Solid *ss) {
-    read(comm, code, id, n, ss);
+    read(comm, BASE_STRT_READ, code, id, n, ss);
 }
 
 #undef PATTERN
