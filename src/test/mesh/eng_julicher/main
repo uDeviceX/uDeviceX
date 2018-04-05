@@ -1,6 +1,6 @@
-# TEST: mesh.eng_julicher
+# sTEST: mesh.eng_julicher
 cd test/mesh/eng_julicher
 u.conf0 u/mesh/eng_julicher
 u.make -j
 u.cp.rbc rbc/sc/2562 rbc.off
-u.run ./udx 'i="rbc.off"; o="eng.vtk"' > eng.out.txt
+u.run ./udx 'i="rbc.off"; o="eng.vtk"'
