@@ -61,25 +61,23 @@ static void ini_map(const Coords *coords, T p, int **ids, int *nids) {
     EFREE(ii);
 }
 
-static DContMap *alloc(DContMap **m0) {
-    EMALLOC(1, m0);
-    return *m0;
+void den_map_ini(DContMap **m) {
+    EMALLOC(1, m);
+    (*m)->cids = NULL;
 }
 
-void den_ini_map_none(const Coords *c, DContMap **m0) {
-    DContMap *m = alloc(m0);
+void den_map_set_none(const Coords *c, DContMap *m) {
     None p;
     ini_map(c, p, &m->cids, &m->n);
 }
 
-void den_ini_map_circle(const Coords *c, float R, DContMap **m0) {
-    DContMap *m = alloc(m0);
+void den_map_set_circle(const Coords *c, float R, DContMap *m) {
     Circle p;
     p.R = R;
     ini_map(c, p, &m->cids, &m->n);
 }
 
-void den_fin_map(DContMap *m) {
-    CC(d::Free(m->cids));
+void den_map_fin(DContMap *m) {
+    if (m->cids) CC(d::Free(m->cids));
     EFREE(m);
 }

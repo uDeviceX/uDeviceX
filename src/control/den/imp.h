@@ -1,12 +1,16 @@
 struct DCont;
 struct DContMap;
 
-void den_ini(int maxp, /**/ DCont **d0);
-void den_ini_map_none(const Coords *c, DContMap **m0);
-void den_ini_map_circle(const Coords *c, float R, DContMap **m0);
+struct Coords;
 
-void den_fin(DCont *d);
-void den_fin_map(DContMap *m);
+void den_ini(int maxp, /**/ DCont**);
+void den_map_ini(DContMap**);
+
+void den_fin(DCont*);
+void den_map_fin(DContMap*);
+
+void den_map_set_none(const Coords*, DContMap*);
+void den_map_set_circle(const Coords*, float R, DContMap*);
 
 void den_reset(int n, /**/ DCont *d);
 void den_filter_particles(int maxdensity, const DContMap *m, const int *starts, const int *counts, /**/ DCont *d);

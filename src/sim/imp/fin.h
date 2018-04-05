@@ -57,7 +57,7 @@ static void fin_outflow(Outflow *o) {
 
 static void fin_denoutflow(DCont *d, DContMap *m) {
     UC(den_fin(d));
-    UC(den_fin_map(m));
+    UC(den_map_fin(m));
 }
 
 static void fin_inflow(Inflow *i) {
