@@ -100,9 +100,9 @@ void sim_strt(Sim *s, const Config *cfg, Time *time, TimeSeg *time_seg) {
     if (opt->rbc) rbc_strt_quants(s->cart, BASE_STRT_READ, cell, RESTART_BEGIN, &rbc->q);
     dSync();
 
-    if (opt->rig) rig_strt_quants(s->cart, RESTART_BEGIN, &rig->q);
+    if (opt->rig) rig_strt_quants(s->cart, BASE_STRT_READ, RESTART_BEGIN, &rig->q);
 
-    if (opt->wall) wall_strt_quants(s->cart, maxp_wall, &wall->q);
+    if (opt->wall) wall_strt_quants(s->cart, BASE_STRT_READ, maxp_wall, &wall->q);
 
     /*T*/
     if (opt->wall && wall->q.n) UC(wall_gen_ticket(&wall->q, wall->t));

@@ -44,12 +44,12 @@ static void strt_quants(MPI_Comm comm, const char *base, int maxn, int *w_n, flo
     CC(d::Free(pptmp));
 }
 
-void wall_strt_quants(MPI_Comm comm, int maxn, WallQuants *q) {
-    strt_quants(comm, BASE_STRT_READ, maxn, &q->n, &q->pp);
+void wall_strt_quants(MPI_Comm comm, const char *base, int maxn, WallQuants *q) {
+    strt_quants(comm, base, maxn, &q->n, &q->pp);
 }
 
-void wall_strt_dump_templ(MPI_Comm comm, const WallQuants *q) {
-    write(comm, BASE_STRT_DUMP, q->n, q->pp);
+void wall_strt_dump_templ(MPI_Comm comm, const char *base, const WallQuants *q) {
+    write(comm, base, q->n, q->pp);
 }
 
 #undef PP

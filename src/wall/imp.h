@@ -31,8 +31,8 @@ void wall_gen_ticket(const WallQuants*, WallTicket*); // <2>
 // end::gen[]
 
 // tag::start[]
-void wall_strt_quants(MPI_Comm, int maxn, WallQuants*); // <1>
-void wall_strt_dump_templ(MPI_Comm, const WallQuants*); // <2>
+void wall_strt_quants(MPI_Comm, const char *base, int maxn, WallQuants*); // <1>
+void wall_strt_dump_templ(MPI_Comm, const char *base, const WallQuants*); // <2>
 // end::start[]
 
 // tag::int[]

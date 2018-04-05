@@ -19,8 +19,8 @@ static void gen_from_strt(int maxp, MPI_Comm comm, const char *base, const int i
     *n = *ns * (*nps);
 }
 
-void rig_strt_quants(MPI_Comm comm, const int id, RigQuants *q) {
-    gen_from_strt(q->maxp, comm, BASE_STRT_READ, id, /**/ &q->ns, &q->nps, &q->n, q->rr0_hst, q->ss_hst);
+void rig_strt_quants(MPI_Comm comm, const char *base, const int id, RigQuants *q) {
+    gen_from_strt(q->maxp, comm, base, id, /**/ &q->ns, &q->nps, &q->n, q->rr0_hst, q->ss_hst);
     gen_pp_hst(q->ns, q->rr0_hst, q->nps, /**/ q->ss_hst, q->pp_hst);
     gen_ipp_hst(q->ss_hst, q->ns, q->nv, q->hvv, /**/ q->i_pp_hst);
     cpy_H2D(q);
@@ -44,12 +44,12 @@ static void strt_dump_templ0(MPI_Comm comm, const char *base, const int nps, con
     EFREE(pp);
 }
 
-void rig_strt_dump_templ(MPI_Comm comm, const RigQuants *q) {
-    strt_dump_templ0(comm, BASE_STRT_DUMP, q->nps, q->rr0_hst);
+void rig_strt_dump_templ(MPI_Comm comm, const char *base, const RigQuants *q) {
+    strt_dump_templ0(comm, base, q->nps, q->rr0_hst);
 }
 
-void rig_strt_dump(MPI_Comm comm, const int id, const RigQuants *q) {
-    restart_write_ss(comm, BASE_STRT_DUMP, SS, id, q->ns, q->ss_hst);
+void rig_strt_dump(MPI_Comm comm, const char *base, const int id, const RigQuants *q) {
+    restart_write_ss(comm, base, SS, id, q->ns, q->ss_hst);
 }
 
 #undef PP
