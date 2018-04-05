@@ -1,0 +1,18 @@
+#### Rigid bodies in double poiseuille
+# nTEST: rstrt.rig
+cd test/restart/3/
+:
+u.cp.rig sphere.ply  rig.ply
+echo -e "4.1 21.5 8\n4.1 10.5 8\n11.9 16 8" > rigs-ic.txt
+:
+u.strtdir .
+u.run udx conf.cfg
+u.run udx conf.cfg '
+glb = {
+    restart = true
+}
+bforce = {
+    type = "double_poiseuille"
+    a    = 5.0
+}'
+cat solid_diag_0000.txt | awk '{print $2, $5, $8}' | uscale 5 > sdiag.out.txt
