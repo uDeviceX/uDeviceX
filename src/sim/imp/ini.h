@@ -228,6 +228,7 @@ static int get_shifttype(const Config *c, const char *desc) {
 
 static void read_opt(const Config *c, Opt *o) {
     int b;
+    const char *s;
     UC(conf_lookup_bool(c, "fsi.active", &b));
     o->fsi = b;
     UC(conf_lookup_bool(c, "cnt.active", &b));
@@ -275,6 +276,12 @@ static void read_opt(const Config *c, Opt *o) {
     UC(conf_lookup_bool(c, "dump.strt", &b));
     o->dump_strt = b;
     UC(conf_lookup_float(c, "dump.freq_strt", &o->freq_strt));
+
+    UC(conf_lookup_string(c, "dump.strt_base_dump", &s));
+    strcpy(o->strt_base_dump, s);
+
+    UC(conf_lookup_string(c, "dump.strt_base_read", &s));
+    strcpy(o->strt_base_read, s);
 
     UC(conf_lookup_bool(c, "dump.parts", &b));
     o->dump_parts = b;
