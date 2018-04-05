@@ -1,4 +1,5 @@
 $B/algo/edg/imp.o: $S/algo/edg/imp.cpp; $X -I$S/algo/edg -I$S/.
+$B/algo/key_list/imp.o: $S/algo/key_list/imp.cpp; $X -I$S/algo/key_list -I$S/.
 $B/algo/scalars/imp.o: $S/algo/scalars/imp.cpp; $X -I$S/algo/scalars -I$S/.
 $B/algo/vectors/imp.o: $S/algo/vectors/imp.cpp; $X -I$S/algo/vectors -I$S/.
 $B/conf/imp.o: $S/conf/imp.cpp; $X -I$S/conf -I$S/.

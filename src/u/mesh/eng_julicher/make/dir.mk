@@ -1,5 +1,6 @@
 D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/algo/edg            && \
+    d $B/algo/key_list       && \
     d $B/algo/scalars        && \
     d $B/algo/vectors        && \
     d $B/conf                && \
