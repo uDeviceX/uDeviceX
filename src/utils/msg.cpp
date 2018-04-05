@@ -6,9 +6,7 @@
 
 static int rank;
 
-void msg_ini(int rnk) {
-    rank = rnk;
-}
+void msg_ini(int rnk) { rank = rnk; }
 
 static FILE* open(const char *path) {
     static int fst = 1;
@@ -25,7 +23,7 @@ static FILE* open(const char *path) {
         if (f == NULL) {
             fprintf(stderr, "%s:%d: fail to append: '%s'\n", __FILE__, __LINE__, path);
             exit(2);
-        }        
+        }
     }
     return f;
 }
@@ -38,21 +36,23 @@ static void print(const char *msg, FILE *f) {
 }
 
 void msg_print(const char *fmt, ...) {
-    char msg[BUFSIZ] = {0}, name[64];
+    char msg[BUFSIZ], name[BUFSIZ];
     va_list ap;
     FILE *f;
 
     // set name of file
-    sprintf(name, ".%03d", rank);
+    snprintf(name, BUFSIZ - 1, ".%03d", rank);
 
     // form the message
     va_start(ap, fmt);
-    vsprintf(msg, fmt, ap);
+    vsnprintf(msg, BUFSIZ - 1, fmt, ap);
     va_end(ap);
 
     // print the message
     f = open(name);
     print(msg, f);
-    fclose(f);
+    if (fclose(f) != 0) {
+        fprintf(stderr, "%s:%d: fail to close: '%s'\n", __FILE__, __LINE__, name);
+        exit(2);
+    }
 }
-
