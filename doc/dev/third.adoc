@@ -83,10 +83,11 @@ Configuration options
       ./configure --prefix=$HOME/prefix/hdf5 --enable-parallel CXX=mpic++ CC=mpicc
 ----
 
+[[third_bop]]
 == bop
 
 a simple format for particle data, see
-link:https://gitlab.ethz.ch/mavt-cse/bop[bop].
+link:https://github.com/amlucas/bop[bop].
 
 installation:
 
