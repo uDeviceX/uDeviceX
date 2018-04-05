@@ -66,7 +66,7 @@ static void ini_vcon(MPI_Comm comm, int3 L, const Config *cfg, /**/ Vcon *c) {
 }
 
 static void ini_outflow(const Coords *coords, int maxp, const Config *cfg, Outflow **o) {
-    UC(ini(maxp, /**/ o));
+    UC(outflow_ini(maxp, /**/ o));
     const char *type;
     UC(conf_lookup_string(cfg, "outflow.type", &type));
 
@@ -76,14 +76,14 @@ static void ini_outflow(const Coords *coords, int maxp, const Config *cfg, Outfl
         UC(conf_lookup_float(cfg, "outflow.R", &R));
         UC(conf_lookup_float3(cfg, "outflow.center", &center));
 
-        ini_params_circle(coords, center, R, /**/ *o);
+        outflow_ini_params_circle(coords, center, R, /**/ *o);
     }
     else if (same_str(type, "plate")) {
         int dir;
         float r0;
         UC(conf_lookup_int(cfg, "outflow.direction", &dir));
         UC(conf_lookup_float(cfg, "outflow.position", &r0));
-        ini_params_plate(coords, dir, r0, /**/ *o);
+        outflow_ini_params_plate(coords, dir, r0, /**/ *o);
     }
     else {
         ERR("Unrecognized type <%s>", type);

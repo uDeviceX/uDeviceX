@@ -6,8 +6,8 @@ static void apply_inflow(float kBT, int numdensity, float dt, Inflow *i, Flu *f)
 }
 
 static void mark_outflow(const Flu *f, Outflow *o) {
-    UC(filter_particles(f->q.n, f->q.pp, /**/ o));
-    UC(download_ndead(o));
+    UC(outflow_filter_particles(f->q.n, f->q.pp, /**/ o));
+    UC(outflow_download_ndead(o));
 }
 
 static void mark_outflowden(Params params, const Flu *f, const DContMap *m, /**/ DCont *d) {

@@ -19,12 +19,10 @@
 
 #include "imp.h"
 
-#include "circle/dev.h"
-#include "plate/dev.h"
-#include "dev/filter.h"
-
 #include "imp/type.h"
-#include "imp/main.h"
 
-#include "circle/imp.h"
-#include "plate/imp.h"
+namespace outflow_dev {
+#include "dev/main.h"
+}
+
+#include "imp/main.h"

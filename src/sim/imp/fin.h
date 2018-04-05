@@ -45,14 +45,14 @@ static void fin_rig_distr(/**/ RigDistr *d) {
 }
 
 static void fin_colorer(Colorer *c) {
-    fin_mesh_exch(/**/ &c->e);
+    UC(fin_mesh_exch(/**/ &c->e));
     Dfree(c->pp);
     Dfree(c->minext);
     Dfree(c->maxext);
 }
 
 static void fin_outflow(Outflow *o) {
-    fin(/**/ o);
+    UC(outflow_fin(/**/ o));
 }
 
 static void fin_denoutflow(DCont *d, DContMap *m) {
@@ -70,8 +70,8 @@ static void fin_flu(Opt opt, Flu *f) {
     UC(fluforces_bulk_fin(/**/ f->bulk));
     UC(fluforces_halo_fin(/**/ f->halo));
  
-    fin_flu_distr(/**/ &f->d);
-    fin_flu_exch(/**/ &f->e);
+    UC(fin_flu_distr(/**/ &f->d));
+    UC(fin_flu_exch(/**/ &f->e));
 
     UC(Dfree(f->ff));
     EFREE(f->ff_hst);
@@ -99,8 +99,8 @@ static void fin_rbc(Opt opt, Rbc *r) {
 }
 
 static void fin_rig(Rig *s) {
-    rig_fin(&s->q);
-    scan_fin(/**/ s->ws);
+    UC(rig_fin(&s->q));
+    UC(scan_fin(/**/ s->ws));
     Dfree(s->ff);
     EFREE(s->ff_hst);
 
@@ -110,7 +110,7 @@ static void fin_rig(Rig *s) {
 }
 
 static void fin_bounce_back(BounceBack *bb) {
-    meshbb_fin(/**/ bb->d);
+    UC(meshbb_fin(/**/ bb->d));
     Dfree(bb->mm);
     UC(fin_bb_exch(/**/ &bb->e));
 }
