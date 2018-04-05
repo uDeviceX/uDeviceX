@@ -7,4 +7,4 @@ u.cp.sdf wall1/wall.dat sdf.dat
 u.strtdir .
 u.run udx conf.cfg
 : :::::: checks total wall particle number ::::::
-cp strt/wall/templ.bop wall.out.txt
+head -n 4 strt/wall.pp/templ.bop > wall.out.txt
