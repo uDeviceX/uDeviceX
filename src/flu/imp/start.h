@@ -17,10 +17,10 @@ static int strt_ii(MPI_Comm comm, const char *base, const char *code, const int 
     return n;
 }
 
-void flu_strt_quants(MPI_Comm comm, const int id, FluQuants *q) {
-    q->n =         strt_pp(comm, BASE_STRT_READ,     id, /**/ q->pp, /* w */ q->pp_hst);
-    if (q->ids)    strt_ii(comm, BASE_STRT_READ, IDS, id, /**/ q->ii, /* w */ q->ii_hst);
-    if (q->colors) strt_ii(comm, BASE_STRT_READ, COL, id, /**/ q->cc, /* w */ q->cc_hst);
+void flu_strt_quants(MPI_Comm comm, const char *base, const int id, FluQuants *q) {
+    q->n =         strt_pp(comm, base,     id, /**/ q->pp, /* w */ q->pp_hst);
+    if (q->ids)    strt_ii(comm, base, IDS, id, /**/ q->ii, /* w */ q->ii_hst);
+    if (q->colors) strt_ii(comm, base, COL, id, /**/ q->cc, /* w */ q->cc_hst);
 }
 
 static void strt_dump_pp(MPI_Comm comm, const char *base, const int id, const int n, const Particle *dev, Particle *hst) {
@@ -33,10 +33,10 @@ static void strt_dump_ii(MPI_Comm comm, const char *base, const char *code, cons
     restart_write_ii(comm, base, code, id, n, hst);
 }
 
-void flu_strt_dump(MPI_Comm comm, const int id, const FluQuants *q) {
-    strt_dump_pp(comm, BASE_STRT_DUMP, id, q->n, q->pp, /* w */ q->pp_hst);
-    if (q->ids)    strt_dump_ii(comm, BASE_STRT_DUMP, IDS, id, q->n, q->ii, /* w */ q->ii_hst);
-    if (q->colors) strt_dump_ii(comm, BASE_STRT_DUMP, COL, id, q->n, q->cc, /* w */ q->cc_hst);
+void flu_strt_dump(MPI_Comm comm, const char *base, const int id, const FluQuants *q) {
+    strt_dump_pp(comm, base, id, q->n, q->pp, /* w */ q->pp_hst);
+    if (q->ids)    strt_dump_ii(comm, base, IDS, id, q->n, q->ii, /* w */ q->ii_hst);
+    if (q->colors) strt_dump_ii(comm, base, COL, id, q->n, q->cc, /* w */ q->cc_hst);
 }
 
 #undef CODE

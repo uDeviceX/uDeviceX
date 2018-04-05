@@ -94,7 +94,7 @@ void sim_strt(Sim *s, const Config *cfg, Time *time, TimeSeg *time_seg) {
     long maxp_wall = get_max_parts_wall(s->params);
 
     /*Q*/
-    flu_strt_quants(s->cart, RESTART_BEGIN, &flu->q);
+    flu_strt_quants(s->cart, BASE_STRT_READ, RESTART_BEGIN, &flu->q);
     flu_build_cells(&flu->q);
 
     if (opt->rbc) rbc_strt_quants(s->cart, cell, RESTART_BEGIN, &rbc->q);

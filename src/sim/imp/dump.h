@@ -104,7 +104,7 @@ static void dump_strt0(int id, Sim *s) {
     Flu *flu = &s->flu;
     Rbc *rbc = &s->rbc;
     Rig *rig = &s->rig;
-    flu_strt_dump(s->cart, id, &flu->q);
+    flu_strt_dump(s->cart, BASE_STRT_DUMP, id, &flu->q);
     if (s->opt.rbc) rbc_strt_dump(s->cart, id, &rbc->q);
     if (s->opt.rig) rig_strt_dump(s->cart, id, &rig->q);
 }

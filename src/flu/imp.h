@@ -34,8 +34,8 @@ void flu_gen_ids(MPI_Comm, const int n, FluQuants *q); // <2>
 // end::gen[]
 
 // tag::start[]
-void flu_strt_quants(MPI_Comm, const int id, FluQuants *q);     // <1>
-void flu_strt_dump(MPI_Comm, const int id, const FluQuants *q); // <2>
+void flu_strt_quants(MPI_Comm, const char *base, const int id, FluQuants *q);     // <1>
+void flu_strt_dump(MPI_Comm, const char *base, const int id, const FluQuants *q); // <2>
 // end::start[]
 
 // tag::tools[]
