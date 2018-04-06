@@ -8,7 +8,7 @@ static const int ncolors = sizeof(colors)/sizeof(uint32_t);
 
 static uint32_t str2color(const char *s) {
     int cid, t;
-    for (t = 0; s != '\0'; ++s) t += (int) *s;
+    for (t = 0; *s != '\0'; ++s) t += (int) *s;
     cid = t % ncolors;
     return colors[cid];
 }
