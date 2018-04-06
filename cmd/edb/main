@@ -1,7 +1,9 @@
 #!/bin/sh
 
 . u.edb.util
-prog=u.edb.util
+
+prog=u.edb
+prog0=u.edb0
 
 usg () {
     msg "$prog command [args..]"
@@ -10,3 +12,6 @@ usg () {
 }
 
 if test $# -ne 0 && test "$1" = -h; then usg; fi
+if test $# -eq 0; then err "command name must be given"; fi
+
+e $prog0 "$@"

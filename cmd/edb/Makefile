@@ -1,6 +1,6 @@
 PREFIX = $(HOME)
 
-M = main util
+M = main main0 util
 
 D = edb
 P = u
