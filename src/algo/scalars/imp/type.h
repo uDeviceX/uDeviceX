@@ -1,3 +1,4 @@
+enum {MAGIC = 123};
 struct Scalars {
     int type;
     int n;
@@ -6,6 +7,7 @@ struct Scalars {
         const double *dd;
         const Vectors *vec;
     } D;
+    int stamp;
 };
 
 static double float_get (const Scalars*, int i);
