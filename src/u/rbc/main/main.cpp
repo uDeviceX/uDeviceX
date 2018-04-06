@@ -6,6 +6,7 @@
 #include <conf.h>
 #include "inc/conf.h"
 
+#include "utils/imp.h"
 #include "utils/msg.h"
 #include "utils/error.h"
 #include "utils/mc.h"
