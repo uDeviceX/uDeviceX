@@ -12,9 +12,9 @@ static void share0(MPI_Comm comm, const int root, /**/ Particle *pp, int *n) {
             displs[j+1] = displs[j] + counts[j];
     }
 
-    MC(MPI_Gatherv(pp, *n,
-                   datatype::particle, recvbuf.data(), counts.data(), displs.data(),
-                   datatype::particle, root, comm) );
+    MC(m::Gatherv(pp, *n,
+                  datatype::particle, recvbuf.data(), counts.data(), displs.data(),
+                  datatype::particle, root, comm) );
 
     if (rank == root) {
         *n = displs.back() + counts.back();
