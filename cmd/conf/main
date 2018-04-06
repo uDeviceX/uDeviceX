@@ -2,6 +2,8 @@
 
 set -eu
 
+. u.conf.util
+
 usg() {
     echo 'usage: u.conf SRC.DIR UNIT.DIR <<<!
 [variables]

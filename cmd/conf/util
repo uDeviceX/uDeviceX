@@ -1,0 +1,28 @@
+: ${AWK=awk}
+: ${DBG=0}
+
+e () {
+  if test ! "$DBG" = 0
+  then msg "cmd: $*"
+  fi
+  eval "$@"
+}
+
+msg () { echo >&2 "$*"; }
+err () { msg "$prog: $@"; exit 2; }
+
+match () { test -f "$1"; }
+
+numberp () { # number?
+    "$AWK" -v n="$1" 'BEGIN  {r = !(n + 0 == n); exit r }'
+}
+
+intp () { # integer?
+    awk -v n="$1" 'BEGIN  {r = !("" int(n) == "" n); exit r }'
+}
+
+assert_arg () {
+    local m
+    m="$1"; shift
+    if test $# -eq 0; then err $m; fi
+}
