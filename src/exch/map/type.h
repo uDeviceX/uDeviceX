@@ -8,6 +8,7 @@ struct EMap {
     int *starts;         /* cumulative sum of the above                 */
     int *offsets;        /* offsets per fragment for each solute        */
     int *ids[MAX_FRAGS]; /* indices of leaving objects                  */
+    int *cap;            /* capacity of ids                             */
 };
 // end::struct[]
 
