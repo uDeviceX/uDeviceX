@@ -1,9 +1,10 @@
 namespace emap_dev {
 
 static __device__ int warpexscan(int cnt, int t) {
+    assert (t < warpSize);
     int L, scan;
     scan = cnt;
-    for (L = 1; L < 32; L <<= 1) scan += (t >= L) * __shfl_up(scan, L);
+    for (L = 1; L < warpSize; L <<= 1) scan += (t >= L) * __shfl_up(scan, L);
     return scan - cnt;
 }
 
