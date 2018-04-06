@@ -21,11 +21,7 @@ ERR_BIN_MAKE=4
 ERR_MISSING_MK=5
 ERR_ARGP=6
 
-msg() { printf '%s\n' "$*" >&2; }
-err() { msg "$prog $@"; exit 2; }
-
 if test $# -ne 0 && test "$1" = -h; then usg; fi
-
 if test $# -eq 0; then err 'missing SRC.DIR'; fi
 S="$1"; shift
 
@@ -35,16 +31,16 @@ U="$1"; shift
 c=/dev/stdin  # config file
 t=/tmp/u.conf.$$.conf
 trap 'rm -rf $t; exit 2' 1 2 3 15
-cat "$c" > "$t"
+e cat "$c" '>' "$t"
 c=$t
 
 ### S: source directory; h: header file; c: config file #####
-u.conf.make "$S" "$U" "$c"; rc=$?
+e u.conf.make "$S" "$U" "$c"; rc=$?
 if test $rc -eq $ERR_NO_RUNS;    then err 'no run commands in config'; fi
 if test $rc -eq $ERR_BIN_MAKE;   then err 'cannot create bin[...]/Makefile'; fi
 if test $rc -eq $ERR_MISSING_MK; then err 'cannot find system config'; fi
 
-u.conf.conf     "$c"; rc=$?
+e u.conf.conf     "$c"; rc=$?
 if test $rc -eq $ERR_ARGP;       then err 'u.argp fails'; fi
 
-rm -f $t
+e rm -f $t
