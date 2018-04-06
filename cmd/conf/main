@@ -37,7 +37,7 @@ if test $rc -eq $ERR_MISSING_MK; then err 'cannot find system config'; fi
 t=/tmp/u.conf.$$; >$t
 trap 'rm $t; exit 2' 1 2 3 4 15
 
-"$AWK" '{ printf "%s \n", $0 }' > $t
+"$AWK" '{ printf "%s \n", $0 }' /dev/stdin > $t
 
 u.argp `cat $t` '>' conf.h
 if test $? -ne 0; then err 'u.argp failed'; fi
