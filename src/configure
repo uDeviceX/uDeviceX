@@ -25,4 +25,4 @@ then err "u.conf command is not found"
 fi
 
 S=`u.cp.s`
-echo run | u.conf "$S" u/x "$@"
+echo | u.conf "$S" u/x "$@"
