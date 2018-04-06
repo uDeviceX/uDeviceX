@@ -21,25 +21,23 @@ h=falcon # a host
 
 t=/tmp/edg.$$.gdb # tmp file is gdb script; TODO: no cleanup
 
-clean () {
-    rm -f -- "${t?error}"
-}
+clean () { rm -f -- "${t?error}" ; }
+
 
 trap "clean; exit 1" 1 2 3 15
 e="$1"; shift
 
 gdb_script () {
-    (
 	printf "%s" "set args"
 	for f
-	do
-	    printf " \'%s\'" "$f"
+	do printf " \'%s\'" "$f"
 	done
 	printf "\n"
 	printf "start\n"
-    )
 }
 
 gdb_script "$@" > "$t"
-printf '(gud-gdb "%s --fullname /ssh:%s:%s/%s -x %s")' "$cgdb" "$h" "`pwd`" "$e" "$t"
+
+fmt='(gud-gdb "%s --fullname /ssh:%s:%s/%s -x %s")'
+printf "$fmt" "$cgdb" "$h" "`pwd`" "$e" "$t"
 printf "\n"
