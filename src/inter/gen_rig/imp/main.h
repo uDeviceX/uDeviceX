@@ -1,5 +1,6 @@
 static void gen0(const Coords *c, MPI_Comm comm, RigGenInfo rgi, int nsolid, int rcount, int idmax, int root, float *coms, /**/
                  RigInfo ri) {
+    enum {NFLOATS_PER_SOLID = sizeof(Solid) / sizeof(float)};
     Solid model;
     // share model to everyone
     int npsolid = 0, rank;
@@ -16,9 +17,9 @@ static void gen0(const Coords *c, MPI_Comm comm, RigGenInfo rgi, int nsolid, int
             empty_solid(rgi.nt, rgi.tt, rgi.vv, /* io */ ri.rr0, &npsolid);
     }
 
-    MC(m::Bcast(&npsolid,         1,   MPI_INT, root, comm) );
-    MC(m::Bcast(ri.rr0, 3 * npsolid, MPI_FLOAT, root, comm) );
-    MC(m::Bcast(&model,    1, datatype::solid,   root, comm) );
+    MC(m::Bcast(&npsolid,               1,   MPI_INT, root, comm) );
+    MC(m::Bcast(ri.rr0,       3 * npsolid, MPI_FLOAT, root, comm) );
+    MC(m::Bcast(&model, NFLOATS_PER_SOLID, MPI_FLOAT, root, comm) );
 
     // filter coms to keep only the ones in my domain
     int id = 0;
