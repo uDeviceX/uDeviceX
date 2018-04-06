@@ -14,7 +14,7 @@ __global__ void build_map(int3 L0, int n, const float3 *minext, const float3 *ma
     ndsts = emap_decode(fid, /**/ fids);
 
     for (j = 0; j < ndsts; ++j)
-        emap_add(0, i, fids[j], /**/ map);
+        emap_add(NFRAGS, 0, i, fids[j], /**/ map);
 }
 
 static __device__ void pack_p(int nv, const Particle *pp, int vid, int frag_mid, int *indices, /**/ Particle *buf) {
