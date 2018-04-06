@@ -7,7 +7,6 @@ cp $S/data/cells/rbc/$nv.off rbc.off
 cp $S/data/ic/ident          rbcs-ic.txt
 u.conf $S $U <<!
     KL_SYNC
-run
 !
 u.make -j
 u.run ./udx conf.cfg > av.out.txt
