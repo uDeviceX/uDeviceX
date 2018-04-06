@@ -9,6 +9,6 @@ O = $B/algo/edg/imp.o $B/algo/vectors/imp.o $B/conf/imp.o $B/coords/conf.o \
     $B/rbc/params/imp.o $B/rbc/shape/imp.o $B/rbc/stretch/imp.o \
     $B/scheme/force/conf.o $B/scheme/force/imp.o $B/scheme/move/imp.o \
     $B/scheme/restrain/conf.o $B/scheme/restrain/imp.o $B/scheme/time/imp.o \
-    $B/u/rbc/main/lib/imp.o $B/u/rbc/main/main.o $B/utils/cc.o $B/utils/error.o \
-    $B/utils/imp.o $B/utils/mc.o $B/utils/msg.o $B/utils/nvtx/imp.o $B/utils/os.o \
-    $B/utils/string/imp.o
+    $B/u/rbc/sphering/lib/imp.o $B/u/rbc/sphering/main.o $B/utils/cc.o \
+    $B/utils/error.o $B/utils/imp.o $B/utils/mc.o $B/utils/msg.o \
+    $B/utils/nvtx/imp.o $B/utils/os.o $B/utils/string/imp.o

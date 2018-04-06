@@ -37,8 +37,8 @@ $B/scheme/move/imp.o: $S/scheme/move/imp.cu; $N -I$S/scheme/move -I$S/.
 $B/scheme/restrain/conf.o: $S/scheme/restrain/conf.cpp; $X -I$S/scheme/restrain -I$S/.
 $B/scheme/restrain/imp.o: $S/scheme/restrain/imp.cu; $N -I$S/scheme/restrain -I$S/.
 $B/scheme/time/imp.o: $S/scheme/time/imp.cpp; $X -I$S/scheme/time -I$S/.
-$B/u/rbc/main/lib/imp.o: $S/u/rbc/main/lib/imp.cu; $N -I$S/u/rbc/main/lib -I$S/.
-$B/u/rbc/main/main.o: $S/u/rbc/main/main.cpp; $X -I$S/u/rbc/main -I$S/.
+$B/u/rbc/sphering/lib/imp.o: $S/u/rbc/sphering/lib/imp.cu; $N -I$S/u/rbc/sphering/lib -I$S/.
+$B/u/rbc/sphering/main.o: $S/u/rbc/sphering/main.cpp; $X -I$S/u/rbc/sphering -I$S/.
 $B/utils/cc.o: $S/utils/cc.cpp; $X -I$S/utils -I$S/.
 $B/utils/error.o: $S/utils/error.cpp; $X -I$S/utils -I$S/.
 $B/utils/imp.o: $S/utils/imp.cpp; $X -I$S/utils -I$S/.
