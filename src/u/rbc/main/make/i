@@ -3,7 +3,7 @@ f () ( for d; do f0 "$d"; done )
 
 f $U algo/edg conf coords d inc io/mesh_read io/mesh io/write io/restart io/diag/part \
      math algo/vectors mpi rbc scheme/force \
-     scheme/move scheme/restrain scheme/time utils algo/utils
+     scheme/move scheme/restrain scheme/time_line utils algo/utils
 
 # add dir
 echo $U $U/lib .

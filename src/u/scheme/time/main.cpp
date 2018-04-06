@@ -5,7 +5,7 @@
 #include "utils/mc.h"
 #include "mpi/glb.h"
 #include "mpi/wrapper.h"
-#include "scheme/time/imp.h"
+#include "scheme/time_line/imp.h"
 
 int main(int argc, char **argv) {
     float s, ts, dt, dump;

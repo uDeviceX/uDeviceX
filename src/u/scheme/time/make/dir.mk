@@ -1,8 +1,8 @@
 D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
-    d $B/d             && \
-    d $B/mpi           && \
-    d $B/scheme/time   && \
-    d $B/u/scheme/time && \
-    d $B/utils         && \
-    d $B/utils/nvtx    && \
-    d $B/utils/string 
+    d $B/d                && \
+    d $B/mpi              && \
+    d $B/scheme/time_line && \
+    d $B/u/scheme/time    && \
+    d $B/utils            && \
+    d $B/utils/nvtx       && \
+    d $B/utils/string    

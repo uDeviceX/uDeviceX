@@ -1,7 +1,7 @@
 $B/d/api.o: $S/d/api.cu; $N -I$S/d -I$S/.
 $B/mpi/glb.o: $S/mpi/glb.cpp; $X -I$S/mpi -I$S/.
 $B/mpi/wrapper.o: $S/mpi/wrapper.cpp; $X -I$S/mpi -I$S/.
-$B/scheme/time/imp.o: $S/scheme/time/imp.cpp; $X -I$S/scheme/time -I$S/.
+$B/scheme/time_line/imp.o: $S/scheme/time_line/imp.cpp; $X -I$S/scheme/time_line -I$S/.
 $B/u/scheme/time/main.o: $S/u/scheme/time/main.cpp; $X -I$S/.
 $B/utils/cc.o: $S/utils/cc.cpp; $X -I$S/utils -I$S/.
 $B/utils/error.o: $S/utils/error.cpp; $X -I$S/utils -I$S/.
