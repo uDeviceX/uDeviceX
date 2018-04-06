@@ -161,8 +161,11 @@ struct Opt {
     bool push_flu, push_rbc, push_rig;
 };
 
-struct TimeSeg {
-    float end, wall;
+struct Time {
+    TimeLine *t;          /* current time manager         */
+    float end, wall;      /* ent time, freeze time        */
+    TimeStep *step;       /* time step manager            */
+    TimeStepAccel *accel; /* helper for time step manager */
 };
 
 struct Dump {
@@ -220,6 +223,4 @@ struct Sim {
 
     /* inter processing helpers */
     GenColor *gen_color;
-    TimeStep *time_step;
-    TimeStepAccel *time_step_accel;
 };
