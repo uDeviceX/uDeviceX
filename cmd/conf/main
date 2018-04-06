@@ -28,19 +28,15 @@ S="$1"; shift
 if test $# -eq 0; then err 'missing UNIT.DIR'; fi
 U="$1"; shift
 
-c=/dev/stdin  # config file
-t=/tmp/u.conf.$$.conf
-trap 'rm -rf $t; exit 2' 1 2 3 15
-e cat "$c" '>' "$t"
-c=$t
-
 ### S: source directory; h: header file; c: config file #####
-e u.conf.make "$S" "$U" "$c"; rc=$?
+e u.conf.make "$S" "$U"; rc=$?
 if test $rc -eq $ERR_NO_RUNS;    then err 'no run commands in config'; fi
 if test $rc -eq $ERR_BIN_MAKE;   then err 'cannot create bin[...]/Makefile'; fi
 if test $rc -eq $ERR_MISSING_MK; then err 'cannot find system config'; fi
 
-e u.conf.conf     "$c"; rc=$?
-if test $rc -eq $ERR_ARGP;       then err 'u.argp fails'; fi
+oneline () {
+    e "$AWK" '{ printf "%s \n", $0 }'
+}
 
-e rm -f $t
+e u.argp `oneline` '>' conf.h
+if test $? -ne 0; then err 'u.argp failed'; fi
