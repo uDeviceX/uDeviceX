@@ -2,7 +2,7 @@
 
 . u.edb.util
 
-: ${CUDA_GDB=cuda-gdb}
+: ${CUDA_GDB=`which cuda-gdb`}
 : ${HOST=`hostname`}
 prog=u.edb0
 
