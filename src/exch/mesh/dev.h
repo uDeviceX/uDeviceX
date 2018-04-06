@@ -38,8 +38,9 @@ __global__ void pack_mesh(int nv, const Particle *pp, EMap map, /**/ Pap26 buf) 
 
         /* mesh index in the fragment coordinates */ 
         frag_mid = mid - map.starts[fid];
-        
-        pack_p(nv, pp, vid, frag_mid, map.ids[fid], /**/ buf.d[fid]);
+
+        if (frag_mid < map.cap[fid])
+            pack_p(nv, pp, vid, frag_mid, map.ids[fid], /**/ buf.d[fid]);
     }
 }
 
