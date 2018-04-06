@@ -39,7 +39,7 @@ void msg_print(const char *fmt, ...) {
     char msg[BUFSIZ], name[FILENAME_MAX];
     va_list ap;
     FILE *f;
-    snprintf(name, BUFSIZ - 1, ".%03d", rank);
+    snprintf(name, FILENAME_MAX - 1, ".%03d", rank);
 
     va_start(ap, fmt);
     vsnprintf(msg, BUFSIZ - 1, fmt, ap);
