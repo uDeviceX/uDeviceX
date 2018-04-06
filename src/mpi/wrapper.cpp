@@ -87,6 +87,11 @@ int Finalize(void) {
     return MPI_Finalize();
 }
 
+int Gatherv(const void *sendbuf, int sendcount, MPI_Datatype sendtype, void *recvbuf, const int recvcounts[],
+            const int displs[], MPI_Datatype recvtype, int root, MPI_Comm comm) {
+    return MPI_Gatherv(sendbuf, sendcount, sendtype, recvbuf, recvcounts, displs, recvtype, root, comm);
+}
+
 int Init(int *argc, char ***argv) {
     return MPI_Init(argc, argv);
 }
