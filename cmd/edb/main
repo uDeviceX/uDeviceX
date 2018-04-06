@@ -5,6 +5,8 @@ prog=u.edb.util
 
 usg () {
     msg "$prog command [args..]"
-    msg 'print an emacs command to launch remote gdb session ("emacs debug")'
+    msg 'print a command to run remote gdb session in emacs("emacs debug")'
     exit
 }
+
+if test $# -ne 0 && test "$1" = -h; then usg; fi
