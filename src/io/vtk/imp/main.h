@@ -122,12 +122,12 @@ void vtk_write(VTK *q, MPI_Comm comm, int id) {
     if (!key_list_marked(q->tri)) {
         msg_print("missing triangle data");
         key_list_log(q->tri);
-        ERR("");
+        ERR("vtk_write is called is not enough data");
     }
     if (!key_list_marked(q->vert)) {
         msg_print("missing vertices data");
         key_list_log(q->vert);
-        ERR("");
+        ERR("vtk_write is called is not enough data");
     }
     if (!q->rr_set) ERR("points are unset");
 
