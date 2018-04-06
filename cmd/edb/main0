@@ -10,12 +10,10 @@ t=/tmp/edb.$$
 command="$1"; shift
 
 gdb_script () {
-    printf "%s" "set args"
-    for f
-    do printf " \'%s\'" "$f"
-    done
-    printf "\n"
-    printf "start\n"
+    # quote evrery argument
+    for i; do shift; set "$@" \""$i"\"; done
+    echo "set args" "$@"
+    echo "start"
 }
 
 e gdb_script "$@" '>' "$t"
