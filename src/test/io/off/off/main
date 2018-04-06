@@ -4,4 +4,5 @@ cd test/io/off/off
 u.cp.rbc rbc/642 rbc.off
 :
 u.conf0 u/io/off
+u.make -j
 u.run ./udx -- 'i="rbc.off"; type="off"' > test.out.txt
