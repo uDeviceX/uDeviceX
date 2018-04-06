@@ -16,10 +16,8 @@ static int max3(int a, int b, int c) {
     if (b > c) c = b;
     return c;
 }
-static int get_nbuf(int n, int nv, int nt, int ne) {
-    int nm;
-    nm = n / nv;
-    return max3(3*n, 4*nm*nt, 3*nm*ne);
+static int get_nbuf(int nm, int nv, int nt, int ne) {
+    return max3(nm*nv, nm*nt, nm*ne);
 }
 
 static int little_p0() {

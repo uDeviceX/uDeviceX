@@ -32,14 +32,14 @@ void vtk_conf_vert(VTKConf *q, const char *keys) {
     UC(key_list_push(q->vert, keys));
 }
 
-void vtk_ini(MPI_Comm comm, int maxn, char const *path, VTKConf *c, /**/ VTK **pq) {
+void vtk_ini(MPI_Comm comm, int maxm, char const *path, VTKConf *c, /**/ VTK **pq) {
     int i;
     VTK *q;
     int nbuf, nk;
     Mesh *mesh;
     EMALLOC(1, &q);
     mesh = c->mesh;
-    nbuf = get_nbuf(maxn, mesh_nv(mesh), mesh_nt(mesh), mesh_ne(mesh));
+    nbuf = get_nbuf(maxm, mesh_nv(mesh), mesh_nt(mesh), mesh_ne(mesh));
     EMALLOC(nbuf, &q->dbuf);
     EMALLOC(nbuf, &q->ibuf);
     UC(mkdir(comm, DUMP_BASE, path));
