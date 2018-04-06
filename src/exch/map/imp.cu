@@ -61,7 +61,7 @@ void emap_scan(int nw, int nfrags, /**/ EMap map) {
         ss  = map.starts  + i * stride;
         oo  = map.offsets + i * stride;
         oon = oo + stride; /* oo next */
-        KL(emap_dev::scan2d, (1, 32), (cc, oo, /**/ oon, ss));
+        KL(emap_dev::scan2d, (1, 32), (nfrags, cc, oo, /**/ oon, ss));
     }
 }
 
