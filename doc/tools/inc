@@ -40,6 +40,7 @@ function main(f0, d0, lvl,   nr, f, fullname, l) {
 	    main(File, Dir, lvl + 1)
 	}
     }
+    close(fullname)
 }
 function incp(l, d) { # sets global "File"
     if (l !~ /^[ \t]*include::/) return 0
