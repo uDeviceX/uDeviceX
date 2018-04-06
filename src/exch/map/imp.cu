@@ -17,10 +17,13 @@
 #include "imp.h"
 #include "dev/main.h"
 
+static int get_stride(int nfrags)       {return nfrags + 1;}
+static int get_size(int nw, int nfrags) {return (nw + 1) * get_stride(nfrags);}
+
 void emap_ini(int nw, int nfrags, int cap[], /**/ EMap *map) {
     int i, c;
     size_t sz;
-    sz = (nw + 1) * (nfrags + 1) * sizeof(int);
+    sz = get_size(nw, nfrags) * sizeof(int);
     CC(d::Malloc((void**) &map->counts,  sz));
     CC(d::Malloc((void**) &map->starts,  sz));
     CC(d::Malloc((void**) &map->offsets, sz));
@@ -43,7 +46,7 @@ void emap_fin(int nfrags, EMap *map) {
 
 void emap_reini(int nw, int nfrags, /**/ EMap map) {
     size_t sz;
-    sz = (nw + 1) * (nfrags + 1) * sizeof(int);
+    sz = get_size(nw, nfrags) * sizeof(int);
     if (sz == 0) return;
     CC(d::MemsetAsync(map.counts,  0, sz));
     CC(d::MemsetAsync(map.starts,  0, sz));
@@ -52,12 +55,12 @@ void emap_reini(int nw, int nfrags, /**/ EMap map) {
 
 void emap_scan(int nw, int nfrags, /**/ EMap map) {
     int i, *cc, *ss, *oo, *oon, stride;
-    stride = nfrags + 1;
+    stride = get_stride(nfrags);
     for (i = 0; i < nw; ++i) {
         cc  = map.counts  + i * stride;
         ss  = map.starts  + i * stride;
         oo  = map.offsets + i * stride;
-        oon = map.offsets + (i + 1) * stride;
+        oon = oo + stride; /* oo next */
         KL(emap_dev::scan2d, (1, 32), (cc, oo, /**/ oon, ss));
     }
 }
@@ -65,7 +68,7 @@ void emap_scan(int nw, int nfrags, /**/ EMap map) {
 void emap_download_counts(int nw, int nfrags, EMap map, /**/ int counts[]) {
     int *src, stride;
     size_t sz = nfrags * sizeof(int);
-    stride = nfrags + 1;
+    stride = get_stride(nfrags);
     src = map.offsets + nw * stride;
     CC(d::Memcpy(counts, src, sz, D2H));
 }
