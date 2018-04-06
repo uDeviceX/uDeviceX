@@ -4,7 +4,7 @@ Helper for packing data to send buffers. This is common to all
 quantities.
 As opposed to the _distr_ module, the mapping is not _one to one_.
 A single quantity can be exchanged with up to 7 neighboring nodes if
-it is in a corner.
+it is in a corner (exchange with 3 faces, 3 edges and one corner).
 
 == data structure
 
@@ -14,6 +14,39 @@ A single structure is able to build a map for up to `nw` objects
 [source,cpp]
 ----
 include::{src}/exch/map/type.h[tag=struct]
+----
+
+for `nw` objects and `nfrags` fragments, the `counts`, `starts` and
+`offsets` arrays all have the same size `n = (nw + 1) * (nfrags + 1)`
+for convenience.
+
+The `nfrags + 1` part is for the starts, which is exclusive scan of
+counts in the fragment dimension. Therefore the last element is the sum of counts, i.e. number
+of entities for a given object.
+
+The `nw + 1` part is for offsets, which are an exclusive prefix sum of
+counts in the object id dimension: the last row is the number of
+entities of all objects leaving per fragment.
+
+*example:* Given `nw = 2` objects, with `nfrags = 5` fragments, with the following
+ counts:
+----
+object 0: 0 2 2 1 4
+object 1: 1 1 0 0 3
+-> counts = 0 2 2 1 4 _  1 1 0 0 3 _  _ _ _ _ _ _
+-> starts = 0 0 2 4 5 9  0 1 1 1 1 4  _ _ _ _ _ _
+----
+where `_` stands for "not set".
+
+The offset array is then given by (we rewrite counts row by row for better understanding):
+----
+counts  = 0 2 2 1 4 _
+          1 1 0 0 3 _
+          _ _ _ _ _ _
+
+offsets = 0 0 0 0 0 _
+          0 2 2 1 4 _
+	  1 3 2 1 7 _
 ----
 
 == interface
