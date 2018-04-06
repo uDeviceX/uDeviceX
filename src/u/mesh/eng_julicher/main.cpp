@@ -36,13 +36,13 @@ static void dump(int nv, int nm, double *eng, Vectors *vectors, Out *out) {
     scalars_double_ini(nv, eng, /**/ &scalars);
     
     vtk_conf_ini(mesh, &conf);
-    //    vtk_conf_vert(conf, "eng");
+    vtk_conf_vert(conf, "eng");
     
     vtk_ini(comm, nm, path, conf, &vtk);
     vtk_points(vtk, nm, vectors);
-    //    vtk_vert(vtk, nm, scalars, "eng");
+    vtk_vert(vtk, nm, scalars, "eng");
     id = 0;
-    vtk_write(vtk, comm, id);
+    //vtk_write(vtk, comm, id);
 
     scalars_fin(scalars);
     vtk_fin(vtk);
