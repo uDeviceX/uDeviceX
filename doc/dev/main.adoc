@@ -34,7 +34,7 @@ include::modules/dbg.adoc[]
 
 include::modules/distr.adoc[]
 
-include::modules/exch.adoc[]
+include::modules/exch/main.adoc[]
 
 include::modules/flu.adoc[]
 
