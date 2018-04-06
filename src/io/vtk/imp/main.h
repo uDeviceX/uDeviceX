@@ -117,7 +117,7 @@ void vtk_write(VTK *q, MPI_Comm comm, int id) {
     const char *keys;
     Out out;
     if (q->stamp != MAGIC)
-        ERR("*q is not initialized");
+        ERR("VTK is not initialized");
 
     if (!key_list_marked(q->tri)) {
         msg_print("missing triangle data");
