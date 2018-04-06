@@ -322,7 +322,6 @@ void sim_ini(Config *cfg, MPI_Comm cart, /**/ Time *time, Sim **sim) {
     s = *sim;
 
     MC(m::Comm_dup(cart, &s->cart));
-    datatype::ini();
     UC(coords_ini_conf(s->cart, cfg, /**/ &s->coords));
     UC(coords_log(s->coords));
 
