@@ -22,9 +22,9 @@ int main(int argc, char **argv) {
     ts = 0; dt = 0.01; dump = 0.25; s = 0.0001;
     time_line_ini(ts, /**/ &t);
     for (i = 0; i < 1000; i++) {
-        time_line_next(t, dt += s);
+        time_line_advance(dt += s, t);
         if (time_line_cross(t, dump))
-            printf("%d %ld %g\n", i, time_line_iteration(t), time_line_current(t));
+            printf("%d %ld %g\n", i, time_line_get_iteration(t), time_line_get_current(t));
     }
     time_line_fin(t);
 

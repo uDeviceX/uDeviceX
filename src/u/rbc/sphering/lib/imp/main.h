@@ -38,7 +38,7 @@ static void run0(MPI_Comm cart, float dt, float mass, float te, const Coords *co
     DiagPart *diagpart;
     diag_part_ini("diag.txt", /**/ &diagpart);
     time_line_ini(0, &time);
-    for (i = 0; time_line_current(time) < te; i++) {
+    for (i = 0; time_line_get_current(time) < te; i++) {
         Dzero(f, q->n);
         rbc_force_apply(t, par, dt, q, /**/ f);
         if (stretch) rbc_stretch_apply(q->nc, fstretch, /**/ f);
@@ -49,7 +49,7 @@ static void run0(MPI_Comm cart, float dt, float mass, float te, const Coords *co
 #ifdef RBC_CLEAR_VEL
         scheme_move_clear_vel(q->n, /**/ q->pp);
 #endif
-        time_line_next(time, dt);
+        time_line_advance(dt, time);
     }
     time_line_fin(time);
     diag_part_fin(diagpart);
