@@ -1,0 +1,19 @@
+= common
+
+helper for common exchange operations
+
+[source,cpp]
+----
+include::{src}/exch/common/imp.h[tag=int]
+----
+<1> pack particles `pp` into 27 buffers `buf` according to the local map `ph`
+<2> shift particles in the fragment direction
+
+The local map is defined through the structure
+
+[source,cpp]
+----
+include::{src}/exch/common/imp.h[tag=struct]
+----
+
+which is a map for a single set of quantities.
