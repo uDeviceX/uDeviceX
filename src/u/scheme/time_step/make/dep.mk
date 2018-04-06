@@ -3,7 +3,6 @@ $B/conf/imp.o: $S/utils/imp.h $S/utils/error.h $S/conf/imp/set.h $S/conf/imp.h $
 $B/d/api.o: $S/d/cpu/imp.h $S/utils/imp.h $S/inc/conf.h $S/utils/error.h $S/d/common.h $S/d/api.h $B/conf.h $S/d/cuda/imp.h
 $B/io/txt/imp.o: $S/utils/imp.h $S/utils/error.h $S/inc/type.h $S/io/txt/imp.h $S/io/txt/imp/dump.h $S/io/txt/imp/read.h $S/io/txt/imp/type.h $S/utils/msg.h
 $B/mpi/glb.o: $S/inc/conf.h $S/mpi/wrapper.h $S/utils/mc.h $B/conf.h
-$B/mpi/type.o: $S/inc/conf.h $S/inc/type.h $S/mpi/type.h $S/utils/mc.h
 $B/mpi/wrapper.o: $S/mpi/wrapper.h
 $B/scheme/time_step/imp.o: $S/utils/imp.h $S/inc/conf.h $S/utils/error.h $S/scheme/time_step/imp/util.h $S/mpi/wrapper.h $S/conf/imp.h $S/scheme/time_step/imp.h $S/utils/mc.h $B/conf.h $S/scheme/time_step/imp/main.h $S/scheme/time_step/imp/type.h $S/algo/force_stat/imp.h $S/utils/msg.h
 $B/u/scheme/time_step/main.o: $S/utils/imp.h $S/inc/conf.h $S/utils/error.h $S/scheme/time_step/imp.h $S/inc/type.h $S/conf/imp.h $S/mpi/wrapper.h $S/utils/cc.h $S/utils/mc.h $S/io/txt/imp.h $S/inc/dev.h $S/d/api.h $B/conf.h $S/algo/force_stat/imp.h $S/utils/msg.h $S/mpi/glb.h

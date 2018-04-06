@@ -1,6 +1,7 @@
-static __device__ void pack_p(const Particle *pp, int offset, int *indices, int i, /**/ Particle *buf) {
+static __device__ void pack_p(const Particle *pp, int offset, int *indices, int cap, int i, /**/ Particle *buf) {
     int dst, src;
     dst = offset + i;
+    if (dst >= cap) return;
     src = __ldg(indices + dst);
     buf[dst] = pp[src];
 }
@@ -17,7 +18,7 @@ __global__ void ecommon_pack_pp(const Particle *pp, PackHelper ph, /**/ Pap26 bu
         /* index in the fragment coordinates */ 
         frag_i = gid - ph.starts[fid];
         
-        pack_p(pp, ph.offsets[fid], ph.indices[fid], frag_i, /**/ buf.d[fid]);
+        pack_p(pp, ph.offsets[fid], ph.indices[fid], ph.cap[fid], frag_i, /**/ buf.d[fid]);
     }
 }
 

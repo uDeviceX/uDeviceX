@@ -18,7 +18,6 @@ $B/mesh/angle/imp.o: $S/utils/imp.h $S/utils/error.h $S/math/tri/imp.h $S/mesh/a
 $B/mesh/scatter/imp.o: $S/utils/imp.h $S/utils/error.h $S/mesh/scatter/imp.h $S/algo/scalars/imp.h $S/io/mesh_read/imp.h $S/mesh/scatter/imp/main.h $S/mesh/scatter/imp/type.h $S/utils/msg.h
 $B/mesh/tri_area/imp.o: $S/utils/imp.h $S/utils/error.h $S/math/tri/imp.h $S/mesh/tri_area/imp.h $S/io/mesh_read/imp.h $S/algo/vectors/imp.h $S/mesh/tri_area/imp/main.h $S/mesh/tri_area/imp/type.h $S/utils/msg.h
 $B/mpi/glb.o: $S/inc/conf.h $S/mpi/wrapper.h $S/utils/mc.h $B/conf.h
-$B/mpi/type.o: $S/inc/conf.h $S/inc/type.h $S/mpi/type.h $S/utils/mc.h
 $B/mpi/wrapper.o: $S/mpi/wrapper.h
 $B/u/io/vtk/main.o: $S/utils/imp.h $S/utils/error.h $S/conf/imp.h $S/mpi/wrapper.h $S/algo/scalars/imp.h $S/mesh/tri_area/imp.h $S/io/mesh_read/imp.h $S/mesh/scatter/imp.h $S/algo/vectors/imp.h $S/utils/mc.h $S/mesh/angle/imp.h $S/io/vtk/imp.h $S/mpi/glb.h $S/utils/msg.h
 $B/utils/cc.o: $S/utils/cc/common.h $S/inc/conf.h $S/utils/error.h $S/d/api.h $B/conf.h

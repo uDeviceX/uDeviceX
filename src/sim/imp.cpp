@@ -25,7 +25,6 @@
 #include "utils/nvtx/imp.h"
 
 #include "inc/type.h"
-#include "mpi/type.h"
 #include "inc/dev.h"
 
 #include "utils/texo.h"

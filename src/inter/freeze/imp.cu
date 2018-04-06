@@ -20,7 +20,6 @@
 
 #include "utils/kl.h"
 #include "inc/type.h"
-#include "mpi/type.h"
 #include "inc/dev.h"
 
 #include "dbg/imp.h"

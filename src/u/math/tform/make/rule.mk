@@ -9,7 +9,6 @@ $B/math/rnd/imp.o: $S/math/rnd/imp.cpp; $X -I$S/math/rnd -I$S/.
 $B/math/tform/imp.o: $S/math/tform/imp.cpp; $X -I$S/math/tform -I$S/.
 $B/math/tri/imp.o: $S/math/tri/imp.cpp; $X -I$S/math/tri -I$S/.
 $B/mpi/glb.o: $S/mpi/glb.cpp; $X -I$S/mpi -I$S/.
-$B/mpi/type.o: $S/mpi/type.cpp; $X -I$S/mpi -I$S/.
 $B/mpi/wrapper.o: $S/mpi/wrapper.cpp; $X -I$S/mpi -I$S/.
 $B/u/math/tform/lib/imp.o: $S/u/math/tform/lib/imp.cu; $N -I$S/u/math/tform/lib -I$S/.
 $B/u/math/tform/main.o: $S/u/math/tform/main.cpp; $X -I$S/u/math/tform -I$S/.

@@ -12,7 +12,6 @@ $B/frag/imp.o: $S/frag/dev.h $S/frag/imp.h
 $B/io/txt/imp.o: $S/utils/imp.h $S/utils/error.h $S/inc/type.h $S/io/txt/imp.h $S/io/txt/imp/dump.h $S/io/txt/imp/read.h $S/io/txt/imp/type.h $S/utils/msg.h
 $B/math/rnd/imp.o: $S/utils/imp.h $S/utils/error.h $S/math/rnd/imp.h
 $B/mpi/glb.o: $S/inc/conf.h $S/mpi/wrapper.h $S/utils/mc.h $B/conf.h
-$B/mpi/type.o: $S/inc/conf.h $S/inc/type.h $S/mpi/type.h $S/utils/mc.h
 $B/mpi/wrapper.o: $S/mpi/wrapper.h
 $B/pair/conf.o: $S/utils/error.h $S/conf/imp.h $S/pair/imp.h $S/inc/def.h $S/pair/type.h
 $B/pair/imp.o: $S/utils/imp.h $S/inc/conf.h $S/utils/error.h $S/pair/imp.h $S/inc/def.h $S/pair/imp/main.h $S/pair/imp/type.h $S/pair/type.h

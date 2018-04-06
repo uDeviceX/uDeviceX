@@ -9,7 +9,6 @@
 #include "inc/def.h"
 
 #include "mpi/wrapper.h"
-#include "mpi/type.h"
 #include "utils/mc.h"
 
 #include "coords/imp.h"

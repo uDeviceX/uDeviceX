@@ -84,6 +84,6 @@ include::{src}/exch/map/dev.h[tag=int]
 ----
 <1> get code (local fragment id) from position
 <2> get code (local fragment id) from box positions
-<3> add an entity to the map
+<3> add an entity id `pid` to the map in fragment `fid` and object `soluteid`. Does not add if the capacity is exceeded
 <4> get destination fragments from code
 

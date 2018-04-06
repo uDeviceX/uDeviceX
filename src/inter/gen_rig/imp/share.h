@@ -1,25 +1,34 @@
 static void share0(MPI_Comm comm, const int root, /**/ Particle *pp, int *n) {
-    int rank, size;
+    int rank, size, i;
+    int *counts, *displs;
+    Particle *recvbuf;
+    MPI_Datatype PartType;
+
+    MC(MPI_Type_contiguous(sizeof(Particle) / sizeof(float), MPI_FLOAT, &PartType));
+    MC(MPI_Type_commit(&PartType));
+
     MC(m::Comm_rank(comm, &rank));
     MC(m::Comm_size(comm, &size));
-    std::vector<int> counts(size), displs(size);
-    std::vector<Particle> recvbuf(MAX_PSOLID_NUM);
-    MC(MPI_Gather(n, 1, MPI_INT, counts.data(), 1, MPI_INT, root, comm) );
+
+    EMALLOC(size, &counts);
+    EMALLOC(size, &displs);
+    EMALLOC(MAX_PSOLID_NUM, &recvbuf);
+
+    MC(m::Gather(n, 1, MPI_INT, counts, 1, MPI_INT, root, comm) );
 
     if (rank == root) {
         displs[0] = 0;
-        for (int j = 0; j < size - 1; ++j)
-            displs[j+1] = displs[j] + counts[j];
+        for (i = 0; i < size - 1; ++i) displs[i+1] = displs[i] + counts[i];
     }
 
-    MC(MPI_Gatherv(pp, *n,
-                   datatype::particle, recvbuf.data(), counts.data(), displs.data(),
-                   datatype::particle, root, comm) );
+    MC(m::Gatherv(pp, *n, PartType, recvbuf, counts, displs, PartType, root, comm) );
 
     if (rank == root) {
-        *n = displs.back() + counts.back();
-        for (int i = 0; i < *n; ++i) pp[i] = recvbuf[i];
+        *n = displs[size-1] + counts[size-1];
+        for (i = 0; i < *n; ++i) pp[i] = recvbuf[i];
     }
+
+    MC(MPI_Type_free(&PartType));
 }
 
 static void share(const Coords *coords, MPI_Comm comm, const int root, /**/ Particle *pp, int *n) {

@@ -8,6 +8,7 @@ static void pack_pp(int nfrags, int nw, const PaWrap *ww, EMap map, /**/ Pap26 b
         w = ww + i;
         ph.starts  = map.starts  + i * stride;
         ph.offsets = map.offsets + i * stride;
+        ph.cap = map.cap;
         memcpy(ph.indices, map.ids, nfrags * sizeof(int*));
 
         UC(ecommon_pack_pp(w->pp, ph, /**/ buf));

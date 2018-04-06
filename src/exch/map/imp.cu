@@ -17,7 +17,7 @@
 #include "dev/main.h"
 
 static void check_frags(int nfrags) {
-    if (nfrags >= MAX_FRAGS)
+    if (nfrags > MAX_FRAGS)
         ERR("Too many fragments: %d/%d", nfrags, MAX_FRAGS);
 }
 static int get_stride(int nfrags)       {return nfrags + 1;}
@@ -31,6 +31,8 @@ void emap_ini(int nw, int nfrags, int cap[], /**/ EMap *map) {
     CC(d::Malloc((void**) &map->counts,  sz));
     CC(d::Malloc((void**) &map->starts,  sz));
     CC(d::Malloc((void**) &map->offsets, sz));
+    CC(d::Malloc((void**) &map->cap, nfrags * sizeof(int)));
+    cH2D(map->cap, cap, nfrags);
 
     for (i = 0; i < nfrags; ++i) {
         c = cap[i];
@@ -44,6 +46,7 @@ void emap_fin(int nfrags, EMap *map) {
     CC(d::Free(map->counts));
     CC(d::Free(map->starts));
     CC(d::Free(map->offsets));
+    CC(d::Free(map->cap));
 
     for (int i = 0; i < nfrags; ++i)
         CC(d::Free(map->ids[i]));
