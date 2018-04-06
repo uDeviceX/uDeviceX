@@ -1,7 +1,6 @@
 $B/algo/kahan_sum/imp.o: $S/algo/kahan_sum/imp.cpp; $X -I$S/algo/kahan_sum -I$S/.
 $B/d/api.o: $S/d/api.cu; $N -I$S/d -I$S/.
 $B/mpi/glb.o: $S/mpi/glb.cpp; $X -I$S/mpi -I$S/.
-$B/mpi/type.o: $S/mpi/type.cpp; $X -I$S/mpi -I$S/.
 $B/mpi/wrapper.o: $S/mpi/wrapper.cpp; $X -I$S/mpi -I$S/.
 $B/u/algo/kahan_sum/main.o: $S/u/algo/kahan_sum/main.cpp; $X -I$S/.
 $B/utils/cc.o: $S/utils/cc.cpp; $X -I$S/utils -I$S/.

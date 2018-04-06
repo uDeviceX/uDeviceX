@@ -11,7 +11,6 @@ $B/math/tform/imp.o: $S/math/tform/imp.cpp; $X -I$S/math/tform -I$S/.
 $B/math/tri/imp.o: $S/math/tri/imp.cpp; $X -I$S/math/tri -I$S/.
 $B/mesh/area/imp.o: $S/mesh/area/imp.cpp; $X -I$S/mesh/area -I$S/.
 $B/mpi/glb.o: $S/mpi/glb.cpp; $X -I$S/mpi -I$S/.
-$B/mpi/type.o: $S/mpi/type.cpp; $X -I$S/mpi -I$S/.
 $B/mpi/wrapper.o: $S/mpi/wrapper.cpp; $X -I$S/mpi -I$S/.
 $B/u/mesh/area/main.o: $S/u/mesh/area/main.cpp; $X -I$S/.
 $B/utils/cc.o: $S/utils/cc.cpp; $X -I$S/utils -I$S/.

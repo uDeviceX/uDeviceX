@@ -6,7 +6,6 @@ $B/d/api.o: $S/d/cpu/imp.h $S/utils/imp.h $S/inc/conf.h $S/utils/error.h $S/d/co
 $B/io/mesh_read/edg/imp.o: $S/utils/imp.h $S/utils/error.h $S/io/mesh_read/edg/imp/main.h $S/algo/edg/imp.h $S/io/mesh_read/edg/imp/type.h $S/utils/msg.h
 $B/io/mesh_read/imp.o: $S/utils/imp.h $S/utils/error.h $S/io/mesh_read/imp/ply.h $S/io/mesh_read/imp.h $S/io/mesh_read/imp/main.h $S/io/mesh_read/imp/type.h $S/io/mesh_read/edg/imp.h $S/io/mesh_read/imp/off.h $S/utils/msg.h
 $B/mpi/glb.o: $S/inc/conf.h $S/mpi/wrapper.h $S/utils/mc.h $B/conf.h
-$B/mpi/type.o: $S/inc/conf.h $S/inc/type.h $S/mpi/type.h $S/utils/mc.h
 $B/mpi/wrapper.o: $S/mpi/wrapper.h
 $B/u/io/off/main.o: $S/utils/imp.h $S/inc/conf.h $S/utils/error.h $S/conf/imp.h $S/mpi/wrapper.h $S/io/mesh_read/imp.h $S/coords/ini.h $S/utils/mc.h $B/conf.h $S/mpi/glb.h $S/utils/msg.h
 $B/utils/cc.o: $S/utils/cc/common.h $S/inc/conf.h $S/utils/error.h $S/d/api.h $B/conf.h

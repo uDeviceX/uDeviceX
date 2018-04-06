@@ -18,7 +18,6 @@ $B/mesh/angle/imp.o: $S/mesh/angle/imp.cpp; $X -I$S/mesh/angle -I$S/.
 $B/mesh/scatter/imp.o: $S/mesh/scatter/imp.cpp; $X -I$S/mesh/scatter -I$S/.
 $B/mesh/tri_area/imp.o: $S/mesh/tri_area/imp.cpp; $X -I$S/mesh/tri_area -I$S/.
 $B/mpi/glb.o: $S/mpi/glb.cpp; $X -I$S/mpi -I$S/.
-$B/mpi/type.o: $S/mpi/type.cpp; $X -I$S/mpi -I$S/.
 $B/mpi/wrapper.o: $S/mpi/wrapper.cpp; $X -I$S/mpi -I$S/.
 $B/u/io/vtk/main.o: $S/u/io/vtk/main.cpp; $X -I$S/.
 $B/utils/cc.o: $S/utils/cc.cpp; $X -I$S/utils -I$S/.

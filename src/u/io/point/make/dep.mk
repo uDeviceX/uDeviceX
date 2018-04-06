@@ -4,7 +4,6 @@ $B/coords/imp.o: $S/utils/imp.h $S/inc/conf.h $S/coords/ini.h $S/utils/error.h $
 $B/d/api.o: $S/d/cpu/imp.h $S/utils/imp.h $S/inc/conf.h $S/utils/error.h $S/d/common.h $S/d/api.h $B/conf.h $S/d/cuda/imp.h
 $B/io/point/imp.o: $S/utils/imp.h $S/utils/os.h $S/inc/conf.h $S/utils/error.h $S/io/point/imp/util.h $S/mpi/wrapper.h $S/utils/mc.h $S/utils/string/imp.h $B/conf.h $S/io/point/imp/main.h $S/io/point/imp/type.h $S/utils/msg.h
 $B/mpi/glb.o: $S/inc/conf.h $S/mpi/wrapper.h $S/utils/mc.h $B/conf.h
-$B/mpi/type.o: $S/inc/conf.h $S/inc/type.h $S/mpi/type.h $S/utils/mc.h
 $B/mpi/wrapper.o: $S/mpi/wrapper.h
 $B/u/io/point/main.o: $S/utils/imp.h $S/inc/conf.h $S/utils/error.h $S/mpi/wrapper.h $S/conf/imp.h $S/utils/mc.h $B/conf.h $S/io/point/imp.h $S/mpi/glb.h $S/utils/msg.h
 $B/utils/cc.o: $S/utils/cc/common.h $S/inc/conf.h $S/utils/error.h $S/d/api.h $B/conf.h
