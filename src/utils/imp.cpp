@@ -6,6 +6,8 @@
 #include "utils/error.h"
 
 void emalloc(size_t size, /**/ void **data) {
+    if (size <= 0)
+        ERR("wrong size=%ld for allocation", size);
     *data = malloc(size);
     if (NULL == *data)
         ERR("Failed to allocate array of size %ld\n", size);
