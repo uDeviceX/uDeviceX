@@ -23,27 +23,28 @@ struct Out {
     const char *path;
 };
 
-static void dump(int nv, int nm, double *eng, Vectors*, Out *out) {
+static void dump(int nv, int nm, double *eng, Vectors *vectors, Out *out) {
     int id;
     VTKConf *conf;
     VTK *vtk;
     MeshRead *mesh;
     const char *path;
     MPI_Comm comm;
-    Scalars *sc;
+    Scalars *scalars;
 
     mesh = out->mesh; comm = out->comm; path = out->path;
-    scalars_double_ini(nv, eng, /**/ &sc);
+    scalars_double_ini(nv, eng, /**/ &scalars);
     
     vtk_conf_ini(mesh, &conf);
-    vtk_conf_vert(conf, "eng");
+    //    vtk_conf_vert(conf, "eng");
     
     vtk_ini(comm, nm, path, conf, &vtk);
-    vtk_vert(vtk, nm, sc, "eng");
+    vtk_points(vtk, nm, vectors);
+    //    vtk_vert(vtk, nm, scalars, "eng");
     id = 0;
     vtk_write(vtk, comm, id);
 
-    scalars_fin(sc);
+    scalars_fin(scalars);
     vtk_fin(vtk);
     vtk_conf_fin(conf);
 }
