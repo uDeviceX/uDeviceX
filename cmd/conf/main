@@ -35,7 +35,7 @@ if test $rc -eq $ERR_BIN_MAKE;   then err 'cannot create bin[...]/Makefile'; fi
 if test $rc -eq $ERR_MISSING_MK; then err 'cannot find system config'; fi
 
 oneline () {
-    e "$AWK" '{ printf "%s \n", $0 }'
+    "$AWK" '{ printf "%s \n", $0 }'
 }
 
 e u.argp `oneline` '>' conf.h
