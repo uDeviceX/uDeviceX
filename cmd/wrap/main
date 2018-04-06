@@ -1,11 +1,12 @@
-# gets ./udx
-# returns something srun or mpi can run
+# gets ./udx [args..]
+# returns something srun or mpi can use
 
 : ${CUDA_MEMCHECK=cuda-memcheck}
 : ${VALGRIND=valgrind}
 : ${NVPROF=nvprof}
 : ${TIME=time}
 : ${CUDA_GDB=cuda-gdb}
+: ${EMACS_GDB=u.edb}
 
 mem () { # cuda memcheck
     echo "${CUDA_MEMCHECK}" "${MEM}" "$@"
@@ -25,6 +26,10 @@ tim() { # time
 
 gdb() { # cuda gdb
     echo "${CUDA_GDB}"      "${GDB}" --args "$@"
+}
+
+edb() { # emacs gdb
+    echo "${EMACS_GDB}"              "$@"
 }
 
 direct () {
@@ -47,6 +52,9 @@ then
 elif test ! -z "${GDB+x}"
 then
     gdb    "$@"
+elif test ! -z "${EDB+x}"
+then
+    edb    "$@"
 else
     direct "$@"
 fi
