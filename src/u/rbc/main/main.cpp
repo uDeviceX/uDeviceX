@@ -20,9 +20,10 @@
 /* local */
 #include "lib/imp.h"
 
-static void dump_history(const Config *cfg, const char *fname) {
+static void dump_history(const Config *cfg, const char *name) {
     FILE *f;
-    UC(efopen(fname, "w", &f));
+    UC(efopen(name, "w", &f));
+    msg_print("dumping: '%s'", name);
     UC(conf_write_history(cfg, f));
     UC(efclose(f));
 }
