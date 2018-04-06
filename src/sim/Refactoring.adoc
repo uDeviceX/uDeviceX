@@ -1,0 +1,34 @@
+= Refactoring plan
+
+== Structures:
+
+=== Flu
+
+var:
+
+* solvent quants
+* distribution
+* exchange
+* dpd forces helpers
+
+methods:
+
+
+
+=== Objects
+
+* membrane and Rig quantities
+* distribution
+* exchange helpers
+
+
+=== Walls
+
+* wall quants
+* force helper
+
+=== Time
+
+* time_step adaptation
+* time seq
+
