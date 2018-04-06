@@ -15,10 +15,7 @@
 
 int main(int argc, char **argv) {
     Sim *sim;
-    TimeLine *time;
-    TimeSeg *time_seg;
     Config *cfg;
-    float t0;
     int rank, size, dims[3];
     MPI_Comm cart;
     int restart;
@@ -34,19 +31,14 @@ int main(int argc, char **argv) {
     msg_print("mpi rank/size: %d/%d", rank, size);
     UC(conf_ini(&cfg));
     UC(conf_read(argc, argv, cfg));
-    t0 = 0;
-    UC(time_line_ini(t0, &time));
-    UC(time_seg_ini(cfg, /**/ &time_seg));
-
-    sim_ini(cfg, cart, /**/ time, &sim);
+    
+    UC(sim_ini(cfg, cart, &sim));
     UC(conf_lookup_bool(cfg, "glb.restart", &restart));
     msg_print("read restart: %s", restart ? "YES" : "NO" );
-    if (restart) UC(sim_strt(sim, cfg, time, time_seg));
-    else         UC(sim_gen(sim, cfg, time, time_seg));
+    if (restart) UC(sim_strt(sim, cfg));
+    else         UC(sim_gen(sim, cfg));
     UC(sim_fin(sim));
 
-    UC(time_seg_fin(time_seg));
-    UC(time_line_fin(time));
     UC(conf_fin(cfg));
 
     MC(m::Barrier(cart));
