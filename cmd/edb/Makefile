@@ -1,7 +1,8 @@
 PREFIX = $(HOME)
 
-M = main
-D = edg
+M = main util
+
+D = edb
 P = u
 B = $(PREFIX)/bin
 R = ../..
