@@ -14,4 +14,4 @@ usg () {
 if test $# -ne 0 && test "$1" = -h; then usg; fi
 if test $# -eq 0; then err "command name must be given"; fi
 
-e $prog0 "$@"
+"$prog0" "$@"

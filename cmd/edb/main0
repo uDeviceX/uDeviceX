@@ -11,12 +11,12 @@ command="$1"; shift
 
 gdb_script () {
     # quote evrery argument
-    for i; do shift; set "$@" \""$i"\"; done
+    for i; do shift; set "$@" \'"$i"\'; done
     echo "set args" "$@"
     echo "start"
 }
 
-e gdb_script "$@" '>' "$t"
+gdb_script "$@" > "$t"
 if test $? -ne 0; then err "fail to write to '$t'"; fi
 
 fmt='(gud-gdb "%s --fullname /ssh:%s:%s/%s -x %s")'
