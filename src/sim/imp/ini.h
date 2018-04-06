@@ -333,7 +333,7 @@ void sim_ini(Config *cfg, MPI_Comm cart, /**/ TimeLine *time, Sim **sim) {
     UC(time_step_ini(cfg, &s->time_step));
     UC(time_step_accel_ini(&s->time_step_accel));
     dt = time_step_dt0(s->time_step);
-    time_line_next(time, dt);
+    time_line_advance(dt, time);
     UC(read_opt(cfg, &opt));
     s->opt = opt;
     UC(read_color_opt(cfg, &s->recolorer));
