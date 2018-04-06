@@ -34,24 +34,24 @@ static void run0(MPI_Comm cart, float dt, float mass, float te, const Coords *co
                  RbcQuants *q, RbcForce *t,
                  const RbcParams *par, bool stretch, RbcStretch *fstretch, MeshWrite *mesh_write, Force *f) {
     long i;
-    Time *time;
+    TimeLine *time;
     DiagPart *diagpart;
     diag_part_ini("diag.txt", /**/ &diagpart);
-    time_ini(0, &time);
-    for (i = 0; time_current(time) < te; i++) {
+    time_line_ini(0, &time);
+    for (i = 0; time_line_get_current(time) < te; i++) {
         Dzero(f, q->n);
         rbc_force_apply(t, par, dt, q, /**/ f);
         if (stretch) rbc_stretch_apply(q->nc, fstretch, /**/ f);
         body_force(mass, coords, bforce, q, /**/ f);
         scheme_move_apply(dt, mass, q->n, f, q->pp);
-        if (time_cross(time, part_freq))
+        if (time_line_cross(time, part_freq))
             dump(cart, diagpart, dt, coords, q, mesh_write);
 #ifdef RBC_CLEAR_VEL
         scheme_move_clear_vel(q->n, /**/ q->pp);
 #endif
-        time_next(time, dt);
+        time_line_advance(dt, time);
     }
-    time_fin(time);
+    time_line_fin(time);
     diag_part_fin(diagpart);
 }
 

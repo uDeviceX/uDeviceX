@@ -1,4 +1,4 @@
-static void step(Time *time, float dt, bool wall0, float tstart, Sim *s) {
+static void step(TimeLine *time, float dt, bool wall0, float tstart, Sim *s) {
     long it;
     Flu *flu = &s->flu;
     Rbc *rbc = &s->rbc;
@@ -7,7 +7,7 @@ static void step(Time *time, float dt, bool wall0, float tstart, Sim *s) {
     BForce *bforce = s->bforce;
     const Opt *opt = &s->opt;
     if (opt->wall && !s->equilibrating)
-        UC(wvel_get_step(time_current(time) - tstart, wall->vel, /**/ wall->velstep));
+        UC(wvel_get_step(time_line_get_current(time) - tstart, wall->vel, /**/ wall->velstep));
 
     UC(check_sizes(s));
     UC(check_pos_soft(s));
@@ -20,7 +20,7 @@ static void step(Time *time, float dt, bool wall0, float tstart, Sim *s) {
     UC(forces(dt, time, wall0, s));
     UC(check_forces(dt, s));
 
-    it = time_iteration(time);
+    it = time_line_get_iteration(time);
     dump_diag(time, s);
     dump_diag_after(time, s->rigids, s);
     UC(body_force(bforce, s));

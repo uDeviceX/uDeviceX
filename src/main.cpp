@@ -9,13 +9,13 @@
 #include "utils/mc.h"
 #include "mpi/glb.h"
 #include "mpi/wrapper.h"
-#include "scheme/time/imp.h"
+#include "scheme/time_line/imp.h"
 #include "conf/imp.h"
 #include "sim/imp.h"
 
 int main(int argc, char **argv) {
     Sim *sim;
-    Time *time;
+    TimeLine *time;
     TimeSeg *time_seg;
     Config *cfg;
     float t0;
@@ -35,7 +35,7 @@ int main(int argc, char **argv) {
     UC(conf_ini(&cfg));
     UC(conf_read(argc, argv, cfg));
     t0 = 0;
-    UC(time_ini(t0, &time));
+    UC(time_line_ini(t0, &time));
     UC(time_seg_ini(cfg, /**/ &time_seg));
 
     sim_ini(cfg, cart, /**/ time, &sim);
@@ -46,7 +46,7 @@ int main(int argc, char **argv) {
     UC(sim_fin(sim));
 
     UC(time_seg_fin(time_seg));
-    UC(time_fin(time));
+    UC(time_line_fin(time));
     UC(conf_fin(cfg));
 
     MC(m::Barrier(cart));
