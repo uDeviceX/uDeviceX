@@ -1,0 +1,79 @@
+= obj
+
+Object exchanger is used to exchange particles from objects (_rbc_ or
+_rig_) with neighboring nodes for computing their interactions with
+the solvent (_fsi_) or with other objects (_contact forces_).
+It sends the remote forces back to the local node.
+
+Sending back the forces is optional.
+
+==  particle exchange interface
+
+allocate, deallocate the structures:
+
+[source,cpp]
+----
+include::{src}/exch/obj/imp.h[tag=mem]
+----
+
+build the map from array of wrappers `PaWrap` containing array of particles:
+
+[source,cpp]
+----
+include::{src}/exch/obj/imp.h[tag=map]
+----
+
+pack the data:
+
+[source,cpp]
+----
+include::{src}/exch/obj/imp.h[tag=pack]
+----
+
+communicate the packed data with neighboring nodes:
+
+[source,cpp]
+----
+include::{src}/exch/obj/imp.h[tag=com]
+----
+
+retrieve information about the received data:
+
+[source,cpp]
+----
+include::{src}/exch/obj/imp.h[tag=get]
+----
+<1> get the number of particles inside each fragment
+<2> upload particles on device, shift them in local coordinates and
+    return device pointers
+<3> set forces on device to 0 and return device pointers
+
+== force back sender interface 
+
+allocate, deallocate the optional structures:
+
+[source,cpp]
+----
+include::{src}/exch/obj/imp.h[tag=memback]
+----
+
+download the forces on host:
+
+[source,cpp]
+----
+include::{src}/exch/obj/imp.h[tag=packback]
+----
+
+communicate back the forces to neighbours:
+
+[source,cpp]
+----
+include::{src}/exch/obj/imp.h[tag=comback]
+----
+
+unpack forces arrays inside wrappers `FoWrap`.
+
+[source,cpp]
+----
+include::{src}/exch/obj/imp.h[tag=unpackback]
+----
