@@ -4,7 +4,7 @@ static void share0(MPI_Comm comm, const int root, /**/ Particle *pp, int *n) {
     MC(m::Comm_size(comm, &size));
     std::vector<int> counts(size), displs(size);
     std::vector<Particle> recvbuf(MAX_PSOLID_NUM);
-    MC(MPI_Gather(n, 1, MPI_INT, counts.data(), 1, MPI_INT, root, comm) );
+    MC(m::Gather(n, 1, MPI_INT, counts.data(), 1, MPI_INT, root, comm) );
 
     if (rank == root) {
         displs[0] = 0;
