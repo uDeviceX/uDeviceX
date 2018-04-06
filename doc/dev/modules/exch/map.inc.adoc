@@ -51,6 +51,17 @@ offsets = 0 0 0 0 0 _
 
 `starts` and `offsets` are results of the scan operation (see below).
 
+The index `j` used to retrieve the ith entity of a given object in a
+given fragment is then given by
+
+----
+j = offsets[oid][fid] + starts[oid][fid] + i
+----
+where `oid` is the object id, `fid` the fragment.
+note that above, `[oid][fid]` is implemented as `[oid * (nfrags + 1) + fid]`.
+
+The id is then `ids[fid][j]`.
+
 == interface
 
 Host interface:

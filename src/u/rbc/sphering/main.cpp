@@ -6,6 +6,7 @@
 #include <conf.h>
 #include "inc/conf.h"
 
+#include "utils/imp.h"
 #include "utils/msg.h"
 #include "utils/error.h"
 #include "utils/mc.h"
@@ -18,6 +19,14 @@
 
 /* local */
 #include "lib/imp.h"
+
+static void dump_history(const Config *cfg, const char *name) {
+    FILE *f;
+    UC(efopen(name, "w", &f));
+    msg_print("dumping: '%s'", name);
+    UC(conf_write_history(cfg, f));
+    UC(efclose(f));
+}
 
 int main(int argc, char **argv) {
     Config *cfg;
@@ -49,15 +58,14 @@ int main(int argc, char **argv) {
     UC(bforce_set_conf(cfg, /**/ bforce));
     UC(conf_lookup_float(cfg, "dump.freq_parts", &part_freq));
     UC(coords_ini_conf(cart, cfg, &coords));
-    
+
     run(cfg, cart, dt, mass, te, coords, part_freq, bforce, "rbc.off", "rbcs-ic.txt", par);
+    UC(dump_history(cfg, "conf.history.cfg"));
+
     UC(coords_fin(coords));
-
     UC(bforce_fin(bforce));
-
     UC(rbc_params_fin(par));
     UC(conf_fin(cfg));
-
     MC(m::Barrier(cart));
     m::fin();
 }
