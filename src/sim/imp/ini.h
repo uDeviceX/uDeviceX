@@ -311,7 +311,7 @@ static long num_pp_estimate(Params p) {
     return L.x * L.y * L.z * p.numdensity;
 }
 
-void sim_ini(Config *cfg, MPI_Comm cart, /**/ Time *time, Sim **sim) {
+void sim_ini(Config *cfg, MPI_Comm cart, /**/ TimeLine *time, Sim **sim) {
     float dt;
     Sim *s;
     int maxp;
@@ -333,7 +333,7 @@ void sim_ini(Config *cfg, MPI_Comm cart, /**/ Time *time, Sim **sim) {
     UC(time_step_ini(cfg, &s->time_step));
     UC(time_step_accel_ini(&s->time_step_accel));
     dt = time_step_dt0(s->time_step);
-    time_next(time, dt);
+    time_line_next(time, dt);
     UC(read_opt(cfg, &opt));
     s->opt = opt;
     UC(read_color_opt(cfg, &s->recolorer));

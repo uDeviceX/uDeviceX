@@ -4,7 +4,7 @@ static float get_dt0(Sim *s) {
     return time_step_dt0(time_step);
 }
 
-static float get_dt(Sim* s, Time* time) {
+static float get_dt(Sim *s, TimeLine *time) {
     /* Possibility to adapt dt only after equilibration */
     if (s->equilibrating)
         return time_step_dt0(s->time_step);
@@ -21,21 +21,21 @@ static float get_dt(Sim* s, Time* time) {
 
         const float dt = time_step_dt(s->time_step, s->cart, s->time_step_accel);
 
-        if (time_cross(time, opt->freq_parts))
+        if (time_line_cross(time, opt->freq_parts))
             time_step_log(s->time_step);
 
         return dt;
     }
 }
 
-static void run_eq(Time *time, float te, Sim *s) { /* equilibrate */
+static void run_eq(TimeLine *time, float te, Sim *s) { /* equilibrate */
     float dt;
     s->equilibrating = true;
     bool wall0 = false;
     dt = get_dt0(s);    
-    while (time_current(time) < te) {
+    while (time_line_current(time) < te) {
         UC(step(time, dt, wall0, 0.0, s));
-        time_next(time, dt);
+        time_line_next(time, dt);
         dt = get_dt(s, time);
     }
     UC(distribute_flu(/**/ s));
@@ -94,14 +94,14 @@ static void pre_run(const Config *cfg, Sim *s) {
     s->equilibrating = false;         
 }
 
-static void run(Time *time, float ts, float te, Sim *s) {
+static void run(TimeLine *time, float ts, float te, Sim *s) {
     float dt;
 
     /* ts, te: time start and end */
     dt = get_dt0(s);
-    while (time_current(time) < te) {
+    while (time_line_current(time) < te) {
         UC(step(time, dt, s->opt.wall, ts, s));
-        time_next(time, dt);
+        time_line_next(time, dt);
         dt = get_dt(s, time);
     }
     UC(distribute_flu(/**/ s));
