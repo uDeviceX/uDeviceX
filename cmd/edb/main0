@@ -6,7 +6,7 @@
 : ${HOST=`hostname`}
 prog=u.edb0
 
-t=.edb
+t=/tmp/edb.$$
 command="$1"; shift
 
 gdb_script () {
