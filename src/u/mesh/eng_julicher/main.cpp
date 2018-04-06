@@ -42,7 +42,7 @@ static void dump(int nv, int nm, double *eng, Vectors *vectors, Out *out) {
     vtk_points(vtk, nm, vectors);
     vtk_vert(vtk, nm, scalars, "eng");
     id = 0;
-    //vtk_write(vtk, comm, id);
+    vtk_write(vtk, comm, id);
 
     scalars_fin(scalars);
     vtk_fin(vtk);
@@ -52,13 +52,15 @@ static void dump(int nv, int nm, double *eng, Vectors *vectors, Out *out) {
 static void main0(const char *cell, Out *out) {
     int nv, nm;
     MeshEngJulicher *eng_julicher;
+    const float *vert;
     Vectors  *pos;
     double *eng, kb;
     nm = 1; kb = 1;
     UC(mesh_read_ini_off(cell, /**/ &out->mesh));
     UC(mesh_eng_julicher_ini(out->mesh, nm, /**/ &eng_julicher));
     nv = mesh_read_get_nv(out->mesh);
-    UC(vectors_float_ini(nv, mesh_read_get_vert(out->mesh), /**/ &pos));
+    vert = mesh_read_get_vert(out->mesh);
+    UC(vectors_float_ini(nv, vert, /**/ &pos));
 
     EMALLOC(nv, &eng);
     mesh_eng_julicher_apply(eng_julicher, nm, pos, kb, /**/ eng);

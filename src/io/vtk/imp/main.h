@@ -100,7 +100,7 @@ void vtk_vert(VTK *q, int nm, const Scalars *sc, const char *keys) {
     if (!key_list_has(q->vert, keys)) {
         msg_print("unkown key '%s'", keys);
         key_list_log(q->vert);
-        ERR("");
+        ERR("wrong vtk_vert call");
     }
     j = key_list_offset(q->vert, keys);
     nv = mesh_nv(q->mesh);
@@ -173,6 +173,8 @@ void vtk_write(VTK *q, MPI_Comm comm, int id) {
 
 void vtk_fin(VTK *q) {
     int i;
+    if (q->stamp != MAGIC)
+        ERR("VTK is not initialized");
     EFREE(q->dbuf);
     EFREE(q->ibuf);
     for (i = 0; i < key_list_size(q->tri); i++)

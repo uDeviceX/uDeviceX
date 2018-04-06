@@ -17,7 +17,7 @@ static int max3(int a, int b, int c) {
     return c;
 }
 static int get_nbuf(int nm, int nv, int nt, int ne) {
-    return max3(nm*nv, nm*nt, nm*ne);
+    return max3(3*nm*nv, 4*nm*nt, 2*nm*ne);
 }
 
 static int little_p0() {
