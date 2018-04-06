@@ -3,5 +3,5 @@
 cd test/io/off/off
 u.cp.rbc rbc/642 rbc.off
 :
-echo run | S=`u.cp.s` u.build u/io/off
+u.conf0 u/io/off
 u.run ./udx -- 'i="rbc.off"; type="off"' > test.out.txt

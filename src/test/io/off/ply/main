@@ -3,5 +3,5 @@
 cd test/io/off/ply
 u.cp.rig cylinder   rbc.ply
 :
-echo run | S=`u.cp.s` u.build u/io/off
+u.conf0 u/io/off
 u.run ./udx -- 'i="rbc.ply"; type="ply"' > test.out.txt

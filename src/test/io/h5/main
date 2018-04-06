@@ -1,5 +1,5 @@
 # TEST: io.h5
 cd test/io/h5
-echo run | S=`u.cp.s` u.build u/io/h5
+u.conf0 u/io/h5
 u.run ./udx conf.cfg
 echo $? > test.out.txt

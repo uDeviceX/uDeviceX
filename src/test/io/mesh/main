@@ -4,6 +4,6 @@ cd test/io/mesh
 u.cp.hdr test.h  conf.h
 u.cp.rbc rbc/642 rbc.off
 :
-echo run | S=`u.cp.s` u.build u/io/off conf.h
+u.conf0 u/io/off
 u.run ./udx conf.cfg
 echo $? > test.out.txt
