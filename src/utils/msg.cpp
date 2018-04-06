@@ -36,19 +36,15 @@ static void print(const char *msg, FILE *f) {
 }
 
 void msg_print(const char *fmt, ...) {
-    char msg[BUFSIZ], name[BUFSIZ];
+    char msg[BUFSIZ], name[FILENAME_MAX];
     va_list ap;
     FILE *f;
+    snprintf(name, FILENAME_MAX - 1, ".%03d", rank);
 
-    // set name of file
-    snprintf(name, BUFSIZ - 1, ".%03d", rank);
-
-    // form the message
     va_start(ap, fmt);
     vsnprintf(msg, BUFSIZ - 1, fmt, ap);
     va_end(ap);
 
-    // print the message
     f = open(name);
     print(msg, f);
     if (fclose(f) != 0) {
