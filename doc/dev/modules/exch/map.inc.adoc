@@ -64,7 +64,7 @@ The id is then `ids[fid][j]`.
 
 == interface
 
-Host interface:
+=== Host interface:
 
 [source,cpp]
 ----
@@ -73,16 +73,17 @@ include::{src}/exch/map/imp.h[tag=int]
 <1> allocate the map structure on device
 <2> deallocate the map structure
 <3> reset the map structure
-<4> scan the map structure to get starts
-<5> copy counts from device to host
+<4> scan the map structure to get starts and offsets
+<5> copy counts (total number of entities per fragment) from device to host
 
-Device interface:
+=== Device interface:
 
 [source,cpp]
 ----
 include::{src}/exch/map/dev.h[tag=int]
 ----
 <1> get code (local fragment id) from position
-<2> get code (local fragment id) from box position
-<3> add a quantity to the map
+<2> get code (local fragment id) from box positions
+<3> add an entity to the map
 <4> get destination fragments from code
+
