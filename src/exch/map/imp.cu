@@ -17,7 +17,7 @@
 #include "dev/main.h"
 
 static void check_frags(int nfrags) {
-    if (nfrags >= MAX_FRAGS)
+    if (nfrags > MAX_FRAGS)
         ERR("Too many fragments: %d/%d", nfrags, MAX_FRAGS);
 }
 static int get_stride(int nfrags)       {return nfrags + 1;}
