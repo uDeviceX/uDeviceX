@@ -2,7 +2,7 @@ BIN = $(HOME)/bin
 B = $(BIN)
 
 P.common = host make/main robin run/main strtdir batch/main wrap/main
-P.conf = conf/main conf/make conf/make0 conf/conf conf/util utils
+P.conf = conf/main conf/make conf/make0 conf/util utils
 P.daint     = load/daint    make/daint    run/daint    batch/daint    post.load/daint
 P.leonhard  = load/leonhard make/leonhard run/leonhard batch/leonhard post.load/leonhard
 P.panda     = load/panda    make/panda    run/panda    batch/panda    post.load/panda
