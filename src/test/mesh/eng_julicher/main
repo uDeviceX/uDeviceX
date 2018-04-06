@@ -3,4 +3,4 @@ cd test/mesh/eng_julicher
 u.conf0 u/mesh/eng_julicher
 u.make -j
 u.cp.rbc rbc/sc/2562 rbc.off
-u.run ./udx 'i="rbc.off"; o="eng.vtk"'
+u.run ./udx 'i="rbc.off"; o="eng"'
