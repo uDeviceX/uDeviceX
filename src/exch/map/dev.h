@@ -1,8 +1,11 @@
+#define _I_ static __device__
+#define _S_ static __device__
+
 /* corner fragments are neighbor with 7 fragments */
 enum { MAX_DSTS = 7 };
 
 // tag::int[]
-static __device__ int emap_code(int3 L, const float r[3]) // <1>
+_I_ int emap_code(int3 L, const float r[3]) // <1>
 // end::int[]
 {
     int x, y, z;
@@ -15,7 +18,7 @@ static __device__ int emap_code(int3 L, const float r[3]) // <1>
 }
 
 // tag::int[]
-static __device__ int emap_code_box(int3 L, float3 lo, float3 hi)  // <2>
+_I_ int emap_code_box(int3 L, float3 lo, float3 hi)  // <2>
 // end::int[]
 {
     int x, y, z;
@@ -27,7 +30,7 @@ static __device__ int emap_code_box(int3 L, float3 lo, float3 hi)  // <2>
 }
 
 // tag::int[]
-static __device__ void emap_add(int nfrags, int soluteid, int pid, int fid, EMap m) // <3>
+_I_ void emap_add(int nfrags, int soluteid, int pid, int fid, EMap m) // <3>
 // end::int[]
 {
     int ientry, centry, stride;
@@ -37,7 +40,7 @@ static __device__ void emap_add(int nfrags, int soluteid, int pid, int fid, EMap
     m.ids[fid][ientry] = pid;
 }
 
-static __device__ int add_faces(int j, const int d[3], /**/ int fids[MAX_DSTS]) {
+_S_ int add_faces(int j, const int d[3], /**/ int fids[MAX_DSTS]) {
     for (int c = 0; c < 3; ++c) {
         if (d[c]) {
             int df[3] = {0, 0, 0}; df[c] = d[c];
@@ -47,7 +50,7 @@ static __device__ int add_faces(int j, const int d[3], /**/ int fids[MAX_DSTS]) 
     return j;
 }
 
-static __device__ int add_edges(int j, const int d[3], /**/ int fids[MAX_DSTS]) {
+_S_ int add_edges(int j, const int d[3], /**/ int fids[MAX_DSTS]) {
     enum {X, Y, Z};
     for (int c = 0; c < 3; ++c) {
         int de[3] = {d[X], d[Y], d[Z]}; de[c] = 0;
@@ -57,7 +60,7 @@ static __device__ int add_edges(int j, const int d[3], /**/ int fids[MAX_DSTS]) 
     return j;
 }
 
-static __device__ int add_cornr(int j, const int d[3], /**/ int fids[MAX_DSTS]) {
+_S_ int add_cornr(int j, const int d[3], /**/ int fids[MAX_DSTS]) {
     enum {X, Y, Z};
     if (d[X] && d[Y] && d[Z])
         fids[j++] = frag_dev::d32i(d);
@@ -65,7 +68,7 @@ static __device__ int add_cornr(int j, const int d[3], /**/ int fids[MAX_DSTS]) 
 }
 
 // tag::int[]
-static __device__ int emap_decode(int code, /**/ int fids[MAX_DSTS]) // <4>
+_I_ int emap_decode(int code, /**/ int fids[MAX_DSTS]) // <4>
 // end::int[]
 {
     int j = 0;
@@ -76,3 +79,6 @@ static __device__ int emap_decode(int code, /**/ int fids[MAX_DSTS]) // <4>
     j = add_cornr(j, d, /**/ fids);
     return j;
 }
+
+#undef _I_
+#undef _S_
