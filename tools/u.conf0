@@ -1,4 +1,4 @@
 # a simple interface to u.conf
 u="$1"; shift
 s=`u.cp.s`
-echo run | u.conf "$s" "$u"
+echo | u.conf "$s" "$u"
