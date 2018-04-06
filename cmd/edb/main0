@@ -1,0 +1,26 @@
+#!/bin/sh
+
+. u.edb.util
+
+: ${CUDA_GDB=cuda-gdb}
+: ${HOST=`hostname`}
+prog=u.edb0
+
+t=.edb
+command="$1"; shift
+
+gdb_script () {
+    printf "%s" "set args"
+    for f
+    do printf " \'%s\'" "$f"
+    done
+    printf "\n"
+    printf "start\n"
+}
+
+e gdb_script "$@" '>' "$t"
+if test $? -ne 0; then err "fail to write to '$t'"; fi
+
+fmt='(gud-gdb "%s --fullname /ssh:%s:%s/%s -x %s")'
+printf "$fmt" "$CUDA_GDB" "$HOST" "`pwd`" "$command" "$t"
+printf "\n"
