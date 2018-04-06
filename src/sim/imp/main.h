@@ -6,7 +6,7 @@ static long get_max_parts_wall(Params params) {
         (L.z + 2 * ZWM);
 }
 
-static void gen(TimeLine *time, float tw, const Coords *coords, Wall *w, Sim *s) { /* generate */
+static void gen(float tw, const Coords *coords, Wall *w, Sim *s) { /* generate */
     Flu *flu = &s->flu;
     Rbc *rbc = &s->rbc;
     Rig *rig = &s->rig;
@@ -31,7 +31,7 @@ static void gen(TimeLine *time, float tw, const Coords *coords, Wall *w, Sim *s)
     sinfo.empty_pp = opt->rig_empty_pp;
     sinfo.numdensity = s->params.numdensity;
     
-    run_eq(time, tw, s);
+    run_eq(tw, s);
     if (opt->wall) {
         dSync();
         UC(sdf_gen(coords, s->cart, dump_sdf, /**/ w->sdf));
@@ -49,7 +49,7 @@ static void gen(TimeLine *time, float tw, const Coords *coords, Wall *w, Sim *s)
     }
 }
 
-void sim_gen(Sim *s, const Config *cfg, TimeLine *time, TimeSeg *time_seg) {
+void sim_gen(Sim *s, const Config *cfg) {
     Flu *flu = &s->flu;
     Rbc *rbc = &s->rbc;
     Wall *wall = &s->wall;
@@ -67,23 +67,23 @@ void sim_gen(Sim *s, const Config *cfg, TimeLine *time, TimeSeg *time_seg) {
     MC(m::Barrier(s->cart));
     if (opt->wall || opt->rig) {
         s->rigids = false;
-        gen(time, time_seg->wall, s->coords, /**/ wall, s);
+        gen(s->time.wall, s->coords, /**/ wall, s);
         dSync();
         if (opt->wall && wall->q.n) UC(wall_gen_ticket(&wall->q, wall->t));
         if (opt->rbc && opt->flucolors) UC(gen_colors(rbc, &s->colorer, /**/ flu));
-        tstart = time_seg->wall;    
+        tstart = s->time.wall;    
     }
 
     s->rigids = opt->rig;
     
     pre_run(cfg, s);
-    run(time, tstart, time_seg->end, s);
+    run(tstart, s->time.end, s);
 
     /* final strt dump*/
     if (opt->dump_strt) dump_strt0(RESTART_FINAL, s);
 }
 
-void sim_strt(Sim *s, const Config *cfg, TimeLine *time, TimeSeg *time_seg) {
+void sim_strt(Sim *s, const Config *cfg) {
     Flu *flu = &s->flu;
     Rbc *rbc = &s->rbc;
     Rig *rig = &s->rig;
@@ -117,6 +117,6 @@ void sim_strt(Sim *s, const Config *cfg, TimeLine *time, TimeSeg *time_seg) {
 
     s->rigids = opt->rig;
     pre_run(cfg, s);
-    run(time, time_seg->wall, time_seg->end, s);
+    run(s->time.wall, s->time.end, s);
     if (opt->dump_strt) dump_strt0(RESTART_FINAL, s);
 }

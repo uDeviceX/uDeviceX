@@ -320,7 +320,7 @@ static void ini_time(Config *cfg, /**/ Time *t) {
     UC(time_step_accel_ini(&t->accel));
 }
 
-void sim_ini(Config *cfg, MPI_Comm cart, /**/ TimeLine *time, Sim **sim) {
+void sim_ini(Config *cfg, MPI_Comm cart, /**/ Sim **sim) {
     float dt;
     Sim *s;
     int maxp;
@@ -341,7 +341,7 @@ void sim_ini(Config *cfg, MPI_Comm cart, /**/ TimeLine *time, Sim **sim) {
     
     maxp = SAFETY_FACTOR_MAXP * num_pp_estimate(params);
     dt = time_step_dt0(s->time.step);
-    time_line_advance(dt, time);
+    time_line_advance(dt, s->time.t);
     UC(read_opt(cfg, &opt));
     s->opt = opt;
     UC(read_color_opt(cfg, &s->recolorer));

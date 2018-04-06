@@ -182,7 +182,7 @@ void sim_fin(Sim *s) {
     UC(fin_dump(s->opt, &s->dump));
     UC(scheme_restrain_fin(s->restrain));
     UC(coords_fin(/**/ s->coords));
-    UC(fin_time(s->&time));
+    UC(fin_time(&s->time));
     UC(fin_pair_params(s));
     UC(inter_color_fin(s->gen_color));
     UC(dbg_fin(s->dbg));

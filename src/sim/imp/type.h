@@ -197,6 +197,7 @@ struct Sim {
     BForce *bforce;
 
     /* helpers */
+    Time time;
     Coords *coords;
     ObjInter objinter;
     BounceBack bb;
