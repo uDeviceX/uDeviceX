@@ -5,7 +5,6 @@ U="$1"; shift # unit
 B="$1"; shift  # bin
 
 ERR_BIN_MAKE=4
-ERR_MISSING_MK=5
 
 msg() { printf '%s\n' "$*" >&2; }
 
