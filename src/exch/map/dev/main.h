@@ -1,22 +1,24 @@
 namespace emap_dev {
 
-static __device__ void warpexscan(int cnt, int t, /**/ int *starts) {
+static __device__ int warpexscan(int cnt, int t) {
+    assert (t < warpSize);
     int L, scan;
     scan = cnt;
-    for (L = 1; L < 32; L <<= 1) scan += (t >= L) * __shfl_up(scan, L);
-    if (t < 27) starts[t] = scan - cnt;
+    for (L = 1; L < warpSize; L <<= 1) scan += (t >= L) * __shfl_up(scan, L);
+    return scan - cnt;
 }
 
-__global__ void scan2d(const int *counts, const int *oldtcounts, /**/ int *tcounts, int *starts) {
-    int t, cnt, newcnt;
+__global__ void scan2d(int nfrags, const int *counts, const int *offsets, /**/ int *nextoffsets, int *starts) {
+    int t, cnt, scan, nextoffset;
     t = threadIdx.x;
     cnt = 0;
-    if (t < 26) {
+    if (t < nfrags) {
         cnt = counts[t];
-        newcnt = cnt + oldtcounts[t];
-        tcounts[t] = newcnt;
+        nextoffset = cnt + offsets[t];
+        nextoffsets[t] = nextoffset;
     }
-    if (starts) warpexscan(cnt, t, /**/ starts);
+    scan = warpexscan(cnt, t);
+    if (t <= nfrags) starts[t] = scan;
 }
 
 } // dev
