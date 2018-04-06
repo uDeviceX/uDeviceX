@@ -1,0 +1,10 @@
+#!/bin/sh
+
+. u.edb.util
+prog=u.edb.util
+
+usg () {
+    msg "$prog command [args..]"
+    msg 'print an emacs command to launch remote gdb session ("emacs debug")'
+    exit
+}

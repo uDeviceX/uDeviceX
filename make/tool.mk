@@ -1,6 +1,6 @@
 # input:
-# P: installation prefix (like u)
-# M: a list of target to install, main and main0 are replaced by $D
+# M: a list of target to install, main and main0 are installed a $P.$D and $P.${D}0, other files are isntalled as $P.{filename}
+# P: installation prefix (like u.edg)
 #    and ${D}0
 # D: directory name
 # B: where to install
