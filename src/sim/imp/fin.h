@@ -147,6 +147,11 @@ static void fin_dump(Opt opt, Dump *d) {
     EFREE(d->pp);
 }
 
+static void fin_time(Time *t) {
+    UC(time_step_fin(t->step));
+    UC(time_step_accel_fin(t->accel));    
+}
+
 void sim_fin(Sim *s) {
     if (s->opt.rbc || s->opt.rig)
         UC(fin_objinter(&s->opt, &s->objinter));
@@ -177,9 +182,7 @@ void sim_fin(Sim *s) {
     UC(fin_dump(s->opt, &s->dump));
     UC(scheme_restrain_fin(s->restrain));
     UC(coords_fin(/**/ s->coords));
-    UC(time_step_fin(s->time_step));
-    UC(time_step_accel_fin(s->time_step_accel));
-
+    UC(fin_time(s->&time));
     UC(fin_pair_params(s));
     UC(inter_color_fin(s->gen_color));
     UC(dbg_fin(s->dbg));
@@ -187,5 +190,3 @@ void sim_fin(Sim *s) {
     MC(m::Comm_free(&s->cart));
     EFREE(s);
 }
-
-void time_seg_fin(TimeSeg *q) { EFREE(q); }

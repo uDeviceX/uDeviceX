@@ -311,6 +311,15 @@ static long num_pp_estimate(Params p) {
     return L.x * L.y * L.z * p.numdensity;
 }
 
+static void ini_time(Config *cfg, /**/ Time *t) {
+    const float t0 = 0;
+    UC(conf_lookup_float(cfg, "time.end",  &t->end));
+    UC(conf_lookup_float(cfg, "time.wall", &t->wall));
+    UC(time_line_ini(t0, &t->t));
+    UC(time_step_ini(cfg, &t->step));
+    UC(time_step_accel_ini(&t->accel));
+}
+
 void sim_ini(Config *cfg, MPI_Comm cart, /**/ TimeLine *time, Sim **sim) {
     float dt;
     Sim *s;
@@ -328,11 +337,10 @@ void sim_ini(Config *cfg, MPI_Comm cart, /**/ TimeLine *time, Sim **sim) {
     params.L = subdomain(s->coords);
     UC(conf_lookup_float(cfg, "glb.kBT",        &params.kBT       ));
     UC(conf_lookup_int  (cfg, "glb.numdensity", &params.numdensity));
+    UC(ini_time(cfg, &s->time));
     
     maxp = SAFETY_FACTOR_MAXP * num_pp_estimate(params);
-    UC(time_step_ini(cfg, &s->time_step));
-    UC(time_step_accel_ini(&s->time_step_accel));
-    dt = time_step_dt0(s->time_step);
+    dt = time_step_dt0(s->time.step);
     time_line_advance(dt, time);
     UC(read_opt(cfg, &opt));
     s->opt = opt;
@@ -381,12 +389,4 @@ void sim_ini(Config *cfg, MPI_Comm cart, /**/ TimeLine *time, Sim **sim) {
     s->params = params;
     
     MC(MPI_Barrier(s->cart));
-}
-
-void time_seg_ini(Config *cfg, /**/ TimeSeg **pq) {
-    TimeSeg *q;
-    EMALLOC(1, &q);
-    UC(conf_lookup_float(cfg, "time.end",  &q->end));
-    UC(conf_lookup_float(cfg, "time.wall", &q->wall));
-    *pq = q;
 }
