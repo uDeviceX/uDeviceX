@@ -1,4 +1,5 @@
 $B/algo/edg/imp.o: $S/algo/edg/imp.cpp; $X -I$S/algo/edg -I$S/.
+$B/algo/kahan_sum/imp.o: $S/algo/kahan_sum/imp.cpp; $X -I$S/algo/kahan_sum -I$S/.
 $B/algo/key_list/imp.o: $S/algo/key_list/imp.cpp; $X -I$S/algo/key_list -I$S/.
 $B/algo/scalars/imp.o: $S/algo/scalars/imp.cpp; $X -I$S/algo/scalars -I$S/.
 $B/algo/vectors/imp.o: $S/algo/vectors/imp.cpp; $X -I$S/algo/vectors -I$S/.
@@ -17,6 +18,7 @@ $B/mesh/angle/imp.o: $S/mesh/angle/imp.cpp; $X -I$S/mesh/angle -I$S/.
 $B/mesh/edg_len/imp.o: $S/mesh/edg_len/imp.cpp; $X -I$S/mesh/edg_len -I$S/.
 $B/mesh/eng_kantor/imp.o: $S/mesh/eng_kantor/imp.cpp; $X -I$S/mesh/eng_kantor -I$S/.
 $B/mesh/scatter/imp.o: $S/mesh/scatter/imp.cpp; $X -I$S/mesh/scatter -I$S/.
+$B/mesh/spherical/imp.o: $S/mesh/spherical/imp.cpp; $X -I$S/mesh/spherical -I$S/.
 $B/mesh/vert_area/imp.o: $S/mesh/vert_area/imp.cpp; $X -I$S/mesh/vert_area -I$S/.
 $B/mpi/glb.o: $S/mpi/glb.cpp; $X -I$S/mpi -I$S/.
 $B/mpi/wrapper.o: $S/mpi/wrapper.cpp; $X -I$S/mpi -I$S/.
