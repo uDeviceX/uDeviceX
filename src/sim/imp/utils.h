@@ -32,3 +32,40 @@ static void compute_hematocrit(const Sim *s) {
     msg_print("Geometry volume: %g", Vdomain);
     msg_print("Hematocrit: %g", Ht);
 }
+
+static void dump_history(const Config *cfg, const char *fname) {
+    FILE *f;
+    UC(efopen(fname, "w", &f));
+    UC(conf_write_history(cfg, f));
+    UC(efclose(f));
+}
+
+static float get_dt0(Sim *s) {
+    TimeStep *time_step;    
+    time_step = s->time.step;
+    return time_step_dt0(time_step);
+}
+
+static float get_dt(Sim *s, TimeLine *time) {
+    /* Possibility to adapt dt only after equilibration */
+    if (s->equilibrating)
+        return time_step_dt0(s->time.step);
+    else {
+        const Flu *flu = &s->flu;
+        const Rbc *rbc = &s->rbc;
+        const Opt *opt = &s->opt;
+
+        time_step_accel_reset(s->time.accel);
+        if (flu->q.n)
+            time_step_accel_push(s->time.accel, flu->mass, flu->q.n, flu->ff);
+        if (opt->rbc && rbc->q.n)
+            time_step_accel_push(s->time.accel, rbc->mass, rbc->q.n, rbc->ff);
+
+        const float dt = time_step_dt(s->time.step, s->cart, s->time.accel);
+
+        if (time_line_cross(time, opt->freq_parts))
+            time_step_log(s->time.step);
+
+        return dt;
+    }
+}
