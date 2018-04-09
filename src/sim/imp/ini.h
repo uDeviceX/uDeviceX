@@ -178,13 +178,6 @@ static void ini_objinter(MPI_Comm cart, int maxp, int3 L, const Opt *opt, /**/ O
     if (opt->fsi) fsi_ini(rank, L, /**/ &o->fsi);
 }
 
-static void read_color_opt(const Config *c, Recolorer *o) {
-    int b;
-    UC(conf_lookup_bool(c, "recolor.active", &b));
-    o->flux_active = b;
-    UC(conf_lookup_int(c, "recolor.dir", &o->flux_dir));
-}
-
 static int get_shifttype(const Config *c, const char *desc) {
     const char *type;
     UC(conf_lookup_string(c, desc, &type));
@@ -299,6 +292,13 @@ static void read_opt(const Config *c, Opt *o) {
     o->push_rig = b;
 }
 
+static void read_recolor_opt(const Config *c, Recolorer *o) {
+    int b;
+    UC(conf_lookup_bool(c, "recolor.active", &b));
+    o->flux_active = b;
+    UC(conf_lookup_int(c, "recolor.dir", &o->flux_dir));
+}
+
 static void check_opt(Opt opt) {
     if (opt.dump_rbc_com && !opt.rbcids)
         ERR("Need rbc.ids activated to dump rbc com!");
@@ -384,7 +384,7 @@ void sim_ini(Config *cfg, MPI_Comm cart, /**/ Sim **sim) {
     UC(read_opt_common(cfg, &opt));
     UC(read_opt(cfg, &opt));
     s->opt = opt;
-    UC(read_color_opt(cfg, &s->recolorer));
+    UC(read_recolor_opt(cfg, &s->recolorer));
     UC(check_opt(opt));
     UC(ini_pair_params(cfg, params.kBT, dt, s));
 
