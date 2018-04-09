@@ -58,7 +58,7 @@ static void dump_vtk(int nv, int nm, const double *eng, Vectors *vectors, Out *o
 
 static void main0(const char *cell, Out *out) {
     int nv, nm;
-    MeshEngJulicher *eng_kantor;
+    MeshEngKantor *eng_kantor;
     const float *vert;
     Vectors  *pos;
     double *eng, kb;
