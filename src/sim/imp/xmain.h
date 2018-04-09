@@ -81,3 +81,5 @@ void sim_freeze(const Config *cfg, Sim *s) {
     if (opt->wall && wall->q.n) UC(wall_gen_ticket(&wall->q, wall->t));
     if (opt->rbc && opt->flucolors) UC(gen_colors(rbc, &s->colorer, /**/ flu));
 }
+
+void sim_restart(Sim *s){}
