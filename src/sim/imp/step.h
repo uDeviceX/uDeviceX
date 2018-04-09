@@ -1,4 +1,4 @@
-static void step(TimeLine *time, float dt, bool wall0, float tstart, Sim *s) {
+static void step(TimeLine *time, float dt, float tstart, Sim *s) {
     long it;
     Flu *flu = &s->flu;
     Rbc *rbc = &s->rbc;
@@ -17,7 +17,7 @@ static void step(TimeLine *time, float dt, bool wall0, float tstart, Sim *s) {
     if (opt->rbc)  UC(distribute_rbc(/**/ rbc));
 
     UC(check_sizes(s));
-    UC(forces(dt, time, wall0, s));
+    UC(forces(dt, time, s));
     UC(check_forces(dt, s));
 
     it = time_line_get_iteration(time);
@@ -37,7 +37,7 @@ static void step(TimeLine *time, float dt, bool wall0, float tstart, Sim *s) {
         log(it, &s->vcon);
     }
 
-    if (wall0) bounce_wall(dt, opt->rbc, s->coords, wall, /**/ flu, rbc);
+    if (active_walls(s)) bounce_wall(dt, opt->rbc, s->coords, wall, /**/ flu, rbc);
 
     if (s->rigids && opt->rig_bounce) bounce_solid(dt, s->params.L, /**/ &s->bb, rig, flu);
 

@@ -1,10 +1,9 @@
 static void run_eq(float te, Sim *s) { /* equilibrate */
     float dt;
     s->equilibrating = true;
-    bool wall0 = false;
     dt = utils_get_dt0(s);
     while (time_line_get_current(s->time.t) < te) {
-        UC(step(s->time.t, dt, wall0, 0.0, s));
+        UC(step(s->time.t, dt, 0.0, s));
         time_line_advance(dt, s->time.t);
         dt = utils_get_dt(s, s->time.t);
     }
@@ -28,7 +27,7 @@ static void run(float ts, float te, Sim *s) {
     /* ts, te: time start and end */
     dt = utils_get_dt0(s);
     while (time_line_get_current(s->time.t) < te) {
-        UC(step(s->time.t, dt, s->opt.wall, ts, s));
+        UC(step(s->time.t, dt, ts, s));
         time_line_advance(dt, s->time.t);
         dt = utils_get_dt(s, s->time.t);
     }

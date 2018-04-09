@@ -1,4 +1,4 @@
-void forces(float dt, TimeLine *time, bool wall0, Sim *s) {
+void forces(float dt, TimeLine *time, Sim *s) {
     Flu *flu = &s->flu;
     Rbc *rbc = &s->rbc;
     Rig *rig = &s->rig;
@@ -16,7 +16,7 @@ void forces(float dt, TimeLine *time, bool wall0, Sim *s) {
     if (fluss)      UC(clear_stresses(flu->ss, flu->q.n));
     
     UC(forces_dpd(fluss, flu));
-    if (wall0 && wall->q.n) forces_wall(fluss, wall, s);
+    if (active_walls(s) && wall->q.n) forces_wall(fluss, wall, s);
     if (opt->rbc) forces_rbc(dt, opt, rbc);
 
     UC(forces_objects(s));
