@@ -281,25 +281,20 @@ void sim_ini(const Config *cfg, MPI_Comm cart, /**/ Sim **sim) {
 
     UC(bforce_ini(&s->bforce));
     UC(bforce_set_none(/**/ s->bforce));
-    
-    if (opt->rbc)        UC(ini_rbc(cfg, opt, s->cart, params.L, /**/ &s->rbc));
 
+    UC(ini_flu(cfg, opt, params, s->cart, maxp, params.L, /**/ &s->flu));    
+    if (opt->rbc)  UC(ini_rbc(cfg, opt, s->cart, params.L, /**/ &s->rbc));
+    if (opt->rig)  UC(ini_rig(cfg, s->cart, opt, maxp, params.L, /**/ &s->rig));
+    if (opt->wall) UC(ini_wall(cfg, params.L, &s->wall));
+    
     if (opt->rbc || opt->rig)
         UC(ini_objinter(s->cart, maxp, params.L, opt, /**/ &s->objinter));
-
-    if (opt->wall) ini_wall(cfg, params.L, &s->wall);
-
-    UC(ini_flu(cfg, opt, params, s->cart, maxp, params.L, /**/ &s->flu));
 
     if (opt->flucolors && opt->rbc)
         UC(ini_colorer(s->rbc.q.nv, s->cart, maxp, params.L, /**/ &s->colorer));
 
-    if (opt->rig) {
-        UC(ini_rig(cfg, s->cart, opt, maxp, params.L, /**/ &s->rig));
-
-        if (opt->rig_bounce)
-            UC(ini_bounce_back(s->cart, maxp, params.L, &s->rig, /**/ &s->bb));
-    }
+    if (opt->rig && opt->rig_bounce)
+        UC(ini_bounce_back(s->cart, maxp, params.L, &s->rig, /**/ &s->bb));
 
     UC(ini_optional_features(cfg, opt, &params, /**/ s));
     
