@@ -1,15 +1,24 @@
 = VTK
 
-Write point and mesh data to legacy vtk files.
+Write vertices and triangles data to legacy vtk files. `VTK` structure
+uses `VTKConf` structure for initialization.
 
-A configuration structure
+A configuration structure.
 [source,cpp]
 ----
 include::{src}/io/vtk/imp.h[tags=conf]
 ----
+<1> initilize configuration structure
+<2> "register" a "key" for data on vertices
+<3> "register" a "key" for data on triangles
 
 Push data
 [source,cpp]
 ----
-include::{src}/io/point/imp.h[tags=main]
+include::{src}/io/vtk/imp.h[tags=main]
 ----
+<1> initilize the structure, create directory
+<2> "push" coordinates of the vertices
+<3> "push" vertices data
+<4> "push" triangle data
+<5> write a file
