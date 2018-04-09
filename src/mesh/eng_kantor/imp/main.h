@@ -28,6 +28,6 @@ void mesh_eng_kantor_apply(MeshEngKantor *q, int nm, Vectors *pos, double kb, do
     mesh_angle_apply(q->angle, nm, pos, /**/ angles);
     for (i = 0; i < nm * ne; i++) {
         angle = angles[i];
-        o[i] = kb * (1 - cos(angle - angle0));
+        o[i] = 2*kb*(1 - cos(angle - angle0));
     }
 }
