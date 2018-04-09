@@ -1,4 +1,4 @@
-# cTEST: mesh.scatter
+# TEST: mesh.scatter
 cd test/mesh/scatter
 u.conf0 u/mesh/scatter
 u.make -j
