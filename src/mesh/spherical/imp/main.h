@@ -13,7 +13,9 @@ void mesh_spherical_fin(MeshSpherical *q) {
 
 static void xyz2sph(double x, double y, double z, /**/ double *pr, double *ptheta, double *pphi) {
     double r, theta, phi;
-    
+    r = sqrt(x*x + y*y + z*z);
+    theta = atan2(z, r);
+    phi = atan2(y, x);
     *pr = r; *ptheta = theta; *pphi = phi;
 }
 static void apply(int n, double *rr, /**/ double *r, double *theta, double *phi) {
