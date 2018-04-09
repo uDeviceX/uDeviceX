@@ -1,4 +1,5 @@
 struct MeshSpherical {
-    int nd, nv;
-    int4 *dd; /* dihidrals */
+    double *rr; /* workspace for coordinates shifted to a mesh center
+                   of mass */
+    int nv;
 };

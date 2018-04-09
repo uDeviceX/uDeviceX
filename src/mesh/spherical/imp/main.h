@@ -1,49 +1,36 @@
-void mesh_spherical_ini(MeshRead *mesh, MeshSpherical **pq) {
-    int i, nv, nd;
+void mesh_spherical_ini(int nv, MeshSpherical **pq) {
     MeshSpherical *q;
-    const int4 *dd;
-    UC(nv = mesh_read_get_nv(mesh));
-    UC(nd = mesh_read_get_ne(mesh));
-    UC(dd = mesh_read_get_dih(mesh));
     EMALLOC(1, &q);
-    EMALLOC(nd, &q->dd);
-    for (i = 0; i < nd; i++)
-        q->dd[i] = dd[i];
-    q->nd = nd; q->nv = nv;
+    EMALLOC(3*nv, &q->rr);
+    q->nv = nv;
     *pq = q;
 }
 
 void mesh_spherical_fin(MeshSpherical *q) {
-    EFREE(q->dd); EFREE(q);
+    EFREE(q->rr);
+    EFREE(q);
 }
 
-static void get(Vectors *p, int i, double d[3]) {
-    enum {X, Y, Z};
-    float f[3];
-    UC(vectors_get(p, i, /**/ f));
-    d[X] = f[X]; d[Y] = f[Y]; d[Z] = f[Z];
-}
-static double angle(int4 t, Vectors *p, int offset) {
-    int ia, ib, ic, id;
-    double a[3], b[3], c[3], d[3], x, y;
-    ia = t.x; ib = t.y; ic = t.z; id = t.w;
-
-    UC(get(p, ia + offset, /**/ a));
-    UC(get(p, ib + offset, /**/ b));
-    UC(get(p, ic + offset, /**/ c));
-    UC(get(p, id + offset, /**/ d));
+static void xyz2sph(double x, double y, double z, /**/ double *pr, double *ptheta, double *pphi) {
+    double r, theta, phi;
     
-    tri_hst::dihedral_xy(a, b, c, d, /**/ &x, &y);
-    return atan2(y, x);
+    *pr = r; *ptheta = theta; *pphi = phi;
 }
-void mesh_spherical_apply(MeshSpherical *q, int m, Vectors *p, /**/ double *angle0) {
-    int i, j, k, nv, nd, offset;
-    int4 *dd;
-    nd = q->nd; nv = q->nv; dd = q->dd; offset = 0;
-
-    for (k = i = 0; i < m; i++) {
-        for (j = 0; j < nd; j++)
-            angle0[k++] = angle(dd[j], p, offset);
-        offset += nv;
+static void apply(int n, double *rr, /**/ double *r, double *theta, double *phi) {
+    enum {X, Y, Z};
+    int i;
+    for (i = 0; i < n; i++) {
+        xyz2sph(rr[X], rr[Y], rr[Z], /**/ r, theta, phi);
+        rr += 3; r++; theta++; phi++;
     }
+}
+void mesh_spherical_apply(MeshSpherical *q, int m, Vectors *pos, /**/ double *r, double *theta, double *phi) {
+    int i, nv, offset;
+    double *rr;
+    nv = q->nv; rr = q->rr; offset = 0;    
+    for (i = 0; i < m; i++) {
+        UC(to_com(nv, offset, pos, /**/ rr));
+        apply(nv, rr, /**/ r, theta, phi);
+        rr += 3*nv; r += nv; theta += nv; phi += nv; offset += nv;
+    }    
 }
