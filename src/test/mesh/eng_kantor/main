@@ -1,0 +1,6 @@
+# sTEST: mesh.eng_kantor
+cd test/mesh/eng_kantor
+u.conf0 u/mesh/eng_kantor
+u.make -j
+u.cp.rbc rbc/sc/2562 rbc.off
+u.run ./udx 'i="rbc.off"; o="eng"' > eng.out.txt
