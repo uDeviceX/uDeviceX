@@ -23,7 +23,7 @@ static void dump_txt(int nv, int nm, const double *a) {
 }
 
 static void main0(const char *cell) {
-    int nv, nm;
+    int nv, ne, nm;
     MeshRead *mesh;
     MeshScatter *scatter;
     Scalars *ones;
@@ -32,9 +32,10 @@ static void main0(const char *cell) {
     UC(mesh_read_ini_off(cell, /**/ &mesh));
     UC(mesh_scatter_ini(mesh, /**/ &scatter));
     nv = mesh_read_get_nv(mesh);
+    ne = mesh_read_get_ne(mesh);
 
     EMALLOC(nv, &rank);
-    scalars_one_ini(nv, &ones);
+    scalars_one_ini(ne, &ones);
     mesh_scatter_edg2vert(scatter, nm, ones, /**/ rank);
     dump_txt(nv, nm, rank);
     

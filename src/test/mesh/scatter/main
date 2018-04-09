@@ -1,0 +1,6 @@
+# cTEST: mesh.scatter
+cd test/mesh/scatter
+u.conf0 u/mesh/scatter
+u.make -j
+u.cp.rbc rbc/sc/2562 rbc.off
+u.run ./udx 'i="rbc.off"' > scatter.out.txt
