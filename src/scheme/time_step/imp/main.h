@@ -16,7 +16,7 @@ void time_step_accel_push(TimeStepAccel *q, float m, int n, Force *ff) {
 }
 void time_step_accel_reset(TimeStepAccel *q) { q->k = 0; }
 
-void time_step_ini(Config *c, /**/ TimeStep **pq) {
+void time_step_ini(const Config *c, /**/ TimeStep **pq) {
     const char *type;
     int l;
     TimeStep *q;

@@ -218,7 +218,7 @@ static long maxp_estimate(Params p) {
     return SAFETY_FACTOR_MAXP * estimate;
 }
 
-static void ini_time(Config *cfg, /**/ Time *t) {
+static void ini_time(const Config *cfg, /**/ Time *t) {
     const float t0 = 0;
     UC(conf_lookup_float(cfg, "time.end",  &t->end));
     UC(conf_lookup_float(cfg, "time.wall", &t->wall));
@@ -227,7 +227,7 @@ static void ini_time(Config *cfg, /**/ Time *t) {
     UC(time_step_accel_ini(&t->accel));
 }
 
-static void ini_common(Config *cfg, MPI_Comm cart, /**/ Sim *s) {
+static void ini_common(const Config *cfg, MPI_Comm cart, /**/ Sim *s) {
     Params params;
     MC(m::Comm_dup(cart, &s->cart));
     UC(coords_ini_conf(s->cart, cfg, /**/ &s->coords));
@@ -240,10 +240,12 @@ static void ini_common(Config *cfg, MPI_Comm cart, /**/ Sim *s) {
     UC(dbg_ini(&s->dbg));
     UC(dbg_set_conf(cfg, s->dbg));
 
+    UC(ini_time(cfg, &s->time));
+    
     s->params = params;
 }
 
-void sim_ini(Config *cfg, MPI_Comm cart, /**/ Sim **sim) {
+void sim_ini(const Config *cfg, MPI_Comm cart, /**/ Sim **sim) {
     float dt;
     Sim *s;
     int maxp;
@@ -256,7 +258,6 @@ void sim_ini(Config *cfg, MPI_Comm cart, /**/ Sim **sim) {
     
     UC(ini_common(cfg, cart, /**/ s));
     params = s->params;
-    UC(ini_time(cfg, &s->time));
     
     maxp = maxp_estimate(params);
     dt = time_step_dt0(s->time.step);
