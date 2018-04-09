@@ -23,7 +23,14 @@ struct Out {
     const char *path;
 };
 
-static void dump(int nv, int nm, double *eng, Vectors *vectors, Out *out) {
+static void dump_txt(int nv, int nm, const double *a) {
+    int n, i;
+    n = nv * nm;
+    for (i = 0; i < n; i++)
+        printf("%g\n", a[i]);
+}
+
+static void dump_vtk(int nv, int nm, const double *eng, Vectors *vectors, Out *out) {
     int id;
     VTKConf *conf;
     VTK *vtk;
@@ -64,7 +71,8 @@ static void main0(const char *cell, Out *out) {
 
     EMALLOC(nv, &eng);
     mesh_eng_julicher_apply(eng_julicher, nm, pos, kb, /**/ eng);
-    dump(nv, nm, eng, pos, out);
+    dump_vtk(nv, nm, eng, pos, out);
+    dump_txt(nv, nm, eng);
 
     mesh_eng_julicher_fin(eng_julicher);
     UC(vectors_fin(pos));
