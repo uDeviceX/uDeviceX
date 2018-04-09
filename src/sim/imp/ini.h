@@ -155,7 +155,7 @@ static void ini_rig(const Config *cfg, MPI_Comm cart, Opt opt, int maxp, int3 L,
 }
 
 static void ini_bounce_back(MPI_Comm cart, int maxp, int3 L, Rig *s, /**/ BounceBack *bb) {
-    meshbb_ini(maxp, /**/ &bb->d);
+    UC(meshbb_ini(maxp, /**/ &bb->d));
     Dalloc(&bb->mm, maxp);
 
     UC(ini_bb_exch(s->q.nt, s->q.nv, MAX_CELL_NUM, cart, L, /**/ &bb->e));
@@ -306,9 +306,10 @@ static void ini_dump(int maxp, MPI_Comm cart, const Coords *c, Opt opt, Dump *d)
     d->id_bop = d->id_rbc = d->id_rbc_com = d->id_rig_mesh = d->id_strt = 0;
 }
 
-static long num_pp_estimate(Params p) {
+static long maxp_estimate(Params p) {
     int3 L = p.L;
-    return L.x * L.y * L.z * p.numdensity;
+    int estimate = L.x * L.y * L.z * p.numdensity;
+    return SAFETY_FACTOR_MAXP * estimate;
 }
 
 static void ini_time(Config *cfg, /**/ Time *t) {
@@ -339,7 +340,7 @@ void sim_ini(Config *cfg, MPI_Comm cart, /**/ Sim **sim) {
     UC(conf_lookup_int  (cfg, "glb.numdensity", &params.numdensity));
     UC(ini_time(cfg, &s->time));
     
-    maxp = SAFETY_FACTOR_MAXP * num_pp_estimate(params);
+    maxp = maxp_estimate(params);
     dt = time_step_dt0(s->time.step);
     time_line_advance(dt, s->time.t);
     UC(read_opt(cfg, &opt));
