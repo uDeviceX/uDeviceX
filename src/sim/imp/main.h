@@ -66,15 +66,12 @@ void sim_gen(Sim *s, const Config *cfg) {
     }
     MC(m::Barrier(s->cart));
     if (opt->wall || opt->rig) {
-        s->rigids = false;
         gen(s->time.wall, s->coords, /**/ wall, s);
         dSync();
         if (opt->wall && wall->q.n) UC(wall_gen_ticket(&wall->q, wall->t));
         if (opt->rbc && opt->flucolors) UC(gen_colors(rbc, &s->colorer, /**/ flu));
         tstart = s->time.wall;    
     }
-
-    s->rigids = opt->rig;
     
     pre_run(cfg, s);
     run(tstart, s->time.end, s);
@@ -115,7 +112,6 @@ void sim_strt(Sim *s, const Config *cfg) {
         MC(m::Barrier(s->cart));
     }
 
-    s->rigids = opt->rig;
     pre_run(cfg, s);
     run(s->time.wall, s->time.end, s);
     if (opt->dump_strt) dump_strt_final(s);

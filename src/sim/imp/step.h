@@ -13,8 +13,8 @@ static void step(TimeLine *time, float dt, float tstart, Sim *s) {
     UC(check_pos_soft(s));
 
     UC(distribute_flu(s));
-    if (s->rigids) UC(distribute_rig(/**/ rig));
-    if (opt->rbc)  UC(distribute_rbc(/**/ rbc));
+    if (active_rig(s)) UC(distribute_rig(/**/ rig));
+    if (opt->rbc)      UC(distribute_rbc(/**/ rbc));
 
     UC(check_sizes(s));
     UC(forces(dt, time, s));
@@ -22,13 +22,13 @@ static void step(TimeLine *time, float dt, float tstart, Sim *s) {
 
     it = time_line_get_iteration(time);
     dump_diag(time, s);
-    dump_diag_after(time, s->rigids, s);
+    dump_diag_after(time, active_rig(s), s);
     UC(body_force(bforce, s));
 
     UC(restrain(it, /**/ s));
     UC(update_solvent(dt, /**/ flu));
-    if (s->rigids) update_solid(dt, /**/ rig);
-    if (opt->rbc)  update_rbc(dt, it, rbc, s);
+    if (active_rig(s)) UC(update_solid(dt, /**/ rig));
+    if (opt->rbc)      UC(update_rbc(dt, it, rbc, s));
 
     UC(check_vel(dt, s));
     if (opt->vcon && !s->equilibrating) {
@@ -39,7 +39,7 @@ static void step(TimeLine *time, float dt, float tstart, Sim *s) {
 
     if (active_walls(s)) bounce_wall(dt, opt->rbc, s->coords, wall, /**/ flu, rbc);
 
-    if (s->rigids && opt->rig_bounce) bounce_solid(dt, s->params.L, /**/ &s->bb, rig, flu);
+    if (active_rig(s) && opt->rig_bounce) bounce_solid(dt, s->params.L, /**/ &s->bb, rig, flu);
 
     UC(check_pos_soft(s));
     UC(check_vel(dt, s));

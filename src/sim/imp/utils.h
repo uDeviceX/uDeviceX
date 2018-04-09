@@ -74,6 +74,6 @@ static bool active_walls(const Sim *s) {
     return !s->equilibrating && s->opt.wall;
 }
 
-static bool active_rigids(const Sim *s) {
+static bool active_rig(const Sim *s) {
     return !s->equilibrating && s->opt.rig;
 }
