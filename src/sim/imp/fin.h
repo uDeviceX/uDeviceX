@@ -65,7 +65,7 @@ static void fin_inflow(Inflow *i) {
 }
 
 
-static void fin_flu(Opt opt, Flu *f) {
+static void fin_flu(const Opt *opt, Flu *f) {
     UC(flu_fin(&f->q));
     UC(fluforces_bulk_fin(/**/ f->bulk));
     UC(fluforces_halo_fin(/**/ f->halo));
@@ -76,13 +76,13 @@ static void fin_flu(Opt opt, Flu *f) {
     UC(Dfree(f->ff));
     EFREE(f->ff_hst);
 
-    if (opt.fluss) {
+    if (opt->fluss) {
         UC(Dfree(f->ss));
         EFREE(f->ss_hst);        
     }
 }
 
-static void fin_rbc(Opt opt, Rbc *r) {
+static void fin_rbc(const Opt *opt, Rbc *r) {
     UC(rbc_fin(&r->q));
     UC(rbc_force_fin(r->force));
 
@@ -91,8 +91,8 @@ static void fin_rbc(Opt opt, Rbc *r) {
     Dfree(r->ff);
     UC(triangles_fin(r->tri));
 
-    if (opt.dump_rbc_com) UC(rbc_com_fin(/**/ r->com));
-    if (opt.rbcstretch)   UC(rbc_stretch_fin(/**/ r->stretch));
+    if (opt->dump_rbc_com) UC(rbc_com_fin(/**/ r->com));
+    if (opt->rbcstretch)   UC(rbc_stretch_fin(/**/ r->stretch));
     UC(rbc_params_fin(r->params));
     UC(mesh_read_fin(r->cell));
     UC(mesh_write_fin(r->mesh_write));
@@ -139,9 +139,9 @@ static void fin_pair_params(Sim *s) {
     UC(pair_fin(s->objinter.fsiparams));
 }
 
-static void fin_dump(Opt opt, Dump *d) {
-    if (opt.dump_field) UC(io_field_fin(d->iofield));
-    if (opt.dump_parts) UC(io_rig_fin(d->iorig));
+static void fin_dump(const Opt *opt, Dump *d) {
+    if (opt->dump_field) UC(io_field_fin(d->iofield));
+    if (opt->dump_parts) UC(io_rig_fin(d->iorig));
     UC(io_bop_fin(d->bop));
     UC(diag_part_fin(d->diagpart));
     EFREE(d->pp);
@@ -153,33 +153,35 @@ static void fin_time(Time *t) {
 }
 
 void sim_fin(Sim *s) {
-    if (s->opt.rbc || s->opt.rig)
+    const Opt *opt = &s->opt;
+    
+    if (opt->rbc || opt->rig)
         UC(fin_objinter(&s->opt, &s->objinter));
 
-    if (s->opt.vcon)       UC(fin_vcon(/**/ &s->vcon));
-    if (s->opt.outflow)    UC(fin_outflow(/**/ s->outflow));
-    if (s->opt.inflow)     UC(fin_inflow (/**/ s->inflow ));
-    if (s->opt.denoutflow) UC(fin_denoutflow(/**/ s->denoutflow, s->mapoutflow));
+    if (opt->vcon)       UC(fin_vcon(/**/ &s->vcon));
+    if (opt->outflow)    UC(fin_outflow(/**/ s->outflow));
+    if (opt->inflow)     UC(fin_inflow (/**/ s->inflow ));
+    if (opt->denoutflow) UC(fin_denoutflow(/**/ s->denoutflow, s->mapoutflow));
     
-    if (s->opt.wall) UC(fin_wall(&s->wall));
+    if (opt->wall) UC(fin_wall(&s->wall));
 
-    UC(fin_flu(s->opt, &s->flu));
+    UC(fin_flu(opt, &s->flu));
 
-    if (s->opt.flucolors && s->opt.rbc)
+    if (opt->flucolors && opt->rbc)
         UC(fin_colorer(/**/ &s->colorer));
 
-    if (s->opt.rig) {
+    if (opt->rig) {
         UC(fin_rig(/**/ &s->rig));
         
-        if (s->opt.rig_bounce)
+        if (opt->rig_bounce)
             UC(fin_bounce_back(&s->bb));
     }
     
-    if (s->opt.rbc) UC(fin_rbc(s->opt, /**/ &s->rbc));
+    if (opt->rbc) UC(fin_rbc(opt, /**/ &s->rbc));
 
     UC(bforce_fin(s->bforce));
     
-    UC(fin_dump(s->opt, &s->dump));
+    UC(fin_dump(opt, &s->dump));
     UC(scheme_restrain_fin(s->restrain));
     UC(coords_fin(/**/ s->coords));
     UC(fin_time(&s->time));
