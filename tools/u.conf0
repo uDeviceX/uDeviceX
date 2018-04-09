@@ -1,4 +1,12 @@
 # a simple interface to u.conf
+
+usg () {
+    echo >&2 'u.conf0 UNIT'
+    exit
+}
+
+if test $# -ne 0 && test "$1" = -h; then usg; fi
+
 u="$1"; shift
 s=`u.cp.s`
 echo | u.conf "$s" "$u"
