@@ -1,0 +1,35 @@
+/* compute curvature of parametric surface */
+
+load("vect") $
+
+(X: 1; Y: 2; Z: 3) $
+
+cross(a, b):= express(a ~ b);
+dot(a, b):= express(a . b);
+
+expand0(e):=expand(e, 0, 0);
+zero(e):=map(expand0, taylor(e, [u, v], [0, 0], 0));
+
+p(xu, xv, xuv, xuu, xvv):= xu*u + xv*v + 1/2*xuu*u^2 + 1/2*xvv*v^2 + xuv*u*v;
+
+x: p(xu, xv, xuv, xuu, xvv);
+y: p(yu, yv, yuv, yuu, yvv);
+z: p(zu, zv, zuv, zuu, zvv);
+
+r: [x, y, z];
+
+ru: diff(r, u);
+rv: diff(r, v);
+
+ruu: diff(r, u, 2);
+rvv: diff(r, v, 2);
+ruv: diff(diff(r, v), v);
+
+n: cross(ru, rv);
+n: zero(n);
+
+L: zero(dot(ruu, n));
+M: zero(dot(ruv, n));
+N: zero(dot(rvv, n));
+
+T: matrix([L, M], [M, N]);

@@ -1,0 +1,3 @@
+# compute bending energy analytically
+
+

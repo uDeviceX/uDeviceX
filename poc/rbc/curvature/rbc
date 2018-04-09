@@ -1,0 +1,8 @@
+x: u;
+y: v;
+rr: x^2 + y^2;
+z: sqrt(1-'rr^2)*(a0 + a1*'rr + a2*'rr^2);
+
+diff(z, u, 2);
+
+diff(z, 'rr);
