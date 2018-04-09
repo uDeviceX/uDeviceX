@@ -195,9 +195,22 @@ static int get_shifttype(const Config *c, const char *desc) {
     return -1;
 }
 
-static void read_opt(const Config *c, Opt *o) {
+static void read_opt_common(const Config *c, Opt *o) {
     int b;
     const char *s;
+
+    UC(conf_lookup_bool(c, "flu.ids", &b));
+    o->fluids = b;
+
+    UC(conf_lookup_string(c, "dump.strt_base_dump", &s));
+    strcpy(o->strt_base_dump, s);
+
+    UC(conf_lookup_string(c, "dump.strt_base_read", &s));
+    strcpy(o->strt_base_read, s);
+}
+
+static void read_opt(const Config *c, Opt *o) {
+    int b;
     UC(conf_lookup_bool(c, "fsi.active", &b));
     o->fsi = b;
     UC(conf_lookup_bool(c, "cnt.active", &b));
@@ -245,12 +258,6 @@ static void read_opt(const Config *c, Opt *o) {
     UC(conf_lookup_bool(c, "dump.strt", &b));
     o->dump_strt = b;
     UC(conf_lookup_float(c, "dump.freq_strt", &o->freq_strt));
-
-    UC(conf_lookup_string(c, "dump.strt_base_dump", &s));
-    strcpy(o->strt_base_dump, s);
-
-    UC(conf_lookup_string(c, "dump.strt_base_read", &s));
-    strcpy(o->strt_base_read, s);
 
     UC(conf_lookup_bool(c, "dump.parts", &b));
     o->dump_parts = b;
@@ -331,6 +338,9 @@ static void ini_common(Config *cfg, MPI_Comm cart, /**/ Sim *s) {
     UC(conf_lookup_float(cfg, "glb.kBT",        &params.kBT       ));
     UC(conf_lookup_int  (cfg, "glb.numdensity", &params.numdensity));
 
+    UC(dbg_ini(&s->dbg));
+    UC(dbg_set_conf(cfg, s->dbg));
+
     s->params = params;
 }
 
@@ -351,6 +361,8 @@ void sim_ini(Config *cfg, MPI_Comm cart, /**/ Sim **sim) {
     maxp = maxp_estimate(params);
     dt = time_step_dt0(s->time.step);
     time_line_advance(dt, s->time.t);
+
+    UC(read_opt_common(cfg, &opt));
     UC(read_opt(cfg, &opt));
     s->opt = opt;
     UC(read_color_opt(cfg, &s->recolorer));
@@ -391,11 +403,6 @@ void sim_ini(Config *cfg, MPI_Comm cart, /**/ Sim **sim) {
 
     UC(inter_color_ini(&s->gen_color));
     UC(inter_color_set_conf(cfg, s->gen_color));
-
-    UC(dbg_ini(&s->dbg));
-    UC(dbg_set_conf(cfg, s->dbg));
-
-    s->params = params;
     
     MC(MPI_Barrier(s->cart));
 }
