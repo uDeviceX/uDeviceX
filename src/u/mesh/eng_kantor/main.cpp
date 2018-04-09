@@ -12,7 +12,7 @@
 #include "io/mesh_read/imp.h"
 
 #include "algo/vectors/imp.h"
-#include "mesh/eng_julicher/imp.h"
+#include "mesh/eng_kantor/imp.h"
 
 #include "io/vtk/imp.h"
 #include "algo/scalars/imp.h"
@@ -58,23 +58,23 @@ static void dump_vtk(int nv, int nm, const double *eng, Vectors *vectors, Out *o
 
 static void main0(const char *cell, Out *out) {
     int nv, nm;
-    MeshEngJulicher *eng_julicher;
+    MeshEngJulicher *eng_kantor;
     const float *vert;
     Vectors  *pos;
     double *eng, kb;
     nm = 1; kb = 1;
     UC(mesh_read_ini_off(cell, /**/ &out->mesh));
-    UC(mesh_eng_julicher_ini(out->mesh, nm, /**/ &eng_julicher));
+    UC(mesh_eng_kantor_ini(out->mesh, nm, /**/ &eng_kantor));
     nv = mesh_read_get_nv(out->mesh);
     vert = mesh_read_get_vert(out->mesh);
     UC(vectors_float_ini(nv, vert, /**/ &pos));
 
     EMALLOC(nv, &eng);
-    mesh_eng_julicher_apply(eng_julicher, nm, pos, kb, /**/ eng);
+    mesh_eng_kantor_apply(eng_kantor, nm, pos, kb, /**/ eng);
     dump_vtk(nv, nm, eng, pos, out);
     dump_txt(nv, nm, eng);
 
-    mesh_eng_julicher_fin(eng_julicher);
+    mesh_eng_kantor_fin(eng_kantor);
     UC(vectors_fin(pos));
     UC(mesh_read_fin(out->mesh));
     EFREE(eng);
