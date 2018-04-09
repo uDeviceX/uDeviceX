@@ -69,3 +69,11 @@ static float utils_get_dt(Sim *s, TimeLine *time) {
         return dt;
     }
 }
+
+static bool active_walls(const Sim *s) {
+    return !s->equilibrating && s->opt.wall;
+}
+
+static bool active_rigids(const Sim *s) {
+    return !s->equilibrating && s->opt.rig;
+}
