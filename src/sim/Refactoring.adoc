@@ -32,3 +32,12 @@ methods:
 * time_step adaptation
 * time seq
 
+== Interface:
+
+----
+ini, fin
+gen_flu
+restart
+run
+dump_restart
+----
