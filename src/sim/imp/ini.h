@@ -207,6 +207,37 @@ static void read_opt_common(const Config *c, Opt *o) {
 
     UC(conf_lookup_string(c, "dump.strt_base_read", &s));
     strcpy(o->strt_base_read, s);
+
+    UC(conf_lookup_bool(c, "dump.field", &b));
+    o->dump_field = b;
+    UC(conf_lookup_float(c, "dump.freq_field", &o->freq_field));
+    
+    UC(conf_lookup_bool(c, "dump.strt", &b));
+    o->dump_strt = b;
+    UC(conf_lookup_float(c, "dump.freq_strt", &o->freq_strt));
+
+    UC(conf_lookup_bool(c, "dump.parts", &b));
+    o->dump_parts = b;
+    UC(conf_lookup_float(c, "dump.freq_parts", &o->freq_parts));
+}
+
+static void set_opt_eq(Opt *o) {
+    o->rbc  = false;
+    o->rig  = false;
+    o->wall = false;
+
+    o->fsi = false;
+    o->cnt = false;
+
+    o->inflow = false;
+    o->outflow = false;
+    o->denoutflow = false;
+    o->outflow = false;
+    o->vcon = false;
+    
+    o->push_flu = false;
+    o->push_rbc = false;
+    o->push_rig = false;
 }
 
 static void read_opt(const Config *c, Opt *o) {
@@ -250,18 +281,6 @@ static void read_opt(const Config *c, Opt *o) {
     o->denoutflow = b;
     UC(conf_lookup_bool(c, "vcon.active", &b));
     o->vcon = b;
-
-    UC(conf_lookup_bool(c, "dump.field", &b));
-    o->dump_field = b;
-    UC(conf_lookup_float(c, "dump.freq_field", &o->freq_field));
-    
-    UC(conf_lookup_bool(c, "dump.strt", &b));
-    o->dump_strt = b;
-    UC(conf_lookup_float(c, "dump.freq_strt", &o->freq_strt));
-
-    UC(conf_lookup_bool(c, "dump.parts", &b));
-    o->dump_parts = b;
-    UC(conf_lookup_float(c, "dump.freq_parts", &o->freq_parts));
 
     UC(conf_lookup_bool(c, "dump.rbc_com", &b));
     o->dump_rbc_com = b;
