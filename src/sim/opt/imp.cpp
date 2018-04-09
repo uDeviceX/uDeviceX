@@ -26,16 +26,17 @@ static void lookup_bool(const Config *c, const char *desc, bool *res) {
     *res = b;
 }
 
-void opt_read_common(const Config *c, Opt *o) {
+static void lookup_string(const Config *c, const char *desc, char *res) {
     const char *s;
+    UC(conf_lookup_string(c, desc, &s));
+    strcpy(res, s);
+}
 
+static void read_common(const Config *c, Opt *o) {
     UC(lookup_bool(c, "flu.ids", &o->fluids));
-
-    UC(conf_lookup_string(c, "dump.strt_base_dump", &s));
-    strcpy(o->strt_base_dump, s);
-
-    UC(conf_lookup_string(c, "dump.strt_base_read", &s));
-    strcpy(o->strt_base_read, s);
+    
+    UC(lookup_string(c, "dump.strt_base_dump", o->strt_base_dump));
+    UC(lookup_string(c, "dump.strt_base_read", o->strt_base_read));
 
     UC(lookup_bool(c, "dump.field", &o->dump_field));
     UC(conf_lookup_float(c, "dump.freq_field", &o->freq_field));
@@ -47,7 +48,7 @@ void opt_read_common(const Config *c, Opt *o) {
     UC(conf_lookup_float(c, "dump.freq_parts", &o->freq_parts));
 }
 
-void opt_set_eq(Opt *o) {
+static void set_eq(Opt *o) {
     o->rbc  = false;
     o->rig  = false;
     o->wall = false;
@@ -66,7 +67,7 @@ void opt_set_eq(Opt *o) {
     o->push_rig = false;
 }
 
-void opt_read(const Config *c, Opt *o) {
+static void read_full(const Config *c, Opt *o) {
     UC(lookup_bool(c, "fsi.active", &o->fsi));
     UC(lookup_bool(c, "cnt.active", &o->cnt));
 
@@ -99,4 +100,19 @@ void opt_read(const Config *c, Opt *o) {
     UC(lookup_bool(c, "flu.push", &o->push_flu));
     UC(lookup_bool(c, "rbc.push", &o->push_rbc));
     UC(lookup_bool(c, "rig.push", &o->push_rig));
+}
+
+void opt_read_gen(const Config *c, Opt *o) {
+    UC(read_common(c, o));
+    UC(set_eq(o));
+}
+
+void opt_read_full(const Config *c, Opt *o) {
+    UC(read_common(c, o));
+    UC(read_full(c, o));
+}
+
+void opt_check(const Opt *o) {
+    if (o->dump_rbc_com && !o->rbcids)
+        ERR("Need rbc.ids activated to dump rbc com!");
 }
