@@ -52,7 +52,7 @@ void mesh_eng_julicher_apply(MeshEngJulicher *q, int nm, Vectors *pos, double kb
         curvs_edg[i] = lens[i]*angles[i];
 
     scalars_double_ini(nm * ne, curvs_edg, /**/ &sc);
-    mesh_scatter_edg2vert_avg(q->scatter, nm, sc, /**/ curvs_vert);
+    mesh_scatter_edg2vert(q->scatter, nm, sc, /**/ curvs_vert);
     for (i = 0; i < nm * nv; i++)
         curvs_vert[i] /= 4;
 
