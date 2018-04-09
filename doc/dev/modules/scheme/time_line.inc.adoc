@@ -2,13 +2,11 @@
 
 Keeps current simulation time.
 
-`time_next(Time*, float dt)` is called every time step and updates the state of Time*.
-
-`time_cross(Time*, float interval)` true if `n*interval` is in between
-current and previus timestep. In other words did simulation "just
-crossed" `n*interval`.
-
 [source,cpp]
 ----
 include::{src}/scheme/time_line/imp.h[tag=interface]
 ----
+<1> should be called every time step
+<2> return `true` if `n*interval` is in between current and previus
+    timesteps, in there words did simulation just crossed `n*interval`
+    for some `n`
