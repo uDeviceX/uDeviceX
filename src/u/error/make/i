@@ -3,5 +3,4 @@ f () ( for d; do f0 "$d"; done )
 
 f $U comm inc mpi d frag utils conf
 
-# add dir
 echo . $U $U/lib

@@ -76,9 +76,10 @@ $B/mesh/collision/imp.o: $S/inc/conf.h $S/utils/error.h $S/inc/type.h $S/d/q.h $
 $B/mesh/dist/imp.o: $S/inc/type.h $S/mesh/dist/imp.h
 $B/mesh/edg_len/imp.o: $S/utils/imp.h $S/utils/error.h $S/mesh/edg_len/imp.h $S/io/mesh_read/imp.h $S/algo/vectors/imp.h $S/mesh/edg_len/imp/main.h $S/mesh/edg_len/imp/type.h $S/utils/msg.h
 $B/mesh/eng_julicher/imp.o: $S/utils/imp.h $S/utils/error.h $S/math/tri/imp.h $S/mesh/eng_julicher/imp.h $S/algo/scalars/imp.h $S/io/mesh_read/imp.h $S/mesh/scatter/imp.h $S/mesh/edg_len/imp.h $S/algo/vectors/imp.h $S/mesh/eng_julicher/imp/main.h $S/mesh/angle/imp.h $S/mesh/eng_julicher/imp/type.h $S/mesh/vert_area/imp.h $S/utils/msg.h
-$B/mesh/eng_kantor/imp.o: $S/utils/imp.h $S/utils/error.h $S/math/tri/imp.h $S/mesh/eng_kantor/imp.h $S/algo/scalars/imp.h $S/io/mesh_read/imp.h $S/mesh/scatter/imp.h $S/mesh/edg_len/imp.h $S/algo/vectors/imp.h $S/mesh/eng_kantor/imp/main.h $S/mesh/angle/imp.h $S/mesh/eng_kantor/imp/type.h $S/mesh/vert_area/imp.h $S/utils/msg.h
+$B/mesh/eng_kantor/imp.o: $S/utils/imp.h $S/utils/error.h $S/math/tri/imp.h $S/mesh/eng_kantor/imp.h $S/algo/scalars/imp.h $S/io/mesh_read/imp.h $S/algo/vectors/imp.h $S/mesh/eng_kantor/imp/main.h $S/mesh/angle/imp.h $S/mesh/eng_kantor/imp/type.h $S/utils/msg.h
 $B/mesh/props/imp.o: $S/inc/type.h $S/mesh/props/imp.h
 $B/mesh/scatter/imp.o: $S/utils/imp.h $S/utils/error.h $S/mesh/scatter/imp.h $S/algo/scalars/imp.h $S/io/mesh_read/imp.h $S/mesh/scatter/imp/main.h $S/mesh/scatter/imp/type.h $S/utils/msg.h
+$B/mesh/spherical/imp.o: $S/utils/imp.h $S/utils/error.h $S/mesh/spherical/imp/util.h $S/mesh/spherical/imp.h $S/algo/kahan_sum/imp.h $S/algo/vectors/imp.h $S/mesh/spherical/imp/main.h $S/mesh/spherical/imp/type.h $S/utils/msg.h
 $B/mesh/triangles/imp.o: $S/utils/imp.h $S/inc/conf.h $S/utils/error.h $S/mesh/triangles/imp.h $S/io/mesh_read/imp.h $S/utils/cc.h $S/inc/dev.h $S/d/api.h $B/conf.h $S/mesh/triangles/type.h
 $B/mesh/tri_area/imp.o: $S/utils/imp.h $S/utils/error.h $S/math/tri/imp.h $S/mesh/tri_area/imp.h $S/io/mesh_read/imp.h $S/algo/vectors/imp.h $S/mesh/tri_area/imp/main.h $S/mesh/tri_area/imp/type.h $S/utils/msg.h
 $B/mesh/vert_area/imp.o: $S/utils/imp.h $S/utils/error.h $S/math/tri/imp.h $S/mesh/vert_area/imp.h $S/io/mesh_read/imp.h $S/algo/vectors/imp.h $S/mesh/vert_area/imp/main.h $S/mesh/vert_area/imp/type.h $S/utils/msg.h
@@ -131,5 +132,5 @@ $B/wall/sdf/imp.o: $S/utils/imp.h $S/inc/conf.h $S/utils/error.h $S/wall/sdf/lab
 $B/wall/sdf/label/imp.o: $S/utils/imp.h $S/inc/conf.h $S/wall/sdf/imp.h $S/utils/error.h $S/inc/type.h $S/d/q.h $S/wall/sdf/dev.h $S/wall/sdf/label/imp.h $S/utils/cc.h $S/inc/def.h $S/inc/dev.h $S/d/api.h $B/conf.h $S/wall/sdf/label/imp/main.h $S/math/tform/dev.h $S/math/tform/type.h $S/utils/kl.h $S/wall/sdf/type.h $S/wall/sdf/label/dev/main.h $S/wall/sdf/tex3d/type.h $S/d/ker.h $S/utils/msg.h
 $B/wall/sdf/tex3d/imp.o: $S/utils/imp.h $S/inc/conf.h $S/utils/error.h $S/wall/sdf/tex3d/imp.h $S/utils/cc.h $S/d/api.h $B/conf.h $S/wall/sdf/tex3d/imp/main.h $S/wall/sdf/array3d/type.h $S/wall/sdf/tex3d/type.h
 $B/wall/sdf/tform/imp.o: $S/utils/error.h $S/wall/sdf/tform/imp.h $S/math/tform/imp.h $S/coords/imp.h
-$B/wall/wvel/conf.o: $S/utils/imp.h $S/utils/error.h $S/conf/imp.h $S/wall/wvel/imp.h $B/conf.h
+$B/wall/wvel/conf.o: $S/utils/imp.h $S/utils/error.h $S/conf/imp.h $S/wall/wvel/imp.h
 $B/wall/wvel/imp.o: $S/utils/imp.h $S/utils/error.h $S/wall/wvel/imp.h $B/conf.h $S/wall/wvel/imp/main.h $S/wall/wvel/imp/type.h $S/wall/wvel/type.h $S/coords/imp.h $S/utils/msg.h

@@ -3,5 +3,4 @@ f () ( for d; do f0 "$d"; done )
 
 f $U inc mpi d utils conf scheme/time_step io/txt algo/force_stat
 
-# add dir
 echo $U .

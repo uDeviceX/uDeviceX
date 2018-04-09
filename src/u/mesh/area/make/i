@@ -3,5 +3,4 @@ f () ( for d; do f0 "$d"; done )
 
 f $U algo/edg algo/kahan_sum inc mpi math/tri d utils conf io/mesh_read mesh/area algo/vectors math/tform coords
 
-# add dir
 echo $U .

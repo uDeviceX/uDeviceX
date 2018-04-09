@@ -79,7 +79,7 @@ static void compute_angle(MeshRead *mesh, int nm, Vectors *pos, double *angle_ve
     mesh_angle_apply(angle, nm, pos, /**/ angle_edg);
     UC(scalars_double_ini(ne, angle_edg, /**/ &sc));
 
-    mesh_scatter_edg2vert(scatter, nm, sc, /**/ angle_vert);
+    mesh_scatter_edg2vert_avg(scatter, nm, sc, /**/ angle_vert);
 
     scalars_fin(sc);
     mesh_scatter_fin(scatter);

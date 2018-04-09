@@ -6,5 +6,4 @@ f $U algo/edg algo/kahan_sum algo/key_list conf d inc io/mesh_read \
      mesh/angle algo/scalars mesh/scatter algo/vectors \
      mpi utils math/tform coords
 
-# add dir
 echo $U .

@@ -6,5 +6,4 @@ f $U inc mpi d utils io/txt conf clist partlist \
 
 echo flu/type.h math/dev.h
 
-# add dir
 echo $U $U/lib .

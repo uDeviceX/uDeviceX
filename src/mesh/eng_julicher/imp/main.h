@@ -40,7 +40,7 @@ void mesh_eng_julicher_fin(MeshEngJulicher *q) {
 void mesh_eng_julicher_apply(MeshEngJulicher *q, int nm, Vectors *pos, double kb, /**/ double *o) {
     int i, nv, ne;
     double *lens, *angles, *areas, *curvs_vert, *curvs_edg;
-    double A, M;
+    double area, curv;
     Scalars *sc;
     lens = q->lens; angles = q->angles; areas = q->areas;
     curvs_edg = q->curvs_edg; curvs_vert = q->curvs_vert;
@@ -58,10 +58,10 @@ void mesh_eng_julicher_apply(MeshEngJulicher *q, int nm, Vectors *pos, double kb
 
     mesh_vert_area_apply(q->area, nm, pos, /**/ areas);
     for (i = 0; i < nm * nv; i++) {
-        M = curvs_vert[i];
-        A = areas[i];
-        if (A <= 0) ERR("A[%d]=%g <= 0", A, i);
-        o[i] = 2*kb*M*M/A;
+        curv = curvs_vert[i];
+        area = areas[i];
+        if (area <= 0) ERR("area[%d]=%g <= 0", area, i);
+        o[i] = 2*kb*curv*curv/area;
     }
     scalars_fin(sc);
     mesh_vert_area_apply(q->area, nm, pos, /**/ areas);

@@ -37,6 +37,15 @@ void scalars_zero_ini(int n, /**/ Scalars **pq) {
     *pq = q;
 }
 
+
+void scalars_one_ini(int n, /**/ Scalars **pq) {
+    Scalars *q;
+    EMALLOC(1, &q);
+    q->type = ONE; q->n = n;
+    q->stamp = MAGIC;
+    *pq = q;
+}
+
 void scalars_fin(Scalars *q) { EFREE(q); }
 
 static double float_get(const Scalars *q, int i) { return q->D.ff[i]; }
@@ -61,6 +70,7 @@ static double vecz_get(const Scalars *q, int i)   {
 }
 
 static double zero_get(const Scalars*, int) { return 0; }
+static double one_get(const Scalars*, int) { return 1; }
 double scalars_get(const Scalars *q, int i) {
     int n;
     if (q->stamp != MAGIC)

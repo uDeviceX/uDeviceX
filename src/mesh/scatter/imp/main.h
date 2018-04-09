@@ -45,7 +45,7 @@ static void edg2vert(MeshScatter *q, Scalars *sc, int offset_v, int offset_e, /*
         o[b + offset_v] += value;
     }
 }
-void mesh_scatter_edg2vert(MeshScatter *q, int nm, Scalars *sc, /**/ double *o) {
+void mesh_scatter_edg2vert_avg(MeshScatter *q, int nm, Scalars *sc, /**/ double *o) {
     int i, j, k, d, n, nv, ne;
     int offset_v, offset_e;
     nv = q->nv;
@@ -64,6 +64,20 @@ void mesh_scatter_edg2vert(MeshScatter *q, int nm, Scalars *sc, /**/ double *o) 
             if (j >= n) ERR("j=%d >= n=%d", j, n);
             o[j++] /= d;
         }
+}
+
+void mesh_scatter_edg2vert(MeshScatter *q, int nm, Scalars *sc, /**/ double *o) {
+    int i, n, nv, ne;
+    int offset_v, offset_e;
+    nv = q->nv;
+    ne = q->ne;
+    n = nv * nm;
+    for (i = 0; i < n; i++) o[i] = 0;
+    for (offset_e = offset_v = i = 0; i < nm; i++) {
+        UC(edg2vert(q, sc, offset_v, offset_e, /**/ o));
+        offset_v += nv;
+        offset_e += ne;
+    }
 }
 
 void mesh_scatter_fin(MeshScatter *q) {

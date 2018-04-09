@@ -3,5 +3,4 @@ f () ( for d; do f0 "$d"; done )
 
 f $U algo/edg inc rbc mpi d math utils io/mesh_read io/restart coords conf algo/vectors algo/utils
 
-# add dir
 echo $U $U/lib .

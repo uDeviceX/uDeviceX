@@ -4,5 +4,4 @@ f () ( for d; do f0 "$d"; done )
 f $U algo/edg conf d inc io/mesh io/write io/mesh_read \
      io/point math/tri mesh/tri_area algo/vectors mpi utils math/tform coords
 
-# add dir
 echo $U .
