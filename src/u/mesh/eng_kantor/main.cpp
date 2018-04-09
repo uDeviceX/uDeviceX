@@ -11,10 +11,12 @@
 #include "conf/imp.h"
 #include "io/mesh_read/imp.h"
 
-#include "algo/vectors/imp.h"
 #include "mesh/eng_kantor/imp.h"
+#include "mesh/scatter/imp.h"
 
 #include "io/vtk/imp.h"
+
+#include "algo/vectors/imp.h"
 #include "algo/scalars/imp.h"
 
 struct Out {
@@ -56,28 +58,48 @@ static void dump_vtk(int nv, int nm, const double *eng, Vectors *vectors, Out *o
     vtk_conf_fin(conf);
 }
 
+static void scatter(int nm, MeshRead *mesh, const double *edg, /**/ double *vert) {
+    int ne;
+    Scalars *scalars;
+    MeshScatter *scatter;
+    ne = mesh_read_get_ne(mesh);
+    mesh_scatter_ini(mesh, /**/ &scatter);
+    scalars_double_ini(nm * ne, edg, /**/ &scalars);
+    UC(mesh_scatter_edg2vert(scatter, nm, scalars, /**/ vert));
+    scalars_fin(scalars);
+    mesh_scatter_fin(scatter);
+}
+
 static void main0(const char *cell, Out *out) {
-    int nv, nm;
+    int nv, ne, nm;
     MeshEngKantor *eng_kantor;
     const float *vert;
     Vectors  *pos;
-    double *eng, kb;
+    double *eng_edg, *eng_vert, kb;
     nm = 1; kb = 1;
     UC(mesh_read_ini_off(cell, /**/ &out->mesh));
     UC(mesh_eng_kantor_ini(out->mesh, nm, /**/ &eng_kantor));
     nv = mesh_read_get_nv(out->mesh);
+    ne = mesh_read_get_ne(out->mesh);
+    
     vert = mesh_read_get_vert(out->mesh);
     UC(vectors_float_ini(nv, vert, /**/ &pos));
 
-    EMALLOC(nv, &eng);
-    mesh_eng_kantor_apply(eng_kantor, nm, pos, kb, /**/ eng);
-    dump_vtk(nv, nm, eng, pos, out);
-    dump_txt(nv, nm, eng);
+    EMALLOC(ne, &eng_edg);
+    EMALLOC(nv, &eng_vert);
+    
+    mesh_eng_kantor_apply(eng_kantor, nm, pos, kb,
+                          /**/ eng_edg);
+    scatter(nm, out->mesh, eng_edg, /**/ eng_vert);
+    
+    dump_vtk(nv, nm, eng_vert, pos, out);
+    dump_txt(nv, nm, eng_vert);
 
     mesh_eng_kantor_fin(eng_kantor);
     UC(vectors_fin(pos));
     UC(mesh_read_fin(out->mesh));
-    EFREE(eng);
+    EFREE(eng_vert);
+    EFREE(eng_edg);
 }
 
 int main(int argc, char **argv) {
