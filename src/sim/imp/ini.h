@@ -212,9 +212,9 @@ static void ini_dump(int maxp, MPI_Comm cart, const Coords *c, const Opt *opt, D
     d->id_bop = d->id_rbc = d->id_rbc_com = d->id_rig_mesh = d->id_strt = 0;
 }
 
-static long maxp_estimate(Params p) {
-    int3 L = p.L;
-    int estimate = L.x * L.y * L.z * p.numdensity;
+static long maxp_estimate(const Params *p) {
+    int3 L = p->L;
+    int estimate = L.x * L.y * L.z * p->numdensity;
     return SAFETY_FACTOR_MAXP * estimate;
 }
 
@@ -245,6 +245,15 @@ static void ini_common(const Config *cfg, MPI_Comm cart, /**/ Sim *s) {
     s->params = params;
 }
 
+static void ini_optional_features(const Config *cfg, const Opt *opt, const Params *par, Sim *s) {
+    int maxp = maxp_estimate(par);
+    
+    if (opt->vcon)       UC(ini_vcon(s->cart, par->L, cfg, /**/ &s->vcon));
+    if (opt->outflow)    UC(ini_outflow(s->coords, maxp, cfg, /**/ &s->outflow));
+    if (opt->inflow)     UC(ini_inflow (s->coords, par->L, cfg,  /**/ &s->inflow ));
+    if (opt->denoutflow) UC(ini_denoutflow(s->coords, maxp, cfg, /**/ &s->denoutflow, &s->mapoutflow));    
+}
+
 void sim_ini(const Config *cfg, MPI_Comm cart, /**/ Sim **sim) {
     float dt;
     Sim *s;
@@ -259,7 +268,7 @@ void sim_ini(const Config *cfg, MPI_Comm cart, /**/ Sim **sim) {
     UC(ini_common(cfg, cart, /**/ s));
     params = s->params;
     
-    maxp = maxp_estimate(params);
+    maxp = maxp_estimate(&params);
     dt = time_step_dt0(s->time.step);
     time_line_advance(dt, s->time.t);
 
@@ -272,13 +281,8 @@ void sim_ini(const Config *cfg, MPI_Comm cart, /**/ Sim **sim) {
 
     UC(bforce_ini(&s->bforce));
     UC(bforce_set_none(/**/ s->bforce));
-        
+    
     if (opt->rbc)        UC(ini_rbc(cfg, opt, s->cart, params.L, /**/ &s->rbc));
-
-    if (opt->vcon)       UC(ini_vcon(s->cart, params.L, cfg, /**/ &s->vcon));
-    if (opt->outflow)    UC(ini_outflow(s->coords, maxp, cfg, /**/ &s->outflow));
-    if (opt->inflow)     UC(ini_inflow (s->coords, params.L, cfg,  /**/ &s->inflow ));
-    if (opt->denoutflow) UC(ini_denoutflow(s->coords, maxp, cfg, /**/ &s->denoutflow, &s->mapoutflow));
 
     if (opt->rbc || opt->rig)
         UC(ini_objinter(s->cart, maxp, params.L, opt, /**/ &s->objinter));
@@ -297,6 +301,8 @@ void sim_ini(const Config *cfg, MPI_Comm cart, /**/ Sim **sim) {
             UC(ini_bounce_back(s->cart, maxp, params.L, &s->rig, /**/ &s->bb));
     }
 
+    UC(ini_optional_features(cfg, opt, &params, /**/ s));
+    
     UC(scheme_restrain_ini(&s->restrain));
     UC(scheme_restrain_set_conf(cfg, s->restrain));
 
