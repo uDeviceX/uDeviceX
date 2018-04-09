@@ -91,7 +91,7 @@ static void pre_run(const Config *cfg, Sim *s) {
 
     compute_hematocrit(s);
     
-    s->equilibrating = false;         
+    s->equilibrating = false;
 }
 
 static void run(float ts, float te, Sim *s) {
@@ -106,3 +106,4 @@ static void run(float ts, float te, Sim *s) {
     }
     UC(distribute_flu(/**/ s));
 }
+

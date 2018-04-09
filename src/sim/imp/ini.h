@@ -178,13 +178,6 @@ static void ini_objinter(MPI_Comm cart, int maxp, int3 L, const Opt *opt, /**/ O
     if (opt->fsi) fsi_ini(rank, L, /**/ &o->fsi);
 }
 
-static void read_color_opt(const Config *c, Recolorer *o) {
-    int b;
-    UC(conf_lookup_bool(c, "recolor.active", &b));
-    o->flux_active = b;
-    UC(conf_lookup_int(c, "recolor.dir", &o->flux_dir));
-}
-
 static int get_shifttype(const Config *c, const char *desc) {
     const char *type;
     UC(conf_lookup_string(c, desc, &type));
@@ -207,6 +200,37 @@ static void read_opt_common(const Config *c, Opt *o) {
 
     UC(conf_lookup_string(c, "dump.strt_base_read", &s));
     strcpy(o->strt_base_read, s);
+
+    UC(conf_lookup_bool(c, "dump.field", &b));
+    o->dump_field = b;
+    UC(conf_lookup_float(c, "dump.freq_field", &o->freq_field));
+    
+    UC(conf_lookup_bool(c, "dump.strt", &b));
+    o->dump_strt = b;
+    UC(conf_lookup_float(c, "dump.freq_strt", &o->freq_strt));
+
+    UC(conf_lookup_bool(c, "dump.parts", &b));
+    o->dump_parts = b;
+    UC(conf_lookup_float(c, "dump.freq_parts", &o->freq_parts));
+}
+
+static void set_opt_eq(Opt *o) {
+    o->rbc  = false;
+    o->rig  = false;
+    o->wall = false;
+
+    o->fsi = false;
+    o->cnt = false;
+
+    o->inflow = false;
+    o->outflow = false;
+    o->denoutflow = false;
+    o->outflow = false;
+    o->vcon = false;
+    
+    o->push_flu = false;
+    o->push_rbc = false;
+    o->push_rig = false;
 }
 
 static void read_opt(const Config *c, Opt *o) {
@@ -251,18 +275,6 @@ static void read_opt(const Config *c, Opt *o) {
     UC(conf_lookup_bool(c, "vcon.active", &b));
     o->vcon = b;
 
-    UC(conf_lookup_bool(c, "dump.field", &b));
-    o->dump_field = b;
-    UC(conf_lookup_float(c, "dump.freq_field", &o->freq_field));
-    
-    UC(conf_lookup_bool(c, "dump.strt", &b));
-    o->dump_strt = b;
-    UC(conf_lookup_float(c, "dump.freq_strt", &o->freq_strt));
-
-    UC(conf_lookup_bool(c, "dump.parts", &b));
-    o->dump_parts = b;
-    UC(conf_lookup_float(c, "dump.freq_parts", &o->freq_parts));
-
     UC(conf_lookup_bool(c, "dump.rbc_com", &b));
     o->dump_rbc_com = b;
     UC(conf_lookup_float(c, "dump.freq_rbc_com", &o->freq_rbc_com));
@@ -278,6 +290,13 @@ static void read_opt(const Config *c, Opt *o) {
     o->push_rbc = b;
     UC(conf_lookup_bool(c, "rig.push", &b));
     o->push_rig = b;
+}
+
+static void read_recolor_opt(const Config *c, Recolorer *o) {
+    int b;
+    UC(conf_lookup_bool(c, "recolor.active", &b));
+    o->flux_active = b;
+    UC(conf_lookup_int(c, "recolor.dir", &o->flux_dir));
 }
 
 static void check_opt(Opt opt) {
@@ -365,7 +384,7 @@ void sim_ini(Config *cfg, MPI_Comm cart, /**/ Sim **sim) {
     UC(read_opt_common(cfg, &opt));
     UC(read_opt(cfg, &opt));
     s->opt = opt;
-    UC(read_color_opt(cfg, &s->recolorer));
+    UC(read_recolor_opt(cfg, &s->recolorer));
     UC(check_opt(opt));
     UC(ini_pair_params(cfg, params.kBT, dt, s));
 
@@ -404,5 +423,5 @@ void sim_ini(Config *cfg, MPI_Comm cart, /**/ Sim **sim) {
     UC(inter_color_ini(&s->gen_color));
     UC(inter_color_set_conf(cfg, s->gen_color));
     
-    MC(MPI_Barrier(s->cart));
+    MC(m::Barrier(s->cart));
 }
