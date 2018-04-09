@@ -162,15 +162,15 @@ static void fin_optional_features(const Opt *opt, Sim *s) {
 void sim_fin(Sim *s) {
     const Opt *opt = &s->opt;
     
-    if (opt->rbc || opt->rig)
-        UC(fin_objinter(&s->opt, &s->objinter));
-
     UC(fin_optional_features(opt, s));
     
     UC(fin_flu(opt, &s->flu));
     if (opt->rbc)  UC(fin_rbc(opt, /**/ &s->rbc));
     if (opt->rig)  UC(fin_rig(/**/ &s->rig));
     if (opt->wall) UC(fin_wall(&s->wall));
+
+    if (opt->rbc || opt->rig)
+        UC(fin_objinter(&s->opt, &s->objinter));
     
     if (opt->flucolors && opt->rbc)
         UC(fin_colorer(/**/ &s->colorer));
