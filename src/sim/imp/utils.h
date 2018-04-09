@@ -11,7 +11,7 @@ static double compute_volume_rbc(MPI_Comm comm, const Rbc *r) {
     return tot;
 }
 
-static void compute_hematocrit(const Sim *s) {
+static void utils_compute_hematocrit(const Sim *s) {
     const Opt *opt = &s->opt;
     double Vdomain, Vrbc, Ht;
     if (!opt->rbc) return;
@@ -33,20 +33,20 @@ static void compute_hematocrit(const Sim *s) {
     msg_print("Hematocrit: %g", Ht);
 }
 
-static void dump_history(const Config *cfg, const char *fname) {
+static void utils_dump_history(const Config *cfg, const char *fname) {
     FILE *f;
     UC(efopen(fname, "w", &f));
     UC(conf_write_history(cfg, f));
     UC(efclose(f));
 }
 
-static float get_dt0(Sim *s) {
+static float utils_get_dt0(Sim *s) {
     TimeStep *time_step;    
     time_step = s->time.step;
     return time_step_dt0(time_step);
 }
 
-static float get_dt(Sim *s, TimeLine *time) {
+static float utils_get_dt(Sim *s, TimeLine *time) {
     /* Possibility to adapt dt only after equilibration */
     if (s->equilibrating)
         return time_step_dt0(s->time.step);
