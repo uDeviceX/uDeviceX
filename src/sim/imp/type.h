@@ -201,7 +201,6 @@ struct Sim {
 
 
     /* state */
-    bool rigids;
     bool equilibrating;
 
     Opt opt;

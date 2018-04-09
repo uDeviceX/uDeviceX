@@ -152,33 +152,32 @@ static void fin_time(Time *t) {
     UC(time_step_accel_fin(t->accel));    
 }
 
-void sim_fin(Sim *s) {
-    const Opt *opt = &s->opt;
-    
-    if (opt->rbc || opt->rig)
-        UC(fin_objinter(&s->opt, &s->objinter));
-
+static void fin_optional_features(const Opt *opt, Sim *s) {
     if (opt->vcon)       UC(fin_vcon(/**/ &s->vcon));
     if (opt->outflow)    UC(fin_outflow(/**/ s->outflow));
     if (opt->inflow)     UC(fin_inflow (/**/ s->inflow ));
     if (opt->denoutflow) UC(fin_denoutflow(/**/ s->denoutflow, s->mapoutflow));
+}
+
+void sim_fin(Sim *s) {
+    const Opt *opt = &s->opt;
     
+    UC(fin_optional_features(opt, s));
+    
+    UC(fin_flu(opt, &s->flu));
+    if (opt->rbc)  UC(fin_rbc(opt, /**/ &s->rbc));
+    if (opt->rig)  UC(fin_rig(/**/ &s->rig));
     if (opt->wall) UC(fin_wall(&s->wall));
 
-    UC(fin_flu(opt, &s->flu));
-
+    if (opt->rbc || opt->rig)
+        UC(fin_objinter(&s->opt, &s->objinter));
+    
     if (opt->flucolors && opt->rbc)
         UC(fin_colorer(/**/ &s->colorer));
 
-    if (opt->rig) {
-        UC(fin_rig(/**/ &s->rig));
-        
-        if (opt->rig_bounce)
-            UC(fin_bounce_back(&s->bb));
-    }
+    if (opt->rig && opt->rig_bounce)
+        UC(fin_bounce_back(&s->bb));
     
-    if (opt->rbc) UC(fin_rbc(opt, /**/ &s->rbc));
-
     UC(bforce_fin(s->bforce));
     
     UC(fin_dump(opt, &s->dump));

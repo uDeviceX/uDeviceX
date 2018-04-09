@@ -24,7 +24,7 @@ static void dump_part(Sim *s) {
         io_bop_parts(s->cart, s->coords, flu->q.n, flu->q.pp_hst, "solvent", id_bop, bop);
     }
 
-    if(s->rigids) {
+    if (active_rig(s)) {
         cD2H(rig->q.pp_hst, rig->q.pp, rig->q.n);
         if (s->opt.dump_forces) {
             cD2H(rig->ff_hst, rig->ff, rig->q.n);
@@ -75,7 +75,7 @@ static int download_pp(Sim *s) { /* device to host  data transfer */
     if (flu->q.n) {
         cD2H(s->dump.pp + np, flu->q.pp, flu->q.n);    np += flu->q.n;
     }
-    if (s->rigids && rig->q.n) {
+    if (active_rig(s) && rig->q.n) {
         cD2H(s->dump.pp + np, rig->q.pp, rig->q.n);    np += rig->q.n;
     }
     if (s->opt.rbc && rbc->q.n) {
