@@ -118,10 +118,10 @@ void mesh_write_particles(MeshWrite *q, MPI_Comm comm, const Coords *coords, int
         ERR("sprintf failed");
     UC(write_file_open(comm, path, /**/ &f));
     switch (q->shift_type) {
-    case EDGE:
+    case MESH_WRITE_EDGE:
         vectors_postions_edge_ini(coords, n, pp, /**/ &pos);
         break;
-    case CENTER:
+    case MESH_WRITE_CENTER:
         vectors_postions_center_ini(coords, n, pp, /**/ &pos);
         break;
     default:

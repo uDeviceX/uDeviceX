@@ -13,8 +13,8 @@
 static int get_shifttype(const Config *c, const char *desc) {
     const char *type;
     UC(conf_lookup_string(c, desc, &type));
-    if      (same_str(type, "edge"  )) return EDGE;
-    else if (same_str(type, "center")) return CENTER;
+    if      (same_str(type, "edge"  )) return MESH_WRITE_EDGE;
+    else if (same_str(type, "center")) return MESH_WRITE_CENTER;
     else
         ERR("Unrecognised rbc shift type <%s>", type);
     return -1;
