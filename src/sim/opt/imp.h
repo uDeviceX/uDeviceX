@@ -16,6 +16,6 @@ struct Opt {
 
 struct Config;
 
-void opt_read_common(const Config*, Opt*);
-void opt_set_eq(Opt*);
-void opt_read(const Config*, Opt*);
+void opt_read_gen(const Config*, Opt*);
+void opt_read_full(const Config*, Opt*);
+void opt_check(const Opt*);

@@ -185,11 +185,6 @@ static void read_recolor_opt(const Config *c, Recolorer *o) {
     UC(conf_lookup_int(c, "recolor.dir", &o->flux_dir));
 }
 
-static void check_opt(Opt opt) {
-    if (opt.dump_rbc_com && !opt.rbcids)
-        ERR("Need rbc.ids activated to dump rbc com!");
-}
-
 static void coords_log(const Coords *c) {
     msg_print("domain: %d %d %d", xdomain(c), ydomain(c), zdomain(c));
     msg_print("subdomain: [%d:%d][%d:%d][%d:%d]",
@@ -267,11 +262,10 @@ void sim_ini(Config *cfg, MPI_Comm cart, /**/ Sim **sim) {
     dt = time_step_dt0(s->time.step);
     time_line_advance(dt, s->time.t);
 
-    UC(opt_read_common(cfg, &opt));
-    UC(opt_read(cfg, &opt));
+    UC(opt_read_full(cfg, &opt));
     s->opt = opt;
     UC(read_recolor_opt(cfg, &s->recolorer));
-    UC(check_opt(opt));
+    UC(opt_check(&opt));
     UC(ini_pair_params(cfg, params.kBT, dt, s));
 
     UC(ini_dump(maxp, s->cart, s->coords, opt, /**/ &s->dump));
