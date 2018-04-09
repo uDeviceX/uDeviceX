@@ -1,5 +1,6 @@
-#include <mpi.h>
+#include <math.h>
 #include <stdio.h>
+#include <mpi.h>
 
 #include "utils/mc.h"
 #include "utils/msg.h"
@@ -28,8 +29,69 @@ struct Spherical {
     double *r, *theta, *phi;
 };
 
-static void compute_eng(int nv, Vectors*, /**/ double *eng) {
+struct Shape {
+    double a0, a1, a2, D;
+};
+
+struct Param {
+    int nv;
+    Vectors *pos;
+};
+
+
+static double sqrt0(double x) { return x > 0 ? sqrt(x) : 0; };
+static double zrbc(double x, double y, Shape *q) {
+    double a0, a1, a2, D, r, z;
+    a0 = q->a1; a1 = q->a1; a2 = q->a2; D = q->D;
+    r = x*x + y*y; r /= D*D;
+    z  = sqrt0(1 - 4*r) * (a0 + a1*r + a2*r*r);
+    return z * D;
+}
+
+static double sq(double x) { return x*x; }
+static double norm0(double D, int n, Vectors *pos) {
+    enum {X, Y, Z};
     int i;
+    float r[3];
+    double x, y, z, z0, ans;
+    Shape shape;
+    shape.a0 = 0.0518; shape.a1 = 2.0026; shape.a2 = -4.491; shape.D =  D;
+    ans = 0.0;
+    for (i = 0; i < n; i++) {
+        vectors_get(pos, i, /**/ r);
+        x = r[X]; y = r[Y]; z = r[Z];
+        z0 = zrbc(x, y, &shape);
+        if (z < 0) z0 = -z0;
+        ans += sq(z - z0);
+    }
+    return ans/n;
+}
+static double norm(double D, Param *p) { return norm0(D, p->nv, p->pos); }
+static void fit(int nv, Vectors *pos, /**/ double *pxm, double *pm) {
+    int i;
+    double x, lo, hi, n, m, xm, curr;
+    Param param;
+    param.nv = nv; param.pos = pos;
+
+    lo = 5; hi = 20.0; n = 20000;
+    
+    m = 1e12;
+    for (i = 0; i < n; i++) {
+        x = lo + (hi - lo)*(i + 1)/n;
+        curr = norm(x, &param);
+        if (curr < m) {
+            m = curr;
+            xm = x;
+        }
+    }
+    *pxm = xm; *pm = m;
+}
+
+static void compute_eng(int nv, Vectors *pos, /**/ double *eng) {
+    double R, err;
+    int i;
+    fit(nv, pos, /**/ &R, &err);
+    msg_print("R: %g %g", R, err);
     for (i = 0; i < nv; i++) eng[i] = i;
 }
 
