@@ -115,6 +115,10 @@ static void dump_strt(Sim *s) {
     dump_strt0(s->dump.id_strt++, s);
 }
 
+static void dump_strt_final(Sim *s) {
+    dump_strt0(RESTART_FINAL, s);
+}
+
 static void dump_diag(TimeLine *time, Sim *s) {
     const Opt *o = &s->opt;
     if (time_line_cross(time, o->freq_parts)) {
