@@ -19,7 +19,7 @@ static void fin_mesh_exch(/**/ Mexch *e) {
 }
 
 static void fin_bb_exch(/**/ BBexch *e) {
-    fin_mesh_exch(/**/ e);
+    UC(fin_mesh_exch(/**/ e));
     
     UC(emesh_packm_fin(/**/ e->pm));
     UC(emesh_commm_fin(/**/ e->cm));
