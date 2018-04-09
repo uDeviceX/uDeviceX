@@ -5,7 +5,15 @@ usg () {
     exit
 }
 
+err () {
+    echo >&2 "$prog $@"
+    exit 2
+}
+
+prog=u.conf0
+
 if test $# -ne 0 && test "$1" = -h; then usg; fi
+if test $# -eq 0; then err 'missing UNIT'; fi
 
 u="$1"; shift
 s=`u.cp.s`
