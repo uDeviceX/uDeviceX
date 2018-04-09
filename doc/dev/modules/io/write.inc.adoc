@@ -4,3 +4,5 @@
 ----
 include::{src}/io/write/imp.h[tags=interface]
 ----
+<1> write `nbytes` from every prcesses
+<2> write `nbytes` onlye from master process (`rank = 0`)
