@@ -1,5 +1,7 @@
 #include <math.h>
 #include <stdio.h>
+#include <float.h>
+
 #include <mpi.h>
 
 #include "utils/mc.h"
@@ -38,60 +40,64 @@ struct Param {
     Vectors *pos;
 };
 
-
-static double sqrt0(double x) { return x > 0 ? sqrt(x) : 0; };
-static double zrbc(double x, double y, Shape *q) {
-    double a0, a1, a2, D, r, z;
-    a0 = q->a1; a1 = q->a1; a2 = q->a2; D = q->D;
-    r = x*x + y*y; r /= D*D;
-    z  = sqrt0(1 - 4*r) * (a0 + a1*r + a2*r*r);
-    return z * D;
+static void get(Vectors *pos, int i, /**/ double *px, double *py, double *pz) {
+    enum {X, Y, Z};
+    float r[3];
+    vectors_get(pos, i, /**/ r);
+    *px = r[X]; *py = r[Y]; *pz = r[Z];
 }
 
 static double sq(double x) { return x*x; }
+static double sqrt0(double x) { return x > 0 ? sqrt(x) : 0; };
+static double zrbc(double x, double y, Shape *q) {
+    double a0, a1, a2, D, r, z;
+    a0 = q->a0; a1 = q->a1; a2 = q->a2; D = q->D;
+    r = x*x + y*y; r /= sq(D);
+    z  = sqrt0(1 - 4*r) * (a0 + a1*r + a2*r*r);
+    return z * D;
+}
 static double norm0(double D, int n, Vectors *pos) {
-    enum {X, Y, Z};
     int i;
-    float r[3];
     double x, y, z, z0, ans;
     Shape shape;
     shape.a0 = 0.0518; shape.a1 = 2.0026; shape.a2 = -4.491; shape.D =  D;
     ans = 0.0;
     for (i = 0; i < n; i++) {
-        vectors_get(pos, i, /**/ r);
-        x = r[X]; y = r[Y]; z = r[Z];
+        get(pos, i, /**/ &x, &y, &z);
         z0 = zrbc(x, y, &shape);
         if (z < 0) z0 = -z0;
         ans += sq(z - z0);
     }
     return ans/n;
 }
-static double norm(double D, Param *p) { return norm0(D, p->nv, p->pos); }
-static void fit(int nv, Vectors *pos, /**/ double *pxm, double *pm) {
+static void pos_min_max(int n, Vectors *pos, double *pmi, double *pma) {
+    double mi, ma, x, y, z;
     int i;
-    double x, lo, hi, n, m, xm, curr;
+    mi = DBL_MAX; ma = -DBL_MAX;
+    for (i = 0; i < n; i++) {
+        get(pos, i, &x, &y, &z);
+        if (x > ma) ma = x;
+        if (x < mi) mi = x;
+    }
+    *pma = ma; *pmi = mi;
+}
+static double norm(double D, Param *p) { return norm0(D, p->nv, p->pos); }
+static void fit(int nv, Vectors *pos, /**/ double *pD, double *pno) {
+    double mi, ma, D, no;
     Param param;
     param.nv = nv; param.pos = pos;
-
-    lo = 5; hi = 20.0; n = 20000;
+    pos_min_max(nv, pos, /**/ &mi, &ma);
     
-    m = 1e12;
-    for (i = 0; i < n; i++) {
-        x = lo + (hi - lo)*(i + 1)/n;
-        curr = norm(x, &param);
-        if (curr < m) {
-            m = curr;
-            xm = x;
-        }
-    }
-    *pxm = xm; *pm = m;
+    D = ma - mi;
+    no = norm(D, &param);
+    *pD = D; *pno = no;
 }
 
 static void compute_eng(int nv, Vectors *pos, /**/ double *eng) {
-    double R, err;
+    double D, err;
     int i;
-    fit(nv, pos, /**/ &R, &err);
-    msg_print("R: %g %g", R, err);
+    fit(nv, pos, /**/ &D, &err);
+    msg_print("diameter, error: %g %g", D, err);
     for (i = 0; i < nv; i++) eng[i] = i;
 }
 
@@ -158,7 +164,7 @@ static void main0(const char *cell, Out *out) {
 
     EMALLOC(nv, &eng);
     compute_eng(nv, pos, /**/ eng);
-    
+
     mesh_spherical_apply(spherical, nm, pos, /**/ sph->r, sph->theta, sph->phi);
 
     dump_vtk(nv, nm, eng, pos, out);
