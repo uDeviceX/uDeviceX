@@ -1,4 +1,5 @@
 $B/algo/edg/imp.o: $S/utils/error.h $S/algo/edg/imp.h $S/algo/edg/imp/main.h
+$B/algo/kahan_sum/imp.o: $S/utils/imp.h $S/utils/error.h $S/algo/kahan_sum/imp.h $S/algo/kahan_sum/imp/main.h $S/algo/kahan_sum/imp/type.h
 $B/algo/key_list/imp.o: $S/utils/imp.h $S/utils/error.h $S/algo/key_list/imp/util.h $S/algo/key_list/imp.h $S/utils/string/imp.h $S/algo/key_list/imp/main.h $S/algo/key_list/imp/type.h $S/utils/msg.h
 $B/algo/scalars/imp.o: $S/utils/imp.h $S/utils/error.h $S/algo/scalars/imp.h $S/algo/vectors/imp.h $S/algo/scalars/imp/main.h $S/algo/scalars/imp/type.h
 $B/algo/vectors/imp.o: $S/utils/imp.h $S/utils/error.h $S/inc/type.h $S/algo/vectors/imp.h $S/algo/vectors/imp/main.h $S/algo/vectors/imp/type.h $S/math/tform/imp.h $S/coords/imp.h
@@ -17,10 +18,11 @@ $B/mesh/angle/imp.o: $S/utils/imp.h $S/utils/error.h $S/math/tri/imp.h $S/mesh/a
 $B/mesh/edg_len/imp.o: $S/utils/imp.h $S/utils/error.h $S/mesh/edg_len/imp.h $S/io/mesh_read/imp.h $S/algo/vectors/imp.h $S/mesh/edg_len/imp/main.h $S/mesh/edg_len/imp/type.h $S/utils/msg.h
 $B/mesh/eng_julicher/imp.o: $S/utils/imp.h $S/utils/error.h $S/math/tri/imp.h $S/mesh/eng_julicher/imp.h $S/algo/scalars/imp.h $S/io/mesh_read/imp.h $S/mesh/scatter/imp.h $S/mesh/edg_len/imp.h $S/algo/vectors/imp.h $S/mesh/eng_julicher/imp/main.h $S/mesh/angle/imp.h $S/mesh/eng_julicher/imp/type.h $S/mesh/vert_area/imp.h $S/utils/msg.h
 $B/mesh/scatter/imp.o: $S/utils/imp.h $S/utils/error.h $S/mesh/scatter/imp.h $S/algo/scalars/imp.h $S/io/mesh_read/imp.h $S/mesh/scatter/imp/main.h $S/mesh/scatter/imp/type.h $S/utils/msg.h
+$B/mesh/spherical/imp.o: $S/utils/imp.h $S/utils/error.h $S/mesh/spherical/imp/util.h $S/mesh/spherical/imp.h $S/algo/kahan_sum/imp.h $S/algo/vectors/imp.h $S/mesh/spherical/imp/main.h $S/mesh/spherical/imp/type.h $S/utils/msg.h
 $B/mesh/vert_area/imp.o: $S/utils/imp.h $S/utils/error.h $S/math/tri/imp.h $S/mesh/vert_area/imp.h $S/io/mesh_read/imp.h $S/algo/vectors/imp.h $S/mesh/vert_area/imp/main.h $S/mesh/vert_area/imp/type.h $S/utils/msg.h
 $B/mpi/glb.o: $S/inc/conf.h $S/mpi/wrapper.h $S/utils/mc.h $B/conf.h
 $B/mpi/wrapper.o: $S/mpi/wrapper.h
-$B/u/mesh/eng_julicher/main.o: $S/utils/imp.h $S/utils/error.h $S/conf/imp.h $S/mpi/wrapper.h $S/algo/scalars/imp.h $S/mesh/eng_julicher/imp.h $S/io/mesh_read/imp.h $S/algo/vectors/imp.h $S/utils/mc.h $S/io/vtk/imp.h $S/mpi/glb.h $S/utils/msg.h
+$B/u/mesh/eng_julicher/main.o: $S/mesh/spherical/imp.h $S/utils/imp.h $S/utils/error.h $S/conf/imp.h $S/mpi/wrapper.h $S/algo/scalars/imp.h $S/mesh/eng_julicher/imp.h $S/io/mesh_read/imp.h $S/algo/vectors/imp.h $S/utils/mc.h $S/io/vtk/imp.h $S/mpi/glb.h $S/utils/msg.h
 $B/utils/cc.o: $S/utils/cc/common.h $S/inc/conf.h $S/utils/error.h $S/d/api.h $B/conf.h
 $B/utils/error.o: $S/utils/msg.h $S/utils/error.h
 $B/utils/imp.o: $S/utils/error.h $S/utils/imp.h
