@@ -321,6 +321,19 @@ static void ini_time(Config *cfg, /**/ Time *t) {
     UC(time_step_accel_ini(&t->accel));
 }
 
+static void ini_common(Config *cfg, MPI_Comm cart, /**/ Sim *s) {
+    Params params;
+    MC(m::Comm_dup(cart, &s->cart));
+    UC(coords_ini_conf(s->cart, cfg, /**/ &s->coords));
+    UC(coords_log(s->coords));
+
+    params.L = subdomain(s->coords);
+    UC(conf_lookup_float(cfg, "glb.kBT",        &params.kBT       ));
+    UC(conf_lookup_int  (cfg, "glb.numdensity", &params.numdensity));
+
+    s->params = params;
+}
+
 void sim_ini(Config *cfg, MPI_Comm cart, /**/ Sim **sim) {
     float dt;
     Sim *s;
@@ -331,13 +344,8 @@ void sim_ini(Config *cfg, MPI_Comm cart, /**/ Sim **sim) {
     EMALLOC(1, sim);
     s = *sim;
 
-    MC(m::Comm_dup(cart, &s->cart));
-    UC(coords_ini_conf(s->cart, cfg, /**/ &s->coords));
-    UC(coords_log(s->coords));
-
-    params.L = subdomain(s->coords);
-    UC(conf_lookup_float(cfg, "glb.kBT",        &params.kBT       ));
-    UC(conf_lookup_int  (cfg, "glb.numdensity", &params.numdensity));
+    UC(ini_common(cfg, cart, /**/ s));
+    params = s->params;
     UC(ini_time(cfg, &s->time));
     
     maxp = maxp_estimate(params);
