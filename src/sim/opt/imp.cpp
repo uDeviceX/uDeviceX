@@ -103,13 +103,13 @@ static void read_full(const Config *c, Opt *o) {
 }
 
 void opt_read_gen(const Config *c, Opt *o) {
-    read_common(c, o);
-    set_eq(o);
+    UC(read_common(c, o));
+    UC(set_eq(o));
 }
 
 void opt_read_full(const Config *c, Opt *o) {
-    read_common(c, o);
-    read_full(c, o);
+    UC(read_common(c, o));
+    UC(read_full(c, o));
 }
 
 void opt_check(const Opt *o) {
