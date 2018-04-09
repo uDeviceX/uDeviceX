@@ -1,4 +1,4 @@
-void mesh_angle_ini(MeshRead *mesh, MeshSpherical **pq) {
+void mesh_spherical_ini(MeshRead *mesh, MeshSpherical **pq) {
     int i, nv, nd;
     MeshSpherical *q;
     const int4 *dd;
@@ -13,7 +13,7 @@ void mesh_angle_ini(MeshRead *mesh, MeshSpherical **pq) {
     *pq = q;
 }
 
-void mesh_angle_fin(MeshSpherical *q) {
+void mesh_spherical_fin(MeshSpherical *q) {
     EFREE(q->dd); EFREE(q);
 }
 
@@ -36,7 +36,7 @@ static double angle(int4 t, Vectors *p, int offset) {
     tri_hst::dihedral_xy(a, b, c, d, /**/ &x, &y);
     return atan2(y, x);
 }
-void mesh_angle_apply(MeshSpherical *q, int m, Vectors *p, /**/ double *angle0) {
+void mesh_spherical_apply(MeshSpherical *q, int m, Vectors *p, /**/ double *angle0) {
     int i, j, k, nv, nd, offset;
     int4 *dd;
     nd = q->nd; nv = q->nv; dd = q->dd; offset = 0;
