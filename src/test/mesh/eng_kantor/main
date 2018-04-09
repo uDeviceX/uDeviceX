@@ -1,4 +1,4 @@
-# sTEST: mesh.eng_kantor
+# TEST: mesh.eng_kantor
 cd test/mesh/eng_kantor
 u.conf0 u/mesh/eng_kantor
 u.make -j

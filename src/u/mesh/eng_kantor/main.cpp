@@ -75,8 +75,8 @@ static void main0(const char *cell, Out *out) {
     MeshEngKantor *eng_kantor;
     const float *vert;
     Vectors  *pos;
-    double *eng_edg, *eng_vert, kb;
-    nm = 1; kb = 1;
+    double *eng_edg, *eng_vert, kb, angle;
+    nm = 1; kb = 1; angle = 0;
     UC(mesh_read_ini_off(cell, /**/ &out->mesh));
     UC(mesh_eng_kantor_ini(out->mesh, nm, /**/ &eng_kantor));
     nv = mesh_read_get_nv(out->mesh);
@@ -88,8 +88,8 @@ static void main0(const char *cell, Out *out) {
     EMALLOC(ne, &eng_edg);
     EMALLOC(nv, &eng_vert);
     
-    mesh_eng_kantor_apply(eng_kantor, nm, pos, kb,
-                          /**/ eng_edg);
+    mesh_eng_kantor_apply(eng_kantor, nm, pos,
+                          kb, angle, /**/ eng_edg);
     scatter(nm, out->mesh, eng_edg, /**/ eng_vert);
     
     dump_vtk(nv, nm, eng_vert, pos, out);
