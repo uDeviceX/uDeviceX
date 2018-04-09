@@ -109,6 +109,7 @@
 #include "imp.h"
 
 #include "imp/type.h"
+#include "imp/utils.h"
 #include "imp/force/common.h"
 #include "imp/force/dpd.h"
 #include "imp/force/objects.h"
