@@ -106,6 +106,8 @@
 
 #include "color/flux.h"
 
+#include "opt/imp.h"
+
 #include "imp.h"
 
 #include "imp/type.h"
