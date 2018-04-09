@@ -1,0 +1,6 @@
+= Low level MPI file write
+
+[source, c++]
+----
+include::{src}/io/write/imp.h[tags=interface]
+----

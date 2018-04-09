@@ -2,6 +2,8 @@
 
 :leveloffset: +1
 
+include::write.inc.adoc[]
+
 include::txt.inc.adoc[]
 
 include::mesh.inc.adoc[]
