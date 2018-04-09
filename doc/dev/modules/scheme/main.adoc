@@ -10,7 +10,7 @@ include::move.inc.adoc[]
 
 include::restrain.inc.adoc[]
 
-include::time.inc.adoc[]
+include::time_line.inc.adoc[]
 
 include::time_step.inc.adoc[]
 
