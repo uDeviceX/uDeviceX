@@ -1,0 +1,15 @@
+= VTK
+
+Write point and mesh data to legacy vtk files.
+
+A configuration structure
+[source,cpp]
+----
+include::{src}/io/vtk/imp.h[tags=conf]
+----
+
+Push data
+[source,cpp]
+----
+include::{src}/io/point/imp.h[tags=main]
+----

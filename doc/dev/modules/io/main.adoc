@@ -10,6 +10,8 @@ include::diag.inc.adoc[]
 
 include::point.inc.adoc[]
 
+include::vtk.inc.adoc[]
+
 include::restart.inc.adoc[]
 
 :leveloffset: -1
