@@ -1,6 +1,5 @@
 #include <mpi.h>
 #include <math.h>
-#include <vector_types.h>
 
 #include <conf.h>
 #include "inc/conf.h"

@@ -1,8 +1,6 @@
 #include <stdio.h>
 #include <vector_types.h>
 
-#include <conf.h>
-
 #include "utils/imp.h"
 #include "utils/error.h"
 #include "conf/imp.h"

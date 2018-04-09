@@ -2,7 +2,6 @@
 #include <stdarg.h>
 #include <string.h>
 #include <mpi.h>
-#include <vector_types.h>
 
 #include <conf.h>
 #include "inc/conf.h"

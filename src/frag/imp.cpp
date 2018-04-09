@@ -1,5 +1,4 @@
 #include <vector_types.h>
-
 #include "frag/imp.h"
 
 #define FRAG_HOST

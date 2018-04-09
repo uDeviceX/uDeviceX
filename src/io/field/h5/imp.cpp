@@ -1,5 +1,4 @@
 #include <hdf5.h>
-#include <vector_types.h>
 
 #include "coords/imp.h"
 #include "mpi/wrapper.h"

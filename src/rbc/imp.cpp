@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <assert.h>
 #include <math.h>
-#include <vector_types.h>
 #include <mpi.h>
 
 #include <conf.h>

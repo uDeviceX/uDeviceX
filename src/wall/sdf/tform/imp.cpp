@@ -1,6 +1,4 @@
 #include <stdio.h>
-#include <vector_types.h>
-
 #include "utils/error.h"
 #include "coords/imp.h"
 #include "math/tform/imp.h"
