@@ -1,0 +1,6 @@
+# TEST: mesh.edg_len
+cd test/mesh/edg_len
+u.conf0 u/mesh/edg_len
+u.make -j
+u.cp.rbc rbc/sc/2562 rbc.off
+u.run ./udx 'i="rbc.off"' > edg_len.out.txt
