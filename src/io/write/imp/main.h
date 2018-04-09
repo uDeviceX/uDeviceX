@@ -15,7 +15,7 @@ int write_file_close(WriteFile *fp) {
     return 0;
 }
 
-void write_all(MPI_Comm comm, const void * const ptr, const int nbytes32, WriteFile *fp) {
+void write_all(MPI_Comm comm, const void * const ptr, int nbytes32, WriteFile *fp) {
     MPI_File f = fp->f;
     MPI_Offset base;
     MPI_Offset offset = 0, nbytes = nbytes32;
