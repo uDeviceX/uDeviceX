@@ -5,5 +5,4 @@ f $U algo/edg conf coords d inc io/mesh_read io/mesh io/write io/restart io/diag
      math algo/vectors mpi rbc scheme/force \
      scheme/move scheme/restrain scheme/time_line utils algo/utils
 
-# add dir
 echo $U $U/lib .

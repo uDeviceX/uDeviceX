@@ -3,7 +3,5 @@ f () ( for d; do f0 "$d"; done )
 
 f $U algo/edg algo/scalars algo/vectors coords conf d inc \
      io/write io/mesh_read math/tform mesh/scatter mpi utils
-     
 
-# add dir
 echo $U .

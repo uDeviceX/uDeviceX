@@ -3,5 +3,4 @@ f () ( for d; do f0 "$d"; done )
 
 f $U inc/conf.h mpi utils d inc scheme/time_line
 
-# add dir
 echo $U .

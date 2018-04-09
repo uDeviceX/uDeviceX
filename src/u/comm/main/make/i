@@ -3,5 +3,4 @@ f () ( for d; do f0 "$d"; done )
 
 f $U comm utils frag mpi d inc conf coords
 
-# add directory
 echo .

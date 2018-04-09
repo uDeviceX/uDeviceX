@@ -3,5 +3,4 @@ f () ( for d; do f0 "$d"; done )
 
 f $U inc mpi d utils wall/sdf io/field math wall/wvel coords conf algo/utils
 
-# add dir
 echo $U $U/lib .

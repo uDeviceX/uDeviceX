@@ -3,5 +3,4 @@ f () ( for d; do f0 "$d"; done )
 
 f $U comm inc mpi d frag utils math/rnd
 
-# add dir
 echo $U .

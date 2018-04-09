@@ -3,5 +3,4 @@ f () ( for d; do f0 "$d"; done )
 
 f $U inc mpi d utils
 
-# add dir
 echo $U .

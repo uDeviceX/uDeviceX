@@ -3,5 +3,4 @@ f () ( for d; do f0 "$d"; done )
 
 f $U comm d frag coords inc math mpi wall/sdf/tform utils conf
 
-# add dir
 echo $U $U/lib .

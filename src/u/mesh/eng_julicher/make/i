@@ -6,5 +6,4 @@ f $U algo/edg algo/key_list conf d inc io/write io/mesh_read \
      algo/vectors algo/scalars mpi utils math/tform coords \
      io/vtk
 
-# add dir
 echo $U .

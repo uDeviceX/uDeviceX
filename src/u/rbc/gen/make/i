@@ -5,5 +5,4 @@ f $U algo/kahan_sum algo/edg conf coords d inc \
      io/mesh_read math/tri mesh/area algo/vectors mesh/volume mpi \
      rbc/gen rbc/matrices utils math/tform
 
-# add dir
 echo $U .
