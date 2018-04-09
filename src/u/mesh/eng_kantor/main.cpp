@@ -65,7 +65,7 @@ static void scatter(int nm, MeshRead *mesh, const double *edg, /**/ double *vert
     ne = mesh_read_get_ne(mesh);
     mesh_scatter_ini(mesh, /**/ &scatter);
     scalars_double_ini(nm * ne, edg, /**/ &scalars);
-    UC(mesh_scatter_edg2vert(scatter, nm, scalars, /**/ vert));
+    UC(mesh_scatter_edg2vert_avg(scatter, nm, scalars, /**/ vert));
     scalars_fin(scalars);
     mesh_scatter_fin(scatter);
 }

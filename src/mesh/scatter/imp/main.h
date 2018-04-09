@@ -45,7 +45,7 @@ static void edg2vert(MeshScatter *q, Scalars *sc, int offset_v, int offset_e, /*
         o[b + offset_v] += value;
     }
 }
-void mesh_scatter_edg2vert(MeshScatter *q, int nm, Scalars *sc, /**/ double *o) {
+void mesh_scatter_edg2vert_avg(MeshScatter *q, int nm, Scalars *sc, /**/ double *o) {
     int i, j, k, d, n, nv, ne;
     int offset_v, offset_e;
     nv = q->nv;

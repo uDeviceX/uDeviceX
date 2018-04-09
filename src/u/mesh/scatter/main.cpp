@@ -36,7 +36,7 @@ static void main0(const char *cell) {
 
     EMALLOC(nv, &rank);
     scalars_one_ini(ne, &ones);
-    mesh_scatter_edg2vert(scatter, nm, ones, /**/ rank);
+    mesh_scatter_edg2vert_avg(scatter, nm, ones, /**/ rank);
     dump_txt(nv, nm, rank);
     
     UC(mesh_scatter_fin(scatter));
