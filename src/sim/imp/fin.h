@@ -152,16 +152,20 @@ static void fin_time(Time *t) {
     UC(time_step_accel_fin(t->accel));    
 }
 
+static void fin_optional_features(const Opt *opt, Sim *s) {
+    if (opt->vcon)       UC(fin_vcon(/**/ &s->vcon));
+    if (opt->outflow)    UC(fin_outflow(/**/ s->outflow));
+    if (opt->inflow)     UC(fin_inflow (/**/ s->inflow ));
+    if (opt->denoutflow) UC(fin_denoutflow(/**/ s->denoutflow, s->mapoutflow));
+}
+
 void sim_fin(Sim *s) {
     const Opt *opt = &s->opt;
     
     if (opt->rbc || opt->rig)
         UC(fin_objinter(&s->opt, &s->objinter));
 
-    if (opt->vcon)       UC(fin_vcon(/**/ &s->vcon));
-    if (opt->outflow)    UC(fin_outflow(/**/ s->outflow));
-    if (opt->inflow)     UC(fin_inflow (/**/ s->inflow ));
-    if (opt->denoutflow) UC(fin_denoutflow(/**/ s->denoutflow, s->mapoutflow));
+    UC(fin_optional_features(opt, s));
     
     if (opt->wall) UC(fin_wall(&s->wall));
 
