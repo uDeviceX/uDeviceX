@@ -423,5 +423,5 @@ void sim_ini(Config *cfg, MPI_Comm cart, /**/ Sim **sim) {
     UC(inter_color_ini(&s->gen_color));
     UC(inter_color_set_conf(cfg, s->gen_color));
     
-    MC(MPI_Barrier(s->cart));
+    MC(m::Barrier(s->cart));
 }
