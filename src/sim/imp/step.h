@@ -39,7 +39,7 @@ static void step(TimeLine *time, float dt, bool wall0, float tstart, Sim *s) {
 
     if (wall0) bounce_wall(dt, opt->rbc, s->coords, wall, /**/ flu, rbc);
 
-    if (opt->rig_bounce && s->rigids) bounce_solid(dt, s->params.L, /**/ &s->bb, rig, flu);
+    if (s->rigids && opt->rig_bounce) bounce_solid(dt, s->params.L, /**/ &s->bb, rig, flu);
 
     UC(check_pos_soft(s));
     UC(check_vel(dt, s));
