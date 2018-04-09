@@ -80,7 +80,7 @@ void sim_gen(Sim *s, const Config *cfg) {
     run(tstart, s->time.end, s);
 
     /* final strt dump*/
-    if (opt->dump_strt) dump_strt0(RESTART_FINAL, s);
+    if (opt->dump_strt) dump_strt_final(s);
 }
 
 void sim_strt(Sim *s, const Config *cfg) {
@@ -118,5 +118,5 @@ void sim_strt(Sim *s, const Config *cfg) {
     s->rigids = opt->rig;
     pre_run(cfg, s);
     run(s->time.wall, s->time.end, s);
-    if (opt->dump_strt) dump_strt0(RESTART_FINAL, s);
+    if (opt->dump_strt) dump_strt_final(s);
 }
