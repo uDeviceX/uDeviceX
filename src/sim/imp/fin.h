@@ -167,22 +167,17 @@ void sim_fin(Sim *s) {
 
     UC(fin_optional_features(opt, s));
     
-    if (opt->wall) UC(fin_wall(&s->wall));
-
     UC(fin_flu(opt, &s->flu));
-
+    if (opt->rbc)  UC(fin_rbc(opt, /**/ &s->rbc));
+    if (opt->rig)  UC(fin_rig(/**/ &s->rig));
+    if (opt->wall) UC(fin_wall(&s->wall));
+    
     if (opt->flucolors && opt->rbc)
         UC(fin_colorer(/**/ &s->colorer));
 
-    if (opt->rig) {
-        UC(fin_rig(/**/ &s->rig));
-        
-        if (opt->rig_bounce)
-            UC(fin_bounce_back(&s->bb));
-    }
+    if (opt->rig && opt->rig_bounce)
+        UC(fin_bounce_back(&s->bb));
     
-    if (opt->rbc) UC(fin_rbc(opt, /**/ &s->rbc));
-
     UC(bforce_fin(s->bforce));
     
     UC(fin_dump(opt, &s->dump));
