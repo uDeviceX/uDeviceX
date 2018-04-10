@@ -82,7 +82,7 @@ static void quant_fin(Quant *q) {
 static void get(Vectors *pos, int i, /**/ double *px, double *py, double *pz) {
     enum {X, Y, Z};
     float r[3];
-    vectors_get(pos, i, /**/ r);
+    UC(vectors_get(pos, i, /**/ r));
     *px = r[X]; *py = r[Y]; *pz = r[Z];
 }
 
@@ -146,7 +146,7 @@ static double norm0(const Shape *shape, int n, Vectors *pos) {
     double x, y, z, z0, ans;
     ans = 0.0;
     for (i = 0; i < n; i++) {
-        get(pos, i, /**/ &x, &y, &z);
+        UC(get(pos, i, /**/ &x, &y, &z));
         z0 = zrbc(x, y, shape);
         if (z < 0) z0 = -z0;
         ans += sq(z - z0);
@@ -178,7 +178,7 @@ static void pos_min_max(int n, Vectors *pos, double *pmi, double *pma) {
     int i;
     mi = DBL_MAX; ma = -DBL_MAX;
     for (i = 0; i < n; i++) {
-        get(pos, i, &x, &y, &z);
+        UC(get(pos, i, &x, &y, &z));
         if (x > ma) ma = x;
         if (x < mi) mi = x;
     }
@@ -218,7 +218,7 @@ static void compute_normal(Shape *shape, int n, Vectors *pos, /**/ double *nx, d
     int i;
     double x, y, z;
     for (i = 0; i < n; i++) {
-        get(pos, i, &x, &y, &z);
+        UC(get(pos, i, &x, &y, &z));
         normal(x, y, shape, &nx[i], &ny[i], &nz[i]);
     }
 }
@@ -228,7 +228,7 @@ static void compute_curv(Shape *shape, int n, Vectors *pos, /**/ double *mean, d
     double L, M, N, k0, k1;
     double x, y, z;
     for (i = 0; i < n; i++) {
-        get(pos, i, &x, &y, &z);
+        UC(get(pos, i, &x, &y, &z));
         curv(x, y, shape, &L, &M, &N);
         status = eig(L, M, N, /**/ &k0, &k1);
         if (status != EIG_OK)
