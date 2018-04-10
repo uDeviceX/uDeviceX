@@ -84,7 +84,7 @@ void sim_gen(Sim *s) {
     if (opt->dump_strt) dump_strt_final(s);
 }
 
-static void restart(Sim *s) {
+static void gen_from_restart(Sim *s) {
     Flu *flu = &s->flu;
     Rbc *rbc = &s->rbc;
     Rig *rig = &s->rig;
@@ -106,7 +106,7 @@ void sim_strt(Sim *s) {
     Wall *wall = &s->wall;
     const Opt *opt = &s->opt;
 
-    restart(s); 
+    gen_from_restart(s); 
 
     if (opt->wall && wall->q.n) UC(wall_gen_ticket(&wall->q, wall->t));
     MC(m::Barrier(s->cart));
