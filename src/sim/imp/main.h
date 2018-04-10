@@ -6,10 +6,11 @@ static long get_max_parts_wall(Params params) {
         (L.z + 2 * ZWM);
 }
 
-static void freeze(const Coords *coords, Wall *w, Sim *s) { /* generate */
+static void freeze(const Coords *coords, Sim *s) { /* generate */
     Flu *flu = &s->flu;
     Rbc *rbc = &s->rbc;
     Rig *rig = &s->rig;
+    Wall *w = &s->wall;
     const Opt *opt = &s->opt;
     bool dump_sdf = opt->dump_field;
     long maxp_wall = get_max_parts_wall(s->params);
@@ -67,7 +68,7 @@ void sim_gen(Sim *s, const Config *cfg) {
     MC(m::Barrier(s->cart));
     if (opt->wall || opt->rig) {
         run(tstart, s->time.wall, s);
-        freeze(s->coords, /**/ wall, s);
+        freeze(s->coords, /**/ s);
         dSync();
         if (opt->wall && wall->q.n) UC(wall_gen_ticket(&wall->q, wall->t));
         if (opt->rbc && opt->flucolors) UC(gen_colors(rbc, &s->colorer, /**/ flu));
