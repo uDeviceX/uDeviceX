@@ -28,17 +28,19 @@ ruv: diff(diff([x, y, z], v), u);
 n: cross(ru, rv);
 
 matchdeclare([n, m], numberp) $
-defrule(r_f, pderivop(f,n)(r('u)), ff(n)) $
-defrule(r_r, pderivop(r,n)('u),  rr(n)) $
-defrule(r_x, pderivop('x,n,m)('u,'v),  xx(n, m)) $
-defrule(r_y, pderivop('y,n,m)('u,'v),  yy(n, m)) $
+defrule(r_f0, f(r('u)), f0);
+defrule(r_r,  'r, r0);
+defrule(r_f,  pderivop(f,n)(r('u)), ff(n)) $
+defrule(r_r,  pderivop(r,n)('u),  rr(n)) $
+defrule(r_x,  pderivop('x,n,m)('u,'v),  xx(n, m)) $
+defrule(r_y,  pderivop('y,n,m)('u,'v),  yy(n, m)) $
 
 ff(n):=concat('f, n);
 rr(i):=diff(r0, 'u, i);
 xx(i, j):=diff(diff(x0, 'u, i), 'v, j);
 yy(i, j):=diff(diff(y0, 'u, i), 'v, j);
 
-ap(e):=apply1(e, r_f, r_r, r_x, r_y);
+ap(e):=apply1(e, r_f0, r_f, r_f0, r_r, r_x, r_y, r_r);
 
 ru: ap(ru);
 rv: ap(rv);
@@ -57,3 +59,6 @@ for e in [
   f1=fullratsimp(diff(f0, r)), f2=gcfac(factor(diff(f0, r, 2))), 'L=L, 'M=M, 'N=N,
   '(n[X]) = n[X], '(n[Y]) = n[Y], '(n[Z]) = n[Z]
   ] do cgrind(e);
+
+ap([x0, y0, z]);
+T: matrix([L, M], [M, N]);
