@@ -58,12 +58,12 @@ void sim_gen(Sim *s, const Config *cfg) {
     s->equilibrating = true;
 
     UC(gen_flu(s));
-    UC(gen_rbc(s));
 
     MC(m::Barrier(s->cart));
 
     run(tstart, s->time.eq, s);
-    
+
+    UC(gen_rbc(s));
     freeze(/**/ s);
     dSync();
 
