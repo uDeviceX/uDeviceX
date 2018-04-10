@@ -41,7 +41,7 @@ static void ini_sampler(int3 L, Sampler *s) {
 }
 
 static void ini_state(State *s) {
-    s->sume = s->cur = make_float3(0, 0, 0);    
+    s->f = s->sume = s->cur = make_float3(0, 0, 0);    
 }
 
 static void ini(MPI_Comm comm, int3 L, /**/ PidVCont *c) {
@@ -53,8 +53,6 @@ static void ini(MPI_Comm comm, int3 L, /**/ PidVCont *c) {
     
     MC(m::Comm_rank(comm, &rank));
     MC(m::Comm_dup(comm, &c->comm));
-
-    c->f = make_float3(0, 0, 0);
     
     UC(ini_dump(rank, /**/ &c->fdump));
 
@@ -185,6 +183,7 @@ static float3 update_state(const Param *p, float3 vcur, State *s) {
     axpy(p->Kp, &e,       /**/ &f);
     axpy(p->Ki, &s->sume, /**/ &f);
     axpy(p->Kd, &de,      /**/ &f);
+    s->f = f;
     return f;
 }
 
@@ -193,14 +192,13 @@ float3 vcont_adjustF(/**/ PidVCont *c) {
     vcur = average_samples(c->comm, &c->sampler);
     UC(reini_sampler(&c->sampler));
     
-    c->f =  update_state(&c->param, vcur, &c->state);
-    return c->f;
+    return update_state(&c->param, vcur, &c->state);
 }
 
 void vcont_log(const PidVCont *c) {
     if (c->fdump == NULL) return;
     float3 v = c->state.cur;
-    float3 f = c->f;
+    float3 f = c->state.f;
     fprintf(c->fdump, "%.3e %.3e %.3e %.3e %.3e %.3e\n",
             v.x, v.y, v.z, f.x, f.y, f.z);
     fflush(c->fdump);

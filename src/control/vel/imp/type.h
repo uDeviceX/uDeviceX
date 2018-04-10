@@ -30,6 +30,7 @@ struct Sampler {
 struct State {
     float3 cur;               /* current average velocity                        */
     float3 olde, sume;        /* previous error, sum of all previous errors      */
+    float3 f;                 /* force estimate                                  */
 };
 
 struct Param {
@@ -39,8 +40,6 @@ struct Param {
 
 /* pid velocity controller */
 struct PidVCont {
-    float3 f;                 /* force estimate                                  */
-
     Param param;
     State state;
     Sampler sampler;          /* helper to average velocity on device            */
