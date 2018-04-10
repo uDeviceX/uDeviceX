@@ -112,16 +112,13 @@ static double zrbc(double x, double y, const Shape *q) {
 static void normal(double x, double y, Shape *shape, /**/
                    double *pnx, double *pny, double *pnz) {
     enum {X, Y, Z};
-    double D, f10, r0, nx, ny, nz, n;
+    double D, f10, r0, nx, ny, nz;
     D = shape->D;
     r0 = r(x, y, shape);
     f10 = f1(r0, shape);
     nx = -(2*f10*x)/D;
     ny = -(2*f10*y)/D;
     nz = 1;
-
-    n = sqrt(nx*nx + ny*ny + nz*nz);
-    nx /= n; ny /= n; nz /= n;
 
     *pnx = nx; *pny = ny; *pnz = nz;
 }
@@ -137,18 +134,23 @@ static double norm0(const Shape *shape, int n, Vectors *pos) {
     }
     return ans/n;
 }
-static void curv(double x, double y, Shape *q, /**/ double *pL, double *pM, double *pN) {
+static void curv(double x, double y, Shape *shape, /**/ double *pL, double *pM, double *pN) {
     double L, M, N;
     double D, r0, f10, f20;
+    double nx, ny, nz, n;
 
-    D = q->D;
-    r0 = r(x, y, q);
-    f10 = f1(r0, q);
-    f20 = f2(r0, q);
+    D = shape->D;
+    r0 = r(x, y, shape);
+    f10 = f1(r0, shape);
+    f20 = f2(r0, shape);
 
     L = (4*f20*pow(x,2))/pow(D,3)+(2*f10)/D;
     M = (4*f20*pow(y,2))/pow(D,3)+(2*f10)/D;
     N = (4*f20*x*y)/pow(D,3);
+
+    normal(x, y, shape, &nx, &ny, &nz);
+    n = sqrt(nx*nx + ny*ny + nz*nz);
+    L /= n; M /= n; N /= n;
 
     *pL = L; *pM = M; *pN = N;
 }
