@@ -6,6 +6,13 @@ static long get_max_parts_wall(Params params) {
         (L.z + 2 * ZWM);
 }
 
+static void gen_flu(Sim *s) {
+    Flu *flu = &s->flu;
+    UC(flu_gen_quants(s->coords, s->params.numdensity, s->gen_color, &flu->q));
+    UC(flu_build_cells(&flu->q));
+    if (s->opt.fluids) flu_gen_ids(s->cart, flu->q.n, &flu->q);
+}
+
 static void gen_rbc(Sim *s) {
     MeshRead *cell = s->rbc.cell;
     Rbc *rbc = &s->rbc;
@@ -59,16 +66,14 @@ static void freeze(Sim *s) { /* generate */
 }
 
 void sim_gen(Sim *s, const Config *cfg) {
-    Flu *flu = &s->flu;
     Wall *wall = &s->wall;
     const Opt *opt = &s->opt;
     float tstart = 0;
     s->equilibrating = true;
-    
-    UC(flu_gen_quants(s->coords, s->params.numdensity, s->gen_color, &flu->q));
-    UC(flu_build_cells(&flu->q));
-    if (opt->fluids) flu_gen_ids(s->cart, flu->q.n, &flu->q);
+
+    UC(gen_flu(s));
     UC(gen_rbc(s));
+
     MC(m::Barrier(s->cart));
     if (opt->wall || opt->rig) {
         run(tstart, s->time.wall, s);
@@ -99,16 +104,12 @@ void sim_strt(Sim *s, const Config *cfg) {
 
     /*Q*/
     flu_strt_quants(s->cart, base_strt_read, RESTART_BEGIN, &flu->q);
-    flu_build_cells(&flu->q);
-
-    if (opt->rbc) rbc_strt_quants(s->cart, base_strt_read, cell, RESTART_BEGIN, &rbc->q);
-    dSync();
-
-    if (opt->rig) rig_strt_quants(s->cart, base_strt_read, RESTART_BEGIN, &rig->q);
-
-    if (opt->wall) wall_strt_quants(s->cart, base_strt_read, maxp_wall, &wall->q);
+    if (opt->rbc)   rbc_strt_quants(s->cart, base_strt_read, cell, RESTART_BEGIN, &rbc->q);
+    if (opt->rig)   rig_strt_quants(s->cart, base_strt_read,       RESTART_BEGIN, &rig->q);
+    if (opt->wall) wall_strt_quants(s->cart, base_strt_read, maxp_wall,          &wall->q);
 
     /*T*/
+    flu_build_cells(&flu->q);
     if (opt->wall && wall->q.n) UC(wall_gen_ticket(&wall->q, wall->t));
 
     MC(m::Barrier(s->cart));
