@@ -104,16 +104,12 @@ void sim_strt(Sim *s, const Config *cfg) {
 
     /*Q*/
     flu_strt_quants(s->cart, base_strt_read, RESTART_BEGIN, &flu->q);
-    flu_build_cells(&flu->q);
-
-    if (opt->rbc) rbc_strt_quants(s->cart, base_strt_read, cell, RESTART_BEGIN, &rbc->q);
-    dSync();
-
-    if (opt->rig) rig_strt_quants(s->cart, base_strt_read, RESTART_BEGIN, &rig->q);
-
-    if (opt->wall) wall_strt_quants(s->cart, base_strt_read, maxp_wall, &wall->q);
+    if (opt->rbc)   rbc_strt_quants(s->cart, base_strt_read, cell, RESTART_BEGIN, &rbc->q);
+    if (opt->rig)   rig_strt_quants(s->cart, base_strt_read,       RESTART_BEGIN, &rig->q);
+    if (opt->wall) wall_strt_quants(s->cart, base_strt_read, maxp_wall,          &wall->q);
 
     /*T*/
+    flu_build_cells(&flu->q);
     if (opt->wall && wall->q.n) UC(wall_gen_ticket(&wall->q, wall->t));
 
     MC(m::Barrier(s->cart));
