@@ -55,6 +55,7 @@ void sim_gen(Sim *s, const Config *cfg) {
     MeshRead *cell = s->rbc.cell;
     const Opt *opt = &s->opt;
     float tstart = 0;
+    s->equilibrating = true;
     
     UC(flu_gen_quants(s->coords, s->params.numdensity, s->gen_color, &flu->q));
     UC(flu_build_cells(&flu->q));
@@ -65,7 +66,7 @@ void sim_gen(Sim *s, const Config *cfg) {
     }
     MC(m::Barrier(s->cart));
     if (opt->wall || opt->rig) {
-        run_eq(s->time.wall, s);
+        run(tstart, s->time.wall, s);
         gen(s->coords, /**/ wall, s);
         dSync();
         if (opt->wall && wall->q.n) UC(wall_gen_ticket(&wall->q, wall->t));
