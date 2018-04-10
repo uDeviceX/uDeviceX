@@ -30,16 +30,18 @@ static void id2code(const int id, char *code) {
     }
 }
 
-static void gen_base_name_dump(const char *base, const char *code, const int id, /**/ char *name) {
+static void gen_base_name(const char *pattern, const char *base, const char *code, const int id, /**/ char *name) {
     char idcode[BS] = {0};
     id2code(id, /**/ idcode);
-    CSPR(sprintf(name, PATTERN, base, code, idcode));
+    CSPR(sprintf(name, pattern, base, code, idcode));    
+}
+
+static void gen_base_name_dump(const char *base, const char *code, const int id, /**/ char *name) {
+    gen_base_name(PATTERN, base, code, id, name);
 }
 
 static void gen_base_name_read(const char *base, const char *code, const int id, /**/ char *name) {
-    char idcode[BS] = {0};
-    id2code(id, /**/ idcode);
-    CSPR(sprintf(name, PATTERN ".bop", base, code, idcode));
+    gen_base_name(PATTERN ".bop", base, code, id, name);
 }
 
 template <typename T>
