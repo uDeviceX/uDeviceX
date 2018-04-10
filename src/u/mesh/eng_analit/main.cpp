@@ -15,7 +15,6 @@
 #include "io/mesh_read/imp.h"
 
 #include "mesh/spherical/imp.h"
-
 #include "io/vtk/imp.h"
 
 #include "algo/vectors/imp.h"
@@ -145,8 +144,8 @@ static void curv(double x, double y, Shape *shape, /**/ double *pL, double *pM, 
     f20 = f2(r0, shape);
 
     L = (4*f20*pow(x,2))/pow(D,3)+(2*f10)/D;
-    M = (4*f20*pow(y,2))/pow(D,3)+(2*f10)/D;
-    N = (4*f20*x*y)/pow(D,3);
+    M = (4*f20*x*y)/pow(D,3);
+    N = (4*f20*pow(y,2))/pow(D,3)+(2*f10)/D;
 
     normal(x, y, shape, &nx, &ny, &nz);
     n = sqrt(nx*nx + ny*ny + nz*nz);
