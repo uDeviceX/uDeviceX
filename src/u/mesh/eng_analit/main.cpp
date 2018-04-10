@@ -28,10 +28,11 @@ struct Out {
 
 struct Quant {
     int n;
-    double *eng, *nx, *ny, *nz;
+    double *eng, *nx, *ny, *nz, *mean, *gauss;
 };
-
-struct QuantScalars { Scalars *eng, *nx, *ny, *nz; };
+struct QuantScalars {
+    Scalars *eng, *nx, *ny, *nz, *mean, *gauss;
+};
 struct Spherical { double *r, *theta, *phi; };
 struct Shape { double a0, a1, a2, D; };
 static const Shape shape0 = {0.0518, 2.0026, -4.491, -1};
@@ -50,12 +51,15 @@ static void quant_scalars_ini(Quant *u, QuantScalars **pq) {
     scalars_double_ini(n, u->nx, /**/ &q->nx);
     scalars_double_ini(n, u->ny, /**/ &q->ny);
     scalars_double_ini(n, u->nz, /**/ &q->nz);
+    scalars_double_ini(n, u->mean, /**/ &q->mean);
+    scalars_double_ini(n, u->gauss, /**/ &q->gauss);
     *pq = q;
 }
 
 static void quant_scalars_fin(QuantScalars *q) {
     scalars_fin(q->eng);
     scalars_fin(q->nx); scalars_fin(q->ny); scalars_fin(q->nz);
+    scalars_fin(q->mean); scalars_fin(q->gauss);
     EFREE(q);
 }
 
@@ -64,12 +68,14 @@ static void quant_ini(int n, Quant **pq) {
     EMALLOC(1, &q);
     EMALLOC(n, &q->eng);
     EMALLOC(n, &q->nx); EMALLOC(n, &q->ny); EMALLOC(n, &q->nz);
+    EMALLOC(n, &q->mean); EMALLOC(n, &q->gauss);
     q->n = n;
     *pq = q;
 }
 static void quant_fin(Quant *q) {
     EFREE(q->eng);
     EFREE(q->nx); EFREE(q->ny); EFREE(q->nz);
+    EFREE(q->mean); EFREE(q->gauss);
     EFREE(q);
 }
 
@@ -82,6 +88,19 @@ static void get(Vectors *pos, int i, /**/ double *px, double *py, double *pz) {
 
 static double sq(double x) { return x*x; }
 static double sqrt0(double x) { return x > 0 ? sqrt(x) : 0; };
+
+enum {EIG_OK, EIG_D};
+static int eig(double a, double b, double c, /**/ double *px, double *py) { /* eigenvalues(matrix([a, b], [b, c])); */
+    double D, x, y;
+    D = c*c-2*a*c+4*b*b+a*a;
+    if (D < 0) return EIG_D; 
+    x = -(sqrt(D)-c-a)/2; /* TODO: not robust */
+    y =  (sqrt(D)+c+a)/2;
+
+    *px = x; *py = y;
+    return EIG_OK;
+}
+
 static double f2(double r, const Shape *q) { /* diff(f, r, 2) */
     double a0, a1, a2;
     a0 = q->a0; a1 = q->a1; a2 = q->a2;
@@ -201,6 +220,21 @@ static void compute_normal(Shape *shape, int n, Vectors *pos, /**/ double *nx, d
     }
 }
 
+static void compute_curv(Shape *shape, int n, Vectors *pos, /**/ double *mean, double *gauss) {
+    int i, status;
+    double L, M, N, k0, k1;
+    double x, y, z;
+    for (i = 0; i < n; i++) {
+        get(pos, i, &x, &y, &z);
+        curv(x, y, shape, &L, &M, &N);
+        status = eig(L, M, N, /**/ &k0, &k1);
+        if (status != EIG_OK)
+            ERR("eig fails for: %g %g %g\n", L, M, N);
+        mean[i] = k0 + k1;
+        gauss[i] = k0*k1;
+    }
+}
+
 void spherical_ini(int n, Spherical **pq) {
     Spherical *q;
     EMALLOC(1, &q);
@@ -237,6 +271,8 @@ static void dump_vtk(int nm, Quant *quant, Vectors *vectors, Out *out) {
     vtk_conf_vert(conf, "nx");
     vtk_conf_vert(conf, "ny");
     vtk_conf_vert(conf, "nz");
+    vtk_conf_vert(conf, "mean");
+    vtk_conf_vert(conf, "gauss");
 
     vtk_ini(comm, nm, path, conf, &vtk);
     vtk_points(vtk, nm, vectors);
@@ -244,6 +280,8 @@ static void dump_vtk(int nm, Quant *quant, Vectors *vectors, Out *out) {
     vtk_vert(vtk, nm, scalars->nx, "nx");
     vtk_vert(vtk, nm, scalars->ny, "ny");
     vtk_vert(vtk, nm, scalars->nz, "nz");
+    vtk_vert(vtk, nm, scalars->mean, "mean");
+    vtk_vert(vtk, nm, scalars->gauss, "gauss");    
 
     id = 0;
     vtk_write(vtk, comm, id);
@@ -275,9 +313,9 @@ static void main0(const char *cell, Out *out) {
 
     compute_eng(nv, pos, /**/ quant->eng);
     compute_normal(&shape, nv, pos, /**/ quant->nx, quant->ny, quant->nz);
+    compute_curv(&shape, nv, pos, /**/ quant->mean, quant->gauss);
 
     mesh_spherical_apply(spherical, nm, pos, /**/ sph->r, sph->theta, sph->phi);
-
     dump_vtk(nm, quant, pos, out);
     dump_txt(nv, nm, sph, quant->eng);
 
