@@ -6,7 +6,7 @@ static long get_max_parts_wall(Params params) {
         (L.z + 2 * ZWM);
 }
 
-static void freeze(const Coords *coords, Sim *s) { /* generate */
+static void freeze(Sim *s) { /* generate */
     Flu *flu = &s->flu;
     Rbc *rbc = &s->rbc;
     Rig *rig = &s->rig;
@@ -34,18 +34,18 @@ static void freeze(const Coords *coords, Sim *s) { /* generate */
     
     if (opt->wall) {
         dSync();
-        UC(sdf_gen(coords, s->cart, dump_sdf, /**/ w->sdf));
+        UC(sdf_gen(s->coords, s->cart, dump_sdf, /**/ w->sdf));
         MC(m::Barrier(s->cart));
         inter_freeze_walls(s->cart, maxp_wall, w->sdf, /*io*/ &flu->q, /**/ &w->q);
     }
-    inter_freeze(coords, s->cart, winfo, /*io*/ finfo, rinfo, sinfo);
+    inter_freeze(s->coords, s->cart, winfo, /*io*/ finfo, rinfo, sinfo);
     clear_vel(s);
 
     if (opt->flucolors) {
         Particle *pp = flu->q.pp;
         int n = flu->q.n;
         int *cc = flu->q.cc;
-        inter_color_apply_dev(coords, s->gen_color, n, pp, /*o*/ cc);
+        inter_color_apply_dev(s->coords, s->gen_color, n, pp, /*o*/ cc);
     }
 }
 
@@ -68,7 +68,7 @@ void sim_gen(Sim *s, const Config *cfg) {
     MC(m::Barrier(s->cart));
     if (opt->wall || opt->rig) {
         run(tstart, s->time.wall, s);
-        freeze(s->coords, /**/ s);
+        freeze(/**/ s);
         dSync();
         if (opt->wall && wall->q.n) UC(wall_gen_ticket(&wall->q, wall->t));
         if (opt->rbc && opt->flucolors) UC(gen_colors(rbc, &s->colorer, /**/ flu));
