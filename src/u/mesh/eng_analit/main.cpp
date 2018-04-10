@@ -112,13 +112,17 @@ static double zrbc(double x, double y, const Shape *q) {
 static void normal(double x, double y, Shape *shape, /**/
                    double *pnx, double *pny, double *pnz) {
     enum {X, Y, Z};
-    double D, f10, r0, nx, ny, nz;
+    double D, f10, r0, nx, ny, nz, n;
     D = shape->D;
     r0 = r(x, y, shape);
     f10 = f1(r0, shape);
     nx = -(2*f10*x)/D;
     ny = -(2*f10*y)/D;
     nz = 1;
+
+    n = sqrt(nx*nx + ny*ny + nz*nz);
+    nx /= n; ny /= n; nz /= n;
+
     *pnx = nx; *pny = ny; *pnz = nz;
 }
 static double norm0(const Shape *shape, int n, Vectors *pos) {
@@ -170,7 +174,7 @@ static void fit(int nv, Vectors *pos, /**/ Shape *pshape, double *pno) {
     D = ma - mi;
     shape.D = D;
     no = norm(&shape, &param);
-    
+
     *pshape = shape; *pno = no;
 }
 
@@ -193,7 +197,7 @@ static void compute_normal(Shape *shape, int n, Vectors *pos, /**/ double *nx, d
     for (i = 0; i < n; i++) {
         get(pos, i, &x, &y, &z);
         normal(x, y, shape, &nx[i], &ny[i], &nz[i]);
-    }    
+    }
 }
 
 void spherical_ini(int n, Spherical **pq) {
@@ -239,7 +243,7 @@ static void dump_vtk(int nm, Quant *quant, Vectors *vectors, Out *out) {
     vtk_vert(vtk, nm, scalars->nx, "nx");
     vtk_vert(vtk, nm, scalars->ny, "ny");
     vtk_vert(vtk, nm, scalars->nz, "nz");
-    
+
     id = 0;
     vtk_write(vtk, comm, id);
 
@@ -267,7 +271,7 @@ static void main0(const char *cell, Out *out) {
     UC(vectors_float_ini(nv, vert, /**/ &pos));
 
      shape = fit_shape(nv, pos);
-                  
+
     compute_eng(nv, pos, /**/ quant->eng);
     compute_normal(&shape, nv, pos, /**/ quant->nx, quant->ny, quant->nz);
 
