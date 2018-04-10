@@ -74,7 +74,7 @@ void sim_gen(Sim *s) {
     dSync();
 
     if (opt->wall && wall->q.n)     UC(wall_gen_ticket(&wall->q, wall->t));
-    if (opt->rbc && opt->flucolors) UC(gen_colors(s));
+    if (opt->rbc && opt->flucolors) UC(colors_from_rbc(s));
 
     tstart = s->time.eq;
     pre_run(s);
@@ -84,33 +84,32 @@ void sim_gen(Sim *s) {
     if (opt->dump_strt) dump_strt_final(s);
 }
 
-void sim_strt(Sim *s) {
+static void restart(Sim *s) {
     Flu *flu = &s->flu;
     Rbc *rbc = &s->rbc;
     Rig *rig = &s->rig;
     Wall *wall = &s->wall;
     MeshRead *cell = s->rbc.cell;
     const Opt *opt = &s->opt;
-    bool dump_sdf = opt->dump_field;
     long maxp_wall = get_max_parts_wall(s->params);
     const char *base_strt_read = opt->strt_base_read;
-
-    /*Q*/
+    bool dump_sdf = opt->dump_field;
+    
     flu_strt_quants(s->cart, base_strt_read, RESTART_BEGIN, &flu->q);
     if (opt->rbc)   rbc_strt_quants(s->cart, base_strt_read, cell, RESTART_BEGIN, &rbc->q);
     if (opt->rig)   rig_strt_quants(s->cart, base_strt_read,       RESTART_BEGIN, &rig->q);
     if (opt->wall) wall_strt_quants(s->cart, base_strt_read, maxp_wall,          &wall->q);
+    if (opt->wall) UC(sdf_gen(s->coords, s->cart, dump_sdf, /**/ wall->sdf));
+}
 
-    /*T*/
-    flu_build_cells(&flu->q);
+void sim_strt(Sim *s) {
+    Wall *wall = &s->wall;
+    const Opt *opt = &s->opt;
+
+    restart(s); 
+
     if (opt->wall && wall->q.n) UC(wall_gen_ticket(&wall->q, wall->t));
-
     MC(m::Barrier(s->cart));
-    if (opt->wall) {
-        dSync();
-        UC(sdf_gen(s->coords, s->cart, dump_sdf, /**/ wall->sdf));
-        MC(m::Barrier(s->cart));
-    }
 
     pre_run(s);
     run(s->time.eq, s->time.end, s);

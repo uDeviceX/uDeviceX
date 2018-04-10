@@ -1,6 +1,6 @@
 /* set colors of particles according to the RBCs */
 
-void gen_colors(Sim *s) {
+void colors_from_rbc(Sim *s) {
     int nm, nv, n, nmhalo;
     const Rbc *r = &s->rbc;
     Colorer *c = &s->colorer;
