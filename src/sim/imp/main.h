@@ -6,10 +6,20 @@ static long get_max_parts_wall(Params params) {
         (L.z + 2 * ZWM);
 }
 
-static void gen(const Coords *coords, Wall *w, Sim *s) { /* generate */
+static void gen_rbc(Sim *s) {
+    MeshRead *cell = s->rbc.cell;
+    Rbc *rbc = &s->rbc;
+    const Opt *opt = &s->opt;
+    if (opt->rbc) {
+        rbc_gen_quants(s->coords, s->cart, cell, "rbcs-ic.txt", /**/ &rbc->q);
+    }
+}
+
+static void freeze(Sim *s) { /* generate */
     Flu *flu = &s->flu;
     Rbc *rbc = &s->rbc;
     Rig *rig = &s->rig;
+    Wall *w = &s->wall;
     const Opt *opt = &s->opt;
     bool dump_sdf = opt->dump_field;
     long maxp_wall = get_max_parts_wall(s->params);
@@ -33,26 +43,24 @@ static void gen(const Coords *coords, Wall *w, Sim *s) { /* generate */
     
     if (opt->wall) {
         dSync();
-        UC(sdf_gen(coords, s->cart, dump_sdf, /**/ w->sdf));
+        UC(sdf_gen(s->coords, s->cart, dump_sdf, /**/ w->sdf));
         MC(m::Barrier(s->cart));
         inter_freeze_walls(s->cart, maxp_wall, w->sdf, /*io*/ &flu->q, /**/ &w->q);
     }
-    inter_freeze(coords, s->cart, winfo, /*io*/ finfo, rinfo, sinfo);
+    inter_freeze(s->coords, s->cart, winfo, /*io*/ finfo, rinfo, sinfo);
     clear_vel(s);
 
     if (opt->flucolors) {
         Particle *pp = flu->q.pp;
         int n = flu->q.n;
         int *cc = flu->q.cc;
-        inter_color_apply_dev(coords, s->gen_color, n, pp, /*o*/ cc);
+        inter_color_apply_dev(s->coords, s->gen_color, n, pp, /*o*/ cc);
     }
 }
 
 void sim_gen(Sim *s, const Config *cfg) {
     Flu *flu = &s->flu;
-    Rbc *rbc = &s->rbc;
     Wall *wall = &s->wall;
-    MeshRead *cell = s->rbc.cell;
     const Opt *opt = &s->opt;
     float tstart = 0;
     s->equilibrating = true;
@@ -60,19 +68,16 @@ void sim_gen(Sim *s, const Config *cfg) {
     UC(flu_gen_quants(s->coords, s->params.numdensity, s->gen_color, &flu->q));
     UC(flu_build_cells(&flu->q));
     if (opt->fluids) flu_gen_ids(s->cart, flu->q.n, &flu->q);
-    if (opt->rbc) {
-        rbc_gen_quants(s->coords, s->cart, cell, "rbcs-ic.txt", /**/ &rbc->q);
-        if (opt->flucolors) UC(gen_colors(rbc, &s->colorer, /**/ flu));
-    }
+    UC(gen_rbc(s));
     MC(m::Barrier(s->cart));
     if (opt->wall || opt->rig) {
         run(tstart, s->time.wall, s);
-        gen(s->coords, /**/ wall, s);
+        freeze(/**/ s);
         dSync();
         if (opt->wall && wall->q.n) UC(wall_gen_ticket(&wall->q, wall->t));
-        if (opt->rbc && opt->flucolors) UC(gen_colors(rbc, &s->colorer, /**/ flu));
-        tstart = s->time.wall;    
+        tstart = s->time.wall;
     }
+    if (opt->rbc && opt->flucolors) UC(gen_colors(s));
     
     pre_run(cfg, s);
     run(tstart, s->time.end, s);

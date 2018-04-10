@@ -1,8 +1,11 @@
 /* set colors of particles according to the RBCs */
 
-void gen_colors(const Rbc *r, Colorer *c, Flu *f) {
+void gen_colors(Sim *s) {
     int nm, nv, n, nmhalo;
-
+    const Rbc *r = &s->rbc;
+    Colorer *c = &s->colorer;
+    Flu *f = &s->flu;
+        
     n  = f->q.n;
     nm = r->q.nc;
     nv = r->q.nv;
