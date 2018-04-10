@@ -51,7 +51,7 @@ static void step(TimeLine *time, float dt, float tstart, Sim *s) {
     UC(check_pos_soft(s));
     UC(check_vel(dt, s));
 
-    if (! s->equilibrating) {
+    if (!s->equilibrating) {
         if (opt->inflow)     UC(apply_inflow(s->params.kBT, s->params.numdensity, dt, s->inflow, /**/ flu));
         if (opt->outflow)    UC(mark_outflow(flu, /**/ s->outflow));
         if (opt->denoutflow) UC(mark_outflowden(s->params, flu, s->mapoutflow, /**/ s->denoutflow));
