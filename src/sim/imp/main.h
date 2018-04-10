@@ -22,31 +22,46 @@ static void gen_rbc(Sim *s) {
     }
 }
 
+static InterWalInfos get_winfo(Sim *s) {
+    InterWalInfos wi;
+    wi.active = s->opt.wall;
+    wi.sdf = s->wall.sdf;
+    return wi;
+}
+
+static InterFluInfos get_finfo(Sim *s) {
+    InterFluInfos fi;
+    fi.q = &s->flu.q;
+    return fi;
+}
+static InterRbcInfos get_rinfo(Sim *s) {
+    InterRbcInfos ri;
+    ri.active = s->opt.rbc;
+    ri.q = &s->rbc.q;
+    return ri;
+}   
+static InterRigInfos get_sinfo(Sim *s) {
+    InterRigInfos si;
+    si.active = s->opt.rig;
+    si.q = &s->rig.q;
+    si.pi = s->rig.pininfo;
+    si.mass = s->rig.mass;
+    si.empty_pp = s->opt.rig_empty_pp;
+    si.numdensity = s->params.numdensity;
+    return si;
+}
+
 static void freeze(Sim *s) { /* generate */
     Flu *flu = &s->flu;
-    Rbc *rbc = &s->rbc;
-    Rig *rig = &s->rig;
     Wall *w = &s->wall;
     const Opt *opt = &s->opt;
     bool dump_sdf = opt->dump_field;
     long maxp_wall = get_max_parts_wall(s->params);
     
-    InterWalInfos winfo;
-    InterFluInfos finfo;
-    InterRbcInfos rinfo;
-    InterRigInfos sinfo;
-
-    winfo.active = opt->wall;
-    winfo.sdf = w->sdf;
-    finfo.q = &flu->q;
-    rinfo.active = opt->rbc;
-    rinfo.q = &rbc->q;
-    sinfo.active = opt->rig;
-    sinfo.q = &rig->q;
-    sinfo.pi = rig->pininfo;
-    sinfo.mass = rig->mass;
-    sinfo.empty_pp = opt->rig_empty_pp;
-    sinfo.numdensity = s->params.numdensity;
+    InterWalInfos winfo = get_winfo(s);
+    InterFluInfos finfo = get_finfo(s);
+    InterRbcInfos rinfo = get_rinfo(s);
+    InterRigInfos sinfo = get_sinfo(s);
     
     if (opt->wall) {
         dSync();
@@ -75,8 +90,10 @@ void sim_gen(Sim *s, const Config *cfg) {
     UC(gen_rbc(s));
 
     MC(m::Barrier(s->cart));
+
+    run(tstart, s->time.eq, s);
+    
     if (opt->wall || opt->rig) {
-        run(tstart, s->time.eq, s);
         freeze(/**/ s);
         dSync();
         if (opt->wall && wall->q.n) UC(wall_gen_ticket(&wall->q, wall->t));
