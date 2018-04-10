@@ -90,7 +90,8 @@ static double sq(double x) { return x*x; }
 static double sqrt0(double x) { return x > 0 ? sqrt(x) : 0; };
 
 enum {EIG_OK, EIG_D};
-static int eig(double a, double b, double c, /**/ double *px, double *py) { /* eigenvalues(matrix([a, b], [b, c])); */
+static int eig(double a, double b, double c, /**/ double *px, double *py) {
+    /* eigenvalues(matrix([a, b], [b, c])); */
     double D, x, y;
     D = c*c-2*a*c+4*b*b+a*a;
     if (D < 0) return EIG_D; 
@@ -311,7 +312,7 @@ static void main0(const char *cell, Out *out) {
     vert = mesh_read_get_vert(out->mesh);
     UC(vectors_float_ini(nv, vert, /**/ &pos));
 
-     shape = fit_shape(nv, pos);
+    shape = fit_shape(nv, pos);
 
     compute_normal(&shape, nv, pos, /**/ quant->nx, quant->ny, quant->nz);
     compute_curv(&shape, nv, pos, /**/ quant->mean, quant->gauss);
