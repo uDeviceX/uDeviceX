@@ -112,6 +112,7 @@ static void dump_strt0(int id, Sim *s) {
     flu_strt_dump(s->cart, base, id, &flu->q);
     if (active_rbc(s)) rbc_strt_dump(s->cart, base, id, &rbc->q);
     if (active_rig(s)) rig_strt_dump(s->cart, base, id, &rig->q);
+    if (opt->vcon)   vcont_strt_dump(s->cart, base, id, s->vcon.vcont);
 }
 
 static void dump_strt(Sim *s) {
