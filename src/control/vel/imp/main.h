@@ -40,17 +40,21 @@ static void ini_sampler(int3 L, Sampler *s) {
     CC(d::HostGetDevicePointer((void **) &s->dtotnum, s->totnum, 0));
 }
 
+static void ini_state(State *s) {
+    s->sume = s->cur = make_float3(0, 0, 0);    
+}
+
 static void ini(MPI_Comm comm, int3 L, /**/ PidVCont *c) {
     int rank;
 
     UC(ini_sampler(L, &c->sampler));
     UC(reini_sampler(&c->sampler));
+    UC(ini_state(&c->state));
     
     MC(m::Comm_rank(comm, &rank));
     MC(m::Comm_dup(comm, &c->comm));
 
-    c->current = make_float3(0, 0, 0);
-    c->f = c->sume = make_float3(0, 0, 0);
+    c->f = make_float3(0, 0, 0);
     
     UC(ini_dump(rank, /**/ &c->fdump));
 
@@ -78,16 +82,19 @@ void vcont_fin(/**/ PidVCont *c) {
     EFREE(c);
 }
 
+static void set_params(float f, float Kp, float Ki, float Kd, Param *p) {
+    p->Kp = f * Kp;
+    p->Ki = f * Ki;
+    p->Kd = f * Kd;
+}
+
 void vcont_set_params(float factor, float Kp, float Ki, float Kd, /**/ PidVCont *c) {
-    c->factor = factor;
-    c->Kp = Kp;
-    c->Ki = Ki;
-    c->Kd = Kd;
+    set_params(factor, Kp, Ki, Kd, &c->param);
 }
 
 void vcont_set_target(float3 vtarget, /**/ PidVCont *c) {
-    c->target = vtarget;
-    c->olde   = vtarget;
+    c->param.target = vtarget;
+    c->state.olde   = vtarget;
 }
 
 void vcont_set_cart(/**/ PidVCont *cont) {
@@ -164,30 +171,37 @@ static float3 average_samples(MPI_Comm comm, Sampler *s) {
     return make_float3(vcur.x, vcur.y, vcur.z);
 }
 
+static float3 update_state(const Param *p, float3 vcur, State *s) {
+    float3 e, de, f;
+        
+    s->cur = vcur;
+    diff(&p->target, &vcur, /**/ &e);
+    diff(&e, &s->olde, /**/ &de);
+    add(&e, /**/ &s->sume);    
+    s->olde = e;
+    
+    f = make_float3(0, 0, 0);
+
+    axpy(p->Kp, &e,       /**/ &f);
+    axpy(p->Ki, &s->sume, /**/ &f);
+    axpy(p->Kd, &de,      /**/ &f);
+    return f;
+}
+
 float3 vcont_adjustF(/**/ PidVCont *c) {
-    float3 e, de, vcur;
+    float3 vcur;
 
-    c->current = vcur = average_samples(c->comm, &c->sampler);
-
-    diff(&c->target, &vcur, /**/ &e);
-    diff(&e, &c->olde, /**/ &de);
-    add(&e, /**/ &c->sume);
-
-    c->f = make_float3(0, 0, 0);
-
-    axpy(c->factor * c->Kp, &e,       /**/ &c->f);
-    axpy(c->factor * c->Ki, &c->sume, /**/ &c->f);
-    axpy(c->factor * c->Kd, &de,      /**/ &c->f);
-
+    vcur = average_samples(c->comm, &c->sampler);
     UC(reini_sampler(&c->sampler));
+    
+    c->f =  update_state(&c->param, vcur, &c->state);
 
-    c->olde = e;
     return c->f;
 }
 
 void vcont_log(const PidVCont *c) {
     if (c->fdump == NULL) return;
-    float3 v = c->current;
+    float3 v = c->state.cur;
     float3 f = c->f;
     fprintf(c->fdump, "%.3e %.3e %.3e %.3e %.3e %.3e\n",
             v.x, v.y, v.z, f.x, f.y, f.z);

@@ -27,13 +27,22 @@ struct Sampler {
     int    *dtotnum;
 };
 
+struct State {
+    float3 cur;               /* current average velocity                        */
+    float3 olde, sume;        /* previous error, sum of all previous errors      */
+};
+
+struct Param {
+    float3 target;            /* target average velocity                         */
+    float Kp, Ki, Kd;         /* parameters of the pid controller                */
+};
+
 /* pid velocity controller */
 struct PidVCont {
-    float3 target, current;   /* target and current average velocities           */
-    float Kp, Ki, Kd, factor; /* parameters of the pid controller                */
-    float3 olde, sume;        /* previous error, sum of all previous errors      */
     float3 f;                 /* force estimate                                  */
 
+    Param param;
+    State state;
     Sampler sampler;          /* helper to average velocity on device            */
     
     MPI_Comm comm;
