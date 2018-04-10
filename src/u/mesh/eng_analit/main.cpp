@@ -15,7 +15,6 @@
 #include "io/mesh_read/imp.h"
 
 #include "mesh/spherical/imp.h"
-
 #include "io/vtk/imp.h"
 
 #include "algo/vectors/imp.h"
@@ -32,17 +31,10 @@ struct Quant {
     double *eng, *nx, *ny, *nz;
 };
 
-struct QuantScalars {
-    Scalars *eng, *nx, *ny, *nz;
-};
-
-struct Spherical {
-    double *r, *theta, *phi;
-};
-
-struct Shape {
-    double a0, a1, a2, D;
-};
+struct QuantScalars { Scalars *eng, *nx, *ny, *nz; };
+struct Spherical { double *r, *theta, *phi; };
+struct Shape { double a0, a1, a2, D; };
+static const Shape shape0 = {0.0518, 2.0026, -4.491, -1};
 
 struct Param {
     int nv;
@@ -77,7 +69,7 @@ static void quant_ini(int n, Quant **pq) {
 }
 static void quant_fin(Quant *q) {
     EFREE(q->eng);
-    EFREE(&q->nx); EFREE(&q->ny); EFREE(&q->nz);
+    EFREE(q->nx); EFREE(q->ny); EFREE(q->nz);
     EFREE(q);
 }
 
@@ -90,68 +82,74 @@ static void get(Vectors *pos, int i, /**/ double *px, double *py, double *pz) {
 
 static double sq(double x) { return x*x; }
 static double sqrt0(double x) { return x > 0 ? sqrt(x) : 0; };
-static double f2(double r, Shape *q) { /* diff(f, r, 2) */
+static double f2(double r, const Shape *q) { /* diff(f, r, 2) */
     double a0, a1, a2;
     a0 = q->a0; a1 = q->a1; a2 = q->a2;
     return -(2*(6*r*(a2*(5*r-2)+a1)+a2-2*(a1+a0)))/(sqrt0(1-4*r)*(4*r-1));
 }
-static double f1(double r, Shape *q) { /* diff(f, r) */
+static double f1(double r, const Shape *q) { /* diff(f, r) */
     double a0, a1, a2;
     a0 = q->a0; a1 = q->a1; a2 = q->a2;
     return sqrt(1-4*r)*(2*a2*r+a1)-(2*(r*(a2*r+a1)+a0))/sqrt0(1-4*r);
 }
-static double f(double r, Shape *q) {
+static double f(double r, const Shape *q) {
     double a0, a1, a2;
     a0 = q->a0; a1 = q->a1; a2 = q->a2;
     return sqrt0(1 - 4*r) * (a0 + a1*r + a2*r*r);
 }
-static double r(double x, double y, Shape *q) {
+static double r(double x, double y, const Shape *q) {
     double D;
     D = q->D;
     return (x*x + y*y)/sq(D);
 }
-static double zrbc(double x, double y, Shape *q) {
+static double zrbc(double x, double y, const Shape *q) {
     double r0, D;
     D = q->D;
     r0 = r(x, y, q);
     return f(r0, q) * D;
 }
-static void normal(double x, double y, Shape *q, /**/ double *n) {
+static void normal(double x, double y, Shape *shape, /**/
+                   double *pnx, double *pny, double *pnz) {
     enum {X, Y, Z};
-    double D, f10, r0;
-    D = q->D;
-    r0 = r(x, y, q);
-    f10 = f1(r0, q);
-    n[X] = (2*f10*x)/D;
-    n[Y] = (2*f10*y)/D;
-    n[Z] = -1;
+    double D, f10, r0, nx, ny, nz;
+    D = shape->D;
+    r0 = r(x, y, shape);
+    f10 = f1(r0, shape);
+    nx = -(2*f10*x)/D;
+    ny = -(2*f10*y)/D;
+    nz = 1;
+
+    *pnx = nx; *pny = ny; *pnz = nz;
 }
-static double norm0(double D, int n, Vectors *pos) {
+static double norm0(const Shape *shape, int n, Vectors *pos) {
     int i;
     double x, y, z, z0, ans;
-    Shape shape;
-    shape.a0 = 0.0518; shape.a1 = 2.0026; shape.a2 = -4.491; shape.D =  D;
     ans = 0.0;
     for (i = 0; i < n; i++) {
         get(pos, i, /**/ &x, &y, &z);
-        z0 = zrbc(x, y, &shape);
+        z0 = zrbc(x, y, shape);
         if (z < 0) z0 = -z0;
         ans += sq(z - z0);
     }
     return ans/n;
 }
-static void curv(double x, double y, Shape *q, /**/ double *pL, double *pM, double *pN) {
+static void curv(double x, double y, Shape *shape, /**/ double *pL, double *pM, double *pN) {
     double L, M, N;
     double D, r0, f10, f20;
+    double nx, ny, nz, n;
 
-    D = q->D;
-    r0 = r(x, y, q);
-    f10 = f1(r0, q);
-    f20 = f2(r0, q);
+    D = shape->D;
+    r0 = r(x, y, shape);
+    f10 = f1(r0, shape);
+    f20 = f2(r0, shape);
 
     L = (4*f20*pow(x,2))/pow(D,3)+(2*f10)/D;
-    M = (4*f20*pow(y,2))/pow(D,3)+(2*f10)/D;
-    N = (4*f20*x*y)/pow(D,3);
+    M = (4*f20*x*y)/pow(D,3);
+    N = (4*f20*pow(y,2))/pow(D,3)+(2*f10)/D;
+
+    normal(x, y, shape, &nx, &ny, &nz);
+    n = sqrt(nx*nx + ny*ny + nz*nz);
+    L /= n; M /= n; N /= n;
 
     *pL = L; *pM = M; *pN = N;
 }
@@ -166,24 +164,41 @@ static void pos_min_max(int n, Vectors *pos, double *pmi, double *pma) {
     }
     *pma = ma; *pmi = mi;
 }
-static double norm(double D, Param *p) { return norm0(D, p->nv, p->pos); }
-static void fit(int nv, Vectors *pos, /**/ double *pD, double *pno) {
+static double norm(const Shape *shape, Param *p) { return norm0(shape, p->nv, p->pos); }
+static void fit(int nv, Vectors *pos, /**/ Shape *pshape, double *pno) {
     double mi, ma, D, no;
     Param param;
-    param.nv = nv; param.pos = pos;
+    Shape shape;
+    param.nv = nv; param.pos = pos; shape = shape0;
     pos_min_max(nv, pos, /**/ &mi, &ma);
 
     D = ma - mi;
-    no = norm(D, &param);
-    *pD = D; *pno = no;
+    shape.D = D;
+    no = norm(&shape, &param);
+
+    *pshape = shape; *pno = no;
 }
 
 static void compute_eng(int nv, Vectors *pos, /**/ double *eng) {
-    double D, err;
     int i;
-    fit(nv, pos, /**/ &D, &err);
-    msg_print("diameter, error: %g %g", D, err);
     for (i = 0; i < nv; i++) eng[i] = i;
+}
+
+Shape fit_shape(int nv, Vectors *pos) {
+    double err;
+    Shape shape;
+    fit(nv, pos, /**/ &shape, &err);
+    msg_print("diameter, error: %g %g", shape.D, err);
+    return shape;
+}
+
+static void compute_normal(Shape *shape, int n, Vectors *pos, /**/ double *nx, double *ny, double *nz) {
+    int i;
+    double x, y, z;
+    for (i = 0; i < n; i++) {
+        get(pos, i, &x, &y, &z);
+        normal(x, y, shape, &nx[i], &ny[i], &nz[i]);
+    }
 }
 
 void spherical_ini(int n, Spherical **pq) {
@@ -229,7 +244,7 @@ static void dump_vtk(int nm, Quant *quant, Vectors *vectors, Out *out) {
     vtk_vert(vtk, nm, scalars->nx, "nx");
     vtk_vert(vtk, nm, scalars->ny, "ny");
     vtk_vert(vtk, nm, scalars->nz, "nz");
-    
+
     id = 0;
     vtk_write(vtk, comm, id);
 
@@ -245,6 +260,7 @@ static void main0(const char *cell, Out *out) {
     MeshSpherical *spherical;
     Spherical *sph;
     Quant *quant;
+    Shape shape;
     nm = 1;
     UC(mesh_read_ini_off(cell, /**/ &out->mesh));
     nv = mesh_read_get_nv(out->mesh);
@@ -254,7 +270,11 @@ static void main0(const char *cell, Out *out) {
 
     vert = mesh_read_get_vert(out->mesh);
     UC(vectors_float_ini(nv, vert, /**/ &pos));
+
+     shape = fit_shape(nv, pos);
+
     compute_eng(nv, pos, /**/ quant->eng);
+    compute_normal(&shape, nv, pos, /**/ quant->nx, quant->ny, quant->nz);
 
     mesh_spherical_apply(spherical, nm, pos, /**/ sph->r, sph->theta, sph->phi);
 

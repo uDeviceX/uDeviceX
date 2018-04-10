@@ -37,8 +37,8 @@ ruv: apply1(ruv, r_f, r_r);
 n: apply1(n, r_f, r_r);
 
 L: dot(ruu, n);
-M: dot(rvv, n);
-N: dot(ruv, n);
+M: dot(ruv, n);
+N: dot(rvv, n);
 
 for e in [
   f1=gcfac(diff(f0, r)), f2=gcfac(factor(diff(f0, r, 2))), 'L=L, 'M=M, 'N=N,
