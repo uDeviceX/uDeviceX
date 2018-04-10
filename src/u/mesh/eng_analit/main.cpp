@@ -34,7 +34,7 @@ struct Quant {
 
 struct QuantScalars { Scalars *eng, *nx, *ny, *nz; };
 struct Spherical { double *r, *theta, *phi; };
-struct Shape { double a0, a1, a2, D; }
+struct Shape { double a0, a1, a2, D; };
 static const Shape shape0 = {0.0518, 2.0026, -4.491, -1};
 
 struct Param {
@@ -187,7 +187,7 @@ Shape fit_shape(int nv, Vectors *pos) {
     return shape;
 }
 
-static void compute_n(Shape *shape, int n, Vectors *pos, /**/ double *nx, double *ny, double *nz) {
+static void compute_normal(Shape *shape, int n, Vectors *pos, /**/ double *nx, double *ny, double *nz) {
     int i;
     double x, y, z;
     for (i = 0; i < n; i++) {
@@ -269,7 +269,7 @@ static void main0(const char *cell, Out *out) {
      shape = fit_shape(nv, pos);
                   
     compute_eng(nv, pos, /**/ quant->eng);
-    compute_n(&shape, nv, pos, /**/ quant->nx, quant->ny, quant->nz);
+    compute_normal(&shape, nv, pos, /**/ quant->nx, quant->ny, quant->nz);
 
     mesh_spherical_apply(spherical, nm, pos, /**/ sph->r, sph->theta, sph->phi);
 
