@@ -17,7 +17,7 @@ static void step(TimeLine *time, float dt, float tstart, Sim *s) {
     Wall *wall = &s->wall;
     BForce *bforce = s->bforce;
     const Opt *opt = &s->opt;
-    if (opt->wall && !s->equilibrating)
+    if (active_walls(s))
         UC(wvel_get_step(time_line_get_current(time) - tstart, wall->vel, /**/ wall->velstep));
 
     UC(check_sizes(s));
