@@ -23,6 +23,8 @@
 #include "coords/imp.h"
 #include "algo/utils/dev.h"
 
+#include "io/restart/imp.h"
+
 #include "imp.h"
 
 #include "imp/type.h"
@@ -35,3 +37,4 @@ namespace vcont_dev {
 }
 
 #include "imp/main.h"
+#include "imp/start.h"

@@ -30,16 +30,18 @@ static void id2code(const int id, char *code) {
     }
 }
 
-static void gen_base_name_dump(const char *base, const char *code, const int id, /**/ char *name) {
+static void gen_base_name(const char *pattern, const char *base, const char *code, const int id, /**/ char *name) {
     char idcode[BS] = {0};
     id2code(id, /**/ idcode);
-    CSPR(sprintf(name, PATTERN, base, code, idcode));
+    CSPR(sprintf(name, pattern, base, code, idcode));    
+}
+
+static void gen_base_name_dump(const char *base, const char *code, const int id, /**/ char *name) {
+    gen_base_name(PATTERN, base, code, id, name);
 }
 
 static void gen_base_name_read(const char *base, const char *code, const int id, /**/ char *name) {
-    char idcode[BS] = {0};
-    id2code(id, /**/ idcode);
-    CSPR(sprintf(name, PATTERN ".bop", base, code, idcode));
+    gen_base_name(PATTERN ".bop", base, code, id, name);
 }
 
 template <typename T>
@@ -114,6 +116,26 @@ void restart_write_ss(MPI_Comm comm, const char *base, const char *code, int id,
 
 void restart_read_ss(MPI_Comm comm, const char *base, const char *code, int id, int *n, Solid *ss) {
     read(comm, base, code, id, n, ss);
+}
+
+void restart_write_stream_one_node(MPI_Comm comm, const char *base, const char *code, int id, const void *data, StreamWriter sw) {
+    char name[BS];
+    FILE *f;
+    if (!m::is_master(comm)) return;
+    gen_base_name(PATTERN ".dat", base, code, id, name);
+    UC(efopen(name, "w", &f));
+    UC(sw(data, f));
+    UC(efclose(f));    
+}
+
+void restart_read_stream_one_node(MPI_Comm comm, const char *base, const char *code, int id, StreamReader sr, void *data) {
+    char name[BS];
+    FILE *f;
+    if (!m::is_master(comm)) return;
+    gen_base_name(PATTERN ".dat", base, code, id, name);
+    UC(efopen(name, "r", &f));
+    UC(sr(f, data));
+    UC(efclose(f));    
 }
 
 #undef PATTERN

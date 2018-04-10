@@ -8,6 +8,8 @@
 #include <conf.h>
 #include "inc/conf.h"
 
+#include "mpi/wrapper.h"
+
 #include "inc/type.h"
 #include "inc/def.h"
 #include "utils/msg.h"
