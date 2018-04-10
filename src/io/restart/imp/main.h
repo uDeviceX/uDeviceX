@@ -118,4 +118,24 @@ void restart_read_ss(MPI_Comm comm, const char *base, const char *code, int id, 
     read(comm, base, code, id, n, ss);
 }
 
+void restart_write_stream_one_node(MPI_Comm comm, const char *base, const char *code, int id, const void *data, StreamWriter sw) {
+    char name[BS];
+    FILE *f;
+    if (!m::is_master(comm)) return;
+    gen_base_name(PATTERN ".dat", base, code, id, name);
+    UC(efopen(name, "w", &f));
+    UC(sw(data, f));
+    UC(efclose(f));    
+}
+
+void restart_read_stream_one_node(MPI_Comm comm, const char *base, const char *code, int id, StreamReader sr, void *data) {
+    char name[BS];
+    FILE *f;
+    if (!m::is_master(comm)) return;
+    gen_base_name(PATTERN ".dat", base, code, id, name);
+    UC(efopen(name, "r", &f));
+    UC(sr(f, data));
+    UC(efclose(f));    
+}
+
 #undef PATTERN
