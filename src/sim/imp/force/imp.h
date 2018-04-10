@@ -9,10 +9,10 @@ void forces(float dt, TimeLine *time, Sim *s) {
     
     fluss = opt->fluss && time_line_cross(time, opt->freq_parts);
 
-    UC(clear_forces(flu->ff, flu->q.n));
-    if (active_rig(s))  UC(clear_forces  (rig->ff, rig->q.n));
-    if (active_rbc(s))  UC(clear_forces  (rbc->ff, rbc->q.n));
-    if (fluss)          UC(clear_stresses(flu->ss, flu->q.n));
+    UC(clear_forces(flu->q.n, flu->ff));
+    if (active_rig(s))  UC(clear_forces  (rig->q.n, rig->ff));
+    if (active_rbc(s))  UC(clear_forces  (rbc->q.n, rbc->ff));
+    if (fluss)          UC(clear_stresses(flu->q.n, flu->ss));
     
     UC(forces_dpd(fluss, flu));
     if (active_walls(s)) forces_wall(fluss, s);

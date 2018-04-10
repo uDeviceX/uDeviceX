@@ -17,11 +17,11 @@ void forces_rbc (float dt, const Opt *o, Rbc *r) {
     if (o->rbcstretch) rbc_stretch_apply(r->q.nc, r->stretch, /**/ r->ff);
 }
 
-void clear_forces(Force* ff, int n) {
+void clear_forces(int n, Force* ff) {
     if (n) DzeroA(ff, n);
 }
 
-void clear_stresses(float* ss, int n) {
+void clear_stresses(int n, float* ss) {
     if (n) DzeroA(ss, 6*n);
 }
 
