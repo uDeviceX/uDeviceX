@@ -1,8 +1,30 @@
-x: u;
-y: v;
-rr: x^2 + y^2;
-z: sqrt(1-'rr^2)*(a0 + a1*'rr + a2*'rr^2);
+load("pdiff");
+load("vect");
 
-diff(z, u, 2);
+cross(a, b):=express(a ~ b);
 
-diff(z, 'rr);
+r0: 'u^2 + 'v^2;
+f0: sqrt(1-'r^2)*('a0 + 'a1*'r + 'a2*'r^2);
+
+f00: f(r(v, u)) $
+ru: diff(f00, u);
+rv: diff(f00, v);
+
+ruu: diff(f00, u, 2);
+rvv: diff(f00, v, 2);
+rvu: diff(diff(f00, v), u);
+
+n: cross([1, 0, rv], [0, 1, ru]);
+
+matchdeclare([n, m], numberp) $
+defrule(r_f, pderivop(f,n)(r('v,'u)), ff[n]) $
+defrule(r_r, pderivop(r,n,m)('v,'u),  rr(n, m)) $
+
+rr(i, j):=diff(diff(r0, 'v, i), 'u, j);
+
+apply1(ruu, r_f, r_r);
+apply1(rvv, r_f, r_r);
+apply1(rvu, r_f, r_r);
+
+apply1(n, r_f, r_r);
+
