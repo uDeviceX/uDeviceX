@@ -89,52 +89,69 @@ static void get(Vectors *pos, int i, /**/ double *px, double *py, double *pz) {
 static double sq(double x) { return x*x; }
 static double sqrt0(double x) { return x > 0 ? sqrt(x) : 0; };
 
+enum {QUADRATIC_OK, QUADRATIC_D};
+static int quadratic(double b, double c, /**/ double *px, double *py) {
+    int sgn;
+    double D, x, y;
+
+    sgn = b > 0 ? 1 : -1;
+    D = b*b - 4*c;
+    if (D < 0) return QUADRATIC_D;
+    x = (-b - sgn * sqrt(D)) / 2;
+    y = c / x;
+    if (x > y) {
+        *px = x; *py = y;
+    } else {
+        *px = y; *py = x;
+    }
+    return QUADRATIC_OK;
+}
+
 enum {EIG_OK, EIG_D};
 static int eig(double a, double b, double c, /**/ double *px, double *py) {
     /* eigenvalues(matrix([a, b], [b, c])); */
-    double D, x, y;
-    D = c*c-2*a*c+4*b*b+a*a;
-    if (D < 0) return EIG_D; 
-    x = -(sqrt(D)-c-a)/2; /* TODO: not robust */
-    y =  (sqrt(D)+c+a)/2;
+    int status;
+    double B, C;
+    B = a + c;
+    C = a*c - b*b;
+    status = quadratic(B, C, /**/ px, py);
+    return status == QUADRATIC_OK ? EIG_OK : EIG_D;
+}
+static double cpy_sign(double x, double z) { return  z > 0 ? x : - x; }
 
-    *px = x; *py = y;
-    return EIG_OK;
-}
-
-static double f2(double r, const Shape *q) { /* diff(f, r, 2) */
+static double f2(double r, double z, const Shape *q) { /* diff(f, r, 2) */
     double a0, a1, a2;
     a0 = q->a0; a1 = q->a1; a2 = q->a2;
-    return -(2*(6*r*(a2*(5*r-2)+a1)+a2-2*(a1+a0)))/(sqrt0(1-4*r)*(4*r-1));
+    return cpy_sign(-(2*(6*r*(a2*(5*r-2)+a1)+a2-2*(a1+a0)))/(sqrt0(1-4*r)*(4*r-1)),   z);
 }
-static double f1(double r, const Shape *q) { /* diff(f, r) */
+static double f1(double r, double z, const Shape *q) { /* diff(f, r) */
     double a0, a1, a2;
     a0 = q->a0; a1 = q->a1; a2 = q->a2;
-    return sqrt(1-4*r)*(2*a2*r+a1)-(2*(r*(a2*r+a1)+a0))/sqrt0(1-4*r);
+    return cpy_sign(sqrt(1-4*r)*(2*a2*r+a1)-(2*(r*(a2*r+a1)+a0))/sqrt0(1-4*r),   z);
 }
-static double f(double r, const Shape *q) {
+static double f(double r, double z, const Shape *q) {
     double a0, a1, a2;
     a0 = q->a0; a1 = q->a1; a2 = q->a2;
-    return sqrt0(1 - 4*r) * (a0 + a1*r + a2*r*r);
+    return cpy_sign(sqrt0(1 - 4*r) * (a0 + a1*r + a2*r*r),   z);
 }
 static double r(double x, double y, const Shape *q) {
     double D;
     D = q->D;
     return (x*x + y*y)/sq(D);
 }
-static double zrbc(double x, double y, const Shape *q) {
+static double zrbc(double x, double y, double z, const Shape *q) {
     double r0, D;
     D = q->D;
     r0 = r(x, y, q);
-    return f(r0, q) * D;
+    return f(r0, z, q) * D;
 }
-static void normal(double x, double y, Shape *shape, /**/
+static void normal(double x, double y, double z, Shape *shape, /**/
                    double *pnx, double *pny, double *pnz) {
     enum {X, Y, Z};
     double D, f10, r0, nx, ny, nz;
     D = shape->D;
     r0 = r(x, y, shape);
-    f10 = f1(r0, shape);
+    f10 = f1(r0, z, shape);
     nx = -(2*f10*x)/D;
     ny = -(2*f10*y)/D;
     nz = 1;
@@ -147,27 +164,27 @@ static double norm0(const Shape *shape, int n, Vectors *pos) {
     ans = 0.0;
     for (i = 0; i < n; i++) {
         UC(get(pos, i, /**/ &x, &y, &z));
-        z0 = zrbc(x, y, shape);
+        z0 = zrbc(x, y, z, shape);
         if (z < 0) z0 = -z0;
         ans += sq(z - z0);
     }
     return ans/n;
 }
-static void curv(double x, double y, Shape *shape, /**/ double *pL, double *pM, double *pN) {
+static void curv(double x, double y, double z, Shape *shape, /**/ double *pL, double *pM, double *pN) {
     double L, M, N;
     double D, r0, f10, f20;
     double nx, ny, nz, n;
 
     D = shape->D;
     r0 = r(x, y, shape);
-    f10 = f1(r0, shape);
-    f20 = f2(r0, shape);
+    f10 = f1(r0, z, shape);
+    f20 = f2(r0, z, shape);
 
     L = (4*f20*pow(x,2))/pow(D,3)+(2*f10)/D;
     M = (4*f20*x*y)/pow(D,3);
     N = (4*f20*pow(y,2))/pow(D,3)+(2*f10)/D;
 
-    normal(x, y, shape, &nx, &ny, &nz);
+    normal(x, y, z, shape, &nx, &ny, &nz);
     n = sqrt(nx*nx + ny*ny + nz*nz);
     L /= n; M /= n; N /= n;
 
@@ -219,7 +236,7 @@ static void compute_normal(Shape *shape, int n, Vectors *pos, /**/ double *nx, d
     double x, y, z;
     for (i = 0; i < n; i++) {
         UC(get(pos, i, &x, &y, &z));
-        normal(x, y, shape, &nx[i], &ny[i], &nz[i]);
+        normal(x, y, z, shape, &nx[i], &ny[i], &nz[i]);
     }
 }
 
@@ -228,7 +245,7 @@ static void compute_curv(Shape *shape, int n, Vectors *pos, /**/ double *mean, d
     double x, y, z, L, M, N, k0, k1;
     for (i = 0; i < n; i++) {
         UC(get(pos, i, &x, &y, &z));
-        curv(x, y, shape, /**/ &L, &M, &N);
+        curv(x, y, z, shape, /**/ &L, &M, &N);
         status = eig(L, M, N, /**/ &k0, &k1);
         if (status != EIG_OK)
             ERR("eig fails for: %g %g %g", L, M, N);
@@ -283,7 +300,7 @@ static void dump_vtk(int nm, Quant *quant, Vectors *vectors, Out *out) {
     vtk_vert(vtk, nm, scalars->ny, "ny");
     vtk_vert(vtk, nm, scalars->nz, "nz");
     vtk_vert(vtk, nm, scalars->mean, "mean");
-    vtk_vert(vtk, nm, scalars->gauss, "gauss");    
+    vtk_vert(vtk, nm, scalars->gauss, "gauss");
 
     id = 0;
     vtk_write(vtk, comm, id);
