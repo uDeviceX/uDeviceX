@@ -280,7 +280,7 @@ void sim_ini(const Config *cfg, MPI_Comm cart, /**/ Sim **sim) {
     UC(ini_dump(maxp, s->cart, s->coords, opt, /**/ &s->dump));
 
     UC(bforce_ini(&s->bforce));
-    UC(bforce_set_none(/**/ s->bforce));
+    UC(bforce_set_conf(cfg, s->bforce));
 
     UC(ini_flu(cfg, opt, params, s->cart, maxp, params.L, /**/ &s->flu));    
     if (opt->rbc)  UC(ini_rbc(cfg, opt, s->cart, params.L, /**/ &s->rbc));

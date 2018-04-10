@@ -1,12 +1,9 @@
 static void pre_run(const Config *cfg, Sim *s) {
     s->equilibrating = false;
     
-    UC(bforce_set_conf(cfg, s->bforce));
-
     UC(utils_dump_history(cfg, "conf.history.cfg"));
     UC(dump_strt_templ(s));
-
-    utils_compute_hematocrit(s);
+    UC(utils_compute_hematocrit(s));
 }
 
 static void step(TimeLine *time, float dt, float tstart, Sim *s) {
@@ -34,7 +31,7 @@ static void step(TimeLine *time, float dt, float tstart, Sim *s) {
     it = time_line_get_iteration(time);
     dump_diag(time, s);
     dump_diag_after(time, active_rig(s), s);
-    UC(body_force(bforce, s));
+    if (!s->equilibrating) UC(body_force(bforce, s));
 
     UC(restrain(it, /**/ s));
     UC(update_solvent(dt, /**/ flu));
