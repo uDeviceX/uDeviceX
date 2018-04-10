@@ -1,3 +1,5 @@
+#!/usr/bin/awk -f
+
 function ini() {
     eps = 1e-6
     pi = 3.141592653589793
