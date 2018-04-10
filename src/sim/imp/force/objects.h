@@ -9,7 +9,7 @@ void forces_fsi(ObjInter *oi, int nw, PaWrap *pw, FoWrap *fw) {
 
 void forces_objects(Sim *sim) {
     PaArray parray;
-    Opt opt = sim->opt;
+    const Opt *opt = &sim->opt;
     PaWrap pw[MAX_OBJ_TYPES];
     FoWrap fw[MAX_OBJ_TYPES];
     int nw = 0;
@@ -24,7 +24,7 @@ void forces_objects(Sim *sim) {
         fw[nw] = {s->q.n, s->ff};
         ++nw;
     }
-    if (opt.rbc) {
+    if (opt->rbc) {
         pw[nw] = {r->q.n, r->q.pp};
         fw[nw] = {r->q.n, r->ff};
         ++nw;
@@ -45,14 +45,14 @@ void forces_objects(Sim *sim) {
     /* bulk interactions */
     
     UC(parray_push_pp(f->q.pp, &parray));
-    if (opt.flucolors)
+    if (opt->flucolors)
         parray_push_cc(f->q.cc, &parray);
 
-    if (opt.fsi)
+    if (opt->fsi)
         fsi_bind_solvent(parray, f->ff, f->q.n, f->q.cells.starts, /**/ oi->fsi);
 
-    if (opt.cnt) UC(forces_cnt(oi, nw, pw, fw));
-    if (opt.fsi) UC(forces_fsi(oi, nw, pw, fw));
+    if (opt->cnt) UC(forces_cnt(oi, nw, pw, fw));
+    if (opt->fsi) UC(forces_fsi(oi, nw, pw, fw));
 
     /* recv data and halo interactions  */
 
@@ -63,8 +63,8 @@ void forces_objects(Sim *sim) {
     Pap26 hpp = eobj_upload_shift(e->u);
     Fop26 hff = eobj_reini_ff(e->u, e->pf);
 
-    if (opt.fsi) UC(fsi_halo(oi->fsiparams, oi->fsi, hpp, hff, hcc.d));
-    if (opt.cnt) UC(cnt_halo(oi->cntparams, oi->cnt, nw, pw, fw, hpp, hff, hcc.d));
+    if (opt->fsi) UC(fsi_halo(oi->fsiparams, oi->fsi, hpp, hff, hcc.d));
+    if (opt->cnt) UC(cnt_halo(oi->cntparams, oi->cnt, nw, pw, fw, hpp, hff, hcc.d));
 
     /* send the forces back */ 
     

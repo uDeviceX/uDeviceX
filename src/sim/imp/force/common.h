@@ -2,13 +2,13 @@ void body_force(const BForce *bforce, Sim *s) {
     Flu *flu = &s->flu;
     Rbc *rbc = &s->rbc;
     Rig *rig = &s->rig;
-    Opt *opt = &s->opt;
+    const Opt *opt = &s->opt;
 
     if (opt->push_flu)
         UC(bforce_apply(s->coords, flu->mass, bforce, flu->q.n, flu->q.pp, /**/ flu->ff));
     if (opt->push_rig && active_rig(s))
         UC(bforce_apply(s->coords, rig->mass, bforce, rig->q.n, rig->q.pp, /**/ rig->ff));
-    if (opt->push_rbc && s->opt.rbc)
+    if (opt->push_rbc && opt->rbc)
         UC(bforce_apply(s->coords, rbc->mass, bforce, rbc->q.n, rbc->q.pp, /**/ rbc->ff));
 }
 
@@ -32,10 +32,11 @@ void forces_wall(bool fluss, Wall *w, Sim *s) {
     Rbc *rbc = &s->rbc;
     Rig *rig = &s->rig;
     PairParams *par = flu->params;
+    const Opt *opt = &s->opt;
     parray_push_pp(flu->q.pp, &po);
     parray_push_pp(rig->q.pp, &ps);
     parray_push_pp(rbc->q.pp, &pr);
-    if (s->opt.flucolors)
+    if (opt->flucolors)
         parray_push_cc(flu->q.cc, &po);
 
     farray_push_ff(flu->ff, &fo);
@@ -46,5 +47,5 @@ void forces_wall(bool fluss, Wall *w, Sim *s) {
     
     if (flu->q.n)                  wall_force(par, w->velstep, s->coords, w->sdf, &w->q, w->t, flu->q.n, &po, /**/ &fo);
     if (active_rig(s) && rig->q.n) wall_force(par, w->velstep, s->coords, w->sdf, &w->q, w->t, rig->q.n, &ps, /**/ &fs);
-    if (s->opt.rbc && rbc->q.n)    wall_force(par, w->velstep, s->coords, w->sdf, &w->q, w->t, rbc->q.n, &pr, /**/ &fr);
+    if (opt->rbc && rbc->q.n)      wall_force(par, w->velstep, s->coords, w->sdf, &w->q, w->t, rbc->q.n, &pr, /**/ &fr);
 }
