@@ -25,14 +25,18 @@ void clear_stresses(float* ss, int n) {
     if (n) DzeroA(ss, 6*n);
 }
 
-void forces_wall(bool fluss, Wall *w, Sim *s) {
+void forces_wall(bool fluss, Sim *s) {
     PaArray po, ps, pr;
     FoArray fo, fs, fr;
     Flu *flu = &s->flu;
     Rbc *rbc = &s->rbc;
     Rig *rig = &s->rig;
+    Wall *w = &s->wall;
     PairParams *par = flu->params;
     const Opt *opt = &s->opt;
+
+    if (!w->q.n) return;
+    
     parray_push_pp(flu->q.pp, &po);
     parray_push_pp(rig->q.pp, &ps);
     parray_push_pp(rbc->q.pp, &pr);

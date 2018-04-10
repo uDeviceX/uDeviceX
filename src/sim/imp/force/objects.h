@@ -1,9 +1,9 @@
-void forces_cnt(ObjInter *oi, int nw, PaWrap *pw, FoWrap *fw) {
+static void forces_cnt(ObjInter *oi, int nw, PaWrap *pw, FoWrap *fw) {
     cnt_build_cells(nw, pw, /**/ oi->cnt);
     cnt_bulk(oi->cntparams, oi->cnt, nw, pw, fw);
 }
 
-void forces_fsi(ObjInter *oi, int nw, PaWrap *pw, FoWrap *fw) {
+static void forces_fsi(ObjInter *oi, int nw, PaWrap *pw, FoWrap *fw) {
     fsi_bulk(oi->fsiparams, oi->fsi, nw, pw, fw);
 }
 
