@@ -22,25 +22,32 @@ static void gen_rbc(Sim *s) {
     }
 }
 
-static void freeze(Sim *s) { /* generate */
+static void gen_wall(Sim *s) {
     Flu *flu = &s->flu;
     Wall *w = &s->wall;
-    const Opt *opt = &s->opt;
-    bool dump_sdf = opt->dump_field;
+    bool dump_sdf = s->opt.dump_field;
     long maxp_wall = get_max_parts_wall(s->params);
+    
+    if (s->opt.wall) {
+        UC(sdf_gen(s->coords, s->cart, dump_sdf, /**/ w->sdf));
+        MC(m::Barrier(s->cart));
+        inter_freeze_walls(s->cart, maxp_wall, w->sdf, /*io*/ &flu->q, /**/ &w->q);
+    }
+}
+
+static void freeze(Sim *s) { /* generate */
+    Flu *flu = &s->flu;
+    const Opt *opt = &s->opt;
     
     InterWalInfos winfo = get_winfo(s);
     InterFluInfos finfo = get_finfo(s);
     InterRbcInfos rinfo = get_rinfo(s);
     InterRigInfos sinfo = get_sinfo(s);
-    
-    if (opt->wall) {
-        dSync();
-        UC(sdf_gen(s->coords, s->cart, dump_sdf, /**/ w->sdf));
-        MC(m::Barrier(s->cart));
-        inter_freeze_walls(s->cart, maxp_wall, w->sdf, /*io*/ &flu->q, /**/ &w->q);
-    }
-    inter_freeze(s->coords, s->cart, winfo, /*io*/ finfo, rinfo, sinfo);
+
+    UC(gen_rbc(s));
+    UC(gen_wall(s));
+    dSync();    
+    UC(inter_freeze(s->coords, s->cart, winfo, /*io*/ finfo, rinfo, sinfo));
     clear_vel(s);
 
     if (opt->flucolors) {
@@ -63,7 +70,6 @@ void sim_gen(Sim *s) {
 
     run(tstart, s->time.eq, s);
 
-    UC(gen_rbc(s));
     freeze(/**/ s);
     dSync();
 
