@@ -1,3 +1,15 @@
+static bool active_walls(const Sim *s) {
+    return !s->equilibrating && s->opt.wall;
+}
+
+static bool active_rbc(const Sim *s) {
+    return s->opt.rbc;
+}
+
+static bool active_rig(const Sim *s) {
+    return !s->equilibrating && s->opt.rig;
+}
+
 static double compute_volume_rbc(MPI_Comm comm, const Rbc *r) {
     double loc, tot, V0;
     long nc;
@@ -14,7 +26,7 @@ static double compute_volume_rbc(MPI_Comm comm, const Rbc *r) {
 static void utils_compute_hematocrit(const Sim *s) {
     const Opt *opt = &s->opt;
     double Vdomain, Vrbc, Ht;
-    if (!opt->rbc) return;
+    if (!active_rbc(s)) return;
 
     if (opt->wall) {
         enum {NSAMPLES = 100000};
@@ -58,7 +70,7 @@ static float utils_get_dt(Sim *s, TimeLine *time) {
         time_step_accel_reset(s->time.accel);
         if (flu->q.n)
             time_step_accel_push(s->time.accel, flu->mass, flu->q.n, flu->ff);
-        if (opt->rbc && rbc->q.n)
+        if (active_rbc(s) && rbc->q.n)
             time_step_accel_push(s->time.accel, rbc->mass, rbc->q.n, rbc->ff);
 
         const float dt = time_step_dt(s->time.step, s->cart, s->time.accel);
@@ -68,16 +80,4 @@ static float utils_get_dt(Sim *s, TimeLine *time) {
 
         return dt;
     }
-}
-
-static bool active_walls(const Sim *s) {
-    return !s->equilibrating && s->opt.wall;
-}
-
-static bool active_rbc(const Sim *s) {
-    return s->opt.rbc;
-}
-
-static bool active_rig(const Sim *s) {
-    return !s->equilibrating && s->opt.rig;
 }

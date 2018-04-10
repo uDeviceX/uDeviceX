@@ -11,14 +11,14 @@ static void run_eq(float te, Sim *s) { /* equilibrate */
 }
 
 static void pre_run(const Config *cfg, Sim *s) {
+    s->equilibrating = false;
+    
     UC(bforce_set_conf(cfg, s->bforce));
 
     UC(utils_dump_history(cfg, "conf.history.cfg"));
     UC(dump_strt_templ(s));
 
     utils_compute_hematocrit(s);
-    
-    s->equilibrating = false;
 }
 
 static void run(float ts, float te, Sim *s) {

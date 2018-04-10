@@ -110,8 +110,8 @@ static void dump_strt0(int id, Sim *s) {
     const Opt *opt = &s->opt;
     const char *base = opt->strt_base_dump;
     flu_strt_dump(s->cart, base, id, &flu->q);
-    if (opt->rbc) rbc_strt_dump(s->cart, base, id, &rbc->q);
-    if (opt->rig) rig_strt_dump(s->cart, base, id, &rig->q);
+    if (active_rbc(s)) rbc_strt_dump(s->cart, base, id, &rbc->q);
+    if (active_rig(s)) rig_strt_dump(s->cart, base, id, &rig->q);
 }
 
 static void dump_strt(Sim *s) {

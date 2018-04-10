@@ -14,7 +14,7 @@ static void step(TimeLine *time, float dt, float tstart, Sim *s) {
 
     UC(distribute_flu(s));
     if (active_rig(s)) UC(distribute_rig(/**/ rig));
-    if (opt->rbc)      UC(distribute_rbc(/**/ rbc));
+    if (active_rbc(s)) UC(distribute_rbc(/**/ rbc));
 
     UC(check_sizes(s));
     UC(forces(dt, time, s));
@@ -28,7 +28,7 @@ static void step(TimeLine *time, float dt, float tstart, Sim *s) {
     UC(restrain(it, /**/ s));
     UC(update_solvent(dt, /**/ flu));
     if (active_rig(s)) UC(update_solid(dt, /**/ rig));
-    if (opt->rbc)      UC(update_rbc(dt, it, rbc, s));
+    if (active_rbc(s)) UC(update_rbc(dt, it, rbc, s));
 
     UC(check_vel(dt, s));
     if (opt->vcon && !s->equilibrating) {
@@ -37,7 +37,7 @@ static void step(TimeLine *time, float dt, float tstart, Sim *s) {
         log(it, &s->vcon);
     }
 
-    if (active_walls(s)) bounce_wall(dt, opt->rbc, s->coords, wall, /**/ flu, rbc);
+    if (active_walls(s)) bounce_wall(dt, active_rbc(s), s->coords, wall, /**/ flu, rbc);
 
     if (active_rig(s) && opt->rig_bounce) bounce_solid(dt, s->params.L, /**/ &s->bb, rig, flu);
 

@@ -2,10 +2,9 @@ void clear_vel(Sim *s) {
     Flu *flu = &s->flu;
     Rbc *rbc = &s->rbc;
     Rig *rig = &s->rig;
-    const Opt *opt = &s->opt;
     scheme_move_clear_vel(flu->q.n, flu->q.pp);
-    if (opt->rig) scheme_move_clear_vel(rig->q.n, rig->q.pp);
-    if (opt->rbc) scheme_move_clear_vel(rbc->q.n, rbc->q.pp);
+    if (active_rig(s)) scheme_move_clear_vel(rig->q.n, rig->q.pp);
+    if (active_rbc(s)) scheme_move_clear_vel(rbc->q.n, rbc->q.pp);
 }
 
 void update_solid(float dt, Rig *s) {
