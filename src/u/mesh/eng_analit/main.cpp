@@ -32,17 +32,9 @@ struct Quant {
     double *eng, *nx, *ny, *nz;
 };
 
-struct QuantScalars {
-    Scalars *eng, *nx, *ny, *nz;
-};
-
-struct Spherical {
-    double *r, *theta, *phi;
-};
-
-struct Shape {
-    double a0, a1, a2, D;
-};
+struct QuantScalars { Scalars *eng, *nx, *ny, *nz; };
+struct Spherical { double *r, *theta, *phi; };
+struct Shape { double a0, a1, a2, D; }
 static const Shape shape0 = {0.0518, 2.0026, -4.491, -1};
 
 struct Param {
