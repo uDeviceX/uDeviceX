@@ -212,6 +212,7 @@ Shape fit_shape(int nv, Vectors *pos) {
 }
 
 static void compute_normal(Shape *shape, int n, Vectors *pos, /**/ double *nx, double *ny, double *nz) {
+    /* normal is not normalized! */
     int i;
     double x, y, z;
     for (i = 0; i < n; i++) {
