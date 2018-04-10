@@ -84,25 +84,29 @@ void sim_gen(Sim *s) {
     if (opt->dump_strt) dump_strt_final(s);
 }
 
-void sim_strt(Sim *s) {
+static void restart(Sim *s) {
     Flu *flu = &s->flu;
     Rbc *rbc = &s->rbc;
     Rig *rig = &s->rig;
     Wall *wall = &s->wall;
     MeshRead *cell = s->rbc.cell;
     const Opt *opt = &s->opt;
-    bool dump_sdf = opt->dump_field;
     long maxp_wall = get_max_parts_wall(s->params);
     const char *base_strt_read = opt->strt_base_read;
-
-    /*Q*/
+    
     flu_strt_quants(s->cart, base_strt_read, RESTART_BEGIN, &flu->q);
     if (opt->rbc)   rbc_strt_quants(s->cart, base_strt_read, cell, RESTART_BEGIN, &rbc->q);
     if (opt->rig)   rig_strt_quants(s->cart, base_strt_read,       RESTART_BEGIN, &rig->q);
     if (opt->wall) wall_strt_quants(s->cart, base_strt_read, maxp_wall,          &wall->q);
+}
 
-    /*T*/
-    flu_build_cells(&flu->q);
+void sim_strt(Sim *s) {
+    Wall *wall = &s->wall;
+    const Opt *opt = &s->opt;
+    bool dump_sdf = opt->dump_field;
+
+    restart(s);
+ 
     if (opt->wall && wall->q.n) UC(wall_gen_ticket(&wall->q, wall->t));
 
     MC(m::Barrier(s->cart));
