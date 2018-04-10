@@ -35,8 +35,8 @@ int main(int argc, char **argv) {
     UC(sim_ini(cfg, cart, &sim));
     UC(conf_lookup_bool(cfg, "glb.restart", &restart));
     msg_print("read restart: %s", restart ? "YES" : "NO" );
-    if (restart) UC(sim_strt(sim, cfg));
-    else         UC(sim_gen(sim, cfg));
+    if (restart) UC(sim_strt(sim));
+    else         UC(sim_gen(sim));
     UC(sim_fin(sim));
 
     UC(conf_fin(cfg));

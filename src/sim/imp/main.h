@@ -51,7 +51,7 @@ static void freeze(Sim *s) { /* generate */
     }
 }
 
-void sim_gen(Sim *s, const Config *cfg) {
+void sim_gen(Sim *s) {
     Wall *wall = &s->wall;
     const Opt *opt = &s->opt;
     float tstart = 0;
@@ -71,14 +71,14 @@ void sim_gen(Sim *s, const Config *cfg) {
     if (opt->rbc && opt->flucolors) UC(gen_colors(s));
 
     tstart = s->time.eq;
-    pre_run(cfg, s);
+    pre_run(s);
     run(tstart, s->time.end, s);
 
     /* final strt dump*/
     if (opt->dump_strt) dump_strt_final(s);
 }
 
-void sim_strt(Sim *s, const Config *cfg) {
+void sim_strt(Sim *s) {
     Flu *flu = &s->flu;
     Rbc *rbc = &s->rbc;
     Rig *rig = &s->rig;
@@ -106,7 +106,7 @@ void sim_strt(Sim *s, const Config *cfg) {
         MC(m::Barrier(s->cart));
     }
 
-    pre_run(cfg, s);
+    pre_run(s);
     run(s->time.eq, s->time.end, s);
     if (opt->dump_strt) dump_strt_final(s);
 }

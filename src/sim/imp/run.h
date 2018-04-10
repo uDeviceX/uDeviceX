@@ -1,4 +1,4 @@
-static void pre_run(const Config *cfg, Sim *s) {
+static void pre_run(Sim *s) {
     s->equilibrating = false;
     
     UC(dump_strt_templ(s));
