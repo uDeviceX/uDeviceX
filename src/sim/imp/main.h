@@ -6,7 +6,7 @@ static long get_max_parts_wall(Params params) {
         (L.z + 2 * ZWM);
 }
 
-static void gen(float tw, const Coords *coords, Wall *w, Sim *s) { /* generate */
+static void gen(const Coords *coords, Wall *w, Sim *s) { /* generate */
     Flu *flu = &s->flu;
     Rbc *rbc = &s->rbc;
     Rig *rig = &s->rig;
@@ -31,7 +31,6 @@ static void gen(float tw, const Coords *coords, Wall *w, Sim *s) { /* generate *
     sinfo.empty_pp = opt->rig_empty_pp;
     sinfo.numdensity = s->params.numdensity;
     
-    run_eq(tw, s);
     if (opt->wall) {
         dSync();
         UC(sdf_gen(coords, s->cart, dump_sdf, /**/ w->sdf));
@@ -66,7 +65,8 @@ void sim_gen(Sim *s, const Config *cfg) {
     }
     MC(m::Barrier(s->cart));
     if (opt->wall || opt->rig) {
-        gen(s->time.wall, s->coords, /**/ wall, s);
+        run_eq(s->time.wall, s);
+        gen(s->coords, /**/ wall, s);
         dSync();
         if (opt->wall && wall->q.n) UC(wall_gen_ticket(&wall->q, wall->t));
         if (opt->rbc && opt->flucolors) UC(gen_colors(rbc, &s->colorer, /**/ flu));

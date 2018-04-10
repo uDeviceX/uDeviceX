@@ -53,7 +53,7 @@ static void utils_dump_history(const Config *cfg, const char *fname) {
 }
 
 static float utils_get_dt0(Sim *s) {
-    TimeStep *time_step;    
+    TimeStep *time_step;
     time_step = s->time.step;
     return time_step_dt0(time_step);
 }
