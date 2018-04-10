@@ -13,7 +13,7 @@ f0: sqrt(1-4*'r)*('a0 + 'a1*'r + 'a2*'r^2);
 
 x: u;
 y: v;
-z: D*f(r(v, u)) $
+z: D*f(r(u, v)) $
 
 ru: diff([x, y, z], u);
 rv: diff([x, y, z], v);
@@ -22,14 +22,14 @@ ruu: diff([x, y, z], u, 2);
 rvv: diff([x, y, z], v, 2);
 ruv: diff(diff([x, y, z], v), u);
 
-n: cross(rv, ru);
+n: cross(ru, rv);
 
 matchdeclare([n, m], numberp) $
-defrule(r_f, pderivop(f,n)(r('v,'u)), ff(n)) $
-defrule(r_r, pderivop(r,n,m)('v,'u),  rr(n, m)) $
+defrule(r_f, pderivop(f,n)(r('u,'v)), ff(n)) $
+defrule(r_r, pderivop(r,n,m)('u,'v),  rr(n, m)) $
 
 ff(n):=concat('f, n);
-rr(i, j):=diff(diff(r0, 'v, i), 'u, j);
+rr(i, j):=diff(diff(r0, 'u, i), 'v, j);
 
 ruu: apply1(ruu, r_f, r_r);
 rvv: apply1(rvv, r_f, r_r);
