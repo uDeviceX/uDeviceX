@@ -1,7 +1,6 @@
 static void pre_run(const Config *cfg, Sim *s) {
     s->equilibrating = false;
     
-    UC(utils_dump_history(cfg, "conf.history.cfg"));
     UC(dump_strt_templ(s));
     UC(utils_compute_hematocrit(s));
 }

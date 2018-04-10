@@ -303,6 +303,9 @@ void sim_ini(const Config *cfg, MPI_Comm cart, /**/ Sim **sim) {
 
     UC(inter_color_ini(&s->gen_color));
     UC(inter_color_set_conf(cfg, s->gen_color));
+
+    if (m::is_master(s->cart))
+        UC(utils_dump_history(cfg, "conf.history.cfg"));
     
     MC(m::Barrier(s->cart));
 }
