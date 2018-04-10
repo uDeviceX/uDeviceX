@@ -124,9 +124,9 @@ static void normal(double x, double y, Shape *shape, /**/
     D = shape->D;
     r0 = r(x, y, shape);
     f10 = f1(r0, shape);
-    nx = (2*f10*x)/D;
-    ny = (2*f10*y)/D;
-    nz = -1;
+    nx = -(2*f10*x)/D;
+    ny = -(2*f10*y)/D;
+    nz = 1;
     *pnx = nx; *pny = ny; *pnz = nz;
 }
 static double norm0(const Shape *shape, int n, Vectors *pos) {
