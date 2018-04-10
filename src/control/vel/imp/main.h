@@ -148,21 +148,26 @@ static void reduce_local(Sampler *s, double3 *v, long *n) {
     }
 }
 
-float3 vcont_adjustF(/**/ PidVCont *c) {
-    float3 e, de;
+static float3 average_samples(MPI_Comm comm, Sampler *s) {
     long ncur;
     double3 vcur;
+    double fac;
 
-    UC(reduce_local(&c->sampler, &vcur, &ncur));
+    UC(reduce_local(s, &vcur, &ncur));
 
-    MC(m::Allreduce(MPI_IN_PLACE, &vcur.x, 3, MPI_DOUBLE, MPI_SUM, c->comm));
-    MC(m::Allreduce(MPI_IN_PLACE, &ncur,   1, MPI_LONG,   MPI_SUM, c->comm));
+    MC(m::Allreduce(MPI_IN_PLACE, &vcur.x, 3, MPI_DOUBLE, MPI_SUM, comm));
+    MC(m::Allreduce(MPI_IN_PLACE, &ncur,   1, MPI_LONG,   MPI_SUM, comm));
 
-    const double fac = ncur ? (1.0 / ncur) : 1.0;
-    
+    fac = ncur ? (1.0 / ncur) : 1.0;    
     scal(fac, /**/ &vcur);
 
-    c->current = make_float3(vcur.x, vcur.y, vcur.z);
+    return make_float3(vcur.x, vcur.y, vcur.z);
+}
+
+float3 vcont_adjustF(/**/ PidVCont *c) {
+    float3 e, de, vcur;
+
+    c->current = vcur = average_samples(c->comm, &c->sampler);
 
     diff(&c->target, &vcur, /**/ &e);
     diff(&e, &c->olde, /**/ &de);
