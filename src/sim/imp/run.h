@@ -9,10 +9,10 @@ static void pre_run(const Config *cfg, Sim *s) {
     utils_compute_hematocrit(s);
 }
 
+/* ts, te: time start and end */
 static void run(float ts, float te, Sim *s) {
     float dt;
 
-    /* ts, te: time start and end */
     dt = utils_get_dt0(s);
     while (time_line_get_current(s->time.t) < te) {
         UC(step(s->time.t, dt, ts, s));
