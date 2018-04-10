@@ -85,7 +85,6 @@ static void normal(double x, double y, Shape *q, /**/ double *n) {
     n[Y] = (2*f10*y)/D;
     n[Z] = -1;
 }
-
 static double norm0(double D, int n, Vectors *pos) {
     int i;
     double x, y, z, z0, ans;
@@ -99,6 +98,21 @@ static double norm0(double D, int n, Vectors *pos) {
         ans += sq(z - z0);
     }
     return ans/n;
+}
+static void curv(double x, double y, Shape *q, /**/ double *pL, double *pM, double *pN) {
+    double L, M, N;
+    double D, r0, f10, f20;
+
+    D = q->D;
+    r0 = r(x, y, q);
+    f10 = f1(r0, q);
+    f20 = f2(r0, q);
+
+    L = (4*f20*pow(x,2))/pow(D,3)+(2*f10)/D;
+    M = (4*f20*pow(y,2))/pow(D,3)+(2*f10)/D;
+    N = (4*f20*x*y)/pow(D,3);
+
+    *pL = L; *pM = M; *pN = N;
 }
 static void pos_min_max(int n, Vectors *pos, double *pmi, double *pma) {
     double mi, ma, x, y, z;
@@ -117,7 +131,7 @@ static void fit(int nv, Vectors *pos, /**/ double *pD, double *pno) {
     Param param;
     param.nv = nv; param.pos = pos;
     pos_min_max(nv, pos, /**/ &mi, &ma);
-    
+
     D = ma - mi;
     no = norm(D, &param);
     *pD = D; *pno = no;
