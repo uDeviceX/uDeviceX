@@ -49,12 +49,26 @@ static void get(Vectors *pos, int i, /**/ double *px, double *py, double *pz) {
 
 static double sq(double x) { return x*x; }
 static double sqrt0(double x) { return x > 0 ? sqrt(x) : 0; };
+static double f2(double r, Shape *q) { /* diff(f, r, 2) */
+    double a0, a1, a2;
+    a0 = q->a0; a1 = q->a1; a2 = q->a2;
+    return -(2*(6*r*(a2*(5*r-2)+a1)+a2-2*(a1+a0)))/(sqrt0(1-4*r)*(4*r-1));
+}
+static double f1(double r, Shape *q) { /* diff(f, r) */
+    double a0, a1, a2;
+    a0 = q->a0; a1 = q->a1; a2 = q->a2;
+    return sqrt(1-4*r)*(2*a2*r+a1)-(2*(r*(a2*r+a1)+a0))/sqrt0(1-4*r);
+}
+static double f(double r, Shape *q) {
+    double a0, a1, a2;
+    a0 = q->a0; a1 = q->a1; a2 = q->a2;
+    return sqrt0(1 - 4*r) * (a0 + a1*r + a2*r*r);
+}
 static double zrbc(double x, double y, Shape *q) {
-    double a0, a1, a2, D, r, z;
-    a0 = q->a0; a1 = q->a1; a2 = q->a2; D = q->D;
+    double D, r;
+    D = q->D;
     r = x*x + y*y; r /= sq(D);
-    z  = sqrt0(1 - 4*r) * (a0 + a1*r + a2*r*r);
-    return z * D;
+    return f(r, q) * D;
 }
 static double norm0(double D, int n, Vectors *pos) {
     int i;

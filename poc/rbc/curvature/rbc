@@ -1,30 +1,46 @@
-load("pdiff");
-load("vect");
+load("pdiff")  $
+load("vect")   $
+load("cgrind") $
+load("scifac") $
+
+(X: 1, Y: 2, Z: 3) $
 
 cross(a, b):=express(a ~ b);
+dot(a, b):=express(a . b);
 
-r0: 'u^2 + 'v^2;
-f0: sqrt(1-'r^2)*('a0 + 'a1*'r + 'a2*'r^2);
+r0: ('u^2 + 'v^2)/'D^2;
+f0: sqrt(1-4*'r)*('a0 + 'a1*'r + 'a2*'r^2);
 
-f00: f(r(v, u)) $
-ru: diff(f00, u);
-rv: diff(f00, v);
+x: u;
+y: v;
+z: D*f(r(v, u)) $
 
-ruu: diff(f00, u, 2);
-rvv: diff(f00, v, 2);
-rvu: diff(diff(f00, v), u);
+ru: diff([x, y, z], u);
+rv: diff([x, y, z], v);
 
-n: cross([1, 0, rv], [0, 1, ru]);
+ruu: diff([x, y, z], u, 2);
+rvv: diff([x, y, z], v, 2);
+ruv: diff(diff([x, y, z], v), u);
+
+n: cross(rv, ru);
 
 matchdeclare([n, m], numberp) $
-defrule(r_f, pderivop(f,n)(r('v,'u)), ff[n]) $
+defrule(r_f, pderivop(f,n)(r('v,'u)), ff(n)) $
 defrule(r_r, pderivop(r,n,m)('v,'u),  rr(n, m)) $
 
+ff(n):=concat('f, n);
 rr(i, j):=diff(diff(r0, 'v, i), 'u, j);
 
-apply1(ruu, r_f, r_r);
-apply1(rvv, r_f, r_r);
-apply1(rvu, r_f, r_r);
+ruu: apply1(ruu, r_f, r_r);
+rvv: apply1(rvv, r_f, r_r);
+ruv: apply1(ruv, r_f, r_r);
+n: apply1(n, r_f, r_r);
 
-apply1(n, r_f, r_r);
+L: dot(ruu, n);
+M: dot(rvv, n);
+N: dot(ruv, n);
 
+for e in [
+  f1=gcfac(diff(f0, r)), f2=gcfac(factor(diff(f0, r, 2))), 'L=L, 'M=M, 'N=N,
+  '(n[X]) = n[X], '(n[Y]) = n[Y], '(n[Z]) = n[Z]
+  ] do cgrind(e);
