@@ -148,7 +148,7 @@ struct Vcon {
 
 struct Time {
     TimeLine *t;          /* current time manager         */
-    float end, wall;      /* ent time, freeze time        */
+    float eq, end;        /* freeze time, end time        */
     TimeStep *step;       /* time step manager            */
     TimeStepAccel *accel; /* helper for time step manager */
 };
