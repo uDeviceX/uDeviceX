@@ -190,12 +190,10 @@ static float3 update_state(const Param *p, float3 vcur, State *s) {
 
 float3 vcont_adjustF(/**/ PidVCont *c) {
     float3 vcur;
-
     vcur = average_samples(c->comm, &c->sampler);
     UC(reini_sampler(&c->sampler));
     
     c->f =  update_state(&c->param, vcur, &c->state);
-
     return c->f;
 }
 
