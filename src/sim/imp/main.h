@@ -22,35 +22,6 @@ static void gen_rbc(Sim *s) {
     }
 }
 
-static InterWalInfos get_winfo(Sim *s) {
-    InterWalInfos wi;
-    wi.active = s->opt.wall;
-    wi.sdf = s->wall.sdf;
-    return wi;
-}
-
-static InterFluInfos get_finfo(Sim *s) {
-    InterFluInfos fi;
-    fi.q = &s->flu.q;
-    return fi;
-}
-static InterRbcInfos get_rinfo(Sim *s) {
-    InterRbcInfos ri;
-    ri.active = s->opt.rbc;
-    ri.q = &s->rbc.q;
-    return ri;
-}   
-static InterRigInfos get_sinfo(Sim *s) {
-    InterRigInfos si;
-    si.active = s->opt.rig;
-    si.q = &s->rig.q;
-    si.pi = s->rig.pininfo;
-    si.mass = s->rig.mass;
-    si.empty_pp = s->opt.rig_empty_pp;
-    si.numdensity = s->params.numdensity;
-    return si;
-}
-
 static void freeze(Sim *s) { /* generate */
     Flu *flu = &s->flu;
     Wall *w = &s->wall;
@@ -93,12 +64,11 @@ void sim_gen(Sim *s, const Config *cfg) {
 
     run(tstart, s->time.eq, s);
     
-    if (opt->wall || opt->rig) {
-        freeze(/**/ s);
-        dSync();
-        if (opt->wall && wall->q.n) UC(wall_gen_ticket(&wall->q, wall->t));
-        tstart = s->time.eq;
-    }
+    freeze(/**/ s);
+    dSync();
+    if (opt->wall && wall->q.n) UC(wall_gen_ticket(&wall->q, wall->t));
+    tstart = s->time.eq;
+
     if (opt->rbc && opt->flucolors) UC(gen_colors(s));
     
     pre_run(cfg, s);

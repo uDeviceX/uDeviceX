@@ -81,3 +81,34 @@ static float utils_get_dt(Sim *s, TimeLine *time) {
         return dt;
     }
 }
+
+static InterWalInfos get_winfo(Sim *s) {
+    InterWalInfos wi;
+    wi.active = s->opt.wall;
+    wi.sdf = s->wall.sdf;
+    return wi;
+}
+
+static InterFluInfos get_finfo(Sim *s) {
+    InterFluInfos fi;
+    fi.q = &s->flu.q;
+    return fi;
+}
+
+static InterRbcInfos get_rinfo(Sim *s) {
+    InterRbcInfos ri;
+    ri.active = s->opt.rbc;
+    ri.q = &s->rbc.q;
+    return ri;
+}   
+
+static InterRigInfos get_sinfo(Sim *s) {
+    InterRigInfos si;
+    si.active = s->opt.rig;
+    si.q = &s->rig.q;
+    si.pi = s->rig.pininfo;
+    si.mass = s->rig.mass;
+    si.empty_pp = s->opt.rig_empty_pp;
+    si.numdensity = s->params.numdensity;
+    return si;
+}
