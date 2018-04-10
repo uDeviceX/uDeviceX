@@ -198,9 +198,10 @@ static void fit(int nv, Vectors *pos, /**/ Shape *pshape, double *pno) {
     *pshape = shape; *pno = no;
 }
 
-static void compute_eng(int nv, Vectors *pos, /**/ double *eng) {
+static void compute_eng(int n, double *mean, /**/ double *eng) {
     int i;
-    for (i = 0; i < nv; i++) eng[i] = i;
+    for (i = 0; i < n; i++)
+        eng[i] = mean[i]*mean[i];
 }
 
 Shape fit_shape(int nv, Vectors *pos) {
@@ -230,9 +231,9 @@ static void compute_curv(Shape *shape, int n, Vectors *pos, /**/ double *mean, d
         curv(x, y, shape, &L, &M, &N);
         status = eig(L, M, N, /**/ &k0, &k1);
         if (status != EIG_OK)
-            ERR("eig fails for: %g %g %g\n", L, M, N);
-        mean[i] = k0 + k1;
-        gauss[i] = k0*k1;
+            ERR("eig fails for: %g %g %g", L, M, N);
+        mean[i] = (k0 + k1)/2;
+        gauss[i] = k0 * k1;
     }
 }
 
@@ -312,9 +313,9 @@ static void main0(const char *cell, Out *out) {
 
      shape = fit_shape(nv, pos);
 
-    compute_eng(nv, pos, /**/ quant->eng);
     compute_normal(&shape, nv, pos, /**/ quant->nx, quant->ny, quant->nz);
     compute_curv(&shape, nv, pos, /**/ quant->mean, quant->gauss);
+    compute_eng(nv, quant->mean, /**/ quant->eng);
 
     mesh_spherical_apply(spherical, nm, pos, /**/ sph->r, sph->theta, sph->phi);
     dump_vtk(nm, quant, pos, out);
