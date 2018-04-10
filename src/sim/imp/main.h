@@ -75,8 +75,10 @@ void sim_gen(Sim *s, const Config *cfg) {
     UC(gen_rbc(s));
 
     MC(m::Barrier(s->cart));
+
+    run(tstart, s->time.eq, s);
+    
     if (opt->wall || opt->rig) {
-        run(tstart, s->time.eq, s);
         freeze(/**/ s);
         dSync();
         if (opt->wall && wall->q.n) UC(wall_gen_ticket(&wall->q, wall->t));
