@@ -117,15 +117,17 @@ static double zrbc(double x, double y, const Shape *q) {
     r0 = r(x, y, q);
     return f(r0, q) * D;
 }
-static void normal(double x, double y, Shape *q, /**/ double *n) {
+static void normal(double x, double y, Shape *shape, /**/
+                   double *pnx, double *pny, double *pnz) {
     enum {X, Y, Z};
-    double D, f10, r0;
-    D = q->D;
-    r0 = r(x, y, q);
-    f10 = f1(r0, q);
-    n[X] = (2*f10*x)/D;
-    n[Y] = (2*f10*y)/D;
-    n[Z] = -1;
+    double D, f10, r0, nx, ny, nz;
+    D = shape->D;
+    r0 = r(x, y, shape);
+    f10 = f1(r0, shape);
+    nx = (2*f10*x)/D;
+    ny = (2*f10*y)/D;
+    nz = -1;
+    *pnx = nx; *pny = ny; *pnz = nz;
 }
 static double norm0(const Shape *shape, int n, Vectors *pos) {
     int i;
@@ -193,8 +195,13 @@ Shape fit_shape(int nv, Vectors *pos) {
     return shape;
 }
 
-static void compute_n(int nv, Vectors *pos, /**/ double *nx, double *ny, double *nz) {
-    
+static void compute_n(Shape *shape, int n, Vectors *pos, /**/ double *nx, double *ny, double *nz) {
+    int i;
+    double x, y, z;
+    for (i = 0; i < n; i++) {
+        get(pos, i, &x, &y, &z);
+        normal(x, y, shape, &nx[i], &ny[i], &nz[i]);
+    }    
 }
 
 void spherical_ini(int n, Spherical **pq) {
@@ -256,7 +263,7 @@ static void main0(const char *cell, Out *out) {
     MeshSpherical *spherical;
     Spherical *sph;
     Quant *quant;
-    Shape q;
+    Shape shape;
     nm = 1;
     UC(mesh_read_ini_off(cell, /**/ &out->mesh));
     nv = mesh_read_get_nv(out->mesh);
@@ -267,9 +274,10 @@ static void main0(const char *cell, Out *out) {
     vert = mesh_read_get_vert(out->mesh);
     UC(vectors_float_ini(nv, vert, /**/ &pos));
 
-    q = fit_shape(nv, pos);
+     shape = fit_shape(nv, pos);
                   
     compute_eng(nv, pos, /**/ quant->eng);
+    compute_n(&shape, nv, pos, /**/ quant->nx, quant->ny, quant->nz);
 
     mesh_spherical_apply(spherical, nm, pos, /**/ sph->r, sph->theta, sph->phi);
 
