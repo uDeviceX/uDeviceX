@@ -225,11 +225,10 @@ static void compute_normal(Shape *shape, int n, Vectors *pos, /**/ double *nx, d
 
 static void compute_curv(Shape *shape, int n, Vectors *pos, /**/ double *mean, double *gauss) {
     int i, status;
-    double L, M, N, k0, k1;
-    double x, y, z;
+    double x, y, z, L, M, N, k0, k1;
     for (i = 0; i < n; i++) {
         UC(get(pos, i, &x, &y, &z));
-        curv(x, y, shape, &L, &M, &N);
+        curv(x, y, shape, /**/ &L, &M, &N);
         status = eig(L, M, N, /**/ &k0, &k1);
         if (status != EIG_OK)
             ERR("eig fails for: %g %g %g", L, M, N);
