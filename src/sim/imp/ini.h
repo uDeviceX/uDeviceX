@@ -221,7 +221,7 @@ static long maxp_estimate(const Params *p) {
 static void ini_time(const Config *cfg, /**/ Time *t) {
     const float t0 = 0;
     UC(conf_lookup_float(cfg, "time.end",  &t->end));
-    UC(conf_lookup_float(cfg, "time.wall", &t->wall));
+    UC(conf_lookup_float(cfg, "time.wall", &t->eq));
     UC(time_line_ini(t0, &t->t));
     UC(time_step_ini(cfg, &t->step));
     UC(time_step_accel_ini(&t->accel));
