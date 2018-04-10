@@ -27,6 +27,15 @@ struct Out {
     const char *path;
 };
 
+struct Quant {
+    int n;
+    double *eng, *nx, *ny, *nz;
+};
+
+struct QuantScalars {
+    Scalars *eng, *nx, *ny, *nz;
+};
+
 struct Spherical {
     double *r, *theta, *phi;
 };
@@ -39,6 +48,38 @@ struct Param {
     int nv;
     Vectors *pos;
 };
+
+static void quant_scalars_ini(Quant *u, QuantScalars **pq) {
+    int n;
+    QuantScalars *q;
+    EMALLOC(1, &q);
+    n = u->n;
+    scalars_double_ini(n, u->eng, /**/ &q->eng);
+    scalars_double_ini(n, u->nx, /**/ &q->nx);
+    scalars_double_ini(n, u->ny, /**/ &q->ny);
+    scalars_double_ini(n, u->nz, /**/ &q->nz);
+    *pq = q;
+}
+
+static void quant_scalars_fin(QuantScalars *q) {
+    scalars_fin(q->eng);
+    scalars_fin(q->nx); scalars_fin(q->ny); scalars_fin(q->nz);
+    EFREE(q);
+}
+
+static void quant_ini(int n, Quant **pq) {
+    Quant *q;
+    EMALLOC(1, &q);
+    EMALLOC(n, &q->eng);
+    EMALLOC(n, &q->nx); EMALLOC(n, &q->ny); EMALLOC(n, &q->nz);
+    q->n = n;
+    *pq = q;
+}
+static void quant_fin(Quant *q) {
+    EFREE(q->eng);
+    EFREE(&q->nx); EFREE(&q->ny); EFREE(&q->nz);
+    EFREE(q);
+}
 
 static void get(Vectors *pos, int i, /**/ double *px, double *py, double *pz) {
     enum {X, Y, Z};
@@ -164,28 +205,35 @@ static void dump_txt(int nv, int nm, Spherical *sph, const double *a) {
         printf("%g %g %g %g\n", sph->r[i], sph->theta[i], sph->phi[i], a[i]);
 }
 
-static void dump_vtk(int nv, int nm, const double *eng, Vectors *vectors, Out *out) {
+static void dump_vtk(int nm, Quant *quant, Vectors *vectors, Out *out) {
     int id;
     VTKConf *conf;
     VTK *vtk;
     MeshRead *mesh;
     const char *path;
     MPI_Comm comm;
-    Scalars *scalars;
+    QuantScalars *scalars;
 
     mesh = out->mesh; comm = out->comm; path = out->path;
-    scalars_double_ini(nv, eng, /**/ &scalars);
+    quant_scalars_ini(quant, /**/ &scalars);
 
     vtk_conf_ini(mesh, &conf);
     vtk_conf_vert(conf, "eng");
+    vtk_conf_vert(conf, "nx");
+    vtk_conf_vert(conf, "ny");
+    vtk_conf_vert(conf, "nz");
 
     vtk_ini(comm, nm, path, conf, &vtk);
     vtk_points(vtk, nm, vectors);
-    vtk_vert(vtk, nm, scalars, "eng");
+    vtk_vert(vtk, nm, scalars->eng, "eng");
+    vtk_vert(vtk, nm, scalars->nx, "nx");
+    vtk_vert(vtk, nm, scalars->ny, "ny");
+    vtk_vert(vtk, nm, scalars->nz, "nz");
+    
     id = 0;
     vtk_write(vtk, comm, id);
 
-    scalars_fin(scalars);
+    quant_scalars_fin(scalars);
     vtk_fin(vtk);
     vtk_conf_fin(conf);
 }
@@ -196,28 +244,27 @@ static void main0(const char *cell, Out *out) {
     Vectors  *pos;
     MeshSpherical *spherical;
     Spherical *sph;
-    double *eng;
+    Quant *quant;
     nm = 1;
     UC(mesh_read_ini_off(cell, /**/ &out->mesh));
     nv = mesh_read_get_nv(out->mesh);
+    quant_ini(nv, &quant);
     spherical_ini(nv, &sph);
     UC(mesh_spherical_ini(nv, /**/ &spherical));
 
     vert = mesh_read_get_vert(out->mesh);
     UC(vectors_float_ini(nv, vert, /**/ &pos));
-
-    EMALLOC(nv, &eng);
-    compute_eng(nv, pos, /**/ eng);
+    compute_eng(nv, pos, /**/ quant->eng);
 
     mesh_spherical_apply(spherical, nm, pos, /**/ sph->r, sph->theta, sph->phi);
 
-    dump_vtk(nv, nm, eng, pos, out);
-    dump_txt(nv, nm, sph, eng);
+    dump_vtk(nm, quant, pos, out);
+    dump_txt(nv, nm, sph, quant->eng);
 
+    UC(quant_fin(quant));
     UC(vectors_fin(pos));
     UC(mesh_spherical_fin(spherical));
     UC(mesh_read_fin(out->mesh));
-    EFREE(eng);
 }
 
 int main(int argc, char **argv) {
