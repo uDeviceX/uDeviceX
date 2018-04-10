@@ -14,13 +14,9 @@ union Trans {
     TRad  rad;
 };
 
-/* pid velocity controller */
-struct PidVCont {
+
+struct Sampler {
     int3 L;                   /* subdomain size                                  */
-    float3 target, current;   /* target and current average velocities           */
-    float Kp, Ki, Kd, factor; /* parameters of the pid controller                */
-    float3 olde, sume;        /* previous error, sum of all previous errors      */
-    float3 f;                 /* force estimate                                  */
     long nsamples;            /* number of "pending" avg on grid                 */
     
     float3 *gridvel;          /* sum of velocity per grid point                  */
@@ -29,7 +25,17 @@ struct PidVCont {
     int    *totnum;
     float3 *dtotvel;          /* device pointer of the above                     */
     int    *dtotnum;
+};
 
+/* pid velocity controller */
+struct PidVCont {
+    float3 target, current;   /* target and current average velocities           */
+    float Kp, Ki, Kd, factor; /* parameters of the pid controller                */
+    float3 olde, sume;        /* previous error, sum of all previous errors      */
+    float3 f;                 /* force estimate                                  */
+
+    Sampler sampler;          /* helper to average velocity on device            */
+    
     MPI_Comm comm;
 
     FILE *fdump;              /* output file for logging info                    */
