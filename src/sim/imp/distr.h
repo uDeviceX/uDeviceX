@@ -15,16 +15,17 @@ void distribute_flu(Sim *s) {
     FluQuants *q = &s->flu.q;
     FluDistr *d = &s->flu.d;
     int ndead;
+    const Opt *opt = &s->opt;
 
     NVTX_PUSH("distr_flu");
     
-    lp.pp        = q->pp;
+    lp.pp = q->pp;
 
-    if (s->opt.denoutflow) {
+    if (opt->denoutflow) {
         lp.deathlist = den_get_deathlist(s->denoutflow);
         ndead        = den_get_ndead(s->denoutflow);
     }
-    else if (s->opt.outflow) {
+    else if (opt->outflow) {
         lp.deathlist = outflow_get_deathlist(s->outflow);
         ndead        = outflow_get_ndead    (s->outflow);
     } else {

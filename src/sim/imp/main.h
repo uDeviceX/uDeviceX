@@ -89,7 +89,7 @@ void sim_strt(Sim *s, const Config *cfg) {
     const Opt *opt = &s->opt;
     bool dump_sdf = opt->dump_field;
     long maxp_wall = get_max_parts_wall(s->params);
-    const char *base_strt_read = s->opt.strt_base_read;
+    const char *base_strt_read = opt->strt_base_read;
 
     /*Q*/
     flu_strt_quants(s->cart, base_strt_read, RESTART_BEGIN, &flu->q);
