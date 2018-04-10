@@ -21,8 +21,8 @@ void vcont_set_radial(/**/ PidVCont *c);  // <4>
 void vcont_set_conf(const Config *cfg, /**/ PidVCont *c);
 // end::cnf[]
 
-void vcont_stream_write_state(const PidVCont*, FILE*);
-void vcont_stream_read_state(FILE*, PidVCont*);
+void vcont_strt_dump(MPI_Comm, const char *base, int id, const PidVCont*);
+void vcont_strt_read(MPI_Comm, const char *base, int id, PidVCont*);
 
 // tag::int[]
 void   vcont_sample(const Coords *coords, int n, const Particle *pp, const int *starts, const int *counts, /**/ PidVCont *c); // <1>
