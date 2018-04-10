@@ -74,7 +74,7 @@ void sim_gen(Sim *s) {
     dSync();
 
     if (opt->wall && wall->q.n)     UC(wall_gen_ticket(&wall->q, wall->t));
-    if (opt->rbc && opt->flucolors) UC(gen_colors(s));
+    if (opt->rbc && opt->flucolors) UC(colors_from_rbc(s));
 
     tstart = s->time.eq;
     pre_run(s);
