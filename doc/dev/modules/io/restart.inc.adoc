@@ -33,6 +33,15 @@ include::{src}/io/restart/imp.h[tag=write]
 <1> write particle data
 <2> write integer data
 <3> write rigid data
+<4> the master rank only writes to a stream (text file)
+
+The stream writer and reader make use of a function pointer:
+
+[source,cpp]
+----
+include::{src}/io/restart/imp.h[tag=stream]
+----
+where the data is passed through a `void` pointer.
 
 The reader functions are symmetric to the writer:
 
