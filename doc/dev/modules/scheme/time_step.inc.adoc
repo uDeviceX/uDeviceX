@@ -1,19 +1,78 @@
 = Time step
 
-Return time step based on the current state of the simulation. If
-`type=const` always return the same timestep. If `type=disp` return
-timestep based on the maximum accelaration. `TimeStepAccel` is
-constructed using `time_step_accel_push`.
+Time step manager.
 
-`float time_step_dt(TimeStep*, MPI_Comm, TimeStepAccel*);`
+Two possible modes:
+
+* `const`: constant timestep
+* `disp`: adaptive time step based on the maximum acceleration of
+   given particles
+
+== interface
+
+allocate, deallocate the object:
 
 [source,cpp]
 ----
-include::{src}/scheme/time_step/imp.h[tag=accel]
+include::{src}/scheme/time_step/imp.h[tag=mem]
 ----
-
+<1> The mode is initialised from <<conf, configuration file>>. See
+    <<scheme_time_step_conf>> for syntax.
 
 [source,cpp]
 ----
-include::{src}/scheme/time_step/imp.h[tag=interface]
+include::{src}/scheme/time_step/imp.h[tag=int]
 ----
+<1> Compute and return current timestep depending on the mode.
+    See <<scheme_time_step_acc>> for `ImeStepAccel` argument.
+<2> return previous timestep
+<3> print time step informations to screen
+
+[[scheme_time_step_acc]]
+== acceleration manager
+
+Helper structure to pack multiple arrays of acceleration
+
+allocate, deallocate the structure:
+
+[source,cpp]
+----
+include::{src}/scheme/time_step/imp.h[tag=amem]
+----
+
+interface:
+
+[source,cpp]
+----
+include::{src}/scheme/time_step/imp.h[tag=aint]
+----
+<1> add an array of forces. `m` is the mass of the particles.
+<2> remove all pushed arrays
+
+[[scheme_time_step_conf]]
+== Configuration
+
+constant timestep `dt = 1e-3` (no log):
+
+[source,cfg]
+----
+time = {
+     type = "const"
+     dt = 1e-3
+     screenlog = false
+}
+----
+
+adaptive timestep with maximum `dt = 1e-2` and maximum displacement
+`dx = 0.1` (active log):
+
+[source,cfg]
+----
+time = {
+     type = "disp"
+     dt = 1e-2
+     dx = 0.1
+     screenlog = true
+}
+----
+
