@@ -93,13 +93,13 @@ static void main0(const char *cell, Out *out) {
     const float *vert;
     Vectors  *pos;
     MeshCylindrical *cylindrical;
-    Cylindrical *sph;
+    Cylindrical *cyl;
     double *eng_edg, *eng_vert, kb, angle;
     nm = 1; kb = 1; angle = 0;
     UC(mesh_read_ini_off(cell, /**/ &out->mesh));
     UC(mesh_eng_kantor_ini(out->mesh, nm, /**/ &eng_kantor));
     nv = mesh_read_get_nv(out->mesh);
-    cylindrical_ini(nv, &sph);
+    cylindrical_ini(nv, &cyl);
     UC(mesh_cylindrical_ini(nv, /**/ &cylindrical));
     ne = mesh_read_get_ne(out->mesh);
 
@@ -111,11 +111,11 @@ static void main0(const char *cell, Out *out) {
 
     mesh_eng_kantor_apply(eng_kantor, nm, pos,
                           kb, angle, /**/ eng_edg);
-    mesh_cylindrical_apply(cylindrical, nm, pos, /**/ sph->r, sph->phi, sph->z);
+    mesh_cylindrical_apply(cylindrical, nm, pos, /**/ cyl->r, cyl->phi, cyl->z);
     scatter(nm, out->mesh, eng_edg, /**/ eng_vert);
 
     dump_vtk(nv, nm, eng_vert, pos, out);
-    dump_txt(nv, nm, sph, eng_vert);
+    dump_txt(nv, nm, cyl, eng_vert);
 
     mesh_eng_kantor_fin(eng_kantor);
     UC(vectors_fin(pos));
