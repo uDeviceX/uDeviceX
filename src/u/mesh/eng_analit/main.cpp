@@ -278,11 +278,11 @@ void cylindrical_fin(Cylindrical *q) {
     EFREE(q);
 }
 
-static void dump_txt(int nv, int nm, Cylindrical *sph, const double *a) {
+static void dump_txt(int nv, int nm, Cylindrical *cyl, const double *a) {
     int n, i;
     n = nv * nm;
     for (i = 0; i < n; i++)
-        printf("%g %g %g %g\n", sph->r[i], sph->phi[i], sph->z[i], a[i]);
+        printf("%g %g %g %g\n", cyl->r[i], cyl->phi[i], cyl->z[i], a[i]);
 }
 
 static void dump_vtk(int nm, Quant *quant, Vectors *vectors, Out *out) {
@@ -335,14 +335,14 @@ static void main0(const char *cell, Out *out) {
     const float *vert;
     Vectors  *pos;
     MeshCylindrical *cylindrical;
-    Cylindrical *sph;
+    Cylindrical *cyl;
     Quant *quant;
     Shape shape;
     nm = 1;
     UC(mesh_read_ini_off(cell, /**/ &out->mesh));
     nv = mesh_read_get_nv(out->mesh);
     quant_ini(nv, &quant);
-    cylindrical_ini(nv, &sph);
+    cylindrical_ini(nv, &cyl);
     UC(mesh_cylindrical_ini(nv, /**/ &cylindrical));
 
     vert = mesh_read_get_vert(out->mesh);
@@ -354,9 +354,9 @@ static void main0(const char *cell, Out *out) {
     compute_curv(&shape, nv, pos, /**/ quant->L, quant->M, quant->N, quant->mean, quant->gauss);
     compute_eng(nv, quant->mean, /**/ quant->eng);
 
-    mesh_cylindrical_apply(cylindrical, nm, pos, /**/ sph->r, sph->phi, sph->z);
+    mesh_cylindrical_apply(cylindrical, nm, pos, /**/ cyl->r, cyl->phi, cyl->z);
     dump_vtk(nm, quant, pos, out);
-    dump_txt(nv, nm, sph, quant->eng);
+    dump_txt(nv, nm, cyl, quant->eng);
 
     UC(quant_fin(quant));
     UC(vectors_fin(pos));
