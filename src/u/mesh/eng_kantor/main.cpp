@@ -13,7 +13,7 @@
 
 #include "mesh/eng_kantor/imp.h"
 #include "mesh/scatter/imp.h"
-#include "mesh/spherical/imp.h"
+#include "mesh/cylindrical/imp.h"
 
 #include "io/vtk/imp.h"
 
@@ -26,23 +26,23 @@ struct Out {
     const char *path;
 };
 
-struct Spherical {
+struct Cylindrical {
     double *r, *theta, *phi;
 };
 
-void spherical_ini(int n, Spherical **pq) {
-    Spherical *q;
+void cylindrical_ini(int n, Cylindrical **pq) {
+    Cylindrical *q;
     EMALLOC(1, &q);
     EMALLOC(n, &q->r); EMALLOC(n, &q->theta); EMALLOC(n, &q->phi);
     *pq = q;
 }
 
-void spherical_fin(Spherical *q) {
+void cylindrical_fin(Cylindrical *q) {
     EFREE(q->r); EFREE(q->theta); EFREE(q->phi);
     EFREE(q);
 }
 
-static void dump_txt(int nv, int nm, Spherical *sph, const double *a) {
+static void dump_txt(int nv, int nm, Cylindrical *sph, const double *a) {
     int n, i;
     n = nv * nm;
     for (i = 0; i < n; i++)
@@ -92,15 +92,15 @@ static void main0(const char *cell, Out *out) {
     MeshEngKantor *eng_kantor;
     const float *vert;
     Vectors  *pos;
-    MeshSpherical *spherical;
-    Spherical *sph;
+    MeshCylindrical *cylindrical;
+    Cylindrical *sph;
     double *eng_edg, *eng_vert, kb, angle;
     nm = 1; kb = 1; angle = 0;
     UC(mesh_read_ini_off(cell, /**/ &out->mesh));
     UC(mesh_eng_kantor_ini(out->mesh, nm, /**/ &eng_kantor));
     nv = mesh_read_get_nv(out->mesh);
-    spherical_ini(nv, &sph);
-    UC(mesh_spherical_ini(nv, /**/ &spherical));
+    cylindrical_ini(nv, &sph);
+    UC(mesh_cylindrical_ini(nv, /**/ &cylindrical));
     ne = mesh_read_get_ne(out->mesh);
 
     vert = mesh_read_get_vert(out->mesh);
@@ -111,7 +111,7 @@ static void main0(const char *cell, Out *out) {
 
     mesh_eng_kantor_apply(eng_kantor, nm, pos,
                           kb, angle, /**/ eng_edg);
-    mesh_spherical_apply(spherical, nm, pos, /**/ sph->r, sph->theta, sph->phi);
+    mesh_cylindrical_apply(cylindrical, nm, pos, /**/ sph->r, sph->theta, sph->phi);
     scatter(nm, out->mesh, eng_edg, /**/ eng_vert);
 
     dump_vtk(nv, nm, eng_vert, pos, out);
@@ -119,7 +119,7 @@ static void main0(const char *cell, Out *out) {
 
     mesh_eng_kantor_fin(eng_kantor);
     UC(vectors_fin(pos));
-    UC(mesh_spherical_fin(spherical));
+    UC(mesh_cylindrical_fin(cylindrical));
     UC(mesh_read_fin(out->mesh));
     EFREE(eng_vert);
     EFREE(eng_edg);
