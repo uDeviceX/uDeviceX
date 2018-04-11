@@ -28,10 +28,10 @@ struct Out {
 
 struct Quant {
     int n;
-    double *eng, *nx, *ny, *nz, *mean, *gauss;
+    double *eng, *nx, *ny, *nz, *mean, *gauss, *L, *M, *N;
 };
 struct QuantScalars {
-    Scalars *eng, *nx, *ny, *nz, *mean, *gauss;
+    Scalars *eng, *nx, *ny, *nz, *mean, *gauss, *L, *M, *N;
 };
 struct Spherical { double *r, *theta, *phi; };
 struct Shape { double a0, a1, a2, D; };
@@ -53,6 +53,9 @@ static void quant_scalars_ini(Quant *u, QuantScalars **pq) {
     scalars_double_ini(n, u->nz, /**/ &q->nz);
     scalars_double_ini(n, u->mean, /**/ &q->mean);
     scalars_double_ini(n, u->gauss, /**/ &q->gauss);
+    scalars_double_ini(n, u->L, /**/ &q->L);
+    scalars_double_ini(n, u->M, /**/ &q->M);
+    scalars_double_ini(n, u->N, /**/ &q->N);
     *pq = q;
 }
 
@@ -60,6 +63,7 @@ static void quant_scalars_fin(QuantScalars *q) {
     scalars_fin(q->eng);
     scalars_fin(q->nx); scalars_fin(q->ny); scalars_fin(q->nz);
     scalars_fin(q->mean); scalars_fin(q->gauss);
+    scalars_fin(q->L); scalars_fin(q->M); scalars_fin(q->N);
     EFREE(q);
 }
 
@@ -69,6 +73,7 @@ static void quant_ini(int n, Quant **pq) {
     EMALLOC(n, &q->eng);
     EMALLOC(n, &q->nx); EMALLOC(n, &q->ny); EMALLOC(n, &q->nz);
     EMALLOC(n, &q->mean); EMALLOC(n, &q->gauss);
+    EMALLOC(n, &q->L); EMALLOC(n, &q->M); EMALLOC(n, &q->N);
     q->n = n;
     *pq = q;
 }
@@ -76,6 +81,7 @@ static void quant_fin(Quant *q) {
     EFREE(q->eng);
     EFREE(q->nx); EFREE(q->ny); EFREE(q->nz);
     EFREE(q->mean); EFREE(q->gauss);
+    EFREE(q->L); EFREE(q->M); EFREE(q->N);
     EFREE(q);
 }
 
@@ -118,16 +124,19 @@ static int eig(double a, double b, double c, /**/ double *px, double *py) {
     return status == QUADRATIC_OK ? EIG_OK : EIG_D;
 }
 static double cpy_sign(double x, double z) { return  z > 0 ? x : - x; }
-
-static double f2(double r, double z, const Shape *q) { /* diff(f, r, 2) */
-    double a0, a1, a2;
-    a0 = q->a0; a1 = q->a1; a2 = q->a2;
-    return cpy_sign(-(2*(6*r*(a2*(5*r-2)+a1)+a2-2*(a1+a0)))/(sqrt0(1-4*r)*(4*r-1)),   z);
-}
 static double f1(double r, double z, const Shape *q) { /* diff(f, r) */
     double a0, a1, a2;
     a0 = q->a0; a1 = q->a1; a2 = q->a2;
-    return cpy_sign(sqrt(1-4*r)*(2*a2*r+a1)-(2*(r*(a2*r+a1)+a0))/sqrt0(1-4*r),   z);
+    return cpy_sign(
+                    -(10*a2*pow(r,2)+(6*a1-2*a2)*r-a1+2*a0)/sqrt0(1-4*r),
+                    z);
+}
+static double f2(double r, double z, const Shape *q) { /* diff(f, r, 2) */
+    double a0, a1, a2;
+    a0 = q->a0; a1 = q->a1; a2 = q->a2;
+    return cpy_sign(
+                    -(2*(6*r*(a2*(5*r-2)+a1)+a2-2*(a1+a0)))/(sqrt0(1-4*r)*(4*r-1)),
+                    z);
 }
 static double f(double r, double z, const Shape *q) {
     double a0, a1, a2;
@@ -148,13 +157,15 @@ static double zrbc(double x, double y, double z, const Shape *q) {
 static void normal(double x, double y, double z, Shape *shape, /**/
                    double *pnx, double *pny, double *pnz) {
     enum {X, Y, Z};
-    double D, f10, r0, nx, ny, nz;
+    double D, f10, r0, nx, ny, nz, u;
     D = shape->D;
     r0 = r(x, y, shape);
     f10 = f1(r0, z, shape);
-    nx = -(2*f10*x)/D;
-    ny = -(2*f10*y)/D;
-    nz = 1;
+
+    u = sqrt(x*x + y*y);
+    nx = -2*f10*u*x/D;
+    ny = -2*f10*u*y/D;
+    nz = u;
 
     *pnx = nx; *pny = ny; *pnz = nz;
 }
@@ -165,7 +176,6 @@ static double norm0(const Shape *shape, int n, Vectors *pos) {
     for (i = 0; i < n; i++) {
         UC(get(pos, i, /**/ &x, &y, &z));
         z0 = zrbc(x, y, z, shape);
-        if (z < 0) z0 = -z0;
         ans += sq(z - z0);
     }
     return ans/n;
@@ -173,17 +183,17 @@ static double norm0(const Shape *shape, int n, Vectors *pos) {
 static void curv(double x, double y, double z, Shape *shape, /**/ double *pL, double *pM, double *pN) {
     double L, M, N;
     double D, r0, f10, f20;
-    double nx, ny, nz, n;
+    double nx, ny, nz, n, u;
 
     D = shape->D;
     r0 = r(x, y, shape);
     f10 = f1(r0, z, shape);
     f20 = f2(r0, z, shape);
 
-    L = (4*f20*pow(x,2))/pow(D,3)+(2*f10)/D;
-    M = (4*f20*x*y)/pow(D,3);
-    N = (4*f20*pow(y,2))/pow(D,3)+(2*f10)/D;
-
+    u = sqrt(x*x + y*y);
+    L = u*((4*f20*pow(u,2))/pow(D,3)+(2*f10)/D);
+    M = 0.0;
+    N = (2*f10*pow(u,3))/D;
     normal(x, y, z, shape, &nx, &ny, &nz);
     n = sqrt(nx*nx + ny*ny + nz*nz);
     L /= n; M /= n; N /= n;
@@ -240,17 +250,19 @@ static void compute_normal(Shape *shape, int n, Vectors *pos, /**/ double *nx, d
     }
 }
 
-static void compute_curv(Shape *shape, int n, Vectors *pos, /**/ double *mean, double *gauss) {
+static void compute_curv(Shape *shape, int n, Vectors *pos, /**/ double *L, double *M, double *N,
+                         double *mean, double *gauss) {
     int i, status;
-    double x, y, z, L, M, N, k0, k1;
+    double x, y, z, L0, M0, N0, k0, k1;
     for (i = 0; i < n; i++) {
         UC(get(pos, i, &x, &y, &z));
-        curv(x, y, z, shape, /**/ &L, &M, &N);
-        status = eig(L, M, N, /**/ &k0, &k1);
+        curv(x, y, z, shape, /**/ &L0, &M0, &N0);
+        status = eig(L0, M0, N0, /**/ &k0, &k1);
         if (status != EIG_OK)
-            ERR("eig fails for: %g %g %g", L, M, N);
-        mean[i] = (k0 + k1)/2;
+            ERR("eig fails for: %g %g %g", L0, M0, N0);
+        mean[i] = (k0 + k1) / 2;
         gauss[i] = k0 * k1;
+        L[i] = L0; M[i] = M0; N[i] = N0;
     }
 }
 
@@ -292,6 +304,10 @@ static void dump_vtk(int nm, Quant *quant, Vectors *vectors, Out *out) {
     vtk_conf_vert(conf, "nz");
     vtk_conf_vert(conf, "mean");
     vtk_conf_vert(conf, "gauss");
+    vtk_conf_vert(conf, "L");
+    vtk_conf_vert(conf, "M");
+    vtk_conf_vert(conf, "N");
+    
 
     vtk_ini(comm, nm, path, conf, &vtk);
     vtk_points(vtk, nm, vectors);
@@ -301,6 +317,10 @@ static void dump_vtk(int nm, Quant *quant, Vectors *vectors, Out *out) {
     vtk_vert(vtk, nm, scalars->nz, "nz");
     vtk_vert(vtk, nm, scalars->mean, "mean");
     vtk_vert(vtk, nm, scalars->gauss, "gauss");
+
+    vtk_vert(vtk, nm, scalars->L, "L");
+    vtk_vert(vtk, nm, scalars->M, "M");
+    vtk_vert(vtk, nm, scalars->N, "N");
 
     id = 0;
     vtk_write(vtk, comm, id);
@@ -331,7 +351,7 @@ static void main0(const char *cell, Out *out) {
     shape = fit_shape(nv, pos);
 
     compute_normal(&shape, nv, pos, /**/ quant->nx, quant->ny, quant->nz);
-    compute_curv(&shape, nv, pos, /**/ quant->mean, quant->gauss);
+    compute_curv(&shape, nv, pos, /**/ quant->L, quant->M, quant->N, quant->mean, quant->gauss);
     compute_eng(nv, quant->mean, /**/ quant->eng);
 
     mesh_spherical_apply(spherical, nm, pos, /**/ sph->r, sph->theta, sph->phi);
