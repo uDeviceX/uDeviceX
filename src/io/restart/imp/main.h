@@ -132,6 +132,7 @@ void restart_read_stream_one_node(const char *base, const char *code, int id, St
     char name[BS];
     FILE *f;
     gen_base_name(PATTERN ".dat", base, code, id, name);
+    msg_print("reading '%s'", name);
     UC(efopen(name, "r", &f));
     UC(sr(f, data));
     UC(efclose(f));    
