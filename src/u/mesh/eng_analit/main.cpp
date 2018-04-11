@@ -33,7 +33,7 @@ struct Quant {
 struct QuantScalars {
     Scalars *eng, *nx, *ny, *nz, *mean, *gauss, *L, *M, *N;
 };
-struct Cylindrical { double *r, *theta, *phi; };
+struct Cylindrical { double *r, *phi, *z; };
 struct Shape { double a0, a1, a2, D; };
 static const Shape shape0 = {0.0518, 2.0026, -4.491, -1};
 
@@ -269,12 +269,12 @@ static void compute_curv(Shape *shape, int n, Vectors *pos, /**/ double *L, doub
 void cylindrical_ini(int n, Cylindrical **pq) {
     Cylindrical *q;
     EMALLOC(1, &q);
-    EMALLOC(n, &q->r); EMALLOC(n, &q->theta); EMALLOC(n, &q->phi);
+    EMALLOC(n, &q->r); EMALLOC(n, &q->phi); EMALLOC(n, &q->z);
     *pq = q;
 }
 
 void cylindrical_fin(Cylindrical *q) {
-    EFREE(q->r); EFREE(q->theta); EFREE(q->phi);
+    EFREE(q->r); EFREE(q->phi); EFREE(q->z);
     EFREE(q);
 }
 
@@ -282,7 +282,7 @@ static void dump_txt(int nv, int nm, Cylindrical *sph, const double *a) {
     int n, i;
     n = nv * nm;
     for (i = 0; i < n; i++)
-        printf("%g %g %g %g\n", sph->r[i], sph->theta[i], sph->phi[i], a[i]);
+        printf("%g %g %g %g\n", sph->r[i], sph->phi[i], sph->z[i], a[i]);
 }
 
 static void dump_vtk(int nm, Quant *quant, Vectors *vectors, Out *out) {
@@ -354,7 +354,7 @@ static void main0(const char *cell, Out *out) {
     compute_curv(&shape, nv, pos, /**/ quant->L, quant->M, quant->N, quant->mean, quant->gauss);
     compute_eng(nv, quant->mean, /**/ quant->eng);
 
-    mesh_cylindrical_apply(cylindrical, nm, pos, /**/ sph->r, sph->theta, sph->phi);
+    mesh_cylindrical_apply(cylindrical, nm, pos, /**/ sph->r, sph->phi, sph->z);
     dump_vtk(nm, quant, pos, out);
     dump_txt(nv, nm, sph, quant->eng);
 
