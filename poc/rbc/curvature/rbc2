@@ -1,0 +1,37 @@
+load("pdiff")  $
+load("vect")   $
+load("cgrind") $
+load("scifac") $
+
+(X: 1, Y: 2, Z: 3) $
+(a0: 0.0518, a1: 2.0026, a2: -4.491, D: 7.82);
+
+cross(a, b):=express(a ~ b);
+dot(a, b):=express(a . b);
+
+x: 1/2*D*sin('u)*cos('v);
+y: 1/2*D*sin('u)*sin('v);
+
+r: trigsimp(x^2 + y^2)/D^2;
+f: sqrt(1-4*r)*(a0 + a1*r + a2*r^2);
+defrule(r_sin, sin('u)^2, 1 - cos('u)^2);
+f: apply1(f, r_sin);
+z: D * f;
+
+ru: diff([x, y, z], 'u);
+rv: diff([x, y, z], 'v);
+
+ruu: diff([x, y, z], 'u, 2);
+rvv: diff([x, y, z], 'v, 2);
+ruv: diff(diff([x, y, z], 'v), 'u);
+
+n: trigsimp(cross(ru, rv));
+nn: sqrt(trigsimp(dot(n, n)));
+
+L: trigsimp(dot(ruu, n));
+M: dot(ruv, n);
+N: fullratsimp(trigsimp(dot(rvv, n)));
+
+for e in ['L = L, 'N = N] do cgrind(e);
+
+draw2d('points_joined = true, parametric(x/cos(v), (N/nn + L/nn)^2, 'u, 0, %pi/2), 'color=red);
