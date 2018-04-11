@@ -92,15 +92,15 @@ static void gen_from_restart(Sim *s) {
     MeshRead *cell = s->rbc.cell;
     const Opt *opt = &s->opt;
     long maxp_wall = get_max_parts_wall(s->params);
-    const char *base_strt_read = opt->strt_base_read;
+    const char *base = opt->strt_base_read;
     bool dump_sdf = opt->dump_field;
     
-    flu_strt_quants(s->cart, base_strt_read, RESTART_BEGIN, &flu->q);
-    if (opt->rbc)   rbc_strt_quants(s->cart, base_strt_read, cell, RESTART_BEGIN, &rbc->q);
-    if (opt->rig)   rig_strt_quants(s->cart, base_strt_read,       RESTART_BEGIN, &rig->q);
-    if (opt->wall) wall_strt_quants(s->cart, base_strt_read, maxp_wall,          &wall->q);
+    flu_strt_quants(s->cart, base, RESTART_BEGIN, &flu->q);
+    if (opt->rbc)   rbc_strt_quants(s->cart, base, cell, RESTART_BEGIN, &rbc->q);
+    if (opt->rig)   rig_strt_quants(s->cart, base,       RESTART_BEGIN, &rig->q);
+    if (opt->wall) wall_strt_quants(s->cart, base, maxp_wall,          &wall->q);
     if (opt->wall) UC(sdf_gen(s->coords, s->cart, dump_sdf, /**/ wall->sdf));
-    if (opt->vcon) vcont_strt_read(base_strt_read, RESTART_BEGIN, s->vcon.vcont);
+    if (opt->vcon) vcont_strt_read(base, RESTART_BEGIN, s->vcon.vcont);
 }
 
 void sim_strt(Sim *s) {
