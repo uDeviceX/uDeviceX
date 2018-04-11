@@ -4,7 +4,6 @@ load("cgrind") $
 load("scifac") $
 
 (X: 1, Y: 2, Z: 3) $
-(a0: 0.0518, a1: 2.0026, a2: -4.491, D: 7.82);
 
 cross(a, b):=express(a ~ b);
 dot(a, b):=express(a . b);
@@ -34,8 +33,3 @@ N: fullratsimp(trigsimp(dot(rvv, n)));
 
 for e in ['L = L, 'N = N] do cgrind(e);
 
-draw2d('points_joined = true,
-  nticks=500,
-  parametric(x/cos(v), (N/nn + L/nn)^2, 'u, 0, %pi/2),
-  'color=red,
-  parametric(x/cos(v), 30*z, 'u, 0, %pi/2));
