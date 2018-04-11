@@ -1,0 +1,14 @@
+#### Plates : poiseuille
+# cTEST: start.vcon
+cd test/restart/vcon
+:
+u.cp.sdf wall1/wall.dat sdf.dat
+u.run udx conf.cfg '
+time = {
+    end = 2.01
+}'
+u.run udx conf.cfg '
+glb = {
+    restart = true
+}'
+cat vcont.txt > vcont.out.txt
