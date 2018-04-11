@@ -1,12 +1,31 @@
 = Time line
 
-Keeps current simulation time.
+Manage simulation time.
+
+Allocate, deallocate structure:
 
 [source,cpp]
 ----
-include::{src}/scheme/time_line/imp.h[tag=interface]
+include::{src}/scheme/time_line/imp.h[tag=mem]
 ----
-<1> should be called every time step
-<2> return `true` if `n*interval` is in between current and previus
-    timesteps, in other words has the simulation just crossed
-    `n*interval` for some `n`.
+
+Manipulate time:
+
+[source,cpp]
+----
+include::{src}/scheme/time_line/imp.h[tag=int]
+----
+<1> advance time by `dt` (should be called at every time step)
+<2> return `true` if there exist integer `n` such that `n*interval`
+    is in between current and previous times, in other words has the
+    simulation just crossed `n*interval` for some `n`.
+
+Getters:
+
+[source,cpp]
+----
+include::{src}/scheme/time_line/imp.h[tag=get]
+----
+<1> get current time
+<2> get iteration id
+
