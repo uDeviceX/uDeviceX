@@ -40,11 +40,11 @@ void cylindrical_fin(Cylindrical *q) {
     EFREE(q);
 }
 
-static void dump_txt(int nv, int nm, Cylindrical *sph, const double *a) {
+static void dump_txt(int nv, int nm, Cylindrical *cyl, const double *a) {
     int n, i;
     n = nv * nm;
     for (i = 0; i < n; i++)
-        printf("%g %g %g %g\n", sph->r[i], sph->phi[i], sph->z[i], a[i]);
+        printf("%g %g %g %g\n", cyl->r[i], cyl->phi[i], cyl->z[i], a[i]);
 }
 
 static void dump_vtk(int nv, int nm, const double *eng, Vectors *vectors, Out *out) {
@@ -80,25 +80,25 @@ static void main0(const char *cell, Out *out) {
     const float *vert;
     Vectors  *pos;
     double *eng, kb;
-    Cylindrical *sph;
+    Cylindrical *cyl;
 
     nm = 1; kb = 1;
     UC(mesh_read_ini_off(cell, /**/ &out->mesh));
     UC(mesh_eng_julicher_ini(out->mesh, nm, /**/ &eng_julicher));
     nv = mesh_read_get_nv(out->mesh);
-    cylindrical_ini(nv, &sph);
+    cylindrical_ini(nv, &cyl);
     UC(mesh_cylindrical_ini(nv, /**/ &cylindrical));
     vert = mesh_read_get_vert(out->mesh);
     UC(vectors_float_ini(nv, vert, /**/ &pos));
 
     EMALLOC(nv, &eng);
     mesh_eng_julicher_apply(eng_julicher, nm, pos, kb, /**/ eng);
-    mesh_cylindrical_apply(cylindrical, nm, pos, /**/ sph->r, sph->phi, sph->z);
+    mesh_cylindrical_apply(cylindrical, nm, pos, /**/ cyl->r, cyl->phi, cyl->z);
     dump_vtk(nv, nm, eng, pos, out);
-    dump_txt(nv, nm, sph, eng);
+    dump_txt(nv, nm, cyl, eng);
 
     mesh_eng_julicher_fin(eng_julicher);
-    cylindrical_fin(sph);
+    cylindrical_fin(cyl);
     UC(mesh_cylindrical_fin(cylindrical));
     UC(vectors_fin(pos));
     UC(mesh_read_fin(out->mesh));
