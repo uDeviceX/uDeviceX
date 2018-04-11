@@ -4,17 +4,20 @@ load("cgrind") $
 load("scifac") $
 
 (X: 1, Y: 2, Z: 3) $
+assume(cos(u) > 0);
 
 cross(a, b):=express(a ~ b);
 dot(a, b):=express(a . b);
 
-x: 1/2*D*sin('u)*cos('v);
-y: 1/2*D*sin('u)*sin('v);
+x: 1/2*'D*sin('u)*cos('v);
+y: 1/2*'D*sin('u)*sin('v);
 
 r: trigsimp(x^2 + y^2)/D^2;
 f: sqrt(1-4*r)*(a0 + a1*r + a2*r^2);
-defrule(r_sin, sin('u)^2, 1 - cos('u)^2);
-f: apply1(f, r_sin);
+defrule(r_sin0, sin('u)^2, 1 - cos('u)^2);
+defrule(r_sin1, sin('u)^4, (1 - cos('u)^2)^2);
+f: apply1(f, r_sin0, r_sin1);
+f: rat(f, cos('u));
 z: D * f;
 
 ru: diff([x, y, z], 'u);
