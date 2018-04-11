@@ -1,8 +1,9 @@
 #### Plates : poiseuille
-# cTEST: start.vcon
+# nTEST: start.vcon
 cd test/restart/vcon
 :
 u.cp.sdf wall1/wall.dat sdf.dat
+u.strtdir .
 u.run udx conf.cfg '
 time = {
     end = 2.01
