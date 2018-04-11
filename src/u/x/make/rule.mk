@@ -73,6 +73,7 @@ $B/mesh/area/imp.o: $S/mesh/area/imp.cpp; $X -I$S/mesh/area -I$S/.
 $B/meshbb/imp.o: $S/meshbb/imp.cu; $N -I$S/meshbb -I$S/.
 $B/mesh/bbox/imp.o: $S/mesh/bbox/imp.cpp; $X -I$S/mesh/bbox -I$S/.
 $B/mesh/collision/imp.o: $S/mesh/collision/imp.cu; $N -I$S/mesh/collision -I$S/.
+$B/mesh/cylindrical/imp.o: $S/mesh/cylindrical/imp.cpp; $X -I$S/mesh/cylindrical -I$S/.
 $B/mesh/dist/imp.o: $S/mesh/dist/imp.cpp; $X -I$S/mesh/dist -I$S/.
 $B/mesh/edg_len/imp.o: $S/mesh/edg_len/imp.cpp; $X -I$S/mesh/edg_len -I$S/.
 $B/mesh/eng_julicher/imp.o: $S/mesh/eng_julicher/imp.cpp; $X -I$S/mesh/eng_julicher -I$S/.

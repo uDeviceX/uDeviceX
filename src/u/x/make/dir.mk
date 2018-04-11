@@ -65,6 +65,7 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/mesh/area             && \
     d $B/mesh/bbox             && \
     d $B/mesh/collision        && \
+    d $B/mesh/cylindrical      && \
     d $B/mesh/dist             && \
     d $B/mesh/edg_len          && \
     d $B/mesh/eng_julicher     && \

@@ -5,5 +5,5 @@ struct Vectors;
 void mesh_cylindrical_ini(int nv, /**/ MeshCylindrical**);
 void mesh_cylindrical_fin(MeshCylindrical*);
 void  mesh_cylindrical_apply(MeshCylindrical*, int nm, Vectors*, /**/
-                           double *r, double *theta, double *phi);
+                           double *r, double *phi, double *z);
 // end::interface[]
