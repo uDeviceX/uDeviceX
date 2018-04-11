@@ -22,5 +22,5 @@ void restart_write_stream_one_node(MPI_Comm, const char *base, const char *code,
 void restart_read_pp(MPI_Comm, const char *base, const char *code, int id, int *n, Particle *pp);
 void restart_read_ii(MPI_Comm, const char *base, const char *code, int id, int *n, int *ii);
 void restart_read_ss(MPI_Comm, const char *base, const char *code, int id, int *n, Solid *ss);
-void restart_read_stream_one_node(MPI_Comm, const char *base, const char *code, int id, StreamReader, void *data);
+void restart_read_stream_one_node(const char *base, const char *code, int id, StreamReader, void *data);
 // end::read[]

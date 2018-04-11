@@ -100,7 +100,7 @@ static void gen_from_restart(Sim *s) {
     if (opt->rig)   rig_strt_quants(s->cart, base_strt_read,       RESTART_BEGIN, &rig->q);
     if (opt->wall) wall_strt_quants(s->cart, base_strt_read, maxp_wall,          &wall->q);
     if (opt->wall) UC(sdf_gen(s->coords, s->cart, dump_sdf, /**/ wall->sdf));
-    if (opt->vcon) vcont_strt_read(s->cart, base_strt_read, RESTART_BEGIN, s->vcon.vcont);
+    if (opt->vcon) vcont_strt_read(base_strt_read, RESTART_BEGIN, s->vcon.vcont);
 }
 
 void sim_strt(Sim *s) {

@@ -39,9 +39,9 @@ static void stream_read_state(FILE *f, void *data) {
     UC(read_state(f, &c->state));
 }
 
-void vcont_strt_read(MPI_Comm comm, const char *base, int id, PidVCont *c) {
+void vcont_strt_read(const char *base, int id, PidVCont *c) {
     StreamReader sr = stream_read_state;
-    restart_read_stream_one_node(comm, base, CODE, id, sr, (void*) c);
+    restart_read_stream_one_node(base, CODE, id, sr, (void*) c);
 }
 
 #undef CODE
