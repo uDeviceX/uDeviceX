@@ -16,7 +16,7 @@ $B/math/tform/imp.o: $S/math/tform/imp.cpp; $X -I$S/math/tform -I$S/.
 $B/math/tri/imp.o: $S/math/tri/imp.cpp; $X -I$S/math/tri -I$S/.
 $B/mesh/angle/imp.o: $S/mesh/angle/imp.cpp; $X -I$S/mesh/angle -I$S/.
 $B/mesh/edg_len/imp.o: $S/mesh/edg_len/imp.cpp; $X -I$S/mesh/edg_len -I$S/.
-$B/mesh/spherical/imp.o: $S/mesh/spherical/imp.cpp; $X -I$S/mesh/spherical -I$S/.
+$B/mesh/cylindrical/imp.o: $S/mesh/cylindrical/imp.cpp; $X -I$S/mesh/cylindrical -I$S/.
 $B/mesh/vert_area/imp.o: $S/mesh/vert_area/imp.cpp; $X -I$S/mesh/vert_area -I$S/.
 $B/mpi/glb.o: $S/mpi/glb.cpp; $X -I$S/mpi -I$S/.
 $B/mpi/wrapper.o: $S/mpi/wrapper.cpp; $X -I$S/mpi -I$S/.

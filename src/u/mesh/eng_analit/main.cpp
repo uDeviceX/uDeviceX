@@ -14,7 +14,7 @@
 #include "conf/imp.h"
 #include "io/mesh_read/imp.h"
 
-#include "mesh/spherical/imp.h"
+#include "mesh/cylindrical/imp.h"
 #include "io/vtk/imp.h"
 
 #include "algo/vectors/imp.h"
@@ -33,7 +33,7 @@ struct Quant {
 struct QuantScalars {
     Scalars *eng, *nx, *ny, *nz, *mean, *gauss, *L, *M, *N;
 };
-struct Spherical { double *r, *theta, *phi; };
+struct Cylindrical { double *r, *theta, *phi; };
 struct Shape { double a0, a1, a2, D; };
 static const Shape shape0 = {0.0518, 2.0026, -4.491, -1};
 
@@ -266,19 +266,19 @@ static void compute_curv(Shape *shape, int n, Vectors *pos, /**/ double *L, doub
     }
 }
 
-void spherical_ini(int n, Spherical **pq) {
-    Spherical *q;
+void cylindrical_ini(int n, Cylindrical **pq) {
+    Cylindrical *q;
     EMALLOC(1, &q);
     EMALLOC(n, &q->r); EMALLOC(n, &q->theta); EMALLOC(n, &q->phi);
     *pq = q;
 }
 
-void spherical_fin(Spherical *q) {
+void cylindrical_fin(Cylindrical *q) {
     EFREE(q->r); EFREE(q->theta); EFREE(q->phi);
     EFREE(q);
 }
 
-static void dump_txt(int nv, int nm, Spherical *sph, const double *a) {
+static void dump_txt(int nv, int nm, Cylindrical *sph, const double *a) {
     int n, i;
     n = nv * nm;
     for (i = 0; i < n; i++)
@@ -334,16 +334,16 @@ static void main0(const char *cell, Out *out) {
     int nv, nm;
     const float *vert;
     Vectors  *pos;
-    MeshSpherical *spherical;
-    Spherical *sph;
+    MeshCylindrical *cylindrical;
+    Cylindrical *sph;
     Quant *quant;
     Shape shape;
     nm = 1;
     UC(mesh_read_ini_off(cell, /**/ &out->mesh));
     nv = mesh_read_get_nv(out->mesh);
     quant_ini(nv, &quant);
-    spherical_ini(nv, &sph);
-    UC(mesh_spherical_ini(nv, /**/ &spherical));
+    cylindrical_ini(nv, &sph);
+    UC(mesh_cylindrical_ini(nv, /**/ &cylindrical));
 
     vert = mesh_read_get_vert(out->mesh);
     UC(vectors_float_ini(nv, vert, /**/ &pos));
@@ -354,13 +354,13 @@ static void main0(const char *cell, Out *out) {
     compute_curv(&shape, nv, pos, /**/ quant->L, quant->M, quant->N, quant->mean, quant->gauss);
     compute_eng(nv, quant->mean, /**/ quant->eng);
 
-    mesh_spherical_apply(spherical, nm, pos, /**/ sph->r, sph->theta, sph->phi);
+    mesh_cylindrical_apply(cylindrical, nm, pos, /**/ sph->r, sph->theta, sph->phi);
     dump_vtk(nm, quant, pos, out);
     dump_txt(nv, nm, sph, quant->eng);
 
     UC(quant_fin(quant));
     UC(vectors_fin(pos));
-    UC(mesh_spherical_fin(spherical));
+    UC(mesh_cylindrical_fin(cylindrical));
     UC(mesh_read_fin(out->mesh));
 }
 
