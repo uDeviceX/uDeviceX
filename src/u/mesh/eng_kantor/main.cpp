@@ -27,18 +27,18 @@ struct Out {
 };
 
 struct Cylindrical {
-    double *r, *theta, *phi;
+    double *r, *phi, *z;
 };
 
 void cylindrical_ini(int n, Cylindrical **pq) {
     Cylindrical *q;
     EMALLOC(1, &q);
-    EMALLOC(n, &q->r); EMALLOC(n, &q->theta); EMALLOC(n, &q->phi);
+    EMALLOC(n, &q->r); EMALLOC(n, &q->phi); EMALLOC(n, &q->z);
     *pq = q;
 }
 
 void cylindrical_fin(Cylindrical *q) {
-    EFREE(q->r); EFREE(q->theta); EFREE(q->phi);
+    EFREE(q->r); EFREE(q->phi); EFREE(q->z);
     EFREE(q);
 }
 
@@ -46,7 +46,7 @@ static void dump_txt(int nv, int nm, Cylindrical *sph, const double *a) {
     int n, i;
     n = nv * nm;
     for (i = 0; i < n; i++)
-        printf("%g %g %g %g\n", sph->r[i], sph->theta[i], sph->phi[i], a[i]);
+        printf("%g %g %g %g\n", sph->r[i], sph->phi[i], sph->z[i], a[i]);
 }
 
 static void dump_vtk(int nv, int nm, const double *eng, Vectors *vectors, Out *out) {
@@ -111,7 +111,7 @@ static void main0(const char *cell, Out *out) {
 
     mesh_eng_kantor_apply(eng_kantor, nm, pos,
                           kb, angle, /**/ eng_edg);
-    mesh_cylindrical_apply(cylindrical, nm, pos, /**/ sph->r, sph->theta, sph->phi);
+    mesh_cylindrical_apply(cylindrical, nm, pos, /**/ sph->r, sph->phi, sph->z);
     scatter(nm, out->mesh, eng_edg, /**/ eng_vert);
 
     dump_vtk(nv, nm, eng_vert, pos, out);
