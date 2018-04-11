@@ -39,11 +39,13 @@ nn: to_cos(gcfac(nn));
 
 L: fullratsimp(trigsimp(dot(ruu, n))) / dot(ru, ru);
 M: trigsimp(dot(ruv, n));
-N: trigsimp(dot(rvv, n)) / dot(rv, rv);
+N: trigsimp(dot(rvv, n))              / dot(rv, rv);
 
-D: 12.6;
-l: read_nested_list("data/julicher.txt") $
-fun(l):=[l[1]/D, l[4]*2500] $
+D: 12.08 $
+sc: 2350 $
+fi: "data/julicher.txt" $
+l: read_nested_list(fi) $
+fun(l):=[l[1]/D, l[4]*sc] $
 data: map(fun, l) $
 
 draw2d(nticks=100,
