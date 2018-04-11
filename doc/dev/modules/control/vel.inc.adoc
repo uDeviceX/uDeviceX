@@ -74,6 +74,16 @@ The parameters can also be set through the configuration file:
 include::{src}/control/vel/imp.h[tags=cnf]
 ----
 
+By default, the state of the controller is set to zero current
+velocity.
+It can also be set throught the <<io_restart, restart>> mechanism:
+
+[source,cpp]
+----
+include::{src}/control/vel/imp.h[tag=start]
+----
+<1> dump the state of the controller to a text file
+<2> read the state from a text file
 
 Control operations:
 
