@@ -1,0 +1,50 @@
+load("vect")   $
+load("pdiff")  $
+load("scifac") $
+
+(X: 1, Y: 2, Z: 3) $
+
+assume(sin(u) > 0);
+/* F(r):= 'C5 * r^5 + 'C3 * r^3 + 'C1 * r; */
+
+matchdeclare(al, all);
+defrule(r_sin0, sin(al)^2, 1 - cos(al)^2);
+defrule(r_sin1, sin(al)^4, (1 - cos(al)^2)^2);
+to_cos(e):=apply1(e, r_sin0, r_sin1);
+
+cross(a, b):=express(a ~ b);
+dot(a, b):=express(a . b);
+
+x: 1/2*sin('u)*cos('v);
+y: 1/2*sin('u)*sin('v);
+z: F(cos('u));
+
+r: [x, y, z];
+ru: diff(r, 'u);
+rv: diff(r, 'v);
+
+ruu: diff(r, 'u, 2);
+rvv: diff(r, 'v, 2);
+ruv: diff(diff(r, 'v), 'u);
+
+n:  trigsimp(cross(trigsimp(ru), trigsimp(rv)));
+nn: dot(n, n);
+nn: to_cos(gcfac(nn));
+
+L: fullratsimp(trigsimp(dot(ruu, n)));
+M: trigsimp(dot(ruv, n));
+N: trigsimp(dot(rvv, n));
+
+defrule(r_f1, pderivop(F,1)(cos(u)), f1(c));
+defrule(r_f2, pderivop(F,2)(cos(u)), f2(c));
+
+defrule(r_sinu, sin('u), s);
+defrule(r_cosu, cos('u), c);
+
+defrule(r_sinv, sin('v), sv);
+defrule(r_cosv, cos('v), cv);
+
+ap(e):=apply1(e, r_f1, r_f2, r_sinu, r_cosu, r_sinv, r_cosv);
+
+grind(ap(subst(v = 0, n[Z]^2)));
+

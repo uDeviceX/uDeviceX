@@ -42,7 +42,7 @@ M: trigsimp(dot(ruv, n));
 N: trigsimp(dot(rvv, n))              / dot(rv, rv);
 
 D: 12.08 $
-sc: 2350 $
+sc: 4 * D^2 $
 fi: "data/julicher.txt" $
 l: read_nested_list(fi) $
 fun(l):=[l[1]/D, l[4]*sc] $
@@ -50,5 +50,5 @@ data: map(fun, l) $
 
 draw2d(nticks=100,
   points(data),
-  parametric(x, ((L + N)/sqrt(nn))^2, u, 0, %pi/2)), v = 0;
+  parametric(x, (1/2*(L + N)/sqrt(nn))^2, u, 0, %pi/2)), v = 0;
 
