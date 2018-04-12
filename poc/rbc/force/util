@@ -6,3 +6,4 @@ function noarg() { return ARGC <= 1 }
 function eq(a, b) { return a "" == b "" }
 function ok(r)    { return r > 0 } # file read status
 function bad(r)   { return !ok(r)}
+function clear(a) { split("", a) } # clear array
