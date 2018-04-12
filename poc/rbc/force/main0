@@ -1,6 +1,12 @@
 #!/usr/bin/awk -f
 
-function ini() { prog = "main" } 
+function ini() { prog = "main" }
+function usg() {
+    printf "%s FILE.off\n", prog | "cat >&2"
+    printf "compute membrain bending forces\n" | "cat >&2"
+    exit
+}
+
 function compute_ang(   m, i, j, k, l) {
     for (m = 0; m < NE; m++) {
 	i = D0[m]; j = D1[m]; k = D2[m]; l = D3[m]
@@ -35,6 +41,7 @@ BEGIN {
     ini()
     if (noarg()) err("needs FILE.off")
     file = first_arg()
+    if (eq(file, "-h")) usg()
     off_read(file)
     setup()
     #compute_ang()

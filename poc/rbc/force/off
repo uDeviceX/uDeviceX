@@ -1,18 +1,18 @@
 function off_read(file,   l, r, i) { # sets NV, NT, [XX, YY, ZZ], [T0, T1, T2]
     r = getline < file
-    if (bad(r)) err(r, "fail to read file: " f)
+    if (bad(r)) err("fail to read file: " file)
     if (!eq($0, "OFF")) err("not an OFF file")
     r = getline < file
-    if (bad(r)) err(r, "fail to read file: " f)
+    if (bad(r)) err("fail to read file: " file)
     NV = $1; NT = $2
     for (i = 0; i < NV; i++) {
 	r = getline < file
-	if (bad(r)) err(r, "fail to read verts: " f)
+	if (bad(r)) err(r, "fail to read verts: " file)
 	XX[i] = $1; YY[i] = $2; ZZ[i] = $3
     }
     for (i = 0; i < NT; i++) {
 	r = getline < file
-	if (bad(r)) err(r, "fail to read tris: " f)
+	if (bad(r)) err("fail to read tris: " file)
 	T0[i] = $2; T1[i] = $3; T2[i] = $4
     }
     close(file)
