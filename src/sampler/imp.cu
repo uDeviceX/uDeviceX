@@ -19,6 +19,8 @@
 
 namespace sampler_dev {
 #include "dev/type.h"
+#include "dev/fetch.h"
+#include "dev/add.h"
 #include "dev/main.h"
 }
 
