@@ -1,6 +1,7 @@
 load("vect")   $
 load("pdiff")  $
 load("scifac") $
+load("cgrind") $
 
 assume(sin(u)>0);
 x: 1/2*sin(u)*cos(v);
@@ -38,4 +39,4 @@ avv: -g/'G;
 kuu: gcfac(trigsimp(auu/'E));
 kvv: gcfac(trigsimp(avv/'G));
 
-
+print(cgrind(kuu)) $
