@@ -24,8 +24,7 @@ _S_ int get_coord(float x, int L, int N) {
 _S_ int3 get_cell_coords(float3 r, int3 L, int3 N) {
     return make_int3(get_coord(r.x, L.x, N.x),
                      get_coord(r.y, L.y, N.y),
-                     get_coord(r.z, L.z, N.z));
-                     
+                     get_coord(r.z, L.z, N.z));                     
 }
 
 _S_ int get_grid_id(int3 gc, int3 N) {
