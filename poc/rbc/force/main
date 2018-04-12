@@ -1,0 +1,21 @@
+#!/usr/bin/awk -f
+function ini() {
+    prog = "main"
+}
+
+function read(file, rr, ff) {
+    
+}
+
+BEGIN {
+    ini()
+    if (noarg()) err("needs FILE.off")
+    f = first()
+    print f
+}
+
+function msg(s) { printf "%s: %s\n", prog, s | "cat >&2" }
+function err(s) { msg(s); exit(2) }
+function shift(  i) { for (i = 2; i < ARGC; i++) ARGV[i-1] = ARGV[i]; ARGC-- }    
+function first(   x) { x = ARGV[1]; shift(); return x }
+function noarg() { return ARGC <= 1 }
