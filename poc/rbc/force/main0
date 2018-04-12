@@ -1,5 +1,3 @@
-#!/usr/bin/awk -f
-
 function ini() { prog = "main" }
 function usg() {
     printf "%s FILE.off\n", prog | "cat >&2"
@@ -100,6 +98,6 @@ BEGIN {
     compute_julicher()
     compute_kantor()
 
-    write()
-
+#    write()
+     vtk_write("o.vtk")
 }
