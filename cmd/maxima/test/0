@@ -1,2 +1,2 @@
-# cTEST: maxima.0
+# TEST: maxima.0
 u.maxima a:1 b:2 data/0.mac > maxima.out.txt
