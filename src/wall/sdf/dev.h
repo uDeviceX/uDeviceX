@@ -74,7 +74,7 @@ _I_ bool sdf_far(Sdf_v *sdf, float x, float y, float z) // <1>
 }
 
 // tag::int[]
-_I_ float sdf(Sdf_v *sdf0, float x, float y, float z)  // <2>
+_I_ float sdf_eval(Sdf_v *sdf0, float x, float y, float z)  // <2>
 // end::int[]
 {
     int c;

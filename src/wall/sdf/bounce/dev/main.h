@@ -39,7 +39,7 @@ static __device__ void rescue(Wvel_v wv, Coords_v c, Sdf_v *texsdf, float currsd
     axpy(-sdf0, &dsdf, /**/ r);
         
     for (l = MAX_RESCUE; l >= 1; --l) {
-        if (sdf(texsdf, r->x, r->y, r->z) < 0) {
+        if (sdf_eval(texsdf, r->x, r->y, r->z) < 0) {
             bounce_vel(wv, c, *r, /**/ v);
             return;
         }
@@ -59,7 +59,7 @@ static __device__ void bounce_back_1p(float dt, Wvel_v wv, Coords_v c, Sdf_v *te
     // get previous position
     axpy(-dt, v, /**/ &r0);
 
-    if (sdf(texsdf, r0.x, r0.y, r0.z) >= 0) {
+    if (sdf_eval(texsdf, r0.x, r0.y, r0.z) >= 0) {
         rescue(wv, c, texsdf, currsdf, /* io */ r, v);
         return;
     }
@@ -70,7 +70,7 @@ static __device__ void bounce_back_1p(float dt, Wvel_v wv, Coords_v c, Sdf_v *te
     for (l = 0; l < MAX_NEWTON; ++l) {
         rc = *r;
         axpy(t, v, /**/ &rc);
-        phi = sdf(texsdf, rc.x, rc.y, rc.z);
+        phi = sdf_eval(texsdf, rc.x, rc.y, rc.z);
         dsdf = grad(texsdf, &rc);
         dphi = dot<float> (v, &dsdf);
 
@@ -88,7 +88,7 @@ static __device__ void bounce_back_1p(float dt, Wvel_v wv, Coords_v c, Sdf_v *te
     *r = rw;
     axpy(-t, v, /**/ r);
     
-    if (sdf(texsdf, r->x, r->y, r->z) >= 0)
+    if (sdf_eval(texsdf, r->x, r->y, r->z) >= 0)
         *r = r0;    
 }
 
@@ -105,7 +105,7 @@ __global__ void bounce_back(float dt, Wvel_v wv, Coords_v c, Sdf_v texsdf, int n
     s = cheap_sdf(&texsdf, r.x, r.y, r.z);
 
     if (s >= texsdf.cheap_threshold) {
-        currsdf = sdf(&texsdf, r.x, r.y, r.z);
+        currsdf = sdf_eval(&texsdf, r.x, r.y, r.z);
         if (currsdf >= 0) {
             bounce_back_1p(dt, wv, c, &texsdf, currsdf, /*io*/ &r, &v);
             rv2p(r, v, i, /**/ pp);
