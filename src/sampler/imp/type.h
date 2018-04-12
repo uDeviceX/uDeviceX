@@ -21,7 +21,9 @@ struct SampleDatum {
     const float *ss;
 };
 
-enum {MAX_N_DATA};
+enum {
+    MAX_N_DATA = 10
+};
 
 struct SampleData {
     int n;

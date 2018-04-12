@@ -3,7 +3,7 @@ static long get_size(const Grid *g) {
     return N.x * N.y * N.z;
 }
 
-static void ini_dev_grid(int3 L, int3 M, int3 N, Grid *g) {
+static void ini_dev_grid(int3 L, int3 N, Grid *g) {
     long i, n;
     g->N = N;
     g->L = L;
@@ -13,7 +13,7 @@ static void ini_dev_grid(int3 L, int3 M, int3 N, Grid *g) {
         Dalloc(&g->d[i], n);
 }
 
-static void ini_hst_grid(int3 L, int3 M, int3 N, Grid *g) {
+static void ini_hst_grid(int3 L, int3 N, Grid *g) {
     long i, n;
     g->N = N;
     g->L = L;
@@ -33,12 +33,12 @@ static void fin_hst_grid(Grid *g) {
         EFREE(g->d[i]);
 }
 
-void sampler_ini(int3 L, int3 M, int3 N, Sampler **s0) {
+void sampler_ini(int3 L, int3 N, Sampler **s0) {
     Sampler *s;
     EMALLOC(1, s0);
     s = *s0;
-    UC(ini_dev_grid(L, M, N, &s->dev));
-    UC(ini_hst_grid(L, M, N, &s->hst));
+    UC(ini_dev_grid(L, N, &s->dev));
+    UC(ini_hst_grid(L, N, &s->hst));
     UC(sampler_reset(s));
 }
 
