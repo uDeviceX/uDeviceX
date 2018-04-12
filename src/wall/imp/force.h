@@ -17,3 +17,9 @@ void wall_force(const PairParams *params, const WvelStep *wv, const Coords *c, c
 
     wall_force_apply(params, wv, c, parray, n, t->rnd, wa, /**/ farray);
 }
+
+void wall_repulse(int n, const Particle *pp, const Sdf *sdf, Force *ff) {
+    Sdf_v sdf_v;
+    sdf_to_view(sdf, &sdf_v);
+    wall_force_repulse(n, pp, sdf_v, ff);
+}
