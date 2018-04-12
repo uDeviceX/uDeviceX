@@ -48,3 +48,42 @@ __global__ void force(Par params, Wvel_v wv, Coords_v c, Parray parray, int np, 
 
     farray_atomic_add<1>(&ftot, aid, /**/ farray);
 }
+
+static __device__ float rep_kernel(float l, float x) {
+    float arg = l * (x - 1.f);
+    return expf(arg) - 1.f;
+}
+
+static __device__ void repulse_one_p(const float3 *r, const Sdf_v *sdf_v, float3 *f) {
+    float s, f0;
+    float3 g;
+    s = sdf_eval(sdf_v, r->x, r->y, r->z);
+    g = sdf_ugrad(sdf_v, r);
+    f0 = - rep_kernel(3.f, s);
+    f->x = f0 * g.x;
+    f->y = f0 * g.y;
+    f->z = f0 * g.z;
+}
+
+static __device__ float3 get_pos(const Particle *p) {
+    enum {X, Y, Z};
+    return make_float3(p->r[X], p->r[Y], p->r[Z]);
+}
+
+__global__ void repulse(int n, const Particle *pp, Sdf_v sdf_v, /**/ Force *ff) {
+    enum {X, Y, Z};
+    int pid;
+    float3 r, f;
+    pid = threadIdx.x + blockDim.x * blockIdx.x;
+
+    if (pid >= n) return;
+    r = get_pos(pp + pid);
+    
+    if (sdf_far(&sdf_v, r.x, r.y, r.z)) return;
+
+    repulse_one_p(&r, &sdf_v, &f);
+
+    ff[pid].f[X] += f.x;
+    ff[pid].f[Y] += f.y;
+    ff[pid].f[Z] += f.z;
+}

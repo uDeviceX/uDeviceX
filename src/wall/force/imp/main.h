@@ -66,3 +66,10 @@ void wall_force_apply(const PairParams *params, const WvelStep *wv, const Coords
         wvel_dispatch(pv, wv, c, pav, n, rnd, wa, /**/ farray);
     }
 }
+
+
+void wall_force_repulse(int n, const Particle *pp, Sdf_v sdf_v, Force *ff) {
+    KL(wf_dev::repulse,
+       (k_cnf(n)),
+       (n, pp, sdf_v, ff));
+}
