@@ -2,10 +2,15 @@ enum {
     RHO, VX, VY, VZ,
     SXX, SXY, SXZ,
     SYY, SYZ, SZZ,
-    NFIELDS
+    NFIELDS_MAX
 };
 
-static const char *names[NFIELDS] = {
+enum {
+    NFIELDS_NO_STRESS   = VZ + 1,
+    NFIELDS_WITH_STRESS = NFIELDS_MAX
+};
+
+static const char *names[NFIELDS_MAX] = {
     "density", "u", "v", "w",
     "sxx", "sxy", "sxz",
     "syy", "syz", "szz"
@@ -13,7 +18,8 @@ static const char *names[NFIELDS] = {
 
 struct Grid {
     int3 L, N; /* subdomain size, grid size */
-    float *d[NFIELDS];
+    float *d[NFIELDS_MAX];
+    bool stress;
 };
 
 struct Sampler {
