@@ -29,7 +29,7 @@ O = $B/algo/edg/imp.o $B/algo/force_stat/imp.o $B/algo/kahan_sum/imp.o \
     $B/rbc/force/rnd/api/imp.o $B/rbc/force/rnd/imp.o $B/rbc/gen/imp.o \
     $B/rbc/imp.o $B/rbc/matrices/imp.o $B/rbc/params/conf.o $B/rbc/params/imp.o \
     $B/rbc/shape/imp.o $B/rbc/stretch/imp.o $B/rig/imp.o $B/rigid/conf.o \
-    $B/rigid/imp.o $B/scheme/force/conf.o $B/scheme/force/imp.o \
+    $B/rigid/imp.o $B/sampler/imp.o $B/scheme/force/conf.o $B/scheme/force/imp.o \
     $B/scheme/move/imp.o $B/scheme/restrain/conf.o $B/scheme/restrain/imp.o \
     $B/scheme/time_line/imp.o $B/scheme/time_step/imp.o $B/sim/imp.o \
     $B/sim/opt/imp.o $B/utils/cc.o $B/utils/error.o $B/utils/imp.o $B/utils/mc.o \
