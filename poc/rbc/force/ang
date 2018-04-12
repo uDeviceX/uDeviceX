@@ -1,0 +1,8 @@
+function dihedral_xy(ax, ay, az,
+		     bx, by, bz,
+		     cx, cy, cz,
+		     dx, dy, dz) {
+    
+    DIHEDRAL_X = 100
+    DIHEDRAL_Y = 200
+}

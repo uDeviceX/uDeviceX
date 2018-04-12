@@ -2,4 +2,4 @@
 
 : ${AWK=awk}
 
-"$AWK" -f util -f off -f setup -f main0 "$@"
+"$AWK" -f util -f off -f setup -f ang -f main0 "$@"

@@ -1,7 +1,7 @@
 function reg_e01(i, j) {
     if ((i, j) in edg) return
     edg[i, j]; edg[j, i]
-    E0[NE] = i; E1[NE] = j; GDE[i, j] = GDE[j, i] = NE; NE++
+    E0[NE] = i; E1[NE] = j; NE++
 }
 function build_e01(   m, i, j, k) { # sets NE, E0, E1
     for (NE = m = 0; m < NT; m++) {
@@ -10,18 +10,19 @@ function build_e01(   m, i, j, k) { # sets NE, E0, E1
     }
 }
 function dih_nxt(i, j, k,   m) {
-    m = GDE[i, j]
-    D0[m] = k; D1[m] = i; D2[m] = j
-}
-function dih_prv(i, j, k,   m) {
-    m = GDE[i, j]
-	       D1[m] = i; D2[m] = j; D3[m] = k;
+    NXT[i, j] = k
 }
 function build_dih(   m, i, j, k) {
     for (m = 0; m < NT; m++) {
 	i = T0[m]; j = T1[m]; k = T2[m]
-	dih_nxt(i, j, k); dih_nxt(j, k, i); dih_nxt(k, i, j)
-	dih_prv(j, k, i); dih_nxt(k, i, j); dih_nxt(i, j, k)
+	NXT[i,j]=k; NXT[j,k]=i; NXT[k,i]=j
+    }
+    for (m = 0; m < NE; m++) {
+	i = E0[m]; j = E1[m]
+	D0[m] = NXT[i,j]
+	D1[m] = i
+	D2[m] = j
+	D3[m] = NXT[j,i]
     }
 }
 function reg_t(vert, tri,   deg, cond) {

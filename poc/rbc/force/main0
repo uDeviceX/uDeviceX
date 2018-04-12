@@ -1,10 +1,15 @@
 #!/usr/bin/awk -f
 
-function ini() { prog = "main" }
-function compute_ang() {
+function ini() {
+    prog = "main"
+}
+function compute_ang(   m, i, j, k, l) {
     for (m = 0; m < NE; m++) {
 	i = D0[m]; j = D1[m]; k = D2[m]; l = D3[m]
-	print i, j, k, l
+	dihedral_xy(X[i], Y[i], Z[i],
+		    X[j], Y[j], Z[j],
+		    X[k], Y[k], Z[l],
+		    X[l], Y[l], Z[l])
     }
 }
 
