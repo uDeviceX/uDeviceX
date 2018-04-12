@@ -12,7 +12,7 @@ void sdf_fin(Sdf*);
 
 // tag::int[]
 void sdf_gen(const Coords*, MPI_Comm cart, bool dump, Sdf*); // <1>
-void sdf_to_view(const Sdf*, /**/ Sdf_v*);                   // <2>
+void sdf_get_view(const Sdf*, /**/ Sdf_v*);                  // <2>
 // end::int[]
 
 // tag::tools[]
