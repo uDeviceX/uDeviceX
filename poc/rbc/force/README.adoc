@@ -1,0 +1,6 @@
+NV, NT, NE: number of verts, triangles, edges
+X[v] Y[v] Z[v]: position
+T0[t] T1[t] T2[t]: vertices in triangle `t'
+E0[e] E1[e]      : vertices in edg `e'
+TRI[v, d]      : triangle adjusted to vertices `v' of degree `d`
+EDG[v, d]      : edg adjusted to vertices `v' of degree `d`

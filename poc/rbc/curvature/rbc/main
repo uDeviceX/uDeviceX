@@ -1,21 +1,15 @@
 load("vect")   $
 load("pdiff")  $
 load("scifac") $
+load("cgrind") $
 
-(X: 1, Y: 2, Z: 3) $
+assume(sin(u)>0);
 x: 1/2*sin(u)*cos(v);
 y: 1/2*sin(u)*sin(v);
-z: F(cos(u));
-
-matchdeclare(al, all);
-defrule(r_sin0, sin(al)^2, 1 - cos(al)^2);
-defrule(r_sin1, sin(al)^4, (1 - cos(al)^2)^2);
-to_cos(e):=apply1(e, r_sin0, r_sin1);
+z: Z(cos(u));
 
 cross(a, b):=express(a ~ b);
 dot(a, b):=express(a . b);
-
-norm(a):=a/sqrt(trigsimp(dot(a, a)));
 
 xx: [x, y, z];
 xu: diff(xx, u);
@@ -25,21 +19,24 @@ xuu: diff(xx, u, 2);
 xvv: diff(xx, v, 2);
 xuv: diff(diff(xx, v), u);
 
-U:  trigsimp(cross(trigsimp(xu), trigsimp(xv)));
-UU: dot(U, U);
-UU: to_cos(gcfac(UU));
+/* UU: cross(xu, xv); */
+U : [Ux, Uy, Uz]/'norm('UU);
 
 /* first form */
-E: trigsimp(dot(xu, xu));
-G: trigsimp(dot(xv, xv));
-F: trigsimp(dot(xu, xv));
+E: dot(xu, xu);
+G: dot(xv, xv);
 
 /* second form */
-e: fullratsimp(trigsimp(dot(xuu, U)));
-f: trigsimp(dot(xuv, U));
-g: trigsimp(dot(xvv, U));
+e: dot(xuu, U);
+f: dot(xuv, U);
+g: dot(xvv, U);
 
-auu: (f*F - e*G)/(E*G - F^2);
-auv: (e*F - f*E)/(E*G - F^2);
-avu: (g*F - f*G)/(E*G - F^2);
-avv: (f*F - g*E)/(E*G - F^2);
+/* components of shape operator in basis {xu, xv} */
+auu: -e/'E;
+avv: -g/'G;
+
+/* components of shape operator in basis {xu/|xu|, xv/|xv|} */
+kuu: gcfac(trigsimp(auu/'E));
+kvv: gcfac(trigsimp(avv/'G));
+
+print(cgrind(kuu)) $

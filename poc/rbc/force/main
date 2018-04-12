@@ -1,0 +1,88 @@
+#!/usr/bin/awk -f
+
+function ini() { prog = "main" }
+function read(file,   l, r, i) { # sets NV, NT, [X, Y, Z], [T0, T1, T2]
+    r = getline < file
+    if (bad(r)) err(r, "fail to read file: " f)
+    if (!eq($0, "OFF")) err("not an OFF file")
+    r = getline < file
+    if (bad(r)) err(r, "fail to read file: " f)
+    NV = $1; NT = $2
+    for (i = 0; i < NV; i++) {
+	r = getline < file
+	if (bad(r)) err(r, "fail to read verts: " f)
+	X[i] = $1; Y[i] = $2; Z[i] = $3
+    }
+    for (i = 0; i < NT; i++) {
+	r = getline < file
+	if (bad(r)) err(r, "fail to read tris: " f)
+	T0[i] = $2; T1[i] = $3; T2[i] = $4
+    }
+    close(file)
+}
+
+function reg_e01(i, j) {
+    if ((i, j) in edg) return
+    edg[i, j]; edg[j, i]
+    E0[NE] = i; E1[NE] = j; NE++
+}
+function build_e01(   m, i, j, k) { # sets NE, E0, E1
+    for (NE = m = 0; m < NT; m++) {
+	i = T0[m]; j = T1[m]; k = T2[m]
+	reg_e01(i, j); reg_e01(j, k); reg_e01(k, i)
+    }
+}
+
+function reg_t(vert, tri,   deg, cond) {
+    for (deg = 0; ; deg++) {
+	cond = (vert, deg) in TRI
+	if (!cond) break;
+    }
+    TRI[vert, deg] = tri
+}
+function build_tri(   i, j, k, m) { # TRI: TRI[v] = [tri0, tri1, tri2, ...]
+    for (m = 0; m < NT; m++) {
+	i = T0[m]; j = T1[m]; k = T2[m]
+	reg_t(i, m); reg_t(j, m); reg_t(k, m)
+    }
+}
+
+function reg_e(vert, edg,   deg, cond) {
+    for (deg = 0 ; ; deg++) {
+	cond = (vert, deg) in EDG
+	if (!cond) break
+    }
+    EDG[vert, deg] = edg
+}
+function build_edg(   i, j, m) { # EDG: EDG[v] = [edg0, edg1, edg2, ...]
+    for (m = 0; m < NE; m++) {
+	i = E0[m]; j = E1[m];
+	reg_e(i, m); reg_e(j, m)
+    }
+}
+
+function compute_eng() {
+    
+}
+
+
+BEGIN {
+    ini()
+    if (noarg()) err("needs FILE.off")
+    file = first_arg()
+    read(file)
+    build_e01()
+    build_tri()
+    build_edg()
+
+    compute_eng()
+}
+
+function msg(s) { printf "%s: %s\n", prog, s | "cat >&2" }
+function err(s) { msg(s); exit(2) }
+function shift(  i) { for (i = 2; i < ARGC; i++) ARGV[i-1] = ARGV[i]; ARGC-- }
+function first_arg(   x) { x = ARGV[1]; shift(); return x }
+function noarg() { return ARGC <= 1 }
+function eq(a, b) { return a "" == b "" }
+function ok(r)    { return r > 0 } # file read status
+function bad(r)   { return !ok(r)}
