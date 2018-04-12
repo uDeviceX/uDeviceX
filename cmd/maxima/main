@@ -1,13 +1,52 @@
 #!/bin/sh
 
 prog=u.maxima
+: ${MAXIMA=maxima}
+: ${DBG=0}
+
 usg() {
     cat >&2 <<!
-$prog [arg=val..] [FILE.mac]
+$prog [arg:val..] [OPTIONS..] [FILE.mac]
 run maxima script FILE.mac with arguments
+OPTIONS are passed to maxima command
 !
     exit
 }
 
+e () {
+    if test "$DBG" != 0; then echo >&2 ": $@"; fi
+    eval "$@"
+}
+err () { echo 2>&1 "$prog: $@"; exit 2; }
+
 if test $# -ne 0 && test "$1" = -h; then usg; fi
 
+v=
+for i
+do shift
+   case "$i" in
+       *:*) if test -z "$v"
+	    then v="$i$"
+	    else v="$v
+$i$"
+	    fi
+	    ;;
+       *) set -- "$@" "$i"
+	  ;;
+   esac
+done
+
+f=
+for i
+do shift
+   set -- "$@" "$f"
+   f="$i"
+done
+
+if test   -z "$f"; then err 'FILE.mac is missing'; fi
+if test ! -f "$f"; then err "not a file '$f'"; fi
+
+e "$MAXIMA" --batch-string "\"
+$v
+batch(\\\"$f\\\") $
+\""
