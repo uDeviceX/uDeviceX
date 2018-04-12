@@ -47,8 +47,9 @@ device interface:
 ----
 include::{src}/wall/sdf/dev.h[tag=int]
 ----
-<1> returns true if position is far inside the domain (approximation)
-<2> returns the sdf value at given position (linear interpolation)
+<1> returns gradient of sdf (normalised) at given position (finite difference)
+<2> returns true if position is far inside the domain (approximation)
+<3> returns the sdf value at given position (linear interpolation)
 
 
 Bounce back from wall:
