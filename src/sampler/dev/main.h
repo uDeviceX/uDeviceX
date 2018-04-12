@@ -25,8 +25,8 @@ _S_ int3 get_cell_coords(float3 r, int3 L, int3 M, int3 N) {
                      
 }
 
-_S_ int get_grid_id(int3 gc, int3 L, int3 M) {
-    return gc.x + (L.x + 2 * M.x) * (gc.y + (L.y + 2 * M.y) * gc.z);
+_S_ int get_grid_id(int3 gc, int3 N) {
+    return gc.x + N.x * (gc.y + N.y * gc.z);
 }
 
 _S_ void add_to_grid(const Part *p, Grid g) {
@@ -34,7 +34,7 @@ _S_ void add_to_grid(const Part *p, Grid g) {
     float4 *dst;
     int gid;
     gcoords = get_cell_coords(p->r, g.L, g.M, g.N);
-    gid = get_grid_id(gcoords, g.L, g.M);
+    gid = get_grid_id(gcoords, g.N);
     dst = g.pp + gid;
     
     atomicAdd(&dst->x, p->v.x);
