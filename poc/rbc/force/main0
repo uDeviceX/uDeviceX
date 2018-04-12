@@ -17,7 +17,16 @@ function compute_edg_len(   m, i, j) {
 	i = E0[m]; j = E1[m]
 	LEN[m] = dist(XX[i], YY[i], ZZ[i],
 		      XX[j], YY[j], ZZ[j])
-	print LEN[m]
+    }
+}
+
+function compute_area(   m, i, j, k) {
+    for (m = 0; m < NT; m++) {
+	i = T0[m]; j = T1[m]; k = T2[m]
+	AREA[m] = area(XX[i], YY[i], ZZ[i],
+		       XX[j], YY[j], ZZ[j],
+		       XX[k], YY[k], ZZ[k])
+	print i, j, k, AREA[m]
     }
 }
     
@@ -28,6 +37,7 @@ BEGIN {
     file = first_arg()
     off_read(file)
     setup()
-    compute_ang()
-    compute_edg_len()
+    #compute_ang()
+    #compute_edg_len()
+    compute_area()
 }

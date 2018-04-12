@@ -61,3 +61,19 @@ function dihedral_xy(ax, ay, az,
     DIHEDRAL_Y = orient3d(a, b, c, d)*bc
     DIHEDRAL_X = k[X]*l[X] + k[Y]*l[Y] + k[Z]*l[Z]
 }
+
+function area(ax, ay, az,
+	      bx, by, bz,
+	      cx, cy, cz,
+#
+	      a, b, c, x, y, z) {
+    X = 0; Y = 1; Z = 2
+    a[X] = ax; a[Y] = ay; a[Z] = az
+    b[X] = bx; b[Y] = by; b[Z] = bz
+    c[X] = cx; c[Y] = cy; c[Z] = cz
+
+    x = orient2d_yz(a, b, c)
+    y = orient2d_zx(a, b, c)
+    z = orient2d_xy(a, b, c)
+    return sqrt(x*x + y*y + z*z)/2
+}
