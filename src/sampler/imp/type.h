@@ -5,7 +5,7 @@ struct Grid {
 };
 
 struct Sampler {
-    Grid grid;
+    Grid dev, hst;
     long nsamples;
 };
 
