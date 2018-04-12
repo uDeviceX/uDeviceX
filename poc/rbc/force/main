@@ -3,19 +3,42 @@ function ini() {
     prog = "main"
 }
 
-function read(file, rr, ff) {
-    
+function read(file,   l, r, i) { # sets NV, NT, [X, Y, Z], [F0, F1, F2]
+    r = getline < file
+    if (bad(r)) err(r, "fail to read file: " f)
+
+    if (!eq($0, "OFF")) err("not an OFF file")
+
+    r = getline < file
+    if (bad(r)) err(r, "fail to read file: " f)
+    NV = $1; NT = $2
+    print NV, NT
+    for (i = 0; i < NV; i++) {
+	r = getline < file
+	if (bad(r)) err(r, "fail to read verts: " f)
+	X[i] = $1; Y[i] = $2; Z[i] = $3
+    }
+
+    for (i = 0; i < NT; i++) {
+	r = getline < file
+	if (bad(r)) err(r, "fail to read tris: " f)
+	F0[i] = $2; F1[i] = $3; F2[i] = $4
+    }
+    close(file)
 }
 
 BEGIN {
     ini()
     if (noarg()) err("needs FILE.off")
     f = first()
-    print f
+    read(f, rr, ff)
 }
 
 function msg(s) { printf "%s: %s\n", prog, s | "cat >&2" }
 function err(s) { msg(s); exit(2) }
-function shift(  i) { for (i = 2; i < ARGC; i++) ARGV[i-1] = ARGV[i]; ARGC-- }    
+function shift(  i) { for (i = 2; i < ARGC; i++) ARGV[i-1] = ARGV[i]; ARGC-- }
 function first(   x) { x = ARGV[1]; shift(); return x }
 function noarg() { return ARGC <= 1 }
+function eq(a, b) { return a "" == b "" }
+function ok(r)    { return r > 0 } # file read status
+function bad(r)   { return !ok(r)}
