@@ -44,7 +44,7 @@ void main0(Sdf *sdf, Part *p) {
     Sdf_v sdf_v;
     float x, y, z;
     x = p->x; y = p->y; z = p->z;
-    sdf_to_view(sdf, &sdf_v);
+    sdf_get_view(sdf, &sdf_v);
     KL(dev::main, (1, 1), (sdf_v, x, y, z));
 }
 

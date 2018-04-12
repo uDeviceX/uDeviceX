@@ -44,7 +44,7 @@ void sdf_bounce(float dt, const WvelStep *wv, const Coords *c, const Sdf *sdf, i
 }
 
 
-void sdf_to_view(const Sdf *q, /**/ Sdf_v *v) {
+void sdf_get_view(const Sdf *q, /**/ Sdf_v *v) {
     tex3d_to_view(q->tex, &v->tex);
     tform_to_view(q->t  , &v->t);
     v->cheap_threshold = q->cheap_threshold;
@@ -64,7 +64,7 @@ static void chunk_counts(int3 L, const Sdf *sdf, int nsamples, int nchunks, int 
     int *counts_dev;
     Sdf_v view;
     float *UU;
-    sdf_to_view(sdf, &view);
+    sdf_get_view(sdf, &view);
 
     Dalloc(&UU, 3 * nsamples);
     Dalloc(&counts_dev, nchunks);    
