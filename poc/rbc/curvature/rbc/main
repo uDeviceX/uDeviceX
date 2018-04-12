@@ -3,6 +3,9 @@ load("pdiff")  $
 load("scifac") $
 
 (X: 1, Y: 2, Z: 3) $
+x: 1/2*sin(u)*cos(v);
+y: 1/2*sin(u)*sin(v);
+z: F(cos(u));
 
 matchdeclare(al, all);
 defrule(r_sin0, sin(al)^2, 1 - cos(al)^2);
@@ -10,12 +13,7 @@ defrule(r_sin1, sin(al)^4, (1 - cos(al)^2)^2);
 to_cos(e):=apply1(e, r_sin0, r_sin1);
 
 cross(a, b):=express(a ~ b);
-dot0(a, b):=express(a . b);
 dot(a, b):=express(a . b);
-
-x: 1/2*sin(u)*cos(v);
-y: 1/2*sin(u)*sin(v);
-z: F(cos(u));
 
 xx: [x, y, z];
 xu: diff(xx, u);
@@ -26,14 +24,21 @@ xvv: diff(xx, v, 2);
 xuv: diff(diff(xx, v), u);
 
 U:  trigsimp(cross(trigsimp(xu), trigsimp(xv)));
-UU: dot(Un, U);
+UU: dot(U, U);
 UU: to_cos(gcfac(UU));
 
-/* 12.1 */
+/* first form */
 E: trigsimp(dot(xu, xu));
 G: trigsimp(dot(xv, xv));
 F: trigsimp(dot(xu, xv));
 
-e: fullratsimp(trigsimp(dot(xuu, n)));
-f: trigsimp(dot(xuv, n));
-g: trigsimp(dot(xvv, n));
+/* second form */
+e: fullratsimp(trigsimp(dot(xuu, U)));
+f: trigsimp(dot(xuv, U));
+g: trigsimp(dot(xvv, U));
+
+auu: (f*F - e*G)/(E*G - F^2);
+auv: (e*F - f*E)/(E*G - F^2);
+avu: (g*F - f*G)/(E*G - F^2);
+avv: (f*F - g*E)/(E*G - F^2);
+
