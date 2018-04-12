@@ -35,7 +35,7 @@ function compute_area(   m, i, j, k) {
 	print i, j, k, AREA[m]
     }
 }
-    
+
 
 BEGIN {
     ini()
