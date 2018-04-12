@@ -1,0 +1,12 @@
+cphi: dot_kn, kk, nn
+dot_kn: k, n
+kk: k
+nn: n
+
+n: bd, bc
+k: ab, ac
+
+ab: a, b
+ac: c, a
+bd: b, d
+bc: b, c
