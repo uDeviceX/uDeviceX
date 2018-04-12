@@ -3,6 +3,7 @@
 prog=u.maxima
 : ${MAXIMA=maxima}
 : ${DBG=0}
+: ${ARGS=--very-quiet}
 
 usg() {
     cat >&2 <<!
@@ -21,6 +22,7 @@ err () { echo 2>&1 "$prog: $@"; exit 2; }
 
 if test $# -ne 0 && test "$1" = -h; then usg; fi
 
+# variables
 v=
 for i
 do shift
@@ -36,17 +38,23 @@ $i$"
    esac
 done
 
+# file
 f=
 for i
 do shift
-   set -- "$@" "$f"
+   if test ! -z "$f"
+   then set -- "$@" "$f"
+   fi
    f="$i"
 done
-
 if test   -z "$f"; then err 'FILE.mac is missing'; fi
 if test ! -f "$f"; then err "not a file '$f'"; fi
 
-e "$MAXIMA" --batch-string "\"
+if test $# -eq 0
+then a="$ARGS"
+else a="$@"
+fi
+
+e "$MAXIMA" $a --batch-string "\"
 $v
-batch(\\\"$f\\\") $
-\""
+batchload(\\\"$f\\\") $\""
