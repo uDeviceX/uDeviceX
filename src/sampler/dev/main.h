@@ -53,4 +53,39 @@ __global__ void add(const SampleDatum data, /**/ Grid grid) {
     add_to_grid(&p, grid);    
 }
 
+_S_ long get_size(const Grid *g) {
+    int3 N = g->N;
+    return N.x * N.y * N.z;
+}
+
+_S_ float get_spacing(int L, int M, int N) {
+    return (float) (L + 2 * M) / N;
+}
+
+_S_ float cell_volume(const Grid *g) {
+    float dx, dy, dz;
+    dx = get_spacing(g->L.x, g->M.x, g->N.x);
+    dy = get_spacing(g->L.y, g->M.y, g->N.y);
+    dz = get_spacing(g->L.z, g->M.z, g->N.z);
+    return dx * dy * dz;
+}
+
+__global__ void avg(Grid g) {
+    long i;
+    float4 d;
+    float s;    
+    i = threadIdx.x + blockIdx.x * blockDim.x;
+    if (i >= get_size(&g)) return;
+
+    d = g.pp[i];
+
+    s = d.x ? 0 : 1.f / d.w;
+    d.x *= s;
+    d.y *= s;
+    d.z *= s;
+    d.w /= cell_volume(&g);
+
+    g.pp[i] = d;
+}
+
 #undef _S_

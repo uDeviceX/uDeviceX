@@ -1,23 +1,29 @@
+long get_size(const Grid *g) {
+    int3 N = g->N;
+    return N.x * N.y * N.z;
+}
+
 static void ini_dev_grid(int3 L, int3 M, int3 N, Grid *g) {
-    long n = N.x * N.y * N.z;
+    long n;
     g->N = N;
     g->M = M;
     g->L = L;
 
+    n = get_size(g);
     Dalloc(&g->pp, n);
     Dalloc(&g->ss, 6*n);
 }
 
 static void ini_hst_grid(int3 L, int3 M, int3 N, Grid *g) {
-    long n = N.x * N.y * N.z;
+    long n;
     g->N = N;
     g->M = M;
     g->L = L;
 
+    n = get_size(g);
     EMALLOC(n,   &g->pp);
     EMALLOC(6*n, &g->ss);
 }
-
 
 static void fin_dev_grid(Grid *g) {
     Dfree(g->pp);
@@ -45,8 +51,7 @@ void sampler_fin(Sampler *s) {
 }
 
 static void reset_dev_grid(Grid *g) {
-    int3 N = g->N;
-    long n = N.x * N.y * N.z;
+    long n = get_size(g);
     DzeroA(g->pp, n);
     DzeroA(g->ss, 6*n);
 }
@@ -56,5 +61,15 @@ void sampler_reset(Sampler *s) {
     UC(reset_dev_grid(&s->dev));
 }
 
-void sampler_add(const SampleData, Sampler*);
+void sampler_add(const SampleData *data, Sampler *s) {
+    long i, n;
+    SampleDatum d;
+    Grid g = s->dev;
+    for (i = 0; i < data->n; ++i) {
+        d = data->d[i];
+        n = d.n;
+        KL(sampler_dev::add, (k_cnf(n)), (d, g));
+    }
+}
+
 void sampler_dump(Sampler*);
