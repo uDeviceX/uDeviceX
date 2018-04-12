@@ -1,11 +1,7 @@
 struct Sampler;
-struct Particle;
+struct SampleData;
 
-struct SampleData {
-    long n;
-    const Particle *pp;
-    const float *ss;
-}
+struct Particle;
 
 void sampler_ini(Sampler**);
 void sampler_fin(Sampler*);
