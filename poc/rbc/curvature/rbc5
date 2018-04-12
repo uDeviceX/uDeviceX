@@ -10,6 +10,7 @@ a0: 0.0518; a1: 2.0026; a2: -4.491;
 C5: a2/16; C3: -(a2+2*a1)/8; C1: (a2+4*a1+16*a0)/16;
 
 F(c):= C5 * c^5 + C3 * c^3 + C1 * c;
+/* F(c):= 1/2*c; */
 
 matchdeclare(al, all);
 defrule(r_sin0, sin(al)^2, 1 - cos(al)^2);
@@ -17,6 +18,7 @@ defrule(r_sin1, sin(al)^4, (1 - cos(al)^2)^2);
 to_cos(e):=apply1(e, r_sin0, r_sin1);
 
 cross(a, b):=express(a ~ b);
+dot0(a, b):=express(a . b);
 dot(a, b):=express(a . b);
 
 x: 1/2*sin(u)*cos(v);
@@ -35,9 +37,18 @@ n:  trigsimp(cross(trigsimp(ru), trigsimp(rv)));
 nn: dot(n, n);
 nn: to_cos(gcfac(nn));
 
-L: fullratsimp(trigsimp(dot(ruu, n)));
+L: fullratsimp(trigsimp(dot(ruu, n))) / dot(ru, ru);
 M: trigsimp(dot(ruv, n));
-N: trigsimp(dot(rvv, n));
+N: trigsimp(dot(rvv, n))              / dot(rv, rv);
+
+D: 12.08 $
+sc: 2350 $
+fi: "data/julicher.txt" $
+l: read_nested_list(fi) $
+fun(l):=[l[1]/D, l[4]*sc] $
+data: map(fun, l) $
 
 draw2d(nticks=100,
-  parametric(x, N/sqrt(nn), u, 0, %pi/2)), v = 0;
+  points(data),
+  parametric(x, ((L + N)/sqrt(nn))^2, u, 0, %pi/2)), v = 0;
+
