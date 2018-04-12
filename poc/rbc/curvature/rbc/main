@@ -1,0 +1,42 @@
+load("vect")   $
+load("pdiff")  $
+load("scifac") $
+
+(X: 1, Y: 2, Z: 3) $
+
+matchdeclare(al, all);
+defrule(r_sin0, sin(al)^2, 1 - cos(al)^2);
+defrule(r_sin1, sin(al)^4, (1 - cos(al)^2)^2);
+to_cos(e):=apply1(e, r_sin0, r_sin1);
+
+cross(a, b):=express(a ~ b);
+dot0(a, b):=express(a . b);
+dot(a, b):=express(a . b);
+
+x: 1/2*sin(u)*cos(v);
+y: 1/2*sin(u)*sin(v);
+z: F(cos(u));
+
+r: [x, y, z];
+ru: diff(r, u);
+rv: diff(r, v);
+
+ruu: diff(r, u, 2);
+rvv: diff(r, v, 2);
+ruv: diff(diff(r, v), u);
+
+n:  trigsimp(cross(trigsimp(ru), trigsimp(rv)));
+nn: dot(n, n);
+nn: to_cos(gcfac(nn));
+
+/* 12.1 */
+E: trigsimp(dot(ru, ru));
+G: trigsimp(dot(rv, rv));
+F: trigsimp(dot(ru, rv));
+
+e: fullratsimp(trigsimp(dot(ruu, n)));
+f: trigsimp(dot(ruv, n));
+g: trigsimp(dot(rvv, n));
+
+
+
