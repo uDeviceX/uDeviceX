@@ -25,9 +25,9 @@ xuu: diff(xx, u, 2);
 xvv: diff(xx, v, 2);
 xuv: diff(diff(xx, v), u);
 
-n:  trigsimp(cross(trigsimp(xu), trigsimp(xv)));
-nn: dot(n, n);
-nn: to_cos(gcfac(nn));
+U:  trigsimp(cross(trigsimp(xu), trigsimp(xv)));
+UU: dot(Un, U);
+UU: to_cos(gcfac(UU));
 
 /* 12.1 */
 E: trigsimp(dot(xu, xu));
