@@ -1,35 +1,35 @@
 #define _S_ static __device__
 #define _I_ static __device__
 
-_S_ float fetch(Sdf_v *sdf, float i, float j, float k) {
+_S_ float fetch(const Sdf_v *sdf, float i, float j, float k) {
     return Ttex3D(float, sdf->tex.t, i, j, k);
 }
 
 _S_ int iround(float x) { return (x > 0.5) ? (x + 0.5) : (x - 0.5); }
 
-_S_ void convert(Sdf_v *sdf, const float a[3], /**/ float b[3]) {
+_S_ void convert(const Sdf_v *sdf, const float a[3], /**/ float b[3]) {
     tform_convert_dev(&sdf->t, a, /**/ b);
 }
 
-_S_ void convert_floor(Sdf_v *sdf, const float a[3], /**/ int i[3]) {
+_S_ void convert_floor(const Sdf_v *sdf, const float a[3], /**/ int i[3]) {
     enum {X, Y, Z};
     float f[3];
     convert(sdf, a, /**/ f);
     i[X] = int(f[X]); i[Y] = int(f[Y]); i[Z] = int(f[Z]);
 }
 
-_S_ void convert_round(Sdf_v *sdf, const float a[3], /**/ int i[3]) {
+_S_ void convert_round(const Sdf_v *sdf, const float a[3], /**/ int i[3]) {
     enum {X, Y, Z};
     float f[3];
     convert(sdf, a, /**/ f);
     i[X] = iround(f[X]); i[Y] = iround(f[Y]); i[Z] = iround(f[Z]);
 }
 
-_S_ void spacing(Sdf_v *sdf, float s[3]) {
+_S_ void spacing(const Sdf_v *sdf, float s[3]) {
     tform_spacing_dev(&sdf->t, /**/ s);
 }
 
-_S_ float3 grad(Sdf_v *sdf, const float3 *pos) {
+_S_ float3 grad(const Sdf_v *sdf, const float3 *pos) {
     int tc[3];
     float fcts[3], r[3] = {pos->x, pos->y, pos->z};
     float myval, gx, gy, gz;
@@ -46,7 +46,7 @@ _S_ float3 grad(Sdf_v *sdf, const float3 *pos) {
 }
 
 // tag::int[]
-_I_ float3 sdf_ugrad(Sdf_v *texsdf, const float3 *r) // <1>
+_I_ float3 sdf_ugrad(const Sdf_v *texsdf, const float3 *r) // <1>
 // end::int[]
 {
     float mag, eps;
@@ -62,7 +62,7 @@ _I_ float3 sdf_ugrad(Sdf_v *texsdf, const float3 *r) // <1>
     return g;
 }
 
-_S_ float cheap_sdf(Sdf_v *sdf, float x, float y, float z)  {
+_S_ float cheap_sdf(const Sdf_v *sdf, float x, float y, float z)  {
     int tc[3];
     float r[3] = {x, y, z};
     convert_round(sdf, r, /**/ tc);
@@ -70,14 +70,14 @@ _S_ float cheap_sdf(Sdf_v *sdf, float x, float y, float z)  {
 }
 
 // tag::int[]
-_I_ bool sdf_far(Sdf_v *sdf, float x, float y, float z) // <2>
+_I_ bool sdf_far(const Sdf_v *sdf, float x, float y, float z) // <2>
 // end::int[]
 {
     return cheap_sdf(sdf, x, y, z) <= sdf->cheap_threshold - 1 ;
 }
 
 // tag::int[]
-_I_ float sdf_eval(Sdf_v *sdf0, float x, float y, float z)  // <3>
+_I_ float sdf_eval(const Sdf_v *sdf0, float x, float y, float z)  // <3>
 // end::int[]
 {
     int c;
