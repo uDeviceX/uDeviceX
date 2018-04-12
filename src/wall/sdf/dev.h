@@ -45,7 +45,10 @@ _S_ float3 grad(Sdf_v *sdf, const float3 *pos) {
     return make_float3(gx, gy, gz);
 }
 
-_S_ float3 ugrad(Sdf_v *texsdf, const float3 *r) {
+// tag::int[]
+_I_ float3 sdf_ugrad(Sdf_v *texsdf, const float3 *r) // TODO: doc
+// end::int[]
+{
     float mag, eps;
     float3 g;
     eps = 1e-6;
