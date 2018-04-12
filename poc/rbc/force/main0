@@ -37,6 +37,8 @@ function compute_area(   m, i, j, k) {
 }
 
 
+
+
 BEGIN {
     ini()
     if (noarg()) err("needs FILE.off")
