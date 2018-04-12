@@ -15,14 +15,14 @@ function dih_nxt(i, j, k,   m) {
 }
 function dih_prv(i, j, k,   m) {
     m = GDE[i, j]
-               D1[m] = i; D2[m] = j; D3[m] = k; 
+	       D1[m] = i; D2[m] = j; D3[m] = k;
 }
 function build_dih(   m, i, j, k) {
     for (m = 0; m < NT; m++) {
 	i = T0[m]; j = T1[m]; k = T2[m]
 	dih_nxt(i, j, k); dih_nxt(j, k, i); dih_nxt(k, i, j)
-	dih_prv(j, k, i); dih_nxt(k, i, j); dih_nxt(i, j, k)	
-    }    
+	dih_prv(j, k, i); dih_nxt(k, i, j); dih_nxt(i, j, k)
+    }
 }
 function reg_t(vert, tri,   deg, cond) {
     for (deg = 0; ; deg++) {
@@ -54,7 +54,7 @@ function build_edg(   i, j, m) { # EDG: EDG[v] = [edg0, edg1, edg2, ...]
 function setup() {
     build_e01()
     build_dih()
-    
+
     build_tri()
     build_edg()
 }
