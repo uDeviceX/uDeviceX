@@ -1,12 +1,5 @@
 #!/usr/bin/awk -f
 
-# NV, NT, NE: number of verts, triangles, edges
-# X[v] Y[v] Z[v]: position
-# T0[t] T1[t] T2[t]: vertices in triangle `t'
-# E0[e] E1[e]      : vertices in edg `e'
-# TRI[v, d]      : triangle adjusted to vertices `v' of degree `d`
-# EDG[v, d]      : edg adjusted to vertices `v' of degree `d`
-
 function ini() { prog = "main" }
 function read(file,   l, r, i) { # sets NV, NT, [X, Y, Z], [T0, T1, T2]
     r = getline < file
@@ -68,18 +61,10 @@ function build_edg(   i, j, m) { # EDG: EDG[v] = [edg0, edg1, edg2, ...]
     }
 }
 
-function edg_deg(vert,  deg, cond) {
-    for (deg = 0; ; deg++) {
-	cond = (vert, deg) in EDG
-	if (!cond) break;
-    }
-    return deg
+function compute_eng() {
+    
 }
 
-function write_deg(   i) {
-    for (i = 0; i < NV; i++)
-	print edg_deg(i)
-}
 
 BEGIN {
     ini()
@@ -89,7 +74,8 @@ BEGIN {
     build_e01()
     build_tri()
     build_edg()
-    write_deg()
+
+    compute_eng()
 }
 
 function msg(s) { printf "%s: %s\n", prog, s | "cat >&2" }
