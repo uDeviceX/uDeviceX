@@ -31,16 +31,16 @@ _S_ int get_grid_id(int3 gc, int3 N) {
     return gc.x + N.x * (gc.y + N.y * gc.z);
 }
 
-_S_ void add_to_grid(const Part *p, Grid g) {
+_S_ void add_to_grid(const Part *p, const Grid *g) {
     int3 gcoords;
     int gid;
-    gcoords = get_cell_coords(p->r, g.L, g.N);
-    gid = get_grid_id(gcoords, g.N);
+    gcoords = get_cell_coords(p->r, g->L, g->N);
+    gid = get_grid_id(gcoords, g->N);
 
-    atomicAdd(g.d[RHO] + gid, 1.f);
-    atomicAdd(g.d[VX]  + gid, p->v.x);
-    atomicAdd(g.d[VY]  + gid, p->v.x);
-    atomicAdd(g.d[VZ]  + gid, p->v.x);
+    atomicAdd(g->d[RHO] + gid, 1.f);
+    atomicAdd(g->d[VX]  + gid, p->v.x);
+    atomicAdd(g->d[VY]  + gid, p->v.x);
+    atomicAdd(g->d[VZ]  + gid, p->v.x);
 }
 
 __global__ void add(const SampleDatum data, /**/ Grid grid) {
@@ -50,7 +50,7 @@ __global__ void add(const SampleDatum data, /**/ Grid grid) {
     if (pid >= data.n) return;
 
     fetch_part(pid, &data, /**/ &p);
-    add_to_grid(&p, grid);    
+    add_to_grid(&p, &grid);    
 }
 
 _S_ long get_size(const Grid *g) {
