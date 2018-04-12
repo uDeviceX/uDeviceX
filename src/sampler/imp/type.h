@@ -41,3 +41,12 @@ struct SampleData {
     int n;
     SampleDatum d[MAX_N_DATA];
 };
+
+struct Datum_v {
+    long n;
+    const Particle *pp;
+};
+
+struct DatumS_v : Datum_v {
+    const float *ss;
+};

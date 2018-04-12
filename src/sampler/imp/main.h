@@ -67,16 +67,37 @@ void sampler_reset(Sampler *s) {
     UC(reset_dev_grid(&s->dev));
 }
 
-void sampler_add(const SampleData *data, Sampler *s) {
+static void datum_view(const SampleDatum *d, Datum_v *v) {
+    v->n = d->n;
+    v->pp = d->pp;
+}
+
+static void datum_view(const SampleDatum *d, DatumS_v *v) {
+    v->n = d->n;
+    v->pp = d->pp;
+    v->ss = d->ss;
+}
+
+template <typename Datum>
+static void add(const SampleData *data, Grid g) {
     long i, n;
-    SampleDatum d;
-    Grid g = s->dev;
+    const SampleDatum *d;
+    Datum v;
     for (i = 0; i < data->n; ++i) {
-        d = data->d[i];
-        n = d.n;
-        KL(sampler_dev::add, (k_cnf(n)), (d, g));
+        d = &data->d[i];
+        datum_view(d, &v);
+        n = v.n;
+        KL(sampler_dev::add, (k_cnf(n)), (v, g));
     }
-    ++ s->nsteps;
+}
+
+void sampler_add(const SampleData *data, Sampler *s) {
+    Grid g = s->dev;
+    if (g.stress)
+        add<DatumS_v>(data, g);
+    else
+        add<Datum_v>(data, g);
+    s->nsteps ++;
 }
 
 static void avg(int nsteps, Grid *g) {
