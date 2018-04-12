@@ -1,0 +1,13 @@
+#!/bin/sh
+
+prog=u.maxima
+usg() {
+    cat >&2 <<!
+$prog [arg=val..] [FILE.mac]
+run maxima script FILE.mac with arguments
+!
+    exit
+}
+
+if test $# -ne 0 && test "$1" = -h; then usg; fi
+
