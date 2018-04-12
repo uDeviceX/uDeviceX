@@ -70,20 +70,22 @@ _S_ float cell_volume(const Grid *g) {
     return dx * dy * dz;
 }
 
-__global__ void avg(Grid g) {
+__global__ void avg(int nsteps, Grid g) {
     long i;
     float4 d;
-    float s;    
+    float s, st;    
     i = threadIdx.x + blockIdx.x * blockDim.x;
     if (i >= get_size(&g)) return;
 
     d = g.pp[i];
 
-    s = d.x ? 0 : 1.f / d.w;
+    st = 1.0 / nsteps;
+    s = d.x ? 0 : st / d.w;
+
     d.x *= s;
     d.y *= s;
     d.z *= s;
-    d.w /= cell_volume(&g);
+    d.w *= st / cell_volume(&g);
 
     g.pp[i] = d;
 }

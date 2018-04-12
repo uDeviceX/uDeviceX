@@ -6,7 +6,7 @@ struct Grid {
 
 struct Sampler {
     Grid dev, hst;
-    long nsamples;
+    long nsteps;
 };
 
 struct SampleDatum {

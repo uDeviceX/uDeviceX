@@ -1,4 +1,4 @@
-long get_size(const Grid *g) {
+static long get_size(const Grid *g) {
     int3 N = g->N;
     return N.x * N.y * N.z;
 }
@@ -57,7 +57,7 @@ static void reset_dev_grid(Grid *g) {
 }
 
 void sampler_reset(Sampler *s) {
-    s->nsamples = 0;
+    s->nsteps = 0;
     UC(reset_dev_grid(&s->dev));
 }
 
@@ -70,6 +70,22 @@ void sampler_add(const SampleData *data, Sampler *s) {
         n = d.n;
         KL(sampler_dev::add, (k_cnf(n)), (d, g));
     }
+    ++ s->nsteps;
 }
 
-void sampler_dump(Sampler*);
+static void avg(int nsteps, Grid *g) {
+    long n = get_size(g);
+    KL(sampler_dev::avg, (k_cnf(n)), (nsteps, *g));
+}
+
+static void download(const Grid *dev, Grid *hst) {
+    long n = get_size(dev);
+    aD2H(dev->pp, hst->pp,   n);
+    aD2H(dev->ss, hst->ss, 6*n);
+}
+
+void sampler_dump(Sampler *s) {
+    UC(avg(s->nsteps, &s->dev));
+    UC(download(&s->dev, &s->hst));
+    
+}
