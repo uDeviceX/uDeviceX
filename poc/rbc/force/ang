@@ -60,6 +60,4 @@ function dihedral_xy(ax, ay, az,
 
     DIHEDRAL_Y = orient3d(a, b, c, d)*bc
     DIHEDRAL_X = k[X]*l[X] + k[Y]*l[Y] + k[Z]*l[Z]
-
-    print DIHEDRAL_X, DIHEDRAL_Y
 }

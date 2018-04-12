@@ -8,8 +8,10 @@ function compute_ang(   m, i, j, k, l) {
 	i = D0[m]; j = D1[m]; k = D2[m]; l = D3[m]
 	dihedral_xy(XX[i], YY[i], ZZ[i],
 		    XX[j], YY[j], ZZ[j],
-		    XX[k], YY[k], ZZ[l],
+		    XX[k], YY[k], ZZ[k],
 		    XX[l], YY[l], ZZ[l])
+	pi = 3.141592653589793
+	print 180/pi*atan2(DIHEDRAL_Y, DIHEDRAL_X)
     }
 }
 
