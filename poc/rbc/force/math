@@ -1,0 +1,6 @@
+function dist(ax, ay, az, bx, by, bz,   dx, dy, dz) {
+    dx = ax - bx
+    dy = ay - by
+    dz = az - bz
+    return sqrt(dx^2 + dy^2 + dz^2)
+}

@@ -1,8 +1,6 @@
 #!/usr/bin/awk -f
 
-function ini() {
-    prog = "main"
-}
+function ini() { prog = "main" } 
 function compute_ang(   m, i, j, k, l) {
     for (m = 0; m < NE; m++) {
 	i = D0[m]; j = D1[m]; k = D2[m]; l = D3[m]
@@ -10,10 +8,19 @@ function compute_ang(   m, i, j, k, l) {
 		    XX[j], YY[j], ZZ[j],
 		    XX[k], YY[k], ZZ[k],
 		    XX[l], YY[l], ZZ[l])
-	pi = 3.141592653589793
-	print 180/pi*atan2(DIHEDRAL_Y, DIHEDRAL_X)
+	ANG[m] = atan2(DIHEDRAL_Y, DIHEDRAL_X)
     }
 }
+
+function compute_edg_len(   m, i, j) {
+    for (m = 0; m < NE; m++) {
+	i = E0[m]; j = E1[m]
+	LEN[m] = dist(XX[i], YY[i], ZZ[i],
+		      XX[j], YY[j], ZZ[j])
+	print LEN[m]
+    }
+}
+    
 
 BEGIN {
     ini()
@@ -22,4 +29,5 @@ BEGIN {
     off_read(file)
     setup()
     compute_ang()
+    compute_edg_len()
 }
