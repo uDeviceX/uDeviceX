@@ -1,0 +1,2 @@
+s: linsolve(a*'x + b = 0, 'x) $
+print(s) $
