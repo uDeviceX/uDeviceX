@@ -5,6 +5,12 @@ enum {
     NFIELDS
 };
 
+static const char *names[NFIELDS] = {
+    "density", "u", "v", "w",
+    "sxx", "sxy", "sxz",
+    "syy", "syz", "szz"
+};
+
 struct Grid {
     int3 L, N; /* subdomain size, grid size */
     float *d[NFIELDS];
