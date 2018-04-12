@@ -45,7 +45,10 @@ _S_ float3 grad(Sdf_v *sdf, const float3 *pos) {
     return make_float3(gx, gy, gz);
 }
 
-_S_ float3 ugrad(Sdf_v *texsdf, const float3 *r) {
+// tag::int[]
+_I_ float3 sdf_ugrad(Sdf_v *texsdf, const float3 *r) // <1>
+// end::int[]
+{
     float mag, eps;
     float3 g;
     eps = 1e-6;
@@ -67,14 +70,14 @@ _S_ float cheap_sdf(Sdf_v *sdf, float x, float y, float z)  {
 }
 
 // tag::int[]
-_I_ bool sdf_far(Sdf_v *sdf, float x, float y, float z) // <1>
+_I_ bool sdf_far(Sdf_v *sdf, float x, float y, float z) // <2>
 // end::int[]
 {
     return cheap_sdf(sdf, x, y, z) <= sdf->cheap_threshold - 1 ;
 }
 
 // tag::int[]
-_I_ float sdf(Sdf_v *sdf0, float x, float y, float z)  // <2>
+_I_ float sdf_eval(Sdf_v *sdf0, float x, float y, float z)  // <3>
 // end::int[]
 {
     int c;

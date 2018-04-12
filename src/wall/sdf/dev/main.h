@@ -19,7 +19,7 @@ __global__ void count_inside(Sdf_v sv, int3 L, int n, const float *UU, int *coun
 
     if (i < n) {    
         r = get_r(L, UU + 3 * i);
-        s = sdf(&sv, r.x, r.y, r.z);
+        s = sdf_eval(&sv, r.x, r.y, r.z);
         c = (s <= 0.f);
     }
 
