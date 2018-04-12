@@ -1,7 +1,7 @@
 struct Grid {
-    int3 L, N, M; /* subdomain size, grid size, margin */
-    float4 *pp;   /* density, velocity                 */
-    float *ss;    /* stresses                          */
+    int3 L, N;  /* subdomain size, grid size */
+    float4 *pp; /* density, velocity         */
+    float *ss;  /* stresses                  */
 };
 
 struct Sampler {

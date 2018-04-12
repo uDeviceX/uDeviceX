@@ -6,7 +6,6 @@ static long get_size(const Grid *g) {
 static void ini_dev_grid(int3 L, int3 M, int3 N, Grid *g) {
     long n;
     g->N = N;
-    g->M = M;
     g->L = L;
 
     n = get_size(g);
@@ -17,7 +16,6 @@ static void ini_dev_grid(int3 L, int3 M, int3 N, Grid *g) {
 static void ini_hst_grid(int3 L, int3 M, int3 N, Grid *g) {
     long n;
     g->N = N;
-    g->M = M;
     g->L = L;
 
     n = get_size(g);

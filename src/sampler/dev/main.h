@@ -9,19 +9,22 @@ _S_ void fetch_part(int i, const SampleDatum *d, Part *p) {
     p->v = make_float3(p1.y, p2.x, p2.y);
 }
 
-_S_ int get_coord(float x, int L, int M, int N) {
-    int D, i;
+_S_ float get_spacing(int L, int N) {
+    return (float) L / (float) N;
+}
+
+_S_ int get_coord(float x, int L, int N) {
+    int i;
     float dx;
-    D = 2*L + M;
-    dx = (float) D / (float) N;
-    i = (x + D/2) / dx;
+    dx = get_spacing(L, N);
+    i = (x + L/2) / dx;
     return min(N-1, max(0, i));
 }
 
-_S_ int3 get_cell_coords(float3 r, int3 L, int3 M, int3 N) {
-    return make_int3(get_coord(r.x, L.x, M.x, N.x),
-                     get_coord(r.y, L.y, M.y, N.y),
-                     get_coord(r.z, L.z, M.z, N.z));
+_S_ int3 get_cell_coords(float3 r, int3 L, int3 N) {
+    return make_int3(get_coord(r.x, L.x, N.x),
+                     get_coord(r.y, L.y, N.y),
+                     get_coord(r.z, L.z, N.z));
                      
 }
 
@@ -33,7 +36,7 @@ _S_ void add_to_grid(const Part *p, Grid g) {
     int3 gcoords;
     float4 *dst;
     int gid;
-    gcoords = get_cell_coords(p->r, g.L, g.M, g.N);
+    gcoords = get_cell_coords(p->r, g.L, g.N);
     gid = get_grid_id(gcoords, g.N);
     dst = g.pp + gid;
     
@@ -58,15 +61,11 @@ _S_ long get_size(const Grid *g) {
     return N.x * N.y * N.z;
 }
 
-_S_ float get_spacing(int L, int M, int N) {
-    return (float) (L + 2 * M) / N;
-}
-
 _S_ float cell_volume(const Grid *g) {
     float dx, dy, dz;
-    dx = get_spacing(g->L.x, g->M.x, g->N.x);
-    dy = get_spacing(g->L.y, g->M.y, g->N.y);
-    dz = get_spacing(g->L.z, g->M.z, g->N.z);
+    dx = get_spacing(g->L.x, g->N.x);
+    dy = get_spacing(g->L.y, g->N.y);
+    dz = get_spacing(g->L.z, g->N.z);
     return dx * dy * dz;
 }
 
