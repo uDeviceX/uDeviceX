@@ -1,5 +1,5 @@
 NV, NT, NE: number of verts, triangles, edges
-X[v] Y[v] Z[v]: position
+XX[v] YY[v] ZZ[v]: position
 T0[t] T1[t] T2[t]: vertices in triangle `t'
 D0[d] {D1[d] D2[d]} D3[d]: dihedral `d'
 E0[e] E1[e]      : vertices in edg `e'

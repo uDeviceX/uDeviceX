@@ -1,4 +1,4 @@
-function off_read(file,   l, r, i) { # sets NV, NT, [X, Y, Z], [T0, T1, T2]
+function off_read(file,   l, r, i) { # sets NV, NT, [XX, YY, ZZ], [T0, T1, T2]
     r = getline < file
     if (bad(r)) err(r, "fail to read file: " f)
     if (!eq($0, "OFF")) err("not an OFF file")
@@ -8,7 +8,7 @@ function off_read(file,   l, r, i) { # sets NV, NT, [X, Y, Z], [T0, T1, T2]
     for (i = 0; i < NV; i++) {
 	r = getline < file
 	if (bad(r)) err(r, "fail to read verts: " f)
-	X[i] = $1; Y[i] = $2; Z[i] = $3
+	XX[i] = $1; YY[i] = $2; ZZ[i] = $3
     }
     for (i = 0; i < NT; i++) {
 	r = getline < file

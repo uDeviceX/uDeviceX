@@ -1,8 +1,65 @@
+function orient2d(a, b, P, Q, c,   acp, acq, bcp, bcq) {
+    acp = a[P] - c[P]; bcp = b[P] - c[P]
+    acq = a[Q] - c[Q]; bcq = b[Q] - c[Q]
+    return acp * bcq - acq * bcp;
+}
+
+function orient2d_xy(a, b, c) {
+    X = 0; Y = 1; Z = 2
+    return orient2d(a, b, X, Y, c)
+}
+
+function orient2d_zx(a, b, c) {
+    X = 0; Y = 1; Z = 2
+    return orient2d(a, b, Z, X, c)
+}
+
+function orient2d_yz(a, b, c) {
+    X = 0; Y = 1; Z = 2
+    return orient2d(a, b, Y, Z, c)
+}
+
+function ac_bc_cross(a, c, b, r) {
+    X = 0; Y = 1; Z = 2
+    r[X] = orient2d_yz(a, b, c)
+    r[Y] = orient2d_zx(a, b, c)
+    r[Z] = orient2d_xy(a, b, c)
+}
+
+function orient3d(a, b, c, d,   ax, bx, cx) {
+    X = 0; Y = 1; Z = 2
+    ax = a[X] - d[X]; ay = a[Y] - d[Y]; az = a[Z] - d[Z]
+    bx = b[X] - d[X]; by = b[Y] - d[Y]; bz = b[Z] - d[Z]
+    cx = c[X] - d[X]; cy = c[Y] - d[Y]; cz = c[Z] - d[Z]
+    return \
+	ax*(by*cz - bz*cy) + \
+	bx*(cy*az - cz*ay) + \
+	cx*(ay*bz - az*by)
+}
+
 function dihedral_xy(ax, ay, az,
 		     bx, by, bz,
 		     cx, cy, cz,
-		     dx, dy, dz) {
-    
-    DIHEDRAL_X = 100
-    DIHEDRAL_Y = 200
+		     dx, dy, dz,
+#
+		     a, b, c, d, k, l, bcx, bcy, bcz, bc) {
+    X = 0; Y = 1; Z = 2
+
+    a[X] = ax; a[Y] = ay; a[Z] = az
+    b[X] = bx; b[Y] = by; b[Z] = bz
+    c[X] = cx; c[Y] = cy; c[Z] = cz
+    d[X] = dx; d[Y] = dy; d[Z] = dz
+
+    ac_bc_cross(b, c, a,    k)
+    ac_bc_cross(c, b, d,    l)
+
+    bcx = b[X] - c[X]
+    bcy = b[Y] - c[Y]
+    bcz = b[Z] - c[Z]
+    bc = sqrt(bcx*bcx + bcy*bcy + bcz*bcz)
+
+    DIHEDRAL_Y = orient3d(a, b, c, d)*bc
+    DIHEDRAL_X = k[X]*l[X] + k[Y]*l[Y] + k[Z]*l[Z]
+
+    print DIHEDRAL_X, DIHEDRAL_Y
 }
