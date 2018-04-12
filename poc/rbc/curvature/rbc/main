@@ -15,6 +15,8 @@ to_cos(e):=apply1(e, r_sin0, r_sin1);
 cross(a, b):=express(a ~ b);
 dot(a, b):=express(a . b);
 
+norm(a):=a/sqrt(trigsimp(dot(a, a)));
+
 xx: [x, y, z];
 xu: diff(xx, u);
 xv: diff(xx, v);
@@ -41,4 +43,3 @@ auu: (f*F - e*G)/(E*G - F^2);
 auv: (e*F - f*E)/(E*G - F^2);
 avu: (g*F - f*G)/(E*G - F^2);
 avv: (f*F - g*E)/(E*G - F^2);
-
