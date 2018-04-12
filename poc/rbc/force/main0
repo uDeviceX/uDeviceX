@@ -1,0 +1,18 @@
+#!/usr/bin/awk -f
+
+function ini() { prog = "main" }
+function compute_ang() {
+    for (m = 0; m < NE; m++) {
+	i = D0[m]; j = D1[m]; k = D2[m]; l = D3[m]
+	print i, j, k, l
+    }
+}
+
+BEGIN {
+    ini()
+    if (noarg()) err("needs FILE.off")
+    file = first_arg()
+    off_read(file)
+    setup()
+    compute_ang()
+}

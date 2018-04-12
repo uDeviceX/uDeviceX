@@ -1,0 +1,8 @@
+function msg(s) { printf "%s: %s\n", prog, s | "cat >&2" }
+function err(s) { msg(s); exit(2) }
+function shift(  i) { for (i = 2; i < ARGC; i++) ARGV[i-1] = ARGV[i]; ARGC-- }
+function first_arg(   x) { x = ARGV[1]; shift(); return x }
+function noarg() { return ARGC <= 1 }
+function eq(a, b) { return a "" == b "" }
+function ok(r)    { return r > 0 } # file read status
+function bad(r)   { return !ok(r)}
