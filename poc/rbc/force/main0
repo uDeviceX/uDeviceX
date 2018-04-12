@@ -57,18 +57,29 @@ function scatter_curv(   m, i, j, curv, len, ang) {
     }
 }
 
-function compute_eng(    m, curv, A) {
+function compute_julicher(    m, curv, A) {
     for (m = 0; m < NV; m++) {
 	curv = CURV[m]
 	A    = AREA_VER[m]
-	ENG[m] = 2*curv*curv/A
+	JULICHER[m] = 2*curv*curv/A
     }
 }
 
-function write_eng(   m, r) {
+function compute_kantor(    m, i, j, ang, A, eng) {
+    clear(KANTOR)
+    for (m = 0; m < NE; m++) {
+	i = E0[m]; j = E1[m]
+	ang = ANG[m]
+	eng = 2*(1 - cos(ang))
+	KANTOR[i] += eng/2
+	KANTOR[j] += eng/2
+    }
+}
+
+function write(   m, r) {
     for (m = 0; m < NV; m++) {
 	r = sqrt(XX[m]^2 + YY[m]^2)
-	print r, ENG[m]
+	print r, JULICHER[m], KANTOR[m]
     }
 }
 
@@ -86,8 +97,9 @@ BEGIN {
     compute_area()
     scatter_area()
     scatter_curv()
-    compute_eng()
+    compute_julicher()
+    compute_kantor()
 
-    write_eng()
+    write()
 
 }
