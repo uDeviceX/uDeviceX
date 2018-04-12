@@ -1,0 +1,19 @@
+function off_read(file,   l, r, i) { # sets NV, NT, [X, Y, Z], [T0, T1, T2]
+    r = getline < file
+    if (bad(r)) err(r, "fail to read file: " f)
+    if (!eq($0, "OFF")) err("not an OFF file")
+    r = getline < file
+    if (bad(r)) err(r, "fail to read file: " f)
+    NV = $1; NT = $2
+    for (i = 0; i < NV; i++) {
+	r = getline < file
+	if (bad(r)) err(r, "fail to read verts: " f)
+	X[i] = $1; Y[i] = $2; Z[i] = $3
+    }
+    for (i = 0; i < NT; i++) {
+	r = getline < file
+	if (bad(r)) err(r, "fail to read tris: " f)
+	T0[i] = $2; T1[i] = $3; T2[i] = $4
+    }
+    close(file)
+}

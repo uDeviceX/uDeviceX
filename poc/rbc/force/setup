@@ -1,0 +1,60 @@
+function reg_e01(i, j) {
+    if ((i, j) in edg) return
+    edg[i, j]; edg[j, i]
+    E0[NE] = i; E1[NE] = j; GDE[i, j] = GDE[j, i] = NE; NE++
+}
+function build_e01(   m, i, j, k) { # sets NE, E0, E1
+    for (NE = m = 0; m < NT; m++) {
+	i = T0[m]; j = T1[m]; k = T2[m]
+	reg_e01(i, j); reg_e01(j, k); reg_e01(k, i)
+    }
+}
+function dih_nxt(i, j, k,   m) {
+    m = GDE[i, j]
+    D0[m] = k; D1[m] = i; D2[m] = j
+}
+function dih_prv(i, j, k,   m) {
+    m = GDE[i, j]
+               D1[m] = i; D2[m] = j; D3[m] = k; 
+}
+function build_dih(   m, i, j, k) {
+    for (m = 0; m < NT; m++) {
+	i = T0[m]; j = T1[m]; k = T2[m]
+	dih_nxt(i, j, k); dih_nxt(j, k, i); dih_nxt(k, i, j)
+	dih_prv(j, k, i); dih_nxt(k, i, j); dih_nxt(i, j, k)	
+    }    
+}
+function reg_t(vert, tri,   deg, cond) {
+    for (deg = 0; ; deg++) {
+	cond = (vert, deg) in TRI
+	if (!cond) break;
+    }
+    TRI[vert, deg] = tri
+}
+function build_tri(   i, j, k, m) { # TRI: TRI[v] = [tri0, tri1, tri2, ...]
+    for (m = 0; m < NT; m++) {
+	i = T0[m]; j = T1[m]; k = T2[m]
+	reg_t(i, m); reg_t(j, m); reg_t(k, m)
+    }
+}
+function reg_e(vert, edg,   deg, cond) {
+    for (deg = 0 ; ; deg++) {
+	cond = (vert, deg) in EDG
+	if (!cond) break
+    }
+    EDG[vert, deg] = edg
+}
+function build_edg(   i, j, m) { # EDG: EDG[v] = [edg0, edg1, edg2, ...]
+    for (m = 0; m < NE; m++) {
+	i = E0[m]; j = E1[m];
+	reg_e(i, m); reg_e(j, m)
+    }
+}
+
+function setup() {
+    build_e01()
+    build_dih()
+    
+    build_tri()
+    build_edg()
+}
