@@ -57,24 +57,35 @@ _S_ float cell_volume(const Grid *g) {
 __global__ void avg(int nsteps, Grid g) {
     long i;
     float inv_rho, inv_nsteps;
-    float rho;
-    float sv, sr; /* scales for v and rho */
+    float rho, vol;
+    float sv, sr, ss; /* scales for v, rho, stress */
     i = threadIdx.x + blockIdx.x * blockDim.x;
     if (i >= get_size(&g)) return;
 
     rho = g.d[RHO][i];
-
+    vol = cell_volume(&g);
+        
     inv_rho    = rho ? 0 : 1.f / rho;
     inv_nsteps = 1.0 / nsteps;
 
     sv = inv_rho * inv_nsteps;
-    sr = inv_nsteps / cell_volume(&g);
+    sr = inv_nsteps / vol;
     
+    g.d[RHO][i] = sr * rho;
     g.d[VX][i] *= sv;
     g.d[VY][i] *= sv;
     g.d[VZ][i] *= sv;
 
-    g.d[RHO][i] = sr * rho;
+    if (g.stress) {
+        ss = 1.f / vol;
+
+        g.d[SXX][i] *= ss;
+        g.d[SXY][i] *= ss;
+        g.d[SXZ][i] *= ss;
+        g.d[SYY][i] *= ss;
+        g.d[SYZ][i] *= ss;
+        g.d[SZZ][i] *= ss;
+    }
 }
 
 #undef _S_
