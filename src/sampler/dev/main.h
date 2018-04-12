@@ -33,16 +33,14 @@ _S_ int get_grid_id(int3 gc, int3 N) {
 
 _S_ void add_to_grid(const Part *p, Grid g) {
     int3 gcoords;
-    float4 *dst;
     int gid;
     gcoords = get_cell_coords(p->r, g.L, g.N);
     gid = get_grid_id(gcoords, g.N);
-    dst = g.pp + gid;
-    
-    atomicAdd(&dst->x, p->v.x);
-    atomicAdd(&dst->y, p->v.x);
-    atomicAdd(&dst->z, p->v.x);
-    atomicAdd(&dst->w, 1.f);
+
+    atomicAdd(g.d[RHO] + gid, 1.f);
+    atomicAdd(g.d[VX]  + gid, p->v.x);
+    atomicAdd(g.d[VY]  + gid, p->v.x);
+    atomicAdd(g.d[VZ]  + gid, p->v.x);
 }
 
 __global__ void add(const SampleDatum data, /**/ Grid grid) {
@@ -70,22 +68,25 @@ _S_ float cell_volume(const Grid *g) {
 
 __global__ void avg(int nsteps, Grid g) {
     long i;
-    float4 d;
-    float s, st;    
+    float inv_rho, inv_nsteps;
+    float rho;
+    float sv, sr; /* scales for v and rho */
     i = threadIdx.x + blockIdx.x * blockDim.x;
     if (i >= get_size(&g)) return;
 
-    d = g.pp[i];
+    rho = g.d[RHO][i];
 
-    st = 1.0 / nsteps;
-    s = d.x ? 0 : st / d.w;
+    inv_rho    = rho ? 0 : 1.f / rho;
+    inv_nsteps = 1.0 / nsteps;
 
-    d.x *= s;
-    d.y *= s;
-    d.z *= s;
-    d.w *= st / cell_volume(&g);
+    sv = inv_rho * inv_nsteps;
+    sr = inv_nsteps / cell_volume(&g);
+    
+    g.d[VX][i] *= sv;
+    g.d[VY][i] *= sv;
+    g.d[VZ][i] *= sv;
 
-    g.pp[i] = d;
+    g.d[RHO][i] = sr * rho;
 }
 
 #undef _S_

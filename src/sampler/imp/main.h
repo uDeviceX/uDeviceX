@@ -4,33 +4,33 @@ static long get_size(const Grid *g) {
 }
 
 static void ini_dev_grid(int3 L, int3 M, int3 N, Grid *g) {
-    long n;
+    long i, n;
     g->N = N;
     g->L = L;
 
     n = get_size(g);
-    Dalloc(&g->pp, n);
-    Dalloc(&g->ss, 6*n);
+    for (i = 0; i < NFIELDS; ++i)
+        Dalloc(&g->d[i], n);
 }
 
 static void ini_hst_grid(int3 L, int3 M, int3 N, Grid *g) {
-    long n;
+    long i, n;
     g->N = N;
     g->L = L;
 
     n = get_size(g);
-    EMALLOC(n,   &g->pp);
-    EMALLOC(6*n, &g->ss);
+    for (i = 0; i < NFIELDS; ++i)
+        EMALLOC(n,  &g->d[i]);
 }
 
 static void fin_dev_grid(Grid *g) {
-    Dfree(g->pp);
-    Dfree(g->ss);
+    for (int i = 0; i < NFIELDS; ++i)
+        Dfree(g->d[i]);
 }
 
 static void fin_hst_grid(Grid *g) {
-    EFREE(g->pp);
-    EFREE(g->ss);
+    for (int i = 0; i < NFIELDS; ++i)
+        EFREE(g->d[i]);
 }
 
 void sampler_ini(int3 L, int3 M, int3 N, Sampler **s0) {
@@ -49,9 +49,9 @@ void sampler_fin(Sampler *s) {
 }
 
 static void reset_dev_grid(Grid *g) {
-    long n = get_size(g);
-    DzeroA(g->pp, n);
-    DzeroA(g->ss, 6*n);
+    long i, n = get_size(g);
+    for (i = 0; i < NFIELDS; ++i)
+        DzeroA(g->d[i], n);
 }
 
 void sampler_reset(Sampler *s) {
@@ -77,9 +77,9 @@ static void avg(int nsteps, Grid *g) {
 }
 
 static void download(const Grid *dev, Grid *hst) {
-    long n = get_size(dev);
-    aD2H(dev->pp, hst->pp,   n);
-    aD2H(dev->ss, hst->ss, 6*n);
+    long i, n = get_size(dev);
+    for (i = 0; i < NFIELDS; ++i)
+        aD2H(dev->d[i], hst->d[i], n);
 }
 
 void sampler_dump(Sampler *s) {

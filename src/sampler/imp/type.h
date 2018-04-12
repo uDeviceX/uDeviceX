@@ -1,7 +1,13 @@
+enum {
+    RHO, VX, VY, VZ,
+    SXX, SXY, SXZ,
+    SYY, SYZ, SZZ,
+    NFIELDS
+};
+
 struct Grid {
-    int3 L, N;  /* subdomain size, grid size */
-    float4 *pp; /* density, velocity         */
-    float *ss;  /* stresses                  */
+    int3 L, N; /* subdomain size, grid size */
+    float *d[NFIELDS];
 };
 
 struct Sampler {
