@@ -10,3 +10,10 @@ D0[d] {D1[d] D2[d]} D3[d]: dihedral `d'
 E0[e] E1[e]      : vertices in edg `e'
 TRI[v, d]      : triangle adjusted to vertices `v' of degree `d`
 EDG[v, d]      : edg adjusted to vertices `v' of degree `d`
+
+        b
+      /  \
+    ab --- bc
+   /  \  /  \
+  /    \/    \
+ a --- ac --- c
