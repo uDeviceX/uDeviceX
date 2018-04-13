@@ -7,11 +7,13 @@ function vtk_write(file, vert, tri,   keys, key) {
     vtk_header(file)
     vtk_points(file)
     vtk_tri(file)
+
     if (vtk_keys(vert, keys)) {
 	vtk_vert_header(file)
 	for (key in keys)
 	    vtk_data(file, key, vert)
     }
+
     if (vtk_keys(tri, keys)) {
 	vtk_tri_header(file)
 	for (key in keys)
@@ -20,6 +22,7 @@ function vtk_write(file, vert, tri,   keys, key) {
 }
 
 function vtk_keys(vert, keys,   k, a, fst, has) {
+    clear(keys)
     has = 0
     for (k in vert) {
 	split(k, a, SUBSEP)

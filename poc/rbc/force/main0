@@ -120,5 +120,5 @@ BEGIN {
     vtk_write("o.vtk", vert, tri)
     
     off_write("o.off")
-    # write()
+    write()
 }
