@@ -1,5 +1,32 @@
 #!/bin/sh
 
 : ${AWK=awk}
+: ${PREFIX=.}
 
-"$AWK" -f util -f math -f off -f setup -f tri -f vtk -f refine -f main0 -- "$@"
+prog=eng
+err () {
+    echo >&2 "$prog: $@"
+    exit 2
+}
+
+inc () {
+    local i
+    for i
+    do shift
+       i="$PREFIX/lib/$i"
+       if test ! -f "$i"
+       then err "cannot find file '$i'"
+       fi
+       set -- "$@" -f "$i"
+    done
+    echo "$@"
+}
+
+cmd () {
+    local i
+    i="$PREFIX/cmd/$1"
+    echo -f "$i"
+}
+
+
+"$AWK" `inc util math off setup tri vtk refine` `cmd eng0` -- "$@"
