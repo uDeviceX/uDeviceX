@@ -111,8 +111,15 @@ static void download(const Grid *dev, Grid *hst) {
         aD2H(dev->d[i], hst->d[i], n);
 }
 
-void sampler_dump(Sampler *s) {
+static void dump(MPI_Comm cart, const char *dir, long id, const Grid *g) {
+    int ncmp = get_nfields(g);
+    const float **data = (const float**) g->d;
+    UC(grid_write(g->N, g->L, cart, dir, id, ncmp, data, names));
+}
+
+void sampler_dump(MPI_Comm cart, const char *dir, long id, Sampler *s) {
     UC(avg(s->nsteps, &s->dev));
     UC(download(&s->dev, &s->hst));
-    
+    dSync();
+    UC(dump(cart, dir, id, &s->hst));
 }
