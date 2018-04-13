@@ -1,9 +1,27 @@
 load("vect") $
 load("pdiff") $
+load("cgrind") $
+
+(X: 1, Y: 2, Z: 3) $
 cross(a, b):=express(a ~ b) $
 dot(a, b):=express(a . b) $
 
-X: 1; Y: 2; Z: 3 $
+na(a, b):=concat(a, '_, b);
+g([L]):=block([E, V], local(E, V),
+  E: [], V: [],
+  for l in L do apply('g0, l),
+  [E, V]);
+g0(name, expr, vars):= (
+  for v in vars do
+    push(na(name, v) = diff(expr, v), E),
+    if name # 'E then (
+      push(name = expr, V),
+    for v in vars do
+      push(na('E, v) = na('E, name) * na(name, v), E)));
+fmt([L]):=block([E, V, e, v], local(E, V),
+  [E, V]: apply('g, L),
+  for v in          V do grind(v),
+  for e in reverse(E) do grind(e));
 
 a: [ax, ay, az] ;
 b: [bx, by, bz] ;
@@ -23,16 +41,26 @@ nx: cross(bd, bc)[X];
 ny: cross(bd, bc)[Y];
 nz: cross(bd, bc)[Z];
 
-kn: dot(k, n);
-kk: dot(k, k);
-nn: dot(n, n);
+kn: dot(['kx, 'ky, 'kz], ['nx, 'ny, 'nz]);
+kk: dot(['kx, 'ky, 'kz], ['kx, 'ky, 'kz]);
+nn: dot(['nx, 'ny, 'nz], ['nx, 'ny, 'nz]);
 
-cp: kn/sqrt(kk * nn);
+rsq: 1/sqrt('kk * 'nn);
+cp : 'kn*'rsq;
 
-cp_kn, c_kk, c_nn;
+g(['nn, x, ['y]]);
 
-E: 2*(1 - cp);
-diff(E, ax);
+with_stdout("kantor.c",
+fmt(
+  ['E ,  cp,  ['kn, 'rsq]],
+  ['rsq, rsq, ['kk, 'nn] ],
+  ['kn, kn, ['nx, 'ny, 'nz, 'kx, 'ky, 'kz]],
+  ['nn, nn, ['nx, 'ny, 'nz]],
+  ['kk, kk, ['kx, 'ky, 'kz]],
+  ['nx, nx, sort(listofvars(nx))],
+  ['ny, ny, sort(listofvars(ny))],
+  ['nz, nz, sort(listofvars(nz))],
+  ['kx, kx, sort(listofvars(kx))],
+  ['ky, ky, sort(listofvars(ky))],
+  ['kz, kz, sort(listofvars(kz))]));
 
-diff(E, ay);
-diff(E, az);
