@@ -70,7 +70,7 @@ static void basename(const char *i, /**/ char *o) {
     strcpy(o, p);
 }
 
-void xmf_write(int3 domainSize, int3 gridSize, const char *path, const char **names, int ncomp) {
+void xmf_write(int3 domainSize, int3 gridSize, const char *path, int ncomp, const char **names) {
     char w[BUFSIZ];
     FILE *f;
 
