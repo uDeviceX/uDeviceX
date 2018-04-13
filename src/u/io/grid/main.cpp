@@ -53,10 +53,10 @@ static void fill_data(const Coords *g, Func f, float *a) {
 }
 
 
-static void dump(MPI_Comm cart, const Coords *l, const Coords *g, const char *dir) {
+static void dump(MPI_Comm cart, const Coords *l, const Coords *g, const char *path) {
     enum {NCMP = 2};
     size_t nc;
-    int id = 0, i;
+    int i;
     int3 L, N, s;
     const char *names[NCMP] = { "f1", "f2" };
     const Func ff[NCMP] = {f1, f2};
@@ -73,13 +73,14 @@ static void dump(MPI_Comm cart, const Coords *l, const Coords *g, const char *di
         fill_data(g, ff[i], data[i]);
     }
 
-    UC(grid_write(N, L, cart, dir, id, NCMP, (const float**) data, names));
+    UC(grid_write(N, L, cart, path, NCMP, (const float**) data, names));
 
     for (i = 0; i < NCMP; ++i) EFREE(data[i]);
 }
 
 int main(int argc, char **argv) {
     const char *dir;
+    char path[FILENAME_MAX];
     Coords *l, *g; // space and grid coordinates
     Config *cfg;
     int rank, dims[3];
@@ -100,8 +101,9 @@ int main(int argc, char **argv) {
     
     UC(coords_ini_conf(cart, cfg, &l));
     UC(coords_ini(cart, N.x, N.y, N.z, &g));
-    
-    dump(cart, l, g, dir);
+
+    sprintf(path, DUMP_BASE "/%s/test.h5", dir);
+    dump(cart, l, g, path);
     
     UC(coords_fin(l));
     UC(coords_fin(g));

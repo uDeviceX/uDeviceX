@@ -8,8 +8,12 @@ static void dump0(const Coords *coords, const int N0[3], const float *D0, /**/ f
 }
 
 static void dump1(const Coords *coords, MPI_Comm cart, const int N[3], const float *D, /*w*/ float *W) {
+    int3 L = subdomain(coords);
+    const char *names[] = {"wall"};
+    const float *data[] = {W};
+
     UC(dump0(coords, N, D, /**/ W));
-    UC(io_field_dump_scalar(coords, cart, W, "wall"));
+    UC(grid_write(L, L, cart, DUMP_BASE "/wall.h5", 1, data, names));
 }
 
 static void dump(const Coords *coords, MPI_Comm cart, const int N[], const float *D) {

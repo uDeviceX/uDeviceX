@@ -23,10 +23,8 @@ static int3 get_total_size(int3 L, MPI_Comm cart) {
     return G;
 }
 
-void grid_write(int3 N, int3 L, MPI_Comm cart, const char *dir, long id, int ncmp, const float **data, const char **names) {
-    char path[FILENAME_MAX];
+void grid_write(int3 N, int3 L, MPI_Comm cart, const char *path, int ncmp, const float **data, const char **names) {
     int3 domainSize, gridSize;
-    sprintf(path, DUMP_BASE "/%s/%04ld.h5", dir, id);
 
     domainSize = get_total_size(L, cart);
     gridSize   = get_total_size(N, cart);

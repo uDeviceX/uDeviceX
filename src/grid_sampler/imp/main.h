@@ -112,9 +112,13 @@ static void download(const Grid *dev, Grid *hst) {
 }
 
 static void dump(MPI_Comm cart, const char *dir, long id, const Grid *g) {
+    char path[FILENAME_MAX];
     int ncmp = get_nfields(g);
     const float **data = (const float**) g->d;
-    UC(grid_write(g->N, g->L, cart, dir, id, ncmp, data, names));
+
+    sprintf(path, DUMP_BASE "/%s/%04ld.h5", dir, id);
+    
+    UC(grid_write(g->N, g->L, cart, path, ncmp, data, names));
 }
 
 void grid_sampler_dump(MPI_Comm cart, const char *dir, long id, GridSampler *s) {
