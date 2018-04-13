@@ -41,6 +41,7 @@
 #include "io/rig/imp.h"
 #include "io/diag/part/imp.h"
 #include "io/com/imp.h"
+#include "grid_sampler/imp.h"
 
 #include "wall/wvel/type.h"
 #include "wall/wvel/imp.h"

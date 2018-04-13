@@ -153,6 +153,11 @@ struct Time {
     TimeStepAccel *accel; /* helper for time step manager */
 };
 
+struct Sampler {
+    GridSampler *s;
+    GridSampleData *d;
+};
+
 struct Dump {
     /* host particles for dump */
     Particle *pp;
@@ -161,8 +166,9 @@ struct Dump {
     IoRig *iorig;
     IoBop *bop;
     DiagPart *diagpart; /* diagnostic */
+    Sampler *field;
 
-    int id_bop, id_rbc, id_rbc_com, id_rig_mesh, id_strt;
+    int id_field, id_bop, id_rbc, id_rbc_com, id_rig_mesh, id_strt;
 };
 
 struct Params {

@@ -139,6 +139,11 @@ static void fin_pair_params(Sim *s) {
     UC(pair_fin(s->objinter.fsiparams));
 }
 
+static void fin_sampler(Sampler *s) {
+    UC(grid_sampler_data_fin(s->d));
+    UC(grid_sampler_fin(s->s));
+}
+
 static void fin_dump(const Opt *opt, Dump *d) {
     if (opt->dump_field) UC(io_field_fin(d->iofield));
     if (opt->dump_parts) UC(io_rig_fin(d->iorig));
