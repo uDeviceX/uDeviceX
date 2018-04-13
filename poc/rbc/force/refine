@@ -1,17 +1,24 @@
 function refine4() {
+    refine_pre()
+    refine40()
+    refine_post()
+
+}
+
+function refine_pre() {
     NV0 = NT0 = 0
     clear(XX0); clear(YY0); clear(ZZ0)
     clear(T00); clear(T10); clear(T20)
+    clear(MAP) # use locally
+}
 
-    refine40();
-
+function refine_post() {
     NV = NV0; NT = NT0
     copy(XX0, XX); copy(YY0, YY); copy(ZZ0, ZZ)
     copy(T00, T0); copy(T10, T1); copy(T20, T2)
 }
 
 function refine40(   m, i0, j0, k0, i, j, k, ij, ik, jk) {
-    clear(MAP)
     for (m = 0; m < NT; m++) {
 	i0 = T0[m]; j0 = T1[m]; k0 = T2[m]
 
