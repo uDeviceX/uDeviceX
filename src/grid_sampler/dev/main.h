@@ -54,9 +54,9 @@ _S_ float cell_volume(const Grid *g) {
     return dx * dy * dz;
 }
 
-__global__ void avg(int nsteps, Grid g) {
+__global__ void space_avg(Grid g) {
     long i;
-    float inv_rho, inv_nsteps;
+    float inv_rho;
     float rho, vol;
     float sv, sr, ss; /* scales for v, rho, stress */
     i = threadIdx.x + blockIdx.x * blockDim.x;
@@ -66,19 +66,18 @@ __global__ void avg(int nsteps, Grid g) {
     vol = cell_volume(&g);
         
     inv_rho    = fabs(rho) > 1e-6 ? 1.f / rho : 0;
-    inv_nsteps = 1.0 / nsteps;
 
     sv = inv_rho;
-    sr = inv_nsteps / vol;
+    sr = 1.f / vol;
     
     g.d[RHO][i] = sr * rho;
+
     g.d[VX][i] *= sv;
     g.d[VY][i] *= sv;
     g.d[VZ][i] *= sv;
 
     if (g.stress) {
         ss = sr;
-
         g.d[SXX][i] *= ss;
         g.d[SXY][i] *= ss;
         g.d[SXZ][i] *= ss;
@@ -86,6 +85,37 @@ __global__ void avg(int nsteps, Grid g) {
         g.d[SYZ][i] *= ss;
         g.d[SZZ][i] *= ss;
     }
+}
+
+_S_ int get_nfields(const Grid *g) {
+    return g->stress ?
+        NFIELDS_WITH_STRESS :
+        NFIELDS_NO_STRESS;
+}
+
+__global__ void add_to_grid(const Grid src, Grid dst) {
+    long i, j;
+    i = threadIdx.x + blockIdx.x * blockDim.x;
+    if (i >= get_size(&src)) return;
+
+    for (j = 0; j < get_nfields(&src); ++j)
+        dst.d[j][i] += src.d[j][i];
+}
+
+__global__ void time_avg(int nsteps, Grid g) {
+    long i, j, nfields;
+    float s;
+    i = threadIdx.x + blockIdx.x * blockDim.x;
+    if (i >= get_size(&g)) return;
+
+    nfields = g.stress ?
+        NFIELDS_WITH_STRESS :
+        NFIELDS_NO_STRESS;
+
+    s = 1.0 / nsteps;
+
+    for (j = 0; j < nfields; ++j)
+        g.d[j][i] *= s;
 }
 
 #undef _S_
