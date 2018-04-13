@@ -108,7 +108,7 @@ static void avg(int nsteps, Grid *g) {
 static void download(const Grid *dev, Grid *hst) {
     long i, n = get_size(dev);
     for (i = 0; i < get_nfields(dev); ++i)
-        aD2H(dev->d[i], hst->d[i], n);
+        aD2H(hst->d[i], dev->d[i], n);
 }
 
 static void dump(MPI_Comm cart, const char *dir, long id, const Grid *g) {
