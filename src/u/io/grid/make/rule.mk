@@ -7,7 +7,7 @@ $B/io/grid/imp.o: $S/io/grid/imp.cpp; $X -I$S/io/grid -I$S/.
 $B/io/grid/xmf/imp.o: $S/io/grid/xmf/imp.cpp; $X -I$S/io/grid/xmf -I$S/.
 $B/mpi/glb.o: $S/mpi/glb.cpp; $X -I$S/mpi -I$S/.
 $B/mpi/wrapper.o: $S/mpi/wrapper.cpp; $X -I$S/mpi -I$S/.
-$B/u/io/grid/main.o: $S/u/io/grid/main.cpp; $X -I$S/u/io/grid -I$S/.
+$B/u/io/grid/main.o: $S/u/io/grid/main.cpp; $X -I$S/.
 $B/utils/cc.o: $S/utils/cc.cpp; $X -I$S/utils -I$S/.
 $B/utils/error.o: $S/utils/error.cpp; $X -I$S/utils -I$S/.
 $B/utils/imp.o: $S/utils/imp.cpp; $X -I$S/utils -I$S/.

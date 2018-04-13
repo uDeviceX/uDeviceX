@@ -37,6 +37,7 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/fluforces/halo        && \
     d $B/frag                  && \
     d $B/fsi                   && \
+    d $B/grid_sampler          && \
     d $B/inter/color           && \
     d $B/inter/freeze          && \
     d $B/inter/gen_rig         && \
@@ -98,7 +99,6 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/rbc/stretch           && \
     d $B/rig                   && \
     d $B/rigid                 && \
-    d $B/sampler               && \
     d $B/scheme/force          && \
     d $B/scheme/move           && \
     d $B/scheme/restrain       && \

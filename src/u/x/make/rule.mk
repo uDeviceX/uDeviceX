@@ -42,6 +42,7 @@ $B/fluforces/imp.o: $S/fluforces/imp.cu; $N -I$S/fluforces -I$S/.
 $B/flu/imp.o: $S/flu/imp.cpp; $X -I$S/flu -I$S/.
 $B/frag/imp.o: $S/frag/imp.cpp; $X -I$S/frag -I$S/.
 $B/fsi/imp.o: $S/fsi/imp.cu; $N -I$S/fsi -I$S/.
+$B/grid_sampler/imp.o: $S/grid_sampler/imp.cu; $N -I$S/grid_sampler -I$S/.
 $B/inter/color/conf.o: $S/inter/color/conf.cpp; $X -I$S/inter/color -I$S/.
 $B/inter/color/imp.o: $S/inter/color/imp.cpp; $X -I$S/inter/color -I$S/.
 $B/inter/freeze/imp.o: $S/inter/freeze/imp.cu; $N -I$S/inter/freeze -I$S/.
@@ -110,7 +111,6 @@ $B/rbc/stretch/imp.o: $S/rbc/stretch/imp.cu; $N -I$S/rbc/stretch -I$S/.
 $B/rigid/conf.o: $S/rigid/conf.cpp; $X -I$S/rigid -I$S/.
 $B/rigid/imp.o: $S/rigid/imp.cu; $N -I$S/rigid -I$S/.
 $B/rig/imp.o: $S/rig/imp.cpp; $X -I$S/rig -I$S/.
-$B/sampler/imp.o: $S/sampler/imp.cu; $N -I$S/sampler -I$S/.
 $B/scheme/force/conf.o: $S/scheme/force/conf.cpp; $X -I$S/scheme/force -I$S/.
 $B/scheme/force/imp.o: $S/scheme/force/imp.cu; $N -I$S/scheme/force -I$S/.
 $B/scheme/move/imp.o: $S/scheme/move/imp.cu; $N -I$S/scheme/move -I$S/.
