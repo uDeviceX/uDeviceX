@@ -65,7 +65,7 @@ __global__ void avg(int nsteps, Grid g) {
     rho = g.d[RHO][i];
     vol = cell_volume(&g);
         
-    inv_rho    = rho ? 0 : 1.f / rho;
+    inv_rho    = fabs(rho) > 1e-6 ? 1.f / rho : 0;
     inv_nsteps = 1.0 / nsteps;
 
     sv = inv_rho * inv_nsteps;
