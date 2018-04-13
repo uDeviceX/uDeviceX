@@ -1,5 +1,5 @@
-struct Part { real3 r, v; };
-typedef real3 Pos;
+struct Part { double3 r, v; };
+typedef double3 Pos;
 
 
 static __device__ Pos fetchPos(const Particle *pp, int i) {
@@ -14,7 +14,7 @@ static __device__ Pos fetchPos(const Particle *pp, int i) {
 static __device__ Part fetchPart(const Particle *pp, int i) {
     enum {X, Y, Z};
     Part p;
-    const real *r, *v;
+    const float *r, *v;
     r = pp[i].r; v = pp[i].v;
     p.r.x = r[X]; p.r.y = r[Y]; p.r.z = r[Z];
     p.v.x = v[X]; p.v.y = v[Y]; p.v.z = v[Z];
@@ -22,13 +22,13 @@ static __device__ Part fetchPart(const Particle *pp, int i) {
 }
 
 template <typename RndInfo>
-static __device__ real3 adj_tris(real dt,
-                                 const RbcParams_v *par, const Particle *pp,  const Part p0, const real *av,
+static __device__ double3 adj_tris(double dt,
+                                 const RbcParams_v *par, const Particle *pp,  const Part p0, const float *av,
                                  const StressInfo si, RndInfo ri,
                                  AdjMap *m) {
-    real3 f, fv, fr;
+    double3 f, fv, fr;
     int i1, i2, rbc;
-    real area, volume;
+    double area, volume;
     i1 = m->i1; i2 = m->i2; rbc = m->rbc;
 
     const Part p1 = fetchPart(pp, i1);
@@ -45,10 +45,10 @@ static __device__ real3 adj_tris(real dt,
     return f;
 }
 
-static __device__ real3 adj_dihedrals(const RbcParams_v *par, const Particle *pp, real3 r0,
+static __device__ double3 adj_dihedrals(const RbcParams_v *par, const Particle *pp, double3 r0,
                                       AdjMap *m) {
     Pos r1, r2, r3, r4;
-    real3 f1, f2;
+    double3 f1, f2;
     r1 = fetchPos(pp, m->i1);
     r2 = fetchPos(pp, m->i2);
     r3 = fetchPos(pp, m->i3);
@@ -66,9 +66,9 @@ __global__ void force(float dt,
                       RbcParams_v par, int md, int nv, int nc, const Particle *pp,
                       Adj_v adj,
                       Stress_v sv, Rnd_v rv,
-                      const real *av, /**/ float *ff) {
+                      const float *av, /**/ float *ff) {
     int i, pid;
-    real3 f, fd;
+    double3 f, fd;
     AdjMap m;
     StressInfo si;
     int valid;

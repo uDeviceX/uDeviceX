@@ -38,14 +38,6 @@
 #include "imp/type.h"
 
 namespace rbc_force_dev {
-#if   defined(RBC_DOUBLE)
-  #include "dev/double.h"
-#elif defined(RBC_FLOAT)
-  #include "dev/float.h"
-#else
-  #error RBC_DOUBLE or RBC_FLOAT must be defined
-#endif
-
 #include "dev/type.h"
 #include "dev/fetch.h"
 #include "dev/common.h"
