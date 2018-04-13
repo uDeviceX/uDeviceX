@@ -100,4 +100,5 @@ BEGIN {
 
 #    write()
      vtk_write("o.vtk")
+     off_write("o.off")
 }

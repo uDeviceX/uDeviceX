@@ -17,3 +17,13 @@ function off_read(file,   l, r, i) { # sets NV, NT, [XX, YY, ZZ], [T0, T1, T2]
     }
     close(file)
 }
+
+function off_write(file,  ne, m) {
+    ne = 0; nvp = 3
+    printf "OFF\n" > file
+    printf "%d %d %d\n", NV, NT, ne > file
+    for (m = 0; m < NV; m++)
+	printf "%.14e %.14e %.14e\n", XX[m], YY[m], ZZ[m] > file
+    for (m = 0; m < NT; m++)
+	printf "%d %d %d %d\n", nvp, T0[m], T1[m], T2[m] > file
+}
