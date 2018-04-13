@@ -1,0 +1,37 @@
+= grid
+
+Parallel-IO grid data dump using the <<third_h5, hdf5 library>> and a
+link:https://en.wikipedia.org/wiki/XDMF[xmf] file description.
+
+== interface
+
+The following function dumps grid data with `subGrid` points per node
+mapped to the subdomain coordinates of size `subDomain`.
+Two files `DUMP_BASE/dir/id.xmf` and  `DUMP_BASE/dir/id.h5` are dumped.
+
+[source,cpp]
+----
+include::{src}/io/grid/imp.h[tag=int]
+----
+
+* `ncmp`: number of variables
+* `data`: data to dump (structure of array fashion)
+* `names`: variable names
+
+== submodules
+
+`xmf` writer, to be called by one rank only:
+
+[source,cpp]
+----
+include::{src}/io/grid/xmf/imp.h[tag=int]
+----
+
+`h5` writer, collective write operation:
+
+[source,cpp]
+----
+include::{src}/io/grid/h5/imp.h[tag=int]
+----
+
+`N` is the grid size.

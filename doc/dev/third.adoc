@@ -58,6 +58,7 @@ add path for pkg config
 export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:$HOME/prefix/libconfig/lib/pkgconfig
 ----
 
+[[third_h5]]
 == hdf5
 
 a data model, library, and file format for storing and managing data
