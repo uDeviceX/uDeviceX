@@ -5,6 +5,7 @@ function refine2() {
 }
 
 function refine3() {
+    err("refine3() is not implimented")
     refine_pre()
     refine30()
     refine_post()

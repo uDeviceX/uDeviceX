@@ -98,7 +98,7 @@ BEGIN {
     compute_julicher()
     compute_kantor()
 
-    refine2()
+    refine3()
     vtk_write("o.vtk")
     off_write("o.off")
 }
