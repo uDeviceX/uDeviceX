@@ -1,0 +1,5 @@
+#### Double poiseuille field sampler
+# nTEST: sampler
+cd test/sampler/vel
+u.run udx conf.cfg
+u.avgh5 0 u 1 h5/0001.h5 | uscale 0.1 > h5.out.txt
