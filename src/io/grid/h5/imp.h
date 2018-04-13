@@ -1,1 +1,1 @@
-//void h5_write(const Coords*, MPI_Comm, const char *path, float *data[], const char **names, int n);
+void h5_write(int3 N, MPI_Comm, const char *path, int ncomp, const float **data, const char **names);

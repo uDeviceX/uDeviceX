@@ -48,10 +48,10 @@ static void write_float(hid_t dataset_id,
         ERR("fail to write data set");
 }
 
-static void write0(const Coords *coords, hid_t file_id,
+static void write_channels(const Coords *coords, hid_t file_id,
+                   int nchannels,
                    const float *channeldata[],
-                   const char **channelnames,
-                   int nchannels) {
+                   const char **channelnames) {
     int i;
     hsize_t globalsize[4] = {(hsize_t) zdomain(coords),
                              (hsize_t) ydomain(coords),
@@ -84,15 +84,15 @@ static void write0(const Coords *coords, hid_t file_id,
     H5Sclose(filespace_simple);
 }
 
-void h5_write(int3 N, MPI_Comm cart, const char *path, const float **data,
-              const char **names, int ncomp) {
+void h5_write(int3 N, MPI_Comm cart, const char *path, int ncomp,
+              const float **data, const char **names) {
     /* ncomp: number of component,
        sx, sy, sz: sizes */
     IDs ids;
     Coords *grid_coords;
     UC(coords_ini(cart, N.x, N.y, N.z, &grid_coords));
     UC(create(cart, path, /**/ &ids));
-    UC(write0(grid_coords, ids.file, data, names, ncomp));
+    UC(write_channels(grid_coords, ids.file, ncomp, data, names));
     UC(close(ids, path));
     UC(coords_fin(grid_coords));
 }
