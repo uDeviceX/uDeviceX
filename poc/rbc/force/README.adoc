@@ -11,9 +11,9 @@ E0[e] E1[e]      : vertices in edg `e'
 TRI[v, d]      : triangle adjusted to vertices `v' of degree `d`
 EDG[v, d]      : edg adjusted to vertices `v' of degree `d`
 
-        b
+        j
       /  \
-    ab --- bc
+    ij --- jk
    /  \  /  \
   /    \/    \
- a --- ac --- c
+ i --- ik --- k
