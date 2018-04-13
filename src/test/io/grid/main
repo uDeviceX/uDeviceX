@@ -4,4 +4,4 @@ u.conf0 u/io/grid
 u.make -j
 mkdir -p h5
 u.run ./udx conf.cfg
-u.avgh5 1 f1 2 h5/0000.h5 > test.out.txt
+u.avgh5 1 f1 2 h5/test.h5 > test.out.txt

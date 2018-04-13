@@ -2,9 +2,9 @@ $B/conf/imp.o: $S/conf/imp.cpp; $X -I$S/conf -I$S/.
 $B/coords/conf.o: $S/coords/conf.cpp; $X -I$S/coords -I$S/.
 $B/coords/imp.o: $S/coords/imp.cpp; $X -I$S/coords -I$S/.
 $B/d/api.o: $S/d/api.cu; $N -I$S/d -I$S/.
-$B/io/field/h5/imp.o: $S/io/field/h5/imp.cpp; $X -I$S/io/field/h5 -I$S/.
-$B/io/field/imp.o: $S/io/field/imp.cpp; $X -I$S/io/field -I$S/.
-$B/io/field/xmf/imp.o: $S/io/field/xmf/imp.cpp; $X -I$S/io/field/xmf -I$S/.
+$B/io/grid/h5/imp.o: $S/io/grid/h5/imp.cpp; $X -I$S/io/grid/h5 -I$S/.
+$B/io/grid/imp.o: $S/io/grid/imp.cpp; $X -I$S/io/grid -I$S/.
+$B/io/grid/xmf/imp.o: $S/io/grid/xmf/imp.cpp; $X -I$S/io/grid/xmf -I$S/.
 $B/math/linal/imp.o: $S/math/linal/imp.cpp; $X -I$S/math/linal -I$S/.
 $B/math/rnd/imp.o: $S/math/rnd/imp.cpp; $X -I$S/math/rnd -I$S/.
 $B/math/tform/imp.o: $S/math/tform/imp.cpp; $X -I$S/math/tform -I$S/.

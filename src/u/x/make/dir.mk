@@ -45,9 +45,6 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/io/com                && \
     d $B/io/diag/mesh          && \
     d $B/io/diag/part          && \
-    d $B/io/field              && \
-    d $B/io/field/h5           && \
-    d $B/io/field/xmf          && \
     d $B/io/grid               && \
     d $B/io/grid/h5            && \
     d $B/io/grid/xmf           && \
