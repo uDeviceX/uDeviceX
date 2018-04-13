@@ -7,11 +7,15 @@ function vtk_write(file, vert, tri,   keys, key) {
     vtk_header(file)
     vtk_points(file)
     vtk_tri(file)
-
     if (vtk_keys(vert, keys)) {
-	vtk_vert_header(file)	
+	vtk_vert_header(file)
 	for (key in keys)
-	    vtk_vert_data(file, key, vert)
+	    vtk_data(file, key, vert)
+    }
+    if (vtk_keys(tri, keys)) {
+	vtk_tri_header(file)
+	for (key in keys)
+	    vtk_data(file, key, tri)
     }
 }
 
@@ -49,11 +53,15 @@ function vtk_tri(file,   nvp, m) {
 function vtk_vert_header(file) {
     printf "POINT_DATA %d\n", NV > file
 }
-
-function vtk_vert_data(file, key, data,   m) {
+function vtk_tri_header(file) {
+    printf "CELL_DATA %d\n", NT > file
+}
+function vtk_data(file, key, data,   m) {
     printf "SCALARS %s double 1\n", key > file
     printf "LOOKUP_TABLE default\n"     > file
-    for (m = 0; m < NV; m++) {
+    for (m = 0; (key, m) in data; m++) {
 	printf "%.14e\n", data[key, m]  > file
     }
 }
+
+
