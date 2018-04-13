@@ -68,7 +68,7 @@ __global__ void avg(int nsteps, Grid g) {
     inv_rho    = fabs(rho) > 1e-6 ? 1.f / rho : 0;
     inv_nsteps = 1.0 / nsteps;
 
-    sv = inv_rho * inv_nsteps;
+    sv = inv_rho;
     sr = inv_nsteps / vol;
     
     g.d[RHO][i] = sr * rho;
@@ -77,7 +77,7 @@ __global__ void avg(int nsteps, Grid g) {
     g.d[VZ][i] *= sv;
 
     if (g.stress) {
-        ss = 1.f / vol;
+        ss = sr;
 
         g.d[SXX][i] *= ss;
         g.d[SXY][i] *= ss;
