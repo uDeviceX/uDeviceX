@@ -1,6 +1,6 @@
-function refine4() {
+function refine2() {
     refine_pre()
-    refine40()
+    refine20()
     refine_post()
 }
 
@@ -23,7 +23,7 @@ function refine_post() {
     copy(T00, T0); copy(T10, T1); copy(T20, T2)
 }
 
-function refine40(   m, i0, j0, k0, i, j, k, ij, ik, jk) {
+function refine20(   m, i0, j0, k0, i, j, k, ij, ik, jk) {
     for (m = 0; m < NT; m++) {
 	i0 = T0[m]; j0 = T1[m]; k0 = T2[m]
 
@@ -42,7 +42,7 @@ function refine40(   m, i0, j0, k0, i, j, k, ij, ik, jk) {
     }
 }
 
-function refine30(   m, i0, j0, k0, i, j, k, ij, ik, jk) {
+function refine30(   m, i0, j0, k0, i, j, k, c) {
     for (m = 0; m < NT; m++) {
 	i0 = T0[m]; j0 = T1[m]; k0 = T2[m]
 
@@ -50,12 +50,11 @@ function refine30(   m, i0, j0, k0, i, j, k, ij, ik, jk) {
 	j = refine_single(j0)
 	k = refine_single(k0)
 
-	c = refine_middle(i0, j0, k0)
+	c = refine_center(i0, j0, k0)
 
-	refine_tri(i, ij, ik)
-	refine_tri(ik, jk, k)
-	refine_tri(ij, j, jk)
-	refine_tri(ij, jk, ik)
+	refine_tri(i, j, c)
+	refine_tri(i, c, k)
+	refine_tri(j, k, c)
     }
 }
 
@@ -72,6 +71,13 @@ function refine_middle(i, j) {
     YY0[NV0] = (YY[i] + YY[j])/2
     ZZ0[NV0] = (ZZ[i] + ZZ[j])/2
     return MAP[i, j] = NV0++
+}
+
+function refine_center(i, j, k) { # do not need map
+    XX0[NV0] = (XX[i] + XX[j] + XX[k])/3
+    YY0[NV0] = (YY[i] + YY[j] + YY[k])/3
+    ZZ0[NV0] = (ZZ[i] + ZZ[j] + ZZ[k])/3
+    return NV0++
 }
 
 function refine_tri(i, j, k) {
