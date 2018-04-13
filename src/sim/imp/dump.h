@@ -51,10 +51,11 @@ static void dump_rbc_coms(Sim *s) {
     UC(io_com_dump(s->cart, s->coords, s->dump.id_rbc_com++, nc, r->q.ii, rr));
 }
 
-static void dump_grid(const Sim *s) {
-    const Flu *flu = &s->flu;
-    cD2H(s->dump.pp, flu->q.pp, flu->q.n);
-    UC(io_field_dump_pp(s->coords, s->cart, s->dump.iofield, flu->q.n, s->dump.pp));
+static void dump_grid(Sim *s) {
+    Dump *d = &s->dump;
+    UC(grid_sampler_dump(s->cart, "h5", d->id_field, d->field_sampler.s));
+    UC(grid_sampler_reset(d->field_sampler.s));
+    d->id_field ++;
 }
 
 void dump_diag_after(TimeLine *time, bool solid0, Sim *s) { /* after wall */

@@ -28,6 +28,7 @@ static void step(TimeLine *time, float dt, float tstart, Sim *s) {
     UC(check_forces(dt, s));
 
     it = time_line_get_iteration(time);
+    field_sample(s);
     dump_diag(time, s);
     dump_diag_after(time, active_rig(s), s);
     if (!s->equilibrating) UC(body_force(bforce, s));

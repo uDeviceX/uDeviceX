@@ -162,7 +162,6 @@ struct Dump {
     /* host particles for dump */
     Particle *pp;
     
-    IoField *iofield;
     IoRig *iorig;
     IoBop *bop;
     DiagPart *diagpart; /* diagnostic */

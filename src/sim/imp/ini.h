@@ -227,10 +227,13 @@ static void ini_dump(int maxp, MPI_Comm cart, const Coords *c, const Opt *opt, D
     enum {NPARRAY = 3}; /* flu, rig and rbc */
     EMALLOC(NPARRAY * maxp, &d->pp);
     
-    if (opt->dump_field) UC(io_field_ini(cart, c, &d->iofield));
     if (opt->dump_parts) UC(io_rig_ini(&d->iorig));
     UC(io_bop_ini(cart, maxp, &d->bop));
     UC(diag_part_ini("diag.txt", &d->diagpart));
+    if (opt->dump_field) {
+        UC(ini_sampler(c, opt, &d->field_sampler));
+        os_mkdir(DUMP_BASE "/h5");
+    }
 
     d->id_bop = d->id_rbc = d->id_rbc_com = d->id_rig_mesh = d->id_strt = 0;
 }

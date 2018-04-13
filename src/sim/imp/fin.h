@@ -145,10 +145,10 @@ static void fin_sampler(Sampler *s) {
 }
 
 static void fin_dump(const Opt *opt, Dump *d) {
-    if (opt->dump_field) UC(io_field_fin(d->iofield));
     if (opt->dump_parts) UC(io_rig_fin(d->iorig));
     UC(io_bop_fin(d->bop));
     UC(diag_part_fin(d->diagpart));
+    if (opt->dump_field) UC(fin_sampler(&d->field_sampler));
     EFREE(d->pp);
 }
 
