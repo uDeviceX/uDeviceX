@@ -49,13 +49,17 @@ static __device__ double3 adj_dihedrals(const RbcParams_v *par, const Particle *
                                       AdjMap *m) {
     Pos r1, r2, r3, r4;
     double3 f1, f2;
+    double phi, kb;
     r1 = fetchPos(pp, m->i1);
     r2 = fetchPos(pp, m->i2);
     r3 = fetchPos(pp, m->i3);
     r4 = fetchPos(pp, m->i4);
 
-    f1 = fdih<1>(par, r0, r2, r1, r4);
-    f2 = fdih<2>(par, r1, r0, r2, r3);
+    phi = par->phi / 180.0 * M_PI;
+    kb  = par->kb;
+    
+    f1 = fdih_a(phi, kb, r0, r2, r1, r4);
+    f2 = fdih_b(phi, kb, r1, r0, r2, r3);
     add(&f1, /**/ &f2);
     return f2;
 

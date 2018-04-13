@@ -111,9 +111,10 @@ static __device__ double3 frnd(double dt, const RbcParams_v *par, double3 r1, do
 
 /* forces from one dihedral */
 template <int update>
-__device__ double3 fdih(const RbcParams_v *par, double3 r1, double3 r2, double3 r3, double3 r4) {
+__device__ double3 fdih0(double phi, double kb,
+                         double3 r1, double3 r2, double3 r3, double3 r4) {
     double overIksiI, overIdzeI, cosTheta, IsinThetaI2, sinTheta_1,
-        beta, b11, b12, phi, sint0kb, cost0kb;
+        beta, b11, b12, sint0kb, cost0kb;
     double3 r12, r13, r34, r24, r41, ksi, dze, ksimdze;
     diff(&r1, &r2, /**/ &r12);
     diff(&r1, &r3, /**/ &r13);
@@ -136,9 +137,8 @@ __device__ double3 fdih(const RbcParams_v *par, double3 r1, double3 r2, double3 
         (rsqrtf(max(IsinThetaI2, 1.0e-6)),
          dot<double>(&ksimdze, &r41)); // ">" because the normals look inside
 
-    phi = par->phi / 180.0 * M_PI;
-    sint0kb = sin(phi) * par->kb;
-    cost0kb = cos(phi) * par->kb;
+    sint0kb = sin(phi) * kb;
+    cost0kb = cos(phi) * kb;
     beta = cost0kb - cosTheta * sint0kb * sinTheta_1;
 
     b11 = -beta *  cosTheta * overIksiI * overIksiI;
@@ -171,4 +171,14 @@ __device__ double3 fdih(const RbcParams_v *par, double3 r1, double3 r2, double3 
     }
     else
         return make_double3(0, 0, 0);
+}
+
+static __device__ double3 fdih_a(double phi, double kb,
+                          double3 a, double3 b, double3 c, double3 d) {
+    return fdih0<1>(phi, kb, a, b, c, d);
+}
+
+static __device__ double3 fdih_b(double phi, double kb,
+                          double3 a, double3 b, double3 c, double3 d) {
+    return fdih0<2>(phi, kb, a, b, c, d);
 }
