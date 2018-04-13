@@ -1,2 +1,51 @@
-function refine() {
+function refine4() {
+    NV0 = NT0 = 0
+    clear(XX0); clear(YY0); clear(ZZ0)
+    clear(T00); clear(T10); clear(T20)
+
+    refine40();
+
+    NV = NV0; NT = NT0
+    copy(XX0, XX); copy(YY0, YY); copy(ZZ0, ZZ)
+    copy(T00, T0); copy(T10, T1); copy(T20, T2)
+}
+
+function refine40(   m, i0, j0, k0, i, j, k, ij, ik, jk) {
+    clear(MAP)
+    for (m = 0; m < NT; m++) {
+	i0 = T0[m]; j0 = T1[m]; k0 = T2[m]
+
+	i = refine4_single(i0)
+	j = refine4_single(j0)
+	k = refine4_single(k0)
+
+	ij = refine4_middle(i0, j0)
+	ik = refine4_middle(i0, k0)
+	jk = refine4_middle(j0, k0)
+
+	refine4_tri(i, ij, ik)
+	refine4_tri(ik, jk, k)
+	refine4_tri(ij, j, jk)
+	refine4_tri(ij, jk, ik)
+    }
+}
+
+function refine4_single(i) {
+    if (i in MAP) return MAP[i]
+    XX0[NV0] = XX[i]; YY0[NV0] = YY[i]; ZZ0[NV0] = ZZ[i]
+    return MAP[i] = NV0++
+}
+
+function refine4_middle(i, j) {
+    if ((i, j) in MAP) return MAP[i, j]
+    if ((j, i) in MAP) return MAP[j, i]
+    XX0[NV0] = (XX[i] + XX[j])/2
+    YY0[NV0] = (YY[i] + YY[j])/2
+    ZZ0[NV0] = (ZZ[i] + ZZ[j])/2
+    return MAP[i, j] = NV0++
+}
+
+function refine4_tri(i, j, k) {
+    T00[NT0] = i; T10[NT0] = j; T20[NT0] = k
+    NT0++
 }
