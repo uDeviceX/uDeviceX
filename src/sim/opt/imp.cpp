@@ -1,6 +1,7 @@
 #include <mpi.h>
 #include <stdio.h>
 #include <string.h>
+#include <vector_types.h>
 
 #include "conf/imp.h"
 #include "utils/error.h"
@@ -46,6 +47,9 @@ static void read_common(const Config *c, Opt *o) {
 
     UC(lookup_bool(c, "dump.parts", &o->dump_parts));
     UC(conf_lookup_float(c, "dump.freq_parts", &o->freq_parts));
+
+    UC(conf_lookup_int(c, "sampler.freq", &o->sampler_freq));
+    UC(conf_lookup_int3(c, "sampler.grid_ref", &o->sampler_grid_ref));
 }
 
 static void set_eq(Opt *o) {

@@ -200,12 +200,27 @@ static void ini_pair_params(const Config *cfg, float kBT, float dt, Sim *s) {
     if (s->opt.fsi) UC(set_params(cfg, kBT, dt, "fsi", s->objinter.fsiparams));
 }
 
-static void ini_sampler(const Config *cfg, const Coords *c, const Opt *opt, Sampler *s) {
+static int gsize(int L, int r) {
+    return r >= 0 ? L * r : L / r;
+}
+
+static int3 grid_size(int3 L, int3 r) {
     int3 N;
-    bool stress = opt->fluss;
-    UC(conf_lookup_int3(cfg, "sampler.N", &N));
+    N.x = gsize(L.x, r.x);
+    N.y = gsize(L.y, r.y);
+    N.z = gsize(L.z, r.z);
+    return N;
+}
+
+static void ini_sampler(const Coords *c, const Opt *opt, Sampler *s) {
+    int3 N, L;
+    bool stress;
+    stress = opt->fluss;
+    L = subdomain(c);
+    N = grid_size(L, opt->sampler_grid_ref);
+    
     UC(grid_sampler_data_ini(&s->d));
-    UC(grid_sampler_ini(stress, subdomain(c), N, &s->s));
+    UC(grid_sampler_ini(stress, L, N, &s->s));
 }
 
 static void ini_dump(int maxp, MPI_Comm cart, const Coords *c, const Opt *opt, Dump *d) {
