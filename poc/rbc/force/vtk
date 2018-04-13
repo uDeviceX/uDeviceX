@@ -1,4 +1,4 @@
-function vtk_push_vert(key, data, vert,   i) {
+function vtk_push(key, data, vert,   i) {
     for (i = 0; i in data; i++)
 	vert[key, i] = data[i]
 }

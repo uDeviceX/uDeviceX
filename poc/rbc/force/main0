@@ -114,8 +114,8 @@ BEGIN {
 
     scatter_ang()
 
-    vtk_push_vert("kantor", KANTOR, vert)
-    vtk_push_vert("julicher", JULICHER, vert)
+    vtk_push("kantor", KANTOR, vert)
+    vtk_push("julicher", JULICHER, vert)
     vtk_write("o.vtk", vert)
     
     off_write("o.off")
