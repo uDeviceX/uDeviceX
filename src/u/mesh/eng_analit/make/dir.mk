@@ -15,8 +15,8 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/math/tform        && \
     d $B/math/tri          && \
     d $B/mesh/angle        && \
+    d $B/mesh/cylindrical  && \
     d $B/mesh/edg_len      && \
-    d $B/mesh/cylindrical    && \
     d $B/mesh/vert_area    && \
     d $B/mpi               && \
     d $B/u/mesh/eng_analit && \
