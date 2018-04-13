@@ -12,7 +12,7 @@ struct Opt {
     char strt_base_dump[FILENAME_MAX], strt_base_read[FILENAME_MAX];
     int recolor_freq;
     bool push_flu, push_rbc, push_rig;
-    int sampler_freq;
+    int sampler_npdump;
     int3 sampler_grid_ref;
 };
 

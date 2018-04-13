@@ -48,7 +48,7 @@ static void read_common(const Config *c, Opt *o) {
     UC(lookup_bool(c, "dump.parts", &o->dump_parts));
     UC(conf_lookup_float(c, "dump.freq_parts", &o->freq_parts));
 
-    UC(conf_lookup_int(c, "sampler.freq", &o->sampler_freq));
+    UC(conf_lookup_int(c, "sampler.n_per_dump", &o->sampler_npdump));
     UC(conf_lookup_int3(c, "sampler.grid_ref", &o->sampler_grid_ref));
 }
 
