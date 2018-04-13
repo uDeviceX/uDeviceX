@@ -90,3 +90,12 @@ static void mark_outflowden(Params params, const Flu *f, const DContMap *m, /**/
     UC(den_filter_particles(params.numdensity, m, ss, cc, /**/ d));
     UC(den_download_ndead(/**/ d));
 }
+
+static void sample(Sim *s) {
+    Flu *flu = &s->flu;
+    Sampler *sam = &s->dump.field_sampler;
+
+    UC(grid_sampler_data_reset(sam->d));
+    UC(grid_sampler_data_push(flu->q.n, flu->q.pp, flu->ss, sam->d));
+    UC(grid_sampler_add(sam->d, sam->s));
+}
