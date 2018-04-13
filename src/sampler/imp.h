@@ -15,4 +15,4 @@ void sampler_fin(Sampler*);
 
 void sampler_reset(Sampler*);
 void sampler_add(const SampleData*, Sampler*);
-void sampler_dump(Sampler*);
+void sampler_dump(MPI_Comm, const char *dir, long id, Sampler*);

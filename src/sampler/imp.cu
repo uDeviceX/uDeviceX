@@ -1,3 +1,4 @@
+#include <mpi.h>
 #include <stdio.h>
 
 #include <conf.h>
@@ -13,6 +14,8 @@
 
 #include "inc/type.h"
 #include "inc/dev.h"
+
+#include "io/grid/imp.h"
 
 #include "imp.h"
 #include "imp/type.h"
