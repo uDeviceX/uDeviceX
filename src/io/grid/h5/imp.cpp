@@ -1,5 +1,7 @@
 #include <hdf5.h>
+#include <vector_types.h>
 
+#include "coords/ini.h"
 #include "coords/imp.h"
 #include "mpi/wrapper.h"
 #include "imp.h"
@@ -82,12 +84,15 @@ static void write0(const Coords *coords, hid_t file_id,
     H5Sclose(filespace_simple);
 }
 
-void h5_write(const Coords *coords, MPI_Comm cart, const char *path, const float **data,
+void h5_write(int3 N, MPI_Comm cart, const char *path, const float **data,
               const char **names, int ncomp) {
     /* ncomp: number of component,
        sx, sy, sz: sizes */
     IDs ids;
+    Coords *grid_coords;
+    UC(coords_ini(cart, N.x, N.y, N.z, &grid_coords));
     UC(create(cart, path, /**/ &ids));
-    UC(write0(coords, ids.file, data, names, ncomp));
+    UC(write0(grid_coords, ids.file, data, names, ncomp));
     UC(close(ids, path));
+    UC(coords_fin(grid_coords));
 }
