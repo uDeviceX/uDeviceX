@@ -1,0 +1,124 @@
+function ini() { prog = "main" }
+function usg() {
+    printf "%s FILE.off\n", prog | "cat >&2"
+    printf "compute membrain bending forces\n" | "cat >&2"
+    exit
+}
+
+function compute_ang(   m, i, j, k, l) {
+    for (m = 0; m < NE; m++) {
+	i = D0[m]; j = D1[m]; k = D2[m]; l = D3[m]
+	dihedral_xy(XX[i], YY[i], ZZ[i],
+		    XX[j], YY[j], ZZ[j],
+		    XX[k], YY[k], ZZ[k],
+		    XX[l], YY[l], ZZ[l])
+	ANG_EDG[m] = atan2(DIHEDRAL_Y, DIHEDRAL_X)
+    }
+}
+
+function compute_edg_len(   m, i, j) {
+    for (m = 0; m < NE; m++) {
+	i = E0[m]; j = E1[m]
+	LEN[m] = dist(XX[i], YY[i], ZZ[i],
+		      XX[j], YY[j], ZZ[j])
+    }
+}
+
+function compute_area(   m, i, j, k) {
+    for (m = 0; m < NT; m++) {
+	i = T0[m]; j = T1[m]; k = T2[m]
+	AREA_TRI[m] = area(XX[i], YY[i], ZZ[i],
+			   XX[j], YY[j], ZZ[j],
+			   XX[k], YY[k], ZZ[k])
+    }
+}
+
+function scatter_area(    m, i, j, k, A) {
+    clear(AREA_VER)
+    for (m = 0; m < NT; m++) {
+	i = T0[m]; j = T1[m]; k = T2[m]; A = AREA_TRI[m]
+	AREA_VER[i] += A/3
+	AREA_VER[j] += A/3
+	AREA_VER[k] += A/3
+    }
+}
+
+function scatter_curv(   m, i, j, curv, len, ang) {
+    clear(CURV)
+    for (m = 0; m < NE; m++) {
+	i = E0[m]; j = E1[m]
+	len = LEN[m]
+	ang = ANG_EDG[m]
+	curv = len*ang/4
+	CURV[i] += curv/2
+	CURV[j] += curv/2
+    }
+}
+
+function scatter_ang(   m, i, j, ang, cnt) {
+    clear(ANG_VER)
+    for (m = 0; m < NE; m++) {
+	i = E0[m]; j = E1[m]
+	ang = ANG_EDG[m]
+	ANG_VER[i] += ang; cnt[i]++
+	ANG_VER[j] += ang; cnt[j]++
+    }
+    for (m = 0; m < NV; m++)
+	ANG_VER[m] /= cnt[m]
+}
+
+function compute_julicher(    m, curv, A) {
+    for (m = 0; m < NV; m++) {
+	curv = CURV[m]
+	A    = AREA_VER[m]
+	JULICHER[m] = 2*curv*curv/A
+    }
+}
+
+function compute_kantor(    m, i, j, ang, A, eng) {
+    clear(KANTOR)
+    for (m = 0; m < NE; m++) {
+	i = E0[m]; j = E1[m]
+	ang = ANG_EDG[m]
+	eng = 2*(1 - cos(ang))
+	KANTOR[i] += eng/2
+	KANTOR[j] += eng/2
+    }
+}
+
+function write(   m, r) {
+    msg("NV = " NV)
+    for (m = 0; m < NV; m++) {
+	r = sqrt(XX[m]^2 + YY[m]^2)
+	print r, ANG_VER[m], JULICHER[m], KANTOR[m]
+    }
+}
+
+
+BEGIN {
+    ini()
+    if (noarg()) err("needs FILE.off")
+    file = first_arg()
+    if (eq(file, "-h")) usg()
+    off_read(file)
+    # refine2()    
+    setup()
+
+    compute_ang()
+    compute_edg_len()
+    compute_area()
+    scatter_area()
+    scatter_curv()
+    compute_julicher()
+    compute_kantor()
+
+    scatter_ang()
+
+    vtk_push("area", AREA_TRI, tri)
+    vtk_push("kantor", KANTOR, vert)
+    vtk_push("julicher", JULICHER, vert)
+    vtk_write("o.vtk", vert, tri)
+    
+    off_write("o.off")
+    write()
+}

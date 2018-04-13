@@ -3,8 +3,8 @@
 : ${AWK=awk}
 : ${PREFIX=.}
 
-prog=eng
-prog0=eng0
+prog=kantor
+prog0=kantor0
 err () {
     echo >&2 "$prog: $@"
     exit 2
