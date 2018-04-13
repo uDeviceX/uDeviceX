@@ -26,7 +26,9 @@ bc: c - b;
 k: cross(ab, ac);
 n: cross(bd, bc);
 
-cphi: dot_kn(kx, ky, kz, nx, ny, nz)/(kk(kx, ky, kz) * nn(nx, ny, nz));
 
+cphi: dot_kn(kx, ky, kz, nx, ny, nz)/(kk(kx, ky, kz) * nn(nx, ny, nz));
 factor(diff(cphi, kx));
 
+dot_kn: dot([kx, ky, kz], [nx, ny, nz]);
+diff(dot_kn, kx);

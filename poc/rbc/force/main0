@@ -12,7 +12,7 @@ function compute_ang(   m, i, j, k, l) {
 		    XX[j], YY[j], ZZ[j],
 		    XX[k], YY[k], ZZ[k],
 		    XX[l], YY[l], ZZ[l])
-	ANG[m] = atan2(DIHEDRAL_Y, DIHEDRAL_X)
+	ANG_EDG[m] = atan2(DIHEDRAL_Y, DIHEDRAL_X)
     }
 }
 
@@ -48,11 +48,23 @@ function scatter_curv(   m, i, j, curv, len, ang) {
     for (m = 0; m < NE; m++) {
 	i = E0[m]; j = E1[m]
 	len = LEN[m]
-	ang = ANG[m]
+	ang = ANG_EDG[m]
 	curv = len*ang/4
 	CURV[i] += curv/2
 	CURV[j] += curv/2
     }
+}
+
+function scatter_ang(   m, i, j, ang, cnt) {
+    clear(ANG_VER)
+    for (m = 0; m < NE; m++) {
+	i = E0[m]; j = E1[m]
+	ang = ANG_EDG[m]
+	ANG_VER[i] += ang; cnt[i]++
+	ANG_VER[j] += ang; cnt[j]++
+    }
+    for (m = 0; m < NV; m++)
+	ANG_VER[m] /= cnt[m]
 }
 
 function compute_julicher(    m, curv, A) {
@@ -67,7 +79,7 @@ function compute_kantor(    m, i, j, ang, A, eng) {
     clear(KANTOR)
     for (m = 0; m < NE; m++) {
 	i = E0[m]; j = E1[m]
-	ang = ANG[m]
+	ang = ANG_EDG[m]
 	eng = 2*(1 - cos(ang))
 	KANTOR[i] += eng/2
 	KANTOR[j] += eng/2
@@ -75,9 +87,10 @@ function compute_kantor(    m, i, j, ang, A, eng) {
 }
 
 function write(   m, r) {
+    msg("NV = " NV)
     for (m = 0; m < NV; m++) {
 	r = sqrt(XX[m]^2 + YY[m]^2)
-	print r, JULICHER[m], KANTOR[m]
+	print r, ANG_VER[m], JULICHER[m], KANTOR[m]
     }
 }
 
@@ -88,6 +101,7 @@ BEGIN {
     file = first_arg()
     if (eq(file, "-h")) usg()
     off_read(file)
+    # refine2()    
     setup()
 
     compute_ang()
@@ -98,7 +112,9 @@ BEGIN {
     compute_julicher()
     compute_kantor()
 
-    refine3()
+    scatter_ang()
+
     vtk_write("o.vtk")
     off_write("o.off")
+    write()
 }
