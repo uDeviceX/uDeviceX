@@ -1,0 +1,25 @@
+function vtk_write(file, edg, tri) {
+    vtk_header(file)
+    vtk_points(file)
+    vtk_tri(file)
+}
+
+function vtk_header(file) {
+    printf "# vtk DataFile Version 2.0\n" > file
+    printf "created with uDeviceX\n"      > file
+    printf "ASCII\n"                      > file
+    printf "DATASET POLYDATA\n"           > file
+}
+
+function vtk_points(file,   m) {
+    printf "POINTS %d double\n", NV > file
+    for (m = 0; m < NV; m++)
+	printf "%.14e %.14e %.14e\n", XX[m], YY[m], ZZ[m] > file
+}
+
+function vtk_tri(file,   nvp, m) {
+    nvp = 3
+    printf "POLYGONS %d %d\n", NT, (1 + nvp)*NT > file
+    for (m = 0; m < NT; m++)
+	printf "%d %d %d %d\n", nvp, T0[m], T1[m], T2[m] > file
+}
