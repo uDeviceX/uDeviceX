@@ -1,17 +1,17 @@
-void sampler_data_ini(SampleData **s) {
+void grid_sampler_data_ini(GridSampleData **s) {
     EMALLOC(1, s);
-    sampler_data_reset(*s);
+    grid_sampler_data_reset(*s);
 }
 
-void sampler_data_fin(SampleData  *s) {
+void grid_sampler_data_fin(GridSampleData  *s) {
     EFREE(s);
 }
 
-void sampler_data_reset(SampleData *s) {
+void grid_sampler_data_reset(GridSampleData *s) {
     s->n = 0;
 }
 
-void sampler_data_push(long n, const Particle *pp, const float *ss, SampleData *s) {
+void grid_sampler_data_push(long n, const Particle *pp, const float *ss, GridSampleData *s) {
     int id;
     SampleDatum *d;
     id = s->n++;
