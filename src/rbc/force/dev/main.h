@@ -58,8 +58,8 @@ static __device__ double3 adj_dihedrals(const RbcParams_v *par, const Particle *
     phi = par->phi / 180.0 * M_PI;
     kb  = par->kb;
     
-    f1 = fdih_a(phi, kb, r0, r2, r1, r4);
-    f2 = fdih_b(phi, kb, r1, r0, r2, r3);
+    f1 = force_dev::dih_a(phi, kb, r0, r2, r1, r4);
+    f2 = force_dev::dih_b(phi, kb, r1, r0, r2, r3);
     add(&f1, /**/ &f2);
     return f2;
 
