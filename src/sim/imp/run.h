@@ -39,9 +39,9 @@ static void step(TimeLine *time, float dt, float tstart, Sim *s) {
 
     UC(check_vel(dt, s));
     if (opt->vcon && !s->equilibrating) {
-        sample(s->coords, it, flu, /**/ &s->vcon);
-        adjust(it, /**/ &s->vcon, bforce);
-        log(it, &s->vcon);
+        sample_vcont(s->coords, it, flu, /**/ &s->vcon);
+        adjust_bforce(it, /**/ &s->vcon, bforce);
+        log_vcont(it, &s->vcon);
     }
 
     if (active_walls(s)) bounce_wall(dt, active_rbc(s), s->coords, wall, /**/ flu, rbc);
