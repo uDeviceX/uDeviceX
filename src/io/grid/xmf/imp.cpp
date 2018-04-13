@@ -37,10 +37,10 @@ static void grid(int3 D, int3 G, FILE *f, const char *path, int n, const char **
     fprintf(f, "     <Topology TopologyType=\"3DCORECTMesh\" Dimensions=\"%d %d %d\"/>\n", 1 + G.z, 1 + G.y, 1 + G.x);
     fprintf(f, "     <Geometry GeometryType=\"ORIGIN_DXDYDZ\">\n");
     fprintf(f, "       <DataItem Name=\"Origin\" Dimensions=\"3\" NumberType=\"Float\" Precision=\"4\" Format=\"XML\">\n");
-    fprintf(f, "        %e %e %e\n", o.z, o.y, o.x);
+    fprintf(f, "        %e %e %e\n", o.x, o.y, o.z);
     fprintf(f, "       </DataItem>\n");
     fprintf(f, "       <DataItem Name=\"Spacing\" Dimensions=\"3\" NumberType=\"Float\" Precision=\"4\" Format=\"XML\">\n");
-    fprintf(f, "        %e %e %e\n", d.z, d.y, d.x);
+    fprintf(f, "        %e %e %e\n", d.x, d.y, d.z);
     fprintf(f, "       </DataItem>\n");
     fprintf(f, "     </Geometry>\n");
     for(i = 0; i < n; ++i) {
