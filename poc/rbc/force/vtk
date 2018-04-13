@@ -1,7 +1,29 @@
-function vtk_write(file, edg, tri) {
+function vtk_push_vert(key, data, vert,   i) {
+    for (i = 0; i in data; i++)
+	vert[key, i] = data[i]
+}
+
+function vtk_write(file, vert, tri,   keys, key) {
     vtk_header(file)
     vtk_points(file)
     vtk_tri(file)
+
+    if (vtk_keys(vert, keys)) {
+	vtk_vert_header(file)	
+	for (key in keys)
+	    vtk_vert_data(file, key, vert)
+    }
+}
+
+function vtk_keys(vert, keys,   k, a, fst, has) {
+    has = 0
+    for (k in vert) {
+	split(k, a, SUBSEP)
+	fst = a[1]
+	keys[fst]
+	has = 1
+    }
+    return has
 }
 
 function vtk_header(file) {
@@ -22,4 +44,16 @@ function vtk_tri(file,   nvp, m) {
     printf "POLYGONS %d %d\n", NT, (1 + nvp)*NT > file
     for (m = 0; m < NT; m++)
 	printf "%d %d %d %d\n", nvp, T0[m], T1[m], T2[m] > file
+}
+
+function vtk_vert_header(file) {
+    printf "POINT_DATA %d\n", NV > file
+}
+
+function vtk_vert_data(file, key, data,   m) {
+    printf "SCALARS %s double 1\n", key > file
+    printf "LOOKUP_TABLE default\n"     > file
+    for (m = 0; m < NV; m++) {
+	printf "%.14e\n", data[key, m]  > file
+    }
 }
