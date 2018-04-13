@@ -1,9 +1,9 @@
 #include <string.h>
 #include <stdio.h>
+#include <vector_types.h>
 
 #include "utils/error.h"
 #include "utils/imp.h"
-#include "coords/imp.h"
 
 #include "imp.h"
 
@@ -19,27 +19,31 @@ static void epilogue(FILE *f) {
     fprintf(f, "</Xdmf>\n");
 }
 
-static void grid(const Coords *coords, FILE *f, const char *path, const char **names, int n) {
-    enum {X, Y, Z};
+static float3 get_spacing(int3 D, int3 G) {
+    float3 d;
+    d.x = (float) D.x / (float) G.x;
+    d.y = (float) D.y / (float) G.y;
+    d.z = (float) D.z / (float) G.z;
+    return d;
+}
+
+static void grid(int3 D, int3 G, FILE *f, const char *path, int n, const char **names) {
     int i;
-    int G[3]; /* domain size */
-    G[X] = xdomain(coords);
-    G[Y] = ydomain(coords);
-    G[Z] = zdomain(coords);
+    float3 d = get_spacing(D, G);
 
     fprintf(f, "   <Grid Name=\"mesh\" GridType=\"Uniform\">\n");
-    fprintf(f, "     <Topology TopologyType=\"3DCORECTMesh\" Dimensions=\"%d %d %d\"/>\n", 1 + G[Z], 1 + G[Y], 1 + G[X]);
+    fprintf(f, "     <Topology TopologyType=\"3DCORECTMesh\" Dimensions=\"%d %d %d\"/>\n", 1 + G.z, 1 + G.y, 1 + G.x);
     fprintf(f, "     <Geometry GeometryType=\"ORIGIN_DXDYDZ\">\n");
     fprintf(f, "       <DataItem Name=\"Origin\" Dimensions=\"3\" NumberType=\"Float\" Precision=\"4\" Format=\"XML\">\n");
     fprintf(f, "        %e %e %e\n", 0.0, 0.0, 0.0);
     fprintf(f, "       </DataItem>\n");
     fprintf(f, "       <DataItem Name=\"Spacing\" Dimensions=\"3\" NumberType=\"Float\" Precision=\"4\" Format=\"XML\">\n");
-    fprintf(f, "        %e %e %e\n", 1.0, 1.0, 1.0);
+    fprintf(f, "        %e %e %e\n", d.z, d.y, d.x);
     fprintf(f, "       </DataItem>\n");
     fprintf(f, "     </Geometry>\n");
     for(i = 0; i < n; ++i) {
         fprintf(f, "     <Attribute Name=\"%s\" AttributeType=\"Scalar\" Center=\"Cell\">\n", names[i]);
-        fprintf(f, "       <DataItem Dimensions=\"%d %d %d 1\" NumberType=\"Float\" Precision=\"4\" Format=\"HDF\">\n", G[Z], G[Y], G[X]);
+        fprintf(f, "       <DataItem Dimensions=\"%d %d %d 1\" NumberType=\"Float\" Precision=\"4\" Format=\"HDF\">\n", G.z, G.y, G.x);
         fprintf(f, "        %s:/%s\n", path, names[i]);
         fprintf(f, "       </DataItem>\n");
         fprintf(f, "     </Attribute>\n");
@@ -64,7 +68,7 @@ static void basename(const char *i, /**/ char *o) {
     strcpy(o, p);
 }
 
-void xmf_write(const Coords *coords, const char *path, const char **names, int ncomp) {
+void xmf_write(int3 domainSize, int3 gridSize, const char *path, const char **names, int ncomp) {
     char w[BUFSIZ];
     FILE *f;
 
@@ -73,7 +77,7 @@ void xmf_write(const Coords *coords, const char *path, const char **names, int n
     header(f);
 
     basename(path, /**/ w);
-    grid(coords, f, w, names, ncomp);
+    grid(domainSize, gridSize, f, w, ncomp, names);
     epilogue(f);
     UC(efclose(f));
 }
