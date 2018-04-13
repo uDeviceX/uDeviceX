@@ -23,7 +23,7 @@ struct Grid {
 };
 
 struct GridSampler {
-    Grid dev, hst;
+    Grid sdev, stdev, hst;
     long nsteps;
 };
 
