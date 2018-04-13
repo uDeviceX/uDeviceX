@@ -29,13 +29,15 @@ static float3 get_spacing(int3 D, int3 G) {
 
 static void grid(int3 D, int3 G, FILE *f, const char *path, int n, const char **names) {
     int i;
-    float3 d = get_spacing(D, G);
+    float3 o, d; /* origin, spacing */
+    o.x = o.y = o.z = 0.0;
+    d = get_spacing(D, G);
 
     fprintf(f, "   <Grid Name=\"mesh\" GridType=\"Uniform\">\n");
     fprintf(f, "     <Topology TopologyType=\"3DCORECTMesh\" Dimensions=\"%d %d %d\"/>\n", 1 + G.z, 1 + G.y, 1 + G.x);
     fprintf(f, "     <Geometry GeometryType=\"ORIGIN_DXDYDZ\">\n");
     fprintf(f, "       <DataItem Name=\"Origin\" Dimensions=\"3\" NumberType=\"Float\" Precision=\"4\" Format=\"XML\">\n");
-    fprintf(f, "        %e %e %e\n", 0.0, 0.0, 0.0);
+    fprintf(f, "        %e %e %e\n", o.z, o.y, o.x);
     fprintf(f, "       </DataItem>\n");
     fprintf(f, "       <DataItem Name=\"Spacing\" Dimensions=\"3\" NumberType=\"Float\" Precision=\"4\" Format=\"XML\">\n");
     fprintf(f, "        %e %e %e\n", d.z, d.y, d.x);
