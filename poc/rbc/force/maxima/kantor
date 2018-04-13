@@ -1,0 +1,38 @@
+load("vect") $
+load("pdiff") $
+cross(a, b):=express(a ~ b) $
+dot(a, b):=express(a . b) $
+
+X: 1; Y: 2; Z: 3 $
+
+a: [ax, ay, az] ;
+b: [bx, by, bz] ;
+c: [cx, cy, cz] ;
+d: [dx, dy, dz] ;
+
+ab: b - a;
+ac: c - a;
+bd: d - b;
+bc: c - b;
+
+kx: cross(ab, ac)[X];
+ky: cross(ab, ac)[Y];
+kz: cross(ab, ac)[Z];
+
+nx: cross(bd, bc)[X];
+ny: cross(bd, bc)[Y];
+nz: cross(bd, bc)[Z];
+
+kn: dot(k, n);
+kk: dot(k, k);
+nn: dot(n, n);
+
+cp: kn/sqrt(kk * nn);
+
+cp_kn, c_kk, c_nn;
+
+E: 2*(1 - cp);
+diff(E, ax);
+
+diff(E, ay);
+diff(E, az);
