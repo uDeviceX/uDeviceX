@@ -123,9 +123,7 @@
 #include "imp/check.h"
 #include "imp/dump.h"
 
-#include "imp/colors.h"
-#include "imp/vcont.h"
-#include "imp/openbc.h"
+#include "imp/addons.h"
 
 #include "imp/update.h"
 #include "imp/distr.h"
