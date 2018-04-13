@@ -71,6 +71,7 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/mesh/edg_len          && \
     d $B/mesh/eng_julicher     && \
     d $B/mesh/eng_kantor       && \
+    d $B/mesh/force            && \
     d $B/mesh/props            && \
     d $B/mesh/scatter          && \
     d $B/mesh/spherical        && \

@@ -11,6 +11,7 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/math/rnd              && \
     d $B/math/tform            && \
     d $B/math/tri              && \
+    d $B/mesh/force            && \
     d $B/mpi                   && \
     d $B/rbc                   && \
     d $B/rbc/adj               && \
