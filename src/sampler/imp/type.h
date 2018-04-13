@@ -22,7 +22,7 @@ struct Grid {
     bool stress;
 };
 
-struct Sampler {
+struct GridSampler {
     Grid dev, hst;
     long nsteps;
 };
@@ -37,7 +37,7 @@ enum {
     MAX_N_DATA = 10
 };
 
-struct SampleData {
+struct GridSampleData {
     int n;
     SampleDatum d[MAX_N_DATA];
 };

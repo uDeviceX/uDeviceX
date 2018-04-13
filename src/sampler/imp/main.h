@@ -41,8 +41,8 @@ static void fin_hst_grid(Grid *g) {
         EFREE(g->d[i]);
 }
 
-void sampler_ini(bool stress, int3 L, int3 N, Sampler **s0) {
-    Sampler *s;
+void sampler_ini(bool stress, int3 L, int3 N, GridSampler **s0) {
+    GridSampler *s;
     EMALLOC(1, s0);
     s = *s0;
     UC(ini_dev_grid(stress, L, N, &s->dev));
@@ -50,7 +50,7 @@ void sampler_ini(bool stress, int3 L, int3 N, Sampler **s0) {
     UC(sampler_reset(s));
 }
 
-void sampler_fin(Sampler *s) {
+void sampler_fin(GridSampler *s) {
     UC(fin_dev_grid(&s->dev));
     UC(fin_hst_grid(&s->hst));
     EFREE(s);
@@ -62,7 +62,7 @@ static void reset_dev_grid(Grid *g) {
         DzeroA(g->d[i], n);
 }
 
-void sampler_reset(Sampler *s) {
+void sampler_reset(GridSampler *s) {
     s->nsteps = 0;
     UC(reset_dev_grid(&s->dev));
 }
@@ -79,7 +79,7 @@ static void datum_view(const SampleDatum *d, DatumS_v *v) {
 }
 
 template <typename Datum>
-static void add(const SampleData *data, Grid g) {
+static void add(const GridSampleData *data, Grid g) {
     long i, n;
     const SampleDatum *d;
     Datum v;
@@ -91,7 +91,7 @@ static void add(const SampleData *data, Grid g) {
     }
 }
 
-void sampler_add(const SampleData *data, Sampler *s) {
+void sampler_add(const GridSampleData *data, GridSampler *s) {
     Grid g = s->dev;
     if (g.stress)
         add<DatumS_v>(data, g);
@@ -117,7 +117,7 @@ static void dump(MPI_Comm cart, const char *dir, long id, const Grid *g) {
     UC(grid_write(g->N, g->L, cart, dir, id, ncmp, data, names));
 }
 
-void sampler_dump(MPI_Comm cart, const char *dir, long id, Sampler *s) {
+void sampler_dump(MPI_Comm cart, const char *dir, long id, GridSampler *s) {
     UC(avg(s->nsteps, &s->dev));
     UC(download(&s->dev, &s->hst));
     dSync();
