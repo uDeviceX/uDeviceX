@@ -1,6 +1,0 @@
-#!/bin/sh
-
-: ${AWK=awk}
-
-
-"$AWK" -f util -f math -f off -f setup -f tri -f vtk -f refine -f main0 -- "$@"

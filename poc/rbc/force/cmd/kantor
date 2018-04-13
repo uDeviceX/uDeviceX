@@ -1,0 +1,32 @@
+#!/bin/sh
+
+: ${AWK=awk}
+: ${PREFIX=.}
+
+prog=kantor
+prog0=kantor0
+err () {
+    echo >&2 "$prog: $@"
+    exit 2
+}
+
+inc () {
+    local i
+    for i
+    do shift
+       i="$PREFIX/lib/$i"
+       if test ! -f "$i"
+       then err "cannot find file '$i'"
+       fi
+       set -- "$@" -f "$i"
+    done
+    echo "$@"
+}
+
+cmd () {
+    local i
+    i="$PREFIX/cmd/$1"
+    echo -f "$i"
+}
+
+"$AWK" `inc util math off setup tri vtk refine` `cmd $prog0` -- "$@"
