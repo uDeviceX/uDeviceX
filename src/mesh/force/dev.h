@@ -14,8 +14,12 @@ BEGIN
 
 #ifdef FORCE_HOST
 _S_ double rsqrt0(double x) { return pow(x, -0.5); }
+#define PRINT(fmt, ...) msg_print((fmt), ##__VA_ARGS__)
+#define EXIT() ERR("assert")
 #else
 _S_ double rsqrt0(double x) { return rsqrt(x); }
+#define PRINT(fmt, ...) printf((fmt), ##__VA_ARGS__)
+#define EXIT() assert(0)
 #endif
 
 _S_ double max(double a, double b) { return a > b ? a : b; }
@@ -63,13 +67,13 @@ _S_ double3 dih0(double phi, double kb,
                    &overIksiI, &overIdzeI);
     if (status != ANGLE_OK) {
         printf("bad dihedral\n");
-        assert(0);
+        EXIT();
     }
     
     diff(&ksi, &dze, /**/ &ksimdze);
     sinTheta_1 = copysign(sinTheta_1,
                            dot<double>(&ksimdze, &r41));
-
+    
     sint0kb = sin(phi) * kb;
     cost0kb = cos(phi) * kb;
     beta = cost0kb - cosTheta * sint0kb * sinTheta_1;

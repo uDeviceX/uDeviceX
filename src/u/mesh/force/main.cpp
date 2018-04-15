@@ -22,7 +22,7 @@ void force(Fun fun,
     b.x = b0[X]; b.y = b0[Y]; b.z = b0[Z];
     c.x = c0[X]; c.y = c0[Y]; c.z = c0[Z];
     d.x = d0[X]; d.y = d0[Y]; d.z = d0[Z];
-    f = fun(phi, kb, a, b, c, d);
+    UC(f = fun(phi, kb, a, b, c, d));
     f0[X] = f.x; f0[Y] = f.y; f0[Z] = f.z;
 }
 
@@ -54,8 +54,8 @@ void main0(int *argc, char ***argv) {
     UC(read3(argc, argv, /**/ d));
     
     phi = 0; kb = 1;
-    force(force_hst::dih_a, phi, kb, a, b, c, d, /**/ fa);
-    force(force_hst::dih_b, phi, kb, a, b, c, d, /**/ fb);
+    UC(force(force_hst::dih_a, phi, kb, a, b, c, d, /**/ fa));
+    UC(force(force_hst::dih_b, phi, kb, a, b, c, d, /**/ fb));
     printf("%.16g %.16g %.16g %.16g %.16g %.16g\n",
            fa[X], fa[Y], fa[Z], fb[X], fb[Y], fb[Z]);
 }
@@ -71,7 +71,7 @@ int main(int argc, char **argv) {
     MC(m::Comm_size(cart, &size));
     msg_ini(rank);
 
-    main0(&argc, &argv);
+    UC(main0(&argc, &argv));
     
     MC(m::Barrier(cart));
     m::fin();
