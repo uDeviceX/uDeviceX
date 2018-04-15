@@ -35,8 +35,7 @@ _S_ int angle(double3 a, double3 b, /**/ double *pcos, double *pover_sin,
     over_a = rsqrt0(aa);
     over_b = rsqrt0(bb);
     cost = ab * over_a * over_b;
-    over_sin = rsqrt0(1.0 - cost*cost);
-    over_sin = max(over_sin, 1.0e-6);
+    over_sin = rsqrt0(max(1.0 - cost*cost, 1e-6));
 
     *pcos = cost; *pover_sin = over_sin; *pover_a = over_a; *pover_b = over_b;
     return ANGLE_OK;
