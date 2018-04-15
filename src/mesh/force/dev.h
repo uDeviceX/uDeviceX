@@ -30,8 +30,8 @@ _S_ int angle(double3 a, double3 b, /**/ double *pcos, double *psin,
     bb = dot<double>(&b, &b);
     ab = dot<double>(&a, &b);
     if (aa == 0) return ANGLE_BAD_A;
-    if (bb == 0) return ANGLE_BAD_A;    
-    
+    if (bb == 0) return ANGLE_BAD_B;
+
     over_a = rsqrt0(aa);
     over_b = rsqrt0(bb);
     cost = ab * over_a * over_b;
