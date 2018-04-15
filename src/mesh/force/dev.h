@@ -12,7 +12,12 @@
 
 BEGIN
 
-_S_ double rsqrt(double x) { return 1/sqrt(x); } /* TODO */
+#ifdef FORCE_HOST
+_S_ double rsqrt0(double x) { return pow(x, -0.5); }
+#else
+_S_ double rsqrt0(double x) { return rsqrt(x); }
+#endif
+
 _S_ double max(double a, double b) { return a > b ? a : b; }
 
 /* forces from one dihedral */
@@ -31,8 +36,8 @@ _S_ double3 dih0(double phi, double kb,
     cross(&r12, &r13, /**/ &ksi);
     cross(&r34, &r24, /**/ &dze);
 
-    overIksiI = rsqrt(dot<double>(&ksi, &ksi));
-    overIdzeI = rsqrt(dot<double>(&dze, &dze));
+    overIksiI = rsqrt0(dot<double>(&ksi, &ksi));
+    overIdzeI = rsqrt0(dot<double>(&dze, &dze));
 
     cosTheta = dot<double>(&ksi, &dze) * overIksiI * overIdzeI;
     IsinThetaI2 = 1.0f - cosTheta * cosTheta;
@@ -40,7 +45,7 @@ _S_ double3 dih0(double phi, double kb,
     diff(&ksi, &dze, /**/ &ksimdze);
 
     sinTheta_1 = copysignf
-        (rsqrt(max(IsinThetaI2, 1.0e-6)),
+        (rsqrt0(max(IsinThetaI2, 1.0e-6)),
          dot<double>(&ksimdze, &r41)); // ">" because the normals look inside
 
     sint0kb = sin(phi) * kb;
