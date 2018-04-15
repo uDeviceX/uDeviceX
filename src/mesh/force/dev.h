@@ -83,12 +83,12 @@ _S_ double3 dih0(double phi, double kb,
 }
 
 _I_ double3 dih_a(double phi, double kb,
-                                double3 a, double3 b, double3 c, double3 d) {
+                  double3 a, double3 b, double3 c, double3 d) {
     return dih0<1>(phi, kb, a, b, c, d);
 }
 
 _I_ double3 dih_b(double phi, double kb,
-                                double3 a, double3 b, double3 c, double3 d) {
+                  double3 a, double3 b, double3 c, double3 d) {
     return dih0<2>(phi, kb, a, b, c, d);
 }
 
