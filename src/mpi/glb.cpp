@@ -56,11 +56,9 @@ void get_dims(int *argc, char ***argv, int dims[]) {
 void get_cart(MPI_Comm comm, const int dims[3], /**/ MPI_Comm *cart) {
     const bool reorder = false;
     const int periods[D] = {1, 1, 1};
-
     MC(m::Cart_create(comm, D, dims, periods, reorder, cart));
 }
 
-void fin() {
-    MC(m::Finalize());
-}
-}
+void fin() { MC(m::Finalize()); }
+
+} /* namespace */
