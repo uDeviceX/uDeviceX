@@ -5,6 +5,7 @@
 #include <vector_types.h>
 
 #include "utils/error.h"
+#include "utils/msg.h"
 #include "math/dev.h"
 #include "imp.h"
 

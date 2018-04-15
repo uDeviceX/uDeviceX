@@ -30,7 +30,7 @@ static FILE* open(const char *path) {
 
 static bool is_master(int r) {return r == 0;}
 static void print(const char *msg, FILE *f) {
-    fprintf(f, "%s\n", msg);
+    fnprintf(f, "%s\n", msg);
     if (is_master(rank))
         fprintf(stderr, ": %s\n", msg);
 }
@@ -48,7 +48,8 @@ void msg_print(const char *fmt, ...) {
     f = open(name);
     print(msg, f);
     if (fclose(f) != 0) {
-        fprintf(stderr, "%s:%d: fail to close: '%s'\n", __FILE__, __LINE__, name);
+        fprintf(stderr, "%s:%d: fail to close: '%s'\n",
+                __FILE__, __LINE__, name);
         exit(2);
     }
 }

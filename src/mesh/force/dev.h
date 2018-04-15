@@ -66,7 +66,7 @@ _S_ double3 dih0(double phi, double kb,
                    &cosTheta, &sinTheta_1,
                    &overIksiI, &overIdzeI);
     if (status != ANGLE_OK) {
-        printf("bad dihedral\n");
+        PRINT("bad dihedral\n");
         EXIT();
     }
     
