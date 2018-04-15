@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
+#include <string.h>
 
 #include "msg.h"
 
@@ -8,6 +9,11 @@ static int rank;
 
 void msg_ini(int rnk) { rank = rnk; }
 
+static char last_eq(const char *s, char c) {
+    int n;
+    n = strlen(s);
+    return n > 0 && s[n - 1] == c;
+}
 static FILE* open(const char *path) {
     static int fst = 1;
     FILE *f;
@@ -29,10 +35,14 @@ static FILE* open(const char *path) {
 }
 
 static bool is_master(int r) {return r == 0;}
+static void print0(FILE *f, const char *s) {
+    if (last_eq(s, '\n')) fprintf(f, "%s",   s);
+    else                  fprintf(f, "%s\n", s);
+}
 static void print(const char *msg, FILE *f) {
-    fprintf(f, "%s\n", msg);
+    print0(f, msg);
     if (is_master(rank))
-        fprintf(stderr, ": %s\n", msg);
+        print0(stderr, msg);
 }
 
 void msg_print(const char *fmt, ...) {

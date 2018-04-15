@@ -45,6 +45,13 @@ _S_ int angle(double3 a, double3 b, /**/ double *pcos, double *pover_sin,
     return ANGLE_OK;
 }
 
+void dih_write(double3 a, double3 b, double3 c, double3 d) {
+    PRINT("%g %g %g\n", a.x, a.y, a.z);
+    PRINT("%g %g %g\n", b.x, b.y, b.z);
+    PRINT("%g %g %g\n", c.x, c.y, c.z);
+    PRINT("%g %g %g\n", d.x, d.y, d.z);
+}
+
 /* forces from one dihedral */
 template <int update>
 _S_ double3 dih0(double phi, double kb,
@@ -67,13 +74,14 @@ _S_ double3 dih0(double phi, double kb,
                    &overIksiI, &overIdzeI);
     if (status != ANGLE_OK) {
         PRINT("bad dihedral\n");
+        dih_write(r1, r2, r3, r4);
         EXIT();
     }
-    
+
     diff(&ksi, &dze, /**/ &ksimdze);
     sinTheta_1 = copysign(sinTheta_1,
                            dot<double>(&ksimdze, &r41));
-    
+
     sint0kb = sin(phi) * kb;
     cost0kb = cos(phi) * kb;
     beta = cost0kb - cosTheta * sint0kb * sinTheta_1;
