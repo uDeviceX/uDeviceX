@@ -21,9 +21,9 @@ _S_ double rsqrt0(double x) { return rsqrt(x); }
 _S_ double max(double a, double b) { return a > b ? a : b; }
 
 enum {ANGLE_OK, ANGLE_BAD_A, ANGLE_BAD_B};
-_S_ int angle(double3 a, double3 b, /**/ double *pcos, double *psin,
+_S_ int angle(double3 a, double3 b, /**/ double *pcos, double *pover_sin,
               double *pover_a, double *pover_b) {
-    double  cost, sint, over_a, over_b;
+    double  cost, over_sin, over_a, over_b;
     double aa, bb, ab;
 
     aa = dot<double>(&a, &a);
@@ -35,8 +35,10 @@ _S_ int angle(double3 a, double3 b, /**/ double *pcos, double *psin,
     over_a = rsqrt0(aa);
     over_b = rsqrt0(bb);
     cost = ab * over_a * over_b;
-    sint = sqrt(1.0 - cost*cost);
-    *pcos = cost; *psin = sint; *pover_a = over_a; *pover_b = over_b;
+    over_sin = rsqrt0(1.0 - cost*cost);
+    over_sin = max(over_sin, 1.0e-6);
+
+    *pcos = cost; *pover_sin = over_sin; *pover_a = over_a; *pover_b = over_b;
     return ANGLE_OK;
 }
 
@@ -44,7 +46,8 @@ _S_ int angle(double3 a, double3 b, /**/ double *pcos, double *psin,
 template <int update>
 _S_ double3 dih0(double phi, double kb,
                  double3 r1, double3 r2, double3 r3, double3 r4) {
-    double overIksiI, overIdzeI, cosTheta, IsinThetaI2, sinTheta_1,
+    int status;
+    double overIksiI, overIdzeI, cosTheta, sinTheta_1,
         beta, b11, b12, sint0kb, cost0kb;
     double3 r12, r13, r34, r24, r41, ksi, dze, ksimdze;
     diff(&r1, &r2, /**/ &r12);
@@ -56,17 +59,12 @@ _S_ double3 dih0(double phi, double kb,
     cross(&r12, &r13, /**/ &ksi);
     cross(&r34, &r24, /**/ &dze);
 
-    overIksiI = rsqrt0(dot<double>(&ksi, &ksi));
-    overIdzeI = rsqrt0(dot<double>(&dze, &dze));
-
-    cosTheta = dot<double>(&ksi, &dze) * overIksiI * overIdzeI;
-    IsinThetaI2 = 1.0f - cosTheta * cosTheta;
-
+    status = angle(ksi, dze, /**/
+                   &cosTheta, &sinTheta_1,
+                   &overIksiI, &overIdzeI);
     diff(&ksi, &dze, /**/ &ksimdze);
-
-    sinTheta_1 = copysignf
-        (rsqrt0(max(IsinThetaI2, 1.0e-6)),
-         dot<double>(&ksimdze, &r41)); // ">" because the normals look inside
+    sinTheta_1 = copysign(sinTheta_1,
+                           dot<double>(&ksimdze, &r41));
 
     sint0kb = sin(phi) * kb;
     cost0kb = cos(phi) * kb;
