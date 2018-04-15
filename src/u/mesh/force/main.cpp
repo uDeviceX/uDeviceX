@@ -36,13 +36,11 @@ void read3(int *pc, char ***pv, /**/ double a[3]) {
     int c;
     char **v;
     c = *pc; v = *pv;
-    if (c < 4) ERR("not enough arguments");
+    if (c < 3) ERR("not enough arguments");
     UC(read_dbl(*v, /**/ &a[X])); shift(&c, &v);
     UC(read_dbl(*v, /**/ &a[Y])); shift(&c, &v);
     UC(read_dbl(*v, /**/ &a[Z])); shift(&c, &v);
-    
     *pc = c; *pv = v;
-    
 }
 
 void main0(int *argc, char ***argv) {
@@ -50,9 +48,6 @@ void main0(int *argc, char ***argv) {
     double phi, kb;
     double a[3], b[3], c[3], d[3], fa[3], fb[3];
 
-    shift(argc, argv); /* skip '--' */
-    shift(argc, argv); /* skip '--' */
-    
     UC(read3(argc, argv, /**/ a));
     UC(read3(argc, argv, /**/ b));
     UC(read3(argc, argv, /**/ c));

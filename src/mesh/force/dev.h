@@ -20,6 +20,26 @@ _S_ double rsqrt0(double x) { return rsqrt(x); }
 
 _S_ double max(double a, double b) { return a > b ? a : b; }
 
+enum {ANGLE_OK, ANGLE_BAD_A, ANGLE_BAD_B};
+_S_ int angle(double3 a, double3 b, /**/ double *pcos, double *psin,
+              double *pover_a, double *pover_b) {
+    double  cost, sint, over_a, over_b;
+    double aa, bb, ab;
+
+    aa = dot<double>(&a, &a);
+    bb = dot<double>(&b, &b);
+    ab = dot<double>(&a, &b);
+    if (aa == 0) return ANGLE_BAD_A;
+    if (bb == 0) return ANGLE_BAD_A;    
+    
+    over_a = rsqrt0(aa);
+    over_b = rsqrt0(bb);
+    cost = ab * over_a * over_b;
+    sint = sqrt(1.0 - cost*cost);
+    *pcos = cost; *psin = sint; *pover_a = over_a; *pover_b = over_b;
+    return ANGLE_OK;
+}
+
 /* forces from one dihedral */
 template <int update>
 _S_ double3 dih0(double phi, double kb,
