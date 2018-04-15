@@ -1,4 +1,5 @@
 $B/d/api.o: $S/d/api.cu; $N -I$S/d -I$S/.
+$B/mesh/force/imp.o: $S/mesh/force/imp.cpp; $X -I$S/mesh/force -I$S/.
 $B/mpi/glb.o: $S/mpi/glb.cpp; $X -I$S/mpi -I$S/.
 $B/mpi/wrapper.o: $S/mpi/wrapper.cpp; $X -I$S/mpi -I$S/.
 $B/u/mesh/force/main.o: $S/u/mesh/force/main.cpp; $X -I$S/.

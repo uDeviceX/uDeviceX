@@ -5,6 +5,7 @@
 #include "utils/msg.h"
 #include "mpi/glb.h"
 #include "mpi/wrapper.h"
+#include "mesh/force/imp.h"
 #include "utils/mc.h"
 
 int main(int argc, char **argv) {
