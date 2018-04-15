@@ -62,6 +62,11 @@ _S_ double3 dih0(double phi, double kb,
     status = angle(ksi, dze, /**/
                    &cosTheta, &sinTheta_1,
                    &overIksiI, &overIdzeI);
+    if (status != ANGLE_OK) {
+        printf("bad dihedral\n");
+        assert(0);
+    }
+    
     diff(&ksi, &dze, /**/ &ksimdze);
     sinTheta_1 = copysign(sinTheta_1,
                            dot<double>(&ksimdze, &r41));
