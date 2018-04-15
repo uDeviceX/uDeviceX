@@ -54,8 +54,17 @@ void get_dims(int *argc, char ***argv, int dims[]) {
 }
 
 void get_cart(MPI_Comm comm, const int dims[3], /**/ MPI_Comm *cart) {
+    enum {X, Y, Z};
     const int reorder = 0;
     const int periods[D] = {1, 1, 1};
+    int size;
+    MC(m::Comm_size(comm, &size));
+    if (size != dims[X]*dims[Y]*dims[Z]) {
+        fprintf(stderr, "%s:%d: fail to create cartesian geometry\n", __FILE__, __LINE__);
+        fprintf(stderr, "size=%d  !=  dims[X]=%d  * dims[Y]=%d  * dims[Z]=%d\n",
+                size, dims[X], dims[Y], dims[Z]);
+        exit(2);
+    }
     MC(m::Cart_create(comm, D, dims, periods, reorder, cart));
 }
 
