@@ -30,7 +30,7 @@ static FILE* open(const char *path) {
 
 static bool is_master(int r) {return r == 0;}
 static void print(const char *msg, FILE *f) {
-    fnprintf(f, "%s\n", msg);
+    fprintf(f, "%s\n", msg);
     if (is_master(rank))
         fprintf(stderr, ": %s\n", msg);
 }
