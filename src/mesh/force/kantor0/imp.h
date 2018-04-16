@@ -1,4 +1,5 @@
 struct float3;
+struct double3;
 namespace force_kantor0_hst {
 // tag::interface[]
 float3 dih_a(float phi, float kb, float3 a, float3 b, float3 c, float3 d);
