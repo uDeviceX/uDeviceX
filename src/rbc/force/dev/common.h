@@ -1,9 +1,9 @@
 static __device__ float3 fvolume(const RbcParams_v *par, float3 r2, float3 r3, float v0, float v) {
     float f0;
-    float3 f, n;
-    cross(&r3, &r2, /**/ &n);
+    float3 f;
+    cross(&r3, &r2, /**/ &f);
     f0 = par->kv * (v - v0) / (6 * v0);
-    axpy(f0, &n, /**/ &f);
+    scal(f0, &f);
     return f;
 }
 

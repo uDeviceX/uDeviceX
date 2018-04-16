@@ -22,8 +22,8 @@ static __device__ Part fetchPart(const Particle *pp, int i) {
 
 template <typename RndInfo>
 static __device__ void adj_tris(float dt,
-                                 const RbcParams_v *par, const Particle *pp,  const Part p0, const float *av,
-                                 const StressInfo si, RndInfo ri,
+                                const RbcParams_v *par, const Particle *pp,  const Part p0, const float *av,
+                                const StressInfo si, RndInfo ri,
                                 AdjMap *m, /*io*/ float f[3]) {
     enum {X, Y, Z};
     float3 f0;
