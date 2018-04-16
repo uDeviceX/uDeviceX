@@ -1,5 +1,0 @@
-: ${MAXIMA=maxima}
-
-"$MAXIMA" --very-quiet -r='
-print("Hello, world!")$
-' "$@"

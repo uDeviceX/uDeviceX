@@ -1,9 +1,0 @@
-: ${MAXIMA=maxima}
-
-## Usage: echo 42 | ./read
-
-"$MAXIMA" --very-quiet -r='
-f: ?open("/dev/stdin") $
-x: ?read(f) $
-print(x + 1) $
-' "$@"
