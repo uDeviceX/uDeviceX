@@ -20,16 +20,16 @@ O = $B/algo/edg/imp.o $B/algo/force_stat/imp.o $B/algo/kahan_sum/imp.o \
     $B/math/rnd/imp.o $B/math/tform/imp.o $B/math/tri/imp.o $B/mesh/angle/imp.o \
     $B/mesh/area/imp.o $B/mesh/bbox/imp.o $B/mesh/collision/imp.o \
     $B/mesh/cylindrical/imp.o $B/mesh/dist/imp.o $B/mesh/edg_len/imp.o \
-    $B/mesh/eng_julicher/imp.o $B/mesh/eng_kantor/imp.o $B/mesh/force/imp.o \
-    $B/mesh/props/imp.o $B/mesh/scatter/imp.o $B/mesh/spherical/imp.o \
-    $B/mesh/tri_area/imp.o $B/mesh/triangles/imp.o $B/mesh/vert_area/imp.o \
-    $B/mesh/volume/imp.o $B/meshbb/imp.o $B/mpi/glb.o $B/mpi/wrapper.o \
-    $B/pair/conf.o $B/pair/imp.o $B/parray/imp.o $B/rbc/adj/imp.o $B/rbc/com/imp.o \
-    $B/rbc/force/area_volume/imp.o $B/rbc/force/conf.o $B/rbc/force/imp.o \
-    $B/rbc/force/rnd/api/imp.o $B/rbc/force/rnd/imp.o $B/rbc/gen/imp.o \
-    $B/rbc/imp.o $B/rbc/matrices/imp.o $B/rbc/params/conf.o $B/rbc/params/imp.o \
-    $B/rbc/shape/imp.o $B/rbc/stretch/imp.o $B/rig/imp.o $B/rigid/conf.o \
-    $B/rigid/imp.o $B/scheme/force/conf.o $B/scheme/force/imp.o \
+    $B/mesh/eng_julicher/imp.o $B/mesh/eng_kantor/imp.o \
+    $B/mesh/force/kantor0/imp.o $B/mesh/props/imp.o $B/mesh/scatter/imp.o \
+    $B/mesh/spherical/imp.o $B/mesh/tri_area/imp.o $B/mesh/triangles/imp.o \
+    $B/mesh/vert_area/imp.o $B/mesh/volume/imp.o $B/meshbb/imp.o $B/mpi/glb.o \
+    $B/mpi/wrapper.o $B/pair/conf.o $B/pair/imp.o $B/parray/imp.o $B/rbc/adj/imp.o \
+    $B/rbc/com/imp.o $B/rbc/force/area_volume/imp.o $B/rbc/force/conf.o \
+    $B/rbc/force/imp.o $B/rbc/force/rnd/api/imp.o $B/rbc/force/rnd/imp.o \
+    $B/rbc/gen/imp.o $B/rbc/imp.o $B/rbc/matrices/imp.o $B/rbc/params/conf.o \
+    $B/rbc/params/imp.o $B/rbc/shape/imp.o $B/rbc/stretch/imp.o $B/rig/imp.o \
+    $B/rigid/conf.o $B/rigid/imp.o $B/scheme/force/conf.o $B/scheme/force/imp.o \
     $B/scheme/move/imp.o $B/scheme/restrain/conf.o $B/scheme/restrain/imp.o \
     $B/scheme/time_line/imp.o $B/scheme/time_step/imp.o $B/sim/imp.o \
     $B/sim/opt/imp.o $B/utils/cc.o $B/utils/error.o $B/utils/imp.o $B/utils/mc.o \

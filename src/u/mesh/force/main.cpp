@@ -7,7 +7,7 @@
 #include "utils/error.h"
 #include "mpi/glb.h"
 #include "mpi/wrapper.h"
-#include "mesh/force/imp.h"
+#include "mesh/force/kantor0/imp.h"
 #include "utils/mc.h"
 
 typedef double3 (*Fun)(double, double, double3, double3, double3, double3);

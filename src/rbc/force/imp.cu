@@ -37,7 +37,7 @@
 #include "imp.h"
 #include "imp/type.h"
 
-#include "mesh/force/dev.h"
+#include "mesh/force/kantor0/dev.h"
 
 namespace rbc_force_dev {
 #include "dev/type.h"
