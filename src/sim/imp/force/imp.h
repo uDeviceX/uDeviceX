@@ -2,12 +2,15 @@ void forces(float dt, TimeLine *time, Sim *s) {
     Flu *flu = &s->flu;
     Rbc *rbc = &s->rbc;
     Rig *rig = &s->rig;
-    bool fluss;
+    bool fluss, tfluss;
     Opt *opt = &s->opt;
 
     NVTX_PUSH("forces");
-    
-    fluss = opt->fluss && time_line_cross(time, opt->freq_parts);
+
+    float freq = opt->freq_field / opt->sampler_npdump;
+    tfluss = time_line_cross(time, opt->freq_parts) ||
+        time_line_cross(time, freq);
+    fluss = opt->fluss && tfluss;
 
     UC(clear_forces(flu->q.n, flu->ff));
     if (active_rig(s))  UC(clear_forces  (rig->q.n, rig->ff));
