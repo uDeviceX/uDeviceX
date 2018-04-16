@@ -9,8 +9,8 @@ void grid_sampler_data_fin(GridSampleData  *);
 // end::data_mem[]
 
 // tag::data_int[]
-void grid_sampler_data_reset(GridSampleData *);
-void grid_sampler_data_push(long n, const Particle *pp, const float *ss, GridSampleData *);
+void grid_sampler_data_reset(GridSampleData *); // <1>
+void grid_sampler_data_push(long n, const Particle *pp, const float *ss, GridSampleData *); // <2>
 // end::data_int[]
 
 
