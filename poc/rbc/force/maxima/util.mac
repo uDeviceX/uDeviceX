@@ -1,0 +1,23 @@
+(X: 1, Y: 2, Z: 3) $
+cross(a, b):=express(a ~ b) $
+dot(a, b):=express(a . b) $
+
+na(a, b):=concat(a, '_, b);
+g([L]):=block([E, V], local(E, V),
+  E: [], V: [],
+  for l in L do apply('g0, l),
+  [E, V]);
+g0(name, expr, vars):= (
+  for v in vars do
+    push(na(name, v) = diff(expr, v), E),
+    if name # 'E then (
+      push(name = expr, V),
+    for v in vars do
+      push(na('E, v) = na('E, name) * na(name, v), E)));
+fmt([L]):=block([E, V, e, v], local(E, V),
+  [E, V]: apply('g, L),
+  for v in          V do grind(v),
+  for e in reverse(E) do grind(e));
+
+vabs(a):=sqrt(dot(a, a));
+sl(e):=sort(listofvars(e));
