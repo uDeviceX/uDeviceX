@@ -80,6 +80,7 @@ $B/mesh/edg_len/imp.o: $S/utils/imp.h $S/utils/error.h $S/mesh/edg_len/imp.h $S/
 $B/mesh/eng_julicher/imp.o: $S/utils/imp.h $S/utils/error.h $S/math/tri/imp.h $S/mesh/eng_julicher/imp.h $S/algo/scalars/imp.h $S/io/mesh_read/imp.h $S/mesh/scatter/imp.h $S/mesh/edg_len/imp.h $S/algo/vectors/imp.h $S/mesh/eng_julicher/imp/main.h $S/mesh/angle/imp.h $S/mesh/eng_julicher/imp/type.h $S/mesh/vert_area/imp.h $S/utils/msg.h
 $B/mesh/eng_kantor/imp.o: $S/utils/imp.h $S/utils/error.h $S/math/tri/imp.h $S/mesh/eng_kantor/imp.h $S/algo/scalars/imp.h $S/io/mesh_read/imp.h $S/algo/vectors/imp.h $S/mesh/eng_kantor/imp/main.h $S/mesh/angle/imp.h $S/mesh/eng_kantor/imp/type.h $S/utils/msg.h
 $B/mesh/force/kantor0/imp.o: $S/utils/error.h $S/mesh/force/kantor0/imp.h $S/mesh/force/kantor0/dev.h $S/math/dev.h $S/utils/msg.h
+$B/mesh/force/kantor1/imp.o: $S/utils/error.h $S/mesh/force/kantor1/imp.h $S/mesh/force/kantor1/dev.h $S/math/dev.h $S/utils/msg.h
 $B/mesh/props/imp.o: $S/inc/type.h $S/mesh/props/imp.h
 $B/mesh/scatter/imp.o: $S/utils/imp.h $S/utils/error.h $S/mesh/scatter/imp.h $S/algo/scalars/imp.h $S/io/mesh_read/imp.h $S/mesh/scatter/imp/main.h $S/mesh/scatter/imp/type.h $S/utils/msg.h
 $B/mesh/spherical/imp.o: $S/utils/imp.h $S/utils/error.h $S/mesh/spherical/imp/util.h $S/mesh/spherical/imp.h $S/algo/kahan_sum/imp.h $S/algo/vectors/imp.h $S/mesh/spherical/imp/main.h $S/mesh/spherical/imp/type.h $S/utils/msg.h

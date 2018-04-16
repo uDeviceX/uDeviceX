@@ -12,6 +12,7 @@ $B/math/rnd/imp.o: $S/utils/imp.h $S/utils/error.h $S/math/rnd/imp.h
 $B/math/tform/imp.o: $S/utils/imp.h $S/inc/conf.h $S/utils/error.h $S/math/tform/imp.h $B/conf.h $S/math/tform/imp/main.h $S/math/tform/imp/type.h $S/math/tform/type.h $S/utils/msg.h
 $B/math/tri/imp.o: $S/math/tri/imp.h $S/math/tri/dev.h
 $B/mesh/force/kantor0/imp.o: $S/utils/error.h $S/mesh/force/kantor0/imp.h $S/mesh/force/kantor0/dev.h $S/math/dev.h $S/utils/msg.h
+$B/mesh/force/kantor1/imp.o: $S/utils/error.h $S/mesh/force/kantor1/imp.h $S/mesh/force/kantor1/dev.h $S/math/dev.h $S/utils/msg.h
 $B/mpi/glb.o: $S/inc/conf.h $S/mpi/wrapper.h $S/utils/mc.h $B/conf.h
 $B/mpi/wrapper.o: $S/mpi/wrapper.h
 $B/rbc/adj/imp.o: $S/rbc/adj/imp/fin.h $S/utils/imp.h $S/inc/conf.h $S/utils/error.h $S/rbc/adj/imp.h $S/utils/cc.h $S/rbc/adj/imp/ini.h $S/inc/dev.h $S/d/api.h $B/conf.h $S/rbc/adj/type/common.h $S/algo/edg/imp.h $S/rbc/adj/imp/type.h $S/rbc/adj/type/dev.h $S/rbc/adj/imp/anti.h $S/rbc/adj/imp/map.h $S/utils/msg.h

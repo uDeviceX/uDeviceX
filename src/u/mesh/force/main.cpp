@@ -7,7 +7,7 @@
 #include "utils/error.h"
 #include "mpi/glb.h"
 #include "mpi/wrapper.h"
-#include "mesh/force/kantor0/imp.h"
+#include "mesh/force/kantor1/imp.h"
 #include "utils/mc.h"
 
 typedef double3 (*Fun)(double, double, double3, double3, double3, double3);
@@ -54,8 +54,8 @@ void main0(int *argc, char ***argv) {
     UC(read3(argc, argv, /**/ d));
     
     phi = 0; kb = 1;
-    UC(force(force_kantor0_hst::dih_a, phi, kb, a, b, c, d, /**/ fa));
-    UC(force(force_kantor0_hst::dih_b, phi, kb, a, b, c, d, /**/ fb));
+    UC(force(force_kantor1_hst::dih_a, phi, kb, a, b, c, d, /**/ fa));
+    UC(force(force_kantor1_hst::dih_b, phi, kb, a, b, c, d, /**/ fb));
     printf("%.16g %.16g %.16g %.16g %.16g %.16g\n",
            fa[X], fa[Y], fa[Z], fb[X], fb[Y], fb[Z]);
 }

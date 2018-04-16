@@ -80,6 +80,7 @@ $B/mesh/edg_len/imp.o: $S/mesh/edg_len/imp.cpp; $X -I$S/mesh/edg_len -I$S/.
 $B/mesh/eng_julicher/imp.o: $S/mesh/eng_julicher/imp.cpp; $X -I$S/mesh/eng_julicher -I$S/.
 $B/mesh/eng_kantor/imp.o: $S/mesh/eng_kantor/imp.cpp; $X -I$S/mesh/eng_kantor -I$S/.
 $B/mesh/force/kantor0/imp.o: $S/mesh/force/kantor0/imp.cpp; $X -I$S/mesh/force/kantor0 -I$S/.
+$B/mesh/force/kantor1/imp.o: $S/mesh/force/kantor1/imp.cpp; $X -I$S/mesh/force/kantor1 -I$S/.
 $B/mesh/props/imp.o: $S/mesh/props/imp.cpp; $X -I$S/mesh/props -I$S/.
 $B/mesh/scatter/imp.o: $S/mesh/scatter/imp.cpp; $X -I$S/mesh/scatter -I$S/.
 $B/mesh/spherical/imp.o: $S/mesh/spherical/imp.cpp; $X -I$S/mesh/spherical -I$S/.
