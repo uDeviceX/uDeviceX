@@ -28,14 +28,14 @@ static __device__ float wlc(float lmax, float ks, float r) { return ks/lmax*wlc0
 static __device__ float3 fspring(const RbcParams_v *par, float3 x21, float l0, /**/ int *pstatus) {
   #define wlc_r(r) (wlc(lmax, ks, r))
     float m, r, fwlc, fpow, lmax, ks, x0;
-    float3 f;
     *pstatus = SPRING_OK;
     ks = par->ks; m = par->mpow; x0 = par->x0;
     r = sqrtf(dot<float>(&x21, &x21));
     lmax = l0 / x0;
     if (r >= lmax) {
         *pstatus = SPRING_LONG;
-        return make_float3(0, 0, 0);
+        x21.x = x21.y = x21.z = 0;
+        return x21;
     }
     fwlc =   wlc_r(r); /* make fwlc + fpow = 0 for r = l0 */
     fpow = - wlc_r(l0) * powf(l0, m + 1) / powf(r, m + 1);
@@ -52,25 +52,21 @@ static __device__ void report_tri(float3 r1, float3 r2, float3 r3) {
 static __device__ float3 ftri(const RbcParams_v *par, float3 r1, float3 r2, float3 r3,
                              StressInfo si, float area, float volume) {
     int spring_status;
-    float3 fv, fa, fs;
-    float3 x21, x32, x31, f = make_float3(0, 0, 0);
+    float3 f, fv, fs;
+    float3 x21, x32, x31;
 
     diff(&r2, &r1, /**/ &x21);
     diff(&r3, &r2, /**/ &x32);
     diff(&r3, &r1, /**/ &x31);
 
-    fa = farea(par, x21, x31, x32, si.a0, par->totArea, area);
-    add(&fa, /*io*/ &f);
-
+    f = farea(par, x21, x31, x32, si.a0, par->totArea, area);
     fv = fvolume(par, r2, r3, par->totVolume, volume);
     add(&fv, /*io*/ &f);
 
     fs = fspring(par, x21, si.l0, &spring_status);
     if (spring_status != SPRING_OK)
         report_tri(r1, r2, r3);
-    
     add(&fs, /*io*/ &f);
-
     return f;
 }
 
@@ -89,7 +85,9 @@ static __device__ float3 fvisc(const RbcParams_v *par, float3 r1, float3 r2, flo
 }
 
 static __device__ float3 frnd(float, const RbcParams_v*, float3, float3, Rnd0Info) {
-    return make_float3(0, 0, 0);
+    float3 f;
+    f.x = f.y = f.z = 0;
+    return f;
 }
 
 static __device__ float  frnd0(float dt, const RbcParams_v *par, float rnd) {
@@ -108,4 +106,3 @@ static __device__ float3 frnd(float dt, const RbcParams_v *par, float3 r1, float
     scal(f0/r, /*io*/ &dr);
     return dr;
 }
-
