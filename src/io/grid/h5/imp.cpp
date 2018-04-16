@@ -58,7 +58,7 @@ static void write_channels(const Coords *coords, hid_t file_id,
                              (hsize_t) xdomain(coords), 1};
     hid_t filespace_simple = H5Screate_simple(4, globalsize, NULL);
 
-    for(i = 0; i < nchannels; ++i) {
+    for (i = 0; i < nchannels; ++i) {
         hid_t dset_id = H5Dcreate(file_id, channelnames[i], H5T_NATIVE_FLOAT, filespace_simple,
                                   H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
         hid_t plist_id = H5Pcreate(H5P_DATASET_XFER);
