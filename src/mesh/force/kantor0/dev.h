@@ -77,8 +77,6 @@ _S_ double3 dih0(double phi, double kb,
         dih_write(r1, r2, r3, r4);
         EXIT();
     }
-    PRINT("kk,nn: %g %g\n", 1/overIksiI, 1/overIdzeI);
-
     diff(&ksi, &dze, /**/ &ksimdze);
     sinTheta_1 = copysign(sinTheta_1,
                            dot<double>(&ksimdze, &r41));
