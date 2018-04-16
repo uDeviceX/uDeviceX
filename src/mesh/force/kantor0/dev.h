@@ -55,31 +55,31 @@ _S_ void dih_write(double3 a, double3 b, double3 c, double3 d) {
 /* forces from one dihedral */
 template <int update>
 _S_ double3 dih0(double phi, double kb,
-                 double3 r1, double3 r2, double3 r3, double3 r4) {
+                 double3 a, double3 b, double3 c, double3 d) {
     int status;
     double overIksiI, overIdzeI, cosTheta, sinTheta_1,
         beta, b11, b12, sint0kb, cost0kb;
-    double3 r12, r13, r34, r24, r41, ksi, dze, ksimdze;
-    diff(&r1, &r2, /**/ &r12);
-    diff(&r1, &r3, /**/ &r13);
-    diff(&r3, &r4, /**/ &r34);
-    diff(&r2, &r4, /**/ &r24);
-    diff(&r4, &r1, /**/ &r41);
+    double3 ab, ac, cd, bd, da, ksi, dze, ksimdze;
+    diff(&a, &b, /**/ &ab);
+    diff(&a, &c, /**/ &ac);
+    diff(&c, &d, /**/ &cd);
+    diff(&b, &d, /**/ &bd);
+    diff(&d, &a, /**/ &da);
 
-    cross(&r12, &r13, /**/ &ksi);
-    cross(&r34, &r24, /**/ &dze);
+    cross(&ab, &ac, /**/ &ksi);
+    cross(&cd, &bd, /**/ &dze);
 
     status = angle(ksi, dze, /**/
                    &cosTheta, &sinTheta_1,
                    &overIksiI, &overIdzeI);
     if (status != ANGLE_OK) {
         PRINT("bad dihedral\n");
-        dih_write(r1, r2, r3, r4);
+        dih_write(a, b, c, d);
         EXIT();
     }
     diff(&ksi, &dze, /**/ &ksimdze);
     sinTheta_1 = copysign(sinTheta_1,
-                           dot<double>(&ksimdze, &r41));
+                           dot<double>(&ksimdze, &da));
 
     sint0kb = sin(phi) * kb;
     cost0kb = cos(phi) * kb;
@@ -90,7 +90,7 @@ _S_ double3 dih0(double phi, double kb,
 
     if (update == 1) {
         double3 r32, f1, f;
-        diff(&r3, &r2, /**/ &r32);
+        diff(&c, &b, /**/ &r32);
         cross(&ksi, &r32, /**/ &f);
         cross(&dze, &r32, /**/ &f1);
         scal(b11, /**/ &f);
@@ -101,10 +101,10 @@ _S_ double3 dih0(double phi, double kb,
         double3 f, f1, f2, f3;
         double b22 = -beta * cosTheta * overIdzeI * overIdzeI;
 
-        cross(&ksi, &r13, /**/ &f);
-        cross(&ksi, &r34, /**/ &f1);
-        cross(&dze, &r13, /**/ &f2);
-        cross(&dze, &r34, /**/ &f3);
+        cross(&ksi, &ac, /**/ &f);
+        cross(&ksi, &cd, /**/ &f1);
+        cross(&dze, &ac, /**/ &f2);
+        cross(&dze, &cd, /**/ &f3);
 
         scal(b11, /**/ &f);
         add(&f2, /**/ &f1);
