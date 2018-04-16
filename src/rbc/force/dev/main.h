@@ -21,11 +21,12 @@ static __device__ Part fetchPart(const Particle *pp, int i) {
 }
 
 template <typename RndInfo>
-static __device__ float3 adj_tris(float dt,
+static __device__ void adj_tris(float dt,
                                  const RbcParams_v *par, const Particle *pp,  const Part p0, const float *av,
                                  const StressInfo si, RndInfo ri,
-                                 AdjMap *m) {
-    float3 f, fv, fr;
+                                AdjMap *m, /*io*/ float f[3]) {
+    enum {X, Y, Z};
+    float3 f0;
     int i1, i2, rbc;
     float area, volume;
     i1 = m->i1; i2 = m->i2; rbc = m->rbc;
@@ -34,20 +35,21 @@ static __device__ float3 adj_tris(float dt,
     const Pos  r2 = fetchPos(pp,  i2);
 
     area = av[2*rbc]; volume = av[2 * rbc + 1];
-    f  = ftri(par, p0.r, p1.r, r2, si, area, volume);
+    f0 = ftri(par, p0.r, p1.r, r2, si, area, volume);
+    f[X] += f0.x; f[Y] += f0.y; f[Z] += f0.z;
     
-    fv = fvisc(par, p0.r, p1.r, p0.v, p1.v);
-    add(&fv, /**/ &f);
+    f0 = fvisc(par, p0.r, p1.r, p0.v, p1.v);
+    f[X] += f0.x; f[Y] += f0.y; f[Z] += f0.z;
 
-    fr = frnd(dt, par, p0.r, p1.r, ri);
-    add(&fr, /**/ &f);
-    return f;
+    f0 = frnd(dt, par, p0.r, p1.r, ri);
+    f[X] += f0.x; f[Y] += f0.y; f[Z] += f0.z;
 }
 
-static __device__ float3 adj_dihedrals(const RbcParams_v *par, const Particle *pp, float3 r0,
-                                      AdjMap *m) {
+static __device__ void adj_dihedrals(const RbcParams_v *par, const Particle *pp, float3 r0,
+                                     AdjMap *m, /*io*/ float f[3]) {
+    enum {X, Y, Z};
     Pos r1, r2, r3, r4;
-    float3 f1, f2;
+    float3 f0;
     float phi, kb;
     r1 = fetchPos(pp, m->i1);
     r2 = fetchPos(pp, m->i2);
@@ -57,10 +59,11 @@ static __device__ float3 adj_dihedrals(const RbcParams_v *par, const Particle *p
     phi = par->phi / 180.0 * M_PI;
     kb  = par->kb;
     
-    f1 = force_kantor0_dev::dih_a(phi, kb, r0, r2, r1, r4);
-    f2 = force_kantor0_dev::dih_b(phi, kb, r1, r0, r2, r3);
-    add(&f1, /**/ &f2);
-    return f2;
+    f0 = force_kantor0_dev::dih_a(phi, kb, r0, r2, r1, r4);
+    f[X] += f0.x; f[Y] += f0.y; f[Z] += f0.z;
+    
+    f0 = force_kantor0_dev::dih_b(phi, kb, r1, r0, r2, r3);
+    f[X] += f0.x; f[Y] += f0.y; f[Z] += f0.z;
 
 }
 
@@ -70,11 +73,11 @@ __global__ void force(float dt,
                       Adj_v adj,
                       Stress_v sv, Rnd_v rv,
                       const float *av, /**/ float *ff) {
-    int i, pid;
-    float3 f, fd;
+    enum {X, Y, Z};
+    int i, pid, valid;
+    float f[3];
     AdjMap m;
     StressInfo si;
-    int valid;
 
     i = threadIdx.x + blockDim.x * blockIdx.x;
     pid = i / md;
@@ -87,11 +90,11 @@ __global__ void force(float dt,
 
     const Part p0 = fetchPart(pp, m.i0);
 
-    f  = adj_tris(dt, &par, pp, p0, av, si, ri, &m);
-    fd = adj_dihedrals(&par, pp, p0.r, &m);
-    add(&fd, /**/ &f);
+    f[X] = f[Y] = f[Z] = 0;
+    adj_tris(dt, &par, pp, p0, av, si, ri, &m, /*io*/ f);
+    adj_dihedrals(&par, pp, p0.r, &m,          /*io*/ f);
 
-    atomicAdd(&ff[3 * pid + 0], f.x);
-    atomicAdd(&ff[3 * pid + 1], f.y);
-    atomicAdd(&ff[3 * pid + 2], f.z);
+    atomicAdd(&ff[3 * pid + 0], f[X]);
+    atomicAdd(&ff[3 * pid + 1], f[Y]);
+    atomicAdd(&ff[3 * pid + 2], f[Z]);
 }
