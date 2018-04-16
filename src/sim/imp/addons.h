@@ -101,9 +101,6 @@ static void sample(Sim *s) {
 }
 
 static void field_sample(Sim *s) {
-    const Opt *opt = &s->opt;
-    float freq = opt->freq_field / opt->sampler_npdump;
-    const TimeLine *time = s->time.t;
-    if (opt->dump_field && time_line_cross(time, freq))
+    if (s->opt.dump_field && is_sampling_time(s))
         sample(s);
 }

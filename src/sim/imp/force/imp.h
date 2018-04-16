@@ -7,9 +7,8 @@ void forces(float dt, TimeLine *time, Sim *s) {
 
     NVTX_PUSH("forces");
 
-    float freq = opt->freq_field / opt->sampler_npdump;
     tfluss = time_line_cross(time, opt->freq_parts) ||
-        time_line_cross(time, freq);
+        is_sampling_time(s);
     fluss = opt->fluss && tfluss;
 
     UC(clear_forces(flu->q.n, flu->ff));
