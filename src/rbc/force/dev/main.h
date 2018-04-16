@@ -1,6 +1,5 @@
-struct Part { double3 r, v; };
-typedef double3 Pos;
-
+struct Part { float3 r, v; };
+typedef float3 Pos;
 
 static __device__ Pos fetchPos(const Particle *pp, int i) {
     enum {X, Y, Z};
@@ -22,13 +21,13 @@ static __device__ Part fetchPart(const Particle *pp, int i) {
 }
 
 template <typename RndInfo>
-static __device__ double3 adj_tris(double dt,
+static __device__ float3 adj_tris(float dt,
                                  const RbcParams_v *par, const Particle *pp,  const Part p0, const float *av,
                                  const StressInfo si, RndInfo ri,
                                  AdjMap *m) {
-    double3 f, fv, fr;
+    float3 f, fv, fr;
     int i1, i2, rbc;
-    double area, volume;
+    float area, volume;
     i1 = m->i1; i2 = m->i2; rbc = m->rbc;
 
     const Part p1 = fetchPart(pp, i1);
@@ -45,11 +44,11 @@ static __device__ double3 adj_tris(double dt,
     return f;
 }
 
-static __device__ double3 adj_dihedrals(const RbcParams_v *par, const Particle *pp, double3 r0,
+static __device__ float3 adj_dihedrals(const RbcParams_v *par, const Particle *pp, float3 r0,
                                       AdjMap *m) {
     Pos r1, r2, r3, r4;
-    double3 f1, f2;
-    double phi, kb;
+    float3 f1, f2;
+    float phi, kb;
     r1 = fetchPos(pp, m->i1);
     r2 = fetchPos(pp, m->i2);
     r3 = fetchPos(pp, m->i3);
@@ -72,7 +71,7 @@ __global__ void force(float dt,
                       Stress_v sv, Rnd_v rv,
                       const float *av, /**/ float *ff) {
     int i, pid;
-    double3 f, fd;
+    float3 f, fd;
     AdjMap m;
     StressInfo si;
     int valid;
