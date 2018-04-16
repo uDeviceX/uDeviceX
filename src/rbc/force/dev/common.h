@@ -3,7 +3,7 @@ static __device__ float3 fvolume(const RbcParams_v *par, float3 r2, float3 r3, f
     float3 f;
     cross(&r3, &r2, /**/ &f);
     f0 = par->kv * (v - v0) / (6 * v0);
-    scal(f0, &f);
+    scal(f0, /*io*/ &f);
     return f;
 }
 
@@ -17,7 +17,7 @@ static __device__ float3 farea(const RbcParams_v *par, float3 x21, float3 x31, f
     fA = - par->ka * (A - A0) / (4 * A0 * a);
     fa = - par->kd * (a - a0) / (4 * a0 * a);
     f0 = fA + fa;
-    scal(f0, &f);
+    scal(f0, /*io*/ &f);
     return f;
 }
 
