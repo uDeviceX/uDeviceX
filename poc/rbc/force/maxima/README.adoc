@@ -1,9 +1,0 @@
-E: A : A^2  -> A*dA
-A: ab, ac, bc : area(ab, ac, bc) -> darea1 * dab
-ab: abx, aby, abz : len(abx, aby, abz)
-ac: acx, acy, acz : len(acx, acy, acz)
-bc: bcx, bcy, bcz : len(bcx, bcy, bcz)
-
-abx: ax, bx : expr
-aby: ay, by : expr
-abz: az, bz : expr
