@@ -21,8 +21,8 @@ g0(name, expr, vars):= block(
 fmt([L]):=block([E, V, T, e, v], local(E, V, T),
   [E, V, T]: apply('g, L),
   grind(sort(unique(T))),
-  for v in          V do grind(v),
-  for e in reverse(E) do grind(e));
+  for v in          V do cgrind(v),
+  for e in reverse(E) do cgrind(e));
 
 vabs(a):=sqrt(dot(a, a));
 sl(e):=sort(listofvars(e));
