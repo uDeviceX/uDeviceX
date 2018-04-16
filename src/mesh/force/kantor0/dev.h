@@ -13,26 +13,26 @@
 BEGIN
 
 #ifdef FORCE_KANTOR0_HOST
-_S_ float rsqrt0(float x) { return pow(x, -0.5); }
+_S_ double rsqrt0(double x) { return pow(x, -0.5); }
 #define PRINT(fmt, ...) msg_print((fmt), ##__VA_ARGS__)
 #define EXIT() ERR("assert")
 #else
-_S_ float rsqrt0(float x) { return rsqrt(x); }
+_S_ double rsqrt0(double x) { return rsqrt(x); }
 #define PRINT(fmt, ...) printf((fmt), ##__VA_ARGS__)
 #define EXIT() assert(0)
 #endif
 
-_S_ float max(float a, float b) { return a > b ? a : b; }
+_S_ double max(double a, double b) { return a > b ? a : b; }
 
 enum {ANGLE_OK, ANGLE_BAD_A, ANGLE_BAD_B};
-_S_ int angle(float3 a, float3 b, /**/ float *pcos, float *pover_sin,
-              float *pover_a, float *pover_b) {
-    float  cost, over_sin, over_a, over_b;
-    float aa, bb, ab;
+_S_ int angle(double3 a, double3 b, /**/ double *pcos, double *pover_sin,
+              double *pover_a, double *pover_b) {
+    double  cost, over_sin, over_a, over_b;
+    double aa, bb, ab;
 
-    aa = dot<float>(&a, &a);
-    bb = dot<float>(&b, &b);
-    ab = dot<float>(&a, &b);
+    aa = dot<double>(&a, &a);
+    bb = dot<double>(&b, &b);
+    ab = dot<double>(&a, &b);
     /*
     if (aa == 0) return ANGLE_BAD_A;
     if (bb == 0) return ANGLE_BAD_B; */
@@ -46,7 +46,7 @@ _S_ int angle(float3 a, float3 b, /**/ float *pcos, float *pover_sin,
     return ANGLE_OK;
 }
 
-_S_ void dih_write(float3 a, float3 b, float3 c, float3 d) {
+_S_ void dih_write(double3 a, double3 b, double3 c, double3 d) {
     PRINT("%g %g %g\n", a.x, a.y, a.z);
     PRINT("%g %g %g\n", b.x, b.y, b.z);
     PRINT("%g %g %g\n", c.x, c.y, c.z);
@@ -55,12 +55,12 @@ _S_ void dih_write(float3 a, float3 b, float3 c, float3 d) {
 
 /* forces from one dihedral */
 template <int update>
-_S_ float3 dih0(float phi, float kb,
-                 float3 a, float3 b, float3 c, float3 d) {
+_S_ double3 dih0(double phi, double kb,
+                 double3 a, double3 b, double3 c, double3 d) {
     int status;
-    float overIksiI, overIdzeI, cosTheta, sinTheta_1,
+    double overIksiI, overIdzeI, cosTheta, sinTheta_1,
         beta, b11, b12, sint0kb, cost0kb;
-    float3 ab, ac, cd, bc, bd, da, k, n, ksimdze;
+    double3 ab, ac, cd, bc, bd, da, k, n, ksimdze;
     diff(&a, &b, /**/ &ab);
     diff(&a, &c, /**/ &ac);
     diff(&c, &d, /**/ &cd);
@@ -81,7 +81,7 @@ _S_ float3 dih0(float phi, float kb,
     }
     diff(&k, &n, /**/ &ksimdze);
     sinTheta_1 = copysign(sinTheta_1,
-                          dot<float>(&ksimdze, &da));
+                          dot<double>(&ksimdze, &da));
 
     sint0kb = sin(phi) * kb;
     cost0kb = cos(phi) * kb;
@@ -91,7 +91,7 @@ _S_ float3 dih0(float phi, float kb,
     b12 =  beta * overIksiI * overIdzeI;
 
     if (update == 1) {
-        float3 r32, f1, f;
+        double3 r32, f1, f;
         diff(&c, &b, /**/ &r32);
         cross(&k, &r32, /**/ &f);
         cross(&n, &r32, /**/ &f1);
@@ -100,8 +100,8 @@ _S_ float3 dih0(float phi, float kb,
         return f;
     }
     else if (update == 2) {
-        float3 f, f1, f2, f3;
-        float b22 = -beta * cosTheta * overIdzeI * overIdzeI;
+        double3 f, f1, f2, f3;
+        double b22 = -beta * cosTheta * overIdzeI * overIdzeI;
 
         cross(&k, &ac, /**/ &f);
         cross(&k, &cd, /**/ &f1);
@@ -115,21 +115,47 @@ _S_ float3 dih0(float phi, float kb,
         return f;
     }
     else {
-        float3 f;
+        double3 f;
         f.x = f.y = f.z = 0;
         assert(0);
         return f;
     }
 }
 
-_I_ float3 dih_a(float phi, float kb,
-                  float3 a, float3 b, float3 c, float3 d) {
+_I_ double3 dih_a_dbl(double phi, double kb, double3 a, double3 b, double3 c, double3 d) {
     return dih0<1>(phi, kb, a, b, c, d);
 }
 
-_I_ float3 dih_b(float phi, float kb,
-                  float3 a, float3 b, float3 c, float3 d) {
+_I_ double3 dih_b_dbl(double phi, double kb, double3 a, double3 b, double3 c, double3 d) {
     return dih0<2>(phi, kb, a, b, c, d);
+}
+
+_I_ float3 dih_a(float phi0, float kb0, float3 a0, float3 b0, float3 c0, float3 d0) {
+    double phi, kb;
+    double3 a, b, c, d, f;
+    float3 f0;
+    phi = phi0; kb = kb0;
+    a.x = a0.x; a.y = a0.y; a.z = a0.z;
+    b.x = b0.x; b.y = b0.y; b.z = b0.z;
+    c.x = c0.x; c.y = c0.y; c.z = c0.z;
+    d.x = d0.x; d.y = d0.y; d.z = d0.z;
+    f = dih_a_dbl(phi, kb, a, b, c, d);
+    f0.x = f.x; f0.y = f.y; f0.z = f.z;
+    return f0;
+}
+
+_I_ float3 dih_b(float phi0, float kb0, float3 a0, float3 b0, float3 c0, float3 d0) {
+    double phi, kb;
+    double3 a, b, c, d, f;
+    float3 f0;
+    phi = phi0; kb = kb0;
+    a.x = a0.x; a.y = a0.y; a.z = a0.z;
+    b.x = b0.x; b.y = b0.y; b.z = b0.z;
+    c.x = c0.x; c.y = c0.y; c.z = c0.z;
+    d.x = d0.x; d.y = d0.y; d.z = d0.z;
+    f = dih_b_dbl(phi, kb, a, b, c, d);
+    f0.x = f.x; f0.y = f.y; f0.z = f.z;
+    return f0;
 }
 
 END
