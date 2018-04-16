@@ -62,7 +62,7 @@ __global__ void space_avg(Grid g) {
     i = threadIdx.x + blockIdx.x * blockDim.x;
     if (i >= get_size(&g)) return;
 
-    rho = g.d[RHO][i];
+    rho = g.p[RHO][i];
     vol = cell_volume(&g);
         
     inv_rho    = fabs(rho) > 1e-6 ? 1.f / rho : 0;
@@ -70,27 +70,21 @@ __global__ void space_avg(Grid g) {
     sv = inv_rho;
     sr = 1.f / vol;
     
-    g.d[RHO][i] = sr * rho;
+    g.p[RHO][i] = sr * rho;
 
-    g.d[VX][i] *= sv;
-    g.d[VY][i] *= sv;
-    g.d[VZ][i] *= sv;
+    g.p[VX][i] *= sv;
+    g.p[VY][i] *= sv;
+    g.p[VZ][i] *= sv;
 
     if (g.stress) {
         ss = sr;
-        g.d[SXX][i] *= ss;
-        g.d[SXY][i] *= ss;
-        g.d[SXZ][i] *= ss;
-        g.d[SYY][i] *= ss;
-        g.d[SYZ][i] *= ss;
-        g.d[SZZ][i] *= ss;
+        g.s[SXX][i] *= ss;
+        g.s[SXY][i] *= ss;
+        g.s[SXZ][i] *= ss;
+        g.s[SYY][i] *= ss;
+        g.s[SYZ][i] *= ss;
+        g.s[SZZ][i] *= ss;
     }
-}
-
-_S_ int get_nfields(const Grid *g) {
-    return g->stress ?
-        NFIELDS_WITH_STRESS :
-        NFIELDS_NO_STRESS;
 }
 
 __global__ void add_to_grid(const Grid src, Grid dst) {
@@ -98,22 +92,30 @@ __global__ void add_to_grid(const Grid src, Grid dst) {
     i = threadIdx.x + blockIdx.x * blockDim.x;
     if (i >= get_size(&src)) return;
 
-    for (j = 0; j < get_nfields(&src); ++j)
-        dst.d[j][i] += src.d[j][i];
+    for (j = 0; j < NFIELDS_P; ++j)
+        dst.p[j][i] += src.p[j][i];
+
+    if (src.stress) {
+        for (j = 0; j < NFIELDS_S; ++j)
+            dst.s[j][i] += src.s[j][i];
+    }
 }
 
 __global__ void time_avg(int nsteps, Grid g) {
-    long i, j, nfields;
+    long i, j;
     float s;
     i = threadIdx.x + blockIdx.x * blockDim.x;
     if (i >= get_size(&g)) return;
 
-    nfields = get_nfields(&g);
-
     s = 1.0 / nsteps;
 
-    for (j = 0; j < nfields; ++j)
-        g.d[j][i] *= s;
+    for (j = 0; j < NFIELDS_P; ++j)
+        g.p[j][i] *= s;
+
+    if (g.stress)
+        for (j = 0; j < NFIELDS_S; ++j)
+            g.s[j][i] *= s;
+
 }
 
 #undef _S_

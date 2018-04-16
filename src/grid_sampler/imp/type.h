@@ -1,24 +1,29 @@
 enum {
     RHO, VX, VY, VZ,
-    SXX, SXY, SXZ,
-    SYY, SYZ, SZZ,
-    NFIELDS_MAX
+    NFIELDS_P
 };
 
 enum {
-    NFIELDS_NO_STRESS   = VZ + 1,
-    NFIELDS_WITH_STRESS = NFIELDS_MAX
+    SXX, SXY, SXZ,
+    SYY, SYZ, SZZ,
+    NFIELDS_S
 };
 
-static const char *names[NFIELDS_MAX] = {
-    "density", "u", "v", "w",
-    "sxx", "sxy", "sxz",
-    "syy", "syz", "szz"
+enum {
+    TOT_NFIELDS = NFIELDS_P + NFIELDS_S
 };
+
+static const char *names_p[NFIELDS_P] =
+    {"density", "u", "v", "w"};
+
+static const char *names_s[NFIELDS_S] =
+    {"sxx", "sxy", "sxz",
+     "syy", "syz", "szz"};
 
 struct Grid {
     int3 L, N; /* subdomain size, grid size */
-    float *d[NFIELDS_MAX];
+    float *p[NFIELDS_P];
+    float *s[NFIELDS_S];
     bool stress;
 };
 
