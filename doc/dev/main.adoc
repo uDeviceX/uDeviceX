@@ -44,6 +44,8 @@ include::modules/frag.adoc[]
 
 include::modules/fsi.adoc[]
 
+include::modules/grid_sampler.adoc[]
+
 include::modules/io/main.adoc[]
 
 include::modules/inter/main.adoc[]

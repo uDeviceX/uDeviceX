@@ -1,0 +1,54 @@
+[[grid_sampler]]
+= grid_sampler: particle to grid average
+
+gather particle data on a grid and average in time.
+The particle to grid process is simple binning.
+
+== interface
+
+Allocate and free the structure:
+
+[source, c++]
+----
+include::{src}/grid_sampler/imp.h[tags=mem]
+----
+<1> create a sampler for binning a subdomain of size `L`. `N` is the
+    number of bins. Allocate space for stress when `stress` is set to true.
+<2> deallocate the structure
+
+The sampler object stores the grid data. All operations are performed
+on device:
+
+[source, c++]
+----
+include::{src}/grid_sampler/imp.h[tags=int]
+----
+<1> set all fields of the grids to 0
+<2> add contribution of the data (see <<grid_sampler_data>>) to the
+    time averaged grid
+<3> perform time average of all gathered data, download grid on host
+    and dump to file (see <<io_grid>>).
+
+
+[[grid_sampler_data]]
+== grid sampler data
+
+helper to pass data to the grid sampler.
+
+allocate and deallocate the data structure:
+
+[source, c++]
+----
+include::{src}/grid_sampler/imp.h[tags=data_mem]
+----
+
+pass data to the structure:
+
+[source, c++]
+----
+include::{src}/grid_sampler/imp.h[tags=data_int]
+----
+<1> remove all previously pushed data
+<2> add data (pointers only, *not* a deep copy) to the structure. The
+    `pp` pointer is mandatory. The stress `ss` pointer is used only when
+    `stress` is activated in grid sampler.
