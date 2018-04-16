@@ -1,5 +1,5 @@
-struct Part { float3 r, v; };
-typedef float3 Pos;
+struct Part { double3 r, v; };
+typedef double3 Pos;
 
 static __device__ Pos fetchPos(const Particle *pp, int i) {
     enum {X, Y, Z};
@@ -21,14 +21,14 @@ static __device__ Part fetchPart(const Particle *pp, int i) {
 }
 
 template <typename RndInfo>
-static __device__ void adj_tris(float dt,
+static __device__ void adj_tris(double dt,
                                 const RbcParams_v *par, const Particle *pp,  const Part p0, const float *av,
                                 const StressInfo si, RndInfo ri,
-                                AdjMap *m, /*io*/ float f[3]) {
+                                AdjMap *m, /*io*/ double f[3]) {
     enum {X, Y, Z};
-    float3 f0;
+    double3 f0;
     int i1, i2, rbc;
-    float area, volume;
+    double area, volume;
     i1 = m->i1; i2 = m->i2; rbc = m->rbc;
 
     const Part p1 = fetchPart(pp, i1);
@@ -45,12 +45,12 @@ static __device__ void adj_tris(float dt,
     f[X] += f0.x; f[Y] += f0.y; f[Z] += f0.z;
 }
 
-static __device__ void adj_dihedrals(const RbcParams_v *par, const Particle *pp, float3 r0,
-                                     AdjMap *m, /*io*/ float f[3]) {
+static __device__ void adj_dihedrals(const RbcParams_v *par, const Particle *pp, double3 r0,
+                                     AdjMap *m, /*io*/ double f[3]) {
     enum {X, Y, Z};
     Pos r1, r2, r3, r4;
-    float3 f0;
-    float phi, kb;
+    double3 f0;
+    double phi, kb;
     r1 = fetchPos(pp, m->i1);
     r2 = fetchPos(pp, m->i2);
     r3 = fetchPos(pp, m->i3);
@@ -59,23 +59,23 @@ static __device__ void adj_dihedrals(const RbcParams_v *par, const Particle *pp,
     phi = par->phi / 180.0 * M_PI;
     kb  = par->kb;
     
-    f0 = force_kantor0_dev::dih_a(phi, kb, r0, r2, r1, r4);
+    f0 = force_kantor0_dev::dih_a_dbl(phi, kb, r0, r2, r1, r4);
     f[X] += f0.x; f[Y] += f0.y; f[Z] += f0.z;
     
-    f0 = force_kantor0_dev::dih_b(phi, kb, r1, r0, r2, r3);
+    f0 = force_kantor0_dev::dih_b_dbl(phi, kb, r1, r0, r2, r3);
     f[X] += f0.x; f[Y] += f0.y; f[Z] += f0.z;
 
 }
 
 template <typename Stress_v, typename Rnd_v>
-__global__ void force(float dt,
+__global__ void force(double dt,
                       RbcParams_v par, int md, int nv, int nc, const Particle *pp,
                       Adj_v adj,
                       Stress_v sv, Rnd_v rv,
                       const float *av, /**/ float *ff) {
     enum {X, Y, Z};
     int i, pid, valid;
-    float f[3];
+    double f[3];
     AdjMap m;
     StressInfo si;
 
