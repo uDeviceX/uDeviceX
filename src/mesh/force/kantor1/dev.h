@@ -22,7 +22,8 @@ _S_ double rsqrt0(double x) { return rsqrt(x); }
 #define EXIT() assert(0)
 #endif
 
-_S_ void dih_a0(int Flag_a, double ax, double ay, double az,
+_S_ void dih_a0(int Flag_a,
+                double ax, double ay, double az,
                 double bx, double by, double bz,
                 double cx, double cy, double cz,
                 double dx, double dy, double dz,
@@ -39,9 +40,12 @@ _S_ void dih_a0(int Flag_a, double ax, double ay, double az,
     nz = (cy-by)*(dx-bx)-(cx-bx)*(dy-by);
     ny = (cx-bx)*(dz-bz)-(cz-bz)*(dx-bx);
     nx = (cz-bz)*(dy-by)-(cy-by)*(dz-bz);
+
+    PRINT("k: %g %g %g\n", kx, ky, kz);
+    PRINT("n: %g %g %g\n", nx, ny, nz);
+
     nn = pow(nz,2)+pow(ny,2)+pow(nx,2);
     kk = pow(kz,2)+pow(ky,2)+pow(kx,2);
-    PRINT("kk,nn: %g %g\n", sqrt(kk), sqrt(nn));
     rsq = 1/sqrt(kk*nn);
     kn = kz*nz+ky*ny+kx*nx;
     E_kn = rsq;
