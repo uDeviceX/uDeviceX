@@ -8,16 +8,16 @@ static __device__ float3 fvolume(const RbcParams_v *par, float3 r2, float3 r3, f
 }
 
 static __device__ float3 farea(const RbcParams_v *par, float3 x21, float3 x31, float3 x32,   float a0, float A0, float A) {
-    float3 nn, nnx32, f;
+    float3 nn, f;
     float a, f0, fa, fA;
-    cross(&x21, &x31, /**/ &nn); /* normal */
-    cross(&nn, &x32, /**/ &nnx32);
+    cross(&x21, &x31, /**/ &nn);
+    cross(&nn, &x32,  /**/ &f);
     a = 0.5 * sqrt(dot<float>(&nn, &nn));
 
     fA = - par->ka * (A - A0) / (4 * A0 * a);
     fa = - par->kd * (a - a0) / (4 * a0 * a);
     f0 = fA + fa;
-    axpy(f0, &nnx32, /**/ &f);
+    scal(f0, &f);
     return f;
 }
 
