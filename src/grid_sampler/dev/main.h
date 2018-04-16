@@ -108,9 +108,7 @@ __global__ void time_avg(int nsteps, Grid g) {
     i = threadIdx.x + blockIdx.x * blockDim.x;
     if (i >= get_size(&g)) return;
 
-    nfields = g.stress ?
-        NFIELDS_WITH_STRESS :
-        NFIELDS_NO_STRESS;
+    nfields = get_nfields(&g);
 
     s = 1.0 / nsteps;
 
