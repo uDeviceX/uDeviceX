@@ -1,18 +1,18 @@
-#ifdef FORCE_HOST
+#ifdef FORCE_KANTOR0_HOST
   #define _I_
   #define _S_ static
-  #define BEGIN namespace force_hst {
+  #define BEGIN namespace force_kantor0_hst {
   #define END }
 #else
   #define _I_ static __device__
   #define _S_ static __device__
-  #define BEGIN namespace force_dev {
+  #define BEGIN namespace force_kantor0_dev {
   #define END }
 #endif
 
 BEGIN
 
-#ifdef FORCE_HOST
+#ifdef FORCE_KANTOR0_HOST
 _S_ double rsqrt0(double x) { return pow(x, -0.5); }
 #define PRINT(fmt, ...) msg_print((fmt), ##__VA_ARGS__)
 #define EXIT() ERR("assert")

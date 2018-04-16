@@ -9,6 +9,6 @@
 #include "math/dev.h"
 #include "imp.h"
 
-#define FORCE_HOST
+#define FORCE_KANTOR0_HOST
 #include "dev.h"
-#undef FORCE_HOST
+#undef FORCE_KANTOR0_HOST
