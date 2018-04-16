@@ -3,42 +3,53 @@ static long get_size(const Grid *g) {
     return N.x * N.y * N.z;
 }
 
-static int get_nfields(const Grid *g) {
-    return g->stress ?
-        NFIELDS_WITH_STRESS :
-        NFIELDS_NO_STRESS;
+static void dev_alloc_n(int na, long n, float *a[]) {
+    for (int i = 0; i < na; ++i) Dalloc(&a[i], n);
 }
 
 static void ini_dev_grid(bool stress, int3 L, int3 N, Grid *g) {
-    long i, n;
+    long n;
     g->N = N;
     g->L = L;
     g->stress = stress;
 
     n = get_size(g);
-    for (i = 0; i < get_nfields(g); ++i)
-        Dalloc(&g->d[i], n);
+
+    UC(             dev_alloc_n(NFIELDS_P, n, g->p) );
+    if (stress) UC( dev_alloc_n(NFIELDS_S, n, g->s) );
+}
+
+static void hst_alloc_n(int na, long n, float *a[]) {
+    for (int i = 0; i < na; ++i) EMALLOC(n, &a[i]);
 }
 
 static void ini_hst_grid(bool stress, int3 L, int3 N, Grid *g) {
-    long i, n;
+    long n;
     g->N = N;
     g->L = L;
     g->stress = stress;
 
     n = get_size(g);
-    for (i = 0; i < get_nfields(g); ++i)
-        EMALLOC(n,  &g->d[i]);
+    UC(             hst_alloc_n(NFIELDS_P, n, g->p) );
+    if (stress) UC( hst_alloc_n(NFIELDS_S, n, g->s) );
+}
+
+static void dev_free_n(int na, float *a[]) {
+    for (int i = 0; i < na; ++i) Dfree(a[i]);
 }
 
 static void fin_dev_grid(Grid *g) {
-    for (int i = 0; i < get_nfields(g); ++i)
-        Dfree(g->d[i]);
+    UC(dev_free_n(NFIELDS_P, g->p) );
+    if (g->stress) UC(dev_free_n(NFIELDS_S, g->s));    
+}
+
+static void hst_free_n(int na, float *a[]) {
+    for (int i = 0; i < na; ++i) EFREE(a[i]);
 }
 
 static void fin_hst_grid(Grid *g) {
-    for (int i = 0; i < get_nfields(g); ++i)
-        EFREE(g->d[i]);
+    UC(hst_free_n(NFIELDS_P, g->p) );
+    if (g->stress) UC(hst_free_n(NFIELDS_S, g->s));
 }
 
 void grid_sampler_ini(bool stress, int3 L, int3 N, GridSampler **s0) {
@@ -58,10 +69,14 @@ void grid_sampler_fin(GridSampler *s) {
     EFREE(s);
 }
 
+static void reset_dev_n(int na, long n, float *a[]) {
+    for (int i = 0; i < na; ++i) DzeroA(a[i], n);
+}
+
 static void reset_dev_grid(Grid *g) {
-    long i, n = get_size(g);
-    for (i = 0; i < get_nfields(g); ++i)
-        DzeroA(g->d[i], n);
+    long n = get_size(g);
+    reset_dev_n(NFIELDS_P, n, g->p);
+    if (g->stress) reset_dev_n(NFIELDS_S, n, g->s);
 }
 
 void grid_sampler_reset(GridSampler *s) {
@@ -122,16 +137,38 @@ static void time_avg(int nsteps, Grid *g) {
     KL(sampler_dev::time_avg, (k_cnf(n)), (nsteps, *g));
 }
 
+static void download_n(int na, long n, float * const dev[], float *hst[]) {
+   for (int i = 0; i < na; ++i) aD2H(hst[i], dev[i], n);
+}
+
 static void download(const Grid *dev, Grid *hst) {
-    long i, n = get_size(dev);
-    for (i = 0; i < get_nfields(dev); ++i)
-        aD2H(hst->d[i], dev->d[i], n);
+    long n = get_size(dev);
+    download_n(NFIELDS_P, n, dev->p, hst->p);
+    if (dev->stress) download_n(NFIELDS_S, n, dev->s, hst->s);
 }
 
 static void dump(MPI_Comm cart, const char *dir, long id, const Grid *g) {
     char path[FILENAME_MAX];
-    int ncmp = get_nfields(g);
-    const float **data = (const float**) g->d;
+    int i, j, ncmp;
+    const float *data[TOT_NFIELDS];
+    const char *names[TOT_NFIELDS];
+
+    j = 0;
+    for (i = 0; i < NFIELDS_P; ++i) {
+        data[j]  = g->p[i];
+        names[j] = names_p[i];
+        ++j;
+    }
+
+    if (g->stress) {
+        for (i = 0; i < NFIELDS_S; ++i) {
+            data[j]  = g->s[i];
+            names[j] = names_s[i];
+            ++j;
+        }
+    }
+    
+    ncmp = j;
 
     sprintf(path, DUMP_BASE "/%s/%04ld.h5", dir, id);
     
