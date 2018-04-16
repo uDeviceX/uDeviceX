@@ -10,6 +10,14 @@ static bool active_rig(const Sim *s) {
     return !s->equilibrating && s->opt.rig;
 }
 
+static bool is_sampling_time(const Sim *s) {
+    const Opt *opt = &s->opt;
+    const float freq = opt->freq_field / opt->sampler_npdump;
+    const TimeLine *time = s->time.t;
+
+    return time_line_cross(time, freq);
+}
+
 static double compute_volume_rbc(MPI_Comm comm, const Rbc *r) {
     double loc, tot, V0;
     long nc;

@@ -45,7 +45,7 @@ _S_ int angle(double3 a, double3 b, /**/ double *pcos, double *pover_sin,
     return ANGLE_OK;
 }
 
-void dih_write(double3 a, double3 b, double3 c, double3 d) {
+_S_ void dih_write(double3 a, double3 b, double3 c, double3 d) {
     PRINT("%g %g %g\n", a.x, a.y, a.z);
     PRINT("%g %g %g\n", b.x, b.y, b.z);
     PRINT("%g %g %g\n", c.x, c.y, c.z);
