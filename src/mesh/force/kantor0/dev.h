@@ -24,6 +24,11 @@ _S_ double rsqrt0(double x) { return rsqrt(x); }
 
 _S_ double max(double a, double b) { return a > b ? a : b; }
 
+_S_ double dot0(double a[3], double b[3]) {
+    enum {X, Y, Z};
+    return a[X]*b[X] + a[Y]*b[Y] + a[Z]*b[Z];
+}
+
 enum {ANGLE_OK, ANGLE_BAD_A, ANGLE_BAD_B};
 _S_ int angle(double3 a, double3 b, /**/ double *pcos, double *pover_sin,
               double *pover_a, double *pover_b) {
