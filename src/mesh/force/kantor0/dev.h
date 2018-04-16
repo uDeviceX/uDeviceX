@@ -59,17 +59,17 @@ _S_ double3 dih0(double phi, double kb,
     int status;
     double overIksiI, overIdzeI, cosTheta, sinTheta_1,
         beta, b11, b12, sint0kb, cost0kb;
-    double3 ab, ac, cd, bd, da, ksi, dze, ksimdze;
+    double3 ab, ac, cd, bd, da, n, k, ksimdze;
     diff(&a, &b, /**/ &ab);
     diff(&a, &c, /**/ &ac);
     diff(&c, &d, /**/ &cd);
     diff(&b, &d, /**/ &bd);
     diff(&d, &a, /**/ &da);
 
-    cross(&ab, &ac, /**/ &ksi);
-    cross(&cd, &bd, /**/ &dze);
+    cross(&ab, &ac, /**/ &n);
+    cross(&cd, &bd, /**/ &k);
 
-    status = angle(ksi, dze, /**/
+    status = angle(n, k, /**/
                    &cosTheta, &sinTheta_1,
                    &overIksiI, &overIdzeI);
     if (status != ANGLE_OK) {
@@ -77,7 +77,7 @@ _S_ double3 dih0(double phi, double kb,
         dih_write(a, b, c, d);
         EXIT();
     }
-    diff(&ksi, &dze, /**/ &ksimdze);
+    diff(&n, &k, /**/ &ksimdze);
     sinTheta_1 = copysign(sinTheta_1,
                            dot<double>(&ksimdze, &da));
 
@@ -91,8 +91,8 @@ _S_ double3 dih0(double phi, double kb,
     if (update == 1) {
         double3 r32, f1, f;
         diff(&c, &b, /**/ &r32);
-        cross(&ksi, &r32, /**/ &f);
-        cross(&dze, &r32, /**/ &f1);
+        cross(&n, &r32, /**/ &f);
+        cross(&k, &r32, /**/ &f1);
         scal(b11, /**/ &f);
         axpy(b12, &f1, /**/ &f);
         return f;
@@ -101,10 +101,10 @@ _S_ double3 dih0(double phi, double kb,
         double3 f, f1, f2, f3;
         double b22 = -beta * cosTheta * overIdzeI * overIdzeI;
 
-        cross(&ksi, &ac, /**/ &f);
-        cross(&ksi, &cd, /**/ &f1);
-        cross(&dze, &ac, /**/ &f2);
-        cross(&dze, &cd, /**/ &f3);
+        cross(&n, &ac, /**/ &f);
+        cross(&n, &cd, /**/ &f1);
+        cross(&k, &ac, /**/ &f2);
+        cross(&k, &cd, /**/ &f3);
 
         scal(b11, /**/ &f);
         add(&f2, /**/ &f1);
