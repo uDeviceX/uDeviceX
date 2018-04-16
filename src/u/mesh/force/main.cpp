@@ -82,10 +82,9 @@ void main0(int *argc, char ***argv) {
     
     phi = 0; kb = 1;
     UC(force(Dih_A[type], phi, kb, a, b, c, d, /**/ fa));
-    printf("%.16g %.16g %.16g \n", fa[X], fa[Y], fa[Z]);
-    //    UC(force(Dih_B[type], phi, kb, a, b, c, d, /**/ fb));
-    //    printf("%.16g %.16g %.16g %.16g %.16g %.16g\n",
-    //           fa[X], fa[Y], fa[Z], fb[X], fb[Y], fb[Z]);
+    UC(force(Dih_B[type], phi, kb, a, b, c, d, /**/ fb));
+    printf("%.16g %.16g %.16g %.16g %.16g %.16g\n",
+           fa[X], fa[Y], fa[Z], fb[X], fb[Y], fb[Z]);
 }
 
 int main(int argc, char **argv) {

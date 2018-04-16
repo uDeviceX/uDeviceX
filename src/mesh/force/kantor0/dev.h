@@ -127,40 +127,12 @@ _S_ double3 dih0(double phi, double kb,
     }
 }
 
-_I_ double3 dih_a_dbl(double phi, double kb, double3 a, double3 b, double3 c, double3 d) {
+_I_ double3 dih_a(double phi, double kb, double3 a, double3 b, double3 c, double3 d) {
     return dih0<1>(phi, kb, a, b, c, d);
 }
 
-_I_ double3 dih_b_dbl(double phi, double kb, double3 a, double3 b, double3 c, double3 d) {
+_I_ double3 dih_b(double phi, double kb, double3 a, double3 b, double3 c, double3 d) {
     return dih0<2>(phi, kb, a, b, c, d);
-}
-
-_I_ float3 dih_a(float phi0, float kb0, float3 a0, float3 b0, float3 c0, float3 d0) {
-    double phi, kb;
-    double3 a, b, c, d, f;
-    float3 f0;
-    phi = phi0; kb = kb0;
-    a.x = a0.x; a.y = a0.y; a.z = a0.z;
-    b.x = b0.x; b.y = b0.y; b.z = b0.z;
-    c.x = c0.x; c.y = c0.y; c.z = c0.z;
-    d.x = d0.x; d.y = d0.y; d.z = d0.z;
-    f = dih_a_dbl(phi, kb, a, b, c, d);
-    f0.x = f.x; f0.y = f.y; f0.z = f.z;
-    return f0;
-}
-
-_I_ float3 dih_b(float phi0, float kb0, float3 a0, float3 b0, float3 c0, float3 d0) {
-    double phi, kb;
-    double3 a, b, c, d, f;
-    float3 f0;
-    phi = phi0; kb = kb0;
-    a.x = a0.x; a.y = a0.y; a.z = a0.z;
-    b.x = b0.x; b.y = b0.y; b.z = b0.z;
-    c.x = c0.x; c.y = c0.y; c.z = c0.z;
-    d.x = d0.x; d.y = d0.y; d.z = d0.z;
-    f = dih_b_dbl(phi, kb, a, b, c, d);
-    f0.x = f.x; f0.y = f.y; f0.z = f.z;
-    return f0;
 }
 
 END
