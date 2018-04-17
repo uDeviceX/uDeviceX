@@ -1,5 +1,9 @@
-enum {BLUE_COLOR, RED_COLOR, /* solvent colors */
-      N_COLOR};
+enum {
+    /* solvent colors */
+    BLUE_COLOR,
+    RED_COLOR, 
+    N_COLOR
+};
 
 enum {
     /* wall margins */
