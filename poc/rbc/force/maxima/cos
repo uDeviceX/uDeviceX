@@ -24,8 +24,7 @@ nn: dot(['nx, 'ny, 'nz], ['nx, 'ny, 'nz]);
 rsq: 1/sqrt('kk * 'nn);
 E: 'kn * 'rsq;
 
-with_stdout("cos.c",
-fmt(
+[E, V, T]: g(
   ['E ,  E,   sl(E)],
   ['kn,  kn,  sl(kn)],
   ['rsq, rsq, sl(rsq)],
@@ -38,4 +37,13 @@ fmt(
   ['nz, nz, sl(nz)],
   ['kx, kx, sl(kx)],
   ['ky, ky, sl(ky)],
-  ['kz, kz, sl(kz)]));
+  ['kz, kz, sl(kz)]);
+
+[E, V, T]: rm(
+  E, V, T,
+  'E_kn, 'E_rsq,
+  'kn_kx, 'kn_ky, 'kn_kz, 'kn_nx, 'kn_ny, 'kn_nz,
+  'kx_ay, 'kx_az, 'kx_by, 'kx_bz, 'kx_cy, 'kx_cz,
+  'ky_ax, 'ky_az,         'ky_bz,         'ky_cz
+  ) $
+with_stdout("cos.c", fmt0(E, V, T));

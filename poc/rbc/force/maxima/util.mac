@@ -20,9 +20,29 @@ g0(name, expr, vars):= block(
       push(de_v = de_n * dn_v, E))));
 fmt([L]):=block([E, V, T, e, v], local(E, V, T),
   [E, V, T]: apply('g, L),
+  fmt0(E, V, T));
+fmt0(E, V, T):=(
   grind(sort(unique(T))),
   for v in          V do cgrind(v),
   for e in reverse(E) do cgrind(e));
 
 vabs(a):=sqrt(dot(a, a));
 sl(e):=sort(listofvars(e));
+
+rm0(E, V, T, key):=block(
+  [val],
+  local(E, V, T),
+  catch(
+    for e in E do if lhs(e)=key then (val: rhs(e), throw('done)),
+    for e in V do if lhs(e)=key then (val: rhs(e), throw('done)),
+    error(key, "is not found")),
+  E: sublist(E, lambda([e], lhs(e)#key)),
+  V: sublist(V, lambda([e], lhs(e)#key)),
+  T: sublist(T, lambda([e],      e#key)),
+  E: maplist(lambda([e], subst(key = val, e)), E),
+  V: maplist(lambda([e], subst(key = val, e)), V),
+  [E, V, T]) $
+
+rm(E, V, T, [L]):=(
+  for key in L do [E, V, T]: rm0(E, V, T, key),
+  [E, V, T]);

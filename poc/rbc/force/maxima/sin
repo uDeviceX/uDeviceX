@@ -25,12 +25,11 @@ nn: dot(['nx, 'ny, 'nz], ['nx, 'ny, 'nz]);
 rsq: 1/sqrt('kk * 'nn); /* TODO: */
 E: 'kn * 'rsq;
 
-with_stdout("sin.c",
-fmt(
+[E, V, T]: g(
   ['E ,  E,   sl(E)],
   ['kn,  kn,  sl(kn)],
   ['rsq, rsq, sl(rsq)],
-  
+
   ['knx, knx, sl(knx)],
   ['kny, kny, sl(kny)],
   ['knz, knz, sl(knz)],
@@ -43,5 +42,10 @@ fmt(
   ['nz, nz, sl(nz)],
   ['kx, kx, sl(kx)],
   ['ky, ky, sl(ky)],
-  ['kz, kz, sl(kz)]));
+  ['kz, kz, sl(kz)]) $
 
+[E, V, T]: rm(
+  E, V, T,
+  'E_kn, 'E_rsq
+  ) $
+with_stdout("sin.c", fmt0(E, V, T));
