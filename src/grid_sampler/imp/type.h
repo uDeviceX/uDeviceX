@@ -22,8 +22,8 @@ static const char *names_s[NFIELDS_S] =
 
 struct Grid {
     int3 L, N; /* subdomain size, grid size */
-    float *p[NFIELDS_P];
-    float *s[NFIELDS_S];
+    float *p[NFIELDS_P]; /* particle density and velocity */
+    float *s[NFIELDS_S]; /* stress                        */
     bool stress;
 };
 
