@@ -22,23 +22,28 @@ _S_ int get_grid_id(int3 gc, int3 N) {
     return gc.x + N.x * (gc.y + N.y * gc.z);
 }
 
-template <typename Pa>
-_S_ void add_to_grid(const Pa *p, const Grid *g) {
+_S_ int get_grid_id(const Part *p, const Grid *g) {
     int3 gcoords;
-    int gid;
     gcoords = get_cell_coords(p->r, g->L, g->N);
-    gid = get_grid_id(gcoords, g->N);
-    add_part(gid, p, g);
+    return get_grid_id(gcoords, g->N);
 }
 
-template <typename Datum>
-__global__ void add(const Datum data, /**/ Grid grid) {
-    int pid;
+__global__ void add(SampleDatum data, /**/ Grid grid) {
+    int pid, gid; /* particle and grid id */
+    Part p;
     pid = threadIdx.x + blockIdx.x * blockDim.x;
     if (pid >= data.n) return;
 
-    auto p = fetch_part(pid, &data);
-    add_to_grid(&p, &grid);    
+    fetch_part(pid, &data, &p);
+    gid = get_grid_id(&p, &grid);
+
+    add_part(gid, &p, &grid);
+
+    if (grid.stress) {
+        Stress s;
+        fetch_stress(pid, &data, &s);
+        add_stress(gid, &s, &grid);
+    }
 }
 
 _S_ long get_size(const Grid *g) {

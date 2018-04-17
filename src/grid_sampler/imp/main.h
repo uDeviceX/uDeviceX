@@ -84,27 +84,13 @@ void grid_sampler_reset(GridSampler *s) {
     UC(reset_dev_grid(&s->stdev));
 }
 
-static void datum_view(const SampleDatum *d, Datum_v *v) {
-    v->n = d->n;
-    v->pp = d->pp;
-}
-
-static void datum_view(const SampleDatum *d, DatumS_v *v) {
-    v->n  = d->n;
-    v->pp = d->pp;
-    v->ss = d->ss;
-}
-
-template <typename Datum>
 static void add(const GridSampleData *data, Grid *g) {
     long i, n;
-    const SampleDatum *d;
-    Datum v;
+    SampleDatum d;
     for (i = 0; i < data->n; ++i) {
-        d = &data->d[i];
-        datum_view(d, &v);
-        n = v.n;
-        KL(sampler_dev::add, (k_cnf(n)), (v, *g));
+        d = data->d[i];
+        n = d.n;
+        KL(sampler_dev::add, (k_cnf(n)), (d, *g));
     }
 }
 
@@ -123,10 +109,7 @@ void grid_sampler_add(const GridSampleData *data, GridSampler *s) {
     sg  = &s->sdev;
     stg = &s->stdev;
     UC(reset_dev_grid(sg));
-    if (sg->stress)
-        add<DatumS_v>(data, sg);
-    else
-        add<Datum_v>(data, sg);
+    UC(add(data, sg));
     UC(space_avg(sg));
     UC(add_to_grid(sg, stg));
     s->nsteps ++;

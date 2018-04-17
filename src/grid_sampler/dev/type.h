@@ -2,6 +2,6 @@ struct Part {
     float3 r, v;
 };
 
-struct PartS : Part {
+struct Stress {
     float3 s1, s2;
 };
