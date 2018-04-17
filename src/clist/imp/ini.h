@@ -4,19 +4,17 @@ void clist_ini(int LX, int LY, int LZ, /**/ Clist *c) {
     c->dims.z = LZ;
     c->ncells = LX * LY * LZ;
 
-    size_t size = (c->ncells + 16) * sizeof(int);
-    CC(d::Malloc((void **) &c->starts, size));
-    CC(d::Malloc((void **) &c->counts, size));
+    int n = (c->ncells + 16);
+    Dalloc(&c->starts, n);
+    Dalloc(&c->counts, n);
 }
 
 void clist_ini_map(int maxp, int nA, const Clist *c, /**/ ClistMap **map) {
-    size_t size;
+    long i, size;
     EMALLOC(1, map);
     ClistMap *m = *map;
     
     UC(scan_ini(c->ncells + 16, /**/ &m->scan));
-
-    size = maxp * sizeof(uchar4);
 
     m->maxp = maxp;
     
@@ -24,9 +22,8 @@ void clist_ini_map(int maxp, int nA, const Clist *c, /**/ ClistMap **map) {
     if (nA > MAXA)
         ERR("Too many inputs (%d / %d)", nA, MAXA);
     
-    for (int i = 0; i < nA; ++i)
-        CC(d::Malloc((void **) &m->ee[i], size));
+    for (i = 0; i < nA; ++i) Dalloc(&m->ee[i], maxp);
 
-    size = nA * maxp * sizeof(uint);
-    CC(d::Malloc((void **) &m->ii, size));
+    size = nA * maxp;
+    Dalloc(&m->ii, size);
 }

@@ -234,9 +234,9 @@ void minmax(const Particle * const rbc, int size, int n, float3 *minrbc, float3 
             }
 
             if (ptoblockds != NULL)
-                CC(d::Free(ptoblockds));
+                Dfree(ptoblockds);
 
-            CC(d::Malloc((void **)&ptoblockds,sizeof(sblockds_t) * n));
+            Dalloc(&ptoblockds, n);
 
             cH2D(ptoblockds, h_ptoblockds, n);
 
