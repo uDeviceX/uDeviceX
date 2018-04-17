@@ -3,7 +3,8 @@
     _(BLUE)                                     \
     _(RED)
 
-#define make_enum_color(a) a##_COLOR ,
+#define ENUM_COLOR(a) a##_COLOR
+#define make_enum_color(a) ENUM_COLOR(a) ,
 enum {
     XMACRO_COLOR(make_enum_color)
     N_COLOR

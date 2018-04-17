@@ -9,9 +9,9 @@ _I_ void add_part(int i, const Part *p, const Grid *g) {
 }
 
 _I_ void add_color(int i, const int c, const Grid *g) {
-#define ADD_COLOR(a)                             \
-    if (a##_COLOR == c)                          \
-        atomicAdd(g->c[a##_COLOR] + i, 1.f);
+#define ADD_COLOR(a)                               \
+    if (ENUM_COLOR(a) == c)                        \
+        atomicAdd(g->c[ENUM_COLOR(a)] + i, 1.f);
 
     XMACRO_COLOR(ADD_COLOR)
 

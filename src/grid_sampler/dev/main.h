@@ -88,7 +88,7 @@ __global__ void space_avg(Grid g) {
     g.p[VZ][i] *= sv;
 
     if (g.colors) {
-#define scale(a) g.c[a##_COLOR][i] *= inv_rho;
+#define scale(a) g.c[ENUM_COLOR(a)][i] *= inv_rho;
         XMACRO_COLOR(scale)
 #undef scale
     }
