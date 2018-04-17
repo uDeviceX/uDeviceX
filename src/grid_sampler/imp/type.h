@@ -10,7 +10,11 @@ enum {
 };
 
 enum {
-    TOT_NFIELDS = NFIELDS_P + NFIELDS_S
+    NFIELDS_C = N_COLOR
+};
+
+enum {
+    TOT_NFIELDS = NFIELDS_P + NFIELDS_S + NFIELDS_C
 };
 
 static const char *names_p[NFIELDS_P] =
@@ -20,10 +24,16 @@ static const char *names_s[NFIELDS_S] =
     {"sxx", "sxy", "sxz",
      "syy", "syz", "szz"};
 
+#define make_str(a) #a ,
+static const char *names_c[NFIELDS_C] =
+    {XMACRO_COLOR(make_str)}; /* see inc/def.h */
+#undef make_str
+
 struct Grid {
     int3 L, N; /* subdomain size, grid size */
     float *p[NFIELDS_P]; /* particle density and velocity */
     float *s[NFIELDS_S]; /* stress                        */
+    float *c[N_COLOR];   /* color density                 */
     bool stress;
 };
 

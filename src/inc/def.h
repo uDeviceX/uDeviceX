@@ -1,9 +1,14 @@
+/* solvent colors */
+#define XMACRO_COLOR(_)                         \
+    _(BLUE)                                     \
+    _(RED)
+
+#define make_enum_color(a) a##_COLOR ,
 enum {
-    /* solvent colors */
-    BLUE_COLOR,
-    RED_COLOR, 
+    XMACRO_COLOR(make_enum_color)
     N_COLOR
 };
+#undef make_enum_color
 
 enum {
     /* wall margins */
