@@ -84,7 +84,7 @@ void grid_sampler_reset(GridSampler *s) {
     UC(reset_dev_grid(&s->stdev));
 }
 
-static void add(const GridSampleData *data, Grid *g) {
+static void add_data_to_grid(const GridSampleData *data, Grid *g) {
     long i, n;
     SampleDatum d;
     for (i = 0; i < data->n; ++i) {
@@ -109,7 +109,7 @@ void grid_sampler_add(const GridSampleData *data, GridSampler *s) {
     sg  = &s->sdev;
     stg = &s->stdev;
     UC(reset_dev_grid(sg));
-    UC(add(data, sg));
+    UC(add_data_to_grid(data, sg));
     UC(space_avg(sg));
     UC(add_to_grid(sg, stg));
     s->nsteps ++;
