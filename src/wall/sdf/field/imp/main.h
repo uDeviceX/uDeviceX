@@ -13,7 +13,7 @@ static void dump1(const Coords *coords, MPI_Comm cart, const int N[3], const flo
     const float *data[] = {W};
 
     UC(dump0(coords, N, D, /**/ W));
-    UC(grid_write(L, L, cart, DUMP_BASE "/wall.h5", 1, data, names));
+    UC(grid_write(L, L, cart, DUMP_BASE "/h5/wall.h5", 1, data, names));
 }
 
 static void dump(const Coords *coords, MPI_Comm cart, const int N[], const float *D) {
