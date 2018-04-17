@@ -1,22 +1,7 @@
 ## using gitlab:ugeom
 # TEST: square.out
+cd test/square/out/
 XS=8 YS=8 ZS=8 a=7
 ugeom.square $XS $YS $ZS $a sdf.dat
-u.run udx "
-time = {
-    type = \"const\"
-    dt = 1e-4
-    wall = 1e-4
-    end = 1e-4
-}
-wall = {
-    active = true
-}
-glb = {
-    L = [$XS, $YS, $ZS]
-}
-dump = {
-    field = true
-    freq_field = 0.2000
-}"
+u.run udx conf.cfg
 cp h5/wall.xmf wall.out.xmf
