@@ -11,17 +11,17 @@ void outflow_ini(int maxp, /**/ Outflow **o0) {
     o = *o0;
     
     sz = maxp * sizeof(int);
-    CC(d::Malloc((void**) &o->kk, sz));
-    CC(d::Malloc((void**) &o->ndead_dev, sizeof(int)));
+    Dalloc(&o->kk, maxp);
+    Dalloc(&o->ndead_dev, 1);
 
     CC(d::MemsetAsync(o->kk, 0, sz));
-    reset_ndead(o);
+    UC(reset_ndead(o));
     o->type = TYPE_NONE;
 }
 
 void outflow_fin(/**/ Outflow *o) {
-    CC(d::Free(o->kk));
-    CC(d::Free(o->ndead_dev));
+    Dfree(o->kk);
+    Dfree(o->ndead_dev);
     EFREE(o);
 }
 
