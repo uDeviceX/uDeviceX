@@ -10,6 +10,10 @@ _I_ void fetch_part(int i, const SampleDatum *d, Part *p) {
     p->v = make_float3(p1.y, p2.x, p2.y);
 }
 
+_I_ void fetch_color(int i, const SampleDatum *d, int *c) {
+    *c = d->cc[i];
+}
+
 _I_ void fetch_stress(int i, const SampleDatum *d, Stress *s) {
     float2 s0, s1, s2;
     const float2 *ss = (const float2*) d->ss;

@@ -8,6 +8,16 @@ _I_ void add_part(int i, const Part *p, const Grid *g) {
     atomicAdd(g->p[VZ]  + i, p->v.z);
 }
 
+_I_ void add_color(int i, const int c, const Grid *g) {
+#define ADD_COLOR(a)                             \
+    if (a##_COLOR == c)                          \
+        atomicAdd(g->c[a##_COLOR] + i, 1.f);
+
+    XMACRO_COLOR(ADD_COLOR)
+
+#undef ADD_COLOR
+}
+
 _I_ void add_stress(int i, const Stress *s, const Grid *g) {
     atomicAdd(g->s[SXX] + i, s->s1.x);
     atomicAdd(g->s[SXY] + i, s->s1.y);

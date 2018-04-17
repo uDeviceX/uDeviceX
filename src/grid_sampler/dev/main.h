@@ -81,6 +81,12 @@ __global__ void space_avg(Grid g) {
     g.p[VY][i] *= sv;
     g.p[VZ][i] *= sv;
 
+    if (g.colors) {
+#define scale(a) g.c[a##_COLOR][i] *= sr;
+        XMACRO_COLOR(scale)
+#undef scale
+    }
+    
     if (g.stress) {
         ss = sr;
         g.s[SXX][i] *= ss;
@@ -100,6 +106,11 @@ __global__ void add_to_grid(const Grid src, Grid dst) {
     for (j = 0; j < NFIELDS_P; ++j)
         dst.p[j][i] += src.p[j][i];
 
+    if (src.colors) {
+        for (j = 0; j < NFIELDS_C; ++j)
+            dst.c[j][i] += src.c[j][i];
+    }
+    
     if (src.stress) {
         for (j = 0; j < NFIELDS_S; ++j)
             dst.s[j][i] += src.s[j][i];
@@ -117,10 +128,13 @@ __global__ void time_avg(int nsteps, Grid g) {
     for (j = 0; j < NFIELDS_P; ++j)
         g.p[j][i] *= s;
 
+    if (g.colors)
+        for (j = 0; j < NFIELDS_S; ++j)
+            g.c[j][i] *= s;
+
     if (g.stress)
         for (j = 0; j < NFIELDS_S; ++j)
             g.s[j][i] *= s;
-
 }
 
 #undef _S_
