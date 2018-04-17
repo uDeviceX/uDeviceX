@@ -4,6 +4,13 @@
 gather particle data on a grid and average in time.
 The particle to grid process is simple binning.
 
+== quantities
+
+The number density and velocity (3 components) are computed by
+default.
+Optionally, the stress tensor (6 components) and the color proportions
+can be sampled as well.
+
 == interface
 
 Allocate and free the structure:
@@ -13,7 +20,9 @@ Allocate and free the structure:
 include::{src}/grid_sampler/imp.h[tags=mem]
 ----
 <1> create a sampler for binning a subdomain of size `L`. `N` is the
-    number of bins. Allocate space for stress when `stress` is set to true.
+    number of bins. Allocate space for stress when `stress` is set to
+    true. Allocate space for the color proportions when `colors` is
+    set to true.
 <2> deallocate the structure
 
 The sampler object stores the grid data. All operations are performed
@@ -51,4 +60,5 @@ include::{src}/grid_sampler/imp.h[tags=data_int]
 <1> remove all previously pushed data
 <2> add data (pointers only, *not* a deep copy) to the structure. The
     `pp` pointer is mandatory. The stress `ss` pointer is used only when
-    `stress` is activated in grid sampler.
+    `stress` is activated in grid sampler. The colors `cc` pointer is
+    only used when `colors` is activated in the grid sampler.
