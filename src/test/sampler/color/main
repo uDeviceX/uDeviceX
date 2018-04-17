@@ -1,0 +1,5 @@
+#### drop in Double poiseuille: color field sampler
+# nTEST: sampler.color
+cd test/sampler/color
+u.run udx conf.cfg
+u.avgh5 0 sxy 1 h5/0001.h5 | uscale 0.1 > h5.out.txt
