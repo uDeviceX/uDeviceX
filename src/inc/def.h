@@ -33,7 +33,3 @@ enum {
     /* safety factor for odist fragments */
     ODSTR_FACTOR = 3,
 };
-
-
-/* write ascii/bin */
-#define PLY_WRITE_ASCII
