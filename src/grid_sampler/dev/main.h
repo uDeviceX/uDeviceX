@@ -39,6 +39,12 @@ __global__ void add(SampleDatum data, /**/ Grid grid) {
 
     add_part(gid, &p, &grid);
 
+    if (grid.colors) {
+        int c;
+        fetch_color(pid, &data, &c);
+        add_color(gid, c, &grid);
+    }
+
     if (grid.stress) {
         Stress s;
         fetch_stress(pid, &data, &s);
@@ -70,7 +76,7 @@ __global__ void space_avg(Grid g) {
     rho = g.p[RHO][i];
     vol = cell_volume(&g);
         
-    inv_rho    = fabs(rho) > 1e-6 ? 1.f / rho : 0;
+    inv_rho = fabs(rho) > 1e-6 ? 1.f / rho : 0;
 
     sv = inv_rho;
     sr = 1.f / vol;
@@ -82,7 +88,7 @@ __global__ void space_avg(Grid g) {
     g.p[VZ][i] *= sv;
 
     if (g.colors) {
-#define scale(a) g.c[a##_COLOR][i] *= sr;
+#define scale(a) g.c[a##_COLOR][i] *= inv_rho;
         XMACRO_COLOR(scale)
 #undef scale
     }
@@ -129,7 +135,7 @@ __global__ void time_avg(int nsteps, Grid g) {
         g.p[j][i] *= s;
 
     if (g.colors)
-        for (j = 0; j < NFIELDS_S; ++j)
+        for (j = 0; j < NFIELDS_C; ++j)
             g.c[j][i] *= s;
 
     if (g.stress)

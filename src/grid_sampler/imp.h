@@ -16,7 +16,7 @@ void grid_sampler_data_push(long n, const Particle *pp, const int *cc,
 
 
 // tag::mem[]
-void grid_sampler_ini(bool color, bool stress, int3 L, int3 N, GridSampler**); // <1>
+void grid_sampler_ini(bool colors, bool stress, int3 L, int3 N, GridSampler**); // <1>
 void grid_sampler_fin(GridSampler*); // <2>
 // end::mem[]
 
