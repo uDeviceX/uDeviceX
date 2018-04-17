@@ -11,16 +11,16 @@ void den_ini(int maxp, /**/ DCont **d0) {
     d = *d0;
 
     sz = maxp * sizeof(int);
-    CC(d::Malloc((void**) &d->kk, sz));
-    CC(d::Malloc((void**) &d->ndead_dev, sizeof(int)));
+    Dalloc(&d->kk, maxp);
+    Dalloc(&d->ndead_dev, 1);
 
     CC(d::MemsetAsync(d->kk, 0, sz));
     reset_ndead(d);
 }
 
 void den_fin(DCont *d) {
-    CC(d::Free(d->kk));
-    CC(d::Free(d->ndead_dev));
+    Dfree(d->kk);
+    Dfree(d->ndead_dev);
     EFREE(d);
 }
 

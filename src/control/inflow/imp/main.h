@@ -9,7 +9,6 @@ static void ini_flux(int n, curandState_t *rr, float *cumflux) {
 
 void inflow_ini(int2 nc, Inflow **i) {
     int n;
-    size_t sz;
     Inflow *ip;
     Desc *d;
 
@@ -21,20 +20,13 @@ void inflow_ini(int2 nc, Inflow **i) {
     n = nc.x * nc.y;
     d->nc = nc;
 
-    sz = n * sizeof(curandState_t);
-    CC(d::Malloc((void**) &d->rnds, sz));
+    Dalloc(&d->rnds,    n);
+    Dalloc(&d->uu,      n);
+    Dalloc(&d->cumflux, n);
+    Dalloc(&d->ndev,    1);
 
-    sz = n * sizeof(float3);
-    CC(d::Malloc((void**) &d->uu, sz));
-
-    sz = n * sizeof(float);
-    CC(d::Malloc((void**) &d->cumflux, sz));
-
-    sz = sizeof(int);
-    CC(d::Malloc((void**) &d->ndev, sz));
-
-    ini_rnd(n, d->rnds);
-    ini_flux(n, d->rnds, d->cumflux);
+    UC(ini_rnd(n, d->rnds));
+    UC(ini_flux(n, d->rnds, d->cumflux));
 
     ip->t = TYPE_NONE;
 }
@@ -62,10 +54,10 @@ void inflow_ini_velocity(Inflow *i) {
 
 void inflow_fin(Inflow *i) {
     Desc *d = &i->d;
-    CC(d::Free(d->rnds));
-    CC(d::Free(d->uu));
-    CC(d::Free(d->cumflux));
-    CC(d::Free(d->ndev));
+    Dfree(d->rnds);
+    Dfree(d->uu);
+    Dfree(d->cumflux);
+    Dfree(d->ndev);
     EFREE(i);
 }
 

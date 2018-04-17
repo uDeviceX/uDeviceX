@@ -55,7 +55,7 @@ static void ini_map(const Coords *coords, T p, int **ids, int *nids) {
     *nids = n;
     sz = n * sizeof(int);
     
-    CC(d::Malloc((void**) ids, sz));
+    Dalloc(ids, n);
     CC(d::Memcpy(*ids, ii, sz, H2D));
     
     EFREE(ii);
@@ -78,6 +78,6 @@ void den_map_set_circle(const Coords *c, float R, DContMap *m) {
 }
 
 void den_map_fin(DContMap *m) {
-    if (m->cids) CC(d::Free(m->cids));
+    if (m->cids) Dfree(m->cids);
     EFREE(m);
 }
