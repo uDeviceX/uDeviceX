@@ -147,29 +147,25 @@ static void download(const Grid *dev, Grid *hst) {
     if (dev->stress) download_n(NFIELDS_S, n, dev->s, hst->s);
 }
 
+static void build_desc(int ncmp, const char * const name[], const float * const data[],
+                       int *j, const char *dst_name[], const float *dst_data[]) {
+    for (int i = 0; i < ncmp; ++i) {
+        dst_data[*j] = data[i];
+        dst_name[*j] = name[i];
+        ++(*j);
+    }
+}
+
 static void dump(MPI_Comm cart, const char *dir, long id, const Grid *g) {
     char path[FILENAME_MAX];
-    int i, j, ncmp;
+    int ncmp;
     const float *data[TOT_NFIELDS];
     const char *names[TOT_NFIELDS];
 
-    j = 0;
-    for (i = 0; i < NFIELDS_P; ++i) {
-        data[j]  = g->p[i];
-        names[j] = names_p[i];
-        ++j;
-    }
-
-    if (g->stress) {
-        for (i = 0; i < NFIELDS_S; ++i) {
-            data[j]  = g->s[i];
-            names[j] = names_s[i];
-            ++j;
-        }
-    }
+    ncmp = 0;
+    build_desc               (NFIELDS_P, names_p, g->p, /**/ &ncmp, names, data);
+    if (g->stress) build_desc(NFIELDS_S, names_s, g->s, /**/ &ncmp, names, data);
     
-    ncmp = j;
-
     sprintf(path, DUMP_BASE "/%s/%04ld.h5", dir, id);
     
     UC(grid_write(g->N, g->L, cart, path, ncmp, data, names));
