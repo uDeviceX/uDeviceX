@@ -39,8 +39,8 @@ static void dev_free_n(int na, float *a[]) {
 }
 
 static void fin_dev_grid(Grid *g) {
-    UC(dev_free_n(NFIELDS_P, g->p) );
-    if (g->stress) UC(dev_free_n(NFIELDS_S, g->s));    
+    UC(                dev_free_n(NFIELDS_P, g->p) );
+    if (g->stress) UC( dev_free_n(NFIELDS_S, g->s) );    
 }
 
 static void hst_free_n(int na, float *a[]) {
@@ -75,8 +75,8 @@ static void reset_dev_n(int na, long n, float *a[]) {
 
 static void reset_dev_grid(Grid *g) {
     long n = get_size(g);
-    reset_dev_n(NFIELDS_P, n, g->p);
-    if (g->stress) reset_dev_n(NFIELDS_S, n, g->s);
+    UC(                reset_dev_n(NFIELDS_P, n, g->p) );
+    if (g->stress) UC( reset_dev_n(NFIELDS_S, n, g->s) );
 }
 
 void grid_sampler_reset(GridSampler *s) {
@@ -90,7 +90,7 @@ static void datum_view(const SampleDatum *d, Datum_v *v) {
 }
 
 static void datum_view(const SampleDatum *d, DatumS_v *v) {
-    v->n = d->n;
+    v->n  = d->n;
     v->pp = d->pp;
     v->ss = d->ss;
 }
