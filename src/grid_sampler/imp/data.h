@@ -11,7 +11,7 @@ void grid_sampler_data_reset(GridSampleData *s) {
     s->n = 0;
 }
 
-void grid_sampler_data_push(long n, const Particle *pp, const float *ss, GridSampleData *s) {
+void grid_sampler_data_push(long n, const Particle *pp, const int *cc, const float *ss, GridSampleData *s) {
     int id;
     SampleDatum *d;
     id = s->n++;
@@ -22,6 +22,7 @@ void grid_sampler_data_push(long n, const Particle *pp, const float *ss, GridSam
     d = s->d + id;
     d->n = n;
     d->pp = pp;
+    d->cc = cc;
     d->ss = ss;
 }
 

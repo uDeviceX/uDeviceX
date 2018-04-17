@@ -96,7 +96,7 @@ static void sample(Sim *s) {
     Sampler *sam = &s->dump.field_sampler;
 
     UC(grid_sampler_data_reset(sam->d));
-    UC(grid_sampler_data_push(flu->q.n, flu->q.pp, flu->ss, sam->d));
+    UC(grid_sampler_data_push(flu->q.n, flu->q.pp, flu->q.cc, flu->ss, sam->d));
     UC(grid_sampler_add(sam->d, sam->s));
 }
 

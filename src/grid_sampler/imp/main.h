@@ -7,15 +7,17 @@ static void dev_alloc_n(int na, long n, float *a[]) {
     for (int i = 0; i < na; ++i) Dalloc(&a[i], n);
 }
 
-static void ini_dev_grid(bool stress, int3 L, int3 N, Grid *g) {
+static void ini_dev_grid(bool colors, bool stress, int3 L, int3 N, Grid *g) {
     long n;
     g->N = N;
     g->L = L;
+    g->colors = colors;
     g->stress = stress;
 
     n = get_size(g);
 
     UC(             dev_alloc_n(NFIELDS_P, n, g->p) );
+    if (colors) UC( dev_alloc_n(NFIELDS_C, n, g->c) );
     if (stress) UC( dev_alloc_n(NFIELDS_S, n, g->s) );
 }
 
@@ -23,14 +25,16 @@ static void hst_alloc_n(int na, long n, float *a[]) {
     for (int i = 0; i < na; ++i) EMALLOC(n, &a[i]);
 }
 
-static void ini_hst_grid(bool stress, int3 L, int3 N, Grid *g) {
+static void ini_hst_grid(bool colors, bool stress, int3 L, int3 N, Grid *g) {
     long n;
     g->N = N;
     g->L = L;
+    g->colors = colors;
     g->stress = stress;
 
     n = get_size(g);
     UC(             hst_alloc_n(NFIELDS_P, n, g->p) );
+    if (colors) UC( hst_alloc_n(NFIELDS_C, n, g->c) );
     if (stress) UC( hst_alloc_n(NFIELDS_S, n, g->s) );
 }
 
@@ -40,7 +44,8 @@ static void dev_free_n(int na, float *a[]) {
 
 static void fin_dev_grid(Grid *g) {
     UC(                dev_free_n(NFIELDS_P, g->p) );
-    if (g->stress) UC( dev_free_n(NFIELDS_S, g->s) );    
+    if (g->colors) UC( dev_free_n(NFIELDS_C, g->c) );
+    if (g->stress) UC( dev_free_n(NFIELDS_S, g->s) );
 }
 
 static void hst_free_n(int na, float *a[]) {
@@ -48,17 +53,18 @@ static void hst_free_n(int na, float *a[]) {
 }
 
 static void fin_hst_grid(Grid *g) {
-    UC(hst_free_n(NFIELDS_P, g->p) );
-    if (g->stress) UC(hst_free_n(NFIELDS_S, g->s));
+    UC(                hst_free_n(NFIELDS_P, g->p) );
+    if (g->colors) UC( hst_free_n(NFIELDS_C, g->c) );
+    if (g->stress) UC( hst_free_n(NFIELDS_S, g->s) );
 }
 
-void grid_sampler_ini(bool stress, int3 L, int3 N, GridSampler **s0) {
+void grid_sampler_ini(bool colors, bool stress, int3 L, int3 N, GridSampler **s0) {
     GridSampler *s;
     EMALLOC(1, s0);
     s = *s0;
-    UC(ini_dev_grid(stress, L, N, &s->sdev));
-    UC(ini_dev_grid(stress, L, N, &s->stdev));
-    UC(ini_hst_grid(stress, L, N, &s->hst));
+    UC(ini_dev_grid(colors, stress, L, N, &s->sdev));
+    UC(ini_dev_grid(colors, stress, L, N, &s->stdev));
+    UC(ini_hst_grid(colors, stress, L, N, &s->hst));
     UC(grid_sampler_reset(s));
 }
 
@@ -76,6 +82,7 @@ static void reset_dev_n(int na, long n, float *a[]) {
 static void reset_dev_grid(Grid *g) {
     long n = get_size(g);
     UC(                reset_dev_n(NFIELDS_P, n, g->p) );
+    if (g->colors) UC( reset_dev_n(NFIELDS_C, n, g->c) );
     if (g->stress) UC( reset_dev_n(NFIELDS_S, n, g->s) );
 }
 
@@ -126,8 +133,9 @@ static void download_n(int na, long n, float * const dev[], float *hst[]) {
 
 static void download(const Grid *dev, Grid *hst) {
     long n = get_size(dev);
-    download_n(NFIELDS_P, n, dev->p, hst->p);
-    if (dev->stress) download_n(NFIELDS_S, n, dev->s, hst->s);
+    UC(                  download_n(NFIELDS_P, n, dev->p, hst->p) );
+    if (dev->colors) UC( download_n(NFIELDS_C, n, dev->c, hst->c) );
+    if (dev->stress) UC( download_n(NFIELDS_S, n, dev->s, hst->s) );
 }
 
 static void build_desc(int ncmp, const char * const name[], const float * const data[],
@@ -147,6 +155,7 @@ static void dump(MPI_Comm cart, const char *dir, long id, const Grid *g) {
 
     ncmp = 0;
     build_desc               (NFIELDS_P, names_p, g->p, /**/ &ncmp, names, data);
+    if (g->colors) build_desc(NFIELDS_C, names_c, g->c, /**/ &ncmp, names, data);
     if (g->stress) build_desc(NFIELDS_S, names_s, g->s, /**/ &ncmp, names, data);
     
     sprintf(path, DUMP_BASE "/%s/%04ld.h5", dir, id);

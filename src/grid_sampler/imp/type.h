@@ -33,8 +33,8 @@ struct Grid {
     int3 L, N; /* subdomain size, grid size */
     float *p[NFIELDS_P]; /* particle density and velocity */
     float *s[NFIELDS_S]; /* stress                        */
-    float *c[N_COLOR];   /* color density                 */
-    bool stress;
+    float *c[NFIELDS_C]; /* color density                 */
+    bool colors, stress;
 };
 
 struct GridSampler {
@@ -46,6 +46,7 @@ struct SampleDatum {
     long n;
     const Particle *pp;
     const float *ss;
+    const int *cc;
 };
 
 enum {

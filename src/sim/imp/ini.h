@@ -214,13 +214,14 @@ static int3 grid_size(int3 L, int3 r) {
 
 static void ini_sampler(const Coords *c, const Opt *opt, Sampler *s) {
     int3 N, L;
-    bool stress;
+    bool stress, colors;
     stress = opt->fluss;
+    colors = opt->flucolors;
     L = subdomain(c);
     N = grid_size(L, opt->sampler_grid_ref);
     
     UC(grid_sampler_data_ini(&s->d));
-    UC(grid_sampler_ini(stress, L, N, &s->s));
+    UC(grid_sampler_ini(colors, stress, L, N, &s->s));
 }
 
 static void ini_dump(int maxp, MPI_Comm cart, const Coords *c, const Opt *opt, Dump *d) {

@@ -10,12 +10,13 @@ void grid_sampler_data_fin(GridSampleData  *);
 
 // tag::data_int[]
 void grid_sampler_data_reset(GridSampleData *); // <1>
-void grid_sampler_data_push(long n, const Particle *pp, const float *ss, GridSampleData *); // <2>
+void grid_sampler_data_push(long n, const Particle *pp, const int *cc,
+                            const float *ss, GridSampleData *); // <2>
 // end::data_int[]
 
 
 // tag::mem[]
-void grid_sampler_ini(bool stress, int3 L, int3 N, GridSampler**); // <1>
+void grid_sampler_ini(bool color, bool stress, int3 L, int3 N, GridSampler**); // <1>
 void grid_sampler_fin(GridSampler*); // <2>
 // end::mem[]
 
