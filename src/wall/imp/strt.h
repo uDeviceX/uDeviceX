@@ -3,16 +3,15 @@
 
 static void read(MPI_Comm comm, const char *base, int maxn, /**/ float4 *pp, int *n) {
     Particle *pphst, *ppdev;
-    size_t sz = maxn * sizeof(Particle);
     EMALLOC(maxn, &pphst);
 
     restart_read_pp(comm, base, PP, RESTART_TEMPL, n, pphst);
 
     if (*n) {
-        CC(d::Malloc((void **) &ppdev, sz));
+        Dalloc(&ppdev, maxn);
         cH2D(ppdev, pphst, *n);
         KL(wall_dev::particle2float4, (k_cnf(*n)), (ppdev, *n, /**/ pp));
-        CC(d::Free(ppdev));
+        Dfree(ppdev);
     }
     EFREE(pphst);
 }
@@ -22,10 +21,10 @@ static void write(MPI_Comm comm, const char *base, int n, const float4 *pp) {
 
     EMALLOC(n, &pphst);
     if (n) {
-        CC(d::Malloc((void **) &ppdev, n * sizeof(Particle)));
+        Dalloc(&ppdev, n);
         KL(wall_dev::float42particle , (k_cnf(n)), (pp, n, /**/ ppdev));
         cD2H(pphst, ppdev, n);
-        CC(d::Free(ppdev));
+        Dfree(ppdev);
     }
     restart_write_pp(comm, base, PP, RESTART_TEMPL, n, pphst);
 
@@ -34,14 +33,14 @@ static void write(MPI_Comm comm, const char *base, int n, const float4 *pp) {
 
 static void strt_quants(MPI_Comm comm, const char *base, int maxn, int *w_n, float4 **w_pp) {
     float4 * pptmp;
-    CC(d::Malloc((void **) &pptmp, maxn * sizeof(float4)));
+    Dalloc(&pptmp, maxn);
     read(comm, base, maxn, pptmp, w_n);
 
     if (*w_n) {
-        CC(d::Malloc((void **) w_pp, *w_n * sizeof(float4)));
+        Dalloc(w_pp, *w_n);
         cD2D(*w_pp, pptmp, *w_n);
     }
-    CC(d::Free(pptmp));
+    Dfree(pptmp);
 }
 
 void wall_strt_quants(MPI_Comm comm, const char *base, int maxn, WallQuants *q) {

@@ -23,8 +23,8 @@ static void load_rigid_mesh(const char *fname, int *nt, int *nv, int4 **tt_hst, 
     msg_print("reading: '%s'", fname);
     UC(ply_read(fname, /**/ nt, nv, tt_hst, vv_hst));
 
-    CC(d::Malloc((void**)tt_dev,     (*nt) * sizeof(int4)));
-    CC(d::Malloc((void**)vv_dev, 3 * (*nv) * sizeof(float)));
+    Dalloc(tt_dev,     (*nt));
+    Dalloc(vv_dev, 3 * (*nv));
 
     cH2D(*tt_dev, *tt_hst,     *nt);
     cH2D(*vv_dev, *vv_hst, 3 * *nv);

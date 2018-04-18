@@ -12,8 +12,8 @@ void rig_fin(RigQuants *q) {
     if (q->htt) EFREE(q->htt);
     if (q->hvv) EFREE(q->hvv);
 
-    if (q->dtt) CC(d::Free(q->dtt));
-    if (q->dvv) CC(d::Free(q->dvv));
+    if (q->dtt) Dfree(q->dtt);
+    if (q->dvv) Dfree(q->dvv);
     
     EFREE(q->ss_dmp);
     EFREE(q->ss_dmp_bb);

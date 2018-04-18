@@ -15,13 +15,13 @@ static void freeze(MPI_Comm cart, int3 L, int maxn, const Sdf *qsdf, /*io*/ int 
 
 static void gen_quants(MPI_Comm cart, int3 L, int maxn, const Sdf *qsdf, /**/ int *o_n, Particle *o_pp, int *w_n, float4 **w_pp) {
     Particle *frozen;
-    CC(d::Malloc((void **) &frozen, maxn * sizeof(Particle)));
+    Dalloc(&frozen, maxn);
     UC(freeze(cart, L, maxn, qsdf, o_n, o_pp, w_n, frozen));
     msg_print("consolidating wall");
-    CC(d::Malloc((void **) w_pp, *w_n * sizeof(float4)));
+    Dalloc(w_pp, *w_n);
     KL(wall_dev::particle2float4, (k_cnf(*w_n)), (frozen, *w_n, /**/ *w_pp));
     
-    CC(d::Free(frozen));
+    Dfree(frozen);
     dSync();
 }
 
@@ -34,15 +34,15 @@ static void build_cells(const int n, float4 *pp4, Clist *cells, ClistMap *mcells
     if (n == 0) return;
 
     Particle *pp, *pp0;
-    CC(d::Malloc((void **) &pp,  n * sizeof(Particle)));
-    CC(d::Malloc((void **) &pp0, n * sizeof(Particle)));
+    Dalloc(&pp,  n);
+    Dalloc(&pp0, n);
 
     KL(wall_dev::float42particle, (k_cnf(n)), (pp4, n, /**/ pp));
     UC(clist_build(n, n, pp, /**/ pp0, cells, mcells));
     KL(wall_dev::particle2float4, (k_cnf(n)), (pp0, n, /**/ pp4));
 
-    CC(d::Free(pp));
-    CC(d::Free(pp0));
+    Dfree(pp);
+    Dfree(pp0);
 }
 
 static void gen_ticket(const int w_n, float4 *w_pp, Clist *cells, Texo<int> *texstart, Texo<float4> *texpp) {
