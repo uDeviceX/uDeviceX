@@ -24,32 +24,30 @@ static int get_stride(int nfrags)       {return nfrags + 1;}
 static int get_size(int nw, int nfrags) {return (nw + 1) * get_stride(nfrags);}
 
 void emap_ini(int nw, int nfrags, int cap[], /**/ EMap *map) {
-    int i, c;
-    size_t sz;
+    int i, c, sz;
     UC(check_frags(nfrags));
-    sz = get_size(nw, nfrags) * sizeof(int);
-    CC(d::Malloc((void**) &map->counts,  sz));
-    CC(d::Malloc((void**) &map->starts,  sz));
-    CC(d::Malloc((void**) &map->offsets, sz));
-    CC(d::Malloc((void**) &map->cap, nfrags * sizeof(int)));
+    sz = get_size(nw, nfrags);
+    Dalloc(&map->counts,  sz);
+    Dalloc(&map->starts,  sz);
+    Dalloc(&map->offsets, sz);
+    Dalloc(&map->cap, nfrags);
     cH2D(map->cap, cap, nfrags);
 
     for (i = 0; i < nfrags; ++i) {
         c = cap[i];
-        sz = c * sizeof(int);
-        CC(d::Malloc((void**) &map->ids[i], sz));
+        Dalloc(&map->ids[i], c);
     }
 }
 
 void emap_fin(int nfrags, EMap *map) {
     UC(check_frags(nfrags));
-    CC(d::Free(map->counts));
-    CC(d::Free(map->starts));
-    CC(d::Free(map->offsets));
-    CC(d::Free(map->cap));
+    Dfree(map->counts);
+    Dfree(map->starts);
+    Dfree(map->offsets);
+    Dfree(map->cap);
 
     for (int i = 0; i < nfrags; ++i)
-        CC(d::Free(map->ids[i]));
+        Dfree(map->ids[i]);
 }
 
 void emap_reini(int nw, int nfrags, /**/ EMap map) {

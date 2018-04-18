@@ -1,9 +1,9 @@
 void eflu_pack_fin(EFluPack *p) {
     for (int i = 0; i < NFRAGS; ++i) {
-        CC(d::Free(p->bcc.d[i]));
-        CC(d::Free(p->bss.d[i]));
-        CC(d::Free(p->fss.d[i]));
-        CC(d::Free(p->bii.d[i]));
+        Dfree(p->bcc.d[i]);
+        Dfree(p->bss.d[i]);
+        Dfree(p->fss.d[i]);
+        Dfree(p->bii.d[i]);
     }
     
     UC(comm_bags_fin(PINNED_DEV, NONE, /**/ &p->hpp, &p->dpp));
@@ -12,7 +12,7 @@ void eflu_pack_fin(EFluPack *p) {
 
     UC(comm_bags_fin(PINNED_HST, NONE, /**/ &p->hfss, NULL));
 
-    CC(d::Free(p->counts_dev));
+    Dfree(p->counts_dev);
     EFREE(p);
 }
 

@@ -13,27 +13,27 @@
 #include "type.h"
 
 void dmap_ini(int nfrags, const int capacity[], /**/ DMap *m) {
-    CC(d::Malloc((void**) &m->counts,  nfrags      * sizeof(int)));
-    CC(d::Malloc((void**) &m->starts, (nfrags + 1) * sizeof(int)));
+    Dalloc(&m->counts,  nfrags);
+    Dalloc(&m->starts, (nfrags + 1));
 
     CC(d::alloc_pinned((void**) &m->hcounts, nfrags * sizeof(int)));
     
     int i, c;
     for (i = 0; i < nfrags; ++i) {
         c = capacity[i];
-        if (c) CC(d::Malloc((void**) &m->ids[i], c * sizeof(int)));
+        if (c) Dalloc(&m->ids[i], c);
         else   m->ids[i] = NULL;
     }
     
 }
 
 void dmap_fin(int nfrags, /**/ DMap *m) {
-    CC(d::Free(m->counts));
-    CC(d::Free(m->starts));
+    Dfree(m->counts);
+    Dfree(m->starts);
     CC(d::FreeHost(m->hcounts));    
     for (int i = 0; i < nfrags; ++i)
         if (m->ids[i])
-            CC(d::Free(m->ids[i]));
+            Dfree(m->ids[i]);
 }
 
 void dmap_reini(int nfrags, /**/ DMap m) {

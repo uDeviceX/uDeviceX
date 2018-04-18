@@ -1,8 +1,8 @@
 void drbc_pack_fin(DRbcPack *p) {
     UC(dmap_fin(NBAGS, /**/ &p->map));
     UC(comm_bags_fin(PINNED, DEV_ONLY, /**/ &p->hpp, &p->dpp));
-    CC(d::Free(p->minext));
-    CC(d::Free(p->maxext));
+    Dfree(p->minext);
+    Dfree(p->maxext);
 
     if (p->ids) {
         UC(dmap_fin_host(NBAGS, /**/ &p->hmap));

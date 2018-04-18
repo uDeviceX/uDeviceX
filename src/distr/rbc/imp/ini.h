@@ -19,8 +19,8 @@ void drbc_pack_ini(bool ids, int3 L, int maxnc, int nv, DRbcPack **pack) {
     /* one datum is here a full RBC, so bsize is nv * sizeof(Particle) */
     UC(comm_bags_ini(PINNED, DEV_ONLY, nv * sizeof(Particle), numc, /**/ &p->hpp, &p->dpp));
 
-    CC(d::Malloc((void**) &p->minext, maxnc * sizeof(float3)));
-    CC(d::Malloc((void**) &p->maxext, maxnc * sizeof(float3)));
+    Dalloc(&p->minext, maxnc);
+    Dalloc(&p->maxext, maxnc);
 
     if (ids) {
         UC(dmap_ini_host(NBAGS, numc, /**/ &p->hmap));

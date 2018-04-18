@@ -1,6 +1,5 @@
 void eflu_pack_ini(bool colors, int3 L, int maxd, EFluPack **pack) {
     int i, nc, cap[NBAGS], ncs[NBAGS];
-    size_t sz;
     EFluPack *p;
 
     EMALLOC(1, pack);
@@ -13,13 +12,11 @@ void eflu_pack_ini(bool colors, int3 L, int maxd, EFluPack **pack) {
     
     for (i = 0; i < NFRAGS; ++i) {
         ncs[i] = nc = frag_hst::ncell(L, i) + 1;
-        sz = nc * sizeof(int);
-        CC(d::Malloc((void**) &p->bcc.d[i], sz));
-        CC(d::Malloc((void**) &p->bss.d[i], sz));
-        CC(d::Malloc((void**) &p->fss.d[i], sz));
+        Dalloc(&p->bcc.d[i], nc);
+        Dalloc(&p->bss.d[i], nc);
+        Dalloc(&p->fss.d[i], nc);
         
-        sz = cap[i] * sizeof(int);
-        CC(d::Malloc((void**) &p->bii.d[i], sz));
+        Dalloc(&p->bii.d[i], cap[i]);
     }
     ncs[BULK] = 0;
     
@@ -31,8 +28,7 @@ void eflu_pack_ini(bool colors, int3 L, int maxd, EFluPack **pack) {
 
     memcpy(p->hfss.counts, ncs, sizeof(ncs));
     
-    sz = 26 * sizeof(int);
-    CC(d::Malloc((void**) &p->counts_dev, sz));
+    Dalloc(&p->counts_dev, NFRAGS);
 
     p->opt.colors = colors;
 }
