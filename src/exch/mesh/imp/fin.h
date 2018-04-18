@@ -1,8 +1,8 @@
 void emesh_pack_fin(EMeshPack *p) {
     UC(emap_fin(NFRAGS, /**/ &p->map));
     UC(comm_bags_fin(PINNED, NONE, /**/ &p->hpp, &p->dpp));
-    CC(d::Free(p->minext));
-    CC(d::Free(p->maxext));
+    Dfree(p->minext);
+    Dfree(p->maxext);
     EFREE(p);
 }
 
@@ -19,9 +19,9 @@ void emesh_unpack_fin(EMeshUnpack *u) {
 /* Momentum struct */
 
 static void fin_map(/**/ MMap *map) {
-    CC(d::Free(map->cc));
-    CC(d::Free(map->ss));
-    CC(d::Free(map->subids));
+    Dfree(map->cc);
+    Dfree(map->ss);
+    Dfree(map->subids);
 }
 
 void emesh_packm_fin(EMeshPackM *p) {

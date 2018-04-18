@@ -18,8 +18,8 @@ void emesh_pack_ini(int3 L, int nv, int max_mesh_num, EMeshPack **pack) {
     UC(emap_ini(1, NFRAGS, cap, /**/ &p->map));
     UC(comm_bags_ini(PINNED, NONE, msz, cap, /**/ &p->hpp, &p->dpp));
 
-    CC(d::Malloc((void**) &p->minext, max_mesh_num * sizeof(float3)));
-    CC(d::Malloc((void**) &p->maxext, max_mesh_num * sizeof(float3)));
+    Dalloc(&p->minext, max_mesh_num);
+    Dalloc(&p->maxext, max_mesh_num);
 }
 
 void emesh_comm_ini(MPI_Comm cart, /**/ EMeshComm **com) {
@@ -51,10 +51,9 @@ static void get_mcap(int nfrags, int nt, const int *cap, /**/ int *mcap) {
 }
 
 static void ini_map(int nt, int max_mesh_num, MMap *map) {
-    size_t sz = max_mesh_num * sizeof(int);
-    CC(d::Malloc((void**) &map->cc, sz));
-    CC(d::Malloc((void**) &map->ss, sz));
-    CC(d::Malloc((void**) &map->subids, sz * nt));
+    Dalloc(&map->cc, max_mesh_num);
+    Dalloc(&map->ss, max_mesh_num);
+    Dalloc(&map->subids, max_mesh_num * nt);
 }
 
 void emesh_packm_ini(int nt, int max_mesh_num, EMeshPackM **pack) {
