@@ -22,9 +22,9 @@ void dflu_unpack_fin(DFluUnpack *u) {
     if (u->opt.ids)    UC(comm_bags_fin(HST_ONLY, NONE, &u->hii, NULL));
     if (u->opt.colors) UC(comm_bags_fin(HST_ONLY, NONE, &u->hcc, NULL));
 
-    CC(d::Free(u->ppre));
-    if (u->opt.ids)    CC(d::Free(u->iire));
-    if (u->opt.colors) CC(d::Free(u->ccre));
+    Dfree(u->ppre);
+    if (u->opt.ids)    Dfree(u->iire);
+    if (u->opt.colors) Dfree(u->ccre);
 
     EFREE(u);
 }

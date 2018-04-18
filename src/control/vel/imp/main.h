@@ -29,8 +29,8 @@ static void ini_sampler(int3 L, Sampler *s) {
     s->L = L;
     ncells = L.x * L.y * L.z;
 
-    CC(d::Malloc((void **) &s->gridvel, ncells * sizeof(float3)));
-    CC(d::Malloc((void **) &s->gridnum, ncells * sizeof(int)));
+    Dalloc(&s->gridvel, ncells);
+    Dalloc(&s->gridnum, ncells);
 
     nchunks = ceiln(ncells, WARPSIZE);
     
@@ -67,8 +67,8 @@ void vcont_ini(MPI_Comm comm, int3 L, /**/ PidVCont **c) {
 }
 
 static void fin_sampler(Sampler *s) {
-    CC(d::Free(s->gridvel));
-    CC(d::Free(s->gridnum));
+    Dfree(s->gridvel);
+    Dfree(s->gridnum);
     CC(d::FreeHost(s->totvel));
     CC(d::FreeHost(s->totnum));
 }

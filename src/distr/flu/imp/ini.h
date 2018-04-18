@@ -69,9 +69,9 @@ void dflu_unpack_ini(bool colors, bool ids, int3 L, int maxdensity, DFluUnpack *
     if (colors) UC(comm_bags_ini(HST_ONLY, NONE, sizeof(int), capacity, /**/ &u->hcc, NULL));
 
     int maxparts = (int) (nhalocells(L) * maxdensity) + 1;
-    CC(d::Malloc((void**) &u->ppre, maxparts * sizeof(Particle)));
-    if (ids)    CC(d::Malloc((void**) &u->iire, maxparts * sizeof(int)));
-    if (colors) CC(d::Malloc((void**) &u->ccre, maxparts * sizeof(int)));
+    Dalloc(&u->ppre, maxparts);
+    if (ids)    Dalloc(&u->iire, maxparts);
+    if (colors) Dalloc(&u->ccre, maxparts);
 
     u->opt.colors = colors;
     u->opt.ids = ids;
