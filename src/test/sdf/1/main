@@ -3,6 +3,7 @@ cd test/sdf/1
 S=`u.cp.s` U=u/sdf
 u.conf0 "$U"
 u.make -j
+mkdir -p h5
 u.cp.sdf cyl1/cyl.dat  sdf.dat
 u.run ./udx conf.cfg
 u.wall.dump h5/wall.h5     > wall.out.txt

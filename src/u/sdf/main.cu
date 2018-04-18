@@ -38,6 +38,9 @@ namespace dev {
 #include "dev.h"
 }
 
+#define DUMP true
+#define NO_DUMP false
+
 struct Part { float x, y, z; };
 
 void main0(Sdf *sdf, Part *p) {
@@ -53,7 +56,7 @@ void main1(MPI_Comm cart, const Coords *c, Part *p) {
     int3 L;
     L = subdomain(c);
     UC(sdf_ini(L, &sdf));
-    UC(sdf_gen(c, cart, true, sdf));
+    UC(sdf_gen(c, cart, DUMP, sdf));
     UC(main0(sdf, p));
     UC(sdf_fin(sdf));
     dSync();    
