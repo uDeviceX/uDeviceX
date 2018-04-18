@@ -39,34 +39,33 @@ static FluForcesBulk *bulkforces;
 
 static void read_pp(const char *fname) {
     TxtRead *tr;
-    size_t szp, szf;
+    long sz;
     UC(txt_read_pp(fname, &tr));
     n = txt_read_get_n(tr);
     msg_print("have read %d particles", n);
 
-    szp = (n + 32) * sizeof(Particle);
-    szf = (n + 32) * sizeof(Force);
+    sz = n + 32;
 
-    UC(emalloc(szp, (void**)&pp_hst));
-    UC(emalloc(szf, (void**)&ff_hst));
+    EMALLOC(sz, &pp_hst);
+    EMALLOC(sz, &ff_hst);
 
-    CC(d::Malloc((void**)&pp, szp));
-    CC(d::Malloc((void**)&pp0, szp));
-    CC(d::Malloc((void**)&ff, szf));
+    Dalloc(&pp,  sz);
+    Dalloc(&pp0, sz);
+    Dalloc(&ff,  sz);
 
-    memcpy(pp_hst, txt_read_get_pp(tr), szp);
-    CC(d::Memcpy(pp, pp_hst, szp, H2D));
-    CC(d::Memset(ff, 0, szf));
+    memcpy(pp_hst, txt_read_get_pp(tr), sz * sizeof(Particle));
+    CC(d::Memcpy(pp, pp_hst, sz * sizeof(Particle), H2D));
+    CC(d::Memset(ff, 0, sz * sizeof(Force)));
 
     UC(txt_read_fin(tr));
 }
 
 static void dealloc() {
-    CC(d::Free(pp));
-    CC(d::Free(pp0));
-    CC(d::Free(ff));
-    UC(efree(pp_hst));
-    UC(efree(ff_hst));
+    Dfree(pp);
+    Dfree(pp0);
+    Dfree(ff);
+    EFREE(pp_hst);
+    EFREE(ff_hst);
     n = 0;
 }
 

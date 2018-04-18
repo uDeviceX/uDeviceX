@@ -135,8 +135,8 @@ int main(int argc, char **argv) {
     EMALLOC(MAXN, &pp_hst);
     EMALLOC(clist.ncells, &counts);
     EMALLOC(clist.ncells, &starts);
-    CC(d::Malloc((void**) &pp, MAXN * sizeof(Particle)));
-    CC(d::Malloc((void**) &ppout, MAXN * sizeof(Particle)));
+    Dalloc(&pp,    MAXN);
+    Dalloc(&ppout, MAXN);
 
     read(&n, pp_hst);
     nout = num_parts_inside(L, n, pp_hst);
@@ -158,8 +158,8 @@ int main(int argc, char **argv) {
 
     print_cells(L, starts, counts);
     
-    CC(d::Free(pp));
-    CC(d::Free(ppout));
+    Dfree(pp);
+    Dfree(ppout);
     EFREE(counts);
     EFREE(starts);
     EFREE(pp_hst);

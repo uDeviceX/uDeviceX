@@ -26,13 +26,13 @@ Particle *pp;
 Force *ff;
 
 void alloc() {
-    CC(d::Malloc((void**) &pp, n * sizeof(Particle)));
-    CC(d::Malloc((void**) &ff, n * sizeof(Force)));
+    Dalloc(&pp, n);
+    Dalloc(&ff, n);
 }
 
 void free() {
-    CC(d::Free(pp));
-    CC(d::Free(ff));
+    Dfree(pp);
+    Dfree(ff);
 }
 
 namespace dev {
