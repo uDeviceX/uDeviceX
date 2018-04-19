@@ -14,3 +14,12 @@ void objects_mesh_dump(Objects *obj) {
     if (obj->rig) UC(dump_mesh_rig(obj->cart, obj->coords, d->pp, d->id, obj->rig));
     ++ d->id;
 }
+
+void objects_strt_templ(const char *base, Objects *o) {
+    if (o->rig) UC(rig_strt_dump_templ(o->cart, base, &o->rig->q));
+}
+
+void objects_strt_dump(const char *base, long id, Objects *o) {
+    if (o->mbr) UC(rbc_strt_dump(o->cart, base, id, &o->mbr->q));
+    if (o->mbr) UC(rig_strt_dump(o->cart, base, id, &o->rig->q));
+}
