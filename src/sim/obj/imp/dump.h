@@ -21,5 +21,5 @@ void objects_strt_templ(const char *base, Objects *o) {
 
 void objects_strt_dump(const char *base, long id, Objects *o) {
     if (o->mbr) UC(rbc_strt_dump(o->cart, base, id, &o->mbr->q));
-    if (o->mbr) UC(rig_strt_dump(o->cart, base, id, &o->rig->q));
+    if (o->rig) UC(rig_strt_dump(o->cart, base, id, &o->rig->q));
 }
