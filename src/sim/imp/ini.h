@@ -139,7 +139,7 @@ static void ini_rig(const Config *cfg, MPI_Comm cart, const Opt *opt, int maxp, 
 
     UC(rig_ini(maxp, &s->q));
     tt = s->q.htt; nv = s->q.nv; nt = s->q.nt;
-    UC(mesh_write_ini(cart, opt->rigshifttype, tt, nv, nt, "s", /**/ &s->mesh_write));
+    UC(mesh_write_ini(cart, opt->rig.shifttype, tt, nv, nt, "s", /**/ &s->mesh_write));
 
     EMALLOC(maxp, &s->ff_hst);
     Dalloc(&s->ff, maxp);
@@ -310,16 +310,16 @@ void sim_ini(const Config *cfg, MPI_Comm cart, /**/ Sim **sim) {
 
     UC(ini_flu(cfg, opt, params, s->cart, maxp, params.L, /**/ &s->flu));    
     if (opt->rbc.active)  UC(ini_rbc(cfg, opt, s->cart, params.L, /**/ &s->rbc));
-    if (opt->rig)  UC(ini_rig(cfg, s->cart, opt, maxp, params.L, /**/ &s->rig));
+    if (opt->rig.active)  UC(ini_rig(cfg, s->cart, opt, maxp, params.L, /**/ &s->rig));
     if (opt->wall) UC(ini_wall(cfg, params.L, &s->wall));
     
-    if (opt->rbc.active || opt->rig)
+    if (opt->rbc.active || opt->rig.active)
         UC(ini_objinter(s->cart, maxp, params.L, opt, /**/ &s->objinter));
 
     if (opt->flucolors && opt->rbc.active)
         UC(ini_colorer(s->rbc.q.nv, s->cart, maxp, params.L, /**/ &s->colorer));
 
-    if (opt->rig && opt->rig_bounce)
+    if (opt->rig.active && opt->rig.bounce)
         UC(ini_bounce_back(s->cart, maxp, params.L, &s->rig, /**/ &s->bb));
 
     UC(ini_optional_features(cfg, opt, &params, /**/ s));

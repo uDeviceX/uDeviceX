@@ -7,7 +7,7 @@ static bool active_rbc(const Sim *s) {
 }
 
 static bool active_rig(const Sim *s) {
-    return !s->equilibrating && s->opt.rig;
+    return !s->equilibrating && s->opt.rig.active;
 }
 
 static bool is_sampling_time(const Sim *s) {
@@ -112,11 +112,11 @@ static InterRbcInfos get_rinfo(Sim *s) {
 
 static InterRigInfos get_sinfo(Sim *s) {
     InterRigInfos si;
-    si.active = s->opt.rig;
+    si.active = s->opt.rig.active;
     si.q = &s->rig.q;
     si.pi = s->rig.pininfo;
     si.mass = s->rig.mass;
-    si.empty_pp = s->opt.rig_empty_pp;
+    si.empty_pp = s->opt.rig.empty_pp;
     si.numdensity = s->params.numdensity;
     return si;
 }

@@ -47,7 +47,7 @@ static void step(TimeLine *time, float dt, float tstart, Sim *s) {
 
     if (active_walls(s)) bounce_wall(dt, active_rbc(s), s->coords, wall, /**/ flu, rbc);
 
-    if (active_rig(s) && opt->rig_bounce) bounce_solid(dt, s->params.L, /**/ &s->bb, rig, flu);
+    if (active_rig(s) && opt->rig.bounce) bounce_solid(dt, s->params.L, /**/ &s->bb, rig, flu);
 
     UC(check_pos_soft(s));
     UC(check_vel(dt, s));

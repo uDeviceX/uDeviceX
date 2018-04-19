@@ -41,6 +41,14 @@ static void read_mbr(const Config *c, ObpMbr *o) {
     UC(lookup_bool(c, "rbc.push", &o->push));
 }
 
+static void read_rig(const Config *c, OptRig *o) {
+    UC(lookup_bool(c, "rig.active", &o->active));
+    UC(lookup_bool(c, "rig.bounce", &o->bounce));
+    UC(lookup_bool(c, "rig.empty_pp", &o->empty_pp));
+    o->shifttype = get_shifttype(c, "rig.shifttype");
+    UC(lookup_bool(c, "rig.push", &o->push));
+}
+
 static void read_common(const Config *c, Opt *o) {
     UC(lookup_bool(c, "flu.ids", &o->fluids));
     
@@ -66,11 +74,6 @@ static void read_common(const Config *c, Opt *o) {
     UC(lookup_bool(c, "flu.ids", &o->fluids));
     UC(lookup_bool(c, "flu.stresses", &o->fluss));
 
-    UC(lookup_bool(c, "rig.active", &o->rig));
-    UC(lookup_bool(c, "rig.bounce", &o->rig_bounce));
-    UC(lookup_bool(c, "rig.empty_pp", &o->rig_empty_pp));
-    o->rigshifttype = get_shifttype(c, "rig.shifttype");
-
     UC(lookup_bool(c, "wall.active", &o->wall));    
     UC(lookup_bool(c, "outflow.active", &o->outflow));
     UC(lookup_bool(c, "inflow.active", &o->inflow));
@@ -84,12 +87,12 @@ static void read_common(const Config *c, Opt *o) {
     UC(conf_lookup_int(c, "flu.recolor_freq", &o->recolor_freq));
 
     UC(lookup_bool(c, "flu.push", &o->push_flu));
-    UC(lookup_bool(c, "rig.push", &o->push_rig));
 }
 
 void opt_read(const Config *c, Opt *o) {
     UC(read_common(c, o));
     UC(read_mbr(c, &o->rbc));
+    UC(read_rig(c, &o->rig));
 }
 
 void opt_check(const Opt *o) {

@@ -6,7 +6,7 @@ void body_force(const BForce *bforce, Sim *s) {
 
     if (opt->push_flu)
         UC(bforce_apply(s->coords, flu->mass, bforce, flu->q.n, flu->q.pp, /**/ flu->ff));
-    if (opt->push_rig && active_rig(s))
+    if (opt->rig.push && active_rig(s))
         UC(bforce_apply(s->coords, rig->mass, bforce, rig->q.n, rig->q.pp, /**/ rig->ff));
     if (opt->rbc.push && active_rbc(s))
         UC(bforce_apply(s->coords, rbc->mass, bforce, rbc->q.n, rbc->q.pp, /**/ rbc->ff));

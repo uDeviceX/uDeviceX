@@ -170,16 +170,16 @@ void sim_fin(Sim *s) {
     
     UC(fin_flu(opt, &s->flu));
     if (opt->rbc.active)  UC(fin_rbc(opt, /**/ &s->rbc));
-    if (opt->rig)  UC(fin_rig(/**/ &s->rig));
+    if (opt->rig.active)  UC(fin_rig(/**/ &s->rig));
     if (opt->wall) UC(fin_wall(&s->wall));
 
-    if (opt->rbc.active || opt->rig)
+    if (opt->rbc.active || opt->rig.active)
         UC(fin_objinter(&s->opt, &s->objinter));
     
     if (opt->flucolors && opt->rbc.active)
         UC(fin_colorer(/**/ &s->colorer));
 
-    if (opt->rig && opt->rig_bounce)
+    if (opt->rig.active && opt->rig.bounce)
         UC(fin_bounce_back(&s->bb));
     
     UC(bforce_fin(s->bforce));

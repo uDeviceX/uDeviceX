@@ -99,8 +99,8 @@ static void dump_strt_templ(Sim *s) { /* template dumps (wall, solid) */
     const Opt *opt = &s->opt;
     const char *base = opt->strt_base_dump;
     if (opt->dump_strt) {
-        if (opt->wall) wall_strt_dump_templ(s->cart, base, &w->q);
-        if (opt->rig)  rig_strt_dump_templ(s->cart, base, &rig->q);
+        if (opt->wall)       wall_strt_dump_templ(s->cart, base, &w->q);
+        if (opt->rig.active)  rig_strt_dump_templ(s->cart, base, &rig->q);
     }
 }
 
