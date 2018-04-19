@@ -17,8 +17,6 @@ void distribute_flu(Sim *s) {
     int ndead;
     const Opt *opt = &s->opt;
 
-    NVTX_PUSH("distr_flu");
-    
     lp.pp = q->pp;
 
     if (opt->denoutflow) {
@@ -53,15 +51,11 @@ void distribute_flu(Sim *s) {
     UC(dflu_gather(ndead, d->p, d->u, /**/ q));
 
     dSync();
-
-    NVTX_POP();
 }
 
 void distribute_rbc(Rbc *r) {
     RbcQuants *q = &r->q;
     RbcDistr  *d = &r->d;
-
-    NVTX_PUSH("distr_rbc");
 
     UC(drbc_build_map(q->nc, q->nv, q->pp, /**/ d->p));
     UC(drbc_pack(q, /**/ d->p));
@@ -77,16 +71,12 @@ void distribute_rbc(Rbc *r) {
 
     UC(drbc_unpack_halo(d->u, /**/ q));
     dSync();
-
-    NVTX_POP();
 }
 
 void distribute_rig(Rig *s) {
     RigQuants *q = &s->q;
     RigDistr  *d = &s->d;
     int nv = q->nv;
-
-    NVTX_PUSH("distr_rig");
     
     UC(drig_build_map(q->ns, q->ss, /**/ d->p));
     UC(drig_pack(q->ns, nv, q->ss, q->i_pp, /**/ d->p));
@@ -105,6 +95,4 @@ void distribute_rig(Rig *s) {
     q->n = q->ns * q->nps;
     UC(rig_generate(q->ns, q->ss, q->nps, q->rr0, /**/ q->pp));
     dSync();
-
-    NVTX_POP();
 }

@@ -7,8 +7,6 @@ void forces_dpd(bool stress, Flu *f) {
     flu::RFrag26 rfrags;
 
     FluExch *e = &f->e;
-
-    NVTX_PUSH("forces_dpd");
     
     parray_push_pp(f->q.pp, /**/ &parray);
     if (f->q.colors)
@@ -39,6 +37,4 @@ void forces_dpd(bool stress, Flu *f) {
 
     UC(fluforces_halo_prepare(lfrags, rfrags, /**/ f->halo));
     UC(fluforces_halo_apply(f->params, f->halo, /**/ &farray));
-
-    NVTX_POP();
 }

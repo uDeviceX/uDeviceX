@@ -5,8 +5,6 @@ void forces(float dt, TimeLine *time, Sim *s) {
     bool fluss, tfluss;
     Opt *opt = &s->opt;
 
-    NVTX_PUSH("forces");
-
     tfluss = time_line_cross(time, opt->freq_parts) ||
         is_sampling_time(s);
     fluss = opt->fluss && tfluss;
@@ -23,6 +21,4 @@ void forces(float dt, TimeLine *time, Sim *s) {
     UC(forces_objects(s));
     
     dSync();
-
-    NVTX_POP();
 }
