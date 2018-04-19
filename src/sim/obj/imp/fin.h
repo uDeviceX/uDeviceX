@@ -51,5 +51,6 @@ void objects_fin(Objects *obj) {
     if (obj->rig) UC(fin_rig(obj->rig));
     UC(fin_dump(obj->dump));
     UC(coords_fin(obj->coords));
+    MC(m::Comm_free(&obj->cart));
     EFREE(obj);
 }
