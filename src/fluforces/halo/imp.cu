@@ -31,9 +31,9 @@
 #include "struct/parray/imp.h"
 #include "struct/parray/dev.h"
 
-#include "farray/type.h"
-#include "farray/imp.h"
-#include "farray/dev.h"
+#include "struct/farray/type.h"
+#include "struct/farray/imp.h"
+#include "struct/farray/dev.h"
 
 #include "flu/type.h"
 

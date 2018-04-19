@@ -24,9 +24,9 @@
 #include "pair/dev.h"
 #include "pair/imp.h"
 
-#include "farray/type.h"
-#include "farray/dev.h"
-#include "farray/imp.h"
+#include "struct/farray/type.h"
+#include "struct/farray/dev.h"
+#include "struct/farray/imp.h"
 
 #include "imp.h"
 #include "imp/type.h"

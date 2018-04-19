@@ -33,7 +33,7 @@
 
 #include "pair/imp.h"
 #include "struct/parray/imp.h"
-#include "farray/imp.h"
+#include "struct/farray/imp.h"
 #include "partlist/type.h"
 
 #include "io/mesh/imp.h"

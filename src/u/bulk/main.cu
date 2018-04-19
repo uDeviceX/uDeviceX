@@ -24,7 +24,7 @@
 #include "coords/imp.h"
 
 #include "struct/parray/imp.h"
-#include "farray/imp.h"
+#include "struct/farray/imp.h"
 #include "flu/type.h"
 #include "fluforces/imp.h"
 

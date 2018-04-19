@@ -30,7 +30,6 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/exch/map              && \
     d $B/exch/mesh             && \
     d $B/exch/obj              && \
-    d $B/farray                && \
     d $B/flu                   && \
     d $B/fluforces             && \
     d $B/fluforces/bulk        && \
@@ -105,6 +104,7 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/sim                   && \
     d $B/sim/obj               && \
     d $B/sim/opt               && \
+    d $B/struct/farray         && \
     d $B/struct/parray         && \
     d $B/utils                 && \
     d $B/utils/nvtx            && \

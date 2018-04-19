@@ -35,7 +35,6 @@ $B/exch/flu/imp.o: $S/exch/flu/imp.cu; $N -I$S/exch/flu -I$S/.
 $B/exch/map/imp.o: $S/exch/map/imp.cu; $N -I$S/exch/map -I$S/.
 $B/exch/mesh/imp.o: $S/exch/mesh/imp.cu; $N -I$S/exch/mesh -I$S/.
 $B/exch/obj/imp.o: $S/exch/obj/imp.cu; $N -I$S/exch/obj -I$S/.
-$B/farray/imp.o: $S/farray/imp.cpp; $X -I$S/farray -I$S/.
 $B/fluforces/bulk/imp.o: $S/fluforces/bulk/imp.cu; $N -I$S/fluforces/bulk -I$S/.
 $B/fluforces/halo/imp.o: $S/fluforces/halo/imp.cu; $N -I$S/fluforces/halo -I$S/.
 $B/fluforces/imp.o: $S/fluforces/imp.cu; $N -I$S/fluforces -I$S/.
@@ -119,6 +118,7 @@ $B/scheme/time_step/imp.o: $S/scheme/time_step/imp.cpp; $X -I$S/scheme/time_step
 $B/sim/imp.o: $S/sim/imp.cpp; $X -I$S/sim -I$S/.
 $B/sim/obj/imp.o: $S/sim/obj/imp.cpp; $X -I$S/sim/obj -I$S/.
 $B/sim/opt/imp.o: $S/sim/opt/imp.cpp; $X -I$S/sim/opt -I$S/.
+$B/struct/farray/imp.o: $S/struct/farray/imp.cpp; $X -I$S/struct/farray -I$S/.
 $B/struct/parray/imp.o: $S/struct/parray/imp.cpp; $X -I$S/struct/parray -I$S/.
 $B/utils/cc.o: $S/utils/cc.cpp; $X -I$S/utils -I$S/.
 $B/utils/error.o: $S/utils/error.cpp; $X -I$S/utils -I$S/.
