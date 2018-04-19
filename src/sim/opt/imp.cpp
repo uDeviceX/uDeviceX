@@ -33,7 +33,7 @@ static void lookup_string(const Config *c, const char *desc, char *res) {
     strcpy(res, s);
 }
 
-static void read_mbr(const Config *c, ObpMbr *o) {
+static void read_mbr(const Config *c, OptMbr *o) {
     UC(lookup_bool(c, "rbc.active", &o->active));
     UC(lookup_bool(c, "rbc.ids", &o->ids));
     UC(lookup_bool(c, "rbc.stretch", &o->stretch));

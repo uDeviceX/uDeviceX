@@ -1,5 +1,5 @@
 /* membrane options */
-struct ObpMbr {
+struct OptMbr {
     bool active, ids, stretch, push, dump_com;
     int shifttype;
     float freq_com;
@@ -11,7 +11,7 @@ struct OptRig {
 };
 
 struct Opt {
-    ObpMbr rbc;
+    OptMbr rbc;
     OptRig rig;
     bool fsi, cnt;
     bool flucolors, fluids, fluss;
