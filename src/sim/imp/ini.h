@@ -110,20 +110,20 @@ static void ini_flu(const Config *cfg, const Opt *opt, Params par, MPI_Comm cart
     UC(conf_lookup_float(cfg, "flu.mass", &f->mass));
 }
 
-static void ini_rbc(const Config *cfg, const Opt *opt, MPI_Comm cart, int3 L, /**/ Rbc *r) {
+static void ini_rbc(const Config *cfg, const OptMbr *opt, MPI_Comm cart, int3 L, /**/ Rbc *r) {
     int nv;
     const char *directory = "r";
     UC(mesh_read_ini_off("rbc.off", &r->cell));
-    UC(mesh_write_ini_from_mesh(cart, opt->rbc.shifttype, r->cell, directory, /**/ &r->mesh_write));
+    UC(mesh_write_ini_from_mesh(cart, opt->shifttype, r->cell, directory, /**/ &r->mesh_write));
 
     nv = mesh_read_get_nv(r->cell);
     
     Dalloc(&r->ff, MAX_CELL_NUM * nv);
     UC(triangles_ini(r->cell, /**/ &r->tri));
-    UC(rbc_ini(opt->rbc.ids, r->cell, &r->q));
-    UC(ini_rbc_distr(opt->rbc.ids, nv, cart, L, /**/ &r->d));
-    if (opt->rbc.dump_com) UC(rbc_com_ini(nv, MAX_CELL_NUM, /**/ &r->com));
-    if (opt->rbc.stretch)   UC(rbc_stretch_ini("rbc.stretch", nv, /**/ &r->stretch));
+    UC(rbc_ini(opt->ids, r->cell, &r->q));
+    UC(ini_rbc_distr(opt->ids, nv, cart, L, /**/ &r->d));
+    if (opt->dump_com) UC(rbc_com_ini(nv, MAX_CELL_NUM, /**/ &r->com));
+    if (opt->stretch)   UC(rbc_stretch_ini("rbc.stretch", nv, /**/ &r->stretch));
     UC(rbc_params_ini(&r->params));
     UC(rbc_params_set_conf(cfg, r->params));
 
@@ -133,13 +133,13 @@ static void ini_rbc(const Config *cfg, const Opt *opt, MPI_Comm cart, int3 L, /*
     UC(conf_lookup_float(cfg, "rbc.mass", &r->mass));
 }
 
-static void ini_rig(const Config *cfg, MPI_Comm cart, const Opt *opt, int maxp, int3 L, /**/ Rig *s) {
+static void ini_rig(const Config *cfg, MPI_Comm cart, const OptRig *opt, int maxp, int3 L, /**/ Rig *s) {
     const int4 *tt;
     int nv, nt;
 
     UC(rig_ini(maxp, &s->q));
     tt = s->q.htt; nv = s->q.nv; nt = s->q.nt;
-    UC(mesh_write_ini(cart, opt->rig.shifttype, tt, nv, nt, "s", /**/ &s->mesh_write));
+    UC(mesh_write_ini(cart, opt->shifttype, tt, nv, nt, "s", /**/ &s->mesh_write));
 
     EMALLOC(maxp, &s->ff_hst);
     Dalloc(&s->ff, maxp);
@@ -309,8 +309,8 @@ void sim_ini(const Config *cfg, MPI_Comm cart, /**/ Sim **sim) {
     UC(bforce_set_conf(cfg, s->bforce));
 
     UC(ini_flu(cfg, opt, params, s->cart, maxp, params.L, /**/ &s->flu));    
-    if (opt->rbc.active)  UC(ini_rbc(cfg, opt, s->cart, params.L, /**/ &s->rbc));
-    if (opt->rig.active)  UC(ini_rig(cfg, s->cart, opt, maxp, params.L, /**/ &s->rig));
+    if (opt->rbc.active)  UC(ini_rbc(cfg, &opt->rbc, s->cart, params.L, /**/ &s->rbc));
+    if (opt->rig.active)  UC(ini_rig(cfg, s->cart, &opt->rig, maxp, params.L, /**/ &s->rig));
     if (opt->wall) UC(ini_wall(cfg, params.L, &s->wall));
     
     if (opt->rbc.active || opt->rig.active)
