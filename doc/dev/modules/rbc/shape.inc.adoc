@@ -7,7 +7,7 @@ Allocate, deallocate structure:
 
 [source,cpp]
 ----
-include::{src}/rbc/shape/imp.h[tag=int]
+include::{src}/rbc/shape/imp.h[tag=mem]
 ----
 
 Compute quantities (on host):
