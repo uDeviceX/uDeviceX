@@ -91,7 +91,7 @@ static void fin_rbc(const Opt *opt, Rbc *r) {
     Dfree(r->ff);
     UC(triangles_fin(r->tri));
 
-    if (opt->dump_rbc_com) UC(rbc_com_fin(/**/ r->com));
+    if (opt->rbc.dump_com) UC(rbc_com_fin(/**/ r->com));
     if (opt->rbc.stretch)   UC(rbc_stretch_fin(/**/ r->stretch));
     UC(rbc_params_fin(r->params));
     UC(mesh_read_fin(r->cell));

@@ -1,7 +1,8 @@
 /* membrane options */
 struct ObpMbr {
-    bool active, ids, stretch, push;
+    bool active, ids, stretch, push, dump_com;
     int shifttype;
+    float freq_com;
 };
 
 struct OptRig {
@@ -16,8 +17,8 @@ struct Opt {
     bool flucolors, fluids, fluss;
     bool wall;
     bool inflow, outflow, denoutflow, vcon;
-    bool dump_field, dump_parts, dump_strt, dump_rbc_com, dump_forces;
-    float freq_field, freq_parts, freq_strt, freq_rbc_com;
+    bool dump_field, dump_parts, dump_strt, dump_forces;
+    float freq_field, freq_parts, freq_strt;
     char strt_base_dump[FILENAME_MAX], strt_base_read[FILENAME_MAX];
     int recolor_freq;
     bool push_flu;

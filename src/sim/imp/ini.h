@@ -122,7 +122,7 @@ static void ini_rbc(const Config *cfg, const Opt *opt, MPI_Comm cart, int3 L, /*
     UC(triangles_ini(r->cell, /**/ &r->tri));
     UC(rbc_ini(opt->rbc.ids, r->cell, &r->q));
     UC(ini_rbc_distr(opt->rbc.ids, nv, cart, L, /**/ &r->d));
-    if (opt->dump_rbc_com) UC(rbc_com_ini(nv, MAX_CELL_NUM, /**/ &r->com));
+    if (opt->rbc.dump_com) UC(rbc_com_ini(nv, MAX_CELL_NUM, /**/ &r->com));
     if (opt->rbc.stretch)   UC(rbc_stretch_ini("rbc.stretch", nv, /**/ &r->stretch));
     UC(rbc_params_ini(&r->params));
     UC(rbc_params_set_conf(cfg, r->params));

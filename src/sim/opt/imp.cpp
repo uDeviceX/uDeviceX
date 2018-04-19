@@ -39,6 +39,9 @@ static void read_mbr(const Config *c, ObpMbr *o) {
     UC(lookup_bool(c, "rbc.stretch", &o->stretch));
     o->shifttype = get_shifttype(c, "rbc.shifttype");
     UC(lookup_bool(c, "rbc.push", &o->push));
+    
+    UC(lookup_bool(c, "dump.rbc_com", &o->dump_com));
+    UC(conf_lookup_float(c, "dump.freq_rbc_com", &o->freq_com));
 }
 
 static void read_rig(const Config *c, OptRig *o) {
@@ -80,8 +83,6 @@ static void read_common(const Config *c, Opt *o) {
     UC(lookup_bool(c, "denoutflow.active", &o->denoutflow));
     UC(lookup_bool(c, "vcon.active", &o->vcon));
 
-    UC(lookup_bool(c, "dump.rbc_com", &o->dump_rbc_com));
-    UC(conf_lookup_float(c, "dump.freq_rbc_com", &o->freq_rbc_com));
     UC(lookup_bool(c, "dump.forces", &o->dump_forces));
     
     UC(conf_lookup_int(c, "flu.recolor_freq", &o->recolor_freq));
@@ -96,6 +97,6 @@ void opt_read(const Config *c, Opt *o) {
 }
 
 void opt_check(const Opt *o) {
-    if (o->dump_rbc_com && !o->rbc.ids)
+    if (o->rbc.dump_com && !o->rbc.ids)
         ERR("Need rbc.ids activated to dump rbc com!");
 }

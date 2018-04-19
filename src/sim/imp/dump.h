@@ -135,6 +135,6 @@ static void dump_diag(TimeLine *time, Sim *s) {
         dump_grid(s);
     if (o->dump_strt  && time_line_cross(time, o->freq_strt))
         dump_strt(s);
-    if (o->dump_rbc_com && time_line_cross(time, o->freq_rbc_com))
+    if (o->rbc.dump_com && time_line_cross(time, o->rbc.freq_com))
         dump_rbc_coms(s);
 }
