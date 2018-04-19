@@ -50,5 +50,6 @@ void objects_fin(Objects *obj) {
     if (obj->mbr) UC(fin_mbr(obj->mbr));
     if (obj->rig) UC(fin_rig(obj->rig));
     UC(fin_dump(obj->dump));
+    UC(coords_fin(obj->coords));
     EFREE(obj);
 }

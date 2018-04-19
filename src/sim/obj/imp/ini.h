@@ -69,12 +69,15 @@ static void ini_dump(long maxp, Dump **d) {
     EMALLOC(maxp, &(*d)->pp);
 }
 
-void objects_ini(const Config *cfg, const Opt *opt, MPI_Comm cart, int maxp, int3 L, Objects **objects) {
+void objects_ini(const Config *cfg, const Opt *opt, MPI_Comm cart, const Coords *coords, int maxp, Objects **objects) {
     Objects *obj;
+    int3 L;
     EMALLOC(1, objects);
     obj = *objects;
 
     MC(m::Comm_dup(cart, &obj->cart));
+    L = subdomain(coords);
+    UC(coords_ini(cart, L.x, L.y, L.z, &obj->coords));
 
     if (opt->rbc.active) UC(ini_mbr(cfg, &opt->rbc, cart,       L, &obj->mbr));  else obj->mbr = NULL;
     if (opt->rig.active) UC(ini_rig(cfg, &opt->rig, cart, maxp, L, &obj->rig));  else obj->rig = NULL;

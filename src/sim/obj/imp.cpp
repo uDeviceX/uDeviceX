@@ -18,6 +18,9 @@
 #include "utils/msg.h"
 #include "utils/imp.h"
 
+#include "coords/ini.h"
+#include "coords/imp.h"
+
 #include "pair/imp.h"
 #include "parray/imp.h"
 #include "mesh/triangles/imp.h"
