@@ -4,6 +4,7 @@
 // #include <conf.h>
 // #include "inc/conf.h"
 #include "inc/type.h"
+#include "inc/def.h"
 
 #include "utils/error.h"
 #include "utils/os.h"
@@ -39,3 +40,4 @@
 
 #include "imp.h"
 #include "imp/type.h"
+//#include "imp/ini.h"
