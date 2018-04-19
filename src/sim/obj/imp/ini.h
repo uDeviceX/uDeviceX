@@ -64,9 +64,12 @@ static void ini_rig(const Config *cfg, const OptRig *opt, MPI_Comm cart, int max
     UC(conf_lookup_float(cfg, "rig.mass", &r->mass));
 }
 
-static void ini_dump(long maxp, Dump **d) {
-    EMALLOC(1, d);
-    EMALLOC(maxp, &(*d)->pp);
+static void ini_dump(long maxp, Dump **dump) {
+    Dump *d;
+    EMALLOC(1, dump);
+    d = *dump;
+    EMALLOC(maxp, &d->pp);
+    d->id = 0;
 }
 
 void objects_ini(const Config *cfg, const Opt *opt, MPI_Comm cart, const Coords *coords, int maxp, Objects **objects) {

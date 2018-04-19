@@ -61,6 +61,7 @@ struct Rig {
 
 struct Dump {
     Particle *pp; /* workspace on host */
+    long id;
 };
 
 struct Objects {
