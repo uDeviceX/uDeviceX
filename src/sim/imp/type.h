@@ -94,14 +94,14 @@ struct Rbc {
     RbcQuants q;
     RbcDistr d;
     Force *ff;
-    RbcForce *force;      /* helper to compute membrane forces */
-    RbcParams *params;    /* model parameters */
-    RbcCom    *com;     /* helper to compute center of masses */
+    RbcForce   *force;    /* helper to compute membrane forces         */
+    RbcParams  *params;   /* model parameters                          */
+    RbcCom     *com;      /* helper to compute center of masses        */
     RbcStretch *stretch;  /* helper to apply stretching force to cells */
-    MeshRead    *cell;     /* cell template */
+    MeshRead   *cell;     /* cell template                             */
+    Triangles  *tri;      /* triangles for one cell on devices         */
+    float mass;           /* mass of one particle                      */
     MeshWrite  *mesh_write;
-    Triangles *tri; /* triangles for one cell on devices */
-    float mass; /* mass of one particle */ 
 };
 
 /* data holder for rigid objects */
