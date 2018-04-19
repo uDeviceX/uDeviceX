@@ -100,7 +100,6 @@ static void fin_rbc(const Opt *opt, Rbc *r) {
 
 static void fin_rig(Rig *s) {
     UC(rig_fin(&s->q));
-    UC(scan_fin(/**/ s->ws));
     Dfree(s->ff);
     EFREE(s->ff_hst);
 

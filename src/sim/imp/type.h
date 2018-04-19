@@ -107,7 +107,6 @@ struct Rbc {
 /* data holder for rigid objects */
 struct Rig {
     RigQuants q;
-    Scan *ws; /* work for scan */
     Force *ff, *ff_hst;
 
     RigPinInfo *pininfo;
