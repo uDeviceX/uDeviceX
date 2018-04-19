@@ -1,0 +1,13 @@
+= Struct: helper structures
+
+Helper structures to pass particle data between modules.
+
+:leveloffset: +1
+
+include::partlist.adoc[]
+
+include::parray.adoc[]
+
+include::farray.adoc[]
+
+:leveloffset: -1

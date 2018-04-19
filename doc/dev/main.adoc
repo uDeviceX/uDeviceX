@@ -56,12 +56,6 @@ include::modules/mesh/main.adoc[]
 
 include::modules/pair.adoc[]
 
-include::modules/parray.adoc[]
-
-include::modules/farray.adoc[]
-
-include::modules/partlist.adoc[]
-
 include::modules/meshbb.adoc[]
 
 include::modules/rbc/main.adoc[]
@@ -71,6 +65,8 @@ include::modules/rig.adoc[]
 include::modules/scheme/main.adoc[]
 
 include::modules/sdf/main.adoc[]
+
+include::modules/struct/main.adoc[]
 
 include::modules/utils/main.adoc[]
 
