@@ -33,6 +33,9 @@
 #include "rbc/com/imp.h"
 
 #include "rig/imp.h"
+#include "rigid/imp.h"
+
+#include "scheme/move/imp.h"
 
 #include "distr/rbc/imp.h"
 #include "distr/rig/imp.h"
@@ -41,8 +44,6 @@
 #include "fsi/imp.h"
 
 #include "exch/obj/imp.h"
-
-#include "rigid/imp.h"
 
 #include "sim/opt/imp.h"
 
