@@ -17,7 +17,7 @@ static void gen_rbc(Sim *s) {
     MeshRead *cell = s->rbc.cell;
     Rbc *rbc = &s->rbc;
     const Opt *opt = &s->opt;
-    if (opt->rbc) {
+    if (opt->rbc.active) {
         rbc_gen_quants(s->coords, s->cart, cell, "rbcs-ic.txt", /**/ &rbc->q);
     }
 }
@@ -74,7 +74,7 @@ void sim_gen(Sim *s) {
     dSync();
 
     if (opt->wall && wall->q.n)     UC(wall_gen_ticket(&wall->q, wall->t));
-    if (opt->rbc && opt->flucolors) UC(colors_from_rbc(s));
+    if (opt->rbc.active && opt->flucolors) UC(colors_from_rbc(s));
 
     tstart = s->time.eq;
     pre_run(s);
@@ -96,7 +96,7 @@ static void gen_from_restart(Sim *s) {
     bool dump_sdf = opt->dump_field;
     
     flu_strt_quants(s->cart, base, RESTART_BEGIN, &flu->q);
-    if (opt->rbc)   rbc_strt_quants(s->cart, base, cell, RESTART_BEGIN, &rbc->q);
+    if (opt->rbc.active)   rbc_strt_quants(s->cart, base, cell, RESTART_BEGIN, &rbc->q);
     if (opt->rig)   rig_strt_quants(s->cart, base,       RESTART_BEGIN, &rig->q);
     if (opt->wall) wall_strt_quants(s->cart, base, maxp_wall,          &wall->q);
     if (opt->wall) UC(sdf_gen(s->coords, s->cart, dump_sdf, /**/ wall->sdf));

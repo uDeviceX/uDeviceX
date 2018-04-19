@@ -33,6 +33,14 @@ static void lookup_string(const Config *c, const char *desc, char *res) {
     strcpy(res, s);
 }
 
+static void read_mbr(const Config *c, ObpMbr *o) {
+    UC(lookup_bool(c, "rbc.active", &o->active));
+    UC(lookup_bool(c, "rbc.ids", &o->ids));
+    UC(lookup_bool(c, "rbc.stretch", &o->stretch));
+    o->shifttype = get_shifttype(c, "rbc.shifttype");
+    UC(lookup_bool(c, "rbc.push", &o->push));
+}
+
 static void read_common(const Config *c, Opt *o) {
     UC(lookup_bool(c, "flu.ids", &o->fluids));
     
@@ -50,39 +58,13 @@ static void read_common(const Config *c, Opt *o) {
 
     UC(conf_lookup_int(c, "sampler.n_per_dump", &o->sampler_npdump));
     UC(conf_lookup_int3(c, "sampler.grid_ref", &o->sampler_grid_ref));
-}
 
-static void set_eq(Opt *o) {
-    o->rbc  = false;
-    o->rig  = false;
-    o->wall = false;
-
-    o->fsi = false;
-    o->cnt = false;
-
-    o->inflow = false;
-    o->outflow = false;
-    o->denoutflow = false;
-    o->outflow = false;
-    o->vcon = false;
-    
-    o->push_flu = false;
-    o->push_rbc = false;
-    o->push_rig = false;
-}
-
-static void read_full(const Config *c, Opt *o) {
     UC(lookup_bool(c, "fsi.active", &o->fsi));
     UC(lookup_bool(c, "cnt.active", &o->cnt));
 
     UC(lookup_bool(c, "flu.colors", &o->flucolors));
     UC(lookup_bool(c, "flu.ids", &o->fluids));
     UC(lookup_bool(c, "flu.stresses", &o->fluss));
-
-    UC(lookup_bool(c, "rbc.active", &o->rbc));
-    UC(lookup_bool(c, "rbc.ids", &o->rbcids));
-    UC(lookup_bool(c, "rbc.stretch", &o->rbcstretch));
-    o->rbcshifttype = get_shifttype(c, "rbc.shifttype");
 
     UC(lookup_bool(c, "rig.active", &o->rig));
     UC(lookup_bool(c, "rig.bounce", &o->rig_bounce));
@@ -102,21 +84,15 @@ static void read_full(const Config *c, Opt *o) {
     UC(conf_lookup_int(c, "flu.recolor_freq", &o->recolor_freq));
 
     UC(lookup_bool(c, "flu.push", &o->push_flu));
-    UC(lookup_bool(c, "rbc.push", &o->push_rbc));
     UC(lookup_bool(c, "rig.push", &o->push_rig));
 }
 
-void opt_read_gen(const Config *c, Opt *o) {
+void opt_read(const Config *c, Opt *o) {
     UC(read_common(c, o));
-    UC(set_eq(o));
-}
-
-void opt_read_full(const Config *c, Opt *o) {
-    UC(read_common(c, o));
-    UC(read_full(c, o));
+    UC(read_mbr(c, &o->rbc));
 }
 
 void opt_check(const Opt *o) {
-    if (o->dump_rbc_com && !o->rbcids)
+    if (o->dump_rbc_com && !o->rbc.ids)
         ERR("Need rbc.ids activated to dump rbc com!");
 }

@@ -3,7 +3,7 @@ static bool active_walls(const Sim *s) {
 }
 
 static bool active_rbc(const Sim *s) {
-    return !s->equilibrating && s->opt.rbc;
+    return !s->equilibrating && s->opt.rbc.active;
 }
 
 static bool active_rig(const Sim *s) {
@@ -105,7 +105,7 @@ static InterFluInfos get_finfo(Sim *s) {
 
 static InterRbcInfos get_rinfo(Sim *s) {
     InterRbcInfos ri;
-    ri.active = s->opt.rbc;
+    ri.active = s->opt.rbc.active;
     ri.q = &s->rbc.q;
     return ri;
 }   

@@ -1,8 +1,13 @@
+/* membrane options */
+struct ObpMbr {
+    bool active, ids, stretch, push;
+    int shifttype;
+};
+
 struct Opt {
+    ObpMbr rbc;
     bool fsi, cnt;
     bool flucolors, fluids, fluss;
-    bool rbc, rbcids, rbcstretch;
-    int rbcshifttype;
     bool rig, rig_bounce, rig_empty_pp;
     int rigshifttype;
     bool wall;
@@ -11,13 +16,12 @@ struct Opt {
     float freq_field, freq_parts, freq_strt, freq_rbc_com;
     char strt_base_dump[FILENAME_MAX], strt_base_read[FILENAME_MAX];
     int recolor_freq;
-    bool push_flu, push_rbc, push_rig;
+    bool push_flu, push_rig;
     int sampler_npdump;
     int3 sampler_grid_ref;
 };
 
 struct Config;
 
-void opt_read_gen(const Config*, Opt*);
-void opt_read_full(const Config*, Opt*);
+void opt_read(const Config*, Opt*);
 void opt_check(const Opt*);

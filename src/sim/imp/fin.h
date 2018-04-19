@@ -92,7 +92,7 @@ static void fin_rbc(const Opt *opt, Rbc *r) {
     UC(triangles_fin(r->tri));
 
     if (opt->dump_rbc_com) UC(rbc_com_fin(/**/ r->com));
-    if (opt->rbcstretch)   UC(rbc_stretch_fin(/**/ r->stretch));
+    if (opt->rbc.stretch)   UC(rbc_stretch_fin(/**/ r->stretch));
     UC(rbc_params_fin(r->params));
     UC(mesh_read_fin(r->cell));
     UC(mesh_write_fin(r->mesh_write));
@@ -169,14 +169,14 @@ void sim_fin(Sim *s) {
     UC(fin_optional_features(opt, s));
     
     UC(fin_flu(opt, &s->flu));
-    if (opt->rbc)  UC(fin_rbc(opt, /**/ &s->rbc));
+    if (opt->rbc.active)  UC(fin_rbc(opt, /**/ &s->rbc));
     if (opt->rig)  UC(fin_rig(/**/ &s->rig));
     if (opt->wall) UC(fin_wall(&s->wall));
 
-    if (opt->rbc || opt->rig)
+    if (opt->rbc.active || opt->rig)
         UC(fin_objinter(&s->opt, &s->objinter));
     
-    if (opt->flucolors && opt->rbc)
+    if (opt->flucolors && opt->rbc.active)
         UC(fin_colorer(/**/ &s->colorer));
 
     if (opt->rig && opt->rig_bounce)

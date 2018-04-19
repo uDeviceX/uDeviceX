@@ -114,16 +114,16 @@ static void ini_rbc(const Config *cfg, const Opt *opt, MPI_Comm cart, int3 L, /*
     int nv;
     const char *directory = "r";
     UC(mesh_read_ini_off("rbc.off", &r->cell));
-    UC(mesh_write_ini_from_mesh(cart, opt->rbcshifttype, r->cell, directory, /**/ &r->mesh_write));
+    UC(mesh_write_ini_from_mesh(cart, opt->rbc.shifttype, r->cell, directory, /**/ &r->mesh_write));
 
     nv = mesh_read_get_nv(r->cell);
     
     Dalloc(&r->ff, MAX_CELL_NUM * nv);
     UC(triangles_ini(r->cell, /**/ &r->tri));
-    UC(rbc_ini(opt->rbcids, r->cell, &r->q));
-    UC(ini_rbc_distr(opt->rbcids, nv, cart, L, /**/ &r->d));
+    UC(rbc_ini(opt->rbc.ids, r->cell, &r->q));
+    UC(ini_rbc_distr(opt->rbc.ids, nv, cart, L, /**/ &r->d));
     if (opt->dump_rbc_com) UC(rbc_com_ini(nv, MAX_CELL_NUM, /**/ &r->com));
-    if (opt->rbcstretch)   UC(rbc_stretch_ini("rbc.stretch", nv, /**/ &r->stretch));
+    if (opt->rbc.stretch)   UC(rbc_stretch_ini("rbc.stretch", nv, /**/ &r->stretch));
     UC(rbc_params_ini(&r->params));
     UC(rbc_params_set_conf(cfg, r->params));
 
@@ -298,7 +298,7 @@ void sim_ini(const Config *cfg, MPI_Comm cart, /**/ Sim **sim) {
     dt = time_step_dt0(s->time.step);
     time_line_advance(dt, s->time.t);
 
-    UC(opt_read_full(cfg, opt));
+    UC(opt_read(cfg, opt));
     UC(read_recolor_opt(cfg, &s->recolorer));
     UC(opt_check(opt));
     UC(ini_pair_params(cfg, params.kBT, dt, s));
@@ -309,14 +309,14 @@ void sim_ini(const Config *cfg, MPI_Comm cart, /**/ Sim **sim) {
     UC(bforce_set_conf(cfg, s->bforce));
 
     UC(ini_flu(cfg, opt, params, s->cart, maxp, params.L, /**/ &s->flu));    
-    if (opt->rbc)  UC(ini_rbc(cfg, opt, s->cart, params.L, /**/ &s->rbc));
+    if (opt->rbc.active)  UC(ini_rbc(cfg, opt, s->cart, params.L, /**/ &s->rbc));
     if (opt->rig)  UC(ini_rig(cfg, s->cart, opt, maxp, params.L, /**/ &s->rig));
     if (opt->wall) UC(ini_wall(cfg, params.L, &s->wall));
     
-    if (opt->rbc || opt->rig)
+    if (opt->rbc.active || opt->rig)
         UC(ini_objinter(s->cart, maxp, params.L, opt, /**/ &s->objinter));
 
-    if (opt->flucolors && opt->rbc)
+    if (opt->flucolors && opt->rbc.active)
         UC(ini_colorer(s->rbc.q.nv, s->cart, maxp, params.L, /**/ &s->colorer));
 
     if (opt->rig && opt->rig_bounce)
