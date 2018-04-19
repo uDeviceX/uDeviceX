@@ -1,7 +1,10 @@
 struct Objects;
-struct Config;
 
-void objects_ini(const Config*, const Opt*, MPI_Comm, int maxp, int3 L, Objects**);
+struct Config;
+struct Coords;
+struct Opt;
+
+void objects_ini(const Config*, const Opt*, MPI_Comm, const Coords*, int maxp, Objects**);
 void objects_fin(Objects*);
 
 void objects_clear_forces(Objects*);
