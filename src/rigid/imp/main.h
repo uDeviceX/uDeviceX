@@ -1,26 +1,26 @@
 enum {NTHRD=128};
 
-void rig_ini_pininfo(RigPinInfo **pi) {
+void rig_pininfo_ini(RigPinInfo **pi) {
     RigPinInfo *p;
     EMALLOC(1, pi);
     p = *pi;
     p->pdir = NOT_PERIODIC;
 }
 
-void rig_fin_pininfo(RigPinInfo *pi) {
+void rig_pininfo_fin(RigPinInfo *pi) {
     EFREE(pi);
 }
 
-void rig_set_pininfo(int3 com, int3 axis, RigPinInfo *pi) {
+void rig_pininfo_set(int3 com, int3 axis, RigPinInfo *pi) {
     pi->com  = com;
     pi->axis = axis;
 }
 
-void rig_set_pdir(int pdir, RigPinInfo *pi) {
+void rig_pininfo_set_pdir(int pdir, RigPinInfo *pi) {
     pi->pdir = pdir;
 }
 
-int rig_get_pdir(const RigPinInfo *pi) {
+int rig_pininfo_get_pdir(const RigPinInfo *pi) {
     return pi->pdir;
 }
 

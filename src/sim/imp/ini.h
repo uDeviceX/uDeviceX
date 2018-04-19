@@ -146,8 +146,8 @@ static void ini_rig(const Config *cfg, MPI_Comm cart, const OptRig *opt, int max
 
     UC(ini_rig_distr(s->q.nv, cart, L, /**/ &s->d));
 
-    UC(rig_ini_pininfo(&s->pininfo));
-    UC(rig_set_pininfo_conf(cfg, s->pininfo));
+    UC(rig_pininfo_ini(&s->pininfo));
+    UC(rig_pininfo_set_conf(cfg, s->pininfo));
 
     UC(conf_lookup_float(cfg, "rig.mass", &s->mass));
 }

@@ -30,7 +30,7 @@ static int duplicate_PBC(const Coords *c, const RigPinInfo *pi, const float3 min
     struct f3 {float x[3];};
     const int Lg[3] = {xdomain(c), ydomain(c), zdomain(c)};
     int j, spdir, id = n;
-    spdir = rig_get_pdir(pi);
+    spdir = rig_pininfo_get_pdir(pi);
     for (j = 0; j < n; ++j) {
         f3 r0 = {coms[3*j + X], coms[3*j + Y], coms[3*j + Z]};
         std::vector<f3> dupls;
@@ -84,7 +84,7 @@ static void count_pp_inside(const RigPinInfo *pi, int3 L, const Particle *s_pp, 
                             const int4 *tt, const float *vv, const int nt,
                             /**/ int *tags, int *rcounts) {
 
-    int spdir = rig_get_pdir(pi);
+    int spdir = rig_pininfo_get_pdir(pi);
     for (int j = 0; j < ns; ++j) rcounts[j] = 0;
 
     const float R = max3(L.x, L.y, L.z);

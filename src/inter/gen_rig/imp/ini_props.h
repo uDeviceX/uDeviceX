@@ -26,7 +26,7 @@ static void init_I_fromm(float density, int nt, const int4 *tt, const float *vv,
 void ini_props(const RigPinInfo *pi, int n, const Particle *pp, float pmass, float numdensity, const float *com, int nt, const int4 *tt, const float *vv,
                /**/ float *rr0, Solid *s) {
     enum {X, Y, Z};
-    int spdir = rig_get_pdir(pi);
+    int spdir = rig_pininfo_get_pdir(pi);
     s->v[X] = s->v[Y] = s->v[Z] = 0; 
     s->om[X] = s->om[Y] = s->om[Z] = 0; 
 

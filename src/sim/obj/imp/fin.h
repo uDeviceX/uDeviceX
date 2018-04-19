@@ -36,7 +36,7 @@ static void fin_rig(Rig *r) {
 
     UC(fin_rig_distr(/**/ &r->d));
     UC(mesh_write_fin(r->mesh_write));
-    UC(rig_fin_pininfo(r->pininfo));
+    UC(rig_pininfo_fin(r->pininfo));
 
     EFREE(r);
 }
