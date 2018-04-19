@@ -12,20 +12,20 @@ __global__ void rot_referential(float dt, const int ns, Solid *ss) {
     }
 }
 
-static __device__ void warpReduceSumf3(float *x) {
+static __device__ void atomicAdd3(float d[3], float3 s) {
     enum {X, Y, Z};
-    for (int offset = warpSize>>1; offset > 0; offset >>= 1) {
-        x[X] += __shfl_down(x[X], offset);
-        x[Y] += __shfl_down(x[Y], offset);
-        x[Z] += __shfl_down(x[Z], offset);
-    }
+    atomicAdd(d + X, s.x);
+    atomicAdd(d + Y, s.y);
+    atomicAdd(d + Z, s.z);
 }
 
-static __device__ void atomicAdd3(float d[3], const float s[3]) {
+static __device__ float3 fetch_force(int i, const Force *ff) {
     enum {X, Y, Z};
-    atomicAdd(d + X, s[X]);
-    atomicAdd(d + Y, s[Y]);
-    atomicAdd(d + Z, s[Z]);
+    float3 f;
+    f.x = ff[i].f[X];
+    f.y = ff[i].f[Y];
+    f.z = ff[i].f[Z];
+    return f;
 }
 
 __global__ void add_f_to(const int nps, const Particle *pp, const Force *ff, /**/ Solid *ss) {
@@ -36,11 +36,11 @@ __global__ void add_f_to(const int nps, const Particle *pp, const Force *ff, /**
 
     i = sid * nps + gid;
 
-    Force    f = {0, 0, 0};
-    Particle p = {0, 0, 0, 0, 0, 0};
+    float3 to, f = make_float3(0, 0, 0);
+    Particle   p = {0, 0, 0, 0, 0, 0};
 
     if (gid < nps) {
-        f = ff[i];
+        f = fetch_force(i, ff);
         p = pp[i];
     }
 
@@ -48,15 +48,15 @@ __global__ void add_f_to(const int nps, const Particle *pp, const Force *ff, /**
                          p.r[Y] - ss[sid].com[Y],
                          p.r[Z] - ss[sid].com[Z]};
 
-    float to[3] = {dr[Y] * f.f[Z] - dr[Z] * f.f[Y],
-                   dr[Z] * f.f[X] - dr[X] * f.f[Z],
-                   dr[X] * f.f[Y] - dr[Y] * f.f[X]};
+    to.x = dr[Y] * f.z - dr[Z] * f.y;
+    to.y = dr[Z] * f.x - dr[X] * f.z;
+    to.z = dr[X] * f.y - dr[Y] * f.x;
 
-    warpReduceSumf3(f.f);
-    warpReduceSumf3(to);
+    f =  warpReduceSum(f);
+    to = warpReduceSum(to);
 
     if ((threadIdx.x & (warpSize - 1)) == 0) {
-        atomicAdd3(ss[sid].fo, f.f);
+        atomicAdd3(ss[sid].fo, f);
         atomicAdd3(ss[sid].to, to);
     }
 }
