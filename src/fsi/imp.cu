@@ -32,9 +32,9 @@
 #include "pair/dev.h"
 #include "pair/imp.h"
 
-#include "parray/type.h"
-#include "parray/imp.h"
-#include "parray/dev.h"
+#include "struct/parray/type.h"
+#include "struct/parray/imp.h"
+#include "struct/parray/dev.h"
 
 /* local */
 

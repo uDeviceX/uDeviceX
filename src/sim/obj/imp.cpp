@@ -22,7 +22,7 @@
 #include "coords/imp.h"
 
 #include "pair/imp.h"
-#include "parray/imp.h"
+#include "struct/parray/imp.h"
 #include "mesh/triangles/imp.h"
 
 #include "conf/imp.h"

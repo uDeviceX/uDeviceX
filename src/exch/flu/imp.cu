@@ -19,7 +19,7 @@
 #include "comm/imp.h"
 #include "comm/utils.h"
 
-#include "parray/imp.h"
+#include "struct/parray/imp.h"
 #include "flu/type.h"
 
 #include "imp.h"

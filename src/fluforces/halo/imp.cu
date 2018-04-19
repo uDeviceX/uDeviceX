@@ -27,9 +27,9 @@
 
 #include "math/rnd/dev.h"
 
-#include "parray/type.h"
-#include "parray/imp.h"
-#include "parray/dev.h"
+#include "struct/parray/type.h"
+#include "struct/parray/imp.h"
+#include "struct/parray/dev.h"
 
 #include "farray/type.h"
 #include "farray/imp.h"

@@ -32,7 +32,7 @@
 #include "algo/minmax/imp.h"
 
 #include "pair/imp.h"
-#include "parray/imp.h"
+#include "struct/parray/imp.h"
 #include "farray/imp.h"
 #include "partlist/type.h"
 

@@ -23,7 +23,7 @@
 #include "coords/ini.h"
 #include "coords/imp.h"
 
-#include "parray/imp.h"
+#include "struct/parray/imp.h"
 #include "farray/imp.h"
 #include "flu/type.h"
 #include "fluforces/imp.h"

@@ -92,7 +92,6 @@ $B/mpi/glb.o: $S/mpi/glb.cpp; $X -I$S/mpi -I$S/.
 $B/mpi/wrapper.o: $S/mpi/wrapper.cpp; $X -I$S/mpi -I$S/.
 $B/pair/conf.o: $S/pair/conf.cpp; $X -I$S/pair -I$S/.
 $B/pair/imp.o: $S/pair/imp.cpp; $X -I$S/pair -I$S/.
-$B/parray/imp.o: $S/parray/imp.cpp; $X -I$S/parray -I$S/.
 $B/rbc/adj/imp.o: $S/rbc/adj/imp.cpp; $X -I$S/rbc/adj -I$S/.
 $B/rbc/com/imp.o: $S/rbc/com/imp.cu; $N -I$S/rbc/com -I$S/.
 $B/rbc/force/area_volume/imp.o: $S/rbc/force/area_volume/imp.cu; $N -I$S/rbc/force/area_volume -I$S/.
@@ -120,6 +119,7 @@ $B/scheme/time_step/imp.o: $S/scheme/time_step/imp.cpp; $X -I$S/scheme/time_step
 $B/sim/imp.o: $S/sim/imp.cpp; $X -I$S/sim -I$S/.
 $B/sim/obj/imp.o: $S/sim/obj/imp.cpp; $X -I$S/sim/obj -I$S/.
 $B/sim/opt/imp.o: $S/sim/opt/imp.cpp; $X -I$S/sim/opt -I$S/.
+$B/struct/parray/imp.o: $S/struct/parray/imp.cpp; $X -I$S/struct/parray -I$S/.
 $B/utils/cc.o: $S/utils/cc.cpp; $X -I$S/utils -I$S/.
 $B/utils/error.o: $S/utils/error.cpp; $X -I$S/utils -I$S/.
 $B/utils/imp.o: $S/utils/imp.cpp; $X -I$S/utils -I$S/.

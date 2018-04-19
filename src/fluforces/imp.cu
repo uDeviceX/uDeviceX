@@ -16,7 +16,7 @@
 
 #include "inc/type.h"
 #include "inc/dev.h"
-#include "parray/imp.h"
+#include "struct/parray/imp.h"
 
 #include "d/api.h"
 #include "utils/kl.h"
