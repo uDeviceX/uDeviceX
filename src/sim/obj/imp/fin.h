@@ -41,8 +41,14 @@ static void fin_rig(Rig *r) {
     EFREE(r);
 }
 
+static void fin_dump(Dump *d) {
+    EFREE(d->pp);
+    EFREE(d);
+}
+
 void objects_fin(Objects *obj) {
     if (obj->mbr) UC(fin_mbr(obj->mbr));
     if (obj->rig) UC(fin_rig(obj->rig));
+    UC(fin_dump(obj->dump));
     EFREE(obj);
 }

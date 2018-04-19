@@ -64,11 +64,19 @@ static void ini_rig(const Config *cfg, const OptRig *opt, MPI_Comm cart, int max
     UC(conf_lookup_float(cfg, "rig.mass", &r->mass));
 }
 
+static void ini_dump(long maxp, Dump **d) {
+    EMALLOC(1, d);
+    EMALLOC(maxp, &(*d)->pp);
+}
+
 void objects_ini(const Config *cfg, const Opt *opt, MPI_Comm cart, int maxp, int3 L, Objects **objects) {
     Objects *obj;
     EMALLOC(1, objects);
     obj = *objects;
 
+    MC(m::Comm_dup(cart, &obj->cart));
+
     if (opt->rbc.active) UC(ini_mbr(cfg, &opt->rbc, cart,       L, &obj->mbr));  else obj->mbr = NULL;
     if (opt->rig.active) UC(ini_rig(cfg, &opt->rig, cart, maxp, L, &obj->rig));  else obj->rig = NULL;
+    UC(ini_dump(maxp, &obj->dump));
 }

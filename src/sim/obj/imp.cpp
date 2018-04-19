@@ -8,10 +8,12 @@
 #include "inc/dev.h"
 
 #include "d/api.h"
+#include "mpi/wrapper.h"
 
 #include "utils/error.h"
 #include "utils/os.h"
 #include "utils/cc.h"
+#include "utils/mc.h"
 
 #include "utils/msg.h"
 #include "utils/imp.h"
@@ -52,3 +54,4 @@
 #include "imp/ini.h"
 #include "imp/fin.h"
 #include "imp/main.h"
+#include "imp/dump.h"

@@ -59,7 +59,14 @@ struct Rig {
     float mass;  /* mass of one particle */ 
 };
 
+struct Dump {
+    Particle *pp; /* workspace on host */
+};
+
 struct Objects {
     Mbr *mbr;
     Rig *rig;
+    Dump *dump;
+    Coords *coords;
+    MPI_Comm cart;
 };
