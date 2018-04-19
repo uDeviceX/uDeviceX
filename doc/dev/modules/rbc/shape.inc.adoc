@@ -10,6 +10,9 @@ Allocate, deallocate structure:
 include::{src}/rbc/shape/imp.h[tag=mem]
 ----
 
+where the positions `rr` are stored in a AoS fashion `x0 y0 z0 x1 y1
+z1 ...`. Also needs <<rbc_adj, adjacency structure>> as input.
+
 Compute quantities (on host):
 
 [source,cpp]
