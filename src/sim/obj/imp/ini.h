@@ -26,8 +26,13 @@ static void ini_mbr(const Config *cfg, const OptMbr *opt, MPI_Comm cart, int3 L,
     UC(triangles_ini(m->cell, /**/ &m->tri));
     UC(rbc_ini(opt->ids, m->cell, &m->q));
     UC(ini_mbr_distr(opt->ids, nv, cart, L, /**/ &m->d));
+
     if (opt->dump_com) UC(rbc_com_ini(nv, MAX_CELL_NUM, /**/ &m->com));
-    if (opt->stretch)   UC(rbc_stretch_ini("rbc.stretch", nv, /**/ &m->stretch));
+    else m->com = NULL;
+
+    if (opt->stretch)  UC(rbc_stretch_ini("rbc.stretch", nv, /**/ &m->stretch));
+    else m->stretch = NULL;
+
     UC(rbc_params_ini(&m->params));
     UC(rbc_params_set_conf(cfg, m->params));
 
@@ -64,6 +69,6 @@ void objects_ini(const Config *cfg, const Opt *opt, MPI_Comm cart, int maxp, int
     EMALLOC(1, objects);
     obj = *objects;
 
-    if (opt->rbc.active) UC(ini_mbr(cfg, &opt->rbc, cart,       L, &obj->mbr));
-    if (opt->rig.active) UC(ini_rig(cfg, &opt->rig, cart, maxp, L, &obj->rig));
+    if (opt->rbc.active) UC(ini_mbr(cfg, &opt->rbc, cart,       L, &obj->mbr));  else obj->mbr = NULL;
+    if (opt->rig.active) UC(ini_rig(cfg, &opt->rig, cart, maxp, L, &obj->rig));  else obj->rig = NULL;
 }

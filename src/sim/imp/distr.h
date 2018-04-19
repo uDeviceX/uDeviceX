@@ -10,6 +10,7 @@ static void log_and_fail(Coords *c, DFluStatus *s, FluQuants *q) {
     os_sleep(time); /* hope all ranks dump */
     ERR("dflu_download failed");
 }
+
 void distribute_flu(Sim *s) {
     PartList lp;
     FluQuants *q = &s->flu.q;

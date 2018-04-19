@@ -10,7 +10,7 @@ static void fin_rig_distr(/**/ RigDistr *d) {
     UC(drig_unpack_fin(/**/ d->u));
 }
 
-static void fin_mbr(const OptMbr *opt, Mbr *m) {
+static void fin_mbr(Mbr *m) {
     UC(rbc_fin(&m->q));
     UC(rbc_force_fin(m->force));
 
@@ -19,8 +19,9 @@ static void fin_mbr(const OptMbr *opt, Mbr *m) {
     Dfree(m->ff);
     UC(triangles_fin(m->tri));
 
-    if (opt->dump_com) UC(rbc_com_fin(/**/ m->com));
-    if (opt->stretch)  UC(rbc_stretch_fin(/**/ m->stretch));
+    if (m->com)     UC(rbc_com_fin(/**/ m->com));
+    if (m->stretch) UC(rbc_stretch_fin(/**/ m->stretch));
+
     UC(rbc_params_fin(m->params));
     UC(mesh_read_fin(m->cell));
     UC(mesh_write_fin(m->mesh_write));
@@ -40,8 +41,8 @@ static void fin_rig(Rig *r) {
     EFREE(r);
 }
 
-void objects_fin(const Opt *opt, Objects *obj) {
-    if (opt->rbc.active) UC(fin_mbr(&opt->rbc, obj->mbr));
-    if (opt->rig.active) UC(fin_rig(           obj->rig));
+void objects_fin(Objects *obj) {
+    if (obj->mbr) UC(fin_mbr(obj->mbr));
+    if (obj->rig) UC(fin_rig(obj->rig));
     EFREE(obj);
 }
