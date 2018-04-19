@@ -17,8 +17,8 @@
 #include "frag/dev.h"
 #include "frag/imp.h"
 
-#include "partlist/type.h"
-#include "partlist/dev.h"
+#include "struct/partlist/type.h"
+#include "struct/partlist/dev.h"
 
 #include "algo/scan/imp.h"
 #include "clist/imp.h"

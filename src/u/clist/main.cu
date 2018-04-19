@@ -21,7 +21,7 @@
 #include "coords/ini.h"
 #include "coords/imp.h"
 
-#include "partlist/type.h"
+#include "struct/partlist/type.h"
 
 #include "algo/scan/imp.h"
 #include "clist/imp.h"

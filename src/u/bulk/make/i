@@ -1,7 +1,7 @@
 f0 () { find "$1" -name '*.cu' -o -name '*.cpp' -o -name '*.h' -type f ; }
 f () ( for d; do f0 "$d"; done )
 
-f $U inc mpi d utils io/txt conf clist partlist \
+f $U inc mpi d utils io/txt conf clist \
   algo/scan coords fluforces struct pair math/rnd frag
 
 echo flu/type.h math/dev.h

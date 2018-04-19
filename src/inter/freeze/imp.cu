@@ -26,7 +26,7 @@
 
 #include "utils/texo.h"
 
-#include "partlist/type.h"
+#include "struct/partlist/type.h"
 #include "clist/imp.h"
 
 #include "wall/wvel/type.h"

@@ -17,8 +17,8 @@
 #include "utils/cc.h"
 #include "utils/kl.h"
 
-#include "partlist/type.h"
-#include "partlist/dev.h"
+#include "struct/partlist/type.h"
+#include "struct/partlist/dev.h"
 
 #include "imp.h"
 #include "dev.h"

@@ -34,7 +34,7 @@
 #include "pair/imp.h"
 #include "struct/parray/imp.h"
 #include "struct/farray/imp.h"
-#include "partlist/type.h"
+#include "struct/partlist/type.h"
 
 #include "io/mesh/imp.h"
 #include "io/rig/imp.h"

@@ -31,7 +31,7 @@
 #include "pair/dev.h"
 #include "pair/imp.h"
 
-#include "partlist/type.h"
+#include "struct/partlist/type.h"
 
 #include "clist/imp.h"
 #include "clist/dev.h"

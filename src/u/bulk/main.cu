@@ -16,7 +16,7 @@
 #include "inc/dev.h"
 #include "inc/type.h"
 #include "conf/imp.h"
-#include "partlist/type.h"
+#include "struct/partlist/type.h"
 #include "clist/imp.h"
 #include "pair/imp.h"
 
