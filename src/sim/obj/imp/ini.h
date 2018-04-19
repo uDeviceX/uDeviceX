@@ -64,6 +64,6 @@ void objects_ini(const Config *cfg, const Opt *opt, MPI_Comm cart, int maxp, int
     EMALLOC(1, objects);
     obj = *objects;
 
-    UC(ini_mbr(cfg, &opt->rbc, cart,       L, &obj->mbr));
-    UC(ini_rig(cfg, &opt->rig, cart, maxp, L, &obj->rig));
+    if (opt->rbc.active) UC(ini_mbr(cfg, &opt->rbc, cart,       L, &obj->mbr));
+    if (opt->rig.active) UC(ini_rig(cfg, &opt->rig, cart, maxp, L, &obj->rig));
 }

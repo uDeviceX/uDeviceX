@@ -41,7 +41,7 @@ static void fin_rig(Rig *r) {
 }
 
 void objects_fin(const Opt *opt, Objects *obj) {
-    UC(fin_mbr(&opt->rbc, obj->mbr));
-    UC(fin_rig(           obj->rig));
+    if (opt->rbc.active) UC(fin_mbr(&opt->rbc, obj->mbr));
+    if (opt->rig.active) UC(fin_rig(           obj->rig));
     EFREE(obj);
 }
