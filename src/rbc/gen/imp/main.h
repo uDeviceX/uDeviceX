@@ -26,9 +26,9 @@ static void gen0(double A[16], const float *r, Particle *p) {
 }
 
 static void gen1(double A[16], int nv, const float *rr, Particle *pp) {
-    int i;
-    for (i = 0; i < nv; i++) gen0(A, &rr[3*i], &pp[i]);
+    for (int i = 0; i < nv; i++) gen0(A, &rr[3*i], &pp[i]);
 }
+
 void rbc_gen0(int nv, const float *rr, const Matrices *matrices, /**/ int *pn, Particle *pp) {
     int i, n, nm;
     double *A;
@@ -49,9 +49,9 @@ static void shift(const Coords *c, Particle *p) {
     r[Y] = yg2yl(c, r[Y]);
     r[Z] = zg2zl(c, r[Z]);
 }
+
 void rbc_shift(const Coords *c, int n, Particle *pp) {
-    int i;
-    for (i = 0; i < n; i++) shift(c, &pp[i]);
+    for (int i = 0; i < n; i++) shift(c, &pp[i]);
 }
 
 int rbc_gen(const Coords *coords, const float *rr0, const char *path, int nv, Particle *pp) {
