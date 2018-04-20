@@ -33,6 +33,10 @@ void wall_restart(MPI_Comm cart, const Coords *coords, OptParams op, bool dump_s
     UC(wall_gen_ticket(&w->q, w->t));
 }
 
+int wall_who_stays(const Wall *w, int n, const Particle *pp, int nc, int nv, /**/ int *stay) {
+    return sdf_who_stays(w->sdf, n, pp, nc, nv, /**/ stay);
+}
+
 void wall_interact(const Coords *coords, const PairParams *par, Wall *w, PFarrays *aa) {
     long n, i, na;
     PaArray p;
