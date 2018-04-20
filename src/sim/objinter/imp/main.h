@@ -1,16 +1,18 @@
-static void fill_wrappers(PFarrays *obj, int *nw, PaWrap *pw, FoWrap *fw) {
-    long i, n;
+static void fill_wrappers(PFarrays *obj, int *nwrappers, PaWrap *pw, FoWrap *fw) {
+    long i, nw, n;
     PaArray p;
     FoArray f;
 
-    for (i = 0; i < pfarray_size(obj); ++i, ++pw, ++fw) {
+    (*nwrappers) = nw = pfarray_size(obj);
+
+    if (nw > MAX_OBJ_TYPES)
+        ERR("Too many objects in wrappers : %d/%d", nw, MAX_OBJ_TYPES);
+
+    for (i = 0; i < nw; ++i, ++pw, ++fw) {
         UC(pfarray_get(i, obj, &n, &p, &f));
         pw->n = fw->n = n;
         pw->pp = (const Particle*) p.pp;
         fw->ff = (Force*) f.ff;
-        ++nw;
-        if (*nw > MAX_OBJ_TYPES)
-            ERR("Too many objects in wrappers : %d/%d", *nw, MAX_OBJ_TYPES);
     }
 }
 
