@@ -16,7 +16,7 @@
 
 #include "struct/parray/imp.h"
 #include "struct/farray/imp.h"
-#include "struct/partlist/type.h"
+#include "struct/pfarrays/imp.h"
 
 #include "cnt/imp.h"
 #include "fsi/imp.h"
@@ -28,3 +28,4 @@
 #include "imp.h"
 #include "imp/type.h"
 #include "imp/mem.h"
+#include "imp/main.h"
