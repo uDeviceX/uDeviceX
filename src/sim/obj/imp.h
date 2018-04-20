@@ -1,5 +1,6 @@
 struct Objects;
 
+struct Sdf;
 struct Config;
 struct Coords;
 struct Opt;
@@ -18,3 +19,5 @@ void objects_strt_templ(const char *base, Objects*);
 void objects_strt_dump(const char *base, long id, Objects*);
 
 void objects_get_particles(Objects*, PFarrays*);
+
+void objects_remove_from_wall(const Sdf *sdf, Objects *o);

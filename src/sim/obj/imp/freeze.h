@@ -30,3 +30,8 @@ static void remove_rig(const Sdf *sdf, Rig *r) {
     remove(q->i_pp_hst, q->nv, stay, q->ns);
     msg_print("rig: %d/%d survived", q->ns, ns0);
 }
+
+void objects_remove_from_wall(const Sdf *sdf, Objects *o) {
+    if (o->mbr) remove_mbr(sdf, o->mbr);
+    if (o->rig) remove_rig(sdf, o->rig);
+}
