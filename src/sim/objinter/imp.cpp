@@ -18,6 +18,8 @@
 #include "struct/farray/imp.h"
 #include "struct/pfarrays/imp.h"
 
+#include "pair/imp.h"
+
 #include "cnt/imp.h"
 #include "fsi/imp.h"
 
