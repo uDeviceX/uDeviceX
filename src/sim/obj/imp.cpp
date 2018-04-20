@@ -47,6 +47,8 @@
 #include "distr/rbc/imp.h"
 #include "distr/rig/imp.h"
 
+#include "wall/sdf/imp.h"
+
 #include "sim/opt/imp.h"
 
 #include "imp.h"
@@ -55,3 +57,4 @@
 #include "imp/fin.h"
 #include "imp/main.h"
 #include "imp/dump.h"
+#include "imp/freeze.h"

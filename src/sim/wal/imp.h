@@ -14,4 +14,6 @@ void wall_gen(MPI_Comm, const Coords*, OptParams, bool dump_sdf,
 void wall_restart(MPI_Comm, const Coords*, OptParams, bool dump_sdf,
                   const char *base, /**/ Wall*);
 
+int  wall_who_stays(const Wall*, int n, const Particle*, int nc, int nv, /**/ int *stay);
+
 void wall_interact(const Coords*, const PairParams*, Wall*, PFarrays*);
