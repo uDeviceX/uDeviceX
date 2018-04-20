@@ -120,6 +120,7 @@ $B/sim/obj/imp.o: $S/coords/ini.h $S/rbc/stretch/imp.h $S/sim/obj/imp/ini.h $S/s
 $B/sim/opt/imp.o: $S/utils/imp.h $S/utils/error.h $S/io/mesh/imp.h $S/conf/imp.h $S/sim/opt/imp.h
 $B/struct/farray/imp.o: $S/struct/farray/imp.h $S/struct/farray/imp/main.h $S/struct/farray/type.h
 $B/struct/parray/imp.o: $S/struct/parray/imp.h $S/struct/parray/imp/main.h $S/struct/parray/type.h
+$B/struct/pfarrays/imp.o: $S/struct/farray/imp.h $S/utils/imp.h $S/utils/error.h $S/inc/type.h $S/struct/pfarrays/imp.h $S/struct/parray/imp.h $S/struct/pfarrays/imp/main.h $S/struct/pfarrays/imp/type.h
 $B/utils/cc.o: $S/utils/cc/common.h $S/inc/conf.h $S/utils/error.h $S/d/api.h $B/conf.h
 $B/utils/error.o: $S/utils/msg.h $S/utils/error.h
 $B/utils/imp.o: $S/utils/error.h $S/utils/imp.h
