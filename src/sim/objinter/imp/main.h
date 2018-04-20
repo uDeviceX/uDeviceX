@@ -35,12 +35,18 @@ static void forces_fsi(ObjInter *oi, int nw, PaWrap *pw, FoWrap *fw) {
     fsi_bulk(oi->fsiparams, oi->fsi, nw, pw, fw);
 }
 
+static bool has_work(ObjInter *o) {
+    return o->cnt || o->fsi;
+}
+
 void obj_inter_forces(ObjInter *oi, PFarrays *flu, int *flu_start, PFarrays *obj) {
     PaWrap pw[MAX_OBJ_TYPES];
     FoWrap fw[MAX_OBJ_TYPES];
     int nw = 0;
     ObjExch *e = oi->e;
 
+    if (!has_work(oi)) return;
+    
     UC(fill_wrappers(obj, /**/ &nw, pw, fw));
     if (!nw) return;
 
