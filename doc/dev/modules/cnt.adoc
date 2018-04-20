@@ -1,6 +1,5 @@
-= cnt
-:lext: .adoc
-:src: ../../../src
+[[cnt]]
+= cnt: contact forces
 
 _contact_ interactions between objects (rigid objects, rbc membranes)
 

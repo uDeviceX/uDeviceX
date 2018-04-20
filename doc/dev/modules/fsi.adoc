@@ -1,6 +1,5 @@
-= fsi
-:lext: .adoc
-:src: ../../../src
+[[fsi]]
+= fsi : flow structure interactions
 
 flow-structure interactions between solvent and objects (rigid objects, rbc membranes)
 
