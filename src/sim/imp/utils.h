@@ -38,7 +38,7 @@ static void utils_compute_hematocrit(const Sim *s) {
 
     if (opt->wall) {
         enum {NSAMPLES = 100000};
-        Vdomain = sdf_compute_volume(s->cart, s->params.L, s->wall.sdf, NSAMPLES);
+        Vdomain = sdf_compute_volume(s->cart, s->opt.params.L, s->wall.sdf, NSAMPLES);
     }
     else {
         const Coords *c = s->coords;
@@ -117,6 +117,6 @@ static InterRigInfos get_sinfo(Sim *s) {
     si.pi = s->rig.pininfo;
     si.mass = s->rig.mass;
     si.empty_pp = s->opt.rig.empty_pp;
-    si.numdensity = s->params.numdensity;
+    si.numdensity = s->opt.params.numdensity;
     return si;
 }

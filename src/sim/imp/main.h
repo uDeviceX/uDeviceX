@@ -1,4 +1,4 @@
-static long get_max_parts_wall(Params params) {
+static long get_max_parts_wall(OptParams params) {
     int3 L = params.L;
     return params.numdensity *
         (L.x + 2 * XWM) *
@@ -8,7 +8,7 @@ static long get_max_parts_wall(Params params) {
 
 static void gen_flu(Sim *s) {
     Flu *flu = &s->flu;
-    UC(flu_gen_quants(s->coords, s->params.numdensity, s->gen_color, &flu->q));
+    UC(flu_gen_quants(s->coords, s->opt.params.numdensity, s->gen_color, &flu->q));
     UC(flu_build_cells(&flu->q));
     if (s->opt.fluids) flu_gen_ids(s->cart, flu->q.n, &flu->q);
 }
@@ -26,7 +26,7 @@ static void gen_wall(Sim *s) {
     Flu *flu = &s->flu;
     Wall *w = &s->wall;
     bool dump_sdf = s->opt.dump_field;
-    long maxp_wall = get_max_parts_wall(s->params);
+    long maxp_wall = get_max_parts_wall(s->opt.params);
     
     if (s->opt.wall) {
         UC(sdf_gen(s->coords, s->cart, dump_sdf, /**/ w->sdf));
@@ -91,7 +91,7 @@ static void gen_from_restart(Sim *s) {
     Wall *wall = &s->wall;
     MeshRead *cell = s->rbc.cell;
     const Opt *opt = &s->opt;
-    long maxp_wall = get_max_parts_wall(s->params);
+    long maxp_wall = get_max_parts_wall(s->opt.params);
     const char *base = opt->strt_base_read;
     bool dump_sdf = opt->dump_field;
     

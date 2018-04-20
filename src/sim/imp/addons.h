@@ -79,7 +79,7 @@ static void mark_outflow(const Flu *f, Outflow *o) {
     UC(outflow_download_ndead(o));
 }
 
-static void mark_outflowden(Params params, const Flu *f, const DContMap *m, /**/ DCont *d) {
+static void mark_outflowden(OptParams params, const Flu *f, const DContMap *m, /**/ DCont *d) {
     const int *ss, *cc;
     int n;
     n = f->q.n;

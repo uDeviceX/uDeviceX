@@ -169,12 +169,6 @@ struct Dump {
     int id_field, id_bop, id_rbc, id_rbc_com, id_rig_mesh, id_strt;
 };
 
-struct Params {
-    int3 L;          /* subdomain sizes */
-    float kBT;       /* temperature     */
-    int numdensity;  /* number density  */
-};
-
 struct Sim {
     /* quantities */
     Flu flu;
@@ -182,7 +176,6 @@ struct Sim {
     Rig rig;
     Wall wall;
 
-    Params params;
     BForce *bforce;
 
     /* helpers */
@@ -202,7 +195,6 @@ struct Sim {
     Inflow *inflow;
     DCont    *denoutflow;
     DContMap *mapoutflow;
-
 
     /* state */
     bool equilibrating;

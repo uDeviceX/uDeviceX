@@ -3,8 +3,8 @@ static void set_params(const Config *cfg, float kBT, float dt, const char *name_
     UC(pair_compute_dpd_sigma(kBT, dt, /**/ p));
 }
 
-static void ini_flu_exch(const Opt *opt, Params par, MPI_Comm comm, int3 L, /**/ FluExch *e) {
-    int maxd = HSAFETY_FACTOR * par.numdensity;
+static void ini_flu_exch(const Opt *opt, MPI_Comm comm, int3 L, /**/ FluExch *e) {
+    int maxd = HSAFETY_FACTOR * opt->params.numdensity;
 
     UC(eflu_pack_ini(opt->flucolors, L, maxd, /**/ &e->p));
     UC(eflu_comm_ini(opt->flucolors, comm, /**/ &e->c));
@@ -35,8 +35,8 @@ static void ini_bb_exch(int nt, int nv, int max_m, MPI_Comm comm, int3 L, /**/ B
     UC(emesh_unpackm_ini(nt, max_m, /**/ &e->um));
 }
 
-static void ini_flu_distr(const Opt *opt, Params par, MPI_Comm comm, int3 L, /**/ FluDistr *d) {
-    float maxdensity = ODSTR_FACTOR * par.numdensity;
+static void ini_flu_distr(const Opt *opt, MPI_Comm comm, int3 L, /**/ FluDistr *d) {
+    float maxdensity = ODSTR_FACTOR * opt->params.numdensity;
     UC(dflu_pack_ini(opt->flucolors, opt->fluids, L, maxdensity, /**/ &d->p));
     UC(dflu_comm_ini(opt->flucolors, opt->fluids, comm, /**/ &d->c));
     UC(dflu_unpack_ini(opt->flucolors, opt->fluids, L, maxdensity, /**/ &d->u));
@@ -90,14 +90,15 @@ static void ini_colorer(int nv, MPI_Comm comm, int maxp, int3 L, /**/ Colorer *c
     Dalloc(&c->maxext, maxp);
 }
 
-static void ini_flu(const Config *cfg, const Opt *opt, Params par, MPI_Comm cart, int maxp, int3 L, /**/ Flu *f) {
-
+static void ini_flu(const Config *cfg, const Opt *opt, MPI_Comm cart, int maxp, /**/ Flu *f) {
+    int3 L = opt->params.L;
+    
     UC(flu_ini(opt->flucolors, opt->fluids, L, maxp, &f->q));
     UC(fluforces_bulk_ini(L, maxp, /**/ &f->bulk));
     UC(fluforces_halo_ini(cart, L, /**/ &f->halo));
 
-    UC(ini_flu_distr(opt, par, cart, L, /**/ &f->d));
-    UC(ini_flu_exch(opt, par, cart, L, /**/ &f->e));
+    UC(ini_flu_distr(opt, cart, L, /**/ &f->d));
+    UC(ini_flu_exch(opt, cart, L, /**/ &f->e));
 
     UC(Dalloc(&f->ff, maxp));
     EMALLOC(maxp, /**/ &f->ff_hst);
@@ -238,7 +239,7 @@ static void ini_dump(int maxp, MPI_Comm cart, const Coords *c, const Opt *opt, D
     d->id_bop = d->id_rbc = d->id_rbc_com = d->id_rig_mesh = d->id_strt = 0;
 }
 
-static long maxp_estimate(const Params *p) {
+static long maxp_estimate(const OptParams *p) {
     int3 L = p->L;
     int estimate = L.x * L.y * L.z * p->numdensity;
     return SAFETY_FACTOR_MAXP * estimate;
@@ -254,29 +255,23 @@ static void ini_time(const Config *cfg, /**/ Time *t) {
 }
 
 static void ini_common(const Config *cfg, MPI_Comm cart, /**/ Sim *s) {
-    Params params;
     MC(m::Comm_dup(cart, &s->cart));
     UC(coords_ini_conf(s->cart, cfg, /**/ &s->coords));
     UC(coords_log(s->coords));
-
-    params.L = subdomain(s->coords);
-    UC(conf_lookup_float(cfg, "glb.kBT",        &params.kBT       ));
-    UC(conf_lookup_int  (cfg, "glb.numdensity", &params.numdensity));
 
     UC(dbg_ini(&s->dbg));
     UC(dbg_set_conf(cfg, s->dbg));
 
     UC(ini_time(cfg, &s->time));
-    
-    s->params = params;
 }
 
-static void ini_optional_features(const Config *cfg, const Opt *opt, const Params *par, Sim *s) {
-    int maxp = maxp_estimate(par);
+static void ini_optional_features(const Config *cfg, const Opt *opt, Sim *s) {
+    int maxp = maxp_estimate(&opt->params);
+    int3 L = opt->params.L;
     
-    if (opt->vcon)       UC(ini_vcon(s->cart, par->L, cfg, /**/ &s->vcon));
+    if (opt->vcon)       UC(ini_vcon(s->cart, L, cfg, /**/ &s->vcon));
     if (opt->outflow)    UC(ini_outflow(s->coords, maxp, cfg, /**/ &s->outflow));
-    if (opt->inflow)     UC(ini_inflow (s->coords, par->L, cfg,  /**/ &s->inflow ));
+    if (opt->inflow)     UC(ini_inflow (s->coords, L, cfg,  /**/ &s->inflow ));
     if (opt->denoutflow) UC(ini_denoutflow(s->coords, maxp, cfg, /**/ &s->denoutflow, &s->mapoutflow));    
 }
 
@@ -284,45 +279,47 @@ void sim_ini(const Config *cfg, MPI_Comm cart, /**/ Sim **sim) {
     float dt;
     Sim *s;
     int maxp;
-    Params params;
     Opt *opt;
+    int3 L;
     
     EMALLOC(1, sim);
     s = *sim;
     opt = &s->opt;
     
     UC(ini_common(cfg, cart, /**/ s));
-    params = s->params;
     
-    maxp = maxp_estimate(&params);
     dt = time_step_dt0(s->time.step);
     time_line_advance(dt, s->time.t);
 
     UC(opt_read(cfg, opt));
     UC(read_recolor_opt(cfg, &s->recolorer));
     UC(opt_check(opt));
-    UC(ini_pair_params(cfg, params.kBT, dt, s));
+
+    maxp = maxp_estimate(&opt->params);
+    L = opt->params.L;
+
+    UC(ini_pair_params(cfg, opt->params.kBT, dt, s));
 
     UC(ini_dump(maxp, s->cart, s->coords, opt, /**/ &s->dump));
 
     UC(bforce_ini(&s->bforce));
     UC(bforce_set_conf(cfg, s->bforce));
 
-    UC(ini_flu(cfg, opt, params, s->cart, maxp, params.L, /**/ &s->flu));    
-    if (opt->rbc.active)  UC(ini_rbc(cfg, &opt->rbc, s->cart, params.L, /**/ &s->rbc));
-    if (opt->rig.active)  UC(ini_rig(cfg, s->cart, &opt->rig, maxp, params.L, /**/ &s->rig));
-    if (opt->wall) UC(ini_wall(cfg, params.L, &s->wall));
+    UC(ini_flu(cfg, opt, s->cart, maxp, /**/ &s->flu));    
+    if (opt->rbc.active)  UC(ini_rbc(cfg, &opt->rbc, s->cart, L, /**/ &s->rbc));
+    if (opt->rig.active)  UC(ini_rig(cfg, s->cart, &opt->rig, maxp, L, /**/ &s->rig));
+    if (opt->wall) UC(ini_wall(cfg, L, &s->wall));
     
     if (opt->rbc.active || opt->rig.active)
-        UC(ini_objinter(s->cart, maxp, params.L, opt, /**/ &s->objinter));
+        UC(ini_objinter(s->cart, maxp, L, opt, /**/ &s->objinter));
 
     if (opt->flucolors && opt->rbc.active)
-        UC(ini_colorer(s->rbc.q.nv, s->cart, maxp, params.L, /**/ &s->colorer));
+        UC(ini_colorer(s->rbc.q.nv, s->cart, maxp, L, /**/ &s->colorer));
 
     if (opt->rig.active && opt->rig.bounce)
-        UC(ini_bounce_back(s->cart, maxp, params.L, &s->rig, /**/ &s->bb));
+        UC(ini_bounce_back(s->cart, maxp, L, &s->rig, /**/ &s->bb));
 
-    UC(ini_optional_features(cfg, opt, &params, /**/ s));
+    UC(ini_optional_features(cfg, opt, /**/ s));
     
     UC(scheme_restrain_ini(&s->restrain));
     UC(scheme_restrain_set_conf(cfg, s->restrain));

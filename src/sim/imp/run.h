@@ -47,15 +47,15 @@ static void step(TimeLine *time, float dt, float tstart, Sim *s) {
 
     if (active_walls(s)) bounce_wall(dt, active_rbc(s), s->coords, wall, /**/ flu, rbc);
 
-    if (active_rig(s) && opt->rig.bounce) bounce_solid(dt, s->params.L, /**/ &s->bb, rig, flu);
+    if (active_rig(s) && opt->rig.bounce) bounce_solid(dt, s->opt.params.L, /**/ &s->bb, rig, flu);
 
     UC(check_pos_soft(s));
     UC(check_vel(dt, s));
 
     if (!s->equilibrating) {
-        if (opt->inflow)     UC(apply_inflow(s->params.kBT, s->params.numdensity, dt, s->inflow, /**/ flu));
+        if (opt->inflow)     UC(apply_inflow(s->opt.params.kBT, s->opt.params.numdensity, dt, s->inflow, /**/ flu));
         if (opt->outflow)    UC(mark_outflow(flu, /**/ s->outflow));
-        if (opt->denoutflow) UC(mark_outflowden(s->params, flu, s->mapoutflow, /**/ s->denoutflow));
+        if (opt->denoutflow) UC(mark_outflowden(s->opt.params, flu, s->mapoutflow, /**/ s->denoutflow));
         if (opt->flucolors)  UC(recolor_flux(s->coords, &s->recolorer, flu));
     }
 }
