@@ -157,7 +157,7 @@ void sim_fin(Sim *s) {
     if (opt->rig.active)  UC(fin_rig(/**/ &s->rig));
     if (opt->wall) UC(fin_wall(&s->wall));
 
-    if (s->objinter) UC(obj_inter_fin(s->objinter));
+    UC(obj_inter_fin(s->objinter));
     
     if (opt->flucolors && opt->rbc.active)
         UC(fin_colorer(/**/ &s->colorer));

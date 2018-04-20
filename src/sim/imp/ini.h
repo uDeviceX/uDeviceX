@@ -287,11 +287,8 @@ void sim_ini(const Config *cfg, MPI_Comm cart, /**/ Sim **sim) {
     if (opt->rig.active)  UC(ini_rig(cfg, s->cart, &opt->rig, maxp, L, /**/ &s->rig));
     if (opt->wall) UC(ini_wall(cfg, L, &s->wall));
     
-    if (opt->rbc.active || opt->rig.active)
-        UC(obj_inter_ini(cfg, opt, s->cart, dt, maxp, /**/ &s->objinter));
-    else
-        s->objinter = NULL;
-
+    UC(obj_inter_ini(cfg, opt, s->cart, dt, maxp, /**/ &s->objinter));
+    
     if (opt->flucolors && opt->rbc.active)
         UC(ini_colorer(s->rbc.q.nv, s->cart, maxp, L, /**/ &s->colorer));
 

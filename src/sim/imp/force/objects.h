@@ -8,8 +8,6 @@ void forces_objects(Sim *sim) {
     Flu *f = &sim->flu;
     Rbc *r = &sim->rbc;
     Rig *s = &sim->rig;
-
-    if (!sim->objinter) return;
     
     UC(pfarrays_ini(&flu));
     UC(pfarrays_ini(&obj));
