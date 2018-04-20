@@ -119,6 +119,7 @@ $B/sim/imp.o: $S/sim/imp.cpp; $X -I$S/sim -I$S/.
 $B/sim/obj/imp.o: $S/sim/obj/imp.cpp; $X -I$S/sim/obj -I$S/.
 $B/sim/objinter/imp.o: $S/sim/objinter/imp.cpp; $X -I$S/sim/objinter -I$S/.
 $B/sim/opt/imp.o: $S/sim/opt/imp.cpp; $X -I$S/sim/opt -I$S/.
+$B/sim/wal/imp.o: $S/sim/wal/imp.cpp; $X -I$S/sim/wal -I$S/.
 $B/struct/farray/imp.o: $S/struct/farray/imp.cpp; $X -I$S/struct/farray -I$S/.
 $B/struct/parray/imp.o: $S/struct/parray/imp.cpp; $X -I$S/struct/parray -I$S/.
 $B/struct/pfarrays/imp.o: $S/struct/pfarrays/imp.cpp; $X -I$S/struct/pfarrays -I$S/.
