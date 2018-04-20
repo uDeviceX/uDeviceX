@@ -117,6 +117,7 @@ $B/scheme/time_line/imp.o: $S/scheme/time_line/imp.cpp; $X -I$S/scheme/time_line
 $B/scheme/time_step/imp.o: $S/scheme/time_step/imp.cpp; $X -I$S/scheme/time_step -I$S/.
 $B/sim/imp.o: $S/sim/imp.cpp; $X -I$S/sim -I$S/.
 $B/sim/obj/imp.o: $S/sim/obj/imp.cpp; $X -I$S/sim/obj -I$S/.
+$B/sim/objinter/imp.o: $S/sim/objinter/imp.cpp; $X -I$S/sim/objinter -I$S/.
 $B/sim/opt/imp.o: $S/sim/opt/imp.cpp; $X -I$S/sim/opt -I$S/.
 $B/struct/farray/imp.o: $S/struct/farray/imp.cpp; $X -I$S/struct/farray -I$S/.
 $B/struct/parray/imp.o: $S/struct/parray/imp.cpp; $X -I$S/struct/parray -I$S/.
