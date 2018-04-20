@@ -4,14 +4,6 @@ static void fin_flu_exch(/**/ FluExch *e) {
     UC(eflu_unpack_fin(/**/ e->u));
 }
 
-static void fin_obj_exch(/**/ ObjExch *e) {
-    UC(eobj_pack_fin(/**/ e->p));
-    UC(eobj_comm_fin(/**/ e->c));
-    UC(eobj_unpack_fin(/**/ e->u));
-    UC(eobj_packf_fin(/**/ e->pf));
-    UC(eobj_unpackf_fin(/**/ e->uf));
-}
-
 static void fin_mesh_exch(/**/ Mexch *e) {
     UC(emesh_pack_fin(/**/ e->p));
     UC(emesh_comm_fin(/**/ e->c));
@@ -122,20 +114,12 @@ static void fin_wall(Wall *w) {
     UC(wvel_step_fin(w->velstep));
 }
     
-static void fin_objinter(const Opt *opt, ObjInter *o) {
-    UC(fin_obj_exch(&o->e));
-    if (opt->cnt) cnt_fin(o->cnt);
-    if (opt->fsi) fsi_fin(o->fsi);
-}
-
 static void fin_vcon(Vcon *c) {
     UC(vcont_fin(c->vcont));
 }
 
 static void fin_pair_params(Sim *s) {
     UC(pair_fin(s->flu.params));
-    UC(pair_fin(s->objinter.cntparams));
-    UC(pair_fin(s->objinter.fsiparams));
 }
 
 static void fin_sampler(Sampler *s) {
@@ -173,8 +157,7 @@ void sim_fin(Sim *s) {
     if (opt->rig.active)  UC(fin_rig(/**/ &s->rig));
     if (opt->wall) UC(fin_wall(&s->wall));
 
-    if (opt->rbc.active || opt->rig.active)
-        UC(fin_objinter(&s->opt, &s->objinter));
+    if (s->objinter) UC(obj_inter_fin(s->objinter));
     
     if (opt->flucolors && opt->rbc.active)
         UC(fin_colorer(/**/ &s->colorer));

@@ -27,15 +27,6 @@ struct RigDistr {
     DRigUnpack *u;
 };
 
-/* object exchanger for forces */
-struct ObjExch {
-    EObjPack *p;
-    EObjUnpack *u;
-    EObjPackF *pf;
-    EObjUnpackF *uf;
-    EObjComm *c;
-};
-
 /* mesh exchanger */
 struct Mexch {
     EMeshPack *p;
@@ -125,16 +116,6 @@ struct Wall {
     WvelStep *velstep;
 };
 
-/* helper for computing object interactions */
-struct ObjInter {
-    ObjExch e;
-    Contact *cnt;
-    Fsi     *fsi;
-
-    PairParams *cntparams;
-    PairParams *fsiparams;
-};
-
 /* velocity controller */
 struct Vcon {
     PidVCont *vcont;
@@ -181,7 +162,7 @@ struct Sim {
     /* helpers */
     Time time;
     Coords *coords;
-    ObjInter objinter;
+    ObjInter *objinter;
     BounceBack bb;
     Colorer colorer;
     Recolorer recolorer;

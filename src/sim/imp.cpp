@@ -34,6 +34,7 @@
 #include "pair/imp.h"
 #include "struct/parray/imp.h"
 #include "struct/farray/imp.h"
+#include "struct/pfarrays/imp.h"
 #include "struct/partlist/type.h"
 
 #include "io/mesh/imp.h"
@@ -70,17 +71,12 @@
 #include "distr/rbc/imp.h"
 #include "distr/rig/imp.h"
 
-#include "cnt/imp.h"
-#include "fsi/imp.h"
-
-#include "exch/obj/imp.h"
 #include "exch/mesh/imp.h"
 
 #include "flu/type.h"
 #include "exch/flu/imp.h"
 
 #include "fluforces/imp.h"
-
 
 #include "mesh/triangles/imp.h"
 #include "mesh/collision/imp.h"
@@ -106,6 +102,7 @@
 
 #include "color/flux.h"
 
+#include "objinter/imp.h"
 #include "opt/imp.h"
 
 #include "imp.h"

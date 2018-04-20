@@ -11,16 +11,6 @@ static void ini_flu_exch(const Opt *opt, MPI_Comm comm, int3 L, /**/ FluExch *e)
     UC(eflu_unpack_ini(opt->flucolors, L, maxd, /**/ &e->u));
 }
 
-static void ini_obj_exch(MPI_Comm comm, int3 L, /**/ ObjExch *e) {
-    int maxpsolid = MAX_PSOLID_NUM;
-
-    UC(eobj_pack_ini(L, MAX_OBJ_TYPES, MAX_OBJ_DENSITY, maxpsolid, &e->p));
-    UC(eobj_comm_ini(comm, /**/ &e->c));
-    UC(eobj_unpack_ini(L, MAX_OBJ_DENSITY, maxpsolid, /**/ &e->u));
-    UC(eobj_packf_ini(L, MAX_OBJ_DENSITY, maxpsolid, /**/ &e->pf));
-    UC(eobj_unpackf_ini(L, MAX_OBJ_DENSITY, maxpsolid, /**/ &e->uf));
-}
-
 static void ini_mesh_exch(int nv, int max_m, MPI_Comm comm, int3 L, /**/ Mexch *e) {
     UC(emesh_pack_ini(L, nv, max_m, /**/ &e->p));
     UC(emesh_comm_ini(comm, /**/ &e->c));
@@ -169,14 +159,6 @@ static void ini_wall(const Config *cfg, int3 L, Wall *w) {
     UC(wvel_step_ini(&w->velstep));
 }
 
-static void ini_objinter(MPI_Comm cart, int maxp, int3 L, const Opt *opt, /**/ ObjInter *o) {
-    int rank;
-    MC(m::Comm_rank(cart, &rank));
-    UC(ini_obj_exch(cart, L, &o->e));
-    if (opt->cnt) cnt_ini(maxp, rank, L, /**/ &o->cnt);
-    if (opt->fsi) fsi_ini(rank, L, /**/ &o->fsi);
-}
-
 static void read_recolor_opt(const Config *c, Recolorer *o) {
     int b;
     UC(conf_lookup_bool(c, "recolor.active", &b));
@@ -192,12 +174,7 @@ static void coords_log(const Coords *c) {
 
 static void ini_pair_params(const Config *cfg, float kBT, float dt, Sim *s) {
     UC(pair_ini(&s->flu.params));
-    UC(pair_ini(&s->objinter.cntparams));
-    UC(pair_ini(&s->objinter.fsiparams));
-
     UC(set_params(cfg, kBT, dt, "flu", s->flu.params));
-    if (s->opt.cnt) UC(set_params(cfg, kBT, dt, "cnt", s->objinter.cntparams));
-    if (s->opt.fsi) UC(set_params(cfg, kBT, dt, "fsi", s->objinter.fsiparams));
 }
 
 static int gsize(int L, int r) {
@@ -311,7 +288,9 @@ void sim_ini(const Config *cfg, MPI_Comm cart, /**/ Sim **sim) {
     if (opt->wall) UC(ini_wall(cfg, L, &s->wall));
     
     if (opt->rbc.active || opt->rig.active)
-        UC(ini_objinter(s->cart, maxp, L, opt, /**/ &s->objinter));
+        UC(obj_inter_ini(cfg, opt, s->cart, dt, maxp, /**/ &s->objinter));
+    else
+        s->objinter = NULL;
 
     if (opt->flucolors && opt->rbc.active)
         UC(ini_colorer(s->rbc.q.nv, s->cart, maxp, L, /**/ &s->colorer));
