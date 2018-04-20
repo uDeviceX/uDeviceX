@@ -11,9 +11,10 @@ static void ini_obj_exch(MPI_Comm comm, int3 L, /**/ ObjExch **oe) {
     UC(eobj_unpackf_ini(L, MAX_OBJ_DENSITY, maxpsolid, /**/ &e->uf));
 }
 
-void obj_inter_ini(MPI_Comm cart, int maxp, int3 L, const Opt *opt, /**/ ObjInter **oi) {
+void obj_inter_ini(MPI_Comm cart, int maxp, const Opt *opt, /**/ ObjInter **oi) {
     int rank;
     ObjInter *o;
+    int3 L = opt->params.L;
     EMALLOC(1, oi);
     o = *oi;
     
