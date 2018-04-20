@@ -28,14 +28,15 @@ static void clear_stresses(int n, float* ss) {
 void forces_wall(bool fluss, Sim *s) {
     PaArray po, ps, pr;
     FoArray fo, fs, fr;
+    PFarrays *pf;
     Flu *flu = &s->flu;
     Rbc *rbc = &s->rbc;
     Rig *rig = &s->rig;
-    Wall *w = &s->wall;
+    Wall *w =  s->wall;
     const PairParams *par = flu->params;
     const Opt *opt = &s->opt;
 
-    if (!w->q.n) return;
+    if (!w) return;
     
     parray_push_pp(flu->q.pp, &po);
     parray_push_pp(rig->q.pp, &ps);
@@ -48,10 +49,17 @@ void forces_wall(bool fluss, Sim *s) {
     farray_push_ff(rbc->ff, &fr);
     if (fluss)
         farray_push_ss(flu->ss, &fo);
+
+    UC(pfarrays_ini(&pf));
+    UC(pfarrays_push(pf, flu->q.n, po, fo));
+    if (active_rbc(s)) UC(pfarrays_push(pf, rbc->q.n, pr, fr));
+    if (active_rig(s)) UC(pfarrays_push(pf, rig->q.n, ps, fs));
+    UC(wall_interact(s->coords, par, w, pf));
+    UC(pfarrays_fin(pf));
     
-    if (flu->q.n)                  wall_force(par, w->velstep, s->coords, w->sdf, &w->q, w->t, flu->q.n, &po, /**/ &fo);
-    if (active_rig(s) && rig->q.n) wall_force(par, w->velstep, s->coords, w->sdf, &w->q, w->t, rig->q.n, &ps, /**/ &fs);
-    if (active_rbc(s) && rbc->q.n) wall_force(par, w->velstep, s->coords, w->sdf, &w->q, w->t, rbc->q.n, &pr, /**/ &fr);
+    // if (flu->q.n)                  wall_force(par, w->velstep, s->coords, w->sdf, &w->q, w->t, flu->q.n, &po, /**/ &fo);
+    // if (active_rig(s) && rig->q.n) wall_force(par, w->velstep, s->coords, w->sdf, &w->q, w->t, rig->q.n, &ps, /**/ &fs);
+    // if (active_rbc(s) && rbc->q.n) wall_force(par, w->velstep, s->coords, w->sdf, &w->q, w->t, rbc->q.n, &pr, /**/ &fr);
 
     // if (active_rig(s) && rig->q.n) wall_repulse(rig->q.n, rig->q.pp, w->sdf, /**/ rig->ff);
     // if (active_rbc(s) && rbc->q.n) wall_repulse(rbc->q.n, rbc->q.pp, w->sdf, /**/ rbc->ff);

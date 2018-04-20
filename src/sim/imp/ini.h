@@ -150,15 +150,6 @@ static void ini_bounce_back(MPI_Comm cart, int maxp, int3 L, Rig *s, /**/ Bounce
     UC(ini_bb_exch(s->q.nt, s->q.nv, MAX_CELL_NUM, cart, L, /**/ &bb->e));
 }
 
-static void ini_wall(const Config *cfg, int3 L, Wall *w) {
-    UC(sdf_ini(L, &w->sdf));
-    UC(wall_ini_quants(L, &w->q));
-    UC(wall_ini_ticket(L, &w->t));
-    UC(wvel_ini(&w->vel));
-    UC(wvel_set_conf(cfg, w->vel));
-    UC(wvel_step_ini(&w->velstep));
-}
-
 static void read_recolor_opt(const Config *c, Recolorer *o) {
     int b;
     UC(conf_lookup_bool(c, "recolor.active", &b));
@@ -285,7 +276,7 @@ void sim_ini(const Config *cfg, MPI_Comm cart, /**/ Sim **sim) {
     UC(ini_flu(cfg, opt, s->cart, maxp, /**/ &s->flu));    
     if (opt->rbc.active)  UC(ini_rbc(cfg, &opt->rbc, s->cart, L, /**/ &s->rbc));
     if (opt->rig.active)  UC(ini_rig(cfg, s->cart, &opt->rig, maxp, L, /**/ &s->rig));
-    if (opt->wall) UC(ini_wall(cfg, L, &s->wall));
+    if (opt->wall) UC(wall_ini(cfg, L, &s->wall));
     
     UC(obj_inter_ini(cfg, opt, s->cart, dt, maxp, /**/ &s->objinter));
     

@@ -37,8 +37,7 @@ static void utils_compute_hematocrit(const Sim *s) {
     if (!active_rbc(s)) return;
 
     if (opt->wall) {
-        enum {NSAMPLES = 100000};
-        Vdomain = sdf_compute_volume(s->cart, s->opt.params.L, s->wall.sdf, NSAMPLES);
+        Vdomain = wall_compute_volume(s->wall, s->cart, s->opt.params.L);
     }
     else {
         const Coords *c = s->coords;
@@ -93,7 +92,8 @@ static float utils_get_dt(Sim *s, TimeLine *time) {
 static InterWalInfos get_winfo(Sim *s) {
     InterWalInfos wi;
     wi.active = s->opt.wall;
-    wi.sdf = s->wall.sdf;
+    if (s->opt.wall)  wall_get_sdf_ptr(s->wall, &wi.sdf);
+    else wi.sdf = NULL;
     return wi;
 }
 

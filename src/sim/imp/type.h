@@ -107,15 +107,6 @@ struct Rig {
     float mass;  /* mass of one particle */ 
 };
 
-/* data holder for walls */
-struct Wall {
-    Sdf *sdf;
-    WallQuants q;
-    WallTicket *t;
-    Wvel *vel;
-    WvelStep *velstep;
-};
-
 /* velocity controller */
 struct Vcon {
     PidVCont *vcont;
@@ -155,7 +146,7 @@ struct Sim {
     Flu flu;
     Rbc rbc;
     Rig rig;
-    Wall wall;
+    Wall *wall;
 
     BForce *bforce;
 

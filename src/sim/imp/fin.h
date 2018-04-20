@@ -105,14 +105,6 @@ static void fin_bounce_back(BounceBack *bb) {
     Dfree(bb->mm);
     UC(fin_bb_exch(/**/ &bb->e));
 }
-
-static void fin_wall(Wall *w) {
-    UC(sdf_fin(w->sdf));
-    UC(wall_fin_quants(&w->q));
-    UC(wall_fin_ticket(w->t));
-    UC(wvel_fin(w->vel));
-    UC(wvel_step_fin(w->velstep));
-}
     
 static void fin_vcon(Vcon *c) {
     UC(vcont_fin(c->vcont));
@@ -155,7 +147,7 @@ void sim_fin(Sim *s) {
     UC(fin_flu(opt, &s->flu));
     if (opt->rbc.active)  UC(fin_rbc(&opt->rbc, /**/ &s->rbc));
     if (opt->rig.active)  UC(fin_rig(/**/ &s->rig));
-    if (opt->wall) UC(fin_wall(&s->wall));
+    if (opt->wall) UC(wall_fin(s->wall));
 
     UC(obj_inter_fin(s->objinter));
     

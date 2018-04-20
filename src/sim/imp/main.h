@@ -1,11 +1,3 @@
-static long get_max_parts_wall(OptParams params) {
-    int3 L = params.L;
-    return params.numdensity *
-        (L.x + 2 * XWM) *
-        (L.y + 2 * YWM) *
-        (L.z + 2 * ZWM);
-}
-
 static void gen_flu(Sim *s) {
     Flu *flu = &s->flu;
     UC(flu_gen_quants(s->coords, s->opt.params.numdensity, s->gen_color, &flu->q));
@@ -24,15 +16,13 @@ static void gen_rbc(Sim *s) {
 
 static void gen_wall(Sim *s) {
     Flu *flu = &s->flu;
-    Wall *w = &s->wall;
+    Wall *w = s->wall;
     bool dump_sdf = s->opt.dump_field;
-    long maxp_wall = get_max_parts_wall(s->opt.params);
     
-    if (s->opt.wall) {
-        UC(sdf_gen(s->coords, s->cart, dump_sdf, /**/ w->sdf));
-        MC(m::Barrier(s->cart));
-        inter_freeze_walls(s->cart, maxp_wall, w->sdf, /*io*/ &flu->q, /**/ &w->q);
-    }
+    if (!s->opt.wall) return;
+
+    UC(wall_gen(s->cart, s->coords, s->opt.params, dump_sdf,
+                &flu->q.n, flu->q.pp, w));
 }
 
 static void freeze(Sim *s) { /* generate */
@@ -59,7 +49,6 @@ static void freeze(Sim *s) { /* generate */
 }
 
 void sim_gen(Sim *s) {
-    Wall *wall = &s->wall;
     const Opt *opt = &s->opt;
     float tstart = 0;
     s->equilibrating = true;
@@ -73,7 +62,6 @@ void sim_gen(Sim *s) {
     freeze(/**/ s);
     dSync();
 
-    if (opt->wall && wall->q.n)     UC(wall_gen_ticket(&wall->q, wall->t));
     if (opt->rbc.active && opt->flucolors) UC(colors_from_rbc(s));
 
     tstart = s->time.eq;
@@ -88,28 +76,24 @@ static void gen_from_restart(Sim *s) {
     Flu *flu = &s->flu;
     Rbc *rbc = &s->rbc;
     Rig *rig = &s->rig;
-    Wall *wall = &s->wall;
+    Wall *wall = s->wall;
     MeshRead *cell = s->rbc.cell;
     const Opt *opt = &s->opt;
-    long maxp_wall = get_max_parts_wall(s->opt.params);
     const char *base = opt->strt_base_read;
     bool dump_sdf = opt->dump_field;
     
     flu_strt_quants(s->cart, base, RESTART_BEGIN, &flu->q);
     if (opt->rbc.active) rbc_strt_quants(s->cart, base, cell, RESTART_BEGIN, &rbc->q);
     if (opt->rig.active) rig_strt_quants(s->cart, base,       RESTART_BEGIN, &rig->q);
-    if (opt->wall) wall_strt_quants(s->cart, base, maxp_wall,          &wall->q);
-    if (opt->wall) UC(sdf_gen(s->coords, s->cart, dump_sdf, /**/ wall->sdf));
+    if (opt->wall) wall_restart(s->cart, s->coords, opt->params, dump_sdf, base, wall);
     if (opt->vcon) vcont_strt_read(base, RESTART_BEGIN, s->vcon.vcont);
 }
 
 void sim_strt(Sim *s) {
-    Wall *wall = &s->wall;
     const Opt *opt = &s->opt;
 
     gen_from_restart(s); 
 
-    if (opt->wall && wall->q.n) UC(wall_gen_ticket(&wall->q, wall->t));
     MC(m::Barrier(s->cart));
 
     pre_run(s);

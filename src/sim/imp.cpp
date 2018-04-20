@@ -43,9 +43,6 @@
 #include "io/com/imp.h"
 #include "grid_sampler/imp.h"
 
-#include "wall/wvel/type.h"
-#include "wall/wvel/imp.h"
-
 #include "dbg/imp.h"
 #include "io/restart/imp.h"
 #include "clist/imp.h"
@@ -62,8 +59,6 @@
 #include "rbc/com/imp.h"
 
 #include "rig/imp.h"
-#include "wall/sdf/imp.h"
-#include "wall/imp.h"
 
 #include "comm/imp.h"
 #include "distr/flu/imp.h"
@@ -104,6 +99,7 @@
 
 #include "objinter/imp.h"
 #include "opt/imp.h"
+#include "wal/imp.h"
 
 #include "imp.h"
 

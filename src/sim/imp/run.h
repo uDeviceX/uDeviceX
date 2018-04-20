@@ -10,11 +10,11 @@ static void step(TimeLine *time, float dt, float tstart, Sim *s) {
     Flu *flu = &s->flu;
     Rbc *rbc = &s->rbc;
     Rig *rig = &s->rig;
-    Wall *wall = &s->wall;
+    Wall *wall = s->wall;
     BForce *bforce = s->bforce;
     const Opt *opt = &s->opt;
     if (active_walls(s))
-        UC(wvel_get_step(time_line_get_current(time) - tstart, wall->vel, /**/ wall->velstep));
+        wall_update_vel(time_line_get_current(time) - tstart, wall);
 
     UC(check_sizes(s));
     UC(check_pos_soft(s));

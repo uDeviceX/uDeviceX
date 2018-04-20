@@ -118,6 +118,17 @@ void restrain(long it, Sim *s) {
 }
 
 void bounce_wall(float dt, bool rbc, const Coords *c, Wall *w, /**/ Flu *f, Rbc *r) {
-    sdf_bounce(dt, w->velstep, c, w->sdf, f->q.n, /**/ f->q.pp);
-    if (rbc) sdf_bounce(dt, w->velstep, c, w->sdf, r->q.n, /**/ r->q.pp);
+    PaArray pa;
+    FoArray fo;
+    PFarrays *pf;
+    UC(pfarrays_ini(&pf));
+    parray_push_pp(f->q.pp, &pa);
+    UC(pfarrays_push(pf, f->q.n, pa, fo));
+    if (rbc) {
+        parray_push_pp(r->q.pp, &pa);
+        UC(pfarrays_push(pf, r->q.n, pa, fo));
+    }
+
+    UC(wall_bounce(w, c, dt, pf));
+    UC(pfarrays_fin(pf));
 }
