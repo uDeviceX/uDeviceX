@@ -116,7 +116,7 @@ $B/scheme/restrain/imp.o: $S/scheme/restrain/imp.cu; $N -I$S/scheme/restrain -I$
 $B/scheme/time_line/imp.o: $S/scheme/time_line/imp.cpp; $X -I$S/scheme/time_line -I$S/.
 $B/scheme/time_step/imp.o: $S/scheme/time_step/imp.cpp; $X -I$S/scheme/time_step -I$S/.
 $B/sim/imp.o: $S/sim/imp.cpp; $X -I$S/sim -I$S/.
-$B/sim/obj/imp.o: $S/sim/obj/imp.cpp; $X -I$S/sim/obj -I$S/.
+$B/sim/objects/imp.o: $S/sim/objects/imp.cpp; $X -I$S/sim/objects -I$S/.
 $B/sim/objinter/imp.o: $S/sim/objinter/imp.cpp; $X -I$S/sim/objinter -I$S/.
 $B/sim/opt/imp.o: $S/sim/opt/imp.cpp; $X -I$S/sim/opt -I$S/.
 $B/sim/wal/imp.o: $S/sim/wal/imp.cpp; $X -I$S/sim/wal -I$S/.

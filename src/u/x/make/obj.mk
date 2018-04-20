@@ -32,10 +32,10 @@ O = $B/algo/edg/imp.o $B/algo/force_stat/imp.o $B/algo/kahan_sum/imp.o \
     $B/rbc/stretch/imp.o $B/rig/imp.o $B/rigid/conf.o $B/rigid/imp.o \
     $B/scheme/force/conf.o $B/scheme/force/imp.o $B/scheme/move/imp.o \
     $B/scheme/restrain/conf.o $B/scheme/restrain/imp.o $B/scheme/time_line/imp.o \
-    $B/scheme/time_step/imp.o $B/sim/imp.o $B/sim/obj/imp.o $B/sim/objinter/imp.o \
-    $B/sim/opt/imp.o $B/sim/wal/imp.o $B/struct/farray/imp.o \
-    $B/struct/parray/imp.o $B/struct/pfarrays/imp.o $B/utils/cc.o \
-    $B/utils/error.o $B/utils/imp.o $B/utils/mc.o $B/utils/msg.o \
+    $B/scheme/time_step/imp.o $B/sim/imp.o $B/sim/objects/imp.o \
+    $B/sim/objinter/imp.o $B/sim/opt/imp.o $B/sim/wal/imp.o \
+    $B/struct/farray/imp.o $B/struct/parray/imp.o $B/struct/pfarrays/imp.o \
+    $B/utils/cc.o $B/utils/error.o $B/utils/imp.o $B/utils/mc.o $B/utils/msg.o \
     $B/utils/nvtx/imp.o $B/utils/os.o $B/utils/string/imp.o $B/wall/exch/imp.o \
     $B/wall/force/imp.o $B/wall/imp.o $B/wall/sdf/array3d/imp.o \
     $B/wall/sdf/bounce/imp.o $B/wall/sdf/field/imp.o $B/wall/sdf/imp.o \
