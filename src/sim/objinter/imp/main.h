@@ -15,9 +15,11 @@ static void fill_wrappers(PFarrays *obj, int *nw, PaWrap *pw, FoWrap *fw) {
 }
 
 static void bind_solvent(PFarrays *flu, int *starts, Fsi *fsi) {
-    long n;
+    long n, sz;
     PaArray p;
     FoArray f;
+    sz = pfarray_size(flu);
+    if (sz != 1) ERR("Support only one solvent, given %d", sz);
     UC(pfarray_get(0, flu, &n, &p, &f));
     UC(fsi_bind_solvent(p, (Force*) f.ff, n, starts, /**/ fsi));
 }
