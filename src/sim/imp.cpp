@@ -99,7 +99,7 @@
 
 #include "objinter/imp.h"
 #include "opt/imp.h"
-#include "wal/imp.h"
+#include "walls/imp.h"
 
 #include "imp.h"
 
