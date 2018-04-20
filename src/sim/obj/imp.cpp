@@ -23,6 +23,8 @@
 
 #include "pair/imp.h"
 #include "struct/parray/imp.h"
+#include "struct/farray/imp.h"
+#include "struct/pfarrays/imp.h"
 #include "mesh/triangles/imp.h"
 
 #include "conf/imp.h"

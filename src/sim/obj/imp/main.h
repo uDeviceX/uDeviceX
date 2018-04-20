@@ -80,3 +80,30 @@ void objects_distribute (Objects *obj) {
     if (obj->mbr) UC(distribute_mbr(obj->mbr));
     if (obj->rig) UC(distribute_rig(obj->rig));
 }
+
+static void get_mbr(Mbr *m, long *n, PaArray *p, FoArray *f) {
+    *n = m->q.n;
+    parray_push_pp(m->q.pp, p);
+    farray_push_ff(m->ff, f);
+}
+
+static void get_rig(Rig *r, long *n, PaArray *p, FoArray *f) {
+    *n = r->q.n;
+    parray_push_pp(r->q.pp, p);
+    farray_push_ff(r->ff, f);
+}
+
+void objects_get_particles(Objects *obj, PFarrays *pf) {
+    PaArray p;
+    FoArray f;
+    long n;
+
+    if (obj->mbr) {
+        get_mbr(obj->mbr, &n, &p, &f);
+        UC(pfarray_push(pf, n, p, f));
+    }
+    if (obj->rig) {
+        get_rig(obj->rig, &n, &p, &f);
+        UC(pfarray_push(pf, n, p, f));
+    }
+}

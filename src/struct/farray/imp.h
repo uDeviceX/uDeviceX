@@ -14,6 +14,8 @@ void farray_push_ff(Force *ff, FoArray *a);
 void farray_push_ss(float *ss, FoArray *a);
 // end::push[]
 
+void farray_clear(FoArray *);
+
 // tag::get[]
 bool farray_has_stress(const FoArray *a);
 // end::get[]
