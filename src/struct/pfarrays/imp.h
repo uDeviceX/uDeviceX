@@ -8,5 +8,5 @@ void pfarrays_fin(PFarrays*);
 
 void pfarray_clear(PFarrays*);
 void pfarray_push(PFarrays*, long n, PaArray, FoArray);
-int pfarray_size(const PFarrays*);
-void pfarray_get(const PFarrays*, long *n, PaArray*, FoArray*);
+int  pfarray_size(const PFarrays*);
+void pfarray_get(int i, const PFarrays*, long *n, PaArray*, FoArray*);
