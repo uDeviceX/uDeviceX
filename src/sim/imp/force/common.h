@@ -32,7 +32,7 @@ void forces_wall(bool fluss, Sim *s) {
     Rbc *rbc = &s->rbc;
     Rig *rig = &s->rig;
     Wall *w = &s->wall;
-    PairParams *par = flu->params;
+    const PairParams *par = flu->params;
     const Opt *opt = &s->opt;
 
     if (!w->q.n) return;
