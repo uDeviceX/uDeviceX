@@ -33,6 +33,7 @@ static void lookup_string(const Config *c, const char *desc, char *res) {
     strcpy(res, s);
 }
 
+
 static void read_mbr(const Config *c, OptMbr *o) {
     UC(lookup_bool(c, "rbc.active", &o->active));
     UC(lookup_bool(c, "rbc.ids", &o->ids));
@@ -51,6 +52,13 @@ static void read_rig(const Config *c, OptRig *o) {
     o->shifttype = get_shifttype(c, "rig.shifttype");
     UC(lookup_bool(c, "rig.push", &o->push));
 }
+
+static void read_params(const Config *c, OptParams *p) {
+    UC(conf_lookup_int3 (c, "glb.L",          &p->L         ));
+    UC(conf_lookup_float(c, "glb.kBT",        &p->kBT       ));
+    UC(conf_lookup_int  (c, "glb.numdensity", &p->numdensity));
+}
+
 
 static void read_common(const Config *c, Opt *o) {
     UC(lookup_bool(c, "flu.ids", &o->fluids));
@@ -92,6 +100,7 @@ static void read_common(const Config *c, Opt *o) {
 
 void opt_read(const Config *c, Opt *o) {
     UC(read_common(c, o));
+    UC(read_params(c, &o->params));
     UC(read_mbr(c, &o->rbc));
     UC(read_rig(c, &o->rig));
 }

@@ -5,14 +5,23 @@ struct OptMbr {
     float freq_com;
 };
 
+/* rigid options */
 struct OptRig {
     bool active, bounce, empty_pp, push;
     int shifttype;
 };
 
+/* global physical parameters */
+struct OptParams {
+    int3 L;          /* subdomain sizes */
+    float kBT;       /* temperature     */
+    int numdensity;  /* number density  */
+};
+
 struct Opt {
     OptMbr rbc;
     OptRig rig;
+    OptParams params;
     bool fsi, cnt;
     bool flucolors, fluids, fluss;
     bool wall;
