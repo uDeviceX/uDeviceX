@@ -29,7 +29,7 @@ int pfarray_size(const PFarrays *p) {
 void pfarray_get(int i, const PFarrays *pf, long *n, PaArray *p, FoArray *f) {
     const PFarray *pfa;
 
-    if (i < pf->n)
+    if (i >= pf->n)
         ERR("Out of bounds: %d/%d", i, pf->n);
     
     pfa = &pf->a[i];
