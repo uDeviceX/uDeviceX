@@ -69,3 +69,7 @@ void wall_bounce(const Wall *w, const Coords *coords, float dt, PFarrays *aa) {
         if (n) UC(sdf_bounce(dt, w->velstep, coords, w->sdf, n, /**/ (Particle*) p.pp));
     }    
 }
+
+void wall_update_vel(float t, Wall *w) {
+    UC(wvel_get_step(t, w->vel, /**/ w->velstep));
+}
