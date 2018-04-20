@@ -9,7 +9,7 @@ struct ObjExch {
 
 /* helper for computing object interactions */
 struct ObjInter {
-    ObjExch e;
+    ObjExch *e;
     Contact *cnt;
     Fsi     *fsi;
 
