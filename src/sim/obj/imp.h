@@ -18,6 +18,7 @@ void objects_mesh_dump(Objects*);
 void objects_strt_templ(const char *base, Objects*);
 void objects_strt_dump(const char *base, long id, Objects*);
 
-void objects_get_particles(Objects*, PFarrays*);
+void objects_get_particles_all(Objects*, PFarrays*);
+void objects_get_particles_mbr(Objects*, PFarrays*);
 
 void objects_remove_from_wall(const Sdf *sdf, Objects *o);
