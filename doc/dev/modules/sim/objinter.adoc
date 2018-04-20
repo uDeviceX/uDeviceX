@@ -1,0 +1,7 @@
+= objinter : object interactions
+
+
+Helper to manage interactions between objects (<<cnt, contact
+forces>>) and interactions with solvent particles (<<fsi, fsi
+forces>>).
+

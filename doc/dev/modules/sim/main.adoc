@@ -1,0 +1,9 @@
+= sim: simulation
+
+manages all modules together to run a simulation
+
+:leveloffset: +1
+
+include::objinter.adoc[]
+
+:leveloffset: -1
