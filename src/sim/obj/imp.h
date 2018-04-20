@@ -22,3 +22,11 @@ void objects_get_particles_all(Objects*, PFarrays*);
 void objects_get_particles_mbr(Objects*, PFarrays*);
 
 void objects_remove_from_wall(const Sdf *sdf, Objects *o);
+
+// TODO
+void objects_gen(Objects*);
+void objects_restart(Objects*);
+
+// TODO
+// (maybe belongs somewhere else)
+void objects_bounce(Objects*, PFarrays*);
