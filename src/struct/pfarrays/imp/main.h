@@ -1,17 +1,17 @@
 void pfarrays_ini(PFarrays **pfa) {
     EMALLOC(1, pfa);
-    pfarray_clear(*pfa);
+    pfarrays_clear(*pfa);
 }
 
 void pfarrays_fin(PFarrays *p) {
     EFREE(p);
 }
 
-void pfarray_clear(PFarrays *p) {
+void pfarrays_clear(PFarrays *p) {
     p->n = 0;
 }
 
-void pfarray_push(PFarrays *pf, long n, PaArray p, FoArray f) {
+void pfarrays_push(PFarrays *pf, long n, PaArray p, FoArray f) {
     int i = pf->n ++;
     PFarray *pfa;
     if ( pf->n > MAX_SIZE )
@@ -22,11 +22,11 @@ void pfarray_push(PFarrays *pf, long n, PaArray p, FoArray f) {
     pfa->n = n;
 }
 
-int pfarray_size(const PFarrays *p) {
+int pfarrays_size(const PFarrays *p) {
     return p->n;
 }
 
-void pfarray_get(int i, const PFarrays *pf, long *n, PaArray *p, FoArray *f) {
+void pfarrays_get(int i, const PFarrays *pf, long *n, PaArray *p, FoArray *f) {
     const PFarray *pfa;
 
     if (i >= pf->n)

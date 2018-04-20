@@ -3,13 +3,13 @@ static void fill_wrappers(PFarrays *obj, int *nwrappers, PaWrap *pw, FoWrap *fw)
     PaArray p;
     FoArray f;
 
-    (*nwrappers) = nw = pfarray_size(obj);
+    (*nwrappers) = nw = pfarrays_size(obj);
 
     if (nw > MAX_OBJ_TYPES)
         ERR("Too many objects in wrappers : %d/%d", nw, MAX_OBJ_TYPES);
 
     for (i = 0; i < nw; ++i, ++pw, ++fw) {
-        UC(pfarray_get(i, obj, &n, &p, &f));
+        UC(pfarrays_get(i, obj, &n, &p, &f));
         pw->n = fw->n = n;
         pw->pp = (const Particle*) p.pp;
         fw->ff = (Force*) f.ff;
@@ -20,9 +20,9 @@ static void bind_solvent(PFarrays *flu, int *starts, Fsi *fsi) {
     long n, sz;
     PaArray p;
     FoArray f;
-    sz = pfarray_size(flu);
+    sz = pfarrays_size(flu);
     if (sz != 1) ERR("Support only one solvent, given %d", sz);
-    UC(pfarray_get(0, flu, &n, &p, &f));
+    UC(pfarrays_get(0, flu, &n, &p, &f));
     UC(fsi_bind_solvent(p, (Force*) f.ff, n, starts, /**/ fsi));
 }
 

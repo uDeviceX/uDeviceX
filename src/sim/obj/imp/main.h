@@ -100,10 +100,10 @@ void objects_get_particles(Objects *obj, PFarrays *pf) {
 
     if (obj->mbr) {
         get_mbr(obj->mbr, &n, &p, &f);
-        UC(pfarray_push(pf, n, p, f));
+        UC(pfarrays_push(pf, n, p, f));
     }
     if (obj->rig) {
         get_rig(obj->rig, &n, &p, &f);
-        UC(pfarray_push(pf, n, p, f));
+        UC(pfarrays_push(pf, n, p, f));
     }
 }
