@@ -1,7 +1,21 @@
 = objinter : object interactions
 
+:base: {src}/sim/objinter
 
 Helper to manage interactions between objects (<<cnt, contact
 forces>>) and interactions with solvent particles (<<fsi, fsi
 forces>>).
 
+Allocate, deallocate the structure:
+
+[source, cpp]
+----
+include::{base}/imp.h[tag=mem]
+----
+
+Compute interactions:
+
+[source, cpp]
+----
+include::{base}/imp.h[tag=int]
+----
