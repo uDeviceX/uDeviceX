@@ -7,6 +7,10 @@
 #include "utils/error.h"
 #include "utils/imp.h"
 
+#include "struct/parray/imp.h"
+#include "struct/farray/imp.h"
+#include "struct/pfarrays/imp.h"
+
 #include "wall/sdf/imp.h"
 #include "wall/wvel/imp.h"
 #include "wall/imp.h"
