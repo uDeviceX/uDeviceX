@@ -33,7 +33,16 @@ void wall_restart(MPI_Comm cart, const Coords *coords, OptParams op, bool dump_s
     UC(wall_gen_ticket(&w->q, w->t));
 }
 
+void wall_dump_templ(const Wall *w, MPI_Comm cart, const char *base) {
+    UC(wall_strt_dump_templ(cart, base, &w->q));
+}
+
 void wall_get_sdf_ptr(const Wall *w, const Sdf **s) {*s = w->sdf;}
+
+double wall_compute_volume(const Wall *w, MPI_Comm comm, int3 L) {
+    enum {NSAMPLES = 100000};
+    return sdf_compute_volume(comm, L, w->sdf, NSAMPLES);
+}
 
 void wall_interact(const Coords *coords, const PairParams *par, Wall *w, PFarrays *aa) {
     long n, i, na;

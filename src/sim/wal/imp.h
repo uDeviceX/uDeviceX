@@ -13,7 +13,9 @@ void wall_gen(MPI_Comm, const Coords*, OptParams, bool dump_sdf,
 
 void wall_restart(MPI_Comm, const Coords*, OptParams, bool dump_sdf,
                   const char *base, /**/ Wall*);
-
-void wall_get_sdf_ptr(const Wall*, const Sdf**);
+void wall_dump_templ(const Wall*, MPI_Comm, const char *base);
 
 void wall_interact(const Coords*, const PairParams*, Wall*, PFarrays*);
+
+void wall_get_sdf_ptr(const Wall*, const Sdf**);
+double wall_compute_volume(const Wall*, MPI_Comm, int3 L);
