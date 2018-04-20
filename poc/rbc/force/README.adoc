@@ -1,4 +1,12 @@
-= read from off file
+= compute on mesh
+
+math : various math functions
+off  : read off file
+refine : refine mesh
+setup  : create mesh related structures
+tri    : triangles related functions
+util   : various functions
+vtk    : write vtk ascii file
 
 NV, NT: number of verts, triangles
 XX[v] YY[v] ZZ[v]: position
@@ -21,3 +29,4 @@ EDG[v, d]      : edg adjusted to vertices `v' of degree `d`
   k
   c
  i j
+ 
