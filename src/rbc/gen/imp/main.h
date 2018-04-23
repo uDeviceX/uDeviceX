@@ -54,7 +54,7 @@ void rbc_shift(const Coords *c, int n, Particle *pp) {
     for (int i = 0; i < n; i++) shift(c, &pp[i]);
 }
 
-int rbc_gen(const Coords *coords, const float *rr0, const char *path, int nv, Particle *pp) {
+int rbc_gen_from_file(const Coords *coords, const float *rr0, const char *path, int nv, Particle *pp) {
     int n;
     Matrices *matrices;
     if (nv <= 0) ERR("nv <= 0");
