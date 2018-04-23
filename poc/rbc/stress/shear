@@ -1,0 +1,15 @@
+load("vect") $
+load("pdiff") $
+vabs(a):= sqrt(express(a . a)) $
+
+h: l*sin(%pi/3);
+
+a: [-'l/2,  0];
+b: [   dx,  h];
+c: [ 'l/2,  0];
+
+ab: vabs(a - b);
+bc: vabs(b - c);
+
+taylor(ab, dx, 0, 1);
+taylor(bc, dx, 0, 1);
