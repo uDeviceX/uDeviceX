@@ -71,7 +71,7 @@ void main0(const char *cell, const char *ic, const char *quant) {
     UC(matrices_read(ic, &matrices));
     nv = mesh_read_get_nv(mesh);
     verts = mesh_read_get_vert(mesh);
-    rbc_gen_from_matrices(nv, verts, matrices, /**/ &n, pp);
+    mesh_gen_from_matrices(nv, verts, matrices, /**/ &n, pp);
     nm = n / nv;
     vectors_postions_ini(n, pp, /**/ &positions);
     UC(q_ini(quant, mesh, &mesh_quant));

@@ -29,7 +29,7 @@ static void gen1(double A[16], int nv, const float *rr, Particle *pp) {
     for (int i = 0; i < nv; i++) gen0(A, &rr[3*i], &pp[i]);
 }
 
-void rbc_gen_from_matrices(int nv, const float *rr, const Matrices *matrices, /**/ int *pn, Particle *pp) {
+void mesh_gen_from_matrices(int nv, const float *rr, const Matrices *matrices, /**/ int *pn, Particle *pp) {
     int i, n, nm;
     double *A;
     n = 0;
@@ -50,17 +50,17 @@ static void shift(const Coords *c, Particle *p) {
     r[Z] = zg2zl(c, r[Z]);
 }
 
-void rbc_shift(const Coords *c, int n, Particle *pp) {
+void mesh_shift(const Coords *c, int n, Particle *pp) {
     for (int i = 0; i < n; i++) shift(c, &pp[i]);
 }
 
-int rbc_gen_from_file(const Coords *coords, const float *rr0, const char *path, int nv, Particle *pp) {
+int mesh_gen_from_file(const Coords *coords, const float *rr0, const char *path, int nv, Particle *pp) {
     int n;
     Matrices *matrices;
     if (nv <= 0) ERR("nv <= 0");
     UC(matrices_read_filter(path, coords, /**/ &matrices));
-    UC(rbc_gen_from_matrices(nv, rr0, matrices, /**/ &n, pp));
-    UC(rbc_shift(coords, n, pp));
+    UC(mesh_gen_from_matrices(nv, rr0, matrices, /**/ &n, pp));
+    UC(mesh_shift(coords, n, pp));
     UC(matrices_fin(matrices));
     return n / nv;
 }
