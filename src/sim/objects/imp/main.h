@@ -16,6 +16,19 @@ void objects_clear_forces(Objects *obj) {
     if (obj->rig) UC(clear_rig_forces(obj->rig));
 }
 
+static void clear_vel_mbr(Mbr *m) {
+    UC(scheme_move_clear_vel(m->q.n, m->q.pp));
+}
+
+static void clear_vel_rig(Rig *r) {
+    UC(scheme_move_clear_vel(r->q.n, r->q.pp));
+}
+
+void objects_clear_vel(Objects *obj) {
+    if (obj->mbr) UC(clear_vel_mbr(obj->mbr));
+    if (obj->rig) UC(clear_vel_rig(obj->rig));    
+}
+
 static void update_rig(float dt, Rig *r) {
     if (!r->q.n) return;
     RigQuants *q = &r->q;

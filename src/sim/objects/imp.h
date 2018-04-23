@@ -10,6 +10,7 @@ void objects_ini(const Config*, const Opt*, MPI_Comm, const Coords*, int maxp, O
 void objects_fin(Objects*);
 
 void objects_clear_forces(Objects*);
+void objects_clear_vel(Objects*);
 void objects_update(float dt, Objects*);
 void objects_distribute(Objects*);
 
