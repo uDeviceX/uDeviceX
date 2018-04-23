@@ -1,7 +1,6 @@
 load("vect") $
 load("pdiff") $
 load("cgrind") $
-
 load("util.mac") $
 
 a: [ax, ay, az] $
@@ -9,18 +8,18 @@ b: [bx, by, bz] $
 c: [cx, cy, cz] $
 d: [dx, dy, dz] $
 
-ab: b - a;
-ac: c - a;
-bd: d - b;
-bc: c - b;
+ab: b - a $
+ac: c - a $
+bd: d - b $
+bc: c - b $
 
-[kx, ky, kz]: cross(ab, ac);
-[nx, ny, nz]: cross(bd, bc);
-[knx, kny, knz]: cross(['kx, 'ky, 'kz], ['nx, 'ny, 'nz]);
+[kx, ky, kz]: cross(ab, ac) $
+[nx, ny, nz]: cross(bd, bc) $
+[knx, kny, knz]: cross(['kx, 'ky, 'kz], ['nx, 'ny, 'nz]) $
 kn: vabs(['knx, 'kny, 'knz]) $
 
-kk: dot(['kx, 'ky, 'kz], ['kx, 'ky, 'kz]);
-nn: dot(['nx, 'ny, 'nz], ['nx, 'ny, 'nz]);
+kk: dot(['kx, 'ky, 'kz], ['kx, 'ky, 'kz]) $
+nn: dot(['nx, 'ny, 'nz], ['nx, 'ny, 'nz]) $
 
 rsq: 1/sqrt('kk * 'nn); /* TODO: */
 E: 'kn * 'rsq;
@@ -46,6 +45,7 @@ E: 'kn * 'rsq;
 
 [E, V, T]: rm(
   E, V, T,
-  'E_kn, 'E_rsq
+  'E_kn, 'E_rsq,
+  'knx_ky, 'knx_kz, 'knx_ny, 'knx_nz, 'kny_kx, 'kny_kz, 'kny_nx, 'kny_nz, 'knz_kx, 'knz_ky, 'knz_nx, 'knz_ny
   ) $
 with_stdout("sin.c", fmt0(E, V, T));

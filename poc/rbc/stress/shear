@@ -1,15 +1,30 @@
 load("vect") $
 load("pdiff") $
 vabs(a):= sqrt(express(a . a)) $
+tay0(e, n):=taylor(e, dx, 0, n);
+tay(e, n):=taytorat(tay0(e, n));
 
-h: l*sin(%pi/3);
+assume('l > 0);
+
+h: 'l*sin(%pi/3);
 
 a: [-'l/2,  0];
-b: [   dx,  h];
+b: [  'dx,  h];
 c: [ 'l/2,  0];
 
-ab: vabs(a - b);
-bc: vabs(b - c);
+ab: a - b;
+bc: b - c;
 
-taylor(ab, dx, 0, 1);
-taylor(bc, dx, 0, 1);
+ab0: vabs(ab);
+bc0: vabs(bc);
+
+fab: F(ab0) * ab/ab0;
+fbc: F(bc0) * bc/bc0;
+
+tellsimp(F('l), 0);
+
+Fab: tay(fab, 1);
+Fbc: tay(fbc, 1);
+
+F: Fab - Fbc;
+S: F/h;

@@ -30,12 +30,13 @@ vabs(a):=sqrt(dot(a, a));
 sl(e):=sort(listofvars(e));
 
 rm0(E, V, T, key):=block(
-  [val],
+  [val, cnt],
   local(E, V, T),
-  catch(
-    for e in E do if lhs(e)=key then (val: rhs(e), throw('done)),
-    for e in V do if lhs(e)=key then (val: rhs(e), throw('done)),
-    error(key, "is not found")),
+  cnt: 0,
+  for e in E do if lhs(e)=key then (val: rhs(e), cnt: cnt + 1),
+  for e in V do if lhs(e)=key then (val: rhs(e), cnt: cnt + 1),
+  if cnt = 0 then error(key, "is not found"),
+  if cnt > 1 then error(key, "is seen > 1 times"),
   E: sublist(E, lambda([e], lhs(e)#key)),
   V: sublist(V, lambda([e], lhs(e)#key)),
   T: sublist(T, lambda([e],      e#key)),
