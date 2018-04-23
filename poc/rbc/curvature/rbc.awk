@@ -16,9 +16,7 @@ function f2(c) { return 20*C5*c^3+6*C3*c}
 function L(r) { return (cc(r)*f2(cc(r))*ss(r)^3-f1(cc(r))*ss(r))/4 * sgn(r) }
 function N(r) { return -(f1(cc(r))*ss(r)^3)/4 * sgn(r) }
 function nn(r) { return sqrt(nx(r)^2 + nz(r)^2) + eps }
-function eng(r,   n) {
-    return ((L(r) + N(r))/2)^2/nn(r)^2
-}
+function eng(r) { return ((L(r) + N(r))/2)^2/nn(r)^2 }
 function nx(r) { return (f1(cc(r))*ss(r)^2)/2 * sgn(r)}
 function nz(r) { return (cc(r)*ss(r))/4 * sgn(r)}
 
