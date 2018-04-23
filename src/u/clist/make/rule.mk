@@ -8,6 +8,7 @@ $B/mpi/glb.o: $S/mpi/glb.cpp; $X -I$S/mpi -I$S/.
 $B/mpi/wrapper.o: $S/mpi/wrapper.cpp; $X -I$S/mpi -I$S/.
 $B/struct/farray/imp.o: $S/struct/farray/imp.cpp; $X -I$S/struct/farray -I$S/.
 $B/struct/parray/imp.o: $S/struct/parray/imp.cpp; $X -I$S/struct/parray -I$S/.
+$B/struct/pfarrays/imp.o: $S/struct/pfarrays/imp.cpp; $X -I$S/struct/pfarrays -I$S/.
 $B/u/clist/main.o: $S/u/clist/main.cu; $N -I$S/u/clist -I$S/.
 $B/utils/cc.o: $S/utils/cc.cpp; $X -I$S/utils -I$S/.
 $B/utils/error.o: $S/utils/error.cpp; $X -I$S/utils -I$S/.

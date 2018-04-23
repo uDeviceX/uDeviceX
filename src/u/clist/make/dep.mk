@@ -8,6 +8,7 @@ $B/mpi/glb.o: $S/inc/conf.h $S/mpi/wrapper.h $S/utils/mc.h $B/conf.h
 $B/mpi/wrapper.o: $S/mpi/wrapper.h
 $B/struct/farray/imp.o: $S/struct/farray/imp.h $S/struct/farray/imp/main.h $S/struct/farray/type.h
 $B/struct/parray/imp.o: $S/struct/parray/imp.h $S/struct/parray/imp/main.h $S/struct/parray/type.h
+$B/struct/pfarrays/imp.o: $S/struct/farray/imp.h $S/utils/imp.h $S/utils/error.h $S/inc/type.h $S/struct/pfarrays/imp.h $S/struct/parray/imp.h $S/struct/pfarrays/imp/main.h $S/struct/pfarrays/imp/type.h
 $B/u/clist/main.o: $S/utils/imp.h $S/inc/conf.h $S/utils/error.h $S/inc/type.h $S/conf/imp.h $S/mpi/wrapper.h $S/algo/scan/imp.h $S/coords/ini.h $S/utils/cc.h $S/utils/mc.h $S/inc/dev.h $S/d/api.h $B/conf.h $S/struct/partlist/type.h $S/clist/imp.h $S/coords/imp.h $S/mpi/glb.h $S/utils/msg.h
 $B/utils/cc.o: $S/utils/cc/common.h $S/inc/conf.h $S/utils/error.h $S/d/api.h $B/conf.h
 $B/utils/error.o: $S/utils/msg.h $S/utils/error.h

@@ -10,7 +10,7 @@
 #include "conf/imp.h"
 #include "io/mesh_read/imp.h"
 #include "rbc/matrices/imp.h"
-#include "rbc/gen/imp.h"
+#include "mesh/gen/imp.h"
 #include "mesh/area/imp.h"
 #include "mesh/volume/imp.h"
 #include "algo/vectors/imp.h"

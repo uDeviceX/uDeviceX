@@ -72,6 +72,7 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/mesh/eng_kantor       && \
     d $B/mesh/force/kantor0    && \
     d $B/mesh/force/kantor1    && \
+    d $B/mesh/gen              && \
     d $B/mesh/props            && \
     d $B/mesh/scatter          && \
     d $B/mesh/spherical        && \
@@ -89,7 +90,6 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/rbc/force/area_volume && \
     d $B/rbc/force/rnd         && \
     d $B/rbc/force/rnd/api     && \
-    d $B/rbc/gen               && \
     d $B/rbc/matrices          && \
     d $B/rbc/params            && \
     d $B/rbc/shape             && \

@@ -27,7 +27,7 @@
 #include "type.h"
 #include "adj/type/common.h"
 #include "adj/imp.h"
-#include "gen/imp.h"
+#include "mesh/gen/imp.h"
 #include "shape/imp.h"
 #include "force/area_volume/imp.h"
 #include "imp.h"

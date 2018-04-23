@@ -80,6 +80,7 @@ $B/mesh/eng_julicher/imp.o: $S/mesh/eng_julicher/imp.cpp; $X -I$S/mesh/eng_julic
 $B/mesh/eng_kantor/imp.o: $S/mesh/eng_kantor/imp.cpp; $X -I$S/mesh/eng_kantor -I$S/.
 $B/mesh/force/kantor0/imp.o: $S/mesh/force/kantor0/imp.cpp; $X -I$S/mesh/force/kantor0 -I$S/.
 $B/mesh/force/kantor1/imp.o: $S/mesh/force/kantor1/imp.cpp; $X -I$S/mesh/force/kantor1 -I$S/.
+$B/mesh/gen/imp.o: $S/mesh/gen/imp.cpp; $X -I$S/mesh/gen -I$S/.
 $B/mesh/props/imp.o: $S/mesh/props/imp.cpp; $X -I$S/mesh/props -I$S/.
 $B/mesh/scatter/imp.o: $S/mesh/scatter/imp.cpp; $X -I$S/mesh/scatter -I$S/.
 $B/mesh/spherical/imp.o: $S/mesh/spherical/imp.cpp; $X -I$S/mesh/spherical -I$S/.
@@ -98,7 +99,6 @@ $B/rbc/force/conf.o: $S/rbc/force/conf.cpp; $X -I$S/rbc/force -I$S/.
 $B/rbc/force/imp.o: $S/rbc/force/imp.cu; $N -I$S/rbc/force -I$S/.
 $B/rbc/force/rnd/api/imp.o: $S/rbc/force/rnd/api/imp.cpp; $X -I$S/rbc/force/rnd/api -I$S/.
 $B/rbc/force/rnd/imp.o: $S/rbc/force/rnd/imp.cpp; $X -I$S/rbc/force/rnd -I$S/.
-$B/rbc/gen/imp.o: $S/rbc/gen/imp.cpp; $X -I$S/rbc/gen -I$S/.
 $B/rbc/imp.o: $S/rbc/imp.cpp; $X -I$S/rbc -I$S/.
 $B/rbc/matrices/imp.o: $S/rbc/matrices/imp.cpp; $X -I$S/rbc/matrices -I$S/.
 $B/rbc/params/conf.o: $S/rbc/params/conf.cpp; $X -I$S/rbc/params -I$S/.
