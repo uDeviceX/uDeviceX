@@ -60,7 +60,7 @@ _S_ double3 dih0(double phi, double kb,
     int status;
     double overIksiI, overIdzeI, cosTheta, sinTheta_1,
         beta, b11, b12, sint0kb, cost0kb;
-    double3 ab, ac, cd, bc, bd, da, k, n, ksimdze;
+    double3 ab, ac, cd, bc, bd, da, k, n, k_n;
     diff(&a, &b, /**/ &ab);
     diff(&a, &c, /**/ &ac);
     diff(&c, &d, /**/ &cd);
@@ -79,9 +79,8 @@ _S_ double3 dih0(double phi, double kb,
         dih_write(a, b, c, d);
         EXIT();
     }
-    diff(&k, &n, /**/ &ksimdze);
-    sinTheta_1 = copysign(sinTheta_1,
-                          dot<double>(&ksimdze, &da));
+    diff(&k, &n, /**/ &k_n);
+    sinTheta_1 = copysign(sinTheta_1, dot<double>(&k_n, &da));
 
     sint0kb = sin(phi) * kb;
     cost0kb = cos(phi) * kb;
