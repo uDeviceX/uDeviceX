@@ -64,7 +64,7 @@ void read1(int *pc, char ***pv, /**/ double *px) {
     c = *pc; v = *pv;
     if (c < 1) ERR("not enough arguments");
     UC(read_dbl(*v, /**/ &x)); shift(&c, &v);
-    *px = x;
+    *px = x; *pc = c; *pv = v;
 }
 
 void read_type(int *pc, char ***pv, /**/ int *ptype) {
