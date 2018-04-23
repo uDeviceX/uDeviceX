@@ -1,5 +1,7 @@
-#include <mpi.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <mpi.h>
+
 #include <vector_types.h>
 
 #include "utils/mc.h"
@@ -11,6 +13,8 @@
 #include "mesh/force/kantor0/imp.h"
 #include "utils/mc.h"
 #include "utils/imp.h"
+
+static const char *prog = "udx";
 
 typedef double3 (*Fun)(double, double, double3, double3, double3, double3);
 enum {KANTOR0, KANTOR1};
@@ -24,9 +28,9 @@ static Fun Dih_B[] = {
 };
 
 void force(Fun fun,
-            double phi, double kb,
-            const double a0[3], const double b0[3], const double c0[3], const double d0[4],
-            double f0[3]) {
+           double phi, double kb,
+           const double a0[3], const double b0[3], const double c0[3], const double d0[4], /**/
+           double f0[3]) {
     enum {X, Y, Z};
     double3 a, b, c, d, f;
     a.x = a0[X]; a.y = a0[Y]; a.z = a0[Z];
@@ -82,7 +86,7 @@ void main0(int *argc, char ***argv) {
     int type;
     double phi, kb;
     double a[3], b[3], c[3], d[3], fa[3], fb[3];
-    
+
     UC(read_type(argc, argv, &type));
     UC(read1(argc, argv, /**/ &phi));
     UC(read3(argc, argv, /**/ a));
@@ -97,6 +101,12 @@ void main0(int *argc, char ***argv) {
            fa[X], fa[Y], fa[Z], fb[X], fb[Y], fb[Z]);
 }
 
+void usg() {
+    fprintf(stderr, "%s [kantor0/kantor1] phi a[3] b[3] c[3] d[3]\n", prog);
+    fprintf(stderr, "compute force on dihedral\n");
+    exit(0);
+}
+
 int main(int argc, char **argv) {
     int rank, size, dims[3];
     MPI_Comm cart;
@@ -107,7 +117,7 @@ int main(int argc, char **argv) {
     MC(m::Comm_rank(cart, &rank));
     MC(m::Comm_size(cart, &size));
     msg_ini(rank);
-
+    if (argc > 0 && same_str(argv[0], "-h")) usg();
     UC(main0(&argc, &argv));
     
     MC(m::Barrier(cart));
