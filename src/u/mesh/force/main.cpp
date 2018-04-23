@@ -53,6 +53,15 @@ void read3(int *pc, char ***pv, /**/ double a[3]) {
     UC(read_dbl(*v, /**/ &a[Z])); shift(&c, &v);
     *pc = c; *pv = v;
 }
+void read1(int *pc, char ***pv, /**/ double *px) {
+    int c;
+    char **v;
+    double x;
+    c = *pc; v = *pv;
+    if (c < 1) ERR("not enough arguments");
+    UC(read_dbl(*v, /**/ &x)); shift(&c, &v);
+    *px = x;
+}
 
 void read_type(int *pc, char ***pv, /**/ int *ptype) {
     int c, type;
@@ -75,12 +84,13 @@ void main0(int *argc, char ***argv) {
     double a[3], b[3], c[3], d[3], fa[3], fb[3];
     
     UC(read_type(argc, argv, &type));
+    UC(read1(argc, argv, /**/ &phi));
     UC(read3(argc, argv, /**/ a));
     UC(read3(argc, argv, /**/ b));
     UC(read3(argc, argv, /**/ c));
     UC(read3(argc, argv, /**/ d));
     
-    phi = 0; kb = 1;
+    kb = 1;
     UC(force(Dih_A[type], phi, kb, a, b, c, d, /**/ fa));
     UC(force(Dih_B[type], phi, kb, a, b, c, d, /**/ fb));
     printf("%.16g %.16g %.16g %.16g %.16g %.16g\n",
