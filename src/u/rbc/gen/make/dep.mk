@@ -10,12 +10,12 @@ $B/io/mesh_read/imp.o: $S/utils/imp.h $S/utils/error.h $S/io/mesh_read/imp/ply.h
 $B/math/tform/imp.o: $S/utils/imp.h $S/inc/conf.h $S/utils/error.h $S/math/tform/imp.h $B/conf.h $S/math/tform/imp/main.h $S/math/tform/imp/type.h $S/math/tform/type.h $S/utils/msg.h
 $B/math/tri/imp.o: $S/math/tri/imp.h $S/math/tri/dev.h
 $B/mesh/area/imp.o: $S/utils/imp.h $S/utils/error.h $S/math/tri/imp.h $S/mesh/area/imp.h $S/algo/kahan_sum/imp.h $S/io/mesh_read/imp.h $S/algo/vectors/imp.h $S/mesh/area/imp/main.h $S/mesh/area/imp/type.h $S/utils/msg.h
-$B/mesh/gen/imp.o: $S/utils/imp.h $S/inc/conf.h $S/utils/error.h $S/inc/type.h $S/mpi/wrapper.h $S/mesh/gen/imp.h $S/io/mesh_read/imp.h $S/inc/def.h $S/utils/mc.h $B/conf.h $S/mesh/gen/imp/main.h $S/rbc/matrices/imp.h $S/utils/msg.h $S/coords/imp.h
+$B/mesh/gen/imp.o: $S/utils/imp.h $S/inc/conf.h $S/utils/error.h $S/inc/type.h $S/mpi/wrapper.h $S/mesh/gen/imp.h $S/io/mesh_read/imp.h $S/inc/def.h $S/utils/mc.h $B/conf.h $S/mesh/gen/imp/main.h $S/mesh/gen/matrices/imp.h $S/utils/msg.h $S/coords/imp.h
+$B/mesh/gen/matrices/imp.o: $S/utils/imp.h $S/utils/error.h $S/mesh/gen/matrices/imp.h $S/mesh/gen/matrices/imp/main.h $S/mesh/gen/matrices/imp/type.h $S/coords/imp.h $S/utils/msg.h
 $B/mesh/volume/imp.o: $S/utils/imp.h $S/utils/error.h $S/mesh/volume/imp.h $S/algo/kahan_sum/imp.h $S/io/mesh_read/imp.h $S/algo/vectors/imp.h $S/mesh/volume/imp/main.h $S/mesh/volume/imp/type.h $S/utils/msg.h
 $B/mpi/glb.o: $S/inc/conf.h $S/mpi/wrapper.h $S/utils/mc.h $B/conf.h
 $B/mpi/wrapper.o: $S/mpi/wrapper.h
-$B/rbc/matrices/imp.o: $S/utils/imp.h $S/utils/error.h $S/rbc/matrices/imp.h $S/rbc/matrices/imp/main.h $S/rbc/matrices/imp/type.h $S/coords/imp.h $S/utils/msg.h
-$B/u/rbc/gen/main.o: $S/utils/imp.h $S/utils/error.h $S/inc/type.h $S/conf/imp.h $S/mpi/wrapper.h $S/io/mesh_read/imp.h $S/algo/vectors/imp.h $S/mesh/volume/imp.h $S/utils/mc.h $S/mesh/gen/imp.h $S/rbc/matrices/imp.h $S/mesh/area/imp.h $S/mpi/glb.h $S/utils/msg.h
+$B/u/rbc/gen/main.o: $S/utils/imp.h $S/utils/error.h $S/inc/type.h $S/conf/imp.h $S/mpi/wrapper.h $S/mesh/gen/matrices/imp.h $S/io/mesh_read/imp.h $S/algo/vectors/imp.h $S/mesh/volume/imp.h $S/utils/mc.h $S/mesh/gen/imp.h $S/mesh/area/imp.h $S/mpi/glb.h $S/utils/msg.h
 $B/utils/cc.o: $S/utils/cc/common.h $S/inc/conf.h $S/utils/error.h $S/d/api.h $B/conf.h
 $B/utils/error.o: $S/utils/msg.h $S/utils/error.h
 $B/utils/imp.o: $S/utils/error.h $S/utils/imp.h

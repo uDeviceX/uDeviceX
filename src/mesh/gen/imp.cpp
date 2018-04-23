@@ -19,9 +19,9 @@
 #include "mpi/wrapper.h"
 
 #include "io/mesh_read/imp.h"
-#include "rbc/matrices/imp.h"
 #include "coords/imp.h"
 
+#include "matrices/imp.h"
 #include "imp.h"
 
 #include "imp/main.h"

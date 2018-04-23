@@ -16,7 +16,8 @@ $B/math/tform/imp.o: $S/utils/imp.h $S/inc/conf.h $S/utils/error.h $S/math/tform
 $B/math/tri/imp.o: $S/math/tri/imp.h $S/math/tri/dev.h
 $B/mesh/force/kantor0/imp.o: $S/utils/error.h $S/mesh/force/kantor0/imp.h $S/mesh/force/kantor0/dev.h $S/math/dev.h $S/utils/msg.h
 $B/mesh/force/kantor1/imp.o: $S/utils/error.h $S/mesh/force/kantor1/imp.h $S/mesh/force/kantor1/dev.h $S/math/dev.h $S/utils/msg.h
-$B/mesh/gen/imp.o: $S/utils/imp.h $S/inc/conf.h $S/utils/error.h $S/inc/type.h $S/mpi/wrapper.h $S/mesh/gen/imp.h $S/io/mesh_read/imp.h $S/inc/def.h $S/utils/mc.h $B/conf.h $S/mesh/gen/imp/main.h $S/rbc/matrices/imp.h $S/utils/msg.h $S/coords/imp.h
+$B/mesh/gen/imp.o: $S/utils/imp.h $S/inc/conf.h $S/utils/error.h $S/inc/type.h $S/mpi/wrapper.h $S/mesh/gen/imp.h $S/io/mesh_read/imp.h $S/inc/def.h $S/utils/mc.h $B/conf.h $S/mesh/gen/imp/main.h $S/mesh/gen/matrices/imp.h $S/utils/msg.h $S/coords/imp.h
+$B/mesh/gen/matrices/imp.o: $S/utils/imp.h $S/utils/error.h $S/mesh/gen/matrices/imp.h $S/mesh/gen/matrices/imp/main.h $S/mesh/gen/matrices/imp/type.h $S/coords/imp.h $S/utils/msg.h
 $B/mpi/glb.o: $S/inc/conf.h $S/mpi/wrapper.h $S/utils/mc.h $B/conf.h
 $B/mpi/wrapper.o: $S/mpi/wrapper.h
 $B/rbc/adj/imp.o: $S/rbc/adj/imp/fin.h $S/utils/imp.h $S/inc/conf.h $S/utils/error.h $S/rbc/adj/imp.h $S/utils/cc.h $S/rbc/adj/imp/ini.h $S/inc/dev.h $S/d/api.h $B/conf.h $S/rbc/adj/type/common.h $S/algo/edg/imp.h $S/rbc/adj/imp/type.h $S/rbc/adj/type/dev.h $S/rbc/adj/imp/anti.h $S/rbc/adj/imp/map.h $S/utils/msg.h
@@ -27,7 +28,6 @@ $B/rbc/force/imp.o: $S/rbc/force/dev/type.h $S/rbc/force/area_volume/imp.h $S/ut
 $B/rbc/force/rnd/api/imp.o: $S/utils/imp.h $S/inc/conf.h $S/utils/error.h $S/rbc/force/rnd/api/imp.h $S/rbc/force/rnd/api/imp/cpu.h $S/rbc/force/rnd/api/imp/gaussrand.h $B/conf.h $S/rbc/force/rnd/api/type.h $S/rbc/force/rnd/api/imp/cuda.h
 $B/rbc/force/rnd/imp.o: $S/utils/imp.h $S/utils/os.h $S/inc/conf.h $S/rbc/force/rnd/imp/cu.h $S/utils/error.h $S/rbc/force/rnd/api/imp.h $S/rbc/force/rnd/imp.h $S/rbc/force/rnd/imp/seed.h $S/utils/cc.h $S/inc/dev.h $S/d/api.h $B/conf.h $S/rbc/force/rnd/imp/main.h $S/rbc/force/rnd/api/type.h $S/rbc/force/rnd/imp/type.h $S/utils/msg.h
 $B/rbc/imp.o: $S/rbc/imp/fin.h $S/utils/imp.h $S/inc/conf.h $S/utils/error.h $S/inc/type.h $S/mpi/wrapper.h $S/rbc/imp.h $S/rbc/shape/imp.h $S/io/mesh_read/imp.h $S/utils/cc.h $S/inc/def.h $S/io/restart/imp.h $S/rbc/imp/generate.h $S/rbc/imp/ini.h $S/utils/mc.h $S/d/api.h $S/inc/dev.h $B/conf.h $S/rbc/force/area_volume/imp.h $S/mesh/gen/imp.h $S/rbc/adj/imp.h $S/rbc/type.h $S/rbc/adj/type/common.h $S/rbc/imp/start.h $S/utils/msg.h
-$B/rbc/matrices/imp.o: $S/utils/imp.h $S/utils/error.h $S/rbc/matrices/imp.h $S/rbc/matrices/imp/main.h $S/rbc/matrices/imp/type.h $S/coords/imp.h $S/utils/msg.h
 $B/rbc/params/conf.o: $S/inc/conf.h $S/utils/error.h $S/conf/imp.h $S/rbc/params/imp.h $B/conf.h
 $B/rbc/params/imp.o: $S/utils/imp.h $S/utils/error.h $S/rbc/params/imp.h $S/rbc/params/type.h
 $B/rbc/shape/imp.o: $S/utils/imp.h $S/utils/error.h $S/math/tri/imp.h $S/rbc/shape/imp.h $S/rbc/adj/type/common.h $S/rbc/shape/imp/main.h $S/rbc/shape/imp/type.h $S/rbc/adj/imp.h $S/utils/msg.h

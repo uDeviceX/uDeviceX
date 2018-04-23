@@ -11,10 +11,10 @@ $B/math/tform/imp.o: $S/math/tform/imp.cpp; $X -I$S/math/tform -I$S/.
 $B/math/tri/imp.o: $S/math/tri/imp.cpp; $X -I$S/math/tri -I$S/.
 $B/mesh/area/imp.o: $S/mesh/area/imp.cpp; $X -I$S/mesh/area -I$S/.
 $B/mesh/gen/imp.o: $S/mesh/gen/imp.cpp; $X -I$S/mesh/gen -I$S/.
+$B/mesh/gen/matrices/imp.o: $S/mesh/gen/matrices/imp.cpp; $X -I$S/mesh/gen/matrices -I$S/.
 $B/mesh/volume/imp.o: $S/mesh/volume/imp.cpp; $X -I$S/mesh/volume -I$S/.
 $B/mpi/glb.o: $S/mpi/glb.cpp; $X -I$S/mpi -I$S/.
 $B/mpi/wrapper.o: $S/mpi/wrapper.cpp; $X -I$S/mpi -I$S/.
-$B/rbc/matrices/imp.o: $S/rbc/matrices/imp.cpp; $X -I$S/rbc/matrices -I$S/.
 $B/u/rbc/gen/main.o: $S/u/rbc/gen/main.cpp; $X -I$S/.
 $B/utils/cc.o: $S/utils/cc.cpp; $X -I$S/utils -I$S/.
 $B/utils/error.o: $S/utils/error.cpp; $X -I$S/utils -I$S/.

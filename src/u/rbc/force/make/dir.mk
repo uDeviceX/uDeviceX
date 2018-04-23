@@ -14,6 +14,7 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/mesh/force/kantor0    && \
     d $B/mesh/force/kantor1    && \
     d $B/mesh/gen              && \
+    d $B/mesh/gen/matrices     && \
     d $B/mpi                   && \
     d $B/rbc                   && \
     d $B/rbc/adj               && \
@@ -22,7 +23,6 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/rbc/force/area_volume && \
     d $B/rbc/force/rnd         && \
     d $B/rbc/force/rnd/api     && \
-    d $B/rbc/matrices          && \
     d $B/rbc/params            && \
     d $B/rbc/shape             && \
     d $B/rbc/stretch           && \

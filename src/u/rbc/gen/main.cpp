@@ -9,7 +9,7 @@
 #include "utils/error.h"
 #include "conf/imp.h"
 #include "io/mesh_read/imp.h"
-#include "rbc/matrices/imp.h"
+#include "mesh/gen/matrices/imp.h"
 #include "mesh/gen/imp.h"
 #include "mesh/area/imp.h"
 #include "mesh/volume/imp.h"
