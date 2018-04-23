@@ -59,7 +59,7 @@ template <int update>
 _S_ double3 dih0(double phi, double kb,
                  double3 a, double3 b, double3 c, double3 d) {
     int status;
-    double over_k, over_n, cosTheta, sinTheta_1,
+    double over_k, over_n, cosTheta, over_sin,
         beta, b11, b12, sint0kb, cost0kb;
     double3 ab, ac, cd, bc, bd, da, k, n, k_n;
     diff(&a, &b, /**/ &ab);
@@ -73,7 +73,7 @@ _S_ double3 dih0(double phi, double kb,
     cross(&bd, &bc, /**/ &n);
 
     status = angle(k, n, /**/
-                   &cosTheta, &sinTheta_1,
+                   &cosTheta, &over_sin,
                    &over_k, &over_n);
     if (status != ANGLE_OK) {
         PRINT("bad dihedral\n");
@@ -81,11 +81,11 @@ _S_ double3 dih0(double phi, double kb,
         EXIT();
     }
     diff(&k, &n, /**/ &k_n);
-    sinTheta_1 = copysign(sinTheta_1, dot<double>(&k_n, &da));
+    over_sin = copysign(over_sin, dot<double>(&k_n, &da));
 
     sint0kb = sin(phi) * kb;
     cost0kb = cos(phi) * kb;
-    beta = cost0kb - cosTheta * sint0kb * sinTheta_1;
+    beta = cost0kb - cosTheta * sint0kb * over_sin;
 
     b11 = -beta *  cosTheta * over_k * over_k;
     b12 =  beta * over_k * over_n;
