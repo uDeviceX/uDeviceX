@@ -88,7 +88,7 @@ _S_ double3 dih0(double phi, double kb,
     beta = cost0kb - cosTheta * sint0kb * over_sin;
 
     b11 = -beta *  cosTheta * over_k * over_k;
-    b12 =  beta * over_k * over_n;
+    b12 =  beta *             over_k * over_n;
 
     if (update == 1) {
         double3 r32, f1, f;
