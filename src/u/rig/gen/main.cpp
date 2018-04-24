@@ -19,11 +19,13 @@
 #include "clist/imp.h"
 #include "inter/color/imp.h"
 #include "flu/imp.h"
+#include "rig/imp.h"
 
 static void gen(MPI_Comm cart, const Config *cfg) {
     Coords *coords;
     GenColor *gc;
     FluQuants flu;
+    RigQuants rig;
     int3 L;
     int maxp, numdensity;
     numdensity = 10; // TODO

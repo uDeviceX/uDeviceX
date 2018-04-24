@@ -1,0 +1,9 @@
+#### rig gen
+# sTEST: rig.gen.t1
+cd test/rig/gen
+S=`u.cp.s` U=u/rig/gen
+:
+u.conf0 $U
+u.make -j
+:
+u.run ./udx conf.cfg
