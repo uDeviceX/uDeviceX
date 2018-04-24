@@ -28,8 +28,8 @@ static void gen(MPI_Comm cart, const Config *cfg) {
     RigQuants rig;
     int3 L;
     int maxp, numdensity;
-    numdensity = 10; // TODO
 
+    UC(conf_lookup_int(cfg, "glb.numdensity", &numdensity));
     UC(coords_ini_conf(cart, cfg, &coords));
     L = subdomain(coords);
     maxp = 2 * numdensity * L.x * L.y * L.z;
