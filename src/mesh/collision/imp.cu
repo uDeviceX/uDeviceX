@@ -96,9 +96,9 @@ static __device__ bool inside_box(const float r[3], float3 lo, float3 hi) {
 
 /* assume nm blocks along y */
 /* if the ith particle is inside jth mesh, sets tag[i] to IN (see enum in collision.h) */
-__global__ void compute_colors_tex(const Particle *pp, const int n, const Texo<float2> texvert, const int nv,
-                                   Triangles tri,
-                                   const float3 *minext, const float3 *maxext, /**/ int *cc) {
+__global__ void label_tex(const Particle *pp, const int n, const Texo<float2> texvert, const int nv,
+                          Triangles tri, const float3 *minext, const float3 *maxext,
+                          int lab_in, /**/ int *labels) {
     const int sid = blockIdx.y;
     const int gid = threadIdx.x + blockIdx.x * blockDim.x;
     if (gid >= n) return;
@@ -126,7 +126,7 @@ __global__ void compute_colors_tex(const Particle *pp, const int n, const Texo<f
     }
 
     // dont consider the case of inside several solids
-    if (count % 2) atomicExch(cc + gid, IN);
+    if (count % 2) atomicExch(labels + gid, lab_in);
 }
 }
 
@@ -137,32 +137,31 @@ __global__ void compute_colors_tex(const Particle *pp, const int n, const Texo<f
    nt: number of triangles per mesh
    nv: number of vertices per mesh
 */
-static void get_colors(const Particle *pp, int n,
-                       const Texo<float2> texvert, Triangles *tri,
-                       int nv, int nm,
-                       const float3 *minext, const float3 *maxext, /**/ int *cc) {
+static void get_colors(int n, const Particle *pp, const Triangles *tri, int nv, int nm, const Texo<float2> texvert,                        
+                       const float3 *minext, const float3 *maxext, int lab_in, int lab_out, /**/ int *labels) {
     if (nm == 0 || n == 0) return;
 
-    KL(collision_dev::init_tags, (k_cnf(n)), (n, OUT, /**/ cc));
+    KL(collision_dev::init_tags, (k_cnf(n)), (n, lab_out, /**/ labels));
 
     enum {THR = 128};
     dim3 thrd(THR, 1);
     dim3 blck(ceiln(n, THR), nm);
 
-    KL(collision_dev::compute_colors_tex, (blck, thrd), (pp, n, texvert, nv, *tri, minext, maxext, /**/ cc));
+    KL(collision_dev::label_tex, (blck, thrd),
+       (pp, n, texvert, nv, *tri, minext, maxext, lab_in, /**/ labels));
 }
 
-void collision_get_colors(int n, const Particle *pp, Triangles *tri, 
-                          int nv, int nm, const Particle *i_pp, 
-                          const float3 *minext, const float3 *maxext, /**/ int *cc) {
+void collision_mark(int n, const Particle *pp, const Triangles *tri, 
+                    int nv, int nm, const Particle *i_pp, 
+                    const float3 *minext, const float3 *maxext,
+                    int lab_in, int lab_out, /**/ int *labels) {
     Texo<float2> texvert;
     int ntex;
     ntex = 3 * nm * nv;
     
     if (nm == 0 || n == 0) return;
     texo_setup(ntex, (float2*) i_pp, /**/ &texvert);
-    UC(get_colors(pp, n, texvert, tri,
-                  nv, nm,
-                  minext, maxext, /**/ cc));
+    UC(get_colors(n, pp, tri, nv, nm, texvert,                   
+                  minext, maxext, lab_in, lab_out, /**/ labels));
     texo_destroy(&texvert);
 }
