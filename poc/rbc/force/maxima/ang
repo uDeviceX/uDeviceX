@@ -5,26 +5,38 @@ load("util.mac") $
 
 a: [ax, ay, az] $
 b: [bx, by, bz] $
+c: [cx, cy, cz] $
+d: [dx, dy, dz] $
 
-[dx, dy, dz]: b - a ;
-dd: dot(['dx, 'dy, 'dz], ['dx, 'dy, 'dz]);
-E: sqrt('dd);
+ab: b - a $
+ac: c - a $
+bd: d - b $
+bc: c - b $
+
+[kx, ky, kz]: cross(ab, ac) $
+[nx, ny, nz]: cross(bd, bc) $
+
+[knx, kny, knz]: cross(['kx, 'ky, 'kz], ['nx, 'ny, 'nz]) $
+
+kn : vabs(['knx, 'kny, 'knz]) $ /* TODO: sign! */
+kdn: dot(['kx, 'ky, 'kz], ['nx, 'ny, 'nz]) ;
+E: atan2('kn, 'kdn);
 
 [E, V, T]: g(
-  ['E,  E, sl(E)],
-  ['dd, dd, sl(dd)],
-  ['dx, dx, sl(dx)],
-  ['dy, dy, sl(dy)],
-  ['dz, dz, sl(dz)]
-  ) $
+  ['E ,  E,   sl(E)],
+  ['kn,  kn,  sl(kn)],
 
-[E, V, T]: rm(
-  E, V, T,
-  'dx_ax, 'dx_bx,
-  'dy_ay, 'dy_by,
-  'dz_az, 'dz_bz,
-  'dd_dx, 'dd_dy, 'dd_dz,
-  'E_dx, 'E_dy, 'E_dz
-) $
+  ['knx, knx, sl(knx)],
+  ['kny, kny, sl(kny)],
+  ['knz, knz, sl(knz)],
+
+  ['kdn, kdn, sl(kdn)],
+
+  ['nx, nx, sl(nx)],
+  ['ny, ny, sl(ny)],
+  ['nz, nz, sl(nz)],
+  ['kx, kx, sl(kx)],
+  ['ky, ky, sl(ky)],
+  ['kz, kz, sl(kz)]) $
 
 with_stdout("ang.c", fmt0(E, V, T));
