@@ -116,3 +116,14 @@ function d_dist(ax, ay, az, bx, by, bz,   dx, dy, dz, d) {
     DAX = -d*dx; DAY = -d*dy; DAZ = -d*dz
     DBX =  d*dx; DBY =  d*dy; DBZ =  d*dz
 }
+
+function d_dihedral(ax, ay, az,
+		    bx, by, bz,
+		    cx, cy, cz,
+		    dx, dy, dz) {
+    
+    DAX = DAY = DAZ = 1
+    DBX = DBY = DBZ = 1
+    DCX = DCY = DCZ = 1
+    DDX = DDY = DDZ = 1
+}
