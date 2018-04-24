@@ -55,6 +55,20 @@ function scatter_curv(   m, i, j, curv, len, ang) {
     }
 }
 
+function d_scatter_curv(   m, i, j, curv, len, ang) {
+    clear(dE_ang); clear(dE_len)
+    for (m = 0; m < NE; m++) {
+	i = E0[m]; j = E1[m]
+	len = LEN[m]
+	ang = ANG_EDG[m]
+	curv = len*ang/4
+	dE_ang[m] += dE_curv[i]/2 * len/4
+	dE_ang[m] += dE_curv[j]/2 * len/4
+	dE_len[m] += dE_curv[i]/2 * ang/4
+	dE_len[m] += dE_curv[j]/2 * ang/4
+    }
+}
+
 function compute_julicher(    m, curv, A) {
     clear(E)
     for (m = 0; m < NV; m++) {
@@ -74,10 +88,20 @@ function d_compute_julicher(   m, curv, A) {
     }
 }
 
-function write(   m, r) {
+function write_vert(   m, r) {
     for (m = 0; m < NV; m++) {
 	r = sqrt(XX[m]^2 + YY[m]^2)
 	print r, E[m], dE_A[m], dE_curv[m]
+    }
+}
+
+function write_edg(   m, i, jr, x, y) {
+    for (m = 0; m < NE; m++) {
+	i = E0[m]; j = E1[m]
+	x = (XX[i] + XX[j])/2
+	y = (YY[i] + YY[j])/2
+	r = sqrt(x^2 + y^2)
+	print r, dE_len[m], dE_ang[m]
     }
 }
 
@@ -87,7 +111,7 @@ BEGIN {
     file = first_arg()
     if (eq(file, "-h")) usg()
     off_read(file)
-    # refine2()    
+    # refine2()
     setup()
 
     compute_ang()
@@ -95,13 +119,16 @@ BEGIN {
     compute_area()
     scatter_area()
     scatter_curv()
-    
+
     compute_julicher()
     d_compute_julicher()
+
+    d_scatter_curv()
 
     vtk_push("area", AREA_TRI, tri)
     vtk_push("julicher", E, vert)
     vtk_write("o.vtk", vert, tri)
-    
-    write()
+
+    # write_vert()
+    write_edg()
 }
