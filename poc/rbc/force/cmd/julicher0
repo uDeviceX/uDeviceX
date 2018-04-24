@@ -71,14 +71,14 @@ function compute_julicher(    m, curv, A) {
     for (m = 0; m < NV; m++) {
 	curv = CURV[m]
 	A    = AREA_VER[m]
-	JULICHER[m] = 2*curv*curv/A
+	E[m] = 2*curv*curv/A
     }
 }
 
 function write(   m, r) {
     for (m = 0; m < NV; m++) {
 	r = sqrt(XX[m]^2 + YY[m]^2)
-	print r, JULICHER[m]
+	print r, E[m]
     }
 }
 
@@ -101,7 +101,7 @@ BEGIN {
     scatter_ang()
 
     vtk_push("area", AREA_TRI, tri)
-    vtk_push("julicher", JULICHER, vert)
+    vtk_push("julicher", E, vert)
     vtk_write("o.vtk", vert, tri)
     
     write()
