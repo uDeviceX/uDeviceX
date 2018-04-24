@@ -24,4 +24,5 @@
 #include "rigid/imp.h"
 
 #include "imp.h"
+#include "imp/common.h"
 #include "imp/main.h"
