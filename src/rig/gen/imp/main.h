@@ -1,3 +1,8 @@
+enum {
+    IN,
+    OUT
+};
+
 static void exchange_mesh(int maxm, int3 L, MPI_Comm cart, int nv, /*io*/ int *n, Particle *pp) {
     EMeshPack *pack;
     EMeshComm *comm;
@@ -19,21 +24,42 @@ static void exchange_mesh(int maxm, int3 L, MPI_Comm cart, int nv, /*io*/ int *n
     UC(emesh_wait_send(comm));
 
     UC(emesh_unpack(nv, unpack, /**/ &nmhalo, pp + nm * nv));
+
+    *n += nm * nv;
     
     UC(emesh_pack_fin(pack));
     UC(emesh_comm_fin(comm));
     UC(emesh_unpack_fin(unpack));
 }
 
-/* select only mesh 0 and gather particles */ 
-static void label_template(int3 L, MPI_Comm cart, int nv, int nm, const Particle *pp_mesh, int n_flu, const Particle *pp_flu, /**/ int *label) {
+static void compute_labels(int pdir, int n, const Particle *pp, int nt, int nv, int nm, const int4 *tt, const Particle *pp_mesh, /**/ int *ll) {
+    float3 *lo, *hi;
+    Triangles tri;
+    Dalloc(&lo, nm);
+    Dalloc(&hi, nm);
+
+    tri.nt = nt;
+    tri.tt = (int4*) tt;
+    
+    UC(minmax(pp_mesh, nv, nm, /**/ lo, hi));
+    UC(collision_label(pdir, n, pp, &tri, nv, nm, pp_mesh, lo, hi, IN, OUT, /**/ ll));    
+    Dfree(lo);
+    Dfree(hi);
+}
+
+static void label_template_dev(int pdir, int3 L, MPI_Comm cart, int nt, int nv, int nm, const int4 *tt, const Particle *pp_mesh,
+                               int n_flu, const Particle *pp_flu, /**/ int *ll) {
     int maxm, n;
     Particle *pp;
 
     maxm = NFRAGS;
     Dalloc(&pp, nv * maxm);
+
+    n = nm * nv;
+    if (n) cD2D(pp, pp_mesh, n);
     
     UC(exchange_mesh(maxm, L, cart, nv, /* io */ &n, pp));
+    UC(compute_labels(pdir, n_flu, pp_flu, nt, nv, nm, tt, pp_mesh, ll));
 
     Dfree(pp);
 }

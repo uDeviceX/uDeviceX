@@ -15,6 +15,9 @@
 
 #include "comm/imp.h"
 #include "exch/mesh/imp.h"
+#include "algo/minmax/imp.h"
+#include "mesh/triangles/type.h"
+#include "mesh/collision/imp.h"
 
 #include "imp.h"
 #include "imp/main.h"
