@@ -1,7 +1,29 @@
 D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
-    d $B/d            && \
-    d $B/mpi          && \
-    d $B/u/hw/hst     && \
-    d $B/utils        && \
-    d $B/utils/nvtx   && \
-    d $B/utils/string
+    d $B/algo/edg        && \
+    d $B/algo/force_stat && \
+    d $B/algo/kahan_sum  && \
+    d $B/algo/key_list   && \
+    d $B/algo/minmax     && \
+    d $B/algo/scalars    && \
+    d $B/algo/scan       && \
+    d $B/algo/vectors    && \
+    d $B/clist           && \
+    d $B/conf            && \
+    d $B/coords          && \
+    d $B/d               && \
+    d $B/flu             && \
+    d $B/inter/color     && \
+    d $B/io/restart      && \
+    d $B/io/txt          && \
+    d $B/math/linal      && \
+    d $B/math/rnd        && \
+    d $B/math/tform      && \
+    d $B/math/tri        && \
+    d $B/mpi             && \
+    d $B/struct/farray   && \
+    d $B/struct/parray   && \
+    d $B/struct/pfarrays && \
+    d $B/u/rig/gen       && \
+    d $B/utils           && \
+    d $B/utils/nvtx      && \
+    d $B/utils/string   
