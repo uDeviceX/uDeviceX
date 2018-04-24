@@ -43,17 +43,14 @@ static void ini_mbr(const Config *cfg, const OptMbr *opt, MPI_Comm cart, int3 L,
 }
 
 static void ini_rig(const Config *cfg, const OptRig *opt, MPI_Comm cart, int maxp, int3 L, /**/ Rig **rigid) {
-    const int4 *tt;
-    int nv, nt;
     Rig *r;
     EMALLOC(1, rigid);
     r = *rigid;
 
     UC(mesh_read_ini_ply("rig.ply", &r->mesh));
+    UC(mesh_write_ini_from_mesh(cart, opt->shifttype, r->mesh, "s", /**/ &r->mesh_write));
     
     UC(rig_ini(MAX_SOLIDS, maxp, r->mesh, &r->q));
-    tt = r->q.htt; nv = r->q.nv; nt = r->q.nt;
-    UC(mesh_write_ini(cart, opt->shifttype, tt, nv, nt, "s", /**/ &r->mesh_write));
 
     EMALLOC(maxp, &r->ff_hst);
     Dalloc(&r->ff, maxp);

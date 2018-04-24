@@ -125,14 +125,11 @@ static void ini_rbc(const Config *cfg, const OptMbr *opt, MPI_Comm cart, int3 L,
 }
 
 static void ini_rig(const Config *cfg, MPI_Comm cart, const OptRig *opt, int maxp, int3 L, /**/ Rig *s) {
-    const int4 *tt;
-    int nv, nt;
-
     UC(mesh_read_ini_ply("rig.ply", &s->mesh));
+    UC(mesh_write_ini_from_mesh(cart, opt->shifttype, s->mesh, "s", /**/ &s->mesh_write));
     
     UC(rig_ini(MAX_SOLIDS, maxp, s->mesh, &s->q));
-    tt = s->q.htt; nv = s->q.nv; nt = s->q.nt;
-    UC(mesh_write_ini(cart, opt->shifttype, tt, nv, nt, "s", /**/ &s->mesh_write));
+
 
     EMALLOC(maxp, &s->ff_hst);
     Dalloc(&s->ff, maxp);
