@@ -76,13 +76,11 @@ function compute_julicher(    m, curv, A) {
 }
 
 function write(   m, r) {
-    msg("NV = " NV)
     for (m = 0; m < NV; m++) {
 	r = sqrt(XX[m]^2 + YY[m]^2)
 	print r, JULICHER[m]
     }
 }
-
 
 BEGIN {
     ini()
