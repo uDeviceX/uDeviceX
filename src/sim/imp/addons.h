@@ -55,8 +55,8 @@ void colors_from_rbc(Sim *s) {
     /* compute extents */
     if (n > 0) {
         UC(minmax(c->pp, nv, nm, /**/ c->minext, c->maxext));
-        UC(collision_mark(f->q.n, f->q.pp, r->tri, nv, nm, c->pp, 
-                          c->minext, c->maxext, RED_COLOR, BLUE_COLOR, /**/ f->q.cc));
+        UC(collision_label(NOT_PERIODIC, f->q.n, f->q.pp, r->tri, nv, nm, c->pp, 
+                           c->minext, c->maxext, RED_COLOR, BLUE_COLOR, /**/ f->q.cc));
     }
 }
 

@@ -94,7 +94,7 @@ static __device__ bool inside_box(const float r[3], float3 lo, float3 hi) {
 }
 
 /* assume nm blocks along y */
-__global__ void label_tex(const Particle *pp, const int n, const Texo<float2> texvert, const int nv,
+__global__ void label_tex(int pdir, const Particle *pp, const int n, const Texo<float2> texvert, const int nv,
                           Triangles tri, const float3 *minext, const float3 *maxext,
                           int lab_in, /**/ int *labels) {
     int i, sid, gid, count, mbase;
@@ -115,6 +115,7 @@ __global__ void label_tex(const Particle *pp, const int n, const Texo<float2> te
     if (!inside_box(p.r, lo, hi)) return;
 
     float origin[3] = {0, 0, 0};
+    if (pdir != NOT_PERIODIC) origin[pdir] = p.r[pdir];
 
     mbase = nv * sid;
     for (i = 0; i < tri.nt; ++i) {
@@ -132,8 +133,9 @@ __global__ void label_tex(const Particle *pp, const int n, const Texo<float2> te
 }
 }
 
-static void get_colors(int n, const Particle *pp, const Triangles *tri, int nv, int nm, const Texo<float2> texvert,                        
+static void label(int pdir, int n, const Particle *pp, const Triangles *tri, int nv, int nm, const Texo<float2> texvert,                        
                        const float3 *minext, const float3 *maxext, int lab_in, int lab_out, /**/ int *labels) {
+    enum {X, Y, Z};
     if (nm == 0 || n == 0) return;
 
     KL(collision_dev::init_tags, (k_cnf(n)), (n, lab_out, /**/ labels));
@@ -143,20 +145,19 @@ static void get_colors(int n, const Particle *pp, const Triangles *tri, int nv, 
     dim3 blck(ceiln(n, THR), nm);
 
     KL(collision_dev::label_tex, (blck, thrd),
-       (pp, n, texvert, nv, *tri, minext, maxext, lab_in, /**/ labels));
+       (pdir, pp, n, texvert, nv, *tri, minext, maxext, lab_in, /**/ labels)); 
 }
 
-void collision_mark(int n, const Particle *pp, const Triangles *tri, 
-                    int nv, int nm, const Particle *i_pp, 
-                    const float3 *minext, const float3 *maxext,
-                    int lab_in, int lab_out, /**/ int *labels) {
+void collision_label(int pdir, int n, const Particle *pp, const Triangles *tri, 
+                     int nv, int nm, const Particle *i_pp, 
+                     const float3 *minext, const float3 *maxext,
+                     int lab_in, int lab_out, /**/ int *labels) {
     Texo<float2> texvert;
     int ntex;
     ntex = 3 * nm * nv;
     
     if (nm == 0 || n == 0) return;
     texo_setup(ntex, (float2*) i_pp, /**/ &texvert);
-    UC(get_colors(n, pp, tri, nv, nm, texvert,                   
-                  minext, maxext, lab_in, lab_out, /**/ labels));
+    UC(label(pdir, n, pp, tri, nv, nm, texvert, minext, maxext, lab_in, lab_out, /**/ labels));
     texo_destroy(&texvert);
 }
