@@ -24,7 +24,7 @@ static void ini_mbr(const Config *cfg, const OptMbr *opt, MPI_Comm cart, int3 L,
     
     Dalloc(&m->ff, MAX_CELL_NUM * nv);
     UC(triangles_ini(m->cell, /**/ &m->tri));
-    UC(rbc_ini(opt->ids, m->cell, &m->q));
+    UC(rbc_ini(MAX_CELL_NUM, opt->ids, m->cell, &m->q));
     UC(ini_mbr_distr(opt->ids, nv, cart, L, /**/ &m->d));
 
     if (opt->dump_com) UC(rbc_com_ini(nv, MAX_CELL_NUM, /**/ &m->com));

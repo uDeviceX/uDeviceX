@@ -2,7 +2,7 @@ struct Coords;
 struct MeshRead;
 
 // tag::mem[]
-void rbc_ini(bool ids, const MeshRead*, RbcQuants*);
+void rbc_ini(long maxnc, bool ids, const MeshRead*, RbcQuants*);
 void rbc_fin(RbcQuants*);
 // end::mem[]
 
