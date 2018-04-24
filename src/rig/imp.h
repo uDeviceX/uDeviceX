@@ -22,7 +22,7 @@ struct RigPinInfo;
 struct MeshRead;
 
 // tag::mem[]
-void rig_ini(long maxs, long maxp, RigQuants *q);
+void rig_ini(long maxs, long maxp, const MeshRead*, RigQuants*);
 void rig_fin(RigQuants *q);
 // end::mem[]
 

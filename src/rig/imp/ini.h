@@ -31,7 +31,7 @@ static void load_rigid_mesh(const char *fname, int *nt, int *nv, int4 **tt_hst, 
 }
 
 
-void rig_ini(long maxs, long maxp, RigQuants *q) {
+void rig_ini(long maxs, long maxp, const MeshRead *mesh, RigQuants *q) {
     q->n = q->ns = q->nps = 0;
     q->maxp = maxp;
 
