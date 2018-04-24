@@ -21,9 +21,9 @@ struct Mbr {
     RbcParams  *params;   /* model parameters                          */
     RbcCom     *com;      /* helper to compute center of masses        */
     RbcStretch *stretch;  /* helper to apply stretching force to cells */
-    MeshRead   *cell;     /* cell template                             */
     Triangles  *tri;      /* triangles for one cell on devices         */
     float mass;           /* mass of one particle                      */
+    MeshRead   *cell;     /* cell template                             */
     MeshWrite  *mesh_write;
 };
 
@@ -34,9 +34,11 @@ struct Rig {
 
     RigPinInfo *pininfo;
     RigDistr d;
-    MeshWrite  *mesh_write;
+    
+    float mass;  /* mass of one particle */
 
-    float mass;  /* mass of one particle */ 
+    MeshRead   *mesh;
+    MeshWrite  *mesh_write;
 };
 
 struct Dump {

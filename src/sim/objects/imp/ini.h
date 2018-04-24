@@ -48,6 +48,8 @@ static void ini_rig(const Config *cfg, const OptRig *opt, MPI_Comm cart, int max
     Rig *r;
     EMALLOC(1, rigid);
     r = *rigid;
+
+    UC(mesh_read_ini_ply("rig.ply", &r->mesh));
     
     UC(rig_ini(MAX_SOLIDS, maxp, &r->q));
     tt = r->q.htt; nv = r->q.nv; nt = r->q.nt;
