@@ -26,8 +26,16 @@ static void exchange_mesh(int maxm, int3 L, MPI_Comm cart, int nv, /*io*/ int *n
 }
 
 /* select only mesh 0 and gather particles */ 
-static void create_template(int nv, int nm, const Particle *mesh_pp, /**/ int *n, Particle *templ_pp) {
-        
+static void label_template(int3 L, MPI_Comm cart, int nv, int nm, const Particle *pp_mesh, int n_flu, const Particle *pp_flu, /**/ int *label) {
+    int maxm, n;
+    Particle *pp;
+
+    maxm = NFRAGS;
+    Dalloc(&pp, nv * maxm);
+    
+    UC(exchange_mesh(maxm, L, cart, nv, /* io */ &n, pp));
+
+    Dfree(pp);
 }
 
 void rig_gen_from_solvent(const Coords *coords, MPI_Comm cart, RigGenInfo rgi, /* io */ FluInfo fi, /* o */ RigInfo ri) {
