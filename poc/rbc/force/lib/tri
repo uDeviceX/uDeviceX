@@ -113,7 +113,6 @@ function d_dist(ax, ay, az, bx, by, bz,   dx, dy, dz, d) {
     dz = bz-az
     d = dx^2 + dy^2 + dz^2
     d = 1/sqrt(d)
-
     DAX = -d*dx; DAY = -d*dy; DAZ = -d*dz
     DBX =  d*dx; DBY =  d*dy; DBZ =  d*dz
 }
