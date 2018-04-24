@@ -118,5 +118,6 @@ static InterRigInfos get_sinfo(Sim *s) {
     si.mass = s->rig.mass;
     si.empty_pp = s->opt.rig.empty_pp;
     si.numdensity = s->opt.params.numdensity;
+    si.mesh = s->rig.mesh;
     return si;
 }

@@ -19,10 +19,10 @@ static void gen_from_strt(int maxp, MPI_Comm comm, const char *base, const int i
     *n = *ns * (*nps);
 }
 
-void rig_strt_quants(MPI_Comm comm, const char *base, const int id, RigQuants *q) {
+void rig_strt_quants(MPI_Comm comm, const MeshRead *mesh, const char *base, const int id, RigQuants *q) {
     gen_from_strt(q->maxp, comm, base, id, /**/ &q->ns, &q->nps, &q->n, q->rr0_hst, q->ss_hst);
     gen_pp_hst(q->ns, q->rr0_hst, q->nps, /**/ q->ss_hst, q->pp_hst);
-    gen_ipp_hst(q->ss_hst, q->ns, q->nv, q->hvv, /**/ q->i_pp_hst);
+    gen_ipp_hst(q->ss_hst, q->ns, q->nv, mesh_read_get_vert(mesh), /**/ q->i_pp_hst);
     cpy_H2D(q);
 }
 

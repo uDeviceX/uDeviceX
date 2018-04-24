@@ -1,13 +1,15 @@
 void rig_gen_quants(const Coords *coords, bool empty_pp, int numdensity, float rig_mass, const RigPinInfo *pi, MPI_Comm comm,
-                    /* io */ Particle *opp, int *on, /**/ RigQuants *q) {
+                    const MeshRead *mesh, /* io */ Particle *opp, int *on, /**/ RigQuants *q) {
     RigGenInfo rgi;
     FluInfo fluinfo;
     RigInfo riginfo;
     
     rgi.mass = rig_mass;
     rgi.pi = pi;
-    rgi.tt = q->htt; rgi.nt = q->nt;
-    rgi.vv = q->hvv; rgi.nv = q->nv;
+    rgi.tt = mesh_read_get_tri(mesh);
+    rgi.nt = q->nt;
+    rgi.vv = mesh_read_get_vert(mesh);
+    rgi.nv = q->nv;
     rgi.empty_pp = empty_pp;
     rgi.numdensity = numdensity;
 
@@ -23,7 +25,7 @@ void rig_gen_quants(const Coords *coords, bool empty_pp, int numdensity, float r
     
     inter_gen_rig_from_solvent(coords, comm, rgi, /* io */ fluinfo, /**/ riginfo);
     gen_pp_hst(q->ns, q->rr0_hst, q->nps, /**/ q->ss_hst, q->pp_hst);
-    gen_ipp_hst(q->ss_hst, q->ns, q->nv, q->hvv, /**/ q->i_pp_hst);
+    gen_ipp_hst(q->ss_hst, q->ns, q->nv, rgi.vv, /**/ q->i_pp_hst);
     cpy_H2D(q);
 }
 

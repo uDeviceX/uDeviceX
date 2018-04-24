@@ -1,36 +1,3 @@
-static void ply_read(const char *fname, /**/ int *pnt, int *pnv, int4 **ptt, float **pvv) {
-    int nt, nv;
-    int4 *tt;
-    float *vv;
-    MeshRead *q;
-    UC(mesh_read_ini_ply(fname, &q));
-
-    nt = mesh_read_get_nt(q);
-    nv = mesh_read_get_nv(q);
-
-    EMALLOC(  nt, &tt);
-    EMALLOC(3*nv, &vv);
-
-    EMEMCPY(  nt, mesh_read_get_tri(q), /**/ tt);
-    EMEMCPY(3*nv, mesh_read_get_vert(q), /**/ vv);
-
-    mesh_read_fin(q);
-    *ptt = tt; *pvv = vv;
-    *pnv = nv; *pnt = nt;
-}
-
-static void load_rigid_mesh(const char *fname, int *nt, int *nv, int4 **tt_hst, int4 **tt_dev, float **vv_hst, float **vv_dev) {
-    msg_print("reading: '%s'", fname);
-    UC(ply_read(fname, /**/ nt, nv, tt_hst, vv_hst));
-
-    Dalloc(tt_dev,     (*nt));
-    Dalloc(vv_dev, 3 * (*nv));
-
-    cH2D(*tt_dev, *tt_hst,     *nt);
-    cH2D(*vv_dev, *vv_hst, 3 * *nv);
-}
-
-
 void rig_ini(long maxs, long maxp, const MeshRead *mesh, RigQuants *q) {
     q->n = q->ns = q->nps = 0;
     q->maxp = maxp;
@@ -48,5 +15,14 @@ void rig_ini(long maxs, long maxp, const MeshRead *mesh, RigQuants *q) {
     EMALLOC(maxs, &q->ss_dmp);
     EMALLOC(maxs, &q->ss_dmp_bb);
 
-    UC(load_rigid_mesh("rig.ply", /**/ &q->nt, &q->nv, &q->htt, &q->dtt, &q->hvv, &q->dvv));
+    q->nt = mesh_read_get_nt(mesh);
+    q->nv = mesh_read_get_nv(mesh);
+    
+    Dalloc(&q->dtt,     q->nt);
+    Dalloc(&q->dvv, 3 * q->nv);
+
+    cH2D(q->dtt, mesh_read_get_tri (mesh),     q->nt);
+    cH2D(q->dvv, mesh_read_get_vert(mesh), 3 * q->nv);
+
+    //UC(load_rigid_mesh("rig.ply", /**/ &q->nt, &q->nv, &q->htt, &q->dtt, &q->hvv, &q->dvv));
 }

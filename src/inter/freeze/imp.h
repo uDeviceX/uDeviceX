@@ -1,6 +1,7 @@
 struct Coords;
 struct RigPinInfo;
 struct Sdf;
+struct MeshRead;
 
 // tag::helpers[]
 struct InterWalInfos {
@@ -22,6 +23,7 @@ struct InterRigInfos {
     bool empty_pp;
     RigQuants *q;
     const RigPinInfo *pi;
+    const MeshRead *mesh;
     float mass;
     int numdensity;
 };

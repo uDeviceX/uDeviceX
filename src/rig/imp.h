@@ -7,8 +7,8 @@ struct RigQuants {
 
     /* mesh related quantities */
     int nt, nv;                   /* number of [t]riangles and [v]ertices                          */
-    int4 *htt, *dtt;              /* triangle indices of [h]ost and [d]evice                       */
-    float *hvv, *dvv;             /* vertices of [h]ost and [d]evice (template)                    */
+    int4 *dtt;                    /* triangle indices on device                                    */
+    float *dvv;                   /* vertices on device (template)                                 */
     Particle *i_pp_hst, *i_pp;    /* particles representing all meshes of all solids of that node  */
 
     Solid *ss_dmp, *ss_dmp_bb;
@@ -27,8 +27,8 @@ void rig_fin(RigQuants *q);
 // end::mem[]
 
 // tag::gen[]
-void rig_gen_quants(const Coords*, bool empty_pp, int numdensity, float rig_mass, const RigPinInfo *pi, MPI_Comm comm, Particle *opp, int *on, RigQuants *q);
-void rig_strt_quants(MPI_Comm, const char *base, const int id, RigQuants *q);
+void rig_gen_quants(const Coords*, bool empty_pp, int numdensity, float rig_mass, const RigPinInfo*, MPI_Comm, const MeshRead*, Particle *opp, int *on, RigQuants *q);
+void rig_strt_quants(MPI_Comm, const MeshRead*, const char *base, const int id, RigQuants *q);
 // end::gen[]
 
 // tag::genid[]
