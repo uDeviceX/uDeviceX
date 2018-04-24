@@ -18,6 +18,7 @@
 #include "struct/partlist/type.h"
 #include "clist/imp.h"
 #include "inter/color/imp.h"
+#include "io/mesh_read/imp.h"
 #include "flu/imp.h"
 #include "rig/imp.h"
 
@@ -26,6 +27,7 @@ static void gen(MPI_Comm cart, const Config *cfg) {
     GenColor *gc;
     FluQuants flu;
     RigQuants rig;
+    MeshRead *mesh;
     int3 L;
     int maxp, numdensity;
 
@@ -37,9 +39,12 @@ static void gen(MPI_Comm cart, const Config *cfg) {
     UC(flu_ini(false, false, L, maxp, &flu));
     UC(inter_color_ini(&gc));
     UC(inter_color_set_uniform(gc));
+    UC(mesh_read_ini_ply("rig.ply", &mesh));
+    
     
     UC(flu_gen_quants(coords, numdensity, gc, &flu));
 
+    UC(mesh_read_fin(mesh));
     UC(inter_color_fin(gc));
     UC(flu_fin(&flu));    
     UC(coords_fin(coords));
