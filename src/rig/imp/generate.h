@@ -46,11 +46,11 @@ void rig_gen_mesh(const Coords *coords, MPI_Comm comm, const MeshRead *mesh, con
 
     q->ns = nm = matrices_get_n(matrices);
 
-    UC(mesh_gen_from_matrices(nv, vv, matrices, /**/ &n, q->i_pp));
-    UC(mesh_shift(coords, n, q->i_pp));
+    UC(mesh_gen_from_matrices(nv, vv, matrices, /**/ &n, q->i_pp_hst));
+    UC(mesh_shift(coords, n, q->i_pp_hst));
 
-    UC(gen_from_matrices(matrices, q->ss));
-    UC(shift(coords, nm, q->ss));
+    UC(gen_from_matrices(matrices, q->ss_hst));
+    UC(shift(coords, nm, q->ss_hst));
     
     UC(matrices_fin(matrices));
 }
