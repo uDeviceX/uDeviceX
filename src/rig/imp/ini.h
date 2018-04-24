@@ -23,6 +23,4 @@ void rig_ini(long maxs, long maxp, const MeshRead *mesh, RigQuants *q) {
 
     cH2D(q->dtt, mesh_read_get_tri (mesh),     q->nt);
     cH2D(q->dvv, mesh_read_get_vert(mesh), 3 * q->nv);
-
-    //UC(load_rigid_mesh("rig.ply", /**/ &q->nt, &q->nv, &q->htt, &q->dtt, &q->hvv, &q->dvv));
 }

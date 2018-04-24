@@ -9,8 +9,8 @@ void rig_fin(RigQuants *q) {
     Dfree(q->rr0);
     Dfree(q->i_pp);
 
-    if (q->dtt) Dfree(q->dtt);
-    if (q->dvv) Dfree(q->dvv);
+    Dfree(q->dtt);
+    Dfree(q->dvv);
     
     EFREE(q->ss_dmp);
     EFREE(q->ss_dmp_bb);
