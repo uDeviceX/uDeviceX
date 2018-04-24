@@ -1,0 +1,34 @@
+load("vect") $
+load("pdiff") $
+load("cgrind") $
+load("util.mac") $
+
+a: [ax, ay, az] $
+b: [bx, by, bz] $
+c: [cx, cy, cz] $
+
+ab: b - a $
+ac: c - a $
+
+[kx, ky, kz]: cross(ab, ac) $
+
+kk: dot(['kx, 'ky, 'kz], ['kx, 'ky, 'kz]);
+
+E : kk/2;
+
+[E, V, T]: g(
+  ['E,  E, sl(E)],
+  ['kx, kx, sl(kx)],
+  ['ky, ky, sl(ky)],
+  ['kz, kz, sl(kz)]
+  ) $
+
+[E, V, T]: rm(
+  E, V, T,
+  'E_kx, 'E_ky, 'E_kz,
+  'kx_ay, 'kx_az, 'kx_by, 'kx_bz, 'kx_cy, 'kx_cz,
+  'ky_ax, 'ky_az, 'ky_bx, 'ky_bz, 'ky_cx, 'ky_cz,
+  'kz_ax, 'kz_ay, 'kz_bx, 'kz_by, 'kz_cx, 'kz_cy
+) $
+
+with_stdout("area.c", fmt0(E, V, T));
