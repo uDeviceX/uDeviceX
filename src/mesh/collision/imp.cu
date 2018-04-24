@@ -98,28 +98,32 @@ static __device__ bool inside_box(const float r[3], float3 lo, float3 hi) {
 __global__ void label_tex(const Particle *pp, const int n, const Texo<float2> texvert, const int nv,
                           Triangles tri, const float3 *minext, const float3 *maxext,
                           int lab_in, /**/ int *labels) {
-    const int sid = blockIdx.y;
-    const int gid = threadIdx.x + blockIdx.x * blockDim.x;
+    int i, sid, gid, count, mbase;
+    Particle p;
+    Pos a, b, c;
+    float3 lo, hi;
+    int4 t;
+    sid = blockIdx.y;
+    gid = threadIdx.x + blockIdx.x * blockDim.x;
     if (gid >= n) return;
 
-    int count = 0;
+    count = 0;
 
-    const Particle p = pp[gid];
-
-    float3 lo, hi;
+    p = pp[gid];
+    
     lo = minext[sid];
     hi = maxext[sid];
     if (!inside_box(p.r, lo, hi)) return;
 
     float origin[3] = {0, 0, 0};
 
-    int mbase = nv * sid;
-    for (int i = 0; i < tri.nt; ++i) {
-        const int4 t = tri.tt[i];
+    mbase = nv * sid;
+    for (i = 0; i < tri.nt; ++i) {
+        t = tri.tt[i];
 
-        const Pos a = tex2Pos(texvert, mbase + t.x);
-        const Pos b = tex2Pos(texvert, mbase + t.y);
-        const Pos c = tex2Pos(texvert, mbase + t.z);
+        a = tex2Pos(texvert, mbase + t.x);
+        b = tex2Pos(texvert, mbase + t.y);
+        c = tex2Pos(texvert, mbase + t.z);
 
         if (in_tetrahedron(p.r, a.r, b.r, c.r, origin)) ++count;
     }
