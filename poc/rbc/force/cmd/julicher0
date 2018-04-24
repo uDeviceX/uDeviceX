@@ -33,6 +33,17 @@ function compute_area(   m, i, j, k) {
     }
 }
 
+function d_compute_area(   m, i, j, k) {
+    for (m = 0; m < NT; m++) {
+	i = T0[m]; j = T1[m]; k = T2[m]
+	d_area(XX[i], YY[i], ZZ[i],
+	       XX[j], YY[j], ZZ[j],
+	       XX[k], YY[k], ZZ[k])
+	print DAX, DAY, DAZ
+    }
+    exit
+}
+
 function scatter_area(    m, i, j, k, A) {
     clear(AREA_VER)
     for (m = 0; m < NT; m++) {
@@ -145,6 +156,7 @@ BEGIN {
 
     d_scatter_curv()
     d_scatter_area()
+    d_compute_area()
 
     vtk_push("area", AREA_TRI, tri)
     vtk_push("julicher", E, vert)
