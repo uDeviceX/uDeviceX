@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <vector_types.h>
 #include <assert.h>
+#include <string.h>
 
 #include <conf.h>
 #include "inc/conf.h"
@@ -21,6 +22,9 @@
 #include "utils/msg.h"
 #include "io/mesh_read/imp.h"
 #include "io/restart/imp.h"
+
+#include "mesh/gen/matrices/imp.h"
+#include "mesh/gen/imp.h"
 
 #include "imp.h"
 

@@ -1,3 +1,60 @@
+static Solid gen_from_matrix(const double *A) {
+    enum {X, Y, Z, W, M};
+    enum {D = W};
+    int c;
+    Solid s; memset(&s, 0, sizeof(s));
+    for (c = 0; c < D; ++c) {
+        s.com[c] = A[M * c + W];
+        s.e0[c]  = A[M * c + X];
+        s.e0[c]  = A[M * c + Y];
+        s.e0[c]  = A[M * c + Z];
+    }
+    return s;
+}
+
+static void gen_from_matrices(Matrices *matrices, Solid *ss) {
+    int i, n;
+    double *A;
+    n = matrices_get_n(matrices);
+
+    for (i = 0; i < n; ++i) {
+        matrices_get(matrices, i, &A);
+        ss[i] = gen_from_matrix(A);
+    }
+}
+
+static void shift(const Coords *c, int n, Solid *ss) {
+    enum {X, Y, Z};
+    float *r;
+    int i;
+    for (i = 0; i < n; ++i) {
+        r = ss[i].com;
+        r[X] = xg2xl(c, r[X]);
+        r[Y] = yg2yl(c, r[Y]);
+        r[Z] = zg2zl(c, r[Z]);
+    }
+}
+
+void rig_gen_mesh(const Coords *coords, MPI_Comm comm, const MeshRead *mesh, const char *ic, /**/ RigQuants *q) {
+    const float *vv;
+    int n, nm, nv;
+    Matrices *matrices;
+    nv = mesh_read_get_nv(mesh);
+    vv = mesh_read_get_vert(mesh);
+
+    UC(matrices_read_filter(ic, coords, /**/ &matrices));
+
+    q->ns = nm = matrices_get_n(matrices);
+
+    UC(mesh_gen_from_matrices(nv, vv, matrices, /**/ &n, q->i_pp));
+    UC(mesh_shift(coords, n, q->i_pp));
+
+    UC(gen_from_matrices(matrices, q->ss));
+    UC(shift(coords, nm, q->ss));
+    
+    UC(matrices_fin(matrices));
+}
+
 void rig_gen_quants(const Coords *coords, bool empty_pp, int numdensity, float rig_mass, const RigPinInfo *pi, MPI_Comm comm,
                     const MeshRead *mesh, /* io */ Particle *opp, int *on, /**/ RigQuants *q) {
     RigGenInfo rgi;
