@@ -55,7 +55,7 @@ void colors_from_rbc(Sim *s) {
     /* compute extents */
     if (n > 0) {
         UC(minmax(c->pp, nv, nm, /**/ c->minext, c->maxext));
-        UC(collision_get_colors(f->q.pp, f->q.n, c->pp, r->tri, nv, nm,
+        UC(collision_get_colors(f->q.n, f->q.pp, r->tri, nv, nm, c->pp, 
                                 c->minext, c->maxext, /**/ f->q.cc));
     }
 }
