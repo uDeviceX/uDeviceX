@@ -128,6 +128,8 @@ static void ini_rig(const Config *cfg, MPI_Comm cart, const OptRig *opt, int max
     const int4 *tt;
     int nv, nt;
 
+    UC(mesh_read_ini_ply("rig.ply", &s->mesh));
+    
     UC(rig_ini(MAX_SOLIDS, maxp, &s->q));
     tt = s->q.htt; nv = s->q.nv; nt = s->q.nt;
     UC(mesh_write_ini(cart, opt->shifttype, tt, nv, nt, "s", /**/ &s->mesh_write));

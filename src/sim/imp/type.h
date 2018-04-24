@@ -102,6 +102,7 @@ struct Rig {
 
     RigPinInfo *pininfo;
     RigDistr d;
+    MeshRead   *mesh;
     MeshWrite  *mesh_write;
 
     float mass;  /* mass of one particle */ 
