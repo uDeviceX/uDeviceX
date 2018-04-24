@@ -6,8 +6,8 @@ struct RigGenInfo {
     int numdensity;
     const RigPinInfo *pi;
     int nt, nv;
-    const int4 *tt;
-    const Particle *pp;
+    const int4 *tt;     /* on device */
+    const Particle *pp; /* on device */
     bool empty_pp;
 };
 
@@ -16,6 +16,7 @@ struct FluInfo {
     int *n;
 };
 
+/* everything on host */
 struct RigInfo {
     int ns, *nps, *n;
     float *rr0;
