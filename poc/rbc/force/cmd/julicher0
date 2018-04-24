@@ -68,18 +68,20 @@ function scatter_ang(   m, i, j, ang, cnt) {
 }
 
 function compute_julicher(    m, curv, A) {
-    clear(E)
+    clear(E); clear(dE_A); clear(dE_curv)
     for (m = 0; m < NV; m++) {
 	curv = CURV[m]
 	A    = AREA_VER[m]
-	E[m] = 2*curv*curv/A
+	E[m] = 2*curv^2/A
+	dE_A[m]    = -2*curv^2/A^2
+	dE_curv[m] =  4*curv/A
     }
 }
 
 function write(   m, r) {
     for (m = 0; m < NV; m++) {
 	r = sqrt(XX[m]^2 + YY[m]^2)
-	print r, E[m]
+	print r, E[m], dE_A[m], dE_curv[m]
     }
 }
 
