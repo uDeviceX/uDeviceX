@@ -1,11 +1,21 @@
+load("vect") $
+load("pdiff") $
+load("cgrind") $
+load("util.mac") $
+
 /*
 
 area_v <- area_t
-len_e
-ang_e
-curv_e = len * ang / 4
-
-curv_v = curv_e / 2
+curv_e <- len_e * ang_e / 4
+curv_v <- curv_e / 2
 e_v = 2 * curv_v^2 / area_v
+
+
+e_v
+curv_v
+area_v
+
+curv_e, len_e, ang_e
+area_t
 
 */
