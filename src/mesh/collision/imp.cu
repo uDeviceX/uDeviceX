@@ -94,7 +94,6 @@ static __device__ bool inside_box(const float r[3], float3 lo, float3 hi) {
 }
 
 /* assume nm blocks along y */
-/* if the ith particle is inside jth mesh, sets tag[i] to IN (see enum in collision.h) */
 __global__ void label_tex(const Particle *pp, const int n, const Texo<float2> texvert, const int nv,
                           Triangles tri, const float3 *minext, const float3 *maxext,
                           int lab_in, /**/ int *labels) {
@@ -133,13 +132,6 @@ __global__ void label_tex(const Particle *pp, const int n, const Texo<float2> te
 }
 }
 
-
-/*
-   n:  number of particles
-   nm: number of meshes
-   nt: number of triangles per mesh
-   nv: number of vertices per mesh
-*/
 static void get_colors(int n, const Particle *pp, const Triangles *tri, int nv, int nm, const Texo<float2> texvert,                        
                        const float3 *minext, const float3 *maxext, int lab_in, int lab_out, /**/ int *labels) {
     if (nm == 0 || n == 0) return;
