@@ -55,24 +55,20 @@ function scatter_curv(   m, i, j, curv, len, ang) {
     }
 }
 
-function scatter_ang(   m, i, j, ang, cnt) {
-    clear(ANG_VER)
-    for (m = 0; m < NE; m++) {
-	i = E0[m]; j = E1[m]
-	ang = ANG_EDG[m]
-	ANG_VER[i] += ang; cnt[i]++
-	ANG_VER[j] += ang; cnt[j]++
-    }
-    for (m = 0; m < NV; m++)
-	ANG_VER[m] /= cnt[m]
-}
-
 function compute_julicher(    m, curv, A) {
-    clear(E); clear(dE_A); clear(dE_curv)
+    clear(E)
     for (m = 0; m < NV; m++) {
 	curv = CURV[m]
 	A    = AREA_VER[m]
 	E[m] = 2*curv^2/A
+    }
+}
+
+function d_compute_julicher(   m, curv, A) {
+    clear(dE_A); clear(dE_curv)
+    for (m = 0; m < NV; m++) {
+	curv = CURV[m]
+	A = AREA_VER[m]
 	dE_A[m]    = -2*curv^2/A^2
 	dE_curv[m] =  4*curv/A
     }
@@ -99,9 +95,9 @@ BEGIN {
     compute_area()
     scatter_area()
     scatter_curv()
+    
     compute_julicher()
-
-    scatter_ang()
+    d_compute_julicher()
 
     vtk_push("area", AREA_TRI, tri)
     vtk_push("julicher", E, vert)
