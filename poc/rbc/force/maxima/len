@@ -1,0 +1,30 @@
+load("vect") $
+load("pdiff") $
+load("cgrind") $
+load("util.mac") $
+
+a: [ax, ay, az] $
+b: [bx, by, bz] $
+
+[dx, dy, dz]: b - a ;
+dd: dot(['dx, 'dy, 'dz], ['dx, 'dy, 'dz]);
+E: sqrt('dd);
+
+[E, V, T]: g(
+  ['E,  E, sl(E)],
+  ['dd, dd, sl(dd)],
+  ['dx, dx, sl(dx)],
+  ['dy, dy, sl(dy)],
+  ['dz, dz, sl(dz)]
+  ) $
+
+[E, V, T]: rm(
+  E, V, T,
+  'dx_ax, 'dx_bx,
+  'dy_ay, 'dy_by,
+  'dz_az, 'dz_bz,
+  'dd_dx, 'dd_dy, 'dd_dz,
+  'E_dx, 'E_dy, 'E_dz
+) $
+
+with_stdout("len.c", fmt0(E, V, T));

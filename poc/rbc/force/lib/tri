@@ -97,16 +97,23 @@ function d_area(ax, ay, az,
     DAX = (by-cy)*kz; DAX += (cz-bz)*ky
     DAY = (bz-cz)*kx; DAY += (cx-bx)*kz
     DAZ = (bx-cx)*ky; DAZ += (cy-by)*kx
-    
+
     DBX = (az-cz)*ky; DBX += (cy-ay)*kz
     DBY = (ax-cx)*kz; DBY += (cz-az)*kx
     DBZ = (ay-cy)*kx; DBZ += (cx-ax)*ky
-    
+
     DCX = (ay-by)*kz; DCX += (bz-az)*ky
     DCY = (az-bz)*kx; DCY += (bx-ax)*kz
     DCZ = (ax-bx)*ky; DCZ += (by-ay)*kx
 }
 
-function d_dist(ax, ay, az, bx, by, bz,   dx, dy, dz) {
-    
+function d_dist(ax, ay, az, bx, by, bz,   dx, dy, dz, d) {
+    dx = bx-ax
+    dy = by-ay
+    dz = bz-az
+    d = dx^2 + dy^2 + dz^2
+    d = 1/sqrt(d)
+
+    DAX = -d*dx; DAY = -d*dy; DAZ = -d*dz
+    DBX =  d*dx; DBY =  d*dy; DBZ =  d*dz
 }
