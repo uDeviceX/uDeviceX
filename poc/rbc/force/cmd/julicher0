@@ -68,6 +68,7 @@ function scatter_ang(   m, i, j, ang, cnt) {
 }
 
 function compute_julicher(    m, curv, A) {
+    clear(E)
     for (m = 0; m < NV; m++) {
 	curv = CURV[m]
 	A    = AREA_VER[m]
