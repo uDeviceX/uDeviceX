@@ -27,6 +27,7 @@ void rig_fin(RigQuants *q);
 // end::mem[]
 
 // tag::gen[]
+void rig_gen_mesh(const Coords*, MPI_Comm, const MeshRead*, const char *ic, /**/ RigQuants *);
 void rig_gen_quants(const Coords*, bool empty_pp, int numdensity, float rig_mass, const RigPinInfo*, MPI_Comm, const MeshRead*, Particle *opp, int *on, RigQuants *q);
 void rig_strt_quants(MPI_Comm, const MeshRead*, const char *base, const int id, RigQuants *q);
 // end::gen[]
