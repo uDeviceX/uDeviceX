@@ -39,9 +39,10 @@ function d_compute_area(   m, i, j, k) {
 	d_area(XX[i], YY[i], ZZ[i],
 	       XX[j], YY[j], ZZ[j],
 	       XX[k], YY[k], ZZ[k])
-	print DAX, DAY, DAZ
+	FX[i] += DAX; FY[i] += DAY; FZ[i] += DAZ
+	FX[j] += DBX; FY[j] += DBY; FZ[j] += DBZ
+	FX[k] += DCX; FY[k] += DCY; FZ[k] += DCZ
     }
-    exit
 }
 
 function scatter_area(    m, i, j, k, A) {
@@ -112,7 +113,7 @@ function d_scatter_area(    m, i, j, k, A) {
 function write_vert(   m, r) {
     for (m = 0; m < NV; m++) {
 	r = sqrt(XX[m]^2 + YY[m]^2)
-	print r, E[m], dE_area_vert[m], dE_curv[m]
+	print r, FX[m], FY[m], FZ[m]
     }
 }
 
@@ -152,8 +153,9 @@ BEGIN {
     scatter_curv()
 
     compute_julicher()
+    clear(FX) clear(FY); clear(FZ)
+    
     d_compute_julicher()
-
     d_scatter_curv()
     d_scatter_area()
     d_compute_area()
@@ -162,7 +164,7 @@ BEGIN {
     vtk_push("julicher", E, vert)
     vtk_write("o.vtk", vert, tri)
 
-    # write_vert()
+    write_vert()
     # write_edg()
-    write_tri()
+    # write_tri()
 }

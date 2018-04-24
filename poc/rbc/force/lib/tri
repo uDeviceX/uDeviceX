@@ -79,17 +79,23 @@ function area(ax, ay, az,
 }
 
 function d_area(ax, ay, az,
-	        bx, by, bz,
-	        cx, cy, cz,
+		bx, by, bz,
+		cx, cy, cz,
 #
-		a, b, c, x, y, z) {
-    X = 0; Y = 1; Z = 2
-    a[X] = ax; a[Y] = ay; a[Z] = az
-    b[X] = bx; b[Y] = by; b[Z] = bz
-    c[X] = cx; c[Y] = cy; c[Z] = cz
+		kx, ky, kz) {
+    kz = (bx-ax)*(cy-ay)-(by-ay)*(cx-ax)
+    ky = (bz-az)*(cx-ax)-(bx-ax)*(cz-az)
+    kx = (by-ay)*(cz-az)-(bz-az)*(cy-ay)
 
-    x = orient2d_yz(a, b, c)
-    y = orient2d_zx(a, b, c)
-    z = orient2d_xy(a, b, c)
-    return sqrt(x*x + y*y + z*z)/2
+    DAX = (by-cy)*kz; DAX += (cz-bz)*ky
+    DAY = (bz-cz)*kx; DAY += (cx-bx)*kz
+    DAZ = (bx-cx)*ky; DAZ += (cy-by)*kx
+    
+    DBX = (az-cz)*ky; DBX += (cy-ay)*kz
+    DBY = (ax-cx)*kz; DBY += (cz-az)*kx
+    DBZ = (ay-cy)*kx; DBZ += (cx-ax)*ky
+    
+    DCX = (ay-by)*kz; DCX += (bz-az)*ky
+    DCY = (az-bz)*kx; DCY += (bx-ax)*kz
+    DCZ = (ax-bx)*ky; DCZ += (by-ay)*kx
 }
