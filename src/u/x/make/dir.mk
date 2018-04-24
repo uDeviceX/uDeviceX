@@ -95,6 +95,7 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/rbc/shape             && \
     d $B/rbc/stretch           && \
     d $B/rig                   && \
+    d $B/rig/gen               && \
     d $B/rigid                 && \
     d $B/scheme/force          && \
     d $B/scheme/move           && \
