@@ -29,7 +29,8 @@ static void gen(MPI_Comm cart, const Config *cfg) {
     RigQuants rig;
     MeshRead *mesh;
     int3 L;
-    int maxp, numdensity;
+    int maxp, maxs, numdensity;
+    maxs = 200;
 
     UC(conf_lookup_int(cfg, "glb.numdensity", &numdensity));
     UC(coords_ini_conf(cart, cfg, &coords));
@@ -40,10 +41,12 @@ static void gen(MPI_Comm cart, const Config *cfg) {
     UC(inter_color_ini(&gc));
     UC(inter_color_set_uniform(gc));
     UC(mesh_read_ini_ply("rig.ply", &mesh));
-    
-    
+    UC(rig_ini(maxs, maxp, mesh, &rig));
     UC(flu_gen_quants(coords, numdensity, gc, &flu));
 
+    UC(rig_gen_mesh(coords, cart, mesh, "rigs-ic.txt", /**/ &rig));
+
+    UC(rig_fin(&rig));
     UC(mesh_read_fin(mesh));
     UC(inter_color_fin(gc));
     UC(flu_fin(&flu));    

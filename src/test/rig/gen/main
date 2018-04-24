@@ -2,6 +2,8 @@
 # sTEST: rig.gen.t1
 cd test/rig/gen
 S=`u.cp.s` U=u/rig/gen
+u.cp.rig sphere.ply  rig.ply
+x=8 y=8 z=8; echo 1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 > rigs-ic.txt
 :
 u.conf0 $U
 u.make -j
