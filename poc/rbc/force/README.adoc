@@ -1,6 +1,5 @@
 = compute on mesh
 
-math : various math functions
 off  : read off file
 refine : refine mesh
 setup  : create mesh related structures
