@@ -51,6 +51,9 @@ void rig_gen_mesh(const Coords *coords, MPI_Comm comm, const MeshRead *mesh, con
 
     UC(gen_from_matrices(matrices, q->ss_hst));
     UC(shift(coords, nm, q->ss_hst));
+
+    if (n)  cH2D(q->i_pp, q->i_pp_hst, n);
+    if (nm) cH2D(q->ss, q->ss_hst, nm);
     
     UC(matrices_fin(matrices));
 }
