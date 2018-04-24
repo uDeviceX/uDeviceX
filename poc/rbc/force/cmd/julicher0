@@ -79,7 +79,7 @@ function write(   m, r) {
     msg("NV = " NV)
     for (m = 0; m < NV; m++) {
 	r = sqrt(XX[m]^2 + YY[m]^2)
-	print r, ANG_VER[m], JULICHER[m], KANTOR[m]
+	print r, JULICHER[m]
     }
 }
 
@@ -106,6 +106,5 @@ BEGIN {
     vtk_push("julicher", JULICHER, vert)
     vtk_write("o.vtk", vert, tri)
     
-    off_write("o.off")
     write()
 }
