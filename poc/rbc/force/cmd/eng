@@ -29,4 +29,4 @@ cmd () {
     echo -f "$i"
 }
 
-"$AWK" `inc util math off setup tri vtk refine` `cmd $prog0` -- "$@"
+"$AWK" `inc util off setup tri vtk refine` `cmd $prog0` -- "$@"

@@ -16,6 +16,14 @@ function compute_ang(   m, i, j, k, l) {
     }
 }
 
+function d_compute_edg_len(   m, i, j) {
+    for (m = 0; m < NE; m++) {
+	i = E0[m]; j = E1[m]
+	LEN[m] = dist(XX[i], YY[i], ZZ[i],
+		      XX[j], YY[j], ZZ[j])
+    }
+}
+
 function compute_edg_len(   m, i, j) {
     for (m = 0; m < NE; m++) {
 	i = E0[m]; j = E1[m]
@@ -160,6 +168,7 @@ BEGIN {
     d_scatter_curv()
     d_scatter_area()
     d_compute_area()
+    d_compute_edg_len()
 
     vtk_push("area", AREA_TRI, tri)
     vtk_push("julicher", E, vert)

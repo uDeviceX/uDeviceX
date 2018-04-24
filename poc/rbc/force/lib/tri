@@ -1,3 +1,10 @@
+function dist(ax, ay, az, bx, by, bz,   dx, dy, dz) {
+    dx = ax - bx
+    dy = ay - by
+    dz = az - bz
+    return sqrt(dx^2 + dy^2 + dz^2)
+}
+
 function orient2d(a, b, P, Q, c,   acp, acq, bcp, bcq) {
     acp = a[P] - c[P]; bcp = b[P] - c[P]
     acq = a[Q] - c[Q]; bcq = b[Q] - c[Q]
@@ -98,4 +105,8 @@ function d_area(ax, ay, az,
     DCX = (ay-by)*kz; DCX += (bz-az)*ky
     DCY = (az-bz)*kx; DCY += (bx-ax)*kz
     DCZ = (ax-bx)*ky; DCZ += (by-ay)*kx
+}
+
+function d_dist(ax, ay, az, bx, by, bz,   dx, dy, dz) {
+    
 }
