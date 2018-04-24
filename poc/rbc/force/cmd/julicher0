@@ -83,18 +83,18 @@ function d_compute_julicher(   m, curv, A) {
     for (m = 0; m < NV; m++) {
 	curv = CURV[m]
 	A = AREA_VER[m]
-	dE_area_vert[m]    = -2*curv^2/A^2
-	dE_curv[m] =  4*curv/A
+	dE_area_vert[m] = -2*curv^2/A^2
+	dE_curv[m]      =  4*curv/A
     }
 }
 
 function d_scatter_area(    m, i, j, k, A) {
-    clear(AREA_VER)
+    clear(dE_area_tri)
     for (m = 0; m < NT; m++) {
 	i = T0[m]; j = T1[m]; k = T2[m]; A = AREA_TRI[m]
-	AREA_VER[i] += A/3
-	AREA_VER[j] += A/3
-	AREA_VER[k] += A/3
+	dE_area_tri[m] += dE_area_vert[i]/3
+	dE_area_tri[m] += dE_area_vert[j]/3
+	dE_area_tri[m] += dE_area_vert[k]/3
     }
 }
 
@@ -105,13 +105,23 @@ function write_vert(   m, r) {
     }
 }
 
-function write_edg(   m, i, jr, x, y) {
+function write_edg(   m, i, j, x, y, r) {
     for (m = 0; m < NE; m++) {
 	i = E0[m]; j = E1[m]
 	x = (XX[i] + XX[j])/2
 	y = (YY[i] + YY[j])/2
 	r = sqrt(x^2 + y^2)
 	print r, dE_len[m], dE_ang[m]
+    }
+}
+
+function write_tri(   m, i, j, k, x, y, r) {
+    for (m = 0; m < NT; m++) {
+	i = T0[m]; j = T1[m]; k = T1[m]
+	x = (XX[i] + XX[j] + XX[k])/3
+	y = (YY[i] + YY[j] + YY[k])/3
+	r = sqrt(x^2 + y^2)
+	print r, dE_area_tri[m]
     }
 }
 
@@ -140,6 +150,7 @@ BEGIN {
     vtk_push("julicher", E, vert)
     vtk_write("o.vtk", vert, tri)
 
-    write_vert()
+    # write_vert()
     # write_edg()
+    write_tri()
 }
