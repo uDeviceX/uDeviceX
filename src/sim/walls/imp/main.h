@@ -16,7 +16,7 @@ void wall_gen(MPI_Comm cart, const Coords *coords, OptParams op, bool dump_sdf,
     UC(sdf_gen(coords, cart, dump_sdf, /**/ w->sdf));
     MC(m::Barrier(cart));
     UC(wall_gen_quants(cart, maxn, w->sdf, /**/ n, pp, &w->q));
-    UC(wall_gen_ticket(&w->q, w->t));
+    if (w->q.n) UC(wall_gen_ticket(&w->q, w->t));
     nnew = *n;
     msg_print("solvent particles survived: %d/%d", nnew, nold);
 }
