@@ -79,7 +79,7 @@ union Pos {
     struct { float r[3]; float dummy; };
 };
 
-__device__ Pos tex2Pos(const Texo<float2> texvert, const int id) {
+static __device__ Pos tex2Pos(const Texo<float2> texvert, const int id) {
     Pos r;
     r.f2[0] = texo_fetch(texvert, 3 * id + 0);
     r.f2[1] = texo_fetch(texvert, 3 * id + 1);
@@ -137,10 +137,10 @@ __global__ void compute_colors_tex(const Particle *pp, const int n, const Texo<f
    nt: number of triangles per mesh
    nv: number of vertices per mesh
 */
-static void get_colors0(const Particle *pp, int n,
-                        const Texo<float2> texvert, Triangles *tri,
-                        int nv, int nm,
-                        const float3 *minext, const float3 *maxext, /**/ int *cc) {
+static void get_colors(const Particle *pp, int n,
+                       const Texo<float2> texvert, Triangles *tri,
+                       int nv, int nm,
+                       const float3 *minext, const float3 *maxext, /**/ int *cc) {
     if (nm == 0 || n == 0) return;
 
     KL(collision_dev::init_tags, (k_cnf(n)), (n, OUT, /**/ cc));
@@ -161,8 +161,8 @@ void collision_get_colors(int n, const Particle *pp, Triangles *tri,
     
     if (nm == 0 || n == 0) return;
     texo_setup(ntex, (float2*) i_pp, /**/ &texvert);
-    UC(get_colors0(pp, n, texvert, tri,
-                   nv, nm,
-                   minext, maxext, /**/ cc));
+    UC(get_colors(pp, n, texvert, tri,
+                  nv, nm,
+                  minext, maxext, /**/ cc));
     texo_destroy(&texvert);
 }
