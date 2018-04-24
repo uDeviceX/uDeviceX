@@ -13,15 +13,16 @@ struct RigQuants {
 
     Solid *ss_dmp, *ss_dmp_bb;
 
-    int maxp; /* maximum particle number */
+    long maxp; /* maximum particle number */
 };
 // end::quants[]
 
 struct Coords;
 struct RigPinInfo;
+struct MeshRead;
 
 // tag::mem[]
-void rig_ini(int maxp, RigQuants *q);
+void rig_ini(long maxs, long maxp, RigQuants *q);
 void rig_fin(RigQuants *q);
 // end::mem[]
 

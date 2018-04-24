@@ -49,7 +49,7 @@ static void ini_rig(const Config *cfg, const OptRig *opt, MPI_Comm cart, int max
     EMALLOC(1, rigid);
     r = *rigid;
     
-    UC(rig_ini(maxp, &r->q));
+    UC(rig_ini(MAX_SOLIDS, maxp, &r->q));
     tt = r->q.htt; nv = r->q.nv; nt = r->q.nt;
     UC(mesh_write_ini(cart, opt->shifttype, tt, nv, nt, "s", /**/ &r->mesh_write));
 

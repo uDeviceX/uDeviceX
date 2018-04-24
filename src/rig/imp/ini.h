@@ -31,22 +31,22 @@ static void load_rigid_mesh(const char *fname, int *nt, int *nv, int4 **tt_hst, 
 }
 
 
-void rig_ini(int maxp, RigQuants *q) {
+void rig_ini(long maxs, long maxp, RigQuants *q) {
     q->n = q->ns = q->nps = 0;
     q->maxp = maxp;
 
-    Dalloc(&q->pp ,     maxp);
-    Dalloc(&q->ss ,     MAX_SOLIDS);
+    Dalloc(&q->pp,      maxp);
+    Dalloc(&q->ss,      maxs);
     Dalloc(&q->rr0, 3 * maxp);
     Dalloc(&q->i_pp,    maxp);
 
     EMALLOC(maxp, &q->pp_hst);
-    EMALLOC(MAX_SOLIDS, &q->ss_hst);
+    EMALLOC(maxs, &q->ss_hst);
     EMALLOC(3 * maxp, &q->rr0_hst);
     EMALLOC(maxp, &q->i_pp_hst);
 
-    EMALLOC(MAX_SOLIDS, &q->ss_dmp);
-    EMALLOC(MAX_SOLIDS, &q->ss_dmp_bb);
+    EMALLOC(maxs, &q->ss_dmp);
+    EMALLOC(maxs, &q->ss_dmp_bb);
 
     UC(load_rigid_mesh("rig.ply", /**/ &q->nt, &q->nv, &q->htt, &q->dtt, &q->hvv, &q->dvv));
 }
