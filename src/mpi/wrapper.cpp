@@ -92,10 +92,19 @@ int Gather(const void *sendbuf, int sendcount, MPI_Datatype sendtype, void *recv
     return MPI_Gather(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, root, comm);
 }
 
-
 int Gatherv(const void *sendbuf, int sendcount, MPI_Datatype sendtype, void *recvbuf, const int recvcounts[],
             const int displs[], MPI_Datatype recvtype, int root, MPI_Comm comm) {
     return MPI_Gatherv(sendbuf, sendcount, sendtype, recvbuf, recvcounts, displs, recvtype, root, comm);
+}
+
+int Allgather(const void *sendbuf, int sendcount, MPI_Datatype sendtype, void *recvbuf,
+              int recvcount, MPI_Datatype recvtype, MPI_Comm comm) {
+    return MPI_Allgather(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm);
+}
+
+int Allgatherv(const void *sendbuf, int sendcount, MPI_Datatype sendtype, void *recvbuf, const int recvcounts[],
+               const int displs[], MPI_Datatype recvtype, MPI_Comm comm) {
+    return MPI_Allgatherv(sendbuf, sendcount, sendtype, recvbuf, recvcounts, displs, recvtype, comm);
 }
 
 int Init(int *argc, char ***argv) {

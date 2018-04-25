@@ -24,6 +24,10 @@ int Gather(const void *sendbuf, int sendcount, MPI_Datatype sendtype, void *recv
            int recvcount, MPI_Datatype recvtype, int root, MPI_Comm comm);
 int Gatherv(const void *sendbuf, int sendcount, MPI_Datatype sendtype, void *recvbuf, const int recvcounts[],
             const int displs[], MPI_Datatype recvtype, int root, MPI_Comm comm);
+int Allgather(const void *sendbuf, int sendcount, MPI_Datatype sendtype, void *recvbuf,
+              int recvcount, MPI_Datatype recvtype, MPI_Comm comm);
+int Allgatherv(const void *sendbuf, int sendcount, MPI_Datatype sendtype, void *recvbuf, const int recvcounts[],
+               const int displs[], MPI_Datatype recvtype, MPI_Comm comm);
 int Init(int *argc, char ***argv);
 int Irecv(void *buf, int count, MPI_Datatype datatype, int source, int tag, MPI_Comm comm, MPI_Request *request);
 int Isend(const void *buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm, MPI_Request *request);
