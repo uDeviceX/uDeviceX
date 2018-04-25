@@ -62,6 +62,20 @@ static void collect_and_broadcast_template(MPI_Comm comm, int *n, float *rr) {
     EFREE(counts);
 }
 
+static void shift_template_com(int n, float *rr) {
+    enum {X, Y, Z};
+    float com[3] = {0};
+    int i, c;
+    for (i = 0; i < n; ++i)
+        for (c = 0; c < 3; ++c)
+            com[c] += rr[3*i+c];
+    for (c = 0; c < 3; ++c)
+        com[c] /= n;
+    for (i = 0; i < n; ++i)
+        for (c = 0; c < 3; ++c)
+            rr[3*i+c] -= com[c];
+}
+
 static void label_template_dev(int pdir, int3 L, MPI_Comm cart, int nt, int nv, int nm, const int4 *tt, const Particle *pp_mesh,
                                int nflu, const Particle *pp_dev, const Particle *pp_hst, /**/ int *nps, float *rr0, /*w*/ int *ll_dev, int *ll_hst) {
     int i, maxm, n, cc[NFRAGS];
@@ -91,6 +105,7 @@ static void label_template_dev(int pdir, int3 L, MPI_Comm cart, int nt, int nv, 
     }
 
     UC(collect_and_broadcast_template(cart, nps, rr0));
+    shift_template_com(*nps, rr0);
     
     Dfree(pp0);
 }
