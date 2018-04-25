@@ -27,8 +27,8 @@ _S_ void extract_and_shift_hst(int3 s, int n, const Particle *pp, const int *lab
 }
 
 _S_ void label_extract_and_shift(int3 shift, int pdir, int n, const Particle *pp_dev, const Particle *pp_hst, int nt, int nv,
-                                    int nm, const int4 *tt, const Particle *pp_mesh,
-                                    /**/ int *ntempl, float *rrtempl, /*w*/ int *ll_dev, int *ll_hst) {
+                                 int nm, const int4 *tt, const Particle *pp_mesh,
+                                 /**/ int *ntempl, float *rrtempl, /*w*/ int *ll_dev, int *ll_hst) {
     UC(compute_labels(pdir, n, pp_dev, nt, nv, nm, tt, pp_mesh, IN, OUT, /**/ ll_dev));
     cD2H(ll_hst, ll_dev, n);
     extract_and_shift_hst(shift, n, pp_hst, ll_hst, ntempl, rrtempl);
@@ -63,7 +63,7 @@ _S_ void collect_and_broadcast_template(MPI_Comm comm, int *n, float *rr) {
 }
 
 _S_ void label_template_dev(int pdir, int3 L, MPI_Comm cart, int nt, int nv, int nm, const int4 *tt, const Particle *pp_mesh,
-                               int nflu, const Particle *pp_dev, const Particle *pp_hst, /**/ int *nps, float *rr0, /*w*/ int *ll_dev, int *ll_hst) {
+                            int nflu, const Particle *pp_dev, const Particle *pp_hst, /**/ int *nps, float *rr0, /*w*/ int *ll_dev, int *ll_hst) {
     int i, maxm, nmall, n, cc[NFRAGS];
     int3 shift;
     Particle *pp0, *pp;
