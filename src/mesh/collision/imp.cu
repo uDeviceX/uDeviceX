@@ -78,10 +78,11 @@ union Pos {
     struct { float r[3]; float dummy; };
 };
 
-static __device__ Pos tex2Pos(const Texo<float2> texvert, const int id) {
+static __device__ Pos fetchPos(const Particle *vert, const int id) {
+    const float2 *pp = (const float2*) vert;
     Pos r;
-    r.f2[0] = texo_fetch(texvert, 3 * id + 0);
-    r.f2[1] = texo_fetch(texvert, 3 * id + 1);
+    r.f2[0] = pp[3 * id + 0];
+    r.f2[1] = pp[3 * id + 1];
     return r;
 }
 
@@ -94,9 +95,9 @@ static __device__ bool inside_box(const float r[3], float3 lo, float3 hi) {
 }
 
 /* assume nm blocks along y */
-__global__ void label_tex(int pdir, const Particle *pp, const int n, const Texo<float2> texvert, const int nv,
-                          Triangles tri, const float3 *minext, const float3 *maxext,
-                          int lab_in, /**/ int *labels) {
+__global__ void label(int pdir, const Particle *pp, const int n, const Particle *vert, const int nv,
+                      Triangles tri, const float3 *minext, const float3 *maxext,
+                      int lab_in, /**/ int *labels) {
     int i, sid, gid, count, mbase;
     Particle p;
     Pos a, b, c;
@@ -121,9 +122,9 @@ __global__ void label_tex(int pdir, const Particle *pp, const int n, const Texo<
     for (i = 0; i < tri.nt; ++i) {
         t = tri.tt[i];
 
-        a = tex2Pos(texvert, mbase + t.x);
-        b = tex2Pos(texvert, mbase + t.y);
-        c = tex2Pos(texvert, mbase + t.z);
+        a = fetchPos(vert, mbase + t.x);
+        b = fetchPos(vert, mbase + t.y);
+        c = fetchPos(vert, mbase + t.z);
 
         if (in_tetrahedron(p.r, a.r, b.r, c.r, origin)) ++count;
     }
@@ -133,8 +134,8 @@ __global__ void label_tex(int pdir, const Particle *pp, const int n, const Texo<
 }
 }
 
-static void label(int pdir, int n, const Particle *pp, const Triangles *tri, int nv, int nm, const Texo<float2> texvert,                        
-                       const float3 *minext, const float3 *maxext, int lab_in, int lab_out, /**/ int *labels) {
+static void label(int pdir, int n, const Particle *pp, const Triangles *tri, int nv, int nm, const Particle *i_pp,
+                  const float3 *minext, const float3 *maxext, int lab_in, int lab_out, /**/ int *labels) {
     enum {X, Y, Z};
     if (nm == 0 || n == 0) return;
 
@@ -144,20 +145,14 @@ static void label(int pdir, int n, const Particle *pp, const Triangles *tri, int
     dim3 thrd(THR, 1);
     dim3 blck(ceiln(n, THR), nm);
 
-    KL(collision_dev::label_tex, (blck, thrd),
-       (pdir, pp, n, texvert, nv, *tri, minext, maxext, lab_in, /**/ labels)); 
+    KL(collision_dev::label, (blck, thrd),
+       (pdir, pp, n, i_pp, nv, *tri, minext, maxext, lab_in, /**/ labels)); 
 }
 
 void collision_label(int pdir, int n, const Particle *pp, const Triangles *tri, 
                      int nv, int nm, const Particle *i_pp, 
                      const float3 *minext, const float3 *maxext,
                      int lab_in, int lab_out, /**/ int *labels) {
-    Texo<float2> texvert;
-    int ntex;
-    ntex = 3 * nm * nv;
-    
     if (nm == 0 || n == 0) return;
-    texo_setup(ntex, (float2*) i_pp, /**/ &texvert);
-    UC(label(pdir, n, pp, tri, nv, nm, texvert, minext, maxext, lab_in, lab_out, /**/ labels));
-    texo_destroy(&texvert);
+    UC(label(pdir, n, pp, tri, nv, nm, i_pp, minext, maxext, lab_in, lab_out, /**/ labels));
 }
