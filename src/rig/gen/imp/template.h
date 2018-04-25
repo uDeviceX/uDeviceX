@@ -96,32 +96,54 @@ static void label_template_dev(int pdir, int3 L, MPI_Comm cart, int nt, int nv, 
     Dfree(pp0);
 }
 
-static void get_shift(MPI_Comm comm, bool hasid0, const Solid *ss, float shift[3]) {
-    int root;
-    if (hasid0)
-        memcpy(shift, ss[0].com, 3 * sizeof(float));
+struct Transf {
+    float s[3];
+    float e0[3], e1[3], e2[3];
+};
+
+static void get_transf(MPI_Comm comm, bool hasid0, const Solid *ss, Transf *T) {
+    int root, sz;
+    if (hasid0) {
+        sz = 3 * sizeof(float);
+        memcpy(T->s, ss[0].com, sz);
+        memcpy(T->e0, ss[0].e0, sz);
+        memcpy(T->e1, ss[0].e1, sz);
+        memcpy(T->e2, ss[0].e2, sz);
+    }
     root = get_root(comm, hasid0);
-    MC(m::Bcast(shift, 3, MPI_FLOAT, root, comm));
+    MC(m::Bcast(T->s, 3, MPI_FLOAT, root, comm));
+    MC(m::Bcast(T->e0, 3, MPI_FLOAT, root, comm));
+    MC(m::Bcast(T->e1, 3, MPI_FLOAT, root, comm));
+    MC(m::Bcast(T->e2, 3, MPI_FLOAT, root, comm));
 }
 
-static void shift_template(const float shift[3], int n, float *rr) {
+static void transform(const Transf *T, float *r) {
     enum {X, Y, Z};
-    int i, c;
-    for (i = 0; i < n; ++i)
-        for (c = 0; c < 3; ++c)
-            rr[3*i+c] -= shift[c];
+    int c;
+    float r0[3];
+    for (c = 0; c < 3; ++c) r0[c] = r[c] - T->s[c];
+    for (c = 0; c < 3; ++c)
+        r[c] =
+            r0[X] * T->e0[c] +
+            r0[Y] * T->e1[c] +
+            r0[Z] * T->e2[c];
+}
+
+static void transf_template(const Transf *T, int n, float *rr) {
+    int i;
+    for (i = 0; i < n; ++i) transform(T, &rr[3*i]);
 }
 
 static void extract_template(int3 L, MPI_Comm cart, RigGenInfo rgi, int n, const Particle *flu_pp_dev, const Particle *flu_pp_hst,
                              int ns, bool hasid0, const Solid *ss, /**/ int *nps, float *rr0, /*w*/ int *ll_dev, int *ll_hst) {
     int nm, pdir;
-    float shift[3];
+    Transf T;
     *nps = 0;
     nm = hasid0 ? 1 : 0;
     pdir = rig_pininfo_get_pdir(rgi.pi);
 
     UC(label_template_dev(pdir, L, cart, rgi.nt, rgi.nv, nm, rgi.tt, rgi.pp, n, flu_pp_dev, flu_pp_hst, /**/ nps, rr0, /*w*/ ll_dev, ll_hst));
-    UC(get_shift(cart, hasid0, ss, shift));
-    UC(shift_template(shift, *nps, rr0));
+    UC(get_transf(cart, hasid0, ss, &T));
+    UC(transf_template(&T, *nps, rr0));
 }
 
