@@ -1,6 +1,6 @@
 static void label_template_dev(int pdir, int3 L, MPI_Comm cart, int nt, int nv, int nm, const int4 *tt, const Particle *pp_mesh,
                                int n_flu, const Particle *pp_flu, /**/ int *ll) {
-    int maxm, n;
+    int maxm, n, cc[NFRAGS];
     Particle *pp;
 
     maxm = NFRAGS;
@@ -9,8 +9,8 @@ static void label_template_dev(int pdir, int3 L, MPI_Comm cart, int nt, int nv, 
     n = nm * nv;
     if (n) cD2D(pp, pp_mesh, n);
     
-    UC(exchange_mesh(maxm, L, cart, nv, /* io */ &n, pp));
-    UC(compute_labels(pdir, n_flu, pp_flu, nt, nv, nm, tt, pp_mesh, ll));
+    UC(exchange_mesh(maxm, L, cart, nv, /* io */ &n, pp, /**/ cc));
+    UC(compute_labels(pdir, n_flu, pp_flu, nt, nv, nm, tt, pp_mesh, IN, OUT, /**/ ll));
 
     Dfree(pp);
 }
