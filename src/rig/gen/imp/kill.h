@@ -1,4 +1,4 @@
-static void remove_hst(const int *labels, int *n, Particle *pp) {
+_S_ void remove_hst(const int *labels, int *n, Particle *pp) {
     int i, j;
     for (i = j = 0; i < *n; ++i) {
         if (labels[i] == IN)
@@ -7,7 +7,7 @@ static void remove_hst(const int *labels, int *n, Particle *pp) {
     *n = j;
 }
 
-static void kill_solvent(RigGenInfo rgi, int maxm, int3 L, MPI_Comm cart, int nm,
+_I_ void kill_solvent(RigGenInfo rgi, int maxm, int3 L, MPI_Comm cart, int nm,
                          /*io*/ int *n, Particle *pp_hst, Particle *pp_dev,
                          /*w*/ int *ll_dev, int *ll_hst) {
     int nmall, pdir;

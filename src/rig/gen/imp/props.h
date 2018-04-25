@@ -1,4 +1,4 @@
-static void init_I_from_pos(int n, const float *rr, float pmass, /**/ float *I) {
+_S_ void init_I_from_pos(int n, const float *rr, float pmass, /**/ float *I) {
     enum {X, Y, Z};
     enum {XX, XY, XZ, YY, YZ, ZZ};
     enum {YX = XY, ZX = XZ, ZY = YZ};
@@ -20,19 +20,19 @@ static void init_I_from_pos(int n, const float *rr, float pmass, /**/ float *I) 
     for (c = 0; c < 6; ++c) I[c] *= pmass;
 }
 
-static void init_I_from_mesh(float density, int nt, const int4 *tt, const float *vv, /**/ float *I) {
+_S_ void init_I_from_mesh(float density, int nt, const int4 *tt, const float *vv, /**/ float *I) {
     float com[3] = {0};
     mesh_center_of_mass(nt, tt, vv, /**/ com);
     mesh_inertia_tensor(nt, tt, vv, com, density, /**/ I);
 }
 
-static void clear_vel(Solid *s) {
+_S_ void clear_vel(Solid *s) {
     enum {X, Y, Z};
     s->v[X] = s->v[Y] = s->v[Z] = 0; 
     s->om[X] = s->om[Y] = s->om[Z] = 0; 
 }
 
-static void compute_properties(const RigPinInfo *pi, int n, const float *rr0, float pmass,
+_S_ void compute_properties(const RigPinInfo *pi, int n, const float *rr0, float pmass,
                                float numdensity, const MeshRead *mesh, /**/ Solid *s) {
     enum {X, Y, Z};
     int spdir, nt;
@@ -59,12 +59,12 @@ static void compute_properties(const RigPinInfo *pi, int n, const float *rr0, fl
     UC(linal_inv3x3(I, /**/ s->Iinv));
 }
 
-static void copy_props(const Solid *s0, Solid *s) {
+_S_ void copy_props(const Solid *s0, Solid *s) {
     s->mass = s0->mass;
     memcpy(s->Iinv, s0->Iinv, 6*sizeof(float));
 }
 
-static void set_properties(MPI_Comm comm, RigGenInfo rgi, int n, const float *rr0, int ns, const int *ids, /**/ Solid *ss) {
+_I_ void set_properties(MPI_Comm comm, RigGenInfo rgi, int n, const float *rr0, int ns, const int *ids, /**/ Solid *ss) {
     Solid s_props, *s;
     int i;
     

@@ -1,4 +1,4 @@
-`_S_ int3 fid2shift(int3 L, int fid) {
+_S_ int3 fid2shift(int3 L, int fid) {
     int3 s;
     using namespace frag_hst;
     s.x = - i2dx(fid) * L.x;

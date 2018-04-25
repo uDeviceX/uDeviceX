@@ -3,7 +3,7 @@ enum {
     OUT = -1
 };
 
-static int get_root(MPI_Comm comm, bool hasid0) {
+_I_ int get_root(MPI_Comm comm, bool hasid0) {
     int rank, root0, root;
     MC(m::Comm_rank(comm, &rank));
     root0 = hasid0 ? rank : 0;
@@ -13,7 +13,7 @@ static int get_root(MPI_Comm comm, bool hasid0) {
     return root;
 }
 
-static void exchange_mesh(int maxm, int3 L, MPI_Comm cart, int nv, /*io*/ int *nm, Particle *pp, /**/ int *cc) {
+_I_ void exchange_mesh(int maxm, int3 L, MPI_Comm cart, int nv, /*io*/ int *nm, Particle *pp, /**/ int *cc) {
     EMeshPack *pack;
     EMeshComm *comm;
     EMeshUnpack *unpack;
@@ -42,7 +42,7 @@ static void exchange_mesh(int maxm, int3 L, MPI_Comm cart, int nv, /*io*/ int *n
     UC(emesh_unpack_fin(unpack));
 }
 
-static void compute_labels(int pdir, int n, const Particle *pp, int nt, int nv, int nm, const int4 *tt, const Particle *pp_mesh, int in, int out, /**/ int *ll) {
+_I_ void compute_labels(int pdir, int n, const Particle *pp, int nt, int nv, int nm, const int4 *tt, const Particle *pp_mesh, int in, int out, /**/ int *ll) {
     float3 *lo, *hi;
     Triangles tri;
 
