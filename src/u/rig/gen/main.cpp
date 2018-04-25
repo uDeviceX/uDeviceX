@@ -70,7 +70,7 @@ static void gen(MPI_Comm cart, const Config *cfg) {
     ri.ns = rig.ns;
     ri.nps = &rig.nps;
     ri.n = &rig.n;
-    ri.rr0 = rig.rr0;
+    ri.rr0 = rig.rr0_hst;
     ri.ss = rig.ss_hst;
     ri.pp = rig.pp_hst;
     
