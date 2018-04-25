@@ -27,4 +27,5 @@
 
 #include "imp.h"
 #include "imp/common.h"
+#include "imp/template.h"
 #include "imp/main.h"
