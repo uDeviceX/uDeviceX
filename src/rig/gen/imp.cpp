@@ -6,6 +6,7 @@
 #include "inc/conf.h"
 #include "inc/type.h"
 #include "inc/dev.h"
+#include "inc/def.h"
 
 #include "utils/error.h"
 #include "utils/imp.h"

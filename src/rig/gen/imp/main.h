@@ -19,12 +19,14 @@ void rig_gen_from_solvent(const Coords *coords, MPI_Comm cart, RigGenInfo rgi, /
     cD2H(pp_flu_hst, fi.pp, nflu);
 
     UC(gen_ids(cart, ri.ns, ids));
-
+    
     UC(extract_template(L, cart, rgi, nflu, fi.pp, pp_flu_hst, ri.ns, ids, ri.ss,
                         /**/ ri.nps, ri.rr0, /*w*/ ll_dev, ll_hst));
 
+    UC(kill_solvent(rgi, MAX_SOLIDS, L, cart, ri.ns,
+                    /*io*/ fi.n, pp_flu_hst, fi.pp,
+                    /*w*/ ll_dev, ll_hst));
     
-
     Dfree(ll_dev);
     EFREE(pp_flu_hst);
     EFREE(ll_hst);

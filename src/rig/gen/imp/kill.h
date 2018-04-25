@@ -7,18 +7,19 @@ static void remove_hst(const int *labels, int *n, Particle *pp) {
     *n = j;
 }
 
-static void kill_solvent(int pdir, int maxm, int3 L, MPI_Comm cart, int nv, int nt, int nm, const int4 *tt,
-                         const Particle *i_pp,
+static void kill_solvent(RigGenInfo rgi, int maxm, int3 L, MPI_Comm cart, int nm,
                          /*io*/ int *n, Particle *pp_hst, Particle *pp_dev,
                          /*w*/ int *ll_dev, int *ll_hst) {
-    int nmall;
+    int nmall, pdir;
     Particle *i_ppall;
     nmall = nm;
+    pdir = rig_pininfo_get_pdir(rgi.pi);
 
-    Dalloc(&i_ppall, maxm * nv);
+    Dalloc(&i_ppall, maxm * rgi.nv);
+    cD2D(i_ppall, rgi.pp, nm * rgi.nv);
     
-    UC(exchange_mesh(maxm, L, cart, nv, /*io*/ &nmall, i_ppall, NULL));
-    UC(compute_labels(pdir, *n, pp_dev, nt, nv, nmall, tt, i_ppall, IN, OUT, /**/ ll_dev));
+    UC(exchange_mesh(maxm, L, cart, rgi.nv, /*io*/ &nmall, i_ppall, NULL));
+    UC(compute_labels(pdir, *n, pp_dev, rgi.nt, rgi.nv, nmall, rgi.tt, i_ppall, IN, OUT, /**/ ll_dev));
 
     cD2H(ll_hst, ll_dev, *n);
     remove_hst(ll_hst, n, pp_hst);
