@@ -34,6 +34,34 @@ static void label_extract_and_shift(int3 shift, int pdir, int n, const Particle 
     extract_and_shift_hst(shift, n, pp_hst, ll_hst, ntempl, rrtempl);
 }
 
+static void collect_and_broadcast_template(MPI_Comm comm, int *n, float *rr) {
+    int i, rank, size, *starts, *counts, ntot;
+    float *rr_recv;
+    MC(m::Comm_rank(comm, &rank));
+    MC(m::Comm_size(comm, &size));
+
+    EMALLOC(size, &counts);
+    EMALLOC(size, &starts);
+    
+    MC(m::Allgather(n, 1, MPI_INT, counts, 1, MPI_INT, comm));
+
+    starts[0] = 0;
+    for (i = 0; i < size; ++i) counts[i] *= 3;
+    for (i = 1; i < size; ++i) starts[i] = starts[i-1] + counts[i-1];
+    ntot = starts[size-1] + counts[size-1];
+
+    EMALLOC(ntot, &rr_recv);
+    
+    MC(m::Allgatherv(rr, counts[rank], MPI_FLOAT, rr_recv, counts, starts, MPI_INT, comm));
+
+    *n = ntot/3;
+    memcpy(rr, rr_recv, ntot * sizeof(float));
+    
+    EFREE(rr_recv);
+    EFREE(starts);
+    EFREE(counts);
+}
+
 static void label_template_dev(int pdir, int3 L, MPI_Comm cart, int nt, int nv, int nm, const int4 *tt, const Particle *pp_mesh,
                                int nflu, const Particle *pp_dev, const Particle *pp_hst, /**/ int *nps, float *rr0, /*w*/ int *ll_dev, int *ll_hst) {
     int i, maxm, n, cc[NFRAGS];
@@ -62,8 +90,7 @@ static void label_template_dev(int pdir, int3 L, MPI_Comm cart, int nt, int nv, 
         pp += nm * nv;
     }
 
-    // communicate back
-    // TODO
+    UC(collect_and_broadcast_template(cart, nps, rr0));
     
     Dfree(pp0);
 }
