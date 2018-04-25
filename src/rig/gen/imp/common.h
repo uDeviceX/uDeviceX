@@ -3,18 +3,18 @@ enum {
     OUT = -1
 };
 
-static void exchange_mesh(int maxm, int3 L, MPI_Comm cart, int nv, /*io*/ int *n, Particle *pp, /**/ int *cc) {
+static void exchange_mesh(int maxm, int3 L, MPI_Comm cart, int nv, /*io*/ int *nm, Particle *pp, /**/ int *cc) {
     EMeshPack *pack;
     EMeshComm *comm;
     EMeshUnpack *unpack;
-    int nm, nmhalo;
-    nm = *n / nv;
+    int nm0, nmhalo;
+    nm0 = *nm;
 
     UC(emesh_pack_ini(L, nv, maxm, &pack));
     UC(emesh_comm_ini(cart, /**/ &comm));
     UC(emesh_unpack_ini(L, nv, maxm, &unpack));
 
-    UC(emesh_build_map(nm, nv, pp, /**/ pack));
+    UC(emesh_build_map(nm0, nv, pp, /**/ pack));
     UC(emesh_pack(nv, pp, /**/ pack));
     UC(emesh_download(pack));
 
@@ -23,9 +23,9 @@ static void exchange_mesh(int maxm, int3 L, MPI_Comm cart, int nv, /*io*/ int *n
     UC(emesh_wait_recv(comm, unpack));
     UC(emesh_wait_send(comm));
 
-    UC(emesh_unpack(nv, unpack, /**/ &nmhalo, pp + nm * nv));
+    UC(emesh_unpack(nv, unpack, /**/ &nmhalo, pp + nm0 * nv));
     if (cc) UC(emesh_get_num_frag_mesh(unpack, /**/ cc));
-    *n += nmhalo * nv;
+    *nm += nmhalo;
     
     UC(emesh_pack_fin(pack));
     UC(emesh_comm_fin(comm));

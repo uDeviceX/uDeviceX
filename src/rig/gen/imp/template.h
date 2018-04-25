@@ -64,7 +64,7 @@ static void collect_and_broadcast_template(MPI_Comm comm, int *n, float *rr) {
 
 static void label_template_dev(int pdir, int3 L, MPI_Comm cart, int nt, int nv, int nm, const int4 *tt, const Particle *pp_mesh,
                                int nflu, const Particle *pp_dev, const Particle *pp_hst, /**/ int *nps, float *rr0, /*w*/ int *ll_dev, int *ll_hst) {
-    int i, maxm, n, cc[NFRAGS];
+    int i, maxm, nmall, n, cc[NFRAGS];
     int3 shift;
     Particle *pp0, *pp;
 
@@ -72,10 +72,11 @@ static void label_template_dev(int pdir, int3 L, MPI_Comm cart, int nt, int nv, 
     Dalloc(&pp, nv * maxm);
     pp0 = pp;
 
+    nmall = nm;
     n = nm * nv;
     if (n) cD2D(pp, pp_mesh, n);
     
-    UC(exchange_mesh(maxm, L, cart, nv, /* io */ &n, pp, /**/ cc));
+    UC(exchange_mesh(maxm, L, cart, nv, /* io */ &nmall, pp, /**/ cc));
 
     // bulk mesh
     shift = fid2shift(L, frag_bulk);
