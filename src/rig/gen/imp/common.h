@@ -3,6 +3,16 @@ enum {
     OUT = -1
 };
 
+static int get_root(MPI_Comm comm, bool hasid0) {
+    int rank, root0, root;
+    MC(m::Comm_rank(comm, &rank));
+    root0 = hasid0 ? rank : 0;
+    root = 0;
+    MC(m::Allreduce(&root0, &root, 1, MPI_INT, MPI_SUM, comm));
+    if (hasid0 && root != rank) ERR("More than one rank has id 0");
+    return root;
+}
+
 static void exchange_mesh(int maxm, int3 L, MPI_Comm cart, int nv, /*io*/ int *nm, Particle *pp, /**/ int *cc) {
     EMeshPack *pack;
     EMeshComm *comm;
