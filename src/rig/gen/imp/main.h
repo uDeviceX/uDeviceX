@@ -62,20 +62,6 @@ static void collect_and_broadcast_template(MPI_Comm comm, int *n, float *rr) {
     EFREE(counts);
 }
 
-static void shift_template_com(int n, float *rr) {
-    enum {X, Y, Z};
-    float com[3] = {0};
-    int i, c;
-    for (i = 0; i < n; ++i)
-        for (c = 0; c < 3; ++c)
-            com[c] += rr[3*i+c];
-    for (c = 0; c < 3; ++c)
-        com[c] /= n;
-    for (i = 0; i < n; ++i)
-        for (c = 0; c < 3; ++c)
-            rr[3*i+c] -= com[c];
-}
-
 static void label_template_dev(int pdir, int3 L, MPI_Comm cart, int nt, int nv, int nm, const int4 *tt, const Particle *pp_mesh,
                                int nflu, const Particle *pp_dev, const Particle *pp_hst, /**/ int *nps, float *rr0, /*w*/ int *ll_dev, int *ll_hst) {
     int i, maxm, n, cc[NFRAGS];
@@ -105,20 +91,46 @@ static void label_template_dev(int pdir, int3 L, MPI_Comm cart, int nt, int nv, 
     }
 
     UC(collect_and_broadcast_template(cart, nps, rr0));
-    shift_template_com(*nps, rr0);
     
     Dfree(pp0);
 }
 
+static void get_shift(MPI_Comm comm, bool hasid0, const Solid *ss, float shift[3]) {
+    int rank, root0, root;
+    MC(m::Comm_rank(comm, &rank));
+    if (hasid0)
+        memcpy(shift, ss[0].com, 3 * sizeof(float));
+    root0 = hasid0 ? rank : 0;
+    root = 0;
+    MC(m::Allreduce(&root0, &root, 1, MPI_INT, MPI_SUM, comm));
+    if (hasid0 && root != rank) ERR("More than one rank has id 0");
+    MC(m::Bcast(shift, 3, MPI_FLOAT, root, comm));
+}
+
+static void shift_template(const float shift[3], int n, float *rr) {
+    enum {X, Y, Z};
+    int i, c;
+    for (i = 0; i < n; ++i)
+        for (c = 0; c < 3; ++c)
+            rr[3*i+c] -= shift[c];
+}
+
 static void extract_template(int3 L, MPI_Comm cart, RigGenInfo rgi, int n, const Particle *flu_pp_dev, const Particle *flu_pp_hst,
-                             int ns, const int *ids, /**/ int *nps, float *rr0, /*w*/ int *ll_dev, int *ll_hst) {
+                             int ns, const int *ids, const Solid *ss, /**/ int *nps, float *rr0, /*w*/ int *ll_dev, int *ll_hst) {
     int nm, pdir;
+    bool hasid0;
+    float shift[3];
     *nps = 0;
-    nm = (ns && ids[0] == 0) ? 1 : 0;
+    hasid0 = (ns && ids[0] == 0); 
+    nm = hasid0 ? 1 : 0;
     pdir = rig_pininfo_get_pdir(rgi.pi);
 
-    UC(label_template_dev(pdir, L, cart, rgi.nt, rgi.nv, nm, rgi.tt, rgi.pp, n, flu_pp_dev, flu_pp_hst, /**/ nps, rr0, /*w*/ ll_dev, ll_hst));    
+    UC(label_template_dev(pdir, L, cart, rgi.nt, rgi.nv, nm, rgi.tt, rgi.pp, n, flu_pp_dev, flu_pp_hst, /**/ nps, rr0, /*w*/ ll_dev, ll_hst));
+    UC(get_shift(cart, hasid0, ss, shift));
+    UC(shift_template(shift, *nps, rr0));
 }
+
+
 
 static void gen_ids(MPI_Comm comm, int n, int *ii) {
     int i, i0 = 0, count = 1;
@@ -142,8 +154,10 @@ void rig_gen_from_solvent(const Coords *coords, MPI_Comm cart, RigGenInfo rgi, /
 
     UC(gen_ids(cart, ri.ns, ids));
 
-    extract_template(L, cart, rgi, nflu, fi.pp, pp_flu_hst, ri.ns, ids,
-                     /**/ ri.nps, ri.rr0, /*w*/ ll_dev, ll_hst);
+    UC(extract_template(L, cart, rgi, nflu, fi.pp, pp_flu_hst, ri.ns, ids, ri.ss,
+                        /**/ ri.nps, ri.rr0, /*w*/ ll_dev, ll_hst));
+
+    
 
     Dfree(ll_dev);
     EFREE(pp_flu_hst);
