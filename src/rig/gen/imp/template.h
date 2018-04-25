@@ -97,14 +97,10 @@ static void label_template_dev(int pdir, int3 L, MPI_Comm cart, int nt, int nv, 
 }
 
 static void get_shift(MPI_Comm comm, bool hasid0, const Solid *ss, float shift[3]) {
-    int rank, root0, root;
-    MC(m::Comm_rank(comm, &rank));
+    int root;
     if (hasid0)
         memcpy(shift, ss[0].com, 3 * sizeof(float));
-    root0 = hasid0 ? rank : 0;
-    root = 0;
-    MC(m::Allreduce(&root0, &root, 1, MPI_INT, MPI_SUM, comm));
-    if (hasid0 && root != rank) ERR("More than one rank has id 0");
+    root = get_root(comm, hasid0);
     MC(m::Bcast(shift, 3, MPI_FLOAT, root, comm));
 }
 
