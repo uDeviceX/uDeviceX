@@ -30,8 +30,15 @@
 #include "rigid/imp.h"
 
 #include "imp.h"
+
+#define _I_ static
+#define _S_ static
+
 #include "imp/common.h"
 #include "imp/template.h"
 #include "imp/kill.h"
 #include "imp/props.h"
 #include "imp/main.h"
+
+#undef _I_
+#undef _S_
