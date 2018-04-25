@@ -30,8 +30,7 @@ void rig_gen_from_solvent(const Coords *coords, MPI_Comm cart, RigGenInfo rgi, /
                     /*io*/ fi.n, pp_flu_hst, fi.pp,
                     /*w*/ ll_dev, ll_hst));
 
-    // TODO props
-    
+    UC(set_properties(cart, rgi, *ri.nps, ri.rr0, ri.ns, ids, /**/ ri.ss));
     Dfree(ll_dev);
     EFREE(pp_flu_hst);
     EFREE(ll_hst);

@@ -1,5 +1,6 @@
 struct Coords;
 struct RigPinInfo;
+struct MeshRead;
 
 struct RigGenInfo {
     float mass;
@@ -9,6 +10,7 @@ struct RigGenInfo {
     const int4 *tt;     /* on device */
     const Particle *pp; /* on device */
     bool empty_pp;
+    MeshRead *mesh;
 };
 
 struct FluInfo {

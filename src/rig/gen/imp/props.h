@@ -64,12 +64,11 @@ static void copy_props(const Solid *s0, Solid *s) {
     memcpy(s->Iinv, s0->Iinv, 6*sizeof(float));
 }
 
-static void set_properties(MPI_Comm comm, const RigPinInfo *pi, int n, const float *rr0, float pmass,
-                           float numdensity, const MeshRead *mesh, int ns, const int *ids, /**/ Solid *ss) {
+static void set_properties(MPI_Comm comm, RigGenInfo rgi, int n, const float *rr0, int ns, const int *ids, /**/ Solid *ss) {
     Solid s_props, *s;
     int i;
     
-    compute_properties(pi, n, rr0, pmass, numdensity, mesh, &s_props);
+    compute_properties(rgi.pi, n, rr0, rgi.mass, rgi.numdensity, rgi.mesh, &s_props);
 
     for (i = 0; i < ns; ++i) {
         s = &ss[i];
