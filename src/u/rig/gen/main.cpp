@@ -73,7 +73,7 @@ static void gen(MPI_Comm cart, const Config *cfg) {
     rgi.nv = mesh_read_get_nv(mesh);
     rgi.tt = rig.dtt;
     rgi.pp = rig.i_pp;
-    rgi.empty_pp = false;
+    rgi.empty_pp = true;
     rgi.mesh = mesh;
 
     fi.pp = flu.pp;

@@ -31,6 +31,9 @@ void rig_gen_from_solvent(const Coords *coords, MPI_Comm cart, RigGenInfo rgi, /
                     /*w*/ ll_dev, ll_hst));
 
     UC(set_properties(cart, rgi, *ri.nps, ri.rr0, ri.ns, ids, /**/ ri.ss));
+
+    if (rgi.empty_pp)
+        UC(empty_solid(rgi.mesh, /*io*/ ri.nps, ri.rr0));
     Dfree(ll_dev);
     EFREE(pp_flu_hst);
     EFREE(ll_hst);
