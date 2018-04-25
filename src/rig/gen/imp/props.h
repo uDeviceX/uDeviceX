@@ -1,0 +1,60 @@
+static void init_I_from_pos(int n, const float *rr, float pmass, /**/ float *I) {
+    enum {X, Y, Z};
+    enum {XX, XY, XZ, YY, YZ, ZZ};
+    enum {YX = XY, ZX = XZ, ZY = YZ};
+    int c, i;
+    const float *r;
+    float x, y, z;
+    
+    for (c = 0; c < 6; ++c) I[c] = 0;
+    for (i = 0; i < n; ++i) {
+        r = &rr[3*i];
+        x = r[X]; y = r[Y]; z = r[Z];
+        I[XX] += y*y + z*z;
+        I[YY] += z*z + x*x;
+        I[ZZ] += x*x + y*y;
+        I[XY] -= x*y;
+        I[XZ] -= z*x;
+        I[YZ] -= y*z;
+    }
+    for (c = 0; c < 6; ++c) I[c] *= pmass;
+}
+
+static void init_I_from_mesh(float density, int nt, const int4 *tt, const float *vv, /**/ float *I) {
+    float com[3] = {0};
+    mesh_center_of_mass(nt, tt, vv, /**/ com);
+    mesh_inertia_tensor(nt, tt, vv, com, density, /**/ I);
+}
+
+static void clear_vel(Solid *s) {
+    enum {X, Y, Z};
+    s->v[X] = s->v[Y] = s->v[Z] = 0; 
+    s->om[X] = s->om[Y] = s->om[Z] = 0; 
+}
+
+static void compute_properties(const RigPinInfo *pi, int n, const float *rr0, float pmass,
+                               float numdensity, const MeshRead *mesh, /**/ Solid *s) {
+    enum {X, Y, Z};
+    int spdir, nt;
+    const int4 *tt;
+    const float *vv;
+    float I[6];
+
+    spdir = rig_pininfo_get_pdir(pi);
+
+    /* ini inertia tensor */    
+
+    if (spdir == NOT_PERIODIC) {
+        nt = mesh_read_get_nt(mesh);
+        tt = mesh_read_get_tri(mesh);
+        vv = mesh_read_get_vert(mesh);
+        init_I_from_mesh(pmass * numdensity, nt, tt, vv, /**/ I);
+        s->mass = mesh_volume0(nt, tt, vv) * numdensity * pmass;
+    }
+    else {
+        init_I_from_pos(n, rr0, pmass, /**/ I);
+        s->mass = n * pmass;
+    }
+
+    UC(linal_inv3x3(I, /**/ s->Iinv));
+}

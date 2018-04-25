@@ -26,6 +26,8 @@ void rig_gen_from_solvent(const Coords *coords, MPI_Comm cart, RigGenInfo rgi, /
     UC(kill_solvent(rgi, MAX_SOLIDS, L, cart, ri.ns,
                     /*io*/ fi.n, pp_flu_hst, fi.pp,
                     /*w*/ ll_dev, ll_hst));
+
+    // TODO props
     
     Dfree(ll_dev);
     EFREE(pp_flu_hst);

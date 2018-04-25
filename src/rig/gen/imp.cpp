@@ -16,12 +16,15 @@
 #include "d/api.h"
 #include "mpi/wrapper.h"
 
+#include "math/linal/imp.h"
+#include "io/mesh_read/imp.h"
 #include "coords/imp.h"
 #include "comm/imp.h"
 #include "exch/mesh/imp.h"
 #include "algo/minmax/imp.h"
 #include "mesh/triangles/type.h"
 #include "mesh/collision/imp.h"
+#include "mesh/props/imp.h"
 #include "frag/imp.h"
 
 #include "rigid/imp.h"
@@ -30,4 +33,5 @@
 #include "imp/common.h"
 #include "imp/template.h"
 #include "imp/kill.h"
+#include "imp/props.h"
 #include "imp/main.h"
