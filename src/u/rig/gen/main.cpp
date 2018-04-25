@@ -21,6 +21,8 @@
 #include "io/mesh_read/imp.h"
 #include "flu/imp.h"
 #include "rig/imp.h"
+#include "rig/gen/imp.h"
+#include "rigid/imp.h"
 
 static void gen(MPI_Comm cart, const Config *cfg) {
     Coords *coords;
@@ -30,6 +32,10 @@ static void gen(MPI_Comm cart, const Config *cfg) {
     MeshRead *mesh;
     int3 L;
     int maxp, maxs, numdensity;
+    RigPinInfo *pi;
+    RigGenInfo rgi;
+    FluInfo fi;
+    RigInfo ri;
     maxs = 200;
 
     UC(conf_lookup_int(cfg, "glb.numdensity", &numdensity));
@@ -46,6 +52,31 @@ static void gen(MPI_Comm cart, const Config *cfg) {
 
     UC(rig_gen_mesh(coords, cart, mesh, "rigs-ic.txt", /**/ &rig));
 
+    UC(rig_pininfo_ini(&pi));
+    UC(rig_pininfo_set_pdir(NOT_PERIODIC, pi));
+    
+    rgi.mass = 1.0;
+    rgi.numdensity = numdensity;
+    rgi.pi = pi;
+    rgi.nt = mesh_read_get_nt(mesh);
+    rgi.nv = mesh_read_get_nv(mesh);
+    rgi.tt = rig.dtt;
+    rgi.pp = rig.i_pp;
+    rgi.empty_pp = false;    
+
+    fi.pp = flu.pp;
+    fi.n = &flu.n;
+
+    ri.ns = rig.ns;
+    ri.nps = &rig.nps;
+    ri.n = &rig.n;
+    ri.rr0 = rig.rr0;
+    ri.ss = rig.ss_hst;
+    ri.pp = rig.pp_hst;
+    
+    UC(rig_gen_from_solvent(coords, cart, rgi, /*io*/ fi, /**/ ri));
+
+    UC(rig_pininfo_fin(pi));
     UC(rig_fin(&rig));
     UC(mesh_read_fin(mesh));
     UC(inter_color_fin(gc));
