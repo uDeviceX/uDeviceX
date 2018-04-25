@@ -10,7 +10,7 @@ struct RigGenInfo {
     const int4 *tt;     /* on device */
     const Particle *pp; /* on device */
     bool empty_pp;
-    MeshRead *mesh;
+    const MeshRead *mesh;
 };
 
 struct FluInfo {
@@ -20,7 +20,7 @@ struct FluInfo {
 
 /* everything on host */
 struct RigInfo {
-    int ns, *nps, *n;
+    int ns, *nps;
     float *rr0;
     Solid *ss;
     Particle *pp;

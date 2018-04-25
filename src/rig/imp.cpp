@@ -28,7 +28,7 @@
 
 #include "imp.h"
 
-#include "inter/gen_rig/imp.h"
+#include "rig/gen/imp.h"
 
 #include "imp/ini.h"
 #include "imp/fin.h"

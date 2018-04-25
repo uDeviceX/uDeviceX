@@ -32,10 +32,6 @@ void rig_gen_quants(const Coords*, bool empty_pp, int numdensity, float rig_mass
 void rig_strt_quants(MPI_Comm, const MeshRead*, const char *base, const int id, RigQuants *q);
 // end::gen[]
 
-// tag::genid[]
-void rig_set_ids(MPI_Comm, RigQuants *q);
-// end::genid[]
-
 // tag::io[]
 void rig_strt_dump_templ(MPI_Comm, const char *base, const RigQuants *q);         // <1>
 void rig_strt_dump(MPI_Comm, const char *base, const int id, const RigQuants *q); // <2>
