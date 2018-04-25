@@ -1,4 +1,4 @@
-static int3 fid2shift(int3 L, int fid) {
+`_S_ int3 fid2shift(int3 L, int fid) {
     int3 s;
     using namespace frag_hst;
     s.x = - i2dx(fid) * L.x;
@@ -7,7 +7,7 @@ static int3 fid2shift(int3 L, int fid) {
     return s;
 }
 
-static void extract_and_shift_hst(int3 s, int n, const Particle *pp, const int *labels, int *nx, float *rrx) {
+_S_ void extract_and_shift_hst(int3 s, int n, const Particle *pp, const int *labels, int *nx, float *rrx) {
     enum {X, Y, Z};
     int i, j;
     const float *r;
@@ -26,7 +26,7 @@ static void extract_and_shift_hst(int3 s, int n, const Particle *pp, const int *
     *nx = j;
 }
 
-static void label_extract_and_shift(int3 shift, int pdir, int n, const Particle *pp_dev, const Particle *pp_hst, int nt, int nv,
+_S_ void label_extract_and_shift(int3 shift, int pdir, int n, const Particle *pp_dev, const Particle *pp_hst, int nt, int nv,
                                     int nm, const int4 *tt, const Particle *pp_mesh,
                                     /**/ int *ntempl, float *rrtempl, /*w*/ int *ll_dev, int *ll_hst) {
     UC(compute_labels(pdir, n, pp_dev, nt, nv, nm, tt, pp_mesh, IN, OUT, /**/ ll_dev));
@@ -34,7 +34,7 @@ static void label_extract_and_shift(int3 shift, int pdir, int n, const Particle 
     extract_and_shift_hst(shift, n, pp_hst, ll_hst, ntempl, rrtempl);
 }
 
-static void collect_and_broadcast_template(MPI_Comm comm, int *n, float *rr) {
+_S_ void collect_and_broadcast_template(MPI_Comm comm, int *n, float *rr) {
     int i, rank, size, *starts, *counts, ntot;
     float *rr_recv;
     MC(m::Comm_rank(comm, &rank));
@@ -62,7 +62,7 @@ static void collect_and_broadcast_template(MPI_Comm comm, int *n, float *rr) {
     EFREE(counts);
 }
 
-static void label_template_dev(int pdir, int3 L, MPI_Comm cart, int nt, int nv, int nm, const int4 *tt, const Particle *pp_mesh,
+_S_ void label_template_dev(int pdir, int3 L, MPI_Comm cart, int nt, int nv, int nm, const int4 *tt, const Particle *pp_mesh,
                                int nflu, const Particle *pp_dev, const Particle *pp_hst, /**/ int *nps, float *rr0, /*w*/ int *ll_dev, int *ll_hst) {
     int i, maxm, nmall, n, cc[NFRAGS];
     int3 shift;
@@ -101,7 +101,7 @@ struct Transf {
     float e0[3], e1[3], e2[3];
 };
 
-static void get_transf(MPI_Comm comm, bool hasid0, const Solid *ss, Transf *T) {
+_S_ void get_transf(MPI_Comm comm, bool hasid0, const Solid *ss, Transf *T) {
     int root, sz;
     if (hasid0) {
         sz = 3 * sizeof(float);
@@ -117,7 +117,7 @@ static void get_transf(MPI_Comm comm, bool hasid0, const Solid *ss, Transf *T) {
     MC(m::Bcast(T->e2, 3, MPI_FLOAT, root, comm));
 }
 
-static void transform(const Transf *T, float *r) {
+_S_ void transform(const Transf *T, float *r) {
     enum {X, Y, Z};
     int c;
     float r0[3];
@@ -129,12 +129,12 @@ static void transform(const Transf *T, float *r) {
             r0[Z] * T->e2[c];
 }
 
-static void transf_template(const Transf *T, int n, float *rr) {
+_S_ void transf_template(const Transf *T, int n, float *rr) {
     int i;
     for (i = 0; i < n; ++i) transform(T, &rr[3*i]);
 }
 
-static void extract_template(int3 L, MPI_Comm cart, RigGenInfo rgi, int n, const Particle *flu_pp_dev, const Particle *flu_pp_hst,
+_I_ void extract_template(int3 L, MPI_Comm cart, RigGenInfo rgi, int n, const Particle *flu_pp_dev, const Particle *flu_pp_hst,
                              int ns, bool hasid0, const Solid *ss, /**/ int *nps, float *rr0, /*w*/ int *ll_dev, int *ll_hst) {
     int nm, pdir;
     Transf T;
