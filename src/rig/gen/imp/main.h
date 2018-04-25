@@ -1,9 +1,9 @@
 static int3 fid2shift(int3 L, int fid) {
     int3 s;
     using namespace frag_hst;
-    s.x = i2dx(fid) * L.x;
-    s.y = i2dy(fid) * L.y;
-    s.z = i2dz(fid) * L.z;
+    s.x = - i2dx(fid) * L.x;
+    s.y = - i2dy(fid) * L.y;
+    s.z = - i2dz(fid) * L.z;
     return s;
 }
 
@@ -36,7 +36,7 @@ static void label_extract_and_shift(int3 shift, int pdir, int n, const Particle 
 
 static void label_template_dev(int pdir, int3 L, MPI_Comm cart, int nt, int nv, int nm, const int4 *tt, const Particle *pp_mesh,
                                int nflu, const Particle *pp_dev, const Particle *pp_hst, /**/ int *nps, float *rr0, /*w*/ int *ll_dev, int *ll_hst) {
-    int i, maxm, nm0, n, c, cc[NFRAGS];
+    int i, maxm, n, cc[NFRAGS];
     int3 shift;
     Particle *pp0, *pp;
 
@@ -44,24 +44,22 @@ static void label_template_dev(int pdir, int3 L, MPI_Comm cart, int nt, int nv, 
     Dalloc(&pp, nv * maxm);
     pp0 = pp;
 
-    nm0 = nm;
     n = nm * nv;
     if (n) cD2D(pp, pp_mesh, n);
     
     UC(exchange_mesh(maxm, L, cart, nv, /* io */ &n, pp, /**/ cc));
-    nm = n/nv;
 
     // bulk mesh
     shift = fid2shift(L, frag_bulk);
-    UC(label_extract_and_shift(shift, pdir, nflu, pp_dev, pp_hst, nt, nv, nm0, tt, pp_mesh, /**/ nps, rr0, /*w*/ ll_dev, ll_hst));
-    pp += nm0 * nv;
-
+    if (nm) UC(label_extract_and_shift(shift, pdir, nflu, pp_dev, pp_hst, nt, nv, nm, tt, pp, /**/ nps, rr0, /*w*/ ll_dev, ll_hst));
+    pp += nm * nv;
+    
     // halo meshes
     for (i = 0; i < NFRAGS; ++i) {
-        c = cc[i];
+        nm = cc[i];
         shift = fid2shift(L, i);
-        if (c) UC(label_extract_and_shift(shift, pdir, nflu, pp_dev, pp_hst, nt, nv, c, tt, pp_mesh, /**/ nps, rr0, /*w*/ ll_dev, ll_hst));
-        pp += c * nv;
+        if (nm) UC(label_extract_and_shift(shift, pdir, nflu, pp_dev, pp_hst, nt, nv, nm, tt, pp, /**/ nps, rr0, /*w*/ ll_dev, ll_hst));
+        pp += nm * nv;
     }
 
     // communicate back

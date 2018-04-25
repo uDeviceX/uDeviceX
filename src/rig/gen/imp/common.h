@@ -25,7 +25,7 @@ static void exchange_mesh(int maxm, int3 L, MPI_Comm cart, int nv, /*io*/ int *n
 
     UC(emesh_unpack(nv, unpack, /**/ &nmhalo, pp + nm * nv));
     if (cc) UC(emesh_get_num_frag_mesh(unpack, /**/ cc));
-    *n += nm * nv;
+    *n += nmhalo * nv;
     
     UC(emesh_pack_fin(pack));
     UC(emesh_comm_fin(comm));
