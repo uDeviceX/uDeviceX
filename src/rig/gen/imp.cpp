@@ -20,6 +20,7 @@
 #include "algo/minmax/imp.h"
 #include "mesh/triangles/type.h"
 #include "mesh/collision/imp.h"
+#include "frag/imp.h"
 
 #include "rigid/imp.h"
 
