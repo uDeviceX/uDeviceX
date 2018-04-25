@@ -44,7 +44,7 @@ $B/rig/imp.o: $S/rig/imp.cpp; $X -I$S/rig -I$S/.
 $B/struct/farray/imp.o: $S/struct/farray/imp.cpp; $X -I$S/struct/farray -I$S/.
 $B/struct/parray/imp.o: $S/struct/parray/imp.cpp; $X -I$S/struct/parray -I$S/.
 $B/struct/pfarrays/imp.o: $S/struct/pfarrays/imp.cpp; $X -I$S/struct/pfarrays -I$S/.
-$B/u/rig/gen/main.o: $S/u/rig/gen/main.cpp; $X -I$S/u/rig/gen -I$S/.
+$B/u/rig/gen/main.o: $S/u/rig/gen/main.cpp; $X -I$S/.
 $B/utils/cc.o: $S/utils/cc.cpp; $X -I$S/utils -I$S/.
 $B/utils/error.o: $S/utils/error.cpp; $X -I$S/utils -I$S/.
 $B/utils/imp.o: $S/utils/imp.cpp; $X -I$S/utils -I$S/.

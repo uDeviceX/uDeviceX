@@ -37,14 +37,14 @@ $B/mesh/props/imp.o: $S/inc/type.h $S/mesh/props/imp.h
 $B/mesh/triangles/imp.o: $S/utils/imp.h $S/inc/conf.h $S/utils/error.h $S/mesh/triangles/imp.h $S/io/mesh_read/imp.h $S/utils/cc.h $S/inc/dev.h $S/d/api.h $B/conf.h $S/mesh/triangles/type.h
 $B/mpi/glb.o: $S/inc/conf.h $S/mpi/wrapper.h $S/utils/mc.h $B/conf.h
 $B/mpi/wrapper.o: $S/mpi/wrapper.h
-$B/rig/gen/imp.o: $S/comm/imp.h $S/utils/imp.h $S/inc/conf.h $S/utils/error.h $S/inc/type.h $S/rigid/imp.h $S/mpi/wrapper.h $S/rig/gen/imp.h $S/exch/mesh/imp.h $S/utils/cc.h $S/algo/minmax/imp.h $S/rig/gen/imp/common.h $S/d/api.h $S/utils/mc.h $S/inc/dev.h $B/conf.h $S/rig/gen/imp/main.h $S/mesh/triangles/type.h $S/mesh/collision/imp.h $S/coords/imp.h
+$B/rig/gen/imp.o: $S/comm/imp.h $S/utils/imp.h $S/inc/conf.h $S/utils/error.h $S/inc/type.h $S/rigid/imp.h $S/mpi/wrapper.h $S/rig/gen/imp/template.h $S/rig/gen/imp.h $S/exch/mesh/imp.h $S/utils/cc.h $S/algo/minmax/imp.h $S/rig/gen/imp/common.h $S/d/api.h $S/utils/mc.h $S/inc/dev.h $B/conf.h $S/rig/gen/imp/main.h $S/mesh/triangles/type.h $S/frag/imp.h $S/mesh/collision/imp.h $S/coords/imp.h
 $B/rigid/conf.o: $S/utils/error.h $S/conf/imp.h $S/rigid/imp.h
 $B/rigid/imp.o: $S/utils/imp.h $S/inc/conf.h $S/utils/error.h $S/inc/type.h $S/rigid/imp.h $S/utils/cc.h $S/d/api.h $S/inc/dev.h $B/conf.h $S/rigid/imp/main.h $S/algo/utils/dev.h $S/rigid/imp/type.h $S/utils/kl.h $S/rigid/dev/utils.h $S/rigid/dev/main.h $S/utils/msg.h
 $B/rig/imp.o: $S/rig/imp/fin.h $S/utils/imp.h $S/inc/conf.h $S/utils/error.h $S/inc/type.h $S/rig/imp.h $S/mesh/gen/matrices/imp.h $S/io/mesh_read/imp.h $S/utils/cc.h $S/inc/def.h $S/inter/gen_rig/imp.h $S/io/restart/imp.h $S/rig/imp/generate.h $S/rig/imp/common.h $S/rig/imp/ini.h $S/inc/dev.h $S/d/api.h $B/conf.h $S/mesh/gen/imp.h $S/rig/imp/start.h $S/coords/imp.h $S/utils/msg.h
 $B/struct/farray/imp.o: $S/struct/farray/imp.h $S/struct/farray/imp/main.h $S/struct/farray/type.h
 $B/struct/parray/imp.o: $S/struct/parray/imp.h $S/struct/parray/imp/main.h $S/struct/parray/type.h
 $B/struct/pfarrays/imp.o: $S/struct/farray/imp.h $S/utils/imp.h $S/utils/error.h $S/inc/type.h $S/struct/pfarrays/imp.h $S/struct/parray/imp.h $S/struct/pfarrays/imp/main.h $S/struct/pfarrays/imp/type.h
-$B/u/rig/gen/main.o: $S/flu/imp.h $S/utils/error.h $S/inc/type.h $S/conf/imp.h $S/mpi/wrapper.h $S/io/mesh_read/imp.h $S/coords/ini.h $S/inter/color/imp.h $S/utils/mc.h $S/rig/imp.h $S/struct/partlist/type.h $S/clist/imp.h $S/coords/imp.h $S/mpi/glb.h $S/utils/msg.h
+$B/u/rig/gen/main.o: $S/utils/imp.h $S/flu/imp.h $S/utils/error.h $S/inc/type.h $S/rigid/imp.h $S/conf/imp.h $S/mpi/wrapper.h $S/io/mesh_read/imp.h $S/coords/ini.h $S/inter/color/imp.h $S/utils/mc.h $S/rig/imp.h $S/struct/partlist/type.h $S/clist/imp.h $S/rig/gen/imp.h $S/coords/imp.h $S/mpi/glb.h $S/utils/msg.h
 $B/utils/cc.o: $S/utils/cc/common.h $S/inc/conf.h $S/utils/error.h $S/d/api.h $B/conf.h
 $B/utils/error.o: $S/utils/msg.h $S/utils/error.h
 $B/utils/imp.o: $S/utils/error.h $S/utils/imp.h
