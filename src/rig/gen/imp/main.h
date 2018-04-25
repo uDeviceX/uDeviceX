@@ -8,6 +8,7 @@ void rig_gen_from_solvent(const Coords *coords, MPI_Comm cart, RigGenInfo rgi, /
     int3 L;
     int *ids, nflu, *ll_hst, *ll_dev;
     Particle *pp_flu_hst;
+    bool hasid0;
 
     L = subdomain(coords);
     nflu = *fi.n;
@@ -19,8 +20,10 @@ void rig_gen_from_solvent(const Coords *coords, MPI_Comm cart, RigGenInfo rgi, /
     cD2H(pp_flu_hst, fi.pp, nflu);
 
     UC(gen_ids(cart, ri.ns, ids));
+
+    hasid0 = (ri.ns && ids[0] == 0);     
     
-    UC(extract_template(L, cart, rgi, nflu, fi.pp, pp_flu_hst, ri.ns, ids, ri.ss,
+    UC(extract_template(L, cart, rgi, nflu, fi.pp, pp_flu_hst, ri.ns, hasid0, ri.ss,
                         /**/ ri.nps, ri.rr0, /*w*/ ll_dev, ll_hst));
 
     UC(kill_solvent(rgi, MAX_SOLIDS, L, cart, ri.ns,

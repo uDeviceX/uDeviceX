@@ -113,12 +113,10 @@ static void shift_template(const float shift[3], int n, float *rr) {
 }
 
 static void extract_template(int3 L, MPI_Comm cart, RigGenInfo rgi, int n, const Particle *flu_pp_dev, const Particle *flu_pp_hst,
-                             int ns, const int *ids, const Solid *ss, /**/ int *nps, float *rr0, /*w*/ int *ll_dev, int *ll_hst) {
+                             int ns, bool hasid0, const Solid *ss, /**/ int *nps, float *rr0, /*w*/ int *ll_dev, int *ll_hst) {
     int nm, pdir;
-    bool hasid0;
     float shift[3];
     *nps = 0;
-    hasid0 = (ns && ids[0] == 0); 
     nm = hasid0 ? 1 : 0;
     pdir = rig_pininfo_get_pdir(rgi.pi);
 
