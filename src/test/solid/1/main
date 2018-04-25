@@ -1,7 +1,7 @@
 #### Double poiseuille non pinned sphere
 # nTEST: solid.t2
 cd test/solid/1
-echo -e "8 16 8" > rigs-ic.txt
+x=8  y=16 z=8; echo 1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 >  rigs-ic.txt
 u.cp.rig sphere.ply rig.ply
 :
 u.run udx conf.cfg
