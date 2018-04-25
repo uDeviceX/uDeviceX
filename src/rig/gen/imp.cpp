@@ -9,6 +9,7 @@
 #include "inc/def.h"
 
 #include "utils/error.h"
+#include "utils/msg.h"
 #include "utils/imp.h"
 #include "utils/mc.h"
 #include "utils/cc.h"
@@ -25,6 +26,7 @@
 #include "mesh/triangles/type.h"
 #include "mesh/collision/imp.h"
 #include "mesh/props/imp.h"
+#include "mesh/dist/imp.h"
 #include "frag/imp.h"
 
 #include "rigid/imp.h"

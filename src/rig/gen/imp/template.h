@@ -147,3 +147,28 @@ _I_ void extract_template(int3 L, MPI_Comm cart, RigGenInfo rgi, int n, const Pa
     UC(transf_template(&T, *nps, rr0));
 }
 
+_I_ void empty_solid(const MeshRead *mesh, /* io */ int *n, float *rr) {
+    enum {X, Y, Z};
+    int n0, i, j, nt;
+    const float *r, *vv;
+    const int4 *tt;
+    float d;
+    n0 = *n;
+    nt = mesh_read_get_nt(mesh);
+    tt = mesh_read_get_tri(mesh);
+    vv = mesh_read_get_vert(mesh);
+
+    for (i = j = 0; i < n0; ++i) {
+        r = rr + 3*i;
+        d = dist_from_mesh(nt, tt, vv, r);
+        if (d <= 1.0) {
+            rr[3*j + X] = r[X];
+            rr[3*j + Y] = r[Y];
+            rr[3*j + Z] = r[Z];
+            ++j;
+        }
+    }
+    if (j == 0) ERR("No particle remaining in solid template\n");
+    msg_print("Template solid: keep %d out of %d particles", j, n0);
+    *n = j;
+}
