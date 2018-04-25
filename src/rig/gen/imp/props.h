@@ -58,3 +58,23 @@ static void compute_properties(const RigPinInfo *pi, int n, const float *rr0, fl
 
     UC(linal_inv3x3(I, /**/ s->Iinv));
 }
+
+static void copy_props(const Solid *s0, Solid *s) {
+    s->mass = s0->mass;
+    memcpy(s->Iinv, s0->Iinv, 6*sizeof(float));
+}
+
+static void set_properties(MPI_Comm comm, const RigPinInfo *pi, int n, const float *rr0, float pmass,
+                           float numdensity, const MeshRead *mesh, int ns, const int *ids, /**/ Solid *ss) {
+    Solid s_props, *s;
+    int i;
+    
+    compute_properties(pi, n, rr0, pmass, numdensity, mesh, &s_props);
+
+    for (i = 0; i < ns; ++i) {
+        s = &ss[i];
+        copy_props(&s_props, s);
+        clear_vel(s);
+        s->id = ids[i];
+    }
+}
