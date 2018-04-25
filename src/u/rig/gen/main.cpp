@@ -87,7 +87,8 @@ static void gen(MPI_Comm cart, const Config *cfg) {
     
     UC(rig_gen_from_solvent(coords, cart, rgi, /*io*/ fi, /**/ ri));
 
-    UC(dump_template_xyz("template.xyz", rig.nps, rig.rr0_hst));
+    if (m::is_master(cart))
+        UC(dump_template_xyz("template.xyz", rig.nps, rig.rr0_hst));
     
     UC(rig_pininfo_fin(pi));
     UC(rig_fin(&rig));
