@@ -11,16 +11,15 @@ O = $B/algo/edg/imp.o $B/algo/force_stat/imp.o $B/algo/kahan_sum/imp.o \
     $B/exch/mesh/imp.o $B/exch/obj/imp.o $B/flu/imp.o $B/fluforces/bulk/imp.o \
     $B/fluforces/halo/imp.o $B/fluforces/imp.o $B/frag/imp.o $B/fsi/imp.o \
     $B/grid_sampler/imp.o $B/inter/color/conf.o $B/inter/color/imp.o \
-    $B/inter/freeze/imp.o $B/inter/gen_rig/imp.o $B/io/bop/imp.o $B/io/com/imp.o \
-    $B/io/diag/mesh/imp.o $B/io/diag/part/imp.o $B/io/grid/h5/imp.o \
-    $B/io/grid/imp.o $B/io/grid/xmf/imp.o $B/io/mesh/imp.o \
-    $B/io/mesh_read/edg/imp.o $B/io/mesh_read/imp.o $B/io/point/imp.o \
-    $B/io/restart/imp.o $B/io/rig/imp.o $B/io/txt/imp.o $B/io/vtk/imp.o \
-    $B/io/vtk/mesh/imp.o $B/io/write/imp.o $B/main.o $B/math/linal/imp.o \
-    $B/math/rnd/imp.o $B/math/tform/imp.o $B/math/tri/imp.o $B/mesh/angle/imp.o \
-    $B/mesh/area/imp.o $B/mesh/bbox/imp.o $B/mesh/collision/imp.o \
-    $B/mesh/cylindrical/imp.o $B/mesh/dist/imp.o $B/mesh/edg_len/imp.o \
-    $B/mesh/eng_julicher/imp.o $B/mesh/eng_kantor/imp.o \
+    $B/inter/freeze/imp.o $B/io/bop/imp.o $B/io/com/imp.o $B/io/diag/mesh/imp.o \
+    $B/io/diag/part/imp.o $B/io/grid/h5/imp.o $B/io/grid/imp.o \
+    $B/io/grid/xmf/imp.o $B/io/mesh/imp.o $B/io/mesh_read/edg/imp.o \
+    $B/io/mesh_read/imp.o $B/io/point/imp.o $B/io/restart/imp.o $B/io/rig/imp.o \
+    $B/io/txt/imp.o $B/io/vtk/imp.o $B/io/vtk/mesh/imp.o $B/io/write/imp.o \
+    $B/main.o $B/math/linal/imp.o $B/math/rnd/imp.o $B/math/tform/imp.o \
+    $B/math/tri/imp.o $B/mesh/angle/imp.o $B/mesh/area/imp.o $B/mesh/bbox/imp.o \
+    $B/mesh/collision/imp.o $B/mesh/cylindrical/imp.o $B/mesh/dist/imp.o \
+    $B/mesh/edg_len/imp.o $B/mesh/eng_julicher/imp.o $B/mesh/eng_kantor/imp.o \
     $B/mesh/force/kantor0/imp.o $B/mesh/force/kantor1/imp.o $B/mesh/gen/imp.o \
     $B/mesh/gen/matrices/imp.o $B/mesh/props/imp.o $B/mesh/scatter/imp.o \
     $B/mesh/spherical/imp.o $B/mesh/tri_area/imp.o $B/mesh/triangles/imp.o \

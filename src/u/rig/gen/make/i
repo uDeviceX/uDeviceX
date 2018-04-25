@@ -3,7 +3,7 @@ f () ( for d; do f0 "$d"; done )
 
 f $U inc mpi d utils flu clist struct algo io/restart io/txt \
   inter/color coords conf math io/mesh_read rig rigid comm \
-  frag exch/map exch/common exch/mesh inter/gen_rig mesh/collision \
+  frag exch/map exch/common exch/mesh mesh/collision \
   mesh/bbox mesh/triangles mesh/gen mesh/props mesh/dist
 
 echo $U .

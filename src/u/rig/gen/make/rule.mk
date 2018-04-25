@@ -19,7 +19,6 @@ $B/flu/imp.o: $S/flu/imp.cpp; $X -I$S/flu -I$S/.
 $B/frag/imp.o: $S/frag/imp.cpp; $X -I$S/frag -I$S/.
 $B/inter/color/conf.o: $S/inter/color/conf.cpp; $X -I$S/inter/color -I$S/.
 $B/inter/color/imp.o: $S/inter/color/imp.cpp; $X -I$S/inter/color -I$S/.
-$B/inter/gen_rig/imp.o: $S/inter/gen_rig/imp.cpp; $X -I$S/inter/gen_rig -I$S/.
 $B/io/mesh_read/edg/imp.o: $S/io/mesh_read/edg/imp.cpp; $X -I$S/io/mesh_read/edg -I$S/.
 $B/io/mesh_read/imp.o: $S/io/mesh_read/imp.cpp; $X -I$S/io/mesh_read -I$S/.
 $B/io/restart/imp.o: $S/io/restart/imp.cpp; $X -I$S/io/restart -I$S/.

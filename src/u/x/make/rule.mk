@@ -45,7 +45,6 @@ $B/grid_sampler/imp.o: $S/grid_sampler/imp.cu; $N -I$S/grid_sampler -I$S/.
 $B/inter/color/conf.o: $S/inter/color/conf.cpp; $X -I$S/inter/color -I$S/.
 $B/inter/color/imp.o: $S/inter/color/imp.cpp; $X -I$S/inter/color -I$S/.
 $B/inter/freeze/imp.o: $S/inter/freeze/imp.cu; $N -I$S/inter/freeze -I$S/.
-$B/inter/gen_rig/imp.o: $S/inter/gen_rig/imp.cpp; $X -I$S/inter/gen_rig -I$S/.
 $B/io/bop/imp.o: $S/io/bop/imp.cpp; $X -I$S/io/bop -I$S/.
 $B/io/com/imp.o: $S/io/com/imp.cpp; $X -I$S/io/com -I$S/.
 $B/io/diag/mesh/imp.o: $S/io/diag/mesh/imp.cpp; $X -I$S/io/diag/mesh -I$S/.

@@ -18,7 +18,6 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/flu               && \
     d $B/frag              && \
     d $B/inter/color       && \
-    d $B/inter/gen_rig     && \
     d $B/io/mesh_read      && \
     d $B/io/mesh_read/edg  && \
     d $B/io/restart        && \
