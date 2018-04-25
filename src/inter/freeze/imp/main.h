@@ -15,12 +15,9 @@ static void remove_rbcs(RbcQuants *q, const Sdf *qsdf) {
 
 static void create_solids(const Coords *coords, bool empty_pp, int numdensity, float rig_mass, const RigPinInfo *pi,
                           MPI_Comm cart, const MeshRead *mesh, FluQuants* qflu, RigQuants* qrig) {
-    cD2H(qflu->pp_hst, qflu->pp, qflu->n);
-    rig_gen_quants(coords, empty_pp, numdensity, rig_mass, pi, cart, mesh, /*io*/ qflu->pp_hst, &qflu->n, /**/ qrig);
+    rig_gen_quants(coords, empty_pp, numdensity, rig_mass, pi, cart, mesh, /*io*/ qflu->pp, &qflu->n, /**/ qrig);
     MC(m::Barrier(cart));
-    cH2D(qflu->pp, qflu->pp_hst, qflu->n);
-    MC(m::Barrier(cart));
-    msg_print("created %d solids.", qrig->ns);
+    msg_print("created %d rigid object(s).", qrig->ns);
 }
 
 static void remove_solids(RigQuants *q, const Sdf *sdf) {
@@ -42,8 +39,8 @@ static void remove_solids(RigQuants *q, const Sdf *sdf) {
 
 void inter_freeze(const Coords *coords, MPI_Comm cart, InterWalInfos w, InterFluInfos f, InterRbcInfos r, InterRigInfos s) {
     MC(m::Barrier(cart));
-    if (s.active)             create_solids(coords, s.empty_pp, s.numdensity, s.mass, s.pi, cart, s.mesh, f.q, s.q);
+    if (s.active)             rig_gen_mesh(coords, cart, s.mesh, "rigs-ic.txt", /**/ s.q);
     if (w.active && r.active) remove_rbcs(r.q, w.sdf);
     if (w.active && s.active) remove_solids(s.q, w.sdf);
-    if (s.active)             rig_set_ids(cart, s.q);
+    if (s.active)             create_solids(coords, s.empty_pp, s.numdensity, s.mass, s.pi, cart, s.mesh, f.q, s.q);
 }
