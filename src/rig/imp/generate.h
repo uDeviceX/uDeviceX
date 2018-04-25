@@ -6,8 +6,8 @@ static Solid gen_from_matrix(const double *A) {
     for (c = 0; c < D; ++c) {
         s.com[c] = A[M * c + W];
         s.e0[c]  = A[M * c + X];
-        s.e0[c]  = A[M * c + Y];
-        s.e0[c]  = A[M * c + Z];
+        s.e1[c]  = A[M * c + Y];
+        s.e2[c]  = A[M * c + Z];
     }
     return s;
 }
