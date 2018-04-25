@@ -64,6 +64,9 @@ static void label_template_dev(int pdir, int3 L, MPI_Comm cart, int nt, int nv, 
         pp += c * nv;
     }
 
+    // communicate back
+    // TODO
+    
     Dfree(pp0);
 }
 

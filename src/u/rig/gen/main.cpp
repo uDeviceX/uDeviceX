@@ -8,6 +8,7 @@
 #include "utils/mc.h"
 #include "utils/msg.h"
 #include "utils/error.h"
+#include "utils/imp.h"
 #include "mpi/glb.h"
 #include "mpi/wrapper.h"
 
@@ -23,6 +24,16 @@
 #include "rig/imp.h"
 #include "rig/gen/imp.h"
 #include "rigid/imp.h"
+
+static void dump_template_xyz(const char *path, int n, const float *rr) {
+    int i;
+    FILE *f;
+    UC(efopen(path, "w", &f));
+    fprintf(f, "%d\n#\n", n);
+    for (i = 0; i < n; ++i)
+        fprintf(f, "O %g %g %g\n", rr[3*i+0], rr[3*i+1], rr[3*i+2]);
+    UC(efclose(f));
+}
 
 static void gen(MPI_Comm cart, const Config *cfg) {
     Coords *coords;
@@ -76,6 +87,8 @@ static void gen(MPI_Comm cart, const Config *cfg) {
     
     UC(rig_gen_from_solvent(coords, cart, rgi, /*io*/ fi, /**/ ri));
 
+    UC(dump_template_xyz("template.xyz", rig.nps, rig.rr0_hst));
+    
     UC(rig_pininfo_fin(pi));
     UC(rig_fin(&rig));
     UC(mesh_read_fin(mesh));
