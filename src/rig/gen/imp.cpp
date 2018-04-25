@@ -28,4 +28,5 @@
 #include "imp.h"
 #include "imp/common.h"
 #include "imp/template.h"
+#include "imp/kill.h"
 #include "imp/main.h"
