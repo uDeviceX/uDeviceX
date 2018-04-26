@@ -57,10 +57,6 @@ void forces_wall(bool fluss, Sim *s) {
     UC(wall_interact(s->coords, par, w, pf));
     UC(pfarrays_fin(pf));
     
-    // if (flu->q.n)                  wall_force(par, w->velstep, s->coords, w->sdf, &w->q, w->t, flu->q.n, &po, /**/ &fo);
-    // if (active_rig(s) && rig->q.n) wall_force(par, w->velstep, s->coords, w->sdf, &w->q, w->t, rig->q.n, &ps, /**/ &fs);
-    // if (active_rbc(s) && rbc->q.n) wall_force(par, w->velstep, s->coords, w->sdf, &w->q, w->t, rbc->q.n, &pr, /**/ &fr);
-
     // if (active_rig(s) && rig->q.n) wall_repulse(rig->q.n, rig->q.pp, w->sdf, /**/ rig->ff);
     // if (active_rbc(s) && rbc->q.n) wall_repulse(rbc->q.n, rbc->q.pp, w->sdf, /**/ rbc->ff);
 }
