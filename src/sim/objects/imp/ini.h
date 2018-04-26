@@ -22,9 +22,8 @@ static void ini_mesh_mom_exch(int nt, int max_m, MPI_Comm comm, /**/ MeshMomExch
     UC(emesh_unpackm_ini(nt, max_m, /**/ &e->u));
 }
 
-static void ini_bounce_back(int maxp, int nt, int max_m, MPI_Comm cart, /**/ BounceBack *bb) {
+static void ini_bbdata(int maxp, int nt, int max_m, MPI_Comm cart, /**/ BounceBackData *bb) {
     UC(ini_mesh_mom_exch(nt, max_m, cart, bb->e));
-    UC(meshbb_ini(maxp, /**/ &bb->bb));
     Dalloc(&bb->mm,max_m * nt);
 }
 
@@ -85,6 +84,9 @@ static void ini_rig(const Config *cfg, const OptRig *opt, MPI_Comm cart, int max
     UC(rig_pininfo_set_conf(cfg, r->pininfo));
 
     UC(conf_lookup_float(cfg, "rig.mass", &r->mass));
+
+    if (opt->bounce) {
+    }
 }
 
 static void ini_dump(long maxp, Dump **dump) {
@@ -108,5 +110,8 @@ void objects_ini(const Config *cfg, const Opt *opt, MPI_Comm cart, const Coords 
 
     if (opt->rbc.active) UC(ini_mbr(cfg, &opt->rbc, cart,       L, &obj->mbr));  else obj->mbr = NULL;
     if (opt->rig.active) UC(ini_rig(cfg, &opt->rig, cart, maxp, L, &obj->rig));  else obj->rig = NULL;
+
+    if (opt->rig.bounce) UC(meshbb_ini(maxp, /**/ &obj->bb)); else obj->bb = NULL;
+        
     UC(ini_dump(maxp, &obj->dump));
 }
