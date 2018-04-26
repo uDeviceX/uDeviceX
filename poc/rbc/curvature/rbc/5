@@ -48,7 +48,7 @@ c2: N/sqrt(nn);
 o: "main" $
 printf(true, "write: ~a.png~%", o)$
 draw2d(nticks=100, terminal = 'png, file_name  = o,
-  'xlabel = "R", 'ylabel = "energy", 'key_pos = 'bottom_left, 'line_width = 3,
+  'xlabel = "R", 'ylabel = "1/R", 'key_pos = 'bottom_left, 'line_width = 3,
   'key = "c1",                 'color = 'red,   parametric(x, c1, u, 0, %pi/2),
   'key = "c2",                 'color = 'green, parametric(x, c2, u, 0, %pi/2),  
   'key = "bi-concave profile", 'color = 'black, parametric(x,  30*z, u, 0, %pi/2),
