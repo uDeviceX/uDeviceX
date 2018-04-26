@@ -44,6 +44,7 @@
 #include "rigid/imp.h"
 
 #include "scheme/move/imp.h"
+#include "scheme/force/imp.h"
 
 #include "distr/rbc/imp.h"
 #include "distr/rig/imp.h"
@@ -57,5 +58,6 @@
 #include "imp/ini.h"
 #include "imp/fin.h"
 #include "imp/main.h"
+#include "imp/forces.h"
 #include "imp/dump.h"
 #include "imp/gen.h"

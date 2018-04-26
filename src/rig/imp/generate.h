@@ -3,8 +3,9 @@ static void check(const float e[]) {
     float ee, err;
     ee = e[X]*e[X] + e[Y]*e[Y] + e[Z]*e[Z];
     err = fabs(ee - 1.f);
-    if (err > 1e-6)
-        ERR("rigid ic: Matrix should be rotation only. Do not support scaling (error %g)", ee);
+    if (err > 1e-3)
+        ERR("rigid ic: Matrix should be rotation only. Do not support scaling\n"
+            "error: %g, e = %g %g %g", err, e[X], e[Y], e[Z]);
 }
 
 static Solid gen_from_matrix(const double *A) {
