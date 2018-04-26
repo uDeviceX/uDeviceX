@@ -70,7 +70,8 @@ static void run2(const Config *cfg, MPI_Comm cart, float dt, float mass, float t
                  RbcQuants *q) {
     RbcStretch *rbcstretch;
     RbcForce *t;
-    rbc_gen_quants(coords, cart, off, ic, /**/ q);
+    rbc_gen_mesh(coords, cart, off, ic, /**/ q);
+    rbc_gen_freeze(cart, /**/ q);
 
     if (stretch) rbc_stretch_ini("rbc.stretch", q->nv, &rbcstretch);
     UC(rbc_force_ini(off, &t));

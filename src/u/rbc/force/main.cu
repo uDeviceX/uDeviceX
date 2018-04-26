@@ -81,7 +81,8 @@ static void run1(float dt, RbcQuants *q, RbcForce *t, const RbcParams *par) {
 
 static void run2(const Config *cfg, MPI_Comm cart, float dt, const Coords *coords, MeshRead *off, const char *ic, long seed, const RbcParams *par, RbcQuants *q) {
     RbcForce *t;
-    UC(rbc_gen_quants(coords, cart, off, ic, /**/ q));
+    UC(rbc_gen_mesh(coords, cart, off, ic, /**/ q));
+    UC(rbc_gen_freeze(cart, /**/ q));
     UC(rbc_force_ini(off, /**/ &t));
     UC(rbc_force_set_conf(off, cfg, t));
     UC(run1(dt, q, t, par));

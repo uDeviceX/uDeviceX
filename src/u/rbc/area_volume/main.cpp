@@ -43,7 +43,8 @@ static void run0(RbcQuants q) {
 }
 
 static void run1(MPI_Comm cart, const Coords *coords, MeshRead *off, const char *ic, RbcQuants q) {
-    rbc_gen_quants(coords, cart, off, ic, /**/ &q);
+    rbc_gen_mesh(coords, cart, off, ic, /**/ &q);
+    rbc_gen_freeze(cart, /**/ &q);
     UC(run0(q));
 }
 
