@@ -13,9 +13,9 @@ _S_ void get_cells(int3 L, float tol, real3_t A, real3_t B, real3_t C, /**/ int3
 }
 
 _S_ void find_collisions_cell(real dt,
-                                            int tid, int start, int count, const Particle *pp, const Force *ff,
-                                            const rPa *A, const rPa *B, const rPa *C,
-                                            /**/ int *ncol, float4 *datacol, int *idcol) {
+                              int tid, int start, int count, const Particle *pp, const Force *ff,
+                              const rPa *A, const rPa *B, const rPa *C,
+                              /**/ int *ncol, float4 *datacol, int *idcol) {
     int i, entry;
     rPa p, p0; Force f;
     BBState state;
@@ -113,8 +113,8 @@ __global__ void select_collisions(int n, /**/ int *ncol, float4 *datacol, int *i
 }
 
 _S_ void get_collision_point(real dt,
-                                           const float4 dcol, rPa A, rPa B, rPa C,
-                                           /**/ real3_t *rw, real3_t *vw) {
+                             const float4 dcol, rPa A, rPa B, rPa C,
+                             /**/ real3_t *rw, real3_t *vw) {
     enum {X, Y, Z};
     float h, u, v, w;    
 
