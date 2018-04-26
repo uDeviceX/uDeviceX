@@ -180,25 +180,25 @@ _I_ void rbc_M2f(real dt,
     real_t I[6] = {0}, Iinv[6];
     real3_t om, v, com;
 
-    const real_t fac = 1.f / 3.f;
+    static const real_t one_third = 1.f / 3.f;
 
     compute_I(a, b, c, /**/ I);
     inverse(I, /**/ Iinv);
 
     /* angular velocity to be added (w.r.t. com of triangle) */
-    om.x = fac * (I[XX] * m.L[X] + I[XY] * m.L[Y] + I[XZ] * m.L[Z]);
-    om.y = fac * (I[XY] * m.L[X] + I[YY] * m.L[Y] + I[YZ] * m.L[Z]);
-    om.z = fac * (I[XZ] * m.L[X] + I[YZ] * m.L[Y] + I[ZZ] * m.L[Z]);
+    om.x = one_third * (I[XX] * m.L[X] + I[XY] * m.L[Y] + I[XZ] * m.L[Z]);
+    om.y = one_third * (I[XY] * m.L[X] + I[YY] * m.L[Y] + I[YZ] * m.L[Z]);
+    om.z = one_third * (I[XZ] * m.L[X] + I[YZ] * m.L[Y] + I[ZZ] * m.L[Z]);
 
     /* linear velocity to be added */
-    v.x =  fac * (m.P[X]);
-    v.y =  fac * (m.P[Y]);
-    v.z =  fac * (m.P[Z]);
+    v.x =  one_third * (m.P[X]);
+    v.y =  one_third * (m.P[Y]);
+    v.z =  one_third * (m.P[Z]);
 
     /* referential is com of triangle, shift it */
-    com.x = 0.333333f * (a.x + b.x + c.x);
-    com.y = 0.333333f * (a.y + b.y + c.y);
-    com.z = 0.333333f * (a.z + b.z + c.z);
+    com.x = one_third * (a.x + b.x + c.x);
+    com.y = one_third * (a.y + b.y + c.y);
+    com.z = one_third * (a.z + b.z + c.z);
 
     a.x -= com.x;
     a.y -= com.y;
