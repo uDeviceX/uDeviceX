@@ -46,10 +46,12 @@ if test $# -le 0; then err "expecting rbc.out"; fi
 R="$1"; shift
 
 pr=/tmp/rbc.$$; >$pr
-trap 'rm -f $pr; exit' 1 2 3 15
+ps=/tmp/rig.$$; >$ps
+trap 'rm -f $pr $ps; exit' 1 2 3 15
 
-e plcmt.hex $x $y $z $r '|' plcmt.select $f "$O" "$pr"
+e plcmt.hex $x $y $z $r '|' plcmt.select $f "$ps" "$pr"
 e plcmt.p2mat $s $a     $pr '>' "$R"
+e plcmt.p2mat  1 $a     $ps '>' "$O"
 
 rm -f $pr
 
