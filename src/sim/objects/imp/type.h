@@ -47,7 +47,7 @@ struct Mbr {
     RbcStretch *stretch;  /* helper to apply stretching force to cells */
     Triangles  *tri;      /* triangles for one cell on devices         */
     float mass;           /* mass of one particle                      */
-    MeshRead   *cell;     /* cell template                             */
+    MeshRead   *mesh;     /* cell template                             */
     MeshWrite  *mesh_write;
 };
 

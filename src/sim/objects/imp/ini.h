@@ -17,14 +17,14 @@ static void ini_mbr(const Config *cfg, const OptMbr *opt, MPI_Comm cart, int3 L,
     EMALLOC(1, membrane);
     m = *membrane;
 
-    UC(mesh_read_ini_off("rbc.off", &m->cell));
-    UC(mesh_write_ini_from_mesh(cart, opt->shifttype, m->cell, directory, /**/ &m->mesh_write));
+    UC(mesh_read_ini_off("rbc.off", &m->mesh));
+    UC(mesh_write_ini_from_mesh(cart, opt->shifttype, m->mesh, directory, /**/ &m->mesh_write));
 
-    nv = mesh_read_get_nv(m->cell);
+    nv = mesh_read_get_nv(m->mesh);
     
     Dalloc(&m->ff, MAX_CELL_NUM * nv);
-    UC(triangles_ini(m->cell, /**/ &m->tri));
-    UC(rbc_ini(MAX_CELL_NUM, opt->ids, m->cell, &m->q));
+    UC(triangles_ini(m->mesh, /**/ &m->tri));
+    UC(rbc_ini(MAX_CELL_NUM, opt->ids, m->mesh, &m->q));
     UC(ini_mbr_distr(opt->ids, nv, cart, L, /**/ &m->d));
 
     if (opt->dump_com) UC(rbc_com_ini(nv, MAX_CELL_NUM, /**/ &m->com));
@@ -36,8 +36,8 @@ static void ini_mbr(const Config *cfg, const OptMbr *opt, MPI_Comm cart, int3 L,
     UC(rbc_params_ini(&m->params));
     UC(rbc_params_set_conf(cfg, m->params));
 
-    UC(rbc_force_ini(m->cell, /**/ &m->force));
-    UC(rbc_force_set_conf(m->cell, cfg, m->force));
+    UC(rbc_force_ini(m->mesh, /**/ &m->force));
+    UC(rbc_force_set_conf(m->mesh, cfg, m->force));
 
     UC(conf_lookup_float(cfg, "rbc.mass", &m->mass));
 }

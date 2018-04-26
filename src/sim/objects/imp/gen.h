@@ -1,6 +1,6 @@
 static void gen_mesh_mbr(Coords *coords, MPI_Comm cart, Mbr *m) {
-    MeshRead *cell = m->cell;
-    UC(rbc_gen_mesh(coords, cart, cell, "rbcs-ic.txt", /**/ &m->q));
+    MeshRead *mesh = m->mesh;
+    UC(rbc_gen_mesh(coords, cart, mesh, "rbcs-ic.txt", /**/ &m->q));
 }
 
 static void gen_mesh_rig(Coords *coords, MPI_Comm cart, Rig *r) {

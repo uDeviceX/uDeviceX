@@ -23,7 +23,7 @@ static void fin_mbr(Mbr *m) {
     if (m->stretch) UC(rbc_stretch_fin(/**/ m->stretch));
 
     UC(rbc_params_fin(m->params));
-    UC(mesh_read_fin(m->cell));
+    UC(mesh_read_fin(m->mesh));
     UC(mesh_write_fin(m->mesh_write));
 
     EFREE(m);
