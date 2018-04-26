@@ -3,6 +3,8 @@
 #include <string.h>
 #include <vector_types.h>
 
+#include "inc/def.h"
+
 #include "conf/imp.h"
 #include "utils/error.h"
 #include "utils/imp.h"
@@ -108,4 +110,14 @@ void opt_read(const Config *c, Opt *o) {
 void opt_check(const Opt *o) {
     if (o->rbc.dump_com && !o->rbc.ids)
         ERR("Need rbc.ids activated to dump rbc com!");
+}
+
+static long maxp_estimate(const OptParams *p) {
+    int3 L = p->L;
+    int estimate = L.x * L.y * L.z * p->numdensity;
+    return SAFETY_FACTOR_MAXP * estimate;
+}
+
+long opt_estimate_maxp(const Opt *o) {
+    return maxp_estimate(&o->params);
 }

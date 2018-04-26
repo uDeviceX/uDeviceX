@@ -39,3 +39,4 @@ struct Config;
 
 void opt_read(const Config*, Opt*);
 void opt_check(const Opt*);
+long opt_estimate_maxp(const Opt*);
