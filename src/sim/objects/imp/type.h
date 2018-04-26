@@ -12,6 +12,30 @@ struct RigDistr {
     DRigUnpack *u;
 };
 
+/* mesh exchanger */
+struct MeshExch {
+    EMeshPack *p;
+    EMeshComm *c;
+    EMeshUnpack *u;
+};
+
+/* mesh momentum exchanger */
+struct MeshMomExch {
+    EMeshPackM *p;
+    EMeshCommM *c;
+    EMeshUnpackM *u;
+};
+
+// struct Colorer {
+//     Particle *pp;            /* particle workspace */
+//     float3 *minext, *maxext; /* bounding boxes     */
+// };
+
+// struct BounceBack {
+//     MeshBB *d;
+//     Momentum *mm;
+// };
+
 /* data holder for cell membranes */
 struct Mbr {
     RbcQuants q;

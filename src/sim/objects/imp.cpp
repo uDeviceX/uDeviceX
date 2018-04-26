@@ -46,8 +46,10 @@
 #include "scheme/move/imp.h"
 #include "scheme/force/imp.h"
 
+#include "comm/imp.h"
 #include "distr/rbc/imp.h"
 #include "distr/rig/imp.h"
+#include "exch/mesh/imp.h"
 
 #include "wall/sdf/imp.h"
 
