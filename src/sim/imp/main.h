@@ -84,7 +84,7 @@ static void gen_from_restart(Sim *s) {
     bool dump_sdf = opt->dump_field;
     
     flu_strt_quants(s->cart, base, RESTART_BEGIN, &flu->q);
-    if (opt->rbc.active) rbc_strt_quants(s->cart, base, cell, RESTART_BEGIN, &rbc->q);
+    if (opt->rbc.active) rbc_strt_quants(s->cart, cell, base, RESTART_BEGIN, &rbc->q);
     if (opt->rig.active) rig_strt_quants(s->cart, mesh, base, RESTART_BEGIN, &rig->q);
     if (opt->wall) wall_restart(s->cart, s->coords, opt->params, dump_sdf, base, s->wall);
     if (opt->vcon) vcont_strt_read(base, RESTART_BEGIN, s->vcon.vcont);

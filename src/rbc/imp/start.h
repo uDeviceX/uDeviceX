@@ -14,7 +14,7 @@ static void ids_from_strt(MPI_Comm comm, const char *base, int id, /**/ int *ii)
     restart_read_ii(comm, base, IDS, id, &nc, ii);
 }
 
-void rbc_strt_quants(MPI_Comm comm, const char *base, MeshRead *off, int id, RbcQuants *q) {
+void rbc_strt_quants(MPI_Comm comm, MeshRead *off, const char *base, int id, RbcQuants *q) {
     int nv;
     nv = mesh_read_get_nv(off);
     setup_from_strt(comm, base, nv, id, /**/ q->pp, &q->nc, &q->n, /*w*/ q->pp_hst);
