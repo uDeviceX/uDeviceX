@@ -10,6 +10,18 @@ static void fin_rig_distr(/**/ RigDistr *d) {
     UC(drig_unpack_fin(/**/ d->u));
 }
 
+static void fin_mesh_exch(/**/ MeshExch *e) {
+    UC(emesh_pack_fin(   /**/ e->p));
+    UC(emesh_comm_fin(   /**/ e->c));
+    UC(emesh_unpack_fin( /**/ e->u));
+}
+
+static void fin_mesh_mom_exch(/**/ MeshMomExch *e) {
+    UC(emesh_packm_fin(   /**/ e->p));
+    UC(emesh_commm_fin(   /**/ e->c));
+    UC(emesh_unpackm_fin( /**/ e->u));
+}
+
 static void fin_mbr(Mbr *m) {
     UC(rbc_fin(&m->q));
     UC(rbc_force_fin(m->force));
