@@ -1,3 +1,12 @@
+static void check(const float e[]) {
+    enum {X, Y, Z};
+    float ee, err;
+    ee = e[X]*e[X] + e[Y]*e[Y] + e[Z]*e[Z];
+    err = fabs(ee - 1.f);
+    if (err > 1e-6)
+        ERR("rigid ic: Matrix should be rotation only. Do not support scaling (error %g)", ee);
+}
+
 static Solid gen_from_matrix(const double *A) {
     enum {X, Y, Z, W, M};
     enum {D = W};
@@ -9,6 +18,9 @@ static Solid gen_from_matrix(const double *A) {
         s.e1[c]  = A[M * c + Y];
         s.e2[c]  = A[M * c + Z];
     }
+    UC(check(s.e0));
+    UC(check(s.e1));
+    UC(check(s.e2));
     return s;
 }
 

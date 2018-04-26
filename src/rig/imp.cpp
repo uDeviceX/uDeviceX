@@ -3,6 +3,7 @@
 #include <vector_types.h>
 #include <assert.h>
 #include <string.h>
+#include <math.h>
 
 #include <conf.h>
 #include "inc/conf.h"
