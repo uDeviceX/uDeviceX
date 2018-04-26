@@ -112,7 +112,7 @@ __global__ void select_collisions(int n, /**/ int *ncol, float4 *datacol, int *i
     }
 }
 
-static __device__ void get_collision_point(real dt,
+_S_ void get_collision_point(real dt,
                                            const float4 dcol, rPa A, rPa B, rPa C,
                                            /**/ real3_t *rw, real3_t *vw) {
     enum {X, Y, Z};
