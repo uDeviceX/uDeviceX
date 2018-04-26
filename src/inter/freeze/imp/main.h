@@ -15,7 +15,7 @@ static void remove_rbcs(RbcQuants *q, const Sdf *qsdf) {
 
 static void create_solids(const Coords *coords, bool empty_pp, int numdensity, float rig_mass, const RigPinInfo *pi,
                           MPI_Comm cart, const MeshRead *mesh, FluQuants* qflu, RigQuants* qrig) {
-    rig_gen_quants(coords, empty_pp, numdensity, rig_mass, pi, cart, mesh, /*io*/ qflu->pp, &qflu->n, /**/ qrig);
+    UC(rig_gen_freeze(coords, empty_pp, numdensity, rig_mass, pi, cart, mesh, /*io*/ qflu->pp, &qflu->n, /**/ qrig));
     MC(m::Barrier(cart));
     msg_print("created %d rigid object(s).", qrig->ns);
 }

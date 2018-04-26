@@ -70,7 +70,7 @@ void rig_gen_mesh(const Coords *coords, MPI_Comm comm, const MeshRead *mesh, con
     UC(matrices_fin(matrices));
 }
 
-void rig_gen_quants(const Coords *coords, bool empty_pp, int numdensity, float rig_mass, const RigPinInfo *pi, MPI_Comm comm,
+void rig_gen_freeze(const Coords *coords, bool empty_pp, int numdensity, float rig_mass, const RigPinInfo *pi, MPI_Comm comm,
                     const MeshRead *mesh, /* io */ Particle *opp, int *on, /**/ RigQuants *q) {
     RigGenInfo rgi;
     FluInfo fluinfo;
