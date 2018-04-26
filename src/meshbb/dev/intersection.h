@@ -1,8 +1,8 @@
 /* see Fedosov PhD Thesis */
 _I_ BBState intersect_triangle(real dt,
-                                             const real3_t *s10, const real3_t *s20, const real3_t *s30,
-                                             const real3_t *vs1, const real3_t *vs2, const real3_t *vs3,
-                                             const rPa *p0,  /**/ real_t *h, real_t *u, real_t *v, real_t *s) {
+                               const real3_t *s10, const real3_t *s20, const real3_t *s30,
+                               const real3_t *vs1, const real3_t *vs2, const real3_t *vs3,
+                               const rPa *p0,  /**/ real_t *h, real_t *u, real_t *v, real_t *s) {
     
     real3 a1, a2, at1, at2, n0, nt, ntt, dr0;
 
