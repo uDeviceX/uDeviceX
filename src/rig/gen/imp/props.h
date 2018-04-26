@@ -26,30 +26,25 @@ _S_ void init_I_from_mesh(float density, int nt, const int4 *tt, const float *vv
     mesh_inertia_tensor(nt, tt, vv, com, density, /**/ I);
 }
 
-_S_ void clear_vel(Solid *s) {
-    enum {X, Y, Z};
-    s->v[X] = s->v[Y] = s->v[Z] = 0; 
-    s->om[X] = s->om[Y] = s->om[Z] = 0; 
-}
-
 _S_ void compute_properties(const RigPinInfo *pi, int n, const float *rr0, float pmass,
                                float numdensity, const MeshRead *mesh, /**/ Solid *s) {
     enum {X, Y, Z};
     int spdir, nt;
     const int4 *tt;
     const float *vv;
-    float I[6];
+    float I[6], rho;
 
     spdir = rig_pininfo_get_pdir(pi);
 
     /* ini inertia tensor */    
 
     if (spdir == NOT_PERIODIC) {
+        rho = pmass * numdensity;
         nt = mesh_read_get_nt(mesh);
         tt = mesh_read_get_tri(mesh);
         vv = mesh_read_get_vert(mesh);
-        init_I_from_mesh(pmass * numdensity, nt, tt, vv, /**/ I);
-        s->mass = mesh_volume0(nt, tt, vv) * numdensity * pmass;
+        init_I_from_mesh(rho, nt, tt, vv, /**/ I);
+        s->mass = rho * mesh_volume0(nt, tt, vv);
     }
     else {
         init_I_from_pos(n, rr0, pmass, /**/ I);
@@ -64,6 +59,18 @@ _S_ void copy_props(const Solid *s0, Solid *s) {
     memcpy(s->Iinv, s0->Iinv, 6*sizeof(float));
 }
 
+_S_ void clear_vel(Solid *s) {
+    enum {X, Y, Z};
+    s->v[X] = s->v[Y] = s->v[Z] = 0; 
+    s->om[X] = s->om[Y] = s->om[Z] = 0; 
+}
+
+_S_ void clear_forces(Solid *s) {
+    enum {X, Y, Z};
+    s->fo[X] = s->fo[Y] = s->fo[Z] = 0; 
+    s->to[X] = s->to[Y] = s->to[Z] = 0; 
+}
+
 _I_ void set_properties(MPI_Comm comm, RigGenInfo rgi, int n, const float *rr0, int ns, const int *ids, /**/ Solid *ss) {
     Solid s_props, *s;
     int i;
@@ -74,6 +81,7 @@ _I_ void set_properties(MPI_Comm comm, RigGenInfo rgi, int n, const float *rr0, 
         s = &ss[i];
         copy_props(&s_props, s);
         clear_vel(s);
+        clear_forces(s);
         s->id = ids[i];
     }
 }
