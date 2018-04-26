@@ -2,7 +2,7 @@ struct Coords;
 struct RigPinInfo;
 struct MeshRead;
 
-// tag:struct[]
+// tag::struct[]
 struct RigGenInfo {
     float mass;
     int numdensity;

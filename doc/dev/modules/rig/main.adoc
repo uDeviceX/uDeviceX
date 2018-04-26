@@ -1,6 +1,4 @@
-= Rigid
-:lext: .adoc
-:src: ../../../src
+= rig: rigid objects
 :stem: latexmath
 
 Rigid objects consist of frozen particles moving in a rigid fashion.
@@ -142,4 +140,13 @@ include::{src}/rigid/imp.h[tag=upd]
 <3> generate rigid particles from template positions and rigid
     structures
 <4> update the mesh position
+
+
+== Submodules
+
+:leveloffset: +2
+
+include::gen.inc.adoc[]
+
+:leveloffset: -2
 

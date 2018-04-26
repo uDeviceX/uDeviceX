@@ -8,9 +8,8 @@ also used to remove objects colliding with the newly created wall
 ----
 include::{src}/inter/freeze/imp.h[tag=int]
 ----
-<1> <<inter_gen_rig, create rigid>> bodies, remove rigid bodies and rbcs colliding with
+<1> create rigid bodies, remove rigid bodies and rbcs colliding with
     the walls and remove solvent at rigid bodies locations
-<2> create walls from <<sdf, sdf>>
 
 To avoid long argument list, the data is packed in helper structures:
 
