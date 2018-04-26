@@ -33,5 +33,5 @@ void objects_gen_freeze(PFarrays*, Objects*);
 void objects_restart(Objects*);
 
 // TODO
-void objects_bounce(Objects*, PFarrays*);
-void objects_recolor_flu(Objects*, PFarrays*);
+void objects_bounce(Objects*, PFarrays *flu);
+void objects_recolor_flu(Objects*, PFarrays *flu);

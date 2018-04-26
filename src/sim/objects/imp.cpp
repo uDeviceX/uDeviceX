@@ -62,5 +62,6 @@
 #include "imp/fin.h"
 #include "imp/main.h"
 #include "imp/forces.h"
+#include "imp/bounce.h"
 #include "imp/dump.h"
 #include "imp/gen.h"
