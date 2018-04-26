@@ -22,6 +22,18 @@ static void fin_mesh_mom_exch(/**/ MeshMomExch *e) {
     UC(emesh_unpackm_fin( /**/ e->u));
 }
 
+static void fin_bounce_back(/**/ BounceBack *bb) {
+    UC(fin_mesh_mom_exch(/**/ bb->e));
+    UC(meshbb_fin(/**/ bb->bb));
+    Dfree(&bb->mm);
+}
+
+static void fin_colorer(/**/ Colorer *c) {
+    Dfree(&c->pp_mesh);
+    Dfree(&c->lo);
+    Dfree(&c->hi);
+}
+
 static void fin_mbr(Mbr *m) {
     UC(rbc_fin(&m->q));
     UC(rbc_force_fin(m->force));

@@ -22,6 +22,18 @@ static void ini_mesh_mom_exch(int nt, int max_m, MPI_Comm comm, /**/ MeshMomExch
     UC(emesh_unpackm_ini(nt, max_m, /**/ &e->u));
 }
 
+static void ini_bounce_back(int maxp, int nt, int max_m, MPI_Comm cart, /**/ BounceBack *bb) {
+    UC(ini_mesh_mom_exch(nt, max_m, cart, bb->e));
+    UC(meshbb_ini(maxp, /**/ &bb->bb));
+    Dalloc(&bb->mm,max_m * nt);
+}
+
+static void ini_colorer(int nv, int max_m, /**/ Colorer *c) {
+    Dalloc(&c->pp_mesh, nv * max_m);
+    Dalloc(&c->lo, max_m);
+    Dalloc(&c->hi, max_m);
+}
+
 static void ini_mbr(const Config *cfg, const OptMbr *opt, MPI_Comm cart, int3 L, /**/ Mbr **membrane) {
     int nv;
     const char *directory = "r";
