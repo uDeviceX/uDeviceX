@@ -35,3 +35,18 @@ void objects_remove_from_wall(const Sdf *sdf, Objects *o) {
     if (o->mbr) remove_mbr(sdf, o->mbr);
     if (o->rig) remove_rig(sdf, o->rig);
 }
+
+static void gen_mesh_mbr(Coords *coords, MPI_Comm cart, Mbr *m) {
+    MeshRead *cell = m->cell;
+    UC(rbc_gen_mesh(coords, cart, cell, "rbcs-ic.txt", /**/ &m->q));
+}
+
+static void gen_mesh_rig(Coords *coords, MPI_Comm cart, Rig *r) {
+    MeshRead *mesh = r->mesh;
+    UC(rig_gen_mesh(coords, cart, mesh, "rigs-ic.txt", /**/ &r->q));
+}
+
+void objects_gen_mesh(Objects *o) {
+    if (o->mbr) gen_mesh_mbr(o->coords, o->cart, o->mbr);
+    if (o->rig) gen_mesh_rig(o->coords, o->cart, o->rig);
+}

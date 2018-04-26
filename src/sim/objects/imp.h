@@ -22,10 +22,11 @@ void objects_strt_dump(const char *base, long id, Objects*);
 void objects_get_particles_all(Objects*, PFarrays*);
 void objects_get_particles_mbr(Objects*, PFarrays*);
 
+void objects_gen_mesh(Objects*);
 void objects_remove_from_wall(const Sdf *sdf, Objects *o);
 
 // TODO
-void objects_gen(Objects*);
+void objects_gen_freeze(Objects*);
 void objects_restart(Objects*);
 
 // TODO
