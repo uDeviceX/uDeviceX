@@ -50,15 +50,11 @@ include::adj.inc.adoc[]
 
 include::com.inc.adoc[]
 
-include::matrices.inc.adoc[]
-
 include::forces.inc.adoc[]
 
 include::area_volume.inc.adoc[]
 
 include::rnd.inc.adoc[]
-
-include::gen.inc.adoc[]
 
 include::params.inc.adoc[]
 
