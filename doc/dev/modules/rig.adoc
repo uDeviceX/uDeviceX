@@ -10,6 +10,8 @@ with the frozen particles.
 Rigid objects also contain a surface representation on which other
 particles may bounce back.
 
+Rigid objects are numbered and need a unique id for dumping diagnosis.
+
 == Quantities
 
 === data structure
@@ -34,19 +36,21 @@ include::{src}/rig/imp.h[tag=mem]
 ----
 `maxp` is the maximum particle number per node.
 
-generate the quantities from solvent particles or from <<io_restart, restart>> files:
+Rigid bodies generation is performed in two stages: create the mesh,
+then create the rigid particle template, properties and global ids.
+This allows to remove rigid bodies colliding with other entities
+before the second phase.
+The interface for generation is:
 
 [source, c++]
 ----
 include::{src}/rig/imp.h[tag=gen]
 ----
-
-Rigid objects are numbered and need a unique id for dump.
-This is initialised using
-[source, c++]
-----
-include::{src}/rig/imp.h[tag=genid]
-----
+<1> generate the meshes from file `ic` (see <<mesh_gen>>)
+<2> generate particle template, global ids and properties of rigid
+    objects given mesh. This operation will kill solvent particles inside
+    the rigid objects
+<3> generate quantities from <<io_restart, restart>> files
 
 Restart files are dumped using the following functions (see <<io_restart>>):
 
