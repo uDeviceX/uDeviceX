@@ -67,7 +67,7 @@ static void gen(MPI_Comm cart, const Config *cfg) {
     UC(rig_pininfo_ini(&pi));
     UC(rig_pininfo_set_pdir(NOT_PERIODIC, pi));
 
-    UC(rig_gen_quants(coords, empty_pp, numdensity, mass, pi, cart, mesh, flu.pp, &flu.n, &rig));
+    UC(rig_gen_freeze(coords, empty_pp, numdensity, mass, pi, cart, mesh, flu.pp, &flu.n, &rig));
 
     if (m::is_master(cart))
         UC(dump_template_xyz("template.xyz", rig.nps, rig.rr0_hst));
