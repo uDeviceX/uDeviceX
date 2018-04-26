@@ -49,6 +49,7 @@ struct Dump {
 struct Objects {
     Mbr *mbr;
     Rig *rig;
+    Opt opt;
     Dump *dump;
     Coords *coords;
     MPI_Comm cart;
