@@ -1,0 +1,21 @@
+= gen
+:base: {src}/rig/gen
+
+helper to generate rigid particles from solvents and compute rigid
+properties
+
+The solvent particles inside the given rigid objects are removed by
+this operation.
+
+[source,cpp]
+---
+include:{base}/imp.h[tag=int]
+---
+
+To avoid long argument list, the data is packed in helper structures:
+
+[source, cpp]
+----
+include::{base}/imp.h[tag=struct]
+----
+
