@@ -23,6 +23,9 @@ enum {MAX_COL = 4};
 
 #include "bbstates.h"
 
+#define _I_ static __device__
+#define _S_ static __device__
+
 namespace meshbb_dev {
 #include "dev/type.h"
 #include "dev/roots.h"
@@ -45,3 +48,5 @@ namespace meshbb_dev {
 #endif
 #include "imp/main.h"
 
+#undef _I_
+#undef _S_

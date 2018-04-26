@@ -10,7 +10,7 @@
     
 enum BBState {
     bbstates(make_enum)
-    NBBSTATES
+    BB_NSTATES
 };
 
 static const char *bbstatenames[] = {bbstates(make_str)};
