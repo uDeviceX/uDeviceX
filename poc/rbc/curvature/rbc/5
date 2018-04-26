@@ -42,23 +42,15 @@ L: fullratsimp(trigsimp(dot(ruu, n))) / dot(ru, ru);
 M: trigsimp(dot(ruv, n));
 N: trigsimp(dot(rvv, n))              / dot(rv, rv);
 
-D: 12.08 $
-ju: "../data/julicher.txt" $
-ju: read_nested_list(ju) $
-fun(l):=[l[1]/D, 4*l[4]*D^2] $
-ju: map(fun, ju) $
-
-ka: "../data/kantor.txt" $
-ka: read_nested_list(ka) $
-fun(l):=[l[1]/D, l[4]*D^3] $
-ka: map(fun, ka) $
+c1: L/sqrt(nn);
+c2: N/sqrt(nn);
 
 o: "main" $
 printf(true, "write: ~a.png~%", o)$
-draw2d(nticks=100, terminal = 'pdf, file_name  = o,
-  'xlabel = "R", 'ylabel = "energy", 'key_pos = 'top_left, 'line_width = 3,
-  'key = "Julicher",   'color = 'red,   points(ju),
-  'key = "Kantor",     'color = 'green, points(ka),
-  'key = "analit.",    'color = 'blue,  parametric(x, (1/2*(L + N)/sqrt(nn))^2, u, 0, %pi/2),
-  'key = "bi-concave profile",    'color = 'black, parametric(x, 50*z, u, 0, %pi/2)
+draw2d(nticks=100, terminal = 'png, file_name  = o,
+  'xlabel = "R", 'ylabel = "1/R", 'key_pos = 'bottom_left, 'line_width = 3,
+  'key = "c1",                 'color = 'red,   parametric(x, c1, u, 0, %pi/2),
+  'key = "c2",                 'color = 'green, parametric(x, c2, u, 0, %pi/2),  
+  'key = "bi-concave profile", 'color = 'black, parametric(x,  30*z, u, 0, %pi/2),
+  'key = "",                   'color = 'black, parametric(x, -30*z, u, 0, %pi/2)
   ), v = 0;
