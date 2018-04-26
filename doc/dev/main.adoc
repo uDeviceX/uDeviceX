@@ -60,7 +60,7 @@ include::modules/meshbb.adoc[]
 
 include::modules/rbc/main.adoc[]
 
-include::modules/rig.adoc[]
+include::modules/rig/main.adoc[]
 
 include::modules/scheme/main.adoc[]
 
