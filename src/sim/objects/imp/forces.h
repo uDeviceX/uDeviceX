@@ -15,3 +15,12 @@ void objects_clear_forces(Objects *obj) {
     if (obj->mbr) UC(clear_mbr_forces(obj->mbr));
     if (obj->rig) UC(clear_rig_forces(obj->rig));
 }
+
+static void internal_forces_mbr(float dt, const OptMbr *opt, Mbr *m) {
+    UC(rbc_force_apply(m->force, m->params, dt, &m->q, /**/ m->ff));
+    if (opt->stretch) UC(rbc_stretch_apply(m->q.nc, m->stretch, /**/ m->ff));
+}
+
+void objects_internal_forces(float dt, Objects *o) {
+    if (o->mbr) internal_forces_mbr(dt, &o->opt.rbc, o->mbr);
+}
