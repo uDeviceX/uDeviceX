@@ -22,6 +22,10 @@ include::angle.inc.adoc[]
 
 include::edg_len.inc.adoc[]
 
+include::gen.inc.adoc[]
+
+include::matrices.inc.adoc[]
+
 include::scatter.inc.adoc[]
 
 include::triangles.inc.adoc[]
