@@ -57,4 +57,4 @@
 #include "imp/fin.h"
 #include "imp/main.h"
 #include "imp/dump.h"
-#include "imp/freeze.h"
+#include "imp/gen.h"
