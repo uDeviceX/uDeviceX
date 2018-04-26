@@ -69,9 +69,9 @@ __global__ void collect_rbc_mom(float dt, int nc, int nt, int nv, const int4 *tt
         t.y += cid * nv;
         t.z += cid * nv;
         
-        A = P2rP( pp + t.x );
-        B = P2rP( pp + t.y );
-        C = P2rP( pp + t.z );
+        A = fetch_Part(t.x, pp);
+        B = fetch_Part(t.y, pp);
+        C = fetch_Part(t.z, pp);
 
         rbc_M2f(dt, m, A.r, B.r, C.r, /**/ &fa, &fb, &fc);
 
