@@ -5,6 +5,7 @@ struct Config;
 struct Coords;
 struct Opt;
 struct PFarrays;
+struct BForce;
 
 void objects_ini(const Config*, const Opt*, MPI_Comm, const Coords*, int maxp, Objects**);
 void objects_fin(Objects*);
@@ -15,6 +16,7 @@ void objects_distribute(Objects*);
 
 void objects_clear_forces(Objects*);
 void objects_internal_forces(float dt, Objects *o);
+void objects_body_forces(const BForce*, Objects *o);
 
 void objects_mesh_dump(Objects*);
 
