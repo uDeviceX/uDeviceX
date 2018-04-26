@@ -43,4 +43,5 @@ void inter_freeze(const Coords *coords, MPI_Comm cart, InterWalInfos w, InterFlu
     if (w.active && r.active) remove_rbcs(r.q, w.sdf);
     if (w.active && s.active) remove_solids(s.q, w.sdf);
     if (s.active)             create_solids(coords, s.empty_pp, s.numdensity, s.mass, s.pi, cart, s.mesh, f.q, s.q);
+    if (r.active)             rbc_gen_freeze(cart, r.q);
 }

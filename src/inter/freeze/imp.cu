@@ -34,6 +34,7 @@
 #include "flu/imp.h"
 
 #include "rbc/type.h"
+#include "rbc/imp.h"
 
 #include "rig/imp.h"
 #include "wall/imp.h"

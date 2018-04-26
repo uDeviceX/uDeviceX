@@ -10,7 +10,7 @@ static void gen_rbc(Sim *s) {
     Rbc *rbc = &s->rbc;
     const Opt *opt = &s->opt;
     if (opt->rbc.active) {
-        rbc_gen_quants(s->coords, s->cart, cell, "rbcs-ic.txt", /**/ &rbc->q);
+        rbc_gen_mesh(s->coords, s->cart, cell, "rbcs-ic.txt", /**/ &rbc->q);
     }
 }
 
