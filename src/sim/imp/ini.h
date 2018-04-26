@@ -206,12 +206,6 @@ static void ini_dump(int maxp, MPI_Comm cart, const Coords *c, const Opt *opt, D
     d->id_bop = d->id_rbc = d->id_rbc_com = d->id_rig_mesh = d->id_strt = 0;
 }
 
-static long maxp_estimate(const OptParams *p) {
-    int3 L = p->L;
-    int estimate = L.x * L.y * L.z * p->numdensity;
-    return SAFETY_FACTOR_MAXP * estimate;
-}
-
 static void ini_time(const Config *cfg, /**/ Time *t) {
     const float t0 = 0;
     UC(conf_lookup_float(cfg, "time.end",  &t->end));
@@ -233,7 +227,7 @@ static void ini_common(const Config *cfg, MPI_Comm cart, /**/ Sim *s) {
 }
 
 static void ini_optional_features(const Config *cfg, const Opt *opt, Sim *s) {
-    int maxp = maxp_estimate(&opt->params);
+    int maxp = opt_estimate_maxp(opt);
     int3 L = opt->params.L;
     
     if (opt->vcon)       UC(ini_vcon(s->cart, L, cfg, /**/ &s->vcon));
@@ -262,7 +256,7 @@ void sim_ini(const Config *cfg, MPI_Comm cart, /**/ Sim **sim) {
     UC(read_recolor_opt(cfg, &s->recolorer));
     UC(opt_check(opt));
 
-    maxp = maxp_estimate(&opt->params);
+    maxp = opt_estimate_maxp(opt);
     L = opt->params.L;
 
     UC(ini_pair_params(cfg, opt->params.kBT, dt, s));
