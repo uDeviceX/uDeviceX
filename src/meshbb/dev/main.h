@@ -1,6 +1,6 @@
 static const real_t TOL = 0.1;
 
-static __device__ void get_cells(int3 L, float tol, real3_t A, real3_t B, real3_t C, /**/ int3 *lo, int3 *hi) {
+_S_ void get_cells(int3 L, float tol, real3_t A, real3_t B, real3_t C, /**/ int3 *lo, int3 *hi) {
     real3_t lf, hf;
     lf = min3T3(A, B, C);
     hf = max3T3(A, B, C);
@@ -12,7 +12,7 @@ static __device__ void get_cells(int3 L, float tol, real3_t A, real3_t B, real3_
     *hi = get_cidx(L, hf);
 }
 
-static __device__ void find_collisions_cell(real dt,
+_S_ void find_collisions_cell(real dt,
                                             int tid, int start, int count, const Particle *pp, const Force *ff,
                                             const rPa *A, const rPa *B, const rPa *C,
                                             /**/ int *ncol, float4 *datacol, int *idcol) {
@@ -43,7 +43,7 @@ static __device__ void find_collisions_cell(real dt,
     }
 }
 
-static __device__ void revert_r(float h, rPa *p) {
+_S_ void revert_r(float h, rPa *p) {
     enum {X, Y, Z};
     p->r.x -= p->v.x * h;
     p->r.y -= p->v.y * h;
@@ -137,7 +137,7 @@ static __device__ void get_collision_point(real dt,
     vw->z = w * A.v.z + u * B.v.z + v * C.v.z;    
 }
 
-static __device__ void push_particle(const real3_t *A, const real3_t *B, const real3_t *C, real_t l, /**/ real3_t *r) {
+_S_ void push_particle(const real3_t *A, const real3_t *B, const real3_t *C, real_t l, /**/ real3_t *r) {
     real3_t n, a, b;
     real_t s;
     
