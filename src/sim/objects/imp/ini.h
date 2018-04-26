@@ -10,6 +10,18 @@ static void ini_rig_distr(int nv, MPI_Comm comm, int3 L, /**/ RigDistr *d) {
     UC(drig_unpack_ini(L,MAX_SOLIDS, nv, /**/ &d->u));
 }
 
+static void ini_mesh_exch(int3 L, int nv, int max_m, MPI_Comm comm, /**/ MeshExch *e) {
+    UC(emesh_pack_ini(L, nv, max_m, /**/ &e->p));
+    UC(emesh_comm_ini(comm, /**/ &e->c));
+    UC(emesh_unpack_ini(L, nv, max_m, /**/ &e->u));
+}
+
+static void ini_mesh_mom_exch(int nt, int max_m, MPI_Comm comm, /**/ MeshMomExch *e) {
+    UC(emesh_packm_ini(nt, max_m, /**/ &e->p));
+    UC(emesh_commm_ini(comm, /**/ &e->c));
+    UC(emesh_unpackm_ini(nt, max_m, /**/ &e->u));
+}
+
 static void ini_mbr(const Config *cfg, const OptMbr *opt, MPI_Comm cart, int3 L, /**/ Mbr **membrane) {
     int nv;
     const char *directory = "r";
