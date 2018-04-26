@@ -22,7 +22,6 @@
 #include "io/mesh_read/imp.h"
 #include "flu/imp.h"
 #include "rig/imp.h"
-#include "rig/gen/imp.h"
 #include "rigid/imp.h"
 
 static void dump_template_xyz(const char *path, int n, const float *rr) {
@@ -44,10 +43,12 @@ static void gen(MPI_Comm cart, const Config *cfg) {
     int3 L;
     int maxp, maxs, numdensity;
     RigPinInfo *pi;
-    RigGenInfo rgi;
-    FluInfo fi;
-    RigInfo ri;
+    float mass;
+    bool empty_pp;
+
     maxs = 200;
+    mass = 1.0;
+    empty_pp = true;
 
     UC(conf_lookup_int(cfg, "glb.numdensity", &numdensity));
     UC(coords_ini_conf(cart, cfg, &coords));
@@ -65,27 +66,8 @@ static void gen(MPI_Comm cart, const Config *cfg) {
 
     UC(rig_pininfo_ini(&pi));
     UC(rig_pininfo_set_pdir(NOT_PERIODIC, pi));
-    
-    rgi.mass = 1.0;
-    rgi.numdensity = numdensity;
-    rgi.pi = pi;
-    rgi.nt = mesh_read_get_nt(mesh);
-    rgi.nv = mesh_read_get_nv(mesh);
-    rgi.tt = rig.dtt;
-    rgi.pp = rig.i_pp;
-    rgi.empty_pp = true;
-    rgi.mesh = mesh;
 
-    fi.pp = flu.pp;
-    fi.n = &flu.n;
-
-    ri.ns = rig.ns;
-    ri.nps = &rig.nps;
-    ri.rr0 = rig.rr0_hst;
-    ri.ss = rig.ss_hst;
-    ri.pp = rig.pp_hst;
-    
-    UC(rig_gen_from_solvent(coords, cart, rgi, /*io*/ fi, /**/ ri));
+    UC(rig_gen_quants(coords, empty_pp, numdensity, mass, pi, cart, mesh, flu.pp, &flu.n, &rig));
 
     if (m::is_master(cart))
         UC(dump_template_xyz("template.xyz", rig.nps, rig.rr0_hst));
