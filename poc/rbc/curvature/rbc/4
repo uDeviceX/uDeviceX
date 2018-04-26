@@ -43,16 +43,19 @@ M: trigsimp(dot(ruv, n));
 N: trigsimp(dot(rvv, n))              / dot(rv, rv);
 
 D: 12.08 $
-sc: 4 * D^2 $
-fi: "../data/julicher.txt" $
-l: read_nested_list(fi) $
-fun(l):=[l[1]/D, l[4]*sc] $
-data: map(fun, l) $
+ju: "../data/julicher.txt" $
+ju: read_nested_list(ju) $
+fun(l):=[l[1]/D, 4*l[4]*D^2] $
+ju: map(fun, ju) $
+
+ka: "../data/kantor.txt" $
+ka: read_nested_list(ka) $
+fun(l):=[l[1]/D, l[4]*D^3] $
+ka: map(fun, ka) $
 
 o: "main" $
 printf(true, "write: ~a.png~%", o)$
-draw2d(nticks=100,
-  points(data),
-  terminal   = 'png,
-  file_name  = o,
-  parametric(x, (1/2*(L + N)/sqrt(nn))^2, u, 0, %pi/2)), v = 0;
+draw2d(nticks=100, terminal = 'png, file_name  = o,
+  'xlabel = "R", 'ylabel = "energy",
+  'color = 'red, points(ju), 'color = 'green, points(ka),
+  'color = 'blue, parametric(x, (1/2*(L + N)/sqrt(nn))^2, u, 0, %pi/2)), v = 0;
