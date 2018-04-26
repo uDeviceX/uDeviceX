@@ -22,9 +22,10 @@ static void fin_mesh_mom_exch(/**/ MeshMomExch *e) {
     UC(emesh_unpackm_fin( /**/ e->u));
 }
 
-static void fin_bounce_back(/**/ BounceBackData *bb) {
+static void fin_bbdata(/**/ BounceBackData *bb) {
     UC(fin_mesh_mom_exch(/**/ bb->e));
     Dfree(&bb->mm);
+    EFREE(bb);
 }
 
 static void fin_colorer(/**/ Colorer *c) {
@@ -62,6 +63,8 @@ static void fin_rig(Rig *r) {
     UC(mesh_write_fin(r->mesh_write));
     UC(rig_pininfo_fin(r->pininfo));
 
+    if (r->bbdata) UC(fin_bbdata(r->bbdata));
+    
     EFREE(r);
 }
 
