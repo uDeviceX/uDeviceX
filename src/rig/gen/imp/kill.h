@@ -1,7 +1,7 @@
 _S_ void remove_hst(const int *labels, int *n, Particle *pp) {
     int i, j;
     for (i = j = 0; i < *n; ++i) {
-        if (labels[i] == IN)
+        if (labels[i] == OUT)
             pp[j++] = pp[i];
     }
     *n = j;
