@@ -117,16 +117,19 @@ _S_ void get_transf(MPI_Comm comm, bool hasid0, const Solid *ss, Transf *T) {
     MC(m::Bcast(T->e2, 3, MPI_FLOAT, root, comm));
 }
 
+_S_ float dot(const float a[], const float b[]) {
+    enum {X, Y, Z};
+    return a[X]*b[X] + a[Y]*b[Y] + a[Z]*b[Z];
+}
+
 _S_ void transform(const Transf *T, float *r) {
     enum {X, Y, Z};
     int c;
     float r0[3];
     for (c = 0; c < 3; ++c) r0[c] = r[c] - T->s[c];
-    for (c = 0; c < 3; ++c)
-        r[c] =
-            r0[X] * T->e0[c] +
-            r0[Y] * T->e1[c] +
-            r0[Z] * T->e2[c];
+    r[X] = dot(r0, T->e0);
+    r[Y] = dot(r0, T->e1);
+    r[Z] = dot(r0, T->e2);
 }
 
 _S_ void transf_template(const Transf *T, int n, float *rr) {
