@@ -188,7 +188,7 @@ __global__ void perform_collisions(float dt, float mass,
 
     push_particle(&A.r, &B.r, &C.r, d.w * eps, /**/ &pn.r);
     
-    pp[i] = rP2P(&pn);
+    write_Part(&pn, i, /**/ pp);
 
     /* add momentum (ang mom in ref of the triangle com) */
     /* shift in new ref */

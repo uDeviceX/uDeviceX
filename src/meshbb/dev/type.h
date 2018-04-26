@@ -26,10 +26,10 @@ _I_ rPa fetch_Part(int i, const Particle *pp) {
     return rp;
 }
 
-_I_ Particle rP2P(const rPa *rp) {
+_I_ void write_Part(const rPa *rp, int i, Particle *pp) {
     Particle p = {
         .r = {(float) rp->r.x, (float) rp->r.y, (float) rp->r.z},
         .v = {(float) rp->v.x, (float) rp->v.y, (float) rp->v.z}
     };
-    return p;
+    pp[i] = p;
 }
