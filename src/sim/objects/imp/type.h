@@ -26,15 +26,18 @@ struct MeshMomExch {
     EMeshUnpackM *u;
 };
 
-// struct Colorer {
-//     Particle *pp;            /* particle workspace */
-//     float3 *minext, *maxext; /* bounding boxes     */
-// };
+/* workspace for solvent coloring */
+struct Colorer {
+    Particle *pp_mesh; /* particle workspace */
+    float3 *lo, *hi;   /* bounding boxes     */
+};
 
-// struct BounceBack {
-//     MeshBB *d;
-//     Momentum *mm;
-// };
+/* workspace for mesh bounce back */
+struct BounceBack {
+    MeshBB *bb;
+    MeshMomExch *e;
+    Momentum *mm;
+};
 
 /* data holder for cell membranes */
 struct Mbr {
@@ -49,6 +52,9 @@ struct Mbr {
     float mass;           /* mass of one particle                      */
     MeshRead   *mesh;     /* cell template                             */
     MeshWrite  *mesh_write;
+
+    MeshExch *mesh_exch;
+    Colorer  *colorer;
 };
 
 /* data holder for rigid objects */
@@ -60,9 +66,11 @@ struct Rig {
     RigDistr d;
     
     float mass;  /* mass of one particle */
-
     MeshRead   *mesh;
     MeshWrite  *mesh_write;
+
+    MeshExch   *mesh_exch;
+    BounceBack *bb;
 };
 
 struct Dump {
