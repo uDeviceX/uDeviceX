@@ -1,5 +1,5 @@
 #### rig gen
-# sTEST: rig.gen.t1
+# TEST: rig.gen.t1
 cd test/rig/gen
 S=`u.cp.s` U=u/rig/gen
 u.cp.rig sphere.ply  rig.ply
@@ -9,3 +9,4 @@ u.conf0 $U
 u.make -j
 :
 u.run 2 1 1 ./udx conf.cfg
+cp template.xyz rig.templ.out.txt
