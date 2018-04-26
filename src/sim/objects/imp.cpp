@@ -57,5 +57,6 @@
 #include "imp/ini.h"
 #include "imp/fin.h"
 #include "imp/main.h"
+#include "imp/forces.h"
 #include "imp/dump.h"
 #include "imp/gen.h"
