@@ -30,6 +30,7 @@
 #include "conf/imp.h"
 #include "io/mesh_read/imp.h"
 #include "io/mesh/imp.h"
+#include "io/restart/imp.h"
 
 #include "rbc/params/imp.h"
 #include "rbc/type.h"

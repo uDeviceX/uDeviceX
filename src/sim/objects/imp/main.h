@@ -118,3 +118,17 @@ void objects_get_particles_all(Objects *obj, PFarrays *pf) {
 void objects_get_particles_mbr(Objects *obj, PFarrays *pf) {
     if (obj->mbr) get_mbr(obj->mbr, pf);
 }
+
+static void restart_mbr(MPI_Comm cart, const char *base, Mbr *m) {
+    UC(rbc_strt_quants(cart, m->cell, base, RESTART_BEGIN, &m->q));
+}
+
+static void restart_rig(MPI_Comm cart, const char *base, Rig *r) {
+    UC(rig_strt_quants(cart, r->mesh, base, RESTART_BEGIN, &r->q));
+}
+
+void objects_restart(Objects *o) {
+    const char *base = o->opt.strt_base_read;
+    if (o->mbr) restart_mbr(o->cart, base, o->mbr);
+    if (o->rig) restart_rig(o->cart, base, o->rig);
+}

@@ -24,9 +24,8 @@ void objects_get_particles_mbr(Objects*, PFarrays*);
 
 void objects_gen_mesh(Objects*);
 void objects_remove_from_wall(const Sdf *sdf, Objects *o);
+void objects_gen_freeze(PFarrays*, Objects*);
 
-// TODO
-void objects_gen_freeze(Objects*);
 void objects_restart(Objects*);
 
 // TODO
