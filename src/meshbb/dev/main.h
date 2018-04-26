@@ -22,7 +22,7 @@ _S_ void find_collisions_cell(real dt,
     real_t tc, u, v, s;
     
     for (i = start; i < start + count; ++i) {
-        p = P2rP(pp + i);
+        p = fetch_Part(i, pp);
         f = ff[i];
         rvprev(dt, &p.r, &p.v, f.f, /**/ &p0.r, &p0.v);
 
@@ -175,7 +175,7 @@ __global__ void perform_collisions(float dt, float mass,
     id = idcol[entry];
     d  = datacol[entry];
 
-    p1 = P2rP( pp + i );
+    p1 = fetch_Part(i, pp);
     f  = ff[i];
     
     rvprev(dt, &p1.r, &p1.v, f.f, /**/ &p0.r, &p0.v);

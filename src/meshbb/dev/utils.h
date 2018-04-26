@@ -74,9 +74,9 @@ _I_ void fetch_triangle(int id, int nt, int nv, const int4 *tt, const Particle *
     t.y += mid * nv;
     t.z += mid * nv;
 
-    *A = P2rP( i_pp + t.x );
-    *B = P2rP( i_pp + t.y );
-    *C = P2rP( i_pp + t.z );
+    *A = fetch_Part(t.x, i_pp);
+    *B = fetch_Part(t.y, i_pp);
+    *C = fetch_Part(t.z, i_pp);
 }
 
 _I_ void bounce_back(real dt, const rPa *p0, const real3_t *rw, const real3_t *vw, const real_t h, /**/ rPa *pn) {

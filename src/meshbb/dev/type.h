@@ -16,8 +16,9 @@ _S_ real3_t make_real3(real_t a, real_t b, real_t c) {
     return r;
 }
 
-_I_ rPa P2rP(const Particle *p) {
+_I_ rPa fetch_Part(int i, const Particle *pp) {
     enum {X, Y, Z};
+    const Particle *p = &pp[i];
     rPa rp = {
         .r = make_real3((real_t) p->r[X], (real_t) p->r[Y], (real_t) p->r[Z]),
         .v = make_real3((real_t) p->v[X], (real_t) p->v[Y], (real_t) p->v[Z])
