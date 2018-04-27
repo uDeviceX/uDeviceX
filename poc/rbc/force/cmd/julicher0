@@ -195,7 +195,7 @@ BEGIN {
     if (eq(file, "-h")) usg()
     off_read(file)
     to_cm()
-    # to_rbc()
+    to_rbc()
     setup()
 
     compute_ang()

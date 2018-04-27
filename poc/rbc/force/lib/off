@@ -7,7 +7,7 @@ function off_read(file,   l, r, i) { # sets NV, NT, [XX, YY, ZZ], [T0, T1, T2]
     NV = $1; NT = $2
     for (i = 0; i < NV; i++) {
 	r = getline < file
-	if (bad(r)) err(r, "fail to read verts: " file)
+	if (bad(r)) err("fail to read verts: " file)
 	XX[i] = $1; YY[i] = $2; ZZ[i] = $3
     }
     for (i = 0; i < NT; i++) {

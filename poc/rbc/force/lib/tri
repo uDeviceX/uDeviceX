@@ -11,29 +11,36 @@ function orient2d(a, b, P, Q, c,   acp, acq, bcp, bcq) {
     return acp * bcq - acq * bcp;
 }
 
-function orient2d_xy(a, b, c) {
+function orient2d_xy(a, b, c,   X, Y, Z) {
     X = 0; Y = 1; Z = 2
     return orient2d(a, b, X, Y, c)
 }
 
-function orient2d_zx(a, b, c) {
+function orient2d_zx(a, b, c,   X, Y, Z) {
     X = 0; Y = 1; Z = 2
     return orient2d(a, b, Z, X, c)
 }
 
-function orient2d_yz(a, b, c) {
+function orient2d_yz(a, b, c,   X, Y, Z) {
     X = 0; Y = 1; Z = 2
     return orient2d(a, b, Y, Z, c)
 }
 
-function ac_bc_cross(a, c, b, r) {
+function ac_bc_cross(a, c, b, r,    X, Y, Z) {
     X = 0; Y = 1; Z = 2
     r[X] = orient2d_yz(a, b, c)
     r[Y] = orient2d_zx(a, b, c)
     r[Z] = orient2d_xy(a, b, c)
 }
 
-function orient3d(a, b, c, d,   ax, bx, cx) {
+function tri_normal(a, c, b,   X, Y, Z) {
+    X = 0; Y = 1; Z = 2
+    NX = orient2d_yz(a, b, c)
+    NY = orient2d_zx(a, b, c)
+    NZ = orient2d_xy(a, b, c)
+}
+
+function orient3d(a, b, c, d,   ax, bx, cx,   X, Y, Z) {
     X = 0; Y = 1; Z = 2
     ax = a[X] - d[X]; ay = a[Y] - d[Y]; az = a[Z] - d[Z]
     bx = b[X] - d[X]; by = b[Y] - d[Y]; bz = b[Z] - d[Z]
@@ -49,7 +56,7 @@ function dihedral_xy(ax, ay, az,
 		     cx, cy, cz,
 		     dx, dy, dz,
 #
-		     a, b, c, d, k, l, bcx, bcy, bcz, bc) {
+		     X, Y, Z, a, b, c, d, k, l, bcx, bcy, bcz, bc) {
     X = 0; Y = 1; Z = 2
 
     a[X] = ax; a[Y] = ay; a[Z] = az
@@ -78,7 +85,7 @@ function area(ax, ay, az,
 	      bx, by, bz,
 	      cx, cy, cz,
 #
-	      a, b, c, x, y, z) {
+	      X, Y, Z, a, b, c, x, y, z) {
     X = 0; Y = 1; Z = 2
     a[X] = ax; a[Y] = ay; a[Z] = az
     b[X] = bx; b[Y] = by; b[Z] = bz
@@ -143,232 +150,138 @@ function d_dihedral(ax, ay, az,
 		    kn_knx,kn_kny,kn_knz,knx,kny,knz,kx,kx_ay,kx_az,kx_by,kx_bz,kx_cy,kx_cz,
 		    ky,ky_ax,ky_az,ky_bx,ky_bz,ky_cx,ky_cz,kz,kz_ax,kz_ay,kz_bx,kz_by,kz_cx,
 		    kz_cy,nx,nx_by,nx_bz,nx_cy,nx_cz,nx_dy,nx_dz,ny,ny_bx,ny_bz,ny_cx,ny_cz,
-		    ny_dx,ny_dz,nz,nz_bx,nz_by,nz_cx,nz_cy,nz_dx,nz_dy, eps, k) {
+		    ny_dx,ny_dz,nz,nz_bx,nz_by,nz_cx,nz_cy,nz_dx,nz_dy, eps, X, Y, Z, a, b, c, d, k, n) {
+    
     eps = 1e-32
-    kz = (bx-ax)*(cy-ay)-(by-ay)*(cx-ax)
-    ky = (bz-az)*(cx-ax)-(bx-ax)*(cz-az)
-    kx = (by-ay)*(cz-az)-(bz-az)*(cy-ay)
-    nz = (cy-by)*(dx-bx)-(cx-bx)*(dy-by)
-    ny = (cx-bx)*(dz-bz)-(cz-bz)*(dx-bx)
-    nx = (cz-bz)*(dy-by)-(cy-by)*(dz-bz)
-    kdn = kz*nz+ky*ny+kx*nx
-    knz = kx*ny-ky*nx
-    kny = kz*nx-kx*nz
-    knx = ky*nz-kz*ny
+    X = 0; Y = 1; Z = 2
+    a[X] = ax; a[Y] = ay; a[Z] = az
+    b[X] = bx; b[Y] = by; b[Z] = bz
+    c[X] = cx; c[Y] = cy; c[Z] = cz
+    d[X] = dx; d[Y] = dy; d[Z] = dz
+    tri_normal(a, b, c)
+    kx = NX; ky = NY; kz = NZ
+    tri_normal(c, b, d)
+    nx = NX; ny = NY; nz = NZ
 
-    kn = sqrt(pow(knz,2)+pow(kny,2)+pow(knx,2))
-    kn = sign(kn, ax, ay, az, dx, dy, dz, kx, ky, kz, nx, ny, nz)
-    E_kdn = -kn/(pow(kn,2)+pow(kdn,2))
-    E_kn = kdn/(pow(kn,2)+pow(kdn,2))
-    kn_knx = knx/sqrt(pow(knz,2)+pow(kny,2)+pow(knx,2) + eps)
-    kn_kny = kny/sqrt(pow(knz,2)+pow(kny,2)+pow(knx,2) + eps)
-    kn_knz = knz/sqrt(pow(knz,2)+pow(kny,2)+pow(knx,2) + eps)
-    E_knx = E_kn*kn_knx
-    E_kny = E_kn*kn_kny
-    E_knz = E_kn*kn_knz
-    E_ky = E_knx*nz
-    E_kz = -E_knx*ny
-    E_ny = -E_knx*kz
-    E_nz = E_knx*ky
-    E_kx = -E_kny*nz
-    E_kz += E_kny*nx
-    E_nx = E_kny*kz
-    E_nz += -E_kny*kx
-    E_kx += E_knz*ny
-    E_ky += -E_knz*nx
-    E_nx += -E_knz*ky
-    E_ny += E_knz*kx
-    E_kx += E_kdn*nx
-    E_ky += E_kdn*ny
-    E_kz += E_kdn*nz
-    E_nx += E_kdn*kx
-    E_ny += E_kdn*ky
-    E_nz += E_kdn*kz
-    nx_by = dz-cz
-    nx_bz = cy-dy
-    nx_cy = bz-dz
-    nx_cz = dy-by
-    nx_dy = cz-bz
-    nx_dz = by-cy
-    E_by = E_nx*nx_by
-    E_bz = E_nx*nx_bz
-    E_cy = E_nx*nx_cy
-    E_cz = E_nx*nx_cz
-    E_dy = E_nx*nx_dy
-    E_dz = E_nx*nx_dz
-    ny_bx = cz-dz
-    ny_bz = dx-cx
-    ny_cx = dz-bz
-    ny_cz = bx-dx
-    ny_dx = bz-cz
-    ny_dz = cx-bx
-    E_bx = E_ny*ny_bx
-    E_bz += E_ny*ny_bz
-    E_cx = E_ny*ny_cx
-    E_cz += E_ny*ny_cz
-    E_dx = E_ny*ny_dx
-    E_dz += E_ny*ny_dz
-    nz_bx = dy-cy
-    nz_by = cx-dx
-    nz_cx = by-dy
-    nz_cy = dx-bx
-    nz_dx = cy-by
-    nz_dy = bx-cx
-    E_bx += E_nz*nz_bx
-    E_by += E_nz*nz_by
-    E_cx += E_nz*nz_cx
-    E_cy += E_nz*nz_cy
-    E_dx += E_nz*nz_dx
-    E_dy += E_nz*nz_dy
-    kx_ay = bz-cz
-    kx_az = cy-by
-    kx_by = cz-az
-    kx_bz = ay-cy
-    kx_cy = az-bz
-    kx_cz = by-ay
-    E_ay = E_kx*kx_ay
-    E_az = E_kx*kx_az
-    E_by += E_kx*kx_by
-    E_bz += E_kx*kx_bz
-    E_cy += E_kx*kx_cy
-    E_cz += E_kx*kx_cz
-    ky_ax = cz-bz
-    ky_az = bx-cx
-    ky_bx = az-cz
-    ky_bz = cx-ax
-    ky_cx = bz-az
-    ky_cz = ax-bx
-    E_ax = E_ky*ky_ax
-    E_az += E_ky*ky_az
-    E_bx += E_ky*ky_bx
-    E_bz += E_ky*ky_bz
-    E_cx += E_ky*ky_cx
-    E_cz += E_ky*ky_cz
-    kz_ax = by-cy
-    kz_ay = cx-bx
-    kz_bx = cy-ay
-    kz_by = ax-cx
-    kz_cx = ay-by
-    kz_cy = bx-ax
-    E_ax += E_kz*kz_ax
-    E_ay += E_kz*kz_ay
-    E_bx += E_kz*kz_bx
-    E_by += E_kz*kz_by
-    E_cx += E_kz*kz_cx
-    E_cy += E_kz*kz_cy
-
-    DAX = E_ax; DAY = E_ay; DAZ = E_az
-    DBX = E_bx; DBY = E_by; DBZ = E_bz
-    DCX = E_cx; DCY = E_cy; DCZ = E_cz
-    DDX = E_dx; DDY = E_dy; DDZ = E_dz
-}
-
-
-function d_cos(ax, ay, az,
-	       bx, by, bz,
-	       cx, cy, cz,
-	       dx, dy, dz,
-#
-	       E_ax,E_ay,E_az,E_bx,E_by,E_bz,E_cx,E_cy,E_cz,E_dx,E_dy,E_dz,E_kk,E_kx,E_ky,
-	       E_kz,E_nn,E_nx,E_ny,E_nz,kk,kk_kx,kk_ky,
-	       kk_kz,kx,ky,ky_bx,ky_cx,kz,kz_ax,kz_ay,kz_bx,kz_by,kz_cx,kz_cy,nn,nn_nx,
-	       nn_ny,nn_nz,nx,nx_by,nx_bz,nx_cy,nx_cz,nx_dy,nx_dz,ny,ny_bx,ny_bz,ny_cx,
-	       ny_cz,ny_dx,ny_dz,nz,nz_bx,nz_by,nz_cx,nz_cy,nz_dx,nz_dy,rsq_kk,rsq_nn) {
-
-    kz = (bx-ax)*(cy-ay)-(by-ay)*(cx-ax)
-    ky = (bz-az)*(cx-ax)-(bx-ax)*(cz-az)
-    kx = (by-ay)*(cz-az)-(bz-az)*(cy-ay)
-    nz = (cy-by)*(dx-bx)-(cx-bx)*(dy-by)
-    ny = (cx-bx)*(dz-bz)-(cz-bz)*(dx-bx)
-    nx = (cz-bz)*(dy-by)-(cy-by)*(dz-bz)
-    nn = pow(nz,2)+pow(ny,2)+pow(nx,2)
-    kk = pow(kz,2)+pow(ky,2)+pow(kx,2)
-    rsq = 1/sqrt(kk*nn)
-    kn = kz*nz+ky*ny+kx*nx
-    E_kx = nx*rsq
-    E_ky = ny*rsq
-    E_kz = nz*rsq
-    E_nx = kx*rsq
-    E_ny = ky*rsq
-    E_nz = kz*rsq
-    rsq_kk = -(nn*pow(kk*nn,(-3.0E+0)/2.0E+0))/2.0E+0
-    rsq_nn = -(kk*pow(kk*nn,(-3.0E+0)/2.0E+0))/2.0E+0
-    E_kk = kn*rsq_kk
-    E_nn = kn*rsq_nn
-    kk_kx = 2*kx
-    kk_ky = 2*ky
-    kk_kz = 2*kz
-    E_kx += E_kk*kk_kx
-    E_ky += E_kk*kk_ky
-    E_kz += E_kk*kk_kz
-    nn_nx = 2*nx
-    nn_ny = 2*ny
-    nn_nz = 2*nz
-    E_nx += E_nn*nn_nx
-    E_ny += E_nn*nn_ny
-    E_nz += E_nn*nn_nz
-    nx_by = dz-cz
-    nx_bz = cy-dy
-    nx_cy = bz-dz
-    nx_cz = dy-by
-    nx_dy = cz-bz
-    nx_dz = by-cy
-    E_by = E_nx*nx_by
-    E_bz = E_nx*nx_bz
-    E_cy = E_nx*nx_cy
-    E_cz = E_nx*nx_cz
-    E_dy = E_nx*nx_dy
-    E_dz = E_nx*nx_dz
-    ny_bx = cz-dz
-    ny_bz = dx-cx
-    ny_cx = dz-bz
-    ny_cz = bx-dx
-    ny_dx = bz-cz
-    ny_dz = cx-bx
-    E_bx = E_ny*ny_bx
-    E_bz += E_ny*ny_bz
-    E_cx = E_ny*ny_cx
-    E_cz += E_ny*ny_cz
-    E_dx = E_ny*ny_dx
-    E_dz += E_ny*ny_dz
-    nz_bx = dy-cy
-    nz_by = cx-dx
-    nz_cx = by-dy
-    nz_cy = dx-bx
-    nz_dx = cy-by
-    nz_dy = bx-cx
-    E_bx += E_nz*nz_bx
-    E_by += E_nz*nz_by
-    E_cx += E_nz*nz_cx
-    E_cy += E_nz*nz_cy
-    E_dx += E_nz*nz_dx
-    E_dy += E_nz*nz_dy
-    E_ay = E_kx*(bz-cz)
-    E_az = E_kx*(cy-by)
-    E_by += E_kx*(cz-az)
-    E_bz += E_kx*(ay-cy)
-    E_cy += E_kx*(az-bz)
-    E_cz += E_kx*(by-ay)
-    ky_bx = az-cz
-    ky_cx = bz-az
-    E_ax = E_ky*(cz-bz)
-    E_az += E_ky*(bx-cx)
-    E_bx += E_ky*ky_bx
-    E_bz += E_ky*(cx-ax)
-    E_cx += E_ky*ky_cx
-    E_cz += E_ky*(ax-bx)
-    kz_ax = by-cy
-    kz_ay = cx-bx
-    kz_bx = cy-ay
-    kz_by = ax-cx
-    kz_cx = ay-by
-    kz_cy = bx-ax
-    E_ax += E_kz*kz_ax
-    E_ay += E_kz*kz_ay
-    E_bx += E_kz*kz_bx
-    E_by += E_kz*kz_by
-    E_cx += E_kz*kz_cx
-    E_cy += E_kz*kz_cy
+k = sqrt(pow(kz,2)+pow(ky,2)+pow(kx,2));
+n = sqrt(pow(nz,2)+pow(ny,2)+pow(nx,2));
+kdn = kz*nz+ky*ny+kx*nx;
+knz = kx*ny-ky*nx;
+kny = kz*nx-kx*nz;
+knx = ky*nz-kz*ny;
+kn = sqrt(pow(knz,2)+pow(kny,2)+pow(knx,2));
+E_k = -(2*kn*n)/(pow(k*n+kdn,2)+pow(kn,2));
+E_kdn = -(2*kn)/(pow(k*n+kdn,2)+pow(kn,2));
+E_kn = (2*(k*n+kdn))/(pow(k*n+kdn,2)+pow(kn,2));
+E_n = -(2*k*kn)/(pow(k*n+kdn,2)+pow(kn,2));
+kn_knx = knx/sqrt(pow(knz,2)+pow(kny,2)+pow(knx,2));
+kn_kny = kny/sqrt(pow(knz,2)+pow(kny,2)+pow(knx,2));
+kn_knz = knz/sqrt(pow(knz,2)+pow(kny,2)+pow(knx,2));
+E_knx = E_kn*kn_knx;
+E_kny = E_kn*kn_kny;
+E_knz = E_kn*kn_knz;
+E_ky = E_knx*nz;
+E_kz = -E_knx*ny;
+E_ny = -E_knx*kz;
+E_nz = E_knx*ky;
+E_kx = -E_kny*nz;
+E_kz += E_kny*nx;
+E_nx = E_kny*kz;
+E_nz += -E_kny*kx;
+E_kx += E_knz*ny;
+E_ky += -E_knz*nx;
+E_nx += -E_knz*ky;
+E_ny += E_knz*kx;
+E_kx += E_kdn*nx;
+E_ky += E_kdn*ny;
+E_kz += E_kdn*nz;
+E_nx += E_kdn*kx;
+E_ny += E_kdn*ky;
+E_nz += E_kdn*kz;
+n_nx = nx/sqrt(pow(nz,2)+pow(ny,2)+pow(nx,2));
+n_ny = ny/sqrt(pow(nz,2)+pow(ny,2)+pow(nx,2));
+n_nz = nz/sqrt(pow(nz,2)+pow(ny,2)+pow(nx,2));
+E_nx += E_n*n_nx;
+E_ny += E_n*n_ny;
+E_nz += E_n*n_nz;
+k_kx = kx/sqrt(pow(kz,2)+pow(ky,2)+pow(kx,2));
+k_ky = ky/sqrt(pow(kz,2)+pow(ky,2)+pow(kx,2));
+k_kz = kz/sqrt(pow(kz,2)+pow(ky,2)+pow(kx,2));
+E_kx += E_k*k_kx;
+E_ky += E_k*k_ky;
+E_kz += E_k*k_kz;
+nx_by = dz-cz;
+nx_bz = cy-dy;
+nx_cy = bz-dz;
+nx_cz = dy-by;
+nx_dy = cz-bz;
+nx_dz = by-cy;
+E_by = E_nx*nx_by;
+E_bz = E_nx*nx_bz;
+E_cy = E_nx*nx_cy;
+E_cz = E_nx*nx_cz;
+E_dy = E_nx*nx_dy;
+E_dz = E_nx*nx_dz;
+ny_bx = cz-dz;
+ny_bz = dx-cx;
+ny_cx = dz-bz;
+ny_cz = bx-dx;
+ny_dx = bz-cz;
+ny_dz = cx-bx;
+E_bx = E_ny*ny_bx;
+E_bz += E_ny*ny_bz;
+E_cx = E_ny*ny_cx;
+E_cz += E_ny*ny_cz;
+E_dx = E_ny*ny_dx;
+E_dz += E_ny*ny_dz;
+nz_bx = dy-cy;
+nz_by = cx-dx;
+nz_cx = by-dy;
+nz_cy = dx-bx;
+nz_dx = cy-by;
+nz_dy = bx-cx;
+E_bx += E_nz*nz_bx;
+E_by += E_nz*nz_by;
+E_cx += E_nz*nz_cx;
+E_cy += E_nz*nz_cy;
+E_dx += E_nz*nz_dx;
+E_dy += E_nz*nz_dy;
+kx_ay = bz-cz;
+kx_az = cy-by;
+kx_by = cz-az;
+kx_bz = ay-cy;
+kx_cy = az-bz;
+kx_cz = by-ay;
+E_ay = E_kx*kx_ay;
+E_az = E_kx*kx_az;
+E_by += E_kx*kx_by;
+E_bz += E_kx*kx_bz;
+E_cy += E_kx*kx_cy;
+E_cz += E_kx*kx_cz;
+ky_ax = cz-bz;
+ky_az = bx-cx;
+ky_bx = az-cz;
+ky_bz = cx-ax;
+ky_cx = bz-az;
+ky_cz = ax-bx;
+E_ax = E_ky*ky_ax;
+E_az += E_ky*ky_az;
+E_bx += E_ky*ky_bx;
+E_bz += E_ky*ky_bz;
+E_cx += E_ky*ky_cx;
+E_cz += E_ky*ky_cz;
+kz_ax = by-cy;
+kz_ay = cx-bx;
+kz_bx = cy-ay;
+kz_by = ax-cx;
+kz_cx = ay-by;
+kz_cy = bx-ax;
+E_ax += E_kz*kz_ax;
+E_ay += E_kz*kz_ay;
+E_bx += E_kz*kz_bx;
+E_by += E_kz*kz_by;
+E_cx += E_kz*kz_cx;
+E_cy += E_kz*kz_cy;
 
     DAX = E_ax; DAY = E_ay; DAZ = E_az
     DBX = E_bx; DBY = E_by; DBZ = E_bz
@@ -386,14 +299,19 @@ function d_comp(ax, ay, az,
 		kn_knx,kn_kny,kn_knz,knx,kny,knz,kx,kx_ay,kx_az,kx_by,kx_bz,kx_cy,kx_cz,
 		ky,ky_ax,ky_az,ky_bx,ky_bz,ky_cx,ky_cz,kz,kz_ax,kz_ay,kz_bx,kz_by,kz_cx,
 		kz_cy,nx,nx_by,nx_bz,nx_cy,nx_cz,nx_dy,nx_dz,ny,ny_bx,ny_bz,ny_cx,ny_cz,
-		ny_dx,ny_dz,nz,nz_bx,nz_by,nz_cx,nz_cy,nz_dx,nz_dy, eps, k) {
-    eps = 1e-32
-    kz = (bx-ax)*(cy-ay)-(by-ay)*(cx-ax)
-    ky = (bz-az)*(cx-ax)-(bx-ax)*(cz-az)
-    kx = (by-ay)*(cz-az)-(bz-az)*(cy-ay)
-    nz = (cy-by)*(dx-bx)-(cx-bx)*(dy-by)
-    ny = (cx-bx)*(dz-bz)-(cz-bz)*(dx-bx)
-    nx = (cz-bz)*(dy-by)-(cy-by)*(dz-bz)
+		ny_dx,ny_dz,nz,nz_bx,nz_by,nz_cx,nz_cy,nz_dx,nz_dy,
+		eps, a, b, c, d, k, n, X, Y, Z) {
+    eps = 1e-32; X = 0; Y = 1; Z = 2
+
+    a[X] = ax; a[Y] = ay; a[Z] = az
+    b[X] = bx; b[Y] = by; b[Z] = bz
+    c[X] = cx; c[Y] = cy; c[Z] = cz
+    d[X] = dx; d[Y] = dy; d[Z] = dz
+    tri_normal(a, b, c)
+    kx = NX; ky = NY; kz = NZ
+    tri_normal(c, b, d)
+    nx = NX; ny = NY; nz = NZ
+    
     kdn = kz*nz+ky*ny+kx*nx
     knz = kx*ny-ky*nx
     kny = kz*nx-kx*nz
@@ -508,12 +426,5 @@ function d_comp(ax, ay, az,
     nn = pow(nz,2)+pow(ny,2)+pow(nx,2)
     kk = pow(kz,2)+pow(ky,2)+pow(kx,2)
 
-    X = 1; Y = 2; Z = 3
-    a[X] = ax; a[Y] = ay; a[Z] = az
-    b[X] = bx; b[Y] = by; b[Z] = bz
-    c[X] = cx; c[Y] = cy; c[Z] = cz
-
-    k[X] = k[Y] = k[Z] = 42.0
-    ac_bc_cross(b, c, a, k)
-    return k[Y]
+    return kn
 }

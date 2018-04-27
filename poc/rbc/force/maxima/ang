@@ -21,7 +21,10 @@ da: d - a $
 
 kn : vabs(['knx, 'kny, 'knz]) $ /* TODO: sign! */
 kdn: dot(['kx, 'ky, 'kz], ['nx, 'ny, 'nz]) ;
-E: atan2('kn, 'kdn);
+n  : vabs(['nx, 'ny, 'nz]);
+k  : vabs(['kx, 'ky, 'kz]);
+
+E: 2*atan2('kn, 'kdn + 'k * 'n);
 
 [E, V, T]: g(
   ['E ,  E,   sl(E)],
@@ -33,6 +36,9 @@ E: atan2('kn, 'kdn);
 
   ['kdn, kdn, sl(kdn)],
 
+  ['n  ,   n, sl(n)],
+  ['k  ,   k, sl(k)],
+  
   ['nx, nx, sl(nx)],
   ['ny, ny, sl(ny)],
   ['nz, nz, sl(nz)],
