@@ -1,3 +1,11 @@
+static MeshInfo mesh_info_rig(const Rig *r) {
+    MeshInfo mi;
+    mi.nv = r->q.nv;
+    mi.nt = r->q.nt;
+    mi.tt = r->q.dtt;
+    return mi;
+}
+
 static void mesh_pack_and_send_rig(Rig *r) {
     const RigQuants *q = &r->q;
     MeshExch  *e = r->mesh_exch;
@@ -34,20 +42,14 @@ static void clear_momentum_rig(int nmhalo, Rig *r) {
 
 static void find_and_select_collisions_rig(float dt, long nflu, Clist cflu, const Particle *ppflu, const Force *ffflu, int nm, Rig *r, MeshBB *bb) {
     RigQuants *q = &r->q;
-    MeshInfo mi;
-    mi.nv = q->nv;
-    mi.nt = q->nt;
-    mi.tt = q->dtt;
+    MeshInfo mi = mesh_info_rig(r);
     UC(meshbb_find_collisions(dt, nm, mi, q->i_pp, cflu.dims, cflu.starts, cflu.counts, ppflu, ffflu, /**/ bb));
     UC(meshbb_select_collisions(nflu, /**/ bb));    
 }
 
 static void bounce_rig(float dt, float flu_mass, const MeshBB *bb, long n, const Force *ff, Particle *pp, Rig *r) {
     RigQuants *q = &r->q;
-    MeshInfo mi;
-    mi.nv = q->nv;
-    mi.nt = q->nt;
-    mi.tt = q->dtt;
+    MeshInfo mi = mesh_info_rig(r);
     UC(meshbb_bounce(dt, flu_mass, n, bb, ff, mi, q->i_pp, /**/ pp, r->bbdata->mm));
 }
 
