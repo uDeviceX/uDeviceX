@@ -21,10 +21,18 @@ g0(name, expr, vars):= block(
 fmt([L]):=block([E, V, T, e, v], local(E, V, T),
   [E, V, T]: apply('g, L),
   fmt0(E, V, T));
-fmt0(E, V, T):=(
+cgrind_plus(seen, e):=block([k],
+  k: lhs(e),
+  if elementp(k, seen) then (
+     infix("+=", 80, 80),
+     cgrind(subst("+=", "=", e)))
+   else cgrind(e),
+   adjoin(k, seen));
+fmt0(E, V, T):= block([seen],
+  seen: set(),
   grind(sort(unique(T))),
-  for v in          V do cgrind(v),
-  for e in reverse(E) do cgrind(e));
+  for v in          V do  cgrind(v),
+  for e in reverse(E) do  seen: cgrind_plus(seen, e));
 
 vabs(a):=sqrt(dot(a, a));
 sl(e):=sort(listofvars(e));
