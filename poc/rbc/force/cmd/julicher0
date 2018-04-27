@@ -9,10 +9,10 @@ function d_compute_ang(   m, i, j, k, l, de) {
     for (m = 0; m < NE; m++) {
 	de = dE_ang[i]
 	i = D0[m]; j = D1[m]; k = D2[m]; l = D3[m]
-	d_dihedral(XX[i], YY[i], ZZ[i],
-		   XX[j], YY[j], ZZ[j],
-		   XX[k], YY[k], ZZ[k],
-		   XX[l], YY[l], ZZ[l])
+	d_cos(XX[i], YY[i], ZZ[i],
+	      XX[j], YY[j], ZZ[j],		   
+	      XX[k], YY[k], ZZ[k],		   
+	      XX[l], YY[l], ZZ[l])
 	FX[i] += de*DAX; FY[i] += de*DAY; FZ[i] += de*DAZ
 	FX[j] += de*DBX; FY[j] += de*DBY; FZ[j] += de*DBZ
 	FX[k] += de*DCX; FY[k] += de*DCY; FZ[k] += de*DCZ
@@ -139,7 +139,7 @@ function d_scatter_area(    m, i, j, k, A) {
 function write_vert(   m, r) {
     for (m = 0; m < NV; m++) {
 	r = sqrt(XX[m]^2 + YY[m]^2)
-	print r, FX[m], FY[m], FZ[m]
+	print r, FX[m], FY[m], FZ[m], F[m], CURV[m]
     }
 }
 
@@ -163,6 +163,11 @@ function write_tri(   m, i, j, k, x, y, r) {
     }
 }
 
+function vabs_f(   m) {
+    for (m = 0; m < NV; m++)
+	F[m] = sqrt(FX[m]^2 + FY[m]^2 + FZ[m]^2)
+}
+
 BEGIN {
     ini()
     if (noarg()) err("needs FILE.off")
@@ -170,6 +175,7 @@ BEGIN {
     if (eq(file, "-h")) usg()
     off_read(file)
     # refine2()
+    to_cm()
     setup()
 
     compute_ang()
@@ -188,8 +194,12 @@ BEGIN {
     # d_compute_edg_len()
     d_compute_ang()
 
-    vtk_push("area", AREA_TRI, tri)
-    vtk_push("julicher", E, vert)
+    vabs_f()
+
+    vtk_push("fx", FX, vert)
+    vtk_push("fy", FY, vert)
+    vtk_push("fz", FZ, vert)
+    vtk_push("f",  F, vert)
     vtk_write("o.vtk", vert, tri)
 
     write_vert()

@@ -12,6 +12,7 @@ ab: b - a $
 ac: c - a $
 bd: d - b $
 bc: c - b $
+da: d - a $
 
 [kx, ky, kz]: cross(ab, ac) $
 [nx, ny, nz]: cross(bd, bc) $
