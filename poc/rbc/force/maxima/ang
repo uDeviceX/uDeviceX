@@ -39,4 +39,12 @@ E: atan2('kn, 'kdn);
   ['ky, ky, sl(ky)],
   ['kz, kz, sl(kz)]) $
 
+[E, V, T]: rm(
+  E, V, T,
+  'knx_ky, 'knx_kz, 'knx_ny, 'knx_nz,
+  'kny_kx, 'kny_kz, 'kny_nx, 'kny_nz,
+  'knz_ky, 'knz_kx, 'knz_ny, 'knz_nx,
+  'kdn_kx, 'kdn_ky, 'kdn_kz, 'kdn_nx, 'kdn_ny, 'kdn_nz
+  ) $
+
 with_stdout("ang.c", fmt0(E, V, T));
