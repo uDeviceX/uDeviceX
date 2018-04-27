@@ -139,7 +139,7 @@ function d_scatter_area(    m, i, j, k, A) {
 function write_vert(   m, r) {
     for (m = 0; m < NV; m++) {
 	r = sqrt(XX[m]^2 + YY[m]^2)
-	print r, FX[m], FY[m], FZ[m], F[m], CURV[m]
+	print r, FX[m], FY[m], FZ[m], F[m], AREA_VER[m], CURV[m]
     }
 }
 
@@ -149,7 +149,7 @@ function write_edg(   m, i, j, x, y, r) {
 	x = (XX[i] + XX[j])/2
 	y = (YY[i] + YY[j])/2
 	r = sqrt(x^2 + y^2)
-	print r, dE_len[m], dE_ang[m]
+	print r, dE_len[m], dE_ang[m], ANG_EDG[m]
     }
 }
 
@@ -174,7 +174,6 @@ BEGIN {
     file = first_arg()
     if (eq(file, "-h")) usg()
     off_read(file)
-    # refine2()
     to_cm()
     setup()
 
@@ -202,7 +201,7 @@ BEGIN {
     vtk_push("f",  F, vert)
     vtk_write("o.vtk", vert, tri)
 
-    write_vert()
-    # write_edg()
+    # write_vert()
+    write_edg()
     # write_tri()
 }
