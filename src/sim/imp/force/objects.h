@@ -5,18 +5,12 @@ void forces_objects(Sim *sim) {
     PaArray pa;
     FoArray fa;
 
-    Flu *f = &sim->flu;
     Rbc *r = &sim->rbc;
     Rig *s = &sim->rig;
     
     UC(pfarrays_ini(&obj));
 
-    flu.n = f->q.n;
-    UC(parray_push_pp(f->q.pp, &flu.p));
-    if (sim->opt.flucolors)
-        parray_push_cc(f->q.cc, &flu.p);
-
-    UC(farray_push_ff(f->ff, &flu.f));
+    utils_get_pf_flu(sim, &flu);
     
     if (active_rig(sim)) {
         UC(parray_push_pp(s->q.pp, &pa));
@@ -30,7 +24,7 @@ void forces_objects(Sim *sim) {
         UC(pfarrays_push(obj, r->q.n, pa, fa));        
     }
 
-    UC(obj_inter_forces(sim->objinter, &flu, f->q.cells.starts, obj));
+    UC(obj_inter_forces(sim->objinter, &flu, sim->flu.q.cells.starts, obj));
 
     UC(pfarrays_fin(obj));
 }

@@ -89,6 +89,16 @@ static float utils_get_dt(Sim *s, TimeLine *time) {
     }
 }
 
+static void utils_get_pf_flu(Sim *s, PFarray *flu) {
+    Flu *f = &s->flu;
+    flu->n = f->q.n;
+    UC(parray_push_pp(f->q.pp, &flu->p));
+    if (s->opt.flucolors)
+        parray_push_cc(f->q.cc, &flu->p);
+
+    UC(farray_push_ff(f->ff, &flu->f));
+}
+
 static InterWalInfos get_winfo(Sim *s) {
     InterWalInfos wi;
     wi.active = s->opt.wall;
