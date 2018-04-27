@@ -70,6 +70,7 @@ static void fin_rig(Rig *r) {
 
 static void fin_dump(Dump *d) {
     EFREE(d->pp);
+    UC(io_rig_fin(d->rig));
     EFREE(d);
 }
 

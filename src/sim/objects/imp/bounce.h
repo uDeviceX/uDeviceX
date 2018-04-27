@@ -110,6 +110,6 @@ void objects_bounce(float dt, float flu_mass, const Clist flu_cells, PFarray *fl
     if (r) mom_recv_unpack_rig(r);
     if (r) collect_mom_rig(dt, r);
 
-    // /* for dump */
-    // cD2H(qs->ss_dmp_bb, qs->ss, nm);
+    /* for dump */
+    if (r) cD2H(r->q.ss_dmp_bb, r->q.ss, r->q.ns);
 }

@@ -98,6 +98,7 @@ static void ini_dump(long maxp, Dump **dump) {
     EMALLOC(1, dump);
     d = *dump;
     EMALLOC(maxp, &d->pp);
+    UC(io_rig_ini(&d->rig));
     d->id = 0;
 }
 

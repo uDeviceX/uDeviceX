@@ -73,6 +73,7 @@ struct Rig {
 };
 
 struct Dump {
+    IoRig *rig;
     Particle *pp; /* workspace on host */
     long id;
 };
