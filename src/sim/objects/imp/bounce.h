@@ -31,18 +31,14 @@ static void clear_momentum_rig(int nmhalo, Rig *r) {
     UC(clear_momentum(ntri, r->bbdata->mm));
 }
 
-struct CellsInfos {
-    int3 L;
-    int *ss, *cc;
-};
 
-static void find_and_select_collisions_rig(int3 L, float dt, long nflu, CellsInfos cflu, const Particle *ppflu, const Force *ffflu, int nm, Rig *r, MeshBB *bb) {
+static void find_and_select_collisions_rig(int3 L, float dt, long nflu, Clist cflu, const Particle *ppflu, const Force *ffflu, int nm, Rig *r, MeshBB *bb) {
     RigQuants *q = &r->q;
     MeshInfo mi;
     mi.nv = q->nv;
     mi.nt = q->nt;
     mi.tt = q->dtt;
-    UC(meshbb_find_collisions(dt, nm, mi, q->i_pp, cflu.L, cflu.ss, cflu.cc, ppflu, ffflu, /**/ bb));
+    UC(meshbb_find_collisions(dt, nm, mi, q->i_pp, cflu.dims, cflu.starts, cflu.counts, ppflu, ffflu, /**/ bb));
     UC(meshbb_select_collisions(nflu, /**/ bb));    
 }
 
