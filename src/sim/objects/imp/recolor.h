@@ -1,4 +1,3 @@
-
 static int exchange_mesh_mbr(Mbr *m, Particle *pp) {
     int nm, nv, nmhalo;
     const RbcQuants *q = &m->q;
@@ -34,7 +33,6 @@ static void recolor_flu_from_mbr(Mbr *m, PFarray *flu) {
     UC(collision_label(NOT_PERIODIC, flu->n, (const Particle*) flu->p.pp, m->tri, nv, nm,
                        c->pp_mesh, c->lo, c->hi, RED_COLOR, BLUE_COLOR, /**/ (int*) flu->p.cc));
 }
-
 
 void objects_recolor_flu(Objects *obj, PFarray *flu) {
     if (flu->n == 0) return;
