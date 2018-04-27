@@ -82,11 +82,8 @@ static void mom_recv_unpack_rig(Rig *r) {
 static void collect_mom_rig(float dt, Rig *r) {
     RigQuants *q = &r->q;
     BounceBackData *bb = r->bbdata;
-    MeshInfo mi;
-    mi.nv = q->nv;
-    mi.nt = q->nt;
-    mi.tt = q->dtt;
-
+    MeshInfo mi = mesh_info_rig(r);
+    
     UC(meshbb_collect_rig_momentum(dt, q->ns, mi, q->i_pp, bb->mm, /**/ q->ss));
 }
 
