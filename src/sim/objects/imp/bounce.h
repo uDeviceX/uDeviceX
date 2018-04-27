@@ -32,7 +32,7 @@ static void clear_momentum_rig(int nmhalo, Rig *r) {
 }
 
 
-static void find_and_select_collisions_rig(int3 L, float dt, long nflu, Clist cflu, const Particle *ppflu, const Force *ffflu, int nm, Rig *r, MeshBB *bb) {
+static void find_and_select_collisions_rig(float dt, long nflu, Clist cflu, const Particle *ppflu, const Force *ffflu, int nm, Rig *r, MeshBB *bb) {
     RigQuants *q = &r->q;
     MeshInfo mi;
     mi.nv = q->nv;
@@ -40,6 +40,15 @@ static void find_and_select_collisions_rig(int3 L, float dt, long nflu, Clist cf
     mi.tt = q->dtt;
     UC(meshbb_find_collisions(dt, nm, mi, q->i_pp, cflu.dims, cflu.starts, cflu.counts, ppflu, ffflu, /**/ bb));
     UC(meshbb_select_collisions(nflu, /**/ bb));    
+}
+
+static void bounce_rig(float dt, float flu_mass, const MeshBB *bb, long n, const Force *ff, Particle *pp, Rig *r) {
+    RigQuants *q = &r->q;
+    MeshInfo mi;
+    mi.nv = q->nv;
+    mi.nt = q->nt;
+    mi.tt = q->dtt;
+    UC(meshbb_bounce(dt, flu_mass, n, bb, ff, mi, q->i_pp, /**/ pp, r->bbdata->mm));
 }
 
 static void mom_pack_and_send_rig(Rig *r) {
@@ -79,23 +88,24 @@ static void collect_mom_rig(float dt, Rig *r) {
     UC(meshbb_collect_rig_momentum(dt, q->ns, mi, q->i_pp, bb->mm, /**/ q->ss));
 }
 
-void objects_bounce(float dt, Objects *obj, PFarray *flu) {
+void objects_bounce(float dt, float flu_mass, const Clist flu_cells, PFarray *flu, Objects *obj) {
     int nmhalo;
-    long nflu = 0; /*TODO*/
     Rig *r = obj->rig;
+    MeshBB *bb = obj->bb;
+    Particle *pp = (Particle*) flu->p.pp;
+    Force    *ff = (Force*)    flu->f.ff;
+
+    if (!bb) return;
 
     if (r) mesh_pack_and_send_rig(r);
     if (r) nmhalo = mesh_recv_unpack_rig(r);
 
-    UC(meshbb_reini(nflu, /**/ obj->bb));
-    
-    /* perform bounce back */
-
+    UC(meshbb_reini(flu->n, /**/ bb));
     if (r) clear_momentum_rig(nmhalo, r);
+
+    if (r) find_and_select_collisions_rig(dt, flu->n, flu_cells, pp, ff, nmhalo + r->q.ns, r, bb);
     
-    // UC(meshbb_find_collisions(dt, nm + nmhalo, mi, i_pp, L, ss, cc, pp, flu->ff, /**/ bb->d));
-    // UC(meshbb_select_collisions(n, /**/ bb->d));
-    // UC(meshbb_bounce(dt, flu->mass, n, bb->d, flu->ff, mi, i_pp, /**/ pp, bb->mm));
+    if (r) bounce_rig(dt, flu_mass, bb, flu->n, ff, /**/ pp, r);
 
     if (r) mom_pack_and_send_rig(r);
     if (r) mom_recv_unpack_rig(r);
