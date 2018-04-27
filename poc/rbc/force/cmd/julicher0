@@ -27,7 +27,6 @@ function compute_ang(   m, i, j, k, l) {
 		    XX[j], YY[j], ZZ[j],
 		    XX[k], YY[k], ZZ[k],
 		    XX[l], YY[l], ZZ[l])
-	msg("r: " DIHEDRAL_X^2 + DIHEDRAL_Y^2)
 	ANG_EDG[m] = atan2(DIHEDRAL_Y, DIHEDRAL_X)
     }
 }
@@ -186,6 +185,7 @@ BEGIN {
     if (eq(file, "-h")) usg()
     off_read(file)
     to_cm()
+    # to_r1()
     setup()
 
     compute_ang()

@@ -65,7 +65,7 @@ function dihedral_xy(ax, ay, az,
     bcz = b[Z] - c[Z]
     bc = sqrt(bcx*bcx + bcy*bcy + bcz*bcz)
 
-    DIHEDRAL_Y = - orient3d(a, b, c, d)*bc
+    DIHEDRAL_Y = orient3d(a, b, c, d)*bc
     DIHEDRAL_Y = sign(DIHEDRAL_Y,
 		      a[X], a[Y], a[Z],
 		      d[X], d[Y], d[Z],
@@ -126,11 +126,8 @@ function pow(a, b) {return a^b }
 
 function abs(a) { return a > 0 ? a : -a }
 function copy_sign(a, b) { return b > 0 ? abs(a) : -abs(a) }
-function sign(kn,
-	      ax, ay, az,
-	      dx, dy, dz,
-	      kx, ky, kz,
-	      nx, ny, nz,
+function sign(kn, ax, ay, az, dx, dy, dz,
+	      kx, ky, kz, nx, ny, nz,
 	      #
 	      s) {
     s = (dz-az)*(kz-nz)+(dy-ay)*(ky-ny)+(dx-ax)*(kx-nx)
