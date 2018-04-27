@@ -22,10 +22,12 @@ static void ini_mesh_mom_exch(int nt, int max_m, MPI_Comm comm, /**/ MeshMomExch
     UC(emesh_unpackm_ini(nt, max_m, /**/ &e->u));
 }
 
-static void ini_bounce_back(int maxp, int nt, int max_m, MPI_Comm cart, /**/ BounceBack *bb) {
+static void ini_bbdata(int nt, int max_m, MPI_Comm cart, /**/ BounceBackData **bbdata) {
+    BounceBackData *bb;
+    EMALLOC(1, bbdata);
+    bb = *bbdata;
     UC(ini_mesh_mom_exch(nt, max_m, cart, bb->e));
-    UC(meshbb_ini(maxp, /**/ &bb->bb));
-    Dalloc(&bb->mm,max_m * nt);
+    Dalloc(&bb->mm, max_m * nt);
 }
 
 static void ini_colorer(int nv, int max_m, /**/ Colorer *c) {
@@ -68,13 +70,14 @@ static void ini_mbr(const Config *cfg, const OptMbr *opt, MPI_Comm cart, int3 L,
 
 static void ini_rig(const Config *cfg, const OptRig *opt, MPI_Comm cart, int maxp, int3 L, /**/ Rig **rigid) {
     Rig *r;
+    long max_m = MAX_SOLIDS;
     EMALLOC(1, rigid);
     r = *rigid;
 
     UC(mesh_read_ini_ply("rig.ply", &r->mesh));
     UC(mesh_write_ini_from_mesh(cart, opt->shifttype, r->mesh, "s", /**/ &r->mesh_write));
     
-    UC(rig_ini(MAX_SOLIDS, maxp, r->mesh, &r->q));
+    UC(rig_ini(max_m, maxp, r->mesh, &r->q));
 
     EMALLOC(maxp, &r->ff_hst);
     Dalloc(&r->ff, maxp);
@@ -85,6 +88,9 @@ static void ini_rig(const Config *cfg, const OptRig *opt, MPI_Comm cart, int max
     UC(rig_pininfo_set_conf(cfg, r->pininfo));
 
     UC(conf_lookup_float(cfg, "rig.mass", &r->mass));
+
+    if (opt->bounce) UC(ini_bbdata(r->q.nt, max_m, cart, /**/ &r->bbdata));
+    else r->bbdata = NULL;
 }
 
 static void ini_dump(long maxp, Dump **dump) {
@@ -108,5 +114,8 @@ void objects_ini(const Config *cfg, const Opt *opt, MPI_Comm cart, const Coords 
 
     if (opt->rbc.active) UC(ini_mbr(cfg, &opt->rbc, cart,       L, &obj->mbr));  else obj->mbr = NULL;
     if (opt->rig.active) UC(ini_rig(cfg, &opt->rig, cart, maxp, L, &obj->rig));  else obj->rig = NULL;
+
+    if (opt->rig.bounce) UC(meshbb_ini(maxp, /**/ &obj->bb)); else obj->bb = NULL;
+        
     UC(ini_dump(maxp, &obj->dump));
 }

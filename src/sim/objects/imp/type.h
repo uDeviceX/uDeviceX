@@ -33,8 +33,7 @@ struct Colorer {
 };
 
 /* workspace for mesh bounce back */
-struct BounceBack {
-    MeshBB *bb;
+struct BounceBackData {
     MeshMomExch *e;
     Momentum *mm;
 };
@@ -70,7 +69,7 @@ struct Rig {
     MeshWrite  *mesh_write;
 
     MeshExch   *mesh_exch;
-    BounceBack *bb;
+    BounceBackData *bbdata;
 };
 
 struct Dump {
@@ -85,4 +84,5 @@ struct Objects {
     Dump *dump;
     Coords *coords;
     MPI_Comm cart;
+    MeshBB *bb;
 };

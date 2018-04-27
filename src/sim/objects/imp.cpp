@@ -1,4 +1,5 @@
 #include <mpi.h>
+#include <stdlib.h>
 #include <vector_types.h>
 
 #include <conf.h>
@@ -25,7 +26,9 @@
 #include "struct/parray/imp.h"
 #include "struct/farray/imp.h"
 #include "struct/pfarrays/imp.h"
+#include "struct/partlist/type.h"
 #include "mesh/triangles/imp.h"
+#include "clist/imp.h"
 
 #include "conf/imp.h"
 #include "io/mesh_read/imp.h"
@@ -62,5 +65,6 @@
 #include "imp/fin.h"
 #include "imp/main.h"
 #include "imp/forces.h"
+#include "imp/bounce.h"
 #include "imp/dump.h"
 #include "imp/gen.h"

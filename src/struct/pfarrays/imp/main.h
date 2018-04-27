@@ -11,15 +11,19 @@ void pfarrays_clear(PFarrays *p) {
     p->n = 0;
 }
 
-void pfarrays_push(PFarrays *pf, long n, PaArray p, FoArray f) {
-    int i = pf->n ++;
-    PFarray *pfa;
-    if ( pf->n > MAX_SIZE )
-        ERR("pushed too many pfarrays: %d/%d", pf->n, MAX_SIZE);
-    pfa = &pf->a[i];
-    pfa->p = p;
-    pfa->f = f;
-    pfa->n = n;
+void pfarrays_push(PFarrays *pp, PFarray p) {
+    int i = pp->n ++;
+    if ( pp->n > MAX_SIZE )
+        ERR("pushed too many pfarrays: %d/%d", pp->n, MAX_SIZE);
+    pp->a[i] = p;
+}
+
+void pfarrays_push(PFarrays *pp, long n, PaArray p, FoArray f) {
+    PFarray pf;
+    pf.p = p;
+    pf.n = n;
+    pf.f = f;
+    UC(pfarrays_push(pp, pf));
 }
 
 int pfarrays_size(const PFarrays *p) {
@@ -36,4 +40,8 @@ void pfarrays_get(int i, const PFarrays *pf, long *n, PaArray *p, FoArray *f) {
     *n = pfa->n;
     *p = pfa->p;
     *f = pfa->f;
+}
+
+void pfarrays_get(int i, const PFarrays *pp, PFarray *p) {
+    UC(pfarrays_get(i, pp, &p->n, &p->p, &p->f));
 }
