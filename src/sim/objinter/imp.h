@@ -2,6 +2,7 @@ struct ObjInter;
 
 struct Config;
 struct Opt;
+struct PFarray;
 struct PFarrays;
 
 // tag::mem[]
@@ -10,5 +11,5 @@ void obj_inter_fin(ObjInter*);
 // end::mem[]
 
 // tag::int[]
-void obj_inter_forces(ObjInter*, PFarrays *flu, int *flu_start, PFarrays *obj);
+void obj_inter_forces(ObjInter*, PFarray *flu, int *flu_start, PFarrays *obj);
 // end::int[]

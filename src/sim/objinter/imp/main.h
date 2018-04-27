@@ -16,14 +16,8 @@ static void fill_wrappers(PFarrays *obj, int *nwrappers, PaWrap *pw, FoWrap *fw)
     }
 }
 
-static void bind_solvent(PFarrays *flu, int *starts, Fsi *fsi) {
-    long n, sz;
-    PaArray p;
-    FoArray f;
-    sz = pfarrays_size(flu);
-    if (sz != 1) ERR("Support only one solvent, given %d", sz);
-    UC(pfarrays_get(0, flu, &n, &p, &f));
-    UC(fsi_bind_solvent(p, (Force*) f.ff, n, starts, /**/ fsi));
+static void bind_solvent(PFarray *flu, int *starts, Fsi *fsi) {
+    UC(fsi_bind_solvent(flu->p, (Force*) flu->f.ff, flu->n, starts, /**/ fsi));
 }
 
 static void forces_cnt(ObjInter *oi, int nw, PaWrap *pw, FoWrap *fw) {
@@ -39,7 +33,7 @@ static bool has_work(ObjInter *o) {
     return o->cnt || o->fsi;
 }
 
-void obj_inter_forces(ObjInter *oi, PFarrays *flu, int *flu_start, PFarrays *obj) {
+void obj_inter_forces(ObjInter *oi, PFarray *flu, int *flu_start, PFarrays *obj) {
     PaWrap pw[MAX_OBJ_TYPES];
     FoWrap fw[MAX_OBJ_TYPES];
     int nw = 0;
@@ -61,7 +55,7 @@ void obj_inter_forces(ObjInter *oi, PFarrays *flu, int *flu_start, PFarrays *obj
 
     /* bulk interactions */
     
-    if (oi->fsi) UC(bind_solvent(flu, flu_start, oi->fsi));        
+    if (oi->fsi) UC(bind_solvent(flu, flu_start, oi->fsi));
 
     if (oi->cnt) UC(forces_cnt(oi, nw, pw, fw));
     if (oi->fsi) UC(forces_fsi(oi, nw, pw, fw));
