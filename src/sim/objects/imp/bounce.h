@@ -79,7 +79,7 @@ static void collect_mom_rig(float dt, Rig *r) {
     UC(meshbb_collect_rig_momentum(dt, q->ns, mi, q->i_pp, bb->mm, /**/ q->ss));
 }
 
-void objects_bounce(float dt, Objects *obj, PFarrays *flu) {
+void objects_bounce(float dt, Objects *obj, PFarray *flu) {
     int nmhalo;
     long nflu = 0; /*TODO*/
     Rig *r = obj->rig;

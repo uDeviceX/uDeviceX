@@ -55,25 +55,19 @@ static void gen_freeze_mbr(MPI_Comm cart, Mbr *m) {
     UC(rbc_gen_freeze(cart, /**/ &m->q));
 }
 
-static void gen_freeze_rig(const Coords *coords, MPI_Comm cart, bool empty_pp, int numdensity, PFarrays *flu, Rig *r) {
+static void gen_freeze_rig(const Coords *coords, MPI_Comm cart, bool empty_pp, int numdensity, PFarray *flu, Rig *r) {
     const MeshRead *mesh = r->mesh;
-    long ln;
     int n;
-    PaArray p;
-    FoArray f;
-    if (pfarrays_size(flu) != 1)
-        ERR("Must have only one particle array for solvent");
-    pfarrays_get(0, flu, &ln, &p, &f);
-    n = ln;
+    Particle *pp = (Particle*) flu->p.pp;
+    n = flu->n;
     
     UC(rig_gen_freeze(coords, empty_pp, numdensity, r->mass, r->pininfo,
-                      cart, mesh, (Particle*) p.pp, &n, /**/ &r->q));
+                      cart, mesh, pp, &n, /**/ &r->q));
     
-    pfarrays_clear(flu);
-    pfarrays_push(flu, n, p, f);
+    flu->n = n;
 }
 
-void objects_gen_freeze(PFarrays *flu, Objects *o) {
+void objects_gen_freeze(PFarray *flu, Objects *o) {
     const Opt *opt = &o->opt;
     if (o->mbr) gen_freeze_mbr(o->cart, o->mbr);
     if (o->rig) gen_freeze_rig(o->coords, o->cart, opt->rig.empty_pp, opt->params.numdensity, flu, o->rig);

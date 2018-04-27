@@ -4,6 +4,7 @@ struct Sdf;
 struct Config;
 struct Coords;
 struct Opt;
+struct PFarray;
 struct PFarrays;
 struct BForce;
 
@@ -28,7 +29,7 @@ void objects_get_particles_mbr(Objects*, PFarrays*);
 
 void objects_gen_mesh(Objects*);
 void objects_remove_from_wall(const Sdf *sdf, Objects *o);
-void objects_gen_freeze(PFarrays*, Objects*);
+void objects_gen_freeze(PFarray*, Objects*);
 
 void objects_restart(Objects*);
 
