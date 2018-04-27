@@ -127,7 +127,7 @@ function sign(kn,
 	      kx, ky, kz,
 	      nx, ny, nz,
 	      #
-              s) {
+	      s) {
     s = (dz-az)*(kz-nz)+(dy-ay)*(ky-ny)+(dx-ax)*(kx-nx)
     return copy_sign(kn, s)
 }
@@ -153,7 +153,7 @@ function d_dihedral(ax, ay, az,
     knz = kx*ny-ky*nx
     kny = kz*nx-kx*nz
     knx = ky*nz-kz*ny
-    
+
     kn = sqrt(pow(knz,2)+pow(kny,2)+pow(knx,2))
     kn = sign(kn, ax, ay, az, dx, dy, dz, kx, ky, kz, nx, ny, nz)
     E_kdn = -kn/(pow(kn,2)+pow(kdn,2))
@@ -272,6 +272,7 @@ function d_cos(ax, ay, az,
 	       kk_kz,kx,ky,ky_bx,ky_cx,kz,kz_ax,kz_ay,kz_bx,kz_by,kz_cx,kz_cy,nn,nn_nx,
 	       nn_ny,nn_nz,nx,nx_by,nx_bz,nx_cy,nx_cz,nx_dy,nx_dz,ny,ny_bx,ny_bz,ny_cx,
 	       ny_cz,ny_dx,ny_dz,nz,nz_bx,nz_by,nz_cx,nz_cy,nz_dx,nz_dy,rsq_kk,rsq_nn) {
+
     kz = (bx-ax)*(cy-ay)-(by-ay)*(cx-ax)
     ky = (bz-az)*(cx-ax)-(bx-ax)*(cz-az)
     kx = (by-ay)*(cz-az)-(bz-az)*(cy-ay)
@@ -295,15 +296,15 @@ function d_cos(ax, ay, az,
     kk_kx = 2*kx
     kk_ky = 2*ky
     kk_kz = 2*kz
-    E_kx = E_kk*kk_kx
-    E_ky = E_kk*kk_ky
-    E_kz = E_kk*kk_kz
+    E_kx += E_kk*kk_kx
+    E_ky += E_kk*kk_ky
+    E_kz += E_kk*kk_kz
     nn_nx = 2*nx
     nn_ny = 2*ny
     nn_nz = 2*nz
-    E_nx = E_nn*nn_nx
-    E_ny = E_nn*nn_ny
-    E_nz = E_nn*nn_nz
+    E_nx += E_nn*nn_nx
+    E_ny += E_nn*nn_ny
+    E_nz += E_nn*nn_nz
     nx_by = dz-cz
     nx_bz = cy-dy
     nx_cy = bz-dz
@@ -323,49 +324,49 @@ function d_cos(ax, ay, az,
     ny_dx = bz-cz
     ny_dz = cx-bx
     E_bx = E_ny*ny_bx
-    E_bz = E_ny*ny_bz
+    E_bz += E_ny*ny_bz
     E_cx = E_ny*ny_cx
-    E_cz = E_ny*ny_cz
+    E_cz += E_ny*ny_cz
     E_dx = E_ny*ny_dx
-    E_dz = E_ny*ny_dz
+    E_dz += E_ny*ny_dz
     nz_bx = dy-cy
     nz_by = cx-dx
     nz_cx = by-dy
     nz_cy = dx-bx
     nz_dx = cy-by
     nz_dy = bx-cx
-    E_bx = E_nz*nz_bx
-    E_by = E_nz*nz_by
-    E_cx = E_nz*nz_cx
-    E_cy = E_nz*nz_cy
-    E_dx = E_nz*nz_dx
-    E_dy = E_nz*nz_dy
+    E_bx += E_nz*nz_bx
+    E_by += E_nz*nz_by
+    E_cx += E_nz*nz_cx
+    E_cy += E_nz*nz_cy
+    E_dx += E_nz*nz_dx
+    E_dy += E_nz*nz_dy
     E_ay = E_kx*(bz-cz)
     E_az = E_kx*(cy-by)
-    E_by = E_kx*(cz-az)
-    E_bz = E_kx*(ay-cy)
-    E_cy = E_kx*(az-bz)
-    E_cz = E_kx*(by-ay)
+    E_by += E_kx*(cz-az)
+    E_bz += E_kx*(ay-cy)
+    E_cy += E_kx*(az-bz)
+    E_cz += E_kx*(by-ay)
     ky_bx = az-cz
     ky_cx = bz-az
     E_ax = E_ky*(cz-bz)
-    E_az = E_ky*(bx-cx)
-    E_bx = E_ky*ky_bx
-    E_bz = E_ky*(cx-ax)
-    E_cx = E_ky*ky_cx
-    E_cz = E_ky*(ax-bx)
+    E_az += E_ky*(bx-cx)
+    E_bx += E_ky*ky_bx
+    E_bz += E_ky*(cx-ax)
+    E_cx += E_ky*ky_cx
+    E_cz += E_ky*(ax-bx)
     kz_ax = by-cy
     kz_ay = cx-bx
     kz_bx = cy-ay
     kz_by = ax-cx
     kz_cx = ay-by
     kz_cy = bx-ax
-    E_ax = E_kz*kz_ax
-    E_ay = E_kz*kz_ay
-    E_bx = E_kz*kz_bx
-    E_by = E_kz*kz_by
-    E_cx = E_kz*kz_cx
-    E_cy = E_kz*kz_cy
+    E_ax += E_kz*kz_ax
+    E_ay += E_kz*kz_ay
+    E_bx += E_kz*kz_bx
+    E_by += E_kz*kz_by
+    E_cx += E_kz*kz_cx
+    E_cy += E_kz*kz_cy
 
     DAX = E_ax; DAY = E_ay; DAZ = E_az
     DBX = E_bx; DBY = E_by; DBZ = E_bz

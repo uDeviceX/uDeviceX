@@ -9,10 +9,10 @@ function d_compute_ang(   m, i, j, k, l, de) {
     for (m = 0; m < NE; m++) {
 	de = dE_ang[i]
 	i = D0[m]; j = D1[m]; k = D2[m]; l = D3[m]
-	d_cos(XX[i], YY[i], ZZ[i],
-	      XX[j], YY[j], ZZ[j],		   
-	      XX[k], YY[k], ZZ[k],		   
-	      XX[l], YY[l], ZZ[l])
+	d_dihedral(XX[i], YY[i], ZZ[i],
+		   XX[j], YY[j], ZZ[j],
+		   XX[k], YY[k], ZZ[k],
+		   XX[l], YY[l], ZZ[l])
 	FX[i] += de*DAX; FY[i] += de*DAY; FZ[i] += de*DAZ
 	FX[j] += de*DBX; FY[j] += de*DBY; FZ[j] += de*DBZ
 	FX[k] += de*DCX; FY[k] += de*DCY; FZ[k] += de*DCZ
@@ -159,13 +159,24 @@ function write_tri(   m, i, j, k, x, y, r) {
 	x = (XX[i] + XX[j] + XX[k])/3
 	y = (YY[i] + YY[j] + YY[k])/3
 	r = sqrt(x^2 + y^2)
-	print r, dE_area_tri[m]
+	print r, FX_TRI[m], FY_TRI[m], FZ_TRI[m]
     }
 }
 
 function vabs_f(   m) {
     for (m = 0; m < NV; m++)
 	F[m] = sqrt(FX[m]^2 + FY[m]^2 + FZ[m]^2)
+}
+
+function scatter_force(   m, i, j, k, fx, fy, fz) {
+    clear(FX_TRI); clear(FY_TRI); clear(FZ_TRI)
+    for (m = 0; m < NT; m++) {
+	i = T0[m]; j = T1[m]; k = T2[m]
+	fx = FX[m]; fy = FY[m]; fz = FZ[m]
+	FX_TRI[i] += fx/3; FX_TRI[j] += fx/3; FX_TRI[k] += fx/3
+	FY_TRI[i] += fy/3; FY_TRI[j] += fy/3; FY_TRI[k] += fy/3
+	FZ_TRI[i] += fz/3; FZ_TRI[j] += fz/3; FZ_TRI[k] += fz/3
+    }
 }
 
 BEGIN {
@@ -189,11 +200,12 @@ BEGIN {
     d_compute_julicher()
     d_scatter_curv()
     d_scatter_area()
-    # d_compute_area()
-    # d_compute_edg_len()
+    d_compute_area()
+    d_compute_edg_len()
     d_compute_ang()
 
     vabs_f()
+    scatter_force()
 
     vtk_push("fx", FX, vert)
     vtk_push("fy", FY, vert)
@@ -202,6 +214,6 @@ BEGIN {
     vtk_write("o.vtk", vert, tri)
 
     # write_vert()
-    write_edg()
-    # write_tri()
+    # write_edg()
+    write_tri()
 }
