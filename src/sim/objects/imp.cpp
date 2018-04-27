@@ -30,6 +30,8 @@
 #include "mesh/triangles/imp.h"
 #include "clist/imp.h"
 
+#include "algo/minmax/imp.h"
+
 #include "conf/imp.h"
 #include "io/com/imp.h"
 #include "io/mesh_read/imp.h"
@@ -56,6 +58,7 @@
 #include "distr/rig/imp.h"
 #include "exch/mesh/imp.h"
 #include "meshbb/imp.h"
+#include "mesh/collision/imp.h"
 
 #include "wall/sdf/imp.h"
 
@@ -68,5 +71,6 @@
 #include "imp/main.h"
 #include "imp/forces.h"
 #include "imp/bounce.h"
+#include "imp/recolor.h"
 #include "imp/dump.h"
 #include "imp/gen.h"
