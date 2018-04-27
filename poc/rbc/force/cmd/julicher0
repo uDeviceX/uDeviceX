@@ -20,6 +20,16 @@ function d_compute_ang(   m, i, j, k, l, de) {
     }
 }
 
+function d_compute_comp(    m, i, j, k, l) {
+    for (m = 0; m < NE; m++) {
+	i = D0[m]; j = D1[m]; k = D2[m]; l = D3[m]
+	COMP[m] = d_comp(XX[i], YY[i], ZZ[i],
+			 XX[j], YY[j], ZZ[j],
+			 XX[k], YY[k], ZZ[k],
+			 XX[l], YY[l], ZZ[l])
+    }
+}
+
 function compute_ang(   m, i, j, k, l) {
     for (m = 0; m < NE; m++) {
 	i = D0[m]; j = D1[m]; k = D2[m]; l = D3[m]
@@ -139,7 +149,7 @@ function d_scatter_area(    m, i, j, k, A) {
 function write_vert(   m, r) {
     for (m = 0; m < NV; m++) {
 	r = sqrt(XX[m]^2 + YY[m]^2)
-	print r, FX[m], FY[m], FZ[m], F[m], AREA_VER[m], CURV[m]
+	print r, FX[m], FY[m], FZ[m], F[m], AREA_VER[m], CURV[m], E[m]
     }
 }
 
@@ -149,7 +159,7 @@ function write_edg(   m, i, j, x, y, r) {
 	x = (XX[i] + XX[j])/2
 	y = (YY[i] + YY[j])/2
 	r = sqrt(x^2 + y^2)
-	print r, dE_len[m], dE_ang[m], ANG_EDG[m]
+	print r, COMP[m]
     }
 }
 
@@ -185,7 +195,7 @@ BEGIN {
     if (eq(file, "-h")) usg()
     off_read(file)
     to_cm()
-    # to_r1()
+    # to_rbc()
     setup()
 
     compute_ang()
@@ -200,18 +210,21 @@ BEGIN {
     d_compute_julicher()
     d_scatter_curv()
     d_scatter_area()
-    # d_compute_area()
-    # d_compute_edg_len()
+    d_compute_area()
+    d_compute_edg_len()
     d_compute_ang()
+
+    d_compute_comp()
 
     vabs_f()
     scatter_force()
 
-    vtk_push("fx", FX_TRI, tri)
-    vtk_push("fy", FY_TRI, tri)
-    vtk_push("fz", FZ_TRI, tri)
+    vtk_push("fx", FX, vert)
+    vtk_push("fy", FY, vert)
+    vtk_push("fz", FZ, vert)
+    vtk_push("f",   F, vert)
 
-    
+    vtk_push("e",  E, vert)
     vtk_push("curv",  CURV, vert)
     vtk_write("o.vtk", vert, tri)
 

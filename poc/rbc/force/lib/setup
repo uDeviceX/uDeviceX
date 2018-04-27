@@ -77,3 +77,27 @@ function to_r1(   m, x, y, z, r) {
 	XX[m] = x/r; YY[m] = y/r; ZZ[m] = z/r;
     }
 }
+
+function to_rbc(   m, x, y, z, rm, r) {
+    for (m = 0; m < NV; m++) {
+	x = XX[m]; y = YY[m]
+	r = sqrt(x^2 + y^2)
+	if (r > rm) rm = r
+    }
+    D = 2 * rm
+
+    for (m = 0; m < NV;m ++) {
+	x = XX[m]; y = YY[m]; z = ZZ[m]
+	r = sqrt(x^2 + y^2)
+	ZZ[m] = copy_sign(rbc(D, r), z)
+    }
+}
+
+function sqrt0(r) { return r < 0 ? 0 : sqrt(r) }
+function rbc(D,  r, c, a0, a1, a2, C5, C3, C1) {
+    a0 = 0.0518; a1 = 2.0026; a2 = -4.491
+    C5 = a2/16; C3 = -(a2+2*a1)/8; C1 = (a2+4*a1+16*a0)/16
+    r /= D; r *= 2
+    c = sqrt0(1 - r^2)
+    return D * (C5*c^5+  C3*c^3+C1*c)
+}
