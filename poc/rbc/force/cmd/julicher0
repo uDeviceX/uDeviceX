@@ -27,6 +27,7 @@ function compute_ang(   m, i, j, k, l) {
 		    XX[j], YY[j], ZZ[j],
 		    XX[k], YY[k], ZZ[k],
 		    XX[l], YY[l], ZZ[l])
+	msg("r: " DIHEDRAL_X^2 + DIHEDRAL_Y^2)
 	ANG_EDG[m] = atan2(DIHEDRAL_Y, DIHEDRAL_X)
     }
 }
@@ -168,14 +169,13 @@ function vabs_f(   m) {
 	F[m] = sqrt(FX[m]^2 + FY[m]^2 + FZ[m]^2)
 }
 
-function scatter_force(   m, i, j, k, fx, fy, fz) {
+function scatter_force(   m, i, j, k) {
     clear(FX_TRI); clear(FY_TRI); clear(FZ_TRI)
     for (m = 0; m < NT; m++) {
 	i = T0[m]; j = T1[m]; k = T2[m]
-	fx = FX[m]; fy = FY[m]; fz = FZ[m]
-	FX_TRI[i] += fx/3; FX_TRI[j] += fx/3; FX_TRI[k] += fx/3
-	FY_TRI[i] += fy/3; FY_TRI[j] += fy/3; FY_TRI[k] += fy/3
-	FZ_TRI[i] += fz/3; FZ_TRI[j] += fz/3; FZ_TRI[k] += fz/3
+	FX_TRI[m] = (FX[i] + FX[j] + FX[k])/3
+	FY_TRI[m] = (FY[i] + FY[j] + FY[k])/3
+	FZ_TRI[m] = (FZ[i] + FZ[j] + FZ[k])/3
     }
 }
 
@@ -200,20 +200,22 @@ BEGIN {
     d_compute_julicher()
     d_scatter_curv()
     d_scatter_area()
-    d_compute_area()
-    d_compute_edg_len()
+    # d_compute_area()
+    # d_compute_edg_len()
     d_compute_ang()
 
     vabs_f()
     scatter_force()
 
-    vtk_push("fx", FX, vert)
-    vtk_push("fy", FY, vert)
-    vtk_push("fz", FZ, vert)
-    vtk_push("f",  F, vert)
+    vtk_push("fx", FX_TRI, tri)
+    vtk_push("fy", FY_TRI, tri)
+    vtk_push("fz", FZ_TRI, tri)
+
+    
+    vtk_push("curv",  CURV, vert)
     vtk_write("o.vtk", vert, tri)
 
     # write_vert()
-    # write_edg()
-    write_tri()
+    write_edg()
+    # write_tri()
 }

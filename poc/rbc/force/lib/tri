@@ -65,7 +65,12 @@ function dihedral_xy(ax, ay, az,
     bcz = b[Z] - c[Z]
     bc = sqrt(bcx*bcx + bcy*bcy + bcz*bcz)
 
-    DIHEDRAL_Y = orient3d(a, b, c, d)*bc
+    DIHEDRAL_Y = - orient3d(a, b, c, d)*bc
+    DIHEDRAL_Y = sign(DIHEDRAL_Y,
+		      a[X], a[Y], a[Z],
+		      d[X], d[Y], d[Z],
+		      k[X], k[Y], k[Z],
+		      n[X], n[Y], n[Z])
     DIHEDRAL_X = k[X]*l[X] + k[Y]*l[Y] + k[Z]*l[Z]
 }
 

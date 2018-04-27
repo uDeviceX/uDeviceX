@@ -69,3 +69,11 @@ function to_cm(   m, x, y, z) {
 	XX[m] -= x; YY[m] -= y; ZZ[m] -= z
     }
 }
+
+function to_r1(   m, x, y, z, r) {
+    for (m = 0; m < NV; m++) {
+	x = XX[m]; y = YY[m]; z = ZZ[m]
+	r = sqrt(x^2 + y^2 + z^2)
+	XX[m] = x/r; YY[m] = y/r; ZZ[m] = z/r;
+    }
+}
