@@ -20,7 +20,8 @@ void objects_internal_forces(float dt, Objects *o);
 void objects_body_forces(const BForce*, Objects *o);
 
 void objects_mesh_dump(Objects*);
-
+void objects_diag_dump(float t, Objects*);
+    
 void objects_strt_templ(const char *base, Objects*);
 void objects_strt_dump(const char *base, long id, Objects*);
 

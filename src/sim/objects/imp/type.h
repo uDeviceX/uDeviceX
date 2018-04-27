@@ -75,7 +75,7 @@ struct Rig {
 struct Dump {
     IoRig *rig;
     Particle *pp; /* workspace on host */
-    long id;
+    long id, id_diag;
 };
 
 struct Objects {

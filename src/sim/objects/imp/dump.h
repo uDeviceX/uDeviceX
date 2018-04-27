@@ -15,6 +15,26 @@ void objects_mesh_dump(Objects *obj) {
     ++ d->id;
 }
 
+static void dump_diag_mbr(MPI_Comm cart, const Coords *coords, Mbr *m, Dump *d) {
+    RbcQuants *q = &m->q;
+    long nc = q->nc;
+    float3 *rr, *vv;
+    UC(rbc_com_apply(m->com, nc, q->pp, /**/ &rr, &vv));
+    UC(io_com_dump(cart, coords, d->id_diag, nc, q->ii, rr));
+}
+
+static void dump_diag_rig(float t, const Coords *coords, Rig *r, Dump *d) {
+    RigQuants *q = &r->q;
+    UC(io_rig_dump(coords, t, q->ns, q->ss_dmp, q->ss_dmp_bb, d->rig));
+}
+
+void objects_diag_dump(float t, Objects *obj) {
+    Dump *d = obj->dump;
+    if (obj->mbr) dump_diag_mbr(obj->cart, obj->coords, obj->mbr, d);
+    if (obj->rig) dump_diag_rig(t,         obj->coords, obj->rig, d);
+    ++ d->id_diag;
+}
+
 void objects_strt_templ(const char *base, Objects *o) {
     if (o->rig) UC(rig_strt_dump_templ(o->cart, base, &o->rig->q));
 }

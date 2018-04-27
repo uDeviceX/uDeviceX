@@ -31,6 +31,7 @@
 #include "clist/imp.h"
 
 #include "conf/imp.h"
+#include "io/com/imp.h"
 #include "io/mesh_read/imp.h"
 #include "io/mesh/imp.h"
 #include "io/restart/imp.h"

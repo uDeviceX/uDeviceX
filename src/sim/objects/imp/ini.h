@@ -99,7 +99,7 @@ static void ini_dump(long maxp, Dump **dump) {
     d = *dump;
     EMALLOC(maxp, &d->pp);
     UC(io_rig_ini(&d->rig));
-    d->id = 0;
+    d->id = d->id_diag = 0;
 }
 
 void objects_ini(const Config *cfg, const Opt *opt, MPI_Comm cart, const Coords *coords, int maxp, Objects **objects) {
