@@ -17,13 +17,15 @@ ratprint: false $
 
 assume(sin(u) > 0) $
 
-va: [a0 = 0.0518, a1 = 2.0026, a2 =  -4.491];
-C5: 'a2/16;
-C3: -('a2+2*'a1)/8;
-C1: ('a2+4*'a1+16*'a0)/16 $
+va0: [
+  'a  = ('C0+'C2+'C4)/2,
+  'b  = -('C2+2*'C4)/2,
+  'c  = 'C4/2];
+va1: [
+  'C0 = 0.2072, 'C2 = 2.0026, 'C4 = -1.1228];
+va: va0, va1;
 
-F(c):= C5 * c^5 + C3 * c^3 + C1 * c;
-/* F(c):= 1/2*c; */
+F(q):= 'a*q + 'b*q^3 + 'c*q^5;
 
 matchdeclare(al, all);
 defrule(r_sin0, sin(al)^2, 1 - cos(al)^2);
@@ -33,8 +35,8 @@ to_cos(e):=apply1(e, r_sin0, r_sin1);
 cross(a, b):=express(a ~ b);
 dot(a, b):=express(a . b);
 
-x: 1/2*sin('u)*cos('v);
-y: 1/2*sin('u)*sin('v);
+x: sin('u)*cos('v);
+y: sin('u)*sin('v);
 z: F(cos('u))         ;
 
 r: [x, y, z];
@@ -69,4 +71,5 @@ phi: acos(z/sqrt(x^2 + y^2 + z^2)) $
 dsH: ds(H) $
 
 draw2d(nticks=300,
-  parametric(phi, -f, 'u, 0, %pi/2)), v = 0, va $
+  yrange = [0, 250],
+  parametric(phi,  abs(f), 'u, 0, %pi/2)), v = 0, va $
