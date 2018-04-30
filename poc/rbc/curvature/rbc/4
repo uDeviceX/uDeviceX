@@ -42,7 +42,7 @@ gvv: dot(rv, rv);
 
 L: fullratsimp(trigsimp(dot(ruu, n))) / guu;
 M: trigsimp(dot(ruv, n));
-N: trigsimp(dot(rvv, n))              / gvv
+N: trigsimp(dot(rvv, n))              / gvv;
 
 D: 12.08 $
 ju: "../data/julicher.txt" $
