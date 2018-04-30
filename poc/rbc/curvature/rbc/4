@@ -7,11 +7,9 @@ ratprint: false $
 
 assume(sin(u) > 0);
 
-a0: 0.0518; a1: 2.0026; a2: -4.491;
-C5: a2/16; C3: -(a2+2*a1)/8; C1: (a2+4*a1+16*a0)/16;
-
+a0: 0.0518; a1: 2.0026; a2: -4.491 $
+C5: a2/16; C3: -(a2+2*a1)/8; C1: (a2+4*a1+16*a0)/16 $
 F(c):= C5 * c^5 + C3 * c^3 + C1 * c;
-/* F(c):= 1/2*c; */
 
 matchdeclare(al, all);
 defrule(r_sin0, sin(al)^2, 1 - cos(al)^2);
