@@ -19,7 +19,6 @@ defrule(r_sin1, sin(al)^4, (1 - cos(al)^2)^2);
 to_cos(e):=apply1(e, r_sin0, r_sin1);
 
 cross(a, b):=express(a ~ b);
-dot0(a, b):=express(a . b);
 dot(a, b):=express(a . b);
 
 x: 1/2*sin(u)*cos(v);
