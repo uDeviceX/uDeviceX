@@ -17,8 +17,10 @@ ratprint: false $
 
 assume(sin(u) > 0) $
 
-a0: 0.0518; a1: 2.0026; a2: -4.491 $
-C5: a2/16; C3: -(a2+2*a1)/8; C1: (a2+4*a1+16*a0)/16 $
+va: [a0 = 0.0518, a1 = 2.0026, a2 =  -4.491];
+C5: 'a2/16;
+C3: -('a2+2*'a1)/8;
+C1: ('a2+4*'a1+16*'a0)/16 $
 
 F(c):= C5 * c^5 + C3 * c^3 + C1 * c;
 /* F(c):= 1/2*c; */
@@ -31,25 +33,40 @@ to_cos(e):=apply1(e, r_sin0, r_sin1);
 cross(a, b):=express(a ~ b);
 dot(a, b):=express(a . b);
 
-x: 1/2*sin('u)*cos('v) + 'dx;
-y: 1/2*sin('u)*sin('v) + 'dy;
-z: F(cos('u))          + 'dz;
+x: 1/2*sin('u)*cos('v);
+y: 1/2*sin('u)*sin('v);
+z: F(cos('u))         ;
 
 r: [x, y, z];
-ru: diff(r, u);
-rv: diff(r, v);
+ru: diff(r, 'u);
+rv: diff(r, 'v);
 
-ruu: diff(r, u, 2);
-rvv: diff(r, v, 2);
-ruv: diff(diff(r, v), u);
+guu: dot(ru, ru) $
+guv: dot(ru, rv) $
+gvv: dot(rv, rv) $
+g  : determinant(matrix([guu, guv], [guv, gvv])) $
 
-n:  trigsimp(cross(trigsimp(ru), trigsimp(rv)));
-nn: dot(n, n);
-nn: to_cos(gcfac(nn));
+ruu: diff(r, 'u, 2) $
+rvv: diff(r, 'v, 2) $
+ruv: diff(diff(r, 'v), 'u)   $
+n  : cross(ru, rv) / sqrt(g) $
 
-L: fullratsimp(trigsimp(dot(ruu, n))) / dot(ru, ru);
-M: trigsimp(dot(ruv, n));
-N: trigsimp(dot(rvv, n))              / dot(rv, rv);
+c1: dot(ruu, n)/guu $
+c2: dot(rvv, n)/gvv $
 
-c1: L/sqrt(nn);
-c2: N/sqrt(nn);
+H: (c1 + c2)/2 $
+K: c2 * c2     $
+
+ds(p):= block(
+  [p1: diff(p, 'u), p2: diff(p, 'v), g11: guu, g22: gvv],
+  1/sqrt(g) * (
+    diff(p1 * sqrt(g22/g11), 'u) +
+    diff(p2 * sqrt(g11/g22), 'v)))$
+
+f: 2 * (2*H*(H^2 - K) + ds(H)) $
+
+phi: acos(z/sqrt(x^2 + y^2 + z^2)) $
+dsH: ds(H) $
+
+draw2d(nticks=300,
+  parametric(phi, -f, 'u, 0, %pi/2)), v = 0, va $
