@@ -42,6 +42,7 @@ gvv: dot(rv, rv);
 
 L: fullratsimp(trigsimp(dot(ruu, n))) / guu;
 M: trigsimp(dot(ruv, n));
+if M # 0 then error("4: M should be zero") $
 N: trigsimp(dot(rvv, n))              / gvv;
 
 D: 12.08 $
