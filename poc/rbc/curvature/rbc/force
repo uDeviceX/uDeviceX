@@ -1,3 +1,13 @@
+/*
+
+O.-Y. Zhong-Can, W. Helfrich, Bending energy of vesicle membranes:
+General expressions for the first, second, and third variation of the
+shape energy and applications to spheres and cylinders, Phys. Rev. A
+39 (10) (1989) 5280–5288.  http://dx.doi.org/10.1103/PhysRevA.39.5280.
+
+*/
+
+
 load("vect")   $
 load("pdiff")  $
 load("scifac") $
@@ -5,10 +15,10 @@ ratprint: false $
 
 (X: 1, Y: 2, Z: 3) $
 
-assume(sin(u) > 0);
+assume(sin(u) > 0) $
 
-a0: 0.0518; a1: 2.0026; a2: -4.491;
-C5: a2/16; C3: -(a2+2*a1)/8; C1: (a2+4*a1+16*a0)/16;
+a0: 0.0518; a1: 2.0026; a2: -4.491 $
+C5: a2/16; C3: -(a2+2*a1)/8; C1: (a2+4*a1+16*a0)/16 $
 
 F(c):= C5 * c^5 + C3 * c^3 + C1 * c;
 /* F(c):= 1/2*c; */
