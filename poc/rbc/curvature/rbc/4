@@ -29,21 +29,20 @@ r: [x, y, z];
 ru: diff(r, u);
 rv: diff(r, v);
 
+guu: dot(ru, ru) $
+guv: dot(ru, rv) $
+gvv: dot(rv, rv) $
+g  : determinant(matrix([guu, guv], [guv, gvv]));
+
 ruu: diff(r, u, 2);
 rvv: diff(r, v, 2);
 ruv: diff(diff(r, v), u);
+n   :  cross(ru, rv) / sqrt(g);
 
-n:  trigsimp(cross(trigsimp(ru), trigsimp(rv)));
-nn: dot(n, n);
-nn: to_cos(gcfac(nn));
-
-guu: dot(ru, ru);
-gvv: dot(rv, rv);
-
-L: fullratsimp(trigsimp(dot(ruu, n))) / guu;
+c1: fullratsimp(trigsimp(dot(ruu, n))) / guu;
 M: trigsimp(dot(ruv, n));
 if M # 0 then error("4: M should be zero") $
-N: trigsimp(dot(rvv, n))              / gvv;
+c2: trigsimp(dot(rvv, n))              / gvv;
 
 D: 12.08 $
 ju: "../data/julicher.txt" $
@@ -58,10 +57,10 @@ ka: map(fun, ka) $
 
 o: "main" $
 printf(true, "write: ~a.png~%", o)$
-draw2d(nticks=100, terminal = 'pdf, file_name  = o,
+draw2d(nticks=100, terminal = 'png, file_name  = o,
   'xlabel = "R", 'ylabel = "energy", 'key_pos = 'top_left, 'line_width = 3,
   'key = "Julicher",   'color = 'red,   points(ju),
   'key = "Kantor",     'color = 'green, points(ka),
-  'key = "analit.",    'color = 'blue,  parametric(x, (1/2*(L + N)/sqrt(nn))^2, u, 0, %pi/2),
+  'key = "analit.",    'color = 'blue,  parametric(x, (1/2*(c1 + c2))^2, u, 0, %pi/2),
   'key = "bi-concave profile",    'color = 'black, parametric(x, 50*z, u, 0, %pi/2)
   ), v = 0;
