@@ -20,16 +20,6 @@ function d_compute_ang(   m, i, j, k, l, de) {
     }
 }
 
-function d_compute_comp(    m, i, j, k, l) {
-    for (m = 0; m < NE; m++) {
-	i = D0[m]; j = D1[m]; k = D2[m]; l = D3[m]
-	COMP[m] = d_comp(XX[i], YY[i], ZZ[i],
-			 XX[j], YY[j], ZZ[j],
-			 XX[k], YY[k], ZZ[k],
-			 XX[l], YY[l], ZZ[l])
-    }
-}
-
 function compute_ang(   m, i, j, k, l) {
     for (m = 0; m < NE; m++) {
 	i = D0[m]; j = D1[m]; k = D2[m]; l = D3[m]
@@ -213,8 +203,6 @@ BEGIN {
     d_compute_area()
     d_compute_edg_len()
     d_compute_ang()
-
-    d_compute_comp()
 
     vabs_f()
     scatter_force()

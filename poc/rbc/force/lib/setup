@@ -78,6 +78,12 @@ function to_r1(   m, x, y, z, r) {
     }
 }
 
+function scale(x, y, z) {
+    for (m = 0; m < NV; m++) {
+	XX[m] *= x; YY[m] *= y; ZZ[m] *= z;
+    }
+}
+
 function to_rbc(   m, x, y, z, rm, r) {
     for (m = 0; m < NV; m++) {
 	x = XX[m]; y = YY[m]
