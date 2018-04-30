@@ -25,7 +25,7 @@ static void recolor_flu_from_mbr(Mbr *m, PFarray *flu) {
     int nm, nv;
     Colorer *c = m->colorer;
 
-    nv =m->q.nv;
+    nv = m->q.nv;
     nm = exchange_mesh_mbr(m, c->pp_mesh);
 
     UC(minmax(c->pp_mesh, nv, nm, /**/ c->lo, c->hi));

@@ -14,6 +14,7 @@ static void fin_mesh_exch(/**/ MeshExch *e) {
     UC(emesh_pack_fin(   /**/ e->p));
     UC(emesh_comm_fin(   /**/ e->c));
     UC(emesh_unpack_fin( /**/ e->u));
+    EFREE(e);
 }
 
 static void fin_mesh_mom_exch(/**/ MeshMomExch *e) {
@@ -32,6 +33,7 @@ static void fin_colorer(/**/ Colorer *c) {
     Dfree(&c->pp_mesh);
     Dfree(&c->lo);
     Dfree(&c->hi);
+    EFREE(c);
 }
 
 static void fin_mbr(Mbr *m) {
@@ -50,6 +52,9 @@ static void fin_mbr(Mbr *m) {
     UC(mesh_read_fin(m->mesh));
     UC(mesh_write_fin(m->mesh_write));
 
+    if (m->colorer)   UC(fin_colorer(/**/ m->colorer));
+    if (m->mesh_exch) UC(fin_mesh_exch(/**/ m->mesh_exch));
+    
     EFREE(m);
 }
 
