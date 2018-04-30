@@ -37,9 +37,12 @@ n:  trigsimp(cross(trigsimp(ru), trigsimp(rv)));
 nn: dot(n, n);
 nn: to_cos(gcfac(nn));
 
-L: fullratsimp(trigsimp(dot(ruu, n))) / dot(ru, ru);
+guu: dot(ru, ru);
+gvv: dot(rv, rv);
+
+L: fullratsimp(trigsimp(dot(ruu, n))) / guu;
 M: trigsimp(dot(ruv, n));
-N: trigsimp(dot(rvv, n))              / dot(rv, rv);
+N: trigsimp(dot(rvv, n))              / gvv
 
 D: 12.08 $
 ju: "../data/julicher.txt" $
