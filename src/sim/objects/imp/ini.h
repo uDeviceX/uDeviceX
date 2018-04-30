@@ -42,7 +42,8 @@ static void ini_colorer(int nv, int max_m, /**/ Colorer **col) {
     Dalloc(&c->hi, max_m);
 }
 
-static void ini_mbr(const Config *cfg, const OptMbr *opt, MPI_Comm cart, int3 L, /**/ Mbr **membrane) {
+static void ini_mbr(const Config *cfg, const OptMbr *opt, MPI_Comm cart, int3 L,
+                    bool recolor, /**/ Mbr **membrane) {
     int nv, max_m;
     const char *directory = "r";
     Mbr *m;
@@ -77,8 +78,8 @@ static void ini_mbr(const Config *cfg, const OptMbr *opt, MPI_Comm cart, int3 L,
 
     UC(conf_lookup_float(cfg, "rbc.mass", &m->mass));
 
-    // if () UC(ini_mesh_exch(L, nv, max_m, cart, /**/ m->mesh_exch));
-    // if (opt->flucolors) UC(ini_colorer(nv, max_m, /**/ &m->colorer));
+    if (recolor) UC(ini_mesh_exch(L, nv, max_m, cart, /**/ &m->mesh_exch));
+    if (recolor) UC(ini_colorer(nv, max_m, /**/ &m->colorer));
 }
 
 static void ini_rig(const Config *cfg, const OptRig *opt, MPI_Comm cart, int maxp, int3 L, /**/ Rig **rigid) {
@@ -124,6 +125,7 @@ static void ini_dump(long maxp, Dump **dump) {
 void objects_ini(const Config *cfg, const Opt *opt, MPI_Comm cart, const Coords *coords, int maxp, Objects **objects) {
     Objects *obj;
     int3 L;
+    bool recolor = opt->flucolors;
     EMALLOC(1, objects);
     obj = *objects;
     obj->opt = *opt;
@@ -136,7 +138,7 @@ void objects_ini(const Config *cfg, const Opt *opt, MPI_Comm cart, const Coords 
     obj->rig = NULL;
     obj->bb  = NULL;
 
-    if (opt->rbc.active) UC(ini_mbr(cfg, &opt->rbc, cart,       L, &obj->mbr));
+    if (opt->rbc.active) UC(ini_mbr(cfg, &opt->rbc, cart, L, recolor, &obj->mbr));
     if (opt->rig.active) UC(ini_rig(cfg, &opt->rig, cart, maxp, L, &obj->rig));
 
     if (opt->rig.bounce) UC(meshbb_ini(maxp, /**/ &obj->bb));
