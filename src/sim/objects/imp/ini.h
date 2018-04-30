@@ -132,10 +132,14 @@ void objects_ini(const Config *cfg, const Opt *opt, MPI_Comm cart, const Coords 
     L = subdomain(coords);
     UC(coords_ini(cart, L.x, L.y, L.z, &obj->coords));
 
-    if (opt->rbc.active) UC(ini_mbr(cfg, &opt->rbc, cart,       L, &obj->mbr));  else obj->mbr = NULL;
-    if (opt->rig.active) UC(ini_rig(cfg, &opt->rig, cart, maxp, L, &obj->rig));  else obj->rig = NULL;
+    obj->mbr = NULL;
+    obj->rig = NULL;
+    obj->bb  = NULL;
 
-    if (opt->rig.bounce) UC(meshbb_ini(maxp, /**/ &obj->bb)); else obj->bb = NULL;
+    if (opt->rbc.active) UC(ini_mbr(cfg, &opt->rbc, cart,       L, &obj->mbr));
+    if (opt->rig.active) UC(ini_rig(cfg, &opt->rig, cart, maxp, L, &obj->rig));
+
+    if (opt->rig.bounce) UC(meshbb_ini(maxp, /**/ &obj->bb));
         
     UC(ini_dump(maxp, &obj->dump));
 }
