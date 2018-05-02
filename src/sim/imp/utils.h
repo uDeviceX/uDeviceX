@@ -48,23 +48,21 @@ _I_ float utils_get_dt0(Sim *s) {
     return time_step_dt0(time_step);
 }
 
+_S_ void push_accel(const Sim *s, TimeStepAccel *aa) {
+    const Flu *flu = &s->flu;
+    if (flu->q.n) UC(time_step_accel_push(aa, flu->mass, flu->q.n, flu->ff));
+    UC(objects_get_accel(s->obj, aa));
+}
+
 _I_ float utils_get_dt(Sim *s, TimeLine *time) {
     /* Possibility to adapt dt only after equilibration */
     float dt;
+    const Opt *opt = &s->opt;
     if (s->equilibrating)
         dt = time_step_dt0(s->time.step);
     else {
-        const Flu *flu = &s->flu;
-        // TODO
-        // const Rbc *rbc = &s->rbc;
-        const Opt *opt = &s->opt;
-
-        time_step_accel_reset(s->time.accel);
-        if (flu->q.n)
-            time_step_accel_push(s->time.accel, flu->mass, flu->q.n, flu->ff);
-        // if (active_rbc(s) && rbc->q.n)
-        //     time_step_accel_push(s->time.accel, rbc->mass, rbc->q.n, rbc->ff);
-
+        UC(time_step_accel_reset(s->time.accel));
+        UC(push_accel(s, /**/ s->time.accel));
         dt = time_step_dt(s->time.step, s->cart, s->time.accel);
 
         if (time_line_cross(time, opt->freq_parts))

@@ -107,11 +107,11 @@ void objects_get_particles_mbr(Objects *obj, PFarrays *pf) {
 }
 
 static void get_mbr_accel(const Mbr *m, TimeStepAccel *aa) {
-    UC(time_step_accel_push(aa, m->mass, m->q.n, m->ff));
+    if(m->q.n) UC(time_step_accel_push(aa, m->mass, m->q.n, m->ff));
 }
 
 static void get_rig_accel(const Rig *r, TimeStepAccel *aa) {
-    UC(time_step_accel_push(aa, r->mass, r->q.n, r->ff));
+    if (r->q.n) UC(time_step_accel_push(aa, r->mass, r->q.n, r->ff));
 }
 
 void objects_get_accel(const Objects *obj, TimeStepAccel *aa) {
