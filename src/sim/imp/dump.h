@@ -1,4 +1,4 @@
-static void dump_part(Sim *s) {
+_S_ void dump_part(Sim *s) {
     const Flu *flu = &s->flu;
     const Opt *opt = &s->opt;
     IoBop *bop = s->dump.bop;
@@ -36,14 +36,14 @@ static void dump_part(Sim *s) {
     s->dump.id_bop = ++id_bop;
 }
 
-static void dump_grid(Sim *s) {
+_S_ void dump_grid(Sim *s) {
     Dump *d = &s->dump;
     UC(grid_sampler_dump(s->cart, "h5", d->id_field, d->field_sampler.s));
     UC(grid_sampler_reset(d->field_sampler.s));
     d->id_field ++;
 }
 
-void dump_diag_after(const TimeLine *time, Sim *s) { /* after wall */
+_I_ void dump_diag_after(const TimeLine *time, Sim *s) { /* after wall */
     const Opt *o = &s->opt;
     float t = time_line_get_current(time);
     if (time_line_cross(time, o->freq_parts)) {
@@ -52,7 +52,7 @@ void dump_diag_after(const TimeLine *time, Sim *s) { /* after wall */
     }
 }
 
-static int download_pp(Sim *s) { /* device to host  data transfer */
+_S_ int download_pp(Sim *s) { /* device to host  data transfer */
     int np = 0;
     Flu *flu = &s->flu;
 
@@ -62,14 +62,14 @@ static int download_pp(Sim *s) { /* device to host  data transfer */
     return np;
 }
 
-static void diag(float time, Sim *s) {
+_S_ void diag(float time, Sim *s) {
     if (time < 0) ERR("time = %g < 0", time);
     int n;
     n = download_pp(s);
     UC(diag_part_apply(s->dump.diagpart, s->cart, time, n, s->dump.pp));
 }
 
-static void dump_strt_templ(Sim *s) { /* template dumps (wall, solid) */
+_I_ void dump_strt_templ(Sim *s) { /* template dumps (wall, solid) */
     const Opt *opt = &s->opt;
     const char *base = opt->strt_base_dump;
     if (opt->dump_strt) {
@@ -78,7 +78,7 @@ static void dump_strt_templ(Sim *s) { /* template dumps (wall, solid) */
     }
 }
 
-static void dump_strt0(int id, Sim *s) {
+_S_ void dump_strt0(int id, Sim *s) {
     Flu *flu = &s->flu;
     const Opt *opt = &s->opt;
     const char *base = opt->strt_base_dump;
@@ -87,15 +87,15 @@ static void dump_strt0(int id, Sim *s) {
     if (opt->vcon)   vcont_strt_dump(s->cart, base, id, s->vcon.vcont);
 }
 
-static void dump_strt(Sim *s) {
+_S_ void dump_strt(Sim *s) {
     dump_strt0(s->dump.id_strt++, s);
 }
 
-static void dump_strt_final(Sim *s) {
+_I_ void dump_strt_final(Sim *s) {
     dump_strt0(RESTART_FINAL, s);
 }
 
-static void dump_diag(TimeLine *time, Sim *s) {
+_I_ void dump_diag(TimeLine *time, Sim *s) {
     const Opt *o = &s->opt;
     if (time_line_cross(time, o->freq_parts)) {
         if (o->dump_parts) dump_part(s);

@@ -1,14 +1,14 @@
-void clear_vel(Sim *s) {
+_I_ void clear_vel(Sim *s) {
     Flu *flu = &s->flu;
     UC(scheme_move_clear_vel(flu->q.n, flu->q.pp));
     UC(objects_clear_vel(s->obj));
 }
 
-void update_solvent(float dt, /**/ Flu *f) {
+_I_ void update_solvent(float dt, /**/ Flu *f) {
     UC(scheme_move_apply(dt, f->mass, f->q.n, f->ff, f->q.pp));
 }
 
-void restrain(long it, Sim *s) {
+_I_ void restrain(long it, Sim *s) {
     SchemeQQ qq;
     PFarrays *pf;
     PFarray p;
@@ -31,7 +31,7 @@ void restrain(long it, Sim *s) {
     UC(pfarrays_fin(pf));
 }
 
-void bounce_wall(float dt, Sim *s) {
+_I_ void bounce_wall(float dt, Sim *s) {
     Flu *f = &s->flu;
     PaArray pa;
     FoArray fo;
@@ -46,7 +46,7 @@ void bounce_wall(float dt, Sim *s) {
     UC(pfarrays_fin(pf));
 }
 
-void bounce_objects(float dt, Sim *s) {
+_I_ void bounce_objects(float dt, Sim *s) {
     PFarray pfflu;
     const Flu *flu = &s->flu;
     utils_get_pf_flu(s, &pfflu);

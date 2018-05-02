@@ -1,16 +1,16 @@
-static bool active_walls(const Sim *s) {
+_I_ bool active_walls(const Sim *s) {
     return !s->equilibrating && s->opt.wall;
 }
 
-static bool active_rbc(const Sim *s) {
+_I_ bool active_rbc(const Sim *s) {
     return !s->equilibrating && s->opt.rbc.active;
 }
 
-static bool active_rig(const Sim *s) {
+_I_ bool active_rig(const Sim *s) {
     return !s->equilibrating && s->opt.rig.active;
 }
 
-static bool is_sampling_time(const Sim *s) {
+_I_ bool is_sampling_time(const Sim *s) {
     const Opt *opt = &s->opt;
     const float freq = opt->freq_field / opt->sampler_npdump;
     const TimeLine *time = s->time.t;
@@ -18,7 +18,7 @@ static bool is_sampling_time(const Sim *s) {
     return time_line_cross(time, freq);
 }
 
-static void utils_compute_hematocrit(const Sim *s) {
+_I_ void utils_compute_hematocrit(const Sim *s) {
     const Opt *opt = &s->opt;
     double Vdomain, Vrbc, Ht;
     if (!active_rbc(s)) return;
@@ -39,20 +39,20 @@ static void utils_compute_hematocrit(const Sim *s) {
     msg_print("Hematocrit: %g", Ht);
 }
 
-static void utils_dump_history(const Config *cfg, const char *fname) {
+_I_ void utils_dump_history(const Config *cfg, const char *fname) {
     FILE *f;
     UC(efopen(fname, "w", &f));
     UC(conf_write_history(cfg, f));
     UC(efclose(f));
 }
 
-static float utils_get_dt0(Sim *s) {
+_I_ float utils_get_dt0(Sim *s) {
     TimeStep *time_step;
     time_step = s->time.step;
     return time_step_dt0(time_step);
 }
 
-static float utils_get_dt(Sim *s, TimeLine *time) {
+_I_ float utils_get_dt(Sim *s, TimeLine *time) {
     /* Possibility to adapt dt only after equilibration */
     if (s->equilibrating)
         return time_step_dt0(s->time.step);
@@ -77,7 +77,7 @@ static float utils_get_dt(Sim *s, TimeLine *time) {
     }
 }
 
-static void utils_get_pf_flu(Sim *s, PFarray *flu) {
+_I_ void utils_get_pf_flu(Sim *s, PFarray *flu) {
     Flu *f = &s->flu;
     flu->n = f->q.n;
     UC(parray_push_pp(f->q.pp, &flu->p));

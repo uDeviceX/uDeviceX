@@ -1,11 +1,11 @@
-static void pre_run(Sim *s) {
+_S_ void pre_run(Sim *s) {
     s->equilibrating = false;
     
     UC(dump_strt_templ(s));
     UC(utils_compute_hematocrit(s));
 }
 
-static void step(TimeLine *time, float dt, float tstart, Sim *s) {
+_S_ void step(TimeLine *time, float dt, float tstart, Sim *s) {
     long it;
     Flu *flu = &s->flu;
     Wall *wall = s->wall;
@@ -58,7 +58,7 @@ static void step(TimeLine *time, float dt, float tstart, Sim *s) {
 }
 
 /* ts, te: time start and end */
-static void run(float ts, float te, Sim *s) {
+_I_ void run(float ts, float te, Sim *s) {
     float dt;
 
     dt = utils_get_dt0(s);

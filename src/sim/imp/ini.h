@@ -1,9 +1,9 @@
-static void set_params(const Config *cfg, float kBT, float dt, const char *name_space, PairParams *p) {
+_S_ void set_params(const Config *cfg, float kBT, float dt, const char *name_space, PairParams *p) {
     UC(pair_set_conf(cfg, name_space, p));
     UC(pair_compute_dpd_sigma(kBT, dt, /**/ p));
 }
 
-static void ini_flu_exch(const Opt *opt, MPI_Comm comm, int3 L, /**/ FluExch *e) {
+_S_ void ini_flu_exch(const Opt *opt, MPI_Comm comm, int3 L, /**/ FluExch *e) {
     int maxd = HSAFETY_FACTOR * opt->params.numdensity;
 
     UC(eflu_pack_ini(opt->flucolors, L, maxd, /**/ &e->p));
@@ -11,7 +11,7 @@ static void ini_flu_exch(const Opt *opt, MPI_Comm comm, int3 L, /**/ FluExch *e)
     UC(eflu_unpack_ini(opt->flucolors, L, maxd, /**/ &e->u));
 }
 
-static void ini_flu_distr(const Opt *opt, MPI_Comm comm, int3 L, /**/ FluDistr *d) {
+_S_ void ini_flu_distr(const Opt *opt, MPI_Comm comm, int3 L, /**/ FluDistr *d) {
     float maxdensity = ODSTR_FACTOR * opt->params.numdensity;
     UC(dflu_pack_ini(opt->flucolors, opt->fluids, L, maxdensity, /**/ &d->p));
     UC(dflu_comm_ini(opt->flucolors, opt->fluids, comm, /**/ &d->c));
@@ -19,7 +19,7 @@ static void ini_flu_distr(const Opt *opt, MPI_Comm comm, int3 L, /**/ FluDistr *
     UC(dflu_status_ini(/**/ &d->s));
 }
 
-static void ini_vcon(MPI_Comm comm, int3 L, const Config *cfg, /**/ Vcon *c) {
+_S_ void ini_vcon(MPI_Comm comm, int3 L, const Config *cfg, /**/ Vcon *c) {
     UC(conf_lookup_int(cfg, "vcon.log_freq", &c->log_freq));
     UC(conf_lookup_int(cfg, "vcon.adjust_freq", &c->adjust_freq));
     UC(conf_lookup_int(cfg, "vcon.sample_freq", &c->sample_freq));
@@ -28,18 +28,18 @@ static void ini_vcon(MPI_Comm comm, int3 L, const Config *cfg, /**/ Vcon *c) {
     UC(vcont_set_conf(cfg, /**/ c->vcont));
 }
 
-static void ini_outflow(const Coords *coords, int maxp, const Config *cfg, Outflow **o) {
+_S_ void ini_outflow(const Coords *coords, int maxp, const Config *cfg, Outflow **o) {
     UC(outflow_ini(maxp, /**/ o));
     UC(outflow_set_conf(cfg, coords, *o));
 }
 
-static void ini_denoutflow(const Coords *c, int maxp, const Config *cfg, DCont **d, DContMap **m) {
+_S_ void ini_denoutflow(const Coords *c, int maxp, const Config *cfg, DCont **d, DContMap **m) {
     UC(den_ini(maxp, /**/ d));
     UC(den_map_ini(/**/ m));
     UC(den_map_set_conf(cfg, c, *m));
 }
 
-static void ini_inflow(const Coords *coords, int3 L, const Config *cfg, Inflow **i) {
+_S_ void ini_inflow(const Coords *coords, int3 L, const Config *cfg, Inflow **i) {
     /* number of cells */
     int2 nc = make_int2(L.y, L.z/2);
     UC(inflow_ini(nc, /**/ i));
@@ -47,7 +47,7 @@ static void ini_inflow(const Coords *coords, int3 L, const Config *cfg, Inflow *
     UC(inflow_ini_velocity(*i));
 }
 
-static void ini_flu(const Config *cfg, const Opt *opt, MPI_Comm cart, int maxp, /**/ Flu *f) {
+_S_ void ini_flu(const Config *cfg, const Opt *opt, MPI_Comm cart, int maxp, /**/ Flu *f) {
     int3 L = opt->params.L;
     
     UC(flu_ini(opt->flucolors, opt->fluids, L, maxp, &f->q));
@@ -68,29 +68,29 @@ static void ini_flu(const Config *cfg, const Opt *opt, MPI_Comm cart, int maxp, 
     UC(conf_lookup_float(cfg, "flu.mass", &f->mass));
 }
 
-static void read_recolor_opt(const Config *c, Recolorer *o) {
+_S_ void read_recolor_opt(const Config *c, Recolorer *o) {
     int b;
     UC(conf_lookup_bool(c, "recolor.active", &b));
     o->flux_active = b;
     UC(conf_lookup_int(c, "recolor.dir", &o->flux_dir));
 }
 
-static void coords_log(const Coords *c) {
+_S_ void coords_log(const Coords *c) {
     msg_print("domain: %d %d %d", xdomain(c), ydomain(c), zdomain(c));
     msg_print("subdomain: [%d:%d][%d:%d][%d:%d]",
               xlo(c), xhi(c), ylo(c), yhi(c), zlo(c), zhi(c));
 }
 
-static void ini_pair_params(const Config *cfg, float kBT, float dt, Sim *s) {
+_S_ void ini_pair_params(const Config *cfg, float kBT, float dt, Sim *s) {
     UC(pair_ini(&s->flu.params));
     UC(set_params(cfg, kBT, dt, "flu", s->flu.params));
 }
 
-static int gsize(int L, int r) {
+_S_ int gsize(int L, int r) {
     return r >= 0 ? L * r : L / r;
 }
 
-static int3 grid_size(int3 L, int3 r) {
+_S_ int3 grid_size(int3 L, int3 r) {
     int3 N;
     N.x = gsize(L.x, r.x);
     N.y = gsize(L.y, r.y);
@@ -98,7 +98,7 @@ static int3 grid_size(int3 L, int3 r) {
     return N;
 }
 
-static void ini_sampler(const Coords *c, const Opt *opt, Sampler *s) {
+_S_ void ini_sampler(const Coords *c, const Opt *opt, Sampler *s) {
     int3 N, L;
     bool stress, colors;
     stress = opt->fluss;
@@ -110,7 +110,7 @@ static void ini_sampler(const Coords *c, const Opt *opt, Sampler *s) {
     UC(grid_sampler_ini(colors, stress, L, N, &s->s));
 }
 
-static void ini_dump(int maxp, MPI_Comm cart, const Coords *c, const Opt *opt, Dump *d) {
+_S_ void ini_dump(int maxp, MPI_Comm cart, const Coords *c, const Opt *opt, Dump *d) {
     enum {NPARRAY = 3}; /* flu, rig and rbc */
     EMALLOC(NPARRAY * maxp, &d->pp);
     
@@ -124,7 +124,7 @@ static void ini_dump(int maxp, MPI_Comm cart, const Coords *c, const Opt *opt, D
     d->id_bop = d->id_strt = 0;
 }
 
-static void ini_time(const Config *cfg, /**/ Time *t) {
+_S_ void ini_time(const Config *cfg, /**/ Time *t) {
     const float t0 = 0;
     UC(conf_lookup_float(cfg, "time.end",  &t->end));
     UC(conf_lookup_float(cfg, "time.wall", &t->eq));
@@ -133,7 +133,7 @@ static void ini_time(const Config *cfg, /**/ Time *t) {
     UC(time_step_accel_ini(&t->accel));
 }
 
-static void ini_common(const Config *cfg, MPI_Comm cart, /**/ Sim *s) {
+_S_ void ini_common(const Config *cfg, MPI_Comm cart, /**/ Sim *s) {
     MC(m::Comm_dup(cart, &s->cart));
     UC(coords_ini_conf(s->cart, cfg, /**/ &s->coords));
     UC(coords_log(s->coords));
@@ -144,7 +144,7 @@ static void ini_common(const Config *cfg, MPI_Comm cart, /**/ Sim *s) {
     UC(ini_time(cfg, &s->time));
 }
 
-static void ini_optional_features(const Config *cfg, const Opt *opt, Sim *s) {
+_S_ void ini_optional_features(const Config *cfg, const Opt *opt, Sim *s) {
     int maxp = opt_estimate_maxp(opt);
     int3 L = opt->params.L;
     

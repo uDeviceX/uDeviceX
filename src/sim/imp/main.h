@@ -1,11 +1,11 @@
-static void gen_flu(Sim *s) {
+_S_ void gen_flu(Sim *s) {
     Flu *flu = &s->flu;
     UC(flu_gen_quants(s->coords, s->opt.params.numdensity, s->gen_color, &flu->q));
     UC(flu_build_cells(&flu->q));
     if (s->opt.fluids) flu_gen_ids(s->cart, flu->q.n, &flu->q);
 }
 
-static void gen_wall(Sim *s) {
+_S_ void gen_wall(Sim *s) {
     Flu *flu = &s->flu;
     Wall *w = s->wall;
     bool dump_sdf = s->opt.dump_field;
@@ -16,7 +16,7 @@ static void gen_wall(Sim *s) {
                 &flu->q.n, flu->q.pp, w));
 }
 
-static void freeze(Sim *s) { /* generate */
+_S_ void freeze(Sim *s) { /* generate */
     Flu *flu = &s->flu;
     const Sdf *sdf = NULL;
     PFarray pfflu;    
@@ -70,7 +70,7 @@ void sim_gen(Sim *s) {
     if (opt->dump_strt) dump_strt_final(s);
 }
 
-static void gen_from_restart(Sim *s) {
+_S_ void gen_from_restart(Sim *s) {
     Flu *flu = &s->flu;
     const Opt *opt = &s->opt;
     const char *base = opt->strt_base_read;

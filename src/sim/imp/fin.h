@@ -1,30 +1,30 @@
-static void fin_flu_exch(/**/ FluExch *e) {
+_S_ void fin_flu_exch(/**/ FluExch *e) {
     UC(eflu_pack_fin(/**/ e->p));
     UC(eflu_comm_fin(/**/ e->c));
     UC(eflu_unpack_fin(/**/ e->u));
 }
 
-static void fin_flu_distr(/**/ FluDistr *d) {
+_S_ void fin_flu_distr(/**/ FluDistr *d) {
     UC(dflu_pack_fin(/**/ d->p));
     UC(dflu_comm_fin(/**/ d->c));
     UC(dflu_unpack_fin(/**/ d->u));
 }
 
-static void fin_outflow(Outflow *o) {
+_S_ void fin_outflow(Outflow *o) {
     UC(outflow_fin(/**/ o));
 }
 
-static void fin_denoutflow(DCont *d, DContMap *m) {
+_S_ void fin_denoutflow(DCont *d, DContMap *m) {
     UC(den_fin(d));
     UC(den_map_fin(m));
 }
 
-static void fin_inflow(Inflow *i) {
+_S_ void fin_inflow(Inflow *i) {
     UC(inflow_fin(/**/ i));
 }
 
 
-static void fin_flu(const Opt *opt, Flu *f) {
+_S_ void fin_flu(const Opt *opt, Flu *f) {
     UC(flu_fin(&f->q));
     UC(fluforces_bulk_fin(/**/ f->bulk));
     UC(fluforces_halo_fin(/**/ f->halo));
@@ -41,32 +41,32 @@ static void fin_flu(const Opt *opt, Flu *f) {
     }
 }
     
-static void fin_vcon(Vcon *c) {
+_S_ void fin_vcon(Vcon *c) {
     UC(vcont_fin(c->vcont));
 }
 
-static void fin_pair_params(Sim *s) {
+_S_ void fin_pair_params(Sim *s) {
     UC(pair_fin(s->flu.params));
 }
 
-static void fin_sampler(Sampler *s) {
+_S_ void fin_sampler(Sampler *s) {
     UC(grid_sampler_data_fin(s->d));
     UC(grid_sampler_fin(s->s));
 }
 
-static void fin_dump(const Opt *opt, Dump *d) {
+_S_ void fin_dump(const Opt *opt, Dump *d) {
     UC(io_bop_fin(d->bop));
     UC(diag_part_fin(d->diagpart));
     if (opt->dump_field) UC(fin_sampler(&d->field_sampler));
     EFREE(d->pp);
 }
 
-static void fin_time(Time *t) {
+_S_ void fin_time(Time *t) {
     UC(time_step_fin(t->step));
     UC(time_step_accel_fin(t->accel));    
 }
 
-static void fin_optional_features(const Opt *opt, Sim *s) {
+_S_ void fin_optional_features(const Opt *opt, Sim *s) {
     if (opt->vcon)       UC(fin_vcon(/**/ &s->vcon));
     if (opt->outflow)    UC(fin_outflow(/**/ s->outflow));
     if (opt->inflow)     UC(fin_inflow (/**/ s->inflow ));

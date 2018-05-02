@@ -1,7 +1,7 @@
 /* the following functions will need to be splitted in the future
    for performance reasons */
 
-static void log_and_fail(Coords *c, DFluStatus *s, FluQuants *q) {
+_S_ void log_and_fail(Coords *c, DFluStatus *s, FluQuants *q) {
     unsigned int time;
     time = 10;
     UC(dflu_status_log(s));
@@ -11,7 +11,7 @@ static void log_and_fail(Coords *c, DFluStatus *s, FluQuants *q) {
     ERR("dflu_download failed");
 }
 
-void distribute_flu(Sim *s) {
+_I_ void distribute_flu(Sim *s) {
     PartList lp;
     FluQuants *q = &s->flu.q;
     FluDistr *d = &s->flu.d;

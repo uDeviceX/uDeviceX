@@ -77,15 +77,15 @@
 
 #include "imp.h"
 
+#define _I_ static
+#define _S_ static
+
 #include "imp/type.h"
 #include "imp/utils.h"
 #include "imp/force/common.h"
 #include "imp/force/dpd.h"
 #include "imp/force/objects.h"
 #include "imp/force/imp.h"
-
-#define _I_ static
-#define _S_ static
 
 #include "imp/ini.h"
 #include "imp/fin.h"
