@@ -21,5 +21,5 @@ void rbc_gen_mesh(const Coords *coords, MPI_Comm comm, const MeshRead *off, cons
 }
 
 void rbc_gen_freeze(MPI_Comm comm, /**/ RbcQuants *q) {
-    if (q->ids) gen_ids(comm, q->nc, /**/ q->ii);
+    if (q->ids) UC(gen_ids(comm, q->nc, /**/ q->ii));
 }
