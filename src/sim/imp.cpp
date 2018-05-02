@@ -84,14 +84,18 @@
 #include "imp/force/objects.h"
 #include "imp/force/imp.h"
 
+#define _I_ static
+#define _S_ static
+
 #include "imp/ini.h"
 #include "imp/fin.h"
 #include "imp/check.h"
 #include "imp/dump.h"
-
 #include "imp/addons.h"
-
 #include "imp/update.h"
 #include "imp/distr.h"
 #include "imp/run.h"
 #include "imp/main.h"
+
+#undef _I_
+#undef _S_

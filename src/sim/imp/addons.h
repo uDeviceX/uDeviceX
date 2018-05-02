@@ -1,17 +1,17 @@
 /* velocity controller */
 
-static bool valid_step(long id, const int freq) {
+_S_ bool valid_step(long id, const int freq) {
     return (freq != 0) && (id % freq == 0);
 }
 
-void sample_vcont(const Coords *coords, long id, const Flu *f, /**/ Vcon *c) {
+_I_ void sample_vcont(const Coords *coords, long id, const Flu *f, /**/ Vcon *c) {
     if (valid_step(id, c->sample_freq)) {
         const FluQuants *q = &f->q;
         vcont_sample(coords, q->n, q->pp, q->cells.starts, q->cells.counts, /**/ c->vcont);
     }
 }
 
-void adjust_bforce(long id, /**/ Vcon *c, BForce *bforce) {
+_I_ void adjust_bforce(long id, /**/ Vcon *c, BForce *bforce) {
     if (valid_step(id, c->adjust_freq)) {
         float3 f;
         f = vcont_adjustF(/**/ c->vcont);
@@ -19,33 +19,33 @@ void adjust_bforce(long id, /**/ Vcon *c, BForce *bforce) {
     }
 }
 
-void log_vcont(long id, const Vcon *c) {
+_I_ void log_vcont(long id, const Vcon *c) {
     if (valid_step(id, c->log_freq))
         vcont_log(c->vcont);
 }
 
 /* set colors of particles according to the RBCs */
 
-void recolor_flux(const Coords *c, const Recolorer *opt, Flu *f) {
+_I_ void recolor_flux(const Coords *c, const Recolorer *opt, Flu *f) {
     int3 L = make_int3(xs(c), ys(c), zs(c));
     if (opt->flux_active)
         UC(color_linear_flux(c, L, opt->flux_dir, RED_COLOR, f->q.n, f->q.pp, /**/ f->q.cc));
 }
 
 
-static void apply_inflow(float kBT, int numdensity, float dt, Inflow *i, Flu *f) {
+_I_ void apply_inflow(float kBT, int numdensity, float dt, Inflow *i, Flu *f) {
     if (f->q.colors)
         UC(inflow_create_pp_cc(kBT, numdensity, dt, RED_COLOR, i, &f->q.n, f->q.pp, f->q.cc));
     else
         UC(inflow_create_pp(kBT, numdensity, dt, i, &f->q.n, f->q.pp));
 }
 
-static void mark_outflow(const Flu *f, Outflow *o) {
+_I_ void mark_outflow(const Flu *f, Outflow *o) {
     UC(outflow_filter_particles(f->q.n, f->q.pp, /**/ o));
     UC(outflow_download_ndead(o));
 }
 
-static void mark_outflowden(OptParams params, const Flu *f, const DContMap *m, /**/ DCont *d) {
+_I_ void mark_outflowden(OptParams params, const Flu *f, const DContMap *m, /**/ DCont *d) {
     const int *ss, *cc;
     int n;
     n = f->q.n;
@@ -57,7 +57,7 @@ static void mark_outflowden(OptParams params, const Flu *f, const DContMap *m, /
     UC(den_download_ndead(/**/ d));
 }
 
-static void sample(Sim *s) {
+_S_ void sample(Sim *s) {
     Flu *flu = &s->flu;
     Sampler *sam = &s->dump.field_sampler;
 
@@ -66,18 +66,18 @@ static void sample(Sim *s) {
     UC(grid_sampler_add(sam->d, sam->s));
 }
 
-static void field_sample(Sim *s) {
+_I_ void field_sample(Sim *s) {
     if (s->opt.dump_field && is_sampling_time(s))
         sample(s);
 }
 
-static void colors_from_rbc(Sim *s) {
+_I_ void colors_from_rbc(Sim *s) {
     PFarray flu;
     utils_get_pf_flu(s, &flu);
     UC(objects_recolor_flu(s->obj, &flu));
 }
 
-static void recolor_from_rbc(long it, Sim *s) {
+_I_ void recolor_from_rbc(long it, Sim *s) {
     bool cond;
     const Opt *opt = &s->opt;
     cond = opt->flucolors && opt->recolor_freq && it % opt->recolor_freq == 0;
