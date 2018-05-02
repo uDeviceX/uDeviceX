@@ -29,7 +29,6 @@
 
 #include "utils/texo.h"
 #include "algo/scan/imp.h"
-#include "algo/minmax/imp.h"
 
 #include "pair/imp.h"
 #include "struct/parray/imp.h"
@@ -38,9 +37,7 @@
 #include "struct/partlist/type.h"
 
 #include "io/mesh/imp.h"
-#include "io/rig/imp.h"
 #include "io/diag/part/imp.h"
-#include "io/com/imp.h"
 #include "grid_sampler/imp.h"
 
 #include "dbg/imp.h"
@@ -49,40 +46,16 @@
 
 #include "flu/imp.h"
 
-#include "io/mesh_read/imp.h"
-#include "rbc/params/imp.h"
-#include "rbc/type.h"
-#include "rbc/imp.h"
-#include "rbc/force/imp.h"
-#include "rbc/force/area_volume/imp.h"
-#include "rbc/stretch/imp.h"
-#include "rbc/com/imp.h"
-
-#include "rig/imp.h"
-
 #include "comm/imp.h"
 #include "distr/flu/imp.h"
 #include "distr/flu/status/imp.h"
-#include "distr/rbc/imp.h"
-#include "distr/rig/imp.h"
-
-#include "exch/mesh/imp.h"
 
 #include "flu/type.h"
 #include "exch/flu/imp.h"
 
 #include "fluforces/imp.h"
-
-#include "mesh/triangles/imp.h"
-#include "mesh/collision/imp.h"
-#include "mesh/bbox/imp.h"
-
-#include "rigid/imp.h"
-
-#include "meshbb/imp.h"
 #include "io/bop/imp.h"
 
-#include "inter/freeze/imp.h"
 #include "inter/color/imp.h"
 #include "scheme/force/imp.h"
 #include "scheme/move/imp.h"

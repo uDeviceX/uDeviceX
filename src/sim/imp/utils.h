@@ -87,17 +87,4 @@ static void utils_get_pf_flu(Sim *s, PFarray *flu) {
     UC(farray_push_ff(f->ff, &flu->f));
 }
 
-static InterWalInfos get_winfo(Sim *s) {
-    InterWalInfos wi;
-    wi.active = s->opt.wall;
-    if (s->opt.wall)  wall_get_sdf_ptr(s->wall, &wi.sdf);
-    else wi.sdf = NULL;
-    return wi;
-}
-
-static InterFluInfos get_finfo(Sim *s) {
-    InterFluInfos fi;
-    fi.q = &s->flu.q;
-    return fi;
-}
 
