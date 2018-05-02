@@ -34,6 +34,7 @@ _S_ void freeze(Sim *s) { /* generate */
     
     UC(utils_get_pf_flu(s, &pfflu));
     UC(objects_gen_freeze(&pfflu, s->obj));
+    UC(utils_set_n_flu_pf(&pfflu, s));
     dSync();
     
     UC(clear_vel(s));

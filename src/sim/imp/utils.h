@@ -87,4 +87,7 @@ _I_ void utils_get_pf_flu(Sim *s, PFarray *flu) {
     UC(farray_push_ff(f->ff, &flu->f));
 }
 
-
+_I_ void utils_set_n_flu_pf(const PFarray *flu, Sim *s) {
+    Flu *f = &s->flu;
+    f->q.n = flu->n;
+}
