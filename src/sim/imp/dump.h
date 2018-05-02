@@ -52,20 +52,33 @@ _I_ void dump_diag_after(const TimeLine *time, Sim *s) { /* after wall */
     }
 }
 
-_S_ int download_pp(Sim *s) { /* device to host  data transfer */
-    int np = 0;
+_S_ int download_all_pp(Sim *s) { /* device to host  data transfer */
+    int i, np = 0;
     Flu *flu = &s->flu;
-
+    PFarrays *pf;
+    PFarray p;
+    UC(pfarrays_ini(&pf));
+    UC(objects_get_particles_all(s->obj, pf));
+    
     if (flu->q.n) {
-        cD2H(s->dump.pp + np, flu->q.pp, flu->q.n);    np += flu->q.n;
+        aD2H(s->dump.pp + np, flu->q.pp, flu->q.n);
+        np += flu->q.n;
     }
+    for (i = 0; i < pfarrays_size(pf); ++i) {
+        pfarrays_get(i, pf, &p);
+        aD2H(s->dump.pp + np, (const Particle*) p.p.pp, p.n);
+        np += p.n;
+    }
+        
+    UC(pfarrays_fin(pf));
+    dSync();
     return np;
 }
 
 _S_ void diag(float time, Sim *s) {
     if (time < 0) ERR("time = %g < 0", time);
     int n;
-    n = download_pp(s);
+    n = download_all_pp(s);
     UC(diag_part_apply(s->dump.diagpart, s->cart, time, n, s->dump.pp));
 }
 
