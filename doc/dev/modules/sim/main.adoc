@@ -1,10 +1,27 @@
 = sim: simulation
 
+:base: {src}/sim
+
 manages all modules together to run a simulation
 
 == interface
 
-TODO
+Allocate and deallocate the structure
+
+[source, cpp]
+----
+include::{base}/imp.h[tag=mem]
+----
+
+Run simulation:
+
+[source, cpp]
+----
+include::{base}/imp.h[tag=run]
+----
+<1> run from scratch: this will generate all quantities in two stages
+    (solvent only, equilibrating; freezing stage, adding walls and solutes)
+<2> run from restart files
 
 == submodules
 
