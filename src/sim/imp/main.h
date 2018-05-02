@@ -23,6 +23,8 @@ static void freeze(Sim *s) { /* generate */
     const Opt *opt = &s->opt;
     
     UC(objects_gen_mesh(s->obj));
+    dSync();
+
     UC(gen_wall(s));
     
     if (s->opt.wall) UC(wall_get_sdf_ptr(s->wall, &sdf));
@@ -32,6 +34,7 @@ static void freeze(Sim *s) { /* generate */
     
     UC(utils_get_pf_flu(s, &pfflu));
     UC(objects_gen_freeze(&pfflu, s->obj));
+    dSync();
     
     UC(clear_vel(s));
     

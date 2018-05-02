@@ -4,7 +4,7 @@ static void dump_mesh_mbr(MPI_Comm cart, const Coords *coords, Particle *pp, lon
 }
 
 static void dump_mesh_rig(MPI_Comm cart, const Coords *coords, Particle *pp, long id, Rig *r) {
-    cD2H(pp, r->q.pp, r->q.n);
+    cD2H(pp, r->q.i_pp, r->q.ns * r->q.nv);
     UC(mesh_write_particles(r->mesh_write, cart, coords, r->q.ns, pp, id));
 }
 
@@ -20,12 +20,15 @@ static void dump_diag_mbr(MPI_Comm cart, const Coords *coords, Mbr *m, Dump *d) 
     RbcQuants *q = &m->q;
     long nc = q->nc;
     float3 *rr, *vv;
-    UC(rbc_com_apply(m->com, nc, q->pp, /**/ &rr, &vv));
-    UC(io_com_dump(cart, coords, d->id_diag, nc, q->ii, rr));
+    if (m->com) {
+        UC(rbc_com_apply(m->com, nc, q->pp, /**/ &rr, &vv));
+        UC(io_com_dump(cart, coords, d->id_diag, nc, q->ii, rr));
+    }
 }
 
 static void dump_diag_rig(float t, const Coords *coords, Rig *r, Dump *d) {
     RigQuants *q = &r->q;
+    cD2H(q->ss_dmp, q->ss, q->ns);
     UC(io_rig_dump(coords, t, q->ns, q->ss_dmp, q->ss_dmp_bb, d->rig));
 }
 

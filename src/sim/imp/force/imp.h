@@ -13,7 +13,7 @@ void forces(float dt, TimeLine *time, Sim *s) {
     
     UC(forces_dpd(fluss, flu));
     if (active_walls(s)) UC(forces_wall(fluss, s));
-    if (active_rbc(s))   UC(objects_internal_forces(dt, s->obj));
+    UC(objects_internal_forces(dt, s->obj));
 
     UC(forces_objects(s));
     

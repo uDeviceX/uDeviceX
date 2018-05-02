@@ -51,7 +51,6 @@ static void bounce_rig(float dt, float flu_mass, const MeshBB *bb, long n, const
     RigQuants *q = &r->q;
     MeshInfo mi = mesh_info_rig(r);
     UC(meshbb_bounce(dt, flu_mass, n, bb, ff, mi, q->i_pp, /**/ pp, r->bbdata->mm));
-    dSync();
 }
 
 static void mom_pack_and_send_rig(Rig *r) {
@@ -59,7 +58,8 @@ static void mom_pack_and_send_rig(Rig *r) {
     BounceBackData *bb = r->bbdata;
     MeshMomExch *e = bb->e;    
     int counts[NFRAGS];
-    
+
+    UC(emesh_get_num_frag_mesh(r->mesh_exch->u, /**/ counts));
     UC(emesh_packM(q->nt, counts, bb->mm + q->ns * q->nt, /**/ e->p));
     UC(emesh_downloadM(counts, /**/ e->p));
 
