@@ -21,11 +21,12 @@ static void fin_mesh_mom_exch(/**/ MeshMomExch *e) {
     UC(emesh_packm_fin(   /**/ e->p));
     UC(emesh_commm_fin(   /**/ e->c));
     UC(emesh_unpackm_fin( /**/ e->u));
+    EFREE(e);
 }
 
 static void fin_bbdata(/**/ BounceBackData *bb) {
     UC(fin_mesh_mom_exch(/**/ bb->e));
-    Dfree(&bb->mm);
+    Dfree(bb->mm);
     EFREE(bb);
 }
 

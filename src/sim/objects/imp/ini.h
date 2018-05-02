@@ -19,7 +19,10 @@ static void ini_mesh_exch(int3 L, int nv, int max_m, MPI_Comm comm, /**/ MeshExc
     UC(emesh_unpack_ini(L, nv, max_m, /**/ &e->u));
 }
 
-static void ini_mesh_mom_exch(int nt, int max_m, MPI_Comm comm, /**/ MeshMomExch *e) {
+static void ini_mesh_mom_exch(int nt, int max_m, MPI_Comm comm, /**/ MeshMomExch **mme) {
+    MeshMomExch *e;
+    EMALLOC(1, mme);
+    e = *mme;
     UC(emesh_packm_ini(nt, max_m, /**/ &e->p));
     UC(emesh_commm_ini(comm, /**/ &e->c));
     UC(emesh_unpackm_ini(nt, max_m, /**/ &e->u));
@@ -29,7 +32,7 @@ static void ini_bbdata(int nt, int max_m, MPI_Comm cart, /**/ BounceBackData **b
     BounceBackData *bb;
     EMALLOC(1, bbdata);
     bb = *bbdata;
-    UC(ini_mesh_mom_exch(nt, max_m, cart, bb->e));
+    UC(ini_mesh_mom_exch(nt, max_m, cart, &bb->e));
     Dalloc(&bb->mm, max_m * nt);
 }
 
