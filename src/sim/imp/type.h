@@ -148,6 +148,7 @@ struct Sim {
     Rbc rbc;
     Rig rig;
     Wall *wall;
+    Objects *obj;
 
     BForce *bforce;
 

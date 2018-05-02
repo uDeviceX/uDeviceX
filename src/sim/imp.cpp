@@ -97,6 +97,7 @@
 
 #include "color/flux.h"
 
+#include "objects/imp.h"
 #include "objinter/imp.h"
 #include "opt/imp.h"
 #include "walls/imp.h"
