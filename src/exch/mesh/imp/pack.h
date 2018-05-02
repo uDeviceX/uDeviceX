@@ -13,14 +13,12 @@ void emesh_download(EMeshPack *p) {
     emap_download_counts(nw, NFRAGS, p->map, /**/ p->hpp.counts);
 }
 
-
-
 static void reini_map(int nm, /**/ MMap *m) {
     if (nm) CC(d::MemsetAsync(m->cc, 0, nm * sizeof(int)));
 }
 
 static void compress_mom(int nt, int nm, const Momentum *mm, /**/ MMap *m, int *ids, Momentum *mmc) {
-    reini_map(nm, /**/ m);
+    UC(reini_map(nm, /**/ m));
     KL(emesh_dev::subindex_compress, (k_cnf(nt * nm)), (nt, nm, mm, /**/ m->cc, m->subids));
 
     enum {NWRP=4, WRPSZ=32};
@@ -36,7 +34,7 @@ static void pack_mom(int nt, const int counts[NFRAGS], const Momentum *mm,
 
     for (i = s = 0; i < NFRAGS; ++i) {
         c = counts[i];
-        compress_mom(nt, c, mm + nt * s, /**/ maps + i, ibuf[i], mbuf[i]);
+        UC(compress_mom(nt, c, mm + nt * s, /**/ maps + i, ibuf[i], mbuf[i]));
     }
 }
 
