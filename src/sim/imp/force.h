@@ -1,4 +1,4 @@
-_I_ void body_force(const BForce *bforce, Sim *s) {
+_S_ void body_force(const BForce *bforce, Sim *s) {
     Flu *flu = &s->flu;
     const Opt *opt = &s->opt;
 
