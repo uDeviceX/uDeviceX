@@ -15,6 +15,7 @@
 #include "utils/os.h"
 #include "utils/cc.h"
 #include "utils/mc.h"
+#include "dbg/imp.h"
 
 #include "utils/msg.h"
 #include "utils/imp.h"
@@ -69,6 +70,7 @@
 #include "imp/type.h"
 #include "imp/ini.h"
 #include "imp/fin.h"
+#include "imp/check.h"
 #include "imp/main.h"
 #include "imp/forces.h"
 #include "imp/bounce.h"

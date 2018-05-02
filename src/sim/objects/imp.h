@@ -41,3 +41,7 @@ void objects_recolor_flu(Objects*, PFarray *flu);
 
 
 double objects_mbr_tot_volume(const Objects*);
+
+void objects_check_size(const Objects*);
+void objects_check_vel(const Objects*, float dt);
+void objects_check_forces(const Objects*, float dt);
