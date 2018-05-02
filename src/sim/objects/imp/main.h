@@ -114,3 +114,19 @@ void objects_restart(Objects *o) {
     if (o->mbr) restart_mbr(o->cart, base, o->mbr);
     if (o->rig) restart_rig(o->cart, base, o->rig);
 }
+
+double objects_mbr_tot_volume(const Objects *o) {
+    double loc, tot, V0;
+    long nc;
+    Mbr *m = o->mbr;
+    if (!m) return 0;
+    
+    nc = m->q.nc;
+    V0 = rbc_params_get_tot_volume(m->params);
+
+    tot = 0;
+    loc = nc * V0;
+    MC(m::Allreduce(&loc, &tot, 1, MPI_DOUBLE, MPI_SUM, o->cart));
+    
+    return tot;
+}

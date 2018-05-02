@@ -36,3 +36,6 @@ void objects_restart(Objects*);
 
 void objects_bounce(float dt, float flu_mass, const Clist flu_cells, PFarray *flu, Objects*);
 void objects_recolor_flu(Objects*, PFarrays *flu);
+
+
+double objects_mbr_tot_volume(const Objects*);
