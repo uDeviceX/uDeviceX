@@ -36,7 +36,8 @@ static void bforce_rig(const Coords *c, const BForce *bf, Rig *r) {
 }
 
 void objects_body_forces(const BForce *bf, Objects *o) {
+    const Opt *opt = &o->opt;
     if (!o->active) return;
-    if (o->mbr) bforce_mbr(o->coords, bf, o->mbr);
-    if (o->rig) bforce_rig(o->coords, bf, o->rig);
+    if (o->mbr && opt->rbc.push) bforce_mbr(o->coords, bf, o->mbr);
+    if (o->rig && opt->rig.push) bforce_rig(o->coords, bf, o->rig);
 }
