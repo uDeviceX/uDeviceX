@@ -1,0 +1,58 @@
+[[sim_walls]]
+= walls
+
+:base: {src}/sim/walls
+
+Helper to manage solid walls.
+
+Allocate, deallocate the structure:
+
+[source, cpp]
+----
+include::{base}/imp.h[tag=mem]
+----
+
+Generate from solvent particles:
+
+[source, cpp]
+----
+include::{base}/imp.h[tag=gen]
+----
+
+Alternatively, can be generated from restart files:
+
+[source, cpp]
+----
+include::{base}/imp.h[tag=strt]
+----
+
+The restart file is dumped by calling
+
+[source, cpp]
+----
+include::{base}/imp.h[tag=dump]
+----
+
+Interactions with other quantities are possible with the functions
+
+[source, cpp]
+----
+include::{base}/imp.h[tag=main]
+----
+
+The wall velocity can be updated in time with
+
+[source, cpp]
+----
+include::{base}/imp.h[tag=upd]
+----
+
+Getter functions:
+
+[source, cpp]
+----
+include::{base}/imp.h[tag=get]
+----
+<1> get a pointer to <<sdf>> object
+<2> compute the volume inside the walls (where the solvent can be
+    located). This is evaluated via Monte Carlo
