@@ -157,6 +157,8 @@ void sim_fin(Sim *s) {
 
     if (opt->rig.active && opt->rig.bounce)
         UC(fin_bounce_back(&s->bb));
+
+    UC(objects_fin(s->obj));
     
     UC(bforce_fin(s->bforce));
     

@@ -270,6 +270,8 @@ void sim_ini(const Config *cfg, MPI_Comm cart, /**/ Sim **sim) {
     if (opt->rbc.active)  UC(ini_rbc(cfg, &opt->rbc, s->cart, L, /**/ &s->rbc));
     if (opt->rig.active)  UC(ini_rig(cfg, s->cart, &opt->rig, maxp, L, /**/ &s->rig));
     if (opt->wall) UC(wall_ini(cfg, L, &s->wall));
+
+    UC(objects_ini(cfg, opt, cart, s->coords, maxp, &s->obj));
     
     UC(obj_inter_ini(cfg, opt, s->cart, dt, maxp, /**/ &s->objinter));
     
