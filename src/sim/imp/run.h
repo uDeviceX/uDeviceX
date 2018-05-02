@@ -21,14 +21,13 @@ _S_ void step(TimeLine *time, float dt, float tstart, Sim *s) {
     UC(objects_distribute(s->obj));
 
     UC(check_sizes(s));
-    UC(forces(dt, time, s));
+    UC(forces(dt, time, bforce, s));
     UC(check_forces(dt, s));
 
     it = time_line_get_iteration(time);
     UC(field_sample(s));
     UC(dump_diag(time, s));
     UC(dump_diag_after(time, s));
-    if (!s->equilibrating) UC(body_force(bforce, s));
 
     UC(restrain(it, /**/ s));
     UC(update_solvent(dt, /**/ flu));

@@ -82,10 +82,7 @@
 
 #include "imp/type.h"
 #include "imp/utils.h"
-#include "imp/force/common.h"
-#include "imp/force/dpd.h"
-#include "imp/force/objects.h"
-#include "imp/force/imp.h"
+#include "imp/force.h"
 
 #include "imp/ini.h"
 #include "imp/fin.h"
