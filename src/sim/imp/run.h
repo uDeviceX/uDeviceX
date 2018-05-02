@@ -8,8 +8,6 @@ static void pre_run(Sim *s) {
 static void step(TimeLine *time, float dt, float tstart, Sim *s) {
     long it;
     Flu *flu = &s->flu;
-    Rbc *rbc = &s->rbc;
-    Rig *rig = &s->rig;
     Wall *wall = s->wall;
     BForce *bforce = s->bforce;
     const Opt *opt = &s->opt;
@@ -20,23 +18,22 @@ static void step(TimeLine *time, float dt, float tstart, Sim *s) {
     UC(check_pos_soft(s));
 
     UC(distribute_flu(s));
-    if (active_rig(s)) UC(distribute_rig(/**/ rig));
-    if (active_rbc(s)) UC(distribute_rbc(/**/ rbc));
+    UC(objects_distribute(s->obj));
 
     UC(check_sizes(s));
     UC(forces(dt, time, s));
     UC(check_forces(dt, s));
 
     it = time_line_get_iteration(time);
-    field_sample(s);
-    dump_diag(time, s);
-    dump_diag_after(time, active_rig(s), s);
+    UC(field_sample(s));
+    UC(dump_diag(time, s));
+    UC(dump_diag_after(time, s));
     if (!s->equilibrating) UC(body_force(bforce, s));
 
     UC(restrain(it, /**/ s));
     UC(update_solvent(dt, /**/ flu));
-    if (active_rig(s)) UC(update_solid(dt, /**/ rig));
-    if (active_rbc(s)) UC(update_rbc(dt, it, rbc, s));
+    UC(objects_update(dt, s->obj));
+    UC(recolor_from_rbc(it, s));
 
     UC(check_vel(dt, s));
     if (opt->vcon && !s->equilibrating) {
@@ -45,9 +42,9 @@ static void step(TimeLine *time, float dt, float tstart, Sim *s) {
         log_vcont(it, &s->vcon);
     }
 
-    if (active_walls(s)) bounce_wall(dt, active_rbc(s), s->coords, wall, /**/ flu, rbc);
+    if (active_walls(s)) bounce_wall(dt, s);
 
-    if (active_rig(s) && opt->rig.bounce) bounce_solid(dt, s->opt.params.L, /**/ &s->bb, rig, flu);
+    UC(bounce_objects(dt, s));
 
     UC(check_pos_soft(s));
     UC(check_vel(dt, s));
@@ -72,4 +69,3 @@ static void run(float ts, float te, Sim *s) {
     }
     UC(distribute_flu(/**/ s));
 }
-

@@ -44,7 +44,7 @@ static void utils_compute_hematocrit(const Sim *s) {
         Vdomain = xdomain(c) * ydomain(c) * zdomain(c);
     }
 
-    Vrbc = compute_volume_rbc(s->cart, &s->rbc);
+    Vrbc = objects_mbr_tot_volume(s->obj);
     
     Ht = Vrbc / Vdomain;
 
@@ -71,14 +71,15 @@ static float utils_get_dt(Sim *s, TimeLine *time) {
         return time_step_dt0(s->time.step);
     else {
         const Flu *flu = &s->flu;
-        const Rbc *rbc = &s->rbc;
+        // TODO
+        // const Rbc *rbc = &s->rbc;
         const Opt *opt = &s->opt;
 
         time_step_accel_reset(s->time.accel);
         if (flu->q.n)
             time_step_accel_push(s->time.accel, flu->mass, flu->q.n, flu->ff);
-        if (active_rbc(s) && rbc->q.n)
-            time_step_accel_push(s->time.accel, rbc->mass, rbc->q.n, rbc->ff);
+        // if (active_rbc(s) && rbc->q.n)
+        //     time_step_accel_push(s->time.accel, rbc->mass, rbc->q.n, rbc->ff);
 
         const float dt = time_step_dt(s->time.step, s->cart, s->time.accel);
 
@@ -113,21 +114,3 @@ static InterFluInfos get_finfo(Sim *s) {
     return fi;
 }
 
-static InterRbcInfos get_rinfo(Sim *s) {
-    InterRbcInfos ri;
-    ri.active = s->opt.rbc.active;
-    ri.q = &s->rbc.q;
-    return ri;
-}   
-
-static InterRigInfos get_sinfo(Sim *s) {
-    InterRigInfos si;
-    si.active = s->opt.rig.active;
-    si.q = &s->rig.q;
-    si.pi = s->rig.pininfo;
-    si.mass = s->rig.mass;
-    si.empty_pp = s->opt.rig.empty_pp;
-    si.numdensity = s->opt.params.numdensity;
-    si.mesh = s->rig.mesh;
-    return si;
-}

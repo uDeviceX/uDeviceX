@@ -145,8 +145,6 @@ struct Dump {
 struct Sim {
     /* quantities */
     Flu flu;
-    Rbc rbc;
-    Rig rig;
     Wall *wall;
     Objects *obj;
 

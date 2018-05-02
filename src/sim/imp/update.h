@@ -1,134 +1,54 @@
 void clear_vel(Sim *s) {
     Flu *flu = &s->flu;
-    Rbc *rbc = &s->rbc;
-    Rig *rig = &s->rig;
-    scheme_move_clear_vel(flu->q.n, flu->q.pp);
-    if (active_rig(s)) scheme_move_clear_vel(rig->q.n, rig->q.pp);
-    if (active_rbc(s)) scheme_move_clear_vel(rbc->q.n, rbc->q.pp);
+    UC(scheme_move_clear_vel(flu->q.n, flu->q.pp));
+    UC(objects_clear_vel(s->obj));
 }
-
-void update_solid(float dt, Rig *s) {
-    if (!s->q.n) return;
-    RigQuants *q = &s->q;
-    
-    rig_update(s->pininfo, dt, q->n, s->ff, q->rr0, q->ns, /**/ q->pp, q->ss);
-    rig_update_mesh(dt, q->ns, q->ss, q->nv, q->dvv, /**/ q->i_pp);
-    // for dump
-    cD2H(q->ss_dmp, q->ss, q->ns);
-    rig_reinit_ft(q->ns, /**/ q->ss);
-}
-
-void bounce_solid(float dt, int3 L, BounceBack *bb, Rig *s, Flu *flu) {
-    int n, nm, nt, nv, *ss, *cc, nmhalo, counts[NFRAGS];
-    int4 *tt;
-    Particle *pp, *i_pp;
-    MeshInfo mi;
-    
-    RigQuants *qs = &s->q;
-    BBexch     *e = &bb->e; 
-    
-    nm = qs->ns;
-    nt = qs->nt;
-    nv = qs->nv;
-    tt = qs->dtt;
-    i_pp = qs->i_pp;
-
-    n  = flu->q.n;
-    pp = flu->q.pp;
-    cc = flu->q.cells.counts;
-    ss = flu->q.cells.starts;
-
-    mi.nv = nv;
-    mi.nt = nt;
-    mi.tt = tt;
-    
-    /* send meshes to frags */
-
-    UC(emesh_build_map(nm, nv, i_pp, /**/ e->p));
-    UC(emesh_pack(nv, i_pp, /**/ e->p));
-    UC(emesh_download(e->p));
-
-    UC(emesh_post_send(e->p, e->c));
-    UC(emesh_post_recv(e->c, e->u));
-
-    UC(emesh_wait_send(e->c));
-    UC(emesh_wait_recv(e->c, e->u));
-
-    /* unpack at the end of current mesh buffer */
-    UC(emesh_unpack(nv, e->u, /**/ &nmhalo, i_pp + nm * nv));
-    
-    /* perform bounce back */
-    
-    UC(meshbb_reini(n, /**/ bb->d));
-    if (nm + nmhalo)
-        CC(d::MemsetAsync(bb->mm, 0, nt * (nm + nmhalo) * sizeof(Momentum)));
-
-    UC(meshbb_find_collisions(dt, nm + nmhalo, mi, i_pp, L, ss, cc, pp, flu->ff, /**/ bb->d));
-    UC(meshbb_select_collisions(n, /**/ bb->d));
-    UC(meshbb_bounce(dt, flu->mass, n, bb->d, flu->ff, mi, i_pp, /**/ pp, bb->mm));
-
-    /* send momentum back */
-
-    UC(emesh_get_num_frag_mesh(e->u, /**/ counts));
-    
-    UC(emesh_packM(nt, counts, bb->mm + nm * nt, /**/ e->pm));
-    UC(emesh_downloadM(counts, /**/ e->pm));
-
-    UC(emesh_post_recv(e->cm, e->um));
-    UC(emesh_post_send(e->pm, e->cm));
-    UC(emesh_wait_recv(e->cm, e->um));
-    UC(emesh_wait_send(e->cm));
-
-    UC(emesh_upload(e->um));
-    UC(emesh_unpack_mom(nt, e->p, e->um, /**/ bb->mm));
-    
-    /* gather bb momentum */
-    UC(meshbb_collect_rig_momentum(dt, nm, mi, i_pp, bb->mm, /**/ qs->ss));
-
-    /* for dump */
-    cD2H(qs->ss_dmp_bb, qs->ss, nm);
-}
-
 
 void update_solvent(float dt, /**/ Flu *f) {
     UC(scheme_move_apply(dt, f->mass, f->q.n, f->ff, f->q.pp));
 }
 
-void update_rbc(float dt, long it, Rbc *r, Sim *s) {
-    bool cond;
-    const Opt *opt = &s->opt;
-    cond = opt->flucolors && opt->recolor_freq && it % opt->recolor_freq == 0;
-    if (cond) {
-        /* TODO: does not belong here*/
-        msg_print("recolor");
-        UC(colors_from_rbc(s));
-    } 
-    scheme_move_apply(dt, r->mass, r->q.n, r->ff, r->q.pp);
-}
-
 void restrain(long it, Sim *s) {
     SchemeQQ qq;
-    
-    qq.o = s->flu.q.pp;
-    qq.r = s->rbc.q.pp;
+    PFarrays *pf;
+    PFarray p;
+    UC(pfarrays_ini(&pf));
+    UC(objects_get_particles_mbr(s->obj, pf));
+
+    if (pfarrays_size(pf) > 0) {
+        UC(pfarrays_get(0, pf, &p));
+        qq.r  = (Particle*) p.p.pp;
+        qq.rn = p.n;
+    } else {
+        qq.r  = NULL;
+        qq.rn = 0;
+    }
+    qq.o = s->flu.q.pp;    
     qq.on = s->flu.q.n;
-    qq.rn = s->rbc.q.n;
     
-    scheme_restrain_apply(s->cart, s->flu.q.cc, it, /**/ s->restrain, qq);
+    UC(scheme_restrain_apply(s->cart, s->flu.q.cc, it, /**/ s->restrain, qq));
+
+    UC(pfarrays_fin(pf));
 }
 
-void bounce_wall(float dt, bool rbc, const Coords *c, Wall *w, /**/ Flu *f, Rbc *r) {
+void bounce_wall(float dt, Sim *s) {
+    Flu *f = &s->flu;
     PaArray pa;
     FoArray fo;
     PFarrays *pf;
     UC(pfarrays_ini(&pf));
     parray_push_pp(f->q.pp, &pa);
     UC(pfarrays_push(pf, f->q.n, pa, fo));
-    if (rbc) {
-        parray_push_pp(r->q.pp, &pa);
-        UC(pfarrays_push(pf, r->q.n, pa, fo));
-    }
 
-    UC(wall_bounce(w, c, dt, pf));
+    UC(objects_get_particles_mbr(s->obj, pf));
+    
+    UC(wall_bounce(s->wall, s->coords, dt, pf));
     UC(pfarrays_fin(pf));
+}
+
+void bounce_objects(float dt, Sim *s) {
+    PFarray pfflu;
+    const Flu *flu = &s->flu;
+    utils_get_pf_flu(s, &pfflu);
+    UC(objects_bounce(dt, flu->mass, flu->q.cells, &pfflu, s->obj));
 }

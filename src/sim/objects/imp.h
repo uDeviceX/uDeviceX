@@ -35,7 +35,7 @@ void objects_gen_freeze(PFarray*, Objects*);
 void objects_restart(Objects*);
 
 void objects_bounce(float dt, float flu_mass, const Clist flu_cells, PFarray *flu, Objects*);
-void objects_recolor_flu(Objects*, PFarrays *flu);
+void objects_recolor_flu(Objects*, PFarray *flu);
 
 
 double objects_mbr_tot_volume(const Objects*);

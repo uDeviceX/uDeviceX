@@ -47,6 +47,7 @@ static void remove_rig(const Sdf *sdf, Rig *r) {
 }
 
 void objects_remove_from_wall(const Sdf *sdf, Objects *o) {
+    if (!sdf) return;
     if (o->mbr) remove_mbr(sdf, o->mbr);
     if (o->rig) remove_rig(sdf, o->rig);
 }

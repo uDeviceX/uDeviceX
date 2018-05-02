@@ -5,15 +5,6 @@ static void gen_flu(Sim *s) {
     if (s->opt.fluids) flu_gen_ids(s->cart, flu->q.n, &flu->q);
 }
 
-static void gen_rbc(Sim *s) {
-    MeshRead *cell = s->rbc.cell;
-    Rbc *rbc = &s->rbc;
-    const Opt *opt = &s->opt;
-    if (opt->rbc.active) {
-        rbc_gen_mesh(s->coords, s->cart, cell, "rbcs-ic.txt", /**/ &rbc->q);
-    }
-}
-
 static void gen_wall(Sim *s) {
     Flu *flu = &s->flu;
     Wall *w = s->wall;
@@ -27,19 +18,23 @@ static void gen_wall(Sim *s) {
 
 static void freeze(Sim *s) { /* generate */
     Flu *flu = &s->flu;
+    const Sdf *sdf = NULL;
+    PFarray pfflu;    
     const Opt *opt = &s->opt;
     
-    InterWalInfos winfo = get_winfo(s);
-    InterFluInfos finfo = get_finfo(s);
-    InterRbcInfos rinfo = get_rinfo(s);
-    InterRigInfos sinfo = get_sinfo(s);
-
-    UC(gen_rbc(s));
+    UC(objects_gen_mesh(s->obj));
     UC(gen_wall(s));
-    dSync();    
-    UC(inter_freeze(s->coords, s->cart, winfo, /*io*/ finfo, rinfo, sinfo));
-    clear_vel(s);
+    
+    if (s->opt.wall) UC(wall_get_sdf_ptr(s->wall, &sdf));
 
+    UC(objects_remove_from_wall(sdf, s->obj));
+    dSync();
+    
+    UC(utils_get_pf_flu(s, &pfflu));
+    UC(objects_gen_freeze(&pfflu, s->obj));
+    
+    UC(clear_vel(s));
+    
     if (opt->flucolors) {
         Particle *pp = flu->q.pp;
         int n = flu->q.n;
@@ -74,18 +69,12 @@ void sim_gen(Sim *s) {
 
 static void gen_from_restart(Sim *s) {
     Flu *flu = &s->flu;
-    Rbc *rbc = &s->rbc;
-    Rig *rig = &s->rig;
-    MeshRead *cell, *mesh;
-    cell = s->rbc.cell;
-    mesh = s->rig.mesh;
     const Opt *opt = &s->opt;
     const char *base = opt->strt_base_read;
     bool dump_sdf = opt->dump_field;
     
-    flu_strt_quants(s->cart, base, RESTART_BEGIN, &flu->q);
-    if (opt->rbc.active) rbc_strt_quants(s->cart, cell, base, RESTART_BEGIN, &rbc->q);
-    if (opt->rig.active) rig_strt_quants(s->cart, mesh, base, RESTART_BEGIN, &rig->q);
+    UC(flu_strt_quants(s->cart, base, RESTART_BEGIN, &flu->q));
+    UC(objects_restart(s->obj));
     if (opt->wall) wall_restart(s->cart, s->coords, opt->params, dump_sdf, base, s->wall);
     if (opt->vcon) vcont_strt_read(base, RESTART_BEGIN, s->vcon.vcont);
 }

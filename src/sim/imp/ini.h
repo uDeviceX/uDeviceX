@@ -267,19 +267,11 @@ void sim_ini(const Config *cfg, MPI_Comm cart, /**/ Sim **sim) {
     UC(bforce_set_conf(cfg, s->bforce));
 
     UC(ini_flu(cfg, opt, s->cart, maxp, /**/ &s->flu));    
-    if (opt->rbc.active)  UC(ini_rbc(cfg, &opt->rbc, s->cart, L, /**/ &s->rbc));
-    if (opt->rig.active)  UC(ini_rig(cfg, s->cart, &opt->rig, maxp, L, /**/ &s->rig));
     if (opt->wall) UC(wall_ini(cfg, L, &s->wall));
-
+    
     UC(objects_ini(cfg, opt, cart, s->coords, maxp, &s->obj));
     
     UC(obj_inter_ini(cfg, opt, s->cart, dt, maxp, /**/ &s->objinter));
-    
-    if (opt->flucolors && opt->rbc.active)
-        UC(ini_colorer(s->rbc.q.nv, s->cart, maxp, L, /**/ &s->colorer));
-
-    if (opt->rig.active && opt->rig.bounce)
-        UC(ini_bounce_back(s->cart, maxp, L, &s->rig, /**/ &s->bb));
 
     UC(ini_optional_features(cfg, opt, /**/ s));
     

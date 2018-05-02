@@ -1,6 +1,5 @@
 static void dump_part(Sim *s) {
     const Flu *flu = &s->flu;
-    const Rig *rig = &s->rig;
     const Opt *opt = &s->opt;
     IoBop *bop = s->dump.bop;
     int id_bop = s->dump.id_bop;
@@ -24,31 +23,17 @@ static void dump_part(Sim *s) {
     } else {
         io_bop_parts(s->cart, s->coords, flu->q.n, flu->q.pp_hst, "solvent", id_bop, bop);
     }
-
-    if (active_rig(s)) {
-        cD2H(rig->q.pp_hst, rig->q.pp, rig->q.n);
-        if (opt->dump_forces) {
-            cD2H(rig->ff_hst, rig->ff, rig->q.n);
-            io_bop_parts_forces(s->cart, s->coords, rig->q.n, rig->q.pp_hst, rig->ff_hst, "solid", id_bop, bop);
-        } else {
-            io_bop_parts(s->cart, s->coords, rig->q.n, rig->q.pp_hst, "solid", id_bop, bop);
-        }
-    }
+    // TODO
+    // if (active_rig(s)) {
+    //     cD2H(rig->q.pp_hst, rig->q.pp, rig->q.n);
+    //     if (opt->dump_forces) {
+    //         cD2H(rig->ff_hst, rig->ff, rig->q.n);
+    //         io_bop_parts_forces(s->cart, s->coords, rig->q.n, rig->q.pp_hst, rig->ff_hst, "solid", id_bop, bop);
+    //     } else {
+    //         io_bop_parts(s->cart, s->coords, rig->q.n, rig->q.pp_hst, "solid", id_bop, bop);
+    //     }
+    // }
     s->dump.id_bop = ++id_bop;
-}
-
-static void dump_rbcs(Sim *s) {
-    const Rbc *r = &s->rbc;
-    cD2H(s->dump.pp, r->q.pp, r->q.n);
-    UC(mesh_write_particles(r->mesh_write, s->cart, s->coords, r->q.nc, s->dump.pp, s->dump.id_rbc++));
-}
-
-static void dump_rbc_coms(Sim *s) {
-    float3 *rr, *vv;
-    Rbc *r = &s->rbc;
-    int nc = r->q.nc;
-    UC(rbc_com_apply(r->com, nc, r->q.pp, /**/ &rr, &vv));
-    UC(io_com_dump(s->cart, s->coords, s->dump.id_rbc_com++, nc, r->q.ii, rr));
 }
 
 static void dump_grid(Sim *s) {
@@ -58,30 +43,21 @@ static void dump_grid(Sim *s) {
     d->id_field ++;
 }
 
-void dump_diag_after(TimeLine *time, bool solid0, Sim *s) { /* after wall */
-    const Rig *rig = &s->rig;
+void dump_diag_after(const TimeLine *time, Sim *s) { /* after wall */
     const Opt *o = &s->opt;
-    if (solid0 && (time_line_cross(time, o->freq_parts))) {
-        io_rig_dump(s->coords, time_line_get_current(time), rig->q.ns, rig->q.ss_dmp, rig->q.ss_dmp_bb, s->dump.iorig);
-        cD2H(s->dump.pp, rig->q.i_pp, rig->q.ns * rig->q.nv);
-        UC(mesh_write_particles(rig->mesh_write, s->cart, s->coords, rig->q.ns, s->dump.pp, s->dump.id_rig_mesh++));
+    float t = time_line_get_current(time);
+    if (time_line_cross(time, o->freq_parts)) {
+        UC(objects_mesh_dump(s->obj));
+        UC(objects_diag_dump(t, s->obj));
     }
 }
 
 static int download_pp(Sim *s) { /* device to host  data transfer */
     int np = 0;
     Flu *flu = &s->flu;
-    Rbc *rbc = &s->rbc;
-    Rig *rig = &s->rig;
 
     if (flu->q.n) {
         cD2H(s->dump.pp + np, flu->q.pp, flu->q.n);    np += flu->q.n;
-    }
-    if (active_rig(s) && rig->q.n) {
-        cD2H(s->dump.pp + np, rig->q.pp, rig->q.n);    np += rig->q.n;
-    }
-    if (active_rbc(s) && rbc->q.n) {
-        cD2H(s->dump.pp + np, rbc->q.pp, rbc->q.n);    np += rbc->q.n;
     }
     return np;
 }
@@ -94,24 +70,20 @@ static void diag(float time, Sim *s) {
 }
 
 static void dump_strt_templ(Sim *s) { /* template dumps (wall, solid) */
-    Rig *rig = &s->rig;
     const Opt *opt = &s->opt;
     const char *base = opt->strt_base_dump;
     if (opt->dump_strt) {
         if (opt->wall)       wall_dump_templ(s->wall, s->cart, base);
-        if (opt->rig.active)  rig_strt_dump_templ(s->cart, base, &rig->q);
+        UC(objects_strt_templ(base, s->obj));
     }
 }
 
 static void dump_strt0(int id, Sim *s) {
     Flu *flu = &s->flu;
-    Rbc *rbc = &s->rbc;
-    Rig *rig = &s->rig;
     const Opt *opt = &s->opt;
     const char *base = opt->strt_base_dump;
-    flu_strt_dump(s->cart, base, id, &flu->q);
-    if (active_rbc(s)) rbc_strt_dump(s->cart, base, id, &rbc->q);
-    if (active_rig(s)) rig_strt_dump(s->cart, base, id, &rig->q);
+    UC(flu_strt_dump(s->cart, base, id, &flu->q));
+    UC(objects_strt_dump(base, id, s->obj));
     if (opt->vcon)   vcont_strt_dump(s->cart, base, id, s->vcon.vcont);
 }
 
@@ -127,13 +99,10 @@ static void dump_diag(TimeLine *time, Sim *s) {
     const Opt *o = &s->opt;
     if (time_line_cross(time, o->freq_parts)) {
         if (o->dump_parts) dump_part(s);
-        if (active_rbc(s)) dump_rbcs(s);
         UC(diag(time_line_get_current(time), s));
     }
     if (o->dump_field && time_line_cross(time, o->freq_field))
         dump_grid(s);
     if (o->dump_strt  && time_line_cross(time, o->freq_strt))
         dump_strt(s);
-    if (o->rbc.dump_com && time_line_cross(time, o->rbc.freq_com))
-        dump_rbc_coms(s);
 }
