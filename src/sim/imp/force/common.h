@@ -7,11 +7,6 @@ void body_force(const BForce *bforce, Sim *s) {
     UC(objects_body_forces(bforce, s->obj));
 }
 
-void forces_rbc (float dt, const Opt *o, Rbc *r) {
-    rbc_force_apply(r->force, r->params, dt, &r->q, /**/ r->ff);
-    if (o->rbc.stretch) rbc_stretch_apply(r->q.nc, r->stretch, /**/ r->ff);
-}
-
 static void clear_forces(int n, Force* ff) {
     if (n) DzeroA(ff, n);
 }

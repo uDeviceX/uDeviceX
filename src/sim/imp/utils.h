@@ -18,19 +18,6 @@ static bool is_sampling_time(const Sim *s) {
     return time_line_cross(time, freq);
 }
 
-static double compute_volume_rbc(MPI_Comm comm, const Rbc *r) {
-    double loc, tot, V0;
-    long nc;
-    nc = r->q.nc;
-    V0 = rbc_params_get_tot_volume(r->params);
-
-    tot = 0;
-    loc = nc * V0;
-    MC(m::Allreduce(&loc, &tot, 1, MPI_DOUBLE, MPI_SUM, comm));
-    
-    return tot;
-}
-
 static void utils_compute_hematocrit(const Sim *s) {
     const Opt *opt = &s->opt;
     double Vdomain, Vrbc, Ht;
