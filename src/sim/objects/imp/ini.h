@@ -132,6 +132,7 @@ void objects_ini(const Config *cfg, const Opt *opt, MPI_Comm cart, const Coords 
     EMALLOC(1, objects);
     obj = *objects;
     obj->opt = *opt;
+    obj->active = false;
 
     MC(m::Comm_dup(cart, &obj->cart));
     L = subdomain(coords);

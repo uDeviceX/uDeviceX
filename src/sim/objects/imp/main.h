@@ -7,6 +7,7 @@ static void clear_vel_rig(Rig *r) {
 }
 
 void objects_clear_vel(Objects *obj) {
+    if (!obj->active) return;
     if (obj->mbr) UC(clear_vel_mbr(obj->mbr));
     if (obj->rig) UC(clear_vel_rig(obj->rig));    
 }
@@ -23,6 +24,7 @@ static void update_mbr(float dt, Mbr *m) {
 }
 
 void objects_update(float dt, Objects *obj) {
+    if (!obj->active) return;
     if (obj->mbr) UC(update_mbr(dt, obj->mbr));
     if (obj->rig) UC(update_rig(dt, obj->rig));
 }
@@ -72,6 +74,7 @@ static void distribute_rig(Rig *r) {
 }
 
 void objects_distribute (Objects *obj) {
+    if (!obj->active) return;
     if (obj->mbr) UC(distribute_mbr(obj->mbr));
     if (obj->rig) UC(distribute_rig(obj->rig));
 }
@@ -93,11 +96,13 @@ static void get_rig(Rig *r, PFarrays *pf) {
 }
 
 void objects_get_particles_all(Objects *obj, PFarrays *pf) {
+    if (!obj->active) return;
     if (obj->mbr) get_mbr(obj->mbr, pf);
     if (obj->rig) get_rig(obj->rig, pf);
 }
 
 void objects_get_particles_mbr(Objects *obj, PFarrays *pf) {
+    if (!obj->active) return;
     if (obj->mbr) get_mbr(obj->mbr, pf);
 }
 
@@ -113,12 +118,14 @@ void objects_restart(Objects *o) {
     const char *base = o->opt.strt_base_read;
     if (o->mbr) restart_mbr(o->cart, base, o->mbr);
     if (o->rig) restart_rig(o->cart, base, o->rig);
+    o->active = true;
 }
 
 double objects_mbr_tot_volume(const Objects *o) {
     double loc, tot, V0;
     long nc;
     Mbr *m = o->mbr;
+    if (!o->active) return 0;
     if (!m) return 0;
     
     nc = m->q.nc;

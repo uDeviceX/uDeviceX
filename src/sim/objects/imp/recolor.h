@@ -35,6 +35,7 @@ static void recolor_flu_from_mbr(Mbr *m, PFarray *flu) {
 }
 
 void objects_recolor_flu(Objects *obj, PFarray *flu) {
+    if (!obj->active) return;
     if (flu->n == 0) return;
     if (obj->mbr) recolor_flu_from_mbr(obj->mbr, flu);
 }

@@ -10,6 +10,7 @@ static void dump_mesh_rig(MPI_Comm cart, const Coords *coords, Particle *pp, lon
 
 void objects_mesh_dump(Objects *obj) {
     Dump *d = obj->dump;
+    if (!obj->active) return;
     if (obj->mbr) UC(dump_mesh_mbr(obj->cart, obj->coords, d->pp, d->id, obj->mbr));
     if (obj->rig) UC(dump_mesh_rig(obj->cart, obj->coords, d->pp, d->id, obj->rig));
     ++ d->id;
@@ -30,16 +31,19 @@ static void dump_diag_rig(float t, const Coords *coords, Rig *r, Dump *d) {
 
 void objects_diag_dump(float t, Objects *obj) {
     Dump *d = obj->dump;
+    if (!obj->active) return;
     if (obj->mbr) dump_diag_mbr(obj->cart, obj->coords, obj->mbr, d);
     if (obj->rig) dump_diag_rig(t,         obj->coords, obj->rig, d);
     ++ d->id_diag;
 }
 
 void objects_strt_templ(const char *base, Objects *o) {
+    if (!o->active) return;
     if (o->rig) UC(rig_strt_dump_templ(o->cart, base, &o->rig->q));
 }
 
 void objects_strt_dump(const char *base, long id, Objects *o) {
+    if (!o->active) return;
     if (o->mbr) UC(rbc_strt_dump(o->cart, base, id, &o->mbr->q));
     if (o->rig) UC(rig_strt_dump(o->cart, base, id, &o->rig->q));
 }

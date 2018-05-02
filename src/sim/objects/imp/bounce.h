@@ -51,6 +51,7 @@ static void bounce_rig(float dt, float flu_mass, const MeshBB *bb, long n, const
     RigQuants *q = &r->q;
     MeshInfo mi = mesh_info_rig(r);
     UC(meshbb_bounce(dt, flu_mass, n, bb, ff, mi, q->i_pp, /**/ pp, r->bbdata->mm));
+    dSync();
 }
 
 static void mom_pack_and_send_rig(Rig *r) {
@@ -94,6 +95,7 @@ void objects_bounce(float dt, float flu_mass, const Clist flu_cells, PFarray *fl
     Particle *pp = (Particle*) flu->p.pp;
     Force    *ff = (Force*)    flu->f.ff;
 
+    if (!obj->active) return;
     if (!bb) return;
 
     if (r) mesh_pack_and_send_rig(r);

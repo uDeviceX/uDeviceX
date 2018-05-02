@@ -86,4 +86,5 @@ struct Objects {
     Coords *coords;
     MPI_Comm cart;
     MeshBB *bb;
+    bool active; /* false before completely generated */
 };

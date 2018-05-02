@@ -72,4 +72,5 @@ void objects_gen_freeze(PFarray *flu, Objects *o) {
     const Opt *opt = &o->opt;
     if (o->mbr) gen_freeze_mbr(o->cart, o->mbr);
     if (o->rig) gen_freeze_rig(o->coords, o->cart, opt->rig.empty_pp, opt->params.numdensity, flu, o->rig);
+    o->active = true;
 }
