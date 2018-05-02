@@ -8,6 +8,7 @@ struct PFarray;
 struct PFarrays;
 struct BForce;
 struct TimeStepAccel;
+struct Dbg;
 
 void objects_ini(const Config*, const Opt*, MPI_Comm, const Coords*, int maxp, Objects**);
 void objects_fin(Objects*);
@@ -43,5 +44,5 @@ void objects_recolor_flu(Objects*, PFarray *flu);
 double objects_mbr_tot_volume(const Objects*);
 
 void objects_check_size(const Objects*);
-void objects_check_vel(const Objects*, float dt);
-void objects_check_forces(const Objects*, float dt);
+void objects_check_vel(const Objects*, const Dbg*, float dt);
+void objects_check_forces(const Objects*, const Dbg*, float dt);
