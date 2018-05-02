@@ -1,0 +1,86 @@
+= objects
+:base: {src}/sim/objects
+
+Manages all solutes objects.
+This includes rigid objects and membranes.
+
+== Interface
+
+Allocate, deallocate the structure:
+
+[source, cpp]
+----
+include::{base}/imp.h[tag=mem]
+----
+
+Generate the quantities:
+
+[source, cpp]
+----
+include::{base}/imp.h[tag=gen]
+----
+<1> Generate the meshes of all objects from the template mesh and an
+    initial condition files (see <<mesh_gen>>)
+<2> Remove all meshes colliding with walls
+<3> Build all remaining quantities after removal from walls. The rigid
+    objects need solvent particles
+
+The quantities can be instead generated from restart files:
+
+[source, cpp]
+----
+include::{base}/imp.h[tag=strt]
+----
+
+The state of the objects can be dumped using
+
+[source, cpp]
+----
+include::{base}/imp.h[tag=dump]
+----
+<1> Dump all meshes of objects
+<2> Dump diagnosis. This include the solid objects dumps and the
+    membrane centers of mass.
+<3> Dump rigid templates to restart files
+<4> Dump current state to restart files
+
+
+The objects are updated using
+
+[source, cpp]
+----
+include::{base}/imp.h[tag=upd]
+----
+<1> set all velocities to 0
+<2> advance objects for one timestep
+<3> redistribute objects accross nodes
+
+The objects forces can be managed by calling
+
+[source, cpp]
+----
+include::{base}/imp.h[tag=force]
+----
+<1> set all forces to 0
+<2> compute internal forces (membranes only)
+<3> apply body forces to the objects
+
+Other forces can be set via the getter functions (see link with
+<<sim_objinter>>):
+
+[source, cpp]
+----
+include::{base}/imp.h[tag=get]
+----
+<1> get particle infos of all objects
+<2> get particle infos of membranes
+<3> retrieve acceleration infos (see <<scheme_time_step>>)
+
+[source, cpp]
+----
+include::{base}/imp.h[tag=tools]
+----
+<1> bounce solvent particles against objects
+<2> recolor solvent particles located inside membranes
+<3> compute the total volume occupied by all membranes
+

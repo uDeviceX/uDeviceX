@@ -10,39 +10,56 @@ struct BForce;
 struct TimeStepAccel;
 struct Dbg;
 
+// tag::mem[]
 void objects_ini(const Config*, const Opt*, MPI_Comm, const Coords*, int maxp, Objects**);
 void objects_fin(Objects*);
+// end::mem[]
+
+// tag::upd[]
+void objects_clear_vel(Objects*);        // <1>
+void objects_update(float dt, Objects*); // <2>
+void objects_distribute(Objects*);       // <3>
+// end::upd[]
+
+// tag::force[]
+void objects_clear_forces(Objects*);                 // <1>
+void objects_internal_forces(float dt, Objects *o);  // <2>
+void objects_body_forces(const BForce*, Objects *o); // <3>
+// end::force[]
+
+// tag::dump[]
+void objects_mesh_dump(Objects*);          // <1>
+void objects_diag_dump(float t, Objects*); // <2>
     
-void objects_clear_vel(Objects*);
-void objects_update(float dt, Objects*);
-void objects_distribute(Objects*);
+void objects_strt_templ(const char *base, Objects*);         // <3>
+void objects_strt_dump(const char *base, long id, Objects*); // <4>
+// end::dump[]
 
-void objects_clear_forces(Objects*);
-void objects_internal_forces(float dt, Objects *o);
-void objects_body_forces(const BForce*, Objects *o);
+// tag::get[]
+void objects_get_particles_all(Objects*, PFarrays*);    // <1>
+void objects_get_particles_mbr(Objects*, PFarrays*);    // <2>
+void objects_get_accel(const Objects*, TimeStepAccel*); // <3>
+// end::get[]
 
-void objects_mesh_dump(Objects*);
-void objects_diag_dump(float t, Objects*);
-    
-void objects_strt_templ(const char *base, Objects*);
-void objects_strt_dump(const char *base, long id, Objects*);
+// tag::gen[]
+void objects_gen_mesh(Objects*);                           // <1>
+void objects_remove_from_wall(const Sdf *sdf, Objects *o); // <2>
+void objects_gen_freeze(PFarray*, Objects*);               // <3>
+// end::gen[]
 
-void objects_get_particles_all(Objects*, PFarrays*);
-void objects_get_particles_mbr(Objects*, PFarrays*);
-void objects_get_accel(const Objects*, TimeStepAccel*);
-
-void objects_gen_mesh(Objects*);
-void objects_remove_from_wall(const Sdf *sdf, Objects *o);
-void objects_gen_freeze(PFarray*, Objects*);
-
+// tag::strt[]
 void objects_restart(Objects*);
+// end::strt[]
 
-void objects_bounce(float dt, float flu_mass, const Clist flu_cells, PFarray *flu, Objects*);
-void objects_recolor_flu(Objects*, PFarray *flu);
+// tag::tools[]
+void objects_bounce(float dt, float flu_mass, const Clist flu_cells, PFarray *flu, Objects*); // <1>
+void objects_recolor_flu(Objects*, PFarray *flu); // <2>
+double objects_mbr_tot_volume(const Objects*);    // <3>
+// end::tools[]
 
-
-double objects_mbr_tot_volume(const Objects*);
-
+// tag::check[]
 void objects_check_size(const Objects*);
 void objects_check_vel(const Objects*, const Dbg*, float dt);
 void objects_check_forces(const Objects*, const Dbg*, float dt);
+// end::check[]
+

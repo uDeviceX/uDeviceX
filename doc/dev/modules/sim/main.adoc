@@ -10,6 +10,8 @@ TODO
 
 :leveloffset: +2
 
+include::objects.adoc[]
+
 include::objinter.adoc[]
 
 :leveloffset: -2
