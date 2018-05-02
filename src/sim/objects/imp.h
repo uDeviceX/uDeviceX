@@ -7,6 +7,7 @@ struct Opt;
 struct PFarray;
 struct PFarrays;
 struct BForce;
+struct TimeStepAccel;
 
 void objects_ini(const Config*, const Opt*, MPI_Comm, const Coords*, int maxp, Objects**);
 void objects_fin(Objects*);
@@ -27,6 +28,7 @@ void objects_strt_dump(const char *base, long id, Objects*);
 
 void objects_get_particles_all(Objects*, PFarrays*);
 void objects_get_particles_mbr(Objects*, PFarrays*);
+void objects_get_accel(const Objects*, TimeStepAccel*);
 
 void objects_gen_mesh(Objects*);
 void objects_remove_from_wall(const Sdf *sdf, Objects *o);

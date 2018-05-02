@@ -106,6 +106,20 @@ void objects_get_particles_mbr(Objects *obj, PFarrays *pf) {
     if (obj->mbr) get_mbr(obj->mbr, pf);
 }
 
+static void get_mbr_accel(const Mbr *m, TimeStepAccel *aa) {
+    UC(time_step_accel_push(aa, m->mass, m->q.n, m->ff));
+}
+
+static void get_rig_accel(const Rig *r, TimeStepAccel *aa) {
+    UC(time_step_accel_push(aa, r->mass, r->q.n, r->ff));
+}
+
+void objects_get_accel(const Objects *obj, TimeStepAccel *aa) {
+    if (!obj->active) return;
+    if (obj->mbr) get_mbr_accel(obj->mbr, aa);
+    if (obj->rig) get_rig_accel(obj->rig, aa);    
+}
+
 static void restart_mbr(MPI_Comm cart, const char *base, Mbr *m) {
     UC(rbc_strt_quants(cart, m->mesh, base, RESTART_BEGIN, &m->q));
 }

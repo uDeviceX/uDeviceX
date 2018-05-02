@@ -52,6 +52,7 @@
 
 #include "scheme/move/imp.h"
 #include "scheme/force/imp.h"
+#include "scheme/time_step/imp.h"
 
 #include "comm/imp.h"
 #include "distr/rbc/imp.h"
