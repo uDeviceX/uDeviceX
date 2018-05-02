@@ -2,12 +2,8 @@ _I_ bool active_walls(const Sim *s) {
     return !s->equilibrating && s->opt.wall;
 }
 
-_I_ bool active_rbc(const Sim *s) {
+_S_ bool active_rbc(const Sim *s) {
     return !s->equilibrating && s->opt.rbc.active;
-}
-
-_I_ bool active_rig(const Sim *s) {
-    return !s->equilibrating && s->opt.rig.active;
 }
 
 _I_ bool is_sampling_time(const Sim *s) {
@@ -54,8 +50,9 @@ _I_ float utils_get_dt0(Sim *s) {
 
 _I_ float utils_get_dt(Sim *s, TimeLine *time) {
     /* Possibility to adapt dt only after equilibration */
+    float dt;
     if (s->equilibrating)
-        return time_step_dt0(s->time.step);
+        dt = time_step_dt0(s->time.step);
     else {
         const Flu *flu = &s->flu;
         // TODO
@@ -68,13 +65,12 @@ _I_ float utils_get_dt(Sim *s, TimeLine *time) {
         // if (active_rbc(s) && rbc->q.n)
         //     time_step_accel_push(s->time.accel, rbc->mass, rbc->q.n, rbc->ff);
 
-        const float dt = time_step_dt(s->time.step, s->cart, s->time.accel);
+        dt = time_step_dt(s->time.step, s->cart, s->time.accel);
 
         if (time_line_cross(time, opt->freq_parts))
             time_step_log(s->time.step);
-
-        return dt;
     }
+    return dt;
 }
 
 _I_ void utils_get_pf_flu(Sim *s, PFarray *flu) {
