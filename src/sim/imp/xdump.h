@@ -21,11 +21,11 @@ _S_ long download_all_pp(Sim *s) { /* device to host  data transfer */
     return np;
 }
 
-_S_ void dump_diag(float time, Sim *s) {
-    if (time < 0) ERR("time = %g < 0", time);
+_S_ void dump_diag(float t, Sim *s) {
+    if (t < 0) ERR("time = %g < 0", t);
     long n;
     n = download_all_pp(s);
-    UC(diag_part_apply(s->dump.diagpart, s->cart, time, n, s->dump.pp));
+    UC(diag_part_apply(s->dump.diagpart, s->cart, t, n, s->dump.pp));
     UC(objects_diag_dump(t, s->obj));
 }
 
