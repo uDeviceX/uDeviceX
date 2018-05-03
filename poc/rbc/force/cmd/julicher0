@@ -159,7 +159,7 @@ function write_tri(   m, i, j, k, x, y, r) {
 	x = (XX[i] + XX[j] + XX[k])/3
 	y = (YY[i] + YY[j] + YY[k])/3
 	r = sqrt(x^2 + y^2)
-	print r, E_TRI[m], FX_TRI[m], FY_TRI[m], FZ_TRI[m], F[m]
+	print r, E_TRI[m], FX_TRI[m], FY_TRI[m], FZ_TRI[m], F_TRI[m]
     }
 }
 
