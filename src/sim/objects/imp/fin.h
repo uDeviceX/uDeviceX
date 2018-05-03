@@ -31,9 +31,9 @@ static void fin_bbdata(/**/ BounceBackData *bb) {
 }
 
 static void fin_colorer(/**/ Colorer *c) {
-    Dfree(&c->pp_mesh);
-    Dfree(&c->lo);
-    Dfree(&c->hi);
+    Dfree(c->pp_mesh);
+    Dfree(c->lo);
+    Dfree(c->hi);
     EFREE(c);
 }
 
