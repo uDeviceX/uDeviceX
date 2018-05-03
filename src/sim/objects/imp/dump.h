@@ -40,6 +40,17 @@ void objects_diag_dump(float t, Objects *obj) {
     ++ d->id_diag;
 }
 
+static void dump_part_rig(MPI_Comm cart, const Coords *coords, long id, Rig *r, IoBop *bop) {
+    RigQuants *q = &r->q;
+    cD2H(q->pp_hst, q->pp, q->n);
+    UC(io_bop_parts(cart, coords, q->n, q->pp_hst, "solid", id, bop));
+}
+
+void objects_part_dump(long id, Objects *o, IoBop *bop) {
+    if (!o->active) return;    
+    if (o->rig) dump_part_rig(o->cart, o->coords, id, o->rig, bop);
+}
+
 void objects_strt_templ(const char *base, Objects *o) {
     if (!o->active) return;
     if (o->rig) UC(rig_strt_dump_templ(o->cart, base, &o->rig->q));

@@ -23,16 +23,8 @@ _S_ void dump_part(Sim *s) {
     } else {
         io_bop_parts(s->cart, s->coords, flu->q.n, flu->q.pp_hst, "solvent", id_bop, bop);
     }
-    // TODO
-    // if (active_rig(s)) {
-    //     cD2H(rig->q.pp_hst, rig->q.pp, rig->q.n);
-    //     if (opt->dump_forces) {
-    //         cD2H(rig->ff_hst, rig->ff, rig->q.n);
-    //         io_bop_parts_forces(s->cart, s->coords, rig->q.n, rig->q.pp_hst, rig->ff_hst, "solid", id_bop, bop);
-    //     } else {
-    //         io_bop_parts(s->cart, s->coords, rig->q.n, rig->q.pp_hst, "solid", id_bop, bop);
-    //     }
-    // }
+
+    UC(objects_part_dump(id_bop, s->obj, bop));
     s->dump.id_bop = ++id_bop;
 }
 
