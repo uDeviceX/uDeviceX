@@ -84,7 +84,7 @@ function scale(x, y, z) {
     }
 }
 
-function to_rbc(   m, x, y, z, rm, r) {
+function to_rbc(   m, x, y, z, rm, r, D) {
     for (m = 0; m < NV; m++) {
 	x = XX[m]; y = YY[m]
 	r = sqrt(x^2 + y^2)

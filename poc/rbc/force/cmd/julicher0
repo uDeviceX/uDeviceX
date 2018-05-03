@@ -139,7 +139,7 @@ function d_scatter_area(    m, i, j, k, A) {
 function write_vert(   m, r) {
     for (m = 0; m < NV; m++) {
 	r = sqrt(XX[m]^2 + YY[m]^2)
-	print r, E[m] FX[m], FY[m], FZ[m], F[m], AREA_VER[m], CURV[m]
+	print r, E[m], FX[m], FY[m], FZ[m], F[m]
     }
 }
 
@@ -194,7 +194,7 @@ BEGIN {
     if (eq(file, "-h")) usg()
     off_read(file)
     to_cm()
-    # to_rbc()
+    to_rbc()
     # to_r1()
     setup()
 
