@@ -63,10 +63,39 @@ function vabs_f(   m) {
 	F[m] = sqrt(FX[m]^2 + FY[m]^2 + FZ[m]^2)
 }
 
+function scatter_force(   m, i, j, k) {
+    clear(FX_TRI); clear(FY_TRI); clear(FZ_TRI)
+    for (m = 0; m < NT; m++) {
+	i = T0[m]; j = T1[m]; k = T2[m]
+	FX_TRI[m] = (FX[i] + FX[j] + FX[k])/3
+	FY_TRI[m] = (FY[i] + FY[j] + FY[k])/3
+	FZ_TRI[m] = (FZ[i] + FZ[j] + FZ[k])/3
+	F_TRI[m]  = (F[i] + F[j] + F[k])/3
+    }
+}
+
+function scatter_kantor(   m, i, j, k) {
+    clear(KANTOR_TRI)
+    for (m = 0; m < NT; m++) {
+	i = T0[m]; j = T1[m]; k = T2[m]
+	KANTOR_TRI[m] = (KANTOR[i] + KANTOR[j] + KANTOR[k])/3
+    }
+}
+
 function write(   m, r) {
     for (m = 0; m < NV; m++) {
 	r = sqrt(XX[m]^2 + YY[m]^2)
 	print r, KANTOR[m], FX[m], FY[m], FZ[m], F[m]
+    }
+}
+
+function write_tri(   m, i, j, k, x, y, r) {
+    for (m = 0; m < NT; m++) {
+	i = T0[m]; j = T1[m]; k = T1[m]
+	x = (XX[i] + XX[j] + XX[k])/3
+	y = (YY[i] + YY[j] + YY[k])/3
+	r = sqrt(x^2 + y^2)
+	print r, KANTOR_TRI[m], FX_TRI[m], FY_TRI[m], FZ_TRI[m], F_TRI[m]
     }
 }
 
@@ -82,18 +111,20 @@ BEGIN {
     compute_ang()
     compute_area()
     compute_kantor()
-    
+
     clear(FX) clear(FY); clear(FZ)
     d_compute_kantor()
     vabs_f()
+    scatter_force()
+    scatter_kantor()
 
     vtk_push("kantor", KANTOR, vert)
     vtk_push("fx", FX, vert)
     vtk_push("fy", FY, vert)
     vtk_push("fz", FZ, vert)
-    vtk_push("fz", F, vert)    
+    vtk_push("f", F, vert)
     vtk_write("o.vtk", vert, tri)
 
     off_write("o.off")
-    write()
+    write_tri()
 }
