@@ -70,6 +70,7 @@ f: 2 * (2*H*(H^2 - K) + ds(H)) $
 phi: acos(z/sqrt(x^2 + y^2 + z^2)) $
 dsH: ds(H) $
 
-draw2d(nticks=300,
+draw2d(nticks=300, 'line_width = 3,
   yrange = [0, 250],
-  parametric(phi,  abs(f), 'u, 0, %pi/2)), v = 0, va $
+  parametric(x,   150*z, 'u, 0, %pi/2),
+  parametric(x,  abs(f), 'u, 0, %pi/2)), v = 0, va $

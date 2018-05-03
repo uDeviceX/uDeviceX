@@ -33,48 +33,6 @@ function compute_area(   m, i, j, k) {
     }
 }
 
-function scatter_area(    m, i, j, k, A) {
-    clear(AREA_VER)
-    for (m = 0; m < NT; m++) {
-	i = T0[m]; j = T1[m]; k = T2[m]; A = AREA_TRI[m]
-	AREA_VER[i] += A/3
-	AREA_VER[j] += A/3
-	AREA_VER[k] += A/3
-    }
-}
-
-function scatter_curv(   m, i, j, curv, len, ang) {
-    clear(CURV)
-    for (m = 0; m < NE; m++) {
-	i = E0[m]; j = E1[m]
-	len = LEN[m]
-	ang = ANG_EDG[m]
-	curv = len*ang/4
-	CURV[i] += curv/2
-	CURV[j] += curv/2
-    }
-}
-
-function scatter_ang(   m, i, j, ang, cnt) {
-    clear(ANG_VER)
-    for (m = 0; m < NE; m++) {
-	i = E0[m]; j = E1[m]
-	ang = ANG_EDG[m]
-	ANG_VER[i] += ang; cnt[i]++
-	ANG_VER[j] += ang; cnt[j]++
-    }
-    for (m = 0; m < NV; m++)
-	ANG_VER[m] /= cnt[m]
-}
-
-function compute_julicher(    m, curv, A) {
-    for (m = 0; m < NV; m++) {
-	curv = CURV[m]
-	A    = AREA_VER[m]
-	JULICHER[m] = 2*curv*curv/A
-    }
-}
-
 function compute_kantor(    m, i, j, ang, A, eng) {
     clear(KANTOR)
     for (m = 0; m < NE; m++) {
@@ -87,13 +45,11 @@ function compute_kantor(    m, i, j, ang, A, eng) {
 }
 
 function write(   m, r) {
-    msg("NV = " NV)
     for (m = 0; m < NV; m++) {
 	r = sqrt(XX[m]^2 + YY[m]^2)
-	print r, ANG_VER[m], JULICHER[m], KANTOR[m]
+	print r, KANTOR[m]
     }
 }
-
 
 BEGIN {
     ini()
@@ -101,18 +57,12 @@ BEGIN {
     file = first_arg()
     if (eq(file, "-h")) usg()
     off_read(file)
-    # refine2()    
+    to_rbc()
     setup()
 
     compute_ang()
-    compute_edg_len()
     compute_area()
-    scatter_area()
-    scatter_curv()
-    compute_julicher()
     compute_kantor()
-
-    scatter_ang()
 
     vtk_push("area", AREA_TRI, tri)
     vtk_push("kantor", KANTOR, vert)
