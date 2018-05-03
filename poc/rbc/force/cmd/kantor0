@@ -34,13 +34,12 @@ function compute_area(   m, i, j, k) {
 }
 
 function compute_kantor(    m, i, j, ang, A, eng) {
-    clear(KANTOR)
+    clear(E)
     for (m = 0; m < NE; m++) {
 	i = E0[m]; j = E1[m]
 	ang = ANG_EDG[m]
 	eng = 2*(1 - cos(ang))
-	KANTOR[i] += eng/2
-	KANTOR[j] += eng/2
+	E[i] += eng/2; E[j] += eng/2
     }
 }
 
@@ -75,17 +74,17 @@ function scatter_force(   m, i, j, k) {
 }
 
 function scatter_kantor(   m, i, j, k) {
-    clear(KANTOR_TRI)
+    clear(E_TRI)
     for (m = 0; m < NT; m++) {
 	i = T0[m]; j = T1[m]; k = T2[m]
-	KANTOR_TRI[m] = (KANTOR[i] + KANTOR[j] + KANTOR[k])/3
+	E_TRI[m] = (E[i] + E[j] + E[k])/3
     }
 }
 
-function write(   m, r) {
+function write_vert(   m, r) {
     for (m = 0; m < NV; m++) {
 	r = sqrt(XX[m]^2 + YY[m]^2)
-	print r, KANTOR[m], FX[m], FY[m], FZ[m], F[m]
+	print r, E[m], FX[m], FY[m], FZ[m], F[m]
     }
 }
 
@@ -95,7 +94,7 @@ function write_tri(   m, i, j, k, x, y, r) {
 	x = (XX[i] + XX[j] + XX[k])/3
 	y = (YY[i] + YY[j] + YY[k])/3
 	r = sqrt(x^2 + y^2)
-	print r, KANTOR_TRI[m], FX_TRI[m], FY_TRI[m], FZ_TRI[m], F_TRI[m]
+	print r, E_TRI[m], FX_TRI[m], FY_TRI[m], FZ_TRI[m], F_TRI[m]
     }
 }
 
@@ -105,7 +104,9 @@ BEGIN {
     file = first_arg()
     if (eq(file, "-h")) usg()
     off_read(file)
-    to_rbc()
+    to_cm()
+    # to_r1()
+    # to_rbc()
     setup()
 
     compute_ang()
@@ -118,7 +119,7 @@ BEGIN {
     scatter_force()
     scatter_kantor()
 
-    vtk_push("kantor", KANTOR, vert)
+    vtk_push("e",  E_TRI, tri)
     vtk_push("fx", FX, vert)
     vtk_push("fy", FY, vert)
     vtk_push("fz", FZ, vert)

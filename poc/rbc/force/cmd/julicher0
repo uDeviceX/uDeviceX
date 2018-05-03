@@ -139,7 +139,7 @@ function d_scatter_area(    m, i, j, k, A) {
 function write_vert(   m, r) {
     for (m = 0; m < NV; m++) {
 	r = sqrt(XX[m]^2 + YY[m]^2)
-	print r, FX[m], FY[m], FZ[m], F[m], AREA_VER[m], CURV[m], E[m]
+	print r, E[m] FX[m], FY[m], FZ[m], F[m], AREA_VER[m], CURV[m]
     }
 }
 
@@ -159,7 +159,7 @@ function write_tri(   m, i, j, k, x, y, r) {
 	x = (XX[i] + XX[j] + XX[k])/3
 	y = (YY[i] + YY[j] + YY[k])/3
 	r = sqrt(x^2 + y^2)
-	print r, FX_TRI[m], FY_TRI[m], FZ_TRI[m]
+	print r, E_TRI[m], FX_TRI[m], FY_TRI[m], FZ_TRI[m], F[m]
     }
 }
 
@@ -175,6 +175,15 @@ function scatter_force(   m, i, j, k) {
 	FX_TRI[m] = (FX[i] + FX[j] + FX[k])/3
 	FY_TRI[m] = (FY[i] + FY[j] + FY[k])/3
 	FZ_TRI[m] = (FZ[i] + FZ[j] + FZ[k])/3
+	F_TRI[m]  = (F[i] + F[j] + F[k])/3
+    }
+}
+
+function scatter_energy(   m, i, j, k) {
+    clear(E_TRI)
+    for (m = 0; m < NT; m++) {
+	i = T0[m]; j = T1[m]; k = T2[m]
+	E_TRI[m]  = (E[i] + E[j] + E[k])/3
     }
 }
 
@@ -185,7 +194,8 @@ BEGIN {
     if (eq(file, "-h")) usg()
     off_read(file)
     to_cm()
-    to_rbc()
+    # to_rbc()
+    # to_r1()
     setup()
 
     compute_ang()
@@ -206,6 +216,7 @@ BEGIN {
 
     vabs_f()
     scatter_force()
+    scatter_energy()
 
     vtk_push("fx", FX, vert)
     vtk_push("fy", FY, vert)
@@ -216,7 +227,7 @@ BEGIN {
     vtk_push("curv",  CURV, vert)
     vtk_write("o.vtk", vert, tri)
 
-    # write_vert()
-    write_edg()
+    write_vert()
+    # write_edg()
     # write_tri()
 }
