@@ -44,7 +44,6 @@ static void read_mbr(const Config *c, OptMbr *o) {
     UC(lookup_bool(c, "rbc.push", &o->push));
     
     UC(lookup_bool(c, "dump.rbc_com", &o->dump_com));
-    UC(conf_lookup_float(c, "dump.freq_rbc_com", &o->freq_com));
 }
 
 static void read_rig(const Config *c, OptRig *o) {

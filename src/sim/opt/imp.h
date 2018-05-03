@@ -2,7 +2,6 @@
 struct OptMbr {
     bool active, ids, stretch, push, dump_com;
     int shifttype;
-    float freq_com;
 };
 
 /* rigid options */
