@@ -24,3 +24,5 @@ df0: gcfac(df0);
 
 mu: sqrt(3)*kbT/(4*p*lmax*x0) * (x0 / (2*(1-x0)^3) - 1/(4*(1-x0)^2) + 1/4);
 
+
+Q: factor(taylor(f0, dr, 0, 1)/dr * l0), wlc, m = 2;
