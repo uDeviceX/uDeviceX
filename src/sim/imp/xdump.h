@@ -48,7 +48,7 @@ _S_ void dump_parts(Sim *s) {
         io_bop_stresses(s->cart, flu->q.n, flu->ss_hst, "stress_solvent", id_bop, bop);
     }
 
-    if (opt->dump_forces) {
+    if (opt->dump.forces) {
         cD2H(flu->ff_hst, flu->ff, flu->q.n);
         io_bop_parts_forces(s->cart, s->coords, flu->q.n, flu->q.pp_hst, flu->ff_hst, "solvent", id_bop, bop);
     } else {
@@ -72,9 +72,9 @@ _S_ void dump_field(Sim *s) {
 
 _I_ void dump_strt_templ(Sim *s) { /* template dumps (wall, solid) */
     const Opt *opt = &s->opt;
-    const char *base = opt->strt_base_dump;
-    if (opt->dump_strt) {
-        if (opt->wall)       wall_dump_templ(s->wall, s->cart, base);
+    const char *base = opt->dump.strt_base_dump;
+    if (opt->dump.strt) {
+        if (opt->wall) UC(wall_dump_templ(s->wall, s->cart, base));
         UC(objects_strt_templ(base, s->obj));
     }
 }
@@ -82,7 +82,7 @@ _I_ void dump_strt_templ(Sim *s) { /* template dumps (wall, solid) */
 _S_ void dump_strt0(int id, Sim *s) {
     Flu *flu = &s->flu;
     const Opt *opt = &s->opt;
-    const char *base = opt->strt_base_dump;
+    const char *base = opt->dump.strt_base_dump;
     UC(flu_strt_dump(s->cart, base, id, &flu->q));
     UC(objects_strt_dump(base, id, s->obj));
     if (opt->vcon)   vcont_strt_dump(s->cart, base, id, s->vcon.vcont);
@@ -97,15 +97,15 @@ _I_ void dump_strt_final(Sim *s) {
 }
 
 _I_ void dump(TimeLine *time, Sim *s) {
-    const Opt *o = &s->opt;
+    const OptDump *o = &s->opt.dump;
     if (time_line_cross(time, o->freq_diag))
         dump_diag(time_line_get_current(time), s);
-    if (o->dump_parts && time_line_cross(time, o->freq_parts))
+    if (o->parts && time_line_cross(time, o->freq_parts))
         dump_parts(s);
-    if (o->dump_mesh && time_line_cross(time, o->freq_mesh))
+    if (o->mesh && time_line_cross(time, o->freq_mesh))
         dump_mesh(s);
-    if (o->dump_field && time_line_cross(time, o->freq_field))
+    if (o->field && time_line_cross(time, o->freq_field))
         dump_field(s);
-    if (o->dump_strt  && time_line_cross(time, o->freq_strt))
+    if (o->strt  && time_line_cross(time, o->freq_strt))
         dump_strt(s);
 }

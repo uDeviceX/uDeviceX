@@ -8,7 +8,7 @@ _S_ void gen_flu(Sim *s) {
 _S_ void gen_wall(Sim *s) {
     Flu *flu = &s->flu;
     Wall *w = s->wall;
-    bool dump_sdf = s->opt.dump_field;
+    bool dump_sdf = s->opt.dump.field;
     
     if (!s->opt.wall) return;
 
@@ -68,14 +68,14 @@ void sim_gen(Sim *s) {
     run(tstart, s->time.end, s);
 
     /* final strt dump*/
-    if (opt->dump_strt) dump_strt_final(s);
+    if (opt->dump.strt) dump_strt_final(s);
 }
 
 _S_ void gen_from_restart(Sim *s) {
     Flu *flu = &s->flu;
     const Opt *opt = &s->opt;
-    const char *base = opt->strt_base_read;
-    bool dump_sdf = opt->dump_field;
+    const char *base = opt->dump.strt_base_read;
+    bool dump_sdf = opt->dump.field;
     
     UC(flu_strt_quants(s->cart, base, RESTART_BEGIN, &flu->q));
     UC(objects_restart(s->obj));
@@ -92,5 +92,5 @@ void sim_strt(Sim *s) {
 
     pre_run(s);
     run(s->time.eq, s->time.end, s);
-    if (opt->dump_strt) dump_strt_final(s);
+    if (opt->dump.strt) UC(dump_strt_final(s));
 }

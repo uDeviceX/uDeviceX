@@ -129,7 +129,7 @@ static void restart_rig(MPI_Comm cart, const char *base, Rig *r) {
 }
 
 void objects_restart(Objects *o) {
-    const char *base = o->opt.strt_base_read;
+    const char *base = o->opt.dump.strt_base_read;
     if (o->mbr) restart_mbr(o->cart, base, o->mbr);
     if (o->rig) restart_rig(o->cart, base, o->rig);
     o->active = true;

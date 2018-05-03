@@ -61,21 +61,28 @@ static void read_params(const Config *c, OptParams *p) {
     UC(conf_lookup_int  (c, "glb.numdensity", &p->numdensity));
 }
 
-
-static void read_common(const Config *c, Opt *o) {
-    UC(lookup_bool(c, "flu.ids", &o->fluids));
-    
+static void read_dump(const Config *c, OptDump *o) {    
     UC(lookup_string(c, "dump.strt_base_dump", o->strt_base_dump));
     UC(lookup_string(c, "dump.strt_base_read", o->strt_base_read));
 
-    UC(lookup_bool(c, "dump.field", &o->dump_field));
+    UC(lookup_bool(c, "dump.parts", &o->parts));
+    UC(conf_lookup_float(c, "dump.freq_parts", &o->freq_parts));
+
+    UC(lookup_bool(c, "dump.mesh", &o->mesh));
+    UC(conf_lookup_float(c, "dump.freq_mesh", &o->freq_mesh));
+
+    UC(lookup_bool(c, "dump.field", &o->field));
     UC(conf_lookup_float(c, "dump.freq_field", &o->freq_field));
     
-    UC(lookup_bool(c, "dump.strt", &o->dump_strt));
+    UC(lookup_bool(c, "dump.strt", &o->strt));
     UC(conf_lookup_float(c, "dump.freq_strt", &o->freq_strt));
 
-    UC(lookup_bool(c, "dump.parts", &o->dump_parts));
-    UC(conf_lookup_float(c, "dump.freq_parts", &o->freq_parts));
+    UC(lookup_bool(c, "dump.forces", &o->forces));
+    UC(conf_lookup_float(c, "dump.freq_diag", &o->freq_diag));
+}
+
+static void read_common(const Config *c, Opt *o) {
+    UC(lookup_bool(c, "flu.ids", &o->fluids));
 
     UC(conf_lookup_int(c, "sampler.n_per_dump", &o->sampler_npdump));
     UC(conf_lookup_int3(c, "sampler.grid_ref", &o->sampler_grid_ref));
@@ -92,8 +99,6 @@ static void read_common(const Config *c, Opt *o) {
     UC(lookup_bool(c, "inflow.active", &o->inflow));
     UC(lookup_bool(c, "denoutflow.active", &o->denoutflow));
     UC(lookup_bool(c, "vcon.active", &o->vcon));
-
-    UC(lookup_bool(c, "dump.forces", &o->dump_forces));
     
     UC(conf_lookup_int(c, "flu.recolor_freq", &o->recolor_freq));
 
@@ -103,6 +108,7 @@ static void read_common(const Config *c, Opt *o) {
 void opt_read(const Config *c, Opt *o) {
     UC(read_common(c, o));
     UC(read_params(c, &o->params));
+    UC(read_dump(c, &o->dump));
     UC(read_mbr(c, &o->rbc));
     UC(read_rig(c, &o->rig));
 }

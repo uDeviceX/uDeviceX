@@ -20,7 +20,8 @@ struct OptParams {
 
 struct OptDump {
     bool       parts,      mesh,      field,      strt, forces;
-    float freq_parts, freq_mesh, freq_field, freq_strt, freq_diag;    
+    float freq_parts, freq_mesh, freq_field, freq_strt, freq_diag;
+    char strt_base_dump[FILENAME_MAX], strt_base_read[FILENAME_MAX];
 };
 
 struct Opt {
@@ -32,7 +33,6 @@ struct Opt {
     bool flucolors, fluids, fluss;
     bool wall;
     bool inflow, outflow, denoutflow, vcon;
-    char strt_base_dump[FILENAME_MAX], strt_base_read[FILENAME_MAX];
     int recolor_freq;
     bool push_flu;
     int sampler_npdump;

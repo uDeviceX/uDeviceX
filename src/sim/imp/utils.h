@@ -8,7 +8,7 @@ _S_ bool active_rbc(const Sim *s) {
 
 _I_ bool is_sampling_time(const Sim *s) {
     const Opt *opt = &s->opt;
-    const float freq = opt->freq_field / opt->sampler_npdump;
+    const float freq = opt->dump.freq_field / opt->sampler_npdump;
     const TimeLine *time = s->time.t;
 
     return time_line_cross(time, freq);
@@ -65,7 +65,8 @@ _I_ float utils_get_dt(Sim *s, TimeLine *time) {
         UC(push_accel(s, /**/ s->time.accel));
         dt = time_step_dt(s->time.step, s->cart, s->time.accel);
 
-        if (time_line_cross(time, opt->freq_parts))
+        // TODO: move to dump_diag?
+        if (time_line_cross(time, opt->dump.freq_diag))
             time_step_log(s->time.step);
     }
     return dt;

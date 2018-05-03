@@ -26,8 +26,7 @@ _S_ void step(TimeLine *time, float dt, float tstart, Sim *s) {
 
     it = time_line_get_iteration(time);
     UC(field_sample(s));
-    UC(dump_diag(time, s));
-    UC(dump_diag_after(time, s));
+    UC(dump(time, s));
 
     UC(restrain(it, /**/ s));
     UC(update_solvent(dt, /**/ flu));

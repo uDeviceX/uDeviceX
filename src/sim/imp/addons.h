@@ -67,7 +67,7 @@ _S_ void sample(Sim *s) {
 }
 
 _I_ void field_sample(Sim *s) {
-    if (s->opt.dump_field && is_sampling_time(s))
+    if (s->opt.dump.field && is_sampling_time(s))
         sample(s);
 }
 

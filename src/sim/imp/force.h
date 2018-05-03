@@ -103,7 +103,7 @@ _I_ void forces(float dt, TimeLine *time, const BForce *bforce, Sim *s) {
     bool fluss, tfluss;
     Opt *opt = &s->opt;
 
-    tfluss = time_line_cross(time, opt->freq_parts) ||
+    tfluss = time_line_cross(time, opt->dump.freq_parts) ||
         is_sampling_time(s);
     fluss = opt->fluss && tfluss;
 
