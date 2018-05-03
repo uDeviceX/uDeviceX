@@ -18,16 +18,20 @@ struct OptParams {
     int numdensity;  /* number density  */
 };
 
+struct OptDump {
+    bool       parts,      mesh,      field,      strt, forces;
+    float freq_parts, freq_mesh, freq_field, freq_strt, freq_diag;    
+};
+
 struct Opt {
     OptMbr rbc;
     OptRig rig;
     OptParams params;
+    OptDump dump;
     bool fsi, cnt;
     bool flucolors, fluids, fluss;
     bool wall;
     bool inflow, outflow, denoutflow, vcon;
-    bool dump_field, dump_parts, dump_strt, dump_forces;
-    float freq_field, freq_parts, freq_strt;
     char strt_base_dump[FILENAME_MAX], strt_base_read[FILENAME_MAX];
     int recolor_freq;
     bool push_flu;
