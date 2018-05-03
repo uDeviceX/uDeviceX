@@ -44,10 +44,29 @@ function compute_kantor(    m, i, j, ang, A, eng) {
     }
 }
 
+function d_compute_kantor(   m, i, j, k, l, de) {
+    for (m = 0; m < NE; m++) {
+	i = D0[m]; j = D1[m]; k = D2[m]; l = D3[m]
+	d_cos(XX[i], YY[i], ZZ[i],
+	      XX[j], YY[j], ZZ[j],
+	      XX[k], YY[k], ZZ[k],
+	      XX[l], YY[l], ZZ[l])
+	FX[i] += DAX; FY[i] += DAY; FZ[i] += DAZ
+	FX[j] += DBX; FY[j] += DBY; FZ[j] += DBZ
+	FX[k] += DCX; FY[k] += DCY; FZ[k] += DCZ
+	FX[l] += DDX; FY[l] += DDY; FZ[l] += DDZ
+    }
+}
+
+function vabs_f(   m) {
+    for (m = 0; m < NV; m++)
+	F[m] = sqrt(FX[m]^2 + FY[m]^2 + FZ[m]^2)
+}
+
 function write(   m, r) {
     for (m = 0; m < NV; m++) {
 	r = sqrt(XX[m]^2 + YY[m]^2)
-	print r, KANTOR[m]
+	print r, KANTOR[m], FX[m], FY[m], FZ[m], F[m]
     }
 }
 
@@ -63,12 +82,18 @@ BEGIN {
     compute_ang()
     compute_area()
     compute_kantor()
-
-    vtk_push("area", AREA_TRI, tri)
-    vtk_push("kantor", KANTOR, vert)
-    vtk_push("julicher", JULICHER, vert)
-    vtk_write("o.vtk", vert, tri)
     
+    clear(FX) clear(FY); clear(FZ)
+    d_compute_kantor()
+    vabs_f()
+
+    vtk_push("kantor", KANTOR, vert)
+    vtk_push("fx", FX, vert)
+    vtk_push("fy", FY, vert)
+    vtk_push("fz", FZ, vert)
+    vtk_push("fz", F, vert)    
+    vtk_write("o.vtk", vert, tri)
+
     off_write("o.off")
     write()
 }
