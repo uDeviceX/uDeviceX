@@ -87,7 +87,7 @@
 #include "imp/ini.h"
 #include "imp/fin.h"
 #include "imp/check.h"
-#include "imp/xdump.h"
+#include "imp/dump.h"
 #include "imp/addons.h"
 #include "imp/update.h"
 #include "imp/distr.h"
