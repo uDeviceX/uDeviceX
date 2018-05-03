@@ -9,6 +9,7 @@ struct PFarrays;
 struct BForce;
 struct TimeStepAccel;
 struct Dbg;
+struct IoBop;
 
 // tag::mem[]
 void objects_ini(const Config*, const Opt*, MPI_Comm, const Coords*, int maxp, Objects**);
@@ -28,9 +29,10 @@ void objects_body_forces(const BForce*, Objects *o); // <3>
 // end::force[]
 
 // tag::dump[]
-void objects_mesh_dump(Objects*);          // <1>
-void objects_diag_dump(float t, Objects*); // <2>
-    
+void objects_mesh_dump(Objects*);                    // <1>
+void objects_diag_dump(float t, Objects*);           // <2>
+void objects_part_dump(long id, Objects*, IoBop*);
+
 void objects_strt_templ(const char *base, Objects*);         // <3>
 void objects_strt_dump(const char *base, long id, Objects*); // <4>
 // end::dump[]
