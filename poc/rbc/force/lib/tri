@@ -168,8 +168,8 @@ function d_ang(ax, ay, az,
     kny = kz*nx-kx*nz
     knx = ky*nz-kz*ny
     kn = sqrt(pow(knz,2)+pow(kny,2)+pow(knx,2))
-#    kn = sign(kn, ax, ay, az, dx, dy, dz,
-#	      kx, ky, kz, nx, ny, nz)
+    kn = sign(kn, ax, ay, az, dx, dy, dz,
+	      kx, ky, kz, nx, ny, nz)
     E_kdn = -kn/(pow(kn,2)+pow(kdn,2))
     E_kn = kdn/(pow(kn,2)+pow(kdn,2))
     kn_knx = knx/sqrt(pow(knz,2)+pow(kny,2)+pow(knx,2))

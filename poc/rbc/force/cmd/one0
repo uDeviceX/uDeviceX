@@ -5,6 +5,37 @@ function usg() {
     exit
 }
 
+function scatter_force(   m, i, j, k, l, cnt, c) {
+    for (m = 0; m < NE; m++) {
+	i = D0[m]; j = D1[m]; k = D2[m]; l = D3[m]
+	FX[i] += FAX[m]; FY[i] += FAY[m]; FZ[i] += FAZ[m]
+	FX[j] += FBX[m]; FY[j] += FBY[m]; FZ[j] += FBZ[m]
+	FX[k] += FCX[m]; FY[k] += FCY[m]; FZ[k] += FCZ[m]
+	FX[l] += FDX[m]; FY[l] += FDY[m]; FZ[l] += FDZ[m]
+	cnt[i]++; cnt[j]++; cnt[k]++; cnt[l]++
+    }
+    for (m = 0; m < NV; m++) {
+	c = cnt[m]
+	FX[m] /= c; FY[m] /= c; FZ[m] /= c
+    }
+}
+
+function scatter_ang(   m, i, j, ang, cnt) {
+    clear(ANG_VER)
+    for (m = 0; m < NE; m++) {
+	i = E0[m]; j = E1[m]
+	ang = ANG_EDG[m]
+	ANG_VER[i] += ang; cnt[i]++
+	ANG_VER[j] += ang; cnt[j]++
+    }
+    for (m = 0; m < NV; m++) ANG_VER[m] /= cnt[m]
+}
+
+function vabs_f(   m) {
+    for (m = 0; m < NV; m++)
+	F[m] = sqrt(FX[m]^2 + FY[m]^2 + FZ[m]^2)
+}
+
 function compute_force(   m, i, j, k, l, de) {
     for (m = 0; m < NE; m++) {
 	de = ANG_EDG[m]
@@ -33,9 +64,17 @@ function compute_ang(   m, i, j, k, l) {
 
 function vabs(a, b, c) { return sqrt(a^2 + b^2 + c^2) }
 
-function write(   m) {
-    for (m = 0; m < NE; m++)
+function write_vert(   m, r) {
+    for (m = 0; m < NV; m++) {
+	r = sqrt(XX[m]^2 + YY[m]^2)
+	print r, ANG_VER[m], FX[m], FY[m], FZ[m], F[m]
+    }
+}
+
+function write_dih(   m, r) {
+    for (m = 0; m < NE; m++) {
 	print ANG_EDG[m], vabs(FAX[m], FAY[m], FAZ[m])
+    }
 }
 
 BEGIN {
@@ -51,5 +90,11 @@ BEGIN {
 
     compute_ang()
     compute_force()
-    write()
+
+    scatter_force()
+    scatter_ang()
+    vabs_f()
+
+    # write_vert()
+    write_dih()
 }
