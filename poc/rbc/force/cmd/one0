@@ -34,9 +34,9 @@ function vabs_f(   m) {
 
 function compute_force(   m, i, j, k, l, de) {
     for (m = 0; m < NE; m++) {
-	de = 1 # ANG_EDG[m]
+	de = ANG_EDG[m]
 	i = D0[m]; j = D1[m]; k = D2[m]; l = D3[m]
-	d_cos(XX[i], YY[i], ZZ[i],
+	d_ang(XX[i], YY[i], ZZ[i],
 	      XX[j], YY[j], ZZ[j],
 	      XX[k], YY[k], ZZ[k],
 	      XX[l], YY[l], ZZ[l])

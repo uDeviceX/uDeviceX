@@ -8,7 +8,7 @@ set -eu
 # $ curl https://raw.githubusercontent.com/slitvinov/uDeviceX/solid/bootstrap -o bootstrap
 # $ sh bootstrap
 
-l="atest bop clarity off ri vi udx ugeom comma"
+l="atest bop off udx comma"
 #p=https://github.com/slitvinov
 p=git@gitlab.ethz.ch:mavt-cse
 
