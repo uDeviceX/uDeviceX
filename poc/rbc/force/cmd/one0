@@ -1,0 +1,55 @@
+function ini() { prog = "main" }
+function usg() {
+    printf "%s FILE.off\n", prog | "cat >&2"
+    printf "compute dihedral forces\n" | "cat >&2"
+    exit
+}
+
+function compute_force(   m, i, j, k, l) {
+    for (m = 0; m < NE; m++) {
+	i = D0[m]; j = D1[m]; k = D2[m]; l = D3[m]
+	d_dihedral(XX[i], YY[i], ZZ[i],
+		   XX[j], YY[j], ZZ[j],
+		   XX[k], YY[k], ZZ[k],
+		   XX[l], YY[l], ZZ[l])
+	FAX[m] = DAX; FAY[m] = DAY; FAZ[m] = DAZ
+	FBX[m] = DBX; FBY[m] = DBY; FBZ[m] = DBZ
+	FCX[m] = DCX; FCY[m] = DCY; FCZ[m] = DCZ
+	FDX[m] = DDX; FDY[m] = DDY; FDZ[m] = DDZ
+    }
+}
+
+function compute_ang(   m, i, j, k, l) {
+    for (m = 0; m < NE; m++) {
+	i = D0[m]; j = D1[m]; k = D2[m]; l = D3[m]
+	dihedral_xy(XX[i], YY[i], ZZ[i],
+		    XX[j], YY[j], ZZ[j],
+		    XX[k], YY[k], ZZ[k],
+		    XX[l], YY[l], ZZ[l])
+	ANG_EDG[m] = atan2(DIHEDRAL_Y, DIHEDRAL_X)
+    }
+}
+
+function vabs(a, b, c) { return sqrt(a^2 + b^2 + c^2) }
+
+function write(   m) {
+    for (m = 0; m < NE; m++)
+	print ANG_EDG[m], vabs(FAX[m], FAY[m], FAZ[m])
+}
+
+
+BEGIN {
+    ini()
+    if (noarg()) err("needs FILE.off")
+    file = first_arg()
+    if (eq(file, "-h")) usg()
+    off_read(file)
+    to_cm()
+    to_rbc()
+    # to_r1()
+    setup()
+
+    compute_ang()
+    compute_force()
+    write()
+}
