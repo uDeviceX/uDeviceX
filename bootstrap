@@ -37,3 +37,8 @@ cd libconfig-$v
 ./configure --prefix=$P --disable-cxx
 make -j
 make install
+
+echo 'Add to .profile'
+echo
+echo "PKG_CONFIG_PATH=\$PKG_CONFIG_PATH:$P"
+echo PKG_CONFIG_PATH
