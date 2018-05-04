@@ -9,9 +9,6 @@ function build_e01(   m, i, j, k) { # sets NE, E0, E1
 	reg_e01(i, j); reg_e01(j, k); reg_e01(k, i)
     }
 }
-function dih_nxt(i, j, k,   m) {
-    NXT[i, j] = k
-}
 function build_dih(   m, i, j, k) {
     for (m = 0; m < NT; m++) {
 	i = T0[m]; j = T1[m]; k = T2[m]
