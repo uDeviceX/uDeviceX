@@ -55,6 +55,6 @@ then a="$ARGS"
 else a="$@"
 fi
 
-e "$MAXIMA" $a --batch-string "\"
+"$MAXIMA" $a --batch-string "
 $v
-batchload(\\\"$f\\\") $\""
+batchload(\"$f\") $"

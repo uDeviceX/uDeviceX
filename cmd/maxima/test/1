@@ -1,0 +1,3 @@
+# TEST: maxima.1
+s=/tmp/a
+u.maxima a:\"$s\" data/1.mac > maxima.out.txt
