@@ -150,9 +150,8 @@ function d_dihedral(ax, ay, az,
 		    kn_knx,kn_kny,kn_knz,knx,kny,knz,kx,kx_ay,kx_az,kx_by,kx_bz,kx_cy,kx_cz,
 		    ky,ky_ax,ky_az,ky_bx,ky_bz,ky_cx,ky_cz,kz,kz_ax,kz_ay,kz_bx,kz_by,kz_cx,
 		    kz_cy,nx,nx_by,nx_bz,nx_cy,nx_cz,nx_dy,nx_dz,ny,ny_bx,ny_bz,ny_cx,ny_cz,
-		    ny_dx,ny_dz,nz,nz_bx,nz_by,nz_cx,nz_cy,nz_dx,nz_dy, eps, X, Y, Z, a, b, c, d, k, n) {
+		    ny_dx,ny_dz,nz,nz_bx,nz_by,nz_cx,nz_cy,nz_dx,nz_dy, X, Y, Z, a, b, c, d, k, n) {
 
-    eps = 1e-32
     X = 0; Y = 1; Z = 2
     a[X] = ax; a[Y] = ay; a[Z] = az
     b[X] = bx; b[Y] = by; b[Z] = bz
@@ -302,13 +301,18 @@ function d_cos(ax, ay, az,
 	       E_kz,E_nn,E_nx,E_ny,E_nz,kk,kk_kx,kk_ky,
 	       kk_kz,kx,ky,ky_bx,ky_cx,kz,kz_ax,kz_ay,kz_bx,kz_by,kz_cx,kz_cy,nn,nn_nx,
 	       nn_ny,nn_nz,nx,nx_by,nx_bz,nx_cy,nx_cz,nx_dy,nx_dz,ny,ny_bx,ny_bz,ny_cx,
-	       ny_cz,ny_dx,ny_dz,nz,nz_bx,nz_by,nz_cx,nz_cy,nz_dx,nz_dy,rsq_kk,rsq_nn) {
-    kz = (bx-ax)*(cy-ay)-(by-ay)*(cx-ax)
-    ky = (bz-az)*(cx-ax)-(bx-ax)*(cz-az)
-    kx = (by-ay)*(cz-az)-(bz-az)*(cy-ay)
-    nz = (cy-by)*(dx-bx)-(cx-bx)*(dy-by)
-    ny = (cx-bx)*(dz-bz)-(cz-bz)*(dx-bx)
-    nx = (cz-bz)*(dy-by)-(cy-by)*(dz-bz)
+	       ny_cz,ny_dx,ny_dz,nz,nz_bx,nz_by,nz_cx,nz_cy,nz_dx,nz_dy,rsq_kk,rsq_nn,
+	       X, Y, Z, a, b, c, d) {
+    X = 0; Y = 1; Z = 2
+    a[X] = ax; a[Y] = ay; a[Z] = az
+    b[X] = bx; b[Y] = by; b[Z] = bz
+    c[X] = cx; c[Y] = cy; c[Z] = cz
+    d[X] = dx; d[Y] = dy; d[Z] = dz
+    tri_normal(a, b, c)
+    kx = NX; ky = NY; kz = NZ
+    tri_normal(c, b, d)
+    nx = NX; ny = NY; nz = NZ
+
     nn = pow(nz,2)+pow(ny,2)+pow(nx,2)
     kk = pow(kz,2)+pow(ky,2)+pow(kx,2)
     rsq = 1/sqrt(kk*nn)

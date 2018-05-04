@@ -8,10 +8,10 @@ function usg() {
 function compute_force(   m, i, j, k, l) {
     for (m = 0; m < NE; m++) {
 	i = D0[m]; j = D1[m]; k = D2[m]; l = D3[m]
-	d_dihedral(XX[i], YY[i], ZZ[i],
-		   XX[j], YY[j], ZZ[j],
-		   XX[k], YY[k], ZZ[k],
-		   XX[l], YY[l], ZZ[l])
+	d_cos(XX[i], YY[i], ZZ[i],
+	      XX[j], YY[j], ZZ[j],
+	      XX[k], YY[k], ZZ[k],
+	      XX[l], YY[l], ZZ[l])
 	FAX[m] = DAX; FAY[m] = DAY; FAZ[m] = DAZ
 	FBX[m] = DBX; FBY[m] = DBY; FBZ[m] = DBZ
 	FCX[m] = DCX; FCY[m] = DCY; FCZ[m] = DCZ
@@ -36,7 +36,6 @@ function write(   m) {
     for (m = 0; m < NE; m++)
 	print ANG_EDG[m], vabs(FAX[m], FAY[m], FAZ[m])
 }
-
 
 BEGIN {
     ini()
