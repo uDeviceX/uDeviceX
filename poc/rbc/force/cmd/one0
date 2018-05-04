@@ -14,10 +14,6 @@ function scatter_force(   m, i, j, k, l, cnt, c) {
 	FX[l] += FDX[m]; FY[l] += FDY[m]; FZ[l] += FDZ[m]
 	cnt[i]++; cnt[j]++; cnt[k]++; cnt[l]++
     }
-    for (m = 0; m < NV; m++) {
-	c = cnt[m]
-	FX[m] /= c; FY[m] /= c; FZ[m] /= c
-    }
 }
 
 function scatter_ang(   m, i, j, ang, cnt) {
@@ -38,9 +34,9 @@ function vabs_f(   m) {
 
 function compute_force(   m, i, j, k, l, de) {
     for (m = 0; m < NE; m++) {
-	de = ANG_EDG[m]
+	de = 1 # ANG_EDG[m]
 	i = D0[m]; j = D1[m]; k = D2[m]; l = D3[m]
-	d_ang(XX[i], YY[i], ZZ[i],
+	d_cos(XX[i], YY[i], ZZ[i],
 	      XX[j], YY[j], ZZ[j],
 	      XX[k], YY[k], ZZ[k],
 	      XX[l], YY[l], ZZ[l])
@@ -95,6 +91,6 @@ BEGIN {
     scatter_ang()
     vabs_f()
 
-    # write_vert()
-    write_dih()
+    write_vert()
+    # write_dih()
 }

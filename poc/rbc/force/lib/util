@@ -14,5 +14,4 @@ function copy(from, to,   key, val) {
 	to[key] = val
     }
 }
-
 function copy_sign(a, b) { return b >= 0 ? abs(a) : -abs(a) }
