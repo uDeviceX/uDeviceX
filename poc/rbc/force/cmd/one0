@@ -5,17 +5,18 @@ function usg() {
     exit
 }
 
-function compute_force(   m, i, j, k, l) {
+function compute_force(   m, i, j, k, l, de) {
     for (m = 0; m < NE; m++) {
+	de = ANG_EDG[m]
 	i = D0[m]; j = D1[m]; k = D2[m]; l = D3[m]
-	d_cos(XX[i], YY[i], ZZ[i],
+	d_ang(XX[i], YY[i], ZZ[i],
 	      XX[j], YY[j], ZZ[j],
 	      XX[k], YY[k], ZZ[k],
 	      XX[l], YY[l], ZZ[l])
-	FAX[m] = DAX; FAY[m] = DAY; FAZ[m] = DAZ
-	FBX[m] = DBX; FBY[m] = DBY; FBZ[m] = DBZ
-	FCX[m] = DCX; FCY[m] = DCY; FCZ[m] = DCZ
-	FDX[m] = DDX; FDY[m] = DDY; FDZ[m] = DDZ
+	FAX[m] = de*DAX; FAY[m] = de*DAY; FAZ[m] = de*DAZ
+	FBX[m] = de*DBX; FBY[m] = de*DBY; FBZ[m] = de*DBZ
+	FCX[m] = de*DCX; FCY[m] = de*DCY; FCZ[m] = de*DCZ
+	FDX[m] = de*DDX; FDY[m] = de*DDY; FDZ[m] = de*DDZ
     }
 }
 

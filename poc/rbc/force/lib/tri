@@ -140,18 +140,17 @@ function sign(kn, ax, ay, az, dx, dy, dz,
     return copy_sign(kn, s)
 }
 
-function d_dihedral(ax, ay, az,
-		    bx, by, bz,
-		    cx, cy, cz,
-		    dx, dy, dz,
+function d_ang(ax, ay, az,
+	       bx, by, bz,
+	       cx, cy, cz,
+	       dx, dy, dz,
 #
-		    E_ax,E_ay,E_az,E_bx,E_by,E_bz,E_cx,E_cy,E_cz,E_dx,E_dy,E_dz,E_kdn,E_kn,E_knx,
-		    E_kny,E_knz,E_kx,E_ky,E_kz,E_nx,E_ny,E_nz,
-		    kn_knx,kn_kny,kn_knz,knx,kny,knz,kx,kx_ay,kx_az,kx_by,kx_bz,kx_cy,kx_cz,
-		    ky,ky_ax,ky_az,ky_bx,ky_bz,ky_cx,ky_cz,kz,kz_ax,kz_ay,kz_bx,kz_by,kz_cx,
-		    kz_cy,nx,nx_by,nx_bz,nx_cy,nx_cz,nx_dy,nx_dz,ny,ny_bx,ny_bz,ny_cx,ny_cz,
-		    ny_dx,ny_dz,nz,nz_bx,nz_by,nz_cx,nz_cy,nz_dx,nz_dy, X, Y, Z, a, b, c, d, k, n) {
-
+	       E_ax,E_ay,E_az,E_bx,E_by,E_bz,E_cx,E_cy,E_cz,E_dx,E_dy,E_dz,E_kdn,E_kn,E_knx,
+	       E_kny,E_knz,E_kx,E_ky,E_kz,E_nx,E_ny,E_nz,
+	       kn_knx,kn_kny,kn_knz,knx,kny,knz,kx,kx_ay,kx_az,kx_by,kx_bz,kx_cy,kx_cz,
+	       ky,ky_ax,ky_az,ky_bx,ky_bz,ky_cx,ky_cz,kz,kz_ax,kz_ay,kz_bx,kz_by,kz_cx,
+	       kz_cy,nx,nx_by,nx_bz,nx_cy,nx_cz,nx_dy,nx_dz,ny,ny_bx,ny_bz,ny_cx,ny_cz,
+	       ny_dx,ny_dz,nz,nz_bx,nz_by,nz_cx,nz_cy,nz_dx,nz_dy, X, Y, Z, a, b, c, d, k, n) {
     X = 0; Y = 1; Z = 2
     a[X] = ax; a[Y] = ay; a[Z] = az
     b[X] = bx; b[Y] = by; b[Z] = bz
@@ -168,15 +167,11 @@ function d_dihedral(ax, ay, az,
     knz = kx*ny-ky*nx
     kny = kz*nx-kx*nz
     knx = ky*nz-kz*ny
-
     kn = sqrt(pow(knz,2)+pow(kny,2)+pow(knx,2))
-    kn = sign(kn,
-	      ax, ay, az, dx, dy, dz,
-	      kx, ky, kz, nx, ny, nz)
-    E_k = -(2*kn*n)/(pow(k*n+kdn,2)+pow(kn,2))
-    E_kdn = -(2*kn)/(pow(k*n+kdn,2)+pow(kn,2))
-    E_kn = (2*(k*n+kdn))/(pow(k*n+kdn,2)+pow(kn,2))
-    E_n = -(2*k*kn)/(pow(k*n+kdn,2)+pow(kn,2))
+#    kn = sign(kn, ax, ay, az, dx, dy, dz,
+#	      kx, ky, kz, nx, ny, nz)
+    E_kdn = -kn/(pow(kn,2)+pow(kdn,2))
+    E_kn = kdn/(pow(kn,2)+pow(kdn,2))
     kn_knx = knx/sqrt(pow(knz,2)+pow(kny,2)+pow(knx,2))
     kn_kny = kny/sqrt(pow(knz,2)+pow(kny,2)+pow(knx,2))
     kn_knz = knz/sqrt(pow(knz,2)+pow(kny,2)+pow(knx,2))

@@ -24,7 +24,7 @@ kdn: dot(['kx, 'ky, 'kz], ['nx, 'ny, 'nz]) ;
 n  : vabs(['nx, 'ny, 'nz]);
 k  : vabs(['kx, 'ky, 'kz]);
 
-E: 2*atan2('kn, 'kdn + 'k * 'n);
+E: atan2('kn, 'kdn);
 
 [E, V, T]: g(
   ['E ,  E,   sl(E)],

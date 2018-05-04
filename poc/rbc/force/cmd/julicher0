@@ -9,10 +9,10 @@ function d_compute_ang(   m, i, j, k, l, de) {
     for (m = 0; m < NE; m++) {
 	de = dE_ang[i]
 	i = D0[m]; j = D1[m]; k = D2[m]; l = D3[m]
-	d_dihedral(XX[i], YY[i], ZZ[i],
-		   XX[j], YY[j], ZZ[j],
-		   XX[k], YY[k], ZZ[k],
-		   XX[l], YY[l], ZZ[l])
+	d_ang(XX[i], YY[i], ZZ[i],
+	      XX[j], YY[j], ZZ[j],
+	      XX[k], YY[k], ZZ[k],
+	      XX[l], YY[l], ZZ[l])
 	FX[i] += de*DAX; FY[i] += de*DAY; FZ[i] += de*DAZ
 	FX[j] += de*DBX; FY[j] += de*DBY; FZ[j] += de*DBZ
 	FX[k] += de*DCX; FY[k] += de*DCY; FZ[k] += de*DCZ
@@ -93,13 +93,12 @@ function scatter_curv(   m, i, j, curv, len, ang) {
     }
 }
 
-function d_scatter_curv(   m, i, j, curv, len, ang) {
+function d_scatter_curv(   m, i, j, len, ang) {
     clear(dE_ang); clear(dE_len)
     for (m = 0; m < NE; m++) {
 	i = E0[m]; j = E1[m]
 	len = LEN[m]
 	ang = ANG_EDG[m]
-	curv = len*ang/4
 	dE_ang[m] += dE_curv[i]/2 * len/4
 	dE_ang[m] += dE_curv[j]/2 * len/4
 	dE_len[m] += dE_curv[i]/2 * ang/4
