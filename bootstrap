@@ -11,6 +11,7 @@ set -eu
 l="atest bop off udx comma"
 #p=https://github.com/slitvinov
 p=git@gitlab.ethz.ch:mavt-cse
+P=${HOME}/prefix/libconfig
 
 pull0()    ( cd0 "$d" && cmd git pull )
 install0() ( cd0 "$d" && cmd make install )
@@ -28,3 +29,11 @@ cd0()      { msg ": cd $1"; cd "$1"; }
 
 for d in $l; do cloned; done
 for d in $l; do installd; done
+
+v=1.7.1
+wget https://hyperrealm.github.io/libconfig/dist/libconfig-$v.tar.gz
+tar zxvf libconfig-$v.tar.gz
+cd libconfig-$v
+./configure --prefix=$P --disable-cxx
+make -j
+make install
