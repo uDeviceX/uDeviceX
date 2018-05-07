@@ -5,6 +5,14 @@ function usg() {
     exit
 }
 
+function compute_phi(    z, r, m) {
+    for (m = 0; m < NV; m++) {
+	r = sqrt(XX[m]^2 + YY[m]^2 + ZZ[m]^2)
+	z = abs(ZZ[m])
+	PHI[m] = acos(z/r)
+    }
+}
+
 function compute_area(   m, i, j, k) {
     for (m = 0; m < NT; m++) {
 	i = T0[m]; j = T1[m]; k = T2[m]
@@ -160,7 +168,7 @@ function compute_e(   m, num, den) {
 function write_vert(   m, r) {
     for (m = 0; m < NV; m++) {
 	r = sqrt(XX[m]^2 + YY[m]^2)
-	print r, GOMPPER[m], FX[m], FY[m], FZ[m], dE_T[m]
+	print r, PHI[m], GOMPPER[m], FX[m], FY[m], FZ[m], AREA_VER[m]
     }
 }
 
@@ -188,6 +196,7 @@ BEGIN {
     d_compute_cotangent()
     d_compute_edg_len()
 
+    compute_phi()
     compute_area()
     scatter_area()
 

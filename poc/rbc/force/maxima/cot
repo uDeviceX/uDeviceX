@@ -7,14 +7,14 @@ a: [ax, ay, az] $
 b: [bx, by, bz] $
 c: [cx, cy, cz] $
 
-ab: b - a $
-ac: c - a $
+ac: a - c $
+bc: b - c $
 
-[kx, ky, kz]: cross(ab, ac) $
+[kx, ky, kz]: cross(ac, bc) $
 kk: dot(['kx, 'ky, 'kz], ['kx, 'ky, 'kz]);
 Area: 'kk/2;
 y : Area;
-x : dot(ab, ac);
+x : dot(ac, bc);
 E : x/y;
 
 [E, V, T]: g(

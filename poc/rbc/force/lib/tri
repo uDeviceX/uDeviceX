@@ -420,20 +420,20 @@ function d_cot(ax, ay, az, bx, by, bz, cx, cy, cz,
 	       E_ax,E_ay,E_az,E_bx,E_by,E_bz,E_cx,E_cy,E_cz,E_kk,E_kx,E_ky,E_kz,
 	       kk_kx,kk_ky,kk_kz,kx,kx_ay,kx_az,kx_by,kx_bz,kx_cy,kx_cz,ky,
 	       ky_ax,ky_az,ky_bx,ky_bz,ky_cx,ky_cz,kz,kz_ax,kz_ay,kz_bx,kz_by,kz_cx,kz_cy) {
-    kz = (bx-ax)*(cy-ay)-(by-ay)*(cx-ax)
-    ky = (bz-az)*(cx-ax)-(bx-ax)*(cz-az)
-    kx = (by-ay)*(cz-az)-(bz-az)*(cy-ay)
+    kz = (ax-cx)*(by-cy)-(bx-cx)*(ay-cy)
+    ky = (bx-cx)*(az-cz)-(ax-cx)*(bz-cz)
+    kx = (ay-cy)*(bz-cz)-(by-cy)*(az-cz)
     kk = pow(kz,2)+pow(ky,2)+pow(kx,2)
-    E_ax = (2*((-cx)-bx+2*ax))/kk
-    E_ay = (2*((-cy)-by+2*ay))/kk
-    E_az = (2*((-cz)-bz+2*az))/kk
-    E_bx = (2*(cx-ax))/kk
-    E_by = (2*(cy-ay))/kk
-    E_bz = (2*(cz-az))/kk
-    E_cx = (2*(bx-ax))/kk
-    E_cy = (2*(by-ay))/kk
-    E_cz = (2*(bz-az))/kk
-    E_kk = -(2*((bz-az)*(cz-az)+(by-ay)*(cy-ay)+(bx-ax)*(cx-ax)))/pow(kk,2)
+    E_ax = (2*(bx-cx))/kk
+    E_ay = (2*(by-cy))/kk
+    E_az = (2*(bz-cz))/kk
+    E_bx = (2*(ax-cx))/kk
+    E_by = (2*(ay-cy))/kk
+    E_bz = (2*(az-cz))/kk
+    E_cx = (2*(2*cx-bx-ax))/kk
+    E_cy = (2*(2*cy-by-ay))/kk
+    E_cz = (2*(2*cz-bz-az))/kk
+    E_kk = -(2*((az-cz)*(bz-cz)+(ay-cy)*(by-cy)+(ax-cx)*(bx-cx)))/pow(kk,2)
     kk_kx = 2*kx
     kk_ky = 2*ky
     kk_kz = 2*kz
