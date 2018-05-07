@@ -5,6 +5,25 @@ function usg() {
     exit
 }
 
+function compute_area(   m, i, j, k) {
+    for (m = 0; m < NT; m++) {
+	i = T0[m]; j = T1[m]; k = T2[m]
+	AREA_TRI[m] = area(XX[i], YY[i], ZZ[i],
+			   XX[j], YY[j], ZZ[j],
+			   XX[k], YY[k], ZZ[k])
+    }
+}
+
+function scatter_area(    m, i, j, k, A) {
+    clear(AREA_VER)
+    for (m = 0; m < NT; m++) {
+	i = T0[m]; j = T1[m]; k = T2[m]; A = AREA_TRI[m]
+	AREA_VER[i] += A/3
+	AREA_VER[j] += A/3
+	AREA_VER[k] += A/3
+    }
+}
+
 function compute_edg_len(   m, i, j) {
     for (m = 0; m < NE; m++) {
 	i = E0[m]; j = E1[m]
@@ -61,27 +80,7 @@ function compute_e(   m, num, den) {
 function write_vert(   m, r) {
     for (m = 0; m < NV; m++) {
 	r = sqrt(XX[m]^2 + YY[m]^2)
-	print r, GOMPPER[m]
-    }
-}
-
-function write_edg(   m, i, j, x, y, r) {
-    for (m = 0; m < NE; m++) {
-	i = E0[m]; j = E1[m]
-	x = (XX[i] + XX[j])/2
-	y = (YY[i] + YY[j])/2
-	r = sqrt(x^2 + y^2)
-	print r, COT0[m], COT1[m]
-    }
-}
-
-function write_tri(   m, i, j, k, x, y, r) {
-    for (m = 0; m < NT; m++) {
-	i = T0[m]; j = T1[m]; k = T1[m]
-	x = (XX[i] + XX[j] + XX[k])/3
-	y = (YY[i] + YY[j] + YY[k])/3
-	r = sqrt(x^2 + y^2)
-	print r, E_TRI[m], FX_TRI[m], FY_TRI[m], FZ_TRI[m], F_TRI[m]
+	print r, GOMPPER[m], AREA_VER[m]
     }
 }
 
@@ -102,7 +101,8 @@ BEGIN {
     compute_xt()
     compute_e()
 
+    compute_area()
+    scatter_area()
+
     write_vert()
-    # write_edg()
-    # write_tri()
 }
