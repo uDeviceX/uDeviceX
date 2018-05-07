@@ -10,7 +10,6 @@
 #include "utils/os.h"
 
 #include "d/api.h"
-#include "d/ker.h"
 
 #include "coords/ini.h"
 #include "coords/imp.h"
@@ -22,13 +21,9 @@
 #include "utils/imp.h"
 #include "utils/cc.h"
 #include "utils/mc.h"
-#include "utils/nvtx/imp.h"
 
 #include "inc/type.h"
 #include "inc/dev.h"
-
-#include "utils/texo.h"
-#include "algo/scan/imp.h"
 
 #include "pair/imp.h"
 #include "struct/parray/imp.h"
@@ -36,7 +31,6 @@
 #include "struct/pfarrays/imp.h"
 #include "struct/partlist/type.h"
 
-#include "io/mesh/imp.h"
 #include "io/diag/part/imp.h"
 #include "grid_sampler/imp.h"
 
