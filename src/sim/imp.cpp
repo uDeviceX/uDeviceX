@@ -1,7 +1,9 @@
+#include <stdlib.h>
 #include <assert.h>
 #include <mpi.h>
+#include <vector_types.h>
+
 #include <conf.h>
-#include <curand_kernel.h>
 #include "inc/conf.h"
 
 #include "conf/imp.h"
