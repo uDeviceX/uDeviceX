@@ -41,7 +41,9 @@ _S_ void ini_denoutflow(const Coords *c, int maxp, const Config *cfg, DCont **d,
 
 _S_ void ini_inflow(const Coords *coords, int3 L, const Config *cfg, Inflow **i) {
     /* number of cells */
-    int2 nc = make_int2(L.y, L.z/2);
+    int2 nc;
+    nc.x = L.y;
+    nc.y = L.z/2;
     UC(inflow_ini(nc, /**/ i));
     UC(inflow_ini_params_conf(coords, cfg, *i));
     UC(inflow_ini_velocity(*i));

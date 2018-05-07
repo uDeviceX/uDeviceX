@@ -27,7 +27,7 @@ _I_ void log_vcont(long id, const Vcon *c) {
 /* set colors of particles according to the RBCs */
 
 _I_ void recolor_flux(const Coords *c, const Recolorer *opt, Flu *f) {
-    int3 L = make_int3(xs(c), ys(c), zs(c));
+    int3 L = subdomain(c);
     if (opt->flux_active)
         UC(color_linear_flux(c, L, opt->flux_dir, RED_COLOR, f->q.n, f->q.pp, /**/ f->q.cc));
 }
