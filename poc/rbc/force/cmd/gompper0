@@ -56,7 +56,7 @@ function compute_l2t(   m, i, j, k, l, e) {
     }
 }
 
-function compute_xt(   m, i, j, k, l, dx, dy, dz, e) {
+function compute_xt(   m, i, j, k, l, dx, dy, dz) {
     clear(XT); clear(YT); clear(ZT)
     for (m = 0; m < NE; m++) {
 	i = D0[m]; j = D1[m]; k = D2[m]; l = D3[m]
@@ -66,6 +66,27 @@ function compute_xt(   m, i, j, k, l, dx, dy, dz, e) {
 	dx *= T[m]; dy *= T[m]; dz *= T[m]
 	XT[j] += dx; YT[j] += dy; ZT[j] += dz
 	XT[k] -= dx; YT[k] -= dy; ZT[k] -= dz
+    }
+}
+
+function d_compute_xt(   m, i, j, k, l, dx, dy, dz, de) {
+    for (m = 0; m < NE; m++) {
+	i = D0[m]; j = D1[m]; k = D2[m]; l = D3[m]
+	dx = XX[j] - XX[k]
+	dy = YY[j] - YY[k]
+	dz = ZZ[j] - ZZ[k]
+
+	dE_T[m] += dx*(dE_xt[j] - dE_xt[k])
+	de  = T[m]*(dE_xt[j] - dE_xt[k])
+	FX[j] += de; FX[k] -= de
+
+	dE_T[m] += dy*(dE_yt[j] - dE_yt[k])
+	de  = T[m]*(dE_yt[j] - dE_yt[k])
+	FY[j] += de; FY[k] -= de
+
+	dE_T[m] += dz*(dE_zt[j] - dE_zt[k])
+	de  = T[m]*(dE_zt[j] - dE_zt[k])
+	FZ[j] += de; FZ[k] -= de
     }
 }
 
@@ -92,8 +113,7 @@ function compute_e(   m, num, den) {
 function write_vert(   m, r) {
     for (m = 0; m < NV; m++) {
 	r = sqrt(XX[m]^2 + YY[m]^2)
-	print r, GOMPPER[m], dE_l2t[m],
-	    dE_xt[m], dE_yt[m], dE_zt[m]
+	print r, GOMPPER[m], FX[m], FY[m], FZ[m], dE_T[m]
     }
 }
 
@@ -114,7 +134,9 @@ BEGIN {
     compute_xt()
     compute_e()
 
+    clear(FX); clear(FY); clear(FZ)
     d_compute_e()
+    d_compute_xt()
 
     compute_area()
     scatter_area()
