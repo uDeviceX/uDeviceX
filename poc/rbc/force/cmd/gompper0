@@ -69,6 +69,18 @@ function compute_xt(   m, i, j, k, l, dx, dy, dz, e) {
     }
 }
 
+function d_compute_e(   m, num, den) {
+    for (m = 0; m < NV; m++) {
+	num = XT[m]^2 + YT[m]^2 + ZT[m]^2
+	den = L2T[m]
+	# GOMPPER[m] = 2 * num / den
+	dE_l2t[m] = - 2 * num   / den^2
+	dE_xt[m]  =   4 * XT[m] / den
+	dE_yt[m]  =   4 * YT[m] / den
+	dE_zt[m]  =   4 * ZT[m] / den
+    }
+}
+
 function compute_e(   m, num, den) {
     for (m = 0; m < NV; m++) {
 	num = XT[m]^2 + YT[m]^2 + ZT[m]^2
@@ -80,7 +92,8 @@ function compute_e(   m, num, den) {
 function write_vert(   m, r) {
     for (m = 0; m < NV; m++) {
 	r = sqrt(XX[m]^2 + YY[m]^2)
-	print r, GOMPPER[m], AREA_VER[m]
+	print r, GOMPPER[m], dE_l2t[m],
+	    dE_xt[m], dE_yt[m], dE_zt[m]
     }
 }
 
@@ -100,6 +113,8 @@ BEGIN {
     compute_l2t()
     compute_xt()
     compute_e()
+
+    d_compute_e()
 
     compute_area()
     scatter_area()
