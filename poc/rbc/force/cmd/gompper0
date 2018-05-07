@@ -5,13 +5,31 @@ function usg() {
     exit
 }
 
+function compute_area(   m, i, j, k) {
+    for (m = 0; m < NT; m++) {
+	i = T0[m]; j = T1[m]; k = T2[m]
+	AREA_TRI[m] = area(XX[i], YY[i], ZZ[i],
+			   XX[j], YY[j], ZZ[j],
+			   XX[k], YY[k], ZZ[k])
+    }
+}
+
+function scatter_area(    m, i, j, k, A) {
+    clear(AREA_VER)
+    for (m = 0; m < NT; m++) {
+	i = T0[m]; j = T1[m]; k = T2[m]; A = AREA_TRI[m]
+	AREA_VER[i] += A/3
+	AREA_VER[j] += A/3
+	AREA_VER[k] += A/3
+    }
+}
+
 function cot(i, j, k) {
     ang_xy(XX[i], YY[i], ZZ[i],
 	   XX[j], YY[j], ZZ[j],
 	   XX[k], YY[k], ZZ[k])
     return ANG_X/ANG_Y
 }
-
 function compute_cotangent(   m, i, j, k, l) {
     for (m = 0; m < NE; m++) {
 	i = D0[m]; j = D1[m]; k = D2[m]; l = D3[m]
@@ -23,7 +41,7 @@ function compute_cotangent(   m, i, j, k, l) {
 function write_vert(   m, r) {
     for (m = 0; m < NV; m++) {
 	r = sqrt(XX[m]^2 + YY[m]^2)
-	print r, E[m], FX[m], FY[m], FZ[m], F[m], AREA_VER[m]
+	print r, AREA_VER[m]
     }
 }
 
@@ -58,9 +76,11 @@ BEGIN {
     # to_r1()
     setup()
 
+    compute_area()
+    scatter_area()    
     compute_cotangent()
 
-    # write_vert()
-    write_edg()
+    write_vert()
+    # write_edg()
     # write_tri()
 }
