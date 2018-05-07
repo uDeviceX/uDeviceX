@@ -11,38 +11,21 @@ ab: b - a $
 ac: c - a $
 
 [kx, ky, kz]: cross(ab, ac) $
-[nx, ny, nz]: cross(bd, bc) $
-[knx, kny, knz]: cross(['kx, 'ky, 'kz], ['nx, 'ny, 'nz]) $
-kn: vabs(['knx, 'kny, 'knz]) $
-
-kk: dot(['kx, 'ky, 'kz], ['kx, 'ky, 'kz]) $
-nn: dot(['nx, 'ny, 'nz], ['nx, 'ny, 'nz]) $
-
-rsq: 1/sqrt('kk * 'nn); /* TODO: */
-E: 'kn * 'rsq;
+kk: dot(['kx, 'ky, 'kz], ['kx, 'ky, 'kz]);
+Area: 'kk/2;
+y : Area;
+x : dot(ab, ac);
+E : x/y;
 
 [E, V, T]: g(
   ['E ,  E,   sl(E)],
-  ['kn,  kn,  sl(kn)],
-  ['rsq, rsq, sl(rsq)],
-
-  ['knx, knx, sl(knx)],
-  ['kny, kny, sl(kny)],
-  ['knz, knz, sl(knz)],
-
-  ['kk, kk, sl(kk)],
-  ['nn, nn, sl(nn)],
-
-  ['nx, nx, sl(nx)],
-  ['ny, ny, sl(ny)],
-  ['nz, nz, sl(nz)],
+  
+  ['kk, kk,   sl(kk)],
+  
   ['kx, kx, sl(kx)],
   ['ky, ky, sl(ky)],
   ['kz, kz, sl(kz)]) $
 
 [E, V, T]: rm(
-  E, V, T,
-  'E_kn, 'E_rsq,
-  'knx_ky, 'knx_kz, 'knx_ny, 'knx_nz, 'kny_kx, 'kny_kz, 'kny_nx, 'kny_nz, 'knz_kx, 'knz_ky, 'knz_nx, 'knz_ny
-  ) $
-with_stdout("sin.c", fmt0(E, V, T));
+  E, V, T) $
+with_stdout("cot.c", fmt0(E, V, T));

@@ -414,3 +414,70 @@ function d_cos(ax, ay, az,
     DCX = E_cx; DCY = E_cy; DCZ = E_cz
     DDX = E_dx; DDY = E_dy; DDZ = E_dz
 }
+
+function d_cot(ax, ay, az, bx, by, bz, cx, cy, cz,
+	       #
+	       E_ax,E_ay,E_az,E_bx,E_by,E_bz,E_cx,E_cy,E_cz,E_kk,E_kx,E_ky,E_kz,
+	       kk_kx,kk_ky,kk_kz,kx,kx_ay,kx_az,kx_by,kx_bz,kx_cy,kx_cz,ky,
+	       ky_ax,ky_az,ky_bx,ky_bz,ky_cx,ky_cz,kz,kz_ax,kz_ay,kz_bx,kz_by,kz_cx,kz_cy) {
+    kz = (bx-ax)*(cy-ay)-(by-ay)*(cx-ax)
+    ky = (bz-az)*(cx-ax)-(bx-ax)*(cz-az)
+    kx = (by-ay)*(cz-az)-(bz-az)*(cy-ay)
+    kk = pow(kz,2)+pow(ky,2)+pow(kx,2)
+    E_ax = (2*((-cx)-bx+2*ax))/kk
+    E_ay = (2*((-cy)-by+2*ay))/kk
+    E_az = (2*((-cz)-bz+2*az))/kk
+    E_bx = (2*(cx-ax))/kk
+    E_by = (2*(cy-ay))/kk
+    E_bz = (2*(cz-az))/kk
+    E_cx = (2*(bx-ax))/kk
+    E_cy = (2*(by-ay))/kk
+    E_cz = (2*(bz-az))/kk
+    E_kk = -(2*((bz-az)*(cz-az)+(by-ay)*(cy-ay)+(bx-ax)*(cx-ax)))/pow(kk,2)
+    kk_kx = 2*kx
+    kk_ky = 2*ky
+    kk_kz = 2*kz
+    E_kx = E_kk*kk_kx
+    E_ky = E_kk*kk_ky
+    E_kz = E_kk*kk_kz
+    kx_ay = bz-cz
+    kx_az = cy-by
+    kx_by = cz-az
+    kx_bz = ay-cy
+    kx_cy = az-bz
+    kx_cz = by-ay
+    E_ay += E_kx*kx_ay
+    E_az += E_kx*kx_az
+    E_by += E_kx*kx_by
+    E_bz += E_kx*kx_bz
+    E_cy += E_kx*kx_cy
+    E_cz += E_kx*kx_cz
+    ky_ax = cz-bz
+    ky_az = bx-cx
+    ky_bx = az-cz
+    ky_bz = cx-ax
+    ky_cx = bz-az
+    ky_cz = ax-bx
+    E_ax += E_ky*ky_ax
+    E_az += E_ky*ky_az
+    E_bx += E_ky*ky_bx
+    E_bz += E_ky*ky_bz
+    E_cx += E_ky*ky_cx
+    E_cz += E_ky*ky_cz
+    kz_ax = by-cy
+    kz_ay = cx-bx
+    kz_bx = cy-ay
+    kz_by = ax-cx
+    kz_cx = ay-by
+    kz_cy = bx-ax
+    E_ax += E_kz*kz_ax
+    E_ay += E_kz*kz_ay
+    E_bx += E_kz*kz_bx
+    E_by += E_kz*kz_by
+    E_cx += E_kz*kz_cx
+    E_cy += E_kz*kz_cy
+
+    DAX = E_ax; DAY = E_ay; DAZ = E_az
+    DBX = E_bx; DBY = E_by; DBZ = E_bz
+    DCX = E_cx; DCY = E_cy; DCZ = E_cz
+}
