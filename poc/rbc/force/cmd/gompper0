@@ -5,22 +5,11 @@ function usg() {
     exit
 }
 
-function compute_area(   m, i, j, k) {
-    for (m = 0; m < NT; m++) {
-	i = T0[m]; j = T1[m]; k = T2[m]
-	AREA_TRI[m] = area(XX[i], YY[i], ZZ[i],
-			   XX[j], YY[j], ZZ[j],
-			   XX[k], YY[k], ZZ[k])
-    }
-}
-
-function scatter_area(    m, i, j, k, A) {
-    clear(AREA_VER)
-    for (m = 0; m < NT; m++) {
-	i = T0[m]; j = T1[m]; k = T2[m]; A = AREA_TRI[m]
-	AREA_VER[i] += A/3
-	AREA_VER[j] += A/3
-	AREA_VER[k] += A/3
+function compute_edg_len(   m, i, j) {
+    for (m = 0; m < NE; m++) {
+	i = E0[m]; j = E1[m]
+	LEN[m] = dist(XX[i], YY[i], ZZ[i],
+		      XX[j], YY[j], ZZ[j])
     }
 }
 
@@ -30,18 +19,28 @@ function cot(i, j, k) {
 	   XX[k], YY[k], ZZ[k])
     return ANG_X/ANG_Y
 }
-function compute_cotangent(   m, i, j, k, l) {
+function compute_cotangent(   m, i, j, k, l, ca, cb) {
     for (m = 0; m < NE; m++) {
 	i = D0[m]; j = D1[m]; k = D2[m]; l = D3[m]
-	COT0[m] = cot(j, k, i)
-	COT1[m] = cot(k, j, l)
+	ca = cot(j, k, i)
+	cb = cot(k, j, l)
+	COT0[m] = ca; COT1[m] = cb; T[m] = ca + cb
+    }
+}
+
+function compute_l2t(   m, i, j, k, l, e) {
+    clear(L2T)
+    for (m = 0; m < NE; m++) {
+	i = D0[m]; j = D1[m]; k = D2[m]; l = D3[m]
+	e = LEN[m]^2 * T[m]
+	L2T[i] += e; L2T[l] += e
     }
 }
 
 function write_vert(   m, r) {
     for (m = 0; m < NV; m++) {
 	r = sqrt(XX[m]^2 + YY[m]^2)
-	print r, AREA_VER[m]
+	print r, L2T[m]
     }
 }
 
@@ -76,9 +75,9 @@ BEGIN {
     # to_r1()
     setup()
 
-    compute_area()
-    scatter_area()    
+    compute_edg_len()
     compute_cotangent()
+    compute_l2t()
 
     write_vert()
     # write_edg()
