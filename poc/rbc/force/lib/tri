@@ -51,6 +51,18 @@ function orient3d(a, b, c, d,   ax, bx, cx,   X, Y, Z) {
 	cx*(ay*bz - az*by)
 }
 
+function ang_xy(ax, ay, az,
+		bx, by, bz,
+		cx, cy, cz,
+		#
+		rx, ry, rz, sx, sy, sz, A) {
+    rx = ax - cx; ry = ay - cy; rz = az - cz
+    sx = bx - cx; sy = by - cy; sz = bz - cz
+
+    ANG_Y = area(ax, ay, az, bx, by, bz, cx, cy, cz)
+    ANG_X = rx*sx + ry*sy + rz*sz
+}
+
 function dihedral_xy(ax, ay, az,
 		     bx, by, bz,
 		     cx, cy, cz,
