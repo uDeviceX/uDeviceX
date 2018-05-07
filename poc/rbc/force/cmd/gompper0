@@ -47,12 +47,23 @@ function compute_cotangent(   m, i, j, k, l, ca, cb) {
     }
 }
 
-function compute_l2t(   m, i, j, k, l, e) {
+function compute_l2t(   m, j, k, e) {
     clear(L2T)
     for (m = 0; m < NE; m++) {
-	i = D0[m]; j = D1[m]; k = D2[m]; l = D3[m]
+	j = D1[m]; k = D2[m]
 	e = LEN[m]^2 * T[m]
 	L2T[j] += e; L2T[k] += e
+    }
+}
+
+function d_compute_l2t(   m, j, k, e) {
+    for (m = 0; m < NE; m++) {
+	j = D1[m]; k = D2[m]
+	e = LEN[m]^2*T[m]
+	L2T[j] += e; L2T[k] += e
+
+	dE_len[m] += 2*LEN[m]*T[m]*(dE_l2t[j] + dE_l2t[k])
+	dE_T[m]   += LEN[m]^2 * (dE_l2t[j] + dE_l2t[k])
     }
 }
 
@@ -137,6 +148,7 @@ BEGIN {
     clear(FX); clear(FY); clear(FZ)
     d_compute_e()
     d_compute_xt()
+    d_compute_l2t()
 
     compute_area()
     scatter_area()
