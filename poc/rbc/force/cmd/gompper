@@ -3,8 +3,8 @@
 : ${AWK=awk}
 : ${PREFIX=.}
 
-prog=julicher
-prog0=julicher0
+prog=gompper
+prog0=gompper0
 err () {
     echo >&2 "$prog: $@"
     exit 2
