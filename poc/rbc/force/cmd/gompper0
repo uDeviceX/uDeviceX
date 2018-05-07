@@ -31,6 +31,21 @@ function compute_edg_len(   m, i, j) {
 		      XX[j], YY[j], ZZ[j])
     }
 }
+function d_compute_edg_len(   m, i, j, dx, dy, dz, len, de, d) {
+    for (m = 0; m < NE; m++) {
+	i = E0[m]; j = E1[m]
+	de = dE_len[m]
+	len = LEN[m]
+
+	dx = XX[i] - XX[j]
+	dy = YY[i] - YY[j]
+	dz = ZZ[i] - ZZ[j]
+
+	d = dx/len*de; FX[i] += d; FX[j] -= d
+	d = dy/len*de; FY[i] += d; FY[j] -= d
+	d = dz/len*de; FZ[i] += d; FZ[j] -= d
+    }
+}
 
 function cot(i, j, k) {
     ang_xy(XX[i], YY[i], ZZ[i],
@@ -38,12 +53,28 @@ function cot(i, j, k) {
 	   XX[k], YY[k], ZZ[k])
     return ANG_X/ANG_Y
 }
+function d_cot(i, j, k) {
+    # TODO
+    DIX = DIY = DIZ = 0
+    DJX = DJY = DJZ = 0
+    DKX = DKY = DKZ = 0
+}
 function compute_cotangent(   m, i, j, k, l, ca, cb) {
     for (m = 0; m < NE; m++) {
 	i = D0[m]; j = D1[m]; k = D2[m]; l = D3[m]
 	ca = cot(j, k, i)
 	cb = cot(k, j, l)
 	COT0[m] = ca; COT1[m] = cb; T[m] = ca + cb
+    }
+}
+
+function d_compute_cotangent(   m, i, j, k, l, de) {
+    # TODO
+    for (m = 0; m < NE; m++) {
+	i = D0[m]; j = D1[m]; k = D2[m]; l = D3[m]
+	de = dE_T[m]
+	d_cot(j, k, i)
+	d_cot(k, j, l)
     }
 }
 
@@ -149,6 +180,8 @@ BEGIN {
     d_compute_e()
     d_compute_xt()
     d_compute_l2t()
+    d_compute_cotangent()
+    d_compute_edg_len()
 
     compute_area()
     scatter_area()
