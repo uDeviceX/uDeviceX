@@ -33,14 +33,35 @@ function compute_l2t(   m, i, j, k, l, e) {
     for (m = 0; m < NE; m++) {
 	i = D0[m]; j = D1[m]; k = D2[m]; l = D3[m]
 	e = LEN[m]^2 * T[m]
-	L2T[i] += e; L2T[l] += e
+	L2T[j] += e; L2T[k] += e
+    }
+}
+
+function compute_xt(   m, i, j, k, l, dx, dy, dz, e) {
+    clear(XT); clear(YT); clear(ZT)
+    for (m = 0; m < NE; m++) {
+	i = D0[m]; j = D1[m]; k = D2[m]; l = D3[m]
+	dx = XX[j] - XX[k]
+	dy = YY[j] - YY[k]
+	dz = ZZ[j] - ZZ[k]
+	dx *= T[m]; dy *= T[m]; dz *= T[m]
+	XT[j] += dx; YT[j] += dy; ZT[j] += dz
+	XT[k] -= dx; YT[k] -= dy; ZT[k] -= dz
+    }
+}
+
+function compute_e(   m, num, den) {
+    for (m = 0; m < NV; m++) {
+	num = XT[m]^2 + YT[m]^2 + ZT[m]^2
+	den = L2T[m]
+	GOMPPER[m] = 2 * num / den
     }
 }
 
 function write_vert(   m, r) {
     for (m = 0; m < NV; m++) {
 	r = sqrt(XX[m]^2 + YY[m]^2)
-	print r, L2T[m]
+	print r, GOMPPER[m]
     }
 }
 
@@ -78,6 +99,8 @@ BEGIN {
     compute_edg_len()
     compute_cotangent()
     compute_l2t()
+    compute_xt()
+    compute_e()
 
     write_vert()
     # write_edg()
