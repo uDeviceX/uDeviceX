@@ -11,17 +11,17 @@ ac: a - c $
 bc: b - c $
 
 [kx, ky, kz]: cross(ac, bc) $
-kk: dot(['kx, 'ky, 'kz], ['kx, 'ky, 'kz]);
-Area: 'kk/2;
-y : Area;
-x : dot(ac, bc);
-E : x/y;
+
+d: dot(ac, bc);
+c: 1/sqrt(dot(['kx, 'ky, 'kz], ['kx, 'ky, 'kz]));
+E : 'd*'c;
 
 [E, V, T]: g(
   ['E ,  E,   sl(E)],
-  
-  ['kk, kk,   sl(kk)],
-  
+
+  ['c, c,   sl(c)],
+  ['d, d,   sl(d)],
+
   ['kx, kx, sl(kx)],
   ['ky, ky, sl(ky)],
   ['kz, kz, sl(kz)]) $
