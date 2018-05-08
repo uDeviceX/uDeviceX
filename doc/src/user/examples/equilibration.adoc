@@ -1,0 +1,13 @@
+= equilibration
+
+A simple solvent at rest equilibrating at given temperature.
+We can already see non default parameters appearing:
+
+[{CFG}]
+----
+include::{examples}/equilibration/conf.cfg[]
+----
+<1> domain size
+<2> timestep mode: constant in this case
+<3> step size (in dpd time units)
+<4> simulation time (in dpd time units)
