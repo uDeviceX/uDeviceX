@@ -94,7 +94,7 @@ installation:
 
 [source, sh]
 ----
-git clone git@gitlab.ethz.ch:mavt-cse/bop.git
+git clone git@github.com:amlucas/bop.git
 cd bop
 ./configure [OPTIONS] # <1>
 make
