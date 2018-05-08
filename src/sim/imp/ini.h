@@ -135,9 +135,9 @@ _S_ void ini_time(const Config *cfg, /**/ Time *t) {
     UC(time_step_accel_ini(&t->accel));
 }
 
-_S_ void ini_common(const Config *cfg, MPI_Comm cart, /**/ Sim *s) {
+_S_ void ini_common(const Config *cfg, int3 L, MPI_Comm cart, /**/ Sim *s) {
     MC(m::Comm_dup(cart, &s->cart));
-    UC(coords_ini_conf(s->cart, cfg, /**/ &s->coords));
+    UC(coords_ini(s->cart, L.x, L.y, L.z, /**/ &s->coords));
     UC(coords_log(s->coords));
 
     UC(dbg_ini(&s->dbg));
@@ -166,18 +166,18 @@ void sim_ini(const Config *cfg, MPI_Comm cart, /**/ Sim **sim) {
     EMALLOC(1, sim);
     s = *sim;
     opt = &s->opt;
-    
-    UC(ini_common(cfg, cart, /**/ s));
-    
-    dt = time_step_dt0(s->time.step);
-    time_line_advance(dt, s->time.t);
 
     UC(opt_read(cfg, opt));
     UC(read_recolor_opt(cfg, &s->recolorer));
     UC(opt_check(opt));
+    L = opt->params.L;
+    
+    UC(ini_common(cfg, L, cart, /**/ s));
+    
+    dt = time_step_dt0(s->time.step);
+    time_line_advance(dt, s->time.t);
 
     maxp = opt_estimate_maxp(opt);
-    L = opt->params.L;
 
     UC(ini_pair_params(cfg, opt->params.kBT, dt, s));
 

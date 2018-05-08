@@ -1,0 +1,29 @@
+= equilibration
+
+A simple solvent at rest equilibrating at given temperature.
+We can already see non default parameters appearing:
+
+[{CFG}]
+----
+include::{examples}/equilibration/conf.cfg[tag=glb]
+----
+<1> domain size
+<2> timestep mode: constant in this case
+<3> step size (in dpd time units)
+<4> simulation time (in dpd time units)
+
+The dpd parameters are set as follows:
+
+[{CFG}]
+----
+include::{examples}/equilibration/conf.cfg[tag=flu]
+----
+<1> activate dpd interaction
+<2> no lj interactions (same as default)
+<3> repulsion parameter
+<4> dissipation parameter
+<5> "envelope" power for the dissipative kernel
+
+Note that the parameters are inside an array. This is useful  when we
+set different colors.
+
