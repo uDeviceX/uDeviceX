@@ -1,3 +1,4 @@
+[[example_equilibration]]
 = equilibration
 
 A simple solvent at rest equilibrating at given temperature.

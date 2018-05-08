@@ -1,0 +1,36 @@
+= double_poiseuille
+
+Reverse poiseuille flow in a periodic box.
+The setup looks really like the previous case
+<<example_equilibration>>, but we now add body forces:
+
+[{CFG}]
+----
+include::{examples}/double_poiseuille/conf.cfg[tag=force]
+----
+<1> type of body force
+<2> parameter of the body force
+
+Note that we also need to activate the `push` option for solvent:
+
+[{CFG}]
+----
+include::{examples}/double_poiseuille/conf.cfg[tag=flu]
+----
+<1> activate body force for solvent
+
+
+In order to visualize the flow, we choose here to dump field data.
+The data is sampled via the sampling module, activated when the field
+dump is active.
+
+[{CFG}]
+----
+include::{examples}/double_poiseuille/conf.cfg[tag=field]
+----
+<1> number of samples per dump
+<2> refinement of the grid to sample in each direction  (default is 1)
+<3> frequency of diagnosis (in dpd time units)
+<4> activeate the field dumps
+<5> frequency of field dumps (in dpd time units)
+
