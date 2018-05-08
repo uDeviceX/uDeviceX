@@ -141,9 +141,6 @@ function d_dist(ax, ay, az, bx, by, bz,   dx, dy, dz, d) {
     DBX =  d*dx; DBY =  d*dy; DBZ =  d*dz
 }
 
-function pow(a, b) {return a^b }
-
-function abs(a) { return a > 0 ? a : -a }
 function sign(kn, ax, ay, az, dx, dy, dz,
 	      kx, ky, kz, nx, ny, nz,
 	      #

@@ -17,3 +17,5 @@ function copy(from, to,   key, val) {
 function copy_sign(a, b) { return b >= 0 ? abs(a) : -abs(a) }
 
 function acos(x) { return atan2(sqrt(1-x*x), x) }
+function pow(a, b) {return a^b }
+function abs(a) { return a > 0 ? a : -a }
