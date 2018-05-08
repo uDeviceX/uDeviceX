@@ -89,7 +89,7 @@ function to_rbc(   m, x, y, z, rm, r, D) {
     }
     D = 2 * rm
 
-    for (m = 0; m < NV;m ++) {
+    for (m = 0; m < NV; m++) {
 	x = XX[m]; y = YY[m]; z = ZZ[m]
 	r = sqrt(x^2 + y^2)
 	ZZ[m] = copy_sign(rbc(D, r), z)

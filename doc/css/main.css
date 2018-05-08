@@ -9,7 +9,11 @@ h3 { font-size:1.6em }
 h4 { font-size:1.4em }
 h5 { font-size:1.2em }
 h6 { font-size:1em }
-#toctitle { font-size: 1.5em }
+#toctitle { /* TODO */
+    display: none;
+    visibility: hidden;
+    font-size: 1.2em;
+}
 
 #content {
     min-width: 25em;
@@ -23,7 +27,7 @@ h6 { font-size:1em }
     content:"\00a0\22c5\00a0"
 }
 #toc ul { list-style-type:none }
-#toc a {
+p#toc a {
     text-decoration:none
 }
 
