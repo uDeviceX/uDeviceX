@@ -72,5 +72,6 @@ dsH: ds(H) $
 
 draw2d(nticks=300, 'line_width = 3,
   yrange = [0, 250],
-  parametric(x,   150*z, 'u, 0, %pi/2),
-  parametric(x,  abs(f), 'u, 0, %pi/2)), v = 0, va $
+  parametric(phi,    150*z, 'u, 0, %pi/2),
+  'color = 'red,
+  parametric(phi,  abs(f), 'u, 0, %pi/2)), v = 0, va $

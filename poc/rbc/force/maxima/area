@@ -11,7 +11,6 @@ ab: b - a $
 ac: c - a $
 
 [kx, ky, kz]: cross(ab, ac) $
-
 kk: dot(['kx, 'ky, 'kz], ['kx, 'ky, 'kz]);
 
 E : kk/2;
