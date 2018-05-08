@@ -17,14 +17,14 @@ the following packages should already be installed:
 - documentation tools: `make -C tools`
 
 
-## Modifying existing files:
-1. make  
-2. ./tools/start -> starts server. do it only once  
-3. ./tools/view -> to view changes locally  
+## Modifying existing files
+1. `make`  
+2. `./tools/start` -> starts server. do it only once  
+3. `./tools/view` -> to view changes locally  
 4. add/commit/push to udx repo  
-5. ./tools/deploy -> updates online documentation (ssh key in github account must me set!)  
+5. `./tools/deploy` -> updates online documentation (ssh key in github account must me set!)  
 
 
-## Adding new files:
+## Adding new files
 - run `./configure`  
 - follow the procedure for modifying files
