@@ -22,6 +22,19 @@ function compute_area(   m, i, j, k) {
     }
 }
 
+function d_compute_area(   m, i, j, k, de) {
+    for (m = 0; m < NT; m++) {
+	i = T0[m]; j = T1[m]; k = T2[m]
+	de = dE_area_tri[m]
+	d_area(XX[i], YY[i], ZZ[i],
+	       XX[j], YY[j], ZZ[j],
+	       XX[k], YY[k], ZZ[k])
+	FX[i] += de*DAX; FY[i] += de*DAY; FZ[i] += de*DAZ
+	FX[j] += de*DBX; FY[j] += de*DBY; FZ[j] += de*DBZ
+	FX[k] += de*DCX; FY[k] += de*DCY; FZ[k] += de*DCZ
+    }
+}
+
 function scatter_area(    m, i, j, k, A) {
     clear(AREA_VER)
     for (m = 0; m < NT; m++) {
@@ -29,6 +42,16 @@ function scatter_area(    m, i, j, k, A) {
 	AREA_VER[i] += A/3
 	AREA_VER[j] += A/3
 	AREA_VER[k] += A/3
+    }
+}
+
+function d_scatter_area(   m, i, j, k, A, de) {
+    clear(dE_area_tri)
+    for (m = 0; m < NT; m++) {
+	i = T0[m]; j = T1[m]; k = T2[m]
+	dE_area_tri[m] += dE_area_ver[i]/3
+	dE_area_tri[m] += dE_area_ver[j]/3
+	dE_area_tri[m] += dE_area_ver[k]/3
     }
 }
 
@@ -145,15 +168,17 @@ function d_compute_xt(   m, i, j, k, l, dx, dy, dz, de) {
     }
 }
 
-function d_compute_e(   m, num, den) {
+function d_compute_e(   m, num, den, A) {
     for (m = 0; m < NV; m++) {
 	num = XT[m]^2 + YT[m]^2 + ZT[m]^2
 	den = L2T[m]
-	# GOMPPER[m] = 2 * num / den
-	dE_l2t[m] = - 2 * num   / den^2
-	dE_xt[m]  =   4 * XT[m] / den
-	dE_yt[m]  =   4 * YT[m] / den
-	dE_zt[m]  =   4 * ZT[m] / den
+	A = AREA_VER[m]
+	# GOMPPER[m] = 2 * num / (den * A)
+	dE_l2t[m]       = - 2 * num   / (den^2 * A)
+	dE_xt[m]        =   4 * XT[m] / (den   * A)
+	dE_yt[m]        =   4 * YT[m] / (den   * A)
+	dE_zt[m]        =   4 * ZT[m] / (den   * A)
+	dE_area_ver[m]  = - 2 * num   / (den   * A^2)
     }
 }
 
@@ -180,7 +205,7 @@ BEGIN {
     if (eq(file, "-h")) usg()
     off_read(file)
     to_cm()
-    to_rbc()
+    # to_rbc()
     # to_r1()
     setup()
 
@@ -188,18 +213,21 @@ BEGIN {
     compute_cotangent()
     compute_l2t()
     compute_xt()
+    compute_area()
+    scatter_area()
     compute_e()
 
     clear(FX); clear(FY); clear(FZ)
     d_compute_e()
+    d_scatter_area()
+    d_compute_area()
+    
     d_compute_xt()
     d_compute_l2t()
     d_compute_cotangent()
     d_compute_edg_len()
 
     compute_phi()
-    compute_area()
-    scatter_area()
 
     write_vert()
 }

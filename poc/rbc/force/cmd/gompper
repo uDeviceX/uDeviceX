@@ -4,7 +4,7 @@
 : ${PREFIX=.}
 
 prog=gompper
-prog0=gompper1
+prog0=gompper0
 err () {
     echo >&2 "$prog: $@"
     exit 2

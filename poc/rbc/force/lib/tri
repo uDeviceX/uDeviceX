@@ -113,10 +113,15 @@ function d_area(ax, ay, az,
 		bx, by, bz,
 		cx, cy, cz,
 #
-		kx, ky, kz) {
-    kz = (bx-ax)*(cy-ay)-(by-ay)*(cx-ax)
-    ky = (bz-az)*(cx-ax)-(bx-ax)*(cz-az)
-    kx = (by-ay)*(cz-az)-(bz-az)*(cy-ay)
+		kx, ky, kz, a, b, c, k,
+		X, Y, Z) {
+    X = 0; Y = 1; Z = 2
+    a[X] = ax; a[Y] = ay; a[Z] = az
+    b[X] = bx; b[Y] = by; b[Z] = bz
+    c[X] = cx; c[Y] = cy; c[Z] = cz
+    ac_bc_cross(b, a, c,   k)
+
+    kx = k[X]; ky = k[Y]; kz = k[Z]
 
     DAX = (by-cy)*kz; DAX += (cz-bz)*ky
     DAY = (bz-cz)*kx; DAY += (cx-bx)*kz
