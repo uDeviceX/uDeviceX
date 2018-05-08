@@ -1,3 +1,0 @@
-= benchmark
-
-A case with one cell.

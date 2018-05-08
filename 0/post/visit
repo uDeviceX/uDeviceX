@@ -1,8 +1,0 @@
-set -ue
-
-b=${1-$HOME/D/s2r1/v0.4/s10/0}
-
-vi () { visit 2>.visit 1>/dev/null -nosplash -noconfig -sessionfile `pwd`/"$1"; }
-
-vi.ln /tmp/l/r.visit $b/r/*.ply -- /tmp/l/w.visit $b/h5/wall.xmf
-vi post/s.session
