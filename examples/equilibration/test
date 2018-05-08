@@ -1,0 +1,6 @@
+#! /usr/bin/sh
+
+# nTEST: equilibration
+cd equilibration
+./main
+cat diag.txt | awk '{print $2}' | uscale 10 > diag.out.txt
