@@ -1,0 +1,39 @@
+= configuration parameters
+
+// TODO
+:default: {src}/../conf/default.cfg
+:examples: {src}/../examples
+// TODO: make it look better
+// :CFG: source,cfg
+:CFG: source
+
+_uDeviceX_ is configured via runtime parameters.
+These parameters are passed by the program via three mechanisms:
+
+* <<defaults, default parameters>> (priority 0)
+* file parameters `conf.cfg`(optional) (priority 1)
+* arguments `args` (optional) (priority 2)
+
+The program can be run as follows (for one node):
+
+[source, sh]
+----
+udx [conf.cfg] [args]
+----
+
+When reading parameters, the program will select the one with highest
+priority.
+This makes it easy to overwrite the default parameters.
+
+A file named `conf.history.cfg` is dumped once the program has read
+all parameters. The file contains all parameters which have beed read
+by `udx`.
+
+
+:leveloffset: +1
+
+include::default.adoc[]
+
+include::examples/main.adoc[]
+
+:leveloffset: -1

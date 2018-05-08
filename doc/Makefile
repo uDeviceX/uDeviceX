@@ -12,8 +12,7 @@ style=-a stylesheet="$(ROOT)/css/main.css"  \
       -a toc=left                           \
       -a sectnums
 
-dev/main.html: dev/main.adoc; $(ADOC) $(style) -a src=`u.cp.s` $<
-%.html: %.adoc; $(ADOC) $(style) $<
+%.html: %.adoc; $(ADOC) $(style) -a src=`u.cp.s` $<
 .PHONY: clean
 
 clean:; rm -rf $(PAGES)

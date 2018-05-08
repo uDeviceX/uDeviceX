@@ -2,7 +2,7 @@
 
 :lext: .adoc
 
-:leveloffset:  1
+:leveloffset:  +1
 
 include::build.adoc[]
 
@@ -78,5 +78,5 @@ include::third.adoc[]
 
 include::wrap.adoc[]
 
-:leveloffset:  0
+:leveloffset:  -1
 
