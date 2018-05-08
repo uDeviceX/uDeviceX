@@ -77,3 +77,20 @@ include::{default}[tag=flu]
     `0`: deactivated; membranes must be active if set to non `0`.
 <6> apply body forces on solvent if set to `true`
 
+=== debug parameters
+
+We list here default debug parameters
+
+[{CFG}]
+----
+include::{default}[tag=dbg]
+----
+<1> activate debug mode for solvent distribution
+<2> activate verbose for debug informations
+<3> activate dump informations for debug modes
+<4> check positions of solvent
+<5> check positions of solvent and objects
+<6> check velocities
+<7> check forces
+<8> check colors of solvent
+<9> check cell lists
