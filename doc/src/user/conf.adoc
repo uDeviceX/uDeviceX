@@ -3,6 +3,9 @@
 // TODO
 :default: {src}/../conf/default.cfg
 :examples: {src}/../examples
+// TODO: make it look better
+// :CFG: source,cfg
+:CFG: source
 
 _uDeviceX_ is configured via runtime parameters.
 These parameters are passed by the program via three mechanisms:
@@ -31,11 +34,24 @@ by `udx`.
 
 We describe here the default parameters, contained in the file `${HOME}/.udx/default.cfg`.
 
+=== glb: global parameters
+
+Global parameters
+
+[{CFG}]
+----
+include::{default}[tag=glb]
+----
+<1> create initial conditions from restart files
+<2> temperature of the system (supposed uniform)
+<3> number density of solvent particles
+
+
 === time
 
-This section describes the time related parameters.
+Time related parameters.
 
-[source, cfg]
+[{CFG}]
 ----
 include::{default}[tag=time]
 ----
@@ -49,7 +65,7 @@ Describe the solvent parameters
 // TODO
 A description of the DPD parameters can be found in <<>>.
 
-[source, cfg]
+[{CFG}]
 ----
 include::{default}[tag=flu]
 ----
