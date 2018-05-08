@@ -1,4 +1,4 @@
-= introduction
+= Introduction
 :lext: .adoc
 
 == what is _uDeviceX_?

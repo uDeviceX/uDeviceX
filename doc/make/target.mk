@@ -1,1 +1,1 @@
-PAGES = dev/main.html index.html units/main.html user/main.html
+PAGES = index.html src/dev/main.html src/units/main.html src/user/main.html
