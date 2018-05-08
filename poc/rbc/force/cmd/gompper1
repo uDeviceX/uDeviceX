@@ -157,11 +157,12 @@ function d_compute_e(   m, num, den) {
     }
 }
 
-function compute_e(   m, num, den) {
+function compute_e(   m, num, den, A) {
     for (m = 0; m < NV; m++) {
 	num = XT[m]^2 + YT[m]^2 + ZT[m]^2
 	den = L2T[m]
-	GOMPPER[m] = 2 * num / den
+	A   = AREA_VER[m]
+	GOMPPER[m] = 2 * num / (den * A)
     }
 }
 
