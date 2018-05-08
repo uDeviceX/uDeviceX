@@ -1,96 +1,63 @@
-= configuration files
-:lext: .adoc
+= configuration parameters
 
-== glb
-Global parameters.
+// TODO
+:default: {src}/../conf/default.cfg
+:examples: {src}/../examples
 
-`L = [int, int, int]`::
-  a size of each of the subdomains
-`restart = bool`::
-  continue from a restart?
-`kBT = float`::
-  solvent temerature
-`numdensity = int`::
-  solvent number density in initilization
+_uDeviceX_ is configured via runtime parameters.
+These parameters are passed by the program via three mechanisms:
 
-== time
-Control simulation time.
+* <<defaults, default parameters>> (priority 0)
+* file parameters `conf.cfg`(optional) (priority 1)
+* arguments `args` (optional) (priority 2)
 
-`type = "const"|"disp"`::
-  a strategy for time step.
-`end = float`::
-  when to end the simulation?
-`wall = float`::
-  when to create wall?
-`screenlog = bool`::
-  log time step to `stderr`?
+The program can be run as follows (for one node):
 
-=== `type = const`
+[source, sh]
+----
+udx [conf.cfg] [args]
+----
 
-Timestep is constant
+When reading parameters, the program will select the one with highest
+priority.
+This makes it easy to overwrite the default parameters.
 
-`dt = float`::
-  timestep
+A file named `conf.history.cfg` is dumped once the program has read
+all parameters. The file contains all parameters which have beed read
+by `udx`.
 
-=== `type = disp`
+[[defaults]]
+== Default parameters
 
-The time step is adjusted base on the forces (TODO)
+We describe here the default parameters, contained in the file `${HOME}/.udx/default.cfg`.
 
-`dt = float`::
-  initial timestep
-`dx = float`::
-  maximum displacement
+=== time
 
-== flu
-Solvent parameters.
+This section describes the time related parameters.
 
-== rbc
-RBC membrane.
+[source, cfg]
+----
+include::{default}[tag=time]
+----
+<1> time of freezing step
+<2> dump the timestep informations to the console
 
-== rig
-Rigid body.
 
-== wall
-Wall boundary condition parameters
+=== flu
 
-== fsi
-Fluid-structure interaction.
+Describe the solvent parameters
+// TODO
+A description of the DPD parameters can be found in <<>>.
 
-== cnt
-Contact between rigid objects and membranes.
+[source, cfg]
+----
+include::{default}[tag=flu]
+----
+<1> mass of one particle
+<2> each particle has a different color if set to `true`
+<3> each particle has unique global index if set to `true`
+<4> compute solvent stresses if set to `true`
+<5> recolor the solvent according to membranes every `x` iterations;
+    `0`: deactivated; membranes must be active if set to non `0`.
+<6> apply body forces on solvent if set to `true`
 
-== bforce
-Body force: constant in time force applied to solvent, membranes, and rigid objects.
-
-== wvel
-Wall velocity.
-
-== dump
-Controls what and when to dump.
-
-== inflow
-Inflow boundary conditions for velocity.
-
-== outflow
-Outflow boundary condition for velocity.
-
-== denoutflow
-Density outflow boundary condition.
-
-== iccolor
-How to color particle of the solvent?
-
-== restrain
-Restrain some solvent particles or particles of the membranes.
-
-== vcon
-Velocity controller: apply body condition to maintain prescribed average velocity.
-
-== recolor
-Change color of some solvent particles durining the simulation.
-
-== dflu
-Parameters for solvent distribtuion between MPI processes.
-
-== dbg
-Debug options.
