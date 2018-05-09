@@ -74,7 +74,7 @@ _I_ void dump_strt_templ(Sim *s) { /* template dumps (wall, solid) */
     const Opt *opt = &s->opt;
     const char *base = opt->dump.strt_base_dump;
     if (opt->dump.strt) {
-        if (opt->wall) UC(wall_dump_templ(s->wall, s->cart, base));
+        if (opt->wall.active) UC(wall_dump_templ(s->wall, s->cart, base));
         UC(objects_strt_templ(base, s->obj));
     }
 }

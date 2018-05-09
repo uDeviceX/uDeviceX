@@ -79,7 +79,7 @@ void sim_fin(Sim *s) {
     UC(fin_optional_features(opt, s));
     
     UC(fin_flu(opt, &s->flu));
-    if (opt->wall) UC(wall_fin(s->wall));
+    if (opt->wall.active) UC(wall_fin(s->wall));
 
     UC(obj_inter_fin(s->objinter));
     UC(objects_fin(s->obj));

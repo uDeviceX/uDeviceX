@@ -1,5 +1,5 @@
 _I_ bool active_walls(const Sim *s) {
-    return !s->equilibrating && s->opt.wall;
+    return !s->equilibrating && s->opt.wall.active;
 }
 
 _S_ bool active_rbc(const Sim *s) {
@@ -19,7 +19,7 @@ _I_ void utils_compute_hematocrit(const Sim *s) {
     double Vdomain, Vrbc, Ht;
     if (!active_rbc(s)) return;
 
-    if (opt->wall) {
+    if (opt->wall.active) {
         Vdomain = wall_compute_volume(s->wall, s->cart, s->opt.params.L);
     }
     else {

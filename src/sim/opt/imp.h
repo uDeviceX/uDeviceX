@@ -15,6 +15,11 @@ struct OptRig {
     int shifttype;
 };
 
+struct OptWall {
+    bool active;
+    // bool repulse;
+};
+
 /* global physical parameters */
 struct OptParams {
     int3 L;          /* subdomain sizes */
@@ -32,10 +37,10 @@ struct Opt {
     OptFlu flu;
     OptMbr rbc;
     OptRig rig;
+    OptWall wall;
     OptParams params;
     OptDump dump;
     bool fsi, cnt;
-    bool wall;
     bool inflow, outflow, denoutflow, vcon;
     int recolor_freq;
     int sampler_npdump;

@@ -35,7 +35,6 @@ static void lookup_string(const Config *c, const char *desc, char *res) {
     strcpy(res, s);
 }
 
-
 static void read_flu(const Config *c, OptFlu *o) {
     UC(lookup_bool(c, "flu.colors", &o->colors));
     UC(lookup_bool(c, "flu.ids", &o->ids));
@@ -59,6 +58,10 @@ static void read_rig(const Config *c, OptRig *o) {
     UC(lookup_bool(c, "rig.empty_pp", &o->empty_pp));
     o->shifttype = get_shifttype(c, "rig.shifttype");
     UC(lookup_bool(c, "rig.push", &o->push));
+}
+
+static void read_wall(const Config *c, OptWall *o) {
+    UC(lookup_bool(c, "wall.active", &o->active));
 }
 
 static void read_params(const Config *c, OptParams *p) {
@@ -94,7 +97,6 @@ static void read_common(const Config *c, Opt *o) {
     UC(lookup_bool(c, "fsi.active", &o->fsi));
     UC(lookup_bool(c, "cnt.active", &o->cnt));
 
-    UC(lookup_bool(c, "wall.active", &o->wall));    
     UC(lookup_bool(c, "outflow.active", &o->outflow));
     UC(lookup_bool(c, "inflow.active", &o->inflow));
     UC(lookup_bool(c, "denoutflow.active", &o->denoutflow));
@@ -110,6 +112,7 @@ void opt_read(const Config *c, Opt *o) {
     UC(read_flu(c, &o->flu));
     UC(read_mbr(c, &o->rbc));
     UC(read_rig(c, &o->rig));
+    UC(read_wall(c, &o->wall));
 }
 
 void opt_check(const Opt *o) {

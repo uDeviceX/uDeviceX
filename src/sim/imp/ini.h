@@ -187,7 +187,7 @@ void sim_ini(const Config *cfg, MPI_Comm cart, /**/ Sim **sim) {
     UC(bforce_set_conf(cfg, s->bforce));
 
     UC(ini_flu(cfg, opt, s->cart, maxp, /**/ &s->flu));    
-    if (opt->wall) UC(wall_ini(cfg, L, &s->wall));
+    if (opt->wall.active) UC(wall_ini(cfg, L, &s->wall));
     
     UC(objects_ini(cfg, opt, s->cart, s->coords, maxp, &s->obj));
     
