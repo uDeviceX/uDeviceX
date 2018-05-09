@@ -51,7 +51,7 @@ _S_ void step(TimeLine *time, float dt, float tstart, Sim *s) {
         if (opt->inflow)     UC(apply_inflow(s->opt.params.kBT, s->opt.params.numdensity, dt, s->inflow, /**/ flu));
         if (opt->outflow)    UC(mark_outflow(flu, /**/ s->outflow));
         if (opt->denoutflow) UC(mark_outflowden(s->opt.params, flu, s->mapoutflow, /**/ s->denoutflow));
-        if (opt->flucolors)  UC(recolor_flux(s->coords, &s->recolorer, flu));
+        if (opt->flu.colors) UC(recolor_flux(s->coords, &s->recolorer, flu));
     }
 }
 

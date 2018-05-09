@@ -1,3 +1,8 @@
+/* solvent options */
+struct OptFlu {
+    bool colors, ids, ss, push;
+};
+
 /* membrane options */
 struct OptMbr {
     bool active, ids, stretch, push, dump_com;
@@ -8,6 +13,11 @@ struct OptMbr {
 struct OptRig {
     bool active, bounce, empty_pp, push;
     int shifttype;
+};
+
+struct OptWall {
+    bool active;
+    bool repulse;
 };
 
 /* global physical parameters */
@@ -24,16 +34,15 @@ struct OptDump {
 };
 
 struct Opt {
+    OptFlu flu;
     OptMbr rbc;
     OptRig rig;
+    OptWall wall;
     OptParams params;
     OptDump dump;
     bool fsi, cnt;
-    bool flucolors, fluids, fluss;
-    bool wall;
     bool inflow, outflow, denoutflow, vcon;
     int recolor_freq;
-    bool push_flu;
     int sampler_npdump;
     int3 sampler_grid_ref;
 };

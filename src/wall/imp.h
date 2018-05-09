@@ -37,7 +37,7 @@ void wall_strt_dump_templ(MPI_Comm, const char *base, const WallQuants*); // <2>
 
 // tag::int[]
 void wall_force(const PairParams*, const WvelStep *, const Coords*, const Sdf*, const WallQuants*,
-                const WallTicket*, int n, const PaArray*, const FoArray*);
-// end::int[]
+                const WallTicket*, int n, const PaArray*, const FoArray*); // <1>
 
-void wall_repulse(int n, const Particle *pp, const Sdf*, Force *ff);
+void wall_repulse(const Sdf*, long n, const PaArray*, const FoArray*);     // <2>
+// end::int[]

@@ -68,8 +68,8 @@ void wall_force_apply(const PairParams *params, const WvelStep *wv, const Coords
 }
 
 
-void wall_force_repulse(int n, const Particle *pp, Sdf_v sdf_v, Force *ff) {
+void wall_force_repulse(Sdf_v sdf_v, long n, const PaArray *pa, const FoArray *fo) {
     KL(wf_dev::repulse,
        (k_cnf(n)),
-       (n, pp, sdf_v, ff));
+       (n, (const Particle*) pa->pp, sdf_v, (Force*) fo->ff));
 }

@@ -50,8 +50,10 @@ __global__ void force(Par params, Wvel_v wv, Coords_v c, Parray parray, int np, 
 }
 
 static __device__ float rep_kernel(float l, float x) {
-    float arg = l * (x + 1.f);
-    return expf(arg) - 1.f;
+    float arg, val;
+    arg = l * (x + 1.f);
+    val = expf(arg) - 1.f;
+    return min(1e4f, val);
 }
 
 static __device__ void repulse_one_p(const float3 *r, const Sdf_v *sdf_v, float3 *f) {

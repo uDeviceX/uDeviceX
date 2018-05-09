@@ -35,15 +35,15 @@ _S_ void dump_parts(Sim *s) {
     IoBop *bop = s->dump.bop;
     int id_bop = s->dump.id_bop;
     cD2H(flu->q.pp_hst, flu->q.pp, flu->q.n);
-    if (opt->fluids) {
+    if (opt->flu.ids) {
         cD2H(flu->q.ii_hst, flu->q.ii, flu->q.n);
         io_bop_ids(s->cart, flu->q.n, flu->q.ii_hst, "id_solvent", id_bop, bop);
     }
-    if (opt->flucolors) {
+    if (opt->flu.colors) {
         cD2H(flu->q.cc_hst, flu->q.cc, flu->q.n);
         io_bop_colors(s->cart, flu->q.n, flu->q.cc_hst, "colors_solvent", id_bop, bop);
     }
-    if (opt->fluss) {
+    if (opt->flu.ss) {
         cD2H(flu->ss_hst, flu->ss, 6 * flu->q.n);
         io_bop_stresses(s->cart, flu->q.n, flu->ss_hst, "stress_solvent", id_bop, bop);
     }
@@ -74,7 +74,7 @@ _I_ void dump_strt_templ(Sim *s) { /* template dumps (wall, solid) */
     const Opt *opt = &s->opt;
     const char *base = opt->dump.strt_base_dump;
     if (opt->dump.strt) {
-        if (opt->wall) UC(wall_dump_templ(s->wall, s->cart, base));
+        if (opt->wall.active) UC(wall_dump_templ(s->wall, s->cart, base));
         UC(objects_strt_templ(base, s->obj));
     }
 }

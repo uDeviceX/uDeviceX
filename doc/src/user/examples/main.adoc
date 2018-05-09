@@ -6,4 +6,6 @@ We here list simple run cases of _uDeviceX_.
 
 include::equilibration.adoc[]
 
+include::double_poiseuille.adoc[]
+
 :leveloffset: -1
