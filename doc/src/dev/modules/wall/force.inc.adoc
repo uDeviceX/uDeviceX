@@ -9,11 +9,31 @@ interface:
 ----
 include::{src}/wall/force/imp.h[tag=int]
 ----
+<1> pairwise interactions: input particles with frozen particles
+<2> field interaction: input particles get force stem:[\mathbf{f}(s)],
+    where stem:[s] is the sdf value at position of input particle.
 
-where the helper structure `WallForce` acts as a view to be passed to
+The helper structure `WallForce` acts as a view to be passed to
 the kernel. It is defined as:
 
 [source,cpp]
 ----
 include::{src}/wall/force/imp.h[tag=struct]
 ----
+
+
+The repulsive force stem:[\mathbf{f}] is computed as:
+
+[stem]
+++++
+\mathbf{f}(s) = - \mathbf{\nabla} s \; \phi(s),
+++++
+
+where
+
+[stem]
+++++
+\phi = \exp \left[ \lambda (s + 1) \right] - 1,
+++++
+
+when stem:[s>-1]  and 0 otherwise.

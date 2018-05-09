@@ -55,6 +55,8 @@ compute interactions with other particles (see <<wall_force, force submodule>>):
 ----
 include::{src}/wall/imp.h[tag=int]
 ----
+<1> compute pairwise interactions between wall particles and input particles
+<2> compute field interaction depending on the sdf and input particles
 
 == submodules
 

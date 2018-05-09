@@ -16,7 +16,7 @@ struct WallForce { /* local wall data */
 
 // tag::int[]
 void wall_force_apply(const PairParams*, const WvelStep*, const Coords*, const PaArray*, int n, RNDunif*, WallForce,
-                      /**/ const FoArray*);
-// end::int[]
+                      /**/ const FoArray*); // <1>
 
-void wall_force_repulse(Sdf_v, long n, const PaArray*, const FoArray*);
+void wall_force_repulse(Sdf_v, long n, const PaArray*, const FoArray*); // <2>
+// end::int[]
