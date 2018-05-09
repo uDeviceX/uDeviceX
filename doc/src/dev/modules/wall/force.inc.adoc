@@ -36,4 +36,6 @@ where
 \phi = \exp \left[ \lambda (s + 1) \right] - 1,
 ++++
 
-when stem:[s>-1]  and 0 otherwise.
+when stem:[s>-1]  and 0 otherwise. For stem:[\lambda = 1]:
+
+image::{include}/repulsive_wall.png[pdfwidth=50%]

@@ -1,4 +1,4 @@
-#! /usr/local/bin/gnuplot -p
+#! /usr/bin/env gnuplot -p
 
 set term png
 set output "sdf.png"
