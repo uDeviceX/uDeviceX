@@ -19,4 +19,4 @@ void wall_force_apply(const PairParams*, const WvelStep*, const Coords*, const P
                       /**/ const FoArray*);
 // end::int[]
 
-void wall_force_repulse(int n, const Particle *pp, Sdf_v, Force *ff);
+void wall_force_repulse(Sdf_v, long n, const PaArray*, const FoArray*);
