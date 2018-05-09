@@ -2,7 +2,7 @@ _S_ void body_force(const BForce *bforce, Sim *s) {
     Flu *flu = &s->flu;
     const Opt *opt = &s->opt;
 
-    if (opt->push_flu)
+    if (opt->flu.push)
         UC(bforce_apply(s->coords, flu->mass, bforce, flu->q.n, flu->q.pp, /**/ flu->ff));
     UC(objects_body_forces(bforce, s->obj));
 }
@@ -27,7 +27,7 @@ _S_ void forces_wall(bool fluss, Sim *s) {
     if (!w) return;
     
     parray_push_pp(flu->q.pp, &po);
-    if (opt->flucolors)
+    if (opt->flu.colors)
         parray_push_cc(flu->q.cc, &po);
 
     farray_push_ff(flu->ff, &fo);
@@ -38,10 +38,11 @@ _S_ void forces_wall(bool fluss, Sim *s) {
     UC(pfarrays_push(pf, flu->q.n, po, fo));
     UC(objects_get_particles_all(s->obj, pf));
     UC(wall_interact(s->coords, par, w, pf));
+
+    // UC(pfarrays_clear(pf));
+    // UC(objects_get_particles_all(s->obj, pf));
+    // UC(wall_repulse(w, pf));
     UC(pfarrays_fin(pf));
-    
-    // if (active_rig(s) && rig->q.n) wall_repulse(rig->q.n, rig->q.pp, w->sdf, /**/ rig->ff);
-    // if (active_rbc(s) && rbc->q.n) wall_repulse(rbc->q.n, rbc->q.pp, w->sdf, /**/ rbc->ff);
 }
 
 _S_ void forces_dpd(bool stress, Flu *f) {
@@ -105,7 +106,7 @@ _I_ void forces(float dt, TimeLine *time, const BForce *bforce, Sim *s) {
 
     tfluss = time_line_cross(time, opt->dump.freq_parts) ||
         is_sampling_time(s);
-    fluss = opt->fluss && tfluss;
+    fluss = opt->flu.ss && tfluss;
 
     UC(clear_forces(flu->q.n, flu->ff));
     if (fluss) UC(clear_stresses(flu->q.n, flu->ss));

@@ -29,16 +29,15 @@ struct OptDump {
 };
 
 struct Opt {
+    OptFlu flu;
     OptMbr rbc;
     OptRig rig;
     OptParams params;
     OptDump dump;
     bool fsi, cnt;
-    bool flucolors, fluids, fluss;
     bool wall;
     bool inflow, outflow, denoutflow, vcon;
     int recolor_freq;
-    bool push_flu;
     int sampler_npdump;
     int3 sampler_grid_ref;
 };

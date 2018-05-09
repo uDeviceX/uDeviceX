@@ -76,7 +76,7 @@ _I_ void utils_get_pf_flu(Sim *s, PFarray *flu) {
     Flu *f = &s->flu;
     flu->n = f->q.n;
     UC(parray_push_pp(f->q.pp, &flu->p));
-    if (s->opt.flucolors)
+    if (s->opt.flu.colors)
         parray_push_cc(f->q.cc, &flu->p);
 
     UC(farray_push_ff(f->ff, &flu->f));

@@ -35,7 +35,7 @@ _S_ void fin_flu(const Opt *opt, Flu *f) {
     UC(Dfree(f->ff));
     EFREE(f->ff_hst);
 
-    if (opt->fluss) {
+    if (opt->flu.ss) {
         UC(Dfree(f->ss));
         EFREE(f->ss_hst);        
     }

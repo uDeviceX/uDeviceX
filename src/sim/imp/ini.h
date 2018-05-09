@@ -6,16 +6,16 @@ _S_ void set_params(const Config *cfg, float kBT, float dt, const char *name_spa
 _S_ void ini_flu_exch(const Opt *opt, MPI_Comm comm, int3 L, /**/ FluExch *e) {
     int maxd = HSAFETY_FACTOR * opt->params.numdensity;
 
-    UC(eflu_pack_ini(opt->flucolors, L, maxd, /**/ &e->p));
-    UC(eflu_comm_ini(opt->flucolors, comm, /**/ &e->c));
-    UC(eflu_unpack_ini(opt->flucolors, L, maxd, /**/ &e->u));
+    UC(eflu_pack_ini(opt->flu.colors, L, maxd, /**/ &e->p));
+    UC(eflu_comm_ini(opt->flu.colors, comm, /**/ &e->c));
+    UC(eflu_unpack_ini(opt->flu.colors, L, maxd, /**/ &e->u));
 }
 
 _S_ void ini_flu_distr(const Opt *opt, MPI_Comm comm, int3 L, /**/ FluDistr *d) {
     float maxdensity = ODSTR_FACTOR * opt->params.numdensity;
-    UC(dflu_pack_ini(opt->flucolors, opt->fluids, L, maxdensity, /**/ &d->p));
-    UC(dflu_comm_ini(opt->flucolors, opt->fluids, comm, /**/ &d->c));
-    UC(dflu_unpack_ini(opt->flucolors, opt->fluids, L, maxdensity, /**/ &d->u));
+    UC(dflu_pack_ini(opt->flu.colors, opt->flu.ids, L, maxdensity, /**/ &d->p));
+    UC(dflu_comm_ini(opt->flu.colors, opt->flu.ids, comm, /**/ &d->c));
+    UC(dflu_unpack_ini(opt->flu.colors, opt->flu.ids, L, maxdensity, /**/ &d->u));
     UC(dflu_status_ini(/**/ &d->s));
 }
 
@@ -52,7 +52,7 @@ _S_ void ini_inflow(const Coords *coords, int3 L, const Config *cfg, Inflow **i)
 _S_ void ini_flu(const Config *cfg, const Opt *opt, MPI_Comm cart, int maxp, /**/ Flu *f) {
     int3 L = opt->params.L;
     
-    UC(flu_ini(opt->flucolors, opt->fluids, L, maxp, &f->q));
+    UC(flu_ini(opt->flu.colors, opt->flu.ids, L, maxp, &f->q));
     UC(fluforces_bulk_ini(L, maxp, /**/ &f->bulk));
     UC(fluforces_halo_ini(cart, L, /**/ &f->halo));
 
@@ -62,7 +62,7 @@ _S_ void ini_flu(const Config *cfg, const Opt *opt, MPI_Comm cart, int maxp, /**
     UC(Dalloc(&f->ff, maxp));
     EMALLOC(maxp, /**/ &f->ff_hst);
 
-    if (opt->fluss) {
+    if (opt->flu.ss) {
         UC(Dalloc(&f->ss, 6*maxp));
         EMALLOC(6*maxp, /**/ &f->ss_hst);        
     }
@@ -103,8 +103,8 @@ _S_ int3 grid_size(int3 L, int3 r) {
 _S_ void ini_sampler(const Coords *c, const Opt *opt, Sampler *s) {
     int3 N, L;
     bool stress, colors;
-    stress = opt->fluss;
-    colors = opt->flucolors;
+    stress = opt->flu.ss;
+    colors = opt->flu.colors;
     L = subdomain(c);
     N = grid_size(L, opt->sampler_grid_ref);
     

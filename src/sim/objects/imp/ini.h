@@ -128,7 +128,7 @@ static void ini_dump(long maxp, Dump **dump) {
 void objects_ini(const Config *cfg, const Opt *opt, MPI_Comm cart, const Coords *coords, int maxp, Objects **objects) {
     Objects *obj;
     int3 L;
-    bool recolor = opt->flucolors;
+    bool recolor = opt->flu.colors;
     EMALLOC(1, objects);
     obj = *objects;
     obj->opt = *opt;

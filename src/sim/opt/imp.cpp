@@ -107,6 +107,7 @@ void opt_read(const Config *c, Opt *o) {
     UC(read_common(c, o));
     UC(read_params(c, &o->params));
     UC(read_dump(c, &o->dump));
+    UC(read_flu(c, &o->flu));
     UC(read_mbr(c, &o->rbc));
     UC(read_rig(c, &o->rig));
 }
