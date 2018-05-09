@@ -35,7 +35,7 @@ _S_ void fin_flu(const Opt *opt, Flu *f) {
     UC(Dfree(f->ff));
     EFREE(f->ff_hst);
 
-    if (opt->fluss) {
+    if (opt->flu.ss) {
         UC(Dfree(f->ss));
         EFREE(f->ss_hst);        
     }
@@ -79,7 +79,7 @@ void sim_fin(Sim *s) {
     UC(fin_optional_features(opt, s));
     
     UC(fin_flu(opt, &s->flu));
-    if (opt->wall) UC(wall_fin(s->wall));
+    if (opt->wall.active) UC(wall_fin(s->wall));
 
     UC(obj_inter_fin(s->objinter));
     UC(objects_fin(s->obj));

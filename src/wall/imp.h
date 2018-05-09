@@ -40,4 +40,4 @@ void wall_force(const PairParams*, const WvelStep *, const Coords*, const Sdf*, 
                 const WallTicket*, int n, const PaArray*, const FoArray*);
 // end::int[]
 
-void wall_repulse(int n, const Particle *pp, const Sdf*, Force *ff);
+void wall_repulse(const Sdf*, long n, const PaArray*, const FoArray*);

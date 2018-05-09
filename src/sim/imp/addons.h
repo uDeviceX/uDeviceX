@@ -80,7 +80,7 @@ _I_ void colors_from_rbc(Sim *s) {
 _I_ void recolor_from_rbc(long it, Sim *s) {
     bool cond;
     const Opt *opt = &s->opt;
-    cond = opt->flucolors && opt->recolor_freq && it % opt->recolor_freq == 0;
+    cond = opt->flu.colors && opt->recolor_freq && it % opt->recolor_freq == 0;
     if (cond) {
         msg_print("recolor");
         UC(colors_from_rbc(s));

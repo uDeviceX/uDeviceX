@@ -35,6 +35,12 @@ static void lookup_string(const Config *c, const char *desc, char *res) {
     strcpy(res, s);
 }
 
+static void read_flu(const Config *c, OptFlu *o) {
+    UC(lookup_bool(c, "flu.colors", &o->colors));
+    UC(lookup_bool(c, "flu.ids", &o->ids));
+    UC(lookup_bool(c, "flu.stresses", &o->ss));
+    UC(lookup_bool(c, "flu.push", &o->push));
+}
 
 static void read_mbr(const Config *c, OptMbr *o) {
     UC(lookup_bool(c, "rbc.active", &o->active));
@@ -52,6 +58,11 @@ static void read_rig(const Config *c, OptRig *o) {
     UC(lookup_bool(c, "rig.empty_pp", &o->empty_pp));
     o->shifttype = get_shifttype(c, "rig.shifttype");
     UC(lookup_bool(c, "rig.push", &o->push));
+}
+
+static void read_wall(const Config *c, OptWall *o) {
+    UC(lookup_bool(c, "wall.active", &o->active));
+    UC(lookup_bool(c, "wall.repulse", &o->repulse));
 }
 
 static void read_params(const Config *c, OptParams *p) {
@@ -81,35 +92,28 @@ static void read_dump(const Config *c, OptDump *o) {
 }
 
 static void read_common(const Config *c, Opt *o) {
-    UC(lookup_bool(c, "flu.ids", &o->fluids));
-
     UC(conf_lookup_int(c, "sampler.n_per_dump", &o->sampler_npdump));
     UC(conf_lookup_int3(c, "sampler.grid_ref", &o->sampler_grid_ref));
 
     UC(lookup_bool(c, "fsi.active", &o->fsi));
     UC(lookup_bool(c, "cnt.active", &o->cnt));
 
-    UC(lookup_bool(c, "flu.colors", &o->flucolors));
-    UC(lookup_bool(c, "flu.ids", &o->fluids));
-    UC(lookup_bool(c, "flu.stresses", &o->fluss));
-
-    UC(lookup_bool(c, "wall.active", &o->wall));    
     UC(lookup_bool(c, "outflow.active", &o->outflow));
     UC(lookup_bool(c, "inflow.active", &o->inflow));
     UC(lookup_bool(c, "denoutflow.active", &o->denoutflow));
     UC(lookup_bool(c, "vcon.active", &o->vcon));
     
     UC(conf_lookup_int(c, "flu.recolor_freq", &o->recolor_freq));
-
-    UC(lookup_bool(c, "flu.push", &o->push_flu));
 }
 
 void opt_read(const Config *c, Opt *o) {
     UC(read_common(c, o));
     UC(read_params(c, &o->params));
     UC(read_dump(c, &o->dump));
+    UC(read_flu(c, &o->flu));
     UC(read_mbr(c, &o->rbc));
     UC(read_rig(c, &o->rig));
+    UC(read_wall(c, &o->wall));
 }
 
 void opt_check(const Opt *o) {
