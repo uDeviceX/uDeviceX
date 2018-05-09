@@ -39,9 +39,11 @@ _S_ void forces_wall(bool fluss, Sim *s) {
     UC(objects_get_particles_all(s->obj, pf));
     UC(wall_interact(s->coords, par, w, pf));
 
-    // UC(pfarrays_clear(pf));
-    // UC(objects_get_particles_all(s->obj, pf));
-    // UC(wall_repulse(w, pf));
+    if (opt->wall.repulse) {
+        UC(pfarrays_clear(pf));
+        UC(objects_get_particles_all(s->obj, pf));
+        UC(wall_repulse(w, pf));
+    }
     UC(pfarrays_fin(pf));
 }
 
