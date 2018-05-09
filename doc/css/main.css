@@ -26,10 +26,6 @@ h6 { font-size:1em }
 #header .details br+span.author:before {
     content:"\00a0\22c5\00a0"
 }
-#toc ul { list-style-type:none }
-p#toc a {
-    text-decoration:none
-}
 
 .literalblock pre, .listingblock pre, listingblock .pygments, .listingblock .pygments code {
     background:#f7f7f8 !important
@@ -52,3 +48,42 @@ p#toc a {
 pre .conum[data-value]{position:relative;top:-.125em}
 b.conum *{color:inherit!important}
 .conum:not([data-value]):empty{display:none}
+
+#header,#content,#footnotes,#footer {
+    width:100%;
+    margin-left:auto;
+    margin-right:auto;
+    margin-top:0;
+    margin-bottom:0;
+    max-width:62.5em; *zoom:1;
+    position:relative;
+    padding-left:.9375em;
+    padding-right:.9375em
+}
+
+/* table of content */
+#toc ul { list-style-type:none }
+p#toc a {
+    text-decoration:none
+}
+
+body.toc2 {
+    padding-left:15em;
+    padding-right:0
+}
+
+#toc.toc2 {
+    margin-top:0!important;
+    background-color:rgba(255,255,255,1);
+    position:fixed;
+    width:15em;
+    left:0;
+    top:0;
+    border-right:1px solid #efefed;
+    border-top-width:0!important;
+    border-bottom-width:0!important;
+    z-index:1000;
+    padding:1.25em 1em;
+    height:100%;
+    overflow:auto
+}
