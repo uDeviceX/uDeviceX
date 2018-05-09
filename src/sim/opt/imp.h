@@ -1,3 +1,8 @@
+/* solvent options */
+struct OptFlu {
+    bool colors, ids, ss, push;
+};
+
 /* membrane options */
 struct OptMbr {
     bool active, ids, stretch, push, dump_com;
