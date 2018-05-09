@@ -62,6 +62,7 @@ static void read_rig(const Config *c, OptRig *o) {
 
 static void read_wall(const Config *c, OptWall *o) {
     UC(lookup_bool(c, "wall.active", &o->active));
+    UC(lookup_bool(c, "wall.repulse", &o->repulse));
 }
 
 static void read_params(const Config *c, OptParams *p) {

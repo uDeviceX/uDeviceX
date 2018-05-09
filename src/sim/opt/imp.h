@@ -17,7 +17,7 @@ struct OptRig {
 
 struct OptWall {
     bool active;
-    // bool repulse;
+    bool repulse;
 };
 
 /* global physical parameters */
