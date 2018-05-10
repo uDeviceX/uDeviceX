@@ -7,15 +7,14 @@ ratprint: false $
 
 assume(sin(u) > 0);
 
-a0: 0.0518; a1: 2.0026; a2: -4.491 $
-C5: 'a2/16; C3: -('a2+2*'a1)/8; C1: ('a2+4*'a1+16*'a0)/16 $
-/* F(c):= 'C5 * c^5 + 'C3 * c^3 + 'C1 * c; */
+a0: 0.2072; a1: 2.0026; a2: -1.12275 $
+C5: 'a2/2; C3: -(2*'a2+'a1)/2; C1: ('a2+'a1+'a0)/2 $
 
 cross(a, b):=express(a ~ b) $
 dot(a, b):=express(a . b) $
 
-x: 1/2*sin(u)*cos(v) $
-y: 1/2*sin(u)*sin(v) $
+x: sin(u)*cos(v) $
+y: sin(u)*sin(v) $
 z: F(cos(u))   $
 
 r: [x, y, z]   $
