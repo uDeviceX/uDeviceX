@@ -7,8 +7,8 @@ ratprint: false $
 
 assume(sin(u) > 0);
 
-a0: 0.2072; a1: 2.0026; a2: -1.12275 $
-C5: 'a2/2; C3: -(2*'a2+'a1)/2; C1: ('a2+'a1+'a0)/2 $
+C0: 0.2072; C2: 2.0026; C4: -1.12275 $
+a: ('C4+'C2+'C0)/2 $ b: -(2*'C4+'C2)/2$ c: 'C4/2$
 
 cross(a, b):=express(a ~ b) $
 dot(a, b):=express(a . b) $
@@ -47,10 +47,10 @@ conv(e):=apply1(e, r_F0, r_F1, r_F2);
 c1: conv(c1) $
 c2: conv(c2) $
 
-F(c):= 'C5 * c^5 + 'C3 * c^3 + 'C1 * c;
+F(q):= 'a * q + 'b * q^3 + 'c * q^5;
 
 with_stdout("5.awk",
   grind('c1 = c1, 'c2 = c2, 'z = z,
-    'a0 = a0, 'a1 = a1, 'a2 = a2,
-    'C5 = C5, 'C3 = C3, 'C1 = C1,
-    'F0 = F(c), 'F1 = diff(F(c), c), 'F2 = diff(F(c), c, 2)));
+    'a = a, 'b = factor(b), 'c = c,
+    'C0 = C0, 'C2 = C2, 'C4 = C4,
+    'F0 = F('q), 'F1 = diff(F('q), 'q), 'F2 = diff(F('q), 'q, 2)));

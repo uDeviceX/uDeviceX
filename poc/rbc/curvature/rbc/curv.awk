@@ -2,14 +2,16 @@
 
 function ini() {
     pi = 3.141592653589793
-    a0 = 0.2072; a1 = 2.0026; a2 = -1.12275
-    C1 = (a2+a1+a0)/2
-    C3 = -(2*a2+a1)/2
-    C5 = a2/2
+    C0 = 0.2072;
+    C2 = 2.0026;
+    C4 = -1.12275;
+    a = (C4+C2+C0)/2
+    c = C4/2
+    b = -(2*C4+C2)/2
 }
-function F0(c) { return C5*c^5+C3*c^3+C1*c   }
-function F1(c) { return 5*C5*c^4+3*C3*c^2+C1 }
-function F2(c) { return 20*C5*c^3+6*C3*c     }
+function F0(q) { return c*q^5+b*q^3+a*q   }
+function F1(q) { return 5*c*q^4+3*b*q^2+a }
+function F2(q) { return 20*c*q^3+6*b*q   }
 function c1(u) {
     return (cos(u)*sin(u)^2*F2(cos(u))-F1(cos(u))) \
 	/(sin(u)^2*F1(cos(u))^2+cos(u)^2)^(3/2)
