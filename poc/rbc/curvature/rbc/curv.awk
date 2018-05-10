@@ -1,7 +1,6 @@
 #!/usr/bin/awk -f
 
 function ini() {
-    pi = 3.141592653589793
     C0 = 0.2072
     C2 = 2.0026
     C4 = -1.12275
@@ -22,7 +21,8 @@ function c2(u) {
 function z(u) { return F0(cos(u))}
 function r(u) { return    sin(u) }
 
-function main(   lo, hi, n, i, u) {
+function main(   lo, hi, n, i, u, pi) {
+    pi = 3.141592653589793
     lo = 0; hi = pi; n = 200
     for (i = 0; i < n; i++) {
 	u = lo + i*(hi - lo)/(n - 1)
