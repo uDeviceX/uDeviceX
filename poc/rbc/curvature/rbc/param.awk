@@ -1,17 +1,17 @@
 function simp(lo, hi, n, p,  i, dx, A, B, C) {
     dx = (hi - lo)/n
-    A = f(lo, p) + f(hi, p)
+    A = fsimp(lo, p) + fsimp(hi, p)
     for (i = 1; i <= n - 1; i += 2) {
 	x = lo + i*dx
-	B += f(x, p)
+	B += fsimp(x, p)
     }
     for (i = 2; i <= n - 2; i += 2) {
 	x = lo + i*dx
-	C += f(x, p)
+	C += fsimp(x, p)
     }
     return dx/3*(A + 4*B + 2*C)
 }
-function f(x, p) { return sqrt(g(x, p)) }
+function fsimp(x, p) { return sqrt(g(x, p)) }
 function g(u, p) { return sin(u)^4*F1(cos(u), p)^2+cos(u)^2*sin(u)^2 }
 
 function F1(q, p,   a, b, c) {
