@@ -1,19 +1,5 @@
-function simp(lo, hi, n, p,  i, dx, A, B, C) {
-    dx = (hi - lo)/n
-    A = fsimp(lo, p) + fsimp(hi, p)
-    for (i = 1; i <= n - 1; i += 2) {
-	x = lo + i*dx
-	B += fsimp(x, p)
-    }
-    for (i = 2; i <= n - 2; i += 2) {
-	x = lo + i*dx
-	C += fsimp(x, p)
-    }
-    return dx/3*(A + 4*B + 2*C)
-}
 function fsimp(x, p) { return sqrt(g(x, p)) }
 function g(u, p) { return sin(u)^4*F1(cos(u), p)^2+cos(u)^2*sin(u)^2 }
-
 function F1(q, p,   a, b, c) {
     a = p[1]; b = p[2]; c = p[3]
     return 5*c*q^4+3*b*q^2+a
@@ -38,8 +24,14 @@ function area(a, b, c,    lo, hi, n, pi, p) {
 }
 
 BEGIN {
+    # g = 0.1036, k = 0.375806, be = 0.668099
     ini()
+    pi = 3.141592653589793
     V = volume(a, b, c)
     A = area(a, b, c)
-    print A, V
+    print a + b + c         # g
+    print a + 3/5*b + 3/7*c # k
+    V0 = 3/4*pi
+    print V/V0              # be
+#    print A, V
 }
