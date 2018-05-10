@@ -26,10 +26,14 @@ guu: dot(ru, ru) $
 guv: dot(ru, rv) $
 gvv: dot(rv, rv) $
 g  : determinant(matrix([guu, guv], [guv, gvv])) $
-g  : trigsimp(g) $
+g  : trigsimp(g);
 
 dS: sqrt(g);
 dS: trigsimp(dS);
+
+dV: dot(cross(ru, rv), [0, 0, z])  $
+V: integrate(integrate(dV, u, 0, %pi), v, 0, 2*%pi) $
+V: gcfac(ratexpand(V));
 
 /* S: integrate(integrate(sqrt(g), u, 0, %pi), v, 0, 2*%pi);
 S: gcfac(ratexpand(S)); */
