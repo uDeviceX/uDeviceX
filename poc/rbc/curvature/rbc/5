@@ -7,50 +7,56 @@ ratprint: false $
 
 assume(sin(u) > 0);
 
-a0: 0.0518; a1: 2.0026; a2: -4.491;
-C5: a2/16; C3: -(a2+2*a1)/8; C1: (a2+4*a1+16*a0)/16;
+a0: 0.0518; a1: 2.0026; a2: -4.491 $
+C5: 'a2/16; C3: -('a2+2*'a1)/8; C1: ('a2+4*'a1+16*'a0)/16 $
+/* F(c):= 'C5 * c^5 + 'C3 * c^3 + 'C1 * c; */
 
-F(c):= C5 * c^5 + C3 * c^3 + C1 * c;
-/* F(c):= 1/2*c; */
+matchdeclare(al, all)                         $
+defrule(r_sin0, sin(al)^2, 1 - cos(al)^2)     $
+defrule(r_sin1, sin(al)^4, (1 - cos(al)^2)^2) $
+to_cos(e):=apply1(e, r_sin0, r_sin1) $
 
-matchdeclare(al, all);
-defrule(r_sin0, sin(al)^2, 1 - cos(al)^2);
-defrule(r_sin1, sin(al)^4, (1 - cos(al)^2)^2);
-to_cos(e):=apply1(e, r_sin0, r_sin1);
+cross(a, b):=express(a ~ b) $
+dot(a, b):=express(a . b) $
 
-cross(a, b):=express(a ~ b);
-dot0(a, b):=express(a . b);
-dot(a, b):=express(a . b);
+x: 1/2*sin(u)*cos(v) $
+y: 1/2*sin(u)*sin(v) $
+z: F(cos(u))   $
 
-x: 1/2*sin(u)*cos(v);
-y: 1/2*sin(u)*sin(v);
-z: F(cos(u));
+r: [x, y, z]   $
+ru: diff(r, u) $
+rv: diff(r, v) $
 
-r: [x, y, z];
-ru: diff(r, u);
-rv: diff(r, v);
+guu: dot(ru, ru) $
+guv: dot(ru, rv) $
+gvv: dot(rv, rv) $
+g  : determinant(matrix([guu, guv], [guv, gvv])) $
 
-ruu: diff(r, u, 2);
-rvv: diff(r, v, 2);
-ruv: diff(diff(r, v), u);
+ruu: diff(r, u, 2) $
+rvv: diff(r, v, 2) $
+ruv: diff(diff(r, v), u) $
+n   :  cross(ru, rv) / sqrt(g) $
 
-n:  trigsimp(cross(trigsimp(ru), trigsimp(rv)));
-nn: dot(n, n);
-nn: to_cos(gcfac(nn));
+c1: fullratsimp(trigsimp(dot(ruu, n))) / guu $
+c1: trigsimp(c1) $
+M: trigsimp(dot(ruv, n)) $
+if M # 0 then error("4: M should be zero") $
+c2: dot(rvv, n)              / gvv $
+c2: trigsimp(c2) $
 
-L: fullratsimp(trigsimp(dot(ruu, n))) / dot(ru, ru);
-M: trigsimp(dot(ruv, n));
-N: trigsimp(dot(rvv, n))              / dot(rv, rv);
+matchdeclare(x, true);
+defrule(r_F0, F(x),             F0(x));
+defrule(r_F1, pderivop(F,1)(x), F1(x));
+defrule(r_F2, pderivop(F,2)(x), F2(x));
 
-c1: L/sqrt(nn);
-c2: N/sqrt(nn);
+conv(e):=apply1(e, r_F0, r_F1, r_F2);
+c1: conv(c1) $
+c2: conv(c2) $
 
-o: "main" $
-printf(true, "write: ~a.png~%", o)$
-draw2d(nticks=100, terminal = 'png, file_name  = o,
-  'xlabel = "R", 'ylabel = "1/R", 'key_pos = 'bottom_left, 'line_width = 3,
-  'key = "c1",                 'color = 'red,   parametric(x, c1, u, 0, %pi/2),
-  'key = "c2",                 'color = 'green, parametric(x, c2, u, 0, %pi/2),  
-  'key = "bi-concave profile", 'color = 'black, parametric(x,  30*z, u, 0, %pi/2),
-  'key = "",                   'color = 'black, parametric(x, -30*z, u, 0, %pi/2)
-  ), v = 0;
+F(c):= 'C5 * c^5 + 'C3 * c^3 + 'C1 * c;
+
+with_stdout("5.awk",
+  grind('c1 = c1, 'c2 = c2, 'z = z,
+    'a0 = a0, 'a1 = a1, 'a2 = a2,
+    'C5 = C5, 'C3 = C3, 'C1 = C1,
+    'F0 = F(c), 'F1 = diff(F(c), c), 'F2 = diff(F(c), c, 2)));

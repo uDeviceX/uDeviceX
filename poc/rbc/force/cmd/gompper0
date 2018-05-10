@@ -168,7 +168,7 @@ function compute_e(   m, num, den) {
 function write_vert(   m, r) {
     for (m = 0; m < NV; m++) {
 	r = sqrt(XX[m]^2 + YY[m]^2)
-	print r, PHI[m], GOMPPER[m], FX[m], FY[m], FZ[m], AREA_VER[m]
+	print r, PHI[m], AREA_VER[m], GOMPPER[m], FX[m], FY[m], FZ[m]
     }
 }
 

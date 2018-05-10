@@ -53,12 +53,18 @@ ka: read_nested_list(ka) $
 fun(l):=[l[1]/D, l[4]*D^3] $
 ka: map(fun, ka) $
 
+gm: "../data/gompper.txt" $
+gm: read_nested_list(gm) $
+fun(l):=[l[1]/D, l[4]*D^2] $
+gm: map(fun, gm) $
+
 o: "main" $
-printf(true, "write: ~a.png~%", o)$
-draw2d(nticks=100, terminal = 'png, file_name  = o,
+printf(true, "write: ~a.pdf~%", o)$
+draw2d(nticks=100, terminal = 'pdf, file_name  = o,
   'xlabel = "R", 'ylabel = "energy", 'key_pos = 'top_left, 'line_width = 3,
-  'key = "Julicher",   'color = 'red,   points(ju),
   'key = "Kantor",     'color = 'green, points(ka),
+  'key = "Julicher",   'color = 'red,   points(ju),
+  'key = "Gompper",     'color = 'brown, points(gm),
   'key = "analit.",    'color = 'blue,  parametric(x, (1/2*(c1 + c2))^2, u, 0, %pi/2),
   'key = "bi-concave profile",    'color = 'black, parametric(x, 50*z, u, 0, %pi/2)
   ), v = 0;
