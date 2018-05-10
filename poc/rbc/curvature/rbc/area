@@ -28,6 +28,8 @@ gvv: dot(rv, rv) $
 g  : determinant(matrix([guu, guv], [guv, gvv])) $
 g  : trigsimp(g) $
 
-S: integrate(integrate(g, v, 0, 2*%pi), u, 0, 2*%pi);
+dS: sqrt(g);
+dS: trigsimp(dS);
 
-
+/* S: integrate(integrate(sqrt(g), u, 0, %pi), v, 0, 2*%pi);
+S: gcfac(ratexpand(S)); */
