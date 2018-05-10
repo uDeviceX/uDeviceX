@@ -26,17 +26,20 @@ function ini(   C0, C2, C4) {
     c = C4/2
     b = -(2*C4+C2)/2
 }
-function volume(   pi) {
+function volume(a, b, c,   pi) {
     pi = 3.141592653589793
     return (4*pi*(3*c/7+3*b/5+a))/3
+}
+function area(a, b, c,    lo, hi, n, pi, p) {
+    pi = 3.141592653589793
+    lo = 0; hi = pi; n = 200
+    p[1] = a; p[2] = b; p[3] = c
+    return 2*pi*simp(lo, hi, n, p)
 }
 
 BEGIN {
     ini()
-    pi = 3.141592653589793
-    lo = 0; hi = pi; n = 200
-    p[1] = a; p[2] = b; p[3] = c
-    A = 2*pi*simp(lo, hi, n, p)
-    V = volume()
-    print A
+    V = volume(a, b, c)
+    A = area(a, b, c)
+    print A, V
 }
