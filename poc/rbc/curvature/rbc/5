@@ -11,11 +11,6 @@ a0: 0.0518; a1: 2.0026; a2: -4.491 $
 C5: 'a2/16; C3: -('a2+2*'a1)/8; C1: ('a2+4*'a1+16*'a0)/16 $
 /* F(c):= 'C5 * c^5 + 'C3 * c^3 + 'C1 * c; */
 
-matchdeclare(al, all)                         $
-defrule(r_sin0, sin(al)^2, 1 - cos(al)^2)     $
-defrule(r_sin1, sin(al)^4, (1 - cos(al)^2)^2) $
-to_cos(e):=apply1(e, r_sin0, r_sin1) $
-
 cross(a, b):=express(a ~ b) $
 dot(a, b):=express(a . b) $
 
