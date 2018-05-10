@@ -1,8 +1,10 @@
 function bisect(lo, hi, p,   mi, fl, fh, fm, eps) {
     eps = 1e-12
-    if (hi < lo) bisect_err(sprintf("hi='%s' < lo='%s'", lo, hi))
+    if (hi < lo)
+	bisect_err(sprintf("hi='%s' < lo='%s'", lo, hi))
     fl = fbisect(lo); fh = fbisect(hi)
-    if (!bisect_sgn(fl, fh)) bisect_err(sprintf("fbisect has the same sign at '%s' and '%s'", lo, hi))
+    if (!bisect_sgn(fl, fh))
+	bisect_err(sprintf("fbisect has the same sign at '%s' and '%s'", lo, hi))
     for (;;) {
 	mi = (hi + lo)/2
 	if (hi - lo < eps) return mi
@@ -14,9 +16,7 @@ function bisect(lo, hi, p,   mi, fl, fh, fm, eps) {
 	}
     }
 }
-
 function fbisect(x, p) { return x^3 - 2 }
-
 BEGIN {
     lo = 0; hi = 4
     print bisect(lo, hi)
