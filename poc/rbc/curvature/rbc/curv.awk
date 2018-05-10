@@ -1,6 +1,6 @@
 #!/usr/bin/awk -f
 
-function ini() {
+function ini(   C0, C2, C4) {
     C0 = 0.2072
     C2 = 2.0026
     C4 = -1.12275

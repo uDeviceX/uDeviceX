@@ -7,9 +7,9 @@ ratprint: false $
 
 assume(sin(u) > 0);
 
-C0: 0.2072; C2: 2.0026; C4: -1.12275 $
-a: ('C4+'C2+'C0)/2 $ b: -(2*'C4+'C2)/2$ c: 'C4/2$
-F(q):= 'c*q^5+'b*q^3+'a*q $
+/* C0: 0.2072; C2: 2.0026; C4: -1.12275 $
+a: (C4+C2+C0)/2 $ b: -(2*C4+C2)/2$ c: C4/2$
+F(q):= c*q^5+b*q^3+a*q $ */
 
 cross(a, b):=express(a ~ b) $
 dot(a, b):=express(a . b) $
@@ -31,9 +31,9 @@ g  : trigsimp(g);
 dS: sqrt(g);
 dS: trigsimp(dS);
 
-dV: dot(cross(ru, rv), [0, 0, z])  $
-V: integrate(integrate(dV, u, 0, %pi), v, 0, 2*%pi) $
-V: gcfac(ratexpand(V));
+matchdeclare(x, true);
+defrule(r_F1, pderivop(F,1)(x), F1(x));
 
-/* S: integrate(integrate(sqrt(g), u, 0, %pi), v, 0, 2*%pi);
-S: gcfac(ratexpand(S)); */
+conv(e):=apply1(e, r_F1);
+conv(g);
+grind(%);
