@@ -1,5 +1,5 @@
-CC = c99
-CFLAGS += -O3 -g -Wall 
+CC = gcc
+CFLAGS += -O3 -g -Wall -std=c99 
 
 BIN=$(HOME)/bin
 
