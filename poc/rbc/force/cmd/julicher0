@@ -189,12 +189,20 @@ function scatter_energy(   m, i, j, k) {
 BEGIN {
     ini()
     if (noarg()) err("needs FILE.off")
-    file = first_arg()
-    if (eq(file, "-h")) usg()
+
+    while (!noarg()) {
+	arg = ARGV[1]
+	if      (eq(arg, "-h")) usg()
+	else if (eq(arg, "-r")) Rbc=1
+	else if (eq(arg, "-r")) Sph=1
+	else file = arg
+	shift()
+    }
+
     off_read(file)
     to_cm()
-    to_rbc()
-    # to_r1()
+    if (Rbc) to_rbc()
+    if (Sph) to_r1()
     setup()
 
     compute_ang()
