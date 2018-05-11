@@ -1,0 +1,2 @@
+# TEST: gompper.0
+cmd/gompper data/rbc/a/0.off > forces.out.dat
