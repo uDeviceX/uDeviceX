@@ -1,4 +1,4 @@
-function ini() { prog = "main" }
+function ini() { prog = "gompper1" }
 function usg() {
     printf "%s FILE.off\n", prog | "cat >&2"
     printf "compute membrain bending forces\n" | "cat >&2"
