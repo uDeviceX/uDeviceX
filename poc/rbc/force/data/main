@@ -1,0 +1,8 @@
+#!/bin/sh
+
+for e in kantor julicher gompper
+do mkdir -p   data/rbc/a/$e
+   for i in 0 1 2 3
+   do cmd/$e data/rbc/a/$i.off  > data/rbc/a/$e/$i
+   done
+done
