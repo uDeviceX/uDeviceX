@@ -1,8 +1,8 @@
-o = "pdf/kantor.pdf"
+o = "pdf/gompper.pdf"
 
-f0 = "<sort -g data/rbc/a/kantor/" . "0"
-f1 = "<sort -g data/rbc/a/kantor/" . "1"
-f2 = "<sort -g data/rbc/a/kantor/" . "2"
+f0 = "<sort -g data/rbc/a/gompper/" . "0"
+f1 = "<sort -g data/rbc/a/gompper/" . "1"
+f2 = "<sort -g data/rbc/a/gompper/" . "2"
 r  = "<awk '$1>0' data/rbc/a/curv"
 
 print o
@@ -27,7 +27,7 @@ set y2label "energy [T^2/L]" offset -2c
 set lmargin 5.5
 set rmargin 6.5
 
-sc = 0.005
+sc = 0.0015
 plot r                                  w l lt 1 lw 1 t "",  \
      f2 u 1:($2*16)           axes x1y2 w l lt 3 lw 2 t "2", \
      f1 u 1:($2*4)            axes x1y2 w l lt 2 lw 2 t "1", \
