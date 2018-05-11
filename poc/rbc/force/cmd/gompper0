@@ -149,7 +149,7 @@ function d_compute_e(   m, num, den) {
     for (m = 0; m < NV; m++) {
 	num = XT[m]^2 + YT[m]^2 + ZT[m]^2
 	den = L2T[m]
-	# GOMPPER[m] = 2 * num / den
+	# E[m] = 2 * num / den
 	dE_l2t[m] = - 2 * num   / den^2
 	dE_xt[m]  =   4 * XT[m] / den
 	dE_yt[m]  =   4 * YT[m] / den
@@ -161,14 +161,14 @@ function compute_e(   m, num, den) {
     for (m = 0; m < NV; m++) {
 	num = XT[m]^2 + YT[m]^2 + ZT[m]^2
 	den = L2T[m]
-	GOMPPER[m] = 2 * num / den
+	E[m] = 2 * num / den
     }
 }
 
 function write_vert(   m, r) {
     for (m = 0; m < NV; m++) {
 	r = sqrt(XX[m]^2 + YY[m]^2)
-	print r, PHI[m], AREA_VER[m], GOMPPER[m], FX[m], FY[m], FZ[m]
+	print r, E[m], FX[m], FY[m], FZ[m], PHI[m], AREA_VER[m]
     }
 }
 

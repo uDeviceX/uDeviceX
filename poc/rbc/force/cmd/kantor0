@@ -33,6 +33,16 @@ function compute_area(   m, i, j, k) {
     }
 }
 
+function scatter_area(    m, i, j, k, A) {
+    clear(AREA_VER)
+    for (m = 0; m < NT; m++) {
+	i = T0[m]; j = T1[m]; k = T2[m]; A = AREA_TRI[m]
+	AREA_VER[i] += A/3
+	AREA_VER[j] += A/3
+	AREA_VER[k] += A/3
+    }
+}
+
 function compute_kantor(    m, i, j, ang, A, eng) {
     clear(E)
     for (m = 0; m < NE; m++) {
@@ -84,7 +94,7 @@ function scatter_kantor(   m, i, j, k) {
 function write_vert(   m, r) {
     for (m = 0; m < NV; m++) {
 	r = sqrt(XX[m]^2 + YY[m]^2)
-	print r, E[m], FX[m], FY[m], FZ[m], F[m]
+	print r, E[m], FX[m], FY[m], FZ[m], AREA_VER[m]
     }
 }
 
@@ -105,12 +115,13 @@ BEGIN {
     if (eq(file, "-h")) usg()
     off_read(file)
     to_cm()
-    to_r1()
+    # to_r1()
     to_rbc()
     setup()
 
     compute_ang()
     compute_area()
+    scatter_area()
     compute_kantor()
 
     clear(FX) clear(FY); clear(FZ)
@@ -127,5 +138,5 @@ BEGIN {
     vtk_write("o.vtk", vert, tri)
 
     off_write("o.off")
-    write_tri()
+    write_vert()
 }
