@@ -1,0 +1,66 @@
+/*
+
+O.-Y. Zhong-Can, W. Helfrich, Bending energy of vesicle membranes:
+General expressions for the first, second, and third variation of the
+shape energy and applications to spheres and cylinders, Phys. Rev. A
+39 (10) (1989) 5280–5288.  http://dx.doi.org/10.1103/PhysRevA.39.5280.
+
+*/
+
+
+load("vect")   $
+load("pdiff")  $
+load("scifac") $
+ratprint: false $
+
+(X: 1, Y: 2, Z: 3) $
+
+assume(sin(u) > 0) $
+
+va0: [
+  'a  = ('C0+'C2+'C4)/2,
+  'b  = -('C2+2*'C4)/2,
+  'c  = 'C4/2];
+va1: [
+  'C0 = 0.2072, 'C2 = 2.0026, 'C4 = -1.1228];
+va: va0, va1;
+
+/* F(q):= 'a*q + 'b*q^3 + 'c*q^5; */
+cross(a, b):=express(a ~ b);
+dot(a, b):=express(a . b);
+
+x: sin('u)*cos('v);
+y: sin('u)*sin('v);
+z: F(cos('u))         ;
+
+r: [x, y, z];
+ru: diff(r, 'u);
+rv: diff(r, 'v);
+
+guu: dot(ru, ru) $
+guv: dot(ru, rv) $
+gvv: dot(rv, rv) $
+g  : determinant(matrix([guu, guv], [guv, gvv])) $
+
+ruu: diff(r, 'u, 2) $
+rvv: diff(r, 'v, 2) $
+ruv: diff(diff(r, 'v), 'u)   $
+n  : cross(ru, rv) / sqrt(g) $
+
+c1: dot(ruu, n)/guu $
+c1: fullratsimp(trigsimp(dot(ruu, n))) / guu $
+c1: trigsimp(c1) $
+
+c2: dot(rvv, n) / gvv $
+c2: trigsimp(c2) $
+
+H: (c1 + c2)/2 $
+K: c2 * c2     $
+
+ds(p):= block(
+  [p1: diff(p, 'u), p2: diff(p, 'v), g11: guu, g22: gvv],
+  1/sqrt(g) * (
+    diff(p1 * sqrt(g22/g11), 'u) +
+    diff(p2 * sqrt(g11/g22), 'v)))$
+
+f: 2 * (2*H*(H^2 - K) + ds(H)) $
