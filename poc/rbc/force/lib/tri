@@ -40,6 +40,18 @@ function tri_normal(a, c, b,   X, Y, Z) {
     NZ = orient2d_xy(a, b, c)
 }
 
+function tri_normal0(ax, ay, az, bx, by, bz, cx, cy, cz,
+		     #
+		     a, b, c, X, Y, Z) {
+    X = 0; Y = 1; Z = 2
+    a[X] = ax; a[Y] = ay; a[Z] = az
+    b[X] = bx; b[Y] = by; b[Z] = bz
+    c[X] = cx; c[Y] = cy; c[Z] = cz
+    NX = orient2d_yz(a, b, c)
+    NY = orient2d_zx(a, b, c)
+    NZ = orient2d_xy(a, b, c)    
+}
+
 function orient3d(a, b, c, d,   ax, bx, cx,   X, Y, Z) {
     X = 0; Y = 1; Z = 2
     ax = a[X] - d[X]; ay = a[Y] - d[Y]; az = a[Z] - d[Z]

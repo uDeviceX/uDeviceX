@@ -22,6 +22,27 @@ function compute_area(   m, i, j, k) {
     }
 }
 
+function compute_normal(   m, i, j, k) {
+    for (m = 0; m < NT; m++) {
+	i = T0[m]; j = T1[m]; k = T2[m]
+	tri_normal0(XX[i], YY[i], ZZ[i],
+		    XX[j], YY[j], ZZ[j],
+		    XX[k], YY[k], ZZ[k])
+	NX_TRI[m] = NX; NY_TRI[m] = NY; NZ_TRI[m] = NZ
+    }
+}
+
+function scatter_normal(   m, i, j, k, nx, ny, nz) {
+    clear(NX_VER); clear(NY_VER); clear(NZ_VER)
+    for (m = 0; m < NT; m++) {
+	i = T0[m]; j = T1[m]; k = T2[m]
+	nx = NX_TRI[m]; ny = NY_TRI[m]; nz = NZ_TRI[m]
+	NX_VER[i] += nx/3; NX_VER[j] += nx/3; NX_VER[k] += nx/3
+	NY_VER[i] += ny/3; NY_VER[j] += ny/3; NY_VER[k] += ny/3
+	NZ_VER[i] += nz/3; NZ_VER[j] += nz/3; NZ_VER[k] += nz/3
+    }
+}
+
 function scatter_area(    m, i, j, k, A) {
     clear(AREA_VER)
     for (m = 0; m < NT; m++) {
@@ -165,10 +186,13 @@ function compute_e(   m, num, den) {
     }
 }
 
-function write_vert(   m, r) {
+function write_vert(   m, r, nx, ny, nz, x, y, z, sc) {
     for (m = 0; m < NV; m++) {
 	r = sqrt(XX[m]^2 + YY[m]^2)
-	print r, E[m], FX[m], FY[m], FZ[m], PHI[m], AREA_VER[m]
+	nx = NX_VER[m]; ny = NY_VER[m]; nz = NZ_VER[m]
+	x  = XX[m]; y = YY[m]; z = ZZ[m]
+	sc = x*nx + y*ny + z*nz
+	print r, E[m], FX[m], FY[m], FZ[m], PHI[m], AREA_VER[m] # , sc
     }
 }
 
@@ -202,6 +226,8 @@ BEGIN {
     d_compute_cotangent()
     d_compute_edg_len()
 
+    compute_normal()
+    scatter_normal()
     compute_phi()
     compute_area()
     scatter_area()
