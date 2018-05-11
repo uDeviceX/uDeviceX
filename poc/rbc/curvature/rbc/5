@@ -42,7 +42,6 @@ matchdeclare(x, true);
 defrule(r_F0, F(x),             F0(x));
 defrule(r_F1, pderivop(F,1)(x), F1(x));
 defrule(r_F2, pderivop(F,2)(x), F2(x));
-
 conv(e):=apply1(e, r_F0, r_F1, r_F2);
 c1: conv(c1) $
 c2: conv(c2) $
@@ -53,4 +52,5 @@ with_stdout("5.awk",
   grind('c1 = c1, 'c2 = c2, 'z = z,
     'a = a, 'b = factor(b), 'c = c,
     'C0 = C0, 'C2 = C2, 'C4 = C4,
-    'F0 = F('q), 'F1 = diff(F('q), 'q), 'F2 = diff(F('q), 'q, 2)));
+    'F0 = F('q), 'F1 = diff(F('q), 'q), 'F2 = diff(F('q), 'q, 2),
+    'F3 = diff(F('q), 'q, 3), 'F4 = diff(F('q), 'q, 4)));

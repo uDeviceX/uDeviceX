@@ -60,13 +60,13 @@ function shape(p,   lo, hi, n, i, u, pi) {
 BEGIN {
     # g = 0.1036; k = 0.375806; be = 0.644463
     g = 0.25; k = 0.375806; be = 0.644463
-    
     p[1] = g; p[2] = k; p[3] = be
     lo = 0.0; hi = 10.0
     a = bisect(lo, hi, p)
     kga2bc(k, g, a)
     b = PAR_B; c = PAR_C
     bisect_msg("area:   " area(a, b, c))
+    bisect_msg(sprintf("abc: %s %s %s", a, b, c))
     p[1] = a; p[2] = b; p[3] = c
     shape(p)
 }

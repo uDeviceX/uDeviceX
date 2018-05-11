@@ -1,0 +1,8 @@
+#!/bin/sh
+
+r="off.refine -s"
+
+off.icosahedron | $r | $r | $r |                off.rbc  > data/rbc/a/0.off
+off.icosahedron | $r | $r | $r | $r |           off.rbc  > data/rbc/a/1.off
+off.icosahedron | $r | $r | $r | $r | $r |      off.rbc  > data/rbc/a/2.off
+off.icosahedron | $r | $r | $r | $r | $r | $r | off.rbc  > data/rbc/a/3.off

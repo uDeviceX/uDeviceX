@@ -1,13 +1,3 @@
-/*
-
-O.-Y. Zhong-Can, W. Helfrich, Bending energy of vesicle membranes:
-General expressions for the first, second, and third variation of the
-shape energy and applications to spheres and cylinders, Phys. Rev. A
-39 (10) (1989) 5280–5288.  http://dx.doi.org/10.1103/PhysRevA.39.5280.
-
-*/
-
-
 load("vect")   $
 load("pdiff")  $
 load("scifac") $
@@ -15,17 +5,15 @@ ratprint: false $
 
 (X: 1, Y: 2, Z: 3) $
 
+matchdeclare(x, true)                  $
+defrule(r_F0, F(x),             F0(x)) $
+defrule(r_F1, pderivop(F,1)(x), F1(x)) $
+defrule(r_F2, pderivop(F,2)(x), F2(x)) $
+defrule(r_F3, pderivop(F,3)(x), F3(x)) $
+defrule(r_F4, pderivop(F,4)(x), F4(x)) $
+conv(e):=apply1(e, r_F0, r_F1, r_F2, r_F3, r_F4)   $
 assume(sin(u) > 0) $
 
-va0: [
-  'a  = ('C0+'C2+'C4)/2,
-  'b  = -('C2+2*'C4)/2,
-  'c  = 'C4/2];
-va1: [
-  'C0 = 0.2072, 'C2 = 2.0026, 'C4 = -1.1228];
-va: va0, va1;
-
-/* F(q):= 'a*q + 'b*q^3 + 'c*q^5; */
 cross(a, b):=express(a ~ b);
 dot(a, b):=express(a . b);
 
@@ -64,3 +52,11 @@ ds(p):= block(
     diff(p2 * sqrt(g11/g22), 'v)))$
 
 f: 2 * (2*H*(H^2 - K) + ds(H)) $
+
+ds: ds(H) $
+ds: subst(v = 0, ds) $
+ds: trigsimp(ds)     $
+ds: conv(ds)         $
+
+with_stdout("f.awk",
+   grind('ds = ds));
