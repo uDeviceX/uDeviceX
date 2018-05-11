@@ -186,13 +186,13 @@ function compute_e(   m, num, den) {
     }
 }
 
-function write_vert(   m, r, nx, ny, nz, x, y, z, sc) {
+function write_vert(   m, r, nx, ny, nz, x, y, z, s) {
     for (m = 0; m < NV; m++) {
 	r = sqrt(XX[m]^2 + YY[m]^2)
 	nx = NX_VER[m]; ny = NY_VER[m]; nz = NZ_VER[m]
-	x  = XX[m]; y = YY[m]; z = ZZ[m]
-	sc = x*nx + y*ny + z*nz
-	print r, E[m], FX[m], FY[m], FZ[m], PHI[m], AREA_VER[m] # , sc
+	x = XX[m]; y = YY[m]; z = ZZ[m]
+	s = x*nx + y*ny + z*nz
+	print r, E[m], FX[m], FY[m], FZ[m], PHI[m], AREA_VER[m] # , s
     }
 }
 
