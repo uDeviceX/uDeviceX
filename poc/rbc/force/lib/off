@@ -18,7 +18,7 @@ function off_read(file,   l, r, i) { # sets NV, NT, [XX, YY, ZZ], [T0, T1, T2]
     close(file)
 }
 
-function off_write(file,  ne, m) {
+function off_write(file,  ne, nvp, m) {
     ne = 0; nvp = 3
     printf "OFF\n" > file
     printf "%d %d %d\n", NV, NT, ne > file
