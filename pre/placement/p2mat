@@ -1,7 +1,7 @@
 "${AWK-awk}" '
 function usg() {
     msg("usage: <stream of positions> | plcmt.p2mat <scale> <angle/rnd>")
-    msg("  prints 4x4 affine matrixes from coordinates; angle is rotation around OX")
+    msg("  prints 4x4 affine matrixes from coordinates; angle is rotation around OX (radians)")
     msg("  if angle=rnd angle is random")
     exit
 }

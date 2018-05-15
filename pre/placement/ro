@@ -7,10 +7,10 @@ usg () {
     msg "$prog Lx Ly Lz r     f    sc ang     solid.out rbc.out"
     msg '   ro(`rbc and solid`) : create initial conditons for rbc and solid'
     msg '   L[xyz]: domain sizes'
-    msg '   r: radious of a sphere for packing'
+    msg '   r: radius of a sphere for packing'
     msg '   f: fraction of solids'
     msg '   sc: scale for RBCs'
-    msg '   ang: angle of rotation around OX ("rnd" for random)'
+    msg '   ang: angle of rotation around OX in radians ("rnd" for random)'
     exit
 }
 
