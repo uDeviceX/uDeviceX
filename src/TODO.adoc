@@ -1,0 +1,28 @@
+= TODO list for code
+
+== general and simpl configuration of pairwise forces
+
+what parameters between different particles
+
+=== now implemented
+
+* flu-flu (in flu)
+* flu-walls (in flu; mirrored)
+* flu-obj (in fsi)
+* obj-obj ((in cnt)
+* obj-walls (in flu)
+
+=== Improvement?
+
+* flu-flu (in flu)
+* flu-walls (in flu; mirrored)
+* flu-obj (in each obj: fsi namespace)
+* obj-obj ((in cnt)
+* obj-walls (in each obj: wall namespace)
+
+
+== configuration of wall repulsion
+
+Specify which object is repulsed and with what parameters
+
+Possible conf in each object with a section repulsion...
