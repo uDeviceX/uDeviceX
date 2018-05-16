@@ -30,6 +30,11 @@ void pair_set_dpd(int ncol, const float a[], const float g[], float spow, PairPa
     p->spow = spow;
 }
 
+void pair_set_adhesion(float k1, float k2, PairParams *p) {
+    p->k1 = k1;
+    p->k2 = k2;
+}
+
 void pair_compute_dpd_sigma(float kBT, float dt, PairParams *p) {
     int i, npar, ncol;
     ncol = p->ncolors;
@@ -81,3 +86,7 @@ void pair_get_view_dpd_lj(const PairParams *p, PairDPDLJ *v) {
     v->spow = p->spow;
 }
 
+void pair_get_view_adhesion(const PairParams *p, PairAdhesion *v) {
+    v->k1 = p->k1;
+    v->k2 = p->k2;
+}

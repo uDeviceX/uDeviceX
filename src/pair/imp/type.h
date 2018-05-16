@@ -7,5 +7,9 @@ struct PairParams {
 
     float ljs; /* lennard jones sigma   */
     float lje; /* lennard jones epsilon */
+
+    /* adhesion parameters */
+    float k1; /* spring constant */ 
+    float k2; /* viscous coeff   */
 };
 
