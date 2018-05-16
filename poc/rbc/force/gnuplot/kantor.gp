@@ -3,6 +3,9 @@ o = "pdf/kantor.pdf"
 f0 = "<sort -g data/rbc/a/kantor/" . "0"
 f1 = "<sort -g data/rbc/a/kantor/" . "1"
 f2 = "<sort -g data/rbc/a/kantor/" . "2"
+
+fe = "<sort -g data/rbc/eq/kantor/" . "01"
+
 r  = "<awk '$1>0' data/rbc/a/curv"
 
 print o
@@ -21,15 +24,15 @@ set xlabel "r [L]"
 set xtics  0.5
 set ytics  0.4 nomirror
 set y2tics 5.0 nomirror
-set ylabel "z [L]"            offset  3c
+set ylabel "z [L]"           offset  3c
 set y2label "energy [T^2/L]" offset -2c
 
 set lmargin 5.5
 set rmargin 6.5
 
 sc = 0.005
-plot r                                  w l lt 1 lw 1 t "",  \
-     f2 u 1:($2*16)           axes x1y2 w l lt 3 lw 2 t "2", \
-     f1 u 1:($2*4)            axes x1y2 w l lt 2 lw 2 t "1", \
-     f0                       axes x1y2 w l lt 1 lw 2 t "0", \
-     r  u 1:(($3 + $4)**2*sc) axes x1y2 w l lt 1 lw 4 t "reference"
+plot \
+     fe u 1:($2*2)            axes x1y2 w dots        t "relaxed mesh", \
+     f0                       axes x1y2 w l lt 3 lw 4 t "initial mesh", \
+     r  u 1:(($3 + $4)**2*sc) axes x1y2 w l lt 1 lw 4 t "Helfrich",     \
+     r                                  w l lt 1 lw 1 t "mesh profile"

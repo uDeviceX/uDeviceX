@@ -94,7 +94,7 @@ function scatter_kantor(   m, i, j, k) {
 function write_vert(   m, r) {
     for (m = 0; m < NV; m++) {
 	r = sqrt(XX[m]^2 + YY[m]^2)
-	print r, E[m], FX[m], FY[m], FZ[m], AREA_VER[m]
+	print r, E[m], FX[m], FY[m], FZ[m], AREA_VER[m], ZZ[m]
     }
 }
 
