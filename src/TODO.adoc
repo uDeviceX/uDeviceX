@@ -20,6 +20,39 @@ what parameters between different particles
 * obj-obj ((in cnt)
 * obj-walls (in each obj: wall namespace)
 
+=== Improvement v2
+
+add one string for each type of interactions;
+string is a namespace in conf with parameters of that interaction
+
+ex:
+
+[source,cfg]
+----
+flu = {
+    ...
+    pair = "pair_fluflu"
+}
+
+pair_fluflu = {
+    dpd = true
+    ...
+}
+
+rbc = {
+    pairfsi = "pair_rbcflu"
+    paircnt = "pair_objobj"
+    pairwall = "pair_adhesion"
+}
+
+rig = {
+    pairfsi = "rigflu"
+    paircnt = "objobj"
+    pairwall = "pair_fluflu"
+}
+
+...
+----
 
 == configuration of wall repulsion
 
