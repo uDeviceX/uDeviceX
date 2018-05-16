@@ -24,6 +24,9 @@ struct PairDPDLJ {
     float ljs, lje;
 };
 
+struct PairAdhesion {
+    float k1, k2;
+};
 
 struct PairPa {
     float x, y, z;
