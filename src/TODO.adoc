@@ -80,3 +80,7 @@ ctc = {
 ...
 
 ----
+
+== fsi and cnt params aware
+
+fsi and cnt should use different pair parameters depending on object type
