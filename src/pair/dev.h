@@ -56,6 +56,13 @@ _S_ float magn_lj(float s, float e, float invr) {
     return f;
 }
 
+_S_ float magn_adhesion(float k1, float k2, float r, float ev) {
+    float spring, visc;
+    spring = - k1 * r;
+    visc   = - k2 * ev;
+    return spring + visc;
+}
+
 _S_ float force_magn(const PairDPD *p, float rnd, float ev, float r, float) {
     return magn_dpd(p->a, p->g, p->s, p->spow, rnd, r, ev);
 }
@@ -65,6 +72,10 @@ _S_ float force_magn(const PairDPDLJ *p, float rnd, float ev, float r, float inv
     f  = magn_dpd(p->a, p->g, p->s, p->spow, rnd, r, ev);
     f += magn_lj(p->ljs, p->lje, invr);
     return f;
+}
+
+_S_ float force_magn(const PairAdhesion *p, float, float ev, float r, float) {
+    return magn_adhesion(p->k1, p->k2, r, ev);
 }
 
 _S_ void magn2fo(float f0, float3 er, float3 dr, /**/ PairFo *f) {
