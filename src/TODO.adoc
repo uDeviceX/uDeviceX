@@ -46,8 +46,8 @@ rbc = {
 }
 
 rig = {
-    pairfsi = "rigflu"
-    paircnt = "objobj"
+    pairfsi = "pair_rigflu"
+    paircnt = "pair_objobj"
     pairwall = "pair_fluflu"
 }
 
