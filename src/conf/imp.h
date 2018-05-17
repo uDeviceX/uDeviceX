@@ -16,9 +16,9 @@ void conf_lookup_int(const Config *c, const char *desc, int *a);
 void conf_lookup_float(const Config *c, const char *desc, float *a);
 void conf_lookup_bool(const Config *c, const char *desc, int *a);
 void conf_lookup_string(const Config *c, const char *desc, const char **a);
-void conf_lookup_vint(const Config *c, const char *desc, int *n, int a[]);
+void conf_lookup_vint(const Config *c, const char *desc, int maxn, int *n, int a[]);
 void conf_lookup_int3(const Config *c, const char *desc, int3 *a);
-void conf_lookup_vfloat(const Config *c, const char *desc, int *n, float a[]);
+void conf_lookup_vfloat(const Config *c, const char *desc, int maxn, int *n, float a[]);
 void conf_lookup_float3(const Config *c, const char *desc, float3 *a);
 // end::lookup[]
 
@@ -27,9 +27,9 @@ void conf_lookup_int_ns(const Config *c, const char *ns, const char *desc, int *
 void conf_lookup_float_ns(const Config *c, const char *ns, const char *desc, float *a);
 void conf_lookup_bool_ns(const Config *c, const char *ns, const char *desc, int *a);
 void conf_lookup_string_ns(const Config *c, const char *ns, const char *desc, const char **a);
-void conf_lookup_vint_ns(const Config *c, const char *ns, const char *desc, int *n, int a[]);
+void conf_lookup_vint_ns(const Config *c, const char *ns, const char *desc, int maxn, int *n, int a[]);
 void conf_lookup_int3_ns(const Config *c, const char *ns, const char *desc, int3 *a);
-void conf_lookup_vfloat_ns(const Config *c, const char *ns, const char *desc, int *n, float a[]);
+void conf_lookup_vfloat_ns(const Config *c, const char *ns, const char *desc, int maxn, int *n, float a[]);
 void conf_lookup_float3_ns(const Config *c, const char *ns, const char *desc, float3 *a);
 // end::ns[]
 
@@ -38,9 +38,9 @@ bool conf_opt_int(const Config *c, const char *desc, int *a);
 bool conf_opt_float(const Config *c, const char *desc, float *a);
 bool conf_opt_bool(const Config *c, const char *desc, int *a);
 bool conf_opt_string(const Config *c, const char *desc, const char **a);
-bool conf_opt_vint(const Config *c, const char *desc, int *n, int a[]);
+bool conf_opt_vint(const Config *c, const char *desc, int maxn, int *n, int a[]);
 bool conf_opt_int3(const Config *c, const char *desc, int3 *a);
-bool conf_opt_vfloat(const Config *c, const char *desc, int *n, float a[]);
+bool conf_opt_vfloat(const Config *c, const char *desc, int maxn, int *n, float a[]);
 bool conf_opt_float3(const Config *c, const char *desc, float3 *a);
 // end::opt[]
 

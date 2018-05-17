@@ -59,13 +59,14 @@ static int lookup_string(const Config *c, const char *desc, const char **a) {
     return status;
 }
 
-static int lookup_vint(const Config *c, const char *desc, int *n, int a[]) {
+static int lookup_vint(const Config *c, const char *desc, int maxn, int *n, int a[]) {
     config_setting_t *s, *e;
     int j, status;
     status = lookup_setting(c, desc, /**/ &s);
     if (status != OK) return status;
     if (config_setting_type(s) != CONFIG_TYPE_ARRAY) return WTYPE;
     *n = config_setting_length(s);
+    if (*n > maxn) ERR("Too many components: %d / %d", *n, maxn);
     for (j = 0; j < *n; ++j) {
         e = config_setting_get_elem(s, j);
         if (config_setting_type(e) != CONFIG_TYPE_INT) return WTYPE;
@@ -78,7 +79,7 @@ static int lookup_vint(const Config *c, const char *desc, int *n, int a[]) {
 static int lookup_int3(const Config *c, const char *desc, int3 *a) {
     enum {X, Y, Z};
     int status, n = 0, f[3];
-    status = lookup_vint(c, desc, &n, f);
+    status = lookup_vint(c, desc, 3, &n, f);
     if (status != OK) return status;
     if (n != 3)
         ERR("fail to read `%s`: int3 must have 3 components, found %d", desc, n);
@@ -88,13 +89,14 @@ static int lookup_int3(const Config *c, const char *desc, int3 *a) {
     return status;
 }
 
-static int lookup_vfloat(const Config *c, const char *desc, int *n, float a[]) {
+static int lookup_vfloat(const Config *c, const char *desc, int maxn, int *n, float a[]) {
     config_setting_t *s, *e;
     int j, status;
     status = lookup_setting(c, desc, /**/ &s);
     if (status != OK) return status;
     if (config_setting_type(s) != CONFIG_TYPE_ARRAY) return WTYPE;
     *n = config_setting_length(s);
+    if (*n > maxn) ERR("Too many components: %d / %d", *n, maxn);
     for (j = 0; j < *n; ++j) {
         e = config_setting_get_elem(s, j);
         if (config_setting_type(e) != CONFIG_TYPE_FLOAT) return WTYPE;
@@ -108,7 +110,7 @@ static int lookup_float3(const Config *c, const char *desc, float3 *a) {
     enum {X, Y, Z};
     int n = 0, status;
     float f[3];
-    status = lookup_vfloat(c, desc, &n, f);
+    status = lookup_vfloat(c, desc, 3, &n, f);
     if (status != OK) return status;
     if (n != 3)
         ERR("fail to read `%s`: float3 must have 3 components, found %d", desc, n);
@@ -140,8 +142,8 @@ void conf_lookup_string(const Config *c, const char *desc, const char **a) {
     UC(treat_status(status, desc, "string"));
 }
 
-void conf_lookup_vint(const Config *c, const char *desc, int *n, int a[]) {
-    int status = lookup_vint(c, desc, n, a);
+void conf_lookup_vint(const Config *c, const char *desc, int maxn, int *n, int a[]) {
+    int status = lookup_vint(c, desc, maxn, n, a);
     UC(treat_status(status, desc, "array of int"));
 }
 
@@ -150,8 +152,8 @@ void conf_lookup_int3(const Config *c, const char *desc, int3 *a) {
     UC(treat_status(status, desc, "array of int"));
 }
 
-void conf_lookup_vfloat(const Config *c, const char *desc, int *n, float a[]) {
-    int status = lookup_vfloat(c, desc, n, a);
+void conf_lookup_vfloat(const Config *c, const char *desc, int maxn, int *n, float a[]) {
+    int status = lookup_vfloat(c, desc, maxn, n, a);
     UC(treat_status(status, desc, "array of float"));
 }
 
@@ -188,10 +190,10 @@ void conf_lookup_string_ns(const Config *c, const char *ns, const char *d, const
     UC(conf_lookup_string(c, desc, a));
 }
 
-void conf_lookup_vint_ns(const Config *c, const char *ns, const char *d, int *n, int a[]) {
+void conf_lookup_vint_ns(const Config *c, const char *ns, const char *d, int maxn, int *n, int a[]) {
     char desc[FILENAME_MAX];
     get_desc(ns, d, desc);
-    UC(conf_lookup_vint(c, desc, n, a));
+    UC(conf_lookup_vint(c, desc, maxn, n, a));
 }
 
 void conf_lookup_int3_ns(const Config *c, const char *ns, const char *d, int3 *a) {
@@ -200,10 +202,10 @@ void conf_lookup_int3_ns(const Config *c, const char *ns, const char *d, int3 *a
     UC(conf_lookup_int3(c, desc, a));
 }
 
-void conf_lookup_vfloat_ns(const Config *c, const char *ns, const char *d, int *n, float a[]) {
+void conf_lookup_vfloat_ns(const Config *c, const char *ns, const char *d, int maxn, int *n, float a[]) {
     char desc[FILENAME_MAX];
     get_desc(ns, d, desc);
-    UC(conf_lookup_vfloat(c, desc, n, a));
+    UC(conf_lookup_vfloat(c, desc, maxn, n, a));
 }
 
 void conf_lookup_float3_ns(const Config *c, const char *ns, const char *d, float3 *a) {
@@ -230,16 +232,16 @@ bool conf_opt_string(const Config *c, const char *desc, const char **a)  {
     return OK == lookup_string(c, desc, a);
 }
 
-bool conf_opt_vint(const Config *c, const char *desc, int *n, int a[]) {
-    return OK == lookup_vint(c, desc, n, a);
+bool conf_opt_vint(const Config *c, const char *desc, int maxn, int *n, int a[]) {
+    return OK == lookup_vint(c, desc, maxn, n, a);
 }
 
 bool conf_opt_int3(const Config *c, const char *desc, int3 *a) {
     return OK == lookup_int3(c, desc, a);
 }
 
-bool conf_opt_vfloat(const Config *c, const char *desc, int *n, float a[]) {
-    return OK == lookup_vfloat(c, desc, n, a);
+bool conf_opt_vfloat(const Config *c, const char *desc, int maxn, int *n, float a[]) {
+    return OK == lookup_vfloat(c, desc, maxn, n, a);
 }
 
 bool conf_opt_float3(const Config *c, const char *desc, float3 *a) {

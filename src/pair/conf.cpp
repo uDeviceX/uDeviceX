@@ -36,13 +36,13 @@ void pair_set_conf(const Config *cfg, const char *base, PairParams *par) {
         float a[MAX_PAR], g[MAX_PAR], spow;
 
         get_desc(base, "a", desc);
-        UC(conf_lookup_vfloat(cfg, desc, &na, a));
+        UC(conf_lookup_vfloat(cfg, desc, MAX_PAR, &na, a));
 
         if (na > MAX_PAR)
             ERR("Too many parameters in %s.a : %d/%d", base, na, MAX_PAR);
             
         get_desc(base, "g", desc);
-        UC(conf_lookup_vfloat(cfg, desc, &ng, g));
+        UC(conf_lookup_vfloat(cfg, desc, MAX_PAR, &ng, g));
 
         get_desc(base, "spow", desc);
         UC(conf_lookup_float(cfg, desc, &spow));
