@@ -135,7 +135,7 @@ static int lookup_vstring(const Config *c, const char *desc, int maxn, int *n, c
         if (config_setting_type(e) != CONFIG_TYPE_STRING) return WTYPE;
         ss[j] = config_setting_get_string(e);
     }
-    //set_vstring(desc, *n, a, c->r);
+    set_vstring(desc, *n, ss, c->r);
     return status;
 }
 
@@ -178,6 +178,12 @@ void conf_lookup_float3(const Config *c, const char *desc, float3 *a) {
     int status = lookup_float3(c, desc, a);
     UC(treat_status(status, desc, "array of float"));
 }
+
+void conf_lookup_vstring(const Config *c, const char *desc, int maxn, int *n, const char **ss) {
+    int status = lookup_vstring(c, desc, maxn, n, ss);
+    UC(treat_status(status, desc, "array of string"));
+}
+
 
 static void get_desc(const char *ns, const char *d, char *desc) {
     sprintf(desc, "%s.%s", ns, d);
@@ -231,6 +237,12 @@ void conf_lookup_float3_ns(const Config *c, const char *ns, const char *d, float
     UC(conf_lookup_float3(c, desc, a));
 }
 
+void conf_lookup_vstring_ns(const Config *c, const char *ns, const char *d, int maxn, int *n, const char **ss) {
+    char desc[FILENAME_MAX];
+    get_desc(ns, d, desc);
+    UC(conf_lookup_vstring(c, desc, maxn, n, ss));
+}
+
 
 
 bool conf_opt_int(const Config *c, const char *desc, int *a) {
@@ -263,4 +275,8 @@ bool conf_opt_vfloat(const Config *c, const char *desc, int maxn, int *n, float 
 
 bool conf_opt_float3(const Config *c, const char *desc, float3 *a) {
     return OK == lookup_float3(c, desc, a);
+}
+
+bool conf_opt_vstring(const Config *c, const char *desc, int maxn, int *n, const char **ss) {
+    return OK == lookup_vstring(c, desc, maxn, n, ss);
 }

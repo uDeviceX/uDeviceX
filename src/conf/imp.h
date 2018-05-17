@@ -20,6 +20,7 @@ void conf_lookup_vint(const Config *c, const char *desc, int maxn, int *n, int a
 void conf_lookup_int3(const Config *c, const char *desc, int3 *a);
 void conf_lookup_vfloat(const Config *c, const char *desc, int maxn, int *n, float a[]);
 void conf_lookup_float3(const Config *c, const char *desc, float3 *a);
+void conf_lookup_vstring(const Config *c, const char *desc, int maxn, int *n, const char **ss);
 // end::lookup[]
 
 // tag::ns[]
@@ -31,6 +32,7 @@ void conf_lookup_vint_ns(const Config *c, const char *ns, const char *desc, int 
 void conf_lookup_int3_ns(const Config *c, const char *ns, const char *desc, int3 *a);
 void conf_lookup_vfloat_ns(const Config *c, const char *ns, const char *desc, int maxn, int *n, float a[]);
 void conf_lookup_float3_ns(const Config *c, const char *ns, const char *desc, float3 *a);
+void conf_lookup_vstring_ns(const Config *c, const char *ns, const char *d, int maxn, int *n, const char **ss);
 // end::ns[]
 
 // tag::opt[]
@@ -42,6 +44,7 @@ bool conf_opt_vint(const Config *c, const char *desc, int maxn, int *n, int a[])
 bool conf_opt_int3(const Config *c, const char *desc, int3 *a);
 bool conf_opt_vfloat(const Config *c, const char *desc, int maxn, int *n, float a[]);
 bool conf_opt_float3(const Config *c, const char *desc, float3 *a);
+bool conf_opt_vstring(const Config *c, const char *desc, int maxn, int *n, const char **ss);
 // end::opt[]
 
 // tag::set[]
