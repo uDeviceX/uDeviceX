@@ -61,8 +61,8 @@ Possible conf in each object with a section repulsion...
 
 == Many membranes/objects
 
-* no hardcoded filenames
-* make arrays in sim/objects
+* no hardcoded filenames Done
+* make arrays in sim/objects Done
 * adapt configuration as, for ex:
 
 ----
