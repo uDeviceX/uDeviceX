@@ -19,10 +19,14 @@ static void set_created(IoRig *io) {
     strcpy(io->mode, "a");
 }
 
+static void gen_fname(const char *rig_name, int id, char *fname) {
+    sprintf(fname, DUMP_BASE "/%s_diag_%04d.txt", rig_name, id);
+}
+
 void io_rig_dump(const Coords *c, float t, int ns, const Solid *ss, const Solid *ssbb, IoRig *io) {
-    enum {X, Y, Z};
-    char fname[256];
-    float com[3];
+    enum {X, Y, Z, D};
+    char fname[FILENAME_MAX];
+    float com[D];
     FILE *fp = NULL;
     int j;
     const Solid *s, *sbb;
@@ -31,7 +35,7 @@ void io_rig_dump(const Coords *c, float t, int ns, const Solid *ss, const Solid 
         s   = ss   + j;
         sbb = ssbb + j;
 
-        sprintf(fname, DUMP_BASE "/solid_diag_%04d.txt", (int) s->id);
+        gen_fname("solid", s->id, fname);
         UC(efopen(fname, io->mode, /**/ &fp));
         fprintf(fp, "%+.6e ", t);
 
