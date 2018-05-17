@@ -1,5 +1,3 @@
-enum {X, Y, Z};
-
 void io_rig_ini(IoRig **iop) {
     IoRig *io;
     EMALLOC(1, iop);
@@ -12,6 +10,7 @@ void io_rig_fin(IoRig *io) {
 }
 
 static void write_v(FILE *f, const float v[3]) {
+    enum {X, Y, Z};
     fprintf(f, "%+.6e %+.6e %+.6e ", v[X], v[Y], v[Z]);
 }
 
