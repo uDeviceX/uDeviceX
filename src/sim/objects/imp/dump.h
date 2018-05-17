@@ -27,7 +27,7 @@ static void dump_diag_mbr(MPI_Comm cart, const Coords *coords, Mbr *m, Dump *d) 
     float3 *rr, *vv;
     if (m->com) {
         UC(rbc_com_apply(m->com, nc, q->pp, /**/ &rr, &vv));
-        UC(io_com_dump(cart, coords, d->id_diag, nc, q->ii, rr));
+        UC(io_com_dump(cart, coords, m->name, d->id_diag, nc, q->ii, rr));
     }
 }
 
@@ -37,7 +37,6 @@ static void dump_diag_rig(float t, const Coords *coords, Rig *r, Dump *d) {
     UC(io_rig_dump(coords, t, r->name, q->ns, q->ss_dmp, q->ss_dmp_bb, d->rig));
 }
 
-/* TODO different namings */
 void objects_diag_dump(float t, Objects *obj) {
     int i;
     Dump *d = obj->dump;
