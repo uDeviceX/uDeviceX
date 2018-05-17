@@ -81,7 +81,7 @@ static void ini_mbr(const Config *cfg, const OptMbr *opt, MPI_Comm cart, int3 L,
     UC(rbc_force_ini(m->mesh, /**/ &m->force));
     UC(rbc_force_set_conf(m->mesh, cfg, m->force));
 
-    UC(conf_lookup_float(cfg, "rbc.mass", &m->mass));
+    m->mass = opt->mass;
 
     if (recolor) UC(ini_mesh_exch(L, nv, max_m, cart, /**/ &m->mesh_exch));
     if (recolor) UC(ini_colorer(nv, max_m, /**/ &m->colorer));

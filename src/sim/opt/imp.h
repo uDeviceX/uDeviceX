@@ -7,6 +7,7 @@ struct OptFlu {
 struct OptMbr {
     bool active, ids, stretch, push, dump_com;
     int shifttype;
+    float mass;
 };
 
 /* rigid options */
