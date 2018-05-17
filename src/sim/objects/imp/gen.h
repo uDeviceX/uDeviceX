@@ -27,7 +27,7 @@ static void remove_mbr(const Sdf *sdf, Mbr *m) {
     q->nc = sdf_who_stays(sdf, q->n, q->pp, nc0 = q->nc, q->nv, /**/ stay);
     q->n = q->nc * q->nv;
     remove(q->pp, q->nv, stay, q->nc);
-    msg_print("rbc: %d/%d survived", q->nc, nc0);
+    msg_print("%s: %d/%d survived", m->name, q->nc, nc0);
 }
 
 static void remove_rig(const Sdf *sdf, Rig *r) {
@@ -44,7 +44,7 @@ static void remove_rig(const Sdf *sdf, Rig *r) {
 
     remove(q->i_pp,     q->nv, stay, q->ns);
     remove(q->i_pp_hst, q->nv, stay, q->ns);
-    msg_print("rig: %d/%d survived", q->ns, ns0);
+    msg_print("%s: %d/%d survived", r->name, q->ns, ns0);
 }
 
 void objects_remove_from_wall(const Sdf *sdf, Objects *o) {
