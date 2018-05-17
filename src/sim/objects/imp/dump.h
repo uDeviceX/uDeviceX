@@ -8,7 +8,6 @@ static void dump_mesh_rig(MPI_Comm cart, const Coords *coords, Particle *pp, lon
     UC(mesh_write_particles(r->mesh_write, cart, coords, r->q.ns, pp, id));
 }
 
-/* TODO different namings */
 void objects_mesh_dump(Objects *obj) {
     int i;
     Dump *d = obj->dump;
