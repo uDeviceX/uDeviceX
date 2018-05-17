@@ -78,7 +78,7 @@ void objects_gen_freeze(PFarray *flu, Objects *o) {
         gen_freeze_mbr(o->cart, o->mbr[i]);
 
     for (i = 0; i < o->nrig; ++i)
-        gen_freeze_rig(o->coords, o->cart, opt->rig.empty_pp, opt->params.numdensity, flu, o->rig[i]);
+        gen_freeze_rig(o->coords, o->cart, opt->rig[i].empty_pp, opt->params.numdensity, flu, o->rig[i]);
 
     o->active = true;
 }

@@ -172,15 +172,20 @@ void opt_read(const Config *c, Opt *o) {
     UC(read_dump(c, &o->dump));
     UC(read_flu(c, &o->flu));
 
-    UC(read_mbr(c, o->restart, "rbc", &o->mbr));
-    UC(read_rig(c, o->restart, "rig", &o->rig));
+    UC(read_mbr_array(c, o->restart, &o->nmbr, o->mbr));
+    UC(read_rig_array(c, o->restart, &o->nrig, o->rig));
 
     UC(read_wall(c, &o->wall));
 }
 
+static void check_mbr(const OptMbr *m) {
+    if (m->dump_com && !m->ids)
+        ERR("%s: Need ids activated to dump com!", m->name);
+}
+
 void opt_check(const Opt *o) {
-    if (o->mbr.dump_com && !o->mbr.ids)
-        ERR("Need rbc.ids activated to dump rbc com!");
+    for (int i = 0; i < o->nmbr; ++i)
+        check_mbr(&o->mbr[i]);
 }
 
 static long maxp_estimate(const OptParams *p) {

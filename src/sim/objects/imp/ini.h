@@ -138,6 +138,12 @@ static void ini_dump(long maxp, Dump **dump) {
     d->id = d->id_diag = 0;
 }
 
+static bool need_bb(int n, const OptRig *r) {
+    int i;
+    for (i = 0; i < n; ++i) if (r[i].bounce) return true;
+    return false;
+}
+
 void objects_ini(const Config *cfg, const Opt *opt, MPI_Comm cart, const Coords *coords, int maxp, Objects **objects) {
     Objects *obj;
     int3 L;
@@ -154,16 +160,16 @@ void objects_ini(const Config *cfg, const Opt *opt, MPI_Comm cart, const Coords 
 
     obj->bb  = NULL;
 
-    obj->nmbr = opt->mbr.active ? 1 : 0; // TODO: configuration
-    obj->nrig = opt->rig.active ? 1 : 0; // TODO: configuration
+    obj->nmbr = opt->nmbr;
+    obj->nrig = opt->nrig;
 
     if (obj->nmbr) EMALLOC(obj->nmbr, &obj->mbr);
     if (obj->nrig) EMALLOC(obj->nrig, &obj->rig);
 
-    for (i = 0; i < obj->nmbr; ++i) UC(ini_mbr(cfg, &opt->mbr, cart, L, recolor, &obj->mbr[i]));
-    for (i = 0; i < obj->nrig; ++i) UC(ini_rig(cfg, &opt->rig, cart, maxp, L, &obj->rig[i]));
+    for (i = 0; i < obj->nmbr; ++i) UC(ini_mbr(cfg, &opt->mbr[i], cart, L, recolor, &obj->mbr[i]));
+    for (i = 0; i < obj->nrig; ++i) UC(ini_rig(cfg, &opt->rig[i], cart, maxp, L, &obj->rig[i]));
 
-    if (opt->rig.bounce) UC(meshbb_ini(maxp, /**/ &obj->bb));
+    if (need_bb(opt->nrig, opt->rig)) UC(meshbb_ini(maxp, /**/ &obj->bb));
         
     UC(ini_dump(maxp, &obj->dump));
 }
