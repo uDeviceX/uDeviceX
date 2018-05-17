@@ -13,9 +13,7 @@
 
 #include "imp.h"
 
-static int get_shifttype(const Config *c, const char *desc) {
-    const char *type;
-    UC(conf_lookup_string(c, desc, &type));
+static int str2shifttype(const char *type) {
     if      (same_str(type, "edge"  )) return MESH_WRITE_EDGE;
     else if (same_str(type, "center")) return MESH_WRITE_CENTER;
     else
@@ -23,9 +21,27 @@ static int get_shifttype(const Config *c, const char *desc) {
     return -1;
 }
 
+static int get_shifttype(const Config *c, const char *desc) {
+    const char *type;
+    UC(conf_lookup_string(c, desc, &type));
+    return str2shifttype(type);
+ }
+
+static int get_shifttype_ns(const Config *c, const char *ns, const char *d) {
+    const char *type;
+    UC(conf_lookup_string_ns(c, ns, d, &type));
+    return str2shifttype(type);
+}
+
 static void lookup_bool(const Config *c, const char *desc, bool *res) {
     int b;
     UC(conf_lookup_bool(c, desc, &b));
+    *res = b;
+}
+
+static void lookup_bool_ns(const Config *c, const char *ns, const char *desc, bool *res) {
+    int b;
+    UC(conf_lookup_bool_ns(c, ns, desc, &b));
     *res = b;
 }
 
@@ -42,15 +58,15 @@ static void read_flu(const Config *c, OptFlu *o) {
     UC(lookup_bool(c, "flu.push", &o->push));
 }
 
-static void read_mbr(const Config *c, OptMbr *o) {
-    UC(lookup_bool(c, "rbc.active", &o->active));
-    UC(lookup_bool(c, "rbc.ids", &o->ids));
-    UC(lookup_bool(c, "rbc.stretch", &o->stretch));
-    o->shifttype = get_shifttype(c, "rbc.shifttype");
-    UC(lookup_bool(c, "rbc.push", &o->push));
+static void read_mbr(const Config *c, const char *ns, OptMbr *o) {
+    UC(lookup_bool_ns(c, ns, "active", &o->active));
+    UC(lookup_bool_ns(c, ns, "ids", &o->ids));
+    UC(lookup_bool_ns(c, ns, "stretch", &o->stretch));
+    o->shifttype = get_shifttype_ns(c, ns, "shifttype");
+    UC(lookup_bool_ns(c, ns, "push", &o->push));
     
     UC(lookup_bool(c, "dump.rbc_com", &o->dump_com));
-    UC(conf_lookup_float(c, "rbc.mass", &o->mass));
+    UC(conf_lookup_float_ns(c, ns, "mass", &o->mass));
 }
 
 static void read_rig(const Config *c, OptRig *o) {
@@ -113,7 +129,7 @@ void opt_read(const Config *c, Opt *o) {
     UC(read_params(c, &o->params));
     UC(read_dump(c, &o->dump));
     UC(read_flu(c, &o->flu));
-    UC(read_mbr(c, &o->rbc));
+    UC(read_mbr(c, "rbc", &o->rbc));
     UC(read_rig(c, &o->rig));
     UC(read_wall(c, &o->wall));
 }
