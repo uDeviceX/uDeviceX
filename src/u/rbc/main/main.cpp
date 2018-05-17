@@ -52,7 +52,7 @@ int main(int argc, char **argv) {
     UC(conf_lookup_float(cfg, "rbc.mass", &mass));
 
     UC(rbc_params_ini(&par));
-    UC(rbc_params_set_conf(cfg, par));
+    UC(rbc_params_set_conf(cfg, "rbc", par));
 
     UC(bforce_ini(&bforce));
     UC(bforce_set_conf(cfg, /**/ bforce));
