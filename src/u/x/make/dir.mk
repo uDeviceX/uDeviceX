@@ -38,7 +38,6 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/fsi                   && \
     d $B/grid_sampler          && \
     d $B/inter/color           && \
-    d $B/inter/freeze          && \
     d $B/io/bop                && \
     d $B/io/com                && \
     d $B/io/diag/mesh          && \
