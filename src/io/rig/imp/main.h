@@ -1,4 +1,4 @@
-#define BASE DUMP_BASE "/diag"
+#define BASE DUMP_BASE "/diag/rig"
 
 void io_rig_ini(IoRig **iop) {
     IoRig *io;

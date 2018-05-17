@@ -18,4 +18,4 @@ bforce = {
     type = "double_poiseuille"
     a    = 5.0
 }'
-cat diag/rig.0000.txt | awk '{print $2, $5, $8}' | uscale 5 > sdiag.out.txt
+cat diag/rig/rig.0000.txt | awk '{print $2, $5, $8}' | uscale 5 > sdiag.out.txt
