@@ -68,7 +68,7 @@ static void ini_mbr(const Config *cfg, const OptMbr *opt, MPI_Comm cart, int3 L,
     strcpy(m->name, "rbc");
     gen_name_mesh_dir(m->name, mesh_dir);
     
-    UC(mesh_read_ini_off("rbc.off", &m->mesh));
+    UC(mesh_read_ini_off(opt->templ_file, &m->mesh));
     UC(mesh_write_ini_from_mesh(cart, opt->shifttype, m->mesh, mesh_dir, /**/ &m->mesh_write));
 
     nv = mesh_read_get_nv(m->mesh);
@@ -79,7 +79,7 @@ static void ini_mbr(const Config *cfg, const OptMbr *opt, MPI_Comm cart, int3 L,
     UC(ini_mbr_distr(opt->ids, nv, cart, L, /**/ &m->d));
 
     if (opt->dump_com) UC(rbc_com_ini(nv, max_m, /**/ &m->com));
-    if (opt->stretch)  UC(rbc_stretch_ini("rbc.stretch", nv, /**/ &m->stretch));
+    if (opt->stretch)  UC(rbc_stretch_ini(opt->stretch_file, nv, /**/ &m->stretch));
 
     UC(rbc_params_ini(&m->params));
     UC(rbc_params_set_conf(cfg, m->name, m->params));
