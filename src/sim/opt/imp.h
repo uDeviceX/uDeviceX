@@ -9,6 +9,7 @@ struct OptMbr {
     int shifttype;
     float mass;
     char templ_file[FILENAME_MAX];
+    char ic_file[FILENAME_MAX];
     char stretch_file[FILENAME_MAX];
 };
 
@@ -18,6 +19,7 @@ struct OptRig {
     int shifttype;
     float mass;
     char templ_file[FILENAME_MAX];
+    char ic_file[FILENAME_MAX];
 };
 
 struct OptWall {
