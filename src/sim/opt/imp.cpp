@@ -86,6 +86,8 @@ static void read_rig(const Config *c, const char *ns, OptRig *o) {
     o->shifttype = get_shifttype_ns(c, ns, "shifttype");
     UC(lookup_bool_ns(c, ns, "push", &o->push));
     UC(conf_lookup_float_ns(c, ns, "mass", &o->mass));
+
+    UC(lookup_string_ns(c, ns, "templ_file", o->templ_file));
 }
 
 static void read_wall(const Config *c, OptWall *o) {

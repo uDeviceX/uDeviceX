@@ -17,6 +17,7 @@ struct OptRig {
     bool active, bounce, empty_pp, push;
     int shifttype;
     float mass;
+    char templ_file[FILENAME_MAX];
 };
 
 struct OptWall {
