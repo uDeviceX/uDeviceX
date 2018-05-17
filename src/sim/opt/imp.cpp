@@ -81,6 +81,8 @@ static void read_mbr(const Config *c, bool restart, const char *ns, OptMbr *o) {
 
     if (o->stretch)
         UC(lookup_string_ns(c, ns, "stretch_file", o->stretch_file));
+
+    strcpy(o->name, ns);
 }
 
 static void read_rig(const Config *c, bool restart, const char *ns, OptRig *o) {
@@ -93,7 +95,9 @@ static void read_rig(const Config *c, bool restart, const char *ns, OptRig *o) {
 
     UC(lookup_string_ns(c, ns, "templ_file", o->templ_file));
     if (restart) o->ic_file[0] = '\0';        
-    else         UC(lookup_string_ns(c, ns, "ic_file", o->ic_file));        
+    else         UC(lookup_string_ns(c, ns, "ic_file", o->ic_file));
+
+    strcpy(o->name, ns);
 }
 
 static void read_wall(const Config *c, OptWall *o) {

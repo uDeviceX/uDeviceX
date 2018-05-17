@@ -11,6 +11,7 @@ struct OptMbr {
     char templ_file[FILENAME_MAX];
     char ic_file[FILENAME_MAX];
     char stretch_file[FILENAME_MAX];
+    char name[FILENAME_MAX];
 };
 
 /* rigid options */
@@ -20,6 +21,7 @@ struct OptRig {
     float mass;
     char templ_file[FILENAME_MAX];
     char ic_file[FILENAME_MAX];
+    char name[FILENAME_MAX];
 };
 
 struct OptWall {

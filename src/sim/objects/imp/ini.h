@@ -64,8 +64,7 @@ static void ini_mbr(const Config *cfg, const OptMbr *opt, MPI_Comm cart, int3 L,
     m->stretch   = NULL;
     m->colorer   = NULL;
     m->mesh_exch = NULL;
-    // TODO: from opt
-    strcpy(m->name, "rbc");
+    strcpy(m->name, opt->name);
     strcpy(m->ic_file, opt->ic_file);
     gen_name_mesh_dir(m->name, mesh_dir);
     
@@ -104,8 +103,8 @@ static void ini_rig(const Config *cfg, const OptRig *opt, MPI_Comm cart, int max
 
     r->bbdata    = NULL;
     r->mesh_exch = NULL;
-    // TODO: from opt
-    strcpy(r->name, "rig");
+
+    strcpy(r->name, opt->name);
     strcpy(r->ic_file, opt->ic_file);
     gen_name_mesh_dir(r->name, mesh_dir);
     
