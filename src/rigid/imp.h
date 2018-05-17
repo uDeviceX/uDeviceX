@@ -11,7 +11,7 @@ void rig_pininfo_ini(RigPinInfo **); // <1>
 void rig_pininfo_fin(RigPinInfo *); // <2>
 void rig_pininfo_set(int3 com, int3 axis, RigPinInfo *); // <3>
 void rig_pininfo_set_pdir(int pdir, RigPinInfo *); // <4>
-void rig_pininfo_set_conf(const Config *cfg, RigPinInfo *); // <5>
+void rig_pininfo_set_conf(const Config *cfg, const char *ns, RigPinInfo *); // <5>
 
 int rig_pininfo_get_pdir(const RigPinInfo *); // <6>
 // end::pin[]
