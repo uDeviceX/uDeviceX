@@ -23,4 +23,4 @@ rbc = {
     shifttype=\"center\"
 }
 "
-ply2punto r/00001.ply > ply.out.txt
+ply2punto ply.rbc/00001.ply > ply.out.txt
