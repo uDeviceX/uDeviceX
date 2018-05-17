@@ -88,7 +88,7 @@ static void read_mbr(const Config *c, bool restart, const char *ns, OptMbr *o) {
 static void read_mbr_array(const Config *c, bool restart, int *nmbr, OptMbr *oo) {
     int i, n;
     const char *ss[MAX_MBR_TYPES];
-    UC(conf_lookup_vstring(c, "mbr", MAX_MBR_TYPES, &n, ss));
+    UC(conf_lookup_vstring(c, "membranes", MAX_MBR_TYPES, &n, ss));
     for (i = 0; i < n; ++i)
         UC(read_mbr(c, restart, ss[i], &oo[i]));
     *nmbr = n;
@@ -112,7 +112,7 @@ static void read_rig(const Config *c, bool restart, const char *ns, OptRig *o) {
 static void read_rig_array(const Config *c, bool restart, int *nrig, OptRig *oo) {
     int i, n;
     const char *ss[MAX_RIG_TYPES];
-    UC(conf_lookup_vstring(c, "rig", MAX_RIG_TYPES, &n, ss));
+    UC(conf_lookup_vstring(c, "rigids", MAX_RIG_TYPES, &n, ss));
     for (i = 0; i < n; ++i)
         UC(read_rig(c, restart, ss[i], &oo[i]));
     *nrig = n;
