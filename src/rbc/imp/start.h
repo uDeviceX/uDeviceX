@@ -1,10 +1,14 @@
 #define PP  ".pp"
 #define IDS ".ids"
 
+static void gen_code(const char *name, const char *ext, char *code) {
+    strcpy(code, name);
+    strcat(code, ext);
+}
+
 static void setup_from_strt(MPI_Comm comm, const char *base, const char *name, int nv, int id, /**/ Particle *pp, int *nc, int *n, /*w*/ Particle *pp_hst) {
     char code[FILENAME_MAX];
-    strcpy(code, name);
-    strcat(code, PP);
+    gen_code(name, PP, code);
     restart_read_pp(comm, base, code, id, n, pp_hst);
     *nc = *n / nv;
 
@@ -14,8 +18,7 @@ static void setup_from_strt(MPI_Comm comm, const char *base, const char *name, i
 static void ids_from_strt(MPI_Comm comm, const char *base, const char *name, int id, /**/ int *ii) {
     int nc;
     char code[FILENAME_MAX];
-    strcpy(code, name);
-    strcat(code, PP);
+    gen_code(name, IDS, code);
     restart_read_ii(comm, base, code, id, &nc, ii);
 }
 
@@ -28,16 +31,14 @@ void rbc_strt_quants(MPI_Comm comm, const MeshRead *off, const char *base, const
 
 static void strt_dump(MPI_Comm comm, const char *base, const char *name, int id, int n, const Particle *pp, /*w*/ Particle *pp_hst) {
     char code[FILENAME_MAX];
-    strcpy(code, name);
-    strcat(code, PP);
+    gen_code(name, PP, code);
     if (n) cD2H(pp_hst, pp, n);
     restart_write_pp(comm, base, code, id, n, pp_hst);
 }
 
 static void strt_dump_ii(MPI_Comm comm, const char *base, const char *name, int id, int nc, const int *ii) {
-    char code[FILENAME_MAX] = {0};
-    strcpy(code, name);
-    strcat(code, IDS);
+    char code[FILENAME_MAX];
+    gen_code(name, IDS, code);
     restart_write_ii(comm, base, code, id, nc, ii);
 }
 
