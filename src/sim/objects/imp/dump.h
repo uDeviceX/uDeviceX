@@ -50,10 +50,9 @@ void objects_diag_dump(float t, Objects *obj) {
 static void dump_part_rig(MPI_Comm cart, const Coords *coords, long id, Rig *r, IoBop *bop) {
     RigQuants *q = &r->q;
     cD2H(q->pp_hst, q->pp, q->n);
-    UC(io_bop_parts(cart, coords, q->n, q->pp_hst, "solid", id, bop));
+    UC(io_bop_parts(cart, coords, q->n, q->pp_hst, r->name, id, bop));
 }
 
-/* TODO different namings */
 void objects_part_dump(long id, Objects *o, IoBop *bop) {
     int i;
     if (!o->active) return;    
