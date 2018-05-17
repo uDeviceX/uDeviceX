@@ -1,27 +1,6 @@
-= TODO list for code
-
-== general and simpl configuration of pairwise forces
+* TODO general and simpl configuration of pairwise forces
 
 what parameters between different particles
-
-=== now implemented
-
-* flu-flu (in flu)
-* flu-walls (in flu; mirrored)
-* flu-obj (in fsi)
-* obj-obj ((in cnt)
-* obj-walls (in flu)
-
-=== Improvement?
-
-* flu-flu (in flu)
-* flu-walls (in flu; mirrored)
-* flu-obj (in each obj: fsi namespace)
-* obj-obj ((in cnt)
-* obj-walls (in each obj: wall namespace)
-
-=== Improvement v2
-
 add one string for each type of interactions;
 string is a namespace in conf with parameters of that interaction
 
@@ -53,17 +32,19 @@ rig = {
 ...
 ----
 
-== configuration of wall repulsion
+* TODO configuration of wall repulsion
 
 Specify which object is repulsed and with what parameters
 
 Possible conf in each object with a section repulsion...
 
-== Many membranes/objects
+* TODO Many membranes/objects
 
-* no hardcoded filenames Done
-* make arrays in sim/objects Done
-* adapt configuration as, for ex:
+** DONE no hardcoded filenames 
+   CLOSED: [2018-05-17 Thu 17:08]
+** DONE make arrays in sim/objects
+   CLOSED: [2018-05-17 Thu 17:08]
+** TODO adapt configuration as, for ex:
 
 ----
 mbr = ["rbc", "ctc"]
@@ -81,6 +62,6 @@ ctc = {
 
 ----
 
-== fsi and cnt params aware
+* TODO fsi and cnt params aware
 
 fsi and cnt should use different pair parameters depending on object type
