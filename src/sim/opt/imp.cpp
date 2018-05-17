@@ -85,6 +85,15 @@ static void read_mbr(const Config *c, bool restart, const char *ns, OptMbr *o) {
     strcpy(o->name, ns);
 }
 
+static void read_mbr_array(const Config *c, bool restart, int *nmbr, OptMbr *oo) {
+    int i, n;
+    const char *ss[MAX_MBR_TYPES];
+    UC(conf_lookup_vstring(c, "mbr", MAX_MBR_TYPES, &n, ss));
+    for (i = 0; i < n; ++i)
+        UC(read_mbr(c, restart, ss[i], &oo[i]));
+    *nmbr = n;
+}
+
 static void read_rig(const Config *c, bool restart, const char *ns, OptRig *o) {
     UC(lookup_bool_ns(c, ns, "active", &o->active));
     UC(lookup_bool_ns(c, ns, "bounce", &o->bounce));
@@ -98,6 +107,15 @@ static void read_rig(const Config *c, bool restart, const char *ns, OptRig *o) {
     else         UC(lookup_string_ns(c, ns, "ic_file", o->ic_file));
 
     strcpy(o->name, ns);
+}
+
+static void read_rig_array(const Config *c, bool restart, int *nrig, OptRig *oo) {
+    int i, n;
+    const char *ss[MAX_RIG_TYPES];
+    UC(conf_lookup_vstring(c, "rig", MAX_RIG_TYPES, &n, ss));
+    for (i = 0; i < n; ++i)
+        UC(read_rig(c, restart, ss[i], &oo[i]));
+    *nrig = n;
 }
 
 static void read_wall(const Config *c, OptWall *o) {

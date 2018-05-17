@@ -44,6 +44,8 @@ struct OptDump {
 
 struct Opt {
     OptFlu flu;
+    // OptMbr mbr[MAX_MBR_TYPES];
+    // OptRig rig[MAX_RIG_TYPES];
     OptMbr mbr;
     OptRig rig;
     OptWall wall;
