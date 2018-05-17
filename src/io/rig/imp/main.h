@@ -1,8 +1,11 @@
+#define BASE DUMP_BASE "/diag"
+
 void io_rig_ini(IoRig **iop) {
     IoRig *io;
     EMALLOC(1, iop);
     io = *iop;
     strcpy(io->mode, "w");
+    os_mkdir(BASE);
 }
 
 void io_rig_fin(IoRig *io) {
@@ -19,7 +22,7 @@ static void set_created(IoRig *io) {
 }
 
 static void gen_fname(const char *rig_name, int id, char *fname) {
-    sprintf(fname, DUMP_BASE "/%s_diag_%04d.txt", rig_name, id);
+    sprintf(fname, BASE "/%s.%04d.txt", rig_name, id);
 }
 
 void io_rig_dump(const Coords *c, float t, int ns, const Solid *ss, const Solid *ssbb, IoRig *io) {
@@ -59,3 +62,5 @@ void io_rig_dump(const Coords *c, float t, int ns, const Solid *ss, const Solid 
     }
     set_created(io);
 }
+
+#undef BASE
