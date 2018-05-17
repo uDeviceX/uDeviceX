@@ -1,3 +1,8 @@
+static void gen_name_mesh_dir(const char *name, char *mesh_dir) {
+    strcpy(mesh_dir, "ply.");
+    strcat(mesh_dir, name);
+}
+
 static void ini_mbr_distr(bool ids, int nv, MPI_Comm comm, int3 L, /**/ MbrDistr *d) {
     UC(drbc_pack_ini(ids, L, MAX_CELL_NUM, nv, /**/ &d->p));
     UC(drbc_comm_ini(ids, comm, /**/ &d->c));
@@ -48,7 +53,7 @@ static void ini_colorer(int nv, int max_m, /**/ Colorer **col) {
 static void ini_mbr(const Config *cfg, const OptMbr *opt, MPI_Comm cart, int3 L,
                     bool recolor, /**/ Mbr **membrane) {
     int nv, max_m;
-    const char *directory = "r";
+    char mesh_dir[FILENAME_MAX];
     Mbr *m;
     EMALLOC(1, membrane);
     m = *membrane;
@@ -61,9 +66,10 @@ static void ini_mbr(const Config *cfg, const OptMbr *opt, MPI_Comm cart, int3 L,
     m->mesh_exch = NULL;
     // TODO: from opt
     strcpy(m->name, "rbc");
+    gen_name_mesh_dir(m->name, mesh_dir);
     
     UC(mesh_read_ini_off("rbc.off", &m->mesh));
-    UC(mesh_write_ini_from_mesh(cart, opt->shifttype, m->mesh, directory, /**/ &m->mesh_write));
+    UC(mesh_write_ini_from_mesh(cart, opt->shifttype, m->mesh, mesh_dir, /**/ &m->mesh_write));
 
     nv = mesh_read_get_nv(m->mesh);
     
@@ -90,6 +96,7 @@ static void ini_mbr(const Config *cfg, const OptMbr *opt, MPI_Comm cart, int3 L,
 static void ini_rig(const Config *cfg, const OptRig *opt, MPI_Comm cart, int maxp, int3 L, /**/ Rig **rigid) {
     Rig *r;
     long max_m = MAX_SOLIDS;
+    char mesh_dir[FILENAME_MAX];
     int nv;
     EMALLOC(1, rigid);
     r = *rigid;
@@ -98,9 +105,10 @@ static void ini_rig(const Config *cfg, const OptRig *opt, MPI_Comm cart, int max
     r->mesh_exch = NULL;
     // TODO: from opt
     strcpy(r->name, "rig");
+    gen_name_mesh_dir(r->name, mesh_dir);
     
     UC(mesh_read_ini_ply("rig.ply", &r->mesh));
-    UC(mesh_write_ini_from_mesh(cart, opt->shifttype, r->mesh, "s", /**/ &r->mesh_write));
+    UC(mesh_write_ini_from_mesh(cart, opt->shifttype, r->mesh, mesh_dir, /**/ &r->mesh_write));
     
     UC(rig_ini(max_m, maxp, r->mesh, &r->q));
     
