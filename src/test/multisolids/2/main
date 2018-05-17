@@ -10,4 +10,4 @@ u.cp.rig ellipsoid.ply rig.ply
 :
 u.run udx conf.cfg
 :
-cat solid_diag_0000.txt | awk '{print $2, $5, $8}' | uscale 2.5 > sdiag.out.txt
+cat diag/rig.0000.txt | awk '{print $2, $5, $8}' | uscale 2.5 > sdiag.out.txt
