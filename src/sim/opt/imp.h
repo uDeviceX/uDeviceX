@@ -14,6 +14,7 @@ struct OptMbr {
 struct OptRig {
     bool active, bounce, empty_pp, push;
     int shifttype;
+    float mass;
 };
 
 struct OptWall {

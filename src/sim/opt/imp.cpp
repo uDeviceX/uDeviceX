@@ -59,6 +59,7 @@ static void read_rig(const Config *c, OptRig *o) {
     UC(lookup_bool(c, "rig.empty_pp", &o->empty_pp));
     o->shifttype = get_shifttype(c, "rig.shifttype");
     UC(lookup_bool(c, "rig.push", &o->push));
+    UC(conf_lookup_float(c, "rig.mass", &o->mass));
 }
 
 static void read_wall(const Config *c, OptWall *o) {

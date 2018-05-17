@@ -114,7 +114,7 @@ static void ini_rig(const Config *cfg, const OptRig *opt, MPI_Comm cart, int max
     UC(rig_pininfo_ini(&r->pininfo));
     UC(rig_pininfo_set_conf(cfg, r->pininfo));
 
-    UC(conf_lookup_float(cfg, "rig.mass", &r->mass));
+    r->mass = opt->mass;
 
     if (opt->bounce) UC(ini_mesh_exch(L, nv, max_m, cart, /**/ &r->mesh_exch));
     if (opt->bounce) UC(ini_bbdata(r->q.nt, max_m, cart, /**/ &r->bbdata));
