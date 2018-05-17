@@ -25,7 +25,7 @@ static void gen_fname(const char *rig_name, int id, char *fname) {
     sprintf(fname, BASE "/%s.%04d.txt", rig_name, id);
 }
 
-void io_rig_dump(const Coords *c, float t, int ns, const Solid *ss, const Solid *ssbb, IoRig *io) {
+void io_rig_dump(const Coords *c, float t, const char *name, int ns, const Solid *ss, const Solid *ssbb, IoRig *io) {
     enum {X, Y, Z, D};
     char fname[FILENAME_MAX];
     float com[D];
@@ -37,7 +37,7 @@ void io_rig_dump(const Coords *c, float t, int ns, const Solid *ss, const Solid 
         s   = ss   + j;
         sbb = ssbb + j;
 
-        gen_fname("solid", s->id, fname);
+        gen_fname(name, s->id, fname);
         UC(efopen(fname, io->mode, /**/ &fp));
         fprintf(fp, "%+.6e ", t);
 
