@@ -19,8 +19,7 @@ void clist_ini_map(int maxp, int nA, const Clist *c, /**/ ClistMap **map) {
     m->maxp = maxp;
     
     m->nA = nA;
-    if (nA > MAXA)
-        ERR("Too many inputs (%d / %d)", nA, MAXA);
+    EMALLOC(nA, &m->ee);
     
     for (i = 0; i < nA; ++i) Dalloc(&m->ee[i], maxp);
 
