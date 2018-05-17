@@ -79,13 +79,13 @@ static void read_mbr(const Config *c, const char *ns, OptMbr *o) {
         UC(lookup_string_ns(c, ns, "stretch_file", o->stretch_file));
 }
 
-static void read_rig(const Config *c, OptRig *o) {
-    UC(lookup_bool(c, "rig.active", &o->active));
-    UC(lookup_bool(c, "rig.bounce", &o->bounce));
-    UC(lookup_bool(c, "rig.empty_pp", &o->empty_pp));
-    o->shifttype = get_shifttype(c, "rig.shifttype");
-    UC(lookup_bool(c, "rig.push", &o->push));
-    UC(conf_lookup_float(c, "rig.mass", &o->mass));
+static void read_rig(const Config *c, const char *ns, OptRig *o) {
+    UC(lookup_bool_ns(c, ns, "active", &o->active));
+    UC(lookup_bool_ns(c, ns, "bounce", &o->bounce));
+    UC(lookup_bool_ns(c, ns, "empty_pp", &o->empty_pp));
+    o->shifttype = get_shifttype_ns(c, ns, "shifttype");
+    UC(lookup_bool_ns(c, ns, "push", &o->push));
+    UC(conf_lookup_float_ns(c, ns, "mass", &o->mass));
 }
 
 static void read_wall(const Config *c, OptWall *o) {
@@ -140,7 +140,7 @@ void opt_read(const Config *c, Opt *o) {
     UC(read_dump(c, &o->dump));
     UC(read_flu(c, &o->flu));
     UC(read_mbr(c, "rbc", &o->rbc));
-    UC(read_rig(c, &o->rig));
+    UC(read_rig(c, "rig", &o->rig));
     UC(read_wall(c, &o->wall));
 }
 
