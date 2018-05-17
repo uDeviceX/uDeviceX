@@ -157,7 +157,8 @@ double objects_mbr_tot_volume(const Objects *o) {
 
     loc = 0;
 
-    for (i = 0; i < o->nmbr; ++i) local_vol_mbr(o->mbr[i]);
+    for (i = 0; i < o->nmbr; ++i)
+        loc += local_vol_mbr(o->mbr[i]);
     
     tot = 0;
     MC(m::Allreduce(&loc, &tot, 1, MPI_DOUBLE, MPI_SUM, o->cart));
