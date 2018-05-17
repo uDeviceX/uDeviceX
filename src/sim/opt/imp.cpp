@@ -150,14 +150,14 @@ void opt_read(const Config *c, Opt *o) {
     UC(read_dump(c, &o->dump));
     UC(read_flu(c, &o->flu));
 
-    UC(read_mbr(c, o->restart, "rbc", &o->rbc));
+    UC(read_mbr(c, o->restart, "rbc", &o->mbr));
     UC(read_rig(c, o->restart, "rig", &o->rig));
 
     UC(read_wall(c, &o->wall));
 }
 
 void opt_check(const Opt *o) {
-    if (o->rbc.dump_com && !o->rbc.ids)
+    if (o->mbr.dump_com && !o->mbr.ids)
         ERR("Need rbc.ids activated to dump rbc com!");
 }
 

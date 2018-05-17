@@ -155,13 +155,13 @@ void objects_ini(const Config *cfg, const Opt *opt, MPI_Comm cart, const Coords 
 
     obj->bb  = NULL;
 
-    obj->nmbr = opt->rbc.active ? 1 : 0; // TODO: configuration
+    obj->nmbr = opt->mbr.active ? 1 : 0; // TODO: configuration
     obj->nrig = opt->rig.active ? 1 : 0; // TODO: configuration
 
     if (obj->nmbr) EMALLOC(obj->nmbr, &obj->mbr);
     if (obj->nrig) EMALLOC(obj->nrig, &obj->rig);
 
-    for (i = 0; i < obj->nmbr; ++i) UC(ini_mbr(cfg, &opt->rbc, cart, L, recolor, &obj->mbr[i]));
+    for (i = 0; i < obj->nmbr; ++i) UC(ini_mbr(cfg, &opt->mbr, cart, L, recolor, &obj->mbr[i]));
     for (i = 0; i < obj->nrig; ++i) UC(ini_rig(cfg, &opt->rig, cart, maxp, L, &obj->rig[i]));
 
     if (opt->rig.bounce) UC(meshbb_ini(maxp, /**/ &obj->bb));

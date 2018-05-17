@@ -42,7 +42,7 @@ struct OptDump {
 
 struct Opt {
     OptFlu flu;
-    OptMbr rbc;
+    OptMbr mbr;
     OptRig rig;
     OptWall wall;
     OptParams params;

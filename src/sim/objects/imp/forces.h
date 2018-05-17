@@ -26,7 +26,7 @@ static void internal_forces_mbr(float dt, const OptMbr *opt, Mbr *m) {
 void objects_internal_forces(float dt, Objects *o) {
     int i;
     if (!o->active) return;
-    for (i = 0; i < o->nmbr; ++i) internal_forces_mbr(dt, &o->opt.rbc, o->mbr[i]);
+    for (i = 0; i < o->nmbr; ++i) internal_forces_mbr(dt, &o->opt.mbr, o->mbr[i]);
 }
 
 static void bforce_mbr(const Coords *c, const BForce *bf, Mbr *m) {
@@ -43,7 +43,7 @@ void objects_body_forces(const BForce *bf, Objects *o) {
     if (!o->active) return;
 
     for (i = 0; i < o->nmbr; ++i)        
-        if (opt->rbc.push)
+        if (opt->mbr.push)
             bforce_mbr(o->coords, bf, o->mbr[i]);
 
     for (i = 0; i < o->nrig; ++i)
