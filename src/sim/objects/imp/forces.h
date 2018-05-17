@@ -12,9 +12,10 @@ static void clear_rig_forces(Rig *r) {
 }
 
 void objects_clear_forces(Objects *obj) {
+    int i;
     if (!obj->active) return;
-    if (obj->mbr) UC(clear_mbr_forces(obj->mbr));
-    if (obj->rig) UC(clear_rig_forces(obj->rig));
+    for (i = 0; i < obj->nmbr; ++i) UC(clear_mbr_forces(obj->mbr[i]));
+    for (i = 0; i < obj->nrig; ++i) UC(clear_rig_forces(obj->rig[i]));
 }
 
 static void internal_forces_mbr(float dt, const OptMbr *opt, Mbr *m) {
@@ -23,8 +24,9 @@ static void internal_forces_mbr(float dt, const OptMbr *opt, Mbr *m) {
 }
 
 void objects_internal_forces(float dt, Objects *o) {
+    int i;
     if (!o->active) return;
-    if (o->mbr) internal_forces_mbr(dt, &o->opt.rbc, o->mbr);
+    for (i = 0; i < o->nmbr; ++i) internal_forces_mbr(dt, &o->opt.rbc, o->mbr[i]);
 }
 
 static void bforce_mbr(const Coords *c, const BForce *bf, Mbr *m) {
@@ -36,8 +38,15 @@ static void bforce_rig(const Coords *c, const BForce *bf, Rig *r) {
 }
 
 void objects_body_forces(const BForce *bf, Objects *o) {
+    int i;
     const Opt *opt = &o->opt;
     if (!o->active) return;
-    if (o->mbr && opt->rbc.push) bforce_mbr(o->coords, bf, o->mbr);
-    if (o->rig && opt->rig.push) bforce_rig(o->coords, bf, o->rig);
+
+    for (i = 0; i < o->nmbr; ++i)        
+        if (opt->rbc.push)
+            bforce_mbr(o->coords, bf, o->mbr[i]);
+
+    for (i = 0; i < o->nrig; ++i)
+        if (opt->rig.push)
+            bforce_rig(o->coords, bf, o->rig[i]);
 }
