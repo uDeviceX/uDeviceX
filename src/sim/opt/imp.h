@@ -8,6 +8,8 @@ struct OptMbr {
     bool active, ids, stretch, push, dump_com;
     int shifttype;
     float mass;
+    char templ_file[FILENAME_MAX];
+    char stretch_file[FILENAME_MAX];
 };
 
 /* rigid options */

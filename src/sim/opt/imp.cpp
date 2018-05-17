@@ -51,6 +51,12 @@ static void lookup_string(const Config *c, const char *desc, char *res) {
     strcpy(res, s);
 }
 
+static void lookup_string_ns(const Config *c, const char *ns, const char *desc, char *res) {
+    const char *s;
+    UC(conf_lookup_string_ns(c, ns, desc, &s));
+    strcpy(res, s);
+}
+
 static void read_flu(const Config *c, OptFlu *o) {
     UC(lookup_bool(c, "flu.colors", &o->colors));
     UC(lookup_bool(c, "flu.ids", &o->ids));
@@ -67,6 +73,10 @@ static void read_mbr(const Config *c, const char *ns, OptMbr *o) {
     
     UC(lookup_bool(c, "dump.rbc_com", &o->dump_com));
     UC(conf_lookup_float_ns(c, ns, "mass", &o->mass));
+
+    UC(lookup_string_ns(c, ns, "templ_file", o->templ_file));
+    if (o->stretch)
+        UC(lookup_string_ns(c, ns, "stretch_file", o->stretch_file));
 }
 
 static void read_rig(const Config *c, OptRig *o) {
