@@ -26,7 +26,9 @@ enum {
     MAX_SOLIDS = 40,
 
     /* maximum number of object types (solid, rbc, ...) */
-    MAX_OBJ_TYPES = 2,
+    MAX_MBR_TYPES = 2,
+    MAX_RIG_TYPES = 2,
+    MAX_OBJ_TYPES = MAX_MBR_TYPES + MAX_RIG_TYPES,
 
     /* maximum number density of particles of the objects */
     MAX_OBJ_DENSITY = 30,
