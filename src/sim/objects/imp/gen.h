@@ -1,11 +1,11 @@
 static void gen_mesh_mbr(Coords *coords, MPI_Comm cart, Mbr *m) {
     MeshRead *mesh = m->mesh;
-    UC(rbc_gen_mesh(coords, cart, mesh, "rbcs-ic.txt", /**/ &m->q));
+    UC(rbc_gen_mesh(coords, cart, mesh, m->ic_file, /**/ &m->q));
 }
 
 static void gen_mesh_rig(Coords *coords, MPI_Comm cart, Rig *r) {
     MeshRead *mesh = r->mesh;
-    UC(rig_gen_mesh(coords, cart, mesh, "rigs-ic.txt", /**/ &r->q));
+    UC(rig_gen_mesh(coords, cart, mesh, r->ic_file, /**/ &r->q));
 }
 
 void objects_gen_mesh(Objects *o) {
