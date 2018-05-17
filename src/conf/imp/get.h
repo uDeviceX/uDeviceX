@@ -118,6 +118,8 @@ static int lookup_float3(const Config *c, const char *desc, float3 *a) {
     return status;
 }
 
+
+
 void conf_lookup_int(const Config *c, const char *desc, int *a) {
     int status = lookup_int(c, desc, a);
     UC(treat_status(status, desc, "int"));
@@ -157,6 +159,60 @@ void conf_lookup_float3(const Config *c, const char *desc, float3 *a) {
     int status = lookup_float3(c, desc, a);
     UC(treat_status(status, desc, "array of float"));
 }
+
+static void get_desc(const char *ns, const char *d, char *desc) {
+    sprintf(desc, "%s.%s", ns, d);
+}
+
+void conf_lookup_int_ns(const Config *c, const char *ns, const char *d, int *a) {
+    char desc[FILENAME_MAX];
+    get_desc(ns, d, desc);
+    UC(conf_lookup_int(c, desc, a));
+}
+
+void conf_lookup_float_ns(const Config *c, const char *ns, const char *d, float *a) {
+    char desc[FILENAME_MAX];
+    get_desc(ns, d, desc);
+    UC(conf_lookup_float(c, desc, a));
+}
+
+void conf_lookup_bool_ns(const Config *c, const char *ns, const char *d, int *a) {
+    char desc[FILENAME_MAX];
+    get_desc(ns, d, desc);
+    UC(conf_lookup_bool(c, desc, a));
+}
+
+void conf_lookup_string_ns(const Config *c, const char *ns, const char *d, const char **a) {
+    char desc[FILENAME_MAX];
+    get_desc(ns, d, desc);
+    UC(conf_lookup_string(c, desc, a));
+}
+
+void conf_lookup_vint_ns(const Config *c, const char *ns, const char *d, int *n, int a[]) {
+    char desc[FILENAME_MAX];
+    get_desc(ns, d, desc);
+    UC(conf_lookup_vint(c, desc, n, a));
+}
+
+void conf_lookup_int3_ns(const Config *c, const char *ns, const char *d, int3 *a) {
+    char desc[FILENAME_MAX];
+    get_desc(ns, d, desc);
+    UC(conf_lookup_int3(c, desc, a));
+}
+
+void conf_lookup_vfloat_ns(const Config *c, const char *ns, const char *d, int *n, float a[]) {
+    char desc[FILENAME_MAX];
+    get_desc(ns, d, desc);
+    UC(conf_lookup_vfloat(c, desc, n, a));
+}
+
+void conf_lookup_float3_ns(const Config *c, const char *ns, const char *d, float3 *a) {
+    char desc[FILENAME_MAX];
+    get_desc(ns, d, desc);
+    UC(conf_lookup_float3(c, desc, a));
+}
+
+
 
 bool conf_opt_int(const Config *c, const char *desc, int *a) {
     return OK == lookup_int(c, desc, a);
