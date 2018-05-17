@@ -20,7 +20,7 @@ void rbc_force_set_rnd1(int seed, RbcForce *f); // <4>
 // end::set[]
 
 // tag::cnf[]
-void rbc_force_set_conf(const MeshRead *cell, const Config *cfg, RbcForce *f);
+void rbc_force_set_conf(const MeshRead *cell, const Config *cfg, const char *name, RbcForce *f);
 // end::cnf[]
 
 // tag::apply[]

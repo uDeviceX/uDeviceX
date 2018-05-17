@@ -7,9 +7,7 @@
 
 #include "imp.h"
 
-#define name "rbc"
-
-void rbc_force_set_conf(const MeshRead *cell, const Config *cfg, RbcForce *f) {
+void rbc_force_set_conf(const MeshRead *cell, const Config *cfg, const char *name, RbcForce *f) {
     int stress_free, rnd;
     UC(conf_lookup_bool_ns(cfg, name, "stress_free", &stress_free));
     UC(conf_lookup_bool_ns(cfg, name, "rnd", &rnd));

@@ -8,9 +8,7 @@
 
 #include "imp.h"
 
-#define name "rbc"
-
-void rbc_params_set_conf(const Config *c, RbcParams *par) {
+void rbc_params_set_conf(const Config *c, const char *name, RbcParams *par) {
     float gc, gt, kbt, kb, phi, ks, mpow, x0, ka, kd, kv, totArea, totVolume;
 
     UC(conf_lookup_float_ns(c, name, "gammaC", &gc));

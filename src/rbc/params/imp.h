@@ -26,7 +26,7 @@ double rbc_params_get_tot_volume(const RbcParams *);
 // end::get[]
 
 // tag::cnf[]
-void rbc_params_set_conf(const Config *c, RbcParams *);
+void rbc_params_set_conf(const Config *c, const char *name, RbcParams *);
 // end::cnf[]
 
 // tag::view[]

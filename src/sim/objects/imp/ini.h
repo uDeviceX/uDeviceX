@@ -82,10 +82,10 @@ static void ini_mbr(const Config *cfg, const OptMbr *opt, MPI_Comm cart, int3 L,
     if (opt->stretch)  UC(rbc_stretch_ini("rbc.stretch", nv, /**/ &m->stretch));
 
     UC(rbc_params_ini(&m->params));
-    UC(rbc_params_set_conf(cfg, m->params));
+    UC(rbc_params_set_conf(cfg, m->name, m->params));
 
     UC(rbc_force_ini(m->mesh, /**/ &m->force));
-    UC(rbc_force_set_conf(m->mesh, cfg, m->force));
+    UC(rbc_force_set_conf(m->mesh, cfg, m->name, m->force));
 
     m->mass = opt->mass;
 
