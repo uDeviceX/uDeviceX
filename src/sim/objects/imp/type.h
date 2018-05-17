@@ -40,6 +40,7 @@ struct BounceBackData {
 
 /* data holder for cell membranes */
 struct Mbr {
+    char name[FILENAME_MAX];
     RbcQuants q;
     MbrDistr d;
     Force *ff;
@@ -58,6 +59,7 @@ struct Mbr {
 
 /* data holder for rigid objects */
 struct Rig {
+    char name[FILENAME_MAX];
     RigQuants q;
     Force *ff, *ff_hst;
 
