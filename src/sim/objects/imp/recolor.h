@@ -34,8 +34,12 @@ static void recolor_flu_from_mbr(Mbr *m, PFarray *flu) {
                        c->pp_mesh, c->lo, c->hi, RED_COLOR, BLUE_COLOR, /**/ (int*) flu->p.cc));
 }
 
+/* TODO 2 steps recoloring */
+/* not supported yet */
 void objects_recolor_flu(Objects *obj, PFarray *flu) {
+    int i;
     if (!obj->active) return;
     if (flu->n == 0) return;
-    if (obj->mbr) recolor_flu_from_mbr(obj->mbr, flu);
+    if (obj->nmbr > 1) ERR("not implemented yet for more than one membrane type");
+    for (i = 0; i < obj->nmbr; ++i) recolor_flu_from_mbr(obj->mbr[i], flu);
 }
