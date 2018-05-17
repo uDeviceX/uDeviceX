@@ -7,4 +7,4 @@ x=4 y=12 z=16; echo 1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 > rbcs-ic.txt
 :
 u.run 1 2 2 udx conf.cfg
 :
-ply2punto ply.rbc/00003.ply | uscale 100 > ply.out.txt
+ply2punto ply/rbc/00003.ply | uscale 100 > ply.out.txt

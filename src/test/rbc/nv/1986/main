@@ -17,4 +17,4 @@ rbc = {
     totVolume = $volume
 }"
 :
-ply2punto ply.rbc/00003.ply | uscale 10 > ply.out.txt
+ply2punto ply/rbc/00003.ply | uscale 10 > ply.out.txt

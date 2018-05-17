@@ -7,4 +7,4 @@ u.cp.rbc rbc/498.off rbc.off
 :
 u.run 1 2 1 udx conf.cfg
 :
-ply2punto ply.rbc/00002.ply > ply.out.txt
+ply2punto ply/rbc/00002.ply > ply.out.txt
