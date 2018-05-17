@@ -1,4 +1,3 @@
-#define CODE "rig"
 #define PP ".pp"
 #define SS ".ss"
 
@@ -29,8 +28,8 @@ static void gen_from_strt(int maxp, MPI_Comm comm, const char *base, const char 
     *n = *ns * (*nps);
 }
 
-void rig_strt_quants(MPI_Comm comm, const MeshRead *mesh, const char *base, const int id, RigQuants *q) {
-    gen_from_strt(q->maxp, comm, base, CODE, id, /**/ &q->ns, &q->nps, &q->n, q->rr0_hst, q->ss_hst);
+void rig_strt_quants(MPI_Comm comm, const MeshRead *mesh, const char *base, const char *name, const int id, RigQuants *q) {
+    gen_from_strt(q->maxp, comm, base, name, id, /**/ &q->ns, &q->nps, &q->n, q->rr0_hst, q->ss_hst);
     gen_pp_hst(q->ns, q->rr0_hst, q->nps, /**/ q->ss_hst, q->pp_hst);
     gen_ipp_hst(q->ss_hst, q->ns, q->nv, mesh_read_get_vert(mesh), /**/ q->i_pp_hst);
     cpy_H2D(q);
@@ -56,16 +55,15 @@ static void strt_dump_templ0(MPI_Comm comm, const char *base, const char *name, 
     EFREE(pp);
 }
 
-void rig_strt_dump_templ(MPI_Comm comm, const char *base, const RigQuants *q) {
-    strt_dump_templ0(comm, base, CODE, q->nps, q->rr0_hst);
+void rig_strt_dump_templ(MPI_Comm comm, const char *base, const char *name, const RigQuants *q) {
+    strt_dump_templ0(comm, base, name, q->nps, q->rr0_hst);
 }
 
-void rig_strt_dump(MPI_Comm comm, const char *base, const int id, const RigQuants *q) {
+void rig_strt_dump(MPI_Comm comm, const char *base, const char *name, const int id, const RigQuants *q) {
     char code[FILENAME_MAX];
-    gen_code(CODE, SS, code);
+    gen_code(name, SS, code);
     restart_write_ss(comm, base, code, id, q->ns, q->ss_hst);
 }
 
 #undef PP
 #undef SS
-#undef CODE

@@ -61,17 +61,15 @@ void objects_part_dump(long id, Objects *o, IoBop *bop) {
     for (i = 0; i < o->nrig; ++i) dump_part_rig(o->cart, o->coords, id, o->rig[i], bop);
 }
 
-/* TODO different namings */
 void objects_strt_templ(const char *base, Objects *o) {
     int i;
     if (!o->active) return;
-    for (i = 0; i < o->nrig; ++i) UC(rig_strt_dump_templ(o->cart, base, &o->rig[i]->q));
+    for (i = 0; i < o->nrig; ++i) UC(rig_strt_dump_templ(o->cart, base, o->rig[i]->name, &o->rig[i]->q));
 }
 
-/* TODO different namings */
 void objects_strt_dump(const char *base, long id, Objects *o) {
     int i;
     if (!o->active) return;
     for (i = 0; i < o->nmbr; ++i) UC(rbc_strt_dump(o->cart, base, o->mbr[i]->name, id, &o->mbr[i]->q));
-    for (i = 0; i < o->nrig; ++i) UC(rig_strt_dump(o->cart, base, id, &o->rig[i]->q));
+    for (i = 0; i < o->nrig; ++i) UC(rig_strt_dump(o->cart, base, o->rig[i]->name, id, &o->rig[i]->q));
 }

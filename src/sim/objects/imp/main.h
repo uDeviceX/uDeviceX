@@ -131,7 +131,7 @@ static void restart_mbr(MPI_Comm cart, const char *base, Mbr *m) {
 }
 
 static void restart_rig(MPI_Comm cart, const char *base, Rig *r) {
-    UC(rig_strt_quants(cart, r->mesh, base, RESTART_BEGIN, &r->q));
+    UC(rig_strt_quants(cart, r->mesh, base, r->name, RESTART_BEGIN, &r->q));
 }
 
 void objects_restart(Objects *o) {
