@@ -127,7 +127,7 @@ void objects_get_accel(const Objects *obj, TimeStepAccel *aa) {
 }
 
 static void restart_mbr(MPI_Comm cart, const char *base, Mbr *m) {
-    UC(rbc_strt_quants(cart, m->mesh, base, RESTART_BEGIN, &m->q));
+    UC(rbc_strt_quants(cart, m->mesh, base, m->name, RESTART_BEGIN, &m->q));
 }
 
 static void restart_rig(MPI_Comm cart, const char *base, Rig *r) {

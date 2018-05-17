@@ -1,23 +1,29 @@
 #define PP  ".pp"
 #define IDS ".ids"
 
-static void setup_from_strt(MPI_Comm comm, const char *base, int nv, int id, /**/ Particle *pp, int *nc, int *n, /*w*/ Particle *pp_hst) {
-    restart_read_pp(comm, base, PP, id, n, pp_hst);
+static void setup_from_strt(MPI_Comm comm, const char *base, const char *name, int nv, int id, /**/ Particle *pp, int *nc, int *n, /*w*/ Particle *pp_hst) {
+    char code[FILENAME_MAX];
+    strcpy(code, name);
+    strcat(code, PP);
+    restart_read_pp(comm, base, code, id, n, pp_hst);
     *nc = *n / nv;
 
     if (*n) cH2D(pp, pp_hst, *n);
 }
 
-static void ids_from_strt(MPI_Comm comm, const char *base, int id, /**/ int *ii) {
+static void ids_from_strt(MPI_Comm comm, const char *base, const char *name, int id, /**/ int *ii) {
     int nc;
-    restart_read_ii(comm, base, IDS, id, &nc, ii);
+    char code[FILENAME_MAX];
+    strcpy(code, name);
+    strcat(code, PP);
+    restart_read_ii(comm, base, code, id, &nc, ii);
 }
 
-void rbc_strt_quants(MPI_Comm comm, const MeshRead *off, const char *base, int id, RbcQuants *q) {
+void rbc_strt_quants(MPI_Comm comm, const MeshRead *off, const char *base, const char *name, int id, RbcQuants *q) {
     int nv;
     nv = mesh_read_get_nv(off);
-    setup_from_strt(comm, base, nv, id, /**/ q->pp, &q->nc, &q->n, /*w*/ q->pp_hst);
-    if (q->ids) ids_from_strt(comm, base, id, /**/ q->ii);
+    setup_from_strt(comm, base, name, nv, id, /**/ q->pp, &q->nc, &q->n, /*w*/ q->pp_hst);
+    if (q->ids) ids_from_strt(comm, base, name, id, /**/ q->ii);
 }
 
 static void strt_dump(MPI_Comm comm, const char *base, const char *name, int id, int n, const Particle *pp, /*w*/ Particle *pp_hst) {
