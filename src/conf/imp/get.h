@@ -96,6 +96,7 @@ static int lookup_vfloat(const Config *c, const char *desc, int maxn, int *n, fl
     if (status != OK) return status;
     if (config_setting_type(s) != CONFIG_TYPE_ARRAY) return WTYPE;
     *n = config_setting_length(s);
+
     if (*n > maxn) ERR("%s: too many components: %d / %d", desc, *n, maxn);
     for (j = 0; j < *n; ++j) {
         e = config_setting_get_elem(s, j);
