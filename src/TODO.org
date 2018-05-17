@@ -39,7 +39,6 @@ Specify which object is repulsed and with what parameters
 Possible conf in each object with a section repulsion...
 
 * TODO Many membranes/objects
-
 ** DONE no hardcoded filenames 
    CLOSED: [2018-05-17 Thu 17:08]
 ** DONE make arrays in sim/objects
@@ -62,6 +61,8 @@ ctc = {
 
 ----
 
+** TODO recoloring for many mbr
+** TODO test bounce back for many objects
 * TODO fsi and cnt params aware
 
 fsi and cnt should use different pair parameters depending on object type
