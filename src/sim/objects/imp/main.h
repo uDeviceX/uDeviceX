@@ -7,9 +7,10 @@ static void clear_vel_rig(Rig *r) {
 }
 
 void objects_clear_vel(Objects *obj) {
+    int i;
     if (!obj->active) return;
-    if (obj->mbr) UC(clear_vel_mbr(obj->mbr));
-    if (obj->rig) UC(clear_vel_rig(obj->rig));    
+    for (i = 0; i < obj->nmbr; ++i) UC(clear_vel_mbr(obj->mbr[i]));
+    for (i = 0; i < obj->nrig; ++i) UC(clear_vel_rig(obj->rig[i]));    
 }
 
 static void update_rig(float dt, Rig *r) {
@@ -24,9 +25,10 @@ static void update_mbr(float dt, Mbr *m) {
 }
 
 void objects_update(float dt, Objects *obj) {
+    int i;
     if (!obj->active) return;
-    if (obj->mbr) UC(update_mbr(dt, obj->mbr));
-    if (obj->rig) UC(update_rig(dt, obj->rig));
+    for (i = 0; i < obj->nmbr; ++i) UC(update_mbr(dt, obj->mbr[i]));
+    for (i = 0; i < obj->nrig; ++i) UC(update_rig(dt, obj->rig[i]));
 }
 
 static void distribute_mbr(Mbr *m) {
@@ -74,9 +76,10 @@ static void distribute_rig(Rig *r) {
 }
 
 void objects_distribute (Objects *obj) {
+    int i;
     if (!obj->active) return;
-    if (obj->mbr) UC(distribute_mbr(obj->mbr));
-    if (obj->rig) UC(distribute_rig(obj->rig));
+    for (i = 0; i < obj->nmbr; ++i) UC(distribute_mbr(obj->mbr[i]));
+    for (i = 0; i < obj->nrig; ++i) UC(distribute_rig(obj->rig[i]));
 }
 
 static void get_mbr(Mbr *m, PFarrays *pf) {
@@ -96,14 +99,16 @@ static void get_rig(Rig *r, PFarrays *pf) {
 }
 
 void objects_get_particles_all(Objects *obj, PFarrays *pf) {
+    int i;
     if (!obj->active) return;
-    if (obj->mbr) get_mbr(obj->mbr, pf);
-    if (obj->rig) get_rig(obj->rig, pf);
+    for (i = 0; i < obj->nmbr; ++i) get_mbr(obj->mbr[i], pf);
+    for (i = 0; i < obj->nrig; ++i) get_rig(obj->rig[i], pf);
 }
 
 void objects_get_particles_mbr(Objects *obj, PFarrays *pf) {
+    int i;
     if (!obj->active) return;
-    if (obj->mbr) get_mbr(obj->mbr, pf);
+    for (i = 0; i < obj->nmbr; ++i) get_mbr(obj->mbr[i], pf);
 }
 
 static void get_mbr_accel(const Mbr *m, TimeStepAccel *aa) {
@@ -115,9 +120,10 @@ static void get_rig_accel(const Rig *r, TimeStepAccel *aa) {
 }
 
 void objects_get_accel(const Objects *obj, TimeStepAccel *aa) {
+    int i;
     if (!obj->active) return;
-    if (obj->mbr) get_mbr_accel(obj->mbr, aa);
-    if (obj->rig) get_rig_accel(obj->rig, aa);    
+    for (i = 0; i < obj->nmbr; ++i) get_mbr_accel(obj->mbr[i], aa);
+    for (i = 0; i < obj->nrig; ++i) get_rig_accel(obj->rig[i], aa);    
 }
 
 static void restart_mbr(MPI_Comm cart, const char *base, Mbr *m) {
@@ -129,24 +135,31 @@ static void restart_rig(MPI_Comm cart, const char *base, Rig *r) {
 }
 
 void objects_restart(Objects *o) {
+    int i;
     const char *base = o->opt.dump.strt_base_read;
-    if (o->mbr) restart_mbr(o->cart, base, o->mbr);
-    if (o->rig) restart_rig(o->cart, base, o->rig);
+    for (i = 0; i < o->nmbr; ++i) restart_mbr(o->cart, base, o->mbr[i]);
+    for (i = 0; i < o->nrig; ++i) restart_rig(o->cart, base, o->rig[i]);
     o->active = true;
 }
 
-double objects_mbr_tot_volume(const Objects *o) {
-    double loc, tot, V0;
+static double local_vol_mbr(const Mbr *m) {
     long nc;
-    Mbr *m = o->mbr;
-    if (!o->active) return 0;
-    if (!m) return 0;
-    
+    double V0;
     nc = m->q.nc;
     V0 = rbc_params_get_tot_volume(m->params);
+    return nc * V0;
+}
 
+double objects_mbr_tot_volume(const Objects *o) {
+    int i;
+    double loc, tot;
+    if (!o->active) return 0;
+
+    loc = 0;
+
+    for (i = 0; i < o->nmbr; ++i) local_vol_mbr(o->mbr[i]);
+    
     tot = 0;
-    loc = nc * V0;
     MC(m::Allreduce(&loc, &tot, 1, MPI_DOUBLE, MPI_SUM, o->cart));
     
     return tot;
