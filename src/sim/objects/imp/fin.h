@@ -81,8 +81,11 @@ static void fin_dump(Dump *d) {
 }
 
 void objects_fin(Objects *obj) {
-    if (obj->mbr) UC(fin_mbr(obj->mbr));
-    if (obj->rig) UC(fin_rig(obj->rig));
+    int i;
+    for (i = 0; i < obj->nmbr; ++i) UC(fin_mbr(obj->mbr[i]));
+    for (i = 0; i < obj->nrig; ++i) UC(fin_rig(obj->rig[i]));
+    if (obj->nmbr) EFREE(obj->mbr);
+    if (obj->nrig) EFREE(obj->rig);
     if (obj->bb)  UC(meshbb_fin(/**/ obj->bb));
     UC(fin_dump(obj->dump));
     UC(coords_fin(obj->coords));

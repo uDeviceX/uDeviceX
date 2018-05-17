@@ -129,6 +129,7 @@ void objects_ini(const Config *cfg, const Opt *opt, MPI_Comm cart, const Coords 
     Objects *obj;
     int3 L;
     bool recolor = opt->flu.colors;
+    int i;
     EMALLOC(1, objects);
     obj = *objects;
     obj->opt = *opt;
@@ -138,12 +139,16 @@ void objects_ini(const Config *cfg, const Opt *opt, MPI_Comm cart, const Coords 
     L = subdomain(coords);
     UC(coords_ini(cart, L.x, L.y, L.z, &obj->coords));
 
-    obj->mbr = NULL;
-    obj->rig = NULL;
     obj->bb  = NULL;
 
-    if (opt->rbc.active) UC(ini_mbr(cfg, &opt->rbc, cart, L, recolor, &obj->mbr));
-    if (opt->rig.active) UC(ini_rig(cfg, &opt->rig, cart, maxp, L, &obj->rig));
+    obj->nmbr = opt->rbc.active ? 1 : 0; // TODO: configuration
+    obj->nrig = opt->rig.active ? 1 : 0; // TODO: configuration
+
+    if (obj->nmbr) EMALLOC(obj->nmbr, &obj->mbr);
+    if (obj->nrig) EMALLOC(obj->nrig, &obj->rig);
+
+    for (i = 0; i < obj->nmbr; ++i) UC(ini_mbr(cfg, &opt->rbc, cart, L, recolor, &obj->mbr[i]));
+    for (i = 0; i < obj->nrig; ++i) UC(ini_rig(cfg, &opt->rig, cart, maxp, L, &obj->rig[i]));
 
     if (opt->rig.bounce) UC(meshbb_ini(maxp, /**/ &obj->bb));
         

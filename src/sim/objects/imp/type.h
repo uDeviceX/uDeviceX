@@ -79,8 +79,9 @@ struct Dump {
 };
 
 struct Objects {
-    Mbr *mbr;
-    Rig *rig;
+    int nmbr, nrig;
+    Mbr **mbr;
+    Rig **rig;
     Opt opt;
     Dump *dump;
     Coords *coords;
