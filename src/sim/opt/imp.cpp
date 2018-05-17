@@ -64,7 +64,7 @@ static void read_flu(const Config *c, OptFlu *o) {
     UC(lookup_bool(c, "flu.push", &o->push));
 }
 
-static void read_mbr(const Config *c, const char *ns, OptMbr *o) {
+static void read_mbr(const Config *c, bool restart, const char *ns, OptMbr *o) {
     UC(lookup_bool_ns(c, ns, "active", &o->active));
     UC(lookup_bool_ns(c, ns, "ids", &o->ids));
     UC(lookup_bool_ns(c, ns, "stretch", &o->stretch));
@@ -79,7 +79,7 @@ static void read_mbr(const Config *c, const char *ns, OptMbr *o) {
         UC(lookup_string_ns(c, ns, "stretch_file", o->stretch_file));
 }
 
-static void read_rig(const Config *c, const char *ns, OptRig *o) {
+static void read_rig(const Config *c, bool restart, const char *ns, OptRig *o) {
     UC(lookup_bool_ns(c, ns, "active", &o->active));
     UC(lookup_bool_ns(c, ns, "bounce", &o->bounce));
     UC(lookup_bool_ns(c, ns, "empty_pp", &o->empty_pp));
@@ -134,6 +134,8 @@ static void read_common(const Config *c, Opt *o) {
     UC(lookup_bool(c, "vcon.active", &o->vcon));
     
     UC(conf_lookup_int(c, "flu.recolor_freq", &o->recolor_freq));
+
+    UC(lookup_bool(c, "glb.restart", &o->restart));
 }
 
 void opt_read(const Config *c, Opt *o) {
@@ -141,8 +143,10 @@ void opt_read(const Config *c, Opt *o) {
     UC(read_params(c, &o->params));
     UC(read_dump(c, &o->dump));
     UC(read_flu(c, &o->flu));
-    UC(read_mbr(c, "rbc", &o->rbc));
-    UC(read_rig(c, "rig", &o->rig));
+
+    UC(read_mbr(c, o->restart, "rbc", &o->rbc));
+    UC(read_rig(c, o->restart, "rig", &o->rig));
+
     UC(read_wall(c, &o->wall));
 }
 

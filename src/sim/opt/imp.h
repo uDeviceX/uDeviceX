@@ -50,6 +50,7 @@ struct Opt {
     int recolor_freq;
     int sampler_npdump;
     int3 sampler_grid_ref;
+    bool restart;
 };
 
 struct Config;
