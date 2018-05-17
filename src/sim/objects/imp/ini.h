@@ -1,5 +1,5 @@
 static void gen_name_mesh_dir(const char *name, char *mesh_dir) {
-    strcpy(mesh_dir, "ply.");
+    strcpy(mesh_dir, "ply/");
     strcat(mesh_dir, name);
 }
 
