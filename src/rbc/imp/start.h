@@ -1,4 +1,3 @@
-#define CODE "rbc"
 #define PP  ".pp"
 #define IDS ".ids"
 
@@ -21,27 +20,26 @@ void rbc_strt_quants(MPI_Comm comm, const MeshRead *off, const char *base, int i
     if (q->ids) ids_from_strt(comm, base, id, /**/ q->ii);
 }
 
-static void strt_dump(MPI_Comm comm, const char *base, const char *base_code, int id, int n, const Particle *pp, /*w*/ Particle *pp_hst) {
+static void strt_dump(MPI_Comm comm, const char *base, const char *name, int id, int n, const Particle *pp, /*w*/ Particle *pp_hst) {
     char code[FILENAME_MAX];
-    strcpy(code, base_code);
+    strcpy(code, name);
     strcat(code, PP);
     if (n) cD2H(pp_hst, pp, n);
     restart_write_pp(comm, base, code, id, n, pp_hst);
 }
 
-static void strt_dump_ii(MPI_Comm comm, const char *base, const char *base_code, int id, int nc, const int *ii) {
+static void strt_dump_ii(MPI_Comm comm, const char *base, const char *name, int id, int nc, const int *ii) {
     char code[FILENAME_MAX] = {0};
-    strcpy(code, base_code);
+    strcpy(code, name);
     strcat(code, IDS);
     restart_write_ii(comm, base, code, id, nc, ii);
 }
 
-void rbc_strt_dump(MPI_Comm comm, const char *base, int id, const RbcQuants *q) {
-    strt_dump(comm, base, CODE, id, q->n, q->pp, /*w*/ q->pp_hst);
+void rbc_strt_dump(MPI_Comm comm, const char *base, const char *name, int id, const RbcQuants *q) {
+    strt_dump(comm, base, name, id, q->n, q->pp, /*w*/ q->pp_hst);
     if (q->ids)
-        strt_dump_ii(comm, base, CODE, id, q->nc, q->ii);
+        strt_dump_ii(comm, base, name, id, q->nc, q->ii);
 }
 
-#undef CODE
 #undef PP
 #undef IDS

@@ -72,6 +72,6 @@ void objects_strt_templ(const char *base, Objects *o) {
 void objects_strt_dump(const char *base, long id, Objects *o) {
     int i;
     if (!o->active) return;
-    for (i = 0; i < o->nmbr; ++i) UC(rbc_strt_dump(o->cart, base, id, &o->mbr[i]->q));
+    for (i = 0; i < o->nmbr; ++i) UC(rbc_strt_dump(o->cart, base, o->mbr[i]->name, id, &o->mbr[i]->q));
     for (i = 0; i < o->nrig; ++i) UC(rig_strt_dump(o->cart, base, id, &o->rig[i]->q));
 }
