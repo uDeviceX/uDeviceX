@@ -121,7 +121,23 @@ static int lookup_float3(const Config *c, const char *desc, float3 *a) {
     return status;
 }
 
+static int lookup_vstring(const Config *c, const char *desc, int maxn, int *n, const char **ss) {
+    config_setting_t *s, *e;
+    int j, status;
+    status = lookup_setting(c, desc, /**/ &s);
+    if (status != OK) return status;
+    if (config_setting_type(s) != CONFIG_TYPE_ARRAY) return WTYPE;
+    *n = config_setting_length(s);
 
+    if (*n > maxn) ERR("%s: too many components: %d / %d", desc, *n, maxn);
+    for (j = 0; j < *n; ++j) {
+        e = config_setting_get_elem(s, j);
+        if (config_setting_type(e) != CONFIG_TYPE_STRING) return WTYPE;
+        ss[j] = config_setting_get_string(e);
+    }
+    //set_vstring(desc, *n, a, c->r);
+    return status;
+}
 
 void conf_lookup_int(const Config *c, const char *desc, int *a) {
     int status = lookup_int(c, desc, a);
