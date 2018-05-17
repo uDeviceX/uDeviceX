@@ -3,9 +3,10 @@
 #define SS CODE ".ss"
 
 static void pp2rr(const Particle *pp, const int n, float *rr) {
-    for (int i = 0; i < n; ++i)
-    for (int c = 0; c < 3; ++c)
-    rr[3*i + c] = pp[i].r[c];
+    int i, c;
+    for (i = 0; i < n; ++i)
+        for ( c = 0; c < 3; ++c)
+            rr[3*i + c] = pp[i].r[c];
 }
 
 static void gen_from_strt(int maxp, MPI_Comm comm, const char *base, const int id, int *ns, int *nps, int *n, float *rr0_hst, Solid *ss_hst) {
