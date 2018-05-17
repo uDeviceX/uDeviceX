@@ -107,7 +107,7 @@ static void ini_rig(const Config *cfg, const OptRig *opt, MPI_Comm cart, int max
     strcpy(r->name, "rig");
     gen_name_mesh_dir(r->name, mesh_dir);
     
-    UC(mesh_read_ini_ply("rig.ply", &r->mesh));
+    UC(mesh_read_ini_ply(opt->templ_file, &r->mesh));
     UC(mesh_write_ini_from_mesh(cart, opt->shifttype, r->mesh, mesh_dir, /**/ &r->mesh_write));
     
     UC(rig_ini(max_m, maxp, r->mesh, &r->q));
