@@ -43,7 +43,8 @@ Possible conf in each object with a section repulsion...
    CLOSED: [2018-05-17 Thu 17:08]
 ** DONE make arrays in sim/objects
    CLOSED: [2018-05-17 Thu 17:08]
-** TODO adapt configuration as, for ex:
+** DONE adapt configuration as, for ex:
+   CLOSED: [2018-05-18 Fri 10:38]
 
 ----
 mbr = ["rbc", "ctc"]
