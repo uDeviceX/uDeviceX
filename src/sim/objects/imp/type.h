@@ -71,13 +71,13 @@ struct Rig {
     float mass;  /* mass of one particle */
     MeshRead   *mesh;
     MeshWrite  *mesh_write;
+    IoRig      *diag;
 
     MeshExch   *mesh_exch;
     BounceBackData *bbdata;
 };
 
 struct Dump {
-    IoRig *rig;
     Particle *pp; /* workspace on host */
     long id, id_diag;
 };

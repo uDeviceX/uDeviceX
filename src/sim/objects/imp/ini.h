@@ -110,6 +110,7 @@ static void ini_rig(const Config *cfg, const OptRig *opt, MPI_Comm cart, int max
     
     UC(mesh_read_ini_ply(opt->templ_file, &r->mesh));
     UC(mesh_write_ini_from_mesh(cart, opt->shifttype, r->mesh, mesh_dir, /**/ &r->mesh_write));
+    UC(io_rig_ini(&r->diag));
     
     UC(rig_ini(max_m, maxp, r->mesh, &r->q));
     
@@ -134,7 +135,6 @@ static void ini_dump(long maxp, Dump **dump) {
     EMALLOC(1, dump);
     d = *dump;
     EMALLOC(maxp, &d->pp);
-    UC(io_rig_ini(&d->rig));
     d->id = d->id_diag = 0;
 }
 

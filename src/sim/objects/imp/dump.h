@@ -31,10 +31,10 @@ static void dump_diag_mbr(MPI_Comm cart, const Coords *coords, Mbr *m, Dump *d) 
     }
 }
 
-static void dump_diag_rig(float t, const Coords *coords, Rig *r, Dump *d) {
+static void dump_diag_rig(float t, const Coords *coords, Rig *r) {
     RigQuants *q = &r->q;
     cD2H(q->ss_dmp, q->ss, q->ns);
-    UC(io_rig_dump(coords, t, r->name, q->ns, q->ss_dmp, q->ss_dmp_bb, d->rig));
+    UC(io_rig_dump(coords, t, r->name, q->ns, q->ss_dmp, q->ss_dmp_bb, r->diag));
 }
 
 void objects_diag_dump(float t, Objects *obj) {
@@ -42,7 +42,7 @@ void objects_diag_dump(float t, Objects *obj) {
     Dump *d = obj->dump;
     if (!obj->active) return;
     for (i = 0; i < obj->nmbr; ++i) dump_diag_mbr(obj->cart, obj->coords, obj->mbr[i], d);
-    for (i = 0; i < obj->nrig; ++i) dump_diag_rig(t,         obj->coords, obj->rig[i], d);
+    for (i = 0; i < obj->nrig; ++i) dump_diag_rig(t,         obj->coords, obj->rig[i]);
     ++ d->id_diag;
 }
 

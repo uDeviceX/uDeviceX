@@ -67,6 +67,7 @@ static void fin_rig(Rig *r) {
 
     UC(fin_rig_distr(/**/ &r->d));
     UC(mesh_write_fin(r->mesh_write));
+    UC(io_rig_fin(r->diag));
     UC(rig_pininfo_fin(r->pininfo));
 
     if (r->bbdata) UC(fin_bbdata(r->bbdata));
@@ -76,7 +77,6 @@ static void fin_rig(Rig *r) {
 
 static void fin_dump(Dump *d) {
     EFREE(d->pp);
-    UC(io_rig_fin(d->rig));
     EFREE(d);
 }
 
