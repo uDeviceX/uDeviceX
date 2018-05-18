@@ -38,14 +38,11 @@ static void recolor_flu_from_mbr(Mbr *m, PFarray *flu) {
                        c->pp_mesh, c->lo, c->hi, RED_COLOR, /**/ (int*) flu->p.cc));
 }
 
-/* TODO 2 steps recoloring */
-/* not supported yet */
 void objects_recolor_flu(Objects *obj, PFarray *flu) {
     int i;
     if (!obj->active) return;
     if (!obj->nmbr) return;
     if (flu->n == 0) return;
-    if (obj->nmbr > 1) ERR("not implemented yet for more than one membrane type");
 
     UC(reini_colors(flu));
     for (i = 0; i < obj->nmbr; ++i) UC(recolor_flu_from_mbr(obj->mbr[i], flu));
