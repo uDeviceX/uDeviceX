@@ -68,7 +68,8 @@ ctc = {
     CLOSED: [2018-05-18 Fri 12:17]
 *** DONE Multi rigid types
     CLOSED: [2018-05-18 Fri 12:17]
-** TODO recoloring for many mbr
+** DONE recoloring for many mbr
+   CLOSED: [2018-05-18 Fri 14:00]
 ** TODO test bounce back for many objects
 * TODO fsi and cnt params aware
 
