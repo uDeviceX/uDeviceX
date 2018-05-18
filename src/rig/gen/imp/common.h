@@ -54,7 +54,7 @@ _I_ void compute_labels(int pdir, int n, const Particle *pp, int nt, int nv, int
     
     if (nm) UC(minmax(pp_mesh, nv, nm, /**/ lo, hi));
     UC(collision_label_ini(n, OUT, /**/ ll));    
-    UC(collision_label(pdir, n, pp, &tri, nv, nm, pp_mesh, lo, hi, OUT, /**/ ll));
+    UC(collision_label(pdir, n, pp, &tri, nv, nm, pp_mesh, lo, hi, IN, /**/ ll));
 
     if (nm) Dfree(lo);
     if (nm) Dfree(hi);
