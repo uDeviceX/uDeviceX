@@ -1,0 +1,12 @@
+#### RBC in a periodic box (1 node)
+# nTEST: multimbr.t0
+cd test/multiobjects/mbr
+u.cp.rbc rbc/498.off rbc1.off
+u.cp.rbc rbc/498.off rbc2.off
+x=0.75 y=8 z=12; echo 1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 > rbcs1-ic.txt
+x=8.5  y=8 z=12; echo 1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 > rbcs2-ic.txt
+:
+u.run udx conf.cfg
+:
+ply2punto ply/rbc1/00001.ply | uscale 10 >  ply.out.txt
+ply2punto ply/rbc2/00001.ply | uscale 10 >> ply.out.txt
