@@ -62,6 +62,9 @@ ctc = {
 
 ----
 
+** TODO Add tests
+*** TODO Multi membrane types
+*** TODO Multi rigid types
 ** TODO recoloring for many mbr
 ** TODO test bounce back for many objects
 * TODO fsi and cnt params aware
