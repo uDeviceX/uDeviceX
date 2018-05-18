@@ -65,7 +65,6 @@ static void read_flu(const Config *c, OptFlu *o) {
 }
 
 static void read_mbr(const Config *c, bool restart, const char *ns, OptMbr *o) {
-    UC(lookup_bool_ns(c, ns, "active", &o->active));
     UC(lookup_bool_ns(c, ns, "ids", &o->ids));
     UC(lookup_bool_ns(c, ns, "stretch", &o->stretch));
     o->shifttype = get_shifttype_ns(c, ns, "shifttype");
@@ -95,7 +94,6 @@ static void read_mbr_array(const Config *c, bool restart, int *nmbr, OptMbr *oo)
 }
 
 static void read_rig(const Config *c, bool restart, const char *ns, OptRig *o) {
-    UC(lookup_bool_ns(c, ns, "active", &o->active));
     UC(lookup_bool_ns(c, ns, "bounce", &o->bounce));
     UC(lookup_bool_ns(c, ns, "empty_pp", &o->empty_pp));
     o->shifttype = get_shifttype_ns(c, ns, "shifttype");

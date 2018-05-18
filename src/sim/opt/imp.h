@@ -5,7 +5,7 @@ struct OptFlu {
 
 /* membrane options */
 struct OptMbr {
-    bool active, ids, stretch, push, dump_com;
+    bool ids, stretch, push, dump_com;
     int shifttype;
     float mass;
     char templ_file[FILENAME_MAX];
@@ -16,7 +16,7 @@ struct OptMbr {
 
 /* rigid options */
 struct OptRig {
-    bool active, bounce, empty_pp, push;
+    bool bounce, empty_pp, push;
     int shifttype;
     float mass;
     char templ_file[FILENAME_MAX];
