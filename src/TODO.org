@@ -33,10 +33,8 @@ rig = {
 ----
 
 * TODO configuration of wall repulsion
-
 Specify which object is repulsed and with what parameters
-
-Possible conf in each object with a section repulsion...
+Possible conf in each object with a section repulsion
 
 * TODO Many membranes/objects
 ** DONE no hardcoded filenames 
@@ -72,5 +70,9 @@ ctc = {
    CLOSED: [2018-05-18 Fri 14:00]
 ** TODO test bounce back for many objects
 * TODO fsi and cnt params aware
-
 fsi and cnt should use different pair parameters depending on object type
+** TODO objects exchanger communicate starts of objects
+** TODO fsi: different params in bulk
+** TODO fsi: different params in halo
+** TODO cnt: different params in bulk
+** TODO cnt: different params in halo
