@@ -30,8 +30,9 @@ static void recolor_flu_from_mbr(Mbr *m, PFarray *flu) {
 
     UC(minmax(c->pp_mesh, nv, nm, /**/ c->lo, c->hi));
 
+    UC(collision_label_ini(flu->n, BLUE_COLOR, /**/ (int*) flu->p.cc));
     UC(collision_label(NOT_PERIODIC, flu->n, (const Particle*) flu->p.pp, m->tri, nv, nm,
-                       c->pp_mesh, c->lo, c->hi, RED_COLOR, BLUE_COLOR, /**/ (int*) flu->p.cc));
+                       c->pp_mesh, c->lo, c->hi, RED_COLOR, /**/ (int*) flu->p.cc));
 }
 
 /* TODO 2 steps recoloring */

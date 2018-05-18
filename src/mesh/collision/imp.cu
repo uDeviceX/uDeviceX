@@ -134,25 +134,22 @@ __global__ void label(int pdir, const Particle *pp, const int n, const Particle 
 }
 }
 
-static void label(int pdir, int n, const Particle *pp, const Triangles *tri, int nv, int nm, const Particle *i_pp,
-                  const float3 *minext, const float3 *maxext, int lab_in, int lab_out, /**/ int *labels) {
-    enum {X, Y, Z};
-    if (nm == 0 || n == 0) return;
-
+void collision_label_ini(long n, int lab_out, /**/ int *labels) {
     KL(collision_dev::init_tags, (k_cnf(n)), (n, lab_out, /**/ labels));
-
-    enum {THR = 128};
-    dim3 thrd(THR, 1);
-    dim3 blck(ceiln(n, THR), nm);
-
-    KL(collision_dev::label, (blck, thrd),
-       (pdir, pp, n, i_pp, nv, *tri, minext, maxext, lab_in, /**/ labels)); 
 }
 
 void collision_label(int pdir, int n, const Particle *pp, const Triangles *tri, 
                      int nv, int nm, const Particle *i_pp, 
                      const float3 *minext, const float3 *maxext,
-                     int lab_in, int lab_out, /**/ int *labels) {
-    if (nm == 0 || n == 0) return;
-    UC(label(pdir, n, pp, tri, nv, nm, i_pp, minext, maxext, lab_in, lab_out, /**/ labels));
+                     int lab_in, /**/ int *labels) {
+    enum {THR = 128};
+    
+    dim3 thrd(THR, 1);
+    dim3 blck(ceiln(n, THR), nm);
+
+    if (nm == 0 || n == 0) return;    
+    
+    KL(collision_dev::label, (blck, thrd),
+       (pdir, pp, n, i_pp, nv, *tri, minext, maxext, lab_in, /**/ labels)); 
+
 }
