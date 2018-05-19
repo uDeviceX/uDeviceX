@@ -75,7 +75,7 @@ static void run2(const Config *cfg, MPI_Comm cart, float dt, float mass, float t
 
     if (stretch) rbc_stretch_ini("rbc.stretch", q->nv, &rbcstretch);
     UC(rbc_force_ini(off, &t));
-    UC(rbc_force_set_conf(off, cfg, t));
+    UC(rbc_force_set_conf(off, cfg, "rbc", t));
     UC(run1(cart, dt, mass, te, coords, part_freq, bforce, q, t, par, mesh_write, stretch, rbcstretch));
     if (stretch) rbc_stretch_fin(rbcstretch);
     UC(rbc_force_fin(t));

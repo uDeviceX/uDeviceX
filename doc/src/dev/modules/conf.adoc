@@ -56,6 +56,12 @@ include::{src}/conf/imp.h[tags=lookup]
 Note that the program raises an error if the argument is not found or
 if an error occured (e.g. wrong type).
 
+A convenient set of functions to look for variable in a given namespace:
+
+[source, c++]
+----
+include::{src}/conf/imp.h[tags=ns]
+----
 
 Lookup variables from the configuration:
 

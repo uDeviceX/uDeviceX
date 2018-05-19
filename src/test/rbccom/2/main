@@ -9,4 +9,4 @@ x=6.75 y=9 z=12; echo 1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 >> rbcs-ic.txt
 :
 u.run 2 1 1 udx conf.cfg
 :
-sort com/0003.txt | awk '{print $1, $2, $3, $4}' | uscale 100 > com.out.txt
+sort diag/com/rbc.0003.txt | awk '{print $1, $2, $3, $4}' | uscale 100 > com.out.txt

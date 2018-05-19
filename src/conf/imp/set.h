@@ -165,6 +165,27 @@ static void set_string(const char *name, const char *a, config_t *c) {
         ERR("could not set <%s>", desc[n-1]);
 }
 
+static void set_vstring(const char *name, int nelem, const char *ss[], config_t *c) {
+    enum {APPEND = -1};
+    int n;
+    CBuf buf;
+    const char *desc[MAX_LEVEL];
+    config_setting_t *group, *setting, *status;
+    int i;
+
+    UC(split_str(name, &n, &buf));
+    to_ptr_array(&buf, desc);
+        
+    group = get_subgroup_setting(n-1, desc, /**/ c);
+    setting = subsetting(desc[n-1], CONFIG_TYPE_ARRAY, /**/ group);
+
+    for (i = 0; i < nelem; ++i) {
+        status = config_setting_set_string_elem(setting, APPEND, ss[i]);
+        if (NULL == status)
+            ERR("could not set element %d/%d of <%s>", i, nelem, desc[n-1]);
+    }
+}
+
 
 void conf_set_int(const char *desc, int a, Config *cfg) {
     UC(set_int(desc, a, &cfg->c[EXE]));

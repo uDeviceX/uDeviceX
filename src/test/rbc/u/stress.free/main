@@ -13,7 +13,6 @@ u.conf0 u/rbc/force
 u.make -j
 u.run ./udx conf.cfg "
 rbc = {
-    active = true
     totArea = $area
     totVolume = $volume
     stress_free = true

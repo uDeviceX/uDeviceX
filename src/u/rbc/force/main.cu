@@ -84,7 +84,7 @@ static void run2(const Config *cfg, MPI_Comm cart, float dt, const Coords *coord
     UC(rbc_gen_mesh(coords, cart, off, ic, /**/ q));
     UC(rbc_gen_freeze(cart, /**/ q));
     UC(rbc_force_ini(off, /**/ &t));
-    UC(rbc_force_set_conf(off, cfg, t));
+    UC(rbc_force_set_conf(off, cfg, "rbc", t));
     UC(run1(dt, q, t, par));
     UC(rbc_force_fin(t));
 }
@@ -123,7 +123,7 @@ int main(int argc, char **argv) {
     UC(conf_lookup_int(cfg, "rbc.seed", &seed));
 
     UC(rbc_params_ini(&par));
-    UC(rbc_params_set_conf(cfg, par));
+    UC(rbc_params_set_conf(cfg, "rbc", par));
     
     UC(run(cfg, cart, dt, coords, cell, ic, seed, par));
 

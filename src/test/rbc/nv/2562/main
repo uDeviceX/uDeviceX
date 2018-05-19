@@ -11,4 +11,4 @@ echo 1 0 0 $x \
 :
 u.run udx conf.cfg
 :
-ply2punto r/00003.ply | awk 'NR % 10 == 0' > ply.out.txt
+ply2punto ply/rbc/00003.ply | awk 'NR % 10 == 0' > ply.out.txt

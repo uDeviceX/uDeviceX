@@ -2,10 +2,6 @@ _I_ bool active_walls(const Sim *s) {
     return !s->equilibrating && s->opt.wall.active;
 }
 
-_S_ bool active_rbc(const Sim *s) {
-    return !s->equilibrating && s->opt.rbc.active;
-}
-
 _I_ bool is_sampling_time(const Sim *s) {
     const Opt *opt = &s->opt;
     const float freq = opt->dump.freq_field / opt->sampler_npdump;
@@ -17,7 +13,6 @@ _I_ bool is_sampling_time(const Sim *s) {
 _I_ void utils_compute_hematocrit(const Sim *s) {
     const Opt *opt = &s->opt;
     double Vdomain, Vrbc, Ht;
-    if (!active_rbc(s)) return;
 
     if (opt->wall.active) {
         Vdomain = wall_compute_volume(s->wall, s->cart, s->opt.params.L);

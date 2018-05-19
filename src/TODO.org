@@ -1,0 +1,78 @@
+* TODO general and simpl configuration of pairwise forces
+
+what parameters between different particles
+add one string for each type of interactions;
+string is a namespace in conf with parameters of that interaction
+
+ex:
+
+----
+flu = {
+    ...
+    pair = "pair_fluflu"
+}
+
+pair_fluflu = {
+    dpd = true
+    ...
+}
+
+rbc = {
+    pairfsi = "pair_rbcflu"
+    paircnt = "pair_objobj"
+    pairwall = "pair_adhesion"
+}
+
+rig = {
+    pairfsi = "pair_rigflu"
+    paircnt = "pair_objobj"
+    pairwall = "pair_fluflu"
+}
+
+...
+----
+
+* TODO configuration of wall repulsion
+Specify which object is repulsed and with what parameters
+Possible conf in each object with a section repulsion
+
+* TODO Many membranes/objects
+** DONE no hardcoded filenames 
+   CLOSED: [2018-05-17 Thu 17:08]
+** DONE make arrays in sim/objects
+   CLOSED: [2018-05-17 Thu 17:08]
+** DONE adapt configuration as, for ex:
+   CLOSED: [2018-05-18 Fri 10:38]
+
+----
+mbr = ["rbc", "ctc"]
+rig = []
+
+rbc = {
+...
+}
+
+ctc = {
+...
+}
+
+...
+
+----
+
+** DONE Add tests
+   CLOSED: [2018-05-18 Fri 12:17]
+*** DONE Multi membrane types
+    CLOSED: [2018-05-18 Fri 12:17]
+*** DONE Multi rigid types
+    CLOSED: [2018-05-18 Fri 12:17]
+** DONE recoloring for many mbr
+   CLOSED: [2018-05-18 Fri 14:00]
+** TODO test bounce back for many objects
+* TODO fsi and cnt params aware
+fsi and cnt should use different pair parameters depending on object type
+** TODO objects exchanger communicate starts of objects
+** TODO fsi: different params in bulk
+** TODO fsi: different params in halo
+** TODO cnt: different params in bulk
+** TODO cnt: different params in halo

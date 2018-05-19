@@ -5,14 +5,23 @@ struct OptFlu {
 
 /* membrane options */
 struct OptMbr {
-    bool active, ids, stretch, push, dump_com;
+    bool ids, stretch, push, dump_com;
     int shifttype;
+    float mass;
+    char templ_file[FILENAME_MAX];
+    char ic_file[FILENAME_MAX];
+    char stretch_file[FILENAME_MAX];
+    char name[FILENAME_MAX];
 };
 
 /* rigid options */
 struct OptRig {
-    bool active, bounce, empty_pp, push;
+    bool bounce, empty_pp, push;
     int shifttype;
+    float mass;
+    char templ_file[FILENAME_MAX];
+    char ic_file[FILENAME_MAX];
+    char name[FILENAME_MAX];
 };
 
 struct OptWall {
@@ -35,8 +44,9 @@ struct OptDump {
 
 struct Opt {
     OptFlu flu;
-    OptMbr rbc;
-    OptRig rig;
+    OptMbr mbr[MAX_MBR_TYPES];
+    OptRig rig[MAX_RIG_TYPES];
+    int nmbr, nrig;
     OptWall wall;
     OptParams params;
     OptDump dump;
@@ -45,6 +55,7 @@ struct Opt {
     int recolor_freq;
     int sampler_npdump;
     int3 sampler_grid_ref;
+    bool restart;
 };
 
 struct Config;

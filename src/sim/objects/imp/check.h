@@ -12,8 +12,9 @@ static void check_size_rig(const Rig *r) {
 }
 
 void objects_check_size(const Objects *obj) {
-    if (obj->mbr) UC(check_size_mbr(obj->mbr));
-    if (obj->rig) UC(check_size_rig(obj->rig));
+    int i;
+    for (i = 0; i < obj->nmbr; ++i) UC(check_size_mbr(obj->mbr[i]));
+    for (i = 0; i < obj->nrig; ++i) UC(check_size_rig(obj->rig[i]));
 }
 
 static void check_vel_mbr(const Dbg *dbg, float dt, const Coords *coords, const Mbr *m) {
@@ -25,8 +26,9 @@ static void check_vel_rig(const Dbg *dbg, float dt, const Coords *coords, const 
 }
 
 void objects_check_vel(const Objects *o, const Dbg *dbg, float dt) {
-    if (o->mbr) UC(check_vel_mbr(dbg, dt, o->coords, o->mbr));
-    if (o->rig) UC(check_vel_rig(dbg, dt, o->coords, o->rig));
+    int i;
+    for (i = 0; i < o->nmbr; ++i) UC(check_vel_mbr(dbg, dt, o->coords, o->mbr[i]));
+    for (i = 0; i < o->nrig; ++i) UC(check_vel_rig(dbg, dt, o->coords, o->rig[i]));
 }
 
 static void check_forces_mbr(const Dbg *dbg, float dt, const Coords *coords, const Mbr *m) {
@@ -38,6 +40,7 @@ static void check_forces_rig(const Dbg *dbg, float dt, const Coords *coords, con
 }
 
 void objects_check_forces(const Objects *o, const Dbg *dbg, float dt) {
-    if (o->mbr) UC(check_forces_mbr(dbg, dt, o->coords, o->mbr));
-    if (o->rig) UC(check_forces_rig(dbg, dt, o->coords, o->rig));
+    int i;
+    for (i = 0; i < o->nmbr; ++i) UC(check_forces_mbr(dbg, dt, o->coords, o->mbr[i]));
+    for (i = 0; i < o->nrig; ++i) UC(check_forces_rig(dbg, dt, o->coords, o->rig[i]));
 }

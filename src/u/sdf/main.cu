@@ -67,7 +67,7 @@ void read_part(const Config *cfg, /**/ Part *p) {
     float r[D];
     int n;
 
-    UC(conf_lookup_vfloat(cfg, "pos", &n, r));
+    UC(conf_lookup_vfloat(cfg, "pos", D, &n, r));
     
     p->x = r[X];
     p->y = r[Y];

@@ -19,7 +19,6 @@ u.make -j
 :
 u.run ./udx conf.cfg "
 rbc = {
-     active = true
      totArea = $area
      totVolume = $volume
 }

@@ -1,3 +1,8 @@
+static void gen_name_mesh_dir(const char *name, char *mesh_dir) {
+    strcpy(mesh_dir, "ply/");
+    strcat(mesh_dir, name);
+}
+
 static void ini_mbr_distr(bool ids, int nv, MPI_Comm comm, int3 L, /**/ MbrDistr *d) {
     UC(drbc_pack_ini(ids, L, MAX_CELL_NUM, nv, /**/ &d->p));
     UC(drbc_comm_ini(ids, comm, /**/ &d->c));
@@ -48,7 +53,7 @@ static void ini_colorer(int nv, int max_m, /**/ Colorer **col) {
 static void ini_mbr(const Config *cfg, const OptMbr *opt, MPI_Comm cart, int3 L,
                     bool recolor, /**/ Mbr **membrane) {
     int nv, max_m;
-    const char *directory = "r";
+    char mesh_dir[FILENAME_MAX];
     Mbr *m;
     EMALLOC(1, membrane);
     m = *membrane;
@@ -59,9 +64,12 @@ static void ini_mbr(const Config *cfg, const OptMbr *opt, MPI_Comm cart, int3 L,
     m->stretch   = NULL;
     m->colorer   = NULL;
     m->mesh_exch = NULL;
+    strcpy(m->name, opt->name);
+    strcpy(m->ic_file, opt->ic_file);
+    gen_name_mesh_dir(m->name, mesh_dir);
     
-    UC(mesh_read_ini_off("rbc.off", &m->mesh));
-    UC(mesh_write_ini_from_mesh(cart, opt->shifttype, m->mesh, directory, /**/ &m->mesh_write));
+    UC(mesh_read_ini_off(opt->templ_file, &m->mesh));
+    UC(mesh_write_ini_from_mesh(cart, opt->shifttype, m->mesh, mesh_dir, /**/ &m->mesh_write));
 
     nv = mesh_read_get_nv(m->mesh);
     
@@ -71,15 +79,15 @@ static void ini_mbr(const Config *cfg, const OptMbr *opt, MPI_Comm cart, int3 L,
     UC(ini_mbr_distr(opt->ids, nv, cart, L, /**/ &m->d));
 
     if (opt->dump_com) UC(rbc_com_ini(nv, max_m, /**/ &m->com));
-    if (opt->stretch)  UC(rbc_stretch_ini("rbc.stretch", nv, /**/ &m->stretch));
+    if (opt->stretch)  UC(rbc_stretch_ini(opt->stretch_file, nv, /**/ &m->stretch));
 
     UC(rbc_params_ini(&m->params));
-    UC(rbc_params_set_conf(cfg, m->params));
+    UC(rbc_params_set_conf(cfg, m->name, m->params));
 
     UC(rbc_force_ini(m->mesh, /**/ &m->force));
-    UC(rbc_force_set_conf(m->mesh, cfg, m->force));
+    UC(rbc_force_set_conf(m->mesh, cfg, m->name, m->force));
 
-    UC(conf_lookup_float(cfg, "rbc.mass", &m->mass));
+    m->mass = opt->mass;
 
     if (recolor) UC(ini_mesh_exch(L, nv, max_m, cart, /**/ &m->mesh_exch));
     if (recolor) UC(ini_colorer(nv, max_m, /**/ &m->colorer));
@@ -88,15 +96,21 @@ static void ini_mbr(const Config *cfg, const OptMbr *opt, MPI_Comm cart, int3 L,
 static void ini_rig(const Config *cfg, const OptRig *opt, MPI_Comm cart, int maxp, int3 L, /**/ Rig **rigid) {
     Rig *r;
     long max_m = MAX_SOLIDS;
+    char mesh_dir[FILENAME_MAX];
     int nv;
     EMALLOC(1, rigid);
     r = *rigid;
 
     r->bbdata    = NULL;
     r->mesh_exch = NULL;
+
+    strcpy(r->name, opt->name);
+    strcpy(r->ic_file, opt->ic_file);
+    gen_name_mesh_dir(r->name, mesh_dir);
     
-    UC(mesh_read_ini_ply("rig.ply", &r->mesh));
-    UC(mesh_write_ini_from_mesh(cart, opt->shifttype, r->mesh, "s", /**/ &r->mesh_write));
+    UC(mesh_read_ini_ply(opt->templ_file, &r->mesh));
+    UC(mesh_write_ini_from_mesh(cart, opt->shifttype, r->mesh, mesh_dir, /**/ &r->mesh_write));
+    UC(io_rig_ini(&r->diag));
     
     UC(rig_ini(max_m, maxp, r->mesh, &r->q));
     
@@ -108,9 +122,9 @@ static void ini_rig(const Config *cfg, const OptRig *opt, MPI_Comm cart, int max
     UC(ini_rig_distr(nv, cart, L, /**/ &r->d));
 
     UC(rig_pininfo_ini(&r->pininfo));
-    UC(rig_pininfo_set_conf(cfg, r->pininfo));
+    UC(rig_pininfo_set_conf(cfg, r->name, r->pininfo));
 
-    UC(conf_lookup_float(cfg, "rig.mass", &r->mass));
+    r->mass = opt->mass;
 
     if (opt->bounce) UC(ini_mesh_exch(L, nv, max_m, cart, /**/ &r->mesh_exch));
     if (opt->bounce) UC(ini_bbdata(r->q.nt, max_m, cart, /**/ &r->bbdata));
@@ -121,14 +135,20 @@ static void ini_dump(long maxp, Dump **dump) {
     EMALLOC(1, dump);
     d = *dump;
     EMALLOC(maxp, &d->pp);
-    UC(io_rig_ini(&d->rig));
     d->id = d->id_diag = 0;
+}
+
+static bool need_bb(int n, const OptRig *r) {
+    int i;
+    for (i = 0; i < n; ++i) if (r[i].bounce) return true;
+    return false;
 }
 
 void objects_ini(const Config *cfg, const Opt *opt, MPI_Comm cart, const Coords *coords, int maxp, Objects **objects) {
     Objects *obj;
     int3 L;
     bool recolor = opt->flu.colors;
+    int i;
     EMALLOC(1, objects);
     obj = *objects;
     obj->opt = *opt;
@@ -138,14 +158,18 @@ void objects_ini(const Config *cfg, const Opt *opt, MPI_Comm cart, const Coords 
     L = subdomain(coords);
     UC(coords_ini(cart, L.x, L.y, L.z, &obj->coords));
 
-    obj->mbr = NULL;
-    obj->rig = NULL;
     obj->bb  = NULL;
 
-    if (opt->rbc.active) UC(ini_mbr(cfg, &opt->rbc, cart, L, recolor, &obj->mbr));
-    if (opt->rig.active) UC(ini_rig(cfg, &opt->rig, cart, maxp, L, &obj->rig));
+    obj->nmbr = opt->nmbr;
+    obj->nrig = opt->nrig;
 
-    if (opt->rig.bounce) UC(meshbb_ini(maxp, /**/ &obj->bb));
+    if (obj->nmbr) EMALLOC(obj->nmbr, &obj->mbr);
+    if (obj->nrig) EMALLOC(obj->nrig, &obj->rig);
+
+    for (i = 0; i < obj->nmbr; ++i) UC(ini_mbr(cfg, &opt->mbr[i], cart, L, recolor, &obj->mbr[i]));
+    for (i = 0; i < obj->nrig; ++i) UC(ini_rig(cfg, &opt->rig[i], cart, maxp, L, &obj->rig[i]));
+
+    if (need_bb(opt->nrig, opt->rig)) UC(meshbb_ini(maxp, /**/ &obj->bb));
         
     UC(ini_dump(maxp, &obj->dump));
 }

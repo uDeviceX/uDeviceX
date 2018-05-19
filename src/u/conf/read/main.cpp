@@ -20,13 +20,13 @@ static void extract(const Config *c) {
     if (conf_opt_int(c, "opt", &opt))
         printf("%d\n", opt);
 
-    if (conf_opt_vint(c, "ivec", &in, ivec)) {
+    if (conf_opt_vint(c, "ivec", MAX_VEC, &in, ivec)) {
         for (i = 0; i < in; ++i)
             printf("%d ", ivec[i]);
         printf("\n");
     }
 
-    if (conf_opt_vfloat(c, "fvec", &fn, fvec)) {
+    if (conf_opt_vfloat(c, "fvec", MAX_VEC, &fn, fvec)) {
         for (i = 0; i < fn; ++i)
             printf("%g ", fvec[i]);
         printf("\n");

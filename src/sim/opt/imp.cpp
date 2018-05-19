@@ -13,14 +13,24 @@
 
 #include "imp.h"
 
-static int get_shifttype(const Config *c, const char *desc) {
-    const char *type;
-    UC(conf_lookup_string(c, desc, &type));
+static int str2shifttype(const char *type) {
     if      (same_str(type, "edge"  )) return MESH_WRITE_EDGE;
     else if (same_str(type, "center")) return MESH_WRITE_CENTER;
     else
         ERR("Unrecognised rbc shift type <%s>", type);
     return -1;
+}
+
+static int get_shifttype(const Config *c, const char *desc) {
+    const char *type;
+    UC(conf_lookup_string(c, desc, &type));
+    return str2shifttype(type);
+ }
+
+static int get_shifttype_ns(const Config *c, const char *ns, const char *d) {
+    const char *type;
+    UC(conf_lookup_string_ns(c, ns, d, &type));
+    return str2shifttype(type);
 }
 
 static void lookup_bool(const Config *c, const char *desc, bool *res) {
@@ -29,9 +39,21 @@ static void lookup_bool(const Config *c, const char *desc, bool *res) {
     *res = b;
 }
 
+static void lookup_bool_ns(const Config *c, const char *ns, const char *desc, bool *res) {
+    int b;
+    UC(conf_lookup_bool_ns(c, ns, desc, &b));
+    *res = b;
+}
+
 static void lookup_string(const Config *c, const char *desc, char *res) {
     const char *s;
     UC(conf_lookup_string(c, desc, &s));
+    strcpy(res, s);
+}
+
+static void lookup_string_ns(const Config *c, const char *ns, const char *desc, char *res) {
+    const char *s;
+    UC(conf_lookup_string_ns(c, ns, desc, &s));
     strcpy(res, s);
 }
 
@@ -42,22 +64,56 @@ static void read_flu(const Config *c, OptFlu *o) {
     UC(lookup_bool(c, "flu.push", &o->push));
 }
 
-static void read_mbr(const Config *c, OptMbr *o) {
-    UC(lookup_bool(c, "rbc.active", &o->active));
-    UC(lookup_bool(c, "rbc.ids", &o->ids));
-    UC(lookup_bool(c, "rbc.stretch", &o->stretch));
-    o->shifttype = get_shifttype(c, "rbc.shifttype");
-    UC(lookup_bool(c, "rbc.push", &o->push));
+static void read_mbr(const Config *c, bool restart, const char *ns, OptMbr *o) {
+    UC(lookup_bool_ns(c, ns, "ids", &o->ids));
+    UC(lookup_bool_ns(c, ns, "stretch", &o->stretch));
+    o->shifttype = get_shifttype_ns(c, ns, "shifttype");
+    UC(lookup_bool_ns(c, ns, "push", &o->push));
     
     UC(lookup_bool(c, "dump.rbc_com", &o->dump_com));
+    UC(conf_lookup_float_ns(c, ns, "mass", &o->mass));
+
+    UC(lookup_string_ns(c, ns, "templ_file", o->templ_file));
+
+    if (restart) o->ic_file[0] = '\0';
+    else         UC(lookup_string_ns(c, ns, "ic_file", o->ic_file));
+
+    if (o->stretch)
+        UC(lookup_string_ns(c, ns, "stretch_file", o->stretch_file));
+
+    strcpy(o->name, ns);
 }
 
-static void read_rig(const Config *c, OptRig *o) {
-    UC(lookup_bool(c, "rig.active", &o->active));
-    UC(lookup_bool(c, "rig.bounce", &o->bounce));
-    UC(lookup_bool(c, "rig.empty_pp", &o->empty_pp));
-    o->shifttype = get_shifttype(c, "rig.shifttype");
-    UC(lookup_bool(c, "rig.push", &o->push));
+static void read_mbr_array(const Config *c, bool restart, int *nmbr, OptMbr *oo) {
+    int i, n;
+    const char *ss[MAX_MBR_TYPES];
+    UC(conf_lookup_vstring(c, "membranes", MAX_MBR_TYPES, &n, ss));
+    for (i = 0; i < n; ++i)
+        UC(read_mbr(c, restart, ss[i], &oo[i]));
+    *nmbr = n;
+}
+
+static void read_rig(const Config *c, bool restart, const char *ns, OptRig *o) {
+    UC(lookup_bool_ns(c, ns, "bounce", &o->bounce));
+    UC(lookup_bool_ns(c, ns, "empty_pp", &o->empty_pp));
+    o->shifttype = get_shifttype_ns(c, ns, "shifttype");
+    UC(lookup_bool_ns(c, ns, "push", &o->push));
+    UC(conf_lookup_float_ns(c, ns, "mass", &o->mass));
+
+    UC(lookup_string_ns(c, ns, "templ_file", o->templ_file));
+    if (restart) o->ic_file[0] = '\0';        
+    else         UC(lookup_string_ns(c, ns, "ic_file", o->ic_file));
+
+    strcpy(o->name, ns);
+}
+
+static void read_rig_array(const Config *c, bool restart, int *nrig, OptRig *oo) {
+    int i, n;
+    const char *ss[MAX_RIG_TYPES];
+    UC(conf_lookup_vstring(c, "rigids", MAX_RIG_TYPES, &n, ss));
+    for (i = 0; i < n; ++i)
+        UC(read_rig(c, restart, ss[i], &oo[i]));
+    *nrig = n;
 }
 
 static void read_wall(const Config *c, OptWall *o) {
@@ -104,6 +160,8 @@ static void read_common(const Config *c, Opt *o) {
     UC(lookup_bool(c, "vcon.active", &o->vcon));
     
     UC(conf_lookup_int(c, "flu.recolor_freq", &o->recolor_freq));
+
+    UC(lookup_bool(c, "glb.restart", &o->restart));
 }
 
 void opt_read(const Config *c, Opt *o) {
@@ -111,14 +169,21 @@ void opt_read(const Config *c, Opt *o) {
     UC(read_params(c, &o->params));
     UC(read_dump(c, &o->dump));
     UC(read_flu(c, &o->flu));
-    UC(read_mbr(c, &o->rbc));
-    UC(read_rig(c, &o->rig));
+
+    UC(read_mbr_array(c, o->restart, &o->nmbr, o->mbr));
+    UC(read_rig_array(c, o->restart, &o->nrig, o->rig));
+
     UC(read_wall(c, &o->wall));
 }
 
+static void check_mbr(const OptMbr *m) {
+    if (m->dump_com && !m->ids)
+        ERR("%s: Need ids activated to dump com!", m->name);
+}
+
 void opt_check(const Opt *o) {
-    if (o->rbc.dump_com && !o->rbc.ids)
-        ERR("Need rbc.ids activated to dump rbc com!");
+    for (int i = 0; i < o->nmbr; ++i)
+        check_mbr(&o->mbr[i]);
 }
 
 static long maxp_estimate(const OptParams *p) {

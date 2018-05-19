@@ -1,10 +1,11 @@
-enum {X, Y, Z};
+#define BASE DUMP_BASE "/diag/rig"
 
 void io_rig_ini(IoRig **iop) {
     IoRig *io;
     EMALLOC(1, iop);
     io = *iop;
     strcpy(io->mode, "w");
+    os_mkdir(BASE);
 }
 
 void io_rig_fin(IoRig *io) {
@@ -12,6 +13,7 @@ void io_rig_fin(IoRig *io) {
 }
 
 static void write_v(FILE *f, const float v[3]) {
+    enum {X, Y, Z};
     fprintf(f, "%+.6e %+.6e %+.6e ", v[X], v[Y], v[Z]);
 }
 
@@ -19,10 +21,14 @@ static void set_created(IoRig *io) {
     strcpy(io->mode, "a");
 }
 
-void io_rig_dump(const Coords *c, float t, int ns, const Solid *ss, const Solid *ssbb, IoRig *io) {
-    enum {X, Y, Z};
-    char fname[256];
-    float com[3];
+static void gen_fname(const char *rig_name, int id, char *fname) {
+    sprintf(fname, BASE "/%s.%04d.txt", rig_name, id);
+}
+
+void io_rig_dump(const Coords *c, float t, const char *name, int ns, const Solid *ss, const Solid *ssbb, IoRig *io) {
+    enum {X, Y, Z, D};
+    char fname[FILENAME_MAX];
+    float com[D];
     FILE *fp = NULL;
     int j;
     const Solid *s, *sbb;
@@ -31,7 +37,7 @@ void io_rig_dump(const Coords *c, float t, int ns, const Solid *ss, const Solid 
         s   = ss   + j;
         sbb = ssbb + j;
 
-        sprintf(fname, DUMP_BASE "/solid_diag_%04d.txt", (int) s->id);
+        gen_fname(name, s->id, fname);
         UC(efopen(fname, io->mode, /**/ &fp));
         fprintf(fp, "%+.6e ", t);
 
@@ -56,3 +62,5 @@ void io_rig_dump(const Coords *c, float t, int ns, const Solid *ss, const Solid 
     }
     set_created(io);
 }
+
+#undef BASE

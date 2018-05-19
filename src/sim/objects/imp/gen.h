@@ -1,16 +1,17 @@
 static void gen_mesh_mbr(Coords *coords, MPI_Comm cart, Mbr *m) {
     MeshRead *mesh = m->mesh;
-    UC(rbc_gen_mesh(coords, cart, mesh, "rbcs-ic.txt", /**/ &m->q));
+    UC(rbc_gen_mesh(coords, cart, mesh, m->ic_file, /**/ &m->q));
 }
 
 static void gen_mesh_rig(Coords *coords, MPI_Comm cart, Rig *r) {
     MeshRead *mesh = r->mesh;
-    UC(rig_gen_mesh(coords, cart, mesh, "rigs-ic.txt", /**/ &r->q));
+    UC(rig_gen_mesh(coords, cart, mesh, r->ic_file, /**/ &r->q));
 }
 
 void objects_gen_mesh(Objects *o) {
-    if (o->mbr) gen_mesh_mbr(o->coords, o->cart, o->mbr);
-    if (o->rig) gen_mesh_rig(o->coords, o->cart, o->rig);
+    int i;
+    for (i = 0; i < o->nmbr; ++i) gen_mesh_mbr(o->coords, o->cart, o->mbr[i]);
+    for (i = 0; i < o->nrig; ++i) gen_mesh_rig(o->coords, o->cart, o->rig[i]);
 }
 
 template <typename T>
@@ -26,7 +27,7 @@ static void remove_mbr(const Sdf *sdf, Mbr *m) {
     q->nc = sdf_who_stays(sdf, q->n, q->pp, nc0 = q->nc, q->nv, /**/ stay);
     q->n = q->nc * q->nv;
     remove(q->pp, q->nv, stay, q->nc);
-    msg_print("rbc: %d/%d survived", q->nc, nc0);
+    msg_print("%s: %d/%d survived", m->name, q->nc, nc0);
 }
 
 static void remove_rig(const Sdf *sdf, Rig *r) {
@@ -43,13 +44,14 @@ static void remove_rig(const Sdf *sdf, Rig *r) {
 
     remove(q->i_pp,     q->nv, stay, q->ns);
     remove(q->i_pp_hst, q->nv, stay, q->ns);
-    msg_print("rig: %d/%d survived", q->ns, ns0);
+    msg_print("%s: %d/%d survived", r->name, q->ns, ns0);
 }
 
 void objects_remove_from_wall(const Sdf *sdf, Objects *o) {
+    int i;
     if (!sdf) return;
-    if (o->mbr) remove_mbr(sdf, o->mbr);
-    if (o->rig) remove_rig(sdf, o->rig);
+    for (i = 0; i < o->nmbr; ++i) remove_mbr(sdf, o->mbr[i]);
+    for (i = 0; i < o->nrig; ++i) remove_rig(sdf, o->rig[i]);
 }
 
 static void gen_freeze_mbr(MPI_Comm cart, Mbr *m) {
@@ -69,8 +71,14 @@ static void gen_freeze_rig(const Coords *coords, MPI_Comm cart, bool empty_pp, i
 }
 
 void objects_gen_freeze(PFarray *flu, Objects *o) {
+    int i;
     const Opt *opt = &o->opt;
-    if (o->mbr) gen_freeze_mbr(o->cart, o->mbr);
-    if (o->rig) gen_freeze_rig(o->coords, o->cart, opt->rig.empty_pp, opt->params.numdensity, flu, o->rig);
+
+    for (i = 0; i < o->nmbr; ++i)
+        gen_freeze_mbr(o->cart, o->mbr[i]);
+
+    for (i = 0; i < o->nrig; ++i)
+        gen_freeze_rig(o->coords, o->cart, opt->rig[i].empty_pp, opt->params.numdensity, flu, o->rig[i]);
+
     o->active = true;
 }

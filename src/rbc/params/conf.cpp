@@ -8,23 +8,23 @@
 
 #include "imp.h"
 
-void rbc_params_set_conf(const Config *c, RbcParams *par) {
+void rbc_params_set_conf(const Config *c, const char *name, RbcParams *par) {
     float gc, gt, kbt, kb, phi, ks, mpow, x0, ka, kd, kv, totArea, totVolume;
 
-    UC(conf_lookup_float(c, "rbc.gammaC", &gc));
-    UC(conf_lookup_float(c, "rbc.gammaT", &gt));
-    UC(conf_lookup_float(c, "rbc.kBT", &kbt));
-    UC(conf_lookup_float(c, "rbc.kb", &kb));
-    UC(conf_lookup_float(c, "rbc.phi", &phi));
-    UC(conf_lookup_float(c, "rbc.ks", &ks));
-    UC(conf_lookup_float(c, "rbc.x0", &x0));
-    UC(conf_lookup_float(c, "rbc.mpow", &mpow));
-    UC(conf_lookup_float(c, "rbc.ka", &ka));
-    UC(conf_lookup_float(c, "rbc.kd", &kd));
-    UC(conf_lookup_float(c, "rbc.kv", &kv));
+    UC(conf_lookup_float_ns(c, name, "gammaC", &gc));
+    UC(conf_lookup_float_ns(c, name, "gammaT", &gt));
+    UC(conf_lookup_float_ns(c, name, "kBT", &kbt));
+    UC(conf_lookup_float_ns(c, name, "kb", &kb));
+    UC(conf_lookup_float_ns(c, name, "phi", &phi));
+    UC(conf_lookup_float_ns(c, name, "ks", &ks));
+    UC(conf_lookup_float_ns(c, name, "x0", &x0));
+    UC(conf_lookup_float_ns(c, name, "mpow", &mpow));
+    UC(conf_lookup_float_ns(c, name, "ka", &ka));
+    UC(conf_lookup_float_ns(c, name, "kd", &kd));
+    UC(conf_lookup_float_ns(c, name, "kv", &kv));
 
-    UC(conf_lookup_float(c, "rbc.totArea",   &totArea));
-    UC(conf_lookup_float(c, "rbc.totVolume", &totVolume));
+    UC(conf_lookup_float_ns(c, name, "totArea",   &totArea));
+    UC(conf_lookup_float_ns(c, name, "totVolume", &totVolume));
 
     rbc_params_set_fluct(gc, gt, kbt, /**/ par);
     rbc_params_set_bending(kb, phi, /**/ par);

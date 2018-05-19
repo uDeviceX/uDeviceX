@@ -61,7 +61,7 @@ void sim_gen(Sim *s) {
     freeze(/**/ s);
     dSync();
 
-    if (opt->rbc.active && opt->flu.colors) UC(colors_from_rbc(s));
+    if (opt->flu.colors) UC(colors_from_rbc(s));
 
     tstart = s->time.eq;
     pre_run(s);

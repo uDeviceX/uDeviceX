@@ -88,30 +88,37 @@ static void collect_mom_rig(float dt, Rig *r) {
     UC(meshbb_collect_rig_momentum(dt, q->ns, mi, q->i_pp, bb->mm, /**/ q->ss));
 }
 
-void objects_bounce(float dt, float flu_mass, const Clist flu_cells, PFarray *flu, Objects *obj) {
+/* TODO less brutal implementation */
+static void bounce_rig(float dt, float flu_mass, const Clist flu_cells, PFarray *flu, MeshBB *bb, Rig *r) {
     int nmhalo;
-    Rig *r = obj->rig;
-    MeshBB *bb = obj->bb;
     Particle *pp = (Particle*) flu->p.pp;
     Force    *ff = (Force*)    flu->f.ff;
 
-    if (!obj->active) return;
-    if (!bb) return;
-
-    if (r) mesh_pack_and_send_rig(r);
-    if (r) nmhalo = mesh_recv_unpack_rig(r);
+    mesh_pack_and_send_rig(r);
+    nmhalo = mesh_recv_unpack_rig(r);
 
     UC(meshbb_reini(flu->n, /**/ bb));
-    if (r) clear_momentum_rig(nmhalo, r);
+    clear_momentum_rig(nmhalo, r);
 
-    if (r) find_and_select_collisions_rig(dt, flu->n, flu_cells, pp, ff, nmhalo + r->q.ns, r, bb);
+    find_and_select_collisions_rig(dt, flu->n, flu_cells, pp, ff, nmhalo + r->q.ns, r, bb);
     
-    if (r) bounce_rig(dt, flu_mass, bb, flu->n, ff, /**/ pp, r);
+    bounce_rig(dt, flu_mass, bb, flu->n, ff, /**/ pp, r);
 
-    if (r) mom_pack_and_send_rig(r);
-    if (r) mom_recv_unpack_rig(r);
-    if (r) collect_mom_rig(dt, r);
+    mom_pack_and_send_rig(r);
+    mom_recv_unpack_rig(r);
+    collect_mom_rig(dt, r);
 
     /* for dump */
-    if (r) cD2H(r->q.ss_dmp_bb, r->q.ss, r->q.ns);
+    cD2H(r->q.ss_dmp_bb, r->q.ss, r->q.ns);
+}
+
+void objects_bounce(float dt, float flu_mass, const Clist flu_cells, PFarray *flu, Objects *obj) {
+    MeshBB *bb = obj->bb;
+    int i;
+ 
+    if (!obj->active) return;
+    if (!bb) return;
+    
+    for (i = 0; i < obj->nrig; ++i)
+        bounce_rig(dt, flu_mass, flu_cells, flu, bb, obj->rig[i]);
 }

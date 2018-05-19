@@ -40,6 +40,8 @@ struct BounceBackData {
 
 /* data holder for cell membranes */
 struct Mbr {
+    char name[FILENAME_MAX];
+    char ic_file[FILENAME_MAX];
     RbcQuants q;
     MbrDistr d;
     Force *ff;
@@ -58,6 +60,8 @@ struct Mbr {
 
 /* data holder for rigid objects */
 struct Rig {
+    char name[FILENAME_MAX];
+    char ic_file[FILENAME_MAX];
     RigQuants q;
     Force *ff, *ff_hst;
 
@@ -67,20 +71,21 @@ struct Rig {
     float mass;  /* mass of one particle */
     MeshRead   *mesh;
     MeshWrite  *mesh_write;
+    IoRig      *diag;
 
     MeshExch   *mesh_exch;
     BounceBackData *bbdata;
 };
 
 struct Dump {
-    IoRig *rig;
     Particle *pp; /* workspace on host */
     long id, id_diag;
 };
 
 struct Objects {
-    Mbr *mbr;
-    Rig *rig;
+    int nmbr, nrig;
+    Mbr **mbr;
+    Rig **rig;
     Opt opt;
     Dump *dump;
     Coords *coords;

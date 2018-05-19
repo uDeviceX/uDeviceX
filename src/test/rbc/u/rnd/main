@@ -15,7 +15,6 @@ glb = {
     kBT = 0.0
 }
 rbc = {
-    active = true
     totArea = $area
     totVolume = $volume
     rnd = true
