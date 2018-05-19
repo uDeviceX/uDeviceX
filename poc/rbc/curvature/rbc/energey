@@ -47,7 +47,6 @@ matchdeclare(x, true);
 defrule(r_F0, F(x),             F0(x));
 defrule(r_F1, pderivop(F,1)(x), F1(x));
 defrule(r_F2, pderivop(F,2)(x), F2(x));
-
 conv(e):=apply1(e, r_F0, r_F1, r_F2);
 c1: conv(c1) $
 c2: conv(c2) $

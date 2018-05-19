@@ -10,7 +10,7 @@ r  = "<awk '$1>0' data/rbc/a/curv"
 
 print o
 
-set term pdfcairo size 3.5in, 3.5in
+#set term pdfcairo size 3.5in, 3.5in
 set output o
 
 set size square
@@ -30,9 +30,11 @@ set y2label "energy [T^2/L]" offset -2c
 set lmargin 5.5
 set rmargin 6.5
 
-sc = 0.005
+H(x,y)=(x + y)/2.0
+K(x,y)=x*y
+
+sc = 0.005/2
 plot \
-     fe u 1:($2*2)            axes x1y2 w dots        t "relaxed mesh", \
-     f0                       axes x1y2 w l lt 3 lw 4 t "initial mesh", \
-     r  u 1:(($3 + $4)**2*sc) axes x1y2 w l lt 1 lw 4 t "Helfrich",     \
-     r                                  w l lt 1 lw 1 t "mesh profile"
+     f2 u 1:($2*4)                        axes x1y2 w l lt 3 lw 4 t "initial mesh", \
+     r  u 1:((H($3,$4)**2 - K($3,$4))*sc) axes x1y2 w l lt 1 lw 4 t "Helfrich", \
+     r                                    w l lt 1 lw 1 t "mesh profile"

@@ -31,7 +31,7 @@ static void check_stack_overflow() {
         error_signal(__FILE__, __LINE__, "stack overflow (%d / %d)", stack_sz, MAX_TRACE);
         error_report();
         error_abort();
-    }    
+    }
 }
 
 void error_stack_push(const char *file, int line) {
@@ -66,11 +66,11 @@ void error_signal(const char *file, int line, const char *fmt, ...) {
     set_err_loc(file, line);
     err_status = 1;
     strcpy(err_kind, "udx");
-    
+
     va_list ap;
     va_start(ap, fmt);
     vsprintf(err_msg, fmt, ap);
-    va_end(ap);    
+    va_end(ap);
 }
 
 void error_signal_cuda(const char *file, int line, const char *msg) {
@@ -97,4 +97,3 @@ void error_report() {
 }
 
 void error_abort() { exit(1); }
-

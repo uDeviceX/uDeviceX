@@ -1,5 +1,5 @@
 #define ERR(fmt, ...)  do {                                     \
-        error_signal(__FILE__, __LINE__, fmt, ##__VA_ARGS__);   \
+        error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
         error_report();                                         \
         error_abort();                                          \
     } while (0)
