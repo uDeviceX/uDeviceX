@@ -126,14 +126,12 @@ void objects_get_accel(const Objects *obj, TimeStepAccel *aa) {
     for (i = 0; i < obj->nrig; ++i) get_rig_accel(obj->rig[i], aa);    
 }
 
-/* TODO */
-
 static void get_mbr_params_adhesion(const Mbr *m, const PairParams **prm) {
-    *prm = NULL;
+    *prm = m->adhesion;
 }
 
-static void get_rig_params_adhesion(const Rig *m, const PairParams **prm) {
-    *prm = NULL;
+static void get_rig_params_adhesion(const Rig *r, const PairParams **prm) {
+    *prm = r->adhesion;
 }
 
 void objects_get_params_adhesion(const Objects *obj, const PairParams *prms[]) {
