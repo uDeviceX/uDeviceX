@@ -55,6 +55,8 @@ static void fin_mbr(Mbr *m) {
 
     if (m->colorer)   UC(fin_colorer(/**/ m->colorer));
     if (m->mesh_exch) UC(fin_mesh_exch(/**/ m->mesh_exch));
+
+    if (m->adhesion) UC(pair_fin(m->adhesion));
     
     EFREE(m);
 }
@@ -71,7 +73,9 @@ static void fin_rig(Rig *r) {
     UC(rig_pininfo_fin(r->pininfo));
 
     if (r->bbdata) UC(fin_bbdata(r->bbdata));
-    
+
+    if (r->adhesion) UC(pair_fin(r->adhesion));
+
     EFREE(r);
 }
 
