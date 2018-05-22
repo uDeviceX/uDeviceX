@@ -68,7 +68,11 @@ void wall_adhesion(const Coords *coords, const PairParams* params[], Wall *w, PF
     for (i = 0; i < na; ++i) {
         UC(pfarrays_get(i, aa, &n, &p, &f));
         par = params[i];
-        if (n) UC(wall_force_adhesion(par, w->velstep, coords, w->sdf, &w->q, w->t, n, &p, /**/ &f));
+
+        if (!par) continue;
+        if (!n)   continue;
+
+        UC(wall_force_adhesion(par, w->velstep, coords, w->sdf, &w->q, w->t, n, &p, /**/ &f));
     }
 }
 

@@ -137,7 +137,6 @@ static void get_rig_params_adhesion(const Rig *m, const PairParams **prm) {
 }
 
 void objects_get_params_adhesion(const Objects *obj, const PairParams *prms[]) {
-
     int i = 0;
     for (; i < obj->nmbr; ++i) get_mbr_params_adhesion(obj->mbr[i], &prms[i]);
     for (; i < obj->nrig; ++i) get_rig_params_adhesion(obj->rig[i], &prms[i]);
