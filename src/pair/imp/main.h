@@ -4,6 +4,7 @@ void pair_ini(PairParams **par) {
     p = *par;
 
     p->ncolors = 0;
+    p->dpd = p->lj = p->adhesion = false;
 }
 
 void pair_fin(PairParams *p) {
@@ -11,6 +12,7 @@ void pair_fin(PairParams *p) {
 }
 
 void pair_set_lj(float sigma, float eps, PairParams *p) {
+    p->lj = true;
     p->ljs = sigma;
     p->lje = eps;
 }
@@ -23,7 +25,8 @@ void pair_set_dpd(int ncol, const float a[], const float g[], float spow, PairPa
 
     if (ncol <= 0)      ERR("need at least one color (given %d)\n", ncol);
     if (ncol > N_COLOR) ERR("too many colors (given %d)\n", ncol);
-    
+
+    p->dpd = true;
     p->ncolors = ncol;
     memcpy(p->a, a, sz);
     memcpy(p->g, g, sz);
@@ -31,6 +34,7 @@ void pair_set_dpd(int ncol, const float a[], const float g[], float spow, PairPa
 }
 
 void pair_set_adhesion(float k1, float k2, PairParams *p) {
+    p->adhesion = true;
     p->k1 = k1;
     p->k2 = k2;
 }
