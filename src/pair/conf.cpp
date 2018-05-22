@@ -15,10 +15,11 @@ static int get_ncol(int npar) {
 }
 
 void pair_set_conf(const Config *cfg, const char *ns, PairParams *par) {
-    int dpd, lj;
+    int dpd, lj, adhesion;
 
-    UC(conf_lookup_bool_ns(cfg, ns, "dpd", &dpd));
-    UC(conf_lookup_bool_ns(cfg, ns, "lj",   &lj));
+    UC(conf_lookup_bool_ns(cfg, ns, "dpd",      &dpd));
+    UC(conf_lookup_bool_ns(cfg, ns, "lj",       &lj));
+    UC(conf_lookup_bool_ns(cfg, ns, "adhesion", &adhesion));
 
     if (dpd) {
         int na, ng, nc;
@@ -35,6 +36,7 @@ void pair_set_conf(const Config *cfg, const char *ns, PairParams *par) {
         
         UC(pair_set_dpd(nc, a, g, spow, /**/ par));
     }
+
     if (lj) {
         float s, e;
 
@@ -42,5 +44,14 @@ void pair_set_conf(const Config *cfg, const char *ns, PairParams *par) {
         UC(conf_lookup_float_ns(cfg, ns, "lje", &e));
 
         UC(pair_set_lj(s, e, /**/ par));
+    }
+
+    if (adhesion) {
+        float k1, k2;
+
+        UC(conf_lookup_float_ns(cfg, ns, "k1", &k1));
+        UC(conf_lookup_float_ns(cfg, ns, "k2", &k2));
+
+        UC(pair_set_adhesion(k1, k2, /**/ par));
     }
 }
