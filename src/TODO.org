@@ -39,8 +39,10 @@ Possible conf in each object with a section repulsion
 ** DONE Use it in simulation
    CLOSED: [2018-05-22 Tue 18:05]
 
-* TODO configuration of wall adhesion
-** TODO Read parameters from conf
+* DONE configuration of wall adhesion
+  CLOSED: [2018-05-22 Tue 18:45]
+** DONE Read parameters from conf
+   CLOSED: [2018-05-22 Tue 18:45]
 ** DONE Use it in simulation
    CLOSED: [2018-05-22 Tue 18:05]
 * DONE Many membranes/objects
