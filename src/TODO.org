@@ -35,7 +35,8 @@ rig = {
 * TODO configuration of wall repulsion
 Specify which object is repulsed and with what parameters
 Possible conf in each object with a section repulsion
-
+** TODO Read parameters from conf
+** TODO Use it in simulation
 * DONE Many membranes/objects
   CLOSED: [2018-05-22 Tue 13:53]
 ** DONE no hardcoded filenames 
