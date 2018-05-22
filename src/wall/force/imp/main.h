@@ -67,6 +67,15 @@ void wall_force_apply(const PairParams *params, const WvelStep *wv, const Coords
     }
 }
 
+void wall_force_adhseion(const PairParams *params, const WvelStep *wv, const Coords *c, const PaArray *parray, int n, RNDunif *rnd, WallForce wa, /**/ const FoArray *farray) {
+    PairAdhesion pv;
+    PaArray_v pav;
+
+    UC(pair_get_view_adhesion(params, &pv));
+    UC(parray_get_view(parray, &pav));
+    UC(wvel_dispatch(pv, wv, c, pav, n, rnd, wa, /**/ farray));
+}
+
 
 void wall_force_repulse(Sdf_v sdf_v, long n, const PaArray *pa, const FoArray *fo) {
     KL(wf_dev::repulse,
