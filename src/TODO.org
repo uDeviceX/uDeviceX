@@ -36,7 +36,8 @@ rig = {
 Specify which object is repulsed and with what parameters
 Possible conf in each object with a section repulsion
 
-* TODO Many membranes/objects
+* DONE Many membranes/objects
+  CLOSED: [2018-05-22 Tue 13:53]
 ** DONE no hardcoded filenames 
    CLOSED: [2018-05-17 Thu 17:08]
 ** DONE make arrays in sim/objects
@@ -68,7 +69,8 @@ ctc = {
     CLOSED: [2018-05-18 Fri 12:17]
 ** DONE recoloring for many mbr
    CLOSED: [2018-05-18 Fri 14:00]
-** TODO test bounce back for many objects
+** DONE test bounce back for many objects
+   CLOSED: [2018-05-22 Tue 13:53]
 * TODO fsi and cnt params aware
 fsi and cnt should use different pair parameters depending on object type
 ** TODO objects exchanger communicate starts of objects
