@@ -40,7 +40,7 @@ void wall_force(const PairParams*, const WvelStep *, const Coords*, const Sdf*, 
                 const WallTicket*, int n, const PaArray*, const FoArray*); // <1>
 
 void wall_force_adhesion(const PairParams*, const WvelStep *, const Coords*, const Sdf*, const WallQuants*,
-                const WallTicket*, int n, const PaArray*, const FoArray*);
+                         const WallTicket*, int n, const PaArray*, const FoArray*);
 
 void wall_repulse(const Sdf*, long n, const PaArray*, const FoArray*);     // <2>
 // end::int[]
