@@ -93,14 +93,16 @@ void wall_repulse(const Wall *w, PFarrays *aa) {
     long n, i, na;
     PaArray p;
     FoArray f;
-    WallRepulsePrm wrp;
-    wrp.lambda = 3.f;
+    WallRepulsePrm *wrp;
+    wall_repulse_prm_ini(3.f, &wrp);
 
     na = pfarrays_size(aa);
     for (i = 0; i < na; ++i) {
         UC(pfarrays_get(i, aa, &n, &p, &f));
         if (n) UC(wall_repulse(w->sdf, wrp, n, &p, /**/ &f));
     }
+
+    wall_repulse_prm_fin(wrp);
 }
 
 void wall_update_vel(float t, Wall *w) {

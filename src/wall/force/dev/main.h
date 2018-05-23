@@ -49,14 +49,14 @@ __global__ void force(Par params, Wvel_v wv, Coords_v c, Parray parray, int np, 
     farray_atomic_add<1>(&ftot, aid, /**/ farray);
 }
 
-static __device__ float rep_kernel(const WallRepulse *wr, float x) {
+static __device__ float rep_kernel(const WallRepulsePrm *wr, float x) {
     float arg, val;
     arg = wr->l * (x + 1.f);
     val = expf(arg) - 1.f;
     return min(1e4f, val);
 }
 
-static __device__ void repulse_one_p(const WallRepulse *wr, const float3 *r, const Sdf_v *sdf_v, float3 *f) {
+static __device__ void repulse_one_p(const WallRepulsePrm *wr, const float3 *r, const Sdf_v *sdf_v, float3 *f) {
     float s, f0;
     float3 g;
     s = sdf_eval(sdf_v, r->x, r->y, r->z);
@@ -72,7 +72,7 @@ static __device__ float3 get_pos(const Particle *p) {
     return make_float3(p->r[X], p->r[Y], p->r[Z]);
 }
 
-__global__ void repulse(WallRepulse wr, int n, const Particle *pp, Sdf_v sdf_v, /**/ Force *ff) {
+__global__ void repulse(WallRepulsePrm wr, int n, const Particle *pp, Sdf_v sdf_v, /**/ Force *ff) {
     enum {X, Y, Z};
     int pid;
     float3 r, f;

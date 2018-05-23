@@ -6,6 +6,7 @@ struct Coords;
 struct Sdf;
 struct int3;
 struct float4;
+struct Config;
 
 // tag::struct[]
 struct WallQuants {
@@ -15,10 +16,8 @@ struct WallQuants {
 };
 
 struct WallTicket;
+struct WallRepulsePrm;
 
-struct WallRepulsePrm {
-    float lambda;
-};
 // end::struct[]
 
 // tag::mem[]
@@ -46,5 +45,11 @@ void wall_force(const PairParams*, const WvelStep *, const Coords*, const Sdf*, 
 void wall_force_adhesion(const PairParams*, const WvelStep *, const Coords*, const Sdf*, const WallQuants*,
                          const WallTicket*, int n, const PaArray*, const FoArray*);
 
-void wall_repulse(const Sdf*, WallRepulsePrm, long n, const PaArray*, const FoArray*);     // <2>
+void wall_repulse(const Sdf*, const WallRepulsePrm*, long n, const PaArray*, const FoArray*);     // <2>
 // end::int[]
+
+
+void wall_repulse_prm_ini(float lambda, WallRepulsePrm**);
+void wall_repulse_prm_ini_conf(const Config*, WallRepulsePrm**);
+void wall_repulse_prm_fin(WallRepulsePrm*);
+
