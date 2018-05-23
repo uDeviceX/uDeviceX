@@ -15,7 +15,7 @@ struct WallForce { /* local wall data */
 // end::struct[]
 
 struct WallRepulse {
-    float k;
+    float l;
 };
 
 // tag::int[]
