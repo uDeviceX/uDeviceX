@@ -10,9 +10,7 @@ void comm_post_recv(hBags *b, Comm *com) {
 static void fail_over(int i, long c, long cap) {
     enum {X, Y, Z};
     int d[3];
-    d[X] = frag_hst::i2dx(i);
-    d[Y] = frag_hst::i2dy(i);
-    d[Z] = frag_hst::i2dz(i);
+    frag_hst::i2d3(i, d);
     ERR("over capacity, fragment %d = [%d %d %d]: %ld/%ld",
         i, d[X], d[Y], d[Z], c, cap);
 }
@@ -52,6 +50,7 @@ static void fail_wait_normal(int code) {
     m::Error_string(code, msg, &sz);
     ERR(msg);
 }
+
 static void fail_wait_status(int n, MPI_Status *ss) {
     /* get error message from status */
     enum {X, Y, Z};
@@ -60,15 +59,14 @@ static void fail_wait_status(int n, MPI_Status *ss) {
     for (i = 0; i < n; i++) {
         code = m::status2errcode(&ss[i]);
         if (m::is_success(code) || m::is_pending(code)) continue;
-        d[X] = frag_hst::i2dx(i);
-        d[Y] = frag_hst::i2dy(i);
-        d[Z] = frag_hst::i2dz(i);
+        frag_hst::i2d3(i, d);
         m::Error_string(code, msg, &sz);
         ERR("mpi error in fragment %d = [%d %d %d], %s", i,
             d[X], d[Y], d[Z], msg);
     }
     ERR("assert");
 }
+
 static void fail_wait(int code, int n, MPI_Status *ss) {
     if (m::is_err_in_status(code)) UC(fail_wait_status(n, ss));
     else  UC(fail_wait_normal(code));
