@@ -45,7 +45,7 @@ static void alloc_pair(int i, AllocMod mod, /**/ hBags *hb, dBags *db) {
     }
 }
 
-int comm_bags_ini(AllocMod fmod, AllocMod bmod, size_t bsize, const int capacity[NBAGS], /**/ hBags *hb, dBags *db) {
+void comm_bags_ini(AllocMod fmod, AllocMod bmod, size_t bsize, const int capacity[NBAGS], /**/ hBags *hb, dBags *db) {
     hb->bsize = bsize;
     memcpy(hb->capacity, capacity, NBAGS * sizeof(int));
 
@@ -57,10 +57,9 @@ int comm_bags_ini(AllocMod fmod, AllocMod bmod, size_t bsize, const int capacity
     UC(alloc_pair(frag_bulk, bmod, /**/ hb, db));
 
     UC(alloc_counts(NBAGS, /**/ &hb->counts));
-    return 0;
 }
 
-int comm_ini(MPI_Comm cart, /**/ Comm **com_p) {
+void comm_ini(MPI_Comm cart, /**/ Comm **com_p) {
     int i, c, crd_rnk[3], d[3];
     int coords[3], periods[3], dims[3];
     Comm *com;
@@ -78,5 +77,4 @@ int comm_ini(MPI_Comm cart, /**/ Comm **com_p) {
         com->tags[i] = frag_hst::anti(i);
     }
     MC(m::Comm_dup(cart, &com->cart));
-    return 0;
 }
