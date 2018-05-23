@@ -1,4 +1,19 @@
-* TODO general and simpl configuration of pairwise forces
+
+* [1/2] configuration of wall repulsion
+Specify which object is repulsed and with what parameters
+Possible conf in each object with a section repulsion
+** TODO Read parameters from conf
+** TODO pass parameters to forces
+** DONE Use it in simulation
+   CLOSED: [2018-05-22 Tue 18:05]
+* [0/5] fsi and cnt params aware
+fsi and cnt should use different pair parameters depending on object type
+** TODO objects exchanger communicate starts of objects
+** TODO fsi: different params in bulk
+** TODO fsi: different params in halo
+** TODO cnt: different params in bulk
+** TODO cnt: different params in halo
+* [0/3] general and simpl configuration of pairwise forces
 
 what parameters between different particles
 add one string for each type of interactions;
@@ -31,22 +46,11 @@ rig = {
 
 ...
 ----
+** TODO impl basic version
+** TODO make defaults
+** TODO adapt tests
 
-* TODO configuration of wall repulsion
-Specify which object is repulsed and with what parameters
-Possible conf in each object with a section repulsion
-** TODO Read parameters from conf
-** DONE Use it in simulation
-   CLOSED: [2018-05-22 Tue 18:05]
-
-* DONE configuration of wall adhesion
-  CLOSED: [2018-05-22 Tue 18:45]
-** DONE Read parameters from conf
-   CLOSED: [2018-05-22 Tue 18:45]
-** DONE Use it in simulation
-   CLOSED: [2018-05-22 Tue 18:05]
-* DONE Many membranes/objects
-  CLOSED: [2018-05-22 Tue 13:53]
+* [6/6] Many membranes/objects
 ** DONE no hardcoded filenames 
    CLOSED: [2018-05-17 Thu 17:08]
 ** DONE make arrays in sim/objects
@@ -80,10 +84,8 @@ ctc = {
    CLOSED: [2018-05-18 Fri 14:00]
 ** DONE test bounce back for many objects
    CLOSED: [2018-05-22 Tue 13:53]
-* TODO fsi and cnt params aware
-fsi and cnt should use different pair parameters depending on object type
-** TODO objects exchanger communicate starts of objects
-** TODO fsi: different params in bulk
-** TODO fsi: different params in halo
-** TODO cnt: different params in bulk
-** TODO cnt: different params in halo
+* [2/2] configuration of wall adhesion
+** DONE Read parameters from conf
+   CLOSED: [2018-05-22 Tue 18:45]
+** DONE Use it in simulation
+   CLOSED: [2018-05-22 Tue 18:05]
