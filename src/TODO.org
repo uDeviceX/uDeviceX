@@ -1,14 +1,4 @@
 
-* [3/4] configuration of wall repulsion
-Specify which object is repulsed and with what parameters
-Possible conf in each object with a section repulsion
-** DONE Read parameters from conf
-   CLOSED: [2018-05-23 Wed 10:16]
-** DONE pass parameters to forces
-   CLOSED: [2018-05-23 Wed 10:16]
-** DONE Use it in simulation
-   CLOSED: [2018-05-22 Tue 18:05]
-** TODO adapt defaults/tests
 * [0/5] fsi and cnt params aware
 fsi and cnt should use different pair parameters depending on object type
 ** TODO objects exchanger communicate starts of objects
@@ -52,6 +42,17 @@ rig = {
 ** TODO impl basic version
 ** TODO make defaults
 ** TODO adapt tests
+* [4/4] configuration of wall repulsion
+Specify which object is repulsed and with what parameters
+Possible conf in each object with a section repulsion
+** DONE Read parameters from conf
+   CLOSED: [2018-05-23 Wed 10:16]
+** DONE pass parameters to forces
+   CLOSED: [2018-05-23 Wed 10:16]
+** DONE Use it in simulation
+   CLOSED: [2018-05-22 Tue 18:05]
+** DONE adapt defaults/tests
+   CLOSED: [2018-05-23 Wed 10:19]
 
 * [6/6] Many membranes/objects
 ** DONE no hardcoded filenames 
