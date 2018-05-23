@@ -40,6 +40,13 @@ void comm_bags_fin(AllocMod fmod, AllocMod bmod, /**/ hBags *hb, dBags *db) {
     free_counts(/**/ &hb->counts);
 }
 
+void comm_buffer_fin(CommBuffer *cb) {
+    int i;
+    for (i = 0; i < NFRAGS; ++i)
+        EFREE(cb->buf[i]);
+    EFREE(cb);
+}
+
 void comm_fin(/**/ Comm *c) {
     MC(m::Comm_free(&c->cart));
     EFREE(c);
