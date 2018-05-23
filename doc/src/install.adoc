@@ -34,7 +34,7 @@ Library for dumping data in Bricks of Particles
 git clone https://github.com/amlucas/bop.git
 cd bop
 ./configure --prefix $HOME/prefix/bop
-make -j
+make MPICXX=CC -j
 make -s test
 make install
 ----
@@ -61,3 +61,13 @@ u.conf0 ./u/x
 u.make -j
 ----
 
+
+== To modify the code
+Tool that updates file dependencies used to compile uDeviceX
+[source, shell]
+----
+git clone https://gitlab.ethz.ch/mavt-cse/comma.git
+cd comma
+make; make install
+make tests
+----
