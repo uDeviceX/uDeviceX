@@ -1,4 +1,7 @@
-
+* [0/3]Single message communicator
+** TODO generic comm with "push" interface
+** TODO update unit
+** TODO udx uses new communicator
 * [0/5] fsi and cnt params aware
 fsi and cnt should use different pair parameters depending on object type
 ** TODO objects exchanger communicate starts of objects
