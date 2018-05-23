@@ -10,6 +10,8 @@ struct BForce;
 struct TimeStepAccel;
 struct Dbg;
 struct IoBop;
+struct PairParams;
+struct WallRepulsePrm;
 
 // tag::mem[]
 void objects_ini(const Config*, const Opt*, MPI_Comm, const Coords*, int maxp, Objects**);
@@ -43,6 +45,7 @@ void objects_get_particles_mbr(Objects*, PFarrays*);    // <2>
 void objects_get_accel(const Objects*, TimeStepAccel*); // <3>
 
 void objects_get_params_adhesion(const Objects*, const PairParams*[]);
+void objects_get_params_repulsion(const Objects*, const WallRepulsePrm*[]);
 // end::get[]
 
 // tag::gen[]
