@@ -1,5 +1,7 @@
-* [0/3]Single message communicator
-** TODO generic comm with "push" interface
+* [1/4] Single message communicator
+** DONE comm buffer containing all hbags
+   CLOSED: [2018-05-23 Wed 18:15]
+** TODO link to comm 
 ** TODO update unit
 ** TODO udx uses new communicator
 * [0/5] fsi and cnt params aware
