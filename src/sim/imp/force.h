@@ -42,7 +42,7 @@ _S_ void forces_wall(bool fluss, Sim *s) {
     {
         const WallRepulsePrm *repulsion_prms[MAX_OBJ_TYPES];
         UC(pfarrays_clear(pf));
-        UC(objects_get_params_repulsion(s->obj, (const WallRepulsePrm**) &repulsion_prms));
+        UC(objects_get_params_repulsion(s->obj, repulsion_prms));
         UC(objects_get_particles_all(s->obj, pf));
         UC(wall_repulse(w, repulsion_prms, pf));
     }
@@ -50,7 +50,7 @@ _S_ void forces_wall(bool fluss, Sim *s) {
     {
         const PairParams *adhesion_prms[MAX_OBJ_TYPES];
         UC(pfarrays_clear(pf));
-        UC(objects_get_params_adhesion(s->obj, (const PairParams**) &adhesion_prms));
+        UC(objects_get_params_adhesion(s->obj, adhesion_prms));
         UC(objects_get_particles_all(s->obj, pf));
         UC(wall_adhesion(s->coords, adhesion_prms, w, pf));
     }
