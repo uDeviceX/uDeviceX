@@ -28,7 +28,7 @@ void wall_dump_templ(const Wall*, MPI_Comm, const char *base);
 void wall_interact(const Coords*, const PairParams*, Wall*, PFarrays*);
 void wall_adhesion(const Coords*, const PairParams*[], Wall*, PFarrays*);
 void wall_bounce(const Wall*, const Coords*, float dt, PFarrays*);
-void wall_repulse(const Wall*, PFarrays*);
+void wall_repulse(const Wall*, const WallRepulsePrm *[], PFarrays*);
 // end::main[]
 
 // tag::upd[]
