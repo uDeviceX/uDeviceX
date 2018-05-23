@@ -44,6 +44,19 @@ static void get_counts(const MPI_Status ss[NFRAGS], /**/ hBags *b) {
     }
 }
 
+static void get_counts(const MPI_Status ss[NFRAGS], /**/ CommBuffer *b) {
+    int i, cc[NFRAGS];
+    size_t cap, c;
+    get_counts_bytes(ss, /**/ cc);
+
+    for (i = 0; i < NFRAGS; ++i) {
+        c = cc[i];
+        cap = b->cap[i];
+        b->sz[i] = c;
+        if (c > cap) UC(fail_over(i, c, cap));
+    }
+}
+
 static void fail_wait_normal(int code) {
     int sz;
     char msg[BUFSIZ];
@@ -80,10 +93,41 @@ void comm_wait_recv(Comm *com, /**/ hBags *b) {
     get_counts(ss, /**/ b);
 }
 
+void comm_post_recv(CommBuffer *cb, Comm *com) {
+    int i, tag;
+    for (i = 0; i < NFRAGS; ++i) {
+        tag = com->tags[i];
+        MC(m::Irecv(cb->buf[i], cb->sz[i], MPI_BYTE, com->ranks[i], tag, com->cart, com->rreq + i));
+    }
+}
+
+void comm_post_send(const CommBuffer *cb, Comm *com) {
+    int i, tag;
+    long c, cap;
+    for (i = 0; i < NFRAGS; ++i) {
+        c = cb->sz[i];
+        cap = cb->cap[i];
+        tag = i;
+        if (c > cap) UC(fail_over(i, c, cap));
+        MC(m::Isend(cb->buf[i], c, MPI_BYTE, com->ranks[i], tag, com->cart, com->sreq + i));
+    }
+}
+    
+
+void comm_wait_recv(Comm *com, /**/ CommBuffer *cb) {
+    int errorcode;
+    MPI_Status ss[NFRAGS];
+    errorcode = m::Waitall(NFRAGS, com->rreq, /**/ ss);
+    if (!m::is_success(errorcode)) fail_wait(errorcode, NFRAGS, ss);
+    get_counts(ss, /**/ cb);
+}
+
 void comm_wait_send(Comm *com) {
     MPI_Status ss[NFRAGS];
     MC(m::Waitall(NFRAGS, com->sreq, ss));
 }
+
+
 
 int comm_get_number_capacity(int i, const hBags *b) {
     return b->capacity[i];

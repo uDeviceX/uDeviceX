@@ -56,5 +56,11 @@ void comm_wait_recv(Comm *c, /**/ hBags *b);      // <3>
 void comm_wait_send(Comm *c);                     // <4>
 // end::communication[]
 
+void comm_post_recv(CommBuffer *cb, Comm *c);
+void comm_post_send(const CommBuffer *cb, Comm *c);
+
+void comm_wait_recv(Comm *c, /**/ CommBuffer *cb);
+void comm_wait_send(Comm *c);
+
 int    comm_get_number_capacity(int i, const hBags *b);
 size_t comm_get_byte_capacity(int i, const hBags *b);
