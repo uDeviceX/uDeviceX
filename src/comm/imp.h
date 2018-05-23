@@ -1,4 +1,4 @@
-typedef void data_t;
+typedef char data_t;
 
 enum {
     NFRAGS = 26, /* number of fragments for one halo */

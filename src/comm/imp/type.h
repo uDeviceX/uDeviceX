@@ -9,6 +9,6 @@ struct Comm {
 // end::comm[]
 
 struct CommBuffer {
-    data_t *buf;
-    size_t sz;
+    data_t *buf[NBAGS];
+    size_t sz[NBAGS], cap[NBAGS];
 };
