@@ -50,6 +50,6 @@ void wall_repulse(const Sdf*, const WallRepulsePrm*, long n, const PaArray*, con
 
 
 void wall_repulse_prm_ini(float lambda, WallRepulsePrm**);
-void wall_repulse_prm_ini_conf(const Config*, WallRepulsePrm**);
+void wall_repulse_prm_ini_conf(const Config*, const char *ns, WallRepulsePrm**);
 void wall_repulse_prm_fin(WallRepulsePrm*);
 

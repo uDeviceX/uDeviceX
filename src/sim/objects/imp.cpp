@@ -53,6 +53,8 @@
 #include "rig/imp.h"
 #include "rigid/imp.h"
 
+#include "wall/imp.h"
+
 #include "scheme/move/imp.h"
 #include "scheme/force/imp.h"
 #include "scheme/time_step/imp.h"
