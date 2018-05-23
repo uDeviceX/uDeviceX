@@ -117,7 +117,7 @@ void dihedral_xy(int argc, char **v) {
     double a[3], b[3], c[3], d[3];
     double x, y, t;
     if (argc != 3*4 + 1)
-        ERR("ac_bc_cross needs 12 arguments");
+        ERR("dihedral_xy needs 12 arguments");
     UC(a[X] = read_dbl(v[1])); v++;
     UC(a[Y] = read_dbl(v[1])); v++;
     UC(a[Z] = read_dbl(v[1])); v++;

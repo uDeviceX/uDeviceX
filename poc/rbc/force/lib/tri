@@ -71,7 +71,7 @@ function ang_xy(ax, ay, az,
     rx = ax - cx; ry = ay - cy; rz = az - cz
     sx = bx - cx; sy = by - cy; sz = bz - cz
 
-    ANG_Y = area(ax, ay, az, bx, by, bz, cx, cy, cz)
+    ANG_Y = 2*area(ax, ay, az, bx, by, bz, cx, cy, cz)
     ANG_X = rx*sx + ry*sy + rz*sz
 }
 

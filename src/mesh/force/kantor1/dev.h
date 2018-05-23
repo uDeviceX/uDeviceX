@@ -13,11 +13,9 @@
 BEGIN
 
 #ifdef FORCE_KANTOR1_HOST
-_S_ double rsqrt0(double x) { return pow(x, -0.5); }
 #define PRINT(fmt, ...) msg_print((fmt), ##__VA_ARGS__)
 #define EXIT() ERR("assert")
 #else
-_S_ double rsqrt0(double x) { return rsqrt(x); }
 #define PRINT(fmt, ...) printf((fmt), ##__VA_ARGS__)
 #define EXIT() assert(0)
 #endif
@@ -122,7 +120,7 @@ _S_ void dih_a0(int Flag_a,
     }
 }
 
-_I_ double3 dih_a(double phi, double kb,
+_I_ double3 dih_a(double, double kb,
                   double3 a, double3 b, double3 c, double3 d) {
     double3 f;
     double fx, fy, fz;
@@ -136,7 +134,7 @@ _I_ double3 dih_a(double phi, double kb,
     return f;
 }
 
-_I_ double3 dih_b(double phi, double kb,
+_I_ double3 dih_b(double, double kb,
                   double3 a, double3 b, double3 c, double3 d) {
     double3 f;
     double fx, fy, fz;
