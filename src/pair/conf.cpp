@@ -9,60 +9,49 @@
 #include "type.h"
 #include "imp.h"
 
-/* set string "d" = "base.var" */
-static void get_desc(const char *base, const char *var, char *d) {
-    strcpy(d, base);
-    strcat(d, ".");
-    strcat(d, var);
-}
-
 static int get_ncol(int npar) {
     int d = lround( sqrt(1 + 8 * npar) );
     return (d - 1) / 2;
 }
 
-void pair_set_conf(const Config *cfg, const char *base, PairParams *par) {
-    int dpd, lj;
-    char desc[FILENAME_MAX];
+void pair_set_conf(const Config *cfg, const char *ns, PairParams *par) {
+    int dpd, lj, adhesion;
 
-    get_desc(base, "dpd", desc);
-    UC(conf_lookup_bool(cfg, desc, &dpd));
-
-    get_desc(base, "lj", desc);
-    UC(conf_lookup_bool(cfg, desc, &lj));
+    UC(conf_lookup_bool_ns(cfg, ns, "dpd",      &dpd));
+    UC(conf_lookup_bool_ns(cfg, ns, "lj",       &lj));
+    UC(conf_lookup_bool_ns(cfg, ns, "adhesion", &adhesion));
 
     if (dpd) {
         int na, ng, nc;
         float a[MAX_PAR], g[MAX_PAR], spow;
 
-        get_desc(base, "a", desc);
-        UC(conf_lookup_vfloat(cfg, desc, MAX_PAR, &na, a));
-
-        if (na > MAX_PAR)
-            ERR("Too many parameters in %s.a : %d/%d", base, na, MAX_PAR);
-            
-        get_desc(base, "g", desc);
-        UC(conf_lookup_vfloat(cfg, desc, MAX_PAR, &ng, g));
-
-        get_desc(base, "spow", desc);
-        UC(conf_lookup_float(cfg, desc, &spow));
+        UC(conf_lookup_vfloat_ns(cfg, ns, "a", MAX_PAR, &na, a));
+        UC(conf_lookup_vfloat_ns(cfg, ns, "g", MAX_PAR, &ng, g));
+        UC(conf_lookup_float_ns(cfg, ns, "spow", &spow));
 
         if (na != ng)
-            ERR("%s.a and %s.g must have the same length: %d / %d", base, base, na, ng);
+            ERR("%s.a and %s.g must have the same length: %d / %d", ns, ns, na, ng);
         
         nc = get_ncol(na);
         
         UC(pair_set_dpd(nc, a, g, spow, /**/ par));
     }
+
     if (lj) {
         float s, e;
 
-        get_desc(base, "ljs", desc);
-        UC(conf_lookup_float(cfg, desc, &s));
-
-        get_desc(base, "lje", desc);
-        UC(conf_lookup_float(cfg, desc, &e));
+        UC(conf_lookup_float_ns(cfg, ns, "ljs", &s));
+        UC(conf_lookup_float_ns(cfg, ns, "lje", &e));
 
         UC(pair_set_lj(s, e, /**/ par));
+    }
+
+    if (adhesion) {
+        float k1, k2;
+
+        UC(conf_lookup_float_ns(cfg, ns, "k1", &k1));
+        UC(conf_lookup_float_ns(cfg, ns, "k2", &k2));
+
+        UC(pair_set_adhesion(k1, k2, /**/ par));
     }
 }

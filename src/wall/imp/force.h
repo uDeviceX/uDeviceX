@@ -15,11 +15,19 @@ void wall_force(const PairParams *params, const WvelStep *wv, const Coords *c, c
     WallForce wa;
     wa = get_wa(sdf, q, t, n);
 
-    wall_force_apply(params, wv, c, parray, n, t->rnd, wa, /**/ farray);
+    UC(wall_force_apply(params, wv, c, parray, n, t->rnd, wa, /**/ farray));
+}
+
+void wall_force_adhesion(const PairParams *params, const WvelStep *wv, const Coords *c, const Sdf *sdf,
+                         const WallQuants *q, const WallTicket *t, int n, const PaArray *parray, const FoArray *farray) {
+    WallForce wa;
+    wa = get_wa(sdf, q, t, n);
+
+    UC(wall_force_adhesion_apply(params, wv, c, parray, n, t->rnd, wa, /**/ farray));
 }
 
 void wall_repulse(const Sdf *sdf, long n, const PaArray *pa, const FoArray *fa) {
     Sdf_v sdf_v;
     sdf_get_view(sdf, &sdf_v);
-    wall_force_repulse(sdf_v, n, pa, /**/ fa);
+    UC(wall_force_repulse(sdf_v, n, pa, /**/ fa));
 }

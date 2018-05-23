@@ -57,6 +57,25 @@ void wall_interact(const Coords *coords, const PairParams *par, Wall *w, PFarray
     }
 }
 
+void wall_adhesion(const Coords *coords, const PairParams* params[], Wall *w, PFarrays *aa) {
+    long n, i, na;
+    PaArray p;
+    FoArray f;
+    const PairParams *par;
+
+    na = pfarrays_size(aa);
+
+    for (i = 0; i < na; ++i) {
+        UC(pfarrays_get(i, aa, &n, &p, &f));
+        par = params[i];
+
+        if (!par) continue;
+        if (!n)   continue;
+
+        UC(wall_force_adhesion(par, w->velstep, coords, w->sdf, &w->q, w->t, n, &p, /**/ &f));
+    }
+}
+
 void wall_bounce(const Wall *w, const Coords *coords, float dt, PFarrays *aa) {
     long n, i, na;
     PaArray p;

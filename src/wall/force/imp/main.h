@@ -50,7 +50,8 @@ static void wvel_dispatch(Par params, const WvelStep *w, const Coords *c, Parray
     };
 }
 
-void wall_force_apply(const PairParams *params, const WvelStep *wv, const Coords *c, const PaArray *parray, int n, RNDunif *rnd, WallForce wa, /**/ const FoArray *farray) {    
+void wall_force_apply(const PairParams *params, const WvelStep *wv, const Coords *c, const PaArray *parray, int n,
+                      RNDunif *rnd, WallForce wa, /**/ const FoArray *farray) {    
     if (parray_is_colored(parray)) {
         PairDPDCM pv;
         PaArray_v pav;        
@@ -65,6 +66,16 @@ void wall_force_apply(const PairParams *params, const WvelStep *wv, const Coords
         parray_get_view(parray, &pav);
         wvel_dispatch(pv, wv, c, pav, n, rnd, wa, /**/ farray);
     }
+}
+
+void wall_force_adhesion_apply(const PairParams *params, const WvelStep *wv, const Coords *c, const PaArray *parray, int n,
+                               RNDunif *rnd, WallForce wa, /**/ const FoArray *farray) {
+    PairAdhesion pv;
+    PaArray_v pav;
+
+    UC(pair_get_view_adhesion(params, &pv));
+    UC(parray_get_view(parray, &pav));
+    UC(wvel_dispatch(pv, wv, c, pav, n, rnd, wa, /**/ farray));
 }
 
 

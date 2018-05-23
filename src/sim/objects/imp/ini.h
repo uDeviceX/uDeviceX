@@ -50,6 +50,21 @@ static void ini_colorer(int nv, int max_m, /**/ Colorer **col) {
     Dalloc(&c->hi, max_m);
 }
 
+static void read_params(const Config *cfg, const char *ns, PairParams **par) {
+    PairParams *p;
+    UC(pair_ini(par));
+    p = *par;
+    UC(pair_set_conf(cfg, ns, p));
+}
+
+static void ini_params(const Config *cfg, const char *name, const char *pair, PairParams **par) {
+    const char *ns;
+    UC(conf_lookup_string_ns(cfg, name, pair, &ns));
+
+    if (same_str(ns, "none")) *par = NULL;
+    else UC(read_params(cfg, ns, par));    
+}
+
 static void ini_mbr(const Config *cfg, const OptMbr *opt, MPI_Comm cart, int3 L,
                     bool recolor, /**/ Mbr **membrane) {
     int nv, max_m;
@@ -91,6 +106,8 @@ static void ini_mbr(const Config *cfg, const OptMbr *opt, MPI_Comm cart, int3 L,
 
     if (recolor) UC(ini_mesh_exch(L, nv, max_m, cart, /**/ &m->mesh_exch));
     if (recolor) UC(ini_colorer(nv, max_m, /**/ &m->colorer));
+
+    UC(ini_params(cfg, m->name, "adhesion", &m->adhesion));
 }
 
 static void ini_rig(const Config *cfg, const OptRig *opt, MPI_Comm cart, int maxp, int3 L, /**/ Rig **rigid) {
@@ -128,6 +145,8 @@ static void ini_rig(const Config *cfg, const OptRig *opt, MPI_Comm cart, int max
 
     if (opt->bounce) UC(ini_mesh_exch(L, nv, max_m, cart, /**/ &r->mesh_exch));
     if (opt->bounce) UC(ini_bbdata(r->q.nt, max_m, cart, /**/ &r->bbdata));
+
+    UC(ini_params(cfg, r->name, "adhesion", &r->adhesion));
 }
 
 static void ini_dump(long maxp, Dump **dump) {

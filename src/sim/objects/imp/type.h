@@ -56,6 +56,8 @@ struct Mbr {
 
     MeshExch *mesh_exch;
     Colorer  *colorer;
+
+    PairParams *adhesion;
 };
 
 /* data holder for rigid objects */
@@ -75,6 +77,8 @@ struct Rig {
 
     MeshExch   *mesh_exch;
     BounceBackData *bbdata;
+
+    PairParams *adhesion;
 };
 
 struct Dump {
