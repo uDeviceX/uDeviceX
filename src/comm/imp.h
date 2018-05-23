@@ -34,6 +34,7 @@ struct hBags {
 // end::hBags[]
 
 struct Comm;
+struct CommBuffer;
 
 // tag::alloc[]
 void comm_bags_ini(AllocMod fmod, AllocMod bmod, size_t bsize, const int capacity[NBAGS], /**/ hBags *hb, dBags *db);
@@ -41,6 +42,11 @@ void comm_bags_fin(AllocMod fmod, AllocMod bmod, /**/ hBags *hb, dBags *db);
 void comm_ini(MPI_Comm cart, /**/ Comm **c);
 void comm_fin(/**/ Comm *c);
 // end::alloc[]
+
+void comm_buffer_ini(CommBuffer**);
+void comm_buffer_fin(CommBuffer*);
+void comm_buffer_set(int nbags, const hBags*, CommBuffer*);
+void comm_buffer_get(const CommBuffer*, int nbags, hBags*);
 
 // tag::communication[]
 void comm_post_recv(hBags *b, Comm *c);           // <1>

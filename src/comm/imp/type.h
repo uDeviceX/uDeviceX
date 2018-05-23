@@ -7,3 +7,8 @@ struct Comm {
     int  tags[NFRAGS];       /* tags in bt coordinates */
 };
 // end::comm[]
+
+struct CommBuffer {
+    data_t *buf;
+    size_t sz;
+};
