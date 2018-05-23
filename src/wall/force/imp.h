@@ -14,6 +14,10 @@ struct WallForce { /* local wall data */
 };
 // end::struct[]
 
+struct WallRepulse {
+    float k;
+};
+
 // tag::int[]
 void wall_force_apply(const PairParams*, const WvelStep*, const Coords*, const PaArray*, int n, RNDunif*, WallForce,
                       /**/ const FoArray*); // <1>
@@ -21,5 +25,5 @@ void wall_force_apply(const PairParams*, const WvelStep*, const Coords*, const P
 void wall_force_adhesion_apply(const PairParams*, const WvelStep*, const Coords*, const PaArray*, int n, RNDunif*, WallForce,
                                /**/ const FoArray*);
 
-void wall_force_repulse(Sdf_v, long n, const PaArray*, const FoArray*); // <2>
+void wall_force_repulse(Sdf_v, WallRepulse, long n, const PaArray*, const FoArray*); // <2>
 // end::int[]

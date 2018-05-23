@@ -27,7 +27,8 @@ void wall_force_adhesion(const PairParams *params, const WvelStep *wv, const Coo
 }
 
 void wall_repulse(const Sdf *sdf, long n, const PaArray *pa, const FoArray *fa) {
+    WallRepulse wr;
     Sdf_v sdf_v;
     sdf_get_view(sdf, &sdf_v);
-    UC(wall_force_repulse(sdf_v, n, pa, /**/ fa));
+    UC(wall_force_repulse(sdf_v, wr, n, pa, /**/ fa));
 }
