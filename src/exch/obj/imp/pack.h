@@ -23,7 +23,7 @@ void eobj_pack(int nw, const PaWrap *ww, /**/ EObjPack *p) {
 
 void eobj_download(int nw, EObjPack *p) {
     if (!nw) return;
-    UC(emap_download_counts(nw, NFRAGS, p->map, /**/ p->hpp.counts));
+    UC(emap_download_counts(nw, NFRAGS, p->map, /**/ p->hpp->counts));
 }
 
 static void clear_forces(int nfrags, /**/ EObjPackF *p) {
@@ -38,7 +38,7 @@ static void clear_forces(int nfrags, /**/ EObjPackF *p) {
 
 Fop26 eobj_reini_ff(const EObjUnpack *u, EObjPackF *pf) {
     size_t sz = NBAGS * sizeof(int);
-    memcpy(pf->hff.counts, u->hpp.counts, sz);
+    memcpy(pf->hff.counts, u->hpp->counts, sz);
     clear_forces(NFRAGS, /**/ pf);
 
     Fop26 wrap;

@@ -1,18 +1,28 @@
+/*
+pp: particles
+ss: starts (object-wise)
+*/
+
+enum {
+    ID_PP, ID_SS,
+    MAX_NBAGS
+};
+
 struct EObjPack {
     EMap map;
     dBags dpp;
-    hBags hpp;
+    hBags hbags[MAX_NBAGS], *hpp, *hss;
 
     int3 L; /* subdomain size */
 };
 
 struct EObjComm {
-    Comm *pp;
+    Comm *comm;
 };
 
 struct EObjUnpack {
-    hBags hpp;
     dBags dpp;
+    hBags hbags[MAX_NBAGS], *hpp, *hss;
 
     int3 L; /* subdomain size */
 };

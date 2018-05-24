@@ -1,6 +1,7 @@
 struct EObjPack;
 struct EObjComm;
 struct EObjUnpack;
+
 struct EObjPackF;
 struct EObjCommF;
 struct EObjUnpackF;
@@ -60,5 +61,5 @@ void eobj_wait_send_ff(EObjCommF *c);
 // end::comback[]
 
 // tag::unpackback[]
-void eobj_unpack_ff(const EObjUnpackF *u, const EObjPack *p, int nw, /**/ FoWrap *ww);
+void eobj_unpack_ff(EObjUnpackF *u, const EObjPack *p, int nw, /**/ FoWrap *ww);
 // end::unpackback[]

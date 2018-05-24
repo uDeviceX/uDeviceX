@@ -1,20 +1,20 @@
 int26 eobj_get_counts(EObjUnpack *u) {
     int26 cc;
-    memcpy(cc.d, u->hpp.counts, NFRAGS * sizeof(int));
+    memcpy(cc.d, u->hpp->counts, NFRAGS * sizeof(int));
     return cc;
 }
 
-static void upload(int nfrags, const hBags h, /**/ dBags d) {
+static void upload(int nfrags, const hBags *h, /**/ dBags *d) {
     int i, c;
     size_t sz;
     data_t *src, *dst;
 
     for (i = 0; i < nfrags; ++i) {
-        c = h.counts[i];
+        c = h->counts[i];
         if (c) {
-            sz  = h.bsize * c;
-            dst = d.data[i];
-            src = h.data[i];
+            sz  = h->bsize * c;
+            dst = d->data[i];
+            src = h->data[i];
             CC(d::MemcpyAsync(dst, src, sz, H2D));
         }
     }    
@@ -34,8 +34,8 @@ static void shift_pp(int3 L, int nfrags, const int counts[], /**/ dBags d) {
 }
 
 Pap26 eobj_upload_shift(EObjUnpack *u) {
-    upload(NFRAGS, u->hpp, /**/ u->dpp);
-    shift_pp(u->L, NFRAGS, u->hpp.counts, /**/ u->dpp);    
+    upload(NFRAGS, u->hpp, /**/ &u->dpp);
+    shift_pp(u->L, NFRAGS, u->hpp->counts, /**/ u->dpp);
     Pap26 wrap;
     bag2Sarray(u->dpp, &wrap);
     return wrap;
@@ -57,9 +57,9 @@ static void unpack_ff(int nfrags, Fop26 ff, EMap map, int nw, /**/ FoWrap *ww) {
     }
 }
 
-void eobj_unpack_ff(const EObjUnpackF *u, const EObjPack *p, int nw, /**/ FoWrap *ww) {
+void eobj_unpack_ff(EObjUnpackF *u, const EObjPack *p, int nw, /**/ FoWrap *ww) {
     Fop26 wrap;
-    upload(NFRAGS, u->hff, /**/ u->dff);
+    upload(NFRAGS, &u->hff, /**/ &u->dff);
     bag2Sarray(u->dff, &wrap);
     unpack_ff(NFRAGS, wrap, p->map, nw, /**/ ww);
 }
