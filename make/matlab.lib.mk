@@ -12,7 +12,7 @@ install: $M
               main0) n="${D}0"  ;; \
               *)     n="$$f"    ;; \
             esac; \
-	    t="$(MPATH)/$P.$$n"; \
+	    t="$(MPATH)/$$n"; \
 	    cp "$$f" "$$t"; \
 	    echo "install '$$t'"; \
 	 done
