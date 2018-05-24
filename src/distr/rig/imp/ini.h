@@ -40,8 +40,10 @@ void drig_unpack_ini(int3 L, int maxns, int nv, DRigUnpack **unpack) {
     u->L = L;
     get_num_capacity(maxns, /**/ numc);
 
+    u->hipp = &u->hbags[ID_PP];  u->hss = &u->hbags[ID_SS];
+    
     /* one datum is here a full mesh, so bsize is nv * sizeof(Particle) */
-    UC(comm_bags_ini(HST_ONLY, NONE, nv * sizeof(Particle), numc, /**/ &u->hipp, NULL));
+    UC(comm_bags_ini(HST_ONLY, NONE, nv * sizeof(Particle), numc, /**/ u->hipp, NULL));
 
-    UC(comm_bags_ini(HST_ONLY, NONE, sizeof(Solid), numc, /**/ &u->hss, NULL));
+    UC(comm_bags_ini(HST_ONLY, NONE, sizeof(Solid), numc, /**/ u->hss, NULL));
 }

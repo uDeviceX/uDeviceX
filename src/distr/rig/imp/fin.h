@@ -12,7 +12,7 @@ void drig_comm_fin(DRigComm *c) {
 }
 
 void drig_unpack_fin(DRigUnpack *u) {
-    UC(comm_bags_fin(HST_ONLY, NONE, &u->hipp, NULL));
-    UC(comm_bags_fin(HST_ONLY, NONE, &u->hss, NULL));
+    UC(comm_bags_fin(HST_ONLY, NONE, u->hipp, NULL));
+    UC(comm_bags_fin(HST_ONLY, NONE, u->hss, NULL));
     EFREE(u);
 }

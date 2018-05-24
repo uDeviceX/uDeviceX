@@ -22,7 +22,7 @@ struct DRigComm {
 };
 
 struct DRigUnpack {
-    hBags hbags[MAX_NBAGS], hipp, hss;
+    hBags hbags[MAX_NBAGS], *hipp, *hss;
     int3 L;  /* subdomain size */
 };
 // end::struct[]
