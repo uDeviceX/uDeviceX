@@ -1,0 +1,23 @@
+#!/usr/bin/awk -f
+
+function data() {
+    n = 100
+    for (i = 0; i < n; i++)
+	print i, i^2   | p
+    print "e"          | p
+}
+
+BEGIN {
+    system("mkfifo pipe")
+    p = "gnuplot > pipe"
+    print "set print 'pipe'" | p
+    print "plot sin(x)"      | p
+    print "bind \"k\" print \"k\"" | p
+    for (;;) {
+	getline k < "pipe"
+	if (k == "k") {
+	    print "plot \"-\"" | p
+	    data()
+	}
+    }
+}
