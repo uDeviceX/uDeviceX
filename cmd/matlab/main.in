@@ -16,6 +16,7 @@ if test $# -ne 0 && test "$1" = -h
 then usg
 fi
 
-set -x
-set -e
-"$MATLAB" -nodisplay -nosplash -nodesktop -r "run('$1'); exit"
+if test $# -eq 0
+then "$MATLAB" -nosplash
+else "$MATLAB" -nosplash -nodisplay -nodesktop -r "run('$1'); exit;"
+fi
