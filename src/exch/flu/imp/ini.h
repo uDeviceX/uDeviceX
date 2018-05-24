@@ -25,6 +25,7 @@ void eflu_pack_ini(bool colors, int3 L, int maxd, EFluPack **pack) {
     p->dpp = &p->dbags[nbags++];
     UC(comm_bags_ini(PINNED_DEV, NONE, sizeof(Particle), cap, /**/ p->hpp, p->dpp));
 
+    p->hcc = NULL; p->dcc = NULL;
     if (colors) {
         p->hcc = &p->hbags[nbags];
         p->dcc = &p->dbags[nbags++];
@@ -39,8 +40,6 @@ void eflu_pack_ini(bool colors, int3 L, int maxd, EFluPack **pack) {
     memcpy(p->hfss->counts, ncs, sizeof(ncs));
     
     Dalloc(&p->counts_dev, NFRAGS);
-
-    p->opt.colors = colors;
 }
 
 void eflu_comm_ini(MPI_Comm cart, /**/ EFluComm **com) {
@@ -71,6 +70,7 @@ void eflu_unpack_ini(bool colors, int3 L, int maxd, EFluUnpack **unpack) {
     u->dpp = &u->dbags[nbags++];    
     UC(comm_bags_ini(PINNED_DEV, NONE, sizeof(Particle), cap, /**/ u->hpp, u->dpp));
 
+    u->hcc = NULL; u->dcc = NULL;    
     if (colors) {
         u->hcc = &u->hbags[nbags];
         u->dcc = &u->dbags[nbags++];        
@@ -83,7 +83,5 @@ void eflu_unpack_ini(bool colors, int3 L, int maxd, EFluUnpack **unpack) {
 
     u->nbags = nbags;
     UC(comm_buffer_ini(u->nbags, u->hbags, &u->hbuf));
-    
-    u->opt.colors = colors;
 }
 

@@ -7,7 +7,7 @@ void eflu_pack_fin(EFluPack *p) {
     }
     
     UC(comm_bags_fin(PINNED_DEV, NONE, /**/ p->hpp, p->dpp));
-    if (p->opt.colors)
+    if (p->hcc)
         UC(comm_bags_fin(PINNED_DEV, NONE, /**/ p->hcc, p->dcc));
 
     UC(comm_bags_fin(PINNED_HST, NONE, /**/ p->hfss, NULL));
@@ -24,7 +24,7 @@ void eflu_comm_fin(EFluComm *c) {
 
 void eflu_unpack_fin(EFluUnpack *u) {
     UC(comm_bags_fin(PINNED_DEV, NONE, /**/ u->hpp, u->dpp));
-    if (u->opt.colors)
+    if (u->hcc)
         UC(comm_bags_fin(PINNED_DEV, NONE, /**/ u->hcc, u->dcc));
 
     UC(comm_bags_fin(PINNED_HST, NONE, /**/ u->hfss, u->dfss));

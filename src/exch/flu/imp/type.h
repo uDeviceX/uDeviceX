@@ -9,10 +9,6 @@
   bii: indices of the particles in bulk coordinates
 */
 
-struct Opt {
-    bool colors;
-};
-
 struct EFluPack {
     enum {
         MAX_NHBAGS = 3,
@@ -29,7 +25,6 @@ struct EFluPack {
     CommBuffer *hbuf;
 
     int3 L; /* subdomain size */
-    Opt opt;
 };
 
 struct EFluComm {
@@ -48,5 +43,4 @@ struct EFluUnpack {
     CommBuffer *hbuf;
 
     int3 L; /* subdomain size */
-    Opt opt;
 };

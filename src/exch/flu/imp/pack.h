@@ -50,11 +50,11 @@ void eflu_download_data(EFluPack *p) {
     dSync(); /* wait for counts memcpy */
 
     copy(NFRAGS, counts, p->dpp, /**/ p->hpp);
-    if (p->opt.colors)
+    if (p->hcc)
         copy(NFRAGS, counts, p->dcc, /**/ p->hcc);
 
     memcpy(p->hpp->counts, counts, sz);
-    if (p->opt.colors)
+    if (p->hcc)
         memcpy(p->hcc->counts, counts, sz);
 
     dSync(); /* wait for copy */
