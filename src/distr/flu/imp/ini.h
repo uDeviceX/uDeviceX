@@ -76,6 +76,8 @@ void dflu_unpack_ini(bool colors, bool ids, int3 L, int maxdensity, DFluUnpack *
     
     get_capacity(L, maxdensity, /**/ capacity);
 
+    u->hii = u->hcc = NULL;
+    
     i = 0;
     u->hpp = &u->hbags[i++];
     UC(comm_bags_ini(HST_ONLY, NONE, sizeof(Particle), capacity, /**/ u->hpp, NULL));
@@ -92,10 +94,8 @@ void dflu_unpack_ini(bool colors, bool ids, int3 L, int maxdensity, DFluUnpack *
     u->nbags = i;
     UC(comm_buffer_ini(u->nbags, u->hbags, &u->hbuf));
 
+    u->iire = u->ccre = NULL;
     Dalloc(&u->ppre, maxparts);
     if (ids)    Dalloc(&u->iire, maxparts);
     if (colors) Dalloc(&u->ccre, maxparts);
-
-    u->opt.colors = colors;
-    u->opt.ids = ids;
 }

@@ -49,15 +49,15 @@ static void unpack_pp(/**/ DFluUnpack *u) {
 }
 
 static void unpack_ii(/**/ DFluUnpack *u) {
-    unpack_ii(u->hii, /**/ u->iire);
+    if (u->hii) unpack_ii(u->hii, /**/ u->iire);
 }
 
 static void unpack_cc(/**/ DFluUnpack *u) {
-    unpack_ii(u->hcc, /**/ u->ccre);
+    if (u->hcc) unpack_ii(u->hcc, /**/ u->ccre);
 }
 
 void dflu_unpack(/**/ DFluUnpack *u) {
     unpack_pp(/**/ u);
-    if (u->opt.ids)    unpack_ii(/**/ u);
-    if (u->opt.colors) unpack_cc(/**/ u);
+    unpack_ii(/**/ u);
+    unpack_cc(/**/ u);
 }

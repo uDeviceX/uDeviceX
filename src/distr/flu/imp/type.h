@@ -31,7 +31,6 @@ struct DFluUnpack {
     int *iire, *ccre;
     int nhalo; /* number of received particles */
     int3 L; /* subdomain size */
-    Opt opt;
     CommBuffer *hbuf;
 };
 // end::struct[]
