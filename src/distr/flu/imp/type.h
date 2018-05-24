@@ -26,7 +26,8 @@ struct DFluComm {
 };
 
 struct DFluUnpack {
-    hBags hpp, hii, hcc;
+    hBags hbags[MAX_NBAGS], *hpp, *hii, *hcc;
+    int nbags;
     Particle *ppre;
     int *iire, *ccre;
     int nhalo; /* number of received particles */

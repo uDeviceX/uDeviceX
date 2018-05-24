@@ -7,26 +7,26 @@ static int scan_hst(const int n, const int *counts, int27 *starts) {
 }
 
 template <typename T>
-static void unpack(const hBags bags, int27 starts, /**/ T *buf) {
+static void unpack(const hBags *bags, int27 starts, /**/ T *buf) {
     int c, s, i;
-    size_t sz, bs = bags.bsize;
+    size_t sz, bs = bags->bsize;
 
     assert(bs == sizeof(T));
     
     for (i = 0; i < NFRAGS; ++i) {
-        c = bags.counts[i];
+        c = bags->counts[i];
         sz = c * bs;
         s = starts.d[i];
         if (c)
-            CC(d::MemcpyAsync(buf + s, bags.data[i], sz, H2D));
+            CC(d::MemcpyAsync(buf + s, bags->data[i], sz, H2D));
     }
 }
 
-static int unpack_pp(int3 L, const hBags bags, /**/ Particle *pp) {
+static int unpack_pp(int3 L, const hBags *bags, /**/ Particle *pp) {
     int nhalo;
     int27 starts;
 
-    nhalo = scan_hst(NFRAGS, bags.counts, &starts);    
+    nhalo = scan_hst(NFRAGS, bags->counts, &starts);    
     unpack(bags, starts, /**/ pp);
 
     dcommon_shift_halo(L, nhalo, starts, /**/ pp);
@@ -34,11 +34,11 @@ static int unpack_pp(int3 L, const hBags bags, /**/ Particle *pp) {
     return nhalo;
 }
 
-static int unpack_ii(const hBags bags, /**/ int *ii) {
+static int unpack_ii(const hBags *bags, /**/ int *ii) {
     int nhalo;
     int27 starts;
 
-    nhalo = scan_hst(NFRAGS, bags.counts, &starts);    
+    nhalo = scan_hst(NFRAGS, bags->counts, &starts);    
     unpack(bags, starts, /**/ ii);
     
     return nhalo;

@@ -18,9 +18,9 @@ void dflu_comm_fin(DFluComm *c) {
 }
 
 void dflu_unpack_fin(DFluUnpack *u) {
-    UC(comm_bags_fin(HST_ONLY, NONE, &u->hpp, NULL));
-    if (u->opt.ids)    UC(comm_bags_fin(HST_ONLY, NONE, &u->hii, NULL));
-    if (u->opt.colors) UC(comm_bags_fin(HST_ONLY, NONE, &u->hcc, NULL));
+    UC(comm_bags_fin(HST_ONLY, NONE, u->hpp, NULL));
+    if (u->opt.ids)    UC(comm_bags_fin(HST_ONLY, NONE, u->hii, NULL));
+    if (u->opt.colors) UC(comm_bags_fin(HST_ONLY, NONE, u->hcc, NULL));
 
     Dfree(u->ppre);
     if (u->opt.ids)    Dfree(u->iire);

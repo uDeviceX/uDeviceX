@@ -68,7 +68,7 @@ static int nhalocells(int3 L) {
 }
 
 void dflu_unpack_ini(bool colors, bool ids, int3 L, int maxdensity, DFluUnpack **unpack) {
-    int capacity[NBAGS];
+    int maxparts, i, capacity[NBAGS];
     DFluUnpack *u;
 
     EMALLOC(1, unpack);
@@ -78,11 +78,22 @@ void dflu_unpack_ini(bool colors, bool ids, int3 L, int maxdensity, DFluUnpack *
     
     get_capacity(L, maxdensity, /**/ capacity);
 
-    UC(comm_bags_ini(HST_ONLY, NONE, sizeof(Particle), capacity, /**/ &u->hpp, NULL));
-    if (ids)    UC(comm_bags_ini(HST_ONLY, NONE, sizeof(int), capacity, /**/ &u->hii, NULL));
-    if (colors) UC(comm_bags_ini(HST_ONLY, NONE, sizeof(int), capacity, /**/ &u->hcc, NULL));
+    i = 0;
+    u->hpp = &u->hbags[i++];
+    UC(comm_bags_ini(HST_ONLY, NONE, sizeof(Particle), capacity, /**/ u->hpp, NULL));
 
-    int maxparts = (int) (nhalocells(L) * maxdensity) + 1;
+    if (ids) {
+        u->hii = &u->hbags[i++];
+        UC(comm_bags_ini(HST_ONLY, NONE, sizeof(int), capacity, /**/ u->hii, NULL));
+    }
+    
+    if (colors) {
+        u->hcc = &u->hbags[i++];
+        UC(comm_bags_ini(HST_ONLY, NONE, sizeof(int), capacity, /**/ u->hcc, NULL));
+    }
+    u->nbags = i;
+
+    maxparts = (int) (nhalocells(L) * maxdensity) + 1;
     Dalloc(&u->ppre, maxparts);
     if (ids)    Dalloc(&u->iire, maxparts);
     if (colors) Dalloc(&u->ccre, maxparts);
