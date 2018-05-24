@@ -14,6 +14,8 @@ struct DRigPack {
     DMap map;
     dBags dbags[MAX_NBAGS], *dipp, *dss;
     hBags hbags[MAX_NBAGS], *hipp, *hss;
+    CommBuffer *hbuf;
+    int nbags;
     int3 L;  /* subdomain size */
 };
 
@@ -23,6 +25,8 @@ struct DRigComm {
 
 struct DRigUnpack {
     hBags hbags[MAX_NBAGS], *hipp, *hss;
+    CommBuffer *hbuf;
+    int nbags;
     int3 L;  /* subdomain size */
 };
 // end::struct[]
