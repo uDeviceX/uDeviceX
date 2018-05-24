@@ -45,9 +45,7 @@ static int unpack_ii(const hBags *bags, /**/ int *ii) {
 }
 
 static void unpack_pp(/**/ DFluUnpack *u) {
-    int nhalo;
-    nhalo = unpack_pp(u->L, u->hpp, /**/ u->ppre);
-    u->nhalo = nhalo;
+    u->nhalo = unpack_pp(u->L, u->hpp, /**/ u->ppre);
 }
 
 static void unpack_ii(/**/ DFluUnpack *u) {
