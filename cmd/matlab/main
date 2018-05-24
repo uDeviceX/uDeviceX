@@ -1,6 +1,0 @@
-#!/bin/bash
-
-. u.matlab.util
-prog=u.matlab
-
-err 42

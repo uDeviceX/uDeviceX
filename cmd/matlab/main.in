@@ -1,0 +1,7 @@
+#!/bin/sh
+
+. u.matlab.util
+
+: ${MATLAB=%MATLAB%}
+
+prog=u.matlab
