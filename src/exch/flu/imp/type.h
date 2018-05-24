@@ -42,8 +42,9 @@ struct EFluUnpack {
         MAX_NDBAGS = 3
     };
 
-    dBags dbags[MAX_NDBAGS], dpp, dcc, dfss;
-    hBags hbags[MAX_NHBAGS], hpp, hcc, hfss;
+    dBags dbags[MAX_NDBAGS], *dpp, *dcc, *dfss;
+    hBags hbags[MAX_NHBAGS], *hpp, *hcc, *hfss;
+    int nbags;
 
     int3 L; /* subdomain size */
     Opt opt;

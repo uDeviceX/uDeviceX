@@ -28,13 +28,13 @@ void eflu_get_remote_frags(const EFluUnpack *u, /**/ RFrag26 *rfrags) {
         xcells = dx == 0 ? L.x : 1;
         ycells = dy == 0 ? L.y : 1;
         zcells = dz == 0 ? L.z : 1;
-        parray_push_pp((Particle*) u->dpp.data[i], &parrayb);
+        parray_push_pp((Particle*) u->dpp->data[i], &parrayb);
         if (u->opt.colors)
-            parray_push_cc((int*) u->dcc.data[i], &parrayb);
+            parray_push_cc((int*) u->dcc->data[i], &parrayb);
             
         rfrags->d[i] = {
             .parray = parrayb,
-            .start = (int*) u->dfss.data[i],
+            .start = (int*) u->dfss->data[i],
             .dx = dx,
             .dy = dy,
             .dz = dz,
