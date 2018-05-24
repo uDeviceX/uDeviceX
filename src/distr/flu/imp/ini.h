@@ -25,6 +25,9 @@ void dflu_pack_ini(bool colors, bool ids, int3 L, int maxdensity, DFluPack **pac
 
     UC(dmap_ini(NFRAGS, capacity, /**/ &p->map));
 
+    p->hii = p->hcc = NULL;
+    p->dii = p->dcc = NULL;
+    
     i = 0;
     p->hpp = &p->hbags[i];
     p->dpp = &p->dbags[i++];
@@ -44,11 +47,9 @@ void dflu_pack_ini(bool colors, bool ids, int3 L, int maxdensity, DFluPack **pac
 
     p->nbags = i;
     UC(comm_buffer_ini(p->nbags, p->hbags, &p->hbuf));
-    p->opt.colors = colors;
-    p->opt.ids = ids;
 }
 
-void dflu_comm_ini(bool colors, bool ids, MPI_Comm cart, /**/ DFluComm **com) {
+void dflu_comm_ini(MPI_Comm cart, /**/ DFluComm **com) {
     DFluComm *c;
     EMALLOC(1, com);
     c = *com;

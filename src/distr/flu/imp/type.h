@@ -17,7 +17,6 @@ struct DFluPack {
     int nbags;
     int nhalo; /* number of sent particles */
     int3 L; /* subdomain size */
-    Opt opt;
     CommBuffer *hbuf;
 };
 

@@ -26,8 +26,8 @@ static void pack_ii(const DMap m, const int *ii, /**/ dBags *bags) {
 
 void dflu_pack(const FluQuants *q, /**/ DFluPack *p) {
     UC(pack_pp(p->map, q->pp, /**/ p->dpp));
-    if (p->opt.ids)    UC(pack_ii(p->map, q->ii, /**/ p->dii));
-    if (p->opt.colors) UC(pack_ii(p->map, q->cc, /**/ p->dcc));
+    if (p->dii) UC(pack_ii(p->map, q->ii, /**/ p->dii));
+    if (p->dcc) UC(pack_ii(p->map, q->cc, /**/ p->dcc));
 }
 
 struct ExceedData { int cap, cnt, fid; };
@@ -62,8 +62,8 @@ static void download_pp_and_counts(DFluPack *p) {
     cnt = p->map.hcounts;
     dSync(); /* wait for pack kernels */
     memcpy(p->hpp->counts, cnt, sz);
-    if (p->opt.ids)    memcpy(p->hii->counts, cnt, sz);
-    if (p->opt.colors) memcpy(p->hcc->counts, cnt, sz);
+    if (p->hii) memcpy(p->hii->counts, cnt, sz);
+    if (p->hcc) memcpy(p->hcc->counts, cnt, sz);
     p->nhalo = reduce(NFRAGS, cnt);
 }
 
