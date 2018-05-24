@@ -32,6 +32,7 @@ void emesh_packm_fin(EMeshPackM *p) {
         UC(fin_map(&p->maps[i]));
 
     CC(d::FreeHost(p->cchst));
+    UC(comm_buffer_fin(p->hbuf));
     EFREE(p);
 }
 
@@ -44,5 +45,6 @@ void emesh_commm_fin(EMeshCommM *c) {
 void emesh_unpackm_fin(EMeshUnpackM *u) {
     UC(comm_bags_fin(PINNED_DEV, NONE, /**/ u->hmm, u->dmm));
     UC(comm_bags_fin(PINNED_DEV, NONE, /**/ u->hii, u->dii));
+    UC(comm_buffer_fin(u->hbuf));
     EFREE(u);
 }

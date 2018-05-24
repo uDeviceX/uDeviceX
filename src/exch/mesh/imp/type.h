@@ -34,6 +34,8 @@ struct EMeshPackM {
     int *cchst, *ccdev; /* helper to collect counts */
     dBags dbags[MAX_NBAGS], *dmm, *dii;
     hBags hbags[MAX_NBAGS], *hmm, *hii;
+    int nbags;
+    CommBuffer *hbuf;
 };
 
 struct EMeshCommM {
@@ -43,6 +45,8 @@ struct EMeshCommM {
 struct EMeshUnpackM {
     dBags dbags[MAX_NBAGS], *dmm, *dii;
     hBags hbags[MAX_NBAGS], *hmm, *hii;
+    int nbags;
+    CommBuffer *hbuf;
 };
 
 typedef Sarray<MMap, 26> MMap26;
