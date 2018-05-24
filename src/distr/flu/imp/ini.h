@@ -43,6 +43,7 @@ void dflu_pack_ini(bool colors, bool ids, int3 L, int maxdensity, DFluPack **pac
     }    
 
     p->nbags = i;
+    UC(comm_buffer_ini(p->nbags, p->hbags, &p->hbuf));
     p->opt.colors = colors;
     p->opt.ids = ids;
 }
@@ -92,6 +93,7 @@ void dflu_unpack_ini(bool colors, bool ids, int3 L, int maxdensity, DFluUnpack *
         UC(comm_bags_ini(HST_ONLY, NONE, sizeof(int), capacity, /**/ u->hcc, NULL));
     }
     u->nbags = i;
+    UC(comm_buffer_ini(u->nbags, u->hbags, &u->hbuf));
 
     maxparts = (int) (nhalocells(L) * maxdensity) + 1;
     Dalloc(&u->ppre, maxparts);

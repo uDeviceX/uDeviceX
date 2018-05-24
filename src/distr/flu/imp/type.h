@@ -18,6 +18,7 @@ struct DFluPack {
     int nhalo; /* number of sent particles */
     int3 L; /* subdomain size */
     Opt opt;
+    CommBuffer *hbuf;
 };
 
 struct DFluComm {
@@ -33,5 +34,6 @@ struct DFluUnpack {
     int nhalo; /* number of received particles */
     int3 L; /* subdomain size */
     Opt opt;
+    CommBuffer *hbuf;
 };
 // end::struct[]
