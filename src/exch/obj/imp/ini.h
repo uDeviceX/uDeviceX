@@ -45,6 +45,9 @@ void eobj_pack_ini(int3 L, int nw, int maxd, int maxpsolid, EObjPack **pack) {
     UC(comm_bags_ini(HST_ONLY, NONE, sizeof(int),    cccap, /**/ p->hcc, NULL));
 
     set_cc_counts(nw, NFRAGS, p->hcc);
+
+    p->nbags = MAX_NBAGS;
+    UC(comm_buffer_ini(p->nbags, p->hbags, &p->hbuf));
 }
 
 void eobj_comm_ini(MPI_Comm cart, /**/ EObjComm **com) {
@@ -72,6 +75,9 @@ void eobj_unpack_ini(int3 L, int nw, int maxd, int maxpsolid, EObjUnpack **unpac
     UC(comm_bags_ini(HST_ONLY  , NONE, sizeof(int),    cccap, /**/ u->hcc, NULL));
 
     set_cc_counts(nw, NFRAGS, u->hcc);
+
+    u->nbags = MAX_NBAGS;
+    UC(comm_buffer_ini(u->nbags, u->hbags, &u->hbuf));
 }
 
 void eobj_packf_ini(int3 L, int maxd, int maxpsolid, EObjPackF **pack) {

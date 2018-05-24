@@ -12,6 +12,8 @@ struct EObjPack {
     EMap map;
     dBags dpp;
     hBags hbags[MAX_NBAGS], *hpp, *hcc;
+    int nbags;
+    CommBuffer *hbuf;
 
     int3 L; /* subdomain size */
 };
@@ -23,6 +25,8 @@ struct EObjComm {
 struct EObjUnpack {
     dBags dpp;
     hBags hbags[MAX_NBAGS], *hpp, *hcc;
+    int nbags;
+    CommBuffer *hbuf;
 
     int3 L; /* subdomain size */
 };
