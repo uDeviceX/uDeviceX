@@ -43,7 +43,7 @@ void eflu_pack_ini(bool colors, int3 L, int maxd, EFluPack **pack) {
     p->opt.colors = colors;
 }
 
-void eflu_comm_ini(bool colors, MPI_Comm cart, /**/ EFluComm **com) {
+void eflu_comm_ini(MPI_Comm cart, /**/ EFluComm **com) {
     EFluComm *c;
     EMALLOC(1, com);
     c = *com;

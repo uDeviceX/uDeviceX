@@ -7,7 +7,7 @@ _S_ void ini_flu_exch(const Opt *opt, MPI_Comm comm, int3 L, /**/ FluExch *e) {
     int maxd = HSAFETY_FACTOR * opt->params.numdensity;
 
     UC(eflu_pack_ini(opt->flu.colors, L, maxd, /**/ &e->p));
-    UC(eflu_comm_ini(opt->flu.colors, comm, /**/ &e->c));
+    UC(eflu_comm_ini(comm, /**/ &e->c));
     UC(eflu_unpack_ini(opt->flu.colors, L, maxd, /**/ &e->u));
 }
 
