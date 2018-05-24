@@ -26,7 +26,12 @@ static void forces_cnt(ObjInter *oi, int nw, PaWrap *pw, FoWrap *fw) {
 }
 
 static void forces_fsi(ObjInter *oi, int nw, PaWrap *pw, FoWrap *fw) {
-    fsi_bulk(oi->fsiparams, oi->fsi, nw, pw, fw);
+    // TODO configure
+    const PairParams *prms[MAX_OBJ_TYPES];
+    int i;
+    for (i = 0; i < nw; ++i) prms[i] = oi->fsiparams;
+    
+    fsi_bulk(oi->fsi, nw, prms, pw, fw);
 }
 
 static bool has_work(ObjInter *o) {
@@ -38,7 +43,7 @@ void obj_inter_forces(ObjInter *oi, PFarray *flu, int *flu_start, PFarrays *obj)
     FoWrap fw[MAX_OBJ_TYPES];
     int nw = 0;
     ObjExch *e = oi->e;
-    int all_counts[26*MAX_OBJ_TYPES] = {0};
+    int all_counts[26 * MAX_OBJ_TYPES] = {0};
 
     if (!has_work(oi)) return;
     
@@ -58,8 +63,8 @@ void obj_inter_forces(ObjInter *oi, PFarray *flu, int *flu_start, PFarrays *obj)
     
     if (oi->fsi) UC(bind_solvent(flu, flu_start, oi->fsi));
 
-    if (oi->cnt) UC(forces_cnt(oi, nw, pw, fw));
     if (oi->fsi) UC(forces_fsi(oi, nw, pw, fw));
+    if (oi->cnt) UC(forces_cnt(oi, nw, pw, fw));    
 
     /* recv data and halo interactions  */
 

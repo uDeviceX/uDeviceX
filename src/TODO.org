@@ -1,10 +1,11 @@
-* [2/6] fsi and cnt params aware
+* [3/6] fsi and cnt params aware
 fsi and cnt should use different pair parameters depending on object type
 ** DONE objects exchanger communicate counts per object types
    CLOSED: [2018-05-24 Thu 16:51]
 ** DONE objects exchanger getter for above quants
    CLOSED: [2018-05-24 Thu 17:12]
-** TODO fsi: different params in bulk
+** DONE fsi: different params in bulk
+   CLOSED: [2018-05-24 Thu 17:27]
 ** TODO fsi: different params in halo
 ** TODO cnt: different params in bulk
 ** TODO cnt: different params in halo

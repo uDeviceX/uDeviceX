@@ -33,10 +33,10 @@ static void bulk_one_wrap(const PairParams *params, PaWrap *pw, FoWrap *fw, Fsi 
     }
 }
 
-void fsi_bulk(const PairParams *params, Fsi *fsi, int nw, PaWrap *pw, FoWrap *fw) {
+void fsi_bulk(Fsi *fsi, int nw, const PairParams **prms, PaWrap *pw, FoWrap *fw) {
     if (nw == 0)
         return;
     
     for (int i = 0; i < nw; i++)
-        bulk_one_wrap(params, pw++, fw++, fsi);
+        bulk_one_wrap(prms[i], &pw[i], &fw[i], fsi);
 }
