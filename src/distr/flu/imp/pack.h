@@ -4,21 +4,21 @@ static int reduce(int n, const int d[]) {
     return s;
 }
 
-static void pack_pp(const DMap m, const Particle *pp, /**/ dBags bags) {
+static void pack_pp(const DMap m, const Particle *pp, /**/ dBags *bags) {
     int n;
     const int S = sizeof(Particle) / sizeof(float2);
     float2p26 wrap;
-    bag2Sarray(bags, &wrap);
+    bag2Sarray(*bags, &wrap);
     n = reduce(NFRAGS, m.hcounts);
 
     KL((dflu_dev::pack<float2, S>), (k_cnf(S*n)), ((const float2*)pp, m, /**/ wrap));
 }
 
-static void pack_ii(const DMap m, const int *ii, /**/ dBags bags) {
+static void pack_ii(const DMap m, const int *ii, /**/ dBags *bags) {
     int n;
     const int S = 1;
     intp26 wrap;
-    bag2Sarray(bags, &wrap);
+    bag2Sarray(*bags, &wrap);
     n = reduce(NFRAGS, m.hcounts);
 
     KL((dflu_dev::pack<int, S>), (k_cnf(S*n)), (ii, m, /**/ wrap));
@@ -61,9 +61,9 @@ static void download_pp_and_counts(DFluPack *p) {
     sz = NFRAGS * sizeof(int);
     cnt = p->map.hcounts;
     dSync(); /* wait for pack kernels */
-    memcpy(p->hpp.counts, cnt, sz);
-    if (p->opt.ids)    memcpy(p->hii.counts, cnt, sz);
-    if (p->opt.colors) memcpy(p->hcc.counts, cnt, sz);
+    memcpy(p->hpp->counts, cnt, sz);
+    if (p->opt.ids)    memcpy(p->hii->counts, cnt, sz);
+    if (p->opt.colors) memcpy(p->hcc->counts, cnt, sz);
     p->nhalo = reduce(NFRAGS, cnt);
 }
 
@@ -72,7 +72,7 @@ void dflu_download(DFluPack *p, /**/ DFluStatus *s) {
     int r;
     int *cnt;
     cnt = p->map.hcounts;
-    r = check_counts(NFRAGS, cnt, &p->hpp, /**/ &e);
+    r = check_counts(NFRAGS, cnt, p->hpp, /**/ &e);
     if (r == OK) {
         UC(download_pp_and_counts(p));
     }

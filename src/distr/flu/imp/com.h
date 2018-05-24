@@ -5,9 +5,9 @@ void dflu_post_recv(DFluComm *c, DFluUnpack *u) {
 }
 
 void dflu_post_send(DFluPack *p, DFluComm *c) {
-    UC(comm_post_send(&p->hpp, c->pp));
-    if (c->opt.ids)    UC(comm_post_send(&p->hii, c->ii));
-    if (c->opt.colors) UC(comm_post_send(&p->hcc, c->cc));
+    UC(comm_post_send(p->hpp, c->pp));
+    if (c->opt.ids)    UC(comm_post_send(p->hii, c->ii));
+    if (c->opt.colors) UC(comm_post_send(p->hcc, c->cc));
 }
 
 void dflu_wait_recv(DFluComm *c, DFluUnpack *u) {

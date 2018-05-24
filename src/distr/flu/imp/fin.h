@@ -1,9 +1,9 @@
 void dflu_pack_fin(DFluPack *p) {
     UC(dmap_fin(NFRAGS, /**/ &p->map));
-    UC(comm_bags_fin(PINNED, NONE, /**/ &p->hpp, &p->dpp));
+    UC(comm_bags_fin(PINNED, NONE, /**/ p->hpp, p->dpp));
 
-    if (p->opt.ids)    UC(comm_bags_fin(PINNED, NONE, /**/ &p->hii, &p->dii));
-    if (p->opt.colors) UC(comm_bags_fin(PINNED, NONE, /**/ &p->hcc, &p->dcc));
+    if (p->opt.ids)    UC(comm_bags_fin(PINNED, NONE, /**/ p->hii, p->dii));
+    if (p->opt.colors) UC(comm_bags_fin(PINNED, NONE, /**/ p->hcc, p->dcc));
 
     EFREE(p);
 }

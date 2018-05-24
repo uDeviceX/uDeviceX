@@ -14,7 +14,7 @@ static void get_capacity(int3 L, int maxd, /**/ int capacity[NBAGS]) {
 
 void dflu_pack_ini(bool colors, bool ids, int3 L, int maxdensity, DFluPack **pack) {
     DFluPack *p;
-    int capacity[NBAGS];
+    int i, capacity[NBAGS];
 
     EMALLOC(1, pack);
     p = *pack;
@@ -24,11 +24,25 @@ void dflu_pack_ini(bool colors, bool ids, int3 L, int maxdensity, DFluPack **pac
     get_capacity(L, maxdensity, /**/ capacity);
 
     UC(dmap_ini(NFRAGS, capacity, /**/ &p->map));
-    
-    UC(comm_bags_ini(PINNED, NONE, sizeof(Particle), capacity, /**/ &p->hpp, &p->dpp));
-    if (ids)    UC(comm_bags_ini(PINNED, NONE, sizeof(int), capacity, /**/ &p->hii, &p->dii));
-    if (colors) UC(comm_bags_ini(PINNED, NONE, sizeof(int), capacity, /**/ &p->hcc, &p->dcc));
 
+    i = 0;
+    p->hpp = &p->hbags[i];
+    p->dpp = &p->dbags[i++];
+    UC(comm_bags_ini(PINNED, NONE, sizeof(Particle), capacity, /**/ p->hpp, p->dpp));
+    
+    if (ids) {
+        p->hii = &p->hbags[i];
+        p->dii = &p->dbags[i++];
+        UC(comm_bags_ini(PINNED, NONE, sizeof(int), capacity, /**/ p->hii, p->dii));
+    }
+
+    if (colors) {
+        p->hcc = &p->hbags[i];
+        p->dcc = &p->dbags[i++];
+        UC(comm_bags_ini(PINNED, NONE, sizeof(int), capacity, /**/ p->hcc, p->dcc));
+    }    
+
+    p->nbags = i;
     p->opt.colors = colors;
     p->opt.ids = ids;
 }
