@@ -1,0 +1,13 @@
+. ./util
+
+prog=replace_matlab
+MATLAB=`./find_matlab`
+if test $? -ne 0
+then err 'find_matlab failed'
+fi
+
+sed -e "s,%MATLAB%,$MATLAB,g" \
+    -e "s,%MATLABPATH%,$MATLABPATH,g" \
+    "$1"
+
+msg "MATLAB=$MATLAB"

@@ -1,0 +1,29 @@
+#!/bin/sh
+
+. u.matlab.util
+
+: ${MATLAB=%MATLAB%}
+: ${MATLABPATH=}
+
+if test -z "${MATLABPATH}"
+then MATLABPATH="$MATLABPATH:%MATLABPATH%"
+else MATLABPATH="%MATLABPATH%"
+fi    
+export MATLABPATH
+
+prog=u.matlab
+
+usg () {
+    msg "$prog [MATLAB OPTIONS]..."
+    msg 'udx matlab wrapper'
+    exit
+}
+
+if test $# -ne 0 && test "$1" = -h
+then usg
+fi
+
+if test $# -eq 0
+then "$MATLAB" -nosplash
+else "$MATLAB" -nosplash -nodisplay -nodesktop -r "run('$1'); exit;"
+fi

@@ -55,6 +55,7 @@ struct Opt {
     int sampler_npdump;
     int3 sampler_grid_ref;
     bool restart;
+    bool tracers;
 };
 
 struct Config;

@@ -1,0 +1,37 @@
+#!/bin/sh
+
+. ./util
+
+prog=find_matlab
+: ${MATLAB=matlab}
+
+path () {
+    s "${MATLAB}" -h
+    if test $? -ne 127
+    then printf '%s\n' "$MATLAB"
+	 return 0
+    else return 1
+    fi    
+}
+
+linux () { location '/usr/local/MATLAB/*/'; }
+osx ()   { location '/Applications/MATLAB_*.app/'; }
+location () {
+    p="$1"; shift
+    if ! s ls $p; then return 1; fi
+    for d in $p
+    do if test -e "${d}bin/matlab"
+       then printf '%s\n' "${d}bin/matlab"
+	    return 0
+       fi
+    done
+    return 1
+}
+
+fail () {
+    msg "$prog: fail to find matlab"
+    err 'run MATLAB=<path to bin/matlab> make'
+}
+
+
+path || linux || osx || fail

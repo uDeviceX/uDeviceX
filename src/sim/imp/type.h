@@ -19,6 +19,15 @@ struct Recolorer {
     int flux_dir;
 };
 
+/* Tracer DPD particle colorer */
+struct Tracers {
+    bool active;
+    int freq; /* recolor frequency */
+    float R; /* radius where tracers are placed */
+    float iniP; /* probability to create tracer */
+    float delP; /* probability to delete tracer */
+};
+
 /* data holder for solvent */
 struct Flu {
     FluQuants q;
@@ -85,6 +94,7 @@ struct Sim {
     Coords *coords;
     ObjInter *objinter;
     Recolorer recolorer;
+    Tracers tracers;
     Vcon vcon;
     Restrain *restrain;
     Dbg *dbg;
