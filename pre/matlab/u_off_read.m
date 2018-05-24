@@ -1,27 +1,37 @@
 function [tri, xx, yy, zz] = u_off_read(path)
-  f = fopen(name, 'r');
+  X = 1; Y = 2; Z = 3;
+  f = fopen(path, 'r');
+  if f == -1
+    error('not a file "%s"', path);
+  endif
+
+  s = fgets(f); % "OFF"
+  if strncmp(s, "OFF", 3) == 0
+    error('not an off file "%s"', path)
+  endif
+
   s = fgets(f);
+  [D, cnt] = sscanf(s, "%d %d %d");
+  if cnt != 3
+    error('wrong line: "%s" in "%s"', s, path)
+  endif
+  nv = D(1); nt = D(2);
 
-  if ~scmp(s(1:3), 'OFF')
-    error('not an off file "%s"', path);
-  end
+  [D, cnt] = fscanf(f, '%f %f %f', [3, nv]);
+  if cnt != nv * 3
+    error('fail to read xyz in "%s"', path)
+  endif
 
-  s = fgets(f);
-  [a, s] = stok(s); nvert = s2num(a);
-  [a, s] = stok(s); nface = s2num(a);
+  xx = D(X, :); yy = D(Y, :); zz = D(Z, :);
 
-  [A,cnt] = fscanf(f,'%f %f %f', 3*nvert);
-  if cnt~=3*nvert
-    warning('Problem in reading vertices.');
-  end
-  A = reshape(A, 3, cnt/3);
-  vertex = A;
+  [D, cnt]  = fscanf(f,'%d %d %d %d\n', [4, nt]);
+  if cnt != nt * 4
+    error('failt to read triangles in "%s"', path)
+  endif
 
-  [A,cnt] = fscanf(f,'%d %d %d %d\n', 4*nface);
-  if cnt~=4*nface
-    warning('Problem in reading faces.');
-  end
-  A = reshape(A, 4, cnt/4);
-  face = A(2:4,:)+1;
-  fclose(f);
+  tri = D(2:end, :)';
+  tri = tri + 1;
+  if fclose(f) != 0
+    error('fail to close "%s"', path)
+  endif
 endfunction
