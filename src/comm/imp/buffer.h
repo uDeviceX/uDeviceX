@@ -44,7 +44,7 @@ static void frag_get_buffer(int fid, const CommBuffer *cb, int nbags, hBags *hbb
         c = counts[i];
         hb->counts[fid] = c;
         sz = c * hb->bsize;
-        memcpy(hb->data, d, sz);
+        memcpy(hb->data[fid], d, sz);
         d += sz;
     }
 }

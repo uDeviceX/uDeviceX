@@ -97,7 +97,7 @@ void comm_post_recv(CommBuffer *cb, Comm *com) {
     int i, tag;
     for (i = 0; i < NFRAGS; ++i) {
         tag = com->tags[i];
-        MC(m::Irecv(cb->buf[i], cb->sz[i], MPI_BYTE, com->ranks[i], tag, com->cart, com->rreq + i));
+        MC(m::Irecv(cb->buf[i], cb->cap[i], MPI_BYTE, com->ranks[i], tag, com->cart, com->rreq + i));
     }
 }
 
