@@ -4,10 +4,16 @@
  ss:  "Solid" structures 
 */
 
+enum {
+    ID_PP,
+    ID_SS,
+    MAX_NBAGS
+};
+
 struct DRigPack {
     DMap map;
-    dBags dipp, dss;
-    hBags hipp, hss;
+    dBags dbags[MAX_NBAGS], *dipp, *dss;
+    hBags hbags[MAX_NBAGS], *hipp, *hss;
     int3 L;  /* subdomain size */
 };
 
@@ -16,7 +22,7 @@ struct DRigComm {
 };
 
 struct DRigUnpack {
-    hBags hipp, hss;
+    hBags hbags[MAX_NBAGS], hipp, hss;
     int3 L;  /* subdomain size */
 };
 // end::struct[]

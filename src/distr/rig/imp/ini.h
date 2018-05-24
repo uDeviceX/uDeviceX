@@ -15,10 +15,12 @@ void drig_pack_ini(int3 L, int maxns, int nv, DRigPack **pack) {
 
     UC(dmap_ini(NBAGS, numc, /**/ &p->map));
 
-    /* one datum is here a full mesh, so bsize is nv * sizeof(Particle) */
-    UC(comm_bags_ini(PINNED, DEV_ONLY, nv * sizeof(Particle), numc, /**/ &p->hipp, &p->dipp));
+    p->hipp = &p->hbags[ID_PP];  p->hss = &p->hbags[ID_SS];
+    p->dipp = &p->dbags[ID_PP];  p->dss = &p->dbags[ID_SS];
     
-    UC(comm_bags_ini(PINNED, DEV_ONLY, sizeof(Solid), numc, /**/ &p->hss, &p->dss));
+    /* one datum is here a full mesh, so bsize is nv * sizeof(Particle) */
+    UC(comm_bags_ini(PINNED, DEV_ONLY, nv * sizeof(Particle), numc, /**/ p->hipp, p->dipp));
+    UC(comm_bags_ini(PINNED, DEV_ONLY, sizeof(Solid), numc, /**/ p->hss, p->dss));
 }
 
 void drig_comm_ini(MPI_Comm cart, /**/ DRigComm **com) {

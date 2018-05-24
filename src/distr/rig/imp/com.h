@@ -4,8 +4,8 @@ void drig_post_recv(DRigComm *c, DRigUnpack *u) {
 }
 
 void drig_post_send(DRigPack *p, DRigComm *c) {
-    UC(comm_post_send(&p->hipp, c->ipp));
-    UC(comm_post_send(&p->hss, c->ss));
+    UC(comm_post_send(p->hipp, c->ipp));
+    UC(comm_post_send(p->hss, c->ss));
 }
 
 void drig_wait_recv(DRigComm *c, DRigUnpack *u) {

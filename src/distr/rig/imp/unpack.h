@@ -1,12 +1,12 @@
 void drig_unpack_bulk(const DRigPack *p, /**/ RigQuants *q) {
     int ns, nv, n;
-    ns = p->hipp.counts[frag_bulk];
+    ns = p->hipp->counts[frag_bulk];
     nv = q->nv;
     n = ns * nv;
     
     if (ns) {
-        CC(d::MemcpyAsync(q->i_pp, p->dipp.data[frag_bulk], n * sizeof(Particle), D2D));
-        CC(d::MemcpyAsync(  q->ss,  p->dss.data[frag_bulk],   ns * sizeof(Solid), D2D));
+        CC(d::MemcpyAsync(q->i_pp, p->dipp->data[frag_bulk], n * sizeof(Particle), D2D));
+        CC(d::MemcpyAsync(  q->ss,  p->dss->data[frag_bulk],   ns * sizeof(Solid), D2D));
     }
     q->ns = ns;
 }

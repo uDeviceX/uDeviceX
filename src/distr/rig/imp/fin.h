@@ -1,7 +1,7 @@
 void drig_pack_fin(DRigPack *p) {
     UC(dmap_fin(NBAGS, /**/ &p->map));
-    UC(comm_bags_fin(PINNED, DEV_ONLY, /**/ &p->hipp, &p->dipp));
-    UC(comm_bags_fin(PINNED, DEV_ONLY, /**/ &p->hss, &p->dss));
+    UC(comm_bags_fin(PINNED, DEV_ONLY, /**/ p->hipp, p->dipp));
+    UC(comm_bags_fin(PINNED, DEV_ONLY, /**/ p->hss, p->dss));
     EFREE(p);
 }
 
