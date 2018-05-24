@@ -39,11 +39,7 @@ void drbc_comm_ini(bool ids, MPI_Comm cart, /**/ DRbcComm **com) {
     DRbcComm *c;
     EMALLOC(1, com);
     c = *com;
-    
-    UC(comm_ini(cart, /**/ &c->pp));
-    if (ids)
-        UC(comm_ini(cart, /**/ &c->ii));
-    c->ids = ids;
+    UC(comm_ini(cart, /**/ &c->comm));
 }
 
 void drbc_unpack_ini(bool ids, int3 L, int maxnc, int nv, DRbcUnpack **unpack) {

@@ -20,9 +20,7 @@ struct DRbcPack {
 };
 
 struct DRbcComm {
-    /* optional: ids */
-    Comm *pp, *ii;
-    bool ids;
+    Comm *comm;
 };
 
 struct DRbcUnpack {

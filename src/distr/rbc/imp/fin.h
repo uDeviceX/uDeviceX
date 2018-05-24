@@ -13,9 +13,7 @@ void drbc_pack_fin(DRbcPack *p) {
 }
 
 void drbc_comm_fin(DRbcComm *c) {
-    UC(comm_fin(c->pp));
-    if (c->ids)
-        UC(comm_fin(c->ii));
+    UC(comm_fin(c->comm));
     EFREE(c);
 }
 
