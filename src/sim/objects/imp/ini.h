@@ -5,7 +5,7 @@ static void gen_name_mesh_dir(const char *name, char *mesh_dir) {
 
 static void ini_mbr_distr(bool ids, int nv, MPI_Comm comm, int3 L, /**/ MbrDistr *d) {
     UC(drbc_pack_ini(ids, L, MAX_CELL_NUM, nv, /**/ &d->p));
-    UC(drbc_comm_ini(ids, comm, /**/ &d->c));
+    UC(drbc_comm_ini(comm, /**/ &d->c));
     UC(drbc_unpack_ini(ids, L, MAX_CELL_NUM, nv, /**/ &d->u));
 }
 
