@@ -36,8 +36,8 @@ static void upload_bags(const hBags *h, dBags *d) {
 }
 
 void emesh_upload(EMeshUnpackM *u) {
-    upload_bags(&u->hmm, &u->dmm);
-    upload_bags(&u->hii, &u->dii);
+    upload_bags(u->hmm, u->dmm);
+    upload_bags(u->hii, u->dii);
 }
 
 static int get_fragstarts(int nfrags, const int cc[], /**/ int *starts) {
@@ -54,10 +54,10 @@ void emesh_unpack_mom(int nt, const EMeshPack *p, const EMeshUnpackM *u, /**/ Mo
     int27 fragstarts;
     int n;
     
-    bag2Sarray(u->dmm, &wrapmm);
-    bag2Sarray(u->dii, &wrapii);
+    bag2Sarray(*u->dmm, &wrapmm);
+    bag2Sarray(*u->dii, &wrapii);
 
-    n = get_fragstarts(NFRAGS, u->hii.counts, /**/ fragstarts.d);
+    n = get_fragstarts(NFRAGS, u->hii->counts, /**/ fragstarts.d);
     
     KL(emesh_dev::unpack_mom, (k_cnf(n)), (nt, fragstarts, wrapii, wrapmm, p->map, /**/ mm));
 }

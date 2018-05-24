@@ -42,7 +42,7 @@ void emesh_commm_fin(EMeshCommM *c) {
 }
 
 void emesh_unpackm_fin(EMeshUnpackM *u) {
-    UC(comm_bags_fin(PINNED_DEV, NONE, /**/ &u->hmm, &u->dmm));
-    UC(comm_bags_fin(PINNED_DEV, NONE, /**/ &u->hii, &u->dii));
+    UC(comm_bags_fin(PINNED_DEV, NONE, /**/ u->hmm, u->dmm));
+    UC(comm_bags_fin(PINNED_DEV, NONE, /**/ u->hii, u->dii));
     EFREE(u);
 }

@@ -18,8 +18,8 @@ void emesh_wait_send(EMeshComm *c) {
 /* momentum */
 
 void emesh_post_recv(EMeshCommM *c, EMeshUnpackM *u) {
-    UC(comm_post_recv(&u->hmm, c->mm));
-    UC(comm_post_recv(&u->hii, c->ii));
+    UC(comm_post_recv(u->hmm, c->mm));
+    UC(comm_post_recv(u->hii, c->ii));
 }
 
 void emesh_post_send(EMeshPackM *p, EMeshCommM *c) {
@@ -28,8 +28,8 @@ void emesh_post_send(EMeshPackM *p, EMeshCommM *c) {
 }
 
 void emesh_wait_recv(EMeshCommM *c, EMeshUnpackM *u) {
-    UC(comm_wait_recv(c->mm, &u->hmm));
-    UC(comm_wait_recv(c->ii, &u->hii));
+    UC(comm_wait_recv(c->mm, u->hmm));
+    UC(comm_wait_recv(c->ii, u->hii));
 }
 
 void emesh_wait_send(EMeshCommM *c) {

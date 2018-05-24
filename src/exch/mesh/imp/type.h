@@ -41,8 +41,8 @@ struct EMeshCommM {
 };
 
 struct EMeshUnpackM {
-    dBags dbags[MAX_NBAGS], dmm, dii;
-    hBags hbags[MAX_NBAGS], hmm, hii;
+    dBags dbags[MAX_NBAGS], *dmm, *dii;
+    hBags hbags[MAX_NBAGS], *hmm, *hii;
 };
 
 typedef Sarray<MMap, 26> MMap26;

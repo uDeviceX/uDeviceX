@@ -97,6 +97,9 @@ void emesh_unpackm_ini(int nt, int max_mesh_num, EMeshUnpackM **unpack) {
     get_capacity(NFRAGS, max_mesh_num, /**/ cap);
     get_mcap(NFRAGS, nt, cap, /**/ mcap);
 
-    UC(comm_bags_ini(PINNED_DEV, NONE, sizeof(Momentum), mcap, /**/ &u->hmm, &u->dmm));
-    UC(comm_bags_ini(PINNED_DEV, NONE, sizeof(int)     , mcap, /**/ &u->hii, &u->dii));
+    u->hmm = &u->hbags[ID_MM]; u->hii = &u->hbags[ID_II];
+    u->dmm = &u->dbags[ID_MM]; u->dii = &u->dbags[ID_II];
+
+    UC(comm_bags_ini(PINNED_DEV, NONE, sizeof(Momentum), mcap, /**/ u->hmm, u->dmm));
+    UC(comm_bags_ini(PINNED_DEV, NONE, sizeof(int)     , mcap, /**/ u->hii, u->dii));
 }
