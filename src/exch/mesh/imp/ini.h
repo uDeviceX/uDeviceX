@@ -68,9 +68,12 @@ void emesh_packm_ini(int nt, int max_mesh_num, EMeshPackM **pack) {
 
     for (i = 0; i < NFRAGS; ++i)
         UC(ini_map(nt, cap[i], /**/ &p->maps[i]));
+
+    p->hmm = &p->hbags[ID_MM]; p->hii = &p->hbags[ID_II];
+    p->dmm = &p->dbags[ID_MM]; p->dii = &p->dbags[ID_II];
     
-    UC(comm_bags_ini(PINNED,   NONE, sizeof(Momentum), mcap, /**/ &p->hmm, &p->dmm));
-    UC(comm_bags_ini(PINNED,   NONE, sizeof(int)     , mcap, /**/ &p->hii, &p->dii));
+    UC(comm_bags_ini(PINNED,   NONE, sizeof(Momentum), mcap, /**/ p->hmm, p->dmm));
+    UC(comm_bags_ini(PINNED,   NONE, sizeof(int)     , mcap, /**/ p->hii, p->dii));
 
     CC(d::alloc_pinned((void**) &p->cchst, 26 * sizeof(int)));
     CC(d::HostGetDevicePointer((void**) &p->ccdev, p->cchst, 0));

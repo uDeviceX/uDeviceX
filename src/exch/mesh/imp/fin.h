@@ -25,8 +25,8 @@ static void fin_map(/**/ MMap *map) {
 }
 
 void emesh_packm_fin(EMeshPackM *p) {
-    UC(comm_bags_fin(PINNED, NONE, /**/ &p->hmm, &p->dmm));
-    UC(comm_bags_fin(PINNED, NONE, /**/ &p->hii, &p->dii));
+    UC(comm_bags_fin(PINNED, NONE, /**/ p->hmm, p->dmm));
+    UC(comm_bags_fin(PINNED, NONE, /**/ p->hii, p->dii));
 
     for (int i = 0; i < NFRAGS; ++i)
         UC(fin_map(&p->maps[i]));

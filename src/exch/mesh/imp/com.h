@@ -23,8 +23,8 @@ void emesh_post_recv(EMeshCommM *c, EMeshUnpackM *u) {
 }
 
 void emesh_post_send(EMeshPackM *p, EMeshCommM *c) {
-    UC(comm_post_send(&p->hmm, c->mm));
-    UC(comm_post_send(&p->hii, c->ii));
+    UC(comm_post_send(p->hmm, c->mm));
+    UC(comm_post_send(p->hii, c->ii));
 }
 
 void emesh_wait_recv(EMeshCommM *c, EMeshUnpackM *u) {

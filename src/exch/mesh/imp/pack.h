@@ -39,7 +39,7 @@ static void pack_mom(int nt, const int counts[NFRAGS], const Momentum *mm,
 }
 
 void emesh_packM(int nt, const int counts[NFRAGS], const Momentum *mm, /**/ EMeshPackM *p) {
-    pack_mom(nt, counts, mm, /**/ p->maps, (int **) p->dii.data, (Momentum **) p->dmm.data);
+    pack_mom(nt, counts, mm, /**/ p->maps, (int **) p->dii->data, (Momentum **) p->dmm->data);
 }
 
 void emesh_downloadM(const int counts[NFRAGS], EMeshPackM *p) {
@@ -55,7 +55,7 @@ void emesh_downloadM(const int counts[NFRAGS], EMeshPackM *p) {
 
     dSync();
 
-    memcpy(p->hmm.counts, p->cchst, sz);
-    memcpy(p->hii.counts, p->cchst, sz);
+    memcpy(p->hmm->counts, p->cchst, sz);
+    memcpy(p->hii->counts, p->cchst, sz);
 }
 
