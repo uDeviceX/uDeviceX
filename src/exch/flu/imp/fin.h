@@ -18,10 +18,7 @@ void eflu_pack_fin(EFluPack *p) {
 }
 
 void eflu_comm_fin(EFluComm *c) {
-    UC(comm_fin(/**/ c->pp));
-    UC(comm_fin(/**/ c->fss));
-    if (c->opt.colors)
-        UC(comm_fin(/**/ c->cc));
+    UC(comm_fin(/**/ c->comm));
     EFREE(c);
 }
 

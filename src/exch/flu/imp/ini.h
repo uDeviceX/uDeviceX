@@ -47,13 +47,7 @@ void eflu_comm_ini(bool colors, MPI_Comm cart, /**/ EFluComm **com) {
     EFluComm *c;
     EMALLOC(1, com);
     c = *com;
-    
-    UC(comm_ini(cart, /**/ &c->pp));
-    UC(comm_ini(cart, /**/ &c->fss));
-    if (colors)
-        UC(comm_ini(cart, /**/ &c->cc));
-
-    c->opt.colors = colors;
+    UC(comm_ini(cart, /**/ &c->comm));
 }
 
 void eflu_unpack_ini(bool colors, int3 L, int maxd, EFluUnpack **unpack) {

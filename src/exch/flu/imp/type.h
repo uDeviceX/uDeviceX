@@ -33,8 +33,7 @@ struct EFluPack {
 };
 
 struct EFluComm {
-    Comm *pp, *cc, *fss;
-    Opt opt;
+    Comm *comm;
 };
 
 struct EFluUnpack {
