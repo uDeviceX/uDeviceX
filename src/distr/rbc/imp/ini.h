@@ -25,6 +25,7 @@ void drbc_pack_ini(bool ids, int3 L, int maxnc, int nv, DRbcPack **pack) {
     Dalloc(&p->minext, maxnc);
     Dalloc(&p->maxext, maxnc);
 
+    p->hii = NULL;
     if (ids) {
         p->hii = &p->hbags[i++];
         UC(dmap_ini_host(NBAGS, numc, /**/ &p->hmap));
@@ -32,7 +33,6 @@ void drbc_pack_ini(bool ids, int3 L, int maxnc, int nv, DRbcPack **pack) {
     }
     p->nbags = i;
     UC(comm_buffer_ini(p->nbags, p->hbags, &p->hbuf));
-    p->ids = ids;
 }
 
 void drbc_comm_ini(bool ids, MPI_Comm cart, /**/ DRbcComm **com) {
@@ -49,7 +49,6 @@ void drbc_unpack_ini(bool ids, int3 L, int maxnc, int nv, DRbcUnpack **unpack) {
     u = *unpack;
 
     u->L = L;
-    u->ids = ids;
     
     get_num_capacity(maxnc, /**/ numc);
 
@@ -58,6 +57,7 @@ void drbc_unpack_ini(bool ids, int3 L, int maxnc, int nv, DRbcUnpack **unpack) {
     /* one datum is here a full RBC, so bsize is nv * sizeof(Particle) */
     UC(comm_bags_ini(HST_ONLY, NONE, nv * sizeof(Particle), numc, /**/ u->hpp, NULL));
 
+    u->hii = NULL;
     if (ids) {
         u->hii = &u->hbags[i++];
         UC(comm_bags_ini(HST_ONLY, NONE, sizeof(int), numc, /**/ u->hii, NULL));

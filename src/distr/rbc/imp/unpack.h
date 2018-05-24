@@ -21,7 +21,7 @@ void drbc_unpack_bulk(const DRbcPack *p, /**/ RbcQuants *q) {
     nc = unpack_bulk_pp(p, /**/ q->pp);
     n = nc * nv;
 
-    if (p->ids)
+    if (p->hii)
         unpack_bulk_ii(p, /**/ q->ii);
 
     q->nc = nc;
@@ -73,7 +73,7 @@ void drbc_unpack_halo(const DRbcUnpack *u, /**/ RbcQuants *q) {
 
     nc = unpack_halo_pp(u->L, nc0, nv, u->hpp, /**/ q->pp);
 
-    if (u->ids)
+    if (u->hii)
         unpack_halo_ii(nc0, u->hii, /**/ q->ii);
 
     q->n = nc * nv;

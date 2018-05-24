@@ -4,7 +4,7 @@ void drbc_pack_fin(DRbcPack *p) {
     Dfree(p->minext);
     Dfree(p->maxext);
 
-    if (p->ids) {
+    if (p->hii) {
         UC(dmap_fin_host(NBAGS, /**/ &p->hmap));
         UC(comm_bags_fin(HST_ONLY, HST_ONLY, /**/ p->hii, NULL));
     }
@@ -19,7 +19,7 @@ void drbc_comm_fin(DRbcComm *c) {
 
 void drbc_unpack_fin(DRbcUnpack *u) {
     UC(comm_bags_fin(HST_ONLY, NONE, /**/ u->hpp, NULL));
-    if (u->ids)
+    if (u->hii)
         UC(comm_bags_fin(HST_ONLY, NONE, /**/ u->hii, NULL));
     UC(comm_buffer_fin(u->hbuf));
     EFREE(u);

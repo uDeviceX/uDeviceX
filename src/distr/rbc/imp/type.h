@@ -11,10 +11,7 @@ struct DRbcPack {
     hBags hbags[MAX_NHBAGS], *hpp, *hii;
     int nbags;
     CommBuffer *hbuf;
-    
-    /* optional: ids */
-    bool ids;
-    DMap hmap;
+    DMap hmap; /* host map for ids */
 
     int3 L; /* subdomain size */
 };
@@ -28,9 +25,6 @@ struct DRbcUnpack {
     int nbags;
     CommBuffer *hbuf;
     
-    /* optional: ids */
-    bool ids;
-
     int3 L; /* subdomain size */
 };
 // end::struct[]
