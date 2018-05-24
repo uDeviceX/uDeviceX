@@ -4,11 +4,14 @@ D = matlab
 M = main util
 
 PREFIX = $(HOME)
-B = $(HOME)/bin
+B = $(PREFIX)/bin
+MATLABPATH=$(PREFIX)/lib/matlab
 
 include $S/make/tool.mk
 main: main.in
-	./replace_matlab main.in > main
+	mkdir -p "$(MATLABPATH)"
+	MATLABPATH="$(MATLABPATH)" ./replace_matlab main.in > main
 	chmod +x main
+
 .PHONY: install clean
 clean:; rm -f main
