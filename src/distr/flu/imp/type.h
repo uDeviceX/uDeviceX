@@ -1,31 +1,32 @@
 typedef Sarray <float2*, 26> float2p26;
 typedef Sarray <int*, 26> intp26;
 
-// tag::struct[]
-struct Opt {
-    bool colors, ids;
+enum {
+    MAX_NBAGS = 3
 };
 
+// tag::struct[]
 struct DFluPack {
     DMap map;
-    dBags dpp, dii, dcc;
-    hBags hpp, hii, hcc;
+    dBags dbags[MAX_NBAGS], *dpp, *dii, *dcc;
+    hBags hbags[MAX_NBAGS], *hpp, *hii, *hcc;
+    int nbags;
     int nhalo; /* number of sent particles */
     int3 L; /* subdomain size */
-    Opt opt;
+    CommBuffer *hbuf;
 };
 
 struct DFluComm {
-    Comm *pp, *ii, *cc;
-    Opt opt;
+    Comm *comm;
 };
 
 struct DFluUnpack {
-    hBags hpp, hii, hcc;
+    hBags hbags[MAX_NBAGS], *hpp, *hii, *hcc;
+    int nbags;
     Particle *ppre;
     int *iire, *ccre;
     int nhalo; /* number of received particles */
     int3 L; /* subdomain size */
-    Opt opt;
+    CommBuffer *hbuf;
 };
 // end::struct[]

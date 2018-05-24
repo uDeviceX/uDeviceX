@@ -14,7 +14,7 @@ _S_ void ini_flu_exch(const Opt *opt, MPI_Comm comm, int3 L, /**/ FluExch *e) {
 _S_ void ini_flu_distr(const Opt *opt, MPI_Comm comm, int3 L, /**/ FluDistr *d) {
     float maxdensity = ODSTR_FACTOR * opt->params.numdensity;
     UC(dflu_pack_ini(opt->flu.colors, opt->flu.ids, L, maxdensity, /**/ &d->p));
-    UC(dflu_comm_ini(opt->flu.colors, opt->flu.ids, comm, /**/ &d->c));
+    UC(dflu_comm_ini(comm, /**/ &d->c));
     UC(dflu_unpack_ini(opt->flu.colors, opt->flu.ids, L, maxdensity, /**/ &d->u));
     UC(dflu_status_ini(/**/ &d->s));
 }

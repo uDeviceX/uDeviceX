@@ -12,9 +12,9 @@ static void frag_set_buffer(int fid, int nbags, const hBags *hbb, CommBuffer *cb
     for (i = 0; i < nbags; ++i) {
         hb = &hbb[i];
         bs = hb->bsize;
-        c  = hbb->counts[fid];
+        c  = hb->counts[fid];
         sz = c * bs;
-        memcpy(d, hbb->data[fid], sz);
+        memcpy(d, hb->data[fid], sz);
         counts[i] = c;
         d += sz;
         tot_sz += sz;
