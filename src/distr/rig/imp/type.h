@@ -20,7 +20,7 @@ struct DRigPack {
 };
 
 struct DRigComm {
-    Comm *ipp, *ss;
+    Comm *comm;
 };
 
 struct DRigUnpack {

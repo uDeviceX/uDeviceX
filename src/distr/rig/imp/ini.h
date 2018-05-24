@@ -31,8 +31,7 @@ void drig_comm_ini(MPI_Comm cart, /**/ DRigComm **com) {
     DRigComm *c;
     EMALLOC(1, com);
     c = *com;
-    UC(comm_ini(cart, /**/ &c->ipp));
-    UC(comm_ini(cart, /**/ &c->ss));
+    UC(comm_ini(cart, /**/ &c->comm));
 }
 
 void drig_unpack_ini(int3 L, int maxns, int nv, DRigUnpack **unpack) {

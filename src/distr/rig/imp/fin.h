@@ -7,8 +7,7 @@ void drig_pack_fin(DRigPack *p) {
 }
 
 void drig_comm_fin(DRigComm *c) {
-    UC(comm_fin(c->ipp));
-    UC(comm_fin(c->ss));
+    UC(comm_fin(c->comm));
     EFREE(c);
 }
 
