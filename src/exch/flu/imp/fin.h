@@ -6,11 +6,11 @@ void eflu_pack_fin(EFluPack *p) {
         Dfree(p->bii.d[i]);
     }
     
-    UC(comm_bags_fin(PINNED_DEV, NONE, /**/ &p->hpp, &p->dpp));
+    UC(comm_bags_fin(PINNED_DEV, NONE, /**/ p->hpp, p->dpp));
     if (p->opt.colors)
-        UC(comm_bags_fin(PINNED_DEV, NONE, /**/ &p->hcc, &p->dcc));
+        UC(comm_bags_fin(PINNED_DEV, NONE, /**/ p->hcc, p->dcc));
 
-    UC(comm_bags_fin(PINNED_HST, NONE, /**/ &p->hfss, NULL));
+    UC(comm_bags_fin(PINNED_HST, NONE, /**/ p->hfss, NULL));
 
     Dfree(p->counts_dev);
     EFREE(p);

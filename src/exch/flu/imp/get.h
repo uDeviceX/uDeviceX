@@ -2,14 +2,14 @@ void eflu_get_local_frags(const EFluPack *p, /**/ LFrag26 *lfrags) {
     PaArray parraya;    
     
     for (int i = 0; i < 26; ++i) {
-        parray_push_pp((Particle*) p->dpp.data[i], &parraya);
+        parray_push_pp((Particle*) p->dpp->data[i], &parraya);
         if (p->opt.colors)
-            parray_push_cc((int*) p->dcc.data[i], &parraya);
+            parray_push_cc((int*) p->dcc->data[i], &parraya);
 
         lfrags->d[i] = {
             .parray  = parraya,            
             .ii = p->bii.d[i],
-            .n  = p->hpp.counts[i]
+            .n  = p->hpp->counts[i]
         };
     }
 }

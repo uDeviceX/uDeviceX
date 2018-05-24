@@ -9,8 +9,8 @@ void eflu_pack(const PaArray *parray, /**/ EFluPack *p) {
     
     get_cell_num(p->L, /**/ cc.d);
 
-    bag2Sarray(p->dpp, /**/ &fpp);
-    if (parray->colors) bag2Sarray(p->dcc, /**/ &fcc);
+    bag2Sarray(*p->dpp, /**/ &fpp);
+    if (parray->colors) bag2Sarray(*p->dcc, /**/ &fcc);
         
     for (i = 0; i < 26; ++i) {
         nc = cc.d[i];
@@ -49,13 +49,13 @@ void eflu_download_data(EFluPack *p) {
     CC(d::MemcpyAsync(counts, p->counts_dev, sz, D2H));
     dSync(); /* wait for counts memcpy */
 
-    copy(NFRAGS, counts, &p->dpp, /**/ &p->hpp);
+    copy(NFRAGS, counts, p->dpp, /**/ p->hpp);
     if (p->opt.colors)
-        copy(NFRAGS, counts, &p->dcc, /**/ &p->hcc);
+        copy(NFRAGS, counts, p->dcc, /**/ p->hcc);
 
-    memcpy(p->hpp.counts, counts, sz);
+    memcpy(p->hpp->counts, counts, sz);
     if (p->opt.colors)
-        memcpy(p->hcc.counts, counts, sz);
+        memcpy(p->hcc->counts, counts, sz);
 
     dSync(); /* wait for copy */
 }

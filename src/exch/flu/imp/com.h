@@ -6,10 +6,10 @@ void eflu_post_recv(EFluComm *c, EFluUnpack *u) {
 }
 
 void eflu_post_send(EFluPack *p, EFluComm *c) {
-    UC(comm_post_send(&p->hpp, c->pp));
-    UC(comm_post_send(&p->hfss, c->fss));
+    UC(comm_post_send(p->hpp, c->pp));
+    UC(comm_post_send(p->hfss, c->fss));
     if (c->opt.colors)
-        UC(comm_post_send(&p->hcc, c->cc));
+        UC(comm_post_send(p->hcc, c->cc));
 }
 
 void eflu_wait_recv(EFluComm *c, EFluUnpack *u) {

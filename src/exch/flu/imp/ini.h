@@ -1,5 +1,5 @@
 void eflu_pack_ini(bool colors, int3 L, int maxd, EFluPack **pack) {
-    int i, nc, cap[NBAGS], ncs[NBAGS];
+    int i, nbags, nc, cap[NBAGS], ncs[NBAGS];
     EFluPack *p;
 
     EMALLOC(1, pack);
@@ -19,14 +19,23 @@ void eflu_pack_ini(bool colors, int3 L, int maxd, EFluPack **pack) {
         Dalloc(&p->bii.d[i], cap[i]);
     }
     ncs[BULK] = 0;
-    
-    UC(comm_bags_ini(PINNED_DEV, NONE, sizeof(Particle), cap, /**/ &p->hpp, &p->dpp));
-    if (colors)
-        UC(comm_bags_ini(PINNED_DEV, NONE,  sizeof(int), cap, /**/ &p->hcc, &p->dcc));
 
-    UC(comm_bags_ini(PINNED_HST, NONE, sizeof(int), ncs, /**/ &p->hfss, NULL));
+    nbags = 0;
+    p->hpp = &p->hbags[nbags];
+    p->dpp = &p->dbags[nbags++];
+    UC(comm_bags_ini(PINNED_DEV, NONE, sizeof(Particle), cap, /**/ p->hpp, p->dpp));
 
-    memcpy(p->hfss.counts, ncs, sizeof(ncs));
+    if (colors) {
+        p->hcc = &p->hbags[nbags];
+        p->dcc = &p->dbags[nbags++];
+        UC(comm_bags_ini(PINNED_DEV, NONE,  sizeof(int), cap, /**/ p->hcc, p->dcc));
+    }
+
+    p->hfss = &p->hbags[nbags++];
+    UC(comm_bags_ini(PINNED_HST, NONE, sizeof(int), ncs, /**/ p->hfss, NULL));
+    p->nbags = nbags;
+
+    memcpy(p->hfss->counts, ncs, sizeof(ncs));
     
     Dalloc(&p->counts_dev, NFRAGS);
 
