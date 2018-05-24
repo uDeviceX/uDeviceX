@@ -6,4 +6,14 @@
 
 prog=u.matlab
 
-echo $MATLAB
+usg () {
+    msg "$prog [MATLAB OPTIONS]..."
+    msg 'udx matlab wrapper'
+    exit
+}
+
+if test $# -ne 0 && test "$1" = -h
+then usg
+fi
+
+"$MATLAB" -nosplash "$@"
