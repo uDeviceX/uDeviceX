@@ -30,6 +30,8 @@ void drbc_pack_ini(bool ids, int3 L, int maxnc, int nv, DRbcPack **pack) {
         UC(dmap_ini_host(NBAGS, numc, /**/ &p->hmap));
         UC(comm_bags_ini(HST_ONLY, HST_ONLY, sizeof(int), numc, /**/ p->hii, NULL));
     }
+    p->nbags = i;
+    UC(comm_buffer_ini(p->nbags, p->hbags, &p->hbuf));
     p->ids = ids;
 }
 
@@ -64,4 +66,6 @@ void drbc_unpack_ini(bool ids, int3 L, int maxnc, int nv, DRbcUnpack **unpack) {
         u->hii = &u->hbags[i++];
         UC(comm_bags_ini(HST_ONLY, NONE, sizeof(int), numc, /**/ u->hii, NULL));
     }
+    u->nbags = i;
+    UC(comm_buffer_ini(u->nbags, u->hbags, &u->hbuf));
 }

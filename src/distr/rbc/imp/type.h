@@ -9,7 +9,9 @@ struct DRbcPack {
     float3 *minext, *maxext;
     dBags dbags[MAX_NDBAGS], *dpp;
     hBags hbags[MAX_NHBAGS], *hpp, *hii;
-
+    int nbags;
+    CommBuffer *hbuf;
+    
     /* optional: ids */
     bool ids;
     DMap hmap;
@@ -25,7 +27,9 @@ struct DRbcComm {
 
 struct DRbcUnpack {
     hBags hbags[MAX_NHBAGS], *hpp, *hii;
-
+    int nbags;
+    CommBuffer *hbuf;
+    
     /* optional: ids */
     bool ids;
 
