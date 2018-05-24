@@ -1,4 +1,4 @@
-typedef void data_t;
+typedef unsigned char data_t;
 
 enum {
     NFRAGS = 26, /* number of fragments for one halo */
@@ -34,21 +34,33 @@ struct hBags {
 // end::hBags[]
 
 struct Comm;
+struct CommBuffer;
 
 // tag::alloc[]
-int comm_bags_ini(AllocMod fmod, AllocMod bmod, size_t bsize, const int capacity[NBAGS], /**/ hBags *hb, dBags *db);
-int comm_bags_fin(AllocMod fmod, AllocMod bmod, /**/ hBags *hb, dBags *db);
-int comm_ini(MPI_Comm cart, /**/ Comm **c);
-int comm_fin(/**/ Comm *c);
+void comm_bags_ini(AllocMod fmod, AllocMod bmod, size_t bsize, const int capacity[NBAGS], /**/ hBags *hb, dBags *db);
+void comm_bags_fin(AllocMod fmod, AllocMod bmod, /**/ hBags *hb, dBags *db);
+void comm_ini(MPI_Comm cart, /**/ Comm **c);
+void comm_fin(/**/ Comm *c);
 // end::alloc[]
 
-// tag::communication[]
-int comm_post_recv(hBags *b, Comm *c);           // <1>
-int comm_post_send(const hBags *b, Comm *c);     // <2>
+void comm_buffer_ini(int nbags, const hBags *hbb, CommBuffer**);
+void comm_buffer_fin(CommBuffer*);
+void comm_buffer_set(int nbags, const hBags*, CommBuffer*);
+void comm_buffer_get(const CommBuffer*, int nbags, hBags*);
 
-int comm_wait_recv(Comm *c, /**/ hBags *b);      // <3>
-int comm_wait_send(Comm *c);                     // <4>
+// tag::communication[]
+void comm_post_recv(hBags *b, Comm *c);           // <1>
+void comm_post_send(const hBags *b, Comm *c);     // <2>
+
+void comm_wait_recv(Comm *c, /**/ hBags *b);      // <3>
+void comm_wait_send(Comm *c);                     // <4>
 // end::communication[]
+
+void comm_post_recv(CommBuffer *cb, Comm *c);
+void comm_post_send(const CommBuffer *cb, Comm *c);
+
+void comm_wait_recv(Comm *c, /**/ CommBuffer *cb);
+void comm_wait_send(Comm *c);
 
 int    comm_get_number_capacity(int i, const hBags *b);
 size_t comm_get_byte_capacity(int i, const hBags *b);

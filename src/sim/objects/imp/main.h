@@ -135,9 +135,23 @@ static void get_rig_params_adhesion(const Rig *r, const PairParams **prm) {
 }
 
 void objects_get_params_adhesion(const Objects *obj, const PairParams *prms[]) {
-    int i = 0;
-    for (; i < obj->nmbr; ++i) get_mbr_params_adhesion(obj->mbr[i], &prms[i]);
-    for (; i < obj->nrig; ++i) get_rig_params_adhesion(obj->rig[i], &prms[i]);
+    int i, j = 0;
+    for (i = 0; i < obj->nmbr; ++i) get_mbr_params_adhesion(obj->mbr[i], &prms[j++]);
+    for (i = 0; i < obj->nrig; ++i) get_rig_params_adhesion(obj->rig[i], &prms[j++]);
+}
+
+static void get_mbr_params_repulsion(const Mbr *m, const WallRepulsePrm **prm) {
+    *prm = m->wall_rep_prm;
+}
+
+static void get_rig_params_repulsion(const Rig *r, const WallRepulsePrm **prm) {
+    *prm = r->wall_rep_prm;
+}
+
+void objects_get_params_repulsion(const Objects *obj, const WallRepulsePrm *prms[]) {
+    int i, j = 0;
+    for (i = 0; i < obj->nmbr; ++i) get_mbr_params_repulsion(obj->mbr[i], &prms[j++]);
+    for (i = 0; i < obj->nrig; ++i) get_rig_params_repulsion(obj->rig[i], &prms[j++]);
 }
 
 static void restart_mbr(MPI_Comm cart, const char *base, Mbr *m) {

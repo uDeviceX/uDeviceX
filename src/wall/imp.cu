@@ -20,6 +20,8 @@
 #include "utils/kl.h"
 #include "utils/texo.h"
 
+#include "conf/imp.h"
+
 #include "math/rnd/imp.h"
 
 #include "coords/type.h"
@@ -51,3 +53,4 @@ namespace wall_dev {
 #include "imp/strt.h"
 #include "imp/generate.h"
 #include "imp/force.h"
+#include "imp/repulse.h"

@@ -57,6 +57,8 @@ static void fin_mbr(Mbr *m) {
     if (m->mesh_exch) UC(fin_mesh_exch(/**/ m->mesh_exch));
 
     if (m->adhesion) UC(pair_fin(m->adhesion));
+    if (m->wall_rep_prm)
+        UC(wall_repulse_prm_fin(m->wall_rep_prm));
     
     EFREE(m);
 }
@@ -75,6 +77,8 @@ static void fin_rig(Rig *r) {
     if (r->bbdata) UC(fin_bbdata(r->bbdata));
 
     if (r->adhesion) UC(pair_fin(r->adhesion));
+    if (r->wall_rep_prm)
+        UC(wall_repulse_prm_fin(r->wall_rep_prm));
 
     EFREE(r);
 }

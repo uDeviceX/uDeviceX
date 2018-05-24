@@ -22,7 +22,7 @@ the following packages should already be installed:
 2. `./tools/start` -> starts server. do it only once  
 3. `./tools/view` -> to view changes locally  
 4. add/commit/push to udx repo  
-5. `./tools/deploy` -> updates online documentation (ssh key in github account must me set!)  
+5. `./tools/deploy` -> updates online documentation (ssh key in github account must be set!)  
 
 
 ## Adding new files

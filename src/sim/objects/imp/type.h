@@ -58,6 +58,7 @@ struct Mbr {
     Colorer  *colorer;
 
     PairParams *adhesion;
+    WallRepulsePrm *wall_rep_prm;
 };
 
 /* data holder for rigid objects */
@@ -79,6 +80,7 @@ struct Rig {
     BounceBackData *bbdata;
 
     PairParams *adhesion;
+    WallRepulsePrm *wall_rep_prm;
 };
 
 struct Dump {

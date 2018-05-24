@@ -1,4 +1,4 @@
-$B/comm/imp.o: $S/comm/imp/fin.h $S/utils/imp.h $S/inc/conf.h $S/utils/error.h $S/mpi/wrapper.h $S/comm/imp.h $S/utils/cc.h $S/comm/imp/ini.h $S/d/api.h $S/utils/mc.h $B/conf.h $S/comm/imp/main.h $S/comm/imp/type.h $S/frag/imp.h $S/utils/msg.h
+$B/comm/imp.o: $S/comm/imp/fin.h $S/utils/imp.h $S/inc/conf.h $S/utils/error.h $S/mpi/wrapper.h $S/comm/imp.h $S/utils/cc.h $S/comm/imp/ini.h $S/d/api.h $S/utils/mc.h $S/inc/dev.h $B/conf.h $S/comm/imp/main.h $S/comm/imp/type.h $S/comm/imp/buffer.h $S/frag/imp.h $S/utils/msg.h
 $B/conf/imp.o: $S/utils/imp.h $S/utils/error.h $S/conf/imp/set.h $S/conf/imp.h $S/conf/imp/main.h $S/conf/imp/type.h $S/conf/imp/get.h $S/utils/msg.h
 $B/coords/conf.o: $S/utils/imp.h $S/coords/ini.h $S/utils/error.h $S/conf/imp.h
 $B/coords/imp.o: $S/utils/imp.h $S/inc/conf.h $S/coords/ini.h $S/utils/error.h $S/mpi/wrapper.h $S/coords/imp.h $S/utils/mc.h $B/conf.h $S/coords/imp/main.h $S/coords/imp/type.h $S/coords/type.h

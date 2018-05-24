@@ -79,8 +79,8 @@ void wall_force_adhesion_apply(const PairParams *params, const WvelStep *wv, con
 }
 
 
-void wall_force_repulse(Sdf_v sdf_v, long n, const PaArray *pa, const FoArray *fo) {
+void wall_force_repulse(Sdf_v sdf_v, WallRepulsePrm wr, long n, const PaArray *pa, const FoArray *fo) {
     KL(wf_dev::repulse,
        (k_cnf(n)),
-       (n, (const Particle*) pa->pp, sdf_v, (Force*) fo->ff));
+       (wr, n, (const Particle*) pa->pp, sdf_v, (Force*) fo->ff));
 }

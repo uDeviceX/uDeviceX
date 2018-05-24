@@ -65,6 +65,14 @@ static void ini_params(const Config *cfg, const char *name, const char *pair, Pa
     else UC(read_params(cfg, ns, par));    
 }
 
+static void ini_repulsion_params(const Config *cfg, const char *name, WallRepulsePrm **par) {
+    const char *ns;
+    UC(conf_lookup_string_ns(cfg, name, "repulsion", &ns));
+
+    if (same_str(ns, "none")) *par = NULL;
+    else UC(wall_repulse_prm_ini_conf(cfg, ns, par));
+}
+
 static void ini_mbr(const Config *cfg, const OptMbr *opt, MPI_Comm cart, int3 L,
                     bool recolor, /**/ Mbr **membrane) {
     int nv, max_m;
@@ -108,6 +116,7 @@ static void ini_mbr(const Config *cfg, const OptMbr *opt, MPI_Comm cart, int3 L,
     if (recolor) UC(ini_colorer(nv, max_m, /**/ &m->colorer));
 
     UC(ini_params(cfg, m->name, "adhesion", &m->adhesion));
+    UC(ini_repulsion_params(cfg, m->name, &m->wall_rep_prm));
 }
 
 static void ini_rig(const Config *cfg, const OptRig *opt, MPI_Comm cart, int maxp, int3 L, /**/ Rig **rigid) {
@@ -147,6 +156,7 @@ static void ini_rig(const Config *cfg, const OptRig *opt, MPI_Comm cart, int max
     if (opt->bounce) UC(ini_bbdata(r->q.nt, max_m, cart, /**/ &r->bbdata));
 
     UC(ini_params(cfg, r->name, "adhesion", &r->adhesion));
+    UC(ini_repulsion_params(cfg, r->name, &r->wall_rep_prm));
 }
 
 static void ini_dump(long maxp, Dump **dump) {

@@ -89,15 +89,21 @@ void wall_bounce(const Wall *w, const Coords *coords, float dt, PFarrays *aa) {
     }    
 }
 
-void wall_repulse(const Wall *w, PFarrays *aa) {
+void wall_repulse(const Wall *w, const WallRepulsePrm *params[], PFarrays *aa) {
     long n, i, na;
     PaArray p;
     FoArray f;
+    const WallRepulsePrm *wrp;
 
     na = pfarrays_size(aa);
     for (i = 0; i < na; ++i) {
         UC(pfarrays_get(i, aa, &n, &p, &f));
-        if (n) UC(wall_repulse(w->sdf, n, &p, /**/ &f));
+        wrp = params[i];
+
+        if (!n)   continue;
+        if (!wrp) continue;
+
+        UC(wall_repulse(w->sdf, wrp, n, &p, /**/ &f));
     }
 }
 

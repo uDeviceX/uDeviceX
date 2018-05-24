@@ -55,7 +55,7 @@ static void fail_exceed(ExceedData *e) {
         fid, d[X], d[Y], d[Z], cnt, cap);
 }
 
-static void dflu_download0(DFluPack *p) {
+static void download_pp_and_counts(DFluPack *p) {
     size_t sz;
     int *cnt;
     sz = NFRAGS * sizeof(int);
@@ -71,10 +71,10 @@ void dflu_download(DFluPack *p, /**/ DFluStatus *s) {
     ExceedData e;
     int r;
     int *cnt;
-    cnt = p->map.hcounts;    
+    cnt = p->map.hcounts;
     r = check_counts(NFRAGS, cnt, &p->hpp, /**/ &e);
     if (r == OK) {
-        UC(dflu_download0(p));
+        UC(download_pp_and_counts(p));
     }
     else {
         if   (dflu_status_nullp(s)) UC(fail_exceed(&e));

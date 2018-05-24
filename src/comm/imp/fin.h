@@ -30,7 +30,7 @@ static void free_pair(int i, AllocMod mod, /**/ hBags *hb, dBags *db) {
     }
 }
 
-int comm_bags_fin(AllocMod fmod, AllocMod bmod, /**/ hBags *hb, dBags *db) {
+void comm_bags_fin(AllocMod fmod, AllocMod bmod, /**/ hBags *hb, dBags *db) {
     /* fragments */
     for (int i = 0; i < NFRAGS; ++i)
         free_pair(i, fmod, /**/ hb, db);
@@ -38,11 +38,16 @@ int comm_bags_fin(AllocMod fmod, AllocMod bmod, /**/ hBags *hb, dBags *db) {
     /* bulk */
     free_pair(frag_bulk, bmod, /**/ hb, db);
     free_counts(/**/ &hb->counts);
-    return 0;
 }
 
-int comm_fin(/**/ Comm *c) {
+void comm_buffer_fin(CommBuffer *cb) {
+    int i;
+    for (i = 0; i < NFRAGS; ++i)
+        EFREE(cb->buf[i]);
+    EFREE(cb);
+}
+
+void comm_fin(/**/ Comm *c) {
     MC(m::Comm_free(&c->cart));
     EFREE(c);
-    return 0;
 }

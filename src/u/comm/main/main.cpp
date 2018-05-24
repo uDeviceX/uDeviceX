@@ -33,10 +33,14 @@ void fill_bags(hBags *b) {
     }
 }
 
-void comp(const int *a, const int *b, int n) {
-    for (int i = 0; i < n; ++i)
-        if (a[i] != b[i])
-            ERR("%d != %d for i = %d\n", a[i], b[i], i);
+void comp(const int *aa, const int *bb, int n) {
+    int i, a, b;
+    for (i = 0; i < n; ++i) {
+        a = aa[i];
+        b = bb[i];
+        if (a != b)
+            ERR("%d != %d for i = %d\n", a, b, i);
+    }
 }
 
 void compare(const hBags *sb, const hBags *rb) {
@@ -52,14 +56,16 @@ void compare(const hBags *sb, const hBags *rb) {
 }
 
 int main(int argc, char **argv) {
-    hBags sendB, recvB;
+    enum {N = 3};
+    hBags sendB[N], recvB[N];
     Comm *comm;
+    CommBuffer *scommbuf, *rcommbuf;
     int capacity[NBAGS];
     float maxdensity = 26.f;
     int3 L;
     Config *cfg;
     Coords *coords;
-    int rank, size, dims[3];
+    int i, rank, size, dims[3];
     MPI_Comm cart;
     
     m::ini(&argc, &argv);
@@ -79,26 +85,40 @@ int main(int argc, char **argv) {
 
     frag_hst::estimates(L, NBAGS, maxdensity, /**/ capacity);
 
-    UC(comm_bags_ini(HST_ONLY, NONE, sizeof(int), capacity, /**/ &sendB, NULL));
-    UC(comm_bags_ini(HST_ONLY, NONE, sizeof(int), capacity, /**/ &recvB, NULL));
+    for (i = 0; i < N; ++i) {
+        UC(comm_bags_ini(HST_ONLY, NONE, sizeof(int), capacity, /**/ &sendB[i], NULL));
+        UC(comm_bags_ini(HST_ONLY, NONE, sizeof(int), capacity, /**/ &recvB[i], NULL));
+        fill_bags(&sendB[i]);
+    }
+    
     UC(comm_ini(cart, /**/ &comm));
+    UC(comm_buffer_ini(N, sendB, &scommbuf));
+    UC(comm_buffer_ini(N, recvB, &rcommbuf));
 
-    fill_bags(&sendB);
 
-    UC(comm_post_recv(&recvB, comm));
-    UC(comm_post_send(&sendB, comm));
+    UC(comm_buffer_set(N, sendB, scommbuf));
 
-    UC(comm_wait_recv(comm, &recvB));
+    UC(comm_post_recv(rcommbuf, comm));
+    UC(comm_post_send(scommbuf, comm));
+
+    UC(comm_wait_recv(comm, rcommbuf));
     UC(comm_wait_send(comm));
 
-    compare(&sendB, &recvB);
+    UC(comm_buffer_get(rcommbuf, N, recvB));
+
+    for (i = 0; i < N; ++i)
+        compare(&sendB[i], &recvB[i]);
 
     msg_print("Passed");
-    
-    UC(comm_bags_fin(HST_ONLY, NONE, &sendB, NULL));
-    UC(comm_bags_fin(HST_ONLY, NONE, &recvB, NULL));
-    UC(comm_fin(/**/ comm));
 
+    for (i = 0; i < N; ++i) {
+        UC(comm_bags_fin(HST_ONLY, NONE, &sendB[i], NULL));
+        UC(comm_bags_fin(HST_ONLY, NONE, &recvB[i], NULL));
+    }
+    UC(comm_fin(/**/ comm));
+    UC(comm_buffer_fin(scommbuf));
+    UC(comm_buffer_fin(rcommbuf));
+    
     UC(coords_fin(coords));
     UC(conf_fin(cfg));
 
