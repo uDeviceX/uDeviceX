@@ -40,5 +40,5 @@ void dbg_check_pos_soft(const Coords *c, const char *base, const Dbg *dbg, int n
 void dbg_check_vel(float dt, const Coords *c, const char *base, const Dbg *dbg, int n, const Particle *pp);
 void dbg_check_forces(float dt, const Coords *c, const char *base, const Dbg *dbg, int n, const Particle *pp, const Force *ff);
 void dbg_check_colors(const Coords *c, const Dbg *dbg, int n, const int *cc);
-void dbg_check_clist(const Coords *c, const Dbg *dbg, int3 L, const int *starts, const int *counts, int n, const Particle *pp);
+void dbg_check_clist(const Coords *c, const Dbg *dbg, int3 L, const int *starts, const int *counts, const Particle *pp);
 // end::int[]
