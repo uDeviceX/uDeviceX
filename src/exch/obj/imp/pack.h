@@ -23,7 +23,7 @@ void eobj_pack(int nw, const PaWrap *ww, /**/ EObjPack *p) {
 
 void eobj_download(int nw, EObjPack *p) {
     if (!nw) return;
-    UC(emap_download_tot_counts(nw, NFRAGS, p->map, /**/ p->hpp->counts));
+    UC(emap_download_all_counts(nw, NFRAGS, p->map, /**/ p->hpp->counts, (int**) p->hcc->data));
 }
 
 static void clear_forces(int nfrags, /**/ EObjPackF *p) {

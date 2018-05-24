@@ -1,17 +1,17 @@
 /*
 pp: particles
-ss: starts (object-wise)
+cc: counts of object types
 */
 
 enum {
-    ID_PP, ID_SS,
+    ID_PP, ID_CC,
     MAX_NBAGS
 };
 
 struct EObjPack {
     EMap map;
     dBags dpp;
-    hBags hbags[MAX_NBAGS], *hpp, *hss;
+    hBags hbags[MAX_NBAGS], *hpp, *hcc;
 
     int3 L; /* subdomain size */
 };
@@ -22,7 +22,7 @@ struct EObjComm {
 
 struct EObjUnpack {
     dBags dpp;
-    hBags hbags[MAX_NBAGS], *hpp, *hss;
+    hBags hbags[MAX_NBAGS], *hpp, *hcc;
 
     int3 L; /* subdomain size */
 };

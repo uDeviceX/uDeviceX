@@ -19,32 +19,32 @@ static void fill(int val, int n, int *a) {
     for (int i = 0; i < n; ++i) a[i] = val;
 }
 
-static void get_ss_cap(int nw, int nfrags, int *cap) {
+static void get_cc_cap(int nw, int nfrags, int *cap) {
     fill(nw, nfrags, cap);
 }
 
-static void set_ss_counts(int nw, int nfrags, hBags *ss) {
+static void set_cc_counts(int nw, int nfrags, hBags *ss) {
     fill(nw, nfrags, ss->counts);
 }
 
 void eobj_pack_ini(int3 L, int nw, int maxd, int maxpsolid, EObjPack **pack) {
-    int cap[NFRAGS], sscap[NFRAGS];
+    int cap[NFRAGS], cccap[NFRAGS];
     EObjPack * p;
     EMALLOC(1, pack);
     p = *pack;
 
     p->L = L;
     estimates(L, NFRAGS, maxd, maxpsolid, /**/ cap);
-    get_ss_cap(nw, NFRAGS, sscap);
+    get_cc_cap(nw, NFRAGS, cccap);
 
     UC(emap_ini(nw, NFRAGS, cap, /**/ &p->map));
 
-    p->hpp = &p->hbags[ID_PP];  p->hss = &p->hbags[ID_SS];
+    p->hpp = &p->hbags[ID_PP];  p->hcc = &p->hbags[ID_CC];
     
     UC(comm_bags_ini(PINNED,   NONE, sizeof(Particle), cap, /**/ p->hpp, &p->dpp));
-    UC(comm_bags_ini(HST_ONLY, NONE, sizeof(int),    sscap, /**/ p->hss, NULL));
+    UC(comm_bags_ini(HST_ONLY, NONE, sizeof(int),    cccap, /**/ p->hcc, NULL));
 
-    set_ss_counts(nw, NFRAGS, p->hss);
+    set_cc_counts(nw, NFRAGS, p->hcc);
 }
 
 void eobj_comm_ini(MPI_Comm cart, /**/ EObjComm **com) {
@@ -56,7 +56,7 @@ void eobj_comm_ini(MPI_Comm cart, /**/ EObjComm **com) {
 }
 
 void eobj_unpack_ini(int3 L, int nw, int maxd, int maxpsolid, EObjUnpack **unpack) {
-    int cap[NFRAGS], sscap[NFRAGS];
+    int cap[NFRAGS], cccap[NFRAGS];
     EObjUnpack *u;
 
     EMALLOC(1, unpack);
@@ -64,14 +64,14 @@ void eobj_unpack_ini(int3 L, int nw, int maxd, int maxpsolid, EObjUnpack **unpac
 
     u->L = L;
     estimates(L, NFRAGS, maxd, maxpsolid, /**/ cap);
-    get_ss_cap(nw, NFRAGS, sscap);
+    get_cc_cap(nw, NFRAGS, cccap);
 
-    u->hpp = &u->hbags[ID_PP];  u->hss = &u->hbags[ID_SS];
+    u->hpp = &u->hbags[ID_PP];  u->hcc = &u->hbags[ID_CC];
 
     UC(comm_bags_ini(PINNED_DEV, NONE, sizeof(Particle), cap, /**/ u->hpp, &u->dpp));
-    UC(comm_bags_ini(HST_ONLY  , NONE, sizeof(int),    sscap, /**/ u->hss, NULL));
+    UC(comm_bags_ini(HST_ONLY  , NONE, sizeof(int),    cccap, /**/ u->hcc, NULL));
 
-    set_ss_counts(nw, NFRAGS, u->hss);
+    set_cc_counts(nw, NFRAGS, u->hcc);
 }
 
 void eobj_packf_ini(int3 L, int maxd, int maxpsolid, EObjPackF **pack) {
