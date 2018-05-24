@@ -1,10 +1,12 @@
 /* object exchanger for forces */
 struct ObjExch {
     EObjPack *p;
-    EObjUnpack *u;
-    EObjPackF *pf;
-    EObjUnpackF *uf;
     EObjComm *c;
+    EObjUnpack *u;
+
+    EObjPackF *pf;
+    EObjCommF *cf;
+    EObjUnpackF *uf;    
 };
 
 /* helper for computing object interactions */

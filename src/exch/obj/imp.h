@@ -53,10 +53,10 @@ void eobj_download_ff(EObjPackF *p);
 // end::packback[]
 
 // tag::comback[]
-void eobj_post_recv_ff(EObjComm *c, EObjUnpackF *u);
-void eobj_post_send_ff(EObjPackF *p, EObjComm *c);
-void eobj_wait_recv_ff(EObjComm *c, EObjUnpackF *u);
-void eobj_wait_send_ff(EObjComm *c);
+void eobj_post_recv_ff(EObjCommF *c, EObjUnpackF *u);
+void eobj_post_send_ff(EObjPackF *p, EObjCommF *c);
+void eobj_wait_recv_ff(EObjCommF *c, EObjUnpackF *u);
+void eobj_wait_send_ff(EObjCommF *c);
 // end::comback[]
 
 // tag::unpackback[]

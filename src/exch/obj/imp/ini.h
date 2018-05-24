@@ -34,7 +34,6 @@ void eobj_comm_ini(MPI_Comm cart, /**/ EObjComm **com) {
     c = *com;
     
     UC(comm_ini(cart, /**/ &c->pp));
-    UC(comm_ini(cart, /**/ &c->ff));
 }
 
 void eobj_unpack_ini(int3 L, int maxd, int maxpsolid, EObjUnpack **unpack) {
