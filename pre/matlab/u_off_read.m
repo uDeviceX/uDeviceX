@@ -21,7 +21,6 @@ function [tri, xx, yy, zz] = u_off_read(path)
   if cnt != nv * 3
     error('fail to read xyz in "%s"', path)
   endif
-
   xx = D(X, :); yy = D(Y, :); zz = D(Z, :);
 
   [D, cnt]  = fscanf(f,'%d %d %d %d\n', [4, nt]);
