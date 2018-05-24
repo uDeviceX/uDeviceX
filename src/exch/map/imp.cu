@@ -75,11 +75,10 @@ void emap_scan(int nw, int nfrags, /**/ EMap map) {
 
 void emap_download_tot_counts(int nw, int nfrags, EMap map, /**/ int counts[]) {
     int *src, stride;
-    size_t sz = nfrags * sizeof(int);
     UC(check_frags(nfrags));
     stride = get_stride(nfrags);
     src = map.offsets + nw * stride;
-    CC(d::Memcpy(counts, src, sz, D2H));
+    cD2H(counts, src, nfrags);
 }
 
 static void transpose(int nw, int stride, int nfrags, const int *buf, /**/ int *counts[]) {
