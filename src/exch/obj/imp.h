@@ -34,6 +34,7 @@ void eobj_wait_send(EObjComm *c);
 
 // tag::get[]
 int26 eobj_get_counts(EObjUnpack *u); // <1>
+void  eobj_get_all_counts(int nw, EObjUnpack *u, int *all_counts);
 Pap26 eobj_upload_shift(EObjUnpack *u); // <2>
 Fop26 eobj_reini_ff(const EObjUnpack *u, EObjPackF *pf); // <3>
 // end::get[]

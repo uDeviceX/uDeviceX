@@ -4,6 +4,16 @@ int26 eobj_get_counts(EObjUnpack *u) {
     return cc;
 }
 
+void  eobj_get_all_counts(int nw, EObjUnpack *u, int *all_counts) {
+    hBags *cc = u->hcc;
+    int i, j, *ci;
+    for (i = 0; i < NFRAGS; ++i) {
+        ci = (int*) cc->data[i];
+        for (j = 0; j < nw; ++j)
+            all_counts[j * NFRAGS + i] = ci[j];
+    }
+}
+
 static void upload(int nfrags, const hBags *h, /**/ dBags *d) {
     int i, c;
     size_t sz;

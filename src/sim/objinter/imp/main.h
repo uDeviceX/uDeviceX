@@ -38,6 +38,7 @@ void obj_inter_forces(ObjInter *oi, PFarray *flu, int *flu_start, PFarrays *obj)
     FoWrap fw[MAX_OBJ_TYPES];
     int nw = 0;
     ObjExch *e = oi->e;
+    int all_counts[26*MAX_OBJ_TYPES] = {0};
 
     if (!has_work(oi)) return;
     
@@ -65,6 +66,9 @@ void obj_inter_forces(ObjInter *oi, PFarray *flu, int *flu_start, PFarrays *obj)
     UC(eobj_wait_send(e->c));
     UC(eobj_wait_recv(e->c, e->u));
 
+    // TODO use this 
+    eobj_get_all_counts(nw, e->u, /**/ all_counts);
+    // TODO instead of this
     int26 hcc = eobj_get_counts(e->u);
     Pap26 hpp = eobj_upload_shift(e->u);
     Fop26 hff = eobj_reini_ff(e->u, e->pf);
