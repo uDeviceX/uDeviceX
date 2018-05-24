@@ -22,8 +22,7 @@ struct DFluPack {
 };
 
 struct DFluComm {
-    Comm *pp, *ii, *cc;
-    Opt opt;
+    Comm *comm;
 };
 
 struct DFluUnpack {

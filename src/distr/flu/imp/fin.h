@@ -10,11 +10,7 @@ void dflu_pack_fin(DFluPack *p) {
 }
 
 void dflu_comm_fin(DFluComm *c) {
-    UC(comm_fin(c->pp));
-
-    if (c->opt.ids)    UC(comm_fin(c->ii));
-    if (c->opt.colors) UC(comm_fin(c->cc));
-
+    UC(comm_fin(c->comm));
     EFREE(c);
 }
 

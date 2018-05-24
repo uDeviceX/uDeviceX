@@ -52,12 +52,7 @@ void dflu_comm_ini(bool colors, bool ids, MPI_Comm cart, /**/ DFluComm **com) {
     DFluComm *c;
     EMALLOC(1, com);
     c = *com;
-    UC(comm_ini(cart, /**/ &c->pp));
-    if (ids)    UC(comm_ini(cart, /**/ &c->ii));
-    if (colors) UC(comm_ini(cart, /**/ &c->cc));
-
-    c->opt.colors = colors;
-    c->opt.ids = ids;
+    UC(comm_ini(cart, /**/ &c->comm));
 }
 
 static int nhalocells(int3 L) {
