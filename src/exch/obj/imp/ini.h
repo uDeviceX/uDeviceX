@@ -15,20 +15,36 @@ static void estimates(int3 L, int nfrags, int maxd, int maxpsolid, int *cap) {
     }
 }
 
+static void fill(int val, int n, int *a) {
+    for (int i = 0; i < n; ++i) a[i] = val;
+}
+
+static void get_ss_cap(int nw, int nfrags, int *cap) {
+    fill(nw, nfrags, cap);
+}
+
+static void set_ss_counts(int nw, int nfrags, hBags *ss) {
+    fill(nw, nfrags, ss->counts);
+}
+
 void eobj_pack_ini(int3 L, int nw, int maxd, int maxpsolid, EObjPack **pack) {
-    int cap[NFRAGS];
+    int cap[NFRAGS], sscap[NFRAGS];
     EObjPack * p;
     EMALLOC(1, pack);
     p = *pack;
 
     p->L = L;
     estimates(L, NFRAGS, maxd, maxpsolid, /**/ cap);
+    get_ss_cap(nw, NFRAGS, sscap);
 
     UC(emap_ini(nw, NFRAGS, cap, /**/ &p->map));
 
     p->hpp = &p->hbags[ID_PP];  p->hss = &p->hbags[ID_SS];
     
-    UC(comm_bags_ini(PINNED, NONE, sizeof(Particle), cap, /**/ p->hpp, &p->dpp));
+    UC(comm_bags_ini(PINNED,   NONE, sizeof(Particle), cap, /**/ p->hpp, &p->dpp));
+    UC(comm_bags_ini(HST_ONLY, NONE, sizeof(int),    sscap, /**/ p->hss, NULL));
+
+    set_ss_counts(nw, NFRAGS, p->hss);
 }
 
 void eobj_comm_ini(MPI_Comm cart, /**/ EObjComm **com) {
@@ -39,8 +55,8 @@ void eobj_comm_ini(MPI_Comm cart, /**/ EObjComm **com) {
     UC(comm_ini(cart, /**/ &c->comm));
 }
 
-void eobj_unpack_ini(int3 L, int maxd, int maxpsolid, EObjUnpack **unpack) {
-    int cap[NFRAGS];
+void eobj_unpack_ini(int3 L, int nw, int maxd, int maxpsolid, EObjUnpack **unpack) {
+    int cap[NFRAGS], sscap[NFRAGS];
     EObjUnpack *u;
 
     EMALLOC(1, unpack);
@@ -48,10 +64,14 @@ void eobj_unpack_ini(int3 L, int maxd, int maxpsolid, EObjUnpack **unpack) {
 
     u->L = L;
     estimates(L, NFRAGS, maxd, maxpsolid, /**/ cap);
+    get_ss_cap(nw, NFRAGS, sscap);
 
     u->hpp = &u->hbags[ID_PP];  u->hss = &u->hbags[ID_SS];
 
     UC(comm_bags_ini(PINNED_DEV, NONE, sizeof(Particle), cap, /**/ u->hpp, &u->dpp));
+    UC(comm_bags_ini(HST_ONLY  , NONE, sizeof(int),    sscap, /**/ u->hss, NULL));
+
+    set_ss_counts(nw, NFRAGS, u->hss);
 }
 
 void eobj_packf_ini(int3 L, int maxd, int maxpsolid, EObjPackF **pack) {

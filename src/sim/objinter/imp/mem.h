@@ -5,8 +5,8 @@ static void ini_obj_exch(MPI_Comm comm, int3 L, /**/ ObjExch **oe) {
     e = *oe;
 
     UC(eobj_pack_ini   (L, MAX_OBJ_TYPES, MAX_OBJ_DENSITY, maxpsolid, /**/ &e->p));
-    UC(eobj_comm_ini   (comm,                          /**/ &e->c));
-    UC(eobj_unpack_ini (L, MAX_OBJ_DENSITY, maxpsolid, /**/ &e->u));
+    UC(eobj_comm_ini   (comm,                                         /**/ &e->c));
+    UC(eobj_unpack_ini (L, MAX_OBJ_TYPES, MAX_OBJ_DENSITY, maxpsolid, /**/ &e->u));
 
     UC(eobj_packf_ini  (L, MAX_OBJ_DENSITY, maxpsolid, /**/ &e->pf));
     UC(eobj_commf_ini  (comm,                          /**/ &e->cf));
