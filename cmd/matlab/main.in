@@ -5,3 +5,5 @@
 : ${MATLAB=%MATLAB%}
 
 prog=u.matlab
+
+echo $MATLAB
