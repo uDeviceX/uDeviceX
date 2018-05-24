@@ -39,6 +39,10 @@ _S_ void ini_denoutflow(const Coords *c, int maxp, const Config *cfg, DCont **d,
     UC(den_map_set_conf(cfg, c, *m));
 }
 
+_S_ void ini_tracers(const int maxp) {
+    UC(tracers_ini(maxp));
+}
+
 _S_ void ini_inflow(const Coords *coords, int3 L, const Config *cfg, Inflow **i) {
     /* number of cells */
     int2 nc;
@@ -68,6 +72,17 @@ _S_ void ini_flu(const Config *cfg, const Opt *opt, MPI_Comm cart, int maxp, /**
     }
 
     UC(conf_lookup_float(cfg, "flu.mass", &f->mass));
+}
+
+_S_ void read_tracer_opt(const Config *c, Tracers *o, Opt *opt) {
+    int b;
+    UC(conf_lookup_bool(c, "tracers.active", &b));
+    o->active = b;
+    opt->tracers = b;
+    UC(conf_lookup_int(c, "tracers.freq", &o->freq));
+    UC(conf_lookup_float(c, "tracers.radius", &o->R));
+    UC(conf_lookup_float(c, "tracers.createprob", &o->iniP));
+    UC(conf_lookup_float(c, "tracers.deleteprob", &o->delP));
 }
 
 _S_ void read_recolor_opt(const Config *c, Recolorer *o) {
@@ -149,7 +164,8 @@ _S_ void ini_common(const Config *cfg, int3 L, MPI_Comm cart, /**/ Sim *s) {
 _S_ void ini_optional_features(const Config *cfg, const Opt *opt, Sim *s) {
     int maxp = opt_estimate_maxp(opt);
     int3 L = opt->params.L;
-    
+
+    if (opt->tracers)    UC(ini_tracers(maxp));
     if (opt->vcon)       UC(ini_vcon(s->cart, L, cfg, /**/ &s->vcon));
     if (opt->outflow)    UC(ini_outflow(s->coords, maxp, cfg, /**/ &s->outflow));
     if (opt->inflow)     UC(ini_inflow (s->coords, L, cfg,  /**/ &s->inflow ));
@@ -169,6 +185,7 @@ void sim_ini(const Config *cfg, MPI_Comm cart, /**/ Sim **sim) {
 
     UC(opt_read(cfg, opt));
     UC(read_recolor_opt(cfg, &s->recolorer));
+    UC(read_tracer_opt(cfg, &s->tracers, opt));
     UC(opt_check(opt));
     L = opt->params.L;
     

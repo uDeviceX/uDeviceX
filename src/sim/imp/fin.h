@@ -67,6 +67,7 @@ _S_ void fin_time(Time *t) {
 }
 
 _S_ void fin_optional_features(const Opt *opt, Sim *s) {
+    if (opt->tracers)    UC(tracers_fin());
     if (opt->vcon)       UC(fin_vcon(/**/ &s->vcon));
     if (opt->outflow)    UC(fin_outflow(/**/ s->outflow));
     if (opt->inflow)     UC(fin_inflow (/**/ s->inflow ));

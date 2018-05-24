@@ -64,7 +64,7 @@
 #include "control/outflow/imp.h"
 #include "control/inflow/imp.h"
 
-#include "color/flux.h"
+#include "color/imp.h"
 
 #include "objects/imp.h"
 #include "objinter/imp.h"

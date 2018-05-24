@@ -8,7 +8,7 @@ $B/algo/scan/imp.o: $S/algo/scan/imp.cu; $N -I$S/algo/scan -I$S/.
 $B/algo/vectors/imp.o: $S/algo/vectors/imp.cpp; $X -I$S/algo/vectors -I$S/.
 $B/clist/imp.o: $S/clist/imp.cu; $N -I$S/clist -I$S/.
 $B/cnt/imp.o: $S/cnt/imp.cu; $N -I$S/cnt -I$S/.
-$B/color/flux.o: $S/color/flux.cu; $N -I$S/color -I$S/.
+$B/color/imp.o: $S/color/imp.cu; $N -I$S/color -I$S/.
 $B/comm/imp.o: $S/comm/imp.cpp; $X -I$S/comm -I$S/.
 $B/conf/imp.o: $S/conf/imp.cpp; $X -I$S/conf -I$S/.
 $B/control/den/conf.o: $S/control/den/conf.cpp; $X -I$S/control/den -I$S/.

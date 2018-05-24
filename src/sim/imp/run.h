@@ -52,6 +52,7 @@ _S_ void step(TimeLine *time, float dt, float tstart, Sim *s) {
         if (opt->outflow)    UC(mark_outflow(flu, /**/ s->outflow));
         if (opt->denoutflow) UC(mark_outflowden(s->opt.params, flu, s->mapoutflow, /**/ s->denoutflow));
         if (opt->flu.colors) UC(recolor_flux(s->coords, &s->recolorer, flu));
+        if (opt->flu.colors) UC(recolor_tracers(s->coords, &s->tracers, it, flu));
     }
 }
 
