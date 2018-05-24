@@ -1,9 +1,10 @@
-* [2/4] Single message communicator
+* [3/4] Single message communicator
 ** DONE comm buffer containing all hbags
    CLOSED: [2018-05-23 Wed 18:15]
 ** DONE link to comm 
    CLOSED: [2018-05-23 Wed 18:27]
-** TODO update unit
+** DONE update unit
+   CLOSED: [2018-05-24 Thu 09:11]
 ** TODO udx uses new communicator
 * [0/5] fsi and cnt params aware
 fsi and cnt should use different pair parameters depending on object type
