@@ -1,7 +1,7 @@
 static int unpack_bulk_pp(const DRbcPack *p, /**/ Particle *pp) {
-    int nc = p->hpp.counts[frag_bulk];
-    void *src = p->dpp.data[frag_bulk];
-    size_t sz = nc * p->hpp.bsize;
+    int nc = p->hpp->counts[frag_bulk];
+    void *src = p->dpp->data[frag_bulk];
+    size_t sz = nc * p->hpp->bsize;
     
     if (nc)
         CC(d::MemcpyAsync(pp, src, sz, D2D));
@@ -9,8 +9,8 @@ static int unpack_bulk_pp(const DRbcPack *p, /**/ Particle *pp) {
 }
 
 static void unpack_bulk_ii(const DRbcPack *p, /**/ int *ii) {
-    int nc = p->hii.counts[frag_bulk];
-    void *src = p->hii.data[frag_bulk];
+    int nc = p->hii->counts[frag_bulk];
+    void *src = p->hii->data[frag_bulk];
     memcpy(ii, src, nc * sizeof(int));
 }
 
@@ -71,10 +71,10 @@ void drbc_unpack_halo(const DRbcUnpack *u, /**/ RbcQuants *q) {
     nc0 = q->nc;
     nv  = q->nv;
 
-    nc = unpack_halo_pp(u->L, nc0, nv, &u->hpp, /**/ q->pp);
+    nc = unpack_halo_pp(u->L, nc0, nv, u->hpp, /**/ q->pp);
 
     if (u->ids)
-        unpack_halo_ii(nc0, &u->hii, /**/ q->ii);
+        unpack_halo_ii(nc0, u->hii, /**/ q->ii);
 
     q->n = nc * nv;
     q->nc = nc;

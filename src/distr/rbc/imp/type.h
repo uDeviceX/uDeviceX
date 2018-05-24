@@ -7,8 +7,8 @@ enum {
 struct DRbcPack {
     DMap map;
     float3 *minext, *maxext;
-    dBags dbags[MAX_NDBAGS], dpp;
-    hBags hbags[MAX_NHBAGS], hpp, hii;
+    dBags dbags[MAX_NDBAGS], *dpp;
+    hBags hbags[MAX_NHBAGS], *hpp, *hii;
 
     /* optional: ids */
     bool ids;
@@ -24,7 +24,7 @@ struct DRbcComm {
 };
 
 struct DRbcUnpack {
-    hBags hbags[MAX_NHBAGS], hpp, hii;
+    hBags hbags[MAX_NHBAGS], *hpp, *hii;
 
     /* optional: ids */
     bool ids;
