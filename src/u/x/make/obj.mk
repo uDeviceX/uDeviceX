@@ -1,7 +1,7 @@
 O = $B/algo/edg/imp.o $B/algo/force_stat/imp.o $B/algo/kahan_sum/imp.o \
     $B/algo/key_list/imp.o $B/algo/minmax/imp.o $B/algo/scalars/imp.o \
     $B/algo/scan/imp.o $B/algo/vectors/imp.o $B/clist/imp.o $B/cnt/imp.o \
-    $B/color/flux.o $B/comm/imp.o $B/conf/imp.o $B/control/den/conf.o \
+    $B/color/imp.o $B/comm/imp.o $B/conf/imp.o $B/control/den/conf.o \
     $B/control/den/imp.o $B/control/inflow/conf.o $B/control/inflow/imp.o \
     $B/control/outflow/conf.o $B/control/outflow/imp.o $B/control/vel/conf.o \
     $B/control/vel/imp.o $B/coords/conf.o $B/coords/imp.o $B/d/api.o $B/dbg/conf.o \

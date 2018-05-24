@@ -24,12 +24,21 @@ _I_ void log_vcont(long id, const Vcon *c) {
         vcont_log(c->vcont);
 }
 
-/* set colors of particles according to the RBCs */
+/* set colors of particles */
 
 _I_ void recolor_flux(const Coords *c, const Recolorer *opt, Flu *f) {
     int3 L = subdomain(c);
     if (opt->flux_active)
         UC(color_linear_flux(c, L, opt->flux_dir, RED_COLOR, f->q.n, f->q.pp, /**/ f->q.cc));
+}
+
+_I_ void recolor_tracers(const Coords *c, const Tracers *opt, const int it, Flu *f) {
+    bool cond;
+    cond = opt->active && it % opt->freq == 0;
+    if (cond) {
+        UC(  color_tracers(c, RED_COLOR,  opt->R, opt->iniP, f->q.n, f->q.pp, /**/ f->q.cc));
+        UC(decolor_tracers(c, BLUE_COLOR, opt->R, opt->delP, f->q.n, f->q.pp, /**/ f->q.cc));
+    }
 }
 
 
