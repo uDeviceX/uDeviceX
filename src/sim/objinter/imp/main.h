@@ -76,11 +76,11 @@ void obj_inter_forces(ObjInter *oi, PFarray *flu, int *flu_start, PFarrays *obj)
     
     UC(eobj_download_ff(e->pf));
 
-    UC(eobj_post_send_ff(e->pf, e->c));
-    UC(eobj_post_recv_ff(e->c, e->uf));
+    UC(eobj_post_send_ff(e->pf, e->cf));
+    UC(eobj_post_recv_ff(e->cf, e->uf));
 
-    UC(eobj_wait_send_ff(e->c));
-    UC(eobj_wait_recv_ff(e->c, e->uf));
+    UC(eobj_wait_send_ff(e->cf));
+    UC(eobj_wait_recv_ff(e->cf, e->uf));
 
     UC(eobj_unpack_ff(e->uf, e->p, nw, /**/ fw));
 }

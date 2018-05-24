@@ -35,7 +35,7 @@ void drbc_pack_ini(bool ids, int3 L, int maxnc, int nv, DRbcPack **pack) {
     UC(comm_buffer_ini(p->nbags, p->hbags, &p->hbuf));
 }
 
-void drbc_comm_ini(bool ids, MPI_Comm cart, /**/ DRbcComm **com) {
+void drbc_comm_ini(MPI_Comm cart, /**/ DRbcComm **com) {
     DRbcComm *c;
     EMALLOC(1, com);
     c = *com;

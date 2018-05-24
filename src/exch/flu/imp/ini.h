@@ -1,5 +1,5 @@
 void eflu_pack_ini(bool colors, int3 L, int maxd, EFluPack **pack) {
-    int i, nc, cap[NBAGS], ncs[NBAGS];
+    int i, nbags, nc, cap[NBAGS], ncs[NBAGS];
     EFluPack *p;
 
     EMALLOC(1, pack);
@@ -19,35 +19,38 @@ void eflu_pack_ini(bool colors, int3 L, int maxd, EFluPack **pack) {
         Dalloc(&p->bii.d[i], cap[i]);
     }
     ncs[BULK] = 0;
+
+    nbags = 0;
+    p->hpp = &p->hbags[nbags];
+    p->dpp = &p->dbags[nbags++];
+    UC(comm_bags_ini(PINNED_DEV, NONE, sizeof(Particle), cap, /**/ p->hpp, p->dpp));
+
+    p->hcc = NULL; p->dcc = NULL;
+    if (colors) {
+        p->hcc = &p->hbags[nbags];
+        p->dcc = &p->dbags[nbags++];
+        UC(comm_bags_ini(PINNED_DEV, NONE,  sizeof(int), cap, /**/ p->hcc, p->dcc));
+    }
+
+    p->hfss = &p->hbags[nbags++];
+    UC(comm_bags_ini(PINNED_HST, NONE, sizeof(int), ncs, /**/ p->hfss, NULL));
+    p->nbags = nbags;
+    UC(comm_buffer_ini(p->nbags, p->hbags, &p->hbuf));
     
-    UC(comm_bags_ini(PINNED_DEV, NONE, sizeof(Particle), cap, /**/ &p->hpp, &p->dpp));
-    if (colors)
-        UC(comm_bags_ini(PINNED_DEV, NONE,  sizeof(int), cap, /**/ &p->hcc, &p->dcc));
-
-    UC(comm_bags_ini(PINNED_HST, NONE, sizeof(int), ncs, /**/ &p->hfss, NULL));
-
-    memcpy(p->hfss.counts, ncs, sizeof(ncs));
+    memcpy(p->hfss->counts, ncs, sizeof(ncs));
     
     Dalloc(&p->counts_dev, NFRAGS);
-
-    p->opt.colors = colors;
 }
 
-void eflu_comm_ini(bool colors, MPI_Comm cart, /**/ EFluComm **com) {
+void eflu_comm_ini(MPI_Comm cart, /**/ EFluComm **com) {
     EFluComm *c;
     EMALLOC(1, com);
     c = *com;
-    
-    UC(comm_ini(cart, /**/ &c->pp));
-    UC(comm_ini(cart, /**/ &c->fss));
-    if (colors)
-        UC(comm_ini(cart, /**/ &c->cc));
-
-    c->opt.colors = colors;
+    UC(comm_ini(cart, /**/ &c->comm));
 }
 
 void eflu_unpack_ini(bool colors, int3 L, int maxd, EFluUnpack **unpack) {
-    int i, cap[NBAGS], ncs[NBAGS];
+    int nbags, i, cap[NBAGS], ncs[NBAGS];
     EFluUnpack *u;
 
     EMALLOC(1, unpack);
@@ -60,13 +63,25 @@ void eflu_unpack_ini(bool colors, int3 L, int maxd, EFluUnpack **unpack) {
     for (i = 0; i < NFRAGS; ++i)
         ncs[i] = frag_hst::ncell(L, i) + 1;
     ncs[BULK] = 0;
+
+    nbags = 0;
     
-    UC(comm_bags_ini(PINNED_DEV, NONE, sizeof(Particle), cap, /**/ &u->hpp, &u->dpp));
-    if (colors)
-        UC(comm_bags_ini(PINNED_DEV, NONE,  sizeof(int), cap, /**/ &u->hcc, &u->dcc));
+    u->hpp = &u->hbags[nbags];
+    u->dpp = &u->dbags[nbags++];    
+    UC(comm_bags_ini(PINNED_DEV, NONE, sizeof(Particle), cap, /**/ u->hpp, u->dpp));
 
-    UC(comm_bags_ini(PINNED_DEV, NONE, sizeof(int), ncs, /**/ &u->hfss, &u->dfss));
+    u->hcc = NULL; u->dcc = NULL;    
+    if (colors) {
+        u->hcc = &u->hbags[nbags];
+        u->dcc = &u->dbags[nbags++];        
+        UC(comm_bags_ini(PINNED_DEV, NONE,  sizeof(int), cap, /**/ u->hcc, u->dcc));
+    }
 
-    u->opt.colors = colors;
+    u->hfss = &u->hbags[nbags];
+    u->dfss = &u->dbags[nbags++];        
+    UC(comm_bags_ini(PINNED_DEV, NONE, sizeof(int), ncs, /**/ u->hfss, u->dfss));
+
+    u->nbags = nbags;
+    UC(comm_buffer_ini(u->nbags, u->hbags, &u->hbuf));
 }
 

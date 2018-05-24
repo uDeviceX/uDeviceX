@@ -25,24 +25,25 @@ static void fin_map(/**/ MMap *map) {
 }
 
 void emesh_packm_fin(EMeshPackM *p) {
-    UC(comm_bags_fin(PINNED, NONE, /**/ &p->hmm, &p->dmm));
-    UC(comm_bags_fin(PINNED, NONE, /**/ &p->hii, &p->dii));
+    UC(comm_bags_fin(PINNED, NONE, /**/ p->hmm, p->dmm));
+    UC(comm_bags_fin(PINNED, NONE, /**/ p->hii, p->dii));
 
     for (int i = 0; i < NFRAGS; ++i)
         UC(fin_map(&p->maps[i]));
 
     CC(d::FreeHost(p->cchst));
+    UC(comm_buffer_fin(p->hbuf));
     EFREE(p);
 }
 
 void emesh_commm_fin(EMeshCommM *c) {
-    UC(comm_fin(c->mm));
-    UC(comm_fin(c->ii));
+    UC(comm_fin(c->comm));
     EFREE(c);
 }
 
 void emesh_unpackm_fin(EMeshUnpackM *u) {
-    UC(comm_bags_fin(PINNED_DEV, NONE, /**/ &u->hmm, &u->dmm));
-    UC(comm_bags_fin(PINNED_DEV, NONE, /**/ &u->hii, &u->dii));
+    UC(comm_bags_fin(PINNED_DEV, NONE, /**/ u->hmm, u->dmm));
+    UC(comm_bags_fin(PINNED_DEV, NONE, /**/ u->hii, u->dii));
+    UC(comm_buffer_fin(u->hbuf));
     EFREE(u);
 }

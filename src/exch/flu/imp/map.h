@@ -22,7 +22,7 @@ static void download_cell_starts(int3 L, intp26 src, /**/ intp26 dst) {
 
 void eflu_download_cell_starts(/**/ EFluPack *p) {
     intp26 fss_hst;
-    bag2Sarray(p->hfss, /**/ &fss_hst);
+    bag2Sarray(*p->hfss, /**/ &fss_hst);
     download_cell_starts(p->L, p->fss, /**/ fss_hst);
     /* size of the messages is fixed throughout the whole simulation */
     /* sizes are frag_ncell(fid) + 1 */

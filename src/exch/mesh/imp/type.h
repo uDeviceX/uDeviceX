@@ -24,20 +24,29 @@ struct MMap { /* map for compression of Momentum (support structure only) */
     int *cc, *ss, *subids;
 };
 
+enum {
+    ID_MM, ID_II,
+    MAX_NBAGS
+};
+
 struct EMeshPackM {
     MMap maps[NFRAGS];
     int *cchst, *ccdev; /* helper to collect counts */
-    dBags dmm, dii;
-    hBags hmm, hii;
+    dBags dbags[MAX_NBAGS], *dmm, *dii;
+    hBags hbags[MAX_NBAGS], *hmm, *hii;
+    int nbags;
+    CommBuffer *hbuf;
 };
 
 struct EMeshCommM {
-    Comm *mm, *ii;
+    Comm *comm;
 };
 
 struct EMeshUnpackM {
-    dBags dmm, dii;
-    hBags hmm, hii;
+    dBags dbags[MAX_NBAGS], *dmm, *dii;
+    hBags hbags[MAX_NBAGS], *hmm, *hii;
+    int nbags;
+    CommBuffer *hbuf;
 };
 
 typedef Sarray<MMap, 26> MMap26;

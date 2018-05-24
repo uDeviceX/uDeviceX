@@ -1,14 +1,8 @@
-* [3/4] Single message communicator
-** DONE comm buffer containing all hbags
-   CLOSED: [2018-05-23 Wed 18:15]
-** DONE link to comm 
-   CLOSED: [2018-05-23 Wed 18:27]
-** DONE update unit
-   CLOSED: [2018-05-24 Thu 09:11]
-** TODO udx uses new communicator
-* [0/5] fsi and cnt params aware
+* [1/6] fsi and cnt params aware
 fsi and cnt should use different pair parameters depending on object type
-** TODO objects exchanger communicate starts of objects
+** DONE objects exchanger communicate counts per object types
+   CLOSED: [2018-05-24 Thu 16:51]
+** TODO objects exchanger getter for above quants
 ** TODO fsi: different params in bulk
 ** TODO fsi: different params in halo
 ** TODO cnt: different params in bulk
@@ -49,6 +43,15 @@ rig = {
 ** TODO impl basic version
 ** TODO make defaults
 ** TODO adapt tests
+* [4/4] Single message communicator
+** DONE comm buffer containing all hbags
+   CLOSED: [2018-05-23 Wed 18:15]
+** DONE link to comm 
+   CLOSED: [2018-05-23 Wed 18:27]
+** DONE update unit
+   CLOSED: [2018-05-24 Thu 09:11]
+** DONE udx uses new communicator
+   CLOSED: [2018-05-24 Thu 15:22]
 * [4/4] configuration of wall repulsion
 Specify which object is repulsed and with what parameters
 Possible conf in each object with a section repulsion

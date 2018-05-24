@@ -73,11 +73,34 @@ void emap_scan(int nw, int nfrags, /**/ EMap map) {
     }
 }
 
-void emap_download_counts(int nw, int nfrags, EMap map, /**/ int counts[]) {
+void emap_download_tot_counts(int nw, int nfrags, EMap map, /**/ int counts[]) {
     int *src, stride;
-    size_t sz = nfrags * sizeof(int);
     UC(check_frags(nfrags));
     stride = get_stride(nfrags);
     src = map.offsets + nw * stride;
-    CC(d::Memcpy(counts, src, sz, D2H));
+    cD2H(counts, src, nfrags);
+}
+
+static void transpose(int nw, int stride, int nfrags, const int *buf, /**/ int tot_counts[], int *counts[]) {
+    int i, j, c, tc;
+    for (i = 0; i < nfrags; ++i) {
+        tc = 0;
+        for (j = 0; j < nw; ++j) {
+            c = buf[j*stride + i];
+            tc += c;
+            counts[i][j] = c;
+        }
+        tot_counts[i] = tc;
+    }
+}
+
+void emap_download_all_counts(int nw, int nfrags, EMap map, /**/ int tot_counts[], int *counts[]) {
+    int *buf, stride, sz;
+    UC(check_frags(nfrags));
+    stride = get_stride(nfrags);
+    sz = stride * nw;
+    EMALLOC(stride * nw, &buf);
+    cD2H(buf, map.counts, sz);
+    transpose(nw, stride, nfrags, buf, /**/ tot_counts, counts);
+    EFREE(buf);
 }

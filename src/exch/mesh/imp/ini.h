@@ -68,10 +68,16 @@ void emesh_packm_ini(int nt, int max_mesh_num, EMeshPackM **pack) {
 
     for (i = 0; i < NFRAGS; ++i)
         UC(ini_map(nt, cap[i], /**/ &p->maps[i]));
-    
-    UC(comm_bags_ini(PINNED,   NONE, sizeof(Momentum), mcap, /**/ &p->hmm, &p->dmm));
-    UC(comm_bags_ini(PINNED,   NONE, sizeof(int)     , mcap, /**/ &p->hii, &p->dii));
 
+    p->hmm = &p->hbags[ID_MM]; p->hii = &p->hbags[ID_II];
+    p->dmm = &p->dbags[ID_MM]; p->dii = &p->dbags[ID_II];
+    
+    UC(comm_bags_ini(PINNED,   NONE, sizeof(Momentum), mcap, /**/ p->hmm, p->dmm));
+    UC(comm_bags_ini(PINNED,   NONE, sizeof(int)     , mcap, /**/ p->hii, p->dii));
+
+    p->nbags = MAX_NBAGS;
+    UC(comm_buffer_ini(p->nbags, p->hbags, &p->hbuf));
+    
     CC(d::alloc_pinned((void**) &p->cchst, 26 * sizeof(int)));
     CC(d::HostGetDevicePointer((void**) &p->ccdev, p->cchst, 0));
 }
@@ -79,10 +85,8 @@ void emesh_packm_ini(int nt, int max_mesh_num, EMeshPackM **pack) {
 void emesh_commm_ini(MPI_Comm cart, /**/ EMeshCommM **com) {
     EMeshCommM *c;
     EMALLOC(1, com);
-    c = *com;
-    
-    UC(comm_ini(cart, /**/ &c->mm));
-    UC(comm_ini(cart, /**/ &c->ii));
+    c = *com;    
+    UC(comm_ini(cart, /**/ &c->comm));
 }
 
 void emesh_unpackm_ini(int nt, int max_mesh_num, EMeshUnpackM **unpack) {
@@ -94,6 +98,12 @@ void emesh_unpackm_ini(int nt, int max_mesh_num, EMeshUnpackM **unpack) {
     get_capacity(NFRAGS, max_mesh_num, /**/ cap);
     get_mcap(NFRAGS, nt, cap, /**/ mcap);
 
-    UC(comm_bags_ini(PINNED_DEV, NONE, sizeof(Momentum), mcap, /**/ &u->hmm, &u->dmm));
-    UC(comm_bags_ini(PINNED_DEV, NONE, sizeof(int)     , mcap, /**/ &u->hii, &u->dii));
+    u->hmm = &u->hbags[ID_MM]; u->hii = &u->hbags[ID_II];
+    u->dmm = &u->dbags[ID_MM]; u->dii = &u->dbags[ID_II];
+
+    UC(comm_bags_ini(PINNED_DEV, NONE, sizeof(Momentum), mcap, /**/ u->hmm, u->dmm));
+    UC(comm_bags_ini(PINNED_DEV, NONE, sizeof(int)     , mcap, /**/ u->hii, u->dii));
+
+    u->nbags = MAX_NBAGS;
+    UC(comm_buffer_ini(u->nbags, u->hbags, &u->hbuf));
 }

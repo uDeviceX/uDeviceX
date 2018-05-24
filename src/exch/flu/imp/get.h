@@ -2,14 +2,14 @@ void eflu_get_local_frags(const EFluPack *p, /**/ LFrag26 *lfrags) {
     PaArray parraya;    
     
     for (int i = 0; i < 26; ++i) {
-        parray_push_pp((Particle*) p->dpp.data[i], &parraya);
-        if (p->opt.colors)
-            parray_push_cc((int*) p->dcc.data[i], &parraya);
+        parray_push_pp((Particle*) p->dpp->data[i], &parraya);
+        if (p->hcc)
+            parray_push_cc((int*) p->dcc->data[i], &parraya);
 
         lfrags->d[i] = {
             .parray  = parraya,            
             .ii = p->bii.d[i],
-            .n  = p->hpp.counts[i]
+            .n  = p->hpp->counts[i]
         };
     }
 }
@@ -28,13 +28,13 @@ void eflu_get_remote_frags(const EFluUnpack *u, /**/ RFrag26 *rfrags) {
         xcells = dx == 0 ? L.x : 1;
         ycells = dy == 0 ? L.y : 1;
         zcells = dz == 0 ? L.z : 1;
-        parray_push_pp((Particle*) u->dpp.data[i], &parrayb);
-        if (u->opt.colors)
-            parray_push_cc((int*) u->dcc.data[i], &parrayb);
+        parray_push_pp((Particle*) u->dpp->data[i], &parrayb);
+        if (u->hcc)
+            parray_push_cc((int*) u->dcc->data[i], &parrayb);
             
         rfrags->d[i] = {
             .parray = parrayb,
-            .start = (int*) u->dfss.data[i],
+            .start = (int*) u->dfss->data[i],
             .dx = dx,
             .dy = dy,
             .dz = dz,
