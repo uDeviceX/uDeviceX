@@ -6,10 +6,6 @@ enum {
 };
 
 // tag::struct[]
-struct Opt {
-    bool colors, ids;
-};
-
 struct DFluPack {
     DMap map;
     dBags dbags[MAX_NBAGS], *dpp, *dii, *dcc;
