@@ -72,6 +72,7 @@ void dflu_unpack_ini(bool colors, bool ids, int3 L, int maxdensity, DFluUnpack *
     u = *unpack;
 
     u->L = L;
+    maxparts = (int) (nhalocells(L) * maxdensity) + 1;
     
     get_capacity(L, maxdensity, /**/ capacity);
 
@@ -91,7 +92,6 @@ void dflu_unpack_ini(bool colors, bool ids, int3 L, int maxdensity, DFluUnpack *
     u->nbags = i;
     UC(comm_buffer_ini(u->nbags, u->hbags, &u->hbuf));
 
-    maxparts = (int) (nhalocells(L) * maxdensity) + 1;
     Dalloc(&u->ppre, maxparts);
     if (ids)    Dalloc(&u->iire, maxparts);
     if (colors) Dalloc(&u->ccre, maxparts);
