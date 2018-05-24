@@ -10,7 +10,7 @@ void emesh_pack(int nv, const Particle *pp, /**/ EMeshPack *p) {
 
 void emesh_download(EMeshPack *p) {
     int nw = 1;
-    emap_download_counts(nw, NFRAGS, p->map, /**/ p->hpp.counts);
+    emap_download_tot_counts(nw, NFRAGS, p->map, /**/ p->hpp.counts);
 }
 
 static void reini_map(int nm, /**/ MMap *m) {
