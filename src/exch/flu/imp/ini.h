@@ -34,7 +34,8 @@ void eflu_pack_ini(bool colors, int3 L, int maxd, EFluPack **pack) {
     p->hfss = &p->hbags[nbags++];
     UC(comm_bags_ini(PINNED_HST, NONE, sizeof(int), ncs, /**/ p->hfss, NULL));
     p->nbags = nbags;
-
+    UC(comm_buffer_ini(p->nbags, p->hbags, &p->hbuf));
+    
     memcpy(p->hfss->counts, ncs, sizeof(ncs));
     
     Dalloc(&p->counts_dev, NFRAGS);
@@ -87,6 +88,7 @@ void eflu_unpack_ini(bool colors, int3 L, int maxd, EFluUnpack **unpack) {
     UC(comm_bags_ini(PINNED_DEV, NONE, sizeof(int), ncs, /**/ u->hfss, u->dfss));
 
     u->nbags = nbags;
+    UC(comm_buffer_ini(u->nbags, u->hbags, &u->hbuf));
     
     u->opt.colors = colors;
 }

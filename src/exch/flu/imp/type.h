@@ -26,6 +26,7 @@ struct EFluPack {
     dBags dbags[MAX_NDBAGS], *dpp, *dcc;
     hBags hbags[MAX_NHBAGS], *hpp, *hcc, *hfss;
     int nbags;
+    CommBuffer *hbuf;
 
     int3 L; /* subdomain size */
     Opt opt;
@@ -45,6 +46,7 @@ struct EFluUnpack {
     dBags dbags[MAX_NDBAGS], *dpp, *dcc, *dfss;
     hBags hbags[MAX_NHBAGS], *hpp, *hcc, *hfss;
     int nbags;
+    CommBuffer *hbuf;
 
     int3 L; /* subdomain size */
     Opt opt;
