@@ -25,12 +25,7 @@ static void forces_cnt(ObjInter *oi, int nw, PaWrap *pw, FoWrap *fw) {
     cnt_bulk(oi->cntparams, oi->cnt, nw, pw, fw);
 }
 
-static void forces_fsi(ObjInter *oi, int nw, PaWrap *pw, FoWrap *fw) {
-    // TODO configure
-    const PairParams *prms[MAX_OBJ_TYPES];
-    int i;
-    for (i = 0; i < nw; ++i) prms[i] = oi->fsiparams;
-    
+static void forces_fsi(ObjInter *oi, int nw, const PairParams *prms[], PaWrap *pw, FoWrap *fw) {
     fsi_bulk(oi->fsi, nw, prms, pw, fw);
 }
 
@@ -45,10 +40,16 @@ void obj_inter_forces(ObjInter *oi, PFarray *flu, int *flu_start, PFarrays *obj)
     ObjExch *e = oi->e;
     int all_counts[26 * MAX_OBJ_TYPES] = {0};
 
+    // TODO configure
+    const PairParams *fsi_prms[MAX_OBJ_TYPES];
+    int i;
+
     if (!has_work(oi)) return;
     
     UC(fill_wrappers(obj, /**/ &nw, pw, fw));
     if (!nw) return;
+
+    for (i = 0; i < nw; ++i) fsi_prms[i] = oi->fsiparams;
 
     /* Prepare and send the data */
     
@@ -63,22 +64,20 @@ void obj_inter_forces(ObjInter *oi, PFarray *flu, int *flu_start, PFarrays *obj)
     
     if (oi->fsi) UC(bind_solvent(flu, flu_start, oi->fsi));
 
-    if (oi->fsi) UC(forces_fsi(oi, nw, pw, fw));
-    if (oi->cnt) UC(forces_cnt(oi, nw, pw, fw));    
+    if (oi->fsi) UC(forces_fsi(oi, nw, fsi_prms, pw, fw));
+    if (oi->cnt) UC(forces_cnt(oi, nw, pw, fw));
 
     /* recv data and halo interactions  */
 
     UC(eobj_wait_send(e->c));
     UC(eobj_wait_recv(e->c, e->u));
 
-    // TODO use this 
     eobj_get_all_counts(nw, e->u, /**/ all_counts);
-    // TODO instead of this
     int26 hcc = eobj_get_counts(e->u);
     Pap26 hpp = eobj_upload_shift(e->u);
     Fop26 hff = eobj_reini_ff(e->u, e->pf);
 
-    if (oi->fsi) UC(fsi_halo(oi->fsiparams, oi->fsi, hpp, hff, hcc.d));
+    if (oi->fsi) UC(fsi_halo(oi->fsi, nw, fsi_prms, hpp, hff, all_counts));
     if (oi->cnt) UC(cnt_halo(oi->cntparams, oi->cnt, nw, pw, fw, hpp, hff, hcc.d));
 
     /* send the forces back */ 

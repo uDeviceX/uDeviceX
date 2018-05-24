@@ -1,14 +1,15 @@
-* [3/6] fsi and cnt params aware
-fsi and cnt should use different pair parameters depending on object type
+* [4/6] fsi params aware
+fsi should use different pair parameters depending on object type
 ** DONE objects exchanger communicate counts per object types
    CLOSED: [2018-05-24 Thu 16:51]
 ** DONE objects exchanger getter for above quants
    CLOSED: [2018-05-24 Thu 17:12]
 ** DONE fsi: different params in bulk
    CLOSED: [2018-05-24 Thu 17:27]
-** TODO fsi: different params in halo
-** TODO cnt: different params in bulk
-** TODO cnt: different params in halo
+** DONE fsi: different params in halo
+   CLOSED: [2018-05-24 Thu 17:43]
+** TODO fsi: configure per object parameters
+** TODO fsi: use configuration
 * [0/3] general and simpl configuration of pairwise forces
 
 what parameters between different particles
@@ -45,6 +46,7 @@ rig = {
 ** TODO impl basic version
 ** TODO make defaults
 ** TODO adapt tests
+* TODO cnt params aware ?
 * [4/4] Single message communicator
 ** DONE comm buffer containing all hbags
    CLOSED: [2018-05-23 Wed 18:15]
