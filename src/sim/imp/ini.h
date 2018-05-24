@@ -79,10 +79,12 @@ _S_ void read_tracer_opt(const Config *c, Tracers *o, Opt *opt) {
     UC(conf_lookup_bool(c, "tracers.active", &b));
     o->active = b;
     opt->tracers = b;
-    UC(conf_lookup_int(c, "tracers.freq", &o->freq));
-    UC(conf_lookup_float(c, "tracers.radius", &o->R));
-    UC(conf_lookup_float(c, "tracers.createprob", &o->iniP));
-    UC(conf_lookup_float(c, "tracers.deleteprob", &o->delP));
+    if (b) {
+        UC(conf_lookup_int(c, "tracers.freq", &o->freq));
+        UC(conf_lookup_float(c, "tracers.radius", &o->R));
+        UC(conf_lookup_float(c, "tracers.createprob", &o->iniP));
+        UC(conf_lookup_float(c, "tracers.deleteprob", &o->delP));
+    }
 }
 
 _S_ void read_recolor_opt(const Config *c, Recolorer *o) {
