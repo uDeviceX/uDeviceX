@@ -37,8 +37,7 @@ void emesh_packm_fin(EMeshPackM *p) {
 }
 
 void emesh_commm_fin(EMeshCommM *c) {
-    UC(comm_fin(c->mm));
-    UC(comm_fin(c->ii));
+    UC(comm_fin(c->comm));
     EFREE(c);
 }
 

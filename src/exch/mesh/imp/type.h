@@ -39,7 +39,7 @@ struct EMeshPackM {
 };
 
 struct EMeshCommM {
-    Comm *mm, *ii;
+    Comm *comm;
 };
 
 struct EMeshUnpackM {

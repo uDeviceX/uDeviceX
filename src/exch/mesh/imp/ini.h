@@ -85,10 +85,8 @@ void emesh_packm_ini(int nt, int max_mesh_num, EMeshPackM **pack) {
 void emesh_commm_ini(MPI_Comm cart, /**/ EMeshCommM **com) {
     EMeshCommM *c;
     EMALLOC(1, com);
-    c = *com;
-    
-    UC(comm_ini(cart, /**/ &c->mm));
-    UC(comm_ini(cart, /**/ &c->ii));
+    c = *com;    
+    UC(comm_ini(cart, /**/ &c->comm));
 }
 
 void emesh_unpackm_ini(int nt, int max_mesh_num, EMeshUnpackM **unpack) {
