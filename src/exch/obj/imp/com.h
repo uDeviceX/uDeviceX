@@ -1,13 +1,15 @@
 void eobj_post_recv(EObjComm *c, EObjUnpack *u) {
-    UC(comm_post_recv(u->hpp, c->comm));
+    UC(comm_post_recv(u->hbuf, c->comm));
 }
 
 void eobj_post_send(EObjPack *p, EObjComm *c) {
-    UC(comm_post_send(p->hpp, c->comm));
+    UC(comm_buffer_set(p->nbags, p->hbags, p->hbuf));
+    UC(comm_post_send(p->hbuf, c->comm));
 }
 
 void eobj_wait_recv(EObjComm *c, EObjUnpack *u) {
-    UC(comm_wait_recv(c->comm, u->hpp));
+    UC(comm_wait_recv(c->comm, u->hbuf));
+    UC(comm_buffer_get(u->hbuf, u->nbags, u->hbags));
 }
 
 void eobj_wait_send(EObjComm *c) {
