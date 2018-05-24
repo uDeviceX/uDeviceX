@@ -62,6 +62,13 @@ void eobj_packf_ini(int3 L, int maxd, int maxpsolid, EObjPackF **pack) {
     UC(comm_bags_ini(PINNED_DEV, NONE, sizeof(Force), cap, /**/ &p->hff, &p->dff));
 }
 
+void eobj_commf_ini(MPI_Comm cart, /**/ EObjCommF **com) {
+    EObjCommF *c;
+    EMALLOC(1, com);
+    c = *com;
+    UC(comm_ini(cart, /**/ &c->comm));
+}
+
 void eobj_unpackf_ini(int3 L, int maxd, int maxpsolid, EObjUnpackF **unpack) {
     int cap[NFRAGS];
     EObjUnpackF *u;

@@ -22,6 +22,10 @@ struct EObjPackF {
     hBags hff;
 };
 
+struct EObjCommF {
+    Comm *comm;
+};
+
 struct EObjUnpackF {
     hBags hff;
     dBags dff;

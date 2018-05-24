@@ -20,6 +20,11 @@ void eobj_packf_fin(EObjPackF *p) {
     EFREE(p);
 }
 
+void eobj_commf_fin(EObjCommF *c) {
+    UC(comm_fin(c->comm));
+    EFREE(c);
+}
+
 void eobj_unpackf_fin(EObjUnpackF *u) {
     UC(comm_bags_fin(PINNED_DEV, NONE, /**/ &u->hff, &u->dff));
     EFREE(u);
