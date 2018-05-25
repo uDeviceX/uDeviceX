@@ -92,3 +92,8 @@ void obj_inter_forces(ObjInter *oi, PFarray *flu, int *flu_start, PFarrays *obj)
 
     UC(eobj_unpack_ff(e->uf, e->p, nw, /**/ fw));
 }
+
+void obj_inter_update_dpd_prms(float dt, float kBT, ObjInter *oi) {
+    if (oi->cnt) UC(pair_compute_dpd_sigma(kBT, dt, /**/ oi->cntparams));
+    if (oi->fsi) UC(pair_compute_dpd_sigma(kBT, dt, /**/ oi->fsiparams));
+}
