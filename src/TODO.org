@@ -1,6 +1,6 @@
 TODO
 
-* [6/8] fsi params aware
+* [7/8] fsi params aware
 fsi should use different pair parameters depending on object type
 ** DONE objects exchanger communicate counts per object types
    CLOSED: [2018-05-24 Thu 16:51]
@@ -14,7 +14,8 @@ fsi should use different pair parameters depending on object type
    CLOSED: [2018-05-25 Fri 09:43]
 ** DONE fsi: use configuration
    CLOSED: [2018-05-25 Fri 09:53]
-** TODO cleanup from objinter
+** DONE cleanup from objinter
+   CLOSED: [2018-05-25 Fri 09:54]
 ** TODO adapt tests
 * [0/3] general and simpl configuration of pairwise forces
 

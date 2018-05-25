@@ -44,10 +44,8 @@ void obj_inter_ini(const Config *cfg, const Opt *opt, MPI_Comm cart, float dt, i
     if (opt->fsi) UC(fsi_ini(      rank, L, /**/ &o->fsi));
 
     o->cntparams = NULL;
-    o->fsiparams = NULL;
     
     if (opt->cnt) UC(ini_pair_params(cfg, "cnt", kBT, dt, &o->cntparams));
-    if (opt->fsi) UC(ini_pair_params(cfg, "fsi", kBT, dt, &o->fsiparams));                     
 }
 
 
@@ -67,5 +65,4 @@ void obj_inter_fin(ObjInter *o) {
     if (o->cnt) UC(cnt_fin(o->cnt));
     if (o->fsi) UC(fsi_fin(o->fsi));
     if (o->cntparams) UC(pair_fin(o->cntparams));
-    if (o->fsiparams) UC(pair_fin(o->fsiparams));
 }

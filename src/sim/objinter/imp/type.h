@@ -16,6 +16,5 @@ struct ObjInter {
     Fsi     *fsi;
 
     PairParams *cntparams;
-    PairParams *fsiparams;
 };
 

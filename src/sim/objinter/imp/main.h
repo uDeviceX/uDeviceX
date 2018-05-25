@@ -89,5 +89,4 @@ void obj_inter_forces(ObjInter *oi, const PairParams **fsi_prms, PFarray *flu, i
 
 void obj_inter_update_dpd_prms(float dt, float kBT, ObjInter *oi) {
     if (oi->cnt) UC(pair_compute_dpd_sigma(kBT, dt, /**/ oi->cntparams));
-    if (oi->fsi) UC(pair_compute_dpd_sigma(kBT, dt, /**/ oi->fsiparams));
 }
