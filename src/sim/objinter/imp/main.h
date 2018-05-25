@@ -33,23 +33,17 @@ static bool has_work(ObjInter *o) {
     return o->cnt || o->fsi;
 }
 
-void obj_inter_forces(ObjInter *oi, PFarray *flu, int *flu_start, PFarrays *obj) {
+void obj_inter_forces(ObjInter *oi, const PairParams **fsi_prms, PFarray *flu, int *flu_start, PFarrays *obj) {
     PaWrap pw[MAX_OBJ_TYPES];
     FoWrap fw[MAX_OBJ_TYPES];
     int nw = 0;
     ObjExch *e = oi->e;
     int all_counts[26 * MAX_OBJ_TYPES] = {0};
 
-    // TODO configure
-    const PairParams *fsi_prms[MAX_OBJ_TYPES];
-    int i;
-
     if (!has_work(oi)) return;
     
     UC(fill_wrappers(obj, /**/ &nw, pw, fw));
     if (!nw) return;
-
-    for (i = 0; i < nw; ++i) fsi_prms[i] = oi->fsiparams;
 
     /* Prepare and send the data */
     

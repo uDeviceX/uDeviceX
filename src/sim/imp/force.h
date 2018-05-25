@@ -102,12 +102,14 @@ _S_ void forces_dpd(bool stress, Flu *f) {
 _S_ void forces_objects(Sim *sim) {
     PFarrays *obj;
     PFarray flu;
+    const PairParams *fsi_prms[MAX_OBJ_TYPES];
     
     UC(pfarrays_ini(&obj));
     UC(objects_get_particles_all(sim->obj, obj));
+    UC(objects_get_params_fsi(sim->obj, fsi_prms));
     UC(utils_get_pf_flu(sim, &flu));
     
-    UC(obj_inter_forces(sim->objinter, &flu, sim->flu.q.cells.starts, obj));
+    UC(obj_inter_forces(sim->objinter, fsi_prms, &flu, sim->flu.q.cells.starts, obj));
 
     UC(pfarrays_fin(obj));
 }
