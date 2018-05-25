@@ -1,6 +1,6 @@
-= comm
+= comm: generic communicator
 
-generic communicator with "halo".
+generic communicator with neighboring ranks (halo).
 
 == purpose
 Communicate data with the neighboring ranks
@@ -21,13 +21,15 @@ include::{src}/comm/imp.h[tag=hBags]
 include::{src}/comm/imp.h[tag=dBags]
 ----
 
+`CommBuffer`: wrapper to serialize `hBags` data. Hidden from user.
+
 `Comm`: contains the communication related variables. It is hidden
 from user.
 
 == allocation mod
 
 User can choose how the buffers are allocated with the enum type `AllocMod`.
-This is used in the funcion `ini` and `fin`. allocation mode and free mode are assumed to be the same
+This is used in the function `ini` and `fin`. allocation mode and free mode are assumed to be the same
 
 currently supported allocation modes:
 
@@ -49,6 +51,7 @@ include::{src}/comm/imp.h[tag=alloc]
 ** `fmod`: allocation mode for fragment buffers
 ** `bmod`: allocation mode for bulk buffer
 * *comm alloc*: initialize `Comm` structure
+* *comm_buffer*: initialize from bags capacities.
 
 === communication
 
@@ -65,7 +68,36 @@ The interface is as follows:
 ----
 include::{src}/comm/imp.h[tag=communication]
 ----
-<1> call MPI asynchroneous recv and store requests in `s`
-<2> call MPI asynchroneous send and store requests in `s`
+<1> call MPI asynchronous recv and store requests in `s`
+<2> call MPI asynchronous send and store requests in `s`
 <3> wait for recv requests
 <4> wait for send requests
+
+For more than one bags, it is recommanded to use the CommBuffer
+structure to group the messages into one:
+
+[source,cpp]
+----
+include::{src}/comm/imp.h[tag=communication_b]
+----
+
+
+=== getters
+
+Convenient get functions:
+
+[source,cpp]
+----
+include::{src}/comm/imp.h[tag=get]
+----
+<1> get the number of elements (not bytes) that can be stored in the
+    fragment `i` of the bag
+<2> get the number of bytes that can be stored in the
+    fragment `i` of the bag
+
+Convert data from bag to static array:
+
+[source,cpp]
+----
+include::{src}/comm/utils.h[tag=convert]
+----

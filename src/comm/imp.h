@@ -41,10 +41,11 @@ void comm_bags_ini(AllocMod fmod, AllocMod bmod, size_t bsize, const int capacit
 void comm_bags_fin(AllocMod fmod, AllocMod bmod, /**/ hBags *hb, dBags *db);
 void comm_ini(MPI_Comm cart, /**/ Comm **c);
 void comm_fin(/**/ Comm *c);
-// end::alloc[]
-
 void comm_buffer_ini(int nbags, const hBags *hbb, CommBuffer**);
 void comm_buffer_fin(CommBuffer*);
+// end::alloc[]
+
+
 void comm_buffer_set(int nbags, const hBags*, CommBuffer*);
 void comm_buffer_get(const CommBuffer*, int nbags, hBags*);
 
@@ -56,11 +57,16 @@ void comm_wait_recv(Comm *c, /**/ hBags *b);      // <3>
 void comm_wait_send(Comm *c);                     // <4>
 // end::communication[]
 
+// tag::communication_b[]
 void comm_post_recv(CommBuffer *cb, Comm *c);
 void comm_post_send(const CommBuffer *cb, Comm *c);
 
 void comm_wait_recv(Comm *c, /**/ CommBuffer *cb);
 void comm_wait_send(Comm *c);
+// end::communication_b[]
 
-int    comm_get_number_capacity(int i, const hBags *b);
-size_t comm_get_byte_capacity(int i, const hBags *b);
+// tag::get[]
+int    comm_get_number_capacity(int i, const hBags *b); // <1>
+size_t comm_get_byte_capacity(int i, const hBags *b);   // <2>
+// end::get[]
+
