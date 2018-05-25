@@ -33,9 +33,10 @@ rig = {
 
 ...
 ----
-** TODO flu-flu
 ** DONE fsi
    CLOSED: [2018-05-25 Fri 11:02]
+** TODO flu-flu
+** TODO obj-walls use fsi params
 ** TODO make defaults
 ** TODO adapt tests
 * [8/8] fsi params aware
