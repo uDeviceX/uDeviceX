@@ -30,11 +30,13 @@ static void forces_fsi(ObjInter *oi, int nw, const PairParams *prms[], PaWrap *p
 }
 
 static bool has_fsi_work(int nw, const PairParams **prms) {
-    for (int i = 0; i < nw; ++i) if (prms[i]) return true;
+    for (int i = 0; i < nw; ++i)
+        if (prms[i]) return true;
     return false;
 }
-    static bool has_work(const ObjInter *o, int nw, const PairParams **fsi_prms) {
-        return o->cnt || has_fsi_work(nw, fsi_prms);
+
+static bool has_work(const ObjInter *o, int nw, const PairParams **fsi_prms) {
+    return o->cnt || has_fsi_work(nw, fsi_prms);
 }
 
 void obj_inter_forces(ObjInter *oi, const PairParams **fsi_prms, PFarray *flu, int *flu_start, PFarrays *obj) {
@@ -43,11 +45,10 @@ void obj_inter_forces(ObjInter *oi, const PairParams **fsi_prms, PFarray *flu, i
     int nw = 0;
     ObjExch *e = oi->e;
     int all_counts[26 * MAX_OBJ_TYPES] = {0};
-
-    if (!has_work(oi, nw, fsi_prms)) return;
     
     UC(fill_wrappers(obj, /**/ &nw, pw, fw));
     if (!nw) return;
+    if (!has_work(oi, nw, fsi_prms)) return;
 
     /* Prepare and send the data */
     
