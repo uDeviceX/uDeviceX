@@ -11,6 +11,9 @@ _S_ void step(TimeLine *time, float dt, float tstart, Sim *s) {
     Wall *wall = s->wall;
     BForce *bforce = s->bforce;
     const Opt *opt = &s->opt;
+
+    UC(update_params(dt, s));
+    
     if (active_walls(s))
         wall_update_vel(time_line_get_current(time) - tstart, wall);
 

@@ -52,3 +52,14 @@ _I_ void bounce_objects(float dt, Sim *s) {
     utils_get_pf_flu(s, &pfflu);
     UC(objects_bounce(dt, flu->mass, flu->q.cells, &pfflu, s->obj));
 }
+
+_S_ void update_dpd_prms_flu(float dt, float kBT, Sim *s) {
+    UC(pair_compute_dpd_sigma(kBT, dt, /**/ s->flu.params));
+}
+
+_I_ void update_params(float dt, Sim *s) {
+    float kBT;
+    const Opt *opt = &s->opt;
+    kBT = opt->params.kBT;
+    UC(update_dpd_prms_flu(dt, kBT, s));
+}
