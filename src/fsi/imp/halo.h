@@ -46,6 +46,6 @@ void fsi_halo(Fsi *fsi, int nw, const PairParams **prms, Pap26 all_pp, Fop26 all
             ff.d[j] = all_ff.d[j] + start[j];
             start[j] += counts[j];
         }
-        fsi_halo_one_type(prms[i], fsi, pp, ff, counts);
+        if (prms[i]) fsi_halo_one_type(prms[i], fsi, pp, ff, counts);
     }
 }
