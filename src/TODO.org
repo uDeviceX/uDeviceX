@@ -39,6 +39,16 @@ rig = {
 ** TODO obj-walls use fsi params
 ** TODO make defaults
 ** TODO adapt tests
+* [1/4] cell adhesion
+** DONE over simplistic model
+   CLOSED: [2018-05-25 Fri 11:24]
+** TODO separate module with more detailed model
+*** TODO keep track of ligants
+*** TODO configuration
+*** TODO communication
+*** TODO test
+** TODO qualitative test
+** TODO calibrate parameters
 * [8/8] fsi params aware
 fsi should use different pair parameters depending on object type
 ** DONE objects exchanger communicate counts per object types
