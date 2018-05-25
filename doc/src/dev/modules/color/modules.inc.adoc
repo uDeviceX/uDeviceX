@@ -1,7 +1,5 @@
 == modules
 
-:src: ../../../../src
-
 Some utility modules are implemeted in `/src/color`.
 
 === flux
@@ -11,7 +9,7 @@ positive direction x, y or z
 
 [source, cpp]
 ----
-include::{src}/color/flux.h[]
+include::{src}/color/imp.h[]
 ----
 
 * `dir` is the direction x, y or z
