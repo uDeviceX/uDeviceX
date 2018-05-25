@@ -1,5 +1,9 @@
 TODO
 
+* [0/3] update params at every timestep (pass dt)
+** TODO fsi
+** TODO cnt
+** TODO flu
 * [4/6] fsi params aware
 fsi should use different pair parameters depending on object type
 ** DONE objects exchanger communicate counts per object types
