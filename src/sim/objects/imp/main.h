@@ -92,8 +92,8 @@ static void update_dpd_prms_rig(float dt, float kBT, Rig *r) {
 
 void objects_update_dpd_prms(float dt, float kBT, Objects *obj) {
     int i;
-    for (i = 0; i < obj->nmbr; ++i) update_dpd_prms_mbr(kBT, dt, obj->mbr[i]);
-    for (i = 0; i < obj->nrig; ++i) update_dpd_prms_rig(kBT, dt, obj->rig[i]);
+    for (i = 0; i < obj->nmbr; ++i) update_dpd_prms_mbr(dt, kBT, obj->mbr[i]);
+    for (i = 0; i < obj->nrig; ++i) update_dpd_prms_rig(dt, kBT, obj->rig[i]);
 }
 
 static void get_mbr(Mbr *m, PFarrays *pf) {
