@@ -55,8 +55,22 @@ compute interactions with other particles (see <<wall_force, force submodule>>):
 ----
 include::{src}/wall/imp.h[tag=int]
 ----
-<1> compute pairwise interactions between wall particles and input particles
-<2> compute field interaction depending on the sdf and input particles
+<1> compute pairwise interactions between wall particles and input
+    particles
+<2> compute visco elastic interactions with wall particles within
+    cutoff radius 1
+<3> compute field interaction depending on the sdf and input
+    particles
+
+The repulsion parameters are managed via the following interface:
+
+[source,cpp]
+----
+include::{src}/wall/imp.h[tag=repulse]
+----
+<1> allocate and initialise the parameters
+<2> allocate and initialise the parameters from config file
+<3> deallocate the parameters
 
 == submodules
 

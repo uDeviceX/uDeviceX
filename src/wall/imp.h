@@ -43,13 +43,13 @@ void wall_force(const PairParams*, const WvelStep *, const Coords*, const Sdf*, 
                 const WallTicket*, int n, const PaArray*, const FoArray*); // <1>
 
 void wall_force_adhesion(const PairParams*, const WvelStep *, const Coords*, const Sdf*, const WallQuants*,
-                         const WallTicket*, int n, const PaArray*, const FoArray*);
+                         const WallTicket*, int n, const PaArray*, const FoArray*); // <2>
 
-void wall_repulse(const Sdf*, const WallRepulsePrm*, long n, const PaArray*, const FoArray*);     // <2>
+void wall_repulse(const Sdf*, const WallRepulsePrm*, long n, const PaArray*, const FoArray*); // <3>
 // end::int[]
 
-
-void wall_repulse_prm_ini(float lambda, WallRepulsePrm**);
-void wall_repulse_prm_ini_conf(const Config*, const char *ns, WallRepulsePrm**);
-void wall_repulse_prm_fin(WallRepulsePrm*);
-
+// tag::repulse[]
+void wall_repulse_prm_ini(float lambda, WallRepulsePrm**); // <1>
+void wall_repulse_prm_ini_conf(const Config*, const char *ns, WallRepulsePrm**); // <2>
+void wall_repulse_prm_fin(WallRepulsePrm*); // <3>
+// end::repulse[]
