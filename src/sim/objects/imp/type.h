@@ -57,6 +57,7 @@ struct Mbr {
     MeshExch *mesh_exch;
     Colorer  *colorer;
 
+    PairParams *fsi;
     PairParams *adhesion;
     WallRepulsePrm *wall_rep_prm;
 };
@@ -79,6 +80,7 @@ struct Rig {
     MeshExch   *mesh_exch;
     BounceBackData *bbdata;
 
+    PairParams *fsi;
     PairParams *adhesion;
     WallRepulsePrm *wall_rep_prm;
 };
