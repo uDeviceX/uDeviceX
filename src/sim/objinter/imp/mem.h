@@ -41,7 +41,7 @@ void obj_inter_ini(const Config *cfg, const Opt *opt, MPI_Comm cart, float dt, i
     o->fsi = NULL;
     
     if (opt->cnt) UC(cnt_ini(maxp, rank, L, /**/ &o->cnt));
-    if (opt->fsi) UC(fsi_ini(      rank, L, /**/ &o->fsi));
+    UC(fsi_ini(rank, L, /**/ &o->fsi));
 
     o->cntparams = NULL;
     
