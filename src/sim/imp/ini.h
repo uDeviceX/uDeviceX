@@ -1,8 +1,3 @@
-_S_ void set_params(const Config *cfg, float kBT, float dt, const char *name_space, PairParams *p) {
-    UC(pair_set_conf(cfg, name_space, p));
-    UC(pair_compute_dpd_sigma(kBT, dt, /**/ p));
-}
-
 _S_ void ini_flu_exch(const Opt *opt, MPI_Comm comm, int3 L, /**/ FluExch *e) {
     int maxd = HSAFETY_FACTOR * opt->params.numdensity;
 
@@ -102,7 +97,7 @@ _S_ void coords_log(const Coords *c) {
 
 _S_ void ini_pair_params(const Config *cfg, float kBT, float dt, Sim *s) {
     UC(pair_ini(&s->flu.params));
-    UC(set_params(cfg, kBT, dt, "flu", s->flu.params));
+    UC(pair_set_conf(cfg, "flu", s->flu.params));
 }
 
 _S_ int gsize(int L, int r) {
