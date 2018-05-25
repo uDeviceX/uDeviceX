@@ -14,9 +14,11 @@ Allocate, deallocate the structure:
 include::{base}/imp.h[tag=mem]
 ----
 
-Compute interactions:
+Interface:
 
 [source, cpp]
 ----
 include::{base}/imp.h[tag=int]
 ----
+<1> update the dpd (sigma) parameters of contact interactions given a new time step
+<2> compute interactions (contact and fsi), bulk and halo

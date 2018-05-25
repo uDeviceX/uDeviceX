@@ -11,6 +11,6 @@ void obj_inter_fin(ObjInter*);
 // end::mem[]
 
 // tag::int[]
-void obj_inter_update_dpd_prms(float dt, float kBT, ObjInter*);
-void obj_inter_forces(ObjInter*, const PairParams **fsi_prms, PFarray *flu, int *flu_start, PFarrays *obj);
+void obj_inter_update_dpd_prms(float dt, float kBT, ObjInter*); // <1>
+void obj_inter_forces(ObjInter*, const PairParams **fsi_prms, PFarray *flu, int *flu_start, PFarrays *obj); // <2>
 // end::int[]

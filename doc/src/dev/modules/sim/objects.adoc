@@ -41,8 +41,9 @@ include::{base}/imp.h[tag=dump]
 <1> Dump all meshes of objects
 <2> Dump diagnosis. This include the solid objects dumps and the
     membrane centers of mass.
-<3> Dump rigid templates to restart files
-<4> Dump current state to restart files
+<3> Dump rigid particles in bop format
+<4> Dump rigid templates to restart files
+<5> Dump current state to restart files
 
 
 The objects are updated using
@@ -54,6 +55,7 @@ include::{base}/imp.h[tag=upd]
 <1> set all velocities to 0
 <2> advance objects for one timestep
 <3> redistribute objects accross nodes
+<4> update dpd parameters given a new time step
 
 The objects forces can be managed by calling
 
@@ -75,6 +77,12 @@ include::{base}/imp.h[tag=get]
 <1> get particle infos of all objects
 <2> get particle infos of membranes
 <3> retrieve acceleration infos (see <<scheme_time_step>>)
+<4> get the pair parameters for fsi interactions (one per object, NULL
+    for no interactions)
+<5> get the parameters for adhesion interactions with walls (one per object, NULL
+    for no interactions)
+<6> get the parameters for repulsion with walls (one per object, NULL
+    for no interactions)
 
 [source, cpp]
 ----

@@ -22,7 +22,7 @@ void objects_fin(Objects*);
 void objects_clear_vel(Objects*);        // <1>
 void objects_update(float dt, Objects*); // <2>
 void objects_distribute(Objects*);       // <3>
-void objects_update_dpd_prms(float dt, float kBT, Objects*);
+void objects_update_dpd_prms(float dt, float kBT, Objects*); // <4>
 // end::upd[]
 
 // tag::force[]
@@ -34,10 +34,10 @@ void objects_body_forces(const BForce*, Objects *o); // <3>
 // tag::dump[]
 void objects_mesh_dump(Objects*);                    // <1>
 void objects_diag_dump(float t, Objects*);           // <2>
-void objects_part_dump(long id, Objects*, IoBop*);
+void objects_part_dump(long id, Objects*, IoBop*);   // <3>
 
-void objects_strt_templ(const char *base, Objects*);         // <3>
-void objects_strt_dump(const char *base, long id, Objects*); // <4>
+void objects_strt_templ(const char *base, Objects*);         // <4>
+void objects_strt_dump(const char *base, long id, Objects*); // <5>
 // end::dump[]
 
 // tag::get[]
@@ -45,9 +45,9 @@ void objects_get_particles_all(Objects*, PFarrays*);    // <1>
 void objects_get_particles_mbr(Objects*, PFarrays*);    // <2>
 void objects_get_accel(const Objects*, TimeStepAccel*); // <3>
 
-void objects_get_params_fsi(const Objects*, const PairParams*[]);
-void objects_get_params_adhesion(const Objects*, const PairParams*[]);
-void objects_get_params_repulsion(const Objects*, const WallRepulsePrm*[]);
+void objects_get_params_fsi(const Objects*, const PairParams*[]);           // <4>
+void objects_get_params_adhesion(const Objects*, const PairParams*[]);      // <5>
+void objects_get_params_repulsion(const Objects*, const WallRepulsePrm*[]); // <6>
 // end::get[]
 
 // tag::gen[]
