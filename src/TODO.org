@@ -1,6 +1,44 @@
 TODO
 
-* [7/8] fsi params aware
+* [1/4] general and simpl configuration of pairwise forces
+
+what parameters between different particles
+add one string for each type of interactions;
+string is a namespace in conf with parameters of that interaction
+
+ex:
+
+----
+flu = {
+    ...
+    self = "pair_fluflu"
+}
+
+pair_fluflu = {
+    dpd = true
+    ...
+}
+
+rbc = {
+    fsi = "pair_rbcflu"
+    adhesion = "pair_adhesion"
+    repulsion = "none"
+}
+
+rig = {
+    fsi = "pair_rigflu"
+    adhesion = "pair_fluflu"
+    repulsion = "pair_repulsion"
+}
+
+...
+----
+** TODO flu-flu
+** DONE fsi
+   CLOSED: [2018-05-25 Fri 11:02]
+** TODO make defaults
+** TODO adapt tests
+* [8/8] fsi params aware
 fsi should use different pair parameters depending on object type
 ** DONE objects exchanger communicate counts per object types
    CLOSED: [2018-05-24 Thu 16:51]
@@ -16,43 +54,8 @@ fsi should use different pair parameters depending on object type
    CLOSED: [2018-05-25 Fri 09:53]
 ** DONE cleanup from objinter
    CLOSED: [2018-05-25 Fri 09:54]
-** TODO adapt tests
-* [0/3] general and simpl configuration of pairwise forces
-
-what parameters between different particles
-add one string for each type of interactions;
-string is a namespace in conf with parameters of that interaction
-
-ex:
-
-----
-flu = {
-    ...
-    pair = "pair_fluflu"
-}
-
-pair_fluflu = {
-    dpd = true
-    ...
-}
-
-rbc = {
-    pairfsi = "pair_rbcflu"
-    paircnt = "pair_objobj"
-    pairwall = "pair_adhesion"
-}
-
-rig = {
-    pairfsi = "pair_rigflu"
-    paircnt = "pair_objobj"
-    pairwall = "pair_fluflu"
-}
-
-...
-----
-** TODO impl basic version
-** TODO make defaults
-** TODO adapt tests
+** DONE adapt tests
+   CLOSED: [2018-05-25 Fri 10:59]
 * [3/3] update params at every timestep (pass dt)
 ** DONE fsi
    CLOSED: [2018-05-25 Fri 09:17]
