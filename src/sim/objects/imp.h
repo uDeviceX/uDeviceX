@@ -22,7 +22,7 @@ void objects_fin(Objects*);
 void objects_clear_vel(Objects*);        // <1>
 void objects_update(float dt, Objects*); // <2>
 void objects_distribute(Objects*);       // <3>
-void objects_update_dpd_prms(float dt, float kBT, Objects*); // TODO
+void objects_update_dpd_prms(float dt, float kBT, Objects*);
 // end::upd[]
 
 // tag::force[]
@@ -45,7 +45,7 @@ void objects_get_particles_all(Objects*, PFarrays*);    // <1>
 void objects_get_particles_mbr(Objects*, PFarrays*);    // <2>
 void objects_get_accel(const Objects*, TimeStepAccel*); // <3>
 
-void objects_get_params_fsi(const Objects*, const PairParams*[]); // TODO
+void objects_get_params_fsi(const Objects*, const PairParams*[]);
 void objects_get_params_adhesion(const Objects*, const PairParams*[]);
 void objects_get_params_repulsion(const Objects*, const WallRepulsePrm*[]);
 // end::get[]

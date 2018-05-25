@@ -82,6 +82,20 @@ void objects_distribute (Objects *obj) {
     for (i = 0; i < obj->nrig; ++i) UC(distribute_rig(obj->rig[i]));
 }
 
+static void update_dpd_prms_mbr(float dt, float kBT, Mbr *m) {
+    if (m->fsi) UC(pair_compute_dpd_sigma(kBT, dt, /**/ m->fsi));
+}
+
+static void update_dpd_prms_rig(float dt, float kBT, Rig *r) {
+    if (r->fsi) UC(pair_compute_dpd_sigma(kBT, dt, /**/ r->fsi));
+}
+
+void objects_update_dpd_prms(float dt, float kBT, Objects *obj) {
+    int i;
+    for (i = 0; i < obj->nmbr; ++i) update_dpd_prms_mbr(kBT, dt, obj->mbr[i]);
+    for (i = 0; i < obj->nrig; ++i) update_dpd_prms_rig(kBT, dt, obj->rig[i]);
+}
+
 static void get_mbr(Mbr *m, PFarrays *pf) {
     PaArray p;
     FoArray f;
@@ -126,13 +140,17 @@ void objects_get_accel(const Objects *obj, TimeStepAccel *aa) {
     for (i = 0; i < obj->nrig; ++i) get_rig_accel(obj->rig[i], aa);    
 }
 
-static void get_mbr_params_adhesion(const Mbr *m, const PairParams **prm) {
-    *prm = m->adhesion;
+static void get_mbr_params_fsi(const Mbr *m, const PairParams **prm) {*prm = m->fsi;}
+static void get_rig_params_fsi(const Rig *r, const PairParams **prm) {*prm = r->fsi;}
+
+void objects_get_params_fsi(const Objects *obj, const PairParams *prms[]) {
+    int i, j = 0;
+    for (i = 0; i < obj->nmbr; ++i) get_mbr_params_fsi(obj->mbr[i], &prms[j++]);
+    for (i = 0; i < obj->nrig; ++i) get_rig_params_fsi(obj->rig[i], &prms[j++]);
 }
 
-static void get_rig_params_adhesion(const Rig *r, const PairParams **prm) {
-    *prm = r->adhesion;
-}
+static void get_mbr_params_adhesion(const Mbr *m, const PairParams **prm) {*prm = m->adhesion;}
+static void get_rig_params_adhesion(const Rig *r, const PairParams **prm) {*prm = r->adhesion;}
 
 void objects_get_params_adhesion(const Objects *obj, const PairParams *prms[]) {
     int i, j = 0;
@@ -140,13 +158,8 @@ void objects_get_params_adhesion(const Objects *obj, const PairParams *prms[]) {
     for (i = 0; i < obj->nrig; ++i) get_rig_params_adhesion(obj->rig[i], &prms[j++]);
 }
 
-static void get_mbr_params_repulsion(const Mbr *m, const WallRepulsePrm **prm) {
-    *prm = m->wall_rep_prm;
-}
-
-static void get_rig_params_repulsion(const Rig *r, const WallRepulsePrm **prm) {
-    *prm = r->wall_rep_prm;
-}
+static void get_mbr_params_repulsion(const Mbr *m, const WallRepulsePrm **prm) {*prm = m->wall_rep_prm;}
+static void get_rig_params_repulsion(const Rig *r, const WallRepulsePrm **prm) {*prm = r->wall_rep_prm;}
 
 void objects_get_params_repulsion(const Objects *obj, const WallRepulsePrm *prms[]) {
     int i, j = 0;

@@ -1,6 +1,6 @@
 TODO
 
-* [4/7] fsi params aware
+* [5/7] fsi params aware
 fsi should use different pair parameters depending on object type
 ** DONE objects exchanger communicate counts per object types
    CLOSED: [2018-05-24 Thu 16:51]
@@ -10,7 +10,8 @@ fsi should use different pair parameters depending on object type
    CLOSED: [2018-05-24 Thu 17:27]
 ** DONE fsi: different params in halo
    CLOSED: [2018-05-24 Thu 17:43]
-** TODO fsi: configure "per object parameters"
+** DONE fsi: configure "per object parameters"
+   CLOSED: [2018-05-25 Fri 09:43]
 ** TODO fsi: use configuration
 ** TODO cleanup from objinter
 * [0/3] general and simpl configuration of pairwise forces
