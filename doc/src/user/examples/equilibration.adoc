@@ -23,7 +23,7 @@ include::{examples}/equilibration/conf.cfg[tag=flu]
 <2> no lj interactions (same as default)
 <3> repulsion parameter
 <4> dissipation parameter
-<5> "envelope" power for the dissipative kernel
+<5> "envelope" power for the random kernel
 
 Note that the parameters are inside an array. This is useful  when we
 set different colors.

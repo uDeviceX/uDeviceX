@@ -9,7 +9,7 @@ The setup looks really like the previous case
 include::{examples}/double_poiseuille/conf.cfg[tag=force]
 ----
 <1> type of body force
-<2> parameter of the body force
+<2> magnitude of the body force
 
 Note that we also need to activate the `push` option for solvent:
 
