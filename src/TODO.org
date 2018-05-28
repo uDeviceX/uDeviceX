@@ -1,7 +1,8 @@
 TODO
 
-* [1/4] general and simpl configuration of pairwise forces
-
+* [2/6] general and simpl configuration of pairwise forces
+** DONE description
+   CLOSED: [2018-05-28 Mon 09:18]
 what parameters between different particles
 add one string for each type of interactions;
 string is a namespace in conf with parameters of that interaction
