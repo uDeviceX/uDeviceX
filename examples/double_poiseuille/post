@@ -1,0 +1,8 @@
+#! /usr/bin/env gnuplot
+
+set term pdf monochrome
+set output "U.pdf"
+set xlabel "x (dpd units)"
+set ylabel "U (dpd units)"
+plot "profile.txt" u 1:2 w lp t ""
+
