@@ -1,8 +1,9 @@
 #! /usr/bin/env gnuplot
 
-set term pdf monochrome
-set output "T.pdf"
+set term png
+set output "T.png"
 set xlabel "t (dpd units)"
 set ylabel "k_BT (dpd units)"
+set grid
 plot "diag.txt" u 1:2 w lp t ""
 
