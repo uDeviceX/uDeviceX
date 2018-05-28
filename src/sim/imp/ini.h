@@ -95,7 +95,7 @@ _S_ void coords_log(const Coords *c) {
               xlo(c), xhi(c), ylo(c), yhi(c), zlo(c), zhi(c));
 }
 
-_S_ void ini_pair_params(const Config *cfg, float kBT, float dt, Sim *s) {
+_S_ void ini_pair_params(const Config *cfg, Sim *s) {
     UC(pair_ini(&s->flu.params));
     UC(pair_set_conf(cfg, "flu", s->flu.params));
 }
@@ -193,7 +193,7 @@ void sim_ini(const Config *cfg, MPI_Comm cart, /**/ Sim **sim) {
 
     maxp = opt_estimate_maxp(opt);
 
-    UC(ini_pair_params(cfg, opt->params.kBT, dt, s));
+    UC(ini_pair_params(cfg, s));
 
     UC(ini_dump(maxp, s->cart, s->coords, opt, /**/ &s->dump));
 
