@@ -48,6 +48,19 @@ _S_ void ini_inflow(const Coords *coords, int3 L, const Config *cfg, Inflow **i)
     UC(inflow_ini_velocity(*i));
 }
 
+_S_ void read_pair_params(const Config *cfg, const char *ns, PairParams **par) {
+    PairParams *p;
+    UC(pair_ini(par));
+    p = *par;
+    UC(pair_set_conf(cfg, ns, p));
+}
+
+_S_ void ini_pair_params(const Config *cfg, const char *name, const char *pair, PairParams **par) {
+    const char *ns;
+    UC(conf_lookup_string_ns(cfg, name, pair, &ns));
+    UC(read_pair_params(cfg, ns, par));
+}
+
 _S_ void ini_flu(const Config *cfg, const Opt *opt, MPI_Comm cart, int maxp, /**/ Flu *f) {
     int3 L = opt->params.L;
     
@@ -63,10 +76,11 @@ _S_ void ini_flu(const Config *cfg, const Opt *opt, MPI_Comm cart, int maxp, /**
 
     if (opt->flu.ss) {
         UC(Dalloc(&f->ss, 6*maxp));
-        EMALLOC(6*maxp, /**/ &f->ss_hst);        
+        EMALLOC(6*maxp, /**/ &f->ss_hst);
     }
 
     UC(conf_lookup_float(cfg, "flu.mass", &f->mass));
+    UC(ini_pair_params(cfg, "flu", "self", &f->params));
 }
 
 _S_ void read_tracer_opt(const Config *c, Tracers *o, Opt *opt) {
@@ -93,11 +107,6 @@ _S_ void coords_log(const Coords *c) {
     msg_print("domain: %d %d %d", xdomain(c), ydomain(c), zdomain(c));
     msg_print("subdomain: [%d:%d][%d:%d][%d:%d]",
               xlo(c), xhi(c), ylo(c), yhi(c), zlo(c), zhi(c));
-}
-
-_S_ void ini_pair_params(const Config *cfg, Sim *s) {
-    UC(pair_ini(&s->flu.params));
-    UC(pair_set_conf(cfg, "flu", s->flu.params));
 }
 
 _S_ int gsize(int L, int r) {
@@ -192,8 +201,6 @@ void sim_ini(const Config *cfg, MPI_Comm cart, /**/ Sim **sim) {
     time_line_advance(dt, s->time.t);
 
     maxp = opt_estimate_maxp(opt);
-
-    UC(ini_pair_params(cfg, s));
 
     UC(ini_dump(maxp, s->cart, s->coords, opt, /**/ &s->dump));
 
