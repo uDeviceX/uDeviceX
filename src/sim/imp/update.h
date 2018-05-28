@@ -37,7 +37,7 @@ _I_ void bounce_wall(float dt, Sim *s) {
     FoArray fo;
     PFarrays *pf;
     UC(pfarrays_ini(&pf));
-    parray_push_pp(f->q.pp, &pa);
+    UC(parray_push_pp(f->q.pp, &pa));
     UC(pfarrays_push(pf, f->q.n, pa, fo));
 
     UC(objects_get_particles_mbr(s->obj, pf));
@@ -49,7 +49,7 @@ _I_ void bounce_wall(float dt, Sim *s) {
 _I_ void bounce_objects(float dt, Sim *s) {
     PFarray pfflu;
     const Flu *flu = &s->flu;
-    utils_get_pf_flu(s, &pfflu);
+    UC(utils_get_pf_flu(s, &pfflu));
     UC(objects_bounce(dt, flu->mass, flu->q.cells, &pfflu, s->obj));
 }
 
