@@ -62,7 +62,7 @@ static void ini_params(const Config *cfg, const char *name, const char *pair, Pa
     UC(conf_lookup_string_ns(cfg, name, pair, &ns));
 
     if (same_str(ns, "none")) *par = NULL;
-    else UC(read_params(cfg, ns, par));    
+    else UC(read_params(cfg, ns, par));
 }
 
 static void ini_repulsion_params(const Config *cfg, const char *name, WallRepulsePrm **par) {
