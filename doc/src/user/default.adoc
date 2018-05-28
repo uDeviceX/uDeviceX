@@ -24,13 +24,11 @@ Time related parameters.
 include::{default}[tag=time]
 ----
 <1> time of freezing step
-<2> dump the timestep informations to the console
+<2> dump the time step informations to the console
 
 == flu
 
 Describe the solvent parameters
-// TODO
-A description of the DPD parameters can be found in <<>>.
 
 [{CFG}]
 ----
@@ -40,9 +38,32 @@ include::{default}[tag=flu]
 <2> each particle has a different color if set to `true`
 <3> each particle has unique global index if set to `true`
 <4> compute solvent stresses if set to `true`
-<5> recolor the solvent according to membranes every `x` iterations;
+<5> re-color the solvent according to membranes every `x` iterations;
     `0`: deactivated; membranes must be active if set to non `0`.
 <6> apply body forces on solvent if set to `true`
+<7> self interaction parameters (see below)
+
+The interaction parameters are described in a separate namespace.
+In the `flu.self` case, the default is given by:
+
+The pair interaction parameters have all the same structure, allowing
+to share namespaces for common interactions.
+
+[{CFG}]
+----
+include::{default}[tag=pair_flu]
+----
+<1> activate DPD interactions
+<2> no repulsive Lennard-Jones potential
+<3> no adhesion interactions
+<4> repulsion parameters
+<5> dissipative parameters
+<6> envelope parameter for the random kernel
+
+Note that the parameters form an array.
+These correspond to different color interactions.
+In this case, a maximum of 2 colors is possible.
+The parameters correspond to `blue-blue`, `blue-red`,`red-red`.
 
 == debug parameters
 
