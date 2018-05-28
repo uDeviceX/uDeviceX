@@ -1,0 +1,8 @@
+#! /usr/bin/env gnuplot
+
+set term pdf monochrome
+set output "T.pdf"
+set xlabel "t (dpd units)"
+set ylabel "k_BT (dpd units)"
+plot "diag.txt" u 1:2 w lp t ""
+
