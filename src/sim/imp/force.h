@@ -21,7 +21,7 @@ _S_ void forces_wall(bool fluss, Sim *s) {
     PFarrays *pf;
     Flu *flu = &s->flu;
     Wall *w =  s->wall;
-    const PairParams *par = flu->params;
+    const PairParams *dpd_prms[1 + MAX_OBJ_TYPES];
     const Opt *opt = &s->opt;
 
     if (!w) return;
@@ -33,11 +33,14 @@ _S_ void forces_wall(bool fluss, Sim *s) {
     farray_push_ff(flu->ff, &fo);
     if (fluss)
         farray_push_ss(flu->ss, &fo);
+    dpd_prms[0] = flu->params;
 
     UC(pfarrays_ini(&pf));
     UC(pfarrays_push(pf, flu->q.n, po, fo));
+    
     UC(objects_get_particles_all(s->obj, pf));
-    UC(wall_interact(s->coords, par, w, pf));
+    UC(objects_get_params_fsi(s->obj, dpd_prms + 1));
+    UC(wall_interact(s->coords, dpd_prms, w, pf));
 
     {
         const WallRepulsePrm *repulsion_prms[MAX_OBJ_TYPES];

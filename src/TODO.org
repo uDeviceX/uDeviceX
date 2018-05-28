@@ -1,6 +1,6 @@
 TODO
 
-* [3/6] general and simpl configuration of pairwise forces
+* [5/6] general and simpl configuration of pairwise forces
 ** DONE description
    CLOSED: [2018-05-28 Mon 09:18]
 what parameters between different particles
@@ -38,8 +38,10 @@ rig = {
    CLOSED: [2018-05-25 Fri 11:02]
 ** DONE flu-flu
    CLOSED: [2018-05-28 Mon 09:57]
-** TODO obj-walls use fsi params
-** TODO make defaults
+** DONE obj-walls use fsi params
+   CLOSED: [2018-05-28 Mon 10:26]
+** DONE make defaults
+   CLOSED: [2018-05-28 Mon 10:26]
 ** TODO adapt tests
 * [1/4] cell adhesion
 ** DONE over simplistic model
