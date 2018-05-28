@@ -3,7 +3,7 @@ TODO
 * [1/4] cell adhesion
 ** DONE over simplistic model
    CLOSED: [2018-05-25 Fri 11:24]
-** TODO separate module with more detailed model
+** TODO [0/4] separate module with more detailed model
 *** TODO keep track of ligants
 *** TODO configuration
 *** TODO communication
