@@ -34,3 +34,6 @@ include::{examples}/double_poiseuille/conf.cfg[tag=field]
 <4> activeate the field dumps
 <5> frequency of field dumps (in dpd time units)
 
+The velocity profile is shown below:
+
+image::{include}/examples/double_poiseuille.U.png[]
