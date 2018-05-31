@@ -19,8 +19,8 @@ void objects_clear_forces(Objects *obj) {
 }
 
 static void internal_forces_mbr(float dt, const OptMbr *opt, Mbr *m) {
-    UC(rbc_force_apply(m->force, m->params, dt, &m->q, /**/ m->ff));
-    if (opt->stretch) UC(rbc_stretch_apply(m->q.nc, m->stretch, /**/ m->ff));
+    UC(rbc_force_apply(m->force, m->params, dt, &m->q, /**/ m->ff_fast));
+    if (opt->stretch) UC(rbc_stretch_apply(m->q.nc, m->stretch, /**/ m->ff_fast));
 }
 
 void objects_internal_forces(float dt, Objects *o) {

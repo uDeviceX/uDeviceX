@@ -20,14 +20,27 @@ static void advance_rig(float dt, Rig *r) {
     UC(rig_update_mesh(dt, q->ns, q->ss, q->nv, q->dvv, /**/ q->i_pp));
 }
 
-static void advance_mbr(float dt, Mbr *m) {
-    UC(scheme_move_apply(dt, m->mass, m->q.n, m->ff, m->q.pp));
+static void ini_mbr_fast_forces(Mbr *m) {
+    aD2D(m->ff_fast, m->ff, m->q.n);
+}
+
+static void sub_advance_mbr(float dt, const OptMbr *opt, Mbr *m) {
+    UC(ini_mbr_fast_forces(m));
+    UC(internal_forces_mbr(dt, opt, m));
+    UC(scheme_move_apply(dt, m->mass, m->q.n, m->ff_fast, m->q.pp));
+}
+
+static void advance_mbr(float dt, const OptMbr *opt, Mbr *m) {
+    int i, n = 1; // TODO
+    float sub_dt = dt / n;
+    for (i = 0; i < n; ++i)
+        UC(sub_advance_mbr(sub_dt, opt, m));
 }
 
 void objects_advance(float dt, Objects *obj) {
     int i;
     if (!obj->active) return;
-    for (i = 0; i < obj->nmbr; ++i) UC(advance_mbr(dt, obj->mbr[i]));
+    for (i = 0; i < obj->nmbr; ++i) UC(advance_mbr(dt, &obj->opt.mbr[i], obj->mbr[i]));
     for (i = 0; i < obj->nrig; ++i) UC(advance_rig(dt, obj->rig[i]));
 }
 
