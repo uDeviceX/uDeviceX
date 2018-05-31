@@ -141,7 +141,6 @@ static void ini_rig(const Config *cfg, const OptRig *opt, MPI_Comm cart, int max
     
     UC(rig_ini(max_m, maxp, r->mesh, &r->q));
     
-    EMALLOC(maxp, &r->ff_hst);
     Dalloc(&r->ff, maxp);
 
     nv = r->q.nv;

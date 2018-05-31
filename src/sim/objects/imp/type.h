@@ -67,7 +67,7 @@ struct Rig {
     char name[FILENAME_MAX];
     char ic_file[FILENAME_MAX];
     RigQuants q;
-    Force *ff, *ff_hst;
+    Force *ff;
 
     RigPinInfo *pininfo;
     RigDistr d;

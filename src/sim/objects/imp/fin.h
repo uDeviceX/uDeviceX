@@ -67,7 +67,6 @@ static void fin_mbr(Mbr *m) {
 static void fin_rig(Rig *r) {
     UC(rig_fin(&r->q));
     Dfree(r->ff);
-    EFREE(r->ff_hst);
     UC(mesh_read_fin(r->mesh));
 
     UC(fin_rig_distr(/**/ &r->d));
