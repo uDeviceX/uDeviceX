@@ -1,4 +1,6 @@
 TODO
+* restarts
+** continue numbering of dumps
 
 * [1/4] cell adhesion
 ** DONE over simplistic model
