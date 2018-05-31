@@ -7,6 +7,7 @@ struct OptFlu {
 struct OptMbr {
     bool ids, stretch, push, dump_com;
     int shifttype;
+    int substeps;
     float mass;
     char templ_file[FILENAME_MAX];
     char ic_file[FILENAME_MAX];

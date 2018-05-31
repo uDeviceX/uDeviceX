@@ -72,6 +72,7 @@ static void read_mbr(const Config *c, bool restart, const char *ns, OptMbr *o) {
     
     UC(lookup_bool(c, "dump.rbc_com", &o->dump_com));
     UC(conf_lookup_float_ns(c, ns, "mass", &o->mass));
+    UC(conf_lookup_int_ns(c, ns, "substeps", &o->substeps));
 
     UC(lookup_string_ns(c, ns, "templ_file", o->templ_file));
 

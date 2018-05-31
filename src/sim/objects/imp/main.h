@@ -31,7 +31,7 @@ static void sub_advance_mbr(float dt, const OptMbr *opt, Mbr *m) {
 }
 
 static void advance_mbr(float dt, const OptMbr *opt, Mbr *m) {
-    int i, n = 1; // TODO
+    int i, n = opt->substeps;
     float sub_dt = dt / n;
     for (i = 0; i < n; ++i)
         UC(sub_advance_mbr(sub_dt, opt, m));
