@@ -96,7 +96,9 @@ static void ini_mbr(const Config *cfg, const OptMbr *opt, MPI_Comm cart, int3 L,
 
     nv = mesh_read_get_nv(m->mesh);
     
-    Dalloc(&m->ff, max_m * nv);
+    Dalloc(&m->ff,      max_m * nv);
+    Dalloc(&m->ff_fast, max_m * nv);
+    
     UC(triangles_ini(m->mesh, /**/ &m->tri));
     UC(rbc_ini(max_m, opt->ids, m->mesh, &m->q));
     UC(ini_mbr_distr(opt->ids, nv, cart, L, /**/ &m->d));

@@ -44,6 +44,7 @@ static void fin_mbr(Mbr *m) {
     UC(fin_mbr_distr(/**/ &m->d));
         
     Dfree(m->ff);
+    Dfree(m->ff_fast);
     UC(triangles_fin(m->tri));
 
     if (m->com)     UC(rbc_com_fin(/**/ m->com));

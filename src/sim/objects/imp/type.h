@@ -44,7 +44,8 @@ struct Mbr {
     char ic_file[FILENAME_MAX];
     RbcQuants q;
     MbrDistr d;
-    Force *ff;
+    Force *ff;            /* big time scale forces                     */
+    Force *ff_fast;       /* small time scale forces                   */
     RbcForce   *force;    /* helper to compute membrane forces         */
     RbcParams  *params;   /* model parameters                          */
     RbcCom     *com;      /* helper to compute center of masses        */
