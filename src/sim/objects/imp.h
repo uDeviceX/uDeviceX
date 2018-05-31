@@ -27,7 +27,6 @@ void objects_update_dpd_prms(float dt, float kBT, Objects*); // <4>
 
 // tag::force[]
 void objects_clear_forces(Objects*);                 // <1>
-void objects_internal_forces(float dt, Objects *o);  // <2>
 void objects_body_forces(const BForce*, Objects *o); // <3>
 // end::force[]
 

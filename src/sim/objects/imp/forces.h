@@ -18,15 +18,10 @@ void objects_clear_forces(Objects *obj) {
     for (i = 0; i < obj->nrig; ++i) UC(clear_rig_forces(obj->rig[i]));
 }
 
+// used in main.h
 static void internal_forces_mbr(float dt, const OptMbr *opt, Mbr *m) {
     UC(rbc_force_apply(m->force, m->params, dt, &m->q, /**/ m->ff_fast));
     if (opt->stretch) UC(rbc_stretch_apply(m->q.nc, m->stretch, /**/ m->ff_fast));
-}
-
-void objects_internal_forces(float dt, Objects *o) {
-    int i;
-    if (!o->active) return;
-    for (i = 0; i < o->nmbr; ++i) internal_forces_mbr(dt, &o->opt.mbr[i], o->mbr[i]);
 }
 
 static void bforce_mbr(const Coords *c, const BForce *bf, Mbr *m) {
