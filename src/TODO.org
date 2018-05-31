@@ -1,9 +1,11 @@
 TODO
 
-* [1/3] Separation of time scale mbr
+* [2/4] Separation of time scale mbr
 ** DONE basic impl with hardcoded n = 1
    CLOSED: [2018-05-31 Thu 10:29]
-** TODO configure per membrane substeps
+** DONE configure per membrane substeps
+   CLOSED: [2018-05-31 Thu 10:45]
+** TODO adapt tests
 ** TODO cleanup code: no internal forces?
 * [1/4] cell adhesion
 ** DONE over simplistic model
