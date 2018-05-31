@@ -7,7 +7,7 @@ include make/target.mk
 all: $(PAGES)
 include make/deps.mk
 
-style=-a stylesheet="$(ROOT)/css/main.css"  \
+style=  \
       -a include="$(ROOT)/include"          \
       -a toc=left                           \
       -a sectnums

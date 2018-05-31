@@ -53,7 +53,9 @@ The objects are updated using
 include::{base}/imp.h[tag=upd]
 ----
 <1> set all velocities to 0
-<2> advance objects for one timestep
+<2> advance objects for one timestep;
+    internal fast forces are computed there for time separation scheme
+    of membranes
 <3> redistribute objects accross nodes
 <4> update dpd parameters given a new time step
 
@@ -64,8 +66,9 @@ The objects forces can be managed by calling
 include::{base}/imp.h[tag=force]
 ----
 <1> set all forces to 0
-<2> compute internal forces (membranes only)
-<3> apply body forces to the objects
+<2> apply body forces to the objects
+
+The internal membrane forces are computed inside advance (see above).
 
 Other forces can be set via the getter functions (see link with
 <<sim_objinter>>):
