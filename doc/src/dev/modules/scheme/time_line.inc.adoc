@@ -29,3 +29,12 @@ include::{src}/scheme/time_line/imp.h[tag=get]
 <1> get current time
 <2> get iteration id
 
+The time structure can also be initialised via <<io_restart, restart>> mechanism:
+
+[source,cpp]
+----
+include::{src}/scheme/time_line/imp.h[tag=strt]
+----
+<1> dump time line state to a restart file in text format
+<2> read restart file to initialize time line state
+
