@@ -13,22 +13,22 @@ void objects_clear_vel(Objects *obj) {
     for (i = 0; i < obj->nrig; ++i) UC(clear_vel_rig(obj->rig[i]));    
 }
 
-static void update_rig(float dt, Rig *r) {
+static void advance_rig(float dt, Rig *r) {
     if (!r->q.n) return;
     RigQuants *q = &r->q;
     UC(rig_update(r->pininfo, dt, q->n, r->ff, q->rr0, q->ns, /**/ q->pp, q->ss));
     UC(rig_update_mesh(dt, q->ns, q->ss, q->nv, q->dvv, /**/ q->i_pp));
 }
 
-static void update_mbr(float dt, Mbr *m) {
+static void advance_mbr(float dt, Mbr *m) {
     UC(scheme_move_apply(dt, m->mass, m->q.n, m->ff, m->q.pp));
 }
 
-void objects_update(float dt, Objects *obj) {
+void objects_advance(float dt, Objects *obj) {
     int i;
     if (!obj->active) return;
-    for (i = 0; i < obj->nmbr; ++i) UC(update_mbr(dt, obj->mbr[i]));
-    for (i = 0; i < obj->nrig; ++i) UC(update_rig(dt, obj->rig[i]));
+    for (i = 0; i < obj->nmbr; ++i) UC(advance_mbr(dt, obj->mbr[i]));
+    for (i = 0; i < obj->nrig; ++i) UC(advance_rig(dt, obj->rig[i]));
 }
 
 static void distribute_mbr(Mbr *m) {

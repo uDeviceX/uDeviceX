@@ -19,9 +19,9 @@ void objects_fin(Objects*);
 // end::mem[]
 
 // tag::upd[]
-void objects_clear_vel(Objects*);        // <1>
-void objects_update(float dt, Objects*); // <2>
-void objects_distribute(Objects*);       // <3>
+void objects_clear_vel(Objects*);         // <1>
+void objects_advance(float dt, Objects*); // <2>
+void objects_distribute(Objects*);        // <3>
 void objects_update_dpd_prms(float dt, float kBT, Objects*); // <4>
 // end::upd[]
 

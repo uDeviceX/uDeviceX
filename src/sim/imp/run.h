@@ -33,7 +33,7 @@ _S_ void step(TimeLine *time, float dt, float tstart, Sim *s) {
 
     UC(restrain(it, /**/ s));
     UC(update_solvent(dt, /**/ flu));
-    UC(objects_update(dt, s->obj));
+    UC(objects_advance(dt, s->obj));
     UC(recolor_from_rbc(it, s));
 
     UC(check_vel(dt, s));
