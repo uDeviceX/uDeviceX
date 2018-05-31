@@ -176,8 +176,16 @@ void opt_read(const Config *c, Opt *o) {
 }
 
 static void check_mbr(const OptMbr *m) {
+    enum {
+        MIN_SUBSTEPS = 1,
+        MAX_SUBSTEPS = 1000
+    };
     if (m->dump_com && !m->ids)
         ERR("%s: Need ids activated to dump com!", m->name);
+
+    if (m->substeps < MIN_SUBSTEPS || m->substeps > MAX_SUBSTEPS)
+        ERR("%s: substeps out of range: %d (min: %d, max: %d)",
+            m->name, m->substeps, MIN_SUBSTEPS, MAX_SUBSTEPS);
 }
 
 void opt_check(const Opt *o) {
