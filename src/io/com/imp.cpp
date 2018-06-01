@@ -52,7 +52,7 @@ static void write_mpi(MPI_Comm comm, const char *fname, long n, const char *data
 
 
 void io_com_dump(MPI_Comm comm, const Coords *coords, const char *name, long id, int n, const int *ii, const float3 *rr) {
-    char fname[256] = {0}, *data;
+    char fname[FILENAME_MAX] = {0}, *data;
     long nchar = 0;
     
     EMALLOC(MAX_CHAR_PER_LINE * n, &data);
