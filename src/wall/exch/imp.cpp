@@ -102,7 +102,7 @@ static void unpack(const hBags *b, /*io*/ int *n, Particle *pp) {
 }
 
 /* exchange pp(hst) between processors to get a wall margin */
-void wall_exch_pp(MPI_Comm cart, int3 L, int maxn, /*io*/ Particle *pp, int *n) {
+void wall_exch_pp(MPI_Comm cart, int numdensity, int3 L, int maxn, /*io*/ Particle *pp, int *n) {
     hBags send, recv;
     Comm *com;
     int i, capacity[NBAGS];

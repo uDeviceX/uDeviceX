@@ -29,7 +29,7 @@ void wall_fin_ticket(WallTicket*);
 // end::mem[]
 
 // tag::gen[]
-void wall_gen_quants(MPI_Comm, int maxn, const Sdf*, /* io */ int *o_n, Particle *o_pp, /**/ WallQuants*); // <1>
+void wall_gen_quants(MPI_Comm, int numdensity, int maxn, const Sdf*, /* io */ int *o_n, Particle *o_pp, /**/ WallQuants*); // <1>
 void wall_gen_ticket(const WallQuants*, WallTicket*); // <2>
 // end::gen[]
 
