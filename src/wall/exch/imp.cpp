@@ -105,9 +105,9 @@ static void unpack(const hBags *b, /*io*/ int *n, Particle *pp) {
 void wall_exch_pp(MPI_Comm cart, int numdensity, int3 L, int maxn, /*io*/ Particle *pp, int *n) {
     hBags send, recv;
     Comm *com;
-    int i, capacity[NBAGS];
+    int capacity[NBAGS];
 
-    for (i = 0; i < NBAGS; ++i) capacity[i] = maxn;
+    exch_estimate(numdensity, L, capacity);
 
     UC(comm_bags_ini(HST_ONLY, NONE, sizeof(Particle), capacity, &send, NULL));
     UC(comm_bags_ini(HST_ONLY, NONE, sizeof(Particle), capacity, &recv, NULL));
