@@ -86,7 +86,7 @@ static void check_counts(int maxn, int n0, const hBags *b) {
         ERR("Too many particles for wall : %d / %d\n", c, maxn);
 }
 
-static void unpack(int maxn, const hBags *b, /*io*/ int *n, Particle *pp) {
+static void unpack(const hBags *b, /*io*/ int *n, Particle *pp) {
     int i, j, k, c;
     const Particle *src;
     k = *n;
@@ -108,6 +108,7 @@ void wall_exch_pp(MPI_Comm cart, int3 L, int maxn, /*io*/ Particle *pp, int *n) 
     int i, capacity[NBAGS];
 
     for (i = 0; i < NBAGS; ++i) capacity[i] = maxn;
+
     UC(comm_bags_ini(HST_ONLY, NONE, sizeof(Particle), capacity, &send, NULL));
     UC(comm_bags_ini(HST_ONLY, NONE, sizeof(Particle), capacity, &recv, NULL));
     UC(comm_ini(cart, &com));
@@ -115,7 +116,7 @@ void wall_exch_pp(MPI_Comm cart, int3 L, int maxn, /*io*/ Particle *pp, int *n) 
     fill_bags(L, *n, pp, /**/ &send);
     communicate(&send, /**/ com, &recv);
     check_counts(maxn, *n, &recv);
-    unpack(maxn, &recv, /**/ n, pp);
+    unpack(&recv, /**/ n, pp);
     
     UC(comm_bags_fin(HST_ONLY, NONE, &send, NULL));
     UC(comm_bags_fin(HST_ONLY, NONE, &recv, NULL));
