@@ -1,7 +1,8 @@
 TODO
-* [0/1] Dump
+* [0/2] Dump
 ** TODO Make consistent diag files
    solid_diag and com are not consistent
+** TODO Do not create bop folder if not needed
 * [0/1] restart
 ** TODO continue numbering of dumps
 * [1/4] cell adhesion
