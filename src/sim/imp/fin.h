@@ -55,8 +55,8 @@ _S_ void fin_sampler(Sampler *s) {
 }
 
 _S_ void fin_dump(const Opt *opt, Dump *d) {
-    UC(io_bop_fin(d->bop));
     UC(diag_part_fin(d->diagpart));
+    if (opt->dump.parts) UC(io_bop_fin(d->bop));
     if (opt->dump.field) UC(fin_sampler(&d->field_sampler));
     EFREE(d->pp);
 }

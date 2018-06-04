@@ -136,9 +136,9 @@ _S_ void ini_sampler(const Coords *c, const Opt *opt, Sampler *s) {
 _S_ void ini_dump(int maxp, MPI_Comm cart, const Coords *c, const Opt *opt, Dump *d) {
     enum {NPARRAY = 3}; /* flu, rig and rbc */
     EMALLOC(NPARRAY * maxp, &d->pp);
-    
-    UC(io_bop_ini(cart, maxp, &d->bop));
+
     UC(diag_part_ini("diag.txt", &d->diagpart));
+    if (opt->dump.parts) UC(io_bop_ini(cart, maxp, &d->bop));
     if (opt->dump.field) {
         UC(ini_sampler(c, opt, &d->field_sampler));
         os_mkdir(DUMP_BASE "/h5");
