@@ -16,6 +16,19 @@
 #include "utils/error.h"
 #include "utils/msg.h"
 
+static void exch_estimate(int numdensity, int3 L, int cap[]) {
+    enum {SAFETY_FACTOR = 2};
+    int i, nc, c;
+    for (i = 0; i < NFRAGS; ++i) {
+        nc = frag_hst::ncell(L, i);
+        nc *= frag_hst::i2dx(i) ? XWM : 1;
+        nc *= frag_hst::i2dy(i) ? YWM : 1;
+        nc *= frag_hst::i2dz(i) ? ZWM : 1;
+        c = numdensity * nc;
+        cap[i] = SAFETY_FACTOR * c;
+    }
+}
+
 static void shift(int3 L, int fid, float r[3]) {
     enum {X, Y, Z};
     int d[3];
