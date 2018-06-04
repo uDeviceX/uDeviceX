@@ -3,12 +3,13 @@
 #include <stdlib.h>
 #include <math.h>
 
+typedef float real;
+
 struct Args {
     int n;
     int Lx, Ly, Lz;
+    real r;
 };
-
-typedef float real;
 
 struct Particles {
     real *xx, *yy, *zz;
@@ -19,7 +20,7 @@ static const real yang_coeff_3d = 2.0 / M_PI;
 
 static void usg() {
     fprintf(stderr,
-            "usage: obj-ic <N> <Lx> <Ly> <Lz>\n"
+            "usage: obj-ic <N> <Lx> <Ly> <Lz> <r>\n"
             "\t N          : number of spheres to pack\n"
             "\t Lx, Ly, Lz : dimension of domain\n");
     exit(1);
@@ -40,6 +41,9 @@ static void parse(int c, char **v, Args *a) {
     a->Ly = atoi(*v);
     if (!shift(&c, &v)) usg();
     a->Lz = atoi(*v);
+
+    if (!shift(&c, &v)) usg();
+    a->r = atof(*v);
 }
 
 static void clear_forces(int n, Particles *p) {
@@ -98,8 +102,8 @@ static void fetch(int i, const Particles *p, real r[]) {
 static real periodic_d(int L, const real xi, const real xj) {
     real dx0, dx;
     dx = dx0 = xi - xj;
-    if (fabs(dx0 - L) < dx) dx = dx0 - L;
-    if (fabs(dx0 + L) < dx) dx = dx0 + L;
+    if (fabs(dx0 - L) < fabs(dx)) dx = dx0 - L;
+    if (fabs(dx0 + L) < fabs(dx)) dx = dx0 + L;
     return dx;
 }
 
@@ -122,6 +126,11 @@ static real yang_w3(real rc, real r) {
     return yang_coeff_3d * yang_w0(q) / (rc * rc * rc);
 }
 
+static real dpda(real rc, real r) {
+    if (r < rc) return 1.0 - r / rc;
+    return 0;
+}
+
 static real force(real rc, const real dr[], real f[]) {
     enum {X, Y, Z, D};
     f[X] = f[Y] = f[Z] = 0;
@@ -129,11 +138,12 @@ static real force(real rc, const real dr[], real f[]) {
 
     rsq = dr[X] * dr[X] + dr[Y] * dr[Y] + dr[Z] * dr[Z];
     r = sqrt(rsq);
-    if (r > rc || r < 1e-6) return r;
+    if (r > rc) return r;
     
     inv_r = 1.0 / r;
     
-    f0 = yang_w3(rc, r);
+    // f0 = yang_w3(rc, r);
+    f0 = dpda(rc, r);
     f0 *= inv_r;
 
     f[X] = dr[X] * f0;
@@ -142,7 +152,7 @@ static real force(real rc, const real dr[], real f[]) {
     return r;
 }
 
-static bool interactions(real rc, int Lx, int Ly, int Lz, int n, Particles *p) {
+static real interactions(real rc, int Lx, int Ly, int Lz, int n, Particles *p) {
     enum {X, Y, Z, D};
     int i, j;
     real ri[D], rj[D], dr[D], f[D], fi[D], r, rmin;
@@ -172,9 +182,7 @@ static bool interactions(real rc, int Lx, int Ly, int Lz, int n, Particles *p) {
         p->fy[i] += fi[Y];
         p->fz[i] += fi[Z];
     }
-
-    printf("rmin = %g\n", rmin);
-    return rmin > rc / 2;
+    return rmin;
 }
 
 static void dump_xyz(const char *fname, int n, const Particles *p) {
@@ -187,36 +195,50 @@ static void dump_xyz(const char *fname, int n, const Particles *p) {
     fclose(f);
 }
 
+static void check_density(Args a) {
+    real den, Vs, Vb;
+    Vb = a.Lx * a.Ly * a.Lz;
+    Vs = a.n * 4.0 * M_PI * pow(a.r, 3) / 3.0;
+    den = Vs / Vb;
+    fprintf(stderr, "%g\n", den);
+}
+
 int main(int argc, char **argv) {
     Args a;
     Particles p;
     long seed = 12345;
     bool converged = false;
     int step = 0;
+    real rmin;
 
-    static const real dt = 0.1;
-    static const real rc = 4.0;
-    static const int max_steps = 10000;
-    
+    static const real dt = 0.15;
+    static const int max_steps = 15000;
+    static const int freq = 1000;
+
     parse(argc, argv, &a);
+    check_density(a);
     srand(seed);
-
+    
     particles_ini(a.n, a.Lx, a.Ly, a.Lz, &p);
 
     while (!converged) {
         clear_forces(a.n, &p);
-        converged = interactions(rc, a.Lx, a.Ly, a.Lz, a.n, &p);
+        rmin = interactions(2.1 * a.r, a.Lx, a.Ly, a.Lz, a.n, &p);
         advance(dt, a.Lx, a.Ly, a.Lz, a.n, &p);
         ++ step;
 
+        converged = (a.r < rmin / 2);
+        printf("%g\n", rmin / 2);
+        
         if (step > max_steps) {
             fprintf(stderr, "reached max steps\n");
             break;
         }
 
-        if (step % 50 == 0) {
+        if (step % freq == 0) {
+            
             char name[FILENAME_MAX];
-            int id = step / 50;
+            int id = step / freq;
             sprintf(name, "%.04d.xyz", id);
             dump_xyz(name, a.n, &p);
         }
@@ -225,6 +247,11 @@ int main(int argc, char **argv) {
     dump_xyz("final.xyz", a.n, &p);
     
     particles_fin(&p);
-        
+
+    if (step < max_steps)
+        fprintf(stderr, "Done in %d iterations\n", step);
+    else
+        return 1;
+
     return 0;
 }
