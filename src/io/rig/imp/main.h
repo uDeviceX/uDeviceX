@@ -5,7 +5,7 @@ void io_rig_ini(IoRig **iop) {
     EMALLOC(1, iop);
     io = *iop;
     strcpy(io->mode, "w");
-    os_mkdir(BASE);
+    UC(os_mkdir(BASE));
 }
 
 void io_rig_fin(IoRig *io) {

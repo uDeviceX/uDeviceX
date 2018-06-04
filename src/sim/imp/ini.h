@@ -141,7 +141,7 @@ _S_ void ini_dump(int maxp, MPI_Comm cart, const Coords *c, const Opt *opt, Dump
     if (opt->dump.parts) UC(io_bop_ini(cart, maxp, &d->bop));
     if (opt->dump.field) {
         UC(ini_sampler(c, opt, &d->field_sampler));
-        os_mkdir(DUMP_BASE "/h5");
+        UC(os_mkdir(DUMP_BASE "/h5"));
     }
 
     d->id_bop = d->id_strt = 0;
