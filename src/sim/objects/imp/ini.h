@@ -73,14 +73,20 @@ static void ini_repulsion_params(const Config *cfg, const char *name, WallRepuls
     else UC(wall_repulse_prm_ini_conf(cfg, ns, par));
 }
 
-static void ini_obj_common(const Config *cfg, const OptMbr *opt, MPI_Comm cart, int3 L, Obj *obj) {
-    
+static void ini_obj_common(const Config *cfg, const OptObj *opt, MPI_Comm cart, int3 L, Obj *obj) {
+    char mesh_dir[FILENAME_MAX];
+    strcpy(obj->name, opt->name);
+    strcpy(obj->ic_file, opt->ic_file);
+    gen_name_mesh_dir(obj->name, mesh_dir);
+
+    UC(mesh_write_ini_from_mesh(cart, opt->shifttype, obj->mesh, mesh_dir, /**/ &obj->mesh_write));
+
+    obj->mass = opt->mass;        
 }
 
 static void ini_mbr(const Config *cfg, const OptMbr *opt, MPI_Comm cart, int3 L,
                     bool recolor, /**/ Mbr **membrane) {
     int nv, max_m;
-    char mesh_dir[FILENAME_MAX];
     Mbr *m;
     EMALLOC(1, membrane);
     m = *membrane;
@@ -91,12 +97,11 @@ static void ini_mbr(const Config *cfg, const OptMbr *opt, MPI_Comm cart, int3 L,
     m->stretch   = NULL;
     m->colorer   = NULL;
     m->mesh_exch = NULL;
-    strcpy(m->name, opt->name);
-    strcpy(m->ic_file, opt->ic_file);
-    gen_name_mesh_dir(m->name, mesh_dir);
-    
+
+    // TODO: unify off/ply
     UC(mesh_read_ini_off(opt->templ_file, &m->mesh));
-    UC(mesh_write_ini_from_mesh(cart, opt->shifttype, m->mesh, mesh_dir, /**/ &m->mesh_write));
+
+    UC(ini_obj_common(cfg, opt, cart, L, m));
 
     nv = mesh_read_get_nv(m->mesh);
     
@@ -116,8 +121,6 @@ static void ini_mbr(const Config *cfg, const OptMbr *opt, MPI_Comm cart, int3 L,
     UC(rbc_force_ini(m->mesh, /**/ &m->force));
     UC(rbc_force_set_conf(m->mesh, cfg, m->name, m->force));
 
-    m->mass = opt->mass;
-
     if (recolor) UC(ini_mesh_exch(L, nv, max_m, cart, /**/ &m->mesh_exch));
     if (recolor) UC(ini_colorer(nv, max_m, /**/ &m->colorer));
 
@@ -129,7 +132,6 @@ static void ini_mbr(const Config *cfg, const OptMbr *opt, MPI_Comm cart, int3 L,
 static void ini_rig(const Config *cfg, const OptRig *opt, MPI_Comm cart, int maxp, int3 L, /**/ Rig **rigid) {
     Rig *r;
     long max_m = MAX_SOLIDS;
-    char mesh_dir[FILENAME_MAX];
     int nv;
     EMALLOC(1, rigid);
     r = *rigid;
@@ -137,12 +139,11 @@ static void ini_rig(const Config *cfg, const OptRig *opt, MPI_Comm cart, int max
     r->bbdata    = NULL;
     r->mesh_exch = NULL;
 
-    strcpy(r->name, opt->name);
-    strcpy(r->ic_file, opt->ic_file);
-    gen_name_mesh_dir(r->name, mesh_dir);
-    
+    // TODO: unify off/ply
     UC(mesh_read_ini_ply(opt->templ_file, &r->mesh));
-    UC(mesh_write_ini_from_mesh(cart, opt->shifttype, r->mesh, mesh_dir, /**/ &r->mesh_write));
+
+    UC(ini_obj_common(cfg, opt, cart, L, r));
+    
     UC(io_rig_ini(&r->diag));
     
     UC(rig_ini(max_m, maxp, r->mesh, &r->q));
@@ -155,8 +156,6 @@ static void ini_rig(const Config *cfg, const OptRig *opt, MPI_Comm cart, int max
 
     UC(rig_pininfo_ini(&r->pininfo));
     UC(rig_pininfo_set_conf(cfg, r->name, r->pininfo));
-
-    r->mass = opt->mass;
 
     if (opt->bounce) UC(ini_mesh_exch(L, nv, max_m, cart, /**/ &r->mesh_exch));
     if (opt->bounce) UC(ini_bbdata(r->q.nt, max_m, cart, /**/ &r->bbdata));
