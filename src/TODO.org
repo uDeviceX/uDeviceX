@@ -1,14 +1,16 @@
 TODO
-* [3/6] Bounce Back
+* [4/7] Bounce Back
 ** DONE store previous flu parts
    CLOSED: [2018-06-05 Tue 16:17]
 ** DONE Bounce back from previous and current flu pp
    CLOSED: [2018-06-05 Tue 16:46]
 ** DONE Use in sim/objects
    CLOSED: [2018-06-05 Tue 16:47]
-** TODO test
+** DONE visual test
+   CLOSED: [2018-06-05 Tue 17:29]
 ** TODO membrane bb
-** TODO test
+** TODO visual test
+** TODO quantitative test: stats for recoloring
 * [0/1] restart
 ** TODO continue numbering of dumps
 * [1/4] cell adhesion
