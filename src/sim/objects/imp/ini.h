@@ -73,6 +73,10 @@ static void ini_repulsion_params(const Config *cfg, const char *name, WallRepuls
     else UC(wall_repulse_prm_ini_conf(cfg, ns, par));
 }
 
+static void ini_obj_common(const Config *cfg, const OptMbr *opt, MPI_Comm cart, int3 L, Obj *obj) {
+    
+}
+
 static void ini_mbr(const Config *cfg, const OptMbr *opt, MPI_Comm cart, int3 L,
                     bool recolor, /**/ Mbr **membrane) {
     int nv, max_m;

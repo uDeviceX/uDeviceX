@@ -3,26 +3,26 @@ struct OptFlu {
     bool colors, ids, ss, push;
 };
 
-/* membrane options */
-struct OptMbr {
-    bool ids, stretch, push, dump_com;
+/* common parameters for membranes and rigid objects */
+struct OptObj {
+    bool push;
     int shifttype;
-    int substeps;
     float mass;
     char templ_file[FILENAME_MAX];
     char ic_file[FILENAME_MAX];
-    char stretch_file[FILENAME_MAX];
     char name[FILENAME_MAX];
 };
 
+/* membrane options */
+struct OptMbr : OptObj {
+    bool ids, stretch, dump_com;
+    int substeps;
+    char stretch_file[FILENAME_MAX];
+};
+
 /* rigid options */
-struct OptRig {
-    bool bounce, empty_pp, push;
-    int shifttype;
-    float mass;
-    char templ_file[FILENAME_MAX];
-    char ic_file[FILENAME_MAX];
-    char name[FILENAME_MAX];
+struct OptRig : OptObj {
+    bool bounce, empty_pp;
 };
 
 struct OptWall {
