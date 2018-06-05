@@ -119,7 +119,7 @@ Possible conf in each object with a section repulsion
 ** DONE adapt defaults/tests
    CLOSED: [2018-05-23 Wed 10:19]
 
-* [10/11] Many membranes/objects
+* [11/11] Many membranes/objects
 ** DONE no hardcoded filenames 
    CLOSED: [2018-05-17 Thu 17:08]
 ** DONE make arrays in sim/objects
@@ -161,7 +161,8 @@ ctc = {
    CLOSED: [2018-06-05 Tue 09:06]
 ** DONE use generic functions for common parts in sim/objects
    CLOSED: [2018-06-05 Tue 09:21]
-** TODO can read from ply or off based on extension
+** DONE can read from ply or off based on extension
+   CLOSED: [2018-06-05 Tue 09:48]
 * [2/2] configuration of wall adhesion
 ** DONE Read parameters from conf
    CLOSED: [2018-05-22 Tue 18:45]
