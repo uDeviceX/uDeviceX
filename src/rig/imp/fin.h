@@ -13,5 +13,4 @@ void rig_fin(RigQuants *q) {
     Dfree(q->dvv);
     
     EFREE(q->ss_dmp);
-    EFREE(q->ss_dmp_bb);
 }

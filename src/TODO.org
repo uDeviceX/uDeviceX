@@ -5,18 +5,6 @@ TODO
 ** TODO Bounce back from previous and current
 ** TODO Use in sim/objects
 ** TODO test
-* [4/5] Dump
-** DONE Make consistent diag files
-   CLOSED: [2018-06-05 Tue 10:46]
-   solid_diag and com are not consistent
-   -> use MPI-IO for solids, one file per dump
-** TODO Do not store bounce back infos
-** DONE adapt tests
-   CLOSED: [2018-06-05 Tue 11:03]
-** DONE Use generic io/write for com and rig
-   CLOSED: [2018-06-05 Tue 10:47]
-** DONE Do not create bop folder if not needed
-   CLOSED: [2018-06-04 Mon 11:31]
 * [0/1] restart
 ** TODO continue numbering of dumps
 * [1/4] cell adhesion
@@ -29,6 +17,19 @@ TODO
 *** TODO test
 ** TODO qualitative test
 ** TODO calibrate parameters
+* [5/5] Dump
+** DONE Make consistent diag files
+   CLOSED: [2018-06-05 Tue 10:46]
+   solid_diag and com are not consistent
+   -> use MPI-IO for solids, one file per dump
+** DONE Do not store bounce back infos
+   CLOSED: [2018-06-05 Tue 11:04]
+** DONE adapt tests
+   CLOSED: [2018-06-05 Tue 11:03]
+** DONE Use generic io/write for com and rig
+   CLOSED: [2018-06-05 Tue 10:47]
+** DONE Do not create bop folder if not needed
+   CLOSED: [2018-06-04 Mon 11:31]
 * [4/4] Separation of time scale mbr
 ** DONE basic impl with hardcoded n = 1
    CLOSED: [2018-05-31 Thu 10:29]

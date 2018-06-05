@@ -11,7 +11,7 @@ struct RigQuants {
     float *dvv;                   /* vertices on device (template)                                 */
     Particle *i_pp_hst, *i_pp;    /* particles representing all meshes of all solids of that node  */
 
-    Solid *ss_dmp, *ss_dmp_bb;
+    Solid *ss_dmp;
 
     long maxp; /* maximum particle number */
 };

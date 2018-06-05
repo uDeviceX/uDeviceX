@@ -13,7 +13,6 @@ void rig_ini(long maxs, long maxp, const MeshRead *mesh, RigQuants *q) {
     EMALLOC(maxp, &q->i_pp_hst);
 
     EMALLOC(maxs, &q->ss_dmp);
-    EMALLOC(maxs, &q->ss_dmp_bb);
 
     q->nt = mesh_read_get_nt(mesh);
     q->nv = mesh_read_get_nv(mesh);

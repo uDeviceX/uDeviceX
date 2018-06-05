@@ -107,9 +107,6 @@ static void bounce_rig(float dt, float flu_mass, const Clist flu_cells, PFarray 
     mom_pack_and_send_rig(r);
     mom_recv_unpack_rig(r);
     collect_mom_rig(dt, r);
-
-    /* for dump */
-    cD2H(r->q.ss_dmp_bb, r->q.ss, r->q.ns);
 }
 
 void objects_bounce(float dt, float flu_mass, const Clist flu_cells, PFarray *flu, Objects *obj) {
