@@ -75,7 +75,6 @@ static void fin_rig(Rig *r) {
     Dfree(r->ff);
 
     UC(fin_rig_distr(/**/ &r->d));
-    UC(io_rig_fin(r->diag));
     UC(rig_pininfo_fin(r->pininfo));
 
     if (r->bbdata) UC(fin_bbdata(r->bbdata));

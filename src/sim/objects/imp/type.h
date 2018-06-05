@@ -76,8 +76,6 @@ struct Rig : Obj {
     RigPinInfo *pininfo;
     RigDistr d;
     
-    IoRig      *diag;
-
     BounceBackData *bbdata;
 };
 

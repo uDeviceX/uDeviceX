@@ -1,66 +1,75 @@
 #define BASE DUMP_BASE "/diag/rig"
 
-void io_rig_ini(IoRig **iop) {
-    IoRig *io;
-    EMALLOC(1, iop);
-    io = *iop;
-    strcpy(io->mode, "w");
-    UC(os_mkdir(BASE));
-}
-
-void io_rig_fin(IoRig *io) {
-    EFREE(io);
-}
-
-static void write_v(FILE *f, const float v[3]) {
+static int swrite_v(const float v[3], char *buf) {
     enum {X, Y, Z};
-    fprintf(f, "%+.6e %+.6e %+.6e ", v[X], v[Y], v[Z]);
+    return sprintf(buf, "%+.6e %+.6e %+.6e ", v[X], v[Y], v[Z]); // 3 * 13 + 3 = 42
 }
 
-static void set_created(IoRig *io) {
-    strcpy(io->mode, "a");
-}
-
-static void gen_fname(const char *rig_name, int id, char *fname) {
-    sprintf(fname, BASE "/%s.%04d.txt", rig_name, id);
-}
-
-void io_rig_dump(const Coords *c, float t, const char *name, int ns, const Solid *ss, const Solid *ssbb, IoRig *io) {
+static int swrite(const Coords *c, int ns, const Solid *ss, int maxn, char *buf) {
     enum {X, Y, Z, D};
-    char fname[FILENAME_MAX];
+    int i, nchar;
     float com[D];
-    FILE *fp = NULL;
-    int j;
-    const Solid *s, *sbb;
+    const Solid *s;
 
-    for (j = 0; j < ns; ++j) {
-        s   = ss   + j;
-        sbb = ssbb + j;
-
-        gen_fname(name, s->id, fname);
-        UC(efopen(fname, io->mode, /**/ &fp));
-        fprintf(fp, "%+.6e ", t);
+    for (i = nchar = 0; i < ns; ++i) {
+        s = &ss[i];
 
         // shift to global coordinates
         com[X] = xl2xg(c, s->com[X]);
         com[Y] = yl2yg(c, s->com[Y]);
         com[Z] = zl2zg(c, s->com[Z]);
-            
-        write_v(fp, com);
-        write_v(fp, s->v );
-        write_v(fp, s->om);
-        write_v(fp, s->fo);
-        write_v(fp, s->to);
-        write_v(fp, s->e0);
-        write_v(fp, s->e1);
-        write_v(fp, s->e2);
-        write_v(fp, sbb->fo);
-        write_v(fp, sbb->to);
-        fprintf(fp, "\n");
-        
-        UC(efclose(fp));
+
+        nchar += sprintf(buf + nchar, "%04d ", (int) s->id); // 5
+        nchar += swrite_v(com,   buf + nchar);
+        nchar += swrite_v(s->v,  buf + nchar);
+        nchar += swrite_v(s->om, buf + nchar);
+        nchar += swrite_v(s->fo, buf + nchar);
+        nchar += swrite_v(s->to, buf + nchar);
+        nchar += swrite_v(s->e0, buf + nchar);
+        nchar += swrite_v(s->e1, buf + nchar);
+        nchar += swrite_v(s->e2, buf + nchar);
+        nchar += sprintf(buf + nchar, "\n"); // 1
+        if (nchar > maxn)
+            ERR("exceed buffer capacity: [%d / %d]", nchar, maxn);
     }
-    set_created(io);
+    return nchar;
+}
+
+static void write_mpi(MPI_Comm comm, const char *fname, long n, const char *data) {
+    WriteFile *f;
+    UC(write_file_open(comm, fname, &f));
+    UC(write_all(comm, data, n, f));
+    UC(write_file_close(f));
+}
+
+static void gen_fname(const char *name, long id, char *fname) {
+    sprintf(fname, BASE "/%s.%04ld.txt", name, id);
+}
+
+void io_rig_dump(MPI_Comm comm, const Coords *c, const char *name, long id, int ns, const Solid *ss) {
+    char fname[FILENAME_MAX], *data;
+    int maxnc, nchar = 0;    
+
+    enum {
+        NC_ID = 5,
+        NC_END = 1,
+        NC_v3 = 42,
+        NC_SECURITY = 1,
+        N_v3 = 8
+    };
+    
+    maxnc = ns * (NC_ID + NC_END + NC_v3 * N_v3 + NC_SECURITY);
+
+    EMALLOC(maxnc, &data);
+
+    if (m::is_master(comm))
+        UC(os_mkdir(BASE));
+
+    gen_fname(name, id, fname);
+    nchar = swrite(c, ns, ss, maxnc, data);
+    write_mpi(comm, fname, nchar, data);
+    
+    EFREE(data);
 }
 
 #undef BASE

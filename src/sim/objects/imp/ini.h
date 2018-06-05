@@ -151,8 +151,6 @@ static void ini_rig(const Config *cfg, const OptRig *opt, MPI_Comm cart, int max
 
     UC(ini_obj_common(cfg, opt, cart, r));
     
-    UC(io_rig_ini(&r->diag));
-    
     UC(rig_ini(max_m, maxp, r->mesh, &r->q));
     
     Dalloc(&r->ff, maxp);
