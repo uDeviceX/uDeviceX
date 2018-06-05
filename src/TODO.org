@@ -1,6 +1,7 @@
 TODO
-* [1/5] Bounce Back
-** TODO Keep previous mesh
+* [2/5] Bounce Back
+** DONE Keep previous mesh
+   CLOSED: [2018-06-05 Tue 15:18]
 ** DONE Exch supports prev mesh
    CLOSED: [2018-06-05 Tue 12:29]
 ** TODO Bounce back from previous and current
