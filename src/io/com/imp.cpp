@@ -44,6 +44,10 @@ static void write_mpi(MPI_Comm comm, const char *fname, long n, const char *data
     UC(write_file_close(f));
 }
 
+static void gen_fname(const char *name, long id, char *fname) {
+    sprintf(fname, BASE "/%s.%04ld.txt", name, id);
+}
+
 void io_com_dump(MPI_Comm comm, const Coords *coords, const char *name, long id, int n, const int *ii, const float3 *rr) {
     char fname[FILENAME_MAX] = {0}, *data;
     long nchar = 0;
@@ -53,7 +57,7 @@ void io_com_dump(MPI_Comm comm, const Coords *coords, const char *name, long id,
     if (m::is_master(comm))
         UC(os_mkdir(BASE));
 
-    sprintf(fname, BASE "/%s.%04ld.txt", name, id);
+    gen_fname(name, id, fname);
     
     UC(nchar = swrite(coords, n, ii, rr, /**/ data));
     write_mpi(comm, fname, nchar, data);
