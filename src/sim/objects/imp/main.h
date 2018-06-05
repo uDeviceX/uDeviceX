@@ -1,3 +1,7 @@
+void objects_save_prev_mesh(Objects *obj) {
+    // TODO
+}
+
 static void clear_vel_mbr(Mbr *m) {
     UC(scheme_move_clear_vel(m->q.n, m->q.pp));
 }
