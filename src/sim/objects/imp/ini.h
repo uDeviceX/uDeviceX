@@ -182,9 +182,10 @@ static void ini_dump(long maxp, Dump **dump) {
     d->id = d->id_diag = 0;
 }
 
-static bool need_bb(int n, const OptRig *r) {
+static bool need_bb(int nm, int nr, const OptMbr *m, const OptRig *r) {
     int i;
-    for (i = 0; i < n; ++i) if (r[i].bounce) return true;
+    for (i = 0; i < nm; ++i) if (m[i].bounce) return true;
+    for (i = 0; i < nr; ++i) if (r[i].bounce) return true;
     return false;
 }
 
@@ -213,7 +214,8 @@ void objects_ini(const Config *cfg, const Opt *opt, MPI_Comm cart, const Coords 
     for (i = 0; i < obj->nmbr; ++i) UC(ini_mbr(cfg, &opt->mbr[i], cart, L, recolor, &obj->mbr[i]));
     for (i = 0; i < obj->nrig; ++i) UC(ini_rig(cfg, &opt->rig[i], cart, maxp, L, &obj->rig[i]));
 
-    if (need_bb(opt->nrig, opt->rig)) UC(meshbb_ini(maxp, /**/ &obj->bb));
+    if (need_bb(opt->nmbr, opt->nrig, opt->mbr, opt->rig))
+        UC(meshbb_ini(maxp, /**/ &obj->bb));
         
     UC(ini_dump(maxp, &obj->dump));
 }
