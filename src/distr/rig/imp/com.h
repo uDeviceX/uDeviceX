@@ -4,7 +4,7 @@ void drig_post_recv(DRigComm *c, DRigUnpack *u) {
 
 void drig_post_send(DRigPack *p, DRigComm *c) {
     UC(comm_buffer_set(p->nbags, p->hbags, p->hbuf));
-    UC(comm_post_send(p->hbags, c->comm));
+    UC(comm_post_send(p->hbuf, c->comm));
 }
 
 void drig_wait_recv(DRigComm *c, DRigUnpack *u) {
