@@ -18,7 +18,6 @@ void objects_ini(const Config*, const Opt*, MPI_Comm, const Coords*, int maxp, O
 void objects_fin(Objects*);
 // end::mem[]
 
-void objects_save_prev_mesh(Objects*);
 // tag::upd[]
 void objects_clear_vel(Objects*);         // <1>
 void objects_advance(float dt, Objects*); // <2>

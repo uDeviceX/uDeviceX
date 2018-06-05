@@ -1,11 +1,10 @@
 TODO
-* [2/5] Bounce Back
-** DONE Keep previous mesh
-   CLOSED: [2018-06-05 Tue 15:18]
-** DONE Exch supports prev mesh
-   CLOSED: [2018-06-05 Tue 12:29]
-** TODO Bounce back from previous and current
+* [0/6] Bounce Back
+** TODO store previous flu parts
+** TODO Bounce back from previous and current flu pp
 ** TODO Use in sim/objects
+** TODO test
+** TODO membrane bb
 ** TODO test
 * [0/1] restart
 ** TODO continue numbering of dumps

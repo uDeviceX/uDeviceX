@@ -33,13 +33,12 @@ static void ini_mesh_mom_exch(int nt, int max_m, MPI_Comm comm, /**/ MeshMomExch
     UC(emesh_unpackm_ini(nt, max_m, /**/ &e->u));
 }
 
-static void ini_bbdata(int nt, int nv, int max_m, MPI_Comm cart, /**/ BounceBackData **bbdata) {
+static void ini_bbdata(int nt, int max_m, MPI_Comm cart, /**/ BounceBackData **bbdata) {
     BounceBackData *bb;
     EMALLOC(1, bbdata);
     bb = *bbdata;
     UC(ini_mesh_mom_exch(nt, max_m, cart, &bb->e));
     Dalloc(&bb->mm,      max_m * nt);
-    Dalloc(&bb->pp_prev, max_m * nv);
 }
 
 static void ini_colorer(int nv, int max_m, /**/ Colorer **col) {
@@ -143,7 +142,7 @@ static void ini_mbr(const Config *cfg, const OptMbr *opt, MPI_Comm cart, int3 L,
 static void ini_rig(const Config *cfg, const OptRig *opt, MPI_Comm cart, int maxp, int3 L, /**/ Rig **rigid) {
     Rig *r;
     long max_m = MAX_SOLIDS;
-    int nt, nv;
+    int nv;
     EMALLOC(1, rigid);
     r = *rigid;
 
@@ -157,7 +156,6 @@ static void ini_rig(const Config *cfg, const OptRig *opt, MPI_Comm cart, int max
     Dalloc(&r->ff, maxp);
 
     nv = r->q.nv;
-    nt = r->q.nt;
 
     UC(ini_rig_distr(nv, cart, L, /**/ &r->d));
 
@@ -165,7 +163,7 @@ static void ini_rig(const Config *cfg, const OptRig *opt, MPI_Comm cart, int max
     UC(rig_pininfo_set_conf(cfg, r->name, r->pininfo));
 
     if (opt->bounce) UC(ini_mesh_exch(L, nv, max_m, cart, /**/ &r->mesh_exch));
-    if (opt->bounce) UC(ini_bbdata(nt, nv, max_m, cart, /**/ &r->bbdata));
+    if (opt->bounce) UC(ini_bbdata(nv, max_m, cart, /**/ &r->bbdata));
 }
 
 static void ini_dump(long maxp, Dump **dump) {

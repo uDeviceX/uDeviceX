@@ -1,21 +1,3 @@
-static void save_prev_mesh_mbr(Mbr *m) {
-}
-
-static void save_prev_mesh_rig(Rig *r) {
-    BounceBackData *bb = r->bbdata;
-    int n;
-    if (!bb) return;
-    n = r->q.nv * r->q.ns;
-    aD2D(bb->pp_prev, r->q.i_pp, n);
-}
-
-void objects_save_prev_mesh(Objects *obj) {
-    int i;
-    if (!obj->active) return;
-    for (i = 0; i < obj->nmbr; ++i) UC(save_prev_mesh_mbr(obj->mbr[i]));
-    for (i = 0; i < obj->nrig; ++i) UC(save_prev_mesh_rig(obj->rig[i]));    
-}
-
 static void clear_vel_mbr(Mbr *m) {
     UC(scheme_move_clear_vel(m->q.n, m->q.pp));
 }
