@@ -8,6 +8,13 @@ _I_ void update_solvent(float dt, /**/ Flu *f) {
     UC(scheme_move_apply(dt, f->mass, f->q.n, f->ff, f->q.pp));
 }
 
+_I_ void store_solvent(Flu *f) {
+    FluQuants *q = &f->q;
+    long n = q->n;
+    if (n)
+        aD2D(q->pp0, q->pp, n);
+}
+
 _I_ void restrain(long it, Sim *s) {
     SchemeQQ qq;
     PFarrays *pf;

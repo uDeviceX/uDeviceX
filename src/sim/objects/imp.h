@@ -40,6 +40,8 @@ void objects_strt_dump(const char *base, long id, Objects*); // <5>
 // end::dump[]
 
 // tag::get[]
+bool objects_have_bounce(const Objects*);
+
 void objects_get_particles_all(Objects*, PFarrays*);    // <1>
 void objects_get_particles_mbr(Objects*, PFarrays*);    // <2>
 void objects_get_accel(const Objects*, TimeStepAccel*); // <3>

@@ -1,6 +1,7 @@
 TODO
-* [0/6] Bounce Back
-** TODO store previous flu parts
+* [1/6] Bounce Back
+** DONE store previous flu parts
+   CLOSED: [2018-06-05 Tue 16:17]
 ** TODO Bounce back from previous and current flu pp
 ** TODO Use in sim/objects
 ** TODO test

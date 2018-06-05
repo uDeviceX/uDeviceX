@@ -105,6 +105,10 @@ void objects_update_dpd_prms(float dt, float kBT, Objects *obj) {
     for (i = 0; i < obj->nrig; ++i) update_dpd_prms(dt, kBT, obj->rig[i]);
 }
 
+bool objects_have_bounce(const Objects *o) {
+    return o->bb != NULL;
+}
+
 static void get_mbr(Mbr *m, PFarrays *pf) {
     PaArray p;
     FoArray f;
