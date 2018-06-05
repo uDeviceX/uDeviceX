@@ -60,3 +60,9 @@ void efgets(char *s, int size, FILE *stream) {
 bool same_str(const char *a, const char *b) {
     return 0 == strcmp(a, b);
 }
+
+const char* get_filename_ext(const char *filename) {
+    const char *dot = strrchr(filename, '.');
+    if (!dot || dot == filename) return "";
+    return dot + 1;
+}

@@ -20,4 +20,5 @@ void efgets(char *s, int size, FILE*);
 
 // tag::tools[]
 bool same_str(const char *a, const char *b); // <1>
+const char* get_filename_ext(const char*);
 // end::tools[]
