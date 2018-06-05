@@ -37,6 +37,16 @@ static void fin_colorer(/**/ Colorer *c) {
     EFREE(c);
 }
 
+static void fin_obj_common(Obj *o) {
+    UC(mesh_read_fin(o->mesh));
+    UC(mesh_write_fin(o->mesh_write));
+
+    if (o->fsi)      UC(pair_fin(o->fsi));
+    if (o->adhesion) UC(pair_fin(o->adhesion));
+    if (o->wall_rep_prm)
+        UC(wall_repulse_prm_fin(o->wall_rep_prm));
+}
+
 static void fin_mbr(Mbr *m) {
     UC(rbc_fin(&m->q));
     UC(rbc_force_fin(m->force));
@@ -51,16 +61,11 @@ static void fin_mbr(Mbr *m) {
     if (m->stretch) UC(rbc_stretch_fin(/**/ m->stretch));
 
     UC(rbc_params_fin(m->params));
-    UC(mesh_read_fin(m->mesh));
-    UC(mesh_write_fin(m->mesh_write));
 
     if (m->colorer)   UC(fin_colorer(/**/ m->colorer));
     if (m->mesh_exch) UC(fin_mesh_exch(/**/ m->mesh_exch));
 
-    if (m->fsi)      UC(pair_fin(m->fsi));
-    if (m->adhesion) UC(pair_fin(m->adhesion));
-    if (m->wall_rep_prm)
-        UC(wall_repulse_prm_fin(m->wall_rep_prm));
+    UC(fin_obj_common(m));
     
     EFREE(m);
 }
@@ -68,19 +73,14 @@ static void fin_mbr(Mbr *m) {
 static void fin_rig(Rig *r) {
     UC(rig_fin(&r->q));
     Dfree(r->ff);
-    UC(mesh_read_fin(r->mesh));
 
     UC(fin_rig_distr(/**/ &r->d));
-    UC(mesh_write_fin(r->mesh_write));
     UC(io_rig_fin(r->diag));
     UC(rig_pininfo_fin(r->pininfo));
 
     if (r->bbdata) UC(fin_bbdata(r->bbdata));
 
-    if (r->fsi)      UC(pair_fin(r->fsi));
-    if (r->adhesion) UC(pair_fin(r->adhesion));
-    if (r->wall_rep_prm)
-        UC(wall_repulse_prm_fin(r->wall_rep_prm));
+    UC(fin_obj_common(r));
 
     EFREE(r);
 }

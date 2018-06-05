@@ -73,7 +73,7 @@ static void ini_repulsion_params(const Config *cfg, const char *name, WallRepuls
     else UC(wall_repulse_prm_ini_conf(cfg, ns, par));
 }
 
-static void ini_obj_common(const Config *cfg, const OptObj *opt, MPI_Comm cart, int3 L, Obj *obj) {
+static void ini_obj_common(const Config *cfg, const OptObj *opt, MPI_Comm cart, Obj *obj) {
     char mesh_dir[FILENAME_MAX];
     strcpy(obj->name, opt->name);
     strcpy(obj->ic_file, opt->ic_file);
@@ -81,7 +81,11 @@ static void ini_obj_common(const Config *cfg, const OptObj *opt, MPI_Comm cart, 
 
     UC(mesh_write_ini_from_mesh(cart, opt->shifttype, obj->mesh, mesh_dir, /**/ &obj->mesh_write));
 
-    obj->mass = opt->mass;        
+    obj->mass = opt->mass;
+
+    UC(ini_params(cfg, obj->name, "fsi", &obj->fsi));
+    UC(ini_params(cfg, obj->name, "adhesion", &obj->adhesion));
+    UC(ini_repulsion_params(cfg, obj->name, &obj->wall_rep_prm));
 }
 
 static void ini_mbr(const Config *cfg, const OptMbr *opt, MPI_Comm cart, int3 L,
@@ -101,7 +105,7 @@ static void ini_mbr(const Config *cfg, const OptMbr *opt, MPI_Comm cart, int3 L,
     // TODO: unify off/ply
     UC(mesh_read_ini_off(opt->templ_file, &m->mesh));
 
-    UC(ini_obj_common(cfg, opt, cart, L, m));
+    UC(ini_obj_common(cfg, opt, cart, m));
 
     nv = mesh_read_get_nv(m->mesh);
     
@@ -123,10 +127,6 @@ static void ini_mbr(const Config *cfg, const OptMbr *opt, MPI_Comm cart, int3 L,
 
     if (recolor) UC(ini_mesh_exch(L, nv, max_m, cart, /**/ &m->mesh_exch));
     if (recolor) UC(ini_colorer(nv, max_m, /**/ &m->colorer));
-
-    UC(ini_params(cfg, m->name, "fsi", &m->fsi));
-    UC(ini_params(cfg, m->name, "adhesion", &m->adhesion));
-    UC(ini_repulsion_params(cfg, m->name, &m->wall_rep_prm));
 }
 
 static void ini_rig(const Config *cfg, const OptRig *opt, MPI_Comm cart, int maxp, int3 L, /**/ Rig **rigid) {
@@ -142,7 +142,7 @@ static void ini_rig(const Config *cfg, const OptRig *opt, MPI_Comm cart, int max
     // TODO: unify off/ply
     UC(mesh_read_ini_ply(opt->templ_file, &r->mesh));
 
-    UC(ini_obj_common(cfg, opt, cart, L, r));
+    UC(ini_obj_common(cfg, opt, cart, r));
     
     UC(io_rig_ini(&r->diag));
     
@@ -159,10 +159,6 @@ static void ini_rig(const Config *cfg, const OptRig *opt, MPI_Comm cart, int max
 
     if (opt->bounce) UC(ini_mesh_exch(L, nv, max_m, cart, /**/ &r->mesh_exch));
     if (opt->bounce) UC(ini_bbdata(r->q.nt, max_m, cart, /**/ &r->bbdata));
-
-    UC(ini_params(cfg, r->name, "fsi", &r->fsi));
-    UC(ini_params(cfg, r->name, "adhesion", &r->adhesion));
-    UC(ini_repulsion_params(cfg, r->name, &r->wall_rep_prm));
 }
 
 static void ini_dump(long maxp, Dump **dump) {
