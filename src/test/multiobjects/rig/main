@@ -8,5 +8,5 @@ x=8.5  y=8 z=12; echo 1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 > ell-ic.txt
 :
 u.run udx conf.cfg
 :
-cat diag/rig/rig_ell.0000.txt | awk '{print $2, $5, $8}' | uscale 5 >  sdiag.out.txt
-cat diag/rig/rig_sph.0000.txt | awk '{print $2, $5, $8}' | uscale 5 >> sdiag.out.txt
+cat diag/rig/rig_ell.0002.txt | sort | awk '{print $2, $5, $8}' | uscale 5 >  sdiag.out.txt
+cat diag/rig/rig_sph.0002.txt | sort | awk '{print $2, $5, $8}' | uscale 5 >> sdiag.out.txt
