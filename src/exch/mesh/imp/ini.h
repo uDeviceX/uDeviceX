@@ -30,6 +30,7 @@ void emesh_pack_ini(bool prev_mesh, int3 L, int nv, int max_mesh_num, EMeshPack 
     }
 
     p->nbags = i;
+    UC(comm_buffer_ini(p->nbags, p->hbags, &p->hbuf));
 
     Dalloc(&p->minext, max_mesh_num);
     Dalloc(&p->maxext, max_mesh_num);
@@ -65,6 +66,7 @@ void emesh_unpack_ini(bool prev_mesh, int3 L, int nv, int max_mesh_num, EMeshUnp
     }
 
     u->nbags = i;
+    UC(comm_buffer_ini(u->nbags, u->hbags, &u->hbuf));
 }
 
 

@@ -8,6 +8,7 @@ struct EMeshPack {
     dBags dbags[MAX_NBAGS], *dpp, *dpp_prev;
     hBags hbags[MAX_NBAGS], *hpp, *hpp_prev;
     int nbags;
+    CommBuffer *hbuf;
     
     int3 L; /* subdomain size */
 };
@@ -20,6 +21,7 @@ struct EMeshUnpack {
     hBags hbags[MAX_NBAGS], *hpp, *hpp_prev;
     dBags dbags[MAX_NBAGS], *dpp, *dpp_prev;
     int nbags;
+    CommBuffer *hbuf;
     
     int3 L; /* subdomain size */
 };
