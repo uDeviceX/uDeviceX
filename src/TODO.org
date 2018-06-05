@@ -119,7 +119,7 @@ Possible conf in each object with a section repulsion
 ** DONE adapt defaults/tests
    CLOSED: [2018-05-23 Wed 10:19]
 
-* [6/6] Many membranes/objects
+* [6/8] Many membranes/objects
 ** DONE no hardcoded filenames 
    CLOSED: [2018-05-17 Thu 17:08]
 ** DONE make arrays in sim/objects
@@ -153,6 +153,8 @@ ctc = {
    CLOSED: [2018-05-18 Fri 14:00]
 ** DONE test bounce back for many objects
    CLOSED: [2018-05-22 Tue 13:53]
+** TODO isolate common parts of objects
+** TODO use generic functions for common parts
 * [2/2] configuration of wall adhesion
 ** DONE Read parameters from conf
    CLOSED: [2018-05-22 Tue 18:45]

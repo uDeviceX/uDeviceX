@@ -38,52 +38,46 @@ struct BounceBackData {
     Momentum *mm;
 };
 
-/* data holder for cell membranes */
-struct Mbr {
+/* common parts for membranes and rigid objects */
+struct Obj {
     char name[FILENAME_MAX];
     char ic_file[FILENAME_MAX];
-    RbcQuants q;
-    MbrDistr d;
-    Force *ff;            /* big time scale forces                     */
-    Force *ff_fast;       /* small time scale forces                   */
-    RbcForce   *force;    /* helper to compute membrane forces         */
-    RbcParams  *params;   /* model parameters                          */
-    RbcCom     *com;      /* helper to compute center of masses        */
-    RbcStretch *stretch;  /* helper to apply stretching force to cells */
-    Triangles  *tri;      /* triangles for one cell on devices         */
     float mass;           /* mass of one particle                      */
     MeshRead   *mesh;     /* cell template                             */
     MeshWrite  *mesh_write;
-
-    MeshExch *mesh_exch;
-    Colorer  *colorer;
+    MeshExch   *mesh_exch;
 
     PairParams *fsi;
     PairParams *adhesion;
     WallRepulsePrm *wall_rep_prm;
 };
 
+/* data holder for cell membranes */
+struct Mbr : Obj {
+    RbcQuants q;
+    MbrDistr d;
+    Force *ff;            /* large time scale forces                   */
+    Force *ff_fast;       /* small time scale forces                   */
+    RbcForce   *force;    /* helper to compute membrane forces         */
+    RbcParams  *params;   /* model parameters                          */
+    RbcCom     *com;      /* helper to compute center of masses        */
+    RbcStretch *stretch;  /* helper to apply stretching force to cells */
+    Triangles  *tri;      /* triangles for one cell on devices         */
+
+    Colorer  *colorer;
+};
+
 /* data holder for rigid objects */
-struct Rig {
-    char name[FILENAME_MAX];
-    char ic_file[FILENAME_MAX];
+struct Rig : Obj {
     RigQuants q;
     Force *ff;
 
     RigPinInfo *pininfo;
     RigDistr d;
     
-    float mass;  /* mass of one particle */
-    MeshRead   *mesh;
-    MeshWrite  *mesh_write;
     IoRig      *diag;
 
-    MeshExch   *mesh_exch;
     BounceBackData *bbdata;
-
-    PairParams *fsi;
-    PairParams *adhesion;
-    WallRepulsePrm *wall_rep_prm;
 };
 
 struct Dump {
