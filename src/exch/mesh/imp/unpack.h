@@ -5,14 +5,13 @@ static void upload_and_shift(int n, int i, int3 L, const data_t *data, Particle 
     ecommon_shift_one_frag(L, n, i, /**/ pp);
 }
 
-void emesh_unpack(int nv, const EMeshUnpack *u, /**/ int *nmhalo, Particle *pp, Particle *pp_prev) {
+void emesh_unpack(int nv, const EMeshUnpack *u, /**/ int *nmhalo, Particle *pp) {
     int i, nm, n, s = 0, nmtot = 0;
     
     for (i = 0; i < NFRAGS; ++i) {
         nm = u->hpp->counts[i];
         n  = nm * nv; 
         upload_and_shift(n, i, u->L, u->hpp->data[i], pp + s);
-        if (pp_prev) upload_and_shift(n, i, u->L, u->hpp_prev->data[i], pp_prev + s);
         s += n;
         nmtot += nm;
     }

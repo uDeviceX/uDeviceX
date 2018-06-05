@@ -15,13 +15,13 @@ static void ini_rig_distr(int nv, MPI_Comm comm, int3 L, /**/ RigDistr *d) {
     UC(drig_unpack_ini(L,MAX_SOLIDS, nv, /**/ &d->u));
 }
 
-static void ini_mesh_exch(bool prev_mesh, int3 L, int nv, int max_m, MPI_Comm comm, /**/ MeshExch **me) {
+static void ini_mesh_exch(int3 L, int nv, int max_m, MPI_Comm comm, /**/ MeshExch **me) {
     MeshExch *e;
     EMALLOC(1, me);
     e = *me;
-    UC(emesh_pack_ini(prev_mesh, L, nv, max_m, /**/ &e->p));
+    UC(emesh_pack_ini(L, nv, max_m, /**/ &e->p));
     UC(emesh_comm_ini(comm, /**/ &e->c));
-    UC(emesh_unpack_ini(prev_mesh, L, nv, max_m, /**/ &e->u));
+    UC(emesh_unpack_ini(L, nv, max_m, /**/ &e->u));
 }
 
 static void ini_mesh_mom_exch(int nt, int max_m, MPI_Comm comm, /**/ MeshMomExch **mme) {
@@ -136,7 +136,7 @@ static void ini_mbr(const Config *cfg, const OptMbr *opt, MPI_Comm cart, int3 L,
     UC(rbc_force_ini(m->mesh, /**/ &m->force));
     UC(rbc_force_set_conf(m->mesh, cfg, m->name, m->force));
 
-    if (recolor) UC(ini_mesh_exch(false, L, nv, max_m, cart, /**/ &m->mesh_exch));
+    if (recolor) UC(ini_mesh_exch(L, nv, max_m, cart, /**/ &m->mesh_exch));
     if (recolor) UC(ini_colorer(nv, max_m, /**/ &m->colorer));
 }
 
@@ -164,7 +164,7 @@ static void ini_rig(const Config *cfg, const OptRig *opt, MPI_Comm cart, int max
     UC(rig_pininfo_ini(&r->pininfo));
     UC(rig_pininfo_set_conf(cfg, r->name, r->pininfo));
 
-    if (opt->bounce) UC(ini_mesh_exch(false, L, nv, max_m, cart, /**/ &r->mesh_exch)); // TODO
+    if (opt->bounce) UC(ini_mesh_exch(L, nv, max_m, cart, /**/ &r->mesh_exch));
     if (opt->bounce) UC(ini_bbdata(nt, nv, max_m, cart, /**/ &r->bbdata));
 }
 

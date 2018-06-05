@@ -20,12 +20,12 @@ _I_ void exchange_mesh(int maxm, int3 L, MPI_Comm cart, int nv, /*io*/ int *nm, 
     int nm0, nmhalo;
     nm0 = *nm;
 
-    UC(emesh_pack_ini(false, L, nv, maxm, &pack));
+    UC(emesh_pack_ini(L, nv, maxm, &pack));
     UC(emesh_comm_ini(cart, /**/ &comm));
-    UC(emesh_unpack_ini(false, L, nv, maxm, &unpack));
+    UC(emesh_unpack_ini(L, nv, maxm, &unpack));
 
     UC(emesh_build_map(nm0, nv, pp, /**/ pack));
-    UC(emesh_pack(nv, pp, NULL, /**/ pack));
+    UC(emesh_pack(nv, pp, /**/ pack));
     UC(emesh_download(pack));
 
     UC(emesh_post_recv(comm, unpack));
@@ -33,7 +33,7 @@ _I_ void exchange_mesh(int maxm, int3 L, MPI_Comm cart, int nv, /*io*/ int *nm, 
     UC(emesh_wait_recv(comm, unpack));
     UC(emesh_wait_send(comm));
 
-    UC(emesh_unpack(nv, unpack, /**/ &nmhalo, pp + nm0 * nv, NULL));
+    UC(emesh_unpack(nv, unpack, /**/ &nmhalo, pp + nm0 * nv));
     if (cc) UC(emesh_get_num_frag_mesh(unpack, /**/ cc));
     *nm += nmhalo;
     

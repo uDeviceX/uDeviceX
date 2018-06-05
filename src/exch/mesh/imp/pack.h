@@ -2,23 +2,15 @@ static void pack_mesh(int nv, const Particle *pp, EMap map, /**/ Pap26 buf) {
     KL(emesh_dev::pack_mesh, (14 * 16, 128), (nv, pp, map, /**/ buf));
 }
 
-void emesh_pack(int nv, const Particle *pp, const Particle *pp_prev, /**/ EMeshPack *p) {
+void emesh_pack(int nv, const Particle *pp, /**/ EMeshPack *p) {
     Pap26 wrap;
     bag2Sarray(*p->dpp, &wrap);
     pack_mesh(nv, pp, p->map, /**/ wrap);
-    if (pp_prev) {
-        if (!p->hpp_prev) ERR("Not initialised correctly, cannot communicate prev mesh");
-        bag2Sarray(*p->dpp_prev, &wrap);
-        pack_mesh(nv, pp_prev, p->map, /**/ wrap);
-    }
 }
 
 void emesh_download(EMeshPack *p) {
     int nw = 1;
     emap_download_tot_counts(nw, NFRAGS, p->map, /**/ p->hpp->counts);
-    if (p->hpp_prev) {
-        memcpy(p->hpp_prev->counts, p->hpp->counts, NFRAGS * sizeof(int));
-    }
 }
 
 static void reini_map(int nm, /**/ MMap *m) {

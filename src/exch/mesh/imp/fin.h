@@ -1,8 +1,6 @@
 void emesh_pack_fin(EMeshPack *p) {
     UC(emap_fin(NFRAGS, /**/ &p->map));
     UC(comm_bags_fin(PINNED, NONE, /**/ p->hpp, p->dpp));
-    if (p->hpp_prev)
-        UC(comm_bags_fin(PINNED, NONE, /**/ p->hpp_prev, p->dpp_prev));
     UC(comm_buffer_fin(p->hbuf));
     Dfree(p->minext);
     Dfree(p->maxext);
@@ -16,8 +14,6 @@ void emesh_comm_fin(EMeshComm *c) {
 
 void emesh_unpack_fin(EMeshUnpack *u) {
     UC(comm_bags_fin(PINNED_DEV, NONE, /**/ u->hpp, u->dpp));
-    if (u->hpp_prev)
-        UC(comm_bags_fin(PINNED_DEV, NONE, /**/ u->hpp_prev, u->dpp_prev));
     UC(comm_buffer_fin(u->hbuf));
     EFREE(u);
 }

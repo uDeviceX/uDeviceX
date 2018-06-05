@@ -8,9 +8,9 @@ struct EMeshUnpackM;
 /* mesh exchanger */
 
 // tag::mem[]
-void emesh_pack_ini(bool prev_mesh, int3 L, int nv, int max_mesh_num, EMeshPack **p);
+void emesh_pack_ini(int3 L, int nv, int max_mesh_num, EMeshPack **p);
 void emesh_comm_ini(MPI_Comm comm, /**/ EMeshComm **c);
-void emesh_unpack_ini(bool prev_mesh, int3 L, int nv, int max_mesh_num, EMeshUnpack **u);
+void emesh_unpack_ini(int3 L, int nv, int max_mesh_num, EMeshUnpack **u);
 
 void emesh_pack_fin(EMeshPack *p);
 void emesh_comm_fin(EMeshComm *c);
@@ -22,7 +22,7 @@ void emesh_build_map(int nm, int nv, const Particle *pp, /**/ EMeshPack *p);
 // end::map[]
 
 // tag::pack[]
-void emesh_pack(int nv, const Particle *pp, const Particle *pp_prev, /**/ EMeshPack *p);
+void emesh_pack(int nv, const Particle *pp, /**/ EMeshPack *p);
 void emesh_download(EMeshPack *p);
 // end::pack[]
 
@@ -34,7 +34,7 @@ void emesh_wait_send(EMeshComm *c);
 // end::com[]
 
 // tag::unpack[]
-void emesh_unpack(int nv, const EMeshUnpack *u, /**/ int *nmhalo, Particle *pp, Particle *pp_prev);
+void emesh_unpack(int nv, const EMeshUnpack *u, /**/ int *nmhalo, Particle *pp);
 // end::unpack[]
 
 // tag::get[]

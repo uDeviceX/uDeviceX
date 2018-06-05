@@ -1,12 +1,12 @@
 enum {
-    MAX_NBAGS = 2
+    MAX_NBAGS = 1
 };
 
 struct EMeshPack {
     EMap map;
     float3 *minext, *maxext;
-    dBags dbags[MAX_NBAGS], *dpp, *dpp_prev;
-    hBags hbags[MAX_NBAGS], *hpp, *hpp_prev;
+    dBags dbags[MAX_NBAGS], *dpp;
+    hBags hbags[MAX_NBAGS], *hpp;
     int nbags;
     CommBuffer *hbuf;
     
@@ -18,8 +18,8 @@ struct EMeshComm {
 };
 
 struct EMeshUnpack {
-    hBags hbags[MAX_NBAGS], *hpp, *hpp_prev;
-    dBags dbags[MAX_NBAGS], *dpp, *dpp_prev;
+    hBags hbags[MAX_NBAGS], *hpp;
+    dBags dbags[MAX_NBAGS], *dpp;
     int nbags;
     CommBuffer *hbuf;
     
