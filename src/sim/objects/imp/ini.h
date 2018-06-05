@@ -73,12 +73,25 @@ static void ini_repulsion_params(const Config *cfg, const char *name, WallRepuls
     else UC(wall_repulse_prm_ini_conf(cfg, ns, par));
 }
 
+static void read_mesh(const char *filename, MeshRead **mesh) {
+    const char *ext;
+    ext = get_filename_ext(filename);
+
+    if      (same_str(ext, "off"))
+        UC(mesh_read_ini_off(filename, mesh));
+    else if (same_str(ext, "ply"))
+        UC(mesh_read_ini_ply(filename, mesh));
+    else
+        ERR("%s : unrecognised extension <%s>\n", filename, ext);
+}
+
 static void ini_obj_common(const Config *cfg, const OptObj *opt, MPI_Comm cart, Obj *obj) {
     char mesh_dir[FILENAME_MAX];
     strcpy(obj->name, opt->name);
     strcpy(obj->ic_file, opt->ic_file);
     gen_name_mesh_dir(obj->name, mesh_dir);
 
+    UC(read_mesh(opt->templ_file, &obj->mesh));
     UC(mesh_write_ini_from_mesh(cart, opt->shifttype, obj->mesh, mesh_dir, /**/ &obj->mesh_write));
 
     obj->mass = opt->mass;
@@ -101,9 +114,6 @@ static void ini_mbr(const Config *cfg, const OptMbr *opt, MPI_Comm cart, int3 L,
     m->stretch   = NULL;
     m->colorer   = NULL;
     m->mesh_exch = NULL;
-
-    // TODO: unify off/ply
-    UC(mesh_read_ini_off(opt->templ_file, &m->mesh));
 
     UC(ini_obj_common(cfg, opt, cart, m));
 
@@ -138,9 +148,6 @@ static void ini_rig(const Config *cfg, const OptRig *opt, MPI_Comm cart, int max
 
     r->bbdata    = NULL;
     r->mesh_exch = NULL;
-
-    // TODO: unify off/ply
-    UC(mesh_read_ini_ply(opt->templ_file, &r->mesh));
 
     UC(ini_obj_common(cfg, opt, cart, r));
     
