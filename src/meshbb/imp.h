@@ -19,10 +19,10 @@ void meshbb_fin(/**/ MeshBB *d);
 // tag::int[]
 void meshbb_reini(int n, /**/ MeshBB *d);  // <1>
 void meshbb_find_collisions(float dt, int nm, MeshInfo meshinfo, const Particle *i_pp, int3 L,
-                            const int *starts, const int *counts, const Particle *pp, const Force *ff, /**/ MeshBB *d);  // <2>
+                            const int *starts, const int *counts, const Particle *pp, const Particle *pp0, /**/ MeshBB *d);  // <2>
 void meshbb_select_collisions(int n, /**/ MeshBB *d);  // <3>
-void meshbb_bounce(float dt, float mass, int n, const MeshBB *d, const Force *ff, MeshInfo meshinfo,
-                   const Particle *i_pp, /**/ Particle *pp, Momentum *mm);  // <4>
+void meshbb_bounce(float dt, float mass, int n, const MeshBB *d, MeshInfo meshinfo,
+                   const Particle *i_pp, const Particle *pp0, /**/ Particle *pp, Momentum *mm);  // <4>
 // end::int[]
 
 // tag::collect[]

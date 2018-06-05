@@ -12,19 +12,19 @@ _S_ void get_cells(int3 L, float tol, real3_t A, real3_t B, real3_t C, /**/ int3
     *hi = get_cidx(L, hf);
 }
 
-_S_ void find_collisions_cell(real dt,
-                              int tid, int start, int count, const Particle *pp, const Force *ff,
+_S_ void find_collisions_cell(real dt, int tid, int start, int count, const Particle *pp, const Particle *pp0,
                               const rPa *A, const rPa *B, const rPa *C,
                               /**/ int *ncol, float4 *datacol, int *idcol) {
     int i, entry;
-    rPa p, p0; Force f;
+    rPa p, p0;
     BBState state;
     real_t tc, u, v, s;
     
     for (i = start; i < start + count; ++i) {
-        p = fetch_Part(i, pp);
-        f = ff[i];
-        rvprev(dt, &p.r, &p.v, f.f, /**/ &p0.r, &p0.v);
+        p  = fetch_Part(i, pp);
+        p0 = fetch_Part(i, pp0);
+
+        vprev(dt, &p.r, &p0.r, /**/ &p0.v);
 
         state = intersect_triangle(dt, &A->r, &B->r, &C->r, &A->v, &B->v, &C->v, &p0, /**/ &tc, &u, &v, &s);
         
@@ -52,7 +52,7 @@ _S_ void revert_r(float h, rPa *p) {
 
 __global__ void find_collisions(float dt,
                                 int nm, int nt, int nv, const int4 *tt, const Particle *i_pp,
-                                int3 L, const int *starts, const int *counts, const Particle *pp, const Force *ff,
+                                int3 L, const int *starts, const int *counts, const Particle *pp, const Particle *pp0,
                                 /**/ int *ncol, float4 *datacol, int *idcol) {
     
     int gid, ix, iy, iz, cid;
@@ -75,7 +75,7 @@ __global__ void find_collisions(float dt,
             for (ix = str.x; ix <= end.x; ++ix) {
                 cid = ix + L.x * (iy + L.y * iz);
                 
-                find_collisions_cell(dt, gid, starts[cid], counts[cid], pp, ff, &A, &B, &C, /**/ ncol, datacol, idcol);
+                find_collisions_cell(dt, gid, starts[cid], counts[cid], pp, pp0, &A, &B, &C, /**/ ncol, datacol, idcol);
             }
         }
     }
@@ -157,12 +157,11 @@ _S_ void push_particle(const real3_t *A, const real3_t *B, const real3_t *C, rea
 
 __global__ void perform_collisions(float dt, float mass,
                                    int n, const int *ncol, const float4 *datacol, const int *idcol,
-                                   const Force *ff, int nt, int nv, const int4 *tt, const Particle *i_pp,
+                                   int nt, int nv, const int4 *tt, const Particle *i_pp, const Particle *pp0,
                                    /**/ Particle *pp, Momentum *mm) {
     int i, id, entry;
     float4 d;
     rPa p1, p0, pn, A, B, C;
-    Force f;
     real3_t rw, vw;
     Momentum m;
     const real_t eps = 1e-2;
@@ -175,10 +174,10 @@ __global__ void perform_collisions(float dt, float mass,
     id = idcol[entry];
     d  = datacol[entry];
 
-    p1 = fetch_Part(i, pp);
-    f  = ff[i];
+    p0 = fetch_Part(i, pp0);
+    p1 = fetch_Part(i, pp);    
     
-    rvprev(dt, &p1.r, &p1.v, f.f, /**/ &p0.r, &p0.v);
+    vprev(dt, &p1.r, &p0.r, /**/ &p0.v);
 
     fetch_triangle(id, nt, nv, tt, i_pp, /**/ &A, &B, &C);
     

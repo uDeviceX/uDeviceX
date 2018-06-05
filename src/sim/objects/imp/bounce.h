@@ -40,17 +40,17 @@ static void clear_momentum_rig(int nmhalo, Rig *r) {
 }
 
 
-static void find_and_select_collisions_rig(float dt, long nflu, Clist cflu, const Particle *ppflu, const Force *ffflu, int nm, Rig *r, MeshBB *bb) {
+static void find_and_select_collisions_rig(float dt, long nflu, Clist cflu, const Particle *flu_pp, const Particle *flu_pp0, int nm, Rig *r, MeshBB *bb) {
     RigQuants *q = &r->q;
     MeshInfo mi = mesh_info_rig(r);
-    UC(meshbb_find_collisions(dt, nm, mi, q->i_pp, cflu.dims, cflu.starts, cflu.counts, ppflu, ffflu, /**/ bb));
+    UC(meshbb_find_collisions(dt, nm, mi, q->i_pp, cflu.dims, cflu.starts, cflu.counts, flu_pp, flu_pp0, /**/ bb));
     UC(meshbb_select_collisions(nflu, /**/ bb));    
 }
 
-static void bounce_rig(float dt, float flu_mass, const MeshBB *bb, long n, const Force *ff, Particle *pp, Rig *r) {
+static void bounce_rig(float dt, float flu_mass, const MeshBB *bb, long n, const Particle *pp0, Particle *pp, Rig *r) {
     RigQuants *q = &r->q;
     MeshInfo mi = mesh_info_rig(r);
-    UC(meshbb_bounce(dt, flu_mass, n, bb, ff, mi, q->i_pp, /**/ pp, r->bbdata->mm));
+    UC(meshbb_bounce(dt, flu_mass, n, bb, mi, q->i_pp, pp0, /**/ pp, r->bbdata->mm));
 }
 
 static void mom_pack_and_send_rig(Rig *r) {
@@ -89,27 +89,25 @@ static void collect_mom_rig(float dt, Rig *r) {
 }
 
 /* TODO less brutal implementation */
-static void bounce_rig(float dt, float flu_mass, const Clist flu_cells, PFarray *flu, MeshBB *bb, Rig *r) {
+static void bounce_rig(float dt, float flu_mass, const Clist flu_cells, long n, const Particle *flu_pp0, Particle *flu_pp, MeshBB *bb, Rig *r) {
     int nmhalo;
-    Particle *pp = (Particle*) flu->p.pp;
-    Force    *ff = (Force*)    flu->f.ff;
 
     mesh_pack_and_send_rig(r);
     nmhalo = mesh_recv_unpack_rig(r);
 
-    UC(meshbb_reini(flu->n, /**/ bb));
+    UC(meshbb_reini(n, /**/ bb));
     clear_momentum_rig(nmhalo, r);
 
-    find_and_select_collisions_rig(dt, flu->n, flu_cells, pp, ff, nmhalo + r->q.ns, r, bb);
+    find_and_select_collisions_rig(dt, n, flu_cells, flu_pp, flu_pp0, nmhalo + r->q.ns, r, bb);
     
-    bounce_rig(dt, flu_mass, bb, flu->n, ff, /**/ pp, r);
+    bounce_rig(dt, flu_mass, bb, n, flu_pp0, /**/ flu_pp, r);
 
     mom_pack_and_send_rig(r);
     mom_recv_unpack_rig(r);
     collect_mom_rig(dt, r);
 }
 
-void objects_bounce(float dt, float flu_mass, const Clist flu_cells, PFarray *flu, Objects *obj) {
+void objects_bounce(float dt, float flu_mass, const Clist flu_cells, long n, const Particle *flu_pp0, Particle *flu_pp, Objects *obj) {
     MeshBB *bb = obj->bb;
     int i;
  
@@ -117,5 +115,5 @@ void objects_bounce(float dt, float flu_mass, const Clist flu_cells, PFarray *fl
     if (!bb) return;
     
     for (i = 0; i < obj->nrig; ++i)
-        bounce_rig(dt, flu_mass, flu_cells, flu, bb, obj->rig[i]);
+        bounce_rig(dt, flu_mass, flu_cells, n, flu_pp0, flu_pp, bb, obj->rig[i]);
 }

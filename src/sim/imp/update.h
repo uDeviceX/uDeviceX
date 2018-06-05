@@ -54,10 +54,9 @@ _I_ void bounce_wall(float dt, Sim *s) {
 }
 
 _I_ void bounce_objects(float dt, Sim *s) {
-    PFarray pfflu;
-    const Flu *flu = &s->flu;
-    UC(utils_get_pf_flu(s, &pfflu));
-    UC(objects_bounce(dt, flu->mass, flu->q.cells, &pfflu, s->obj));
+    Flu *flu = &s->flu;
+    FluQuants *q = &flu->q;
+    UC(objects_bounce(dt, flu->mass, q->cells, q->n, q->pp0, q->pp, s->obj));
 }
 
 _S_ void flu_update_dpd_prms(float dt, float kBT, Sim *s) {

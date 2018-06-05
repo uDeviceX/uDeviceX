@@ -1,9 +1,11 @@
 TODO
-* [1/6] Bounce Back
+* [3/6] Bounce Back
 ** DONE store previous flu parts
    CLOSED: [2018-06-05 Tue 16:17]
-** TODO Bounce back from previous and current flu pp
-** TODO Use in sim/objects
+** DONE Bounce back from previous and current flu pp
+   CLOSED: [2018-06-05 Tue 16:46]
+** DONE Use in sim/objects
+   CLOSED: [2018-06-05 Tue 16:47]
 ** TODO test
 ** TODO membrane bb
 ** TODO test
