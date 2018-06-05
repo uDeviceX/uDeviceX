@@ -64,25 +64,29 @@ static void read_flu(const Config *c, OptFlu *o) {
     UC(lookup_bool(c, "flu.push", &o->push));
 }
 
-static void read_mbr(const Config *c, bool restart, const char *ns, OptMbr *o) {
-    UC(lookup_bool_ns(c, ns, "ids", &o->ids));
-    UC(lookup_bool_ns(c, ns, "stretch", &o->stretch));
+static void read_obj_common(const Config *c, bool restart, const char *ns, OptObj *o) {
     o->shifttype = get_shifttype_ns(c, ns, "shifttype");
     UC(lookup_bool_ns(c, ns, "push", &o->push));
-    
-    UC(lookup_bool(c, "dump.rbc_com", &o->dump_com));
     UC(conf_lookup_float_ns(c, ns, "mass", &o->mass));
-    UC(conf_lookup_int_ns(c, ns, "substeps", &o->substeps));
 
     UC(lookup_string_ns(c, ns, "templ_file", o->templ_file));
 
     if (restart) o->ic_file[0] = '\0';
     else         UC(lookup_string_ns(c, ns, "ic_file", o->ic_file));
 
+    strcpy(o->name, ns);        
+}
+
+static void read_mbr(const Config *c, bool restart, const char *ns, OptMbr *o) {
+    UC(read_obj_common(c, restart, ns, o));
+    UC(lookup_bool_ns(c, ns, "ids", &o->ids));
+    UC(lookup_bool_ns(c, ns, "stretch", &o->stretch));
+    
+    UC(lookup_bool(c, "dump.rbc_com", &o->dump_com));
+    UC(conf_lookup_int_ns(c, ns, "substeps", &o->substeps));
+
     if (o->stretch)
         UC(lookup_string_ns(c, ns, "stretch_file", o->stretch_file));
-
-    strcpy(o->name, ns);
 }
 
 static void read_mbr_array(const Config *c, bool restart, int *nmbr, OptMbr *oo) {
@@ -95,17 +99,9 @@ static void read_mbr_array(const Config *c, bool restart, int *nmbr, OptMbr *oo)
 }
 
 static void read_rig(const Config *c, bool restart, const char *ns, OptRig *o) {
+    UC(read_obj_common(c, restart, ns, o));
     UC(lookup_bool_ns(c, ns, "bounce", &o->bounce));
     UC(lookup_bool_ns(c, ns, "empty_pp", &o->empty_pp));
-    o->shifttype = get_shifttype_ns(c, ns, "shifttype");
-    UC(lookup_bool_ns(c, ns, "push", &o->push));
-    UC(conf_lookup_float_ns(c, ns, "mass", &o->mass));
-
-    UC(lookup_string_ns(c, ns, "templ_file", o->templ_file));
-    if (restart) o->ic_file[0] = '\0';        
-    else         UC(lookup_string_ns(c, ns, "ic_file", o->ic_file));
-
-    strcpy(o->name, ns);
 }
 
 static void read_rig_array(const Config *c, bool restart, int *nrig, OptRig *oo) {
