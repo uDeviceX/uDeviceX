@@ -5,12 +5,14 @@ TODO
 ** TODO Bounce back from previous and current
 ** TODO Use in sim/objects
 ** TODO test
-* [1/4] Dump
-** TODO Make consistent diag files
+* [3/4] Dump
+** DONE Make consistent diag files
+   CLOSED: [2018-06-05 Tue 10:46]
    solid_diag and com are not consistent
    -> use MPI-IO for solids, one file per dump
 ** TODO adapt tests
-** TODO Use generic io/write for com and rig
+** DONE Use generic io/write for com and rig
+   CLOSED: [2018-06-05 Tue 10:47]
 ** DONE Do not create bop folder if not needed
    CLOSED: [2018-06-04 Mon 11:31]
 * [0/1] restart
