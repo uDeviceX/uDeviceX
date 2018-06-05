@@ -10,6 +10,7 @@
 #include "inc/type.h"
 #include "utils/error.h"
 #include "utils/imp.h"
+#include "utils/mc.h"
 
 #include "imp.h"
 #include "imp/type.h"
