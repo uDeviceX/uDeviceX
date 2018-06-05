@@ -1,4 +1,8 @@
 TODO
+* [0/3] Bounce Back
+** TODO Keep previous mesh
+** TODO Bounce back from previous and current
+** TODO Rigorous Test
 * [1/2] Dump
 ** TODO Make consistent diag files
    solid_diag and com are not consistent
