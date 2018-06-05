@@ -2,10 +2,15 @@ static void pack_mesh(int nv, const Particle *pp, EMap map, /**/ Pap26 buf) {
     KL(emesh_dev::pack_mesh, (14 * 16, 128), (nv, pp, map, /**/ buf));
 }
 
-void emesh_pack(int nv, const Particle *pp, /**/ EMeshPack *p) {
+void emesh_pack(int nv, const Particle *pp, const Particle *pp_prev, /**/ EMeshPack *p) {
     Pap26 wrap;
     bag2Sarray(*p->dpp, &wrap);
     pack_mesh(nv, pp, p->map, /**/ wrap);
+    if (pp_prev) {
+        if (!p->hpp_prev) ERR("Not initialised correctly, cannot communicate prev mesh");
+        bag2Sarray(*p->dpp_prev, &wrap);
+        pack_mesh(nv, pp_prev, p->map, /**/ wrap);
+    }
 }
 
 void emesh_download(EMeshPack *p) {

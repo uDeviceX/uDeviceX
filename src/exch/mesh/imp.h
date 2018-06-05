@@ -22,7 +22,7 @@ void emesh_build_map(int nm, int nv, const Particle *pp, /**/ EMeshPack *p);
 // end::map[]
 
 // tag::pack[]
-void emesh_pack(int nv, const Particle *pp, /**/ EMeshPack *p);
+void emesh_pack(int nv, const Particle *pp, const Particle *pp_prev, /**/ EMeshPack *p);
 void emesh_download(EMeshPack *p);
 // end::pack[]
 
@@ -34,7 +34,7 @@ void emesh_wait_send(EMeshComm *c);
 // end::com[]
 
 // tag::unpack[]
-void emesh_unpack(int nv, const EMeshUnpack *u, /**/ int *nmhalo, Particle *pp);
+void emesh_unpack(int nv, const EMeshUnpack *u, /**/ int *nmhalo, Particle *pp, Particle *pp_prev);
 // end::unpack[]
 
 // tag::get[]

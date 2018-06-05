@@ -162,7 +162,7 @@ static void ini_rig(const Config *cfg, const OptRig *opt, MPI_Comm cart, int max
     UC(rig_pininfo_ini(&r->pininfo));
     UC(rig_pininfo_set_conf(cfg, r->name, r->pininfo));
 
-    if (opt->bounce) UC(ini_mesh_exch(true, L, nv, max_m, cart, /**/ &r->mesh_exch));
+    if (opt->bounce) UC(ini_mesh_exch(false, L, nv, max_m, cart, /**/ &r->mesh_exch)); // TODO
     if (opt->bounce) UC(ini_bbdata(r->q.nt, max_m, cart, /**/ &r->bbdata));
 }
 
