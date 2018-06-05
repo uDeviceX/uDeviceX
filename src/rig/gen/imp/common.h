@@ -20,9 +20,9 @@ _I_ void exchange_mesh(int maxm, int3 L, MPI_Comm cart, int nv, /*io*/ int *nm, 
     int nm0, nmhalo;
     nm0 = *nm;
 
-    UC(emesh_pack_ini(L, nv, maxm, &pack));
+    UC(emesh_pack_ini(false, L, nv, maxm, &pack));
     UC(emesh_comm_ini(cart, /**/ &comm));
-    UC(emesh_unpack_ini(L, nv, maxm, &unpack));
+    UC(emesh_unpack_ini(false, L, nv, maxm, &unpack));
 
     UC(emesh_build_map(nm0, nv, pp, /**/ pack));
     UC(emesh_pack(nv, pp, /**/ pack));

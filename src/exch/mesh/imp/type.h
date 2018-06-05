@@ -5,9 +5,10 @@ enum {
 struct EMeshPack {
     EMap map;
     float3 *minext, *maxext;
-    dBags dbags[MAX_NBAGS], *dpp;
-    hBags hbags[MAX_NBAGS], *hpp;
-
+    dBags dbags[MAX_NBAGS], *dpp, *dpp_prev;
+    hBags hbags[MAX_NBAGS], *hpp, *hpp_prev;
+    int nbags;
+    
     int3 L; /* subdomain size */
 };
 
@@ -16,9 +17,10 @@ struct EMeshComm {
 };
 
 struct EMeshUnpack {
-    hBags hbags[MAX_NBAGS], *hpp;
-    dBags dbags[MAX_NBAGS], *dpp;
-
+    hBags hbags[MAX_NBAGS], *hpp, *hpp_prev;
+    dBags dbags[MAX_NBAGS], *dpp, *dpp_prev;
+    int nbags;
+    
     int3 L; /* subdomain size */
 };
 
