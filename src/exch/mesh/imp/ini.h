@@ -75,7 +75,7 @@ void emesh_packm_ini(int nt, int max_mesh_num, EMeshPackM **pack) {
     UC(comm_bags_ini(PINNED,   NONE, sizeof(Momentum), mcap, /**/ p->hmm, p->dmm));
     UC(comm_bags_ini(PINNED,   NONE, sizeof(int)     , mcap, /**/ p->hii, p->dii));
 
-    p->nbags = MAX_NBAGS;
+    p->nbags = MAX_NMBAGS;
     UC(comm_buffer_ini(p->nbags, p->hbags, &p->hbuf));
     
     CC(d::alloc_pinned((void**) &p->cchst, 26 * sizeof(int)));
@@ -104,6 +104,6 @@ void emesh_unpackm_ini(int nt, int max_mesh_num, EMeshUnpackM **unpack) {
     UC(comm_bags_ini(PINNED_DEV, NONE, sizeof(Momentum), mcap, /**/ u->hmm, u->dmm));
     UC(comm_bags_ini(PINNED_DEV, NONE, sizeof(int)     , mcap, /**/ u->hii, u->dii));
 
-    u->nbags = MAX_NBAGS;
+    u->nbags = MAX_NMBAGS;
     UC(comm_buffer_ini(u->nbags, u->hbags, &u->hbuf));
 }
