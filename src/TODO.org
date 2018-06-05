@@ -1,7 +1,8 @@
 TODO
-* [0/5] Bounce Back
+* [1/5] Bounce Back
 ** TODO Keep previous mesh
-** TODO Exch prev mesh
+** DONE Exch supports prev mesh
+   CLOSED: [2018-06-05 Tue 12:29]
 ** TODO Bounce back from previous and current
 ** TODO Use in sim/objects
 ** TODO test
