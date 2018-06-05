@@ -85,8 +85,10 @@ static void read_mesh(const char *filename, MeshRead **mesh) {
         ERR("%s : unrecognised extension <%s>\n", filename, ext);
 }
 
-static void ini_obj_common(const Config *cfg, const OptObj *opt, MPI_Comm cart, Obj *obj) {
+static void ini_obj_common(const Config *cfg, const OptObj *opt, MPI_Comm cart, int max_m, int3 L, Obj *obj) {
     char mesh_dir[FILENAME_MAX];
+    int nv;
+    
     strcpy(obj->name, opt->name);
     strcpy(obj->ic_file, opt->ic_file);
     gen_name_mesh_dir(obj->name, mesh_dir);
@@ -99,6 +101,16 @@ static void ini_obj_common(const Config *cfg, const OptObj *opt, MPI_Comm cart, 
     UC(ini_params(cfg, obj->name, "fsi", &obj->fsi));
     UC(ini_params(cfg, obj->name, "adhesion", &obj->adhesion));
     UC(ini_repulsion_params(cfg, obj->name, &obj->wall_rep_prm));
+
+    nv = mesh_read_get_nv(obj->mesh);
+    
+    obj->mesh_exch = NULL;
+    obj->bbdata    = NULL;
+
+    if (opt->bounce) {
+        UC(ini_bbdata(nv, max_m, cart, /**/ &obj->bbdata));
+        UC(ini_mesh_exch(L, nv, max_m, cart, /**/ &obj->mesh_exch));
+    }
 }
 
 static void ini_mbr(const Config *cfg, const OptMbr *opt, MPI_Comm cart, int3 L,
@@ -113,9 +125,8 @@ static void ini_mbr(const Config *cfg, const OptMbr *opt, MPI_Comm cart, int3 L,
     m->com       = NULL;
     m->stretch   = NULL;
     m->colorer   = NULL;
-    m->mesh_exch = NULL;
 
-    UC(ini_obj_common(cfg, opt, cart, m));
+    UC(ini_obj_common(cfg, opt, cart, max_m, L, m));
 
     nv = mesh_read_get_nv(m->mesh);
     
@@ -135,8 +146,11 @@ static void ini_mbr(const Config *cfg, const OptMbr *opt, MPI_Comm cart, int3 L,
     UC(rbc_force_ini(m->mesh, /**/ &m->force));
     UC(rbc_force_set_conf(m->mesh, cfg, m->name, m->force));
 
-    if (recolor) UC(ini_mesh_exch(L, nv, max_m, cart, /**/ &m->mesh_exch));
-    if (recolor) UC(ini_colorer(nv, max_m, /**/ &m->colorer));
+    if (recolor) {
+        if (!m->mesh_exch)
+            UC(ini_mesh_exch(L, nv, max_m, cart, /**/ &m->mesh_exch));
+        UC(ini_colorer(nv, max_m, /**/ &m->colorer));
+    }
 }
 
 static void ini_rig(const Config *cfg, const OptRig *opt, MPI_Comm cart, int maxp, int3 L, /**/ Rig **rigid) {
@@ -146,10 +160,7 @@ static void ini_rig(const Config *cfg, const OptRig *opt, MPI_Comm cart, int max
     EMALLOC(1, rigid);
     r = *rigid;
 
-    r->bbdata    = NULL;
-    r->mesh_exch = NULL;
-
-    UC(ini_obj_common(cfg, opt, cart, r));
+    UC(ini_obj_common(cfg, opt, cart, max_m, L, r));
     
     UC(rig_ini(max_m, maxp, r->mesh, &r->q));
     
@@ -161,9 +172,6 @@ static void ini_rig(const Config *cfg, const OptRig *opt, MPI_Comm cart, int max
 
     UC(rig_pininfo_ini(&r->pininfo));
     UC(rig_pininfo_set_conf(cfg, r->name, r->pininfo));
-
-    if (opt->bounce) UC(ini_mesh_exch(L, nv, max_m, cart, /**/ &r->mesh_exch));
-    if (opt->bounce) UC(ini_bbdata(nv, max_m, cart, /**/ &r->bbdata));
 }
 
 static void ini_dump(long maxp, Dump **dump) {

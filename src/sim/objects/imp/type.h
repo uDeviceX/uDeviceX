@@ -46,7 +46,8 @@ struct Obj {
     MeshRead   *mesh;     /* cell template                             */
     MeshWrite  *mesh_write;
     MeshExch   *mesh_exch;
-
+    BounceBackData *bbdata;
+    
     PairParams *fsi;
     PairParams *adhesion;
     WallRepulsePrm *wall_rep_prm;
@@ -74,8 +75,6 @@ struct Rig : Obj {
 
     RigPinInfo *pininfo;
     RigDistr d;
-    
-    BounceBackData *bbdata;
 };
 
 struct Dump {
