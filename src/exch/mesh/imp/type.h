@@ -1,8 +1,12 @@
+enum {
+    MAX_NBAGS = 2
+};
+
 struct EMeshPack {
     EMap map;
     float3 *minext, *maxext;
-    dBags dpp;
-    hBags hpp;
+    dBags dbags[MAX_NBAGS], *dpp;
+    hBags hbags[MAX_NBAGS], *hpp;
 
     int3 L; /* subdomain size */
 };
@@ -12,8 +16,8 @@ struct EMeshComm {
 };
 
 struct EMeshUnpack {
-    hBags hpp;
-    dBags dpp;
+    hBags hbags[MAX_NBAGS], *hpp;
+    dBags dbags[MAX_NBAGS], *dpp;
 
     int3 L; /* subdomain size */
 };

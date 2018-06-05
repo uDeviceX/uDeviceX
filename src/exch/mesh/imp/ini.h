@@ -5,7 +5,7 @@ static void get_capacity(int nfrags, int max_mesh_num, /**/ int cap[]) {
 }
 
 void emesh_pack_ini(int3 L, int nv, int max_mesh_num, EMeshPack **pack) {
-    int cap[NFRAGS];
+    int i, cap[NFRAGS];
     size_t msz = nv * sizeof(Particle);
     EMeshPack *p;
 
@@ -16,7 +16,12 @@ void emesh_pack_ini(int3 L, int nv, int max_mesh_num, EMeshPack **pack) {
     get_capacity(NFRAGS, max_mesh_num, /**/ cap);
 
     UC(emap_ini(1, NFRAGS, cap, /**/ &p->map));
-    UC(comm_bags_ini(PINNED, NONE, msz, cap, /**/ &p->hpp, &p->dpp));
+
+    i = 0;
+    p->dpp = &p->dbags[i];
+    p->hpp = &p->hbags[i++];
+    
+    UC(comm_bags_ini(PINNED, NONE, msz, cap, /**/ p->hpp, p->dpp));
 
     Dalloc(&p->minext, max_mesh_num);
     Dalloc(&p->maxext, max_mesh_num);
@@ -30,7 +35,7 @@ void emesh_comm_ini(MPI_Comm cart, /**/ EMeshComm **com) {
 }
 
 void emesh_unpack_ini(int3 L, int nv, int max_mesh_num, EMeshUnpack **unpack) {
-    int cap[NFRAGS];
+    int i, cap[NFRAGS];
     size_t msz = nv * sizeof(Particle);
     EMeshUnpack *u;
     EMALLOC(1, unpack);
@@ -39,7 +44,11 @@ void emesh_unpack_ini(int3 L, int nv, int max_mesh_num, EMeshUnpack **unpack) {
     u->L = L;
     get_capacity(NFRAGS, max_mesh_num, /**/ cap);
 
-    UC(comm_bags_ini(PINNED_DEV, NONE, msz, cap, /**/ &u->hpp, &u->dpp));
+    i = 0;
+    u->hpp = &u->hbags[i];
+    u->dpp = &u->dbags[i++];
+    
+    UC(comm_bags_ini(PINNED_DEV, NONE, msz, cap, /**/ u->hpp, u->dpp));
 }
 
 

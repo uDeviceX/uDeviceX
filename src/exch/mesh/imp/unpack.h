@@ -3,11 +3,11 @@ void emesh_unpack(int nv, const EMeshUnpack *u, /**/ int *nmhalo, Particle *pp) 
     size_t sz;
     
     for (i = 0; i < NFRAGS; ++i) {
-        nm = u->hpp.counts[i];
+        nm = u->hpp->counts[i];
         n  = nm * nv; 
         sz = n * sizeof(Particle);
         if (nm) {
-            CC(d::MemcpyAsync(pp + s, u->hpp.data[i], sz, H2D));
+            CC(d::MemcpyAsync(pp + s, u->hpp->data[i], sz, H2D));
             ecommon_shift_one_frag(u->L, n, i, /**/ pp + s);
         }
         s += n;
@@ -17,7 +17,7 @@ void emesh_unpack(int nv, const EMeshUnpack *u, /**/ int *nmhalo, Particle *pp) 
 }
 
 void emesh_get_num_frag_mesh(const EMeshUnpack *u, /**/ int cc[NFRAGS]) {
-    memcpy(cc, u->hpp.counts, NFRAGS * sizeof(int));
+    memcpy(cc, u->hpp->counts, NFRAGS * sizeof(int));
 }
 
 /* momentum */

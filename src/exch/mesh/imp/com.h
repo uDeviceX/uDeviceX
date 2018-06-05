@@ -1,13 +1,13 @@
 void emesh_post_recv(EMeshComm *c, EMeshUnpack *u) {
-    UC(comm_post_recv(&u->hpp, c->pp));
+    UC(comm_post_recv(u->hpp, c->pp));
 }
 
 void emesh_post_send(EMeshPack *p, EMeshComm *c) {
-    UC(comm_post_send(&p->hpp, c->pp));
+    UC(comm_post_send(p->hpp, c->pp));
 }
 
 void emesh_wait_recv(EMeshComm *c, EMeshUnpack *u) {
-    UC(comm_wait_recv(c->pp, &u->hpp));
+    UC(comm_wait_recv(c->pp, u->hpp));
 }
 
 void emesh_wait_send(EMeshComm *c) {
