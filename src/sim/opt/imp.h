@@ -5,7 +5,7 @@ struct OptFlu {
 
 /* common parameters for membranes and rigid objects */
 struct OptObj {
-    bool push;
+    bool push, bounce;
     int shifttype;
     float mass;
     char templ_file[FILENAME_MAX];
@@ -22,7 +22,7 @@ struct OptMbr : OptObj {
 
 /* rigid options */
 struct OptRig : OptObj {
-    bool bounce, empty_pp;
+    bool empty_pp;
 };
 
 struct OptWall {

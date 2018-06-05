@@ -66,7 +66,8 @@ static void read_flu(const Config *c, OptFlu *o) {
 
 static void read_obj_common(const Config *c, bool restart, const char *ns, OptObj *o) {
     o->shifttype = get_shifttype_ns(c, ns, "shifttype");
-    UC(lookup_bool_ns(c, ns, "push", &o->push));
+    UC(lookup_bool_ns(c, ns, "push",   &o->push));
+    UC(lookup_bool_ns(c, ns, "bounce", &o->bounce));
     UC(conf_lookup_float_ns(c, ns, "mass", &o->mass));
 
     UC(lookup_string_ns(c, ns, "templ_file", o->templ_file));
@@ -100,7 +101,6 @@ static void read_mbr_array(const Config *c, bool restart, int *nmbr, OptMbr *oo)
 
 static void read_rig(const Config *c, bool restart, const char *ns, OptRig *o) {
     UC(read_obj_common(c, restart, ns, o));
-    UC(lookup_bool_ns(c, ns, "bounce", &o->bounce));
     UC(lookup_bool_ns(c, ns, "empty_pp", &o->empty_pp));
 }
 
