@@ -22,8 +22,11 @@ _S_ void step(TimeLine *time, float dt, float tstart, Sim *s) {
 
     UC(distribute_flu(s));    
     UC(objects_distribute(s->obj));
-    if (objects_have_bounce(s->obj))
+
+    if (objects_have_bounce(s->obj)) {
         UC(store_solvent(&s->flu));
+        UC(objects_save_mesh(s->obj));
+    }
 
     UC(check_sizes(s));
     UC(forces(dt, time, bforce, s));

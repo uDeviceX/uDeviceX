@@ -107,12 +107,31 @@ static void bounce_rig(float dt, float flu_mass, const Clist flu_cells, long n, 
     collect_mom_rig(dt, r);
 }
 
+static void save_mesh_mbr_current(Mbr *m) {
+    if (m->bbdata)
+        convert_pp2rr_current(m->q.n, m->q.pp, m->bbdata->rr_cp);
+}
+
+static void save_mesh_rig_current(Rig *r) {
+    if (r->bbdata)
+        convert_pp2rr_current(r->q.ns * r->q.nv, r->q.i_pp, r->bbdata->rr_cp);
+}
+
+static void objects_save_mesh_current(Objects *obj) {
+    int i;
+    if (!obj->active) return;
+    for (i = 0; i < obj->nmbr; ++i) UC(save_mesh_mbr_current(obj->mbr[i]));
+    for (i = 0; i < obj->nrig; ++i) UC(save_mesh_rig_current(obj->rig[i]));    
+}
+
 void objects_bounce(float dt, float flu_mass, const Clist flu_cells, long n, const Particle *flu_pp0, Particle *flu_pp, Objects *obj) {
     MeshBB *bb = obj->bb;
     int i;
  
     if (!obj->active) return;
     if (!bb) return;
+
+    UC(objects_save_mesh_current(obj));
     
     for (i = 0; i < obj->nrig; ++i)
         bounce_rig(dt, flu_mass, flu_cells, n, flu_pp0, flu_pp, bb, obj->rig[i]);

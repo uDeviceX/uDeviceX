@@ -10,8 +10,9 @@ TODO
    CLOSED: [2018-06-05 Tue 17:29]
 ** DONE Store previous mesh positions
    CLOSED: [2018-06-06 Wed 08:53]
-** TODO [0/2] Exchange previous mesh
-*** TODO Merge inside positions structure
+** TODO [1/2] Exchange previous mesh
+*** DONE Merge inside positions structure
+    CLOSED: [2018-06-06 Wed 14:46]
 *** TODO Switch to this struct in mesh exch
 ** TODO meshBB uses previous mesh positions
 ** TODO test on rigids
