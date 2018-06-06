@@ -1,5 +1,5 @@
 TODO
-* [5/11] Bounce Back
+* [5/12] Bounce Back
 ** DONE store previous flu parts
    CLOSED: [2018-06-05 Tue 16:17]
 ** DONE Bounce back from previous and current flu pp
@@ -10,12 +10,16 @@ TODO
    CLOSED: [2018-06-05 Tue 17:29]
 ** DONE Store previous mesh positions
    CLOSED: [2018-06-06 Wed 08:53]
-** TODO Exchange previous mesh
+** TODO [0/2] Exchange previous mesh
+*** TODO Merge inside positions structure
+*** TODO Switch to this struct in mesh exch
 ** TODO meshBB uses previous mesh positions
 ** TODO test on rigids
 ** TODO membrane bb
 ** TODO visual test
 ** TODO quantitative test: stats for recoloring
+** TODO many objects suppoort
+   need clever implementation in sim/objects/bounce.h
 * [0/1] restart
 ** TODO continue numbering of dumps
 * [1/4] cell adhesion
