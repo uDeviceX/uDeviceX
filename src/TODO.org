@@ -20,7 +20,10 @@ TODO
    CLOSED: [2018-06-06 Wed 17:28]
 ** DONE visual test on rigids
    CLOSED: [2018-06-06 Wed 17:31]
-** TODO membrane bb
+** TODO [1/2] membrane bb
+*** DONE Bounce particles
+    CLOSED: [2018-06-06 Wed 17:59]
+*** TODO apply momentum on mbr
 ** TODO visual test
 ** TODO quantitative test: stats for recoloring
 ** TODO cleaner many objects support
