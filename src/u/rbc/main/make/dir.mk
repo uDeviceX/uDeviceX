@@ -36,5 +36,6 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/u/rbc/main            && \
     d $B/u/rbc/main/lib        && \
     d $B/utils                 && \
+    d $B/utils/convert         && \
     d $B/utils/nvtx            && \
     d $B/utils/string         

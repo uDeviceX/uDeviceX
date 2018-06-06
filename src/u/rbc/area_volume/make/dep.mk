@@ -33,6 +33,7 @@ $B/rbc/shape/imp.o: $S/utils/imp.h $S/utils/error.h $S/math/tri/imp.h $S/rbc/sha
 $B/rbc/stretch/imp.o: $S/utils/imp.h $S/inc/conf.h $S/utils/error.h $S/d/q.h $S/inc/type.h $S/rbc/stretch/imp.h $S/utils/cc.h $S/inc/def.h $S/d/api.h $S/inc/dev.h $B/conf.h $S/rbc/stretch/imp/main.h $S/rbc/stretch/imp/type.h $S/utils/kl.h $S/rbc/stretch/dev/main.h $S/d/ker.h $S/utils/msg.h
 $B/u/rbc/area_volume/main.o: $S/utils/imp.h $S/inc/conf.h $S/rbc/type.h $S/utils/error.h $S/mpi/wrapper.h $S/io/mesh/imp.h $S/conf/imp.h $S/io/mesh_read/imp.h $S/coords/ini.h $S/utils/cc.h $S/inc/def.h $S/rbc/force/area_volume/imp.h $S/inc/dev.h $S/utils/mc.h $S/d/api.h $B/conf.h $S/rbc/force/imp.h $S/mpi/glb.h $S/rbc/imp.h $S/utils/msg.h
 $B/utils/cc.o: $S/utils/cc/common.h $S/inc/conf.h $S/utils/error.h $S/d/api.h $B/conf.h
+$B/utils/convert/imp.o: $S/inc/conf.h $S/inc/type.h $S/utils/convert/imp.h $S/inc/dev.h $B/conf.h $S/utils/convert/imp/main.h $S/utils/kl.h $S/utils/convert/dev/main.h
 $B/utils/error.o: $S/utils/msg.h $S/utils/error.h
 $B/utils/imp.o: $S/utils/error.h $S/utils/imp.h
 $B/utils/mc.o: $S/inc/conf.h $S/utils/error.h $S/mpi/wrapper.h $S/utils/mc.h $B/conf.h

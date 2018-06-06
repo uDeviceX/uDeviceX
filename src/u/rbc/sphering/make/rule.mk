@@ -41,6 +41,7 @@ $B/scheme/time_line/imp.o: $S/scheme/time_line/imp.cpp; $X -I$S/scheme/time_line
 $B/u/rbc/sphering/lib/imp.o: $S/u/rbc/sphering/lib/imp.cu; $N -I$S/u/rbc/sphering/lib -I$S/.
 $B/u/rbc/sphering/main.o: $S/u/rbc/sphering/main.cpp; $X -I$S/u/rbc/sphering -I$S/.
 $B/utils/cc.o: $S/utils/cc.cpp; $X -I$S/utils -I$S/.
+$B/utils/convert/imp.o: $S/utils/convert/imp.cu; $N -I$S/utils/convert -I$S/.
 $B/utils/error.o: $S/utils/error.cpp; $X -I$S/utils -I$S/.
 $B/utils/imp.o: $S/utils/imp.cpp; $X -I$S/utils -I$S/.
 $B/utils/mc.o: $S/utils/mc.cpp; $X -I$S/utils -I$S/.

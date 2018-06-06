@@ -47,7 +47,7 @@ $B/inter/color/imp.o: $S/utils/imp.h $S/inc/conf.h $S/inter/color/imp/drop.h $S/
 $B/io/bop/imp.o: $S/utils/imp.h $S/utils/os.h $S/inc/conf.h $S/utils/error.h $S/inc/type.h $S/mpi/wrapper.h $S/io/bop/imp.h $S/inc/def.h $S/d/api.h $S/utils/mc.h $B/conf.h $S/io/bop/imp/main.h $S/io/bop/imp/type.h $S/coords/imp.h
 $B/io/com/imp.o: $S/utils/os.h $S/utils/imp.h $S/inc/conf.h $S/utils/error.h $S/mpi/wrapper.h $S/io/com/imp.h $S/io/write/imp.h $S/utils/mc.h $B/conf.h $S/coords/imp.h
 $B/io/diag/mesh/imp.o: $S/utils/imp.h $S/inc/conf.h $S/utils/error.h $S/inc/type.h $S/mpi/wrapper.h $S/io/diag/mesh/imp.h $S/io/mesh_read/imp.h $B/conf.h $S/io/diag/mesh/imp/main.h $S/io/diag/mesh/imp/type.h $S/utils/msg.h
-$B/io/diag/part/imp.o: $S/utils/imp.h $S/inc/conf.h $S/utils/error.h $S/inc/type.h $S/mpi/wrapper.h $S/io/diag/part/imp.h $B/conf.h $S/io/diag/part/imp/main.h $S/io/diag/part/imp/type.h $S/utils/msg.h
+$B/io/diag/part/imp.o: $S/utils/imp.h $S/inc/conf.h $S/utils/error.h $S/inc/type.h $S/mpi/wrapper.h $S/io/diag/part/imp.h $S/utils/mc.h $B/conf.h $S/io/diag/part/imp/main.h $S/io/diag/part/imp/type.h $S/utils/msg.h
 $B/io/grid/h5/imp.o: $S/utils/error.h $S/mpi/wrapper.h $S/io/grid/h5/imp.h $S/coords/ini.h $S/coords/imp.h
 $B/io/grid/imp.o: $S/inc/conf.h $S/io/grid/xmf/imp.h $S/utils/error.h $S/mpi/wrapper.h $S/io/grid/h5/imp.h $S/utils/mc.h $B/conf.h
 $B/io/grid/xmf/imp.o: $S/utils/imp.h $S/utils/error.h $S/io/grid/xmf/imp.h
@@ -123,6 +123,7 @@ $B/struct/farray/imp.o: $S/struct/farray/imp.h $S/struct/farray/imp/main.h $S/st
 $B/struct/parray/imp.o: $S/struct/parray/imp.h $S/struct/parray/imp/main.h $S/struct/parray/type.h
 $B/struct/pfarrays/imp.o: $S/struct/farray/imp.h $S/utils/imp.h $S/utils/error.h $S/inc/type.h $S/struct/pfarrays/imp.h $S/struct/parray/imp.h $S/struct/pfarrays/imp/main.h $S/struct/pfarrays/imp/type.h
 $B/utils/cc.o: $S/utils/cc/common.h $S/inc/conf.h $S/utils/error.h $S/d/api.h $B/conf.h
+$B/utils/convert/imp.o: $S/inc/conf.h $S/inc/type.h $S/utils/convert/imp.h $S/inc/dev.h $B/conf.h $S/utils/convert/imp/main.h $S/utils/kl.h $S/utils/convert/dev/main.h
 $B/utils/error.o: $S/utils/msg.h $S/utils/error.h
 $B/utils/imp.o: $S/utils/error.h $S/utils/imp.h
 $B/utils/mc.o: $S/inc/conf.h $S/utils/error.h $S/mpi/wrapper.h $S/utils/mc.h $B/conf.h
