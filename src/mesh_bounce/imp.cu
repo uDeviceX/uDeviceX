@@ -26,7 +26,7 @@ enum {MAX_COL = 4};
 #define _I_ static __device__
 #define _S_ static __device__
 
-namespace meshbb_dev {
+namespace mesh_bounce_dev {
 #include "dev/type.h"
 #include "dev/roots.h"
 #include "dev/utils.h"
