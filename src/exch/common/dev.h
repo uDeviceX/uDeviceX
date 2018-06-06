@@ -37,7 +37,7 @@ static  __device__ void shift_1p(const int s[3], /**/ Particle *p) {
     p->r[Z] += s[Z];
 }
 
-__global__ void ecommon_shift_one_frag(int3 L, int n, const int fid, /**/ Particle *pp) {
+__global__ void ecommon_shift_pp_one_frag(int3 L, int n, const int fid, /**/ Particle *pp) {
     int i, s[3];
     i = threadIdx.x + blockDim.x * blockIdx.x;
     if (i >= n) return;

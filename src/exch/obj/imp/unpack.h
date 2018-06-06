@@ -38,7 +38,7 @@ static void shift_pp(int3 L, int nfrags, const int counts[], /**/ dBags d) {
         n = counts[i];
         if (n) {
             pp = (Particle *) d.data[i];
-            ecommon_shift_one_frag(L, n, i, /**/ pp);
+            ecommon_shift_pp_one_frag(L, n, i, /**/ pp);
         }
     }    
 }

@@ -2,7 +2,7 @@ static void upload_and_shift(int n, int i, int3 L, const data_t *data, Particle 
     if (n == 0) return;
     size_t sz = n * sizeof(Particle);
     CC(d::MemcpyAsync(pp, data, sz, H2D));
-    ecommon_shift_one_frag(L, n, i, /**/ pp);
+    ecommon_shift_pp_one_frag(L, n, i, /**/ pp);
 }
 
 void emesh_unpack(int nv, const EMeshUnpack *u, /**/ int *nmhalo, Particle *pp) {
