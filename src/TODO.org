@@ -1,5 +1,5 @@
 TODO
-* [6/12] Bounce Back
+* [8/12] Bounce Back
 ** DONE store previous flu parts
    CLOSED: [2018-06-05 Tue 16:17]
 ** DONE Bounce back from previous and current flu pp
@@ -16,12 +16,14 @@ TODO
     CLOSED: [2018-06-06 Wed 14:46]
 *** DONE Switch to this struct in mesh exch
     CLOSED: [2018-06-06 Wed 15:02]
-** TODO meshBB uses previous mesh positions
-** TODO test on rigids
+** DONE meshBB uses previous mesh positions
+   CLOSED: [2018-06-06 Wed 17:28]
+** DONE visual test on rigids
+   CLOSED: [2018-06-06 Wed 17:31]
 ** TODO membrane bb
 ** TODO visual test
 ** TODO quantitative test: stats for recoloring
-** TODO many objects suppoort
+** TODO cleaner many objects support
    need clever implementation in sim/objects/bounce.h
 * [0/1] Other
 ** TODO put all converting kernels (zip...) in utils/
