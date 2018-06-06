@@ -28,6 +28,7 @@ TODO
 ** TODO quantitative test: stats for recoloring
 ** TODO cleaner many objects support
    need clever implementation in sim/objects/bounce.h
+** TODO rm old meshbb
 * [0/1] Other
 ** TODO put all converting kernels (zip...) in utils/
 * [0/1] restart
