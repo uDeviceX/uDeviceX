@@ -11,7 +11,7 @@ static void mesh_pack_and_send_rig(Rig *r) {
     MeshExch  *e = r->mesh_exch;
 
     UC(emesh_build_map(q->ns, q->nv, q->i_pp, /**/ e->p));
-    UC(emesh_pack(q->nv, q->i_pp, /**/ e->p));
+    UC(emesh_pack_pp(q->nv, q->i_pp, /**/ e->p));
     UC(emesh_download(e->p));
 
     UC(emesh_post_send(e->p, e->c));

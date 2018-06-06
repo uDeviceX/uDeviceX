@@ -25,7 +25,7 @@ _I_ void exchange_mesh(int maxm, int3 L, MPI_Comm cart, int nv, /*io*/ int *nm, 
     UC(emesh_unpack_ini(L, nv, maxm, &unpack));
 
     UC(emesh_build_map(nm0, nv, pp, /**/ pack));
-    UC(emesh_pack(nv, pp, /**/ pack));
+    UC(emesh_pack_pp(nv, pp, /**/ pack));
     UC(emesh_download(pack));
 
     UC(emesh_post_recv(comm, unpack));

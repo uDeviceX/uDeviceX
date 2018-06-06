@@ -1,11 +1,11 @@
-static void pack_mesh(int nv, const Particle *pp, EMap map, /**/ Pap26 buf) {
+static void pack_mesh_pp(int nv, const Particle *pp, EMap map, /**/ Pap26 buf) {
     KL(emesh_dev::pack_mesh, (14 * 16, 128), (nv, pp, map, /**/ buf));
 }
 
-void emesh_pack(int nv, const Particle *pp, /**/ EMeshPack *p) {
+void emesh_pack_pp(int nv, const Particle *pp, /**/ EMeshPack *p) {
     Pap26 wrap;
     bag2Sarray(*p->dpp, &wrap);
-    pack_mesh(nv, pp, p->map, /**/ wrap);
+    pack_mesh_pp(nv, pp, p->map, /**/ wrap);
 }
 
 void emesh_download(EMeshPack *p) {

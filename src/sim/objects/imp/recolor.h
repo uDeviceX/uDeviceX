@@ -10,7 +10,7 @@ static int exchange_mesh_mbr(Mbr *m, Particle *pp) {
     nv = q->nv;
     
     UC(emesh_build_map(nm, nv, q->pp, /**/ e->p));
-    UC(emesh_pack(nv, q->pp, /**/ e->p));
+    UC(emesh_pack_pp(nv, q->pp, /**/ e->p));
     UC(emesh_download(e->p));
 
     UC(emesh_post_send(e->p, e->c));
