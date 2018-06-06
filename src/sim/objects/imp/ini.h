@@ -217,7 +217,7 @@ void objects_ini(const Config *cfg, const Opt *opt, MPI_Comm cart, const Coords 
     for (i = 0; i < obj->nrig; ++i) UC(ini_rig(cfg, &opt->rig[i], cart, maxp, L, &obj->rig[i]));
 
     if (need_bb(opt->nmbr, opt->nrig, opt->mbr, opt->rig))
-        UC(meshbb_ini(maxp, /**/ &obj->bb));
+        UC(mesh_bounce_ini(maxp, /**/ &obj->bb));
         
     UC(ini_dump(maxp, &obj->dump));
 }

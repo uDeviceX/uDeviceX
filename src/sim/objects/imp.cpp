@@ -64,7 +64,8 @@
 #include "distr/rbc/imp.h"
 #include "distr/rig/imp.h"
 #include "exch/mesh/imp.h"
-#include "meshbb/imp.h"
+//#include "meshbb/imp.h"
+#include "mesh_bounce/imp.h"
 #include "mesh/collision/imp.h"
 
 #include "wall/sdf/imp.h"

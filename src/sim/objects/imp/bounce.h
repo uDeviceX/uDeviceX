@@ -41,16 +41,14 @@ static void clear_momentum_rig(int nmhalo, Rig *r) {
 
 
 static void find_and_select_collisions_rig(float dt, long nflu, Clist cflu, const Particle *flu_pp, const Particle *flu_pp0, int nm, Rig *r, MeshBB *bb) {
-    RigQuants *q = &r->q;
     MeshInfo mi = mesh_info_rig(r);
-    UC(meshbb_find_collisions(dt, nm, mi, q->i_pp, cflu.dims, cflu.starts, cflu.counts, flu_pp, flu_pp0, /**/ bb));
-    UC(meshbb_select_collisions(nflu, /**/ bb));    
+    UC(mesh_bounce_find_collisions(dt, nm, mi, r->bbdata->rr_cp, cflu.dims, cflu.starts, cflu.counts, flu_pp, flu_pp0, /**/ bb));
+    UC(mesh_bounce_select_collisions(nflu, /**/ bb));    
 }
 
 static void bounce_rig(float dt, float flu_mass, const MeshBB *bb, long n, const Particle *pp0, Particle *pp, Rig *r) {
-    RigQuants *q = &r->q;
     MeshInfo mi = mesh_info_rig(r);
-    UC(meshbb_bounce(dt, flu_mass, n, bb, mi, q->i_pp, pp0, /**/ pp, r->bbdata->mm));
+    UC(mesh_bounce_bounce(dt, flu_mass, n, bb, mi, r->bbdata->rr_cp, pp0, /**/ pp, r->bbdata->mm));
 }
 
 static void mom_pack_and_send_rig(Rig *r) {
@@ -85,7 +83,7 @@ static void collect_mom_rig(float dt, Rig *r) {
     BounceBackData *bb = r->bbdata;
     MeshInfo mi = mesh_info_rig(r);
     
-    UC(meshbb_collect_rig_momentum(dt, q->ns, mi, q->i_pp, bb->mm, /**/ q->ss));
+    UC(mesh_bounce_collect_rig_momentum(dt, q->ns, mi, q->i_pp, bb->mm, /**/ q->ss));
 }
 
 /* TODO less brutal implementation */
@@ -95,7 +93,7 @@ static void bounce_rig(float dt, float flu_mass, const Clist flu_cells, long n, 
     mesh_pack_and_send_rig(r);
     nmhalo = mesh_recv_unpack_rig(r);
 
-    UC(meshbb_reini(n, /**/ bb));
+    UC(mesh_bounce_reini(n, /**/ bb));
     clear_momentum_rig(nmhalo, r);
 
     find_and_select_collisions_rig(dt, n, flu_cells, flu_pp, flu_pp0, nmhalo + r->q.ns, r, bb);
