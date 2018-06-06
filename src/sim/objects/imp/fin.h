@@ -27,7 +27,7 @@ static void fin_mesh_mom_exch(/**/ MeshMomExch *e) {
 static void fin_bbdata(/**/ BounceBackData *bb) {
     UC(fin_mesh_mom_exch(/**/ bb->e));
     Dfree(bb->mm);
-    Dfree(bb->pp_prev);
+    Dfree(bb->rr_cp);
     EFREE(bb);
 }
 

@@ -38,8 +38,8 @@ static void ini_bbdata(int nt, int nv, int max_m, MPI_Comm cart, /**/ BounceBack
     EMALLOC(1, bbdata);
     bb = *bbdata;
     UC(ini_mesh_mom_exch(nt, max_m, cart, &bb->e));
-    Dalloc(&bb->mm,      max_m * nt);
-    Dalloc(&bb->pp_prev, max_m * nv);
+    Dalloc(&bb->mm,    max_m * nt);
+    Dalloc(&bb->rr_cp, max_m * nv);
 }
 
 static void ini_colorer(int nv, int max_m, /**/ Colorer **col) {

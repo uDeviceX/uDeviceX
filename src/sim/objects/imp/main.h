@@ -1,11 +1,11 @@
 static void save_mesh_mbr(Mbr *m) {
     if (m->bbdata)
-        aD2D(m->bbdata->pp_prev, m->q.pp, m->q.n);
+        convert_pp2rr_previous(m->q.n, m->q.pp, m->bbdata->rr_cp);
 }
 
 static void save_mesh_rig(Rig *r) {
     if (r->bbdata)
-        aD2D(r->bbdata->pp_prev, r->q.i_pp, r->q.ns * r->q.nv);
+        convert_pp2rr_previous(r->q.ns * r->q.nv, r->q.i_pp, r->bbdata->rr_cp);
 }
 
 void objects_save_mesh(Objects *obj) {

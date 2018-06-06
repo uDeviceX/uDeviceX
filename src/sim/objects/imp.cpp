@@ -20,6 +20,7 @@
 
 #include "utils/msg.h"
 #include "utils/imp.h"
+#include "utils/convert/imp.h"
 
 #include "coords/ini.h"
 #include "coords/imp.h"
