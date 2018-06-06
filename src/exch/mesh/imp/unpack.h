@@ -1,17 +1,17 @@
-static void upload_and_shift(int n, int i, int3 L, const data_t *data, Particle *pp) {
+static void upload_and_shift_pp(int n, int i, int3 L, const data_t *data, Particle *pp) {
     if (n == 0) return;
     size_t sz = n * sizeof(Particle);
     CC(d::MemcpyAsync(pp, data, sz, H2D));
     ecommon_shift_pp_one_frag(L, n, i, /**/ pp);
 }
 
-void emesh_unpack(int nv, const EMeshUnpack *u, /**/ int *nmhalo, Particle *pp) {
+void emesh_unpack_pp(int nv, const EMeshUnpack *u, /**/ int *nmhalo, Particle *pp) {
     int i, nm, n, s = 0, nmtot = 0;
     
     for (i = 0; i < NFRAGS; ++i) {
         nm = u->hpp->counts[i];
         n  = nm * nv; 
-        upload_and_shift(n, i, u->L, u->hpp->data[i], pp + s);
+        upload_and_shift_pp(n, i, u->L, u->hpp->data[i], pp + s);
         s += n;
         nmtot += nm;
     }

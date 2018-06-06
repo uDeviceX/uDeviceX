@@ -33,7 +33,7 @@ _I_ void exchange_mesh(int maxm, int3 L, MPI_Comm cart, int nv, /*io*/ int *nm, 
     UC(emesh_wait_recv(comm, unpack));
     UC(emesh_wait_send(comm));
 
-    UC(emesh_unpack(nv, unpack, /**/ &nmhalo, pp + nm0 * nv));
+    UC(emesh_unpack_pp(nv, unpack, /**/ &nmhalo, pp + nm0 * nv));
     if (cc) UC(emesh_get_num_frag_mesh(unpack, /**/ cc));
     *nm += nmhalo;
     

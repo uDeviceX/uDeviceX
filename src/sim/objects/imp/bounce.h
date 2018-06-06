@@ -26,7 +26,7 @@ static int mesh_recv_unpack_rig(Rig *r) {
     UC(emesh_wait_recv(e->c, e->u));
 
     /* unpack at the end of current mesh buffer */
-    UC(emesh_unpack(q->nv, e->u, /**/ &nmhalo, q->i_pp + q->ns * q->nv));
+    UC(emesh_unpack_pp(q->nv, e->u, /**/ &nmhalo, q->i_pp + q->ns * q->nv));
     return nmhalo;
 }
 

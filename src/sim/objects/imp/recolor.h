@@ -21,7 +21,7 @@ static int exchange_mesh_mbr(Mbr *m, Particle *pp) {
     UC(emesh_wait_send(e->c));
     UC(emesh_wait_recv(e->c, e->u));
 
-    UC(emesh_unpack(nv, e->u, /**/ &nmhalo, pp + nm * nv));
+    UC(emesh_unpack_pp(nv, e->u, /**/ &nmhalo, pp + nm * nv));
     return nm + nmhalo;    
 }
 
