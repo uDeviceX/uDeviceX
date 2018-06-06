@@ -11,7 +11,7 @@ static void mesh_pack_and_send_rig(Rig *r) {
     MeshExch  *e = r->mesh_exch;
 
     UC(emesh_build_map(q->ns, q->nv, q->i_pp, /**/ e->p));
-    UC(emesh_pack_pp(q->nv, q->i_pp, /**/ e->p));
+    UC(emesh_pack_rrcp(q->nv, r->bbdata->rr_cp, /**/ e->p));
     UC(emesh_download(e->p));
 
     UC(emesh_post_send(e->p, e->c));
@@ -26,7 +26,7 @@ static int mesh_recv_unpack_rig(Rig *r) {
     UC(emesh_wait_recv(e->c, e->u));
 
     /* unpack at the end of current mesh buffer */
-    UC(emesh_unpack_pp(q->nv, e->u, /**/ &nmhalo, q->i_pp + q->ns * q->nv));
+    UC(emesh_unpack_rrcp(q->nv, e->u, /**/ &nmhalo, r->bbdata->rr_cp + q->ns * q->nv));
     return nmhalo;
 }
 
