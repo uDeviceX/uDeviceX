@@ -8,6 +8,16 @@ void emesh_pack_pp(int nv, const Particle *pp, /**/ EMeshPack *p) {
     pack_mesh_pp(nv, pp, p->map, /**/ wrap);
 }
 
+static void pack_mesh_rrcp(int nv, const Positioncp *rr, EMap map, /**/ Pocpp26 buf) {
+    KL(emesh_dev::pack_mesh, (14 * 16, 128), (nv, rr, map, /**/ buf));
+}
+
+void emesh_pack_rrcp(int nv, const Positioncp *rr, /**/ EMeshPack *p) {
+    Pocpp26 wrap;
+    bag2Sarray(*p->dpp, &wrap);
+    pack_mesh_rrcp(nv, rr, p->map, /**/ wrap);
+}
+
 void emesh_download(EMeshPack *p) {
     int nw = 1;
     emap_download_tot_counts(nw, NFRAGS, p->map, /**/ p->hpp->counts);

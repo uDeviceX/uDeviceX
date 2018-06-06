@@ -23,6 +23,7 @@ void emesh_build_map(int nm, int nv, const Particle *pp, /**/ EMeshPack *p);
 
 // tag::pack[]
 void emesh_pack_pp(int nv, const Particle *pp, /**/ EMeshPack *p);
+void emesh_pack_rrcp(int nv, const Positioncp *rr, /**/ EMeshPack *p);
 void emesh_download(EMeshPack *p);
 // end::pack[]
 

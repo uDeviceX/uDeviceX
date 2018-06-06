@@ -17,7 +17,8 @@ __global__ void build_map(int3 L0, int n, const float3 *minext, const float3 *ma
         emap_add(NFRAGS, 0, i, fids[j], /**/ map);
 }
 
-static __device__ void pack_p(int nv, const Particle *pp, int vid, int frag_mid, int *indices, /**/ Particle *buf) {
+template <typename T>
+static __device__ void pack_p(int nv, const T *pp, int vid, int frag_mid, int *indices, /**/ T *buf) {
     int dst, src, mid;
     mid = __ldg(indices + frag_mid);
     dst = nv * frag_mid + vid;
@@ -25,7 +26,8 @@ static __device__ void pack_p(int nv, const Particle *pp, int vid, int frag_mid,
     buf[dst] = pp[src];
 }
 
-__global__ void pack_mesh(int nv, const Particle *pp, EMap map, /**/ Pap26 buf) {
+template <typename T>
+__global__ void pack_mesh(int nv, const T *pp, EMap map, /**/ Sarray<T*, 26> buf) {
     int gid, hi, step, fid, mid, vid, frag_mid;
     gid = threadIdx.x + blockDim.x * blockIdx.x;
     hi = map.starts[26] * nv;

@@ -37,6 +37,7 @@ typedef Sarray<int*, 26>     intp26;
 typedef Sarray<Particle*, 26> Pap26;
 typedef Sarray<Force*,    26> Fop26;
 typedef Sarray<Momentum*, 26> Mop26;
+typedef Sarray<Positioncp*, 26> Pocpp26;
 
 /* particles wrap */
 struct PaWrap {
