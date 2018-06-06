@@ -50,8 +50,7 @@ _S_ void revert_r(float h, rPa *p) {
     p->r.z -= p->v.z * h;
 }
 
-__global__ void find_collisions(float dt,
-                                int nm, int nt, int nv, const int4 *tt, const Particle *i_pp,
+__global__ void find_collisions(float dt, int nm, int nt, int nv, const int4 *tt, const Positioncp *i_rr,
                                 int3 L, const int *starts, const int *counts, const Particle *pp, const Particle *pp0,
                                 /**/ int *ncol, float4 *datacol, int *idcol) {
     
@@ -62,7 +61,7 @@ __global__ void find_collisions(float dt,
 
     if (gid >= nm * nt) return;
 
-    fetch_triangle(gid, nt, nv, tt, i_pp, /**/ &A, &B, &C);
+    fetch_triangle(dt, gid, nt, nv, tt, i_rr, /**/ &A, &B, &C);
 
     revert_r(dt, &A);
     revert_r(dt, &B);
@@ -157,7 +156,7 @@ _S_ void push_particle(const real3_t *A, const real3_t *B, const real3_t *C, rea
 
 __global__ void perform_collisions(float dt, float mass,
                                    int n, const int *ncol, const float4 *datacol, const int *idcol,
-                                   int nt, int nv, const int4 *tt, const Particle *i_pp, const Particle *pp0,
+                                   int nt, int nv, const int4 *tt, const Positioncp *i_rr, const Particle *pp0,
                                    /**/ Particle *pp, Momentum *mm) {
     int i, id, entry;
     float4 d;
@@ -179,7 +178,7 @@ __global__ void perform_collisions(float dt, float mass,
     
     vprev(dt, &p1.r, &p0.r, /**/ &p0.v);
 
-    fetch_triangle(id, nt, nv, tt, i_pp, /**/ &A, &B, &C);
+    fetch_triangle(dt, id, nt, nv, tt, i_rr, /**/ &A, &B, &C);
     
     get_collision_point(dt, d, A, B, C, /**/ &rw, &vw);
 

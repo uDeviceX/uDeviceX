@@ -63,6 +63,23 @@ _I_ void fetch_triangle(int id, int nt, int nv, const int4 *tt, const Particle *
     *C = fetch_Part(t.z, i_pp);
 }
 
+_I_ void fetch_triangle(float dt, int id, int nt, int nv, const int4 *tt, const Positioncp *i_rr,
+                        /**/ rPa *A, rPa *B, rPa *C) {
+    int4 t;
+    int tid, mid;
+    tid = id % nt;
+    mid = id / nt;
+
+    t = tt[tid];
+    t.x += mid * nv;
+    t.y += mid * nv;
+    t.z += mid * nv;
+
+    *A = fetch_Part(dt, t.x, i_rr);
+    *B = fetch_Part(dt, t.y, i_rr);
+    *C = fetch_Part(dt, t.z, i_rr);
+}
+
 _I_ void bounce_back(real dt, const rPa *p0, const real3_t *rw, const real3_t *vw, const real_t h, /**/ rPa *pn) {
     pn->v.x = 2 * vw->x - p0->v.x;
     pn->v.y = 2 * vw->y - p0->v.y;

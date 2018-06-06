@@ -1,6 +1,7 @@
 struct MeshBB;
 
 struct Particle;
+struct Positioncp;
 struct Force;
 struct Momentum;
 struct Solid;
@@ -18,11 +19,11 @@ void mesh_bounce_fin(/**/ MeshBB *d);
 
 // tag::int[]
 void mesh_bounce_reini(int n, /**/ MeshBB *d);  // <1>
-void mesh_bounce_find_collisions(float dt, int nm, MeshInfo meshinfo, const Particle *i_pp, int3 L,
+void mesh_bounce_find_collisions(float dt, int nm, MeshInfo meshinfo, const Positioncp *i_rr, int3 L,
                                  const int *starts, const int *counts, const Particle *pp, const Particle *pp0, /**/ MeshBB *d);  // <2>
 void mesh_bounce_select_collisions(int n, /**/ MeshBB *d);  // <3>
 void mesh_bounce_bounce(float dt, float mass, int n, const MeshBB *d, MeshInfo meshinfo,
-                        const Particle *i_pp, const Particle *pp0, /**/ Particle *pp, Momentum *mm);  // <4>
+                        const Positioncp *i_rr, const Particle *pp0, /**/ Particle *pp, Momentum *mm);  // <4>
 // end::int[]
 
 // tag::collect[]

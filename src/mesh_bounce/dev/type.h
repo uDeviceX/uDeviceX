@@ -26,6 +26,21 @@ _I_ rPa fetch_Part(int i, const Particle *pp) {
     return rp;
 }
 
+_I_ rPa fetch_Part(float dt, int i, const Positioncp *rr) {
+    enum {X, Y, Z};
+    const Positioncp r = rr[i];
+    rPa rp;
+    rp.r.x = r.rc[X];
+    rp.r.y = r.rc[Y];
+    rp.r.z = r.rc[Z];
+
+    rp.v.x = (r.rc[X] - r.rp[X]) / dt;
+    rp.v.y = (r.rc[Y] - r.rp[Y]) / dt;
+    rp.v.z = (r.rc[Z] - r.rp[Z]) / dt;
+    
+    return rp;
+}
+
 _I_ void write_Part(const rPa *rp, int i, Particle *pp) {
     Particle p = {
         .r = {(float) rp->r.x, (float) rp->r.y, (float) rp->r.z},
