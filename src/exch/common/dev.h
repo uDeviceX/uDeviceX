@@ -30,11 +30,11 @@ static __device__ void fid2shift(int3 L, int id, /**/ int s[3]) {
     s[Z] = L.z * frag_dev::i2dz(id);
 }
 
-static  __device__ void shift_1p(const int s[3], /**/ Particle *p) {
+static  __device__ void shift_f3(const int s[3], /**/ float *r) {
     enum {X, Y, Z};
-    p->r[X] += s[X];
-    p->r[Y] += s[Y];
-    p->r[Z] += s[Z];
+    r[X] += s[X];
+    r[Y] += s[Y];
+    r[Z] += s[Z];
 }
 
 __global__ void ecommon_shift_pp_one_frag(int3 L, int n, const int fid, /**/ Particle *pp) {
@@ -43,5 +43,15 @@ __global__ void ecommon_shift_pp_one_frag(int3 L, int n, const int fid, /**/ Par
     if (i >= n) return;
     
     fid2shift(L, fid, /**/ s);
-    shift_1p(s, /**/ pp + i);
+    shift_f3(s, /**/ pp[i].r);
+}
+
+__global__ void ecommon_shift_rrcp_one_frag(int3 L, int n, const int fid, /**/ Positioncp *rr) {
+    int i, s[3];
+    i = threadIdx.x + blockDim.x * blockIdx.x;
+    if (i >= n) return;
+    
+    fid2shift(L, fid, /**/ s);
+    shift_f3(s, /**/ rr[i].rp);
+    shift_f3(s, /**/ rr[i].rc);
 }

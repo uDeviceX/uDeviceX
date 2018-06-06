@@ -25,3 +25,7 @@ void ecommon_pack_pp(const Particle *pp, PackHelper ph, /**/ Pap26 buf) {
 void ecommon_shift_pp_one_frag(int3 L, int n, const int fid, /**/ Particle *pp) {
     KL(exch_dev::ecommon_shift_pp_one_frag, (k_cnf(n)), (L, n, fid, /**/ pp));
 }
+
+void ecommon_shift_rrcp_one_frag(int3 L, int n, const int fid, /**/ Positioncp *rr) {
+    KL(exch_dev::ecommon_shift_rrcp_one_frag, (k_cnf(n)), (L, n, fid, /**/ rr));
+}
