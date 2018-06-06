@@ -30,6 +30,7 @@
 #include "struct/farray/imp.h"
 #include "struct/pfarrays/imp.h"
 #include "struct/partlist/type.h"
+#include "mesh/triangles/type.h"
 #include "mesh/triangles/imp.h"
 #include "clist/imp.h"
 
