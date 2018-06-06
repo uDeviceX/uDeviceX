@@ -20,6 +20,8 @@ TODO
 ** TODO quantitative test: stats for recoloring
 ** TODO many objects suppoort
    need clever implementation in sim/objects/bounce.h
+* [0/1] Other
+** TODO put all converting kernels (zip...) in utils/
 * [0/1] restart
 ** TODO continue numbering of dumps
 * [1/4] cell adhesion

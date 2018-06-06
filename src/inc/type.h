@@ -25,6 +25,11 @@ struct Momentum {
     float P[3], L[3]; /* linear and angular momentum */
 };
 
+struct Positioncp {
+    float rc[3]; /* current position  */
+    float rp[3]; /* previous position */
+};
+
 typedef Sarray<int, 26>       int26;
 typedef Sarray<int, 27>       int27;
 
