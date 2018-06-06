@@ -18,6 +18,26 @@ void emesh_unpack_pp(int nv, const EMeshUnpack *u, /**/ int *nmhalo, Particle *p
     *nmhalo = nmtot;
 }
 
+static void upload_and_shift_rrcp(int n, int i, int3 L, const data_t *data, Positioncp *rr) {
+    if (n == 0) return;
+    size_t sz = n * sizeof(Positioncp);
+    CC(d::MemcpyAsync(rr, data, sz, H2D));
+    ecommon_shift_rrcp_one_frag(L, n, i, /**/ rr);
+}
+
+void emesh_unpack_rrcp(int nv, const EMeshUnpack *u, /**/ int *nmhalo, Positioncp *rr) {
+    int i, nm, n, s = 0, nmtot = 0;
+    
+    for (i = 0; i < NFRAGS; ++i) {
+        nm = u->hpp->counts[i];
+        n  = nm * nv; 
+        upload_and_shift_rrcp(n, i, u->L, u->hpp->data[i], rr + s);
+        s += n;
+        nmtot += nm;
+    }
+    *nmhalo = nmtot;
+}
+
 void emesh_get_num_frag_mesh(const EMeshUnpack *u, /**/ int cc[NFRAGS]) {
     memcpy(cc, u->hpp->counts, NFRAGS * sizeof(int));
 }

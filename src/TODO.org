@@ -1,5 +1,5 @@
 TODO
-* [5/12] Bounce Back
+* [6/12] Bounce Back
 ** DONE store previous flu parts
    CLOSED: [2018-06-05 Tue 16:17]
 ** DONE Bounce back from previous and current flu pp
@@ -10,10 +10,12 @@ TODO
    CLOSED: [2018-06-05 Tue 17:29]
 ** DONE Store previous mesh positions
    CLOSED: [2018-06-06 Wed 08:53]
-** TODO [1/2] Exchange previous mesh
+** DONE [2/2] Exchange previous mesh
+   CLOSED: [2018-06-06 Wed 15:03]
 *** DONE Merge inside positions structure
     CLOSED: [2018-06-06 Wed 14:46]
-*** TODO Switch to this struct in mesh exch
+*** DONE Switch to this struct in mesh exch
+    CLOSED: [2018-06-06 Wed 15:02]
 ** TODO meshBB uses previous mesh positions
 ** TODO test on rigids
 ** TODO membrane bb

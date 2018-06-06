@@ -36,6 +36,7 @@ void emesh_wait_send(EMeshComm *c);
 
 // tag::unpack[]
 void emesh_unpack_pp(int nv, const EMeshUnpack *u, /**/ int *nmhalo, Particle *pp);
+void emesh_unpack_rrcp(int nv, const EMeshUnpack *u, /**/ int *nmhalo, Positioncp *rr);
 // end::unpack[]
 
 // tag::get[]
