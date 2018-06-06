@@ -33,12 +33,13 @@ static void ini_mesh_mom_exch(int nt, int max_m, MPI_Comm comm, /**/ MeshMomExch
     UC(emesh_unpackm_ini(nt, max_m, /**/ &e->u));
 }
 
-static void ini_bbdata(int nt, int max_m, MPI_Comm cart, /**/ BounceBackData **bbdata) {
+static void ini_bbdata(int nt, int nv, int max_m, MPI_Comm cart, /**/ BounceBackData **bbdata) {
     BounceBackData *bb;
     EMALLOC(1, bbdata);
     bb = *bbdata;
     UC(ini_mesh_mom_exch(nt, max_m, cart, &bb->e));
     Dalloc(&bb->mm,      max_m * nt);
+    Dalloc(&bb->pp_prev, max_m * nv);
 }
 
 static void ini_colorer(int nv, int max_m, /**/ Colorer **col) {
@@ -87,7 +88,7 @@ static void read_mesh(const char *filename, MeshRead **mesh) {
 
 static void ini_obj_common(const Config *cfg, const OptObj *opt, MPI_Comm cart, int max_m, int3 L, Obj *obj) {
     char mesh_dir[FILENAME_MAX];
-    int nv;
+    int nt, nv;
     
     strcpy(obj->name, opt->name);
     strcpy(obj->ic_file, opt->ic_file);
@@ -102,13 +103,14 @@ static void ini_obj_common(const Config *cfg, const OptObj *opt, MPI_Comm cart, 
     UC(ini_params(cfg, obj->name, "adhesion", &obj->adhesion));
     UC(ini_repulsion_params(cfg, obj->name, &obj->wall_rep_prm));
 
+    nt = mesh_read_get_nt(obj->mesh);
     nv = mesh_read_get_nv(obj->mesh);
     
     obj->mesh_exch = NULL;
     obj->bbdata    = NULL;
 
     if (opt->bounce) {
-        UC(ini_bbdata(nv, max_m, cart, /**/ &obj->bbdata));
+        UC(ini_bbdata(nt, nv, max_m, cart, /**/ &obj->bbdata));
         UC(ini_mesh_exch(L, nv, max_m, cart, /**/ &obj->mesh_exch));
     }
 }

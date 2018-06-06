@@ -1,3 +1,20 @@
+static void save_mesh_mbr(Mbr *m) {
+    if (m->bbdata)
+        aD2D(m->bbdata->pp_prev, m->q.pp, m->q.n);
+}
+
+static void save_mesh_rig(Rig *r) {
+    if (r->bbdata)
+        aD2D(r->bbdata->pp_prev, r->q.i_pp, r->q.ns * r->q.nv);
+}
+
+void objects_save_mesh(Objects *obj) {
+    int i;
+    if (!obj->active) return;
+    for (i = 0; i < obj->nmbr; ++i) UC(save_mesh_mbr(obj->mbr[i]));
+    for (i = 0; i < obj->nrig; ++i) UC(save_mesh_rig(obj->rig[i]));    
+}
+
 static void clear_vel_mbr(Mbr *m) {
     UC(scheme_move_clear_vel(m->q.n, m->q.pp));
 }

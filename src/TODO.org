@@ -1,5 +1,5 @@
 TODO
-* [4/7] Bounce Back
+* [5/11] Bounce Back
 ** DONE store previous flu parts
    CLOSED: [2018-06-05 Tue 16:17]
 ** DONE Bounce back from previous and current flu pp
@@ -8,6 +8,11 @@ TODO
    CLOSED: [2018-06-05 Tue 16:47]
 ** DONE visual test
    CLOSED: [2018-06-05 Tue 17:29]
+** DONE Store previous mesh positions
+   CLOSED: [2018-06-06 Wed 08:53]
+** TODO Exchange previous mesh
+** TODO meshBB uses previous mesh positions
+** TODO test on rigids
 ** TODO membrane bb
 ** TODO visual test
 ** TODO quantitative test: stats for recoloring

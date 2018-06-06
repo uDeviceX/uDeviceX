@@ -34,6 +34,7 @@ struct Colorer {
 
 /* workspace for mesh bounce back */
 struct BounceBackData {
+    Particle *pp_prev;
     MeshMomExch *e;
     Momentum *mm;
 };
