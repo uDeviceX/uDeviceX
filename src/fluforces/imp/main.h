@@ -1,13 +1,6 @@
-static void zip(const int n, const float *pp, /**/ float4 *zpp) {
-    static_assert(sizeof(Particle) == 6 * sizeof(float),
-                  "sizeof(Particle) != 6 * sizeof(float)");
-    KL(fluforces_dev::zip, (k_cnf(n)), (n, pp, zpp));
-}
-
-
 void fluforces_bulk_prepare(int n, const PaArray *a, /**/ FluForcesBulk *b) {
     if (n == 0) return;
-    zip(n, a->pp, /**/ b->zipped_pp);
+    convert_pp2f4_pos(n, a->pp, /**/ b->zipped_pp);
     if (a->colors)
         b->colors = a->cc;
     else
