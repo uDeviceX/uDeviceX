@@ -156,7 +156,7 @@ _S_ void inverse(const real_t A[6], /**/ real_t I[6]) {
 
     /* inverse determinant */
     real_t idet = mx * A[XX] - my * A[XY] + mz * A[XZ];
-    assert( fabs(idet) > 1e-8f );
+    //assert( fabs(idet) > 1e-8f );
     idet = 1.f / idet;
 
     I[XX] =  idet * mx;
