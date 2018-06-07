@@ -63,13 +63,6 @@ __global__ void collect_rig_mom(int ns, int nt, int nv, const int4 *tt, const Pa
     }
 }
 
-_S_ void addForce(const real3_t f, int i, Force *ff) {
-    enum {X, Y, Z};
-    atomicAdd(ff[i].f + X, f.x);
-    atomicAdd(ff[i].f + Y, f.y);
-    atomicAdd(ff[i].f + Z, f.z);
-}
-
 _S_ void addVel(const real3_t v, int i, Particle *pp) {
     enum {X, Y, Z};
     atomicAdd(pp[i].v + X, v.x);
