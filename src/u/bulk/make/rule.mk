@@ -1,3 +1,4 @@
+$B/algo/convert/imp.o: $S/algo/convert/imp.cu; $N -I$S/algo/convert -I$S/.
 $B/algo/scan/imp.o: $S/algo/scan/imp.cu; $N -I$S/algo/scan -I$S/.
 $B/clist/imp.o: $S/clist/imp.cu; $N -I$S/clist -I$S/.
 $B/conf/imp.o: $S/conf/imp.cpp; $X -I$S/conf -I$S/.

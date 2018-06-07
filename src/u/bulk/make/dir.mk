@@ -1,4 +1,5 @@
 D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
+    d $B/algo/convert    && \
     d $B/algo/scan       && \
     d $B/clist           && \
     d $B/conf            && \
