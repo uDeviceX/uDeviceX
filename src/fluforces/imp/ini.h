@@ -10,9 +10,14 @@ void fluforces_bulk_ini(int3 L, int maxp, /**/ FluForcesBulk **bd) {
 
 static int is_plus(const int d[3]) {
     enum {X, Y, Z};
-    return d[X] + d[Y] + d[Z] > 0 ||
-        d[X] + d[Y] + d[Z] == 0 && (d[X] > 0 || d[X] == 0 && (d[Y] > 0 || d[Y] == 0 && d[Z] > 0));
+    return (d[X] + d[Y] + d[Z] > 0) ||
+        ((d[X] + d[Y] + d[Z] == 0) && (d[X] > 0)) ||
+        ((d[X] == 0) && (d[Y] > 0)) ||
+        (d[Y] == 0 && d[Z] > 0);
 }
+
+static int min(int a, int b) {return a < b ? a : b;}
+static int max(int a, int b) {return a < b ? b : a;}
 
 static void get_interrank_infos(MPI_Comm cart, int fid, /**/ RNDunif* trunks[], bool masks[]) {
     int coordsneighbor[3], c, indx[3], rank, dstrank;

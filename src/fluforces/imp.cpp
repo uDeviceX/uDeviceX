@@ -1,5 +1,6 @@
 #include <mpi.h>
 #include <assert.h>
+#include <vector_types.h>
 
 #if __CUDACC_VER_MAJOR__ >= 9
 #include <cuda_fp16.h>
@@ -12,7 +13,7 @@
 #include "utils/imp.h"
 
 #include "math/rnd/imp.h"
-#include "math/rnd/dev.h"
+// #include "math/rnd/dev.h"
 
 #include "inc/type.h"
 #include "inc/dev.h"
