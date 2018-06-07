@@ -172,7 +172,7 @@ static void collect_mom_rig(Rig *r) {
 /* TODO less brutal implementation */
 static void bounce_mbr(float dt, float flu_mass, const Clist flu_cells, long n, const Particle *flu_pp0, Particle *flu_pp, MeshBB *bb, Mbr *m) {
     int nmhalo;
-    if (!m->bbdata) return;
+    if (!m->bbdata || !m->active_bounce) return;
 
     mesh_pack_and_send_mbr(m);
     nmhalo = mesh_recv_unpack_mbr(m);
