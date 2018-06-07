@@ -40,7 +40,7 @@ __global__ void collect_rig_mom(int ns, int nt, int nv, const int4 *tt, const Pa
     if (sid >= ns) return;
 
     Momentum m = mm[i];
-    s = &ss[i];
+    s = &ss[sid];
 
     if (nonzero(&m)) {
         rPa A, B, C;
