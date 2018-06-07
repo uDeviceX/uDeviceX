@@ -1,0 +1,9 @@
+#### mesh_bounce: RBC in solvent
+# sTEST: mesh_bounce.rbc.t1
+cd test/mesh_bounce/rbc
+ x=8 y=16 z=8; echo 1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 > rbcs-ic.txt
+u.cp.rbc rbc/498.off rbc.off
+:
+u.run udx conf.cfg
+:
+ply2punto ply/rbc/00002.ply | uscale 1 > ply.out.txt
