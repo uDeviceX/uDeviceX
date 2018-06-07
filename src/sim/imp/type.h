@@ -61,6 +61,7 @@ struct Vcon {
 struct Time {
     TimeLine *t;          /* current time manager         */
     float eq, end;        /* freeze time, end time        */
+    float mbrbb;          /* when to activate membrane bounce */
     TimeStep *step;       /* time step manager            */
     TimeStepAccel *accel; /* helper for time step manager */
 };

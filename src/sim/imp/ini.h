@@ -149,8 +149,9 @@ _S_ void ini_dump(int maxp, MPI_Comm cart, const Coords *c, const Opt *opt, Dump
 
 _S_ void ini_time(const Config *cfg, /**/ Time *t) {
     const float t0 = 0;
-    UC(conf_lookup_float(cfg, "time.end",  &t->end));
-    UC(conf_lookup_float(cfg, "time.wall", &t->eq));
+    UC(conf_lookup_float(cfg, "time.end",    &t->end));
+    UC(conf_lookup_float(cfg, "time.wall",   &t->eq));
+    UC(conf_lookup_float(cfg, "time.mbr_bb", &t->mbrbb));
     UC(time_line_ini(t0, &t->t));
     UC(time_step_ini(cfg, &t->step));
     UC(time_step_accel_ini(&t->accel));
