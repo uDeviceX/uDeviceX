@@ -1,5 +1,5 @@
 TODO
-* [11/13] Bounce Back
+* [11/14] Bounce Back
 ** DONE store previous flu parts
    CLOSED: [2018-06-05 Tue 16:17]
 ** DONE Bounce back from previous and current flu pp
@@ -28,6 +28,7 @@ TODO
     CLOSED: [2018-06-07 Thu 10:06]
 ** DONE visual test
    CLOSED: [2018-06-07 Thu 11:24]
+** TODO configure: switch bunce back on after a given time
 ** TODO quantitative test: stats for recoloring
 ** TODO cleaner many objects support
    need clever implementation in sim/objects/bounce.h
