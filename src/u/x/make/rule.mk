@@ -68,7 +68,6 @@ $B/math/tform/imp.o: $S/math/tform/imp.cpp; $X -I$S/math/tform -I$S/.
 $B/math/tri/imp.o: $S/math/tri/imp.cpp; $X -I$S/math/tri -I$S/.
 $B/mesh/angle/imp.o: $S/mesh/angle/imp.cpp; $X -I$S/mesh/angle -I$S/.
 $B/mesh/area/imp.o: $S/mesh/area/imp.cpp; $X -I$S/mesh/area -I$S/.
-$B/meshbb/imp.o: $S/meshbb/imp.cu; $N -I$S/meshbb -I$S/.
 $B/mesh/bbox/imp.o: $S/mesh/bbox/imp.cpp; $X -I$S/mesh/bbox -I$S/.
 $B/mesh_bounce/imp.o: $S/mesh_bounce/imp.cu; $N -I$S/mesh_bounce -I$S/.
 $B/mesh/collision/imp.o: $S/mesh/collision/imp.cu; $N -I$S/mesh/collision -I$S/.
