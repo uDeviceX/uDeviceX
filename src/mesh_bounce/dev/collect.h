@@ -1,6 +1,38 @@
+_S_ void rig_transform_mom(real3_t dr, Momentum *m) {
+    mom_shift_ref(dr, /**/ m);
+
+    m->L[X] += dr.y * m->P[Z] - dr.z * m->P[Y];
+    m->L[Y] += dr.z * m->P[X] - dr.x * m->P[Z];
+    m->L[Z] += dr.x * m->P[Y] - dr.y * m->P[X];    
+}
+
+_S_ void rig_add_lin_mom(float mass, const float P[3], float *v) {
+    enum {X, Y, Z};
+    float fac = 1.0 / mass;
+    atomicAdd(&v[X], fac * P[X]);
+    atomicAdd(&v[Y], fac * P[Y]);
+    atomicAdd(&v[Z], fac * P[Z]);
+}
+
+_S_ void rig_add_ang_mom(const float Iinv[], const float L[3], float *om) {
+    enum {X, Y, Z, D};
+    enum {XX, XY, XZ, YY, YZ, ZZ};
+    enum {YX = XY, ZX = XZ, ZY = YZ};
+    float dom[D] = {
+        Iinv[XX] * L[X] + Iinv[XY] * L[Y] + Iinv[XZ] * L[Z],
+        Iinv[YX] * L[X] + Iinv[YY] * L[Y] + Iinv[YZ] * L[Z],
+        Iinv[ZX] * L[X] + Iinv[ZY] * L[Y] + Iinv[ZZ] * L[Z]
+    };
+    
+    atomicAdd(&om[X], dom[X]);
+    atomicAdd(&om[Y], dom[Y]);
+    atomicAdd(&om[Z], dom[Z]);
+}
+
 /* assume very small portion of non zero momentum changes */
 __global__ void collect_rig_mom(float dt, int ns, int nt, int nv, const int4 *tt, const Particle *pp, const Momentum *mm, /**/ Solid *ss) {
     int i, sid;
+    Solid *s;
     i = threadIdx.x + blockDim.x * blockIdx.x;
 
     sid = i / nt;
@@ -23,21 +55,12 @@ __global__ void collect_rig_mom(float dt, int ns, int nt, int nv, const int4 *tt
         dr.y -= 0.333333 * (A.r.y + B.r.y + C.r.y);
         dr.z -= 0.333333 * (A.r.z + B.r.z + C.r.z);
 
-        mom_shift_ref(dr, /**/ &m);
+        rig_transform_mom(dr, &m);
 
-        m.L[X] += dr.y * m.P[Z] - dr.z * m.P[Y];
-        m.L[Y] += dr.z * m.P[X] - dr.x * m.P[Z];
-        m.L[Z] += dr.x * m.P[Y] - dr.y * m.P[X];
+        s = &ss[i];
 
-        const float fac = 1.f / dt;
-        
-        atomicAdd(ss[sid].fo + X, fac * m.P[X]);
-        atomicAdd(ss[sid].fo + Y, fac * m.P[Y]);
-        atomicAdd(ss[sid].fo + Z, fac * m.P[Z]);
-
-        atomicAdd(ss[sid].to + X, fac * m.L[X]);
-        atomicAdd(ss[sid].to + Y, fac * m.L[Y]);
-        atomicAdd(ss[sid].to + Z, fac * m.L[Z]);
+        rig_add_lin_mom(s->mass, m.P, s->v);
+        rig_add_ang_mom(s->Iinv, m.L, s->om);
     }
 }
 
