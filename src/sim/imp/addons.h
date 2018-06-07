@@ -95,3 +95,8 @@ _I_ void recolor_from_rbc(long it, Sim *s) {
         UC(colors_from_rbc(s));
     }
 }
+
+_I_ void activate_mbr_bb(Sim *s) {
+    UC(colors_from_rbc(s));
+    UC(objects_activate_mbr_bounce(s->obj));
+}

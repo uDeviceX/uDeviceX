@@ -10,6 +10,18 @@ _I_ bool is_sampling_time(const Sim *s) {
     return time_line_cross(time, freq);
 }
 
+_I_ bool is_mbr_bb_activation_time(Sim *s) {
+    float t, tbb;
+    t = time_line_get_current(s->time.t);
+    tbb = s->time.mbr_bb;
+
+    if (t > tbb && !s->active_mbr_bb) {
+        s->active_mbr_bb = true;
+        return true;
+    }
+    return false;
+}
+
 _I_ void utils_compute_hematocrit(const Sim *s) {
     const Opt *opt = &s->opt;
     double Vdomain, Vrbc, Ht;

@@ -24,6 +24,9 @@ _S_ void step(TimeLine *time, float dt, float tstart, Sim *s) {
     UC(objects_distribute(s->obj));
 
     if (objects_have_bounce(s->obj)) {
+        if (is_mbr_bb_activation_time(s))
+            activate_mbr_bb(s);
+
         UC(store_solvent(&s->flu));
         UC(objects_save_mesh(s->obj));
     }

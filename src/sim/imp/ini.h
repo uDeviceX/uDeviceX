@@ -151,7 +151,7 @@ _S_ void ini_time(const Config *cfg, /**/ Time *t) {
     const float t0 = 0;
     UC(conf_lookup_float(cfg, "time.end",    &t->end));
     UC(conf_lookup_float(cfg, "time.wall",   &t->eq));
-    UC(conf_lookup_float(cfg, "time.mbr_bb", &t->mbrbb));
+    UC(conf_lookup_float(cfg, "time.mbr_bb", &t->mbr_bb));
     UC(time_line_ini(t0, &t->t));
     UC(time_step_ini(cfg, &t->step));
     UC(time_step_accel_ini(&t->accel));
@@ -225,6 +225,8 @@ void sim_ini(const Config *cfg, MPI_Comm cart, /**/ Sim **sim) {
 
     if (m::is_master(s->cart))
         UC(utils_dump_history(cfg, "conf.history.cfg"));
+
+    s->active_mbr_bb = false;
     
     MC(m::Barrier(s->cart));
 }
