@@ -158,8 +158,7 @@ static void collect_mom_mbr(float dt, Mbr *m) {
     BounceBackData *bb = m->bbdata;
     MeshInfo mi = mesh_info_mbr(m);
 
-    // TODO where to store forces?
-    UC(mesh_bounce_collect_rbc_momentum(dt, q->nc, mi, q->pp, bb->mm, /**/ m->ff));
+    UC(mesh_bounce_collect_rbc_momentum(m->mass, q->nc, mi, bb->mm, /**/ q->pp));
 }
 
 static void collect_mom_rig(Rig *r) {

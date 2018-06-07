@@ -40,6 +40,6 @@ void mesh_bounce_collect_rig_momentum(int ns, MeshInfo mi, const Particle *pp, c
     KL(mesh_bounce_dev::collect_rig_mom, (k_cnf(ns * mi.nt)), (ns, mi.nt, mi.nv, mi.tt, pp, mm, /**/ ss));
 }
 
-void mesh_bounce_collect_rbc_momentum(float dt, int nc, MeshInfo mi, const Particle *pp, const Momentum *mm, /**/ Force *ff) {
-    KL(mesh_bounce_dev::collect_rbc_mom, (k_cnf(nc * mi.nt)), (dt, nc, mi.nt, mi.nv, mi.tt, pp, mm, /**/ ff));
+void mesh_bounce_collect_rbc_momentum(float mass, int nc, MeshInfo mi, const Momentum *mm, /**/ Particle *pp) {
+    KL(mesh_bounce_dev::collect_rbc_mom, (k_cnf(nc * mi.nt)), (mass, nc, mi.nt, mi.nv, mi.tt, mm, /**/ pp));
 }

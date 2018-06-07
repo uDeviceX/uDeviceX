@@ -28,5 +28,5 @@ void mesh_bounce_bounce(float dt, float mass, int n, const MeshBB *d, MeshInfo m
 
 // tag::collect[]
 void mesh_bounce_collect_rig_momentum(int ns, MeshInfo meshinfo, const Particle *pp, const Momentum *mm, /**/ Solid *ss); // <1>
-void mesh_bounce_collect_rbc_momentum(float dt, int nc, MeshInfo meshinfo, const Particle *pp, const Momentum *mm, /**/ Force *ff); // <2>
+void mesh_bounce_collect_rbc_momentum(float mass, int nc, MeshInfo mi, const Momentum *mm, /**/ Particle *pp);            // <2>
 // end::collect[]

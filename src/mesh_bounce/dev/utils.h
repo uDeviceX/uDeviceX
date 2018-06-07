@@ -109,7 +109,7 @@ _I_ void mom_shift_ref(const real3_t r, /**/ Momentum *m) {
     m->L[Z] -= r.x * m->P[Y] - r.y * m->P[X];
 }
 
-_I_ bool nz(float a) {return fabs(a) > 1e-6f;}
+_S_ bool nz(float a) {return fabs(a) > 1e-6f;}
 
 _I_ bool nonzero(const Momentum *m) {
     return nz(m->P[X]) && nz(m->P[Y]) && nz(m->P[Z]) &&
@@ -120,7 +120,7 @@ enum {XX, XY, XZ, YY, YZ, ZZ};
 /* see /poc/bounce-back/trianglemom.mac */
 
 /* inertia tensor w.r.t. com of triangle */
-_I_ void compute_I(const real3_t a, const real3_t b, const real3_t c, /**/ real_t I[6]) {
+_S_ void compute_I(float mass, const real3_t a, const real3_t b, const real3_t c, /**/ real_t I[6]) {
 
     real3_t M, d, e;
     const real_t inv_12 = 1.f/12.f;
@@ -138,16 +138,16 @@ _I_ void compute_I(const real3_t a, const real3_t b, const real3_t c, /**/ real_
     e.y = 2 * b.y - a.y - c.y;
     e.z = 2 * c.y - a.y - b.y;
 
-    I[XX] = M.y + M.z;
-    I[YY] = M.x + M.z;
-    I[ZZ] = M.x + M.y;
+    I[XX] = mass * (M.y + M.z);
+    I[YY] = mass * (M.x + M.z);
+    I[ZZ] = mass * (M.x + M.y);
 
-    I[XY] = - inv_24 * (d.x * a.y + d.y * b.y + d.z * c.y);
-    I[XZ] = - inv_24 * (d.x * a.z + d.y * b.z + d.z * c.z);
-    I[YZ] = - inv_24 * (e.x * a.z + e.y * b.z + e.z * c.z);
+    I[XY] = - inv_24 * mass * (d.x * a.y + d.y * b.y + d.z * c.y);
+    I[XZ] = - inv_24 * mass * (d.x * a.z + d.y * b.z + d.z * c.z);
+    I[YZ] = - inv_24 * mass * (e.x * a.z + e.y * b.z + e.z * c.z);
 }
 
-_I_ void inverse(const real_t A[6], /**/ real_t I[6]) {
+_S_ void inverse(const real_t A[6], /**/ real_t I[6]) {
 
     /* minors */
     const real_t mx = A[YY] * A[ZZ] - A[YZ] * A[YZ];
@@ -167,45 +167,44 @@ _I_ void inverse(const real_t A[6], /**/ real_t I[6]) {
     I[ZZ] =  idet * (A[XX] * A[YY] - A[XY] * A[XY]);
 }
 
-_I_ void rbc_v2f(real dt, const real3_t r, const real3_t om, const real3_t v, /**/ real3_t *f) {
-    const float fac = 1.0 / dt;
-    f->x = fac * (v.x + r.y * om.z - r.z * om.y);
-    f->y = fac * (v.y + r.z * om.x - r.x * om.z);
-    f->z = fac * (v.z + r.x * om.y - r.y * om.x);
+_S_ void rigid_motion_vel(const real3_t r, const real3_t om, const real3_t v0, /**/ real3_t *v) {
+    v->x = v0.x + r.y * om.z - r.z * om.y;
+    v->y = v0.y + r.z * om.x - r.x * om.z;
+    v->z = v0.z + r.x * om.y - r.y * om.x;
 }
 
-_I_ void rbc_M2f(real dt,
-                 const Momentum m, real3_t a, real3_t b, real3_t c,
-                 /**/ real3_t *fa, real3_t *fb, real3_t *fc) {
+_I_ void rbc_M2v(float mass, const Momentum m, real3_t a, real3_t b, real3_t c,
+                 /**/ real3_t *va, real3_t *vb, real3_t *vc) {
 
-    real_t I[6] = {0}, Iinv[6];
+    real_t I[6], Iinv[6], inv_mass;
     real3_t om, v, com;
 
     static const real_t one_third = 1.f / 3.f;
 
-    compute_I(a, b, c, /**/ I);
+    compute_I(mass, a, b, c, /**/ I);
     inverse(I, /**/ Iinv);
 
     /* angular velocity to be added (w.r.t. com of triangle) */
-    om.x = one_third * (I[XX] * m.L[X] + I[XY] * m.L[Y] + I[XZ] * m.L[Z]);
-    om.y = one_third * (I[XY] * m.L[X] + I[YY] * m.L[Y] + I[YZ] * m.L[Z]);
-    om.z = one_third * (I[XZ] * m.L[X] + I[YZ] * m.L[Y] + I[ZZ] * m.L[Z]);
+    om.x = one_third * (Iinv[XX] * m.L[X] + Iinv[XY] * m.L[Y] + Iinv[XZ] * m.L[Z]);
+    om.y = one_third * (Iinv[XY] * m.L[X] + Iinv[YY] * m.L[Y] + Iinv[YZ] * m.L[Z]);
+    om.z = one_third * (Iinv[XZ] * m.L[X] + Iinv[YZ] * m.L[Y] + Iinv[ZZ] * m.L[Z]);
 
     /* linear velocity to be added */
-    v.x =  one_third * (m.P[X]);
-    v.y =  one_third * (m.P[Y]);
-    v.z =  one_third * (m.P[Z]);
+    inv_mass = 1.0 / mass;
+    v.x =  one_third * m.P[X] * inv_mass;
+    v.y =  one_third * m.P[Y] * inv_mass;
+    v.z =  one_third * m.P[Z] * inv_mass;
 
     /* referential is com of triangle, shift it */
     com.x = one_third * (a.x + b.x + c.x);
     com.y = one_third * (a.y + b.y + c.y);
     com.z = one_third * (a.z + b.z + c.z);
 
-    a.x -= com.x;
-    a.y -= com.y;
-    a.z -= com.z;
+    a.x -= com.x; b.x -= com.x; c.x -= com.x;
+    a.y -= com.y; b.y -= com.y; c.y -= com.y;
+    a.z -= com.z; b.z -= com.z; c.z -= com.z;
 
-    rbc_v2f(dt, a, om, v, /**/ fa);
-    rbc_v2f(dt, b, om, v, /**/ fb);
-    rbc_v2f(dt, c, om, v, /**/ fc);
+    rigid_motion_vel(a, om, v, va);
+    rigid_motion_vel(b, om, v, vb);
+    rigid_motion_vel(c, om, v, vc);
 }

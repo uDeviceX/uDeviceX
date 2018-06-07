@@ -63,7 +63,6 @@ __global__ void collect_rig_mom(int ns, int nt, int nv, const int4 *tt, const Pa
     }
 }
 
-// TODO change directly velocity
 _S_ void addForce(const real3_t f, int i, Force *ff) {
     enum {X, Y, Z};
     atomicAdd(ff[i].f + X, f.x);
@@ -71,7 +70,14 @@ _S_ void addForce(const real3_t f, int i, Force *ff) {
     atomicAdd(ff[i].f + Z, f.z);
 }
 
-__global__ void collect_rbc_mom(float dt, int nc, int nt, int nv, const int4 *tt, const Particle *pp, const Momentum *mm, /**/ Force *ff) {
+_S_ void addVel(const real3_t v, int i, Particle *pp) {
+    enum {X, Y, Z};
+    atomicAdd(pp[i].v + X, v.x);
+    atomicAdd(pp[i].v + Y, v.y);
+    atomicAdd(pp[i].v + Z, v.z);
+}
+
+__global__ void collect_rbc_mom(float mass, int nc, int nt, int nv, const int4 *tt, const Momentum *mm, /**/ Particle *pp) {
     int i, cid, tid;
     int4 t;
     i = threadIdx.x + blockDim.x * blockIdx.x;
@@ -85,7 +91,7 @@ __global__ void collect_rbc_mom(float dt, int nc, int nt, int nv, const int4 *tt
 
     if (nonzero(&m)) {
         rPa A, B, C;
-        real3_t fa, fb, fc;
+        real3_t va, vb, vc;
 
         t = tt[tid];
         t.x += cid * nv;
@@ -96,10 +102,10 @@ __global__ void collect_rbc_mom(float dt, int nc, int nt, int nv, const int4 *tt
         B = fetch_Part(t.y, pp);
         C = fetch_Part(t.z, pp);
 
-        rbc_M2f(dt, m, A.r, B.r, C.r, /**/ &fa, &fb, &fc);
+        rbc_M2v(mass, m, A.r, B.r, C.r, /**/ &va, &vb, &vc);
 
-        addForce(fa, t.x, /**/ ff);
-        addForce(fb, t.y, /**/ ff);
-        addForce(fc, t.z, /**/ ff);
+        addVel(va, t.x, /**/ pp);
+        addVel(vb, t.y, /**/ pp);
+        addVel(vc, t.z, /**/ pp);
     }
 }
