@@ -41,7 +41,6 @@ $B/scheme/time_line/imp.o: $S/utils/imp.h $S/utils/error.h $S/scheme/time_line/i
 $B/u/rbc/sphering/lib/imp.o: $S/coords/type.h $S/utils/imp.h $S/inc/conf.h $S/scheme/force/imp.h $S/rbc/type.h $S/utils/error.h $S/io/diag/part/imp.h $S/rbc/stretch/imp.h $S/inc/type.h $S/mpi/wrapper.h $S/io/mesh/imp.h $S/conf/imp.h $S/u/rbc/sphering/lib/imp.h $S/io/mesh_read/imp.h $S/scheme/move/imp.h $S/utils/cc.h $S/inc/def.h $S/rbc/force/area_volume/imp.h $S/inc/dev.h $S/d/api.h $B/conf.h $S/u/rbc/sphering/lib/imp/main.h $S/rbc/force/rnd/imp.h $S/utils/texo.h $S/scheme/time_line/imp.h $S/rbc/params/imp.h $S/rbc/force/imp.h $S/mpi/glb.h $S/rbc/imp.h $S/utils/msg.h
 $B/u/rbc/sphering/main.o: $S/utils/imp.h $S/inc/conf.h $S/scheme/force/imp.h $S/utils/error.h $S/conf/imp.h $S/mpi/wrapper.h $S/coords/ini.h $S/utils/mc.h $B/conf.h $S/u/rbc/sphering/lib/imp.h $S/rbc/params/imp.h $S/mpi/glb.h $S/utils/msg.h
 $B/utils/cc.o: $S/utils/cc/common.h $S/inc/conf.h $S/utils/error.h $S/d/api.h $B/conf.h
-$B/utils/convert/imp.o: $S/inc/conf.h $S/inc/type.h $S/utils/convert/imp.h $S/inc/dev.h $B/conf.h $S/utils/convert/imp/main.h $S/utils/kl.h $S/utils/convert/dev/main.h
 $B/utils/error.o: $S/utils/msg.h $S/utils/error.h
 $B/utils/imp.o: $S/utils/error.h $S/utils/imp.h
 $B/utils/mc.o: $S/inc/conf.h $S/utils/error.h $S/mpi/wrapper.h $S/utils/mc.h $B/conf.h

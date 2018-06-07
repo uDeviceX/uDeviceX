@@ -1,7 +1,7 @@
-O = $B/algo/edg/imp.o $B/algo/force_stat/imp.o $B/algo/kahan_sum/imp.o \
-    $B/algo/key_list/imp.o $B/algo/minmax/imp.o $B/algo/scalars/imp.o \
-    $B/algo/scan/imp.o $B/algo/vectors/imp.o $B/clist/imp.o $B/cnt/imp.o \
-    $B/color/imp.o $B/comm/imp.o $B/conf/imp.o $B/control/den/conf.o \
+O = $B/algo/convert/imp.o $B/algo/edg/imp.o $B/algo/force_stat/imp.o \
+    $B/algo/kahan_sum/imp.o $B/algo/key_list/imp.o $B/algo/minmax/imp.o \
+    $B/algo/scalars/imp.o $B/algo/scan/imp.o $B/algo/vectors/imp.o $B/clist/imp.o \
+    $B/cnt/imp.o $B/color/imp.o $B/comm/imp.o $B/conf/imp.o $B/control/den/conf.o \
     $B/control/den/imp.o $B/control/inflow/conf.o $B/control/inflow/imp.o \
     $B/control/outflow/conf.o $B/control/outflow/imp.o $B/control/vel/conf.o \
     $B/control/vel/imp.o $B/coords/conf.o $B/coords/imp.o $B/d/api.o $B/dbg/conf.o \
@@ -34,10 +34,9 @@ O = $B/algo/edg/imp.o $B/algo/force_stat/imp.o $B/algo/kahan_sum/imp.o \
     $B/scheme/time_line/imp.o $B/scheme/time_step/imp.o $B/sim/imp.o \
     $B/sim/objects/imp.o $B/sim/objinter/imp.o $B/sim/opt/imp.o \
     $B/sim/walls/imp.o $B/struct/farray/imp.o $B/struct/parray/imp.o \
-    $B/struct/pfarrays/imp.o $B/utils/cc.o $B/utils/convert/imp.o \
-    $B/utils/error.o $B/utils/imp.o $B/utils/mc.o $B/utils/msg.o \
-    $B/utils/nvtx/imp.o $B/utils/os.o $B/utils/string/imp.o $B/wall/exch/imp.o \
-    $B/wall/force/imp.o $B/wall/imp.o $B/wall/sdf/array3d/imp.o \
-    $B/wall/sdf/bounce/imp.o $B/wall/sdf/field/imp.o $B/wall/sdf/imp.o \
-    $B/wall/sdf/label/imp.o $B/wall/sdf/tex3d/imp.o $B/wall/sdf/tform/imp.o \
-    $B/wall/wvel/conf.o $B/wall/wvel/imp.o
+    $B/struct/pfarrays/imp.o $B/utils/cc.o $B/utils/error.o $B/utils/imp.o \
+    $B/utils/mc.o $B/utils/msg.o $B/utils/nvtx/imp.o $B/utils/os.o \
+    $B/utils/string/imp.o $B/wall/exch/imp.o $B/wall/force/imp.o $B/wall/imp.o \
+    $B/wall/sdf/array3d/imp.o $B/wall/sdf/bounce/imp.o $B/wall/sdf/field/imp.o \
+    $B/wall/sdf/imp.o $B/wall/sdf/label/imp.o $B/wall/sdf/tex3d/imp.o \
+    $B/wall/sdf/tform/imp.o $B/wall/wvel/conf.o $B/wall/wvel/imp.o

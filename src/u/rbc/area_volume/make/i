@@ -2,6 +2,6 @@ f0 () { find "$1" -name '*.cu' -o -name '*.cpp' -o -name '*.h' -type f ; }
 f () ( for d; do f0 "$d"; done )
 
 f $U algo/edg algo/utils algo/vectors conf coords d inc io/mesh io/mesh_read io/restart \
-  io/write math mesh/force mpi rbc mesh/gen utils
+  io/write math mesh/force mpi rbc mesh/gen utils/
 
 echo $U .

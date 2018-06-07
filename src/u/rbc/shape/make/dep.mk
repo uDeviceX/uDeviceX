@@ -13,7 +13,6 @@ $B/rbc/adj/imp.o: $S/rbc/adj/imp/fin.h $S/utils/imp.h $S/inc/conf.h $S/utils/err
 $B/rbc/shape/imp.o: $S/utils/imp.h $S/utils/error.h $S/math/tri/imp.h $S/rbc/shape/imp.h $S/rbc/adj/type/common.h $S/rbc/shape/imp/main.h $S/rbc/shape/imp/type.h $S/rbc/adj/imp.h $S/utils/msg.h
 $B/u/rbc/shape/main.o: $S/utils/imp.h $S/inc/conf.h $S/utils/error.h $S/mpi/wrapper.h $S/conf/imp.h $S/io/mesh_read/imp.h $S/utils/cc.h $S/rbc/shape/imp.h $S/utils/mc.h $S/inc/dev.h $B/conf.h $S/rbc/adj/imp.h $S/mpi/glb.h $S/utils/msg.h
 $B/utils/cc.o: $S/utils/cc/common.h $S/inc/conf.h $S/utils/error.h $S/d/api.h $B/conf.h
-$B/utils/convert/imp.o: $S/inc/conf.h $S/inc/type.h $S/utils/convert/imp.h $S/inc/dev.h $B/conf.h $S/utils/convert/imp/main.h $S/utils/kl.h $S/utils/convert/dev/main.h
 $B/utils/error.o: $S/utils/msg.h $S/utils/error.h
 $B/utils/imp.o: $S/utils/error.h $S/utils/imp.h
 $B/utils/mc.o: $S/inc/conf.h $S/utils/error.h $S/mpi/wrapper.h $S/utils/mc.h $B/conf.h

@@ -1,4 +1,5 @@
 D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
+    d $B/algo/convert      && \
     d $B/algo/edg          && \
     d $B/algo/force_stat   && \
     d $B/algo/kahan_sum    && \
@@ -42,6 +43,5 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/struct/pfarrays   && \
     d $B/u/rig/gen         && \
     d $B/utils             && \
-    d $B/utils/convert     && \
     d $B/utils/nvtx        && \
     d $B/utils/string     
