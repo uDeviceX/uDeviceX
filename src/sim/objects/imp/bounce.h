@@ -162,12 +162,12 @@ static void collect_mom_mbr(float dt, Mbr *m) {
     UC(mesh_bounce_collect_rbc_momentum(dt, q->nc, mi, q->pp, bb->mm, /**/ m->ff));
 }
 
-static void collect_mom_rig(float dt, Rig *r) {
+static void collect_mom_rig(Rig *r) {
     RigQuants *q = &r->q;
     BounceBackData *bb = r->bbdata;
     MeshInfo mi = mesh_info_rig(r);
     
-    UC(mesh_bounce_collect_rig_momentum(dt, q->ns, mi, q->i_pp, bb->mm, /**/ q->ss));
+    UC(mesh_bounce_collect_rig_momentum(q->ns, mi, q->i_pp, bb->mm, /**/ q->ss));
 }
 
 /* TODO less brutal implementation */
@@ -206,7 +206,7 @@ static void bounce_rig(float dt, float flu_mass, const Clist flu_cells, long n, 
 
     mom_pack_and_send_rig(r);
     mom_recv_unpack_rig(r);
-    collect_mom_rig(dt, r);
+    collect_mom_rig(r);
 }
 
 static void save_mesh_mbr_current(Mbr *m) {

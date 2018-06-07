@@ -30,7 +30,7 @@ _S_ void rig_add_ang_mom(const float Iinv[], const float L[3], float *om) {
 }
 
 /* assume very small portion of non zero momentum changes */
-__global__ void collect_rig_mom(float dt, int ns, int nt, int nv, const int4 *tt, const Particle *pp, const Momentum *mm, /**/ Solid *ss) {
+__global__ void collect_rig_mom(int ns, int nt, int nv, const int4 *tt, const Particle *pp, const Momentum *mm, /**/ Solid *ss) {
     int i, sid;
     Solid *s;
     i = threadIdx.x + blockDim.x * blockIdx.x;
@@ -63,7 +63,8 @@ __global__ void collect_rig_mom(float dt, int ns, int nt, int nv, const int4 *tt
     }
 }
 
-static __device__ void addForce(const real3_t f, int i, Force *ff) {
+// TODO change directly velocity
+_S_ void addForce(const real3_t f, int i, Force *ff) {
     enum {X, Y, Z};
     atomicAdd(ff[i].f + X, f.x);
     atomicAdd(ff[i].f + Y, f.y);
