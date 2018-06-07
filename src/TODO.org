@@ -34,8 +34,6 @@ TODO
    need clever implementation in sim/objects/bounce.h
 ** DONE rm old meshbb
    CLOSED: [2018-06-07 Thu 10:06]
-* [0/1] Other
-** TODO put all converting kernels (zip...) in utils/
 * [0/1] restart
 ** TODO continue numbering of dumps
 * [1/4] cell adhesion
@@ -48,6 +46,9 @@ TODO
 *** TODO test
 ** TODO qualitative test
 ** TODO calibrate parameters
+* [1/1] Other
+** DONE put all converting kernels (zip...) in algo/convert
+   CLOSED: [2018-06-07 Thu 12:13]
 * [5/5] Dump
 ** DONE Make consistent diag files
    CLOSED: [2018-06-05 Tue 10:46]
