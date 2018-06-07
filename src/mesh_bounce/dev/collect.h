@@ -40,6 +40,7 @@ __global__ void collect_rig_mom(float dt, int ns, int nt, int nv, const int4 *tt
     if (sid >= ns) return;
 
     Momentum m = mm[i];
+    s = &ss[i];
 
     if (nonzero(&m)) {
         rPa A, B, C;
@@ -47,17 +48,15 @@ __global__ void collect_rig_mom(float dt, int ns, int nt, int nv, const int4 *tt
         
         fetch_triangle(i, nt, nv, tt, pp, /**/ &A, &B, &C);
 
-        dr.x = ss[sid].com[X];
-        dr.y = ss[sid].com[Y];
-        dr.z = ss[sid].com[Z];
+        dr.x = s->com[X];
+        dr.y = s->com[Y];
+        dr.z = s->com[Z];
         
         dr.x -= 0.333333 * (A.r.x + B.r.x + C.r.x);
         dr.y -= 0.333333 * (A.r.y + B.r.y + C.r.y);
         dr.z -= 0.333333 * (A.r.z + B.r.z + C.r.z);
 
-        rig_transform_mom(dr, &m);
-
-        s = &ss[i];
+        rig_transform_mom(dr, &m);        
 
         rig_add_lin_mom(s->mass, m.P, s->v);
         rig_add_ang_mom(s->Iinv, m.L, s->om);
