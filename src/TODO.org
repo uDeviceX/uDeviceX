@@ -1,5 +1,5 @@
 TODO
-* [8/12] Bounce Back
+* [10/13] Bounce Back
 ** DONE store previous flu parts
    CLOSED: [2018-06-05 Tue 16:17]
 ** DONE Bounce back from previous and current flu pp
@@ -20,15 +20,18 @@ TODO
    CLOSED: [2018-06-06 Wed 17:28]
 ** DONE visual test on rigids
    CLOSED: [2018-06-06 Wed 17:31]
-** TODO [1/2] membrane bb
+** DONE [2/2] membrane bb
+   CLOSED: [2018-06-07 Thu 10:06]
 *** DONE Bounce particles
     CLOSED: [2018-06-06 Wed 17:59]
-*** TODO apply momentum on mbr
+*** DONE apply momentum on mbr
+    CLOSED: [2018-06-07 Thu 10:06]
 ** TODO visual test
 ** TODO quantitative test: stats for recoloring
 ** TODO cleaner many objects support
    need clever implementation in sim/objects/bounce.h
-** TODO rm old meshbb
+** DONE rm old meshbb
+   CLOSED: [2018-06-07 Thu 10:06]
 * [0/1] Other
 ** TODO put all converting kernels (zip...) in utils/
 * [0/1] restart
