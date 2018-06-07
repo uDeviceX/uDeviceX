@@ -209,7 +209,7 @@ static void bounce_rig(float dt, float flu_mass, const Clist flu_cells, long n, 
 }
 
 static void save_mesh_mbr_current(Mbr *m) {
-    if (m->bbdata)
+    if (m->bbdata && m->active_bounce)
         convert_pp2rr_current(m->q.n, m->q.pp, m->bbdata->rr_cp);
 }
 

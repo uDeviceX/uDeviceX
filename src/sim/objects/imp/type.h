@@ -66,6 +66,7 @@ struct Mbr : Obj {
     RbcStretch *stretch;  /* helper to apply stretching force to cells */
     Triangles  *tri;      /* triangles for one cell on devices         */
 
+    bool active_bounce;
     Colorer  *colorer;
 };
 

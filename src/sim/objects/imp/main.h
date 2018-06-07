@@ -233,3 +233,13 @@ double objects_mbr_tot_volume(const Objects *o) {
     
     return tot;
 }
+
+static void activate_mbr_bounce(Mbr *m) {
+    if (m->bbdata)
+        m->active_bounce = true;
+}
+
+void objects_activate_mbr_bounce(Objects *o) {
+    int i;
+    for (i = 0; i < o->nmbr; ++i) activate_mbr_bounce(o->mbr[i]);
+}

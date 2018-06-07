@@ -127,6 +127,7 @@ static void ini_mbr(const Config *cfg, const OptMbr *opt, MPI_Comm cart, int3 L,
     m->com       = NULL;
     m->stretch   = NULL;
     m->colorer   = NULL;
+    m->active_bounce = false;
 
     UC(ini_obj_common(cfg, opt, cart, max_m, L, m));
 
