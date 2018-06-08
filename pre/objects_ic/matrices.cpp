@@ -89,8 +89,8 @@ static void scale(real s, real M[N][N]) {
 
 static void shift(real x, real y, real z, real M[N][N]) {
     M[X][D] = x;
-    M[Y][D] = x;
-    M[Z][D] = x;
+    M[Y][D] = y;
+    M[Z][D] = z;
     M[D][D] = 0;
 }
 

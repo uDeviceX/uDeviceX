@@ -10,7 +10,7 @@
 
 static void usg() {
     fprintf(stderr,
-            "usage: obj-ic <N> <Lx> <Ly> <Lz> <r> <sc> [RND, <ax> <ay> <az>]\n"
+            "usage: u.obj-ic <N> <Lx> <Ly> <Lz> <r> <sc> [RND, <ax> <ay> <az>]\n"
             "\t N          : number of spheres to pack\n"
             "\t Lx, Ly, Lz : dimension of domain\n"
             "\t sc         : scale\n"
