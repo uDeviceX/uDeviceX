@@ -1,0 +1,15 @@
+#### mesh_bounce: RBC in solvent
+# sTEST: mesh_bounce.rbc.t2
+cd test/mesh_bounce/rbc/1986
+s=1.0 x=8 y=16 z=8; echo $s 0 0 $x  0 $s 0 $y  0 0 $s $z  0 0 0 1 > rbcs-ic.txt
+u.cp.rbc rbc/sc/1986.off rbc.off
+area=`off.area rbc.off`
+volume=`off.volume rbc.off`
+:
+u.run udx conf.cfg "
+rbc = {
+    totArea = $area
+    totVolume = $volume
+}"
+:
+ply2punto ply/rbc/00002.ply | uscale 1 > ply.out.txt
