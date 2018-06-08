@@ -11,3 +11,14 @@ struct Particles {
     real *vx, *vy, *vz;
     real *fx, *fy, *fz;
 };
+
+enum {
+    ANGLE_RND,
+    ANGLE_IN
+};
+
+struct Angle {
+    int type;
+    /* angles: rotate around x, y then z */
+    real x, y, z;
+};

@@ -4,7 +4,7 @@ LDFLAGS  =
 
 all: main
 
-main: main.o particles.o
+main: main.o particles.o matrices.o
 	$(CXX) $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
 
 %.o: %.cpp
@@ -12,6 +12,7 @@ main: main.o particles.o
 
 main.o: main.cpp type.h utils.h
 particles.o: particles.cpp type.h utils.h
+matrices.o: matrices.cpp type.h
 
 clean:; rm -rf main *.o
 .PHONY: clean
