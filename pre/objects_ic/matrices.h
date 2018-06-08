@@ -1,1 +1,1 @@
-void dump_matrices(const Angle *a, int n, const Particles *p, FILE *stream);
+void dump_matrices(real sc, const Angle *a, int n, const Particles *p, FILE *stream);

@@ -1,11 +1,5 @@
 typedef float real;
 
-struct Args {
-    int n;
-    int Lx, Ly, Lz;
-    real r;
-};
-
 struct Particles {
     real *xx, *yy, *zz;
     real *vx, *vy, *vz;
@@ -21,4 +15,11 @@ struct Angle {
     int type;
     /* angles: rotate around x, y then z */
     real x, y, z;
+};
+
+struct Args {
+    int n;
+    int Lx, Ly, Lz;
+    real r, sc;
+    Angle ang;
 };

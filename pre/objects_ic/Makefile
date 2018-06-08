@@ -10,7 +10,7 @@ main: main.o particles.o matrices.o
 %.o: %.cpp
 	$(CXX) $(CXXFLAGS) -o $@ -c $<
 
-main.o: main.cpp type.h utils.h
+main.o: main.cpp type.h utils.h particles.h matrices.h
 particles.o: particles.cpp type.h utils.h
 matrices.o: matrices.cpp type.h
 

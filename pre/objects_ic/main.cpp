@@ -1,17 +1,23 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdlib.h>
+#include <string.h>
 #include <math.h>
 
 #include "type.h"
 #include "utils.h"
 #include "particles.h"
+#include "matrices.h"
 
 static void usg() {
     fprintf(stderr,
-            "usage: obj-ic <N> <Lx> <Ly> <Lz> <r>\n"
+            "usage: obj-ic <N> <Lx> <Ly> <Lz> <r> <sc> [RND, <ax> <ay> <az>]\n"
             "\t N          : number of spheres to pack\n"
-            "\t Lx, Ly, Lz : dimension of domain\n");
+            "\t Lx, Ly, Lz : dimension of domain\n"
+            "\t sc         : scale\n"
+            "\n"
+            "\t RND        : random angles\n"
+            "\t or\n"
+            "\t ax ay az   : given angles\n");
     exit(1);
 }
 
@@ -33,6 +39,21 @@ static void parse(int c, char **v, Args *a) {
 
     if (!shift(&c, &v)) usg();
     a->r = atof(*v);
+    if (!shift(&c, &v)) usg();
+    a->sc = atof(*v);
+
+    if (!shift(&c, &v)) usg();
+    if (0 == strcmp(*v, "RND")) {
+        a->ang.type = ANGLE_RND;
+    }
+    else {
+        a->ang.type = ANGLE_IN;
+        a->ang.x = atof(*v);
+        if (!shift(&c, &v)) usg();
+        a->ang.y = atof(*v);
+        if (!shift(&c, &v)) usg();
+        a->ang.z = atof(*v);
+    }    
 }
 
 static void dump_xyz(const char *fname, int n, const Particles *p) {
@@ -50,7 +71,7 @@ static void check_density(Args a) {
     Vb = a.Lx * a.Ly * a.Lz;
     Vs = a.n * 4.0 * M_PI * cu(a.r) / 3.0;
     den = Vs / Vb;
-    fprintf(stderr, "%g\n", den);
+    fprintf(stderr, "max sphere density: %g\n", den);
 }
 
 int main(int argc, char **argv) {
@@ -84,7 +105,7 @@ int main(int argc, char **argv) {
         particles_rescale_v(T0, T, a.n, &p);
         
         converged = (a.r < rmin / 2);
-        printf("%g\n", rmin / 2);
+        // fprintf(stderr, "%g\n", rmin / 2);
         
         if (step > max_steps) {
             fprintf(stderr, "reached max steps\n");
@@ -109,5 +130,7 @@ int main(int argc, char **argv) {
     else
         return 1;
 
+    dump_matrices(a.sc, &a.ang, a.n, &p, stdout);
+    
     return 0;
 }
