@@ -96,10 +96,13 @@ _I_ void lin_mom_change(float m, const real3_t v0, const real3_t v1, /**/ float 
     dP[Z] = - m * (v1.z - v0.z);
 }
 
-_I_ void ang_mom_change(float m, const real3_t r, const real3_t v0, const real3_t v1, /**/ float dL[3]) {
-    dL[X] = - m * (r.y * v1.z - r.z * v1.y  -  r.y * v0.z + r.z - v0.y);
-    dL[Y] = - m * (r.z * v1.x - r.x * v1.z  -  r.z * v0.x + r.x - v0.z);
-    dL[Z] = - m * (r.x * v1.y - r.y * v1.x  -  r.x * v0.y + r.y - v0.x);
+_I_ void ang_mom_change(float m, real3_t rc, real3_t r0, real3_t v0, real3_t r1, real3_t v1, /**/ float dL[3]) {
+    r0.x -= rc.x; r0.y -= rc.y; r0.z -= rc.z;
+    r1.x -= rc.x; r1.y -= rc.y; r1.z -= rc.z;
+    
+    dL[X] = - m * (r1.y * v1.z - r1.z * v1.y  -  r0.y * v0.z + r0.z - v0.y);
+    dL[Y] = - m * (r1.z * v1.x - r1.x * v1.z  -  r0.z * v0.x + r0.x - v0.z);
+    dL[Z] = - m * (r1.x * v1.y - r1.y * v1.x  -  r0.x * v0.y + r0.y - v0.x);
 }
 
 /* shift origin from 0 to R for ang momentum */

@@ -168,7 +168,7 @@ __global__ void perform_collisions(float dt, float mass,
     int i, id, entry;
     float4 d;
     rPa p1, p0, pn, A, B, C;
-    real3_t rw, vw;
+    real3_t rw, vw, rc;
     Momentum m;
     const real_t eps = 1e-2;
 
@@ -197,13 +197,13 @@ __global__ void perform_collisions(float dt, float mass,
 
     /* add momentum (ang mom in ref of the triangle com) */
     /* shift in new ref */
-    
-    rw.x -= 0.333333 * (A.r.x + B.r.x + C.r.x);
-    rw.y -= 0.333333 * (A.r.y + B.r.y + C.r.y);
-    rw.z -= 0.333333 * (A.r.z + B.r.z + C.r.z);
-    
-    lin_mom_change(mass,     p1.v, pn.v, /**/ m.P);
-    ang_mom_change(mass, rw, p1.v, pn.v, /**/ m.L);
+
+    rc.x = 0.333333 * (A.r.x + B.r.x + C.r.x);
+    rc.y = 0.333333 * (A.r.y + B.r.y + C.r.y);
+    rc.z = 0.333333 * (A.r.z + B.r.z + C.r.z);
+        
+    lin_mom_change(mass,           p1.v,       pn.v, /**/ m.P);
+    ang_mom_change(mass, rc, p1.r, p1.v, pn.r, pn.v, /**/ m.L);
 
     atomicAddf3(mm[id].P, m.P);
     atomicAddf3(mm[id].L, m.L);
