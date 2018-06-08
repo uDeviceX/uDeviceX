@@ -12,3 +12,5 @@ void particles_advance(real dt, int Lx, int Ly, int Lz, int n, Particles *p);
 
 real particles_temperature(int n, const Particles *p);
 void particles_rescale_v(real T0, real T, int n, Particles *p);
+
+void particles_shift(real x, real y, real z, int n, Particles *p);

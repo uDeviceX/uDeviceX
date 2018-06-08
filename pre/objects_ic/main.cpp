@@ -130,6 +130,7 @@ int main(int argc, char **argv) {
     else
         return 1;
 
+    particles_shift(a.Lx/2, a.Ly/2, a.Lz/2, a.n, &p);
     dump_matrices(a.sc, &a.ang, a.n, &p, stdout);
     
     return 0;

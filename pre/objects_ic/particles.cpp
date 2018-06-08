@@ -179,3 +179,12 @@ void particles_rescale_v(real T0, real T, int n, Particles *p) {
         p->vz[i] *= s;
     }
 }
+
+void particles_shift(real x, real y, real z, int n, Particles *p) {
+    int i;
+    for (i = 0; i < n; ++i) {
+        p->xx[i] += x;
+        p->yy[i] += y;
+        p->zz[i] += z;
+    }
+}
