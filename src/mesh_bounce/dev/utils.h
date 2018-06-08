@@ -90,16 +90,16 @@ _I_ void bounce_back(real dt, const rPa *p0, const real3_t *rw, const real3_t *v
     pn->r.z = rw->z + (dt-h) * pn->v.z;
 }
 
-_I_ void lin_mom_change(const real3_t v0, const real3_t v1, /**/ float dP[3]) {
-    dP[X] = -(v1.x - v0.x);
-    dP[Y] = -(v1.y - v0.y);
-    dP[Z] = -(v1.z - v0.z);
+_I_ void lin_mom_change(float m, const real3_t v0, const real3_t v1, /**/ float dP[3]) {
+    dP[X] = - m * (v1.x - v0.x);
+    dP[Y] = - m * (v1.y - v0.y);
+    dP[Z] = - m * (v1.z - v0.z);
 }
 
-_I_ void ang_mom_change(const real3_t r, const real3_t v0, const real3_t v1, /**/ float dL[3]) {
-    dL[X] = -(r.y * v1.z - r.z * v1.y  -  r.y * v0.z + r.z - v0.y);
-    dL[Y] = -(r.z * v1.x - r.x * v1.z  -  r.z * v0.x + r.x - v0.z);
-    dL[Z] = -(r.x * v1.y - r.y * v1.x  -  r.x * v0.y + r.y - v0.x);
+_I_ void ang_mom_change(float m, const real3_t r, const real3_t v0, const real3_t v1, /**/ float dL[3]) {
+    dL[X] = - m * (r.y * v1.z - r.z * v1.y  -  r.y * v0.z + r.z - v0.y);
+    dL[Y] = - m * (r.z * v1.x - r.x * v1.z  -  r.z * v0.x + r.x - v0.z);
+    dL[Z] = - m * (r.x * v1.y - r.y * v1.x  -  r.x * v0.y + r.y - v0.x);
 }
 
 /* shift origin from 0 to R for ang momentum */

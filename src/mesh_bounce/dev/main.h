@@ -195,14 +195,14 @@ __global__ void perform_collisions(float dt, float mass,
     rw.y -= 0.333333 * (A.r.y + B.r.y + C.r.y);
     rw.z -= 0.333333 * (A.r.z + B.r.z + C.r.z);
     
-    lin_mom_change(    p1.v, pn.v, /**/ m.P);
-    ang_mom_change(rw, p1.v, pn.v, /**/ m.L);
+    lin_mom_change(mass,     p1.v, pn.v, /**/ m.P);
+    ang_mom_change(mass, rw, p1.v, pn.v, /**/ m.L);
 
-    atomicAdd(mm[id].P + X, mass * m.P[X]);
-    atomicAdd(mm[id].P + Y, mass * m.P[Y]);
-    atomicAdd(mm[id].P + Z, mass * m.P[Z]);
+    atomicAdd(mm[id].P + X, m.P[X]);
+    atomicAdd(mm[id].P + Y, m.P[Y]);
+    atomicAdd(mm[id].P + Z, m.P[Z]);
 
-    atomicAdd(mm[id].L + X, mass * m.L[X]);
-    atomicAdd(mm[id].L + Y, mass * m.L[Y]);
-    atomicAdd(mm[id].L + Z, mass * m.L[Z]);
+    atomicAdd(mm[id].L + X, m.L[X]);
+    atomicAdd(mm[id].L + Y, m.L[Y]);
+    atomicAdd(mm[id].L + Z, m.L[Z]);
 }
