@@ -10,5 +10,7 @@ main: main.o
 %.o: %.cpp
 	$(CXX) $(CXXFLAGS) -o $@ -c $<
 
+main.o: main.cpp type.h
+
 clean:; rm -rf main *.o
 .PHONY: clean

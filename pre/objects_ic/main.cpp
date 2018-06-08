@@ -2,20 +2,7 @@
 #include <stdlib.h>
 #include <stdlib.h>
 #include <math.h>
-
-typedef float real;
-
-struct Args {
-    int n;
-    int Lx, Ly, Lz;
-    real r;
-};
-
-struct Particles {
-    real *xx, *yy, *zz;
-    real *vx, *vy, *vz;
-    real *fx, *fy, *fz;
-};
+#include "type.h"
 
 static const real yang_coeff_3d = 2.0 / M_PI;
 
@@ -29,7 +16,7 @@ static void usg() {
 
 static bool shift(int *c, char ***v) {
     (*c) --; (*v)++;
-    return (*c) >= 0;
+    return (*c) > 0;
 }
 
 static void parse(int c, char **v, Args *a) {
