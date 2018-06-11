@@ -3,9 +3,12 @@
 
 #include "type.h"
 #include "com.h"
+#include "disp.h"
+
+enum {X, Y, Z, D};
 
 struct Arg {
-    int Lx, Ly, Lz;
+    int L[D];
     int nfiles;
     char **fnames;
 };
@@ -23,11 +26,11 @@ static bool shift(int *c, char ***v) {
 
 static void parse(int c, char **v, Arg *a) {
     if (!shift(&c, &v)) usg();
-    a->Lx = atof(*v);
+    a->L[X] = atof(*v);
     if (!shift(&c, &v)) usg();
-    a->Ly = atof(*v);
+    a->L[Y] = atof(*v);
     if (!shift(&c, &v)) usg();
-    a->Lz = atof(*v);
+    a->L[Z] = atof(*v);
 
     if (!shift(&c, &v)) usg();
     a->fnames = v;
@@ -45,17 +48,20 @@ static void swap(T *a, T *b) {
 
 int main(int argc, char **argv ) {
     Arg a;
+    Disp *d;
     Com *cc0, *cc1;
     int i, n;
+    float tot[D];
     FILE *f;
 
     parse(argc, argv, &a);
-
 
     f = fopen(a.fnames[0], "r");
     read(f, &n, &cc0);
     sort_by_id(n, cc0);
     fclose(f);
+
+    disp_ini(n, &d);
     
     for (i = 1; i < a.nfiles; ++i) {
         f = fopen(a.fnames[i], "r");
@@ -64,11 +70,17 @@ int main(int argc, char **argv ) {
         
         sort_by_id(n, cc1);
 
+        disp_add(n, cc0, cc1, a.L, d);
+        
         swap(&cc0, &cc1);
         
         free(cc1);
     }
     free(cc0);
+
+    disp_reduce(d, tot);
+    printf("%g %g %g\n", tot[X], tot[Y], tot[Z]);
+    disp_fin(d);
     
     return 0;
 }
