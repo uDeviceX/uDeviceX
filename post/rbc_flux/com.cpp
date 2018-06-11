@@ -16,7 +16,7 @@ static int count_lines(FILE *f) {
 }
 
 static void read_entry(FILE *f, Com *c) {
-    fscanf(f, "%d %f %f %f\n",
+    fscanf(f, "%d %f %f %f %*f %*f %*f\n",
            &c->id,
            &c->x, &c->y, &c->z);
 }
