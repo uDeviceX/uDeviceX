@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 
 #include "type.h"
 #include "com.h"
@@ -46,12 +47,23 @@ static void swap(T *a, T *b) {
     *b = c;
 }
 
+static void op_sum(float dx, float dy, float dz, float *res) {
+    res[X] += dx;
+    res[Y] += dy;
+    res[Z] += dz;
+}
+
+static void op_maxy(float dx, float dy, float dz, float *res) {
+    if (fabs(dy) > fabs(*res))
+        *res = dy;
+}
+
 int main(int argc, char **argv ) {
     Arg a;
     Disp *d;
     Com *cc0, *cc1;
     int i, n;
-    float tot[D];
+    float tot[D] = {0}, s, max_dy = 0;
     FILE *f;
 
     parse(argc, argv, &a);
@@ -78,8 +90,13 @@ int main(int argc, char **argv ) {
     }
     free(cc0);
 
-    disp_reduce(d, tot);
-    printf("%g %g %g\n", tot[X], tot[Y], tot[Z]);
+    disp_reduce(d, &op_sum, tot);
+    disp_reduce(d, &op_maxy, &max_dy);
+
+    s = 1.0 / a.nfiles;
+    printf("%g %g %g\n", s*tot[X], s*tot[Y], s*tot[Z]);
+    printf("%g\n", max_dy);
+
     disp_fin(d);
     
     return 0;

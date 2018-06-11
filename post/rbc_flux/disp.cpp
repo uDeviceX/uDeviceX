@@ -5,6 +5,7 @@
 #include <math.h>
 
 #include "type.h"
+#include "disp.h"
 
 struct Disp {
     float *xx, *yy, *zz;
@@ -58,13 +59,8 @@ void disp_add(int n, const Com *cc0, const Com *cc1, int L[3], Disp *d) {
     }
 }
 
-void disp_reduce(const Disp *d, float tot[3]) {
-    enum {X, Y, Z};
+void disp_reduce(const Disp *d, Op op, float *res) {
     int i;
-    tot[X] = tot[Y] = tot[Z] = 0;
-    for (i = 0; i < d->n; ++i) {
-        tot[X] += d->xx[i];
-        tot[Y] += d->yy[i];
-        tot[Z] += d->zz[i];
-    }
+    for (i = 0; i < d->n; ++i)
+        op(d->xx[i], d->yy[i], d->zz[i], res);
 }
