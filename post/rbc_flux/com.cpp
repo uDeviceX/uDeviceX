@@ -16,10 +16,9 @@ static int count_lines(FILE *f) {
 }
 
 static void read_entry(FILE *f, Com *c) {
-    fscanf(f, "%d %f %f %f %f %f %f\n",
+    fscanf(f, "%d %f %f %f\n",
            &c->id,
-           &c->x, &c->y, &c->z,
-           &c->vx, &c->vy, &c->vz);
+           &c->x, &c->y, &c->z);
 }
 
 void read(FILE *f, int *n_, Com **cc_) {
@@ -40,4 +39,14 @@ static bool compare(Com a, Com b) {return a.id < b.id;}
 
 void sort_by_id(int n, Com *cc) {
     std::sort(cc, cc+n, &compare);
+}
+
+void print_cc(int n, const Com *cc, FILE *stream) {
+    int i;
+    const Com *c;
+    for (i = 0; i < n; ++i) {
+        c = &cc[i];
+        fprintf(stream, "%04d %.6e %.6e %.6e\n",
+                c->id, c->x, c->y, c->z);
+    }
 }
