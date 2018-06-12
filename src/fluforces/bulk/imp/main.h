@@ -39,7 +39,7 @@ static void interactions(Par params, int3 L, int n, Parray parray, const int *st
 }
 
 template <typename Par, typename Parray>
-static void apply(Par params, int3 L, int n, Parray parray, const int *start, RNDunif *rnd, /**/ const FoArray *farray) {
+static void dispatch_stress(Par params, int3 L, int n, Parray parray, const int *start, RNDunif *rnd, /**/ const FoArray *farray) {
     if (farray_has_stress(farray)) {
         FoSArray_v farray_v;
         farray_get_view(farray, &farray_v);
@@ -59,7 +59,7 @@ static void apply_color(const PairParams *params, int3 L, int n, BPaArray parray
     pair_get_view_dpd_color(params, &pv);
     tbarray_get_view(n, parray, &parray_v);    
         
-    apply(pv, L, n, parray_v, start, rnd, /**/ farray);
+    dispatch_stress(pv, L, n, parray_v, start, rnd, /**/ farray);
 
     tbarray_fin_view(&parray_v);    
 }
@@ -70,7 +70,7 @@ static void apply_grey(const PairParams *params, int3 L, int n, BPaArray parray,
     pair_get_view_dpd(params, &pv);
     tbarray_get_view(n, parray, &parray_v);
         
-    apply(pv, L, n, parray_v, start, rnd, /**/ farray);
+    dispatch_stress(pv, L, n, parray_v, start, rnd, /**/ farray);
 
     tbarray_fin_view(&parray_v); 
 }
