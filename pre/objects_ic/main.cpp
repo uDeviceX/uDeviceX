@@ -10,14 +10,15 @@
 
 static void usg() {
     fprintf(stderr,
-            "usage: u.obj-ic <N> <Lx> <Ly> <Lz> <r> <sc> [RND, <ax> <ay> <az>]\n"
+            "usage: u.obj-ic [-d] <N> <Lx> <Ly> <Lz> <r> <sc> [RND, <ax> <ay> <az>]\n"
             "\t N          : number of spheres to pack\n"
             "\t Lx, Ly, Lz : dimension of domain\n"
             "\t sc         : scale\n"
             "\n"
             "\t RND        : random angles\n"
             "\t or\n"
-            "\t ax ay az   : given angles\n");
+            "\t ax ay az   : given angles\n"
+            "\t -d         : optional, dumps xyz coords\n");
     exit(1);
 }
 
@@ -28,6 +29,13 @@ static bool shift(int *c, char ***v) {
 
 static void parse(int c, char **v, Args *a) {
     if (!shift(&c, &v)) usg();
+
+    a->dump_xyz = false;
+    if (0 == strcmp("-d", *v)) {
+        a->dump_xyz = true;
+        if (!shift(&c, &v)) usg();
+    }
+    
     a->n = atoi(*v);
 
     if (!shift(&c, &v)) usg();
@@ -105,15 +113,13 @@ int main(int argc, char **argv) {
         particles_rescale_v(T0, T, a.n, &p);
         
         converged = (a.r < rmin / 2);
-        // fprintf(stderr, "%g\n", rmin / 2);
         
         if (step > max_steps) {
             fprintf(stderr, "reached max steps\n");
             break;
         }
 
-        if (step % freq == 0) {
-            
+        if (a.dump_xyz && (step % freq == 0)) {
             char name[FILENAME_MAX];
             int id = step / freq;
             sprintf(name, "%.04d.xyz", id);
@@ -121,7 +127,8 @@ int main(int argc, char **argv) {
         }
     }
 
-    dump_xyz("final.xyz", a.n, &p);
+    if (a.dump_xyz)
+        dump_xyz("final.xyz", a.n, &p);
     
     particles_fin(&p);
 

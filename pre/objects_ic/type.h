@@ -22,4 +22,5 @@ struct Args {
     int Lx, Ly, Lz;
     real r, sc;
     Angle ang;
+    bool dump_xyz;
 };
