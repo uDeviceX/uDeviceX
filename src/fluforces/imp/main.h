@@ -12,7 +12,7 @@ void fluforces_bulk_apply(const PairParams *par, int n, const FluForcesBulk *b, 
     BPaArray a;
     if (n == 0) return;
 
-    flocal_push_pp(b->zipped_pp, &a);    
+    flocal_push_pp(b->zipped_pp, &a);
     if (b->colors)
         flocal_push_cc(b->colors, &a);
 

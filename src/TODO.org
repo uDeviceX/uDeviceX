@@ -47,7 +47,7 @@ TODO
 *** TODO test
 ** TODO qualitative test
 ** TODO calibrate parameters
-* [1/1] Other
+* [1/1] Refactoring
 ** DONE put all converting kernels (zip...) in algo/convert
    CLOSED: [2018-06-07 Thu 12:13]
 * [5/5] Dump
@@ -72,7 +72,7 @@ TODO
    CLOSED: [2018-05-31 Thu 10:47]
 ** DONE cleanup code: no internal forces?
    CLOSED: [2018-05-31 Thu 10:49]
-* [6/6] general and simpl configuration of pairwise forces
+* [6/6] general and simple configuration of pairwise forces
 ** DONE description
    CLOSED: [2018-05-28 Mon 09:18]
 what parameters between different particles
