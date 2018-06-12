@@ -77,7 +77,7 @@ void rbc_force_set_stressfree(const char *fname, /**/ RbcForce *f) {
     rbc_shape_edg(shape, &ll_hst);
     rbc_shape_area(shape, &aa_hst);
 
-    Dalloc(&v.ll, n);    
+    Dalloc(&v.ll, n);
     Dalloc(&v.aa, n);
     
     cH2D(v.ll, ll_hst, n);
