@@ -47,7 +47,6 @@ namespace fsi_dev {
 #include "dev/map.common.h"
 #include "dev/map/bulk.h"
 #include "dev/map/halo.h"
-#include "dev/pair.h"
 #include "dev/bulk.h"
 #include "dev/halo.h"
 }
