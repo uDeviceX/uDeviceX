@@ -13,15 +13,6 @@ _S_ void bpa_fetch_p(Parray a, int i, PairPa *p) {
     p->vx = v.x;  p->vy = v.y;  p->vz = v.z;
 }
 
-_I_ void fetch(BPaArray_v a, int i, PairPa *p) {
-    bpa_fetch_p(a, i, p);
-}
-
-_I_ void fetch(BPaCArray_v a, int i, PairPa *p) {
-    bpa_fetch_p(a, i, p);
-    p->color = a.cc[i];
-}
-
 
 /* texture bulk parray fetch */
 

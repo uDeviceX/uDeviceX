@@ -8,15 +8,6 @@ void flocal_push_cc(const int *cc, BPaArray *a) {
     a->colors = true;
 }
 
-static void barray_get_view(BPaArray a, BPaArray_v *v) {
-    v->pp = a.pp;
-}
-
-static void barray_get_view(BPaArray a, BPaCArray_v *v) {
-    v->pp = a.pp;
-    v->cc = a.cc;
-}
-
 static void tbarray_get_view(int n, BPaArray a, TBPaArray_v *v) {
     texo_setup(2*n, (float4*) a.pp, &v->pp);
 }
