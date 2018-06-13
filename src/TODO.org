@@ -47,6 +47,18 @@ TODO
 *** TODO test
 ** TODO qualitative test
 ** TODO calibrate parameters
+* [4/5] configuration of wall repulsion
+Specify which object is repulsed and with what parameters
+Possible conf in each object with a section repulsion
+** DONE Read parameters from conf
+   CLOSED: [2018-05-23 Wed 10:16]
+** DONE pass parameters to forces
+   CLOSED: [2018-05-23 Wed 10:16]
+** DONE Use it in simulation
+   CLOSED: [2018-05-22 Tue 18:05]
+** DONE adapt defaults/tests
+   CLOSED: [2018-05-23 Wed 10:19]
+** TODO configurable wall bounce
 * [1/1] Refactoring
 ** DONE put all converting kernels (zip...) in algo/convert
    CLOSED: [2018-06-07 Thu 12:13]
@@ -150,18 +162,6 @@ fsi should use different pair parameters depending on object type
    CLOSED: [2018-05-24 Thu 09:11]
 ** DONE udx uses new communicator
    CLOSED: [2018-05-24 Thu 15:22]
-* [4/4] configuration of wall repulsion
-Specify which object is repulsed and with what parameters
-Possible conf in each object with a section repulsion
-** DONE Read parameters from conf
-   CLOSED: [2018-05-23 Wed 10:16]
-** DONE pass parameters to forces
-   CLOSED: [2018-05-23 Wed 10:16]
-** DONE Use it in simulation
-   CLOSED: [2018-05-22 Tue 18:05]
-** DONE adapt defaults/tests
-   CLOSED: [2018-05-23 Wed 10:19]
-
 * [11/11] Many membranes/objects
 ** DONE no hardcoded filenames 
    CLOSED: [2018-05-17 Thu 17:08]
