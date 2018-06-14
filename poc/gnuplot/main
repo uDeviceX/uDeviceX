@@ -9,8 +9,9 @@ function data() {
 
 BEGIN {
     system("mkfifo pipe")
-    p = "gnuplot > pipe"
+    p = "gnuplot"
     print "set print 'pipe'" | p
+    exit
     print "plot sin(x)"      | p
     print "bind \"k\" print \"k\"" | p
     for (;;) {
