@@ -1,8 +1,8 @@
 ### all files
 # TEST: all
-u.post.rbc.flux 32 56 60 data/*.txt | head -n 1 > f.out.txt
+u.post.rbc.flux 32 56 60 -sum data/*.txt > f.out.txt
 
 ### all files no periodic along x
 # TEST: all.nox
-u.post.rbc.flux 100000000 56 60 data/*.txt | head -n 1 > f.out.txt
+u.post.rbc.flux 100000000 56 60 -sum data/*.txt > f.out.txt
 
