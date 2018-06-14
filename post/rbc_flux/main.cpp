@@ -71,7 +71,7 @@ static void op_maxy(float dx, float dy, float dz, float *res) {
         *res = dy;
 }
 
-int main(int argc, char **argv ) {
+int main(int argc, char **argv) {
     Arg a;
     Disp *d;
     Com *cc0, *cc1;
@@ -102,7 +102,7 @@ int main(int argc, char **argv ) {
     }
     free(cc0);
 
-    float s = 1.0 / a.nfiles;
+    float s = 1.0 / n;
 
     if (0 == strcmp(a.op, "-sum")) {
         float tot[D] = {0};
