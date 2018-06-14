@@ -6,3 +6,10 @@ u.post.rbc.flux 32 56 60 -sum data/*.txt > f.out.txt
 # TEST: all.nox
 u.post.rbc.flux 100000000 56 60 -sum data/*.txt > f.out.txt
 
+### ratio
+# TEST: ratio
+u.post.rbc.flux 32 56 60 -ratio data/*.txt > f.out.txt
+
+### max dy
+# TEST: maxy
+u.post.rbc.flux 32 56 60 -maxy data/*.txt > f.out.txt
