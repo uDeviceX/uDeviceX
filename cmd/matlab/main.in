@@ -9,6 +9,7 @@ if test -z "${MATLABPATH}"
 then MATLABPATH="$MATLABPATH:%MATLABPATH%"
 else MATLABPATH="%MATLABPATH%"
 fi    
+
 export MATLABPATH
 
 prog=u.matlab
