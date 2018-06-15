@@ -1,4 +1,7 @@
 TODO
+* [0/2] Renaming
+** TODO rbc -> mbr
+** TODO Solid -> Rigid
 * [12/14] Bounce Back
 ** DONE store previous flu parts
    CLOSED: [2018-06-05 Tue 16:17]
