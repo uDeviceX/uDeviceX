@@ -1,8 +1,8 @@
-__global__ void rot_referential(float dt, const int ns, Solid *ss) {
+__global__ void rot_referential(float dt, const int ns, Rigid *ss) {
     int i;
     i = threadIdx.x + blockIdx.x * blockDim.x;
     if (i < ns) {
-        Solid s = ss[i];
+        Rigid s = ss[i];
         rot_e(dt, s.om, /**/ s.e0);
         rot_e(dt, s.om, /**/ s.e1);
         rot_e(dt, s.om, /**/ s.e2);
@@ -28,7 +28,7 @@ static __device__ float3 fetch_force(int i, const Force *ff) {
     return f;
 }
 
-__global__ void add_f_to(const int nps, const Particle *pp, const Force *ff, /**/ Solid *ss) {
+__global__ void add_f_to(const int nps, const Particle *pp, const Force *ff, /**/ Rigid *ss) {
     enum {X, Y, Z};
     int gid, sid, i;
     gid = blockIdx.x * blockDim.x + threadIdx.x;
@@ -61,24 +61,24 @@ __global__ void add_f_to(const int nps, const Particle *pp, const Force *ff, /**
     }
 }
 
-__global__ void reinit_ft(const int ns, Solid *ss) {
+__global__ void reinit_ft(const int ns, Rigid *ss) {
     enum {X, Y, Z};
     const int gid = blockIdx.x * blockDim.x + threadIdx.x;
     if (gid < ns) {
-        Solid *s = ss + gid;
+        Rigid *s = ss + gid;
         s->fo[X] = s->fo[Y] = s->fo[Z] = 0.f;
         s->to[X] = s->to[Y] = s->to[Z] = 0.f;
     }
 }
 
-__global__ void update_om_v(RigPinInfo pi, float dt, const int ns, Solid *ss) {
+__global__ void update_om_v(RigPinInfo pi, float dt, const int ns, Rigid *ss) {
     enum {X, Y, Z};
     enum {XX, XY, XZ, YY, YZ, ZZ};
     enum {YX = XY, ZX = XZ, ZY = YZ};
     const int gid = blockIdx.x * blockDim.x + threadIdx.x;
 
     if (gid < ns) {
-        Solid s = ss[gid];
+        Rigid s = ss[gid];
         const float *A = s.Iinv, *b = s.to;
         const float sc = dt/s.mass;
         const float dom[3] = {A[XX]*b[X] + A[XY]*b[Y] + A[XZ]*b[Z],
@@ -106,7 +106,7 @@ __global__ void update_om_v(RigPinInfo pi, float dt, const int ns, Solid *ss) {
     }
 }
 
-__global__ void update_com(float dt, int ns, Solid *ss) {
+__global__ void update_com(float dt, int ns, Rigid *ss) {
     int sid, c, i;
     i = threadIdx.x + blockIdx.x * blockDim.x;
     sid = i / 3;
@@ -116,10 +116,10 @@ __global__ void update_com(float dt, int ns, Solid *ss) {
         ss[sid].com[c] += ss[sid].v[c]*dt;
 }
 
-__global__ void update_pp(const int nps, const float *rr0, const Solid *ss, /**/ Particle *pp) {
+__global__ void update_pp(const int nps, const float *rr0, const Rigid *ss, /**/ Particle *pp) {
     enum {X, Y, Z};
     int pid, sid, i;
-    Solid s;
+    Rigid s;
     float x, y, z, dx, dy, dz, omx, omy, omz;
     Particle p;
     const float *r0;
@@ -151,10 +151,10 @@ __global__ void update_pp(const int nps, const float *rr0, const Solid *ss, /**/
     }
 }
 
-__global__ void update_mesh(float dt, const Solid *ss_dev, const int nv, const float *vv, /**/ Particle *pp) {
+__global__ void update_mesh(float dt, const Rigid *ss_dev, const int nv, const float *vv, /**/ Particle *pp) {
     enum {X, Y, Z};
     const int sid = blockIdx.y; // solid Id
-    const Solid *s = ss_dev + sid;
+    const Rigid *s = ss_dev + sid;
 
     const int i = threadIdx.x + blockIdx.x * blockDim.x;
     const int vid = sid * nv + i;

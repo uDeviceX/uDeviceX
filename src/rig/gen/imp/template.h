@@ -101,7 +101,7 @@ struct Transf {
     float e0[3], e1[3], e2[3];
 };
 
-_S_ void get_transf(MPI_Comm comm, bool hasid0, const Solid *ss, Transf *T) {
+_S_ void get_transf(MPI_Comm comm, bool hasid0, const Rigid *ss, Transf *T) {
     int root, sz;
     if (hasid0) {
         sz = 3 * sizeof(float);
@@ -138,7 +138,7 @@ _S_ void transf_template(const Transf *T, int n, float *rr) {
 }
 
 _I_ void extract_template(int3 L, MPI_Comm cart, RigGenInfo rgi, int n, const Particle *flu_pp_dev, const Particle *flu_pp_hst,
-                             int ns, bool hasid0, const Solid *ss, /**/ int *nps, float *rr0, /*w*/ int *ll_dev, int *ll_hst) {
+                             int ns, bool hasid0, const Rigid *ss, /**/ int *nps, float *rr0, /*w*/ int *ll_dev, int *ll_hst) {
     int nm, pdir;
     Transf T;
     *nps = 0;

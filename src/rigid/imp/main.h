@@ -24,7 +24,7 @@ int rig_pininfo_get_pdir(const RigPinInfo *pi) {
     return pi->pdir;
 }
 
-void rig_reinit_ft(const int nsolid, /**/ Solid *ss) {
+void rig_reinit_ft(const int nsolid, /**/ Rigid *ss) {
     KL(rigid_dev::reinit_ft, (k_cnf(nsolid)), (nsolid, /**/ ss));
 }
 
@@ -33,7 +33,7 @@ static bool pinned_com(const RigPinInfo *pi) {
     return com.x && com.y && com.z;
 }
 
-void rig_update(const RigPinInfo *pi, float dt, int n, const Force *ff, const float *rr0, int ns, /**/ Particle *pp, Solid *ss) {
+void rig_update(const RigPinInfo *pi, float dt, int n, const Force *ff, const float *rr0, int ns, /**/ Particle *pp, Rigid *ss) {
     if (ns < 1) return;
 
     const int nps = n / ns; /* number of particles per solid */
@@ -50,7 +50,7 @@ void rig_update(const RigPinInfo *pi, float dt, int n, const Force *ff, const fl
     KL(rigid_dev::update_pp, ( nblck, nthrd ), (nps, rr0, ss, /**/ pp));
 }
 
-void rig_generate(int ns, const Solid *ss, int nps, const float *rr0, /**/ Particle *pp) {
+void rig_generate(int ns, const Rigid *ss, int nps, const float *rr0, /**/ Particle *pp) {
     if (ns < 1) return;
 
     const dim3 nblck ( ceiln(nps, NTHRD), ns );
@@ -59,7 +59,7 @@ void rig_generate(int ns, const Solid *ss, int nps, const float *rr0, /**/ Parti
     KL(rigid_dev::update_pp, ( nblck, nthrd ), (nps, rr0, ss, /**/ pp));
 }
 
-void rig_update_mesh(float dt, int ns, const Solid *ss, int nv, const float *vv, /**/ Particle *pp) {
+void rig_update_mesh(float dt, int ns, const Rigid *ss, int nv, const float *vv, /**/ Particle *pp) {
     const dim3 nblck ( ceiln(nv, NTHRD), ns );
     const dim3 nthrd ( NTHRD, 1 );
     KL(rigid_dev::update_mesh, (nblck, nthrd ), (dt, ss, nv, vv, /**/ pp));

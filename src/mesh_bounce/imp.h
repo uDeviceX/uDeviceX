@@ -4,7 +4,7 @@ struct Particle;
 struct Positioncp;
 struct Force;
 struct Momentum;
-struct Solid;
+struct Rigid;
 struct int4;
 
 struct MeshInfo {
@@ -27,6 +27,6 @@ void mesh_bounce_bounce(float dt, float mass, int n, const MeshBB *d, MeshInfo m
 // end::int[]
 
 // tag::collect[]
-void mesh_bounce_collect_rig_momentum(int ns, MeshInfo meshinfo, const Particle *pp, const Momentum *mm, /**/ Solid *ss); // <1>
+void mesh_bounce_collect_rig_momentum(int ns, MeshInfo meshinfo, const Particle *pp, const Momentum *mm, /**/ Rigid *ss); // <1>
 void mesh_bounce_collect_rbc_momentum(float mass, int nc, MeshInfo mi, const Momentum *mm, /**/ Particle *pp);            // <2>
 // end::collect[]

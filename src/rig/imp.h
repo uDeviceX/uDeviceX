@@ -2,7 +2,7 @@
 struct RigQuants {
     int n, ns, nps;              /* number of particles (total), solid, particle per solid        */
     Particle *pp_hst, *pp;       /* particles on hst and device                                   */
-    Solid    *ss_hst, *ss;       /* rigid strutures                                               */
+    Rigid    *ss_hst, *ss;       /* rigid strutures                                               */
     float   *rr0_hst, *rr0;      /* frozen particle templates                                     */
 
     /* mesh related quantities */
@@ -11,7 +11,7 @@ struct RigQuants {
     float *dvv;                   /* vertices on device (template)                                 */
     Particle *i_pp_hst, *i_pp;    /* particles representing all meshes of all solids of that node  */
 
-    Solid *ss_dmp;
+    Rigid *ss_dmp;
 
     long maxp; /* maximum particle number */
 };

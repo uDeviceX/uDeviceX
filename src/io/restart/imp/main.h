@@ -104,7 +104,7 @@ void restart_read_ii(MPI_Comm comm, const char *base, const char *code, int id, 
     read(comm, base, code, id, n, ii);    
 }
 
-void restart_write_ss(MPI_Comm comm, const char *base, const char *code, int id, long n, const Solid *ss) {
+void restart_write_ss(MPI_Comm comm, const char *base, const char *code, int id, long n, const Rigid *ss) {
     static const char *vars =
         "Ixx Ixy Ixz Iyy Iyz Izz "
         "mass x y z vx vy vz omx omy omz "
@@ -114,7 +114,7 @@ void restart_write_ss(MPI_Comm comm, const char *base, const char *code, int id,
     write(comm, base, code, id, n, ss, BopFLOAT, NVARS, vars);
 }
 
-void restart_read_ss(MPI_Comm comm, const char *base, const char *code, int id, int *n, Solid *ss) {
+void restart_read_ss(MPI_Comm comm, const char *base, const char *code, int id, int *n, Rigid *ss) {
     read(comm, base, code, id, n, ss);
 }
 

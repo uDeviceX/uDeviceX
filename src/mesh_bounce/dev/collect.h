@@ -30,9 +30,9 @@ _S_ void rig_add_ang_mom(const float Iinv[], const float L[3], float *om) {
 }
 
 /* assume very small portion of non zero momentum changes */
-__global__ void collect_rig_mom(int ns, int nt, int nv, const int4 *tt, const Particle *pp, const Momentum *mm, /**/ Solid *ss) {
+__global__ void collect_rig_mom(int ns, int nt, int nv, const int4 *tt, const Particle *pp, const Momentum *mm, /**/ Rigid *ss) {
     int i, sid;
-    Solid *s;
+    Rigid *s;
     i = threadIdx.x + blockDim.x * blockIdx.x;
 
     sid = i / nt;

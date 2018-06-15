@@ -36,7 +36,7 @@ void mesh_bounce_bounce(float dt, float mass, int n, const MeshBB *mbb, MeshInfo
        (dt, mass, n, mbb->ncols, mbb->datacol, mbb->idcol, mi.nt, mi.nv, mi.tt, i_rr, pp0, /**/ pp, mm));
 }
 
-void mesh_bounce_collect_rig_momentum(int ns, MeshInfo mi, const Particle *pp, const Momentum *mm, /**/ Solid *ss) {
+void mesh_bounce_collect_rig_momentum(int ns, MeshInfo mi, const Particle *pp, const Momentum *mm, /**/ Rigid *ss) {
     KL(mesh_bounce_dev::collect_rig_mom, (k_cnf(ns * mi.nt)), (ns, mi.nt, mi.nv, mi.tt, pp, mm, /**/ ss));
 }
 

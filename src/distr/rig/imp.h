@@ -11,8 +11,8 @@ void drig_pack_fin(DRigPack *p);
 void drig_comm_fin(DRigComm *c);
 void drig_unpack_fin(DRigUnpack *u);
 
-void drig_build_map(int ns, const Solid *ss, /**/ DRigPack *p);
-void drig_pack(int ns, int nv, const Solid *ss, const Particle *ipp, /**/ DRigPack *p);
+void drig_build_map(int ns, const Rigid *ss, /**/ DRigPack *p);
+void drig_pack(int ns, int nv, const Rigid *ss, const Particle *ipp, /**/ DRigPack *p);
 void drig_download(DRigPack *p);
 
 void drig_post_recv(DRigComm *c, DRigUnpack *u);

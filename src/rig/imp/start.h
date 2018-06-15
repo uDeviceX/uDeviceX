@@ -13,7 +13,7 @@ static void pp2rr(const Particle *pp, const int n, float *rr) {
             rr[3*i + c] = pp[i].r[c];
 }
 
-static void gen_from_strt(int maxp, MPI_Comm comm, const char *base, const char *name, const int id, int *ns, int *nps, int *n, float *rr0_hst, Solid *ss_hst) {
+static void gen_from_strt(int maxp, MPI_Comm comm, const char *base, const char *name, const int id, int *ns, int *nps, int *n, float *rr0_hst, Rigid *ss_hst) {
     Particle *pp;
     char code[FILENAME_MAX];
     

@@ -23,7 +23,7 @@ struct FluInfo {
 struct RigInfo {
     int ns, *nps;
     float *rr0;
-    Solid *ss;
+    Rigid *ss;
     Particle *pp;
 };
 // end::struct[]

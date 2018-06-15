@@ -8,11 +8,11 @@ static void check(const float e[]) {
             "error: %g, e = %g %g %g", err, e[X], e[Y], e[Z]);
 }
 
-static Solid gen_from_matrix(const double *A) {
+static Rigid gen_from_matrix(const double *A) {
     enum {X, Y, Z, W, M};
     enum {D = W};
     int c;
-    Solid s; memset(&s, 0, sizeof(s));
+    Rigid s; memset(&s, 0, sizeof(s));
     for (c = 0; c < D; ++c) {
         s.com[c] = A[M * c + W];
         s.e0[c]  = A[M * c + X];
@@ -25,7 +25,7 @@ static Solid gen_from_matrix(const double *A) {
     return s;
 }
 
-static void gen_from_matrices(Matrices *matrices, Solid *ss) {
+static void gen_from_matrices(Matrices *matrices, Rigid *ss) {
     int i, n;
     double *A;
     n = matrices_get_n(matrices);
@@ -36,7 +36,7 @@ static void gen_from_matrices(Matrices *matrices, Solid *ss) {
     }
 }
 
-static void shift(const Coords *c, int n, Solid *ss) {
+static void shift(const Coords *c, int n, Rigid *ss) {
     enum {X, Y, Z};
     float *r;
     int i;

@@ -7,7 +7,7 @@ struct Particle {
     float r[3], v[3];
 };
 
-struct Solid {
+struct Rigid {
     float Iinv[6],            /* moment of inertia            6        */
         mass,                 /* mass of the solid            7        */
         com[3],               /* [c]enter [o]f [m]ass         10       */

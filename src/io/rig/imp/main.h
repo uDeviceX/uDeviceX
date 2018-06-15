@@ -5,11 +5,11 @@ static int swrite_v(const float v[3], char *buf) {
     return sprintf(buf, "%+.6e %+.6e %+.6e ", v[X], v[Y], v[Z]); // 3 * 13 + 3 = 42
 }
 
-static int swrite(const Coords *c, int ns, const Solid *ss, int maxn, char *buf) {
+static int swrite(const Coords *c, int ns, const Rigid *ss, int maxn, char *buf) {
     enum {X, Y, Z, D};
     int i, nchar;
     float com[D];
-    const Solid *s;
+    const Rigid *s;
 
     for (i = nchar = 0; i < ns; ++i) {
         s = &ss[i];
@@ -46,7 +46,7 @@ static void gen_fname(const char *name, long id, char *fname) {
     sprintf(fname, BASE "/%s.%04ld.txt", name, id);
 }
 
-void io_rig_dump(MPI_Comm comm, const Coords *c, const char *name, long id, int ns, const Solid *ss) {
+void io_rig_dump(MPI_Comm comm, const Coords *c, const char *name, long id, int ns, const Rigid *ss) {
     char fname[FILENAME_MAX], *data;
     int maxnc, nchar = 0;    
 

@@ -1,7 +1,7 @@
 // tag::struct[]
 /* 
  ipp: particles of the mesh
- ss:  "Solid" structures 
+ ss:  "Rigid" structures 
 */
 
 enum {
