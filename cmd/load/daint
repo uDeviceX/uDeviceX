@@ -3,7 +3,7 @@
 : ${MODULE_CUDATOOLKIT=cudatoolkit}
 : ${MODULE_CRAY=0}
 
-if test "$MODULE_GNU" != 0
+if test "$MODULE_CRAY" != 0
 then module1 swap PrgEnv-cray PrgEnv-gnu
 fi
 
