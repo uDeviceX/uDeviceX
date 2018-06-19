@@ -1,7 +1,7 @@
 #include <unistd.h>
 static size_t b2mb(size_t byte) { return byte / 1000000; }
 
-size_t memory() {
+static size_t memory() {
     size_t p, sz;
     p  = sysconf(_SC_PHYS_PAGES);
     sz = sysconf(_SC_PAGE_SIZE);
