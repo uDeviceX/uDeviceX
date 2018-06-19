@@ -13,9 +13,9 @@ namespace d {
 
 #if   defined(DEV_CUDA)
   #include "cuda/imp.h"
+  #include "cuda/release/alloc.h"
 #elif defined(DEV_CPU)
   #include "cpu/imp.h"
-  #include "cpu/release/alloc.h"
 #else
   #error DEV_* is undefined
 #endif
