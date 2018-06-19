@@ -16,7 +16,6 @@ static double Bytes2MBytes(size_t sz) {
 void emalloc(size_t size, /**/ void **data) {
     *data = malloc(size);
     if (NULL == *data) {
-        char s[FILENAME_MAX];
         msg_print("standard library: %s", strerror(errno));
         os_malloc_stats();
         ERR("Failed to allocate array of size %g MB\n", Bytes2MBytes(size));
