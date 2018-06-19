@@ -1,5 +1,4 @@
-#include <unistd.h>
-static size_t b2mb(size_t byte) { return byte / 1000000; }
+static double b2mb(size_t byte) { return (double) byte / (double) (1 << 20); }
 
 static size_t memory() {
     size_t p, sz;

@@ -10,15 +10,11 @@
 
 // static size_t tot = 0;
 
-static void format_bytes(size_t sz, char *s) {
-    int GB, MB, kB, B;
-    GB = sz >> 30; sz -= GB << 30;
-    MB = sz >> 20; sz -= MB << 20;
-    kB = sz >> 10; sz -= kB << 10;
-    B  = sz;
-    sprintf(s, "%d GB + %d MB + %d kB + %d B", GB, MB, kB, B);
+static double Bytes2MBytes(size_t sz) {
+    return (double) sz / (double) (1 << 20);
 }
 
+<<<<<<< HEAD
 // static void log_size(size_t sz) {
 //     char s[FILENAME_MAX], t[FILENAME_MAX];
 //     if (sz < (1 << 20)) return;
@@ -28,16 +24,20 @@ static void format_bytes(size_t sz, char *s) {
     
 //     // error_print_stack();
 // }
+=======
+>>>>>>> da5e5499a92f14347998e841206dec3da8ede499
 void emalloc(size_t size, /**/ void **data) {
     *data = malloc(size);
-    // tot += size;
-    // log_size(size);
     if (NULL == *data) {
+<<<<<<< HEAD
         char s[FILENAME_MAX];
         format_bytes(size, s);
         msg_print("standard library: %s", strerror(errno));
         malloc_stats();
         ERR("Failed to allocate array of size %s\n", s);
+=======
+        ERR("Failed to allocate array of size %g MB\n", Bytes2MBytes(size));
+>>>>>>> da5e5499a92f14347998e841206dec3da8ede499
     }
 }
 
