@@ -6,6 +6,8 @@
 
 #include "utils/imp.h"
 #include "utils/error.h"
+#include "utils/msg.h"
+
 #include "d/api.h"
 
 namespace d {
