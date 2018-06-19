@@ -2,11 +2,12 @@
 #include <stdlib.h>
 #include <string.h>
 #include <errno.h>
-#include <malloc.h>
 
-#include "imp.h"
+#include "utils/os.h"
 #include "utils/msg.h"
 #include "utils/error.h"
+
+#include "imp.h"
 
 static double Bytes2MBytes(size_t sz) {
     return (double) sz / (double) (1 << 20);
@@ -17,7 +18,7 @@ void emalloc(size_t size, /**/ void **data) {
     if (NULL == *data) {
         char s[FILENAME_MAX];
         msg_print("standard library: %s", strerror(errno));
-        malloc_stats();
+        os_malloc_stats();
         ERR("Failed to allocate array of size %g MB\n", Bytes2MBytes(size));
     }
 }

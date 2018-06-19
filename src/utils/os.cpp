@@ -5,6 +5,7 @@
 #include <errno.h>
 #include <time.h>
 #include <unistd.h>
+#include <malloc.h>
 
 #include "msg.h"
 #include "utils/error.h"
@@ -51,9 +52,9 @@ void os_mkdir(const char *path0) {
 
 #undef SEP
 #undef END
-    
 
 long os_time() { return time(NULL); }
 void os_srand(long int seedval) { srand48(seedval); }
 double os_drand() { return drand48(); }
 void os_sleep(unsigned int seconds) { sleep(seconds); }
+void os_malloc_stats() { os_malloc_stats(); }
