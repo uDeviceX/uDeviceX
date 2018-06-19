@@ -21,7 +21,7 @@ $B/struct/pfarrays/imp.o: $S/struct/farray/imp.h $S/utils/imp.h $S/utils/error.h
 $B/u/bulk/main.o: $S/flu/type.h $S/struct/farray/imp.h $S/utils/imp.h $S/inc/conf.h $S/fluforces/imp.h $S/utils/error.h $S/inc/type.h $S/conf/imp.h $S/mpi/wrapper.h $S/struct/parray/imp.h $S/coords/ini.h $S/utils/cc.h $S/io/txt/imp.h $S/pair/imp.h $S/inc/dev.h $S/utils/mc.h $S/d/api.h $B/conf.h $S/struct/partlist/type.h $S/clist/imp.h $S/coords/imp.h $S/mpi/glb.h $S/utils/msg.h
 $B/utils/cc.o: $S/utils/cc/common.h $S/inc/conf.h $S/utils/error.h $S/d/api.h $B/conf.h
 $B/utils/error.o: $S/utils/msg.h $S/utils/error.h
-$B/utils/imp.o: $S/utils/error.h $S/utils/imp.h
+$B/utils/imp.o: $S/utils/error.h $S/utils/imp.h $S/utils/msg.h
 $B/utils/mc.o: $S/inc/conf.h $S/utils/error.h $S/mpi/wrapper.h $S/utils/mc.h $B/conf.h
 $B/utils/msg.o: $S/utils/msg.h
 $B/utils/nvtx/imp.o: $S/utils/error.h

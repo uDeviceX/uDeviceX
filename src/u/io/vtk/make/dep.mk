@@ -22,7 +22,7 @@ $B/mpi/wrapper.o: $S/mpi/wrapper.h
 $B/u/io/vtk/main.o: $S/utils/imp.h $S/utils/error.h $S/conf/imp.h $S/mpi/wrapper.h $S/algo/scalars/imp.h $S/mesh/tri_area/imp.h $S/io/mesh_read/imp.h $S/mesh/scatter/imp.h $S/algo/vectors/imp.h $S/utils/mc.h $S/mesh/angle/imp.h $S/io/vtk/imp.h $S/mpi/glb.h $S/utils/msg.h
 $B/utils/cc.o: $S/utils/cc/common.h $S/inc/conf.h $S/utils/error.h $S/d/api.h $B/conf.h
 $B/utils/error.o: $S/utils/msg.h $S/utils/error.h
-$B/utils/imp.o: $S/utils/error.h $S/utils/imp.h
+$B/utils/imp.o: $S/utils/error.h $S/utils/imp.h $S/utils/msg.h
 $B/utils/mc.o: $S/inc/conf.h $S/utils/error.h $S/mpi/wrapper.h $S/utils/mc.h $B/conf.h
 $B/utils/msg.o: $S/utils/msg.h
 $B/utils/nvtx/imp.o: $S/utils/error.h

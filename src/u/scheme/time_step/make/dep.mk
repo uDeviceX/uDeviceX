@@ -8,7 +8,7 @@ $B/scheme/time_step/imp.o: $S/utils/imp.h $S/inc/conf.h $S/utils/error.h $S/sche
 $B/u/scheme/time_step/main.o: $S/utils/imp.h $S/inc/conf.h $S/utils/error.h $S/scheme/time_step/imp.h $S/inc/type.h $S/conf/imp.h $S/mpi/wrapper.h $S/utils/cc.h $S/utils/mc.h $S/io/txt/imp.h $S/inc/dev.h $S/d/api.h $B/conf.h $S/algo/force_stat/imp.h $S/utils/msg.h $S/mpi/glb.h
 $B/utils/cc.o: $S/utils/cc/common.h $S/inc/conf.h $S/utils/error.h $S/d/api.h $B/conf.h
 $B/utils/error.o: $S/utils/msg.h $S/utils/error.h
-$B/utils/imp.o: $S/utils/error.h $S/utils/imp.h
+$B/utils/imp.o: $S/utils/error.h $S/utils/imp.h $S/utils/msg.h
 $B/utils/mc.o: $S/inc/conf.h $S/utils/error.h $S/mpi/wrapper.h $S/utils/mc.h $B/conf.h
 $B/utils/msg.o: $S/utils/msg.h
 $B/utils/nvtx/imp.o: $S/utils/error.h

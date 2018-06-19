@@ -15,7 +15,7 @@ $B/u/math/tform/main.o: $S/u/math/tform/tok.h $S/inc/conf.h $S/utils/error.h $S/
 $B/u/math/tform/tok.o: $S/utils/imp.h $S/utils/error.h
 $B/utils/cc.o: $S/utils/cc/common.h $S/inc/conf.h $S/utils/error.h $S/d/api.h $B/conf.h
 $B/utils/error.o: $S/utils/msg.h $S/utils/error.h
-$B/utils/imp.o: $S/utils/error.h $S/utils/imp.h
+$B/utils/imp.o: $S/utils/error.h $S/utils/imp.h $S/utils/msg.h
 $B/utils/mc.o: $S/inc/conf.h $S/utils/error.h $S/mpi/wrapper.h $S/utils/mc.h $B/conf.h
 $B/utils/msg.o: $S/utils/msg.h
 $B/utils/nvtx/imp.o: $S/utils/error.h
