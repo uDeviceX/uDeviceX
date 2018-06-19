@@ -1,3 +1,6 @@
+/* for sysconf */
+#include <unistd.h>
+
 static double b2mb(size_t byte) { return (double) byte / (double) (1 << 20); }
 
 static size_t memory() {
