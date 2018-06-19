@@ -5,5 +5,4 @@ inline int safe0(dim3 i, dim3 j) {
 }
 inline int safe(dim3 i, dim3 j)                    { return safe0(i, j); }
 inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
-inline int safe(dim3 i, dim3 j, int, cudaStream_t) { return safe0(i, j); }
 }
