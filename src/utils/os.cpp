@@ -57,4 +57,4 @@ long os_time() { return time(NULL); }
 void os_srand(long int seedval) { srand48(seedval); }
 double os_drand() { return drand48(); }
 void os_sleep(unsigned int seconds) { sleep(seconds); }
-void os_malloc_stats() { os_malloc_stats(); }
+void os_malloc_stats() { malloc_stats(); }
