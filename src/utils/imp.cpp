@@ -16,7 +16,6 @@ void emalloc(size_t size, /**/ void **data) {
     *data = malloc(size);
     if (NULL == *data) {
         char s[FILENAME_MAX];
-        format_bytes(size, s);
         msg_print("standard library: %s", strerror(errno));
         malloc_stats();
         ERR("Failed to allocate array of size %g MB\n", Bytes2MBytes(size));
