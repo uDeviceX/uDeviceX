@@ -97,3 +97,7 @@ void error_report() {
 }
 
 void error_abort() { exit(1); }
+
+void error_print_stack() {
+    stack_dump();
+}

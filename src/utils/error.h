@@ -35,3 +35,5 @@ void error_signal_mpi(const char *file, int line, const char *msg);
 bool error_get();
 void error_report();
 void error_abort();
+
+void error_print_stack();
