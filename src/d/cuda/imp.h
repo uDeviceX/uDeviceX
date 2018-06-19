@@ -16,10 +16,6 @@ static int R(cudaError_t e) {
     }
 }
 
-int alloc_pinned(void **pHost, size_t size) {
-    return R(cudaHostAlloc(pHost, size, cudaHostAllocMapped));
-}
-
 int is_device_pointer(const void *p) {
     cudaPointerAttributes a;
     cudaError_t e;
@@ -27,10 +23,6 @@ int is_device_pointer(const void *p) {
     if      (e == cudaErrorInvalidValue) return 0;
     else if (a.memoryType != cudaMemoryTypeDevice) return 0;
     else return 1;
-}
-
-int Malloc(void **devPtr, size_t size) {
-    return R(cudaMalloc(devPtr, size));
 }
 
 int MemcpyToSymbol(const void *symbol, const void *src, size_t count, size_t offset, int kind0) {
@@ -74,14 +66,6 @@ int MemcpyAsync (void *dst, const void *src, size_t count, int kind0, Stream_t s
     }
     kind = k2k(kind0);
     return R(cudaMemcpyAsync (dst, src, count, kind));
-}
-
-int Free (void *devPtr) {
-    return R(cudaFree (devPtr));
-}
-
-int FreeHost (void *hstPtr) {
-    return R(cudaFreeHost(hstPtr));
 }
 
 int DeviceSynchronize (void) {
