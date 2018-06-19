@@ -114,7 +114,7 @@ void mesh_write_particles(MeshWrite *q, MPI_Comm comm, const Coords *coords, int
 
     nv = q->nv; nt = q->nt; tt = q->tt; directory = q->directory;
     n = nv * nc;
-    if (sprintf(path, PATTERN, DUMP_BASE, directory, id) < 0)
+    if (snprintf(path, FILENAME_MAX, PATTERN, DUMP_BASE, directory, id) < 0)
         ERR("sprintf failed");
     UC(write_file_open(comm, path, /**/ &f));
     switch (q->shift_type) {
