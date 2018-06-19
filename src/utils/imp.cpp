@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <errno.h>
+#include <malloc.h>
 
 #include "imp.h"
 #include "utils/msg.h"
@@ -26,7 +28,6 @@ static void format_bytes(size_t sz, char *s) {
     
 //     // error_print_stack();
 // }
-
 void emalloc(size_t size, /**/ void **data) {
     *data = malloc(size);
     // tot += size;
@@ -34,6 +35,8 @@ void emalloc(size_t size, /**/ void **data) {
     if (NULL == *data) {
         char s[FILENAME_MAX];
         format_bytes(size, s);
+        msg_print("standard library: %s", strerror(errno));
+        malloc_stats();
         ERR("Failed to allocate array of size %s\n", s);
     }
 }
