@@ -110,7 +110,7 @@ void mesh_write_particles(MeshWrite *q, MPI_Comm comm, const Coords *coords, int
     Vectors *pos, *vel;
     WriteFile *f;
     const char *directory;
-    char path[FILENAME_MAX];
+    char path[FILENAME_MAX] = {'\0'} ;
 
     nv = q->nv; nt = q->nt; tt = q->tt; directory = q->directory;
     n = nv * nc;
@@ -139,7 +139,7 @@ void mesh_write_vectors(MeshWrite *q, MPI_Comm comm, int nc, Vectors *pos, Vecto
     const int4 *tt;
     WriteFile *f;
     const char *directory;
-    char path[FILENAME_MAX];
+    char path[FILENAME_MAX] = {'\0'};
 
     nv = q->nv; nt = q->nt; tt = q->tt; directory = q->directory;
     if (snprintf(path, FILENAME_MAX, PATTERN, DUMP_BASE, directory, id) < 0)

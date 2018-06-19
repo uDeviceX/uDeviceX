@@ -2,7 +2,7 @@ static char *cpy(char *dest, const char *src) { return strncpy(dest, src, FILENA
 static char *cat(char *dest, const char *src) { return strncat(dest, src, FILENAME_MAX); }
 
 static void mkdir(MPI_Comm comm, const char *p, const char *s) {
-    char path[FILENAME_MAX];
+    char path[FILENAME_MAX] = {'\0'};
     if (!m::is_master(comm)) return;
     cpy(path, p);
     cat(path, "/");

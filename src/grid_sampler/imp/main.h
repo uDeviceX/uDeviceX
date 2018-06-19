@@ -148,7 +148,7 @@ static void build_desc(int ncmp, const char * const name[], const float * const 
 }
 
 static void dump(MPI_Comm cart, const char *dir, long id, const Grid *g) {
-    char path[FILENAME_MAX];
+    char path[FILENAME_MAX] = {'\0'};
     int ncmp;
     const float *data[TOT_NFIELDS];
     const char *names[TOT_NFIELDS];

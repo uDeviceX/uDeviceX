@@ -29,7 +29,7 @@ static void safe_mkdir(const char *path)  {
 #define SEP '/'
 
 void os_mkdir(const char *path0) {
-    char path[FILENAME_MAX];
+    char path[FILENAME_MAX] = {'\0'};
     unsigned int len;
     char *p;
 

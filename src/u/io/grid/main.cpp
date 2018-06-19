@@ -65,7 +65,7 @@ static void dump(MPI_Comm cart, const Coords *l, const Coords *g, const char *pa
     s.x = xs(g); N.x = xdomain(g); L.x = xdomain(l);
     s.y = ys(g); N.y = ydomain(g); L.y = ydomain(l);
     s.z = zs(g); N.z = zdomain(g); L.z = zdomain(l);
-        
+
     nc = s.x * s.y * s.z;
 
     for (i = 0; i < NCMP; ++i) {
@@ -80,13 +80,13 @@ static void dump(MPI_Comm cart, const Coords *l, const Coords *g, const char *pa
 
 int main(int argc, char **argv) {
     const char *dir;
-    char path[FILENAME_MAX];
+    char path[FILENAME_MAX] = {'\0'};
     Coords *l, *g; // space and grid coordinates
     Config *cfg;
     int rank, dims[3];
     int3 N; // local grid size
     MPI_Comm cart;
-    
+
     m::ini(&argc, &argv);
     m::get_dims(&argc, &argv, dims);
     m::get_cart(MPI_COMM_WORLD, dims, &cart);
@@ -98,13 +98,13 @@ int main(int argc, char **argv) {
     UC(conf_read(argc, argv, cfg));
     UC(conf_lookup_int3(cfg, "grid_size", &N));
     UC(conf_lookup_string(cfg, "dir", &dir));
-    
+
     UC(coords_ini_conf(cart, cfg, &l));
     UC(coords_ini(cart, N.x, N.y, N.z, &g));
 
     sprintf(path, DUMP_BASE "/%s/test.h5", dir);
     dump(cart, l, g, path);
-    
+
     UC(coords_fin(l));
     UC(coords_fin(g));
     UC(conf_fin(cfg));

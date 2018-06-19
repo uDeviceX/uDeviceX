@@ -111,7 +111,7 @@ void vtk_vert(VTK *q, int nm, const Scalars *sc, const char *keys) {
 }
 
 void vtk_write(VTK *q, MPI_Comm comm, int id) {
-    char path[FILENAME_MAX];
+    char path[FILENAME_MAX] = {'\0'};
     int i, nk, n, nm, nv, nt, nbuf;
     const int *tt;
     const char *keys;
