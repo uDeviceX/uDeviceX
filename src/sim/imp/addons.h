@@ -82,6 +82,10 @@ _I_ void field_sample(Sim *s) {
 
 _I_ void colors_from_rbc(Sim *s) {
     PFarray flu;
+    const Opt *opt = &s->opt;
+
+    if (!opt->flu.colors) return;
+    
     utils_get_pf_flu(s, &flu);
     UC(objects_recolor_flu(s->obj, &flu));
 }
@@ -89,7 +93,7 @@ _I_ void colors_from_rbc(Sim *s) {
 _I_ void recolor_from_rbc(long it, Sim *s) {
     bool cond;
     const Opt *opt = &s->opt;
-    cond = opt->flu.colors && opt->recolor_freq && it % opt->recolor_freq == 0;
+    cond = opt->flu.colors && opt->recolor_freq && (it % opt->recolor_freq == 0);
     if (cond) {
         msg_print("recolor inside rbc");
         UC(colors_from_rbc(s));
