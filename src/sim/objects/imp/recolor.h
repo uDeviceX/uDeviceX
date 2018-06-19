@@ -28,6 +28,8 @@ static int exchange_mesh_mbr(Mbr *m, Particle *pp) {
 static void recolor_flu_from_mbr(Mbr *m, PFarray *flu) {
     int nm, nv;
     Colorer *c = m->colorer;
+    if (c == NULL)
+        ERR("colorer was not initialised");
 
     nv = m->q.nv;
     nm = exchange_mesh_mbr(m, c->pp_mesh);
