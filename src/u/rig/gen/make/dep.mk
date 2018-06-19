@@ -12,7 +12,7 @@ $B/comm/imp.o: $S/comm/imp/fin.h $S/utils/imp.h $S/inc/conf.h $S/utils/error.h $
 $B/conf/imp.o: $S/utils/imp.h $S/utils/error.h $S/conf/imp/set.h $S/conf/imp.h $S/conf/imp/main.h $S/conf/imp/type.h $S/conf/imp/get.h $S/utils/msg.h
 $B/coords/conf.o: $S/utils/imp.h $S/coords/ini.h $S/utils/error.h $S/conf/imp.h
 $B/coords/imp.o: $S/utils/imp.h $S/inc/conf.h $S/coords/ini.h $S/utils/error.h $S/mpi/wrapper.h $S/coords/imp.h $S/utils/mc.h $B/conf.h $S/coords/imp/main.h $S/coords/imp/type.h $S/coords/type.h
-$B/d/api.o: $S/d/cpu/imp.h $S/utils/imp.h $S/inc/conf.h $S/utils/error.h $S/d/common.h $S/d/api.h $B/conf.h $S/d/cuda/release/alloc.h $S/d/cuda/imp.h
+$B/d/api.o: $S/d/cpu/imp.h $S/utils/imp.h $S/inc/conf.h $S/utils/error.h $S/d/common.h $S/d/api.h $B/conf.h $S/d/cuda/release/alloc.h $S/d/cuda/debug/alloc.h $S/d/cuda/imp.h
 $B/exch/common/imp.o: $S/comm/imp.h $S/inc/conf.h $S/inc/type.h $S/exch/common/imp.h $S/utils/cc.h $S/exch/common/dev.h $S/inc/dev.h $S/d/api.h $B/conf.h $S/frag/dev.h $S/utils/kl.h $S/frag/imp.h
 $B/exch/map/imp.o: $S/utils/imp.h $S/inc/conf.h $S/utils/error.h $S/exch/map/imp.h $S/utils/cc.h $S/d/api.h $S/inc/dev.h $B/conf.h $S/exch/map/type.h $S/utils/kl.h $S/exch/map/dev/main.h
 $B/exch/mesh/imp.o: $S/exch/mesh/imp/fin.h $S/exch/common/imp.h $S/exch/map/dev.h $S/comm/imp.h $S/utils/imp.h $S/inc/conf.h $S/utils/error.h $S/exch/mesh/imp/com.h $S/exch/map/imp.h $S/comm/utils.h $S/inc/type.h $S/exch/mesh/imp.h $S/utils/cc.h $S/exch/mesh/dev.h $S/algo/minmax/imp.h $S/exch/mesh/imp/ini.h $S/d/api.h $S/inc/dev.h $B/conf.h $S/exch/mesh/imp/unpack.h $S/exch/mesh/imp/type.h $S/exch/map/type.h $S/utils/kl.h $S/frag/dev.h $S/exch/mesh/imp/pack.h $S/exch/mesh/imp/map.h $S/frag/imp.h $S/utils/msg.h
