@@ -100,4 +100,5 @@ void error_abort() { exit(1); }
 
 void error_print_stack() {
     stack_dump();
+    msg_print("%s", back_trace);
 }

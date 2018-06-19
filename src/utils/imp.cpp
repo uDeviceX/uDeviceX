@@ -6,6 +6,8 @@
 #include "utils/msg.h"
 #include "utils/error.h"
 
+// static size_t tot = 0;
+
 static void format_bytes(size_t sz, char *s) {
     int GB, MB, kB, B;
     GB = sz >> 30; sz -= GB << 30;
@@ -15,19 +17,25 @@ static void format_bytes(size_t sz, char *s) {
     sprintf(s, "%d GB + %d MB + %d kB + %d B", GB, MB, kB, B);
 }
 
-static void log_size(size_t sz) {
-    char s[FILENAME_MAX];
-    if (sz < (1 << 20)) return;
-    format_bytes(sz, s);
-    msg_print("allocate %s", s);
-    error_print_stack();
-}
+// static void log_size(size_t sz) {
+//     char s[FILENAME_MAX], t[FILENAME_MAX];
+//     if (sz < (1 << 20)) return;
+//     format_bytes(sz, s);
+//     format_bytes(tot, t);
+//     msg_print("allocate %s -> total %s", s, t);
+    
+//     // error_print_stack();
+// }
 
 void emalloc(size_t size, /**/ void **data) {
     *data = malloc(size);
-    log_size(size);
-    if (NULL == *data)
-        ERR("Failed to allocate array of size %ld\n", size);
+    // tot += size;
+    // log_size(size);
+    if (NULL == *data) {
+        char s[FILENAME_MAX];
+        format_bytes(size, s);
+        ERR("Failed to allocate array of size %s\n", s);
+    }
 }
 
 void efree(void *ptr) {
