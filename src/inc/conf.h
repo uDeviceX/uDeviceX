@@ -14,6 +14,11 @@
   #define DEV_CUDA
 #endif
 
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
 /* compute rbc force in double or float */
 #if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
   #define RBC_DOUBLE
