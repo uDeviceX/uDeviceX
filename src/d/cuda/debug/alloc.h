@@ -1,6 +1,9 @@
 /* for sysconf */
 #include <unistd.h>
 
+static size_t tot_d = 0;
+static size_t tot_h = 0;
+
 static double b2mb(size_t byte) { return (double) byte / (double) (1 << 20); }
 
 static size_t memory() {
@@ -12,7 +15,8 @@ static size_t memory() {
 
 int alloc_pinned(void **pHost, size_t size) {
     cudaError_t status;
-    msg_print("[alloc_pinned] %g MB", b2mb(size));
+    tot_h += size;
+    msg_print("[alloc_pinned] %g MB (total %g MB)", b2mb(size), b2mb(tot_h));
     status = cudaHostAlloc(pHost, size, cudaHostAllocMapped);
     msg_print("host memory: %g MB", b2mb(memory()));
     return R(status);
@@ -20,7 +24,8 @@ int alloc_pinned(void **pHost, size_t size) {
 
 int Malloc(void **devPtr, size_t size) {
     cudaError_t status;
-    msg_print("[Malloc] %g MB", b2mb(size));
+    tot_d += size;
+    msg_print("[Malloc] %g MB (total %g MB)", b2mb(size), b2mb(tot_d));
     status = cudaMalloc(devPtr, size);
     msg_print("host memory: %g MB", b2mb(memory()));
     return R(status);
