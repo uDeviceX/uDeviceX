@@ -1,5 +1,7 @@
 . u.utils
 
-module1 load cudatoolkit
+: ${MODULE_CUDATOOLKIT=cudatoolkit}
+
+module1 load $MODULE_CUDATOOLKIT
 module1 load daint-gpu
 module1 load cray-hdf5-parallel
