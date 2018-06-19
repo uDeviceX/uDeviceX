@@ -12,17 +12,17 @@ static size_t memory() {
 
 int alloc_pinned(void **pHost, size_t size) {
     cudaError_t status;
-    msg_print("[alloc_pinned] %ld MB", b2mb(size));
+    msg_print("[alloc_pinned] %g MB", b2mb(size));
     status = cudaHostAlloc(pHost, size, cudaHostAllocMapped);
-    msg_print("host memory: %ld MG", b2mb(memory()));
+    msg_print("host memory: %g MG", b2mb(memory()));
     return R(status);
 }
 
 int Malloc(void **devPtr, size_t size) {
     cudaError_t status;
-    msg_print("[Malloc] %ld MB", b2mb(size));
+    msg_print("[Malloc] %g MB", b2mb(size));
     status = cudaMalloc(devPtr, size);
-    msg_print("host memory: %ld MG", b2mb(memory()));
+    msg_print("host memory: %g MG", b2mb(memory()));
     return R(status);
 }
 
