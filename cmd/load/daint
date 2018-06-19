@@ -1,6 +1,11 @@
 . u.utils
 
 : ${MODULE_CUDATOOLKIT=cudatoolkit}
+: ${MODULE_GNU=0}
+
+if test "$MODULE_GNU" -ne 0
+then module1 swap PrgEnv-cray PrgEnv-gnu
+fi
 
 module1 load $MODULE_CUDATOOLKIT
 module1 load daint-gpu
