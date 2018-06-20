@@ -1,1 +1,2 @@
-(emodule-define "Example 1" "./example1")
+(emodule-define "One"  "./example1")
+(emodule-define "Pick" "./pick.tcl")
