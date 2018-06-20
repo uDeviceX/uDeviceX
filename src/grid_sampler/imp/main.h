@@ -158,7 +158,7 @@ static void dump(MPI_Comm cart, const char *dir, long id, const Grid *g) {
     if (g->colors) build_desc(NFIELDS_C, names_c, g->c, /**/ &ncmp, names, data);
     if (g->stress) build_desc(NFIELDS_S, names_s, g->s, /**/ &ncmp, names, data);
     
-    sprintf(path, DUMP_BASE "/%s/%04ld.h5", dir, id);
+    snprintf(path, FILENAME_MAX, DUMP_BASE "/%s/%04ld.h5", dir, id);
     
     UC(grid_write(g->N, g->L, cart, path, ncmp, data, names));
 }
