@@ -12,20 +12,20 @@ function mesh(xmin, xmax, ymin, ymax, xdim, ydim, t,
   dx = (xmax-xmin)/(xdim-1)
   dy = (ymax-ymin)/(ydim-1)
 
-  printf "(read geometry { define foo \n"
-  printf "MESH\n"
-  printf "%1d %1d\n", xdim, ydim
+  print  "(read geometry { define foo"
+  print  "MESH"
+  print  xdim, ydim
   y = ymin
-  for (j=0; j<ydim; ++j) {
+  for (j = 0; j < ydim; ++j) {
       y += dy
       x = xmin
-      for (i=0; i<xdim; ++i) {
+      for (i = 0; i < xdim; ++i) {
 	  x += dx
-	  printf "%f %f %f\t", x, y, F(x,y,t)
+	  print x, y, F(x,y,t)
       }
       printf "\n"
   }
-  printf "})\n"
+  print "})"
 }
 
 BEGIN {
@@ -33,9 +33,8 @@ BEGIN {
   xmax = ymax = 5
   xdim = ydim = 24
   dt = 0.1
-
-  printf "(geometry example { : foo })\n"
-  for (t=0; ; t+=dt)
+  print "(geometry example { : foo })"
+  for (t = 0; ; t += dt)
     mesh(xmin, xmax, ymin, ymax, xdim, ydim, t)
 }
 ' -- "$@"
