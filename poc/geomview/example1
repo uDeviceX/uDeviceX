@@ -1,0 +1,41 @@
+: ${AWK=awk}
+
+"$AWK" '
+function F(x, y, t,   r) {
+  r = sqrt(x*x+y*y);
+  return(sin(r + t)*sqrt(r));
+}
+
+function mesh(xmin, xmax, ymin, ymax, xdim, ydim, t,
+		    #
+		    dx, dy, y, i, j) {
+  dx = (xmax-xmin)/(xdim-1)
+  dy = (ymax-ymin)/(ydim-1)
+
+  printf "(read geometry { define foo \n"
+  printf "MESH\n"
+  printf "%1d %1d\n", xdim, ydim
+  y = ymin
+  for (j=0; j<ydim; ++j) {
+      y += dy
+      x = xmin
+      for (i=0; i<xdim; ++i) {
+	  x += dx
+	  printf "%f %f %f\t", x, y, F(x,y,t)
+      }
+      printf "\n"
+  }
+  printf "})\n"
+}
+
+BEGIN {
+  xmin = ymin = -5
+  xmax = ymax = 5
+  xdim = ydim = 24
+  dt = 0.1
+
+  printf "(geometry example { : foo })\n"
+  for (t=0; ; t+=dt)
+    mesh(xmin, xmax, ymin, ymax, xdim, ydim, t)
+}
+' -- "$@"
