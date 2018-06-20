@@ -2,8 +2,8 @@
 
 "$AWK" '
 function F(x, y, t,   r) {
-  r = sqrt(x*x+y*y);
-  return(sin(r + t)*sqrt(r));
+  r = sqrt(x*x+y*y)
+  return(sin(r + t)*sqrt(r))
 }
 
 function mesh(xmin, xmax, ymin, ymax, xdim, ydim, t,
