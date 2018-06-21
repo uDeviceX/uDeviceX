@@ -19,7 +19,7 @@ BEGIN { n = 4; i = j = 0 }
 function dump(   i, j) {
     for (i = 0; i < n; i++)
 	for (j = 0; j < n; j++)
-	    printf "%g ", a[j, i]
+	    printf "%s ", a[j, i]
     printf "\n"
 }
 
