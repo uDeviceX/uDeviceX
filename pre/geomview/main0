@@ -12,7 +12,13 @@ err0 () {
 
 oogl="$1"; shift
 
-"$AWK" -v prog=$prog -v oogl="$oogl" '
+Output=0 image=
+if test $# -eq 0
+then Output=0
+else Output=1 image="$1"; shift
+fi
+
+"$AWK" -v prog=$prog -v oogl="$oogl" -v Output=$Output -v image="$image" -v DBG="$DBG" '
 function keys(s,   a, n) {
     n = sub(/^\(/, "", s)
     if (n != 1) return ERR
@@ -47,6 +53,7 @@ function geom() {
 }
 
 function g(s) {
+    if ("" DBG != "0") msg("gcl: " s)
     printf "(%s)\n", s | "cat"
     close("cat")
 }
@@ -60,17 +67,19 @@ function g0(s) {
 BEGIN {
     ini()
     geom()
+    if (Output) {
+       g(sprintf("snapshot Camera %s", image))
+       g("exit")
+    }
     for (;;) {
 	status = getline s
 	if (status == ERR) break
 	if (keys(s) != OK) {
-	    msg("failt to parse: " s)
+	    msg("fail to parse: " s)
 	    break
 	}
     }
-    msg("end")
 }
 function msg(s) { printf "%s: %s\n", prog, s | "cat >&2" }
+function err(s) { msg(s); g("exit") }
 ' "$@"
-
-rm $t

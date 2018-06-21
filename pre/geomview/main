@@ -8,8 +8,9 @@ prog0=u.geomview0
 : ${GEOMVIEW=geomview}
 
 usg () {
-    msg "$prog0 FILE.off [IC.file]"
+    msg "$prog0 [-s image.ppm] FILE.off [IC.file]"
     msg 'geomview wrapper to see udx initial conditions'
+    msg 'if -s is given saves image and exits'
     msg 'Keys:'
     msg '    q: quit'
     msg '    s: save snapshot'
@@ -22,7 +23,10 @@ offp() {
 }
 
 gview () {
-    e "${GEOMVIEW}" -wpos 800,600 -noinit -nopanels -b 1 1 1  -run "$prog0" "$t"
+    if test $Output -eq 0
+    then e "${GEOMVIEW}" -wpos 800,600 -noinit -nopanels -b 1 1 1  -run "$prog0" "$t"
+    else e "${GEOMVIEW}" -wpos 800,600 -noinit -nopanels -b 1 1 1  -run "$prog0" "$t" "$image" --
+    fi
 }
 
 main_off () {
@@ -44,7 +48,7 @@ main_ic () {
     fi
     
     i=/tmp/geomview.ic.$$
-    trap 'rm $i; exit 2' 1 2 3 4 15
+    trap 'e rm $i; exit 2' 1 2 3 4 15
     e ./trans $ic '>' $i
     if test $? -ne 0
     then err "not an initial conditions file '$ic'"
@@ -61,20 +65,29 @@ cat >$t <<!
 }
 !
     gview
-    rm $i
+    e rm $i
 }
 
 if test $# -ne 0 && test "$1" = -h
 then usg
 fi
 
-if test $# -eq 0
-then err 'needs OFF'
-fi
-
 if ! e "$GEOMVIEW" --version '2>/dev/null' '1>/dev/null'
 then err "$GOEMVIEW is not found"
 fi
+
+Output=0
+for i
+do if test "$i" = -o
+   then shift
+	if test $# -eq 0; then err '-o requres a file name'; fi
+	Output=1 image="$1"; shift
+   else shift
+	set -- "$@" "$i"
+   fi
+done
+
+if test $# -eq 0; then err 'needs OFF'; fi
 
 off="$1"; shift
 if ! test -f "$off"
@@ -86,7 +99,7 @@ then err "not an off file '$off'"
 fi
 
 t=/tmp/geomview.$$
-trap 'rm $t; exit 2' 1 2 3 4 15
+trap 'e rm $t; exit 2' 1 2 3 4 15
 
 if test $# -eq 0
 then main_off
