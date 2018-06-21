@@ -1,6 +1,6 @@
 #!/bin/sh
 
-prog=poc/geomview/punto0
+prog=u.geomview0
 . u.conf.util
 
 : ${AWK=awk}
