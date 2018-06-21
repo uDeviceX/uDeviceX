@@ -1,4 +1,7 @@
 {
-   appearance { +edge }
+   appearance {
+      +edge
+      material { ks 0.0 }
+   }
    < oogl/cell.off
 }

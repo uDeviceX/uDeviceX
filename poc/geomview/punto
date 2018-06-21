@@ -10,10 +10,6 @@ err0 () {
     err "$@"
 }
 
-offp() {
-    "$AWK" '{ if ("" $0 != "OFF") exit 1; else exit 0 }' "$1"
-}
-
 if test $# -ne 1
 then err0 'needs OFF'
 fi
@@ -21,10 +17,6 @@ fi
 off="$1"; shift
 if ! test -f "$off"
 then err0 "not a file '$off'"
-fi
-
-if ! offp "$off"
-then err0 "not an off file '$off'"
 fi
 
 "$AWK" -v prog=$prog -v off=$off '
@@ -43,8 +35,9 @@ function keys(s,   a, n) {
 
 function ini() { OK = 0; EOF = 1; ERR = -1 }
 function geom() {
-    g(sprintf("geometry obj { appearance { +edge } < \"%s\" }", off))
+    g(sprintf("geometry obj < %s", off))
     g("bbox-draw obj no")
+    g("interest (rawevent 113)")
 }
 
 function g(s) {
