@@ -5,66 +5,33 @@ prog=poc/geomview/punto
 
 : ${AWK=awk}
 
-err0 () {
-    echo "(exit)"
-    err "$@"
+offp() {
+    "$AWK" '{ if ("" $0 != "OFF") exit 1; else exit 0 }' "$1"
 }
 
 if test $# -ne 1
-then err0 'needs OFF'
+then err 'needs OFF'
 fi
 
 off="$1"; shift
 if ! test -f "$off"
-then err0 "not a file '$off'"
+then err "not a file '$off'"
 fi
 
-"$AWK" -v prog=$prog -v off=$off '
-function keys(s,   a, n) {
-    n = sub(/^\(/, "", s)
-    if (n != 1) return ERR
-    n = sub(/\)$/, "", s)
-    if (n != 1) return ERR
-    n = split(s, a)
+if ! offp "$off"
+then err "not an off file '$off'"
+fi
 
-    if (a[1] == "rawevent" && a[2] == 113)
-	g("exit")
-    msg(s)
-    return OK
+t=/tmp/geomview.$$
+trap 'rm $t; exit' 1 2 3 4 15
+
+cat >$t <<!
+{ appearance {
+      +edge
+      material { ks 0.0 }
+  }
+  < "$off"
 }
+!
 
-function ini() { OK = 0; EOF = 1; ERR = -1 }
-function geom() {
-    g(sprintf("geometry obj < %s", off))
-    g("bbox-draw obj no")
-    g("interest (rawevent 113)")
-}
-
-function g(s) {
-    printf "(%s)\n", s | "cat"
-    close("cat")
-}
-
-function g0(s) {
-    msg(s)
-    printf "%s\n", s | "cat"
-    close("cat")    
-}
-
-BEGIN {
-    ini()
-    geom()
-
-    msg("ready")
-    for (;;) {
-	status = getline s
-	if (status == ERR) break
-	if (keys(s) != OK) {
-	    msg("failt to parse: " s)
-	    break
-	}
-    }
-    msg("end")
-}
-function msg(s) { printf "%s: %s\n", prog, s | "cat >&2" }
-' "$@"
+geomview -noinit -nopanels -b 1 1 1  -run ./punto0 "$t"

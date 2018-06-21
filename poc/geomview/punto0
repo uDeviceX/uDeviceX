@@ -1,0 +1,76 @@
+#!/bin/sh
+
+prog=poc/geomview/punto0
+. u.conf.util
+
+: ${AWK=awk}
+
+err0 () {
+    echo "(exit)"
+    err "$@"
+}
+
+oogl="$1"; shift
+
+"$AWK" -v prog=$prog -v oogl="$oogl" '
+function keys(s,   a, n) {
+    n = sub(/^\(/, "", s)
+    if (n != 1) return ERR
+    n = sub(/\)$/, "", s)
+    if (n != 1) return ERR
+    n = split(s, a)
+    if (a[1] == "rawevent")
+       key(a[2])
+    return OK
+}
+
+function key(k) {
+    if      (k == KEY_Q) g("exit")
+    else if (k == KEY_S) {
+	msg("write snap.ppm")
+	g("snapshot Camera snap.ppm")
+    }
+    else err("unknown key: " k)
+}
+
+function ini() {
+    KEY_Q = 113; KEY_S = 115
+    OK = 0; EOF = 1; ERR = -1
+}
+function geom() {
+    g(sprintf("geometry obj < %s", oogl))
+    g("bbox-draw obj no")
+    g(sprintf("interest (rawevent %s)", KEY_Q))
+    g(sprintf("interest (rawevent %s)", KEY_S))
+}
+
+function g(s) {
+    printf "(%s)\n", s | "cat"
+    close("cat")
+}
+
+function g0(s) {
+    msg(s)
+    printf "%s\n", s | "cat"
+    close("cat")    
+}
+
+BEGIN {
+    ini()
+    geom()
+
+    msg("ready")
+    for (;;) {
+	status = getline s
+	if (status == ERR) break
+	if (keys(s) != OK) {
+	    msg("failt to parse: " s)
+	    break
+	}
+    }
+    msg("end")
+}
+function msg(s) { printf "%s: %s\n", prog, s | "cat >&2" }
+' "$@"
+
+rm $t
