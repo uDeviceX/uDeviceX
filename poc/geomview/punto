@@ -11,7 +11,7 @@ offp() {
 }
 
 gview () {
-    e "${GEOMVIEW}" -wpos 1366,768 -noinit -nopanels -b 1 1 1  -run ./punto0 "$t"
+    e "${GEOMVIEW}" -wpos 800,600 -noinit -nopanels -b 1 1 1  -run ./punto0 "$t"
 }
 
 main_off () {
