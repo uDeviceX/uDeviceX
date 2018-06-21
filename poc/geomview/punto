@@ -43,7 +43,7 @@ function keys(s,   a, n) {
 
 function ini() { OK = 0; EOF = 1; ERR = -1 }
 function geom() {
-    g(sprintf("geometry obj < \"%s\"", off))
+    g(sprintf("geometry obj { appearance { +edge } < \"%s\" }", off))
     g("bbox-draw obj no")
 }
 
