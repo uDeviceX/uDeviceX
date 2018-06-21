@@ -58,8 +58,6 @@ function g0(s) {
 BEGIN {
     ini()
     geom()
-
-    msg("ready")
     for (;;) {
 	status = getline s
 	if (status == ERR) break

@@ -1,0 +1,26 @@
+#!/bin/sh
+
+prog=poc/geomview/punto0
+. u.conf.util
+
+: ${AWK=awk}
+
+"$AWK" -v prog=$prog '
+BEGIN { n = 4; i = j = 0 }
+{
+    for (m = 1; m <= NF; m++) {
+	e = $m
+	a[i, j++] = e
+	if (j == n) {j = 0; i++ }
+	if (i == n) {dump(); i = j = 0 }
+    }
+}
+function dump(   i, j) {
+    for (i = 0; i < n; i++) {
+	for (j = 0; j < n; j++) {
+	    printf "%g ", a[j, i]
+	}
+    }
+    printf "\n"
+}
+' "$@"
