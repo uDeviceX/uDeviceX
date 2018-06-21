@@ -26,6 +26,7 @@ function keys(s,   a, n) {
 
 function key(k) {
     if      (k == KEY_Q) g("exit")
+    else if (k == KEY_P) g("ui-panel geomview on")
     else if (k == KEY_S) {
 	msg("write snap.ppm")
 	g("snapshot Camera snap.ppm")
@@ -34,14 +35,15 @@ function key(k) {
 }
 
 function ini() {
-    KEY_Q = 113; KEY_S = 115
+    KEY_Q = 113; KEY_S = 115; KEY_P = 112
     OK = 0; EOF = 1; ERR = -1
 }
+
+function reg_key(k) { g(sprintf("interest (rawevent %s)", k)) }
 function geom() {
     g(sprintf("geometry obj < %s", oogl))
     g("bbox-draw obj no")
-    g(sprintf("interest (rawevent %s)", KEY_Q))
-    g(sprintf("interest (rawevent %s)", KEY_S))
+    reg_key(KEY_Q); reg_key(KEY_S); reg_key(KEY_P)
 }
 
 function g(s) {

@@ -7,6 +7,15 @@ prog0=u.geomview0
 : ${AWK=awk}
 : ${GEOMVIEW=geomview}
 
+usg () {
+    msg "$prog0 FILE.off [IC.file]"
+    msg 'geomview wrapper to see udx initial condition'
+    msg 'Keys:'
+    msg '    q: quite'
+    msg '    s: save snapshot'
+    msg '    p: panel'
+}
+
 offp() {
     "$AWK" '{ if ("" $0 != "OFF") exit 1; else exit 0 }' "$1"
 }
@@ -53,6 +62,10 @@ cat >$t <<!
     gview
     rm $i
 }
+
+if test $# -ne 0 && test "$1" = -h
+then usg
+fi
 
 if test $# -eq 0
 then err 'needs OFF'
