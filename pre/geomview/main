@@ -9,11 +9,12 @@ prog0=u.geomview0
 
 usg () {
     msg "$prog0 FILE.off [IC.file]"
-    msg 'geomview wrapper to see udx initial condition'
+    msg 'geomview wrapper to see udx initial conditions'
     msg 'Keys:'
-    msg '    q: quite'
+    msg '    q: quit'
     msg '    s: save snapshot'
     msg '    p: panel'
+    exit
 }
 
 offp() {
