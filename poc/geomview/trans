@@ -7,11 +7,10 @@ prog=poc/geomview/punto0
 
 "$AWK" -v prog=$prog '
 BEGIN { n = 4; i = j = 0 }
-{
-    for (m = 1; m <= NF; m++) {
+{ for (m = 1; m <= NF; m++) {
 	e = $m
 	if (!numberp(e))
-	    err(sprintf("not numbers %s (%s)", $0, FILENAME))
+	    err(sprintf("not numbers \"%s\" (%s)", $0, FILENAME))
 	a[i, j++] = e
 	if (j == n) {j = 0; i++ }
 	if (i == n) {dump(); i = j = 0 }
