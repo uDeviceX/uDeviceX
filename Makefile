@@ -1,7 +1,7 @@
-A = conf cmd cmd/argp cmd/par cmd/u poc/doc/convert/adoc2html poc/ply2vtk post/ply post/field cmd/utest
+A = conf tools/install cmd cmd/argp cmd/par cmd/u poc/doc/convert/adoc2html poc/ply2vtk post/ply post/field cmd/utest
 B = tools cmd post/punto post/strt post/wall pre/placement pre/units pre/stretch pre/geomview
 C = post/ply/cmd post/rbc post/data data cmd/cp cmd/scatter cmd/var cmd/edb cmd/maxima
-D = tools/install
+D = lib/ply pkgconfig/ply
 
 install:
 	install0 () ( cd "$$d" && make install); \

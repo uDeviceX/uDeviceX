@@ -1,6 +1,6 @@
 S = ../..
-
 include $S/conf.mk
+
 TRG = ply
 P = $(TRG).pc
 SED = sed
