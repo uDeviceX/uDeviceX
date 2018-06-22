@@ -1,0 +1,38 @@
+. u.conf.util
+
+prog=u.install
+
+usg () {
+    msg "$prog FILE... DIRECTORY"
+    msg 'copy one or more files into DIRECTORY preserving relative directory structure'
+    exit
+}
+
+if test $# -ne 0 && test "$1" = -h; then usg; fi
+if test $# -eq 0; then err 'missing FILE'; fi
+if test $# -eq 1; then err 'missing DIRECTORY'; fi
+
+DIR="$1"; shift
+for i; do shift; set -- "$@" "$DIR"; DIR="$i"; done
+for i; do if test ! -f "$i"; then err "not a file '$i'"; fi; done
+
+mkdir0 () {
+    if e test -z "$1"; then exit; fi
+    e mkdir -p \"$1\"
+    if test ! -d "$1"
+    then err "fail to create directory '$1'"
+    fi
+}
+
+cp0 () {
+    if ! e cp -- \"$1\" \"$2\"
+    then err "fail to copy '$1' to '$2'"
+    fi
+}
+
+mkdir0 "$DIR"
+for i
+do d=`e dirname -- \"$i\"`
+   mkdir0 "$DIR/$d"
+   cp0    "$i" "$DIR/$d"
+done

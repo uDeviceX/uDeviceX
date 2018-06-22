@@ -1,0 +1,16 @@
+# TEST: 0
+t=/tmp/install.$$
+trap 'rm -f $t' 1 2 3 4 5
+:
+prefix=prefix
+d=a/b/c/d
+mkdir -p $t
+:
+(cd $t
+ mkdir -p $prefix $d
+ f0=$d/file.1
+ f1=$d/file.2
+ >$f0; >$f1
+ u.install $f0 $f1  $prefix
+ echo $prefix/$d/* ) > list.out.txt
+rm -rf $t
