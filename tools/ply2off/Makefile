@@ -2,6 +2,11 @@ S = ../..
 include $S/conf.mk
 
 M = main
+P = u
+B = $(BIN)
+D = ply2off
+include $S/make/tool.mk
+
 U_CFLGAS = -Wall -Wextra `u.pkg-config --cflags ply`
 U_LDFLAGS = `u.pkg-config --libs ply`
 
