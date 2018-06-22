@@ -1,68 +1,16 @@
-/*
-
-Sample code showing how to read and write PLY polygon files.
-
-Greg Turk, March 1994
-
-*/
-
 #include <stdio.h>
 #include <math.h>
 #include <stdlib.h>
 
 #include "ply.h"
+typedef struct Vertex Vertex;
+struct Vertex { float x,y,z; };
 
-/* user's vertex and face definitions for a polygonal object */
-
-typedef struct Vertex {
-  float x,y,z;             /* the usual 3-space position of a vertex */
-} Vertex;
-
-typedef struct Face {
+typedef struct Face Face;
+struct Face {
   unsigned char intensity; /* this user attaches intensity to faces */
   unsigned char nverts;    /* number of vertex indices in list */
   int *verts;              /* vertex index list */
-} Face;
-
-/* polygon description of an object (a cube) */
-
-Vertex verts[] = {  /* vertices */
-  { 0.0, 0.0, 0.0},
-  { 1.0, 0.0, 0.0},
-  { 1.0, 1.0, 0.0},
-  { 0.0, 1.0, 0.0},
-  { 0.0, 0.0, 1.0},
-  { 1.0, 0.0, 1.0},
-  { 1.0, 1.0, 1.0},
-  { 0.0, 1.0, 1.0},
-};
-
-Face faces[] = {  /* faces */
-  { '\001', 4, NULL },  /* intensity, vertex list count, vertex list (empty) */
-  { '\004', 4, NULL },
-  { '\010', 4, NULL },
-  { '\020', 4, NULL },
-  { '\144', 4, NULL },
-  { '\377', 4, NULL },
-};
-
-/* list of vertices for each face */
-/* (notice that indices begin at zero) */
-
-typedef int Vertex_Indices[4];
-Vertex_Indices vert_ptrs[] = {
-  { 0, 1, 2, 3 },
-  { 7, 6, 5, 4 },
-  { 0, 4, 5, 1 },
-  { 1, 5, 6, 2 },
-  { 2, 6, 7, 3 },
-  { 3, 7, 4, 0 },
-};
-
-/* information needed to describe the user's data to the PLY routines */
-
-char *elem_names[] = { /* list of the kinds of elements in the user's object */
-  "vertex", "face"
 };
 
 PlyProperty vert_props[] = { /* list of property information for a vertex */
@@ -71,96 +19,18 @@ PlyProperty vert_props[] = { /* list of property information for a vertex */
   {"z", PLY_FLOAT, PLY_FLOAT, offsetof(Vertex,z), 0, 0, 0, 0},
 };
 
-PlyProperty face_props[] = { /* list of property information for a vertex */
+PlyProperty face_props[] = {
   {"intensity", PLY_UCHAR, PLY_UCHAR, offsetof(Face,intensity), 0, 0, 0, 0},
   {"vertex_indices", PLY_INT, PLY_INT, offsetof(Face,verts),
    1, PLY_UCHAR, PLY_UCHAR, offsetof(Face,nverts)},
 };
 
 
-
-/******************************************************************************
-The main routine just creates and then reads a PLY file.
-******************************************************************************/
-
-static void write_test();
 static void read_test();
 
-int main()
-{
-  /* write a PLY file */
-  write_test();
-  /* read a PLY file */
-  read_test();
-}
+int main() { read_test(); }
 
-
-/******************************************************************************
-Write out a PLY file.
-******************************************************************************/
-
-static void write_test()
-{
-  int i;
-  PlyFile *ply;
-  float version;
-  int nverts = sizeof (verts) / sizeof (Vertex);
-  int nfaces = sizeof (faces) / sizeof (Face);
-
-  /* create the vertex index lists for the faces */
-  for (i = 0; i < nfaces; i++)
-    faces[i].verts = vert_ptrs[i];
-
-  /* open either a binary or ascii PLY file for writing */
-  /* (the file will be called "test.ply" because the routines */
-  /*  enforce the .ply filename extension) */
-
-#if 1
-  ply = ply_open_for_writing("test", 2, elem_names, PLY_ASCII, &version);
-#else
-  ply = ply_open_for_writing("test", 2, elem_names, PLY_BINARY_BE, &version);
-#endif
-
-  /* describe what properties go into the vertex and face elements */
-
-  ply_element_count (ply, "vertex", nverts);
-  ply_describe_property (ply, "vertex", &vert_props[0]);
-  ply_describe_property (ply, "vertex", &vert_props[1]);
-  ply_describe_property (ply, "vertex", &vert_props[2]);
-
-  ply_element_count (ply, "face", nfaces);
-  ply_describe_property (ply, "face", &face_props[0]);
-  ply_describe_property (ply, "face", &face_props[1]);
-
-  /* write a comment and an object information field */
-  ply_put_comment (ply, "author: Greg Turk");
-  ply_put_obj_info (ply, "random information");
-
-  /* we have described exactly what we will put in the file, so */
-  /* we are now done with the header info */
-  ply_header_complete (ply);
-
-  /* set up and write the vertex elements */
-  ply_put_element_setup (ply, "vertex");
-  for (i = 0; i < nverts; i++)
-    ply_put_element (ply, (void *) &verts[i]);
-
-  /* set up and write the face elements */
-  ply_put_element_setup (ply, "face");
-  for (i = 0; i < nfaces; i++)
-    ply_put_element (ply, (void *) &faces[i]);
-
-  /* close the PLY file */
-  ply_close (ply);
-}
-
-
-/******************************************************************************
-Read in a PLY file.
-******************************************************************************/
-
-void read_test()
-{
+void read_test() {
   int i,j,k;
   PlyFile *ply;
   int nelems;
