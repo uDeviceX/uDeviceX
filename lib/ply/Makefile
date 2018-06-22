@@ -1,12 +1,9 @@
-CFLAGS = -O2 -g
+S = ../..
+include $S/conf.mk
 
-test: test.o ply.o
+TRG = ply
+O = main.o
+I = ply.h
 
-%.c.o: $(CC) $(CFLAGS) $< -c -o $@
-
-test.o: ply.h
-ply.o: ply.h
-
-.PHONY: clean
-
-clean:; rm -f test ply.o test.o
+all: install
+include $S/make/lib.mk

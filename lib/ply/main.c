@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include <string.h>
+
 #include "ply.h"
 
 char *type_names[] = {

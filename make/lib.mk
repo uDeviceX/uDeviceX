@@ -14,8 +14,6 @@ $L: $O; ar rv $@ $H && ranlib $@
 %.o: %.c; $(CC) $(CFLAGS) $(U_CFLAGS) -c -o $@ $<
 
 install: $L $H
-	@printf 'install %s' "$L"
-	@printf 'install %s' "$I"
 	u.install $L $(LIB)
 	u.install $I $(INC)
 
