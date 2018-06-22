@@ -1,5 +1,5 @@
 Name: @TRG@
 Version: 0.1
 Description: PLY file format
-Libs: -L@LIB@
+Libs: -L@LIB@ -l@TRG@
 Cflags: -I@INC@

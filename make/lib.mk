@@ -10,7 +10,7 @@
 
 L = lib$(TRG).a
 
-$L: $O; ar rv $@ $H && ranlib $@
+$L: $O; ar rv $@ $O && ranlib $@
 %.o: %.c; $(CC) $(CFLAGS) $(U_CFLAGS) -c -o $@ $<
 
 install: $L $H
