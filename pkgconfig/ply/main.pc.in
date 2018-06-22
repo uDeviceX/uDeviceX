@@ -1,0 +1,5 @@
+Name: @TRG@
+Version: 0.1
+Description: ply library
+Libs: -L@LIB@
+Cflags: -I@INC@
