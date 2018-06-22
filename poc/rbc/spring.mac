@@ -19,7 +19,6 @@ E: Epow + Ewlc;
 fullratsimp(diff(E, r) - f), wlc;
 /*  ***  */
 
-f0: f , wlc;
-f0: f0, r = l0 + dr, m = 2;
+f0: f , wlc, r = l0 + dr, m = 2;
 f0: taylor(f0, dr, 0, 1);
-f0: gcfac(factor(f0/dr));
+f0: gcfac(factor(f0));
