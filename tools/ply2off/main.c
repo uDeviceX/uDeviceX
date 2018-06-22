@@ -26,11 +26,7 @@ PlyProperty face_props[] = {
 };
 
 
-static void read_test();
-
-int main() { read_test(); }
-
-void read_test() {
+int main(int argc, char *argv[]) {
   int i,j,k;
   PlyFile *ply;
   int nelems;
@@ -49,7 +45,7 @@ void read_test() {
   char **obj_info;
 
   /* open a PLY file for reading */
-  ply = ply_open_for_reading("test", &nelems, &elist, &file_type, &version);
+  ply = ply_open_for_reading(argv[1], &nelems, &elist, &file_type, &version);
 
   /* print what we found out about the file */
   printf ("version %f\n", version);
