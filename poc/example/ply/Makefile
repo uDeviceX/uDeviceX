@@ -1,5 +1,8 @@
+S = ../../..
+include $S/conf.mk
+
 M = main
-U_CFLGAS = -Wall -Wextra -O0 -g `u.pkg-config --cflags ply`
+U_CFLGAS = -Wall -Wextra `u.pkg-config --cflags ply`
 U_LDFLAGS = `u.pkg-config --libs ply`
 
 %.o: %.c; $(CC) $(CFLAGS) $(U_CFLAGS) -c -o $@ $<
