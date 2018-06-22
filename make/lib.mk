@@ -17,6 +17,6 @@ install: $L $H
 	u.install $L $(LIB)
 	u.install $I $(INC)
 
-clean: rm -f $O $L
+clean:; rm -f $O $L
 
 .PHONY: clean install
