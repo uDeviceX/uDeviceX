@@ -1,1 +1,24 @@
-echo 42
+. u.conf.util
+
+prog=u.pkg-config
+PKG_CONFIG=pkg-config
+
+if test -z "$PKG_CONFIG_PATH"
+then PKG_CONFIG_PATH="@PKG@"
+else PKG_CONFIG_PATH="$PKG_CONFIG_PATH:@PKG@"
+fi
+
+usg () {
+    msg "$prog [OPTION...]"
+    msg 'udx pkg-config wrapper'
+}
+
+if test $# -ne 0 && test "$1" = -h
+then usg
+fi
+
+if e "$PKG_CONFIG" --version '2>/dev/null' '1>dev/null'
+then err "cannot find $PKG_CONFIG"
+fi
+
+e PKG_CONFIG_PATH="$PKG_CONFIG_PATH" "$PKG_CONFIG" "$@"
