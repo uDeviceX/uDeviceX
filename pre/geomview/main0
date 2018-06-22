@@ -47,8 +47,10 @@ function ini() {
 
 function reg_key(k) { g(sprintf("interest (rawevent %s)", k)) }
 function geom() {
-    g(sprintf("geometry obj < %s", oogl))
-    g("bbox-draw obj no")
+    g0("(progn")
+	g(sprintf("geometry obj < %s", oogl))
+	g("bbox-draw obj no")
+    g0(")")
     reg_key(KEY_Q); reg_key(KEY_S); reg_key(KEY_P)
 }
 
@@ -59,9 +61,9 @@ function g(s) {
 }
 
 function g0(s) {
-    msg(s)
+    if ("" DBG != "0") msg("gcl: " s)
     printf "%s\n", s | "cat"
-    close("cat")    
+    close("cat")
 }
 
 BEGIN {
