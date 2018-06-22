@@ -1,7 +1,7 @@
 # input:
+# D: directory name
 # M: a list of target to install, main and main0 are installed a $D
 # and ${D}0, other files are isntalled as ${filename}
-# D: directory name
 # MPATH: where to install
 
 install: $M
