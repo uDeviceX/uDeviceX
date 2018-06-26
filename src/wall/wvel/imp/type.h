@@ -10,9 +10,7 @@ struct WvelShear {
     int vdir, gdir; // direction of the flow and gradient
 };
 
-struct WvelShearSin {
-    float gdot;     // shear rate
-    int vdir, gdir; // direction of the flow and gradient
+struct WvelShearSin : WvelShear {
     float w;        // frequency
 };
 
