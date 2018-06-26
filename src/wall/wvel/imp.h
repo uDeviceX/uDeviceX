@@ -26,8 +26,8 @@ void wvel_step_fin(WvelStep *wv);
 
 // tag::ini[]
 void wvel_set_cste(float3 u, Wvel *vw);
-void wvel_set_shear(float gdot, int vdir, int gdir, Wvel *vw);
-void wvel_set_shear_sin(float gdot, int vdir, int gdir, float w, Wvel *vw);
+void wvel_set_shear(float gdot, int vdir, int gdir, int half, Wvel *vw);
+void wvel_set_shear_sin(float gdot, int vdir, int gdir, int half, float w, Wvel *vw);
 void wvel_set_hs(float u, float h, Wvel *vw);
 void wvel_set_timestep(float dt, Wvel *vw);
 // end::ini[]

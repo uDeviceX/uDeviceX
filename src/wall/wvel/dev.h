@@ -24,6 +24,8 @@ static __device__ void wvel(WvelShear_v p, Coords_v c, float3 r, /**/ float3 *v)
     else if (gdir == 1) d = rc.y;
     else if (gdir == 2) d = rc.z;
 
+    d = p.half ? min(d, 0.f) : d;
+
     v->x = v->y = v->z = 0;
     if      (vdir == 0) v->x = d * gdot;
     else if (vdir == 1) v->y = d * gdot;

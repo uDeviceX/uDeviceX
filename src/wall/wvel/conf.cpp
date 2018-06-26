@@ -18,20 +18,22 @@ void wvel_set_conf(const Config *cfg, Wvel *vw) {
     }
     else if (same_str(type, "shear")) {
         float gdot;
-        int vdir, gdir;
+        int vdir, gdir, half;
         UC(conf_lookup_float(cfg, "wvel.gdot", &gdot));
         UC(conf_lookup_int(cfg, "wvel.vdir", &vdir));
         UC(conf_lookup_int(cfg, "wvel.gdir", &gdir));
-        UC(wvel_set_shear(gdot, vdir, gdir, vw));
+        UC(conf_lookup_int(cfg, "wvel.half", &half));
+        UC(wvel_set_shear(gdot, vdir, gdir, half, vw));
     }
     else if (same_str(type, "shear sin")) {
         float gdot, w;
-        int vdir, gdir;
+        int vdir, gdir, half;
         UC(conf_lookup_float(cfg, "wvel.gdot", &gdot));
         UC(conf_lookup_int(cfg, "wvel.vdir", &vdir));
         UC(conf_lookup_int(cfg, "wvel.gdir", &gdir));
+        UC(conf_lookup_int(cfg, "wvel.half", &half));
         UC(conf_lookup_float(cfg, "wvel.w", &w));
-        UC(wvel_set_shear_sin(gdot, vdir, gdir, w, vw));
+        UC(wvel_set_shear_sin(gdot, vdir, gdir, half, w, vw));
     }
     else if (same_str(type, "hele shaw")) {
         float u, h;

@@ -8,6 +8,7 @@ struct WvelCste_v {
 struct WvelShear_v {
     float gdot;     // shear rate
     int vdir, gdir; // direction of the flow and gradient
+    int half;       // only half is moving ?
 };
 
 struct WvelHS_v {
