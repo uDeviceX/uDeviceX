@@ -1,0 +1,9 @@
+#! /usr/bin/env gnuplot
+
+set term png
+set output "U.png"
+set grid
+set xlabel "x (dpd units)"
+set ylabel "U (dpd units)"
+plot "profile.txt" u 1:2 w lp t ""
+
