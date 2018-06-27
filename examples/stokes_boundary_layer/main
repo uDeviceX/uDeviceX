@@ -2,4 +2,4 @@
 
 u.cp.sdf wall1/wall.dat sdf.dat
 udx conf.cfg
-u.avgh5 1 u 1 h5/0010.h5 > profile.txt
+u.avgh5 1 u 2 h5/0010.h5 > profile.txt
