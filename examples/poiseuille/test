@@ -1,0 +1,6 @@
+#! /usr/bin/sh
+
+# nTEST: poiseuille
+cd poiseuille
+./main
+cat profile.txt | awk '{print $2}' | uscale 1 > profile.out.txt

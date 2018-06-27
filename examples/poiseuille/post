@@ -1,0 +1,46 @@
+#! /usr/bin/env python
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+L = 16.0 - 2.0
+
+D = np.loadtxt("profile.txt")
+
+x = D[1:-1,0]
+u = D[1:-1,1]
+
+p = np.polyfit(x, u, 2)
+
+xft = np.linspace(-L/2, L/2, 100)
+uft = np.polyval(p,  xft)
+
+
+U0 = max(uft)
+
+u   = u   / U0
+uft = uft / U0
+
+x   = x   / L
+xft = xft / L
+
+plt.rc('text', usetex=True)
+plt.rc('font', family='serif', size=18)
+
+
+plt.figure()
+#plt.grid()
+plt.plot(x, u, 'k+', label="DPD")
+plt.plot(xft, uft, 'k-', label="fit")
+plt.xlim(-0.5, 0.5)
+plt.ylim(0.0, 1.1)
+
+plt.xlabel(r'$z/L$')
+plt.ylabel(r'$u/u_{max}$')
+
+plt.xticks([-0.5, 0, 0.5])
+plt.yticks([0, 1.0])
+
+plt.legend(numpoints=1, frameon=False, fontsize=12)
+
+plt.savefig("U")
