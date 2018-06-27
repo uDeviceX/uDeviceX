@@ -2,6 +2,7 @@
 
 import numpy as np
 import matplotlib.pyplot as plt
+plt.switch_backend('agg')
 
 L = 16.0 - 2.0
 
@@ -29,7 +30,6 @@ plt.rc('font', family='serif', size=18)
 
 
 plt.figure()
-#plt.grid()
 plt.plot(x, u, 'k+', label="DPD")
 plt.plot(xft, uft, 'k-', label="fit")
 plt.xlim(-0.5, 0.5)
