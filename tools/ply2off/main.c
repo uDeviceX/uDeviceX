@@ -32,7 +32,6 @@ int main(int argc, char *argv[]) {
   float version;
   int nprops;
   int num_elems;
-  PlyProperty **plist;
   Vertex **vlist;
   Face **flist;
   char *elem_name;
@@ -51,7 +50,7 @@ int main(int argc, char *argv[]) {
 
     /* get the description of the first element */
     elem_name = elist[i];
-    plist = ply_get_element_description (ply, elem_name, &num_elems, &nprops);
+    ply_get_element_description (ply, elem_name, &num_elems, &nprops);
 
     /* print the name of the element, for debugging */
     printf ("element %s %d\n", elem_name, num_elems);
@@ -87,7 +86,7 @@ int main(int argc, char *argv[]) {
       flist = (Face **) malloc (sizeof (Face *) * num_elems);
 
       /* set up for getting face elements */
-      ply_get_property (ply, elem_name, &face_props[0]);
+      ply_get_property(ply, elem_name, &face_props[0]);
 
       /* grab all the face elements */
       for (j = 0; j < num_elems; j++) {
@@ -97,18 +96,12 @@ int main(int argc, char *argv[]) {
         ply_get_element (ply, (void *) flist[j]);
 
         /* print out face info, for debugging */
-        printf ("list = ");
         for (k = 0; k < flist[j]->nverts; k++)
           printf ("%d ", flist[j]->verts[k]);
         printf ("\n");
       }
     }
-    
-    /* print out the properties we got, for debugging */
-    for (j = 0; j < nprops; j++)
-      printf ("property %s\n", plist[j]->name);
   }
-  /* close the PLY file */
   ply_close (ply);
 }
 
