@@ -8,7 +8,6 @@ struct Vertex { float x,y,z; };
 
 typedef struct Face Face;
 struct Face {
-  unsigned char intensity; /* this user attaches intensity to faces */
   unsigned char nverts;    /* number of vertex indices in list */
   int *verts;              /* vertex index list */
 };
@@ -20,11 +19,9 @@ PlyProperty vert_props[] = { /* list of property information for a vertex */
 };
 
 PlyProperty face_props[] = {
-  {"intensity", PLY_UCHAR, PLY_UCHAR, offsetof(Face,intensity), 0, 0, 0, 0},
-  {"vertex_indices", PLY_INT, PLY_INT, offsetof(Face,verts),
+  {"vertex_index", PLY_INT, PLY_INT, offsetof(Face,verts),
    1, PLY_UCHAR, PLY_UCHAR, offsetof(Face,nverts)},
 };
-
 
 int main(int argc, char *argv[]) {
   int i,j,k;
@@ -39,10 +36,6 @@ int main(int argc, char *argv[]) {
   Vertex **vlist;
   Face **flist;
   char *elem_name;
-  int num_comments;
-  char **comments;
-  int num_obj_info;
-  char **obj_info;
 
   /* open a PLY file for reading */
   ply = ply_open_for_reading(argv[1], &nelems, &elist, &file_type, &version);
@@ -94,9 +87,7 @@ int main(int argc, char *argv[]) {
       flist = (Face **) malloc (sizeof (Face *) * num_elems);
 
       /* set up for getting face elements */
-
       ply_get_property (ply, elem_name, &face_props[0]);
-      ply_get_property (ply, elem_name, &face_props[1]);
 
       /* grab all the face elements */
       for (j = 0; j < num_elems; j++) {
@@ -106,7 +97,7 @@ int main(int argc, char *argv[]) {
         ply_get_element (ply, (void *) flist[j]);
 
         /* print out face info, for debugging */
-        printf ("face: %d, list = ", flist[j]->intensity);
+        printf ("list = ");
         for (k = 0; k < flist[j]->nverts; k++)
           printf ("%d ", flist[j]->verts[k]);
         printf ("\n");
@@ -117,17 +108,6 @@ int main(int argc, char *argv[]) {
     for (j = 0; j < nprops; j++)
       printf ("property %s\n", plist[j]->name);
   }
-
-  /* grab and print out the comments in the file */
-  comments = ply_get_comments (ply, &num_comments);
-  for (i = 0; i < num_comments; i++)
-    printf ("comment = '%s'\n", comments[i]);
-
-  /* grab and print out the object information */
-  obj_info = ply_get_obj_info (ply, &num_obj_info);
-  for (i = 0; i < num_obj_info; i++)
-    printf ("obj_info = '%s'\n", obj_info[i]);
-
   /* close the PLY file */
   ply_close (ply);
 }
