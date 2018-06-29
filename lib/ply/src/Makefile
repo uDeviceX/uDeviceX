@@ -1,4 +1,4 @@
-S = ../..
+S = ../../..
 include $S/conf.mk
 
 TRG = ply

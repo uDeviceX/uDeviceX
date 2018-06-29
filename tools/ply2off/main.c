@@ -32,6 +32,7 @@ int main(int argc, char *argv[]) {
   float version;
   int nprops;
   int num_elems;
+
   Vertex **vlist;
   Face **flist;
   char *elem_name;
