@@ -8,28 +8,36 @@ L = 16.0
 
 D = np.loadtxt("profile.txt")
 
-(nx, ny) = np.shape(D)
+(ny, nx) = np.shape(D)
 
-x = np.linspace(0.0, L, nx)
-iy=5
-u = D[:,iy]
+x = np.linspace(0.0, 1.0, nx)
+y = np.linspace(0.0, 1.0, ny)
 
-print x
-print u
-
+Umax = np.max(np.abs(D), axis=(0,1))
 
 plt.rc('text', usetex=True)
 plt.rc('font', family='serif', size=18)
 
 plt.figure()
+
+iy=23
+
+u = D[:,iy] / Umax
+
+y0=y[iy]
+
+uth = np.cos(x*2*np.pi) * np.sin(2*np.pi*y0)
+
 plt.plot(x, u, 'k+', label="DPD")
+plt.plot(x, uth, 'k-', label="theory")
+
 
 plt.xlabel(r'$z/L$')
 plt.ylabel(r'$u/u_{max}$')
 
-#plt.xticks([-0.5, 0, 0.5])
-#plt.yticks([0, 1.0])
+plt.xticks([0, 0.5, 1.0])
+plt.yticks([-1.0, 0, 1.0])
 
-#plt.legend(numpoints=1, frameon=False, fontsize=12)
+plt.legend(numpoints=1, frameon=False, fontsize=12)
 
 plt.savefig("U")

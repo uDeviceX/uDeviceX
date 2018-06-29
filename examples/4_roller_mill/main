@@ -1,4 +1,4 @@
 #! /usr/bin/sh
 
 udx conf.cfg
-u.2davgh5 2 u h5/0010.h5  > profile.txt
+u.2davgh5 2 u h5/0008.h5  > profile.txt
