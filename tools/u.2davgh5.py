@@ -35,11 +35,9 @@ for fname in argv:
     (nz, ny, nx, nu) = ff.shape
     nn = [nx, ny, nz]
 
-    av=(adir+1)%3
-
     ff = ff.value
     ff = ff.reshape(nz, ny, nx)
-    ff = np.sum(ff, (2-av)) / (nn[av])
+    ff = np.sum(ff, (2-adir)) / (nn[adir])
 
     if t == 0:
         fff = ff
