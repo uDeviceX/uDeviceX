@@ -23,13 +23,11 @@ PlyProperty face_props[] = {
    1, PLY_UCHAR, PLY_UCHAR, offsetof(Face,nverts)},
 };
 
-int main(int argc, char *argv[]) {
+int main() {
   int i,j,k;
   PlyFile *ply;
   int nelems;
   char **elist;
-  int file_type;
-  float version;
   int nprops;
   int num_elems;
 
@@ -40,9 +38,9 @@ int main(int argc, char *argv[]) {
   ply = ply_read(stdin, &nelems, &elist);
   for (i = 0; i < nelems; i++) {
     elem_name = elist[i];
-    ply_get_element_description (ply, elem_name, &num_elems, &nprops);
+    ply_get_element_description(ply, elem_name, &num_elems, &nprops);
     printf ("element %s %d\n", elem_name, num_elems);
-    if (equal_strings ("vertex", elem_name)) {
+    if (equal_strings ("vertex", elem_name))
       vlist = (Vertex **) malloc (sizeof (Vertex *) * num_elems);
       ply_get_property (ply, elem_name, &vert_props[0]);
       ply_get_property (ply, elem_name, &vert_props[1]);
@@ -67,4 +65,3 @@ int main(int argc, char *argv[]) {
   }
   ply_close (ply);
 }
-
