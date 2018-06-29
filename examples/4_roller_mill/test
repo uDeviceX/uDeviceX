@@ -1,0 +1,6 @@
+#! /usr/bin/sh
+
+# nTEST: 4_roller_mill
+cd 4_roller_mill
+./main
+cat profile.txt | awk '{print $2}' | uscale 1 > profile.out.txt
