@@ -1,0 +1,6 @@
+#! /usr/bin/sh
+
+# nTEST: stokes_boundary_layer
+cd stokes_boundary_layer
+./main
+cat profile.txt | awk '{print $2}' | uscale 1 > profile.out.txt
