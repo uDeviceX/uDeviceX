@@ -72,7 +72,7 @@ class AttrDict(collections.OrderedDict):
             if otype is not ntype:
                 msg = "cannot set '%s' to '%s', expecting type: '%s', given '%s'" % \
                       (name, str(value), otype.__name__, ntype.__name__)
-            raise AttributeError(msg)
+                raise AttributeError(msg)
         d[name] = value
 
 class ConfigParseError(RuntimeError):
@@ -566,7 +566,7 @@ def dump_value(key, value, f, indent=0):
         key_prefix_nl = ''
     else:
         key_prefix = key + ' = '
-        key_prefix_nl = key + ' =\n' + spaces
+        key_prefix_nl = key + ' = ' + spaces
 
     if isinstance(value, dict):
         f.write(u'{}{}{{\n'.format(spaces, key_prefix_nl))
@@ -608,7 +608,7 @@ def dump_dict(cfg, f, indent=0):
             raise ConfigSerializeError("Dict keys must be strings: %r" %
                                        (key,))
         dump_value(key, cfg[key], f, indent)
-        f.write(u';\n')
+        f.write(u'\n')
 
 
 def dumps(cfg):
