@@ -64,6 +64,16 @@ class AttrDict(collections.OrderedDict):
             raise AttributeError("AttrDict has no attribute %r" % attr)
         return self.__getitem__(attr)
 
+    def __setattr__(self, name, value):
+        d = self
+        if name in d:
+            otype = type(d[name])
+            ntype = type(value)
+            if otype is not ntype:
+                msg = "cannot set '%s' to '%s', expecting type: '%s', given '%s'" % \
+                      (name, str(value), otype.__name__, ntype.__name__)
+            raise AttributeError(msg)
+        d[name] = value
 
 class ConfigParseError(RuntimeError):
     '''Exception class raised on errors reading the libconfig input'''
