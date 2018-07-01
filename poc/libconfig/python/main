@@ -13,7 +13,6 @@ c.dbg.clean = False
 g = udxconf.namespace()
 g.q = 56
 g.p = 56
-
 c.g = g
 
 print(udxconf.dumps(c))
