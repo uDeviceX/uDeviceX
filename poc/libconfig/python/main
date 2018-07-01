@@ -4,10 +4,12 @@ import udxconf
 import sys
 
 c = udxconf.load(sys.stdin)
-c.a = 5.6
+
+# change
 c.time.wall = 0.2
 c.dbg.clean = False
 
+# create a namespace
 g = udxconf.namespace()
 g.q = 56
 g.p = 56
