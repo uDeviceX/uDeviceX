@@ -7,4 +7,11 @@ c = udxconf.load(sys.stdin)
 c.a = 5.6
 c.time.wall = 0.2
 c.dbg.clean = False
+
+g = udxconf.namespace()
+g.q = 56
+g.p = 56
+
+c.g = g
+
 print(udxconf.dumps(c))

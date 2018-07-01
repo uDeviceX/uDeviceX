@@ -641,6 +641,7 @@ def dump(cfg, f):
 
     dump_dict(cfg, f, 0)
 
+def namespace(): return AttrDict()
 
 # main(): small example of how to use libconf
 #############################################
