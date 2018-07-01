@@ -1,0 +1,8 @@
+#!/usr/bin/python3
+
+import udxconf
+import sys
+
+c = udxconf.load(sys.stdin)
+c.b = 'preved'
+print(udxconf.dumps(c))
