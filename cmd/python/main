@@ -1,6 +1,6 @@
 . u.conf.util
 
-: ${PYTHON=python3}
+: ${UPYTHON=python3}
 prog=u.python
 
 usg () {
@@ -16,8 +16,8 @@ case "$h" in
    daint) e module load cray-python/3.6.1.1 ;;
 esac
 
-if ! e "$PYTHON" --version '>/dev/null' '2>/dev/null'
-then err "cannot find '$PYTHON'"
+if ! e "$UPYTHON" --version '>/dev/null' '2>/dev/null'
+then err "cannot find '$UPYTHON'"
 fi
    
-"${PYTHON}" "$@"
+"${UPYTHON}" "$@"
