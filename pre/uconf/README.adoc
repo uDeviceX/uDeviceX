@@ -36,16 +36,16 @@ Variables and namespaces can be distringuished using
 
 == examples
 
-link:../test/a[a] ::
+link:test/a[a] ::
     read/modifiy/write one field file
 
-link:../test/default[default] ::
+link:test/default[default] ::
     read/modifiy/write udx default configuration
 
-link:../test/except[except] ::
+link:test/except[except] ::
     raise an exception on type error
 
-link:../test/all[all] ::
+link:test/all[all] ::
     walk over all variables
 
 == references
