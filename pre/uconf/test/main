@@ -5,7 +5,7 @@ import sys
 
 c = uconf.load(sys.stdin)
 
-# change
+# change variables
 c.time.wall = 0.2
 c.dbg.clean = False
 
