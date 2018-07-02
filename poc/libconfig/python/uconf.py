@@ -492,7 +492,7 @@ def load(f, filename=None, includedir=''):
     '''
 
     if isinstance(f.read(0), bytes):
-        raise TypeError("libconf.load() input file must by unicode")
+        raise TypeError("uconf.load() input file must by unicode")
 
     tokenstream = TokenStream.from_file(f,
                                         filename=filename,
