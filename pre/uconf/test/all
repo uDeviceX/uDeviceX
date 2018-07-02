@@ -11,7 +11,7 @@ def dump(indent, msg):
 
 def tdict(d, indent):
     for k, v in d.items():
-        if isinstance(v, dict):
+        if isnamespace(v):
             dump(indent, "%s" % k)
             tdict(v, indent + 1)
         else:
