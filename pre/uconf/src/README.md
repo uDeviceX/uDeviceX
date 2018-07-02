@@ -1,0 +1,27 @@
+# uconf
+
+Load cfg file as a python object `cfg`
+
+	cfg = uconf.load(f)
+
+Dump `cfg` to a file
+
+	uconf.dump(cfg, f)
+
+Fields of cfg a readable and writeble
+
+	cfg.a = 42 * cfg.a
+
+Attempt to overwrite a filed with a differnt type rises an exception
+
+	cfg.a = "42"
+
+"Wall" over all variables and namespace
+
+	for k, v in cfg.items():
+		....
+
+
+# references
+
+A modified verstion of https://github.com/Grk0/python-libconf.gita

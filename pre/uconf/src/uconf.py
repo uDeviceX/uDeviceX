@@ -642,3 +642,4 @@ def dump(cfg, f):
     dump_dict(cfg, f, 0)
 
 def namespace(): return AttrDict()
+def isnamespace(v): return isinstance(v, dict)
