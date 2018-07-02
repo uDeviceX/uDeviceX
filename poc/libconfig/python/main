@@ -1,18 +1,18 @@
 #!/usr/bin/python3
 
-import udxconf
+import uconf
 import sys
 
-c = udxconf.load(sys.stdin)
+c = uconf.load(sys.stdin)
 
 # change
 c.time.wall = 0.2
 c.dbg.clean = False
 
 # create a namespace
-g = udxconf.namespace()
+g = uconf.namespace()
 g.q = 56
 g.p = 56
 c.g = g
 
-print(udxconf.dumps(c))
+print(uconf.dumps(c))
