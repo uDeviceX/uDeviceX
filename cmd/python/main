@@ -1,0 +1,23 @@
+. u.conf.util
+
+: ${PYTHON=python3}
+prog=u.python
+
+usg () {
+    msg "$prog [OPTION].."
+    msg 'udx python wrapper'
+    exit
+}
+if test $# -ne 0 && test "$1" = -h; then usg; fi
+
+h=`u.host`
+
+case "$h" in
+   daint) e module load cray-python/3.6.1.1 ;;
+esac
+
+if ! e "$PYTHON" --version '>/dev/null' '2>/dev/null'
+then err "cannot find '$PYTHON'"
+fi
+   
+"${PYTHON}" "$@"

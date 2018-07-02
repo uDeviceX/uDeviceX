@@ -1,8 +1,8 @@
 S = ../..
 include $S/conf.mk
 
-M = python
+M = main
 P = u
 B = $(BIN)
-D = ply2off
+D = python
 include $S/make/tool.mk
