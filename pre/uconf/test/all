@@ -1,0 +1,20 @@
+#!/usr/bin/python3
+
+import uconf
+import sys
+
+c = uconf.load(sys.stdin)
+
+def dump(indent, msg):
+    space = " " * 4 * indent
+    print("%s%s" % (space, msg))
+
+def tdict(d, indent):
+    for k, v in d.items():
+        if isinstance(v, dict):
+            dump(indent, "%s" % k)
+            tdict(v, indent + 1)
+        else:
+            dump(indent, "%s = %s" % (k, v))
+
+tdict(c, indent = 0)
