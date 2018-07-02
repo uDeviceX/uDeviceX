@@ -1,0 +1,3 @@
+# TEST: 1
+: ${PYTHON=python3}
+$PYTHON a < data/a.cfg > conf.out.cfg
