@@ -1,0 +1,9 @@
+#!/usr/bin/python3
+
+import uconf
+import sys
+
+c = uconf.load(sys.stdin)
+
+# wrong type
+c.a = "42"

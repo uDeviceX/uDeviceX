@@ -1,0 +1,18 @@
+#!/usr/bin/env python3
+
+import uconf
+import sys
+
+c = uconf.load(sys.stdin)
+
+# change variables
+c.time.wall = 0.2
+c.dbg.clean = False
+
+# create a namespace
+g = uconf.namespace()
+g.q = 56
+g.p = 56
+c.g = g
+
+print(uconf.dumps(c))

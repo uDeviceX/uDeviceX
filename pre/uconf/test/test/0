@@ -1,0 +1,3 @@
+# TEST: 0
+: ${PYTHON=python3}
+$PYTHON default < data/default.cfg > conf.out.cfg
