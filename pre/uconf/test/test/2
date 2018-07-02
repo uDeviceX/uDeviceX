@@ -1,0 +1,4 @@
+# TEST: 2
+: ${PYTHON=python3}
+$PYTHON except < data/a.cfg
+echo $? > status.out.txt
