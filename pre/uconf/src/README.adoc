@@ -42,8 +42,11 @@ link:../test/a[a] ::
 link:../test/default[default] ::
     read/modifiy/write udx default configuration
 
+link:../test/except[except] ::
+    raise an exception on type error
+
 link:../test/all[all] ::
-    wall over all variables
+    walk over all variables
 
 == references
 
