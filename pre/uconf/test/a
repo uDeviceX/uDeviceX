@@ -1,0 +1,14 @@
+#!/usr/bin/python3
+
+import uconf
+import sys
+
+c = uconf.load(sys.stdin)
+
+# create a namespace
+g = uconf.namespace()
+g.q = 56
+g.p = 56
+c.g = g
+
+print(uconf.dumps(c))
