@@ -1,4 +1,4 @@
-= uconf
+== uconf
 
 Load cfg file as a python object `cfg`
 
@@ -34,10 +34,17 @@ for k, v in cfg.items():
 Variables and namespaces can be distringuished using
 `isnamespace(cfg, v)`
 
-= examples
+== examples
 
-../test
+link:../test/a[a] ::
+    read/modifiy/write one field file
 
-= references
+link:../test/default[default] ::
+    read/modifiy/write udx default configuration
+
+link:../test/all[all] ::
+    wall over all variables
+
+== references
 
 A modified verstion of https://github.com/Grk0/python-libconf.git
