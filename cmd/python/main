@@ -12,7 +12,7 @@ if test $# -ne 0 && test "$1" = -h; then usg; fi
 
 h=`u.host`
 if test $# -ne 0
-then err "u.host failed'
+then err 'u.host failed'
 fi
 
 case "$h" in
