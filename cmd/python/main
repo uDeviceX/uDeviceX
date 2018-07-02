@@ -11,6 +11,9 @@ usg () {
 if test $# -ne 0 && test "$1" = -h; then usg; fi
 
 h=`u.host`
+if test $# -ne 0
+then err "u.host failed'
+fi
 
 case "$h" in
    daint) e module load cray-python/3.6.1.1 ;;
