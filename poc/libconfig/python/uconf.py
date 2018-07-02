@@ -642,21 +642,3 @@ def dump(cfg, f):
     dump_dict(cfg, f, 0)
 
 def namespace(): return AttrDict()
-
-# main(): small example of how to use libconf
-#############################################
-
-def main():
-    '''Open the libconfig file specified by sys.argv[1] and pretty-print it'''
-    global output
-    if len(sys.argv[1:]) == 1:
-        with io.open(sys.argv[1], 'r', encoding='utf-8') as f:
-            output = load(f)
-    else:
-        output = load(sys.stdin)
-
-    dump(output, sys.stdout)
-
-
-if __name__ == '__main__':
-    main()
