@@ -1,6 +1,6 @@
 PYTHON = python3
 
-install:; "$(PYTHON)" setup.py install --user
+install:; "$(PYTHON)" setup.py install --user --prefix=
 
 test:
 
