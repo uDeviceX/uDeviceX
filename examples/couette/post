@@ -1,0 +1,15 @@
+#! /bin/sh
+
+format_name() {
+    f=$1  ; shift
+    ext=$1; shift
+    echo $f | sed "s/h5\/\([0-9]\{4\}\)/\1/" \
+	| sed "s/h5/${ext}/"
+}
+
+for f in `ls h5/*[6-9].h5`; do
+    P=`format_name $f "txt"`
+    U=`format_name $f "png"`
+    u.avgh5 1 u 2 $f > $P
+    ./make_image $P $U $T
+done
