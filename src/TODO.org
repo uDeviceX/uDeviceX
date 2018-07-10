@@ -1,7 +1,22 @@
 TODO
+* [0/3] cnt params: per object pair
+** TODO separate cnt
+*** TODO bulk
+*** TODO halo
+** TODO configuration
+   cnt = [cnt_1, cnt_2, ...]
+   cnt_1 = {
+   objects = ['obj1', 'obj2']
+   pair = 'pair_cnt1'
+   }
+   ...
+** TODO update tests
 * [0/2] Renaming
 ** TODO rbc -> mbr
 ** TODO Solid -> Rigid
+* [0/2] Add streams
+** TODO wrapper stream module
+** TODO pass to modules
 * [12/14] Bounce Back
 ** DONE store previous flu parts
    CLOSED: [2018-06-05 Tue 16:17]
@@ -216,6 +231,4 @@ ctc = {
    CLOSED: [2018-05-22 Tue 18:05]
 
 Possible improvements
-
-* cnt params: per object pair
 * fsi params color aware
