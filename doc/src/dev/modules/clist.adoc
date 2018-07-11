@@ -42,10 +42,10 @@ The above can be easily extended in 3D, only ordering changes.
 
 [source,cpp]
 ----
-include::{src}/clist/imp.h[tag=clist]
+include::{src}/clist/imp/type.h[tag=clist]
 ----
 
-* `dims` dimesnsions of the grid
+* `dims` dimensions of the grid
 * `ncells` number of cells
 * `counts` number of particles per cell
 * `starts` exclusive prefic scan of the above
@@ -70,13 +70,6 @@ include::{src}/clist/imp/type.h[tag=map]
   array id and the particle id inside this array
 * `scan` scan workspace, see link:algo/scan{lext}[scan]
 
-The ids can be accessed from
-
-[source,cpp]
-----
-include::{src}/clist/imp.h[tag=access]
-----
-
 
 == interface
 
@@ -93,6 +86,14 @@ build interface:
 ----
 include::{src}/clist/imp.h[tag=int]
 ----
+
+The fields can be accessed from
+
+[source,cpp]
+----
+include::{src}/clist/imp.h[tag=access]
+----
+
 
 Device interface: code/decode map ids
 

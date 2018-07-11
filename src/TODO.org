@@ -17,12 +17,6 @@ TODO
 ** DONE update tests
    CLOSED: [2018-07-11 Wed 17:25]
 ** TODO update doc
-* [2/3] hide clists
-** DONE hide structures
-   CLOSED: [2018-07-11 Wed 09:59]
-** DONE adapt rest of the code
-   CLOSED: [2018-07-11 Wed 09:59]
-** TODO update doc
 * [0/2] Renaming
 ** TODO rbc -> mbr
 ** TODO Solid -> Rigid
@@ -89,6 +83,13 @@ Possible conf in each object with a section repulsion
 ** DONE adapt defaults/tests
    CLOSED: [2018-05-23 Wed 10:19]
 ** TODO configurable wall bounce
+* [3/3] hide clists
+** DONE hide structures
+   CLOSED: [2018-07-11 Wed 09:59]
+** DONE adapt rest of the code
+   CLOSED: [2018-07-11 Wed 09:59]
+** DONE update doc
+   CLOSED: [2018-07-11 Wed 17:31]
 * [1/1] Refactoring
 ** DONE put all converting kernels (zip...) in algo/convert
    CLOSED: [2018-06-07 Thu 12:13]
