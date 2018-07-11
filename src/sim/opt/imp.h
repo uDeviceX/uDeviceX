@@ -50,7 +50,6 @@ struct Opt {
     OptWall wall;
     OptParams params;
     OptDump dump;
-    bool cnt;
     bool inflow, outflow, denoutflow, vcon;
     int recolor_freq;
     int sampler_npdump;

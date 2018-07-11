@@ -147,8 +147,6 @@ static void read_common(const Config *c, Opt *o) {
     UC(conf_lookup_int(c, "sampler.n_per_dump", &o->sampler_npdump));
     UC(conf_lookup_int3(c, "sampler.grid_ref", &o->sampler_grid_ref));
 
-    UC(lookup_bool(c, "cnt.active", &o->cnt));
-
     UC(lookup_bool(c, "outflow.active", &o->outflow));
     UC(lookup_bool(c, "inflow.active", &o->inflow));
     UC(lookup_bool(c, "denoutflow.active", &o->denoutflow));
