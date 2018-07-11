@@ -238,7 +238,7 @@ static void ini_cnt_params(const Config *cfg, int nmbr, int nrig, Mbr **mm, Rig 
 
     for (i = 0; i < ninter_read; ++i) {
         UC(conf_lookup_string_ns(cfg, prms_ns[i], "obja", &sobja));
-        UC(conf_lookup_string_ns(cfg, prms_ns[i], "onjb", &sobjb));
+        UC(conf_lookup_string_ns(cfg, prms_ns[i], "objb", &sobjb));
         UC(conf_lookup_string_ns(cfg, prms_ns[i], "pair", &pair_ns));
 
         id_obja = get_name_id(sobja, n, names);
