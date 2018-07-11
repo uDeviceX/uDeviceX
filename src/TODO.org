@@ -1,22 +1,4 @@
 TODO
-* [3/4] cnt params: per object pair
-** DONE separate cnt
-   CLOSED: [2018-07-11 Wed 12:23]
-*** DONE bulk
-    CLOSED: [2018-07-11 Wed 11:18]
-*** DONE halo
-    CLOSED: [2018-07-11 Wed 12:23]
-** DONE configuration
-   CLOSED: [2018-07-11 Wed 17:25]
-   cnt = [cnt_1, cnt_2, ...]
-   cnt_1 = {
-   objects = ['obj1', 'obj2']
-   pair = 'pair_cnt1'
-   }
-   ...
-** DONE update tests
-   CLOSED: [2018-07-11 Wed 17:25]
-** TODO update doc
 * [0/2] Renaming
 ** TODO rbc -> mbr
 ** TODO Solid -> Rigid
@@ -85,6 +67,25 @@ Possible conf in each object with a section repulsion
 ** DONE adapt defaults/tests
    CLOSED: [2018-05-23 Wed 10:19]
 ** TODO configurable wall bounce
+* [4/4] cnt params: per object pair
+** DONE separate cnt
+   CLOSED: [2018-07-11 Wed 12:23]
+*** DONE bulk
+    CLOSED: [2018-07-11 Wed 11:18]
+*** DONE halo
+    CLOSED: [2018-07-11 Wed 12:23]
+** DONE configuration
+   CLOSED: [2018-07-11 Wed 17:25]
+   cnt = [cnt_1, cnt_2, ...]
+   cnt_1 = {
+   objects = ['obj1', 'obj2']
+   pair = 'pair_cnt1'
+   }
+   ...
+** DONE update tests
+   CLOSED: [2018-07-11 Wed 17:25]
+** DONE update doc
+   CLOSED: [2018-07-11 Wed 17:39]
 * [3/3] hide clists
 ** DONE hide structures
    CLOSED: [2018-07-11 Wed 09:59]

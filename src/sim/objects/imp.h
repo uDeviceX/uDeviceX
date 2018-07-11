@@ -50,7 +50,7 @@ void objects_get_accel(const Objects*, TimeStepAccel*); // <3>
 void objects_get_params_fsi(const Objects*, const PairParams*[]);           // <4>
 void objects_get_params_adhesion(const Objects*, const PairParams*[]);      // <5>
 void objects_get_params_repulsion(const Objects*, const WallRepulsePrm*[]); // <6>
-void objects_get_params_cnt(const Objects*, const PairParams***);
+void objects_get_params_cnt(const Objects*, const PairParams***);           // <7>
 // end::get[]
 
 // tag::gen[]

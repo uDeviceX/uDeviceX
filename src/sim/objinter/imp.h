@@ -11,5 +11,5 @@ void obj_inter_fin(ObjInter*);
 // end::mem[]
 
 // tag::int[]
-void obj_inter_forces(ObjInter*, const PairParams **fsi_prms, const PairParams **cnt_prms, PFarray *flu, const int *flu_start, PFarrays *obj); // <2>
+void obj_inter_forces(ObjInter*, const PairParams **fsi_prms, const PairParams **cnt_prms, PFarray *flu, const int *flu_start, PFarrays *obj); // <1>
 // end::int[]

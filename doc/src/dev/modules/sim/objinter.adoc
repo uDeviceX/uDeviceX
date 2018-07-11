@@ -20,5 +20,4 @@ Interface:
 ----
 include::{base}/imp.h[tag=int]
 ----
-<1> update the dpd (sigma) parameters of contact interactions given a new time step
-<2> compute interactions (contact and fsi), bulk and halo
+<1> compute interactions (contact and fsi), bulk and halo

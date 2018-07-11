@@ -86,6 +86,8 @@ include::{base}/imp.h[tag=get]
     for no interactions)
 <6> get the parameters for repulsion with walls (one per object, NULL
     for no interactions)
+<7> get the pair parameters for cnt interactions (one per object pair, NULL
+    for no interactions)
 
 [source, cpp]
 ----
