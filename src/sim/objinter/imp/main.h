@@ -20,7 +20,7 @@ static void bind_solvent(PFarray *flu, const int *starts, Fsi *fsi) {
     UC(fsi_bind_solvent(flu->p, (Force*) flu->f.ff, flu->n, starts, /**/ fsi));
 }
 
-static void forces_cnt(ObjInter *oi, int nw, PaWrap *pw, FoWrap *fw) {
+static void forces_cnt(ObjInter *oi, int nw, const PairParams *prms[], PaWrap *pw, FoWrap *fw) {
     cnt_build_cells(nw, pw, /**/ oi->cnt);
     cnt_bulk(oi->cntparams, oi->cnt, nw, pw, fw);
 }
@@ -39,7 +39,7 @@ static bool has_work(const ObjInter *o, int nw, const PairParams **fsi_prms) {
     return o->cnt || has_fsi_work(nw, fsi_prms);
 }
 
-void obj_inter_forces(ObjInter *oi, const PairParams **fsi_prms, PFarray *flu, const int *flu_start, PFarrays *obj) {
+void obj_inter_forces(ObjInter *oi, const PairParams **fsi_prms, const PairParams **cnt_prms, PFarray *flu, const int *flu_start, PFarrays *obj) {
     PaWrap pw[MAX_OBJ_TYPES];
     FoWrap fw[MAX_OBJ_TYPES];
     int nw = 0;
@@ -64,7 +64,7 @@ void obj_inter_forces(ObjInter *oi, const PairParams **fsi_prms, PFarray *flu, c
     if (oi->fsi) UC(bind_solvent(flu, flu_start, oi->fsi));
 
     if (oi->fsi) UC(forces_fsi(oi, nw, fsi_prms, pw, fw));
-    if (oi->cnt) UC(forces_cnt(oi, nw, pw, fw));
+    if (oi->cnt) UC(forces_cnt(oi, nw, cnt_prms, pw, fw));
 
     /* recv data and halo interactions  */
 

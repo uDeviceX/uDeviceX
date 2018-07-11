@@ -194,6 +194,10 @@ void objects_get_params_repulsion(const Objects *obj, const WallRepulsePrm *prms
     for (i = 0; i < obj->nrig; ++i) get_params_repulsion(obj->rig[i], &prms[j++]);
 }
 
+void objects_get_params_cnt(const Objects *o, const PairParams ***prms) {
+    *prms = (const PairParams**) o->cnt_params;
+}
+
 static void restart_mbr(MPI_Comm cart, const char *base, Mbr *m) {
     UC(rbc_strt_quants(cart, m->mesh, base, m->name, RESTART_BEGIN, &m->q));
 }

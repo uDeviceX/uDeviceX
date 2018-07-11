@@ -106,13 +106,15 @@ _S_ void forces_objects(Sim *sim) {
     PFarrays *obj;
     PFarray flu;
     const PairParams *fsi_prms[MAX_OBJ_TYPES];
-    
+    const PairParams **cnt_prms;
+        
     UC(pfarrays_ini(&obj));
     UC(objects_get_particles_all(sim->obj, obj));
     UC(objects_get_params_fsi(sim->obj, fsi_prms));
+    UC(objects_get_params_cnt(sim->obj, &cnt_prms));
     UC(utils_get_pf_flu(sim, &flu));
     
-    UC(obj_inter_forces(sim->objinter, fsi_prms, &flu, clists_get_ss(sim->flu.q.cells), obj));
+    UC(obj_inter_forces(sim->objinter, fsi_prms, cnt_prms, &flu, clists_get_ss(sim->flu.q.cells), obj));
 
     UC(pfarrays_fin(obj));
 }
