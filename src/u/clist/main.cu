@@ -111,7 +111,7 @@ int main(int argc, char **argv) {
     Particle *pp_hst;
     int n = 0, nout, *starts, *counts;
     int3 L;
-    Clist clist;
+    Clist *clist;
     ClistMap *m;
     Config *cfg;
     Coords *coords;
@@ -133,22 +133,22 @@ int main(int argc, char **argv) {
     UC(clist_ini(L.x, L.y, L.z, /**/ &clist));
 
     EMALLOC(MAXN, &pp_hst);
-    EMALLOC(clist.ncells, &counts);
-    EMALLOC(clist.ncells, &starts);
+    EMALLOC(clists_get_n(clist), &counts);
+    EMALLOC(clists_get_n(clist), &starts);
     Dalloc(&pp,    MAXN);
     Dalloc(&ppout, MAXN);
 
     read(&n, pp_hst);
     nout = num_parts_inside(L, n, pp_hst);
 
-    UC(clist_ini_map(n, 1, &clist, /**/ &m));
+    UC(clist_ini_map(n, 1, clist, /**/ &m));
     
     CC(d::Memcpy(pp, pp_hst, n * sizeof(Particle), H2D));
     
-    UC(clist_build(n, nout, pp, /**/ ppout, &clist, m));
+    UC(clist_build(n, nout, pp, /**/ ppout, clist, m));
     
-    CC(d::Memcpy(counts, clist.counts, clist.ncells * sizeof(int), D2H));
-    CC(d::Memcpy(starts, clist.starts, clist.ncells * sizeof(int), D2H));
+    CC(d::Memcpy(counts, clists_get_cc(clist), clists_get_n(clist) * sizeof(int), D2H));
+    CC(d::Memcpy(starts, clists_get_ss(clist), clists_get_n(clist) * sizeof(int), D2H));
     CC(d::Memcpy(pp_hst, ppout, nout * sizeof(Particle), D2H));
     
     if (valid(L, starts, counts, pp_hst, nout))
@@ -164,7 +164,7 @@ int main(int argc, char **argv) {
     EFREE(starts);
     EFREE(pp_hst);
     
-    UC(clist_fin(/**/ &clist));
+    UC(clist_fin(/**/ clist));
     UC(clist_fin_map(/**/ m));
     UC(conf_fin(cfg));
     UC(coords_fin(coords));
