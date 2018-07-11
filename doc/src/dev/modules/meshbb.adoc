@@ -1,6 +1,7 @@
 = meshbb
 :lext: .adoc
 :src: ../../../src
+:base: {src}/mesh_bounce
 :stem: latexmath
 
 Bounce back particles on a moving mesh
@@ -42,14 +43,14 @@ Allocate and deallocate `MeshBB` structure:
 
 [source,cpp]
 ----
-include::{src}/meshbb/imp.h[tag=mem]
+include::{base}/imp.h[tag=mem]
 ----
 
 Bouncing particles on a set of mesh:
 
 [source,cpp]
 ----
-include::{src}/meshbb/imp.h[tag=int]
+include::{base}/imp.h[tag=int]
 ----
 <1> reinitialise the structure (must be done before a new time step)
 <2> store collision informations inside the structure with a set of
@@ -63,7 +64,7 @@ or to membrane mesh:
 
 [source,cpp]
 ----
-include::{src}/meshbb/imp.h[tag=collect]
+include::{base}/imp.h[tag=collect]
 ----
 <1> Reduce `Momentum` array into one force and torque per rigid
     object.
