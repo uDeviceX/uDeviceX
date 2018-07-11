@@ -72,12 +72,11 @@ void obj_inter_forces(ObjInter *oi, const PairParams **fsi_prms, PFarray *flu, c
     UC(eobj_wait_recv(e->c, e->u));
 
     eobj_get_all_counts(nw, e->u, /**/ all_counts);
-    int26 hcc = eobj_get_counts(e->u);
     Pap26 hpp = eobj_upload_shift(e->u);
     Fop26 hff = eobj_reini_ff(e->u, e->pf);
 
     if (oi->fsi) UC(fsi_halo(oi->fsi, nw, fsi_prms, hpp, hff, all_counts));
-    if (oi->cnt) UC(cnt_halo(oi->cntparams, oi->cnt, nw, pw, fw, hpp, hff, hcc.d));
+    if (oi->cnt) UC(cnt_halo(oi->cntparams, oi->cnt, nw, pw, fw, hpp, hff, all_counts));
 
     /* send the forces back */ 
     
