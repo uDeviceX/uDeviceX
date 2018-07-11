@@ -22,7 +22,7 @@ static void bind_solvent(PFarray *flu, const int *starts, Fsi *fsi) {
 
 static void forces_cnt(ObjInter *oi, int nw, const PairParams *prms[], PaWrap *pw, FoWrap *fw) {
     cnt_build_cells(nw, pw, /**/ oi->cnt);
-    cnt_bulk(oi->cntparams, oi->cnt, nw, pw, fw);
+    cnt_bulk(oi->cnt, nw, prms, pw, fw);
 }
 
 static void forces_fsi(ObjInter *oi, int nw, const PairParams *prms[], PaWrap *pw, FoWrap *fw) {
@@ -75,8 +75,8 @@ void obj_inter_forces(ObjInter *oi, const PairParams **fsi_prms, const PairParam
     Pap26 hpp = eobj_upload_shift(e->u);
     Fop26 hff = eobj_reini_ff(e->u, e->pf);
 
-    if (oi->fsi) UC(fsi_halo(oi->fsi, nw, fsi_prms, hpp, hff, all_counts));
-    if (oi->cnt) UC(cnt_halo(oi->cntparams, oi->cnt, nw, pw, fw, hpp, hff, all_counts));
+    if (oi->fsi) UC(fsi_halo(oi->fsi, nw, fsi_prms,         hpp, hff, all_counts));
+    if (oi->cnt) UC(cnt_halo(oi->cnt, nw, cnt_prms, pw, fw, hpp, hff, all_counts));
 
     /* send the forces back */ 
     

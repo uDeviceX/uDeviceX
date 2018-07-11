@@ -214,7 +214,6 @@ static int get_id_inter(int a, int b) {
     i = a > b ? a : b;
     j = a > b ? b : a;
     return j + i*(i+1)/2;
-    
 }
 
 static void ini_cnt_params(const Config *cfg, int nmbr, int nrig, Mbr **mm, Rig **rr, PairParams ***prms_ptr) {
