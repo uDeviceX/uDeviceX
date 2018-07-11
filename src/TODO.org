@@ -1,5 +1,5 @@
 TODO
-* [1/3] cnt params: per object pair
+* [1/4] cnt params: per object pair
 ** DONE separate cnt
    CLOSED: [2018-07-11 Wed 12:23]
 *** DONE bulk
@@ -14,6 +14,7 @@ TODO
    }
    ...
 ** TODO update tests
+** TODO update doc
 * [2/3] hide clists
 ** DONE hide structures
    CLOSED: [2018-07-11 Wed 09:59]
