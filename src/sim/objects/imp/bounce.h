@@ -77,15 +77,23 @@ static void clear_momentum_rig(int nmhalo, Rig *r) {
 }
 
 
-static void find_and_select_collisions_rig(float dt, long nflu, Clist cflu, const Particle *flu_pp, const Particle *flu_pp0, int nm, Rig *r, MeshBB *bb) {
+static void find_and_select_collisions_rig(float dt, long nflu, const Clist *cflu, const Particle *flu_pp, const Particle *flu_pp0, int nm, Rig *r, MeshBB *bb) {
     MeshInfo mi = mesh_info_rig(r);
-    UC(mesh_bounce_find_collisions(dt, nm, mi, r->bbdata->rr_cp, cflu.dims, cflu.starts, cflu.counts, flu_pp, flu_pp0, /**/ bb));
+    UC(mesh_bounce_find_collisions(dt, nm, mi, r->bbdata->rr_cp,
+                                   clists_get_dim(cflu),
+                                   clists_get_ss(cflu),
+                                   clists_get_cc(cflu),
+                                   flu_pp, flu_pp0, /**/ bb));
     UC(mesh_bounce_select_collisions(nflu, /**/ bb));    
 }
 
-static void find_and_select_collisions_mbr(float dt, long nflu, Clist cflu, const Particle *flu_pp, const Particle *flu_pp0, int nm, Mbr *m, MeshBB *bb) {
+static void find_and_select_collisions_mbr(float dt, long nflu, const Clist *cflu, const Particle *flu_pp, const Particle *flu_pp0, int nm, Mbr *m, MeshBB *bb) {
     MeshInfo mi = mesh_info_mbr(m);
-    UC(mesh_bounce_find_collisions(dt, nm, mi, m->bbdata->rr_cp, cflu.dims, cflu.starts, cflu.counts, flu_pp, flu_pp0, /**/ bb));
+    UC(mesh_bounce_find_collisions(dt, nm, mi, m->bbdata->rr_cp,
+                                   clists_get_dim(cflu),
+                                   clists_get_ss(cflu),
+                                   clists_get_cc(cflu),
+                                   flu_pp, flu_pp0, /**/ bb));
     UC(mesh_bounce_select_collisions(nflu, /**/ bb));    
 }
 
@@ -170,7 +178,7 @@ static void collect_mom_rig(Rig *r) {
 }
 
 /* TODO less brutal implementation */
-static void bounce_mbr(float dt, float flu_mass, const Clist flu_cells, long n, const Particle *flu_pp0, Particle *flu_pp, MeshBB *bb, Mbr *m) {
+static void bounce_mbr(float dt, float flu_mass, const Clist *flu_cells, long n, const Particle *flu_pp0, Particle *flu_pp, MeshBB *bb, Mbr *m) {
     int nmhalo;
     if (!m->bbdata || !m->active_bounce) return;
 
@@ -189,7 +197,7 @@ static void bounce_mbr(float dt, float flu_mass, const Clist flu_cells, long n, 
     collect_mom_mbr(dt, m);
 }
 
-static void bounce_rig(float dt, float flu_mass, const Clist flu_cells, long n, const Particle *flu_pp0, Particle *flu_pp, MeshBB *bb, Rig *r) {
+static void bounce_rig(float dt, float flu_mass, const Clist *flu_cells, long n, const Particle *flu_pp0, Particle *flu_pp, MeshBB *bb, Rig *r) {
     int nmhalo;
     if (!r->bbdata) return;
 
@@ -225,7 +233,7 @@ static void objects_save_mesh_current(Objects *obj) {
     for (i = 0; i < obj->nrig; ++i) UC(save_mesh_rig_current(obj->rig[i]));    
 }
 
-void objects_bounce(float dt, float flu_mass, const Clist flu_cells, long n, const Particle *flu_pp0, Particle *flu_pp, Objects *obj) {
+void objects_bounce(float dt, float flu_mass, const Clist *flu_cells, long n, const Particle *flu_pp0, Particle *flu_pp, Objects *obj) {
     MeshBB *bb = obj->bb;
     int i;
  

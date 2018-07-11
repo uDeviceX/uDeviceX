@@ -14,7 +14,7 @@ void fsi_fin(Fsi *fsi) {
     EFREE(fsi);
 }
 
-void fsi_bind_solvent(PaArray pa, Force *ff, int n, int *starts, /**/ Fsi *fsi) {
+void fsi_bind_solvent(PaArray pa, Force *ff, int n, const int *starts, /**/ Fsi *fsi) {
     SolventWrap *w = fsi->wo;
     w->pa = pa;
     w->n  = n;

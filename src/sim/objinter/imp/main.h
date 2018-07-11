@@ -16,7 +16,7 @@ static void fill_wrappers(PFarrays *obj, int *nwrappers, PaWrap *pw, FoWrap *fw)
     }
 }
 
-static void bind_solvent(PFarray *flu, int *starts, Fsi *fsi) {
+static void bind_solvent(PFarray *flu, const int *starts, Fsi *fsi) {
     UC(fsi_bind_solvent(flu->p, (Force*) flu->f.ff, flu->n, starts, /**/ fsi));
 }
 
@@ -39,7 +39,7 @@ static bool has_work(const ObjInter *o, int nw, const PairParams **fsi_prms) {
     return o->cnt || has_fsi_work(nw, fsi_prms);
 }
 
-void obj_inter_forces(ObjInter *oi, const PairParams **fsi_prms, PFarray *flu, int *flu_start, PFarrays *obj) {
+void obj_inter_forces(ObjInter *oi, const PairParams **fsi_prms, PFarray *flu, const int *flu_start, PFarrays *obj) {
     PaWrap pw[MAX_OBJ_TYPES];
     FoWrap fw[MAX_OBJ_TYPES];
     int nw = 0;

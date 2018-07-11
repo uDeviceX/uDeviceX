@@ -12,6 +12,8 @@ void clist_fin_map(ClistMap *m);
 // tag::access[]
 const int* clists_get_ss(const Clist *c);
 const int* clists_get_cc(const Clist *c);
+int3       clists_get_dim(const Clist *c);
+int        clists_get_n(const Clist *c);
 const uint* clist_get_ids(const ClistMap *m);
 // end::access[]
 

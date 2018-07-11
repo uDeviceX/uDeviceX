@@ -7,7 +7,7 @@ _S_ bool valid_step(long id, const int freq) {
 _I_ void sample_vcont(const Coords *coords, long id, const Flu *f, /**/ Vcon *c) {
     if (valid_step(id, c->sample_freq)) {
         const FluQuants *q = &f->q;
-        vcont_sample(coords, q->n, q->pp, q->cells.starts, q->cells.counts, /**/ c->vcont);
+        vcont_sample(coords, q->n, q->pp, clists_get_ss(q->cells), clists_get_cc(q->cells), /**/ c->vcont);
     }
 }
 
@@ -58,8 +58,8 @@ _I_ void mark_outflowden(OptParams params, const Flu *f, const DContMap *m, /**/
     const int *ss, *cc;
     int n;
     n = f->q.n;
-    ss = f->q.cells.starts;
-    cc = f->q.cells.counts;
+    ss = clists_get_ss(f->q.cells);
+    cc = clists_get_cc(f->q.cells);
 
     UC(den_reset(n, /**/ d));
     UC(den_filter_particles(params.numdensity, m, ss, cc, /**/ d));

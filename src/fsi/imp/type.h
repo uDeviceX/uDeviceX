@@ -4,7 +4,7 @@ struct SolventWrap {
     PaArray pa;
     Force *ff;
     int n; 
-    int *starts;
+    const int *starts;
 };
 
 struct Fsi {

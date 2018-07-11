@@ -10,7 +10,7 @@ void flu_ini(bool colors, bool ids, int3 L, int maxp, FluQuants *q) {
     Dalloc(&q->pp, maxp);
     Dalloc(&q->pp0, maxp);
     UC(clist_ini(L.x, L.y, L.z, /**/ &q->cells));
-    UC(clist_ini_map(maxp, 2, &q->cells, /**/ &q->mcells));
+    UC(clist_ini_map(maxp, 2, q->cells, /**/ &q->mcells));
 
     EMALLOC(maxp, &q->pp_hst);
 

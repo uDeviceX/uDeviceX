@@ -62,8 +62,8 @@ _S_ void forces_wall(bool fluss, Sim *s) {
 }
 
 _S_ void forces_dpd(bool stress, Flu *f) {
-    const int *count = f->q.cells.counts;
-    const int *start = f->q.cells.starts;
+    const int *count = clists_get_cc(f->q.cells);
+    const int *start = clists_get_ss(f->q.cells);
     PaArray parray;
     FoArray farray;
     flu::LFrag26 lfrags;
@@ -112,7 +112,7 @@ _S_ void forces_objects(Sim *sim) {
     UC(objects_get_params_fsi(sim->obj, fsi_prms));
     UC(utils_get_pf_flu(sim, &flu));
     
-    UC(obj_inter_forces(sim->objinter, fsi_prms, &flu, sim->flu.q.cells.starts, obj));
+    UC(obj_inter_forces(sim->objinter, fsi_prms, &flu, clists_get_ss(sim->flu.q.cells), obj));
 
     UC(pfarrays_fin(obj));
 }

@@ -2,7 +2,7 @@
 struct FluQuants {
     Particle *pp, *pp0;    /* particles on device  */
     int       n;           /* particle number      */
-    Clist      cells;      /* cell lists           */
+    Clist     *cells;      /* cell lists           */
     ClistMap *mcells;      /* cell lists map       */
     Particle *pp_hst;      /* particles on host    */
 

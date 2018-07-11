@@ -50,11 +50,11 @@ static void gen_ticket(const int w_n, float4 *w_pp, Clist *cells, Texo<int> *tex
     UC(clist_ini_map(w_n, 1, cells, /**/ &mcells));
     UC(build_cells(w_n, /**/ w_pp, cells, mcells));
     
-    UC(texo_setup(cells->ncells, cells->starts, texstart));
+    UC(texo_setup(clists_get_n(cells), (int*) clists_get_ss(cells), texstart));
     UC(texo_setup(w_n, w_pp, texpp));
     UC(clist_fin_map(mcells));
 }
 
 void wall_gen_ticket(const WallQuants *q, WallTicket *t) {
-    UC(gen_ticket(q->n, q->pp, &t->cells, &t->texstart, &t->texpp));
+    UC(gen_ticket(q->n, q->pp, t->cells, &t->texstart, &t->texpp));
 }

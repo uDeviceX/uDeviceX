@@ -64,7 +64,7 @@ void objects_restart(Objects*);
 
 // tag::tools[]
 void objects_activate_mbr_bounce(Objects*);
-void objects_bounce(float dt, float flu_mass, const Clist flu_cells, long n, const Particle *flu_pp0, Particle *flu_pp, Objects *obj); // <1>
+void objects_bounce(float dt, float flu_mass, const Clist *flu_cells, long n, const Particle *flu_pp0, Particle *flu_pp, Objects *obj); // <1>
 void objects_recolor_flu(Objects*, PFarray *flu); // <2>
 double objects_mbr_tot_volume(const Objects*);    // <3>
 // end::tools[]

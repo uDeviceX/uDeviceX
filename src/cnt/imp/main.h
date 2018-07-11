@@ -3,8 +3,7 @@ void cnt_ini(int maxp, int rank, int3 L, /**/ Contact **cnt) {
     Contact *c = *cnt;
 
     c->L = L;
-    EMALLOC(1, &c->cells);
-    clist_ini(L.x, L.y, L.z, /**/ c->cells);
+    clist_ini(L.x, L.y, L.z, /**/ &c->cells);
     clist_ini_map(maxp, MAX_OBJ_TYPES, c->cells, /**/ &c->cmap);
     UC(rnd_ini(7119 - rank, 187 + rank, 18278, 15674, /**/ &c->rgen));
 }
@@ -13,7 +12,6 @@ void cnt_fin(Contact *c) {
     clist_fin(/**/ c->cells);
     clist_fin_map(/**/ c->cmap);
     UC(rnd_fin(c->rgen));
-    EFREE(c->cells);
     EFREE(c);
 }
 
