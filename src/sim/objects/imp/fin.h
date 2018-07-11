@@ -90,6 +90,17 @@ static void fin_dump(Dump *d) {
     EFREE(d);
 }
 
+static void fin_cnt_params(int nmbr, int nrig, PairParams **prms) {
+    int i, n, ninter;
+    n = nmbr + nrig;
+    ninter = n * (n+1) / 2;
+    for (i = 0; i < ninter; ++i) {
+        if (prms[i])
+            UC(pair_fin(prms[i]));
+    }
+    EFREE(prms);
+}
+
 void objects_fin(Objects *obj) {
     int i;
     for (i = 0; i < obj->nmbr; ++i) UC(fin_mbr(obj->mbr[i]));
@@ -97,6 +108,7 @@ void objects_fin(Objects *obj) {
     if (obj->nmbr) EFREE(obj->mbr);
     if (obj->nrig) EFREE(obj->rig);
     if (obj->bb)  UC(mesh_bounce_fin(/**/ obj->bb));
+    UC(fin_cnt_params(obj->nmbr, obj->nrig, obj->cnt_params));
     UC(fin_dump(obj->dump));
     UC(coords_fin(obj->coords));
     MC(m::Comm_free(&obj->cart));
