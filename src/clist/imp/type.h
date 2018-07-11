@@ -1,3 +1,11 @@
+// tag::clist[]
+struct Clist {
+    int3 dims;
+    int ncells;
+    int *starts, *counts;
+};
+// end::clist[]
+
 // tag::map[]
 struct ClistMap {
     int nA;       /* number of source arrays to build the cell lists, e.g remote+bulk -> 2 */

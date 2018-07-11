@@ -1,4 +1,7 @@
-void clist_ini(int LX, int LY, int LZ, /**/ Clist *c) {
+void clist_ini(int LX, int LY, int LZ, /**/ Clist **cl) {
+    Clist *c;
+    EMALLOC(1, cl);
+    c = *cl;
     c->dims.x = LX;
     c->dims.y = LY;
     c->dims.z = LZ;

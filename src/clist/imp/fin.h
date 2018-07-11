@@ -1,6 +1,7 @@
 void clist_fin(/**/ Clist *c) {
     Dfree(c->starts);
     Dfree(c->counts);
+    EFREE(c);
 }
 
 void clist_fin_map(ClistMap *m) {

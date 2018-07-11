@@ -1,15 +1,8 @@
-// tag::clist[]
-struct Clist {
-    int3 dims;
-    int ncells;
-    int *starts, *counts;
-};
-// end::clist[]
-
+struct Clist;
 struct ClistMap;
 
 // tag::mem[]
-void clist_ini(int LX, int LY, int LZ, /**/ Clist *c);
+void clist_ini(int LX, int LY, int LZ, /**/ Clist **c);
 void clist_fin(/**/ Clist *c);
 
 void clist_ini_map(int maxp, int nA, const Clist *c, /**/ ClistMap **m);
@@ -17,6 +10,8 @@ void clist_fin_map(ClistMap *m);
 // end::mem[]
 
 // tag::access[]
+const int* clists_get_ss(const Clist *c);
+const int* clists_get_cc(const Clist *c);
 const uint* clist_get_ids(const ClistMap *m);
 // end::access[]
 

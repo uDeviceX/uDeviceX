@@ -1,5 +1,7 @@
 enum {LOCAL, REMOTE};
 
+const int* clists_get_ss(const Clist *c) {return c->starts;}
+const int* clists_get_cc(const Clist *c) {return c->counts;}
 const uint* clist_get_ids(const ClistMap *m) {return m->ii;}
 
 void clist_ini_counts(/**/ Clist *c) {
