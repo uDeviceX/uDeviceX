@@ -1,4 +1,10 @@
 TODO
+* [2/3] hide clists
+** DONE hide structures
+   CLOSED: [2018-07-11 Wed 09:59]
+** DONE adapt rest of the code
+   CLOSED: [2018-07-11 Wed 09:59]
+** TODO update doc
 * [0/3] cnt params: per object pair
 ** TODO separate cnt
 *** TODO bulk
