@@ -233,7 +233,7 @@ static void ini_cnt_params(const Config *cfg, int nmbr, int nrig, Mbr **mm, Rig 
     prms = *prms_ptr;
     get_all_names(nmbr, nrig, mm, rr, names);
 
-    UC(conf_lookup_vstring(cfg, "cnt", ninter, &ninter_read, prms_ns));
+    UC(conf_lookup_vstring(cfg, "contact", ninter, &ninter_read, prms_ns));
     
     for (i = 0; i < ninter; ++i) prms[i] = NULL;
 
