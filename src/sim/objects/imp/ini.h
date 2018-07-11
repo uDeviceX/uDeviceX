@@ -192,6 +192,69 @@ static bool need_bb(int nm, int nr, const OptMbr *m, const OptRig *r) {
     return false;
 }
 
+static void get_all_names(int nmbr, int nrig, Mbr **mm, Rig **rr, const char **names) {
+    int i, j = 0;
+    for (i = 0; i < nmbr; ++i) names[j++] = mm[i]->name;
+    for (i = 0; i < nrig; ++i) names[j++] = rr[i]->name;
+}
+
+enum {NOT_FOUND=-1};
+
+static int get_name_id(const char *s, int n, const char **names) {
+    int i;
+    for (i = 0; i < n; ++i)
+        if (same_str(s, names[i]))
+            return i;
+    ERR("object <%s> does not exist\n", s);
+    return NOT_FOUND;
+}
+
+static int get_id_inter(int a, int b) {
+    int i, j;
+    i = a > b ? a : b;
+    j = a > b ? b : a;
+    return j + i*(i+1)/2;
+    
+}
+
+static void ini_cnt_params(const Config *cfg, int nmbr, int nrig, Mbr **mm, Rig **rr, PairParams ***prms_ptr) {
+    int i, n, ninter, ninter_read;
+    int id_obja, id_objb, id_inter;
+    const char **names, **prms_ns, *sobja, *sobjb, *pair_ns;
+    PairParams **prms;
+    
+    n = nmbr + nrig;
+    ninter = n * (n+1) / 2;
+    
+    EMALLOC(ninter, &prms_ns);
+    EMALLOC(ninter, prms_ptr);
+    EMALLOC(n, &names);
+
+    prms = *prms_ptr;
+    get_all_names(nmbr, nrig, mm, rr, names);
+
+    UC(conf_lookup_vstring(cfg, "cnt", ninter, &ninter_read, prms_ns));
+    
+    for (i = 0; i < ninter; ++i) prms[i] = NULL;
+
+    for (i = 0; i < ninter_read; ++i) {
+        UC(conf_lookup_string_ns(cfg, prms_ns[i], "obja", &sobja));
+        UC(conf_lookup_string_ns(cfg, prms_ns[i], "onjb", &sobjb));
+        UC(conf_lookup_string_ns(cfg, prms_ns[i], "pair", &pair_ns));
+
+        id_obja = get_name_id(sobja, n, names);
+        id_objb = get_name_id(sobjb, n, names);
+
+        
+        id_inter = get_id_inter(id_obja, id_objb);
+
+        read_params(cfg, pair_ns, &prms[id_inter]);
+    }
+
+    EFREE(prms_ns);
+    EFREE(names);    
+}
+
 void objects_ini(const Config *cfg, const Opt *opt, MPI_Comm cart, const Coords *coords, int maxp, Objects **objects) {
     Objects *obj;
     int3 L;
@@ -221,4 +284,5 @@ void objects_ini(const Config *cfg, const Opt *opt, MPI_Comm cart, const Coords 
         UC(mesh_bounce_ini(maxp, /**/ &obj->bb));
         
     UC(ini_dump(maxp, &obj->dump));
+    UC(ini_cnt_params(cfg, obj->nmbr, obj->nrig, obj->mbr, obj->rig, &obj->cnt_params));
 }
