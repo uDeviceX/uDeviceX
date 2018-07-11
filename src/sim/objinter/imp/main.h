@@ -90,7 +90,3 @@ void obj_inter_forces(ObjInter *oi, const PairParams **fsi_prms, const PairParam
 
     UC(eobj_unpack_ff(e->uf, e->p, nw, /**/ fw));
 }
-
-void obj_inter_update_dpd_prms(float dt, float kBT, ObjInter *oi) {
-    if (oi->cnt) UC(pair_compute_dpd_sigma(kBT, dt, /**/ oi->cntparams));
-}

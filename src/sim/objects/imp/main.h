@@ -117,9 +117,16 @@ static void update_dpd_prms(float dt, float kBT, Obj *o) {
 }
 
 void objects_update_dpd_prms(float dt, float kBT, Objects *obj) {
-    int i;
+    int i, n, ninter;    
     for (i = 0; i < obj->nmbr; ++i) update_dpd_prms(dt, kBT, obj->mbr[i]);
     for (i = 0; i < obj->nrig; ++i) update_dpd_prms(dt, kBT, obj->rig[i]);
+
+    n = obj->nmbr + obj->nrig;
+    ninter = n*(n+1)/2;
+    for (i = 0; i < ninter; ++i) {
+        if (obj->cnt_params[i])
+            UC(pair_compute_dpd_sigma(kBT, dt, /**/ obj->cnt_params[i]));
+    }
 }
 
 bool objects_have_bounce(const Objects *o) {

@@ -68,6 +68,5 @@ _I_ void update_params(float dt, Sim *s) {
     const Opt *opt = &s->opt;
     kBT = opt->params.kBT;
     UC(flu_update_dpd_prms(dt, kBT, s));
-    UC(obj_inter_update_dpd_prms(dt, kBT, s->objinter));
     UC(objects_update_dpd_prms(dt, kBT, s->obj));
 }

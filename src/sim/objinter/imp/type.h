@@ -14,7 +14,5 @@ struct ObjInter {
     ObjExch *e;
     Contact *cnt;
     Fsi     *fsi;
-
-    PairParams *cntparams;
 };
 
