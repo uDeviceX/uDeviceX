@@ -1,19 +1,21 @@
 TODO
-* [1/4] cnt params: per object pair
+* [3/4] cnt params: per object pair
 ** DONE separate cnt
    CLOSED: [2018-07-11 Wed 12:23]
 *** DONE bulk
     CLOSED: [2018-07-11 Wed 11:18]
 *** DONE halo
     CLOSED: [2018-07-11 Wed 12:23]
-** TODO configuration
+** DONE configuration
+   CLOSED: [2018-07-11 Wed 17:25]
    cnt = [cnt_1, cnt_2, ...]
    cnt_1 = {
    objects = ['obj1', 'obj2']
    pair = 'pair_cnt1'
    }
    ...
-** TODO update tests
+** DONE update tests
+   CLOSED: [2018-07-11 Wed 17:25]
 ** TODO update doc
 * [2/3] hide clists
 ** DONE hide structures
