@@ -4,7 +4,7 @@ $B/algo/vectors/imp.o: $S/utils/imp.h $S/utils/error.h $S/inc/type.h $S/algo/vec
 $B/conf/imp.o: $S/utils/imp.h $S/utils/error.h $S/conf/imp/set.h $S/conf/imp.h $S/conf/imp/main.h $S/conf/imp/type.h $S/conf/imp/get.h $S/utils/msg.h
 $B/coords/conf.o: $S/utils/imp.h $S/coords/ini.h $S/utils/error.h $S/conf/imp.h
 $B/coords/imp.o: $S/utils/imp.h $S/inc/conf.h $S/coords/ini.h $S/utils/error.h $S/mpi/wrapper.h $S/coords/imp.h $S/utils/mc.h $B/conf.h $S/coords/imp/main.h $S/coords/imp/type.h $S/coords/type.h
-$B/d/api.o: $S/d/cpu/imp.h $S/utils/imp.h $S/inc/conf.h $S/utils/error.h $S/d/common.h $S/d/api.h $B/conf.h $S/d/cuda/release/alloc.h $S/d/cuda/debug/alloc.h $S/d/cuda/imp.h
+$B/d/api.o: $S/d/cpu/imp.h $S/utils/imp.h $S/inc/conf.h $S/utils/error.h $S/d/common.h $S/d/api.h $B/conf.h $S/d/cuda/release/alloc.h $S/d/cuda/debug/alloc.h $S/d/cuda/imp.h $S/utils/msg.h
 $B/io/mesh_read/edg/imp.o: $S/utils/imp.h $S/utils/error.h $S/io/mesh_read/edg/imp/main.h $S/algo/edg/imp.h $S/io/mesh_read/edg/imp/type.h $S/utils/msg.h
 $B/io/mesh_read/imp.o: $S/utils/imp.h $S/utils/error.h $S/io/mesh_read/imp/ply.h $S/io/mesh_read/imp.h $S/io/mesh_read/imp/main.h $S/io/mesh_read/imp/type.h $S/io/mesh_read/edg/imp.h $S/io/mesh_read/imp/off.h $S/utils/msg.h
 $B/io/write/imp.o: $S/utils/imp.h $S/inc/conf.h $S/utils/error.h $S/mpi/wrapper.h $S/io/write/imp.h $S/utils/mc.h $B/conf.h $S/io/write/imp/main.h $S/io/write/imp/type.h
@@ -15,7 +15,7 @@ $B/mpi/wrapper.o: $S/mpi/wrapper.h
 $B/u/mesh/scatter/main.o: $S/utils/imp.h $S/utils/error.h $S/conf/imp.h $S/mpi/wrapper.h $S/algo/scalars/imp.h $S/io/mesh_read/imp.h $S/mesh/scatter/imp.h $S/utils/mc.h $S/mpi/glb.h $S/utils/msg.h
 $B/utils/cc.o: $S/utils/cc/common.h $S/inc/conf.h $S/utils/error.h $S/d/api.h $B/conf.h
 $B/utils/error.o: $S/utils/msg.h $S/utils/error.h
-$B/utils/imp.o: $S/utils/error.h $S/utils/imp.h $S/utils/msg.h
+$B/utils/imp.o: $S/utils/os.h $S/utils/error.h $S/utils/imp.h $S/utils/msg.h
 $B/utils/mc.o: $S/inc/conf.h $S/utils/error.h $S/mpi/wrapper.h $S/utils/mc.h $B/conf.h
 $B/utils/msg.o: $S/utils/msg.h
 $B/utils/nvtx/imp.o: $S/utils/error.h
