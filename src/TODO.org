@@ -1,4 +1,8 @@
 TODO
+* [0/3] Particle data structure: float4
+** TODO common device and host: access / set
+** TODO use everywhere the accessors
+** TODO switch to float4
 * [0/2] Renaming
 ** TODO rbc -> mbr
 ** TODO Solid -> Rigid

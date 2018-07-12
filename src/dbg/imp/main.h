@@ -46,11 +46,9 @@ static void gen_name(const Coords *c, const char *base, /**/ char *name) {
 
 static void dump_pp(const Coords *c, const char *base, int n, const Particle *dev) {
     Particle *hst;
-    size_t sz;
     char name[FILENAME_MAX];
-    sz = n*sizeof(Particle);
     EMALLOC(n, &hst);
-    UC(d::Memcpy(hst, dev, sz, D2H));
+    cD2H(hst, dev, n);
     UC(gen_name(c, base, name));
     UC(txt_write_pp(n, hst, name));
     EFREE(hst);    
@@ -59,17 +57,13 @@ static void dump_pp(const Coords *c, const char *base, int n, const Particle *de
 static void dump_pp_ff(const Coords *c, const char *base, int n, const Particle *ppdev, const Force *ffdev) {
     Particle *pphst;
     Force *ffhst;
-    size_t szp, szf;
     char name[FILENAME_MAX];
-
-    szp = n*sizeof(Particle);
-    szf = n*sizeof(Force);
 
     EMALLOC(n, &pphst);
     EMALLOC(n, &ffhst);
 
-    UC(d::Memcpy(pphst, ppdev, szp, D2H));
-    UC(d::Memcpy(ffhst, ffdev, szf, D2H));
+    cD2H(pphst, ppdev, n);
+    cD2H(ffhst, ffdev, n);
 
     UC(gen_name(c, base, name));
 

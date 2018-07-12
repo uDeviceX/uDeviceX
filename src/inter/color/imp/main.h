@@ -37,21 +37,17 @@ void inter_color_apply_hst(const Coords *coords, const GenColor *gc, int n, cons
 void inter_color_apply_dev(const Coords *coords, const GenColor *gc, int n, const Particle *pp, /**/ int *cc) {
     int *cc_hst;
     Particle *pp_hst;
-    size_t szc, szp;
 
     if (gc->kind == NONE) return;
     
-    szc = n * sizeof(int);
-    szp = n * sizeof(Particle);
-
     EMALLOC(n, &cc_hst);
     EMALLOC(n, &pp_hst);
 
-    CC(d::Memcpy(pp_hst, pp, szp, D2H));
+    cD2H(pp_hst, pp, n);
 
     UC(inter_color_apply_hst(coords, gc, n, pp_hst, /**/ cc_hst));
 
-    CC(d::Memcpy(cc, cc_hst, szc, H2D));
+    cH2D(cc, cc_hst, n);
     
     EFREE(pp_hst);
     EFREE(cc_hst);
