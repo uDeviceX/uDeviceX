@@ -20,6 +20,8 @@
 #include "struct/partlist/type.h"
 #include "struct/partlist/dev.h"
 
+#include "struct/particle/dev.h"
+
 #include "imp.h"
 #include "dev.h"
 

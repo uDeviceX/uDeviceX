@@ -3,27 +3,25 @@ enum {
     INVALID = 255
 };
 
-static __device__ bool inside(const float r[3], int3 L) {
-    enum {X, Y, Z};
+static __device__ bool inside(float3 r, int3 L) {
     return
-        (r[X] >= -L.x/2) && (r[X] < L.x/2) &&
-        (r[Y] >= -L.y/2) && (r[Y] < L.y/2) &&
-        (r[Z] >= -L.z/2) && (r[Z] < L.z/2)  ;
+        (r.x >= -L.x/2) && (r.x < L.x/2) &&
+        (r.y >= -L.y/2) && (r.y < L.y/2) &&
+        (r.z >= -L.z/2) && (r.z < L.z/2)  ;
 }
 
 static __device__ int project_cid(int i, const int L) {
     return i < 0 ? 0 : i >= L ? L - 1 : i;
 }
 
-static __device__ uchar4 get_entry(const bool project, const float *r, int3 L) {
-    enum {X, Y, Z};
+static __device__ uchar4 get_entry(const bool project, float3 r, int3 L) {
     uchar4 e;
     int ix, iy, iz;
 
     /* must be done in double precision */
-    ix = (int) ((double) r[X] + L.x/2);
-    iy = (int) ((double) r[Y] + L.y/2);
-    iz = (int) ((double) r[Z] + L.z/2);
+    ix = (int) ((double) r.x + L.x/2);
+    iy = (int) ((double) r.y + L.y/2);
+    iz = (int) ((double) r.z + L.z/2);
 
     if (project) {
         ix = project_cid(ix, L.x);
@@ -45,7 +43,7 @@ static __device__ int get_cid(int3 L, uchar4 e) {
 /* project:: if particle is outside of domain L, include it in closest cell */
 __global__ void subindex(bool project, int3 L, int n, const PartList lp, /*io*/ int *counts, /**/ uchar4 *ee) {
     int i, cid;
-    Particle p;
+    float3 r;
     uchar4 e;
     bool dead;
     
@@ -53,13 +51,13 @@ __global__ void subindex(bool project, int3 L, int n, const PartList lp, /*io*/ 
     if (i >= n) return;
 
     dead = is_dead(i, lp);
-    p = lp.pp[i];
+    r = fetch_pos(i, lp.pp);
 
     if (dead) {
         e.x = e.y = e.z = 0;
         e.w = INVALID;
     } else {
-        e = get_entry(project, p.r, L);
+        e = get_entry(project, r, L);
         cid = get_cid(L, e);
     }
     
