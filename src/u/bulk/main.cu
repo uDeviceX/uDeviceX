@@ -33,7 +33,7 @@
 static Particle *pp, *pp0, *pp_hst;
 static Force *ff, *ff_hst;
 static int n;
-static Clist clist;
+static Clist *clist;
 static ClistMap *cmap;
 static FluForcesBulk *bulkforces;
 
@@ -70,7 +70,7 @@ static void dealloc() {
 }
 
 static void build_clist() {
-    UC(clist_build(n, n, pp, /**/ pp0, &clist, cmap));
+    UC(clist_build(n, n, pp, /**/ pp0, clist, cmap));
     Particle *tmp = pp;
     pp = pp0;
     pp0 = tmp;
@@ -121,7 +121,7 @@ int main(int argc, char **argv) {
     maxp = n + 32;
 
     UC(clist_ini(L.x, L.y, L.z, &clist));
-    UC(clist_ini_map(maxp, 1, &clist, &cmap));
+    UC(clist_ini_map(maxp, 1, clist, &cmap));
     UC(build_clist());
 
     UC(fluforces_bulk_ini(L, maxp, &bulkforces));
@@ -130,7 +130,7 @@ int main(int argc, char **argv) {
     farray_push_ff(ff, &farray);
 
     UC(fluforces_bulk_prepare(n, &parray, /**/ bulkforces));
-    UC(fluforces_bulk_apply(params, n, bulkforces, clist.starts, clist.counts, /**/ &farray));
+    UC(fluforces_bulk_apply(params, n, bulkforces, clists_get_ss(clist), clists_get_cc(clist), /**/ &farray));
 
     // particles are reordered because of clists
     CC(d::Memcpy(pp_hst, pp, n*sizeof(Particle), D2H));
@@ -138,7 +138,7 @@ int main(int argc, char **argv) {
     UC(txt_write_pp_ff(n, pp_hst, ff_hst, fout));
 
     UC(fluforces_bulk_fin(bulkforces));
-    UC(clist_fin(&clist));
+    UC(clist_fin(clist));
     UC(clist_fin_map(cmap));
     UC(dealloc());
 
