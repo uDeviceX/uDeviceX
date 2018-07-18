@@ -189,7 +189,10 @@ void opt_check(const Opt *o) {
 
 static long maxp_estimate(const OptParams *p) {
     int3 L = p->L;
-    int estimate = L.x * L.y * L.z * p->numdensity;
+    int flu, obj, estimate;
+    flu = L.x * L.y * L.z * p->numdensity;
+    obj = MAX_OBJ_TYPES * MAX_PSOLID_NUM * MAX_SOLIDS;
+    estimate = flu > obj ? flu : obj;
     return SAFETY_FACTOR_MAXP * estimate;
 }
 
