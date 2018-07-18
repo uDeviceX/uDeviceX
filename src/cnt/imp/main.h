@@ -44,7 +44,18 @@ static void build_cells(const PaWrap *w, Clist *c, ClistMap *m) {
     clist_build_map(cc, /**/ c, m);
 }
 
-void cnt_build_cells(int nw, const PaWrap *pw, /**/ Contact *c) {
-    for (int i = 0; i < nw; ++i)
+static bool has_work(int i, int nw, const PairParams **prms) {
+    int j, k;
+    for (j = 0; j <= i; ++j) {
+        k = get_id_inter(i, j);
+        if (prms[k]) return true;
+    }
+    return false;
+}
+
+void cnt_build_cells(int nw, const PairParams **prms, const PaWrap *pw, /**/ Contact *c) {
+    for (int i = 0; i < nw; ++i) {
+        if (!has_work(i, nw, prms)) continue;
         build_cells(&pw[i], c->cells[i], c->cmap[i]);
+    }
 }

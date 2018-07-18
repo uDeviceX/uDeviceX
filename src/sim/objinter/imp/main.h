@@ -21,7 +21,7 @@ static void bind_solvent(PFarray *flu, const int *starts, Fsi *fsi) {
 }
 
 static void forces_cnt(ObjInter *oi, int nw, const PairParams *prms[], PaWrap *pw, FoWrap *fw) {
-    cnt_build_cells(nw, pw, /**/ oi->cnt);
+    cnt_build_cells(  nw, prms, pw, /**/ oi->cnt);
     cnt_bulk(oi->cnt, nw, prms, pw, fw);
 }
 
