@@ -13,6 +13,11 @@ int Malloc(void **p, size_t size) {
     return 0;
 }
 
+int GetSymbolAddress(void **devPtr, const void *symbol) {
+    *devPtr = symbol;
+    return 0;
+}
+
 int MemcpyToSymbol(const void *symbol, const void *src, size_t count, size_t offset, int /*kind*/) {
     memcpy(vadd(symbol, offset), src, count);
     return 0;

@@ -11,6 +11,7 @@ int is_device_pointer(const void *ptr);
 // end::more[]
 
 // tag::api[]
+int GetSymbolAddress(void **devPtr, const void *symbol);
 int Malloc(void **p, size_t);
 int MemcpyToSymbol(const void *symbol, const void *src, size_t count, size_t offset=0, int kind=MemcpyHostToDevice);
 int MemcpyFromSymbol(void *dst, const void *symbol, size_t count, size_t offset=0, int kind=MemcpyDeviceToHost);

@@ -25,6 +25,10 @@ int is_device_pointer(const void *p) {
     else return 1;
 }
 
+int GetSymbolAddress(void **devPtr, const void *symbol) {
+    return R(cudaGetSymbolAddress(devPtr, symbol));
+}
+
 int MemcpyToSymbol(const void *symbol, const void *src, size_t count, size_t offset, int kind0) {
     enum cudaMemcpyKind kind;
     kind = k2k(kind0);
