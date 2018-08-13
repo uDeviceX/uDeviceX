@@ -25,6 +25,8 @@ static __device__ err_type error;
 
 static void err_ini() {
     err_type e = ERR_NONE;
+    void *devPtr;
+    CC(d::GetSymbolAddress(&devPtr, &dbg_dev::error));
     CC(d::MemcpyToSymbol(&dbg_dev::error, &e, sizeof(err_type)));
 }
 
