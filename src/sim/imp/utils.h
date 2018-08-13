@@ -23,9 +23,9 @@ _I_ bool is_mbr_bb_activation_time(Sim *s) {
 }
 
 _I_ void utils_compute_hematocrit(const Sim *s) {
+    const double SMALL = 1e-3;
     const Opt *opt = &s->opt;
     double Vdomain, Vrbc, Ht;
-
     if (opt->wall.active) {
         Vdomain = wall_compute_volume(s->wall, s->cart, s->opt.params.L);
     }
@@ -33,9 +33,10 @@ _I_ void utils_compute_hematocrit(const Sim *s) {
         const Coords *c = s->coords;
         Vdomain = xdomain(c) * ydomain(c) * zdomain(c);
     }
-
-    Vrbc = objects_mbr_tot_volume(s->obj);
+    if (Vdomain < SMALL)
+        ERR("Vdomain = %g\n", g);
     
+    Vrbc = objects_mbr_tot_volume(s->obj);
     Ht = Vrbc / Vdomain;
 
     msg_print("Geometry volume: %g", Vdomain);
