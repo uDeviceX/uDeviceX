@@ -14,7 +14,6 @@
 PREFIX    = $(HOME)
 BIN       = $(PREFIX)/bin
 NVCC     ?= nvcc
-CXX      ?= gcc -x c++
 ARCH     ?= -arch compute_35 -code sm_35
 OPT	 ?= -O3 -g
 
