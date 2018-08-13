@@ -34,7 +34,7 @@ _I_ void utils_compute_hematocrit(const Sim *s) {
         Vdomain = xdomain(c) * ydomain(c) * zdomain(c);
     }
     if (Vdomain < SMALL)
-        ERR("Vdomain = %g\n", g);
+        ERR("Vdomain = %g", Vdomain);
     
     Vrbc = objects_mbr_tot_volume(s->obj);
     Ht = Vrbc / Vdomain;
