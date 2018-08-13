@@ -28,7 +28,7 @@ LIBS      += -lcudart -lcurand -lnvToolsExt
 LOG = @echo $< $@;
 N  = $(LOG) $(NVCC)  $(ARCH) $(NVCCFLAGS)        --compiler-options '$(NCFLAGS)'     $< -c -o $@
 X  = $(LOG) $(NVCC)  -Wno-deprecated-gpu-targets --compiler-options '$(XCFLAGS)'     $< -c -o $@
-L  = $(LOG) $(NVCC)  $(ARCH) -dlink $O $(NVCCLIBS) -o $B/gpuCode.o && \
+L  = $(LOG) $(NVCC)  $(ARCH) -dlink $O -o $B/gpuCode.o && \
 	$(LINK)  $B/gpuCode.o $O $(LIBS) -o $@
 
 $B/udx: $O; $L
