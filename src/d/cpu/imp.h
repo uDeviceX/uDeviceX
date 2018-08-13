@@ -13,8 +13,8 @@ int Malloc(void **p, size_t size) {
     return 0;
 }
 
-int GetSymbolAddress(void **devPtr, const void *symbol) {
-    *devPtr = symbol;
+int GetSymbolAddress(void **, const void*) {
+    ERR("GetSymbolAddress cannot be called if devices is empulated by CPU");
     return 0;
 }
 
