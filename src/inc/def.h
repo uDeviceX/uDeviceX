@@ -34,7 +34,7 @@ enum {
     MAX_OBJ_DENSITY = 30,
 
     /* maximum number of red blood cells per node */
-    MAX_CELL_NUM = 300,
+    MAX_CELL_NUM = 500,
 
     /* maximum texture size in bytes */
     MAX_TEXO_SIZE = 100000000,

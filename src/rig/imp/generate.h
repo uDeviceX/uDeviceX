@@ -58,7 +58,9 @@ void rig_gen_mesh(const Coords *coords, MPI_Comm comm, const MeshRead *mesh, con
     UC(matrices_read_filter(ic, coords, /**/ &matrices));
 
     q->ns = nm = matrices_get_n(matrices);
-
+    if (nm > MAX_SOLIDS)
+        ERR("nm=%d >= MAX_SOLIDS=%d", nm, MAX_SOLIDS);
+    
     UC(mesh_gen_from_matrices(nv, vv, matrices, /**/ &n, q->i_pp_hst));
     UC(mesh_shift(coords, n, q->i_pp_hst));
 
