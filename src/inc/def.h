@@ -23,7 +23,7 @@ enum {
     MAX_PSOLID_NUM = 12000,
 
     /* maximum number of solids per node */
-    MAX_SOLIDS = 40,
+    MAX_SOLIDS = 60,
 
     /* maximum number of object types (solid, rbc, ...) */
     MAX_MBR_TYPES = 2,
