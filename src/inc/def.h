@@ -23,7 +23,7 @@ enum {
     MAX_PSOLID_NUM = 12000,
 
     /* maximum number of solids per node */
-    MAX_SOLIDS = 60,
+    MAX_SOLIDS = 100,
 
     /* maximum number of object types (solid, rbc, ...) */
     MAX_MBR_TYPES = 2,
@@ -34,7 +34,7 @@ enum {
     MAX_OBJ_DENSITY = 30,
 
     /* maximum number of red blood cells per node */
-    MAX_CELL_NUM = 500,
+    MAX_CELL_NUM = 900,
 
     /* maximum texture size in bytes */
     MAX_TEXO_SIZE = 100000000,
