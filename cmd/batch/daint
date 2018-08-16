@@ -18,7 +18,8 @@ fi
 Args="--output=out.txt --error=err.txt -C gpu $Time"
 
 # quote evrery argument
-for i; do shift; set "$@" \""$i"\"; done
+quote () { printf %s\\n "$1" | sed "s/'/'\\\\''/g;1s/^/'/;\$s/\$/'/" ; }
+for i; do shift; set "$@" `quote "$i"`; done
 
 exec_stdin sbatch --constraint=gpu -N $n $Args <<EOF
 #!/bin/bash
