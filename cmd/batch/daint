@@ -6,7 +6,7 @@ n=$1; shift
 x=$1; shift
 y=$1; shift
 z=$1; shift
-e=$1; shift # executable
+e="$1"; shift # executable
 
 if   test $#   -eq 0
 then Time="--time 00:10:00"
