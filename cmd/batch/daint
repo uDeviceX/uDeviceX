@@ -6,7 +6,7 @@ n=$1; shift
 x=$1; shift
 y=$1; shift
 z=$1; shift
-e=$1; shift # executable
+e="$1"; shift # executable
 
 if   test $#   -eq 0
 then Time="--time 00:10:00"
@@ -18,7 +18,8 @@ fi
 Args="--output=out.txt --error=err.txt -C gpu $Time"
 
 # quote evrery argument
-for i; do shift; set "$@" \""$i"\"; done
+quote () { printf %s\\n "$1" | sed "s/'/'\\\\''/g;1s/^/'/;\$s/\$/'/" ; }
+for i; do shift; set "$@" "`quote "$i"`"; done
 
 exec_stdin sbatch --constraint=gpu -N $n $Args <<EOF
 #!/bin/bash

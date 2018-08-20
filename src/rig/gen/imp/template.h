@@ -42,7 +42,7 @@ _S_ void collect_and_broadcast_template(MPI_Comm comm, int *n, float *rr) {
 
     EMALLOC(size, &counts);
     EMALLOC(size, &starts);
-    
+
     MC(m::Allgather(n, 1, MPI_INT, counts, 1, MPI_INT, comm));
 
     starts[0] = 0;
@@ -51,12 +51,12 @@ _S_ void collect_and_broadcast_template(MPI_Comm comm, int *n, float *rr) {
     ntot = starts[size-1] + counts[size-1];
 
     EMALLOC(ntot, &rr_recv);
-    
+
     MC(m::Allgatherv(rr, counts[rank], MPI_FLOAT, rr_recv, counts, starts, MPI_INT, comm));
 
     *n = ntot/3;
     memcpy(rr, rr_recv, ntot * sizeof(float));
-    
+
     EFREE(rr_recv);
     EFREE(starts);
     EFREE(counts);
@@ -75,14 +75,14 @@ _S_ void label_template_dev(int pdir, int3 L, MPI_Comm cart, int nt, int nv, int
     nmall = nm;
     n = nm * nv;
     if (n) cD2D(pp, pp_mesh, n);
-    
+
     UC(exchange_mesh(maxm, L, cart, nv, /* io */ &nmall, pp, /**/ cc));
 
     // bulk mesh
     shift = fid2shift(L, frag_bulk);
     if (nm) UC(label_extract_and_shift(shift, pdir, nflu, pp_dev, pp_hst, nt, nv, nm, tt, pp, /**/ nps, rr0, /*w*/ ll_dev, ll_hst));
     pp += nm * nv;
-    
+
     // halo meshes
     for (i = 0; i < NFRAGS; ++i) {
         nm = cc[i];
@@ -92,7 +92,7 @@ _S_ void label_template_dev(int pdir, int3 L, MPI_Comm cart, int nt, int nv, int
     }
 
     UC(collect_and_broadcast_template(cart, nps, rr0));
-    
+
     Dfree(pp0);
 }
 
@@ -171,7 +171,9 @@ _I_ void empty_solid(const MeshRead *mesh, /* io */ int *n, float *rr) {
             ++j;
         }
     }
-    if (j == 0) ERR("No particle remaining in solid template\n");
+    if (j == 0)
+        ERR("No particle remaining in solid template (size = %d)", n0);
+
     msg_print("Template solid: keep %d out of %d particles", j, n0);
     *n = j;
 }

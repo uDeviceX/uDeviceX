@@ -31,13 +31,13 @@ void field_ini(const char *path, /**/ Field **pq) {
     read_extents  (f, /**/ &ext[X], &ext[Y], &ext[Z]);
     read_grid_size(f, /**/ &N[X],     &N[Y],   &N[Z]);
 
-    msg_print("size:   %d %d %d", N[X], N[Y], N[Z]);
-    msg_print("extend: %g %g %g", ext[X], ext[Y], ext[Z]);
-
     n = N[X]*N[Y]*N[Z];
-
     EMALLOC(n, &q->D);
     D = q->D;
     UC(efread(D, sizeof(D[0]), n, f));
+    msg_print("size:   %d %d %d", N[X], N[Y], N[Z]);
+    msg_print("extend: %g %g %g", ext[X], ext[Y], ext[Z]);
+    msg_print("value: D[0,n-1] = %g %g", D[0], D[n-1]);
+
     *pq = q;
 }

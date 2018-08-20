@@ -2,6 +2,8 @@ static void setup_from_pos(const Coords *coords, MPI_Comm comm, const float *vv,
                            Particle *pp, int *pnc, int *pn, /* storage */ Particle *pp_hst) {
     int nc;
     nc = mesh_gen_from_file(coords, vv, ic, nv, /**/ pp_hst);
+    if (nc >= MAX_CELL_NUM)
+        ERR("nc=%d >= MAX_CELL_NUM=%d", nc, MAX_CELL_NUM);
     if (nc) cH2D(pp, pp_hst, nv * nc);
     MC(m::Barrier(comm));
     *pnc = nc; *pn = nc * nv;
