@@ -1,7 +1,6 @@
 = Installation procedure
 updated 08 May 2018
 
-
 == Install necessary libraries
 
 === libconfig
@@ -11,15 +10,19 @@ Library for parsing input configuration scripts
 git clone https://github.com/hyperrealm/libconfig.git
 cd libconfig
 autoreconf
-./configure --prefix=${HOME}/prefix/libconfig --disable-cxx
-make -j
+./configure --prefix=$HOME/prefix/libconfig --disable-cxx
+make
 make install
+----
+
+Also add the last line (export ...) to ~/.bashrc file.
+[source, shell]
+---
 export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:$HOME/prefix/libconfig/lib/pkgconfig
 ----
-Also add the last line (export ...) in the ~/.bashrc file.
 
-===  aest
-Library for running tests
+===  atest
+An tool to run regression tests
 [source, shell]
 ----
 git clone https://gitlab.ethz.ch/mavt-cse/atest.git
@@ -48,7 +51,6 @@ cd off
 make install
 ----
 
-
 == Install uDeviceX
 The source code
 [source, shell]
@@ -57,10 +59,9 @@ git clone https://gitlab.ethz.ch/mavt-cse/uDeviceX.git
 cd uDeviceX
 make install
 cd src
-u.conf0 ./u/x
+./configure
 u.make -j
 ----
-
 
 == To modify the code
 Tool that updates file dependencies used to compile uDeviceX
