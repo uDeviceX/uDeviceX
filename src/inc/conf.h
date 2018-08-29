@@ -24,7 +24,7 @@
   #define RBC_DOUBLE
 #endif
 
-/* what to do if r > lmax for spings? */
+/* what to do if r > lmax for a spring? */
 #if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
   #define RBC_SPRING_IGNORE
 #endif
