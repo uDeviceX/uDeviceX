@@ -1,6 +1,10 @@
 = Installation procedure
 updated 08 May 2018
 
+uDeviceX requires libraries and command line tools. In the following
+the library are installed in '$HOME/prefix' and command line tools are
+in '$HOME/bin'.
+
 == Install necessary libraries
 
 === libconfig
@@ -57,10 +61,10 @@ The source code
 ----
 git clone https://gitlab.ethz.ch/mavt-cse/uDeviceX.git
 cd uDeviceX
-make install
+make install PREFIX=$HOME
 cd src
 ./configure
-u.make -j
+u.make -j PREFIX=$HOME
 ----
 
 == To modify the code
