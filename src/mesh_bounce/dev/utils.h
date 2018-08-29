@@ -182,7 +182,7 @@ _I_ void rbc_M2v(float mass, const Momentum m, real3_t a, real3_t b, real3_t c,
     real_t I[6], Iinv[6], inv_mass;
     real3_t om, v, com;
 
-    static const real_t one_third = 1.f / 3.f;
+    const real_t one_third = 1.f / 3.f;
 
     compute_I(mass, a, b, c, /**/ I);
     inverse(I, /**/ Iinv);
