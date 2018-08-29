@@ -25,8 +25,8 @@
 #endif
 
 /* what to do if r > lmax for spings? */
-#if !defined(RBC_SPRING_CAP) && !defined(RBC_SPRING_FAIL)
-  #define RBC_SPRING_CAP
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
 #endif
 
 #ifndef DUMP_BASE
