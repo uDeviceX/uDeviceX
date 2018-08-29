@@ -45,3 +45,6 @@ enum {
     /* safety factor for odist fragments */
     ODSTR_FACTOR = 3,
 };
+
+/* for the spring forces r = min(lmax*RBC_SPRING_CAP, r) */
+#define RBC_SPRING_CAP (0.99)

@@ -34,8 +34,7 @@ static __device__ double3 fspring(const RbcParams_v *par, double3 x21, double l0
     lmax = l0 / x0;
     if (r >= lmax) {
         *pstatus = SPRING_LONG;
-        x21.x = x21.y = x21.z = 0;
-        return x21;
+        r = RBC_SPRING_CAP * lmax;
     }
     fwlc =   wlc_r(r); /* make fwlc + fpow = 0 for r = l0 */
     fpow = - wlc_r(l0) * powf(l0, m + 1) / powf(r, m + 1);
@@ -64,8 +63,9 @@ static __device__ double3 ftri(const RbcParams_v *par, double3 r1, double3 r2, d
     add(&fv, /*io*/ &f);
 
     fs = fspring(par, x21, si.l0, &spring_status);
-    if (spring_status != SPRING_OK)
-        report_tri(r1, r2, r3);
+#ifdef RBC_SPRING_FAIL
+    if (spring_status != SPRING_OK) report_tri(r1, r2, r3);
+#endif
     add(&fs, /*io*/ &f);
     return f;
 }
