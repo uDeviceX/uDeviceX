@@ -1,3 +1,4 @@
+module: swap PrgEnv-cray PrgEnv-gnu
 module: load cudatoolkit
 module: load daint-gpu
 module: load cray-hdf5-parallel
