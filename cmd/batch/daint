@@ -17,7 +17,7 @@ fi
 
 Args="--output=out.txt --error=err.txt -C gpu $Time"
 
-# quote evrery argument
+# quote every argument
 quote () { printf %s\\n "$1" | sed "s/'/'\\\\''/g;1s/^/'/;\$s/\$/'/" ; }
 for i; do shift; set "$@" "`quote "$i"`"; done
 
