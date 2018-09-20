@@ -73,7 +73,7 @@ then usg
 fi
 
 if ! e "$GEOMVIEW" --version '2>/dev/null' '1>/dev/null'
-then err "$GOEMVIEW is not found"
+then err "$GEOMVIEW is not found"
 fi
 
 Output=0
