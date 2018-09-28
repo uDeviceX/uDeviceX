@@ -84,27 +84,3 @@ void rbc_bending_set_stressfree(const char *fname, /**/ RbcForce *f) {
     f->stype = RBC_SFREE;
     f->sinfo.sfree = v;
 }
-
-void rbc_bending_set_rnd0(RbcForce *f) {
-    Rnd0_v rnd0;
-    f->rtype = RBC_RND0;
-    f->rinfo.rnd0 = rnd0;
-}
-
-void rbc_bending_set_rnd1(int seed, RbcForce *f) {
-    Rnd1_v rnd1;
-    int n;
-    int *hst;
-    Adj *adj = f->adj;
-
-    n = adj_get_max(adj);
-    Dalloc(&rnd1.anti, n);
-    
-    EMALLOC(n, &hst);
-    adj_get_anti(adj, /**/ hst);
-    cH2D(rnd1.anti, hst, n);
-    EFREE(hst);
-
-    f->rtype = RBC_RND1;
-    f->rinfo.rnd1 = rnd1;
-}

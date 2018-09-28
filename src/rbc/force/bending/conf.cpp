@@ -24,13 +24,4 @@ void rbc_bending_set_conf(const MeshRead *cell, const Config *cfg, const char *n
         UC(conf_lookup_float_ns(cfg, name, "totArea", &Atot));
         UC(rbc_bending_set_stressful(nt, Atot, /**/ f));
     }
-
-    if (rnd) {
-        int seed;
-        UC(conf_lookup_int_ns(cfg, name, "seed", &seed));
-        UC(rbc_bending_set_rnd1(seed, f));
-    }
-    else {
-        UC(rbc_bending_set_rnd0(f));
-    }
 }
