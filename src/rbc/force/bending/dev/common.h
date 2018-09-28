@@ -1,26 +1,3 @@
-static __device__ double3 fvolume(const RbcParams_v *par, double3 r2, double3 r3, double v0, double v) {
-    double f0;
-    double3 f;
-    cross(&r3, &r2, /**/ &f);
-    f0 = par->kv * (v - v0) / (6 * v0);
-    scal(f0, /*io*/ &f);
-    return f;
-}
-
-static __device__ double3 farea(const RbcParams_v *par, double3 x21, double3 x31, double3 x32,   double a0, double A0, double A) {
-    double3 nn, f;
-    double a, f0, fa, fA;
-    cross(&x21, &x31, /**/ &nn);
-    cross(&nn, &x32,  /**/ &f);
-    a = 0.5 * sqrt(dot<double>(&nn, &nn));
-
-    fA = - par->ka * (A - A0) / (4 * A0 * a);
-    fa = - par->kd * (a - a0) / (4 * a0 * a);
-    f0 = fA + fa;
-    scal(f0, /*io*/ &f);
-    return f;
-}
-
 enum {SPRING_OK, SPRING_LONG};
 static __device__ double sq(double x) { return x * x; }
 static __device__ double wlc0(double r) { return (4*sq(r)-9*r+6)/(4*sq(r-1)); }
@@ -57,10 +34,6 @@ static __device__ double3 ftri(const RbcParams_v *par, double3 r1, double3 r2, d
     diff(&r2, &r1, /**/ &x21);
     diff(&r3, &r2, /**/ &x32);
     diff(&r3, &r1, /**/ &x31);
-
-    f = farea(par, x21, x31, x32, si.a0, par->totArea, area);
-    fv = fvolume(par, r2, r3, par->totVolume, volume);
-    add(&fv, /*io*/ &f);
 
     fs = fspring(par, x21, si.l0, &spring_status);
 #ifdef RBC_SPRING_FAIL
