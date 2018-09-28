@@ -10,14 +10,6 @@
 
 #define  SIZE (MAX_STRING_SIZE)
 
-int util_mkdir(const char *path) {
-    char command[SIZE];
-    snprintf(command, SIZE, "mkdir -p -- '%s'", path);
-    if (system(command) != 0)
-        ERR(HE_SYS, "comamnd <%s> failed", command);
-    return HE_OK;
-}
-
 int util_eq(const char *a, const char *b) {
     return strncmp(a, b, SIZE) == 0;
 }
