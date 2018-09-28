@@ -4,7 +4,6 @@ struct Force;
 struct Config;
 struct MeshRead;
 struct RbcQuants;
-struct RbcParams;
 
 // tag::mem[]
 void rbc_bending_ini(const MeshRead *cell, RbcBending**);
