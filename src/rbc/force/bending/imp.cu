@@ -40,7 +40,6 @@
 namespace rbc_bending_dev {
 #include "dev/type.h"
 #include "dev/fetch.h"
-#include "dev/common.h"
 #include "dev/main.h"
 }
 

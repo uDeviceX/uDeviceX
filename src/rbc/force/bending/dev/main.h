@@ -20,28 +20,6 @@ static __device__ Part fetchPart(const Particle *pp, int i) {
     return p;
 }
 
-template <typename RndInfo>
-static __device__ void adj_tris(double dt,
-                                const RbcParams_v *par, const Particle *pp,  const Part p0, const float *av,
-                                const StressInfo si, RndInfo ri,
-                                AdjMap *m, /*io*/ double f[3]) {
-    enum {X, Y, Z};
-    double3 f0;
-    int i1, i2, rbc;
-    double area, volume;
-    i1 = m->i1; i2 = m->i2; rbc = m->rbc;
-
-    const Part p1 = fetchPart(pp, i1);
-    const Pos  r2 = fetchPos(pp,  i2);
-
-    area = av[2*rbc]; volume = av[2 * rbc + 1];
-    f0 = ftri(par, p0.r, p1.r, r2, si, area, volume);
-    f[X] += f0.x; f[Y] += f0.y; f[Z] += f0.z;
-
-    f0 = frnd(dt, par, p0.r, p1.r, ri);
-    f[X] += f0.x; f[Y] += f0.y; f[Z] += f0.z;
-}
-
 static __device__ void adj_dihedrals(const RbcParams_v *par, const Particle *pp, double3 r0,
                                      AdjMap *m, /*io*/ double f[3]) {
     enum {X, Y, Z};
@@ -73,7 +51,6 @@ __global__ void force(double dt,
     int i, pid, valid;
     double f[3];
     AdjMap m;
-    StressInfo si;
 
     i = threadIdx.x + blockDim.x * blockIdx.x;
     pid = i / md;
@@ -81,13 +58,11 @@ __global__ void force(double dt,
     if (pid >= nc * nv) return;
     valid = adj_get_map(i, &adj, /**/ &m);
     if (!valid) return;
-    si = fetch_stress_info(i % (md * nv), sv);
     auto ri = fetch_rnd_info(i % (md * nv), i, rv);
 
     const Part p0 = fetchPart(pp, m.i0);
 
     f[X] = f[Y] = f[Z] = 0;
-    adj_tris(dt, &par, pp, p0, av, si, ri, &m, /*io*/ f);
     adj_dihedrals(&par, pp, p0.r, &m,          /*io*/ f);
 
     atomicAdd(&ff[3 * pid + 0], f[X]);
