@@ -14,14 +14,14 @@ static void get_rnd_view(const RbcForce *f, /**/ Rnd1_v *v) {
     *v = f->rinfo.rnd1;
 }
 
-template <typename Stress_v, typename Rnd_v>
+template <typename Stress_v>
 static void apply(float dt, RbcParams_v parv, int nc, int nv, int md,
                   const Particle *pp,
-                  const Adj_v *adj_v, Stress_v sv, Rnd_v rv,
+                  const Adj_v *adj_v, Stress_v sv,
                   float *av, /**/ Force *ff) {
     if (!d::is_device_pointer(ff))  ERR("`ff` is not a device pointer");
     KL(rbc_bending_dev::force, (k_cnf(nc*nv*md)), (dt, parv, md, nv, nc, pp,
-                                                 *adj_v, sv, rv, av, /**/ (float*)ff));
+                                                 *adj_v, sv, av, /**/ (float*)ff));
 }
 
 template <typename Stress_v>
@@ -29,16 +29,7 @@ static void dispatch_rnd(float dt, RbcParams_v parv, int nc, int nv, int md,
                          const Particle *pp,
                          const Adj_v *adj_v, RbcForce *t, Stress_v sv,
                          float *av, /**/ Force *ff){
-    if (is_rnd(t)) {
-        Rnd1_v rv;
-        get_rnd_view(t, &rv);
-        apply(dt, parv, nc, nv, md, pp, adj_v, sv, rv, av, /**/ ff);
-    }
-    else {
-        Rnd0_v rv;
-        get_rnd_view(t, &rv);
-        apply(dt, parv, nc, nv, md, pp, adj_v, sv, rv, av, /**/ ff);
-    }
+    apply(dt, parv, nc, nv, md, pp, adj_v, sv, av, /**/ ff);
 }
 
 

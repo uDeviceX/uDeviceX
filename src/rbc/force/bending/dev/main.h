@@ -41,11 +41,11 @@ static __device__ void adj_dihedrals(const RbcParams_v *par, const Particle *pp,
     f[X] += f0.x; f[Y] += f0.y; f[Z] += f0.z;
 }
 
-template <typename Stress_v, typename Rnd_v>
+template <typename Stress_v>
 __global__ void force(double dt,
                       RbcParams_v par, int md, int nv, int nc, const Particle *pp,
                       Adj_v adj,
-                      Stress_v sv, Rnd_v rv,
+                      Stress_v sv,
                       const float *av, /**/ float *ff) {
     enum {X, Y, Z};
     int i, pid, valid;
@@ -58,7 +58,6 @@ __global__ void force(double dt,
     if (pid >= nc * nv) return;
     valid = adj_get_map(i, &adj, /**/ &m);
     if (!valid) return;
-    auto ri = fetch_rnd_info(i % (md * nv), i, rv);
 
     const Part p0 = fetchPart(pp, m.i0);
 
