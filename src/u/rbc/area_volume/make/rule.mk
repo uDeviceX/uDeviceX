@@ -23,6 +23,7 @@ $B/rbc/adj/imp.o: $S/rbc/adj/imp.cpp; $X -I$S/rbc/adj -I$S/.
 $B/rbc/com/imp.o: $S/rbc/com/imp.cu; $N -I$S/rbc/com -I$S/.
 $B/rbc/force/area_volume/imp.o: $S/rbc/force/area_volume/imp.cu; $N -I$S/rbc/force/area_volume -I$S/.
 $B/rbc/force/bending/imp.o: $S/rbc/force/bending/imp.cu; $N -I$S/rbc/force/bending -I$S/.
+$B/rbc/force/bending/juelicher/imp.o: $S/rbc/force/bending/juelicher/imp.cu; $N -I$S/rbc/force/bending/juelicher -I$S/.
 $B/rbc/force/bending/kantor/imp.o: $S/rbc/force/bending/kantor/imp.cu; $N -I$S/rbc/force/bending/kantor -I$S/.
 $B/rbc/force/conf.o: $S/rbc/force/conf.cpp; $X -I$S/rbc/force -I$S/.
 $B/rbc/force/imp.o: $S/rbc/force/imp.cu; $N -I$S/rbc/force -I$S/.
