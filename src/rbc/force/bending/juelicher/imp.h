@@ -5,7 +5,7 @@ struct MeshRead;
 struct RbcQuants;
 
 // tag::mem[]
-void juelicher_ini(const MeshRead *cell, Juelicher**);
+void juelicher_ini(const MeshRead*, Juelicher**);
 void juelicher_fin(Juelicher*);
 // end::mem[]
 

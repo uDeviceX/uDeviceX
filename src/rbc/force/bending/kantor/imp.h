@@ -5,7 +5,7 @@ struct MeshRead;
 struct RbcQuants;
 
 // tag::mem[]
-void kantor_ini(const MeshRead *cell, Kantor**);
+void kantor_ini(const MeshRead*, Kantor**);
 void kantor_fin(Kantor*);
 // end::mem[]
 
