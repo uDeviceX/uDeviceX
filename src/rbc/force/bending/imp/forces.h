@@ -1,4 +1,4 @@
-void rbc_bending_apply(RbcForce *t, const RbcParams *par, const RbcQuants *q, /**/ Force *ff) {
+void rbc_bending_apply(RbcBending *t, const RbcParams *par, const RbcQuants *q, /**/ Force *ff) {
     int nc, nv, md;
     RbcParams_v parv;
     if (q->nc <= 0) return;

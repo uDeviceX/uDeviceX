@@ -1,5 +1,5 @@
 struct RbcParams;
-struct RbcForce;
+struct RbcBending;
 struct Force;
 struct Config;
 struct MeshRead;
@@ -7,10 +7,10 @@ struct RbcQuants;
 struct RbcParams;
 
 // tag::mem[]
-void rbc_bending_ini(const MeshRead *cell, RbcForce**);
-void rbc_bending_fin(RbcForce*);
+void rbc_bending_ini(const MeshRead *cell, RbcBending**);
+void rbc_bending_fin(RbcBending*);
 // end::mem[]
 
 // tag::apply[]
-void rbc_bending_apply(RbcForce*, const RbcParams*, const RbcQuants*, /**/ Force*); // <1>
+void rbc_bending_apply(RbcBending*, const RbcParams*, const RbcQuants*, /**/ Force*); // <1>
 // end::apply[]

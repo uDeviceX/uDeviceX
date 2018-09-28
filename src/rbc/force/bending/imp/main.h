@@ -1,5 +1,5 @@
-void rbc_bending_ini(const MeshRead *cell, RbcForce **pq) {
-    RbcForce *q;
+void rbc_bending_ini(const MeshRead *cell, RbcBending **pq) {
+    RbcBending *q;
     int md, nt, nv;
     const int4 *tt;
     EMALLOC(1, &q);
@@ -14,7 +14,7 @@ void rbc_bending_ini(const MeshRead *cell, RbcForce **pq) {
     *pq = q;
 }
 
-void rbc_bending_fin(RbcForce *q) {
+void rbc_bending_fin(RbcBending *q) {
     UC(adj_fin(q->adj));
     UC(adj_view_fin(q->adj_v));
     EFREE(q);
