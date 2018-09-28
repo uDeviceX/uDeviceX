@@ -18,7 +18,6 @@ void rbc_force_ini(const MeshRead *cell, RbcForce **pq) {
     
     UC(adj_ini(md, nt, nv, tt, /**/ &q->adj));
     UC(adj_view_ini(q->adj, /**/ &q->adj_v));
-    UC(bending_kantor_ini(cell, &q->bending));
 
     *pq = q;
 }
@@ -44,7 +43,7 @@ void rbc_force_fin(RbcForce *q) {
     UC(fin_stress(q));
     UC(adj_fin(q->adj));
     UC(adj_view_fin(q->adj_v));
-    bending_fin(q->bending);
+    UC(bending_fin(q->bending));
     EFREE(q);
 }
 
@@ -116,4 +115,14 @@ void rbc_force_set_rnd1(int seed, RbcForce *f) {
     
     f->rtype = RBC_RND1;
     f->rinfo.rnd1 = rnd1;
+}
+
+void rbc_force_set_bending(const MeshRead *cell, const char *type, RbcForce *q) {
+    if (same_str(type, "kantor"))
+        UC(bending_kantor_ini(cell, /**/ &q->bending));
+    else if (same_str(type, "juelicher"))
+        UC(bending_juelicher_ini(cell, /**/ &q->bending));
+    else
+        ERR("unknown bending type '%s'", type);
+    msg_print("bending: %s", type);
 }

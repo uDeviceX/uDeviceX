@@ -14,8 +14,9 @@ void rbc_force_fin(RbcForce*);
 void rbc_force_set_stressful(int nt, float totArea, /**/ RbcForce*); // <1>
 void rbc_force_set_stressfree(const char *fname, /**/ RbcForce*);    // <2>
 
-void rbc_force_set_rnd0(RbcForce *f);           // <3>
-void rbc_force_set_rnd1(int seed, RbcForce *f); // <4>
+void rbc_force_set_rnd0(RbcForce*);           // <3>
+void rbc_force_set_rnd1(int seed, RbcForce*); // <4>
+void rbc_force_set_bending(const MeshRead*, const char*, RbcForce*);
 // end::set[]
 
 // tag::cnf[]

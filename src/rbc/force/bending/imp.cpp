@@ -12,6 +12,7 @@
 #include "utils/imp.h"
 
 #include "kantor/imp.h"
+#include "juelicher/imp.h"
 
 #include "imp.h"
 #include "imp/main.h"

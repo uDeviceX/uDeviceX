@@ -6,6 +6,8 @@ struct RbcQuants;
 
 // tag::mem[]
 void bending_kantor_ini(const MeshRead *cell, Bending**);
+void bending_juelicher_ini(const MeshRead *cell, Bending**);
+
 void bending_fin(Bending*);
 // end::mem[]
 
