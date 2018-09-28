@@ -38,6 +38,7 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/frag                        && \
     d $B/fsi                         && \
     d $B/grid_sampler                && \
+    d $B/he                          && \
     d $B/inter/color                 && \
     d $B/io/bop                      && \
     d $B/io/com                      && \

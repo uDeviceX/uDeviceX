@@ -43,6 +43,12 @@ $B/flu/imp.o: $S/flu/imp.cpp; $X -I$S/flu -I$S/.
 $B/frag/imp.o: $S/frag/imp.cpp; $X -I$S/frag -I$S/.
 $B/fsi/imp.o: $S/fsi/imp.cu; $N -I$S/fsi -I$S/.
 $B/grid_sampler/imp.o: $S/grid_sampler/imp.cu; $N -I$S/grid_sampler -I$S/.
+$B/he/err.o: $S/he/err.cpp; $X -I$S/he -I$S/.
+$B/he/hash.o: $S/he/hash.cpp; $X -I$S/he -I$S/.
+$B/he/he.o: $S/he/he.cpp; $X -I$S/he -I$S/.
+$B/he/memory.o: $S/he/memory.cpp; $X -I$S/he -I$S/.
+$B/he/read.o: $S/he/read.cpp; $X -I$S/he -I$S/.
+$B/he/util.o: $S/he/util.cpp; $X -I$S/he -I$S/.
 $B/inter/color/conf.o: $S/inter/color/conf.cpp; $X -I$S/inter/color -I$S/.
 $B/inter/color/imp.o: $S/inter/color/imp.cpp; $X -I$S/inter/color -I$S/.
 $B/io/bop/imp.o: $S/io/bop/imp.cpp; $X -I$S/io/bop -I$S/.

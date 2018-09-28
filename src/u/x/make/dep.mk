@@ -43,6 +43,12 @@ $B/flu/imp.o: $S/flu/imp/fin.h $S/utils/imp.h $S/utils/os.h $S/inc/conf.h $S/uti
 $B/frag/imp.o: $S/frag/dev.h $S/frag/imp.h
 $B/fsi/imp.o: $S/fsi/dev/type.h $S/utils/imp.h $S/inc/conf.h $S/fsi/dev/common.h $S/utils/error.h $S/struct/parray/dev.h $S/inc/type.h $S/d/q.h $S/fsi/imp/halo.h $S/dbg/imp.h $S/fsi/imp.h $S/struct/parray/imp.h $S/math/rnd/dev.h $S/fsi/imp/bulk.h $S/fsi/dev/map/bulk.h $S/utils/cc.h $S/inc/def.h $S/math/rnd/imp.h $S/fsi/dev/halo.h $S/fsi/dev/map/halo.h $S/pair/imp.h $S/pair/type.h $S/inc/dev.h $S/utils/mc.h $S/d/api.h $B/conf.h $S/fsi/imp/main.h $S/fsi/dev/map.common.h $S/fsi/imp/type.h $S/fsi/dev/bulk.h $S/pair/dev.h $S/utils/kl.h $S/frag/dev.h $S/math/dev.h $S/struct/parray/type.h $S/frag/imp.h $S/utils/msg.h $S/d/ker.h
 $B/grid_sampler/imp.o: $S/grid_sampler/imp/data.h $S/grid_sampler/dev/type.h $S/utils/imp.h $S/inc/conf.h $S/utils/error.h $S/inc/type.h $S/grid_sampler/dev/fetch.h $S/grid_sampler/imp.h $S/io/grid/imp.h $S/grid_sampler/dev/add.h $S/inc/def.h $S/utils/cc.h $S/inc/dev.h $S/d/api.h $B/conf.h $S/grid_sampler/imp/main.h $S/grid_sampler/imp/type.h $S/utils/kl.h $S/grid_sampler/dev/main.h
+$B/he/err.o: $S/he/err.h $S/he/def.h $S/he/macro.h
+$B/he/hash.o: $S/he/hash.h $S/he/memory.h $S/he/err.h
+$B/he/he.o: $S/he/err.h $S/he/he.h $S/he/memory.h $S/he/read.h
+$B/he/memory.o: $S/he/memory.h $S/he/err.h
+$B/he/read.o: $S/he/err.h $S/he/util.h $S/he/def.h $S/he/memory.h $S/he/read.h $S/he/macro.h $S/he/hash.h
+$B/he/util.o: $S/he/util.h $S/inc/def.h $S/he/err.h
 $B/inter/color/conf.o: $S/utils/imp.h $S/utils/error.h $S/conf/imp.h $S/inter/color/imp.h
 $B/inter/color/imp.o: $S/utils/imp.h $S/inc/conf.h $S/inter/color/imp/drop.h $S/utils/error.h $S/inc/type.h $S/inter/color/imp.h $S/utils/cc.h $S/inc/def.h $S/inter/color/imp/unif.h $S/d/api.h $S/inc/dev.h $B/conf.h $S/inter/color/imp/main.h $S/inter/color/imp/type.h $S/coords/imp.h $S/utils/msg.h
 $B/io/bop/imp.o: $S/utils/imp.h $S/utils/os.h $S/inc/conf.h $S/utils/error.h $S/inc/type.h $S/mpi/wrapper.h $S/io/bop/imp.h $S/inc/def.h $S/d/api.h $S/utils/mc.h $B/conf.h $S/io/bop/imp/main.h $S/io/bop/imp/type.h $S/coords/imp.h

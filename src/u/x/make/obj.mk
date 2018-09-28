@@ -10,7 +10,8 @@ O = $B/algo/convert/imp.o $B/algo/edg/imp.o $B/algo/force_stat/imp.o \
     $B/distr/rig/imp.o $B/exch/common/imp.o $B/exch/flu/imp.o $B/exch/map/imp.o \
     $B/exch/mesh/imp.o $B/exch/obj/imp.o $B/flu/imp.o $B/fluforces/bulk/imp.o \
     $B/fluforces/halo/imp.o $B/fluforces/imp.o $B/frag/imp.o $B/fsi/imp.o \
-    $B/grid_sampler/imp.o $B/inter/color/conf.o $B/inter/color/imp.o \
+    $B/grid_sampler/imp.o $B/he/err.o $B/he/hash.o $B/he/he.o $B/he/memory.o \
+    $B/he/read.o $B/he/util.o $B/inter/color/conf.o $B/inter/color/imp.o \
     $B/io/bop/imp.o $B/io/com/imp.o $B/io/diag/mesh/imp.o $B/io/diag/part/imp.o \
     $B/io/grid/h5/imp.o $B/io/grid/imp.o $B/io/grid/xmf/imp.o $B/io/mesh/imp.o \
     $B/io/mesh_read/edg/imp.o $B/io/mesh_read/imp.o $B/io/point/imp.o \

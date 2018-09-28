@@ -1,0 +1,1 @@
+enum {MAX_STRING_SIZE = 4096};
