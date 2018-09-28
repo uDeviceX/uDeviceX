@@ -34,10 +34,10 @@ static __device__ void adj_dihedrals(const RbcParams_v *par, const Particle *pp,
     phi = par->phi / 180.0 * M_PI;
     kb  = par->kb;
     
-    f0 = force_kantor_dev::dih_a(phi, kb, r0, r2, r1, r4);
+    f0 = force_kantor0_dev::dih_a(phi, kb, r0, r2, r1, r4);
     f[X] += f0.x; f[Y] += f0.y; f[Z] += f0.z;
     
-    f0 = force_kantor_dev::dih_b(phi, kb, r1, r0, r2, r3);
+    f0 = force_kantor0_dev::dih_b(phi, kb, r1, r0, r2, r3);
     f[X] += f0.x; f[Y] += f0.y; f[Z] += f0.z;
 }
 
