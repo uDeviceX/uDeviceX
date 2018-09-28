@@ -20,20 +20,6 @@ static __device__ double3 ftri(const RbcParams_v *par, double3 r1, double3 r2, d
     return f;
 }
 
-static __device__ double3 fvisc(const RbcParams_v *par, double3 r1, double3 r2, double3 u1, double3 u2) {
-    const double gammaC = par->gammaC, gammaT = par->gammaT;
-    double3 du, dr, f = make_double3(0, 0, 0);
-    diff(&u2, &u1, /**/ &du);
-    diff(&r1, &r2, /**/ &dr);
-
-    double fac = dot<double>(&du, &dr) / dot<double>(&dr, &dr);
-
-    axpy(gammaT      , &du, /**/ &f);
-    axpy(gammaC * fac, &dr, /**/ &f);
-
-    return f;
-}
-
 static __device__ double3 frnd(double, const RbcParams_v*, double3, double3, Rnd0Info) {
     double3 f;
     f.x = f.y = f.z = 0;

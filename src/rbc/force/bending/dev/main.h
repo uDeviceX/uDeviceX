@@ -37,9 +37,6 @@ static __device__ void adj_tris(double dt,
     area = av[2*rbc]; volume = av[2 * rbc + 1];
     f0 = ftri(par, p0.r, p1.r, r2, si, area, volume);
     f[X] += f0.x; f[Y] += f0.y; f[Z] += f0.z;
-    
-    f0 = fvisc(par, p0.r, p1.r, p0.v, p1.v);
-    f[X] += f0.x; f[Y] += f0.y; f[Z] += f0.z;
 
     f0 = frnd(dt, par, p0.r, p1.r, ri);
     f[X] += f0.x; f[Y] += f0.y; f[Z] += f0.z;
