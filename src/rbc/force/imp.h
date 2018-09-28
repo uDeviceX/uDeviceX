@@ -6,7 +6,7 @@ struct MeshRead;
 struct RbcQuants;
 
 // tag::mem[]
-void rbc_force_ini(const MeshRead *cell, RbcForce**);
+void rbc_force_ini(const MeshRead*, RbcForce**);
 void rbc_force_fin(RbcForce*);
 // end::mem[]
 
@@ -19,7 +19,7 @@ void rbc_force_set_rnd1(int seed, RbcForce *f); // <4>
 // end::set[]
 
 // tag::cnf[]
-void rbc_force_set_conf(const MeshRead *cell, const Config *cfg, const char *name, RbcForce *f);
+void rbc_force_set_conf(const MeshRead*, const Config *cfg, const char *name, RbcForce*);
 // end::cnf[]
 
 // tag::apply[]
