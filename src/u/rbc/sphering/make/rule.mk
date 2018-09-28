@@ -4,6 +4,12 @@ $B/conf/imp.o: $S/conf/imp.cpp; $X -I$S/conf -I$S/.
 $B/coords/conf.o: $S/coords/conf.cpp; $X -I$S/coords -I$S/.
 $B/coords/imp.o: $S/coords/imp.cpp; $X -I$S/coords -I$S/.
 $B/d/api.o: $S/d/api.cu; $N -I$S/d -I$S/.
+$B/he/err.o: $S/he/err.cpp; $X -I$S/he -I$S/.
+$B/he/hash.o: $S/he/hash.cpp; $X -I$S/he -I$S/.
+$B/he/he.o: $S/he/he.cpp; $X -I$S/he -I$S/.
+$B/he/memory.o: $S/he/memory.cpp; $X -I$S/he -I$S/.
+$B/he/read.o: $S/he/read.cpp; $X -I$S/he -I$S/.
+$B/he/util.o: $S/he/util.cpp; $X -I$S/he -I$S/.
 $B/io/diag/part/imp.o: $S/io/diag/part/imp.cpp; $X -I$S/io/diag/part -I$S/.
 $B/io/mesh/imp.o: $S/io/mesh/imp.cpp; $X -I$S/io/mesh -I$S/.
 $B/io/mesh_read/edg/imp.o: $S/io/mesh_read/edg/imp.cpp; $X -I$S/io/mesh_read/edg -I$S/.

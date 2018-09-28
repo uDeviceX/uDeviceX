@@ -33,12 +33,21 @@ static __device__ void adj_dihedrals(const RbcParams_v *par, const Particle *pp,
 
     phi = par->phi / 180.0 * M_PI;
     kb  = par->kb;
-    
+
     f0 = force_kantor0_dev::dih_a(phi, kb, r0, r2, r1, r4);
     f[X] += f0.x; f[Y] += f0.y; f[Z] += f0.z;
-    
+
     f0 = force_kantor0_dev::dih_b(phi, kb, r1, r0, r2, r3);
     f[X] += f0.x; f[Y] += f0.y; f[Z] += f0.z;
+}
+
+__global__ void force2(RbcParams_v par, int ne, int nc,
+                       const Particle *pp, const int4 *dih,
+                       /**/ float *ff) {
+    int i;
+    i = threadIdx.x + blockDim.x * blockIdx.x;
+    if (i >= ne*nc) return;
+    printf("%d\n", i);
 }
 
 __global__ void force(RbcParams_v par, int md, int nv, int nc, const Particle *pp,

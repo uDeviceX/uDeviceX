@@ -1,8 +1,8 @@
 void juelicher_ini(const MeshRead *cell, Juelicher **pq) {
-#define  nxt(h)     he_nxt(he, (h))
-#define  flp(h)     he_flp(he, (h))
-#define  ver(h)     he_ver(he, (h))
-#define  hdg_edg(e) he_hdg_edg(he, (e))
+#   define  nxt(h)     he_nxt(he, (h))
+#   define  flp(h)     he_flp(he, (h))
+#   define  ver(h)     he_ver(he, (h))
+#   define  hdg_edg(e) he_hdg_edg(he, (e))
     Juelicher *q;
     int md, nt, nv, ne, e, i, j, k, l, h, n, nn, nnf;
     const int4 *tt;
@@ -29,9 +29,9 @@ void juelicher_ini(const MeshRead *cell, Juelicher **pq) {
         j = ver(h); k = ver(n); i = ver(nn);
         nnf = nxt(nxt(flp(h)));
         l = ver(nnf);
-        msg_print("%d %d %d %d", i, j, k, l);
         dih[e].x = i; dih[e].y = j; dih[e].z = k; dih[e].w = l;
     }
+    q->ne = ne;
     cH2D(q->dih, dih, ne);
         
     UC(adj_ini(md, nt, nv, tt, /**/ &q->adj));

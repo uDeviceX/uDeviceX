@@ -5,6 +5,6 @@ f $U algo/edg algo/utils algo/vectors conf coords \
      d inc io/diag/part io/mesh io/mesh_read \
      io/restart io/write math mesh/force mpi \
      rbc scheme/force scheme/move scheme/restrain scheme/time_line \
-     utils  mesh/gen
+     utils  mesh/gen he
 
 echo $U $U/lib .

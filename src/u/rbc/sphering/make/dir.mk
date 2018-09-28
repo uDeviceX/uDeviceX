@@ -4,6 +4,7 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/conf                        && \
     d $B/coords                      && \
     d $B/d                           && \
+    d $B/he                          && \
     d $B/io/diag/part                && \
     d $B/io/mesh                     && \
     d $B/io/mesh_read                && \

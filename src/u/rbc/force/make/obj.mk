@@ -1,5 +1,6 @@
 O = $B/algo/edg/imp.o $B/algo/vectors/imp.o $B/conf/imp.o $B/coords/conf.o \
-    $B/coords/imp.o $B/d/api.o $B/io/mesh_read/edg/imp.o $B/io/mesh_read/imp.o \
+    $B/coords/imp.o $B/d/api.o $B/he/err.o $B/he/hash.o $B/he/he.o $B/he/memory.o \
+    $B/he/read.o $B/he/util.o $B/io/mesh_read/edg/imp.o $B/io/mesh_read/imp.o \
     $B/io/restart/imp.o $B/math/linal/imp.o $B/math/rnd/imp.o $B/math/tform/imp.o \
     $B/math/tri/imp.o $B/mesh/force/kantor0/imp.o $B/mesh/force/kantor1/imp.o \
     $B/mesh/gen/imp.o $B/mesh/gen/matrices/imp.o $B/mpi/glb.o $B/mpi/wrapper.o \
