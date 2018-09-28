@@ -36,6 +36,7 @@ union RndInfo {
 
 struct RbcForce {
     RbcRnd *rnd;
+    RbcBending *bending;
 
     Adj   *adj;
     Adj_v *adj_v;

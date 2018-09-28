@@ -25,6 +25,7 @@
 #include "rbc/params/imp.h"
 #include "rbc/adj/imp.h"
 #include "rbc/shape/imp.h"
+#include "bending/imp.h"
 
 #include "rnd/imp.h"
 #include "rbc/type.h"
