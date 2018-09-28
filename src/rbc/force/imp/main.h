@@ -18,6 +18,7 @@ void rbc_force_ini(const MeshRead *cell, RbcForce **pq) {
     
     UC(adj_ini(md, nt, nv, tt, /**/ &q->adj));
     UC(adj_view_ini(q->adj, /**/ &q->adj_v));
+    rbc_bending_ini(cell, &q->bending);
 
     *pq = q;
 }
@@ -43,6 +44,7 @@ void rbc_force_fin(RbcForce *q) {
     UC(fin_stress(q));
     UC(adj_fin(q->adj));
     UC(adj_view_fin(q->adj_v));
+    rbc_bending_fin(q->bending);
     EFREE(q);
 }
 
