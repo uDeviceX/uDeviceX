@@ -122,6 +122,8 @@ void rbc_force_set_bending(const MeshRead *cell, const char *type, RbcForce *q) 
         UC(bending_kantor_ini(cell, /**/ &q->bending));
     else if (same_str(type, "juelicher"))
         UC(bending_juelicher_ini(cell, /**/ &q->bending));
+    else if (same_str(type, "none"))
+        UC(bending_none_ini(cell, /**/ &q->bending));
     else
         ERR("unknown bending type '%s'", type);
     msg_print("bending: %s", type);
