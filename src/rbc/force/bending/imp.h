@@ -1,7 +1,6 @@
 struct RbcParams;
 struct RbcBending;
 struct Force;
-struct Config;
 struct MeshRead;
 struct RbcQuants;
 
