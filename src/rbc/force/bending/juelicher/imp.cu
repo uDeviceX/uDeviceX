@@ -14,6 +14,8 @@
 #include "utils/error.h"
 #include "utils/msg.h"
 #include "utils/imp.h"
+#include "he/read.h"
+#include "he/he.h"
 
 #include "d/q.h"
 #include "d/api.h"

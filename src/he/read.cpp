@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <assert.h>
+#include <vector_types.h>
 
 #include "def.h"
 #include "err.h"
@@ -88,6 +89,22 @@ static void setup_flip(T *q, HeHash *hdg, int i, int j) {
     f = he_hash_get(hdg, j, i);
     q->flp[h] = f;
 }
+
+int he_read_int4_ini(int nv, int nt, const int4 *tt, T **pq) {
+    int status;
+    int *tri;
+    int i, j;
+    MALLOC(3*nt, &tri);
+    for (j = i = 0; i < nt; i++) {
+        tri[j++] = tt[i].x;
+        tri[j++] = tt[i].y;
+        tri[j++] = tt[i].z;
+    }
+    status = he_read_tri_ini(nv, nt, tri, pq);
+    FREE(tri);
+    return status;
+}
+
 int he_read_tri_ini(int nv, int nt, int *tri0, T **pq) {
     int ne, nh;
     int e, t, i, j, k;
