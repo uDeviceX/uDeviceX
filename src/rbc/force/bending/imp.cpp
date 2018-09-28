@@ -1,8 +1,9 @@
 #include <stdio.h>
 #include <assert.h>
+#include <stddef.h>
 
 #include <conf.h>
-#include "inc/conf.h"
+#include "inc/macro.h"
 
 #include "inc/def.h"
 
