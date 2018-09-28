@@ -25,9 +25,12 @@ O = $B/algo/convert/imp.o $B/algo/edg/imp.o $B/algo/force_stat/imp.o \
     $B/mesh/spherical/imp.o $B/mesh/tri_area/imp.o $B/mesh/triangles/imp.o \
     $B/mesh/vert_area/imp.o $B/mesh/volume/imp.o $B/mesh_bounce/imp.o \
     $B/mpi/glb.o $B/mpi/wrapper.o $B/pair/conf.o $B/pair/imp.o $B/rbc/adj/imp.o \
-    $B/rbc/com/imp.o $B/rbc/force/area_volume/imp.o $B/rbc/force/conf.o \
-    $B/rbc/force/imp.o $B/rbc/force/rnd/api/imp.o $B/rbc/force/rnd/imp.o \
-    $B/rbc/imp.o $B/rbc/params/conf.o $B/rbc/params/imp.o $B/rbc/shape/imp.o \
+    $B/rbc/com/imp.o $B/rbc/force/area_volume/imp.o \
+    $B/rbc/force/bending/area_volume/imp.o $B/rbc/force/bending/conf.o \
+    $B/rbc/force/bending/imp.o $B/rbc/force/bending/rnd/api/imp.o \
+    $B/rbc/force/bending/rnd/imp.o $B/rbc/force/conf.o $B/rbc/force/imp.o \
+    $B/rbc/force/rnd/api/imp.o $B/rbc/force/rnd/imp.o $B/rbc/imp.o \
+    $B/rbc/params/conf.o $B/rbc/params/imp.o $B/rbc/shape/imp.o \
     $B/rbc/stretch/imp.o $B/rig/gen/imp.o $B/rig/imp.o $B/rigid/conf.o \
     $B/rigid/imp.o $B/scheme/force/conf.o $B/scheme/force/imp.o \
     $B/scheme/move/imp.o $B/scheme/restrain/conf.o $B/scheme/restrain/imp.o \

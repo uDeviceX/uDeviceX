@@ -20,6 +20,11 @@ $B/mpi/wrapper.o: $S/mpi/wrapper.cpp; $X -I$S/mpi -I$S/.
 $B/rbc/adj/imp.o: $S/rbc/adj/imp.cpp; $X -I$S/rbc/adj -I$S/.
 $B/rbc/com/imp.o: $S/rbc/com/imp.cu; $N -I$S/rbc/com -I$S/.
 $B/rbc/force/area_volume/imp.o: $S/rbc/force/area_volume/imp.cu; $N -I$S/rbc/force/area_volume -I$S/.
+$B/rbc/force/bending/area_volume/imp.o: $S/rbc/force/bending/area_volume/imp.cu; $N -I$S/rbc/force/bending/area_volume -I$S/.
+$B/rbc/force/bending/conf.o: $S/rbc/force/bending/conf.cpp; $X -I$S/rbc/force/bending -I$S/.
+$B/rbc/force/bending/imp.o: $S/rbc/force/bending/imp.cu; $N -I$S/rbc/force/bending -I$S/.
+$B/rbc/force/bending/rnd/api/imp.o: $S/rbc/force/bending/rnd/api/imp.cpp; $X -I$S/rbc/force/bending/rnd/api -I$S/.
+$B/rbc/force/bending/rnd/imp.o: $S/rbc/force/bending/rnd/imp.cpp; $X -I$S/rbc/force/bending/rnd -I$S/.
 $B/rbc/force/conf.o: $S/rbc/force/conf.cpp; $X -I$S/rbc/force -I$S/.
 $B/rbc/force/imp.o: $S/rbc/force/imp.cu; $N -I$S/rbc/force -I$S/.
 $B/rbc/force/rnd/api/imp.o: $S/rbc/force/rnd/api/imp.cpp; $X -I$S/rbc/force/rnd/api -I$S/.
