@@ -48,7 +48,7 @@ $B/he/hash.o: $S/he/hash.h $S/he/memory.h $S/he/err.h
 $B/he/he.o: $S/he/err.h $S/he/he.h $S/he/memory.h $S/he/read.h
 $B/he/memory.o: $S/he/memory.h $S/he/err.h
 $B/he/read.o: $S/he/err.h $S/he/util.h $S/he/def.h $S/he/memory.h $S/he/read.h $S/he/macro.h $S/he/hash.h
-$B/he/util.o: $S/he/util.h $S/inc/def.h $S/he/err.h
+$B/he/util.o: $S/he/err.h $S/he/util.h $S/he/def.h
 $B/inter/color/conf.o: $S/utils/imp.h $S/utils/error.h $S/conf/imp.h $S/inter/color/imp.h
 $B/inter/color/imp.o: $S/utils/imp.h $S/inc/conf.h $S/inter/color/imp/drop.h $S/utils/error.h $S/inc/type.h $S/inter/color/imp.h $S/utils/cc.h $S/inc/def.h $S/inter/color/imp/unif.h $S/d/api.h $S/inc/dev.h $B/conf.h $S/inter/color/imp/main.h $S/inter/color/imp/type.h $S/coords/imp.h $S/utils/msg.h
 $B/io/bop/imp.o: $S/utils/imp.h $S/utils/os.h $S/inc/conf.h $S/utils/error.h $S/inc/type.h $S/mpi/wrapper.h $S/io/bop/imp.h $S/inc/def.h $S/d/api.h $S/utils/mc.h $B/conf.h $S/io/bop/imp/main.h $S/io/bop/imp/type.h $S/coords/imp.h
