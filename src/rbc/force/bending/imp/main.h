@@ -22,10 +22,6 @@ void rbc_force_ini(const MeshRead *cell, RbcForce **pq) {
     *pq = q;
 }
 
-static void fin_rnd(RbcRnd *rnd) {
-    rbc_rnd_fin(rnd);
-}
-
 static void fin_stress(RbcForce *f) {
     if (is_stress_free(f)) {
         StressFree_v v = f->sinfo.sfree;
@@ -38,7 +34,6 @@ void rbc_force_fin(RbcForce *q) {
     if (is_rnd(q)) {
         Rnd1_v v = q->rinfo.rnd1;
         Dfree(v.anti);
-        UC(fin_rnd(q->rnd));
     }        
     UC(fin_stress(q));
     UC(adj_fin(q->adj));
@@ -110,8 +105,6 @@ void rbc_force_set_rnd1(int seed, RbcForce *f) {
     cH2D(rnd1.anti, hst, n);
     EFREE(hst);
 
-    UC(rbc_rnd_ini(n * MAX_CELL_NUM, seed, &f->rnd));
-    
     f->rtype = RBC_RND1;
     f->rinfo.rnd1 = rnd1;
 }

@@ -26,13 +26,12 @@ static void apply(float dt, RbcParams_v parv, int nc, int nv, int md,
 
 template <typename Stress_v>
 static void dispatch_rnd(float dt, RbcParams_v parv, int nc, int nv, int md,
-                         const Particle *pp, RbcRnd *rnd,
+                         const Particle *pp,
                          const Adj_v *adj_v, RbcForce *t, Stress_v sv,
                          float *av, /**/ Force *ff){
     if (is_rnd(t)) {
         Rnd1_v rv;
         get_rnd_view(t, &rv);
-        rbc_rnd_gen(rnd, nc * md * nv, /**/ &rv.rr);
         apply(dt, parv, nc, nv, md, pp, adj_v, sv, rv, av, /**/ ff);
     }
     else {
@@ -50,18 +49,17 @@ void rbc_force_apply(RbcForce *t, const RbcParams *par, float dt, const RbcQuant
     if (!d::is_device_pointer(q->pp))  ERR("`q->pp` is not a device pointer");
 
     parv = rbc_params_get_view(par);
-    UC(area_volume_compute(q->area_volume, q->nc, q->pp, /**/ &av));
 
     if (is_stress_free(t)) {
         StressFree_v si;
         get_stress_view(t, &si);
-        dispatch_rnd(dt, parv, q->nc, q->nv, q->md, q->pp, t->rnd,
+        dispatch_rnd(dt, parv, q->nc, q->nv, q->md, q->pp,
                      t->adj_v, t, si, av, /**/ ff);
     }
     else {
         StressFul_v si;
         get_stress_view(t, &si);
-        dispatch_rnd(dt, parv, q->nc, q->nv, q->md, q->pp, t->rnd,
+        dispatch_rnd(dt, parv, q->nc, q->nv, q->md, q->pp,
                      t->adj_v, t, si, av, /**/ ff);
     }    
 }

@@ -26,13 +26,11 @@
 #include "rbc/adj/imp.h"
 #include "rbc/shape/imp.h"
 
-#include "rnd/imp.h"
 #include "rbc/type.h"
 
 #include "rbc/adj/type/common.h"
 #include "rbc/adj/type/dev.h"
 #include "rbc/adj/dev.h"
-#include "area_volume/imp.h"
 
 #include "imp.h"
 #include "imp/type.h"
