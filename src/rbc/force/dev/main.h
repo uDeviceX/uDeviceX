@@ -45,27 +45,6 @@ static __device__ void adj_tris(double dt,
     f[X] += f0.x; f[Y] += f0.y; f[Z] += f0.z;
 }
 
-static __device__ void adj_dihedrals(const RbcParams_v *par, const Particle *pp, double3 r0,
-                                     AdjMap *m, /*io*/ double f[3]) {
-    enum {X, Y, Z};
-    Pos r1, r2, r3, r4;
-    double3 f0;
-    double phi, kb;
-    r1 = fetchPos(pp, m->i1);
-    r2 = fetchPos(pp, m->i2);
-    r3 = fetchPos(pp, m->i3);
-    r4 = fetchPos(pp, m->i4);
-
-    phi = par->phi / 180.0 * M_PI;
-    kb  = par->kb;
-    
-    f0 = force_kantor0_dev::dih_a(phi, kb, r0, r2, r1, r4);
-    f[X] += f0.x; f[Y] += f0.y; f[Z] += f0.z;
-    
-    f0 = force_kantor0_dev::dih_b(phi, kb, r1, r0, r2, r3);
-    f[X] += f0.x; f[Y] += f0.y; f[Z] += f0.z;
-}
-
 template <typename Stress_v, typename Rnd_v>
 __global__ void force(double dt,
                       RbcParams_v par, int md, int nv, int nc, const Particle *pp,
@@ -91,7 +70,6 @@ __global__ void force(double dt,
 
     f[X] = f[Y] = f[Z] = 0;
     adj_tris(dt, &par, pp, p0, av, si, ri, &m, /*io*/ f);
-    adj_dihedrals(&par, pp, p0.r, &m,          /*io*/ f);
 
     atomicAdd(&ff[3 * pid + 0], f[X]);
     atomicAdd(&ff[3 * pid + 1], f[Y]);
