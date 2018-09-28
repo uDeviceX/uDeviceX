@@ -6,14 +6,6 @@ static void get_stress_view(const RbcForce *f, /**/ StressFree_v *v) {
     *v = f->sinfo.sfree;
 }
 
-static void get_rnd_view(const RbcForce *f, /**/ Rnd0_v *v) {
-    *v = f->rinfo.rnd0;
-}
-
-static void get_rnd_view(const RbcForce *f, /**/ Rnd1_v *v) {
-    *v = f->rinfo.rnd1;
-}
-
 template <typename Stress_v>
 static void apply(float dt, RbcParams_v parv, int nc, int nv, int md,
                   const Particle *pp,
