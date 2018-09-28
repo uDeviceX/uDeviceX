@@ -42,7 +42,6 @@ static void dispatch_rnd(float dt, RbcParams_v parv, int nc, int nv, int md,
     }
 }
 
-
 void rbc_force_apply(RbcForce *t, const RbcParams *par, float dt, const RbcQuants *q, /**/ Force *ff) {
     RbcParams_v parv;
     float *av;
