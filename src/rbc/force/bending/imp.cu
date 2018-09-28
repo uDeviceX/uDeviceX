@@ -37,7 +37,7 @@
 
 #include "mesh/force/kantor0/dev.h"
 
-namespace rbc_force_dev {
+namespace rbc_bending_dev {
 #include "dev/type.h"
 #include "dev/fetch.h"
 #include "dev/common.h"
@@ -46,4 +46,3 @@ namespace rbc_force_dev {
 
 #include "imp/main.h"
 #include "imp/forces.h"
-#include "imp/stat.h"

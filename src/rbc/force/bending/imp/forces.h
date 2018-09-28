@@ -20,7 +20,7 @@ static void apply(float dt, RbcParams_v parv, int nc, int nv, int md,
                   const Adj_v *adj_v, Stress_v sv, Rnd_v rv,
                   float *av, /**/ Force *ff) {
     if (!d::is_device_pointer(ff))  ERR("`ff` is not a device pointer");
-    KL(rbc_force_dev::force, (k_cnf(nc*nv*md)), (dt, parv, md, nv, nc, pp,
+    KL(rbc_bending_dev::force, (k_cnf(nc*nv*md)), (dt, parv, md, nv, nc, pp,
                                                  *adj_v, sv, rv, av, /**/ (float*)ff));
 }
 
@@ -42,7 +42,7 @@ static void dispatch_rnd(float dt, RbcParams_v parv, int nc, int nv, int md,
 }
 
 
-void rbc_force_apply(RbcForce *t, const RbcParams *par, float dt, const RbcQuants *q, /**/ Force *ff) {
+void rbc_bending_apply(RbcForce *t, const RbcParams *par, float dt, const RbcQuants *q, /**/ Force *ff) {
     RbcParams_v parv;
     float *av;
     if (q->nc <= 0) return;

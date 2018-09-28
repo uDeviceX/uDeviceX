@@ -6,7 +6,7 @@ static bool is_rnd(const RbcForce *f) {
     return f->rtype == RBC_RND1;
 }
 
-void rbc_force_ini(const MeshRead *cell, RbcForce **pq) {
+void rbc_bending_ini(const MeshRead *cell, RbcForce **pq) {
     RbcForce *q;
     int md, nt, nv;
     const int4 *tt;
@@ -30,7 +30,7 @@ static void fin_stress(RbcForce *f) {
     }
 }
 
-void rbc_force_fin(RbcForce *q) {
+void rbc_bending_fin(RbcForce *q) {
     if (is_rnd(q)) {
         Rnd1_v v = q->rinfo.rnd1;
         Dfree(v.anti);
@@ -41,7 +41,7 @@ void rbc_force_fin(RbcForce *q) {
     EFREE(q);
 }
 
-void rbc_force_set_stressful(int nt, float totArea, /**/ RbcForce *f) {
+void rbc_bending_set_stressful(int nt, float totArea, /**/ RbcForce *f) {
     StressFul_v v;
     float a0 = totArea / nt;
 
@@ -52,7 +52,7 @@ void rbc_force_set_stressful(int nt, float totArea, /**/ RbcForce *f) {
     f->sinfo.sful = v;
 }
 
-void rbc_force_set_stressfree(const char *fname, /**/ RbcForce *f) {
+void rbc_bending_set_stressfree(const char *fname, /**/ RbcForce *f) {
     StressFree_v v;
     MeshRead *cell;
     const Adj *adj;
@@ -85,13 +85,13 @@ void rbc_force_set_stressfree(const char *fname, /**/ RbcForce *f) {
     f->sinfo.sfree = v;
 }
 
-void rbc_force_set_rnd0(RbcForce *f) {
+void rbc_bending_set_rnd0(RbcForce *f) {
     Rnd0_v rnd0;
     f->rtype = RBC_RND0;
     f->rinfo.rnd0 = rnd0;
 }
 
-void rbc_force_set_rnd1(int seed, RbcForce *f) {
+void rbc_bending_set_rnd1(int seed, RbcForce *f) {
     Rnd1_v rnd1;
     int n;
     int *hst;
