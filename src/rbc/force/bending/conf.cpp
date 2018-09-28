@@ -15,13 +15,9 @@ void rbc_bending_set_conf(const MeshRead *cell, const Config *cfg, const char *n
     if (stress_free) {
         const char *fname;
         UC(conf_lookup_string_ns(cfg, name, "stress_free_file", &fname));
-        UC(rbc_bending_set_stressfree(fname, /**/ f));
     }
     else {
         float Atot = 0;
-        int nt;
-        nt = mesh_read_get_nt(cell);
         UC(conf_lookup_float_ns(cfg, name, "totArea", &Atot));
-        UC(rbc_bending_set_stressful(nt, Atot, /**/ f));
     }
 }

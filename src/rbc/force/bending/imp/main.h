@@ -1,11 +1,3 @@
-static bool is_stress_free(const RbcForce *f) {
-    return f->stype == RBC_SFREE;
-}
-
-static bool is_rnd(const RbcForce *f) {
-    return f->rtype == RBC_RND1;
-}
-
 void rbc_bending_ini(const MeshRead *cell, RbcForce **pq) {
     RbcForce *q;
     int md, nt, nv;
@@ -22,65 +14,8 @@ void rbc_bending_ini(const MeshRead *cell, RbcForce **pq) {
     *pq = q;
 }
 
-static void fin_stress(RbcForce *f) {
-    if (is_stress_free(f)) {
-        StressFree_v v = f->sinfo.sfree;
-        Dfree(v.ll);
-        Dfree(v.aa);
-    }
-}
-
 void rbc_bending_fin(RbcForce *q) {
-    if (is_rnd(q)) {
-        Rnd1_v v = q->rinfo.rnd1;
-        Dfree(v.anti);
-    }        
-    UC(fin_stress(q));
     UC(adj_fin(q->adj));
     UC(adj_view_fin(q->adj_v));
     EFREE(q);
-}
-
-void rbc_bending_set_stressful(int nt, float totArea, /**/ RbcForce *f) {
-    StressFul_v v;
-    float a0 = totArea / nt;
-
-    v.a0 = a0;
-    v.l0 = sqrt(a0 * 4.0 / sqrt(3.0));
-    
-    f->stype = RBC_SFUL;
-    f->sinfo.sful = v;
-}
-
-void rbc_bending_set_stressfree(const char *fname, /**/ RbcForce *f) {
-    StressFree_v v;
-    MeshRead *cell;
-    const Adj *adj;
-    RbcShape *shape;
-    const float *rr;
-    float *ll_hst, *aa_hst;
-    int n;
-
-    adj = f->adj;    
-    UC(mesh_read_ini_off(fname, &cell));
-    rr = mesh_read_get_vert(cell);
-
-    UC(rbc_shape_ini(adj, rr, /**/ &shape));
-
-    n = adj_get_max(adj);
-
-    rbc_shape_edg(shape, &ll_hst);
-    rbc_shape_area(shape, &aa_hst);
-
-    Dalloc(&v.ll, n);
-    Dalloc(&v.aa, n);
-    
-    cH2D(v.ll, ll_hst, n);
-    cH2D(v.aa, aa_hst, n);
-    
-    UC(rbc_shape_fin(shape));
-    UC(mesh_read_fin(cell));
-
-    f->stype = RBC_SFREE;
-    f->sinfo.sfree = v;
 }

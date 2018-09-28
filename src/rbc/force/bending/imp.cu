@@ -39,7 +39,6 @@
 
 namespace rbc_bending_dev {
 #include "dev/type.h"
-#include "dev/fetch.h"
 #include "dev/main.h"
 }
 
