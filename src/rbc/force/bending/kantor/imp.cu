@@ -35,7 +35,7 @@
 
 #include "mesh/force/kantor0/dev.h"
 
-namespace rbc_bending_dev {
+namespace kantor_dev {
 #include "dev/main.h"
 }
 

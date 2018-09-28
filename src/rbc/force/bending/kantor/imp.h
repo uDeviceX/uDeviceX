@@ -1,14 +1,14 @@
 struct RbcParams;
-struct RbcBending;
+struct Kantor;
 struct Force;
 struct MeshRead;
 struct RbcQuants;
 
 // tag::mem[]
-void rbc_bending_ini(const MeshRead *cell, RbcBending**);
-void rbc_bending_fin(RbcBending*);
+void kantor_ini(const MeshRead *cell, Kantor**);
+void kantor_fin(Kantor*);
 // end::mem[]
 
 // tag::apply[]
-void rbc_bending_apply(RbcBending*, const RbcParams*, const RbcQuants*, /**/ Force*); // <1>
+void kantor_apply(Kantor*, const RbcParams*, const RbcQuants*, /**/ Force*); // <1>
 // end::apply[]
