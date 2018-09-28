@@ -38,7 +38,6 @@
 #include "mesh/force/kantor0/dev.h"
 
 namespace rbc_bending_dev {
-#include "dev/type.h"
 #include "dev/main.h"
 }
 
