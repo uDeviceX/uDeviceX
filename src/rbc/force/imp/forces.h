@@ -51,7 +51,7 @@ void rbc_force_apply(RbcForce *t, const RbcParams *par, float dt, const RbcQuant
 
     parv = rbc_params_get_view(par);
     UC(area_volume_compute(q->area_volume, q->nc, q->pp, /**/ &av));
-    UC(rbc_bending_apply(t->bending, par, q, /*io*/ ff));
+    UC(bending_apply(t->bending, par, q, /*io*/ ff));
 
     if (is_stress_free(t)) {
         StressFree_v si;

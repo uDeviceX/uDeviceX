@@ -1,21 +1,43 @@
-void rbc_bending_ini(const MeshRead *cell, RbcBending **pq) {
-    RbcBending *q;
-    int md, nt, nv;
-    const int4 *tt;
-    EMALLOC(1, &q);
-    nv = mesh_read_get_nv(cell);
-    nt = mesh_read_get_nt(cell);
-    md = mesh_read_get_md(cell);
-    tt = mesh_read_get_tri(cell);
-    
-    UC(adj_ini(md, nt, nv, tt, /**/ &q->adj));
-    UC(adj_view_ini(q->adj, /**/ &q->adj_v));
+struct Bending {
+    struct Bending_vtable *vtable;
+};
 
-    *pq = q;
+struct Bending_vtable {
+    void (*apply)(Bending*, const RbcParams*, const RbcQuants*, /**/ Force*);
+    void (*fin)(Bending*);
+};
+
+void bending_apply(Bending *q, const RbcParams *params, const RbcQuants *quants, /**/ Force *ff) {
+    q->vtable->apply(q, params, quants, /**/ ff);
 }
 
-void rbc_bending_fin(RbcBending *q) {
-    UC(adj_fin(q->adj));
-    UC(adj_view_fin(q->adj_v));
-    EFREE(q);
+void bending_fin(Bending *q) {
+    q->vtable->fin(q);
+}
+
+struct BendingKantor {
+    Bending bending;
+    Kantor *kantor;
+};
+
+
+static void method_kantor_apply(Bending *q, const RbcParams *params, const RbcQuants *quants, /**/ Force *ff) {
+    BendingKantor *b = CONTAINER_OF(q, BendingKantor, bending);
+    UC(kantor_apply(b->kantor, params, quants, ff));
+}
+
+static void method_kantor_fin(Bending *q) {
+    BendingKantor *b = CONTAINER_OF(q, BendingKantor, bending);
+    UC(kantor_fin(b->kantor));
+}    
+
+
+static Bending_vtable BendingKantor_vtable = { method_kantor_apply, method_kantor_fin};
+
+void bending_kantor_ini(const MeshRead *cell, /**/ Bending **pq) {
+    BendingKantor *q;
+    EMALLOC(1, &q);    
+    UC(kantor_ini(cell, &q->kantor));
+    q->bending.vtable = &BendingKantor_vtable;
+    *pq = &q->bending;
 }
