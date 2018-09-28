@@ -12,5 +12,5 @@ void rbc_bending_fin(RbcForce*);
 // end::mem[]
 
 // tag::apply[]
-void rbc_bending_apply(RbcForce*, const RbcParams*, float dt, const RbcQuants*, /**/ Force*); // <1>
+void rbc_bending_apply(RbcForce*, const RbcParams*, const RbcQuants*, /**/ Force*); // <1>
 // end::apply[]
