@@ -15,7 +15,7 @@ static __device__ float area(const float3 r0, const float3 r1, const float3 r2) 
     return 0.5f * sqrtf(dot<float>(&n, &n));
 }
 
-static __device__ float volume(float3 r0, float3 r1, float3 r2) {
+static __device__ float volume(const float3 r0, const float3 r1, const float3 r2) {
     return
         0.1666666667f *
         ((r0.x*r1.y-r0.y*r1.x)*r2.z +
