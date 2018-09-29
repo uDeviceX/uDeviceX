@@ -28,6 +28,7 @@
 #include "rbc/imp.h"
 #include "rbc/force/rnd/imp.h"
 #include "rbc/force/imp.h"
+#include "rbc/force/bending/imp.h"
 
 #include "io/mesh_read/imp.h"
 
@@ -105,6 +106,7 @@ int main(int argc, char **argv) {
     Config *cfg;
     Coords *coords;
     RbcParams *par;
+    Bending *bending;
     const char *cell, *ic;
     MPI_Comm cart;
     int dims[3];
@@ -124,9 +126,19 @@ int main(int argc, char **argv) {
 
     UC(rbc_params_ini(&par));
     UC(rbc_params_set_conf(cfg, "rbc", par));
+
+    MeshRead *off;
+    RbcQuants q;
+    bool ids = false;
+    UC(mesh_read_ini_off(cell, /**/ &off));
+    UC(rbc_ini(MAX_CELL_NUM, ids, off, &q));
+    bending_kantor_ini(off, &bending);
+    bending_fin(bending);
+    rbc_fin(&q);
+    mesh_read_fin(off);
     
     UC(run(cfg, cart, dt, coords, cell, ic, seed, par));
-
+    
     UC(rbc_params_fin(par));
     UC(conf_fin(cfg));
     UC(coords_fin(coords));
