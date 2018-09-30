@@ -26,7 +26,6 @@
 #include "rbc/params/imp.h"
 #include "rbc/type.h"
 #include "rbc/imp.h"
-#include "rbc/force/rnd/imp.h"
 #include "rbc/force/imp.h"
 #include "rbc/force/bending/imp.h"
 
@@ -66,43 +65,7 @@ static void write(int n, Particle *p, Force *f) {
     EFREE(f_hst);
 }
 
-static void run0(float dt, RbcQuants *q, RbcForce *t, const RbcParams *par, Force *f) {
-    rbc_force_apply(t, par, dt, q, /**/ f);
-    write(q->n, q->pp, f);
-}
-
-static void run1(float dt, RbcQuants *q, RbcForce *t, const RbcParams *par) {
-    Force *f;
-    Dalloc(&f, q->n);
-    Dzero(f, q->n);
-
-    run0(dt, q, t, par, f);
-    Dfree(f);
-}
-
-static void run2(const Config *cfg, MPI_Comm cart, float dt, const Coords *coords, MeshRead *off, const char *ic, long seed, const RbcParams *par, RbcQuants *q) {
-    RbcForce *t;
-    UC(rbc_gen_mesh(coords, cart, off, ic, /**/ q));
-    UC(rbc_gen_freeze(cart, /**/ q));
-    UC(rbc_force_ini(off, /**/ &t));
-    UC(rbc_force_set_conf(off, cfg, "rbc", t));
-    UC(run1(dt, q, t, par));
-    UC(rbc_force_fin(t));
-}
-
-void run(const Config *cfg, MPI_Comm cart, float dt, const Coords *coords, const char *cell, const char *ic, long seed, const RbcParams *par) {
-    MeshRead *off;
-    RbcQuants q;
-    UC(mesh_read_ini_off(cell, /**/ &off));
-    UC(rbc_ini(MAX_CELL_NUM, false, off, &q));
-    UC(run2(cfg, cart, dt, coords, off, ic, seed, par, &q));
-    UC(rbc_fin(&q));
-    UC(mesh_read_fin(off));
-}
-
 int main(int argc, char **argv) {
-    int seed;
-    float dt;
     Config *cfg;
     Coords *coords;
     RbcParams *par;
@@ -110,6 +73,11 @@ int main(int argc, char **argv) {
     const char *cell, *ic;
     MPI_Comm cart;
     int dims[3];
+    MeshRead *off;
+    RbcQuants q;
+    bool ids = false;
+    Force *f;
+    float kb, phi;
     
     m::ini(&argc, &argv);
     m::get_dims(&argc, &argv, dims);
@@ -117,32 +85,35 @@ int main(int argc, char **argv) {
 
     UC(conf_ini(&cfg));
     UC(conf_read(argc, argv, cfg));
-    UC(conf_lookup_float(cfg, "time.dt", &dt));
-
     UC(coords_ini_conf(cart, cfg, &coords));
     UC(conf_lookup_string(cfg, "rbc.cell", &cell));
     UC(conf_lookup_string(cfg, "rbc.ic", &ic));
-    UC(conf_lookup_int(cfg, "rbc.seed", &seed));
+    UC(conf_lookup_float(cfg, "rbc.kb", &kb));
+    UC(conf_lookup_float(cfg, "rbc.phi", &phi));
 
     UC(rbc_params_ini(&par));
-    UC(rbc_params_set_conf(cfg, "rbc", par));
+    UC(rbc_params_set_bending(kb, phi, /**/ par));
 
-    MeshRead *off;
-    RbcQuants q;
-    bool ids = false;
     UC(mesh_read_ini_off(cell, /**/ &off));
     UC(rbc_ini(MAX_CELL_NUM, ids, off, &q));
-    bending_kantor_ini(off, &bending);
-    bending_fin(bending);
+    UC(rbc_gen_mesh(coords, cart, off, ic, /**/ &q));
+
+    Dalloc(&f, q.n); Dzero(f, q.n);
+
+    UC(bending_juelicher_ini(off, &bending));
+    UC(bending_apply(bending, par, &q, f));
+    write(q.n, q.pp, f);
+    
+    Dfree(f);
+    UC(bending_fin(bending));
     rbc_fin(&q);
     mesh_read_fin(off);
-    
-    UC(run(cfg, cart, dt, coords, cell, ic, seed, par));
     
     UC(rbc_params_fin(par));
     UC(conf_fin(cfg));
     UC(coords_fin(coords));
-
     MC(m::Barrier(cart));
+
+    dSync();
     m::fin();
 }
