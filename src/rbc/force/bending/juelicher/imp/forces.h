@@ -1,3 +1,13 @@
+static void dump(int n, float *dev) {
+    int i;
+    float *hst;
+    EMALLOC(n, &hst);
+    cD2H(hst, dev, n);
+    for (i = 0; i < n; i++)
+        printf("%g\n", hst[i]);
+    EFREE(hst);
+}
+
 void juelicher_apply(Juelicher *q, const RbcParams *par, const RbcQuants *quants, /**/ Force *ff) {
     int nc, ne, nt, nv;
     RbcParams_v parv;
@@ -21,5 +31,9 @@ void juelicher_apply(Juelicher *q, const RbcParams *par, const RbcQuants *quants
     if (quants->nc <= 0) return;
     
     parv = rbc_params_get_view(par);
-    KL(juelicher_dev::compute_area, (k_cnf(nt*nc)), (nt, nc, pp, tri, /**/ area));
+
+    Dzero(area, nv*nc);
+    KL(juelicher_dev::compute_area, (k_cnf(nt*nc)), (nv, nt, nc, pp, tri, /**/ area));
+    dSync();
+    dump(nv*nc, area);
 }
