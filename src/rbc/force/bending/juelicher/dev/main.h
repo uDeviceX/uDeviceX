@@ -1,6 +1,3 @@
-struct Part { double3 r, v; };
-typedef double3 Pos;
-
 static __device__ double tri_area(const double a[3], const double b[3], const double c[3]) { return tri_dev::kahan_area(a, b, c); }
 static __device__ void append(double x, int i, float *a) { atomicAdd(&a[i], x); }
 static __device__ void get(const Particle *pp, int i, /**/ double r[3]) {
@@ -46,4 +43,14 @@ __global__ void compute_area(int nv, int nt, int nc,
     tri  += t;
 
     compute_area0(pp, *tri, /**/ area);
+}
+
+__global__ void sum(int nv, const float *from, /**/ float *to) {
+    int i, c;
+    float s;
+    i  = threadIdx.x + blockIdx.x * blockDim.x;
+    c  = blockIdx.y;
+    if (i < nv) s = from[c*nv + i]; else s = 0;
+    s = warpReduceSum(s);
+    if ((threadIdx.x % warpSize) == 0) atomicAdd(&to[c], s);
 }

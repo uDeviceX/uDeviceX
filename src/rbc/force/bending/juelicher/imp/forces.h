@@ -8,6 +8,13 @@ static void dump(int n, float *dev) {
     EFREE(hst);
 }
 
+static void sum(int nv, int nc, const float *from, /**/ float *to) {
+    dim3 thrd(128, 1);
+    dim3 blck(ceiln(nv, thrd.x), nc);
+    Dzero(to, nc);
+    KL(juelicher_dev::sum, (blck, thrd), (nv, from, /**/ to));
+}
+
 void juelicher_apply(Juelicher *q, const RbcParams *par, const RbcQuants *quants, /**/ Force *ff) {
     int nc, ne, nt, nv;
     RbcParams_v parv;
@@ -29,11 +36,13 @@ void juelicher_apply(Juelicher *q, const RbcParams *par, const RbcQuants *quants
     if (!d::is_device_pointer(pp))
         ERR("`q->pp` is not a device pointer");
     if (quants->nc <= 0) return;
-    
+
     parv = rbc_params_get_view(par);
 
     Dzero(area, nv*nc);
     KL(juelicher_dev::compute_area, (k_cnf(nt*nc)), (nv, nt, nc, pp, tri, /**/ area));
     dSync();
-    dump(nv*nc, area);
+    sum(nv, nc, area, /**/ area_tot);
+    dSync();
+    dump(nc, area_tot);
 }
