@@ -30,6 +30,8 @@ void juelicher_ini(const MeshRead *cell, Juelicher **pq) {
     Dalloc(&q->lentheta_tot, MAX_CELL_NUM);
     Dalloc(&q->area_tot,     MAX_CELL_NUM);
     Dalloc(&q->curva_mean_area_tot,     MAX_CELL_NUM);
+    Dalloc(&q->f,   3*MAX_CELL_NUM*nv);
+    Dalloc(&q->fad, 3*MAX_CELL_NUM*nv);    
 
     for (e = 0; e < ne; e++) { /* i[jk]l */
         h = hdg_edg(e); n = nxt(h); nn = nxt(nxt(h));
@@ -59,5 +61,7 @@ void juelicher_fin(Juelicher *q) {
     Dfree(q->lentheta_tot);
     Dfree(q->area_tot);
     Dfree(q->curva_mean_area_tot);
+    Dfree(q->f);
+    Dfree(q->fad);
     EFREE(q);
 }

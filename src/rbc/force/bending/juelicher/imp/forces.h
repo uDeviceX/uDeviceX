@@ -8,6 +8,18 @@ static void dump(int n, float *dev) {
     EFREE(hst);
 }
 
+static void dump3(int n, float *dev) {
+    int i, j;
+    float *hst;
+    EMALLOC(3*n, &hst);
+    cD2H(hst, dev, 3*n);
+    for (j = i = 0; i < n; i++) {
+        printf("%g %g %g\n", hst[j], hst[j+1], hst[j+2]);
+        j += 3;
+    }
+    EFREE(hst);
+}
+
 static void sum(int nv, int nc, const float *from, /**/ float *to) {
     dim3 thrd(128, 1);
     dim3 blck(ceiln(nv, thrd.x), nc);
@@ -22,6 +34,7 @@ void juelicher_apply(Juelicher *q, const RbcParams *par, const RbcQuants *quants
     int4 *tri, *dih;
     float *area, *lentheta, *theta;
     float *lentheta_tot, *area_tot, *curva_mean_area_tot;
+    float *f, *fad;
     const Particle *pp;
 
     float H0 = -1.0/2.0;
@@ -32,6 +45,8 @@ void juelicher_apply(Juelicher *q, const RbcParams *par, const RbcQuants *quants
     lentheta_tot = q->lentheta_tot;
     area_tot = q->area_tot;
     curva_mean_area_tot = q->curva_mean_area_tot;
+    f = q->f;
+    fad = q->fad;
     pp = quants->pp;
 
     nv = quants->nv; nc = quants->nc; nt = quants->nt;
@@ -44,15 +59,22 @@ void juelicher_apply(Juelicher *q, const RbcParams *par, const RbcQuants *quants
     parv = rbc_params_get_view(par);
 
     Dzero(area, nv*nc);
-    KL(juelicher_dev::compute_area, (k_cnf(nt*nc)), (nv, nt, nc, pp, tri, /**/ area)); dSync();
+    KL(juelicher_dev::compute_area, (k_cnf(nt*nc)), (nv, nt, nc, pp, tri, /**/ area));
+    dSync();
     sum(nv, nc, area, /**/ area_tot); dSync();
 
     Dzero(theta, ne*nc);
     Dzero(lentheta, nv*nc);
-    KL(juelicher_dev::compute_theta_len, (k_cnf(ne*nc)), (nv, ne, nc, pp, dih, /**/ theta, lentheta)); dSync();
+    KL(juelicher_dev::compute_theta_len, (k_cnf(ne*nc)), (nv, ne, nc, pp, dih, /**/ theta, lentheta));
+    dSync();
 
     sum(nv, nc, lentheta, /**/ lentheta_tot); dSync();
-    KL(juelicher_dev::compute_mean_curv, (k_cnf(nc)), (nc, H0, kb, lentheta_tot, area_tot, /**/ curva_mean_area_tot)); dSync();
-    
-    dump(nc, curva_mean_area_tot);
+    KL(juelicher_dev::compute_mean_curv, (k_cnf(nc)), (nc, H0, kb, lentheta_tot, area_tot, /**/ curva_mean_area_tot));
+    dSync();
+
+    Dzero(f, nv*nc);
+    Dzero(fad, nv*nc);
+    KL(juelicher_dev::force_edg, (k_cnf(ne*nc)),
+       (nv, ne, nc, H0, pp, dih, curva_mean_area_tot, theta, lentheta, area, /**/ f, fad));
+    dSync();
 }
