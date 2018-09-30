@@ -47,6 +47,6 @@ void juelicher_ini(const MeshRead *cell, Juelicher **pq) {
 void juelicher_fin(Juelicher *q) {
     UC(adj_fin(q->adj));
     UC(adj_view_fin(q->adj_v));
-    EFREE(q->dih);
+    Dfree(q->dih);
     EFREE(q);
 }
