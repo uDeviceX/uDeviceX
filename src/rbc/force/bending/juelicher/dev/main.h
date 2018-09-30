@@ -1,4 +1,20 @@
 static __device__ double tri_area(const double a[3], const double b[3], const double c[3]) { return tri_dev::kahan_area(a, b, c); }
+static __device__ double tri_dih(const double a[3], const double b[3], const double c[3], const double d[3]) {
+    double x, y;
+    tri_dev::dihedral_xy(a, b, c, d, /**/ &x, &y);
+    return -atan2(y, x); /* TODO: */
+}
+static __device__ double vec_minus(const double a[3], const double b[3], /**/ double c[3]) {
+    enum {X, Y, Z};
+    c[X] = a[X] - b[X];
+    c[Y] = a[Y] - b[Y];
+    c[Z] = a[Z] - b[Z];
+}
+static __device__ double vec_dot(const double a[3], const double b[3]) {
+    enum {X, Y, Z};
+   return a[X]*b[X] + a[Y]*b[Y] + a[Z]*b[Z];
+}
+static __device__ double vec_abs(const double a[3]) { return sqrt(vec_dot(a, a)); }
 static __device__ void append(double x, int i, float *a) { atomicAdd(&a[i], x); }
 static __device__ void get(const Particle *pp, int i, /**/ double r[3]) {
     enum {X, Y, Z};
@@ -6,12 +22,28 @@ static __device__ void get(const Particle *pp, int i, /**/ double r[3]) {
     r[Y] = pp[i].r[Y];
     r[Z] = pp[i].r[Z];
 }
-
 static __device__ void get3(const Particle *pp, int i, int j, int k,
                             /**/ double a[3], double b[3], double c[3]) {
     get(pp, i, /**/ a);
     get(pp, j, /**/ b);
     get(pp, k, /**/ c);
+}
+static __device__ void get4(const Particle *pp, int i, int j, int k, int l,
+                            /**/ double a[3], double b[3], double c[3], double d[3]) {
+    get(pp, i, /**/ a);
+    get(pp, j, /**/ b);
+    get(pp, k, /**/ c);
+    get(pp, l, /**/ d);
+}
+
+__global__ void sum(int nv, const float *from, /**/ float *to) {
+    int i, c;
+    float s;
+    i  = threadIdx.x + blockIdx.x * blockDim.x;
+    c  = blockIdx.y;
+    if (i < nv) s = from[c*nv + i]; else s = 0;
+    s = warpReduceSum(s);
+    if ((threadIdx.x % warpSize) == 0) atomicAdd(&to[c], s);
 }
 
 static __device__ void compute_area0(const Particle *pp, int4 tri, /**/ float *area) {
@@ -45,12 +77,41 @@ __global__ void compute_area(int nv, int nt, int nc,
     compute_area0(pp, *tri, /**/ area);
 }
 
-__global__ void sum(int nv, const float *from, /**/ float *to) {
-    int i, c;
-    float s;
-    i  = threadIdx.x + blockIdx.x * blockDim.x;
-    c  = blockIdx.y;
-    if (i < nv) s = from[c*nv + i]; else s = 0;
-    s = warpReduceSum(s);
-    if ((threadIdx.x % warpSize) == 0) atomicAdd(&to[c], s);
+static __device__ void compute_theta_len0(const Particle *pp, int4 dih,
+                                          /**/ float *theta, float *lentheta) {
+    int i, j, k, l;
+    double a[3], b[3], c[3], d[3], u[3];
+    double len0, theta0, lentheta0;
+
+    i = dih.x; j = dih.y; k = dih.z; l = dih.w;
+    get4(pp, i, j, k, l, /**/ a, b, c, d);
+
+    *theta = theta0 = tri_dih(a, b, c, d);
+    printf("theta0: %d %d %d %d %g\n", i, j, k, l, theta0);
+
+    vec_minus(c, b, u);
+    len0 = vec_abs(u);
+    lentheta0 = len0*theta0;
+
+    append(lentheta0, j,  lentheta);
+    append(lentheta0, k,  lentheta);
+}
+
+__global__ void compute_theta_len(int nv, int ne, int nc,
+                                  const Particle *pp, const int4 *dih,
+                                  /**/ float *theta, float *lentheta) {
+    int i;
+    int e, c; /* edge, cell */
+    i = threadIdx.x + blockDim.x * blockIdx.x;
+    if (i >= ne*nc) return;
+
+    c = i / ne;
+    e = i % ne;
+
+    pp       += nv*c;
+    theta    += ne*c + e;
+    lentheta += nv*c;
+    dih      += e;
+
+    compute_theta_len0(pp, *dih, /**/ theta, lentheta);
 }

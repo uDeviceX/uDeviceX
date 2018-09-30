@@ -25,7 +25,7 @@ void juelicher_apply(Juelicher *q, const RbcParams *par, const RbcQuants *quants
     const Particle *pp;
 
     tri = q->tri; dih = q->dih;
-    area = q->area; lentheta = q->lentheta;
+    area = q->area; lentheta = q->lentheta; theta = q->theta;
     lentheta_tot = q->lentheta_tot;
     area_tot = q->area_tot;
     pp = quants->pp;
@@ -40,9 +40,13 @@ void juelicher_apply(Juelicher *q, const RbcParams *par, const RbcQuants *quants
     parv = rbc_params_get_view(par);
 
     Dzero(area, nv*nc);
-    KL(juelicher_dev::compute_area, (k_cnf(nt*nc)), (nv, nt, nc, pp, tri, /**/ area));
-    dSync();
-    sum(nv, nc, area, /**/ area_tot);
-    dSync();
-    dump(nc, area_tot);
+    KL(juelicher_dev::compute_area, (k_cnf(nt*nc)), (nv, nt, nc, pp, tri, /**/ area)); dSync();
+    sum(nv, nc, area, /**/ area_tot); dSync();
+
+    Dzero(theta, ne*nc);
+    Dzero(lentheta, nv*nc);
+    KL(juelicher_dev::compute_theta_len, (k_cnf(ne*nc)), (nv, ne, nc, pp, dih, /**/ theta, lentheta)); dSync();
+
+    sum(nv, nc, lentheta, /**/ lentheta_tot); dSync();
+    dump(nc, lentheta_tot);
 }
