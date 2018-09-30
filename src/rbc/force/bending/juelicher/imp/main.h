@@ -9,7 +9,7 @@ void juelicher_ini(const MeshRead *cell, Juelicher **pq) {
     HeRead *he_read;
     He *he;
     int4 *dih;
-    
+
     EMALLOC(1, &q);
     nv = mesh_read_get_nv(cell);
     nt = mesh_read_get_nt(cell);
@@ -20,10 +20,16 @@ void juelicher_ini(const MeshRead *cell, Juelicher **pq) {
 
     ne = he_ne(he);
     EMALLOC(ne, &dih);
-    EMALLOC(ne, &q->dih);
     Dalloc(&q->dih, ne);
     Dalloc(&q->tri, nt);
-    
+
+    Dalloc(&q->theta,    MAX_CELL_NUM*ne); /* (sic) */
+    Dalloc(&q->area,     MAX_CELL_NUM*nv);
+    Dalloc(&q->lentheta, MAX_CELL_NUM*nv);
+
+    Dalloc(&q->lentheta_tot, MAX_CELL_NUM);
+    Dalloc(&q->area_tot,     MAX_CELL_NUM);
+
     for (e = 0; e < ne; e++) { /* i[jk]l */
         h = hdg_edg(e); n = nxt(h); nn = nxt(nxt(h));
         j = ver(h); k = ver(n); i = ver(nn);
@@ -31,11 +37,11 @@ void juelicher_ini(const MeshRead *cell, Juelicher **pq) {
         l = ver(nnf);
         dih[e].x = i; dih[e].y = j; dih[e].z = k; dih[e].w = l;
     }
-    
+
     q->ne = ne;
     cH2D(q->dih, dih, ne);
     cH2D(q->tri, tri,  nt);
-    
+
 
     he_read_fin(he_read);
     he_fin(he);
@@ -47,5 +53,10 @@ void juelicher_ini(const MeshRead *cell, Juelicher **pq) {
 void juelicher_fin(Juelicher *q) {
     Dfree(q->dih);
     Dfree(q->tri);
+    Dfree(q->area);
+    Dfree(q->theta);
+    Dfree(q->lentheta);
+    Dfree(q->lentheta_tot);
+    Dfree(q->area_tot);
     EFREE(q);
 }
