@@ -21,13 +21,17 @@ void juelicher_apply(Juelicher *q, const RbcParams *par, const RbcQuants *quants
 
     int4 *tri, *dih;
     float *area, *lentheta, *theta;
-    float *lentheta_tot, *area_tot;
+    float *lentheta_tot, *area_tot, *curva_mean_area_tot;
     const Particle *pp;
+
+    float H0 = -1.0/2.0;
+    float kb = 1.0;
 
     tri = q->tri; dih = q->dih;
     area = q->area; lentheta = q->lentheta; theta = q->theta;
     lentheta_tot = q->lentheta_tot;
     area_tot = q->area_tot;
+    curva_mean_area_tot = q->curva_mean_area_tot;
     pp = quants->pp;
 
     nv = quants->nv; nc = quants->nc; nt = quants->nt;
@@ -48,5 +52,7 @@ void juelicher_apply(Juelicher *q, const RbcParams *par, const RbcQuants *quants
     KL(juelicher_dev::compute_theta_len, (k_cnf(ne*nc)), (nv, ne, nc, pp, dih, /**/ theta, lentheta)); dSync();
 
     sum(nv, nc, lentheta, /**/ lentheta_tot); dSync();
-    dump(nc, lentheta_tot);
+    KL(juelicher_dev::compute_mean_curv, (k_cnf(nc)), (nc, H0, kb, lentheta_tot, area_tot, /**/ curva_mean_area_tot)); dSync();
+    
+    dump(nc, curva_mean_area_tot);
 }

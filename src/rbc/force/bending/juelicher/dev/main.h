@@ -4,7 +4,7 @@ static __device__ double tri_dih(const double a[3], const double b[3], const dou
     tri_dev::dihedral_xy(a, b, c, d, /**/ &x, &y);
     return -atan2(y, x); /* TODO: */
 }
-static __device__ double vec_minus(const double a[3], const double b[3], /**/ double c[3]) {
+static __device__ void vec_minus(const double a[3], const double b[3], /**/ double c[3]) {
     enum {X, Y, Z};
     c[X] = a[X] - b[X];
     c[Y] = a[Y] - b[Y];
@@ -87,8 +87,6 @@ static __device__ void compute_theta_len0(const Particle *pp, int4 dih,
     get4(pp, i, j, k, l, /**/ a, b, c, d);
 
     *theta = theta0 = tri_dih(a, b, c, d);
-    printf("theta0: %d %d %d %d %g\n", i, j, k, l, theta0);
-
     vec_minus(c, b, u);
     len0 = vec_abs(u);
     lentheta0 = len0*theta0;
@@ -114,4 +112,16 @@ __global__ void compute_theta_len(int nv, int ne, int nc,
     dih      += e;
 
     compute_theta_len0(pp, *dih, /**/ theta, lentheta);
+}
+
+__global__ void compute_mean_curv(int nc, float H0, float kb,
+                                  const float *lentheta, const float *area,
+                                  /**/ float *mean) {
+    int i;
+    float kad, pi;
+    i = threadIdx.x + blockDim.x * blockIdx.x;
+    if (i >= nc) return;
+    pi = 3.141592653589793;
+    kad = 2*kb/pi;
+    mean[i] = (lentheta[i]/4 - H0 * area[i])*(4*kad*pi/area[i]);
 }
