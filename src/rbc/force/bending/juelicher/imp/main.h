@@ -42,7 +42,6 @@ void juelicher_ini(const MeshRead *cell, Juelicher **pq) {
     cH2D(q->dih, dih, ne);
     cH2D(q->tri, tri,  nt);
 
-
     he_read_fin(he_read);
     he_fin(he);
     EFREE(dih);
