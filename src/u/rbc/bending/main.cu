@@ -102,7 +102,7 @@ int main(int argc, char **argv) {
 
     UC(bending_juelicher_ini(off, &bending));
     UC(bending_apply(bending, par, &q, f));
-    //write(q.n, q.pp, f);
+    write(q.n, q.pp, f);
     
     Dfree(f);
     UC(bending_fin(bending));

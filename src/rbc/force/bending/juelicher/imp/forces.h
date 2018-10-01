@@ -92,11 +92,15 @@ void juelicher_apply(Juelicher *q, const RbcParams *par, const RbcQuants *quants
        (nv, nt, nc, H0, pp, tri, lentheta, area, /**/ f));
     dSync();
 
+    KL(juelicher_dev::accumulate, (k_cnf(nv*nc)),
+       (nv*nc, f, fad, /**/ ff));
+
+    /*
     print("lentheta_tot", &lentheta_tot[0]);
     print("curva_mean_area_tot", &curva_mean_area_tot[0]);
     print("area", &area[0]);
     print("fx",  &f[0]);
     print("fad", &fad[0]);
 
-    dump3(nv*nc, f);
+    dump3(nv*nc, f); */
 }

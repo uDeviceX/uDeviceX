@@ -359,7 +359,7 @@ static __device__ void force_area0(float H0, const Particle *pp, const int4 tri,
     double a[3], b[3], c[3];
     double da[3], db[3], dc[3];
     double coef1, coef2, coef;
-    
+
     i = tri.x; j = tri.y; k = tri.z;
     get3(pp, i, j, k, /**/ a, b, c);
 
@@ -370,11 +370,11 @@ static __device__ void force_area0(float H0, const Particle *pp, const int4 tri,
     coef2 = lentheta[i]*lentheta[i]/8.0/area[i]/area[i] - 2.0*H0*H0;
     coef = coef1 * coef2;
     vec_scalar_append(da, coef, i, f);
-    
+
     coef2 = lentheta[j]*lentheta[j]/8.0/area[j]/area[j] - 2.0*H0*H0;
     coef = coef1 * coef2;
     vec_scalar_append(db, coef, j, f);
-    
+
     coef2 = lentheta[k]*lentheta[k]/8.0/area[k]/area[k] - 2.0*H0*H0;
     coef = coef1 * coef2;
     vec_scalar_append(dc, coef, k, f);
@@ -402,4 +402,24 @@ __global__ void force_area(int nv, int nt, int nc, float H0,
 
     force_area0(H0, pp, *tri,
                 lentheta, area, /**/ f);
+}
+
+__global__ void accumulate(int n,
+                           const float *ff0, const float *ff1,
+                           /**/ Force *ff) {
+    enum {X, Y, Z};
+    int i;
+    Force *f;
+    const float *f0, *f1;
+
+    i = threadIdx.x + blockDim.x * blockIdx.x;
+    if (i >= n) return;
+
+    f0 = &ff0[3*i];
+    f1 = &ff1[3*i];
+    f = &ff[i];
+
+    f->f[X] += f0[X] + f1[X];
+    f->f[Y] += f0[Y] + f1[Y];
+    f->f[Z] += f0[Z] + f1[Z];
 }
