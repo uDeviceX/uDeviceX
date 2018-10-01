@@ -42,9 +42,14 @@ void juelicher_apply(Juelicher *q, const RbcParams *par, const RbcQuants *quants
     float *lentheta_tot, *area_tot, *curva_mean_area_tot;
     float *f, *fad;
     const Particle *pp;
+    float pi, kb, H0, kad;
+    pi = 3.141592653589793;
 
-    float H0 = -1.0/2.0;
-    float kb = 1.0;
+    parv = rbc_params_get_view(par);
+
+    H0 = -1.0/2.0;
+    kb = 1.0; /* parv.kb; */
+    kad = 2*kb/pi;
 
     tri = q->tri; dih = q->dih;
     area = q->area; lentheta = q->lentheta; theta = q->theta;
@@ -75,7 +80,7 @@ void juelicher_apply(Juelicher *q, const RbcParams *par, const RbcQuants *quants
     dSync();
 
     sum(nv, nc, lentheta, /**/ lentheta_tot); dSync();
-    KL(juelicher_dev::compute_mean_curv, (k_cnf(nc)), (nc, H0, kb, lentheta_tot, area_tot, /**/ curva_mean_area_tot));
+    KL(juelicher_dev::compute_mean_curv, (k_cnf(nc)), (nc, H0, kad, lentheta_tot, area_tot, /**/ curva_mean_area_tot));
     dSync();
 
     Dzero(f, nv*nc);

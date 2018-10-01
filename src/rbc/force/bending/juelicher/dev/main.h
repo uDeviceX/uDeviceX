@@ -234,15 +234,14 @@ __global__ void compute_theta_len(int nv, int ne, int nc,
     compute_theta_len0(pp, *dih, /**/ theta, lentheta);
 }
 
-__global__ void compute_mean_curv(int nc, float H0, float kb,
+__global__ void compute_mean_curv(int nc, float H0, float kad,
                                   const float *lentheta, const float *area,
                                   /**/ float *mean) {
     int i;
-    float kad, pi;
+    float pi;
+    pi = 3.141592653589793;
     i = threadIdx.x + blockDim.x * blockIdx.x;
     if (i >= nc) return;
-    pi = 3.141592653589793;
-    kad = 2*kb/pi;
     mean[i] = (lentheta[i]/4 - H0 * area[i])*(4*kad*pi/area[i]);
 }
 
