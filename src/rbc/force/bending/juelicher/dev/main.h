@@ -175,7 +175,7 @@ static __device__ void force_edg0(float H0, float curva_mean_area_tot,
     int j, k;
     double b[3], c[3], db[3], dc[3];
     double coef;
-    
+
     j = dih.y; k = dih.z;
     get2(pp, j, k, /**/ b, c);
     dedg_abs(b, c, db, dc);
@@ -203,7 +203,7 @@ __global__ void force_edg(int nv, int ne, int nc, float H0,
 
     pp       += nv*c;
     dih      += e;
-    
+
     curva_mean_area_tot += c;
     theta    += ne*c + e;
     lentheta += nv*c;
@@ -215,4 +215,52 @@ __global__ void force_edg(int nv, int ne, int nc, float H0,
     force_edg0(H0, *curva_mean_area_tot,
                pp, *dih,
                *theta, lentheta, area, /**/ f, fad);
+}
+
+static __device__ void force_lentheta0(float H0, float curva_mean_area_tot,
+                                       const Particle *pp, const int4 dih,
+                                       const float *lentheta, const float *area,
+                                       /**/ float *f, float *fad) {
+    int j, k;
+    double b[3], c[3], db[3], dc[3];
+    double coef;
+
+    j = dih.y; k = dih.z;
+    get2(pp, j, k, /**/ b, c);
+    dedg_abs(b, c, db, dc);
+
+//    coef = - ( (lentheta[j]/area[j]/4 - H0) + (lentheta[k]/area[k]/4 - H0) ) * theta;
+    vec_scalar_append(db, coef, j, f);
+    vec_scalar_append(dc, coef, k, f);
+//    coef = -curva_mean_area_tot/4 * theta;
+    vec_scalar_append(db, coef, j, fad);
+    vec_scalar_append(dc, coef, k, fad);
+}
+
+__global__ void force_lentheta(int nv, int ne, int nc, float H0,
+                               const Particle *pp, const int4 *dih,
+                               const float *curva_mean_area_tot,
+                               const float *lentheta, const float *area,
+                               /**/ float *f, float *fad) {
+    int i;
+    int e, c; /* edge, cell */
+    i = threadIdx.x + blockDim.x * blockIdx.x;
+    if (i >= ne*nc) return;
+
+    c = i / ne;
+    e = i % ne;
+
+    pp       += nv*c;
+    dih      += e;
+
+    curva_mean_area_tot += c;
+    lentheta += nv*c;
+    area     += nv*c;
+
+    f        += 3*nv*c;
+    fad      += 3*nv*c;
+
+    force_lentheta0(H0, *curva_mean_area_tot,
+                    pp, *dih,
+                    lentheta, area, /**/ f, fad);
 }

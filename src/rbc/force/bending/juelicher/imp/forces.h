@@ -77,4 +77,8 @@ void juelicher_apply(Juelicher *q, const RbcParams *par, const RbcQuants *quants
     KL(juelicher_dev::force_edg, (k_cnf(ne*nc)),
        (nv, ne, nc, H0, pp, dih, curva_mean_area_tot, theta, lentheta, area, /**/ f, fad));
     dSync();
+
+    KL(juelicher_dev::force_lentheta, (k_cnf(ne*nc)),
+       (nv, ne, nc, H0, pp, dih, curva_mean_area_tot, lentheta, area, /**/ f, fad));
+    dSync();
 }
