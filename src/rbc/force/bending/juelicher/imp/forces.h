@@ -88,6 +88,10 @@ void juelicher_apply(Juelicher *q, const RbcParams *par, const RbcQuants *quants
        (nv, ne, nc, H0, pp, dih, curva_mean_area_tot, lentheta, area, /**/ f, fad));
     dSync();
 
+    KL(juelicher_dev::force_area, (k_cnf(ne*nc)),
+       (nv, nt, nc, H0, pp, tri, lentheta, area, /**/ f));
+    dSync();
+
     print("lentheta_tot", &lentheta_tot[0]);
     print("curva_mean_area_tot", &curva_mean_area_tot[0]);
     print("area", &area[0]);

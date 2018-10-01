@@ -115,6 +115,23 @@ static __device__ void ddih_angle(const double a[3], const double b[3], const do
     vec_linear_combination(-cn/e, n, -ck/e, k,    db);
 }
 
+static __device__ void tri_edg(const double a[3], const double b[3], const double c[3],
+                               /**/ double ab[3], double bc[3], double ca[3]) {
+    vec_minus(b, a,   ab);
+    vec_minus(c, b,   bc);
+    vec_minus(a, c,   ca);
+}
+
+static __device__ void dtri_area(double a[3], double b[3], double c[3],  /**/ double da[3], double db[3], double dc[3]) {
+    double n[3], n2[3], ab[3], bc[3], ca[3];
+    tri_normal(a, b, c,   n);
+    vec_scalar(n, 0.5,   n2);
+    tri_edg(a, b, c,   ab, bc, ca);
+    vec_cross(n2, bc,   da);
+    vec_cross(n2, ca,   db);
+    vec_cross(n2, ab,   dc);
+}
+
 static __device__ void get(const Particle *pp, int i, /**/ double r[3]) {
     r[X] = pp[i].r[X];
     r[Y] = pp[i].r[Y];
@@ -333,4 +350,56 @@ __global__ void force_lentheta(int nv, int ne, int nc, float H0,
     force_lentheta0(H0, *curva_mean_area_tot,
                     pp, *dih,
                     lentheta, area, /**/ f, fad);
+}
+
+static __device__ void force_area0(float H0, const Particle *pp, const int4 tri,
+                                   const float *lentheta, const float *area,
+                                   /**/ float *f) {
+    int i, j, k;
+    double a[3], b[3], c[3];
+    double da[3], db[3], dc[3];
+    double coef1, coef2, coef;
+    
+    i = tri.x; j = tri.y; k = tri.z;
+    get3(pp, i, j, k, /**/ a, b, c);
+
+    dtri_area(a, b, c, da, db, dc);
+
+    coef1 = 1.0/3.0;
+
+    coef2 = lentheta[i]*lentheta[i]/8.0/area[i]/area[i] - 2.0*H0*H0;
+    coef = coef1 * coef2;
+    vec_scalar_append(da, coef, i, f);
+    
+    coef2 = lentheta[j]*lentheta[j]/8.0/area[j]/area[j] - 2.0*H0*H0;
+    coef = coef1 * coef2;
+    vec_scalar_append(db, coef, j, f);
+    
+    coef2 = lentheta[k]*lentheta[k]/8.0/area[k]/area[k] - 2.0*H0*H0;
+    coef = coef1 * coef2;
+    vec_scalar_append(dc, coef, k, f);
+}
+
+__global__ void force_area(int nv, int nt, int nc, float H0,
+                           const Particle *pp, const int4 *tri,
+                           const float *lentheta, const float *area,
+                           /**/ float *f) {
+    int i;
+    int t, c; /* triangle, cell */
+    i = threadIdx.x + blockDim.x * blockIdx.x;
+    if (i >= nt*nc) return;
+
+    c = i / nt;
+    t = i % nt;
+
+    pp       += nv*c;
+    tri      += t;
+
+    lentheta += nv*c;
+    area     += nv*c;
+
+    f        += 3*nv*c;
+
+    force_area0(H0, pp, *tri,
+                lentheta, area, /**/ f);
 }
