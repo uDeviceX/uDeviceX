@@ -221,20 +221,31 @@ static __device__ void force_lentheta0(float H0, float curva_mean_area_tot,
                                        const Particle *pp, const int4 dih,
                                        const float *lentheta, const float *area,
                                        /**/ float *f, float *fad) {
-    int j, k;
-    double b[3], c[3], db[3], dc[3];
-    double coef;
+    int i, j, k, l;
+    double len0, coef;
+    double a[3], b[3], c[3], d[3], u[3];
+    double da[3], db[3], dc[3], dd[3];
 
-    j = dih.y; k = dih.z;
-    get2(pp, j, k, /**/ b, c);
+    i = dih.x; j = dih.y; k = dih.z; l = dih.w;
+    get4(pp, i, j, k, l, /**/ a, b, c, d);
+//    ddih_angle(a, b, c, d, da, db, dc, dd);
+    vec_minus(c, b, u);
+    len0 = vec_abs(u);
     dedg_abs(b, c, db, dc);
 
-//    coef = - ( (lentheta[j]/area[j]/4 - H0) + (lentheta[k]/area[k]/4 - H0) ) * theta;
+    coef =  -(  (lentheta[j]/area[j]/4 - H0) + (lentheta[k]/area[k]/4 - H0) ) * len0 ;
+
+    vec_scalar_append(da, coef, i, f);
     vec_scalar_append(db, coef, j, f);
     vec_scalar_append(dc, coef, k, f);
-//    coef = -curva_mean_area_tot/4 * theta;
+    vec_scalar_append(dd, coef, l, f);
+
+    coef = -curva_mean_area_tot/4.0 *len0;
+
+    vec_scalar_append(da, coef, i, fad);
     vec_scalar_append(db, coef, j, fad);
     vec_scalar_append(dc, coef, k, fad);
+    vec_scalar_append(dd, coef, l, fad);
 }
 
 __global__ void force_lentheta(int nv, int ne, int nc, float H0,
