@@ -23,10 +23,37 @@ static __device__ void vec_minus(const double a[3], const double b[3], /**/ doub
 static __device__ double vec_dot(const double a[3], const double b[3]) {
    return a[X]*b[X] + a[Y]*b[Y] + a[Z]*b[Z];
 }
+static __device__ void vec_cross(const double a[3], const double b[3], /**/ double c[3]) {
+   c[X] = a[Y]*b[Z]-b[Y]*a[Z];
+   c[Y] = b[X]*a[Z]-a[X]*b[Z];
+   c[Z] = a[X]*b[Y]-b[X]*a[Y];
+}
 static __device__ double vec_abs(const double a[3]) { return sqrt(vec_dot(a, a)); }
 
 static __device__ void vec_copy(const double a[3], double b[3]) {
     b[X] = a[X]; b[Y] = a[Y]; b[Z] = a[Z];
+}
+
+static __device__ double edg_abs(const double a[3], const double b[3]) {
+    double u[3];
+    vec_minus(b, a, u);
+    return vec_abs(u);
+}
+
+static __device__ double tri_cot(const double a[3], const double b[3], const double c[3]) { /* at `b' */
+    double x, y, u[3], v[3];
+    y = 2 * tri_area(a, b, c);
+    vec_minus(a, b, u);
+    vec_minus(c, b, v);
+    x = vec_dot(u, v);
+    return x/y; /* TODO: */
+}
+
+static __device__ void vec_linear_combination(double al, const double a[3], double be, const double b[3],
+                            /**/ double c[3]) {
+    c[X] = al*a[X] + be*b[X];
+    c[Y] = al*a[Y] + be*b[Y];
+    c[Z] = al*a[Z] + be*b[Z];
 }
 
 static __device__ void vec_negative(const double a[3], /**/ double b[3]) {
@@ -52,6 +79,40 @@ static __device__ void vec_scalar_append(const double a[3], double s, int i,
     append(s*a[X], 3*i,     f);
     append(s*a[Y], 3*i + 1, f);
     append(s*a[Z], 3*i + 2, f);
+}
+
+static __device__ void tri_normal(const double a[3], const double b[3], const double c[3], /**/ double e[3]) {
+    double u[3], v[3], n[3];
+    vec_minus(b, a,   u);
+    vec_minus(c, a,   v);
+    vec_cross(u, v,   n);
+    vec_norm(n,   e);
+}
+
+static __device__ void ddih_angle(const double a[3], const double b[3], const double c[3], const double d[3], /**/
+                                  double da[3], double db[3], double dc[3], double dd[3]) {
+    double n[3], k[3];
+    double e, An, Ak, cn, bn, bk, ck;
+
+    tri_normal(a, b, c,   n);
+    tri_normal(c, b, d,   k);
+
+    e = edg_abs(c, b);
+
+    An = tri_area(a, b, c);
+    Ak = tri_area(c, b, d);
+
+    vec_scalar(n, e/(2*An),   da);
+    vec_scalar(k, e/(2*Ak),   dd);
+
+    cn = tri_cot(b, c, a);
+    bn = tri_cot(a, b, c);
+
+    bk = tri_cot(c, b, d);
+    ck = tri_cot(d, c, b);
+
+    vec_linear_combination(-bn/e, n, -bk/e, k,    dc);
+    vec_linear_combination(-cn/e, n, -ck/e, k,    db);
 }
 
 static __device__ void get(const Particle *pp, int i, /**/ double r[3]) {
@@ -228,7 +289,7 @@ static __device__ void force_lentheta0(float H0, float curva_mean_area_tot,
 
     i = dih.x; j = dih.y; k = dih.z; l = dih.w;
     get4(pp, i, j, k, l, /**/ a, b, c, d);
-//    ddih_angle(a, b, c, d, da, db, dc, dd);
+    ddih_angle(a, b, c, d, /**/ da, db, dc, dd);
     vec_minus(c, b, u);
     len0 = vec_abs(u);
     dedg_abs(b, c, db, dc);
