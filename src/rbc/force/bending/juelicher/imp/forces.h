@@ -1,3 +1,9 @@
+static void print(const char *s, float *dev) {
+    float hst;
+    cD2H(&hst, dev, 1);
+    msg_print("%s: %g", s, hst);
+}
+
 static void dump(int n, float *dev) {
     int i;
     float *hst;
@@ -81,4 +87,12 @@ void juelicher_apply(Juelicher *q, const RbcParams *par, const RbcQuants *quants
     KL(juelicher_dev::force_lentheta, (k_cnf(ne*nc)),
        (nv, ne, nc, H0, pp, dih, curva_mean_area_tot, lentheta, area, /**/ f, fad));
     dSync();
+
+    print("lentheta_tot", &lentheta_tot[0]);
+    print("curva_mean_area_tot", &curva_mean_area_tot[0]);
+    print("area", &area[0]);
+    print("fx",  &f[0]);
+    print("fad", &fad[0]);
+
+    dump3(nv*nc, f);
 }
