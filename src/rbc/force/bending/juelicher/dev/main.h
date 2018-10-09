@@ -316,7 +316,7 @@ static __device__ void force_lentheta0(float H0, float curva_mean_area_tot,
     vec_scalar_append(dc, coef, k, f);
     vec_scalar_append(dd, coef, l, f);
 
-    coef = -curva_mean_area_tot/4.0*len0;
+    coef = -curva_mean_area_tot/2.0*len0;
     vec_scalar_append(da, coef, i, fad);
     vec_scalar_append(db, coef, j, fad);
     vec_scalar_append(dc, coef, k, fad);
