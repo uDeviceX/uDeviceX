@@ -59,7 +59,6 @@ void bending_juelicher_ini(const MeshRead *cell, /**/ Bending **pq) {
     *pq = &q->bending;
 }
 
-
 struct BendingNone { Bending bending; };
 static void method_none_apply(Bending*, const RbcParams*, const RbcQuants*, /**/ Force*) { }
 static void method_none_fin(Bending*) { }
