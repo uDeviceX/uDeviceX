@@ -15,7 +15,6 @@ void bending_fin(Bending *q) {
     q->vtable->fin(q);
 }
 
-
 struct BendingKantor {
     Bending bending;
     Kantor *kantor;
@@ -27,6 +26,7 @@ static void method_kantor_apply(Bending *q, const RbcParams *params, const RbcQu
 static void method_kantor_fin(Bending *q) {
     BendingKantor *b = CONTAINER_OF(q, BendingKantor, bending);
     UC(kantor_fin(b->kantor));
+    EFREE(q);
 }    
 static Bending_vtable BendingKantor_vtable = { method_kantor_apply, method_kantor_fin};
 void bending_kantor_ini(const MeshRead *cell, /**/ Bending **pq) {
@@ -49,6 +49,7 @@ static void method_juelicher_apply(Bending *q, const RbcParams *params, const Rb
 static void method_juelicher_fin(Bending *q) {
     BendingJuelicher *b = CONTAINER_OF(q, BendingJuelicher, bending);
     UC(juelicher_fin(b->juelicher));
+    EFREE(q);
 }    
 static Bending_vtable BendingJuelicher_vtable = { method_juelicher_apply, method_juelicher_fin};
 void bending_juelicher_ini(const MeshRead *cell, /**/ Bending **pq) {
