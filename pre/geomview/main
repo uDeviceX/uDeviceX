@@ -49,7 +49,7 @@ main_ic () {
     
     i=/tmp/geomview.ic.$$
     trap 'e rm $i; exit 2' 1 2 3 4 15
-    e ./trans $ic '>' $i
+    e u.geomview.transpose $ic '>' $i
     if test $? -ne 0
     then err "not an initial conditions file '$ic'"
     fi
