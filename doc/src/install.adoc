@@ -21,7 +21,7 @@ make install
 
 Also add the last line (export ...) to ~/.bashrc file.
 [source, shell]
----
+----
 export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:$HOME/prefix/libconfig/lib/pkgconfig
 ----
 
