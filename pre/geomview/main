@@ -6,15 +6,19 @@ prog0=u.geomview0
 
 : ${AWK=awk}
 : ${GEOMVIEW=geomview}
+: ${WX=800}
+: ${WY=600}
 
 usg () {
-    msg "$prog0 [-s image.ppm] FILE.off [IC.file]"
+    msg "$prog0 [-o image.ppm] FILE.off [IC.file]"
     msg 'geomview wrapper to see udx initial conditions'
-    msg 'if -s is given saves image and exits'
+    msg 'if -o is given saves image and exits'
     msg 'Keys:'
     msg '    q: quit'
     msg '    s: save snapshot'
     msg '    p: panel'
+    msg '   WX: resolution in x direction'
+    msg '   WY: resolution in y direction'
     exit
 }
 
@@ -24,8 +28,8 @@ offp() {
 
 gview () {
     if test $Output -eq 0
-    then e "${GEOMVIEW}" -wpos 800,600 -noinit -nopanels -b 1 1 1  -run "$prog0" "$t"
-    else e "${GEOMVIEW}" -wpos 800,600 -noinit -nopanels -b 1 1 1  -run "$prog0" "$t" "$image" --
+    then e "${GEOMVIEW}" -wpos $WX,$WY -noinit -nopanels -b 1 1 1  -run "$prog0" "$t"
+    else e "${GEOMVIEW}" -wpos $WX,$WY -noinit -nopanels -b 1 1 1  -run "$prog0" "$t" "$image" --
     fi
 }
 
@@ -49,7 +53,7 @@ main_ic () {
     
     i=/tmp/geomview.ic.$$
     trap 'e rm $i; exit 2' 1 2 3 4 15
-    e ./trans $ic '>' $i
+    e u.geomview.transpose $ic '>' $i
     if test $? -ne 0
     then err "not an initial conditions file '$ic'"
     fi
