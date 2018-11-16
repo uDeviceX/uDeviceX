@@ -67,7 +67,7 @@ void juelicher_apply(Juelicher *q, const RbcParams *par, const RbcQuants *quants
         ERR("`q->pp` is not a device pointer");
     if (quants->nc <= 0) return;
 
-    parv = rbc_params_get_view(par);
+    // parv = rbc_params_get_view(par);
 
     Dzero(area, nv*nc);
     KL(juelicher_dev::compute_area, (k_cnf(nt*nc)), (nv, nt, nc, pp, tri, /**/ area));
