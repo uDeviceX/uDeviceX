@@ -35,7 +35,7 @@ static void sum(int nv, int nc, const float *from, /**/ float *to) {
 
 void juelicher_apply(Juelicher *q, const RbcParams *par, const RbcQuants *quants, /**/ Force *ff) {
     int nc, ne, nt, nv;
-    RbcParams_v parv;
+    //    RbcParams_v parv;
 
     int4 *tri, *dih;
     float *area, *lentheta, *theta;
@@ -45,7 +45,7 @@ void juelicher_apply(Juelicher *q, const RbcParams *par, const RbcQuants *quants
     float pi, kb, H0, kad;
     pi = 3.141592653589793;
 
-    parv = rbc_params_get_view(par);
+    //parv = rbc_params_get_view(par);
 
     H0 = -1.0/2.0;
     kb = 1.0; /* parv.kb; */
