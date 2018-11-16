@@ -6,5 +6,5 @@ R=5 f=0.0 sc=1.0 ang=0
 plcmt.ro $X $Y $Z  $R $f $sc $ang rigs-ic.txt rbcs-ic.txt
 u.cp.rbc rbc/498.off  rbc.off
 
-PROF= u.run udx conf.cfg
+u.run udx conf.cfg
 
