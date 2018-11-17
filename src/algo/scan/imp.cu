@@ -14,6 +14,7 @@
 #include "imp.h"
 
 namespace scan_dev {
+#include "algo/utils/shfl.h"
 #include "dev.h"
 }
 

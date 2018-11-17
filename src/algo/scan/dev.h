@@ -29,7 +29,7 @@ __global__ void breduce(const uint4 *vin, unsigned int *vout, int n) {
 
 #pragma unroll
     for(int i = 16; i > 0; i >>= 1)
-        val.x += __shfl_down((int)val.x, i);
+        val.x += shfl_down((int)val.x, i);
 
     if (0 == lid)
         shtmp[wid] = val.x;
@@ -40,7 +40,7 @@ __global__ void breduce(const uint4 *vin, unsigned int *vout, int n) {
 
 #pragma unroll
         for(int i = 16; i > 0; i >>= 1)
-            val.x += __shfl_down((int)val.x, i);
+            val.x += shfl_down((int)val.x, i);
     }
     if (0 == threadIdx.x) vout[blockIdx.x] = val.x;
     return;
