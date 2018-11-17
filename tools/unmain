@@ -1,0 +1,26 @@
+#!/bin/sh
+
+. u.conf.util
+
+prog=tools/unmain
+
+Main=
+Seen=0
+for i
+do shift
+   case $i in
+       main.o|*/main.o)
+	   if test $Seen = 1
+	   then err "two mains in a file list: '$Main' and '$i'"
+	   fi
+	   Seen=1 Main="$i";;
+       *) set -- "$@" "$i" ;;
+   esac
+done
+
+for i
+do shift
+   set -- "$@" \'"$i"\'
+done
+
+echo "$@"
