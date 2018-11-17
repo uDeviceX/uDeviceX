@@ -30,7 +30,7 @@ LIBS      += -lcudart -lcurand -lnvToolsExt
 LOG = @echo $< $@;
 N  = $(LOG) $(NVCC)  $(ARCH) $(NVCCFLAGS)        --compiler-options '$(NCFLAGS)' $< -c -o $@
 X  = $(LOG) $(NVCC)  -Wno-deprecated-gpu-targets --compiler-options '$(XCFLAGS)' $< -c -o $@
-DL = $(LOG) $(NVCC) $(ARCH) -dlink `../tools/unmain $^` -o $@
+DL = $(LOG) $(NVCC) $(ARCH) -dlink `u.unmain $^` -o $@
 L  = $(LOG) $(LINK) `u.main $O` $^ $(LIBS) -o $@
 A  = $(LOG) ar r $@ `u.unmain $O` && ranlib $@
 
