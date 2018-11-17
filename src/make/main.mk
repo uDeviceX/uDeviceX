@@ -14,7 +14,6 @@
 # A: archive
 
 PREFIX    = $(HOME)
-BIN       = $(PREFIX)/bin
 NVCC     ?= nvcc
 ARCH     ?= -arch compute_35 -code sm_35
 OPT	 ?= -O3 -g
@@ -45,7 +44,12 @@ $B/.cookie:; $D; touch $@
 
 clean:; -rm -f $B/udx $O $B/gpuCode.o $B/.cookie
 
-install: $B/udx; cp $B/udx $(BIN)
+install: $B/udx
+	u.install udx $(PREFIX)/bin
+
+install_lib: $B/libudx_cpu.a $B/libudx_cuda.a
+	u.install libudx_cpu.a libudx_cuda.a $(PREFIX)/lib
+	u.install `find . -name '*.h' | grep -v '^u/'` $(PREFIX)/include/udx
 
 test: install
 	@echo log to atest.log
