@@ -11,6 +11,7 @@
 # X: c++ compile
 # L: link
 # DL: device link
+# A: archive
 
 PREFIX    = $(HOME)
 BIN       = $(PREFIX)/bin
@@ -31,9 +32,14 @@ N  = $(LOG) $(NVCC)  $(ARCH) $(NVCCFLAGS)        --compiler-options '$(NCFLAGS)'
 X  = $(LOG) $(NVCC)  -Wno-deprecated-gpu-targets --compiler-options '$(XCFLAGS)'     $< -c -o $@
 DL = $(LOG) $(NVCC) $(ARCH) -dlink $^         -o $@
 L  = $(LOG) $(LINK)                $^ $(LIBS) -o $@
+A  = $(LOG) ar r $@ $^ && ranlib $@
 
-$B/udx: $B/gpu.o $O; $L
+$B/udx: $B/libudx_cpu.a $B/libudx_cuda.a; $L
 $B/gpu.o: $O; $(DL)
+
+$B/libudx_cpu.a:  $O;       $A
+$B/libudx_cuda.a: $B/gpu.o; $A
+
 $O:  $B/.cookie
 $B/.cookie:; $D; touch $@
 
