@@ -24,7 +24,7 @@ udx_cuda.pc: udx_cuda.pc.in
             -e "s|@LIBS@|$$LIBS|g" $< > $@
 
 install: $P
-	u.install $P "$(PREFIX)/lib/pkgconfig"
+	u.install $P "$(PKG)"
 
 PHONY: clean
 clean:; rm -rf $P
