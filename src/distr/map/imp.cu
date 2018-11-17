@@ -9,6 +9,7 @@
 #include "utils/cc.h"
 #include "utils/error.h"
 #include "utils/imp.h"
+#include "algo/utils/shfl.h"
 
 #include "type.h"
 

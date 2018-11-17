@@ -24,6 +24,7 @@
 #include "comm/imp.h"
 #include "comm/utils.h"
 
+#include "algo/utils/shfl.h"
 #include "algo/minmax/imp.h"
 
 #include "distr/map/type.h"

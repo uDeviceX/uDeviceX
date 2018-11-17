@@ -9,7 +9,7 @@ static __global__ void dmap_scan(/**/ DMap m)              // <1>
     val = 0, cnt = 0;    
 
     if (tid < NCOUNTS) cnt = val = m.counts[tid];
-    for (int L = 1; L < 32; L <<= 1) val += (tid >= L) * __shfl_up(val, L) ;
+    for (int L = 1; L < 32; L <<= 1) val += (tid >= L) * shfl_up(val, L) ;
     if (tid <= NCOUNTS) m.starts[tid] = val - cnt;
 }
 

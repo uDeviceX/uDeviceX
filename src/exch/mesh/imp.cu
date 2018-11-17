@@ -16,6 +16,7 @@
 #include "utils/error.h"
 
 #include "algo/minmax/imp.h"
+#include "algo/utils/shfl.h"
 
 #include "frag/imp.h"
 #include "comm/imp.h"

@@ -141,7 +141,7 @@ __global__ void gexscan(const uint4 *vin, unsigned int *offs, uint4 *vout, int n
     tu4.w = tmp;
 #pragma unroll
     for(int i = 1; i < 32; i <<= 1)
-        tu4.w += (lid >= i)*__shfl_up((int)tu4.w, i);
+        tu4.w += (lid >= i)*shfl_up((int)tu4.w, i);
 
     if (lid == 31)
         if (wid < NWARP-1) woff[wid+1] = tu4.w;
@@ -154,7 +154,7 @@ __global__ void gexscan(const uint4 *vin, unsigned int *offs, uint4 *vout, int n
         tmp = (lid < NWARP) ? woff[lid] : 0;
 #pragma unroll
         for(int i = 1; i < NWARP; i <<= 1)
-            tmp += (lid >= i)*__shfl_up((int)tmp, i);
+            tmp += (lid >= i)*shfl_up((int)tmp, i);
 
         if (lid < NWARP) woff[lid] = tmp;
     }

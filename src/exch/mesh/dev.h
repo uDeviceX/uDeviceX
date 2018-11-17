@@ -80,7 +80,7 @@ __global__ void subindex_compress(int nt, int nm, const Momentum *mm, /**/ int *
 static __device__ int warpScan(int val) {
     int tid;
     tid = threadIdx.x % warpSize;
-    for (int L = 1; L < 32; L <<= 1) val += (tid >= L) * __shfl_up(val, L) ;
+    for (int L = 1; L < 32; L <<= 1) val += (tid >= L) * shfl_up(val, L) ;
     return val;
 }
 
