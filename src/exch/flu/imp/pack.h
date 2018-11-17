@@ -30,7 +30,7 @@ void eflu_pack(const PaArray *parray, /**/ EFluPack *p) {
     }
 }
 
-static void copy(int n, const int counts[], const dBags *d, /**/ hBags *h) {
+static void copy(int, const int counts[], const dBags *d, /**/ hBags *h) {
     int i, c;
     size_t sz;
     
