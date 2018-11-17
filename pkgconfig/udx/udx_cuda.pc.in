@@ -8,4 +8,4 @@ Version: 0.1
 Description: udx cuda flags
 Requires: udx_dep
 Libs: -L${libdir} -ludx_cpu @LIBS@
-Cflags: -I${includedir} @CFLAGS@
+Cflags: -I${includedir}/udx @CFLAGS@

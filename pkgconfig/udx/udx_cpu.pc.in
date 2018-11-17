@@ -8,4 +8,4 @@ Version: 0.1
 Description: udx CPU only flags
 Requires: udx_dep
 Libs: -L${libdir} -ludx_cpu
-Cflags: -I${includedir}
+Cflags: -I${includedir}/udx
