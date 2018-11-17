@@ -3,6 +3,13 @@
 
 // tag::int[]
 template <typename T>
+_I_ T shfl_down(T val, unsigned int width) {
+    return __shfl_down(val, width);
+}
+// end::int[]
+
+// tag::int[]
+template <typename T>
 _I_ T warpReduceSum(T v)  // <1>
 // end::int[]
 {
