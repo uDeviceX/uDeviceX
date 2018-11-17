@@ -28,13 +28,12 @@ NVCCFLAGS += $(COMMON) -use_fast_math -restrict
 LIBS      += -lcudart -lcurand -lnvToolsExt
 
 LOG = @echo $< $@;
-N  = $(LOG) $(NVCC)  $(ARCH) $(NVCCFLAGS)        --compiler-options '$(NCFLAGS)'     $< -c -o $@
-X  = $(LOG) $(NVCC)  -Wno-deprecated-gpu-targets --compiler-options '$(XCFLAGS)'     $< -c -o $@
-DL = $(LOG) $(NVCC) $(ARCH) -dlink $^         -o $@
-L  = $(LOG) $(LINK)                $^ $(LIBS) -o $@
-A  = $(LOG) ar r $@ $^ && ranlib $@
-
-$B/udx: $B/libudx_cpu.a $B/libudx_cuda.a; $L
+N  = $(LOG) $(NVCC)  $(ARCH) $(NVCCFLAGS)        --compiler-options '$(NCFLAGS)' $< -c -o $@
+X  = $(LOG) $(NVCC)  -Wno-deprecated-gpu-targets --compiler-options '$(XCFLAGS)' $< -c -o $@
+DL = $(LOG) $(NVCC) $(ARCH) -dlink `../tools/unmain $^` -o $@
+L  = $(LOG) $(LINK) $^ $(LIBS) -o $@
+A  = $(LOG) ar r $@ `../tools/unmain $^` && ranlib $@
+$B/udx: $B/main.o $B/libudx_cpu.a $B/libudx_cuda.a; $L
 $B/gpu.o: $O; $(DL)
 
 $B/libudx_cpu.a:  $O;       $A
