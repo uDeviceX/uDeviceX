@@ -7,3 +7,4 @@ PYTHON = u.python
 
 CC = c99
 CFLAGS = -O2 -g
+CXXFLAGS = -O2 -g
