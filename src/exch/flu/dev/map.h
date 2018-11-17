@@ -88,7 +88,7 @@ __global__ void scan(const int26 fragn, const intp26 fragcc, /**/ intp26 fragcum
             }
 
             shdata[tid] = gs;
-            lastval = __shfl(gs, 31);
+            lastval = shfl(gs, 31);
         }
         __syncthreads();
         if (warpid) myscan += shdata[warpid - 1];

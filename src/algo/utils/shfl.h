@@ -10,6 +10,10 @@ template <typename T>
 _I_ T shfl_up(T val, unsigned int width) {
     return __shfl_up_sync(0xFFFFFFFF, val, width);
 }
+template <typename T>
+_I_ T shfl(T val, unsigned int width) {
+    return __shfl_sync(0xFFFFFFFF, val, width);
+}
 #else
 template <typename T>
 _I_ T shfl_down(T val, unsigned int width) {
@@ -19,6 +23,10 @@ _I_ T shfl_down(T val, unsigned int width) {
 template <typename T>
 _I_ T shfl_up(T val, unsigned int width) {
     return __shfl_up(val, width);
+}
+template <typename T>
+_I_ T shfl(T val, unsigned int width) {
+    return __shfl(val, width);
 }
 #endif
 
