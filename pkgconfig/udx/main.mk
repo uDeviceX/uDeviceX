@@ -3,7 +3,7 @@ BIN       = $(PREFIX)/bin
 ARCH     ?= -arch compute_35 -code sm_35
 
 NVCCFLAGS  += $(ARCH) -use_fast_math -restrict
-NVCCLIBS   += -lcudart -lcurand -lnvToolsExt
+NVCCLIBS   +=  $(NVCC_LIBS) -lcudart -lcurand -lnvToolsExt
 
 P = \
 udx_dep.pc\
