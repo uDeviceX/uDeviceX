@@ -47,7 +47,7 @@ clean:; -rm -f $B/udx $O $B/gpuCode.o $B/.cookie
 install: $B/udx
 	u.install udx $(PREFIX)/bin
 
-install_lib: $B/libudx_cpu.a $B/libudx_cuda.a
+lib: $B/libudx_cpu.a $B/libudx_cuda.a
 	u.install libudx_cpu.a libudx_cuda.a $(PREFIX)/lib
 	u.install `find . -name '*.h' | grep -v '^u/'` $(PREFIX)/include/udx
 
@@ -55,4 +55,4 @@ test: install
 	@echo log to atest.log
 	@atest 2>&1 `find test -name main -type f`       | tee atest.log
 
-.PHONY: clean test all D install
+.PHONY: clean test all install lib
