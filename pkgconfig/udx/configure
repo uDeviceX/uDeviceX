@@ -24,5 +24,15 @@ if ! u.conf -h 2>/dev/null
 then err "u.conf command is not found"
 fi
 
-S=`u.cp.s`
-echo | u.conf "$S" u/x "$@"
+write_sys () (
+    dn=amlucas dh=panda
+    n=`whoami` h=`u.host`
+
+    s0="sys/$n.$h"
+    if test ! -f "$s0"; then s0="sys/$dn.$h";  fi
+    if test ! -f "$s0"; then s0="sys/$dn.$dh"; fi
+    if test ! -f "$s0"; then exit 1             ; fi
+    cp "$s0"  sys.mk
+)
+
+write_sys
