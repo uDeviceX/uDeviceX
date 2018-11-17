@@ -18,9 +18,4 @@ do shift
    esac
 done
 
-for i
-do shift
-   set -- "$@" \'"$i"\'
-done
-
 echo "$@"
