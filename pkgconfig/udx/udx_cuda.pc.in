@@ -6,6 +6,5 @@ includedir=${prefix}/include
 Name: udx_cuda
 Version: 0.1
 Description: udx cuda flags
-Requires: udx_dep
 Libs: -L${libdir} -ludx_cpu @LIBS@
 Cflags: -I${includedir}/udx @CFLAGS@
