@@ -10,6 +10,7 @@
 # N: nvcc compile
 # X: c++ compile
 # L: link
+# DL: device link
 
 PREFIX    = $(HOME)
 BIN       = $(PREFIX)/bin
@@ -28,10 +29,11 @@ LIBS      += -lcudart -lcurand -lnvToolsExt
 LOG = @echo $< $@;
 N  = $(LOG) $(NVCC)  $(ARCH) $(NVCCFLAGS)        --compiler-options '$(NCFLAGS)'     $< -c -o $@
 X  = $(LOG) $(NVCC)  -Wno-deprecated-gpu-targets --compiler-options '$(XCFLAGS)'     $< -c -o $@
-L  = $(LOG) $(NVCC)  $(ARCH) -dlink $O -o $B/gpuCode.o && \
-	$(LINK)  $B/gpuCode.o $O $(LIBS) -o $@
+DL = $(LOG) $(NVCC) $(ARCH) -dlink $^         -o $@
+L  = $(LOG) $(LINK)                $^ $(LIBS) -o $@
 
-$B/udx: $O; $L
+$B/udx: $B/gpu.o $O; $L
+$B/gpu.o: $O; $(DL)
 $O:  $B/.cookie
 $B/.cookie:; $D; touch $@
 
