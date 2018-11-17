@@ -2,7 +2,7 @@
 
 . u.conf.util
 
-prog=tools/main
+prog=u.main
 
 Main=
 Seen=0

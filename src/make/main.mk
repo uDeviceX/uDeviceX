@@ -31,8 +31,8 @@ LOG = @echo $< $@;
 N  = $(LOG) $(NVCC)  $(ARCH) $(NVCCFLAGS)        --compiler-options '$(NCFLAGS)' $< -c -o $@
 X  = $(LOG) $(NVCC)  -Wno-deprecated-gpu-targets --compiler-options '$(XCFLAGS)' $< -c -o $@
 DL = $(LOG) $(NVCC) $(ARCH) -dlink `../tools/unmain $^` -o $@
-L  = $(LOG) $(LINK) `../tools/main $O` $^ $(LIBS) -o $@
-A  = $(LOG) ar r $@ `../tools/unmain $O` && ranlib $@
+L  = $(LOG) $(LINK) `u.main $O` $^ $(LIBS) -o $@
+A  = $(LOG) ar r $@ `u.unmain $O` && ranlib $@
 
 $B/udx: $B/libudx_cpu.a $B/libudx_cuda.a; $L
 $B/gpu.o: $O; $(DL)

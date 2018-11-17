@@ -2,7 +2,7 @@
 
 . u.conf.util
 
-prog=tools/unmain
+prog=u.unmain
 
 Main=
 Seen=0
