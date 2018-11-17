@@ -18,7 +18,7 @@ udx_cpu.pc: udx_cpu.pc.in
 	sed "s|@PREFIX@|$(PREFIX)|g" $< > $@
 
 udx_cuda.pc: udx_cuda.pc.in
-	CFLAGS="$(ARCH) $(NVCCFLAGS)" LIBS="$(ARCH) `./coma $(NVCCLIBS)`"; \
+	CFLAGS="$(ARCH) --compiler-options $(shell ./coma $(CXXFLAGS))" ; LIBS="$(NVCCLIBS)" ; \
 	sed -e "s|@PREFIX@|$(PREFIX)|g" \
             -e "s|@CFLAGS@|$$CFLAGS|g" \
             -e "s|@LIBS@|$$LIBS|g" $< > $@
