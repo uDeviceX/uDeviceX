@@ -11,6 +11,7 @@
 
 #include "inc/type.h"
 #include "inc/dev.h"
+#include "algo/utils/shfl.h"
 #include "algo/utils/dev.h"
 
 #include "utils/kl.h"

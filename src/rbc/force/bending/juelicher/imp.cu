@@ -10,6 +10,7 @@
 #include "math/dev.h"
 #include "math/tri/dev.h"
 
+#include "algo/utils/shfl.h"
 #include "algo/utils/dev.h"
 
 #include "io/mesh_read/imp.h"

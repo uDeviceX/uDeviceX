@@ -12,6 +12,7 @@
 #include "d/ker.h"
 
 #include "imp.h"
+
 namespace scan_dev {
 #include "dev.h"
 }
