@@ -64,7 +64,7 @@ struct BendingNone { Bending bending; };
 static void method_none_apply(Bending*, const RbcParams*, const RbcQuants*, /**/ Force*) { }
 static void method_none_fin(Bending*) { }
 static Bending_vtable BendingNone_vtable = { method_none_apply, method_none_fin};
-void bending_none_ini(const MeshRead *cell, /**/ Bending **pq) {
+void bending_none_ini(const MeshRead*, /**/ Bending **pq) {
     BendingNone *q;
     EMALLOC(1, &q);    
     q->bending.vtable = &BendingNone_vtable;

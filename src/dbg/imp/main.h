@@ -133,7 +133,7 @@ void dbg_check_forces(float dt, const Coords *c, const char *base, const Dbg *db
     }
 }
 
-void dbg_check_colors(const Coords *c, const Dbg *dbg, int n, const int *cc) {
+void dbg_check_colors(const Coords*, const Dbg *dbg, int n, const int *cc) {
     if (!check(dbg, DBG_COLORS))
         return;
     UC(err_ini());
@@ -143,7 +143,7 @@ void dbg_check_colors(const Coords *c, const Dbg *dbg, int n, const int *cc) {
     }
 }
 
-void dbg_check_clist(const Coords *c, const Dbg *dbg, int3 L, const int *starts, const int *counts, const Particle *pp) {
+void dbg_check_clist(const Coords*, const Dbg *dbg, int3 L, const int *starts, const int *counts, const Particle *pp) {
     if (!check(dbg, DBG_CLIST))
         return;
     int n = L.x * L.y * L.z;

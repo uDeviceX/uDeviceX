@@ -119,7 +119,7 @@ static void sample(Trans t, const Coords *coords, const Particle *pp, const int 
     s->nsamples++;
 }
 
-void vcont_sample(const Coords *coords, int n, const Particle *pp, const int *starts, const int *counts, /**/ PidVCont *c) {
+void vcont_sample(const Coords *coords, int, const Particle *pp, const int *starts, const int *counts, /**/ PidVCont *c) {
     switch (c->type) {
     case TYPE_NONE:
         break;

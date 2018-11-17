@@ -1,4 +1,4 @@
-static WallForce get_wa(const Sdf *sdf, const WallQuants *q, const WallTicket *t, int n) {
+static WallForce get_wa(const Sdf *sdf, const WallQuants *q, const WallTicket *t, int) {
     WallForce wa; /* local wall data */
 
     sdf_get_view(sdf, &wa.sdf_v);

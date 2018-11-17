@@ -1,9 +1,11 @@
+/*
 static void print(const char *s, float *dev) {
     float hst;
     cD2H(&hst, dev, 1);
     msg_print("%s: %g", s, hst);
-}
+    } */
 
+/*
 static void dump(int n, float *dev) {
     int i;
     float *hst;
@@ -12,8 +14,9 @@ static void dump(int n, float *dev) {
     for (i = 0; i < n; i++)
         printf("%g\n", hst[i]);
     EFREE(hst);
-}
+    } */
 
+/*
 static void dump3(int n, float *dev) {
     int i, j;
     float *hst;
@@ -24,7 +27,7 @@ static void dump3(int n, float *dev) {
         j += 3;
     }
     EFREE(hst);
-}
+    } */
 
 static void sum(int nv, int nc, const float *from, /**/ float *to) {
     dim3 thrd(128, 1);
@@ -33,7 +36,7 @@ static void sum(int nv, int nc, const float *from, /**/ float *to) {
     KL(juelicher_dev::sum, (blck, thrd), (nv, from, /**/ to));
 }
 
-void juelicher_apply(Juelicher *q, const RbcParams *par, const RbcQuants *quants, /**/ Force *ff) {
+void juelicher_apply(Juelicher *q, const RbcParams*, const RbcQuants *quants, /**/ Force *ff) {
     int nc, ne, nt, nv;
     //    RbcParams_v parv;
 

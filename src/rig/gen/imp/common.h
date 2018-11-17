@@ -42,7 +42,7 @@ _I_ void exchange_mesh(int maxm, int3 L, MPI_Comm cart, int nv, /*io*/ int *nm, 
     UC(emesh_unpack_fin(unpack));
 }
 
-_I_ void compute_labels(int pdir, int n, const Particle *pp, int nt, int nv, int nm, const int4 *tt, const Particle *pp_mesh, int in, int out, /**/ int *ll) {
+_I_ void compute_labels(int pdir, int n, const Particle *pp, int nt, int nv, int nm, const int4 *tt, const Particle *pp_mesh, int, int, /**/ int *ll) {
     float3 *lo, *hi;
     Triangles tri;
 

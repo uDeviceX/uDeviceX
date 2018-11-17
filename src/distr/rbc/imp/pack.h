@@ -5,7 +5,7 @@ static void pack_pp(const DMap m, int nc, int nv, const Particle *pp, /**/ dBags
 }
 
 /* all data (including map) on host */
-static void pack_ii(const DMap m, int nc, const int *ii, /**/ hBags *bags) {
+static void pack_ii(const DMap m, int, const int *ii, /**/ hBags *bags) {
     Sarray<int*, NBAGS> wrap;
     bag2Sarray(*bags, &wrap);
 

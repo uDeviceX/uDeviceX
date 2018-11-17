@@ -138,7 +138,7 @@ _S_ void transf_template(const Transf *T, int n, float *rr) {
 }
 
 _I_ void extract_template(int3 L, MPI_Comm cart, RigGenInfo rgi, int n, const Particle *flu_pp_dev, const Particle *flu_pp_hst,
-                             int ns, bool hasid0, const Rigid *ss, /**/ int *nps, float *rr0, /*w*/ int *ll_dev, int *ll_hst) {
+                             int, bool hasid0, const Rigid *ss, /**/ int *nps, float *rr0, /*w*/ int *ll_dev, int *ll_hst) {
     int nm, pdir;
     Transf T;
     *nps = 0;

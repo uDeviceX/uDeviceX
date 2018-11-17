@@ -23,15 +23,9 @@ static int predicate(const Coords *c, Circle p, int i, int j, int k) {
     return R < p.R && R >= p.R - 1;
 }
 
-static int predicate(const Coords *c, Plate p, int i, int j, int k) {
-    // TODO
+static int predicate(const Coords*, None, int, int, int) {
     return 0;
 }
-
-static int predicate(const Coords *c, None p, int i, int j, int k) {
-    return 0;
-}
-
 
 template <typename T>
 static void ini_map(const Coords *coords, T p, int **ids, int *nids) {
