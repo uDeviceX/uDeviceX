@@ -18,4 +18,8 @@ do shift
    esac
 done
 
+if test $Seen = 0
+then err "no main in the file list"
+fi
+
 echo "$@"
