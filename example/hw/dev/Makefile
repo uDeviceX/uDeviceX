@@ -1,6 +1,7 @@
 include ../../../conf.mk
 LD = $(NCC)
-UDX_CXXFLAGS = `u.pkg-config udx_cuda --cflags` --compiler-options '`u.pkg-config udx_cpu --cflags`' \
+UDX_CXXFLAGS = `u.pkg-config udx_cuda --cflags` \
+--compiler-options '`u.pkg-config udx_cpu --cflags`' \
 --compiler-options '$(CXXFLAGS)'
 
 UDX_LDFLAGS  = `u.pkg-config udx_cuda --libs`   --linker-options   '`u.pkg-config udx_cpu --libs`'
