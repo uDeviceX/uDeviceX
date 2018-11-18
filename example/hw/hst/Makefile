@@ -1,11 +1,8 @@
-include ../../../conf.mk
-LD = $(CXX)
-UDX_CXXFLAGS = `u.pkg-config udx_cpu --cflags`
-UDX_LDFLAGS  = `u.pkg-config udx_cpu --libs`
+S = $(shell u.cp.s)
+include $S/../conf.mk
+include $S/../make/example.mk
 
-main: main.o; $(LD) $< $(UDX_LDFLAGS) -o $@
-
-main.o: main.cpp; $(CXX) $(CXXFLAGS) $(UDX_CXXFLAGS) $^ -c -o $@
+main: main.o
 install: main; u.install main $(BIN)
 
 clean:; rm -f main main.o

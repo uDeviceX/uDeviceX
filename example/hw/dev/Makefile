@@ -1,13 +1,9 @@
-include ../../../conf.mk
-LD = $(CXX)
-UDX_CXXFLAGS = $(shell u.pkg-config udx_cuda --cflags)
-UDX_LDFLAGS  = $(shell u.pkg-config udx_cpu --libs) $(shell u.pkg-config udx_cuda --libs)
+S = $(shell u.cp.s)
+include $S/../conf.mk
+include $S/../make/example.mk
 
-main: main.o; $(LD) $^ $(UDX_LDFLAGS) -o $@
-main.o: main.cu; $(NCC) $(UDX_CXXFLAGS) $< -c -o $@
+main: main.o
 install: main; u.install main $(BIN)
-
-main.o: dev.h
 
 clean:; rm -f main main.o
 .PHONY: install clean
