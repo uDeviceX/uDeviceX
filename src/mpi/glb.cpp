@@ -13,12 +13,13 @@ namespace m { /* MPI */
 enum {X, Y, Z, D};
 
 void ini(int *argc, char ***argv) {
-    if (m::Init(argc, argv) != MPI_SUCCESS) {
-        fprintf(stderr, ": m::Init failed\n");
-        exit(2);
-    }
     if (m::Errhandler_set(MPI_COMM_WORLD, MPI_ERRORS_RETURN) != MPI_SUCCESS) {
         fprintf(stderr, ": m::Errhandler_set failed\n");
+        exit(2);
+    }
+
+    if (m::Init(argc, argv) != MPI_SUCCESS) {
+        fprintf(stderr, ": m::Init failed\n");
         exit(2);
     }
 }
