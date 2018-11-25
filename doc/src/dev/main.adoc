@@ -1,4 +1,4 @@
-= _uDeviceX_ Developer Documentaion
+= Developer Documentaion
 
 :lext: .adoc
 
