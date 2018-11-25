@@ -36,4 +36,4 @@ void rig_strt_quants(MPI_Comm, const MeshRead*, const char *base, const char *na
 // tag::io[]
 void rig_strt_dump_templ(MPI_Comm, const char *base, const char *name, const RigQuants *q);         // <1>
 void rig_strt_dump(MPI_Comm, const char *base, const char *name, const int id, const RigQuants *q); // <2>
-// tag::io[]
+// end::io[]
