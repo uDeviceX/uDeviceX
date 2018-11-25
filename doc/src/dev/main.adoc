@@ -10,8 +10,6 @@ include::conventions.adoc[]
 
 include::doc.adoc[]
 
-include::gource.adoc[]
-
 include::modules/algo/main.adoc[]
 
 include::modules/clist.adoc[]
