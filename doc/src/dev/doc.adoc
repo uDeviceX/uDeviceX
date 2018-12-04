@@ -1,4 +1,4 @@
-= Documentation
+= documentation
 :lext: .adoc
 
 The `uDeviceX` documentation is written in `Asciidoc` format and converted to `html`.

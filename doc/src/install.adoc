@@ -2,8 +2,8 @@
 updated 08 May 2018
 
 uDeviceX requires libraries and command line tools. In the following
-the library are installed in '$HOME/prefix' and command line tools are
-in '$HOME/bin'.
+the library are installed in `$HOME/prefix` and command line tools are
+in `$HOME/bin`.
 
 == Install necessary libraries
 
@@ -19,10 +19,11 @@ make
 make install
 ----
 
-Also add the last line (export ...) to ~/.bashrc file.
+Also add the last line (export ...) to `$HOME/.profile` file.
 [source, shell]
 ----
-export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:$HOME/prefix/libconfig/lib/pkgconfig
+PKG_CONFIG_PATH=$PKG_CONFIG_PATH:$HOME/prefix/libconfig/lib/pkgconfig
+export PKG_CONFIG_PATH
 ----
 
 ===  atest
