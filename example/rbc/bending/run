@@ -1,0 +1,4 @@
+u.cp.ic ident ident
+
+u.cp.rbc 2562 rbc.off
+u.run ./main 'rbc = {cell = "rbc.off"; ic = "ident"; kb = 1.0; phi = 0.3}'
