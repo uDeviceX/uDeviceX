@@ -7,4 +7,3 @@ plcmt.ro $X $Y $Z  $R $f $sc $ang rigs-ic.txt rbcs-ic.txt
 u.cp.rbc rbc/498.off  rbc.off
 
 PROF= u.run udx conf.cfg
-
