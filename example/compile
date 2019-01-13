@@ -2,5 +2,5 @@
 
 for m in `find . -name Makefile`
 do d=`dirname $m`
-   u.make -C $d
+   u.make -C $d CXX=CC
 done
