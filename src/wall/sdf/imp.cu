@@ -35,6 +35,7 @@
 #include "math/tform/imp.h"
 #include "math/tform/dev.h"
 #include "tform/imp.h"
+#include "algo/utils/shfl.h"
 #include "algo/utils/dev.h"
 
 #include "type.h"

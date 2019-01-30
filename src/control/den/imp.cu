@@ -16,6 +16,7 @@
 #include "coords/type.h"
 #include "coords/imp.h"
 
+#include "algo/utils/shfl.h"
 #include "algo/utils/dev.h"
 
 #include "imp.h"

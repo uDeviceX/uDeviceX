@@ -1,9 +1,11 @@
+/*
 static void print(const char *s, float *dev) {
     float hst;
     cD2H(&hst, dev, 1);
     msg_print("%s: %g", s, hst);
-}
+    } */
 
+/*
 static void dump(int n, float *dev) {
     int i;
     float *hst;
@@ -12,8 +14,9 @@ static void dump(int n, float *dev) {
     for (i = 0; i < n; i++)
         printf("%g\n", hst[i]);
     EFREE(hst);
-}
+    } */
 
+/*
 static void dump3(int n, float *dev) {
     int i, j;
     float *hst;
@@ -24,7 +27,7 @@ static void dump3(int n, float *dev) {
         j += 3;
     }
     EFREE(hst);
-}
+    } */
 
 static void sum(int nv, int nc, const float *from, /**/ float *to) {
     dim3 thrd(128, 1);
@@ -33,9 +36,9 @@ static void sum(int nv, int nc, const float *from, /**/ float *to) {
     KL(juelicher_dev::sum, (blck, thrd), (nv, from, /**/ to));
 }
 
-void juelicher_apply(Juelicher *q, const RbcParams *par, const RbcQuants *quants, /**/ Force *ff) {
+void juelicher_apply(Juelicher *q, const RbcParams*, const RbcQuants *quants, /**/ Force *ff) {
     int nc, ne, nt, nv;
-    RbcParams_v parv;
+    //    RbcParams_v parv;
 
     int4 *tri, *dih;
     float *area, *lentheta, *theta;
@@ -45,7 +48,7 @@ void juelicher_apply(Juelicher *q, const RbcParams *par, const RbcQuants *quants
     float pi, kb, H0, kad;
     pi = 3.141592653589793;
 
-    parv = rbc_params_get_view(par);
+    //parv = rbc_params_get_view(par);
 
     H0 = -1.0/2.0;
     kb = 1.0; /* parv.kb; */
@@ -67,7 +70,7 @@ void juelicher_apply(Juelicher *q, const RbcParams *par, const RbcQuants *quants
         ERR("`q->pp` is not a device pointer");
     if (quants->nc <= 0) return;
 
-    parv = rbc_params_get_view(par);
+    // parv = rbc_params_get_view(par);
 
     Dzero(area, nv*nc);
     KL(juelicher_dev::compute_area, (k_cnf(nt*nc)), (nv, nt, nc, pp, tri, /**/ area));

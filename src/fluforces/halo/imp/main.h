@@ -46,10 +46,6 @@ static bool is_colored(const flu::RFrag26 f) {
     return parray_is_colored(&(f.d[0].parray));
 }
 
-static int pad(int n) {
-    return PADDING * ceiln(n, PADDING);    
-}
-
 template <typename Par, typename Parray, typename Farray>
 static void interactions(Par params, int3 L, const LFrag_v26<Parray> lfrags, const RFrag_v26<Parray> rfrags, const flu::RndFrag26 rrnd, /**/ Farray farray) {
     int n, i;

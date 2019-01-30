@@ -1,4 +1,4 @@
-= _uDeviceX_ Developer Documentaion
+= Developer Documentaion
 
 :lext: .adoc
 
@@ -9,8 +9,6 @@ include::build.adoc[]
 include::conventions.adoc[]
 
 include::doc.adoc[]
-
-include::gource.adoc[]
 
 include::modules/algo/main.adoc[]
 

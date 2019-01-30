@@ -1,0 +1,11 @@
+prefix=@PREFIX@
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: udx_cpu
+Version: 0.1
+Description: udx CPU only flags
+Requires: udx_dep
+Libs: -L${libdir} -ludx_cpu
+Cflags: -I${includedir}/udx

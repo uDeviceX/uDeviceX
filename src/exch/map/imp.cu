@@ -14,6 +14,7 @@
 
 #include "type.h"
 #include "imp.h"
+#include "algo/utils/shfl.h"
 #include "dev/main.h"
 
 static void check_frags(int nfrags) {

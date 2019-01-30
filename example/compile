@@ -1,0 +1,6 @@
+#!/bin/sh
+
+for m in `find . -name Makefile`
+do d=`dirname $m`
+   u.make -C $d
+done

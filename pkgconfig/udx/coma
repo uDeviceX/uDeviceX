@@ -1,0 +1,9 @@
+#!/bin/sh
+
+s=
+for i
+do printf %s $s
+   printf %s "$i"
+   s=,
+done
+printf '\n'

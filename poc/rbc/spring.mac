@@ -7,18 +7,17 @@ pow(a, b):=a^b;
 wlc0(r):=(4*sq(r)-9*r+6)/(4*sq(r-1));
 wlc(r):=ks/lmax*wlc0(r/lmax);
 
-fwlc: 'wlc(r);
-fpow: -'wlc(l0) * pow(l0, m + 1) / pow(r, m + 1);
-
-f: (fwlc + fpow)*r;
-
 /* check */
-Epow: l0^(m + 1) * 'wlc(l0) / r^(m - 1) / (m - 1);
+m: 2;
+
+Epow: kp / r^(m - 1);
 Ewlc: block([x: 'r/lmax], ('ks / 4 * lmax) * (3 * x^2 - 2 * x^3) / (1 - x));
 E: Epow + Ewlc;
-fullratsimp(diff(E, r) - f), wlc;
+
+f: diff(E, r);
+f0: subst(r = l0, f);
+
+subst(ks = 1, solve(f0, kp));
+
 /*  ***  */
 
-f0: f , wlc, r = l0 + dr, m = 2;
-f0: taylor(f0, dr, 0, 1);
-f0: gcfac(factor(f0));

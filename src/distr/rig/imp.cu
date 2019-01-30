@@ -21,6 +21,7 @@
 
 #include "rig/imp.h"
 
+#include "algo/utils/shfl.h"
 #include "distr/map/type.h"
 #include "distr/map/dev.h"
 #include "distr/map/imp.h"

@@ -1,9 +1,14 @@
 #! /bin/sh
 
-X=64; Y=64; Z=64
-R=5; f=0.0; sc=1.0; ang=0;
+X=64 Y=64 Z=64
+R=5 f=0.0 sc=1.0 ang=0
 
 plcmt.ro $X $Y $Z  $R $f $sc $ang rigs-ic.txt rbcs-ic.txt
 u.cp.rbc rbc/498.off  rbc.off
 
+<<<<<<< HEAD
 PROF= u.run udx conf.cfg
+=======
+u.run udx conf.cfg
+
+>>>>>>> 16be6c4ba7801917530f4d28897ed2a44ecaf05e

@@ -1,0 +1,21 @@
+LINK = g++
+NVCC_DIR = /usr/local/cuda-8.0
+NVCC     = ${NVCC_DIR}/bin/nvcc
+
+MPI_CXXFLAGS = -I/usr/include/mpich-x86_64
+MPI_LIBS  = -L/usr/lib64/mpich/lib -Wl,-rpath,/usr/lib64/mpich/lib -lmpichcxx -lmpich
+
+HDF5_LIBS     = -lhdf5
+NVCC_LIBS = -L${NVCC_DIR}/lib64 -Wl,-rpath,${NVCC_DIR}/lib64
+
+libconfigL  = $(shell pkg-config --libs-only-l libconfig)
+libconfigID = $(shell pkg-config --variable=includedir libconfig)
+libconfigLD = $(shell pkg-config --variable=libdir libconfig)
+
+LIBCONFIG_CXXFLAGS = -I${libconfigID}
+LIBCONFIG_LIBS     = -L${libconfigLD} -Wl,-rpath,${libconfigLD} ${libconfigL}
+
+BOP_CXXFLAGS = $(shell bop-config --cflags)
+BOP_LIBS     = $(shell bop-config --libs-mpi)
+
+CXXFLAGS += -Wall -Wextra -Wno-unused-parameter -Wno-unused-function

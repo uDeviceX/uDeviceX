@@ -8,7 +8,7 @@ matrices (see <<mesh_matrices, matrices submodule>>).
 include::{src}/mesh/gen/imp.h[tag=int]
 ----
 <1> generate and filter meshes from file `ic`. Only those
-    belonging to subdomain are kept.
+    belonging to a current subdomain are kept.
 <2> generate from a matrices array
 <3> shift a set of vertices particles from global to local coordinates
 

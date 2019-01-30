@@ -11,6 +11,8 @@
 
 #include "inc/type.h"
 #include "inc/dev.h"
+#include "algo/utils/shfl.h"
+#include "algo/utils/dev.h"
 
 #include "utils/kl.h"
 
@@ -42,18 +44,18 @@ static __device__ float3 maxf3(float3 a, float3 b) {
 
 static __device__ float3 warpReduce_minf3(float3 val) {
     for (int offset = warpSize/2; offset > 0; offset /= 2) {
-        val.x = min(val.x, __shfl_down(val.x, offset));
-        val.y = min(val.y, __shfl_down(val.y, offset));
-        val.z = min(val.z, __shfl_down(val.z, offset));
+        val.x = min(val.x, shfl_down(val.x, offset));
+        val.y = min(val.y, shfl_down(val.y, offset));
+        val.z = min(val.z, shfl_down(val.z, offset));
     }
     return val;
 }
 
 static __device__ float3 warpReduce_maxf3(float3 val) {
     for (int offset = warpSize/2; offset > 0; offset /= 2) {
-        val.x = max(val.x, __shfl_down(val.x, offset));
-        val.y = max(val.y, __shfl_down(val.y, offset));
-        val.z = max(val.z, __shfl_down(val.z, offset));
+        val.x = max(val.x, shfl_down(val.x, offset));
+        val.y = max(val.y, shfl_down(val.y, offset));
+        val.z = max(val.z, shfl_down(val.z, offset));
     }
     return val;
 }

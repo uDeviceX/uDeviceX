@@ -71,7 +71,7 @@ _S_ void clear_forces(Rigid *s) {
     s->to[X] = s->to[Y] = s->to[Z] = 0; 
 }
 
-_I_ void set_properties(MPI_Comm comm, RigGenInfo rgi, int n, const float *rr0, int ns, const int *ids, /**/ Rigid *ss) {
+_I_ void set_properties(MPI_Comm, RigGenInfo rgi, int n, const float *rr0, int ns, const int *ids, /**/ Rigid *ss) {
     Rigid s_props, *s;
     int i;
     

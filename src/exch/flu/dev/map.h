@@ -73,7 +73,7 @@ __global__ void scan(const int26 fragn, const intp26 fragcc, /**/ intp26 fragcum
         if (tid == 0) myscan += lastval;
 
         for (L = 1; L < 32; L <<= 1) {
-            val = __shfl_up(myscan, L);
+            val = shfl_up(myscan, L);
             if (laneid >= L) myscan += val;
         }
 
@@ -83,12 +83,12 @@ __global__ void scan(const int26 fragn, const intp26 fragcc, /**/ intp26 fragcum
             gs = 0;
             if (laneid < NWARPS) gs = shdata[tid];
             for ( L = 1; L < 32; L <<= 1) {
-                val = __shfl_up(gs, L);
+                val = shfl_up(gs, L);
                 if (laneid >= L) gs += val;
             }
 
             shdata[tid] = gs;
-            lastval = __shfl(gs, 31);
+            lastval = shfl(gs, 31);
         }
         __syncthreads();
         if (warpid) myscan += shdata[warpid - 1];

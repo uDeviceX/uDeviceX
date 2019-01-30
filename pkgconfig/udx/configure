@@ -1,0 +1,38 @@
+#!/bin/sh
+
+msg () { echo >&2 "$@"; }
+err () { msg "error: $@"; exit 2; }
+usg () {
+    msg  'udx configuration and system test'
+    msg  './configure'
+    exit
+}
+
+if test $# -ne 0 && test "$1" = -h
+then usg
+fi
+
+if ! bop-config --help 2>/dev/null 1>/dev/null
+then err "bop-config command is not found"
+fi
+
+if ! u.cp.s -h 2>/dev/null
+then err "u.cp.s command is not found"
+fi
+
+if ! u.conf -h 2>/dev/null
+then err "u.conf command is not found"
+fi
+
+write_sys () (
+    dn=amlucas dh=panda
+    n=`whoami` h=`u.host`
+
+    s0="sys/$n.$h"
+    if test ! -f "$s0"; then s0="sys/$dn.$h";  fi
+    if test ! -f "$s0"; then s0="sys/$dn.$dh"; fi
+    if test ! -f "$s0"; then exit 1             ; fi
+    cp "$s0"  sys.mk
+)
+
+write_sys

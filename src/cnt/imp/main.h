@@ -44,7 +44,7 @@ static void build_cells(const PaWrap *w, Clist *c, ClistMap *m) {
     clist_build_map(cc, /**/ c, m);
 }
 
-static bool has_work(int i, int nw, const PairParams **prms) {
+static bool has_work(int i, int, const PairParams **prms) {
     int j, k;
     for (j = 0; j <= i; ++j) {
         k = get_id_inter(i, j);

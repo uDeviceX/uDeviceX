@@ -21,6 +21,7 @@
 
 #include "struct/parray/imp.h"
 #include "flu/type.h"
+#include "algo/utils/shfl.h"
 
 #include "imp.h"
 

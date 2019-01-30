@@ -21,6 +21,8 @@
 #include "struct/partlist/dev.h"
 
 #include "algo/scan/imp.h"
+#include "algo/utils/shfl.h"
+
 #include "clist/imp.h"
 #include "flu/imp.h"
 
