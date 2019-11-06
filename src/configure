@@ -5,7 +5,7 @@ err () { msg "error: $@"; exit 2; }
 usg () {
     msg  'udx configuration and system test'
     msg  './configure'
-    exit
+    exit 2
 }
 
 if test $# -ne 0 && test "$1" = -h
