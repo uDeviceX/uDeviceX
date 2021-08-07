@@ -3,6 +3,6 @@ CFG = default.cfg rbc.lina.cfg rbc.test.cfg
 
 install:
 	mkdir -p -- $(DIR)
-	cp ${CFG} ${DIR}/
+	cp ${CFG} ${DIR}
 
 .PHONY: install
