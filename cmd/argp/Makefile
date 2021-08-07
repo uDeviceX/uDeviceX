@@ -1,6 +1,5 @@
-BIN = $(HOME)/bin
+include ../../conf.mk
 B = $(BIN)
-
 p = u
 m = argp
 
