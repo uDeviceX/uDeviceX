@@ -1,4 +1,5 @@
-LINK = g++
+CXX = mpicxx
+LINK = mpicxx
 NVCC = nvcc
 OPT = -O2 -g
 
