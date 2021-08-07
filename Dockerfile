@@ -4,6 +4,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get -qq install --yes --no-install-recomm
 g++ \
 git \
 libconfig-dev \
+libhdf5-mpich-dev \
 libmpich-dev \
 make \
 mpich \
