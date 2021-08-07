@@ -1,4 +1,4 @@
-BIN = $(HOME)/bin
+include ../conf.mk
 B = $(BIN)
 
 P.common = host make/main robin run/main strtdir batch/main wrap/main
@@ -11,9 +11,9 @@ P.acer      = load/acer     make/acer     run/acer     batch/acer     post.load/
 P = $(P.common) $(P.conf) $(P.panda) $(P.daint) $(P.acer) $(P.leonhard)
 
 install:
-	@echo install cmd tools to $B
-	@mkdir -p $B
-	@for f in $P;                          \
+	echo install cmd tools to $B
+	mkdir -p $B
+	for f in $P;                          \
 	do t=`tools/transform "$$f"`;          \
            cp "$$f" "$B/$$t";                  \
 	done
