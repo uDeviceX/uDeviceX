@@ -1,5 +1,4 @@
-BIN = $(HOME)/bin
-# config
+include ../../conf.mk
 C   = $(HOME)/.udx
 B = $(BIN)
 

@@ -33,6 +33,5 @@ pkgconfig/ply \
 pre/uconf/src \
 cmd/python \
 
-
 install:
 	for d in $M; do ( cd "$$d" && make install) || exit 2; done
