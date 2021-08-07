@@ -1,4 +1,4 @@
-PREFIX = $(HOME)
+PREFIX = $(HOME)/.local
 BIN = $(PREFIX)/bin
 LIB = $(PREFIX)/lib
 INC = $(PREFIX)/include
