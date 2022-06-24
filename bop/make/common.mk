@@ -1,5 +1,5 @@
 # where to install tools
-INST_BIN = $(HOME)/bin
+INST_BIN = $(prefix)/bin
 # where to install library
 INST_LIB = $(prefix)/bop
 
