@@ -1,0 +1,50 @@
+img {
+    max-width:100%;
+    height:auto
+}
+
+h1 { font-size:2em }
+h2 { font-size:1.8em }
+h3 { font-size:1.6em }
+h4 { font-size:1.4em }
+h5 { font-size:1.2em }
+h6 { font-size:1em }
+#toctitle { font-size: 1.5em }
+
+#content {
+    min-width: 25em;
+    max-width: 60em;
+}
+
+#header .details br {
+    display:none
+}
+#header .details br+span.author:before {
+    content:"\00a0\22c5\00a0"
+}
+#toc ul { list-style-type:none }
+#toc a {
+    text-decoration:none
+}
+
+.literalblock pre, .listingblock pre, listingblock .pygments, .listingblock .pygments code {
+    background:#f7f7f8 !important
+}
+
+.conum[data-value]{
+    display:inline-block;
+    color:#000!important;
+    background-color:rgba(230,230,230,1);
+    -webkit-border-radius:100px;
+    border-radius:100px;
+    text-align:center;
+    font-size:.75em;
+    width:1.67em;
+    height:1.67em;
+    line-height:1.67em;
+}
+.conum[data-value]+b{display:none}
+.conum[data-value]:after{content:attr(data-value)}
+pre .conum[data-value]{position:relative;top:-.125em}
+b.conum *{color:inherit!important}
+.conum:not([data-value]):empty{display:none}

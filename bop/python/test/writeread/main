@@ -1,0 +1,25 @@
+### write and read sequence of 10 int
+# TEST: wr.seq
+:
+set -eu
+f=tmp
+:
+python3 <<EOF
+import pybop
+n = 10
+a = range(n)
+bop = pybop.PyBop()
+bop.set_n(n)
+bop.set_vars(1, "a")
+bop.set_type("asciiint")
+bop.alloc()
+bop.set_data(a)
+bop.write("$f")
+EOF
+:
+python3 > all.out.txt <<EOF
+import pybop
+bop = pybop.PyBop()
+bop.read("$f.bop")
+print(bop.get_int_data())
+EOF

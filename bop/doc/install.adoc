@@ -1,0 +1,19 @@
+= Installation
+
+The following will install the binaries into `${HOME}/bin`. This folder needs to be in the `PATH` variable.
+Furthermore, it installs the headers and library into
+`PREFIX/bop/include` and `PREFIX/bop/lib`, respectively.
+`PREFIX` is set to `${HOME}/prefix` by default.
+
+[source,sh]
+----
+./configure --prefix PREFIX
+make
+----
+
+After installation, it is recommended to run tests (uses link:https://gitlab.ethz.ch/mavt-cse/atest[atest] framework):
+
+[source,sh]
+----
+make -s test
+----

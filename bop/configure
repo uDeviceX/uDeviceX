@@ -1,0 +1,63 @@
+#!/bin/sh
+
+usg() {
+    cat <<EOF
+usage: configure [OPTION]
+
+Options:
+
+  --prefix <prefix>          set bop installation prefix;
+  	   		     default: ${HOME}/prefix
+  --prefix-pybind11 <prefix> set pybind11 installation prefix;
+  	   		     default: ${HOME}/prefix
+  --help                     print help message
+
+
+Compilation (after running configure):
+
+make [VARS]
+
+VARS:
+  
+  CXX           c compiler (default: g++)
+  CXXFLAGS      c flags for serial version
+  MPICXX        mpi compiler (default: mpic++)
+  MPICXXFLAGS   c flags for mpi version
+
+EOF
+    exit 1
+}
+
+dump() {
+    cat <<EOF
+prefix=$prefix
+PYBIND_PREFIX=$prefix_pybind11
+EOF
+}
+
+prefix=${HOME}/prefix
+prefix_pybind11=${HOME}/prefix
+
+while test $# -gt 0; do
+    case "$1" in
+	--prefix)
+	    shift
+	    prefix="$1"
+	    ;;
+	--prefix-pybind11)
+	    shift
+	    prefix_pybind11="$1"
+	    ;;
+	--help)
+	    usg
+	    ;;
+	*)
+	    usg
+	    ;;
+    esac
+    shift
+done
+
+dump > make/usr.mk
+
+exit 0

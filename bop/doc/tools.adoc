@@ -1,0 +1,18 @@
+= Tools
+
+== Converters
+
+Convert bop files `in1.bop`, `in2.bop`, ..., `inN.bop` into a single vtk file `out.vtk`:
+
+[source,sh]
+----
+bop2vtk out.vtk in1.bop in2.bop ... inN.bop
+----
+
+Dump ascii data from bop files `in1.bop`, `in2.bop`, ..., `inN.bop` into `out.txt`:
+
+[source,sh]
+----
+bop2txt in1.bop in2.bop ... inN.bop > out.txt
+----
+

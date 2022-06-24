@@ -1,0 +1,27 @@
+= serial interface
+
+Interface specific to sequential version
+
+== write
+
+[source,cpp]
+----
+include::{src}/bop_serial.h[tag=write]
+----
+<1> write the header file from `BopData`
+<2> write the data file from `BopData`
+
+Note that `name` is the basename of the file, without the extension.
+This results in the header file `name.bop` and int the data file `name.values`.
+
+== read
+
+[source,cpp]
+----
+include::{src}/bop_serial.h[tag=read]
+----
+<1> read and parse the header file. returns the name of the data file
+    in the (user provided) buffer `dfname`
+<2> read data file and store it inside the internal buffer of the
+    `BopData` structure
+

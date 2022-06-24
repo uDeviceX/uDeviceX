@@ -1,0 +1,24 @@
+### read sequence of 3-comp. vectors
+# TEST: read.seq
+:
+f=tmp
+:
+cat > $f.values <<EOF
+1 1 1
+2 2 2
+EOF
+:
+cat > $f.bop << EOF
+2
+DATA_FILE: $f.values
+DATA_FORMAT: iascii
+VARIABLES: a b c
+EOF
+:
+python3 > seq.out.txt <<EOF
+import pybop
+bop = pybop.PyBop()
+bop.read("$f.bop")
+print(bop.get_n())
+print(bop.get_int_data())
+EOF

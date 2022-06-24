@@ -1,0 +1,17 @@
+### write sequence of 10 int
+# TEST: write.seq
+:
+python3 <<EOF
+import pybop
+n = 10
+a = range(n)
+bop = pybop.PyBop()
+bop.set_n(n)
+bop.set_vars(1, "a")
+bop.set_type("asciiint")
+bop.alloc()
+bop.set_data(a)
+bop.write("seq")
+EOF
+:
+cat seq.values > seq.out.txt

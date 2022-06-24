@@ -1,0 +1,4 @@
+4
+DATA_FILE: ascii-0.values
+DATA_FORMAT: ascii
+VARIABLES: x y z

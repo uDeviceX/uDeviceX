@@ -1,0 +1,34 @@
+= mpi interface
+
+Interface specific to mpi version
+
+== write
+
+[source,cpp]
+----
+include::{src}/bop_mpi.h[tag=write]
+----
+<1> write the header file from `BopData`. Must be called by all ranks
+    of the communicator `comm`.
+<2> write the data file from `BopData`. Must be called by all ranks
+    of the communicator `comm`.
+
+Note that `name` is the basename of the file, without the extension.
+This results in the header file `name.bop` and int the data file `name.values`.
+
+The header file will contain the total number of particles, it is reduced internally.
+
+== read
+
+[source,cpp]
+----
+include::{src}/bop_mpi.h[tag=read]
+----
+<1> read and parse the header file. returns the name of the data file
+    in the (user provided) buffer `dfname`.
+<2> read data file and store it inside the internal buffer of the
+    `BopData` structure. This is a collective operation.
+
+Note: The collective read for ascii values is not supported.
+The user must use the serial implementation.
+

@@ -1,0 +1,48 @@
+#!/bin/sh
+
+set -eu
+
+GIT_PAGES="git@github.com:amlucas/bop.git"
+BRANCH="gh-pages"
+
+ROOT="/bop"
+DOC=doc_
+
+make clean && make ROOT=${ROOT}
+
+T="./public"
+rm -rf $T
+# html, css, include, directories
+H=`find . -type f -name "*.html"`
+C=`find . -type f -name "*.css"`
+D=`find . -type d`
+
+# create tmp doc direcory
+for d in $D; do
+     mkdir -p "${T}/${d}"
+done
+
+for h in $H $C; do
+    cp -f $h "${T}/${h}"
+done
+
+# copy to remote git repo
+
+git clone $GIT_PAGES -b $BRANCH $DOC
+
+rm -rf ${DOC}/*
+mv $T/* ${DOC}
+
+# push to remote
+COMMITID=`git rev-parse HEAD`
+mydir=`pwd`
+cd $DOC
+# upd readme
+echo "https://amlucas.github.io/bop/" > README.adoc
+git add *
+git commit -a -m "automatic deploy from commit ${COMMITID}"
+git push origin $BRANCH
+
+# cleanup
+cd ${mydir}
+rm -rf $T ${DOC}

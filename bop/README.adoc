@@ -1,0 +1,6 @@
+= BOP
+
+A simple format for cloud data.
+
+Documentation: https://amlucas.github.io/bop/
+

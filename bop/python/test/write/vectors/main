@@ -1,0 +1,18 @@
+### write sequence of 10 3-comp. vectors
+# TEST: write.vect
+:
+python3 <<EOF
+import pybop
+n = 10
+d = 3
+a = [0.5 * i for i in range(n*d)]
+bop = pybop.PyBop()
+bop.set_n(n)
+bop.set_vars(d, "a b c")
+bop.set_type("asciifloat")
+bop.alloc()
+bop.set_data(a)
+bop.write("seq")
+EOF
+:
+cat seq.values > seq.out.txt

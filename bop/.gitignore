@@ -1,0 +1,7 @@
+*.o
+test.out.txt
+test.out.vtk
+/seq2bop
+/rwascii
+/bop2txt
+/bop2vtk

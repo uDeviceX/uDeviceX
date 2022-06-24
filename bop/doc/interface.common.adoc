@@ -1,0 +1,76 @@
+= Common Interface
+
+== memory management
+
+The `BopData` data structure is hidden from user and can be
+allocated/deallocated using the following functions:
+
+[source,cpp]
+----
+include::{src}/bop_common.h[tag=mem]
+----
+<1> allocate hidden structure `BopData`
+<2> allocate space for the data based on the set variables `n`,
+    `nvars` and `type`
+<3> deallocate the hidden structure and, if needed, the internal
+    buffer for data
+
+== setters
+
+A description of the data can be set using the following functions:
+
+[source,cpp]
+----
+include::{src}/bop_common.h[tag=set]
+----
+<1> set the number of particles
+<2> set the number of variables and their names separated by space in a sigle string
+<3> set the type of the data
+<4> get a pointer of the internal data buffer (read, write)
+
+The type is defined in the enumeration type:
+
+[source,cpp]
+----
+include::{src}/bop_common.h[tag=type]
+----
+
+== getters
+
+The informations stored in the `BopData` descriptor can be retrieved
+by using the following getter functions:
+
+[source,cpp]
+----
+include::{src}/bop_common.h[tag=get]
+----
+<1> get the number of particles
+<2> get the number of fields
+<3> get the variable names in `Cbuf` array
+<4> get variable names in `const char**` format
+<5> get the type of the data
+<6> get a pointer on the internal buffer (read only)
+
+== Error handling
+
+Any function from the library returns an error status encoded in the
+`BopStatus` type.
+The status can be interpreted by calling the functions:
+
+[source,cpp]
+----
+include::{src}/bop_common.h[tag=err]
+----
+<1> returns `true` on success and `false` if an error occured
+<2> returns a description of the status
+<3> report additional informations on the error
+
+== Convenient tools 
+
+[source,cpp]
+----
+include::{src}/bop_common.h[tag=tools]
+----
+<1> output summary in stdout stream
+<2> cancatenate `nd` `BopData` structures into one
+

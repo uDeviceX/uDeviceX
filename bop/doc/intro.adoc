@@ -1,0 +1,41 @@
+= Introduction
+
+The _bop_ (bricks of particles) format is a simple file format for cloud data.
+The name is inspired from the _bov_ (bricks of values) format for
+grid data in visit.
+
+It consists in two files:
+
+* a header file (extension: `.bop`), in ascii format, containing a description of the data
+* a data file (extension: `.values`), in binary or ascii, containing the data
+
+The header file has the following format, for `<N>` particles:
+
+----
+<N>
+DATA_FILE: <file.values>
+DATA_FORMAT: <float|ascii|double|int|iascii>
+VARIABLES: <x> <y> <z> <vx> <vy> <vz> <id> ...
+NRANK: <m>
+<n1>
+<n2>
+<n3>
+...
+<nm>
+----
+where `<n1>`, `<n2>`, ... are the number of particles per mpi rank.
+`NRANK` and these fields are optional.
+
+`file.values` format:
+
+----
+x[0] y[0] z[0] vx[0] vy[0] vz[0] id[0]
+...
+
+x[N-1] y[N-1] ...
+----
+
+The `ascii` format is assumed to be single precision floating points data.
+Th `iascii` format is the ascii version for integer data.
+Other formats are binary.
+

@@ -1,0 +1,17 @@
+### write sequence of 10 float
+# TEST: write.float
+:
+python3 <<EOF
+import pybop
+n = 10
+a = [0.5 * i for i in range(n)]
+bop = pybop.PyBop()
+bop.set_n(n)
+bop.set_vars(1, "a")
+bop.set_type("asciifloat")
+bop.alloc()
+bop.set_data(a)
+bop.write("seq")
+EOF
+:
+cat seq.values > seq.out.txt

@@ -1,0 +1,4 @@
+4
+DATA_FILE: ascii-2.values
+DATA_FORMAT: ascii
+VARIABLES: s t u
