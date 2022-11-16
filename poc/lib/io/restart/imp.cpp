@@ -5,7 +5,6 @@
 #include "bop/bop_common.h"
 #include "bop/bop_mpi.h"
 
-#include <conf.h>
 #include "inc/conf.h"
 
 #include "mpi/wrapper.h"

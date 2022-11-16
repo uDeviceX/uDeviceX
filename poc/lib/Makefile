@@ -20,7 +20,7 @@ all: libudx_c.a libudx_g.a
 .c.o:
 	$(MPICC) -c -I. -I`dirname $<` $(CFLAGS) $< -o $@
 .cu.o:
-	$(NVCC) $(NVCCFLAGS) -c -I. -I`dirname $<` $(CXXFLAGS) $(HDF5_CXXFLAGS) $< -o $@
+	$(NVCC) -c -I. -I`dirname $<` $(NVCCFLAGS) $(HDF5_CXXFLAGS) $< -o $@
 
 libudx_c.a: $(O_C); ar r $@ $(O_C) && ranlib $@
 libudx_g.a: $(O_G); ar r $@ $(O_G) && ranlib $@

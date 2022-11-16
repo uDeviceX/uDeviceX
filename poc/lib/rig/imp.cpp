@@ -5,7 +5,6 @@
 #include <string.h>
 #include <math.h>
 
-#include <conf.h>
 #include "inc/conf.h"
 
 #include "utils/msg.h"

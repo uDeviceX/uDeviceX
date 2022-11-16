@@ -6,7 +6,6 @@
 #include <cuda_fp16.h>
 #endif
 
-#include <conf.h>
 #include "inc/conf.h"
 
 #include "utils/error.h"

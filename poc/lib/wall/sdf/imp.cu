@@ -2,7 +2,7 @@
 
 #include <curand.h>
 
-#include <conf.h>
+
 #include "inc/conf.h"
 
 #include "d/q.h"

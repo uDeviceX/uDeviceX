@@ -2,9 +2,6 @@
 #include <math.h>
 #include <vector_types.h>
 #include <assert.h>
-
-#include <conf.h>
-
 #include "utils/error.h"
 #include "utils/imp.h"
 #include "utils/msg.h"

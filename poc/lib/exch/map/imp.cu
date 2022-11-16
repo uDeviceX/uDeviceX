@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <assert.h>
 
-#include <conf.h>
+
 #include "inc/conf.h"
 #include "inc/dev.h"
 

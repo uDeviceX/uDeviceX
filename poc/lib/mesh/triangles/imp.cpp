@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <vector_types.h>
 
-#include <conf.h>
 #include "inc/conf.h"
 
 #include "d/api.h"

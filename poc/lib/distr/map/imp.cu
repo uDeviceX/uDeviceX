@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#include <conf.h>
+
 #include "inc/conf.h"
 #include "inc/dev.h"
 

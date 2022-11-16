@@ -1,7 +1,7 @@
 #include <mpi.h>
 #include <assert.h>
 
-#include <conf.h>
+
 #include "inc/conf.h"
 
 #include "utils/imp.h"

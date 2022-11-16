@@ -1,7 +1,6 @@
 #include <mpi.h>
 #include <math.h>
 
-#include <conf.h>
 #include "inc/conf.h"
 
 #include "conf/imp.h"

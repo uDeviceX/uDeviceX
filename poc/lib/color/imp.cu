@@ -2,7 +2,7 @@
 #include <curand_kernel.h>
 #include <assert.h>
 
-#include <conf.h>
+
 #include "inc/conf.h"
 
 #include "utils/msg.h"

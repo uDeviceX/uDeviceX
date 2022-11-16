@@ -3,7 +3,6 @@
 #include <string.h>
 #include <mpi.h>
 
-#include <conf.h>
 #include "inc/conf.h"
 
 #include "utils/error.h"

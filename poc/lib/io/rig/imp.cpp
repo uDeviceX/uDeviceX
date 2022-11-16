@@ -4,7 +4,6 @@
 
 #include "inc/type.h"
 
-#include <conf.h>
 #include "inc/conf.h"
 #include "utils/error.h"
 #include "utils/imp.h"
