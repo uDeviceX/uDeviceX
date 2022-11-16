@@ -47,6 +47,14 @@ io/txt/imp.o\
 io/vtk/imp.o\
 io/vtk/mesh/imp.o\
 io/write/imp.o\
+libconfig/grammar.o\
+libconfig/libconfig.o\
+libconfig/scanctx.o\
+libconfig/scanner.o\
+libconfig/strbuf.o\
+libconfig/strvec.o\
+libconfig/util.o\
+libconfig/wincompat.o\
 math/linal/imp.o\
 math/rnd/imp.o\
 math/tform/imp.o\

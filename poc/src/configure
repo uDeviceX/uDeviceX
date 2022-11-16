@@ -1,4 +1,4 @@
 {
-	find . -name '*.cpp' | sort | awk 'BEGIN {print "O_C = \\" } { sub(/^\.\//, ""); sub(/\.[^.]*$/, ".o"); print $0 "\\"} END {printf "\n"}'
+	find . -name '*.c' -or -name '*.cpp' | sort | awk 'BEGIN {print "O_C = \\" } { sub(/^\.\//, ""); sub(/\.[^.]*$/, ".o"); print $0 "\\"} END {printf "\n"}'
 	find . -name '*.cpp' | sort | awk 'BEGIN {print "O_G = \\" } { sub(/^\.\//, ""); sub(/\.[^.]*$/, ".o"); print $0 "\\"} END {printf "\n"}'
 } > var.mk

@@ -1,9 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <libconfig.h>
 #include <vector_types.h>
 
+#include "libconfig/libconfig.h"
 #include "utils/error.h"
 #include "utils/imp.h"
 #include "utils/msg.h"
