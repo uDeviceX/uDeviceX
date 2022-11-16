@@ -1,0 +1,1 @@
+find . -name '*.cpp' | sort | awk 'BEGIN {print "O = \\" } { sub(/^\.\//, ""); sub(/\.[^.]*$/, ".o"); print $0 "\\"} END {printf "\n"}'
