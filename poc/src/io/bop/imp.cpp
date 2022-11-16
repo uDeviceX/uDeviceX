@@ -2,8 +2,8 @@
 #include <string.h>
 #include <vector_types.h>
 
-#include <bop_common.h>
-#include <bop_mpi.h>
+#include "bop/bop_common.h"
+#include "bop/bop_mpi.h"
 
 #include "conf.h"
 #include "inc/conf.h"
