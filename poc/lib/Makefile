@@ -5,8 +5,8 @@
 .SUFFIXES: .cpp
 .SUFFIXES: .cu
 
-MPICXX = mpicxx
-MPICC = mpicc
+MPICXX = mpicxx.mpich
+MPICC = mpicc.mpich
 HDF5_CXXFLAGS = `pkg-config --cflags hdf5-mpich`
 NVCC = nvcc
 NVCCFLAGS = -arch=sm_35
