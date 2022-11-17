@@ -21,7 +21,11 @@ int is_device_pointer(const void *p) {
     cudaError_t e;
     e = cudaPointerGetAttributes(&a, p);
     if      (e == cudaErrorInvalidValue) return 0;
+#if CUDART_VERSION < 11000
     else if (a.memoryType != cudaMemoryTypeDevice) return 0;
+#else
+    else if (a.type != cudaMemoryTypeDevice) return 0;
+#endif
     else return 1;
 }
 
