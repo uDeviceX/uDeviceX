@@ -14,7 +14,7 @@ CXXFLAGS = -Ofast
 CFLAGS = -Ofast
 
 include var.mk
-all: libudx_c.a libudx_g.a
+all: libudx_c.a libudx_g.a libudx.a
 .cpp.o:
 	$(MPICXX) -c -I. -I`dirname $<` $(CXXFLAGS) $(HDF5_CXXFLAGS) $< -o $@
 .c.o:
@@ -24,6 +24,6 @@ all: libudx_c.a libudx_g.a
 
 libudx_c.a: $(O_C); ar r $@ $(O_C) && ranlib $@
 libudx_g.a: $(O_G); ar r $@ $(O_G) && ranlib $@
+libudx.a: $(O_G) $(O_C); ar r $@ $(O_G) $(O_C) && ranlib $@
 
-
-clean:; rm -rf libudx_g.a libudx_c.a $(O_C) $(O_G)
+clean:; rm -f libudx_g.a libudx_c.a libudx.a $(O_C) $(O_G)
