@@ -1,4 +1,8 @@
 #include <hdf5.h>
+#ifndef H5_HAVE_PARALLEL
+#error needs parallel HDF5
+#endif
+
 #include <vector_types.h>
 
 #include "coords/ini.h"
