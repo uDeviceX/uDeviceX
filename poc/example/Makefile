@@ -9,3 +9,4 @@ CXXFLAGS = -Ofast
 all: main
 .cpp:
 	$(MPICXX) $(CXXFLAGS) $< -I../lib ../lib/libudx.a -lcurand -lcudart $(HDF5_LDFLAGS) -o $@
+clean:; rm -f main
