@@ -11,6 +11,6 @@ CXXFLAGS = -Ofast
 all: main
 main: main.o
 .cpp.o:; $(MPICXX) -c $(CXXFLAGS) $< -I../lib
-main: main.o; $(NVCC) -lcurand -ccbin=$(MPICXX) --linker-options="$(HDF5_LDFLAGS)" $< -o $@
+main: main.o; $(NVCC) -lcurand -ccbin=$(MPICXX) --linker-options=$(HDF5_LDFLAGS) $< -o $@
 
 clean:; rm -f main main.o
