@@ -17,5 +17,5 @@ include var.mk
 libudx.a: $O; ar r $@ $O && ranlib $@
 .c.o:; $(MPICC) -c $(CFLAGS) $< -o $@
 .cpp.o:; $(MPICXX) -c -I`dirname $<` -I. $(CXXFLAGS) $(HDF5_CXXFLAGS) $< -o $@
-.cu.o:; $(NVCC) -c -I`dirname $<` -I. $(NVCCFLAGS) $(HDF5_CXXFLAGS) $< -o $@
+.cu.o:; $(NVCC) -ccbin=$(MPICXX) -c -I`dirname $<` -I. $(NVCCFLAGS) $< -o $@
 clean:; rm -f libudx.a $O
