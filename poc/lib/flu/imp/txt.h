@@ -12,7 +12,7 @@ static void local2global_p(const Coords *c, long n, Particle *pp) {
 
 static void gen_name(const Coords *c, /**/ char *name) {
     int r;
-    char stamp[FILENAME_MAX];
+    char stamp[FILENAME_MAX - 4];
     coord_stamp(c, /**/ stamp);
     r = sprintf(name, "%s.txt", stamp);
     if (r < 0) ERR("sprintf failed");
