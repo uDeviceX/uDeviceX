@@ -5,7 +5,7 @@
 .SUFFIXES: .cu
 .SUFFIXES: .o
 
-MPICXX = mpicxx.mpich
+MPICXX = mpicxx
 CC = c99
 HDF5_CXXFLAGS = `pkg-config --cflags hdf5-mpich`
 NVCC = nvcc
