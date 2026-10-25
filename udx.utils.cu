@@ -643,9 +643,6 @@ void msg_print(const char *fmt, ...) {
 }
 /* end src/utils/msg.cpp */
 
-#line 1 "src/utils/nvtx/imp.cpp"
-
-
 /* begin src/utils/os.cpp */
 #include <stdio.h>
 #include <stdlib.h>
