@@ -66,8 +66,7 @@ OBJECTS = \
  udx.mesh-distance-props.o \
  udx.mesh-eng_julicher.o \
  udx.mesh-eng_kantor.o \
- udx.mesh-force-kantor0.o \
- udx.mesh-force-kantor1.o \
+ udx.mesh-force-kantor.o \
  udx.mesh-gen-matrices.o \
  udx.mesh-gen.o \
  udx.mesh-topology.o \
