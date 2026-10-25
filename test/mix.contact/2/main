@@ -1,20 +1,43 @@
-#### contact force: several cell and rigid objects
-# nTEST: mix.contact.t2
-cd test/mix.contact/2
-X=16 Y=32 Z=16
-rad=3.0 fr=0.2 sc=0.5 ang=0.0
-SEED=123 plcmt.ro $X $Y $Z  $rad  $fr $sc $ang        rigs-ic.txt  rbcs-ic.txt
-u.cp.rig cylinder      rig.ply
-u.cp.rbc sph/sc/642    rbc.off
-u.cp.rbc rbc/sc/642    ref.off
-:
-u.run udx conf.cfg "
+#!/bin/sh
+set -eu
+
+root=${UDX_ROOT:?UDX_ROOT is not set}
+PATH="$root/pre/placement:$root/tools/regression/bin:$root/tools:$root/tools/atest:$PATH"
+export PATH
+work=$(mktemp -d "${TMPDIR:-/tmp}/udx-mix-contact.XXXXXX")
+trap 'rm -rf "$work"' EXIT INT TERM
+cd "$work"
+cp "$root/test/mix.contact/2/conf.cfg" "$root/test/mix.contact/2/rbc.test.cfg" .
+
+SEED=123 "$root/tools/regression/bin/plcmt.ro" 16 32 16 3.0 0.2 0.5 0.0 rigs-ic.txt rbcs-ic.txt
+"$root/tools/regression/bin/u.cp.rig" cylinder rig.ply
+"$root/tools/regression/bin/u.cp.rbc" sph/sc/642 rbc.off
+"$root/tools/regression/bin/u.cp.rbc" rbc/sc/642 ref.off
+
+mpirun -np "${UDX_NP:-1}" "$root/build/udx" conf.cfg "$(cat <<'CONFIG'
 glb = {
-    L = [$X, $Y, $Z]
+    L = [16, 32, 16]
+}
+dump = {
+    mesh = true
+    freq_mesh = 0.7500
+    field = true
+    freq_field = 0.7500
+}
+sampler = {
+    n_per_dump = 1
+    grid_ref = [1, 1, 1]
 }
 rbc = {
     stress_free      = true
-    stress_free_file = \"ref.off\"
-}"
-:
-ply2punto ply/rbc/00002.ply | uscale 0.1 > ply.out.txt
+    stress_free_file = "ref.off"
+}
+CONFIG
+)"
+
+raw_xmf=$(find raw -maxdepth 1 -name '*.xmf' -type f | sort | head -n 1)
+test -n "$raw_xmf"
+python3 "$root/tools/raw_grid.py" check "$raw_xmf" >/dev/null
+
+"$root/tools/ply2punto" ply/rbc/00002.ply | "$root/tools/atest/uscale" 0.1 > ply.out.txt
+"$root/tools/atest/ucmp" ply.out.txt "$root/test_data/ply.ref.mix.contact.t2.txt"

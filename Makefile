@@ -7,10 +7,6 @@ OPT = -O2 -g
 CPPFLAGS = -I.
 NVCCFLAGS = -std=c++11 $(OPT) -use_fast_math -restrict
 
-# Set these on the make command line when a dependency is not in a system path.
-NVTX_CPPFLAGS =
-NVCC_LIBS =
-LIBCONFIG_LIBS =
 MPI_LIBS = -lopen-rte -lopen-pal
 
 OBJECTS = \
@@ -22,7 +18,22 @@ OBJECTS = \
  udx.coords.o \
  udx.d.o \
  udx.dbg.o \
+ udx.algo-convert.o \
+ udx.algo-edg.o \
+ udx.algo-force_stat.o \
+ udx.algo-kahan_sum.o \
+ udx.algo-key_list.o \
+ udx.algo-minmax.o \
+ udx.algo-scan.o \
+ udx.algo-scalars.o \
+ udx.algo-vectors.o \
+ udx.control-den.o \
+ udx.control-inflow.o \
+ udx.control-outflow.o \
+ udx.control-vel.o \
  udx.distr-common.o \
+ udx.distr-flu-status.o \
+ udx.distr-flu.o \
  udx.distr-map.o \
  udx.distr-rbc.o \
  udx.distr-rig.o \
@@ -116,7 +127,6 @@ OBJECTS = \
  udx.struct-parray.o \
  udx.struct-pfarrays.o \
  udx.support.o \
- udx.utils-nvtx.o \
  udx.utils-string.o \
  udx.utils.o \
  udx.wall-exch.o \
@@ -137,13 +147,13 @@ DEVICE = build/device.o
 .SUFFIXES: .cu .o
 
 .cu.o:
-	$(NVCC) $(ARCH) -ccbin $(CCBIN) $(NVCCFLAGS) $(CPPFLAGS) $(NVTX_CPPFLAGS) -dc -c $< -o $@
+	$(NVCC) $(ARCH) -ccbin $(CCBIN) $(NVCCFLAGS) $(CPPFLAGS) -dc -c $< -o $@
 
 all: $(TARGET)
 
 $(TARGET): $(OBJECTS) $(DEVICE)
 	mkdir -p build
-	$(NVCC) $(ARCH) -ccbin $(CCBIN) $(NVCCFLAGS) $(OBJECTS) $(DEVICE) $(MPI_LIBS) $(NVCC_LIBS) $(LIBCONFIG_LIBS) -lcudart -lcurand -o $@
+	$(NVCC) $(ARCH) -ccbin $(CCBIN) $(NVCCFLAGS) $(OBJECTS) $(DEVICE) $(MPI_LIBS) -lcudart -lcurand -o $@
 
 $(DEVICE): $(OBJECTS)
 	mkdir -p build
