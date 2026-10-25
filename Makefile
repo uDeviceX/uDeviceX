@@ -35,3 +35,11 @@ cmd/python \
 
 install:
 	for d in $M; do ( cd "$$d" && make install) || exit 2; done
+
+flat:
+	$(MAKE) -f Makefile.flat
+
+flat-clean:
+	$(MAKE) -f Makefile.flat clean
+
+.PHONY: install flat flat-clean
