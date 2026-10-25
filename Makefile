@@ -104,10 +104,9 @@ OBJECTS = \
  udx.wall-force.o \
  udx.wall-sdf-grid-transform.o \
  udx.wall-sdf-bounce.o \
- udx.wall-sdf-sampling.o \
+ udx.wall-sdf-velocity.o \
  udx.wall-sdf-label.o \
  udx.wall-sdf.o \
- udx.wall-wvel.o \
  udx.wall.o
 
 TARGET = build/udx
