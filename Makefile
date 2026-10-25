@@ -99,8 +99,7 @@ OBJECTS = \
  udx.scheme-force.o \
  udx.scheme-move.o \
  udx.scheme-restrain.o \
- udx.scheme-time_line.o \
- udx.scheme-time_step.o \
+ udx.scheme-time.o \
  udx.sim-objects.o \
  udx.sim-objinter.o \
  udx.sim-opt.o \
