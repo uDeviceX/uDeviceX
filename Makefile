@@ -21,8 +21,7 @@ OBJECTS = \
  udx.algo-convert.o \
  udx.algo-edg-minmax.o \
  udx.algo-force_stat.o \
- udx.algo-kahan_sum.o \
- udx.algo-key_list.o \
+ udx.algo-accumulators.o \
  udx.algo-scan.o \
  udx.algo-scalars.o \
  udx.algo-vectors.o \
