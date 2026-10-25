@@ -151,8 +151,9 @@
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/algo/convert/imp.cu"
-/* begin src/algo/convert/imp.cu */#include <conf.h>
-/* begin src/inc/conf.h *//* [k]ernel [l]aunch macros */
+/* begin src/algo/convert/imp.cu */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
 #if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
     !defined(KL_SYNC)
 #define KL_RELEASE
@@ -187,7 +188,9 @@
 #define DUMP_BASE "."
 #endif
 /* end src/inc/conf.h */
-/* begin src/inc/type.h */#pragma once
+/* already included: src/inc/conf.h */
+/* begin src/inc/type.h */
+#pragma once
 
 template <typename T, int N>
 struct Sarray { /* [s]tatic array */
@@ -242,7 +245,8 @@ struct FoWrap {
     Force *ff;
 };
 /* end src/inc/type.h */
-/* begin src/inc/dev.h *//* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
+/* begin src/inc/dev.h */
+/* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
 
 /* a common kernel execution configuration */
@@ -280,10 +284,12 @@ struct FoWrap {
 #define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
 #define DzeroA(P, n)   DsetA(P, 0, n)
 /* end src/inc/dev.h */
-/* begin src/utils/kl.h *//* [k]ernel [l]aunch macros */
+/* begin src/utils/kl.h */
+/* [k]ernel [l]aunch macros */
 
 #if    defined(KL_RELEASE)
-/* begin src/utils/kl/release.h */#define KL_BEFORE(s, C) if (!kl::safe(ESC C)) continue;
+/* begin src/utils/kl/release.h */
+#define KL_BEFORE(s, C) if (!kl::safe(ESC C)) continue;
 #define KL_CALL(F, C, A) F<<<ESC C>>>A
 #define KL_AFTER(s)
 
@@ -293,14 +299,16 @@ namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
 #endif
 /* end src/utils/kl/release.h */
 #elif  defined(KL_NONE)
-/* begin src/utils/kl/none.h */#define KL_BEFORE(s, C)
+/* begin src/utils/kl/none.h */
+#define KL_BEFORE(s, C)
 #define KL_CALL(F, C, A)
 #define KL_AFTER(s)
 
 namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
 /* end src/utils/kl/none.h */
 #elif  defined(KL_SYNC)
-/* begin src/utils/kl/sync.h */#define KL_BEFORE(s, C) if (!kl::safe(ESC C)) continue;
+/* begin src/utils/kl/sync.h */
+#define KL_BEFORE(s, C) if (!kl::safe(ESC C)) continue;
 #define KL_CALL(F, C, A) F<<<ESC C>>>A
 #define KL_AFTER(s)                             \
     do {                                        \
@@ -314,7 +322,8 @@ namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
   #error KL_* is undefined
 #endif
 
-/* begin src/utils/kl/common.h */namespace kl {
+/* begin src/utils/kl/common.h */
+namespace kl {
 #pragma once
 
 inline int safe0(dim3 i, dim3 j) {
@@ -325,7 +334,8 @@ inline int safe(dim3 i, dim3 j)                    { return safe0(i, j); }
 inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
 }
 /* end src/utils/kl/common.h */
-/* begin src/utils/kl/macro.h */#define ESC(...) __VA_ARGS__
+/* begin src/utils/kl/macro.h */
+#define ESC(...) __VA_ARGS__
 #define KL(F, C, A)                             \
     do  {                                       \
         KL_BEFORE(#F, C);                       \
@@ -337,7 +347,8 @@ inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
 /* TODO: header includes header */
 /* end src/utils/kl.h */
 
-/* begin src/algo/convert/imp.h */struct Particle;
+/* begin src/algo/convert/imp.h */
+struct Particle;
 struct Positioncp;
 struct float4;
 
@@ -347,7 +358,8 @@ void convert_pp2f4_pos(int n, const float *pp, /**/ float4 *zpp);
 /* end src/algo/convert/imp.h */
 
 namespace convert_dev {
-/* begin src/algo/convert/dev/main.h */__global__ void pp2rr_current (long n, const Particle *pp, Positioncp *rr) {
+/* begin src/algo/convert/dev/main.h */
+__global__ void pp2rr_current (long n, const Particle *pp, Positioncp *rr) {
     enum {X, Y, Z};
     const float *s;
     float *d;
@@ -398,7 +410,8 @@ __global__ void pp2f4_pos(int n, const float *pp, /**/ float4 *zpp) {
 /* end src/algo/convert/dev/main.h */
 }
 
-/* begin src/algo/convert/imp/main.h */void convert_pp2rr_current (long n, const Particle *pp, Positioncp *rr) {
+/* begin src/algo/convert/imp/main.h */
+void convert_pp2rr_current (long n, const Particle *pp, Positioncp *rr) {
     KL(convert_dev::pp2rr_current, (k_cnf(n)), (n, pp, rr));
 }
 
@@ -712,10 +725,12 @@ void convert_pp2f4_pos(int n, const float *pp, /**/ float4 *zpp) {
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/algo/edg/imp.cpp"
-/* begin src/algo/edg/imp.cpp */#include <stdlib.h>
+/* begin src/algo/edg/imp.cpp */
+#include <stdlib.h>
 #include <stdio.h>
 
-/* begin src/utils/error.h */#define ERR(fmt, ...)  do {                                     \
+/* begin src/utils/error.h */
+#define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
         error_report();                                         \
         error_abort();                                          \
@@ -755,7 +770,8 @@ void error_abort();
 
 void error_print_stack();
 /* end src/utils/error.h */
-/* begin src/algo/edg/imp.h */// tag::interface[]
+/* begin src/algo/edg/imp.h */
+// tag::interface[]
 void edg_ini(int md, int nv,                     int *hx);
 void edg_set(int md, int i, int j, int val, /**/ int *hx,       int *hy); // <1>
 int  edg_get(int md, int i, int j,         const int *hx, const int *hy); // <2>
@@ -763,59 +779,25 @@ int  edg_valid(int md, int i, int j,         const int *hx); // <3>
 // end::interface[]
 /* end src/algo/edg/imp.h */
 
-/* begin src/algo/edg/imp/main.h */#include <stdlib.h>
+/* begin src/algo/edg/imp/main.h */
+#include <stdlib.h>
 #include <stdio.h>
 
-/* already included: src/utils/error.h *//* begin src/flu/imp.h */#pragma once
-
-// tag::struct[]
-struct FluQuants {
-    Particle *pp, *pp0;    /* particles on device  */
-    int       n;           /* particle number      */
-    Clist     *cells;      /* cell lists           */
-    ClistMap *mcells;      /* cell lists map       */
-    Particle *pp_hst;      /* particles on host    */
-
-    /* optional data */
-
-    bool ids, colors;
-
-    int *ii, *ii0;  /* global ids on device */
-    int *ii_hst;    /* global ids on host   */
-
-    int *cc, *cc0;  /* colors on device */
-    int *cc_hst;    /* colors on host   */
-
-    int maxp; /* maximum particle number */
-};
-// end::struct[]
-
-struct Coords;
-struct GenColor;
+/* already included: src/utils/error.h */
+/* begin src/sim/imp.h */
+struct Sim;
+struct Config;
 
 // tag::mem[]
-void flu_ini(bool colors, bool ids, int3 L, int maxp, FluQuants *q);
-void flu_fin(FluQuants *q);
+void sim_ini(const Config*, MPI_Comm, /**/ Sim**);
+void sim_fin(Sim*);
 // end::mem[]
 
-// tag::gen[]
-void flu_gen_quants(const Coords*, int numdensity, const GenColor *gc, FluQuants *q); // <1>
-void flu_gen_ids(MPI_Comm, const int n, FluQuants *q); // <2>
-// end::gen[]
-
-// tag::start[]
-void flu_strt_quants(MPI_Comm, const char *base, const int id, FluQuants *q);     // <1>
-void flu_strt_dump(MPI_Comm, const char *base, const int id, const FluQuants *q); // <2>
-// end::start[]
-
-// tag::tools[]
-void flu_txt_dump(const Coords*, const FluQuants *q); // <1>
-
-/* build cells only from one array of particles fully contained in the domain */
-/* warning: this will delete particles which are outside                      */
-void flu_build_cells(/**/ FluQuants *q); // <2>
-// end::tools[]
-/* end src/flu/imp.h */
+// tag::run[]
+void sim_gen(Sim*);  // <1>
+void sim_strt(Sim*); // <2>
+// end::run[]
+/* end src/sim/imp.h */
 
 void edg_ini(int md, int nv, /**/ int *hx) {
     int n, i;
@@ -1153,15 +1135,20 @@ int edg_valid(int md, int i, int x, const int *hx) { /* valid? */
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/algo/force_stat/imp.cu"
-/* begin src/algo/force_stat/imp.cu */#include <thrust/device_ptr.h>
+/* begin src/algo/force_stat/imp.cu */
+#include <thrust/device_ptr.h>
 #include <thrust/transform_reduce.h>
 
-/* already included: src/inc/type.h *//* already included: src/utils/error.h *//* begin src/utils/msg.h */// tag::int[]
+/* already included: src/inc/type.h */
+/* already included: src/utils/error.h */
+/* begin src/utils/msg.h */
+// tag::int[]
 void msg_ini(int rank); // <1>
 void msg_print(const char *fmt, ...); // <2>
 // end::int[]
 /* end src/utils/msg.h */
-/* begin src/d/api.h */#pragma once
+/* begin src/d/api.h */
+#pragma once
 
 namespace d {  /* a wrapper for device API */
 typedef int Stream_t; /* TODO: streams are not supported */
@@ -1193,12 +1180,14 @@ int PeekAtLastError(void);
 }
 /* end src/d/api.h */
 
-/* begin src/algo/force_stat/imp.h */struct Force;
+/* begin src/algo/force_stat/imp.h */
+struct Force;
 
 /* sqrt(max(fx^2 + fy^2 + fz^2)) */
 float force_stat_max(int n, const Force*);
 /* end src/algo/force_stat/imp.h */
-/* begin src/algo/force_stat/imp/main.h */static __device__ float sumsq(Force f) {
+/* begin src/algo/force_stat/imp/main.h */
+static __device__ float sumsq(Force f) {
     enum {X, Y, Z};
     float x, y, z;
     x = f.f[X]; y = f.f[Y]; z = f.f[Z];
@@ -1527,9 +1516,11 @@ float force_stat_max(int n, const Force *dev) {
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/algo/kahan_sum/imp.cpp"
-/* begin src/algo/kahan_sum/imp.cpp */#include <stdio.h>
+/* begin src/algo/kahan_sum/imp.cpp */
+#include <stdio.h>
 
-/* begin src/utils/imp.h */// tag::mem[]
+/* begin src/utils/imp.h */
+// tag::mem[]
 void emalloc(size_t, /**/ void**); // <1>
 void efree(void*); // <2>
 void *ememcpy(void *dest, const void *src, size_t n); // <3>
@@ -1555,7 +1546,9 @@ const char* get_filename_ext(const char*);
 // end::tools[]
 /* end src/utils/imp.h */
 /* already included: src/utils/error.h */
-/* begin src/algo/kahan_sum/imp.h */struct KahanSum;
+
+/* begin src/algo/kahan_sum/imp.h */
+struct KahanSum;
 
 // tag::interface[]
 void kahan_sum_ini(/**/ KahanSum**);
@@ -1566,7 +1559,8 @@ double kahan_sum_get(const KahanSum*); // <2>
 double kahan_sum_compensation(const KahanSum*); // <3>
 // end::interface[]
 /* end src/algo/kahan_sum/imp.h */
-/* begin src/algo/kahan_sum/imp/type.h *//*
+/* begin src/algo/kahan_sum/imp/type.h */
+/*
 
 var sum = 0.0
     var c = 0.0
@@ -1584,7 +1578,8 @@ struct KahanSum {
     double c, y, sum;
 };
 /* end src/algo/kahan_sum/imp/type.h */
-/* begin src/algo/kahan_sum/imp/main.h */void kahan_sum_ini(/**/ KahanSum **pq) {
+/* begin src/algo/kahan_sum/imp/main.h */
+void kahan_sum_ini(/**/ KahanSum **pq) {
     KahanSum *q;
     EMALLOC(1, &q);
     q->c = q->sum = 0;
@@ -1908,13 +1903,19 @@ double kahan_sum_compensation(const KahanSum *q) { return q->c; }
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/algo/key_list/imp.cpp"
-/* begin src/algo/key_list/imp.cpp */#include <stdio.h>
+/* begin src/algo/key_list/imp.cpp */
+#include <stdio.h>
 #include <string.h>
 
-/* already included: src/utils/error.h *//* already included: src/utils/imp.h *//* already included: src/utils/msg.h *//* begin src/utils/string/imp.h */int string_nword(const char *s);
+/* already included: src/utils/error.h */
+/* already included: src/utils/imp.h */
+/* already included: src/utils/msg.h */
+/* begin src/utils/string/imp.h */
+int string_nword(const char *s);
 /* end src/utils/string/imp.h */
 
-/* begin src/algo/key_list/imp.h */struct KeyList;
+/* begin src/algo/key_list/imp.h */
+struct KeyList;
 
 void key_list_ini(KeyList**);
 void key_list_copy(KeyList*, /**/ KeyList**);
@@ -1933,7 +1934,8 @@ void key_list_unmark(KeyList*);
 
 void key_list_log(KeyList*);
 /* end src/algo/key_list/imp.h */
-/* begin src/algo/key_list/imp/type.h */enum {MAX_NK = 100 };
+/* begin src/algo/key_list/imp/type.h */
+enum {MAX_NK = 100 };
 enum {STAMP_GOOD = 42 };
 
 struct KeyList {
@@ -1944,9 +1946,11 @@ struct KeyList {
     int stamp;
 };
 /* end src/algo/key_list/imp/type.h */
-/* begin src/algo/key_list/imp/util.h */static char *cpy(char *dest, const char *src) { return strncpy(dest, src, FILENAME_MAX); }
+/* begin src/algo/key_list/imp/util.h */
+static char *cpy(char *dest, const char *src) { return strncpy(dest, src, FILENAME_MAX); }
 /* end src/algo/key_list/imp/util.h */
-/* begin src/algo/key_list/imp/main.h */void key_list_ini(KeyList **pq) {
+/* begin src/algo/key_list/imp/main.h */
+void key_list_ini(KeyList **pq) {
     KeyList *q;
     EMALLOC(1, &q);
     q->nk = 0;
@@ -2375,11 +2379,14 @@ void key_list_log(KeyList *q) {
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/algo/minmax/imp.cu"
-/* begin src/algo/minmax/imp.cu */#include <stdio.h>
+/* begin src/algo/minmax/imp.cu */
+#include <stdio.h>
 
-#include <conf.h>
 /* already included: src/inc/conf.h */
-/* begin src/inc/def.h *//* solvent colors */
+/* already included: src/inc/conf.h */
+
+/* begin src/inc/def.h */
+/* solvent colors */
 #define XMACRO_COLOR(_)                         \
     _(BLUE)                                     \
     _(RED)
@@ -2433,14 +2440,18 @@ enum {
 /* for the spring forces r = min(lmax*RBC_SPRING_CAP, r) */
 #define RBC_SPRING_CAP (0.99)
 /* end src/inc/def.h */
-/* already included: src/utils/msg.h *//* begin src/d/q.h *//* function and variable type [q]ualifiers */
+/* already included: src/utils/msg.h */
+/* begin src/d/q.h */
+/* function and variable type [q]ualifiers */
 
 #if   defined(DEV_CUDA)
-/* begin src/d/cuda/q.h *//* B.1. Function Type Qualifiers */
+/* begin src/d/cuda/q.h */
+/* B.1. Function Type Qualifiers */
 /* B.2. Variable Type Qualifiers */
 /* end src/d/cuda/q.h */
 #elif defined(DEV_CPU)
-/* begin src/d/cpu/q.h *//* B.1. Function Type Qualifiers */
+/* begin src/d/cpu/q.h */
+/* B.1. Function Type Qualifiers */
 #ifdef __device__
   #undef  __device__
   #define __device__
@@ -2492,8 +2503,10 @@ enum {
   #error DEV_* is undefined
 #endif
 /* end src/d/q.h */
-/* begin src/d/ker.h */#if   defined(DEV_CUDA)
-/* begin src/d/cuda/ker.h */#define  Ifetch(t, i)  tex1Dfetch(t, i)
+/* begin src/d/ker.h */
+#if   defined(DEV_CUDA)
+/* begin src/d/cuda/ker.h */
+#define  Ifetch(t, i)  tex1Dfetch(t, i)
 #define F4fetch(t, i)  tex1Dfetch(t, i)
 #define F2fetch(t, i)  tex1Dfetch(t, i)
 #define  Ffetch(t, i)  tex1Dfetch(t, i)
@@ -2502,7 +2515,8 @@ enum {
 #define Ttex3D(T, to, i, j, k) tex3D<T>(to, i, j, k);
 /* end src/d/cuda/ker.h */
 #elif defined(DEV_CPU)
-/* begin src/d/cpu/ker.h */#define atomicAdd(...) (0)
+/* begin src/d/cpu/ker.h */
+#define atomicAdd(...) (0)
 
 #define atomicExch(...)
 #define __float2half_rn(...) (0)
@@ -2526,7 +2540,8 @@ enum {
 
 #define Ttex3D(T, to, i, j, k) (T{})
 /* end src/d/cpu/ker.h */
-/* begin src/d/cpu/wrap.h */namespace d {
+/* begin src/d/cpu/wrap.h */
+namespace d {
 static uint3 threadIdx, blockIdx, gridDim;
 static dim3  blockDim;
 static int   warpSize = 1;
@@ -2543,7 +2558,11 @@ static int   warpSize = 1;
 #endif
 /* end src/d/ker.h */
 /* already included: src/d/api.h */
-/* already included: src/inc/type.h *//* already included: src/inc/dev.h *//* begin src/algo/utils/shfl.h */#define _I_ static __device__
+
+/* already included: src/inc/type.h */
+/* already included: src/inc/dev.h */
+/* begin src/algo/utils/shfl.h */
+#define _I_ static __device__
 
 #if __CUDACC_VER_MAJOR__ >= 9
 #pragma once
@@ -2579,7 +2598,8 @@ _I_ T shfl(T val, unsigned int width) {
 
 #undef _I_
 /* end src/algo/utils/shfl.h */
-/* begin src/algo/utils/dev.h */#define _S_ static __device__
+/* begin src/algo/utils/dev.h */
+#define _S_ static __device__
 #define _I_ static __device__
 
 // tag::int[]
@@ -2623,7 +2643,9 @@ _I_ float3 warpReduceSum(float3 val)  // <3>
 /* end src/algo/utils/dev.h */
 
 /* already included: src/utils/kl.h */
-/* begin src/struct/particle/dev.h */#pragma once
+
+/* begin src/struct/particle/dev.h */
+#pragma once
 
 static __device__ float3 fetch_pos(int i, const Particle *pp) {
     enum {X, Y, Z};
@@ -2640,7 +2662,8 @@ static __device__ float3 fetch_vel(int i, const Particle *pp) {
 }
 /* end src/struct/particle/dev.h */
 
-/* begin src/algo/minmax/imp.h */struct Particle;
+/* begin src/algo/minmax/imp.h */
+struct Particle;
 struct float3;
 // tag::interface[]
 void minmax(const Particle *pp, int nv, int nobj, /**/ float3 *lo, float3 *hi);
@@ -3042,10 +3065,14 @@ void minmax(const Particle *pp, int nv, int nobj, /**/ float3 *lo, float3 *hi) {
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/algo/scalars/imp.cpp"
-/* begin src/algo/scalars/imp.cpp */#include <stdio.h>
+/* begin src/algo/scalars/imp.cpp */
+#include <stdio.h>
 
-/* already included: src/utils/imp.h *//* already included: src/utils/error.h */
-/* begin src/algo/vectors/imp.h */struct Particle;
+/* already included: src/utils/imp.h */
+/* already included: src/utils/error.h */
+
+/* begin src/algo/vectors/imp.h */
+struct Particle;
 struct Vectors;
 struct Coords;
 
@@ -3062,7 +3089,8 @@ void vectors_get(const Vectors*, int i, /**/ float r[3]); // <7>
 // end::interface[]
 /* end src/algo/vectors/imp.h */
 
-/* begin src/algo/scalars/imp.h */struct Particle;
+/* begin src/algo/scalars/imp.h */
+struct Particle;
 struct Scalars;
 struct Vectors;
 
@@ -3078,7 +3106,8 @@ void scalars_fin(Scalars*);
 double scalars_get(const Scalars*, int i);
 // end::interface[]
 /* end src/algo/scalars/imp.h */
-/* begin src/algo/scalars/imp/type.h */struct Scalars {
+/* begin src/algo/scalars/imp/type.h */
+struct Scalars {
     int type;
     int n;
     union {
@@ -3107,7 +3136,8 @@ static double (*get[])(const Scalars*, int i) =
 { float_get,  double_get, vecx_get, vecy_get, vecz_get, zero_get, one_get};
 }
 /* end src/algo/scalars/imp/type.h */
-/* begin src/algo/scalars/imp/main.h */void scalars_float_ini(int n, const float *rr, /**/ Scalars **pq) {
+/* begin src/algo/scalars/imp/main.h */
+void scalars_float_ini(int n, const float *rr, /**/ Scalars **pq) {
     Scalars *q;
     EMALLOC(1, &q);
     q->type = scalars_impl::FLOAT; q->n = n; q->D.ff = rr;
@@ -3492,13 +3522,20 @@ double scalars_get(const Scalars *q, int i) {
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/algo/scan/imp.cu"
-/* begin src/algo/scan/imp.cu */#include <stdio.h>
-#include <conf.h>
+/* begin src/algo/scan/imp.cu */
+#include <stdio.h>
 /* already included: src/inc/conf.h */
-/* already included: src/inc/dev.h *//* already included: src/utils/imp.h *//* already included: src/utils/error.h *//* begin src/utils/cc.h *//* [c]uda [c]heck macros */
+/* already included: src/inc/conf.h */
+
+/* already included: src/inc/dev.h */
+/* already included: src/utils/imp.h */
+/* already included: src/utils/error.h */
+/* begin src/utils/cc.h */
+/* [c]uda [c]heck macros */
 
 #if   defined(CC_SYNC)
-/* begin src/utils/cc/sync.h *//* Aggressive [sync]ronization */
+/* begin src/utils/cc/sync.h */
+/* Aggressive [sync]ronization */
 #define CC(ans)                                             \
     do {                                                    \
         d::DeviceSynchronize();                             \
@@ -3507,7 +3544,8 @@ double scalars_get(const Scalars *q, int i) {
     } while (0)
 /* end src/utils/cc/sync.h */
 #elif defined(CC_RELEASE)
-/* begin src/utils/cc/release.h *//* [c]cuda [c]heck */
+/* begin src/utils/cc/release.h */
+/* [c]cuda [c]heck */
 #define CC(ans)                                             \
     do { cc::check((ans), __FILE__, __LINE__);} while (0)
 /* end src/utils/cc/release.h */
@@ -3515,7 +3553,8 @@ double scalars_get(const Scalars *q, int i) {
   #error CC_* is undefined
 #endif
 
-/* begin src/utils/cc/common.h */namespace cc {
+/* begin src/utils/cc/common.h */
+namespace cc {
 void check(int rc, const char *file, int line);
 }
 
@@ -3524,8 +3563,13 @@ void check(int rc, const char *file, int line);
 
 /* TODO: header includes header */
 /* end src/utils/cc.h */
-/* already included: src/utils/kl.h *//* already included: src/d/api.h *//* already included: src/d/q.h *//* already included: src/d/ker.h */
-/* begin src/algo/scan/imp.h */struct Scan;
+/* already included: src/utils/kl.h */
+/* already included: src/d/api.h */
+/* already included: src/d/q.h */
+/* already included: src/d/ker.h */
+
+/* begin src/algo/scan/imp.h */
+struct Scan;
 
 // tag::interface[]
 void scan_apply(const int *input, int size, /**/ int *output, /*w*/ Scan*); // <1>
@@ -3535,7 +3579,9 @@ void scan_fin(Scan*);                                                       // <
 /* end src/algo/scan/imp.h */
 
 namespace scan_dev {
-/* already included: src/algo/utils/shfl.h *//* begin src/algo/scan/dev.h */__global__ void compress(const int nentries, const int4 *const in, uchar4 *const out) {
+/* already included: src/algo/utils/shfl.h */
+/* begin src/algo/scan/dev.h */
+__global__ void compress(const int nentries, const int4 *const in, uchar4 *const out) {
     const int gid = threadIdx.x + blockDim.x * blockIdx.x;
 
     if (4 * gid >= nentries)
@@ -3736,13 +3782,15 @@ __global__ void gexscan(const uint4 *vin, unsigned int *offs, uint4 *vout, int n
 }
 
 #if   defined(DEV_CUDA)
-/* begin src/algo/scan/cuda/type.h */struct Scan {
+/* begin src/algo/scan/cuda/type.h */
+struct Scan {
     int size;
     unsigned int  *tmp;
     unsigned char *compressed;
 };
 /* end src/algo/scan/cuda/type.h */
-/* begin src/algo/scan/cuda/imp.h */enum { THREADS = 128 };
+/* begin src/algo/scan/cuda/imp.h */
+enum { THREADS = 128 };
 static void scan0(const unsigned char *input, int size, /**/ uint *output, /*w*/ uint *tmp) {
     int nblocks = ((size / 16) + THREADS - 1 ) / THREADS;
     KL(scan_dev::breduce<THREADS/32>, (nblocks, THREADS                ), ((uint4 *)input, tmp, size / 16));
@@ -3776,9 +3824,11 @@ void scan_fin(/**/ Scan *w) {
 }
 /* end src/algo/scan/cuda/imp.h */
 #elif defined(DEV_CPU)
-/* begin src/algo/scan/cpu/type.h */struct Scan { };
+/* begin src/algo/scan/cpu/type.h */
+struct Scan { };
 /* end src/algo/scan/cpu/type.h */
-/* begin src/algo/scan/cpu/imp.h */void scan_ini(int, Scan**) { }
+/* begin src/algo/scan/cpu/imp.h */
+void scan_ini(int, Scan**) { }
 void scan_fin(Scan*) { }
 
 void scan_apply(const int* input, int size, /**/ int* output, /*w*/ Scan*) {
@@ -4094,9 +4144,14 @@ void scan_apply(const int* input, int size, /**/ int* output, /*w*/ Scan*) {
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/algo/vectors/imp.cpp"
-/* begin src/algo/vectors/imp.cpp */#include <stdio.h>
+/* begin src/algo/vectors/imp.cpp */
+#include <stdio.h>
 
-/* already included: src/utils/imp.h *//* already included: src/utils/error.h *//* already included: src/inc/type.h *//* begin src/coords/imp.h */struct Coords;
+/* already included: src/utils/imp.h */
+/* already included: src/utils/error.h */
+/* already included: src/inc/type.h */
+/* begin src/coords/imp.h */
+struct Coords;
 struct Coords_v;
 struct float3;
 struct int3;
@@ -4169,7 +4224,8 @@ void coord_stamp(const Coords *c, /**/ char *s);
 int coords_size(const Coords *c);
 // end::int[]
 /* end src/coords/imp.h */
-/* begin src/math/tform/imp.h */struct Tform;
+/* begin src/math/tform/imp.h */
+struct Tform;
 struct Tform_v;
 
 // tag::ini[]
@@ -4202,7 +4258,9 @@ void tform_dump(Tform*, FILE*);
 // end::log[]
 /* end src/math/tform/imp.h */
 
-/* already included: src/algo/vectors/imp.h *//* begin src/algo/vectors/imp/type.h */struct Vectors {
+/* already included: src/algo/vectors/imp.h */
+/* begin src/algo/vectors/imp/type.h */
+struct Vectors {
     int type;
     int n;
     union {
@@ -4229,7 +4287,8 @@ static void (*get[])(const Vectors*, int i, float r[3]) =
 
 typedef  void (*Local2Global)(const Coords *coords, float a[3], /**/ float b[3]);
 /* end src/algo/vectors/imp/type.h */
-/* begin src/algo/vectors/imp/main.h */void vectors_float_ini(int n, const float *rr, /**/ Vectors **pq) {
+/* begin src/algo/vectors/imp/main.h */
+void vectors_float_ini(int n, const float *rr, /**/ Vectors **pq) {
     Vectors *q;
     EMALLOC(1, &q);
     q->type = vectors_impl::FLOAT; q->n = n; q->D.rr = rr;
@@ -4652,15 +4711,28 @@ void vectors_get(const Vectors *q, int i, /**/ float r[3]) {
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/clist/imp.cu"
-/* begin src/clist/imp.cu */#include <stdio.h>
+/* begin src/clist/imp.cu */
+#include <stdio.h>
 #include <assert.h>
 
-#include <conf.h>
 /* already included: src/inc/conf.h */
-/* already included: src/utils/error.h *//* already included: src/utils/msg.h *//* already included: src/utils/imp.h */
-/* already included: src/inc/def.h *//* already included: src/inc/type.h *//* already included: src/inc/dev.h *//* already included: src/algo/scan/imp.h */
-/* already included: src/d/api.h *//* already included: src/utils/cc.h *//* already included: src/utils/kl.h */
-/* begin src/struct/partlist/type.h */#pragma once
+/* already included: src/inc/conf.h */
+
+/* already included: src/utils/error.h */
+/* already included: src/utils/msg.h */
+/* already included: src/utils/imp.h */
+
+/* already included: src/inc/def.h */
+/* already included: src/inc/type.h */
+/* already included: src/inc/dev.h */
+/* already included: src/algo/scan/imp.h */
+
+/* already included: src/d/api.h */
+/* already included: src/utils/cc.h */
+/* already included: src/utils/kl.h */
+
+/* begin src/struct/partlist/type.h */
+#pragma once
 
 enum {
     ALIVE = 0,
@@ -4677,7 +4749,8 @@ struct PartList {
 };
 // end::type[]
 /* end src/struct/partlist/type.h */
-/* begin src/struct/partlist/dev.h */#pragma once
+/* begin src/struct/partlist/dev.h */
+#pragma once
 
 static __device__ bool is_dead(int i, const PartList lp) {
     if (lp.deathlist)
@@ -4691,7 +4764,9 @@ static __device__ bool is_alive(int i, const PartList lp) {
 /* end src/struct/partlist/dev.h */
 
 /* already included: src/struct/particle/dev.h */
-/* begin src/clist/imp.h */struct Clist;
+
+/* begin src/clist/imp.h */
+struct Clist;
 struct ClistMap;
 
 // tag::mem[]
@@ -4726,7 +4801,8 @@ void clist_gather_ii(const int *iilo, const int *iire, const ClistMap *m, long n
 void clist_build(int nlo, int nout, const Particle *pplo, /**/ Particle *ppout, Clist *c, ClistMap *m);
 // end::int[]
 /* end src/clist/imp.h */
-/* begin src/clist/dev.h */#pragma once
+/* begin src/clist/dev.h */
+#pragma once
 
 #define _I_ static __device__
 
@@ -4753,7 +4829,8 @@ _I_ void clist_decode_id(uint c, /**/ int *s, int *pid)
 #undef _I_
 /* end src/clist/dev.h */
 
-/* begin src/clist/imp/type.h */// tag::clist[]
+/* begin src/clist/imp/type.h */
+// tag::clist[]
 struct Clist {
     int3 dims;
     int ncells;
@@ -4772,7 +4849,8 @@ struct ClistMap {
 // end::map[]
 /* end src/clist/imp/type.h */
 namespace clist_dev {
-/* begin src/clist/dev/main.h */enum {
+/* begin src/clist/dev/main.h */
+enum {
     VALID   = 0,
     INVALID = 255
 };
@@ -4875,7 +4953,8 @@ __global__ void gather(const Sarray<const T*, N> src, const uint *ii, int n, /**
 }
 /* end src/clist/dev/main.h */
 }
-/* begin src/clist/imp/ini.h */void clist_ini(int LX, int LY, int LZ, /**/ Clist **cl) {
+/* begin src/clist/imp/ini.h */
+void clist_ini(int LX, int LY, int LZ, /**/ Clist **cl) {
     Clist *c;
     EMALLOC(1, cl);
     c = *cl;
@@ -4907,7 +4986,8 @@ void clist_ini_map(int maxp, int nA, const Clist *c, /**/ ClistMap **map) {
     Dalloc(&m->ii, size);
 }
 /* end src/clist/imp/ini.h */
-/* begin src/clist/imp/fin.h */void clist_fin(/**/ Clist *c) {
+/* begin src/clist/imp/fin.h */
+void clist_fin(/**/ Clist *c) {
     Dfree(c->starts);
     Dfree(c->counts);
     EFREE(c);
@@ -4922,7 +5002,8 @@ void clist_fin_map(ClistMap *m) {
     EFREE(m);
 }
 /* end src/clist/imp/fin.h */
-/* begin src/clist/imp/main.h */enum {LOCAL, REMOTE};
+/* begin src/clist/imp/main.h */
+enum {LOCAL, REMOTE};
 
 const int* clists_get_ss(const Clist *c) {return c->starts;}
 const int* clists_get_cc(const Clist *c) {return c->counts;}
@@ -5307,20 +5388,29 @@ void clist_build(int nlo, int nout, const Particle *pplo, /**/ Particle *ppout, 
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/cnt/imp.cu"
-/* begin src/cnt/imp.cu */#include <assert.h>
+/* begin src/cnt/imp.cu */
+#include <assert.h>
 #include <stdio.h>
-#include <conf.h>
 /* already included: src/inc/conf.h */
-/* already included: src/d/api.h *//* already included: src/d/q.h *//* already included: src/d/ker.h */
-/* already included: src/utils/error.h *//* already included: src/utils/imp.h */
-/* begin src/math/rnd/imp.h */// tag::interface[]
+/* already included: src/inc/conf.h */
+
+/* already included: src/d/api.h */
+/* already included: src/d/q.h */
+/* already included: src/d/ker.h */
+
+/* already included: src/utils/error.h */
+/* already included: src/utils/imp.h */
+
+/* begin src/math/rnd/imp.h */
+// tag::interface[]
 struct RNDunif;                                             // <1>
 void rnd_ini(int x, int y, int z, int c, /**/ RNDunif **r); // <2>
 void rnd_fin(RNDunif *r);                                   // <3>
 float rnd_get(RNDunif *r);                                  // <4>
 // end::interface[]
 /* end src/math/rnd/imp.h */
-/* begin src/math/rnd/dev.h */#pragma once
+/* begin src/math/rnd/dev.h */
+#pragma once
 
 namespace rnd {
 /* random number from the ArcSine distribution on [-sqrt(2),sqrt(2)]
@@ -5397,7 +5487,8 @@ inline __device__ float mean0var1uu( float seed, uint u, uint v )
 
 }
 /* end src/math/rnd/dev.h */
-/* begin src/math/dev.h *//* use templates here because we might have mixed float/double */
+/* begin src/math/dev.h */
+/* use templates here because we might have mixed float/double */
 
 #define _HD_ __host__ __device__
 
@@ -5459,8 +5550,12 @@ _HD_ void axpy(const T1 a, const T2 *x, /*io*/ T3 *y) {
 }
 /* end src/math/dev.h */
 
-/* already included: src/inc/def.h *//* already included: src/utils/msg.h *//* already included: src/utils/cc.h */
-/* begin src/frag/imp.h */#pragma once
+/* already included: src/inc/def.h */
+/* already included: src/utils/msg.h */
+/* already included: src/utils/cc.h */
+
+/* begin src/frag/imp.h */
+#pragma once
 
 enum {frag_bulk = 26};
 
@@ -5496,7 +5591,11 @@ void estimates(int3 L, int nfrags, float maxd, /**/ int *cap); // <1>
 } // frag_hst
 /* end src/frag/imp.h */
 
-/* already included: src/utils/kl.h *//* already included: src/inc/type.h *//* already included: src/inc/dev.h *//* begin src/frag/dev.h */#ifdef FRAG_HOST
+/* already included: src/utils/kl.h */
+/* already included: src/inc/type.h */
+/* already included: src/inc/dev.h */
+/* begin src/frag/dev.h */
+#ifdef FRAG_HOST
 #ifndef UDX_FRAG_HOST_DEFINED
 #define UDX_FRAG_HOST_DEFINED
 #define UDX_FRAG_BODY
@@ -5602,7 +5701,8 @@ END
 #endif
 /* end src/frag/dev.h */
 
-/* begin src/dbg/imp.h */#pragma once
+/* begin src/dbg/imp.h */
+#pragma once
 
 struct Dbg;
 
@@ -5650,7 +5750,8 @@ void dbg_check_clist(const Coords *c, const Dbg *dbg, int3 L, const int *starts,
 // end::int[]
 /* end src/dbg/imp.h */
 
-/* begin src/pair/type.h */#pragma once
+/* begin src/pair/type.h */
+#pragma once
 
 /* maximum of pairwise dpd parameters */
 enum {
@@ -5699,7 +5800,8 @@ struct PairSFo {
     float sxx, syy, szz, sxy, sxz, syz;
 };
 /* end src/pair/type.h */
-/* begin src/pair/dev.h */#pragma once
+/* begin src/pair/dev.h */
+#pragma once
 
 #define _S_ static __device__
 #define _I_ static __device__
@@ -5901,7 +6003,8 @@ _I_ void pair_add(const PairSFo *b, /**/ PairSFo *a)
 #undef _S_
 #undef _I_
 /* end src/pair/dev.h */
-/* begin src/pair/imp.h */struct PairParams;
+/* begin src/pair/imp.h */
+struct PairParams;
 struct Config;
 
 struct PairDPD;
@@ -5939,8 +6042,12 @@ void pair_get_view_adhesion(const PairParams*, PairAdhesion*);
 /* end src/pair/imp.h */
 
 /* already included: src/struct/partlist/type.h */
-/* already included: src/clist/imp.h *//* already included: src/clist/dev.h */
-/* begin src/cnt/imp.h */struct Contact;
+
+/* already included: src/clist/imp.h */
+/* already included: src/clist/dev.h */
+
+/* begin src/cnt/imp.h */
+struct Contact;
 struct int3;
 struct PairParams;
 
@@ -5957,7 +6064,8 @@ void cnt_halo(const Contact *cnt, int nw, const PairParams **prms, PaWrap *pw, F
 /* end src/cnt/imp.h */
 
 namespace cnt_dev {
-/* begin src/cnt/dev/pair.h */template <typename Par>
+/* begin src/cnt/dev/pair.h */
+template <typename Par>
 static __device__ void pair(Par params, PairPa a, PairPa b, float rnd, /**/
                             float *fx, float *fy, float *fz) {
     PairFo f;
@@ -5965,7 +6073,8 @@ static __device__ void pair(Par params, PairPa a, PairPa b, float rnd, /**/
     *fx = f.x; *fy = f.y; *fz = f.z;
 }
 /* end src/cnt/dev/pair.h */
-/* begin src/cnt/dev/map/common.h *//** TODO: should be merged with Map in fsi:: */
+/* begin src/cnt/dev/map/common.h */
+/** TODO: should be merged with Map in fsi:: */
 enum {FULL, EMPTY}; /* map status */
 struct Map { /* helps to find remote particle */
     int  org0, org1, org2;
@@ -5985,7 +6094,8 @@ static __device__ int m2id(const Map m, int i) {
     return id;
 }
 /* end src/cnt/dev/map/common.h */
-/* begin src/cnt/dev/map/halo.h */static __device__ int tex2map(int3 L, int zplane, float x, float y, float z, const int *starts, /**/ Map *m) {
+/* begin src/cnt/dev/map/halo.h */
+static __device__ int tex2map(int3 L, int zplane, float x, float y, float z, const int *starts, /**/ Map *m) {
     int cnt0, cnt1, cnt2, org0;
     int org1, org2;
     int xcenter, xstart, xcount;
@@ -6038,7 +6148,8 @@ static __device__ int m2id(const Map m, int i) {
     return FULL;
 }
 /* end src/cnt/dev/map/halo.h */
-/* begin src/cnt/dev/map/bulk.h */static __device__ int r2map(int3 L, int zplane, int n, float x, float y, float z, const int *starts, /**/ Map *m) {
+/* begin src/cnt/dev/map/bulk.h */
+static __device__ int r2map(int3 L, int zplane, int n, float x, float y, float z, const int *starts, /**/ Map *m) {
     /* coordinate [r] to map */
     int cnt0, cnt1, cnt2, org0;
     int org1, org2;
@@ -6086,7 +6197,8 @@ static __device__ int m2id(const Map m, int i) {
     return FULL;
 }
 /* end src/cnt/dev/map/bulk.h */
-/* begin src/cnt/dev/bulk.h */static __device__ void f22p(float2 a, float2 b, float2 c, PairPa *p) {
+/* begin src/cnt/dev/bulk.h */
+static __device__ void f22p(float2 a, float2 b, float2 c, PairPa *p) {
     p->x  = a.x; p->y  = a.y; p->z  = b.x;
     p->vx = b.y; p->vy = c.x; p->vz = c.y;
 }
@@ -6152,7 +6264,8 @@ __global__ void bulk(bool self, Par params, int3 L, int n_dst, const float2 *pp_
     atomicAdd(ff_dst + 3 * aid + 2, zforce);
 }
 /* end src/cnt/dev/bulk.h */
-/* begin src/cnt/dev/halo.h */template <typename Par>
+/* begin src/cnt/dev/halo.h */
+template <typename Par>
 static __device__
 void interactions_one_p(Par params, int3 L, float seed, PairPa a, int aid,
                         const int *starts, const uint *ids_src, const float2 *pp_src,
@@ -6215,7 +6328,8 @@ __global__ void halo(Par params, int3 L, float seed,
 /* end src/cnt/dev/halo.h */
 }
 
-/* begin src/cnt/imp/type.h */struct Contact {
+/* begin src/cnt/imp/type.h */
+struct Contact {
     int nobj;         /* number of objects       */
     Clist    **cells; /* cell lists              */
     ClistMap **cmap;  /* helper to build clists  */
@@ -6223,7 +6337,8 @@ __global__ void halo(Par params, int3 L, float seed,
     int3 L;           /* dimensions of subdomain */
 };
 /* end src/cnt/imp/type.h */
-/* begin src/cnt/imp/bulk.h */static int get_id_inter(int a, int b) {
+/* begin src/cnt/imp/bulk.h */
+static int get_id_inter(int a, int b) {
     int i, j;
     i = a > b ? a : b;
     j = a > b ? b : a;
@@ -6270,7 +6385,8 @@ void cnt_bulk(const Contact *c, int nw, const PairParams **prms, PaWrap *pw, FoW
 }
 
 /* end src/cnt/imp/bulk.h */
-/* begin src/cnt/imp/halo.h */static int scan(int n, const int cc[], int ss[]) {
+/* begin src/cnt/imp/halo.h */
+static int scan(int n, const int cc[], int ss[]) {
     int i, s;
     ss[0] = 0;
     for (i = s = 0; i < n; ++i)
@@ -6330,7 +6446,8 @@ void cnt_halo(const Contact *cnt, int nw, const PairParams **prms,
     }
 }
 /* end src/cnt/imp/halo.h */
-/* begin src/cnt/imp/main.h */enum {
+/* begin src/cnt/imp/main.h */
+enum {
     CID_SUBINDEX,
     CN_SUBINDICES
 };
@@ -6692,15 +6809,24 @@ void cnt_build_cells(int nw, const PairParams **prms, const PaWrap *pw, /**/ Con
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/color/imp.cu"
-/* begin src/color/imp.cu */#include <stdio.h>
+/* begin src/color/imp.cu */
+#include <stdio.h>
 #include <curand_kernel.h>
 #include <assert.h>
 
-#include <conf.h>
 /* already included: src/inc/conf.h */
-/* already included: src/utils/msg.h *//* already included: src/utils/cc.h *//* already included: src/utils/kl.h *//* already included: src/d/api.h */
-/* already included: src/inc/dev.h *//* already included: src/inc/type.h */
-/* begin src/coords/type.h */// tag::view[]
+/* already included: src/inc/conf.h */
+
+/* already included: src/utils/msg.h */
+/* already included: src/utils/cc.h */
+/* already included: src/utils/kl.h */
+/* already included: src/d/api.h */
+
+/* already included: src/inc/dev.h */
+/* already included: src/inc/type.h */
+
+/* begin src/coords/type.h */
+// tag::view[]
 #pragma once
 
 struct Coords_v {
@@ -6710,7 +6836,8 @@ struct Coords_v {
 };
 // end::view[]
 /* end src/coords/type.h */
-/* begin src/coords/imp/type.h */#pragma once
+/* begin src/coords/imp/type.h */
+#pragma once
 
 struct Coords {
     int xc, yc, zc; /* rank coordinates        */
@@ -6719,7 +6846,9 @@ struct Coords {
 };
 /* end src/coords/imp/type.h */
 /* already included: src/coords/imp.h */
-/* begin src/color/imp.h */struct int3;
+
+/* begin src/color/imp.h */
+struct int3;
 struct Particle;
 struct Coords;
 
@@ -6734,13 +6863,15 @@ void tracers_ini(const int n);
 
 void tracers_fin();
 /* end src/color/imp.h */
-/* begin src/color/imp/type.h */#pragma once
+/* begin src/color/imp/type.h */
+#pragma once
 
 struct Rnd {
     curandState_t * state;
 } color_rnd;
 /* end src/color/imp/type.h */
-/* begin src/color/imp/main.h */namespace color_dev
+/* begin src/color/imp/main.h */
+namespace color_dev
 {
 
 __global__ void linear_flux(int3 L, int dir, int color, int n, const Particle *pp, int *cc) {
@@ -7167,14 +7298,21 @@ void tracers_fin() {
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/comm/imp.cpp"
-/* begin src/comm/imp.cpp */#include <assert.h>
+/* begin src/comm/imp.cpp */
+#include <assert.h>
 #include <string.h>
 #include <mpi.h>
 
-#include <conf.h>
-/* already included: src/inc/conf.h *//* already included: src/inc/dev.h */
+/* already included: src/inc/conf.h */
+/* already included: src/inc/conf.h */
+/* already included: src/inc/dev.h */
+
 /* already included: src/frag/imp.h */
-/* already included: src/utils/msg.h *//* already included: src/utils/imp.h *//* begin src/utils/mc.h *//* [m]pi [c]heck macros */
+
+/* already included: src/utils/msg.h */
+/* already included: src/utils/imp.h */
+/* begin src/utils/mc.h */
+/* [m]pi [c]heck macros */
 #define MC(ans)                                                         \
     do { mpicheck::check((ans), __FILE__, __LINE__); } while (0)
 
@@ -7182,7 +7320,11 @@ namespace mpicheck {
 void check(int code, const char *file, int line);
 }
 /* end src/utils/mc.h */
-/* already included: src/utils/cc.h *//* already included: src/utils/error.h *//* already included: src/d/api.h *//* begin src/mpi/wrapper.h */namespace m {
+/* already included: src/utils/cc.h */
+/* already included: src/utils/error.h */
+/* already included: src/d/api.h */
+/* begin src/mpi/wrapper.h */
+namespace m {
 int Allreduce(const void *sendbuf, void *recvbuf, int count, MPI_Datatype datatype, MPI_Op op, MPI_Comm comm);
 int Barrier(MPI_Comm comm);
 int Bcast(void *buffer, int count, MPI_Datatype datatype, int root, MPI_Comm comm);
@@ -7233,7 +7375,8 @@ int status2errcode(MPI_Status *status);
 }
 /* end src/mpi/wrapper.h */
 
-/* begin src/comm/imp.h */#pragma once
+/* begin src/comm/imp.h */
+#pragma once
 
 typedef unsigned char data_t;
 
@@ -7309,7 +7452,8 @@ size_t comm_get_byte_capacity(int i, const hBags *b);   // <2>
 
 /* end src/comm/imp.h */
 
-/* begin src/comm/imp/type.h */// tag::comm[]
+/* begin src/comm/imp/type.h */
+// tag::comm[]
 struct Comm {
     MPI_Request sreq[NBAGS]; /* send requests */
     MPI_Request rreq[NBAGS]; /* recv requests */
@@ -7324,7 +7468,8 @@ struct CommBuffer {
     size_t sz[NBAGS], cap[NBAGS];
 };
 /* end src/comm/imp/type.h */
-/* begin src/comm/imp/ini.h *//* pinned allocation */
+/* begin src/comm/imp/ini.h */
+/* pinned allocation */
 
 static void alloc_counts(int n, /**/ int **hc) {
     size_t sz = n * sizeof(int);
@@ -7425,7 +7570,8 @@ void comm_ini(MPI_Comm cart, /**/ Comm **com_p) {
 }
 
 /* end src/comm/imp/ini.h */
-/* begin src/comm/imp/fin.h */static void free_counts(int **hc) {
+/* begin src/comm/imp/fin.h */
+static void free_counts(int **hc) {
     EFREE(*hc);
     *hc = NULL;
 }
@@ -7479,7 +7625,8 @@ void comm_fin(/**/ Comm *c) {
     EFREE(c);
 }
 /* end src/comm/imp/fin.h */
-/* begin src/comm/imp/buffer.h */static void frag_set_buffer(int fid, int nbags, const hBags *hbb, CommBuffer *cb) {
+/* begin src/comm/imp/buffer.h */
+static void frag_set_buffer(int fid, int nbags, const hBags *hbb, CommBuffer *cb) {
     size_t tot_sz, sz, bs;
     int i, c, *counts;
     data_t *d;
@@ -7535,7 +7682,8 @@ void comm_buffer_get(const CommBuffer *cb, int nbags, hBags *hbb) {
         frag_get_buffer(fid, cb, nbags, hbb);
 }
 /* end src/comm/imp/buffer.h */
-/* begin src/comm/imp/main.h */void comm_post_recv(hBags *b, Comm *com) {
+/* begin src/comm/imp/main.h */
+void comm_post_recv(hBags *b, Comm *com) {
     int i, c, tag;
     for (i = 0; i < NFRAGS; ++i) {
         c = b->capacity[i] * b->bsize;
@@ -7974,14 +8122,19 @@ size_t comm_get_byte_capacity(int i, const hBags *b) {
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/conf/imp.cpp"
-/* begin src/conf/imp.cpp */#include <stdio.h>
+/* begin src/conf/imp.cpp */
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <libconfig.h>
 #include <vector_types.h>
 
-/* already included: src/utils/error.h *//* already included: src/utils/imp.h *//* already included: src/utils/msg.h */
-/* begin src/conf/imp.h */struct Config;
+/* already included: src/utils/error.h */
+/* already included: src/utils/imp.h */
+/* already included: src/utils/msg.h */
+
+/* begin src/conf/imp.h */
+struct Config;
 struct float3;
 struct int3;
 
@@ -8047,7 +8200,8 @@ void conf_write_history(const Config *cfg, FILE *stream); // <2>
 // end::dump[]
 /* end src/conf/imp.h */
 
-/* begin src/conf/imp/type.h */// tag::struct[]
+/* begin src/conf/imp/type.h */
+// tag::struct[]
 enum {
     EXE, /* from program setters */
     ARG, /* from arguments       */
@@ -8076,7 +8230,8 @@ struct CBuf {
     char c[MAX_LEVEL][FILENAME_MAX];
 };
 /* end src/conf/imp/type.h */
-/* begin src/conf/imp/main.h */static void set_write_options(config_t *c) {
+/* begin src/conf/imp/main.h */
+static void set_write_options(config_t *c) {
     config_set_option(c, CONFIG_OPTION_SEMICOLON_SEPARATORS,            CONFIG_FALSE);
     config_set_option(c, CONFIG_OPTION_COLON_ASSIGNMENT_FOR_GROUPS,     CONFIG_FALSE);
     config_set_option(c, CONFIG_OPTION_COLON_ASSIGNMENT_FOR_NON_GROUPS, CONFIG_FALSE);
@@ -8201,7 +8356,8 @@ void conf_write_history(const Config *cfg, FILE *stream) {
     config_write(cfg->r, stream);
 }
 /* end src/conf/imp/main.h */
-/* begin src/conf/imp/set.h */static config_setting_t* subsetting(const char *desc, int type, config_setting_t *group) {
+/* begin src/conf/imp/set.h */
+static config_setting_t* subsetting(const char *desc, int type, config_setting_t *group) {
     config_setting_t *sub;
     sub = config_setting_lookup(group, desc);
     if (NULL == sub)
@@ -8423,7 +8579,8 @@ void conf_set_string(const char *desc, const char *a, Config *cfg) {
 }
 
 /* end src/conf/imp/set.h */
-/* begin src/conf/imp/get.h */static bool found(const config_setting_t *s) {return s != NULL;}
+/* begin src/conf/imp/get.h */
+static bool found(const config_setting_t *s) {return s != NULL;}
 static void treat_status(int status, const char *desc, const char *type) {
     if (status == NOTFOUND)
         ERR("Could not find <%s>\n", desc);
@@ -9006,9 +9163,14 @@ bool conf_opt_vstring(const Config *c, const char *desc, int maxn, int *n, const
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/control/den/conf.cpp"
-/* begin src/control/den/conf.cpp */#include <stdio.h>
+/* begin src/control/den/conf.cpp */
+#include <stdio.h>
 
-/* already included: src/utils/error.h *//* already included: src/utils/imp.h *//* already included: src/conf/imp.h *//* begin src/control/den/imp.h */struct DCont;
+/* already included: src/utils/error.h */
+/* already included: src/utils/imp.h */
+/* already included: src/conf/imp.h */
+/* begin src/control/den/imp.h */
+struct DCont;
 struct DContMap;
 
 struct Config;
@@ -9358,18 +9520,33 @@ void den_map_set_conf(const Config *cfg, const Coords *c, DContMap *m) {
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/control/den/imp.cu"
-/* begin src/control/den/imp.cu */#include <stdio.h>
+/* begin src/control/den/imp.cu */
+#include <stdio.h>
 #include <curand_kernel.h>
 
-#include <conf.h>
 /* already included: src/inc/conf.h */
-/* already included: src/utils/error.h *//* already included: src/utils/imp.h *//* already included: src/utils/cc.h *//* already included: src/utils/kl.h *//* already included: src/d/api.h */
-/* already included: src/inc/dev.h *//* already included: src/inc/type.h */
-/* already included: src/coords/type.h *//* already included: src/coords/imp.h */
-/* already included: src/algo/utils/shfl.h *//* already included: src/algo/utils/dev.h */
+/* already included: src/inc/conf.h */
+
+/* already included: src/utils/error.h */
+/* already included: src/utils/imp.h */
+/* already included: src/utils/cc.h */
+/* already included: src/utils/kl.h */
+/* already included: src/d/api.h */
+
+/* already included: src/inc/dev.h */
+/* already included: src/inc/type.h */
+
+/* already included: src/coords/type.h */
+/* already included: src/coords/imp.h */
+
+/* already included: src/algo/utils/shfl.h */
+/* already included: src/algo/utils/dev.h */
+
 /* already included: src/control/den/imp.h */
+
 namespace den_dev {
-/* begin src/control/den/dev/main.h */__global__ void kill(int maxden, const int *starts, const int *counts, int n, const int *cids, /**/ int *ndead, int *kk) {
+/* begin src/control/den/dev/main.h */
+__global__ void kill(int maxden, const int *starts, const int *counts, int n, const int *cids, /**/ int *ndead, int *kk) {
     int i, nd, cid, s, c, pid, j;
     nd = 0;
     c = maxden;
@@ -9399,7 +9576,8 @@ namespace den_dev {
 /* end src/control/den/dev/main.h */
 }
 
-/* begin src/control/den/imp/type.h */struct DCont {
+/* begin src/control/den/imp/type.h */
+struct DCont {
     int *ndead_dev, ndead;
     int *kk;
     // curandState_t *rnd; // random states
@@ -9410,7 +9588,8 @@ struct DContMap {
     int *cids; // cell ids of the controlled cells
 };
 /* end src/control/den/imp/type.h */
-/* begin src/control/den/imp/main.h */static void reset_ndead(DCont *d) {
+/* begin src/control/den/imp/main.h */
+static void reset_ndead(DCont *d) {
     CC(d::MemsetAsync(d->ndead_dev, 0, sizeof(int)));
     d->ndead = 0;
 }
@@ -9454,7 +9633,8 @@ void den_download_ndead(DCont *d) {
 const int* den_get_deathlist(DCont *d) {return d->kk;}
 int        den_get_ndead(DCont *d)     {return d->ndead;}
 /* end src/control/den/imp/main.h */
-/* begin src/control/den/imp/map.h */struct Circle {
+/* begin src/control/den/imp/map.h */
+struct Circle {
     float R;
 };
 
@@ -9833,12 +10013,18 @@ void den_map_fin(DContMap *m) {
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/control/inflow/conf.cpp"
-/* begin src/control/inflow/conf.cpp */#include <stdlib.h>
+/* begin src/control/inflow/conf.cpp */
+#include <stdlib.h>
 #include <stdio.h>
 #include <vector_types.h>
 
-/* already included: src/coords/type.h *//* already included: src/conf/imp.h *//* already included: src/utils/imp.h *//* already included: src/utils/error.h */
-/* begin src/control/inflow/imp.h */struct Inflow;
+/* already included: src/coords/type.h */
+/* already included: src/conf/imp.h */
+/* already included: src/utils/imp.h */
+/* already included: src/utils/error.h */
+
+/* begin src/control/inflow/imp.h */
+struct Inflow;
 struct Config;
 struct Particle;
 struct int2;
@@ -10206,16 +10392,30 @@ void inflow_ini_params_conf(const Coords *coords, const Config *cfg, /**/ Inflow
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/control/inflow/imp.cu"
-/* begin src/control/inflow/imp.cu */#include <stdio.h>
+/* begin src/control/inflow/imp.cu */
+#include <stdio.h>
 #include <curand_kernel.h>
 
-#include <conf.h>
 /* already included: src/inc/conf.h */
-/* already included: src/utils/error.h *//* already included: src/utils/imp.h *//* already included: src/utils/cc.h *//* already included: src/utils/kl.h *//* already included: src/d/api.h */
-/* already included: src/inc/dev.h *//* already included: src/inc/type.h */
-/* already included: src/coords/type.h *//* already included: src/coords/imp.h *//* already included: src/math/dev.h */
+/* already included: src/inc/conf.h */
+
+/* already included: src/utils/error.h */
+/* already included: src/utils/imp.h */
+/* already included: src/utils/cc.h */
+/* already included: src/utils/kl.h */
+/* already included: src/d/api.h */
+
+/* already included: src/inc/dev.h */
+/* already included: src/inc/type.h */
+
+/* already included: src/coords/type.h */
+/* already included: src/coords/imp.h */
+/* already included: src/math/dev.h */
+
 /* already included: src/control/inflow/imp.h */
-/* begin src/control/inflow/plate/type.h */struct ParamsPlate {
+
+/* begin src/control/inflow/plate/type.h */
+struct ParamsPlate {
     float3 o, a, b;
 };
 
@@ -10224,7 +10424,8 @@ struct VParamsPlate {
     bool upoiseuille, vpoiseuille;
 };
 /* end src/control/inflow/plate/type.h */
-/* begin src/control/inflow/plate/dev.h */static __device__ void coords2pos(ParamsPlate p, float2 xi, /**/ float3 *r) {
+/* begin src/control/inflow/plate/dev.h */
+static __device__ void coords2pos(ParamsPlate p, float2 xi, /**/ float3 *r) {
     *r = p.o;
     axpy(xi.x, &p.a, /**/ r);
     axpy(xi.y, &p.b, /**/ r);
@@ -10251,7 +10452,8 @@ static __device__ void coords2vel(VParamsPlate vp, ParamsPlate p, float2 xi, /**
 }
 /* end src/control/inflow/plate/dev.h */
 
-/* begin src/control/inflow/circle/type.h */struct ParamsCircle {
+/* begin src/control/inflow/circle/type.h */
+struct ParamsCircle {
     float3 o;   /* center of cylinder */
     float R, H; /* radius, hight      */
 };
@@ -10261,7 +10463,8 @@ struct VParamsCircle {
     bool poiseuille;
 };
 /* end src/control/inflow/circle/type.h */
-/* begin src/control/inflow/circle/dev.h */static __device__ void coords2pos(ParamsCircle p, float2 xi, /**/ float3 *r) {
+/* begin src/control/inflow/circle/dev.h */
+static __device__ void coords2pos(ParamsCircle p, float2 xi, /**/ float3 *r) {
     float th, h, cth, sth;
     th = xi.x * 2 * M_PI;
     h = xi.y * p.H;
@@ -10305,7 +10508,8 @@ static __device__ void coords2vel(VParamsCircle vp, ParamsCircle p, float2 xi, /
 /* end src/control/inflow/circle/dev.h */
 
 
-/* begin src/control/inflow/imp/type.h */enum Type {
+/* begin src/control/inflow/imp/type.h */
+enum Type {
     INFLOW_TYPE_NONE,
     INFLOW_TYPE_PLATE,
     INFLOW_TYPE_CIRCLE,
@@ -10345,7 +10549,8 @@ struct InflowSolventWrap {
 /* end src/control/inflow/imp/type.h */
 
 namespace inflow_dev {
-/* begin src/control/inflow/dev/ini.h */__global__ void ini_rnd(long seed, int n, curandState_t *rr) {
+/* begin src/control/inflow/dev/ini.h */
+__global__ void ini_rnd(long seed, int n, curandState_t *rr) {
     long i;
     i = threadIdx.x + blockIdx.x * blockDim.x;
     if (i >= n) return;
@@ -10359,7 +10564,8 @@ __global__ void ini_flux(int n, /**/ curandState_t *rr, float *cumflux) {
     cumflux[i] = curand_uniform(rr + i);
 }
 /* end src/control/inflow/dev/ini.h */
-/* begin src/control/inflow/dev/main.h */template <typename Par, typename VPar>
+/* begin src/control/inflow/dev/main.h */
+template <typename Par, typename VPar>
 __global__ void ini_vel(VPar vparams, Par params, int2 nc, /**/ float3 *uu) {
     int i, xcid, ycid;
     float3 u;
@@ -10457,7 +10663,8 @@ __global__ void create_particles(float kBT, Par params, int2 nc, const float3 *f
 /* end src/control/inflow/dev/main.h */
 }
 
-/* begin src/control/inflow/plate/imp.h */static float crop(float x, float lo, float hi) {
+/* begin src/control/inflow/plate/imp.h */
+static float crop(float x, float lo, float hi) {
     if (x < lo) return lo;
     if (x > hi) return hi;
     return x;
@@ -10527,7 +10734,8 @@ void inflow_ini_params_plate(const Coords *c, float3 o, int dir, float L1, float
     i->t = INFLOW_TYPE_PLATE;
 }
 /* end src/control/inflow/plate/imp.h */
-/* begin src/control/inflow/circle/imp.h */static bool is_inside_subdomain(const Coords *c, float3 r) {
+/* begin src/control/inflow/circle/imp.h */
+static bool is_inside_subdomain(const Coords *c, float3 r) {
     bool inside = true;
     inside &= (xlo(c) <= r.x) && (r.x < xhi(c));
     inside &= (ylo(c) <= r.y) && (r.y < yhi(c));
@@ -10564,7 +10772,8 @@ void inflow_ini_params_circle(const Coords *c, float3 o, float R, float H, float
 }
 /* end src/control/inflow/circle/imp.h */
 
-/* begin src/control/inflow/imp/main.h */static void inflow_ini_rnd(int n, curandState_t *rr) {
+/* begin src/control/inflow/imp/main.h */
+static void inflow_ini_rnd(int n, curandState_t *rr) {
     long seed = 1234567;
     KL(inflow_dev::ini_rnd, (k_cnf(n)), (seed, n, rr));
 }
@@ -10983,11 +11192,16 @@ void inflow_create_pp_cc(float kBT, int numdensity, float dt, int newcolor, Infl
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/control/outflow/conf.cpp"
-/* begin src/control/outflow/conf.cpp */#include <stdio.h>
+/* begin src/control/outflow/conf.cpp */
+#include <stdio.h>
 #include <vector_types.h>
 
-/* already included: src/utils/error.h *//* already included: src/utils/imp.h *//* already included: src/conf/imp.h */
-/* begin src/control/outflow/imp.h */struct Outflow;
+/* already included: src/utils/error.h */
+/* already included: src/utils/imp.h */
+/* already included: src/conf/imp.h */
+
+/* begin src/control/outflow/imp.h */
+struct Outflow;
 
 struct Config;
 struct Coords;
@@ -11342,16 +11556,30 @@ void outflow_set_conf(const Config *cfg, const Coords *coords, Outflow *o) {
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/control/outflow/imp.cu"
-/* begin src/control/outflow/imp.cu */#include <stdio.h>
+/* begin src/control/outflow/imp.cu */
+#include <stdio.h>
 
-#include <conf.h>
 /* already included: src/inc/conf.h */
-/* already included: src/utils/error.h *//* already included: src/utils/imp.h *//* already included: src/utils/cc.h *//* already included: src/utils/kl.h *//* already included: src/d/api.h */
+/* already included: src/inc/conf.h */
+
+/* already included: src/utils/error.h */
+/* already included: src/utils/imp.h */
+/* already included: src/utils/cc.h */
+/* already included: src/utils/kl.h */
+/* already included: src/d/api.h */
+
 /* already included: src/math/dev.h */
-/* already included: src/coords/type.h *//* already included: src/coords/imp.h */
-/* already included: src/inc/dev.h *//* already included: src/inc/type.h */
+
+/* already included: src/coords/type.h */
+/* already included: src/coords/imp.h */
+
+/* already included: src/inc/dev.h */
+/* already included: src/inc/type.h */
+
 /* already included: src/control/outflow/imp.h */
-/* begin src/control/outflow/imp/type.h */enum {
+
+/* begin src/control/outflow/imp/type.h */
+enum {
     OUTFLOW_TYPE_NONE,
     OUTFLOW_TYPE_PLATE,
     OUTFLOW_TYPE_CIRCLE
@@ -11383,7 +11611,8 @@ struct Outflow {
 /* end src/control/outflow/imp/type.h */
 
 namespace outflow_dev {
-/* begin src/control/outflow/dev/main.h */static __device__ int predicate(OutflowParamsPlate p, const float r[3]) {
+/* begin src/control/outflow/dev/main.h */
+static __device__ int predicate(OutflowParamsPlate p, const float r[3]) {
     enum {X, Y, Z};
     float s;
 
@@ -11419,7 +11648,8 @@ __global__ void filter(int n, const Particle *pp, Par params, /**/ int *ndead, i
 /* end src/control/outflow/dev/main.h */
 }
 
-/* begin src/control/outflow/imp/main.h */static void reset_ndead(Outflow *o) {
+/* begin src/control/outflow/imp/main.h */
+static void reset_ndead(Outflow *o) {
     CC(d::MemsetAsync(o->ndead_dev, 0, sizeof(int)));
     o->ndead = 0;
 }
@@ -11809,12 +12039,17 @@ int  outflow_get_ndead(Outflow *o)     {return o->ndead;}
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/control/vel/conf.cpp"
-/* begin src/control/vel/conf.cpp */#include <stdio.h>
+/* begin src/control/vel/conf.cpp */
+#include <stdio.h>
 #include <mpi.h>
 #include <vector_types.h>
 
-/* already included: src/utils/imp.h *//* already included: src/utils/error.h *//* already included: src/conf/imp.h */
-/* begin src/control/vel/imp.h */struct PidVCont;
+/* already included: src/utils/imp.h */
+/* already included: src/utils/error.h */
+/* already included: src/conf/imp.h */
+
+/* begin src/control/vel/imp.h */
+struct PidVCont;
 struct Coords;
 struct Config;
 struct float3;
@@ -12172,15 +12407,30 @@ void vcont_set_conf(const Config *cfg, /**/ PidVCont *c) {
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/control/vel/imp.cu"
-/* begin src/control/vel/imp.cu */#include <stdio.h>
+/* begin src/control/vel/imp.cu */
+#include <stdio.h>
 #include <mpi.h>
 #include <assert.h>
 
-#include <conf.h>
-/* already included: src/inc/conf.h *//* already included: src/utils/msg.h */
-/* already included: src/utils/error.h *//* already included: src/utils/imp.h */
-/* already included: src/inc/type.h *//* already included: src/inc/dev.h *//* already included: src/d/api.h *//* already included: src/mpi/wrapper.h *//* already included: src/utils/cc.h *//* already included: src/utils/kl.h *//* already included: src/utils/mc.h */
-/* already included: src/math/dev.h *//* already included: src/coords/type.h *//* begin src/coords/dev.h */#pragma once
+/* already included: src/inc/conf.h */
+/* already included: src/inc/conf.h */
+/* already included: src/utils/msg.h */
+
+/* already included: src/utils/error.h */
+/* already included: src/utils/imp.h */
+
+/* already included: src/inc/type.h */
+/* already included: src/inc/dev.h */
+/* already included: src/d/api.h */
+/* already included: src/mpi/wrapper.h */
+/* already included: src/utils/cc.h */
+/* already included: src/utils/kl.h */
+/* already included: src/utils/mc.h */
+
+/* already included: src/math/dev.h */
+/* already included: src/coords/type.h */
+/* begin src/coords/dev.h */
+#pragma once
 
 /* domain sizes */
 
@@ -12278,8 +12528,12 @@ static __device__ void global2local(const Coords_v c, float3 rg, /**/ float3 *rl
 
 /* end src/coords/dev.h */
 /* already included: src/coords/imp.h */
-/* already included: src/algo/utils/shfl.h *//* already included: src/algo/utils/dev.h */
-/* begin src/io/restart/imp.h */#pragma once
+
+/* already included: src/algo/utils/shfl.h */
+/* already included: src/algo/utils/dev.h */
+
+/* begin src/io/restart/imp.h */
+#pragma once
 
 struct Coords;
 struct Particle;
@@ -12312,7 +12566,9 @@ void restart_read_stream_one_node(const char *base, const char *code, int id, St
 /* end src/io/restart/imp.h */
 
 /* already included: src/control/vel/imp.h */
-/* begin src/control/vel/imp/type.h */enum {
+
+/* begin src/control/vel/imp/type.h */
+enum {
     VCONT_TYPE_NONE,
     VCONT_TYPE_CART,
     VCONT_TYPE_RAD
@@ -12368,7 +12624,8 @@ struct PidVCont {
 /* end src/control/vel/imp/type.h */
 
 namespace vcont_dev {
-/* begin src/control/vel/dev/common.h */__global__ void reduceByWarp(const float3 *gvel, const int *gnum, const uint ncells, /**/ float3 *vel, int *num) {
+/* begin src/control/vel/dev/common.h */
+__global__ void reduceByWarp(const float3 *gvel, const int *gnum, const uint ncells, /**/ float3 *vel, int *num) {
     assert(blockDim.x == 32);
     int i, c;
     float3 v = make_float3(0, 0, 0);
@@ -12390,7 +12647,8 @@ namespace vcont_dev {
     }
 }
 /* end src/control/vel/dev/common.h */
-/* begin src/control/vel/dev/cart.h */static __device__ float3 transform(Coords_v, TCart, const Particle p) {
+/* begin src/control/vel/dev/cart.h */
+static __device__ float3 transform(Coords_v, TCart, const Particle p) {
     enum {X, Y, Z};
     float3 u;
     u.x = p.v[X];
@@ -12399,7 +12657,8 @@ namespace vcont_dev {
     return u;
 }
 /* end src/control/vel/dev/cart.h */
-/* begin src/control/vel/dev/radial.h */static __device__ float3 transform(Coords_v c, TRad, const Particle p) {
+/* begin src/control/vel/dev/radial.h */
+static __device__ float3 transform(Coords_v c, TRad, const Particle p) {
     enum {X, Y, Z};
     float3 u; // radial coordinates
     float x, y, r, rinv;
@@ -12418,7 +12677,8 @@ namespace vcont_dev {
     return u;
 }
 /* end src/control/vel/dev/radial.h */
-/* begin src/control/vel/dev/sample.h */static __device__ bool valid_cell(int3 L, int3 c) {
+/* begin src/control/vel/dev/sample.h */
+static __device__ bool valid_cell(int3 L, int3 c) {
     return c.x < L.x && c.y < L.y && c.z < L.z;
 }
 
@@ -12454,7 +12714,8 @@ __global__ void sample(Coords_v coords, Trans t, int3 L, const int *cellsstart, 
 /* end src/control/vel/dev/sample.h */
 }
 
-/* begin src/control/vel/imp/main.h */#pragma once
+/* begin src/control/vel/imp/main.h */
+#pragma once
 
 enum {VCONT_WARPSIZE = 32};
 
@@ -12662,7 +12923,8 @@ void vcont_log(const PidVCont *c) {
     fflush(c->fdump);
 }
 /* end src/control/vel/imp/main.h */
-/* begin src/control/vel/imp/start.h */#define CODE "vcon"
+/* begin src/control/vel/imp/start.h */
+#define CODE "vcon"
 #define PAT "%g %g %g\n"
 
 static void writef3(float3 v, FILE *f) {
@@ -13011,13 +13273,18 @@ void vcont_strt_read(const char *base, int id, PidVCont *c) {
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/coords/conf.cpp"
-/* begin src/coords/conf.cpp */#include <stdio.h>
+/* begin src/coords/conf.cpp */
+#include <stdio.h>
 #include <mpi.h>
 
 #include <vector_types.h>
 
-/* already included: src/utils/imp.h *//* already included: src/utils/error.h *//* already included: src/conf/imp.h */
-/* begin src/coords/ini.h */struct Coords;
+/* already included: src/utils/imp.h */
+/* already included: src/utils/error.h */
+/* already included: src/conf/imp.h */
+
+/* begin src/coords/ini.h */
+struct Coords;
 struct Config;
 
 // tag::mem[]
@@ -13336,14 +13603,25 @@ void coords_ini_conf(MPI_Comm cart, const Config *cfg, Coords **c) {
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/coords/imp.cpp"
-/* begin src/coords/imp.cpp */#include <vector_types.h>
+/* begin src/coords/imp.cpp */
+#include <vector_types.h>
 #include <mpi.h>
 
-#include <conf.h>
 /* already included: src/inc/conf.h */
-/* already included: src/utils/error.h *//* already included: src/utils/imp.h *//* already included: src/utils/mc.h */
+/* already included: src/inc/conf.h */
+
+/* already included: src/utils/error.h */
+/* already included: src/utils/imp.h */
+/* already included: src/utils/mc.h */
+
 /* already included: src/mpi/wrapper.h */
-/* already included: src/coords/type.h *//* already included: src/coords/ini.h *//* already included: src/coords/imp.h *//* already included: src/coords/imp/type.h *//* begin src/coords/imp/main.h */enum {X, Y, Z, D};
+
+/* already included: src/coords/type.h */
+/* already included: src/coords/ini.h */
+/* already included: src/coords/imp.h */
+/* already included: src/coords/imp/type.h */
+/* begin src/coords/imp/main.h */
+enum {X, Y, Z, D};
 
 void coords_get_view(const Coords *c, Coords_v *v) {
     v->xc = c->xc;
@@ -13829,20 +14107,28 @@ int coords_size(const Coords *c) {
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/d/api.cu"
-/* begin src/d/api.cu */#include <stdio.h>
+/* begin src/d/api.cu */
+#include <stdio.h>
 #include <assert.h>
 
-#include <conf.h>
 /* already included: src/inc/conf.h */
-/* already included: src/utils/imp.h *//* already included: src/utils/error.h *//* already included: src/utils/msg.h */
+/* already included: src/inc/conf.h */
+
+/* already included: src/utils/imp.h */
+/* already included: src/utils/error.h */
+/* already included: src/utils/msg.h */
+
 /* already included: src/d/api.h */
+
 namespace d {
-/* begin src/d/common.h */static const char *emsg0; /* last error message */
+/* begin src/d/common.h */
+static const char *emsg0; /* last error message */
 const char *emsg() { return emsg0; }
 /* end src/d/common.h */
 
 #if   defined(DEV_CUDA)
-/* begin src/d/cuda/imp.h */#define SZ(a) (int)(sizeof(a)/sizeof(*(a)))
+/* begin src/d/cuda/imp.h */
+#define SZ(a) (int)(sizeof(a)/sizeof(*(a)))
 static enum cudaMemcpyKind k2k0[] = {  /* [k]ind to [k]ind */
     cudaMemcpyHostToHost, cudaMemcpyHostToDevice,
     cudaMemcpyDeviceToHost, cudaMemcpyDeviceToDevice,
@@ -13925,7 +14211,8 @@ int PeekAtLastError(void) {
 }
 /* end src/d/cuda/imp.h */
 #  if  defined(CUDA_ALLOC_RELEASE)
-/* begin src/d/cuda/release/alloc.h */int alloc_pinned(void **pHost, size_t size) {
+/* begin src/d/cuda/release/alloc.h */
+int alloc_pinned(void **pHost, size_t size) {
     return R(cudaHostAlloc(pHost, size, cudaHostAllocMapped));
 }
 
@@ -13942,7 +14229,8 @@ int FreeHost (void *hstPtr) {
 }
 /* end src/d/cuda/release/alloc.h */
 #  elif defined(CUDA_ALLOC_DEBUG)
-/* begin src/d/cuda/debug/alloc.h *//* for sysconf */
+/* begin src/d/cuda/debug/alloc.h */
+/* for sysconf */
 #include <unistd.h>
 
 static size_t tot_d = 0;
@@ -13989,7 +14277,8 @@ int FreeHost (void *hstPtr) {
 #    error CUDA_ALLOC_* is undefined
 #  endif
 #elif defined(DEV_CPU)
-/* begin src/d/cpu/imp.h *//* [v]oid add : shift by `n' number of bytes */
+/* begin src/d/cpu/imp.h */
+/* [v]oid add : shift by `n' number of bytes */
 #define vadd(p, n) (void*)((char*)(p) + (n))
 
 int alloc_pinned(void **pHost, size_t size) {
@@ -14367,10 +14656,14 @@ int PeekAtLastError(void) {
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/dbg/conf.cpp"
-/* begin src/dbg/conf.cpp */#include <stdio.h>
+/* begin src/dbg/conf.cpp */
+#include <stdio.h>
 
-/* already included: src/utils/error.h *//* already included: src/conf/imp.h */
+/* already included: src/utils/error.h */
+/* already included: src/conf/imp.h */
+
 /* already included: src/dbg/imp.h */
+
 static void set(const Config *cfg, const char *desc, int kind, Dbg *dbg) {
     int enabled = 0;
     UC(conf_lookup_bool(cfg, desc, &enabled));
@@ -14692,11 +14985,25 @@ void dbg_set_conf(const Config *cfg, Dbg *dbg) {
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/dbg/imp.cu"
-/* begin src/dbg/imp.cu */#include <stdio.h>
+/* begin src/dbg/imp.cu */
+#include <stdio.h>
 #include <assert.h>
-#include <conf.h>
-/* already included: src/inc/def.h *//* already included: src/inc/conf.h *//* already included: src/inc/type.h *//* already included: src/inc/dev.h */
-/* already included: src/utils/imp.h *//* already included: src/utils/error.h *//* already included: src/utils/cc.h *//* already included: src/utils/kl.h *//* already included: src/utils/msg.h *//* already included: src/d/api.h *//* already included: src/coords/type.h *//* already included: src/coords/imp.h *//* begin src/io/txt/imp.h */struct Particle;
+/* already included: src/inc/conf.h */
+/* already included: src/inc/def.h */
+/* already included: src/inc/conf.h */
+/* already included: src/inc/type.h */
+/* already included: src/inc/dev.h */
+
+/* already included: src/utils/imp.h */
+/* already included: src/utils/error.h */
+/* already included: src/utils/cc.h */
+/* already included: src/utils/kl.h */
+/* already included: src/utils/msg.h */
+/* already included: src/d/api.h */
+/* already included: src/coords/type.h */
+/* already included: src/coords/imp.h */
+/* begin src/io/txt/imp.h */
+struct Particle;
 struct Force;
 struct TxtRead;
 
@@ -14717,7 +15024,9 @@ const Force*    txt_read_get_ff(const TxtRead *);
 // end::read[]
 /* end src/io/txt/imp.h */
 
-/* already included: src/dbg/imp.h *//* begin src/dbg/error.h */#define ERRLIST(_) _(NONE),  /* no error */     \
+/* already included: src/dbg/imp.h */
+/* begin src/dbg/error.h */
+#define ERRLIST(_) _(NONE),  /* no error */     \
         _(INVALID),  /* invalid value */        \
         _(INF_VAL),  /* inf value */            \
         _(NAN_VAL)   /* nan value */
@@ -14759,7 +15068,8 @@ static const char* get_err_str(err_type e) {return err_str[e];}
 /* end src/dbg/error.h */
 
 namespace dbg_dev {
-/* begin src/dbg/dev/common.h */static __device__ void report(err_type e) {
+/* begin src/dbg/dev/common.h */
+static __device__ void report(err_type e) {
     if (e != ERR_NONE) atomicExch(&error, e);
 }
 
@@ -14780,7 +15090,8 @@ static __device__ err_type check_float3(const float a[3]) {
     return ERR_NONE;
 }
 /* end src/dbg/dev/common.h */
-/* begin src/dbg/dev/pos.h */static __device__ bool valid_pos(float x, int L) {
+/* begin src/dbg/dev/pos.h */
+static __device__ bool valid_pos(float x, int L) {
     if (x < -0.5*L || x > 0.5*L)
         return false;
     return true;
@@ -14856,7 +15167,8 @@ __global__ void check_pos_pu(int3 L, const Particle *pp, int n, bool verbose = t
     report(e);
 }
 /* end src/dbg/dev/pos.h */
-/* begin src/dbg/dev/vel.h */static __device__ bool valid_vel(float dt, float v, int L) {
+/* begin src/dbg/dev/vel.h */
+static __device__ bool valid_vel(float dt, float v, int L) {
     float dx = fabs(v * dt);
     if (dx > L/2)
         return false;
@@ -14897,7 +15209,8 @@ __global__ void check_vv(float dt, int3 L, const Particle *pp, int n, bool verbo
     report(e);
 }
 /* end src/dbg/dev/vel.h */
-/* begin src/dbg/dev/force.h */static __device__ bool valid_acc(float dt, float a, int L, bool verbose) {
+/* begin src/dbg/dev/force.h */
+static __device__ bool valid_acc(float dt, float a, int L, bool verbose) {
     float dx = fabs(a * dt * dt);
     if (dx > 0.5*L) {
         if (verbose) printf("DBG: a = %g (L = %d)\n", a, L);
@@ -14934,7 +15247,8 @@ __global__ void check_ff(float dt, int3 L, const Force *ff, int n, bool verbose 
     report(e);
 }
 /* end src/dbg/dev/force.h */
-/* begin src/dbg/dev/color.h */static __device__ err_type valid_color(int c, bool verbose) {
+/* begin src/dbg/dev/color.h */
+static __device__ err_type valid_color(int c, bool verbose) {
     if (c != BLUE_COLOR && c != RED_COLOR) {
         if (verbose) printf("DBG: color = %d\n", c);
         return ERR_INVALID;
@@ -14949,7 +15263,8 @@ __global__ void check_cc(const int *cc, int n, bool verbose = true) {
     report(e);
 }
 /* end src/dbg/dev/color.h */
-/* begin src/dbg/dev/clist.h */static __device__ int3 cell_coords(int3 L, int cid) {
+/* begin src/dbg/dev/clist.h */
+static __device__ int3 cell_coords(int3 L, int cid) {
     int3 c;
     c.x = cid % L.x;
     c.z = cid / (L.y * L.x);
@@ -15014,13 +15329,15 @@ __global__ void check_clist(int3 ncells, const int *ss, const int *cc, const Par
 /* end src/dbg/dev/clist.h */
 } // devdbg
 
-/* begin src/dbg/imp/type.h */struct Dbg {
+/* begin src/dbg/imp/type.h */
+struct Dbg {
     int state[DBG_NKIND_];
     bool verbose;
     bool dump;
 };
 /* end src/dbg/imp/type.h */
-/* begin src/dbg/imp/main.h */void dbg_ini(Dbg **dbg) {
+/* begin src/dbg/imp/main.h */
+void dbg_ini(Dbg **dbg) {
     Dbg *d;
     int i;
     EMALLOC(1, dbg);
@@ -15476,10 +15793,20 @@ void dbg_check_clist(const Coords*, const Dbg *dbg, int3 L, const int *starts, c
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/distr/common/imp.cu"
-/* begin src/distr/common/imp.cu */#include <conf.h>
+/* begin src/distr/common/imp.cu */
 /* already included: src/inc/conf.h */
-/* already included: src/d/api.h *//* already included: src/inc/type.h *//* already included: src/inc/dev.h *//* already included: src/utils/kl.h *//* already included: src/utils/cc.h *//* already included: src/frag/dev.h *//* already included: src/frag/imp.h */
-/* begin src/distr/map/type.h */#pragma once
+/* already included: src/inc/conf.h */
+
+/* already included: src/d/api.h */
+/* already included: src/inc/type.h */
+/* already included: src/inc/dev.h */
+/* already included: src/utils/kl.h */
+/* already included: src/utils/cc.h */
+/* already included: src/frag/dev.h */
+/* already included: src/frag/imp.h */
+
+/* begin src/distr/map/type.h */
+#pragma once
 
 // tag::struct[]
 /* [D]istr Map */
@@ -15493,7 +15820,8 @@ struct DMap {
 // end::struct[]
 /* end src/distr/map/type.h */
 
-/* begin src/distr/common/imp.h */struct Particle;
+/* begin src/distr/common/imp.h */
+struct Particle;
 struct int3;
 
 // tag::int[]
@@ -15505,7 +15833,8 @@ void dcommon_shift_halo(int3 L, int nhalo, const Sarray<int, 27> starts, /**/ Pa
 /* end src/distr/common/imp.h */
 
 namespace dcommon_dev {
-/* begin src/distr/common/dev.h *//* pack packets of nv particles into 27 buffers according to map  */
+/* begin src/distr/common/dev.h */
+/* pack packets of nv particles into 27 buffers according to map  */
 __global__ void pack_pp_packets(int nv, const Particle *pp, DMap m, /**/ Sarray<Particle*, 27> buf) {
     int i, cid, fid, scid;
     int dst, src, offset;
@@ -15875,18 +16204,88 @@ void dcommon_shift_halo(int3 L, int nhalo, const Sarray<int, 27> starts, /**/ Pa
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/distr/flu/imp.cu"
-/* begin src/distr/flu/imp.cu */#include <mpi.h>
+/* begin src/distr/flu/imp.cu */
+#include <mpi.h>
 #include <assert.h>
 
-#include <conf.h>
 /* already included: src/inc/conf.h */
+/* already included: src/inc/conf.h */
+
 /* already included: src/utils/msg.h */
-/* already included: src/utils/imp.h *//* already included: src/utils/cc.h *//* already included: src/utils/kl.h *//* already included: src/utils/error.h */
-/* already included: src/d/api.h *//* already included: src/inc/type.h *//* already included: src/inc/dev.h *//* already included: src/frag/dev.h *//* already included: src/frag/imp.h */
-/* already included: src/struct/partlist/type.h *//* already included: src/struct/partlist/dev.h */
-/* already included: src/algo/scan/imp.h *//* already included: src/algo/utils/shfl.h */
-/* already included: src/clist/imp.h *//* already included: src/flu/imp.h */
-/* already included: src/comm/imp.h *//* begin src/comm/utils.h */#pragma once
+
+/* already included: src/utils/imp.h */
+/* already included: src/utils/cc.h */
+/* already included: src/utils/kl.h */
+/* already included: src/utils/error.h */
+
+/* already included: src/d/api.h */
+/* already included: src/inc/type.h */
+/* already included: src/inc/dev.h */
+/* already included: src/frag/dev.h */
+/* already included: src/frag/imp.h */
+
+/* already included: src/struct/partlist/type.h */
+/* already included: src/struct/partlist/dev.h */
+
+/* already included: src/algo/scan/imp.h */
+/* already included: src/algo/utils/shfl.h */
+
+/* already included: src/clist/imp.h */
+/* begin src/flu/imp.h */
+#pragma once
+
+// tag::struct[]
+struct FluQuants {
+    Particle *pp, *pp0;    /* particles on device  */
+    int       n;           /* particle number      */
+    Clist     *cells;      /* cell lists           */
+    ClistMap *mcells;      /* cell lists map       */
+    Particle *pp_hst;      /* particles on host    */
+
+    /* optional data */
+
+    bool ids, colors;
+
+    int *ii, *ii0;  /* global ids on device */
+    int *ii_hst;    /* global ids on host   */
+
+    int *cc, *cc0;  /* colors on device */
+    int *cc_hst;    /* colors on host   */
+
+    int maxp; /* maximum particle number */
+};
+// end::struct[]
+
+struct Coords;
+struct GenColor;
+
+// tag::mem[]
+void flu_ini(bool colors, bool ids, int3 L, int maxp, FluQuants *q);
+void flu_fin(FluQuants *q);
+// end::mem[]
+
+// tag::gen[]
+void flu_gen_quants(const Coords*, int numdensity, const GenColor *gc, FluQuants *q); // <1>
+void flu_gen_ids(MPI_Comm, const int n, FluQuants *q); // <2>
+// end::gen[]
+
+// tag::start[]
+void flu_strt_quants(MPI_Comm, const char *base, const int id, FluQuants *q);     // <1>
+void flu_strt_dump(MPI_Comm, const char *base, const int id, const FluQuants *q); // <2>
+// end::start[]
+
+// tag::tools[]
+void flu_txt_dump(const Coords*, const FluQuants *q); // <1>
+
+/* build cells only from one array of particles fully contained in the domain */
+/* warning: this will delete particles which are outside                      */
+void flu_build_cells(/**/ FluQuants *q); // <2>
+// end::tools[]
+/* end src/flu/imp.h */
+
+/* already included: src/comm/imp.h */
+/* begin src/comm/utils.h */
+#pragma once
 
 // tag::convert[]
 template <typename BAGT, typename T, int N>
@@ -15898,7 +16297,9 @@ static void bag2Sarray(BAGT bags, Sarray<T*, N> *buf)
 }
 /* end src/comm/utils.h */
 
-/* already included: src/distr/map/type.h *//* begin src/distr/flu/imp.h */struct DFluPack;
+/* already included: src/distr/map/type.h */
+/* begin src/distr/flu/imp.h */
+struct DFluPack;
 struct DFluComm;
 struct DFluUnpack;
 struct DFluStatus;
@@ -15938,7 +16339,8 @@ void dflu_gather(int ndead, const DFluPack *p, const DFluUnpack *u, /**/ FluQuan
 // end::clist[]
 /* end src/distr/flu/imp.h */
 
-/* begin src/distr/map/dev.h */#pragma once
+/* begin src/distr/map/dev.h */
+#pragma once
 
 // tag::int[]
 /* exclusive scan */
@@ -15976,7 +16378,8 @@ static __device__ void dmap_add(int pid, int fid, DMap m)  // <3>
     m.ids[fid][entry] = pid;
 }
 /* end src/distr/map/dev.h */
-/* begin src/distr/map/imp.h */// tag::int[]
+/* begin src/distr/map/imp.h */
+// tag::int[]
 void dmap_ini(int nfrags, const int capacity[], /**/ DMap *m);
 void dmap_fin(int nfrags, /**/ DMap *m);
 void dmap_reini(int nfrags, /**/ DMap m);
@@ -15987,7 +16390,9 @@ void dmap_reini_host(int nfrags, /**/ DMap m);
 void dmap_D2H(int nfrags, const DMap *d, /**/ DMap *h);
 // end::int[]
 /* end src/distr/map/imp.h */
-/* already included: src/distr/common/imp.h *//* begin src/distr/flu/status/imp.h */struct DFluStatus;
+/* already included: src/distr/common/imp.h */
+/* begin src/distr/flu/status/imp.h */
+struct DFluStatus;
 struct Config;
 
 /* ini */
@@ -16004,7 +16409,8 @@ void dflu_status_exceed(int frag, int counter, int capacity, /**/ DFluStatus *s)
 
 /* end src/distr/flu/status/imp.h */
 
-/* begin src/distr/flu/imp/type.h */typedef Sarray <float2*, 26> float2p26;
+/* begin src/distr/flu/imp/type.h */
+typedef Sarray <float2*, 26> float2p26;
 typedef Sarray <int*, 26> intp26;
 
 enum {
@@ -16039,7 +16445,8 @@ struct DFluUnpack {
 /* end src/distr/flu/imp/type.h */
 
 namespace dflu_dev {
-/* begin src/distr/flu/dev.h */__global__ void build_map(int3 L, const PartList lp, const int n, /**/ DMap m) {
+/* begin src/distr/flu/dev.h */
+__global__ void build_map(int3 L, const PartList lp, const int n, /**/ DMap m) {
     int pid, fid;
     pid = threadIdx.x + blockIdx.x * blockDim.x;
     if (pid >= n) return;
@@ -16075,7 +16482,8 @@ __global__ void pack(const T *data, DMap m, /**/ Sarray<T*, 26> buf) {
 }
 /* end src/distr/flu/dev.h */
 }
-/* begin src/distr/flu/imp/ini.h */static int estimate_max_flux(int3 L, int fid, int maxd) {
+/* begin src/distr/flu/imp/ini.h */
+static int estimate_max_flux(int3 L, int fid, int maxd) {
     int e, nfaces, d[3];
     frag_hst::i2d3(fid, d);
     nfaces = abs(d[0]) + abs(d[1]) + abs(d[2]);
@@ -16177,7 +16585,8 @@ void dflu_unpack_ini(bool colors, bool ids, int3 L, int maxdensity, DFluUnpack *
     if (colors) Dalloc(&u->ccre, maxparts);
 }
 /* end src/distr/flu/imp/ini.h */
-/* begin src/distr/flu/imp/fin.h */void dflu_pack_fin(DFluPack *p) {
+/* begin src/distr/flu/imp/fin.h */
+void dflu_pack_fin(DFluPack *p) {
     UC(dmap_fin(NFRAGS, /**/ &p->map));
     UC(comm_bags_fin(PINNED, NONE, /**/ p->hpp, p->dpp));
 
@@ -16208,7 +16617,8 @@ void dflu_unpack_fin(DFluUnpack *u) {
     EFREE(u);
 }
 /* end src/distr/flu/imp/fin.h */
-/* begin src/distr/flu/imp/map.h */static void build_map(int3 L, int n, const PartList lp, DMap m) {
+/* begin src/distr/flu/imp/map.h */
+static void build_map(int3 L, int n, const PartList lp, DMap m) {
     UC(dmap_reini(NFRAGS, /**/ m));
     KL(dflu_dev::build_map, (k_cnf(n)), (L, lp, n, /**/ m));
     UC(dmap_download_counts(NFRAGS, /**/ &m)); /* async */
@@ -16220,7 +16630,8 @@ void dflu_build_map(int n, const PartList lp, DFluPack *p) {
     dSync();
 }
 /* end src/distr/flu/imp/map.h */
-/* begin src/distr/flu/imp/pack.h */#pragma once
+/* begin src/distr/flu/imp/pack.h */
+#pragma once
 
 static int reduce(int n, const int d[]) {
     int s, i;
@@ -16306,7 +16717,8 @@ void dflu_download(DFluPack *p, /**/ DFluStatus *s) {
     }
 }
 /* end src/distr/flu/imp/pack.h */
-/* begin src/distr/flu/imp/com.h */void dflu_post_recv(DFluComm *c, DFluUnpack *u) {
+/* begin src/distr/flu/imp/com.h */
+void dflu_post_recv(DFluComm *c, DFluUnpack *u) {
     UC(comm_post_recv(u->hbuf, c->comm));
 }
 
@@ -16324,7 +16736,8 @@ void dflu_wait_send(DFluComm *c) {
     UC(comm_wait_send(c->comm));
 }
 /* end src/distr/flu/imp/com.h */
-/* begin src/distr/flu/imp/unpack.h */static int scan_hst(const int n, const int *counts, int27 *starts) {
+/* begin src/distr/flu/imp/unpack.h */
+static int scan_hst(const int n, const int *counts, int27 *starts) {
     int i, s;
     starts->d[0] = 0;
     for (i = 0, s = 0; i < n; ++i)
@@ -16388,7 +16801,8 @@ void dflu_unpack(/**/ DFluUnpack *u) {
     unpack_cc(/**/ u);
 }
 /* end src/distr/flu/imp/unpack.h */
-/* begin src/distr/flu/imp/gather.h */void dflu_bulk(PartList lp, /**/ FluQuants *q) {
+/* begin src/distr/flu/imp/gather.h */
+void dflu_bulk(PartList lp, /**/ FluQuants *q) {
     UC(clist_ini_counts(q->cells));
     UC(clist_subindex_local(q->n, lp, /**/ q->cells, q->mcells));
 }
@@ -16739,9 +17153,15 @@ void dflu_gather(int ndead, const DFluPack *p, const DFluUnpack *u, /**/ FluQuan
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/distr/flu/status/imp.cpp"
-/* begin src/distr/flu/status/imp.cpp */#include <stdio.h>
-/* already included: src/utils/imp.h *//* already included: src/utils/error.h *//* already included: src/utils/msg.h *//* already included: src/frag/imp.h */
+/* begin src/distr/flu/status/imp.cpp */
+#include <stdio.h>
+/* already included: src/utils/imp.h */
+/* already included: src/utils/error.h */
+/* already included: src/utils/msg.h */
+/* already included: src/frag/imp.h */
+
 /* already included: src/distr/flu/status/imp.h */
+
 enum {SUCCESS, PACK_FAILURE};
 struct DFluStatus {
     int errorcode;
@@ -17091,13 +17511,22 @@ int dflu_status_nullp(DFluStatus *s) { return s == NULL; }
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/distr/map/imp.cu"
-/* begin src/distr/map/imp.cu */#include <stdlib.h>
+/* begin src/distr/map/imp.cu */
+#include <stdlib.h>
 #include <stdio.h>
 
-#include <conf.h>
-/* already included: src/inc/conf.h *//* already included: src/inc/dev.h */
-/* already included: src/d/api.h *//* already included: src/utils/cc.h *//* already included: src/utils/error.h *//* already included: src/utils/imp.h *//* already included: src/algo/utils/shfl.h */
+/* already included: src/inc/conf.h */
+/* already included: src/inc/conf.h */
+/* already included: src/inc/dev.h */
+
+/* already included: src/d/api.h */
+/* already included: src/utils/cc.h */
+/* already included: src/utils/error.h */
+/* already included: src/utils/imp.h */
+/* already included: src/algo/utils/shfl.h */
+
 /* already included: src/distr/map/type.h */
+
 void dmap_ini(int nfrags, const int capacity[], /**/ DMap *m) {
     Dalloc(&m->counts,  nfrags);
     Dalloc(&m->starts, (nfrags + 1));
@@ -17466,14 +17895,28 @@ void dmap_D2H(int nfrags, const DMap *d, /**/ DMap *h) {
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/distr/rbc/imp.cu"
-/* begin src/distr/rbc/imp.cu */#include <mpi.h>
+/* begin src/distr/rbc/imp.cu */
+#include <mpi.h>
 #include <assert.h>
 
-#include <conf.h>
 /* already included: src/inc/conf.h */
-/* already included: src/utils/msg.h *//* already included: src/d/q.h *//* already included: src/d/api.h *//* already included: src/d/ker.h *//* already included: src/utils/imp.h *//* already included: src/utils/cc.h *//* already included: src/utils/kl.h *//* already included: src/utils/error.h */
-/* already included: src/inc/dev.h *//* already included: src/inc/type.h *//* already included: src/inc/def.h */
-/* begin src/rbc/type.h */#pragma once
+/* already included: src/inc/conf.h */
+
+/* already included: src/utils/msg.h */
+/* already included: src/d/q.h */
+/* already included: src/d/api.h */
+/* already included: src/d/ker.h */
+/* already included: src/utils/imp.h */
+/* already included: src/utils/cc.h */
+/* already included: src/utils/kl.h */
+/* already included: src/utils/error.h */
+
+/* already included: src/inc/dev.h */
+/* already included: src/inc/type.h */
+/* already included: src/inc/def.h */
+
+/* begin src/rbc/type.h */
+#pragma once
 
 struct AreaVolume;
 struct Particle;
@@ -17492,10 +17935,21 @@ struct RbcQuants {
 
 /* end src/rbc/type.h */
 
-/* already included: src/frag/dev.h *//* already included: src/frag/imp.h *//* already included: src/comm/imp.h *//* already included: src/comm/utils.h */
-/* already included: src/algo/utils/shfl.h *//* already included: src/algo/minmax/imp.h */
-/* already included: src/distr/map/type.h *//* already included: src/distr/map/dev.h *//* already included: src/distr/map/imp.h *//* already included: src/distr/common/imp.h */
-/* begin src/distr/rbc/imp.h */struct DRbcPack;
+/* already included: src/frag/dev.h */
+/* already included: src/frag/imp.h */
+/* already included: src/comm/imp.h */
+/* already included: src/comm/utils.h */
+
+/* already included: src/algo/utils/shfl.h */
+/* already included: src/algo/minmax/imp.h */
+
+/* already included: src/distr/map/type.h */
+/* already included: src/distr/map/dev.h */
+/* already included: src/distr/map/imp.h */
+/* already included: src/distr/common/imp.h */
+
+/* begin src/distr/rbc/imp.h */
+struct DRbcPack;
 struct DRbcComm;
 struct DRbcUnpack;
 
@@ -17522,7 +17976,8 @@ void drbc_unpack_halo(const DRbcUnpack *u, /**/ RbcQuants *q);
 // end::interface[]
 /* end src/distr/rbc/imp.h */
 
-/* begin src/distr/rbc/dev.h */namespace drbc_dev {
+/* begin src/distr/rbc/dev.h */
+namespace drbc_dev {
 
 __global__ void build_map(int3 L, int n, const float3 *minext, const float3 *maxext, /**/ DMap m) {
     enum {X, Y, Z};
@@ -17545,7 +18000,8 @@ __global__ void build_map(int3 L, int n, const float3 *minext, const float3 *max
 
 }
 /* end src/distr/rbc/dev.h */
-/* begin src/distr/rbc/imp/type.h */// tag::struct[]
+/* begin src/distr/rbc/imp/type.h */
+// tag::struct[]
 enum {
     MAX_NHBAGS = 2,
     MAX_NDBAGS = 1
@@ -17576,7 +18032,8 @@ struct DRbcUnpack {
 };
 // end::struct[]
 /* end src/distr/rbc/imp/type.h */
-/* begin src/distr/rbc/imp/ini.h */static void rbc_get_num_capacity(int maxnc, /**/ int numc[NBAGS]) {
+/* begin src/distr/rbc/imp/ini.h */
+static void rbc_get_num_capacity(int maxnc, /**/ int numc[NBAGS]) {
     // TODO save memory here?
     for (int i = 0; i < NBAGS; ++i)
         numc[i] = maxnc;
@@ -17644,7 +18101,8 @@ void drbc_unpack_ini(bool ids, int3 L, int maxnc, int nv, DRbcUnpack **unpack) {
     UC(comm_buffer_ini(u->nbags, u->hbags, &u->hbuf));
 }
 /* end src/distr/rbc/imp/ini.h */
-/* begin src/distr/rbc/imp/fin.h */void drbc_pack_fin(DRbcPack *p) {
+/* begin src/distr/rbc/imp/fin.h */
+void drbc_pack_fin(DRbcPack *p) {
     UC(dmap_fin(NBAGS, /**/ &p->map));
     UC(comm_bags_fin(PINNED, DEV_ONLY, /**/ p->hpp, p->dpp));
     Dfree(p->minext);
@@ -17671,7 +18129,8 @@ void drbc_unpack_fin(DRbcUnpack *u) {
     EFREE(u);
 }
 /* end src/distr/rbc/imp/fin.h */
-/* begin src/distr/rbc/imp/map.h */static void build_map(int3 L, int n, const float3 *minext, const float3 *maxext, /**/ DMap m) {
+/* begin src/distr/rbc/imp/map.h */
+static void build_map(int3 L, int n, const float3 *minext, const float3 *maxext, /**/ DMap m) {
     UC(dmap_reini(NBAGS, /**/ m));
     KL(drbc_dev::build_map, (k_cnf(n)), (L, n, minext, maxext, /**/ m));
     KL(dmap_scan<NBAGS>, (1, 32), (/**/ m));
@@ -17682,7 +18141,8 @@ void drbc_build_map(int nc, int nv, const Particle *pp, DRbcPack *p) {
     build_map(p->L, nc, p->minext, p->maxext, /**/  p->map);
 }
 /* end src/distr/rbc/imp/map.h */
-/* begin src/distr/rbc/imp/pack.h */static void rbc_pack_pp(const DMap m, int nc, int nv, const Particle *pp, /**/ dBags *bags) {
+/* begin src/distr/rbc/imp/pack.h */
+static void rbc_pack_pp(const DMap m, int nc, int nv, const Particle *pp, /**/ dBags *bags) {
     Sarray<Particle*, NBAGS> wrap;
     bag2Sarray(*bags, &wrap);
     UC(dcommon_pack_pp_packets(nc, nv, pp, m, /**/ wrap));
@@ -17719,7 +18179,8 @@ void drbc_download(DRbcPack *p) {
         memcpy(p->hii->counts, p->hmap.counts, sz);
 }
 /* end src/distr/rbc/imp/pack.h */
-/* begin src/distr/rbc/imp/com.h */void drbc_post_recv(DRbcComm *c, DRbcUnpack *u) {
+/* begin src/distr/rbc/imp/com.h */
+void drbc_post_recv(DRbcComm *c, DRbcUnpack *u) {
     UC(comm_post_recv(u->hbuf, c->comm));
 }
 
@@ -17737,7 +18198,8 @@ void drbc_wait_send(DRbcComm *c) {
     UC(comm_wait_send(c->comm));
 }
 /* end src/distr/rbc/imp/com.h */
-/* begin src/distr/rbc/imp/unpack.h */static int unpack_bulk_pp(const DRbcPack *p, /**/ Particle *pp) {
+/* begin src/distr/rbc/imp/unpack.h */
+static int unpack_bulk_pp(const DRbcPack *p, /**/ Particle *pp) {
     int nc = p->hpp->counts[frag_bulk];
     void *src = p->dpp->data[frag_bulk];
     size_t sz = nc * p->hpp->bsize;
@@ -18119,14 +18581,30 @@ void drbc_unpack_halo(const DRbcUnpack *u, /**/ RbcQuants *q) {
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/distr/rig/imp.cu"
-/* begin src/distr/rig/imp.cu */#include <mpi.h>
+/* begin src/distr/rig/imp.cu */
+#include <mpi.h>
 #include <assert.h>
 
-#include <conf.h>
 /* already included: src/inc/conf.h */
-/* already included: src/utils/msg.h *//* already included: src/d/api.h *//* already included: src/utils/imp.h *//* already included: src/utils/cc.h *//* already included: src/utils/kl.h *//* already included: src/utils/error.h *//* already included: src/inc/dev.h *//* already included: src/inc/type.h *//* already included: src/inc/def.h */
-/* already included: src/frag/dev.h *//* already included: src/frag/imp.h *//* already included: src/comm/imp.h *//* already included: src/comm/utils.h */
-/* begin src/rig/imp.h */#pragma once
+/* already included: src/inc/conf.h */
+
+/* already included: src/utils/msg.h */
+/* already included: src/d/api.h */
+/* already included: src/utils/imp.h */
+/* already included: src/utils/cc.h */
+/* already included: src/utils/kl.h */
+/* already included: src/utils/error.h */
+/* already included: src/inc/dev.h */
+/* already included: src/inc/type.h */
+/* already included: src/inc/def.h */
+
+/* already included: src/frag/dev.h */
+/* already included: src/frag/imp.h */
+/* already included: src/comm/imp.h */
+/* already included: src/comm/utils.h */
+
+/* begin src/rig/imp.h */
+#pragma once
 
 // tag::quants[]
 struct RigQuants {
@@ -18169,8 +18647,14 @@ void rig_strt_dump(MPI_Comm, const char *base, const char *name, const int id, c
 // end::io[]
 /* end src/rig/imp.h */
 
-/* already included: src/algo/utils/shfl.h *//* already included: src/distr/map/type.h *//* already included: src/distr/map/dev.h *//* already included: src/distr/map/imp.h *//* already included: src/distr/common/imp.h */
-/* begin src/distr/rig/imp.h */struct DRigPack;
+/* already included: src/algo/utils/shfl.h */
+/* already included: src/distr/map/type.h */
+/* already included: src/distr/map/dev.h */
+/* already included: src/distr/map/imp.h */
+/* already included: src/distr/common/imp.h */
+
+/* begin src/distr/rig/imp.h */
+struct DRigPack;
 struct DRigComm;
 struct DRigUnpack;
 
@@ -18197,7 +18681,8 @@ void drig_unpack_halo(const DRigUnpack *u, /**/ RigQuants *q);
 // end::interface[]
 /* end src/distr/rig/imp.h */
 
-/* begin src/distr/rig/dev.h */namespace drig_dev {
+/* begin src/distr/rig/dev.h */
+namespace drig_dev {
 
 __global__ void build_map(int3 L, int n, const Rigid *ss, /**/ DMap m) {
     enum {X, Y, Z};
@@ -18230,7 +18715,8 @@ __global__ void pack_ss(const Rigid *ss, DMap m, /**/ Sarray<Rigid*, 27> buf) {
 
 }
 /* end src/distr/rig/dev.h */
-/* begin src/distr/rig/imp/type.h */#pragma once
+/* begin src/distr/rig/imp/type.h */
+#pragma once
 
 // tag::struct[]
 /*
@@ -18265,7 +18751,8 @@ struct DRigUnpack {
 };
 // end::struct[]
 /* end src/distr/rig/imp/type.h */
-/* begin src/distr/rig/imp/ini.h */static void rig_get_num_capacity(int maxns, /**/ int numc[NBAGS]) {
+/* begin src/distr/rig/imp/ini.h */
+static void rig_get_num_capacity(int maxns, /**/ int numc[NBAGS]) {
     // TODO save memory here?
     for (int i = 0; i < NBAGS; ++i)
         numc[i] = maxns;
@@ -18322,7 +18809,8 @@ void drig_unpack_ini(int3 L, int maxns, int nv, DRigUnpack **unpack) {
     UC(comm_buffer_ini(u->nbags, u->hbags, &u->hbuf));
 }
 /* end src/distr/rig/imp/ini.h */
-/* begin src/distr/rig/imp/fin.h */void drig_pack_fin(DRigPack *p) {
+/* begin src/distr/rig/imp/fin.h */
+void drig_pack_fin(DRigPack *p) {
     UC(dmap_fin(NBAGS, /**/ &p->map));
     UC(comm_bags_fin(PINNED, DEV_ONLY, /**/ p->hipp, p->dipp));
     UC(comm_bags_fin(PINNED, DEV_ONLY, /**/ p->hss, p->dss));
@@ -18342,7 +18830,8 @@ void drig_unpack_fin(DRigUnpack *u) {
     EFREE(u);
 }
 /* end src/distr/rig/imp/fin.h */
-/* begin src/distr/rig/imp/map.h */static void build_map(int3 L, int n, const Rigid *ss, /**/ DMap m) {
+/* begin src/distr/rig/imp/map.h */
+static void build_map(int3 L, int n, const Rigid *ss, /**/ DMap m) {
     UC(dmap_reini(NBAGS, /**/ m));
     KL(drig_dev::build_map, (k_cnf(n)), (L, n, ss, /**/ m));
     KL(dmap_scan<NBAGS>, (1, 32), (/**/ m));
@@ -18352,7 +18841,8 @@ void drig_build_map(int ns, const Rigid *ss, /**/ DRigPack *p) {
     UC(build_map(p->L, ns, ss, /**/ p->map));
 }
 /* end src/distr/rig/imp/map.h */
-/* begin src/distr/rig/imp/pack.h */static void rig_pack_pp(const DMap m, int ns, int nv, const Particle *ipp, /**/ dBags *bags) {
+/* begin src/distr/rig/imp/pack.h */
+static void rig_pack_pp(const DMap m, int ns, int nv, const Particle *ipp, /**/ dBags *bags) {
     Sarray<Particle*, NBAGS> wrap;
     bag2Sarray(*bags, &wrap);
 
@@ -18378,7 +18868,8 @@ void drig_download(DRigPack *p) {
     CC(d::Memcpy(p->hss->counts, p->map.counts, NBAGS * sizeof(int), D2H));
 }
 /* end src/distr/rig/imp/pack.h */
-/* begin src/distr/rig/imp/com.h */void drig_post_recv(DRigComm *c, DRigUnpack *u) {
+/* begin src/distr/rig/imp/com.h */
+void drig_post_recv(DRigComm *c, DRigUnpack *u) {
     UC(comm_post_recv(u->hbuf, c->comm));
 }
 
@@ -18396,7 +18887,8 @@ void drig_wait_send(DRigComm *c) {
     UC(comm_wait_send(c->comm));
 }
 /* end src/distr/rig/imp/com.h */
-/* begin src/distr/rig/imp/unpack.h */void drig_unpack_bulk(const DRigPack *p, /**/ RigQuants *q) {
+/* begin src/distr/rig/imp/unpack.h */
+void drig_unpack_bulk(const DRigPack *p, /**/ RigQuants *q) {
     int ns, nv, n;
     ns = p->hipp->counts[frag_bulk];
     nv = q->nv;
@@ -18748,13 +19240,24 @@ void drig_unpack_halo(const DRigUnpack *u, /**/ RigQuants *q) {
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/exch/common/imp.cu"
-/* begin src/exch/common/imp.cu */#include <mpi.h>
+/* begin src/exch/common/imp.cu */
+#include <mpi.h>
 
-#include <conf.h>
 /* already included: src/inc/conf.h */
-/* already included: src/d/api.h *//* already included: src/utils/cc.h *//* already included: src/utils/kl.h */
-/* already included: src/inc/dev.h *//* already included: src/inc/type.h *//* already included: src/frag/dev.h *//* already included: src/frag/imp.h */
-/* already included: src/comm/imp.h *//* begin src/exch/common/imp.h */#pragma once
+/* already included: src/inc/conf.h */
+
+/* already included: src/d/api.h */
+/* already included: src/utils/cc.h */
+/* already included: src/utils/kl.h */
+
+/* already included: src/inc/dev.h */
+/* already included: src/inc/type.h */
+/* already included: src/frag/dev.h */
+/* already included: src/frag/imp.h */
+
+/* already included: src/comm/imp.h */
+/* begin src/exch/common/imp.h */
+#pragma once
 
 struct int3;
 
@@ -18774,7 +19277,8 @@ void ecommon_shift_rrcp_one_frag(int3 L, int n, const int fid, /**/ Positioncp *
 // end::int[]
 /* end src/exch/common/imp.h */
 namespace exch_dev {
-/* begin src/exch/common/dev.h */static __device__ void pack_p(const Particle *pp, int offset, int *indices, int cap, int i, /**/ Particle *buf) {
+/* begin src/exch/common/dev.h */
+static __device__ void pack_p(const Particle *pp, int offset, int *indices, int cap, int i, /**/ Particle *buf) {
     int dst, src;
     dst = offset + i;
     if (dst >= cap) return;
@@ -19145,15 +19649,30 @@ void ecommon_shift_rrcp_one_frag(int3 L, int n, const int fid, /**/ Positioncp *
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/exch/flu/imp.cu"
-/* begin src/exch/flu/imp.cu */#include <mpi.h>
+/* begin src/exch/flu/imp.cu */
+#include <mpi.h>
 #include <assert.h>
 
-#include <conf.h>
 /* already included: src/inc/conf.h */
-/* already included: src/utils/msg.h *//* already included: src/inc/type.h *//* already included: src/inc/dev.h *//* already included: src/frag/dev.h *//* already included: src/frag/imp.h */
-/* already included: src/d/api.h *//* already included: src/utils/error.h *//* already included: src/utils/imp.h *//* already included: src/utils/cc.h *//* already included: src/utils/kl.h */
-/* already included: src/comm/imp.h *//* already included: src/comm/utils.h */
-/* begin src/struct/parray/imp.h */#pragma once
+/* already included: src/inc/conf.h */
+
+/* already included: src/utils/msg.h */
+/* already included: src/inc/type.h */
+/* already included: src/inc/dev.h */
+/* already included: src/frag/dev.h */
+/* already included: src/frag/imp.h */
+
+/* already included: src/d/api.h */
+/* already included: src/utils/error.h */
+/* already included: src/utils/imp.h */
+/* already included: src/utils/cc.h */
+/* already included: src/utils/kl.h */
+
+/* already included: src/comm/imp.h */
+/* already included: src/comm/utils.h */
+
+/* begin src/struct/parray/imp.h */
+#pragma once
 
 struct PaArray {
     bool colors;
@@ -19180,7 +19699,8 @@ void parray_get_view(const PaArray *a, PaArray_v *v);  // <1>
 void parray_get_view(const PaArray *a, PaCArray_v *v); // <2>
 // end::view[]
 /* end src/struct/parray/imp.h */
-/* begin src/flu/type.h */#pragma once
+/* begin src/flu/type.h */
+#pragma once
 
 /* helpers to communicate between halo interactions and exchanger */
 
@@ -19213,7 +19733,9 @@ typedef Sarray<RndFrag, 26> RndFrag26;
 } // flu
 /* end src/flu/type.h */
 /* already included: src/algo/utils/shfl.h */
-/* begin src/exch/flu/imp.h */struct EFluPack;
+
+/* begin src/exch/flu/imp.h */
+struct EFluPack;
 struct EFluComm;
 struct EFluUnpack;
 struct PaArray;
@@ -19258,7 +19780,8 @@ void eflu_get_remote_frags(const EFluUnpack *u, /**/ RFrag26 *rfrags);
 /* end src/exch/flu/imp.h */
 
 namespace eflu_dev {
-/* begin src/exch/flu/dev/map.h *//* return origin and extents of the cells of fragment i */
+/* begin src/exch/flu/dev/map.h */
+/* return origin and extents of the cells of fragment i */
 static __device__ void get_frag_box(int3 L0, int i, /**/ int org[3], int ext[3]) {
     int d[3];
     int c, L[3] = {L0.x, L0.y, L0.z};
@@ -19357,7 +19880,8 @@ __global__ void scan(const int26 fragn, const intp26 fragcc, /**/ intp26 fragcum
     }
 }
 /* end src/exch/flu/dev/map.h */
-/* begin src/exch/flu/dev/pack.h *//* copy particles from bulk array pp to a single fragment to be exchanged */
+/* begin src/exch/flu/dev/pack.h */
+/* copy particles from bulk array pp to a single fragment to be exchanged */
 __global__ void collect_particles(int fid, int nc, const Particle *pp, const int *bss,
                                   const int *bcc, const int *fss, int cap,
                                   /**/ int *fii, Particle *fpp, int *fnn) {
@@ -19429,7 +19953,8 @@ __global__ void collect_colors(int fid, int nc, const int *ii,
 /* end src/exch/flu/dev/pack.h */
 } // dev
 
-/* begin src/exch/flu/imp/type.h *//*
+/* begin src/exch/flu/imp/type.h */
+/*
   pp: exchanged particles
   cc: colors of the above
 
@@ -19476,7 +20001,8 @@ struct EFluUnpack {
     int3 L; /* subdomain size */
 };
 /* end src/exch/flu/imp/type.h */
-/* begin src/exch/flu/imp/ini.h */void eflu_pack_ini(bool colors, int3 L, int maxd, EFluPack **pack) {
+/* begin src/exch/flu/imp/ini.h */
+void eflu_pack_ini(bool colors, int3 L, int maxd, EFluPack **pack) {
     int i, nbags, nc, cap[NBAGS], ncs[NBAGS];
     EFluPack *p;
 
@@ -19564,7 +20090,8 @@ void eflu_unpack_ini(bool colors, int3 L, int maxd, EFluUnpack **unpack) {
 }
 
 /* end src/exch/flu/imp/ini.h */
-/* begin src/exch/flu/imp/fin.h */void eflu_pack_fin(EFluPack *p) {
+/* begin src/exch/flu/imp/fin.h */
+void eflu_pack_fin(EFluPack *p) {
     for (int i = 0; i < NFRAGS; ++i) {
         Dfree(p->bcc.d[i]);
         Dfree(p->bss.d[i]);
@@ -19599,7 +20126,8 @@ void eflu_unpack_fin(EFluUnpack *u) {
 }
 
 /* end src/exch/flu/imp/fin.h */
-/* begin src/exch/flu/imp/common.h */static int get_cell_num(int3 L, int *cc) {
+/* begin src/exch/flu/imp/common.h */
+static int get_cell_num(int3 L, int *cc) {
     int i, nc, c;
     for (nc = i = 0; i < NFRAGS; ++i) {
         c = cc[i] = frag_hst::ncell(L, i) + 1;
@@ -19613,7 +20141,8 @@ static void scan(int n, int *cc, /**/ int *ss) {
     for (int i = 0; i < n; ++i) ss[i+1] = ss[i] + cc[i];
 }
 /* end src/exch/flu/imp/common.h */
-/* begin src/exch/flu/imp/map.h */void eflu_compute_map(const int *start, const int *count, /**/ EFluPack *p) {
+/* begin src/exch/flu/imp/map.h */
+void eflu_compute_map(const int *start, const int *count, /**/ EFluPack *p) {
     int nc;
     int26 cc;
     int27 ss;
@@ -19644,7 +20173,8 @@ void eflu_download_cell_starts(/**/ EFluPack *p) {
 }
 
 /* end src/exch/flu/imp/map.h */
-/* begin src/exch/flu/imp/pack.h */void eflu_pack(const PaArray *parray, /**/ EFluPack *p) {
+/* begin src/exch/flu/imp/pack.h */
+void eflu_pack(const PaArray *parray, /**/ EFluPack *p) {
     int nc, i, cap;
     int26 cc;
     Pap26 fpp;
@@ -19706,7 +20236,8 @@ void eflu_download_data(EFluPack *p) {
     dSync(); /* wait for copy */
 }
 /* end src/exch/flu/imp/pack.h */
-/* begin src/exch/flu/imp/com.h */void eflu_post_recv(EFluComm *c, EFluUnpack *u) {
+/* begin src/exch/flu/imp/com.h */
+void eflu_post_recv(EFluComm *c, EFluUnpack *u) {
     UC(comm_post_recv(u->hbuf, c->comm));
 }
 
@@ -19725,7 +20256,8 @@ void eflu_wait_send(EFluComm *c) {
 }
 
 /* end src/exch/flu/imp/com.h */
-/* begin src/exch/flu/imp/unpack.h */static void upload_data(int n, const hBags *h, /**/ dBags *d) {
+/* begin src/exch/flu/imp/unpack.h */
+static void upload_data(int n, const hBags *h, /**/ dBags *d) {
     int i, c;
     size_t sz;
     for (i = 0; i < n; ++i) {
@@ -19744,7 +20276,8 @@ void eflu_unpack(EFluUnpack *u) {
         upload_data(NFRAGS, u->hcc, /**/ u->dcc);
 }
 /* end src/exch/flu/imp/unpack.h */
-/* begin src/exch/flu/imp/get.h */void eflu_get_local_frags(const EFluPack *p, /**/ LFrag26 *lfrags) {
+/* begin src/exch/flu/imp/get.h */
+void eflu_get_local_frags(const EFluPack *p, /**/ LFrag26 *lfrags) {
     PaArray parraya;
 
     for (int i = 0; i < 26; ++i) {
@@ -20092,14 +20625,23 @@ void eflu_get_remote_frags(const EFluUnpack *u, /**/ RFrag26 *rfrags) {
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/exch/map/imp.cu"
-/* begin src/exch/map/imp.cu */#include <stdlib.h>
+/* begin src/exch/map/imp.cu */
+#include <stdlib.h>
 #include <stdio.h>
 #include <assert.h>
 
-#include <conf.h>
-/* already included: src/inc/conf.h *//* already included: src/inc/dev.h */
-/* already included: src/d/api.h *//* already included: src/utils/kl.h *//* already included: src/utils/cc.h *//* already included: src/utils/error.h *//* already included: src/utils/imp.h */
-/* begin src/exch/map/type.h */#pragma once
+/* already included: src/inc/conf.h */
+/* already included: src/inc/conf.h */
+/* already included: src/inc/dev.h */
+
+/* already included: src/d/api.h */
+/* already included: src/utils/kl.h */
+/* already included: src/utils/cc.h */
+/* already included: src/utils/error.h */
+/* already included: src/utils/imp.h */
+
+/* begin src/exch/map/type.h */
+#pragma once
 
 // [E]xchange map
 
@@ -20116,7 +20658,8 @@ struct EMap {
 // end::struct[]
 
 /* end src/exch/map/type.h */
-/* begin src/exch/map/imp.h */// tag::int[]
+/* begin src/exch/map/imp.h */
+// tag::int[]
 void emap_ini(int nw, int nfrags, int cap[], /**/ EMap *map);               // <1>
 void emap_fin(int nfrags, EMap *map);                                       // <2>
 void emap_reini(int nw, int nfrags, /**/ EMap map);                         // <3>
@@ -20125,7 +20668,9 @@ void emap_download_tot_counts(int nw, int nfrags, EMap map, /**/ int counts[]); 
 void emap_download_all_counts(int nw, int nfrags, EMap map, /**/ int tot_counts[], int *counts[]);
 // end::int[]
 /* end src/exch/map/imp.h */
-/* already included: src/algo/utils/shfl.h *//* begin src/exch/map/dev/main.h */namespace emap_dev {
+/* already included: src/algo/utils/shfl.h */
+/* begin src/exch/map/dev/main.h */
+namespace emap_dev {
 
 static __device__ int warpexscan(int cnt, int t) {
     assert (t < warpSize);
@@ -20539,17 +21084,36 @@ void emap_download_all_counts(int nw, int nfrags, EMap map, /**/ int tot_counts[
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/exch/mesh/imp.cu"
-/* begin src/exch/mesh/imp.cu */#include <mpi.h>
+/* begin src/exch/mesh/imp.cu */
+#include <mpi.h>
 #include <assert.h>
 
-#include <conf.h>
 /* already included: src/inc/conf.h */
-/* already included: src/utils/imp.h *//* already included: src/utils/msg.h *//* already included: src/inc/type.h *//* already included: src/inc/dev.h *//* already included: src/frag/dev.h */
-/* already included: src/d/api.h *//* already included: src/utils/cc.h *//* already included: src/utils/kl.h *//* already included: src/utils/error.h */
-/* already included: src/algo/minmax/imp.h *//* already included: src/algo/utils/shfl.h */
-/* already included: src/frag/imp.h *//* already included: src/comm/imp.h *//* already included: src/comm/utils.h */
-/* already included: src/exch/map/type.h *//* already included: src/exch/map/imp.h */
-/* begin src/exch/mesh/imp.h */struct EMeshPack;
+/* already included: src/inc/conf.h */
+
+/* already included: src/utils/imp.h */
+/* already included: src/utils/msg.h */
+/* already included: src/inc/type.h */
+/* already included: src/inc/dev.h */
+/* already included: src/frag/dev.h */
+
+/* already included: src/d/api.h */
+/* already included: src/utils/cc.h */
+/* already included: src/utils/kl.h */
+/* already included: src/utils/error.h */
+
+/* already included: src/algo/minmax/imp.h */
+/* already included: src/algo/utils/shfl.h */
+
+/* already included: src/frag/imp.h */
+/* already included: src/comm/imp.h */
+/* already included: src/comm/utils.h */
+
+/* already included: src/exch/map/type.h */
+/* already included: src/exch/map/imp.h */
+
+/* begin src/exch/mesh/imp.h */
+struct EMeshPack;
 struct EMeshComm;
 struct EMeshUnpack;
 struct EMeshPackM;
@@ -20624,7 +21188,8 @@ void emesh_unpack_mom(int nt, const EMeshPack *p, const EMeshUnpackM *u, /**/ Mo
 // end::unpackback[]
 /* end src/exch/mesh/imp.h */
 
-/* begin src/exch/map/dev.h */#pragma once
+/* begin src/exch/map/dev.h */
+#pragma once
 
 #define _I_ static __device__
 #define _S_ static __device__
@@ -20714,7 +21279,9 @@ _I_ int emap_decode(int code, /**/ int fids[MAX_DSTS]) // <4>
 #undef _S_
 /* end src/exch/map/dev.h */
 /* already included: src/exch/common/imp.h */
-/* begin src/exch/mesh/imp/type.h */enum {
+
+/* begin src/exch/mesh/imp/type.h */
+enum {
     EXCH_MESH_MAX_NBAGS = 1
 };
 
@@ -20775,7 +21342,8 @@ struct EMeshUnpackM {
 
 typedef Sarray<MMap, 26> MMap26;
 /* end src/exch/mesh/imp/type.h */
-/* begin src/exch/mesh/dev.h */namespace emesh_dev {
+/* begin src/exch/mesh/dev.h */
+namespace emesh_dev {
 
 /* L0: subdomain cropped by one cutoff radius */
 __global__ void build_map(int3 L0, int n, const float3 *minext, const float3 *maxext, /**/ EMap map) {
@@ -20968,7 +21536,8 @@ __global__ void unpack_mom(int nt, int27 fragstarts, intp26 hii, Mop26 hmm, EMap
 
 } // dev
 /* end src/exch/mesh/dev.h */
-/* begin src/exch/mesh/imp/ini.h */// TODO this can be refined
+/* begin src/exch/mesh/imp/ini.h */
+// TODO this can be refined
 static void get_capacity(int nfrags, int max_mesh_num, /**/ int cap[]) {
     for (int i = 0; i < nfrags; ++i)
         cap[i] = max_mesh_num;
@@ -21091,7 +21660,8 @@ void emesh_unpackm_ini(int nt, int max_mesh_num, EMeshUnpackM **unpack) {
     UC(comm_buffer_ini(u->nbags, u->hbags, &u->hbuf));
 }
 /* end src/exch/mesh/imp/ini.h */
-/* begin src/exch/mesh/imp/fin.h */void emesh_pack_fin(EMeshPack *p) {
+/* begin src/exch/mesh/imp/fin.h */
+void emesh_pack_fin(EMeshPack *p) {
     UC(emap_fin(NFRAGS, /**/ &p->map));
     UC(comm_bags_fin(PINNED, NONE, /**/ p->hpp, p->dpp));
     UC(comm_buffer_fin(p->hbuf));
@@ -21143,7 +21713,8 @@ void emesh_unpackm_fin(EMeshUnpackM *u) {
     EFREE(u);
 }
 /* end src/exch/mesh/imp/fin.h */
-/* begin src/exch/mesh/imp/map.h */static void fill_map(int3 L, int n, const float3 *lo, const float3 *hi, /**/ EMap map) {
+/* begin src/exch/mesh/imp/map.h */
+static void fill_map(int3 L, int n, const float3 *lo, const float3 *hi, /**/ EMap map) {
     int3 L0 = make_int3(L.x-2, L.y-2, L.z-2);
     KL(emesh_dev::build_map, (k_cnf(n)), (L0, n, lo, hi, /**/ map));
 }
@@ -21155,7 +21726,8 @@ void emesh_build_map(int nm, int nv, const Particle *pp, /**/ EMeshPack *p) {
     emap_scan(1, NFRAGS, /**/ p->map);
 }
 /* end src/exch/mesh/imp/map.h */
-/* begin src/exch/mesh/imp/pack.h */static void pack_mesh_pp(int nv, const Particle *pp, EMap map, /**/ Pap26 buf) {
+/* begin src/exch/mesh/imp/pack.h */
+static void pack_mesh_pp(int nv, const Particle *pp, EMap map, /**/ Pap26 buf) {
     KL(emesh_dev::pack_mesh, (14 * 16, 128), (nv, pp, map, /**/ buf));
 }
 
@@ -21227,7 +21799,8 @@ void emesh_downloadM(const int counts[NFRAGS], EMeshPackM *p) {
 }
 
 /* end src/exch/mesh/imp/pack.h */
-/* begin src/exch/mesh/imp/com.h */void emesh_post_recv(EMeshComm *c, EMeshUnpack *u) {
+/* begin src/exch/mesh/imp/com.h */
+void emesh_post_recv(EMeshComm *c, EMeshUnpack *u) {
     UC(comm_post_recv(u->hbuf, c->pp));
 }
 
@@ -21266,7 +21839,8 @@ void emesh_wait_send(EMeshCommM *c) {
     UC(comm_wait_send(c->comm));
 }
 /* end src/exch/mesh/imp/com.h */
-/* begin src/exch/mesh/imp/unpack.h */static void upload_and_shift_pp(int n, int i, int3 L, const data_t *data, Particle *pp) {
+/* begin src/exch/mesh/imp/unpack.h */
+static void upload_and_shift_pp(int n, int i, int3 L, const data_t *data, Particle *pp) {
     if (n == 0) return;
     size_t sz = n * sizeof(Particle);
     CC(d::MemcpyAsync(pp, data, sz, H2D));
@@ -21652,15 +22226,32 @@ void emesh_unpack_mom(int nt, const EMeshPack *p, const EMeshUnpackM *u, /**/ Mo
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/exch/obj/imp.cu"
-/* begin src/exch/obj/imp.cu */#include <mpi.h>
+/* begin src/exch/obj/imp.cu */
+#include <mpi.h>
 #include <assert.h>
 
-#include <conf.h>
 /* already included: src/inc/conf.h */
-/* already included: src/utils/imp.h *//* already included: src/utils/msg.h *//* already included: src/inc/type.h *//* already included: src/inc/dev.h *//* already included: src/frag/dev.h *//* already included: src/frag/imp.h */
-/* already included: src/d/api.h *//* already included: src/utils/cc.h *//* already included: src/utils/kl.h *//* already included: src/utils/error.h */
-/* already included: src/comm/imp.h *//* already included: src/comm/utils.h */
-/* already included: src/exch/map/type.h *//* already included: src/exch/map/imp.h *//* begin src/exch/obj/imp.h */struct EObjPack;
+/* already included: src/inc/conf.h */
+
+/* already included: src/utils/imp.h */
+/* already included: src/utils/msg.h */
+/* already included: src/inc/type.h */
+/* already included: src/inc/dev.h */
+/* already included: src/frag/dev.h */
+/* already included: src/frag/imp.h */
+
+/* already included: src/d/api.h */
+/* already included: src/utils/cc.h */
+/* already included: src/utils/kl.h */
+/* already included: src/utils/error.h */
+
+/* already included: src/comm/imp.h */
+/* already included: src/comm/utils.h */
+
+/* already included: src/exch/map/type.h */
+/* already included: src/exch/map/imp.h */
+/* begin src/exch/obj/imp.h */
+struct EObjPack;
 struct EObjComm;
 struct EObjUnpack;
 
@@ -21728,8 +22319,11 @@ void eobj_unpack_ff(EObjUnpackF *u, const EObjPack *p, int nw, /**/ FoWrap *ww);
 // end::unpackback[]
 /* end src/exch/obj/imp.h */
 
-/* already included: src/exch/map/dev.h *//* already included: src/exch/common/imp.h */
-/* begin src/exch/obj/dev.h */namespace eobj_dev {
+/* already included: src/exch/map/dev.h */
+/* already included: src/exch/common/imp.h */
+
+/* begin src/exch/obj/dev.h */
+namespace eobj_dev {
 
 __global__ void build_map(int3 L, int soluteid, int n, const Particle *pp, /**/ EMap map) {
     int pid, fid, fids[MAX_DSTS], ndsts, j;
@@ -21777,7 +22371,8 @@ __global__ void unpack_ff(Fop26 hff, PackHelper ph, /**/ Force *ff) {
 }
 /* end src/exch/obj/dev.h */
 
-/* begin src/exch/obj/imp/type.h */#pragma once
+/* begin src/exch/obj/imp/type.h */
+#pragma once
 
 /*
 pp: particles
@@ -21826,7 +22421,8 @@ struct EObjUnpackF {
     dBags dff;
 };
 /* end src/exch/obj/imp/type.h */
-/* begin src/exch/obj/imp/ini.h */static void estimates(int3 L, int nfrags, int maxd, int maxpsolid, int *cap) {
+/* begin src/exch/obj/imp/ini.h */
+static void estimates(int3 L, int nfrags, int maxd, int maxpsolid, int *cap) {
     int i, e, kind;
     frag_hst::estimates(L, nfrags, maxd, /**/ cap);
 
@@ -21939,7 +22535,8 @@ void eobj_unpackf_ini(int3 L, int maxd, int maxpsolid, EObjUnpackF **unpack) {
     UC(comm_bags_ini(PINNED_DEV, NONE, sizeof(Force), cap, /**/ &u->hff, &u->dff));
 }
 /* end src/exch/obj/imp/ini.h */
-/* begin src/exch/obj/imp/fin.h */void eobj_pack_fin(EObjPack *p) {
+/* begin src/exch/obj/imp/fin.h */
+void eobj_pack_fin(EObjPack *p) {
     UC(emap_fin(NFRAGS, /**/ &p->map));
     UC(comm_bags_fin(PINNED,   NONE, /**/ p->hpp, &p->dpp));
     UC(comm_bags_fin(HST_ONLY, NONE, /**/ p->hcc, NULL));
@@ -21974,7 +22571,8 @@ void eobj_unpackf_fin(EObjUnpackF *u) {
     EFREE(u);
 }
 /* end src/exch/obj/imp/fin.h */
-/* begin src/exch/obj/imp/map.h */static void add_wrap_to_map(int3 L, int wid, int n, const Particle *pp, EMap map) {
+/* begin src/exch/obj/imp/map.h */
+static void add_wrap_to_map(int3 L, int wid, int n, const Particle *pp, EMap map) {
     int3 L0 = make_int3(L.x-2, L.y-2, L.z-2);
     KL(eobj_dev::build_map, (k_cnf(n)), (L0, wid, n, pp, /**/ map));
 }
@@ -21998,7 +22596,8 @@ void eobj_build_map(int nw, const PaWrap *ww, /**/ EObjPack *p) {
     build_map(p->L, nw, ww, /**/ p->map);
 }
 /* end src/exch/obj/imp/map.h */
-/* begin src/exch/obj/imp/pack.h */static void pack_pp(int nfrags, int nw, const PaWrap *ww, EMap map, /**/ Pap26 buf) {
+/* begin src/exch/obj/imp/pack.h */
+static void pack_pp(int nfrags, int nw, const PaWrap *ww, EMap map, /**/ Pap26 buf) {
     int i, stride;
     stride = nfrags + 1;
     const PaWrap *w;
@@ -22060,7 +22659,8 @@ void eobj_download_ff(EObjPackF *p) {
     dSync();
 }
 /* end src/exch/obj/imp/pack.h */
-/* begin src/exch/obj/imp/com.h */void eobj_post_recv(EObjComm *c, EObjUnpack *u) {
+/* begin src/exch/obj/imp/com.h */
+void eobj_post_recv(EObjComm *c, EObjUnpack *u) {
     UC(comm_post_recv(u->hbuf, c->comm));
 }
 
@@ -22094,7 +22694,8 @@ void eobj_wait_send_ff(EObjCommF *c) {
     UC(comm_wait_send(c->comm));
 }
 /* end src/exch/obj/imp/com.h */
-/* begin src/exch/obj/imp/unpack.h */int26 eobj_get_counts(EObjUnpack *u) {
+/* begin src/exch/obj/imp/unpack.h */
+int26 eobj_get_counts(EObjUnpack *u) {
     int26 cc;
     memcpy(cc.d, u->hpp->counts, NFRAGS * sizeof(int));
     return cc;
@@ -22470,14 +23071,17 @@ void eobj_unpack_ff(EObjUnpackF *u, const EObjPack *p, int nw, /**/ FoWrap *ww) 
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/flu/imp.cpp"
-/* begin src/flu/imp.cpp */#include <stdio.h>
+/* begin src/flu/imp.cpp */
+#include <stdio.h>
 #include <stdlib.h>
 #include <vector_types.h>
 #include <mpi.h>
 
-#include <conf.h>
 /* already included: src/inc/conf.h */
-/* begin src/utils/os.h */// tag::int[]
+/* already included: src/inc/conf.h */
+
+/* begin src/utils/os.h */
+// tag::int[]
 void os_mkdir(const char* path); // <1>
 long os_time();                  // <2>
 void os_srand(long int seedval); // <3>
@@ -22486,13 +23090,29 @@ void os_sleep(unsigned int seconds); // <5>
 void os_malloc_stats();              // TODO
 // end::int[]
 /* end src/utils/os.h */
-/* already included: src/utils/msg.h *//* already included: src/inc/def.h *//* already included: src/inc/dev.h *//* already included: src/inc/type.h */
-/* already included: src/d/api.h *//* already included: src/mpi/wrapper.h */
-/* already included: src/utils/error.h *//* already included: src/utils/imp.h */
-/* already included: src/utils/mc.h *//* already included: src/utils/cc.h */
+/* already included: src/utils/msg.h */
+/* already included: src/inc/def.h */
+/* already included: src/inc/dev.h */
+/* already included: src/inc/type.h */
+
+/* already included: src/d/api.h */
+/* already included: src/mpi/wrapper.h */
+
+/* already included: src/utils/error.h */
+/* already included: src/utils/imp.h */
+
+/* already included: src/utils/mc.h */
+/* already included: src/utils/cc.h */
+
 /* already included: src/coords/imp.h */
-/* already included: src/struct/partlist/type.h *//* already included: src/algo/scan/imp.h *//* already included: src/clist/imp.h */
-/* already included: src/io/restart/imp.h *//* begin src/inter/color/imp.h */struct GenColor;
+
+/* already included: src/struct/partlist/type.h */
+/* already included: src/algo/scan/imp.h */
+/* already included: src/clist/imp.h */
+
+/* already included: src/io/restart/imp.h */
+/* begin src/inter/color/imp.h */
+struct GenColor;
 struct Particle;
 struct Coords;
 struct Config;
@@ -22519,8 +23139,11 @@ void inter_color_apply_dev(const Coords*, const GenColor*, int n, const Particle
 /* end src/inter/color/imp.h */
 
 /* already included: src/io/txt/imp.h */
+
 /* already included: src/flu/imp.h */
-/* begin src/flu/imp/ini.h */static void ini_ii(int maxp, int **ii, int **ii0, int **ii_hst) {
+
+/* begin src/flu/imp/ini.h */
+static void ini_ii(int maxp, int **ii, int **ii0, int **ii_hst) {
     Dalloc(ii, maxp);
     Dalloc(ii0, maxp);
     EMALLOC(maxp, ii_hst);
@@ -22543,7 +23166,8 @@ void flu_ini(bool colors, bool ids, int3 L, int maxp, FluQuants *q) {
     q->colors = colors;
 }
 /* end src/flu/imp/ini.h */
-/* begin src/flu/imp/fin.h */static void fin_ii(int *ii, int *ii0, int *ii_hst) {
+/* begin src/flu/imp/fin.h */
+static void fin_ii(int *ii, int *ii0, int *ii_hst) {
     CC(d::Free(ii));
     CC(d::Free(ii0));
     EFREE(ii_hst);
@@ -22560,7 +23184,8 @@ void flu_fin(FluQuants *q) {
     if (q->colors) UC(fin_ii(q->cc, q->cc0, q->cc_hst));
 }
 /* end src/flu/imp/fin.h */
-/* begin src/flu/imp/generate.h */static void assert_np(int n, int m) {
+/* begin src/flu/imp/generate.h */
+static void assert_np(int n, int m) {
     if (n > m) ERR("too many particles: n = %d < m = %d", n, m);
 }
 
@@ -22625,7 +23250,8 @@ void flu_gen_ids(MPI_Comm comm, const int n, FluQuants *q) {
     ii_gen(comm, n, q->ii, q->ii_hst);
 }
 /* end src/flu/imp/generate.h */
-/* begin src/flu/imp/start.h */#define CODE "flu"
+/* begin src/flu/imp/start.h */
+#define CODE "flu"
 #define PP  CODE ".pp"
 #define COL CODE ".cc"
 #define IDS CODE ".ii"
@@ -22671,7 +23297,8 @@ void flu_strt_dump(MPI_Comm comm, const char *base, const int id, const FluQuant
 #undef IDS
 #undef PP
 /* end src/flu/imp/start.h */
-/* begin src/flu/imp/txt.h */static void local2global_p(const Coords *c, long n, Particle *pp) {
+/* begin src/flu/imp/txt.h */
+static void local2global_p(const Coords *c, long n, Particle *pp) {
     enum {X, Y, Z};
     float *r;
     int i;
@@ -22702,7 +23329,8 @@ void flu_txt_dump(const Coords *c, const FluQuants *q) {
     UC(txt_write_pp(n, hst, name));
 }
 /* end src/flu/imp/txt.h */
-/* begin src/flu/imp/cells.h */void flu_build_cells(/**/ FluQuants *q) {
+/* begin src/flu/imp/cells.h */
+void flu_build_cells(/**/ FluQuants *q) {
     UC(clist_build(q->n, q->n, q->pp, /**/ q->pp0, q->cells, q->mcells));
     // swap
     Particle *tmp = q->pp;
@@ -23009,13 +23637,24 @@ void flu_txt_dump(const Coords *c, const FluQuants *q) {
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/fluforces/bulk/imp.cu"
-/* begin src/fluforces/bulk/imp.cu */#include <stdio.h>
+/* begin src/fluforces/bulk/imp.cu */
+#include <stdio.h>
 #include <assert.h>
 
-#include <conf.h>
 /* already included: src/inc/conf.h */
-/* already included: src/inc/type.h *//* already included: src/inc/def.h *//* already included: src/inc/dev.h */
-/* already included: src/d/api.h *//* already included: src/d/ker.h *//* already included: src/utils/error.h *//* already included: src/utils/kl.h *//* already included: src/utils/cc.h *//* begin src/utils/texo.h */#pragma once
+/* already included: src/inc/conf.h */
+
+/* already included: src/inc/type.h */
+/* already included: src/inc/def.h */
+/* already included: src/inc/dev.h */
+
+/* already included: src/d/api.h */
+/* already included: src/d/ker.h */
+/* already included: src/utils/error.h */
+/* already included: src/utils/kl.h */
+/* already included: src/utils/cc.h */
+/* begin src/utils/texo.h */
+#pragma once
 
 /* 1D texture object template */
 static void sz_check(int n) {
@@ -23061,7 +23700,8 @@ void texo_destroy(/**/ Texo<T> *to)
     CC(cudaDestroyTextureObject(to->d));
 }
 /* end src/utils/texo.h */
-/* begin src/utils/texo.dev.h */#pragma once
+/* begin src/utils/texo.dev.h */
+#pragma once
 
 template<typename T>
 __device__ __forceinline__
@@ -23073,9 +23713,16 @@ const T texo_fetch(const Texo<T> t, const int i)
 }
 /* end src/utils/texo.dev.h */
 
-/* already included: src/math/rnd/imp.h *//* already included: src/math/rnd/dev.h *//* already included: src/math/dev.h */
-/* already included: src/pair/type.h *//* already included: src/pair/dev.h *//* already included: src/pair/imp.h */
-/* begin src/struct/farray/type.h */#pragma once
+/* already included: src/math/rnd/imp.h */
+/* already included: src/math/rnd/dev.h */
+/* already included: src/math/dev.h */
+
+/* already included: src/pair/type.h */
+/* already included: src/pair/dev.h */
+/* already included: src/pair/imp.h */
+
+/* begin src/struct/farray/type.h */
+#pragma once
 
 struct FoArray_v {
     float *ff;
@@ -23086,7 +23733,8 @@ struct FoSArray_v {
     float *ss;
 };
 /* end src/struct/farray/type.h */
-/* begin src/struct/farray/dev.h */#pragma once
+/* begin src/struct/farray/dev.h */
+#pragma once
 
 #define _I_ static __device__
 #define _S_ static __device__
@@ -23190,7 +23838,8 @@ _I_ PairSFo farray_fo0(FoSArray_v)
 #undef _I_
 #undef _S_
 /* end src/struct/farray/dev.h */
-/* begin src/struct/farray/imp.h */#pragma once
+/* begin src/struct/farray/imp.h */
+#pragma once
 
 struct FoArray {
     bool stress;
@@ -23220,7 +23869,8 @@ void farray_get_view(const FoArray *a, FoSArray_v *v); // <2>
 // end::view[]
 /* end src/struct/farray/imp.h */
 
-/* begin src/fluforces/bulk/imp.h */#pragma once
+/* begin src/fluforces/bulk/imp.h */
+#pragma once
 
 struct PairParams;
 struct Force;
@@ -23242,7 +23892,8 @@ void flocal_apply(const PairParams*, int3 L, int n, BPaArray parray, const int *
                   /**/ const FoArray *ff);
 
 /* end src/fluforces/bulk/imp.h */
-/* begin src/fluforces/bulk/imp/type.h */struct TBPaArray_v {
+/* begin src/fluforces/bulk/imp/type.h */
+struct TBPaArray_v {
     Texo<float4> pp;
 };
 
@@ -23253,7 +23904,8 @@ struct TBPaCArray_v {
 /* end src/fluforces/bulk/imp/type.h */
 
 namespace fbulk_dev {
-/* begin src/fluforces/bulk/dev/fetch.h */#define _S_ static __device__
+/* begin src/fluforces/bulk/dev/fetch.h */
+#define _S_ static __device__
 #define _I_ static __device__
 
 /* bulk parray fetch */
@@ -23293,7 +23945,8 @@ _I_ void fetch(TBPaCArray_v a, int i, PairPa *p) {
 #undef _S_
 #undef _I_
 /* end src/fluforces/bulk/dev/fetch.h */
-/* begin src/fluforces/bulk/dev/main.h */#define _S_ static __device__
+/* begin src/fluforces/bulk/dev/main.h */
+#define _S_ static __device__
 
 _S_ bool cutoff_range(PairPa pa, PairPa pb) {
     float x, y, z;
@@ -23397,7 +24050,8 @@ __global__ void apply(Par params, int3 L, int n, Parray parray, const int *start
 // #include "dev/xmain.h"
 }
 
-/* begin src/fluforces/bulk/imp/main.h */void flocal_push_pp(const float4 *pp, BPaArray *a) {
+/* begin src/fluforces/bulk/imp/main.h */
+void flocal_push_pp(const float4 *pp, BPaArray *a) {
     a->pp = pp;
     a->colors = false;
 }
@@ -23781,19 +24435,38 @@ void flocal_apply(const PairParams *params, int3 L, int n, BPaArray parray, cons
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/fluforces/halo/imp.cu"
-/* begin src/fluforces/halo/imp.cu */#include <stdio.h>
+/* begin src/fluforces/halo/imp.cu */
+#include <stdio.h>
 #include <assert.h>
 
-#include <conf.h>
 /* already included: src/inc/conf.h */
-/* already included: src/d/ker.h *//* already included: src/d/q.h *//* already included: src/d/api.h */
-/* already included: src/frag/dev.h *//* already included: src/frag/imp.h */
-/* already included: src/inc/def.h *//* already included: src/utils/cc.h *//* already included: src/utils/error.h */
-/* already included: src/inc/type.h *//* already included: src/inc/dev.h */
-/* already included: src/math/dev.h *//* already included: src/pair/type.h *//* already included: src/pair/dev.h *//* already included: src/pair/imp.h */
+/* already included: src/inc/conf.h */
+
+/* already included: src/d/ker.h */
+/* already included: src/d/q.h */
+/* already included: src/d/api.h */
+
+/* already included: src/frag/dev.h */
+/* already included: src/frag/imp.h */
+
+/* already included: src/inc/def.h */
+/* already included: src/utils/cc.h */
+/* already included: src/utils/error.h */
+
+/* already included: src/inc/type.h */
+/* already included: src/inc/dev.h */
+
+/* already included: src/math/dev.h */
+/* already included: src/pair/type.h */
+/* already included: src/pair/dev.h */
+/* already included: src/pair/imp.h */
+
 /* already included: src/utils/kl.h */
+
 /* already included: src/math/rnd/dev.h */
-/* begin src/struct/parray/type.h */#pragma once
+
+/* begin src/struct/parray/type.h */
+#pragma once
 
 struct PaArray_v {
     const float *pp;
@@ -23804,7 +24477,9 @@ struct PaCArray_v {
     const int *cc;   /* colors */
 };
 /* end src/struct/parray/type.h */
-/* already included: src/struct/parray/imp.h *//* begin src/struct/parray/dev.h */#pragma once
+/* already included: src/struct/parray/imp.h */
+/* begin src/struct/parray/dev.h */
+#pragma once
 
 #define _S_ static __device__
 #define _I_ static __device__
@@ -23845,16 +24520,22 @@ _I_ void parray_get(PaCArray_v a, int i, /**/ PairPa *p) // <2>
 #undef _I_
 /* end src/struct/parray/dev.h */
 
-/* already included: src/struct/farray/type.h *//* already included: src/struct/farray/imp.h *//* already included: src/struct/farray/dev.h */
+/* already included: src/struct/farray/type.h */
+/* already included: src/struct/farray/imp.h */
+/* already included: src/struct/farray/dev.h */
+
 /* already included: src/flu/type.h */
-/* begin src/fluforces/halo/imp.h */struct PairParams;
+
+/* begin src/fluforces/halo/imp.h */
+struct PairParams;
 struct int3;
 struct FoArray;
 
 void fhalo_apply(const PairParams*, int3 L, const flu::LFrag26 lfrags, const flu::RFrag26 rfrags, const flu::RndFrag26 rrnd, /**/ const FoArray *farray);
 /* end src/fluforces/halo/imp.h */
 
-/* begin src/fluforces/halo/imp/type.h */template<typename Parray>
+/* begin src/fluforces/halo/imp/type.h */
+template<typename Parray>
 struct LFrag_v { /* "local" fragment */
     Parray parray;
     const int *ii; /* index */
@@ -23876,7 +24557,8 @@ template <typename Parray>
 using RFrag_v26 = Sarray<RFrag_v<Parray>, 26>;
 /* end src/fluforces/halo/imp/type.h */
 namespace fhalo_dev {
-/* begin src/fluforces/halo/dev/dbg.h */template <typename Parray>
+/* begin src/fluforces/halo/dev/dbg.h */
+template <typename Parray>
 static __device__ void assert_frag(int3 L, int i, const RFrag_v<Parray> frag) {
     int xs, ys, zs; /* sizes */
     int dx, dy, dz;
@@ -23909,7 +24591,8 @@ static __device__ void assert_rc(int3 L, const RFrag_v<Parray> frag, int i, int 
     }
 }
 /* end src/fluforces/halo/dev/dbg.h */
-/* begin src/fluforces/halo/dev/map.h */struct Map { /* helps to find remote particle */
+/* begin src/fluforces/halo/dev/map.h */
+struct Map { /* helps to find remote particle */
     int  org0, org1, org2;
     int cnt0, cnt1, cnt2;
 };
@@ -24039,7 +24722,8 @@ static __device__ Map r2map(int3 L, const RFrag_v<Parray> frag, float x, float y
     return r2map0(frag.start, id, row, col, jump);
 }
 /* end src/fluforces/halo/dev/map.h */
-/* begin src/fluforces/halo/dev/main.h */template <typename Farray>
+/* begin src/fluforces/halo/dev/main.h */
+template <typename Farray>
 struct Fo {
     Farray farray;
     int i;
@@ -24124,7 +24808,8 @@ __global__ void apply(int fid, Par params, int3 L, const LFrag_v<Parray> lfrag, 
 }
 /* end src/fluforces/halo/dev/main.h */
 }
-/* begin src/fluforces/halo/imp/main.h */enum {
+/* begin src/fluforces/halo/imp/main.h */
+enum {
     PADDING = 16 /* warpsize / 2 */
 };
 
@@ -24527,7 +25212,8 @@ void fhalo_apply(const PairParams *params, int3 L, const flu::LFrag26 lfrags, co
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/fluforces/imp.cpp"
-/* begin src/fluforces/imp.cpp */#include <mpi.h>
+/* begin src/fluforces/imp.cpp */
+#include <mpi.h>
 #include <assert.h>
 #include <vector_types.h>
 
@@ -24535,16 +25221,35 @@ void fhalo_apply(const PairParams *params, int3 L, const flu::LFrag26 lfrags, co
 #include <cuda_fp16.h>
 #endif
 
-#include <conf.h>
 /* already included: src/inc/conf.h */
-/* already included: src/utils/error.h *//* already included: src/utils/imp.h */
-/* already included: src/math/rnd/imp.h */// #include "math/rnd/dev.h"
+/* already included: src/inc/conf.h */
 
-/* already included: src/inc/type.h *//* already included: src/inc/dev.h *//* already included: src/struct/parray/imp.h */
-/* already included: src/d/api.h *//* already included: src/utils/kl.h *//* already included: src/utils/cc.h *//* already included: src/utils/mc.h */
-/* already included: src/utils/msg.h *//* already included: src/mpi/wrapper.h *//* already included: src/frag/imp.h *//* already included: src/algo/convert/imp.h */
-/* already included: src/flu/type.h *//* already included: src/fluforces/bulk/imp.h *//* already included: src/fluforces/halo/imp.h */
-/* begin src/fluforces/imp.h */struct PairParams;
+/* already included: src/utils/error.h */
+/* already included: src/utils/imp.h */
+
+/* already included: src/math/rnd/imp.h */
+// #include "math/rnd/dev.h"
+
+/* already included: src/inc/type.h */
+/* already included: src/inc/dev.h */
+/* already included: src/struct/parray/imp.h */
+
+/* already included: src/d/api.h */
+/* already included: src/utils/kl.h */
+/* already included: src/utils/cc.h */
+/* already included: src/utils/mc.h */
+
+/* already included: src/utils/msg.h */
+/* already included: src/mpi/wrapper.h */
+/* already included: src/frag/imp.h */
+/* already included: src/algo/convert/imp.h */
+
+/* already included: src/flu/type.h */
+/* already included: src/fluforces/bulk/imp.h */
+/* already included: src/fluforces/halo/imp.h */
+
+/* begin src/fluforces/imp.h */
+struct PairParams;
 struct FluForcesBulk;
 struct FluForcesHalo;
 struct PaArray;
@@ -24575,7 +25280,8 @@ void fluforces_halo_apply(const PairParams*, const FluForcesHalo *h, /**/ const 
 
 /* implementation */
 
-/* begin src/fluforces/imp/type.h */struct FluForcesBulk {
+/* begin src/fluforces/imp/type.h */
+struct FluForcesBulk {
     float4  *zipped_pp;  /* xyzouvwo xyzouvwo xyzouvwo ...          */
     RNDunif *rnd;        /* random generator per timestep           */
     const int *colors;   /* pointer to colors, not to be allocated  */
@@ -24594,7 +25300,8 @@ struct FluForcesHalo {
     int3 L; /* subdomain size */
 };
 /* end src/fluforces/imp/type.h */
-/* begin src/fluforces/imp/ini.h */void fluforces_bulk_ini(int3 L, int maxp, /**/ FluForcesBulk **bd) {
+/* begin src/fluforces/imp/ini.h */
+void fluforces_bulk_ini(int3 L, int maxp, /**/ FluForcesBulk **bd) {
     FluForcesBulk *b;
     EMALLOC(1, bd);
     b = *bd;
@@ -24665,7 +25372,8 @@ void fluforces_halo_ini(MPI_Comm cart, int3 L, /**/ FluForcesHalo **hd) {
         get_interrank_infos(cart, i, /**/ h->trunks, h->masks);
 }
 /* end src/fluforces/imp/ini.h */
-/* begin src/fluforces/imp/fin.h */void fluforces_bulk_fin(/**/ FluForcesBulk *b) {
+/* begin src/fluforces/imp/fin.h */
+void fluforces_bulk_fin(/**/ FluForcesBulk *b) {
     CC(d::Free(b->zipped_pp));
     UC(rnd_fin(b->rnd));
     EFREE(b);
@@ -24677,7 +25385,8 @@ void fluforces_halo_fin(/**/ FluForcesHalo *h) {
     EFREE(h);
 }
 /* end src/fluforces/imp/fin.h */
-/* begin src/fluforces/imp/main.h */void fluforces_bulk_prepare(int n, const PaArray *a, /**/ FluForcesBulk *b) {
+/* begin src/fluforces/imp/main.h */
+void fluforces_bulk_prepare(int n, const PaArray *a, /**/ FluForcesBulk *b) {
     if (n == 0) return;
     convert_pp2f4_pos(n, a->pp, /**/ b->zipped_pp);
     if (a->colors)
@@ -25015,10 +25724,13 @@ void fluforces_halo_apply(const PairParams *par, const FluForcesHalo *h, /**/ co
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/frag/imp.cpp"
-/* begin src/frag/imp.cpp */#include <vector_types.h>
+/* begin src/frag/imp.cpp */
+#include <vector_types.h>
 /* already included: src/frag/imp.h */
+
 #define FRAG_HOST
-/* already included: src/frag/dev.h */#undef FRAG_HOST
+/* already included: src/frag/dev.h */
+#undef FRAG_HOST
 
 namespace frag_hst {
 
@@ -25332,22 +26044,49 @@ void estimates(int3 L, int nfrags, float maxd, /**/ int *cap) {
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/fsi/imp.cu"
-/* begin src/fsi/imp.cu */#include <stdio.h>
+/* begin src/fsi/imp.cu */
+#include <stdio.h>
 #include <assert.h>
 
 
-#include <conf.h>
 /* already included: src/inc/conf.h */
-/* already included: src/utils/error.h *//* already included: src/d/api.h *//* already included: src/d/q.h *//* already included: src/d/ker.h */
-/* already included: src/math/rnd/imp.h *//* already included: src/math/rnd/dev.h *//* already included: src/math/dev.h */
-/* already included: src/inc/def.h *//* already included: src/utils/msg.h *//* already included: src/utils/imp.h */
-/* already included: src/utils/cc.h *//* already included: src/utils/mc.h *//* already included: src/frag/imp.h *//* already included: src/frag/dev.h */
-/* already included: src/utils/kl.h *//* already included: src/inc/type.h *//* already included: src/inc/dev.h *//* already included: src/dbg/imp.h */
-/* already included: src/pair/type.h *//* already included: src/pair/dev.h *//* already included: src/pair/imp.h */
-/* already included: src/struct/parray/type.h *//* already included: src/struct/parray/imp.h *//* already included: src/struct/parray/dev.h */
+/* already included: src/inc/conf.h */
+
+/* already included: src/utils/error.h */
+/* already included: src/d/api.h */
+/* already included: src/d/q.h */
+/* already included: src/d/ker.h */
+
+/* already included: src/math/rnd/imp.h */
+/* already included: src/math/rnd/dev.h */
+/* already included: src/math/dev.h */
+
+/* already included: src/inc/def.h */
+/* already included: src/utils/msg.h */
+/* already included: src/utils/imp.h */
+
+/* already included: src/utils/cc.h */
+/* already included: src/utils/mc.h */
+/* already included: src/frag/imp.h */
+/* already included: src/frag/dev.h */
+
+/* already included: src/utils/kl.h */
+/* already included: src/inc/type.h */
+/* already included: src/inc/dev.h */
+/* already included: src/dbg/imp.h */
+
+/* already included: src/pair/type.h */
+/* already included: src/pair/dev.h */
+/* already included: src/pair/imp.h */
+
+/* already included: src/struct/parray/type.h */
+/* already included: src/struct/parray/imp.h */
+/* already included: src/struct/parray/dev.h */
+
 /* local */
 
-/* begin src/fsi/imp.h */struct RNDunif;
+/* begin src/fsi/imp.h */
+struct RNDunif;
 struct Fsi;
 struct int3;
 
@@ -25365,10 +26104,12 @@ void fsi_halo(Fsi *fsi, int nw, const PairParams **prms, Pap26 all_pp, Fop26 all
 
 /* body */
 namespace fsi_dev {
-/* begin src/fsi/dev/type.h */typedef PairPa Pa;
+/* begin src/fsi/dev/type.h */
+typedef PairPa Pa;
 struct Fo { float *x, *y, *z; }; /* force */
 /* end src/fsi/dev/type.h */
-/* begin src/fsi/dev/common.h */static __device__ float random(uint lid, uint rid, float seed) {
+/* begin src/fsi/dev/common.h */
+static __device__ float random(uint lid, uint rid, float seed) {
     return rnd::mean0var1uu(seed, lid, rid);
 }
 
@@ -25396,7 +26137,8 @@ static __device__ void pair(Par params, const Pa a, const Pa b, float rnd, /**/
     atomicAdd(f.x, -x); atomicAdd(f.y, -y); atomicAdd(f.z, -z);
 }
 /* end src/fsi/dev/common.h */
-/* begin src/fsi/dev/map.common.h */struct Map { /* helps to find remote particle */
+/* begin src/fsi/dev/map.common.h */
+struct Map { /* helps to find remote particle */
     int  org0, org1, org2;
     uint cnt0, cnt1, cnt2;
 };
@@ -25414,7 +26156,8 @@ static __device__ uint m2id(const Map m, uint i) {
     return id;
 }
 /* end src/fsi/dev/map.common.h */
-/* begin src/fsi/dev/map/bulk.h */static __device__ int r2map(int3 L, const int *start, int zplane, int n, float x, float y, float z, /**/ Map *m) {
+/* begin src/fsi/dev/map/bulk.h */
+static __device__ int r2map(int3 L, const int *start, int zplane, int n, float x, float y, float z, /**/ Map *m) {
     /* coordinate [r] to map */
     int cnt0, cnt1, cnt2, org0;
     int org1, org2;
@@ -25479,7 +26222,8 @@ static __device__ uint m2id(const Map m, uint i) {
     return 1;
 }
 /* end src/fsi/dev/map/bulk.h */
-/* begin src/fsi/dev/map/halo.h */static __device__ int tex2map(int3 L, const int *start, int zplane, int n1, float x, float y, float z, /**/ Map *m) {
+/* begin src/fsi/dev/map/halo.h */
+static __device__ int tex2map(int3 L, const int *start, int zplane, int n1, float x, float y, float z, /**/ Map *m) {
     /* textures to map */
     int xstart, xcount;
     int zmy;
@@ -25550,7 +26294,8 @@ static __device__ uint m2id(const Map m, uint i) {
     return 1;
 }
 /* end src/fsi/dev/map/halo.h */
-/* begin src/fsi/dev/bulk.h */static __device__ void pp2p(const Particle *pp, int i, /**/ Pa *p) {
+/* begin src/fsi/dev/bulk.h */
+static __device__ void pp2p(const Particle *pp, int i, /**/ Pa *p) {
     enum {X, Y, Z};
     Particle a = pp[i];
     p->x  = a.r[X]; p->y  = a.r[Y]; p->z  = a.r[Z];
@@ -25619,7 +26364,8 @@ __global__ void bulk(Par params, int3 L, const int *start, const Particle *ppA, 
     bulk2(params, L, start, ppA, parray, i, zplane, n1, seed, ff, ff0);
 }
 /* end src/fsi/dev/bulk.h */
-/* begin src/fsi/dev/halo.h */static __device__ Pa warp2p(const Particle *pp, int i) {
+/* begin src/fsi/dev/halo.h */
+static __device__ Pa warp2p(const Particle *pp, int i) {
     enum {X, Y, Z};
     Pa p;
     pp += i;
@@ -25681,7 +26427,8 @@ __global__ void halo(Par params, int3 L, const int *cellsstart, int27 starts, Pa
 /* end src/fsi/dev/halo.h */
 }
 
-/* begin src/fsi/imp/type.h */#pragma once
+/* begin src/fsi/imp/type.h */
+#pragma once
 
 struct RNDunif;
 
@@ -25698,7 +26445,8 @@ struct Fsi {
     int3 L; /* subdomain size */
 };
 /* end src/fsi/imp/type.h */
-/* begin src/fsi/imp/main.h */void fsi_ini(int rank, int3 L, /**/ Fsi **fsi) {
+/* begin src/fsi/imp/main.h */
+void fsi_ini(int rank, int3 L, /**/ Fsi **fsi) {
     Fsi *f;
     EMALLOC(1, fsi);
     f = *fsi;
@@ -25723,7 +26471,8 @@ void fsi_bind_solvent(PaArray pa, Force *ff, int n, const int *starts, /**/ Fsi 
 }
 
 /* end src/fsi/imp/main.h */
-/* begin src/fsi/imp/bulk.h */static void bulk_one_wrap(const PairParams *params, PaWrap *pw, FoWrap *fw, Fsi *fsi) {
+/* begin src/fsi/imp/bulk.h */
+static void bulk_one_wrap(const PairParams *params, PaWrap *pw, FoWrap *fw, Fsi *fsi) {
     int n0, n1;
     float rnd;
     const Particle *ppA = pw->pp;
@@ -25766,7 +26515,8 @@ void fsi_bulk(Fsi *fsi, int nw, const PairParams **prms, PaWrap *pw, FoWrap *fw)
         if (prms[i]) bulk_one_wrap(prms[i], &pw[i], &fw[i], fsi);
 }
 /* end src/fsi/imp/bulk.h */
-/* begin src/fsi/imp/halo.h */static void fsi_halo_one_type(const PairParams *params, Fsi *fsi, Pap26 PP, Fop26 FF, const int counts[26]) {
+/* begin src/fsi/imp/halo.h */
+static void fsi_halo_one_type(const PairParams *params, Fsi *fsi, Pap26 PP, Fop26 FF, const int counts[26]) {
     enum {NFRAGS = 26};
     int i, n, s;
     int27 starts;
@@ -26118,21 +26868,33 @@ void fsi_halo(Fsi *fsi, int nw, const PairParams **prms, Pap26 all_pp, Fop26 all
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/grid_sampler/imp.cu"
-/* begin src/grid_sampler/imp.cu */#include <mpi.h>
+/* begin src/grid_sampler/imp.cu */
+#include <mpi.h>
 #include <stdio.h>
 
-#include <conf.h>
 /* already included: src/inc/conf.h */
-/* already included: src/utils/error.h *//* already included: src/utils/imp.h */
-/* already included: src/utils/kl.h *//* already included: src/utils/cc.h */
+/* already included: src/inc/conf.h */
+
+/* already included: src/utils/error.h */
+/* already included: src/utils/imp.h */
+
+/* already included: src/utils/kl.h */
+/* already included: src/utils/cc.h */
+
 /* already included: src/d/api.h */
-/* already included: src/inc/type.h *//* already included: src/inc/def.h *//* already included: src/inc/dev.h */
-/* begin src/io/grid/imp.h */// tag::int[]
+
+/* already included: src/inc/type.h */
+/* already included: src/inc/def.h */
+/* already included: src/inc/dev.h */
+
+/* begin src/io/grid/imp.h */
+// tag::int[]
 void grid_write(int3 subGrid, int3 subDomain, MPI_Comm, const char *path, int ncmp, const float **data, const char **names);
 // end::int[]
 /* end src/io/grid/imp.h */
 
-/* begin src/grid_sampler/imp.h */struct GridSampler;
+/* begin src/grid_sampler/imp.h */
+struct GridSampler;
 struct GridSampleData;
 
 struct Particle;
@@ -26160,7 +26922,8 @@ void grid_sampler_add(const GridSampleData*, GridSampler*); // <2>
 void grid_sampler_dump(MPI_Comm, const char *dir, long id, GridSampler*); // <3>
 // end::int[]
 /* end src/grid_sampler/imp.h */
-/* begin src/grid_sampler/imp/type.h */enum {
+/* begin src/grid_sampler/imp/type.h */
+enum {
     RHO, VX, VY, VZ,
     NFIELDS_P
 };
@@ -26222,7 +26985,8 @@ struct GridSampleData {
 /* end src/grid_sampler/imp/type.h */
 
 namespace sampler_dev {
-/* begin src/grid_sampler/dev/type.h */struct Part {
+/* begin src/grid_sampler/dev/type.h */
+struct Part {
     float3 r, v;
 };
 
@@ -26230,7 +26994,8 @@ struct Stress {
     float3 s1, s2;
 };
 /* end src/grid_sampler/dev/type.h */
-/* begin src/grid_sampler/dev/fetch.h */#define _S_ static __device__
+/* begin src/grid_sampler/dev/fetch.h */
+#define _S_ static __device__
 #define _I_ static __device__
 
 _I_ void fetch_part(int i, const SampleDatum *d, Part *p) {
@@ -26258,7 +27023,8 @@ _I_ void fetch_stress(int i, const SampleDatum *d, Stress *s) {
 #undef _S_
 #undef _I_
 /* end src/grid_sampler/dev/fetch.h */
-/* begin src/grid_sampler/dev/add.h */#define _S_ static __device__
+/* begin src/grid_sampler/dev/add.h */
+#define _S_ static __device__
 #define _I_ static __device__
 
 _I_ void add_part(int i, const Part *p, const Grid *g) {
@@ -26291,7 +27057,8 @@ _I_ void add_stress(int i, const Stress *s, const Grid *g) {
 #undef _S_
 #undef _I_
 /* end src/grid_sampler/dev/add.h */
-/* begin src/grid_sampler/dev/main.h */#define _S_ static __device__
+/* begin src/grid_sampler/dev/main.h */
+#define _S_ static __device__
 
 _S_ float get_spacing(int L, int N) {
     return (float) L / (float) N;
@@ -26440,7 +27207,8 @@ __global__ void time_avg(int nsteps, Grid g) {
 /* end src/grid_sampler/dev/main.h */
 }
 
-/* begin src/grid_sampler/imp/main.h */static long get_size(const Grid *g) {
+/* begin src/grid_sampler/imp/main.h */
+static long get_size(const Grid *g) {
     int3 N = g->N;
     return N.x * N.y * N.z;
 }
@@ -26612,7 +27380,8 @@ void grid_sampler_dump(MPI_Comm cart, const char *dir, long id, GridSampler *s) 
     UC(dump(cart, dir, id, &s->hst));
 }
 /* end src/grid_sampler/imp/main.h */
-/* begin src/grid_sampler/imp/data.h */void grid_sampler_data_ini(GridSampleData **s) {
+/* begin src/grid_sampler/imp/data.h */
+void grid_sampler_data_ini(GridSampleData **s) {
     EMALLOC(1, s);
     grid_sampler_data_reset(*s);
 }
@@ -26941,22 +27710,26 @@ void grid_sampler_data_push(long n, const Particle *pp, const int *cc, const flo
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/he/err.cpp"
-/* begin src/he/err.cpp */#include <stdarg.h>
+/* begin src/he/err.cpp */
+#include <stdarg.h>
 #include <stdlib.h>
 #include <stdio.h>
 
-/* begin src/he/def.h */#ifndef HE_DEFINITIONS_DEFINED
+/* begin src/he/def.h */
+#ifndef HE_DEFINITIONS_DEFINED
 #define HE_DEFINITIONS_DEFINED
 enum {MAX_STRING_SIZE = 4096};
 #endif
 /* end src/he/def.h */
-/* begin src/he/macro.h */#ifdef __GNUC__
+/* begin src/he/macro.h */
+#ifdef __GNUC__
   #define __UNUSED __attribute__((unused))
 #else
   #define __UNUSED
 #endif
 /* end src/he/macro.h */
-/* begin src/he/err.h *//* error codes */
+/* begin src/he/err.h */
+/* error codes */
 #ifndef HE_ERROR_CODES_DEFINED
 #define HE_ERROR_CODES_DEFINED
 enum {HE_OK, HE_IO, HE_MEMORY, HE_SYS, HE_USER, HE_INDEX, HE_NUM};
@@ -27296,8 +28069,10 @@ void he_msg(const char *file, int line, const char *fmt, ...) {
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/he/hash.cpp"
-/* begin src/he/hash.cpp */#include <stdio.h>
-/* begin src/he/memory.h */#define MALLOC(n, pp) he_malloc((n)*sizeof(**(pp)), (void**)(pp))
+/* begin src/he/hash.cpp */
+#include <stdio.h>
+/* begin src/he/memory.h */
+#define MALLOC(n, pp) he_malloc((n)*sizeof(**(pp)), (void**)(pp))
 #define FREE(p) he_free(p)
 #define MEMCPY(n, src, dest) he_memcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
 
@@ -27305,7 +28080,9 @@ int he_malloc(int, void**);
 int he_free(void *ptr);
 int he_memcpy(void *dest, const void *src, size_t n);
 /* end src/he/memory.h */
-/* already included: src/he/err.h *//* begin src/he/hash.h */#define T HeHash
+/* already included: src/he/err.h */
+/* begin src/he/hash.h */
+#define T HeHash
 
 typedef struct T T;
 
@@ -27704,9 +28481,13 @@ int he_hash_get(T *q, int i, int j) {
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/he/he.cpp"
-/* begin src/he/he.cpp */#include <stdio.h>
+/* begin src/he/he.cpp */
+#include <stdio.h>
 
-/* already included: src/he/err.h *//* already included: src/he/memory.h *//* begin src/he/read.h */#define T HeRead
+/* already included: src/he/err.h */
+/* already included: src/he/memory.h */
+/* begin src/he/read.h */
+#define T HeRead
 
 struct int4;
 
@@ -27742,7 +28523,8 @@ int he_read_info(T*, FILE*);
 #undef T
 /* end src/he/read.h */
 
-/* begin src/he/he.h */#define T He
+/* begin src/he/he.h */
+#define T He
 
 typedef struct T T;
 typedef struct HeRead HeRead;
@@ -28170,11 +28952,14 @@ int he_bnd(T *q, int h)     { V(h, q->nh); return q->flp[h] == -1; }
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/he/memory.cpp"
-/* begin src/he/memory.cpp */#include <stdio.h>
+/* begin src/he/memory.cpp */
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-/* already included: src/he/err.h *//* already included: src/he/memory.h */
+/* already included: src/he/err.h */
+/* already included: src/he/memory.h */
+
 int he_malloc(int size, /**/ void **pq) {
     void *q;
     q = malloc(size);
@@ -28495,12 +29280,18 @@ int he_memcpy(void *dest, const void *src, size_t n) {
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/he/read.cpp"
-/* begin src/he/read.cpp */#include <stdio.h>
+/* begin src/he/read.cpp */
+#include <stdio.h>
 #include <string.h>
 #include <assert.h>
 #include <vector_types.h>
 
-/* already included: src/he/def.h *//* already included: src/he/err.h *//* already included: src/he/memory.h *//* already included: src/he/macro.h *//* begin src/he/util.h *//* string equal? */
+/* already included: src/he/def.h */
+/* already included: src/he/err.h */
+/* already included: src/he/memory.h */
+/* already included: src/he/macro.h */
+/* begin src/he/util.h */
+/* string equal? */
 int util_eq(const char *a, const char *b);
 
 /* fgets without '\n' */
@@ -28510,7 +29301,9 @@ char *util_fgets(char *s, FILE *stream);
 char *util_comment_fgets(char *s, FILE *stream);
 /* end src/he/util.h */
 /* already included: src/he/hash.h */
+
 /* already included: src/he/read.h */
+
 #define T HeRead
 #define SIZE (MAX_STRING_SIZE)
 #define E(fmt, ...) ERR(HE_IO, fmt, ##__VA_ARGS__);
@@ -29078,13 +29871,17 @@ int he_read_hdg_tri(T *q, int **p) { *p = q->hdg_tri; return HE_OK; };
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/he/util.cpp"
-/* begin src/he/util.cpp */#include <stdlib.h>
+/* begin src/he/util.cpp */
+#include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
 
-/* already included: src/he/err.h *//* already included: src/he/util.h */
+/* already included: src/he/err.h */
+/* already included: src/he/util.h */
+
 /* already included: src/he/def.h */
+
 #define  SIZE (MAX_STRING_SIZE)
 
 int util_eq(const char *a, const char *b) {
@@ -29414,10 +30211,15 @@ char *util_comment_fgets(char *s, FILE *stream) {
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/inter/color/conf.cpp"
-/* begin src/inter/color/conf.cpp */#include <stdio.h>
+/* begin src/inter/color/conf.cpp */
+#include <stdio.h>
 
-/* already included: src/utils/error.h *//* already included: src/utils/imp.h *//* already included: src/conf/imp.h */
+/* already included: src/utils/error.h */
+/* already included: src/utils/imp.h */
+/* already included: src/conf/imp.h */
+
 /* already included: src/inter/color/imp.h */
+
 void inter_color_set_conf(const Config *cfg, GenColor *gc) {
     const char *kind;
     UC(conf_lookup_string(cfg, "iccolor.kind", &kind));
@@ -29737,15 +30539,28 @@ void inter_color_set_conf(const Config *cfg, GenColor *gc) {
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/inter/color/imp.cpp"
-/* begin src/inter/color/imp.cpp */#include <stdio.h>
+/* begin src/inter/color/imp.cpp */
+#include <stdio.h>
 
-#include <conf.h>
 /* already included: src/inc/conf.h */
-/* already included: src/inc/def.h *//* already included: src/inc/dev.h *//* already included: src/inc/type.h */
+/* already included: src/inc/conf.h */
+
+/* already included: src/inc/def.h */
+/* already included: src/inc/dev.h */
+/* already included: src/inc/type.h */
+
 /* already included: src/d/api.h */
-/* already included: src/utils/error.h *//* already included: src/utils/imp.h *//* already included: src/utils/msg.h *//* already included: src/utils/cc.h */
+
+/* already included: src/utils/error.h */
+/* already included: src/utils/imp.h */
+/* already included: src/utils/msg.h */
+/* already included: src/utils/cc.h */
+
 /* already included: src/coords/imp.h */
-/* already included: src/inter/color/imp.h *//* begin src/inter/color/imp/type.h */enum {
+
+/* already included: src/inter/color/imp.h */
+/* begin src/inter/color/imp/type.h */
+enum {
     INTER_COLOR_NONE,
     INTER_COLOR_DROP,
     INTER_COLOR_UNIF
@@ -29756,12 +30571,14 @@ struct GenColor {
     float R;
 };
 /* end src/inter/color/imp/type.h */
-/* begin src/inter/color/imp/unif.h */static void set_color_unif(int n, /**/ int* cc) {
+/* begin src/inter/color/imp/unif.h */
+static void set_color_unif(int n, /**/ int* cc) {
     int i;
     for (i = 0; i < n; i++) cc[i] = BLUE_COLOR;
 }
 /* end src/inter/color/imp/unif.h */
-/* begin src/inter/color/imp/drop.h */static void set_color_drop(float rad, const Coords *coords, int n, const Particle *pp, /**/ int *cc) {
+/* begin src/inter/color/imp/drop.h */
+static void set_color_drop(float rad, const Coords *coords, int n, const Particle *pp, /**/ int *cc) {
     enum {X, Y, Z};
     int lx, ly, lz; /* domain */
     int i, r, g;
@@ -29791,7 +30608,8 @@ struct GenColor {
     msg_print("red/green : %d/%d", r, g);
 }
 /* end src/inter/color/imp/drop.h */
-/* begin src/inter/color/imp/main.h */void inter_color_ini(GenColor **c) {
+/* begin src/inter/color/imp/main.h */
+void inter_color_ini(GenColor **c) {
     GenColor *gc;
     EMALLOC(1, c);
     gc = *c;
@@ -30146,18 +30964,35 @@ void inter_color_apply_dev(const Coords *coords, const GenColor *gc, int n, cons
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/io/bop/imp.cpp"
-/* begin src/io/bop/imp.cpp */#include <mpi.h>
+/* begin src/io/bop/imp.cpp */
+#include <mpi.h>
 #include <string.h>
 #include <vector_types.h>
 
-#include <bop_common.h>
+/* begin src/inc/bop_common.h */
+#pragma once
+
+#include_next <bop_common.h>
+/* end src/inc/bop_common.h */
 #include <bop_mpi.h>
 
-/* already included: src/inc/conf.h *//* already included: src/inc/conf.h *//* already included: src/utils/mc.h */
+/* already included: src/inc/conf.h */
+/* already included: src/inc/conf.h */
+/* already included: src/utils/mc.h */
+
 /* already included: src/d/api.h */
+
 /* already included: src/mpi/wrapper.h */
-/* already included: src/inc/type.h *//* already included: src/inc/def.h *//* already included: src/utils/os.h *//* already included: src/utils/error.h *//* already included: src/utils/imp.h *//* already included: src/coords/imp.h */
-/* begin src/io/bop/imp.h */struct IoBop;
+
+/* already included: src/inc/type.h */
+/* already included: src/inc/def.h */
+/* already included: src/utils/os.h */
+/* already included: src/utils/error.h */
+/* already included: src/utils/imp.h */
+/* already included: src/coords/imp.h */
+
+/* begin src/io/bop/imp.h */
+struct IoBop;
 
 void io_bop_ini(MPI_Comm comm, int maxp, IoBop **t);
 void io_bop_fin(IoBop *t);
@@ -30168,12 +31003,14 @@ void io_bop_stresses    (MPI_Comm cart, long n, const float *ss, const char *nam
 void io_bop_ids         (MPI_Comm cart, long n, const int   *ii, const char *name, int id, IoBop *t);
 void io_bop_colors      (MPI_Comm cart, long n, const int   *cc, const char *name, int id, IoBop *t);
 /* end src/io/bop/imp.h */
-/* begin src/io/bop/imp/type.h */struct IoBop {
+/* begin src/io/bop/imp/type.h */
+struct IoBop {
     BopData *ff; /* float data */
     BopData *ii; /*   int data */
 };
 /* end src/io/bop/imp/type.h */
-/* begin src/io/bop/imp/main.h */enum {
+/* begin src/io/bop/imp/main.h */
+enum {
     NVARP = 6,
     NVARF = 3,
     NVARS = 6,
@@ -30632,16 +31469,25 @@ void io_bop_colors(MPI_Comm cart, long n, const int *cc, const char *name, int i
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/io/com/imp.cpp"
-/* begin src/io/com/imp.cpp */#include <stdio.h>
+/* begin src/io/com/imp.cpp */
+#include <stdio.h>
 #include <vector_types.h>
 #include <mpi.h>
 
-#include <conf.h>
 /* already included: src/inc/conf.h */
-/* already included: src/mpi/wrapper.h *//* already included: src/utils/mc.h */
+/* already included: src/inc/conf.h */
+
+/* already included: src/mpi/wrapper.h */
+/* already included: src/utils/mc.h */
+
 /* already included: src/coords/imp.h */
-/* already included: src/utils/imp.h *//* already included: src/utils/os.h *//* already included: src/utils/error.h */
-/* begin src/io/write/imp.h */struct WriteFile;
+
+/* already included: src/utils/imp.h */
+/* already included: src/utils/os.h */
+/* already included: src/utils/error.h */
+
+/* begin src/io/write/imp.h */
+struct WriteFile;
 
 // tag::interface[]
 int write_file_open(MPI_Comm, const char *path, /**/ WriteFile**);
@@ -30655,7 +31501,8 @@ int write_reduce(MPI_Comm, int, /**/ int*);
 // end::interface[]
 /* end src/io/write/imp.h */
 
-/* begin src/io/com/imp.h */struct Coords;
+/* begin src/io/com/imp.h */
+struct Coords;
 struct float3;
 void io_com_dump(MPI_Comm, const Coords*, const char *name, long id, int n, const int *ii, const float3 *rr);
 /* end src/io/com/imp.h */
@@ -31008,14 +31855,22 @@ void io_com_dump(MPI_Comm comm, const Coords *coords, const char *name, long id,
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/io/diag/mesh/imp.cpp"
-/* begin src/io/diag/mesh/imp.cpp */#include <stdio.h>
+/* begin src/io/diag/mesh/imp.cpp */
+#include <stdio.h>
 #include <string.h>
 #include <vector_types.h>
 #include <mpi.h>
 
-#include <conf.h>
 /* already included: src/inc/conf.h */
-/* already included: src/utils/msg.h *//* already included: src/mpi/wrapper.h *//* already included: src/inc/type.h *//* already included: src/utils/error.h *//* already included: src/utils/imp.h *//* begin src/io/mesh_read/imp.h */struct int4;
+/* already included: src/inc/conf.h */
+
+/* already included: src/utils/msg.h */
+/* already included: src/mpi/wrapper.h */
+/* already included: src/inc/type.h */
+/* already included: src/utils/error.h */
+/* already included: src/utils/imp.h */
+/* begin src/io/mesh_read/imp.h */
+struct int4;
 struct MeshRead;
 
 // tag::interface[]
@@ -31034,7 +31889,8 @@ const int4  *mesh_read_get_dih(MeshRead*);
 // end::interface[]
 /* end src/io/mesh_read/imp.h */
 
-/* begin src/io/diag/mesh/imp.h */struct DiagMesh;
+/* begin src/io/diag/mesh/imp.h */
+struct DiagMesh;
 struct MeshRead;
 
 // tag::interface[]
@@ -31043,13 +31899,15 @@ void diag_mesh_fin(DiagMesh*);
 void diag_mesh_apply(DiagMesh*, MPI_Comm, float time, int nc, Particle*);
 // end::interface[]
 /* end src/io/diag/mesh/imp.h */
-/* begin src/io/diag/mesh/imp/type.h */struct DiagMesh {
+/* begin src/io/diag/mesh/imp/type.h */
+struct DiagMesh {
     char path[FILENAME_MAX];
     int nv, nt;
     int4 *tt;
 };
 /* end src/io/diag/mesh/imp/type.h */
-/* begin src/io/diag/mesh/imp/main.h */void diag_mesh_ini(const char *path, MeshRead *mesh, DiagMesh **pq) {
+/* begin src/io/diag/mesh/imp/main.h */
+void diag_mesh_ini(const char *path, MeshRead *mesh, DiagMesh **pq) {
     FILE *f;
     DiagMesh *q;
     EMALLOC(1, &q);
@@ -31373,14 +32231,23 @@ void diag_mesh_apply(DiagMesh*, MPI_Comm, float, int, Particle*) {
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/io/diag/part/imp.cpp"
-/* begin src/io/diag/part/imp.cpp */#include <stdio.h>
+/* begin src/io/diag/part/imp.cpp */
+#include <stdio.h>
 #include <string.h>
 #include <mpi.h>
 
-#include <conf.h>
 /* already included: src/inc/conf.h */
-/* already included: src/utils/msg.h *//* already included: src/mpi/wrapper.h *//* already included: src/inc/type.h *//* already included: src/utils/error.h *//* already included: src/utils/imp.h *//* already included: src/utils/mc.h */
-/* begin src/io/diag/part/imp.h */struct Particle;
+/* already included: src/inc/conf.h */
+
+/* already included: src/utils/msg.h */
+/* already included: src/mpi/wrapper.h */
+/* already included: src/inc/type.h */
+/* already included: src/utils/error.h */
+/* already included: src/utils/imp.h */
+/* already included: src/utils/mc.h */
+
+/* begin src/io/diag/part/imp.h */
+struct Particle;
 struct DiagPart;
 
 // tag::interface[]
@@ -31389,13 +32256,15 @@ void diag_part_fin(DiagPart*);
 void diag_part_apply(DiagPart*, MPI_Comm, float time, int n, const Particle*);
 // end::interface[]
 /* end src/io/diag/part/imp.h */
-/* begin src/io/diag/part/imp/type.h */enum {DIAG_PART_STAMP_GOOD = 123456};
+/* begin src/io/diag/part/imp/type.h */
+enum {DIAG_PART_STAMP_GOOD = 123456};
 struct DiagPart {
     int stamp;
     char path[FILENAME_MAX];
 };
 /* end src/io/diag/part/imp/type.h */
-/* begin src/io/diag/part/imp/main.h */void diag_part_ini(const char *path, /**/ DiagPart **pq) {
+/* begin src/io/diag/part/imp/main.h */
+void diag_part_ini(const char *path, /**/ DiagPart **pq) {
     FILE *f;
     DiagPart *q;
     EMALLOC(1, &q);
@@ -31762,14 +32631,20 @@ void diag_part_apply(DiagPart *q, MPI_Comm comm, float time, int n, const Partic
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/io/grid/h5/imp.cpp"
-/* begin src/io/grid/h5/imp.cpp */#include <hdf5.h>
+/* begin src/io/grid/h5/imp.cpp */
+#include <hdf5.h>
 #include <vector_types.h>
 
-/* already included: src/coords/ini.h *//* already included: src/coords/imp.h *//* already included: src/mpi/wrapper.h *//* begin src/io/grid/h5/imp.h */// tag::int[]
+/* already included: src/coords/ini.h */
+/* already included: src/coords/imp.h */
+/* already included: src/mpi/wrapper.h */
+/* begin src/io/grid/h5/imp.h */
+// tag::int[]
 void h5_write(int3 N, MPI_Comm, const char *path, int ncomp, const float **data, const char **names);
 // end::int[]
 /* end src/io/grid/h5/imp.h */
 /* already included: src/utils/error.h */
+
 struct IDs {
     hid_t plist;
     hid_t file;
@@ -32159,18 +33034,25 @@ void h5_write(int3 N, MPI_Comm cart, const char *path, int ncomp,
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/io/grid/imp.cpp"
-/* begin src/io/grid/imp.cpp */#include <mpi.h>
+/* begin src/io/grid/imp.cpp */
+#include <mpi.h>
 #include <stdio.h>
 #include <vector_types.h>
 
-#include <conf.h>
 /* already included: src/inc/conf.h */
-/* already included: src/mpi/wrapper.h *//* already included: src/utils/error.h *//* already included: src/utils/mc.h */
-/* begin src/io/grid/xmf/imp.h */// tag::int[]
+/* already included: src/inc/conf.h */
+
+/* already included: src/mpi/wrapper.h */
+/* already included: src/utils/error.h */
+/* already included: src/utils/mc.h */
+
+/* begin src/io/grid/xmf/imp.h */
+// tag::int[]
 void xmf_write(int3 domainSize, int3 gridSize, const char *path, int ncomp, const char **names);
 // end::int[]
 /* end src/io/grid/xmf/imp.h */
 /* already included: src/io/grid/h5/imp.h */
+
 static int3 get_total_size(int3 L, MPI_Comm cart) {
     enum {X, Y, Z, D};
     int dims[3], periods[D], coords[D];
@@ -32492,12 +33374,16 @@ void grid_write(int3 N, int3 L, MPI_Comm cart, const char *path, int ncmp, const
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/io/grid/xmf/imp.cpp"
-/* begin src/io/grid/xmf/imp.cpp */#include <string.h>
+/* begin src/io/grid/xmf/imp.cpp */
+#include <string.h>
 #include <stdio.h>
 #include <vector_types.h>
 
-/* already included: src/utils/error.h *//* already included: src/utils/imp.h */
+/* already included: src/utils/error.h */
+/* already included: src/utils/imp.h */
+
 /* already included: src/io/grid/xmf/imp.h */
+
 static void header(FILE *f) {
     fprintf(f, "<?xml version=\"1.0\" ?>\n");
     fprintf(f, "<!DOCTYPE Xdmf SYSTEM \"Xdmf.dtd\" []>\n");
@@ -32874,20 +33760,34 @@ void xmf_write(int3 domainSize, int3 gridSize, const char *path, int ncomp, cons
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/io/mesh/imp.cpp"
-/* begin src/io/mesh/imp.cpp */#include <mpi.h>
+/* begin src/io/mesh/imp.cpp */
+#include <mpi.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <vector_types.h>
 
-#include <conf.h>
 /* already included: src/inc/conf.h */
+/* already included: src/inc/conf.h */
+
 /* already included: src/coords/imp.h */
-/* already included: src/utils/os.h *//* already included: src/utils/error.h *//* already included: src/utils/imp.h *//* already included: src/utils/msg.h *//* already included: src/utils/mc.h */
-/* already included: src/mpi/wrapper.h *//* already included: src/inc/type.h */
-/* already included: src/io/mesh_read/imp.h *//* already included: src/algo/vectors/imp.h */
+
+/* already included: src/utils/os.h */
+/* already included: src/utils/error.h */
+/* already included: src/utils/imp.h */
+/* already included: src/utils/msg.h */
+/* already included: src/utils/mc.h */
+
+/* already included: src/mpi/wrapper.h */
+/* already included: src/inc/type.h */
+
+/* already included: src/io/mesh_read/imp.h */
+/* already included: src/algo/vectors/imp.h */
+
 /* already included: src/io/write/imp.h */
-/* begin src/io/mesh/imp.h */#pragma once
+
+/* begin src/io/mesh/imp.h */
+#pragma once
 
 struct Coords;
 struct Particle;
@@ -32906,7 +33806,8 @@ void mesh_write_vectors(MeshWrite*, MPI_Comm, int nm, Vectors *pos, Vectors *vel
 
 void mesh_write_fin(MeshWrite*);
 /* end src/io/mesh/imp.h */
-/* begin src/io/mesh/imp/type.h */struct MeshWrite {
+/* begin src/io/mesh/imp/type.h */
+struct MeshWrite {
     int4 *tt;
     int nv, nt;
     char directory[FILENAME_MAX];
@@ -32914,7 +33815,8 @@ void mesh_write_fin(MeshWrite*);
 };
 /* end src/io/mesh/imp/type.h */
 
-/* begin src/io/mesh/imp/util.h */#pragma once
+/* begin src/io/mesh/imp/util.h */
+#pragma once
 
 static char *mesh_cpy(char *dest, const char *src) { return strncpy(dest, src, FILENAME_MAX); }
 static char *mesh_cat(char *dest, const char *src) { return strncat(dest, src, FILENAME_MAX); }
@@ -32932,7 +33834,8 @@ static void mesh_mkdir(MPI_Comm comm, const char *p, const char *s) {
     if (m::is_master(comm)) UC(mkdir0(p, s));
 }
 /* end src/io/mesh/imp/util.h */
-/* begin src/io/mesh/imp/main.h */#define PATTERN "%s/%s/%05d.ply"
+/* begin src/io/mesh/imp/main.h */
+#define PATTERN "%s/%s/%05d.ply"
 enum { NVP = 3 /* number of vertices per face */ };
 
 static void ini(MPI_Comm comm, int shifttype, const int4 *tt, int nv, int nt, const char *directory, /**/ MeshWrite **pq) {
@@ -33383,16 +34286,23 @@ void mesh_write_vectors(MeshWrite *q, MPI_Comm comm, int nc, Vectors *pos, Vecto
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/io/mesh_read/edg/imp.cpp"
-/* begin src/io/mesh_read/edg/imp.cpp */#include <stdio.h>
+/* begin src/io/mesh_read/edg/imp.cpp */
+#include <stdio.h>
 
-/* already included: src/utils/error.h *//* already included: src/utils/imp.h *//* already included: src/utils/msg.h */
+/* already included: src/utils/error.h */
+/* already included: src/utils/imp.h */
+/* already included: src/utils/msg.h */
+
 /* already included: src/algo/edg/imp.h */
-/* begin src/io/mesh_read/edg/imp/type.h */struct Edg {
+
+/* begin src/io/mesh_read/edg/imp/type.h */
+struct Edg {
     int md, nv;
     int *hx, *hy;
 };
 /* end src/io/mesh_read/edg/imp/type.h */
-/* begin src/io/mesh_read/edg/imp/main.h */void e_ini(int md, int nv, /**/ Edg **pq) {
+/* begin src/io/mesh_read/edg/imp/main.h */
+void e_ini(int md, int nv, /**/ Edg **pq) {
     Edg *q;
     EMALLOC(1, &q);
     EMALLOC(md*nv, &q->hx);
@@ -33729,12 +34639,17 @@ int e_valid(Edg *q, int i, int j) {
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/io/mesh_read/imp.cpp"
-/* begin src/io/mesh_read/imp.cpp */#include <stdio.h>
+/* begin src/io/mesh_read/imp.cpp */
+#include <stdio.h>
 #include <string.h>
 #include <vector_types.h>
 
-/* already included: src/utils/error.h *//* already included: src/utils/imp.h */
-/* already included: src/utils/msg.h *//* begin src/io/mesh_read/edg/imp.h */struct Edg;
+/* already included: src/utils/error.h */
+/* already included: src/utils/imp.h */
+
+/* already included: src/utils/msg.h */
+/* begin src/io/mesh_read/edg/imp.h */
+struct Edg;
 
 void e_ini(int md, int nv, /**/ Edg**);
 void e_fin(Edg*);
@@ -33745,7 +34660,9 @@ int  e_valid(Edg*, int i, int j);
 /* end src/io/mesh_read/edg/imp.h */
 
 /* already included: src/io/mesh_read/imp.h */
-/* begin src/io/mesh_read/imp/type.h */struct MeshRead {
+
+/* begin src/io/mesh_read/imp/type.h */
+struct MeshRead {
     int nv, nt, nd; /* vertices, triangles, dihidrals */
     float *rr; /* [x y z] [x y z] */
     int4  *tt; /* triangles: [v0 v1 v2 dummy] */
@@ -33754,7 +34671,8 @@ int  e_valid(Edg*, int i, int j);
     int dd_computed;
 };
 /* end src/io/mesh_read/imp/type.h */
-/* begin src/io/mesh_read/imp/off.h */#define SIZE 1024
+/* begin src/io/mesh_read/imp/off.h */
+#define SIZE 1024
 static int emptyp(char *s) {
     for (;;) {
         if      (s[0] == '\0')                return 1;
@@ -33859,7 +34777,8 @@ static void read_off(FILE *f, const char *path, /**/ MeshRead *q) {
     q->rr = rr; q->tt = tt;
 }
 /* end src/io/mesh_read/imp/off.h */
-/* begin src/io/mesh_read/imp/ply.h */static bool prop(const char *pname, const char *str) {
+/* begin src/io/mesh_read/imp/ply.h */
+static bool prop(const char *pname, const char *str) {
     const int l1 = strlen(pname);
     const int l2 = strlen(str);
 
@@ -33909,7 +34828,8 @@ static void read_ply(FILE *f, const char *fname, MeshRead *q) {
     q->rr = rr; q->tt = tt;
 }
 /* end src/io/mesh_read/imp/ply.h */
-/* begin src/io/mesh_read/imp/main.h */struct Q { int4 *d; }; /* queue */
+/* begin src/io/mesh_read/imp/main.h */
+struct Q { int4 *d; }; /* queue */
 
 static void q_push(Q *q, int i0, int i1, int i2, int i3) {
     int4 *d;
@@ -34349,18 +35269,28 @@ const int4  *mesh_read_get_dih(MeshRead *q) {
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/io/point/imp.cpp"
-/* begin src/io/point/imp.cpp */#include <string.h>
+/* begin src/io/point/imp.cpp */
+#include <string.h>
 #include <ctype.h>
 #include <mpi.h>
 
-#include <bop_common.h>
+/* already included: src/inc/bop_common.h */
 #include <bop_mpi.h>
 
-#include <conf.h>
 /* already included: src/inc/conf.h */
-/* already included: src/utils/os.h *//* already included: src/utils/msg.h *//* already included: src/utils/error.h *//* already included: src/utils/imp.h *//* already included: src/utils/string/imp.h */
-/* already included: src/utils/mc.h *//* already included: src/mpi/wrapper.h */
-/* begin src/io/point/imp/type.h */#pragma once
+/* already included: src/inc/conf.h */
+
+/* already included: src/utils/os.h */
+/* already included: src/utils/msg.h */
+/* already included: src/utils/error.h */
+/* already included: src/utils/imp.h */
+/* already included: src/utils/string/imp.h */
+
+/* already included: src/utils/mc.h */
+/* already included: src/mpi/wrapper.h */
+
+/* begin src/io/point/imp/type.h */
+#pragma once
 
 struct BopData;
 enum { POINT_N_MAX = 100 };
@@ -34386,7 +35316,8 @@ struct IOPoint {
     BopData *bop;
 };
 /* end src/io/point/imp/type.h */
-/* begin src/io/point/imp/util.h */#pragma once
+/* begin src/io/point/imp/util.h */
+#pragma once
 
 static char *point_cpy(char *dest, const char *src) { return strncpy(dest, src, FILENAME_MAX); }
 static char *point_cat(char *dest, const char *src) { return strncat(dest, src, FILENAME_MAX); }
@@ -34418,7 +35349,8 @@ static void wrong_key(IOPoint *q, const char *key) {
     ERR("");
 }
 /* end src/io/point/imp/util.h */
-/* begin src/io/point/imp/main.h */#define PATTERN "%s/%s/%05d"
+/* begin src/io/point/imp/main.h */
+#define PATTERN "%s/%s/%05d"
 
 void io_point_conf_ini(/**/ IOPointConf **pq) {
     IOPointConf *q;
@@ -34847,18 +35779,29 @@ void io_point_write(IOPoint *q, MPI_Comm comm, int id) {
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/io/restart/imp.cpp"
-/* begin src/io/restart/imp.cpp */#include <stdio.h>
+/* begin src/io/restart/imp.cpp */
+#include <stdio.h>
 #include <string.h>
 #include <mpi.h>
 
-#include <bop_common.h>
+/* already included: src/inc/bop_common.h */
 #include <bop_mpi.h>
 
-#include <conf.h>
 /* already included: src/inc/conf.h */
+/* already included: src/inc/conf.h */
+
 /* already included: src/mpi/wrapper.h */
-/* already included: src/inc/type.h *//* already included: src/inc/def.h *//* already included: src/utils/msg.h *//* already included: src/utils/error.h *//* already included: src/utils/imp.h *//* already included: src/coords/imp.h */
-/* already included: src/io/restart/imp.h *//* begin src/io/restart/imp/main.h *//*
+
+/* already included: src/inc/type.h */
+/* already included: src/inc/def.h */
+/* already included: src/utils/msg.h */
+/* already included: src/utils/error.h */
+/* already included: src/utils/imp.h */
+/* already included: src/coords/imp.h */
+
+/* already included: src/io/restart/imp.h */
+/* begin src/io/restart/imp/main.h */
+/*
    pattern :
    base/code/id.ext
    base depends on read/write
@@ -35300,25 +36243,37 @@ void restart_read_stream_one_node(const char *base, const char *code, int id, St
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/io/rig/imp.cpp"
-/* begin src/io/rig/imp.cpp */#include <stdio.h>
+/* begin src/io/rig/imp.cpp */
+#include <stdio.h>
 #include <string.h>
 #include <mpi.h>
 
 /* already included: src/inc/type.h */
-#include <conf.h>
-/* already included: src/inc/conf.h *//* already included: src/utils/error.h *//* already included: src/utils/imp.h *//* already included: src/utils/os.h *//* already included: src/coords/imp.h *//* already included: src/mpi/wrapper.h */
+
+/* already included: src/inc/conf.h */
+/* already included: src/inc/conf.h */
+/* already included: src/utils/error.h */
+/* already included: src/utils/imp.h */
+/* already included: src/utils/os.h */
+/* already included: src/coords/imp.h */
+/* already included: src/mpi/wrapper.h */
+
 /* already included: src/io/write/imp.h */
-/* begin src/io/rig/imp.h */struct Coords;
+
+/* begin src/io/rig/imp.h */
+struct Coords;
 struct Rigid;
 
 void io_rig_dump(MPI_Comm comm, const Coords *c, const char *name, long id, int ns, const Rigid *ss);
 
 /* end src/io/rig/imp.h */
-/* begin src/io/rig/imp/type.h */struct IoRig {
+/* begin src/io/rig/imp/type.h */
+struct IoRig {
     char mode[16]; // fopen mode
 };
 /* end src/io/rig/imp/type.h */
-/* begin src/io/rig/imp/main.h */#define BASE DUMP_BASE "/diag/rig"
+/* begin src/io/rig/imp/main.h */
+#define BASE DUMP_BASE "/diag/rig"
 
 static int swrite_v(const float v[3], char *buf) {
     enum {X, Y, Z};
@@ -35694,18 +36649,26 @@ void io_rig_dump(MPI_Comm comm, const Coords *c, const char *name, long id, int 
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/io/txt/imp.cpp"
-/* begin src/io/txt/imp.cpp */#include <stdio.h>
+/* begin src/io/txt/imp.cpp */
+#include <stdio.h>
 
 /* already included: src/inc/type.h */
-/* already included: src/utils/msg.h *//* already included: src/utils/imp.h *//* already included: src/utils/error.h */
+
+/* already included: src/utils/msg.h */
+/* already included: src/utils/imp.h */
+/* already included: src/utils/error.h */
+
 /* already included: src/io/txt/imp.h */
-/* begin src/io/txt/imp/type.h */struct TxtRead {
+
+/* begin src/io/txt/imp/type.h */
+struct TxtRead {
     int n;
     Particle *pp;
     Force *ff;
 };
 /* end src/io/txt/imp/type.h */
-/* begin src/io/txt/imp/dump.h */#define VFRMT "%16.10e %16.10e %16.10e"
+/* begin src/io/txt/imp/dump.h */
+#define VFRMT "%16.10e %16.10e %16.10e"
 
 void txt_write_pp(long n, const Particle *pp, const char *name) {
     enum {X, Y, Z};
@@ -35748,7 +36711,8 @@ void txt_write_pp_ff(long n, const Particle *pp, const Force *ff, const char *na
 
 #undef VFRMT
 /* end src/io/txt/imp/dump.h */
-/* begin src/io/txt/imp/read.h */#define VFRMT "%f %f %f"
+/* begin src/io/txt/imp/read.h */
+#define VFRMT "%f %f %f"
 
 static void ini(TxtRead **pq) {
     TxtRead *q;
@@ -36150,17 +37114,28 @@ const Force*    txt_read_get_ff(const TxtRead *q) { return q->ff; }
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/io/vtk/imp.cpp"
-/* begin src/io/vtk/imp.cpp */#include <stdio.h>
+/* begin src/io/vtk/imp.cpp */
+#include <stdio.h>
 #include <stdarg.h>
 #include <string.h>
 #include <mpi.h>
 
-#include <conf.h>
 /* already included: src/inc/conf.h */
-/* already included: src/utils/error.h *//* already included: src/utils/imp.h *//* already included: src/utils/msg.h *//* already included: src/utils/os.h */
+/* already included: src/inc/conf.h */
+
+/* already included: src/utils/error.h */
+/* already included: src/utils/imp.h */
+/* already included: src/utils/msg.h */
+/* already included: src/utils/os.h */
+
 /* already included: src/mpi/wrapper.h */
-/* already included: src/algo/key_list/imp.h *//* already included: src/algo/vectors/imp.h *//* already included: src/algo/scalars/imp.h */
-/* begin src/io/vtk/mesh/imp.h */struct Mesh;
+
+/* already included: src/algo/key_list/imp.h */
+/* already included: src/algo/vectors/imp.h */
+/* already included: src/algo/scalars/imp.h */
+
+/* begin src/io/vtk/mesh/imp.h */
+struct Mesh;
 struct MeshRead;
 
 void mesh_ini(MeshRead*, /**/ Mesh**);
@@ -36173,7 +37148,9 @@ int mesh_ne(Mesh*);
 const int* mesh_tt(Mesh*);
 /* end src/io/vtk/mesh/imp.h */
 /* already included: src/io/write/imp.h */
-/* begin src/io/vtk/imp.h */struct VTK;
+
+/* begin src/io/vtk/imp.h */
+struct VTK;
 struct VTKConf;
 
 struct MeshRead;
@@ -36199,7 +37176,8 @@ void vtk_fin(VTK*);
 // tag::main[]
 /* end src/io/vtk/imp.h */
 
-/* begin src/io/vtk/imp/type.h */#pragma once
+/* begin src/io/vtk/imp/type.h */
+#pragma once
 
 struct VTKConf {
     Mesh *mesh;
@@ -36232,7 +37210,8 @@ struct Out {
     MPI_Comm comm;
 };
 /* end src/io/vtk/imp/type.h */
-/* begin src/io/vtk/imp/util.h */#pragma once
+/* begin src/io/vtk/imp/util.h */
+#pragma once
 
 static char *vtk_cpy(char *dest, const char *src) { return strncpy(dest, src, FILENAME_MAX); }
 static char *vtk_cat(char *dest, const char *src) { return strncat(dest, src, FILENAME_MAX); }
@@ -36305,7 +37284,8 @@ static void big_endian_int(int n, int *d) {
         big_endian_int0(&d[i]);
 }
 /* end src/io/vtk/imp/util.h */
-/* begin src/io/vtk/imp/print.h */enum { BUF = 9999 };
+/* begin src/io/vtk/imp/print.h */
+enum { BUF = 9999 };
 
 static void print(Out *out, const char *fmt, ...) {
     char s[BUF];
@@ -36320,7 +37300,8 @@ static void print(Out *out, const char *fmt, ...) {
     UC(write_master(out->comm, s, size, out->file));
 }
 /* end src/io/vtk/imp/print.h */
-/* begin src/io/vtk/imp/file.h */static void header(Out *o) {
+/* begin src/io/vtk/imp/file.h */
+static void header(Out *o) {
     print(o, "# vtk DataFile Version 2.0\n");
     print(o, "created with uDeviceX\n");
     print(o, "BINARY\n");
@@ -36405,7 +37386,8 @@ static void point_data(Out *o, int n, double *data, const char *name) {
     print(o, "\n");
 }
 /* end src/io/vtk/imp/file.h */
-/* begin src/io/vtk/imp/main.h */#define PATTERN "%s/%s/%05d.vtk"
+/* begin src/io/vtk/imp/main.h */
+#define PATTERN "%s/%s/%05d.vtk"
 
 void vtk_conf_ini(MeshRead *mesh, /**/ VTKConf **pq) {
     VTKConf *q;
@@ -36893,18 +37875,26 @@ void vtk_fin(VTK *q) {
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/io/vtk/mesh/imp.cpp"
-/* begin src/io/vtk/mesh/imp.cpp */#include <stdio.h>
+/* begin src/io/vtk/mesh/imp.cpp */
+#include <stdio.h>
 #include <vector_types.h>
 
-/* already included: src/utils/error.h *//* already included: src/utils/imp.h *//* already included: src/utils/msg.h *//* already included: src/io/mesh_read/imp.h */
+/* already included: src/utils/error.h */
+/* already included: src/utils/imp.h */
+/* already included: src/utils/msg.h */
+/* already included: src/io/mesh_read/imp.h */
+
 /* already included: src/io/vtk/mesh/imp.h */
-/* begin src/io/vtk/mesh/imp/type.h */struct Mesh {
+
+/* begin src/io/vtk/mesh/imp/type.h */
+struct Mesh {
     int nv, nt, ne; /* vertices and triangles */
     int *tt;   /* triangles [v0 v1 v2] [v0 v1 v2] .. */
     int *ee;   /* edges [e0 e1] [e0 e1] .. */
 };
 /* end src/io/vtk/mesh/imp/type.h */
-/* begin src/io/vtk/mesh/imp/main.h */void mesh_ini(MeshRead *mesh, /**/ Mesh **pq) {
+/* begin src/io/vtk/mesh/imp/main.h */
+void mesh_ini(MeshRead *mesh, /**/ Mesh **pq) {
     Mesh *q;
     int i, j, nv, nt, ne;
     const int4 *tt, *dd;
@@ -37261,17 +38251,26 @@ const int* mesh_tt(Mesh *q) { return q->tt; }
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/io/write/imp.cpp"
-/* begin src/io/write/imp.cpp */#include <stdlib.h>
+/* begin src/io/write/imp.cpp */
+#include <stdlib.h>
 #include <mpi.h>
 
-#include <conf.h>
 /* already included: src/inc/conf.h */
-/* already included: src/mpi/wrapper.h *//* already included: src/utils/error.h *//* already included: src/utils/imp.h *//* already included: src/utils/mc.h */
-/* already included: src/io/write/imp.h *//* begin src/io/write/imp/type.h */struct WriteFile {
+/* already included: src/inc/conf.h */
+
+/* already included: src/mpi/wrapper.h */
+/* already included: src/utils/error.h */
+/* already included: src/utils/imp.h */
+/* already included: src/utils/mc.h */
+
+/* already included: src/io/write/imp.h */
+/* begin src/io/write/imp/type.h */
+struct WriteFile {
     MPI_File f;
 };
 /* end src/io/write/imp/type.h */
-/* begin src/io/write/imp/main.h */int write_file_open(MPI_Comm comm, const char *fn, /**/ WriteFile **pq) {
+/* begin src/io/write/imp/main.h */
+int write_file_open(MPI_Comm comm, const char *fn, /**/ WriteFile **pq) {
     WriteFile *q;
     EMALLOC(1, &q);
     MC(m::File_open(comm, fn, MPI_MODE_WRONLY |  MPI_MODE_CREATE, MPI_INFO_NULL, &q->f));
@@ -37620,7 +38619,10 @@ int write_reduce(MPI_Comm comm, int n0, /**/ int *n) {
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/math/linal/imp.cpp"
-/* begin src/math/linal/imp.cpp *//* already included: src/utils/error.h *//* begin src/math/linal/imp.h */// tag::interface[]
+/* begin src/math/linal/imp.cpp */
+/* already included: src/utils/error.h */
+/* begin src/math/linal/imp.h */
+// tag::interface[]
 void linal_inv3x3(const float m0[6], /**/ float minv0[6]); // <1>
 // end::interface[]
 /* end src/math/linal/imp.h */
@@ -37955,12 +38957,16 @@ void linal_inv3x3(const float *m, /**/ float *r) {
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/math/rnd/imp.cpp"
-/* begin src/math/rnd/imp.cpp */#include <limits>
+/* begin src/math/rnd/imp.cpp */
+#include <limits>
 #include <stdio.h>
 #include <stdint.h>
 
-/* already included: src/utils/error.h *//* already included: src/utils/imp.h */
-/* already included: src/math/rnd/imp.h */typedef uint32_t integer;
+/* already included: src/utils/error.h */
+/* already included: src/utils/imp.h */
+
+/* already included: src/math/rnd/imp.h */
+typedef uint32_t integer;
 struct RNDunif { integer x, y, z, c; };
 
 void rnd_ini(int x, int y, int z, int c, /**/ RNDunif **pq) {
@@ -38286,19 +39292,28 @@ float rnd_get(RNDunif *r) {
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/math/tform/imp.cpp"
-/* begin src/math/tform/imp.cpp */#include <stdio.h>
+/* begin src/math/tform/imp.cpp */
+#include <stdio.h>
 
-#include <conf.h>
 /* already included: src/inc/conf.h */
-/* already included: src/utils/msg.h *//* already included: src/utils/imp.h *//* already included: src/utils/error.h */
-/* begin src/math/tform/type.h */#pragma once
+/* already included: src/inc/conf.h */
+
+/* already included: src/utils/msg.h */
+/* already included: src/utils/imp.h */
+/* already included: src/utils/error.h */
+
+/* begin src/math/tform/type.h */
+#pragma once
 
 struct Tform_v { float o[3], s[3]; };
 /* end src/math/tform/type.h */
 /* already included: src/math/tform/imp.h */
-/* begin src/math/tform/imp/type.h */struct Tform   { float o[3], s[3]; };
+
+/* begin src/math/tform/imp/type.h */
+struct Tform   { float o[3], s[3]; };
 /* end src/math/tform/imp/type.h */
-/* begin src/math/tform/imp/main.h */void tform_ini(Tform **pq) { EMALLOC(1, pq); }
+/* begin src/math/tform/imp/main.h */
+void tform_ini(Tform **pq) { EMALLOC(1, pq); }
 void tform_fin(Tform *q)   { EFREE(q);       }
 
 static void report(const float a0[3], const float a1[3],   const float b0[3], const float b1[3]) {
@@ -38742,9 +39757,11 @@ void tform_to_view(const Tform *t, Tform_v *v) {
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/math/tri/imp.cpp"
-/* begin src/math/tri/imp.cpp */#include <math.h>
+/* begin src/math/tri/imp.cpp */
+#include <math.h>
 
-/* begin src/math/tri/imp.h */namespace tri_hst {
+/* begin src/math/tri/imp.h */
+namespace tri_hst {
 // tag::interface[]
 double kahan_area0(double a, double b, double c); // <1>
 double kahan_area(const double a[3], const double b[3], const double c[3]); // <2>
@@ -38758,7 +39775,8 @@ void dihedral_xy(const double a[3], const double b[3], const double c[3], const 
 /* end src/math/tri/imp.h */
 
 #define TRI_HOST
-/* begin src/math/tri/dev.h */#ifdef TRI_HOST
+/* begin src/math/tri/dev.h */
+#ifdef TRI_HOST
 #ifndef UDX_TRI_HOST_DEFINED
 #define UDX_TRI_HOST_DEFINED
 #define UDX_TRI_BODY
@@ -39204,14 +40222,22 @@ END
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/mesh/angle/imp.cpp"
-/* begin src/mesh/angle/imp.cpp */#include <stdio.h>
+/* begin src/mesh/angle/imp.cpp */
+#include <stdio.h>
 #include <math.h>
 #include <vector_types.h>
 
-/* already included: src/utils/imp.h *//* already included: src/utils/error.h *//* already included: src/utils/msg.h */
-/* already included: src/io/mesh_read/imp.h *//* already included: src/algo/vectors/imp.h */
+/* already included: src/utils/imp.h */
+/* already included: src/utils/error.h */
+/* already included: src/utils/msg.h */
+
+/* already included: src/io/mesh_read/imp.h */
+/* already included: src/algo/vectors/imp.h */
+
 /* already included: src/math/tri/imp.h */
-/* begin src/mesh/angle/imp.h */struct MeshAngle;
+
+/* begin src/mesh/angle/imp.h */
+struct MeshAngle;
 struct Vectors;
 struct MeshRead;
 
@@ -39221,12 +40247,14 @@ void mesh_angle_fin(MeshAngle*);
 void  mesh_angle_apply(MeshAngle*, int nm, Vectors*, /**/ double*); // <2>
 // end::interface[]
 /* end src/mesh/angle/imp.h */
-/* begin src/mesh/angle/imp/type.h */struct MeshAngle {
+/* begin src/mesh/angle/imp/type.h */
+struct MeshAngle {
     int nd, nv;
     int4 *dd; /* dihidrals */
 };
 /* end src/mesh/angle/imp/type.h */
-/* begin src/mesh/angle/imp/main.h */void mesh_angle_ini(MeshRead *mesh, MeshAngle **pq) {
+/* begin src/mesh/angle/imp/main.h */
+void mesh_angle_ini(MeshRead *mesh, MeshAngle **pq) {
     int i, nv, nd;
     MeshAngle *q;
     const int4 *dd;
@@ -39577,13 +40605,22 @@ void mesh_angle_apply(MeshAngle *q, int m, Vectors *p, /**/ double *angle0) {
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/mesh/area/imp.cpp"
-/* begin src/mesh/area/imp.cpp */#include <stdio.h>
+/* begin src/mesh/area/imp.cpp */
+#include <stdio.h>
 #include <vector_types.h>
 
-/* already included: src/utils/imp.h *//* already included: src/utils/error.h *//* already included: src/utils/msg.h */
-/* already included: src/io/mesh_read/imp.h *//* already included: src/algo/vectors/imp.h *//* already included: src/algo/kahan_sum/imp.h */
+/* already included: src/utils/imp.h */
+/* already included: src/utils/error.h */
+/* already included: src/utils/msg.h */
+
+/* already included: src/io/mesh_read/imp.h */
+/* already included: src/algo/vectors/imp.h */
+/* already included: src/algo/kahan_sum/imp.h */
+
 /* already included: src/math/tri/imp.h */
-/* begin src/mesh/area/imp.h */struct MeshArea;
+
+/* begin src/mesh/area/imp.h */
+struct MeshArea;
 struct Vectors;
 struct MeshRead;
 
@@ -39595,12 +40632,14 @@ double mesh_area_apply0(MeshArea*, Vectors*);                     // <2>
 void  mesh_area_apply(MeshArea*, int nm, Vectors*, /**/ double*); // <3>
 // end::interface[]
 /* end src/mesh/area/imp.h */
-/* begin src/mesh/area/imp/type.h */struct MeshArea {
+/* begin src/mesh/area/imp/type.h */
+struct MeshArea {
     int4 *tt;
     int nv, nt;
 };
 /* end src/mesh/area/imp/type.h */
-/* begin src/mesh/area/imp/main.h */void mesh_area_ini(MeshRead *mesh, MeshArea **pq) {
+/* begin src/mesh/area/imp/main.h */
+void mesh_area_ini(MeshRead *mesh, MeshArea **pq) {
     int nv, nt;
     MeshArea *q;
     EMALLOC(1, &q);
@@ -39955,10 +40994,14 @@ void mesh_area_apply(MeshArea *q, int m, Vectors *p, double *area0) {
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/mesh/bbox/imp.cpp"
-/* begin src/mesh/bbox/imp.cpp */#include <vector_types.h>
+/* begin src/mesh/bbox/imp.cpp */
+#include <vector_types.h>
 
-/* already included: src/inc/type.h *//* already included: src/algo/minmax/imp.h */
-/* begin src/mesh/bbox/imp.h */struct float3;
+/* already included: src/inc/type.h */
+/* already included: src/algo/minmax/imp.h */
+
+/* begin src/mesh/bbox/imp.h */
+struct float3;
 struct Particle;
 
 void mesh_get_bbox(const float *rr, const int n, /**/ float3 *minbb, float3 *maxbb);
@@ -40308,13 +41351,27 @@ void mesh_get_bboxes_dev(const Particle *pp, const int nps, const int ns, /**/ f
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/mesh/collision/imp.cu"
-/* begin src/mesh/collision/imp.cu */#include <stdio.h>
+/* begin src/mesh/collision/imp.cu */
+#include <stdio.h>
 #include <assert.h>
 
-#include <conf.h>
-/* already included: src/inc/conf.h *//* already included: src/inc/def.h *//* already included: src/utils/error.h *//* already included: src/utils/msg.h *//* already included: src/utils/cc.h */
-/* already included: src/d/q.h *//* already included: src/d/ker.h *//* already included: src/d/api.h */
-/* already included: src/inc/type.h *//* already included: src/inc/dev.h *//* already included: src/utils/texo.h *//* already included: src/utils/texo.dev.h *//* begin src/mesh/triangles/type.h */#pragma once
+/* already included: src/inc/conf.h */
+/* already included: src/inc/conf.h */
+/* already included: src/inc/def.h */
+/* already included: src/utils/error.h */
+/* already included: src/utils/msg.h */
+/* already included: src/utils/cc.h */
+
+/* already included: src/d/q.h */
+/* already included: src/d/ker.h */
+/* already included: src/d/api.h */
+
+/* already included: src/inc/type.h */
+/* already included: src/inc/dev.h */
+/* already included: src/utils/texo.h */
+/* already included: src/utils/texo.dev.h */
+/* begin src/mesh/triangles/type.h */
+#pragma once
 
 // tag::interface[]
 struct Triangles {
@@ -40323,7 +41380,8 @@ struct Triangles {
 };
 // end::interface[]
 /* end src/mesh/triangles/type.h */
-/* begin src/mesh/triangles/imp.h */struct Triangles;
+/* begin src/mesh/triangles/imp.h */
+struct Triangles;
 struct MeshRead;
 
 // tag::interface[]
@@ -40332,7 +41390,9 @@ void triangles_fin(Triangles*);
 // end::interface[]
 /* end src/mesh/triangles/imp.h */
 
-/* already included: src/utils/kl.h *//* begin src/rigid/imp.h */struct RigPinInfo;
+/* already included: src/utils/kl.h */
+/* begin src/rigid/imp.h */
+struct RigPinInfo;
 struct int3;
 struct Config;
 
@@ -40365,7 +41425,8 @@ void rig_update_mesh(float dt, int ns, const Rigid *ss, int nv, const float *vv,
 
 /* end src/rigid/imp.h */
 
-/* begin src/mesh/collision/imp.h */struct float3;
+/* begin src/mesh/collision/imp.h */
+struct float3;
 struct Particle;
 struct int4;
 struct Triangles;
@@ -40806,12 +41867,19 @@ void collision_label(int pdir, int n, const Particle *pp, const Triangles *tri,
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/mesh/cylindrical/imp.cpp"
-/* begin src/mesh/cylindrical/imp.cpp */#include <stdio.h>
+/* begin src/mesh/cylindrical/imp.cpp */
+#include <stdio.h>
 #include <math.h>
 
-/* already included: src/utils/imp.h *//* already included: src/utils/error.h *//* already included: src/utils/msg.h */
-/* already included: src/algo/vectors/imp.h *//* already included: src/algo/kahan_sum/imp.h */
-/* begin src/mesh/cylindrical/imp.h */struct MeshCylindrical;
+/* already included: src/utils/imp.h */
+/* already included: src/utils/error.h */
+/* already included: src/utils/msg.h */
+
+/* already included: src/algo/vectors/imp.h */
+/* already included: src/algo/kahan_sum/imp.h */
+
+/* begin src/mesh/cylindrical/imp.h */
+struct MeshCylindrical;
 struct Vectors;
 
 // tag::interface[]
@@ -40821,7 +41889,8 @@ void  mesh_cylindrical_apply(MeshCylindrical*, int nm, Vectors*, /**/
                            double *r, double *phi, double *z);
 // end::interface[]
 /* end src/mesh/cylindrical/imp.h */
-/* begin src/mesh/cylindrical/imp/util.h */static void cylindrical_compute_com(int nv, Vectors *pos, /**/ double *com) {
+/* begin src/mesh/cylindrical/imp/util.h */
+static void cylindrical_compute_com(int nv, Vectors *pos, /**/ double *com) {
     enum {X, Y, Z};
     int i;
     float r[3];
@@ -40855,13 +41924,15 @@ static void cylindrical_to_com(int nv, int offset, Vectors *pos, /**/ double *rr
     }
 }
 /* end src/mesh/cylindrical/imp/util.h */
-/* begin src/mesh/cylindrical/imp/type.h */struct MeshCylindrical {
+/* begin src/mesh/cylindrical/imp/type.h */
+struct MeshCylindrical {
     double *rr; /* workspace for coordinates shifted to a mesh center
                    of mass */
     int nv;
 };
 /* end src/mesh/cylindrical/imp/type.h */
-/* begin src/mesh/cylindrical/imp/main.h */void mesh_cylindrical_ini(int nv, MeshCylindrical **pq) {
+/* begin src/mesh/cylindrical/imp/main.h */
+void mesh_cylindrical_ini(int nv, MeshCylindrical **pq) {
     MeshCylindrical *q;
     EMALLOC(1, &q);
     EMALLOC(3*nv, &q->rr);
@@ -41199,10 +42270,13 @@ void mesh_cylindrical_apply(MeshCylindrical *q, int m, Vectors *pos, /**/ double
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/mesh/dist/imp.cpp"
-/* begin src/mesh/dist/imp.cpp */#include <vector_types.h>
+/* begin src/mesh/dist/imp.cpp */
+#include <vector_types.h>
 #include <math.h>
 
-/* already included: src/inc/type.h *//* begin src/mesh/dist/imp.h */struct int4;
+/* already included: src/inc/type.h */
+/* begin src/mesh/dist/imp.h */
+struct int4;
 float dist_from_mesh(int nt, const int4 *tt, const float *vv, const float *r0);
 /* end src/mesh/dist/imp.h */
 
@@ -41600,13 +42674,20 @@ float dist_from_mesh(int nt, const int4 *tt, const float *vv, const float *r0) {
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/mesh/edg_len/imp.cpp"
-/* begin src/mesh/edg_len/imp.cpp */#include <stdio.h>
+/* begin src/mesh/edg_len/imp.cpp */
+#include <stdio.h>
 #include <math.h>
 #include <vector_types.h>
 
-/* already included: src/utils/imp.h *//* already included: src/utils/error.h *//* already included: src/utils/msg.h */
-/* already included: src/io/mesh_read/imp.h *//* already included: src/algo/vectors/imp.h */
-/* begin src/mesh/edg_len/imp.h */struct MeshEdgLen;
+/* already included: src/utils/imp.h */
+/* already included: src/utils/error.h */
+/* already included: src/utils/msg.h */
+
+/* already included: src/io/mesh_read/imp.h */
+/* already included: src/algo/vectors/imp.h */
+
+/* begin src/mesh/edg_len/imp.h */
+struct MeshEdgLen;
 struct MeshRead;
 struct Vectors;
 
@@ -41616,12 +42697,14 @@ void mesh_edg_len_fin(MeshEdgLen*);
 void mesh_edg_len_apply(MeshEdgLen*, int nm, Vectors*, /**/ double*); // <2>
 // end::interface[]
 /* end src/mesh/edg_len/imp.h */
-/* begin src/mesh/edg_len/imp/type.h */struct MeshEdgLen {
+/* begin src/mesh/edg_len/imp/type.h */
+struct MeshEdgLen {
     int ne, nv;
     int *ee;
 };
 /* end src/mesh/edg_len/imp/type.h */
-/* begin src/mesh/edg_len/imp/main.h */void mesh_edg_len_ini(MeshRead *mesh, MeshEdgLen **pq) {
+/* begin src/mesh/edg_len/imp/main.h */
+void mesh_edg_len_ini(MeshRead *mesh, MeshEdgLen **pq) {
     MeshEdgLen *q;
     int i, j, nv, ne, *ee;
     const int4 *dd;
@@ -41983,12 +43066,23 @@ void mesh_edg_len_fin(MeshEdgLen *q) {
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/mesh/eng_julicher/imp.cpp"
-/* begin src/mesh/eng_julicher/imp.cpp */#include <stdio.h>
+/* begin src/mesh/eng_julicher/imp.cpp */
+#include <stdio.h>
 
-/* already included: src/utils/imp.h *//* already included: src/utils/error.h *//* already included: src/utils/msg.h */
-/* already included: src/io/mesh_read/imp.h *//* already included: src/algo/scalars/imp.h *//* already included: src/algo/vectors/imp.h */
+/* already included: src/utils/imp.h */
+/* already included: src/utils/error.h */
+/* already included: src/utils/msg.h */
+
+/* already included: src/io/mesh_read/imp.h */
+/* already included: src/algo/scalars/imp.h */
+/* already included: src/algo/vectors/imp.h */
+
 /* already included: src/math/tri/imp.h */
-/* already included: src/mesh/edg_len/imp.h *//* already included: src/mesh/angle/imp.h *//* begin src/mesh/vert_area/imp.h */struct MeshVertArea;
+
+/* already included: src/mesh/edg_len/imp.h */
+/* already included: src/mesh/angle/imp.h */
+/* begin src/mesh/vert_area/imp.h */
+struct MeshVertArea;
 struct Vectors;
 struct MeshRead;
 
@@ -41999,7 +43093,8 @@ void mesh_vert_area_fin(MeshVertArea*);
 void  mesh_vert_area_apply(MeshVertArea*, int nm, Vectors*, /**/ double*); // <2>
 // end::interface[]
 /* end src/mesh/vert_area/imp.h */
-/* begin src/mesh/scatter/imp.h */struct MeshScatter;
+/* begin src/mesh/scatter/imp.h */
+struct MeshScatter;
 struct MeshRead;
 struct Scalars;
 
@@ -42011,7 +43106,8 @@ void mesh_scatter_edg2vert_avg(MeshScatter*, int nm, Scalars*, /**/ double*); //
 // end::interface[]
 /* end src/mesh/scatter/imp.h */
 
-/* begin src/mesh/eng_julicher/imp.h */struct MeshEngJulicher;
+/* begin src/mesh/eng_julicher/imp.h */
+struct MeshEngJulicher;
 struct Vectors;
 struct MeshRead;
 
@@ -42022,7 +43118,8 @@ void mesh_eng_julicher_fin(MeshEngJulicher*);
 void  mesh_eng_julicher_apply(MeshEngJulicher*, int nm, Vectors*, double kb, /**/ double*); // <2>
 // end::interface[]
 /* end src/mesh/eng_julicher/imp.h */
-/* begin src/mesh/eng_julicher/imp/type.h */struct MeshEngJulicher {
+/* begin src/mesh/eng_julicher/imp/type.h */
+struct MeshEngJulicher {
     int max_nm; /* maximum number of meshes */
     int nv, ne;
 
@@ -42036,7 +43133,8 @@ void  mesh_eng_julicher_apply(MeshEngJulicher*, int nm, Vectors*, double kb, /**
     MeshScatter *scatter;
 };
 /* end src/mesh/eng_julicher/imp/type.h */
-/* begin src/mesh/eng_julicher/imp/main.h */void mesh_eng_julicher_ini(MeshRead *mesh, int nm, /**/ MeshEngJulicher **pq) {
+/* begin src/mesh/eng_julicher/imp/main.h */
+void mesh_eng_julicher_ini(MeshRead *mesh, int nm, /**/ MeshEngJulicher **pq) {
     int nv, ne;
     MeshEngJulicher *q;
     EMALLOC(1, &q);
@@ -42405,13 +43503,23 @@ void mesh_eng_julicher_apply(MeshEngJulicher *q, int nm, Vectors *pos, double kb
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/mesh/eng_kantor/imp.cpp"
-/* begin src/mesh/eng_kantor/imp.cpp */#include <stdio.h>
+/* begin src/mesh/eng_kantor/imp.cpp */
+#include <stdio.h>
 #include <math.h>
 
-/* already included: src/utils/imp.h *//* already included: src/utils/error.h *//* already included: src/utils/msg.h */
-/* already included: src/io/mesh_read/imp.h *//* already included: src/algo/scalars/imp.h *//* already included: src/algo/vectors/imp.h */
-/* already included: src/math/tri/imp.h *//* already included: src/mesh/angle/imp.h */
-/* begin src/mesh/eng_kantor/imp.h */struct MeshEngKantor;
+/* already included: src/utils/imp.h */
+/* already included: src/utils/error.h */
+/* already included: src/utils/msg.h */
+
+/* already included: src/io/mesh_read/imp.h */
+/* already included: src/algo/scalars/imp.h */
+/* already included: src/algo/vectors/imp.h */
+
+/* already included: src/math/tri/imp.h */
+/* already included: src/mesh/angle/imp.h */
+
+/* begin src/mesh/eng_kantor/imp.h */
+struct MeshEngKantor;
 struct Vectors;
 struct MeshRead;
 
@@ -42422,14 +43530,16 @@ void mesh_eng_kantor_fin(MeshEngKantor*);
 void  mesh_eng_kantor_apply(MeshEngKantor*, int nm, Vectors*, double kb, double ang, /**/ double*); // <2>
 // end::interface[]
 /* end src/mesh/eng_kantor/imp.h */
-/* begin src/mesh/eng_kantor/imp/type.h */struct MeshEngKantor {
+/* begin src/mesh/eng_kantor/imp/type.h */
+struct MeshEngKantor {
     int max_nm; /* maximum number of meshes */
     int nv, ne;
     double *angles;
     MeshAngle  *angle;
 };
 /* end src/mesh/eng_kantor/imp/type.h */
-/* begin src/mesh/eng_kantor/imp/main.h */void mesh_eng_kantor_ini(MeshRead *mesh, int nm, /**/ MeshEngKantor **pq) {
+/* begin src/mesh/eng_kantor/imp/main.h */
+void mesh_eng_kantor_ini(MeshRead *mesh, int nm, /**/ MeshEngKantor **pq) {
     int nv, ne;
     MeshEngKantor *q;
     EMALLOC(1, &q);
@@ -42763,13 +43873,18 @@ void mesh_eng_kantor_apply(MeshEngKantor *q, int nm, Vectors *pos, double kb, do
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/mesh/force/kantor0/imp.cpp"
-/* begin src/mesh/force/kantor0/imp.cpp */#include <math.h>
+/* begin src/mesh/force/kantor0/imp.cpp */
+#include <math.h>
 #include <assert.h>
 #include <stdio.h>
 #include <assert.h>
 #include <vector_types.h>
 
-/* already included: src/utils/error.h *//* already included: src/utils/msg.h *//* already included: src/math/dev.h *//* begin src/mesh/force/kantor0/imp.h */struct float3;
+/* already included: src/utils/error.h */
+/* already included: src/utils/msg.h */
+/* already included: src/math/dev.h */
+/* begin src/mesh/force/kantor0/imp.h */
+struct float3;
 struct double3;
 namespace force_kantor0_hst {
 // tag::interface[]
@@ -42780,7 +43895,8 @@ double3 dih_b(double phi, double kb, double3 a, double3 b, double3 c, double3 d)
 /* end src/mesh/force/kantor0/imp.h */
 
 #define FORCE_KANTOR0_HOST
-/* begin src/mesh/force/kantor0/dev.h */#ifdef FORCE_KANTOR0_HOST
+/* begin src/mesh/force/kantor0/dev.h */
+#ifdef FORCE_KANTOR0_HOST
 #ifndef UDX_KANTOR0_HOST_DEFINED
 #define UDX_KANTOR0_HOST_DEFINED
 #define UDX_KANTOR0_BODY
@@ -43236,13 +44352,18 @@ END
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/mesh/force/kantor1/imp.cpp"
-/* begin src/mesh/force/kantor1/imp.cpp */#include <math.h>
+/* begin src/mesh/force/kantor1/imp.cpp */
+#include <math.h>
 #include <assert.h>
 #include <stdio.h>
 #include <assert.h>
 #include <vector_types.h>
 
-/* already included: src/utils/error.h *//* already included: src/utils/msg.h *//* already included: src/math/dev.h *//* begin src/mesh/force/kantor1/imp.h */struct double3;
+/* already included: src/utils/error.h */
+/* already included: src/utils/msg.h */
+/* already included: src/math/dev.h */
+/* begin src/mesh/force/kantor1/imp.h */
+struct double3;
 namespace force_kantor1_hst {
 // tag::interface[]
 double3 dih_a(double phi, double kb, double3 a, double3 b, double3 c, double3 d);
@@ -43252,7 +44373,8 @@ double3 dih_b(double phi, double kb, double3 a, double3 b, double3 c, double3 d)
 /* end src/mesh/force/kantor1/imp.h */
 
 #define FORCE_KANTOR1_HOST
-/* begin src/mesh/force/kantor1/dev.h */#ifdef FORCE_KANTOR1_HOST
+/* begin src/mesh/force/kantor1/dev.h */
+#ifdef FORCE_KANTOR1_HOST
   #define _I_
   #define _S_ static
   #define BEGIN namespace force_kantor1_hst {
@@ -43710,18 +44832,32 @@ END
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/mesh/gen/imp.cpp"
-/* begin src/mesh/gen/imp.cpp */#include <stdio.h>
+/* begin src/mesh/gen/imp.cpp */
+#include <stdio.h>
 #include <assert.h>
 #include <mpi.h>
 
-#include <conf.h>
 /* already included: src/inc/conf.h */
+/* already included: src/inc/conf.h */
+
 /* already included: src/coords/imp.h */
-/* already included: src/inc/def.h *//* already included: src/inc/type.h */
+
+/* already included: src/inc/def.h */
+/* already included: src/inc/type.h */
+
 /* already included: src/utils/msg.h */
-/* already included: src/utils/error.h *//* already included: src/utils/imp.h *//* already included: src/utils/imp.h *//* already included: src/utils/mc.h *//* already included: src/mpi/wrapper.h */
-/* already included: src/io/mesh_read/imp.h *//* already included: src/coords/imp.h */
-/* begin src/mesh/gen/matrices/imp.h */struct Matrices;
+
+/* already included: src/utils/error.h */
+/* already included: src/utils/imp.h */
+/* already included: src/utils/imp.h */
+/* already included: src/utils/mc.h */
+/* already included: src/mpi/wrapper.h */
+
+/* already included: src/io/mesh_read/imp.h */
+/* already included: src/coords/imp.h */
+
+/* begin src/mesh/gen/matrices/imp.h */
+struct Matrices;
 struct Coords;
 
 // tag::interface[]
@@ -43736,7 +44872,8 @@ void matrices_log(const Matrices*);   // <6>
 void matrices_fin(Matrices*);
 // end::interface[]
 /* end src/mesh/gen/matrices/imp.h */
-/* begin src/mesh/gen/imp.h */struct Coords;
+/* begin src/mesh/gen/imp.h */
+struct Coords;
 struct Particle;
 struct Matrices;
 
@@ -43748,7 +44885,8 @@ void mesh_shift(const Coords*, int n, /**/ Particle*); // <3>
 // end::int[]
 /* end src/mesh/gen/imp.h */
 
-/* begin src/mesh/gen/imp/main.h */static void mult(double A[16], const double a[4], /**/ double b[4]) {
+/* begin src/mesh/gen/imp/main.h */
+static void mult(double A[16], const double a[4], /**/ double b[4]) {
     /* b = A x a */
     enum {X, Y, Z, W};
     int c, i;
@@ -44115,18 +45253,26 @@ int mesh_gen_from_file(const Coords *coords, const float *rr0, const char *path,
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/mesh/gen/matrices/imp.cpp"
-/* begin src/mesh/gen/matrices/imp.cpp */#include <stdio.h>
+/* begin src/mesh/gen/matrices/imp.cpp */
+#include <stdio.h>
 #include <string.h>
 
-/* already included: src/utils/error.h *//* already included: src/utils/imp.h *//* already included: src/utils/msg.h *//* already included: src/coords/imp.h */
+/* already included: src/utils/error.h */
+/* already included: src/utils/imp.h */
+/* already included: src/utils/msg.h */
+/* already included: src/coords/imp.h */
+
 /* already included: src/mesh/gen/matrices/imp.h */
-/* begin src/mesh/gen/matrices/imp/type.h */struct Matrix { double D[4*4]; };
+
+/* begin src/mesh/gen/matrices/imp/type.h */
+struct Matrix { double D[4*4]; };
 struct Matrices {
     int n;
     Matrix *m;
 };
 /* end src/mesh/gen/matrices/imp/type.h */
-/* begin src/mesh/gen/matrices/imp/main.h */static const int MAX_N = 100000;
+/* begin src/mesh/gen/matrices/imp/main.h */
+static const int MAX_N = 100000;
 
 static void matrix2r(const double A[16], double r[3]) {
     enum {X, Y, Z};
@@ -44531,10 +45677,13 @@ void matrices_fin(Matrices *q) { EFREE(q->m); EFREE(q); }
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/mesh/props/imp.cpp"
-/* begin src/mesh/props/imp.cpp */#include <vector_types.h>
+/* begin src/mesh/props/imp.cpp */
+#include <vector_types.h>
 #include <string.h>
 
-/* already included: src/inc/type.h *//* begin src/mesh/props/imp.h */struct int4;
+/* already included: src/inc/type.h */
+/* begin src/mesh/props/imp.h */
+struct int4;
 float mesh_volume0(int nt, const int4 *tt, const float *vv);
 void mesh_center_of_mass(int nt, const int4 *tt, const float *vv, /**/ float *com);
 void mesh_inertia_tensor(int nt, const int4 *tt, const float *vv, const float *com, const float density, /**/ float *I);
@@ -44993,18 +46142,27 @@ void mesh_inertia_tensor(int nt, const int4 *tt, const float *vv, const float *c
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/mesh/scatter/imp.cpp"
-/* begin src/mesh/scatter/imp.cpp */#include <stdio.h>
+/* begin src/mesh/scatter/imp.cpp */
+#include <stdio.h>
 #include <vector_types.h>
 
-/* already included: src/utils/imp.h *//* already included: src/utils/error.h *//* already included: src/utils/msg.h */
-/* already included: src/io/mesh_read/imp.h *//* already included: src/algo/scalars/imp.h */
-/* already included: src/mesh/scatter/imp.h *//* begin src/mesh/scatter/imp/type.h */struct MeshScatter {
+/* already included: src/utils/imp.h */
+/* already included: src/utils/error.h */
+/* already included: src/utils/msg.h */
+
+/* already included: src/io/mesh_read/imp.h */
+/* already included: src/algo/scalars/imp.h */
+
+/* already included: src/mesh/scatter/imp.h */
+/* begin src/mesh/scatter/imp/type.h */
+struct MeshScatter {
     int ne, nv;
     int *ee;
     int *deg; /* vert. degree */
 };
 /* end src/mesh/scatter/imp/type.h */
-/* begin src/mesh/scatter/imp/main.h */static void deg_ini(int nv, int ne, const int *ee, /**/ int *deg) {
+/* begin src/mesh/scatter/imp/main.h */
+static void deg_ini(int nv, int ne, const int *ee, /**/ int *deg) {
     int i, k, a, b;
     for (i = 0; i < nv; i++) deg[i] = 0;
     for (i = k = 0; i < ne; i++) {
@@ -45392,12 +46550,19 @@ void mesh_scatter_fin(MeshScatter *q) {
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/mesh/spherical/imp.cpp"
-/* begin src/mesh/spherical/imp.cpp */#include <stdio.h>
+/* begin src/mesh/spherical/imp.cpp */
+#include <stdio.h>
 #include <math.h>
 
-/* already included: src/utils/imp.h *//* already included: src/utils/error.h *//* already included: src/utils/msg.h */
-/* already included: src/algo/vectors/imp.h *//* already included: src/algo/kahan_sum/imp.h */
-/* begin src/mesh/spherical/imp.h */struct MeshSpherical;
+/* already included: src/utils/imp.h */
+/* already included: src/utils/error.h */
+/* already included: src/utils/msg.h */
+
+/* already included: src/algo/vectors/imp.h */
+/* already included: src/algo/kahan_sum/imp.h */
+
+/* begin src/mesh/spherical/imp.h */
+struct MeshSpherical;
 struct Vectors;
 
 // tag::interface[]
@@ -45407,7 +46572,8 @@ void  mesh_spherical_apply(MeshSpherical*, int nm, Vectors*, /**/
                            double *r, double *theta, double *phi);
 // end::interface[]
 /* end src/mesh/spherical/imp.h */
-/* begin src/mesh/spherical/imp/util.h */static void spherical_compute_com(int nv, Vectors *pos, /**/ double *com) {
+/* begin src/mesh/spherical/imp/util.h */
+static void spherical_compute_com(int nv, Vectors *pos, /**/ double *com) {
     enum {X, Y, Z};
     int i;
     float r[3];
@@ -45441,13 +46607,15 @@ static void spherical_to_com(int nv, int offset, Vectors *pos, /**/ double *rr) 
     }
 }
 /* end src/mesh/spherical/imp/util.h */
-/* begin src/mesh/spherical/imp/type.h */struct MeshSpherical {
+/* begin src/mesh/spherical/imp/type.h */
+struct MeshSpherical {
     double *rr; /* workspace for coordinates shifted to a mesh center
                    of mass */
     int nv;
 };
 /* end src/mesh/spherical/imp/type.h */
-/* begin src/mesh/spherical/imp/main.h */void mesh_spherical_ini(int nv, MeshSpherical **pq) {
+/* begin src/mesh/spherical/imp/main.h */
+void mesh_spherical_ini(int nv, MeshSpherical **pq) {
     MeshSpherical *q;
     EMALLOC(1, &q);
     EMALLOC(3*nv, &q->rr);
@@ -45786,13 +46954,21 @@ void mesh_spherical_apply(MeshSpherical *q, int m, Vectors *pos, /**/ double *r,
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/mesh/tri_area/imp.cpp"
-/* begin src/mesh/tri_area/imp.cpp */#include <stdio.h>
+/* begin src/mesh/tri_area/imp.cpp */
+#include <stdio.h>
 #include <vector_types.h>
 
-/* already included: src/utils/imp.h *//* already included: src/utils/error.h *//* already included: src/utils/msg.h */
-/* already included: src/io/mesh_read/imp.h *//* already included: src/algo/vectors/imp.h */
+/* already included: src/utils/imp.h */
+/* already included: src/utils/error.h */
+/* already included: src/utils/msg.h */
+
+/* already included: src/io/mesh_read/imp.h */
+/* already included: src/algo/vectors/imp.h */
+
 /* already included: src/math/tri/imp.h */
-/* begin src/mesh/tri_area/imp.h */struct MeshTriArea;
+
+/* begin src/mesh/tri_area/imp.h */
+struct MeshTriArea;
 struct Vectors;
 struct MeshRead;
 
@@ -45803,12 +46979,14 @@ void mesh_tri_area_fin(MeshTriArea*);
 void  mesh_tri_area_apply(MeshTriArea*, int nm, Vectors*, /**/ double*); // <2>
 // end::interface[]
 /* end src/mesh/tri_area/imp.h */
-/* begin src/mesh/tri_area/imp/type.h */struct MeshTriArea {
+/* begin src/mesh/tri_area/imp/type.h */
+struct MeshTriArea {
     int4 *tt;
     int nv, nt;
 };
 /* end src/mesh/tri_area/imp/type.h */
-/* begin src/mesh/tri_area/imp/main.h */void mesh_tri_area_ini(MeshRead *mesh, MeshTriArea **pq) {
+/* begin src/mesh/tri_area/imp/main.h */
+void mesh_tri_area_ini(MeshRead *mesh, MeshTriArea **pq) {
     int nv, nt;
     MeshTriArea *q;
     EMALLOC(1, &q);
@@ -46152,14 +47330,24 @@ void mesh_tri_area_apply(MeshTriArea *q, int m, Vectors *p, double *area0) {
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/mesh/triangles/imp.cpp"
-/* begin src/mesh/triangles/imp.cpp */#include <stdio.h>
+/* begin src/mesh/triangles/imp.cpp */
+#include <stdio.h>
 #include <vector_types.h>
 
-#include <conf.h>
 /* already included: src/inc/conf.h */
-/* already included: src/d/api.h *//* already included: src/inc/dev.h *//* already included: src/utils/cc.h *//* already included: src/utils/imp.h *//* already included: src/utils/error.h */
+/* already included: src/inc/conf.h */
+
+/* already included: src/d/api.h */
+/* already included: src/inc/dev.h */
+/* already included: src/utils/cc.h */
+/* already included: src/utils/imp.h */
+/* already included: src/utils/error.h */
+
 /* already included: src/io/mesh_read/imp.h */
-/* already included: src/mesh/triangles/type.h *//* already included: src/mesh/triangles/imp.h */
+
+/* already included: src/mesh/triangles/type.h */
+/* already included: src/mesh/triangles/imp.h */
+
 void triangles_ini(MeshRead *mesh, /**/ Triangles **pq) {
     int nt;
     Triangles *q;
@@ -46479,18 +47667,28 @@ void triangles_fin(Triangles *q) {
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/mesh/vert_area/imp.cpp"
-/* begin src/mesh/vert_area/imp.cpp */#include <stdio.h>
+/* begin src/mesh/vert_area/imp.cpp */
+#include <stdio.h>
 #include <vector_types.h>
 
-/* already included: src/utils/imp.h *//* already included: src/utils/error.h *//* already included: src/utils/msg.h */
-/* already included: src/io/mesh_read/imp.h *//* already included: src/algo/vectors/imp.h */
+/* already included: src/utils/imp.h */
+/* already included: src/utils/error.h */
+/* already included: src/utils/msg.h */
+
+/* already included: src/io/mesh_read/imp.h */
+/* already included: src/algo/vectors/imp.h */
+
 /* already included: src/math/tri/imp.h */
-/* already included: src/mesh/vert_area/imp.h *//* begin src/mesh/vert_area/imp/type.h */struct MeshVertArea {
+
+/* already included: src/mesh/vert_area/imp.h */
+/* begin src/mesh/vert_area/imp/type.h */
+struct MeshVertArea {
     int4 *tt;
     int nv, nt;
 };
 /* end src/mesh/vert_area/imp/type.h */
-/* begin src/mesh/vert_area/imp/main.h */void mesh_vert_area_ini(MeshRead *mesh, MeshVertArea **pq) {
+/* begin src/mesh/vert_area/imp/main.h */
+void mesh_vert_area_ini(MeshRead *mesh, MeshVertArea **pq) {
     int nv, nt;
     MeshVertArea *q;
     EMALLOC(1, &q);
@@ -46839,12 +48037,20 @@ void mesh_vert_area_apply(MeshVertArea *q, int nm, Vectors *pos, double *o) {
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/mesh/volume/imp.cpp"
-/* begin src/mesh/volume/imp.cpp */#include <stdio.h>
+/* begin src/mesh/volume/imp.cpp */
+#include <stdio.h>
 #include <vector_types.h>
 
-/* already included: src/utils/imp.h *//* already included: src/utils/error.h *//* already included: src/utils/msg.h */
-/* already included: src/io/mesh_read/imp.h *//* already included: src/algo/vectors/imp.h *//* already included: src/algo/kahan_sum/imp.h */
-/* begin src/mesh/volume/imp.h */struct MeshVolume;
+/* already included: src/utils/imp.h */
+/* already included: src/utils/error.h */
+/* already included: src/utils/msg.h */
+
+/* already included: src/io/mesh_read/imp.h */
+/* already included: src/algo/vectors/imp.h */
+/* already included: src/algo/kahan_sum/imp.h */
+
+/* begin src/mesh/volume/imp.h */
+struct MeshVolume;
 struct Vectors;
 struct MeshRead;
 
@@ -46856,14 +48062,16 @@ double mesh_volume_apply0(MeshVolume*, Vectors*);                      // <2>
 void  mesh_volume_apply(MeshVolume*, int nm, Vectors*, /**/ double*); // <3>
 // end::interface[]
 /* end src/mesh/volume/imp.h */
-/* begin src/mesh/volume/imp/type.h */struct MeshVolume {
+/* begin src/mesh/volume/imp/type.h */
+struct MeshVolume {
     double *rr; /* workspace for coordinates shifted to a mesh center
                    of mass */
     int4 *tt;
     int nv, nt;
 };
 /* end src/mesh/volume/imp/type.h */
-/* begin src/mesh/volume/imp/main.h */void mesh_volume_ini(MeshRead *mesh, MeshVolume **pq) {
+/* begin src/mesh/volume/imp/main.h */
+void mesh_volume_ini(MeshRead *mesh, MeshVolume **pq) {
     int nv, nt;
     MeshVolume *q;
     EMALLOC(1, &q);
@@ -47267,14 +48475,26 @@ double mesh_volume_apply0(MeshVolume *q, Vectors *positions) {
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/mesh_bounce/imp.cu"
-/* begin src/mesh_bounce/imp.cu */#include <assert.h>
+/* begin src/mesh_bounce/imp.cu */
+#include <assert.h>
 #include <stdio.h>
 
-#include <conf.h>
 /* already included: src/inc/conf.h */
-/* already included: src/utils/msg.h *//* already included: src/utils/imp.h *//* already included: src/utils/error.h *//* already included: src/inc/dev.h *//* already included: src/utils/kl.h *//* already included: src/utils/cc.h *//* already included: src/inc/type.h *//* already included: src/d/api.h */
+/* already included: src/inc/conf.h */
+
+/* already included: src/utils/msg.h */
+/* already included: src/utils/imp.h */
+/* already included: src/utils/error.h */
+/* already included: src/inc/dev.h */
+/* already included: src/utils/kl.h */
+/* already included: src/utils/cc.h */
+/* already included: src/inc/type.h */
+/* already included: src/d/api.h */
+
 /* already included: src/math/dev.h */
-/* begin src/mesh_bounce/imp.h */#pragma once
+
+/* begin src/mesh_bounce/imp.h */
+#pragma once
 
 struct MeshBB;
 
@@ -47309,7 +48529,8 @@ void mesh_bounce_collect_rig_momentum(int ns, MeshInfo meshinfo, const Particle 
 void mesh_bounce_collect_rbc_momentum(float mass, int nc, MeshInfo mi, const Momentum *mm, /**/ Particle *pp);            // <2>
 // end::collect[]
 /* end src/mesh_bounce/imp.h */
-/* begin src/mesh_bounce/imp/type.h */struct MeshBB {
+/* begin src/mesh_bounce/imp/type.h */
+struct MeshBB {
     int *ncols;       /* number of possible collisions per particle      */
     float4 *datacol;  /* list of data related to collisions per particle */
     int *idcol;       /* list of triangle colliding ids per particle     */
@@ -47319,7 +48540,8 @@ void mesh_bounce_collect_rbc_momentum(float mass, int nc, MeshInfo mi, const Mom
 /* conf */
 enum {MAX_COL = 4};
 
-/* begin src/mesh_bounce/bbstates.h */#define make_enum(a) a ,
+/* begin src/mesh_bounce/bbstates.h */
+#define make_enum(a) a ,
 #define make_str(a) #a ,
 
 #define bbstates(_)                                                 \
@@ -47345,7 +48567,8 @@ static const char *bbstatenames[] = {bbstates(make_str)};
 #define _S_ static __device__
 
 namespace mesh_bounce_dev {
-/* begin src/mesh_bounce/dev/type.h */// typedef double   real_t;
+/* begin src/mesh_bounce/dev/type.h */
+// typedef double   real_t;
 // typedef double3 real3_t;
 
 typedef float   real_t;
@@ -47396,7 +48619,8 @@ _I_ void write_Part(const rPa *rp, int i, Particle *pp) {
     pp[i] = p;
 }
 /* end src/mesh_bounce/dev/type.h */
-/* begin src/mesh_bounce/dev/roots.h */namespace roots {
+/* begin src/mesh_bounce/dev/roots.h */
+namespace roots {
 #define SWAP(a,b) do { auto tmp = b ; b = a ; a = tmp ; } while(0)
 
 template<typename real>
@@ -47513,7 +48737,8 @@ _I_ int cubic(real a, real b, real c,
 /* solve_cubic.c - finds the real roots of x^3 + a x^2 + b x + c = 0 */
 } // roots
 /* end src/mesh_bounce/dev/roots.h */
-/* begin src/mesh_bounce/dev/utils.h */typedef double real;
+/* begin src/mesh_bounce/dev/utils.h */
+typedef double real;
 typedef double3 real3;
 enum {X, Y, Z};
 
@@ -47727,7 +48952,8 @@ _I_ void rbc_M2v(float mass, const Momentum m, real3_t a, real3_t b, real3_t c,
     rigid_motion_vel(c, om, v, vc);
 }
 /* end src/mesh_bounce/dev/utils.h */
-/* begin src/mesh_bounce/dev/intersection.h */static __device__ bool cubic_root(real dt, real a, real b, real c, real d, /**/ real *h) {
+/* begin src/mesh_bounce/dev/intersection.h */
+static __device__ bool cubic_root(real dt, real a, real b, real c, real d, /**/ real *h) {
     const real eps = 1e-8;
     real h1, h2, h3;
 
@@ -47855,7 +49081,8 @@ _I_ BBState intersect_triangle(real dt,
     return BB_SUCCESS;
 }
 /* end src/mesh_bounce/dev/intersection.h */
-/* begin src/mesh_bounce/dev/collect.h */_S_ void rig_transform_mom(real3_t dr, Momentum *m) {
+/* begin src/mesh_bounce/dev/collect.h */
+_S_ void rig_transform_mom(real3_t dr, Momentum *m) {
     mom_shift_ref(dr, /**/ m);
 
     m->L[X] += dr.y * m->P[Z] - dr.z * m->P[Y];
@@ -47960,7 +49187,8 @@ __global__ void collect_rbc_mom(float mass, int nc, int nt, int nv, const int4 *
     }
 }
 /* end src/mesh_bounce/dev/collect.h */
-/* begin src/mesh_bounce/dev/main.h */static const real_t TOL = 0.1;
+/* begin src/mesh_bounce/dev/main.h */
+static const real_t TOL = 0.1;
 
 _S_ void get_cells(int3 L, float tol, real3_t A, real3_t B, real3_t C, /**/ int3 *lo, int3 *hi) {
     real3_t lf, hf;
@@ -48173,7 +49401,8 @@ __global__ void perform_collisions(float dt, float mass,
 /* end src/mesh_bounce/dev/main.h */
 }
 
-/* begin src/mesh_bounce/imp/main.h */void mesh_bounce_ini(int maxpp, /**/ MeshBB **meshbb) {
+/* begin src/mesh_bounce/imp/main.h */
+void mesh_bounce_ini(int maxpp, /**/ MeshBB **meshbb) {
     MeshBB *mbb;
     EMALLOC(1, meshbb);
     mbb = *meshbb;
@@ -48522,13 +49751,18 @@ void mesh_bounce_collect_rbc_momentum(float mass, int nc, MeshInfo mi, const Mom
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/mpi/glb.cpp"
-/* begin src/mpi/glb.cpp */#include <stdlib.h>
+/* begin src/mpi/glb.cpp */
+#include <stdlib.h>
 #include <string.h>
 #include <mpi.h>
 
-#include <conf.h>
 /* already included: src/inc/conf.h */
-/* already included: src/mpi/wrapper.h *//* already included: src/inc/conf.h *//* already included: src/utils/mc.h */
+/* already included: src/inc/conf.h */
+
+/* already included: src/mpi/wrapper.h */
+/* already included: src/inc/conf.h */
+/* already included: src/utils/mc.h */
+
 namespace m { /* MPI */
 enum {X, Y, Z, D};
 
@@ -48891,8 +50125,10 @@ void fin() { MC(m::Finalize()); }
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/mpi/wrapper.cpp"
-/* begin src/mpi/wrapper.cpp */#include <mpi.h>
+/* begin src/mpi/wrapper.cpp */
+#include <mpi.h>
 /* already included: src/mpi/wrapper.h */
+
 namespace m {
 int Allreduce(const void *sendbuf, void *recvbuf, int count, MPI_Datatype datatype, MPI_Op op, MPI_Comm comm) {
     return MPI_Allreduce(sendbuf, recvbuf, count, datatype, op, comm);
@@ -49355,12 +50591,18 @@ int status2errcode(MPI_Status *status) { return status->MPI_ERROR; }
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/pair/conf.cpp"
-/* begin src/pair/conf.cpp */#include <stdio.h>
+/* begin src/pair/conf.cpp */
+#include <stdio.h>
 #include <math.h>
 #include <string.h>
 
-/* already included: src/utils/error.h *//* already included: src/conf/imp.h */
-/* already included: src/inc/def.h *//* already included: src/pair/type.h *//* already included: src/pair/imp.h */
+/* already included: src/utils/error.h */
+/* already included: src/conf/imp.h */
+
+/* already included: src/inc/def.h */
+/* already included: src/pair/type.h */
+/* already included: src/pair/imp.h */
+
 static int get_ncol(int npar) {
     int d = lround( sqrt(1 + 8 * npar) );
     return (d - 1) / 2;
@@ -49707,14 +50949,22 @@ void pair_set_conf(const Config *cfg, const char *ns, PairParams *par) {
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/pair/imp.cpp"
-/* begin src/pair/imp.cpp */#include <stdio.h>
+/* begin src/pair/imp.cpp */
+#include <stdio.h>
 #include <string.h>
 #include <math.h>
 
 /* already included: src/inc/conf.h */
-/* already included: src/utils/error.h *//* already included: src/utils/imp.h */
-/* already included: src/inc/def.h *//* already included: src/pair/imp.h *//* already included: src/pair/type.h */
-/* begin src/pair/imp/type.h */struct PairParams {
+
+/* already included: src/utils/error.h */
+/* already included: src/utils/imp.h */
+
+/* already included: src/inc/def.h */
+/* already included: src/pair/imp.h */
+/* already included: src/pair/type.h */
+
+/* begin src/pair/imp/type.h */
+struct PairParams {
     bool dpd;
     float a[MAX_PAR]; /* a    : conservative */
     float g[MAX_PAR]; /* gamma: dissipative  */
@@ -49733,7 +50983,8 @@ void pair_set_conf(const Config *cfg, const char *ns, PairParams *par) {
 };
 
 /* end src/pair/imp/type.h */
-/* begin src/pair/imp/main.h */void pair_ini(PairParams **par) {
+/* begin src/pair/imp/main.h */
+void pair_ini(PairParams **par) {
     PairParams *p;
     EMALLOC(1, par);
     p = *par;
@@ -50149,17 +51400,26 @@ void pair_get_view_adhesion(const PairParams *p, PairAdhesion *v) {
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/rbc/adj/imp.cpp"
-/* begin src/rbc/adj/imp.cpp */#include <stdio.h>
+/* begin src/rbc/adj/imp.cpp */
+#include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
 #include <vector_types.h>
 
-#include <conf.h>
 /* already included: src/inc/conf.h */
-/* already included: src/utils/error.h *//* already included: src/utils/imp.h */
+/* already included: src/inc/conf.h */
+
+/* already included: src/utils/error.h */
+/* already included: src/utils/imp.h */
+
 /* already included: src/utils/msg.h */
-/* already included: src/d/api.h *//* already included: src/utils/cc.h *//* already included: src/inc/dev.h */
-/* begin src/rbc/adj/imp.h */struct Adj;
+
+/* already included: src/d/api.h */
+/* already included: src/utils/cc.h */
+/* already included: src/inc/dev.h */
+
+/* begin src/rbc/adj/imp.h */
+struct Adj;
 struct Adj_v;
 struct AdjMap;
 struct int4;
@@ -50177,7 +51437,9 @@ void adj_view_fin(Adj_v*);
 /* end src/rbc/adj/imp.h */
 
 /* already included: src/algo/edg/imp.h */
-/* begin src/rbc/adj/type/common.h */#pragma once
+
+/* begin src/rbc/adj/type/common.h */
+#pragma once
 
 // tag::interface[]
 struct AdjMap {
@@ -50186,7 +51448,8 @@ struct AdjMap {
 };
 // end::interface[]
 /* end src/rbc/adj/type/common.h */
-/* begin src/rbc/adj/type/dev.h */#pragma once
+/* begin src/rbc/adj/type/dev.h */
+#pragma once
 
 struct Adj_v {
     int *adj0;
@@ -50196,13 +51459,15 @@ struct Adj_v {
 
 /* end src/rbc/adj/type/dev.h */
 
-/* begin src/rbc/adj/imp/type.h */struct Adj { /* adjacency lists */
+/* begin src/rbc/adj/imp/type.h */
+struct Adj { /* adjacency lists */
     int *adj0;
     int *adj1;
     int nv, md;
 };
 /* end src/rbc/adj/imp/type.h */
-/* begin src/rbc/adj/imp/ini.h */static void gen_a12(int md, int i0, int *hx, int *hy, /**/ int *a1, int *a2) {
+/* begin src/rbc/adj/imp/ini.h */
+static void gen_a12(int md, int i0, int *hx, int *hy, /**/ int *a1, int *a2) {
     int lo = i0*md, hi = lo + md, mi = hx[lo];
     int i;
     for (i = lo + 1; (i < hi) && (hx[i] != -1); i++)
@@ -50264,7 +51529,8 @@ void adj_view_ini(const Adj *hst, /**/ Adj_v **pq) {
     *pq = q;
 }
 /* end src/rbc/adj/imp/ini.h */
-/* begin src/rbc/adj/imp/fin.h */void adj_fin(Adj *q) {
+/* begin src/rbc/adj/imp/fin.h */
+void adj_fin(Adj *q) {
     EFREE(q->adj0);
     EFREE(q->adj1);
     EFREE(q);
@@ -50276,7 +51542,8 @@ void adj_view_fin(Adj_v *q) {
     EFREE(q);
 }
 /* end src/rbc/adj/imp/fin.h */
-/* begin src/rbc/adj/imp/map.h */static int adj_hst_fetch(const int *adj, int i) { return adj[i]; }
+/* begin src/rbc/adj/imp/map.h */
+static int adj_hst_fetch(const int *adj, int i) { return adj[i]; }
 static int hst0(int md, int nv, int i, const int *adj0, const int *adj1, /**/ AdjMap *m) {
     int i0, i1, i2, i3, i4;
     int j, k;
@@ -50316,7 +51583,8 @@ int adj_get_map(int i, const Adj *q, /**/ AdjMap *m) {
 
 int adj_get_max(const Adj *q) { return (q->md) * (q->nv); }
 /* end src/rbc/adj/imp/map.h */
-/* begin src/rbc/adj/imp/anti.h */static void set(int md, int nv, const Adj *adj, /**/ int *hx, int *hy) {
+/* begin src/rbc/adj/imp/anti.h */
+static void set(int md, int nv, const Adj *adj, /**/ int *hx, int *hy) {
     AdjMap m;
     int valid, i, i0, i1;
     for (i = 0; i < md*nv; i++) {
@@ -50658,15 +51926,32 @@ void adj_get_anti(const Adj *adj, /**/ int *anti) {
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/rbc/com/imp.cu"
-/* begin src/rbc/com/imp.cu */#include <stdio.h>
+/* begin src/rbc/com/imp.cu */
+#include <stdio.h>
 #include <assert.h>
 
-#include <conf.h>
 /* already included: src/inc/conf.h */
-/* already included: src/inc/def.h *//* already included: src/inc/type.h *//* already included: src/inc/dev.h *//* already included: src/math/dev.h */
-/* already included: src/utils/msg.h *//* already included: src/utils/error.h *//* already included: src/utils/imp.h */
-/* already included: src/d/q.h *//* already included: src/d/api.h *//* already included: src/d/ker.h *//* already included: src/utils/cc.h *//* already included: src/utils/kl.h *//* already included: src/algo/utils/shfl.h *//* already included: src/algo/utils/dev.h */
-/* begin src/rbc/com/imp.h */struct RbcCom;
+/* already included: src/inc/conf.h */
+
+/* already included: src/inc/def.h */
+/* already included: src/inc/type.h */
+/* already included: src/inc/dev.h */
+/* already included: src/math/dev.h */
+
+/* already included: src/utils/msg.h */
+/* already included: src/utils/error.h */
+/* already included: src/utils/imp.h */
+
+/* already included: src/d/q.h */
+/* already included: src/d/api.h */
+/* already included: src/d/ker.h */
+/* already included: src/utils/cc.h */
+/* already included: src/utils/kl.h */
+/* already included: src/algo/utils/shfl.h */
+/* already included: src/algo/utils/dev.h */
+
+/* begin src/rbc/com/imp.h */
+struct RbcCom;
 struct float3;
 struct Particle;
 
@@ -50677,7 +51962,8 @@ void rbc_com_apply(RbcCom*, int nm, const Particle*, /**/ float3 **rr, float3 **
 // end::interface[]
 /* end src/rbc/com/imp.h */
 
-/* begin src/rbc/com/imp/type.h */struct RbcCom {
+/* begin src/rbc/com/imp/type.h */
+struct RbcCom {
     int nv;
     int max_cell;
     float3 *drr, *dvv;  /* positions, velocities on device */
@@ -50686,7 +51972,8 @@ void rbc_com_apply(RbcCom*, int nm, const Particle*, /**/ float3 **rr, float3 **
 /* end src/rbc/com/imp/type.h */
 
 namespace rbccom_dev {
-/* begin src/rbc/com/dev/main.h */__global__ void reduce_props(int nv, const Particle *pp, /**/ float3 *rr, float3 *vv) {
+/* begin src/rbc/com/dev/main.h */
+__global__ void reduce_props(int nv, const Particle *pp, /**/ float3 *rr, float3 *vv) {
     int mid, i;
     float3 r, v;
     i   = threadIdx.x + blockIdx.x * blockDim.x;
@@ -50717,7 +52004,8 @@ namespace rbccom_dev {
 }
 /* end src/rbc/com/dev/main.h */
 }
-/* begin src/rbc/com/imp/ini.h */void rbc_com_ini(int nv, int max_cell, /**/ RbcCom **pq) {
+/* begin src/rbc/com/imp/ini.h */
+void rbc_com_ini(int nv, int max_cell, /**/ RbcCom **pq) {
     RbcCom *q;
     size_t sz;
     EMALLOC(1, &q);
@@ -50731,7 +52019,8 @@ namespace rbccom_dev {
     *pq = q;
 }
 /* end src/rbc/com/imp/ini.h */
-/* begin src/rbc/com/imp/fin.h */void rbc_com_fin(/**/ RbcCom *q) {
+/* begin src/rbc/com/imp/fin.h */
+void rbc_com_fin(/**/ RbcCom *q) {
     CC(d::FreeHost(q->hrr));
     CC(d::FreeHost(q->hvv));
     Dfree(q->drr);
@@ -50739,7 +52028,8 @@ namespace rbccom_dev {
     EFREE(q);
 }
 /* end src/rbc/com/imp/fin.h */
-/* begin src/rbc/com/imp/main.h */static void reini(int nm, /**/ float3 *h) {
+/* begin src/rbc/com/imp/main.h */
+static void reini(int nm, /**/ float3 *h) {
     if (nm) CC(d::MemsetAsync(h, 0, nm * sizeof(float3)));
 }
 
@@ -51088,15 +52378,31 @@ void rbc_com_apply(RbcCom *q, int nm, const Particle *pp, /**/ float3 **prr, flo
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/rbc/force/area_volume/imp.cu"
-/* begin src/rbc/force/area_volume/imp.cu */#include <stdio.h>
+/* begin src/rbc/force/area_volume/imp.cu */
+#include <stdio.h>
 #include <assert.h>
 
-#include <conf.h>
 /* already included: src/inc/conf.h */
-/* already included: src/inc/type.h *//* already included: src/inc/dev.h *//* already included: src/math/dev.h */
-/* already included: src/utils/imp.h *//* already included: src/utils/error.h *//* already included: src/utils/msg.h */
-/* already included: src/d/api.h *//* already included: src/d/ker.h *//* already included: src/d/q.h *//* already included: src/utils/cc.h *//* already included: src/utils/kl.h *//* already included: src/algo/utils/shfl.h *//* already included: src/algo/utils/dev.h */
-/* begin src/rbc/force/area_volume/imp.h */struct AreaVolume;
+/* already included: src/inc/conf.h */
+
+/* already included: src/inc/type.h */
+/* already included: src/inc/dev.h */
+/* already included: src/math/dev.h */
+
+/* already included: src/utils/imp.h */
+/* already included: src/utils/error.h */
+/* already included: src/utils/msg.h */
+
+/* already included: src/d/api.h */
+/* already included: src/d/ker.h */
+/* already included: src/d/q.h */
+/* already included: src/utils/cc.h */
+/* already included: src/utils/kl.h */
+/* already included: src/algo/utils/shfl.h */
+/* already included: src/algo/utils/dev.h */
+
+/* begin src/rbc/force/area_volume/imp.h */
+struct AreaVolume;
 struct Particle;
 struct int4;
 
@@ -51110,7 +52416,8 @@ void area_volume_host(AreaVolume*, /**/ float **av); // <3>
 /* end src/rbc/force/area_volume/imp.h */
 
 namespace rbc_force_av_dev {
-/* begin src/rbc/force/area_volume/dev/main.h */static __device__ float3 pp2r(const Particle *pp, const int id) {
+/* begin src/rbc/force/area_volume/dev/main.h */
+static __device__ float3 pp2r(const Particle *pp, const int id) {
     enum {X, Y, Z};
     float3 r;
     r.x = pp[id].r[X];
@@ -51158,7 +52465,8 @@ __global__ void main(int nt, int nv, const Particle *pp, const int4 *tri, float 
 }
 /* end src/rbc/force/area_volume/dev/main.h */
 }
-/* begin src/rbc/force/area_volume/imp/type.h */struct AreaVolume {
+/* begin src/rbc/force/area_volume/imp/type.h */
+struct AreaVolume {
     int nt, nv; /* number of triangles and vertices in one cell */
     int max_cell; /* max cell number */
     int4 *tri; /* triangles on device */
@@ -51168,7 +52476,8 @@ __global__ void main(int nt, int nv, const Particle *pp, const int4 *tri, float 
     int Computed; /* was area computed? */
 };
 /* end src/rbc/force/area_volume/imp/type.h */
-/* begin src/rbc/force/area_volume/imp/main.h */static void assert_tri(int nt, int nv, const int4 *tri) {
+/* begin src/rbc/force/area_volume/imp/main.h */
+static void assert_tri(int nt, int nv, const int4 *tri) {
     int *rank;
     int f0, f1, f2, i;
     int4 f;
@@ -51526,18 +52835,25 @@ void area_volume_host(AreaVolume *q, /**/ float **pav) {
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/rbc/force/bending/imp.cpp"
-/* begin src/rbc/force/bending/imp.cpp */#include <stdio.h>
+/* begin src/rbc/force/bending/imp.cpp */
+#include <stdio.h>
 #include <assert.h>
 #include <stddef.h>
 
-#include <conf.h>
-/* begin src/inc/macro.h */#define CONTAINER_OF(ptr, type, member) \
+/* already included: src/inc/conf.h */
+/* begin src/inc/macro.h */
+#define CONTAINER_OF(ptr, type, member) \
     ((type*)((char*)(ptr) - offsetof(type, member)))
 /* end src/inc/macro.h */
 
 /* already included: src/inc/def.h */
-/* already included: src/utils/error.h *//* already included: src/utils/msg.h *//* already included: src/utils/imp.h */
-/* begin src/rbc/force/bending/kantor/imp.h */struct RbcParams;
+
+/* already included: src/utils/error.h */
+/* already included: src/utils/msg.h */
+/* already included: src/utils/imp.h */
+
+/* begin src/rbc/force/bending/kantor/imp.h */
+struct RbcParams;
 struct Kantor;
 struct Force;
 struct MeshRead;
@@ -51552,7 +52868,8 @@ void kantor_fin(Kantor*);
 void kantor_apply(Kantor*, const RbcParams*, const RbcQuants*, /**/ Force*); // <1>
 // end::apply[]
 /* end src/rbc/force/bending/kantor/imp.h */
-/* begin src/rbc/force/bending/juelicher/imp.h */struct RbcParams;
+/* begin src/rbc/force/bending/juelicher/imp.h */
+struct RbcParams;
 struct Juelicher;
 struct Force;
 struct MeshRead;
@@ -51568,7 +52885,8 @@ void juelicher_apply(Juelicher*, const RbcParams*, const RbcQuants*, /**/ Force*
 // end::apply[]
 /* end src/rbc/force/bending/juelicher/imp.h */
 
-/* begin src/rbc/force/bending/imp.h */struct RbcParams;
+/* begin src/rbc/force/bending/imp.h */
+struct RbcParams;
 struct Bending;
 struct Force;
 struct MeshRead;
@@ -51586,7 +52904,8 @@ void bending_fin(Bending*);
 void bending_apply(Bending*, const RbcParams*, const RbcQuants*, /**/ Force*); // <1>
 // end::apply[]
 /* end src/rbc/force/bending/imp.h */
-/* begin src/rbc/force/bending/imp/main.h */struct Bending {
+/* begin src/rbc/force/bending/imp/main.h */
+struct Bending {
     struct Bending_vtable *vtable;
 };
 
@@ -51959,17 +53278,38 @@ void bending_none_ini(const MeshRead*, /**/ Bending **pq) {
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/rbc/force/bending/juelicher/imp.cu"
-/* begin src/rbc/force/bending/juelicher/imp.cu */#include <stdio.h>
+/* begin src/rbc/force/bending/juelicher/imp.cu */
+#include <stdio.h>
 #include <assert.h>
 
-#include <conf.h>
 /* already included: src/inc/conf.h */
-/* already included: src/inc/def.h *//* already included: src/inc/type.h *//* already included: src/inc/dev.h *//* already included: src/math/dev.h *//* already included: src/math/tri/dev.h */
-/* already included: src/algo/utils/shfl.h *//* already included: src/algo/utils/dev.h */
+/* already included: src/inc/conf.h */
+
+/* already included: src/inc/def.h */
+/* already included: src/inc/type.h */
+/* already included: src/inc/dev.h */
+/* already included: src/math/dev.h */
+/* already included: src/math/tri/dev.h */
+
+/* already included: src/algo/utils/shfl.h */
+/* already included: src/algo/utils/dev.h */
+
 /* already included: src/io/mesh_read/imp.h */
-/* already included: src/utils/error.h *//* already included: src/utils/msg.h *//* already included: src/utils/imp.h *//* already included: src/he/read.h *//* already included: src/he/he.h */
-/* already included: src/d/q.h *//* already included: src/d/api.h *//* already included: src/d/ker.h *//* already included: src/utils/cc.h *//* already included: src/utils/kl.h */
-/* begin src/rbc/params/imp.h */#pragma once
+
+/* already included: src/utils/error.h */
+/* already included: src/utils/msg.h */
+/* already included: src/utils/imp.h */
+/* already included: src/he/read.h */
+/* already included: src/he/he.h */
+
+/* already included: src/d/q.h */
+/* already included: src/d/api.h */
+/* already included: src/d/ker.h */
+/* already included: src/utils/cc.h */
+/* already included: src/utils/kl.h */
+
+/* begin src/rbc/params/imp.h */
+#pragma once
 
 struct Config;
 struct RbcParams;
@@ -52007,8 +53347,13 @@ RbcParams_v rbc_params_get_view(const RbcParams *);
 // end::view[]
 /* end src/rbc/params/imp.h */
 /* already included: src/rbc/adj/imp.h */
+
 /* already included: src/rbc/type.h */
-/* already included: src/rbc/adj/type/common.h *//* already included: src/rbc/adj/type/dev.h *//* begin src/rbc/adj/dev.h */#pragma once
+
+/* already included: src/rbc/adj/type/common.h */
+/* already included: src/rbc/adj/type/dev.h */
+/* begin src/rbc/adj/dev.h */
+#pragma once
 
 static __device__ int fetch(const int *a, int i) { return a[i]; }
 static __device__ int adj_get_map0(int md, int nv, int i, const int *adj0, const int *adj1, /**/ AdjMap *m) {
@@ -52054,7 +53399,9 @@ static __device__ int adj_get_map(int i, Adj_v *adj, /**/ AdjMap *m) {
 }
 /* end src/rbc/adj/dev.h */
 
-/* already included: src/rbc/force/bending/juelicher/imp.h *//* begin src/rbc/force/bending/juelicher/imp/type.h */struct Juelicher {
+/* already included: src/rbc/force/bending/juelicher/imp.h */
+/* begin src/rbc/force/bending/juelicher/imp/type.h */
+struct Juelicher {
     int4 *tri, *dih;
 
     float *area, *lentheta, *theta;
@@ -52066,8 +53413,10 @@ static __device__ int adj_get_map(int i, Adj_v *adj, /**/ AdjMap *m) {
 /* end src/rbc/force/bending/juelicher/imp/type.h */
 
 /* already included: src/mesh/force/kantor0/dev.h */
+
 namespace juelicher_dev {
-/* begin src/rbc/force/bending/juelicher/dev/main.h */enum {X, Y, Z};
+/* begin src/rbc/force/bending/juelicher/dev/main.h */
+enum {X, Y, Z};
 static __device__  int small(double s) {
     const double eps = 1e-12;
     if      (s >  eps) return 0;
@@ -52494,7 +53843,8 @@ __global__ void accumulate(int n,
 /* end src/rbc/force/bending/juelicher/dev/main.h */
 }
 
-/* begin src/rbc/force/bending/juelicher/imp/main.h */void juelicher_ini(const MeshRead *cell, Juelicher **pq) {
+/* begin src/rbc/force/bending/juelicher/imp/main.h */
+void juelicher_ini(const MeshRead *cell, Juelicher **pq) {
 #   define  nxt(h)     he_nxt(he, (h))
 #   define  flp(h)     he_flp(he, (h))
 #   define  ver(h)     he_ver(he, (h))
@@ -52562,7 +53912,8 @@ void juelicher_fin(Juelicher *q) {
     EFREE(q);
 }
 /* end src/rbc/force/bending/juelicher/imp/main.h */
-/* begin src/rbc/force/bending/juelicher/imp/forces.h *//*
+/* begin src/rbc/force/bending/juelicher/imp/forces.h */
+/*
 static void print(const char *s, float *dev) {
     float hst;
     cD2H(&hst, dev, 1);
@@ -52977,27 +54328,52 @@ void juelicher_apply(Juelicher *q, const RbcParams*, const RbcQuants *quants, /*
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/rbc/force/bending/kantor/imp.cu"
-/* begin src/rbc/force/bending/kantor/imp.cu */#include <stdio.h>
+/* begin src/rbc/force/bending/kantor/imp.cu */
+#include <stdio.h>
 #include <assert.h>
 
-#include <conf.h>
 /* already included: src/inc/conf.h */
-/* already included: src/inc/def.h *//* already included: src/inc/type.h *//* already included: src/inc/dev.h *//* already included: src/math/dev.h */
+/* already included: src/inc/conf.h */
+
+/* already included: src/inc/def.h */
+/* already included: src/inc/type.h */
+/* already included: src/inc/dev.h */
+/* already included: src/math/dev.h */
+
 /* already included: src/io/mesh_read/imp.h */
-/* already included: src/utils/error.h *//* already included: src/utils/msg.h *//* already included: src/utils/imp.h */
-/* already included: src/d/q.h *//* already included: src/d/api.h *//* already included: src/d/ker.h *//* already included: src/utils/cc.h *//* already included: src/utils/kl.h */
-/* already included: src/rbc/params/imp.h *//* already included: src/rbc/adj/imp.h */
+
+/* already included: src/utils/error.h */
+/* already included: src/utils/msg.h */
+/* already included: src/utils/imp.h */
+
+/* already included: src/d/q.h */
+/* already included: src/d/api.h */
+/* already included: src/d/ker.h */
+/* already included: src/utils/cc.h */
+/* already included: src/utils/kl.h */
+
+/* already included: src/rbc/params/imp.h */
+/* already included: src/rbc/adj/imp.h */
+
 /* already included: src/rbc/type.h */
-/* already included: src/rbc/adj/type/common.h *//* already included: src/rbc/adj/type/dev.h *//* already included: src/rbc/adj/dev.h */
-/* already included: src/rbc/force/bending/kantor/imp.h *//* begin src/rbc/force/bending/kantor/imp/type.h */struct Kantor {
+
+/* already included: src/rbc/adj/type/common.h */
+/* already included: src/rbc/adj/type/dev.h */
+/* already included: src/rbc/adj/dev.h */
+
+/* already included: src/rbc/force/bending/kantor/imp.h */
+/* begin src/rbc/force/bending/kantor/imp/type.h */
+struct Kantor {
     Adj   *adj;
     Adj_v *adj_v;
 };
 /* end src/rbc/force/bending/kantor/imp/type.h */
 
 /* already included: src/mesh/force/kantor0/dev.h */
+
 namespace kantor_dev {
-/* begin src/rbc/force/bending/kantor/dev/main.h */struct Part { double3 r, v; };
+/* begin src/rbc/force/bending/kantor/dev/main.h */
+struct Part { double3 r, v; };
 typedef double3 Pos;
 
 static __device__ Pos fetchPos(const Particle *pp, int i) {
@@ -53066,7 +54442,8 @@ __global__ void force(RbcParams_v par, int md, int nv, int nc, const Particle *p
 /* end src/rbc/force/bending/kantor/dev/main.h */
 }
 
-/* begin src/rbc/force/bending/kantor/imp/main.h */void kantor_ini(const MeshRead *cell, Kantor **pq) {
+/* begin src/rbc/force/bending/kantor/imp/main.h */
+void kantor_ini(const MeshRead *cell, Kantor **pq) {
     Kantor *q;
     int md, nt, nv;
     const int4 *tt;
@@ -53088,7 +54465,8 @@ void kantor_fin(Kantor *q) {
     EFREE(q);
 }
 /* end src/rbc/force/bending/kantor/imp/main.h */
-/* begin src/rbc/force/bending/kantor/imp/forces.h */void kantor_apply(Kantor *t, const RbcParams *par, const RbcQuants *q, /**/ Force *ff) {
+/* begin src/rbc/force/bending/kantor/imp/forces.h */
+void kantor_apply(Kantor *t, const RbcParams *par, const RbcQuants *q, /**/ Force *ff) {
     int nc, nv, md;
     RbcParams_v parv;
     if (q->nc <= 0) return;
@@ -53402,11 +54780,16 @@ void kantor_fin(Kantor *q) {
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/rbc/force/conf.cpp"
-/* begin src/rbc/force/conf.cpp */#include <stdio.h>
+/* begin src/rbc/force/conf.cpp */
+#include <stdio.h>
 #include <string.h>
 
-/* already included: src/utils/error.h *//* already included: src/conf/imp.h *//* already included: src/io/mesh_read/imp.h */
-/* begin src/rbc/force/imp.h */struct RbcParams;
+/* already included: src/utils/error.h */
+/* already included: src/conf/imp.h */
+/* already included: src/io/mesh_read/imp.h */
+
+/* begin src/rbc/force/imp.h */
+struct RbcParams;
 struct RbcForce;
 struct Force;
 struct Config;
@@ -53767,16 +55150,35 @@ void rbc_force_set_conf(const MeshRead *cell, const Config *cfg, const char *nam
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/rbc/force/imp.cu"
-/* begin src/rbc/force/imp.cu */#include <stdio.h>
+/* begin src/rbc/force/imp.cu */
+#include <stdio.h>
 #include <assert.h>
 
-#include <conf.h>
 /* already included: src/inc/conf.h */
-/* already included: src/inc/def.h *//* already included: src/inc/type.h *//* already included: src/inc/dev.h *//* already included: src/math/dev.h *//* already included: src/math/tri/dev.h */
+/* already included: src/inc/conf.h */
+
+/* already included: src/inc/def.h */
+/* already included: src/inc/type.h */
+/* already included: src/inc/dev.h */
+/* already included: src/math/dev.h */
+/* already included: src/math/tri/dev.h */
+
 /* already included: src/io/mesh_read/imp.h */
-/* already included: src/utils/error.h *//* already included: src/utils/msg.h *//* already included: src/utils/imp.h */
-/* already included: src/d/q.h *//* already included: src/d/api.h *//* already included: src/d/ker.h *//* already included: src/utils/cc.h *//* already included: src/utils/kl.h */
-/* already included: src/rbc/params/imp.h *//* already included: src/rbc/adj/imp.h *//* begin src/rbc/shape/imp.h */struct RbcShape;
+
+/* already included: src/utils/error.h */
+/* already included: src/utils/msg.h */
+/* already included: src/utils/imp.h */
+
+/* already included: src/d/q.h */
+/* already included: src/d/api.h */
+/* already included: src/d/ker.h */
+/* already included: src/utils/cc.h */
+/* already included: src/utils/kl.h */
+
+/* already included: src/rbc/params/imp.h */
+/* already included: src/rbc/adj/imp.h */
+/* begin src/rbc/shape/imp.h */
+struct RbcShape;
 struct MeshRead;
 struct Adj;
 
@@ -53796,7 +55198,9 @@ void rbc_shape_total_volume(RbcShape*, /**/ float*);  // <4>
 // end::int[]
 /* end src/rbc/shape/imp.h */
 /* already included: src/rbc/force/bending/imp.h */
-/* begin src/rbc/force/rnd/imp.h */#pragma once
+
+/* begin src/rbc/force/rnd/imp.h */
+#pragma once
 
 struct RbcRnd;
 
@@ -53815,8 +55219,15 @@ float rbc_rnd_get_hst(const RbcRnd*, int i);    // <2>
 // end::int[]
 /* end src/rbc/force/rnd/imp.h */
 /* already included: src/rbc/type.h */
-/* already included: src/rbc/adj/type/common.h *//* already included: src/rbc/adj/type/dev.h *//* already included: src/rbc/adj/dev.h *//* already included: src/rbc/force/area_volume/imp.h */
-/* already included: src/rbc/force/imp.h *//* begin src/rbc/force/imp/type.h */enum {
+
+/* already included: src/rbc/adj/type/common.h */
+/* already included: src/rbc/adj/type/dev.h */
+/* already included: src/rbc/adj/dev.h */
+/* already included: src/rbc/force/area_volume/imp.h */
+
+/* already included: src/rbc/force/imp.h */
+/* begin src/rbc/force/imp/type.h */
+enum {
     RBC_SFUL,
     RBC_SFREE
 };
@@ -53867,11 +55278,13 @@ struct RbcForce {
 /* end src/rbc/force/imp/type.h */
 
 namespace rbc_force_dev {
-/* begin src/rbc/force/dev/type.h */struct StressInfo { double l0, a0; };
+/* begin src/rbc/force/dev/type.h */
+struct StressInfo { double l0, a0; };
 struct Rnd0Info {};
 struct Rnd1Info { double r; };
 /* end src/rbc/force/dev/type.h */
-/* begin src/rbc/force/dev/fetch.h */static __device__ StressInfo fetch_stress_info(int, StressFul_v sv) {
+/* begin src/rbc/force/dev/fetch.h */
+static __device__ StressInfo fetch_stress_info(int, StressFul_v sv) {
     StressInfo si;
     si.l0 = sv.l0;
     si.a0 = sv.a0;
@@ -53900,7 +55313,8 @@ static __device__ Rnd1Info fetch_rnd_info(int i0, int j, Rnd1_v rv) {
     return ri;
 }
 /* end src/rbc/force/dev/fetch.h */
-/* begin src/rbc/force/dev/common.h */static __device__ double3 fvolume(const RbcParams_v *par, double3 r2, double3 r3, double v0, double v) {
+/* begin src/rbc/force/dev/common.h */
+static __device__ double3 fvolume(const RbcParams_v *par, double3 r2, double3 r3, double v0, double v) {
     double f0;
     double3 f;
     cross(&r3, &r2, /**/ &f);
@@ -54009,7 +55423,8 @@ static __device__ double3 frnd(double dt, const RbcParams_v *par, double3 r1, do
     return dr;
 }
 /* end src/rbc/force/dev/common.h */
-/* begin src/rbc/force/dev/main.h */struct Part { double3 r, v; };
+/* begin src/rbc/force/dev/main.h */
+struct Part { double3 r, v; };
 typedef double3 Pos;
 
 static __device__ Pos fetchPos(const Particle *pp, int i) {
@@ -54089,7 +55504,8 @@ __global__ void force(double dt,
 /* end src/rbc/force/dev/main.h */
 }
 
-/* begin src/rbc/force/imp/main.h */static bool is_stress_free(const RbcForce *f) {
+/* begin src/rbc/force/imp/main.h */
+static bool is_stress_free(const RbcForce *f) {
     return f->stype == RBC_SFREE;
 }
 
@@ -54220,7 +55636,8 @@ void rbc_force_set_bending(const MeshRead *cell, const char *type, RbcForce *q) 
     msg_print("bending: %s", type);
 }
 /* end src/rbc/force/imp/main.h */
-/* begin src/rbc/force/imp/forces.h */static void get_stress_view(const RbcForce *f, /**/ StressFul_v *v) {
+/* begin src/rbc/force/imp/forces.h */
+static void get_stress_view(const RbcForce *f, /**/ StressFul_v *v) {
     *v = f->sinfo.sful;
 }
 
@@ -54289,7 +55706,8 @@ void rbc_force_apply(RbcForce *t, const RbcParams *par, float dt, const RbcQuant
     }
 }
 /* end src/rbc/force/imp/forces.h */
-/* begin src/rbc/force/imp/stat.h */void rbc_force_stat(float *pArea, float *pVolume) {
+/* begin src/rbc/force/imp/stat.h */
+void rbc_force_stat(float *pArea, float *pVolume) {
     *pArea = 1.0; *pVolume = 1.0; /* TODO */
 }
 /* end src/rbc/force/imp/stat.h */
@@ -54593,20 +56011,26 @@ void rbc_force_apply(RbcForce *t, const RbcParams *par, float dt, const RbcQuant
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/rbc/force/rnd/api/imp.cpp"
-/* begin src/rbc/force/rnd/api/imp.cpp */#include <stddef.h>
+/* begin src/rbc/force/rnd/api/imp.cpp */
+#include <stddef.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
 #include <curand.h>
 
-#include <conf.h>
 /* already included: src/inc/conf.h */
-/* already included: src/utils/error.h *//* already included: src/utils/imp.h */
-/* begin src/rbc/force/rnd/api/type.h */namespace rbc_api {
+/* already included: src/inc/conf.h */
+
+/* already included: src/utils/error.h */
+/* already included: src/utils/imp.h */
+
+/* begin src/rbc/force/rnd/api/type.h */
+namespace rbc_api {
 typedef struct Generator_st *Generator_t;
 } /* namespace */
 /* end src/rbc/force/rnd/api/type.h */
-/* begin src/rbc/force/rnd/api/imp.h */namespace rnd_api {
+/* begin src/rbc/force/rnd/api/imp.h */
+namespace rnd_api {
 typedef struct Generator_st *Generator_t;
 int CreateGenerator(Generator_t *g);
 int SetPseudoRandomGeneratorSeed(Generator_t g,  long seed);
@@ -54618,7 +56042,8 @@ int GenerateNormal(Generator_t g, float *outputPtr, size_t n);
 namespace rnd_api {
 
 #if   defined(DEV_CUDA)
-/* begin src/rbc/force/rnd/api/imp/cuda.h */struct Generator_st { curandGenerator_t g; };
+/* begin src/rbc/force/rnd/api/imp/cuda.h */
+struct Generator_st { curandGenerator_t g; };
 
 static int CreateGenerator0(curandGenerator_t *g) {
     return curandCreateGenerator(g, CURAND_RNG_PSEUDO_DEFAULT);
@@ -54650,7 +56075,8 @@ int GenerateNormal(Generator_t s, float *outputPtr, size_t n) {
 }
 /* end src/rbc/force/rnd/api/imp/cuda.h */
 #elif defined(DEV_CPU)
-/* begin src/rbc/force/rnd/api/imp/gaussrand.h *//* Gaussian rnd with mean = 0 and std = 1
+/* begin src/rbc/force/rnd/api/imp/gaussrand.h */
+/* Gaussian rnd with mean = 0 and std = 1
    Knuth and due originally to Marsaglia */
 double gaussrand() {
     static double V1, V2, S;
@@ -54672,7 +56098,8 @@ double gaussrand() {
     return X;
 }
 /* end src/rbc/force/rnd/api/imp/gaussrand.h */
-/* begin src/rbc/force/rnd/api/imp/cpu.h */int CreateGenerator(Generator_t*) { return 0; }
+/* begin src/rbc/force/rnd/api/imp/cpu.h */
+int CreateGenerator(Generator_t*) { return 0; }
 int DestroyGenerator(Generator_t) { return 0; }
 int SetPseudoRandomGeneratorSeed(Generator_t,  long seed) { srand(seed); return 0; }
 int GenerateNormal(Generator_t, float *outputPtr, size_t n) {
@@ -54986,30 +56413,45 @@ int GenerateNormal(Generator_t, float *outputPtr, size_t n) {
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/rbc/force/rnd/imp.cpp"
-/* begin src/rbc/force/rnd/imp.cpp */#include <stdlib.h>
+/* begin src/rbc/force/rnd/imp.cpp */
+#include <stdlib.h>
 #include <stdio.h>
 #include <mpi.h>
 #include <curand.h>
 
-#include <conf.h>
 /* already included: src/inc/conf.h */
-/* already included: src/utils/os.h *//* already included: src/utils/msg.h *//* already included: src/d/api.h *//* already included: src/inc/dev.h */
-/* already included: src/utils/error.h *//* already included: src/utils/imp.h *//* already included: src/utils/cc.h */
-/* already included: src/rbc/force/rnd/api/type.h *//* already included: src/rbc/force/rnd/api/imp.h *//* already included: src/rbc/force/rnd/imp.h */
-/* begin src/rbc/force/rnd/imp/type.h */struct RbcRnd { /* data */
+/* already included: src/inc/conf.h */
+
+/* already included: src/utils/os.h */
+/* already included: src/utils/msg.h */
+/* already included: src/d/api.h */
+/* already included: src/inc/dev.h */
+
+/* already included: src/utils/error.h */
+/* already included: src/utils/imp.h */
+/* already included: src/utils/cc.h */
+
+/* already included: src/rbc/force/rnd/api/type.h */
+/* already included: src/rbc/force/rnd/api/imp.h */
+/* already included: src/rbc/force/rnd/imp.h */
+
+/* begin src/rbc/force/rnd/imp/type.h */
+struct RbcRnd { /* data */
     float *r;
     rnd_api::Generator_t g;
     int max;
 };
 /* end src/rbc/force/rnd/imp/type.h */
-/* begin src/rbc/force/rnd/imp/cu.h */#define CU(x)                                                           \
+/* begin src/rbc/force/rnd/imp/cu.h */
+#define CU(x)                                                           \
     do {                                                                \
         int _curc = (x);                                                \
         if ( _curc != 0)                                                \
             ERR("curand error status: %d", _curc);                      \
     } while(0)
 /* end src/rbc/force/rnd/imp/cu.h */
-/* begin src/rbc/force/rnd/imp/seed.h */static long decode_seed_time() {
+/* begin src/rbc/force/rnd/imp/seed.h */
+static long decode_seed_time() {
     long t;
     t = os_time();
     msg_print("seed time: %ld", t);
@@ -55020,7 +56462,8 @@ static int decode_seed(long seed) {
     else return seed;
 }
 /* end src/rbc/force/rnd/imp/seed.h */
-/* begin src/rbc/force/rnd/imp/main.h */static void ini0(RbcRnd *d, int n, long seed) {
+/* begin src/rbc/force/rnd/imp/main.h */
+static void ini0(RbcRnd *d, int n, long seed) {
     Dalloc(&d->r, n);
     CU(rnd_api::CreateGenerator(&d->g));
     seed = decode_seed(seed);
@@ -55363,21 +56806,42 @@ float rbc_rnd_get_hst(const RbcRnd *d, int i) {
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/rbc/imp.cpp"
-/* begin src/rbc/imp.cpp */#include <stdio.h>
+/* begin src/rbc/imp.cpp */
+#include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
 #include <math.h>
 #include <string.h>
 #include <mpi.h>
 
-#include <conf.h>
 /* already included: src/inc/conf.h */
-/* already included: src/inc/def.h *//* already included: src/inc/type.h *//* already included: src/inc/dev.h */
+/* already included: src/inc/conf.h */
+
+/* already included: src/inc/def.h */
+/* already included: src/inc/type.h */
+/* already included: src/inc/dev.h */
+
 /* already included: src/utils/msg.h */
-/* already included: src/d/api.h *//* already included: src/utils/error.h *//* already included: src/utils/imp.h *//* already included: src/utils/cc.h */
-/* already included: src/utils/mc.h *//* already included: src/mpi/wrapper.h */
-/* already included: src/io/mesh_read/imp.h *//* already included: src/io/restart/imp.h */
-/* already included: src/rbc/type.h *//* already included: src/rbc/adj/type/common.h *//* already included: src/rbc/adj/imp.h *//* already included: src/mesh/gen/imp.h *//* already included: src/rbc/shape/imp.h *//* already included: src/rbc/force/area_volume/imp.h *//* begin src/rbc/imp.h */struct Coords;
+
+/* already included: src/d/api.h */
+/* already included: src/utils/error.h */
+/* already included: src/utils/imp.h */
+/* already included: src/utils/cc.h */
+
+/* already included: src/utils/mc.h */
+/* already included: src/mpi/wrapper.h */
+
+/* already included: src/io/mesh_read/imp.h */
+/* already included: src/io/restart/imp.h */
+
+/* already included: src/rbc/type.h */
+/* already included: src/rbc/adj/type/common.h */
+/* already included: src/rbc/adj/imp.h */
+/* already included: src/mesh/gen/imp.h */
+/* already included: src/rbc/shape/imp.h */
+/* already included: src/rbc/force/area_volume/imp.h */
+/* begin src/rbc/imp.h */
+struct Coords;
 struct MeshRead;
 
 // tag::mem[]
@@ -55394,7 +56858,8 @@ void rbc_strt_dump(MPI_Comm, const char *base, const char *name, int id, const R
 
 /* end src/rbc/imp.h */
 
-/* begin src/rbc/imp/ini.h */static void ini_common(long maxnc, const int4 *tt, RbcQuants *q) {
+/* begin src/rbc/imp/ini.h */
+static void ini_common(long maxnc, const int4 *tt, RbcQuants *q) {
     int nv, nt;
     nv = q->nv; nt = q->nt;
     Dalloc(&q->pp, maxnc * nv);
@@ -55417,7 +56882,8 @@ void rbc_ini(long maxnc, bool ids, const MeshRead *cell, RbcQuants *q) {
     if (ids) UC(ini_ids(maxnc, q));
 }
 /* end src/rbc/imp/ini.h */
-/* begin src/rbc/imp/fin.h */static void fin_common(RbcQuants *q) {
+/* begin src/rbc/imp/fin.h */
+static void fin_common(RbcQuants *q) {
     Dfree(q->pp);
     UC(area_volume_fin(q->area_volume));
     EFREE(q->pp_hst);
@@ -55430,7 +56896,8 @@ void rbc_fin(RbcQuants *q) {
     fin_common(q);
 }
 /* end src/rbc/imp/fin.h */
-/* begin src/rbc/imp/generate.h */static void setup_from_pos(const Coords *coords, MPI_Comm comm, const float *vv, const char *ic, int nv, /**/
+/* begin src/rbc/imp/generate.h */
+static void setup_from_pos(const Coords *coords, MPI_Comm comm, const float *vv, const char *ic, int nv, /**/
                            Particle *pp, int *pnc, int *pn, /* storage */ Particle *pp_hst) {
     int nc;
     nc = mesh_gen_from_file(coords, vv, ic, nv, /**/ pp_hst);
@@ -55458,7 +56925,8 @@ void rbc_gen_freeze(MPI_Comm comm, /**/ RbcQuants *q) {
     if (q->ids) UC(gen_ids(comm, q->nc, /**/ q->ii));
 }
 /* end src/rbc/imp/generate.h */
-/* begin src/rbc/imp/start.h */#define PP  ".pp"
+/* begin src/rbc/imp/start.h */
+#define PP  ".pp"
 #define IDS ".ids"
 
 static void rbc_gen_code(const char *name, const char *ext, char *code) {
@@ -55811,12 +57279,17 @@ void rbc_strt_dump(MPI_Comm comm, const char *base, const char *name, int id, co
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/rbc/params/conf.cpp"
-/* begin src/rbc/params/conf.cpp */#include <stdio.h>
+/* begin src/rbc/params/conf.cpp */
+#include <stdio.h>
 
-#include <conf.h>
 /* already included: src/inc/conf.h */
-/* already included: src/utils/error.h *//* already included: src/conf/imp.h */
+/* already included: src/inc/conf.h */
+
+/* already included: src/utils/error.h */
+/* already included: src/conf/imp.h */
+
 /* already included: src/rbc/params/imp.h */
+
 void rbc_params_set_conf(const Config *c, const char *name, RbcParams *par) {
     float gc, gt, kbt, kb, phi, ks, mpow, x0, ka, kd, kv, totArea, totVolume;
 
@@ -56141,11 +57614,15 @@ void rbc_params_set_conf(const Config *c, const char *name, RbcParams *par) {
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/rbc/params/imp.cpp"
-/* begin src/rbc/params/imp.cpp */#include <stdlib.h>
+/* begin src/rbc/params/imp.cpp */
+#include <stdlib.h>
 #include <stdio.h>
 
-/* already included: src/utils/imp.h *//* already included: src/utils/error.h */
-/* begin src/rbc/params/type.h *//* model parameters */
+/* already included: src/utils/imp.h */
+/* already included: src/utils/error.h */
+
+/* begin src/rbc/params/type.h */
+/* model parameters */
 struct RbcParams {
     float gammaC; /*  */
     float gammaT; /*  */
@@ -56165,6 +57642,7 @@ struct RbcParams {
 };
 /* end src/rbc/params/type.h */
 /* already included: src/rbc/params/imp.h */
+
 void rbc_params_ini(RbcParams **p) {
     EMALLOC(1, p);
 }
@@ -56522,18 +58000,28 @@ RbcParams_v rbc_params_get_view(const RbcParams *p) {
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/rbc/shape/imp.cpp"
-/* begin src/rbc/shape/imp.cpp */#include <stdio.h>
+/* begin src/rbc/shape/imp.cpp */
+#include <stdio.h>
 #include <math.h>
 
-/* already included: src/utils/error.h *//* already included: src/utils/imp.h *//* already included: src/utils/msg.h */
-/* already included: src/rbc/adj/imp.h *//* already included: src/rbc/adj/type/common.h *//* already included: src/math/tri/imp.h */
+/* already included: src/utils/error.h */
+/* already included: src/utils/imp.h */
+/* already included: src/utils/msg.h */
+
+/* already included: src/rbc/adj/imp.h */
+/* already included: src/rbc/adj/type/common.h */
+/* already included: src/math/tri/imp.h */
+
 /* already included: src/rbc/shape/imp.h */
-/* begin src/rbc/shape/imp/type.h */struct RbcShape {
+
+/* begin src/rbc/shape/imp/type.h */
+struct RbcShape {
     float *edg, *area;
     float A, V;
 };
 /* end src/rbc/shape/imp/type.h */
-/* begin src/rbc/shape/imp/main.h */static void diff(const float *a, const float *b, /**/ float *c) {
+/* begin src/rbc/shape/imp/main.h */
+static void diff(const float *a, const float *b, /**/ float *c) {
     enum {X, Y, Z};
     c[X] = a[X] - b[X];
     c[Y] = a[Y] - b[Y];
@@ -56959,15 +58447,29 @@ void rbc_shape_total_volume(RbcShape *q, /**/ float *pe) {
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/rbc/stretch/imp.cu"
-/* begin src/rbc/stretch/imp.cu */#include <stdio.h>
+/* begin src/rbc/stretch/imp.cu */
+#include <stdio.h>
 #include <assert.h>
 
-#include <conf.h>
 /* already included: src/inc/conf.h */
-/* already included: src/inc/def.h *//* already included: src/inc/type.h *//* already included: src/inc/dev.h */
+/* already included: src/inc/conf.h */
+
+/* already included: src/inc/def.h */
+/* already included: src/inc/type.h */
+/* already included: src/inc/dev.h */
+
 /* already included: src/utils/msg.h */
-/* already included: src/d/q.h *//* already included: src/d/api.h *//* already included: src/d/ker.h *//* already included: src/utils/error.h *//* already included: src/utils/imp.h *//* already included: src/utils/cc.h *//* already included: src/utils/kl.h */
-/* begin src/rbc/stretch/imp.h */struct RbcStretch;
+
+/* already included: src/d/q.h */
+/* already included: src/d/api.h */
+/* already included: src/d/ker.h */
+/* already included: src/utils/error.h */
+/* already included: src/utils/imp.h */
+/* already included: src/utils/cc.h */
+/* already included: src/utils/kl.h */
+
+/* begin src/rbc/stretch/imp.h */
+struct RbcStretch;
 struct Force;
 
 // tag::interface[]
@@ -56977,7 +58479,8 @@ void rbc_stretch_apply(int nm, const RbcStretch*, /**/ Force*);
 // end::interface[]
 /* end src/rbc/stretch/imp.h */
 namespace rbc_stretch_dev {
-/* begin src/rbc/stretch/dev/main.h */static __device__ void apply0(const float *f, /**/ float *fb) {
+/* begin src/rbc/stretch/dev/main.h */
+static __device__ void apply0(const float *f, /**/ float *fb) {
     enum {X, Y, Z};
     fb[X] += f[X]; fb[Y] += f[Y]; fb[Z] += f[Z];
 }
@@ -56996,12 +58499,14 @@ __global__ void apply(int n, int nv, const float *f, Force *ff) {
 }
 /* end src/rbc/stretch/dev/main.h */
 }
-/* begin src/rbc/stretch/imp/type.h */struct RbcStretch {
+/* begin src/rbc/stretch/imp/type.h */
+struct RbcStretch {
     int nv; /* number of vertices */
     float *f; /* force: 3*nv */
 };
 /* end src/rbc/stretch/imp/type.h */
-/* begin src/rbc/stretch/imp/main.h */static void alloc(int n, RbcStretch *f) { Dalloc(&f->f, 3*n); }
+/* begin src/rbc/stretch/imp/main.h */
+static void alloc(int n, RbcStretch *f) { Dalloc(&f->f, 3*n); }
 static void dealloc(RbcStretch *f) { Dfree(f->f); }
 
 static int read3(FILE *f, float *h) {
@@ -57357,17 +58862,42 @@ void rbc_stretch_apply(int nm, const RbcStretch *f, /**/ Force *ff) {
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/rig/gen/imp.cpp"
-/* begin src/rig/gen/imp.cpp */#include <mpi.h>
+/* begin src/rig/gen/imp.cpp */
+#include <mpi.h>
 #include <string.h>
 #include <vector_types.h>
 
-#include <conf.h>
-/* already included: src/inc/conf.h *//* already included: src/inc/type.h *//* already included: src/inc/dev.h *//* already included: src/inc/def.h */
-/* already included: src/utils/error.h *//* already included: src/utils/msg.h *//* already included: src/utils/imp.h *//* already included: src/utils/mc.h *//* already included: src/utils/cc.h */
-/* already included: src/d/api.h *//* already included: src/mpi/wrapper.h */
-/* already included: src/math/linal/imp.h *//* already included: src/io/mesh_read/imp.h *//* already included: src/coords/imp.h *//* already included: src/comm/imp.h *//* already included: src/exch/mesh/imp.h *//* already included: src/algo/minmax/imp.h *//* already included: src/mesh/triangles/type.h *//* already included: src/mesh/collision/imp.h *//* already included: src/mesh/props/imp.h *//* already included: src/mesh/dist/imp.h *//* already included: src/frag/imp.h */
+/* already included: src/inc/conf.h */
+/* already included: src/inc/conf.h */
+/* already included: src/inc/type.h */
+/* already included: src/inc/dev.h */
+/* already included: src/inc/def.h */
+
+/* already included: src/utils/error.h */
+/* already included: src/utils/msg.h */
+/* already included: src/utils/imp.h */
+/* already included: src/utils/mc.h */
+/* already included: src/utils/cc.h */
+
+/* already included: src/d/api.h */
+/* already included: src/mpi/wrapper.h */
+
+/* already included: src/math/linal/imp.h */
+/* already included: src/io/mesh_read/imp.h */
+/* already included: src/coords/imp.h */
+/* already included: src/comm/imp.h */
+/* already included: src/exch/mesh/imp.h */
+/* already included: src/algo/minmax/imp.h */
+/* already included: src/mesh/triangles/type.h */
+/* already included: src/mesh/collision/imp.h */
+/* already included: src/mesh/props/imp.h */
+/* already included: src/mesh/dist/imp.h */
+/* already included: src/frag/imp.h */
+
 /* already included: src/rigid/imp.h */
-/* begin src/rig/gen/imp.h */struct Coords;
+
+/* begin src/rig/gen/imp.h */
+struct Coords;
 struct RigPinInfo;
 struct MeshRead;
 
@@ -57407,7 +58937,8 @@ void rig_gen_from_solvent(const Coords*, MPI_Comm, RigGenInfo, /*io*/ FluInfo, /
 #define _I_ static
 #define _S_ static
 
-/* begin src/rig/gen/imp/common.h */enum {
+/* begin src/rig/gen/imp/common.h */
+enum {
     IN  = -2,
     OUT = -1
 };
@@ -57469,7 +59000,8 @@ _I_ void compute_labels(int pdir, int n, const Particle *pp, int nt, int nv, int
     if (nm) Dfree(hi);
 }
 /* end src/rig/gen/imp/common.h */
-/* begin src/rig/gen/imp/template.h */_S_ int3 fid2shift(int3 L, int fid) {
+/* begin src/rig/gen/imp/template.h */
+_S_ int3 fid2shift(int3 L, int fid) {
     int3 s;
     using namespace frag_hst;
     s.x = - i2dx(fid) * L.x;
@@ -57649,7 +59181,8 @@ _I_ void empty_solid(const MeshRead *mesh, /* io */ int *n, float *rr) {
     *n = j;
 }
 /* end src/rig/gen/imp/template.h */
-/* begin src/rig/gen/imp/kill.h */_S_ void remove_hst(const int *labels, int *n, Particle *pp) {
+/* begin src/rig/gen/imp/kill.h */
+_S_ void remove_hst(const int *labels, int *n, Particle *pp) {
     int i, j;
     for (i = j = 0; i < *n; ++i) {
         if (labels[i] == OUT)
@@ -57679,7 +59212,8 @@ _I_ void kill_solvent(RigGenInfo rgi, int maxm, int3 L, MPI_Comm cart, int nm,
     Dfree(i_ppall);
 }
 /* end src/rig/gen/imp/kill.h */
-/* begin src/rig/gen/imp/props.h */_S_ void init_I_from_pos(int n, const float *rr, float pmass, /**/ float *I) {
+/* begin src/rig/gen/imp/props.h */
+_S_ void init_I_from_pos(int n, const float *rr, float pmass, /**/ float *I) {
     enum {X, Y, Z};
     enum {XX, XY, XZ, YY, YZ, ZZ};
     enum {YX = XY, ZX = XZ, ZY = YZ};
@@ -57767,7 +59301,8 @@ _I_ void set_properties(MPI_Comm, RigGenInfo rgi, int n, const float *rr0, int n
     }
 }
 /* end src/rig/gen/imp/props.h */
-/* begin src/rig/gen/imp/main.h */static void gen_ids(MPI_Comm comm, int n, int *ii) {
+/* begin src/rig/gen/imp/main.h */
+static void gen_ids(MPI_Comm comm, int n, int *ii) {
     int i, i0 = 0, count = 1;
     MC(m::Exscan(&n, &i0, count, MPI_INT, MPI_SUM, comm));
     for (i = 0; i < n; ++i) ii[i] = i + i0;
@@ -58112,23 +59647,42 @@ void rig_gen_from_solvent(const Coords *coords, MPI_Comm cart, RigGenInfo rgi, /
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/rig/imp.cpp"
-/* begin src/rig/imp.cpp */#include <mpi.h>
+/* begin src/rig/imp.cpp */
+#include <mpi.h>
 #include <stdio.h>
 #include <vector_types.h>
 #include <assert.h>
 #include <string.h>
 #include <math.h>
 
-#include <conf.h>
 /* already included: src/inc/conf.h */
-/* already included: src/utils/msg.h *//* already included: src/utils/imp.h *//* already included: src/utils/error.h */
+/* already included: src/inc/conf.h */
+
+/* already included: src/utils/msg.h */
+/* already included: src/utils/imp.h */
+/* already included: src/utils/error.h */
+
 /* already included: src/coords/imp.h */
-/* already included: src/d/api.h *//* already included: src/inc/dev.h *//* already included: src/inc/def.h *//* already included: src/inc/type.h *//* already included: src/utils/cc.h */
-/* already included: src/utils/msg.h *//* already included: src/io/mesh_read/imp.h *//* already included: src/io/restart/imp.h */
-/* already included: src/mesh/gen/matrices/imp.h *//* already included: src/mesh/gen/imp.h */
+
+/* already included: src/d/api.h */
+/* already included: src/inc/dev.h */
+/* already included: src/inc/def.h */
+/* already included: src/inc/type.h */
+/* already included: src/utils/cc.h */
+
+/* already included: src/utils/msg.h */
+/* already included: src/io/mesh_read/imp.h */
+/* already included: src/io/restart/imp.h */
+
+/* already included: src/mesh/gen/matrices/imp.h */
+/* already included: src/mesh/gen/imp.h */
+
 /* already included: src/rig/imp.h */
+
 /* already included: src/rig/gen/imp.h */
-/* begin src/rig/imp/ini.h */void rig_ini(long maxs, long maxp, const MeshRead *mesh, RigQuants *q) {
+
+/* begin src/rig/imp/ini.h */
+void rig_ini(long maxs, long maxp, const MeshRead *mesh, RigQuants *q) {
     q->n = q->ns = q->nps = 0;
     q->maxp = maxp;
 
@@ -58154,7 +59708,8 @@ void rig_gen_from_solvent(const Coords *coords, MPI_Comm cart, RigGenInfo rgi, /
     cH2D(q->dvv, mesh_read_get_vert(mesh), 3 * q->nv);
 }
 /* end src/rig/imp/ini.h */
-/* begin src/rig/imp/fin.h */void rig_fin(RigQuants *q) {
+/* begin src/rig/imp/fin.h */
+void rig_fin(RigQuants *q) {
     EFREE(q->pp_hst);
     EFREE(q->ss_hst);
     EFREE(q->rr0_hst);
@@ -58171,7 +59726,8 @@ void rig_gen_from_solvent(const Coords *coords, MPI_Comm cart, RigGenInfo rgi, /
     EFREE(q->ss_dmp);
 }
 /* end src/rig/imp/fin.h */
-/* begin src/rig/imp/common.h */static void update_r_hst(const float *rr0, const int n, const float *com, const float *e0, const float *e1, const float *e2, /**/ Particle *pp) {
+/* begin src/rig/imp/common.h */
+static void update_r_hst(const float *rr0, const int n, const float *com, const float *e0, const float *e1, const float *e2, /**/ Particle *pp) {
     for (int ip = 0; ip < n; ++ip) {
         float *r0 = pp[ip].r;
         const float* ro = &rr0[3*ip];
@@ -58230,7 +59786,8 @@ static void cpy_H2D(const RigQuants *q) {
     cH2D(q->pp,   q->pp_hst,   q->n);
 }
 /* end src/rig/imp/common.h */
-/* begin src/rig/imp/generate.h */static void check(const float e[]) {
+/* begin src/rig/imp/generate.h */
+static void check(const float e[]) {
     enum {X, Y, Z};
     float ee, err;
     ee = e[X]*e[X] + e[Y]*e[Y] + e[Z]*e[Z];
@@ -58336,7 +59893,8 @@ void rig_gen_freeze(const Coords *coords, bool empty_pp, int numdensity, float r
     cpy_H2D(q);
 }
 /* end src/rig/imp/generate.h */
-/* begin src/rig/imp/start.h */#define PP ".pp"
+/* begin src/rig/imp/start.h */
+#define PP ".pp"
 #define SS ".ss"
 
 static void rig_gen_code(const char *name, const char *ext, char *code) {
@@ -58706,11 +60264,15 @@ void rig_strt_dump(MPI_Comm comm, const char *base, const char *name, const int 
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/rigid/conf.cpp"
-/* begin src/rigid/conf.cpp */#include <stdio.h>
+/* begin src/rigid/conf.cpp */
+#include <stdio.h>
 #include <vector_types.h>
 
-/* already included: src/utils/error.h *//* already included: src/conf/imp.h */
+/* already included: src/utils/error.h */
+/* already included: src/conf/imp.h */
+
 /* already included: src/rigid/imp.h */
+
 void rig_pininfo_set_conf(const Config *cfg, const char *ns, RigPinInfo *pi) {
     int3 com, axis;
     int pdir;
@@ -59022,15 +60584,29 @@ void rig_pininfo_set_conf(const Config *cfg, const char *ns, RigPinInfo *pi) {
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/rigid/imp.cu"
-/* begin src/rigid/imp.cu */#include <stdio.h>
+/* begin src/rigid/imp.cu */
+#include <stdio.h>
 #include <assert.h>
 
-#include <conf.h>
-/* already included: src/inc/conf.h *//* already included: src/inc/type.h *//* already included: src/inc/dev.h */
+/* already included: src/inc/conf.h */
+/* already included: src/inc/conf.h */
+/* already included: src/inc/type.h */
+/* already included: src/inc/dev.h */
+
 /* already included: src/d/api.h */
-/* already included: src/utils/msg.h *//* already included: src/utils/imp.h *//* already included: src/utils/error.h *//* already included: src/utils/cc.h *//* already included: src/utils/kl.h *//* already included: src/algo/utils/shfl.h *//* already included: src/algo/utils/dev.h */
+
+/* already included: src/utils/msg.h */
+/* already included: src/utils/imp.h */
+/* already included: src/utils/error.h */
+/* already included: src/utils/cc.h */
+/* already included: src/utils/kl.h */
+/* already included: src/algo/utils/shfl.h */
+/* already included: src/algo/utils/dev.h */
+
 /* already included: src/rigid/imp.h */
-/* begin src/rigid/imp/type.h */struct RigPinInfo {
+
+/* begin src/rigid/imp/type.h */
+struct RigPinInfo {
     int3 com;  /* what components of com stay fixed */
     int3 axis;  /* what components of rotation stay fixed */
     int pdir; /* direction of periodicity */
@@ -59038,7 +60614,8 @@ void rig_pininfo_set_conf(const Config *cfg, const char *ns, RigPinInfo *pi) {
 /* end src/rigid/imp/type.h */
 
 namespace rigid_dev {
-/* begin src/rigid/dev/utils.h */static __device__ float dot(const float *v, const float *u) {
+/* begin src/rigid/dev/utils.h */
+static __device__ float dot(const float *v, const float *u) {
     enum {X, Y, Z};
     return v[X]*u[X] + v[Y]*u[Y] + v[Z]*u[Z];
 }
@@ -59079,7 +60656,8 @@ __device__ void rot_e(float dt, const float *om, /**/ float *e) {
     e[X] += vx*dt; e[Y] += vy*dt; e[Z] += vz*dt;
 }
 /* end src/rigid/dev/utils.h */
-/* begin src/rigid/dev/main.h */__global__ void rot_referential(float dt, const int ns, Rigid *ss) {
+/* begin src/rigid/dev/main.h */
+__global__ void rot_referential(float dt, const int ns, Rigid *ss) {
     int i;
     i = threadIdx.x + blockIdx.x * blockDim.x;
     if (i < ns) {
@@ -59262,7 +60840,8 @@ __global__ void update_mesh(float dt, const Rigid *ss_dev, const int nv, const f
 /* end src/rigid/dev/main.h */
 }
 
-/* begin src/rigid/imp/main.h */enum {NTHRD=128};
+/* begin src/rigid/imp/main.h */
+enum {NTHRD=128};
 
 void rig_pininfo_ini(RigPinInfo **pi) {
     RigPinInfo *p;
@@ -59629,12 +61208,17 @@ void rig_update_mesh(float dt, int ns, const Rigid *ss, int nv, const float *vv,
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/scheme/force/conf.cpp"
-/* begin src/scheme/force/conf.cpp */#include <stdlib.h>
+/* begin src/scheme/force/conf.cpp */
+#include <stdlib.h>
 #include <stdio.h>
 #include <vector_types.h>
 
-/* already included: src/conf/imp.h *//* already included: src/utils/imp.h *//* already included: src/utils/error.h */
-/* begin src/scheme/force/imp.h */struct Particle;
+/* already included: src/conf/imp.h */
+/* already included: src/utils/imp.h */
+/* already included: src/utils/error.h */
+
+/* begin src/scheme/force/imp.h */
+struct Particle;
 struct Force;
 struct BForce;
 struct float3;
@@ -60002,13 +61586,27 @@ void bforce_set_conf(const Config *cfg, /**/ BForce *bf) {
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/scheme/force/imp.cu"
-/* begin src/scheme/force/imp.cu */#include <stdio.h>
+/* begin src/scheme/force/imp.cu */
+#include <stdio.h>
 
-#include <conf.h>
-/* already included: src/inc/conf.h *//* already included: src/inc/type.h *//* already included: src/inc/dev.h */
-/* already included: src/coords/type.h *//* already included: src/coords/dev.h *//* already included: src/coords/imp.h */
-/* already included: src/d/api.h *//* already included: src/utils/error.h *//* already included: src/utils/kl.h *//* already included: src/utils/cc.h *//* already included: src/utils/imp.h */
-/* already included: src/scheme/force/imp.h *//* begin src/scheme/force/type.h *//* "view" structures: to be passed to device funtions */
+/* already included: src/inc/conf.h */
+/* already included: src/inc/conf.h */
+/* already included: src/inc/type.h */
+/* already included: src/inc/dev.h */
+
+/* already included: src/coords/type.h */
+/* already included: src/coords/dev.h */
+/* already included: src/coords/imp.h */
+
+/* already included: src/d/api.h */
+/* already included: src/utils/error.h */
+/* already included: src/utils/kl.h */
+/* already included: src/utils/cc.h */
+/* already included: src/utils/imp.h */
+
+/* already included: src/scheme/force/imp.h */
+/* begin src/scheme/force/type.h */
+/* "view" structures: to be passed to device funtions */
 
 /* constant force f */
 struct BForce_cste_v {
@@ -60057,7 +61655,8 @@ struct BForce_v {
     int type;
 };
 /* end src/scheme/force/type.h */
-/* begin src/scheme/force/dev/main.h *//* cste */
+/* begin src/scheme/force/dev/main.h */
+/* cste */
 static __device__ float3 get_gp(Coords_v, BForce_cste_v par, Particle) {
     return par.a;
 }
@@ -60139,7 +61738,8 @@ __global__ void force(Coords_v c, P par, float mass, int n, const Particle *pp, 
     f[Z] += mass * gp.z;
 }
 /* end src/scheme/force/dev/main.h */
-/* begin src/scheme/force/imp/type.h *//* structure containing parameters on host */
+/* begin src/scheme/force/imp/type.h */
+/* structure containing parameters on host */
 
 // tag::params[]
 /* constant force f */
@@ -60190,7 +61790,8 @@ struct BForce {
     int type;
 };
 /* end src/scheme/force/imp/type.h */
-/* begin src/scheme/force/imp/ini.h */void bforce_ini(BForce **p) { EMALLOC(1, p); }
+/* begin src/scheme/force/imp/ini.h */
+void bforce_ini(BForce **p) { EMALLOC(1, p); }
 void bforce_fin(BForce *p)  { EFREE(p);      }
 
 void bforce_set_none(/**/ BForce *p) {
@@ -60222,7 +61823,8 @@ void bforce_set_rad(float a, /**/ BForce *p) {
     p->p.rad.a = a;
 }
 /* end src/scheme/force/imp/ini.h */
-/* begin src/scheme/force/imp/main.h */void bforce_adjust(float3 f, /**/ BForce *bforce) {
+/* begin src/scheme/force/imp/main.h */
+void bforce_adjust(float3 f, /**/ BForce *bforce) {
     int type;
     BForceParam *p;
     type = bforce->type;
@@ -60641,15 +62243,27 @@ void bforce_apply(const Coords *c, float mass, const BForce *bf, int n, const Pa
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/scheme/move/imp.cu"
-/* begin src/scheme/move/imp.cu */#include <stdio.h>
+/* begin src/scheme/move/imp.cu */
+#include <stdio.h>
 #include <assert.h>
 
-#include <conf.h>
 /* already included: src/inc/conf.h */
-/* already included: src/d/api.h *//* already included: src/d/q.h *//* already included: src/d/ker.h */
-/* already included: src/inc/def.h *//* already included: src/utils/msg.h *//* already included: src/utils/cc.h */
-/* already included: src/utils/kl.h *//* already included: src/inc/type.h *//* already included: src/inc/dev.h */
-/* begin src/scheme/move/imp.h */struct Force;
+/* already included: src/inc/conf.h */
+
+/* already included: src/d/api.h */
+/* already included: src/d/q.h */
+/* already included: src/d/ker.h */
+
+/* already included: src/inc/def.h */
+/* already included: src/utils/msg.h */
+/* already included: src/utils/cc.h */
+
+/* already included: src/utils/kl.h */
+/* already included: src/inc/type.h */
+/* already included: src/inc/dev.h */
+
+/* begin src/scheme/move/imp.h */
+struct Force;
 struct Particle;
 
 // tag::int[]
@@ -60660,7 +62274,8 @@ void scheme_move_clear_vel(int n, Particle*); // <2>
 
 namespace scheme_move_dev {
 #ifdef FORWARD_EULER
-/* begin src/scheme/move/dev/euler.h */static __device__ void update0(float dt, float m, const float *f, /**/ float *r, float *v) {
+/* begin src/scheme/move/dev/euler.h */
+static __device__ void update0(float dt, float m, const float *f, /**/ float *r, float *v) {
     enum {X, Y, Z};
     r[X] += v[X]*dt;
     r[Y] += v[Y]*dt;
@@ -60672,7 +62287,8 @@ namespace scheme_move_dev {
 }
 /* end src/scheme/move/dev/euler.h */
 #else
-/* begin src/scheme/move/dev/vv.h */static __device__ void update0(float dt, float m, const float *f, /**/ float *r, float *v) {
+/* begin src/scheme/move/dev/vv.h */
+static __device__ void update0(float dt, float m, const float *f, /**/ float *r, float *v) {
     enum {X, Y, Z};
     v[X] += f[X]/m*dt;
     v[Y] += f[Y]/m*dt;
@@ -60684,7 +62300,8 @@ namespace scheme_move_dev {
 }
 /* end src/scheme/move/dev/vv.h */
 #endif
-/* begin src/scheme/move/dev/main.h */__global__ void update(float dt, float mass, Particle* pp, const Force *ff, int n) {
+/* begin src/scheme/move/dev/main.h */
+__global__ void update(float dt, float mass, Particle* pp, const Force *ff, int n) {
     float *r, *v;
     const float *f;
     int pid;
@@ -60705,7 +62322,8 @@ __global__ void clear_vel(int n, /**/ Particle *pp)  {
 /* end src/scheme/move/dev/main.h */
 } /* namespace */
 
-/* begin src/scheme/move/imp/main.h */void scheme_move_apply(float dt, float mass, int n, const Force *ff, Particle *pp) {
+/* begin src/scheme/move/imp/main.h */
+void scheme_move_apply(float dt, float mass, int n, const Force *ff, Particle *pp) {
     KL(scheme_move_dev::update, (k_cnf(n)), (dt, mass, pp, ff, n));
 }
 
@@ -61013,11 +62631,16 @@ void scheme_move_clear_vel(int n, /**/ Particle *pp) {
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/scheme/restrain/conf.cpp"
-/* begin src/scheme/restrain/conf.cpp */#include <stdio.h>
+/* begin src/scheme/restrain/conf.cpp */
+#include <stdio.h>
 #include <mpi.h>
 
-/* already included: src/utils/imp.h *//* already included: src/utils/error.h *//* already included: src/conf/imp.h */
-/* begin src/scheme/restrain/imp.h */struct Particle;
+/* already included: src/utils/imp.h */
+/* already included: src/utils/error.h */
+/* already included: src/conf/imp.h */
+
+/* begin src/scheme/restrain/imp.h */
+struct Particle;
 struct Config;
 struct Restrain;
 
@@ -61369,25 +62992,43 @@ void scheme_restrain_set_conf(const Config *cfg, Restrain *r) {
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/scheme/restrain/imp.cu"
-/* begin src/scheme/restrain/imp.cu */#include <mpi.h>
+/* begin src/scheme/restrain/imp.cu */
+#include <mpi.h>
 #include <stdio.h>
 
-#include <conf.h>
 /* already included: src/inc/conf.h */
-/* already included: src/inc/type.h *//* already included: src/inc/dev.h *//* already included: src/inc/def.h */
+/* already included: src/inc/conf.h */
+
+/* already included: src/inc/type.h */
+/* already included: src/inc/dev.h */
+/* already included: src/inc/def.h */
+
 /* already included: src/mpi/wrapper.h */
-/* already included: src/utils/error.h *//* already included: src/utils/imp.h *//* already included: src/utils/msg.h *//* already included: src/utils/cc.h *//* already included: src/utils/mc.h *//* already included: src/utils/kl.h *//* already included: src/algo/utils/shfl.h *//* already included: src/algo/utils/dev.h */
+
+/* already included: src/utils/error.h */
+/* already included: src/utils/imp.h */
+/* already included: src/utils/msg.h */
+/* already included: src/utils/cc.h */
+/* already included: src/utils/mc.h */
+/* already included: src/utils/kl.h */
+/* already included: src/algo/utils/shfl.h */
+/* already included: src/algo/utils/dev.h */
+
 /* already included: src/d/api.h */
+
 /* already included: src/scheme/restrain/imp.h */
+
 namespace restrain_dev {
-/* begin src/scheme/restrain/dev/type.h */struct MapColor {
+/* begin src/scheme/restrain/dev/type.h */
+struct MapColor {
     const int *cc;
     int color;
 };
 
 struct MapGrey {};
 /* end src/scheme/restrain/dev/type.h */
-/* begin src/scheme/restrain/dev/main.h */static __device__ int valid_p(const MapGrey, int) { return 1; }
+/* begin src/scheme/restrain/dev/main.h */
+static __device__ int valid_p(const MapGrey, int) { return 1; }
 static __device__ int valid_p(const MapColor m, int i) {
     return m.cc[i] == m.color;
 }
@@ -61440,7 +63081,8 @@ __global__ void shift(Map m, float3 v, int n, /**/ Particle *pp) {
 /* end src/scheme/restrain/dev/main.h */
 }
 
-/* begin src/scheme/restrain/imp/type.h */enum {
+/* begin src/scheme/restrain/imp/type.h */
+enum {
     RSTR_NONE,
     RSTR_COL,
     RSTR_RBC
@@ -61455,7 +63097,8 @@ struct Restrain {
     float3 *v;
 };
 /* end src/scheme/restrain/imp/type.h */
-/* begin src/scheme/restrain/imp/main.h */void scheme_restrain_ini(Restrain **rstr) {
+/* begin src/scheme/restrain/imp/main.h */
+void scheme_restrain_ini(Restrain **rstr) {
     Restrain *r;
     EMALLOC(1, rstr);
     r = *rstr;
@@ -61874,13 +63517,19 @@ void scheme_restrain_apply(MPI_Comm comm, const int *cc, long it, /**/ Restrain 
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/scheme/time_line/imp.cpp"
-/* begin src/scheme/time_line/imp.cpp */#include <mpi.h>
+/* begin src/scheme/time_line/imp.cpp */
+#include <mpi.h>
 #include <stdio.h>
 #include <math.h>
 
-/* already included: src/utils/msg.h *//* already included: src/utils/error.h *//* already included: src/utils/imp.h */
+/* already included: src/utils/msg.h */
+/* already included: src/utils/error.h */
+/* already included: src/utils/imp.h */
+
 /* already included: src/io/restart/imp.h */
-/* begin src/scheme/time_line/imp.h */struct TimeLine;
+
+/* begin src/scheme/time_line/imp.h */
+struct TimeLine;
 
 // tag::mem[]
 void time_line_ini(float start, /**/ TimeLine**);
@@ -61903,13 +63552,15 @@ long  time_line_get_iteration(const TimeLine*); // <2>
 // end::get[]
 /* end src/scheme/time_line/imp.h */
 
-/* begin src/scheme/time_line/imp/type.h */struct TimeLine {
+/* begin src/scheme/time_line/imp/type.h */
+struct TimeLine {
     float t, t0;
     float dt, dt0;
     long iteration;
 };
 /* end src/scheme/time_line/imp/type.h */
-/* begin src/scheme/time_line/imp/main.h */void time_line_ini(float t, /**/ TimeLine** pq) {
+/* begin src/scheme/time_line/imp/main.h */
+void time_line_ini(float t, /**/ TimeLine** pq) {
     TimeLine *q;
     EMALLOC(1, &q);
     q->t = q->t0 = t;
@@ -61944,7 +63595,8 @@ int time_line_cross(const TimeLine *q, float i) {
     return t0 <= f && f < t;
 }
 /* end src/scheme/time_line/imp/main.h */
-/* begin src/scheme/time_line/imp/start.h */#define CODE "timeline"
+/* begin src/scheme/time_line/imp/start.h */
+#define CODE "timeline"
 
 static void write_state(const TimeLine *t, FILE *f) {
     fprintf(f, "%g %g\n", t->t,  t->t0);
@@ -62280,14 +63932,24 @@ void time_line_strt_read(const char *base, int id, TimeLine *t) {
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/scheme/time_step/imp.cpp"
-/* begin src/scheme/time_step/imp.cpp */#include <mpi.h>
+/* begin src/scheme/time_step/imp.cpp */
+#include <mpi.h>
 #include <math.h>
 
-#include <conf.h>
 /* already included: src/inc/conf.h */
-/* already included: src/conf/imp.h *//* already included: src/utils/msg.h *//* already included: src/utils/error.h *//* already included: src/utils/imp.h *//* already included: src/utils/mc.h */
-/* already included: src/algo/force_stat/imp.h *//* already included: src/mpi/wrapper.h */
-/* begin src/scheme/time_step/imp.h */struct TimeStep;
+/* already included: src/inc/conf.h */
+
+/* already included: src/conf/imp.h */
+/* already included: src/utils/msg.h */
+/* already included: src/utils/error.h */
+/* already included: src/utils/imp.h */
+/* already included: src/utils/mc.h */
+
+/* already included: src/algo/force_stat/imp.h */
+/* already included: src/mpi/wrapper.h */
+
+/* begin src/scheme/time_step/imp.h */
+struct TimeStep;
 struct TimeStepAccel;
 struct Force;
 struct Config;
@@ -62315,7 +63977,8 @@ void time_step_log(TimeStep*);                           // <3>
 // end::int[]
 /* end src/scheme/time_step/imp.h */
 
-/* begin src/scheme/time_step/imp/type.h */enum { MAX_ACCEL_NUM = 9 };
+/* begin src/scheme/time_step/imp/type.h */
+enum { MAX_ACCEL_NUM = 9 };
 struct TimeStepAccel {
     float  mm[MAX_ACCEL_NUM];
     int    nn[MAX_ACCEL_NUM];
@@ -62342,7 +64005,8 @@ static void  disp_log(TimeStep*);
 static void  (*tlog[])(TimeStep*)                          = { const_log,  disp_log };
 static float (*dt[])(TimeStep*, MPI_Comm, TimeStepAccel*) = { const_dt,  disp_dt };
 /* end src/scheme/time_step/imp/type.h */
-/* begin src/scheme/time_step/imp/util.h */static void timestep_reduce(MPI_Comm comm, const void *sendbuf0, void *recvbuf, int count, MPI_Datatype datatype, MPI_Op op) {
+/* begin src/scheme/time_step/imp/util.h */
+static void timestep_reduce(MPI_Comm comm, const void *sendbuf0, void *recvbuf, int count, MPI_Datatype datatype, MPI_Op op) {
     int root = 0;
     const void *sendbuf = (m::is_master(comm) ? MPI_IN_PLACE : sendbuf0);
     MC(m::Reduce(sendbuf, recvbuf, count, datatype, op, root, comm));
@@ -62368,7 +64032,8 @@ static float accel_max(MPI_Comm comm, TimeStepAccel *q, /**/ float *accel) {
     return max;
 }
 /* end src/scheme/time_step/imp/util.h */
-/* begin src/scheme/time_step/imp/main.h */void time_step_accel_ini(/**/ TimeStepAccel **pq) {
+/* begin src/scheme/time_step/imp/main.h */
+void time_step_accel_ini(/**/ TimeStepAccel **pq) {
     TimeStepAccel *q;
     EMALLOC(1, &q);
     q->k = 0;
@@ -62743,21 +64408,41 @@ float time_step_dt0(TimeStep *q) { return q->dt; };
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/sim/imp.cpp"
-/* begin src/sim/imp.cpp */#include <stdlib.h>
+/* begin src/sim/imp.cpp */
+#include <stdlib.h>
 #include <assert.h>
 #include <mpi.h>
 #include <vector_types.h>
 
-#include <conf.h>
 /* already included: src/inc/conf.h */
+/* already included: src/inc/conf.h */
+
 /* already included: src/conf/imp.h */
-/* already included: src/utils/error.h *//* already included: src/utils/os.h */
+
+/* already included: src/utils/error.h */
+/* already included: src/utils/os.h */
+
 /* already included: src/d/api.h */
-/* already included: src/coords/ini.h *//* already included: src/coords/imp.h */
+
+/* already included: src/coords/ini.h */
+/* already included: src/coords/imp.h */
+
 /* already included: src/mpi/wrapper.h */
-/* already included: src/inc/def.h *//* already included: src/utils/msg.h *//* already included: src/utils/imp.h *//* already included: src/utils/cc.h *//* already included: src/utils/mc.h */
-/* already included: src/inc/type.h *//* already included: src/inc/dev.h */
-/* already included: src/pair/imp.h *//* already included: src/struct/parray/imp.h *//* already included: src/struct/farray/imp.h *//* begin src/struct/pfarrays/imp.h */#pragma once
+
+/* already included: src/inc/def.h */
+/* already included: src/utils/msg.h */
+/* already included: src/utils/imp.h */
+/* already included: src/utils/cc.h */
+/* already included: src/utils/mc.h */
+
+/* already included: src/inc/type.h */
+/* already included: src/inc/dev.h */
+
+/* already included: src/pair/imp.h */
+/* already included: src/struct/parray/imp.h */
+/* already included: src/struct/farray/imp.h */
+/* begin src/struct/pfarrays/imp.h */
+#pragma once
 
 struct PFarray {
     PaArray p;
@@ -62781,16 +64466,42 @@ void pfarrays_get(int i, const PFarrays*, long *n, PaArray*, FoArray*);
 void pfarrays_get(int i, const PFarrays*, PFarray*);
 /* end src/struct/pfarrays/imp.h */
 /* already included: src/struct/partlist/type.h */
-/* already included: src/io/diag/part/imp.h *//* already included: src/grid_sampler/imp.h */
-/* already included: src/dbg/imp.h *//* already included: src/io/restart/imp.h *//* already included: src/clist/imp.h */
+
+/* already included: src/io/diag/part/imp.h */
+/* already included: src/grid_sampler/imp.h */
+
+/* already included: src/dbg/imp.h */
+/* already included: src/io/restart/imp.h */
+/* already included: src/clist/imp.h */
+
 /* already included: src/flu/imp.h */
-/* already included: src/comm/imp.h *//* already included: src/distr/flu/imp.h *//* already included: src/distr/flu/status/imp.h */
-/* already included: src/flu/type.h *//* already included: src/exch/flu/imp.h */
-/* already included: src/fluforces/imp.h *//* already included: src/io/bop/imp.h */
-/* already included: src/inter/color/imp.h *//* already included: src/scheme/force/imp.h *//* already included: src/scheme/move/imp.h *//* already included: src/scheme/restrain/imp.h *//* already included: src/scheme/time_line/imp.h *//* already included: src/scheme/time_step/imp.h */
-/* already included: src/control/vel/imp.h *//* already included: src/control/den/imp.h *//* already included: src/control/outflow/imp.h *//* already included: src/control/inflow/imp.h */
+
+/* already included: src/comm/imp.h */
+/* already included: src/distr/flu/imp.h */
+/* already included: src/distr/flu/status/imp.h */
+
+/* already included: src/flu/type.h */
+/* already included: src/exch/flu/imp.h */
+
+/* already included: src/fluforces/imp.h */
+/* already included: src/io/bop/imp.h */
+
+/* already included: src/inter/color/imp.h */
+/* already included: src/scheme/force/imp.h */
+/* already included: src/scheme/move/imp.h */
+/* already included: src/scheme/restrain/imp.h */
+/* already included: src/scheme/time_line/imp.h */
+/* already included: src/scheme/time_step/imp.h */
+
+/* already included: src/control/vel/imp.h */
+/* already included: src/control/den/imp.h */
+/* already included: src/control/outflow/imp.h */
+/* already included: src/control/inflow/imp.h */
+
 /* already included: src/color/imp.h */
-/* begin src/sim/objects/imp.h */struct Objects;
+
+/* begin src/sim/objects/imp.h */
+struct Objects;
 
 struct Sdf;
 struct Config;
@@ -62869,7 +64580,8 @@ void objects_check_forces(const Objects*, const Dbg*, float dt);
 // end::check[]
 
 /* end src/sim/objects/imp.h */
-/* begin src/sim/objinter/imp.h */struct ObjInter;
+/* begin src/sim/objinter/imp.h */
+struct ObjInter;
 
 struct Config;
 struct Opt;
@@ -62885,7 +64597,8 @@ void obj_inter_fin(ObjInter*);
 void obj_inter_forces(ObjInter*, const PairParams **fsi_prms, const PairParams **cnt_prms, PFarray *flu, const int *flu_start, PFarrays *obj); // <1>
 // end::int[]
 /* end src/sim/objinter/imp.h */
-/* begin src/sim/opt/imp.h */#pragma once
+/* begin src/sim/opt/imp.h */
+#pragma once
 
 /* solvent options */
 struct OptFlu {
@@ -62953,7 +64666,8 @@ void opt_read(const Config*, Opt*);
 void opt_check(const Opt*);
 long opt_estimate_maxp(const Opt*);
 /* end src/sim/opt/imp.h */
-/* begin src/sim/walls/imp.h */struct Wall;
+/* begin src/sim/walls/imp.h */
+struct Wall;
 
 struct OptParams;
 struct Config;
@@ -62996,24 +64710,13 @@ double wall_compute_volume(const Wall*, MPI_Comm, int3 L); // <2>
 // end::get[]
 /* end src/sim/walls/imp.h */
 
-/* begin src/sim/imp.h */struct Sim;
-struct Config;
-
-// tag::mem[]
-void sim_ini(const Config*, MPI_Comm, /**/ Sim**);
-void sim_fin(Sim*);
-// end::mem[]
-
-// tag::run[]
-void sim_gen(Sim*);  // <1>
-void sim_strt(Sim*); // <2>
-// end::run[]
-/* end src/sim/imp.h */
+/* already included: src/sim/imp.h */
 
 #define _I_ static
 #define _S_ static
 
-/* begin src/sim/imp/type.h *//* solvent distribution */
+/* begin src/sim/imp/type.h */
+/* solvent distribution */
 struct FluDistr {
     DFluPack *p;
     DFluComm *c;
@@ -63133,7 +64836,8 @@ struct Sim {
     GenColor *gen_color;
 };
 /* end src/sim/imp/type.h */
-/* begin src/sim/imp/utils.h */_I_ bool active_walls(const Sim *s) {
+/* begin src/sim/imp/utils.h */
+_I_ bool active_walls(const Sim *s) {
     return !s->equilibrating && s->opt.wall.active;
 }
 
@@ -63230,7 +64934,8 @@ _I_ void utils_set_n_flu_pf(const PFarray *flu, Sim *s) {
     f->q.n = flu->n;
 }
 /* end src/sim/imp/utils.h */
-/* begin src/sim/imp/force.h */_S_ void body_force(const BForce *bforce, Sim *s) {
+/* begin src/sim/imp/force.h */
+_S_ void body_force(const BForce *bforce, Sim *s) {
     Flu *flu = &s->flu;
     const Opt *opt = &s->opt;
 
@@ -63376,7 +65081,8 @@ _I_ void forces(float dt, TimeLine *time, const BForce *bforce, Sim *s) {
 }
 /* end src/sim/imp/force.h */
 
-/* begin src/sim/imp/ini.h */_S_ void ini_flu_exch(const Opt *opt, MPI_Comm comm, int3 L, /**/ FluExch *e) {
+/* begin src/sim/imp/ini.h */
+_S_ void ini_flu_exch(const Opt *opt, MPI_Comm comm, int3 L, /**/ FluExch *e) {
     int maxd = HSAFETY_FACTOR * opt->params.numdensity;
 
     UC(eflu_pack_ini(opt->flu.colors, L, maxd, /**/ &e->p));
@@ -63609,7 +65315,8 @@ void sim_ini(const Config *cfg, MPI_Comm cart, /**/ Sim **sim) {
     MC(m::Barrier(s->cart));
 }
 /* end src/sim/imp/ini.h */
-/* begin src/sim/imp/fin.h */_S_ void fin_flu_exch(/**/ FluExch *e) {
+/* begin src/sim/imp/fin.h */
+_S_ void fin_flu_exch(/**/ FluExch *e) {
     UC(eflu_pack_fin(/**/ e->p));
     UC(eflu_comm_fin(/**/ e->c));
     UC(eflu_unpack_fin(/**/ e->u));
@@ -63710,7 +65417,8 @@ void sim_fin(Sim *s) {
     EFREE(s);
 }
 /* end src/sim/imp/fin.h */
-/* begin src/sim/imp/check.h */_S_ void check_size(long n, long nmax) {
+/* begin src/sim/imp/check.h */
+_S_ void check_size(long n, long nmax) {
     if (n < 0 || n > nmax)
         ERR("wrong size: %ld / %ld", n, nmax);
 }
@@ -63736,7 +65444,8 @@ _I_ void check_forces(float dt, Sim *s) {
     UC(objects_check_forces(s->obj, s->dbg, dt));
 }
 /* end src/sim/imp/check.h */
-/* begin src/sim/imp/dump.h */_S_ long download_all_pp(Sim *s) { /* device to host  data transfer */
+/* begin src/sim/imp/dump.h */
+_S_ long download_all_pp(Sim *s) { /* device to host  data transfer */
     long i, np = 0;
     Flu *flu = &s->flu;
     PFarrays *pf;
@@ -63848,7 +65557,8 @@ _I_ void dump(TimeLine *time, Sim *s) {
         dump_strt(s);
 }
 /* end src/sim/imp/dump.h */
-/* begin src/sim/imp/addons.h *//* velocity controller */
+/* begin src/sim/imp/addons.h */
+/* velocity controller */
 
 _S_ bool valid_step(long id, const int freq) {
     return (freq != 0) && (id % freq == 0);
@@ -63955,7 +65665,8 @@ _I_ void activate_mbr_bb(Sim *s) {
     UC(objects_activate_mbr_bounce(s->obj));
 }
 /* end src/sim/imp/addons.h */
-/* begin src/sim/imp/update.h */_I_ void clear_vel(Sim *s) {
+/* begin src/sim/imp/update.h */
+_I_ void clear_vel(Sim *s) {
     Flu *flu = &s->flu;
     UC(scheme_move_clear_vel(flu->q.n, flu->q.pp));
     UC(objects_clear_vel(s->obj));
@@ -64028,7 +65739,8 @@ _I_ void update_params(float dt, Sim *s) {
     UC(objects_update_dpd_prms(dt, kBT, s->obj));
 }
 /* end src/sim/imp/update.h */
-/* begin src/sim/imp/distr.h *//* the following functions will need to be splitted in the future
+/* begin src/sim/imp/distr.h */
+/* the following functions will need to be splitted in the future
    for performance reasons */
 
 _S_ void log_and_fail(Coords *c, DFluStatus *s, FluQuants *q) {
@@ -64084,7 +65796,8 @@ _I_ void distribute_flu(Sim *s) {
     dSync();
 }
 /* end src/sim/imp/distr.h */
-/* begin src/sim/imp/run.h */_S_ void pre_run(Sim *s) {
+/* begin src/sim/imp/run.h */
+_S_ void pre_run(Sim *s) {
     s->equilibrating = false;
 
     UC(dump_strt_templ(s));
@@ -64166,7 +65879,8 @@ _I_ void run(float ts, float te, Sim *s) {
     UC(distribute_flu(/**/ s));
 }
 /* end src/sim/imp/run.h */
-/* begin src/sim/imp/main.h */_S_ void gen_flu(Sim *s) {
+/* begin src/sim/imp/main.h */
+_S_ void gen_flu(Sim *s) {
     Flu *flu = &s->flu;
     UC(flu_gen_quants(s->coords, s->opt.params.numdensity, s->gen_color, &flu->q));
     UC(flu_build_cells(&flu->q));
@@ -64566,23 +66280,66 @@ void sim_strt(Sim *s) {
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/sim/objects/imp.cpp"
-/* begin src/sim/objects/imp.cpp */#include <mpi.h>
+/* begin src/sim/objects/imp.cpp */
+#include <mpi.h>
 #include <stdlib.h>
 #include <string.h>
 #include <vector_types.h>
 
-#include <conf.h>
-/* already included: src/inc/conf.h *//* already included: src/inc/type.h *//* already included: src/inc/def.h *//* already included: src/inc/dev.h */
-/* already included: src/d/api.h *//* already included: src/mpi/wrapper.h */
-/* already included: src/utils/error.h *//* already included: src/utils/os.h *//* already included: src/utils/cc.h *//* already included: src/utils/mc.h *//* already included: src/dbg/imp.h */
-/* already included: src/utils/msg.h *//* already included: src/utils/imp.h *//* already included: src/algo/convert/imp.h */
-/* already included: src/coords/ini.h *//* already included: src/coords/imp.h */
-/* already included: src/pair/imp.h *//* already included: src/struct/parray/imp.h *//* already included: src/struct/farray/imp.h *//* already included: src/struct/pfarrays/imp.h *//* already included: src/struct/partlist/type.h *//* already included: src/mesh/triangles/type.h *//* already included: src/mesh/triangles/imp.h *//* already included: src/clist/imp.h */
+/* already included: src/inc/conf.h */
+/* already included: src/inc/conf.h */
+/* already included: src/inc/type.h */
+/* already included: src/inc/def.h */
+/* already included: src/inc/dev.h */
+
+/* already included: src/d/api.h */
+/* already included: src/mpi/wrapper.h */
+
+/* already included: src/utils/error.h */
+/* already included: src/utils/os.h */
+/* already included: src/utils/cc.h */
+/* already included: src/utils/mc.h */
+/* already included: src/dbg/imp.h */
+
+/* already included: src/utils/msg.h */
+/* already included: src/utils/imp.h */
+/* already included: src/algo/convert/imp.h */
+
+/* already included: src/coords/ini.h */
+/* already included: src/coords/imp.h */
+
+/* already included: src/pair/imp.h */
+/* already included: src/struct/parray/imp.h */
+/* already included: src/struct/farray/imp.h */
+/* already included: src/struct/pfarrays/imp.h */
+/* already included: src/struct/partlist/type.h */
+/* already included: src/mesh/triangles/type.h */
+/* already included: src/mesh/triangles/imp.h */
+/* already included: src/clist/imp.h */
+
 /* already included: src/algo/minmax/imp.h */
-/* already included: src/conf/imp.h *//* already included: src/io/com/imp.h *//* already included: src/io/mesh_read/imp.h *//* already included: src/io/mesh/imp.h *//* already included: src/io/restart/imp.h *//* already included: src/io/rig/imp.h *//* already included: src/io/bop/imp.h */
-/* already included: src/rbc/params/imp.h *//* already included: src/rbc/type.h *//* already included: src/rbc/imp.h *//* already included: src/rbc/force/imp.h *//* already included: src/rbc/force/area_volume/imp.h *//* already included: src/rbc/stretch/imp.h *//* already included: src/rbc/com/imp.h */
-/* already included: src/rig/imp.h *//* already included: src/rigid/imp.h */
-/* begin src/wall/imp.h */#pragma once
+
+/* already included: src/conf/imp.h */
+/* already included: src/io/com/imp.h */
+/* already included: src/io/mesh_read/imp.h */
+/* already included: src/io/mesh/imp.h */
+/* already included: src/io/restart/imp.h */
+/* already included: src/io/rig/imp.h */
+/* already included: src/io/bop/imp.h */
+
+/* already included: src/rbc/params/imp.h */
+/* already included: src/rbc/type.h */
+/* already included: src/rbc/imp.h */
+/* already included: src/rbc/force/imp.h */
+/* already included: src/rbc/force/area_volume/imp.h */
+/* already included: src/rbc/stretch/imp.h */
+/* already included: src/rbc/com/imp.h */
+
+/* already included: src/rig/imp.h */
+/* already included: src/rigid/imp.h */
+
+/* begin src/wall/imp.h */
+#pragma once
 
 struct PairParams;
 struct PaArray;
@@ -64641,10 +66398,20 @@ void wall_repulse_prm_fin(WallRepulsePrm*); // <3>
 // end::repulse[]
 /* end src/wall/imp.h */
 
-/* already included: src/scheme/move/imp.h *//* already included: src/scheme/force/imp.h *//* already included: src/scheme/time_step/imp.h */
-/* already included: src/comm/imp.h *//* already included: src/distr/rbc/imp.h *//* already included: src/distr/rig/imp.h *//* already included: src/exch/mesh/imp.h *///#include "meshbb/imp.h"
-/* already included: src/mesh_bounce/imp.h *//* already included: src/mesh/collision/imp.h */
-/* begin src/wall/sdf/imp.h */struct Sdf;
+/* already included: src/scheme/move/imp.h */
+/* already included: src/scheme/force/imp.h */
+/* already included: src/scheme/time_step/imp.h */
+
+/* already included: src/comm/imp.h */
+/* already included: src/distr/rbc/imp.h */
+/* already included: src/distr/rig/imp.h */
+/* already included: src/exch/mesh/imp.h */
+//#include "meshbb/imp.h"
+/* already included: src/mesh_bounce/imp.h */
+/* already included: src/mesh/collision/imp.h */
+
+/* begin src/wall/sdf/imp.h */
+struct Sdf;
 struct Sdf_v;
 struct WvelStep;
 struct Coords;
@@ -64673,7 +66440,10 @@ void sdf_bounce(float dt, const WvelStep*, const Coords*, const Sdf*, int n, /**
 /* end src/wall/sdf/imp.h */
 
 /* already included: src/sim/opt/imp.h */
-/* already included: src/sim/objects/imp.h *//* begin src/sim/objects/imp/type.h *//* membrane distribution */
+
+/* already included: src/sim/objects/imp.h */
+/* begin src/sim/objects/imp/type.h */
+/* membrane distribution */
 struct MbrDistr {
     DRbcPack *p;
     DRbcComm *c;
@@ -64772,7 +66542,8 @@ struct Objects {
     PairParams **cnt_params;
 };
 /* end src/sim/objects/imp/type.h */
-/* begin src/sim/objects/imp/ini.h */static void gen_name_mesh_dir(const char *name, char *mesh_dir) {
+/* begin src/sim/objects/imp/ini.h */
+static void gen_name_mesh_dir(const char *name, char *mesh_dir) {
     strcpy(mesh_dir, "ply/");
     strcat(mesh_dir, name);
 }
@@ -65060,7 +66831,8 @@ void objects_ini(const Config *cfg, const Opt *opt, MPI_Comm cart, const Coords 
     UC(ini_cnt_params(cfg, obj->nmbr, obj->nrig, obj->mbr, obj->rig, &obj->cnt_params));
 }
 /* end src/sim/objects/imp/ini.h */
-/* begin src/sim/objects/imp/fin.h */static void fin_mbr_distr(/**/ MbrDistr *d) {
+/* begin src/sim/objects/imp/fin.h */
+static void fin_mbr_distr(/**/ MbrDistr *d) {
     UC(drbc_pack_fin(/**/ d->p));
     UC(drbc_comm_fin(/**/ d->c));
     UC(drbc_unpack_fin(/**/ d->u));
@@ -65177,7 +66949,8 @@ void objects_fin(Objects *obj) {
     EFREE(obj);
 }
 /* end src/sim/objects/imp/fin.h */
-/* begin src/sim/objects/imp/check.h */#pragma once
+/* begin src/sim/objects/imp/check.h */
+#pragma once
 
 static void obj_check_size(long n, long nmax) {
     if (n < 0 || n > nmax)
@@ -65226,7 +66999,8 @@ void objects_check_forces(const Objects *o, const Dbg *dbg, float dt) {
     for (i = 0; i < o->nrig; ++i) UC(check_forces_rig(dbg, dt, o->coords, o->rig[i]));
 }
 /* end src/sim/objects/imp/check.h */
-/* begin src/sim/objects/imp/forces.h */#pragma once
+/* begin src/sim/objects/imp/forces.h */
+#pragma once
 
 static void obj_clear_forces(int n, Force* ff) {
     if (n) DzeroA(ff, n);
@@ -65276,7 +67050,8 @@ void objects_body_forces(const BForce *bf, Objects *o) {
             bforce_rig(o->coords, bf, o->rig[i]);
 }
 /* end src/sim/objects/imp/forces.h */
-/* begin src/sim/objects/imp/main.h */static void save_mesh_mbr(Mbr *m) {
+/* begin src/sim/objects/imp/main.h */
+static void save_mesh_mbr(Mbr *m) {
     if (m->bbdata)
         convert_pp2rr_previous(m->q.n, m->q.pp, m->bbdata->rr_cp);
 }
@@ -65533,7 +67308,8 @@ void objects_activate_mbr_bounce(Objects *o) {
     for (i = 0; i < o->nmbr; ++i) activate_mbr_bounce(o->mbr[i]);
 }
 /* end src/sim/objects/imp/main.h */
-/* begin src/sim/objects/imp/bounce.h */static MeshInfo mesh_info_mbr(const Mbr *m) {
+/* begin src/sim/objects/imp/bounce.h */
+static MeshInfo mesh_info_mbr(const Mbr *m) {
     MeshInfo mi;
     mi.nv = m->q.nv;
     mi.nt = m->q.nt;
@@ -65784,7 +67560,8 @@ void objects_bounce(float dt, float flu_mass, const Clist *flu_cells, long n, co
         bounce_rig(dt, flu_mass, flu_cells, n, flu_pp0, flu_pp, bb, obj->rig[i]);
 }
 /* end src/sim/objects/imp/bounce.h */
-/* begin src/sim/objects/imp/recolor.h */static void reini_colors(PFarray *flu) {
+/* begin src/sim/objects/imp/recolor.h */
+static void reini_colors(PFarray *flu) {
     UC(collision_label_ini(flu->n, BLUE_COLOR, /**/ (int*) flu->p.cc));
 }
 
@@ -65836,7 +67613,8 @@ void objects_recolor_flu(Objects *obj, PFarray *flu) {
     for (i = 0; i < obj->nmbr; ++i) UC(recolor_flu_from_mbr(obj->mbr[i], flu));
 }
 /* end src/sim/objects/imp/recolor.h */
-/* begin src/sim/objects/imp/dump.h */static void dump_mesh_mbr(MPI_Comm cart, const Coords *coords, Particle *pp, long id, Mbr *m) {
+/* begin src/sim/objects/imp/dump.h */
+static void dump_mesh_mbr(MPI_Comm cart, const Coords *coords, Particle *pp, long id, Mbr *m) {
     cD2H(pp, m->q.pp, m->q.n);
     UC(mesh_write_particles(m->mesh_write, cart, coords, m->q.nc, pp, id));
 }
@@ -65909,7 +67687,8 @@ void objects_strt_dump(const char *base, long id, Objects *o) {
     for (i = 0; i < o->nrig; ++i) UC(rig_strt_dump(o->cart, base, o->rig[i]->name, id, &o->rig[i]->q));
 }
 /* end src/sim/objects/imp/dump.h */
-/* begin src/sim/objects/imp/gen.h */static void gen_mesh_mbr(Coords *coords, MPI_Comm cart, Mbr *m) {
+/* begin src/sim/objects/imp/gen.h */
+static void gen_mesh_mbr(Coords *coords, MPI_Comm cart, Mbr *m) {
     MeshRead *mesh = m->mesh;
     UC(rbc_gen_mesh(coords, cart, mesh, m->ic_file, /**/ &m->q));
 }
@@ -66294,20 +68073,39 @@ void objects_gen_freeze(PFarray *flu, Objects *o) {
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/sim/objinter/imp.cpp"
-/* begin src/sim/objinter/imp.cpp */#include <stdio.h>
+/* begin src/sim/objinter/imp.cpp */
+#include <stdio.h>
 #include <mpi.h>
 #include <vector_types.h>
 
-#include <conf.h>
-/* already included: src/inc/conf.h *//* already included: src/inc/type.h *//* already included: src/inc/def.h */
-/* already included: src/utils/imp.h *//* already included: src/utils/error.h *//* already included: src/utils/cc.h *//* already included: src/utils/mc.h */
+/* already included: src/inc/conf.h */
+/* already included: src/inc/conf.h */
+/* already included: src/inc/type.h */
+/* already included: src/inc/def.h */
+
+/* already included: src/utils/imp.h */
+/* already included: src/utils/error.h */
+/* already included: src/utils/cc.h */
+/* already included: src/utils/mc.h */
+
 /* already included: src/mpi/wrapper.h */
-/* already included: src/struct/parray/imp.h *//* already included: src/struct/farray/imp.h *//* already included: src/struct/pfarrays/imp.h */
+
+/* already included: src/struct/parray/imp.h */
+/* already included: src/struct/farray/imp.h */
+/* already included: src/struct/pfarrays/imp.h */
+
 /* already included: src/pair/imp.h */
-/* already included: src/cnt/imp.h *//* already included: src/fsi/imp.h */
+
+/* already included: src/cnt/imp.h */
+/* already included: src/fsi/imp.h */
+
 /* already included: src/exch/obj/imp.h */
+
 /* already included: src/sim/opt/imp.h */
-/* already included: src/sim/objinter/imp.h *//* begin src/sim/objinter/imp/type.h *//* object exchanger for forces */
+
+/* already included: src/sim/objinter/imp.h */
+/* begin src/sim/objinter/imp/type.h */
+/* object exchanger for forces */
 struct ObjExch {
     EObjPack *p;
     EObjComm *c;
@@ -66326,7 +68124,8 @@ struct ObjInter {
 };
 
 /* end src/sim/objinter/imp/type.h */
-/* begin src/sim/objinter/imp/mem.h */static void ini_obj_exch(MPI_Comm comm, int3 L, /**/ ObjExch **oe) {
+/* begin src/sim/objinter/imp/mem.h */
+static void ini_obj_exch(MPI_Comm comm, int3 L, /**/ ObjExch **oe) {
     ObjExch *e;
     int maxpsolid = MAX_PSOLID_NUM;
     EMALLOC(1, oe);
@@ -66377,7 +68176,8 @@ void obj_inter_fin(ObjInter *o) {
     if (o->fsi) UC(fsi_fin(o->fsi));
 }
 /* end src/sim/objinter/imp/mem.h */
-/* begin src/sim/objinter/imp/main.h */static void fill_wrappers(PFarrays *obj, int *nwrappers, PaWrap *pw, FoWrap *fw) {
+/* begin src/sim/objinter/imp/main.h */
+static void fill_wrappers(PFarrays *obj, int *nwrappers, PaWrap *pw, FoWrap *fw) {
     long i, nw, n;
     PaArray p;
     FoArray f;
@@ -66770,15 +68570,22 @@ void obj_inter_forces(ObjInter *oi, const PairParams **fsi_prms, const PairParam
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/sim/opt/imp.cpp"
-/* begin src/sim/opt/imp.cpp */#include <mpi.h>
+/* begin src/sim/opt/imp.cpp */
+#include <mpi.h>
 #include <stdio.h>
 #include <string.h>
 #include <vector_types.h>
 
 /* already included: src/inc/def.h */
-/* already included: src/conf/imp.h *//* already included: src/utils/error.h *//* already included: src/utils/imp.h */
+
+/* already included: src/conf/imp.h */
+/* already included: src/utils/error.h */
+/* already included: src/utils/imp.h */
+
 /* already included: src/io/mesh/imp.h */
+
 /* already included: src/sim/opt/imp.h */
+
 static int str2shifttype(const char *type) {
     if      (same_str(type, "edge"  )) return MESH_WRITE_EDGE;
     else if (same_str(type, "center")) return MESH_WRITE_CENTER;
@@ -67265,15 +69072,28 @@ long opt_estimate_maxp(const Opt *o) {
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/sim/walls/imp.cpp"
-/* begin src/sim/walls/imp.cpp */#include <stdio.h>
+/* begin src/sim/walls/imp.cpp */
+#include <stdio.h>
 #include <mpi.h>
 #include <vector_types.h>
 
-/* already included: src/inc/type.h *//* already included: src/inc/def.h */
-/* already included: src/utils/error.h *//* already included: src/utils/imp.h *//* already included: src/utils/mc.h *//* already included: src/utils/msg.h */
+/* already included: src/inc/type.h */
+/* already included: src/inc/def.h */
+
+/* already included: src/utils/error.h */
+/* already included: src/utils/imp.h */
+/* already included: src/utils/mc.h */
+/* already included: src/utils/msg.h */
+
 /* already included: src/mpi/wrapper.h */
-/* already included: src/struct/parray/imp.h *//* already included: src/struct/farray/imp.h *//* already included: src/struct/pfarrays/imp.h */
-/* already included: src/wall/sdf/imp.h *//* begin src/wall/wvel/imp.h */#pragma once
+
+/* already included: src/struct/parray/imp.h */
+/* already included: src/struct/farray/imp.h */
+/* already included: src/struct/pfarrays/imp.h */
+
+/* already included: src/wall/sdf/imp.h */
+/* begin src/wall/wvel/imp.h */
+#pragma once
 
 struct Wvel;
 struct WvelStep;
@@ -67328,8 +69148,12 @@ void wvel_get_view(const WvelStep *w, /**/ WvelHS_v *v);
 // end::view[]
 /* end src/wall/wvel/imp.h */
 /* already included: src/wall/imp.h */
+
 /* already included: src/sim/opt/imp.h */
-/* already included: src/sim/walls/imp.h *//* begin src/sim/walls/imp/type.h */struct Wall {
+
+/* already included: src/sim/walls/imp.h */
+/* begin src/sim/walls/imp/type.h */
+struct Wall {
     Sdf *sdf;
     WallQuants q;
     WallTicket *t;
@@ -67337,7 +69161,8 @@ void wvel_get_view(const WvelStep *w, /**/ WvelHS_v *v);
     WvelStep *velstep;
 };
 /* end src/sim/walls/imp/type.h */
-/* begin src/sim/walls/imp/mem.h */void wall_ini(const Config *cfg, int3 L, Wall **wall) {
+/* begin src/sim/walls/imp/mem.h */
+void wall_ini(const Config *cfg, int3 L, Wall **wall) {
     Wall *w;
     EMALLOC(1, wall);
     w = *wall;
@@ -67358,7 +69183,8 @@ void wall_fin(Wall *w) {
     EFREE(w);
 }
 /* end src/sim/walls/imp/mem.h */
-/* begin src/sim/walls/imp/main.h */static long get_max_parts(OptParams p) {
+/* begin src/sim/walls/imp/main.h */
+static long get_max_parts(OptParams p) {
     int3 L = p.L;
     return p.numdensity *
         (L.x + 2 * XWM) *
@@ -67775,10 +69601,14 @@ void wall_update_vel(float t, Wall *w) {
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/struct/farray/imp.cpp"
-/* begin src/struct/farray/imp.cpp */#include <stdio.h>
+/* begin src/struct/farray/imp.cpp */
+#include <stdio.h>
 
 /* already included: src/struct/farray/imp.h */
-/* already included: src/struct/farray/type.h *//* begin src/struct/farray/imp/main.h */void farray_push_ff(Force *ff, FoArray *a) {
+
+/* already included: src/struct/farray/type.h */
+/* begin src/struct/farray/imp/main.h */
+void farray_push_ff(Force *ff, FoArray *a) {
     a->ff = (float*) ff;
     a->stress = false;
 }
@@ -68102,10 +69932,14 @@ void farray_get_view(const FoArray *a, FoSArray_v *v) {
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/struct/parray/imp.cpp"
-/* begin src/struct/parray/imp.cpp */#include <stdio.h>
+/* begin src/struct/parray/imp.cpp */
+#include <stdio.h>
 
 /* already included: src/struct/parray/imp.h */
-/* already included: src/struct/parray/type.h *//* begin src/struct/parray/imp/main.h */void parray_push_pp(const Particle *pp, PaArray *a) {
+
+/* already included: src/struct/parray/type.h */
+/* begin src/struct/parray/imp/main.h */
+void parray_push_pp(const Particle *pp, PaArray *a) {
     a->pp = (const float*)pp;
     a->colors = false;
 };
@@ -68429,12 +70263,20 @@ void parray_get_view(const PaArray *a, PaCArray_v *v) {
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/struct/pfarrays/imp.cpp"
-/* begin src/struct/pfarrays/imp.cpp */#include <stdio.h>
+/* begin src/struct/pfarrays/imp.cpp */
+#include <stdio.h>
 
-/* already included: src/utils/error.h *//* already included: src/utils/imp.h */
+/* already included: src/utils/error.h */
+/* already included: src/utils/imp.h */
+
 /* already included: src/inc/type.h */
-/* already included: src/struct/parray/imp.h *//* already included: src/struct/farray/imp.h */
-/* already included: src/struct/pfarrays/imp.h *//* begin src/struct/pfarrays/imp/type.h */enum {
+
+/* already included: src/struct/parray/imp.h */
+/* already included: src/struct/farray/imp.h */
+
+/* already included: src/struct/pfarrays/imp.h */
+/* begin src/struct/pfarrays/imp/type.h */
+enum {
     MAX_SIZE = 10
 };
 
@@ -68443,7 +70285,8 @@ struct PFarrays {
     int n;
 };
 /* end src/struct/pfarrays/imp/type.h */
-/* begin src/struct/pfarrays/imp/main.h */void pfarrays_ini(PFarrays **pfa) {
+/* begin src/struct/pfarrays/imp/main.h */
+void pfarrays_ini(PFarrays **pfa) {
     EMALLOC(1, pfa);
     pfarrays_clear(*pfa);
 }
@@ -68791,12 +70634,17 @@ void pfarrays_get(int i, const PFarrays *pp, PFarray *p) {
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/utils/cc.cpp"
-/* begin src/utils/cc.cpp */#include <stdio.h>
+/* begin src/utils/cc.cpp */
+#include <stdio.h>
 
-#include <conf.h>
 /* already included: src/inc/conf.h */
-/* already included: src/utils/error.h *//* already included: src/d/api.h */
-/* already included: src/utils/cc/common.h */namespace cc {
+/* already included: src/inc/conf.h */
+
+/* already included: src/utils/error.h */
+/* already included: src/d/api.h */
+
+/* already included: src/utils/cc/common.h */
+namespace cc {
 void check(int rc, const char *file, int line) {
     if (rc != 0) {
         error_signal_cuda(file, line, d::emsg());
@@ -69105,13 +70953,16 @@ void check(int rc, const char *file, int line) {
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/utils/error.cpp"
-/* begin src/utils/error.cpp */#include <stdio.h>
+/* begin src/utils/error.cpp */
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdarg.h>
 #include <assert.h>
 
-/* already included: src/utils/msg.h *//* already included: src/utils/error.h */
+/* already included: src/utils/msg.h */
+/* already included: src/utils/error.h */
+
 /* context information */
 static int         err_line;
 static const char *err_file;
@@ -69507,13 +71358,18 @@ void error_print_stack() {
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/utils/imp.cpp"
-/* begin src/utils/imp.cpp */#include <stdio.h>
+/* begin src/utils/imp.cpp */
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <errno.h>
 
-/* already included: src/utils/os.h *//* already included: src/utils/msg.h *//* already included: src/utils/error.h */
+/* already included: src/utils/os.h */
+/* already included: src/utils/msg.h */
+/* already included: src/utils/error.h */
+
 /* already included: src/utils/imp.h */
+
 static double Bytes2MBytes(size_t sz) {
     return (double) sz / (double) (1 << 20);
 }
@@ -69882,12 +71738,17 @@ const char* get_filename_ext(const char *filename) {
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/utils/mc.cpp"
-/* begin src/utils/mc.cpp */#include <stdio.h>
+/* begin src/utils/mc.cpp */
+#include <stdio.h>
 #include <mpi.h>
 
-#include <conf.h>
 /* already included: src/inc/conf.h */
-/* already included: src/mpi/wrapper.h *//* already included: src/utils/error.h *//* already included: src/utils/mc.h */
+/* already included: src/inc/conf.h */
+
+/* already included: src/mpi/wrapper.h */
+/* already included: src/utils/error.h */
+/* already included: src/utils/mc.h */
+
 namespace mpicheck {
 void check(int code, const char *file, int line) {
     char msg[BUFSIZ], msg0[BUFSIZ];
@@ -70200,12 +72061,14 @@ void check(int code, const char *file, int line) {
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/utils/msg.cpp"
-/* begin src/utils/msg.cpp */#include <stdio.h>
+/* begin src/utils/msg.cpp */
+#include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
 #include <string.h>
 
 /* already included: src/utils/msg.h */
+
 static int rank;
 
 void msg_ini(int rnk) { rank = rnk; }
@@ -70564,10 +72427,12 @@ void msg_print(const char *fmt, ...) {
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/utils/nvtx/imp.cpp"
-/* begin src/utils/nvtx/imp.cpp */#include <string.h>
+/* begin src/utils/nvtx/imp.cpp */
+#include <string.h>
 #include <nvToolsExt.h>
 
 /* already included: src/utils/error.h */
+
 static const uint32_t colors[] = { 0x0000ff00, 0x000000ff, 0x00ffff00, 0x00ff00ff, 0x0000ffff, 0x00ff0000, 0x00ffffff };
 static const int ncolors = sizeof(colors)/sizeof(uint32_t);
 
@@ -70895,7 +72760,8 @@ void nvtx_pop() {
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/utils/os.cpp"
-/* begin src/utils/os.cpp */#include <stdio.h>
+/* begin src/utils/os.cpp */
+#include <stdio.h>
 #include <stdlib.h>
 
 #include <sys/stat.h>
@@ -70904,8 +72770,11 @@ void nvtx_pop() {
 #include <unistd.h>
 #include <malloc.h>
 
-/* already included: src/utils/msg.h *//* already included: src/utils/error.h */
+/* already included: src/utils/msg.h */
+/* already included: src/utils/error.h */
+
 /* already included: src/utils/os.h */
+
 static void safe_mkdir(const char *path)  {
     mode_t mode;
     int rc, ok;
@@ -71252,10 +73121,13 @@ void os_malloc_stats() { malloc_stats(); }
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/utils/string/imp.cpp"
-/* begin src/utils/string/imp.cpp */#include <ctype.h>
+/* begin src/utils/string/imp.cpp */
+#include <ctype.h>
 
 /* already included: src/utils/error.h */
+
 /* already included: src/utils/string/imp.h */
+
 int string_nword(const char *s) {
     enum {OUT, IN};
     const char *s0;
@@ -71577,17 +73449,25 @@ int string_nword(const char *s) {
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/wall/exch/imp.cpp"
-/* begin src/wall/exch/imp.cpp */#include <stdio.h>
+/* begin src/wall/exch/imp.cpp */
+#include <stdio.h>
 #include <string.h>
 #include <mpi.h>
 
 #include <vector_types.h>
 
-#include <conf.h>
-/* already included: src/inc/conf.h *//* already included: src/inc/def.h */
-/* already included: src/frag/imp.h *//* already included: src/comm/imp.h */
+/* already included: src/inc/conf.h */
+/* already included: src/inc/conf.h */
+/* already included: src/inc/def.h */
+
+/* already included: src/frag/imp.h */
+/* already included: src/comm/imp.h */
+
 /* already included: src/inc/type.h */
-/* already included: src/utils/error.h *//* already included: src/utils/msg.h */
+
+/* already included: src/utils/error.h */
+/* already included: src/utils/msg.h */
+
 static void exch_estimate(int numdensity, int3 L, int cap[]) {
     enum {SAFETY_FACTOR = 2};
     int i, nc, c;
@@ -71994,18 +73874,38 @@ void wall_exch_pp(MPI_Comm cart, int numdensity, int3 L, int maxn, /*io*/ Partic
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/wall/force/imp.cu"
-/* begin src/wall/force/imp.cu */#include <stdio.h>
+/* begin src/wall/force/imp.cu */
+#include <stdio.h>
 #include <assert.h>
 
-#include <conf.h>
 /* already included: src/inc/conf.h */
-/* already included: src/inc/def.h *//* already included: src/utils/msg.h *//* already included: src/utils/error.h */
-/* already included: src/d/api.h *//* already included: src/d/q.h *//* already included: src/d/ker.h */
+/* already included: src/inc/conf.h */
+
+/* already included: src/inc/def.h */
+/* already included: src/utils/msg.h */
+/* already included: src/utils/error.h */
+
+/* already included: src/d/api.h */
+/* already included: src/d/q.h */
+/* already included: src/d/ker.h */
+
 /* already included: src/utils/cc.h */
-/* already included: src/inc/type.h *//* already included: src/inc/dev.h *//* already included: src/utils/texo.h *//* already included: src/utils/texo.dev.h */
-/* already included: src/math/rnd/imp.h *//* already included: src/math/rnd/dev.h *//* already included: src/math/dev.h */
-/* already included: src/coords/type.h *//* already included: src/coords/dev.h *//* already included: src/coords/imp.h */
-/* begin src/wall/wvel/type.h */#pragma once
+
+/* already included: src/inc/type.h */
+/* already included: src/inc/dev.h */
+/* already included: src/utils/texo.h */
+/* already included: src/utils/texo.dev.h */
+
+/* already included: src/math/rnd/imp.h */
+/* already included: src/math/rnd/dev.h */
+/* already included: src/math/dev.h */
+
+/* already included: src/coords/type.h */
+/* already included: src/coords/dev.h */
+/* already included: src/coords/imp.h */
+
+/* begin src/wall/wvel/type.h */
+#pragma once
 
 /* view structures                      */
 /* (what is passed to device functions) */
@@ -72026,7 +73926,9 @@ struct WvelHS_v {
 };
 
 /* end src/wall/wvel/type.h */
-/* already included: src/wall/wvel/imp.h *//* begin src/wall/wvel/dev.h */#pragma once
+/* already included: src/wall/wvel/imp.h */
+/* begin src/wall/wvel/dev.h */
+#pragma once
 
 // tag::vel[]
 static __device__ void wvel(WvelCste_v p, Coords_v c, float3 r, /**/ float3 *v)
@@ -72096,7 +73998,9 @@ static __device__ void bounce_vel(Wvel_v wv, Coords_v c, float3 rw, /* io */ flo
 }
 /* end src/wall/wvel/dev.h */
 
-/* already included: src/math/tform/type.h *//* begin src/math/tform/dev.h */#pragma once
+/* already included: src/math/tform/type.h */
+/* begin src/math/tform/dev.h */
+#pragma once
 
 static __device__ void tform_convert_dev(const Tform_v *t, const float a0[3], /**/ float a1[3]) {
     enum {X, Y, Z};
@@ -72115,12 +74019,14 @@ static __device__ void tform_spacing_dev(const Tform_v *t, /**/ float s[3]) {
 }
 /* end src/math/tform/dev.h */
 
-/* begin src/wall/sdf/tex3d/type.h */#pragma once
+/* begin src/wall/sdf/tex3d/type.h */
+#pragma once
 
 struct Tex3d_v { cudaTextureObject_t t; }; // <1>
 struct Tex3d   { cudaTextureObject_t t; }; // <2>
 /* end src/wall/sdf/tex3d/type.h */
-/* begin src/wall/sdf/type.h */#pragma once
+/* begin src/wall/sdf/type.h */
+#pragma once
 
 /* view */
 struct Sdf_v {
@@ -72129,7 +74035,8 @@ struct Sdf_v {
     float cheap_threshold;
 };
 /* end src/wall/sdf/type.h */
-/* begin src/wall/sdf/dev.h */#pragma once
+/* begin src/wall/sdf/dev.h */
+#pragma once
 
 #define _S_ static __device__
 #define _I_ static __device__
@@ -72248,10 +74155,21 @@ _I_ float sdf_eval(const Sdf_v *sdf0, float x, float y, float z)  // <3>
 #undef _I_
 /* end src/wall/sdf/dev.h */
 
-/* already included: src/pair/type.h *//* already included: src/pair/dev.h *//* already included: src/pair/imp.h */
-/* already included: src/struct/parray/type.h *//* already included: src/struct/parray/imp.h *//* already included: src/struct/parray/dev.h */
-/* already included: src/struct/farray/type.h *//* already included: src/struct/farray/imp.h *//* already included: src/struct/farray/dev.h */
-/* already included: src/utils/kl.h *//* begin src/wall/force/imp.h */#pragma once
+/* already included: src/pair/type.h */
+/* already included: src/pair/dev.h */
+/* already included: src/pair/imp.h */
+
+/* already included: src/struct/parray/type.h */
+/* already included: src/struct/parray/imp.h */
+/* already included: src/struct/parray/dev.h */
+
+/* already included: src/struct/farray/type.h */
+/* already included: src/struct/farray/imp.h */
+/* already included: src/struct/farray/dev.h */
+
+/* already included: src/utils/kl.h */
+/* begin src/wall/force/imp.h */
+#pragma once
 
 struct PairParams;
 struct PaArray;
@@ -72286,12 +74204,14 @@ void wall_force_repulse(Sdf_v, WallRepulsePrm, long n, const PaArray*, const FoA
 
 namespace wf_dev {
 namespace map {
-/* begin src/wall/force/dev/map/type.h */struct Map { /* helps to find remote particle */
+/* begin src/wall/force/dev/map/type.h */
+struct Map { /* helps to find remote particle */
     int org0, org1, org2;
     int str0, str1, str2;
 };
 /* end src/wall/force/dev/map/type.h */
-/* begin src/wall/force/dev/map/ini.h */static __device__ int minmax(int lo, int hi, int a) { return min(hi, max(lo, a)); }
+/* begin src/wall/force/dev/map/ini.h */
+static __device__ int minmax(int lo, int hi, int a) { return min(hi, max(lo, a)); }
 
 static __device__ void ini(int3 L, int zplane, const Texo<int> texstart, int w_n, float x, float y, float z, /**/ Map *m) {
 #define start_fetch(i) (texo_fetch(texstart, i))
@@ -72342,7 +74262,8 @@ static __device__ void ini(int3 L, int zplane, const Texo<int> texstart, int w_n
 #undef start_fetch
 }
 /* end src/wall/force/dev/map/ini.h */
-/* begin src/wall/force/dev/map/use.h *//* true if `i' is bigger than the number of remote particles */
+/* begin src/wall/force/dev/map/use.h */
+/* true if `i' is bigger than the number of remote particles */
 static __device__ int endp(const Map m, int i) { return i >= m.str2; }
 static __device__ int m2id(const Map m, int i) {
     /* return remote particle id */
@@ -72354,7 +74275,8 @@ static __device__ int m2id(const Map m, int i) {
 }
 /* end src/wall/force/dev/map/use.h */
 }
-/* begin src/wall/force/dev/main.h */template <typename Wvel_v>
+/* begin src/wall/force/dev/main.h */
+template <typename Wvel_v>
 static __device__ void fetch_wall(Wvel_v wv, Coords_v c, Texo<float4> pp, int i, /**/ PairPa *a) {
     float3 r, v; /* wall velocity */
     float4 r0;
@@ -72448,7 +74370,8 @@ __global__ void repulse(WallRepulsePrm wr, int n, const Particle *pp, Sdf_v sdf_
 /* end src/wall/force/dev/main.h */
 }
 
-/* begin src/wall/force/imp/main.h */enum {
+/* begin src/wall/force/imp/main.h */
+enum {
     TPP = 3 /* # threads per particle */
 };
 
@@ -72835,31 +74758,61 @@ void wall_force_repulse(Sdf_v sdf_v, WallRepulsePrm wr, long n, const PaArray *p
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/wall/imp.cu"
-/* begin src/wall/imp.cu */#include <mpi.h>
+/* begin src/wall/imp.cu */
+#include <mpi.h>
 #include <stdio.h>
 #include <assert.h>
 
-#include <conf.h>
-/* already included: src/inc/conf.h *//* already included: src/inc/def.h *//* already included: src/utils/msg.h */
-/* already included: src/utils/error.h *//* already included: src/utils/imp.h *//* already included: src/d/api.h *//* already included: src/d/q.h *//* already included: src/d/ker.h */
+/* already included: src/inc/conf.h */
+/* already included: src/inc/conf.h */
+/* already included: src/inc/def.h */
+/* already included: src/utils/msg.h */
+
+/* already included: src/utils/error.h */
+/* already included: src/utils/imp.h */
+/* already included: src/d/api.h */
+/* already included: src/d/q.h */
+/* already included: src/d/ker.h */
+
 /* already included: src/utils/cc.h */
-/* already included: src/inc/type.h *//* already included: src/inc/dev.h *//* already included: src/utils/kl.h *//* already included: src/utils/texo.h */
+
+/* already included: src/inc/type.h */
+/* already included: src/inc/dev.h */
+/* already included: src/utils/kl.h */
+/* already included: src/utils/texo.h */
+
 /* already included: src/conf/imp.h */
+
 /* already included: src/math/rnd/imp.h */
-/* already included: src/coords/type.h *//* already included: src/wall/wvel/type.h */
-/* already included: src/math/tform/type.h *//* already included: src/wall/sdf/tex3d/type.h *//* already included: src/wall/sdf/type.h *//* already included: src/wall/sdf/imp.h */
-/* already included: src/struct/partlist/type.h *//* already included: src/algo/scan/imp.h *//* already included: src/clist/imp.h */
+
+/* already included: src/coords/type.h */
+/* already included: src/wall/wvel/type.h */
+
+/* already included: src/math/tform/type.h */
+/* already included: src/wall/sdf/tex3d/type.h */
+/* already included: src/wall/sdf/type.h */
+/* already included: src/wall/sdf/imp.h */
+
+/* already included: src/struct/partlist/type.h */
+/* already included: src/algo/scan/imp.h */
+/* already included: src/clist/imp.h */
+
 /* already included: src/io/restart/imp.h */
-/* begin src/wall/exch/imp.h */struct int3;
+
+/* begin src/wall/exch/imp.h */
+struct int3;
 struct Particle;
 // tag::int[]
 void wall_exch_pp(MPI_Comm cart, int numdensity, int3 L, int maxn, /*io*/ Particle *pp, int *n);
 // end::int[]
 /* end src/wall/exch/imp.h */
 /* already included: src/wall/force/imp.h */
+
 /* already included: src/wall/imp.h */
+
 namespace wall_dev {
-/* begin src/wall/dev/main.h */__global__ void particle2float4(const Particle *src, const int n, float4 *dst) {
+/* begin src/wall/dev/main.h */
+__global__ void particle2float4(const Particle *src, const int n, float4 *dst) {
     enum {X, Y, Z};
     int pid = threadIdx.x + blockDim.x * blockIdx.x;
     if (pid >= n) return;
@@ -72880,14 +74833,16 @@ __global__ void float42particle(const float4 *src, const int n, Particle *dst) {
 /* end src/wall/dev/main.h */
 }
 
-/* begin src/wall/imp/type.h */struct WallTicket {
+/* begin src/wall/imp/type.h */
+struct WallTicket {
     RNDunif *rnd;        /* rng on host                                        */
     Clist *cells;        /* cell lists (always the same, no need to store map) */
     Texo<int> texstart;  /* texture of starts from clist                       */
     Texo<float4> texpp;  /* texture of particle positions                      */
 };
 /* end src/wall/imp/type.h */
-/* begin src/wall/imp/ini.h */void wall_ini_quants(int3 L, WallQuants *q) {
+/* begin src/wall/imp/ini.h */
+void wall_ini_quants(int3 L, WallQuants *q) {
     q->n = 0;
     q->pp = NULL;
     q->L = L;
@@ -72903,7 +74858,8 @@ void wall_ini_ticket(int3 L, WallTicket **ti) {
                  L.z + 2 * ZWM, /**/ &t->cells));
 }
 /* end src/wall/imp/ini.h */
-/* begin src/wall/imp/fin.h */void wall_fin_quants(WallQuants *q) {
+/* begin src/wall/imp/fin.h */
+void wall_fin_quants(WallQuants *q) {
     if (q->pp) Dfree(q->pp);
     q->n = 0;
 }
@@ -72916,7 +74872,8 @@ void wall_fin_ticket(WallTicket *t) {
     EFREE(t);
 }
 /* end src/wall/imp/fin.h */
-/* begin src/wall/imp/strt.h */#define CODE "wall"
+/* begin src/wall/imp/strt.h */
+#define CODE "wall"
 #define PP CODE ".pp"
 
 static void read(MPI_Comm comm, const char *base, int maxn, /**/ float4 *pp, int *n) {
@@ -72972,7 +74929,8 @@ void wall_strt_dump_templ(MPI_Comm comm, const char *base, const WallQuants *q) 
 #undef PP
 #undef CODE
 /* end src/wall/imp/strt.h */
-/* begin src/wall/imp/generate.h */static void freeze0(MPI_Comm cart, int numdensity, int3 L, int maxn, const Sdf *qsdf, /*io*/ int *n, Particle *pp, /*o*/ int *w_n, Particle *dev, /*w*/ Particle *hst) {
+/* begin src/wall/imp/generate.h */
+static void freeze0(MPI_Comm cart, int numdensity, int3 L, int maxn, const Sdf *qsdf, /*io*/ int *n, Particle *pp, /*o*/ int *w_n, Particle *dev, /*w*/ Particle *hst) {
     sdf_bulk_wall(qsdf, /*io*/ n, pp, /*o*/ w_n, hst); /* sort into bulk-frozen */
     msg_print("before exch: bulk/frozen : %d/%d", *n, *w_n);
     UC(wall_exch_pp(cart, numdensity, L, maxn, /*io*/ hst, w_n));
@@ -73033,7 +74991,8 @@ void wall_gen_ticket(const WallQuants *q, WallTicket *t) {
     UC(gen_ticket(q->n, q->pp, t->cells, &t->texstart, &t->texpp));
 }
 /* end src/wall/imp/generate.h */
-/* begin src/wall/imp/force.h */static WallForce get_wa(const Sdf *sdf, const WallQuants *q, const WallTicket *t, int) {
+/* begin src/wall/imp/force.h */
+static WallForce get_wa(const Sdf *sdf, const WallQuants *q, const WallTicket *t, int) {
     WallForce wa; /* local wall data */
 
     sdf_get_view(sdf, &wa.sdf_v);
@@ -73067,7 +75026,8 @@ void wall_repulse(const Sdf *sdf, const WallRepulsePrm *wr, long n, const PaArra
     UC(wall_force_repulse(sdf_v, *wr, n, pa, /**/ fa));
 }
 /* end src/wall/imp/force.h */
-/* begin src/wall/imp/repulse.h */void wall_repulse_prm_ini(float lambda, WallRepulsePrm **wrp) {
+/* begin src/wall/imp/repulse.h */
+void wall_repulse_prm_ini(float lambda, WallRepulsePrm **wrp) {
     WallRepulsePrm *wr;
     EMALLOC(1, wrp);
     wr = *wrp;
@@ -73384,19 +75344,29 @@ void wall_repulse_prm_fin(WallRepulsePrm *wr) {
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/wall/sdf/array3d/imp.cu"
-/* begin src/wall/sdf/array3d/imp.cu */#include <stdio.h>
+/* begin src/wall/sdf/array3d/imp.cu */
+#include <stdio.h>
 
-/* already included: src/inc/conf.h *//* already included: src/inc/conf.h */
+/* already included: src/inc/conf.h */
+/* already included: src/inc/conf.h */
+
 /* already included: src/d/api.h */
-/* already included: src/utils/imp.h *//* already included: src/utils/error.h *//* already included: src/utils/cc.h *//* already included: src/utils/msg.h */
-/* begin src/wall/sdf/array3d/type.h */#pragma once
+
+/* already included: src/utils/imp.h */
+/* already included: src/utils/error.h */
+/* already included: src/utils/cc.h */
+/* already included: src/utils/msg.h */
+
+/* begin src/wall/sdf/array3d/type.h */
+#pragma once
 
 struct Array3d {
     cudaArray_t a;  // <1>
     size_t x, y, z; // <2>
 };
 /* end src/wall/sdf/array3d/type.h */
-/* begin src/wall/sdf/array3d/imp.h */struct Array3d;
+/* begin src/wall/sdf/array3d/imp.h */
+struct Array3d;
 void array3d_ini(Array3d**, size_t x, size_t y, size_t z);                // <1>
 void array3d_fin(Array3d*);                                               // <2>
 void array3d_copy(size_t x, size_t y, size_t z, float *D, /**/ Array3d*); // <3>
@@ -73736,21 +75706,46 @@ void array3d_copy(size_t x, size_t y, size_t z, float *D, /**/ Array3d *q) {
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/wall/sdf/bounce/imp.cu"
-/* begin src/wall/sdf/bounce/imp.cu */#include <stdio.h>
+/* begin src/wall/sdf/bounce/imp.cu */
+#include <stdio.h>
 #include <assert.h>
 #include <mpi.h>
 
-#include <conf.h>
 /* already included: src/inc/conf.h */
-/* already included: src/utils/msg.h *//* already included: src/utils/cc.h *//* already included: src/utils/error.h */
-/* already included: src/d/q.h *//* already included: src/d/ker.h *//* already included: src/d/api.h */
-/* already included: src/inc/type.h *//* already included: src/inc/dev.h */
+/* already included: src/inc/conf.h */
+
+/* already included: src/utils/msg.h */
+/* already included: src/utils/cc.h */
+/* already included: src/utils/error.h */
+
+/* already included: src/d/q.h */
+/* already included: src/d/ker.h */
+/* already included: src/d/api.h */
+
+/* already included: src/inc/type.h */
+/* already included: src/inc/dev.h */
+
 /* already included: src/utils/kl.h */
-/* already included: src/coords/type.h *//* already included: src/coords/dev.h *//* already included: src/coords/imp.h */
-/* already included: src/wall/wvel/type.h *//* already included: src/wall/wvel/imp.h *//* already included: src/wall/wvel/dev.h *//* already included: src/math/dev.h */
-/* already included: src/math/tform/type.h *//* already included: src/math/tform/dev.h *//* already included: src/wall/sdf/tex3d/type.h *//* already included: src/wall/sdf/type.h *//* already included: src/wall/sdf/imp.h */
+
+/* already included: src/coords/type.h */
+/* already included: src/coords/dev.h */
+/* already included: src/coords/imp.h */
+
+/* already included: src/wall/wvel/type.h */
+/* already included: src/wall/wvel/imp.h */
+/* already included: src/wall/wvel/dev.h */
+/* already included: src/math/dev.h */
+
+/* already included: src/math/tform/type.h */
+/* already included: src/math/tform/dev.h */
+/* already included: src/wall/sdf/tex3d/type.h */
+/* already included: src/wall/sdf/type.h */
+/* already included: src/wall/sdf/imp.h */
+
 /* already included: src/wall/sdf/dev.h */
-/* begin src/wall/sdf/bounce/imp.h */struct Sdf;
+
+/* begin src/wall/sdf/bounce/imp.h */
+struct Sdf;
 struct WvelStep;
 struct Coords;
 struct Particle;
@@ -73762,7 +75757,8 @@ void bounce_back(float dt, const WvelStep *wv, const Coords *c, const Sdf *sdf, 
 /* end src/wall/sdf/bounce/imp.h */
 
 namespace sdf_bb_dev {
-/* begin src/wall/sdf/bounce/dev/main.h */enum {
+/* begin src/wall/sdf/bounce/dev/main.h */
+enum {
     MAX_RESCUE = 8,
     MAX_NEWTON = 2
 };
@@ -73878,7 +75874,8 @@ __global__ void bounce_back(float dt, Wvel_v wv, Coords_v c, Sdf_v texsdf, int n
 }
 /* end src/wall/sdf/bounce/dev/main.h */
 }
-/* begin src/wall/sdf/bounce/imp/main.h */template <typename Wvel_v>
+/* begin src/wall/sdf/bounce/imp/main.h */
+template <typename Wvel_v>
 static void apply(float dt, Wvel_v wv, const Coords *c, const Sdf *sdf, int n, /**/ Particle *pp) {
     Sdf_v sdf_v;
     Coords_v coordsv;
@@ -74210,14 +76207,23 @@ void bounce_back(float dt, const WvelStep *w, const Coords *c, const Sdf *sdf, i
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/wall/sdf/field/imp.cpp"
-/* begin src/wall/sdf/field/imp.cpp */#include <mpi.h>
+/* begin src/wall/sdf/field/imp.cpp */
+#include <mpi.h>
 #include <math.h>
 #include <vector_types.h>
 
-#include <conf.h>
 /* already included: src/inc/conf.h */
-/* already included: src/utils/error.h *//* already included: src/utils/imp.h *//* already included: src/io/grid/imp.h *//* already included: src/utils/msg.h *//* already included: src/coords/imp.h */
-/* already included: src/math/tform/imp.h *//* begin src/wall/sdf/tform/imp.h */struct Tform;
+/* already included: src/inc/conf.h */
+
+/* already included: src/utils/error.h */
+/* already included: src/utils/imp.h */
+/* already included: src/io/grid/imp.h */
+/* already included: src/utils/msg.h */
+/* already included: src/coords/imp.h */
+
+/* already included: src/math/tform/imp.h */
+/* begin src/wall/sdf/tform/imp.h */
+struct Tform;
 struct Coords;
 
 // tag::int[]
@@ -74229,7 +76235,8 @@ void sub2tex_ini(const Coords*, const int T[3], const int M[3], /**/ Tform*); //
 
 /* end src/wall/sdf/tform/imp.h */
 
-/* begin src/wall/sdf/field/imp.h */struct Coords;
+/* begin src/wall/sdf/field/imp.h */
+struct Coords;
 struct Tform;
 struct Field;
 
@@ -74254,13 +76261,15 @@ void field_scale(Field*, float scale); // <3>
 // end::int[]
 /* end src/wall/sdf/field/imp.h */
 
-/* begin src/wall/sdf/field/imp/type.h */struct Field {  /* size, extension, and data */
+/* begin src/wall/sdf/field/imp/type.h */
+struct Field {  /* size, extension, and data */
     int N[3];
     float ext[3];
     float *D;
 };
 /* end src/wall/sdf/field/imp/type.h */
-/* begin src/wall/sdf/field/imp/ini.h */static void read_extents(FILE *f, /**/ float *x, float *y, float *z) {
+/* begin src/wall/sdf/field/imp/ini.h */
+static void read_extents(FILE *f, /**/ float *x, float *y, float *z) {
     int r;
     char s[2048];
     UC(efgets(s, sizeof(s), f));
@@ -74304,12 +76313,14 @@ void field_ini(const char *path, /**/ Field **pq) {
     *pq = q;
 }
 /* end src/wall/sdf/field/imp/ini.h */
-/* begin src/wall/sdf/field/imp/fin.h */void field_fin(Field *q) {
+/* begin src/wall/sdf/field/imp/fin.h */
+void field_fin(Field *q) {
     EFREE(q->D);
     EFREE(q);
 }
 /* end src/wall/sdf/field/imp/fin.h */
-/* begin src/wall/sdf/field/imp/sample.h */struct Fi { /* field */
+/* begin src/wall/sdf/field/imp/sample.h */
+struct Fi { /* field */
     const Tform *t;
     const int *n;
     float *D;
@@ -74399,7 +76410,8 @@ static void sample(const Tform *t, const int N0[3], const float *D0, const int N
     }
 }
 /* end src/wall/sdf/field/imp/sample.h */
-/* begin src/wall/sdf/field/imp/main.h */static void dump0(const Coords *coords, const int N0[3], const float *D0, /**/ float *D1) {
+/* begin src/wall/sdf/field/imp/main.h */
+static void dump0(const Coords *coords, const int N0[3], const float *D0, /**/ float *D1) {
     int L[3] = {xs(coords), ys(coords), zs(coords)};
     Tform *t;
     UC(tform_ini(&t));
@@ -74764,17 +76776,36 @@ void field_dump(const Field *q, const Coords *c, MPI_Comm cart) {
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/wall/sdf/imp.cu"
-/* begin src/wall/sdf/imp.cu */#include <mpi.h>
+/* begin src/wall/sdf/imp.cu */
+#include <mpi.h>
 
 #include <curand.h>
 
-#include <conf.h>
 /* already included: src/inc/conf.h */
-/* already included: src/d/q.h *//* already included: src/d/api.h *//* already included: src/d/ker.h *//* already included: src/utils/error.h *//* already included: src/inc/def.h *//* already included: src/utils/msg.h *//* already included: src/utils/cc.h *//* already included: src/utils/mc.h *//* already included: src/utils/kl.h */
+/* already included: src/inc/conf.h */
+
+/* already included: src/d/q.h */
+/* already included: src/d/api.h */
+/* already included: src/d/ker.h */
+/* already included: src/utils/error.h */
+/* already included: src/inc/def.h */
+/* already included: src/utils/msg.h */
+/* already included: src/utils/cc.h */
+/* already included: src/utils/mc.h */
+/* already included: src/utils/kl.h */
+
 /* already included: src/mpi/wrapper.h */
-/* already included: src/inc/type.h *//* already included: src/inc/dev.h *//* already included: src/utils/imp.h */
+
+/* already included: src/inc/type.h */
+/* already included: src/inc/dev.h */
+/* already included: src/utils/imp.h */
+
 /* already included: src/coords/imp.h */
-/* already included: src/wall/sdf/array3d/imp.h *//* already included: src/wall/sdf/tex3d/type.h *//* begin src/wall/sdf/tex3d/imp.h */struct Tex3d;
+
+/* already included: src/wall/sdf/array3d/imp.h */
+/* already included: src/wall/sdf/tex3d/type.h */
+/* begin src/wall/sdf/tex3d/imp.h */
+struct Tex3d;
 struct Tex3d_v;
 struct Array3d;
 
@@ -74789,7 +76820,10 @@ void tex3d_to_view(const Tex3d*, /**/ Tex3d_v*); // <2>
 // end::int[]
 /* end src/wall/sdf/tex3d/imp.h */
 
-/* already included: src/wall/sdf/field/imp.h *//* already included: src/wall/sdf/bounce/imp.h *//* begin src/wall/sdf/label/imp.h */#pragma once
+/* already included: src/wall/sdf/field/imp.h */
+/* already included: src/wall/sdf/bounce/imp.h */
+/* begin src/wall/sdf/label/imp.h */
+#pragma once
 
 enum {
     // tag::enum[]
@@ -74805,11 +76839,21 @@ void wall_label_hst(const Sdf *sdf, int n, const Particle*, /**/ int *labels); /
 // end::int[]
 /* end src/wall/sdf/label/imp.h */
 
-/* already included: src/math/tform/type.h *//* already included: src/math/tform/imp.h *//* already included: src/math/tform/dev.h *//* already included: src/wall/sdf/tform/imp.h *//* already included: src/algo/utils/shfl.h *//* already included: src/algo/utils/dev.h */
-/* already included: src/wall/sdf/type.h *//* already included: src/wall/sdf/imp.h */
+/* already included: src/math/tform/type.h */
+/* already included: src/math/tform/imp.h */
+/* already included: src/math/tform/dev.h */
+/* already included: src/wall/sdf/tform/imp.h */
+/* already included: src/algo/utils/shfl.h */
+/* already included: src/algo/utils/dev.h */
+
+/* already included: src/wall/sdf/type.h */
+/* already included: src/wall/sdf/imp.h */
+
 /* already included: src/wall/sdf/dev.h */
+
 namespace sdf_dev {
-/* begin src/wall/sdf/dev/main.h */static __device__ float3 get_r(int3 L, const float *U) {
+/* begin src/wall/sdf/dev/main.h */
+static __device__ float3 get_r(int3 L, const float *U) {
     enum {X, Y, Z};
     float3 r;
     r.x = L.x * (U[X] - 0.5);
@@ -74842,7 +76886,8 @@ __global__ void count_inside(Sdf_v sv, int3 L, int n, const float *UU, int *coun
 /* end src/wall/sdf/dev/main.h */
 }
 
-/* begin src/wall/sdf/imp/type.h */struct Array3d;
+/* begin src/wall/sdf/imp/type.h */
+struct Array3d;
 struct Tform;
 struct Sdf {
     Array3d   *arr;
@@ -74853,7 +76898,8 @@ struct Sdf {
     int3 Lte; /* texture grid size */
 };
 /* end src/wall/sdf/imp/type.h */
-/* begin src/wall/sdf/imp/gen.h */static void gen0(const Coords *coords, Field *F, /**/ Sdf *sdf) {
+/* begin src/wall/sdf/imp/gen.h */
+static void gen0(const Coords *coords, Field *F, /**/ Sdf *sdf) {
     enum {X, Y, Z};
     int M[3] = {XWM, YWM, ZWM}; /* margin and texture */
     int N[3];
@@ -74909,7 +76955,8 @@ void sdf_gen(const Coords *coords, MPI_Comm cart, bool dump, Sdf *sdf) {
     UC(field_fin(F));
 }
 /* end src/wall/sdf/imp/gen.h */
-/* begin src/wall/sdf/imp/split.h *//* sort solvent particle into remaining in solvent and turning into wall according to keys (all on hst) */
+/* begin src/wall/sdf/imp/split.h */
+/* sort solvent particle into remaining in solvent and turning into wall according to keys (all on hst) */
 static void split_wall_solvent(const int *keys, /*io*/ int *s_n, Particle *s_pp, /**/ int *w_n, Particle *w_pp) {
     int n = *s_n;
     Particle p;
@@ -74966,7 +77013,8 @@ int sdf_who_stays(const Sdf *sdf, int n, const Particle *pp, int nc, int nv, /**
     return nc;
 }
 /* end src/wall/sdf/imp/split.h */
-/* begin src/wall/sdf/imp/main.h */static int3 texture_grid_size(int3 L, int3 M) {
+/* begin src/wall/sdf/imp/main.h */
+static int3 texture_grid_size(int3 L, int3 M) {
     enum {PAD = 16};
     int3 T;
     int x, y, z; /* grid extents in real space */
@@ -75388,19 +77436,40 @@ double sdf_compute_volume(MPI_Comm comm, int3 L, const Sdf *sdf, long nsamples) 
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/wall/sdf/label/imp.cu"
-/* begin src/wall/sdf/label/imp.cu */#include <assert.h>
+/* begin src/wall/sdf/label/imp.cu */
+#include <assert.h>
 #include <mpi.h>
 
-#include <conf.h>
 /* already included: src/inc/conf.h */
-/* already included: src/inc/def.h *//* already included: src/utils/msg.h *//* already included: src/utils/cc.h *//* already included: src/utils/error.h *//* already included: src/utils/imp.h */
-/* already included: src/d/q.h *//* already included: src/d/ker.h *//* already included: src/d/api.h */
-/* already included: src/inc/type.h *//* already included: src/inc/dev.h */
+/* already included: src/inc/conf.h */
+
+/* already included: src/inc/def.h */
+/* already included: src/utils/msg.h */
+/* already included: src/utils/cc.h */
+/* already included: src/utils/error.h */
+/* already included: src/utils/imp.h */
+
+/* already included: src/d/q.h */
+/* already included: src/d/ker.h */
+/* already included: src/d/api.h */
+
+/* already included: src/inc/type.h */
+/* already included: src/inc/dev.h */
+
 /* already included: src/utils/kl.h */
-/* already included: src/math/tform/type.h *//* already included: src/math/tform/dev.h *//* already included: src/wall/sdf/tex3d/type.h *//* already included: src/wall/sdf/type.h *//* already included: src/wall/sdf/imp.h *//* already included: src/wall/sdf/dev.h */
+
+/* already included: src/math/tform/type.h */
+/* already included: src/math/tform/dev.h */
+/* already included: src/wall/sdf/tex3d/type.h */
+/* already included: src/wall/sdf/type.h */
+/* already included: src/wall/sdf/imp.h */
+/* already included: src/wall/sdf/dev.h */
+
 /* already included: src/wall/sdf/label/imp.h */
+
 namespace sdf_label_dev {
-/* begin src/wall/sdf/label/dev/main.h */static __global__ void main(Sdf_v sdf_v, int n, const Particle *pp, /**/ int *labels) {
+/* begin src/wall/sdf/label/dev/main.h */
+static __global__ void main(Sdf_v sdf_v, int n, const Particle *pp, /**/ int *labels) {
     enum {X, Y, Z};
     int pid;
     Particle p;
@@ -75416,7 +77485,8 @@ namespace sdf_label_dev {
 }
 /* end src/wall/sdf/label/dev/main.h */
 }
-/* begin src/wall/sdf/label/imp/main.h */void wall_label_dev(const Sdf *sdf, int n, const Particle *pp, /**/ int *labels) {
+/* begin src/wall/sdf/label/imp/main.h */
+void wall_label_dev(const Sdf *sdf, int n, const Particle *pp, /**/ int *labels) {
     Sdf_v sdf_v;
     sdf_get_view(sdf, &sdf_v);
     KL(sdf_label_dev::main,(k_cnf(n)), (sdf_v, n, pp, labels));
@@ -75732,14 +77802,25 @@ void wall_label_hst(const Sdf *sdf, int n, const Particle *pp, /**/ int *hst) {
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/wall/sdf/tex3d/imp.cu"
-/* begin src/wall/sdf/tex3d/imp.cu */#include <stdio.h>
+/* begin src/wall/sdf/tex3d/imp.cu */
+#include <stdio.h>
 
-/* already included: src/inc/conf.h *//* already included: src/inc/conf.h */
+/* already included: src/inc/conf.h */
+/* already included: src/inc/conf.h */
+
 /* already included: src/d/api.h */
-/* already included: src/utils/imp.h *//* already included: src/utils/error.h *//* already included: src/utils/cc.h */
+
+/* already included: src/utils/imp.h */
+/* already included: src/utils/error.h */
+/* already included: src/utils/cc.h */
+
 /* already included: src/wall/sdf/array3d/type.h */
-/* already included: src/wall/sdf/tex3d/type.h *//* already included: src/wall/sdf/tex3d/imp.h */
-/* begin src/wall/sdf/tex3d/imp/main.h */void tex3d_ini(Tex3d **pq) {
+
+/* already included: src/wall/sdf/tex3d/type.h */
+/* already included: src/wall/sdf/tex3d/imp.h */
+
+/* begin src/wall/sdf/tex3d/imp/main.h */
+void tex3d_ini(Tex3d **pq) {
     Tex3d *q;
     EMALLOC(1, &q);
     *pq = q;
@@ -76071,9 +78152,14 @@ void tex3d_to_view(const Tex3d *t, /**/ Tex3d_v *v) { v->t = t->t; }
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/wall/sdf/tform/imp.cpp"
-/* begin src/wall/sdf/tform/imp.cpp */#include <stdio.h>
-/* already included: src/utils/error.h *//* already included: src/coords/imp.h *//* already included: src/math/tform/imp.h */
+/* begin src/wall/sdf/tform/imp.cpp */
+#include <stdio.h>
+/* already included: src/utils/error.h */
+/* already included: src/coords/imp.h */
+/* already included: src/math/tform/imp.h */
+
 /* already included: src/wall/sdf/tform/imp.h */
+
 struct TGrid {
     float lo[3], hi[3];
     int n[3];
@@ -76485,11 +78571,16 @@ void sub2tex_ini(const Coords *c, const int T[3], const int M[3], /**/ Tform *t)
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/wall/wvel/conf.cpp"
-/* begin src/wall/wvel/conf.cpp */#include <stdio.h>
+/* begin src/wall/wvel/conf.cpp */
+#include <stdio.h>
 #include <vector_types.h>
 
-/* already included: src/utils/imp.h *//* already included: src/utils/error.h *//* already included: src/conf/imp.h */
+/* already included: src/utils/imp.h */
+/* already included: src/utils/error.h */
+/* already included: src/conf/imp.h */
+
 /* already included: src/wall/wvel/imp.h */
+
 void wvel_set_conf(const Config *cfg, Wvel *vw) {
     const char *type;
     UC(conf_lookup_string(cfg, "wvel.type", &type));
@@ -76828,17 +78919,25 @@ void wvel_set_conf(const Config *cfg, Wvel *vw) {
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/wall/wvel/imp.cpp"
-/* begin src/wall/wvel/imp.cpp */#include <mpi.h>
+/* begin src/wall/wvel/imp.cpp */
+#include <mpi.h>
 #include <math.h>
 #include <vector_types.h>
 #include <assert.h>
 
-#include <conf.h>
+/* already included: src/inc/conf.h */
 
-/* already included: src/utils/error.h *//* already included: src/utils/imp.h *//* already included: src/utils/msg.h */
+/* already included: src/utils/error.h */
+/* already included: src/utils/imp.h */
+/* already included: src/utils/msg.h */
+
 /* already included: src/coords/imp.h */
-/* already included: src/wall/wvel/type.h *//* already included: src/wall/wvel/imp.h */
-/* begin src/wall/wvel/imp/type.h *//* data stored on the host                       */
+
+/* already included: src/wall/wvel/type.h */
+/* already included: src/wall/wvel/imp.h */
+
+/* begin src/wall/wvel/imp/type.h */
+/* data stored on the host                       */
 /* (helpers to setup the views at each timestep) */
 
 struct WvelCste {
@@ -76897,7 +78996,8 @@ struct WvelStep {
 };
 
 /* end src/wall/wvel/imp/type.h */
-/* begin src/wall/wvel/imp/main.h */void wvel_ini(Wvel **wv) {
+/* begin src/wall/wvel/imp/main.h */
+void wvel_ini(Wvel **wv) {
     EMALLOC(1, wv);
 }
 
@@ -77319,19 +79419,29 @@ void wvel_get_view(const WvelStep *w, /**/ WvelHS_v *v) {
 #pragma push_macro("wlc_r")
 #pragma push_macro("xstr")
 #line 1 "src/main.cpp"
-/* begin src/main.cpp */#include <mpi.h>
+/* begin src/main.cpp */
+#include <mpi.h>
 #include <stdio.h>
 
-#include <conf.h>
 /* already included: src/inc/conf.h */
-/* already included: src/utils/msg.h *//* already included: src/utils/error.h *//* already included: src/utils/mc.h *//* begin src/mpi/glb.h */namespace m { /* mini MPI */
+/* already included: src/inc/conf.h */
+
+/* already included: src/utils/msg.h */
+/* already included: src/utils/error.h */
+/* already included: src/utils/mc.h */
+/* begin src/mpi/glb.h */
+namespace m { /* mini MPI */
 void ini(int *argc, char ***argv);
 void get_dims(int *argc, char ***argv, int dims[3]);
 void get_cart(MPI_Comm comm, const int dims[3], /**/ MPI_Comm *cart);
 void fin();
 }
 /* end src/mpi/glb.h */
-/* already included: src/mpi/wrapper.h *//* already included: src/scheme/time_line/imp.h *//* already included: src/conf/imp.h *//* already included: src/sim/imp.h */
+/* already included: src/mpi/wrapper.h */
+/* already included: src/scheme/time_line/imp.h */
+/* already included: src/conf/imp.h */
+/* already included: src/sim/imp.h */
+
 int main(int argc, char **argv) {
     Sim *sim;
     Config *cfg;
