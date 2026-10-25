@@ -15,7 +15,7 @@ SEED=123 "$root/tools/regression/bin/plcmt.ro" 16 32 16 3.0 0.2 0.5 0.0 rigs-ic.
 "$root/tools/regression/bin/u.cp.rbc" sph/sc/642 rbc.off
 "$root/tools/regression/bin/u.cp.rbc" rbc/sc/642 ref.off
 
-mpirun -np "${UDX_NP:-1}" "$root/build/udx" conf.cfg "$(cat <<'CONFIG'
+mpirun -np 2 "$root/build/udx" 2 1 1 -- conf.cfg "$(cat <<'CONFIG'
 glb = {
     L = [16, 32, 16]
 }
