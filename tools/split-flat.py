@@ -46,7 +46,14 @@ def split_text(text: str) -> dict[str, str]:
     api_parts = []
     if lib_start in text:
         lib = _block(text, lib_start, lib_end)
-        support_parts.append(_without_wrapper(lib))
+        lib_support = _without_wrapper(lib)
+        lib_support = lib_support.replace(
+            lib_source,
+            "#ifndef YY_BUFFER_NEW\n#define YY_BUFFER_NEW 0\n#define YY_BUFFER_NORMAL 1\n#define YY_BUFFER_EOF_PENDING 2\n#endif\n\n"
+            + lib_source,
+            1,
+        )
+        support_parts.append(lib_support)
         api_parts.append(
             _without_wrapper(lib[:lib.index(lib_source)] if lib_source in lib else lib)
         )
