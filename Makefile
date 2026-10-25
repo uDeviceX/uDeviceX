@@ -65,8 +65,7 @@ OBJECTS = \
  udx.mesh-coordinates.o \
  udx.mesh-distance-props.o \
  udx.mesh-kantor.o \
- udx.mesh-gen-matrices.o \
- udx.mesh-gen.o \
+ udx.mesh-generation.o \
  udx.mesh-topology.o \
  udx.mesh_bounce.o \
  udx.mpi.o \
