@@ -66,8 +66,8 @@ float dist_from_mesh(int nt, const int4 *tt, const float *vv, const float *r0);
 
 enum {X, Y, Z};
 
-static float min(float a, float b) {return a < b ? a : b;}
-static float max(float a, float b) {return a < b ? b : a;}
+static float fmin_local(float a, float b) {return a < b ? a : b;}
+static float fmax_local(float a, float b) {return a < b ? b : a;}
 static float dot(const float x[3], const float y[3]) { return x[0]*y[0] + x[1]*y[1] + x[2]*y[2]; }
 
 static void project_t(const float *a, const float *b, const float *c, const float *r, /**/ float *p) {
@@ -110,8 +110,8 @@ static void project_t(const float *a, const float *b, const float *c, const floa
         v -= a_;
     }
     else {
-        u = max(min(1.f, u), 0.f);
-        v = max(min(v, 1.f-u), 0.f);
+        u = fmax_local(fmin_local(1.f, u), 0.f);
+        v = fmax_local(fmin_local(v, 1.f-u), 0.f);
     }
 
     // compute projected point
@@ -143,7 +143,7 @@ float dist_from_mesh(int nt, const int4 *tt, const float *vv, const float *r0) {
 
         const float d = dist_from_triangle(A, B, C, r0);
 
-        dmin = min(d, dmin);
+        dmin = fmin_local(d, dmin);
     }
     return dmin;
 }
