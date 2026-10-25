@@ -83,8 +83,7 @@ OBJECTS = \
  udx.rbc-force-bending.o \
  udx.rbc-force-random.o \
  udx.rbc-force.o \
- udx.rbc-parameters-shape.o \
- udx.rbc-stretch.o \
+ udx.rbc-geometry.o \
  udx.rbc.o \
  udx.rig-gen.o \
  udx.rig.o \
