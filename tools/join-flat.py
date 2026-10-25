@@ -18,7 +18,7 @@ PREFIX = re.compile(
 
 def main() -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--input", default="flat")
+    parser.add_argument("--input", default=".")
     parser.add_argument("--output", default="build/udx.flat.cu")
     args = parser.parse_args()
 
@@ -44,9 +44,9 @@ def main() -> int:
     for unit in units:
         text = PREFIX.sub("", unit.read_text(), count=1)
         parts.extend([
-            f"/* begin flat/{unit.name} */\n",
+        f"/* begin {unit.name} */\n",
             text,
-            f"\n/* end flat/{unit.name} */\n",
+            f"\n/* end {unit.name} */\n",
         ])
 
     output = pathlib.Path(args.output)
