@@ -67,8 +67,7 @@ OBJECTS = \
  udx.rbc-force-main.o \
  udx.rbc-geometry.o \
  udx.rbc.o \
- udx.rig-gen.o \
- udx.rig.o \
+ udx.rig-gen-main.o \
  udx.rigid.o \
  udx.scheme-force-time.o \
  udx.scheme-move.o \

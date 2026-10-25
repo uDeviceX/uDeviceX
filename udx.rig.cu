@@ -196,6 +196,8 @@ int coords_size(const Coords *c);
 // end::int[]
 /* end src/coords/imp.h */
 
+#ifndef UDX_RIG_DEVICE_API_COMMON
+#define UDX_RIG_DEVICE_API_COMMON
 /* begin src/d/api.h */
 namespace d {  /* a wrapper for device API */
 typedef int Stream_t; /* TODO: streams are not supported */
@@ -226,6 +228,7 @@ int PeekAtLastError(void);
 // end::api[]
 }
 /* end src/d/api.h */
+#endif
 /* begin src/inc/dev.h */
 /* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
@@ -265,6 +268,8 @@ int PeekAtLastError(void);
 #define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
 #define DzeroA(P, n)   DsetA(P, 0, n)
 /* end src/inc/dev.h */
+#ifndef UDX_RIG_DEF_COMMON
+#define UDX_RIG_DEF_COMMON
 /* begin src/inc/def.h */
 /* solvent colors */
 #define XMACRO_COLOR(_)                         \
@@ -317,6 +322,9 @@ enum {
 /* for the spring forces r = min(lmax*RBC_SPRING_CAP, r) */
 #define RBC_SPRING_CAP (0.99)
 /* end src/inc/def.h */
+#endif
+#ifndef UDX_RIG_CORE_TYPE
+#define UDX_RIG_CORE_TYPE
 /* begin src/inc/type.h */
 template <typename T, int N>
 struct Sarray { /* [s]tatic array */
@@ -371,6 +379,7 @@ struct FoWrap {
     Force *ff;
 };
 /* end src/inc/type.h */
+#endif
 /* begin src/utils/cc.h */
 /* [c]uda [c]heck macros */
 
@@ -527,6 +536,8 @@ void rig_strt_dump(MPI_Comm, const char *base, const char *name, const int id, c
 // end::io[]
 /* end src/rig/imp.h */
 
+#ifndef UDX_RIG_GEN_INFO
+#define UDX_RIG_GEN_INFO
 /* begin src/rig/gen/imp.h */
 struct Coords;
 struct RigPinInfo;
@@ -562,6 +573,7 @@ struct RigInfo {
 void rig_gen_from_solvent(const Coords*, MPI_Comm, RigGenInfo, /*io*/ FluInfo, /**/ RigInfo);
 // end::int[]
 /* end src/rig/gen/imp.h */
+#endif
 
 /* begin src/rig/imp/ini.h */
 void rig_ini(long maxs, long maxp, const MeshRead *mesh, RigQuants *q) {
