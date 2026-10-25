@@ -723,7 +723,10 @@ struct int3;
 struct Config;
 
 // tag::enum[]
+#ifndef UDX_RIG_PERIODIC
+#define UDX_RIG_PERIODIC
 enum {NOT_PERIODIC = -1};
+#endif
 // end::enum[]
 
 // tag::pin[]

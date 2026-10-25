@@ -119,7 +119,10 @@ struct int3;
 struct Config;
 
 // tag::enum[]
+#ifndef UDX_RIG_PERIODIC
+#define UDX_RIG_PERIODIC
 enum {NOT_PERIODIC = -1};
+#endif
 // end::enum[]
 
 // tag::pin[]
@@ -202,6 +205,8 @@ void rig_pininfo_set_conf(const Config *cfg, const char *ns, RigPinInfo *pi) {
 #endif
 /* end src/inc/conf.h */
 
+#ifndef UDX_RIG_CORE_TYPE
+#define UDX_RIG_CORE_TYPE
 /* begin src/inc/type.h */
 template <typename T, int N>
 struct Sarray { /* [s]tatic array */
@@ -256,6 +261,7 @@ struct FoWrap {
     Force *ff;
 };
 /* end src/inc/type.h */
+#endif
 /* begin src/inc/dev.h */
 /* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
@@ -296,6 +302,8 @@ struct FoWrap {
 #define DzeroA(P, n)   DsetA(P, 0, n)
 /* end src/inc/dev.h */
 
+#ifndef UDX_RIG_DEVICE_API_COMMON
+#define UDX_RIG_DEVICE_API_COMMON
 /* begin src/d/api.h */
 namespace d {  /* a wrapper for device API */
 typedef int Stream_t; /* TODO: streams are not supported */
@@ -326,6 +334,7 @@ int PeekAtLastError(void);
 // end::api[]
 }
 /* end src/d/api.h */
+#endif
 
 /* begin src/utils/msg.h */
 // tag::int[]
