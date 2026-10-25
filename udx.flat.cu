@@ -188,7 +188,42 @@
 #define DUMP_BASE "."
 #endif
 /* end src/inc/conf.h */
-/* already included: src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
 /* begin src/inc/type.h */
 #pragma once
 
@@ -824,57 +859,20 @@ void error_abort();
 
 void error_print_stack();
 /* end src/utils/error.h */
-/* begin src/flu/imp.h */
-#pragma once
-
-// tag::struct[]
-struct FluQuants {
-    Particle *pp, *pp0;    /* particles on device  */
-    int       n;           /* particle number      */
-    Clist     *cells;      /* cell lists           */
-    ClistMap *mcells;      /* cell lists map       */
-    Particle *pp_hst;      /* particles on host    */
-
-    /* optional data */
-
-    bool ids, colors;
-
-    int *ii, *ii0;  /* global ids on device */
-    int *ii_hst;    /* global ids on host   */
-
-    int *cc, *cc0;  /* colors on device */
-    int *cc_hst;    /* colors on host   */
-
-    int maxp; /* maximum particle number */
-};
-// end::struct[]
-
-struct Coords;
-struct GenColor;
+/* begin src/sim/imp.h */
+struct Sim;
+struct Config;
 
 // tag::mem[]
-void flu_ini(bool colors, bool ids, int3 L, int maxp, FluQuants *q);
-void flu_fin(FluQuants *q);
+void sim_ini(const Config*, MPI_Comm, /**/ Sim**);
+void sim_fin(Sim*);
 // end::mem[]
 
-// tag::gen[]
-void flu_gen_quants(const Coords*, int numdensity, const GenColor *gc, FluQuants *q); // <1>
-void flu_gen_ids(MPI_Comm, const int n, FluQuants *q); // <2>
-// end::gen[]
-
-// tag::start[]
-void flu_strt_quants(MPI_Comm, const char *base, const int id, FluQuants *q);     // <1>
-void flu_strt_dump(MPI_Comm, const char *base, const int id, const FluQuants *q); // <2>
-// end::start[]
-
-// tag::tools[]
-void flu_txt_dump(const Coords*, const FluQuants *q); // <1>
-
-/* build cells only from one array of particles fully contained in the domain */
-/* warning: this will delete particles which are outside                      */
-void flu_build_cells(/**/ FluQuants *q); // <2>
-// end::tools[]
-/* end src/flu/imp.h */
+// tag::run[]
+void sim_gen(Sim*);  // <1>
+void sim_strt(Sim*); // <2>
+// end::run[]
+/* end src/sim/imp.h */
 
 void edg_ini(int md, int nv, /**/ int *hx) {
     int n, i;
@@ -1216,7 +1214,62 @@ int edg_valid(int md, int i, int x, const int *hx) { /* valid? */
 #include <thrust/device_ptr.h>
 #include <thrust/transform_reduce.h>
 
-/* already included: src/inc/type.h */
+/* begin src/inc/type.h */
+#pragma once
+
+template <typename T, int N>
+struct Sarray { /* [s]tatic array */
+    T d[N];
+};
+
+struct Particle {
+    float r[3], v[3];
+};
+
+struct Rigid {
+    float Iinv[6],            /* moment of inertia            6        */
+        mass,                 /* mass of the solid            7        */
+        com[3],               /* [c]enter [o]f [m]ass         10       */
+        v[3], om[3],          /* linear and angular velocity  13 16    */
+        e0[3], e1[3], e2[3],  /* local referential            19 22 25 */
+        fo[3], to[3],         /* force, torque                28 31    */
+        id;                   /* id of the solid              32       */
+};
+
+struct Force {
+    float f[3];
+};
+
+struct Momentum {
+    float P[3], L[3]; /* linear and angular momentum */
+};
+
+struct Positioncp {
+    float rc[3]; /* current position  */
+    float rp[3]; /* previous position */
+};
+
+typedef Sarray<int, 26>       int26;
+typedef Sarray<int, 27>       int27;
+
+typedef Sarray<int*, 26>     intp26;
+typedef Sarray<Particle*, 26> Pap26;
+typedef Sarray<Force*,    26> Fop26;
+typedef Sarray<Momentum*, 26> Mop26;
+typedef Sarray<Positioncp*, 26> Pocpp26;
+
+/* particles wrap */
+struct PaWrap {
+    int n;
+    const Particle *pp;
+};
+
+/* forces wrap */
+struct FoWrap {
+    int n;
+    Force *ff;
+};
+/* end src/inc/type.h */
 /* begin src/utils/error.h */
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
@@ -2609,8 +2662,78 @@ void key_list_log(KeyList *q) {
 /* begin src/algo/minmax/imp.cu */
 #include <stdio.h>
 
-/* already included: src/inc/conf.h */
-/* already included: src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
 
 /* begin src/inc/def.h */
 /* solvent colors */
@@ -2789,9 +2912,95 @@ static int   warpSize = 1;
   #error DEV_* is undefined
 #endif
 /* end src/d/ker.h */
-/* already included: src/d/api.h */
+/* begin src/d/api.h */
+#pragma once
 
-/* already included: src/inc/type.h */
+namespace d {  /* a wrapper for device API */
+typedef int Stream_t; /* TODO: streams are not supported */
+enum {MemcpyHostToHost, MemcpyHostToDevice,
+      MemcpyDeviceToHost, MemcpyDeviceToDevice,
+      MemcpyDefault};
+
+// tag::more[]
+const char *emsg();
+int alloc_pinned(void **pHost, size_t size);
+int is_device_pointer(const void *ptr);
+// end::more[]
+
+// tag::api[]
+int GetSymbolAddress(void **devPtr, const void *symbol);
+int Malloc(void **p, size_t);
+int MemcpyToSymbol(const void *symbol, const void *src, size_t count, size_t offset=0, int kind=MemcpyHostToDevice);
+int MemcpyFromSymbol(void *dst, const void *symbol, size_t count, size_t offset=0, int kind=MemcpyDeviceToHost);
+int HostGetDevicePointer(void **pDevice, void *pHost, unsigned int flags);
+int Memcpy (void *dst, const void *src, size_t count, int kind);
+int MemsetAsync (void *devPtr, int value, size_t count, Stream_t stream=0);
+int Memset (void *devPtr, int value, size_t count);
+int MemcpyAsync (void * dst, const void * src, size_t count, int kind, Stream_t stream = 0);
+int Free (void *devPtr);
+int FreeHost (void *hstPtr);
+int DeviceSynchronize (void);
+int PeekAtLastError(void);
+// end::api[]
+}
+/* end src/d/api.h */
+
+/* begin src/inc/type.h */
+#pragma once
+
+template <typename T, int N>
+struct Sarray { /* [s]tatic array */
+    T d[N];
+};
+
+struct Particle {
+    float r[3], v[3];
+};
+
+struct Rigid {
+    float Iinv[6],            /* moment of inertia            6        */
+        mass,                 /* mass of the solid            7        */
+        com[3],               /* [c]enter [o]f [m]ass         10       */
+        v[3], om[3],          /* linear and angular velocity  13 16    */
+        e0[3], e1[3], e2[3],  /* local referential            19 22 25 */
+        fo[3], to[3],         /* force, torque                28 31    */
+        id;                   /* id of the solid              32       */
+};
+
+struct Force {
+    float f[3];
+};
+
+struct Momentum {
+    float P[3], L[3]; /* linear and angular momentum */
+};
+
+struct Positioncp {
+    float rc[3]; /* current position  */
+    float rp[3]; /* previous position */
+};
+
+typedef Sarray<int, 26>       int26;
+typedef Sarray<int, 27>       int27;
+
+typedef Sarray<int*, 26>     intp26;
+typedef Sarray<Particle*, 26> Pap26;
+typedef Sarray<Force*,    26> Fop26;
+typedef Sarray<Momentum*, 26> Mop26;
+typedef Sarray<Positioncp*, 26> Pocpp26;
+
+/* particles wrap */
+struct PaWrap {
+    int n;
+    const Particle *pp;
+};
+
+/* forces wrap */
+struct FoWrap {
+    int n;
+    Force *ff;
+};
+/* end src/inc/type.h */
 /* begin src/inc/dev.h */
 /* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
@@ -2916,7 +3125,16 @@ _I_ float3 warpReduceSum(float3 val)  // <3>
 /* [k]ernel [l]aunch macros */
 
 #if    defined(KL_RELEASE)
-/* already included: src/utils/kl/release.h */
+/* begin src/utils/kl/release.h */
+#define KL_BEFORE(s, C) if (!kl::safe(ESC C)) continue;
+#define KL_CALL(F, C, A) F<<<ESC C>>>A
+#define KL_AFTER(s)
+
+#ifndef UDX_KL_RELEASE_FUNCTIONS_DEFINED
+#define UDX_KL_RELEASE_FUNCTIONS_DEFINED
+namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
+#endif
+/* end src/utils/kl/release.h */
 #elif  defined(KL_NONE)
 /* begin src/utils/kl/none.h */
 #define KL_BEFORE(s, C)
@@ -2941,7 +3159,18 @@ namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
   #error KL_* is undefined
 #endif
 
-/* already included: src/utils/kl/common.h */
+/* begin src/utils/kl/common.h */
+namespace kl {
+#pragma once
+
+inline int safe0(dim3 i, dim3 j) {
+    msg(i.x, i.y, i.z,   j.x, j.y, j.z);
+    return i.x>0 && i.y>0 && i.z>0   &&   j.x>0 && j.y>0 && j.z>0;
+}
+inline int safe(dim3 i, dim3 j)                    { return safe0(i, j); }
+inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
+}
+/* end src/utils/kl/common.h */
 /* begin src/utils/kl/macro.h */
 #define ESC(...) __VA_ARGS__
 #define KL(F, C, A)                             \
@@ -3900,8 +4129,78 @@ double scalars_get(const Scalars *q, int i) {
 #line 1 "src/algo/scan/imp.cu"
 /* begin src/algo/scan/imp.cu */
 #include <stdio.h>
-/* already included: src/inc/conf.h */
-/* already included: src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
 
 /* begin src/inc/dev.h */
 /* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
@@ -4046,7 +4345,16 @@ void check(int rc, const char *file, int line);
 /* [k]ernel [l]aunch macros */
 
 #if    defined(KL_RELEASE)
-/* already included: src/utils/kl/release.h */
+/* begin src/utils/kl/release.h */
+#define KL_BEFORE(s, C) if (!kl::safe(ESC C)) continue;
+#define KL_CALL(F, C, A) F<<<ESC C>>>A
+#define KL_AFTER(s)
+
+#ifndef UDX_KL_RELEASE_FUNCTIONS_DEFINED
+#define UDX_KL_RELEASE_FUNCTIONS_DEFINED
+namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
+#endif
+/* end src/utils/kl/release.h */
 #elif  defined(KL_NONE)
 /* begin src/utils/kl/none.h */
 #define KL_BEFORE(s, C)
@@ -4071,7 +4379,18 @@ namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
   #error KL_* is undefined
 #endif
 
-/* already included: src/utils/kl/common.h */
+/* begin src/utils/kl/common.h */
+namespace kl {
+#pragma once
+
+inline int safe0(dim3 i, dim3 j) {
+    msg(i.x, i.y, i.z,   j.x, j.y, j.z);
+    return i.x>0 && i.y>0 && i.z>0   &&   j.x>0 && j.y>0 && j.z>0;
+}
+inline int safe(dim3 i, dim3 j)                    { return safe0(i, j); }
+inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
+}
+/* end src/utils/kl/common.h */
 /* begin src/utils/kl/macro.h */
 #define ESC(...) __VA_ARGS__
 #define KL(F, C, A)                             \
@@ -4084,7 +4403,38 @@ namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
 
 /* TODO: header includes header */
 /* end src/utils/kl.h */
-/* already included: src/d/api.h */
+/* begin src/d/api.h */
+#pragma once
+
+namespace d {  /* a wrapper for device API */
+typedef int Stream_t; /* TODO: streams are not supported */
+enum {MemcpyHostToHost, MemcpyHostToDevice,
+      MemcpyDeviceToHost, MemcpyDeviceToDevice,
+      MemcpyDefault};
+
+// tag::more[]
+const char *emsg();
+int alloc_pinned(void **pHost, size_t size);
+int is_device_pointer(const void *ptr);
+// end::more[]
+
+// tag::api[]
+int GetSymbolAddress(void **devPtr, const void *symbol);
+int Malloc(void **p, size_t);
+int MemcpyToSymbol(const void *symbol, const void *src, size_t count, size_t offset=0, int kind=MemcpyHostToDevice);
+int MemcpyFromSymbol(void *dst, const void *symbol, size_t count, size_t offset=0, int kind=MemcpyDeviceToHost);
+int HostGetDevicePointer(void **pDevice, void *pHost, unsigned int flags);
+int Memcpy (void *dst, const void *src, size_t count, int kind);
+int MemsetAsync (void *devPtr, int value, size_t count, Stream_t stream=0);
+int Memset (void *devPtr, int value, size_t count);
+int MemcpyAsync (void * dst, const void * src, size_t count, int kind, Stream_t stream = 0);
+int Free (void *devPtr);
+int FreeHost (void *hstPtr);
+int DeviceSynchronize (void);
+int PeekAtLastError(void);
+// end::api[]
+}
+/* end src/d/api.h */
 /* begin src/d/q.h */
 /* function and variable type [q]ualifiers */
 
@@ -4213,7 +4563,43 @@ void scan_fin(Scan*);                                                       // <
 /* end src/algo/scan/imp.h */
 
 namespace scan_dev {
-/* already included: src/algo/utils/shfl.h */
+/* begin src/algo/utils/shfl.h */
+#define _I_ static __device__
+
+#if __CUDACC_VER_MAJOR__ >= 9
+#pragma once
+
+template <typename T>
+_I_ T shfl_down(T val, unsigned int width) {
+    return __shfl_down_sync(0xFFFFFFFF, val, width);
+}
+
+template <typename T>
+_I_ T shfl_up(T val, unsigned int width) {
+    return __shfl_up_sync(0xFFFFFFFF, val, width);
+}
+template <typename T>
+_I_ T shfl(T val, unsigned int width) {
+    return __shfl_sync(0xFFFFFFFF, val, width);
+}
+#else
+template <typename T>
+_I_ T shfl_down(T val, unsigned int width) {
+    return __shfl_down(val, width);
+}
+
+template <typename T>
+_I_ T shfl_up(T val, unsigned int width) {
+    return __shfl_up(val, width);
+}
+template <typename T>
+_I_ T shfl(T val, unsigned int width) {
+    return __shfl(val, width);
+}
+#endif
+
+#undef _I_
+/* end src/algo/utils/shfl.h */
 /* begin src/algo/scan/dev.h */
 __global__ void compress(const int nentries, const int4 *const in, uchar4 *const out) {
     const int gid = threadIdx.x + blockDim.x * blockIdx.x;
@@ -4848,7 +5234,62 @@ void error_abort();
 
 void error_print_stack();
 /* end src/utils/error.h */
-/* already included: src/inc/type.h */
+/* begin src/inc/type.h */
+#pragma once
+
+template <typename T, int N>
+struct Sarray { /* [s]tatic array */
+    T d[N];
+};
+
+struct Particle {
+    float r[3], v[3];
+};
+
+struct Rigid {
+    float Iinv[6],            /* moment of inertia            6        */
+        mass,                 /* mass of the solid            7        */
+        com[3],               /* [c]enter [o]f [m]ass         10       */
+        v[3], om[3],          /* linear and angular velocity  13 16    */
+        e0[3], e1[3], e2[3],  /* local referential            19 22 25 */
+        fo[3], to[3],         /* force, torque                28 31    */
+        id;                   /* id of the solid              32       */
+};
+
+struct Force {
+    float f[3];
+};
+
+struct Momentum {
+    float P[3], L[3]; /* linear and angular momentum */
+};
+
+struct Positioncp {
+    float rc[3]; /* current position  */
+    float rp[3]; /* previous position */
+};
+
+typedef Sarray<int, 26>       int26;
+typedef Sarray<int, 27>       int27;
+
+typedef Sarray<int*, 26>     intp26;
+typedef Sarray<Particle*, 26> Pap26;
+typedef Sarray<Force*,    26> Fop26;
+typedef Sarray<Momentum*, 26> Mop26;
+typedef Sarray<Positioncp*, 26> Pocpp26;
+
+/* particles wrap */
+struct PaWrap {
+    int n;
+    const Particle *pp;
+};
+
+/* forces wrap */
+struct FoWrap {
+    int n;
+    Force *ff;
+};
+/* end src/inc/type.h */
 /* begin src/coords/imp.h */
 struct Coords;
 struct Coords_v;
@@ -5430,8 +5871,78 @@ void vectors_get(const Vectors *q, int i, /**/ float r[3]) {
 #include <stdio.h>
 #include <assert.h>
 
-/* already included: src/inc/conf.h */
-/* already included: src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
 
 /* begin src/utils/error.h */
 #define ERR(fmt, ...)  do {                                     \
@@ -5507,8 +6018,117 @@ const char* get_filename_ext(const char*);
 // end::tools[]
 /* end src/utils/imp.h */
 
-/* already included: src/inc/def.h */
-/* already included: src/inc/type.h */
+/* begin src/inc/def.h */
+/* solvent colors */
+#define XMACRO_COLOR(_)                         \
+    _(BLUE)                                     \
+    _(RED)
+
+#define ENUM_COLOR(a) a##_COLOR
+#define make_enum_color(a) ENUM_COLOR(a) ,
+#ifndef UDX_DEF_ENUMS_DEFINED
+#define UDX_DEF_ENUMS_DEFINED
+enum {
+    XMACRO_COLOR(make_enum_color)
+    N_COLOR
+};
+#undef make_enum_color
+
+enum {
+    /* wall margins */
+    XWM = 6,
+    YWM = 6,
+    ZWM = 6,
+
+    SAFETY_FACTOR_MAXP = 3,
+
+    /* maximum number of particles per solid */
+    MAX_PSOLID_NUM = 12000,
+
+    /* maximum number of solids per node */
+    MAX_SOLIDS = 100,
+
+    /* maximum number of object types (solid, rbc, ...) */
+    MAX_MBR_TYPES = 2,
+    MAX_RIG_TYPES = 2,
+    MAX_OBJ_TYPES = MAX_MBR_TYPES + MAX_RIG_TYPES,
+
+    /* maximum number density of particles of the objects */
+    MAX_OBJ_DENSITY = 30,
+
+    /* maximum number of red blood cells per node */
+    MAX_CELL_NUM = 1500,
+
+    /* maximum texture size in bytes */
+    MAX_TEXO_SIZE = 100000000,
+
+    /* safety factor for dpd halo interactions */
+    HSAFETY_FACTOR = 10,
+
+    /* safety factor for odist fragments */
+    ODSTR_FACTOR = 3,
+};
+#endif
+
+/* for the spring forces r = min(lmax*RBC_SPRING_CAP, r) */
+#define RBC_SPRING_CAP (0.99)
+/* end src/inc/def.h */
+/* begin src/inc/type.h */
+#pragma once
+
+template <typename T, int N>
+struct Sarray { /* [s]tatic array */
+    T d[N];
+};
+
+struct Particle {
+    float r[3], v[3];
+};
+
+struct Rigid {
+    float Iinv[6],            /* moment of inertia            6        */
+        mass,                 /* mass of the solid            7        */
+        com[3],               /* [c]enter [o]f [m]ass         10       */
+        v[3], om[3],          /* linear and angular velocity  13 16    */
+        e0[3], e1[3], e2[3],  /* local referential            19 22 25 */
+        fo[3], to[3],         /* force, torque                28 31    */
+        id;                   /* id of the solid              32       */
+};
+
+struct Force {
+    float f[3];
+};
+
+struct Momentum {
+    float P[3], L[3]; /* linear and angular momentum */
+};
+
+struct Positioncp {
+    float rc[3]; /* current position  */
+    float rp[3]; /* previous position */
+};
+
+typedef Sarray<int, 26>       int26;
+typedef Sarray<int, 27>       int27;
+
+typedef Sarray<int*, 26>     intp26;
+typedef Sarray<Particle*, 26> Pap26;
+typedef Sarray<Force*,    26> Fop26;
+typedef Sarray<Momentum*, 26> Mop26;
+typedef Sarray<Positioncp*, 26> Pocpp26;
+
+/* particles wrap */
+struct PaWrap {
+    int n;
+    const Particle *pp;
+};
+
+/* forces wrap */
+struct FoWrap {
+    int n;
+    Force *ff;
+};
+/* end src/inc/type.h */
 /* begin src/inc/dev.h */
 /* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
@@ -5558,7 +6178,38 @@ void scan_fin(Scan*);                                                       // <
 // end::interface[]
 /* end src/algo/scan/imp.h */
 
-/* already included: src/d/api.h */
+/* begin src/d/api.h */
+#pragma once
+
+namespace d {  /* a wrapper for device API */
+typedef int Stream_t; /* TODO: streams are not supported */
+enum {MemcpyHostToHost, MemcpyHostToDevice,
+      MemcpyDeviceToHost, MemcpyDeviceToDevice,
+      MemcpyDefault};
+
+// tag::more[]
+const char *emsg();
+int alloc_pinned(void **pHost, size_t size);
+int is_device_pointer(const void *ptr);
+// end::more[]
+
+// tag::api[]
+int GetSymbolAddress(void **devPtr, const void *symbol);
+int Malloc(void **p, size_t);
+int MemcpyToSymbol(const void *symbol, const void *src, size_t count, size_t offset=0, int kind=MemcpyHostToDevice);
+int MemcpyFromSymbol(void *dst, const void *symbol, size_t count, size_t offset=0, int kind=MemcpyDeviceToHost);
+int HostGetDevicePointer(void **pDevice, void *pHost, unsigned int flags);
+int Memcpy (void *dst, const void *src, size_t count, int kind);
+int MemsetAsync (void *devPtr, int value, size_t count, Stream_t stream=0);
+int Memset (void *devPtr, int value, size_t count);
+int MemcpyAsync (void * dst, const void * src, size_t count, int kind, Stream_t stream = 0);
+int Free (void *devPtr);
+int FreeHost (void *hstPtr);
+int DeviceSynchronize (void);
+int PeekAtLastError(void);
+// end::api[]
+}
+/* end src/d/api.h */
 /* begin src/utils/cc.h */
 /* [c]uda [c]heck macros */
 
@@ -5596,7 +6247,16 @@ void check(int rc, const char *file, int line);
 /* [k]ernel [l]aunch macros */
 
 #if    defined(KL_RELEASE)
-/* already included: src/utils/kl/release.h */
+/* begin src/utils/kl/release.h */
+#define KL_BEFORE(s, C) if (!kl::safe(ESC C)) continue;
+#define KL_CALL(F, C, A) F<<<ESC C>>>A
+#define KL_AFTER(s)
+
+#ifndef UDX_KL_RELEASE_FUNCTIONS_DEFINED
+#define UDX_KL_RELEASE_FUNCTIONS_DEFINED
+namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
+#endif
+/* end src/utils/kl/release.h */
 #elif  defined(KL_NONE)
 /* begin src/utils/kl/none.h */
 #define KL_BEFORE(s, C)
@@ -5621,7 +6281,18 @@ namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
   #error KL_* is undefined
 #endif
 
-/* already included: src/utils/kl/common.h */
+/* begin src/utils/kl/common.h */
+namespace kl {
+#pragma once
+
+inline int safe0(dim3 i, dim3 j) {
+    msg(i.x, i.y, i.z,   j.x, j.y, j.z);
+    return i.x>0 && i.y>0 && i.z>0   &&   j.x>0 && j.y>0 && j.z>0;
+}
+inline int safe(dim3 i, dim3 j)                    { return safe0(i, j); }
+inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
+}
+/* end src/utils/kl/common.h */
 /* begin src/utils/kl/macro.h */
 #define ESC(...) __VA_ARGS__
 #define KL(F, C, A)                             \
@@ -5667,7 +6338,23 @@ static __device__ bool is_alive(int i, const PartList lp) {
 }
 /* end src/struct/partlist/dev.h */
 
-/* already included: src/struct/particle/dev.h */
+/* begin src/struct/particle/dev.h */
+#pragma once
+
+static __device__ float3 fetch_pos(int i, const Particle *pp) {
+    enum {X, Y, Z};
+    float3 r;
+    r.x = pp[i].r[X]; r.y = pp[i].r[Y]; r.z = pp[i].r[Z];
+    return r;
+}
+
+static __device__ float3 fetch_vel(int i, const Particle *pp) {
+    enum {X, Y, Z};
+    float3 v;
+    v.x = pp[i].v[X]; v.y = pp[i].v[Y]; v.z = pp[i].v[Z];
+    return v;
+}
+/* end src/struct/particle/dev.h */
 
 /* begin src/clist/imp.h */
 struct Clist;
@@ -6295,10 +6982,111 @@ void clist_build(int nlo, int nout, const Particle *pplo, /**/ Particle *ppout, 
 /* begin src/cnt/imp.cu */
 #include <assert.h>
 #include <stdio.h>
-/* already included: src/inc/conf.h */
-/* already included: src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
 
-/* already included: src/d/api.h */
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
+
+/* begin src/d/api.h */
+#pragma once
+
+namespace d {  /* a wrapper for device API */
+typedef int Stream_t; /* TODO: streams are not supported */
+enum {MemcpyHostToHost, MemcpyHostToDevice,
+      MemcpyDeviceToHost, MemcpyDeviceToDevice,
+      MemcpyDefault};
+
+// tag::more[]
+const char *emsg();
+int alloc_pinned(void **pHost, size_t size);
+int is_device_pointer(const void *ptr);
+// end::more[]
+
+// tag::api[]
+int GetSymbolAddress(void **devPtr, const void *symbol);
+int Malloc(void **p, size_t);
+int MemcpyToSymbol(const void *symbol, const void *src, size_t count, size_t offset=0, int kind=MemcpyHostToDevice);
+int MemcpyFromSymbol(void *dst, const void *symbol, size_t count, size_t offset=0, int kind=MemcpyDeviceToHost);
+int HostGetDevicePointer(void **pDevice, void *pHost, unsigned int flags);
+int Memcpy (void *dst, const void *src, size_t count, int kind);
+int MemsetAsync (void *devPtr, int value, size_t count, Stream_t stream=0);
+int Memset (void *devPtr, int value, size_t count);
+int MemcpyAsync (void * dst, const void * src, size_t count, int kind, Stream_t stream = 0);
+int Free (void *devPtr);
+int FreeHost (void *hstPtr);
+int DeviceSynchronize (void);
+int PeekAtLastError(void);
+// end::api[]
+}
+/* end src/d/api.h */
 /* begin src/d/q.h */
 /* function and variable type [q]ualifiers */
 
@@ -6633,7 +7421,61 @@ _HD_ void axpy(const T1 a, const T2 *x, /*io*/ T3 *y) {
 }
 /* end src/math/dev.h */
 
-/* already included: src/inc/def.h */
+/* begin src/inc/def.h */
+/* solvent colors */
+#define XMACRO_COLOR(_)                         \
+    _(BLUE)                                     \
+    _(RED)
+
+#define ENUM_COLOR(a) a##_COLOR
+#define make_enum_color(a) ENUM_COLOR(a) ,
+#ifndef UDX_DEF_ENUMS_DEFINED
+#define UDX_DEF_ENUMS_DEFINED
+enum {
+    XMACRO_COLOR(make_enum_color)
+    N_COLOR
+};
+#undef make_enum_color
+
+enum {
+    /* wall margins */
+    XWM = 6,
+    YWM = 6,
+    ZWM = 6,
+
+    SAFETY_FACTOR_MAXP = 3,
+
+    /* maximum number of particles per solid */
+    MAX_PSOLID_NUM = 12000,
+
+    /* maximum number of solids per node */
+    MAX_SOLIDS = 100,
+
+    /* maximum number of object types (solid, rbc, ...) */
+    MAX_MBR_TYPES = 2,
+    MAX_RIG_TYPES = 2,
+    MAX_OBJ_TYPES = MAX_MBR_TYPES + MAX_RIG_TYPES,
+
+    /* maximum number density of particles of the objects */
+    MAX_OBJ_DENSITY = 30,
+
+    /* maximum number of red blood cells per node */
+    MAX_CELL_NUM = 1500,
+
+    /* maximum texture size in bytes */
+    MAX_TEXO_SIZE = 100000000,
+
+    /* safety factor for dpd halo interactions */
+    HSAFETY_FACTOR = 10,
+
+    /* safety factor for odist fragments */
+    ODSTR_FACTOR = 3,
+};
+#endif
+
+/* for the spring forces r = min(lmax*RBC_SPRING_CAP, r) */
+#define RBC_SPRING_CAP (0.99)
+/* end src/inc/def.h */
 /* begin src/utils/msg.h */
 // tag::int[]
 void msg_ini(int rank); // <1>
@@ -6715,7 +7557,16 @@ void estimates(int3 L, int nfrags, float maxd, /**/ int *cap); // <1>
 /* [k]ernel [l]aunch macros */
 
 #if    defined(KL_RELEASE)
-/* already included: src/utils/kl/release.h */
+/* begin src/utils/kl/release.h */
+#define KL_BEFORE(s, C) if (!kl::safe(ESC C)) continue;
+#define KL_CALL(F, C, A) F<<<ESC C>>>A
+#define KL_AFTER(s)
+
+#ifndef UDX_KL_RELEASE_FUNCTIONS_DEFINED
+#define UDX_KL_RELEASE_FUNCTIONS_DEFINED
+namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
+#endif
+/* end src/utils/kl/release.h */
 #elif  defined(KL_NONE)
 /* begin src/utils/kl/none.h */
 #define KL_BEFORE(s, C)
@@ -6740,7 +7591,18 @@ namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
   #error KL_* is undefined
 #endif
 
-/* already included: src/utils/kl/common.h */
+/* begin src/utils/kl/common.h */
+namespace kl {
+#pragma once
+
+inline int safe0(dim3 i, dim3 j) {
+    msg(i.x, i.y, i.z,   j.x, j.y, j.z);
+    return i.x>0 && i.y>0 && i.z>0   &&   j.x>0 && j.y>0 && j.z>0;
+}
+inline int safe(dim3 i, dim3 j)                    { return safe0(i, j); }
+inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
+}
+/* end src/utils/kl/common.h */
 /* begin src/utils/kl/macro.h */
 #define ESC(...) __VA_ARGS__
 #define KL(F, C, A)                             \
@@ -6753,7 +7615,62 @@ namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
 
 /* TODO: header includes header */
 /* end src/utils/kl.h */
-/* already included: src/inc/type.h */
+/* begin src/inc/type.h */
+#pragma once
+
+template <typename T, int N>
+struct Sarray { /* [s]tatic array */
+    T d[N];
+};
+
+struct Particle {
+    float r[3], v[3];
+};
+
+struct Rigid {
+    float Iinv[6],            /* moment of inertia            6        */
+        mass,                 /* mass of the solid            7        */
+        com[3],               /* [c]enter [o]f [m]ass         10       */
+        v[3], om[3],          /* linear and angular velocity  13 16    */
+        e0[3], e1[3], e2[3],  /* local referential            19 22 25 */
+        fo[3], to[3],         /* force, torque                28 31    */
+        id;                   /* id of the solid              32       */
+};
+
+struct Force {
+    float f[3];
+};
+
+struct Momentum {
+    float P[3], L[3]; /* linear and angular momentum */
+};
+
+struct Positioncp {
+    float rc[3]; /* current position  */
+    float rp[3]; /* previous position */
+};
+
+typedef Sarray<int, 26>       int26;
+typedef Sarray<int, 27>       int27;
+
+typedef Sarray<int*, 26>     intp26;
+typedef Sarray<Particle*, 26> Pap26;
+typedef Sarray<Force*,    26> Fop26;
+typedef Sarray<Momentum*, 26> Mop26;
+typedef Sarray<Positioncp*, 26> Pocpp26;
+
+/* particles wrap */
+struct PaWrap {
+    int n;
+    const Particle *pp;
+};
+
+/* forces wrap */
+struct FoWrap {
+    int n;
+    Force *ff;
+};
+/* end src/inc/type.h */
 /* begin src/inc/dev.h */
 /* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
@@ -7240,7 +8157,24 @@ void pair_get_view_dpd_lj(const PairParams*, PairDPDLJ*);
 void pair_get_view_adhesion(const PairParams*, PairAdhesion*);
 /* end src/pair/imp.h */
 
-/* already included: src/struct/partlist/type.h */
+/* begin src/struct/partlist/type.h */
+#pragma once
+
+enum {
+    ALIVE = 0,
+    DEAD  = 1
+};
+
+/* structure of particle                           */
+/* optional "deathlist" for particles to be killed */
+
+// tag::type[]
+struct PartList {
+    const Particle *pp;   /* particles array          */
+    const int *deathlist; /* what pp is dead or alive */
+};
+// end::type[]
+/* end src/struct/partlist/type.h */
 
 /* begin src/clist/imp.h */
 struct Clist;
@@ -7278,7 +8212,33 @@ void clist_gather_ii(const int *iilo, const int *iire, const ClistMap *m, long n
 void clist_build(int nlo, int nout, const Particle *pplo, /**/ Particle *ppout, Clist *c, ClistMap *m);
 // end::int[]
 /* end src/clist/imp.h */
-/* already included: src/clist/dev.h */
+/* begin src/clist/dev.h */
+#pragma once
+
+#define _I_ static __device__
+
+enum { CLIST_NMAX = (256*256*256) };
+
+// tag::int[]
+_I_ uint clist_encode_id(int s, int pid)
+// end::int[]
+{
+    /* pid: particle id; s: array id */
+    assert(pid < CLIST_NMAX);
+    return CLIST_NMAX * s + pid;
+}
+
+// tag::int[]
+_I_ void clist_decode_id(uint c, /**/ int *s, int *pid)
+// end::int[]
+{
+    /* pid: particle id; s: array id; c : code */
+    *pid = c % CLIST_NMAX;
+    *s   = c / CLIST_NMAX;
+}
+
+#undef _I_
+/* end src/clist/dev.h */
 
 /* begin src/cnt/imp.h */
 struct Contact;
@@ -8048,8 +9008,78 @@ void cnt_build_cells(int nw, const PairParams **prms, const PaWrap *pw, /**/ Con
 #include <curand_kernel.h>
 #include <assert.h>
 
-/* already included: src/inc/conf.h */
-/* already included: src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
 
 /* begin src/utils/msg.h */
 // tag::int[]
@@ -8094,7 +9124,16 @@ void check(int rc, const char *file, int line);
 /* [k]ernel [l]aunch macros */
 
 #if    defined(KL_RELEASE)
-/* already included: src/utils/kl/release.h */
+/* begin src/utils/kl/release.h */
+#define KL_BEFORE(s, C) if (!kl::safe(ESC C)) continue;
+#define KL_CALL(F, C, A) F<<<ESC C>>>A
+#define KL_AFTER(s)
+
+#ifndef UDX_KL_RELEASE_FUNCTIONS_DEFINED
+#define UDX_KL_RELEASE_FUNCTIONS_DEFINED
+namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
+#endif
+/* end src/utils/kl/release.h */
 #elif  defined(KL_NONE)
 /* begin src/utils/kl/none.h */
 #define KL_BEFORE(s, C)
@@ -8119,7 +9158,18 @@ namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
   #error KL_* is undefined
 #endif
 
-/* already included: src/utils/kl/common.h */
+/* begin src/utils/kl/common.h */
+namespace kl {
+#pragma once
+
+inline int safe0(dim3 i, dim3 j) {
+    msg(i.x, i.y, i.z,   j.x, j.y, j.z);
+    return i.x>0 && i.y>0 && i.z>0   &&   j.x>0 && j.y>0 && j.z>0;
+}
+inline int safe(dim3 i, dim3 j)                    { return safe0(i, j); }
+inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
+}
+/* end src/utils/kl/common.h */
 /* begin src/utils/kl/macro.h */
 #define ESC(...) __VA_ARGS__
 #define KL(F, C, A)                             \
@@ -8132,7 +9182,38 @@ namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
 
 /* TODO: header includes header */
 /* end src/utils/kl.h */
-/* already included: src/d/api.h */
+/* begin src/d/api.h */
+#pragma once
+
+namespace d {  /* a wrapper for device API */
+typedef int Stream_t; /* TODO: streams are not supported */
+enum {MemcpyHostToHost, MemcpyHostToDevice,
+      MemcpyDeviceToHost, MemcpyDeviceToDevice,
+      MemcpyDefault};
+
+// tag::more[]
+const char *emsg();
+int alloc_pinned(void **pHost, size_t size);
+int is_device_pointer(const void *ptr);
+// end::more[]
+
+// tag::api[]
+int GetSymbolAddress(void **devPtr, const void *symbol);
+int Malloc(void **p, size_t);
+int MemcpyToSymbol(const void *symbol, const void *src, size_t count, size_t offset=0, int kind=MemcpyHostToDevice);
+int MemcpyFromSymbol(void *dst, const void *symbol, size_t count, size_t offset=0, int kind=MemcpyDeviceToHost);
+int HostGetDevicePointer(void **pDevice, void *pHost, unsigned int flags);
+int Memcpy (void *dst, const void *src, size_t count, int kind);
+int MemsetAsync (void *devPtr, int value, size_t count, Stream_t stream=0);
+int Memset (void *devPtr, int value, size_t count);
+int MemcpyAsync (void * dst, const void * src, size_t count, int kind, Stream_t stream = 0);
+int Free (void *devPtr);
+int FreeHost (void *hstPtr);
+int DeviceSynchronize (void);
+int PeekAtLastError(void);
+// end::api[]
+}
+/* end src/d/api.h */
 
 /* begin src/inc/dev.h */
 /* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
@@ -8173,7 +9254,62 @@ namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
 #define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
 #define DzeroA(P, n)   DsetA(P, 0, n)
 /* end src/inc/dev.h */
-/* already included: src/inc/type.h */
+/* begin src/inc/type.h */
+#pragma once
+
+template <typename T, int N>
+struct Sarray { /* [s]tatic array */
+    T d[N];
+};
+
+struct Particle {
+    float r[3], v[3];
+};
+
+struct Rigid {
+    float Iinv[6],            /* moment of inertia            6        */
+        mass,                 /* mass of the solid            7        */
+        com[3],               /* [c]enter [o]f [m]ass         10       */
+        v[3], om[3],          /* linear and angular velocity  13 16    */
+        e0[3], e1[3], e2[3],  /* local referential            19 22 25 */
+        fo[3], to[3],         /* force, torque                28 31    */
+        id;                   /* id of the solid              32       */
+};
+
+struct Force {
+    float f[3];
+};
+
+struct Momentum {
+    float P[3], L[3]; /* linear and angular momentum */
+};
+
+struct Positioncp {
+    float rc[3]; /* current position  */
+    float rp[3]; /* previous position */
+};
+
+typedef Sarray<int, 26>       int26;
+typedef Sarray<int, 27>       int27;
+
+typedef Sarray<int*, 26>     intp26;
+typedef Sarray<Particle*, 26> Pap26;
+typedef Sarray<Force*,    26> Fop26;
+typedef Sarray<Momentum*, 26> Mop26;
+typedef Sarray<Positioncp*, 26> Pocpp26;
+
+/* particles wrap */
+struct PaWrap {
+    int n;
+    const Particle *pp;
+};
+
+/* forces wrap */
+struct FoWrap {
+    int n;
+    Force *ff;
+};
+/* end src/inc/type.h */
 
 /* begin src/coords/type.h */
 // tag::view[]
@@ -8726,8 +9862,78 @@ void tracers_fin() {
 #include <string.h>
 #include <mpi.h>
 
-/* already included: src/inc/conf.h */
-/* already included: src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
 /* begin src/inc/dev.h */
 /* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
@@ -8768,7 +9974,42 @@ void tracers_fin() {
 #define DzeroA(P, n)   DsetA(P, 0, n)
 /* end src/inc/dev.h */
 
-/* already included: src/frag/imp.h */
+/* begin src/frag/imp.h */
+#pragma once
+
+enum {frag_bulk = 26};
+
+struct int3;
+
+namespace frag_hst {
+
+// tag::i2d[]
+int i2dx(int i);                 // <1>
+int i2dy(int i);                 // <2>
+int i2dz(int i);                 // <3>
+void i2d3(int i, /**/ int d[3]); // <4>
+// end::i2d[]
+
+// tag::d2i[]
+int d2i(int x, int y, int z); // <1>
+int d32i(const int d[3]);     // <2>
+// end::d2i[]
+
+// tag::ncell[]
+int ncell(int3 L, int i); // <1>
+// end::ncell[]
+
+// tag::anti[]
+int antid2i(int x, int y, int z); // <1>
+int anti(int i);                  // <2>
+// end::anti[]
+
+// tag::hst[]
+void estimates(int3 L, int nfrags, float maxd, /**/ int *cap); // <1>
+// end::hst[]
+
+} // frag_hst
+/* end src/frag/imp.h */
 
 /* begin src/utils/msg.h */
 // tag::int[]
@@ -8885,7 +10126,38 @@ void error_abort();
 
 void error_print_stack();
 /* end src/utils/error.h */
-/* already included: src/d/api.h */
+/* begin src/d/api.h */
+#pragma once
+
+namespace d {  /* a wrapper for device API */
+typedef int Stream_t; /* TODO: streams are not supported */
+enum {MemcpyHostToHost, MemcpyHostToDevice,
+      MemcpyDeviceToHost, MemcpyDeviceToDevice,
+      MemcpyDefault};
+
+// tag::more[]
+const char *emsg();
+int alloc_pinned(void **pHost, size_t size);
+int is_device_pointer(const void *ptr);
+// end::more[]
+
+// tag::api[]
+int GetSymbolAddress(void **devPtr, const void *symbol);
+int Malloc(void **p, size_t);
+int MemcpyToSymbol(const void *symbol, const void *src, size_t count, size_t offset=0, int kind=MemcpyHostToDevice);
+int MemcpyFromSymbol(void *dst, const void *symbol, size_t count, size_t offset=0, int kind=MemcpyDeviceToHost);
+int HostGetDevicePointer(void **pDevice, void *pHost, unsigned int flags);
+int Memcpy (void *dst, const void *src, size_t count, int kind);
+int MemsetAsync (void *devPtr, int value, size_t count, Stream_t stream=0);
+int Memset (void *devPtr, int value, size_t count);
+int MemcpyAsync (void * dst, const void * src, size_t count, int kind, Stream_t stream = 0);
+int Free (void *devPtr);
+int FreeHost (void *hstPtr);
+int DeviceSynchronize (void);
+int PeekAtLastError(void);
+// end::api[]
+}
+/* end src/d/api.h */
 /* begin src/mpi/wrapper.h */
 namespace m {
 int Allreduce(const void *sendbuf, void *recvbuf, int count, MPI_Datatype datatype, MPI_Op op, MPI_Comm comm);
@@ -11287,8 +12559,78 @@ void den_map_set_conf(const Config *cfg, const Coords *c, DContMap *m) {
 #include <stdio.h>
 #include <curand_kernel.h>
 
-/* already included: src/inc/conf.h */
-/* already included: src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
 
 /* begin src/utils/error.h */
 #define ERR(fmt, ...)  do {                                     \
@@ -11394,7 +12736,16 @@ void check(int rc, const char *file, int line);
 /* [k]ernel [l]aunch macros */
 
 #if    defined(KL_RELEASE)
-/* already included: src/utils/kl/release.h */
+/* begin src/utils/kl/release.h */
+#define KL_BEFORE(s, C) if (!kl::safe(ESC C)) continue;
+#define KL_CALL(F, C, A) F<<<ESC C>>>A
+#define KL_AFTER(s)
+
+#ifndef UDX_KL_RELEASE_FUNCTIONS_DEFINED
+#define UDX_KL_RELEASE_FUNCTIONS_DEFINED
+namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
+#endif
+/* end src/utils/kl/release.h */
 #elif  defined(KL_NONE)
 /* begin src/utils/kl/none.h */
 #define KL_BEFORE(s, C)
@@ -11419,7 +12770,18 @@ namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
   #error KL_* is undefined
 #endif
 
-/* already included: src/utils/kl/common.h */
+/* begin src/utils/kl/common.h */
+namespace kl {
+#pragma once
+
+inline int safe0(dim3 i, dim3 j) {
+    msg(i.x, i.y, i.z,   j.x, j.y, j.z);
+    return i.x>0 && i.y>0 && i.z>0   &&   j.x>0 && j.y>0 && j.z>0;
+}
+inline int safe(dim3 i, dim3 j)                    { return safe0(i, j); }
+inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
+}
+/* end src/utils/kl/common.h */
 /* begin src/utils/kl/macro.h */
 #define ESC(...) __VA_ARGS__
 #define KL(F, C, A)                             \
@@ -11432,7 +12794,38 @@ namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
 
 /* TODO: header includes header */
 /* end src/utils/kl.h */
-/* already included: src/d/api.h */
+/* begin src/d/api.h */
+#pragma once
+
+namespace d {  /* a wrapper for device API */
+typedef int Stream_t; /* TODO: streams are not supported */
+enum {MemcpyHostToHost, MemcpyHostToDevice,
+      MemcpyDeviceToHost, MemcpyDeviceToDevice,
+      MemcpyDefault};
+
+// tag::more[]
+const char *emsg();
+int alloc_pinned(void **pHost, size_t size);
+int is_device_pointer(const void *ptr);
+// end::more[]
+
+// tag::api[]
+int GetSymbolAddress(void **devPtr, const void *symbol);
+int Malloc(void **p, size_t);
+int MemcpyToSymbol(const void *symbol, const void *src, size_t count, size_t offset=0, int kind=MemcpyHostToDevice);
+int MemcpyFromSymbol(void *dst, const void *symbol, size_t count, size_t offset=0, int kind=MemcpyDeviceToHost);
+int HostGetDevicePointer(void **pDevice, void *pHost, unsigned int flags);
+int Memcpy (void *dst, const void *src, size_t count, int kind);
+int MemsetAsync (void *devPtr, int value, size_t count, Stream_t stream=0);
+int Memset (void *devPtr, int value, size_t count);
+int MemcpyAsync (void * dst, const void * src, size_t count, int kind, Stream_t stream = 0);
+int Free (void *devPtr);
+int FreeHost (void *hstPtr);
+int DeviceSynchronize (void);
+int PeekAtLastError(void);
+// end::api[]
+}
+/* end src/d/api.h */
 
 /* begin src/inc/dev.h */
 /* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
@@ -11473,9 +12866,74 @@ namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
 #define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
 #define DzeroA(P, n)   DsetA(P, 0, n)
 /* end src/inc/dev.h */
-/* already included: src/inc/type.h */
+/* begin src/inc/type.h */
+#pragma once
 
-/* already included: src/coords/type.h */
+template <typename T, int N>
+struct Sarray { /* [s]tatic array */
+    T d[N];
+};
+
+struct Particle {
+    float r[3], v[3];
+};
+
+struct Rigid {
+    float Iinv[6],            /* moment of inertia            6        */
+        mass,                 /* mass of the solid            7        */
+        com[3],               /* [c]enter [o]f [m]ass         10       */
+        v[3], om[3],          /* linear and angular velocity  13 16    */
+        e0[3], e1[3], e2[3],  /* local referential            19 22 25 */
+        fo[3], to[3],         /* force, torque                28 31    */
+        id;                   /* id of the solid              32       */
+};
+
+struct Force {
+    float f[3];
+};
+
+struct Momentum {
+    float P[3], L[3]; /* linear and angular momentum */
+};
+
+struct Positioncp {
+    float rc[3]; /* current position  */
+    float rp[3]; /* previous position */
+};
+
+typedef Sarray<int, 26>       int26;
+typedef Sarray<int, 27>       int27;
+
+typedef Sarray<int*, 26>     intp26;
+typedef Sarray<Particle*, 26> Pap26;
+typedef Sarray<Force*,    26> Fop26;
+typedef Sarray<Momentum*, 26> Mop26;
+typedef Sarray<Positioncp*, 26> Pocpp26;
+
+/* particles wrap */
+struct PaWrap {
+    int n;
+    const Particle *pp;
+};
+
+/* forces wrap */
+struct FoWrap {
+    int n;
+    Force *ff;
+};
+/* end src/inc/type.h */
+
+/* begin src/coords/type.h */
+// tag::view[]
+#pragma once
+
+struct Coords_v {
+    int xc, yc, zc; /* rank coordinates        */
+    int xd, yd, zd; /* rank sizes              */
+    int Lx, Ly, Lz; /* [L]ocal: subdomain size */
+};
+// end::view[]
+/* end src/coords/type.h */
 /* begin src/coords/imp.h */
 struct Coords;
 struct Coords_v;
@@ -11551,8 +13009,86 @@ int coords_size(const Coords *c);
 // end::int[]
 /* end src/coords/imp.h */
 
-/* already included: src/algo/utils/shfl.h */
-/* already included: src/algo/utils/dev.h */
+/* begin src/algo/utils/shfl.h */
+#define _I_ static __device__
+
+#if __CUDACC_VER_MAJOR__ >= 9
+#pragma once
+
+template <typename T>
+_I_ T shfl_down(T val, unsigned int width) {
+    return __shfl_down_sync(0xFFFFFFFF, val, width);
+}
+
+template <typename T>
+_I_ T shfl_up(T val, unsigned int width) {
+    return __shfl_up_sync(0xFFFFFFFF, val, width);
+}
+template <typename T>
+_I_ T shfl(T val, unsigned int width) {
+    return __shfl_sync(0xFFFFFFFF, val, width);
+}
+#else
+template <typename T>
+_I_ T shfl_down(T val, unsigned int width) {
+    return __shfl_down(val, width);
+}
+
+template <typename T>
+_I_ T shfl_up(T val, unsigned int width) {
+    return __shfl_up(val, width);
+}
+template <typename T>
+_I_ T shfl(T val, unsigned int width) {
+    return __shfl(val, width);
+}
+#endif
+
+#undef _I_
+/* end src/algo/utils/shfl.h */
+/* begin src/algo/utils/dev.h */
+#define _S_ static __device__
+#define _I_ static __device__
+
+// tag::int[]
+#pragma once
+
+template <typename T>
+_I_ T warpReduceSum(T v)  // <1>
+// end::int[]
+{
+    for (int offset = warpSize>>1; offset > 0; offset >>= 1)
+        v += shfl_down(v, offset);
+    return v;
+}
+
+// tag::int[]
+_I_ float2 warpReduceSum(float2 val)  // <2>
+// end::int[]
+{
+    for (int offset = warpSize / 2; offset > 0; offset /= 2) {
+        val.x += shfl_down(val.x, offset);
+        val.y += shfl_down(val.y, offset);
+    }
+    return val;
+}
+
+// tag::int[]
+_I_ float3 warpReduceSum(float3 val)  // <3>
+// end::int[]
+{
+    for (int offset = warpSize/2; offset > 0; offset /= 2) {
+        val.x += shfl_down(val.x, offset);
+        val.y += shfl_down(val.y, offset);
+        val.z += shfl_down(val.z, offset);
+    }
+    return val;
+}
+
+#undef _S_
+#undef _I_
+
+/* end src/algo/utils/dev.h */
 
 /* begin src/control/den/imp.h */
 struct DCont;
@@ -12064,7 +13600,17 @@ void den_map_fin(DContMap *m) {
 #include <stdio.h>
 #include <vector_types.h>
 
-/* already included: src/coords/type.h */
+/* begin src/coords/type.h */
+// tag::view[]
+#pragma once
+
+struct Coords_v {
+    int xc, yc, zc; /* rank coordinates        */
+    int xd, yd, zd; /* rank sizes              */
+    int Lx, Ly, Lz; /* [L]ocal: subdomain size */
+};
+// end::view[]
+/* end src/coords/type.h */
 /* begin src/conf/imp.h */
 struct Config;
 struct float3;
@@ -12572,8 +14118,78 @@ void inflow_ini_params_conf(const Coords *coords, const Config *cfg, /**/ Inflow
 #include <stdio.h>
 #include <curand_kernel.h>
 
-/* already included: src/inc/conf.h */
-/* already included: src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
 
 /* begin src/utils/error.h */
 #define ERR(fmt, ...)  do {                                     \
@@ -12679,7 +14295,16 @@ void check(int rc, const char *file, int line);
 /* [k]ernel [l]aunch macros */
 
 #if    defined(KL_RELEASE)
-/* already included: src/utils/kl/release.h */
+/* begin src/utils/kl/release.h */
+#define KL_BEFORE(s, C) if (!kl::safe(ESC C)) continue;
+#define KL_CALL(F, C, A) F<<<ESC C>>>A
+#define KL_AFTER(s)
+
+#ifndef UDX_KL_RELEASE_FUNCTIONS_DEFINED
+#define UDX_KL_RELEASE_FUNCTIONS_DEFINED
+namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
+#endif
+/* end src/utils/kl/release.h */
 #elif  defined(KL_NONE)
 /* begin src/utils/kl/none.h */
 #define KL_BEFORE(s, C)
@@ -12704,7 +14329,18 @@ namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
   #error KL_* is undefined
 #endif
 
-/* already included: src/utils/kl/common.h */
+/* begin src/utils/kl/common.h */
+namespace kl {
+#pragma once
+
+inline int safe0(dim3 i, dim3 j) {
+    msg(i.x, i.y, i.z,   j.x, j.y, j.z);
+    return i.x>0 && i.y>0 && i.z>0   &&   j.x>0 && j.y>0 && j.z>0;
+}
+inline int safe(dim3 i, dim3 j)                    { return safe0(i, j); }
+inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
+}
+/* end src/utils/kl/common.h */
 /* begin src/utils/kl/macro.h */
 #define ESC(...) __VA_ARGS__
 #define KL(F, C, A)                             \
@@ -12717,7 +14353,38 @@ namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
 
 /* TODO: header includes header */
 /* end src/utils/kl.h */
-/* already included: src/d/api.h */
+/* begin src/d/api.h */
+#pragma once
+
+namespace d {  /* a wrapper for device API */
+typedef int Stream_t; /* TODO: streams are not supported */
+enum {MemcpyHostToHost, MemcpyHostToDevice,
+      MemcpyDeviceToHost, MemcpyDeviceToDevice,
+      MemcpyDefault};
+
+// tag::more[]
+const char *emsg();
+int alloc_pinned(void **pHost, size_t size);
+int is_device_pointer(const void *ptr);
+// end::more[]
+
+// tag::api[]
+int GetSymbolAddress(void **devPtr, const void *symbol);
+int Malloc(void **p, size_t);
+int MemcpyToSymbol(const void *symbol, const void *src, size_t count, size_t offset=0, int kind=MemcpyHostToDevice);
+int MemcpyFromSymbol(void *dst, const void *symbol, size_t count, size_t offset=0, int kind=MemcpyDeviceToHost);
+int HostGetDevicePointer(void **pDevice, void *pHost, unsigned int flags);
+int Memcpy (void *dst, const void *src, size_t count, int kind);
+int MemsetAsync (void *devPtr, int value, size_t count, Stream_t stream=0);
+int Memset (void *devPtr, int value, size_t count);
+int MemcpyAsync (void * dst, const void * src, size_t count, int kind, Stream_t stream = 0);
+int Free (void *devPtr);
+int FreeHost (void *hstPtr);
+int DeviceSynchronize (void);
+int PeekAtLastError(void);
+// end::api[]
+}
+/* end src/d/api.h */
 
 /* begin src/inc/dev.h */
 /* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
@@ -12758,9 +14425,74 @@ namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
 #define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
 #define DzeroA(P, n)   DsetA(P, 0, n)
 /* end src/inc/dev.h */
-/* already included: src/inc/type.h */
+/* begin src/inc/type.h */
+#pragma once
 
-/* already included: src/coords/type.h */
+template <typename T, int N>
+struct Sarray { /* [s]tatic array */
+    T d[N];
+};
+
+struct Particle {
+    float r[3], v[3];
+};
+
+struct Rigid {
+    float Iinv[6],            /* moment of inertia            6        */
+        mass,                 /* mass of the solid            7        */
+        com[3],               /* [c]enter [o]f [m]ass         10       */
+        v[3], om[3],          /* linear and angular velocity  13 16    */
+        e0[3], e1[3], e2[3],  /* local referential            19 22 25 */
+        fo[3], to[3],         /* force, torque                28 31    */
+        id;                   /* id of the solid              32       */
+};
+
+struct Force {
+    float f[3];
+};
+
+struct Momentum {
+    float P[3], L[3]; /* linear and angular momentum */
+};
+
+struct Positioncp {
+    float rc[3]; /* current position  */
+    float rp[3]; /* previous position */
+};
+
+typedef Sarray<int, 26>       int26;
+typedef Sarray<int, 27>       int27;
+
+typedef Sarray<int*, 26>     intp26;
+typedef Sarray<Particle*, 26> Pap26;
+typedef Sarray<Force*,    26> Fop26;
+typedef Sarray<Momentum*, 26> Mop26;
+typedef Sarray<Positioncp*, 26> Pocpp26;
+
+/* particles wrap */
+struct PaWrap {
+    int n;
+    const Particle *pp;
+};
+
+/* forces wrap */
+struct FoWrap {
+    int n;
+    Force *ff;
+};
+/* end src/inc/type.h */
+
+/* begin src/coords/type.h */
+// tag::view[]
+#pragma once
+
+struct Coords_v {
+    int xc, yc, zc; /* rank coordinates        */
+    int xd, yd, zd; /* rank sizes              */
+    int Lx, Ly, Lz; /* [L]ocal: subdomain size */
+};
+// end::view[]
+/* end src/coords/type.h */
 /* begin src/coords/imp.h */
 struct Coords;
 struct Coords_v;
@@ -12835,7 +14567,68 @@ void coord_stamp(const Coords *c, /**/ char *s);
 int coords_size(const Coords *c);
 // end::int[]
 /* end src/coords/imp.h */
-/* already included: src/math/dev.h */
+/* begin src/math/dev.h */
+/* use templates here because we might have mixed float/double */
+
+#define _HD_ __host__ __device__
+
+#pragma once
+
+template <typename T1, typename T2>
+_HD_ void scal(const T1 a, /*io*/ T2 *b) {
+    b->x *= a;
+    b->y *= a;
+    b->z *= a;
+}
+
+template <typename T1, typename T2>
+_HD_ void add(const T1 *a, /*io*/ T2 *b) {
+    b->x += a->x;
+    b->y += a->y;
+    b->z += a->z;
+}
+
+template <typename T1, typename T2, typename T3>
+_HD_ void diff(const T1 *a, const T2 *b, /**/ T3 *c) {
+    c->x = a->x - b->x;
+    c->y = a->y - b->y;
+    c->z = a->z - b->z;
+}
+
+template <typename T1, typename T2, typename T3>
+_HD_ T1 dot(const T2 *a, const T3 *b) {
+    return a->x * b->x + a->y * b->y + a->z * b->z;
+}
+
+template <typename T1, typename T2, typename T3>
+_HD_ void cross(const T1 *a, const T2 *b, /**/ T3 *c) {
+    c->x = a->y * b->z - a->z * b->y;
+    c->y = a->z * b->x - a->x * b->z;
+    c->z = a->x * b->y - a->y * b->x;
+}
+
+template <typename T1, typename T2, typename T3>
+_HD_ void scalmult(const T1 *a, const T2 x, /**/ const T3 *b) {
+    b->x = a->x * x;
+    b->y = a->y * x;
+    b->z = a->z * x;
+}
+
+
+template <typename T1, typename T2, typename T3, typename T4>
+_HD_ void apxb(const T1 *a, const T2 x, const T3 *b, /**/ T4 *c) {
+    c->x = a->x + x * b->x;
+    c->y = a->y + x * b->y;
+    c->z = a->z + x * b->z;
+}
+
+template <typename T1, typename T2, typename T3>
+_HD_ void axpy(const T1 a, const T2 *x, /*io*/ T3 *y) {
+    y->x += a * x->x;
+    y->y += a * x->y;
+    y->z += a * x->z;
+}
+/* end src/math/dev.h */
 
 /* begin src/control/inflow/imp.h */
 struct Inflow;
@@ -14145,8 +15938,78 @@ void outflow_set_conf(const Config *cfg, const Coords *coords, Outflow *o) {
 /* begin src/control/outflow/imp.cu */
 #include <stdio.h>
 
-/* already included: src/inc/conf.h */
-/* already included: src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
 
 /* begin src/utils/error.h */
 #define ERR(fmt, ...)  do {                                     \
@@ -14252,7 +16115,16 @@ void check(int rc, const char *file, int line);
 /* [k]ernel [l]aunch macros */
 
 #if    defined(KL_RELEASE)
-/* already included: src/utils/kl/release.h */
+/* begin src/utils/kl/release.h */
+#define KL_BEFORE(s, C) if (!kl::safe(ESC C)) continue;
+#define KL_CALL(F, C, A) F<<<ESC C>>>A
+#define KL_AFTER(s)
+
+#ifndef UDX_KL_RELEASE_FUNCTIONS_DEFINED
+#define UDX_KL_RELEASE_FUNCTIONS_DEFINED
+namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
+#endif
+/* end src/utils/kl/release.h */
 #elif  defined(KL_NONE)
 /* begin src/utils/kl/none.h */
 #define KL_BEFORE(s, C)
@@ -14277,7 +16149,18 @@ namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
   #error KL_* is undefined
 #endif
 
-/* already included: src/utils/kl/common.h */
+/* begin src/utils/kl/common.h */
+namespace kl {
+#pragma once
+
+inline int safe0(dim3 i, dim3 j) {
+    msg(i.x, i.y, i.z,   j.x, j.y, j.z);
+    return i.x>0 && i.y>0 && i.z>0   &&   j.x>0 && j.y>0 && j.z>0;
+}
+inline int safe(dim3 i, dim3 j)                    { return safe0(i, j); }
+inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
+}
+/* end src/utils/kl/common.h */
 /* begin src/utils/kl/macro.h */
 #define ESC(...) __VA_ARGS__
 #define KL(F, C, A)                             \
@@ -14290,11 +16173,113 @@ namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
 
 /* TODO: header includes header */
 /* end src/utils/kl.h */
-/* already included: src/d/api.h */
+/* begin src/d/api.h */
+#pragma once
 
-/* already included: src/math/dev.h */
+namespace d {  /* a wrapper for device API */
+typedef int Stream_t; /* TODO: streams are not supported */
+enum {MemcpyHostToHost, MemcpyHostToDevice,
+      MemcpyDeviceToHost, MemcpyDeviceToDevice,
+      MemcpyDefault};
 
-/* already included: src/coords/type.h */
+// tag::more[]
+const char *emsg();
+int alloc_pinned(void **pHost, size_t size);
+int is_device_pointer(const void *ptr);
+// end::more[]
+
+// tag::api[]
+int GetSymbolAddress(void **devPtr, const void *symbol);
+int Malloc(void **p, size_t);
+int MemcpyToSymbol(const void *symbol, const void *src, size_t count, size_t offset=0, int kind=MemcpyHostToDevice);
+int MemcpyFromSymbol(void *dst, const void *symbol, size_t count, size_t offset=0, int kind=MemcpyDeviceToHost);
+int HostGetDevicePointer(void **pDevice, void *pHost, unsigned int flags);
+int Memcpy (void *dst, const void *src, size_t count, int kind);
+int MemsetAsync (void *devPtr, int value, size_t count, Stream_t stream=0);
+int Memset (void *devPtr, int value, size_t count);
+int MemcpyAsync (void * dst, const void * src, size_t count, int kind, Stream_t stream = 0);
+int Free (void *devPtr);
+int FreeHost (void *hstPtr);
+int DeviceSynchronize (void);
+int PeekAtLastError(void);
+// end::api[]
+}
+/* end src/d/api.h */
+
+/* begin src/math/dev.h */
+/* use templates here because we might have mixed float/double */
+
+#define _HD_ __host__ __device__
+
+#pragma once
+
+template <typename T1, typename T2>
+_HD_ void scal(const T1 a, /*io*/ T2 *b) {
+    b->x *= a;
+    b->y *= a;
+    b->z *= a;
+}
+
+template <typename T1, typename T2>
+_HD_ void add(const T1 *a, /*io*/ T2 *b) {
+    b->x += a->x;
+    b->y += a->y;
+    b->z += a->z;
+}
+
+template <typename T1, typename T2, typename T3>
+_HD_ void diff(const T1 *a, const T2 *b, /**/ T3 *c) {
+    c->x = a->x - b->x;
+    c->y = a->y - b->y;
+    c->z = a->z - b->z;
+}
+
+template <typename T1, typename T2, typename T3>
+_HD_ T1 dot(const T2 *a, const T3 *b) {
+    return a->x * b->x + a->y * b->y + a->z * b->z;
+}
+
+template <typename T1, typename T2, typename T3>
+_HD_ void cross(const T1 *a, const T2 *b, /**/ T3 *c) {
+    c->x = a->y * b->z - a->z * b->y;
+    c->y = a->z * b->x - a->x * b->z;
+    c->z = a->x * b->y - a->y * b->x;
+}
+
+template <typename T1, typename T2, typename T3>
+_HD_ void scalmult(const T1 *a, const T2 x, /**/ const T3 *b) {
+    b->x = a->x * x;
+    b->y = a->y * x;
+    b->z = a->z * x;
+}
+
+
+template <typename T1, typename T2, typename T3, typename T4>
+_HD_ void apxb(const T1 *a, const T2 x, const T3 *b, /**/ T4 *c) {
+    c->x = a->x + x * b->x;
+    c->y = a->y + x * b->y;
+    c->z = a->z + x * b->z;
+}
+
+template <typename T1, typename T2, typename T3>
+_HD_ void axpy(const T1 a, const T2 *x, /*io*/ T3 *y) {
+    y->x += a * x->x;
+    y->y += a * x->y;
+    y->z += a * x->z;
+}
+/* end src/math/dev.h */
+
+/* begin src/coords/type.h */
+// tag::view[]
+#pragma once
+
+struct Coords_v {
+    int xc, yc, zc; /* rank coordinates        */
+    int xd, yd, zd; /* rank sizes              */
+    int Lx, Ly, Lz; /* [L]ocal: subdomain size */
+};
+// end::view[]
+/* end src/coords/type.h */
 /* begin src/coords/imp.h */
 struct Coords;
 struct Coords_v;
@@ -14409,7 +16394,62 @@ int coords_size(const Coords *c);
 #define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
 #define DzeroA(P, n)   DsetA(P, 0, n)
 /* end src/inc/dev.h */
-/* already included: src/inc/type.h */
+/* begin src/inc/type.h */
+#pragma once
+
+template <typename T, int N>
+struct Sarray { /* [s]tatic array */
+    T d[N];
+};
+
+struct Particle {
+    float r[3], v[3];
+};
+
+struct Rigid {
+    float Iinv[6],            /* moment of inertia            6        */
+        mass,                 /* mass of the solid            7        */
+        com[3],               /* [c]enter [o]f [m]ass         10       */
+        v[3], om[3],          /* linear and angular velocity  13 16    */
+        e0[3], e1[3], e2[3],  /* local referential            19 22 25 */
+        fo[3], to[3],         /* force, torque                28 31    */
+        id;                   /* id of the solid              32       */
+};
+
+struct Force {
+    float f[3];
+};
+
+struct Momentum {
+    float P[3], L[3]; /* linear and angular momentum */
+};
+
+struct Positioncp {
+    float rc[3]; /* current position  */
+    float rp[3]; /* previous position */
+};
+
+typedef Sarray<int, 26>       int26;
+typedef Sarray<int, 27>       int27;
+
+typedef Sarray<int*, 26>     intp26;
+typedef Sarray<Particle*, 26> Pap26;
+typedef Sarray<Force*,    26> Fop26;
+typedef Sarray<Momentum*, 26> Mop26;
+typedef Sarray<Positioncp*, 26> Pocpp26;
+
+/* particles wrap */
+struct PaWrap {
+    int n;
+    const Particle *pp;
+};
+
+/* forces wrap */
+struct FoWrap {
+    int n;
+    Force *ff;
+};
+/* end src/inc/type.h */
 
 /* begin src/control/outflow/imp.h */
 struct Outflow;
@@ -15408,8 +17448,78 @@ void vcont_set_conf(const Config *cfg, /**/ PidVCont *c) {
 #include <mpi.h>
 #include <assert.h>
 
-/* already included: src/inc/conf.h */
-/* already included: src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
 /* begin src/utils/msg.h */
 // tag::int[]
 void msg_ini(int rank); // <1>
@@ -15485,7 +17595,62 @@ const char* get_filename_ext(const char*);
 // end::tools[]
 /* end src/utils/imp.h */
 
-/* already included: src/inc/type.h */
+/* begin src/inc/type.h */
+#pragma once
+
+template <typename T, int N>
+struct Sarray { /* [s]tatic array */
+    T d[N];
+};
+
+struct Particle {
+    float r[3], v[3];
+};
+
+struct Rigid {
+    float Iinv[6],            /* moment of inertia            6        */
+        mass,                 /* mass of the solid            7        */
+        com[3],               /* [c]enter [o]f [m]ass         10       */
+        v[3], om[3],          /* linear and angular velocity  13 16    */
+        e0[3], e1[3], e2[3],  /* local referential            19 22 25 */
+        fo[3], to[3],         /* force, torque                28 31    */
+        id;                   /* id of the solid              32       */
+};
+
+struct Force {
+    float f[3];
+};
+
+struct Momentum {
+    float P[3], L[3]; /* linear and angular momentum */
+};
+
+struct Positioncp {
+    float rc[3]; /* current position  */
+    float rp[3]; /* previous position */
+};
+
+typedef Sarray<int, 26>       int26;
+typedef Sarray<int, 27>       int27;
+
+typedef Sarray<int*, 26>     intp26;
+typedef Sarray<Particle*, 26> Pap26;
+typedef Sarray<Force*,    26> Fop26;
+typedef Sarray<Momentum*, 26> Mop26;
+typedef Sarray<Positioncp*, 26> Pocpp26;
+
+/* particles wrap */
+struct PaWrap {
+    int n;
+    const Particle *pp;
+};
+
+/* forces wrap */
+struct FoWrap {
+    int n;
+    Force *ff;
+};
+/* end src/inc/type.h */
 /* begin src/inc/dev.h */
 /* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
@@ -15525,7 +17690,38 @@ const char* get_filename_ext(const char*);
 #define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
 #define DzeroA(P, n)   DsetA(P, 0, n)
 /* end src/inc/dev.h */
-/* already included: src/d/api.h */
+/* begin src/d/api.h */
+#pragma once
+
+namespace d {  /* a wrapper for device API */
+typedef int Stream_t; /* TODO: streams are not supported */
+enum {MemcpyHostToHost, MemcpyHostToDevice,
+      MemcpyDeviceToHost, MemcpyDeviceToDevice,
+      MemcpyDefault};
+
+// tag::more[]
+const char *emsg();
+int alloc_pinned(void **pHost, size_t size);
+int is_device_pointer(const void *ptr);
+// end::more[]
+
+// tag::api[]
+int GetSymbolAddress(void **devPtr, const void *symbol);
+int Malloc(void **p, size_t);
+int MemcpyToSymbol(const void *symbol, const void *src, size_t count, size_t offset=0, int kind=MemcpyHostToDevice);
+int MemcpyFromSymbol(void *dst, const void *symbol, size_t count, size_t offset=0, int kind=MemcpyDeviceToHost);
+int HostGetDevicePointer(void **pDevice, void *pHost, unsigned int flags);
+int Memcpy (void *dst, const void *src, size_t count, int kind);
+int MemsetAsync (void *devPtr, int value, size_t count, Stream_t stream=0);
+int Memset (void *devPtr, int value, size_t count);
+int MemcpyAsync (void * dst, const void * src, size_t count, int kind, Stream_t stream = 0);
+int Free (void *devPtr);
+int FreeHost (void *hstPtr);
+int DeviceSynchronize (void);
+int PeekAtLastError(void);
+// end::api[]
+}
+/* end src/d/api.h */
 /* begin src/mpi/wrapper.h */
 namespace m {
 int Allreduce(const void *sendbuf, void *recvbuf, int count, MPI_Datatype datatype, MPI_Op op, MPI_Comm comm);
@@ -15614,7 +17810,16 @@ void check(int rc, const char *file, int line);
 /* [k]ernel [l]aunch macros */
 
 #if    defined(KL_RELEASE)
-/* already included: src/utils/kl/release.h */
+/* begin src/utils/kl/release.h */
+#define KL_BEFORE(s, C) if (!kl::safe(ESC C)) continue;
+#define KL_CALL(F, C, A) F<<<ESC C>>>A
+#define KL_AFTER(s)
+
+#ifndef UDX_KL_RELEASE_FUNCTIONS_DEFINED
+#define UDX_KL_RELEASE_FUNCTIONS_DEFINED
+namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
+#endif
+/* end src/utils/kl/release.h */
 #elif  defined(KL_NONE)
 /* begin src/utils/kl/none.h */
 #define KL_BEFORE(s, C)
@@ -15639,7 +17844,18 @@ namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
   #error KL_* is undefined
 #endif
 
-/* already included: src/utils/kl/common.h */
+/* begin src/utils/kl/common.h */
+namespace kl {
+#pragma once
+
+inline int safe0(dim3 i, dim3 j) {
+    msg(i.x, i.y, i.z,   j.x, j.y, j.z);
+    return i.x>0 && i.y>0 && i.z>0   &&   j.x>0 && j.y>0 && j.z>0;
+}
+inline int safe(dim3 i, dim3 j)                    { return safe0(i, j); }
+inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
+}
+/* end src/utils/kl/common.h */
 /* begin src/utils/kl/macro.h */
 #define ESC(...) __VA_ARGS__
 #define KL(F, C, A)                             \
@@ -15662,8 +17878,79 @@ void check(int code, const char *file, int line);
 }
 /* end src/utils/mc.h */
 
-/* already included: src/math/dev.h */
-/* already included: src/coords/type.h */
+/* begin src/math/dev.h */
+/* use templates here because we might have mixed float/double */
+
+#define _HD_ __host__ __device__
+
+#pragma once
+
+template <typename T1, typename T2>
+_HD_ void scal(const T1 a, /*io*/ T2 *b) {
+    b->x *= a;
+    b->y *= a;
+    b->z *= a;
+}
+
+template <typename T1, typename T2>
+_HD_ void add(const T1 *a, /*io*/ T2 *b) {
+    b->x += a->x;
+    b->y += a->y;
+    b->z += a->z;
+}
+
+template <typename T1, typename T2, typename T3>
+_HD_ void diff(const T1 *a, const T2 *b, /**/ T3 *c) {
+    c->x = a->x - b->x;
+    c->y = a->y - b->y;
+    c->z = a->z - b->z;
+}
+
+template <typename T1, typename T2, typename T3>
+_HD_ T1 dot(const T2 *a, const T3 *b) {
+    return a->x * b->x + a->y * b->y + a->z * b->z;
+}
+
+template <typename T1, typename T2, typename T3>
+_HD_ void cross(const T1 *a, const T2 *b, /**/ T3 *c) {
+    c->x = a->y * b->z - a->z * b->y;
+    c->y = a->z * b->x - a->x * b->z;
+    c->z = a->x * b->y - a->y * b->x;
+}
+
+template <typename T1, typename T2, typename T3>
+_HD_ void scalmult(const T1 *a, const T2 x, /**/ const T3 *b) {
+    b->x = a->x * x;
+    b->y = a->y * x;
+    b->z = a->z * x;
+}
+
+
+template <typename T1, typename T2, typename T3, typename T4>
+_HD_ void apxb(const T1 *a, const T2 x, const T3 *b, /**/ T4 *c) {
+    c->x = a->x + x * b->x;
+    c->y = a->y + x * b->y;
+    c->z = a->z + x * b->z;
+}
+
+template <typename T1, typename T2, typename T3>
+_HD_ void axpy(const T1 a, const T2 *x, /*io*/ T3 *y) {
+    y->x += a * x->x;
+    y->y += a * x->y;
+    y->z += a * x->z;
+}
+/* end src/math/dev.h */
+/* begin src/coords/type.h */
+// tag::view[]
+#pragma once
+
+struct Coords_v {
+    int xc, yc, zc; /* rank coordinates        */
+    int xd, yd, zd; /* rank sizes              */
+    int Lx, Ly, Lz; /* [L]ocal: subdomain size */
+};
+// end::view[]
+/* end src/coords/type.h */
 /* begin src/coords/dev.h */
 #pragma once
 
@@ -15837,8 +18124,86 @@ int coords_size(const Coords *c);
 // end::int[]
 /* end src/coords/imp.h */
 
-/* already included: src/algo/utils/shfl.h */
-/* already included: src/algo/utils/dev.h */
+/* begin src/algo/utils/shfl.h */
+#define _I_ static __device__
+
+#if __CUDACC_VER_MAJOR__ >= 9
+#pragma once
+
+template <typename T>
+_I_ T shfl_down(T val, unsigned int width) {
+    return __shfl_down_sync(0xFFFFFFFF, val, width);
+}
+
+template <typename T>
+_I_ T shfl_up(T val, unsigned int width) {
+    return __shfl_up_sync(0xFFFFFFFF, val, width);
+}
+template <typename T>
+_I_ T shfl(T val, unsigned int width) {
+    return __shfl_sync(0xFFFFFFFF, val, width);
+}
+#else
+template <typename T>
+_I_ T shfl_down(T val, unsigned int width) {
+    return __shfl_down(val, width);
+}
+
+template <typename T>
+_I_ T shfl_up(T val, unsigned int width) {
+    return __shfl_up(val, width);
+}
+template <typename T>
+_I_ T shfl(T val, unsigned int width) {
+    return __shfl(val, width);
+}
+#endif
+
+#undef _I_
+/* end src/algo/utils/shfl.h */
+/* begin src/algo/utils/dev.h */
+#define _S_ static __device__
+#define _I_ static __device__
+
+// tag::int[]
+#pragma once
+
+template <typename T>
+_I_ T warpReduceSum(T v)  // <1>
+// end::int[]
+{
+    for (int offset = warpSize>>1; offset > 0; offset >>= 1)
+        v += shfl_down(v, offset);
+    return v;
+}
+
+// tag::int[]
+_I_ float2 warpReduceSum(float2 val)  // <2>
+// end::int[]
+{
+    for (int offset = warpSize / 2; offset > 0; offset /= 2) {
+        val.x += shfl_down(val.x, offset);
+        val.y += shfl_down(val.y, offset);
+    }
+    return val;
+}
+
+// tag::int[]
+_I_ float3 warpReduceSum(float3 val)  // <3>
+// end::int[]
+{
+    for (int offset = warpSize/2; offset > 0; offset /= 2) {
+        val.x += shfl_down(val.x, offset);
+        val.y += shfl_down(val.y, offset);
+        val.z += shfl_down(val.z, offset);
+    }
+    return val;
+}
+
+#undef _S_
+#undef _I_
+
+/* end src/algo/utils/dev.h */
 
 /* begin src/io/restart/imp.h */
 #pragma once
@@ -17079,8 +19444,78 @@ void coords_ini_conf(MPI_Comm cart, const Config *cfg, Coords **c) {
 #include <vector_types.h>
 #include <mpi.h>
 
-/* already included: src/inc/conf.h */
-/* already included: src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
 
 /* begin src/utils/error.h */
 #define ERR(fmt, ...)  do {                                     \
@@ -17211,7 +19646,17 @@ int status2errcode(MPI_Status *status);
 }
 /* end src/mpi/wrapper.h */
 
-/* already included: src/coords/type.h */
+/* begin src/coords/type.h */
+// tag::view[]
+#pragma once
+
+struct Coords_v {
+    int xc, yc, zc; /* rank coordinates        */
+    int xd, yd, zd; /* rank sizes              */
+    int Lx, Ly, Lz; /* [L]ocal: subdomain size */
+};
+// end::view[]
+/* end src/coords/type.h */
 /* begin src/coords/ini.h */
 struct Coords;
 struct Config;
@@ -17300,7 +19745,15 @@ void coord_stamp(const Coords *c, /**/ char *s);
 int coords_size(const Coords *c);
 // end::int[]
 /* end src/coords/imp.h */
-/* already included: src/coords/imp/type.h */
+/* begin src/coords/imp/type.h */
+#pragma once
+
+struct Coords {
+    int xc, yc, zc; /* rank coordinates        */
+    int xd, yd, zd; /* rank sizes              */
+    int Lx, Ly, Lz; /* [L]ocal: subdomain size */
+};
+/* end src/coords/imp/type.h */
 /* begin src/coords/imp/main.h */
 enum {X, Y, Z, D};
 
@@ -17792,8 +20245,78 @@ int coords_size(const Coords *c) {
 #include <stdio.h>
 #include <assert.h>
 
-/* already included: src/inc/conf.h */
-/* already included: src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
 
 /* begin src/utils/imp.h */
 // tag::mem[]
@@ -17869,7 +20392,38 @@ void msg_print(const char *fmt, ...); // <2>
 // end::int[]
 /* end src/utils/msg.h */
 
-/* already included: src/d/api.h */
+/* begin src/d/api.h */
+#pragma once
+
+namespace d {  /* a wrapper for device API */
+typedef int Stream_t; /* TODO: streams are not supported */
+enum {MemcpyHostToHost, MemcpyHostToDevice,
+      MemcpyDeviceToHost, MemcpyDeviceToDevice,
+      MemcpyDefault};
+
+// tag::more[]
+const char *emsg();
+int alloc_pinned(void **pHost, size_t size);
+int is_device_pointer(const void *ptr);
+// end::more[]
+
+// tag::api[]
+int GetSymbolAddress(void **devPtr, const void *symbol);
+int Malloc(void **p, size_t);
+int MemcpyToSymbol(const void *symbol, const void *src, size_t count, size_t offset=0, int kind=MemcpyHostToDevice);
+int MemcpyFromSymbol(void *dst, const void *symbol, size_t count, size_t offset=0, int kind=MemcpyDeviceToHost);
+int HostGetDevicePointer(void **pDevice, void *pHost, unsigned int flags);
+int Memcpy (void *dst, const void *src, size_t count, int kind);
+int MemsetAsync (void *devPtr, int value, size_t count, Stream_t stream=0);
+int Memset (void *devPtr, int value, size_t count);
+int MemcpyAsync (void * dst, const void * src, size_t count, int kind, Stream_t stream = 0);
+int Free (void *devPtr);
+int FreeHost (void *hstPtr);
+int DeviceSynchronize (void);
+int PeekAtLastError(void);
+// end::api[]
+}
+/* end src/d/api.h */
 
 namespace d {
 /* begin src/d/common.h */
@@ -18518,7 +21072,54 @@ void conf_write_history(const Config *cfg, FILE *stream); // <2>
 // end::dump[]
 /* end src/conf/imp.h */
 
-/* already included: src/dbg/imp.h */
+/* begin src/dbg/imp.h */
+#pragma once
+
+struct Dbg;
+
+struct Config;
+struct Force;
+struct Particle;
+struct int3;
+struct Coords;
+
+// tag::kind[]
+enum {
+    DBG_POS,      // <1>
+    DBG_POS_SOFT, // <2>
+    DBG_VEL,      // <3>
+    DBG_FORCES,   // <4>
+    DBG_COLORS,   // <5>
+    DBG_CLIST,    // <6>
+    DBG_NKIND_
+};
+// end::kind[]
+
+// tag::mem[]
+void dbg_ini(Dbg**);
+void dbg_fin(Dbg*);
+// end::mem[]
+
+// tag::ini[]
+void dbg_enable(int kind, Dbg *dbg);
+void dbg_disable(int kind, Dbg *dbg);
+void dbg_set_verbose(bool, Dbg *dbg);
+void dbg_set_dump(bool, Dbg *dbg);
+// end::ini[]
+
+// tag::cnf[]
+void dbg_set_conf(const Config*, Dbg*);
+// end::cnf[]
+
+// tag::int[]
+void dbg_check_pos(const Coords *c, const char *base, const Dbg *dbg, int n, const Particle *pp);
+void dbg_check_pos_soft(const Coords *c, const char *base, const Dbg *dbg, int n, const Particle *pp);
+void dbg_check_vel(float dt, const Coords *c, const char *base, const Dbg *dbg, int n, const Particle *pp);
+void dbg_check_forces(float dt, const Coords *c, const char *base, const Dbg *dbg, int n, const Particle *pp, const Force *ff);
+void dbg_check_colors(const Coords *c, const Dbg *dbg, int n, const int *cc);
+void dbg_check_clist(const Coords *c, const Dbg *dbg, int3 L, const int *starts, const int *counts, const Particle *pp);
+// end::int[]
+/* end src/dbg/imp.h */
 
 static void set(const Config *cfg, const char *desc, int kind, Dbg *dbg) {
     int enabled = 0;
@@ -18844,10 +21445,189 @@ void dbg_set_conf(const Config *cfg, Dbg *dbg) {
 /* begin src/dbg/imp.cu */
 #include <stdio.h>
 #include <assert.h>
-/* already included: src/inc/conf.h */
-/* already included: src/inc/def.h */
-/* already included: src/inc/conf.h */
-/* already included: src/inc/type.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
+/* begin src/inc/def.h */
+/* solvent colors */
+#define XMACRO_COLOR(_)                         \
+    _(BLUE)                                     \
+    _(RED)
+
+#define ENUM_COLOR(a) a##_COLOR
+#define make_enum_color(a) ENUM_COLOR(a) ,
+#ifndef UDX_DEF_ENUMS_DEFINED
+#define UDX_DEF_ENUMS_DEFINED
+enum {
+    XMACRO_COLOR(make_enum_color)
+    N_COLOR
+};
+#undef make_enum_color
+
+enum {
+    /* wall margins */
+    XWM = 6,
+    YWM = 6,
+    ZWM = 6,
+
+    SAFETY_FACTOR_MAXP = 3,
+
+    /* maximum number of particles per solid */
+    MAX_PSOLID_NUM = 12000,
+
+    /* maximum number of solids per node */
+    MAX_SOLIDS = 100,
+
+    /* maximum number of object types (solid, rbc, ...) */
+    MAX_MBR_TYPES = 2,
+    MAX_RIG_TYPES = 2,
+    MAX_OBJ_TYPES = MAX_MBR_TYPES + MAX_RIG_TYPES,
+
+    /* maximum number density of particles of the objects */
+    MAX_OBJ_DENSITY = 30,
+
+    /* maximum number of red blood cells per node */
+    MAX_CELL_NUM = 1500,
+
+    /* maximum texture size in bytes */
+    MAX_TEXO_SIZE = 100000000,
+
+    /* safety factor for dpd halo interactions */
+    HSAFETY_FACTOR = 10,
+
+    /* safety factor for odist fragments */
+    ODSTR_FACTOR = 3,
+};
+#endif
+
+/* for the spring forces r = min(lmax*RBC_SPRING_CAP, r) */
+#define RBC_SPRING_CAP (0.99)
+/* end src/inc/def.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
+/* begin src/inc/type.h */
+#pragma once
+
+template <typename T, int N>
+struct Sarray { /* [s]tatic array */
+    T d[N];
+};
+
+struct Particle {
+    float r[3], v[3];
+};
+
+struct Rigid {
+    float Iinv[6],            /* moment of inertia            6        */
+        mass,                 /* mass of the solid            7        */
+        com[3],               /* [c]enter [o]f [m]ass         10       */
+        v[3], om[3],          /* linear and angular velocity  13 16    */
+        e0[3], e1[3], e2[3],  /* local referential            19 22 25 */
+        fo[3], to[3],         /* force, torque                28 31    */
+        id;                   /* id of the solid              32       */
+};
+
+struct Force {
+    float f[3];
+};
+
+struct Momentum {
+    float P[3], L[3]; /* linear and angular momentum */
+};
+
+struct Positioncp {
+    float rc[3]; /* current position  */
+    float rp[3]; /* previous position */
+};
+
+typedef Sarray<int, 26>       int26;
+typedef Sarray<int, 27>       int27;
+
+typedef Sarray<int*, 26>     intp26;
+typedef Sarray<Particle*, 26> Pap26;
+typedef Sarray<Force*,    26> Fop26;
+typedef Sarray<Momentum*, 26> Mop26;
+typedef Sarray<Positioncp*, 26> Pocpp26;
+
+/* particles wrap */
+struct PaWrap {
+    int n;
+    const Particle *pp;
+};
+
+/* forces wrap */
+struct FoWrap {
+    int n;
+    Force *ff;
+};
+/* end src/inc/type.h */
 /* begin src/inc/dev.h */
 /* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
@@ -18992,7 +21772,16 @@ void check(int rc, const char *file, int line);
 /* [k]ernel [l]aunch macros */
 
 #if    defined(KL_RELEASE)
-/* already included: src/utils/kl/release.h */
+/* begin src/utils/kl/release.h */
+#define KL_BEFORE(s, C) if (!kl::safe(ESC C)) continue;
+#define KL_CALL(F, C, A) F<<<ESC C>>>A
+#define KL_AFTER(s)
+
+#ifndef UDX_KL_RELEASE_FUNCTIONS_DEFINED
+#define UDX_KL_RELEASE_FUNCTIONS_DEFINED
+namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
+#endif
+/* end src/utils/kl/release.h */
 #elif  defined(KL_NONE)
 /* begin src/utils/kl/none.h */
 #define KL_BEFORE(s, C)
@@ -19017,7 +21806,18 @@ namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
   #error KL_* is undefined
 #endif
 
-/* already included: src/utils/kl/common.h */
+/* begin src/utils/kl/common.h */
+namespace kl {
+#pragma once
+
+inline int safe0(dim3 i, dim3 j) {
+    msg(i.x, i.y, i.z,   j.x, j.y, j.z);
+    return i.x>0 && i.y>0 && i.z>0   &&   j.x>0 && j.y>0 && j.z>0;
+}
+inline int safe(dim3 i, dim3 j)                    { return safe0(i, j); }
+inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
+}
+/* end src/utils/kl/common.h */
 /* begin src/utils/kl/macro.h */
 #define ESC(...) __VA_ARGS__
 #define KL(F, C, A)                             \
@@ -19036,8 +21836,49 @@ void msg_ini(int rank); // <1>
 void msg_print(const char *fmt, ...); // <2>
 // end::int[]
 /* end src/utils/msg.h */
-/* already included: src/d/api.h */
-/* already included: src/coords/type.h */
+/* begin src/d/api.h */
+#pragma once
+
+namespace d {  /* a wrapper for device API */
+typedef int Stream_t; /* TODO: streams are not supported */
+enum {MemcpyHostToHost, MemcpyHostToDevice,
+      MemcpyDeviceToHost, MemcpyDeviceToDevice,
+      MemcpyDefault};
+
+// tag::more[]
+const char *emsg();
+int alloc_pinned(void **pHost, size_t size);
+int is_device_pointer(const void *ptr);
+// end::more[]
+
+// tag::api[]
+int GetSymbolAddress(void **devPtr, const void *symbol);
+int Malloc(void **p, size_t);
+int MemcpyToSymbol(const void *symbol, const void *src, size_t count, size_t offset=0, int kind=MemcpyHostToDevice);
+int MemcpyFromSymbol(void *dst, const void *symbol, size_t count, size_t offset=0, int kind=MemcpyDeviceToHost);
+int HostGetDevicePointer(void **pDevice, void *pHost, unsigned int flags);
+int Memcpy (void *dst, const void *src, size_t count, int kind);
+int MemsetAsync (void *devPtr, int value, size_t count, Stream_t stream=0);
+int Memset (void *devPtr, int value, size_t count);
+int MemcpyAsync (void * dst, const void * src, size_t count, int kind, Stream_t stream = 0);
+int Free (void *devPtr);
+int FreeHost (void *hstPtr);
+int DeviceSynchronize (void);
+int PeekAtLastError(void);
+// end::api[]
+}
+/* end src/d/api.h */
+/* begin src/coords/type.h */
+// tag::view[]
+#pragma once
+
+struct Coords_v {
+    int xc, yc, zc; /* rank coordinates        */
+    int xd, yd, zd; /* rank sizes              */
+    int Lx, Ly, Lz; /* [L]ocal: subdomain size */
+};
+// end::view[]
+/* end src/coords/type.h */
 /* begin src/coords/imp.h */
 struct Coords;
 struct Coords_v;
@@ -19134,7 +21975,54 @@ const Force*    txt_read_get_ff(const TxtRead *);
 // end::read[]
 /* end src/io/txt/imp.h */
 
-/* already included: src/dbg/imp.h */
+/* begin src/dbg/imp.h */
+#pragma once
+
+struct Dbg;
+
+struct Config;
+struct Force;
+struct Particle;
+struct int3;
+struct Coords;
+
+// tag::kind[]
+enum {
+    DBG_POS,      // <1>
+    DBG_POS_SOFT, // <2>
+    DBG_VEL,      // <3>
+    DBG_FORCES,   // <4>
+    DBG_COLORS,   // <5>
+    DBG_CLIST,    // <6>
+    DBG_NKIND_
+};
+// end::kind[]
+
+// tag::mem[]
+void dbg_ini(Dbg**);
+void dbg_fin(Dbg*);
+// end::mem[]
+
+// tag::ini[]
+void dbg_enable(int kind, Dbg *dbg);
+void dbg_disable(int kind, Dbg *dbg);
+void dbg_set_verbose(bool, Dbg *dbg);
+void dbg_set_dump(bool, Dbg *dbg);
+// end::ini[]
+
+// tag::cnf[]
+void dbg_set_conf(const Config*, Dbg*);
+// end::cnf[]
+
+// tag::int[]
+void dbg_check_pos(const Coords *c, const char *base, const Dbg *dbg, int n, const Particle *pp);
+void dbg_check_pos_soft(const Coords *c, const char *base, const Dbg *dbg, int n, const Particle *pp);
+void dbg_check_vel(float dt, const Coords *c, const char *base, const Dbg *dbg, int n, const Particle *pp);
+void dbg_check_forces(float dt, const Coords *c, const char *base, const Dbg *dbg, int n, const Particle *pp, const Force *ff);
+void dbg_check_colors(const Coords *c, const Dbg *dbg, int n, const int *cc);
+void dbg_check_clist(const Coords *c, const Dbg *dbg, int3 L, const int *starts, const int *counts, const Particle *pp);
+// end::int[]
+/* end src/dbg/imp.h */
 /* begin src/dbg/error.h */
 #define ERRLIST(_) _(NONE),  /* no error */     \
         _(INVALID),  /* invalid value */        \
@@ -19904,11 +22792,167 @@ void dbg_check_clist(const Coords*, const Dbg *dbg, int3 L, const int *starts, c
 #pragma push_macro("xstr")
 #line 1 "src/distr/common/imp.cu"
 /* begin src/distr/common/imp.cu */
-/* already included: src/inc/conf.h */
-/* already included: src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
 
-/* already included: src/d/api.h */
-/* already included: src/inc/type.h */
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
+
+/* begin src/d/api.h */
+#pragma once
+
+namespace d {  /* a wrapper for device API */
+typedef int Stream_t; /* TODO: streams are not supported */
+enum {MemcpyHostToHost, MemcpyHostToDevice,
+      MemcpyDeviceToHost, MemcpyDeviceToDevice,
+      MemcpyDefault};
+
+// tag::more[]
+const char *emsg();
+int alloc_pinned(void **pHost, size_t size);
+int is_device_pointer(const void *ptr);
+// end::more[]
+
+// tag::api[]
+int GetSymbolAddress(void **devPtr, const void *symbol);
+int Malloc(void **p, size_t);
+int MemcpyToSymbol(const void *symbol, const void *src, size_t count, size_t offset=0, int kind=MemcpyHostToDevice);
+int MemcpyFromSymbol(void *dst, const void *symbol, size_t count, size_t offset=0, int kind=MemcpyDeviceToHost);
+int HostGetDevicePointer(void **pDevice, void *pHost, unsigned int flags);
+int Memcpy (void *dst, const void *src, size_t count, int kind);
+int MemsetAsync (void *devPtr, int value, size_t count, Stream_t stream=0);
+int Memset (void *devPtr, int value, size_t count);
+int MemcpyAsync (void * dst, const void * src, size_t count, int kind, Stream_t stream = 0);
+int Free (void *devPtr);
+int FreeHost (void *hstPtr);
+int DeviceSynchronize (void);
+int PeekAtLastError(void);
+// end::api[]
+}
+/* end src/d/api.h */
+/* begin src/inc/type.h */
+#pragma once
+
+template <typename T, int N>
+struct Sarray { /* [s]tatic array */
+    T d[N];
+};
+
+struct Particle {
+    float r[3], v[3];
+};
+
+struct Rigid {
+    float Iinv[6],            /* moment of inertia            6        */
+        mass,                 /* mass of the solid            7        */
+        com[3],               /* [c]enter [o]f [m]ass         10       */
+        v[3], om[3],          /* linear and angular velocity  13 16    */
+        e0[3], e1[3], e2[3],  /* local referential            19 22 25 */
+        fo[3], to[3],         /* force, torque                28 31    */
+        id;                   /* id of the solid              32       */
+};
+
+struct Force {
+    float f[3];
+};
+
+struct Momentum {
+    float P[3], L[3]; /* linear and angular momentum */
+};
+
+struct Positioncp {
+    float rc[3]; /* current position  */
+    float rp[3]; /* previous position */
+};
+
+typedef Sarray<int, 26>       int26;
+typedef Sarray<int, 27>       int27;
+
+typedef Sarray<int*, 26>     intp26;
+typedef Sarray<Particle*, 26> Pap26;
+typedef Sarray<Force*,    26> Fop26;
+typedef Sarray<Momentum*, 26> Mop26;
+typedef Sarray<Positioncp*, 26> Pocpp26;
+
+/* particles wrap */
+struct PaWrap {
+    int n;
+    const Particle *pp;
+};
+
+/* forces wrap */
+struct FoWrap {
+    int n;
+    Force *ff;
+};
+/* end src/inc/type.h */
 /* begin src/inc/dev.h */
 /* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
@@ -19952,7 +22996,16 @@ void dbg_check_clist(const Coords*, const Dbg *dbg, int3 L, const int *starts, c
 /* [k]ernel [l]aunch macros */
 
 #if    defined(KL_RELEASE)
-/* already included: src/utils/kl/release.h */
+/* begin src/utils/kl/release.h */
+#define KL_BEFORE(s, C) if (!kl::safe(ESC C)) continue;
+#define KL_CALL(F, C, A) F<<<ESC C>>>A
+#define KL_AFTER(s)
+
+#ifndef UDX_KL_RELEASE_FUNCTIONS_DEFINED
+#define UDX_KL_RELEASE_FUNCTIONS_DEFINED
+namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
+#endif
+/* end src/utils/kl/release.h */
 #elif  defined(KL_NONE)
 /* begin src/utils/kl/none.h */
 #define KL_BEFORE(s, C)
@@ -19977,7 +23030,18 @@ namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
   #error KL_* is undefined
 #endif
 
-/* already included: src/utils/kl/common.h */
+/* begin src/utils/kl/common.h */
+namespace kl {
+#pragma once
+
+inline int safe0(dim3 i, dim3 j) {
+    msg(i.x, i.y, i.z,   j.x, j.y, j.z);
+    return i.x>0 && i.y>0 && i.z>0   &&   j.x>0 && j.y>0 && j.z>0;
+}
+inline int safe(dim3 i, dim3 j)                    { return safe0(i, j); }
+inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
+}
+/* end src/utils/kl/common.h */
 /* begin src/utils/kl/macro.h */
 #define ESC(...) __VA_ARGS__
 #define KL(F, C, A)                             \
@@ -20023,8 +23087,148 @@ void check(int rc, const char *file, int line);
 
 /* TODO: header includes header */
 /* end src/utils/cc.h */
-/* already included: src/frag/dev.h */
-/* already included: src/frag/imp.h */
+/* begin src/frag/dev.h */
+#ifdef FRAG_HOST
+#ifndef UDX_FRAG_HOST_DEFINED
+#define UDX_FRAG_HOST_DEFINED
+#define UDX_FRAG_BODY
+#endif
+#else
+#ifndef UDX_FRAG_DEV_DEFINED
+#define UDX_FRAG_DEV_DEFINED
+#define UDX_FRAG_BODY
+#endif
+#endif
+
+#ifdef UDX_FRAG_BODY
+#ifdef FRAG_HOST
+  #define _I_
+  #define _S_ static
+  #define BEGIN namespace frag_hst {
+  #define END }
+#else
+  #define _I_ static __device__
+  #define _S_ static __device__
+  #define BEGIN namespace frag_dev {
+  #define END }
+#endif
+
+BEGIN
+
+enum {BAD_DIR = -2};
+
+/* fragment id to direction                    */
+
+_I_ int i2dx(int i) { return (i     + 2) % 3 - 1; }
+_I_ int i2dy(int i) { return (i / 3 + 2) % 3 - 1; }
+_I_ int i2dz(int i) { return (i / 9 + 2) % 3 - 1; }
+
+_I_ void i2d3(int i, /**/ int d[3]) {
+    enum {X, Y, Z};
+    d[X] = i2dx(i);
+    d[Y] = i2dy(i);
+    d[Z] = i2dz(i);
+}
+
+/* direction to fragment id                    */
+_I_ int d2i(int x, int y, int z) {
+    return    ((x + 2) % 3)
+        + 3 * ((y + 2) % 3)
+        + 9 * ((z + 2) % 3);
+}
+
+_I_ int d32i(const int d[3])  {
+    enum {X, Y, Z};
+    return d2i(d[X], d[Y], d[Z]);
+}
+
+/* number of cells in direction x, y, z        */
+_S_ int ncell0(int3 L, int x, int y, int z) {
+    int nx, ny, nz;
+    nx = x ? 1 : L.x;
+    ny = y ? 1 : L.y;
+    nz = z ? 1 : L.z;
+    return nx * ny * nz;
+}
+
+/* number of cells in fragment i               */
+_I_ int ncell(int3 L, int i) {
+    int x, y, z;
+    x = i2dx(i);
+    y = i2dy(i);
+    z = i2dz(i);
+    return ncell0(L, x, y, z);
+}
+
+/* anti direction to fragment id                */
+_I_ int antid2i(int x, int y, int z) {
+    return d2i(-x, -y, -z);
+}
+
+/* anti fragment                                */
+_I_ int anti(int i) {
+    int x, y, z;
+    x = i2dx(i);
+    y = i2dy(i);
+    z = i2dz(i);
+    return antid2i(x, y, z);
+}
+
+/* [f]ragment [id] : where is `i' in sorted a[27]? */
+_I_ int frag_get_fid(const int a[], const int i) {
+    int k1, k3, k9;
+    k9 = 9 * ((i >= a[9])           + (i >= a[18]));
+    k3 = 3 * ((i >= a[k9 + 3])      + (i >= a[k9 + 6]));
+    k1 =      (i >= a[k9 + k3 + 1]) + (i >= a[k9 + k3 + 2]);
+    return k9 + k3 + k1;
+}
+
+END
+
+#undef _I_
+#undef _S_
+#undef BEGIN
+#undef END
+
+#undef UDX_FRAG_BODY
+#endif
+/* end src/frag/dev.h */
+/* begin src/frag/imp.h */
+#pragma once
+
+enum {frag_bulk = 26};
+
+struct int3;
+
+namespace frag_hst {
+
+// tag::i2d[]
+int i2dx(int i);                 // <1>
+int i2dy(int i);                 // <2>
+int i2dz(int i);                 // <3>
+void i2d3(int i, /**/ int d[3]); // <4>
+// end::i2d[]
+
+// tag::d2i[]
+int d2i(int x, int y, int z); // <1>
+int d32i(const int d[3]);     // <2>
+// end::d2i[]
+
+// tag::ncell[]
+int ncell(int3 L, int i); // <1>
+// end::ncell[]
+
+// tag::anti[]
+int antid2i(int x, int y, int z); // <1>
+int anti(int i);                  // <2>
+// end::anti[]
+
+// tag::hst[]
+void estimates(int3 L, int nfrags, float maxd, /**/ int *cap); // <1>
+// end::hst[]
+
+} // frag_hst
+/* end src/frag/imp.h */
 
 /* begin src/distr/map/type.h */
 #pragma once
@@ -20429,8 +23633,78 @@ void dcommon_shift_halo(int3 L, int nhalo, const Sarray<int, 27> starts, /**/ Pa
 #include <mpi.h>
 #include <assert.h>
 
-/* already included: src/inc/conf.h */
-/* already included: src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
 
 /* begin src/utils/msg.h */
 // tag::int[]
@@ -20502,7 +23776,16 @@ void check(int rc, const char *file, int line);
 /* [k]ernel [l]aunch macros */
 
 #if    defined(KL_RELEASE)
-/* already included: src/utils/kl/release.h */
+/* begin src/utils/kl/release.h */
+#define KL_BEFORE(s, C) if (!kl::safe(ESC C)) continue;
+#define KL_CALL(F, C, A) F<<<ESC C>>>A
+#define KL_AFTER(s)
+
+#ifndef UDX_KL_RELEASE_FUNCTIONS_DEFINED
+#define UDX_KL_RELEASE_FUNCTIONS_DEFINED
+namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
+#endif
+/* end src/utils/kl/release.h */
 #elif  defined(KL_NONE)
 /* begin src/utils/kl/none.h */
 #define KL_BEFORE(s, C)
@@ -20527,7 +23810,18 @@ namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
   #error KL_* is undefined
 #endif
 
-/* already included: src/utils/kl/common.h */
+/* begin src/utils/kl/common.h */
+namespace kl {
+#pragma once
+
+inline int safe0(dim3 i, dim3 j) {
+    msg(i.x, i.y, i.z,   j.x, j.y, j.z);
+    return i.x>0 && i.y>0 && i.z>0   &&   j.x>0 && j.y>0 && j.z>0;
+}
+inline int safe(dim3 i, dim3 j)                    { return safe0(i, j); }
+inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
+}
+/* end src/utils/kl/common.h */
 /* begin src/utils/kl/macro.h */
 #define ESC(...) __VA_ARGS__
 #define KL(F, C, A)                             \
@@ -20582,8 +23876,94 @@ void error_abort();
 void error_print_stack();
 /* end src/utils/error.h */
 
-/* already included: src/d/api.h */
-/* already included: src/inc/type.h */
+/* begin src/d/api.h */
+#pragma once
+
+namespace d {  /* a wrapper for device API */
+typedef int Stream_t; /* TODO: streams are not supported */
+enum {MemcpyHostToHost, MemcpyHostToDevice,
+      MemcpyDeviceToHost, MemcpyDeviceToDevice,
+      MemcpyDefault};
+
+// tag::more[]
+const char *emsg();
+int alloc_pinned(void **pHost, size_t size);
+int is_device_pointer(const void *ptr);
+// end::more[]
+
+// tag::api[]
+int GetSymbolAddress(void **devPtr, const void *symbol);
+int Malloc(void **p, size_t);
+int MemcpyToSymbol(const void *symbol, const void *src, size_t count, size_t offset=0, int kind=MemcpyHostToDevice);
+int MemcpyFromSymbol(void *dst, const void *symbol, size_t count, size_t offset=0, int kind=MemcpyDeviceToHost);
+int HostGetDevicePointer(void **pDevice, void *pHost, unsigned int flags);
+int Memcpy (void *dst, const void *src, size_t count, int kind);
+int MemsetAsync (void *devPtr, int value, size_t count, Stream_t stream=0);
+int Memset (void *devPtr, int value, size_t count);
+int MemcpyAsync (void * dst, const void * src, size_t count, int kind, Stream_t stream = 0);
+int Free (void *devPtr);
+int FreeHost (void *hstPtr);
+int DeviceSynchronize (void);
+int PeekAtLastError(void);
+// end::api[]
+}
+/* end src/d/api.h */
+/* begin src/inc/type.h */
+#pragma once
+
+template <typename T, int N>
+struct Sarray { /* [s]tatic array */
+    T d[N];
+};
+
+struct Particle {
+    float r[3], v[3];
+};
+
+struct Rigid {
+    float Iinv[6],            /* moment of inertia            6        */
+        mass,                 /* mass of the solid            7        */
+        com[3],               /* [c]enter [o]f [m]ass         10       */
+        v[3], om[3],          /* linear and angular velocity  13 16    */
+        e0[3], e1[3], e2[3],  /* local referential            19 22 25 */
+        fo[3], to[3],         /* force, torque                28 31    */
+        id;                   /* id of the solid              32       */
+};
+
+struct Force {
+    float f[3];
+};
+
+struct Momentum {
+    float P[3], L[3]; /* linear and angular momentum */
+};
+
+struct Positioncp {
+    float rc[3]; /* current position  */
+    float rp[3]; /* previous position */
+};
+
+typedef Sarray<int, 26>       int26;
+typedef Sarray<int, 27>       int27;
+
+typedef Sarray<int*, 26>     intp26;
+typedef Sarray<Particle*, 26> Pap26;
+typedef Sarray<Force*,    26> Fop26;
+typedef Sarray<Momentum*, 26> Mop26;
+typedef Sarray<Positioncp*, 26> Pocpp26;
+
+/* particles wrap */
+struct PaWrap {
+    int n;
+    const Particle *pp;
+};
+
+/* forces wrap */
+struct FoWrap {
+    int n;
+    Force *ff;
+};
+/* end src/inc/type.h */
 /* begin src/inc/dev.h */
 /* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
@@ -20623,11 +24003,180 @@ void error_print_stack();
 #define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
 #define DzeroA(P, n)   DsetA(P, 0, n)
 /* end src/inc/dev.h */
-/* already included: src/frag/dev.h */
-/* already included: src/frag/imp.h */
+/* begin src/frag/dev.h */
+#ifdef FRAG_HOST
+#ifndef UDX_FRAG_HOST_DEFINED
+#define UDX_FRAG_HOST_DEFINED
+#define UDX_FRAG_BODY
+#endif
+#else
+#ifndef UDX_FRAG_DEV_DEFINED
+#define UDX_FRAG_DEV_DEFINED
+#define UDX_FRAG_BODY
+#endif
+#endif
 
-/* already included: src/struct/partlist/type.h */
-/* already included: src/struct/partlist/dev.h */
+#ifdef UDX_FRAG_BODY
+#ifdef FRAG_HOST
+  #define _I_
+  #define _S_ static
+  #define BEGIN namespace frag_hst {
+  #define END }
+#else
+  #define _I_ static __device__
+  #define _S_ static __device__
+  #define BEGIN namespace frag_dev {
+  #define END }
+#endif
+
+BEGIN
+
+enum {BAD_DIR = -2};
+
+/* fragment id to direction                    */
+
+_I_ int i2dx(int i) { return (i     + 2) % 3 - 1; }
+_I_ int i2dy(int i) { return (i / 3 + 2) % 3 - 1; }
+_I_ int i2dz(int i) { return (i / 9 + 2) % 3 - 1; }
+
+_I_ void i2d3(int i, /**/ int d[3]) {
+    enum {X, Y, Z};
+    d[X] = i2dx(i);
+    d[Y] = i2dy(i);
+    d[Z] = i2dz(i);
+}
+
+/* direction to fragment id                    */
+_I_ int d2i(int x, int y, int z) {
+    return    ((x + 2) % 3)
+        + 3 * ((y + 2) % 3)
+        + 9 * ((z + 2) % 3);
+}
+
+_I_ int d32i(const int d[3])  {
+    enum {X, Y, Z};
+    return d2i(d[X], d[Y], d[Z]);
+}
+
+/* number of cells in direction x, y, z        */
+_S_ int ncell0(int3 L, int x, int y, int z) {
+    int nx, ny, nz;
+    nx = x ? 1 : L.x;
+    ny = y ? 1 : L.y;
+    nz = z ? 1 : L.z;
+    return nx * ny * nz;
+}
+
+/* number of cells in fragment i               */
+_I_ int ncell(int3 L, int i) {
+    int x, y, z;
+    x = i2dx(i);
+    y = i2dy(i);
+    z = i2dz(i);
+    return ncell0(L, x, y, z);
+}
+
+/* anti direction to fragment id                */
+_I_ int antid2i(int x, int y, int z) {
+    return d2i(-x, -y, -z);
+}
+
+/* anti fragment                                */
+_I_ int anti(int i) {
+    int x, y, z;
+    x = i2dx(i);
+    y = i2dy(i);
+    z = i2dz(i);
+    return antid2i(x, y, z);
+}
+
+/* [f]ragment [id] : where is `i' in sorted a[27]? */
+_I_ int frag_get_fid(const int a[], const int i) {
+    int k1, k3, k9;
+    k9 = 9 * ((i >= a[9])           + (i >= a[18]));
+    k3 = 3 * ((i >= a[k9 + 3])      + (i >= a[k9 + 6]));
+    k1 =      (i >= a[k9 + k3 + 1]) + (i >= a[k9 + k3 + 2]);
+    return k9 + k3 + k1;
+}
+
+END
+
+#undef _I_
+#undef _S_
+#undef BEGIN
+#undef END
+
+#undef UDX_FRAG_BODY
+#endif
+/* end src/frag/dev.h */
+/* begin src/frag/imp.h */
+#pragma once
+
+enum {frag_bulk = 26};
+
+struct int3;
+
+namespace frag_hst {
+
+// tag::i2d[]
+int i2dx(int i);                 // <1>
+int i2dy(int i);                 // <2>
+int i2dz(int i);                 // <3>
+void i2d3(int i, /**/ int d[3]); // <4>
+// end::i2d[]
+
+// tag::d2i[]
+int d2i(int x, int y, int z); // <1>
+int d32i(const int d[3]);     // <2>
+// end::d2i[]
+
+// tag::ncell[]
+int ncell(int3 L, int i); // <1>
+// end::ncell[]
+
+// tag::anti[]
+int antid2i(int x, int y, int z); // <1>
+int anti(int i);                  // <2>
+// end::anti[]
+
+// tag::hst[]
+void estimates(int3 L, int nfrags, float maxd, /**/ int *cap); // <1>
+// end::hst[]
+
+} // frag_hst
+/* end src/frag/imp.h */
+
+/* begin src/struct/partlist/type.h */
+#pragma once
+
+enum {
+    ALIVE = 0,
+    DEAD  = 1
+};
+
+/* structure of particle                           */
+/* optional "deathlist" for particles to be killed */
+
+// tag::type[]
+struct PartList {
+    const Particle *pp;   /* particles array          */
+    const int *deathlist; /* what pp is dead or alive */
+};
+// end::type[]
+/* end src/struct/partlist/type.h */
+/* begin src/struct/partlist/dev.h */
+#pragma once
+
+static __device__ bool is_dead(int i, const PartList lp) {
+    if (lp.deathlist)
+        return lp.deathlist[i] == DEAD;
+    return false;
+}
+
+static __device__ bool is_alive(int i, const PartList lp) {
+    return !is_dead(i, lp);
+}
+/* end src/struct/partlist/dev.h */
 
 /* begin src/algo/scan/imp.h */
 struct Scan;
@@ -20638,7 +24187,43 @@ void scan_ini(int size, /**/ Scan**);                                       // <
 void scan_fin(Scan*);                                                       // <3>
 // end::interface[]
 /* end src/algo/scan/imp.h */
-/* already included: src/algo/utils/shfl.h */
+/* begin src/algo/utils/shfl.h */
+#define _I_ static __device__
+
+#if __CUDACC_VER_MAJOR__ >= 9
+#pragma once
+
+template <typename T>
+_I_ T shfl_down(T val, unsigned int width) {
+    return __shfl_down_sync(0xFFFFFFFF, val, width);
+}
+
+template <typename T>
+_I_ T shfl_up(T val, unsigned int width) {
+    return __shfl_up_sync(0xFFFFFFFF, val, width);
+}
+template <typename T>
+_I_ T shfl(T val, unsigned int width) {
+    return __shfl_sync(0xFFFFFFFF, val, width);
+}
+#else
+template <typename T>
+_I_ T shfl_down(T val, unsigned int width) {
+    return __shfl_down(val, width);
+}
+
+template <typename T>
+_I_ T shfl_up(T val, unsigned int width) {
+    return __shfl_up(val, width);
+}
+template <typename T>
+_I_ T shfl(T val, unsigned int width) {
+    return __shfl(val, width);
+}
+#endif
+
+#undef _I_
+/* end src/algo/utils/shfl.h */
 
 /* begin src/clist/imp.h */
 struct Clist;
@@ -20676,9 +24261,134 @@ void clist_gather_ii(const int *iilo, const int *iire, const ClistMap *m, long n
 void clist_build(int nlo, int nout, const Particle *pplo, /**/ Particle *ppout, Clist *c, ClistMap *m);
 // end::int[]
 /* end src/clist/imp.h */
-/* already included: src/flu/imp.h */
+/* begin src/flu/imp.h */
+#pragma once
 
-/* already included: src/comm/imp.h */
+// tag::struct[]
+struct FluQuants {
+    Particle *pp, *pp0;    /* particles on device  */
+    int       n;           /* particle number      */
+    Clist     *cells;      /* cell lists           */
+    ClistMap *mcells;      /* cell lists map       */
+    Particle *pp_hst;      /* particles on host    */
+
+    /* optional data */
+
+    bool ids, colors;
+
+    int *ii, *ii0;  /* global ids on device */
+    int *ii_hst;    /* global ids on host   */
+
+    int *cc, *cc0;  /* colors on device */
+    int *cc_hst;    /* colors on host   */
+
+    int maxp; /* maximum particle number */
+};
+// end::struct[]
+
+struct Coords;
+struct GenColor;
+
+// tag::mem[]
+void flu_ini(bool colors, bool ids, int3 L, int maxp, FluQuants *q);
+void flu_fin(FluQuants *q);
+// end::mem[]
+
+// tag::gen[]
+void flu_gen_quants(const Coords*, int numdensity, const GenColor *gc, FluQuants *q); // <1>
+void flu_gen_ids(MPI_Comm, const int n, FluQuants *q); // <2>
+// end::gen[]
+
+// tag::start[]
+void flu_strt_quants(MPI_Comm, const char *base, const int id, FluQuants *q);     // <1>
+void flu_strt_dump(MPI_Comm, const char *base, const int id, const FluQuants *q); // <2>
+// end::start[]
+
+// tag::tools[]
+void flu_txt_dump(const Coords*, const FluQuants *q); // <1>
+
+/* build cells only from one array of particles fully contained in the domain */
+/* warning: this will delete particles which are outside                      */
+void flu_build_cells(/**/ FluQuants *q); // <2>
+// end::tools[]
+/* end src/flu/imp.h */
+
+/* begin src/comm/imp.h */
+#pragma once
+
+typedef unsigned char data_t;
+
+enum {
+    NFRAGS = 26, /* number of fragments for one halo */
+    BULK   = 26, /* bulk id                          */
+    NBAGS  = 27, /* fragments + bulk                 */
+};
+
+/* Allocation mod for bags */
+enum AllocMod {
+    // tag::AllocMod[]
+    HST_ONLY,   /* only host bags allocated                 */
+    DEV_ONLY,   /* only device bags allocated               */
+    PINNED,     /* both host and device pinned              */
+    PINNED_HST, /* host pinned; no device memory            */
+    PINNED_DEV, /* host pinned; device global memory on gpu */
+    NONE        /* no allocation                            */
+    // end::AllocMod[]
+};
+
+// tag::dBags[]
+struct dBags {
+    data_t *data[NBAGS]; /* data on the device         */
+};
+// end::dBags[]
+
+// tag::hBags[]
+struct hBags {
+    data_t *data[NBAGS]; /* data on the host                    */
+    int         *counts; /* size of the data                    */
+    int capacity[NBAGS]; /* capacity of each frag (elem number) */
+    size_t bsize;        /* size of one datum in bytes          */
+};
+// end::hBags[]
+
+struct Comm;
+struct CommBuffer;
+
+// tag::alloc[]
+void comm_bags_ini(AllocMod fmod, AllocMod bmod, size_t bsize, const int capacity[NBAGS], /**/ hBags *hb, dBags *db);
+void comm_bags_fin(AllocMod fmod, AllocMod bmod, /**/ hBags *hb, dBags *db);
+void comm_ini(MPI_Comm cart, /**/ Comm **c);
+void comm_fin(/**/ Comm *c);
+void comm_buffer_ini(int nbags, const hBags *hbb, CommBuffer**);
+void comm_buffer_fin(CommBuffer*);
+// end::alloc[]
+
+
+void comm_buffer_set(int nbags, const hBags*, CommBuffer*);
+void comm_buffer_get(const CommBuffer*, int nbags, hBags*);
+
+// tag::communication[]
+void comm_post_recv(hBags *b, Comm *c);           // <1>
+void comm_post_send(const hBags *b, Comm *c);     // <2>
+
+void comm_wait_recv(Comm *c, /**/ hBags *b);      // <3>
+void comm_wait_send(Comm *c);                     // <4>
+// end::communication[]
+
+// tag::communication_b[]
+void comm_post_recv(CommBuffer *cb, Comm *c);
+void comm_post_send(const CommBuffer *cb, Comm *c);
+
+void comm_wait_recv(Comm *c, /**/ CommBuffer *cb);
+void comm_wait_send(Comm *c);
+// end::communication_b[]
+
+// tag::get[]
+int    comm_get_number_capacity(int i, const hBags *b); // <1>
+size_t comm_get_byte_capacity(int i, const hBags *b);   // <2>
+// end::get[]
+
+/* end src/comm/imp.h */
 /* begin src/comm/utils.h */
 #pragma once
 
@@ -20692,7 +24402,20 @@ static void bag2Sarray(BAGT bags, Sarray<T*, N> *buf)
 }
 /* end src/comm/utils.h */
 
-/* already included: src/distr/map/type.h */
+/* begin src/distr/map/type.h */
+#pragma once
+
+// tag::struct[]
+/* [D]istr Map */
+struct DMap {
+    int *counts;  /* number of entities leaving in each fragment */
+    int *starts;  /* cumulative sum of the above                 */
+    int *ids[27]; /* indices of leaving objects                  */
+
+    int *hcounts; /* counts on host (pinned) */
+};
+// end::struct[]
+/* end src/distr/map/type.h */
 /* begin src/distr/flu/imp.h */
 struct DFluPack;
 struct DFluComm;
@@ -21633,7 +25356,42 @@ void msg_ini(int rank); // <1>
 void msg_print(const char *fmt, ...); // <2>
 // end::int[]
 /* end src/utils/msg.h */
-/* already included: src/frag/imp.h */
+/* begin src/frag/imp.h */
+#pragma once
+
+enum {frag_bulk = 26};
+
+struct int3;
+
+namespace frag_hst {
+
+// tag::i2d[]
+int i2dx(int i);                 // <1>
+int i2dy(int i);                 // <2>
+int i2dz(int i);                 // <3>
+void i2d3(int i, /**/ int d[3]); // <4>
+// end::i2d[]
+
+// tag::d2i[]
+int d2i(int x, int y, int z); // <1>
+int d32i(const int d[3]);     // <2>
+// end::d2i[]
+
+// tag::ncell[]
+int ncell(int3 L, int i); // <1>
+// end::ncell[]
+
+// tag::anti[]
+int antid2i(int x, int y, int z); // <1>
+int anti(int i);                  // <2>
+// end::anti[]
+
+// tag::hst[]
+void estimates(int3 L, int nfrags, float maxd, /**/ int *cap); // <1>
+// end::hst[]
+
+} // frag_hst
+/* end src/frag/imp.h */
 
 /* begin src/distr/flu/status/imp.h */
 struct DFluStatus;
@@ -22006,8 +25764,78 @@ int dflu_status_nullp(DFluStatus *s) { return s == NULL; }
 #include <stdlib.h>
 #include <stdio.h>
 
-/* already included: src/inc/conf.h */
-/* already included: src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
 /* begin src/inc/dev.h */
 /* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
@@ -22048,7 +25876,38 @@ int dflu_status_nullp(DFluStatus *s) { return s == NULL; }
 #define DzeroA(P, n)   DsetA(P, 0, n)
 /* end src/inc/dev.h */
 
-/* already included: src/d/api.h */
+/* begin src/d/api.h */
+#pragma once
+
+namespace d {  /* a wrapper for device API */
+typedef int Stream_t; /* TODO: streams are not supported */
+enum {MemcpyHostToHost, MemcpyHostToDevice,
+      MemcpyDeviceToHost, MemcpyDeviceToDevice,
+      MemcpyDefault};
+
+// tag::more[]
+const char *emsg();
+int alloc_pinned(void **pHost, size_t size);
+int is_device_pointer(const void *ptr);
+// end::more[]
+
+// tag::api[]
+int GetSymbolAddress(void **devPtr, const void *symbol);
+int Malloc(void **p, size_t);
+int MemcpyToSymbol(const void *symbol, const void *src, size_t count, size_t offset=0, int kind=MemcpyHostToDevice);
+int MemcpyFromSymbol(void *dst, const void *symbol, size_t count, size_t offset=0, int kind=MemcpyDeviceToHost);
+int HostGetDevicePointer(void **pDevice, void *pHost, unsigned int flags);
+int Memcpy (void *dst, const void *src, size_t count, int kind);
+int MemsetAsync (void *devPtr, int value, size_t count, Stream_t stream=0);
+int Memset (void *devPtr, int value, size_t count);
+int MemcpyAsync (void * dst, const void * src, size_t count, int kind, Stream_t stream = 0);
+int Free (void *devPtr);
+int FreeHost (void *hstPtr);
+int DeviceSynchronize (void);
+int PeekAtLastError(void);
+// end::api[]
+}
+/* end src/d/api.h */
 /* begin src/utils/cc.h */
 /* [c]uda [c]heck macros */
 
@@ -22149,9 +26008,58 @@ bool same_str(const char *a, const char *b); // <1>
 const char* get_filename_ext(const char*);
 // end::tools[]
 /* end src/utils/imp.h */
-/* already included: src/algo/utils/shfl.h */
+/* begin src/algo/utils/shfl.h */
+#define _I_ static __device__
 
-/* already included: src/distr/map/type.h */
+#if __CUDACC_VER_MAJOR__ >= 9
+#pragma once
+
+template <typename T>
+_I_ T shfl_down(T val, unsigned int width) {
+    return __shfl_down_sync(0xFFFFFFFF, val, width);
+}
+
+template <typename T>
+_I_ T shfl_up(T val, unsigned int width) {
+    return __shfl_up_sync(0xFFFFFFFF, val, width);
+}
+template <typename T>
+_I_ T shfl(T val, unsigned int width) {
+    return __shfl_sync(0xFFFFFFFF, val, width);
+}
+#else
+template <typename T>
+_I_ T shfl_down(T val, unsigned int width) {
+    return __shfl_down(val, width);
+}
+
+template <typename T>
+_I_ T shfl_up(T val, unsigned int width) {
+    return __shfl_up(val, width);
+}
+template <typename T>
+_I_ T shfl(T val, unsigned int width) {
+    return __shfl(val, width);
+}
+#endif
+
+#undef _I_
+/* end src/algo/utils/shfl.h */
+
+/* begin src/distr/map/type.h */
+#pragma once
+
+// tag::struct[]
+/* [D]istr Map */
+struct DMap {
+    int *counts;  /* number of entities leaving in each fragment */
+    int *starts;  /* cumulative sum of the above                 */
+    int *ids[27]; /* indices of leaving objects                  */
+
+    int *hcounts; /* counts on host (pinned) */
+};
+// end::struct[]
+/* end src/distr/map/type.h */
 
 void dmap_ini(int nfrags, const int capacity[], /**/ DMap *m) {
     Dalloc(&m->counts,  nfrags);
@@ -22525,8 +26433,78 @@ void dmap_D2H(int nfrags, const DMap *d, /**/ DMap *h) {
 #include <mpi.h>
 #include <assert.h>
 
-/* already included: src/inc/conf.h */
-/* already included: src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
 
 /* begin src/utils/msg.h */
 // tag::int[]
@@ -22596,7 +26574,38 @@ void msg_print(const char *fmt, ...); // <2>
   #error DEV_* is undefined
 #endif
 /* end src/d/q.h */
-/* already included: src/d/api.h */
+/* begin src/d/api.h */
+#pragma once
+
+namespace d {  /* a wrapper for device API */
+typedef int Stream_t; /* TODO: streams are not supported */
+enum {MemcpyHostToHost, MemcpyHostToDevice,
+      MemcpyDeviceToHost, MemcpyDeviceToDevice,
+      MemcpyDefault};
+
+// tag::more[]
+const char *emsg();
+int alloc_pinned(void **pHost, size_t size);
+int is_device_pointer(const void *ptr);
+// end::more[]
+
+// tag::api[]
+int GetSymbolAddress(void **devPtr, const void *symbol);
+int Malloc(void **p, size_t);
+int MemcpyToSymbol(const void *symbol, const void *src, size_t count, size_t offset=0, int kind=MemcpyHostToDevice);
+int MemcpyFromSymbol(void *dst, const void *symbol, size_t count, size_t offset=0, int kind=MemcpyDeviceToHost);
+int HostGetDevicePointer(void **pDevice, void *pHost, unsigned int flags);
+int Memcpy (void *dst, const void *src, size_t count, int kind);
+int MemsetAsync (void *devPtr, int value, size_t count, Stream_t stream=0);
+int Memset (void *devPtr, int value, size_t count);
+int MemcpyAsync (void * dst, const void * src, size_t count, int kind, Stream_t stream = 0);
+int Free (void *devPtr);
+int FreeHost (void *hstPtr);
+int DeviceSynchronize (void);
+int PeekAtLastError(void);
+// end::api[]
+}
+/* end src/d/api.h */
 /* begin src/d/ker.h */
 #if   defined(DEV_CUDA)
 /* begin src/d/cuda/ker.h */
@@ -22714,7 +26723,16 @@ void check(int rc, const char *file, int line);
 /* [k]ernel [l]aunch macros */
 
 #if    defined(KL_RELEASE)
-/* already included: src/utils/kl/release.h */
+/* begin src/utils/kl/release.h */
+#define KL_BEFORE(s, C) if (!kl::safe(ESC C)) continue;
+#define KL_CALL(F, C, A) F<<<ESC C>>>A
+#define KL_AFTER(s)
+
+#ifndef UDX_KL_RELEASE_FUNCTIONS_DEFINED
+#define UDX_KL_RELEASE_FUNCTIONS_DEFINED
+namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
+#endif
+/* end src/utils/kl/release.h */
 #elif  defined(KL_NONE)
 /* begin src/utils/kl/none.h */
 #define KL_BEFORE(s, C)
@@ -22739,7 +26757,18 @@ namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
   #error KL_* is undefined
 #endif
 
-/* already included: src/utils/kl/common.h */
+/* begin src/utils/kl/common.h */
+namespace kl {
+#pragma once
+
+inline int safe0(dim3 i, dim3 j) {
+    msg(i.x, i.y, i.z,   j.x, j.y, j.z);
+    return i.x>0 && i.y>0 && i.z>0   &&   j.x>0 && j.y>0 && j.z>0;
+}
+inline int safe(dim3 i, dim3 j)                    { return safe0(i, j); }
+inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
+}
+/* end src/utils/kl/common.h */
 /* begin src/utils/kl/macro.h */
 #define ESC(...) __VA_ARGS__
 #define KL(F, C, A)                             \
@@ -22833,8 +26862,117 @@ void error_print_stack();
 #define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
 #define DzeroA(P, n)   DsetA(P, 0, n)
 /* end src/inc/dev.h */
-/* already included: src/inc/type.h */
-/* already included: src/inc/def.h */
+/* begin src/inc/type.h */
+#pragma once
+
+template <typename T, int N>
+struct Sarray { /* [s]tatic array */
+    T d[N];
+};
+
+struct Particle {
+    float r[3], v[3];
+};
+
+struct Rigid {
+    float Iinv[6],            /* moment of inertia            6        */
+        mass,                 /* mass of the solid            7        */
+        com[3],               /* [c]enter [o]f [m]ass         10       */
+        v[3], om[3],          /* linear and angular velocity  13 16    */
+        e0[3], e1[3], e2[3],  /* local referential            19 22 25 */
+        fo[3], to[3],         /* force, torque                28 31    */
+        id;                   /* id of the solid              32       */
+};
+
+struct Force {
+    float f[3];
+};
+
+struct Momentum {
+    float P[3], L[3]; /* linear and angular momentum */
+};
+
+struct Positioncp {
+    float rc[3]; /* current position  */
+    float rp[3]; /* previous position */
+};
+
+typedef Sarray<int, 26>       int26;
+typedef Sarray<int, 27>       int27;
+
+typedef Sarray<int*, 26>     intp26;
+typedef Sarray<Particle*, 26> Pap26;
+typedef Sarray<Force*,    26> Fop26;
+typedef Sarray<Momentum*, 26> Mop26;
+typedef Sarray<Positioncp*, 26> Pocpp26;
+
+/* particles wrap */
+struct PaWrap {
+    int n;
+    const Particle *pp;
+};
+
+/* forces wrap */
+struct FoWrap {
+    int n;
+    Force *ff;
+};
+/* end src/inc/type.h */
+/* begin src/inc/def.h */
+/* solvent colors */
+#define XMACRO_COLOR(_)                         \
+    _(BLUE)                                     \
+    _(RED)
+
+#define ENUM_COLOR(a) a##_COLOR
+#define make_enum_color(a) ENUM_COLOR(a) ,
+#ifndef UDX_DEF_ENUMS_DEFINED
+#define UDX_DEF_ENUMS_DEFINED
+enum {
+    XMACRO_COLOR(make_enum_color)
+    N_COLOR
+};
+#undef make_enum_color
+
+enum {
+    /* wall margins */
+    XWM = 6,
+    YWM = 6,
+    ZWM = 6,
+
+    SAFETY_FACTOR_MAXP = 3,
+
+    /* maximum number of particles per solid */
+    MAX_PSOLID_NUM = 12000,
+
+    /* maximum number of solids per node */
+    MAX_SOLIDS = 100,
+
+    /* maximum number of object types (solid, rbc, ...) */
+    MAX_MBR_TYPES = 2,
+    MAX_RIG_TYPES = 2,
+    MAX_OBJ_TYPES = MAX_MBR_TYPES + MAX_RIG_TYPES,
+
+    /* maximum number density of particles of the objects */
+    MAX_OBJ_DENSITY = 30,
+
+    /* maximum number of red blood cells per node */
+    MAX_CELL_NUM = 1500,
+
+    /* maximum texture size in bytes */
+    MAX_TEXO_SIZE = 100000000,
+
+    /* safety factor for dpd halo interactions */
+    HSAFETY_FACTOR = 10,
+
+    /* safety factor for odist fragments */
+    ODSTR_FACTOR = 3,
+};
+#endif
+
+/* for the spring forces r = min(lmax*RBC_SPRING_CAP, r) */
+#define RBC_SPRING_CAP (0.99)
+/* end src/inc/def.h */
 
 /* begin src/rbc/type.h */
 #pragma once
@@ -22856,12 +26994,274 @@ struct RbcQuants {
 
 /* end src/rbc/type.h */
 
-/* already included: src/frag/dev.h */
-/* already included: src/frag/imp.h */
-/* already included: src/comm/imp.h */
-/* already included: src/comm/utils.h */
+/* begin src/frag/dev.h */
+#ifdef FRAG_HOST
+#ifndef UDX_FRAG_HOST_DEFINED
+#define UDX_FRAG_HOST_DEFINED
+#define UDX_FRAG_BODY
+#endif
+#else
+#ifndef UDX_FRAG_DEV_DEFINED
+#define UDX_FRAG_DEV_DEFINED
+#define UDX_FRAG_BODY
+#endif
+#endif
 
-/* already included: src/algo/utils/shfl.h */
+#ifdef UDX_FRAG_BODY
+#ifdef FRAG_HOST
+  #define _I_
+  #define _S_ static
+  #define BEGIN namespace frag_hst {
+  #define END }
+#else
+  #define _I_ static __device__
+  #define _S_ static __device__
+  #define BEGIN namespace frag_dev {
+  #define END }
+#endif
+
+BEGIN
+
+enum {BAD_DIR = -2};
+
+/* fragment id to direction                    */
+
+_I_ int i2dx(int i) { return (i     + 2) % 3 - 1; }
+_I_ int i2dy(int i) { return (i / 3 + 2) % 3 - 1; }
+_I_ int i2dz(int i) { return (i / 9 + 2) % 3 - 1; }
+
+_I_ void i2d3(int i, /**/ int d[3]) {
+    enum {X, Y, Z};
+    d[X] = i2dx(i);
+    d[Y] = i2dy(i);
+    d[Z] = i2dz(i);
+}
+
+/* direction to fragment id                    */
+_I_ int d2i(int x, int y, int z) {
+    return    ((x + 2) % 3)
+        + 3 * ((y + 2) % 3)
+        + 9 * ((z + 2) % 3);
+}
+
+_I_ int d32i(const int d[3])  {
+    enum {X, Y, Z};
+    return d2i(d[X], d[Y], d[Z]);
+}
+
+/* number of cells in direction x, y, z        */
+_S_ int ncell0(int3 L, int x, int y, int z) {
+    int nx, ny, nz;
+    nx = x ? 1 : L.x;
+    ny = y ? 1 : L.y;
+    nz = z ? 1 : L.z;
+    return nx * ny * nz;
+}
+
+/* number of cells in fragment i               */
+_I_ int ncell(int3 L, int i) {
+    int x, y, z;
+    x = i2dx(i);
+    y = i2dy(i);
+    z = i2dz(i);
+    return ncell0(L, x, y, z);
+}
+
+/* anti direction to fragment id                */
+_I_ int antid2i(int x, int y, int z) {
+    return d2i(-x, -y, -z);
+}
+
+/* anti fragment                                */
+_I_ int anti(int i) {
+    int x, y, z;
+    x = i2dx(i);
+    y = i2dy(i);
+    z = i2dz(i);
+    return antid2i(x, y, z);
+}
+
+/* [f]ragment [id] : where is `i' in sorted a[27]? */
+_I_ int frag_get_fid(const int a[], const int i) {
+    int k1, k3, k9;
+    k9 = 9 * ((i >= a[9])           + (i >= a[18]));
+    k3 = 3 * ((i >= a[k9 + 3])      + (i >= a[k9 + 6]));
+    k1 =      (i >= a[k9 + k3 + 1]) + (i >= a[k9 + k3 + 2]);
+    return k9 + k3 + k1;
+}
+
+END
+
+#undef _I_
+#undef _S_
+#undef BEGIN
+#undef END
+
+#undef UDX_FRAG_BODY
+#endif
+/* end src/frag/dev.h */
+/* begin src/frag/imp.h */
+#pragma once
+
+enum {frag_bulk = 26};
+
+struct int3;
+
+namespace frag_hst {
+
+// tag::i2d[]
+int i2dx(int i);                 // <1>
+int i2dy(int i);                 // <2>
+int i2dz(int i);                 // <3>
+void i2d3(int i, /**/ int d[3]); // <4>
+// end::i2d[]
+
+// tag::d2i[]
+int d2i(int x, int y, int z); // <1>
+int d32i(const int d[3]);     // <2>
+// end::d2i[]
+
+// tag::ncell[]
+int ncell(int3 L, int i); // <1>
+// end::ncell[]
+
+// tag::anti[]
+int antid2i(int x, int y, int z); // <1>
+int anti(int i);                  // <2>
+// end::anti[]
+
+// tag::hst[]
+void estimates(int3 L, int nfrags, float maxd, /**/ int *cap); // <1>
+// end::hst[]
+
+} // frag_hst
+/* end src/frag/imp.h */
+/* begin src/comm/imp.h */
+#pragma once
+
+typedef unsigned char data_t;
+
+enum {
+    NFRAGS = 26, /* number of fragments for one halo */
+    BULK   = 26, /* bulk id                          */
+    NBAGS  = 27, /* fragments + bulk                 */
+};
+
+/* Allocation mod for bags */
+enum AllocMod {
+    // tag::AllocMod[]
+    HST_ONLY,   /* only host bags allocated                 */
+    DEV_ONLY,   /* only device bags allocated               */
+    PINNED,     /* both host and device pinned              */
+    PINNED_HST, /* host pinned; no device memory            */
+    PINNED_DEV, /* host pinned; device global memory on gpu */
+    NONE        /* no allocation                            */
+    // end::AllocMod[]
+};
+
+// tag::dBags[]
+struct dBags {
+    data_t *data[NBAGS]; /* data on the device         */
+};
+// end::dBags[]
+
+// tag::hBags[]
+struct hBags {
+    data_t *data[NBAGS]; /* data on the host                    */
+    int         *counts; /* size of the data                    */
+    int capacity[NBAGS]; /* capacity of each frag (elem number) */
+    size_t bsize;        /* size of one datum in bytes          */
+};
+// end::hBags[]
+
+struct Comm;
+struct CommBuffer;
+
+// tag::alloc[]
+void comm_bags_ini(AllocMod fmod, AllocMod bmod, size_t bsize, const int capacity[NBAGS], /**/ hBags *hb, dBags *db);
+void comm_bags_fin(AllocMod fmod, AllocMod bmod, /**/ hBags *hb, dBags *db);
+void comm_ini(MPI_Comm cart, /**/ Comm **c);
+void comm_fin(/**/ Comm *c);
+void comm_buffer_ini(int nbags, const hBags *hbb, CommBuffer**);
+void comm_buffer_fin(CommBuffer*);
+// end::alloc[]
+
+
+void comm_buffer_set(int nbags, const hBags*, CommBuffer*);
+void comm_buffer_get(const CommBuffer*, int nbags, hBags*);
+
+// tag::communication[]
+void comm_post_recv(hBags *b, Comm *c);           // <1>
+void comm_post_send(const hBags *b, Comm *c);     // <2>
+
+void comm_wait_recv(Comm *c, /**/ hBags *b);      // <3>
+void comm_wait_send(Comm *c);                     // <4>
+// end::communication[]
+
+// tag::communication_b[]
+void comm_post_recv(CommBuffer *cb, Comm *c);
+void comm_post_send(const CommBuffer *cb, Comm *c);
+
+void comm_wait_recv(Comm *c, /**/ CommBuffer *cb);
+void comm_wait_send(Comm *c);
+// end::communication_b[]
+
+// tag::get[]
+int    comm_get_number_capacity(int i, const hBags *b); // <1>
+size_t comm_get_byte_capacity(int i, const hBags *b);   // <2>
+// end::get[]
+
+/* end src/comm/imp.h */
+/* begin src/comm/utils.h */
+#pragma once
+
+// tag::convert[]
+template <typename BAGT, typename T, int N>
+static void bag2Sarray(BAGT bags, Sarray<T*, N> *buf)
+// end::convert[]
+{
+    for (int i = 0; i < N; ++i)
+        buf->d[i] = (T*) bags.data[i];
+}
+/* end src/comm/utils.h */
+
+/* begin src/algo/utils/shfl.h */
+#define _I_ static __device__
+
+#if __CUDACC_VER_MAJOR__ >= 9
+#pragma once
+
+template <typename T>
+_I_ T shfl_down(T val, unsigned int width) {
+    return __shfl_down_sync(0xFFFFFFFF, val, width);
+}
+
+template <typename T>
+_I_ T shfl_up(T val, unsigned int width) {
+    return __shfl_up_sync(0xFFFFFFFF, val, width);
+}
+template <typename T>
+_I_ T shfl(T val, unsigned int width) {
+    return __shfl_sync(0xFFFFFFFF, val, width);
+}
+#else
+template <typename T>
+_I_ T shfl_down(T val, unsigned int width) {
+    return __shfl_down(val, width);
+}
+
+template <typename T>
+_I_ T shfl_up(T val, unsigned int width) {
+    return __shfl_up(val, width);
+}
+template <typename T>
+_I_ T shfl(T val, unsigned int width) {
+    return __shfl(val, width);
+}
+#endif
+
+#undef _I_
+/* end src/algo/utils/shfl.h */
 /* begin src/algo/minmax/imp.h */
 struct Particle;
 struct float3;
@@ -22870,8 +27270,59 @@ void minmax(const Particle *pp, int nv, int nobj, /**/ float3 *lo, float3 *hi);
 // end::interface[]
 /* end src/algo/minmax/imp.h */
 
-/* already included: src/distr/map/type.h */
-/* already included: src/distr/map/dev.h */
+/* begin src/distr/map/type.h */
+#pragma once
+
+// tag::struct[]
+/* [D]istr Map */
+struct DMap {
+    int *counts;  /* number of entities leaving in each fragment */
+    int *starts;  /* cumulative sum of the above                 */
+    int *ids[27]; /* indices of leaving objects                  */
+
+    int *hcounts; /* counts on host (pinned) */
+};
+// end::struct[]
+/* end src/distr/map/type.h */
+/* begin src/distr/map/dev.h */
+#pragma once
+
+// tag::int[]
+/* exclusive scan */
+template <int NCOUNTS>
+static __global__ void dmap_scan(/**/ DMap m)              // <1>
+// end::int[]
+{
+    int tid, val, cnt;
+    tid = threadIdx.x;
+    val = 0, cnt = 0;
+
+    if (tid < NCOUNTS) cnt = val = m.counts[tid];
+    for (int L = 1; L < 32; L <<= 1) val += (tid >= L) * shfl_up(val, L) ;
+    if (tid <= NCOUNTS) m.starts[tid] = val - cnt;
+}
+
+// tag::int[]
+static __device__ int dmap_get_fid(int3 L, const float r[3])       // <2>
+// end::int[]
+{
+    enum {X, Y, Z};
+    int x, y, z;
+    x = -1 + (r[X] >= -L.x/2) + (r[X] >= L.x/2);
+    y = -1 + (r[Y] >= -L.y/2) + (r[Y] >= L.y/2);
+    z = -1 + (r[Z] >= -L.z/2) + (r[Z] >= L.z/2);
+    return frag_dev::d2i(x, y, z);
+}
+
+// tag::int[]
+static __device__ void dmap_add(int pid, int fid, DMap m)  // <3>
+// end::int[]
+{
+    int entry;
+    entry = atomicAdd(m.counts + fid, 1);
+    m.ids[fid][entry] = pid;
+}
+/* end src/distr/map/dev.h */
 /* begin src/distr/map/imp.h */
 // tag::int[]
 void dmap_ini(int nfrags, const int capacity[], /**/ DMap *m);
@@ -23533,8 +27984,78 @@ void drbc_unpack_halo(const DRbcUnpack *u, /**/ RbcQuants *q) {
 #include <mpi.h>
 #include <assert.h>
 
-/* already included: src/inc/conf.h */
-/* already included: src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
 
 /* begin src/utils/msg.h */
 // tag::int[]
@@ -23542,7 +28063,38 @@ void msg_ini(int rank); // <1>
 void msg_print(const char *fmt, ...); // <2>
 // end::int[]
 /* end src/utils/msg.h */
-/* already included: src/d/api.h */
+/* begin src/d/api.h */
+#pragma once
+
+namespace d {  /* a wrapper for device API */
+typedef int Stream_t; /* TODO: streams are not supported */
+enum {MemcpyHostToHost, MemcpyHostToDevice,
+      MemcpyDeviceToHost, MemcpyDeviceToDevice,
+      MemcpyDefault};
+
+// tag::more[]
+const char *emsg();
+int alloc_pinned(void **pHost, size_t size);
+int is_device_pointer(const void *ptr);
+// end::more[]
+
+// tag::api[]
+int GetSymbolAddress(void **devPtr, const void *symbol);
+int Malloc(void **p, size_t);
+int MemcpyToSymbol(const void *symbol, const void *src, size_t count, size_t offset=0, int kind=MemcpyHostToDevice);
+int MemcpyFromSymbol(void *dst, const void *symbol, size_t count, size_t offset=0, int kind=MemcpyDeviceToHost);
+int HostGetDevicePointer(void **pDevice, void *pHost, unsigned int flags);
+int Memcpy (void *dst, const void *src, size_t count, int kind);
+int MemsetAsync (void *devPtr, int value, size_t count, Stream_t stream=0);
+int Memset (void *devPtr, int value, size_t count);
+int MemcpyAsync (void * dst, const void * src, size_t count, int kind, Stream_t stream = 0);
+int Free (void *devPtr);
+int FreeHost (void *hstPtr);
+int DeviceSynchronize (void);
+int PeekAtLastError(void);
+// end::api[]
+}
+/* end src/d/api.h */
 /* begin src/utils/imp.h */
 // tag::mem[]
 void emalloc(size_t, /**/ void**); // <1>
@@ -23606,7 +28158,16 @@ void check(int rc, const char *file, int line);
 /* [k]ernel [l]aunch macros */
 
 #if    defined(KL_RELEASE)
-/* already included: src/utils/kl/release.h */
+/* begin src/utils/kl/release.h */
+#define KL_BEFORE(s, C) if (!kl::safe(ESC C)) continue;
+#define KL_CALL(F, C, A) F<<<ESC C>>>A
+#define KL_AFTER(s)
+
+#ifndef UDX_KL_RELEASE_FUNCTIONS_DEFINED
+#define UDX_KL_RELEASE_FUNCTIONS_DEFINED
+namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
+#endif
+/* end src/utils/kl/release.h */
 #elif  defined(KL_NONE)
 /* begin src/utils/kl/none.h */
 #define KL_BEFORE(s, C)
@@ -23631,7 +28192,18 @@ namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
   #error KL_* is undefined
 #endif
 
-/* already included: src/utils/kl/common.h */
+/* begin src/utils/kl/common.h */
+namespace kl {
+#pragma once
+
+inline int safe0(dim3 i, dim3 j) {
+    msg(i.x, i.y, i.z,   j.x, j.y, j.z);
+    return i.x>0 && i.y>0 && i.z>0   &&   j.x>0 && j.y>0 && j.z>0;
+}
+inline int safe(dim3 i, dim3 j)                    { return safe0(i, j); }
+inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
+}
+/* end src/utils/kl/common.h */
 /* begin src/utils/kl/macro.h */
 #define ESC(...) __VA_ARGS__
 #define KL(F, C, A)                             \
@@ -23724,13 +28296,348 @@ void error_print_stack();
 #define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
 #define DzeroA(P, n)   DsetA(P, 0, n)
 /* end src/inc/dev.h */
-/* already included: src/inc/type.h */
-/* already included: src/inc/def.h */
+/* begin src/inc/type.h */
+#pragma once
 
-/* already included: src/frag/dev.h */
-/* already included: src/frag/imp.h */
-/* already included: src/comm/imp.h */
-/* already included: src/comm/utils.h */
+template <typename T, int N>
+struct Sarray { /* [s]tatic array */
+    T d[N];
+};
+
+struct Particle {
+    float r[3], v[3];
+};
+
+struct Rigid {
+    float Iinv[6],            /* moment of inertia            6        */
+        mass,                 /* mass of the solid            7        */
+        com[3],               /* [c]enter [o]f [m]ass         10       */
+        v[3], om[3],          /* linear and angular velocity  13 16    */
+        e0[3], e1[3], e2[3],  /* local referential            19 22 25 */
+        fo[3], to[3],         /* force, torque                28 31    */
+        id;                   /* id of the solid              32       */
+};
+
+struct Force {
+    float f[3];
+};
+
+struct Momentum {
+    float P[3], L[3]; /* linear and angular momentum */
+};
+
+struct Positioncp {
+    float rc[3]; /* current position  */
+    float rp[3]; /* previous position */
+};
+
+typedef Sarray<int, 26>       int26;
+typedef Sarray<int, 27>       int27;
+
+typedef Sarray<int*, 26>     intp26;
+typedef Sarray<Particle*, 26> Pap26;
+typedef Sarray<Force*,    26> Fop26;
+typedef Sarray<Momentum*, 26> Mop26;
+typedef Sarray<Positioncp*, 26> Pocpp26;
+
+/* particles wrap */
+struct PaWrap {
+    int n;
+    const Particle *pp;
+};
+
+/* forces wrap */
+struct FoWrap {
+    int n;
+    Force *ff;
+};
+/* end src/inc/type.h */
+/* begin src/inc/def.h */
+/* solvent colors */
+#define XMACRO_COLOR(_)                         \
+    _(BLUE)                                     \
+    _(RED)
+
+#define ENUM_COLOR(a) a##_COLOR
+#define make_enum_color(a) ENUM_COLOR(a) ,
+#ifndef UDX_DEF_ENUMS_DEFINED
+#define UDX_DEF_ENUMS_DEFINED
+enum {
+    XMACRO_COLOR(make_enum_color)
+    N_COLOR
+};
+#undef make_enum_color
+
+enum {
+    /* wall margins */
+    XWM = 6,
+    YWM = 6,
+    ZWM = 6,
+
+    SAFETY_FACTOR_MAXP = 3,
+
+    /* maximum number of particles per solid */
+    MAX_PSOLID_NUM = 12000,
+
+    /* maximum number of solids per node */
+    MAX_SOLIDS = 100,
+
+    /* maximum number of object types (solid, rbc, ...) */
+    MAX_MBR_TYPES = 2,
+    MAX_RIG_TYPES = 2,
+    MAX_OBJ_TYPES = MAX_MBR_TYPES + MAX_RIG_TYPES,
+
+    /* maximum number density of particles of the objects */
+    MAX_OBJ_DENSITY = 30,
+
+    /* maximum number of red blood cells per node */
+    MAX_CELL_NUM = 1500,
+
+    /* maximum texture size in bytes */
+    MAX_TEXO_SIZE = 100000000,
+
+    /* safety factor for dpd halo interactions */
+    HSAFETY_FACTOR = 10,
+
+    /* safety factor for odist fragments */
+    ODSTR_FACTOR = 3,
+};
+#endif
+
+/* for the spring forces r = min(lmax*RBC_SPRING_CAP, r) */
+#define RBC_SPRING_CAP (0.99)
+/* end src/inc/def.h */
+
+/* begin src/frag/dev.h */
+#ifdef FRAG_HOST
+#ifndef UDX_FRAG_HOST_DEFINED
+#define UDX_FRAG_HOST_DEFINED
+#define UDX_FRAG_BODY
+#endif
+#else
+#ifndef UDX_FRAG_DEV_DEFINED
+#define UDX_FRAG_DEV_DEFINED
+#define UDX_FRAG_BODY
+#endif
+#endif
+
+#ifdef UDX_FRAG_BODY
+#ifdef FRAG_HOST
+  #define _I_
+  #define _S_ static
+  #define BEGIN namespace frag_hst {
+  #define END }
+#else
+  #define _I_ static __device__
+  #define _S_ static __device__
+  #define BEGIN namespace frag_dev {
+  #define END }
+#endif
+
+BEGIN
+
+enum {BAD_DIR = -2};
+
+/* fragment id to direction                    */
+
+_I_ int i2dx(int i) { return (i     + 2) % 3 - 1; }
+_I_ int i2dy(int i) { return (i / 3 + 2) % 3 - 1; }
+_I_ int i2dz(int i) { return (i / 9 + 2) % 3 - 1; }
+
+_I_ void i2d3(int i, /**/ int d[3]) {
+    enum {X, Y, Z};
+    d[X] = i2dx(i);
+    d[Y] = i2dy(i);
+    d[Z] = i2dz(i);
+}
+
+/* direction to fragment id                    */
+_I_ int d2i(int x, int y, int z) {
+    return    ((x + 2) % 3)
+        + 3 * ((y + 2) % 3)
+        + 9 * ((z + 2) % 3);
+}
+
+_I_ int d32i(const int d[3])  {
+    enum {X, Y, Z};
+    return d2i(d[X], d[Y], d[Z]);
+}
+
+/* number of cells in direction x, y, z        */
+_S_ int ncell0(int3 L, int x, int y, int z) {
+    int nx, ny, nz;
+    nx = x ? 1 : L.x;
+    ny = y ? 1 : L.y;
+    nz = z ? 1 : L.z;
+    return nx * ny * nz;
+}
+
+/* number of cells in fragment i               */
+_I_ int ncell(int3 L, int i) {
+    int x, y, z;
+    x = i2dx(i);
+    y = i2dy(i);
+    z = i2dz(i);
+    return ncell0(L, x, y, z);
+}
+
+/* anti direction to fragment id                */
+_I_ int antid2i(int x, int y, int z) {
+    return d2i(-x, -y, -z);
+}
+
+/* anti fragment                                */
+_I_ int anti(int i) {
+    int x, y, z;
+    x = i2dx(i);
+    y = i2dy(i);
+    z = i2dz(i);
+    return antid2i(x, y, z);
+}
+
+/* [f]ragment [id] : where is `i' in sorted a[27]? */
+_I_ int frag_get_fid(const int a[], const int i) {
+    int k1, k3, k9;
+    k9 = 9 * ((i >= a[9])           + (i >= a[18]));
+    k3 = 3 * ((i >= a[k9 + 3])      + (i >= a[k9 + 6]));
+    k1 =      (i >= a[k9 + k3 + 1]) + (i >= a[k9 + k3 + 2]);
+    return k9 + k3 + k1;
+}
+
+END
+
+#undef _I_
+#undef _S_
+#undef BEGIN
+#undef END
+
+#undef UDX_FRAG_BODY
+#endif
+/* end src/frag/dev.h */
+/* begin src/frag/imp.h */
+#pragma once
+
+enum {frag_bulk = 26};
+
+struct int3;
+
+namespace frag_hst {
+
+// tag::i2d[]
+int i2dx(int i);                 // <1>
+int i2dy(int i);                 // <2>
+int i2dz(int i);                 // <3>
+void i2d3(int i, /**/ int d[3]); // <4>
+// end::i2d[]
+
+// tag::d2i[]
+int d2i(int x, int y, int z); // <1>
+int d32i(const int d[3]);     // <2>
+// end::d2i[]
+
+// tag::ncell[]
+int ncell(int3 L, int i); // <1>
+// end::ncell[]
+
+// tag::anti[]
+int antid2i(int x, int y, int z); // <1>
+int anti(int i);                  // <2>
+// end::anti[]
+
+// tag::hst[]
+void estimates(int3 L, int nfrags, float maxd, /**/ int *cap); // <1>
+// end::hst[]
+
+} // frag_hst
+/* end src/frag/imp.h */
+/* begin src/comm/imp.h */
+#pragma once
+
+typedef unsigned char data_t;
+
+enum {
+    NFRAGS = 26, /* number of fragments for one halo */
+    BULK   = 26, /* bulk id                          */
+    NBAGS  = 27, /* fragments + bulk                 */
+};
+
+/* Allocation mod for bags */
+enum AllocMod {
+    // tag::AllocMod[]
+    HST_ONLY,   /* only host bags allocated                 */
+    DEV_ONLY,   /* only device bags allocated               */
+    PINNED,     /* both host and device pinned              */
+    PINNED_HST, /* host pinned; no device memory            */
+    PINNED_DEV, /* host pinned; device global memory on gpu */
+    NONE        /* no allocation                            */
+    // end::AllocMod[]
+};
+
+// tag::dBags[]
+struct dBags {
+    data_t *data[NBAGS]; /* data on the device         */
+};
+// end::dBags[]
+
+// tag::hBags[]
+struct hBags {
+    data_t *data[NBAGS]; /* data on the host                    */
+    int         *counts; /* size of the data                    */
+    int capacity[NBAGS]; /* capacity of each frag (elem number) */
+    size_t bsize;        /* size of one datum in bytes          */
+};
+// end::hBags[]
+
+struct Comm;
+struct CommBuffer;
+
+// tag::alloc[]
+void comm_bags_ini(AllocMod fmod, AllocMod bmod, size_t bsize, const int capacity[NBAGS], /**/ hBags *hb, dBags *db);
+void comm_bags_fin(AllocMod fmod, AllocMod bmod, /**/ hBags *hb, dBags *db);
+void comm_ini(MPI_Comm cart, /**/ Comm **c);
+void comm_fin(/**/ Comm *c);
+void comm_buffer_ini(int nbags, const hBags *hbb, CommBuffer**);
+void comm_buffer_fin(CommBuffer*);
+// end::alloc[]
+
+
+void comm_buffer_set(int nbags, const hBags*, CommBuffer*);
+void comm_buffer_get(const CommBuffer*, int nbags, hBags*);
+
+// tag::communication[]
+void comm_post_recv(hBags *b, Comm *c);           // <1>
+void comm_post_send(const hBags *b, Comm *c);     // <2>
+
+void comm_wait_recv(Comm *c, /**/ hBags *b);      // <3>
+void comm_wait_send(Comm *c);                     // <4>
+// end::communication[]
+
+// tag::communication_b[]
+void comm_post_recv(CommBuffer *cb, Comm *c);
+void comm_post_send(const CommBuffer *cb, Comm *c);
+
+void comm_wait_recv(Comm *c, /**/ CommBuffer *cb);
+void comm_wait_send(Comm *c);
+// end::communication_b[]
+
+// tag::get[]
+int    comm_get_number_capacity(int i, const hBags *b); // <1>
+size_t comm_get_byte_capacity(int i, const hBags *b);   // <2>
+// end::get[]
+
+/* end src/comm/imp.h */
+/* begin src/comm/utils.h */
+#pragma once
+
+// tag::convert[]
+template <typename BAGT, typename T, int N>
+static void bag2Sarray(BAGT bags, Sarray<T*, N> *buf)
+// end::convert[]
+{
+    for (int i = 0; i < N; ++i)
+        buf->d[i] = (T*) bags.data[i];
+}
+/* end src/comm/utils.h */
 
 /* begin src/rig/imp.h */
 #pragma once
@@ -23776,9 +28683,96 @@ void rig_strt_dump(MPI_Comm, const char *base, const char *name, const int id, c
 // end::io[]
 /* end src/rig/imp.h */
 
-/* already included: src/algo/utils/shfl.h */
-/* already included: src/distr/map/type.h */
-/* already included: src/distr/map/dev.h */
+/* begin src/algo/utils/shfl.h */
+#define _I_ static __device__
+
+#if __CUDACC_VER_MAJOR__ >= 9
+#pragma once
+
+template <typename T>
+_I_ T shfl_down(T val, unsigned int width) {
+    return __shfl_down_sync(0xFFFFFFFF, val, width);
+}
+
+template <typename T>
+_I_ T shfl_up(T val, unsigned int width) {
+    return __shfl_up_sync(0xFFFFFFFF, val, width);
+}
+template <typename T>
+_I_ T shfl(T val, unsigned int width) {
+    return __shfl_sync(0xFFFFFFFF, val, width);
+}
+#else
+template <typename T>
+_I_ T shfl_down(T val, unsigned int width) {
+    return __shfl_down(val, width);
+}
+
+template <typename T>
+_I_ T shfl_up(T val, unsigned int width) {
+    return __shfl_up(val, width);
+}
+template <typename T>
+_I_ T shfl(T val, unsigned int width) {
+    return __shfl(val, width);
+}
+#endif
+
+#undef _I_
+/* end src/algo/utils/shfl.h */
+/* begin src/distr/map/type.h */
+#pragma once
+
+// tag::struct[]
+/* [D]istr Map */
+struct DMap {
+    int *counts;  /* number of entities leaving in each fragment */
+    int *starts;  /* cumulative sum of the above                 */
+    int *ids[27]; /* indices of leaving objects                  */
+
+    int *hcounts; /* counts on host (pinned) */
+};
+// end::struct[]
+/* end src/distr/map/type.h */
+/* begin src/distr/map/dev.h */
+#pragma once
+
+// tag::int[]
+/* exclusive scan */
+template <int NCOUNTS>
+static __global__ void dmap_scan(/**/ DMap m)              // <1>
+// end::int[]
+{
+    int tid, val, cnt;
+    tid = threadIdx.x;
+    val = 0, cnt = 0;
+
+    if (tid < NCOUNTS) cnt = val = m.counts[tid];
+    for (int L = 1; L < 32; L <<= 1) val += (tid >= L) * shfl_up(val, L) ;
+    if (tid <= NCOUNTS) m.starts[tid] = val - cnt;
+}
+
+// tag::int[]
+static __device__ int dmap_get_fid(int3 L, const float r[3])       // <2>
+// end::int[]
+{
+    enum {X, Y, Z};
+    int x, y, z;
+    x = -1 + (r[X] >= -L.x/2) + (r[X] >= L.x/2);
+    y = -1 + (r[Y] >= -L.y/2) + (r[Y] >= L.y/2);
+    z = -1 + (r[Z] >= -L.z/2) + (r[Z] >= L.z/2);
+    return frag_dev::d2i(x, y, z);
+}
+
+// tag::int[]
+static __device__ void dmap_add(int pid, int fid, DMap m)  // <3>
+// end::int[]
+{
+    int entry;
+    entry = atomicAdd(m.counts + fid, 1);
+    m.ids[fid][entry] = pid;
+}
+/* end src/distr/map/dev.h */
 /* begin src/distr/map/imp.h */
 // tag::int[]
 void dmap_ini(int nfrags, const int capacity[], /**/ DMap *m);
@@ -24393,10 +29387,111 @@ void drig_unpack_halo(const DRigUnpack *u, /**/ RigQuants *q) {
 /* begin src/exch/common/imp.cu */
 #include <mpi.h>
 
-/* already included: src/inc/conf.h */
-/* already included: src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
 
-/* already included: src/d/api.h */
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
+
+/* begin src/d/api.h */
+#pragma once
+
+namespace d {  /* a wrapper for device API */
+typedef int Stream_t; /* TODO: streams are not supported */
+enum {MemcpyHostToHost, MemcpyHostToDevice,
+      MemcpyDeviceToHost, MemcpyDeviceToDevice,
+      MemcpyDefault};
+
+// tag::more[]
+const char *emsg();
+int alloc_pinned(void **pHost, size_t size);
+int is_device_pointer(const void *ptr);
+// end::more[]
+
+// tag::api[]
+int GetSymbolAddress(void **devPtr, const void *symbol);
+int Malloc(void **p, size_t);
+int MemcpyToSymbol(const void *symbol, const void *src, size_t count, size_t offset=0, int kind=MemcpyHostToDevice);
+int MemcpyFromSymbol(void *dst, const void *symbol, size_t count, size_t offset=0, int kind=MemcpyDeviceToHost);
+int HostGetDevicePointer(void **pDevice, void *pHost, unsigned int flags);
+int Memcpy (void *dst, const void *src, size_t count, int kind);
+int MemsetAsync (void *devPtr, int value, size_t count, Stream_t stream=0);
+int Memset (void *devPtr, int value, size_t count);
+int MemcpyAsync (void * dst, const void * src, size_t count, int kind, Stream_t stream = 0);
+int Free (void *devPtr);
+int FreeHost (void *hstPtr);
+int DeviceSynchronize (void);
+int PeekAtLastError(void);
+// end::api[]
+}
+/* end src/d/api.h */
 /* begin src/utils/cc.h */
 /* [c]uda [c]heck macros */
 
@@ -24434,7 +29529,16 @@ void check(int rc, const char *file, int line);
 /* [k]ernel [l]aunch macros */
 
 #if    defined(KL_RELEASE)
-/* already included: src/utils/kl/release.h */
+/* begin src/utils/kl/release.h */
+#define KL_BEFORE(s, C) if (!kl::safe(ESC C)) continue;
+#define KL_CALL(F, C, A) F<<<ESC C>>>A
+#define KL_AFTER(s)
+
+#ifndef UDX_KL_RELEASE_FUNCTIONS_DEFINED
+#define UDX_KL_RELEASE_FUNCTIONS_DEFINED
+namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
+#endif
+/* end src/utils/kl/release.h */
 #elif  defined(KL_NONE)
 /* begin src/utils/kl/none.h */
 #define KL_BEFORE(s, C)
@@ -24459,7 +29563,18 @@ namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
   #error KL_* is undefined
 #endif
 
-/* already included: src/utils/kl/common.h */
+/* begin src/utils/kl/common.h */
+namespace kl {
+#pragma once
+
+inline int safe0(dim3 i, dim3 j) {
+    msg(i.x, i.y, i.z,   j.x, j.y, j.z);
+    return i.x>0 && i.y>0 && i.z>0   &&   j.x>0 && j.y>0 && j.z>0;
+}
+inline int safe(dim3 i, dim3 j)                    { return safe0(i, j); }
+inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
+}
+/* end src/utils/kl/common.h */
 /* begin src/utils/kl/macro.h */
 #define ESC(...) __VA_ARGS__
 #define KL(F, C, A)                             \
@@ -24512,11 +29627,281 @@ namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
 #define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
 #define DzeroA(P, n)   DsetA(P, 0, n)
 /* end src/inc/dev.h */
-/* already included: src/inc/type.h */
-/* already included: src/frag/dev.h */
-/* already included: src/frag/imp.h */
+/* begin src/inc/type.h */
+#pragma once
 
-/* already included: src/comm/imp.h */
+template <typename T, int N>
+struct Sarray { /* [s]tatic array */
+    T d[N];
+};
+
+struct Particle {
+    float r[3], v[3];
+};
+
+struct Rigid {
+    float Iinv[6],            /* moment of inertia            6        */
+        mass,                 /* mass of the solid            7        */
+        com[3],               /* [c]enter [o]f [m]ass         10       */
+        v[3], om[3],          /* linear and angular velocity  13 16    */
+        e0[3], e1[3], e2[3],  /* local referential            19 22 25 */
+        fo[3], to[3],         /* force, torque                28 31    */
+        id;                   /* id of the solid              32       */
+};
+
+struct Force {
+    float f[3];
+};
+
+struct Momentum {
+    float P[3], L[3]; /* linear and angular momentum */
+};
+
+struct Positioncp {
+    float rc[3]; /* current position  */
+    float rp[3]; /* previous position */
+};
+
+typedef Sarray<int, 26>       int26;
+typedef Sarray<int, 27>       int27;
+
+typedef Sarray<int*, 26>     intp26;
+typedef Sarray<Particle*, 26> Pap26;
+typedef Sarray<Force*,    26> Fop26;
+typedef Sarray<Momentum*, 26> Mop26;
+typedef Sarray<Positioncp*, 26> Pocpp26;
+
+/* particles wrap */
+struct PaWrap {
+    int n;
+    const Particle *pp;
+};
+
+/* forces wrap */
+struct FoWrap {
+    int n;
+    Force *ff;
+};
+/* end src/inc/type.h */
+/* begin src/frag/dev.h */
+#ifdef FRAG_HOST
+#ifndef UDX_FRAG_HOST_DEFINED
+#define UDX_FRAG_HOST_DEFINED
+#define UDX_FRAG_BODY
+#endif
+#else
+#ifndef UDX_FRAG_DEV_DEFINED
+#define UDX_FRAG_DEV_DEFINED
+#define UDX_FRAG_BODY
+#endif
+#endif
+
+#ifdef UDX_FRAG_BODY
+#ifdef FRAG_HOST
+  #define _I_
+  #define _S_ static
+  #define BEGIN namespace frag_hst {
+  #define END }
+#else
+  #define _I_ static __device__
+  #define _S_ static __device__
+  #define BEGIN namespace frag_dev {
+  #define END }
+#endif
+
+BEGIN
+
+enum {BAD_DIR = -2};
+
+/* fragment id to direction                    */
+
+_I_ int i2dx(int i) { return (i     + 2) % 3 - 1; }
+_I_ int i2dy(int i) { return (i / 3 + 2) % 3 - 1; }
+_I_ int i2dz(int i) { return (i / 9 + 2) % 3 - 1; }
+
+_I_ void i2d3(int i, /**/ int d[3]) {
+    enum {X, Y, Z};
+    d[X] = i2dx(i);
+    d[Y] = i2dy(i);
+    d[Z] = i2dz(i);
+}
+
+/* direction to fragment id                    */
+_I_ int d2i(int x, int y, int z) {
+    return    ((x + 2) % 3)
+        + 3 * ((y + 2) % 3)
+        + 9 * ((z + 2) % 3);
+}
+
+_I_ int d32i(const int d[3])  {
+    enum {X, Y, Z};
+    return d2i(d[X], d[Y], d[Z]);
+}
+
+/* number of cells in direction x, y, z        */
+_S_ int ncell0(int3 L, int x, int y, int z) {
+    int nx, ny, nz;
+    nx = x ? 1 : L.x;
+    ny = y ? 1 : L.y;
+    nz = z ? 1 : L.z;
+    return nx * ny * nz;
+}
+
+/* number of cells in fragment i               */
+_I_ int ncell(int3 L, int i) {
+    int x, y, z;
+    x = i2dx(i);
+    y = i2dy(i);
+    z = i2dz(i);
+    return ncell0(L, x, y, z);
+}
+
+/* anti direction to fragment id                */
+_I_ int antid2i(int x, int y, int z) {
+    return d2i(-x, -y, -z);
+}
+
+/* anti fragment                                */
+_I_ int anti(int i) {
+    int x, y, z;
+    x = i2dx(i);
+    y = i2dy(i);
+    z = i2dz(i);
+    return antid2i(x, y, z);
+}
+
+/* [f]ragment [id] : where is `i' in sorted a[27]? */
+_I_ int frag_get_fid(const int a[], const int i) {
+    int k1, k3, k9;
+    k9 = 9 * ((i >= a[9])           + (i >= a[18]));
+    k3 = 3 * ((i >= a[k9 + 3])      + (i >= a[k9 + 6]));
+    k1 =      (i >= a[k9 + k3 + 1]) + (i >= a[k9 + k3 + 2]);
+    return k9 + k3 + k1;
+}
+
+END
+
+#undef _I_
+#undef _S_
+#undef BEGIN
+#undef END
+
+#undef UDX_FRAG_BODY
+#endif
+/* end src/frag/dev.h */
+/* begin src/frag/imp.h */
+#pragma once
+
+enum {frag_bulk = 26};
+
+struct int3;
+
+namespace frag_hst {
+
+// tag::i2d[]
+int i2dx(int i);                 // <1>
+int i2dy(int i);                 // <2>
+int i2dz(int i);                 // <3>
+void i2d3(int i, /**/ int d[3]); // <4>
+// end::i2d[]
+
+// tag::d2i[]
+int d2i(int x, int y, int z); // <1>
+int d32i(const int d[3]);     // <2>
+// end::d2i[]
+
+// tag::ncell[]
+int ncell(int3 L, int i); // <1>
+// end::ncell[]
+
+// tag::anti[]
+int antid2i(int x, int y, int z); // <1>
+int anti(int i);                  // <2>
+// end::anti[]
+
+// tag::hst[]
+void estimates(int3 L, int nfrags, float maxd, /**/ int *cap); // <1>
+// end::hst[]
+
+} // frag_hst
+/* end src/frag/imp.h */
+
+/* begin src/comm/imp.h */
+#pragma once
+
+typedef unsigned char data_t;
+
+enum {
+    NFRAGS = 26, /* number of fragments for one halo */
+    BULK   = 26, /* bulk id                          */
+    NBAGS  = 27, /* fragments + bulk                 */
+};
+
+/* Allocation mod for bags */
+enum AllocMod {
+    // tag::AllocMod[]
+    HST_ONLY,   /* only host bags allocated                 */
+    DEV_ONLY,   /* only device bags allocated               */
+    PINNED,     /* both host and device pinned              */
+    PINNED_HST, /* host pinned; no device memory            */
+    PINNED_DEV, /* host pinned; device global memory on gpu */
+    NONE        /* no allocation                            */
+    // end::AllocMod[]
+};
+
+// tag::dBags[]
+struct dBags {
+    data_t *data[NBAGS]; /* data on the device         */
+};
+// end::dBags[]
+
+// tag::hBags[]
+struct hBags {
+    data_t *data[NBAGS]; /* data on the host                    */
+    int         *counts; /* size of the data                    */
+    int capacity[NBAGS]; /* capacity of each frag (elem number) */
+    size_t bsize;        /* size of one datum in bytes          */
+};
+// end::hBags[]
+
+struct Comm;
+struct CommBuffer;
+
+// tag::alloc[]
+void comm_bags_ini(AllocMod fmod, AllocMod bmod, size_t bsize, const int capacity[NBAGS], /**/ hBags *hb, dBags *db);
+void comm_bags_fin(AllocMod fmod, AllocMod bmod, /**/ hBags *hb, dBags *db);
+void comm_ini(MPI_Comm cart, /**/ Comm **c);
+void comm_fin(/**/ Comm *c);
+void comm_buffer_ini(int nbags, const hBags *hbb, CommBuffer**);
+void comm_buffer_fin(CommBuffer*);
+// end::alloc[]
+
+
+void comm_buffer_set(int nbags, const hBags*, CommBuffer*);
+void comm_buffer_get(const CommBuffer*, int nbags, hBags*);
+
+// tag::communication[]
+void comm_post_recv(hBags *b, Comm *c);           // <1>
+void comm_post_send(const hBags *b, Comm *c);     // <2>
+
+void comm_wait_recv(Comm *c, /**/ hBags *b);      // <3>
+void comm_wait_send(Comm *c);                     // <4>
+// end::communication[]
+
+// tag::communication_b[]
+void comm_post_recv(CommBuffer *cb, Comm *c);
+void comm_post_send(const CommBuffer *cb, Comm *c);
+
+void comm_wait_recv(Comm *c, /**/ CommBuffer *cb);
+void comm_wait_send(Comm *c);
+// end::communication_b[]
+
+// tag::get[]
+int    comm_get_number_capacity(int i, const hBags *b); // <1>
+size_t comm_get_byte_capacity(int i, const hBags *b);   // <2>
+// end::get[]
+
+/* end src/comm/imp.h */
 /* begin src/exch/common/imp.h */
 #pragma once
 
@@ -24914,8 +30299,78 @@ void ecommon_shift_rrcp_one_frag(int3 L, int n, const int fid, /**/ Positioncp *
 #include <mpi.h>
 #include <assert.h>
 
-/* already included: src/inc/conf.h */
-/* already included: src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
 
 /* begin src/utils/msg.h */
 // tag::int[]
@@ -24923,7 +30378,62 @@ void msg_ini(int rank); // <1>
 void msg_print(const char *fmt, ...); // <2>
 // end::int[]
 /* end src/utils/msg.h */
-/* already included: src/inc/type.h */
+/* begin src/inc/type.h */
+#pragma once
+
+template <typename T, int N>
+struct Sarray { /* [s]tatic array */
+    T d[N];
+};
+
+struct Particle {
+    float r[3], v[3];
+};
+
+struct Rigid {
+    float Iinv[6],            /* moment of inertia            6        */
+        mass,                 /* mass of the solid            7        */
+        com[3],               /* [c]enter [o]f [m]ass         10       */
+        v[3], om[3],          /* linear and angular velocity  13 16    */
+        e0[3], e1[3], e2[3],  /* local referential            19 22 25 */
+        fo[3], to[3],         /* force, torque                28 31    */
+        id;                   /* id of the solid              32       */
+};
+
+struct Force {
+    float f[3];
+};
+
+struct Momentum {
+    float P[3], L[3]; /* linear and angular momentum */
+};
+
+struct Positioncp {
+    float rc[3]; /* current position  */
+    float rp[3]; /* previous position */
+};
+
+typedef Sarray<int, 26>       int26;
+typedef Sarray<int, 27>       int27;
+
+typedef Sarray<int*, 26>     intp26;
+typedef Sarray<Particle*, 26> Pap26;
+typedef Sarray<Force*,    26> Fop26;
+typedef Sarray<Momentum*, 26> Mop26;
+typedef Sarray<Positioncp*, 26> Pocpp26;
+
+/* particles wrap */
+struct PaWrap {
+    int n;
+    const Particle *pp;
+};
+
+/* forces wrap */
+struct FoWrap {
+    int n;
+    Force *ff;
+};
+/* end src/inc/type.h */
 /* begin src/inc/dev.h */
 /* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
@@ -24963,10 +30473,181 @@ void msg_print(const char *fmt, ...); // <2>
 #define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
 #define DzeroA(P, n)   DsetA(P, 0, n)
 /* end src/inc/dev.h */
-/* already included: src/frag/dev.h */
-/* already included: src/frag/imp.h */
+/* begin src/frag/dev.h */
+#ifdef FRAG_HOST
+#ifndef UDX_FRAG_HOST_DEFINED
+#define UDX_FRAG_HOST_DEFINED
+#define UDX_FRAG_BODY
+#endif
+#else
+#ifndef UDX_FRAG_DEV_DEFINED
+#define UDX_FRAG_DEV_DEFINED
+#define UDX_FRAG_BODY
+#endif
+#endif
 
-/* already included: src/d/api.h */
+#ifdef UDX_FRAG_BODY
+#ifdef FRAG_HOST
+  #define _I_
+  #define _S_ static
+  #define BEGIN namespace frag_hst {
+  #define END }
+#else
+  #define _I_ static __device__
+  #define _S_ static __device__
+  #define BEGIN namespace frag_dev {
+  #define END }
+#endif
+
+BEGIN
+
+enum {BAD_DIR = -2};
+
+/* fragment id to direction                    */
+
+_I_ int i2dx(int i) { return (i     + 2) % 3 - 1; }
+_I_ int i2dy(int i) { return (i / 3 + 2) % 3 - 1; }
+_I_ int i2dz(int i) { return (i / 9 + 2) % 3 - 1; }
+
+_I_ void i2d3(int i, /**/ int d[3]) {
+    enum {X, Y, Z};
+    d[X] = i2dx(i);
+    d[Y] = i2dy(i);
+    d[Z] = i2dz(i);
+}
+
+/* direction to fragment id                    */
+_I_ int d2i(int x, int y, int z) {
+    return    ((x + 2) % 3)
+        + 3 * ((y + 2) % 3)
+        + 9 * ((z + 2) % 3);
+}
+
+_I_ int d32i(const int d[3])  {
+    enum {X, Y, Z};
+    return d2i(d[X], d[Y], d[Z]);
+}
+
+/* number of cells in direction x, y, z        */
+_S_ int ncell0(int3 L, int x, int y, int z) {
+    int nx, ny, nz;
+    nx = x ? 1 : L.x;
+    ny = y ? 1 : L.y;
+    nz = z ? 1 : L.z;
+    return nx * ny * nz;
+}
+
+/* number of cells in fragment i               */
+_I_ int ncell(int3 L, int i) {
+    int x, y, z;
+    x = i2dx(i);
+    y = i2dy(i);
+    z = i2dz(i);
+    return ncell0(L, x, y, z);
+}
+
+/* anti direction to fragment id                */
+_I_ int antid2i(int x, int y, int z) {
+    return d2i(-x, -y, -z);
+}
+
+/* anti fragment                                */
+_I_ int anti(int i) {
+    int x, y, z;
+    x = i2dx(i);
+    y = i2dy(i);
+    z = i2dz(i);
+    return antid2i(x, y, z);
+}
+
+/* [f]ragment [id] : where is `i' in sorted a[27]? */
+_I_ int frag_get_fid(const int a[], const int i) {
+    int k1, k3, k9;
+    k9 = 9 * ((i >= a[9])           + (i >= a[18]));
+    k3 = 3 * ((i >= a[k9 + 3])      + (i >= a[k9 + 6]));
+    k1 =      (i >= a[k9 + k3 + 1]) + (i >= a[k9 + k3 + 2]);
+    return k9 + k3 + k1;
+}
+
+END
+
+#undef _I_
+#undef _S_
+#undef BEGIN
+#undef END
+
+#undef UDX_FRAG_BODY
+#endif
+/* end src/frag/dev.h */
+/* begin src/frag/imp.h */
+#pragma once
+
+enum {frag_bulk = 26};
+
+struct int3;
+
+namespace frag_hst {
+
+// tag::i2d[]
+int i2dx(int i);                 // <1>
+int i2dy(int i);                 // <2>
+int i2dz(int i);                 // <3>
+void i2d3(int i, /**/ int d[3]); // <4>
+// end::i2d[]
+
+// tag::d2i[]
+int d2i(int x, int y, int z); // <1>
+int d32i(const int d[3]);     // <2>
+// end::d2i[]
+
+// tag::ncell[]
+int ncell(int3 L, int i); // <1>
+// end::ncell[]
+
+// tag::anti[]
+int antid2i(int x, int y, int z); // <1>
+int anti(int i);                  // <2>
+// end::anti[]
+
+// tag::hst[]
+void estimates(int3 L, int nfrags, float maxd, /**/ int *cap); // <1>
+// end::hst[]
+
+} // frag_hst
+/* end src/frag/imp.h */
+
+/* begin src/d/api.h */
+#pragma once
+
+namespace d {  /* a wrapper for device API */
+typedef int Stream_t; /* TODO: streams are not supported */
+enum {MemcpyHostToHost, MemcpyHostToDevice,
+      MemcpyDeviceToHost, MemcpyDeviceToDevice,
+      MemcpyDefault};
+
+// tag::more[]
+const char *emsg();
+int alloc_pinned(void **pHost, size_t size);
+int is_device_pointer(const void *ptr);
+// end::more[]
+
+// tag::api[]
+int GetSymbolAddress(void **devPtr, const void *symbol);
+int Malloc(void **p, size_t);
+int MemcpyToSymbol(const void *symbol, const void *src, size_t count, size_t offset=0, int kind=MemcpyHostToDevice);
+int MemcpyFromSymbol(void *dst, const void *symbol, size_t count, size_t offset=0, int kind=MemcpyDeviceToHost);
+int HostGetDevicePointer(void **pDevice, void *pHost, unsigned int flags);
+int Memcpy (void *dst, const void *src, size_t count, int kind);
+int MemsetAsync (void *devPtr, int value, size_t count, Stream_t stream=0);
+int Memset (void *devPtr, int value, size_t count);
+int MemcpyAsync (void * dst, const void * src, size_t count, int kind, Stream_t stream = 0);
+int Free (void *devPtr);
+int FreeHost (void *hstPtr);
+int DeviceSynchronize (void);
+int PeekAtLastError(void);
+// end::api[]
+}
+/* end src/d/api.h */
 /* begin src/utils/error.h */
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
@@ -25071,7 +30752,16 @@ void check(int rc, const char *file, int line);
 /* [k]ernel [l]aunch macros */
 
 #if    defined(KL_RELEASE)
-/* already included: src/utils/kl/release.h */
+/* begin src/utils/kl/release.h */
+#define KL_BEFORE(s, C) if (!kl::safe(ESC C)) continue;
+#define KL_CALL(F, C, A) F<<<ESC C>>>A
+#define KL_AFTER(s)
+
+#ifndef UDX_KL_RELEASE_FUNCTIONS_DEFINED
+#define UDX_KL_RELEASE_FUNCTIONS_DEFINED
+namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
+#endif
+/* end src/utils/kl/release.h */
 #elif  defined(KL_NONE)
 /* begin src/utils/kl/none.h */
 #define KL_BEFORE(s, C)
@@ -25096,7 +30786,18 @@ namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
   #error KL_* is undefined
 #endif
 
-/* already included: src/utils/kl/common.h */
+/* begin src/utils/kl/common.h */
+namespace kl {
+#pragma once
+
+inline int safe0(dim3 i, dim3 j) {
+    msg(i.x, i.y, i.z,   j.x, j.y, j.z);
+    return i.x>0 && i.y>0 && i.z>0   &&   j.x>0 && j.y>0 && j.z>0;
+}
+inline int safe(dim3 i, dim3 j)                    { return safe0(i, j); }
+inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
+}
+/* end src/utils/kl/common.h */
 /* begin src/utils/kl/macro.h */
 #define ESC(...) __VA_ARGS__
 #define KL(F, C, A)                             \
@@ -25110,8 +30811,94 @@ namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
 /* TODO: header includes header */
 /* end src/utils/kl.h */
 
-/* already included: src/comm/imp.h */
-/* already included: src/comm/utils.h */
+/* begin src/comm/imp.h */
+#pragma once
+
+typedef unsigned char data_t;
+
+enum {
+    NFRAGS = 26, /* number of fragments for one halo */
+    BULK   = 26, /* bulk id                          */
+    NBAGS  = 27, /* fragments + bulk                 */
+};
+
+/* Allocation mod for bags */
+enum AllocMod {
+    // tag::AllocMod[]
+    HST_ONLY,   /* only host bags allocated                 */
+    DEV_ONLY,   /* only device bags allocated               */
+    PINNED,     /* both host and device pinned              */
+    PINNED_HST, /* host pinned; no device memory            */
+    PINNED_DEV, /* host pinned; device global memory on gpu */
+    NONE        /* no allocation                            */
+    // end::AllocMod[]
+};
+
+// tag::dBags[]
+struct dBags {
+    data_t *data[NBAGS]; /* data on the device         */
+};
+// end::dBags[]
+
+// tag::hBags[]
+struct hBags {
+    data_t *data[NBAGS]; /* data on the host                    */
+    int         *counts; /* size of the data                    */
+    int capacity[NBAGS]; /* capacity of each frag (elem number) */
+    size_t bsize;        /* size of one datum in bytes          */
+};
+// end::hBags[]
+
+struct Comm;
+struct CommBuffer;
+
+// tag::alloc[]
+void comm_bags_ini(AllocMod fmod, AllocMod bmod, size_t bsize, const int capacity[NBAGS], /**/ hBags *hb, dBags *db);
+void comm_bags_fin(AllocMod fmod, AllocMod bmod, /**/ hBags *hb, dBags *db);
+void comm_ini(MPI_Comm cart, /**/ Comm **c);
+void comm_fin(/**/ Comm *c);
+void comm_buffer_ini(int nbags, const hBags *hbb, CommBuffer**);
+void comm_buffer_fin(CommBuffer*);
+// end::alloc[]
+
+
+void comm_buffer_set(int nbags, const hBags*, CommBuffer*);
+void comm_buffer_get(const CommBuffer*, int nbags, hBags*);
+
+// tag::communication[]
+void comm_post_recv(hBags *b, Comm *c);           // <1>
+void comm_post_send(const hBags *b, Comm *c);     // <2>
+
+void comm_wait_recv(Comm *c, /**/ hBags *b);      // <3>
+void comm_wait_send(Comm *c);                     // <4>
+// end::communication[]
+
+// tag::communication_b[]
+void comm_post_recv(CommBuffer *cb, Comm *c);
+void comm_post_send(const CommBuffer *cb, Comm *c);
+
+void comm_wait_recv(Comm *c, /**/ CommBuffer *cb);
+void comm_wait_send(Comm *c);
+// end::communication_b[]
+
+// tag::get[]
+int    comm_get_number_capacity(int i, const hBags *b); // <1>
+size_t comm_get_byte_capacity(int i, const hBags *b);   // <2>
+// end::get[]
+
+/* end src/comm/imp.h */
+/* begin src/comm/utils.h */
+#pragma once
+
+// tag::convert[]
+template <typename BAGT, typename T, int N>
+static void bag2Sarray(BAGT bags, Sarray<T*, N> *buf)
+// end::convert[]
+{
+    for (int i = 0; i < N; ++i)
+        buf->d[i] = (T*) bags.data[i];
+}
+/* end src/comm/utils.h */
 
 /* begin src/struct/parray/imp.h */
 #pragma once
@@ -25174,7 +30961,43 @@ typedef Sarray<RndFrag, 26> RndFrag26;
 
 } // flu
 /* end src/flu/type.h */
-/* already included: src/algo/utils/shfl.h */
+/* begin src/algo/utils/shfl.h */
+#define _I_ static __device__
+
+#if __CUDACC_VER_MAJOR__ >= 9
+#pragma once
+
+template <typename T>
+_I_ T shfl_down(T val, unsigned int width) {
+    return __shfl_down_sync(0xFFFFFFFF, val, width);
+}
+
+template <typename T>
+_I_ T shfl_up(T val, unsigned int width) {
+    return __shfl_up_sync(0xFFFFFFFF, val, width);
+}
+template <typename T>
+_I_ T shfl(T val, unsigned int width) {
+    return __shfl_sync(0xFFFFFFFF, val, width);
+}
+#else
+template <typename T>
+_I_ T shfl_down(T val, unsigned int width) {
+    return __shfl_down(val, width);
+}
+
+template <typename T>
+_I_ T shfl_up(T val, unsigned int width) {
+    return __shfl_up(val, width);
+}
+template <typename T>
+_I_ T shfl(T val, unsigned int width) {
+    return __shfl(val, width);
+}
+#endif
+
+#undef _I_
+/* end src/algo/utils/shfl.h */
 
 /* begin src/exch/flu/imp.h */
 struct EFluPack;
@@ -26072,8 +31895,78 @@ void eflu_get_remote_frags(const EFluUnpack *u, /**/ RFrag26 *rfrags) {
 #include <stdio.h>
 #include <assert.h>
 
-/* already included: src/inc/conf.h */
-/* already included: src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
 /* begin src/inc/dev.h */
 /* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
@@ -26114,12 +32007,52 @@ void eflu_get_remote_frags(const EFluUnpack *u, /**/ RFrag26 *rfrags) {
 #define DzeroA(P, n)   DsetA(P, 0, n)
 /* end src/inc/dev.h */
 
-/* already included: src/d/api.h */
+/* begin src/d/api.h */
+#pragma once
+
+namespace d {  /* a wrapper for device API */
+typedef int Stream_t; /* TODO: streams are not supported */
+enum {MemcpyHostToHost, MemcpyHostToDevice,
+      MemcpyDeviceToHost, MemcpyDeviceToDevice,
+      MemcpyDefault};
+
+// tag::more[]
+const char *emsg();
+int alloc_pinned(void **pHost, size_t size);
+int is_device_pointer(const void *ptr);
+// end::more[]
+
+// tag::api[]
+int GetSymbolAddress(void **devPtr, const void *symbol);
+int Malloc(void **p, size_t);
+int MemcpyToSymbol(const void *symbol, const void *src, size_t count, size_t offset=0, int kind=MemcpyHostToDevice);
+int MemcpyFromSymbol(void *dst, const void *symbol, size_t count, size_t offset=0, int kind=MemcpyDeviceToHost);
+int HostGetDevicePointer(void **pDevice, void *pHost, unsigned int flags);
+int Memcpy (void *dst, const void *src, size_t count, int kind);
+int MemsetAsync (void *devPtr, int value, size_t count, Stream_t stream=0);
+int Memset (void *devPtr, int value, size_t count);
+int MemcpyAsync (void * dst, const void * src, size_t count, int kind, Stream_t stream = 0);
+int Free (void *devPtr);
+int FreeHost (void *hstPtr);
+int DeviceSynchronize (void);
+int PeekAtLastError(void);
+// end::api[]
+}
+/* end src/d/api.h */
 /* begin src/utils/kl.h */
 /* [k]ernel [l]aunch macros */
 
 #if    defined(KL_RELEASE)
-/* already included: src/utils/kl/release.h */
+/* begin src/utils/kl/release.h */
+#define KL_BEFORE(s, C) if (!kl::safe(ESC C)) continue;
+#define KL_CALL(F, C, A) F<<<ESC C>>>A
+#define KL_AFTER(s)
+
+#ifndef UDX_KL_RELEASE_FUNCTIONS_DEFINED
+#define UDX_KL_RELEASE_FUNCTIONS_DEFINED
+namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
+#endif
+/* end src/utils/kl/release.h */
 #elif  defined(KL_NONE)
 /* begin src/utils/kl/none.h */
 #define KL_BEFORE(s, C)
@@ -26144,7 +32077,18 @@ namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
   #error KL_* is undefined
 #endif
 
-/* already included: src/utils/kl/common.h */
+/* begin src/utils/kl/common.h */
+namespace kl {
+#pragma once
+
+inline int safe0(dim3 i, dim3 j) {
+    msg(i.x, i.y, i.z,   j.x, j.y, j.z);
+    return i.x>0 && i.y>0 && i.z>0   &&   j.x>0 && j.y>0 && j.z>0;
+}
+inline int safe(dim3 i, dim3 j)                    { return safe0(i, j); }
+inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
+}
+/* end src/utils/kl/common.h */
 /* begin src/utils/kl/macro.h */
 #define ESC(...) __VA_ARGS__
 #define KL(F, C, A)                             \
@@ -26286,7 +32230,43 @@ void emap_download_tot_counts(int nw, int nfrags, EMap map, /**/ int counts[]); 
 void emap_download_all_counts(int nw, int nfrags, EMap map, /**/ int tot_counts[], int *counts[]);
 // end::int[]
 /* end src/exch/map/imp.h */
-/* already included: src/algo/utils/shfl.h */
+/* begin src/algo/utils/shfl.h */
+#define _I_ static __device__
+
+#if __CUDACC_VER_MAJOR__ >= 9
+#pragma once
+
+template <typename T>
+_I_ T shfl_down(T val, unsigned int width) {
+    return __shfl_down_sync(0xFFFFFFFF, val, width);
+}
+
+template <typename T>
+_I_ T shfl_up(T val, unsigned int width) {
+    return __shfl_up_sync(0xFFFFFFFF, val, width);
+}
+template <typename T>
+_I_ T shfl(T val, unsigned int width) {
+    return __shfl_sync(0xFFFFFFFF, val, width);
+}
+#else
+template <typename T>
+_I_ T shfl_down(T val, unsigned int width) {
+    return __shfl_down(val, width);
+}
+
+template <typename T>
+_I_ T shfl_up(T val, unsigned int width) {
+    return __shfl_up(val, width);
+}
+template <typename T>
+_I_ T shfl(T val, unsigned int width) {
+    return __shfl(val, width);
+}
+#endif
+
+#undef _I_
+/* end src/algo/utils/shfl.h */
 /* begin src/exch/map/dev/main.h */
 namespace emap_dev {
 
@@ -26706,8 +32686,78 @@ void emap_download_all_counts(int nw, int nfrags, EMap map, /**/ int tot_counts[
 #include <mpi.h>
 #include <assert.h>
 
-/* already included: src/inc/conf.h */
-/* already included: src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
 
 /* begin src/utils/imp.h */
 // tag::mem[]
@@ -26741,7 +32791,62 @@ void msg_ini(int rank); // <1>
 void msg_print(const char *fmt, ...); // <2>
 // end::int[]
 /* end src/utils/msg.h */
-/* already included: src/inc/type.h */
+/* begin src/inc/type.h */
+#pragma once
+
+template <typename T, int N>
+struct Sarray { /* [s]tatic array */
+    T d[N];
+};
+
+struct Particle {
+    float r[3], v[3];
+};
+
+struct Rigid {
+    float Iinv[6],            /* moment of inertia            6        */
+        mass,                 /* mass of the solid            7        */
+        com[3],               /* [c]enter [o]f [m]ass         10       */
+        v[3], om[3],          /* linear and angular velocity  13 16    */
+        e0[3], e1[3], e2[3],  /* local referential            19 22 25 */
+        fo[3], to[3],         /* force, torque                28 31    */
+        id;                   /* id of the solid              32       */
+};
+
+struct Force {
+    float f[3];
+};
+
+struct Momentum {
+    float P[3], L[3]; /* linear and angular momentum */
+};
+
+struct Positioncp {
+    float rc[3]; /* current position  */
+    float rp[3]; /* previous position */
+};
+
+typedef Sarray<int, 26>       int26;
+typedef Sarray<int, 27>       int27;
+
+typedef Sarray<int*, 26>     intp26;
+typedef Sarray<Particle*, 26> Pap26;
+typedef Sarray<Force*,    26> Fop26;
+typedef Sarray<Momentum*, 26> Mop26;
+typedef Sarray<Positioncp*, 26> Pocpp26;
+
+/* particles wrap */
+struct PaWrap {
+    int n;
+    const Particle *pp;
+};
+
+/* forces wrap */
+struct FoWrap {
+    int n;
+    Force *ff;
+};
+/* end src/inc/type.h */
 /* begin src/inc/dev.h */
 /* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
@@ -26781,9 +32886,145 @@ void msg_print(const char *fmt, ...); // <2>
 #define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
 #define DzeroA(P, n)   DsetA(P, 0, n)
 /* end src/inc/dev.h */
-/* already included: src/frag/dev.h */
+/* begin src/frag/dev.h */
+#ifdef FRAG_HOST
+#ifndef UDX_FRAG_HOST_DEFINED
+#define UDX_FRAG_HOST_DEFINED
+#define UDX_FRAG_BODY
+#endif
+#else
+#ifndef UDX_FRAG_DEV_DEFINED
+#define UDX_FRAG_DEV_DEFINED
+#define UDX_FRAG_BODY
+#endif
+#endif
 
-/* already included: src/d/api.h */
+#ifdef UDX_FRAG_BODY
+#ifdef FRAG_HOST
+  #define _I_
+  #define _S_ static
+  #define BEGIN namespace frag_hst {
+  #define END }
+#else
+  #define _I_ static __device__
+  #define _S_ static __device__
+  #define BEGIN namespace frag_dev {
+  #define END }
+#endif
+
+BEGIN
+
+enum {BAD_DIR = -2};
+
+/* fragment id to direction                    */
+
+_I_ int i2dx(int i) { return (i     + 2) % 3 - 1; }
+_I_ int i2dy(int i) { return (i / 3 + 2) % 3 - 1; }
+_I_ int i2dz(int i) { return (i / 9 + 2) % 3 - 1; }
+
+_I_ void i2d3(int i, /**/ int d[3]) {
+    enum {X, Y, Z};
+    d[X] = i2dx(i);
+    d[Y] = i2dy(i);
+    d[Z] = i2dz(i);
+}
+
+/* direction to fragment id                    */
+_I_ int d2i(int x, int y, int z) {
+    return    ((x + 2) % 3)
+        + 3 * ((y + 2) % 3)
+        + 9 * ((z + 2) % 3);
+}
+
+_I_ int d32i(const int d[3])  {
+    enum {X, Y, Z};
+    return d2i(d[X], d[Y], d[Z]);
+}
+
+/* number of cells in direction x, y, z        */
+_S_ int ncell0(int3 L, int x, int y, int z) {
+    int nx, ny, nz;
+    nx = x ? 1 : L.x;
+    ny = y ? 1 : L.y;
+    nz = z ? 1 : L.z;
+    return nx * ny * nz;
+}
+
+/* number of cells in fragment i               */
+_I_ int ncell(int3 L, int i) {
+    int x, y, z;
+    x = i2dx(i);
+    y = i2dy(i);
+    z = i2dz(i);
+    return ncell0(L, x, y, z);
+}
+
+/* anti direction to fragment id                */
+_I_ int antid2i(int x, int y, int z) {
+    return d2i(-x, -y, -z);
+}
+
+/* anti fragment                                */
+_I_ int anti(int i) {
+    int x, y, z;
+    x = i2dx(i);
+    y = i2dy(i);
+    z = i2dz(i);
+    return antid2i(x, y, z);
+}
+
+/* [f]ragment [id] : where is `i' in sorted a[27]? */
+_I_ int frag_get_fid(const int a[], const int i) {
+    int k1, k3, k9;
+    k9 = 9 * ((i >= a[9])           + (i >= a[18]));
+    k3 = 3 * ((i >= a[k9 + 3])      + (i >= a[k9 + 6]));
+    k1 =      (i >= a[k9 + k3 + 1]) + (i >= a[k9 + k3 + 2]);
+    return k9 + k3 + k1;
+}
+
+END
+
+#undef _I_
+#undef _S_
+#undef BEGIN
+#undef END
+
+#undef UDX_FRAG_BODY
+#endif
+/* end src/frag/dev.h */
+
+/* begin src/d/api.h */
+#pragma once
+
+namespace d {  /* a wrapper for device API */
+typedef int Stream_t; /* TODO: streams are not supported */
+enum {MemcpyHostToHost, MemcpyHostToDevice,
+      MemcpyDeviceToHost, MemcpyDeviceToDevice,
+      MemcpyDefault};
+
+// tag::more[]
+const char *emsg();
+int alloc_pinned(void **pHost, size_t size);
+int is_device_pointer(const void *ptr);
+// end::more[]
+
+// tag::api[]
+int GetSymbolAddress(void **devPtr, const void *symbol);
+int Malloc(void **p, size_t);
+int MemcpyToSymbol(const void *symbol, const void *src, size_t count, size_t offset=0, int kind=MemcpyHostToDevice);
+int MemcpyFromSymbol(void *dst, const void *symbol, size_t count, size_t offset=0, int kind=MemcpyDeviceToHost);
+int HostGetDevicePointer(void **pDevice, void *pHost, unsigned int flags);
+int Memcpy (void *dst, const void *src, size_t count, int kind);
+int MemsetAsync (void *devPtr, int value, size_t count, Stream_t stream=0);
+int Memset (void *devPtr, int value, size_t count);
+int MemcpyAsync (void * dst, const void * src, size_t count, int kind, Stream_t stream = 0);
+int Free (void *devPtr);
+int FreeHost (void *hstPtr);
+int DeviceSynchronize (void);
+int PeekAtLastError(void);
+// end::api[]
+}
+/* end src/d/api.h */
 /* begin src/utils/cc.h */
 /* [c]uda [c]heck macros */
 
@@ -26821,7 +33062,16 @@ void check(int rc, const char *file, int line);
 /* [k]ernel [l]aunch macros */
 
 #if    defined(KL_RELEASE)
-/* already included: src/utils/kl/release.h */
+/* begin src/utils/kl/release.h */
+#define KL_BEFORE(s, C) if (!kl::safe(ESC C)) continue;
+#define KL_CALL(F, C, A) F<<<ESC C>>>A
+#define KL_AFTER(s)
+
+#ifndef UDX_KL_RELEASE_FUNCTIONS_DEFINED
+#define UDX_KL_RELEASE_FUNCTIONS_DEFINED
+namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
+#endif
+/* end src/utils/kl/release.h */
 #elif  defined(KL_NONE)
 /* begin src/utils/kl/none.h */
 #define KL_BEFORE(s, C)
@@ -26846,7 +33096,18 @@ namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
   #error KL_* is undefined
 #endif
 
-/* already included: src/utils/kl/common.h */
+/* begin src/utils/kl/common.h */
+namespace kl {
+#pragma once
+
+inline int safe0(dim3 i, dim3 j) {
+    msg(i.x, i.y, i.z,   j.x, j.y, j.z);
+    return i.x>0 && i.y>0 && i.z>0   &&   j.x>0 && j.y>0 && j.z>0;
+}
+inline int safe(dim3 i, dim3 j)                    { return safe0(i, j); }
+inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
+}
+/* end src/utils/kl/common.h */
 /* begin src/utils/kl/macro.h */
 #define ESC(...) __VA_ARGS__
 #define KL(F, C, A)                             \
@@ -26908,13 +33169,187 @@ struct float3;
 void minmax(const Particle *pp, int nv, int nobj, /**/ float3 *lo, float3 *hi);
 // end::interface[]
 /* end src/algo/minmax/imp.h */
-/* already included: src/algo/utils/shfl.h */
+/* begin src/algo/utils/shfl.h */
+#define _I_ static __device__
 
-/* already included: src/frag/imp.h */
-/* already included: src/comm/imp.h */
-/* already included: src/comm/utils.h */
+#if __CUDACC_VER_MAJOR__ >= 9
+#pragma once
 
-/* already included: src/exch/map/type.h */
+template <typename T>
+_I_ T shfl_down(T val, unsigned int width) {
+    return __shfl_down_sync(0xFFFFFFFF, val, width);
+}
+
+template <typename T>
+_I_ T shfl_up(T val, unsigned int width) {
+    return __shfl_up_sync(0xFFFFFFFF, val, width);
+}
+template <typename T>
+_I_ T shfl(T val, unsigned int width) {
+    return __shfl_sync(0xFFFFFFFF, val, width);
+}
+#else
+template <typename T>
+_I_ T shfl_down(T val, unsigned int width) {
+    return __shfl_down(val, width);
+}
+
+template <typename T>
+_I_ T shfl_up(T val, unsigned int width) {
+    return __shfl_up(val, width);
+}
+template <typename T>
+_I_ T shfl(T val, unsigned int width) {
+    return __shfl(val, width);
+}
+#endif
+
+#undef _I_
+/* end src/algo/utils/shfl.h */
+
+/* begin src/frag/imp.h */
+#pragma once
+
+enum {frag_bulk = 26};
+
+struct int3;
+
+namespace frag_hst {
+
+// tag::i2d[]
+int i2dx(int i);                 // <1>
+int i2dy(int i);                 // <2>
+int i2dz(int i);                 // <3>
+void i2d3(int i, /**/ int d[3]); // <4>
+// end::i2d[]
+
+// tag::d2i[]
+int d2i(int x, int y, int z); // <1>
+int d32i(const int d[3]);     // <2>
+// end::d2i[]
+
+// tag::ncell[]
+int ncell(int3 L, int i); // <1>
+// end::ncell[]
+
+// tag::anti[]
+int antid2i(int x, int y, int z); // <1>
+int anti(int i);                  // <2>
+// end::anti[]
+
+// tag::hst[]
+void estimates(int3 L, int nfrags, float maxd, /**/ int *cap); // <1>
+// end::hst[]
+
+} // frag_hst
+/* end src/frag/imp.h */
+/* begin src/comm/imp.h */
+#pragma once
+
+typedef unsigned char data_t;
+
+enum {
+    NFRAGS = 26, /* number of fragments for one halo */
+    BULK   = 26, /* bulk id                          */
+    NBAGS  = 27, /* fragments + bulk                 */
+};
+
+/* Allocation mod for bags */
+enum AllocMod {
+    // tag::AllocMod[]
+    HST_ONLY,   /* only host bags allocated                 */
+    DEV_ONLY,   /* only device bags allocated               */
+    PINNED,     /* both host and device pinned              */
+    PINNED_HST, /* host pinned; no device memory            */
+    PINNED_DEV, /* host pinned; device global memory on gpu */
+    NONE        /* no allocation                            */
+    // end::AllocMod[]
+};
+
+// tag::dBags[]
+struct dBags {
+    data_t *data[NBAGS]; /* data on the device         */
+};
+// end::dBags[]
+
+// tag::hBags[]
+struct hBags {
+    data_t *data[NBAGS]; /* data on the host                    */
+    int         *counts; /* size of the data                    */
+    int capacity[NBAGS]; /* capacity of each frag (elem number) */
+    size_t bsize;        /* size of one datum in bytes          */
+};
+// end::hBags[]
+
+struct Comm;
+struct CommBuffer;
+
+// tag::alloc[]
+void comm_bags_ini(AllocMod fmod, AllocMod bmod, size_t bsize, const int capacity[NBAGS], /**/ hBags *hb, dBags *db);
+void comm_bags_fin(AllocMod fmod, AllocMod bmod, /**/ hBags *hb, dBags *db);
+void comm_ini(MPI_Comm cart, /**/ Comm **c);
+void comm_fin(/**/ Comm *c);
+void comm_buffer_ini(int nbags, const hBags *hbb, CommBuffer**);
+void comm_buffer_fin(CommBuffer*);
+// end::alloc[]
+
+
+void comm_buffer_set(int nbags, const hBags*, CommBuffer*);
+void comm_buffer_get(const CommBuffer*, int nbags, hBags*);
+
+// tag::communication[]
+void comm_post_recv(hBags *b, Comm *c);           // <1>
+void comm_post_send(const hBags *b, Comm *c);     // <2>
+
+void comm_wait_recv(Comm *c, /**/ hBags *b);      // <3>
+void comm_wait_send(Comm *c);                     // <4>
+// end::communication[]
+
+// tag::communication_b[]
+void comm_post_recv(CommBuffer *cb, Comm *c);
+void comm_post_send(const CommBuffer *cb, Comm *c);
+
+void comm_wait_recv(Comm *c, /**/ CommBuffer *cb);
+void comm_wait_send(Comm *c);
+// end::communication_b[]
+
+// tag::get[]
+int    comm_get_number_capacity(int i, const hBags *b); // <1>
+size_t comm_get_byte_capacity(int i, const hBags *b);   // <2>
+// end::get[]
+
+/* end src/comm/imp.h */
+/* begin src/comm/utils.h */
+#pragma once
+
+// tag::convert[]
+template <typename BAGT, typename T, int N>
+static void bag2Sarray(BAGT bags, Sarray<T*, N> *buf)
+// end::convert[]
+{
+    for (int i = 0; i < N; ++i)
+        buf->d[i] = (T*) bags.data[i];
+}
+/* end src/comm/utils.h */
+
+/* begin src/exch/map/type.h */
+#pragma once
+
+// [E]xchange map
+
+// tag::struct[]
+enum {MAX_FRAGS=26};
+
+struct EMap {
+    int *counts;         /* number of entities leaving in each fragment */
+    int *starts;         /* cumulative sum of the above                 */
+    int *offsets;        /* offsets per fragment for each solute        */
+    int *ids[MAX_FRAGS]; /* indices of leaving objects                  */
+    int *cap;            /* capacity of ids                             */
+};
+// end::struct[]
+
+/* end src/exch/map/type.h */
 /* begin src/exch/map/imp.h */
 // tag::int[]
 void emap_ini(int nw, int nfrags, int cap[], /**/ EMap *map);               // <1>
@@ -27092,7 +33527,26 @@ _I_ int emap_decode(int code, /**/ int fids[MAX_DSTS]) // <4>
 #undef _I_
 #undef _S_
 /* end src/exch/map/dev.h */
-/* already included: src/exch/common/imp.h */
+/* begin src/exch/common/imp.h */
+#pragma once
+
+struct int3;
+
+// tag::struct[]
+struct PackHelper {
+    int *starts;
+    int *offsets;
+    int *indices[NFRAGS];
+    int *cap;
+};
+// end::struct[]
+
+// tag::int[]
+void ecommon_pack_pp(const Particle *pp, PackHelper ph, /**/ Pap26 buf); // <1>
+void ecommon_shift_pp_one_frag(int3 L, int n, const int fid, /**/ Particle *pp); // <2>
+void ecommon_shift_rrcp_one_frag(int3 L, int n, const int fid, /**/ Positioncp *rr);
+// end::int[]
+/* end src/exch/common/imp.h */
 
 /* begin src/exch/mesh/imp/type.h */
 enum {
@@ -28044,8 +34498,78 @@ void emesh_unpack_mom(int nt, const EMeshPack *p, const EMeshUnpackM *u, /**/ Mo
 #include <mpi.h>
 #include <assert.h>
 
-/* already included: src/inc/conf.h */
-/* already included: src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
 
 /* begin src/utils/imp.h */
 // tag::mem[]
@@ -28079,7 +34603,62 @@ void msg_ini(int rank); // <1>
 void msg_print(const char *fmt, ...); // <2>
 // end::int[]
 /* end src/utils/msg.h */
-/* already included: src/inc/type.h */
+/* begin src/inc/type.h */
+#pragma once
+
+template <typename T, int N>
+struct Sarray { /* [s]tatic array */
+    T d[N];
+};
+
+struct Particle {
+    float r[3], v[3];
+};
+
+struct Rigid {
+    float Iinv[6],            /* moment of inertia            6        */
+        mass,                 /* mass of the solid            7        */
+        com[3],               /* [c]enter [o]f [m]ass         10       */
+        v[3], om[3],          /* linear and angular velocity  13 16    */
+        e0[3], e1[3], e2[3],  /* local referential            19 22 25 */
+        fo[3], to[3],         /* force, torque                28 31    */
+        id;                   /* id of the solid              32       */
+};
+
+struct Force {
+    float f[3];
+};
+
+struct Momentum {
+    float P[3], L[3]; /* linear and angular momentum */
+};
+
+struct Positioncp {
+    float rc[3]; /* current position  */
+    float rp[3]; /* previous position */
+};
+
+typedef Sarray<int, 26>       int26;
+typedef Sarray<int, 27>       int27;
+
+typedef Sarray<int*, 26>     intp26;
+typedef Sarray<Particle*, 26> Pap26;
+typedef Sarray<Force*,    26> Fop26;
+typedef Sarray<Momentum*, 26> Mop26;
+typedef Sarray<Positioncp*, 26> Pocpp26;
+
+/* particles wrap */
+struct PaWrap {
+    int n;
+    const Particle *pp;
+};
+
+/* forces wrap */
+struct FoWrap {
+    int n;
+    Force *ff;
+};
+/* end src/inc/type.h */
 /* begin src/inc/dev.h */
 /* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
@@ -28119,10 +34698,181 @@ void msg_print(const char *fmt, ...); // <2>
 #define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
 #define DzeroA(P, n)   DsetA(P, 0, n)
 /* end src/inc/dev.h */
-/* already included: src/frag/dev.h */
-/* already included: src/frag/imp.h */
+/* begin src/frag/dev.h */
+#ifdef FRAG_HOST
+#ifndef UDX_FRAG_HOST_DEFINED
+#define UDX_FRAG_HOST_DEFINED
+#define UDX_FRAG_BODY
+#endif
+#else
+#ifndef UDX_FRAG_DEV_DEFINED
+#define UDX_FRAG_DEV_DEFINED
+#define UDX_FRAG_BODY
+#endif
+#endif
 
-/* already included: src/d/api.h */
+#ifdef UDX_FRAG_BODY
+#ifdef FRAG_HOST
+  #define _I_
+  #define _S_ static
+  #define BEGIN namespace frag_hst {
+  #define END }
+#else
+  #define _I_ static __device__
+  #define _S_ static __device__
+  #define BEGIN namespace frag_dev {
+  #define END }
+#endif
+
+BEGIN
+
+enum {BAD_DIR = -2};
+
+/* fragment id to direction                    */
+
+_I_ int i2dx(int i) { return (i     + 2) % 3 - 1; }
+_I_ int i2dy(int i) { return (i / 3 + 2) % 3 - 1; }
+_I_ int i2dz(int i) { return (i / 9 + 2) % 3 - 1; }
+
+_I_ void i2d3(int i, /**/ int d[3]) {
+    enum {X, Y, Z};
+    d[X] = i2dx(i);
+    d[Y] = i2dy(i);
+    d[Z] = i2dz(i);
+}
+
+/* direction to fragment id                    */
+_I_ int d2i(int x, int y, int z) {
+    return    ((x + 2) % 3)
+        + 3 * ((y + 2) % 3)
+        + 9 * ((z + 2) % 3);
+}
+
+_I_ int d32i(const int d[3])  {
+    enum {X, Y, Z};
+    return d2i(d[X], d[Y], d[Z]);
+}
+
+/* number of cells in direction x, y, z        */
+_S_ int ncell0(int3 L, int x, int y, int z) {
+    int nx, ny, nz;
+    nx = x ? 1 : L.x;
+    ny = y ? 1 : L.y;
+    nz = z ? 1 : L.z;
+    return nx * ny * nz;
+}
+
+/* number of cells in fragment i               */
+_I_ int ncell(int3 L, int i) {
+    int x, y, z;
+    x = i2dx(i);
+    y = i2dy(i);
+    z = i2dz(i);
+    return ncell0(L, x, y, z);
+}
+
+/* anti direction to fragment id                */
+_I_ int antid2i(int x, int y, int z) {
+    return d2i(-x, -y, -z);
+}
+
+/* anti fragment                                */
+_I_ int anti(int i) {
+    int x, y, z;
+    x = i2dx(i);
+    y = i2dy(i);
+    z = i2dz(i);
+    return antid2i(x, y, z);
+}
+
+/* [f]ragment [id] : where is `i' in sorted a[27]? */
+_I_ int frag_get_fid(const int a[], const int i) {
+    int k1, k3, k9;
+    k9 = 9 * ((i >= a[9])           + (i >= a[18]));
+    k3 = 3 * ((i >= a[k9 + 3])      + (i >= a[k9 + 6]));
+    k1 =      (i >= a[k9 + k3 + 1]) + (i >= a[k9 + k3 + 2]);
+    return k9 + k3 + k1;
+}
+
+END
+
+#undef _I_
+#undef _S_
+#undef BEGIN
+#undef END
+
+#undef UDX_FRAG_BODY
+#endif
+/* end src/frag/dev.h */
+/* begin src/frag/imp.h */
+#pragma once
+
+enum {frag_bulk = 26};
+
+struct int3;
+
+namespace frag_hst {
+
+// tag::i2d[]
+int i2dx(int i);                 // <1>
+int i2dy(int i);                 // <2>
+int i2dz(int i);                 // <3>
+void i2d3(int i, /**/ int d[3]); // <4>
+// end::i2d[]
+
+// tag::d2i[]
+int d2i(int x, int y, int z); // <1>
+int d32i(const int d[3]);     // <2>
+// end::d2i[]
+
+// tag::ncell[]
+int ncell(int3 L, int i); // <1>
+// end::ncell[]
+
+// tag::anti[]
+int antid2i(int x, int y, int z); // <1>
+int anti(int i);                  // <2>
+// end::anti[]
+
+// tag::hst[]
+void estimates(int3 L, int nfrags, float maxd, /**/ int *cap); // <1>
+// end::hst[]
+
+} // frag_hst
+/* end src/frag/imp.h */
+
+/* begin src/d/api.h */
+#pragma once
+
+namespace d {  /* a wrapper for device API */
+typedef int Stream_t; /* TODO: streams are not supported */
+enum {MemcpyHostToHost, MemcpyHostToDevice,
+      MemcpyDeviceToHost, MemcpyDeviceToDevice,
+      MemcpyDefault};
+
+// tag::more[]
+const char *emsg();
+int alloc_pinned(void **pHost, size_t size);
+int is_device_pointer(const void *ptr);
+// end::more[]
+
+// tag::api[]
+int GetSymbolAddress(void **devPtr, const void *symbol);
+int Malloc(void **p, size_t);
+int MemcpyToSymbol(const void *symbol, const void *src, size_t count, size_t offset=0, int kind=MemcpyHostToDevice);
+int MemcpyFromSymbol(void *dst, const void *symbol, size_t count, size_t offset=0, int kind=MemcpyDeviceToHost);
+int HostGetDevicePointer(void **pDevice, void *pHost, unsigned int flags);
+int Memcpy (void *dst, const void *src, size_t count, int kind);
+int MemsetAsync (void *devPtr, int value, size_t count, Stream_t stream=0);
+int Memset (void *devPtr, int value, size_t count);
+int MemcpyAsync (void * dst, const void * src, size_t count, int kind, Stream_t stream = 0);
+int Free (void *devPtr);
+int FreeHost (void *hstPtr);
+int DeviceSynchronize (void);
+int PeekAtLastError(void);
+// end::api[]
+}
+/* end src/d/api.h */
 /* begin src/utils/cc.h */
 /* [c]uda [c]heck macros */
 
@@ -28160,7 +34910,16 @@ void check(int rc, const char *file, int line);
 /* [k]ernel [l]aunch macros */
 
 #if    defined(KL_RELEASE)
-/* already included: src/utils/kl/release.h */
+/* begin src/utils/kl/release.h */
+#define KL_BEFORE(s, C) if (!kl::safe(ESC C)) continue;
+#define KL_CALL(F, C, A) F<<<ESC C>>>A
+#define KL_AFTER(s)
+
+#ifndef UDX_KL_RELEASE_FUNCTIONS_DEFINED
+#define UDX_KL_RELEASE_FUNCTIONS_DEFINED
+namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
+#endif
+/* end src/utils/kl/release.h */
 #elif  defined(KL_NONE)
 /* begin src/utils/kl/none.h */
 #define KL_BEFORE(s, C)
@@ -28185,7 +34944,18 @@ namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
   #error KL_* is undefined
 #endif
 
-/* already included: src/utils/kl/common.h */
+/* begin src/utils/kl/common.h */
+namespace kl {
+#pragma once
+
+inline int safe0(dim3 i, dim3 j) {
+    msg(i.x, i.y, i.z,   j.x, j.y, j.z);
+    return i.x>0 && i.y>0 && i.z>0   &&   j.x>0 && j.y>0 && j.z>0;
+}
+inline int safe(dim3 i, dim3 j)                    { return safe0(i, j); }
+inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
+}
+/* end src/utils/kl/common.h */
 /* begin src/utils/kl/macro.h */
 #define ESC(...) __VA_ARGS__
 #define KL(F, C, A)                             \
@@ -28240,10 +35010,113 @@ void error_abort();
 void error_print_stack();
 /* end src/utils/error.h */
 
-/* already included: src/comm/imp.h */
-/* already included: src/comm/utils.h */
+/* begin src/comm/imp.h */
+#pragma once
 
-/* already included: src/exch/map/type.h */
+typedef unsigned char data_t;
+
+enum {
+    NFRAGS = 26, /* number of fragments for one halo */
+    BULK   = 26, /* bulk id                          */
+    NBAGS  = 27, /* fragments + bulk                 */
+};
+
+/* Allocation mod for bags */
+enum AllocMod {
+    // tag::AllocMod[]
+    HST_ONLY,   /* only host bags allocated                 */
+    DEV_ONLY,   /* only device bags allocated               */
+    PINNED,     /* both host and device pinned              */
+    PINNED_HST, /* host pinned; no device memory            */
+    PINNED_DEV, /* host pinned; device global memory on gpu */
+    NONE        /* no allocation                            */
+    // end::AllocMod[]
+};
+
+// tag::dBags[]
+struct dBags {
+    data_t *data[NBAGS]; /* data on the device         */
+};
+// end::dBags[]
+
+// tag::hBags[]
+struct hBags {
+    data_t *data[NBAGS]; /* data on the host                    */
+    int         *counts; /* size of the data                    */
+    int capacity[NBAGS]; /* capacity of each frag (elem number) */
+    size_t bsize;        /* size of one datum in bytes          */
+};
+// end::hBags[]
+
+struct Comm;
+struct CommBuffer;
+
+// tag::alloc[]
+void comm_bags_ini(AllocMod fmod, AllocMod bmod, size_t bsize, const int capacity[NBAGS], /**/ hBags *hb, dBags *db);
+void comm_bags_fin(AllocMod fmod, AllocMod bmod, /**/ hBags *hb, dBags *db);
+void comm_ini(MPI_Comm cart, /**/ Comm **c);
+void comm_fin(/**/ Comm *c);
+void comm_buffer_ini(int nbags, const hBags *hbb, CommBuffer**);
+void comm_buffer_fin(CommBuffer*);
+// end::alloc[]
+
+
+void comm_buffer_set(int nbags, const hBags*, CommBuffer*);
+void comm_buffer_get(const CommBuffer*, int nbags, hBags*);
+
+// tag::communication[]
+void comm_post_recv(hBags *b, Comm *c);           // <1>
+void comm_post_send(const hBags *b, Comm *c);     // <2>
+
+void comm_wait_recv(Comm *c, /**/ hBags *b);      // <3>
+void comm_wait_send(Comm *c);                     // <4>
+// end::communication[]
+
+// tag::communication_b[]
+void comm_post_recv(CommBuffer *cb, Comm *c);
+void comm_post_send(const CommBuffer *cb, Comm *c);
+
+void comm_wait_recv(Comm *c, /**/ CommBuffer *cb);
+void comm_wait_send(Comm *c);
+// end::communication_b[]
+
+// tag::get[]
+int    comm_get_number_capacity(int i, const hBags *b); // <1>
+size_t comm_get_byte_capacity(int i, const hBags *b);   // <2>
+// end::get[]
+
+/* end src/comm/imp.h */
+/* begin src/comm/utils.h */
+#pragma once
+
+// tag::convert[]
+template <typename BAGT, typename T, int N>
+static void bag2Sarray(BAGT bags, Sarray<T*, N> *buf)
+// end::convert[]
+{
+    for (int i = 0; i < N; ++i)
+        buf->d[i] = (T*) bags.data[i];
+}
+/* end src/comm/utils.h */
+
+/* begin src/exch/map/type.h */
+#pragma once
+
+// [E]xchange map
+
+// tag::struct[]
+enum {MAX_FRAGS=26};
+
+struct EMap {
+    int *counts;         /* number of entities leaving in each fragment */
+    int *starts;         /* cumulative sum of the above                 */
+    int *offsets;        /* offsets per fragment for each solute        */
+    int *ids[MAX_FRAGS]; /* indices of leaving objects                  */
+    int *cap;            /* capacity of ids                             */
+};
+// end::struct[]
+
+/* end src/exch/map/type.h */
 /* begin src/exch/map/imp.h */
 // tag::int[]
 void emap_ini(int nw, int nfrags, int cap[], /**/ EMap *map);               // <1>
@@ -28323,8 +35196,116 @@ void eobj_unpack_ff(EObjUnpackF *u, const EObjPack *p, int nw, /**/ FoWrap *ww);
 // end::unpackback[]
 /* end src/exch/obj/imp.h */
 
-/* already included: src/exch/map/dev.h */
-/* already included: src/exch/common/imp.h */
+/* begin src/exch/map/dev.h */
+#pragma once
+
+#define _I_ static __device__
+#define _S_ static __device__
+
+/* corner fragments are neighbor with 7 fragments */
+enum { MAX_DSTS = 7 };
+
+// tag::int[]
+_I_ int emap_code(int3 L, const float r[3]) // <1>
+// end::int[]
+{
+    int x, y, z;
+    enum {X, Y, Z};
+    x = -1 + (r[X] >= -L.x / 2) + (r[X] >= L.x / 2);
+    y = -1 + (r[Y] >= -L.y / 2) + (r[Y] >= L.y / 2);
+    z = -1 + (r[Z] >= -L.z / 2) + (r[Z] >= L.z / 2);
+
+    return frag_dev::d2i(x, y, z);
+}
+
+// tag::int[]
+_I_ int emap_code_box(int3 L, float3 lo, float3 hi)  // <2>
+// end::int[]
+{
+    int x, y, z;
+    x = -1 + (lo.x >= -L.x / 2) + (hi.x >= L.x / 2);
+    y = -1 + (lo.y >= -L.y / 2) + (hi.y >= L.y / 2);
+    z = -1 + (lo.z >= -L.z / 2) + (hi.z >= L.z / 2);
+
+    return frag_dev::d2i(x, y, z);
+}
+
+// tag::int[]
+_I_ void emap_add(int nfrags, int soluteid, int pid, int fid, EMap m) // <3>
+// end::int[]
+{
+    int ientry, centry, stride, cap;
+    cap = m.cap[fid];
+    stride = nfrags + 1;
+    centry = soluteid * stride + fid;
+    ientry = atomicAdd(m.counts + centry, 1);
+    if (ientry < cap)
+        m.ids[fid][ientry] = pid;
+}
+
+_S_ int add_faces(int j, const int d[3], /**/ int fids[MAX_DSTS]) {
+    for (int c = 0; c < 3; ++c) {
+        if (d[c]) {
+            int df[3] = {0, 0, 0}; df[c] = d[c];
+            fids[j++] = frag_dev::d32i(df);
+        }
+    }
+    return j;
+}
+
+_S_ int add_edges(int j, const int d[3], /**/ int fids[MAX_DSTS]) {
+    enum {X, Y, Z};
+    for (int c = 0; c < 3; ++c) {
+        int de[3] = {d[X], d[Y], d[Z]}; de[c] = 0;
+        if (de[(c + 1) % 3] && de[(c + 2) % 3])
+            fids[j++] = frag_dev::d32i(de);
+    }
+    return j;
+}
+
+_S_ int add_cornr(int j, const int d[3], /**/ int fids[MAX_DSTS]) {
+    enum {X, Y, Z};
+    if (d[X] && d[Y] && d[Z])
+        fids[j++] = frag_dev::d32i(d);
+    return j;
+}
+
+// tag::int[]
+_I_ int emap_decode(int code, /**/ int fids[MAX_DSTS]) // <4>
+// end::int[]
+{
+    int j = 0;
+    int d[3];
+    frag_dev::i2d3(code, d);
+    j = add_faces(j, d, /**/ fids);
+    j = add_edges(j, d, /**/ fids);
+    j = add_cornr(j, d, /**/ fids);
+    return j;
+}
+
+#undef _I_
+#undef _S_
+/* end src/exch/map/dev.h */
+/* begin src/exch/common/imp.h */
+#pragma once
+
+struct int3;
+
+// tag::struct[]
+struct PackHelper {
+    int *starts;
+    int *offsets;
+    int *indices[NFRAGS];
+    int *cap;
+};
+// end::struct[]
+
+// tag::int[]
+void ecommon_pack_pp(const Particle *pp, PackHelper ph, /**/ Pap26 buf); // <1>
+void ecommon_shift_pp_one_frag(int3 L, int n, const int fid, /**/ Particle *pp); // <2>
+void ecommon_shift_rrcp_one_frag(int3 L, int n, const int fid, /**/ Positioncp *rr);
+// end::int[]
+/* end src/exch/common/imp.h */
 
 /* begin src/exch/obj/dev.h */
 namespace eobj_dev {
@@ -29081,8 +36062,78 @@ void eobj_unpack_ff(EObjUnpackF *u, const EObjPack *p, int nw, /**/ FoWrap *ww) 
 #include <vector_types.h>
 #include <mpi.h>
 
-/* already included: src/inc/conf.h */
-/* already included: src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
 
 /* begin src/utils/os.h */
 // tag::int[]
@@ -29100,7 +36151,61 @@ void msg_ini(int rank); // <1>
 void msg_print(const char *fmt, ...); // <2>
 // end::int[]
 /* end src/utils/msg.h */
-/* already included: src/inc/def.h */
+/* begin src/inc/def.h */
+/* solvent colors */
+#define XMACRO_COLOR(_)                         \
+    _(BLUE)                                     \
+    _(RED)
+
+#define ENUM_COLOR(a) a##_COLOR
+#define make_enum_color(a) ENUM_COLOR(a) ,
+#ifndef UDX_DEF_ENUMS_DEFINED
+#define UDX_DEF_ENUMS_DEFINED
+enum {
+    XMACRO_COLOR(make_enum_color)
+    N_COLOR
+};
+#undef make_enum_color
+
+enum {
+    /* wall margins */
+    XWM = 6,
+    YWM = 6,
+    ZWM = 6,
+
+    SAFETY_FACTOR_MAXP = 3,
+
+    /* maximum number of particles per solid */
+    MAX_PSOLID_NUM = 12000,
+
+    /* maximum number of solids per node */
+    MAX_SOLIDS = 100,
+
+    /* maximum number of object types (solid, rbc, ...) */
+    MAX_MBR_TYPES = 2,
+    MAX_RIG_TYPES = 2,
+    MAX_OBJ_TYPES = MAX_MBR_TYPES + MAX_RIG_TYPES,
+
+    /* maximum number density of particles of the objects */
+    MAX_OBJ_DENSITY = 30,
+
+    /* maximum number of red blood cells per node */
+    MAX_CELL_NUM = 1500,
+
+    /* maximum texture size in bytes */
+    MAX_TEXO_SIZE = 100000000,
+
+    /* safety factor for dpd halo interactions */
+    HSAFETY_FACTOR = 10,
+
+    /* safety factor for odist fragments */
+    ODSTR_FACTOR = 3,
+};
+#endif
+
+/* for the spring forces r = min(lmax*RBC_SPRING_CAP, r) */
+#define RBC_SPRING_CAP (0.99)
+/* end src/inc/def.h */
 /* begin src/inc/dev.h */
 /* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
@@ -29140,9 +36245,95 @@ void msg_print(const char *fmt, ...); // <2>
 #define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
 #define DzeroA(P, n)   DsetA(P, 0, n)
 /* end src/inc/dev.h */
-/* already included: src/inc/type.h */
+/* begin src/inc/type.h */
+#pragma once
 
-/* already included: src/d/api.h */
+template <typename T, int N>
+struct Sarray { /* [s]tatic array */
+    T d[N];
+};
+
+struct Particle {
+    float r[3], v[3];
+};
+
+struct Rigid {
+    float Iinv[6],            /* moment of inertia            6        */
+        mass,                 /* mass of the solid            7        */
+        com[3],               /* [c]enter [o]f [m]ass         10       */
+        v[3], om[3],          /* linear and angular velocity  13 16    */
+        e0[3], e1[3], e2[3],  /* local referential            19 22 25 */
+        fo[3], to[3],         /* force, torque                28 31    */
+        id;                   /* id of the solid              32       */
+};
+
+struct Force {
+    float f[3];
+};
+
+struct Momentum {
+    float P[3], L[3]; /* linear and angular momentum */
+};
+
+struct Positioncp {
+    float rc[3]; /* current position  */
+    float rp[3]; /* previous position */
+};
+
+typedef Sarray<int, 26>       int26;
+typedef Sarray<int, 27>       int27;
+
+typedef Sarray<int*, 26>     intp26;
+typedef Sarray<Particle*, 26> Pap26;
+typedef Sarray<Force*,    26> Fop26;
+typedef Sarray<Momentum*, 26> Mop26;
+typedef Sarray<Positioncp*, 26> Pocpp26;
+
+/* particles wrap */
+struct PaWrap {
+    int n;
+    const Particle *pp;
+};
+
+/* forces wrap */
+struct FoWrap {
+    int n;
+    Force *ff;
+};
+/* end src/inc/type.h */
+
+/* begin src/d/api.h */
+#pragma once
+
+namespace d {  /* a wrapper for device API */
+typedef int Stream_t; /* TODO: streams are not supported */
+enum {MemcpyHostToHost, MemcpyHostToDevice,
+      MemcpyDeviceToHost, MemcpyDeviceToDevice,
+      MemcpyDefault};
+
+// tag::more[]
+const char *emsg();
+int alloc_pinned(void **pHost, size_t size);
+int is_device_pointer(const void *ptr);
+// end::more[]
+
+// tag::api[]
+int GetSymbolAddress(void **devPtr, const void *symbol);
+int Malloc(void **p, size_t);
+int MemcpyToSymbol(const void *symbol, const void *src, size_t count, size_t offset=0, int kind=MemcpyHostToDevice);
+int MemcpyFromSymbol(void *dst, const void *symbol, size_t count, size_t offset=0, int kind=MemcpyDeviceToHost);
+int HostGetDevicePointer(void **pDevice, void *pHost, unsigned int flags);
+int Memcpy (void *dst, const void *src, size_t count, int kind);
+int MemsetAsync (void *devPtr, int value, size_t count, Stream_t stream=0);
+int Memset (void *devPtr, int value, size_t count);
+int MemcpyAsync (void * dst, const void * src, size_t count, int kind, Stream_t stream = 0);
+int Free (void *devPtr);
+int FreeHost (void *hstPtr);
+int DeviceSynchronize (void);
+int PeekAtLastError(void);
+// end::api[]
+}
+/* end src/d/api.h */
 /* begin src/mpi/wrapper.h */
 namespace m {
 int Allreduce(const void *sendbuf, void *recvbuf, int count, MPI_Datatype datatype, MPI_Op op, MPI_Comm comm);
@@ -29381,7 +36572,24 @@ int coords_size(const Coords *c);
 // end::int[]
 /* end src/coords/imp.h */
 
-/* already included: src/struct/partlist/type.h */
+/* begin src/struct/partlist/type.h */
+#pragma once
+
+enum {
+    ALIVE = 0,
+    DEAD  = 1
+};
+
+/* structure of particle                           */
+/* optional "deathlist" for particles to be killed */
+
+// tag::type[]
+struct PartList {
+    const Particle *pp;   /* particles array          */
+    const int *deathlist; /* what pp is dead or alive */
+};
+// end::type[]
+/* end src/struct/partlist/type.h */
 /* begin src/algo/scan/imp.h */
 struct Scan;
 
@@ -29428,7 +36636,38 @@ void clist_build(int nlo, int nout, const Particle *pplo, /**/ Particle *ppout, 
 // end::int[]
 /* end src/clist/imp.h */
 
-/* already included: src/io/restart/imp.h */
+/* begin src/io/restart/imp.h */
+#pragma once
+
+struct Coords;
+struct Particle;
+struct Rigid;
+
+// tag::id[]
+enum {RESTART_TEMPL=-1,
+      RESTART_FINAL=-2};
+enum {RESTART_BEGIN=RESTART_FINAL};
+// end::id[]
+
+// tag::stream[]
+typedef void (*StreamWriter)(const void*, FILE*);
+typedef void (*StreamReader)(FILE*, void*);
+// end::stream[]
+
+// tag::write[]
+void restart_write_pp(MPI_Comm, const char *base, const char *code, int id, long n, const Particle *pp); // <1>
+void restart_write_ii(MPI_Comm, const char *base, const char *code, int id, long n, const int *ii);      // <2>
+void restart_write_ss(MPI_Comm, const char *base, const char *code, int id, long n, const Rigid *ss);    // <3>
+void restart_write_stream_one_node(MPI_Comm, const char *base, const char *code, int id, const void *data, StreamWriter); // <4>
+ // end::write[]
+
+// tag::read[]
+void restart_read_pp(MPI_Comm, const char *base, const char *code, int id, int *n, Particle *pp);
+void restart_read_ii(MPI_Comm, const char *base, const char *code, int id, int *n, int *ii);
+void restart_read_ss(MPI_Comm, const char *base, const char *code, int id, int *n, Rigid *ss);
+void restart_read_stream_one_node(const char *base, const char *code, int id, StreamReader, void *data);
+// end::read[]
+/* end src/io/restart/imp.h */
 /* begin src/inter/color/imp.h */
 struct GenColor;
 struct Particle;
@@ -29478,7 +36717,57 @@ const Force*    txt_read_get_ff(const TxtRead *);
 // end::read[]
 /* end src/io/txt/imp.h */
 
-/* already included: src/flu/imp.h */
+/* begin src/flu/imp.h */
+#pragma once
+
+// tag::struct[]
+struct FluQuants {
+    Particle *pp, *pp0;    /* particles on device  */
+    int       n;           /* particle number      */
+    Clist     *cells;      /* cell lists           */
+    ClistMap *mcells;      /* cell lists map       */
+    Particle *pp_hst;      /* particles on host    */
+
+    /* optional data */
+
+    bool ids, colors;
+
+    int *ii, *ii0;  /* global ids on device */
+    int *ii_hst;    /* global ids on host   */
+
+    int *cc, *cc0;  /* colors on device */
+    int *cc_hst;    /* colors on host   */
+
+    int maxp; /* maximum particle number */
+};
+// end::struct[]
+
+struct Coords;
+struct GenColor;
+
+// tag::mem[]
+void flu_ini(bool colors, bool ids, int3 L, int maxp, FluQuants *q);
+void flu_fin(FluQuants *q);
+// end::mem[]
+
+// tag::gen[]
+void flu_gen_quants(const Coords*, int numdensity, const GenColor *gc, FluQuants *q); // <1>
+void flu_gen_ids(MPI_Comm, const int n, FluQuants *q); // <2>
+// end::gen[]
+
+// tag::start[]
+void flu_strt_quants(MPI_Comm, const char *base, const int id, FluQuants *q);     // <1>
+void flu_strt_dump(MPI_Comm, const char *base, const int id, const FluQuants *q); // <2>
+// end::start[]
+
+// tag::tools[]
+void flu_txt_dump(const Coords*, const FluQuants *q); // <1>
+
+/* build cells only from one array of particles fully contained in the domain */
+/* warning: this will delete particles which are outside                      */
+void flu_build_cells(/**/ FluQuants *q); // <2>
+// end::tools[]
+/* end src/flu/imp.h */
 
 /* begin src/flu/imp/ini.h */
 static void ini_ii(int maxp, int **ii, int **ii0, int **ii_hst) {
@@ -29979,11 +37268,190 @@ void flu_build_cells(/**/ FluQuants *q) {
 #include <stdio.h>
 #include <assert.h>
 
-/* already included: src/inc/conf.h */
-/* already included: src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
 
-/* already included: src/inc/type.h */
-/* already included: src/inc/def.h */
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
+
+/* begin src/inc/type.h */
+#pragma once
+
+template <typename T, int N>
+struct Sarray { /* [s]tatic array */
+    T d[N];
+};
+
+struct Particle {
+    float r[3], v[3];
+};
+
+struct Rigid {
+    float Iinv[6],            /* moment of inertia            6        */
+        mass,                 /* mass of the solid            7        */
+        com[3],               /* [c]enter [o]f [m]ass         10       */
+        v[3], om[3],          /* linear and angular velocity  13 16    */
+        e0[3], e1[3], e2[3],  /* local referential            19 22 25 */
+        fo[3], to[3],         /* force, torque                28 31    */
+        id;                   /* id of the solid              32       */
+};
+
+struct Force {
+    float f[3];
+};
+
+struct Momentum {
+    float P[3], L[3]; /* linear and angular momentum */
+};
+
+struct Positioncp {
+    float rc[3]; /* current position  */
+    float rp[3]; /* previous position */
+};
+
+typedef Sarray<int, 26>       int26;
+typedef Sarray<int, 27>       int27;
+
+typedef Sarray<int*, 26>     intp26;
+typedef Sarray<Particle*, 26> Pap26;
+typedef Sarray<Force*,    26> Fop26;
+typedef Sarray<Momentum*, 26> Mop26;
+typedef Sarray<Positioncp*, 26> Pocpp26;
+
+/* particles wrap */
+struct PaWrap {
+    int n;
+    const Particle *pp;
+};
+
+/* forces wrap */
+struct FoWrap {
+    int n;
+    Force *ff;
+};
+/* end src/inc/type.h */
+/* begin src/inc/def.h */
+/* solvent colors */
+#define XMACRO_COLOR(_)                         \
+    _(BLUE)                                     \
+    _(RED)
+
+#define ENUM_COLOR(a) a##_COLOR
+#define make_enum_color(a) ENUM_COLOR(a) ,
+#ifndef UDX_DEF_ENUMS_DEFINED
+#define UDX_DEF_ENUMS_DEFINED
+enum {
+    XMACRO_COLOR(make_enum_color)
+    N_COLOR
+};
+#undef make_enum_color
+
+enum {
+    /* wall margins */
+    XWM = 6,
+    YWM = 6,
+    ZWM = 6,
+
+    SAFETY_FACTOR_MAXP = 3,
+
+    /* maximum number of particles per solid */
+    MAX_PSOLID_NUM = 12000,
+
+    /* maximum number of solids per node */
+    MAX_SOLIDS = 100,
+
+    /* maximum number of object types (solid, rbc, ...) */
+    MAX_MBR_TYPES = 2,
+    MAX_RIG_TYPES = 2,
+    MAX_OBJ_TYPES = MAX_MBR_TYPES + MAX_RIG_TYPES,
+
+    /* maximum number density of particles of the objects */
+    MAX_OBJ_DENSITY = 30,
+
+    /* maximum number of red blood cells per node */
+    MAX_CELL_NUM = 1500,
+
+    /* maximum texture size in bytes */
+    MAX_TEXO_SIZE = 100000000,
+
+    /* safety factor for dpd halo interactions */
+    HSAFETY_FACTOR = 10,
+
+    /* safety factor for odist fragments */
+    ODSTR_FACTOR = 3,
+};
+#endif
+
+/* for the spring forces r = min(lmax*RBC_SPRING_CAP, r) */
+#define RBC_SPRING_CAP (0.99)
+/* end src/inc/def.h */
 /* begin src/inc/dev.h */
 /* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
@@ -30024,7 +37492,38 @@ void flu_build_cells(/**/ FluQuants *q) {
 #define DzeroA(P, n)   DsetA(P, 0, n)
 /* end src/inc/dev.h */
 
-/* already included: src/d/api.h */
+/* begin src/d/api.h */
+#pragma once
+
+namespace d {  /* a wrapper for device API */
+typedef int Stream_t; /* TODO: streams are not supported */
+enum {MemcpyHostToHost, MemcpyHostToDevice,
+      MemcpyDeviceToHost, MemcpyDeviceToDevice,
+      MemcpyDefault};
+
+// tag::more[]
+const char *emsg();
+int alloc_pinned(void **pHost, size_t size);
+int is_device_pointer(const void *ptr);
+// end::more[]
+
+// tag::api[]
+int GetSymbolAddress(void **devPtr, const void *symbol);
+int Malloc(void **p, size_t);
+int MemcpyToSymbol(const void *symbol, const void *src, size_t count, size_t offset=0, int kind=MemcpyHostToDevice);
+int MemcpyFromSymbol(void *dst, const void *symbol, size_t count, size_t offset=0, int kind=MemcpyDeviceToHost);
+int HostGetDevicePointer(void **pDevice, void *pHost, unsigned int flags);
+int Memcpy (void *dst, const void *src, size_t count, int kind);
+int MemsetAsync (void *devPtr, int value, size_t count, Stream_t stream=0);
+int Memset (void *devPtr, int value, size_t count);
+int MemcpyAsync (void * dst, const void * src, size_t count, int kind, Stream_t stream = 0);
+int Free (void *devPtr);
+int FreeHost (void *hstPtr);
+int DeviceSynchronize (void);
+int PeekAtLastError(void);
+// end::api[]
+}
+/* end src/d/api.h */
 /* begin src/d/ker.h */
 #if   defined(DEV_CUDA)
 /* begin src/d/cuda/ker.h */
@@ -30124,7 +37623,16 @@ void error_print_stack();
 /* [k]ernel [l]aunch macros */
 
 #if    defined(KL_RELEASE)
-/* already included: src/utils/kl/release.h */
+/* begin src/utils/kl/release.h */
+#define KL_BEFORE(s, C) if (!kl::safe(ESC C)) continue;
+#define KL_CALL(F, C, A) F<<<ESC C>>>A
+#define KL_AFTER(s)
+
+#ifndef UDX_KL_RELEASE_FUNCTIONS_DEFINED
+#define UDX_KL_RELEASE_FUNCTIONS_DEFINED
+namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
+#endif
+/* end src/utils/kl/release.h */
 #elif  defined(KL_NONE)
 /* begin src/utils/kl/none.h */
 #define KL_BEFORE(s, C)
@@ -30149,7 +37657,18 @@ namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
   #error KL_* is undefined
 #endif
 
-/* already included: src/utils/kl/common.h */
+/* begin src/utils/kl/common.h */
+namespace kl {
+#pragma once
+
+inline int safe0(dim3 i, dim3 j) {
+    msg(i.x, i.y, i.z,   j.x, j.y, j.z);
+    return i.x>0 && i.y>0 && i.z>0   &&   j.x>0 && j.y>0 && j.z>0;
+}
+inline int safe(dim3 i, dim3 j)                    { return safe0(i, j); }
+inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
+}
+/* end src/utils/kl/common.h */
 /* begin src/utils/kl/macro.h */
 #define ESC(...) __VA_ARGS__
 #define KL(F, C, A)                             \
@@ -30263,11 +37782,400 @@ void rnd_fin(RNDunif *r);                                   // <3>
 float rnd_get(RNDunif *r);                                  // <4>
 // end::interface[]
 /* end src/math/rnd/imp.h */
-/* already included: src/math/rnd/dev.h */
-/* already included: src/math/dev.h */
+/* begin src/math/rnd/dev.h */
+#pragma once
 
-/* already included: src/pair/type.h */
-/* already included: src/pair/dev.h */
+namespace rnd {
+/* random number from the ArcSine distribution on [-sqrt(2),sqrt(2)]
+   mean = 0, variance = 1 */
+
+// passes of logistic map
+static __const__ int N = 18;
+// spacing coefficints for low discrepancy numbers
+static __const__ float gold   = 0.6180339887498948482;
+static __const__ float silver = 0.4142135623730950488;
+static __const__ float bronze = 0.00008877875787352212838853023;
+static __const__ float tin    = 0.00004602357186447026756768986;
+static __const__ float sqrt2 = 1.41421356237309514547;
+
+/************************* Trunk generator ***********************
+ * Make one global random number per each timestep
+ * cite G. Marsaglia
+ * passes BigCrush
+ *****************************************************************/
+
+/************************* Branch generator **********************
+ * Make one random number per pair of particles per timestep
+ * Based on the Logistic map on interval [-1,1]
+ * each branch no weaker than trunk
+ * zero dependency between branches
+ *****************************************************************/
+
+// floating point version of LCG
+__inline__ __device__ float rem( float r ) {
+    return r - floorf( r );
+}
+
+// FMA wrapper for the convenience of switching rouding modes
+__inline__ __device__ float FMA( float x, float y, float z ) {
+    return __fmaf_rz( x, y, z );
+}
+
+// logistic rounds
+// <3> : 4 FMA + 1 MUL
+// <2> : 2 FMA + 1 MUL
+// <1> : 1 FMA + 1 MUL
+
+template<int N> __inline__ __device__ float __logistic_core( float x )
+{
+    float x2 = x * x;
+    float r = FMA( FMA( 8.0, x2, -8.0 ), x2, 1.0 );
+    return __logistic_core < N - 2 > ( r );
+}
+
+template<> __inline__ __device__ float __logistic_core<1>( float x ) {
+    return FMA( 2.0 * x, x, -1.0 );
+}
+
+template<> __inline__ __device__ float __logistic_core<0>( float x ) {
+    return x;
+}
+
+inline __device__ float mean0var1ii( float seed, int u, int v )
+{
+    float p = rem( ( ( u & 0x3FF ) * gold ) + u * bronze + ( ( v & 0x3FF ) * silver ) + v * tin ); // safe for large u or v
+    float l = __logistic_core<N>( seed - p );
+    return l * sqrt2;
+}
+
+inline __device__ float mean0var1uu( float seed, uint u, uint v )
+{
+    // 7 FLOPS
+    float p = rem( ( ( u & 0x3FFU ) * gold ) + u * bronze + ( ( v & 0x3FFU ) * silver ) + v * tin ); // safe for large u or v
+    // 45+1 FLOPS
+    float l = __logistic_core<N>( seed - p );
+    // 1 FLOP
+    return l * sqrt2;
+}
+
+}
+/* end src/math/rnd/dev.h */
+/* begin src/math/dev.h */
+/* use templates here because we might have mixed float/double */
+
+#define _HD_ __host__ __device__
+
+#pragma once
+
+template <typename T1, typename T2>
+_HD_ void scal(const T1 a, /*io*/ T2 *b) {
+    b->x *= a;
+    b->y *= a;
+    b->z *= a;
+}
+
+template <typename T1, typename T2>
+_HD_ void add(const T1 *a, /*io*/ T2 *b) {
+    b->x += a->x;
+    b->y += a->y;
+    b->z += a->z;
+}
+
+template <typename T1, typename T2, typename T3>
+_HD_ void diff(const T1 *a, const T2 *b, /**/ T3 *c) {
+    c->x = a->x - b->x;
+    c->y = a->y - b->y;
+    c->z = a->z - b->z;
+}
+
+template <typename T1, typename T2, typename T3>
+_HD_ T1 dot(const T2 *a, const T3 *b) {
+    return a->x * b->x + a->y * b->y + a->z * b->z;
+}
+
+template <typename T1, typename T2, typename T3>
+_HD_ void cross(const T1 *a, const T2 *b, /**/ T3 *c) {
+    c->x = a->y * b->z - a->z * b->y;
+    c->y = a->z * b->x - a->x * b->z;
+    c->z = a->x * b->y - a->y * b->x;
+}
+
+template <typename T1, typename T2, typename T3>
+_HD_ void scalmult(const T1 *a, const T2 x, /**/ const T3 *b) {
+    b->x = a->x * x;
+    b->y = a->y * x;
+    b->z = a->z * x;
+}
+
+
+template <typename T1, typename T2, typename T3, typename T4>
+_HD_ void apxb(const T1 *a, const T2 x, const T3 *b, /**/ T4 *c) {
+    c->x = a->x + x * b->x;
+    c->y = a->y + x * b->y;
+    c->z = a->z + x * b->z;
+}
+
+template <typename T1, typename T2, typename T3>
+_HD_ void axpy(const T1 a, const T2 *x, /*io*/ T3 *y) {
+    y->x += a * x->x;
+    y->y += a * x->y;
+    y->z += a * x->z;
+}
+/* end src/math/dev.h */
+
+/* begin src/pair/type.h */
+#pragma once
+
+/* maximum of pairwise dpd parameters */
+enum {
+    MAX_PAR = (N_COLOR * (N_COLOR + 1)) / 2
+};
+
+
+struct PairDPD {
+    float a, g, s, spow;
+};
+
+struct PairDPDC {
+    int ncolors;
+    float a[MAX_PAR], g[MAX_PAR], s[MAX_PAR], spow;
+};
+
+/* mirrored */
+struct PairDPDCM {
+    int ncolors;
+    float a[N_COLOR], g[N_COLOR], s[N_COLOR], spow;
+};
+
+struct PairDPDLJ {
+    float a, g, s, spow;
+    float ljs, lje;
+};
+
+struct PairAdhesion {
+    float k1, k2;
+};
+
+struct PairPa {
+    float x, y, z;
+    float vx, vy, vz;
+    /* optional fields */
+    int color;
+};
+
+struct PairFo {
+    float x, y, z;
+};
+
+struct PairSFo {
+    float x, y, z;
+    /* stress */
+    float sxx, syy, szz, sxy, sxz, syz;
+};
+/* end src/pair/type.h */
+/* begin src/pair/dev.h */
+#pragma once
+
+#define _S_ static __device__
+#define _I_ static __device__
+
+_S_ float cap(float x, float lo, float hi) {
+    if      (x > hi) return hi;
+    else if (x < lo) return lo;
+    else             return x;
+}
+
+static const float EPS = 1e-6;
+enum {NORM_OK, NORM_BIG, NORM_SMALL};
+_S_ int norm(/*io*/ float3 *pos, /**/ float *pr, float *pinvr) {
+    /* normalize r = [x, y, z], sets |r| and 1/|r| if not big */
+    float x, y, z, invr, r, r2;
+    x = pos->x; y = pos->y; z = pos->z;
+
+    r2 = x*x + y*y + z*z;
+    if      (r2 >= 1 )   return NORM_BIG;
+    else if (r2 < EPS) {
+        *pr = pos->x = pos->y = pos->z = 0;
+        return NORM_SMALL;
+    } else {
+        invr = rsqrtf(r2);
+        r = r2 * invr;
+        x *= invr; y *= invr; z *= invr;
+        pos->x = x; pos->y = y; pos->z = z; *pr = r; *pinvr = invr;
+        return NORM_OK;
+    }
+}
+
+_S_ float ker_wrf(float s, float x) {
+    return powf(x, s);
+}
+
+_S_ float magn_dpd(float a, float g, float s, float kpow,
+                   float rnd, float r, float ev) {
+    float wr, wc;
+    float rm, f0;
+
+    rm = max(1 - r, 0.0f);
+    wc = rm;
+    wr = ker_wrf(kpow, rm);
+
+    f0  = (-g * wr * ev + s * rnd) * wr;
+    f0 +=                        a * wc;
+    return f0;
+}
+
+_S_ float magn_lj(float s, float e, float invr) {
+    float t2, t4, t6, f;
+    t2 = s * s * invr * invr;
+    t4 = t2 * t2;
+    t6 = t4 * t2;
+    f = e * 24 * invr * t6 * (2 * t6 - 1);
+    f = cap(f, 0, 1e4);
+    return f;
+}
+
+_S_ float magn_adhesion(float k1, float k2, float r, float ev) {
+    float spring, visc;
+    spring = - k1 * r;
+    visc   = - k2 * ev;
+    return spring + visc;
+}
+
+_S_ float force_magn(const PairDPD *p, float rnd, float ev, float r, float) {
+    return magn_dpd(p->a, p->g, p->s, p->spow, rnd, r, ev);
+}
+
+_S_ float force_magn(const PairDPDLJ *p, float rnd, float ev, float r, float invr) {
+    float f;
+    f  = magn_dpd(p->a, p->g, p->s, p->spow, rnd, r, ev);
+    f += magn_lj(p->ljs, p->lje, invr);
+    return f;
+}
+
+_S_ float force_magn(const PairAdhesion *p, float, float ev, float r, float) {
+    return magn_adhesion(p->k1, p->k2, r, ev);
+}
+
+_S_ void magn2fo(float f0, float3 er, float3 dr, /**/ PairFo *f) {
+    f->x = f0 * er.x;
+    f->y = f0 * er.y;
+    f->z = f0 * er.z;
+}
+
+_S_ void magn2fo(float f0, float3 er, float3 dr, /**/ PairSFo *f) {
+    f->x = f0 * er.x;
+    f->y = f0 * er.y;
+    f->z = f0 * er.z;
+
+    f->sxx = 0.5f * f->x * dr.x;
+    f->sxy = 0.5f * f->x * dr.y;
+    f->sxz = 0.5f * f->x * dr.z;
+    f->syy = 0.5f * f->y * dr.y;
+    f->syz = 0.5f * f->y * dr.z;
+    f->szz = 0.5f * f->z * dr.z;
+}
+
+_S_ void make_zero(PairFo *f) {
+    f->x = f->y = f->z = 0;
+}
+
+_S_ void make_zero(PairSFo *f) {
+    f->x = f->y = f->z = 0;
+    f->sxx = f->sxy = f->sxz = 0;
+    f->syy = f->syz = f->szz = 0;
+}
+
+// tag::int[]
+template <typename Param, typename Fo>
+_I_ void pair_force(const Param *p, PairPa a, PairPa b, float rnd, /**/ Fo *f)
+// end::int[]
+{
+    float r, invr, ev, f0;
+    float3 dr, er, dv;
+    int vnstat; /* vector normalization status */
+
+    dr.x = a.x - b.x;
+    dr.y = a.y - b.y;
+    dr.z = a.z - b.z;
+
+    dv.x = a.vx - b.vx;
+    dv.y = a.vy - b.vy;
+    dv.z = a.vz - b.vz;
+
+    er = dr;
+
+    vnstat = norm(/*io*/ &er, /*o*/ &r, &invr);
+    if (vnstat == NORM_BIG) {
+        make_zero(f);
+        return;
+    }
+
+    ev = dot<float>(&er, &dv);
+
+    f0 = force_magn(p, rnd, ev, r, invr);
+    magn2fo(f0, er, dr, /**/ f);
+}
+
+_S_ int colors2pid(int ca, int cb) {
+    int c0, c1;
+    c0 = ca < cb ? ca : cb;
+    c1 = ca < cb ? cb : ca;
+    return c1 * (c1+1) / 2 + c0;
+}
+
+template <typename Fo>
+_I_ void pair_force(const PairDPDC *pc, PairPa a, PairPa b, float rnd, /**/ Fo *f) {
+    PairDPD p;
+    int pid;
+    pid = colors2pid(a.color, b.color);
+    p.a = pc->a[pid];
+    p.g = pc->g[pid];
+    p.s = pc->s[pid];
+    p.spow = pc->spow;
+    pair_force(&p, a, b, rnd, /**/ f);
+}
+
+/* mirrored: parameters from particle "a" only */
+template <typename Fo>
+_I_ void pair_force(const PairDPDCM *pc, PairPa a, PairPa b, float rnd, /**/ Fo *f) {
+    PairDPD p;
+    int pid = a.color;
+    p.a = pc->a[pid];
+    p.g = pc->g[pid];
+    p.s = pc->s[pid];
+    p.spow = pc->spow;
+    pair_force(&p, a, b, rnd, /**/ f);
+}
+
+
+// tag::add[]
+_I_ void pair_add(const PairFo *b, /**/ PairFo *a)
+// end::add[]
+{
+    a->x += b->x;
+    a->y += b->y;
+    a->z += b->z;
+}
+
+// tag::add[]
+_I_ void pair_add(const PairSFo *b, /**/ PairSFo *a)
+// end::add[]
+{
+    a->x += b->x;
+    a->y += b->y;
+    a->z += b->z;
+
+    a->sxx += b->sxx;
+    a->sxy += b->sxy;
+    a->sxz += b->sxz;
+    a->syy += b->syy;
+    a->syz += b->syz;
+    a->szz += b->szz;
+}
+
+#undef _S_
+#undef _I_
+/* end src/pair/dev.h */
 /* begin src/pair/imp.h */
 struct PairParams;
 struct Config;
@@ -31024,8 +38932,78 @@ void flocal_apply(const PairParams *params, int3 L, int n, BPaArray parray, cons
 #include <stdio.h>
 #include <assert.h>
 
-/* already included: src/inc/conf.h */
-/* already included: src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
 
 /* begin src/d/ker.h */
 #if   defined(DEV_CUDA)
@@ -31143,12 +39121,237 @@ static int   warpSize = 1;
   #error DEV_* is undefined
 #endif
 /* end src/d/q.h */
-/* already included: src/d/api.h */
+/* begin src/d/api.h */
+#pragma once
 
-/* already included: src/frag/dev.h */
-/* already included: src/frag/imp.h */
+namespace d {  /* a wrapper for device API */
+typedef int Stream_t; /* TODO: streams are not supported */
+enum {MemcpyHostToHost, MemcpyHostToDevice,
+      MemcpyDeviceToHost, MemcpyDeviceToDevice,
+      MemcpyDefault};
 
-/* already included: src/inc/def.h */
+// tag::more[]
+const char *emsg();
+int alloc_pinned(void **pHost, size_t size);
+int is_device_pointer(const void *ptr);
+// end::more[]
+
+// tag::api[]
+int GetSymbolAddress(void **devPtr, const void *symbol);
+int Malloc(void **p, size_t);
+int MemcpyToSymbol(const void *symbol, const void *src, size_t count, size_t offset=0, int kind=MemcpyHostToDevice);
+int MemcpyFromSymbol(void *dst, const void *symbol, size_t count, size_t offset=0, int kind=MemcpyDeviceToHost);
+int HostGetDevicePointer(void **pDevice, void *pHost, unsigned int flags);
+int Memcpy (void *dst, const void *src, size_t count, int kind);
+int MemsetAsync (void *devPtr, int value, size_t count, Stream_t stream=0);
+int Memset (void *devPtr, int value, size_t count);
+int MemcpyAsync (void * dst, const void * src, size_t count, int kind, Stream_t stream = 0);
+int Free (void *devPtr);
+int FreeHost (void *hstPtr);
+int DeviceSynchronize (void);
+int PeekAtLastError(void);
+// end::api[]
+}
+/* end src/d/api.h */
+
+/* begin src/frag/dev.h */
+#ifdef FRAG_HOST
+#ifndef UDX_FRAG_HOST_DEFINED
+#define UDX_FRAG_HOST_DEFINED
+#define UDX_FRAG_BODY
+#endif
+#else
+#ifndef UDX_FRAG_DEV_DEFINED
+#define UDX_FRAG_DEV_DEFINED
+#define UDX_FRAG_BODY
+#endif
+#endif
+
+#ifdef UDX_FRAG_BODY
+#ifdef FRAG_HOST
+  #define _I_
+  #define _S_ static
+  #define BEGIN namespace frag_hst {
+  #define END }
+#else
+  #define _I_ static __device__
+  #define _S_ static __device__
+  #define BEGIN namespace frag_dev {
+  #define END }
+#endif
+
+BEGIN
+
+enum {BAD_DIR = -2};
+
+/* fragment id to direction                    */
+
+_I_ int i2dx(int i) { return (i     + 2) % 3 - 1; }
+_I_ int i2dy(int i) { return (i / 3 + 2) % 3 - 1; }
+_I_ int i2dz(int i) { return (i / 9 + 2) % 3 - 1; }
+
+_I_ void i2d3(int i, /**/ int d[3]) {
+    enum {X, Y, Z};
+    d[X] = i2dx(i);
+    d[Y] = i2dy(i);
+    d[Z] = i2dz(i);
+}
+
+/* direction to fragment id                    */
+_I_ int d2i(int x, int y, int z) {
+    return    ((x + 2) % 3)
+        + 3 * ((y + 2) % 3)
+        + 9 * ((z + 2) % 3);
+}
+
+_I_ int d32i(const int d[3])  {
+    enum {X, Y, Z};
+    return d2i(d[X], d[Y], d[Z]);
+}
+
+/* number of cells in direction x, y, z        */
+_S_ int ncell0(int3 L, int x, int y, int z) {
+    int nx, ny, nz;
+    nx = x ? 1 : L.x;
+    ny = y ? 1 : L.y;
+    nz = z ? 1 : L.z;
+    return nx * ny * nz;
+}
+
+/* number of cells in fragment i               */
+_I_ int ncell(int3 L, int i) {
+    int x, y, z;
+    x = i2dx(i);
+    y = i2dy(i);
+    z = i2dz(i);
+    return ncell0(L, x, y, z);
+}
+
+/* anti direction to fragment id                */
+_I_ int antid2i(int x, int y, int z) {
+    return d2i(-x, -y, -z);
+}
+
+/* anti fragment                                */
+_I_ int anti(int i) {
+    int x, y, z;
+    x = i2dx(i);
+    y = i2dy(i);
+    z = i2dz(i);
+    return antid2i(x, y, z);
+}
+
+/* [f]ragment [id] : where is `i' in sorted a[27]? */
+_I_ int frag_get_fid(const int a[], const int i) {
+    int k1, k3, k9;
+    k9 = 9 * ((i >= a[9])           + (i >= a[18]));
+    k3 = 3 * ((i >= a[k9 + 3])      + (i >= a[k9 + 6]));
+    k1 =      (i >= a[k9 + k3 + 1]) + (i >= a[k9 + k3 + 2]);
+    return k9 + k3 + k1;
+}
+
+END
+
+#undef _I_
+#undef _S_
+#undef BEGIN
+#undef END
+
+#undef UDX_FRAG_BODY
+#endif
+/* end src/frag/dev.h */
+/* begin src/frag/imp.h */
+#pragma once
+
+enum {frag_bulk = 26};
+
+struct int3;
+
+namespace frag_hst {
+
+// tag::i2d[]
+int i2dx(int i);                 // <1>
+int i2dy(int i);                 // <2>
+int i2dz(int i);                 // <3>
+void i2d3(int i, /**/ int d[3]); // <4>
+// end::i2d[]
+
+// tag::d2i[]
+int d2i(int x, int y, int z); // <1>
+int d32i(const int d[3]);     // <2>
+// end::d2i[]
+
+// tag::ncell[]
+int ncell(int3 L, int i); // <1>
+// end::ncell[]
+
+// tag::anti[]
+int antid2i(int x, int y, int z); // <1>
+int anti(int i);                  // <2>
+// end::anti[]
+
+// tag::hst[]
+void estimates(int3 L, int nfrags, float maxd, /**/ int *cap); // <1>
+// end::hst[]
+
+} // frag_hst
+/* end src/frag/imp.h */
+
+/* begin src/inc/def.h */
+/* solvent colors */
+#define XMACRO_COLOR(_)                         \
+    _(BLUE)                                     \
+    _(RED)
+
+#define ENUM_COLOR(a) a##_COLOR
+#define make_enum_color(a) ENUM_COLOR(a) ,
+#ifndef UDX_DEF_ENUMS_DEFINED
+#define UDX_DEF_ENUMS_DEFINED
+enum {
+    XMACRO_COLOR(make_enum_color)
+    N_COLOR
+};
+#undef make_enum_color
+
+enum {
+    /* wall margins */
+    XWM = 6,
+    YWM = 6,
+    ZWM = 6,
+
+    SAFETY_FACTOR_MAXP = 3,
+
+    /* maximum number of particles per solid */
+    MAX_PSOLID_NUM = 12000,
+
+    /* maximum number of solids per node */
+    MAX_SOLIDS = 100,
+
+    /* maximum number of object types (solid, rbc, ...) */
+    MAX_MBR_TYPES = 2,
+    MAX_RIG_TYPES = 2,
+    MAX_OBJ_TYPES = MAX_MBR_TYPES + MAX_RIG_TYPES,
+
+    /* maximum number density of particles of the objects */
+    MAX_OBJ_DENSITY = 30,
+
+    /* maximum number of red blood cells per node */
+    MAX_CELL_NUM = 1500,
+
+    /* maximum texture size in bytes */
+    MAX_TEXO_SIZE = 100000000,
+
+    /* safety factor for dpd halo interactions */
+    HSAFETY_FACTOR = 10,
+
+    /* safety factor for odist fragments */
+    ODSTR_FACTOR = 3,
+};
+#endif
+
+/* for the spring forces r = min(lmax*RBC_SPRING_CAP, r) */
+#define RBC_SPRING_CAP (0.99)
+/* end src/inc/def.h */
 /* begin src/utils/cc.h */
 /* [c]uda [c]heck macros */
 
@@ -31224,7 +39427,62 @@ void error_abort();
 void error_print_stack();
 /* end src/utils/error.h */
 
-/* already included: src/inc/type.h */
+/* begin src/inc/type.h */
+#pragma once
+
+template <typename T, int N>
+struct Sarray { /* [s]tatic array */
+    T d[N];
+};
+
+struct Particle {
+    float r[3], v[3];
+};
+
+struct Rigid {
+    float Iinv[6],            /* moment of inertia            6        */
+        mass,                 /* mass of the solid            7        */
+        com[3],               /* [c]enter [o]f [m]ass         10       */
+        v[3], om[3],          /* linear and angular velocity  13 16    */
+        e0[3], e1[3], e2[3],  /* local referential            19 22 25 */
+        fo[3], to[3],         /* force, torque                28 31    */
+        id;                   /* id of the solid              32       */
+};
+
+struct Force {
+    float f[3];
+};
+
+struct Momentum {
+    float P[3], L[3]; /* linear and angular momentum */
+};
+
+struct Positioncp {
+    float rc[3]; /* current position  */
+    float rp[3]; /* previous position */
+};
+
+typedef Sarray<int, 26>       int26;
+typedef Sarray<int, 27>       int27;
+
+typedef Sarray<int*, 26>     intp26;
+typedef Sarray<Particle*, 26> Pap26;
+typedef Sarray<Force*,    26> Fop26;
+typedef Sarray<Momentum*, 26> Mop26;
+typedef Sarray<Positioncp*, 26> Pocpp26;
+
+/* particles wrap */
+struct PaWrap {
+    int n;
+    const Particle *pp;
+};
+
+/* forces wrap */
+struct FoWrap {
+    int n;
+    Force *ff;
+};
+/* end src/inc/type.h */
 /* begin src/inc/dev.h */
 /* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
@@ -31265,9 +39523,321 @@ void error_print_stack();
 #define DzeroA(P, n)   DsetA(P, 0, n)
 /* end src/inc/dev.h */
 
-/* already included: src/math/dev.h */
-/* already included: src/pair/type.h */
-/* already included: src/pair/dev.h */
+/* begin src/math/dev.h */
+/* use templates here because we might have mixed float/double */
+
+#define _HD_ __host__ __device__
+
+#pragma once
+
+template <typename T1, typename T2>
+_HD_ void scal(const T1 a, /*io*/ T2 *b) {
+    b->x *= a;
+    b->y *= a;
+    b->z *= a;
+}
+
+template <typename T1, typename T2>
+_HD_ void add(const T1 *a, /*io*/ T2 *b) {
+    b->x += a->x;
+    b->y += a->y;
+    b->z += a->z;
+}
+
+template <typename T1, typename T2, typename T3>
+_HD_ void diff(const T1 *a, const T2 *b, /**/ T3 *c) {
+    c->x = a->x - b->x;
+    c->y = a->y - b->y;
+    c->z = a->z - b->z;
+}
+
+template <typename T1, typename T2, typename T3>
+_HD_ T1 dot(const T2 *a, const T3 *b) {
+    return a->x * b->x + a->y * b->y + a->z * b->z;
+}
+
+template <typename T1, typename T2, typename T3>
+_HD_ void cross(const T1 *a, const T2 *b, /**/ T3 *c) {
+    c->x = a->y * b->z - a->z * b->y;
+    c->y = a->z * b->x - a->x * b->z;
+    c->z = a->x * b->y - a->y * b->x;
+}
+
+template <typename T1, typename T2, typename T3>
+_HD_ void scalmult(const T1 *a, const T2 x, /**/ const T3 *b) {
+    b->x = a->x * x;
+    b->y = a->y * x;
+    b->z = a->z * x;
+}
+
+
+template <typename T1, typename T2, typename T3, typename T4>
+_HD_ void apxb(const T1 *a, const T2 x, const T3 *b, /**/ T4 *c) {
+    c->x = a->x + x * b->x;
+    c->y = a->y + x * b->y;
+    c->z = a->z + x * b->z;
+}
+
+template <typename T1, typename T2, typename T3>
+_HD_ void axpy(const T1 a, const T2 *x, /*io*/ T3 *y) {
+    y->x += a * x->x;
+    y->y += a * x->y;
+    y->z += a * x->z;
+}
+/* end src/math/dev.h */
+/* begin src/pair/type.h */
+#pragma once
+
+/* maximum of pairwise dpd parameters */
+enum {
+    MAX_PAR = (N_COLOR * (N_COLOR + 1)) / 2
+};
+
+
+struct PairDPD {
+    float a, g, s, spow;
+};
+
+struct PairDPDC {
+    int ncolors;
+    float a[MAX_PAR], g[MAX_PAR], s[MAX_PAR], spow;
+};
+
+/* mirrored */
+struct PairDPDCM {
+    int ncolors;
+    float a[N_COLOR], g[N_COLOR], s[N_COLOR], spow;
+};
+
+struct PairDPDLJ {
+    float a, g, s, spow;
+    float ljs, lje;
+};
+
+struct PairAdhesion {
+    float k1, k2;
+};
+
+struct PairPa {
+    float x, y, z;
+    float vx, vy, vz;
+    /* optional fields */
+    int color;
+};
+
+struct PairFo {
+    float x, y, z;
+};
+
+struct PairSFo {
+    float x, y, z;
+    /* stress */
+    float sxx, syy, szz, sxy, sxz, syz;
+};
+/* end src/pair/type.h */
+/* begin src/pair/dev.h */
+#pragma once
+
+#define _S_ static __device__
+#define _I_ static __device__
+
+_S_ float cap(float x, float lo, float hi) {
+    if      (x > hi) return hi;
+    else if (x < lo) return lo;
+    else             return x;
+}
+
+static const float EPS = 1e-6;
+enum {NORM_OK, NORM_BIG, NORM_SMALL};
+_S_ int norm(/*io*/ float3 *pos, /**/ float *pr, float *pinvr) {
+    /* normalize r = [x, y, z], sets |r| and 1/|r| if not big */
+    float x, y, z, invr, r, r2;
+    x = pos->x; y = pos->y; z = pos->z;
+
+    r2 = x*x + y*y + z*z;
+    if      (r2 >= 1 )   return NORM_BIG;
+    else if (r2 < EPS) {
+        *pr = pos->x = pos->y = pos->z = 0;
+        return NORM_SMALL;
+    } else {
+        invr = rsqrtf(r2);
+        r = r2 * invr;
+        x *= invr; y *= invr; z *= invr;
+        pos->x = x; pos->y = y; pos->z = z; *pr = r; *pinvr = invr;
+        return NORM_OK;
+    }
+}
+
+_S_ float ker_wrf(float s, float x) {
+    return powf(x, s);
+}
+
+_S_ float magn_dpd(float a, float g, float s, float kpow,
+                   float rnd, float r, float ev) {
+    float wr, wc;
+    float rm, f0;
+
+    rm = max(1 - r, 0.0f);
+    wc = rm;
+    wr = ker_wrf(kpow, rm);
+
+    f0  = (-g * wr * ev + s * rnd) * wr;
+    f0 +=                        a * wc;
+    return f0;
+}
+
+_S_ float magn_lj(float s, float e, float invr) {
+    float t2, t4, t6, f;
+    t2 = s * s * invr * invr;
+    t4 = t2 * t2;
+    t6 = t4 * t2;
+    f = e * 24 * invr * t6 * (2 * t6 - 1);
+    f = cap(f, 0, 1e4);
+    return f;
+}
+
+_S_ float magn_adhesion(float k1, float k2, float r, float ev) {
+    float spring, visc;
+    spring = - k1 * r;
+    visc   = - k2 * ev;
+    return spring + visc;
+}
+
+_S_ float force_magn(const PairDPD *p, float rnd, float ev, float r, float) {
+    return magn_dpd(p->a, p->g, p->s, p->spow, rnd, r, ev);
+}
+
+_S_ float force_magn(const PairDPDLJ *p, float rnd, float ev, float r, float invr) {
+    float f;
+    f  = magn_dpd(p->a, p->g, p->s, p->spow, rnd, r, ev);
+    f += magn_lj(p->ljs, p->lje, invr);
+    return f;
+}
+
+_S_ float force_magn(const PairAdhesion *p, float, float ev, float r, float) {
+    return magn_adhesion(p->k1, p->k2, r, ev);
+}
+
+_S_ void magn2fo(float f0, float3 er, float3 dr, /**/ PairFo *f) {
+    f->x = f0 * er.x;
+    f->y = f0 * er.y;
+    f->z = f0 * er.z;
+}
+
+_S_ void magn2fo(float f0, float3 er, float3 dr, /**/ PairSFo *f) {
+    f->x = f0 * er.x;
+    f->y = f0 * er.y;
+    f->z = f0 * er.z;
+
+    f->sxx = 0.5f * f->x * dr.x;
+    f->sxy = 0.5f * f->x * dr.y;
+    f->sxz = 0.5f * f->x * dr.z;
+    f->syy = 0.5f * f->y * dr.y;
+    f->syz = 0.5f * f->y * dr.z;
+    f->szz = 0.5f * f->z * dr.z;
+}
+
+_S_ void make_zero(PairFo *f) {
+    f->x = f->y = f->z = 0;
+}
+
+_S_ void make_zero(PairSFo *f) {
+    f->x = f->y = f->z = 0;
+    f->sxx = f->sxy = f->sxz = 0;
+    f->syy = f->syz = f->szz = 0;
+}
+
+// tag::int[]
+template <typename Param, typename Fo>
+_I_ void pair_force(const Param *p, PairPa a, PairPa b, float rnd, /**/ Fo *f)
+// end::int[]
+{
+    float r, invr, ev, f0;
+    float3 dr, er, dv;
+    int vnstat; /* vector normalization status */
+
+    dr.x = a.x - b.x;
+    dr.y = a.y - b.y;
+    dr.z = a.z - b.z;
+
+    dv.x = a.vx - b.vx;
+    dv.y = a.vy - b.vy;
+    dv.z = a.vz - b.vz;
+
+    er = dr;
+
+    vnstat = norm(/*io*/ &er, /*o*/ &r, &invr);
+    if (vnstat == NORM_BIG) {
+        make_zero(f);
+        return;
+    }
+
+    ev = dot<float>(&er, &dv);
+
+    f0 = force_magn(p, rnd, ev, r, invr);
+    magn2fo(f0, er, dr, /**/ f);
+}
+
+_S_ int colors2pid(int ca, int cb) {
+    int c0, c1;
+    c0 = ca < cb ? ca : cb;
+    c1 = ca < cb ? cb : ca;
+    return c1 * (c1+1) / 2 + c0;
+}
+
+template <typename Fo>
+_I_ void pair_force(const PairDPDC *pc, PairPa a, PairPa b, float rnd, /**/ Fo *f) {
+    PairDPD p;
+    int pid;
+    pid = colors2pid(a.color, b.color);
+    p.a = pc->a[pid];
+    p.g = pc->g[pid];
+    p.s = pc->s[pid];
+    p.spow = pc->spow;
+    pair_force(&p, a, b, rnd, /**/ f);
+}
+
+/* mirrored: parameters from particle "a" only */
+template <typename Fo>
+_I_ void pair_force(const PairDPDCM *pc, PairPa a, PairPa b, float rnd, /**/ Fo *f) {
+    PairDPD p;
+    int pid = a.color;
+    p.a = pc->a[pid];
+    p.g = pc->g[pid];
+    p.s = pc->s[pid];
+    p.spow = pc->spow;
+    pair_force(&p, a, b, rnd, /**/ f);
+}
+
+
+// tag::add[]
+_I_ void pair_add(const PairFo *b, /**/ PairFo *a)
+// end::add[]
+{
+    a->x += b->x;
+    a->y += b->y;
+    a->z += b->z;
+}
+
+// tag::add[]
+_I_ void pair_add(const PairSFo *b, /**/ PairSFo *a)
+// end::add[]
+{
+    a->x += b->x;
+    a->y += b->y;
+    a->z += b->z;
+
+    a->sxx += b->sxx;
+    a->sxy += b->sxy;
+    a->sxz += b->sxz;
+    a->syy += b->syy;
+    a->syz += b->syz;
+    a->szz += b->szz;
+}
+
+#undef _S_
+#undef _I_
+/* end src/pair/dev.h */
 /* begin src/pair/imp.h */
 struct PairParams;
 struct Config;
@@ -31310,7 +39880,16 @@ void pair_get_view_adhesion(const PairParams*, PairAdhesion*);
 /* [k]ernel [l]aunch macros */
 
 #if    defined(KL_RELEASE)
-/* already included: src/utils/kl/release.h */
+/* begin src/utils/kl/release.h */
+#define KL_BEFORE(s, C) if (!kl::safe(ESC C)) continue;
+#define KL_CALL(F, C, A) F<<<ESC C>>>A
+#define KL_AFTER(s)
+
+#ifndef UDX_KL_RELEASE_FUNCTIONS_DEFINED
+#define UDX_KL_RELEASE_FUNCTIONS_DEFINED
+namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
+#endif
+/* end src/utils/kl/release.h */
 #elif  defined(KL_NONE)
 /* begin src/utils/kl/none.h */
 #define KL_BEFORE(s, C)
@@ -31335,7 +39914,18 @@ namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
   #error KL_* is undefined
 #endif
 
-/* already included: src/utils/kl/common.h */
+/* begin src/utils/kl/common.h */
+namespace kl {
+#pragma once
+
+inline int safe0(dim3 i, dim3 j) {
+    msg(i.x, i.y, i.z,   j.x, j.y, j.z);
+    return i.x>0 && i.y>0 && i.z>0   &&   j.x>0 && j.y>0 && j.z>0;
+}
+inline int safe(dim3 i, dim3 j)                    { return safe0(i, j); }
+inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
+}
+/* end src/utils/kl/common.h */
 /* begin src/utils/kl/macro.h */
 #define ESC(...) __VA_ARGS__
 #define KL(F, C, A)                             \
@@ -31349,7 +39939,84 @@ namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
 /* TODO: header includes header */
 /* end src/utils/kl.h */
 
-/* already included: src/math/rnd/dev.h */
+/* begin src/math/rnd/dev.h */
+#pragma once
+
+namespace rnd {
+/* random number from the ArcSine distribution on [-sqrt(2),sqrt(2)]
+   mean = 0, variance = 1 */
+
+// passes of logistic map
+static __const__ int N = 18;
+// spacing coefficints for low discrepancy numbers
+static __const__ float gold   = 0.6180339887498948482;
+static __const__ float silver = 0.4142135623730950488;
+static __const__ float bronze = 0.00008877875787352212838853023;
+static __const__ float tin    = 0.00004602357186447026756768986;
+static __const__ float sqrt2 = 1.41421356237309514547;
+
+/************************* Trunk generator ***********************
+ * Make one global random number per each timestep
+ * cite G. Marsaglia
+ * passes BigCrush
+ *****************************************************************/
+
+/************************* Branch generator **********************
+ * Make one random number per pair of particles per timestep
+ * Based on the Logistic map on interval [-1,1]
+ * each branch no weaker than trunk
+ * zero dependency between branches
+ *****************************************************************/
+
+// floating point version of LCG
+__inline__ __device__ float rem( float r ) {
+    return r - floorf( r );
+}
+
+// FMA wrapper for the convenience of switching rouding modes
+__inline__ __device__ float FMA( float x, float y, float z ) {
+    return __fmaf_rz( x, y, z );
+}
+
+// logistic rounds
+// <3> : 4 FMA + 1 MUL
+// <2> : 2 FMA + 1 MUL
+// <1> : 1 FMA + 1 MUL
+
+template<int N> __inline__ __device__ float __logistic_core( float x )
+{
+    float x2 = x * x;
+    float r = FMA( FMA( 8.0, x2, -8.0 ), x2, 1.0 );
+    return __logistic_core < N - 2 > ( r );
+}
+
+template<> __inline__ __device__ float __logistic_core<1>( float x ) {
+    return FMA( 2.0 * x, x, -1.0 );
+}
+
+template<> __inline__ __device__ float __logistic_core<0>( float x ) {
+    return x;
+}
+
+inline __device__ float mean0var1ii( float seed, int u, int v )
+{
+    float p = rem( ( ( u & 0x3FF ) * gold ) + u * bronze + ( ( v & 0x3FF ) * silver ) + v * tin ); // safe for large u or v
+    float l = __logistic_core<N>( seed - p );
+    return l * sqrt2;
+}
+
+inline __device__ float mean0var1uu( float seed, uint u, uint v )
+{
+    // 7 FLOPS
+    float p = rem( ( ( u & 0x3FFU ) * gold ) + u * bronze + ( ( v & 0x3FFU ) * silver ) + v * tin ); // safe for large u or v
+    // 45+1 FLOPS
+    float l = __logistic_core<N>( seed - p );
+    // 1 FLOP
+    return l * sqrt2;
+}
+
+}
+/* end src/math/rnd/dev.h */
 
 /* begin src/struct/parray/type.h */
 #pragma once
@@ -31363,7 +40030,34 @@ struct PaCArray_v {
     const int *cc;   /* colors */
 };
 /* end src/struct/parray/type.h */
-/* already included: src/struct/parray/imp.h */
+/* begin src/struct/parray/imp.h */
+#pragma once
+
+struct PaArray {
+    bool colors;
+    const float *pp;
+    const int *cc;
+};
+
+struct PaArray_v;
+struct PaCArray_v;
+
+struct Particle;
+
+// tag::push[]
+void parray_push_pp(const Particle *pp, PaArray *a);
+void parray_push_cc(const int *cc, PaArray *a);
+// end::push[]
+
+// tag::get[]
+bool parray_is_colored(const PaArray *a);
+// end::get[]
+
+// tag::view[]
+void parray_get_view(const PaArray *a, PaArray_v *v);  // <1>
+void parray_get_view(const PaArray *a, PaCArray_v *v); // <2>
+// end::view[]
+/* end src/struct/parray/imp.h */
 /* begin src/struct/parray/dev.h */
 #pragma once
 
@@ -31406,11 +40100,187 @@ _I_ void parray_get(PaCArray_v a, int i, /**/ PairPa *p) // <2>
 #undef _I_
 /* end src/struct/parray/dev.h */
 
-/* already included: src/struct/farray/type.h */
-/* already included: src/struct/farray/imp.h */
-/* already included: src/struct/farray/dev.h */
+/* begin src/struct/farray/type.h */
+#pragma once
 
-/* already included: src/flu/type.h */
+struct FoArray_v {
+    float *ff;
+};
+
+struct FoSArray_v {
+    float *ff;
+    float *ss;
+};
+/* end src/struct/farray/type.h */
+/* begin src/struct/farray/imp.h */
+#pragma once
+
+struct FoArray {
+    bool stress;
+    float *ff;
+    float *ss; /* stress */
+};
+
+struct FoArray_v;
+struct FoSArray_v;
+
+struct Force;
+
+// tag::push[]
+void farray_push_ff(Force *ff, FoArray *a);
+void farray_push_ss(float *ss, FoArray *a);
+// end::push[]
+
+void farray_clear(FoArray *);
+
+// tag::get[]
+bool farray_has_stress(const FoArray *a);
+// end::get[]
+
+// tag::view[]
+void farray_get_view(const FoArray *a, FoArray_v *v);  // <1>
+void farray_get_view(const FoArray *a, FoSArray_v *v); // <2>
+// end::view[]
+/* end src/struct/farray/imp.h */
+/* begin src/struct/farray/dev.h */
+#pragma once
+
+#define _I_ static __device__
+#define _S_ static __device__
+
+template <int S, typename Fo, typename FA>
+_S_ void farray_add_force(const Fo *f, int i, /**/ FA a) {
+    enum {X, Y, Z};
+    float *af = a.ff + 3*i;
+    af[X] += S * f->x;
+    af[Y] += S * f->y;
+    af[Z] += S * f->z;
+}
+
+_S_ void farray_add_stress(const PairSFo *f, int i, /**/ FoSArray_v a) {
+    enum {XX, XY, XZ, YY, YZ, ZZ};
+    float *s = a.ss + 6*i;
+    s[XX] += f->sxx;
+    s[XY] += f->sxy;
+    s[XZ] += f->sxz;
+    s[YY] += f->syy;
+    s[YZ] += f->syz;
+    s[ZZ] += f->szz;
+}
+
+// tag::add[]
+template <int S>
+_I_ void farray_add(const PairFo *f, int i, /**/ FoArray_v a) // <1>
+// end::add[]
+{
+    farray_add_force<S>(f, i, /**/ a);
+}
+
+// tag::add[]
+template <int S>
+_I_ void farray_add(const PairSFo *f, int i, /**/ FoSArray_v a) // <2>
+// end::add[]
+{
+    farray_add_force<S>(f, i, /**/ a);
+    farray_add_stress(f, i, /**/ a);
+}
+
+
+template <int S, typename Fo, typename FA>
+_S_ void farray_atomic_add_force(const Fo *f, int i, /**/ FA a) {
+    enum {X, Y, Z};
+    float *af = a.ff + 3*i;
+    atomicAdd(&af[X], S * f->x);
+    atomicAdd(&af[Y], S * f->y);
+    atomicAdd(&af[Z], S * f->z);
+}
+
+_S_ void farray_atomic_add_stress(const PairSFo *f, int i, /**/ FoSArray_v a) {
+    enum {XX, XY, XZ, YY, YZ, ZZ};
+    float *s = a.ss + 6*i;
+    atomicAdd(&s[XX], f->sxx);
+    atomicAdd(&s[XY], f->sxy);
+    atomicAdd(&s[XZ], f->sxz);
+    atomicAdd(&s[YY], f->syy);
+    atomicAdd(&s[YZ], f->syz);
+    atomicAdd(&s[ZZ], f->szz);
+}
+
+// tag::atomic[]
+template <int S>
+_I_ void farray_atomic_add(const PairFo *f, int i, /**/ FoArray_v a)
+// end::atomic[]
+{
+    farray_atomic_add_force<S>(f, i, /**/ a);
+}
+
+// tag::atomic[]
+template <int S>
+_I_ void farray_atomic_add(const PairSFo *f, int i, /**/ FoSArray_v a)
+// end::atomic[]
+{
+    farray_atomic_add_force<S>(f, i, /**/ a);
+    farray_atomic_add_stress(f, i, /**/ a);
+}
+
+
+// tag::ini[]
+_I_ PairFo farray_fo0(FoArray_v)
+// end::ini[]
+{
+    PairFo f;
+    f.x = f.y = f.z = 0;
+    return f;
+}
+
+// tag::ini[]
+_I_ PairSFo farray_fo0(FoSArray_v)
+// end::ini[]
+{
+    PairSFo f;
+    f.x = f.y = f.z = 0;
+    f.sxx = f.sxy = f.sxz = 0;
+    f.syy = f.syz = f.szz = 0;
+    return f;
+}
+
+#undef _I_
+#undef _S_
+/* end src/struct/farray/dev.h */
+
+/* begin src/flu/type.h */
+#pragma once
+
+/* helpers to communicate between halo interactions and exchanger */
+
+namespace flu {
+
+enum { BULK = 0, FACE = 1, EDGE = 2, CORNER = 3 };
+
+struct LFrag { /* "local" fragment */
+    PaArray parray;
+    const int *ii; /* index */
+    int n;
+};
+
+struct RFrag { /* "remote" fragment */
+    PaArray parray;
+    const int *start;
+    int dx, dy, dz, xcells, ycells, zcells;
+    int type;
+};
+
+struct RndFrag {
+    float seed;
+    int mask;
+};
+
+typedef Sarray<LFrag,   26> LFrag26;
+typedef Sarray<RFrag,   26> RFrag26;
+typedef Sarray<RndFrag, 26> RndFrag26;
+
+} // flu
+/* end src/flu/type.h */
 
 /* begin src/fluforces/halo/imp.h */
 struct PairParams;
@@ -32107,8 +40977,78 @@ void fhalo_apply(const PairParams *params, int3 L, const flu::LFrag26 lfrags, co
 #include <cuda_fp16.h>
 #endif
 
-/* already included: src/inc/conf.h */
-/* already included: src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
 
 /* begin src/utils/error.h */
 #define ERR(fmt, ...)  do {                                     \
@@ -32188,7 +41128,62 @@ float rnd_get(RNDunif *r);                                  // <4>
 /* end src/math/rnd/imp.h */
 // #include "math/rnd/dev.h"
 
-/* already included: src/inc/type.h */
+/* begin src/inc/type.h */
+#pragma once
+
+template <typename T, int N>
+struct Sarray { /* [s]tatic array */
+    T d[N];
+};
+
+struct Particle {
+    float r[3], v[3];
+};
+
+struct Rigid {
+    float Iinv[6],            /* moment of inertia            6        */
+        mass,                 /* mass of the solid            7        */
+        com[3],               /* [c]enter [o]f [m]ass         10       */
+        v[3], om[3],          /* linear and angular velocity  13 16    */
+        e0[3], e1[3], e2[3],  /* local referential            19 22 25 */
+        fo[3], to[3],         /* force, torque                28 31    */
+        id;                   /* id of the solid              32       */
+};
+
+struct Force {
+    float f[3];
+};
+
+struct Momentum {
+    float P[3], L[3]; /* linear and angular momentum */
+};
+
+struct Positioncp {
+    float rc[3]; /* current position  */
+    float rp[3]; /* previous position */
+};
+
+typedef Sarray<int, 26>       int26;
+typedef Sarray<int, 27>       int27;
+
+typedef Sarray<int*, 26>     intp26;
+typedef Sarray<Particle*, 26> Pap26;
+typedef Sarray<Force*,    26> Fop26;
+typedef Sarray<Momentum*, 26> Mop26;
+typedef Sarray<Positioncp*, 26> Pocpp26;
+
+/* particles wrap */
+struct PaWrap {
+    int n;
+    const Particle *pp;
+};
+
+/* forces wrap */
+struct FoWrap {
+    int n;
+    Force *ff;
+};
+/* end src/inc/type.h */
 /* begin src/inc/dev.h */
 /* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
@@ -32228,14 +41223,81 @@ float rnd_get(RNDunif *r);                                  // <4>
 #define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
 #define DzeroA(P, n)   DsetA(P, 0, n)
 /* end src/inc/dev.h */
-/* already included: src/struct/parray/imp.h */
+/* begin src/struct/parray/imp.h */
+#pragma once
 
-/* already included: src/d/api.h */
+struct PaArray {
+    bool colors;
+    const float *pp;
+    const int *cc;
+};
+
+struct PaArray_v;
+struct PaCArray_v;
+
+struct Particle;
+
+// tag::push[]
+void parray_push_pp(const Particle *pp, PaArray *a);
+void parray_push_cc(const int *cc, PaArray *a);
+// end::push[]
+
+// tag::get[]
+bool parray_is_colored(const PaArray *a);
+// end::get[]
+
+// tag::view[]
+void parray_get_view(const PaArray *a, PaArray_v *v);  // <1>
+void parray_get_view(const PaArray *a, PaCArray_v *v); // <2>
+// end::view[]
+/* end src/struct/parray/imp.h */
+
+/* begin src/d/api.h */
+#pragma once
+
+namespace d {  /* a wrapper for device API */
+typedef int Stream_t; /* TODO: streams are not supported */
+enum {MemcpyHostToHost, MemcpyHostToDevice,
+      MemcpyDeviceToHost, MemcpyDeviceToDevice,
+      MemcpyDefault};
+
+// tag::more[]
+const char *emsg();
+int alloc_pinned(void **pHost, size_t size);
+int is_device_pointer(const void *ptr);
+// end::more[]
+
+// tag::api[]
+int GetSymbolAddress(void **devPtr, const void *symbol);
+int Malloc(void **p, size_t);
+int MemcpyToSymbol(const void *symbol, const void *src, size_t count, size_t offset=0, int kind=MemcpyHostToDevice);
+int MemcpyFromSymbol(void *dst, const void *symbol, size_t count, size_t offset=0, int kind=MemcpyDeviceToHost);
+int HostGetDevicePointer(void **pDevice, void *pHost, unsigned int flags);
+int Memcpy (void *dst, const void *src, size_t count, int kind);
+int MemsetAsync (void *devPtr, int value, size_t count, Stream_t stream=0);
+int Memset (void *devPtr, int value, size_t count);
+int MemcpyAsync (void * dst, const void * src, size_t count, int kind, Stream_t stream = 0);
+int Free (void *devPtr);
+int FreeHost (void *hstPtr);
+int DeviceSynchronize (void);
+int PeekAtLastError(void);
+// end::api[]
+}
+/* end src/d/api.h */
 /* begin src/utils/kl.h */
 /* [k]ernel [l]aunch macros */
 
 #if    defined(KL_RELEASE)
-/* already included: src/utils/kl/release.h */
+/* begin src/utils/kl/release.h */
+#define KL_BEFORE(s, C) if (!kl::safe(ESC C)) continue;
+#define KL_CALL(F, C, A) F<<<ESC C>>>A
+#define KL_AFTER(s)
+
+#ifndef UDX_KL_RELEASE_FUNCTIONS_DEFINED
+#define UDX_KL_RELEASE_FUNCTIONS_DEFINED
+namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
+#endif
+/* end src/utils/kl/release.h */
 #elif  defined(KL_NONE)
 /* begin src/utils/kl/none.h */
 #define KL_BEFORE(s, C)
@@ -32260,7 +41322,18 @@ namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
   #error KL_* is undefined
 #endif
 
-/* already included: src/utils/kl/common.h */
+/* begin src/utils/kl/common.h */
+namespace kl {
+#pragma once
+
+inline int safe0(dim3 i, dim3 j) {
+    msg(i.x, i.y, i.z,   j.x, j.y, j.z);
+    return i.x>0 && i.y>0 && i.z>0   &&   j.x>0 && j.y>0 && j.z>0;
+}
+inline int safe(dim3 i, dim3 j)                    { return safe0(i, j); }
+inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
+}
+/* end src/utils/kl/common.h */
 /* begin src/utils/kl/macro.h */
 #define ESC(...) __VA_ARGS__
 #define KL(F, C, A)                             \
@@ -32373,7 +41446,42 @@ int is_err_in_status(int errorcode);
 int status2errcode(MPI_Status *status);
 }
 /* end src/mpi/wrapper.h */
-/* already included: src/frag/imp.h */
+/* begin src/frag/imp.h */
+#pragma once
+
+enum {frag_bulk = 26};
+
+struct int3;
+
+namespace frag_hst {
+
+// tag::i2d[]
+int i2dx(int i);                 // <1>
+int i2dy(int i);                 // <2>
+int i2dz(int i);                 // <3>
+void i2d3(int i, /**/ int d[3]); // <4>
+// end::i2d[]
+
+// tag::d2i[]
+int d2i(int x, int y, int z); // <1>
+int d32i(const int d[3]);     // <2>
+// end::d2i[]
+
+// tag::ncell[]
+int ncell(int3 L, int i); // <1>
+// end::ncell[]
+
+// tag::anti[]
+int antid2i(int x, int y, int z); // <1>
+int anti(int i);                  // <2>
+// end::anti[]
+
+// tag::hst[]
+void estimates(int3 L, int nfrags, float maxd, /**/ int *cap); // <1>
+// end::hst[]
+
+} // frag_hst
+/* end src/frag/imp.h */
 /* begin src/algo/convert/imp.h */
 struct Particle;
 struct Positioncp;
@@ -32384,8 +41492,62 @@ void convert_pp2rr_previous(long n, const Particle *pp, Positioncp *rr);
 void convert_pp2f4_pos(int n, const float *pp, /**/ float4 *zpp);
 /* end src/algo/convert/imp.h */
 
-/* already included: src/flu/type.h */
-/* already included: src/fluforces/bulk/imp.h */
+/* begin src/flu/type.h */
+#pragma once
+
+/* helpers to communicate between halo interactions and exchanger */
+
+namespace flu {
+
+enum { BULK = 0, FACE = 1, EDGE = 2, CORNER = 3 };
+
+struct LFrag { /* "local" fragment */
+    PaArray parray;
+    const int *ii; /* index */
+    int n;
+};
+
+struct RFrag { /* "remote" fragment */
+    PaArray parray;
+    const int *start;
+    int dx, dy, dz, xcells, ycells, zcells;
+    int type;
+};
+
+struct RndFrag {
+    float seed;
+    int mask;
+};
+
+typedef Sarray<LFrag,   26> LFrag26;
+typedef Sarray<RFrag,   26> RFrag26;
+typedef Sarray<RndFrag, 26> RndFrag26;
+
+} // flu
+/* end src/flu/type.h */
+/* begin src/fluforces/bulk/imp.h */
+#pragma once
+
+struct PairParams;
+struct Force;
+struct float4;
+struct int3;
+struct RNDunif;
+struct FoArray;
+
+struct BPaArray {
+    bool colors;
+    const float4 *pp;
+    const int *cc;
+};
+
+void flocal_push_pp(const float4 *pp, BPaArray *a);
+void flocal_push_cc(const int *cc, BPaArray *a);
+
+void flocal_apply(const PairParams*, int3 L, int n, BPaArray parray, const int *start, RNDunif *rnd,
+                  /**/ const FoArray *ff);
+
+/* end src/fluforces/bulk/imp.h */
 /* begin src/fluforces/halo/imp.h */
 struct PairParams;
 struct int3;
@@ -32872,10 +42034,150 @@ void fluforces_halo_apply(const PairParams *par, const FluForcesHalo *h, /**/ co
 #line 1 "src/frag/imp.cpp"
 /* begin src/frag/imp.cpp */
 #include <vector_types.h>
-/* already included: src/frag/imp.h */
+/* begin src/frag/imp.h */
+#pragma once
+
+enum {frag_bulk = 26};
+
+struct int3;
+
+namespace frag_hst {
+
+// tag::i2d[]
+int i2dx(int i);                 // <1>
+int i2dy(int i);                 // <2>
+int i2dz(int i);                 // <3>
+void i2d3(int i, /**/ int d[3]); // <4>
+// end::i2d[]
+
+// tag::d2i[]
+int d2i(int x, int y, int z); // <1>
+int d32i(const int d[3]);     // <2>
+// end::d2i[]
+
+// tag::ncell[]
+int ncell(int3 L, int i); // <1>
+// end::ncell[]
+
+// tag::anti[]
+int antid2i(int x, int y, int z); // <1>
+int anti(int i);                  // <2>
+// end::anti[]
+
+// tag::hst[]
+void estimates(int3 L, int nfrags, float maxd, /**/ int *cap); // <1>
+// end::hst[]
+
+} // frag_hst
+/* end src/frag/imp.h */
 
 #define FRAG_HOST
-/* already included: src/frag/dev.h */
+/* begin src/frag/dev.h */
+#ifdef FRAG_HOST
+#ifndef UDX_FRAG_HOST_DEFINED
+#define UDX_FRAG_HOST_DEFINED
+#define UDX_FRAG_BODY
+#endif
+#else
+#ifndef UDX_FRAG_DEV_DEFINED
+#define UDX_FRAG_DEV_DEFINED
+#define UDX_FRAG_BODY
+#endif
+#endif
+
+#ifdef UDX_FRAG_BODY
+#ifdef FRAG_HOST
+  #define _I_
+  #define _S_ static
+  #define BEGIN namespace frag_hst {
+  #define END }
+#else
+  #define _I_ static __device__
+  #define _S_ static __device__
+  #define BEGIN namespace frag_dev {
+  #define END }
+#endif
+
+BEGIN
+
+enum {BAD_DIR = -2};
+
+/* fragment id to direction                    */
+
+_I_ int i2dx(int i) { return (i     + 2) % 3 - 1; }
+_I_ int i2dy(int i) { return (i / 3 + 2) % 3 - 1; }
+_I_ int i2dz(int i) { return (i / 9 + 2) % 3 - 1; }
+
+_I_ void i2d3(int i, /**/ int d[3]) {
+    enum {X, Y, Z};
+    d[X] = i2dx(i);
+    d[Y] = i2dy(i);
+    d[Z] = i2dz(i);
+}
+
+/* direction to fragment id                    */
+_I_ int d2i(int x, int y, int z) {
+    return    ((x + 2) % 3)
+        + 3 * ((y + 2) % 3)
+        + 9 * ((z + 2) % 3);
+}
+
+_I_ int d32i(const int d[3])  {
+    enum {X, Y, Z};
+    return d2i(d[X], d[Y], d[Z]);
+}
+
+/* number of cells in direction x, y, z        */
+_S_ int ncell0(int3 L, int x, int y, int z) {
+    int nx, ny, nz;
+    nx = x ? 1 : L.x;
+    ny = y ? 1 : L.y;
+    nz = z ? 1 : L.z;
+    return nx * ny * nz;
+}
+
+/* number of cells in fragment i               */
+_I_ int ncell(int3 L, int i) {
+    int x, y, z;
+    x = i2dx(i);
+    y = i2dy(i);
+    z = i2dz(i);
+    return ncell0(L, x, y, z);
+}
+
+/* anti direction to fragment id                */
+_I_ int antid2i(int x, int y, int z) {
+    return d2i(-x, -y, -z);
+}
+
+/* anti fragment                                */
+_I_ int anti(int i) {
+    int x, y, z;
+    x = i2dx(i);
+    y = i2dy(i);
+    z = i2dz(i);
+    return antid2i(x, y, z);
+}
+
+/* [f]ragment [id] : where is `i' in sorted a[27]? */
+_I_ int frag_get_fid(const int a[], const int i) {
+    int k1, k3, k9;
+    k9 = 9 * ((i >= a[9])           + (i >= a[18]));
+    k3 = 3 * ((i >= a[k9 + 3])      + (i >= a[k9 + 6]));
+    k1 =      (i >= a[k9 + k3 + 1]) + (i >= a[k9 + k3 + 2]);
+    return k9 + k3 + k1;
+}
+
+END
+
+#undef _I_
+#undef _S_
+#undef BEGIN
+#undef END
+
+#undef UDX_FRAG_BODY
+#endif
+/* end src/frag/dev.h */
 #undef FRAG_HOST
 
 namespace frag_hst {
@@ -33195,8 +42497,78 @@ void estimates(int3 L, int nfrags, float maxd, /**/ int *cap) {
 #include <assert.h>
 
 
-/* already included: src/inc/conf.h */
-/* already included: src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
 
 /* begin src/utils/error.h */
 #define ERR(fmt, ...)  do {                                     \
@@ -33239,7 +42611,38 @@ void error_abort();
 
 void error_print_stack();
 /* end src/utils/error.h */
-/* already included: src/d/api.h */
+/* begin src/d/api.h */
+#pragma once
+
+namespace d {  /* a wrapper for device API */
+typedef int Stream_t; /* TODO: streams are not supported */
+enum {MemcpyHostToHost, MemcpyHostToDevice,
+      MemcpyDeviceToHost, MemcpyDeviceToDevice,
+      MemcpyDefault};
+
+// tag::more[]
+const char *emsg();
+int alloc_pinned(void **pHost, size_t size);
+int is_device_pointer(const void *ptr);
+// end::more[]
+
+// tag::api[]
+int GetSymbolAddress(void **devPtr, const void *symbol);
+int Malloc(void **p, size_t);
+int MemcpyToSymbol(const void *symbol, const void *src, size_t count, size_t offset=0, int kind=MemcpyHostToDevice);
+int MemcpyFromSymbol(void *dst, const void *symbol, size_t count, size_t offset=0, int kind=MemcpyDeviceToHost);
+int HostGetDevicePointer(void **pDevice, void *pHost, unsigned int flags);
+int Memcpy (void *dst, const void *src, size_t count, int kind);
+int MemsetAsync (void *devPtr, int value, size_t count, Stream_t stream=0);
+int Memset (void *devPtr, int value, size_t count);
+int MemcpyAsync (void * dst, const void * src, size_t count, int kind, Stream_t stream = 0);
+int Free (void *devPtr);
+int FreeHost (void *hstPtr);
+int DeviceSynchronize (void);
+int PeekAtLastError(void);
+// end::api[]
+}
+/* end src/d/api.h */
 /* begin src/d/q.h */
 /* function and variable type [q]ualifiers */
 
@@ -33365,10 +42768,202 @@ void rnd_fin(RNDunif *r);                                   // <3>
 float rnd_get(RNDunif *r);                                  // <4>
 // end::interface[]
 /* end src/math/rnd/imp.h */
-/* already included: src/math/rnd/dev.h */
-/* already included: src/math/dev.h */
+/* begin src/math/rnd/dev.h */
+#pragma once
 
-/* already included: src/inc/def.h */
+namespace rnd {
+/* random number from the ArcSine distribution on [-sqrt(2),sqrt(2)]
+   mean = 0, variance = 1 */
+
+// passes of logistic map
+static __const__ int N = 18;
+// spacing coefficints for low discrepancy numbers
+static __const__ float gold   = 0.6180339887498948482;
+static __const__ float silver = 0.4142135623730950488;
+static __const__ float bronze = 0.00008877875787352212838853023;
+static __const__ float tin    = 0.00004602357186447026756768986;
+static __const__ float sqrt2 = 1.41421356237309514547;
+
+/************************* Trunk generator ***********************
+ * Make one global random number per each timestep
+ * cite G. Marsaglia
+ * passes BigCrush
+ *****************************************************************/
+
+/************************* Branch generator **********************
+ * Make one random number per pair of particles per timestep
+ * Based on the Logistic map on interval [-1,1]
+ * each branch no weaker than trunk
+ * zero dependency between branches
+ *****************************************************************/
+
+// floating point version of LCG
+__inline__ __device__ float rem( float r ) {
+    return r - floorf( r );
+}
+
+// FMA wrapper for the convenience of switching rouding modes
+__inline__ __device__ float FMA( float x, float y, float z ) {
+    return __fmaf_rz( x, y, z );
+}
+
+// logistic rounds
+// <3> : 4 FMA + 1 MUL
+// <2> : 2 FMA + 1 MUL
+// <1> : 1 FMA + 1 MUL
+
+template<int N> __inline__ __device__ float __logistic_core( float x )
+{
+    float x2 = x * x;
+    float r = FMA( FMA( 8.0, x2, -8.0 ), x2, 1.0 );
+    return __logistic_core < N - 2 > ( r );
+}
+
+template<> __inline__ __device__ float __logistic_core<1>( float x ) {
+    return FMA( 2.0 * x, x, -1.0 );
+}
+
+template<> __inline__ __device__ float __logistic_core<0>( float x ) {
+    return x;
+}
+
+inline __device__ float mean0var1ii( float seed, int u, int v )
+{
+    float p = rem( ( ( u & 0x3FF ) * gold ) + u * bronze + ( ( v & 0x3FF ) * silver ) + v * tin ); // safe for large u or v
+    float l = __logistic_core<N>( seed - p );
+    return l * sqrt2;
+}
+
+inline __device__ float mean0var1uu( float seed, uint u, uint v )
+{
+    // 7 FLOPS
+    float p = rem( ( ( u & 0x3FFU ) * gold ) + u * bronze + ( ( v & 0x3FFU ) * silver ) + v * tin ); // safe for large u or v
+    // 45+1 FLOPS
+    float l = __logistic_core<N>( seed - p );
+    // 1 FLOP
+    return l * sqrt2;
+}
+
+}
+/* end src/math/rnd/dev.h */
+/* begin src/math/dev.h */
+/* use templates here because we might have mixed float/double */
+
+#define _HD_ __host__ __device__
+
+#pragma once
+
+template <typename T1, typename T2>
+_HD_ void scal(const T1 a, /*io*/ T2 *b) {
+    b->x *= a;
+    b->y *= a;
+    b->z *= a;
+}
+
+template <typename T1, typename T2>
+_HD_ void add(const T1 *a, /*io*/ T2 *b) {
+    b->x += a->x;
+    b->y += a->y;
+    b->z += a->z;
+}
+
+template <typename T1, typename T2, typename T3>
+_HD_ void diff(const T1 *a, const T2 *b, /**/ T3 *c) {
+    c->x = a->x - b->x;
+    c->y = a->y - b->y;
+    c->z = a->z - b->z;
+}
+
+template <typename T1, typename T2, typename T3>
+_HD_ T1 dot(const T2 *a, const T3 *b) {
+    return a->x * b->x + a->y * b->y + a->z * b->z;
+}
+
+template <typename T1, typename T2, typename T3>
+_HD_ void cross(const T1 *a, const T2 *b, /**/ T3 *c) {
+    c->x = a->y * b->z - a->z * b->y;
+    c->y = a->z * b->x - a->x * b->z;
+    c->z = a->x * b->y - a->y * b->x;
+}
+
+template <typename T1, typename T2, typename T3>
+_HD_ void scalmult(const T1 *a, const T2 x, /**/ const T3 *b) {
+    b->x = a->x * x;
+    b->y = a->y * x;
+    b->z = a->z * x;
+}
+
+
+template <typename T1, typename T2, typename T3, typename T4>
+_HD_ void apxb(const T1 *a, const T2 x, const T3 *b, /**/ T4 *c) {
+    c->x = a->x + x * b->x;
+    c->y = a->y + x * b->y;
+    c->z = a->z + x * b->z;
+}
+
+template <typename T1, typename T2, typename T3>
+_HD_ void axpy(const T1 a, const T2 *x, /*io*/ T3 *y) {
+    y->x += a * x->x;
+    y->y += a * x->y;
+    y->z += a * x->z;
+}
+/* end src/math/dev.h */
+
+/* begin src/inc/def.h */
+/* solvent colors */
+#define XMACRO_COLOR(_)                         \
+    _(BLUE)                                     \
+    _(RED)
+
+#define ENUM_COLOR(a) a##_COLOR
+#define make_enum_color(a) ENUM_COLOR(a) ,
+#ifndef UDX_DEF_ENUMS_DEFINED
+#define UDX_DEF_ENUMS_DEFINED
+enum {
+    XMACRO_COLOR(make_enum_color)
+    N_COLOR
+};
+#undef make_enum_color
+
+enum {
+    /* wall margins */
+    XWM = 6,
+    YWM = 6,
+    ZWM = 6,
+
+    SAFETY_FACTOR_MAXP = 3,
+
+    /* maximum number of particles per solid */
+    MAX_PSOLID_NUM = 12000,
+
+    /* maximum number of solids per node */
+    MAX_SOLIDS = 100,
+
+    /* maximum number of object types (solid, rbc, ...) */
+    MAX_MBR_TYPES = 2,
+    MAX_RIG_TYPES = 2,
+    MAX_OBJ_TYPES = MAX_MBR_TYPES + MAX_RIG_TYPES,
+
+    /* maximum number density of particles of the objects */
+    MAX_OBJ_DENSITY = 30,
+
+    /* maximum number of red blood cells per node */
+    MAX_CELL_NUM = 1500,
+
+    /* maximum texture size in bytes */
+    MAX_TEXO_SIZE = 100000000,
+
+    /* safety factor for dpd halo interactions */
+    HSAFETY_FACTOR = 10,
+
+    /* safety factor for odist fragments */
+    ODSTR_FACTOR = 3,
+};
+#endif
+
+/* for the spring forces r = min(lmax*RBC_SPRING_CAP, r) */
+#define RBC_SPRING_CAP (0.99)
+/* end src/inc/def.h */
 /* begin src/utils/msg.h */
 // tag::int[]
 void msg_ini(int rank); // <1>
@@ -33444,14 +43039,163 @@ namespace mpicheck {
 void check(int code, const char *file, int line);
 }
 /* end src/utils/mc.h */
-/* already included: src/frag/imp.h */
-/* already included: src/frag/dev.h */
+/* begin src/frag/imp.h */
+#pragma once
+
+enum {frag_bulk = 26};
+
+struct int3;
+
+namespace frag_hst {
+
+// tag::i2d[]
+int i2dx(int i);                 // <1>
+int i2dy(int i);                 // <2>
+int i2dz(int i);                 // <3>
+void i2d3(int i, /**/ int d[3]); // <4>
+// end::i2d[]
+
+// tag::d2i[]
+int d2i(int x, int y, int z); // <1>
+int d32i(const int d[3]);     // <2>
+// end::d2i[]
+
+// tag::ncell[]
+int ncell(int3 L, int i); // <1>
+// end::ncell[]
+
+// tag::anti[]
+int antid2i(int x, int y, int z); // <1>
+int anti(int i);                  // <2>
+// end::anti[]
+
+// tag::hst[]
+void estimates(int3 L, int nfrags, float maxd, /**/ int *cap); // <1>
+// end::hst[]
+
+} // frag_hst
+/* end src/frag/imp.h */
+/* begin src/frag/dev.h */
+#ifdef FRAG_HOST
+#ifndef UDX_FRAG_HOST_DEFINED
+#define UDX_FRAG_HOST_DEFINED
+#define UDX_FRAG_BODY
+#endif
+#else
+#ifndef UDX_FRAG_DEV_DEFINED
+#define UDX_FRAG_DEV_DEFINED
+#define UDX_FRAG_BODY
+#endif
+#endif
+
+#ifdef UDX_FRAG_BODY
+#ifdef FRAG_HOST
+  #define _I_
+  #define _S_ static
+  #define BEGIN namespace frag_hst {
+  #define END }
+#else
+  #define _I_ static __device__
+  #define _S_ static __device__
+  #define BEGIN namespace frag_dev {
+  #define END }
+#endif
+
+BEGIN
+
+enum {BAD_DIR = -2};
+
+/* fragment id to direction                    */
+
+_I_ int i2dx(int i) { return (i     + 2) % 3 - 1; }
+_I_ int i2dy(int i) { return (i / 3 + 2) % 3 - 1; }
+_I_ int i2dz(int i) { return (i / 9 + 2) % 3 - 1; }
+
+_I_ void i2d3(int i, /**/ int d[3]) {
+    enum {X, Y, Z};
+    d[X] = i2dx(i);
+    d[Y] = i2dy(i);
+    d[Z] = i2dz(i);
+}
+
+/* direction to fragment id                    */
+_I_ int d2i(int x, int y, int z) {
+    return    ((x + 2) % 3)
+        + 3 * ((y + 2) % 3)
+        + 9 * ((z + 2) % 3);
+}
+
+_I_ int d32i(const int d[3])  {
+    enum {X, Y, Z};
+    return d2i(d[X], d[Y], d[Z]);
+}
+
+/* number of cells in direction x, y, z        */
+_S_ int ncell0(int3 L, int x, int y, int z) {
+    int nx, ny, nz;
+    nx = x ? 1 : L.x;
+    ny = y ? 1 : L.y;
+    nz = z ? 1 : L.z;
+    return nx * ny * nz;
+}
+
+/* number of cells in fragment i               */
+_I_ int ncell(int3 L, int i) {
+    int x, y, z;
+    x = i2dx(i);
+    y = i2dy(i);
+    z = i2dz(i);
+    return ncell0(L, x, y, z);
+}
+
+/* anti direction to fragment id                */
+_I_ int antid2i(int x, int y, int z) {
+    return d2i(-x, -y, -z);
+}
+
+/* anti fragment                                */
+_I_ int anti(int i) {
+    int x, y, z;
+    x = i2dx(i);
+    y = i2dy(i);
+    z = i2dz(i);
+    return antid2i(x, y, z);
+}
+
+/* [f]ragment [id] : where is `i' in sorted a[27]? */
+_I_ int frag_get_fid(const int a[], const int i) {
+    int k1, k3, k9;
+    k9 = 9 * ((i >= a[9])           + (i >= a[18]));
+    k3 = 3 * ((i >= a[k9 + 3])      + (i >= a[k9 + 6]));
+    k1 =      (i >= a[k9 + k3 + 1]) + (i >= a[k9 + k3 + 2]);
+    return k9 + k3 + k1;
+}
+
+END
+
+#undef _I_
+#undef _S_
+#undef BEGIN
+#undef END
+
+#undef UDX_FRAG_BODY
+#endif
+/* end src/frag/dev.h */
 
 /* begin src/utils/kl.h */
 /* [k]ernel [l]aunch macros */
 
 #if    defined(KL_RELEASE)
-/* already included: src/utils/kl/release.h */
+/* begin src/utils/kl/release.h */
+#define KL_BEFORE(s, C) if (!kl::safe(ESC C)) continue;
+#define KL_CALL(F, C, A) F<<<ESC C>>>A
+#define KL_AFTER(s)
+
+#ifndef UDX_KL_RELEASE_FUNCTIONS_DEFINED
+#define UDX_KL_RELEASE_FUNCTIONS_DEFINED
+namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
+#endif
+/* end src/utils/kl/release.h */
 #elif  defined(KL_NONE)
 /* begin src/utils/kl/none.h */
 #define KL_BEFORE(s, C)
@@ -33476,7 +43220,18 @@ namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
   #error KL_* is undefined
 #endif
 
-/* already included: src/utils/kl/common.h */
+/* begin src/utils/kl/common.h */
+namespace kl {
+#pragma once
+
+inline int safe0(dim3 i, dim3 j) {
+    msg(i.x, i.y, i.z,   j.x, j.y, j.z);
+    return i.x>0 && i.y>0 && i.z>0   &&   j.x>0 && j.y>0 && j.z>0;
+}
+inline int safe(dim3 i, dim3 j)                    { return safe0(i, j); }
+inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
+}
+/* end src/utils/kl/common.h */
 /* begin src/utils/kl/macro.h */
 #define ESC(...) __VA_ARGS__
 #define KL(F, C, A)                             \
@@ -33489,7 +43244,62 @@ namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
 
 /* TODO: header includes header */
 /* end src/utils/kl.h */
-/* already included: src/inc/type.h */
+/* begin src/inc/type.h */
+#pragma once
+
+template <typename T, int N>
+struct Sarray { /* [s]tatic array */
+    T d[N];
+};
+
+struct Particle {
+    float r[3], v[3];
+};
+
+struct Rigid {
+    float Iinv[6],            /* moment of inertia            6        */
+        mass,                 /* mass of the solid            7        */
+        com[3],               /* [c]enter [o]f [m]ass         10       */
+        v[3], om[3],          /* linear and angular velocity  13 16    */
+        e0[3], e1[3], e2[3],  /* local referential            19 22 25 */
+        fo[3], to[3],         /* force, torque                28 31    */
+        id;                   /* id of the solid              32       */
+};
+
+struct Force {
+    float f[3];
+};
+
+struct Momentum {
+    float P[3], L[3]; /* linear and angular momentum */
+};
+
+struct Positioncp {
+    float rc[3]; /* current position  */
+    float rp[3]; /* previous position */
+};
+
+typedef Sarray<int, 26>       int26;
+typedef Sarray<int, 27>       int27;
+
+typedef Sarray<int*, 26>     intp26;
+typedef Sarray<Particle*, 26> Pap26;
+typedef Sarray<Force*,    26> Fop26;
+typedef Sarray<Momentum*, 26> Mop26;
+typedef Sarray<Positioncp*, 26> Pocpp26;
+
+/* particles wrap */
+struct PaWrap {
+    int n;
+    const Particle *pp;
+};
+
+/* forces wrap */
+struct FoWrap {
+    int n;
+    Force *ff;
+};
+/* end src/inc/type.h */
 /* begin src/inc/dev.h */
 /* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
@@ -33529,10 +43339,308 @@ namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
 #define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
 #define DzeroA(P, n)   DsetA(P, 0, n)
 /* end src/inc/dev.h */
-/* already included: src/dbg/imp.h */
+/* begin src/dbg/imp.h */
+#pragma once
 
-/* already included: src/pair/type.h */
-/* already included: src/pair/dev.h */
+struct Dbg;
+
+struct Config;
+struct Force;
+struct Particle;
+struct int3;
+struct Coords;
+
+// tag::kind[]
+enum {
+    DBG_POS,      // <1>
+    DBG_POS_SOFT, // <2>
+    DBG_VEL,      // <3>
+    DBG_FORCES,   // <4>
+    DBG_COLORS,   // <5>
+    DBG_CLIST,    // <6>
+    DBG_NKIND_
+};
+// end::kind[]
+
+// tag::mem[]
+void dbg_ini(Dbg**);
+void dbg_fin(Dbg*);
+// end::mem[]
+
+// tag::ini[]
+void dbg_enable(int kind, Dbg *dbg);
+void dbg_disable(int kind, Dbg *dbg);
+void dbg_set_verbose(bool, Dbg *dbg);
+void dbg_set_dump(bool, Dbg *dbg);
+// end::ini[]
+
+// tag::cnf[]
+void dbg_set_conf(const Config*, Dbg*);
+// end::cnf[]
+
+// tag::int[]
+void dbg_check_pos(const Coords *c, const char *base, const Dbg *dbg, int n, const Particle *pp);
+void dbg_check_pos_soft(const Coords *c, const char *base, const Dbg *dbg, int n, const Particle *pp);
+void dbg_check_vel(float dt, const Coords *c, const char *base, const Dbg *dbg, int n, const Particle *pp);
+void dbg_check_forces(float dt, const Coords *c, const char *base, const Dbg *dbg, int n, const Particle *pp, const Force *ff);
+void dbg_check_colors(const Coords *c, const Dbg *dbg, int n, const int *cc);
+void dbg_check_clist(const Coords *c, const Dbg *dbg, int3 L, const int *starts, const int *counts, const Particle *pp);
+// end::int[]
+/* end src/dbg/imp.h */
+
+/* begin src/pair/type.h */
+#pragma once
+
+/* maximum of pairwise dpd parameters */
+enum {
+    MAX_PAR = (N_COLOR * (N_COLOR + 1)) / 2
+};
+
+
+struct PairDPD {
+    float a, g, s, spow;
+};
+
+struct PairDPDC {
+    int ncolors;
+    float a[MAX_PAR], g[MAX_PAR], s[MAX_PAR], spow;
+};
+
+/* mirrored */
+struct PairDPDCM {
+    int ncolors;
+    float a[N_COLOR], g[N_COLOR], s[N_COLOR], spow;
+};
+
+struct PairDPDLJ {
+    float a, g, s, spow;
+    float ljs, lje;
+};
+
+struct PairAdhesion {
+    float k1, k2;
+};
+
+struct PairPa {
+    float x, y, z;
+    float vx, vy, vz;
+    /* optional fields */
+    int color;
+};
+
+struct PairFo {
+    float x, y, z;
+};
+
+struct PairSFo {
+    float x, y, z;
+    /* stress */
+    float sxx, syy, szz, sxy, sxz, syz;
+};
+/* end src/pair/type.h */
+/* begin src/pair/dev.h */
+#pragma once
+
+#define _S_ static __device__
+#define _I_ static __device__
+
+_S_ float cap(float x, float lo, float hi) {
+    if      (x > hi) return hi;
+    else if (x < lo) return lo;
+    else             return x;
+}
+
+static const float EPS = 1e-6;
+enum {NORM_OK, NORM_BIG, NORM_SMALL};
+_S_ int norm(/*io*/ float3 *pos, /**/ float *pr, float *pinvr) {
+    /* normalize r = [x, y, z], sets |r| and 1/|r| if not big */
+    float x, y, z, invr, r, r2;
+    x = pos->x; y = pos->y; z = pos->z;
+
+    r2 = x*x + y*y + z*z;
+    if      (r2 >= 1 )   return NORM_BIG;
+    else if (r2 < EPS) {
+        *pr = pos->x = pos->y = pos->z = 0;
+        return NORM_SMALL;
+    } else {
+        invr = rsqrtf(r2);
+        r = r2 * invr;
+        x *= invr; y *= invr; z *= invr;
+        pos->x = x; pos->y = y; pos->z = z; *pr = r; *pinvr = invr;
+        return NORM_OK;
+    }
+}
+
+_S_ float ker_wrf(float s, float x) {
+    return powf(x, s);
+}
+
+_S_ float magn_dpd(float a, float g, float s, float kpow,
+                   float rnd, float r, float ev) {
+    float wr, wc;
+    float rm, f0;
+
+    rm = max(1 - r, 0.0f);
+    wc = rm;
+    wr = ker_wrf(kpow, rm);
+
+    f0  = (-g * wr * ev + s * rnd) * wr;
+    f0 +=                        a * wc;
+    return f0;
+}
+
+_S_ float magn_lj(float s, float e, float invr) {
+    float t2, t4, t6, f;
+    t2 = s * s * invr * invr;
+    t4 = t2 * t2;
+    t6 = t4 * t2;
+    f = e * 24 * invr * t6 * (2 * t6 - 1);
+    f = cap(f, 0, 1e4);
+    return f;
+}
+
+_S_ float magn_adhesion(float k1, float k2, float r, float ev) {
+    float spring, visc;
+    spring = - k1 * r;
+    visc   = - k2 * ev;
+    return spring + visc;
+}
+
+_S_ float force_magn(const PairDPD *p, float rnd, float ev, float r, float) {
+    return magn_dpd(p->a, p->g, p->s, p->spow, rnd, r, ev);
+}
+
+_S_ float force_magn(const PairDPDLJ *p, float rnd, float ev, float r, float invr) {
+    float f;
+    f  = magn_dpd(p->a, p->g, p->s, p->spow, rnd, r, ev);
+    f += magn_lj(p->ljs, p->lje, invr);
+    return f;
+}
+
+_S_ float force_magn(const PairAdhesion *p, float, float ev, float r, float) {
+    return magn_adhesion(p->k1, p->k2, r, ev);
+}
+
+_S_ void magn2fo(float f0, float3 er, float3 dr, /**/ PairFo *f) {
+    f->x = f0 * er.x;
+    f->y = f0 * er.y;
+    f->z = f0 * er.z;
+}
+
+_S_ void magn2fo(float f0, float3 er, float3 dr, /**/ PairSFo *f) {
+    f->x = f0 * er.x;
+    f->y = f0 * er.y;
+    f->z = f0 * er.z;
+
+    f->sxx = 0.5f * f->x * dr.x;
+    f->sxy = 0.5f * f->x * dr.y;
+    f->sxz = 0.5f * f->x * dr.z;
+    f->syy = 0.5f * f->y * dr.y;
+    f->syz = 0.5f * f->y * dr.z;
+    f->szz = 0.5f * f->z * dr.z;
+}
+
+_S_ void make_zero(PairFo *f) {
+    f->x = f->y = f->z = 0;
+}
+
+_S_ void make_zero(PairSFo *f) {
+    f->x = f->y = f->z = 0;
+    f->sxx = f->sxy = f->sxz = 0;
+    f->syy = f->syz = f->szz = 0;
+}
+
+// tag::int[]
+template <typename Param, typename Fo>
+_I_ void pair_force(const Param *p, PairPa a, PairPa b, float rnd, /**/ Fo *f)
+// end::int[]
+{
+    float r, invr, ev, f0;
+    float3 dr, er, dv;
+    int vnstat; /* vector normalization status */
+
+    dr.x = a.x - b.x;
+    dr.y = a.y - b.y;
+    dr.z = a.z - b.z;
+
+    dv.x = a.vx - b.vx;
+    dv.y = a.vy - b.vy;
+    dv.z = a.vz - b.vz;
+
+    er = dr;
+
+    vnstat = norm(/*io*/ &er, /*o*/ &r, &invr);
+    if (vnstat == NORM_BIG) {
+        make_zero(f);
+        return;
+    }
+
+    ev = dot<float>(&er, &dv);
+
+    f0 = force_magn(p, rnd, ev, r, invr);
+    magn2fo(f0, er, dr, /**/ f);
+}
+
+_S_ int colors2pid(int ca, int cb) {
+    int c0, c1;
+    c0 = ca < cb ? ca : cb;
+    c1 = ca < cb ? cb : ca;
+    return c1 * (c1+1) / 2 + c0;
+}
+
+template <typename Fo>
+_I_ void pair_force(const PairDPDC *pc, PairPa a, PairPa b, float rnd, /**/ Fo *f) {
+    PairDPD p;
+    int pid;
+    pid = colors2pid(a.color, b.color);
+    p.a = pc->a[pid];
+    p.g = pc->g[pid];
+    p.s = pc->s[pid];
+    p.spow = pc->spow;
+    pair_force(&p, a, b, rnd, /**/ f);
+}
+
+/* mirrored: parameters from particle "a" only */
+template <typename Fo>
+_I_ void pair_force(const PairDPDCM *pc, PairPa a, PairPa b, float rnd, /**/ Fo *f) {
+    PairDPD p;
+    int pid = a.color;
+    p.a = pc->a[pid];
+    p.g = pc->g[pid];
+    p.s = pc->s[pid];
+    p.spow = pc->spow;
+    pair_force(&p, a, b, rnd, /**/ f);
+}
+
+
+// tag::add[]
+_I_ void pair_add(const PairFo *b, /**/ PairFo *a)
+// end::add[]
+{
+    a->x += b->x;
+    a->y += b->y;
+    a->z += b->z;
+}
+
+// tag::add[]
+_I_ void pair_add(const PairSFo *b, /**/ PairSFo *a)
+// end::add[]
+{
+    a->x += b->x;
+    a->y += b->y;
+    a->z += b->z;
+
+    a->sxx += b->sxx;
+    a->sxy += b->sxy;
+    a->sxz += b->sxz;
+    a->syy += b->syy;
+    a->syz += b->syz;
+    a->szz += b->szz;
+}
+
+#undef _S_
+#undef _I_
+/* end src/pair/dev.h */
 /* begin src/pair/imp.h */
 struct PairParams;
 struct Config;
@@ -33571,9 +43679,87 @@ void pair_get_view_dpd_lj(const PairParams*, PairDPDLJ*);
 void pair_get_view_adhesion(const PairParams*, PairAdhesion*);
 /* end src/pair/imp.h */
 
-/* already included: src/struct/parray/type.h */
-/* already included: src/struct/parray/imp.h */
-/* already included: src/struct/parray/dev.h */
+/* begin src/struct/parray/type.h */
+#pragma once
+
+struct PaArray_v {
+    const float *pp;
+};
+
+struct PaCArray_v {
+    const float *pp;
+    const int *cc;   /* colors */
+};
+/* end src/struct/parray/type.h */
+/* begin src/struct/parray/imp.h */
+#pragma once
+
+struct PaArray {
+    bool colors;
+    const float *pp;
+    const int *cc;
+};
+
+struct PaArray_v;
+struct PaCArray_v;
+
+struct Particle;
+
+// tag::push[]
+void parray_push_pp(const Particle *pp, PaArray *a);
+void parray_push_cc(const int *cc, PaArray *a);
+// end::push[]
+
+// tag::get[]
+bool parray_is_colored(const PaArray *a);
+// end::get[]
+
+// tag::view[]
+void parray_get_view(const PaArray *a, PaArray_v *v);  // <1>
+void parray_get_view(const PaArray *a, PaCArray_v *v); // <2>
+// end::view[]
+/* end src/struct/parray/imp.h */
+/* begin src/struct/parray/dev.h */
+#pragma once
+
+#define _S_ static __device__
+#define _I_ static __device__
+
+template<typename PA>
+_S_ void parray_get_pp(PA a, int i, /**/ PairPa *p) {
+    const float2 *pp = (const float2 *) a.pp;
+    float2 s0, s1, s2;
+    s0 = __ldg(pp + 3*i + 0);
+    s1 = __ldg(pp + 3*i + 1);
+    s2 = __ldg(pp + 3*i + 2);
+
+    p->x = s0.x;
+    p->y = s0.y;
+    p->z = s1.x;
+
+    p->vx = s1.y;
+    p->vy = s2.x;
+    p->vz = s2.y;
+}
+
+// tag::int[]
+_I_ void parray_get(PaArray_v a, int i, /**/ PairPa *p) // <1>
+// end::int[]
+{
+    parray_get_pp(a, i, /**/ p);
+}
+
+// tag::int[]
+_I_ void parray_get(PaCArray_v a, int i, /**/ PairPa *p) // <2>
+// end::int[]
+{
+    parray_get_pp(a, i, /**/ p);
+    p->color = a.cc[i];
+}
+
+#undef _S_
+#undef _I_
+/* end src/struct/parray/dev.h */
 
 /* local */
 
@@ -34364,8 +44550,78 @@ void fsi_halo(Fsi *fsi, int nw, const PairParams **prms, Pap26 all_pp, Fop26 all
 #include <mpi.h>
 #include <stdio.h>
 
-/* already included: src/inc/conf.h */
-/* already included: src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
 
 /* begin src/utils/error.h */
 #define ERR(fmt, ...)  do {                                     \
@@ -34439,7 +44695,16 @@ const char* get_filename_ext(const char*);
 /* [k]ernel [l]aunch macros */
 
 #if    defined(KL_RELEASE)
-/* already included: src/utils/kl/release.h */
+/* begin src/utils/kl/release.h */
+#define KL_BEFORE(s, C) if (!kl::safe(ESC C)) continue;
+#define KL_CALL(F, C, A) F<<<ESC C>>>A
+#define KL_AFTER(s)
+
+#ifndef UDX_KL_RELEASE_FUNCTIONS_DEFINED
+#define UDX_KL_RELEASE_FUNCTIONS_DEFINED
+namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
+#endif
+/* end src/utils/kl/release.h */
 #elif  defined(KL_NONE)
 /* begin src/utils/kl/none.h */
 #define KL_BEFORE(s, C)
@@ -34464,7 +44729,18 @@ namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
   #error KL_* is undefined
 #endif
 
-/* already included: src/utils/kl/common.h */
+/* begin src/utils/kl/common.h */
+namespace kl {
+#pragma once
+
+inline int safe0(dim3 i, dim3 j) {
+    msg(i.x, i.y, i.z,   j.x, j.y, j.z);
+    return i.x>0 && i.y>0 && i.z>0   &&   j.x>0 && j.y>0 && j.z>0;
+}
+inline int safe(dim3 i, dim3 j)                    { return safe0(i, j); }
+inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
+}
+/* end src/utils/kl/common.h */
 /* begin src/utils/kl/macro.h */
 #define ESC(...) __VA_ARGS__
 #define KL(F, C, A)                             \
@@ -34511,10 +44787,150 @@ void check(int rc, const char *file, int line);
 /* TODO: header includes header */
 /* end src/utils/cc.h */
 
-/* already included: src/d/api.h */
+/* begin src/d/api.h */
+#pragma once
 
-/* already included: src/inc/type.h */
-/* already included: src/inc/def.h */
+namespace d {  /* a wrapper for device API */
+typedef int Stream_t; /* TODO: streams are not supported */
+enum {MemcpyHostToHost, MemcpyHostToDevice,
+      MemcpyDeviceToHost, MemcpyDeviceToDevice,
+      MemcpyDefault};
+
+// tag::more[]
+const char *emsg();
+int alloc_pinned(void **pHost, size_t size);
+int is_device_pointer(const void *ptr);
+// end::more[]
+
+// tag::api[]
+int GetSymbolAddress(void **devPtr, const void *symbol);
+int Malloc(void **p, size_t);
+int MemcpyToSymbol(const void *symbol, const void *src, size_t count, size_t offset=0, int kind=MemcpyHostToDevice);
+int MemcpyFromSymbol(void *dst, const void *symbol, size_t count, size_t offset=0, int kind=MemcpyDeviceToHost);
+int HostGetDevicePointer(void **pDevice, void *pHost, unsigned int flags);
+int Memcpy (void *dst, const void *src, size_t count, int kind);
+int MemsetAsync (void *devPtr, int value, size_t count, Stream_t stream=0);
+int Memset (void *devPtr, int value, size_t count);
+int MemcpyAsync (void * dst, const void * src, size_t count, int kind, Stream_t stream = 0);
+int Free (void *devPtr);
+int FreeHost (void *hstPtr);
+int DeviceSynchronize (void);
+int PeekAtLastError(void);
+// end::api[]
+}
+/* end src/d/api.h */
+
+/* begin src/inc/type.h */
+#pragma once
+
+template <typename T, int N>
+struct Sarray { /* [s]tatic array */
+    T d[N];
+};
+
+struct Particle {
+    float r[3], v[3];
+};
+
+struct Rigid {
+    float Iinv[6],            /* moment of inertia            6        */
+        mass,                 /* mass of the solid            7        */
+        com[3],               /* [c]enter [o]f [m]ass         10       */
+        v[3], om[3],          /* linear and angular velocity  13 16    */
+        e0[3], e1[3], e2[3],  /* local referential            19 22 25 */
+        fo[3], to[3],         /* force, torque                28 31    */
+        id;                   /* id of the solid              32       */
+};
+
+struct Force {
+    float f[3];
+};
+
+struct Momentum {
+    float P[3], L[3]; /* linear and angular momentum */
+};
+
+struct Positioncp {
+    float rc[3]; /* current position  */
+    float rp[3]; /* previous position */
+};
+
+typedef Sarray<int, 26>       int26;
+typedef Sarray<int, 27>       int27;
+
+typedef Sarray<int*, 26>     intp26;
+typedef Sarray<Particle*, 26> Pap26;
+typedef Sarray<Force*,    26> Fop26;
+typedef Sarray<Momentum*, 26> Mop26;
+typedef Sarray<Positioncp*, 26> Pocpp26;
+
+/* particles wrap */
+struct PaWrap {
+    int n;
+    const Particle *pp;
+};
+
+/* forces wrap */
+struct FoWrap {
+    int n;
+    Force *ff;
+};
+/* end src/inc/type.h */
+/* begin src/inc/def.h */
+/* solvent colors */
+#define XMACRO_COLOR(_)                         \
+    _(BLUE)                                     \
+    _(RED)
+
+#define ENUM_COLOR(a) a##_COLOR
+#define make_enum_color(a) ENUM_COLOR(a) ,
+#ifndef UDX_DEF_ENUMS_DEFINED
+#define UDX_DEF_ENUMS_DEFINED
+enum {
+    XMACRO_COLOR(make_enum_color)
+    N_COLOR
+};
+#undef make_enum_color
+
+enum {
+    /* wall margins */
+    XWM = 6,
+    YWM = 6,
+    ZWM = 6,
+
+    SAFETY_FACTOR_MAXP = 3,
+
+    /* maximum number of particles per solid */
+    MAX_PSOLID_NUM = 12000,
+
+    /* maximum number of solids per node */
+    MAX_SOLIDS = 100,
+
+    /* maximum number of object types (solid, rbc, ...) */
+    MAX_MBR_TYPES = 2,
+    MAX_RIG_TYPES = 2,
+    MAX_OBJ_TYPES = MAX_MBR_TYPES + MAX_RIG_TYPES,
+
+    /* maximum number density of particles of the objects */
+    MAX_OBJ_DENSITY = 30,
+
+    /* maximum number of red blood cells per node */
+    MAX_CELL_NUM = 1500,
+
+    /* maximum texture size in bytes */
+    MAX_TEXO_SIZE = 100000000,
+
+    /* safety factor for dpd halo interactions */
+    HSAFETY_FACTOR = 10,
+
+    /* safety factor for odist fragments */
+    ODSTR_FACTOR = 3,
+};
+#endif
+
+/* for the spring forces r = min(lmax*RBC_SPRING_CAP, r) */
+#define RBC_SPRING_CAP (0.99)
+/* end src/inc/def.h */
 /* begin src/inc/dev.h */
 /* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
@@ -35748,7 +46164,26 @@ int he_malloc(int, void**);
 int he_free(void *ptr);
 int he_memcpy(void *dest, const void *src, size_t n);
 /* end src/he/memory.h */
-/* already included: src/he/err.h */
+/* begin src/he/err.h */
+/* error codes */
+#ifndef HE_ERROR_CODES_DEFINED
+#define HE_ERROR_CODES_DEFINED
+enum {HE_OK, HE_IO, HE_MEMORY, HE_SYS, HE_USER, HE_INDEX, HE_NUM};
+#endif
+
+/* for user code */
+#define ER(fmt, ...) ERR(HE_USER, (fmt), ##__VA_ARGS__)
+#define ERR(code, fmt, ...)                                             \
+    do {                                                                \
+        he_err(code, __FILE__, __LINE__, (fmt), ##__VA_ARGS__);         \
+        return code;                                                    \
+    } while(0)
+
+#define MSG(fmt, ...) he_msg(__FILE__, __LINE__, (fmt), ##__VA_ARGS__)
+
+void he_err(int code, const char *file, int line, const char *fmt, ...);
+void he_msg(const char *file, int line, const char *fmt, ...);
+/* end src/he/err.h */
 /* begin src/he/hash.h */
 #define T HeHash
 
@@ -36152,7 +46587,26 @@ int he_hash_get(T *q, int i, int j) {
 /* begin src/he/he.cpp */
 #include <stdio.h>
 
-/* already included: src/he/err.h */
+/* begin src/he/err.h */
+/* error codes */
+#ifndef HE_ERROR_CODES_DEFINED
+#define HE_ERROR_CODES_DEFINED
+enum {HE_OK, HE_IO, HE_MEMORY, HE_SYS, HE_USER, HE_INDEX, HE_NUM};
+#endif
+
+/* for user code */
+#define ER(fmt, ...) ERR(HE_USER, (fmt), ##__VA_ARGS__)
+#define ERR(code, fmt, ...)                                             \
+    do {                                                                \
+        he_err(code, __FILE__, __LINE__, (fmt), ##__VA_ARGS__);         \
+        return code;                                                    \
+    } while(0)
+
+#define MSG(fmt, ...) he_msg(__FILE__, __LINE__, (fmt), ##__VA_ARGS__)
+
+void he_err(int code, const char *file, int line, const char *fmt, ...);
+void he_msg(const char *file, int line, const char *fmt, ...);
+/* end src/he/err.h */
 /* begin src/he/memory.h */
 #define MALLOC(n, pp) he_malloc((n)*sizeof(**(pp)), (void**)(pp))
 #define FREE(p) he_free(p)
@@ -36633,7 +47087,26 @@ int he_bnd(T *q, int h)     { V(h, q->nh); return q->flp[h] == -1; }
 #include <stdlib.h>
 #include <string.h>
 
-/* already included: src/he/err.h */
+/* begin src/he/err.h */
+/* error codes */
+#ifndef HE_ERROR_CODES_DEFINED
+#define HE_ERROR_CODES_DEFINED
+enum {HE_OK, HE_IO, HE_MEMORY, HE_SYS, HE_USER, HE_INDEX, HE_NUM};
+#endif
+
+/* for user code */
+#define ER(fmt, ...) ERR(HE_USER, (fmt), ##__VA_ARGS__)
+#define ERR(code, fmt, ...)                                             \
+    do {                                                                \
+        he_err(code, __FILE__, __LINE__, (fmt), ##__VA_ARGS__);         \
+        return code;                                                    \
+    } while(0)
+
+#define MSG(fmt, ...) he_msg(__FILE__, __LINE__, (fmt), ##__VA_ARGS__)
+
+void he_err(int code, const char *file, int line, const char *fmt, ...);
+void he_msg(const char *file, int line, const char *fmt, ...);
+/* end src/he/err.h */
 /* begin src/he/memory.h */
 #define MALLOC(n, pp) he_malloc((n)*sizeof(**(pp)), (void**)(pp))
 #define FREE(p) he_free(p)
@@ -36970,8 +47443,32 @@ int he_memcpy(void *dest, const void *src, size_t n) {
 #include <assert.h>
 #include <vector_types.h>
 
-/* already included: src/he/def.h */
-/* already included: src/he/err.h */
+/* begin src/he/def.h */
+#ifndef HE_DEFINITIONS_DEFINED
+#define HE_DEFINITIONS_DEFINED
+enum {MAX_STRING_SIZE = 4096};
+#endif
+/* end src/he/def.h */
+/* begin src/he/err.h */
+/* error codes */
+#ifndef HE_ERROR_CODES_DEFINED
+#define HE_ERROR_CODES_DEFINED
+enum {HE_OK, HE_IO, HE_MEMORY, HE_SYS, HE_USER, HE_INDEX, HE_NUM};
+#endif
+
+/* for user code */
+#define ER(fmt, ...) ERR(HE_USER, (fmt), ##__VA_ARGS__)
+#define ERR(code, fmt, ...)                                             \
+    do {                                                                \
+        he_err(code, __FILE__, __LINE__, (fmt), ##__VA_ARGS__);         \
+        return code;                                                    \
+    } while(0)
+
+#define MSG(fmt, ...) he_msg(__FILE__, __LINE__, (fmt), ##__VA_ARGS__)
+
+void he_err(int code, const char *file, int line, const char *fmt, ...);
+void he_msg(const char *file, int line, const char *fmt, ...);
+/* end src/he/err.h */
 /* begin src/he/memory.h */
 #define MALLOC(n, pp) he_malloc((n)*sizeof(**(pp)), (void**)(pp))
 #define FREE(p) he_free(p)
@@ -37625,7 +48122,26 @@ int he_read_hdg_tri(T *q, int **p) { *p = q->hdg_tri; return HE_OK; };
 #include <string.h>
 #include <ctype.h>
 
-/* already included: src/he/err.h */
+/* begin src/he/err.h */
+/* error codes */
+#ifndef HE_ERROR_CODES_DEFINED
+#define HE_ERROR_CODES_DEFINED
+enum {HE_OK, HE_IO, HE_MEMORY, HE_SYS, HE_USER, HE_INDEX, HE_NUM};
+#endif
+
+/* for user code */
+#define ER(fmt, ...) ERR(HE_USER, (fmt), ##__VA_ARGS__)
+#define ERR(code, fmt, ...)                                             \
+    do {                                                                \
+        he_err(code, __FILE__, __LINE__, (fmt), ##__VA_ARGS__);         \
+        return code;                                                    \
+    } while(0)
+
+#define MSG(fmt, ...) he_msg(__FILE__, __LINE__, (fmt), ##__VA_ARGS__)
+
+void he_err(int code, const char *file, int line, const char *fmt, ...);
+void he_msg(const char *file, int line, const char *fmt, ...);
+/* end src/he/err.h */
 /* begin src/he/util.h */
 /* string equal? */
 int util_eq(const char *a, const char *b);
@@ -37637,7 +48153,12 @@ char *util_fgets(char *s, FILE *stream);
 char *util_comment_fgets(char *s, FILE *stream);
 /* end src/he/util.h */
 
-/* already included: src/he/def.h */
+/* begin src/he/def.h */
+#ifndef HE_DEFINITIONS_DEFINED
+#define HE_DEFINITIONS_DEFINED
+enum {MAX_STRING_SIZE = 4096};
+#endif
+/* end src/he/def.h */
 
 #define  SIZE (MAX_STRING_SIZE)
 
@@ -38454,10 +48975,134 @@ void inter_color_set_conf(const Config *cfg, GenColor *gc) {
 /* begin src/inter/color/imp.cpp */
 #include <stdio.h>
 
-/* already included: src/inc/conf.h */
-/* already included: src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
 
-/* already included: src/inc/def.h */
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
+
+/* begin src/inc/def.h */
+/* solvent colors */
+#define XMACRO_COLOR(_)                         \
+    _(BLUE)                                     \
+    _(RED)
+
+#define ENUM_COLOR(a) a##_COLOR
+#define make_enum_color(a) ENUM_COLOR(a) ,
+#ifndef UDX_DEF_ENUMS_DEFINED
+#define UDX_DEF_ENUMS_DEFINED
+enum {
+    XMACRO_COLOR(make_enum_color)
+    N_COLOR
+};
+#undef make_enum_color
+
+enum {
+    /* wall margins */
+    XWM = 6,
+    YWM = 6,
+    ZWM = 6,
+
+    SAFETY_FACTOR_MAXP = 3,
+
+    /* maximum number of particles per solid */
+    MAX_PSOLID_NUM = 12000,
+
+    /* maximum number of solids per node */
+    MAX_SOLIDS = 100,
+
+    /* maximum number of object types (solid, rbc, ...) */
+    MAX_MBR_TYPES = 2,
+    MAX_RIG_TYPES = 2,
+    MAX_OBJ_TYPES = MAX_MBR_TYPES + MAX_RIG_TYPES,
+
+    /* maximum number density of particles of the objects */
+    MAX_OBJ_DENSITY = 30,
+
+    /* maximum number of red blood cells per node */
+    MAX_CELL_NUM = 1500,
+
+    /* maximum texture size in bytes */
+    MAX_TEXO_SIZE = 100000000,
+
+    /* safety factor for dpd halo interactions */
+    HSAFETY_FACTOR = 10,
+
+    /* safety factor for odist fragments */
+    ODSTR_FACTOR = 3,
+};
+#endif
+
+/* for the spring forces r = min(lmax*RBC_SPRING_CAP, r) */
+#define RBC_SPRING_CAP (0.99)
+/* end src/inc/def.h */
 /* begin src/inc/dev.h */
 /* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
@@ -38497,9 +49142,95 @@ void inter_color_set_conf(const Config *cfg, GenColor *gc) {
 #define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
 #define DzeroA(P, n)   DsetA(P, 0, n)
 /* end src/inc/dev.h */
-/* already included: src/inc/type.h */
+/* begin src/inc/type.h */
+#pragma once
 
-/* already included: src/d/api.h */
+template <typename T, int N>
+struct Sarray { /* [s]tatic array */
+    T d[N];
+};
+
+struct Particle {
+    float r[3], v[3];
+};
+
+struct Rigid {
+    float Iinv[6],            /* moment of inertia            6        */
+        mass,                 /* mass of the solid            7        */
+        com[3],               /* [c]enter [o]f [m]ass         10       */
+        v[3], om[3],          /* linear and angular velocity  13 16    */
+        e0[3], e1[3], e2[3],  /* local referential            19 22 25 */
+        fo[3], to[3],         /* force, torque                28 31    */
+        id;                   /* id of the solid              32       */
+};
+
+struct Force {
+    float f[3];
+};
+
+struct Momentum {
+    float P[3], L[3]; /* linear and angular momentum */
+};
+
+struct Positioncp {
+    float rc[3]; /* current position  */
+    float rp[3]; /* previous position */
+};
+
+typedef Sarray<int, 26>       int26;
+typedef Sarray<int, 27>       int27;
+
+typedef Sarray<int*, 26>     intp26;
+typedef Sarray<Particle*, 26> Pap26;
+typedef Sarray<Force*,    26> Fop26;
+typedef Sarray<Momentum*, 26> Mop26;
+typedef Sarray<Positioncp*, 26> Pocpp26;
+
+/* particles wrap */
+struct PaWrap {
+    int n;
+    const Particle *pp;
+};
+
+/* forces wrap */
+struct FoWrap {
+    int n;
+    Force *ff;
+};
+/* end src/inc/type.h */
+
+/* begin src/d/api.h */
+#pragma once
+
+namespace d {  /* a wrapper for device API */
+typedef int Stream_t; /* TODO: streams are not supported */
+enum {MemcpyHostToHost, MemcpyHostToDevice,
+      MemcpyDeviceToHost, MemcpyDeviceToDevice,
+      MemcpyDefault};
+
+// tag::more[]
+const char *emsg();
+int alloc_pinned(void **pHost, size_t size);
+int is_device_pointer(const void *ptr);
+// end::more[]
+
+// tag::api[]
+int GetSymbolAddress(void **devPtr, const void *symbol);
+int Malloc(void **p, size_t);
+int MemcpyToSymbol(const void *symbol, const void *src, size_t count, size_t offset=0, int kind=MemcpyHostToDevice);
+int MemcpyFromSymbol(void *dst, const void *symbol, size_t count, size_t offset=0, int kind=MemcpyDeviceToHost);
+int HostGetDevicePointer(void **pDevice, void *pHost, unsigned int flags);
+int Memcpy (void *dst, const void *src, size_t count, int kind);
+int MemsetAsync (void *devPtr, int value, size_t count, Stream_t stream=0);
+int Memset (void *devPtr, int value, size_t count);
+int MemcpyAsync (void * dst, const void * src, size_t count, int kind, Stream_t stream = 0);
+int Free (void *devPtr);
+int FreeHost (void *hstPtr);
+int DeviceSynchronize (void);
+int PeekAtLastError(void);
+// end::api[]
+}
+/* end src/d/api.h */
 
 /* begin src/utils/error.h */
 #define ERR(fmt, ...)  do {                                     \
@@ -39126,8 +49857,78 @@ void inter_color_apply_dev(const Coords *coords, const GenColor *gc, int n, cons
 /* end src/inc/bop_common.h */
 #include <bop_mpi.h>
 
-/* already included: src/inc/conf.h */
-/* already included: src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
 /* begin src/utils/mc.h */
 /* [m]pi [c]heck macros */
 #define MC(ans)                                                         \
@@ -39138,7 +49939,38 @@ void check(int code, const char *file, int line);
 }
 /* end src/utils/mc.h */
 
-/* already included: src/d/api.h */
+/* begin src/d/api.h */
+#pragma once
+
+namespace d {  /* a wrapper for device API */
+typedef int Stream_t; /* TODO: streams are not supported */
+enum {MemcpyHostToHost, MemcpyHostToDevice,
+      MemcpyDeviceToHost, MemcpyDeviceToDevice,
+      MemcpyDefault};
+
+// tag::more[]
+const char *emsg();
+int alloc_pinned(void **pHost, size_t size);
+int is_device_pointer(const void *ptr);
+// end::more[]
+
+// tag::api[]
+int GetSymbolAddress(void **devPtr, const void *symbol);
+int Malloc(void **p, size_t);
+int MemcpyToSymbol(const void *symbol, const void *src, size_t count, size_t offset=0, int kind=MemcpyHostToDevice);
+int MemcpyFromSymbol(void *dst, const void *symbol, size_t count, size_t offset=0, int kind=MemcpyDeviceToHost);
+int HostGetDevicePointer(void **pDevice, void *pHost, unsigned int flags);
+int Memcpy (void *dst, const void *src, size_t count, int kind);
+int MemsetAsync (void *devPtr, int value, size_t count, Stream_t stream=0);
+int Memset (void *devPtr, int value, size_t count);
+int MemcpyAsync (void * dst, const void * src, size_t count, int kind, Stream_t stream = 0);
+int Free (void *devPtr);
+int FreeHost (void *hstPtr);
+int DeviceSynchronize (void);
+int PeekAtLastError(void);
+// end::api[]
+}
+/* end src/d/api.h */
 
 /* begin src/mpi/wrapper.h */
 namespace m {
@@ -39192,8 +50024,117 @@ int status2errcode(MPI_Status *status);
 }
 /* end src/mpi/wrapper.h */
 
-/* already included: src/inc/type.h */
-/* already included: src/inc/def.h */
+/* begin src/inc/type.h */
+#pragma once
+
+template <typename T, int N>
+struct Sarray { /* [s]tatic array */
+    T d[N];
+};
+
+struct Particle {
+    float r[3], v[3];
+};
+
+struct Rigid {
+    float Iinv[6],            /* moment of inertia            6        */
+        mass,                 /* mass of the solid            7        */
+        com[3],               /* [c]enter [o]f [m]ass         10       */
+        v[3], om[3],          /* linear and angular velocity  13 16    */
+        e0[3], e1[3], e2[3],  /* local referential            19 22 25 */
+        fo[3], to[3],         /* force, torque                28 31    */
+        id;                   /* id of the solid              32       */
+};
+
+struct Force {
+    float f[3];
+};
+
+struct Momentum {
+    float P[3], L[3]; /* linear and angular momentum */
+};
+
+struct Positioncp {
+    float rc[3]; /* current position  */
+    float rp[3]; /* previous position */
+};
+
+typedef Sarray<int, 26>       int26;
+typedef Sarray<int, 27>       int27;
+
+typedef Sarray<int*, 26>     intp26;
+typedef Sarray<Particle*, 26> Pap26;
+typedef Sarray<Force*,    26> Fop26;
+typedef Sarray<Momentum*, 26> Mop26;
+typedef Sarray<Positioncp*, 26> Pocpp26;
+
+/* particles wrap */
+struct PaWrap {
+    int n;
+    const Particle *pp;
+};
+
+/* forces wrap */
+struct FoWrap {
+    int n;
+    Force *ff;
+};
+/* end src/inc/type.h */
+/* begin src/inc/def.h */
+/* solvent colors */
+#define XMACRO_COLOR(_)                         \
+    _(BLUE)                                     \
+    _(RED)
+
+#define ENUM_COLOR(a) a##_COLOR
+#define make_enum_color(a) ENUM_COLOR(a) ,
+#ifndef UDX_DEF_ENUMS_DEFINED
+#define UDX_DEF_ENUMS_DEFINED
+enum {
+    XMACRO_COLOR(make_enum_color)
+    N_COLOR
+};
+#undef make_enum_color
+
+enum {
+    /* wall margins */
+    XWM = 6,
+    YWM = 6,
+    ZWM = 6,
+
+    SAFETY_FACTOR_MAXP = 3,
+
+    /* maximum number of particles per solid */
+    MAX_PSOLID_NUM = 12000,
+
+    /* maximum number of solids per node */
+    MAX_SOLIDS = 100,
+
+    /* maximum number of object types (solid, rbc, ...) */
+    MAX_MBR_TYPES = 2,
+    MAX_RIG_TYPES = 2,
+    MAX_OBJ_TYPES = MAX_MBR_TYPES + MAX_RIG_TYPES,
+
+    /* maximum number density of particles of the objects */
+    MAX_OBJ_DENSITY = 30,
+
+    /* maximum number of red blood cells per node */
+    MAX_CELL_NUM = 1500,
+
+    /* maximum texture size in bytes */
+    MAX_TEXO_SIZE = 100000000,
+
+    /* safety factor for dpd halo interactions */
+    HSAFETY_FACTOR = 10,
+
+    /* safety factor for odist fragments */
+    ODSTR_FACTOR = 3,
+};
+#endif
+
+/* for the spring forces r = min(lmax*RBC_SPRING_CAP, r) */
+#define RBC_SPRING_CAP (0.99)
+/* end src/inc/def.h */
 /* begin src/utils/os.h */
 // tag::int[]
 void os_mkdir(const char* path); // <1>
@@ -39829,8 +50770,78 @@ void io_bop_colors(MPI_Comm cart, long n, const int *cc, const char *name, int i
 #include <vector_types.h>
 #include <mpi.h>
 
-/* already included: src/inc/conf.h */
-/* already included: src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
 
 /* begin src/mpi/wrapper.h */
 namespace m {
@@ -40421,8 +51432,78 @@ void io_com_dump(MPI_Comm comm, const Coords *coords, const char *name, long id,
 #include <vector_types.h>
 #include <mpi.h>
 
-/* already included: src/inc/conf.h */
-/* already included: src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
 
 /* begin src/utils/msg.h */
 // tag::int[]
@@ -40481,7 +51562,62 @@ int is_err_in_status(int errorcode);
 int status2errcode(MPI_Status *status);
 }
 /* end src/mpi/wrapper.h */
-/* already included: src/inc/type.h */
+/* begin src/inc/type.h */
+#pragma once
+
+template <typename T, int N>
+struct Sarray { /* [s]tatic array */
+    T d[N];
+};
+
+struct Particle {
+    float r[3], v[3];
+};
+
+struct Rigid {
+    float Iinv[6],            /* moment of inertia            6        */
+        mass,                 /* mass of the solid            7        */
+        com[3],               /* [c]enter [o]f [m]ass         10       */
+        v[3], om[3],          /* linear and angular velocity  13 16    */
+        e0[3], e1[3], e2[3],  /* local referential            19 22 25 */
+        fo[3], to[3],         /* force, torque                28 31    */
+        id;                   /* id of the solid              32       */
+};
+
+struct Force {
+    float f[3];
+};
+
+struct Momentum {
+    float P[3], L[3]; /* linear and angular momentum */
+};
+
+struct Positioncp {
+    float rc[3]; /* current position  */
+    float rp[3]; /* previous position */
+};
+
+typedef Sarray<int, 26>       int26;
+typedef Sarray<int, 27>       int27;
+
+typedef Sarray<int*, 26>     intp26;
+typedef Sarray<Particle*, 26> Pap26;
+typedef Sarray<Force*,    26> Fop26;
+typedef Sarray<Momentum*, 26> Mop26;
+typedef Sarray<Positioncp*, 26> Pocpp26;
+
+/* particles wrap */
+struct PaWrap {
+    int n;
+    const Particle *pp;
+};
+
+/* forces wrap */
+struct FoWrap {
+    int n;
+    Force *ff;
+};
+/* end src/inc/type.h */
 /* begin src/utils/error.h */
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
@@ -40916,8 +52052,78 @@ void diag_mesh_apply(DiagMesh*, MPI_Comm, float, int, Particle*) {
 #include <string.h>
 #include <mpi.h>
 
-/* already included: src/inc/conf.h */
-/* already included: src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
 
 /* begin src/utils/msg.h */
 // tag::int[]
@@ -40976,7 +52182,62 @@ int is_err_in_status(int errorcode);
 int status2errcode(MPI_Status *status);
 }
 /* end src/mpi/wrapper.h */
-/* already included: src/inc/type.h */
+/* begin src/inc/type.h */
+#pragma once
+
+template <typename T, int N>
+struct Sarray { /* [s]tatic array */
+    T d[N];
+};
+
+struct Particle {
+    float r[3], v[3];
+};
+
+struct Rigid {
+    float Iinv[6],            /* moment of inertia            6        */
+        mass,                 /* mass of the solid            7        */
+        com[3],               /* [c]enter [o]f [m]ass         10       */
+        v[3], om[3],          /* linear and angular velocity  13 16    */
+        e0[3], e1[3], e2[3],  /* local referential            19 22 25 */
+        fo[3], to[3],         /* force, torque                28 31    */
+        id;                   /* id of the solid              32       */
+};
+
+struct Force {
+    float f[3];
+};
+
+struct Momentum {
+    float P[3], L[3]; /* linear and angular momentum */
+};
+
+struct Positioncp {
+    float rc[3]; /* current position  */
+    float rp[3]; /* previous position */
+};
+
+typedef Sarray<int, 26>       int26;
+typedef Sarray<int, 27>       int27;
+
+typedef Sarray<int*, 26>     intp26;
+typedef Sarray<Particle*, 26> Pap26;
+typedef Sarray<Force*,    26> Fop26;
+typedef Sarray<Momentum*, 26> Mop26;
+typedef Sarray<Positioncp*, 26> Pocpp26;
+
+/* particles wrap */
+struct PaWrap {
+    int n;
+    const Particle *pp;
+};
+
+/* forces wrap */
+struct FoWrap {
+    int n;
+    Force *ff;
+};
+/* end src/inc/type.h */
 /* begin src/utils/error.h */
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
@@ -42023,8 +53284,78 @@ void h5_write(int3 N, MPI_Comm cart, const char *path, int ncomp,
 #include <stdio.h>
 #include <vector_types.h>
 
-/* already included: src/inc/conf.h */
-/* already included: src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
 
 /* begin src/mpi/wrapper.h */
 namespace m {
@@ -42922,8 +54253,78 @@ void xmf_write(int3 domainSize, int3 gridSize, const char *path, int ncomp, cons
 #include <string.h>
 #include <vector_types.h>
 
-/* already included: src/inc/conf.h */
-/* already included: src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
 
 /* begin src/coords/imp.h */
 struct Coords;
@@ -43144,7 +54545,62 @@ int is_err_in_status(int errorcode);
 int status2errcode(MPI_Status *status);
 }
 /* end src/mpi/wrapper.h */
-/* already included: src/inc/type.h */
+/* begin src/inc/type.h */
+#pragma once
+
+template <typename T, int N>
+struct Sarray { /* [s]tatic array */
+    T d[N];
+};
+
+struct Particle {
+    float r[3], v[3];
+};
+
+struct Rigid {
+    float Iinv[6],            /* moment of inertia            6        */
+        mass,                 /* mass of the solid            7        */
+        com[3],               /* [c]enter [o]f [m]ass         10       */
+        v[3], om[3],          /* linear and angular velocity  13 16    */
+        e0[3], e1[3], e2[3],  /* local referential            19 22 25 */
+        fo[3], to[3],         /* force, torque                28 31    */
+        id;                   /* id of the solid              32       */
+};
+
+struct Force {
+    float f[3];
+};
+
+struct Momentum {
+    float P[3], L[3]; /* linear and angular momentum */
+};
+
+struct Positioncp {
+    float rc[3]; /* current position  */
+    float rp[3]; /* previous position */
+};
+
+typedef Sarray<int, 26>       int26;
+typedef Sarray<int, 27>       int27;
+
+typedef Sarray<int*, 26>     intp26;
+typedef Sarray<Particle*, 26> Pap26;
+typedef Sarray<Force*,    26> Fop26;
+typedef Sarray<Momentum*, 26> Mop26;
+typedef Sarray<Positioncp*, 26> Pocpp26;
+
+/* particles wrap */
+struct PaWrap {
+    int n;
+    const Particle *pp;
+};
+
+/* forces wrap */
+struct FoWrap {
+    int n;
+    Force *ff;
+};
+/* end src/inc/type.h */
 
 /* begin src/io/mesh_read/imp.h */
 struct int4;
@@ -44851,11 +56307,85 @@ const int4  *mesh_read_get_dih(MeshRead *q) {
 #include <ctype.h>
 #include <mpi.h>
 
-/* already included: src/inc/bop_common.h */
+/* begin src/inc/bop_common.h */
+#pragma once
+
+#include_next <bop_common.h>
+/* end src/inc/bop_common.h */
 #include <bop_mpi.h>
 
-/* already included: src/inc/conf.h */
-/* already included: src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
 
 /* begin src/utils/os.h */
 // tag::int[]
@@ -45500,11 +57030,85 @@ void io_point_write(IOPoint *q, MPI_Comm comm, int id) {
 #include <string.h>
 #include <mpi.h>
 
-/* already included: src/inc/bop_common.h */
+/* begin src/inc/bop_common.h */
+#pragma once
+
+#include_next <bop_common.h>
+/* end src/inc/bop_common.h */
 #include <bop_mpi.h>
 
-/* already included: src/inc/conf.h */
-/* already included: src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
 
 /* begin src/mpi/wrapper.h */
 namespace m {
@@ -45558,8 +57162,117 @@ int status2errcode(MPI_Status *status);
 }
 /* end src/mpi/wrapper.h */
 
-/* already included: src/inc/type.h */
-/* already included: src/inc/def.h */
+/* begin src/inc/type.h */
+#pragma once
+
+template <typename T, int N>
+struct Sarray { /* [s]tatic array */
+    T d[N];
+};
+
+struct Particle {
+    float r[3], v[3];
+};
+
+struct Rigid {
+    float Iinv[6],            /* moment of inertia            6        */
+        mass,                 /* mass of the solid            7        */
+        com[3],               /* [c]enter [o]f [m]ass         10       */
+        v[3], om[3],          /* linear and angular velocity  13 16    */
+        e0[3], e1[3], e2[3],  /* local referential            19 22 25 */
+        fo[3], to[3],         /* force, torque                28 31    */
+        id;                   /* id of the solid              32       */
+};
+
+struct Force {
+    float f[3];
+};
+
+struct Momentum {
+    float P[3], L[3]; /* linear and angular momentum */
+};
+
+struct Positioncp {
+    float rc[3]; /* current position  */
+    float rp[3]; /* previous position */
+};
+
+typedef Sarray<int, 26>       int26;
+typedef Sarray<int, 27>       int27;
+
+typedef Sarray<int*, 26>     intp26;
+typedef Sarray<Particle*, 26> Pap26;
+typedef Sarray<Force*,    26> Fop26;
+typedef Sarray<Momentum*, 26> Mop26;
+typedef Sarray<Positioncp*, 26> Pocpp26;
+
+/* particles wrap */
+struct PaWrap {
+    int n;
+    const Particle *pp;
+};
+
+/* forces wrap */
+struct FoWrap {
+    int n;
+    Force *ff;
+};
+/* end src/inc/type.h */
+/* begin src/inc/def.h */
+/* solvent colors */
+#define XMACRO_COLOR(_)                         \
+    _(BLUE)                                     \
+    _(RED)
+
+#define ENUM_COLOR(a) a##_COLOR
+#define make_enum_color(a) ENUM_COLOR(a) ,
+#ifndef UDX_DEF_ENUMS_DEFINED
+#define UDX_DEF_ENUMS_DEFINED
+enum {
+    XMACRO_COLOR(make_enum_color)
+    N_COLOR
+};
+#undef make_enum_color
+
+enum {
+    /* wall margins */
+    XWM = 6,
+    YWM = 6,
+    ZWM = 6,
+
+    SAFETY_FACTOR_MAXP = 3,
+
+    /* maximum number of particles per solid */
+    MAX_PSOLID_NUM = 12000,
+
+    /* maximum number of solids per node */
+    MAX_SOLIDS = 100,
+
+    /* maximum number of object types (solid, rbc, ...) */
+    MAX_MBR_TYPES = 2,
+    MAX_RIG_TYPES = 2,
+    MAX_OBJ_TYPES = MAX_MBR_TYPES + MAX_RIG_TYPES,
+
+    /* maximum number density of particles of the objects */
+    MAX_OBJ_DENSITY = 30,
+
+    /* maximum number of red blood cells per node */
+    MAX_CELL_NUM = 1500,
+
+    /* maximum texture size in bytes */
+    MAX_TEXO_SIZE = 100000000,
+
+    /* safety factor for dpd halo interactions */
+    HSAFETY_FACTOR = 10,
+
+    /* safety factor for odist fragments */
+    ODSTR_FACTOR = 3,
+};
+#endif
+
+/* for the spring forces r = min(lmax*RBC_SPRING_CAP, r) */
+#define RBC_SPRING_CAP (0.99)
+/* end src/inc/def.h */
 /* begin src/utils/msg.h */
 // tag::int[]
 void msg_ini(int rank); // <1>
@@ -45708,7 +57421,38 @@ int coords_size(const Coords *c);
 // end::int[]
 /* end src/coords/imp.h */
 
-/* already included: src/io/restart/imp.h */
+/* begin src/io/restart/imp.h */
+#pragma once
+
+struct Coords;
+struct Particle;
+struct Rigid;
+
+// tag::id[]
+enum {RESTART_TEMPL=-1,
+      RESTART_FINAL=-2};
+enum {RESTART_BEGIN=RESTART_FINAL};
+// end::id[]
+
+// tag::stream[]
+typedef void (*StreamWriter)(const void*, FILE*);
+typedef void (*StreamReader)(FILE*, void*);
+// end::stream[]
+
+// tag::write[]
+void restart_write_pp(MPI_Comm, const char *base, const char *code, int id, long n, const Particle *pp); // <1>
+void restart_write_ii(MPI_Comm, const char *base, const char *code, int id, long n, const int *ii);      // <2>
+void restart_write_ss(MPI_Comm, const char *base, const char *code, int id, long n, const Rigid *ss);    // <3>
+void restart_write_stream_one_node(MPI_Comm, const char *base, const char *code, int id, const void *data, StreamWriter); // <4>
+ // end::write[]
+
+// tag::read[]
+void restart_read_pp(MPI_Comm, const char *base, const char *code, int id, int *n, Particle *pp);
+void restart_read_ii(MPI_Comm, const char *base, const char *code, int id, int *n, int *ii);
+void restart_read_ss(MPI_Comm, const char *base, const char *code, int id, int *n, Rigid *ss);
+void restart_read_stream_one_node(const char *base, const char *code, int id, StreamReader, void *data);
+// end::read[]
+/* end src/io/restart/imp.h */
 /* begin src/io/restart/imp/main.h */
 /*
    pattern :
@@ -46157,10 +57901,135 @@ void restart_read_stream_one_node(const char *base, const char *code, int id, St
 #include <string.h>
 #include <mpi.h>
 
-/* already included: src/inc/type.h */
+/* begin src/inc/type.h */
+#pragma once
 
-/* already included: src/inc/conf.h */
-/* already included: src/inc/conf.h */
+template <typename T, int N>
+struct Sarray { /* [s]tatic array */
+    T d[N];
+};
+
+struct Particle {
+    float r[3], v[3];
+};
+
+struct Rigid {
+    float Iinv[6],            /* moment of inertia            6        */
+        mass,                 /* mass of the solid            7        */
+        com[3],               /* [c]enter [o]f [m]ass         10       */
+        v[3], om[3],          /* linear and angular velocity  13 16    */
+        e0[3], e1[3], e2[3],  /* local referential            19 22 25 */
+        fo[3], to[3],         /* force, torque                28 31    */
+        id;                   /* id of the solid              32       */
+};
+
+struct Force {
+    float f[3];
+};
+
+struct Momentum {
+    float P[3], L[3]; /* linear and angular momentum */
+};
+
+struct Positioncp {
+    float rc[3]; /* current position  */
+    float rp[3]; /* previous position */
+};
+
+typedef Sarray<int, 26>       int26;
+typedef Sarray<int, 27>       int27;
+
+typedef Sarray<int*, 26>     intp26;
+typedef Sarray<Particle*, 26> Pap26;
+typedef Sarray<Force*,    26> Fop26;
+typedef Sarray<Momentum*, 26> Mop26;
+typedef Sarray<Positioncp*, 26> Pocpp26;
+
+/* particles wrap */
+struct PaWrap {
+    int n;
+    const Particle *pp;
+};
+
+/* forces wrap */
+struct FoWrap {
+    int n;
+    Force *ff;
+};
+/* end src/inc/type.h */
+
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
 /* begin src/utils/error.h */
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
@@ -46771,7 +58640,62 @@ void io_rig_dump(MPI_Comm comm, const Coords *c, const char *name, long id, int 
 /* begin src/io/txt/imp.cpp */
 #include <stdio.h>
 
-/* already included: src/inc/type.h */
+/* begin src/inc/type.h */
+#pragma once
+
+template <typename T, int N>
+struct Sarray { /* [s]tatic array */
+    T d[N];
+};
+
+struct Particle {
+    float r[3], v[3];
+};
+
+struct Rigid {
+    float Iinv[6],            /* moment of inertia            6        */
+        mass,                 /* mass of the solid            7        */
+        com[3],               /* [c]enter [o]f [m]ass         10       */
+        v[3], om[3],          /* linear and angular velocity  13 16    */
+        e0[3], e1[3], e2[3],  /* local referential            19 22 25 */
+        fo[3], to[3],         /* force, torque                28 31    */
+        id;                   /* id of the solid              32       */
+};
+
+struct Force {
+    float f[3];
+};
+
+struct Momentum {
+    float P[3], L[3]; /* linear and angular momentum */
+};
+
+struct Positioncp {
+    float rc[3]; /* current position  */
+    float rp[3]; /* previous position */
+};
+
+typedef Sarray<int, 26>       int26;
+typedef Sarray<int, 27>       int27;
+
+typedef Sarray<int*, 26>     intp26;
+typedef Sarray<Particle*, 26> Pap26;
+typedef Sarray<Force*,    26> Fop26;
+typedef Sarray<Momentum*, 26> Mop26;
+typedef Sarray<Positioncp*, 26> Pocpp26;
+
+/* particles wrap */
+struct PaWrap {
+    int n;
+    const Particle *pp;
+};
+
+/* forces wrap */
+struct FoWrap {
+    int n;
+    Force *ff;
+};
+/* end src/inc/type.h */
 
 /* begin src/utils/msg.h */
 // tag::int[]
@@ -47329,8 +59253,78 @@ const Force*    txt_read_get_ff(const TxtRead *q) { return q->ff; }
 #include <string.h>
 #include <mpi.h>
 
-/* already included: src/inc/conf.h */
-/* already included: src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
 
 /* begin src/utils/error.h */
 #define ERR(fmt, ...)  do {                                     \
@@ -48757,8 +60751,78 @@ const int* mesh_tt(Mesh *q) { return q->tt; }
 #include <stdlib.h>
 #include <mpi.h>
 
-/* already included: src/inc/conf.h */
-/* already included: src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
 
 /* begin src/mpi/wrapper.h */
 namespace m {
@@ -50045,8 +62109,78 @@ float rnd_get(RNDunif *r) {
 /* begin src/math/tform/imp.cpp */
 #include <stdio.h>
 
-/* already included: src/inc/conf.h */
-/* already included: src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
 
 /* begin src/utils/msg.h */
 // tag::int[]
@@ -52092,7 +64226,62 @@ void mesh_area_apply(MeshArea *q, int m, Vectors *p, double *area0) {
 /* begin src/mesh/bbox/imp.cpp */
 #include <vector_types.h>
 
-/* already included: src/inc/type.h */
+/* begin src/inc/type.h */
+#pragma once
+
+template <typename T, int N>
+struct Sarray { /* [s]tatic array */
+    T d[N];
+};
+
+struct Particle {
+    float r[3], v[3];
+};
+
+struct Rigid {
+    float Iinv[6],            /* moment of inertia            6        */
+        mass,                 /* mass of the solid            7        */
+        com[3],               /* [c]enter [o]f [m]ass         10       */
+        v[3], om[3],          /* linear and angular velocity  13 16    */
+        e0[3], e1[3], e2[3],  /* local referential            19 22 25 */
+        fo[3], to[3],         /* force, torque                28 31    */
+        id;                   /* id of the solid              32       */
+};
+
+struct Force {
+    float f[3];
+};
+
+struct Momentum {
+    float P[3], L[3]; /* linear and angular momentum */
+};
+
+struct Positioncp {
+    float rc[3]; /* current position  */
+    float rp[3]; /* previous position */
+};
+
+typedef Sarray<int, 26>       int26;
+typedef Sarray<int, 27>       int27;
+
+typedef Sarray<int*, 26>     intp26;
+typedef Sarray<Particle*, 26> Pap26;
+typedef Sarray<Force*,    26> Fop26;
+typedef Sarray<Momentum*, 26> Mop26;
+typedef Sarray<Positioncp*, 26> Pocpp26;
+
+/* particles wrap */
+struct PaWrap {
+    int n;
+    const Particle *pp;
+};
+
+/* forces wrap */
+struct FoWrap {
+    int n;
+    Force *ff;
+};
+/* end src/inc/type.h */
 /* begin src/algo/minmax/imp.h */
 struct Particle;
 struct float3;
@@ -52456,9 +64645,133 @@ void mesh_get_bboxes_dev(const Particle *pp, const int nps, const int ns, /**/ f
 #include <stdio.h>
 #include <assert.h>
 
-/* already included: src/inc/conf.h */
-/* already included: src/inc/conf.h */
-/* already included: src/inc/def.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
+/* begin src/inc/def.h */
+/* solvent colors */
+#define XMACRO_COLOR(_)                         \
+    _(BLUE)                                     \
+    _(RED)
+
+#define ENUM_COLOR(a) a##_COLOR
+#define make_enum_color(a) ENUM_COLOR(a) ,
+#ifndef UDX_DEF_ENUMS_DEFINED
+#define UDX_DEF_ENUMS_DEFINED
+enum {
+    XMACRO_COLOR(make_enum_color)
+    N_COLOR
+};
+#undef make_enum_color
+
+enum {
+    /* wall margins */
+    XWM = 6,
+    YWM = 6,
+    ZWM = 6,
+
+    SAFETY_FACTOR_MAXP = 3,
+
+    /* maximum number of particles per solid */
+    MAX_PSOLID_NUM = 12000,
+
+    /* maximum number of solids per node */
+    MAX_SOLIDS = 100,
+
+    /* maximum number of object types (solid, rbc, ...) */
+    MAX_MBR_TYPES = 2,
+    MAX_RIG_TYPES = 2,
+    MAX_OBJ_TYPES = MAX_MBR_TYPES + MAX_RIG_TYPES,
+
+    /* maximum number density of particles of the objects */
+    MAX_OBJ_DENSITY = 30,
+
+    /* maximum number of red blood cells per node */
+    MAX_CELL_NUM = 1500,
+
+    /* maximum texture size in bytes */
+    MAX_TEXO_SIZE = 100000000,
+
+    /* safety factor for dpd halo interactions */
+    HSAFETY_FACTOR = 10,
+
+    /* safety factor for odist fragments */
+    ODSTR_FACTOR = 3,
+};
+#endif
+
+/* for the spring forces r = min(lmax*RBC_SPRING_CAP, r) */
+#define RBC_SPRING_CAP (0.99)
+/* end src/inc/def.h */
 /* begin src/utils/error.h */
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
@@ -52656,9 +64969,95 @@ static int   warpSize = 1;
   #error DEV_* is undefined
 #endif
 /* end src/d/ker.h */
-/* already included: src/d/api.h */
+/* begin src/d/api.h */
+#pragma once
 
-/* already included: src/inc/type.h */
+namespace d {  /* a wrapper for device API */
+typedef int Stream_t; /* TODO: streams are not supported */
+enum {MemcpyHostToHost, MemcpyHostToDevice,
+      MemcpyDeviceToHost, MemcpyDeviceToDevice,
+      MemcpyDefault};
+
+// tag::more[]
+const char *emsg();
+int alloc_pinned(void **pHost, size_t size);
+int is_device_pointer(const void *ptr);
+// end::more[]
+
+// tag::api[]
+int GetSymbolAddress(void **devPtr, const void *symbol);
+int Malloc(void **p, size_t);
+int MemcpyToSymbol(const void *symbol, const void *src, size_t count, size_t offset=0, int kind=MemcpyHostToDevice);
+int MemcpyFromSymbol(void *dst, const void *symbol, size_t count, size_t offset=0, int kind=MemcpyDeviceToHost);
+int HostGetDevicePointer(void **pDevice, void *pHost, unsigned int flags);
+int Memcpy (void *dst, const void *src, size_t count, int kind);
+int MemsetAsync (void *devPtr, int value, size_t count, Stream_t stream=0);
+int Memset (void *devPtr, int value, size_t count);
+int MemcpyAsync (void * dst, const void * src, size_t count, int kind, Stream_t stream = 0);
+int Free (void *devPtr);
+int FreeHost (void *hstPtr);
+int DeviceSynchronize (void);
+int PeekAtLastError(void);
+// end::api[]
+}
+/* end src/d/api.h */
+
+/* begin src/inc/type.h */
+#pragma once
+
+template <typename T, int N>
+struct Sarray { /* [s]tatic array */
+    T d[N];
+};
+
+struct Particle {
+    float r[3], v[3];
+};
+
+struct Rigid {
+    float Iinv[6],            /* moment of inertia            6        */
+        mass,                 /* mass of the solid            7        */
+        com[3],               /* [c]enter [o]f [m]ass         10       */
+        v[3], om[3],          /* linear and angular velocity  13 16    */
+        e0[3], e1[3], e2[3],  /* local referential            19 22 25 */
+        fo[3], to[3],         /* force, torque                28 31    */
+        id;                   /* id of the solid              32       */
+};
+
+struct Force {
+    float f[3];
+};
+
+struct Momentum {
+    float P[3], L[3]; /* linear and angular momentum */
+};
+
+struct Positioncp {
+    float rc[3]; /* current position  */
+    float rp[3]; /* previous position */
+};
+
+typedef Sarray<int, 26>       int26;
+typedef Sarray<int, 27>       int27;
+
+typedef Sarray<int*, 26>     intp26;
+typedef Sarray<Particle*, 26> Pap26;
+typedef Sarray<Force*,    26> Fop26;
+typedef Sarray<Momentum*, 26> Mop26;
+typedef Sarray<Positioncp*, 26> Pocpp26;
+
+/* particles wrap */
+struct PaWrap {
+    int n;
+    const Particle *pp;
+};
+
+/* forces wrap */
+struct FoWrap {
+    int n;
+    Force *ff;
+};
+/* end src/inc/type.h */
 /* begin src/inc/dev.h */
 /* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
@@ -52698,8 +65097,65 @@ static int   warpSize = 1;
 #define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
 #define DzeroA(P, n)   DsetA(P, 0, n)
 /* end src/inc/dev.h */
-/* already included: src/utils/texo.h */
-/* already included: src/utils/texo.dev.h */
+/* begin src/utils/texo.h */
+#pragma once
+
+/* 1D texture object template */
+static void sz_check(int n) {
+    if (n <            0 ) ERR("too small texo: %d", n);
+    if (n > MAX_TEXO_SIZE) ERR("too big texo: %d > %d", n, MAX_TEXO_SIZE);
+}
+
+// tag::struct[]
+template<typename T>
+struct Texo {
+    cudaTextureObject_t d;
+};
+// end::struct[]
+
+template<typename T>
+// tag::int[]
+void texo_setup(int n, T *data, /**/ Texo<T> *to)
+// end::int[]
+{
+    sz_check(n);
+
+    cudaResourceDesc resD;
+    cudaTextureDesc  texD;
+
+    memset(&resD, 0, sizeof(resD));
+    resD.resType = cudaResourceTypeLinear;
+    resD.res.linear.devPtr = data;
+    resD.res.linear.sizeInBytes = n * sizeof(T);
+    resD.res.linear.desc = cudaCreateChannelDesc<T>();
+
+    memset(&texD, 0, sizeof(texD));
+    texD.normalizedCoords = 0;
+    texD.readMode = cudaReadModeElementType;
+
+    CC(cudaCreateTextureObject(&to->d, &resD, &texD, NULL));
+}
+
+template<typename T>
+// tag::int[]
+void texo_destroy(/**/ Texo<T> *to)
+// end::int[]
+{
+    CC(cudaDestroyTextureObject(to->d));
+}
+/* end src/utils/texo.h */
+/* begin src/utils/texo.dev.h */
+#pragma once
+
+template<typename T>
+__device__ __forceinline__
+// tag::int[]
+const T texo_fetch(const Texo<T> t, const int i)
+// end::int[]
+{
+    return Tfetch(T, t.d, i);
+}
+/* end src/utils/texo.dev.h */
 /* begin src/mesh/triangles/type.h */
 #pragma once
 
@@ -52724,7 +65180,16 @@ void triangles_fin(Triangles*);
 /* [k]ernel [l]aunch macros */
 
 #if    defined(KL_RELEASE)
-/* already included: src/utils/kl/release.h */
+/* begin src/utils/kl/release.h */
+#define KL_BEFORE(s, C) if (!kl::safe(ESC C)) continue;
+#define KL_CALL(F, C, A) F<<<ESC C>>>A
+#define KL_AFTER(s)
+
+#ifndef UDX_KL_RELEASE_FUNCTIONS_DEFINED
+#define UDX_KL_RELEASE_FUNCTIONS_DEFINED
+namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
+#endif
+/* end src/utils/kl/release.h */
 #elif  defined(KL_NONE)
 /* begin src/utils/kl/none.h */
 #define KL_BEFORE(s, C)
@@ -52749,7 +65214,18 @@ namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
   #error KL_* is undefined
 #endif
 
-/* already included: src/utils/kl/common.h */
+/* begin src/utils/kl/common.h */
+namespace kl {
+#pragma once
+
+inline int safe0(dim3 i, dim3 j) {
+    msg(i.x, i.y, i.z,   j.x, j.y, j.z);
+    return i.x>0 && i.y>0 && i.z>0   &&   j.x>0 && j.y>0 && j.z>0;
+}
+inline int safe(dim3 i, dim3 j)                    { return safe0(i, j); }
+inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
+}
+/* end src/utils/kl/common.h */
 /* begin src/utils/kl/macro.h */
 #define ESC(...) __VA_ARGS__
 #define KL(F, C, A)                             \
@@ -53742,7 +66218,62 @@ void mesh_cylindrical_apply(MeshCylindrical *q, int m, Vectors *pos, /**/ double
 #include <vector_types.h>
 #include <math.h>
 
-/* already included: src/inc/type.h */
+/* begin src/inc/type.h */
+#pragma once
+
+template <typename T, int N>
+struct Sarray { /* [s]tatic array */
+    T d[N];
+};
+
+struct Particle {
+    float r[3], v[3];
+};
+
+struct Rigid {
+    float Iinv[6],            /* moment of inertia            6        */
+        mass,                 /* mass of the solid            7        */
+        com[3],               /* [c]enter [o]f [m]ass         10       */
+        v[3], om[3],          /* linear and angular velocity  13 16    */
+        e0[3], e1[3], e2[3],  /* local referential            19 22 25 */
+        fo[3], to[3],         /* force, torque                28 31    */
+        id;                   /* id of the solid              32       */
+};
+
+struct Force {
+    float f[3];
+};
+
+struct Momentum {
+    float P[3], L[3]; /* linear and angular momentum */
+};
+
+struct Positioncp {
+    float rc[3]; /* current position  */
+    float rp[3]; /* previous position */
+};
+
+typedef Sarray<int, 26>       int26;
+typedef Sarray<int, 27>       int27;
+
+typedef Sarray<int*, 26>     intp26;
+typedef Sarray<Particle*, 26> Pap26;
+typedef Sarray<Force*,    26> Fop26;
+typedef Sarray<Momentum*, 26> Mop26;
+typedef Sarray<Positioncp*, 26> Pocpp26;
+
+/* particles wrap */
+struct PaWrap {
+    int n;
+    const Particle *pp;
+};
+
+/* forces wrap */
+struct FoWrap {
+    int n;
+    Force *ff;
+};
+/* end src/inc/type.h */
 /* begin src/mesh/dist/imp.h */
 struct int4;
 float dist_from_mesh(int nt, const int4 *tt, const float *vv, const float *r0);
@@ -55793,7 +68324,68 @@ void msg_ini(int rank); // <1>
 void msg_print(const char *fmt, ...); // <2>
 // end::int[]
 /* end src/utils/msg.h */
-/* already included: src/math/dev.h */
+/* begin src/math/dev.h */
+/* use templates here because we might have mixed float/double */
+
+#define _HD_ __host__ __device__
+
+#pragma once
+
+template <typename T1, typename T2>
+_HD_ void scal(const T1 a, /*io*/ T2 *b) {
+    b->x *= a;
+    b->y *= a;
+    b->z *= a;
+}
+
+template <typename T1, typename T2>
+_HD_ void add(const T1 *a, /*io*/ T2 *b) {
+    b->x += a->x;
+    b->y += a->y;
+    b->z += a->z;
+}
+
+template <typename T1, typename T2, typename T3>
+_HD_ void diff(const T1 *a, const T2 *b, /**/ T3 *c) {
+    c->x = a->x - b->x;
+    c->y = a->y - b->y;
+    c->z = a->z - b->z;
+}
+
+template <typename T1, typename T2, typename T3>
+_HD_ T1 dot(const T2 *a, const T3 *b) {
+    return a->x * b->x + a->y * b->y + a->z * b->z;
+}
+
+template <typename T1, typename T2, typename T3>
+_HD_ void cross(const T1 *a, const T2 *b, /**/ T3 *c) {
+    c->x = a->y * b->z - a->z * b->y;
+    c->y = a->z * b->x - a->x * b->z;
+    c->z = a->x * b->y - a->y * b->x;
+}
+
+template <typename T1, typename T2, typename T3>
+_HD_ void scalmult(const T1 *a, const T2 x, /**/ const T3 *b) {
+    b->x = a->x * x;
+    b->y = a->y * x;
+    b->z = a->z * x;
+}
+
+
+template <typename T1, typename T2, typename T3, typename T4>
+_HD_ void apxb(const T1 *a, const T2 x, const T3 *b, /**/ T4 *c) {
+    c->x = a->x + x * b->x;
+    c->y = a->y + x * b->y;
+    c->z = a->z + x * b->z;
+}
+
+template <typename T1, typename T2, typename T3>
+_HD_ void axpy(const T1 a, const T2 *x, /*io*/ T3 *y) {
+    y->x += a * x->x;
+    y->y += a * x->y;
+    y->z += a * x->z;
+}
+/* end src/math/dev.h */
 /* begin src/mesh/force/kantor0/imp.h */
 struct float3;
 struct double3;
@@ -56317,7 +68909,68 @@ void msg_ini(int rank); // <1>
 void msg_print(const char *fmt, ...); // <2>
 // end::int[]
 /* end src/utils/msg.h */
-/* already included: src/math/dev.h */
+/* begin src/math/dev.h */
+/* use templates here because we might have mixed float/double */
+
+#define _HD_ __host__ __device__
+
+#pragma once
+
+template <typename T1, typename T2>
+_HD_ void scal(const T1 a, /*io*/ T2 *b) {
+    b->x *= a;
+    b->y *= a;
+    b->z *= a;
+}
+
+template <typename T1, typename T2>
+_HD_ void add(const T1 *a, /*io*/ T2 *b) {
+    b->x += a->x;
+    b->y += a->y;
+    b->z += a->z;
+}
+
+template <typename T1, typename T2, typename T3>
+_HD_ void diff(const T1 *a, const T2 *b, /**/ T3 *c) {
+    c->x = a->x - b->x;
+    c->y = a->y - b->y;
+    c->z = a->z - b->z;
+}
+
+template <typename T1, typename T2, typename T3>
+_HD_ T1 dot(const T2 *a, const T3 *b) {
+    return a->x * b->x + a->y * b->y + a->z * b->z;
+}
+
+template <typename T1, typename T2, typename T3>
+_HD_ void cross(const T1 *a, const T2 *b, /**/ T3 *c) {
+    c->x = a->y * b->z - a->z * b->y;
+    c->y = a->z * b->x - a->x * b->z;
+    c->z = a->x * b->y - a->y * b->x;
+}
+
+template <typename T1, typename T2, typename T3>
+_HD_ void scalmult(const T1 *a, const T2 x, /**/ const T3 *b) {
+    b->x = a->x * x;
+    b->y = a->y * x;
+    b->z = a->z * x;
+}
+
+
+template <typename T1, typename T2, typename T3, typename T4>
+_HD_ void apxb(const T1 *a, const T2 x, const T3 *b, /**/ T4 *c) {
+    c->x = a->x + x * b->x;
+    c->y = a->y + x * b->y;
+    c->z = a->z + x * b->z;
+}
+
+template <typename T1, typename T2, typename T3>
+_HD_ void axpy(const T1 a, const T2 *x, /*io*/ T3 *y) {
+    y->x += a * x->x;
+    y->y += a * x->y;
+    y->z += a * x->z;
+}
+/* end src/math/dev.h */
 /* begin src/mesh/force/kantor1/imp.h */
 struct double3;
 namespace force_kantor1_hst {
@@ -56793,8 +69446,78 @@ END
 #include <assert.h>
 #include <mpi.h>
 
-/* already included: src/inc/conf.h */
-/* already included: src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
 
 /* begin src/coords/imp.h */
 struct Coords;
@@ -56871,8 +69594,117 @@ int coords_size(const Coords *c);
 // end::int[]
 /* end src/coords/imp.h */
 
-/* already included: src/inc/def.h */
-/* already included: src/inc/type.h */
+/* begin src/inc/def.h */
+/* solvent colors */
+#define XMACRO_COLOR(_)                         \
+    _(BLUE)                                     \
+    _(RED)
+
+#define ENUM_COLOR(a) a##_COLOR
+#define make_enum_color(a) ENUM_COLOR(a) ,
+#ifndef UDX_DEF_ENUMS_DEFINED
+#define UDX_DEF_ENUMS_DEFINED
+enum {
+    XMACRO_COLOR(make_enum_color)
+    N_COLOR
+};
+#undef make_enum_color
+
+enum {
+    /* wall margins */
+    XWM = 6,
+    YWM = 6,
+    ZWM = 6,
+
+    SAFETY_FACTOR_MAXP = 3,
+
+    /* maximum number of particles per solid */
+    MAX_PSOLID_NUM = 12000,
+
+    /* maximum number of solids per node */
+    MAX_SOLIDS = 100,
+
+    /* maximum number of object types (solid, rbc, ...) */
+    MAX_MBR_TYPES = 2,
+    MAX_RIG_TYPES = 2,
+    MAX_OBJ_TYPES = MAX_MBR_TYPES + MAX_RIG_TYPES,
+
+    /* maximum number density of particles of the objects */
+    MAX_OBJ_DENSITY = 30,
+
+    /* maximum number of red blood cells per node */
+    MAX_CELL_NUM = 1500,
+
+    /* maximum texture size in bytes */
+    MAX_TEXO_SIZE = 100000000,
+
+    /* safety factor for dpd halo interactions */
+    HSAFETY_FACTOR = 10,
+
+    /* safety factor for odist fragments */
+    ODSTR_FACTOR = 3,
+};
+#endif
+
+/* for the spring forces r = min(lmax*RBC_SPRING_CAP, r) */
+#define RBC_SPRING_CAP (0.99)
+/* end src/inc/def.h */
+/* begin src/inc/type.h */
+#pragma once
+
+template <typename T, int N>
+struct Sarray { /* [s]tatic array */
+    T d[N];
+};
+
+struct Particle {
+    float r[3], v[3];
+};
+
+struct Rigid {
+    float Iinv[6],            /* moment of inertia            6        */
+        mass,                 /* mass of the solid            7        */
+        com[3],               /* [c]enter [o]f [m]ass         10       */
+        v[3], om[3],          /* linear and angular velocity  13 16    */
+        e0[3], e1[3], e2[3],  /* local referential            19 22 25 */
+        fo[3], to[3],         /* force, torque                28 31    */
+        id;                   /* id of the solid              32       */
+};
+
+struct Force {
+    float f[3];
+};
+
+struct Momentum {
+    float P[3], L[3]; /* linear and angular momentum */
+};
+
+struct Positioncp {
+    float rc[3]; /* current position  */
+    float rp[3]; /* previous position */
+};
+
+typedef Sarray<int, 26>       int26;
+typedef Sarray<int, 27>       int27;
+
+typedef Sarray<int*, 26>     intp26;
+typedef Sarray<Particle*, 26> Pap26;
+typedef Sarray<Force*,    26> Fop26;
+typedef Sarray<Momentum*, 26> Mop26;
+typedef Sarray<Positioncp*, 26> Pocpp26;
+
+/* particles wrap */
+struct PaWrap {
+    int n;
+    const Particle *pp;
+};
+
+/* forces wrap */
+struct FoWrap {
+    int n;
+    Force *ff;
+};
+/* end src/inc/type.h */
 
 /* begin src/utils/msg.h */
 // tag::int[]
@@ -58112,7 +70944,62 @@ void matrices_fin(Matrices *q) { EFREE(q->m); EFREE(q); }
 #include <vector_types.h>
 #include <string.h>
 
-/* already included: src/inc/type.h */
+/* begin src/inc/type.h */
+#pragma once
+
+template <typename T, int N>
+struct Sarray { /* [s]tatic array */
+    T d[N];
+};
+
+struct Particle {
+    float r[3], v[3];
+};
+
+struct Rigid {
+    float Iinv[6],            /* moment of inertia            6        */
+        mass,                 /* mass of the solid            7        */
+        com[3],               /* [c]enter [o]f [m]ass         10       */
+        v[3], om[3],          /* linear and angular velocity  13 16    */
+        e0[3], e1[3], e2[3],  /* local referential            19 22 25 */
+        fo[3], to[3],         /* force, torque                28 31    */
+        id;                   /* id of the solid              32       */
+};
+
+struct Force {
+    float f[3];
+};
+
+struct Momentum {
+    float P[3], L[3]; /* linear and angular momentum */
+};
+
+struct Positioncp {
+    float rc[3]; /* current position  */
+    float rp[3]; /* previous position */
+};
+
+typedef Sarray<int, 26>       int26;
+typedef Sarray<int, 27>       int27;
+
+typedef Sarray<int*, 26>     intp26;
+typedef Sarray<Particle*, 26> Pap26;
+typedef Sarray<Force*,    26> Fop26;
+typedef Sarray<Momentum*, 26> Mop26;
+typedef Sarray<Positioncp*, 26> Pocpp26;
+
+/* particles wrap */
+struct PaWrap {
+    int n;
+    const Particle *pp;
+};
+
+/* forces wrap */
+struct FoWrap {
+    int n;
+    Force *ff;
+};
+/* end src/inc/type.h */
 /* begin src/mesh/props/imp.h */
 struct int4;
 float mesh_volume0(int nt, const int4 *tt, const float *vv);
@@ -60093,10 +72980,111 @@ void mesh_tri_area_apply(MeshTriArea *q, int m, Vectors *p, double *area0) {
 #include <stdio.h>
 #include <vector_types.h>
 
-/* already included: src/inc/conf.h */
-/* already included: src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
 
-/* already included: src/d/api.h */
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
+
+/* begin src/d/api.h */
+#pragma once
+
+namespace d {  /* a wrapper for device API */
+typedef int Stream_t; /* TODO: streams are not supported */
+enum {MemcpyHostToHost, MemcpyHostToDevice,
+      MemcpyDeviceToHost, MemcpyDeviceToDevice,
+      MemcpyDefault};
+
+// tag::more[]
+const char *emsg();
+int alloc_pinned(void **pHost, size_t size);
+int is_device_pointer(const void *ptr);
+// end::more[]
+
+// tag::api[]
+int GetSymbolAddress(void **devPtr, const void *symbol);
+int Malloc(void **p, size_t);
+int MemcpyToSymbol(const void *symbol, const void *src, size_t count, size_t offset=0, int kind=MemcpyHostToDevice);
+int MemcpyFromSymbol(void *dst, const void *symbol, size_t count, size_t offset=0, int kind=MemcpyDeviceToHost);
+int HostGetDevicePointer(void **pDevice, void *pHost, unsigned int flags);
+int Memcpy (void *dst, const void *src, size_t count, int kind);
+int MemsetAsync (void *devPtr, int value, size_t count, Stream_t stream=0);
+int Memset (void *devPtr, int value, size_t count);
+int MemcpyAsync (void * dst, const void * src, size_t count, int kind, Stream_t stream = 0);
+int Free (void *devPtr);
+int FreeHost (void *hstPtr);
+int DeviceSynchronize (void);
+int PeekAtLastError(void);
+// end::api[]
+}
+/* end src/d/api.h */
 /* begin src/inc/dev.h */
 /* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
@@ -60257,7 +73245,16 @@ const int4  *mesh_read_get_dih(MeshRead*);
 // end::interface[]
 /* end src/io/mesh_read/imp.h */
 
-/* already included: src/mesh/triangles/type.h */
+/* begin src/mesh/triangles/type.h */
+#pragma once
+
+// tag::interface[]
+struct Triangles {
+    int4 *tt;
+    int nt;
+};
+// end::interface[]
+/* end src/mesh/triangles/type.h */
 /* begin src/mesh/triangles/imp.h */
 struct Triangles;
 struct MeshRead;
@@ -61641,8 +74638,78 @@ double mesh_volume_apply0(MeshVolume *q, Vectors *positions) {
 #include <assert.h>
 #include <stdio.h>
 
-/* already included: src/inc/conf.h */
-/* already included: src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
 
 /* begin src/utils/msg.h */
 // tag::int[]
@@ -61760,7 +74827,16 @@ void error_print_stack();
 /* [k]ernel [l]aunch macros */
 
 #if    defined(KL_RELEASE)
-/* already included: src/utils/kl/release.h */
+/* begin src/utils/kl/release.h */
+#define KL_BEFORE(s, C) if (!kl::safe(ESC C)) continue;
+#define KL_CALL(F, C, A) F<<<ESC C>>>A
+#define KL_AFTER(s)
+
+#ifndef UDX_KL_RELEASE_FUNCTIONS_DEFINED
+#define UDX_KL_RELEASE_FUNCTIONS_DEFINED
+namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
+#endif
+/* end src/utils/kl/release.h */
 #elif  defined(KL_NONE)
 /* begin src/utils/kl/none.h */
 #define KL_BEFORE(s, C)
@@ -61785,7 +74861,18 @@ namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
   #error KL_* is undefined
 #endif
 
-/* already included: src/utils/kl/common.h */
+/* begin src/utils/kl/common.h */
+namespace kl {
+#pragma once
+
+inline int safe0(dim3 i, dim3 j) {
+    msg(i.x, i.y, i.z,   j.x, j.y, j.z);
+    return i.x>0 && i.y>0 && i.z>0   &&   j.x>0 && j.y>0 && j.z>0;
+}
+inline int safe(dim3 i, dim3 j)                    { return safe0(i, j); }
+inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
+}
+/* end src/utils/kl/common.h */
 /* begin src/utils/kl/macro.h */
 #define ESC(...) __VA_ARGS__
 #define KL(F, C, A)                             \
@@ -61831,10 +74918,157 @@ void check(int rc, const char *file, int line);
 
 /* TODO: header includes header */
 /* end src/utils/cc.h */
-/* already included: src/inc/type.h */
-/* already included: src/d/api.h */
+/* begin src/inc/type.h */
+#pragma once
 
-/* already included: src/math/dev.h */
+template <typename T, int N>
+struct Sarray { /* [s]tatic array */
+    T d[N];
+};
+
+struct Particle {
+    float r[3], v[3];
+};
+
+struct Rigid {
+    float Iinv[6],            /* moment of inertia            6        */
+        mass,                 /* mass of the solid            7        */
+        com[3],               /* [c]enter [o]f [m]ass         10       */
+        v[3], om[3],          /* linear and angular velocity  13 16    */
+        e0[3], e1[3], e2[3],  /* local referential            19 22 25 */
+        fo[3], to[3],         /* force, torque                28 31    */
+        id;                   /* id of the solid              32       */
+};
+
+struct Force {
+    float f[3];
+};
+
+struct Momentum {
+    float P[3], L[3]; /* linear and angular momentum */
+};
+
+struct Positioncp {
+    float rc[3]; /* current position  */
+    float rp[3]; /* previous position */
+};
+
+typedef Sarray<int, 26>       int26;
+typedef Sarray<int, 27>       int27;
+
+typedef Sarray<int*, 26>     intp26;
+typedef Sarray<Particle*, 26> Pap26;
+typedef Sarray<Force*,    26> Fop26;
+typedef Sarray<Momentum*, 26> Mop26;
+typedef Sarray<Positioncp*, 26> Pocpp26;
+
+/* particles wrap */
+struct PaWrap {
+    int n;
+    const Particle *pp;
+};
+
+/* forces wrap */
+struct FoWrap {
+    int n;
+    Force *ff;
+};
+/* end src/inc/type.h */
+/* begin src/d/api.h */
+#pragma once
+
+namespace d {  /* a wrapper for device API */
+typedef int Stream_t; /* TODO: streams are not supported */
+enum {MemcpyHostToHost, MemcpyHostToDevice,
+      MemcpyDeviceToHost, MemcpyDeviceToDevice,
+      MemcpyDefault};
+
+// tag::more[]
+const char *emsg();
+int alloc_pinned(void **pHost, size_t size);
+int is_device_pointer(const void *ptr);
+// end::more[]
+
+// tag::api[]
+int GetSymbolAddress(void **devPtr, const void *symbol);
+int Malloc(void **p, size_t);
+int MemcpyToSymbol(const void *symbol, const void *src, size_t count, size_t offset=0, int kind=MemcpyHostToDevice);
+int MemcpyFromSymbol(void *dst, const void *symbol, size_t count, size_t offset=0, int kind=MemcpyDeviceToHost);
+int HostGetDevicePointer(void **pDevice, void *pHost, unsigned int flags);
+int Memcpy (void *dst, const void *src, size_t count, int kind);
+int MemsetAsync (void *devPtr, int value, size_t count, Stream_t stream=0);
+int Memset (void *devPtr, int value, size_t count);
+int MemcpyAsync (void * dst, const void * src, size_t count, int kind, Stream_t stream = 0);
+int Free (void *devPtr);
+int FreeHost (void *hstPtr);
+int DeviceSynchronize (void);
+int PeekAtLastError(void);
+// end::api[]
+}
+/* end src/d/api.h */
+
+/* begin src/math/dev.h */
+/* use templates here because we might have mixed float/double */
+
+#define _HD_ __host__ __device__
+
+#pragma once
+
+template <typename T1, typename T2>
+_HD_ void scal(const T1 a, /*io*/ T2 *b) {
+    b->x *= a;
+    b->y *= a;
+    b->z *= a;
+}
+
+template <typename T1, typename T2>
+_HD_ void add(const T1 *a, /*io*/ T2 *b) {
+    b->x += a->x;
+    b->y += a->y;
+    b->z += a->z;
+}
+
+template <typename T1, typename T2, typename T3>
+_HD_ void diff(const T1 *a, const T2 *b, /**/ T3 *c) {
+    c->x = a->x - b->x;
+    c->y = a->y - b->y;
+    c->z = a->z - b->z;
+}
+
+template <typename T1, typename T2, typename T3>
+_HD_ T1 dot(const T2 *a, const T3 *b) {
+    return a->x * b->x + a->y * b->y + a->z * b->z;
+}
+
+template <typename T1, typename T2, typename T3>
+_HD_ void cross(const T1 *a, const T2 *b, /**/ T3 *c) {
+    c->x = a->y * b->z - a->z * b->y;
+    c->y = a->z * b->x - a->x * b->z;
+    c->z = a->x * b->y - a->y * b->x;
+}
+
+template <typename T1, typename T2, typename T3>
+_HD_ void scalmult(const T1 *a, const T2 x, /**/ const T3 *b) {
+    b->x = a->x * x;
+    b->y = a->y * x;
+    b->z = a->z * x;
+}
+
+
+template <typename T1, typename T2, typename T3, typename T4>
+_HD_ void apxb(const T1 *a, const T2 x, const T3 *b, /**/ T4 *c) {
+    c->x = a->x + x * b->x;
+    c->y = a->y + x * b->y;
+    c->z = a->z + x * b->z;
+}
+
+template <typename T1, typename T2, typename T3>
+_HD_ void axpy(const T1 a, const T2 *x, /*io*/ T3 *y) {
+    y->x += a * x->x;
+    y->y += a * x->y;
+    y->z += a * x->z;
+}
+/* end src/math/dev.h */
 
 /* begin src/mesh_bounce/imp.h */
 #pragma once
@@ -63099,8 +76333,78 @@ void mesh_bounce_collect_rbc_momentum(float mass, int nc, MeshInfo mi, const Mom
 #include <string.h>
 #include <mpi.h>
 
-/* already included: src/inc/conf.h */
-/* already included: src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
 
 /* begin src/mpi/wrapper.h */
 namespace m {
@@ -63153,7 +76457,42 @@ int is_err_in_status(int errorcode);
 int status2errcode(MPI_Status *status);
 }
 /* end src/mpi/wrapper.h */
-/* already included: src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
 /* begin src/utils/mc.h */
 /* [m]pi [c]heck macros */
 #define MC(ans)                                                         \
@@ -64155,8 +77494,111 @@ void conf_write_history(const Config *cfg, FILE *stream); // <2>
 // end::dump[]
 /* end src/conf/imp.h */
 
-/* already included: src/inc/def.h */
-/* already included: src/pair/type.h */
+/* begin src/inc/def.h */
+/* solvent colors */
+#define XMACRO_COLOR(_)                         \
+    _(BLUE)                                     \
+    _(RED)
+
+#define ENUM_COLOR(a) a##_COLOR
+#define make_enum_color(a) ENUM_COLOR(a) ,
+#ifndef UDX_DEF_ENUMS_DEFINED
+#define UDX_DEF_ENUMS_DEFINED
+enum {
+    XMACRO_COLOR(make_enum_color)
+    N_COLOR
+};
+#undef make_enum_color
+
+enum {
+    /* wall margins */
+    XWM = 6,
+    YWM = 6,
+    ZWM = 6,
+
+    SAFETY_FACTOR_MAXP = 3,
+
+    /* maximum number of particles per solid */
+    MAX_PSOLID_NUM = 12000,
+
+    /* maximum number of solids per node */
+    MAX_SOLIDS = 100,
+
+    /* maximum number of object types (solid, rbc, ...) */
+    MAX_MBR_TYPES = 2,
+    MAX_RIG_TYPES = 2,
+    MAX_OBJ_TYPES = MAX_MBR_TYPES + MAX_RIG_TYPES,
+
+    /* maximum number density of particles of the objects */
+    MAX_OBJ_DENSITY = 30,
+
+    /* maximum number of red blood cells per node */
+    MAX_CELL_NUM = 1500,
+
+    /* maximum texture size in bytes */
+    MAX_TEXO_SIZE = 100000000,
+
+    /* safety factor for dpd halo interactions */
+    HSAFETY_FACTOR = 10,
+
+    /* safety factor for odist fragments */
+    ODSTR_FACTOR = 3,
+};
+#endif
+
+/* for the spring forces r = min(lmax*RBC_SPRING_CAP, r) */
+#define RBC_SPRING_CAP (0.99)
+/* end src/inc/def.h */
+/* begin src/pair/type.h */
+#pragma once
+
+/* maximum of pairwise dpd parameters */
+enum {
+    MAX_PAR = (N_COLOR * (N_COLOR + 1)) / 2
+};
+
+
+struct PairDPD {
+    float a, g, s, spow;
+};
+
+struct PairDPDC {
+    int ncolors;
+    float a[MAX_PAR], g[MAX_PAR], s[MAX_PAR], spow;
+};
+
+/* mirrored */
+struct PairDPDCM {
+    int ncolors;
+    float a[N_COLOR], g[N_COLOR], s[N_COLOR], spow;
+};
+
+struct PairDPDLJ {
+    float a, g, s, spow;
+    float ljs, lje;
+};
+
+struct PairAdhesion {
+    float k1, k2;
+};
+
+struct PairPa {
+    float x, y, z;
+    float vx, vy, vz;
+    /* optional fields */
+    int color;
+};
+
+struct PairFo {
+    float x, y, z;
+};
+
+struct PairSFo {
+    float x, y, z;
+    /* stress */
+    float sxx, syy, szz, sxy, sxz, syz;
+};
+/* end src/pair/type.h */
 /* begin src/pair/imp.h */
 struct PairParams;
 struct Config;
@@ -64546,7 +77988,42 @@ void pair_set_conf(const Config *cfg, const char *ns, PairParams *par) {
 #include <string.h>
 #include <math.h>
 
-/* already included: src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
 
 /* begin src/utils/error.h */
 #define ERR(fmt, ...)  do {                                     \
@@ -64616,7 +78093,61 @@ const char* get_filename_ext(const char*);
 // end::tools[]
 /* end src/utils/imp.h */
 
-/* already included: src/inc/def.h */
+/* begin src/inc/def.h */
+/* solvent colors */
+#define XMACRO_COLOR(_)                         \
+    _(BLUE)                                     \
+    _(RED)
+
+#define ENUM_COLOR(a) a##_COLOR
+#define make_enum_color(a) ENUM_COLOR(a) ,
+#ifndef UDX_DEF_ENUMS_DEFINED
+#define UDX_DEF_ENUMS_DEFINED
+enum {
+    XMACRO_COLOR(make_enum_color)
+    N_COLOR
+};
+#undef make_enum_color
+
+enum {
+    /* wall margins */
+    XWM = 6,
+    YWM = 6,
+    ZWM = 6,
+
+    SAFETY_FACTOR_MAXP = 3,
+
+    /* maximum number of particles per solid */
+    MAX_PSOLID_NUM = 12000,
+
+    /* maximum number of solids per node */
+    MAX_SOLIDS = 100,
+
+    /* maximum number of object types (solid, rbc, ...) */
+    MAX_MBR_TYPES = 2,
+    MAX_RIG_TYPES = 2,
+    MAX_OBJ_TYPES = MAX_MBR_TYPES + MAX_RIG_TYPES,
+
+    /* maximum number density of particles of the objects */
+    MAX_OBJ_DENSITY = 30,
+
+    /* maximum number of red blood cells per node */
+    MAX_CELL_NUM = 1500,
+
+    /* maximum texture size in bytes */
+    MAX_TEXO_SIZE = 100000000,
+
+    /* safety factor for dpd halo interactions */
+    HSAFETY_FACTOR = 10,
+
+    /* safety factor for odist fragments */
+    ODSTR_FACTOR = 3,
+};
+#endif
+
+/* for the spring forces r = min(lmax*RBC_SPRING_CAP, r) */
+#define RBC_SPRING_CAP (0.99)
+/* end src/inc/def.h */
 /* begin src/pair/imp.h */
 struct PairParams;
 struct Config;
@@ -64654,7 +78185,56 @@ void pair_get_view_dpd_lj(const PairParams*, PairDPDLJ*);
 // end::view[]
 void pair_get_view_adhesion(const PairParams*, PairAdhesion*);
 /* end src/pair/imp.h */
-/* already included: src/pair/type.h */
+/* begin src/pair/type.h */
+#pragma once
+
+/* maximum of pairwise dpd parameters */
+enum {
+    MAX_PAR = (N_COLOR * (N_COLOR + 1)) / 2
+};
+
+
+struct PairDPD {
+    float a, g, s, spow;
+};
+
+struct PairDPDC {
+    int ncolors;
+    float a[MAX_PAR], g[MAX_PAR], s[MAX_PAR], spow;
+};
+
+/* mirrored */
+struct PairDPDCM {
+    int ncolors;
+    float a[N_COLOR], g[N_COLOR], s[N_COLOR], spow;
+};
+
+struct PairDPDLJ {
+    float a, g, s, spow;
+    float ljs, lje;
+};
+
+struct PairAdhesion {
+    float k1, k2;
+};
+
+struct PairPa {
+    float x, y, z;
+    float vx, vy, vz;
+    /* optional fields */
+    int color;
+};
+
+struct PairFo {
+    float x, y, z;
+};
+
+struct PairSFo {
+    float x, y, z;
+    /* stress */
+    float sxx, syy, szz, sxy, sxz, syz;
+};
+/* end src/pair/type.h */
 
 /* begin src/pair/imp/type.h */
 struct PairParams {
@@ -65099,8 +78679,78 @@ void pair_get_view_adhesion(const PairParams *p, PairAdhesion *v) {
 #include <assert.h>
 #include <vector_types.h>
 
-/* already included: src/inc/conf.h */
-/* already included: src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
 
 /* begin src/utils/error.h */
 #define ERR(fmt, ...)  do {                                     \
@@ -65177,7 +78827,38 @@ void msg_print(const char *fmt, ...); // <2>
 // end::int[]
 /* end src/utils/msg.h */
 
-/* already included: src/d/api.h */
+/* begin src/d/api.h */
+#pragma once
+
+namespace d {  /* a wrapper for device API */
+typedef int Stream_t; /* TODO: streams are not supported */
+enum {MemcpyHostToHost, MemcpyHostToDevice,
+      MemcpyDeviceToHost, MemcpyDeviceToDevice,
+      MemcpyDefault};
+
+// tag::more[]
+const char *emsg();
+int alloc_pinned(void **pHost, size_t size);
+int is_device_pointer(const void *ptr);
+// end::more[]
+
+// tag::api[]
+int GetSymbolAddress(void **devPtr, const void *symbol);
+int Malloc(void **p, size_t);
+int MemcpyToSymbol(const void *symbol, const void *src, size_t count, size_t offset=0, int kind=MemcpyHostToDevice);
+int MemcpyFromSymbol(void *dst, const void *symbol, size_t count, size_t offset=0, int kind=MemcpyDeviceToHost);
+int HostGetDevicePointer(void **pDevice, void *pHost, unsigned int flags);
+int Memcpy (void *dst, const void *src, size_t count, int kind);
+int MemsetAsync (void *devPtr, int value, size_t count, Stream_t stream=0);
+int Memset (void *devPtr, int value, size_t count);
+int MemcpyAsync (void * dst, const void * src, size_t count, int kind, Stream_t stream = 0);
+int Free (void *devPtr);
+int FreeHost (void *hstPtr);
+int DeviceSynchronize (void);
+int PeekAtLastError(void);
+// end::api[]
+}
+/* end src/d/api.h */
 /* begin src/utils/cc.h */
 /* [c]uda [c]heck macros */
 
@@ -65770,11 +79451,190 @@ void adj_get_anti(const Adj *adj, /**/ int *anti) {
 #include <stdio.h>
 #include <assert.h>
 
-/* already included: src/inc/conf.h */
-/* already included: src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
 
-/* already included: src/inc/def.h */
-/* already included: src/inc/type.h */
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
+
+/* begin src/inc/def.h */
+/* solvent colors */
+#define XMACRO_COLOR(_)                         \
+    _(BLUE)                                     \
+    _(RED)
+
+#define ENUM_COLOR(a) a##_COLOR
+#define make_enum_color(a) ENUM_COLOR(a) ,
+#ifndef UDX_DEF_ENUMS_DEFINED
+#define UDX_DEF_ENUMS_DEFINED
+enum {
+    XMACRO_COLOR(make_enum_color)
+    N_COLOR
+};
+#undef make_enum_color
+
+enum {
+    /* wall margins */
+    XWM = 6,
+    YWM = 6,
+    ZWM = 6,
+
+    SAFETY_FACTOR_MAXP = 3,
+
+    /* maximum number of particles per solid */
+    MAX_PSOLID_NUM = 12000,
+
+    /* maximum number of solids per node */
+    MAX_SOLIDS = 100,
+
+    /* maximum number of object types (solid, rbc, ...) */
+    MAX_MBR_TYPES = 2,
+    MAX_RIG_TYPES = 2,
+    MAX_OBJ_TYPES = MAX_MBR_TYPES + MAX_RIG_TYPES,
+
+    /* maximum number density of particles of the objects */
+    MAX_OBJ_DENSITY = 30,
+
+    /* maximum number of red blood cells per node */
+    MAX_CELL_NUM = 1500,
+
+    /* maximum texture size in bytes */
+    MAX_TEXO_SIZE = 100000000,
+
+    /* safety factor for dpd halo interactions */
+    HSAFETY_FACTOR = 10,
+
+    /* safety factor for odist fragments */
+    ODSTR_FACTOR = 3,
+};
+#endif
+
+/* for the spring forces r = min(lmax*RBC_SPRING_CAP, r) */
+#define RBC_SPRING_CAP (0.99)
+/* end src/inc/def.h */
+/* begin src/inc/type.h */
+#pragma once
+
+template <typename T, int N>
+struct Sarray { /* [s]tatic array */
+    T d[N];
+};
+
+struct Particle {
+    float r[3], v[3];
+};
+
+struct Rigid {
+    float Iinv[6],            /* moment of inertia            6        */
+        mass,                 /* mass of the solid            7        */
+        com[3],               /* [c]enter [o]f [m]ass         10       */
+        v[3], om[3],          /* linear and angular velocity  13 16    */
+        e0[3], e1[3], e2[3],  /* local referential            19 22 25 */
+        fo[3], to[3],         /* force, torque                28 31    */
+        id;                   /* id of the solid              32       */
+};
+
+struct Force {
+    float f[3];
+};
+
+struct Momentum {
+    float P[3], L[3]; /* linear and angular momentum */
+};
+
+struct Positioncp {
+    float rc[3]; /* current position  */
+    float rp[3]; /* previous position */
+};
+
+typedef Sarray<int, 26>       int26;
+typedef Sarray<int, 27>       int27;
+
+typedef Sarray<int*, 26>     intp26;
+typedef Sarray<Particle*, 26> Pap26;
+typedef Sarray<Force*,    26> Fop26;
+typedef Sarray<Momentum*, 26> Mop26;
+typedef Sarray<Positioncp*, 26> Pocpp26;
+
+/* particles wrap */
+struct PaWrap {
+    int n;
+    const Particle *pp;
+};
+
+/* forces wrap */
+struct FoWrap {
+    int n;
+    Force *ff;
+};
+/* end src/inc/type.h */
 /* begin src/inc/dev.h */
 /* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
@@ -65814,7 +79674,68 @@ void adj_get_anti(const Adj *adj, /**/ int *anti) {
 #define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
 #define DzeroA(P, n)   DsetA(P, 0, n)
 /* end src/inc/dev.h */
-/* already included: src/math/dev.h */
+/* begin src/math/dev.h */
+/* use templates here because we might have mixed float/double */
+
+#define _HD_ __host__ __device__
+
+#pragma once
+
+template <typename T1, typename T2>
+_HD_ void scal(const T1 a, /*io*/ T2 *b) {
+    b->x *= a;
+    b->y *= a;
+    b->z *= a;
+}
+
+template <typename T1, typename T2>
+_HD_ void add(const T1 *a, /*io*/ T2 *b) {
+    b->x += a->x;
+    b->y += a->y;
+    b->z += a->z;
+}
+
+template <typename T1, typename T2, typename T3>
+_HD_ void diff(const T1 *a, const T2 *b, /**/ T3 *c) {
+    c->x = a->x - b->x;
+    c->y = a->y - b->y;
+    c->z = a->z - b->z;
+}
+
+template <typename T1, typename T2, typename T3>
+_HD_ T1 dot(const T2 *a, const T3 *b) {
+    return a->x * b->x + a->y * b->y + a->z * b->z;
+}
+
+template <typename T1, typename T2, typename T3>
+_HD_ void cross(const T1 *a, const T2 *b, /**/ T3 *c) {
+    c->x = a->y * b->z - a->z * b->y;
+    c->y = a->z * b->x - a->x * b->z;
+    c->z = a->x * b->y - a->y * b->x;
+}
+
+template <typename T1, typename T2, typename T3>
+_HD_ void scalmult(const T1 *a, const T2 x, /**/ const T3 *b) {
+    b->x = a->x * x;
+    b->y = a->y * x;
+    b->z = a->z * x;
+}
+
+
+template <typename T1, typename T2, typename T3, typename T4>
+_HD_ void apxb(const T1 *a, const T2 x, const T3 *b, /**/ T4 *c) {
+    c->x = a->x + x * b->x;
+    c->y = a->y + x * b->y;
+    c->z = a->z + x * b->z;
+}
+
+template <typename T1, typename T2, typename T3>
+_HD_ void axpy(const T1 a, const T2 *x, /*io*/ T3 *y) {
+    y->x += a * x->x;
+    y->y += a * x->y;
+    y->z += a * x->z;
+}
+/* end src/math/dev.h */
 
 /* begin src/utils/msg.h */
 // tag::int[]
@@ -65952,7 +79873,38 @@ const char* get_filename_ext(const char*);
   #error DEV_* is undefined
 #endif
 /* end src/d/q.h */
-/* already included: src/d/api.h */
+/* begin src/d/api.h */
+#pragma once
+
+namespace d {  /* a wrapper for device API */
+typedef int Stream_t; /* TODO: streams are not supported */
+enum {MemcpyHostToHost, MemcpyHostToDevice,
+      MemcpyDeviceToHost, MemcpyDeviceToDevice,
+      MemcpyDefault};
+
+// tag::more[]
+const char *emsg();
+int alloc_pinned(void **pHost, size_t size);
+int is_device_pointer(const void *ptr);
+// end::more[]
+
+// tag::api[]
+int GetSymbolAddress(void **devPtr, const void *symbol);
+int Malloc(void **p, size_t);
+int MemcpyToSymbol(const void *symbol, const void *src, size_t count, size_t offset=0, int kind=MemcpyHostToDevice);
+int MemcpyFromSymbol(void *dst, const void *symbol, size_t count, size_t offset=0, int kind=MemcpyDeviceToHost);
+int HostGetDevicePointer(void **pDevice, void *pHost, unsigned int flags);
+int Memcpy (void *dst, const void *src, size_t count, int kind);
+int MemsetAsync (void *devPtr, int value, size_t count, Stream_t stream=0);
+int Memset (void *devPtr, int value, size_t count);
+int MemcpyAsync (void * dst, const void * src, size_t count, int kind, Stream_t stream = 0);
+int Free (void *devPtr);
+int FreeHost (void *hstPtr);
+int DeviceSynchronize (void);
+int PeekAtLastError(void);
+// end::api[]
+}
+/* end src/d/api.h */
 /* begin src/d/ker.h */
 #if   defined(DEV_CUDA)
 /* begin src/d/cuda/ker.h */
@@ -66044,7 +79996,16 @@ void check(int rc, const char *file, int line);
 /* [k]ernel [l]aunch macros */
 
 #if    defined(KL_RELEASE)
-/* already included: src/utils/kl/release.h */
+/* begin src/utils/kl/release.h */
+#define KL_BEFORE(s, C) if (!kl::safe(ESC C)) continue;
+#define KL_CALL(F, C, A) F<<<ESC C>>>A
+#define KL_AFTER(s)
+
+#ifndef UDX_KL_RELEASE_FUNCTIONS_DEFINED
+#define UDX_KL_RELEASE_FUNCTIONS_DEFINED
+namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
+#endif
+/* end src/utils/kl/release.h */
 #elif  defined(KL_NONE)
 /* begin src/utils/kl/none.h */
 #define KL_BEFORE(s, C)
@@ -66069,7 +80030,18 @@ namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
   #error KL_* is undefined
 #endif
 
-/* already included: src/utils/kl/common.h */
+/* begin src/utils/kl/common.h */
+namespace kl {
+#pragma once
+
+inline int safe0(dim3 i, dim3 j) {
+    msg(i.x, i.y, i.z,   j.x, j.y, j.z);
+    return i.x>0 && i.y>0 && i.z>0   &&   j.x>0 && j.y>0 && j.z>0;
+}
+inline int safe(dim3 i, dim3 j)                    { return safe0(i, j); }
+inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
+}
+/* end src/utils/kl/common.h */
 /* begin src/utils/kl/macro.h */
 #define ESC(...) __VA_ARGS__
 #define KL(F, C, A)                             \
@@ -66082,8 +80054,86 @@ namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
 
 /* TODO: header includes header */
 /* end src/utils/kl.h */
-/* already included: src/algo/utils/shfl.h */
-/* already included: src/algo/utils/dev.h */
+/* begin src/algo/utils/shfl.h */
+#define _I_ static __device__
+
+#if __CUDACC_VER_MAJOR__ >= 9
+#pragma once
+
+template <typename T>
+_I_ T shfl_down(T val, unsigned int width) {
+    return __shfl_down_sync(0xFFFFFFFF, val, width);
+}
+
+template <typename T>
+_I_ T shfl_up(T val, unsigned int width) {
+    return __shfl_up_sync(0xFFFFFFFF, val, width);
+}
+template <typename T>
+_I_ T shfl(T val, unsigned int width) {
+    return __shfl_sync(0xFFFFFFFF, val, width);
+}
+#else
+template <typename T>
+_I_ T shfl_down(T val, unsigned int width) {
+    return __shfl_down(val, width);
+}
+
+template <typename T>
+_I_ T shfl_up(T val, unsigned int width) {
+    return __shfl_up(val, width);
+}
+template <typename T>
+_I_ T shfl(T val, unsigned int width) {
+    return __shfl(val, width);
+}
+#endif
+
+#undef _I_
+/* end src/algo/utils/shfl.h */
+/* begin src/algo/utils/dev.h */
+#define _S_ static __device__
+#define _I_ static __device__
+
+// tag::int[]
+#pragma once
+
+template <typename T>
+_I_ T warpReduceSum(T v)  // <1>
+// end::int[]
+{
+    for (int offset = warpSize>>1; offset > 0; offset >>= 1)
+        v += shfl_down(v, offset);
+    return v;
+}
+
+// tag::int[]
+_I_ float2 warpReduceSum(float2 val)  // <2>
+// end::int[]
+{
+    for (int offset = warpSize / 2; offset > 0; offset /= 2) {
+        val.x += shfl_down(val.x, offset);
+        val.y += shfl_down(val.y, offset);
+    }
+    return val;
+}
+
+// tag::int[]
+_I_ float3 warpReduceSum(float3 val)  // <3>
+// end::int[]
+{
+    for (int offset = warpSize/2; offset > 0; offset /= 2) {
+        val.x += shfl_down(val.x, offset);
+        val.y += shfl_down(val.y, offset);
+        val.z += shfl_down(val.z, offset);
+    }
+    return val;
+}
+
+#undef _S_
+#undef _I_
+
+/* end src/algo/utils/dev.h */
 
 /* begin src/rbc/com/imp.h */
 struct RbcCom;
@@ -66517,10 +80567,135 @@ void rbc_com_apply(RbcCom *q, int nm, const Particle *pp, /**/ float3 **prr, flo
 #include <stdio.h>
 #include <assert.h>
 
-/* already included: src/inc/conf.h */
-/* already included: src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
 
-/* already included: src/inc/type.h */
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
+
+/* begin src/inc/type.h */
+#pragma once
+
+template <typename T, int N>
+struct Sarray { /* [s]tatic array */
+    T d[N];
+};
+
+struct Particle {
+    float r[3], v[3];
+};
+
+struct Rigid {
+    float Iinv[6],            /* moment of inertia            6        */
+        mass,                 /* mass of the solid            7        */
+        com[3],               /* [c]enter [o]f [m]ass         10       */
+        v[3], om[3],          /* linear and angular velocity  13 16    */
+        e0[3], e1[3], e2[3],  /* local referential            19 22 25 */
+        fo[3], to[3],         /* force, torque                28 31    */
+        id;                   /* id of the solid              32       */
+};
+
+struct Force {
+    float f[3];
+};
+
+struct Momentum {
+    float P[3], L[3]; /* linear and angular momentum */
+};
+
+struct Positioncp {
+    float rc[3]; /* current position  */
+    float rp[3]; /* previous position */
+};
+
+typedef Sarray<int, 26>       int26;
+typedef Sarray<int, 27>       int27;
+
+typedef Sarray<int*, 26>     intp26;
+typedef Sarray<Particle*, 26> Pap26;
+typedef Sarray<Force*,    26> Fop26;
+typedef Sarray<Momentum*, 26> Mop26;
+typedef Sarray<Positioncp*, 26> Pocpp26;
+
+/* particles wrap */
+struct PaWrap {
+    int n;
+    const Particle *pp;
+};
+
+/* forces wrap */
+struct FoWrap {
+    int n;
+    Force *ff;
+};
+/* end src/inc/type.h */
 /* begin src/inc/dev.h */
 /* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
@@ -66560,7 +80735,68 @@ void rbc_com_apply(RbcCom *q, int nm, const Particle *pp, /**/ float3 **prr, flo
 #define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
 #define DzeroA(P, n)   DsetA(P, 0, n)
 /* end src/inc/dev.h */
-/* already included: src/math/dev.h */
+/* begin src/math/dev.h */
+/* use templates here because we might have mixed float/double */
+
+#define _HD_ __host__ __device__
+
+#pragma once
+
+template <typename T1, typename T2>
+_HD_ void scal(const T1 a, /*io*/ T2 *b) {
+    b->x *= a;
+    b->y *= a;
+    b->z *= a;
+}
+
+template <typename T1, typename T2>
+_HD_ void add(const T1 *a, /*io*/ T2 *b) {
+    b->x += a->x;
+    b->y += a->y;
+    b->z += a->z;
+}
+
+template <typename T1, typename T2, typename T3>
+_HD_ void diff(const T1 *a, const T2 *b, /**/ T3 *c) {
+    c->x = a->x - b->x;
+    c->y = a->y - b->y;
+    c->z = a->z - b->z;
+}
+
+template <typename T1, typename T2, typename T3>
+_HD_ T1 dot(const T2 *a, const T3 *b) {
+    return a->x * b->x + a->y * b->y + a->z * b->z;
+}
+
+template <typename T1, typename T2, typename T3>
+_HD_ void cross(const T1 *a, const T2 *b, /**/ T3 *c) {
+    c->x = a->y * b->z - a->z * b->y;
+    c->y = a->z * b->x - a->x * b->z;
+    c->z = a->x * b->y - a->y * b->x;
+}
+
+template <typename T1, typename T2, typename T3>
+_HD_ void scalmult(const T1 *a, const T2 x, /**/ const T3 *b) {
+    b->x = a->x * x;
+    b->y = a->y * x;
+    b->z = a->z * x;
+}
+
+
+template <typename T1, typename T2, typename T3, typename T4>
+_HD_ void apxb(const T1 *a, const T2 x, const T3 *b, /**/ T4 *c) {
+    c->x = a->x + x * b->x;
+    c->y = a->y + x * b->y;
+    c->z = a->z + x * b->z;
+}
+
+template <typename T1, typename T2, typename T3>
+_HD_ void axpy(const T1 a, const T2 *x, /*io*/ T3 *y) {
+    y->x += a * x->x;
+    y->y += a * x->y;
+    y->z += a * x->z;
+}
+/* end src/math/dev.h */
 
 /* begin src/utils/imp.h */
 // tag::mem[]
@@ -66636,7 +80872,38 @@ void msg_print(const char *fmt, ...); // <2>
 // end::int[]
 /* end src/utils/msg.h */
 
-/* already included: src/d/api.h */
+/* begin src/d/api.h */
+#pragma once
+
+namespace d {  /* a wrapper for device API */
+typedef int Stream_t; /* TODO: streams are not supported */
+enum {MemcpyHostToHost, MemcpyHostToDevice,
+      MemcpyDeviceToHost, MemcpyDeviceToDevice,
+      MemcpyDefault};
+
+// tag::more[]
+const char *emsg();
+int alloc_pinned(void **pHost, size_t size);
+int is_device_pointer(const void *ptr);
+// end::more[]
+
+// tag::api[]
+int GetSymbolAddress(void **devPtr, const void *symbol);
+int Malloc(void **p, size_t);
+int MemcpyToSymbol(const void *symbol, const void *src, size_t count, size_t offset=0, int kind=MemcpyHostToDevice);
+int MemcpyFromSymbol(void *dst, const void *symbol, size_t count, size_t offset=0, int kind=MemcpyDeviceToHost);
+int HostGetDevicePointer(void **pDevice, void *pHost, unsigned int flags);
+int Memcpy (void *dst, const void *src, size_t count, int kind);
+int MemsetAsync (void *devPtr, int value, size_t count, Stream_t stream=0);
+int Memset (void *devPtr, int value, size_t count);
+int MemcpyAsync (void * dst, const void * src, size_t count, int kind, Stream_t stream = 0);
+int Free (void *devPtr);
+int FreeHost (void *hstPtr);
+int DeviceSynchronize (void);
+int PeekAtLastError(void);
+// end::api[]
+}
+/* end src/d/api.h */
 /* begin src/d/ker.h */
 #if   defined(DEV_CUDA)
 /* begin src/d/cuda/ker.h */
@@ -66790,7 +81057,16 @@ void check(int rc, const char *file, int line);
 /* [k]ernel [l]aunch macros */
 
 #if    defined(KL_RELEASE)
-/* already included: src/utils/kl/release.h */
+/* begin src/utils/kl/release.h */
+#define KL_BEFORE(s, C) if (!kl::safe(ESC C)) continue;
+#define KL_CALL(F, C, A) F<<<ESC C>>>A
+#define KL_AFTER(s)
+
+#ifndef UDX_KL_RELEASE_FUNCTIONS_DEFINED
+#define UDX_KL_RELEASE_FUNCTIONS_DEFINED
+namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
+#endif
+/* end src/utils/kl/release.h */
 #elif  defined(KL_NONE)
 /* begin src/utils/kl/none.h */
 #define KL_BEFORE(s, C)
@@ -66815,7 +81091,18 @@ namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
   #error KL_* is undefined
 #endif
 
-/* already included: src/utils/kl/common.h */
+/* begin src/utils/kl/common.h */
+namespace kl {
+#pragma once
+
+inline int safe0(dim3 i, dim3 j) {
+    msg(i.x, i.y, i.z,   j.x, j.y, j.z);
+    return i.x>0 && i.y>0 && i.z>0   &&   j.x>0 && j.y>0 && j.z>0;
+}
+inline int safe(dim3 i, dim3 j)                    { return safe0(i, j); }
+inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
+}
+/* end src/utils/kl/common.h */
 /* begin src/utils/kl/macro.h */
 #define ESC(...) __VA_ARGS__
 #define KL(F, C, A)                             \
@@ -66828,8 +81115,86 @@ namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
 
 /* TODO: header includes header */
 /* end src/utils/kl.h */
-/* already included: src/algo/utils/shfl.h */
-/* already included: src/algo/utils/dev.h */
+/* begin src/algo/utils/shfl.h */
+#define _I_ static __device__
+
+#if __CUDACC_VER_MAJOR__ >= 9
+#pragma once
+
+template <typename T>
+_I_ T shfl_down(T val, unsigned int width) {
+    return __shfl_down_sync(0xFFFFFFFF, val, width);
+}
+
+template <typename T>
+_I_ T shfl_up(T val, unsigned int width) {
+    return __shfl_up_sync(0xFFFFFFFF, val, width);
+}
+template <typename T>
+_I_ T shfl(T val, unsigned int width) {
+    return __shfl_sync(0xFFFFFFFF, val, width);
+}
+#else
+template <typename T>
+_I_ T shfl_down(T val, unsigned int width) {
+    return __shfl_down(val, width);
+}
+
+template <typename T>
+_I_ T shfl_up(T val, unsigned int width) {
+    return __shfl_up(val, width);
+}
+template <typename T>
+_I_ T shfl(T val, unsigned int width) {
+    return __shfl(val, width);
+}
+#endif
+
+#undef _I_
+/* end src/algo/utils/shfl.h */
+/* begin src/algo/utils/dev.h */
+#define _S_ static __device__
+#define _I_ static __device__
+
+// tag::int[]
+#pragma once
+
+template <typename T>
+_I_ T warpReduceSum(T v)  // <1>
+// end::int[]
+{
+    for (int offset = warpSize>>1; offset > 0; offset >>= 1)
+        v += shfl_down(v, offset);
+    return v;
+}
+
+// tag::int[]
+_I_ float2 warpReduceSum(float2 val)  // <2>
+// end::int[]
+{
+    for (int offset = warpSize / 2; offset > 0; offset /= 2) {
+        val.x += shfl_down(val.x, offset);
+        val.y += shfl_down(val.y, offset);
+    }
+    return val;
+}
+
+// tag::int[]
+_I_ float3 warpReduceSum(float3 val)  // <3>
+// end::int[]
+{
+    for (int offset = warpSize/2; offset > 0; offset /= 2) {
+        val.x += shfl_down(val.x, offset);
+        val.y += shfl_down(val.y, offset);
+        val.z += shfl_down(val.z, offset);
+    }
+    return val;
+}
+
+#undef _S_
+#undef _I_
+
+/* end src/algo/utils/dev.h */
 
 /* begin src/rbc/force/area_volume/imp.h */
 struct AreaVolume;
@@ -67270,13 +81635,102 @@ void area_volume_host(AreaVolume *q, /**/ float **pav) {
 #include <assert.h>
 #include <stddef.h>
 
-/* already included: src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
 /* begin src/inc/macro.h */
 #define CONTAINER_OF(ptr, type, member) \
     ((type*)((char*)(ptr) - offsetof(type, member)))
 /* end src/inc/macro.h */
 
-/* already included: src/inc/def.h */
+/* begin src/inc/def.h */
+/* solvent colors */
+#define XMACRO_COLOR(_)                         \
+    _(BLUE)                                     \
+    _(RED)
+
+#define ENUM_COLOR(a) a##_COLOR
+#define make_enum_color(a) ENUM_COLOR(a) ,
+#ifndef UDX_DEF_ENUMS_DEFINED
+#define UDX_DEF_ENUMS_DEFINED
+enum {
+    XMACRO_COLOR(make_enum_color)
+    N_COLOR
+};
+#undef make_enum_color
+
+enum {
+    /* wall margins */
+    XWM = 6,
+    YWM = 6,
+    ZWM = 6,
+
+    SAFETY_FACTOR_MAXP = 3,
+
+    /* maximum number of particles per solid */
+    MAX_PSOLID_NUM = 12000,
+
+    /* maximum number of solids per node */
+    MAX_SOLIDS = 100,
+
+    /* maximum number of object types (solid, rbc, ...) */
+    MAX_MBR_TYPES = 2,
+    MAX_RIG_TYPES = 2,
+    MAX_OBJ_TYPES = MAX_MBR_TYPES + MAX_RIG_TYPES,
+
+    /* maximum number density of particles of the objects */
+    MAX_OBJ_DENSITY = 30,
+
+    /* maximum number of red blood cells per node */
+    MAX_CELL_NUM = 1500,
+
+    /* maximum texture size in bytes */
+    MAX_TEXO_SIZE = 100000000,
+
+    /* safety factor for dpd halo interactions */
+    HSAFETY_FACTOR = 10,
+
+    /* safety factor for odist fragments */
+    ODSTR_FACTOR = 3,
+};
+#endif
+
+/* for the spring forces r = min(lmax*RBC_SPRING_CAP, r) */
+#define RBC_SPRING_CAP (0.99)
+/* end src/inc/def.h */
 
 /* begin src/utils/error.h */
 #define ERR(fmt, ...)  do {                                     \
@@ -67782,11 +82236,190 @@ void bending_none_ini(const MeshRead*, /**/ Bending **pq) {
 #include <stdio.h>
 #include <assert.h>
 
-/* already included: src/inc/conf.h */
-/* already included: src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
 
-/* already included: src/inc/def.h */
-/* already included: src/inc/type.h */
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
+
+/* begin src/inc/def.h */
+/* solvent colors */
+#define XMACRO_COLOR(_)                         \
+    _(BLUE)                                     \
+    _(RED)
+
+#define ENUM_COLOR(a) a##_COLOR
+#define make_enum_color(a) ENUM_COLOR(a) ,
+#ifndef UDX_DEF_ENUMS_DEFINED
+#define UDX_DEF_ENUMS_DEFINED
+enum {
+    XMACRO_COLOR(make_enum_color)
+    N_COLOR
+};
+#undef make_enum_color
+
+enum {
+    /* wall margins */
+    XWM = 6,
+    YWM = 6,
+    ZWM = 6,
+
+    SAFETY_FACTOR_MAXP = 3,
+
+    /* maximum number of particles per solid */
+    MAX_PSOLID_NUM = 12000,
+
+    /* maximum number of solids per node */
+    MAX_SOLIDS = 100,
+
+    /* maximum number of object types (solid, rbc, ...) */
+    MAX_MBR_TYPES = 2,
+    MAX_RIG_TYPES = 2,
+    MAX_OBJ_TYPES = MAX_MBR_TYPES + MAX_RIG_TYPES,
+
+    /* maximum number density of particles of the objects */
+    MAX_OBJ_DENSITY = 30,
+
+    /* maximum number of red blood cells per node */
+    MAX_CELL_NUM = 1500,
+
+    /* maximum texture size in bytes */
+    MAX_TEXO_SIZE = 100000000,
+
+    /* safety factor for dpd halo interactions */
+    HSAFETY_FACTOR = 10,
+
+    /* safety factor for odist fragments */
+    ODSTR_FACTOR = 3,
+};
+#endif
+
+/* for the spring forces r = min(lmax*RBC_SPRING_CAP, r) */
+#define RBC_SPRING_CAP (0.99)
+/* end src/inc/def.h */
+/* begin src/inc/type.h */
+#pragma once
+
+template <typename T, int N>
+struct Sarray { /* [s]tatic array */
+    T d[N];
+};
+
+struct Particle {
+    float r[3], v[3];
+};
+
+struct Rigid {
+    float Iinv[6],            /* moment of inertia            6        */
+        mass,                 /* mass of the solid            7        */
+        com[3],               /* [c]enter [o]f [m]ass         10       */
+        v[3], om[3],          /* linear and angular velocity  13 16    */
+        e0[3], e1[3], e2[3],  /* local referential            19 22 25 */
+        fo[3], to[3],         /* force, torque                28 31    */
+        id;                   /* id of the solid              32       */
+};
+
+struct Force {
+    float f[3];
+};
+
+struct Momentum {
+    float P[3], L[3]; /* linear and angular momentum */
+};
+
+struct Positioncp {
+    float rc[3]; /* current position  */
+    float rp[3]; /* previous position */
+};
+
+typedef Sarray<int, 26>       int26;
+typedef Sarray<int, 27>       int27;
+
+typedef Sarray<int*, 26>     intp26;
+typedef Sarray<Particle*, 26> Pap26;
+typedef Sarray<Force*,    26> Fop26;
+typedef Sarray<Momentum*, 26> Mop26;
+typedef Sarray<Positioncp*, 26> Pocpp26;
+
+/* particles wrap */
+struct PaWrap {
+    int n;
+    const Particle *pp;
+};
+
+/* forces wrap */
+struct FoWrap {
+    int n;
+    Force *ff;
+};
+/* end src/inc/type.h */
 /* begin src/inc/dev.h */
 /* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
@@ -67826,11 +82459,295 @@ void bending_none_ini(const MeshRead*, /**/ Bending **pq) {
 #define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
 #define DzeroA(P, n)   DsetA(P, 0, n)
 /* end src/inc/dev.h */
-/* already included: src/math/dev.h */
-/* already included: src/math/tri/dev.h */
+/* begin src/math/dev.h */
+/* use templates here because we might have mixed float/double */
 
-/* already included: src/algo/utils/shfl.h */
-/* already included: src/algo/utils/dev.h */
+#define _HD_ __host__ __device__
+
+#pragma once
+
+template <typename T1, typename T2>
+_HD_ void scal(const T1 a, /*io*/ T2 *b) {
+    b->x *= a;
+    b->y *= a;
+    b->z *= a;
+}
+
+template <typename T1, typename T2>
+_HD_ void add(const T1 *a, /*io*/ T2 *b) {
+    b->x += a->x;
+    b->y += a->y;
+    b->z += a->z;
+}
+
+template <typename T1, typename T2, typename T3>
+_HD_ void diff(const T1 *a, const T2 *b, /**/ T3 *c) {
+    c->x = a->x - b->x;
+    c->y = a->y - b->y;
+    c->z = a->z - b->z;
+}
+
+template <typename T1, typename T2, typename T3>
+_HD_ T1 dot(const T2 *a, const T3 *b) {
+    return a->x * b->x + a->y * b->y + a->z * b->z;
+}
+
+template <typename T1, typename T2, typename T3>
+_HD_ void cross(const T1 *a, const T2 *b, /**/ T3 *c) {
+    c->x = a->y * b->z - a->z * b->y;
+    c->y = a->z * b->x - a->x * b->z;
+    c->z = a->x * b->y - a->y * b->x;
+}
+
+template <typename T1, typename T2, typename T3>
+_HD_ void scalmult(const T1 *a, const T2 x, /**/ const T3 *b) {
+    b->x = a->x * x;
+    b->y = a->y * x;
+    b->z = a->z * x;
+}
+
+
+template <typename T1, typename T2, typename T3, typename T4>
+_HD_ void apxb(const T1 *a, const T2 x, const T3 *b, /**/ T4 *c) {
+    c->x = a->x + x * b->x;
+    c->y = a->y + x * b->y;
+    c->z = a->z + x * b->z;
+}
+
+template <typename T1, typename T2, typename T3>
+_HD_ void axpy(const T1 a, const T2 *x, /*io*/ T3 *y) {
+    y->x += a * x->x;
+    y->y += a * x->y;
+    y->z += a * x->z;
+}
+/* end src/math/dev.h */
+/* begin src/math/tri/dev.h */
+#ifdef TRI_HOST
+#ifndef UDX_TRI_HOST_DEFINED
+#define UDX_TRI_HOST_DEFINED
+#define UDX_TRI_BODY
+#endif
+#else
+#ifndef UDX_TRI_DEV_DEFINED
+#define UDX_TRI_DEV_DEFINED
+#define UDX_TRI_BODY
+#endif
+#endif
+
+#ifdef UDX_TRI_BODY
+#ifdef TRI_HOST
+  #define _I_
+  #define _S_ static
+  #define BEGIN namespace tri_hst {
+  #define END }
+#else
+  #define _I_ static __device__
+  #define _S_ static __device__
+  #define BEGIN namespace tri_dev {
+  #define END }
+#endif
+
+BEGIN
+
+_S_ void diff(const double *a, const double *b, /**/ double  *c) {
+    enum {X, Y, Z};
+    c[X] = a[X] - b[X];
+    c[Y] = a[Y] - b[Y];
+    c[Z] = a[Z] - b[Z];
+}
+_S_ double vabs(double *a) {
+    enum {X, Y, Z};
+    double r;
+    r = a[X]*a[X] + a[Y]*a[Y] + a[Z]*a[Z];
+    return sqrt(r);
+}
+_S_ void swap(double *a, double *b) {
+    double t;
+    t = *a; *a = *b; *b = t;
+}
+_S_ int less(double *a, double *b) { return (*a) < (*b); }
+_S_ void  sort3(double *a, double *b, double *c) {
+    if (less(c, b)) swap(c, b);
+    if (less(b, a)) swap(b, a);
+    if (less(c, b)) swap(c, b);
+}
+
+_I_ double kahan_area0(double a, double b, double c) {
+    sort3(&c, &b, &a); /* make a > b > c */
+    return sqrt((a+(b+c))*(c-(a-b))*(c+(a-b))*(a+(b-c)))/4;
+}
+
+_I_ double kahan_area(const double r0[3], const double r1[3], const double r2[3]) {
+    double r01[3], r12[3], r20[3], a, b, c;
+    diff(r0, r1, /**/ r01);
+    diff(r1, r2, /**/ r12);
+    diff(r2, r0, /**/ r20);
+    a = vabs(r01); b = vabs(r12); c = vabs(r20);
+    return kahan_area0(a, b, c);
+}
+
+_S_ double orient2d_xy(const double a[3], const double b[3], const double c[3]) {
+    enum {X, Y, Z};
+    enum {P = X, Q = Y};
+    double acp, bcp, acq, bcq;
+    acp = a[P] - c[P]; bcp = b[P] - c[P];
+    acq = a[Q] - c[Q]; bcq = b[Q] - c[Q];
+    return acp * bcq - acq * bcp;
+}
+
+_S_ double orient2d_zx(const double a[3], const double b[3], const double c[3]) {
+    enum {X, Y, Z};
+    enum {P = Z, Q = X};
+    double acp, bcp, acq, bcq;
+    acp = a[P] - c[P]; bcp = b[P] - c[P];
+    acq = a[Q] - c[Q]; bcq = b[Q] - c[Q];
+    return acp * bcq - acq * bcp;
+}
+
+_S_ double orient2d_yz(const double a[3], const double b[3], const double c[3]) {
+    enum {X, Y, Z};
+    enum {P = Y, Q = Z};
+    double acp, bcp, acq, bcq;
+    acp = a[P] - c[P]; bcp = b[P] - c[P];
+    acq = a[Q] - c[Q]; bcq = b[Q] - c[Q];
+    return acp * bcq - acq * bcp;
+}
+
+_I_ double orient3d(const double a[3], const double b[3], const double c[3], const double d[3]) {
+    enum {X, Y, Z};
+    double ax, ay, az, bx, by, bz, cx, cy, cz;
+
+    ax = a[X] - d[X]; ay = a[Y] - d[Y]; az = a[Z] - d[Z];
+    bx = b[X] - d[X]; by = b[Y] - d[Y]; bz = b[Z] - d[Z];
+    cx = c[X] - d[X]; cy = c[Y] - d[Y]; cz = c[Z] - d[Z];
+
+    return ax*(by*cz - bz*cy) + bx*(cy*az - cz*ay) + cx*(ay*bz - az*by);
+}
+
+_I_ void ac_bc_cross(const double a[3], const double b[3], const double c[3], /**/ double r[3]) {
+    enum {X, Y, Z};
+    r[X] = orient2d_yz(a, b, c);
+    r[Y] = orient2d_zx(a, b, c);
+    r[Z] = orient2d_xy(a, b, c);
+}
+
+_I_ double shewchuk_area(const double a[3], const double b[3], const double c[3]) {
+    double x, y, z;
+    x = orient2d_yz(a, b, c);
+    y = orient2d_zx(a, b, c);
+    z = orient2d_xy(a, b, c);
+    return sqrt(x*x + y*y + z*z)/2;
+}
+
+_I_ void dihedral_xy(const double a[3], const double b[3], const double c[3], const double d[3],
+                       double *px, double *py) {
+    enum {X, Y, Z};
+    double bcx, bcy, bcz, bc;
+    double k[3], l[3];
+
+    ac_bc_cross(b, c, a, /**/ k);
+    ac_bc_cross(c, b, d, /**/ l);
+
+    bcx = b[X] - c[X];
+    bcy = b[Y] - c[Y];
+    bcz = b[Z] - c[Z];
+    bc = sqrt(bcx*bcx + bcy*bcy + bcz*bcz);
+
+    *py = -orient3d(a, b, c, d)*bc;
+    *px = k[X]*l[X] + k[Y]*l[Y] + k[Z]*l[Z];
+}
+
+END
+
+#undef _I_
+#undef _S_
+#undef BEGIN
+#undef END
+
+#undef UDX_TRI_BODY
+#endif
+/* end src/math/tri/dev.h */
+
+/* begin src/algo/utils/shfl.h */
+#define _I_ static __device__
+
+#if __CUDACC_VER_MAJOR__ >= 9
+#pragma once
+
+template <typename T>
+_I_ T shfl_down(T val, unsigned int width) {
+    return __shfl_down_sync(0xFFFFFFFF, val, width);
+}
+
+template <typename T>
+_I_ T shfl_up(T val, unsigned int width) {
+    return __shfl_up_sync(0xFFFFFFFF, val, width);
+}
+template <typename T>
+_I_ T shfl(T val, unsigned int width) {
+    return __shfl_sync(0xFFFFFFFF, val, width);
+}
+#else
+template <typename T>
+_I_ T shfl_down(T val, unsigned int width) {
+    return __shfl_down(val, width);
+}
+
+template <typename T>
+_I_ T shfl_up(T val, unsigned int width) {
+    return __shfl_up(val, width);
+}
+template <typename T>
+_I_ T shfl(T val, unsigned int width) {
+    return __shfl(val, width);
+}
+#endif
+
+#undef _I_
+/* end src/algo/utils/shfl.h */
+/* begin src/algo/utils/dev.h */
+#define _S_ static __device__
+#define _I_ static __device__
+
+// tag::int[]
+#pragma once
+
+template <typename T>
+_I_ T warpReduceSum(T v)  // <1>
+// end::int[]
+{
+    for (int offset = warpSize>>1; offset > 0; offset >>= 1)
+        v += shfl_down(v, offset);
+    return v;
+}
+
+// tag::int[]
+_I_ float2 warpReduceSum(float2 val)  // <2>
+// end::int[]
+{
+    for (int offset = warpSize / 2; offset > 0; offset /= 2) {
+        val.x += shfl_down(val.x, offset);
+        val.y += shfl_down(val.y, offset);
+    }
+    return val;
+}
+
+// tag::int[]
+_I_ float3 warpReduceSum(float3 val)  // <3>
+// end::int[]
+{
+    for (int offset = warpSize/2; offset > 0; offset /= 2) {
+        val.x += shfl_down(val.x, offset);
+        val.y += shfl_down(val.y, offset);
+        val.z += shfl_down(val.z, offset);
+    }
+    return val;
+}
+
+#undef _S_
+#undef _I_
+
+/* end src/algo/utils/dev.h */
 
 /* begin src/io/mesh_read/imp.h */
 struct int4;
@@ -68054,7 +82971,38 @@ int he_bnd(T*, int h); /* 1 for boundary */
   #error DEV_* is undefined
 #endif
 /* end src/d/q.h */
-/* already included: src/d/api.h */
+/* begin src/d/api.h */
+#pragma once
+
+namespace d {  /* a wrapper for device API */
+typedef int Stream_t; /* TODO: streams are not supported */
+enum {MemcpyHostToHost, MemcpyHostToDevice,
+      MemcpyDeviceToHost, MemcpyDeviceToDevice,
+      MemcpyDefault};
+
+// tag::more[]
+const char *emsg();
+int alloc_pinned(void **pHost, size_t size);
+int is_device_pointer(const void *ptr);
+// end::more[]
+
+// tag::api[]
+int GetSymbolAddress(void **devPtr, const void *symbol);
+int Malloc(void **p, size_t);
+int MemcpyToSymbol(const void *symbol, const void *src, size_t count, size_t offset=0, int kind=MemcpyHostToDevice);
+int MemcpyFromSymbol(void *dst, const void *symbol, size_t count, size_t offset=0, int kind=MemcpyDeviceToHost);
+int HostGetDevicePointer(void **pDevice, void *pHost, unsigned int flags);
+int Memcpy (void *dst, const void *src, size_t count, int kind);
+int MemsetAsync (void *devPtr, int value, size_t count, Stream_t stream=0);
+int Memset (void *devPtr, int value, size_t count);
+int MemcpyAsync (void * dst, const void * src, size_t count, int kind, Stream_t stream = 0);
+int Free (void *devPtr);
+int FreeHost (void *hstPtr);
+int DeviceSynchronize (void);
+int PeekAtLastError(void);
+// end::api[]
+}
+/* end src/d/api.h */
 /* begin src/d/ker.h */
 #if   defined(DEV_CUDA)
 /* begin src/d/cuda/ker.h */
@@ -68146,7 +83094,16 @@ void check(int rc, const char *file, int line);
 /* [k]ernel [l]aunch macros */
 
 #if    defined(KL_RELEASE)
-/* already included: src/utils/kl/release.h */
+/* begin src/utils/kl/release.h */
+#define KL_BEFORE(s, C) if (!kl::safe(ESC C)) continue;
+#define KL_CALL(F, C, A) F<<<ESC C>>>A
+#define KL_AFTER(s)
+
+#ifndef UDX_KL_RELEASE_FUNCTIONS_DEFINED
+#define UDX_KL_RELEASE_FUNCTIONS_DEFINED
+namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
+#endif
+/* end src/utils/kl/release.h */
 #elif  defined(KL_NONE)
 /* begin src/utils/kl/none.h */
 #define KL_BEFORE(s, C)
@@ -68171,7 +83128,18 @@ namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
   #error KL_* is undefined
 #endif
 
-/* already included: src/utils/kl/common.h */
+/* begin src/utils/kl/common.h */
+namespace kl {
+#pragma once
+
+inline int safe0(dim3 i, dim3 j) {
+    msg(i.x, i.y, i.z,   j.x, j.y, j.z);
+    return i.x>0 && i.y>0 && i.z>0   &&   j.x>0 && j.y>0 && j.z>0;
+}
+inline int safe(dim3 i, dim3 j)                    { return safe0(i, j); }
+inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
+}
+/* end src/utils/kl/common.h */
 /* begin src/utils/kl/macro.h */
 #define ESC(...) __VA_ARGS__
 #define KL(F, C, A)                             \
@@ -68241,10 +83209,46 @@ void adj_view_fin(Adj_v*);
 // end::interface[]
 /* end src/rbc/adj/imp.h */
 
-/* already included: src/rbc/type.h */
+/* begin src/rbc/type.h */
+#pragma once
 
-/* already included: src/rbc/adj/type/common.h */
-/* already included: src/rbc/adj/type/dev.h */
+struct AreaVolume;
+struct Particle;
+
+// tag::quants[]
+struct RbcQuants {
+    int n, nc;               /* number of particles, cells                */
+    int nt, nv;              /* number of triangles and vertices per mesh */
+    int md;                  /* maximum valence of the mesh               */
+    Particle *pp, *pp_hst;   /* vertices particles on host and device     */
+    bool ids;                /* global ids active ?                       */
+    int *ii;                 /* global ids on host                        */
+    AreaVolume *area_volume; /* to compute area and volume */
+};
+// end::quants[]
+
+/* end src/rbc/type.h */
+
+/* begin src/rbc/adj/type/common.h */
+#pragma once
+
+// tag::interface[]
+struct AdjMap {
+    int i0, i1, i2, i3, i4;
+    int rbc;
+};
+// end::interface[]
+/* end src/rbc/adj/type/common.h */
+/* begin src/rbc/adj/type/dev.h */
+#pragma once
+
+struct Adj_v {
+    int *adj0;
+    int *adj1;
+    int nv, md;
+};
+
+/* end src/rbc/adj/type/dev.h */
 /* begin src/rbc/adj/dev.h */
 #pragma once
 
@@ -68320,7 +83324,162 @@ struct Juelicher {
 };
 /* end src/rbc/force/bending/juelicher/imp/type.h */
 
-/* already included: src/mesh/force/kantor0/dev.h */
+/* begin src/mesh/force/kantor0/dev.h */
+#ifdef FORCE_KANTOR0_HOST
+#ifndef UDX_KANTOR0_HOST_DEFINED
+#define UDX_KANTOR0_HOST_DEFINED
+#define UDX_KANTOR0_BODY
+#endif
+#else
+#ifndef UDX_KANTOR0_DEV_DEFINED
+#define UDX_KANTOR0_DEV_DEFINED
+#define UDX_KANTOR0_BODY
+#endif
+#endif
+
+#ifdef UDX_KANTOR0_BODY
+#ifdef FORCE_KANTOR0_HOST
+  #define _I_
+  #define _S_ static
+  #define BEGIN namespace force_kantor0_hst {
+  #define END }
+#else
+  #define _I_ static __device__
+  #define _S_ static __device__
+  #define BEGIN namespace force_kantor0_dev {
+  #define END }
+#endif
+
+BEGIN
+
+#ifdef FORCE_KANTOR0_HOST
+_S_ double rsqrt0(double x) { return pow(x, -0.5); }
+#define PRINT(fmt, ...) msg_print((fmt), ##__VA_ARGS__)
+#define EXIT() ERR("assert")
+#else
+_S_ double rsqrt0(double x) { return rsqrt(x); }
+#define PRINT(fmt, ...) printf((fmt), ##__VA_ARGS__)
+#define EXIT() assert(0)
+#endif
+
+_S_ double max(double a, double b) { return a > b ? a : b; }
+
+enum {ANGLE_OK, ANGLE_BAD_A, ANGLE_BAD_B};
+_S_ int angle(double3 a, double3 b, /**/ double *pcos, double *pover_sin,
+              double *pover_a, double *pover_b) {
+    double  cost, over_sin, over_a, over_b;
+    double aa, bb, ab;
+    *pcos = *pover_sin = *pover_a = *pover_b = 0.0;
+
+    aa = dot<double>(&a, &a);
+    bb = dot<double>(&b, &b);
+    ab = dot<double>(&a, &b);
+
+    if (aa == 0) return ANGLE_BAD_A;
+    if (bb == 0) return ANGLE_BAD_B;
+
+    over_a = rsqrt0(aa);
+    over_b = rsqrt0(bb);
+    cost = ab * over_a * over_b;
+    over_sin = rsqrt0(max(1.0 - cost*cost, 1e-6));
+
+    *pcos = cost; *pover_sin = over_sin; *pover_a = over_a; *pover_b = over_b;
+    return ANGLE_OK;
+}
+
+_S_ void dih_write(double3 a, double3 b, double3 c, double3 d) {
+    PRINT("%g %g %g\n", a.x, a.y, a.z);
+    PRINT("%g %g %g\n", b.x, b.y, b.z);
+    PRINT("%g %g %g\n", c.x, c.y, c.z);
+    PRINT("%g %g %g\n", d.x, d.y, d.z);
+}
+
+/* forces from one dihedral */
+template <int update>
+_S_ double3 dih0(double phi, double kb,
+                 double3 a, double3 b, double3 c, double3 d) {
+    int status;
+    double over_k, over_n, cosTheta, over_sin,
+        beta, b11, b12, sint0kb, cost0kb;
+    double3 ab, ac, cd, bc, bd, da, k, n, k_n;
+    diff(&a, &b, /**/ &ab);
+    diff(&a, &c, /**/ &ac);
+    diff(&c, &d, /**/ &cd);
+    diff(&b, &d, /**/ &bd);
+    diff(&b, &c, /**/ &bc);
+    diff(&d, &a, /**/ &da);
+
+    cross(&ab, &ac, /**/ &k);
+    cross(&bd, &bc, /**/ &n);
+
+    status = angle(k, n, /**/
+                   &cosTheta, &over_sin,
+                   &over_k, &over_n);
+    if (status != ANGLE_OK) {
+        PRINT("bad dihedral\n");
+        dih_write(a, b, c, d);
+        EXIT();
+    }
+    diff(&k, &n, /**/ &k_n);
+    over_sin = copysign(over_sin, dot<double>(&k_n, &da));
+
+    sint0kb = sin(phi) * kb;
+    cost0kb = cos(phi) * kb;
+    beta = cost0kb - cosTheta * sint0kb * over_sin;
+
+    b11 = -beta *  cosTheta * over_k * over_k;
+    b12 =  beta *             over_k * over_n;
+
+    if (update == 1) {
+        double3 r32, f1, f;
+        diff(&c, &b, /**/ &r32);
+        cross(&k, &r32, /**/ &f);
+        cross(&n, &r32, /**/ &f1);
+        scal(b11, /**/ &f);
+        axpy(b12, &f1, /**/ &f);
+        return f;
+    }
+    else if (update == 2) {
+        double3 f, f1, f2, f3;
+        double b22 = -beta * cosTheta * over_n * over_n;
+
+        cross(&k, &ac, /**/ &f);
+        cross(&k, &cd, /**/ &f1);
+        cross(&n, &ac, /**/ &f2);
+        cross(&n, &cd, /**/ &f3);
+
+        scal(b11, /**/ &f);
+        add(&f2, /**/ &f1);
+        axpy(b12, &f1, /**/ &f);
+        axpy(b22, &f3, /**/ &f);
+        return f;
+    }
+    else {
+        double3 f;
+        f.x = f.y = f.z = 0;
+        assert(0);
+        return f;
+    }
+}
+
+_I_ double3 dih_a(double phi, double kb, double3 a, double3 b, double3 c, double3 d) {
+    return dih0<1>(phi, kb, a, b, c, d);
+}
+
+_I_ double3 dih_b(double phi, double kb, double3 a, double3 b, double3 c, double3 d) {
+    return dih0<2>(phi, kb, a, b, c, d);
+}
+
+END
+
+#undef _I_
+#undef _S_
+#undef BEGIN
+#undef END
+
+#undef UDX_KANTOR0_BODY
+#endif
+/* end src/mesh/force/kantor0/dev.h */
 
 namespace juelicher_dev {
 /* begin src/rbc/force/bending/juelicher/dev/main.h */
@@ -69240,11 +84399,190 @@ void juelicher_apply(Juelicher *q, const RbcParams*, const RbcQuants *quants, /*
 #include <stdio.h>
 #include <assert.h>
 
-/* already included: src/inc/conf.h */
-/* already included: src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
 
-/* already included: src/inc/def.h */
-/* already included: src/inc/type.h */
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
+
+/* begin src/inc/def.h */
+/* solvent colors */
+#define XMACRO_COLOR(_)                         \
+    _(BLUE)                                     \
+    _(RED)
+
+#define ENUM_COLOR(a) a##_COLOR
+#define make_enum_color(a) ENUM_COLOR(a) ,
+#ifndef UDX_DEF_ENUMS_DEFINED
+#define UDX_DEF_ENUMS_DEFINED
+enum {
+    XMACRO_COLOR(make_enum_color)
+    N_COLOR
+};
+#undef make_enum_color
+
+enum {
+    /* wall margins */
+    XWM = 6,
+    YWM = 6,
+    ZWM = 6,
+
+    SAFETY_FACTOR_MAXP = 3,
+
+    /* maximum number of particles per solid */
+    MAX_PSOLID_NUM = 12000,
+
+    /* maximum number of solids per node */
+    MAX_SOLIDS = 100,
+
+    /* maximum number of object types (solid, rbc, ...) */
+    MAX_MBR_TYPES = 2,
+    MAX_RIG_TYPES = 2,
+    MAX_OBJ_TYPES = MAX_MBR_TYPES + MAX_RIG_TYPES,
+
+    /* maximum number density of particles of the objects */
+    MAX_OBJ_DENSITY = 30,
+
+    /* maximum number of red blood cells per node */
+    MAX_CELL_NUM = 1500,
+
+    /* maximum texture size in bytes */
+    MAX_TEXO_SIZE = 100000000,
+
+    /* safety factor for dpd halo interactions */
+    HSAFETY_FACTOR = 10,
+
+    /* safety factor for odist fragments */
+    ODSTR_FACTOR = 3,
+};
+#endif
+
+/* for the spring forces r = min(lmax*RBC_SPRING_CAP, r) */
+#define RBC_SPRING_CAP (0.99)
+/* end src/inc/def.h */
+/* begin src/inc/type.h */
+#pragma once
+
+template <typename T, int N>
+struct Sarray { /* [s]tatic array */
+    T d[N];
+};
+
+struct Particle {
+    float r[3], v[3];
+};
+
+struct Rigid {
+    float Iinv[6],            /* moment of inertia            6        */
+        mass,                 /* mass of the solid            7        */
+        com[3],               /* [c]enter [o]f [m]ass         10       */
+        v[3], om[3],          /* linear and angular velocity  13 16    */
+        e0[3], e1[3], e2[3],  /* local referential            19 22 25 */
+        fo[3], to[3],         /* force, torque                28 31    */
+        id;                   /* id of the solid              32       */
+};
+
+struct Force {
+    float f[3];
+};
+
+struct Momentum {
+    float P[3], L[3]; /* linear and angular momentum */
+};
+
+struct Positioncp {
+    float rc[3]; /* current position  */
+    float rp[3]; /* previous position */
+};
+
+typedef Sarray<int, 26>       int26;
+typedef Sarray<int, 27>       int27;
+
+typedef Sarray<int*, 26>     intp26;
+typedef Sarray<Particle*, 26> Pap26;
+typedef Sarray<Force*,    26> Fop26;
+typedef Sarray<Momentum*, 26> Mop26;
+typedef Sarray<Positioncp*, 26> Pocpp26;
+
+/* particles wrap */
+struct PaWrap {
+    int n;
+    const Particle *pp;
+};
+
+/* forces wrap */
+struct FoWrap {
+    int n;
+    Force *ff;
+};
+/* end src/inc/type.h */
 /* begin src/inc/dev.h */
 /* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
@@ -69284,7 +84622,68 @@ void juelicher_apply(Juelicher *q, const RbcParams*, const RbcQuants *quants, /*
 #define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
 #define DzeroA(P, n)   DsetA(P, 0, n)
 /* end src/inc/dev.h */
-/* already included: src/math/dev.h */
+/* begin src/math/dev.h */
+/* use templates here because we might have mixed float/double */
+
+#define _HD_ __host__ __device__
+
+#pragma once
+
+template <typename T1, typename T2>
+_HD_ void scal(const T1 a, /*io*/ T2 *b) {
+    b->x *= a;
+    b->y *= a;
+    b->z *= a;
+}
+
+template <typename T1, typename T2>
+_HD_ void add(const T1 *a, /*io*/ T2 *b) {
+    b->x += a->x;
+    b->y += a->y;
+    b->z += a->z;
+}
+
+template <typename T1, typename T2, typename T3>
+_HD_ void diff(const T1 *a, const T2 *b, /**/ T3 *c) {
+    c->x = a->x - b->x;
+    c->y = a->y - b->y;
+    c->z = a->z - b->z;
+}
+
+template <typename T1, typename T2, typename T3>
+_HD_ T1 dot(const T2 *a, const T3 *b) {
+    return a->x * b->x + a->y * b->y + a->z * b->z;
+}
+
+template <typename T1, typename T2, typename T3>
+_HD_ void cross(const T1 *a, const T2 *b, /**/ T3 *c) {
+    c->x = a->y * b->z - a->z * b->y;
+    c->y = a->z * b->x - a->x * b->z;
+    c->z = a->x * b->y - a->y * b->x;
+}
+
+template <typename T1, typename T2, typename T3>
+_HD_ void scalmult(const T1 *a, const T2 x, /**/ const T3 *b) {
+    b->x = a->x * x;
+    b->y = a->y * x;
+    b->z = a->z * x;
+}
+
+
+template <typename T1, typename T2, typename T3, typename T4>
+_HD_ void apxb(const T1 *a, const T2 x, const T3 *b, /**/ T4 *c) {
+    c->x = a->x + x * b->x;
+    c->y = a->y + x * b->y;
+    c->z = a->z + x * b->z;
+}
+
+template <typename T1, typename T2, typename T3>
+_HD_ void axpy(const T1 a, const T2 *x, /*io*/ T3 *y) {
+    y->x += a * x->x;
+    y->y += a * x->y;
+    y->z += a * x->z;
+}
+/* end src/math/dev.h */
 
 /* begin src/io/mesh_read/imp.h */
 struct int4;
@@ -69442,7 +84841,38 @@ const char* get_filename_ext(const char*);
   #error DEV_* is undefined
 #endif
 /* end src/d/q.h */
-/* already included: src/d/api.h */
+/* begin src/d/api.h */
+#pragma once
+
+namespace d {  /* a wrapper for device API */
+typedef int Stream_t; /* TODO: streams are not supported */
+enum {MemcpyHostToHost, MemcpyHostToDevice,
+      MemcpyDeviceToHost, MemcpyDeviceToDevice,
+      MemcpyDefault};
+
+// tag::more[]
+const char *emsg();
+int alloc_pinned(void **pHost, size_t size);
+int is_device_pointer(const void *ptr);
+// end::more[]
+
+// tag::api[]
+int GetSymbolAddress(void **devPtr, const void *symbol);
+int Malloc(void **p, size_t);
+int MemcpyToSymbol(const void *symbol, const void *src, size_t count, size_t offset=0, int kind=MemcpyHostToDevice);
+int MemcpyFromSymbol(void *dst, const void *symbol, size_t count, size_t offset=0, int kind=MemcpyDeviceToHost);
+int HostGetDevicePointer(void **pDevice, void *pHost, unsigned int flags);
+int Memcpy (void *dst, const void *src, size_t count, int kind);
+int MemsetAsync (void *devPtr, int value, size_t count, Stream_t stream=0);
+int Memset (void *devPtr, int value, size_t count);
+int MemcpyAsync (void * dst, const void * src, size_t count, int kind, Stream_t stream = 0);
+int Free (void *devPtr);
+int FreeHost (void *hstPtr);
+int DeviceSynchronize (void);
+int PeekAtLastError(void);
+// end::api[]
+}
+/* end src/d/api.h */
 /* begin src/d/ker.h */
 #if   defined(DEV_CUDA)
 /* begin src/d/cuda/ker.h */
@@ -69534,7 +84964,16 @@ void check(int rc, const char *file, int line);
 /* [k]ernel [l]aunch macros */
 
 #if    defined(KL_RELEASE)
-/* already included: src/utils/kl/release.h */
+/* begin src/utils/kl/release.h */
+#define KL_BEFORE(s, C) if (!kl::safe(ESC C)) continue;
+#define KL_CALL(F, C, A) F<<<ESC C>>>A
+#define KL_AFTER(s)
+
+#ifndef UDX_KL_RELEASE_FUNCTIONS_DEFINED
+#define UDX_KL_RELEASE_FUNCTIONS_DEFINED
+namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
+#endif
+/* end src/utils/kl/release.h */
 #elif  defined(KL_NONE)
 /* begin src/utils/kl/none.h */
 #define KL_BEFORE(s, C)
@@ -69559,7 +84998,18 @@ namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
   #error KL_* is undefined
 #endif
 
-/* already included: src/utils/kl/common.h */
+/* begin src/utils/kl/common.h */
+namespace kl {
+#pragma once
+
+inline int safe0(dim3 i, dim3 j) {
+    msg(i.x, i.y, i.z,   j.x, j.y, j.z);
+    return i.x>0 && i.y>0 && i.z>0   &&   j.x>0 && j.y>0 && j.z>0;
+}
+inline int safe(dim3 i, dim3 j)                    { return safe0(i, j); }
+inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
+}
+/* end src/utils/kl/common.h */
 /* begin src/utils/kl/macro.h */
 #define ESC(...) __VA_ARGS__
 #define KL(F, C, A)                             \
@@ -69573,7 +85023,44 @@ namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
 /* TODO: header includes header */
 /* end src/utils/kl.h */
 
-/* already included: src/rbc/params/imp.h */
+/* begin src/rbc/params/imp.h */
+#pragma once
+
+struct Config;
+struct RbcParams;
+struct RbcParams_v {
+    float gammaC, gammaT, kBT;
+    float kb, phi;
+    float ks, x0, mpow;
+    float ka, kd, kv;
+    float totArea, totVolume;
+};
+
+// tag::mem[]
+void rbc_params_ini(RbcParams **);
+void rbc_params_fin(RbcParams *);
+// end::mem[]
+
+// tag::set[]
+void rbc_params_set_fluct(float gammaC, float gammaT, float kBT, RbcParams *);
+void rbc_params_set_bending(float kb, float phi, RbcParams *);
+void rbc_params_set_spring(float ks, float x0, float mpow , RbcParams *);
+void rbc_params_set_area_volume(float ka, float kd, float kv, RbcParams *);
+void rbc_params_set_tot_area_volume(float totArea, float totVolume, RbcParams *);
+// end::set[]
+
+// tag::get[]
+double rbc_params_get_tot_volume(const RbcParams *);
+// end::get[]
+
+// tag::cnf[]
+void rbc_params_set_conf(const Config *c, const char *name, RbcParams *);
+// end::cnf[]
+
+// tag::view[]
+RbcParams_v rbc_params_get_view(const RbcParams *);
+// end::view[]
+/* end src/rbc/params/imp.h */
 /* begin src/rbc/adj/imp.h */
 struct Adj;
 struct Adj_v;
@@ -69592,11 +85079,92 @@ void adj_view_fin(Adj_v*);
 // end::interface[]
 /* end src/rbc/adj/imp.h */
 
-/* already included: src/rbc/type.h */
+/* begin src/rbc/type.h */
+#pragma once
 
-/* already included: src/rbc/adj/type/common.h */
-/* already included: src/rbc/adj/type/dev.h */
-/* already included: src/rbc/adj/dev.h */
+struct AreaVolume;
+struct Particle;
+
+// tag::quants[]
+struct RbcQuants {
+    int n, nc;               /* number of particles, cells                */
+    int nt, nv;              /* number of triangles and vertices per mesh */
+    int md;                  /* maximum valence of the mesh               */
+    Particle *pp, *pp_hst;   /* vertices particles on host and device     */
+    bool ids;                /* global ids active ?                       */
+    int *ii;                 /* global ids on host                        */
+    AreaVolume *area_volume; /* to compute area and volume */
+};
+// end::quants[]
+
+/* end src/rbc/type.h */
+
+/* begin src/rbc/adj/type/common.h */
+#pragma once
+
+// tag::interface[]
+struct AdjMap {
+    int i0, i1, i2, i3, i4;
+    int rbc;
+};
+// end::interface[]
+/* end src/rbc/adj/type/common.h */
+/* begin src/rbc/adj/type/dev.h */
+#pragma once
+
+struct Adj_v {
+    int *adj0;
+    int *adj1;
+    int nv, md;
+};
+
+/* end src/rbc/adj/type/dev.h */
+/* begin src/rbc/adj/dev.h */
+#pragma once
+
+static __device__ int fetch(const int *a, int i) { return a[i]; }
+static __device__ int adj_get_map0(int md, int nv, int i, const int *adj0, const int *adj1, /**/ AdjMap *m) {
+    int i0, i1, i2, i3, i4;
+    int rbc, offset, j, k;
+    i0 = i / md;
+    j  = i % md;
+
+    k   = (i0 % nv) * md;
+    i1 = fetch(adj0, k + j);
+    if (i1 == -1) return 0; /* invalid */
+
+    i2 = fetch(adj0, k + ((j + 1) % md));
+    if (i2 == -1) {
+        i2 = fetch(adj0, k    );
+        i3 = fetch(adj0, k + 1);
+    } else {
+        i3 = fetch(adj0, k + ((j + 2) % md));
+        if (i3 == -1) i3 = fetch(adj0, k);
+    }
+    i4 = fetch(adj1, k + j);
+
+    rbc = i0 / nv;
+    offset = rbc * nv;
+    i1 += offset; i2 += offset; i3 += offset; i4 += offset; /* no i0 */
+
+    assert(rbc < MAX_CELL_NUM);
+
+    m->rbc = rbc;
+    m->i0 = i0; m->i1 = i1; m->i2 = i2; m->i3 = i3; m->i4 = i4;
+    return 1;
+}
+
+// tag::interface[]
+static __device__ int adj_get_map(int i, Adj_v *adj, /**/ AdjMap *m) {
+// end::interface[]
+    int md, nv;
+    md = adj->md;
+    nv = adj->nv;
+    const int *adj0 = adj->adj0;
+    const int *adj1 = adj->adj1;
+    return adj_get_map0(md, nv, i, adj0, adj1, m);
+}
+/* end src/rbc/adj/dev.h */
 
 /* begin src/rbc/force/bending/kantor/imp.h */
 struct RbcParams;
@@ -69621,7 +85189,162 @@ struct Kantor {
 };
 /* end src/rbc/force/bending/kantor/imp/type.h */
 
-/* already included: src/mesh/force/kantor0/dev.h */
+/* begin src/mesh/force/kantor0/dev.h */
+#ifdef FORCE_KANTOR0_HOST
+#ifndef UDX_KANTOR0_HOST_DEFINED
+#define UDX_KANTOR0_HOST_DEFINED
+#define UDX_KANTOR0_BODY
+#endif
+#else
+#ifndef UDX_KANTOR0_DEV_DEFINED
+#define UDX_KANTOR0_DEV_DEFINED
+#define UDX_KANTOR0_BODY
+#endif
+#endif
+
+#ifdef UDX_KANTOR0_BODY
+#ifdef FORCE_KANTOR0_HOST
+  #define _I_
+  #define _S_ static
+  #define BEGIN namespace force_kantor0_hst {
+  #define END }
+#else
+  #define _I_ static __device__
+  #define _S_ static __device__
+  #define BEGIN namespace force_kantor0_dev {
+  #define END }
+#endif
+
+BEGIN
+
+#ifdef FORCE_KANTOR0_HOST
+_S_ double rsqrt0(double x) { return pow(x, -0.5); }
+#define PRINT(fmt, ...) msg_print((fmt), ##__VA_ARGS__)
+#define EXIT() ERR("assert")
+#else
+_S_ double rsqrt0(double x) { return rsqrt(x); }
+#define PRINT(fmt, ...) printf((fmt), ##__VA_ARGS__)
+#define EXIT() assert(0)
+#endif
+
+_S_ double max(double a, double b) { return a > b ? a : b; }
+
+enum {ANGLE_OK, ANGLE_BAD_A, ANGLE_BAD_B};
+_S_ int angle(double3 a, double3 b, /**/ double *pcos, double *pover_sin,
+              double *pover_a, double *pover_b) {
+    double  cost, over_sin, over_a, over_b;
+    double aa, bb, ab;
+    *pcos = *pover_sin = *pover_a = *pover_b = 0.0;
+
+    aa = dot<double>(&a, &a);
+    bb = dot<double>(&b, &b);
+    ab = dot<double>(&a, &b);
+
+    if (aa == 0) return ANGLE_BAD_A;
+    if (bb == 0) return ANGLE_BAD_B;
+
+    over_a = rsqrt0(aa);
+    over_b = rsqrt0(bb);
+    cost = ab * over_a * over_b;
+    over_sin = rsqrt0(max(1.0 - cost*cost, 1e-6));
+
+    *pcos = cost; *pover_sin = over_sin; *pover_a = over_a; *pover_b = over_b;
+    return ANGLE_OK;
+}
+
+_S_ void dih_write(double3 a, double3 b, double3 c, double3 d) {
+    PRINT("%g %g %g\n", a.x, a.y, a.z);
+    PRINT("%g %g %g\n", b.x, b.y, b.z);
+    PRINT("%g %g %g\n", c.x, c.y, c.z);
+    PRINT("%g %g %g\n", d.x, d.y, d.z);
+}
+
+/* forces from one dihedral */
+template <int update>
+_S_ double3 dih0(double phi, double kb,
+                 double3 a, double3 b, double3 c, double3 d) {
+    int status;
+    double over_k, over_n, cosTheta, over_sin,
+        beta, b11, b12, sint0kb, cost0kb;
+    double3 ab, ac, cd, bc, bd, da, k, n, k_n;
+    diff(&a, &b, /**/ &ab);
+    diff(&a, &c, /**/ &ac);
+    diff(&c, &d, /**/ &cd);
+    diff(&b, &d, /**/ &bd);
+    diff(&b, &c, /**/ &bc);
+    diff(&d, &a, /**/ &da);
+
+    cross(&ab, &ac, /**/ &k);
+    cross(&bd, &bc, /**/ &n);
+
+    status = angle(k, n, /**/
+                   &cosTheta, &over_sin,
+                   &over_k, &over_n);
+    if (status != ANGLE_OK) {
+        PRINT("bad dihedral\n");
+        dih_write(a, b, c, d);
+        EXIT();
+    }
+    diff(&k, &n, /**/ &k_n);
+    over_sin = copysign(over_sin, dot<double>(&k_n, &da));
+
+    sint0kb = sin(phi) * kb;
+    cost0kb = cos(phi) * kb;
+    beta = cost0kb - cosTheta * sint0kb * over_sin;
+
+    b11 = -beta *  cosTheta * over_k * over_k;
+    b12 =  beta *             over_k * over_n;
+
+    if (update == 1) {
+        double3 r32, f1, f;
+        diff(&c, &b, /**/ &r32);
+        cross(&k, &r32, /**/ &f);
+        cross(&n, &r32, /**/ &f1);
+        scal(b11, /**/ &f);
+        axpy(b12, &f1, /**/ &f);
+        return f;
+    }
+    else if (update == 2) {
+        double3 f, f1, f2, f3;
+        double b22 = -beta * cosTheta * over_n * over_n;
+
+        cross(&k, &ac, /**/ &f);
+        cross(&k, &cd, /**/ &f1);
+        cross(&n, &ac, /**/ &f2);
+        cross(&n, &cd, /**/ &f3);
+
+        scal(b11, /**/ &f);
+        add(&f2, /**/ &f1);
+        axpy(b12, &f1, /**/ &f);
+        axpy(b22, &f3, /**/ &f);
+        return f;
+    }
+    else {
+        double3 f;
+        f.x = f.y = f.z = 0;
+        assert(0);
+        return f;
+    }
+}
+
+_I_ double3 dih_a(double phi, double kb, double3 a, double3 b, double3 c, double3 d) {
+    return dih0<1>(phi, kb, a, b, c, d);
+}
+
+_I_ double3 dih_b(double phi, double kb, double3 a, double3 b, double3 c, double3 d) {
+    return dih0<2>(phi, kb, a, b, c, d);
+}
+
+END
+
+#undef _I_
+#undef _S_
+#undef BEGIN
+#undef END
+
+#undef UDX_KANTOR0_BODY
+#endif
+/* end src/mesh/force/kantor0/dev.h */
 
 namespace kantor_dev {
 /* begin src/rbc/force/bending/kantor/dev/main.h */
@@ -70529,11 +86252,190 @@ void rbc_force_set_conf(const MeshRead *cell, const Config *cfg, const char *nam
 #include <stdio.h>
 #include <assert.h>
 
-/* already included: src/inc/conf.h */
-/* already included: src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
 
-/* already included: src/inc/def.h */
-/* already included: src/inc/type.h */
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
+
+/* begin src/inc/def.h */
+/* solvent colors */
+#define XMACRO_COLOR(_)                         \
+    _(BLUE)                                     \
+    _(RED)
+
+#define ENUM_COLOR(a) a##_COLOR
+#define make_enum_color(a) ENUM_COLOR(a) ,
+#ifndef UDX_DEF_ENUMS_DEFINED
+#define UDX_DEF_ENUMS_DEFINED
+enum {
+    XMACRO_COLOR(make_enum_color)
+    N_COLOR
+};
+#undef make_enum_color
+
+enum {
+    /* wall margins */
+    XWM = 6,
+    YWM = 6,
+    ZWM = 6,
+
+    SAFETY_FACTOR_MAXP = 3,
+
+    /* maximum number of particles per solid */
+    MAX_PSOLID_NUM = 12000,
+
+    /* maximum number of solids per node */
+    MAX_SOLIDS = 100,
+
+    /* maximum number of object types (solid, rbc, ...) */
+    MAX_MBR_TYPES = 2,
+    MAX_RIG_TYPES = 2,
+    MAX_OBJ_TYPES = MAX_MBR_TYPES + MAX_RIG_TYPES,
+
+    /* maximum number density of particles of the objects */
+    MAX_OBJ_DENSITY = 30,
+
+    /* maximum number of red blood cells per node */
+    MAX_CELL_NUM = 1500,
+
+    /* maximum texture size in bytes */
+    MAX_TEXO_SIZE = 100000000,
+
+    /* safety factor for dpd halo interactions */
+    HSAFETY_FACTOR = 10,
+
+    /* safety factor for odist fragments */
+    ODSTR_FACTOR = 3,
+};
+#endif
+
+/* for the spring forces r = min(lmax*RBC_SPRING_CAP, r) */
+#define RBC_SPRING_CAP (0.99)
+/* end src/inc/def.h */
+/* begin src/inc/type.h */
+#pragma once
+
+template <typename T, int N>
+struct Sarray { /* [s]tatic array */
+    T d[N];
+};
+
+struct Particle {
+    float r[3], v[3];
+};
+
+struct Rigid {
+    float Iinv[6],            /* moment of inertia            6        */
+        mass,                 /* mass of the solid            7        */
+        com[3],               /* [c]enter [o]f [m]ass         10       */
+        v[3], om[3],          /* linear and angular velocity  13 16    */
+        e0[3], e1[3], e2[3],  /* local referential            19 22 25 */
+        fo[3], to[3],         /* force, torque                28 31    */
+        id;                   /* id of the solid              32       */
+};
+
+struct Force {
+    float f[3];
+};
+
+struct Momentum {
+    float P[3], L[3]; /* linear and angular momentum */
+};
+
+struct Positioncp {
+    float rc[3]; /* current position  */
+    float rp[3]; /* previous position */
+};
+
+typedef Sarray<int, 26>       int26;
+typedef Sarray<int, 27>       int27;
+
+typedef Sarray<int*, 26>     intp26;
+typedef Sarray<Particle*, 26> Pap26;
+typedef Sarray<Force*,    26> Fop26;
+typedef Sarray<Momentum*, 26> Mop26;
+typedef Sarray<Positioncp*, 26> Pocpp26;
+
+/* particles wrap */
+struct PaWrap {
+    int n;
+    const Particle *pp;
+};
+
+/* forces wrap */
+struct FoWrap {
+    int n;
+    Force *ff;
+};
+/* end src/inc/type.h */
 /* begin src/inc/dev.h */
 /* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
@@ -70573,8 +86475,214 @@ void rbc_force_set_conf(const MeshRead *cell, const Config *cfg, const char *nam
 #define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
 #define DzeroA(P, n)   DsetA(P, 0, n)
 /* end src/inc/dev.h */
-/* already included: src/math/dev.h */
-/* already included: src/math/tri/dev.h */
+/* begin src/math/dev.h */
+/* use templates here because we might have mixed float/double */
+
+#define _HD_ __host__ __device__
+
+#pragma once
+
+template <typename T1, typename T2>
+_HD_ void scal(const T1 a, /*io*/ T2 *b) {
+    b->x *= a;
+    b->y *= a;
+    b->z *= a;
+}
+
+template <typename T1, typename T2>
+_HD_ void add(const T1 *a, /*io*/ T2 *b) {
+    b->x += a->x;
+    b->y += a->y;
+    b->z += a->z;
+}
+
+template <typename T1, typename T2, typename T3>
+_HD_ void diff(const T1 *a, const T2 *b, /**/ T3 *c) {
+    c->x = a->x - b->x;
+    c->y = a->y - b->y;
+    c->z = a->z - b->z;
+}
+
+template <typename T1, typename T2, typename T3>
+_HD_ T1 dot(const T2 *a, const T3 *b) {
+    return a->x * b->x + a->y * b->y + a->z * b->z;
+}
+
+template <typename T1, typename T2, typename T3>
+_HD_ void cross(const T1 *a, const T2 *b, /**/ T3 *c) {
+    c->x = a->y * b->z - a->z * b->y;
+    c->y = a->z * b->x - a->x * b->z;
+    c->z = a->x * b->y - a->y * b->x;
+}
+
+template <typename T1, typename T2, typename T3>
+_HD_ void scalmult(const T1 *a, const T2 x, /**/ const T3 *b) {
+    b->x = a->x * x;
+    b->y = a->y * x;
+    b->z = a->z * x;
+}
+
+
+template <typename T1, typename T2, typename T3, typename T4>
+_HD_ void apxb(const T1 *a, const T2 x, const T3 *b, /**/ T4 *c) {
+    c->x = a->x + x * b->x;
+    c->y = a->y + x * b->y;
+    c->z = a->z + x * b->z;
+}
+
+template <typename T1, typename T2, typename T3>
+_HD_ void axpy(const T1 a, const T2 *x, /*io*/ T3 *y) {
+    y->x += a * x->x;
+    y->y += a * x->y;
+    y->z += a * x->z;
+}
+/* end src/math/dev.h */
+/* begin src/math/tri/dev.h */
+#ifdef TRI_HOST
+#ifndef UDX_TRI_HOST_DEFINED
+#define UDX_TRI_HOST_DEFINED
+#define UDX_TRI_BODY
+#endif
+#else
+#ifndef UDX_TRI_DEV_DEFINED
+#define UDX_TRI_DEV_DEFINED
+#define UDX_TRI_BODY
+#endif
+#endif
+
+#ifdef UDX_TRI_BODY
+#ifdef TRI_HOST
+  #define _I_
+  #define _S_ static
+  #define BEGIN namespace tri_hst {
+  #define END }
+#else
+  #define _I_ static __device__
+  #define _S_ static __device__
+  #define BEGIN namespace tri_dev {
+  #define END }
+#endif
+
+BEGIN
+
+_S_ void diff(const double *a, const double *b, /**/ double  *c) {
+    enum {X, Y, Z};
+    c[X] = a[X] - b[X];
+    c[Y] = a[Y] - b[Y];
+    c[Z] = a[Z] - b[Z];
+}
+_S_ double vabs(double *a) {
+    enum {X, Y, Z};
+    double r;
+    r = a[X]*a[X] + a[Y]*a[Y] + a[Z]*a[Z];
+    return sqrt(r);
+}
+_S_ void swap(double *a, double *b) {
+    double t;
+    t = *a; *a = *b; *b = t;
+}
+_S_ int less(double *a, double *b) { return (*a) < (*b); }
+_S_ void  sort3(double *a, double *b, double *c) {
+    if (less(c, b)) swap(c, b);
+    if (less(b, a)) swap(b, a);
+    if (less(c, b)) swap(c, b);
+}
+
+_I_ double kahan_area0(double a, double b, double c) {
+    sort3(&c, &b, &a); /* make a > b > c */
+    return sqrt((a+(b+c))*(c-(a-b))*(c+(a-b))*(a+(b-c)))/4;
+}
+
+_I_ double kahan_area(const double r0[3], const double r1[3], const double r2[3]) {
+    double r01[3], r12[3], r20[3], a, b, c;
+    diff(r0, r1, /**/ r01);
+    diff(r1, r2, /**/ r12);
+    diff(r2, r0, /**/ r20);
+    a = vabs(r01); b = vabs(r12); c = vabs(r20);
+    return kahan_area0(a, b, c);
+}
+
+_S_ double orient2d_xy(const double a[3], const double b[3], const double c[3]) {
+    enum {X, Y, Z};
+    enum {P = X, Q = Y};
+    double acp, bcp, acq, bcq;
+    acp = a[P] - c[P]; bcp = b[P] - c[P];
+    acq = a[Q] - c[Q]; bcq = b[Q] - c[Q];
+    return acp * bcq - acq * bcp;
+}
+
+_S_ double orient2d_zx(const double a[3], const double b[3], const double c[3]) {
+    enum {X, Y, Z};
+    enum {P = Z, Q = X};
+    double acp, bcp, acq, bcq;
+    acp = a[P] - c[P]; bcp = b[P] - c[P];
+    acq = a[Q] - c[Q]; bcq = b[Q] - c[Q];
+    return acp * bcq - acq * bcp;
+}
+
+_S_ double orient2d_yz(const double a[3], const double b[3], const double c[3]) {
+    enum {X, Y, Z};
+    enum {P = Y, Q = Z};
+    double acp, bcp, acq, bcq;
+    acp = a[P] - c[P]; bcp = b[P] - c[P];
+    acq = a[Q] - c[Q]; bcq = b[Q] - c[Q];
+    return acp * bcq - acq * bcp;
+}
+
+_I_ double orient3d(const double a[3], const double b[3], const double c[3], const double d[3]) {
+    enum {X, Y, Z};
+    double ax, ay, az, bx, by, bz, cx, cy, cz;
+
+    ax = a[X] - d[X]; ay = a[Y] - d[Y]; az = a[Z] - d[Z];
+    bx = b[X] - d[X]; by = b[Y] - d[Y]; bz = b[Z] - d[Z];
+    cx = c[X] - d[X]; cy = c[Y] - d[Y]; cz = c[Z] - d[Z];
+
+    return ax*(by*cz - bz*cy) + bx*(cy*az - cz*ay) + cx*(ay*bz - az*by);
+}
+
+_I_ void ac_bc_cross(const double a[3], const double b[3], const double c[3], /**/ double r[3]) {
+    enum {X, Y, Z};
+    r[X] = orient2d_yz(a, b, c);
+    r[Y] = orient2d_zx(a, b, c);
+    r[Z] = orient2d_xy(a, b, c);
+}
+
+_I_ double shewchuk_area(const double a[3], const double b[3], const double c[3]) {
+    double x, y, z;
+    x = orient2d_yz(a, b, c);
+    y = orient2d_zx(a, b, c);
+    z = orient2d_xy(a, b, c);
+    return sqrt(x*x + y*y + z*z)/2;
+}
+
+_I_ void dihedral_xy(const double a[3], const double b[3], const double c[3], const double d[3],
+                       double *px, double *py) {
+    enum {X, Y, Z};
+    double bcx, bcy, bcz, bc;
+    double k[3], l[3];
+
+    ac_bc_cross(b, c, a, /**/ k);
+    ac_bc_cross(c, b, d, /**/ l);
+
+    bcx = b[X] - c[X];
+    bcy = b[Y] - c[Y];
+    bcz = b[Z] - c[Z];
+    bc = sqrt(bcx*bcx + bcy*bcy + bcz*bcz);
+
+    *py = -orient3d(a, b, c, d)*bc;
+    *px = k[X]*l[X] + k[Y]*l[Y] + k[Z]*l[Z];
+}
+
+END
+
+#undef _I_
+#undef _S_
+#undef BEGIN
+#undef END
+
+#undef UDX_TRI_BODY
+#endif
+/* end src/math/tri/dev.h */
 
 /* begin src/io/mesh_read/imp.h */
 struct int4;
@@ -70732,7 +86840,38 @@ const char* get_filename_ext(const char*);
   #error DEV_* is undefined
 #endif
 /* end src/d/q.h */
-/* already included: src/d/api.h */
+/* begin src/d/api.h */
+#pragma once
+
+namespace d {  /* a wrapper for device API */
+typedef int Stream_t; /* TODO: streams are not supported */
+enum {MemcpyHostToHost, MemcpyHostToDevice,
+      MemcpyDeviceToHost, MemcpyDeviceToDevice,
+      MemcpyDefault};
+
+// tag::more[]
+const char *emsg();
+int alloc_pinned(void **pHost, size_t size);
+int is_device_pointer(const void *ptr);
+// end::more[]
+
+// tag::api[]
+int GetSymbolAddress(void **devPtr, const void *symbol);
+int Malloc(void **p, size_t);
+int MemcpyToSymbol(const void *symbol, const void *src, size_t count, size_t offset=0, int kind=MemcpyHostToDevice);
+int MemcpyFromSymbol(void *dst, const void *symbol, size_t count, size_t offset=0, int kind=MemcpyDeviceToHost);
+int HostGetDevicePointer(void **pDevice, void *pHost, unsigned int flags);
+int Memcpy (void *dst, const void *src, size_t count, int kind);
+int MemsetAsync (void *devPtr, int value, size_t count, Stream_t stream=0);
+int Memset (void *devPtr, int value, size_t count);
+int MemcpyAsync (void * dst, const void * src, size_t count, int kind, Stream_t stream = 0);
+int Free (void *devPtr);
+int FreeHost (void *hstPtr);
+int DeviceSynchronize (void);
+int PeekAtLastError(void);
+// end::api[]
+}
+/* end src/d/api.h */
 /* begin src/d/ker.h */
 #if   defined(DEV_CUDA)
 /* begin src/d/cuda/ker.h */
@@ -70824,7 +86963,16 @@ void check(int rc, const char *file, int line);
 /* [k]ernel [l]aunch macros */
 
 #if    defined(KL_RELEASE)
-/* already included: src/utils/kl/release.h */
+/* begin src/utils/kl/release.h */
+#define KL_BEFORE(s, C) if (!kl::safe(ESC C)) continue;
+#define KL_CALL(F, C, A) F<<<ESC C>>>A
+#define KL_AFTER(s)
+
+#ifndef UDX_KL_RELEASE_FUNCTIONS_DEFINED
+#define UDX_KL_RELEASE_FUNCTIONS_DEFINED
+namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
+#endif
+/* end src/utils/kl/release.h */
 #elif  defined(KL_NONE)
 /* begin src/utils/kl/none.h */
 #define KL_BEFORE(s, C)
@@ -70849,7 +86997,18 @@ namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
   #error KL_* is undefined
 #endif
 
-/* already included: src/utils/kl/common.h */
+/* begin src/utils/kl/common.h */
+namespace kl {
+#pragma once
+
+inline int safe0(dim3 i, dim3 j) {
+    msg(i.x, i.y, i.z,   j.x, j.y, j.z);
+    return i.x>0 && i.y>0 && i.z>0   &&   j.x>0 && j.y>0 && j.z>0;
+}
+inline int safe(dim3 i, dim3 j)                    { return safe0(i, j); }
+inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
+}
+/* end src/utils/kl/common.h */
 /* begin src/utils/kl/macro.h */
 #define ESC(...) __VA_ARGS__
 #define KL(F, C, A)                             \
@@ -70863,7 +87022,44 @@ namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
 /* TODO: header includes header */
 /* end src/utils/kl.h */
 
-/* already included: src/rbc/params/imp.h */
+/* begin src/rbc/params/imp.h */
+#pragma once
+
+struct Config;
+struct RbcParams;
+struct RbcParams_v {
+    float gammaC, gammaT, kBT;
+    float kb, phi;
+    float ks, x0, mpow;
+    float ka, kd, kv;
+    float totArea, totVolume;
+};
+
+// tag::mem[]
+void rbc_params_ini(RbcParams **);
+void rbc_params_fin(RbcParams *);
+// end::mem[]
+
+// tag::set[]
+void rbc_params_set_fluct(float gammaC, float gammaT, float kBT, RbcParams *);
+void rbc_params_set_bending(float kb, float phi, RbcParams *);
+void rbc_params_set_spring(float ks, float x0, float mpow , RbcParams *);
+void rbc_params_set_area_volume(float ka, float kd, float kv, RbcParams *);
+void rbc_params_set_tot_area_volume(float totArea, float totVolume, RbcParams *);
+// end::set[]
+
+// tag::get[]
+double rbc_params_get_tot_volume(const RbcParams *);
+// end::get[]
+
+// tag::cnf[]
+void rbc_params_set_conf(const Config *c, const char *name, RbcParams *);
+// end::cnf[]
+
+// tag::view[]
+RbcParams_v rbc_params_get_view(const RbcParams *);
+// end::view[]
+/* end src/rbc/params/imp.h */
 /* begin src/rbc/adj/imp.h */
 struct Adj;
 struct Adj_v;
@@ -70940,11 +87136,92 @@ void rbc_rnd_gen(RbcRnd*, int n, /**/ float**); // <1>
 float rbc_rnd_get_hst(const RbcRnd*, int i);    // <2>
 // end::int[]
 /* end src/rbc/force/rnd/imp.h */
-/* already included: src/rbc/type.h */
+/* begin src/rbc/type.h */
+#pragma once
 
-/* already included: src/rbc/adj/type/common.h */
-/* already included: src/rbc/adj/type/dev.h */
-/* already included: src/rbc/adj/dev.h */
+struct AreaVolume;
+struct Particle;
+
+// tag::quants[]
+struct RbcQuants {
+    int n, nc;               /* number of particles, cells                */
+    int nt, nv;              /* number of triangles and vertices per mesh */
+    int md;                  /* maximum valence of the mesh               */
+    Particle *pp, *pp_hst;   /* vertices particles on host and device     */
+    bool ids;                /* global ids active ?                       */
+    int *ii;                 /* global ids on host                        */
+    AreaVolume *area_volume; /* to compute area and volume */
+};
+// end::quants[]
+
+/* end src/rbc/type.h */
+
+/* begin src/rbc/adj/type/common.h */
+#pragma once
+
+// tag::interface[]
+struct AdjMap {
+    int i0, i1, i2, i3, i4;
+    int rbc;
+};
+// end::interface[]
+/* end src/rbc/adj/type/common.h */
+/* begin src/rbc/adj/type/dev.h */
+#pragma once
+
+struct Adj_v {
+    int *adj0;
+    int *adj1;
+    int nv, md;
+};
+
+/* end src/rbc/adj/type/dev.h */
+/* begin src/rbc/adj/dev.h */
+#pragma once
+
+static __device__ int fetch(const int *a, int i) { return a[i]; }
+static __device__ int adj_get_map0(int md, int nv, int i, const int *adj0, const int *adj1, /**/ AdjMap *m) {
+    int i0, i1, i2, i3, i4;
+    int rbc, offset, j, k;
+    i0 = i / md;
+    j  = i % md;
+
+    k   = (i0 % nv) * md;
+    i1 = fetch(adj0, k + j);
+    if (i1 == -1) return 0; /* invalid */
+
+    i2 = fetch(adj0, k + ((j + 1) % md));
+    if (i2 == -1) {
+        i2 = fetch(adj0, k    );
+        i3 = fetch(adj0, k + 1);
+    } else {
+        i3 = fetch(adj0, k + ((j + 2) % md));
+        if (i3 == -1) i3 = fetch(adj0, k);
+    }
+    i4 = fetch(adj1, k + j);
+
+    rbc = i0 / nv;
+    offset = rbc * nv;
+    i1 += offset; i2 += offset; i3 += offset; i4 += offset; /* no i0 */
+
+    assert(rbc < MAX_CELL_NUM);
+
+    m->rbc = rbc;
+    m->i0 = i0; m->i1 = i1; m->i2 = i2; m->i3 = i3; m->i4 = i4;
+    return 1;
+}
+
+// tag::interface[]
+static __device__ int adj_get_map(int i, Adj_v *adj, /**/ AdjMap *m) {
+// end::interface[]
+    int md, nv;
+    md = adj->md;
+    nv = adj->nv;
+    const int *adj0 = adj->adj0;
+    const int *adj1 = adj->adj1;
+    return adj_get_map0(md, nv, i, adj0, adj1, m);
+}
+/* end src/rbc/adj/dev.h */
 /* begin src/rbc/force/area_volume/imp.h */
 struct AreaVolume;
 struct Particle;
@@ -71782,8 +88059,78 @@ void rbc_force_stat(float *pArea, float *pVolume) {
 #include <math.h>
 #include <curand.h>
 
-/* already included: src/inc/conf.h */
-/* already included: src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
 
 /* begin src/utils/error.h */
 #define ERR(fmt, ...)  do {                                     \
@@ -72248,8 +88595,78 @@ int GenerateNormal(Generator_t, float *outputPtr, size_t n) {
 #include <mpi.h>
 #include <curand.h>
 
-/* already included: src/inc/conf.h */
-/* already included: src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
 
 /* begin src/utils/os.h */
 // tag::int[]
@@ -72267,7 +88684,38 @@ void msg_ini(int rank); // <1>
 void msg_print(const char *fmt, ...); // <2>
 // end::int[]
 /* end src/utils/msg.h */
-/* already included: src/d/api.h */
+/* begin src/d/api.h */
+#pragma once
+
+namespace d {  /* a wrapper for device API */
+typedef int Stream_t; /* TODO: streams are not supported */
+enum {MemcpyHostToHost, MemcpyHostToDevice,
+      MemcpyDeviceToHost, MemcpyDeviceToDevice,
+      MemcpyDefault};
+
+// tag::more[]
+const char *emsg();
+int alloc_pinned(void **pHost, size_t size);
+int is_device_pointer(const void *ptr);
+// end::more[]
+
+// tag::api[]
+int GetSymbolAddress(void **devPtr, const void *symbol);
+int Malloc(void **p, size_t);
+int MemcpyToSymbol(const void *symbol, const void *src, size_t count, size_t offset=0, int kind=MemcpyHostToDevice);
+int MemcpyFromSymbol(void *dst, const void *symbol, size_t count, size_t offset=0, int kind=MemcpyDeviceToHost);
+int HostGetDevicePointer(void **pDevice, void *pHost, unsigned int flags);
+int Memcpy (void *dst, const void *src, size_t count, int kind);
+int MemsetAsync (void *devPtr, int value, size_t count, Stream_t stream=0);
+int Memset (void *devPtr, int value, size_t count);
+int MemcpyAsync (void * dst, const void * src, size_t count, int kind, Stream_t stream = 0);
+int Free (void *devPtr);
+int FreeHost (void *hstPtr);
+int DeviceSynchronize (void);
+int PeekAtLastError(void);
+// end::api[]
+}
+/* end src/d/api.h */
 /* begin src/inc/dev.h */
 /* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
@@ -72423,7 +88871,25 @@ int DestroyGenerator(Generator_t g);
 int GenerateNormal(Generator_t g, float *outputPtr, size_t n);
 }
 /* end src/rbc/force/rnd/api/imp.h */
-/* already included: src/rbc/force/rnd/imp.h */
+/* begin src/rbc/force/rnd/imp.h */
+#pragma once
+
+struct RbcRnd;
+
+// tag::enum[]
+enum {SEED_TIME = -1}; /* magic seed: ini from "time" */
+// end::enum[]
+
+// tag::mem[]
+void rbc_rnd_ini(int n, long seed, RbcRnd**);
+void rbc_rnd_fin(RbcRnd*);
+// end::mem[]
+
+// tag::int[]
+void rbc_rnd_gen(RbcRnd*, int n, /**/ float**); // <1>
+float rbc_rnd_get_hst(const RbcRnd*, int i);    // <2>
+// end::int[]
+/* end src/rbc/force/rnd/imp.h */
 
 /* begin src/rbc/force/rnd/imp/type.h */
 struct RbcRnd { /* data */
@@ -72804,11 +89270,190 @@ float rbc_rnd_get_hst(const RbcRnd *d, int i) {
 #include <string.h>
 #include <mpi.h>
 
-/* already included: src/inc/conf.h */
-/* already included: src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
 
-/* already included: src/inc/def.h */
-/* already included: src/inc/type.h */
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
+
+/* begin src/inc/def.h */
+/* solvent colors */
+#define XMACRO_COLOR(_)                         \
+    _(BLUE)                                     \
+    _(RED)
+
+#define ENUM_COLOR(a) a##_COLOR
+#define make_enum_color(a) ENUM_COLOR(a) ,
+#ifndef UDX_DEF_ENUMS_DEFINED
+#define UDX_DEF_ENUMS_DEFINED
+enum {
+    XMACRO_COLOR(make_enum_color)
+    N_COLOR
+};
+#undef make_enum_color
+
+enum {
+    /* wall margins */
+    XWM = 6,
+    YWM = 6,
+    ZWM = 6,
+
+    SAFETY_FACTOR_MAXP = 3,
+
+    /* maximum number of particles per solid */
+    MAX_PSOLID_NUM = 12000,
+
+    /* maximum number of solids per node */
+    MAX_SOLIDS = 100,
+
+    /* maximum number of object types (solid, rbc, ...) */
+    MAX_MBR_TYPES = 2,
+    MAX_RIG_TYPES = 2,
+    MAX_OBJ_TYPES = MAX_MBR_TYPES + MAX_RIG_TYPES,
+
+    /* maximum number density of particles of the objects */
+    MAX_OBJ_DENSITY = 30,
+
+    /* maximum number of red blood cells per node */
+    MAX_CELL_NUM = 1500,
+
+    /* maximum texture size in bytes */
+    MAX_TEXO_SIZE = 100000000,
+
+    /* safety factor for dpd halo interactions */
+    HSAFETY_FACTOR = 10,
+
+    /* safety factor for odist fragments */
+    ODSTR_FACTOR = 3,
+};
+#endif
+
+/* for the spring forces r = min(lmax*RBC_SPRING_CAP, r) */
+#define RBC_SPRING_CAP (0.99)
+/* end src/inc/def.h */
+/* begin src/inc/type.h */
+#pragma once
+
+template <typename T, int N>
+struct Sarray { /* [s]tatic array */
+    T d[N];
+};
+
+struct Particle {
+    float r[3], v[3];
+};
+
+struct Rigid {
+    float Iinv[6],            /* moment of inertia            6        */
+        mass,                 /* mass of the solid            7        */
+        com[3],               /* [c]enter [o]f [m]ass         10       */
+        v[3], om[3],          /* linear and angular velocity  13 16    */
+        e0[3], e1[3], e2[3],  /* local referential            19 22 25 */
+        fo[3], to[3],         /* force, torque                28 31    */
+        id;                   /* id of the solid              32       */
+};
+
+struct Force {
+    float f[3];
+};
+
+struct Momentum {
+    float P[3], L[3]; /* linear and angular momentum */
+};
+
+struct Positioncp {
+    float rc[3]; /* current position  */
+    float rp[3]; /* previous position */
+};
+
+typedef Sarray<int, 26>       int26;
+typedef Sarray<int, 27>       int27;
+
+typedef Sarray<int*, 26>     intp26;
+typedef Sarray<Particle*, 26> Pap26;
+typedef Sarray<Force*,    26> Fop26;
+typedef Sarray<Momentum*, 26> Mop26;
+typedef Sarray<Positioncp*, 26> Pocpp26;
+
+/* particles wrap */
+struct PaWrap {
+    int n;
+    const Particle *pp;
+};
+
+/* forces wrap */
+struct FoWrap {
+    int n;
+    Force *ff;
+};
+/* end src/inc/type.h */
 /* begin src/inc/dev.h */
 /* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
@@ -72856,7 +89501,38 @@ void msg_print(const char *fmt, ...); // <2>
 // end::int[]
 /* end src/utils/msg.h */
 
-/* already included: src/d/api.h */
+/* begin src/d/api.h */
+#pragma once
+
+namespace d {  /* a wrapper for device API */
+typedef int Stream_t; /* TODO: streams are not supported */
+enum {MemcpyHostToHost, MemcpyHostToDevice,
+      MemcpyDeviceToHost, MemcpyDeviceToDevice,
+      MemcpyDefault};
+
+// tag::more[]
+const char *emsg();
+int alloc_pinned(void **pHost, size_t size);
+int is_device_pointer(const void *ptr);
+// end::more[]
+
+// tag::api[]
+int GetSymbolAddress(void **devPtr, const void *symbol);
+int Malloc(void **p, size_t);
+int MemcpyToSymbol(const void *symbol, const void *src, size_t count, size_t offset=0, int kind=MemcpyHostToDevice);
+int MemcpyFromSymbol(void *dst, const void *symbol, size_t count, size_t offset=0, int kind=MemcpyDeviceToHost);
+int HostGetDevicePointer(void **pDevice, void *pHost, unsigned int flags);
+int Memcpy (void *dst, const void *src, size_t count, int kind);
+int MemsetAsync (void *devPtr, int value, size_t count, Stream_t stream=0);
+int Memset (void *devPtr, int value, size_t count);
+int MemcpyAsync (void * dst, const void * src, size_t count, int kind, Stream_t stream = 0);
+int Free (void *devPtr);
+int FreeHost (void *hstPtr);
+int DeviceSynchronize (void);
+int PeekAtLastError(void);
+// end::api[]
+}
+/* end src/d/api.h */
 /* begin src/utils/error.h */
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
@@ -73038,10 +89714,68 @@ const float *mesh_read_get_vert(const MeshRead*);
 const int4  *mesh_read_get_dih(MeshRead*);
 // end::interface[]
 /* end src/io/mesh_read/imp.h */
-/* already included: src/io/restart/imp.h */
+/* begin src/io/restart/imp.h */
+#pragma once
 
-/* already included: src/rbc/type.h */
-/* already included: src/rbc/adj/type/common.h */
+struct Coords;
+struct Particle;
+struct Rigid;
+
+// tag::id[]
+enum {RESTART_TEMPL=-1,
+      RESTART_FINAL=-2};
+enum {RESTART_BEGIN=RESTART_FINAL};
+// end::id[]
+
+// tag::stream[]
+typedef void (*StreamWriter)(const void*, FILE*);
+typedef void (*StreamReader)(FILE*, void*);
+// end::stream[]
+
+// tag::write[]
+void restart_write_pp(MPI_Comm, const char *base, const char *code, int id, long n, const Particle *pp); // <1>
+void restart_write_ii(MPI_Comm, const char *base, const char *code, int id, long n, const int *ii);      // <2>
+void restart_write_ss(MPI_Comm, const char *base, const char *code, int id, long n, const Rigid *ss);    // <3>
+void restart_write_stream_one_node(MPI_Comm, const char *base, const char *code, int id, const void *data, StreamWriter); // <4>
+ // end::write[]
+
+// tag::read[]
+void restart_read_pp(MPI_Comm, const char *base, const char *code, int id, int *n, Particle *pp);
+void restart_read_ii(MPI_Comm, const char *base, const char *code, int id, int *n, int *ii);
+void restart_read_ss(MPI_Comm, const char *base, const char *code, int id, int *n, Rigid *ss);
+void restart_read_stream_one_node(const char *base, const char *code, int id, StreamReader, void *data);
+// end::read[]
+/* end src/io/restart/imp.h */
+
+/* begin src/rbc/type.h */
+#pragma once
+
+struct AreaVolume;
+struct Particle;
+
+// tag::quants[]
+struct RbcQuants {
+    int n, nc;               /* number of particles, cells                */
+    int nt, nv;              /* number of triangles and vertices per mesh */
+    int md;                  /* maximum valence of the mesh               */
+    Particle *pp, *pp_hst;   /* vertices particles on host and device     */
+    bool ids;                /* global ids active ?                       */
+    int *ii;                 /* global ids on host                        */
+    AreaVolume *area_volume; /* to compute area and volume */
+};
+// end::quants[]
+
+/* end src/rbc/type.h */
+/* begin src/rbc/adj/type/common.h */
+#pragma once
+
+// tag::interface[]
+struct AdjMap {
+    int i0, i1, i2, i3, i4;
+    int rbc;
+};
+// end::interface[]
+/* end src/rbc/adj/type/common.h */
 /* begin src/rbc/adj/imp.h */
 struct Adj;
 struct Adj_v;
@@ -73546,8 +90280,78 @@ void rbc_strt_dump(MPI_Comm comm, const char *base, const char *name, int id, co
 /* begin src/rbc/params/conf.cpp */
 #include <stdio.h>
 
-/* already included: src/inc/conf.h */
-/* already included: src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
 
 /* begin src/utils/error.h */
 #define ERR(fmt, ...)  do {                                     \
@@ -73657,7 +90461,44 @@ void conf_write_history(const Config *cfg, FILE *stream); // <2>
 // end::dump[]
 /* end src/conf/imp.h */
 
-/* already included: src/rbc/params/imp.h */
+/* begin src/rbc/params/imp.h */
+#pragma once
+
+struct Config;
+struct RbcParams;
+struct RbcParams_v {
+    float gammaC, gammaT, kBT;
+    float kb, phi;
+    float ks, x0, mpow;
+    float ka, kd, kv;
+    float totArea, totVolume;
+};
+
+// tag::mem[]
+void rbc_params_ini(RbcParams **);
+void rbc_params_fin(RbcParams *);
+// end::mem[]
+
+// tag::set[]
+void rbc_params_set_fluct(float gammaC, float gammaT, float kBT, RbcParams *);
+void rbc_params_set_bending(float kb, float phi, RbcParams *);
+void rbc_params_set_spring(float ks, float x0, float mpow , RbcParams *);
+void rbc_params_set_area_volume(float ka, float kd, float kv, RbcParams *);
+void rbc_params_set_tot_area_volume(float totArea, float totVolume, RbcParams *);
+// end::set[]
+
+// tag::get[]
+double rbc_params_get_tot_volume(const RbcParams *);
+// end::get[]
+
+// tag::cnf[]
+void rbc_params_set_conf(const Config *c, const char *name, RbcParams *);
+// end::cnf[]
+
+// tag::view[]
+RbcParams_v rbc_params_get_view(const RbcParams *);
+// end::view[]
+/* end src/rbc/params/imp.h */
 
 void rbc_params_set_conf(const Config *c, const char *name, RbcParams *par) {
     float gc, gt, kbt, kb, phi, ks, mpow, x0, ka, kd, kv, totArea, totVolume;
@@ -74075,7 +90916,44 @@ struct RbcParams {
     float totArea;   /* total area */
 };
 /* end src/rbc/params/type.h */
-/* already included: src/rbc/params/imp.h */
+/* begin src/rbc/params/imp.h */
+#pragma once
+
+struct Config;
+struct RbcParams;
+struct RbcParams_v {
+    float gammaC, gammaT, kBT;
+    float kb, phi;
+    float ks, x0, mpow;
+    float ka, kd, kv;
+    float totArea, totVolume;
+};
+
+// tag::mem[]
+void rbc_params_ini(RbcParams **);
+void rbc_params_fin(RbcParams *);
+// end::mem[]
+
+// tag::set[]
+void rbc_params_set_fluct(float gammaC, float gammaT, float kBT, RbcParams *);
+void rbc_params_set_bending(float kb, float phi, RbcParams *);
+void rbc_params_set_spring(float ks, float x0, float mpow , RbcParams *);
+void rbc_params_set_area_volume(float ka, float kd, float kv, RbcParams *);
+void rbc_params_set_tot_area_volume(float totArea, float totVolume, RbcParams *);
+// end::set[]
+
+// tag::get[]
+double rbc_params_get_tot_volume(const RbcParams *);
+// end::get[]
+
+// tag::cnf[]
+void rbc_params_set_conf(const Config *c, const char *name, RbcParams *);
+// end::cnf[]
+
+// tag::view[]
+RbcParams_v rbc_params_get_view(const RbcParams *);
+// end::view[]
+/* end src/rbc/params/imp.h */
 
 void rbc_params_ini(RbcParams **p) {
     EMALLOC(1, p);
@@ -74529,7 +91407,16 @@ void adj_view_ini(const Adj*, Adj_v**);
 void adj_view_fin(Adj_v*);
 // end::interface[]
 /* end src/rbc/adj/imp.h */
-/* already included: src/rbc/adj/type/common.h */
+/* begin src/rbc/adj/type/common.h */
+#pragma once
+
+// tag::interface[]
+struct AdjMap {
+    int i0, i1, i2, i3, i4;
+    int rbc;
+};
+// end::interface[]
+/* end src/rbc/adj/type/common.h */
 /* begin src/math/tri/imp.h */
 namespace tri_hst {
 // tag::interface[]
@@ -75002,11 +91889,190 @@ void rbc_shape_total_volume(RbcShape *q, /**/ float *pe) {
 #include <stdio.h>
 #include <assert.h>
 
-/* already included: src/inc/conf.h */
-/* already included: src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
 
-/* already included: src/inc/def.h */
-/* already included: src/inc/type.h */
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
+
+/* begin src/inc/def.h */
+/* solvent colors */
+#define XMACRO_COLOR(_)                         \
+    _(BLUE)                                     \
+    _(RED)
+
+#define ENUM_COLOR(a) a##_COLOR
+#define make_enum_color(a) ENUM_COLOR(a) ,
+#ifndef UDX_DEF_ENUMS_DEFINED
+#define UDX_DEF_ENUMS_DEFINED
+enum {
+    XMACRO_COLOR(make_enum_color)
+    N_COLOR
+};
+#undef make_enum_color
+
+enum {
+    /* wall margins */
+    XWM = 6,
+    YWM = 6,
+    ZWM = 6,
+
+    SAFETY_FACTOR_MAXP = 3,
+
+    /* maximum number of particles per solid */
+    MAX_PSOLID_NUM = 12000,
+
+    /* maximum number of solids per node */
+    MAX_SOLIDS = 100,
+
+    /* maximum number of object types (solid, rbc, ...) */
+    MAX_MBR_TYPES = 2,
+    MAX_RIG_TYPES = 2,
+    MAX_OBJ_TYPES = MAX_MBR_TYPES + MAX_RIG_TYPES,
+
+    /* maximum number density of particles of the objects */
+    MAX_OBJ_DENSITY = 30,
+
+    /* maximum number of red blood cells per node */
+    MAX_CELL_NUM = 1500,
+
+    /* maximum texture size in bytes */
+    MAX_TEXO_SIZE = 100000000,
+
+    /* safety factor for dpd halo interactions */
+    HSAFETY_FACTOR = 10,
+
+    /* safety factor for odist fragments */
+    ODSTR_FACTOR = 3,
+};
+#endif
+
+/* for the spring forces r = min(lmax*RBC_SPRING_CAP, r) */
+#define RBC_SPRING_CAP (0.99)
+/* end src/inc/def.h */
+/* begin src/inc/type.h */
+#pragma once
+
+template <typename T, int N>
+struct Sarray { /* [s]tatic array */
+    T d[N];
+};
+
+struct Particle {
+    float r[3], v[3];
+};
+
+struct Rigid {
+    float Iinv[6],            /* moment of inertia            6        */
+        mass,                 /* mass of the solid            7        */
+        com[3],               /* [c]enter [o]f [m]ass         10       */
+        v[3], om[3],          /* linear and angular velocity  13 16    */
+        e0[3], e1[3], e2[3],  /* local referential            19 22 25 */
+        fo[3], to[3],         /* force, torque                28 31    */
+        id;                   /* id of the solid              32       */
+};
+
+struct Force {
+    float f[3];
+};
+
+struct Momentum {
+    float P[3], L[3]; /* linear and angular momentum */
+};
+
+struct Positioncp {
+    float rc[3]; /* current position  */
+    float rp[3]; /* previous position */
+};
+
+typedef Sarray<int, 26>       int26;
+typedef Sarray<int, 27>       int27;
+
+typedef Sarray<int*, 26>     intp26;
+typedef Sarray<Particle*, 26> Pap26;
+typedef Sarray<Force*,    26> Fop26;
+typedef Sarray<Momentum*, 26> Mop26;
+typedef Sarray<Positioncp*, 26> Pocpp26;
+
+/* particles wrap */
+struct PaWrap {
+    int n;
+    const Particle *pp;
+};
+
+/* forces wrap */
+struct FoWrap {
+    int n;
+    Force *ff;
+};
+/* end src/inc/type.h */
 /* begin src/inc/dev.h */
 /* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
@@ -75116,7 +92182,38 @@ void msg_print(const char *fmt, ...); // <2>
   #error DEV_* is undefined
 #endif
 /* end src/d/q.h */
-/* already included: src/d/api.h */
+/* begin src/d/api.h */
+#pragma once
+
+namespace d {  /* a wrapper for device API */
+typedef int Stream_t; /* TODO: streams are not supported */
+enum {MemcpyHostToHost, MemcpyHostToDevice,
+      MemcpyDeviceToHost, MemcpyDeviceToDevice,
+      MemcpyDefault};
+
+// tag::more[]
+const char *emsg();
+int alloc_pinned(void **pHost, size_t size);
+int is_device_pointer(const void *ptr);
+// end::more[]
+
+// tag::api[]
+int GetSymbolAddress(void **devPtr, const void *symbol);
+int Malloc(void **p, size_t);
+int MemcpyToSymbol(const void *symbol, const void *src, size_t count, size_t offset=0, int kind=MemcpyHostToDevice);
+int MemcpyFromSymbol(void *dst, const void *symbol, size_t count, size_t offset=0, int kind=MemcpyDeviceToHost);
+int HostGetDevicePointer(void **pDevice, void *pHost, unsigned int flags);
+int Memcpy (void *dst, const void *src, size_t count, int kind);
+int MemsetAsync (void *devPtr, int value, size_t count, Stream_t stream=0);
+int Memset (void *devPtr, int value, size_t count);
+int MemcpyAsync (void * dst, const void * src, size_t count, int kind, Stream_t stream = 0);
+int Free (void *devPtr);
+int FreeHost (void *hstPtr);
+int DeviceSynchronize (void);
+int PeekAtLastError(void);
+// end::api[]
+}
+/* end src/d/api.h */
 /* begin src/d/ker.h */
 #if   defined(DEV_CUDA)
 /* begin src/d/cuda/ker.h */
@@ -75275,7 +92372,16 @@ void check(int rc, const char *file, int line);
 /* [k]ernel [l]aunch macros */
 
 #if    defined(KL_RELEASE)
-/* already included: src/utils/kl/release.h */
+/* begin src/utils/kl/release.h */
+#define KL_BEFORE(s, C) if (!kl::safe(ESC C)) continue;
+#define KL_CALL(F, C, A) F<<<ESC C>>>A
+#define KL_AFTER(s)
+
+#ifndef UDX_KL_RELEASE_FUNCTIONS_DEFINED
+#define UDX_KL_RELEASE_FUNCTIONS_DEFINED
+namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
+#endif
+/* end src/utils/kl/release.h */
 #elif  defined(KL_NONE)
 /* begin src/utils/kl/none.h */
 #define KL_BEFORE(s, C)
@@ -75300,7 +92406,18 @@ namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
   #error KL_* is undefined
 #endif
 
-/* already included: src/utils/kl/common.h */
+/* begin src/utils/kl/common.h */
+namespace kl {
+#pragma once
+
+inline int safe0(dim3 i, dim3 j) {
+    msg(i.x, i.y, i.z,   j.x, j.y, j.z);
+    return i.x>0 && i.y>0 && i.z>0   &&   j.x>0 && j.y>0 && j.z>0;
+}
+inline int safe(dim3 i, dim3 j)                    { return safe0(i, j); }
+inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
+}
+/* end src/utils/kl/common.h */
 /* begin src/utils/kl/macro.h */
 #define ESC(...) __VA_ARGS__
 #define KL(F, C, A)                             \
@@ -75713,9 +92830,134 @@ void rbc_stretch_apply(int nm, const RbcStretch *f, /**/ Force *ff) {
 #include <string.h>
 #include <vector_types.h>
 
-/* already included: src/inc/conf.h */
-/* already included: src/inc/conf.h */
-/* already included: src/inc/type.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
+/* begin src/inc/type.h */
+#pragma once
+
+template <typename T, int N>
+struct Sarray { /* [s]tatic array */
+    T d[N];
+};
+
+struct Particle {
+    float r[3], v[3];
+};
+
+struct Rigid {
+    float Iinv[6],            /* moment of inertia            6        */
+        mass,                 /* mass of the solid            7        */
+        com[3],               /* [c]enter [o]f [m]ass         10       */
+        v[3], om[3],          /* linear and angular velocity  13 16    */
+        e0[3], e1[3], e2[3],  /* local referential            19 22 25 */
+        fo[3], to[3],         /* force, torque                28 31    */
+        id;                   /* id of the solid              32       */
+};
+
+struct Force {
+    float f[3];
+};
+
+struct Momentum {
+    float P[3], L[3]; /* linear and angular momentum */
+};
+
+struct Positioncp {
+    float rc[3]; /* current position  */
+    float rp[3]; /* previous position */
+};
+
+typedef Sarray<int, 26>       int26;
+typedef Sarray<int, 27>       int27;
+
+typedef Sarray<int*, 26>     intp26;
+typedef Sarray<Particle*, 26> Pap26;
+typedef Sarray<Force*,    26> Fop26;
+typedef Sarray<Momentum*, 26> Mop26;
+typedef Sarray<Positioncp*, 26> Pocpp26;
+
+/* particles wrap */
+struct PaWrap {
+    int n;
+    const Particle *pp;
+};
+
+/* forces wrap */
+struct FoWrap {
+    int n;
+    Force *ff;
+};
+/* end src/inc/type.h */
 /* begin src/inc/dev.h */
 /* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
@@ -75755,7 +92997,61 @@ void rbc_stretch_apply(int nm, const RbcStretch *f, /**/ Force *ff) {
 #define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
 #define DzeroA(P, n)   DsetA(P, 0, n)
 /* end src/inc/dev.h */
-/* already included: src/inc/def.h */
+/* begin src/inc/def.h */
+/* solvent colors */
+#define XMACRO_COLOR(_)                         \
+    _(BLUE)                                     \
+    _(RED)
+
+#define ENUM_COLOR(a) a##_COLOR
+#define make_enum_color(a) ENUM_COLOR(a) ,
+#ifndef UDX_DEF_ENUMS_DEFINED
+#define UDX_DEF_ENUMS_DEFINED
+enum {
+    XMACRO_COLOR(make_enum_color)
+    N_COLOR
+};
+#undef make_enum_color
+
+enum {
+    /* wall margins */
+    XWM = 6,
+    YWM = 6,
+    ZWM = 6,
+
+    SAFETY_FACTOR_MAXP = 3,
+
+    /* maximum number of particles per solid */
+    MAX_PSOLID_NUM = 12000,
+
+    /* maximum number of solids per node */
+    MAX_SOLIDS = 100,
+
+    /* maximum number of object types (solid, rbc, ...) */
+    MAX_MBR_TYPES = 2,
+    MAX_RIG_TYPES = 2,
+    MAX_OBJ_TYPES = MAX_MBR_TYPES + MAX_RIG_TYPES,
+
+    /* maximum number density of particles of the objects */
+    MAX_OBJ_DENSITY = 30,
+
+    /* maximum number of red blood cells per node */
+    MAX_CELL_NUM = 1500,
+
+    /* maximum texture size in bytes */
+    MAX_TEXO_SIZE = 100000000,
+
+    /* safety factor for dpd halo interactions */
+    HSAFETY_FACTOR = 10,
+
+    /* safety factor for odist fragments */
+    ODSTR_FACTOR = 3,
+};
+#endif
+
+/* for the spring forces r = min(lmax*RBC_SPRING_CAP, r) */
+#define RBC_SPRING_CAP (0.99)
+/* end src/inc/def.h */
 
 /* begin src/utils/error.h */
 #define ERR(fmt, ...)  do {                                     \
@@ -75873,7 +93169,38 @@ void check(int rc, const char *file, int line);
 /* TODO: header includes header */
 /* end src/utils/cc.h */
 
-/* already included: src/d/api.h */
+/* begin src/d/api.h */
+#pragma once
+
+namespace d {  /* a wrapper for device API */
+typedef int Stream_t; /* TODO: streams are not supported */
+enum {MemcpyHostToHost, MemcpyHostToDevice,
+      MemcpyDeviceToHost, MemcpyDeviceToDevice,
+      MemcpyDefault};
+
+// tag::more[]
+const char *emsg();
+int alloc_pinned(void **pHost, size_t size);
+int is_device_pointer(const void *ptr);
+// end::more[]
+
+// tag::api[]
+int GetSymbolAddress(void **devPtr, const void *symbol);
+int Malloc(void **p, size_t);
+int MemcpyToSymbol(const void *symbol, const void *src, size_t count, size_t offset=0, int kind=MemcpyHostToDevice);
+int MemcpyFromSymbol(void *dst, const void *symbol, size_t count, size_t offset=0, int kind=MemcpyDeviceToHost);
+int HostGetDevicePointer(void **pDevice, void *pHost, unsigned int flags);
+int Memcpy (void *dst, const void *src, size_t count, int kind);
+int MemsetAsync (void *devPtr, int value, size_t count, Stream_t stream=0);
+int Memset (void *devPtr, int value, size_t count);
+int MemcpyAsync (void * dst, const void * src, size_t count, int kind, Stream_t stream = 0);
+int Free (void *devPtr);
+int FreeHost (void *hstPtr);
+int DeviceSynchronize (void);
+int PeekAtLastError(void);
+// end::api[]
+}
+/* end src/d/api.h */
 /* begin src/mpi/wrapper.h */
 namespace m {
 int Allreduce(const void *sendbuf, void *recvbuf, int count, MPI_Datatype datatype, MPI_Op op, MPI_Comm comm);
@@ -76024,7 +93351,82 @@ void coord_stamp(const Coords *c, /**/ char *s);
 int coords_size(const Coords *c);
 // end::int[]
 /* end src/coords/imp.h */
-/* already included: src/comm/imp.h */
+/* begin src/comm/imp.h */
+#pragma once
+
+typedef unsigned char data_t;
+
+enum {
+    NFRAGS = 26, /* number of fragments for one halo */
+    BULK   = 26, /* bulk id                          */
+    NBAGS  = 27, /* fragments + bulk                 */
+};
+
+/* Allocation mod for bags */
+enum AllocMod {
+    // tag::AllocMod[]
+    HST_ONLY,   /* only host bags allocated                 */
+    DEV_ONLY,   /* only device bags allocated               */
+    PINNED,     /* both host and device pinned              */
+    PINNED_HST, /* host pinned; no device memory            */
+    PINNED_DEV, /* host pinned; device global memory on gpu */
+    NONE        /* no allocation                            */
+    // end::AllocMod[]
+};
+
+// tag::dBags[]
+struct dBags {
+    data_t *data[NBAGS]; /* data on the device         */
+};
+// end::dBags[]
+
+// tag::hBags[]
+struct hBags {
+    data_t *data[NBAGS]; /* data on the host                    */
+    int         *counts; /* size of the data                    */
+    int capacity[NBAGS]; /* capacity of each frag (elem number) */
+    size_t bsize;        /* size of one datum in bytes          */
+};
+// end::hBags[]
+
+struct Comm;
+struct CommBuffer;
+
+// tag::alloc[]
+void comm_bags_ini(AllocMod fmod, AllocMod bmod, size_t bsize, const int capacity[NBAGS], /**/ hBags *hb, dBags *db);
+void comm_bags_fin(AllocMod fmod, AllocMod bmod, /**/ hBags *hb, dBags *db);
+void comm_ini(MPI_Comm cart, /**/ Comm **c);
+void comm_fin(/**/ Comm *c);
+void comm_buffer_ini(int nbags, const hBags *hbb, CommBuffer**);
+void comm_buffer_fin(CommBuffer*);
+// end::alloc[]
+
+
+void comm_buffer_set(int nbags, const hBags*, CommBuffer*);
+void comm_buffer_get(const CommBuffer*, int nbags, hBags*);
+
+// tag::communication[]
+void comm_post_recv(hBags *b, Comm *c);           // <1>
+void comm_post_send(const hBags *b, Comm *c);     // <2>
+
+void comm_wait_recv(Comm *c, /**/ hBags *b);      // <3>
+void comm_wait_send(Comm *c);                     // <4>
+// end::communication[]
+
+// tag::communication_b[]
+void comm_post_recv(CommBuffer *cb, Comm *c);
+void comm_post_send(const CommBuffer *cb, Comm *c);
+
+void comm_wait_recv(Comm *c, /**/ CommBuffer *cb);
+void comm_wait_send(Comm *c);
+// end::communication_b[]
+
+// tag::get[]
+int    comm_get_number_capacity(int i, const hBags *b); // <1>
+size_t comm_get_byte_capacity(int i, const hBags *b);   // <2>
+// end::get[]
+
+/* end src/comm/imp.h */
 /* begin src/exch/mesh/imp.h */
 struct EMeshPack;
 struct EMeshComm;
@@ -76107,7 +93509,16 @@ struct float3;
 void minmax(const Particle *pp, int nv, int nobj, /**/ float3 *lo, float3 *hi);
 // end::interface[]
 /* end src/algo/minmax/imp.h */
-/* already included: src/mesh/triangles/type.h */
+/* begin src/mesh/triangles/type.h */
+#pragma once
+
+// tag::interface[]
+struct Triangles {
+    int4 *tt;
+    int nt;
+};
+// end::interface[]
+/* end src/mesh/triangles/type.h */
 /* begin src/mesh/collision/imp.h */
 struct float3;
 struct Particle;
@@ -76132,9 +93543,76 @@ void mesh_inertia_tensor(int nt, const int4 *tt, const float *vv, const float *c
 struct int4;
 float dist_from_mesh(int nt, const int4 *tt, const float *vv, const float *r0);
 /* end src/mesh/dist/imp.h */
-/* already included: src/frag/imp.h */
+/* begin src/frag/imp.h */
+#pragma once
 
-/* already included: src/rigid/imp.h */
+enum {frag_bulk = 26};
+
+struct int3;
+
+namespace frag_hst {
+
+// tag::i2d[]
+int i2dx(int i);                 // <1>
+int i2dy(int i);                 // <2>
+int i2dz(int i);                 // <3>
+void i2d3(int i, /**/ int d[3]); // <4>
+// end::i2d[]
+
+// tag::d2i[]
+int d2i(int x, int y, int z); // <1>
+int d32i(const int d[3]);     // <2>
+// end::d2i[]
+
+// tag::ncell[]
+int ncell(int3 L, int i); // <1>
+// end::ncell[]
+
+// tag::anti[]
+int antid2i(int x, int y, int z); // <1>
+int anti(int i);                  // <2>
+// end::anti[]
+
+// tag::hst[]
+void estimates(int3 L, int nfrags, float maxd, /**/ int *cap); // <1>
+// end::hst[]
+
+} // frag_hst
+/* end src/frag/imp.h */
+
+/* begin src/rigid/imp.h */
+struct RigPinInfo;
+struct int3;
+struct Config;
+
+// tag::enum[]
+enum {NOT_PERIODIC = -1};
+// end::enum[]
+
+// tag::pin[]
+void rig_pininfo_ini(RigPinInfo **); // <1>
+void rig_pininfo_fin(RigPinInfo *); // <2>
+void rig_pininfo_set(int3 com, int3 axis, RigPinInfo *); // <3>
+void rig_pininfo_set_pdir(int pdir, RigPinInfo *); // <4>
+void rig_pininfo_set_conf(const Config *cfg, const char *ns, RigPinInfo *); // <5>
+
+int rig_pininfo_get_pdir(const RigPinInfo *); // <6>
+// end::pin[]
+
+struct Particle;
+#pragma once
+
+struct Rigid;
+struct Force;
+
+// tag::upd[]
+void rig_reinit_ft(const int ns, /**/ Rigid *ss); // <1>
+void rig_update(const RigPinInfo *pi, float dt, int n, const Force *ff, const float *rr0, int ns, /**/ Particle *pp, Rigid *ss); // <2>
+void rig_generate(int ns, const Rigid *ss, int nps, const float *rr0, /**/ Particle *pp); // <3>
+void rig_update_mesh(float dt, int ns, const Rigid *ss, int nv, const float *vv, /**/ Particle *pp); // <4>
+// end::upd[]
+
+/* end src/rigid/imp.h */
 
 /* begin src/rig/gen/imp.h */
 struct Coords;
@@ -76895,8 +94373,78 @@ void rig_gen_from_solvent(const Coords *coords, MPI_Comm cart, RigGenInfo rgi, /
 #include <string.h>
 #include <math.h>
 
-/* already included: src/inc/conf.h */
-/* already included: src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
 
 /* begin src/utils/msg.h */
 // tag::int[]
@@ -77047,7 +94595,38 @@ int coords_size(const Coords *c);
 // end::int[]
 /* end src/coords/imp.h */
 
-/* already included: src/d/api.h */
+/* begin src/d/api.h */
+#pragma once
+
+namespace d {  /* a wrapper for device API */
+typedef int Stream_t; /* TODO: streams are not supported */
+enum {MemcpyHostToHost, MemcpyHostToDevice,
+      MemcpyDeviceToHost, MemcpyDeviceToDevice,
+      MemcpyDefault};
+
+// tag::more[]
+const char *emsg();
+int alloc_pinned(void **pHost, size_t size);
+int is_device_pointer(const void *ptr);
+// end::more[]
+
+// tag::api[]
+int GetSymbolAddress(void **devPtr, const void *symbol);
+int Malloc(void **p, size_t);
+int MemcpyToSymbol(const void *symbol, const void *src, size_t count, size_t offset=0, int kind=MemcpyHostToDevice);
+int MemcpyFromSymbol(void *dst, const void *symbol, size_t count, size_t offset=0, int kind=MemcpyDeviceToHost);
+int HostGetDevicePointer(void **pDevice, void *pHost, unsigned int flags);
+int Memcpy (void *dst, const void *src, size_t count, int kind);
+int MemsetAsync (void *devPtr, int value, size_t count, Stream_t stream=0);
+int Memset (void *devPtr, int value, size_t count);
+int MemcpyAsync (void * dst, const void * src, size_t count, int kind, Stream_t stream = 0);
+int Free (void *devPtr);
+int FreeHost (void *hstPtr);
+int DeviceSynchronize (void);
+int PeekAtLastError(void);
+// end::api[]
+}
+/* end src/d/api.h */
 /* begin src/inc/dev.h */
 /* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
@@ -77087,8 +94666,117 @@ int coords_size(const Coords *c);
 #define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
 #define DzeroA(P, n)   DsetA(P, 0, n)
 /* end src/inc/dev.h */
-/* already included: src/inc/def.h */
-/* already included: src/inc/type.h */
+/* begin src/inc/def.h */
+/* solvent colors */
+#define XMACRO_COLOR(_)                         \
+    _(BLUE)                                     \
+    _(RED)
+
+#define ENUM_COLOR(a) a##_COLOR
+#define make_enum_color(a) ENUM_COLOR(a) ,
+#ifndef UDX_DEF_ENUMS_DEFINED
+#define UDX_DEF_ENUMS_DEFINED
+enum {
+    XMACRO_COLOR(make_enum_color)
+    N_COLOR
+};
+#undef make_enum_color
+
+enum {
+    /* wall margins */
+    XWM = 6,
+    YWM = 6,
+    ZWM = 6,
+
+    SAFETY_FACTOR_MAXP = 3,
+
+    /* maximum number of particles per solid */
+    MAX_PSOLID_NUM = 12000,
+
+    /* maximum number of solids per node */
+    MAX_SOLIDS = 100,
+
+    /* maximum number of object types (solid, rbc, ...) */
+    MAX_MBR_TYPES = 2,
+    MAX_RIG_TYPES = 2,
+    MAX_OBJ_TYPES = MAX_MBR_TYPES + MAX_RIG_TYPES,
+
+    /* maximum number density of particles of the objects */
+    MAX_OBJ_DENSITY = 30,
+
+    /* maximum number of red blood cells per node */
+    MAX_CELL_NUM = 1500,
+
+    /* maximum texture size in bytes */
+    MAX_TEXO_SIZE = 100000000,
+
+    /* safety factor for dpd halo interactions */
+    HSAFETY_FACTOR = 10,
+
+    /* safety factor for odist fragments */
+    ODSTR_FACTOR = 3,
+};
+#endif
+
+/* for the spring forces r = min(lmax*RBC_SPRING_CAP, r) */
+#define RBC_SPRING_CAP (0.99)
+/* end src/inc/def.h */
+/* begin src/inc/type.h */
+#pragma once
+
+template <typename T, int N>
+struct Sarray { /* [s]tatic array */
+    T d[N];
+};
+
+struct Particle {
+    float r[3], v[3];
+};
+
+struct Rigid {
+    float Iinv[6],            /* moment of inertia            6        */
+        mass,                 /* mass of the solid            7        */
+        com[3],               /* [c]enter [o]f [m]ass         10       */
+        v[3], om[3],          /* linear and angular velocity  13 16    */
+        e0[3], e1[3], e2[3],  /* local referential            19 22 25 */
+        fo[3], to[3],         /* force, torque                28 31    */
+        id;                   /* id of the solid              32       */
+};
+
+struct Force {
+    float f[3];
+};
+
+struct Momentum {
+    float P[3], L[3]; /* linear and angular momentum */
+};
+
+struct Positioncp {
+    float rc[3]; /* current position  */
+    float rp[3]; /* previous position */
+};
+
+typedef Sarray<int, 26>       int26;
+typedef Sarray<int, 27>       int27;
+
+typedef Sarray<int*, 26>     intp26;
+typedef Sarray<Particle*, 26> Pap26;
+typedef Sarray<Force*,    26> Fop26;
+typedef Sarray<Momentum*, 26> Mop26;
+typedef Sarray<Positioncp*, 26> Pocpp26;
+
+/* particles wrap */
+struct PaWrap {
+    int n;
+    const Particle *pp;
+};
+
+/* forces wrap */
+struct FoWrap {
+    int n;
+    Force *ff;
+};
+/* end src/inc/type.h */
 /* begin src/utils/cc.h */
 /* [c]uda [c]heck macros */
 
@@ -77148,7 +94836,38 @@ const float *mesh_read_get_vert(const MeshRead*);
 const int4  *mesh_read_get_dih(MeshRead*);
 // end::interface[]
 /* end src/io/mesh_read/imp.h */
-/* already included: src/io/restart/imp.h */
+/* begin src/io/restart/imp.h */
+#pragma once
+
+struct Coords;
+struct Particle;
+struct Rigid;
+
+// tag::id[]
+enum {RESTART_TEMPL=-1,
+      RESTART_FINAL=-2};
+enum {RESTART_BEGIN=RESTART_FINAL};
+// end::id[]
+
+// tag::stream[]
+typedef void (*StreamWriter)(const void*, FILE*);
+typedef void (*StreamReader)(FILE*, void*);
+// end::stream[]
+
+// tag::write[]
+void restart_write_pp(MPI_Comm, const char *base, const char *code, int id, long n, const Particle *pp); // <1>
+void restart_write_ii(MPI_Comm, const char *base, const char *code, int id, long n, const int *ii);      // <2>
+void restart_write_ss(MPI_Comm, const char *base, const char *code, int id, long n, const Rigid *ss);    // <3>
+void restart_write_stream_one_node(MPI_Comm, const char *base, const char *code, int id, const void *data, StreamWriter); // <4>
+ // end::write[]
+
+// tag::read[]
+void restart_read_pp(MPI_Comm, const char *base, const char *code, int id, int *n, Particle *pp);
+void restart_read_ii(MPI_Comm, const char *base, const char *code, int id, int *n, int *ii);
+void restart_read_ss(MPI_Comm, const char *base, const char *code, int id, int *n, Rigid *ss);
+void restart_read_stream_one_node(const char *base, const char *code, int id, StreamReader, void *data);
+// end::read[]
+/* end src/io/restart/imp.h */
 
 /* begin src/mesh/gen/matrices/imp.h */
 struct Matrices;
@@ -77179,9 +94898,87 @@ void mesh_shift(const Coords*, int n, /**/ Particle*); // <3>
 // end::int[]
 /* end src/mesh/gen/imp.h */
 
-/* already included: src/rig/imp.h */
+/* begin src/rig/imp.h */
+#pragma once
 
-/* already included: src/rig/gen/imp.h */
+// tag::quants[]
+struct RigQuants {
+    int n, ns, nps;              /* number of particles (total), solid, particle per solid        */
+    Particle *pp_hst, *pp;       /* particles on hst and device                                   */
+    Rigid    *ss_hst, *ss;       /* rigid strutures                                               */
+    float   *rr0_hst, *rr0;      /* frozen particle templates                                     */
+
+    /* mesh related quantities */
+    int nt, nv;                   /* number of [t]riangles and [v]ertices                          */
+    int4 *dtt;                    /* triangle indices on device                                    */
+    float *dvv;                   /* vertices on device (template)                                 */
+    Particle *i_pp_hst, *i_pp;    /* particles representing all meshes of all solids of that node  */
+
+    Rigid *ss_dmp;
+
+    long maxp; /* maximum particle number */
+};
+// end::quants[]
+
+struct Coords;
+struct RigPinInfo;
+struct MeshRead;
+
+// tag::mem[]
+void rig_ini(long maxs, long maxp, const MeshRead*, RigQuants*);
+void rig_fin(RigQuants *q);
+// end::mem[]
+
+// tag::gen[]
+void rig_gen_mesh(const Coords*, MPI_Comm, const MeshRead*, const char *ic, /**/ RigQuants *); // <1>
+void rig_gen_freeze(const Coords*, bool empty_pp, int numdensity, float rig_mass, const RigPinInfo*,
+                    MPI_Comm, const MeshRead*, Particle *opp, int *on, RigQuants *q);          // <2>
+void rig_strt_quants(MPI_Comm, const MeshRead*, const char *base, const char *name, const int id, RigQuants *q); // <3>
+// end::gen[]
+
+// tag::io[]
+void rig_strt_dump_templ(MPI_Comm, const char *base, const char *name, const RigQuants *q);         // <1>
+void rig_strt_dump(MPI_Comm, const char *base, const char *name, const int id, const RigQuants *q); // <2>
+// end::io[]
+/* end src/rig/imp.h */
+
+/* begin src/rig/gen/imp.h */
+struct Coords;
+struct RigPinInfo;
+struct MeshRead;
+
+// tag::struct[]
+#pragma once
+
+struct RigGenInfo {
+    float mass;
+    int numdensity;
+    const RigPinInfo *pi;
+    int nt, nv;
+    const int4 *tt;     /* on device */
+    const Particle *pp; /* on device */
+    bool empty_pp;
+    const MeshRead *mesh;
+};
+
+struct FluInfo {
+    Particle *pp;
+    int *n;
+};
+
+/* everything on host */
+struct RigInfo {
+    int ns, *nps;
+    float *rr0;
+    Rigid *ss;
+    Particle *pp;
+};
+// end::struct[]
+
+// tag::int[]
+void rig_gen_from_solvent(const Coords*, MPI_Comm, RigGenInfo, /*io*/ FluInfo, /**/ RigInfo);
+// end::int[]
+/* end src/rig/gen/imp.h */
 
 /* begin src/rig/imp/ini.h */
 void rig_ini(long maxs, long maxp, const MeshRead *mesh, RigQuants *q) {
@@ -77878,7 +95675,39 @@ void conf_write_history(const Config *cfg, FILE *stream); // <2>
 // end::dump[]
 /* end src/conf/imp.h */
 
-/* already included: src/rigid/imp.h */
+/* begin src/rigid/imp.h */
+struct RigPinInfo;
+struct int3;
+struct Config;
+
+// tag::enum[]
+enum {NOT_PERIODIC = -1};
+// end::enum[]
+
+// tag::pin[]
+void rig_pininfo_ini(RigPinInfo **); // <1>
+void rig_pininfo_fin(RigPinInfo *); // <2>
+void rig_pininfo_set(int3 com, int3 axis, RigPinInfo *); // <3>
+void rig_pininfo_set_pdir(int pdir, RigPinInfo *); // <4>
+void rig_pininfo_set_conf(const Config *cfg, const char *ns, RigPinInfo *); // <5>
+
+int rig_pininfo_get_pdir(const RigPinInfo *); // <6>
+// end::pin[]
+
+struct Particle;
+#pragma once
+
+struct Rigid;
+struct Force;
+
+// tag::upd[]
+void rig_reinit_ft(const int ns, /**/ Rigid *ss); // <1>
+void rig_update(const RigPinInfo *pi, float dt, int n, const Force *ff, const float *rr0, int ns, /**/ Particle *pp, Rigid *ss); // <2>
+void rig_generate(int ns, const Rigid *ss, int nps, const float *rr0, /**/ Particle *pp); // <3>
+void rig_update_mesh(float dt, int ns, const Rigid *ss, int nv, const float *vv, /**/ Particle *pp); // <4>
+// end::upd[]
+
+/* end src/rigid/imp.h */
 
 void rig_pininfo_set_conf(const Config *cfg, const char *ns, RigPinInfo *pi) {
     int3 com, axis;
@@ -78195,9 +96024,134 @@ void rig_pininfo_set_conf(const Config *cfg, const char *ns, RigPinInfo *pi) {
 #include <stdio.h>
 #include <assert.h>
 
-/* already included: src/inc/conf.h */
-/* already included: src/inc/conf.h */
-/* already included: src/inc/type.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
+/* begin src/inc/type.h */
+#pragma once
+
+template <typename T, int N>
+struct Sarray { /* [s]tatic array */
+    T d[N];
+};
+
+struct Particle {
+    float r[3], v[3];
+};
+
+struct Rigid {
+    float Iinv[6],            /* moment of inertia            6        */
+        mass,                 /* mass of the solid            7        */
+        com[3],               /* [c]enter [o]f [m]ass         10       */
+        v[3], om[3],          /* linear and angular velocity  13 16    */
+        e0[3], e1[3], e2[3],  /* local referential            19 22 25 */
+        fo[3], to[3],         /* force, torque                28 31    */
+        id;                   /* id of the solid              32       */
+};
+
+struct Force {
+    float f[3];
+};
+
+struct Momentum {
+    float P[3], L[3]; /* linear and angular momentum */
+};
+
+struct Positioncp {
+    float rc[3]; /* current position  */
+    float rp[3]; /* previous position */
+};
+
+typedef Sarray<int, 26>       int26;
+typedef Sarray<int, 27>       int27;
+
+typedef Sarray<int*, 26>     intp26;
+typedef Sarray<Particle*, 26> Pap26;
+typedef Sarray<Force*,    26> Fop26;
+typedef Sarray<Momentum*, 26> Mop26;
+typedef Sarray<Positioncp*, 26> Pocpp26;
+
+/* particles wrap */
+struct PaWrap {
+    int n;
+    const Particle *pp;
+};
+
+/* forces wrap */
+struct FoWrap {
+    int n;
+    Force *ff;
+};
+/* end src/inc/type.h */
 /* begin src/inc/dev.h */
 /* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
@@ -78238,7 +96192,38 @@ void rig_pininfo_set_conf(const Config *cfg, const char *ns, RigPinInfo *pi) {
 #define DzeroA(P, n)   DsetA(P, 0, n)
 /* end src/inc/dev.h */
 
-/* already included: src/d/api.h */
+/* begin src/d/api.h */
+#pragma once
+
+namespace d {  /* a wrapper for device API */
+typedef int Stream_t; /* TODO: streams are not supported */
+enum {MemcpyHostToHost, MemcpyHostToDevice,
+      MemcpyDeviceToHost, MemcpyDeviceToDevice,
+      MemcpyDefault};
+
+// tag::more[]
+const char *emsg();
+int alloc_pinned(void **pHost, size_t size);
+int is_device_pointer(const void *ptr);
+// end::more[]
+
+// tag::api[]
+int GetSymbolAddress(void **devPtr, const void *symbol);
+int Malloc(void **p, size_t);
+int MemcpyToSymbol(const void *symbol, const void *src, size_t count, size_t offset=0, int kind=MemcpyHostToDevice);
+int MemcpyFromSymbol(void *dst, const void *symbol, size_t count, size_t offset=0, int kind=MemcpyDeviceToHost);
+int HostGetDevicePointer(void **pDevice, void *pHost, unsigned int flags);
+int Memcpy (void *dst, const void *src, size_t count, int kind);
+int MemsetAsync (void *devPtr, int value, size_t count, Stream_t stream=0);
+int Memset (void *devPtr, int value, size_t count);
+int MemcpyAsync (void * dst, const void * src, size_t count, int kind, Stream_t stream = 0);
+int Free (void *devPtr);
+int FreeHost (void *hstPtr);
+int DeviceSynchronize (void);
+int PeekAtLastError(void);
+// end::api[]
+}
+/* end src/d/api.h */
 
 /* begin src/utils/msg.h */
 // tag::int[]
@@ -78350,7 +96335,16 @@ void check(int rc, const char *file, int line);
 /* [k]ernel [l]aunch macros */
 
 #if    defined(KL_RELEASE)
-/* already included: src/utils/kl/release.h */
+/* begin src/utils/kl/release.h */
+#define KL_BEFORE(s, C) if (!kl::safe(ESC C)) continue;
+#define KL_CALL(F, C, A) F<<<ESC C>>>A
+#define KL_AFTER(s)
+
+#ifndef UDX_KL_RELEASE_FUNCTIONS_DEFINED
+#define UDX_KL_RELEASE_FUNCTIONS_DEFINED
+namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
+#endif
+/* end src/utils/kl/release.h */
 #elif  defined(KL_NONE)
 /* begin src/utils/kl/none.h */
 #define KL_BEFORE(s, C)
@@ -78375,7 +96369,18 @@ namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
   #error KL_* is undefined
 #endif
 
-/* already included: src/utils/kl/common.h */
+/* begin src/utils/kl/common.h */
+namespace kl {
+#pragma once
+
+inline int safe0(dim3 i, dim3 j) {
+    msg(i.x, i.y, i.z,   j.x, j.y, j.z);
+    return i.x>0 && i.y>0 && i.z>0   &&   j.x>0 && j.y>0 && j.z>0;
+}
+inline int safe(dim3 i, dim3 j)                    { return safe0(i, j); }
+inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
+}
+/* end src/utils/kl/common.h */
 /* begin src/utils/kl/macro.h */
 #define ESC(...) __VA_ARGS__
 #define KL(F, C, A)                             \
@@ -78388,10 +96393,120 @@ namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
 
 /* TODO: header includes header */
 /* end src/utils/kl.h */
-/* already included: src/algo/utils/shfl.h */
-/* already included: src/algo/utils/dev.h */
+/* begin src/algo/utils/shfl.h */
+#define _I_ static __device__
 
-/* already included: src/rigid/imp.h */
+#if __CUDACC_VER_MAJOR__ >= 9
+#pragma once
+
+template <typename T>
+_I_ T shfl_down(T val, unsigned int width) {
+    return __shfl_down_sync(0xFFFFFFFF, val, width);
+}
+
+template <typename T>
+_I_ T shfl_up(T val, unsigned int width) {
+    return __shfl_up_sync(0xFFFFFFFF, val, width);
+}
+template <typename T>
+_I_ T shfl(T val, unsigned int width) {
+    return __shfl_sync(0xFFFFFFFF, val, width);
+}
+#else
+template <typename T>
+_I_ T shfl_down(T val, unsigned int width) {
+    return __shfl_down(val, width);
+}
+
+template <typename T>
+_I_ T shfl_up(T val, unsigned int width) {
+    return __shfl_up(val, width);
+}
+template <typename T>
+_I_ T shfl(T val, unsigned int width) {
+    return __shfl(val, width);
+}
+#endif
+
+#undef _I_
+/* end src/algo/utils/shfl.h */
+/* begin src/algo/utils/dev.h */
+#define _S_ static __device__
+#define _I_ static __device__
+
+// tag::int[]
+#pragma once
+
+template <typename T>
+_I_ T warpReduceSum(T v)  // <1>
+// end::int[]
+{
+    for (int offset = warpSize>>1; offset > 0; offset >>= 1)
+        v += shfl_down(v, offset);
+    return v;
+}
+
+// tag::int[]
+_I_ float2 warpReduceSum(float2 val)  // <2>
+// end::int[]
+{
+    for (int offset = warpSize / 2; offset > 0; offset /= 2) {
+        val.x += shfl_down(val.x, offset);
+        val.y += shfl_down(val.y, offset);
+    }
+    return val;
+}
+
+// tag::int[]
+_I_ float3 warpReduceSum(float3 val)  // <3>
+// end::int[]
+{
+    for (int offset = warpSize/2; offset > 0; offset /= 2) {
+        val.x += shfl_down(val.x, offset);
+        val.y += shfl_down(val.y, offset);
+        val.z += shfl_down(val.z, offset);
+    }
+    return val;
+}
+
+#undef _S_
+#undef _I_
+
+/* end src/algo/utils/dev.h */
+
+/* begin src/rigid/imp.h */
+struct RigPinInfo;
+struct int3;
+struct Config;
+
+// tag::enum[]
+enum {NOT_PERIODIC = -1};
+// end::enum[]
+
+// tag::pin[]
+void rig_pininfo_ini(RigPinInfo **); // <1>
+void rig_pininfo_fin(RigPinInfo *); // <2>
+void rig_pininfo_set(int3 com, int3 axis, RigPinInfo *); // <3>
+void rig_pininfo_set_pdir(int pdir, RigPinInfo *); // <4>
+void rig_pininfo_set_conf(const Config *cfg, const char *ns, RigPinInfo *); // <5>
+
+int rig_pininfo_get_pdir(const RigPinInfo *); // <6>
+// end::pin[]
+
+struct Particle;
+#pragma once
+
+struct Rigid;
+struct Force;
+
+// tag::upd[]
+void rig_reinit_ft(const int ns, /**/ Rigid *ss); // <1>
+void rig_update(const RigPinInfo *pi, float dt, int n, const Force *ff, const float *rr0, int ns, /**/ Particle *pp, Rigid *ss); // <2>
+void rig_generate(int ns, const Rigid *ss, int nps, const float *rr0, /**/ Particle *pp); // <3>
+void rig_update_mesh(float dt, int ns, const Rigid *ss, int nv, const float *vv, /**/ Particle *pp); // <4>
+// end::upd[]
+
+/* end src/rigid/imp.h */
 
 /* begin src/rigid/imp/type.h */
 struct RigPinInfo {
@@ -79507,9 +97622,134 @@ void bforce_set_conf(const Config *cfg, /**/ BForce *bf) {
 /* begin src/scheme/force/imp.cu */
 #include <stdio.h>
 
-/* already included: src/inc/conf.h */
-/* already included: src/inc/conf.h */
-/* already included: src/inc/type.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
+/* begin src/inc/type.h */
+#pragma once
+
+template <typename T, int N>
+struct Sarray { /* [s]tatic array */
+    T d[N];
+};
+
+struct Particle {
+    float r[3], v[3];
+};
+
+struct Rigid {
+    float Iinv[6],            /* moment of inertia            6        */
+        mass,                 /* mass of the solid            7        */
+        com[3],               /* [c]enter [o]f [m]ass         10       */
+        v[3], om[3],          /* linear and angular velocity  13 16    */
+        e0[3], e1[3], e2[3],  /* local referential            19 22 25 */
+        fo[3], to[3],         /* force, torque                28 31    */
+        id;                   /* id of the solid              32       */
+};
+
+struct Force {
+    float f[3];
+};
+
+struct Momentum {
+    float P[3], L[3]; /* linear and angular momentum */
+};
+
+struct Positioncp {
+    float rc[3]; /* current position  */
+    float rp[3]; /* previous position */
+};
+
+typedef Sarray<int, 26>       int26;
+typedef Sarray<int, 27>       int27;
+
+typedef Sarray<int*, 26>     intp26;
+typedef Sarray<Particle*, 26> Pap26;
+typedef Sarray<Force*,    26> Fop26;
+typedef Sarray<Momentum*, 26> Mop26;
+typedef Sarray<Positioncp*, 26> Pocpp26;
+
+/* particles wrap */
+struct PaWrap {
+    int n;
+    const Particle *pp;
+};
+
+/* forces wrap */
+struct FoWrap {
+    int n;
+    Force *ff;
+};
+/* end src/inc/type.h */
 /* begin src/inc/dev.h */
 /* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
@@ -79550,8 +97790,115 @@ void bforce_set_conf(const Config *cfg, /**/ BForce *bf) {
 #define DzeroA(P, n)   DsetA(P, 0, n)
 /* end src/inc/dev.h */
 
-/* already included: src/coords/type.h */
-/* already included: src/coords/dev.h */
+/* begin src/coords/type.h */
+// tag::view[]
+#pragma once
+
+struct Coords_v {
+    int xc, yc, zc; /* rank coordinates        */
+    int xd, yd, zd; /* rank sizes              */
+    int Lx, Ly, Lz; /* [L]ocal: subdomain size */
+};
+// end::view[]
+/* end src/coords/type.h */
+/* begin src/coords/dev.h */
+#pragma once
+
+/* domain sizes */
+
+static __device__ int xdomain(const Coords_v c) {
+    return c.Lx * c.xd;
+}
+
+static __device__ int ydomain(const Coords_v c) {
+    return c.Ly * c.yd;
+}
+
+static __device__ int zdomain(const Coords_v c) {
+    return c.Lz * c.zd;
+}
+
+/* [l]ocal to [c]enter */
+
+static __device__ float xl2xc(const Coords_v c, float xl) {
+    return xl - 0.5f * c.Lx * (c.xd - 2 * c.xc - 1);
+}
+
+static __device__ float yl2yc(const Coords_v c, float yl) {
+    return yl - 0.5f * c.Ly * (c.yd - 2 * c.yc - 1);
+}
+
+static __device__ float zl2zc(const Coords_v c, float zl) {
+    return zl - 0.5f * c.Lz * (c.zd - 2 * c.zc - 1);
+}
+
+static __device__ void local2center(const Coords_v c, float3 rl, /**/ float3 *rc) {
+    rc->x = xl2xc(c, rl.x);
+    rc->y = yl2yc(c, rl.y);
+    rc->z = zl2zc(c, rl.z);
+}
+
+/* [c]enter to [l]ocal  */
+
+static __device__ float xc2xl(const Coords_v c, float xc) {
+    return xc + 0.5f * c.Lx * (c.xd - 2 * c.xc - 1);
+}
+
+static __device__ float yc2yl(const Coords_v c, float yc) {
+    return yc + 0.5f * c.Ly * (c.yd - 2.f * c.yc - 1);
+}
+
+static __device__ float zc2zl(const Coords_v c, float zc) {
+    return zc + 0.5f * c.Lz * (c.zd - 2.f * c.zc - 1);
+}
+
+static __device__ void center2local(Coords_v c, float3 rc, /**/ float3 *rl) {
+    rl->x = xc2xl(c, rc.x);
+    rl->y = yc2yl(c, rc.y);
+    rl->z = zc2zl(c, rc.z);
+}
+
+/* [l]ocal to [g]lobal */
+
+static __device__ float xl2xg(const Coords_v c, float xl) {
+    return (c.xc + 0.5f) * c.Lx + xl;
+}
+
+static __device__ float yl2yg(const Coords_v c, float yl) {
+    return (c.yc + 0.5f) * c.Ly + yl;
+}
+
+static __device__ float zl2zg(const Coords_v c, float zl) {
+    return (c.zc + 0.5f) * c.Lz + zl;
+}
+
+static __device__ void local2global(const Coords_v c, float3 rl, /**/ float3 *rg) {
+    rg->x = xl2xg(c, rl.x);
+    rg->y = yl2yg(c, rl.y);
+    rg->z = zl2zg(c, rl.z);
+}
+
+/* [g]lobal to [l]ocal */
+
+static __device__ float xg2xl(const Coords_v c, float xg) {
+    return xg - (c.xc + 0.5f) * c.Lx;
+}
+
+static __device__ float yg2yl(const Coords_v c, float yg) {
+    return yg - (c.yc + 0.5f) * c.Ly;
+}
+
+static __device__ float zg2zl(const Coords_v c, float zg) {
+    return zg - (c.zc + 0.5f) * c.Lz;
+}
+
+static __device__ void global2local(const Coords_v c, float3 rg, /**/ float3 *rl) {
+    rl->x = xg2xl(c, rg.x);
+    rl->y = yg2yl(c, rg.y);
+    rl->z = zg2zl(c, rg.z);
+}
+
+/* end src/coords/dev.h */
 /* begin src/coords/imp.h */
 struct Coords;
 struct Coords_v;
@@ -79627,7 +97974,38 @@ int coords_size(const Coords *c);
 // end::int[]
 /* end src/coords/imp.h */
 
-/* already included: src/d/api.h */
+/* begin src/d/api.h */
+#pragma once
+
+namespace d {  /* a wrapper for device API */
+typedef int Stream_t; /* TODO: streams are not supported */
+enum {MemcpyHostToHost, MemcpyHostToDevice,
+      MemcpyDeviceToHost, MemcpyDeviceToDevice,
+      MemcpyDefault};
+
+// tag::more[]
+const char *emsg();
+int alloc_pinned(void **pHost, size_t size);
+int is_device_pointer(const void *ptr);
+// end::more[]
+
+// tag::api[]
+int GetSymbolAddress(void **devPtr, const void *symbol);
+int Malloc(void **p, size_t);
+int MemcpyToSymbol(const void *symbol, const void *src, size_t count, size_t offset=0, int kind=MemcpyHostToDevice);
+int MemcpyFromSymbol(void *dst, const void *symbol, size_t count, size_t offset=0, int kind=MemcpyDeviceToHost);
+int HostGetDevicePointer(void **pDevice, void *pHost, unsigned int flags);
+int Memcpy (void *dst, const void *src, size_t count, int kind);
+int MemsetAsync (void *devPtr, int value, size_t count, Stream_t stream=0);
+int Memset (void *devPtr, int value, size_t count);
+int MemcpyAsync (void * dst, const void * src, size_t count, int kind, Stream_t stream = 0);
+int Free (void *devPtr);
+int FreeHost (void *hstPtr);
+int DeviceSynchronize (void);
+int PeekAtLastError(void);
+// end::api[]
+}
+/* end src/d/api.h */
 /* begin src/utils/error.h */
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
@@ -79673,7 +98051,16 @@ void error_print_stack();
 /* [k]ernel [l]aunch macros */
 
 #if    defined(KL_RELEASE)
-/* already included: src/utils/kl/release.h */
+/* begin src/utils/kl/release.h */
+#define KL_BEFORE(s, C) if (!kl::safe(ESC C)) continue;
+#define KL_CALL(F, C, A) F<<<ESC C>>>A
+#define KL_AFTER(s)
+
+#ifndef UDX_KL_RELEASE_FUNCTIONS_DEFINED
+#define UDX_KL_RELEASE_FUNCTIONS_DEFINED
+namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
+#endif
+/* end src/utils/kl/release.h */
 #elif  defined(KL_NONE)
 /* begin src/utils/kl/none.h */
 #define KL_BEFORE(s, C)
@@ -79698,7 +98085,18 @@ namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
   #error KL_* is undefined
 #endif
 
-/* already included: src/utils/kl/common.h */
+/* begin src/utils/kl/common.h */
+namespace kl {
+#pragma once
+
+inline int safe0(dim3 i, dim3 j) {
+    msg(i.x, i.y, i.z,   j.x, j.y, j.z);
+    return i.x>0 && i.y>0 && i.z>0   &&   j.x>0 && j.y>0 && j.z>0;
+}
+inline int safe(dim3 i, dim3 j)                    { return safe0(i, j); }
+inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
+}
+/* end src/utils/kl/common.h */
 /* begin src/utils/kl/macro.h */
 #define ESC(...) __VA_ARGS__
 #define KL(F, C, A)                             \
@@ -80444,10 +98842,111 @@ void bforce_apply(const Coords *c, float mass, const BForce *bf, int n, const Pa
 #include <stdio.h>
 #include <assert.h>
 
-/* already included: src/inc/conf.h */
-/* already included: src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
 
-/* already included: src/d/api.h */
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
+
+/* begin src/d/api.h */
+#pragma once
+
+namespace d {  /* a wrapper for device API */
+typedef int Stream_t; /* TODO: streams are not supported */
+enum {MemcpyHostToHost, MemcpyHostToDevice,
+      MemcpyDeviceToHost, MemcpyDeviceToDevice,
+      MemcpyDefault};
+
+// tag::more[]
+const char *emsg();
+int alloc_pinned(void **pHost, size_t size);
+int is_device_pointer(const void *ptr);
+// end::more[]
+
+// tag::api[]
+int GetSymbolAddress(void **devPtr, const void *symbol);
+int Malloc(void **p, size_t);
+int MemcpyToSymbol(const void *symbol, const void *src, size_t count, size_t offset=0, int kind=MemcpyHostToDevice);
+int MemcpyFromSymbol(void *dst, const void *symbol, size_t count, size_t offset=0, int kind=MemcpyDeviceToHost);
+int HostGetDevicePointer(void **pDevice, void *pHost, unsigned int flags);
+int Memcpy (void *dst, const void *src, size_t count, int kind);
+int MemsetAsync (void *devPtr, int value, size_t count, Stream_t stream=0);
+int Memset (void *devPtr, int value, size_t count);
+int MemcpyAsync (void * dst, const void * src, size_t count, int kind, Stream_t stream = 0);
+int Free (void *devPtr);
+int FreeHost (void *hstPtr);
+int DeviceSynchronize (void);
+int PeekAtLastError(void);
+// end::api[]
+}
+/* end src/d/api.h */
 /* begin src/d/q.h */
 /* function and variable type [q]ualifiers */
 
@@ -80565,7 +99064,61 @@ static int   warpSize = 1;
 #endif
 /* end src/d/ker.h */
 
-/* already included: src/inc/def.h */
+/* begin src/inc/def.h */
+/* solvent colors */
+#define XMACRO_COLOR(_)                         \
+    _(BLUE)                                     \
+    _(RED)
+
+#define ENUM_COLOR(a) a##_COLOR
+#define make_enum_color(a) ENUM_COLOR(a) ,
+#ifndef UDX_DEF_ENUMS_DEFINED
+#define UDX_DEF_ENUMS_DEFINED
+enum {
+    XMACRO_COLOR(make_enum_color)
+    N_COLOR
+};
+#undef make_enum_color
+
+enum {
+    /* wall margins */
+    XWM = 6,
+    YWM = 6,
+    ZWM = 6,
+
+    SAFETY_FACTOR_MAXP = 3,
+
+    /* maximum number of particles per solid */
+    MAX_PSOLID_NUM = 12000,
+
+    /* maximum number of solids per node */
+    MAX_SOLIDS = 100,
+
+    /* maximum number of object types (solid, rbc, ...) */
+    MAX_MBR_TYPES = 2,
+    MAX_RIG_TYPES = 2,
+    MAX_OBJ_TYPES = MAX_MBR_TYPES + MAX_RIG_TYPES,
+
+    /* maximum number density of particles of the objects */
+    MAX_OBJ_DENSITY = 30,
+
+    /* maximum number of red blood cells per node */
+    MAX_CELL_NUM = 1500,
+
+    /* maximum texture size in bytes */
+    MAX_TEXO_SIZE = 100000000,
+
+    /* safety factor for dpd halo interactions */
+    HSAFETY_FACTOR = 10,
+
+    /* safety factor for odist fragments */
+    ODSTR_FACTOR = 3,
+};
+#endif
+
+/* for the spring forces r = min(lmax*RBC_SPRING_CAP, r) */
+#define RBC_SPRING_CAP (0.99)
+/* end src/inc/def.h */
 /* begin src/utils/msg.h */
 // tag::int[]
 void msg_ini(int rank); // <1>
@@ -80610,7 +99163,16 @@ void check(int rc, const char *file, int line);
 /* [k]ernel [l]aunch macros */
 
 #if    defined(KL_RELEASE)
-/* already included: src/utils/kl/release.h */
+/* begin src/utils/kl/release.h */
+#define KL_BEFORE(s, C) if (!kl::safe(ESC C)) continue;
+#define KL_CALL(F, C, A) F<<<ESC C>>>A
+#define KL_AFTER(s)
+
+#ifndef UDX_KL_RELEASE_FUNCTIONS_DEFINED
+#define UDX_KL_RELEASE_FUNCTIONS_DEFINED
+namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
+#endif
+/* end src/utils/kl/release.h */
 #elif  defined(KL_NONE)
 /* begin src/utils/kl/none.h */
 #define KL_BEFORE(s, C)
@@ -80635,7 +99197,18 @@ namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
   #error KL_* is undefined
 #endif
 
-/* already included: src/utils/kl/common.h */
+/* begin src/utils/kl/common.h */
+namespace kl {
+#pragma once
+
+inline int safe0(dim3 i, dim3 j) {
+    msg(i.x, i.y, i.z,   j.x, j.y, j.z);
+    return i.x>0 && i.y>0 && i.z>0   &&   j.x>0 && j.y>0 && j.z>0;
+}
+inline int safe(dim3 i, dim3 j)                    { return safe0(i, j); }
+inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
+}
+/* end src/utils/kl/common.h */
 /* begin src/utils/kl/macro.h */
 #define ESC(...) __VA_ARGS__
 #define KL(F, C, A)                             \
@@ -80648,7 +99221,62 @@ namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
 
 /* TODO: header includes header */
 /* end src/utils/kl.h */
-/* already included: src/inc/type.h */
+/* begin src/inc/type.h */
+#pragma once
+
+template <typename T, int N>
+struct Sarray { /* [s]tatic array */
+    T d[N];
+};
+
+struct Particle {
+    float r[3], v[3];
+};
+
+struct Rigid {
+    float Iinv[6],            /* moment of inertia            6        */
+        mass,                 /* mass of the solid            7        */
+        com[3],               /* [c]enter [o]f [m]ass         10       */
+        v[3], om[3],          /* linear and angular velocity  13 16    */
+        e0[3], e1[3], e2[3],  /* local referential            19 22 25 */
+        fo[3], to[3],         /* force, torque                28 31    */
+        id;                   /* id of the solid              32       */
+};
+
+struct Force {
+    float f[3];
+};
+
+struct Momentum {
+    float P[3], L[3]; /* linear and angular momentum */
+};
+
+struct Positioncp {
+    float rc[3]; /* current position  */
+    float rp[3]; /* previous position */
+};
+
+typedef Sarray<int, 26>       int26;
+typedef Sarray<int, 27>       int27;
+
+typedef Sarray<int*, 26>     intp26;
+typedef Sarray<Particle*, 26> Pap26;
+typedef Sarray<Force*,    26> Fop26;
+typedef Sarray<Momentum*, 26> Mop26;
+typedef Sarray<Positioncp*, 26> Pocpp26;
+
+/* particles wrap */
+struct PaWrap {
+    int n;
+    const Particle *pp;
+};
+
+/* forces wrap */
+struct FoWrap {
+    int n;
+    Force *ff;
+};
+/* end src/inc/type.h */
 /* begin src/inc/dev.h */
 /* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
@@ -81553,10 +100181,135 @@ void scheme_restrain_set_conf(const Config *cfg, Restrain *r) {
 #include <mpi.h>
 #include <stdio.h>
 
-/* already included: src/inc/conf.h */
-/* already included: src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
 
-/* already included: src/inc/type.h */
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
+
+/* begin src/inc/type.h */
+#pragma once
+
+template <typename T, int N>
+struct Sarray { /* [s]tatic array */
+    T d[N];
+};
+
+struct Particle {
+    float r[3], v[3];
+};
+
+struct Rigid {
+    float Iinv[6],            /* moment of inertia            6        */
+        mass,                 /* mass of the solid            7        */
+        com[3],               /* [c]enter [o]f [m]ass         10       */
+        v[3], om[3],          /* linear and angular velocity  13 16    */
+        e0[3], e1[3], e2[3],  /* local referential            19 22 25 */
+        fo[3], to[3],         /* force, torque                28 31    */
+        id;                   /* id of the solid              32       */
+};
+
+struct Force {
+    float f[3];
+};
+
+struct Momentum {
+    float P[3], L[3]; /* linear and angular momentum */
+};
+
+struct Positioncp {
+    float rc[3]; /* current position  */
+    float rp[3]; /* previous position */
+};
+
+typedef Sarray<int, 26>       int26;
+typedef Sarray<int, 27>       int27;
+
+typedef Sarray<int*, 26>     intp26;
+typedef Sarray<Particle*, 26> Pap26;
+typedef Sarray<Force*,    26> Fop26;
+typedef Sarray<Momentum*, 26> Mop26;
+typedef Sarray<Positioncp*, 26> Pocpp26;
+
+/* particles wrap */
+struct PaWrap {
+    int n;
+    const Particle *pp;
+};
+
+/* forces wrap */
+struct FoWrap {
+    int n;
+    Force *ff;
+};
+/* end src/inc/type.h */
 /* begin src/inc/dev.h */
 /* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
@@ -81596,7 +100349,61 @@ void scheme_restrain_set_conf(const Config *cfg, Restrain *r) {
 #define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
 #define DzeroA(P, n)   DsetA(P, 0, n)
 /* end src/inc/dev.h */
-/* already included: src/inc/def.h */
+/* begin src/inc/def.h */
+/* solvent colors */
+#define XMACRO_COLOR(_)                         \
+    _(BLUE)                                     \
+    _(RED)
+
+#define ENUM_COLOR(a) a##_COLOR
+#define make_enum_color(a) ENUM_COLOR(a) ,
+#ifndef UDX_DEF_ENUMS_DEFINED
+#define UDX_DEF_ENUMS_DEFINED
+enum {
+    XMACRO_COLOR(make_enum_color)
+    N_COLOR
+};
+#undef make_enum_color
+
+enum {
+    /* wall margins */
+    XWM = 6,
+    YWM = 6,
+    ZWM = 6,
+
+    SAFETY_FACTOR_MAXP = 3,
+
+    /* maximum number of particles per solid */
+    MAX_PSOLID_NUM = 12000,
+
+    /* maximum number of solids per node */
+    MAX_SOLIDS = 100,
+
+    /* maximum number of object types (solid, rbc, ...) */
+    MAX_MBR_TYPES = 2,
+    MAX_RIG_TYPES = 2,
+    MAX_OBJ_TYPES = MAX_MBR_TYPES + MAX_RIG_TYPES,
+
+    /* maximum number density of particles of the objects */
+    MAX_OBJ_DENSITY = 30,
+
+    /* maximum number of red blood cells per node */
+    MAX_CELL_NUM = 1500,
+
+    /* maximum texture size in bytes */
+    MAX_TEXO_SIZE = 100000000,
+
+    /* safety factor for dpd halo interactions */
+    HSAFETY_FACTOR = 10,
+
+    /* safety factor for odist fragments */
+    ODSTR_FACTOR = 3,
+};
+#endif
+
+/* for the spring forces r = min(lmax*RBC_SPRING_CAP, r) */
+#define RBC_SPRING_CAP (0.99)
+/* end src/inc/def.h */
 
 /* begin src/mpi/wrapper.h */
 namespace m {
@@ -81769,7 +100576,16 @@ void check(int code, const char *file, int line);
 /* [k]ernel [l]aunch macros */
 
 #if    defined(KL_RELEASE)
-/* already included: src/utils/kl/release.h */
+/* begin src/utils/kl/release.h */
+#define KL_BEFORE(s, C) if (!kl::safe(ESC C)) continue;
+#define KL_CALL(F, C, A) F<<<ESC C>>>A
+#define KL_AFTER(s)
+
+#ifndef UDX_KL_RELEASE_FUNCTIONS_DEFINED
+#define UDX_KL_RELEASE_FUNCTIONS_DEFINED
+namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
+#endif
+/* end src/utils/kl/release.h */
 #elif  defined(KL_NONE)
 /* begin src/utils/kl/none.h */
 #define KL_BEFORE(s, C)
@@ -81794,7 +100610,18 @@ namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
   #error KL_* is undefined
 #endif
 
-/* already included: src/utils/kl/common.h */
+/* begin src/utils/kl/common.h */
+namespace kl {
+#pragma once
+
+inline int safe0(dim3 i, dim3 j) {
+    msg(i.x, i.y, i.z,   j.x, j.y, j.z);
+    return i.x>0 && i.y>0 && i.z>0   &&   j.x>0 && j.y>0 && j.z>0;
+}
+inline int safe(dim3 i, dim3 j)                    { return safe0(i, j); }
+inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
+}
+/* end src/utils/kl/common.h */
 /* begin src/utils/kl/macro.h */
 #define ESC(...) __VA_ARGS__
 #define KL(F, C, A)                             \
@@ -81807,12 +100634,154 @@ namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
 
 /* TODO: header includes header */
 /* end src/utils/kl.h */
-/* already included: src/algo/utils/shfl.h */
-/* already included: src/algo/utils/dev.h */
+/* begin src/algo/utils/shfl.h */
+#define _I_ static __device__
 
-/* already included: src/d/api.h */
+#if __CUDACC_VER_MAJOR__ >= 9
+#pragma once
 
-/* already included: src/scheme/restrain/imp.h */
+template <typename T>
+_I_ T shfl_down(T val, unsigned int width) {
+    return __shfl_down_sync(0xFFFFFFFF, val, width);
+}
+
+template <typename T>
+_I_ T shfl_up(T val, unsigned int width) {
+    return __shfl_up_sync(0xFFFFFFFF, val, width);
+}
+template <typename T>
+_I_ T shfl(T val, unsigned int width) {
+    return __shfl_sync(0xFFFFFFFF, val, width);
+}
+#else
+template <typename T>
+_I_ T shfl_down(T val, unsigned int width) {
+    return __shfl_down(val, width);
+}
+
+template <typename T>
+_I_ T shfl_up(T val, unsigned int width) {
+    return __shfl_up(val, width);
+}
+template <typename T>
+_I_ T shfl(T val, unsigned int width) {
+    return __shfl(val, width);
+}
+#endif
+
+#undef _I_
+/* end src/algo/utils/shfl.h */
+/* begin src/algo/utils/dev.h */
+#define _S_ static __device__
+#define _I_ static __device__
+
+// tag::int[]
+#pragma once
+
+template <typename T>
+_I_ T warpReduceSum(T v)  // <1>
+// end::int[]
+{
+    for (int offset = warpSize>>1; offset > 0; offset >>= 1)
+        v += shfl_down(v, offset);
+    return v;
+}
+
+// tag::int[]
+_I_ float2 warpReduceSum(float2 val)  // <2>
+// end::int[]
+{
+    for (int offset = warpSize / 2; offset > 0; offset /= 2) {
+        val.x += shfl_down(val.x, offset);
+        val.y += shfl_down(val.y, offset);
+    }
+    return val;
+}
+
+// tag::int[]
+_I_ float3 warpReduceSum(float3 val)  // <3>
+// end::int[]
+{
+    for (int offset = warpSize/2; offset > 0; offset /= 2) {
+        val.x += shfl_down(val.x, offset);
+        val.y += shfl_down(val.y, offset);
+        val.z += shfl_down(val.z, offset);
+    }
+    return val;
+}
+
+#undef _S_
+#undef _I_
+
+/* end src/algo/utils/dev.h */
+
+/* begin src/d/api.h */
+#pragma once
+
+namespace d {  /* a wrapper for device API */
+typedef int Stream_t; /* TODO: streams are not supported */
+enum {MemcpyHostToHost, MemcpyHostToDevice,
+      MemcpyDeviceToHost, MemcpyDeviceToDevice,
+      MemcpyDefault};
+
+// tag::more[]
+const char *emsg();
+int alloc_pinned(void **pHost, size_t size);
+int is_device_pointer(const void *ptr);
+// end::more[]
+
+// tag::api[]
+int GetSymbolAddress(void **devPtr, const void *symbol);
+int Malloc(void **p, size_t);
+int MemcpyToSymbol(const void *symbol, const void *src, size_t count, size_t offset=0, int kind=MemcpyHostToDevice);
+int MemcpyFromSymbol(void *dst, const void *symbol, size_t count, size_t offset=0, int kind=MemcpyDeviceToHost);
+int HostGetDevicePointer(void **pDevice, void *pHost, unsigned int flags);
+int Memcpy (void *dst, const void *src, size_t count, int kind);
+int MemsetAsync (void *devPtr, int value, size_t count, Stream_t stream=0);
+int Memset (void *devPtr, int value, size_t count);
+int MemcpyAsync (void * dst, const void * src, size_t count, int kind, Stream_t stream = 0);
+int Free (void *devPtr);
+int FreeHost (void *hstPtr);
+int DeviceSynchronize (void);
+int PeekAtLastError(void);
+// end::api[]
+}
+/* end src/d/api.h */
+
+/* begin src/scheme/restrain/imp.h */
+struct Particle;
+struct Config;
+struct Restrain;
+
+// tag::wrap[]
+#pragma once
+
+struct SchemeQQ {
+    Particle *o, *r;
+    int on, rn;
+};
+// end::wrap[]
+
+// tag::mem[]
+void scheme_restrain_ini(Restrain**);
+void scheme_restrain_fin(Restrain*);
+// end::mem[]
+
+// tag::set[]
+void scheme_restrain_set_red(Restrain*); // <1>
+void scheme_restrain_set_rbc(Restrain*); // <2>
+void scheme_restrain_set_none(Restrain*); // <3>
+void scheme_restrain_set_freq(int freq, Restrain*); // <4>
+// end::set[]
+
+// tag::cnf[]
+void scheme_restrain_set_conf(const Config*, Restrain*);
+// end::cnf[]
+
+// tag::int[]
+void scheme_restrain_apply(MPI_Comm comm, const int *cc, long it, /**/ Restrain *r, SchemeQQ qq);
+// end::int[]
+/* end src/scheme/restrain/imp.h */
 
 namespace restrain_dev {
 /* begin src/scheme/restrain/dev/type.h */
@@ -82392,7 +101361,38 @@ const char* get_filename_ext(const char*);
 // end::tools[]
 /* end src/utils/imp.h */
 
-/* already included: src/io/restart/imp.h */
+/* begin src/io/restart/imp.h */
+#pragma once
+
+struct Coords;
+struct Particle;
+struct Rigid;
+
+// tag::id[]
+enum {RESTART_TEMPL=-1,
+      RESTART_FINAL=-2};
+enum {RESTART_BEGIN=RESTART_FINAL};
+// end::id[]
+
+// tag::stream[]
+typedef void (*StreamWriter)(const void*, FILE*);
+typedef void (*StreamReader)(FILE*, void*);
+// end::stream[]
+
+// tag::write[]
+void restart_write_pp(MPI_Comm, const char *base, const char *code, int id, long n, const Particle *pp); // <1>
+void restart_write_ii(MPI_Comm, const char *base, const char *code, int id, long n, const int *ii);      // <2>
+void restart_write_ss(MPI_Comm, const char *base, const char *code, int id, long n, const Rigid *ss);    // <3>
+void restart_write_stream_one_node(MPI_Comm, const char *base, const char *code, int id, const void *data, StreamWriter); // <4>
+ // end::write[]
+
+// tag::read[]
+void restart_read_pp(MPI_Comm, const char *base, const char *code, int id, int *n, Particle *pp);
+void restart_read_ii(MPI_Comm, const char *base, const char *code, int id, int *n, int *ii);
+void restart_read_ss(MPI_Comm, const char *base, const char *code, int id, int *n, Rigid *ss);
+void restart_read_stream_one_node(const char *base, const char *code, int id, StreamReader, void *data);
+// end::read[]
+/* end src/io/restart/imp.h */
 
 /* begin src/scheme/time_line/imp.h */
 struct TimeLine;
@@ -82802,8 +101802,78 @@ void time_line_strt_read(const char *base, int id, TimeLine *t) {
 #include <mpi.h>
 #include <math.h>
 
-/* already included: src/inc/conf.h */
-/* already included: src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
 
 /* begin src/conf/imp.h */
 struct Config;
@@ -83478,8 +102548,78 @@ float time_step_dt0(TimeStep *q) { return q->dt; };
 #include <mpi.h>
 #include <vector_types.h>
 
-/* already included: src/inc/conf.h */
-/* already included: src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
 
 /* begin src/conf/imp.h */
 struct Config;
@@ -83600,7 +102740,38 @@ void os_malloc_stats();              // TODO
 // end::int[]
 /* end src/utils/os.h */
 
-/* already included: src/d/api.h */
+/* begin src/d/api.h */
+#pragma once
+
+namespace d {  /* a wrapper for device API */
+typedef int Stream_t; /* TODO: streams are not supported */
+enum {MemcpyHostToHost, MemcpyHostToDevice,
+      MemcpyDeviceToHost, MemcpyDeviceToDevice,
+      MemcpyDefault};
+
+// tag::more[]
+const char *emsg();
+int alloc_pinned(void **pHost, size_t size);
+int is_device_pointer(const void *ptr);
+// end::more[]
+
+// tag::api[]
+int GetSymbolAddress(void **devPtr, const void *symbol);
+int Malloc(void **p, size_t);
+int MemcpyToSymbol(const void *symbol, const void *src, size_t count, size_t offset=0, int kind=MemcpyHostToDevice);
+int MemcpyFromSymbol(void *dst, const void *symbol, size_t count, size_t offset=0, int kind=MemcpyDeviceToHost);
+int HostGetDevicePointer(void **pDevice, void *pHost, unsigned int flags);
+int Memcpy (void *dst, const void *src, size_t count, int kind);
+int MemsetAsync (void *devPtr, int value, size_t count, Stream_t stream=0);
+int Memset (void *devPtr, int value, size_t count);
+int MemcpyAsync (void * dst, const void * src, size_t count, int kind, Stream_t stream = 0);
+int Free (void *devPtr);
+int FreeHost (void *hstPtr);
+int DeviceSynchronize (void);
+int PeekAtLastError(void);
+// end::api[]
+}
+/* end src/d/api.h */
 
 /* begin src/coords/ini.h */
 struct Coords;
@@ -83743,7 +102914,61 @@ int status2errcode(MPI_Status *status);
 }
 /* end src/mpi/wrapper.h */
 
-/* already included: src/inc/def.h */
+/* begin src/inc/def.h */
+/* solvent colors */
+#define XMACRO_COLOR(_)                         \
+    _(BLUE)                                     \
+    _(RED)
+
+#define ENUM_COLOR(a) a##_COLOR
+#define make_enum_color(a) ENUM_COLOR(a) ,
+#ifndef UDX_DEF_ENUMS_DEFINED
+#define UDX_DEF_ENUMS_DEFINED
+enum {
+    XMACRO_COLOR(make_enum_color)
+    N_COLOR
+};
+#undef make_enum_color
+
+enum {
+    /* wall margins */
+    XWM = 6,
+    YWM = 6,
+    ZWM = 6,
+
+    SAFETY_FACTOR_MAXP = 3,
+
+    /* maximum number of particles per solid */
+    MAX_PSOLID_NUM = 12000,
+
+    /* maximum number of solids per node */
+    MAX_SOLIDS = 100,
+
+    /* maximum number of object types (solid, rbc, ...) */
+    MAX_MBR_TYPES = 2,
+    MAX_RIG_TYPES = 2,
+    MAX_OBJ_TYPES = MAX_MBR_TYPES + MAX_RIG_TYPES,
+
+    /* maximum number density of particles of the objects */
+    MAX_OBJ_DENSITY = 30,
+
+    /* maximum number of red blood cells per node */
+    MAX_CELL_NUM = 1500,
+
+    /* maximum texture size in bytes */
+    MAX_TEXO_SIZE = 100000000,
+
+    /* safety factor for dpd halo interactions */
+    HSAFETY_FACTOR = 10,
+
+    /* safety factor for odist fragments */
+    ODSTR_FACTOR = 3,
+};
+#endif
+
+/* for the spring forces r = min(lmax*RBC_SPRING_CAP, r) */
+#define RBC_SPRING_CAP (0.99)
+/* end src/inc/def.h */
 /* begin src/utils/msg.h */
 // tag::int[]
 void msg_ini(int rank); // <1>
@@ -83819,7 +103044,62 @@ void check(int code, const char *file, int line);
 }
 /* end src/utils/mc.h */
 
-/* already included: src/inc/type.h */
+/* begin src/inc/type.h */
+#pragma once
+
+template <typename T, int N>
+struct Sarray { /* [s]tatic array */
+    T d[N];
+};
+
+struct Particle {
+    float r[3], v[3];
+};
+
+struct Rigid {
+    float Iinv[6],            /* moment of inertia            6        */
+        mass,                 /* mass of the solid            7        */
+        com[3],               /* [c]enter [o]f [m]ass         10       */
+        v[3], om[3],          /* linear and angular velocity  13 16    */
+        e0[3], e1[3], e2[3],  /* local referential            19 22 25 */
+        fo[3], to[3],         /* force, torque                28 31    */
+        id;                   /* id of the solid              32       */
+};
+
+struct Force {
+    float f[3];
+};
+
+struct Momentum {
+    float P[3], L[3]; /* linear and angular momentum */
+};
+
+struct Positioncp {
+    float rc[3]; /* current position  */
+    float rp[3]; /* previous position */
+};
+
+typedef Sarray<int, 26>       int26;
+typedef Sarray<int, 27>       int27;
+
+typedef Sarray<int*, 26>     intp26;
+typedef Sarray<Particle*, 26> Pap26;
+typedef Sarray<Force*,    26> Fop26;
+typedef Sarray<Momentum*, 26> Mop26;
+typedef Sarray<Positioncp*, 26> Pocpp26;
+
+/* particles wrap */
+struct PaWrap {
+    int n;
+    const Particle *pp;
+};
+
+/* forces wrap */
+struct FoWrap {
+    int n;
+    Force *ff;
+};
+/* end src/inc/type.h */
 /* begin src/inc/dev.h */
 /* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
@@ -83897,8 +103177,64 @@ void pair_get_view_dpd_lj(const PairParams*, PairDPDLJ*);
 // end::view[]
 void pair_get_view_adhesion(const PairParams*, PairAdhesion*);
 /* end src/pair/imp.h */
-/* already included: src/struct/parray/imp.h */
-/* already included: src/struct/farray/imp.h */
+/* begin src/struct/parray/imp.h */
+#pragma once
+
+struct PaArray {
+    bool colors;
+    const float *pp;
+    const int *cc;
+};
+
+struct PaArray_v;
+struct PaCArray_v;
+
+struct Particle;
+
+// tag::push[]
+void parray_push_pp(const Particle *pp, PaArray *a);
+void parray_push_cc(const int *cc, PaArray *a);
+// end::push[]
+
+// tag::get[]
+bool parray_is_colored(const PaArray *a);
+// end::get[]
+
+// tag::view[]
+void parray_get_view(const PaArray *a, PaArray_v *v);  // <1>
+void parray_get_view(const PaArray *a, PaCArray_v *v); // <2>
+// end::view[]
+/* end src/struct/parray/imp.h */
+/* begin src/struct/farray/imp.h */
+#pragma once
+
+struct FoArray {
+    bool stress;
+    float *ff;
+    float *ss; /* stress */
+};
+
+struct FoArray_v;
+struct FoSArray_v;
+
+struct Force;
+
+// tag::push[]
+void farray_push_ff(Force *ff, FoArray *a);
+void farray_push_ss(float *ss, FoArray *a);
+// end::push[]
+
+void farray_clear(FoArray *);
+
+// tag::get[]
+bool farray_has_stress(const FoArray *a);
+// end::get[]
+
+// tag::view[]
+void farray_get_view(const FoArray *a, FoArray_v *v);  // <1>
+void farray_get_view(const FoArray *a, FoSArray_v *v); // <2>
+// end::view[]
+/* end src/struct/farray/imp.h */
 /* begin src/struct/pfarrays/imp.h */
 #pragma once
 
@@ -83923,7 +103259,24 @@ int  pfarrays_size(const PFarrays*);
 void pfarrays_get(int i, const PFarrays*, long *n, PaArray*, FoArray*);
 void pfarrays_get(int i, const PFarrays*, PFarray*);
 /* end src/struct/pfarrays/imp.h */
-/* already included: src/struct/partlist/type.h */
+/* begin src/struct/partlist/type.h */
+#pragma once
+
+enum {
+    ALIVE = 0,
+    DEAD  = 1
+};
+
+/* structure of particle                           */
+/* optional "deathlist" for particles to be killed */
+
+// tag::type[]
+struct PartList {
+    const Particle *pp;   /* particles array          */
+    const int *deathlist; /* what pp is dead or alive */
+};
+// end::type[]
+/* end src/struct/partlist/type.h */
 
 /* begin src/io/diag/part/imp.h */
 struct Particle;
@@ -83965,8 +103318,86 @@ void grid_sampler_dump(MPI_Comm, const char *dir, long id, GridSampler*); // <3>
 // end::int[]
 /* end src/grid_sampler/imp.h */
 
-/* already included: src/dbg/imp.h */
-/* already included: src/io/restart/imp.h */
+/* begin src/dbg/imp.h */
+#pragma once
+
+struct Dbg;
+
+struct Config;
+struct Force;
+struct Particle;
+struct int3;
+struct Coords;
+
+// tag::kind[]
+enum {
+    DBG_POS,      // <1>
+    DBG_POS_SOFT, // <2>
+    DBG_VEL,      // <3>
+    DBG_FORCES,   // <4>
+    DBG_COLORS,   // <5>
+    DBG_CLIST,    // <6>
+    DBG_NKIND_
+};
+// end::kind[]
+
+// tag::mem[]
+void dbg_ini(Dbg**);
+void dbg_fin(Dbg*);
+// end::mem[]
+
+// tag::ini[]
+void dbg_enable(int kind, Dbg *dbg);
+void dbg_disable(int kind, Dbg *dbg);
+void dbg_set_verbose(bool, Dbg *dbg);
+void dbg_set_dump(bool, Dbg *dbg);
+// end::ini[]
+
+// tag::cnf[]
+void dbg_set_conf(const Config*, Dbg*);
+// end::cnf[]
+
+// tag::int[]
+void dbg_check_pos(const Coords *c, const char *base, const Dbg *dbg, int n, const Particle *pp);
+void dbg_check_pos_soft(const Coords *c, const char *base, const Dbg *dbg, int n, const Particle *pp);
+void dbg_check_vel(float dt, const Coords *c, const char *base, const Dbg *dbg, int n, const Particle *pp);
+void dbg_check_forces(float dt, const Coords *c, const char *base, const Dbg *dbg, int n, const Particle *pp, const Force *ff);
+void dbg_check_colors(const Coords *c, const Dbg *dbg, int n, const int *cc);
+void dbg_check_clist(const Coords *c, const Dbg *dbg, int3 L, const int *starts, const int *counts, const Particle *pp);
+// end::int[]
+/* end src/dbg/imp.h */
+/* begin src/io/restart/imp.h */
+#pragma once
+
+struct Coords;
+struct Particle;
+struct Rigid;
+
+// tag::id[]
+enum {RESTART_TEMPL=-1,
+      RESTART_FINAL=-2};
+enum {RESTART_BEGIN=RESTART_FINAL};
+// end::id[]
+
+// tag::stream[]
+typedef void (*StreamWriter)(const void*, FILE*);
+typedef void (*StreamReader)(FILE*, void*);
+// end::stream[]
+
+// tag::write[]
+void restart_write_pp(MPI_Comm, const char *base, const char *code, int id, long n, const Particle *pp); // <1>
+void restart_write_ii(MPI_Comm, const char *base, const char *code, int id, long n, const int *ii);      // <2>
+void restart_write_ss(MPI_Comm, const char *base, const char *code, int id, long n, const Rigid *ss);    // <3>
+void restart_write_stream_one_node(MPI_Comm, const char *base, const char *code, int id, const void *data, StreamWriter); // <4>
+ // end::write[]
+
+// tag::read[]
+void restart_read_pp(MPI_Comm, const char *base, const char *code, int id, int *n, Particle *pp);
+void restart_read_ii(MPI_Comm, const char *base, const char *code, int id, int *n, int *ii);
+void restart_read_ss(MPI_Comm, const char *base, const char *code, int id, int *n, Rigid *ss);
+void restart_read_stream_one_node(const char *base, const char *code, int id, StreamReader, void *data);
+// end::read[]
+/* end src/io/restart/imp.h */
 /* begin src/clist/imp.h */
 struct Clist;
 struct ClistMap;
@@ -84004,9 +103435,134 @@ void clist_build(int nlo, int nout, const Particle *pplo, /**/ Particle *ppout, 
 // end::int[]
 /* end src/clist/imp.h */
 
-/* already included: src/flu/imp.h */
+/* begin src/flu/imp.h */
+#pragma once
 
-/* already included: src/comm/imp.h */
+// tag::struct[]
+struct FluQuants {
+    Particle *pp, *pp0;    /* particles on device  */
+    int       n;           /* particle number      */
+    Clist     *cells;      /* cell lists           */
+    ClistMap *mcells;      /* cell lists map       */
+    Particle *pp_hst;      /* particles on host    */
+
+    /* optional data */
+
+    bool ids, colors;
+
+    int *ii, *ii0;  /* global ids on device */
+    int *ii_hst;    /* global ids on host   */
+
+    int *cc, *cc0;  /* colors on device */
+    int *cc_hst;    /* colors on host   */
+
+    int maxp; /* maximum particle number */
+};
+// end::struct[]
+
+struct Coords;
+struct GenColor;
+
+// tag::mem[]
+void flu_ini(bool colors, bool ids, int3 L, int maxp, FluQuants *q);
+void flu_fin(FluQuants *q);
+// end::mem[]
+
+// tag::gen[]
+void flu_gen_quants(const Coords*, int numdensity, const GenColor *gc, FluQuants *q); // <1>
+void flu_gen_ids(MPI_Comm, const int n, FluQuants *q); // <2>
+// end::gen[]
+
+// tag::start[]
+void flu_strt_quants(MPI_Comm, const char *base, const int id, FluQuants *q);     // <1>
+void flu_strt_dump(MPI_Comm, const char *base, const int id, const FluQuants *q); // <2>
+// end::start[]
+
+// tag::tools[]
+void flu_txt_dump(const Coords*, const FluQuants *q); // <1>
+
+/* build cells only from one array of particles fully contained in the domain */
+/* warning: this will delete particles which are outside                      */
+void flu_build_cells(/**/ FluQuants *q); // <2>
+// end::tools[]
+/* end src/flu/imp.h */
+
+/* begin src/comm/imp.h */
+#pragma once
+
+typedef unsigned char data_t;
+
+enum {
+    NFRAGS = 26, /* number of fragments for one halo */
+    BULK   = 26, /* bulk id                          */
+    NBAGS  = 27, /* fragments + bulk                 */
+};
+
+/* Allocation mod for bags */
+enum AllocMod {
+    // tag::AllocMod[]
+    HST_ONLY,   /* only host bags allocated                 */
+    DEV_ONLY,   /* only device bags allocated               */
+    PINNED,     /* both host and device pinned              */
+    PINNED_HST, /* host pinned; no device memory            */
+    PINNED_DEV, /* host pinned; device global memory on gpu */
+    NONE        /* no allocation                            */
+    // end::AllocMod[]
+};
+
+// tag::dBags[]
+struct dBags {
+    data_t *data[NBAGS]; /* data on the device         */
+};
+// end::dBags[]
+
+// tag::hBags[]
+struct hBags {
+    data_t *data[NBAGS]; /* data on the host                    */
+    int         *counts; /* size of the data                    */
+    int capacity[NBAGS]; /* capacity of each frag (elem number) */
+    size_t bsize;        /* size of one datum in bytes          */
+};
+// end::hBags[]
+
+struct Comm;
+struct CommBuffer;
+
+// tag::alloc[]
+void comm_bags_ini(AllocMod fmod, AllocMod bmod, size_t bsize, const int capacity[NBAGS], /**/ hBags *hb, dBags *db);
+void comm_bags_fin(AllocMod fmod, AllocMod bmod, /**/ hBags *hb, dBags *db);
+void comm_ini(MPI_Comm cart, /**/ Comm **c);
+void comm_fin(/**/ Comm *c);
+void comm_buffer_ini(int nbags, const hBags *hbb, CommBuffer**);
+void comm_buffer_fin(CommBuffer*);
+// end::alloc[]
+
+
+void comm_buffer_set(int nbags, const hBags*, CommBuffer*);
+void comm_buffer_get(const CommBuffer*, int nbags, hBags*);
+
+// tag::communication[]
+void comm_post_recv(hBags *b, Comm *c);           // <1>
+void comm_post_send(const hBags *b, Comm *c);     // <2>
+
+void comm_wait_recv(Comm *c, /**/ hBags *b);      // <3>
+void comm_wait_send(Comm *c);                     // <4>
+// end::communication[]
+
+// tag::communication_b[]
+void comm_post_recv(CommBuffer *cb, Comm *c);
+void comm_post_send(const CommBuffer *cb, Comm *c);
+
+void comm_wait_recv(Comm *c, /**/ CommBuffer *cb);
+void comm_wait_send(Comm *c);
+// end::communication_b[]
+
+// tag::get[]
+int    comm_get_number_capacity(int i, const hBags *b); // <1>
+size_t comm_get_byte_capacity(int i, const hBags *b);   // <2>
+// end::get[]
+
+/* end src/comm/imp.h */
 /* begin src/distr/flu/imp.h */
 struct DFluPack;
 struct DFluComm;
@@ -84065,7 +103621,39 @@ void dflu_status_exceed(int frag, int counter, int capacity, /**/ DFluStatus *s)
 
 /* end src/distr/flu/status/imp.h */
 
-/* already included: src/flu/type.h */
+/* begin src/flu/type.h */
+#pragma once
+
+/* helpers to communicate between halo interactions and exchanger */
+
+namespace flu {
+
+enum { BULK = 0, FACE = 1, EDGE = 2, CORNER = 3 };
+
+struct LFrag { /* "local" fragment */
+    PaArray parray;
+    const int *ii; /* index */
+    int n;
+};
+
+struct RFrag { /* "remote" fragment */
+    PaArray parray;
+    const int *start;
+    int dx, dy, dz, xcells, ycells, zcells;
+    int type;
+};
+
+struct RndFrag {
+    float seed;
+    int mask;
+};
+
+typedef Sarray<LFrag,   26> LFrag26;
+typedef Sarray<RFrag,   26> RFrag26;
+typedef Sarray<RndFrag, 26> RndFrag26;
+
+} // flu
+/* end src/flu/type.h */
 /* begin src/exch/flu/imp.h */
 struct EFluPack;
 struct EFluComm;
@@ -84219,7 +103807,40 @@ void scheme_move_apply(float dt, float mass, int n, const Force*, Particle*); //
 void scheme_move_clear_vel(int n, Particle*); // <2>
 // end::int[]
 /* end src/scheme/move/imp.h */
-/* already included: src/scheme/restrain/imp.h */
+/* begin src/scheme/restrain/imp.h */
+struct Particle;
+struct Config;
+struct Restrain;
+
+// tag::wrap[]
+#pragma once
+
+struct SchemeQQ {
+    Particle *o, *r;
+    int on, rn;
+};
+// end::wrap[]
+
+// tag::mem[]
+void scheme_restrain_ini(Restrain**);
+void scheme_restrain_fin(Restrain*);
+// end::mem[]
+
+// tag::set[]
+void scheme_restrain_set_red(Restrain*); // <1>
+void scheme_restrain_set_rbc(Restrain*); // <2>
+void scheme_restrain_set_none(Restrain*); // <3>
+void scheme_restrain_set_freq(int freq, Restrain*); // <4>
+// end::set[]
+
+// tag::cnf[]
+void scheme_restrain_set_conf(const Config*, Restrain*);
+// end::cnf[]
+
+// tag::int[]
+void scheme_restrain_apply(MPI_Comm comm, const int *cc, long it, /**/ Restrain *r, SchemeQQ qq);
+// end::int[]
+/* end src/scheme/restrain/imp.h */
 /* begin src/scheme/time_line/imp.h */
 struct TimeLine;
 
@@ -86223,10 +105844,189 @@ void sim_strt(Sim *s) {
 #include <string.h>
 #include <vector_types.h>
 
-/* already included: src/inc/conf.h */
-/* already included: src/inc/conf.h */
-/* already included: src/inc/type.h */
-/* already included: src/inc/def.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
+/* begin src/inc/type.h */
+#pragma once
+
+template <typename T, int N>
+struct Sarray { /* [s]tatic array */
+    T d[N];
+};
+
+struct Particle {
+    float r[3], v[3];
+};
+
+struct Rigid {
+    float Iinv[6],            /* moment of inertia            6        */
+        mass,                 /* mass of the solid            7        */
+        com[3],               /* [c]enter [o]f [m]ass         10       */
+        v[3], om[3],          /* linear and angular velocity  13 16    */
+        e0[3], e1[3], e2[3],  /* local referential            19 22 25 */
+        fo[3], to[3],         /* force, torque                28 31    */
+        id;                   /* id of the solid              32       */
+};
+
+struct Force {
+    float f[3];
+};
+
+struct Momentum {
+    float P[3], L[3]; /* linear and angular momentum */
+};
+
+struct Positioncp {
+    float rc[3]; /* current position  */
+    float rp[3]; /* previous position */
+};
+
+typedef Sarray<int, 26>       int26;
+typedef Sarray<int, 27>       int27;
+
+typedef Sarray<int*, 26>     intp26;
+typedef Sarray<Particle*, 26> Pap26;
+typedef Sarray<Force*,    26> Fop26;
+typedef Sarray<Momentum*, 26> Mop26;
+typedef Sarray<Positioncp*, 26> Pocpp26;
+
+/* particles wrap */
+struct PaWrap {
+    int n;
+    const Particle *pp;
+};
+
+/* forces wrap */
+struct FoWrap {
+    int n;
+    Force *ff;
+};
+/* end src/inc/type.h */
+/* begin src/inc/def.h */
+/* solvent colors */
+#define XMACRO_COLOR(_)                         \
+    _(BLUE)                                     \
+    _(RED)
+
+#define ENUM_COLOR(a) a##_COLOR
+#define make_enum_color(a) ENUM_COLOR(a) ,
+#ifndef UDX_DEF_ENUMS_DEFINED
+#define UDX_DEF_ENUMS_DEFINED
+enum {
+    XMACRO_COLOR(make_enum_color)
+    N_COLOR
+};
+#undef make_enum_color
+
+enum {
+    /* wall margins */
+    XWM = 6,
+    YWM = 6,
+    ZWM = 6,
+
+    SAFETY_FACTOR_MAXP = 3,
+
+    /* maximum number of particles per solid */
+    MAX_PSOLID_NUM = 12000,
+
+    /* maximum number of solids per node */
+    MAX_SOLIDS = 100,
+
+    /* maximum number of object types (solid, rbc, ...) */
+    MAX_MBR_TYPES = 2,
+    MAX_RIG_TYPES = 2,
+    MAX_OBJ_TYPES = MAX_MBR_TYPES + MAX_RIG_TYPES,
+
+    /* maximum number density of particles of the objects */
+    MAX_OBJ_DENSITY = 30,
+
+    /* maximum number of red blood cells per node */
+    MAX_CELL_NUM = 1500,
+
+    /* maximum texture size in bytes */
+    MAX_TEXO_SIZE = 100000000,
+
+    /* safety factor for dpd halo interactions */
+    HSAFETY_FACTOR = 10,
+
+    /* safety factor for odist fragments */
+    ODSTR_FACTOR = 3,
+};
+#endif
+
+/* for the spring forces r = min(lmax*RBC_SPRING_CAP, r) */
+#define RBC_SPRING_CAP (0.99)
+/* end src/inc/def.h */
 /* begin src/inc/dev.h */
 /* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
@@ -86267,7 +106067,38 @@ void sim_strt(Sim *s) {
 #define DzeroA(P, n)   DsetA(P, 0, n)
 /* end src/inc/dev.h */
 
-/* already included: src/d/api.h */
+/* begin src/d/api.h */
+#pragma once
+
+namespace d {  /* a wrapper for device API */
+typedef int Stream_t; /* TODO: streams are not supported */
+enum {MemcpyHostToHost, MemcpyHostToDevice,
+      MemcpyDeviceToHost, MemcpyDeviceToDevice,
+      MemcpyDefault};
+
+// tag::more[]
+const char *emsg();
+int alloc_pinned(void **pHost, size_t size);
+int is_device_pointer(const void *ptr);
+// end::more[]
+
+// tag::api[]
+int GetSymbolAddress(void **devPtr, const void *symbol);
+int Malloc(void **p, size_t);
+int MemcpyToSymbol(const void *symbol, const void *src, size_t count, size_t offset=0, int kind=MemcpyHostToDevice);
+int MemcpyFromSymbol(void *dst, const void *symbol, size_t count, size_t offset=0, int kind=MemcpyDeviceToHost);
+int HostGetDevicePointer(void **pDevice, void *pHost, unsigned int flags);
+int Memcpy (void *dst, const void *src, size_t count, int kind);
+int MemsetAsync (void *devPtr, int value, size_t count, Stream_t stream=0);
+int Memset (void *devPtr, int value, size_t count);
+int MemcpyAsync (void * dst, const void * src, size_t count, int kind, Stream_t stream = 0);
+int Free (void *devPtr);
+int FreeHost (void *hstPtr);
+int DeviceSynchronize (void);
+int PeekAtLastError(void);
+// end::api[]
+}
+/* end src/d/api.h */
 /* begin src/mpi/wrapper.h */
 namespace m {
 int Allreduce(const void *sendbuf, void *recvbuf, int count, MPI_Datatype datatype, MPI_Op op, MPI_Comm comm);
@@ -86413,7 +106244,54 @@ namespace mpicheck {
 void check(int code, const char *file, int line);
 }
 /* end src/utils/mc.h */
-/* already included: src/dbg/imp.h */
+/* begin src/dbg/imp.h */
+#pragma once
+
+struct Dbg;
+
+struct Config;
+struct Force;
+struct Particle;
+struct int3;
+struct Coords;
+
+// tag::kind[]
+enum {
+    DBG_POS,      // <1>
+    DBG_POS_SOFT, // <2>
+    DBG_VEL,      // <3>
+    DBG_FORCES,   // <4>
+    DBG_COLORS,   // <5>
+    DBG_CLIST,    // <6>
+    DBG_NKIND_
+};
+// end::kind[]
+
+// tag::mem[]
+void dbg_ini(Dbg**);
+void dbg_fin(Dbg*);
+// end::mem[]
+
+// tag::ini[]
+void dbg_enable(int kind, Dbg *dbg);
+void dbg_disable(int kind, Dbg *dbg);
+void dbg_set_verbose(bool, Dbg *dbg);
+void dbg_set_dump(bool, Dbg *dbg);
+// end::ini[]
+
+// tag::cnf[]
+void dbg_set_conf(const Config*, Dbg*);
+// end::cnf[]
+
+// tag::int[]
+void dbg_check_pos(const Coords *c, const char *base, const Dbg *dbg, int n, const Particle *pp);
+void dbg_check_pos_soft(const Coords *c, const char *base, const Dbg *dbg, int n, const Particle *pp);
+void dbg_check_vel(float dt, const Coords *c, const char *base, const Dbg *dbg, int n, const Particle *pp);
+void dbg_check_forces(float dt, const Coords *c, const char *base, const Dbg *dbg, int n, const Particle *pp, const Force *ff);
+void dbg_check_colors(const Coords *c, const Dbg *dbg, int n, const int *cc);
+void dbg_check_clist(const Coords *c, const Dbg *dbg, int3 L, const int *starts, const int *counts, const Particle *pp);
+// end::int[]
+/* end src/dbg/imp.h */
 
 /* begin src/utils/msg.h */
 // tag::int[]
@@ -86583,11 +106461,116 @@ void pair_get_view_dpd_lj(const PairParams*, PairDPDLJ*);
 // end::view[]
 void pair_get_view_adhesion(const PairParams*, PairAdhesion*);
 /* end src/pair/imp.h */
-/* already included: src/struct/parray/imp.h */
-/* already included: src/struct/farray/imp.h */
-/* already included: src/struct/pfarrays/imp.h */
-/* already included: src/struct/partlist/type.h */
-/* already included: src/mesh/triangles/type.h */
+/* begin src/struct/parray/imp.h */
+#pragma once
+
+struct PaArray {
+    bool colors;
+    const float *pp;
+    const int *cc;
+};
+
+struct PaArray_v;
+struct PaCArray_v;
+
+struct Particle;
+
+// tag::push[]
+void parray_push_pp(const Particle *pp, PaArray *a);
+void parray_push_cc(const int *cc, PaArray *a);
+// end::push[]
+
+// tag::get[]
+bool parray_is_colored(const PaArray *a);
+// end::get[]
+
+// tag::view[]
+void parray_get_view(const PaArray *a, PaArray_v *v);  // <1>
+void parray_get_view(const PaArray *a, PaCArray_v *v); // <2>
+// end::view[]
+/* end src/struct/parray/imp.h */
+/* begin src/struct/farray/imp.h */
+#pragma once
+
+struct FoArray {
+    bool stress;
+    float *ff;
+    float *ss; /* stress */
+};
+
+struct FoArray_v;
+struct FoSArray_v;
+
+struct Force;
+
+// tag::push[]
+void farray_push_ff(Force *ff, FoArray *a);
+void farray_push_ss(float *ss, FoArray *a);
+// end::push[]
+
+void farray_clear(FoArray *);
+
+// tag::get[]
+bool farray_has_stress(const FoArray *a);
+// end::get[]
+
+// tag::view[]
+void farray_get_view(const FoArray *a, FoArray_v *v);  // <1>
+void farray_get_view(const FoArray *a, FoSArray_v *v); // <2>
+// end::view[]
+/* end src/struct/farray/imp.h */
+/* begin src/struct/pfarrays/imp.h */
+#pragma once
+
+struct PFarray {
+    PaArray p;
+    FoArray f;
+    long n;
+};
+
+struct PFarrays;
+
+struct PaArray;
+struct FoArray;
+
+void pfarrays_ini(PFarrays**);
+void pfarrays_fin(PFarrays*);
+
+void pfarrays_clear(PFarrays*);
+void pfarrays_push(PFarrays*, long n, PaArray, FoArray);
+void pfarrays_push(PFarrays*, PFarray);
+int  pfarrays_size(const PFarrays*);
+void pfarrays_get(int i, const PFarrays*, long *n, PaArray*, FoArray*);
+void pfarrays_get(int i, const PFarrays*, PFarray*);
+/* end src/struct/pfarrays/imp.h */
+/* begin src/struct/partlist/type.h */
+#pragma once
+
+enum {
+    ALIVE = 0,
+    DEAD  = 1
+};
+
+/* structure of particle                           */
+/* optional "deathlist" for particles to be killed */
+
+// tag::type[]
+struct PartList {
+    const Particle *pp;   /* particles array          */
+    const int *deathlist; /* what pp is dead or alive */
+};
+// end::type[]
+/* end src/struct/partlist/type.h */
+/* begin src/mesh/triangles/type.h */
+#pragma once
+
+// tag::interface[]
+struct Triangles {
+    int4 *tt;
+    int nt;
+};
+// end::interface[]
+/* end src/mesh/triangles/type.h */
 /* begin src/mesh/triangles/imp.h */
 struct Triangles;
 struct MeshRead;
@@ -86732,8 +106715,58 @@ const float *mesh_read_get_vert(const MeshRead*);
 const int4  *mesh_read_get_dih(MeshRead*);
 // end::interface[]
 /* end src/io/mesh_read/imp.h */
-/* already included: src/io/mesh/imp.h */
-/* already included: src/io/restart/imp.h */
+/* begin src/io/mesh/imp.h */
+#pragma once
+
+struct Coords;
+struct Particle;
+struct int4;
+struct MeshWrite;
+struct MeshRead;
+struct Vectors;
+
+enum {MESH_WRITE_EDGE, MESH_WRITE_CENTER};
+
+void mesh_write_ini(MPI_Comm comm, int shifttype, const int4 *tt, int nv, int nt, const char *directory, /**/ MeshWrite**);
+void mesh_write_ini_from_mesh(MPI_Comm comm, int shifttype, MeshRead*, const char *directory, /**/ MeshWrite**);
+
+void mesh_write_particles(MeshWrite*, MPI_Comm, const Coords*, int nm, const Particle*, int id);
+void mesh_write_vectors(MeshWrite*, MPI_Comm, int nm, Vectors *pos, Vectors *vel, int id);
+
+void mesh_write_fin(MeshWrite*);
+/* end src/io/mesh/imp.h */
+/* begin src/io/restart/imp.h */
+#pragma once
+
+struct Coords;
+struct Particle;
+struct Rigid;
+
+// tag::id[]
+enum {RESTART_TEMPL=-1,
+      RESTART_FINAL=-2};
+enum {RESTART_BEGIN=RESTART_FINAL};
+// end::id[]
+
+// tag::stream[]
+typedef void (*StreamWriter)(const void*, FILE*);
+typedef void (*StreamReader)(FILE*, void*);
+// end::stream[]
+
+// tag::write[]
+void restart_write_pp(MPI_Comm, const char *base, const char *code, int id, long n, const Particle *pp); // <1>
+void restart_write_ii(MPI_Comm, const char *base, const char *code, int id, long n, const int *ii);      // <2>
+void restart_write_ss(MPI_Comm, const char *base, const char *code, int id, long n, const Rigid *ss);    // <3>
+void restart_write_stream_one_node(MPI_Comm, const char *base, const char *code, int id, const void *data, StreamWriter); // <4>
+ // end::write[]
+
+// tag::read[]
+void restart_read_pp(MPI_Comm, const char *base, const char *code, int id, int *n, Particle *pp);
+void restart_read_ii(MPI_Comm, const char *base, const char *code, int id, int *n, int *ii);
+void restart_read_ss(MPI_Comm, const char *base, const char *code, int id, int *n, Rigid *ss);
+void restart_read_stream_one_node(const char *base, const char *code, int id, StreamReader, void *data);
+// end::read[]
+/* end src/io/restart/imp.h */
 /* begin src/io/rig/imp.h */
 struct Coords;
 struct Rigid;
@@ -86754,8 +106787,63 @@ void io_bop_ids         (MPI_Comm cart, long n, const int   *ii, const char *nam
 void io_bop_colors      (MPI_Comm cart, long n, const int   *cc, const char *name, int id, IoBop *t);
 /* end src/io/bop/imp.h */
 
-/* already included: src/rbc/params/imp.h */
-/* already included: src/rbc/type.h */
+/* begin src/rbc/params/imp.h */
+#pragma once
+
+struct Config;
+struct RbcParams;
+struct RbcParams_v {
+    float gammaC, gammaT, kBT;
+    float kb, phi;
+    float ks, x0, mpow;
+    float ka, kd, kv;
+    float totArea, totVolume;
+};
+
+// tag::mem[]
+void rbc_params_ini(RbcParams **);
+void rbc_params_fin(RbcParams *);
+// end::mem[]
+
+// tag::set[]
+void rbc_params_set_fluct(float gammaC, float gammaT, float kBT, RbcParams *);
+void rbc_params_set_bending(float kb, float phi, RbcParams *);
+void rbc_params_set_spring(float ks, float x0, float mpow , RbcParams *);
+void rbc_params_set_area_volume(float ka, float kd, float kv, RbcParams *);
+void rbc_params_set_tot_area_volume(float totArea, float totVolume, RbcParams *);
+// end::set[]
+
+// tag::get[]
+double rbc_params_get_tot_volume(const RbcParams *);
+// end::get[]
+
+// tag::cnf[]
+void rbc_params_set_conf(const Config *c, const char *name, RbcParams *);
+// end::cnf[]
+
+// tag::view[]
+RbcParams_v rbc_params_get_view(const RbcParams *);
+// end::view[]
+/* end src/rbc/params/imp.h */
+/* begin src/rbc/type.h */
+#pragma once
+
+struct AreaVolume;
+struct Particle;
+
+// tag::quants[]
+struct RbcQuants {
+    int n, nc;               /* number of particles, cells                */
+    int nt, nv;              /* number of triangles and vertices per mesh */
+    int md;                  /* maximum valence of the mesh               */
+    Particle *pp, *pp_hst;   /* vertices particles on host and device     */
+    bool ids;                /* global ids active ?                       */
+    int *ii;                 /* global ids on host                        */
+    AreaVolume *area_volume; /* to compute area and volume */
+};
+// end::quants[]
+
+/* end src/rbc/type.h */
 /* begin src/rbc/imp.h */
 struct Coords;
 struct MeshRead;
@@ -86839,8 +106927,82 @@ void rbc_com_apply(RbcCom*, int nm, const Particle*, /**/ float3 **rr, float3 **
 // end::interface[]
 /* end src/rbc/com/imp.h */
 
-/* already included: src/rig/imp.h */
-/* already included: src/rigid/imp.h */
+/* begin src/rig/imp.h */
+#pragma once
+
+// tag::quants[]
+struct RigQuants {
+    int n, ns, nps;              /* number of particles (total), solid, particle per solid        */
+    Particle *pp_hst, *pp;       /* particles on hst and device                                   */
+    Rigid    *ss_hst, *ss;       /* rigid strutures                                               */
+    float   *rr0_hst, *rr0;      /* frozen particle templates                                     */
+
+    /* mesh related quantities */
+    int nt, nv;                   /* number of [t]riangles and [v]ertices                          */
+    int4 *dtt;                    /* triangle indices on device                                    */
+    float *dvv;                   /* vertices on device (template)                                 */
+    Particle *i_pp_hst, *i_pp;    /* particles representing all meshes of all solids of that node  */
+
+    Rigid *ss_dmp;
+
+    long maxp; /* maximum particle number */
+};
+// end::quants[]
+
+struct Coords;
+struct RigPinInfo;
+struct MeshRead;
+
+// tag::mem[]
+void rig_ini(long maxs, long maxp, const MeshRead*, RigQuants*);
+void rig_fin(RigQuants *q);
+// end::mem[]
+
+// tag::gen[]
+void rig_gen_mesh(const Coords*, MPI_Comm, const MeshRead*, const char *ic, /**/ RigQuants *); // <1>
+void rig_gen_freeze(const Coords*, bool empty_pp, int numdensity, float rig_mass, const RigPinInfo*,
+                    MPI_Comm, const MeshRead*, Particle *opp, int *on, RigQuants *q);          // <2>
+void rig_strt_quants(MPI_Comm, const MeshRead*, const char *base, const char *name, const int id, RigQuants *q); // <3>
+// end::gen[]
+
+// tag::io[]
+void rig_strt_dump_templ(MPI_Comm, const char *base, const char *name, const RigQuants *q);         // <1>
+void rig_strt_dump(MPI_Comm, const char *base, const char *name, const int id, const RigQuants *q); // <2>
+// end::io[]
+/* end src/rig/imp.h */
+/* begin src/rigid/imp.h */
+struct RigPinInfo;
+struct int3;
+struct Config;
+
+// tag::enum[]
+enum {NOT_PERIODIC = -1};
+// end::enum[]
+
+// tag::pin[]
+void rig_pininfo_ini(RigPinInfo **); // <1>
+void rig_pininfo_fin(RigPinInfo *); // <2>
+void rig_pininfo_set(int3 com, int3 axis, RigPinInfo *); // <3>
+void rig_pininfo_set_pdir(int pdir, RigPinInfo *); // <4>
+void rig_pininfo_set_conf(const Config *cfg, const char *ns, RigPinInfo *); // <5>
+
+int rig_pininfo_get_pdir(const RigPinInfo *); // <6>
+// end::pin[]
+
+struct Particle;
+#pragma once
+
+struct Rigid;
+struct Force;
+
+// tag::upd[]
+void rig_reinit_ft(const int ns, /**/ Rigid *ss); // <1>
+void rig_update(const RigPinInfo *pi, float dt, int n, const Force *ff, const float *rr0, int ns, /**/ Particle *pp, Rigid *ss); // <2>
+void rig_generate(int ns, const Rigid *ss, int nps, const float *rr0, /**/ Particle *pp); // <3>
+void rig_update_mesh(float dt, int ns, const Rigid *ss, int nv, const float *vv, /**/ Particle *pp); // <4>
+// end::upd[]
+
+/* end src/rigid/imp.h */
 
 /* begin src/wall/imp.h */
 #pragma once
@@ -86971,7 +107133,82 @@ void time_step_log(TimeStep*);                           // <3>
 // end::int[]
 /* end src/scheme/time_step/imp.h */
 
-/* already included: src/comm/imp.h */
+/* begin src/comm/imp.h */
+#pragma once
+
+typedef unsigned char data_t;
+
+enum {
+    NFRAGS = 26, /* number of fragments for one halo */
+    BULK   = 26, /* bulk id                          */
+    NBAGS  = 27, /* fragments + bulk                 */
+};
+
+/* Allocation mod for bags */
+enum AllocMod {
+    // tag::AllocMod[]
+    HST_ONLY,   /* only host bags allocated                 */
+    DEV_ONLY,   /* only device bags allocated               */
+    PINNED,     /* both host and device pinned              */
+    PINNED_HST, /* host pinned; no device memory            */
+    PINNED_DEV, /* host pinned; device global memory on gpu */
+    NONE        /* no allocation                            */
+    // end::AllocMod[]
+};
+
+// tag::dBags[]
+struct dBags {
+    data_t *data[NBAGS]; /* data on the device         */
+};
+// end::dBags[]
+
+// tag::hBags[]
+struct hBags {
+    data_t *data[NBAGS]; /* data on the host                    */
+    int         *counts; /* size of the data                    */
+    int capacity[NBAGS]; /* capacity of each frag (elem number) */
+    size_t bsize;        /* size of one datum in bytes          */
+};
+// end::hBags[]
+
+struct Comm;
+struct CommBuffer;
+
+// tag::alloc[]
+void comm_bags_ini(AllocMod fmod, AllocMod bmod, size_t bsize, const int capacity[NBAGS], /**/ hBags *hb, dBags *db);
+void comm_bags_fin(AllocMod fmod, AllocMod bmod, /**/ hBags *hb, dBags *db);
+void comm_ini(MPI_Comm cart, /**/ Comm **c);
+void comm_fin(/**/ Comm *c);
+void comm_buffer_ini(int nbags, const hBags *hbb, CommBuffer**);
+void comm_buffer_fin(CommBuffer*);
+// end::alloc[]
+
+
+void comm_buffer_set(int nbags, const hBags*, CommBuffer*);
+void comm_buffer_get(const CommBuffer*, int nbags, hBags*);
+
+// tag::communication[]
+void comm_post_recv(hBags *b, Comm *c);           // <1>
+void comm_post_send(const hBags *b, Comm *c);     // <2>
+
+void comm_wait_recv(Comm *c, /**/ hBags *b);      // <3>
+void comm_wait_send(Comm *c);                     // <4>
+// end::communication[]
+
+// tag::communication_b[]
+void comm_post_recv(CommBuffer *cb, Comm *c);
+void comm_post_send(const CommBuffer *cb, Comm *c);
+
+void comm_wait_recv(Comm *c, /**/ CommBuffer *cb);
+void comm_wait_send(Comm *c);
+// end::communication_b[]
+
+// tag::get[]
+int    comm_get_number_capacity(int i, const hBags *b); // <1>
+size_t comm_get_byte_capacity(int i, const hBags *b);   // <2>
+// end::get[]
+
+/* end src/comm/imp.h */
 /* begin src/distr/rbc/imp.h */
 struct DRbcPack;
 struct DRbcComm;
@@ -87102,7 +107339,42 @@ void emesh_unpack_mom(int nt, const EMeshPack *p, const EMeshUnpackM *u, /**/ Mo
 // end::unpackback[]
 /* end src/exch/mesh/imp.h */
 //#include "meshbb/imp.h"
-/* already included: src/mesh_bounce/imp.h */
+/* begin src/mesh_bounce/imp.h */
+#pragma once
+
+struct MeshBB;
+
+struct Particle;
+struct Positioncp;
+struct Force;
+struct Momentum;
+struct Rigid;
+struct int4;
+
+struct MeshInfo {
+    int nt, nv;
+    const int4 *tt;
+};
+
+// tag::mem[]
+void mesh_bounce_ini(int maxpp, /**/ MeshBB **d);
+void mesh_bounce_fin(/**/ MeshBB *d);
+// end::mem[]
+
+// tag::int[]
+void mesh_bounce_reini(int n, /**/ MeshBB *d);  // <1>
+void mesh_bounce_find_collisions(float dt, int nm, MeshInfo meshinfo, const Positioncp *i_rr, int3 L,
+                                 const int *starts, const int *counts, const Particle *pp, const Particle *pp0, /**/ MeshBB *d);  // <2>
+void mesh_bounce_select_collisions(int n, /**/ MeshBB *d);  // <3>
+void mesh_bounce_bounce(float dt, float mass, int n, const MeshBB *d, MeshInfo meshinfo,
+                        const Positioncp *i_rr, const Particle *pp0, /**/ Particle *pp, Momentum *mm);  // <4>
+// end::int[]
+
+// tag::collect[]
+void mesh_bounce_collect_rig_momentum(int ns, MeshInfo meshinfo, const Particle *pp, const Momentum *mm, /**/ Rigid *ss); // <1>
+void mesh_bounce_collect_rbc_momentum(float mass, int nc, MeshInfo mi, const Momentum *mm, /**/ Particle *pp);            // <2>
+// end::collect[]
+/* end src/mesh_bounce/imp.h */
 /* begin src/mesh/collision/imp.h */
 struct float3;
 struct Particle;
@@ -87147,7 +107419,75 @@ void sdf_bounce(float dt, const WvelStep*, const Coords*, const Sdf*, int n, /**
 // end::bounce[]
 /* end src/wall/sdf/imp.h */
 
-/* already included: src/sim/opt/imp.h */
+/* begin src/sim/opt/imp.h */
+#pragma once
+
+/* solvent options */
+struct OptFlu {
+    bool colors, ids, ss, push;
+};
+
+/* common parameters for membranes and rigid objects */
+struct OptObj {
+    bool push, bounce;
+    int shifttype;
+    float mass;
+    char templ_file[FILENAME_MAX];
+    char ic_file[FILENAME_MAX];
+    char name[FILENAME_MAX];
+};
+
+/* membrane options */
+struct OptMbr : OptObj {
+    bool ids, stretch, dump_com;
+    int substeps;
+    char stretch_file[FILENAME_MAX];
+};
+
+/* rigid options */
+struct OptRig : OptObj {
+    bool empty_pp;
+};
+
+struct OptWall {
+    bool active;
+};
+
+/* global physical parameters */
+struct OptParams {
+    int3 L;          /* subdomain sizes */
+    float kBT;       /* temperature     */
+    int numdensity;  /* number density  */
+};
+
+struct OptDump {
+    bool       parts,      mesh,      field,      strt, forces;
+    float freq_parts, freq_mesh, freq_field, freq_strt, freq_diag;
+    char strt_base_dump[FILENAME_MAX], strt_base_read[FILENAME_MAX];
+};
+
+struct Opt {
+    OptFlu flu;
+    OptMbr mbr[MAX_MBR_TYPES];
+    OptRig rig[MAX_RIG_TYPES];
+    int nmbr, nrig;
+    OptWall wall;
+    OptParams params;
+    OptDump dump;
+    bool inflow, outflow, denoutflow, vcon;
+    int recolor_freq;
+    int sampler_npdump;
+    int3 sampler_grid_ref;
+    bool restart;
+    bool tracers;
+};
+
+struct Config;
+
+void opt_read(const Config*, Opt*);
+void opt_check(const Opt*);
+long opt_estimate_maxp(const Opt*);
+/* end src/sim/opt/imp.h */
 
 /* begin src/sim/objects/imp.h */
 struct Objects;
@@ -88865,10 +109205,189 @@ void objects_gen_freeze(PFarray *flu, Objects *o) {
 #include <mpi.h>
 #include <vector_types.h>
 
-/* already included: src/inc/conf.h */
-/* already included: src/inc/conf.h */
-/* already included: src/inc/type.h */
-/* already included: src/inc/def.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
+/* begin src/inc/type.h */
+#pragma once
+
+template <typename T, int N>
+struct Sarray { /* [s]tatic array */
+    T d[N];
+};
+
+struct Particle {
+    float r[3], v[3];
+};
+
+struct Rigid {
+    float Iinv[6],            /* moment of inertia            6        */
+        mass,                 /* mass of the solid            7        */
+        com[3],               /* [c]enter [o]f [m]ass         10       */
+        v[3], om[3],          /* linear and angular velocity  13 16    */
+        e0[3], e1[3], e2[3],  /* local referential            19 22 25 */
+        fo[3], to[3],         /* force, torque                28 31    */
+        id;                   /* id of the solid              32       */
+};
+
+struct Force {
+    float f[3];
+};
+
+struct Momentum {
+    float P[3], L[3]; /* linear and angular momentum */
+};
+
+struct Positioncp {
+    float rc[3]; /* current position  */
+    float rp[3]; /* previous position */
+};
+
+typedef Sarray<int, 26>       int26;
+typedef Sarray<int, 27>       int27;
+
+typedef Sarray<int*, 26>     intp26;
+typedef Sarray<Particle*, 26> Pap26;
+typedef Sarray<Force*,    26> Fop26;
+typedef Sarray<Momentum*, 26> Mop26;
+typedef Sarray<Positioncp*, 26> Pocpp26;
+
+/* particles wrap */
+struct PaWrap {
+    int n;
+    const Particle *pp;
+};
+
+/* forces wrap */
+struct FoWrap {
+    int n;
+    Force *ff;
+};
+/* end src/inc/type.h */
+/* begin src/inc/def.h */
+/* solvent colors */
+#define XMACRO_COLOR(_)                         \
+    _(BLUE)                                     \
+    _(RED)
+
+#define ENUM_COLOR(a) a##_COLOR
+#define make_enum_color(a) ENUM_COLOR(a) ,
+#ifndef UDX_DEF_ENUMS_DEFINED
+#define UDX_DEF_ENUMS_DEFINED
+enum {
+    XMACRO_COLOR(make_enum_color)
+    N_COLOR
+};
+#undef make_enum_color
+
+enum {
+    /* wall margins */
+    XWM = 6,
+    YWM = 6,
+    ZWM = 6,
+
+    SAFETY_FACTOR_MAXP = 3,
+
+    /* maximum number of particles per solid */
+    MAX_PSOLID_NUM = 12000,
+
+    /* maximum number of solids per node */
+    MAX_SOLIDS = 100,
+
+    /* maximum number of object types (solid, rbc, ...) */
+    MAX_MBR_TYPES = 2,
+    MAX_RIG_TYPES = 2,
+    MAX_OBJ_TYPES = MAX_MBR_TYPES + MAX_RIG_TYPES,
+
+    /* maximum number density of particles of the objects */
+    MAX_OBJ_DENSITY = 30,
+
+    /* maximum number of red blood cells per node */
+    MAX_CELL_NUM = 1500,
+
+    /* maximum texture size in bytes */
+    MAX_TEXO_SIZE = 100000000,
+
+    /* safety factor for dpd halo interactions */
+    HSAFETY_FACTOR = 10,
+
+    /* safety factor for odist fragments */
+    ODSTR_FACTOR = 3,
+};
+#endif
+
+/* for the spring forces r = min(lmax*RBC_SPRING_CAP, r) */
+#define RBC_SPRING_CAP (0.99)
+/* end src/inc/def.h */
 
 /* begin src/utils/imp.h */
 // tag::mem[]
@@ -89032,9 +109551,88 @@ int status2errcode(MPI_Status *status);
 }
 /* end src/mpi/wrapper.h */
 
-/* already included: src/struct/parray/imp.h */
-/* already included: src/struct/farray/imp.h */
-/* already included: src/struct/pfarrays/imp.h */
+/* begin src/struct/parray/imp.h */
+#pragma once
+
+struct PaArray {
+    bool colors;
+    const float *pp;
+    const int *cc;
+};
+
+struct PaArray_v;
+struct PaCArray_v;
+
+struct Particle;
+
+// tag::push[]
+void parray_push_pp(const Particle *pp, PaArray *a);
+void parray_push_cc(const int *cc, PaArray *a);
+// end::push[]
+
+// tag::get[]
+bool parray_is_colored(const PaArray *a);
+// end::get[]
+
+// tag::view[]
+void parray_get_view(const PaArray *a, PaArray_v *v);  // <1>
+void parray_get_view(const PaArray *a, PaCArray_v *v); // <2>
+// end::view[]
+/* end src/struct/parray/imp.h */
+/* begin src/struct/farray/imp.h */
+#pragma once
+
+struct FoArray {
+    bool stress;
+    float *ff;
+    float *ss; /* stress */
+};
+
+struct FoArray_v;
+struct FoSArray_v;
+
+struct Force;
+
+// tag::push[]
+void farray_push_ff(Force *ff, FoArray *a);
+void farray_push_ss(float *ss, FoArray *a);
+// end::push[]
+
+void farray_clear(FoArray *);
+
+// tag::get[]
+bool farray_has_stress(const FoArray *a);
+// end::get[]
+
+// tag::view[]
+void farray_get_view(const FoArray *a, FoArray_v *v);  // <1>
+void farray_get_view(const FoArray *a, FoSArray_v *v); // <2>
+// end::view[]
+/* end src/struct/farray/imp.h */
+/* begin src/struct/pfarrays/imp.h */
+#pragma once
+
+struct PFarray {
+    PaArray p;
+    FoArray f;
+    long n;
+};
+
+struct PFarrays;
+
+struct PaArray;
+struct FoArray;
+
+void pfarrays_ini(PFarrays**);
+void pfarrays_fin(PFarrays*);
+
+void pfarrays_clear(PFarrays*);
+void pfarrays_push(PFarrays*, long n, PaArray, FoArray);
+void pfarrays_push(PFarrays*, PFarray);
+int  pfarrays_size(const PFarrays*);
+void pfarrays_get(int i, const PFarrays*, long *n, PaArray*, FoArray*);
+void pfarrays_get(int i, const PFarrays*, PFarray*);
+/* end src/struct/pfarrays/imp.h */
 
 /* begin src/pair/imp.h */
 struct PairParams;
@@ -89176,7 +109774,75 @@ void eobj_unpack_ff(EObjUnpackF *u, const EObjPack *p, int nw, /**/ FoWrap *ww);
 // end::unpackback[]
 /* end src/exch/obj/imp.h */
 
-/* already included: src/sim/opt/imp.h */
+/* begin src/sim/opt/imp.h */
+#pragma once
+
+/* solvent options */
+struct OptFlu {
+    bool colors, ids, ss, push;
+};
+
+/* common parameters for membranes and rigid objects */
+struct OptObj {
+    bool push, bounce;
+    int shifttype;
+    float mass;
+    char templ_file[FILENAME_MAX];
+    char ic_file[FILENAME_MAX];
+    char name[FILENAME_MAX];
+};
+
+/* membrane options */
+struct OptMbr : OptObj {
+    bool ids, stretch, dump_com;
+    int substeps;
+    char stretch_file[FILENAME_MAX];
+};
+
+/* rigid options */
+struct OptRig : OptObj {
+    bool empty_pp;
+};
+
+struct OptWall {
+    bool active;
+};
+
+/* global physical parameters */
+struct OptParams {
+    int3 L;          /* subdomain sizes */
+    float kBT;       /* temperature     */
+    int numdensity;  /* number density  */
+};
+
+struct OptDump {
+    bool       parts,      mesh,      field,      strt, forces;
+    float freq_parts, freq_mesh, freq_field, freq_strt, freq_diag;
+    char strt_base_dump[FILENAME_MAX], strt_base_read[FILENAME_MAX];
+};
+
+struct Opt {
+    OptFlu flu;
+    OptMbr mbr[MAX_MBR_TYPES];
+    OptRig rig[MAX_RIG_TYPES];
+    int nmbr, nrig;
+    OptWall wall;
+    OptParams params;
+    OptDump dump;
+    bool inflow, outflow, denoutflow, vcon;
+    int recolor_freq;
+    int sampler_npdump;
+    int3 sampler_grid_ref;
+    bool restart;
+    bool tracers;
+};
+
+struct Config;
+
+void opt_read(const Config*, Opt*);
+void opt_check(const Opt*);
+long opt_estimate_maxp(const Opt*);
+/* end src/sim/opt/imp.h */
 
 /* begin src/sim/objinter/imp.h */
 struct ObjInter;
@@ -89667,7 +110333,61 @@ void obj_inter_forces(ObjInter *oi, const PairParams **fsi_prms, const PairParam
 #include <string.h>
 #include <vector_types.h>
 
-/* already included: src/inc/def.h */
+/* begin src/inc/def.h */
+/* solvent colors */
+#define XMACRO_COLOR(_)                         \
+    _(BLUE)                                     \
+    _(RED)
+
+#define ENUM_COLOR(a) a##_COLOR
+#define make_enum_color(a) ENUM_COLOR(a) ,
+#ifndef UDX_DEF_ENUMS_DEFINED
+#define UDX_DEF_ENUMS_DEFINED
+enum {
+    XMACRO_COLOR(make_enum_color)
+    N_COLOR
+};
+#undef make_enum_color
+
+enum {
+    /* wall margins */
+    XWM = 6,
+    YWM = 6,
+    ZWM = 6,
+
+    SAFETY_FACTOR_MAXP = 3,
+
+    /* maximum number of particles per solid */
+    MAX_PSOLID_NUM = 12000,
+
+    /* maximum number of solids per node */
+    MAX_SOLIDS = 100,
+
+    /* maximum number of object types (solid, rbc, ...) */
+    MAX_MBR_TYPES = 2,
+    MAX_RIG_TYPES = 2,
+    MAX_OBJ_TYPES = MAX_MBR_TYPES + MAX_RIG_TYPES,
+
+    /* maximum number density of particles of the objects */
+    MAX_OBJ_DENSITY = 30,
+
+    /* maximum number of red blood cells per node */
+    MAX_CELL_NUM = 1500,
+
+    /* maximum texture size in bytes */
+    MAX_TEXO_SIZE = 100000000,
+
+    /* safety factor for dpd halo interactions */
+    HSAFETY_FACTOR = 10,
+
+    /* safety factor for odist fragments */
+    ODSTR_FACTOR = 3,
+};
+#endif
+
+/* for the spring forces r = min(lmax*RBC_SPRING_CAP, r) */
+#define RBC_SPRING_CAP (0.99)
+/* end src/inc/def.h */
 
 /* begin src/conf/imp.h */
 struct Config;
@@ -89803,9 +110523,96 @@ const char* get_filename_ext(const char*);
 // end::tools[]
 /* end src/utils/imp.h */
 
-/* already included: src/io/mesh/imp.h */
+/* begin src/io/mesh/imp.h */
+#pragma once
 
-/* already included: src/sim/opt/imp.h */
+struct Coords;
+struct Particle;
+struct int4;
+struct MeshWrite;
+struct MeshRead;
+struct Vectors;
+
+enum {MESH_WRITE_EDGE, MESH_WRITE_CENTER};
+
+void mesh_write_ini(MPI_Comm comm, int shifttype, const int4 *tt, int nv, int nt, const char *directory, /**/ MeshWrite**);
+void mesh_write_ini_from_mesh(MPI_Comm comm, int shifttype, MeshRead*, const char *directory, /**/ MeshWrite**);
+
+void mesh_write_particles(MeshWrite*, MPI_Comm, const Coords*, int nm, const Particle*, int id);
+void mesh_write_vectors(MeshWrite*, MPI_Comm, int nm, Vectors *pos, Vectors *vel, int id);
+
+void mesh_write_fin(MeshWrite*);
+/* end src/io/mesh/imp.h */
+
+/* begin src/sim/opt/imp.h */
+#pragma once
+
+/* solvent options */
+struct OptFlu {
+    bool colors, ids, ss, push;
+};
+
+/* common parameters for membranes and rigid objects */
+struct OptObj {
+    bool push, bounce;
+    int shifttype;
+    float mass;
+    char templ_file[FILENAME_MAX];
+    char ic_file[FILENAME_MAX];
+    char name[FILENAME_MAX];
+};
+
+/* membrane options */
+struct OptMbr : OptObj {
+    bool ids, stretch, dump_com;
+    int substeps;
+    char stretch_file[FILENAME_MAX];
+};
+
+/* rigid options */
+struct OptRig : OptObj {
+    bool empty_pp;
+};
+
+struct OptWall {
+    bool active;
+};
+
+/* global physical parameters */
+struct OptParams {
+    int3 L;          /* subdomain sizes */
+    float kBT;       /* temperature     */
+    int numdensity;  /* number density  */
+};
+
+struct OptDump {
+    bool       parts,      mesh,      field,      strt, forces;
+    float freq_parts, freq_mesh, freq_field, freq_strt, freq_diag;
+    char strt_base_dump[FILENAME_MAX], strt_base_read[FILENAME_MAX];
+};
+
+struct Opt {
+    OptFlu flu;
+    OptMbr mbr[MAX_MBR_TYPES];
+    OptRig rig[MAX_RIG_TYPES];
+    int nmbr, nrig;
+    OptWall wall;
+    OptParams params;
+    OptDump dump;
+    bool inflow, outflow, denoutflow, vcon;
+    int recolor_freq;
+    int sampler_npdump;
+    int3 sampler_grid_ref;
+    bool restart;
+    bool tracers;
+};
+
+struct Config;
+
+void opt_read(const Config*, Opt*);
+void opt_check(const Opt*);
+long opt_estimate_maxp(const Opt*);
+/* end src/sim/opt/imp.h */
 
 static int str2shifttype(const char *type) {
     if      (same_str(type, "edge"  )) return MESH_WRITE_EDGE;
@@ -90298,8 +111105,117 @@ long opt_estimate_maxp(const Opt *o) {
 #include <mpi.h>
 #include <vector_types.h>
 
-/* already included: src/inc/type.h */
-/* already included: src/inc/def.h */
+/* begin src/inc/type.h */
+#pragma once
+
+template <typename T, int N>
+struct Sarray { /* [s]tatic array */
+    T d[N];
+};
+
+struct Particle {
+    float r[3], v[3];
+};
+
+struct Rigid {
+    float Iinv[6],            /* moment of inertia            6        */
+        mass,                 /* mass of the solid            7        */
+        com[3],               /* [c]enter [o]f [m]ass         10       */
+        v[3], om[3],          /* linear and angular velocity  13 16    */
+        e0[3], e1[3], e2[3],  /* local referential            19 22 25 */
+        fo[3], to[3],         /* force, torque                28 31    */
+        id;                   /* id of the solid              32       */
+};
+
+struct Force {
+    float f[3];
+};
+
+struct Momentum {
+    float P[3], L[3]; /* linear and angular momentum */
+};
+
+struct Positioncp {
+    float rc[3]; /* current position  */
+    float rp[3]; /* previous position */
+};
+
+typedef Sarray<int, 26>       int26;
+typedef Sarray<int, 27>       int27;
+
+typedef Sarray<int*, 26>     intp26;
+typedef Sarray<Particle*, 26> Pap26;
+typedef Sarray<Force*,    26> Fop26;
+typedef Sarray<Momentum*, 26> Mop26;
+typedef Sarray<Positioncp*, 26> Pocpp26;
+
+/* particles wrap */
+struct PaWrap {
+    int n;
+    const Particle *pp;
+};
+
+/* forces wrap */
+struct FoWrap {
+    int n;
+    Force *ff;
+};
+/* end src/inc/type.h */
+/* begin src/inc/def.h */
+/* solvent colors */
+#define XMACRO_COLOR(_)                         \
+    _(BLUE)                                     \
+    _(RED)
+
+#define ENUM_COLOR(a) a##_COLOR
+#define make_enum_color(a) ENUM_COLOR(a) ,
+#ifndef UDX_DEF_ENUMS_DEFINED
+#define UDX_DEF_ENUMS_DEFINED
+enum {
+    XMACRO_COLOR(make_enum_color)
+    N_COLOR
+};
+#undef make_enum_color
+
+enum {
+    /* wall margins */
+    XWM = 6,
+    YWM = 6,
+    ZWM = 6,
+
+    SAFETY_FACTOR_MAXP = 3,
+
+    /* maximum number of particles per solid */
+    MAX_PSOLID_NUM = 12000,
+
+    /* maximum number of solids per node */
+    MAX_SOLIDS = 100,
+
+    /* maximum number of object types (solid, rbc, ...) */
+    MAX_MBR_TYPES = 2,
+    MAX_RIG_TYPES = 2,
+    MAX_OBJ_TYPES = MAX_MBR_TYPES + MAX_RIG_TYPES,
+
+    /* maximum number density of particles of the objects */
+    MAX_OBJ_DENSITY = 30,
+
+    /* maximum number of red blood cells per node */
+    MAX_CELL_NUM = 1500,
+
+    /* maximum texture size in bytes */
+    MAX_TEXO_SIZE = 100000000,
+
+    /* safety factor for dpd halo interactions */
+    HSAFETY_FACTOR = 10,
+
+    /* safety factor for odist fragments */
+    ODSTR_FACTOR = 3,
+};
+#endif
+
+/* for the spring forces r = min(lmax*RBC_SPRING_CAP, r) */
+#define RBC_SPRING_CAP (0.99)
+/* end src/inc/def.h */
 
 /* begin src/utils/error.h */
 #define ERR(fmt, ...)  do {                                     \
@@ -90436,9 +111352,88 @@ int status2errcode(MPI_Status *status);
 }
 /* end src/mpi/wrapper.h */
 
-/* already included: src/struct/parray/imp.h */
-/* already included: src/struct/farray/imp.h */
-/* already included: src/struct/pfarrays/imp.h */
+/* begin src/struct/parray/imp.h */
+#pragma once
+
+struct PaArray {
+    bool colors;
+    const float *pp;
+    const int *cc;
+};
+
+struct PaArray_v;
+struct PaCArray_v;
+
+struct Particle;
+
+// tag::push[]
+void parray_push_pp(const Particle *pp, PaArray *a);
+void parray_push_cc(const int *cc, PaArray *a);
+// end::push[]
+
+// tag::get[]
+bool parray_is_colored(const PaArray *a);
+// end::get[]
+
+// tag::view[]
+void parray_get_view(const PaArray *a, PaArray_v *v);  // <1>
+void parray_get_view(const PaArray *a, PaCArray_v *v); // <2>
+// end::view[]
+/* end src/struct/parray/imp.h */
+/* begin src/struct/farray/imp.h */
+#pragma once
+
+struct FoArray {
+    bool stress;
+    float *ff;
+    float *ss; /* stress */
+};
+
+struct FoArray_v;
+struct FoSArray_v;
+
+struct Force;
+
+// tag::push[]
+void farray_push_ff(Force *ff, FoArray *a);
+void farray_push_ss(float *ss, FoArray *a);
+// end::push[]
+
+void farray_clear(FoArray *);
+
+// tag::get[]
+bool farray_has_stress(const FoArray *a);
+// end::get[]
+
+// tag::view[]
+void farray_get_view(const FoArray *a, FoArray_v *v);  // <1>
+void farray_get_view(const FoArray *a, FoSArray_v *v); // <2>
+// end::view[]
+/* end src/struct/farray/imp.h */
+/* begin src/struct/pfarrays/imp.h */
+#pragma once
+
+struct PFarray {
+    PaArray p;
+    FoArray f;
+    long n;
+};
+
+struct PFarrays;
+
+struct PaArray;
+struct FoArray;
+
+void pfarrays_ini(PFarrays**);
+void pfarrays_fin(PFarrays*);
+
+void pfarrays_clear(PFarrays*);
+void pfarrays_push(PFarrays*, long n, PaArray, FoArray);
+void pfarrays_push(PFarrays*, PFarray);
+int  pfarrays_size(const PFarrays*);
+void pfarrays_get(int i, const PFarrays*, long *n, PaArray*, FoArray*);
+void pfarrays_get(int i, const PFarrays*, PFarray*);
+/* end src/struct/pfarrays/imp.h */
 
 /* begin src/wall/sdf/imp.h */
 struct Sdf;
@@ -90523,9 +111518,135 @@ void wvel_get_view(const WvelStep *w, /**/ WvelShear_v *v);
 void wvel_get_view(const WvelStep *w, /**/ WvelHS_v *v);
 // end::view[]
 /* end src/wall/wvel/imp.h */
-/* already included: src/wall/imp.h */
+/* begin src/wall/imp.h */
+#pragma once
 
-/* already included: src/sim/opt/imp.h */
+struct PairParams;
+struct PaArray;
+struct FoArray;
+struct WvelStep;
+struct Coords;
+struct Sdf;
+struct int3;
+struct float4;
+struct Config;
+
+// tag::struct[]
+struct WallQuants {
+    float4 *pp; /* particle positions xyzo xyzo ... */
+    int n;      /* number of particles              */
+    int3 L;     /* subdomain size                   */
+};
+
+struct WallTicket;
+struct WallRepulsePrm;
+
+// end::struct[]
+
+// tag::mem[]
+void wall_ini_quants(int3 L, WallQuants*);
+void wall_ini_ticket(int3 L, WallTicket**);
+
+void wall_fin_quants(WallQuants*);
+void wall_fin_ticket(WallTicket*);
+// end::mem[]
+
+// tag::gen[]
+void wall_gen_quants(MPI_Comm, int numdensity, int maxn, const Sdf*, /* io */ int *o_n, Particle *o_pp, /**/ WallQuants*); // <1>
+void wall_gen_ticket(const WallQuants*, WallTicket*); // <2>
+// end::gen[]
+
+// tag::start[]
+void wall_strt_quants(MPI_Comm, const char *base, int maxn, WallQuants*); // <1>
+void wall_strt_dump_templ(MPI_Comm, const char *base, const WallQuants*); // <2>
+// end::start[]
+
+// tag::int[]
+void wall_force(const PairParams*, const WvelStep *, const Coords*, const Sdf*, const WallQuants*,
+                const WallTicket*, int n, const PaArray*, const FoArray*); // <1>
+
+void wall_force_adhesion(const PairParams*, const WvelStep *, const Coords*, const Sdf*, const WallQuants*,
+                         const WallTicket*, int n, const PaArray*, const FoArray*); // <2>
+
+void wall_repulse(const Sdf*, const WallRepulsePrm*, long n, const PaArray*, const FoArray*); // <3>
+// end::int[]
+
+// tag::repulse[]
+void wall_repulse_prm_ini(float lambda, WallRepulsePrm**); // <1>
+void wall_repulse_prm_ini_conf(const Config*, const char *ns, WallRepulsePrm**); // <2>
+void wall_repulse_prm_fin(WallRepulsePrm*); // <3>
+// end::repulse[]
+/* end src/wall/imp.h */
+
+/* begin src/sim/opt/imp.h */
+#pragma once
+
+/* solvent options */
+struct OptFlu {
+    bool colors, ids, ss, push;
+};
+
+/* common parameters for membranes and rigid objects */
+struct OptObj {
+    bool push, bounce;
+    int shifttype;
+    float mass;
+    char templ_file[FILENAME_MAX];
+    char ic_file[FILENAME_MAX];
+    char name[FILENAME_MAX];
+};
+
+/* membrane options */
+struct OptMbr : OptObj {
+    bool ids, stretch, dump_com;
+    int substeps;
+    char stretch_file[FILENAME_MAX];
+};
+
+/* rigid options */
+struct OptRig : OptObj {
+    bool empty_pp;
+};
+
+struct OptWall {
+    bool active;
+};
+
+/* global physical parameters */
+struct OptParams {
+    int3 L;          /* subdomain sizes */
+    float kBT;       /* temperature     */
+    int numdensity;  /* number density  */
+};
+
+struct OptDump {
+    bool       parts,      mesh,      field,      strt, forces;
+    float freq_parts, freq_mesh, freq_field, freq_strt, freq_diag;
+    char strt_base_dump[FILENAME_MAX], strt_base_read[FILENAME_MAX];
+};
+
+struct Opt {
+    OptFlu flu;
+    OptMbr mbr[MAX_MBR_TYPES];
+    OptRig rig[MAX_RIG_TYPES];
+    int nmbr, nrig;
+    OptWall wall;
+    OptParams params;
+    OptDump dump;
+    bool inflow, outflow, denoutflow, vcon;
+    int recolor_freq;
+    int sampler_npdump;
+    int3 sampler_grid_ref;
+    bool restart;
+    bool tracers;
+};
+
+struct Config;
+
+void opt_read(const Config*, Opt*);
+void opt_check(const Opt*);
+long opt_estimate_maxp(const Opt*);
+/* end src/sim/opt/imp.h */
 
 /* begin src/sim/walls/imp.h */
 struct Wall;
@@ -91022,9 +112143,49 @@ void wall_update_vel(float t, Wall *w) {
 /* begin src/struct/farray/imp.cpp */
 #include <stdio.h>
 
-/* already included: src/struct/farray/imp.h */
+/* begin src/struct/farray/imp.h */
+#pragma once
 
-/* already included: src/struct/farray/type.h */
+struct FoArray {
+    bool stress;
+    float *ff;
+    float *ss; /* stress */
+};
+
+struct FoArray_v;
+struct FoSArray_v;
+
+struct Force;
+
+// tag::push[]
+void farray_push_ff(Force *ff, FoArray *a);
+void farray_push_ss(float *ss, FoArray *a);
+// end::push[]
+
+void farray_clear(FoArray *);
+
+// tag::get[]
+bool farray_has_stress(const FoArray *a);
+// end::get[]
+
+// tag::view[]
+void farray_get_view(const FoArray *a, FoArray_v *v);  // <1>
+void farray_get_view(const FoArray *a, FoSArray_v *v); // <2>
+// end::view[]
+/* end src/struct/farray/imp.h */
+
+/* begin src/struct/farray/type.h */
+#pragma once
+
+struct FoArray_v {
+    float *ff;
+};
+
+struct FoSArray_v {
+    float *ff;
+    float *ss;
+};
+/* end src/struct/farray/type.h */
 /* begin src/struct/farray/imp/main.h */
 void farray_push_ff(Force *ff, FoArray *a) {
     a->ff = (float*) ff;
@@ -91353,9 +112514,47 @@ void farray_get_view(const FoArray *a, FoSArray_v *v) {
 /* begin src/struct/parray/imp.cpp */
 #include <stdio.h>
 
-/* already included: src/struct/parray/imp.h */
+/* begin src/struct/parray/imp.h */
+#pragma once
 
-/* already included: src/struct/parray/type.h */
+struct PaArray {
+    bool colors;
+    const float *pp;
+    const int *cc;
+};
+
+struct PaArray_v;
+struct PaCArray_v;
+
+struct Particle;
+
+// tag::push[]
+void parray_push_pp(const Particle *pp, PaArray *a);
+void parray_push_cc(const int *cc, PaArray *a);
+// end::push[]
+
+// tag::get[]
+bool parray_is_colored(const PaArray *a);
+// end::get[]
+
+// tag::view[]
+void parray_get_view(const PaArray *a, PaArray_v *v);  // <1>
+void parray_get_view(const PaArray *a, PaCArray_v *v); // <2>
+// end::view[]
+/* end src/struct/parray/imp.h */
+
+/* begin src/struct/parray/type.h */
+#pragma once
+
+struct PaArray_v {
+    const float *pp;
+};
+
+struct PaCArray_v {
+    const float *pp;
+    const int *cc;   /* colors */
+};
+/* end src/struct/parray/type.h */
 /* begin src/struct/parray/imp/main.h */
 void parray_push_pp(const Particle *pp, PaArray *a) {
     a->pp = (const float*)pp;
@@ -91752,12 +112951,146 @@ const char* get_filename_ext(const char*);
 // end::tools[]
 /* end src/utils/imp.h */
 
-/* already included: src/inc/type.h */
+/* begin src/inc/type.h */
+#pragma once
 
-/* already included: src/struct/parray/imp.h */
-/* already included: src/struct/farray/imp.h */
+template <typename T, int N>
+struct Sarray { /* [s]tatic array */
+    T d[N];
+};
 
-/* already included: src/struct/pfarrays/imp.h */
+struct Particle {
+    float r[3], v[3];
+};
+
+struct Rigid {
+    float Iinv[6],            /* moment of inertia            6        */
+        mass,                 /* mass of the solid            7        */
+        com[3],               /* [c]enter [o]f [m]ass         10       */
+        v[3], om[3],          /* linear and angular velocity  13 16    */
+        e0[3], e1[3], e2[3],  /* local referential            19 22 25 */
+        fo[3], to[3],         /* force, torque                28 31    */
+        id;                   /* id of the solid              32       */
+};
+
+struct Force {
+    float f[3];
+};
+
+struct Momentum {
+    float P[3], L[3]; /* linear and angular momentum */
+};
+
+struct Positioncp {
+    float rc[3]; /* current position  */
+    float rp[3]; /* previous position */
+};
+
+typedef Sarray<int, 26>       int26;
+typedef Sarray<int, 27>       int27;
+
+typedef Sarray<int*, 26>     intp26;
+typedef Sarray<Particle*, 26> Pap26;
+typedef Sarray<Force*,    26> Fop26;
+typedef Sarray<Momentum*, 26> Mop26;
+typedef Sarray<Positioncp*, 26> Pocpp26;
+
+/* particles wrap */
+struct PaWrap {
+    int n;
+    const Particle *pp;
+};
+
+/* forces wrap */
+struct FoWrap {
+    int n;
+    Force *ff;
+};
+/* end src/inc/type.h */
+
+/* begin src/struct/parray/imp.h */
+#pragma once
+
+struct PaArray {
+    bool colors;
+    const float *pp;
+    const int *cc;
+};
+
+struct PaArray_v;
+struct PaCArray_v;
+
+struct Particle;
+
+// tag::push[]
+void parray_push_pp(const Particle *pp, PaArray *a);
+void parray_push_cc(const int *cc, PaArray *a);
+// end::push[]
+
+// tag::get[]
+bool parray_is_colored(const PaArray *a);
+// end::get[]
+
+// tag::view[]
+void parray_get_view(const PaArray *a, PaArray_v *v);  // <1>
+void parray_get_view(const PaArray *a, PaCArray_v *v); // <2>
+// end::view[]
+/* end src/struct/parray/imp.h */
+/* begin src/struct/farray/imp.h */
+#pragma once
+
+struct FoArray {
+    bool stress;
+    float *ff;
+    float *ss; /* stress */
+};
+
+struct FoArray_v;
+struct FoSArray_v;
+
+struct Force;
+
+// tag::push[]
+void farray_push_ff(Force *ff, FoArray *a);
+void farray_push_ss(float *ss, FoArray *a);
+// end::push[]
+
+void farray_clear(FoArray *);
+
+// tag::get[]
+bool farray_has_stress(const FoArray *a);
+// end::get[]
+
+// tag::view[]
+void farray_get_view(const FoArray *a, FoArray_v *v);  // <1>
+void farray_get_view(const FoArray *a, FoSArray_v *v); // <2>
+// end::view[]
+/* end src/struct/farray/imp.h */
+
+/* begin src/struct/pfarrays/imp.h */
+#pragma once
+
+struct PFarray {
+    PaArray p;
+    FoArray f;
+    long n;
+};
+
+struct PFarrays;
+
+struct PaArray;
+struct FoArray;
+
+void pfarrays_ini(PFarrays**);
+void pfarrays_fin(PFarrays*);
+
+void pfarrays_clear(PFarrays*);
+void pfarrays_push(PFarrays*, long n, PaArray, FoArray);
+void pfarrays_push(PFarrays*, PFarray);
+int  pfarrays_size(const PFarrays*);
+void pfarrays_get(int i, const PFarrays*, long *n, PaArray*, FoArray*);
+void pfarrays_get(int i, const PFarrays*, PFarray*);
+/* end src/struct/pfarrays/imp.h */
 /* begin src/struct/pfarrays/imp/type.h */
 enum {
     MAX_SIZE = 10
@@ -92120,8 +113453,78 @@ void pfarrays_get(int i, const PFarrays *pp, PFarray *p) {
 /* begin src/utils/cc.cpp */
 #include <stdio.h>
 
-/* already included: src/inc/conf.h */
-/* already included: src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
 
 /* begin src/utils/error.h */
 #define ERR(fmt, ...)  do {                                     \
@@ -92164,7 +113567,38 @@ void error_abort();
 
 void error_print_stack();
 /* end src/utils/error.h */
-/* already included: src/d/api.h */
+/* begin src/d/api.h */
+#pragma once
+
+namespace d {  /* a wrapper for device API */
+typedef int Stream_t; /* TODO: streams are not supported */
+enum {MemcpyHostToHost, MemcpyHostToDevice,
+      MemcpyDeviceToHost, MemcpyDeviceToDevice,
+      MemcpyDefault};
+
+// tag::more[]
+const char *emsg();
+int alloc_pinned(void **pHost, size_t size);
+int is_device_pointer(const void *ptr);
+// end::more[]
+
+// tag::api[]
+int GetSymbolAddress(void **devPtr, const void *symbol);
+int Malloc(void **p, size_t);
+int MemcpyToSymbol(const void *symbol, const void *src, size_t count, size_t offset=0, int kind=MemcpyHostToDevice);
+int MemcpyFromSymbol(void *dst, const void *symbol, size_t count, size_t offset=0, int kind=MemcpyDeviceToHost);
+int HostGetDevicePointer(void **pDevice, void *pHost, unsigned int flags);
+int Memcpy (void *dst, const void *src, size_t count, int kind);
+int MemsetAsync (void *devPtr, int value, size_t count, Stream_t stream=0);
+int Memset (void *devPtr, int value, size_t count);
+int MemcpyAsync (void * dst, const void * src, size_t count, int kind, Stream_t stream = 0);
+int Free (void *devPtr);
+int FreeHost (void *hstPtr);
+int DeviceSynchronize (void);
+int PeekAtLastError(void);
+// end::api[]
+}
+/* end src/d/api.h */
 
 /* begin src/utils/cc/common.h */
 namespace cc {
@@ -93395,8 +114829,78 @@ const char* get_filename_ext(const char *filename) {
 #include <stdio.h>
 #include <mpi.h>
 
-/* already included: src/inc/conf.h */
-/* already included: src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
 
 /* begin src/mpi/wrapper.h */
 namespace m {
@@ -95348,14 +116852,303 @@ int string_nword(const char *s) {
 
 #include <vector_types.h>
 
-/* already included: src/inc/conf.h */
-/* already included: src/inc/conf.h */
-/* already included: src/inc/def.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
 
-/* already included: src/frag/imp.h */
-/* already included: src/comm/imp.h */
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
 
-/* already included: src/inc/type.h */
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
+/* begin src/inc/def.h */
+/* solvent colors */
+#define XMACRO_COLOR(_)                         \
+    _(BLUE)                                     \
+    _(RED)
+
+#define ENUM_COLOR(a) a##_COLOR
+#define make_enum_color(a) ENUM_COLOR(a) ,
+#ifndef UDX_DEF_ENUMS_DEFINED
+#define UDX_DEF_ENUMS_DEFINED
+enum {
+    XMACRO_COLOR(make_enum_color)
+    N_COLOR
+};
+#undef make_enum_color
+
+enum {
+    /* wall margins */
+    XWM = 6,
+    YWM = 6,
+    ZWM = 6,
+
+    SAFETY_FACTOR_MAXP = 3,
+
+    /* maximum number of particles per solid */
+    MAX_PSOLID_NUM = 12000,
+
+    /* maximum number of solids per node */
+    MAX_SOLIDS = 100,
+
+    /* maximum number of object types (solid, rbc, ...) */
+    MAX_MBR_TYPES = 2,
+    MAX_RIG_TYPES = 2,
+    MAX_OBJ_TYPES = MAX_MBR_TYPES + MAX_RIG_TYPES,
+
+    /* maximum number density of particles of the objects */
+    MAX_OBJ_DENSITY = 30,
+
+    /* maximum number of red blood cells per node */
+    MAX_CELL_NUM = 1500,
+
+    /* maximum texture size in bytes */
+    MAX_TEXO_SIZE = 100000000,
+
+    /* safety factor for dpd halo interactions */
+    HSAFETY_FACTOR = 10,
+
+    /* safety factor for odist fragments */
+    ODSTR_FACTOR = 3,
+};
+#endif
+
+/* for the spring forces r = min(lmax*RBC_SPRING_CAP, r) */
+#define RBC_SPRING_CAP (0.99)
+/* end src/inc/def.h */
+
+/* begin src/frag/imp.h */
+#pragma once
+
+enum {frag_bulk = 26};
+
+struct int3;
+
+namespace frag_hst {
+
+// tag::i2d[]
+int i2dx(int i);                 // <1>
+int i2dy(int i);                 // <2>
+int i2dz(int i);                 // <3>
+void i2d3(int i, /**/ int d[3]); // <4>
+// end::i2d[]
+
+// tag::d2i[]
+int d2i(int x, int y, int z); // <1>
+int d32i(const int d[3]);     // <2>
+// end::d2i[]
+
+// tag::ncell[]
+int ncell(int3 L, int i); // <1>
+// end::ncell[]
+
+// tag::anti[]
+int antid2i(int x, int y, int z); // <1>
+int anti(int i);                  // <2>
+// end::anti[]
+
+// tag::hst[]
+void estimates(int3 L, int nfrags, float maxd, /**/ int *cap); // <1>
+// end::hst[]
+
+} // frag_hst
+/* end src/frag/imp.h */
+/* begin src/comm/imp.h */
+#pragma once
+
+typedef unsigned char data_t;
+
+enum {
+    NFRAGS = 26, /* number of fragments for one halo */
+    BULK   = 26, /* bulk id                          */
+    NBAGS  = 27, /* fragments + bulk                 */
+};
+
+/* Allocation mod for bags */
+enum AllocMod {
+    // tag::AllocMod[]
+    HST_ONLY,   /* only host bags allocated                 */
+    DEV_ONLY,   /* only device bags allocated               */
+    PINNED,     /* both host and device pinned              */
+    PINNED_HST, /* host pinned; no device memory            */
+    PINNED_DEV, /* host pinned; device global memory on gpu */
+    NONE        /* no allocation                            */
+    // end::AllocMod[]
+};
+
+// tag::dBags[]
+struct dBags {
+    data_t *data[NBAGS]; /* data on the device         */
+};
+// end::dBags[]
+
+// tag::hBags[]
+struct hBags {
+    data_t *data[NBAGS]; /* data on the host                    */
+    int         *counts; /* size of the data                    */
+    int capacity[NBAGS]; /* capacity of each frag (elem number) */
+    size_t bsize;        /* size of one datum in bytes          */
+};
+// end::hBags[]
+
+struct Comm;
+struct CommBuffer;
+
+// tag::alloc[]
+void comm_bags_ini(AllocMod fmod, AllocMod bmod, size_t bsize, const int capacity[NBAGS], /**/ hBags *hb, dBags *db);
+void comm_bags_fin(AllocMod fmod, AllocMod bmod, /**/ hBags *hb, dBags *db);
+void comm_ini(MPI_Comm cart, /**/ Comm **c);
+void comm_fin(/**/ Comm *c);
+void comm_buffer_ini(int nbags, const hBags *hbb, CommBuffer**);
+void comm_buffer_fin(CommBuffer*);
+// end::alloc[]
+
+
+void comm_buffer_set(int nbags, const hBags*, CommBuffer*);
+void comm_buffer_get(const CommBuffer*, int nbags, hBags*);
+
+// tag::communication[]
+void comm_post_recv(hBags *b, Comm *c);           // <1>
+void comm_post_send(const hBags *b, Comm *c);     // <2>
+
+void comm_wait_recv(Comm *c, /**/ hBags *b);      // <3>
+void comm_wait_send(Comm *c);                     // <4>
+// end::communication[]
+
+// tag::communication_b[]
+void comm_post_recv(CommBuffer *cb, Comm *c);
+void comm_post_send(const CommBuffer *cb, Comm *c);
+
+void comm_wait_recv(Comm *c, /**/ CommBuffer *cb);
+void comm_wait_send(Comm *c);
+// end::communication_b[]
+
+// tag::get[]
+int    comm_get_number_capacity(int i, const hBags *b); // <1>
+size_t comm_get_byte_capacity(int i, const hBags *b);   // <2>
+// end::get[]
+
+/* end src/comm/imp.h */
+
+/* begin src/inc/type.h */
+#pragma once
+
+template <typename T, int N>
+struct Sarray { /* [s]tatic array */
+    T d[N];
+};
+
+struct Particle {
+    float r[3], v[3];
+};
+
+struct Rigid {
+    float Iinv[6],            /* moment of inertia            6        */
+        mass,                 /* mass of the solid            7        */
+        com[3],               /* [c]enter [o]f [m]ass         10       */
+        v[3], om[3],          /* linear and angular velocity  13 16    */
+        e0[3], e1[3], e2[3],  /* local referential            19 22 25 */
+        fo[3], to[3],         /* force, torque                28 31    */
+        id;                   /* id of the solid              32       */
+};
+
+struct Force {
+    float f[3];
+};
+
+struct Momentum {
+    float P[3], L[3]; /* linear and angular momentum */
+};
+
+struct Positioncp {
+    float rc[3]; /* current position  */
+    float rp[3]; /* previous position */
+};
+
+typedef Sarray<int, 26>       int26;
+typedef Sarray<int, 27>       int27;
+
+typedef Sarray<int*, 26>     intp26;
+typedef Sarray<Particle*, 26> Pap26;
+typedef Sarray<Force*,    26> Fop26;
+typedef Sarray<Momentum*, 26> Mop26;
+typedef Sarray<Positioncp*, 26> Pocpp26;
+
+/* particles wrap */
+struct PaWrap {
+    int n;
+    const Particle *pp;
+};
+
+/* forces wrap */
+struct FoWrap {
+    int n;
+    Force *ff;
+};
+/* end src/inc/type.h */
 
 /* begin src/utils/error.h */
 #define ERR(fmt, ...)  do {                                     \
@@ -95815,10 +117608,134 @@ void wall_exch_pp(MPI_Comm cart, int numdensity, int3 L, int maxn, /*io*/ Partic
 #include <stdio.h>
 #include <assert.h>
 
-/* already included: src/inc/conf.h */
-/* already included: src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
 
-/* already included: src/inc/def.h */
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
+
+/* begin src/inc/def.h */
+/* solvent colors */
+#define XMACRO_COLOR(_)                         \
+    _(BLUE)                                     \
+    _(RED)
+
+#define ENUM_COLOR(a) a##_COLOR
+#define make_enum_color(a) ENUM_COLOR(a) ,
+#ifndef UDX_DEF_ENUMS_DEFINED
+#define UDX_DEF_ENUMS_DEFINED
+enum {
+    XMACRO_COLOR(make_enum_color)
+    N_COLOR
+};
+#undef make_enum_color
+
+enum {
+    /* wall margins */
+    XWM = 6,
+    YWM = 6,
+    ZWM = 6,
+
+    SAFETY_FACTOR_MAXP = 3,
+
+    /* maximum number of particles per solid */
+    MAX_PSOLID_NUM = 12000,
+
+    /* maximum number of solids per node */
+    MAX_SOLIDS = 100,
+
+    /* maximum number of object types (solid, rbc, ...) */
+    MAX_MBR_TYPES = 2,
+    MAX_RIG_TYPES = 2,
+    MAX_OBJ_TYPES = MAX_MBR_TYPES + MAX_RIG_TYPES,
+
+    /* maximum number density of particles of the objects */
+    MAX_OBJ_DENSITY = 30,
+
+    /* maximum number of red blood cells per node */
+    MAX_CELL_NUM = 1500,
+
+    /* maximum texture size in bytes */
+    MAX_TEXO_SIZE = 100000000,
+
+    /* safety factor for dpd halo interactions */
+    HSAFETY_FACTOR = 10,
+
+    /* safety factor for odist fragments */
+    ODSTR_FACTOR = 3,
+};
+#endif
+
+/* for the spring forces r = min(lmax*RBC_SPRING_CAP, r) */
+#define RBC_SPRING_CAP (0.99)
+/* end src/inc/def.h */
 /* begin src/utils/msg.h */
 // tag::int[]
 void msg_ini(int rank); // <1>
@@ -95867,7 +117784,38 @@ void error_abort();
 void error_print_stack();
 /* end src/utils/error.h */
 
-/* already included: src/d/api.h */
+/* begin src/d/api.h */
+#pragma once
+
+namespace d {  /* a wrapper for device API */
+typedef int Stream_t; /* TODO: streams are not supported */
+enum {MemcpyHostToHost, MemcpyHostToDevice,
+      MemcpyDeviceToHost, MemcpyDeviceToDevice,
+      MemcpyDefault};
+
+// tag::more[]
+const char *emsg();
+int alloc_pinned(void **pHost, size_t size);
+int is_device_pointer(const void *ptr);
+// end::more[]
+
+// tag::api[]
+int GetSymbolAddress(void **devPtr, const void *symbol);
+int Malloc(void **p, size_t);
+int MemcpyToSymbol(const void *symbol, const void *src, size_t count, size_t offset=0, int kind=MemcpyHostToDevice);
+int MemcpyFromSymbol(void *dst, const void *symbol, size_t count, size_t offset=0, int kind=MemcpyDeviceToHost);
+int HostGetDevicePointer(void **pDevice, void *pHost, unsigned int flags);
+int Memcpy (void *dst, const void *src, size_t count, int kind);
+int MemsetAsync (void *devPtr, int value, size_t count, Stream_t stream=0);
+int Memset (void *devPtr, int value, size_t count);
+int MemcpyAsync (void * dst, const void * src, size_t count, int kind, Stream_t stream = 0);
+int Free (void *devPtr);
+int FreeHost (void *hstPtr);
+int DeviceSynchronize (void);
+int PeekAtLastError(void);
+// end::api[]
+}
+/* end src/d/api.h */
 /* begin src/d/q.h */
 /* function and variable type [q]ualifiers */
 
@@ -96019,7 +117967,62 @@ void check(int rc, const char *file, int line);
 /* TODO: header includes header */
 /* end src/utils/cc.h */
 
-/* already included: src/inc/type.h */
+/* begin src/inc/type.h */
+#pragma once
+
+template <typename T, int N>
+struct Sarray { /* [s]tatic array */
+    T d[N];
+};
+
+struct Particle {
+    float r[3], v[3];
+};
+
+struct Rigid {
+    float Iinv[6],            /* moment of inertia            6        */
+        mass,                 /* mass of the solid            7        */
+        com[3],               /* [c]enter [o]f [m]ass         10       */
+        v[3], om[3],          /* linear and angular velocity  13 16    */
+        e0[3], e1[3], e2[3],  /* local referential            19 22 25 */
+        fo[3], to[3],         /* force, torque                28 31    */
+        id;                   /* id of the solid              32       */
+};
+
+struct Force {
+    float f[3];
+};
+
+struct Momentum {
+    float P[3], L[3]; /* linear and angular momentum */
+};
+
+struct Positioncp {
+    float rc[3]; /* current position  */
+    float rp[3]; /* previous position */
+};
+
+typedef Sarray<int, 26>       int26;
+typedef Sarray<int, 27>       int27;
+
+typedef Sarray<int*, 26>     intp26;
+typedef Sarray<Particle*, 26> Pap26;
+typedef Sarray<Force*,    26> Fop26;
+typedef Sarray<Momentum*, 26> Mop26;
+typedef Sarray<Positioncp*, 26> Pocpp26;
+
+/* particles wrap */
+struct PaWrap {
+    int n;
+    const Particle *pp;
+};
+
+/* forces wrap */
+struct FoWrap {
+    int n;
+    Force *ff;
+};
+/* end src/inc/type.h */
 /* begin src/inc/dev.h */
 /* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
@@ -96059,8 +118062,65 @@ void check(int rc, const char *file, int line);
 #define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
 #define DzeroA(P, n)   DsetA(P, 0, n)
 /* end src/inc/dev.h */
-/* already included: src/utils/texo.h */
-/* already included: src/utils/texo.dev.h */
+/* begin src/utils/texo.h */
+#pragma once
+
+/* 1D texture object template */
+static void sz_check(int n) {
+    if (n <            0 ) ERR("too small texo: %d", n);
+    if (n > MAX_TEXO_SIZE) ERR("too big texo: %d > %d", n, MAX_TEXO_SIZE);
+}
+
+// tag::struct[]
+template<typename T>
+struct Texo {
+    cudaTextureObject_t d;
+};
+// end::struct[]
+
+template<typename T>
+// tag::int[]
+void texo_setup(int n, T *data, /**/ Texo<T> *to)
+// end::int[]
+{
+    sz_check(n);
+
+    cudaResourceDesc resD;
+    cudaTextureDesc  texD;
+
+    memset(&resD, 0, sizeof(resD));
+    resD.resType = cudaResourceTypeLinear;
+    resD.res.linear.devPtr = data;
+    resD.res.linear.sizeInBytes = n * sizeof(T);
+    resD.res.linear.desc = cudaCreateChannelDesc<T>();
+
+    memset(&texD, 0, sizeof(texD));
+    texD.normalizedCoords = 0;
+    texD.readMode = cudaReadModeElementType;
+
+    CC(cudaCreateTextureObject(&to->d, &resD, &texD, NULL));
+}
+
+template<typename T>
+// tag::int[]
+void texo_destroy(/**/ Texo<T> *to)
+// end::int[]
+{
+    CC(cudaDestroyTextureObject(to->d));
+}
+/* end src/utils/texo.h */
+/* begin src/utils/texo.dev.h */
+#pragma once
+
+template<typename T>
+__device__ __forceinline__
+// tag::int[]
+const T texo_fetch(const Texo<T> t, const int i)
+// end::int[]
+{
+    return Tfetch(T, t.d, i);
+}
+/* end src/utils/texo.dev.h */
 
 /* begin src/math/rnd/imp.h */
 // tag::interface[]
@@ -96070,11 +118130,256 @@ void rnd_fin(RNDunif *r);                                   // <3>
 float rnd_get(RNDunif *r);                                  // <4>
 // end::interface[]
 /* end src/math/rnd/imp.h */
-/* already included: src/math/rnd/dev.h */
-/* already included: src/math/dev.h */
+/* begin src/math/rnd/dev.h */
+#pragma once
 
-/* already included: src/coords/type.h */
-/* already included: src/coords/dev.h */
+namespace rnd {
+/* random number from the ArcSine distribution on [-sqrt(2),sqrt(2)]
+   mean = 0, variance = 1 */
+
+// passes of logistic map
+static __const__ int N = 18;
+// spacing coefficints for low discrepancy numbers
+static __const__ float gold   = 0.6180339887498948482;
+static __const__ float silver = 0.4142135623730950488;
+static __const__ float bronze = 0.00008877875787352212838853023;
+static __const__ float tin    = 0.00004602357186447026756768986;
+static __const__ float sqrt2 = 1.41421356237309514547;
+
+/************************* Trunk generator ***********************
+ * Make one global random number per each timestep
+ * cite G. Marsaglia
+ * passes BigCrush
+ *****************************************************************/
+
+/************************* Branch generator **********************
+ * Make one random number per pair of particles per timestep
+ * Based on the Logistic map on interval [-1,1]
+ * each branch no weaker than trunk
+ * zero dependency between branches
+ *****************************************************************/
+
+// floating point version of LCG
+__inline__ __device__ float rem( float r ) {
+    return r - floorf( r );
+}
+
+// FMA wrapper for the convenience of switching rouding modes
+__inline__ __device__ float FMA( float x, float y, float z ) {
+    return __fmaf_rz( x, y, z );
+}
+
+// logistic rounds
+// <3> : 4 FMA + 1 MUL
+// <2> : 2 FMA + 1 MUL
+// <1> : 1 FMA + 1 MUL
+
+template<int N> __inline__ __device__ float __logistic_core( float x )
+{
+    float x2 = x * x;
+    float r = FMA( FMA( 8.0, x2, -8.0 ), x2, 1.0 );
+    return __logistic_core < N - 2 > ( r );
+}
+
+template<> __inline__ __device__ float __logistic_core<1>( float x ) {
+    return FMA( 2.0 * x, x, -1.0 );
+}
+
+template<> __inline__ __device__ float __logistic_core<0>( float x ) {
+    return x;
+}
+
+inline __device__ float mean0var1ii( float seed, int u, int v )
+{
+    float p = rem( ( ( u & 0x3FF ) * gold ) + u * bronze + ( ( v & 0x3FF ) * silver ) + v * tin ); // safe for large u or v
+    float l = __logistic_core<N>( seed - p );
+    return l * sqrt2;
+}
+
+inline __device__ float mean0var1uu( float seed, uint u, uint v )
+{
+    // 7 FLOPS
+    float p = rem( ( ( u & 0x3FFU ) * gold ) + u * bronze + ( ( v & 0x3FFU ) * silver ) + v * tin ); // safe for large u or v
+    // 45+1 FLOPS
+    float l = __logistic_core<N>( seed - p );
+    // 1 FLOP
+    return l * sqrt2;
+}
+
+}
+/* end src/math/rnd/dev.h */
+/* begin src/math/dev.h */
+/* use templates here because we might have mixed float/double */
+
+#define _HD_ __host__ __device__
+
+#pragma once
+
+template <typename T1, typename T2>
+_HD_ void scal(const T1 a, /*io*/ T2 *b) {
+    b->x *= a;
+    b->y *= a;
+    b->z *= a;
+}
+
+template <typename T1, typename T2>
+_HD_ void add(const T1 *a, /*io*/ T2 *b) {
+    b->x += a->x;
+    b->y += a->y;
+    b->z += a->z;
+}
+
+template <typename T1, typename T2, typename T3>
+_HD_ void diff(const T1 *a, const T2 *b, /**/ T3 *c) {
+    c->x = a->x - b->x;
+    c->y = a->y - b->y;
+    c->z = a->z - b->z;
+}
+
+template <typename T1, typename T2, typename T3>
+_HD_ T1 dot(const T2 *a, const T3 *b) {
+    return a->x * b->x + a->y * b->y + a->z * b->z;
+}
+
+template <typename T1, typename T2, typename T3>
+_HD_ void cross(const T1 *a, const T2 *b, /**/ T3 *c) {
+    c->x = a->y * b->z - a->z * b->y;
+    c->y = a->z * b->x - a->x * b->z;
+    c->z = a->x * b->y - a->y * b->x;
+}
+
+template <typename T1, typename T2, typename T3>
+_HD_ void scalmult(const T1 *a, const T2 x, /**/ const T3 *b) {
+    b->x = a->x * x;
+    b->y = a->y * x;
+    b->z = a->z * x;
+}
+
+
+template <typename T1, typename T2, typename T3, typename T4>
+_HD_ void apxb(const T1 *a, const T2 x, const T3 *b, /**/ T4 *c) {
+    c->x = a->x + x * b->x;
+    c->y = a->y + x * b->y;
+    c->z = a->z + x * b->z;
+}
+
+template <typename T1, typename T2, typename T3>
+_HD_ void axpy(const T1 a, const T2 *x, /*io*/ T3 *y) {
+    y->x += a * x->x;
+    y->y += a * x->y;
+    y->z += a * x->z;
+}
+/* end src/math/dev.h */
+
+/* begin src/coords/type.h */
+// tag::view[]
+#pragma once
+
+struct Coords_v {
+    int xc, yc, zc; /* rank coordinates        */
+    int xd, yd, zd; /* rank sizes              */
+    int Lx, Ly, Lz; /* [L]ocal: subdomain size */
+};
+// end::view[]
+/* end src/coords/type.h */
+/* begin src/coords/dev.h */
+#pragma once
+
+/* domain sizes */
+
+static __device__ int xdomain(const Coords_v c) {
+    return c.Lx * c.xd;
+}
+
+static __device__ int ydomain(const Coords_v c) {
+    return c.Ly * c.yd;
+}
+
+static __device__ int zdomain(const Coords_v c) {
+    return c.Lz * c.zd;
+}
+
+/* [l]ocal to [c]enter */
+
+static __device__ float xl2xc(const Coords_v c, float xl) {
+    return xl - 0.5f * c.Lx * (c.xd - 2 * c.xc - 1);
+}
+
+static __device__ float yl2yc(const Coords_v c, float yl) {
+    return yl - 0.5f * c.Ly * (c.yd - 2 * c.yc - 1);
+}
+
+static __device__ float zl2zc(const Coords_v c, float zl) {
+    return zl - 0.5f * c.Lz * (c.zd - 2 * c.zc - 1);
+}
+
+static __device__ void local2center(const Coords_v c, float3 rl, /**/ float3 *rc) {
+    rc->x = xl2xc(c, rl.x);
+    rc->y = yl2yc(c, rl.y);
+    rc->z = zl2zc(c, rl.z);
+}
+
+/* [c]enter to [l]ocal  */
+
+static __device__ float xc2xl(const Coords_v c, float xc) {
+    return xc + 0.5f * c.Lx * (c.xd - 2 * c.xc - 1);
+}
+
+static __device__ float yc2yl(const Coords_v c, float yc) {
+    return yc + 0.5f * c.Ly * (c.yd - 2.f * c.yc - 1);
+}
+
+static __device__ float zc2zl(const Coords_v c, float zc) {
+    return zc + 0.5f * c.Lz * (c.zd - 2.f * c.zc - 1);
+}
+
+static __device__ void center2local(Coords_v c, float3 rc, /**/ float3 *rl) {
+    rl->x = xc2xl(c, rc.x);
+    rl->y = yc2yl(c, rc.y);
+    rl->z = zc2zl(c, rc.z);
+}
+
+/* [l]ocal to [g]lobal */
+
+static __device__ float xl2xg(const Coords_v c, float xl) {
+    return (c.xc + 0.5f) * c.Lx + xl;
+}
+
+static __device__ float yl2yg(const Coords_v c, float yl) {
+    return (c.yc + 0.5f) * c.Ly + yl;
+}
+
+static __device__ float zl2zg(const Coords_v c, float zl) {
+    return (c.zc + 0.5f) * c.Lz + zl;
+}
+
+static __device__ void local2global(const Coords_v c, float3 rl, /**/ float3 *rg) {
+    rg->x = xl2xg(c, rl.x);
+    rg->y = yl2yg(c, rl.y);
+    rg->z = zl2zg(c, rl.z);
+}
+
+/* [g]lobal to [l]ocal */
+
+static __device__ float xg2xl(const Coords_v c, float xg) {
+    return xg - (c.xc + 0.5f) * c.Lx;
+}
+
+static __device__ float yg2yl(const Coords_v c, float yg) {
+    return yg - (c.yc + 0.5f) * c.Ly;
+}
+
+static __device__ float zg2zl(const Coords_v c, float zg) {
+    return zg - (c.zc + 0.5f) * c.Lz;
+}
+
+static __device__ void global2local(const Coords_v c, float3 rg, /**/ float3 *rl) {
+    rl->x = xg2xl(c, rg.x);
+    rl->y = yg2yl(c, rg.y);
+    rl->z = zg2zl(c, rg.z);
+}
+
+/* end src/coords/dev.h */
 /* begin src/coords/imp.h */
 struct Coords;
 struct Coords_v;
@@ -96172,7 +118477,61 @@ struct WvelHS_v {
 };
 
 /* end src/wall/wvel/type.h */
-/* already included: src/wall/wvel/imp.h */
+/* begin src/wall/wvel/imp.h */
+#pragma once
+
+struct Wvel;
+struct WvelStep;
+
+struct WvelCste_v;
+struct WvelShear_v;
+struct WvelHS_v;
+
+struct float3;
+struct Config;
+
+// tag::enum[]
+enum {
+    WALL_VEL_V_CSTE,
+    WALL_VEL_V_SHEAR,
+    WALL_VEL_V_HS,
+};
+// end::enum[]
+
+// tag::mem[]
+void wvel_ini(Wvel **wv);
+void wvel_fin(Wvel *wv);
+
+void wvel_step_ini(WvelStep **wv);
+void wvel_step_fin(WvelStep *wv);
+// end::mem[]
+
+// tag::ini[]
+void wvel_set_cste(float3 u, Wvel *vw);
+void wvel_set_shear(float gdot, int vdir, int gdir, int half, Wvel *vw);
+void wvel_set_shear_sin(float gdot, int vdir, int gdir, int half, float w, Wvel *vw);
+void wvel_set_hs(float u, float h, Wvel *vw);
+void wvel_set_timestep(float dt, Wvel *vw);
+// end::ini[]
+
+// tag::cnf[]
+void wvel_set_conf(const Config *cfg, Wvel *vw);
+// end::cnf[]
+
+// tag::step[]
+void wvel_get_step(float t, const Wvel *wv, /**/ WvelStep *);
+// end::step[]
+
+// tag::get[]
+int wvel_get_type(const WvelStep *w);
+// end::get[]
+
+// tag::view[]
+void wvel_get_view(const WvelStep *w, /**/ WvelCste_v *v);
+void wvel_get_view(const WvelStep *w, /**/ WvelShear_v *v);
+void wvel_get_view(const WvelStep *w, /**/ WvelHS_v *v);
+// end::view[]
+/* end src/wall/wvel/imp.h */
 /* begin src/wall/wvel/dev.h */
 #pragma once
 
@@ -96244,7 +118603,11 @@ static __device__ void bounce_vel(Wvel_v wv, Coords_v c, float3 rw, /* io */ flo
 }
 /* end src/wall/wvel/dev.h */
 
-/* already included: src/math/tform/type.h */
+/* begin src/math/tform/type.h */
+#pragma once
+
+struct Tform_v { float o[3], s[3]; };
+/* end src/math/tform/type.h */
 /* begin src/math/tform/dev.h */
 #pragma once
 
@@ -96401,8 +118764,259 @@ _I_ float sdf_eval(const Sdf_v *sdf0, float x, float y, float z)  // <3>
 #undef _I_
 /* end src/wall/sdf/dev.h */
 
-/* already included: src/pair/type.h */
-/* already included: src/pair/dev.h */
+/* begin src/pair/type.h */
+#pragma once
+
+/* maximum of pairwise dpd parameters */
+enum {
+    MAX_PAR = (N_COLOR * (N_COLOR + 1)) / 2
+};
+
+
+struct PairDPD {
+    float a, g, s, spow;
+};
+
+struct PairDPDC {
+    int ncolors;
+    float a[MAX_PAR], g[MAX_PAR], s[MAX_PAR], spow;
+};
+
+/* mirrored */
+struct PairDPDCM {
+    int ncolors;
+    float a[N_COLOR], g[N_COLOR], s[N_COLOR], spow;
+};
+
+struct PairDPDLJ {
+    float a, g, s, spow;
+    float ljs, lje;
+};
+
+struct PairAdhesion {
+    float k1, k2;
+};
+
+struct PairPa {
+    float x, y, z;
+    float vx, vy, vz;
+    /* optional fields */
+    int color;
+};
+
+struct PairFo {
+    float x, y, z;
+};
+
+struct PairSFo {
+    float x, y, z;
+    /* stress */
+    float sxx, syy, szz, sxy, sxz, syz;
+};
+/* end src/pair/type.h */
+/* begin src/pair/dev.h */
+#pragma once
+
+#define _S_ static __device__
+#define _I_ static __device__
+
+_S_ float cap(float x, float lo, float hi) {
+    if      (x > hi) return hi;
+    else if (x < lo) return lo;
+    else             return x;
+}
+
+static const float EPS = 1e-6;
+enum {NORM_OK, NORM_BIG, NORM_SMALL};
+_S_ int norm(/*io*/ float3 *pos, /**/ float *pr, float *pinvr) {
+    /* normalize r = [x, y, z], sets |r| and 1/|r| if not big */
+    float x, y, z, invr, r, r2;
+    x = pos->x; y = pos->y; z = pos->z;
+
+    r2 = x*x + y*y + z*z;
+    if      (r2 >= 1 )   return NORM_BIG;
+    else if (r2 < EPS) {
+        *pr = pos->x = pos->y = pos->z = 0;
+        return NORM_SMALL;
+    } else {
+        invr = rsqrtf(r2);
+        r = r2 * invr;
+        x *= invr; y *= invr; z *= invr;
+        pos->x = x; pos->y = y; pos->z = z; *pr = r; *pinvr = invr;
+        return NORM_OK;
+    }
+}
+
+_S_ float ker_wrf(float s, float x) {
+    return powf(x, s);
+}
+
+_S_ float magn_dpd(float a, float g, float s, float kpow,
+                   float rnd, float r, float ev) {
+    float wr, wc;
+    float rm, f0;
+
+    rm = max(1 - r, 0.0f);
+    wc = rm;
+    wr = ker_wrf(kpow, rm);
+
+    f0  = (-g * wr * ev + s * rnd) * wr;
+    f0 +=                        a * wc;
+    return f0;
+}
+
+_S_ float magn_lj(float s, float e, float invr) {
+    float t2, t4, t6, f;
+    t2 = s * s * invr * invr;
+    t4 = t2 * t2;
+    t6 = t4 * t2;
+    f = e * 24 * invr * t6 * (2 * t6 - 1);
+    f = cap(f, 0, 1e4);
+    return f;
+}
+
+_S_ float magn_adhesion(float k1, float k2, float r, float ev) {
+    float spring, visc;
+    spring = - k1 * r;
+    visc   = - k2 * ev;
+    return spring + visc;
+}
+
+_S_ float force_magn(const PairDPD *p, float rnd, float ev, float r, float) {
+    return magn_dpd(p->a, p->g, p->s, p->spow, rnd, r, ev);
+}
+
+_S_ float force_magn(const PairDPDLJ *p, float rnd, float ev, float r, float invr) {
+    float f;
+    f  = magn_dpd(p->a, p->g, p->s, p->spow, rnd, r, ev);
+    f += magn_lj(p->ljs, p->lje, invr);
+    return f;
+}
+
+_S_ float force_magn(const PairAdhesion *p, float, float ev, float r, float) {
+    return magn_adhesion(p->k1, p->k2, r, ev);
+}
+
+_S_ void magn2fo(float f0, float3 er, float3 dr, /**/ PairFo *f) {
+    f->x = f0 * er.x;
+    f->y = f0 * er.y;
+    f->z = f0 * er.z;
+}
+
+_S_ void magn2fo(float f0, float3 er, float3 dr, /**/ PairSFo *f) {
+    f->x = f0 * er.x;
+    f->y = f0 * er.y;
+    f->z = f0 * er.z;
+
+    f->sxx = 0.5f * f->x * dr.x;
+    f->sxy = 0.5f * f->x * dr.y;
+    f->sxz = 0.5f * f->x * dr.z;
+    f->syy = 0.5f * f->y * dr.y;
+    f->syz = 0.5f * f->y * dr.z;
+    f->szz = 0.5f * f->z * dr.z;
+}
+
+_S_ void make_zero(PairFo *f) {
+    f->x = f->y = f->z = 0;
+}
+
+_S_ void make_zero(PairSFo *f) {
+    f->x = f->y = f->z = 0;
+    f->sxx = f->sxy = f->sxz = 0;
+    f->syy = f->syz = f->szz = 0;
+}
+
+// tag::int[]
+template <typename Param, typename Fo>
+_I_ void pair_force(const Param *p, PairPa a, PairPa b, float rnd, /**/ Fo *f)
+// end::int[]
+{
+    float r, invr, ev, f0;
+    float3 dr, er, dv;
+    int vnstat; /* vector normalization status */
+
+    dr.x = a.x - b.x;
+    dr.y = a.y - b.y;
+    dr.z = a.z - b.z;
+
+    dv.x = a.vx - b.vx;
+    dv.y = a.vy - b.vy;
+    dv.z = a.vz - b.vz;
+
+    er = dr;
+
+    vnstat = norm(/*io*/ &er, /*o*/ &r, &invr);
+    if (vnstat == NORM_BIG) {
+        make_zero(f);
+        return;
+    }
+
+    ev = dot<float>(&er, &dv);
+
+    f0 = force_magn(p, rnd, ev, r, invr);
+    magn2fo(f0, er, dr, /**/ f);
+}
+
+_S_ int colors2pid(int ca, int cb) {
+    int c0, c1;
+    c0 = ca < cb ? ca : cb;
+    c1 = ca < cb ? cb : ca;
+    return c1 * (c1+1) / 2 + c0;
+}
+
+template <typename Fo>
+_I_ void pair_force(const PairDPDC *pc, PairPa a, PairPa b, float rnd, /**/ Fo *f) {
+    PairDPD p;
+    int pid;
+    pid = colors2pid(a.color, b.color);
+    p.a = pc->a[pid];
+    p.g = pc->g[pid];
+    p.s = pc->s[pid];
+    p.spow = pc->spow;
+    pair_force(&p, a, b, rnd, /**/ f);
+}
+
+/* mirrored: parameters from particle "a" only */
+template <typename Fo>
+_I_ void pair_force(const PairDPDCM *pc, PairPa a, PairPa b, float rnd, /**/ Fo *f) {
+    PairDPD p;
+    int pid = a.color;
+    p.a = pc->a[pid];
+    p.g = pc->g[pid];
+    p.s = pc->s[pid];
+    p.spow = pc->spow;
+    pair_force(&p, a, b, rnd, /**/ f);
+}
+
+
+// tag::add[]
+_I_ void pair_add(const PairFo *b, /**/ PairFo *a)
+// end::add[]
+{
+    a->x += b->x;
+    a->y += b->y;
+    a->z += b->z;
+}
+
+// tag::add[]
+_I_ void pair_add(const PairSFo *b, /**/ PairSFo *a)
+// end::add[]
+{
+    a->x += b->x;
+    a->y += b->y;
+    a->z += b->z;
+
+    a->sxx += b->sxx;
+    a->sxy += b->sxy;
+    a->sxz += b->sxz;
+    a->syy += b->syy;
+    a->syz += b->syz;
+    a->szz += b->szz;
+}
+
+#undef _S_
+#undef _I_
+/* end src/pair/dev.h */
 /* begin src/pair/imp.h */
 struct PairParams;
 struct Config;
@@ -96441,19 +119055,250 @@ void pair_get_view_dpd_lj(const PairParams*, PairDPDLJ*);
 void pair_get_view_adhesion(const PairParams*, PairAdhesion*);
 /* end src/pair/imp.h */
 
-/* already included: src/struct/parray/type.h */
-/* already included: src/struct/parray/imp.h */
-/* already included: src/struct/parray/dev.h */
+/* begin src/struct/parray/type.h */
+#pragma once
 
-/* already included: src/struct/farray/type.h */
-/* already included: src/struct/farray/imp.h */
-/* already included: src/struct/farray/dev.h */
+struct PaArray_v {
+    const float *pp;
+};
+
+struct PaCArray_v {
+    const float *pp;
+    const int *cc;   /* colors */
+};
+/* end src/struct/parray/type.h */
+/* begin src/struct/parray/imp.h */
+#pragma once
+
+struct PaArray {
+    bool colors;
+    const float *pp;
+    const int *cc;
+};
+
+struct PaArray_v;
+struct PaCArray_v;
+
+struct Particle;
+
+// tag::push[]
+void parray_push_pp(const Particle *pp, PaArray *a);
+void parray_push_cc(const int *cc, PaArray *a);
+// end::push[]
+
+// tag::get[]
+bool parray_is_colored(const PaArray *a);
+// end::get[]
+
+// tag::view[]
+void parray_get_view(const PaArray *a, PaArray_v *v);  // <1>
+void parray_get_view(const PaArray *a, PaCArray_v *v); // <2>
+// end::view[]
+/* end src/struct/parray/imp.h */
+/* begin src/struct/parray/dev.h */
+#pragma once
+
+#define _S_ static __device__
+#define _I_ static __device__
+
+template<typename PA>
+_S_ void parray_get_pp(PA a, int i, /**/ PairPa *p) {
+    const float2 *pp = (const float2 *) a.pp;
+    float2 s0, s1, s2;
+    s0 = __ldg(pp + 3*i + 0);
+    s1 = __ldg(pp + 3*i + 1);
+    s2 = __ldg(pp + 3*i + 2);
+
+    p->x = s0.x;
+    p->y = s0.y;
+    p->z = s1.x;
+
+    p->vx = s1.y;
+    p->vy = s2.x;
+    p->vz = s2.y;
+}
+
+// tag::int[]
+_I_ void parray_get(PaArray_v a, int i, /**/ PairPa *p) // <1>
+// end::int[]
+{
+    parray_get_pp(a, i, /**/ p);
+}
+
+// tag::int[]
+_I_ void parray_get(PaCArray_v a, int i, /**/ PairPa *p) // <2>
+// end::int[]
+{
+    parray_get_pp(a, i, /**/ p);
+    p->color = a.cc[i];
+}
+
+#undef _S_
+#undef _I_
+/* end src/struct/parray/dev.h */
+
+/* begin src/struct/farray/type.h */
+#pragma once
+
+struct FoArray_v {
+    float *ff;
+};
+
+struct FoSArray_v {
+    float *ff;
+    float *ss;
+};
+/* end src/struct/farray/type.h */
+/* begin src/struct/farray/imp.h */
+#pragma once
+
+struct FoArray {
+    bool stress;
+    float *ff;
+    float *ss; /* stress */
+};
+
+struct FoArray_v;
+struct FoSArray_v;
+
+struct Force;
+
+// tag::push[]
+void farray_push_ff(Force *ff, FoArray *a);
+void farray_push_ss(float *ss, FoArray *a);
+// end::push[]
+
+void farray_clear(FoArray *);
+
+// tag::get[]
+bool farray_has_stress(const FoArray *a);
+// end::get[]
+
+// tag::view[]
+void farray_get_view(const FoArray *a, FoArray_v *v);  // <1>
+void farray_get_view(const FoArray *a, FoSArray_v *v); // <2>
+// end::view[]
+/* end src/struct/farray/imp.h */
+/* begin src/struct/farray/dev.h */
+#pragma once
+
+#define _I_ static __device__
+#define _S_ static __device__
+
+template <int S, typename Fo, typename FA>
+_S_ void farray_add_force(const Fo *f, int i, /**/ FA a) {
+    enum {X, Y, Z};
+    float *af = a.ff + 3*i;
+    af[X] += S * f->x;
+    af[Y] += S * f->y;
+    af[Z] += S * f->z;
+}
+
+_S_ void farray_add_stress(const PairSFo *f, int i, /**/ FoSArray_v a) {
+    enum {XX, XY, XZ, YY, YZ, ZZ};
+    float *s = a.ss + 6*i;
+    s[XX] += f->sxx;
+    s[XY] += f->sxy;
+    s[XZ] += f->sxz;
+    s[YY] += f->syy;
+    s[YZ] += f->syz;
+    s[ZZ] += f->szz;
+}
+
+// tag::add[]
+template <int S>
+_I_ void farray_add(const PairFo *f, int i, /**/ FoArray_v a) // <1>
+// end::add[]
+{
+    farray_add_force<S>(f, i, /**/ a);
+}
+
+// tag::add[]
+template <int S>
+_I_ void farray_add(const PairSFo *f, int i, /**/ FoSArray_v a) // <2>
+// end::add[]
+{
+    farray_add_force<S>(f, i, /**/ a);
+    farray_add_stress(f, i, /**/ a);
+}
+
+
+template <int S, typename Fo, typename FA>
+_S_ void farray_atomic_add_force(const Fo *f, int i, /**/ FA a) {
+    enum {X, Y, Z};
+    float *af = a.ff + 3*i;
+    atomicAdd(&af[X], S * f->x);
+    atomicAdd(&af[Y], S * f->y);
+    atomicAdd(&af[Z], S * f->z);
+}
+
+_S_ void farray_atomic_add_stress(const PairSFo *f, int i, /**/ FoSArray_v a) {
+    enum {XX, XY, XZ, YY, YZ, ZZ};
+    float *s = a.ss + 6*i;
+    atomicAdd(&s[XX], f->sxx);
+    atomicAdd(&s[XY], f->sxy);
+    atomicAdd(&s[XZ], f->sxz);
+    atomicAdd(&s[YY], f->syy);
+    atomicAdd(&s[YZ], f->syz);
+    atomicAdd(&s[ZZ], f->szz);
+}
+
+// tag::atomic[]
+template <int S>
+_I_ void farray_atomic_add(const PairFo *f, int i, /**/ FoArray_v a)
+// end::atomic[]
+{
+    farray_atomic_add_force<S>(f, i, /**/ a);
+}
+
+// tag::atomic[]
+template <int S>
+_I_ void farray_atomic_add(const PairSFo *f, int i, /**/ FoSArray_v a)
+// end::atomic[]
+{
+    farray_atomic_add_force<S>(f, i, /**/ a);
+    farray_atomic_add_stress(f, i, /**/ a);
+}
+
+
+// tag::ini[]
+_I_ PairFo farray_fo0(FoArray_v)
+// end::ini[]
+{
+    PairFo f;
+    f.x = f.y = f.z = 0;
+    return f;
+}
+
+// tag::ini[]
+_I_ PairSFo farray_fo0(FoSArray_v)
+// end::ini[]
+{
+    PairSFo f;
+    f.x = f.y = f.z = 0;
+    f.sxx = f.sxy = f.sxz = 0;
+    f.syy = f.syz = f.szz = 0;
+    return f;
+}
+
+#undef _I_
+#undef _S_
+/* end src/struct/farray/dev.h */
 
 /* begin src/utils/kl.h */
 /* [k]ernel [l]aunch macros */
 
 #if    defined(KL_RELEASE)
-/* already included: src/utils/kl/release.h */
+/* begin src/utils/kl/release.h */
+#define KL_BEFORE(s, C) if (!kl::safe(ESC C)) continue;
+#define KL_CALL(F, C, A) F<<<ESC C>>>A
+#define KL_AFTER(s)
+
+#ifndef UDX_KL_RELEASE_FUNCTIONS_DEFINED
+#define UDX_KL_RELEASE_FUNCTIONS_DEFINED
+namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
+#endif
+/* end src/utils/kl/release.h */
 #elif  defined(KL_NONE)
 /* begin src/utils/kl/none.h */
 #define KL_BEFORE(s, C)
@@ -96478,7 +119323,18 @@ namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
   #error KL_* is undefined
 #endif
 
-/* already included: src/utils/kl/common.h */
+/* begin src/utils/kl/common.h */
+namespace kl {
+#pragma once
+
+inline int safe0(dim3 i, dim3 j) {
+    msg(i.x, i.y, i.z,   j.x, j.y, j.z);
+    return i.x>0 && i.y>0 && i.z>0   &&   j.x>0 && j.y>0 && j.z>0;
+}
+inline int safe(dim3 i, dim3 j)                    { return safe0(i, j); }
+inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
+}
+/* end src/utils/kl/common.h */
 /* begin src/utils/kl/macro.h */
 #define ESC(...) __VA_ARGS__
 #define KL(F, C, A)                             \
@@ -97086,9 +119942,133 @@ void wall_force_repulse(Sdf_v sdf_v, WallRepulsePrm wr, long n, const PaArray *p
 #include <stdio.h>
 #include <assert.h>
 
-/* already included: src/inc/conf.h */
-/* already included: src/inc/conf.h */
-/* already included: src/inc/def.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
+/* begin src/inc/def.h */
+/* solvent colors */
+#define XMACRO_COLOR(_)                         \
+    _(BLUE)                                     \
+    _(RED)
+
+#define ENUM_COLOR(a) a##_COLOR
+#define make_enum_color(a) ENUM_COLOR(a) ,
+#ifndef UDX_DEF_ENUMS_DEFINED
+#define UDX_DEF_ENUMS_DEFINED
+enum {
+    XMACRO_COLOR(make_enum_color)
+    N_COLOR
+};
+#undef make_enum_color
+
+enum {
+    /* wall margins */
+    XWM = 6,
+    YWM = 6,
+    ZWM = 6,
+
+    SAFETY_FACTOR_MAXP = 3,
+
+    /* maximum number of particles per solid */
+    MAX_PSOLID_NUM = 12000,
+
+    /* maximum number of solids per node */
+    MAX_SOLIDS = 100,
+
+    /* maximum number of object types (solid, rbc, ...) */
+    MAX_MBR_TYPES = 2,
+    MAX_RIG_TYPES = 2,
+    MAX_OBJ_TYPES = MAX_MBR_TYPES + MAX_RIG_TYPES,
+
+    /* maximum number density of particles of the objects */
+    MAX_OBJ_DENSITY = 30,
+
+    /* maximum number of red blood cells per node */
+    MAX_CELL_NUM = 1500,
+
+    /* maximum texture size in bytes */
+    MAX_TEXO_SIZE = 100000000,
+
+    /* safety factor for dpd halo interactions */
+    HSAFETY_FACTOR = 10,
+
+    /* safety factor for odist fragments */
+    ODSTR_FACTOR = 3,
+};
+#endif
+
+/* for the spring forces r = min(lmax*RBC_SPRING_CAP, r) */
+#define RBC_SPRING_CAP (0.99)
+/* end src/inc/def.h */
 /* begin src/utils/msg.h */
 // tag::int[]
 void msg_ini(int rank); // <1>
@@ -97163,7 +120143,38 @@ bool same_str(const char *a, const char *b); // <1>
 const char* get_filename_ext(const char*);
 // end::tools[]
 /* end src/utils/imp.h */
-/* already included: src/d/api.h */
+/* begin src/d/api.h */
+#pragma once
+
+namespace d {  /* a wrapper for device API */
+typedef int Stream_t; /* TODO: streams are not supported */
+enum {MemcpyHostToHost, MemcpyHostToDevice,
+      MemcpyDeviceToHost, MemcpyDeviceToDevice,
+      MemcpyDefault};
+
+// tag::more[]
+const char *emsg();
+int alloc_pinned(void **pHost, size_t size);
+int is_device_pointer(const void *ptr);
+// end::more[]
+
+// tag::api[]
+int GetSymbolAddress(void **devPtr, const void *symbol);
+int Malloc(void **p, size_t);
+int MemcpyToSymbol(const void *symbol, const void *src, size_t count, size_t offset=0, int kind=MemcpyHostToDevice);
+int MemcpyFromSymbol(void *dst, const void *symbol, size_t count, size_t offset=0, int kind=MemcpyDeviceToHost);
+int HostGetDevicePointer(void **pDevice, void *pHost, unsigned int flags);
+int Memcpy (void *dst, const void *src, size_t count, int kind);
+int MemsetAsync (void *devPtr, int value, size_t count, Stream_t stream=0);
+int Memset (void *devPtr, int value, size_t count);
+int MemcpyAsync (void * dst, const void * src, size_t count, int kind, Stream_t stream = 0);
+int Free (void *devPtr);
+int FreeHost (void *hstPtr);
+int DeviceSynchronize (void);
+int PeekAtLastError(void);
+// end::api[]
+}
+/* end src/d/api.h */
 /* begin src/d/q.h */
 /* function and variable type [q]ualifiers */
 
@@ -97315,7 +120326,62 @@ void check(int rc, const char *file, int line);
 /* TODO: header includes header */
 /* end src/utils/cc.h */
 
-/* already included: src/inc/type.h */
+/* begin src/inc/type.h */
+#pragma once
+
+template <typename T, int N>
+struct Sarray { /* [s]tatic array */
+    T d[N];
+};
+
+struct Particle {
+    float r[3], v[3];
+};
+
+struct Rigid {
+    float Iinv[6],            /* moment of inertia            6        */
+        mass,                 /* mass of the solid            7        */
+        com[3],               /* [c]enter [o]f [m]ass         10       */
+        v[3], om[3],          /* linear and angular velocity  13 16    */
+        e0[3], e1[3], e2[3],  /* local referential            19 22 25 */
+        fo[3], to[3],         /* force, torque                28 31    */
+        id;                   /* id of the solid              32       */
+};
+
+struct Force {
+    float f[3];
+};
+
+struct Momentum {
+    float P[3], L[3]; /* linear and angular momentum */
+};
+
+struct Positioncp {
+    float rc[3]; /* current position  */
+    float rp[3]; /* previous position */
+};
+
+typedef Sarray<int, 26>       int26;
+typedef Sarray<int, 27>       int27;
+
+typedef Sarray<int*, 26>     intp26;
+typedef Sarray<Particle*, 26> Pap26;
+typedef Sarray<Force*,    26> Fop26;
+typedef Sarray<Momentum*, 26> Mop26;
+typedef Sarray<Positioncp*, 26> Pocpp26;
+
+/* particles wrap */
+struct PaWrap {
+    int n;
+    const Particle *pp;
+};
+
+/* forces wrap */
+struct FoWrap {
+    int n;
+    Force *ff;
+};
+/* end src/inc/type.h */
 /* begin src/inc/dev.h */
 /* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
@@ -97359,7 +120425,16 @@ void check(int rc, const char *file, int line);
 /* [k]ernel [l]aunch macros */
 
 #if    defined(KL_RELEASE)
-/* already included: src/utils/kl/release.h */
+/* begin src/utils/kl/release.h */
+#define KL_BEFORE(s, C) if (!kl::safe(ESC C)) continue;
+#define KL_CALL(F, C, A) F<<<ESC C>>>A
+#define KL_AFTER(s)
+
+#ifndef UDX_KL_RELEASE_FUNCTIONS_DEFINED
+#define UDX_KL_RELEASE_FUNCTIONS_DEFINED
+namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
+#endif
+/* end src/utils/kl/release.h */
 #elif  defined(KL_NONE)
 /* begin src/utils/kl/none.h */
 #define KL_BEFORE(s, C)
@@ -97384,7 +120459,18 @@ namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
   #error KL_* is undefined
 #endif
 
-/* already included: src/utils/kl/common.h */
+/* begin src/utils/kl/common.h */
+namespace kl {
+#pragma once
+
+inline int safe0(dim3 i, dim3 j) {
+    msg(i.x, i.y, i.z,   j.x, j.y, j.z);
+    return i.x>0 && i.y>0 && i.z>0   &&   j.x>0 && j.y>0 && j.z>0;
+}
+inline int safe(dim3 i, dim3 j)                    { return safe0(i, j); }
+inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
+}
+/* end src/utils/kl/common.h */
 /* begin src/utils/kl/macro.h */
 #define ESC(...) __VA_ARGS__
 #define KL(F, C, A)                             \
@@ -97397,7 +120483,53 @@ namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
 
 /* TODO: header includes header */
 /* end src/utils/kl.h */
-/* already included: src/utils/texo.h */
+/* begin src/utils/texo.h */
+#pragma once
+
+/* 1D texture object template */
+static void sz_check(int n) {
+    if (n <            0 ) ERR("too small texo: %d", n);
+    if (n > MAX_TEXO_SIZE) ERR("too big texo: %d > %d", n, MAX_TEXO_SIZE);
+}
+
+// tag::struct[]
+template<typename T>
+struct Texo {
+    cudaTextureObject_t d;
+};
+// end::struct[]
+
+template<typename T>
+// tag::int[]
+void texo_setup(int n, T *data, /**/ Texo<T> *to)
+// end::int[]
+{
+    sz_check(n);
+
+    cudaResourceDesc resD;
+    cudaTextureDesc  texD;
+
+    memset(&resD, 0, sizeof(resD));
+    resD.resType = cudaResourceTypeLinear;
+    resD.res.linear.devPtr = data;
+    resD.res.linear.sizeInBytes = n * sizeof(T);
+    resD.res.linear.desc = cudaCreateChannelDesc<T>();
+
+    memset(&texD, 0, sizeof(texD));
+    texD.normalizedCoords = 0;
+    texD.readMode = cudaReadModeElementType;
+
+    CC(cudaCreateTextureObject(&to->d, &resD, &texD, NULL));
+}
+
+template<typename T>
+// tag::int[]
+void texo_destroy(/**/ Texo<T> *to)
+// end::int[]
+{
+    CC(cudaDestroyTextureObject(to->d));
+}
+/* end src/utils/texo.h */
 
 /* begin src/conf/imp.h */
 struct Config;
@@ -97475,12 +120607,61 @@ float rnd_get(RNDunif *r);                                  // <4>
 // end::interface[]
 /* end src/math/rnd/imp.h */
 
-/* already included: src/coords/type.h */
-/* already included: src/wall/wvel/type.h */
+/* begin src/coords/type.h */
+// tag::view[]
+#pragma once
 
-/* already included: src/math/tform/type.h */
-/* already included: src/wall/sdf/tex3d/type.h */
-/* already included: src/wall/sdf/type.h */
+struct Coords_v {
+    int xc, yc, zc; /* rank coordinates        */
+    int xd, yd, zd; /* rank sizes              */
+    int Lx, Ly, Lz; /* [L]ocal: subdomain size */
+};
+// end::view[]
+/* end src/coords/type.h */
+/* begin src/wall/wvel/type.h */
+#pragma once
+
+/* view structures                      */
+/* (what is passed to device functions) */
+
+struct WvelCste_v {
+    float3 u;
+};
+
+struct WvelShear_v {
+    float gdot;     // shear rate
+    int vdir, gdir; // direction of the flow and gradient
+    int half;       // only half is moving ?
+};
+
+struct WvelHS_v {
+    float u; // radial max inflow
+    float h; // height of the channel
+};
+
+/* end src/wall/wvel/type.h */
+
+/* begin src/math/tform/type.h */
+#pragma once
+
+struct Tform_v { float o[3], s[3]; };
+/* end src/math/tform/type.h */
+/* begin src/wall/sdf/tex3d/type.h */
+#pragma once
+
+struct Tex3d_v { cudaTextureObject_t t; }; // <1>
+struct Tex3d   { cudaTextureObject_t t; }; // <2>
+/* end src/wall/sdf/tex3d/type.h */
+/* begin src/wall/sdf/type.h */
+#pragma once
+
+/* view */
+struct Sdf_v {
+    Tex3d_v tex;
+    Tform_v t;
+    float cheap_threshold;
+};
+/* end src/wall/sdf/type.h */
 /* begin src/wall/sdf/imp.h */
 struct Sdf;
 struct Sdf_v;
@@ -97510,7 +120691,24 @@ void sdf_bounce(float dt, const WvelStep*, const Coords*, const Sdf*, int n, /**
 // end::bounce[]
 /* end src/wall/sdf/imp.h */
 
-/* already included: src/struct/partlist/type.h */
+/* begin src/struct/partlist/type.h */
+#pragma once
+
+enum {
+    ALIVE = 0,
+    DEAD  = 1
+};
+
+/* structure of particle                           */
+/* optional "deathlist" for particles to be killed */
+
+// tag::type[]
+struct PartList {
+    const Particle *pp;   /* particles array          */
+    const int *deathlist; /* what pp is dead or alive */
+};
+// end::type[]
+/* end src/struct/partlist/type.h */
 /* begin src/algo/scan/imp.h */
 struct Scan;
 
@@ -97557,7 +120755,38 @@ void clist_build(int nlo, int nout, const Particle *pplo, /**/ Particle *ppout, 
 // end::int[]
 /* end src/clist/imp.h */
 
-/* already included: src/io/restart/imp.h */
+/* begin src/io/restart/imp.h */
+#pragma once
+
+struct Coords;
+struct Particle;
+struct Rigid;
+
+// tag::id[]
+enum {RESTART_TEMPL=-1,
+      RESTART_FINAL=-2};
+enum {RESTART_BEGIN=RESTART_FINAL};
+// end::id[]
+
+// tag::stream[]
+typedef void (*StreamWriter)(const void*, FILE*);
+typedef void (*StreamReader)(FILE*, void*);
+// end::stream[]
+
+// tag::write[]
+void restart_write_pp(MPI_Comm, const char *base, const char *code, int id, long n, const Particle *pp); // <1>
+void restart_write_ii(MPI_Comm, const char *base, const char *code, int id, long n, const int *ii);      // <2>
+void restart_write_ss(MPI_Comm, const char *base, const char *code, int id, long n, const Rigid *ss);    // <3>
+void restart_write_stream_one_node(MPI_Comm, const char *base, const char *code, int id, const void *data, StreamWriter); // <4>
+ // end::write[]
+
+// tag::read[]
+void restart_read_pp(MPI_Comm, const char *base, const char *code, int id, int *n, Particle *pp);
+void restart_read_ii(MPI_Comm, const char *base, const char *code, int id, int *n, int *ii);
+void restart_read_ss(MPI_Comm, const char *base, const char *code, int id, int *n, Rigid *ss);
+void restart_read_stream_one_node(const char *base, const char *code, int id, StreamReader, void *data);
+// end::read[]
+/* end src/io/restart/imp.h */
 
 /* begin src/wall/exch/imp.h */
 struct int3;
@@ -97566,9 +120795,99 @@ struct Particle;
 void wall_exch_pp(MPI_Comm cart, int numdensity, int3 L, int maxn, /*io*/ Particle *pp, int *n);
 // end::int[]
 /* end src/wall/exch/imp.h */
-/* already included: src/wall/force/imp.h */
+/* begin src/wall/force/imp.h */
+#pragma once
 
-/* already included: src/wall/imp.h */
+struct PairParams;
+struct PaArray;
+struct FoArray;
+struct WvelStep;
+struct RNDunif;
+
+// tag::struct[]
+struct WallForce { /* local wall data */
+    Sdf_v sdf_v;
+    Texo<int> start;
+    Texo<float4> pp;
+    int n;
+    int3 L;
+};
+// end::struct[]
+
+struct WallRepulsePrm {
+    float l;
+};
+
+// tag::int[]
+void wall_force_apply(const PairParams*, const WvelStep*, const Coords*, const PaArray*, int n, RNDunif*, WallForce,
+                      /**/ const FoArray*); // <1>
+
+void wall_force_adhesion_apply(const PairParams*, const WvelStep*, const Coords*, const PaArray*, int n, RNDunif*, WallForce,
+                               /**/ const FoArray*);
+
+void wall_force_repulse(Sdf_v, WallRepulsePrm, long n, const PaArray*, const FoArray*); // <2>
+// end::int[]
+/* end src/wall/force/imp.h */
+
+/* begin src/wall/imp.h */
+#pragma once
+
+struct PairParams;
+struct PaArray;
+struct FoArray;
+struct WvelStep;
+struct Coords;
+struct Sdf;
+struct int3;
+struct float4;
+struct Config;
+
+// tag::struct[]
+struct WallQuants {
+    float4 *pp; /* particle positions xyzo xyzo ... */
+    int n;      /* number of particles              */
+    int3 L;     /* subdomain size                   */
+};
+
+struct WallTicket;
+struct WallRepulsePrm;
+
+// end::struct[]
+
+// tag::mem[]
+void wall_ini_quants(int3 L, WallQuants*);
+void wall_ini_ticket(int3 L, WallTicket**);
+
+void wall_fin_quants(WallQuants*);
+void wall_fin_ticket(WallTicket*);
+// end::mem[]
+
+// tag::gen[]
+void wall_gen_quants(MPI_Comm, int numdensity, int maxn, const Sdf*, /* io */ int *o_n, Particle *o_pp, /**/ WallQuants*); // <1>
+void wall_gen_ticket(const WallQuants*, WallTicket*); // <2>
+// end::gen[]
+
+// tag::start[]
+void wall_strt_quants(MPI_Comm, const char *base, int maxn, WallQuants*); // <1>
+void wall_strt_dump_templ(MPI_Comm, const char *base, const WallQuants*); // <2>
+// end::start[]
+
+// tag::int[]
+void wall_force(const PairParams*, const WvelStep *, const Coords*, const Sdf*, const WallQuants*,
+                const WallTicket*, int n, const PaArray*, const FoArray*); // <1>
+
+void wall_force_adhesion(const PairParams*, const WvelStep *, const Coords*, const Sdf*, const WallQuants*,
+                         const WallTicket*, int n, const PaArray*, const FoArray*); // <2>
+
+void wall_repulse(const Sdf*, const WallRepulsePrm*, long n, const PaArray*, const FoArray*); // <3>
+// end::int[]
+
+// tag::repulse[]
+void wall_repulse_prm_ini(float lambda, WallRepulsePrm**); // <1>
+void wall_repulse_prm_ini_conf(const Config*, const char *ns, WallRepulsePrm**); // <2>
+void wall_repulse_prm_fin(WallRepulsePrm*); // <3>
+// end::repulse[]
+/* end src/wall/imp.h */
 
 namespace wall_dev {
 /* begin src/wall/dev/main.h */
@@ -98107,10 +121426,111 @@ void wall_repulse_prm_fin(WallRepulsePrm *wr) {
 /* begin src/wall/sdf/array3d/imp.cu */
 #include <stdio.h>
 
-/* already included: src/inc/conf.h */
-/* already included: src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
 
-/* already included: src/d/api.h */
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
+
+/* begin src/d/api.h */
+#pragma once
+
+namespace d {  /* a wrapper for device API */
+typedef int Stream_t; /* TODO: streams are not supported */
+enum {MemcpyHostToHost, MemcpyHostToDevice,
+      MemcpyDeviceToHost, MemcpyDeviceToDevice,
+      MemcpyDefault};
+
+// tag::more[]
+const char *emsg();
+int alloc_pinned(void **pHost, size_t size);
+int is_device_pointer(const void *ptr);
+// end::more[]
+
+// tag::api[]
+int GetSymbolAddress(void **devPtr, const void *symbol);
+int Malloc(void **p, size_t);
+int MemcpyToSymbol(const void *symbol, const void *src, size_t count, size_t offset=0, int kind=MemcpyHostToDevice);
+int MemcpyFromSymbol(void *dst, const void *symbol, size_t count, size_t offset=0, int kind=MemcpyDeviceToHost);
+int HostGetDevicePointer(void **pDevice, void *pHost, unsigned int flags);
+int Memcpy (void *dst, const void *src, size_t count, int kind);
+int MemsetAsync (void *devPtr, int value, size_t count, Stream_t stream=0);
+int Memset (void *devPtr, int value, size_t count);
+int MemcpyAsync (void * dst, const void * src, size_t count, int kind, Stream_t stream = 0);
+int Free (void *devPtr);
+int FreeHost (void *hstPtr);
+int DeviceSynchronize (void);
+int PeekAtLastError(void);
+// end::api[]
+}
+/* end src/d/api.h */
 
 /* begin src/utils/imp.h */
 // tag::mem[]
@@ -98573,8 +121993,78 @@ void array3d_copy(size_t x, size_t y, size_t z, float *D, /**/ Array3d *q) {
 #include <assert.h>
 #include <mpi.h>
 
-/* already included: src/inc/conf.h */
-/* already included: src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
 
 /* begin src/utils/msg.h */
 // tag::int[]
@@ -98773,9 +122263,95 @@ static int   warpSize = 1;
   #error DEV_* is undefined
 #endif
 /* end src/d/ker.h */
-/* already included: src/d/api.h */
+/* begin src/d/api.h */
+#pragma once
 
-/* already included: src/inc/type.h */
+namespace d {  /* a wrapper for device API */
+typedef int Stream_t; /* TODO: streams are not supported */
+enum {MemcpyHostToHost, MemcpyHostToDevice,
+      MemcpyDeviceToHost, MemcpyDeviceToDevice,
+      MemcpyDefault};
+
+// tag::more[]
+const char *emsg();
+int alloc_pinned(void **pHost, size_t size);
+int is_device_pointer(const void *ptr);
+// end::more[]
+
+// tag::api[]
+int GetSymbolAddress(void **devPtr, const void *symbol);
+int Malloc(void **p, size_t);
+int MemcpyToSymbol(const void *symbol, const void *src, size_t count, size_t offset=0, int kind=MemcpyHostToDevice);
+int MemcpyFromSymbol(void *dst, const void *symbol, size_t count, size_t offset=0, int kind=MemcpyDeviceToHost);
+int HostGetDevicePointer(void **pDevice, void *pHost, unsigned int flags);
+int Memcpy (void *dst, const void *src, size_t count, int kind);
+int MemsetAsync (void *devPtr, int value, size_t count, Stream_t stream=0);
+int Memset (void *devPtr, int value, size_t count);
+int MemcpyAsync (void * dst, const void * src, size_t count, int kind, Stream_t stream = 0);
+int Free (void *devPtr);
+int FreeHost (void *hstPtr);
+int DeviceSynchronize (void);
+int PeekAtLastError(void);
+// end::api[]
+}
+/* end src/d/api.h */
+
+/* begin src/inc/type.h */
+#pragma once
+
+template <typename T, int N>
+struct Sarray { /* [s]tatic array */
+    T d[N];
+};
+
+struct Particle {
+    float r[3], v[3];
+};
+
+struct Rigid {
+    float Iinv[6],            /* moment of inertia            6        */
+        mass,                 /* mass of the solid            7        */
+        com[3],               /* [c]enter [o]f [m]ass         10       */
+        v[3], om[3],          /* linear and angular velocity  13 16    */
+        e0[3], e1[3], e2[3],  /* local referential            19 22 25 */
+        fo[3], to[3],         /* force, torque                28 31    */
+        id;                   /* id of the solid              32       */
+};
+
+struct Force {
+    float f[3];
+};
+
+struct Momentum {
+    float P[3], L[3]; /* linear and angular momentum */
+};
+
+struct Positioncp {
+    float rc[3]; /* current position  */
+    float rp[3]; /* previous position */
+};
+
+typedef Sarray<int, 26>       int26;
+typedef Sarray<int, 27>       int27;
+
+typedef Sarray<int*, 26>     intp26;
+typedef Sarray<Particle*, 26> Pap26;
+typedef Sarray<Force*,    26> Fop26;
+typedef Sarray<Momentum*, 26> Mop26;
+typedef Sarray<Positioncp*, 26> Pocpp26;
+
+/* particles wrap */
+struct PaWrap {
+    int n;
+    const Particle *pp;
+};
+
+/* forces wrap */
+struct FoWrap {
+    int n;
+    Force *ff;
+};
+/* end src/inc/type.h */
 /* begin src/inc/dev.h */
 /* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
@@ -98820,7 +122396,16 @@ static int   warpSize = 1;
 /* [k]ernel [l]aunch macros */
 
 #if    defined(KL_RELEASE)
-/* already included: src/utils/kl/release.h */
+/* begin src/utils/kl/release.h */
+#define KL_BEFORE(s, C) if (!kl::safe(ESC C)) continue;
+#define KL_CALL(F, C, A) F<<<ESC C>>>A
+#define KL_AFTER(s)
+
+#ifndef UDX_KL_RELEASE_FUNCTIONS_DEFINED
+#define UDX_KL_RELEASE_FUNCTIONS_DEFINED
+namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
+#endif
+/* end src/utils/kl/release.h */
 #elif  defined(KL_NONE)
 /* begin src/utils/kl/none.h */
 #define KL_BEFORE(s, C)
@@ -98845,7 +122430,18 @@ namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
   #error KL_* is undefined
 #endif
 
-/* already included: src/utils/kl/common.h */
+/* begin src/utils/kl/common.h */
+namespace kl {
+#pragma once
+
+inline int safe0(dim3 i, dim3 j) {
+    msg(i.x, i.y, i.z,   j.x, j.y, j.z);
+    return i.x>0 && i.y>0 && i.z>0   &&   j.x>0 && j.y>0 && j.z>0;
+}
+inline int safe(dim3 i, dim3 j)                    { return safe0(i, j); }
+inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
+}
+/* end src/utils/kl/common.h */
 /* begin src/utils/kl/macro.h */
 #define ESC(...) __VA_ARGS__
 #define KL(F, C, A)                             \
@@ -98859,8 +122455,115 @@ namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
 /* TODO: header includes header */
 /* end src/utils/kl.h */
 
-/* already included: src/coords/type.h */
-/* already included: src/coords/dev.h */
+/* begin src/coords/type.h */
+// tag::view[]
+#pragma once
+
+struct Coords_v {
+    int xc, yc, zc; /* rank coordinates        */
+    int xd, yd, zd; /* rank sizes              */
+    int Lx, Ly, Lz; /* [L]ocal: subdomain size */
+};
+// end::view[]
+/* end src/coords/type.h */
+/* begin src/coords/dev.h */
+#pragma once
+
+/* domain sizes */
+
+static __device__ int xdomain(const Coords_v c) {
+    return c.Lx * c.xd;
+}
+
+static __device__ int ydomain(const Coords_v c) {
+    return c.Ly * c.yd;
+}
+
+static __device__ int zdomain(const Coords_v c) {
+    return c.Lz * c.zd;
+}
+
+/* [l]ocal to [c]enter */
+
+static __device__ float xl2xc(const Coords_v c, float xl) {
+    return xl - 0.5f * c.Lx * (c.xd - 2 * c.xc - 1);
+}
+
+static __device__ float yl2yc(const Coords_v c, float yl) {
+    return yl - 0.5f * c.Ly * (c.yd - 2 * c.yc - 1);
+}
+
+static __device__ float zl2zc(const Coords_v c, float zl) {
+    return zl - 0.5f * c.Lz * (c.zd - 2 * c.zc - 1);
+}
+
+static __device__ void local2center(const Coords_v c, float3 rl, /**/ float3 *rc) {
+    rc->x = xl2xc(c, rl.x);
+    rc->y = yl2yc(c, rl.y);
+    rc->z = zl2zc(c, rl.z);
+}
+
+/* [c]enter to [l]ocal  */
+
+static __device__ float xc2xl(const Coords_v c, float xc) {
+    return xc + 0.5f * c.Lx * (c.xd - 2 * c.xc - 1);
+}
+
+static __device__ float yc2yl(const Coords_v c, float yc) {
+    return yc + 0.5f * c.Ly * (c.yd - 2.f * c.yc - 1);
+}
+
+static __device__ float zc2zl(const Coords_v c, float zc) {
+    return zc + 0.5f * c.Lz * (c.zd - 2.f * c.zc - 1);
+}
+
+static __device__ void center2local(Coords_v c, float3 rc, /**/ float3 *rl) {
+    rl->x = xc2xl(c, rc.x);
+    rl->y = yc2yl(c, rc.y);
+    rl->z = zc2zl(c, rc.z);
+}
+
+/* [l]ocal to [g]lobal */
+
+static __device__ float xl2xg(const Coords_v c, float xl) {
+    return (c.xc + 0.5f) * c.Lx + xl;
+}
+
+static __device__ float yl2yg(const Coords_v c, float yl) {
+    return (c.yc + 0.5f) * c.Ly + yl;
+}
+
+static __device__ float zl2zg(const Coords_v c, float zl) {
+    return (c.zc + 0.5f) * c.Lz + zl;
+}
+
+static __device__ void local2global(const Coords_v c, float3 rl, /**/ float3 *rg) {
+    rg->x = xl2xg(c, rl.x);
+    rg->y = yl2yg(c, rl.y);
+    rg->z = zl2zg(c, rl.z);
+}
+
+/* [g]lobal to [l]ocal */
+
+static __device__ float xg2xl(const Coords_v c, float xg) {
+    return xg - (c.xc + 0.5f) * c.Lx;
+}
+
+static __device__ float yg2yl(const Coords_v c, float yg) {
+    return yg - (c.yc + 0.5f) * c.Ly;
+}
+
+static __device__ float zg2zl(const Coords_v c, float zg) {
+    return zg - (c.zc + 0.5f) * c.Lz;
+}
+
+static __device__ void global2local(const Coords_v c, float3 rg, /**/ float3 *rl) {
+    rl->x = xg2xl(c, rg.x);
+    rl->y = yg2yl(c, rg.y);
+    rl->z = zg2zl(c, rg.z);
+}
+
+/* end src/coords/dev.h */
 /* begin src/coords/imp.h */
 struct Coords;
 struct Coords_v;
@@ -98936,15 +122639,256 @@ int coords_size(const Coords *c);
 // end::int[]
 /* end src/coords/imp.h */
 
-/* already included: src/wall/wvel/type.h */
-/* already included: src/wall/wvel/imp.h */
-/* already included: src/wall/wvel/dev.h */
-/* already included: src/math/dev.h */
+/* begin src/wall/wvel/type.h */
+#pragma once
 
-/* already included: src/math/tform/type.h */
-/* already included: src/math/tform/dev.h */
-/* already included: src/wall/sdf/tex3d/type.h */
-/* already included: src/wall/sdf/type.h */
+/* view structures                      */
+/* (what is passed to device functions) */
+
+struct WvelCste_v {
+    float3 u;
+};
+
+struct WvelShear_v {
+    float gdot;     // shear rate
+    int vdir, gdir; // direction of the flow and gradient
+    int half;       // only half is moving ?
+};
+
+struct WvelHS_v {
+    float u; // radial max inflow
+    float h; // height of the channel
+};
+
+/* end src/wall/wvel/type.h */
+/* begin src/wall/wvel/imp.h */
+#pragma once
+
+struct Wvel;
+struct WvelStep;
+
+struct WvelCste_v;
+struct WvelShear_v;
+struct WvelHS_v;
+
+struct float3;
+struct Config;
+
+// tag::enum[]
+enum {
+    WALL_VEL_V_CSTE,
+    WALL_VEL_V_SHEAR,
+    WALL_VEL_V_HS,
+};
+// end::enum[]
+
+// tag::mem[]
+void wvel_ini(Wvel **wv);
+void wvel_fin(Wvel *wv);
+
+void wvel_step_ini(WvelStep **wv);
+void wvel_step_fin(WvelStep *wv);
+// end::mem[]
+
+// tag::ini[]
+void wvel_set_cste(float3 u, Wvel *vw);
+void wvel_set_shear(float gdot, int vdir, int gdir, int half, Wvel *vw);
+void wvel_set_shear_sin(float gdot, int vdir, int gdir, int half, float w, Wvel *vw);
+void wvel_set_hs(float u, float h, Wvel *vw);
+void wvel_set_timestep(float dt, Wvel *vw);
+// end::ini[]
+
+// tag::cnf[]
+void wvel_set_conf(const Config *cfg, Wvel *vw);
+// end::cnf[]
+
+// tag::step[]
+void wvel_get_step(float t, const Wvel *wv, /**/ WvelStep *);
+// end::step[]
+
+// tag::get[]
+int wvel_get_type(const WvelStep *w);
+// end::get[]
+
+// tag::view[]
+void wvel_get_view(const WvelStep *w, /**/ WvelCste_v *v);
+void wvel_get_view(const WvelStep *w, /**/ WvelShear_v *v);
+void wvel_get_view(const WvelStep *w, /**/ WvelHS_v *v);
+// end::view[]
+/* end src/wall/wvel/imp.h */
+/* begin src/wall/wvel/dev.h */
+#pragma once
+
+// tag::vel[]
+static __device__ void wvel(WvelCste_v p, Coords_v c, float3 r, /**/ float3 *v)
+// end::vel[]
+{
+    *v = p.u;
+}
+
+// tag::vel[]
+static __device__ void wvel(WvelShear_v p, Coords_v c, float3 r, /**/ float3 *v)
+// end::vel[]
+{
+    float3 rc; // relative to center
+    float gdot, d;
+    int vdir, gdir;
+
+    gdot = p.gdot;
+    vdir = p.vdir;
+    gdir = p.gdir;
+
+    local2center(c, r, /**/ &rc);
+
+    d = 0;
+    if      (gdir == 0) d = rc.x;
+    else if (gdir == 1) d = rc.y;
+    else if (gdir == 2) d = rc.z;
+
+    d = p.half ? min(d, 0.f) : d;
+
+    v->x = v->y = v->z = 0;
+    if      (vdir == 0) v->x = d * gdot;
+    else if (vdir == 1) v->y = d * gdot;
+    else if (vdir == 2) v->z = d * gdot;
+}
+
+// tag::vel[]
+static __device__ void wvel(WvelHS_v p, Coords_v c, float3 r, /**/ float3 *v)
+// end::vel[]
+{
+    float3 rc; // relative to center
+    float u, h, r2inv, hfac;
+
+    u = p.u;
+    h = p.h;
+
+    local2center(c, r, /**/ &rc);
+
+    r2inv = 1.f / (rc.x*rc.x + rc.y*rc.y);
+    hfac = u * (1.f - rc.z * rc.z * 4 / (h*h));
+    hfac = max(0.f, hfac);
+
+    v->x = r2inv * hfac * rc.x;
+    v->y = r2inv * hfac * rc.y;
+    v->z = 0;
+}
+
+// tag::bb[]
+template <typename Wvel_v>
+static __device__ void bounce_vel(Wvel_v wv, Coords_v c, float3 rw, /* io */ float3* v)
+// end::bb[]
+{
+    float3 vw;
+    wvel(wv, c, rw, /**/ &vw);
+    v->x = 2 * vw.x - v->x;
+    v->y = 2 * vw.y - v->y;
+    v->z = 2 * vw.z - v->z;
+}
+/* end src/wall/wvel/dev.h */
+/* begin src/math/dev.h */
+/* use templates here because we might have mixed float/double */
+
+#define _HD_ __host__ __device__
+
+#pragma once
+
+template <typename T1, typename T2>
+_HD_ void scal(const T1 a, /*io*/ T2 *b) {
+    b->x *= a;
+    b->y *= a;
+    b->z *= a;
+}
+
+template <typename T1, typename T2>
+_HD_ void add(const T1 *a, /*io*/ T2 *b) {
+    b->x += a->x;
+    b->y += a->y;
+    b->z += a->z;
+}
+
+template <typename T1, typename T2, typename T3>
+_HD_ void diff(const T1 *a, const T2 *b, /**/ T3 *c) {
+    c->x = a->x - b->x;
+    c->y = a->y - b->y;
+    c->z = a->z - b->z;
+}
+
+template <typename T1, typename T2, typename T3>
+_HD_ T1 dot(const T2 *a, const T3 *b) {
+    return a->x * b->x + a->y * b->y + a->z * b->z;
+}
+
+template <typename T1, typename T2, typename T3>
+_HD_ void cross(const T1 *a, const T2 *b, /**/ T3 *c) {
+    c->x = a->y * b->z - a->z * b->y;
+    c->y = a->z * b->x - a->x * b->z;
+    c->z = a->x * b->y - a->y * b->x;
+}
+
+template <typename T1, typename T2, typename T3>
+_HD_ void scalmult(const T1 *a, const T2 x, /**/ const T3 *b) {
+    b->x = a->x * x;
+    b->y = a->y * x;
+    b->z = a->z * x;
+}
+
+
+template <typename T1, typename T2, typename T3, typename T4>
+_HD_ void apxb(const T1 *a, const T2 x, const T3 *b, /**/ T4 *c) {
+    c->x = a->x + x * b->x;
+    c->y = a->y + x * b->y;
+    c->z = a->z + x * b->z;
+}
+
+template <typename T1, typename T2, typename T3>
+_HD_ void axpy(const T1 a, const T2 *x, /*io*/ T3 *y) {
+    y->x += a * x->x;
+    y->y += a * x->y;
+    y->z += a * x->z;
+}
+/* end src/math/dev.h */
+
+/* begin src/math/tform/type.h */
+#pragma once
+
+struct Tform_v { float o[3], s[3]; };
+/* end src/math/tform/type.h */
+/* begin src/math/tform/dev.h */
+#pragma once
+
+static __device__ void tform_convert_dev(const Tform_v *t, const float a0[3], /**/ float a1[3]) {
+    enum {X, Y, Z};
+    const float *o, *s;
+    o = t->o; s = t->s;
+    a1[X] = s[X]*a0[X] + o[X];
+    a1[Y] = s[Y]*a0[Y] + o[Y];
+    a1[Z] = s[Z]*a0[Z] + o[Z];
+}
+
+static __device__ void tform_spacing_dev(const Tform_v *t, /**/ float s[3]) {
+    enum {X, Y, Z};
+    s[X] = t->s[X];
+    s[Y] = t->s[Y];
+    s[Z] = t->s[Z];
+}
+/* end src/math/tform/dev.h */
+/* begin src/wall/sdf/tex3d/type.h */
+#pragma once
+
+struct Tex3d_v { cudaTextureObject_t t; }; // <1>
+struct Tex3d   { cudaTextureObject_t t; }; // <2>
+/* end src/wall/sdf/tex3d/type.h */
+/* begin src/wall/sdf/type.h */
+#pragma once
+
+/* view */
+struct Sdf_v {
+    Tex3d_v tex;
+    Tform_v t;
+    float cheap_threshold;
+};
+/* end src/wall/sdf/type.h */
 /* begin src/wall/sdf/imp.h */
 struct Sdf;
 struct Sdf_v;
@@ -98974,7 +122918,125 @@ void sdf_bounce(float dt, const WvelStep*, const Coords*, const Sdf*, int n, /**
 // end::bounce[]
 /* end src/wall/sdf/imp.h */
 
-/* already included: src/wall/sdf/dev.h */
+/* begin src/wall/sdf/dev.h */
+#pragma once
+
+#define _S_ static __device__
+#define _I_ static __device__
+
+_S_ float fetch(const Sdf_v *sdf, float i, float j, float k) {
+    return Ttex3D(float, sdf->tex.t, i, j, k);
+}
+
+_S_ int iround(float x) { return (x > 0.5) ? (x + 0.5) : (x - 0.5); }
+
+_S_ void convert(const Sdf_v *sdf, const float a[3], /**/ float b[3]) {
+    tform_convert_dev(&sdf->t, a, /**/ b);
+}
+
+_S_ void convert_floor(const Sdf_v *sdf, const float a[3], /**/ int i[3]) {
+    enum {X, Y, Z};
+    float f[3];
+    convert(sdf, a, /**/ f);
+    i[X] = int(f[X]); i[Y] = int(f[Y]); i[Z] = int(f[Z]);
+}
+
+_S_ void convert_round(const Sdf_v *sdf, const float a[3], /**/ int i[3]) {
+    enum {X, Y, Z};
+    float f[3];
+    convert(sdf, a, /**/ f);
+    i[X] = iround(f[X]); i[Y] = iround(f[Y]); i[Z] = iround(f[Z]);
+}
+
+_S_ void spacing(const Sdf_v *sdf, float s[3]) {
+    tform_spacing_dev(&sdf->t, /**/ s);
+}
+
+_S_ float3 grad(const Sdf_v *sdf, const float3 *pos) {
+    int tc[3];
+    float fcts[3], r[3] = {pos->x, pos->y, pos->z};
+    float myval, gx, gy, gz;
+    convert_floor(sdf, r, /**/ tc);
+    spacing(sdf, /**/ fcts);
+
+#define tex0(ix, iy, iz) (fetch(sdf, tc[0] + ix, tc[1] + iy, tc[2] + iz))
+    myval = tex0(0, 0, 0);
+    gx = fcts[0] * (tex0(1, 0, 0) - myval);
+    gy = fcts[1] * (tex0(0, 1, 0) - myval);
+    gz = fcts[2] * (tex0(0, 0, 1) - myval);
+#undef tex0
+    return make_float3(gx, gy, gz);
+}
+
+// tag::int[]
+_I_ float3 sdf_ugrad(const Sdf_v *texsdf, const float3 *r) // <1>
+// end::int[]
+{
+    float mag, eps;
+    float3 g;
+    eps = 1e-6;
+    g = grad(texsdf, r);
+    mag = sqrt(g.x*g.x + g.y*g.y + g.z*g.z);
+    if (mag > eps) {
+        g.x /= mag;
+        g.y /= mag;
+        g.z /= mag;
+    }
+    return g;
+}
+
+_S_ float cheap_sdf(const Sdf_v *sdf, float x, float y, float z)  {
+    int tc[3];
+    float r[3] = {x, y, z};
+    convert_round(sdf, r, /**/ tc);
+    return fetch(sdf, tc[0], tc[1], tc[2]);
+}
+
+// tag::int[]
+_I_ bool sdf_far(const Sdf_v *sdf, float x, float y, float z) // <2>
+// end::int[]
+{
+    return cheap_sdf(sdf, x, y, z) <= sdf->cheap_threshold - 1 ;
+}
+
+// tag::int[]
+_I_ float sdf_eval(const Sdf_v *sdf0, float x, float y, float z)  // <3>
+// end::int[]
+{
+    int c;
+    float s000, s001, s010, s100, s101, s011, s110, s111;
+    float s00x, s01x, s10x, s11x;
+    float s0yx, s1yx;
+    float szyx;
+    float tc0[3], tc[3], lmbd[3], r[3] = {x, y, z};
+    convert(sdf0, r, /**/ tc0);
+    for (c = 0; c < 3; ++c) {
+        lmbd[c] = tc0[c] - (int)tc0[c];
+        tc[c] = (int)tc0[c] + 0.5;
+    }
+#define tex0(ix, iy, iz) (fetch(sdf0, tc[0] + ix, tc[1] + iy, tc[2] + iz))
+    s000 = tex0(0, 0, 0), s001 = tex0(1, 0, 0), s010 = tex0(0, 1, 0);
+    s011 = tex0(1, 1, 0), s100 = tex0(0, 0, 1), s101 = tex0(1, 0, 1);
+    s110 = tex0(0, 1, 1), s111 = tex0(1, 1, 1);
+#undef tex0
+
+#define wavrg(A, B, p) A*(1-p) + p*B /* weighted average */
+    s00x = wavrg(s000, s001, lmbd[0]);
+    s01x = wavrg(s010, s011, lmbd[0]);
+    s10x = wavrg(s100, s101, lmbd[0]);
+    s11x = wavrg(s110, s111, lmbd[0]);
+
+    s0yx = wavrg(s00x, s01x, lmbd[1]);
+    s1yx = wavrg(s10x, s11x, lmbd[1]);
+
+    szyx = wavrg(s0yx, s1yx, lmbd[2]);
+#undef wavrg
+    return szyx;
+}
+
+#undef _S_
+#undef _I_
+/* end src/wall/sdf/dev.h */
 
 /* begin src/wall/sdf/bounce/imp.h */
 struct Sdf;
@@ -99444,8 +123506,78 @@ void bounce_back(float dt, const WvelStep *w, const Coords *c, const Sdf *sdf, i
 #include <math.h>
 #include <vector_types.h>
 
-/* already included: src/inc/conf.h */
-/* already included: src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
 
 /* begin src/utils/error.h */
 #define ERR(fmt, ...)  do {                                     \
@@ -100192,8 +124324,78 @@ void field_dump(const Field *q, const Coords *c, MPI_Comm cart) {
 
 #include <curand.h>
 
-/* already included: src/inc/conf.h */
-/* already included: src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
 
 /* begin src/d/q.h */
 /* function and variable type [q]ualifiers */
@@ -100257,7 +124459,38 @@ void field_dump(const Field *q, const Coords *c, MPI_Comm cart) {
   #error DEV_* is undefined
 #endif
 /* end src/d/q.h */
-/* already included: src/d/api.h */
+/* begin src/d/api.h */
+#pragma once
+
+namespace d {  /* a wrapper for device API */
+typedef int Stream_t; /* TODO: streams are not supported */
+enum {MemcpyHostToHost, MemcpyHostToDevice,
+      MemcpyDeviceToHost, MemcpyDeviceToDevice,
+      MemcpyDefault};
+
+// tag::more[]
+const char *emsg();
+int alloc_pinned(void **pHost, size_t size);
+int is_device_pointer(const void *ptr);
+// end::more[]
+
+// tag::api[]
+int GetSymbolAddress(void **devPtr, const void *symbol);
+int Malloc(void **p, size_t);
+int MemcpyToSymbol(const void *symbol, const void *src, size_t count, size_t offset=0, int kind=MemcpyHostToDevice);
+int MemcpyFromSymbol(void *dst, const void *symbol, size_t count, size_t offset=0, int kind=MemcpyDeviceToHost);
+int HostGetDevicePointer(void **pDevice, void *pHost, unsigned int flags);
+int Memcpy (void *dst, const void *src, size_t count, int kind);
+int MemsetAsync (void *devPtr, int value, size_t count, Stream_t stream=0);
+int Memset (void *devPtr, int value, size_t count);
+int MemcpyAsync (void * dst, const void * src, size_t count, int kind, Stream_t stream = 0);
+int Free (void *devPtr);
+int FreeHost (void *hstPtr);
+int DeviceSynchronize (void);
+int PeekAtLastError(void);
+// end::api[]
+}
+/* end src/d/api.h */
 /* begin src/d/ker.h */
 #if   defined(DEV_CUDA)
 /* begin src/d/cuda/ker.h */
@@ -100353,7 +124586,61 @@ void error_abort();
 
 void error_print_stack();
 /* end src/utils/error.h */
-/* already included: src/inc/def.h */
+/* begin src/inc/def.h */
+/* solvent colors */
+#define XMACRO_COLOR(_)                         \
+    _(BLUE)                                     \
+    _(RED)
+
+#define ENUM_COLOR(a) a##_COLOR
+#define make_enum_color(a) ENUM_COLOR(a) ,
+#ifndef UDX_DEF_ENUMS_DEFINED
+#define UDX_DEF_ENUMS_DEFINED
+enum {
+    XMACRO_COLOR(make_enum_color)
+    N_COLOR
+};
+#undef make_enum_color
+
+enum {
+    /* wall margins */
+    XWM = 6,
+    YWM = 6,
+    ZWM = 6,
+
+    SAFETY_FACTOR_MAXP = 3,
+
+    /* maximum number of particles per solid */
+    MAX_PSOLID_NUM = 12000,
+
+    /* maximum number of solids per node */
+    MAX_SOLIDS = 100,
+
+    /* maximum number of object types (solid, rbc, ...) */
+    MAX_MBR_TYPES = 2,
+    MAX_RIG_TYPES = 2,
+    MAX_OBJ_TYPES = MAX_MBR_TYPES + MAX_RIG_TYPES,
+
+    /* maximum number density of particles of the objects */
+    MAX_OBJ_DENSITY = 30,
+
+    /* maximum number of red blood cells per node */
+    MAX_CELL_NUM = 1500,
+
+    /* maximum texture size in bytes */
+    MAX_TEXO_SIZE = 100000000,
+
+    /* safety factor for dpd halo interactions */
+    HSAFETY_FACTOR = 10,
+
+    /* safety factor for odist fragments */
+    ODSTR_FACTOR = 3,
+};
+#endif
+
+/* for the spring forces r = min(lmax*RBC_SPRING_CAP, r) */
+#define RBC_SPRING_CAP (0.99)
+/* end src/inc/def.h */
 /* begin src/utils/msg.h */
 // tag::int[]
 void msg_ini(int rank); // <1>
@@ -100406,7 +124693,16 @@ void check(int code, const char *file, int line);
 /* [k]ernel [l]aunch macros */
 
 #if    defined(KL_RELEASE)
-/* already included: src/utils/kl/release.h */
+/* begin src/utils/kl/release.h */
+#define KL_BEFORE(s, C) if (!kl::safe(ESC C)) continue;
+#define KL_CALL(F, C, A) F<<<ESC C>>>A
+#define KL_AFTER(s)
+
+#ifndef UDX_KL_RELEASE_FUNCTIONS_DEFINED
+#define UDX_KL_RELEASE_FUNCTIONS_DEFINED
+namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
+#endif
+/* end src/utils/kl/release.h */
 #elif  defined(KL_NONE)
 /* begin src/utils/kl/none.h */
 #define KL_BEFORE(s, C)
@@ -100431,7 +124727,18 @@ namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
   #error KL_* is undefined
 #endif
 
-/* already included: src/utils/kl/common.h */
+/* begin src/utils/kl/common.h */
+namespace kl {
+#pragma once
+
+inline int safe0(dim3 i, dim3 j) {
+    msg(i.x, i.y, i.z,   j.x, j.y, j.z);
+    return i.x>0 && i.y>0 && i.z>0   &&   j.x>0 && j.y>0 && j.z>0;
+}
+inline int safe(dim3 i, dim3 j)                    { return safe0(i, j); }
+inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
+}
+/* end src/utils/kl/common.h */
 /* begin src/utils/kl/macro.h */
 #define ESC(...) __VA_ARGS__
 #define KL(F, C, A)                             \
@@ -100497,7 +124804,62 @@ int status2errcode(MPI_Status *status);
 }
 /* end src/mpi/wrapper.h */
 
-/* already included: src/inc/type.h */
+/* begin src/inc/type.h */
+#pragma once
+
+template <typename T, int N>
+struct Sarray { /* [s]tatic array */
+    T d[N];
+};
+
+struct Particle {
+    float r[3], v[3];
+};
+
+struct Rigid {
+    float Iinv[6],            /* moment of inertia            6        */
+        mass,                 /* mass of the solid            7        */
+        com[3],               /* [c]enter [o]f [m]ass         10       */
+        v[3], om[3],          /* linear and angular velocity  13 16    */
+        e0[3], e1[3], e2[3],  /* local referential            19 22 25 */
+        fo[3], to[3],         /* force, torque                28 31    */
+        id;                   /* id of the solid              32       */
+};
+
+struct Force {
+    float f[3];
+};
+
+struct Momentum {
+    float P[3], L[3]; /* linear and angular momentum */
+};
+
+struct Positioncp {
+    float rc[3]; /* current position  */
+    float rp[3]; /* previous position */
+};
+
+typedef Sarray<int, 26>       int26;
+typedef Sarray<int, 27>       int27;
+
+typedef Sarray<int*, 26>     intp26;
+typedef Sarray<Particle*, 26> Pap26;
+typedef Sarray<Force*,    26> Fop26;
+typedef Sarray<Momentum*, 26> Mop26;
+typedef Sarray<Positioncp*, 26> Pocpp26;
+
+/* particles wrap */
+struct PaWrap {
+    int n;
+    const Particle *pp;
+};
+
+/* forces wrap */
+struct FoWrap {
+    int n;
+    Force *ff;
+};
+/* end src/inc/type.h */
 /* begin src/inc/dev.h */
 /* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
@@ -100645,7 +125007,12 @@ void array3d_ini(Array3d**, size_t x, size_t y, size_t z);                // <1>
 void array3d_fin(Array3d*);                                               // <2>
 void array3d_copy(size_t x, size_t y, size_t z, float *D, /**/ Array3d*); // <3>
 /* end src/wall/sdf/array3d/imp.h */
-/* already included: src/wall/sdf/tex3d/type.h */
+/* begin src/wall/sdf/tex3d/type.h */
+#pragma once
+
+struct Tex3d_v { cudaTextureObject_t t; }; // <1>
+struct Tex3d   { cudaTextureObject_t t; }; // <2>
+/* end src/wall/sdf/tex3d/type.h */
 /* begin src/wall/sdf/tex3d/imp.h */
 struct Tex3d;
 struct Tex3d_v;
@@ -100715,7 +125082,11 @@ void wall_label_hst(const Sdf *sdf, int n, const Particle*, /**/ int *labels); /
 // end::int[]
 /* end src/wall/sdf/label/imp.h */
 
-/* already included: src/math/tform/type.h */
+/* begin src/math/tform/type.h */
+#pragma once
+
+struct Tform_v { float o[3], s[3]; };
+/* end src/math/tform/type.h */
 /* begin src/math/tform/imp.h */
 struct Tform;
 struct Tform_v;
@@ -100749,7 +125120,25 @@ void tform_log(Tform*);
 void tform_dump(Tform*, FILE*);
 // end::log[]
 /* end src/math/tform/imp.h */
-/* already included: src/math/tform/dev.h */
+/* begin src/math/tform/dev.h */
+#pragma once
+
+static __device__ void tform_convert_dev(const Tform_v *t, const float a0[3], /**/ float a1[3]) {
+    enum {X, Y, Z};
+    const float *o, *s;
+    o = t->o; s = t->s;
+    a1[X] = s[X]*a0[X] + o[X];
+    a1[Y] = s[Y]*a0[Y] + o[Y];
+    a1[Z] = s[Z]*a0[Z] + o[Z];
+}
+
+static __device__ void tform_spacing_dev(const Tform_v *t, /**/ float s[3]) {
+    enum {X, Y, Z};
+    s[X] = t->s[X];
+    s[Y] = t->s[Y];
+    s[Z] = t->s[Z];
+}
+/* end src/math/tform/dev.h */
 /* begin src/wall/sdf/tform/imp.h */
 struct Tform;
 struct Coords;
@@ -100762,10 +125151,97 @@ void sub2tex_ini(const Coords*, const int T[3], const int M[3], /**/ Tform*); //
 // end::int[]
 
 /* end src/wall/sdf/tform/imp.h */
-/* already included: src/algo/utils/shfl.h */
-/* already included: src/algo/utils/dev.h */
+/* begin src/algo/utils/shfl.h */
+#define _I_ static __device__
 
-/* already included: src/wall/sdf/type.h */
+#if __CUDACC_VER_MAJOR__ >= 9
+#pragma once
+
+template <typename T>
+_I_ T shfl_down(T val, unsigned int width) {
+    return __shfl_down_sync(0xFFFFFFFF, val, width);
+}
+
+template <typename T>
+_I_ T shfl_up(T val, unsigned int width) {
+    return __shfl_up_sync(0xFFFFFFFF, val, width);
+}
+template <typename T>
+_I_ T shfl(T val, unsigned int width) {
+    return __shfl_sync(0xFFFFFFFF, val, width);
+}
+#else
+template <typename T>
+_I_ T shfl_down(T val, unsigned int width) {
+    return __shfl_down(val, width);
+}
+
+template <typename T>
+_I_ T shfl_up(T val, unsigned int width) {
+    return __shfl_up(val, width);
+}
+template <typename T>
+_I_ T shfl(T val, unsigned int width) {
+    return __shfl(val, width);
+}
+#endif
+
+#undef _I_
+/* end src/algo/utils/shfl.h */
+/* begin src/algo/utils/dev.h */
+#define _S_ static __device__
+#define _I_ static __device__
+
+// tag::int[]
+#pragma once
+
+template <typename T>
+_I_ T warpReduceSum(T v)  // <1>
+// end::int[]
+{
+    for (int offset = warpSize>>1; offset > 0; offset >>= 1)
+        v += shfl_down(v, offset);
+    return v;
+}
+
+// tag::int[]
+_I_ float2 warpReduceSum(float2 val)  // <2>
+// end::int[]
+{
+    for (int offset = warpSize / 2; offset > 0; offset /= 2) {
+        val.x += shfl_down(val.x, offset);
+        val.y += shfl_down(val.y, offset);
+    }
+    return val;
+}
+
+// tag::int[]
+_I_ float3 warpReduceSum(float3 val)  // <3>
+// end::int[]
+{
+    for (int offset = warpSize/2; offset > 0; offset /= 2) {
+        val.x += shfl_down(val.x, offset);
+        val.y += shfl_down(val.y, offset);
+        val.z += shfl_down(val.z, offset);
+    }
+    return val;
+}
+
+#undef _S_
+#undef _I_
+
+/* end src/algo/utils/dev.h */
+
+/* begin src/wall/sdf/type.h */
+#pragma once
+
+/* view */
+struct Sdf_v {
+    Tex3d_v tex;
+    Tform_v t;
+    float cheap_threshold;
+};
+/* end src/wall/sdf/type.h */
 /* begin src/wall/sdf/imp.h */
 struct Sdf;
 struct Sdf_v;
@@ -100795,7 +125271,125 @@ void sdf_bounce(float dt, const WvelStep*, const Coords*, const Sdf*, int n, /**
 // end::bounce[]
 /* end src/wall/sdf/imp.h */
 
-/* already included: src/wall/sdf/dev.h */
+/* begin src/wall/sdf/dev.h */
+#pragma once
+
+#define _S_ static __device__
+#define _I_ static __device__
+
+_S_ float fetch(const Sdf_v *sdf, float i, float j, float k) {
+    return Ttex3D(float, sdf->tex.t, i, j, k);
+}
+
+_S_ int iround(float x) { return (x > 0.5) ? (x + 0.5) : (x - 0.5); }
+
+_S_ void convert(const Sdf_v *sdf, const float a[3], /**/ float b[3]) {
+    tform_convert_dev(&sdf->t, a, /**/ b);
+}
+
+_S_ void convert_floor(const Sdf_v *sdf, const float a[3], /**/ int i[3]) {
+    enum {X, Y, Z};
+    float f[3];
+    convert(sdf, a, /**/ f);
+    i[X] = int(f[X]); i[Y] = int(f[Y]); i[Z] = int(f[Z]);
+}
+
+_S_ void convert_round(const Sdf_v *sdf, const float a[3], /**/ int i[3]) {
+    enum {X, Y, Z};
+    float f[3];
+    convert(sdf, a, /**/ f);
+    i[X] = iround(f[X]); i[Y] = iround(f[Y]); i[Z] = iround(f[Z]);
+}
+
+_S_ void spacing(const Sdf_v *sdf, float s[3]) {
+    tform_spacing_dev(&sdf->t, /**/ s);
+}
+
+_S_ float3 grad(const Sdf_v *sdf, const float3 *pos) {
+    int tc[3];
+    float fcts[3], r[3] = {pos->x, pos->y, pos->z};
+    float myval, gx, gy, gz;
+    convert_floor(sdf, r, /**/ tc);
+    spacing(sdf, /**/ fcts);
+
+#define tex0(ix, iy, iz) (fetch(sdf, tc[0] + ix, tc[1] + iy, tc[2] + iz))
+    myval = tex0(0, 0, 0);
+    gx = fcts[0] * (tex0(1, 0, 0) - myval);
+    gy = fcts[1] * (tex0(0, 1, 0) - myval);
+    gz = fcts[2] * (tex0(0, 0, 1) - myval);
+#undef tex0
+    return make_float3(gx, gy, gz);
+}
+
+// tag::int[]
+_I_ float3 sdf_ugrad(const Sdf_v *texsdf, const float3 *r) // <1>
+// end::int[]
+{
+    float mag, eps;
+    float3 g;
+    eps = 1e-6;
+    g = grad(texsdf, r);
+    mag = sqrt(g.x*g.x + g.y*g.y + g.z*g.z);
+    if (mag > eps) {
+        g.x /= mag;
+        g.y /= mag;
+        g.z /= mag;
+    }
+    return g;
+}
+
+_S_ float cheap_sdf(const Sdf_v *sdf, float x, float y, float z)  {
+    int tc[3];
+    float r[3] = {x, y, z};
+    convert_round(sdf, r, /**/ tc);
+    return fetch(sdf, tc[0], tc[1], tc[2]);
+}
+
+// tag::int[]
+_I_ bool sdf_far(const Sdf_v *sdf, float x, float y, float z) // <2>
+// end::int[]
+{
+    return cheap_sdf(sdf, x, y, z) <= sdf->cheap_threshold - 1 ;
+}
+
+// tag::int[]
+_I_ float sdf_eval(const Sdf_v *sdf0, float x, float y, float z)  // <3>
+// end::int[]
+{
+    int c;
+    float s000, s001, s010, s100, s101, s011, s110, s111;
+    float s00x, s01x, s10x, s11x;
+    float s0yx, s1yx;
+    float szyx;
+    float tc0[3], tc[3], lmbd[3], r[3] = {x, y, z};
+    convert(sdf0, r, /**/ tc0);
+    for (c = 0; c < 3; ++c) {
+        lmbd[c] = tc0[c] - (int)tc0[c];
+        tc[c] = (int)tc0[c] + 0.5;
+    }
+#define tex0(ix, iy, iz) (fetch(sdf0, tc[0] + ix, tc[1] + iy, tc[2] + iz))
+    s000 = tex0(0, 0, 0), s001 = tex0(1, 0, 0), s010 = tex0(0, 1, 0);
+    s011 = tex0(1, 1, 0), s100 = tex0(0, 0, 1), s101 = tex0(1, 0, 1);
+    s110 = tex0(0, 1, 1), s111 = tex0(1, 1, 1);
+#undef tex0
+
+#define wavrg(A, B, p) A*(1-p) + p*B /* weighted average */
+    s00x = wavrg(s000, s001, lmbd[0]);
+    s01x = wavrg(s010, s011, lmbd[0]);
+    s10x = wavrg(s100, s101, lmbd[0]);
+    s11x = wavrg(s110, s111, lmbd[0]);
+
+    s0yx = wavrg(s00x, s01x, lmbd[1]);
+    s1yx = wavrg(s10x, s11x, lmbd[1]);
+
+    szyx = wavrg(s0yx, s1yx, lmbd[2]);
+#undef wavrg
+    return szyx;
+}
+
+#undef _S_
+#undef _I_
+/* end src/wall/sdf/dev.h */
 
 namespace sdf_dev {
 /* begin src/wall/sdf/dev/main.h */
@@ -101386,10 +125980,134 @@ double sdf_compute_volume(MPI_Comm comm, int3 L, const Sdf *sdf, long nsamples) 
 #include <assert.h>
 #include <mpi.h>
 
-/* already included: src/inc/conf.h */
-/* already included: src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
 
-/* already included: src/inc/def.h */
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
+
+/* begin src/inc/def.h */
+/* solvent colors */
+#define XMACRO_COLOR(_)                         \
+    _(BLUE)                                     \
+    _(RED)
+
+#define ENUM_COLOR(a) a##_COLOR
+#define make_enum_color(a) ENUM_COLOR(a) ,
+#ifndef UDX_DEF_ENUMS_DEFINED
+#define UDX_DEF_ENUMS_DEFINED
+enum {
+    XMACRO_COLOR(make_enum_color)
+    N_COLOR
+};
+#undef make_enum_color
+
+enum {
+    /* wall margins */
+    XWM = 6,
+    YWM = 6,
+    ZWM = 6,
+
+    SAFETY_FACTOR_MAXP = 3,
+
+    /* maximum number of particles per solid */
+    MAX_PSOLID_NUM = 12000,
+
+    /* maximum number of solids per node */
+    MAX_SOLIDS = 100,
+
+    /* maximum number of object types (solid, rbc, ...) */
+    MAX_MBR_TYPES = 2,
+    MAX_RIG_TYPES = 2,
+    MAX_OBJ_TYPES = MAX_MBR_TYPES + MAX_RIG_TYPES,
+
+    /* maximum number density of particles of the objects */
+    MAX_OBJ_DENSITY = 30,
+
+    /* maximum number of red blood cells per node */
+    MAX_CELL_NUM = 1500,
+
+    /* maximum texture size in bytes */
+    MAX_TEXO_SIZE = 100000000,
+
+    /* safety factor for dpd halo interactions */
+    HSAFETY_FACTOR = 10,
+
+    /* safety factor for odist fragments */
+    ODSTR_FACTOR = 3,
+};
+#endif
+
+/* for the spring forces r = min(lmax*RBC_SPRING_CAP, r) */
+#define RBC_SPRING_CAP (0.99)
+/* end src/inc/def.h */
 /* begin src/utils/msg.h */
 // tag::int[]
 void msg_ini(int rank); // <1>
@@ -101613,9 +126331,95 @@ static int   warpSize = 1;
   #error DEV_* is undefined
 #endif
 /* end src/d/ker.h */
-/* already included: src/d/api.h */
+/* begin src/d/api.h */
+#pragma once
 
-/* already included: src/inc/type.h */
+namespace d {  /* a wrapper for device API */
+typedef int Stream_t; /* TODO: streams are not supported */
+enum {MemcpyHostToHost, MemcpyHostToDevice,
+      MemcpyDeviceToHost, MemcpyDeviceToDevice,
+      MemcpyDefault};
+
+// tag::more[]
+const char *emsg();
+int alloc_pinned(void **pHost, size_t size);
+int is_device_pointer(const void *ptr);
+// end::more[]
+
+// tag::api[]
+int GetSymbolAddress(void **devPtr, const void *symbol);
+int Malloc(void **p, size_t);
+int MemcpyToSymbol(const void *symbol, const void *src, size_t count, size_t offset=0, int kind=MemcpyHostToDevice);
+int MemcpyFromSymbol(void *dst, const void *symbol, size_t count, size_t offset=0, int kind=MemcpyDeviceToHost);
+int HostGetDevicePointer(void **pDevice, void *pHost, unsigned int flags);
+int Memcpy (void *dst, const void *src, size_t count, int kind);
+int MemsetAsync (void *devPtr, int value, size_t count, Stream_t stream=0);
+int Memset (void *devPtr, int value, size_t count);
+int MemcpyAsync (void * dst, const void * src, size_t count, int kind, Stream_t stream = 0);
+int Free (void *devPtr);
+int FreeHost (void *hstPtr);
+int DeviceSynchronize (void);
+int PeekAtLastError(void);
+// end::api[]
+}
+/* end src/d/api.h */
+
+/* begin src/inc/type.h */
+#pragma once
+
+template <typename T, int N>
+struct Sarray { /* [s]tatic array */
+    T d[N];
+};
+
+struct Particle {
+    float r[3], v[3];
+};
+
+struct Rigid {
+    float Iinv[6],            /* moment of inertia            6        */
+        mass,                 /* mass of the solid            7        */
+        com[3],               /* [c]enter [o]f [m]ass         10       */
+        v[3], om[3],          /* linear and angular velocity  13 16    */
+        e0[3], e1[3], e2[3],  /* local referential            19 22 25 */
+        fo[3], to[3],         /* force, torque                28 31    */
+        id;                   /* id of the solid              32       */
+};
+
+struct Force {
+    float f[3];
+};
+
+struct Momentum {
+    float P[3], L[3]; /* linear and angular momentum */
+};
+
+struct Positioncp {
+    float rc[3]; /* current position  */
+    float rp[3]; /* previous position */
+};
+
+typedef Sarray<int, 26>       int26;
+typedef Sarray<int, 27>       int27;
+
+typedef Sarray<int*, 26>     intp26;
+typedef Sarray<Particle*, 26> Pap26;
+typedef Sarray<Force*,    26> Fop26;
+typedef Sarray<Momentum*, 26> Mop26;
+typedef Sarray<Positioncp*, 26> Pocpp26;
+
+/* particles wrap */
+struct PaWrap {
+    int n;
+    const Particle *pp;
+};
+
+/* forces wrap */
+struct FoWrap {
+    int n;
+    Force *ff;
+};
+/* end src/inc/type.h */
 /* begin src/inc/dev.h */
 /* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
@@ -101660,7 +126464,16 @@ static int   warpSize = 1;
 /* [k]ernel [l]aunch macros */
 
 #if    defined(KL_RELEASE)
-/* already included: src/utils/kl/release.h */
+/* begin src/utils/kl/release.h */
+#define KL_BEFORE(s, C) if (!kl::safe(ESC C)) continue;
+#define KL_CALL(F, C, A) F<<<ESC C>>>A
+#define KL_AFTER(s)
+
+#ifndef UDX_KL_RELEASE_FUNCTIONS_DEFINED
+#define UDX_KL_RELEASE_FUNCTIONS_DEFINED
+namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
+#endif
+/* end src/utils/kl/release.h */
 #elif  defined(KL_NONE)
 /* begin src/utils/kl/none.h */
 #define KL_BEFORE(s, C)
@@ -101685,7 +126498,18 @@ namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
   #error KL_* is undefined
 #endif
 
-/* already included: src/utils/kl/common.h */
+/* begin src/utils/kl/common.h */
+namespace kl {
+#pragma once
+
+inline int safe0(dim3 i, dim3 j) {
+    msg(i.x, i.y, i.z,   j.x, j.y, j.z);
+    return i.x>0 && i.y>0 && i.z>0   &&   j.x>0 && j.y>0 && j.z>0;
+}
+inline int safe(dim3 i, dim3 j)                    { return safe0(i, j); }
+inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
+}
+/* end src/utils/kl/common.h */
 /* begin src/utils/kl/macro.h */
 #define ESC(...) __VA_ARGS__
 #define KL(F, C, A)                             \
@@ -101699,10 +126523,46 @@ namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
 /* TODO: header includes header */
 /* end src/utils/kl.h */
 
-/* already included: src/math/tform/type.h */
-/* already included: src/math/tform/dev.h */
-/* already included: src/wall/sdf/tex3d/type.h */
-/* already included: src/wall/sdf/type.h */
+/* begin src/math/tform/type.h */
+#pragma once
+
+struct Tform_v { float o[3], s[3]; };
+/* end src/math/tform/type.h */
+/* begin src/math/tform/dev.h */
+#pragma once
+
+static __device__ void tform_convert_dev(const Tform_v *t, const float a0[3], /**/ float a1[3]) {
+    enum {X, Y, Z};
+    const float *o, *s;
+    o = t->o; s = t->s;
+    a1[X] = s[X]*a0[X] + o[X];
+    a1[Y] = s[Y]*a0[Y] + o[Y];
+    a1[Z] = s[Z]*a0[Z] + o[Z];
+}
+
+static __device__ void tform_spacing_dev(const Tform_v *t, /**/ float s[3]) {
+    enum {X, Y, Z};
+    s[X] = t->s[X];
+    s[Y] = t->s[Y];
+    s[Z] = t->s[Z];
+}
+/* end src/math/tform/dev.h */
+/* begin src/wall/sdf/tex3d/type.h */
+#pragma once
+
+struct Tex3d_v { cudaTextureObject_t t; }; // <1>
+struct Tex3d   { cudaTextureObject_t t; }; // <2>
+/* end src/wall/sdf/tex3d/type.h */
+/* begin src/wall/sdf/type.h */
+#pragma once
+
+/* view */
+struct Sdf_v {
+    Tex3d_v tex;
+    Tform_v t;
+    float cheap_threshold;
+};
+/* end src/wall/sdf/type.h */
 /* begin src/wall/sdf/imp.h */
 struct Sdf;
 struct Sdf_v;
@@ -101731,9 +126591,142 @@ double sdf_compute_volume(MPI_Comm, int3 L, const Sdf*, long nsamples);         
 void sdf_bounce(float dt, const WvelStep*, const Coords*, const Sdf*, int n, /**/ Particle*);
 // end::bounce[]
 /* end src/wall/sdf/imp.h */
-/* already included: src/wall/sdf/dev.h */
+/* begin src/wall/sdf/dev.h */
+#pragma once
 
-/* already included: src/wall/sdf/label/imp.h */
+#define _S_ static __device__
+#define _I_ static __device__
+
+_S_ float fetch(const Sdf_v *sdf, float i, float j, float k) {
+    return Ttex3D(float, sdf->tex.t, i, j, k);
+}
+
+_S_ int iround(float x) { return (x > 0.5) ? (x + 0.5) : (x - 0.5); }
+
+_S_ void convert(const Sdf_v *sdf, const float a[3], /**/ float b[3]) {
+    tform_convert_dev(&sdf->t, a, /**/ b);
+}
+
+_S_ void convert_floor(const Sdf_v *sdf, const float a[3], /**/ int i[3]) {
+    enum {X, Y, Z};
+    float f[3];
+    convert(sdf, a, /**/ f);
+    i[X] = int(f[X]); i[Y] = int(f[Y]); i[Z] = int(f[Z]);
+}
+
+_S_ void convert_round(const Sdf_v *sdf, const float a[3], /**/ int i[3]) {
+    enum {X, Y, Z};
+    float f[3];
+    convert(sdf, a, /**/ f);
+    i[X] = iround(f[X]); i[Y] = iround(f[Y]); i[Z] = iround(f[Z]);
+}
+
+_S_ void spacing(const Sdf_v *sdf, float s[3]) {
+    tform_spacing_dev(&sdf->t, /**/ s);
+}
+
+_S_ float3 grad(const Sdf_v *sdf, const float3 *pos) {
+    int tc[3];
+    float fcts[3], r[3] = {pos->x, pos->y, pos->z};
+    float myval, gx, gy, gz;
+    convert_floor(sdf, r, /**/ tc);
+    spacing(sdf, /**/ fcts);
+
+#define tex0(ix, iy, iz) (fetch(sdf, tc[0] + ix, tc[1] + iy, tc[2] + iz))
+    myval = tex0(0, 0, 0);
+    gx = fcts[0] * (tex0(1, 0, 0) - myval);
+    gy = fcts[1] * (tex0(0, 1, 0) - myval);
+    gz = fcts[2] * (tex0(0, 0, 1) - myval);
+#undef tex0
+    return make_float3(gx, gy, gz);
+}
+
+// tag::int[]
+_I_ float3 sdf_ugrad(const Sdf_v *texsdf, const float3 *r) // <1>
+// end::int[]
+{
+    float mag, eps;
+    float3 g;
+    eps = 1e-6;
+    g = grad(texsdf, r);
+    mag = sqrt(g.x*g.x + g.y*g.y + g.z*g.z);
+    if (mag > eps) {
+        g.x /= mag;
+        g.y /= mag;
+        g.z /= mag;
+    }
+    return g;
+}
+
+_S_ float cheap_sdf(const Sdf_v *sdf, float x, float y, float z)  {
+    int tc[3];
+    float r[3] = {x, y, z};
+    convert_round(sdf, r, /**/ tc);
+    return fetch(sdf, tc[0], tc[1], tc[2]);
+}
+
+// tag::int[]
+_I_ bool sdf_far(const Sdf_v *sdf, float x, float y, float z) // <2>
+// end::int[]
+{
+    return cheap_sdf(sdf, x, y, z) <= sdf->cheap_threshold - 1 ;
+}
+
+// tag::int[]
+_I_ float sdf_eval(const Sdf_v *sdf0, float x, float y, float z)  // <3>
+// end::int[]
+{
+    int c;
+    float s000, s001, s010, s100, s101, s011, s110, s111;
+    float s00x, s01x, s10x, s11x;
+    float s0yx, s1yx;
+    float szyx;
+    float tc0[3], tc[3], lmbd[3], r[3] = {x, y, z};
+    convert(sdf0, r, /**/ tc0);
+    for (c = 0; c < 3; ++c) {
+        lmbd[c] = tc0[c] - (int)tc0[c];
+        tc[c] = (int)tc0[c] + 0.5;
+    }
+#define tex0(ix, iy, iz) (fetch(sdf0, tc[0] + ix, tc[1] + iy, tc[2] + iz))
+    s000 = tex0(0, 0, 0), s001 = tex0(1, 0, 0), s010 = tex0(0, 1, 0);
+    s011 = tex0(1, 1, 0), s100 = tex0(0, 0, 1), s101 = tex0(1, 0, 1);
+    s110 = tex0(0, 1, 1), s111 = tex0(1, 1, 1);
+#undef tex0
+
+#define wavrg(A, B, p) A*(1-p) + p*B /* weighted average */
+    s00x = wavrg(s000, s001, lmbd[0]);
+    s01x = wavrg(s010, s011, lmbd[0]);
+    s10x = wavrg(s100, s101, lmbd[0]);
+    s11x = wavrg(s110, s111, lmbd[0]);
+
+    s0yx = wavrg(s00x, s01x, lmbd[1]);
+    s1yx = wavrg(s10x, s11x, lmbd[1]);
+
+    szyx = wavrg(s0yx, s1yx, lmbd[2]);
+#undef wavrg
+    return szyx;
+}
+
+#undef _S_
+#undef _I_
+/* end src/wall/sdf/dev.h */
+
+/* begin src/wall/sdf/label/imp.h */
+#pragma once
+
+enum {
+    // tag::enum[]
+    LABEL_BULK,  /* remains in bulk */
+    LABEL_WALL,  /* becomes wall particle */
+    LABEL_DEEP   /* deep inside the wall */
+    // end::enum[]
+};
+
+// tag::int[]
+void wall_label_dev(const Sdf *sdf, int n, const Particle*, /**/ int *labels); // <1>
+void wall_label_hst(const Sdf *sdf, int n, const Particle*, /**/ int *labels); // <2>
+// end::int[]
+/* end src/wall/sdf/label/imp.h */
 
 namespace sdf_label_dev {
 /* begin src/wall/sdf/label/dev/main.h */
@@ -102073,10 +127066,111 @@ void wall_label_hst(const Sdf *sdf, int n, const Particle *pp, /**/ int *hst) {
 /* begin src/wall/sdf/tex3d/imp.cu */
 #include <stdio.h>
 
-/* already included: src/inc/conf.h */
-/* already included: src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
 
-/* already included: src/d/api.h */
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
+
+/* begin src/d/api.h */
+#pragma once
+
+namespace d {  /* a wrapper for device API */
+typedef int Stream_t; /* TODO: streams are not supported */
+enum {MemcpyHostToHost, MemcpyHostToDevice,
+      MemcpyDeviceToHost, MemcpyDeviceToDevice,
+      MemcpyDefault};
+
+// tag::more[]
+const char *emsg();
+int alloc_pinned(void **pHost, size_t size);
+int is_device_pointer(const void *ptr);
+// end::more[]
+
+// tag::api[]
+int GetSymbolAddress(void **devPtr, const void *symbol);
+int Malloc(void **p, size_t);
+int MemcpyToSymbol(const void *symbol, const void *src, size_t count, size_t offset=0, int kind=MemcpyHostToDevice);
+int MemcpyFromSymbol(void *dst, const void *symbol, size_t count, size_t offset=0, int kind=MemcpyDeviceToHost);
+int HostGetDevicePointer(void **pDevice, void *pHost, unsigned int flags);
+int Memcpy (void *dst, const void *src, size_t count, int kind);
+int MemsetAsync (void *devPtr, int value, size_t count, Stream_t stream=0);
+int Memset (void *devPtr, int value, size_t count);
+int MemcpyAsync (void * dst, const void * src, size_t count, int kind, Stream_t stream = 0);
+int Free (void *devPtr);
+int FreeHost (void *hstPtr);
+int DeviceSynchronize (void);
+int PeekAtLastError(void);
+// end::api[]
+}
+/* end src/d/api.h */
 
 /* begin src/utils/imp.h */
 // tag::mem[]
@@ -102179,9 +127273,21 @@ void check(int rc, const char *file, int line);
 /* TODO: header includes header */
 /* end src/utils/cc.h */
 
-/* already included: src/wall/sdf/array3d/type.h */
+/* begin src/wall/sdf/array3d/type.h */
+#pragma once
 
-/* already included: src/wall/sdf/tex3d/type.h */
+struct Array3d {
+    cudaArray_t a;  // <1>
+    size_t x, y, z; // <2>
+};
+/* end src/wall/sdf/array3d/type.h */
+
+/* begin src/wall/sdf/tex3d/type.h */
+#pragma once
+
+struct Tex3d_v { cudaTextureObject_t t; }; // <1>
+struct Tex3d   { cudaTextureObject_t t; }; // <2>
+/* end src/wall/sdf/tex3d/type.h */
 /* begin src/wall/sdf/tex3d/imp.h */
 struct Tex3d;
 struct Tex3d_v;
@@ -103244,7 +128350,61 @@ void conf_write_history(const Config *cfg, FILE *stream); // <2>
 // end::dump[]
 /* end src/conf/imp.h */
 
-/* already included: src/wall/wvel/imp.h */
+/* begin src/wall/wvel/imp.h */
+#pragma once
+
+struct Wvel;
+struct WvelStep;
+
+struct WvelCste_v;
+struct WvelShear_v;
+struct WvelHS_v;
+
+struct float3;
+struct Config;
+
+// tag::enum[]
+enum {
+    WALL_VEL_V_CSTE,
+    WALL_VEL_V_SHEAR,
+    WALL_VEL_V_HS,
+};
+// end::enum[]
+
+// tag::mem[]
+void wvel_ini(Wvel **wv);
+void wvel_fin(Wvel *wv);
+
+void wvel_step_ini(WvelStep **wv);
+void wvel_step_fin(WvelStep *wv);
+// end::mem[]
+
+// tag::ini[]
+void wvel_set_cste(float3 u, Wvel *vw);
+void wvel_set_shear(float gdot, int vdir, int gdir, int half, Wvel *vw);
+void wvel_set_shear_sin(float gdot, int vdir, int gdir, int half, float w, Wvel *vw);
+void wvel_set_hs(float u, float h, Wvel *vw);
+void wvel_set_timestep(float dt, Wvel *vw);
+// end::ini[]
+
+// tag::cnf[]
+void wvel_set_conf(const Config *cfg, Wvel *vw);
+// end::cnf[]
+
+// tag::step[]
+void wvel_get_step(float t, const Wvel *wv, /**/ WvelStep *);
+// end::step[]
+
+// tag::get[]
+int wvel_get_type(const WvelStep *w);
+// end::get[]
+
+// tag::view[]
+void wvel_get_view(const WvelStep *w, /**/ WvelCste_v *v);
+void wvel_get_view(const WvelStep *w, /**/ WvelShear_v *v);
+void wvel_get_view(const WvelStep *w, /**/ WvelHS_v *v);
+// end::view[]
+/* end src/wall/wvel/imp.h */
 
 void wvel_set_conf(const Config *cfg, Wvel *vw) {
     const char *type;
@@ -103590,7 +128750,42 @@ void wvel_set_conf(const Config *cfg, Wvel *vw) {
 #include <vector_types.h>
 #include <assert.h>
 
-/* already included: src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
 
 /* begin src/utils/error.h */
 #define ERR(fmt, ...)  do {                                     \
@@ -103741,8 +128936,83 @@ int coords_size(const Coords *c);
 // end::int[]
 /* end src/coords/imp.h */
 
-/* already included: src/wall/wvel/type.h */
-/* already included: src/wall/wvel/imp.h */
+/* begin src/wall/wvel/type.h */
+#pragma once
+
+/* view structures                      */
+/* (what is passed to device functions) */
+
+struct WvelCste_v {
+    float3 u;
+};
+
+struct WvelShear_v {
+    float gdot;     // shear rate
+    int vdir, gdir; // direction of the flow and gradient
+    int half;       // only half is moving ?
+};
+
+struct WvelHS_v {
+    float u; // radial max inflow
+    float h; // height of the channel
+};
+
+/* end src/wall/wvel/type.h */
+/* begin src/wall/wvel/imp.h */
+#pragma once
+
+struct Wvel;
+struct WvelStep;
+
+struct WvelCste_v;
+struct WvelShear_v;
+struct WvelHS_v;
+
+struct float3;
+struct Config;
+
+// tag::enum[]
+enum {
+    WALL_VEL_V_CSTE,
+    WALL_VEL_V_SHEAR,
+    WALL_VEL_V_HS,
+};
+// end::enum[]
+
+// tag::mem[]
+void wvel_ini(Wvel **wv);
+void wvel_fin(Wvel *wv);
+
+void wvel_step_ini(WvelStep **wv);
+void wvel_step_fin(WvelStep *wv);
+// end::mem[]
+
+// tag::ini[]
+void wvel_set_cste(float3 u, Wvel *vw);
+void wvel_set_shear(float gdot, int vdir, int gdir, int half, Wvel *vw);
+void wvel_set_shear_sin(float gdot, int vdir, int gdir, int half, float w, Wvel *vw);
+void wvel_set_hs(float u, float h, Wvel *vw);
+void wvel_set_timestep(float dt, Wvel *vw);
+// end::ini[]
+
+// tag::cnf[]
+void wvel_set_conf(const Config *cfg, Wvel *vw);
+// end::cnf[]
+
+// tag::step[]
+void wvel_get_step(float t, const Wvel *wv, /**/ WvelStep *);
+// end::step[]
+
+// tag::get[]
+int wvel_get_type(const WvelStep *w);
+// end::get[]
+
+// tag::view[]
+void wvel_get_view(const WvelStep *w, /**/ WvelCste_v *v);
+void wvel_get_view(const WvelStep *w, /**/ WvelShear_v *v);
+void wvel_get_view(const WvelStep *w, /**/ WvelHS_v *v);
+// end::view[]
+/* end src/wall/wvel/imp.h */
 
 /* begin src/wall/wvel/imp/type.h */
 /* data stored on the host                       */
@@ -104231,8 +129501,78 @@ void wvel_get_view(const WvelStep *w, /**/ WvelHS_v *v) {
 #include <mpi.h>
 #include <stdio.h>
 
-/* already included: src/inc/conf.h */
-/* already included: src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
 
 /* begin src/utils/msg.h */
 // tag::int[]
