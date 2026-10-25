@@ -34,8 +34,8 @@ io b
             path.write_text(text)
             units = split_flat.split_text(text)
 
-        self.assertEqual(set(units), {"api", "support", "core", "io"})
-        self.assertEqual(units["support"].count("libconfig implementation"), 1)
+        self.assertEqual(set(units), {"api", "libconfig", "support", "core", "io"})
+        self.assertEqual(units["libconfig"].count("libconfig implementation"), 1)
         self.assertEqual(units["support"].count("bop implementation"), 1)
         self.assertEqual(units["core"].count("core a"), 1)
         self.assertEqual(units["io"].count("io b"), 1)

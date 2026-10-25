@@ -1,9 +1,11 @@
-# Build the checked-in single translation unit.
+# Build one executable from generated, large flat translation units.
 
 ROOT := $(abspath .)
 BUILD := $(ROOT)/build/concat
 FLAT := $(ROOT)/udx.flat.cu
 TARGET := $(BUILD)/udx
+UNIT_DIR := $(BUILD)/units
+OBJ_DIR := $(BUILD)/obj
 
 NVCC ?= nvcc
 CCBIN ?= mpicxx
@@ -28,12 +30,28 @@ NVCCFLAGS += -std=c++11 $(OPT) -use_fast_math -restrict
 NVCC_LINK_LIBS := $(filter-out -Wl%,$(LIBS))
 MPI_LINK_LIBS := $(filter-out -Wl% -pthread,$(shell $(CCBIN) --showme:link 2>/dev/null)) -lopen-rte -lopen-pal
 
+-include $(UNIT_DIR)/units.mk
+UNIT_OBJECTS := $(patsubst $(UNIT_DIR)/%.cu,$(OBJ_DIR)/%.o,$(UNIT_SOURCES))
+DEVICE_LINK := $(BUILD)/device-link.o
+
 all: $(TARGET)
 
-$(TARGET): $(FLAT) | $(BUILD)
-	$(NVCC) $(ARCH) -ccbin $(CCBIN) $(NVCCFLAGS) $(CPPFLAGS) $(CXXFLAGS) $(FLAT) $(NVCC_LINK_LIBS) $(MPI_LINK_LIBS) -lcudart -lcurand -o $@
+$(TARGET): $(UNIT_OBJECTS) $(DEVICE_LINK) | $(BUILD)
+	$(NVCC) $(ARCH) -ccbin $(CCBIN) $(NVCCFLAGS) $(CPPFLAGS) $(CXXFLAGS) $(UNIT_OBJECTS) $(DEVICE_LINK) $(NVCC_LINK_LIBS) $(MPI_LINK_LIBS) -lcudart -lcurand -o $@
+
+$(DEVICE_LINK): $(UNIT_OBJECTS) | $(BUILD)
+	$(NVCC) $(ARCH) -ccbin $(CCBIN) -dlink $(UNIT_OBJECTS) -o $@
+
+$(UNIT_DIR)/units.mk: $(FLAT) tools/split-flat.py | $(UNIT_DIR)
+	python3 tools/split-flat.py --input $(FLAT) --out $(UNIT_DIR)
+
+$(OBJ_DIR)/%.o: $(UNIT_DIR)/%.cu $(UNIT_DIR)/units.mk | $(OBJ_DIR)
+	$(NVCC) $(ARCH) -ccbin $(CCBIN) $(NVCCFLAGS) $(CPPFLAGS) -I$(UNIT_DIR) $(CXXFLAGS) -dc -c $< -o $@
 
 $(BUILD):
+	mkdir -p $@
+
+$(UNIT_DIR) $(OBJ_DIR):
 	mkdir -p $@
 
 clean:

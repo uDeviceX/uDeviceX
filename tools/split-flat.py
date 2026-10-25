@@ -42,7 +42,8 @@ def split_text(text: str) -> dict[str, str]:
     bop_source = "/* begin bop/src/bop_common.cpp */"
     bop_end = "/* end bundled BOP */"
 
-    support_parts = []
+    libconfig_support = ""
+    bop_support = ""
     api_parts = []
     if lib_start in text:
         lib = _block(text, lib_start, lib_end)
@@ -53,13 +54,13 @@ def split_text(text: str) -> dict[str, str]:
             + lib_source,
             1,
         )
-        support_parts.append(lib_support)
+        libconfig_support = lib_support
         api_parts.append(
             _without_wrapper(lib[:lib.index(lib_source)] if lib_source in lib else lib)
         )
     if bop_start in text:
         bop = _block(text, bop_start, bop_end)
-        support_parts.append(bop)
+        bop_support = bop
         api_parts.append(bop[:bop.index(bop_source)] if bop_source in bop else bop)
 
     matches = list(SOURCE.finditer(text))
@@ -70,7 +71,7 @@ def split_text(text: str) -> dict[str, str]:
         units.setdefault(name, []).append(text[match.start():end])
 
     prefix = "// generated from udx.flat.cu\n#include \"udx.api.cuh\"\n\n"
-    result = {"support": "\n\n".join(support_parts)}
+    result = {"libconfig": libconfig_support, "support": bop_support}
     result.update({name: prefix + "\n\n".join(parts) for name, parts in units.items()})
     result["api"] = "#pragma once\n" + "\n\n".join(api_parts)
     return result
@@ -88,6 +89,10 @@ def main() -> int:
     (output / "udx.api.cuh").write_text(units.pop("api"))
     for name, content in units.items():
         (output / f"udx.{name}.cu").write_text(content)
+    names = sorted(units)
+    (output / "units.mk").write_text(
+        "UNIT_SOURCES := " + " ".join(f"$(UNIT_DIR)/udx.{name}.cu" for name in names) + "\n"
+    )
     print(" ".join(sorted(units)))
     return 0
 
