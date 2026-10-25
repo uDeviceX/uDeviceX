@@ -30,29 +30,22 @@ def _header(text: str, path: str) -> str:
     return _block(text, begin, end)
 
 
-def _remove_headers(text: str, paths: tuple[str, ...]) -> str:
-    for path in paths:
-        pattern = re.compile(
-            rf"/\* begin {re.escape(path)} \*/.*?/\* end {re.escape(path)} \*/\n?",
-            re.S,
-        )
-        text = pattern.sub("", text)
-    return text
-
-
-def _common_header_paths(text: str) -> tuple[str, ...]:
-    selected: list[tuple[int, int, str]] = []
+def _dedup_headers(text: str) -> str:
+    seen: set[str] = set()
+    ranges: list[tuple[int, int]] = []
+    preserve = {"src/utils/error.h", "src/utils/kl.h", "src/utils/cc.h"}
     for match in HEADER.finditer(text):
         path = match.group(1)
-        if any(start <= match.start() < end for start, end, _ in selected):
+        if path in preserve or path not in seen:
+            seen.add(path)
             continue
         end_marker = f"/* end {path} */"
         end = text.find(end_marker, match.end())
-        if end < 0:
-            continue
-        selected.append((match.start(), end + len(end_marker), path))
-    selected.sort()
-    return tuple(path for _, _, path in selected)
+        if end >= 0:
+            ranges.append((match.start(), end + len(end_marker)))
+    for start, end in reversed(ranges):
+        text = text[:start] + text[end:]
+    return text
 
 
 def _unit_name(path: str) -> str:
@@ -102,14 +95,6 @@ def split_text(text: str) -> dict[str, str]:
         name = _unit_name(match.group(1))
         units.setdefault(name, []).append(text[match.start():end])
 
-    common_paths = _common_header_paths(text)
-    common = []
-    for path in common_paths:
-        try:
-            common.append(_header(text, path))
-        except ValueError:
-            pass
-    api_parts.extend(common)
     prefix = (
         "// generated from udx.flat.cu\n"
         "#define DEV_CUDA\n#define CC_RELEASE\n#define KL_RELEASE\n"
@@ -118,9 +103,7 @@ def split_text(text: str) -> dict[str, str]:
     result = {"libconfig": libconfig_support, "support": bop_support}
     result.update(
         {
-            name: prefix + "\n\n".join(
-                _remove_headers(part, common_paths) for part in parts
-            )
+            name: prefix + _dedup_headers("\n\n".join(parts))
             for name, parts in units.items()
         }
     )
