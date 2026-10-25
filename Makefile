@@ -87,9 +87,8 @@ OBJECTS = \
  udx.utils-all.o \
  udx.wall-exch.o \
  udx.wall-force.o \
- udx.wall-sdf-grid-transform.o \
+ udx.wall-sdf-transform-velocity.o \
  udx.wall-sdf-bounce.o \
- udx.wall-sdf-velocity.o \
  udx.wall-sdf-label.o \
  udx.wall-sdf.o \
  udx.wall.o

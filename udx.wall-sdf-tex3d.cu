@@ -42,6 +42,8 @@
 /* end src/inc/conf.h */
 
 
+#ifndef UDX_WALL_SDF_DEVICE_API_COMMON
+#define UDX_WALL_SDF_DEVICE_API_COMMON
 /* begin src/d/api.h */
 namespace d {  /* a wrapper for device API */
 typedef int Stream_t; /* TODO: streams are not supported */
@@ -72,6 +74,7 @@ int PeekAtLastError(void);
 // end::api[]
 }
 /* end src/d/api.h */
+#endif
 
 /* begin src/utils/imp.h */
 // tag::mem[]
@@ -174,12 +177,15 @@ void check(int rc, const char *file, int line);
 /* TODO: header includes header */
 /* end src/utils/cc.h */
 
+#ifndef UDX_WALL_SDF_ARRAY3D_TYPE
+#define UDX_WALL_SDF_ARRAY3D_TYPE
 /* begin src/wall/sdf/array3d/type.h */
 struct Array3d {
     cudaArray_t a;  // <1>
     size_t x, y, z; // <2>
 };
 /* end src/wall/sdf/array3d/type.h */
+#endif
 
 /* begin src/wall/sdf/tex3d/type.h */
 struct Tex3d_v { cudaTextureObject_t t; }; // <1>
