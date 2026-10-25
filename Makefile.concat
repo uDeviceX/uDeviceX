@@ -5,7 +5,11 @@ ROOT := $(abspath .)
 BUILD := $(ROOT)/build/concat
 GENERATED := $(BUILD)/udx.flat.cu
 TARGET := $(BUILD)/udx
+GROUP_BUILD := $(BUILD)/groups/$(GROUP)
+GROUP_GENERATED := $(GROUP_BUILD)/udx.flat.cu
+GROUP_OBJECT := $(GROUP_BUILD)/udx.flat.o
 
+-include $(ROOT)/src/sys.mk
 -include $(ROOT)/src/make/common.mk
 
 NVCC ?= nvcc
@@ -14,9 +18,21 @@ ARCH ?= -arch compute_90 -code sm_90
 OPT ?= -O2 -g
 
 CPPFLAGS += -I$(ROOT) -I$(ROOT)/src
+SOURCE_DIRS := $(sort $(dir $(shell tools/udx-flat plan --root $(ROOT) $(if $(GROUP),--group $(GROUP),))))
+CPPFLAGS += $(addprefix -I$(ROOT)/,$(SOURCE_DIRS))
 NVCCFLAGS += -std=c++11 $(OPT) -use_fast_math -restrict
 
 all: $(TARGET)
+
+group:
+	@test -n "$(GROUP)" || (echo "set GROUP=<top-level src group>" >&2; exit 2)
+	$(MAKE) -f Makefile.concat GROUP=$(GROUP) $(GROUP_OBJECT)
+
+$(GROUP_GENERATED): tools/udx-flat
+	tools/udx-flat generate --root $(ROOT) --group $(GROUP) --out $(GROUP_BUILD)
+
+$(GROUP_OBJECT): $(GROUP_GENERATED) | $(GROUP_BUILD)
+	$(NVCC) $(ARCH) -ccbin $(CCBIN) $(NVCCFLAGS) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@
 
 $(GENERATED): tools/udx-flat
 	tools/udx-flat generate --root $(ROOT) --out $(BUILD)
@@ -27,7 +43,10 @@ $(TARGET): $(GENERATED) | $(BUILD)
 $(BUILD):
 	mkdir -p $@
 
+$(GROUP_BUILD):
+	mkdir -p $@
+
 clean:
 	rm -rf $(BUILD)
 
-.PHONY: all clean
+.PHONY: all group clean

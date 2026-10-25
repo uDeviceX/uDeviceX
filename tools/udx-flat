@@ -21,7 +21,7 @@ def fail(message):
     return 2
 
 
-def source_files(root):
+def source_files(root, group=None):
     src = root / "src"
     if not src.is_dir():
         raise ValueError(f"missing source directory: {src}")
@@ -37,6 +37,11 @@ def source_files(root):
         if root not in resolved.parents and resolved != root:
             raise ValueError(f"source symlink escapes repository: {rel}")
         paths.append((rel.as_posix(), path))
+    if group is not None:
+        paths = [
+            item for item in paths
+            if item[0] == "src/main.cpp" or item[0].split("/")[1] == group
+        ]
     paths.sort(key=lambda item: (item[0] == "src/main.cpp", item[0]))
     if not any(rel == "src/main.cpp" for rel, _ in paths):
         raise ValueError("missing entry point src/main.cpp")
@@ -103,7 +108,7 @@ def atomic_write(path, content, binary=False):
 def command(args):
     root = pathlib.Path(args.root).resolve()
     try:
-        paths = source_files(root)
+        paths = source_files(root, args.group)
         validate(paths)
     except ValueError as exc:
         return fail(str(exc))
@@ -130,6 +135,10 @@ def main():
     for name in ("plan", "generate"):
         sub = subparsers.add_parser(name)
         sub.add_argument("--root", default=".")
+        sub.add_argument(
+            "--group",
+            help="select one top-level src group while always retaining src/main.cpp",
+        )
         if name == "generate":
             sub.add_argument("--out", default="build/flat")
         sub.set_defaults(func=command)

@@ -49,6 +49,19 @@ class UdxFlatPlanTests(unittest.TestCase):
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("multiple main", result.stderr.lower())
 
+    def test_plan_can_select_one_top_level_group_with_entry_point(self):
+        root = self.make_tree()
+        result = subprocess.run(
+            [str(TOOL), "plan", "--root", str(root), "--group", "core"],
+            text=True,
+            capture_output=True,
+        )
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(
+            result.stdout.splitlines(),
+            ["src/core/a.cpp", "src/core/b.cu", "src/main.cpp"],
+        )
+
 
 if __name__ == "__main__":
     unittest.main()
