@@ -1,43 +1,156 @@
-NVCC ?= nvcc
-CCBIN ?= mpicxx
-ARCH ?= -arch compute_90 -code sm_90
-OPT ?= -O2 -g
+# Root build for the editable CUDA compilation units.
 
-TARGET := build/udx
-UNITS := $(wildcard udx.*.cu)
-OBJECTS := $(UNITS:.cu=.o)
-DEVICE := build/device.o
+NVCC = nvcc
+CCBIN = mpicxx
+ARCH = -arch compute_90 -code sm_90
+OPT = -O2 -g
+CPPFLAGS = -I.
+NVCCFLAGS = -std=c++11 $(OPT) -use_fast_math -restrict
 
-HDF5_ROOT ?= $(firstword $(wildcard /scratch/slitvinov/build/hdf5 /scratch/slitvinov/miniforge3/pkgs/hdf5-*/))
-NVTX_INCLUDE ?= $(firstword $(wildcard /usr/local/cuda-*/targets/*/include /scratch/slitvinov/.grace/Linux_aarch64/26.3/cuda/*/targets/sbsa-linux/include))
+# Set these on the make command line when a dependency is not in a system path.
+HDF5_CPPFLAGS =
+HDF5_LDFLAGS =
+HDF5_LIBS = -lhdf5
+NVTX_CPPFLAGS =
+NVCC_LIBS =
+LIBCONFIG_LIBS =
+MPI_LIBS = -lopen-rte -lopen-pal
 
-CPPFLAGS += -I.
-ifneq ($(strip $(HDF5_ROOT)),)
-CPPFLAGS += -I$(HDF5_ROOT)/include
-LIBS += -L$(HDF5_ROOT)/lib -lhdf5
-endif
-ifneq ($(strip $(NVTX_INCLUDE)),)
-CPPFLAGS += -I$(NVTX_INCLUDE)
-endif
-LIBS += ${HDF5_LIBS} ${NVCC_LIBS} ${LIBCONFIG_LIBS}
-NVCCFLAGS := -std=c++11 $(OPT) -use_fast_math -restrict
-MPI_LIBS := $(filter-out -Wl% -pthread,$(shell $(CCBIN) --showme:link 2>/dev/null)) -lopen-rte -lopen-pal
+OBJECTS = \
+ udx.clist.o \
+ udx.cnt.o \
+ udx.color.o \
+ udx.comm.o \
+ udx.conf.o \
+ udx.coords.o \
+ udx.d.o \
+ udx.dbg.o \
+ udx.distr-common.o \
+ udx.distr-map.o \
+ udx.distr-rbc.o \
+ udx.distr-rig.o \
+ udx.exch-common.o \
+ udx.exch-flu.o \
+ udx.exch-map.o \
+ udx.exch-mesh.o \
+ udx.exch-obj.o \
+ udx.flu.o \
+ udx.fluforces-bulk.o \
+ udx.fluforces-halo.o \
+ udx.fluforces.o \
+ udx.frag.o \
+ udx.fsi.o \
+ udx.grid_sampler.o \
+ udx.he.o \
+ udx.inter-color.o \
+ udx.io-bop.o \
+ udx.io-com.o \
+ udx.io-diag-mesh.o \
+ udx.io-diag-part.o \
+ udx.io-grid-h5.o \
+ udx.io-grid-xmf.o \
+ udx.io-grid.o \
+ udx.io-mesh.o \
+ udx.io-mesh_read-edg.o \
+ udx.io-mesh_read.o \
+ udx.io-point.o \
+ udx.io-restart.o \
+ udx.io-rig.o \
+ udx.io-txt.o \
+ udx.io-vtk-mesh.o \
+ udx.io-vtk.o \
+ udx.io-write.o \
+ udx.libconfig.o \
+ udx.main.o \
+ udx.math-linal.o \
+ udx.math-rnd.o \
+ udx.math-tform.o \
+ udx.math-tri.o \
+ udx.mesh-angle.o \
+ udx.mesh-area.o \
+ udx.mesh-bbox.o \
+ udx.mesh-collision.o \
+ udx.mesh-cylindrical.o \
+ udx.mesh-dist.o \
+ udx.mesh-edg_len.o \
+ udx.mesh-eng_julicher.o \
+ udx.mesh-eng_kantor.o \
+ udx.mesh-force-kantor0.o \
+ udx.mesh-force-kantor1.o \
+ udx.mesh-gen-matrices.o \
+ udx.mesh-gen.o \
+ udx.mesh-props.o \
+ udx.mesh-scatter.o \
+ udx.mesh-spherical.o \
+ udx.mesh-tri_area.o \
+ udx.mesh-triangles.o \
+ udx.mesh-vert_area.o \
+ udx.mesh-volume.o \
+ udx.mesh_bounce.o \
+ udx.mpi.o \
+ udx.pair.o \
+ udx.rbc-adj.o \
+ udx.rbc-com.o \
+ udx.rbc-force-area_volume.o \
+ udx.rbc-force-bending-juelicher.o \
+ udx.rbc-force-bending-kantor.o \
+ udx.rbc-force-bending.o \
+ udx.rbc-force-rnd-api.o \
+ udx.rbc-force-rnd.o \
+ udx.rbc-force.o \
+ udx.rbc-params.o \
+ udx.rbc-shape.o \
+ udx.rbc-stretch.o \
+ udx.rbc.o \
+ udx.rig-gen.o \
+ udx.rig.o \
+ udx.rigid.o \
+ udx.scheme-force.o \
+ udx.scheme-move.o \
+ udx.scheme-restrain.o \
+ udx.scheme-time_line.o \
+ udx.scheme-time_step.o \
+ udx.sim-objects.o \
+ udx.sim-objinter.o \
+ udx.sim-opt.o \
+ udx.sim-walls.o \
+ udx.sim.o \
+ udx.struct-farray.o \
+ udx.struct-parray.o \
+ udx.struct-pfarrays.o \
+ udx.support.o \
+ udx.utils-nvtx.o \
+ udx.utils-string.o \
+ udx.utils.o \
+ udx.wall-exch.o \
+ udx.wall-force.o \
+ udx.wall-sdf-array3d.o \
+ udx.wall-sdf-bounce.o \
+ udx.wall-sdf-field.o \
+ udx.wall-sdf-label.o \
+ udx.wall-sdf-tex3d.o \
+ udx.wall-sdf-tform.o \
+ udx.wall-sdf.o \
+ udx.wall-wvel.o \
+ udx.wall.o
+
+TARGET = build/udx
+DEVICE = build/device.o
 
 .SUFFIXES: .cu .o
 
 .cu.o:
-	$(NVCC) $(ARCH) -ccbin $(CCBIN) $(NVCCFLAGS) $(CPPFLAGS) -dc -c $< -o $@
+	$(NVCC) $(ARCH) -ccbin $(CCBIN) $(NVCCFLAGS) $(CPPFLAGS) $(HDF5_CPPFLAGS) $(NVTX_CPPFLAGS) -dc -c $< -o $@
 
 all: $(TARGET)
 
-$(TARGET): $(OBJECTS) $(DEVICE) | build
-	$(NVCC) $(ARCH) -ccbin $(CCBIN) $(NVCCFLAGS) $(OBJECTS) $(DEVICE) $(LIBS) $(MPI_LIBS) -lcudart -lcurand -o $@
+$(TARGET): $(OBJECTS) $(DEVICE)
+	mkdir -p build
+	$(NVCC) $(ARCH) -ccbin $(CCBIN) $(NVCCFLAGS) $(OBJECTS) $(DEVICE) $(HDF5_LDFLAGS) $(HDF5_LIBS) $(MPI_LIBS) $(NVCC_LIBS) $(LIBCONFIG_LIBS) -lcudart -lcurand -o $@
 
-$(DEVICE): $(OBJECTS) | build
+$(DEVICE): $(OBJECTS)
+	mkdir -p build
 	$(NVCC) $(ARCH) -ccbin $(CCBIN) -dlink $(OBJECTS) -o $@
-
-build:
-	mkdir -p $@
 
 clean:
 	rm -f $(OBJECTS) $(DEVICE) $(TARGET)
