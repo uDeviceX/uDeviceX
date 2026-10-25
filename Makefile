@@ -70,10 +70,8 @@ OBJECTS = \
  udx.io-write.o \
  udx.libconfig.o \
  udx.main.o \
- udx.math-linal.o \
- udx.math-rnd.o \
+ udx.math.o \
  udx.math-tform.o \
- udx.math-tri.o \
  udx.mesh-geometry.o \
  udx.mesh-area.o \
  udx.mesh-collision.o \
