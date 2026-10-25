@@ -66,7 +66,7 @@ OBJECTS = \
  udx.main.o \
  udx.math.o \
  udx.mesh-geometry.o \
- udx.mesh-area.o \
+ udx.mesh-area-group.o \
  udx.mesh-collision.o \
  udx.mesh-cylindrical.o \
  udx.mesh-dist.o \
@@ -80,7 +80,6 @@ OBJECTS = \
  udx.mesh-props.o \
  udx.mesh-scatter.o \
  udx.mesh-spherical.o \
- udx.mesh-tri_area.o \
  udx.mesh-topology.o \
  udx.mesh-vert_area.o \
  udx.mesh_bounce.o \
