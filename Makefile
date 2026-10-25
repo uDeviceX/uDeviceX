@@ -52,11 +52,10 @@ OBJECTS = \
  udx.io-grid-output.o \
  udx.io-mesh.o \
  udx.io-mesh-reader.o \
- udx.io-point.o \
+ udx.io-point-write.o \
  udx.io-restart.o \
  udx.io-rig.o \
  udx.io-vtk-output.o \
- udx.io-write.o \
  udx.libconfig.o \
  udx.main.o \
  udx.math.o \
