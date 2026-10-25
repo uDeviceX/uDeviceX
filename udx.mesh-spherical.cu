@@ -121,39 +121,7 @@ void  mesh_spherical_apply(MeshSpherical*, int nm, Vectors*, /**/
 // end::interface[]
 /* end src/mesh/spherical/imp.h */
 /* begin src/mesh/spherical/imp/util.h */
-static void compute_com(int nv, Vectors *pos, /**/ double *com) {
-    enum {X, Y, Z};
-    int i;
-    float r[3];
-    KahanSum *sx, *sy, *sz;
-    kahan_sum_ini(&sx); kahan_sum_ini(&sy); kahan_sum_ini(&sz);
-    for (i = 0; i < nv; i++) {
-        UC(vectors_get(pos, i, /**/ r));
-        kahan_sum_add(sx, r[X]);
-        kahan_sum_add(sy, r[Y]);
-        kahan_sum_add(sz, r[Z]);
-    }
-    com[X] = kahan_sum_get(sx)/nv;
-    com[Y] = kahan_sum_get(sy)/nv;
-    com[Z] = kahan_sum_get(sz)/nv;
-    kahan_sum_fin(sx); kahan_sum_fin(sy); kahan_sum_fin(sz);
-}
-
-static void to_com(int nv, int offset, Vectors *pos, /**/ double *rr) {
-    enum {X, Y, Z};
-    int i;
-    float   r0[3]; /* from */
-    double *r1;    /* to */
-    double com[3];
-    UC(compute_com(nv, pos, /**/ com));
-    for (i = 0; i < nv; i++) {
-        UC(vectors_get(pos, i + offset, /**/ r0));
-        r1 = &rr[3*i];
-        r1[X] = r0[X] - com[X];
-        r1[Y] = r0[Y] - com[Y];
-        r1[Z] = r0[Z] - com[Z];
-    }
-}
+#include "udx.mesh-coordinate-common.cuh"
 /* end src/mesh/spherical/imp/util.h */
 /* begin src/mesh/spherical/imp/type.h */
 struct MeshSpherical {
@@ -183,7 +151,7 @@ static void xyz2sph(double x, double y, double z, /**/ double *pr, double *pthet
     phi = atan2(y, x);
     *pr = r; *ptheta = theta; *pphi = phi;
 }
-static void apply(int n, double *rr, /**/ double *r, double *theta, double *phi) {
+static void mesh_spherical_apply_coordinates(int n, double *rr, /**/ double *r, double *theta, double *phi) {
     enum {X, Y, Z};
     int i;
     for (i = 0; i < n; i++) {
@@ -196,8 +164,8 @@ void mesh_spherical_apply(MeshSpherical *q, int m, Vectors *pos, /**/ double *r,
     double *rr;
     nv = q->nv; rr = q->rr; offset = 0;
     for (i = 0; i < m; i++) {
-        UC(to_com(nv, offset, pos, /**/ rr));
-        apply(nv, rr, /**/ r, theta, phi);
+        UC(mesh_coordinate_to_com(nv, offset, pos, /**/ rr));
+        mesh_spherical_apply_coordinates(nv, rr, /**/ r, theta, phi);
         rr += 3*nv; r += nv; theta += nv; phi += nv; offset += nv;
     }
 }

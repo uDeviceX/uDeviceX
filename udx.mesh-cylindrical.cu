@@ -120,41 +120,7 @@ void  mesh_cylindrical_apply(MeshCylindrical*, int nm, Vectors*, /**/
                            double *r, double *phi, double *z);
 // end::interface[]
 /* end src/mesh/cylindrical/imp.h */
-/* begin src/mesh/cylindrical/imp/util.h */
-static void compute_com(int nv, Vectors *pos, /**/ double *com) {
-    enum {X, Y, Z};
-    int i;
-    float r[3];
-    KahanSum *sx, *sy, *sz;
-    kahan_sum_ini(&sx); kahan_sum_ini(&sy); kahan_sum_ini(&sz);
-    for (i = 0; i < nv; i++) {
-        UC(vectors_get(pos, i, /**/ r));
-        kahan_sum_add(sx, r[X]);
-        kahan_sum_add(sy, r[Y]);
-        kahan_sum_add(sz, r[Z]);
-    }
-    com[X] = kahan_sum_get(sx)/nv;
-    com[Y] = kahan_sum_get(sy)/nv;
-    com[Z] = kahan_sum_get(sz)/nv;
-    kahan_sum_fin(sx); kahan_sum_fin(sy); kahan_sum_fin(sz);
-}
-
-static void to_com(int nv, int offset, Vectors *pos, /**/ double *rr) {
-    enum {X, Y, Z};
-    int i;
-    float   r0[3]; /* from */
-    double *r1;    /* to */
-    double com[3];
-    UC(compute_com(nv, pos, /**/ com));
-    for (i = 0; i < nv; i++) {
-        UC(vectors_get(pos, i + offset, /**/ r0));
-        r1 = &rr[3*i];
-        r1[X] = r0[X] - com[X];
-        r1[Y] = r0[Y] - com[Y];
-        r1[Z] = r0[Z] - com[Z];
-    }
-}
-/* end src/mesh/cylindrical/imp/util.h */
+#include "udx.mesh-coordinate-common.cuh"
 /* begin src/mesh/cylindrical/imp/type.h */
 struct MeshCylindrical {
     double *rr; /* workspace for coordinates shifted to a mesh center
@@ -182,7 +148,7 @@ static void xyz2cyl(double x, double y, double z, /**/ double *pr, double *pphi,
     phi = atan2(y, x);
     *pr = r; *pphi  = phi; *pz = z;
 }
-static void apply(int n, double *rr, /**/ double *r, double *phi, double *z) {
+static void mesh_cylindrical_apply_coordinates(int n, double *rr, /**/ double *r, double *phi, double *z) {
     enum {X, Y, Z};
     int i;
     for (i = 0; i < n; i++) {
@@ -195,8 +161,8 @@ void mesh_cylindrical_apply(MeshCylindrical *q, int m, Vectors *pos, /**/ double
     double *rr;
     nv = q->nv; rr = q->rr; offset = 0;
     for (i = 0; i < m; i++) {
-        UC(to_com(nv, offset, pos, /**/ rr));
-        apply(nv, rr, /**/ r, phi, z);
+        UC(mesh_coordinate_to_com(nv, offset, pos, /**/ rr));
+        mesh_cylindrical_apply_coordinates(nv, rr, /**/ r, phi, z);
         rr += 3*nv; r += nv; phi += nv; z += nv; offset += nv;
     }
 }

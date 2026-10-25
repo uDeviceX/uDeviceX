@@ -68,7 +68,7 @@ OBJECTS = \
  udx.mesh-geometry.o \
  udx.mesh-measures.o \
  udx.mesh-collision.o \
- udx.mesh-cylindrical.o \
+ udx.mesh-coordinates.o \
  udx.mesh-dist.o \
  udx.mesh-eng_julicher.o \
  udx.mesh-eng_kantor.o \
@@ -78,7 +78,6 @@ OBJECTS = \
  udx.mesh-gen.o \
  udx.mesh-props.o \
  udx.mesh-scatter.o \
- udx.mesh-spherical.o \
  udx.mesh-topology.o \
  udx.mesh_bounce.o \
  udx.mpi.o \
