@@ -86,8 +86,7 @@ OBJECTS = \
  udx.rbc-force-bending-juelicher.o \
  udx.rbc-force-bending-kantor.o \
  udx.rbc-force-bending.o \
- udx.rbc-force-rnd-api.o \
- udx.rbc-force-rnd.o \
+ udx.rbc-force-random.o \
  udx.rbc-force.o \
  udx.rbc-params.o \
  udx.rbc-shape.o \
