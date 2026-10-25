@@ -150,6 +150,8 @@ struct WvelHS_v;
 struct float3;
 struct Config;
 
+#ifndef UDX_WALL_WVEL_ENUM
+#define UDX_WALL_WVEL_ENUM
 // tag::enum[]
 enum {
     WALL_VEL_V_CSTE,
@@ -157,6 +159,7 @@ enum {
     WALL_VEL_V_HS,
 };
 // end::enum[]
+#endif
 
 // tag::mem[]
 void wvel_ini(Wvel **wv);
@@ -403,6 +406,8 @@ int coords_size(const Coords *c);
 // end::int[]
 /* end src/coords/imp.h */
 
+#ifndef UDX_WALL_WVEL_TYPE
+#define UDX_WALL_WVEL_TYPE
 /* begin src/wall/wvel/type.h */
 /* view structures                      */
 /* (what is passed to device functions) */
@@ -423,6 +428,7 @@ struct WvelHS_v {
 };
 
 /* end src/wall/wvel/type.h */
+#endif
 
 
 /* begin src/wall/wvel/imp/type.h */

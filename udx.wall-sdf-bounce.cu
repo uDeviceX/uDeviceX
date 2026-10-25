@@ -241,6 +241,8 @@ static int   warpSize = 1;
   #error DEV_* is undefined
 #endif
 /* end src/d/ker.h */
+#ifndef UDX_WALL_SDF_DEVICE_API_COMMON
+#define UDX_WALL_SDF_DEVICE_API_COMMON
 /* begin src/d/api.h */
 namespace d {  /* a wrapper for device API */
 typedef int Stream_t; /* TODO: streams are not supported */
@@ -271,6 +273,7 @@ int PeekAtLastError(void);
 // end::api[]
 }
 /* end src/d/api.h */
+#endif
 
 /* begin src/inc/type.h */
 template <typename T, int N>
@@ -604,6 +607,8 @@ int coords_size(const Coords *c);
 // end::int[]
 /* end src/coords/imp.h */
 
+#ifndef UDX_WALL_WVEL_TYPE
+#define UDX_WALL_WVEL_TYPE
 /* begin src/wall/wvel/type.h */
 /* view structures                      */
 /* (what is passed to device functions) */
@@ -624,6 +629,7 @@ struct WvelHS_v {
 };
 
 /* end src/wall/wvel/type.h */
+#endif
 /* begin src/wall/wvel/imp.h */
 struct Wvel;
 struct WvelStep;
@@ -635,6 +641,8 @@ struct WvelHS_v;
 struct float3;
 struct Config;
 
+#ifndef UDX_WALL_WVEL_ENUM
+#define UDX_WALL_WVEL_ENUM
 // tag::enum[]
 enum {
     WALL_VEL_V_CSTE,
@@ -642,6 +650,7 @@ enum {
     WALL_VEL_V_HS,
 };
 // end::enum[]
+#endif
 
 // tag::mem[]
 void wvel_ini(Wvel **wv);
@@ -806,9 +815,14 @@ _HD_ void axpy(const T1 a, const T2 *x, /*io*/ T3 *y) {
 }
 /* end src/math/dev.h */
 
+#ifndef UDX_WALL_SDF_TFORM_TYPE
+#define UDX_WALL_SDF_TFORM_TYPE
 /* begin src/math/tform/type.h */
 struct Tform_v { float o[3], s[3]; };
 /* end src/math/tform/type.h */
+#endif
+#ifndef UDX_WALL_SDF_TFORM_DEV
+#define UDX_WALL_SDF_TFORM_DEV
 /* begin src/math/tform/dev.h */
 static __device__ void tform_convert_dev(const Tform_v *t, const float a0[3], /**/ float a1[3]) {
     enum {X, Y, Z};
@@ -826,10 +840,17 @@ static __device__ void tform_spacing_dev(const Tform_v *t, /**/ float s[3]) {
     s[Z] = t->s[Z];
 }
 /* end src/math/tform/dev.h */
+#endif
+#ifndef UDX_WALL_SDF_TEX3D_TYPE
+#define UDX_WALL_SDF_TEX3D_TYPE
+#ifndef UDX_WALL_SDF_TEX3D_TYPE
+#define UDX_WALL_SDF_TEX3D_TYPE
 /* begin src/wall/sdf/tex3d/type.h */
 struct Tex3d_v { cudaTextureObject_t t; }; // <1>
 struct Tex3d   { cudaTextureObject_t t; }; // <2>
 /* end src/wall/sdf/tex3d/type.h */
+#endif
+#endif
 /* begin src/wall/sdf/type.h */
 /* view */
 struct Sdf_v {

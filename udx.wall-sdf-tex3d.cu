@@ -187,10 +187,13 @@ struct Array3d {
 /* end src/wall/sdf/array3d/type.h */
 #endif
 
+#ifndef UDX_WALL_SDF_TEX3D_TYPE
+#define UDX_WALL_SDF_TEX3D_TYPE
 /* begin src/wall/sdf/tex3d/type.h */
 struct Tex3d_v { cudaTextureObject_t t; }; // <1>
 struct Tex3d   { cudaTextureObject_t t; }; // <2>
 /* end src/wall/sdf/tex3d/type.h */
+#endif
 /* begin src/wall/sdf/tex3d/imp.h */
 struct Tex3d;
 struct Tex3d_v;
