@@ -66,11 +66,10 @@ OBJECTS = \
  udx.main.o \
  udx.math.o \
  udx.mesh-geometry.o \
- udx.mesh-area-group.o \
+ udx.mesh-measures.o \
  udx.mesh-collision.o \
  udx.mesh-cylindrical.o \
  udx.mesh-dist.o \
- udx.mesh-length-area.o \
  udx.mesh-eng_julicher.o \
  udx.mesh-eng_kantor.o \
  udx.mesh-force-kantor0.o \
