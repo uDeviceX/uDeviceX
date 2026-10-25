@@ -58,8 +58,7 @@ OBJECTS = \
  udx.io-grid-output.o \
  udx.io-grid.o \
  udx.io-mesh.o \
- udx.io-mesh_read-edg.o \
- udx.io-mesh_read.o \
+ udx.io-mesh-reader.o \
  udx.io-point.o \
  udx.io-restart.o \
  udx.io-rig.o \
