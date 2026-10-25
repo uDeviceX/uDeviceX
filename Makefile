@@ -58,9 +58,8 @@ OBJECTS = \
  udx.main.o \
  udx.math.o \
  udx.mesh-geometry-measures.o \
- udx.mesh-collision.o \
+ udx.mesh-topology-collision.o \
  udx.mesh-coordinates-distance-generation.o \
- udx.mesh-topology.o \
  udx.mesh_bounce.o \
  udx.mpi.o \
  udx.pair.o \

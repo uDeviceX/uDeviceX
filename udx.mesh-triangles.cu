@@ -43,6 +43,8 @@
 /* end src/inc/conf.h */
 
 
+#ifndef UDX_MESH_DEVICE_API_COMMON
+#define UDX_MESH_DEVICE_API_COMMON
 /* begin src/d/api.h */
 namespace d {  /* a wrapper for device API */
 typedef int Stream_t; /* TODO: streams are not supported */
@@ -73,6 +75,7 @@ int PeekAtLastError(void);
 // end::api[]
 }
 /* end src/d/api.h */
+#endif
 /* begin src/inc/dev.h */
 /* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
@@ -233,6 +236,8 @@ const int4  *mesh_read_get_dih(MeshRead*);
 // end::interface[]
 /* end src/io/mesh_read/imp.h */
 
+#ifndef UDX_MESH_TRIANGLES_TYPE
+#define UDX_MESH_TRIANGLES_TYPE
 /* begin src/mesh/triangles/type.h */
 // tag::interface[]
 struct Triangles {
@@ -241,6 +246,7 @@ struct Triangles {
 };
 // end::interface[]
 /* end src/mesh/triangles/type.h */
+#endif
 /* begin src/mesh/triangles/imp.h */
 struct Triangles;
 struct MeshRead;

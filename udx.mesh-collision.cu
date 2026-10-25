@@ -291,6 +291,8 @@ static int   warpSize = 1;
   #error DEV_* is undefined
 #endif
 /* end src/d/ker.h */
+#ifndef UDX_MESH_DEVICE_API_COMMON
+#define UDX_MESH_DEVICE_API_COMMON
 /* begin src/d/api.h */
 namespace d {  /* a wrapper for device API */
 typedef int Stream_t; /* TODO: streams are not supported */
@@ -321,6 +323,7 @@ int PeekAtLastError(void);
 // end::api[]
 }
 /* end src/d/api.h */
+#endif
 
 /* begin src/inc/type.h */
 template <typename T, int N>
@@ -470,6 +473,8 @@ const T texo_fetch(const Texo<T> t, const int i)
     return Tfetch(T, t.d, i);
 }
 /* end src/utils/texo.dev.h */
+#ifndef UDX_MESH_TRIANGLES_TYPE
+#define UDX_MESH_TRIANGLES_TYPE
 /* begin src/mesh/triangles/type.h */
 // tag::interface[]
 struct Triangles {
@@ -478,6 +483,7 @@ struct Triangles {
 };
 // end::interface[]
 /* end src/mesh/triangles/type.h */
+#endif
 /* begin src/mesh/triangles/imp.h */
 struct Triangles;
 struct MeshRead;
