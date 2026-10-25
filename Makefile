@@ -23,8 +23,7 @@ OBJECTS = \
  udx.algo-force_stat.o \
  udx.algo-accumulators.o \
  udx.algo-scan.o \
- udx.algo-scalars.o \
- udx.algo-vectors.o \
+ udx.algo-numeric.o \
  udx.control-den.o \
  udx.control-inflow.o \
  udx.control-outflow.o \

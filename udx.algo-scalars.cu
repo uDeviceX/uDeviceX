@@ -133,15 +133,15 @@ static double vecz_get(const Scalars*, int i);
 static double zero_get(const Scalars*, int i);
 static double one_get(const Scalars*, int i);
 
-enum {FLOAT, DOUBLE, VECX, VECY, VECZ, ZERO, ONE};
-static double (*get[])(const Scalars*, int i) =
+enum {SCALAR_FLOAT, SCALAR_DOUBLE, SCALAR_VECX, SCALAR_VECY, SCALAR_VECZ, SCALAR_ZERO, SCALAR_ONE};
+static double (*scalar_get_table[])(const Scalars*, int i) =
 { float_get,  double_get, vecx_get, vecy_get, vecz_get, zero_get, one_get};
 /* end src/algo/scalars/imp/type.h */
 /* begin src/algo/scalars/imp/main.h */
 void scalars_float_ini(int n, const float *rr, /**/ Scalars **pq) {
     Scalars *q;
     EMALLOC(1, &q);
-    q->type = FLOAT; q->n = n; q->D.ff = rr;
+    q->type = SCALAR_FLOAT; q->n = n; q->D.ff = rr;
     q->stamp = MAGIC;
     *pq = q;
 }
@@ -149,7 +149,7 @@ void scalars_float_ini(int n, const float *rr, /**/ Scalars **pq) {
 void scalars_double_ini(int n, const double *rr, /**/ Scalars **pq) {
     Scalars *q;
     EMALLOC(1, &q);
-    q->type = DOUBLE; q->n = n; q->D.dd = rr;
+    q->type = SCALAR_DOUBLE; q->n = n; q->D.dd = rr;
     q->stamp = MAGIC;
     *pq = q;
 }
@@ -159,9 +159,9 @@ void scalars_vectors_ini(int n, const Vectors *vec, int dim, /**/ Scalars **pq) 
     Scalars *q;
     EMALLOC(1, &q);
     switch (dim) {
-    case X: q->type = VECX; break;
-    case Y: q->type = VECY; break;
-    case Z: q->type = VECZ; break;
+    case X: q->type = SCALAR_VECX; break;
+    case Y: q->type = SCALAR_VECY; break;
+    case Z: q->type = SCALAR_VECZ; break;
     default: ERR("wrong dim=%d", dim);
     }
     q->stamp = MAGIC;
@@ -172,7 +172,7 @@ void scalars_vectors_ini(int n, const Vectors *vec, int dim, /**/ Scalars **pq) 
 void scalars_zero_ini(int n, /**/ Scalars **pq) {
     Scalars *q;
     EMALLOC(1, &q);
-    q->type = ZERO; q->n = n;
+    q->type = SCALAR_ZERO; q->n = n;
     q->stamp = MAGIC;
     *pq = q;
 }
@@ -181,7 +181,7 @@ void scalars_zero_ini(int n, /**/ Scalars **pq) {
 void scalars_one_ini(int n, /**/ Scalars **pq) {
     Scalars *q;
     EMALLOC(1, &q);
-    q->type = ONE; q->n = n;
+    q->type = SCALAR_ONE; q->n = n;
     q->stamp = MAGIC;
     *pq = q;
 }
@@ -218,7 +218,7 @@ double scalars_get(const Scalars *q, int i) {
     n = q->n;
     if (i >= n) ERR("i = %d    >=   n = %d", i, n);
     if (i < 0)  ERR("i = %d    < 0", i);
-    return get[q->type](q, i);
+    return scalar_get_table[q->type](q, i);
 }
 /* end src/algo/scalars/imp/main.h */
 /* end src/algo/scalars/imp.cpp */

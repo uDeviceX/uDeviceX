@@ -272,8 +272,8 @@ static void positions_center_get(const Vectors*, int i, float r[3]);
 static void velocities_get(const Vectors*, int i, float r[3]);
 static void zero_get(const Vectors*, int i, float r[3]);
 
-enum {FLOAT, POSITIONS, POSITIONS_EDGE, POSITIONS_CENTER, VELOCITIES, ZERO};
-static void (*get[])(const Vectors*, int i, float r[3]) =
+enum {VECTOR_FLOAT, VECTOR_POSITIONS, VECTOR_POSITIONS_EDGE, VECTOR_POSITIONS_CENTER, VECTOR_VELOCITIES, VECTOR_ZERO};
+static void (*vector_get_table[])(const Vectors*, int i, float r[3]) =
 { float_get,  positions_get, positions_edge_get, positions_center_get, velocities_get, zero_get };
 
 typedef  void (*Local2Global)(const Coords *coords, float a[3], /**/ float b[3]);
@@ -282,14 +282,14 @@ typedef  void (*Local2Global)(const Coords *coords, float a[3], /**/ float b[3])
 void vectors_float_ini(int n, const float *rr, /**/ Vectors **pq) {
     Vectors *q;
     EMALLOC(1, &q);
-    q->type = FLOAT; q->n = n; q->D.rr = rr;
+    q->type = VECTOR_FLOAT; q->n = n; q->D.rr = rr;
     *pq = q;
 }
 
 void vectors_postions_ini(int n, const Particle *pp, /**/ Vectors **pq) {
     Vectors *q;
     EMALLOC(1, &q);
-    q->type = POSITIONS; q->n = n; q->D.pp = pp;
+    q->type = VECTOR_POSITIONS; q->n = n; q->D.pp = pp;
     *pq = q;
 }
 
@@ -321,7 +321,7 @@ static void edge_ini_tform(const Coords *coords, Local2Global local2global, Tfor
 void vectors_postions_edge_ini(const Coords *coords, int n, const Particle *pp, /**/ Vectors **pq) {
     Vectors *q;
     EMALLOC(1, &q);
-    q->type = POSITIONS_EDGE; q->n = n; q->D.pp = pp;
+    q->type = VECTOR_POSITIONS_EDGE; q->n = n; q->D.pp = pp;
     edge_ini_tform(coords, l2edge, /**/ &q->tform);
     *pq = q;
 }
@@ -329,7 +329,7 @@ void vectors_postions_edge_ini(const Coords *coords, int n, const Particle *pp, 
 void vectors_postions_center_ini(const Coords *coords, int n, const Particle *pp, /**/ Vectors **pq) {
     Vectors *q;
     EMALLOC(1, &q);
-    q->type = POSITIONS_EDGE; q->n = n; q->D.pp = pp;
+    q->type = VECTOR_POSITIONS_EDGE; q->n = n; q->D.pp = pp;
     edge_ini_tform(coords, l2center, /**/ &q->tform);
     *pq = q;
 }
@@ -337,20 +337,20 @@ void vectors_postions_center_ini(const Coords *coords, int n, const Particle *pp
 void vectors_velocities_ini(int n, const Particle *pp, /**/ Vectors **pq) {
     Vectors *q;
     EMALLOC(1, &q);
-    q->type = VELOCITIES; q->n = n; q->D.pp = pp;
+    q->type = VECTOR_VELOCITIES; q->n = n; q->D.pp = pp;
     *pq = q;
 }
 
 void vectors_zero_ini(int n, /**/ Vectors **pq) {
     Vectors *q;
     EMALLOC(1, &q);
-    q->type = ZERO; q->n = n;
+    q->type = VECTOR_ZERO; q->n = n;
     *pq = q;
 }
 
 void vectors_fin(Vectors *q) {
-    if (q->type == POSITIONS_EDGE ||
-        q->type == POSITIONS_CENTER)
+    if (q->type == VECTOR_POSITIONS_EDGE ||
+        q->type == VECTOR_POSITIONS_CENTER)
         tform_fin(q->tform);
     EFREE(q);
 }
@@ -397,7 +397,7 @@ void vectors_get(const Vectors *q, int i, /**/ float r[3]) {
     n = q->n;
     if (i >= n) ERR("i = %d    >=   n = %d", i, n);
     if (i < 0)  ERR("i = %d    < 0", i);
-    get[q->type](q, i, r);
+    vector_get_table[q->type](q, i, r);
 }
 /* end src/algo/vectors/imp/main.h */
 /* end src/algo/vectors/imp.cpp */
