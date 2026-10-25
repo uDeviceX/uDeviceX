@@ -12,7 +12,7 @@ install_bops2:; mkdir -p $(BIN) && cp bops2 $(BIN)/bops2vtks && cp bops2 $(BIN)/
 
 build: ply2punto ply2off
 
-test:; u.test test/*
+test:; atest test/noflu/main test/pachinko/main test/rdstr/main test/rnd/main
 
 .PHONY: clean all install_cnf install_exs install_bops2 install test
 clean: ; rm -rf ply2punto ply2off

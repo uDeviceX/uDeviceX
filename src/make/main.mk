@@ -53,6 +53,6 @@ lib: $B/libudx_cpu.a $B/libudx_cuda.a
 
 test: install
 	@echo log to atest.log
-	@atest 2>&1 `find test -name main -type f`       | tee atest.log
+	@atest 2>&1 test/noflu/main test/pachinko/main test/rdstr/main test/rnd/main | tee atest.log
 
 .PHONY: clean test all install lib
