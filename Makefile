@@ -68,7 +68,6 @@ OBJECTS = \
  udx.libconfig.o \
  udx.main.o \
  udx.math.o \
- udx.math-tform.o \
  udx.mesh-geometry.o \
  udx.mesh-area.o \
  udx.mesh-collision.o \
