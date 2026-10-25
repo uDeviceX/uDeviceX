@@ -88,10 +88,9 @@ OBJECTS = \
  udx.rig-gen.o \
  udx.rig.o \
  udx.rigid.o \
- udx.scheme-force.o \
+ udx.scheme-force-time.o \
  udx.scheme-move.o \
  udx.scheme-restrain.o \
- udx.scheme-time.o \
  udx.sim-objects.o \
  udx.sim-objinter.o \
  udx.sim-opt.o \
