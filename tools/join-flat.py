@@ -10,8 +10,7 @@ import re
 
 PREFIX = re.compile(
     r"^// generated from udx\.flat\.cu\n"
-    r"#define DEV_CUDA\n#define CC_RELEASE\n#define KL_RELEASE\n"
-    r"#include \"udx\.api\.cuh\"\n\n",
+    r"#include \"udx\.config\.cuh\"\n\n",
     re.M,
 )
 
@@ -23,7 +22,7 @@ def main() -> int:
     args = parser.parse_args()
 
     source_dir = pathlib.Path(args.input)
-    api = (source_dir / "udx.api.cuh").read_text()
+    config = (source_dir / "udx.config.cuh").read_text()
     support = (source_dir / "udx.support.cu").read_text()
     libconfig = (source_dir / "udx.libconfig.cu").read_text()
     units = sorted(source_dir.glob("udx.*.cu"))
@@ -37,9 +36,9 @@ def main() -> int:
         "/* begin flat/udx.support.cu */\n",
         support,
         "\n/* end flat/udx.support.cu */\n",
-        "/* begin flat/udx.api.cuh */\n",
-        api,
-        "\n/* end flat/udx.api.cuh */\n",
+        "/* begin flat/udx.config.cuh */\n",
+        config,
+        "\n/* end flat/udx.config.cuh */\n",
     ]
     for unit in units:
         text = PREFIX.sub("", unit.read_text(), count=1)

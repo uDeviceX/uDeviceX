@@ -1,8 +1,5 @@
 // generated from udx.flat.cu
-#define DEV_CUDA
-#define CC_RELEASE
-#define KL_RELEASE
-#include "udx.api.cuh"
+#include "udx.config.cuh"
 
 /* begin src/math/linal/imp.cpp */
 /* begin src/utils/error.h */

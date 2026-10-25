@@ -1,8 +1,5 @@
 // generated from udx.flat.cu
-#define DEV_CUDA
-#define CC_RELEASE
-#define KL_RELEASE
-#include "udx.api.cuh"
+#include "udx.config.cuh"
 
 /* begin src/sim/objinter/imp.cpp */
 #include <stdio.h>
@@ -687,6 +684,7 @@ void obj_inter_fin(ObjInter *o) {
     UC(fin_obj_exch(o->e));
     if (o->cnt) UC(cnt_fin(o->cnt));
     if (o->fsi) UC(fsi_fin(o->fsi));
+    EFREE(o);
 }
 /* end src/sim/objinter/imp/mem.h */
 /* begin src/sim/objinter/imp/main.h */
