@@ -106,8 +106,7 @@ OBJECTS = \
  udx.struct-arrays.o \
  udx.struct-pfarrays.o \
  udx.support.o \
- udx.utils-string.o \
- udx.utils.o \
+ udx.utils-all.o \
  udx.wall-exch.o \
  udx.wall-force.o \
  udx.wall-sdf-array3d.o \
