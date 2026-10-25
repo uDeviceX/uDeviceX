@@ -29,13 +29,12 @@ OBJECTS = \
  udx.control-outflow.o \
  udx.control-vel.o \
  udx.distr-common.o \
- udx.distr-status-map.o \
+ udx.distr-exch-map.o \
  udx.distr-flu.o \
  udx.distr-rbc.o \
  udx.distr-rig.o \
  udx.exch-common.o \
  udx.exch-flu.o \
- udx.exch-map.o \
  udx.exch-mesh.o \
  udx.exch-obj.o \
  udx.flu.o \

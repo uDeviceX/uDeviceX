@@ -1,5 +1,6 @@
 // generated from udx.flat.cu
 #include "udx.config.cuh"
+#include "udx.device-api-common.cuh"
 
 /* begin src/exch/map/imp.cu */
 #include <stdlib.h>
@@ -83,36 +84,6 @@
 #define DzeroA(P, n)   DsetA(P, 0, n)
 /* end src/inc/dev.h */
 
-/* begin src/d/api.h */
-namespace d {  /* a wrapper for device API */
-typedef int Stream_t; /* TODO: streams are not supported */
-enum {MemcpyHostToHost, MemcpyHostToDevice,
-      MemcpyDeviceToHost, MemcpyDeviceToDevice,
-      MemcpyDefault};
-
-// tag::more[]
-const char *emsg();
-int alloc_pinned(void **pHost, size_t size);
-int is_device_pointer(const void *ptr);
-// end::more[]
-
-// tag::api[]
-int GetSymbolAddress(void **devPtr, const void *symbol);
-int Malloc(void **p, size_t);
-int MemcpyToSymbol(const void *symbol, const void *src, size_t count, size_t offset=0, int kind=MemcpyHostToDevice);
-int MemcpyFromSymbol(void *dst, const void *symbol, size_t count, size_t offset=0, int kind=MemcpyDeviceToHost);
-int HostGetDevicePointer(void **pDevice, void *pHost, unsigned int flags);
-int Memcpy (void *dst, const void *src, size_t count, int kind);
-int MemsetAsync (void *devPtr, int value, size_t count, Stream_t stream=0);
-int Memset (void *devPtr, int value, size_t count);
-int MemcpyAsync (void * dst, const void * src, size_t count, int kind, Stream_t stream = 0);
-int Free (void *devPtr);
-int FreeHost (void *hstPtr);
-int DeviceSynchronize (void);
-int PeekAtLastError(void);
-// end::api[]
-}
-/* end src/d/api.h */
 /* begin src/utils/kl.h */
 /* [k]ernel [l]aunch macros */
 
@@ -302,30 +273,30 @@ void emap_download_all_counts(int nw, int nfrags, EMap map, /**/ int tot_counts[
 
 #if __CUDACC_VER_MAJOR__ >= 9
 template <typename T>
-_I_ T shfl_down(T val, unsigned int width) {
+_I_ T emap_shfl_down(T val, unsigned int width) {
     return __shfl_down_sync(0xFFFFFFFF, val, width);
 }
 
 template <typename T>
-_I_ T shfl_up(T val, unsigned int width) {
+_I_ T emap_shfl_up(T val, unsigned int width) {
     return __shfl_up_sync(0xFFFFFFFF, val, width);
 }
 template <typename T>
-_I_ T shfl(T val, unsigned int width) {
+_I_ T emap_shfl(T val, unsigned int width) {
     return __shfl_sync(0xFFFFFFFF, val, width);
 }
 #else
 template <typename T>
-_I_ T shfl_down(T val, unsigned int width) {
+_I_ T emap_shfl_down(T val, unsigned int width) {
     return __shfl_down(val, width);
 }
 
 template <typename T>
-_I_ T shfl_up(T val, unsigned int width) {
+_I_ T emap_shfl_up(T val, unsigned int width) {
     return __shfl_up(val, width);
 }
 template <typename T>
-_I_ T shfl(T val, unsigned int width) {
+_I_ T emap_shfl(T val, unsigned int width) {
     return __shfl(val, width);
 }
 #endif
@@ -339,7 +310,7 @@ static __device__ int warpexscan(int cnt, int t) {
     assert (t < warpSize);
     int L, scan;
     scan = cnt;
-    for (L = 1; L < warpSize; L <<= 1) scan += (t >= L) * shfl_up(scan, L);
+    for (L = 1; L < warpSize; L <<= 1) scan += (t >= L) * emap_shfl_up(scan, L);
     return scan - cnt;
 }
 
