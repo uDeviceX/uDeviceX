@@ -64,8 +64,7 @@ OBJECTS = \
  udx.mesh-collision.o \
  udx.mesh-coordinates.o \
  udx.mesh-distance-props.o \
- udx.mesh-eng_julicher.o \
- udx.mesh-eng_kantor.o \
+ udx.mesh-energy.o \
  udx.mesh-force-kantor.o \
  udx.mesh-gen-matrices.o \
  udx.mesh-gen.o \
