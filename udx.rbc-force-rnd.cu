@@ -61,6 +61,8 @@ void msg_ini(int rank); // <1>
 void msg_print(const char *fmt, ...); // <2>
 // end::int[]
 /* end src/utils/msg.h */
+#ifndef UDX_RBC_FORCE_DEVICE_API_COMMON
+#define UDX_RBC_FORCE_DEVICE_API_COMMON
 /* begin src/d/api.h */
 namespace d {  /* a wrapper for device API */
 typedef int Stream_t; /* TODO: streams are not supported */
@@ -91,6 +93,7 @@ int PeekAtLastError(void);
 // end::api[]
 }
 /* end src/d/api.h */
+#endif
 /* begin src/inc/dev.h */
 /* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )

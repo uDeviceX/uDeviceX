@@ -62,11 +62,10 @@ OBJECTS = \
  udx.pair.o \
  udx.rbc-adj.o \
  udx.rbc-com.o \
- udx.rbc-force-area_volume.o \
+ udx.rbc-force-area-random.o \
  udx.rbc-force-bending-juelicher.o \
  udx.rbc-force-bending-kantor.o \
  udx.rbc-force-bending.o \
- udx.rbc-force-random.o \
  udx.rbc-force.o \
  udx.rbc-geometry.o \
  udx.rbc.o \

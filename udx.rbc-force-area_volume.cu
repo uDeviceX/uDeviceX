@@ -271,6 +271,8 @@ void msg_print(const char *fmt, ...); // <2>
 // end::int[]
 /* end src/utils/msg.h */
 
+#ifndef UDX_RBC_FORCE_DEVICE_API_COMMON
+#define UDX_RBC_FORCE_DEVICE_API_COMMON
 /* begin src/d/api.h */
 namespace d {  /* a wrapper for device API */
 typedef int Stream_t; /* TODO: streams are not supported */
@@ -301,6 +303,7 @@ int PeekAtLastError(void);
 // end::api[]
 }
 /* end src/d/api.h */
+#endif
 /* begin src/d/ker.h */
 #if   defined(DEV_CUDA)
 /* begin src/d/cuda/ker.h */
