@@ -76,7 +76,6 @@ OBJECTS = \
  udx.mesh-force-kantor1.o \
  udx.mesh-gen-matrices.o \
  udx.mesh-gen.o \
- udx.mesh-scatter.o \
  udx.mesh-topology.o \
  udx.mesh_bounce.o \
  udx.mpi.o \
