@@ -102,11 +102,10 @@ OBJECTS = \
  udx.utils-all.o \
  udx.wall-exch.o \
  udx.wall-force.o \
- udx.wall-sdf-array3d.o \
+ udx.wall-sdf-grid-transform.o \
  udx.wall-sdf-bounce.o \
  udx.wall-sdf-sampling.o \
  udx.wall-sdf-label.o \
- udx.wall-sdf-tform.o \
  udx.wall-sdf.o \
  udx.wall-wvel.o \
  udx.wall.o
