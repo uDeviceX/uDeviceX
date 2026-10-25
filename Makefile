@@ -69,14 +69,13 @@ OBJECTS = \
  udx.mesh-measures.o \
  udx.mesh-collision.o \
  udx.mesh-coordinates.o \
- udx.mesh-dist.o \
+ udx.mesh-distance-props.o \
  udx.mesh-eng_julicher.o \
  udx.mesh-eng_kantor.o \
  udx.mesh-force-kantor0.o \
  udx.mesh-force-kantor1.o \
  udx.mesh-gen-matrices.o \
  udx.mesh-gen.o \
- udx.mesh-props.o \
  udx.mesh-scatter.o \
  udx.mesh-topology.o \
  udx.mesh_bounce.o \
