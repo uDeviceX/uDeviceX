@@ -29,9 +29,8 @@ OBJECTS = \
  udx.control-outflow.o \
  udx.control-vel.o \
  udx.distr-common.o \
- udx.distr-flu-status.o \
+ udx.distr-status-map.o \
  udx.distr-flu.o \
- udx.distr-map.o \
  udx.distr-rbc.o \
  udx.distr-rig.o \
  udx.exch-common.o \
