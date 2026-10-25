@@ -53,8 +53,7 @@ OBJECTS = \
  udx.inter-color.o \
  udx.io-bop.o \
  udx.io-text.o \
- udx.io-diag-mesh.o \
- udx.io-diag-part.o \
+ udx.io-diagnostics.o \
  udx.io-grid-output.o \
  udx.io-mesh.o \
  udx.io-mesh-reader.o \
