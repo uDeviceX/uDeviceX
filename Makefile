@@ -104,9 +104,8 @@ OBJECTS = \
  udx.wall-force.o \
  udx.wall-sdf-array3d.o \
  udx.wall-sdf-bounce.o \
- udx.wall-sdf-field.o \
+ udx.wall-sdf-sampling.o \
  udx.wall-sdf-label.o \
- udx.wall-sdf-tex3d.o \
  udx.wall-sdf-tform.o \
  udx.wall-sdf.o \
  udx.wall-wvel.o \
