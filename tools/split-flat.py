@@ -52,11 +52,7 @@ def _unit_name(path: str) -> str:
     parts = path.split("/")
     if path == "src/main.cpp":
         return "main"
-    if len(parts) >= 4 and parts[1] in {"distr", "exch"}:
-        return "-".join(parts[1:3])
-    if len(parts) >= 5 and parts[1] in {"rbc", "mesh", "wall"}:
-        return "-".join(parts[1:4])
-    return parts[1]
+    return "-".join(parts[1:-1]) or "root"
 
 
 def split_text(text: str) -> dict[str, str]:
