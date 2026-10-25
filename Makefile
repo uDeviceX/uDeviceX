@@ -82,9 +82,8 @@ OBJECTS = \
  udx.mesh-scatter.o \
  udx.mesh-spherical.o \
  udx.mesh-tri_area.o \
- udx.mesh-triangles.o \
+ udx.mesh-topology.o \
  udx.mesh-vert_area.o \
- udx.mesh-volume.o \
  udx.mesh_bounce.o \
  udx.mpi.o \
  udx.pair.o \
