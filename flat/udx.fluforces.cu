@@ -611,8 +611,8 @@ static int is_plus(const int d[3]) {
         (d[Y] == 0 && d[Z] > 0);
 }
 
-static int min(int a, int b) {return a < b ? a : b;}
-static int max(int a, int b) {return a < b ? b : a;}
+static int imin(int a, int b) {return a < b ? a : b;}
+static int imax(int a, int b) {return a < b ? b : a;}
 
 static void get_interrank_infos(MPI_Comm cart, int fid, /**/ RNDunif* trunks[], bool masks[]) {
     int coordsneighbor[3], c, indx[3], rank, dstrank;
@@ -630,8 +630,8 @@ static void get_interrank_infos(MPI_Comm cart, int fid, /**/ RNDunif* trunks[], 
     MC(m::Cart_rank(cart, coordsneighbor, /**/ &dstrank));
 
     for (c = 0; c < 3; ++c)
-        indx[c] = min(coords[c], coordsneighbor[c]) * dims[c] +
-            max(coords[c], coordsneighbor[c]);
+        indx[c] = imin(coords[c], coordsneighbor[c]) * dims[c] +
+            imax(coords[c], coordsneighbor[c]);
 
     seed_base = indx[0] + dims[0] * dims[0] * (indx[1] + dims[1] * dims[1] * indx[2]);
 
@@ -646,10 +646,10 @@ static void get_interrank_infos(MPI_Comm cart, int fid, /**/ RNDunif* trunks[], 
     UC(rnd_ini(390 + seed, seed + 615, 12309, 23094, /**/ &trunks[fid]));
 
     if (dstrank != rank)
-        masks[fid] = min(dstrank, rank) == rank;
+        masks[fid] = imin(dstrank, rank) == rank;
     else {
         int alter_ego = frag_hst::anti(fid);
-        masks[fid] = min(fid, alter_ego) == fid;
+        masks[fid] = imin(fid, alter_ego) == fid;
     }
 }
 
