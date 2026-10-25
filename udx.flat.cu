@@ -1,4 +1,5 @@
 /* begin bundled libconfig */
+extern "C" {
 /* begin libconfig/lib/libconfig.h */
 /* ----------------------------------------------------------------------------
    libconfig - A library for processing structured configuration files
@@ -1597,7 +1598,6 @@ extern int yylex \
 #undef libconfig_yyIN_HEADER
 #endif /* libconfig_yyHEADER_H */
 /* end libconfig/lib/scanner.h */
-extern "C" {
 /* begin libconfig/lib/strbuf.c */
 /* ----------------------------------------------------------------------------
    libconfig - A library for processing structured configuration files
@@ -8374,6 +8374,9 @@ int config_setting_is_aggregate(const config_setting_t *setting)
 /* ------------------------------------------------------------------------- */
 /* end libconfig/lib/libconfig.c */
 } /* extern "C" */
+#undef BEGIN
+#undef CHUNK_SIZE
+#undef ECHO
 /* end bundled libconfig */
 
 /* begin bundled BOP */
