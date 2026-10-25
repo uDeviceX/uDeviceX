@@ -219,6 +219,8 @@ static int   warpSize = 1;
   #error DEV_* is undefined
 #endif
 /* end src/d/ker.h */
+#ifndef UDX_ALGO_DEVICE_API_COMMON
+#define UDX_ALGO_DEVICE_API_COMMON
 /* begin src/d/api.h */
 namespace d {  /* a wrapper for device API */
 typedef int Stream_t; /* TODO: streams are not supported */
@@ -249,6 +251,7 @@ int PeekAtLastError(void);
 // end::api[]
 }
 /* end src/d/api.h */
+#endif
 
 /* begin src/inc/type.h */
 template <typename T, int N>
@@ -420,6 +423,8 @@ _I_ float3 warpReduceSum(float3 val)  // <3>
 
 /* end src/algo/utils/dev.h */
 
+#ifndef UDX_ALGO_KL_COMMON
+#define UDX_ALGO_KL_COMMON
 /* begin src/utils/kl.h */
 /* [k]ernel [l]aunch macros */
 
@@ -477,6 +482,7 @@ inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
 
 /* TODO: header includes header */
 /* end src/utils/kl.h */
+#endif
 
 /* begin src/struct/particle/dev.h */
 static __device__ float3 fetch_pos(int i, const Particle *pp) {

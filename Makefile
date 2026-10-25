@@ -19,9 +19,8 @@ OBJECTS = \
  udx.d.o \
  udx.dbg.o \
  udx.algo-convert.o \
- udx.algo-edge-accumulators.o \
+ udx.algo-edge-accumulators-scan.o \
  udx.algo-force_stat.o \
- udx.algo-scan.o \
  udx.algo-numeric.o \
  udx.control-den.o \
  udx.control-inflow.o \
