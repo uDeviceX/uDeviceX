@@ -64,8 +64,7 @@ OBJECTS = \
  udx.rbc-force-area-random.o \
  udx.rbc-force-bending-juelicher.o \
  udx.rbc-force-bending-kantor.o \
- udx.rbc-force-bending.o \
- udx.rbc-force.o \
+ udx.rbc-force-main.o \
  udx.rbc-geometry.o \
  udx.rbc.o \
  udx.rig-gen.o \

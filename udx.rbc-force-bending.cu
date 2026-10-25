@@ -47,6 +47,8 @@
     ((type*)((char*)(ptr) - offsetof(type, member)))
 /* end src/inc/macro.h */
 
+#ifndef UDX_RBC_FORCE_DEF_COMMON
+#define UDX_RBC_FORCE_DEF_COMMON
 /* begin src/inc/def.h */
 /* solvent colors */
 #define XMACRO_COLOR(_)                         \
@@ -99,6 +101,7 @@ enum {
 /* for the spring forces r = min(lmax*RBC_SPRING_CAP, r) */
 #define RBC_SPRING_CAP (0.99)
 /* end src/inc/def.h */
+#endif
 
 /* begin src/utils/error.h */
 #define ERR(fmt, ...)  do {                                     \
