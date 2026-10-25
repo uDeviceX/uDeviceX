@@ -1,0 +1,4 @@
+raw-grid-check: OK
+channels=density,u,v,w
+dimensions=16x32x16
+ordering=Z,Y,X (X-fastest)

@@ -151,11 +151,11 @@ void check(int code, const char *file, int line);
 void xmf_write(int3 domainSize, int3 gridSize, const char *path, int ncomp, const char **names);
 // end::int[]
 /* end src/io/grid/xmf/imp.h */
-/* begin src/io/grid/h5/imp.h */
+/* begin src/io/grid/raw/imp.h */
 // tag::int[]
-void h5_write(int3 N, MPI_Comm, const char *path, int ncomp, const float **data, const char **names);
+void raw_write(int3 N, MPI_Comm, const char *path, int ncomp, const float **data, const char **names);
 // end::int[]
-/* end src/io/grid/h5/imp.h */
+/* end src/io/grid/raw/imp.h */
 
 static int3 get_total_size(int3 L, MPI_Comm cart) {
     enum {X, Y, Z, D};
@@ -174,7 +174,7 @@ void grid_write(int3 N, int3 L, MPI_Comm cart, const char *path, int ncmp, const
     domainSize = get_total_size(L, cart);
     gridSize   = get_total_size(N, cart);
 
-    UC(h5_write(N, cart, path, ncmp, data, names));
+    UC(raw_write(N, cart, path, ncmp, data, names));
     if (m::is_master(cart))
         UC(xmf_write(domainSize, gridSize, path, ncmp, names));
 }

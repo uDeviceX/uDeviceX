@@ -102,6 +102,7 @@ static float3 get_spacing(int3 D, int3 G) {
 
 static void grid(int3 D, int3 G, FILE *f, const char *path, int n, const char **names) {
     int i;
+    int base_len = strlen(path) - strlen(".raw");
     float3 o, d; /* origin, spacing */
     o.x = o.y = o.z = 0.0;
     d = get_spacing(D, G);
@@ -118,8 +119,8 @@ static void grid(int3 D, int3 G, FILE *f, const char *path, int n, const char **
     fprintf(f, "     </Geometry>\n");
     for(i = 0; i < n; ++i) {
         fprintf(f, "     <Attribute Name=\"%s\" AttributeType=\"Scalar\" Center=\"Cell\">\n", names[i]);
-        fprintf(f, "       <DataItem Dimensions=\"%d %d %d 1\" NumberType=\"Float\" Precision=\"4\" Format=\"HDF\">\n", G.z, G.y, G.x);
-        fprintf(f, "        %s:/%s\n", path, names[i]);
+        fprintf(f, "       <DataItem Dimensions=\"%d %d %d\" NumberType=\"Float\" Precision=\"4\" Format=\"Binary\">\n", G.z, G.y, G.x);
+        fprintf(f, "        %.*s.%s.raw\n", base_len, path, names[i]);
         fprintf(f, "       </DataItem>\n");
         fprintf(f, "     </Attribute>\n");
     }
@@ -128,8 +129,8 @@ static void grid(int3 D, int3 G, FILE *f, const char *path, int n, const char **
 
 static int eq(const char *a, const char *b) { return !strcmp(a, b); }
 static void xsuffix(const char *i, /**/ char *o) {
-    /* replace suffix .h5 by .xmf */
-    char s[] = ".h5";
+    /* replace suffix .raw by .xmf */
+    char s[] = ".raw";
     int n;
     n = strlen(i) - strlen(s);
     if (n >= 0 && eq(i + n, s)) {strncpy(o, i, n); o[n] = '\0';}

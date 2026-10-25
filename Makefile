@@ -8,9 +8,6 @@ CPPFLAGS = -I.
 NVCCFLAGS = -std=c++11 $(OPT) -use_fast_math -restrict
 
 # Set these on the make command line when a dependency is not in a system path.
-HDF5_CPPFLAGS =
-HDF5_LDFLAGS =
-HDF5_LIBS = -lhdf5
 NVTX_CPPFLAGS =
 NVCC_LIBS =
 LIBCONFIG_LIBS =
@@ -47,7 +44,7 @@ OBJECTS = \
  udx.io-com.o \
  udx.io-diag-mesh.o \
  udx.io-diag-part.o \
- udx.io-grid-h5.o \
+ udx.io-grid-raw.o \
  udx.io-grid-xmf.o \
  udx.io-grid.o \
  udx.io-mesh.o \
@@ -140,13 +137,13 @@ DEVICE = build/device.o
 .SUFFIXES: .cu .o
 
 .cu.o:
-	$(NVCC) $(ARCH) -ccbin $(CCBIN) $(NVCCFLAGS) $(CPPFLAGS) $(HDF5_CPPFLAGS) $(NVTX_CPPFLAGS) -dc -c $< -o $@
+	$(NVCC) $(ARCH) -ccbin $(CCBIN) $(NVCCFLAGS) $(CPPFLAGS) $(NVTX_CPPFLAGS) -dc -c $< -o $@
 
 all: $(TARGET)
 
 $(TARGET): $(OBJECTS) $(DEVICE)
 	mkdir -p build
-	$(NVCC) $(ARCH) -ccbin $(CCBIN) $(NVCCFLAGS) $(OBJECTS) $(DEVICE) $(HDF5_LDFLAGS) $(HDF5_LIBS) $(MPI_LIBS) $(NVCC_LIBS) $(LIBCONFIG_LIBS) -lcudart -lcurand -o $@
+	$(NVCC) $(ARCH) -ccbin $(CCBIN) $(NVCCFLAGS) $(OBJECTS) $(DEVICE) $(MPI_LIBS) $(NVCC_LIBS) $(LIBCONFIG_LIBS) -lcudart -lcurand -o $@
 
 $(DEVICE): $(OBJECTS)
 	mkdir -p build

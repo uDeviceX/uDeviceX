@@ -319,4 +319,4 @@ void diag_part_apply(DiagPart *q, MPI_Comm comm, float time, int n, const Partic
 /* end src/io/diag/part/imp/main.h */
 /* end src/io/diag/part/imp.cpp */
 
-#line 1 "src/io/grid/h5/imp.cpp"
+#line 1 "src/io/grid/raw/imp.cpp"
