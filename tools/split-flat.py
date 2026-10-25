@@ -9,6 +9,24 @@ import re
 
 
 SOURCE = re.compile(r"^/\* begin (src/[^*]+\.(?:c|cpp|cu)) \*/\s*$", re.M)
+COMMON_HEADERS = (
+    "src/inc/conf.h",
+    "src/inc/def.h",
+    "src/inc/type.h",
+    "src/inc/dev.h",
+    "src/d/q.h",
+    "src/d/api.h",
+    "src/d/ker.h",
+    "src/struct/partlist/type.h",
+    "src/struct/partlist/dev.h",
+    "src/struct/particle/dev.h",
+    "src/utils/cc.h",
+    "src/utils/error.h",
+    "src/utils/imp.h",
+    "src/utils/kl.h",
+    "src/utils/msg.h",
+    "src/fsi/imp.h",
+)
 
 
 def _block(text: str, begin: str, end: str) -> str:
@@ -20,6 +38,22 @@ def _block(text: str, begin: str, end: str) -> str:
 def _without_wrapper(text: str) -> str:
     text = text.replace('extern "C" {\n', "", 1)
     text = text.replace('} /* extern "C" */\n', "", 1)
+    return text
+
+
+def _header(text: str, path: str) -> str:
+    begin = f"/* begin {path} */"
+    end = f"/* end {path} */"
+    return _block(text, begin, end)
+
+
+def _remove_headers(text: str, paths: tuple[str, ...]) -> str:
+    for path in paths:
+        pattern = re.compile(
+            rf"/\* begin {re.escape(path)} \*/.*?/\* end {re.escape(path)} \*/\n?",
+            re.S,
+        )
+        text = pattern.sub("", text)
     return text
 
 
@@ -70,9 +104,27 @@ def split_text(text: str) -> dict[str, str]:
         name = _unit_name(match.group(1))
         units.setdefault(name, []).append(text[match.start():end])
 
-    prefix = "// generated from udx.flat.cu\n#include \"udx.api.cuh\"\n\n"
+    common = []
+    for path in COMMON_HEADERS:
+        try:
+            common.append(_header(text, path))
+        except ValueError:
+            pass
+    api_parts.extend(common)
+    prefix = (
+        "// generated from udx.flat.cu\n"
+        "#define DEV_CUDA\n#define CC_RELEASE\n#define KL_RELEASE\n"
+        "#include \"udx.api.cuh\"\n\n"
+    )
     result = {"libconfig": libconfig_support, "support": bop_support}
-    result.update({name: prefix + "\n\n".join(parts) for name, parts in units.items()})
+    result.update(
+        {
+            name: prefix + "\n\n".join(
+                _remove_headers(part, COMMON_HEADERS) for part in parts
+            )
+            for name, parts in units.items()
+        }
+    )
     result["api"] = "#pragma once\n" + "\n\n".join(api_parts)
     return result
 
