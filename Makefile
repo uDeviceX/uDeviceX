@@ -55,8 +55,7 @@ OBJECTS = \
  udx.io-com.o \
  udx.io-diag-mesh.o \
  udx.io-diag-part.o \
- udx.io-grid-raw.o \
- udx.io-grid-xmf.o \
+ udx.io-grid-output.o \
  udx.io-grid.o \
  udx.io-mesh.o \
  udx.io-mesh_read-edg.o \
