@@ -60,8 +60,7 @@ OBJECTS = \
  udx.mesh-complete.o \
  udx.mpi.o \
  udx.pair.o \
- udx.rbc-adj.o \
- udx.rbc-com.o \
+ udx.rbc-adj-com.o \
  udx.rbc-force-area-random.o \
  udx.rbc-force-bending-juelicher.o \
  udx.rbc-force-bending-kantor.o \
