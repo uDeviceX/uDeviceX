@@ -70,7 +70,7 @@ OBJECTS = \
  udx.mesh-collision.o \
  udx.mesh-cylindrical.o \
  udx.mesh-dist.o \
- udx.mesh-edg_len.o \
+ udx.mesh-length-area.o \
  udx.mesh-eng_julicher.o \
  udx.mesh-eng_kantor.o \
  udx.mesh-force-kantor0.o \
@@ -81,7 +81,6 @@ OBJECTS = \
  udx.mesh-scatter.o \
  udx.mesh-spherical.o \
  udx.mesh-topology.o \
- udx.mesh-vert_area.o \
  udx.mesh_bounce.o \
  udx.mpi.o \
  udx.pair.o \
