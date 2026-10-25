@@ -171,6 +171,8 @@ enum {
 /* for the spring forces r = min(lmax*RBC_SPRING_CAP, r) */
 #define RBC_SPRING_CAP (0.99)
 /* end src/inc/def.h */
+#ifndef UDX_MESH_COMMON_CUH
+#define UDX_MESH_COMMON_CUH
 /* begin src/inc/type.h */
 template <typename T, int N>
 struct Sarray { /* [s]tatic array */
@@ -225,6 +227,7 @@ struct FoWrap {
     Force *ff;
 };
 /* end src/inc/type.h */
+#endif
 
 /* begin src/utils/msg.h */
 // tag::int[]
