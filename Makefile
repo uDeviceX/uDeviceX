@@ -123,8 +123,7 @@ OBJECTS = \
  udx.sim-opt.o \
  udx.sim-walls.o \
  udx.sim.o \
- udx.struct-farray.o \
- udx.struct-parray.o \
+ udx.struct-arrays.o \
  udx.struct-pfarrays.o \
  udx.support.o \
  udx.utils-string.o \
