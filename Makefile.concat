@@ -11,8 +11,8 @@ ARCH ?= -arch compute_90 -code sm_90
 OPT ?= -O2 -g
 
 CPPFLAGS += -I$(ROOT)
-CXXFLAGS += ${HDF5_CXXFLAGS} ${MPI_CXXFLAGS} ${LIBCONFIG_CXXFLAGS} ${BOP_CXXFLAGS}
-LIBS += ${HDF5_LIBS} ${NVCC_LIBS} ${LIBCONFIG_LIBS} ${BOP_LIBS} ${MPI_LIBS}
+CXXFLAGS += ${HDF5_CXXFLAGS} ${MPI_CXXFLAGS} ${LIBCONFIG_CXXFLAGS}
+LIBS += ${HDF5_LIBS} ${NVCC_LIBS} ${LIBCONFIG_LIBS} ${MPI_LIBS}
 NVCCFLAGS += -std=c++11 $(OPT) -use_fast_math -restrict
 NVCC_LINK_LIBS := $(filter-out -Wl%,$(LIBS))
 MPI_LINK_LIBS := $(filter-out -Wl% -pthread,$(shell $(CCBIN) --showme:link 2>/dev/null)) -lopen-rte -lopen-pal
