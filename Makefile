@@ -64,8 +64,7 @@ OBJECTS = \
  udx.io-restart.o \
  udx.io-rig.o \
  udx.io-txt.o \
- udx.io-vtk-mesh.o \
- udx.io-vtk.o \
+ udx.io-vtk-output.o \
  udx.io-write.o \
  udx.libconfig.o \
  udx.main.o \
