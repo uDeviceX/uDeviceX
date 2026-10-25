@@ -1,9 +1,5 @@
 #!/usr/bin/env python3
-"""Validate raw grid/XMF output and optionally convert it to HDF5.
-
-The simulator does not import this module. HDF5 is needed only for the
-optional compare and to-hdf5 commands.
-"""
+"""Validate raw grid/XMF output."""
 
 from __future__ import annotations
 
@@ -13,10 +9,6 @@ import struct
 import sys
 import xml.etree.ElementTree as ET
 from pathlib import Path
-
-
-ATOL = 1.0e-6
-RTOL = 1.0e-6
 
 
 def _ints(value: str) -> tuple[int, ...]:
@@ -149,89 +141,15 @@ def check_raw(path: Path) -> str:
     ])
 
 
-def _metadata_compare(raw: dict, legacy: dict) -> None:
-    for key in ("dimensions", "topology", "origin", "spacing"):
-        if raw[key] != legacy[key]:
-            raise ValueError(f"XMF {key} differs: raw={raw[key]} legacy={legacy[key]}")
-    raw_names = [x["name"] for x in raw["channels"]]
-    legacy_names = [x["name"] for x in legacy["channels"]]
-    if raw_names != legacy_names:
-        raise ValueError(f"XMF channel names differ: raw={raw_names} legacy={legacy_names}")
-
-
-def compare_hdf5(raw_xmf: Path, legacy_xmf: Path, atol: float, rtol: float) -> str:
-    try:
-        import h5py
-    except ImportError as error:
-        raise RuntimeError("h5py is required for HDF5 comparison") from error
-
-    check_raw(raw_xmf)
-    raw = read_xmf(raw_xmf)
-    legacy = read_xmf(legacy_xmf)
-    _validate_metadata(raw)
-    _metadata_compare(raw, legacy)
-    for raw_channel, legacy_channel in zip(raw["channels"], legacy["channels"]):
-        source = legacy_channel["source"]
-        if ":" not in source:
-            raise ValueError(f"legacy channel is not an HDF5 reference: {source}")
-        h5_name, dataset_name = source.split(":", 1)
-        h5_path = legacy_xmf.parent / h5_name
-        with h5py.File(h5_path, "r") as handle:
-            values = handle[dataset_name][...].reshape(-1)
-            expected = math.prod(raw["dimensions"])
-            if len(values) != expected:
-                raise ValueError(f"wrong HDF5 value count for {legacy_channel['name']}")
-            maximum = 0.0
-            for index, raw_value in enumerate(_raw_values(_raw_path(raw, raw_channel))):
-                difference = abs(float(raw_value) - float(values[index]))
-                maximum = max(maximum, difference)
-                if difference > atol + rtol * abs(float(values[index])):
-                    raise ValueError(
-                        f"{raw_channel['name']} differs at {index}: "
-                        f"raw={raw_value} legacy={values[index]}"
-                    )
-            print(f"compared {raw_channel['name']}: max_abs={maximum:.9g}")
-    return "HDF5 parity: OK"
-
-
-def convert_hdf5(raw_xmf: Path, output: Path) -> None:
-    try:
-        import h5py
-        import numpy
-    except ImportError as error:
-        raise RuntimeError("h5py and numpy are required for HDF5 conversion") from error
-
-    grid = read_xmf(raw_xmf)
-    _validate_metadata(grid)
-    shape = grid["dimensions"] + (1,)
-    with h5py.File(output, "w") as handle:
-        for channel in grid["channels"]:
-            values = numpy.fromfile(_raw_path(grid, channel), dtype="<f4")
-            handle.create_dataset(channel["name"], data=values.reshape(shape), dtype="<f4")
-
-
 def main() -> int:
     parser = argparse.ArgumentParser()
     subparsers = parser.add_subparsers(dest="command", required=True)
     check = subparsers.add_parser("check")
     check.add_argument("xmf", type=Path)
-    compare = subparsers.add_parser("compare")
-    compare.add_argument("raw_xmf", type=Path)
-    compare.add_argument("legacy_xmf", type=Path)
-    compare.add_argument("--atol", type=float, default=ATOL)
-    compare.add_argument("--rtol", type=float, default=RTOL)
-    convert = subparsers.add_parser("to-hdf5")
-    convert.add_argument("raw_xmf", type=Path)
-    convert.add_argument("output", type=Path)
     args = parser.parse_args()
     try:
         if args.command == "check":
             print(check_raw(args.xmf))
-        elif args.command == "compare":
-            print(compare_hdf5(args.raw_xmf, args.legacy_xmf, args.atol, args.rtol))
-        else:
-            convert_hdf5(args.raw_xmf, args.output)
-            print(f"HDF5 conversion: {args.output}")
     except (OSError, RuntimeError, ValueError, ET.ParseError) as error:
         print(f"raw_grid.py: {error}", file=sys.stderr)
         return 1
