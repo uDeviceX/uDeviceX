@@ -43,6 +43,8 @@
 /* end src/inc/conf.h */
 
 
+#ifndef UDX_WALL_DEF_COMMON
+#define UDX_WALL_DEF_COMMON
 /* begin src/inc/def.h */
 /* solvent colors */
 #define XMACRO_COLOR(_)                         \
@@ -95,6 +97,7 @@ enum {
 /* for the spring forces r = min(lmax*RBC_SPRING_CAP, r) */
 #define RBC_SPRING_CAP (0.99)
 /* end src/inc/def.h */
+#endif
 /* begin src/utils/msg.h */
 // tag::int[]
 void msg_ini(int rank); // <1>
@@ -143,6 +146,8 @@ void error_abort();
 void error_print_stack();
 /* end src/utils/error.h */
 
+#ifndef UDX_WALL_DEVICE_API_COMMON
+#define UDX_WALL_DEVICE_API_COMMON
 /* begin src/d/api.h */
 namespace d {  /* a wrapper for device API */
 typedef int Stream_t; /* TODO: streams are not supported */
@@ -173,6 +178,7 @@ int PeekAtLastError(void);
 // end::api[]
 }
 /* end src/d/api.h */
+#endif
 /* begin src/d/q.h */
 /* function and variable type [q]ualifiers */
 
@@ -324,6 +330,8 @@ void check(int rc, const char *file, int line);
 /* TODO: header includes header */
 /* end src/utils/cc.h */
 
+#ifndef UDX_WALL_CORE_TYPE
+#define UDX_WALL_CORE_TYPE
 /* begin src/inc/type.h */
 template <typename T, int N>
 struct Sarray { /* [s]tatic array */
@@ -378,6 +386,7 @@ struct FoWrap {
     Force *ff;
 };
 /* end src/inc/type.h */
+#endif
 /* begin src/inc/dev.h */
 /* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )

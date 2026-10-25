@@ -85,8 +85,7 @@ OBJECTS = \
  udx.struct-pfarrays.o \
  udx.support.o \
  udx.utils-all.o \
- udx.wall-exch.o \
- udx.wall-force.o \
+ udx.wall-exchange-force.o \
  udx.wall-sdf-transform-bounce.o \
  udx.wall-sdf-label.o \
  udx.wall-sdf.o \

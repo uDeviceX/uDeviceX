@@ -45,6 +45,8 @@
 #endif
 /* end src/inc/conf.h */
 
+#ifndef UDX_WALL_DEF_COMMON
+#define UDX_WALL_DEF_COMMON
 /* begin src/inc/def.h */
 /* solvent colors */
 #define XMACRO_COLOR(_)                         \
@@ -97,6 +99,7 @@ enum {
 /* for the spring forces r = min(lmax*RBC_SPRING_CAP, r) */
 #define RBC_SPRING_CAP (0.99)
 /* end src/inc/def.h */
+#endif
 
 /* begin src/frag/imp.h */
 enum {frag_bulk = 26};
@@ -207,6 +210,8 @@ size_t comm_get_byte_capacity(int i, const hBags *b);   // <2>
 
 /* end src/comm/imp.h */
 
+#ifndef UDX_WALL_CORE_TYPE
+#define UDX_WALL_CORE_TYPE
 /* begin src/inc/type.h */
 template <typename T, int N>
 struct Sarray { /* [s]tatic array */
@@ -261,6 +266,7 @@ struct FoWrap {
     Force *ff;
 };
 /* end src/inc/type.h */
+#endif
 
 /* begin src/utils/error.h */
 #define ERR(fmt, ...)  do {                                     \
