@@ -59,8 +59,7 @@ OBJECTS = \
  udx.libconfig.o \
  udx.main.o \
  udx.math.o \
- udx.mesh-geometry.o \
- udx.mesh-measures.o \
+ udx.mesh-geometry-measures.o \
  udx.mesh-collision.o \
  udx.mesh-coordinates.o \
  udx.mesh-distance-props.o \
