@@ -9,24 +9,7 @@ import re
 
 
 SOURCE = re.compile(r"^/\* begin (src/[^*]+\.(?:c|cpp|cu)) \*/\s*$", re.M)
-COMMON_HEADERS = (
-    "src/inc/conf.h",
-    "src/inc/def.h",
-    "src/inc/type.h",
-    "src/inc/dev.h",
-    "src/d/q.h",
-    "src/d/api.h",
-    "src/d/ker.h",
-    "src/struct/partlist/type.h",
-    "src/struct/partlist/dev.h",
-    "src/struct/particle/dev.h",
-    "src/utils/cc.h",
-    "src/utils/error.h",
-    "src/utils/imp.h",
-    "src/utils/kl.h",
-    "src/utils/msg.h",
-    "src/fsi/imp.h",
-)
+HEADER = re.compile(r"^/\* begin (src/[^*]+\.h) \*/\s*$", re.M)
 
 
 def _block(text: str, begin: str, end: str) -> str:
@@ -55,6 +38,21 @@ def _remove_headers(text: str, paths: tuple[str, ...]) -> str:
         )
         text = pattern.sub("", text)
     return text
+
+
+def _common_header_paths(text: str) -> tuple[str, ...]:
+    selected: list[tuple[int, int, str]] = []
+    for match in HEADER.finditer(text):
+        path = match.group(1)
+        if any(start <= match.start() < end for start, end, _ in selected):
+            continue
+        end_marker = f"/* end {path} */"
+        end = text.find(end_marker, match.end())
+        if end < 0:
+            continue
+        selected.append((match.start(), end + len(end_marker), path))
+    selected.sort()
+    return tuple(path for _, _, path in selected)
 
 
 def _unit_name(path: str) -> str:
@@ -104,8 +102,9 @@ def split_text(text: str) -> dict[str, str]:
         name = _unit_name(match.group(1))
         units.setdefault(name, []).append(text[match.start():end])
 
+    common_paths = _common_header_paths(text)
     common = []
-    for path in COMMON_HEADERS:
+    for path in common_paths:
         try:
             common.append(_header(text, path))
         except ValueError:
@@ -120,7 +119,7 @@ def split_text(text: str) -> dict[str, str]:
     result.update(
         {
             name: prefix + "\n\n".join(
-                _remove_headers(part, COMMON_HEADERS) for part in parts
+                _remove_headers(part, common_paths) for part in parts
             )
             for name, parts in units.items()
         }
