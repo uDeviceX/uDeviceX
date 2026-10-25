@@ -4,6 +4,8 @@
 /* begin src/mesh/bbox/imp.cpp */
 #include <vector_types.h>
 
+#ifndef UDX_MESH_COMMON_CUH
+#define UDX_MESH_COMMON_CUH
 /* begin src/inc/type.h */
 template <typename T, int N>
 struct Sarray { /* [s]tatic array */
@@ -58,6 +60,7 @@ struct FoWrap {
     Force *ff;
 };
 /* end src/inc/type.h */
+#endif
 /* begin src/algo/minmax/imp.h */
 struct Particle;
 struct float3;

@@ -325,6 +325,8 @@ int PeekAtLastError(void);
 /* end src/d/api.h */
 #endif
 
+#ifndef UDX_MESH_COMMON_CUH
+#define UDX_MESH_COMMON_CUH
 /* begin src/inc/type.h */
 template <typename T, int N>
 struct Sarray { /* [s]tatic array */
@@ -379,6 +381,7 @@ struct FoWrap {
     Force *ff;
 };
 /* end src/inc/type.h */
+#endif
 /* begin src/inc/dev.h */
 /* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
