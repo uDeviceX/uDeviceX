@@ -1,0 +1,82 @@
+# ucmp - compare two file with numbers
+# ucmp [option] file1 file2
+#
+# -e epsion    compare with abs(A-B) < diff (default: 0.1)
+#
+# SEE ALSO
+#        udiff
+
+${AWK=awk} '
+function ini() {
+    eps = zerop(eps) ? 0.1 : eps
+    FMT = "%f1 %f2 differ: line %i1 (%a1 != %a2)"
+    gsub(/%[A-Za-z0-9]+/, "%s", FMT)
+}
+
+function cmp(   r1, r2, n1, n2, n, i, bad) {
+    for (;;) {
+	r1 = getline l1 < f1; i1++
+	r2 = getline l2 < f2
+	if (endp(r1) && endp(r2)) return 0
+	if (endp(r1)) die("EOF on " f1)
+	if (endp(r2)) die("EOF on " f2)
+	n = max(n1 = split(l1, a1), n2 = split(l2, a2))
+	for (i = 1; i <= n; i++) {
+	    x = a1[i]
+	    y = a2[i]
+	    if (i > n1 || i > n2)
+		DIE()
+	    if (!numberp(x) && !eq(x, y))
+		DIE()
+	    if (!aeq(x, y))
+		DIE()
+	}
+    }
+}
+function DIE() { die(sprintf(FMT, f1, f2, i1, bl(x), bl(y))) }
+BEGIN {
+    if (ARGV[1] == "-e" || ARGV[1] == "--eps") {
+	eps = ARGV[2]
+	if (!numberp(eps))
+	    die("wrong eps: " eps)
+	shift(); shift()
+    }
+    if (ARGC < 3) die("arg count")
+    ini()
+    f1 = ARGV[1]
+    f2 = ARGV[2]
+    cmp()
+}
+
+function  eq(x, y) { return x "" == y "" }
+function aeq(x, y) { return abs(x - y) < eps }
+function numberp(e) {return e == e + 0.0}
+function endp(r) { return !(r > 0 ) }
+function max(a, b) { return a > b ? a : b }
+function abs(a) { return a >= 0 ? a : -a }
+function shift(  i) {for (i = 1; i < ARGC; i++) ARGV[i-1] = ARGV[i]; ARGC--}
+function die(s) { print "ucmp: " s | "cat 2>&1"; exit 1 }
+function zerop(s) { return length(s) == 0}
+function bl(s)   { return zerop(s) ? "<blank>" : s }
+' "$@"
+
+# TEST: ucmp.t0
+# echo 1.01 > A; echo 1 > B
+# ./ucmp A B && echo true   > ucmp.out.txt
+#
+# TEST: ucmp.t1
+# echo 1.01 > A; echo 1 > B
+# ./ucmp A B && echo true   > ucmp.out.txt
+#
+# TEST: ucmp.t2
+# echo 1.01 > A; echo 1 > B
+# ./ucmp -e 0.001 A B || echo false > ucmp.out.txt
+#
+# TEST: ucmp.t3
+# echo '1 2 3
+#4 5 6
+#7 8 9' > A
+# echo '1 2 3
+#4 5.4 6
+#7 8 9' > B
+# ./ucmp A B || echo false > ucmp.out.txt

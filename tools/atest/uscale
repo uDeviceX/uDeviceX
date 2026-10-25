@@ -1,0 +1,26 @@
+# uscale - scale all numbers by `sc'
+# uscale sc [file] ...
+
+${AWK=awk} '
+BEGIN {
+    if (ARGC < 2) die("arg count")
+    sc = ARGV[1]; shift()
+    if (!numperp(sc))
+	die("uscale: not a number : " sc)
+    fmt = "%.15g"
+}
+
+{
+    for (i = 1; i <= NF; i++) {
+	x = sc*$i
+	printf(fmt "%s", x, i < NF ? " " : "\n")
+    }
+}
+
+function shift(  i) { for (i = 1; i < ARGC; i++) ARGV[i-1] = ARGV[i]; ARGC-- }
+function numperp(e) {return e == e + 0.0}
+function die(s) { print "uscale: " s | "cat 2>&1"; exit 1 }
+' "$@"
+
+# TEST: uscale.t0
+# (seq 10; echo -0.1 -0.2 -0.3) | ./uscale -4.2e3 > uscale.out.txt
