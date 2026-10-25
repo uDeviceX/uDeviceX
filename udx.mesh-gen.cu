@@ -119,6 +119,8 @@ int coords_size(const Coords *c);
 // end::int[]
 /* end src/coords/imp.h */
 
+#ifndef UDX_MESH_DEF_COMMON
+#define UDX_MESH_DEF_COMMON
 /* begin src/inc/def.h */
 /* solvent colors */
 #define XMACRO_COLOR(_)                         \
@@ -171,6 +173,7 @@ enum {
 /* for the spring forces r = min(lmax*RBC_SPRING_CAP, r) */
 #define RBC_SPRING_CAP (0.99)
 /* end src/inc/def.h */
+#endif
 #ifndef UDX_MESH_COMMON_CUH
 #define UDX_MESH_COMMON_CUH
 /* begin src/inc/type.h */

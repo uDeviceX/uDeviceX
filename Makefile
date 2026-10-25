@@ -57,8 +57,7 @@ OBJECTS = \
  udx.libconfig.o \
  udx.main.o \
  udx.math.o \
- udx.mesh-geometry-topology.o \
- udx.mesh-coordinates-distance-generation.o \
+ udx.mesh-all.o \
  udx.mesh_bounce.o \
  udx.mpi.o \
  udx.pair.o \
