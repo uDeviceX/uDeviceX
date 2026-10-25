@@ -31,6 +31,9 @@ NVCC_LINK_LIBS := $(filter-out -Wl%,$(LIBS))
 MPI_LINK_LIBS := $(filter-out -Wl% -pthread,$(shell $(CCBIN) --showme:link 2>/dev/null)) -lopen-rte -lopen-pal
 
 -include $(UNIT_DIR)/units.mk
+UNIT_EXCLUDE := $(UNIT_DIR)/udx.algo-%.cu $(UNIT_DIR)/udx.control-%.cu \
+	$(UNIT_DIR)/udx.distr-flu.cu $(UNIT_DIR)/udx.distr-flu-status.cu
+UNIT_SOURCES := $(filter-out $(UNIT_EXCLUDE),$(UNIT_SOURCES))
 UNIT_OBJECTS := $(patsubst $(UNIT_DIR)/%.cu,$(OBJ_DIR)/%.o,$(UNIT_SOURCES))
 DEVICE_LINK := $(BUILD)/device-link.o
 
