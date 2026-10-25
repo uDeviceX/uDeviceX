@@ -96,6 +96,8 @@ void adj_view_ini(const Adj*, Adj_v**);
 void adj_view_fin(Adj_v*);
 // end::interface[]
 /* end src/rbc/adj/imp.h */
+#ifndef UDX_RBC_ADJ_MAP_TYPE
+#define UDX_RBC_ADJ_MAP_TYPE
 /* begin src/rbc/adj/type/common.h */
 // tag::interface[]
 struct AdjMap {
@@ -104,6 +106,7 @@ struct AdjMap {
 };
 // end::interface[]
 /* end src/rbc/adj/type/common.h */
+#endif
 /* begin src/math/tri/imp.h */
 namespace tri_hst {
 // tag::interface[]

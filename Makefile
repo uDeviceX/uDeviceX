@@ -65,8 +65,7 @@ OBJECTS = \
  udx.rbc-force-bending-juelicher.o \
  udx.rbc-force-bending-kantor.o \
  udx.rbc-force-main.o \
- udx.rbc-geometry.o \
- udx.rbc.o \
+ udx.rbc-core-geometry.o \
  udx.rig-complete.o \
  udx.scheme-force-time.o \
  udx.scheme-move.o \

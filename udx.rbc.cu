@@ -47,6 +47,8 @@
 /* end src/inc/conf.h */
 
 
+#ifndef UDX_RBC_CORE_DEF_COMMON
+#define UDX_RBC_CORE_DEF_COMMON
 /* begin src/inc/def.h */
 /* solvent colors */
 #define XMACRO_COLOR(_)                         \
@@ -99,6 +101,9 @@ enum {
 /* for the spring forces r = min(lmax*RBC_SPRING_CAP, r) */
 #define RBC_SPRING_CAP (0.99)
 /* end src/inc/def.h */
+#endif
+#ifndef UDX_RBC_CORE_TYPE_COMMON
+#define UDX_RBC_CORE_TYPE_COMMON
 /* begin src/inc/type.h */
 template <typename T, int N>
 struct Sarray { /* [s]tatic array */
@@ -153,6 +158,7 @@ struct FoWrap {
     Force *ff;
 };
 /* end src/inc/type.h */
+#endif
 /* begin src/inc/dev.h */
 /* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
@@ -200,6 +206,8 @@ void msg_print(const char *fmt, ...); // <2>
 // end::int[]
 /* end src/utils/msg.h */
 
+#ifndef UDX_RBC_CORE_DEVICE_API_COMMON
+#define UDX_RBC_CORE_DEVICE_API_COMMON
 /* begin src/d/api.h */
 namespace d {  /* a wrapper for device API */
 typedef int Stream_t; /* TODO: streams are not supported */
@@ -230,6 +238,7 @@ int PeekAtLastError(void);
 // end::api[]
 }
 /* end src/d/api.h */
+#endif
 /* begin src/utils/error.h */
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
@@ -459,6 +468,8 @@ struct RbcQuants {
 // end::quants[]
 
 /* end src/rbc/type.h */
+#ifndef UDX_RBC_ADJ_MAP_TYPE
+#define UDX_RBC_ADJ_MAP_TYPE
 /* begin src/rbc/adj/type/common.h */
 // tag::interface[]
 struct AdjMap {
@@ -467,6 +478,7 @@ struct AdjMap {
 };
 // end::interface[]
 /* end src/rbc/adj/type/common.h */
+#endif
 /* begin src/rbc/adj/imp.h */
 struct Adj;
 struct Adj_v;
