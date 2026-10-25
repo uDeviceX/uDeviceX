@@ -12,6 +12,7 @@
 *.dcu
 *.cubin
 *.cudaobj
+/build/
 CMakeCache.txt
 *.xmf
 *.h5part

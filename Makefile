@@ -42,4 +42,10 @@ flat:
 flat-clean:
 	$(MAKE) -f Makefile.flat clean
 
-.PHONY: install flat flat-clean
+concat:
+	$(MAKE) -f Makefile.concat
+
+concat-clean:
+	$(MAKE) -f Makefile.concat clean
+
+.PHONY: install flat flat-clean concat concat-clean

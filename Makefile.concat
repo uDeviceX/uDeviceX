@@ -1,0 +1,33 @@
+# Experimental single-translation-unit build.
+# The normal object-based build remains available through Makefile.flat.
+
+ROOT := $(abspath .)
+BUILD := $(ROOT)/build/concat
+GENERATED := $(BUILD)/udx.flat.cu
+TARGET := $(BUILD)/udx
+
+-include $(ROOT)/src/make/common.mk
+
+NVCC ?= nvcc
+CCBIN ?= mpicxx
+ARCH ?= -arch compute_90 -code sm_90
+OPT ?= -O2 -g
+
+CPPFLAGS += -I$(ROOT) -I$(ROOT)/src
+NVCCFLAGS += -std=c++11 $(OPT) -use_fast_math -restrict
+
+all: $(TARGET)
+
+$(GENERATED): tools/udx-flat
+	tools/udx-flat generate --root $(ROOT) --out $(BUILD)
+
+$(TARGET): $(GENERATED) | $(BUILD)
+	$(NVCC) $(ARCH) -ccbin $(CCBIN) $(NVCCFLAGS) $(CPPFLAGS) $(CXXFLAGS) $(GENERATED) $(LIBS) -lcudart -lcurand -o $@
+
+$(BUILD):
+	mkdir -p $@
+
+clean:
+	rm -rf $(BUILD)
+
+.PHONY: all clean
