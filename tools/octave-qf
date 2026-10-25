@@ -1,6 +1,0 @@
-#!/bin/bash
-
-# A wrapper for shebangs
-
-: ${OCTAVE=octave}
-exec "$OCTAVE" --no-window-system --quiet --norc "$@"

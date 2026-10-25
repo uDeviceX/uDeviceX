@@ -1,4 +1,0 @@
-#! /usr/bin/sh
-
-udx conf.cfg
-u.2davgh5 2 u h5/0004.h5  > profile.txt

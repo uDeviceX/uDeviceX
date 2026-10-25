@@ -1,11 +1,13 @@
+#pragma once
+
 struct VTKConf {
     Mesh *mesh;
     KeyList *tri, *vert;
 };
 
-enum { MAGIC = 1234 };
-enum { UNSET = - 1 };
-enum { N_MAX = 100 };
+enum { VTK_MAGIC = 1234 };
+enum { VTK_UNSET = - 1 };
+enum { VTK_N_MAX = 100 };
 struct VTK {
     int nm; /* current number of meshes */
     Mesh *mesh;
@@ -15,8 +17,8 @@ struct VTK {
     double *dbuf;
     int *ibuf;
 
-    double *TRI[N_MAX];
-    double *VERT[N_MAX];
+    double *TRI[VTK_N_MAX];
+    double *VERT[VTK_N_MAX];
     
     int rr_set;
     char path[FILENAME_MAX];

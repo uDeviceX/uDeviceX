@@ -1,3 +1,5 @@
+#pragma once
+
 struct PaArray_v {
     const float *pp;
 };

@@ -1,3 +1,0 @@
-# TEST: test.unpack
-u.test.unpack qqq data/a.pack
-find qqq -type f | xargs cat   > list.out.txt

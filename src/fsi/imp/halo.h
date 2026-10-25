@@ -2,7 +2,7 @@ static void fsi_halo_one_type(const PairParams *params, Fsi *fsi, Pap26 PP, Fop2
     enum {NFRAGS = 26};
     int i, n, s;
     int27 starts;
-    SolventWrap *wo = fsi->wo;
+    FsiSolventWrap *wo = fsi->wo;
     const PaArray *parray = &wo->pa;
     float rnd = rnd_get(fsi->rgen);
 

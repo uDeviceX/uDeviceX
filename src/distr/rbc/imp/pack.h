@@ -1,4 +1,4 @@
-static void pack_pp(const DMap m, int nc, int nv, const Particle *pp, /**/ dBags *bags) {
+static void rbc_pack_pp(const DMap m, int nc, int nv, const Particle *pp, /**/ dBags *bags) {
     Sarray<Particle*, NBAGS> wrap;
     bag2Sarray(*bags, &wrap);
     UC(dcommon_pack_pp_packets(nc, nv, pp, m, /**/ wrap));
@@ -20,7 +20,7 @@ static void pack_ii(const DMap m, int, const int *ii, /**/ hBags *bags) {
 }
 
 void drbc_pack(const RbcQuants *q, /**/ DRbcPack *p) {
-    UC(pack_pp(p->map, q->nc, q->nv, q->pp, /**/ p->dpp));
+    UC(rbc_pack_pp(p->map, q->nc, q->nv, q->pp, /**/ p->dpp));
     if (p->hii) {
         UC(dmap_D2H(NBAGS, &p->map, /**/ &p->hmap));
         dSync();

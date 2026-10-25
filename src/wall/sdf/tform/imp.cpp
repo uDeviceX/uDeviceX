@@ -10,14 +10,14 @@ struct TGrid {
     int n[3];
 };
 
-enum {OK, BAD};
+enum {SDF_TFORM_OK, SDF_TFORM_BAD};
 static int goodp(const int n[3]) {
     enum {X, Y, Z};
     const int H = 1000000;
     int cl, ch;
     cl = n[X] > 0 && n[Y] > 0 && n[Z] > 0;
     ch = n[X] < H && n[Y] < H && n[Z] < H;
-    return (cl && ch) ? OK : BAD;
+    return (cl && ch) ? SDF_TFORM_OK : SDF_TFORM_BAD;
 }
 
 
@@ -80,9 +80,9 @@ void tex2sdf_ini(const Coords *c,
     enum {X, Y, Z};
     TGrid tex, sdf;
 
-    if (goodp(T) == BAD) ERR("bad T = [%d %d %d]", T[X], T[Y], T[Z]);
-    if (goodp(N) == BAD) ERR("bad N = [%d %d %d]", N[X], N[Y], N[Z]);
-    if (goodp(M) == BAD) ERR("bad M = [%d %d %d]", M[X], M[Y], M[Z]);
+    if (goodp(T) == SDF_TFORM_BAD) ERR("bad T = [%d %d %d]", T[X], T[Y], T[Z]);
+    if (goodp(N) == SDF_TFORM_BAD) ERR("bad N = [%d %d %d]", N[X], N[Y], N[Z]);
+    if (goodp(M) == SDF_TFORM_BAD) ERR("bad M = [%d %d %d]", M[X], M[Y], M[Z]);
 
     tex_ini(c, T, M, /**/ &tex);
     sdf_ini(c, N, /**/ &sdf);
@@ -93,7 +93,7 @@ void tex2sdf_ini(const Coords *c,
 void out2sdf_ini(const Coords *c, const int N[3], /**/ Tform* t) {
     enum {X, Y, Z};
     TGrid sub, sdf;
-    if (goodp(N) == BAD) ERR("bad N = [%d %d %d]", N[X], N[Y], N[Z]);
+    if (goodp(N) == SDF_TFORM_BAD) ERR("bad N = [%d %d %d]", N[X], N[Y], N[Z]);
     out_ini(c, /**/ &sub);
     sdf_ini(c, N, /**/ &sdf);
     UC(grid2grid(&sub, &sdf, /**/ t));
@@ -103,8 +103,8 @@ void sub2tex_ini(const Coords *c, const int T[3], const int M[3], /**/ Tform *t)
     enum {X, Y, Z, D};
     float lo[D], hi[D];
 
-    if (goodp(T) == BAD) ERR("bad T = [%d %d %d]", T[X], T[Y], T[Z]);
-    if (goodp(M) == BAD) ERR("bad M = [%d %d %d]", M[X], M[Y], M[Z]);
+    if (goodp(T) == SDF_TFORM_BAD) ERR("bad T = [%d %d %d]", T[X], T[Y], T[Z]);
+    if (goodp(M) == SDF_TFORM_BAD) ERR("bad M = [%d %d %d]", M[X], M[Y], M[Z]);
 
     lo[X] = -xs(c)/2 - M[X];
     lo[Y] = -ys(c)/2 - M[Y];

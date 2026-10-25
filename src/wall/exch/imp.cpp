@@ -29,7 +29,7 @@ static void exch_estimate(int numdensity, int3 L, int cap[]) {
     }
 }
 
-static void shift(int3 L, int fid, float r[3]) {
+static void wall_exch_shift(int3 L, int fid, float r[3]) {
     enum {X, Y, Z};
     int d[3];
     frag_hst::i2d3(fid, d);
@@ -63,7 +63,7 @@ static void fill_bags(int3 L, int n, const Particle *pp, hBags *b) {
         p0 = pp[i];
         for (j = 0; j < NFRAGS; ++j) {
             p = p0;
-            shift(L, j, p.r);
+            wall_exch_shift(L, j, p.r);
             if (is_inside(LW, p)) {
                 c = cc[j] ++;
                 dst[j][c] = p;

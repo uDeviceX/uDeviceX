@@ -1,5 +1,5 @@
 #### contact force: several cell and rigid objects
-# snTEST: mix.contact.t2
+# nTEST: mix.contact.t2
 cd test/mix.contact/2
 X=16 Y=32 Z=16
 rad=3.0 fr=0.2 sc=0.5 ang=0.0
@@ -15,8 +15,6 @@ glb = {
 rbc = {
     stress_free      = true
     stress_free_file = \"ref.off\"
-    totArea          = `off.area   ref.off`
-    totVolume        = `off.volume ref.off`
 }"
 :
 ply2punto ply/rbc/00002.ply | uscale 0.1 > ply.out.txt

@@ -15,7 +15,7 @@ void fsi_fin(Fsi *fsi) {
 }
 
 void fsi_bind_solvent(PaArray pa, Force *ff, int n, const int *starts, /**/ Fsi *fsi) {
-    SolventWrap *w = fsi->wo;
+    FsiSolventWrap *w = fsi->wo;
     w->pa = pa;
     w->n  = n;
     w->ff = ff;

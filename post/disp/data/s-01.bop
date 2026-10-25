@@ -1,4 +1,0 @@
-3
-DATA_FILE: s-01.values
-DATA_FORMAT: ascii
-VARIABLES: x y z vx vy vz

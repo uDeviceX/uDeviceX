@@ -79,7 +79,7 @@ struct Rig : Obj {
     RigDistr d;
 };
 
-struct Dump {
+struct ObjDump {
     Particle *pp; /* workspace on host */
     long id, id_diag;
 };
@@ -89,7 +89,7 @@ struct Objects {
     Mbr **mbr;
     Rig **rig;
     Opt opt;
-    Dump *dump;
+    ObjDump *dump;
     Coords *coords;
     MPI_Comm cart;
     MeshBB *bb;

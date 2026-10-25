@@ -2,7 +2,7 @@ static void bulk_one_wrap(const PairParams *params, PaWrap *pw, FoWrap *fw, Fsi 
     int n0, n1;
     float rnd;
     const Particle *ppA = pw->pp;
-    SolventWrap *wo = fsi->wo;
+    FsiSolventWrap *wo = fsi->wo;
     const PaArray *parray = &wo->pa;
     
     rnd = rnd_get(fsi->rgen);

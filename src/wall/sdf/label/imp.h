@@ -1,3 +1,5 @@
+#pragma once
+
 enum {
     // tag::enum[]
     LABEL_BULK,  /* remains in bulk */

@@ -1,3 +1,5 @@
+#pragma once
+
 struct int3;
 
 // tag::struct[]

@@ -10,7 +10,7 @@ void io_point_conf_ini(/**/ IOPointConf **pq) {
 static void conf_push(IOPointConf *q, int nv, const char *k0) {
     int i;
     i = q->i;
-    cpy(q->keys[i], k0);
+    point_cpy(q->keys[i], k0);
     q->nn[i] = nv; q->i = i + 1;
 }
 void io_point_conf_push(IOPointConf *q, const char *key) {
@@ -34,7 +34,7 @@ static void ini_bop(int maxn, int n, const char *keys, BopData **pq) {
 void io_point_ini(int maxn, const char *path, IOPointConf *c, /**/ IOPoint **pq) {
     int i, nkey, cum_n;
     IOPoint *q;
-    char cum_key[N_MAX*(FILENAME_MAX + 1)];
+    char cum_key[POINT_N_MAX*(FILENAME_MAX + 1)];
     EMALLOC(1, &q);
     nkey = c->i;
     reset(q);
@@ -43,18 +43,18 @@ void io_point_ini(int maxn, const char *path, IOPointConf *c, /**/ IOPoint **pq)
     for (i = 0; i < nkey; i++) {
         q->nn[i] = c->nn[i];
         cum_n += q->nn[i];
-        cpy(q->keys[i], c->keys[i]);
+        point_cpy(q->keys[i], c->keys[i]);
     }
 
     for (i = 0; i < nkey; i++) {
-        if (i > 0) cat(cum_key, " ");
-        cat(cum_key, c->keys[i]);
+        if (i > 0) point_cat(cum_key, " ");
+        point_cat(cum_key, c->keys[i]);
     }
 
     ini_bop(maxn, cum_n, cum_key, &q->bop);
 
     UC(mkdir(DUMP_BASE, path));
-    cpy(q->path, path);
+    point_cpy(q->path, path);
     q->nkey = nkey;
     q->maxn = maxn;
     q->cum_n = cum_n;
@@ -89,7 +89,7 @@ void io_point_push(IOPoint *q, int n, const double *D, const char *key) {
         ERR("n=%d > q->maxn=%d; key: '%s'",
             n, q->maxn, key);
 
-    if (q->n == UNSET)
+    if (q->n == POINT_UNSET)
         q->n = n;
     else if (q->n != n)
         ERR("q->n=%d != n=%d", q->n, n);

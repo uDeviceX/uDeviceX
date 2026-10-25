@@ -2,6 +2,8 @@
 
 #define _HD_ __host__ __device__
 
+#pragma once
+
 template <typename T1, typename T2>
 _HD_ void scal(const T1 a, /*io*/ T2 *b) {
     b->x *= a;

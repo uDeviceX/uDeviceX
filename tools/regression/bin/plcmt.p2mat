@@ -1,0 +1,4 @@
+#!/bin/sh
+set -eu
+root=${UDX_ROOT:?UDX_ROOT is not set}
+exec sh "$root/pre/placement/p2mat" "$@"

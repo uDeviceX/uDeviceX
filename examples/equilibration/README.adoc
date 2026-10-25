@@ -1,3 +1,0 @@
-= equilibration
-
-Simple fluid at rest equilibrating

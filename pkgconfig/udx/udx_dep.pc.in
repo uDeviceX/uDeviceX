@@ -1,5 +1,0 @@
-Name: udx_dep
-Version: 0.1
-Description: udx dependencies
-Libs: @LIBS@
-Cflags: @CFLAGS@

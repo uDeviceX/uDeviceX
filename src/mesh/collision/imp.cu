@@ -24,8 +24,6 @@
 
 #include "imp.h"
 
-enum {X, Y, Z};
-
 static __host__ __device__ bool same_side(const float *x, const float *p, const float *a, const float *b, const float *inplane) {
     const float n[3] = {a[Y] * b[Z] - a[Z] * b[Y],
                         a[Z] * b[X] - a[X] * b[Z],

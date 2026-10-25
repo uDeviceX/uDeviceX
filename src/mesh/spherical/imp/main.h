@@ -18,7 +18,7 @@ static void xyz2sph(double x, double y, double z, /**/ double *pr, double *pthet
     phi = atan2(y, x);
     *pr = r; *ptheta = theta; *pphi = phi;
 }
-static void apply(int n, double *rr, /**/ double *r, double *theta, double *phi) {
+static void spherical_apply(int n, double *rr, /**/ double *r, double *theta, double *phi) {
     enum {X, Y, Z};
     int i;
     for (i = 0; i < n; i++) {
@@ -31,8 +31,8 @@ void mesh_spherical_apply(MeshSpherical *q, int m, Vectors *pos, /**/ double *r,
     double *rr;
     nv = q->nv; rr = q->rr; offset = 0;    
     for (i = 0; i < m; i++) {
-        UC(to_com(nv, offset, pos, /**/ rr));
-        apply(nv, rr, /**/ r, theta, phi);
+        UC(spherical_to_com(nv, offset, pos, /**/ rr));
+        spherical_apply(nv, rr, /**/ r, theta, phi);
         rr += 3*nv; r += nv; theta += nv; phi += nv; offset += nv;
     }    
 }

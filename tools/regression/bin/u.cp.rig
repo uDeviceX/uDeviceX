@@ -1,0 +1,13 @@
+#!/bin/sh
+set -eu
+
+root=${UDX_ROOT:?UDX_ROOT is not set}
+D="${D:-$root/data}"
+test $# -eq 2 || { echo 'u.cp.rig: needs source and destination' >&2; exit 2; }
+f=$1
+t=$2
+for p in "$D/rig/$f" "$D/rig/$f.ply"; do
+    if test -f "$p"; then exec cp "$p" "$t"; fi
+done
+echo "u.cp.rig: cannot find rigid template '$f'" >&2
+exit 2

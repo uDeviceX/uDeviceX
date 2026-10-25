@@ -1,4 +1,17 @@
 #ifdef FRAG_HOST
+#ifndef UDX_FRAG_HOST_DEFINED
+#define UDX_FRAG_HOST_DEFINED
+#define UDX_FRAG_BODY
+#endif
+#else
+#ifndef UDX_FRAG_DEV_DEFINED
+#define UDX_FRAG_DEV_DEFINED
+#define UDX_FRAG_BODY
+#endif
+#endif
+
+#ifdef UDX_FRAG_BODY
+#ifdef FRAG_HOST
   #define _I_
   #define _S_ static
   #define BEGIN namespace frag_hst {
@@ -86,3 +99,6 @@ END
 #undef _S_
 #undef BEGIN
 #undef END
+
+#undef UDX_FRAG_BODY
+#endif

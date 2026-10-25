@@ -1,6 +1,0 @@
-read
-write
-write_mpi
-*.o
-test.bop
-test.values

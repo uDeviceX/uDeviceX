@@ -7,8 +7,8 @@ static void ini(MPI_Comm comm, int shifttype, const int4 *tt, int nv, int nt, co
     EMALLOC(1, &q);
 
     q->nv = nv; q->nt = nt;
-    cpy(q->directory, directory);
-    UC(mkdir(comm, DUMP_BASE, directory));    
+    mesh_cpy(q->directory, directory);
+    UC(mesh_mkdir(comm, DUMP_BASE, directory));
     EMALLOC(nt, &q->tt);
     for (i = 0; i < nt; i++)
         q->tt[i] = tt[i];

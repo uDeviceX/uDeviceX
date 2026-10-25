@@ -1,4 +1,4 @@
-static void ini_rnd(int n, curandState_t *rr) {
+static void inflow_ini_rnd(int n, curandState_t *rr) {
     long seed = 1234567;
     KL(inflow_dev::ini_rnd, (k_cnf(n)), (seed, n, rr));
 }
@@ -25,22 +25,22 @@ void inflow_ini(int2 nc, Inflow **i) {
     Dalloc(&d->cumflux, n);
     Dalloc(&d->ndev,    1);
 
-    UC(ini_rnd(n, d->rnds));
+    UC(inflow_ini_rnd(n, d->rnds));
     UC(ini_flux(n, d->rnds, d->cumflux));
 
-    ip->t = TYPE_NONE;
+    ip->t = INFLOW_TYPE_NONE;
 }
 
 static void ini_velocity(Type t, int2 nc, const ParamsU *p, const VParamsU *vp, /**/ float3 *uu) {
     int n = nc.x * nc.y;
     switch(t) {
-    case TYPE_PLATE:
+    case INFLOW_TYPE_PLATE:
         KL(inflow_dev::ini_vel, (k_cnf(n)), (vp->plate, p->plate, nc, /**/ uu));
         break;
-    case TYPE_CIRCLE:
+    case INFLOW_TYPE_CIRCLE:
         KL(inflow_dev::ini_vel, (k_cnf(n)), (vp->circle, p->circle, nc, /**/ uu));
         break;
-    case TYPE_NONE:
+    case INFLOW_TYPE_NONE:
         break;
     default:
         ERR("No inflow type is set");
@@ -61,7 +61,7 @@ void inflow_fin(Inflow *i) {
     EFREE(i);
 }
 
-static void create_solvent(float kBT, int numdensity, float dt, Inflow *i, int *n, SolventWrap wrap) {
+static void create_solvent(float kBT, int numdensity, float dt, Inflow *i, int *n, InflowSolventWrap wrap) {
     int2 nc;
     Desc *d;
     int nctot;
@@ -75,17 +75,17 @@ static void create_solvent(float kBT, int numdensity, float dt, Inflow *i, int *
     CC(d::MemcpyAsync(d->ndev, n, sizeof(int), H2D));
 
     switch(i->t) {
-    case TYPE_PLATE:
+    case INFLOW_TYPE_PLATE:
         KL(inflow_dev::cumulative_flux, (k_cnf(nctot)), (nxdt, i->p.plate, nc, d->uu, /**/ d->cumflux));
         KL(inflow_dev::create_particles, (k_cnf(nctot)),
            (kBT, i->p.plate, nc, d->uu, /*io*/ d->rnds, d->cumflux, /**/ d->ndev, wrap));
         break;
-    case TYPE_CIRCLE:
+    case INFLOW_TYPE_CIRCLE:
         KL(inflow_dev::cumulative_flux, (k_cnf(nctot)), (nxdt, i->p.circle, nc, d->uu, /**/ d->cumflux));
         KL(inflow_dev::create_particles, (k_cnf(nctot)),
            (kBT, i->p.circle, nc, d->uu, /*io*/ d->rnds, d->cumflux, /**/ d->ndev, wrap));
         break;
-    case TYPE_NONE:
+    case INFLOW_TYPE_NONE:
         break;
     default:
         ERR("No inflow type is set");
@@ -97,7 +97,7 @@ static void create_solvent(float kBT, int numdensity, float dt, Inflow *i, int *
 }
 
 void inflow_create_pp(float kBT, int numdensity, float dt, Inflow *i, int *n, Particle *pp) {
-    SolventWrap wrap;
+    InflowSolventWrap wrap;
 
     wrap.pp = pp;
     wrap.cc = NULL;
@@ -108,7 +108,7 @@ void inflow_create_pp(float kBT, int numdensity, float dt, Inflow *i, int *n, Pa
 }
 
 void inflow_create_pp_cc(float kBT, int numdensity, float dt, int newcolor, Inflow *i, int *n, Particle *pp, int *cc) {
-    SolventWrap wrap;
+    InflowSolventWrap wrap;
 
     wrap.pp = pp;
     wrap.cc = cc;

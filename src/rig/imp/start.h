@@ -1,7 +1,7 @@
 #define PP ".pp"
 #define SS ".ss"
 
-static void gen_code(const char *name, const char *ext, char *code) {
+static void rig_gen_code(const char *name, const char *ext, char *code) {
     strcpy(code, name);
     strcat(code, ext);
 }
@@ -18,12 +18,12 @@ static void gen_from_strt(int maxp, MPI_Comm comm, const char *base, const char 
     char code[FILENAME_MAX];
     
     EMALLOC(maxp, &pp);
-    gen_code(name, PP, code);
+    rig_gen_code(name, PP, code);
     restart_read_pp(comm, base, code, RESTART_TEMPL, nps, pp);
     pp2rr(pp, *nps, rr0_hst);
     EFREE(pp);
 
-    gen_code(name, SS, code);
+        rig_gen_code(name, SS, code);
     restart_read_ss(comm, base, code, id, ns, ss_hst);
     *n = *ns * (*nps);
 }
@@ -49,7 +49,7 @@ static void strt_dump_templ0(MPI_Comm comm, const char *base, const char *name, 
     EMALLOC(nps, &pp);
     rr2pp(rr0_hst, nps, pp);
 
-    gen_code(name, PP, code);
+        rig_gen_code(name, PP, code);
     restart_write_pp(comm, base, code, RESTART_TEMPL, nps, pp);
     
     EFREE(pp);
@@ -61,7 +61,7 @@ void rig_strt_dump_templ(MPI_Comm comm, const char *base, const char *name, cons
 
 void rig_strt_dump(MPI_Comm comm, const char *base, const char *name, const int id, const RigQuants *q) {
     char code[FILENAME_MAX];
-    gen_code(name, SS, code);
+        rig_gen_code(name, SS, code);
     restart_write_ss(comm, base, code, id, q->ns, q->ss_hst);
 }
 

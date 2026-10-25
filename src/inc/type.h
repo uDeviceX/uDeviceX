@@ -1,3 +1,5 @@
+#pragma once
+
 template <typename T, int N>
 struct Sarray { /* [s]tatic array */
     T d[N];

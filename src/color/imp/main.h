@@ -100,26 +100,26 @@ void color_tracers(const Coords *coords, int color, const float R, const float P
     if (inradius) {
         Coords_v view;
         coords_get_view(coords, &view);
-        KL(color_dev::radial_flux, (k_cnf(n)), (view, R, Po, color, n, pp, cc, rnd.state));
+        KL(color_dev::radial_flux, (k_cnf(n)), (view, R, Po, color, n, pp, cc, color_rnd.state));
     }
 }
 
 void decolor_tracers(const Coords *coords, int color, const float R, const float Po, int n, const Particle *pp, int *cc) {
     Coords_v view;
     coords_get_view(coords, &view);
-    KL(color_dev::decolor_tracer, (k_cnf(n)), (view, R, Po, color, n, pp, cc, rnd.state));
+    KL(color_dev::decolor_tracer, (k_cnf(n)), (view, R, Po, color, n, pp, cc, color_rnd.state));
 }
 
-static void ini_rnd(int n, curandState_t *state) {
+static void color_ini_rnd(int n, curandState_t *state) {
     long seed = 1234567;
     KL(color_dev::ini_rnd, (k_cnf(n)), (seed, n, state));
 }
 
 void tracers_ini(const int n) {
-    Dalloc(&rnd.state, n);
-    ini_rnd(n, rnd.state);
+    Dalloc(&color_rnd.state, n);
+    color_ini_rnd(n, color_rnd.state);
 }
 
 void tracers_fin() {
-    Dfree(rnd.state);
+    Dfree(color_rnd.state);
 }

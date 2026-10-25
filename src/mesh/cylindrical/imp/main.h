@@ -17,7 +17,7 @@ static void xyz2cyl(double x, double y, double z, /**/ double *pr, double *pphi,
     phi = atan2(y, x);
     *pr = r; *pphi  = phi; *pz = z;
 }
-static void apply(int n, double *rr, /**/ double *r, double *phi, double *z) {
+static void cylindrical_apply(int n, double *rr, /**/ double *r, double *phi, double *z) {
     enum {X, Y, Z};
     int i;
     for (i = 0; i < n; i++) {
@@ -30,8 +30,8 @@ void mesh_cylindrical_apply(MeshCylindrical *q, int m, Vectors *pos, /**/ double
     double *rr;
     nv = q->nv; rr = q->rr; offset = 0;    
     for (i = 0; i < m; i++) {
-        UC(to_com(nv, offset, pos, /**/ rr));
-        apply(nv, rr, /**/ r, phi, z);
+        UC(cylindrical_to_com(nv, offset, pos, /**/ rr));
+        cylindrical_apply(nv, rr, /**/ r, phi, z);
         rr += 3*nv; r += nv; phi += nv; z += nv; offset += nv;
     }    
 }

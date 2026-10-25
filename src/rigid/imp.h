@@ -17,6 +17,8 @@ int rig_pininfo_get_pdir(const RigPinInfo *); // <6>
 // end::pin[]
 
 struct Particle;
+#pragma once
+
 struct Rigid;
 struct Force;
 

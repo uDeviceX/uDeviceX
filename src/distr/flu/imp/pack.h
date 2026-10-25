@@ -1,3 +1,5 @@
+#pragma once
+
 static int reduce(int n, const int d[]) {
     int s, i;
     for (i = s = 0; i < n; ++i) s += d[i];
@@ -31,7 +33,7 @@ void dflu_pack(const FluQuants *q, /**/ DFluPack *p) {
 }
 
 struct ExceedData { int cap, cnt, fid; };
-enum   {OK, FAIL};
+enum   {DFLU_OK, DFLU_FAIL};
 
 static int check_counts(int nfrags, const int *counts, const hBags *hpp, /**/ ExceedData *e) {
     int fid, cnt, cap;
@@ -40,10 +42,10 @@ static int check_counts(int nfrags, const int *counts, const hBags *hpp, /**/ Ex
         cap = comm_get_number_capacity(fid, hpp);
         if (cnt > cap) {
             e->cap = cap; e->cnt = cnt; e->fid = fid;
-            return FAIL;
+            return DFLU_FAIL;
         }        
     }
-    return OK;
+    return DFLU_OK;
 }
 
 static void fail_exceed(ExceedData *e) {
@@ -73,7 +75,7 @@ void dflu_download(DFluPack *p, /**/ DFluStatus *s) {
     int *cnt;
     cnt = p->map.hcounts;
     r = check_counts(NFRAGS, cnt, p->hpp, /**/ &e);
-    if (r == OK) {
+    if (r == DFLU_OK) {
         UC(download_pp_and_counts(p));
     }
     else {

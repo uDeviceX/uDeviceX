@@ -85,7 +85,7 @@ static void fin_rig(Rig *r) {
     EFREE(r);
 }
 
-static void fin_dump(Dump *d) {
+static void fin_dump(ObjDump *d) {
     EFREE(d->pp);
     EFREE(d);
 }

@@ -13,7 +13,7 @@ void mesh_area_ini(MeshRead *mesh, MeshArea **pq) {
 }
 
 void mesh_area_fin(MeshArea *q) { EFREE(q->tt); EFREE(q); }
-static void get(Vectors *p, int i, double d[3]) {
+static void area_get(Vectors *p, int i, double d[3]) {
     enum {X, Y, Z};
     float f[3];
     UC(vectors_get(p, i, /**/ f));
@@ -26,9 +26,9 @@ static double area(int nt, int4 *tt, Vectors *p, int offset) {
     kahan_sum_ini(&kahan_sum);
     for (i = 0; i < nt; i++) {
         ia = tt[i].x; ib = tt[i].y; ic = tt[i].z;
-        UC(get(p, ia + offset, /**/ a));
-        UC(get(p, ib + offset, /**/ b));
-        UC(get(p, ic + offset, /**/ c));
+        UC(area_get(p, ia + offset, /**/ a));
+        UC(area_get(p, ib + offset, /**/ b));
+        UC(area_get(p, ic + offset, /**/ c));
         kahan_sum_add(kahan_sum, tri_hst::kahan_area(a, b, c));
     }
     sum = kahan_sum_get(kahan_sum);

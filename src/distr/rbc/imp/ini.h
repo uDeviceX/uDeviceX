@@ -1,4 +1,4 @@
-static void get_num_capacity(int maxnc, /**/ int numc[NBAGS]) {
+static void rbc_get_num_capacity(int maxnc, /**/ int numc[NBAGS]) {
     // TODO save memory here?
     for (int i = 0; i < NBAGS; ++i)
         numc[i] = maxnc;
@@ -12,7 +12,7 @@ void drbc_pack_ini(bool ids, int3 L, int maxnc, int nv, DRbcPack **pack) {
 
     p->L= L;
     
-    get_num_capacity(maxnc, /**/ numc);
+    rbc_get_num_capacity(maxnc, /**/ numc);
 
     UC(dmap_ini(NBAGS, numc, /**/ &p->map));
 
@@ -50,7 +50,7 @@ void drbc_unpack_ini(bool ids, int3 L, int maxnc, int nv, DRbcUnpack **unpack) {
 
     u->L = L;
     
-    get_num_capacity(maxnc, /**/ numc);
+    rbc_get_num_capacity(maxnc, /**/ numc);
 
     i = 0;
     u->hpp = &u->hbags[i++];

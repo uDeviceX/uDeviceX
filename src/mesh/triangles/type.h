@@ -1,3 +1,5 @@
+#pragma once
+
 // tag::interface[]
 struct Triangles {
     int4 *tt;

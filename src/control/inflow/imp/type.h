@@ -1,7 +1,7 @@
 enum Type {
-    TYPE_NONE,
-    TYPE_PLATE,
-    TYPE_CIRCLE,
+    INFLOW_TYPE_NONE,
+    INFLOW_TYPE_PLATE,
+    INFLOW_TYPE_CIRCLE,
 };
     
 struct Desc {
@@ -29,7 +29,7 @@ struct Inflow {
     VParamsU vp;
 };
 
-struct SolventWrap {
+struct InflowSolventWrap {
     Particle *pp;       /* particles               */
     int *cc;            /* colors                  */
     bool multisolvent;  /* true if color activated */

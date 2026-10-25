@@ -1,12 +1,14 @@
-static char *cpy(char *dest, const char *src) { return strncpy(dest, src, FILENAME_MAX); }
-static char *cat(char *dest, const char *src) { return strncat(dest, src, FILENAME_MAX); }
+#pragma once
 
-static void mkdir(MPI_Comm comm, const char *p, const char *s) {
+static char *vtk_cpy(char *dest, const char *src) { return strncpy(dest, src, FILENAME_MAX); }
+static char *vtk_cat(char *dest, const char *src) { return strncat(dest, src, FILENAME_MAX); }
+
+static void vtk_mkdir(MPI_Comm comm, const char *p, const char *s) {
     char path[FILENAME_MAX] = {'\0'};
     if (!m::is_master(comm)) return;
-    cpy(path, p);
-    cat(path, "/");
-    cat(path, s);
+    vtk_cpy(path, p);
+    vtk_cat(path, "/");
+    vtk_cat(path, s);
     msg_print("mkdir -p '%s'", path);
     UC(os_mkdir(path));
 }

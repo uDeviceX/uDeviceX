@@ -2,6 +2,8 @@
 #define _I_ static __device__
 
 // tag::int[]
+#pragma once
+
 template <typename T>
 _I_ T warpReduceSum(T v)  // <1>
 // end::int[]

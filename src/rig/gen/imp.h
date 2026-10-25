@@ -3,6 +3,8 @@ struct RigPinInfo;
 struct MeshRead;
 
 // tag::struct[]
+#pragma once
+
 struct RigGenInfo {
     float mass;
     int numdensity;

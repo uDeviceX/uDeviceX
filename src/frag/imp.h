@@ -1,3 +1,5 @@
+#pragma once
+
 enum {frag_bulk = 26};
 
 struct int3;

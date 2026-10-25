@@ -1,3 +1,5 @@
+#pragma once
+
 // tag::struct[]
 /* 
  ipp: particles of the mesh
@@ -7,13 +9,13 @@
 enum {
     ID_PP,
     ID_SS,
-    MAX_NBAGS
+    RIG_MAX_NBAGS
 };
 
 struct DRigPack {
     DMap map;
-    dBags dbags[MAX_NBAGS], *dipp, *dss;
-    hBags hbags[MAX_NBAGS], *hipp, *hss;
+    dBags dbags[RIG_MAX_NBAGS], *dipp, *dss;
+    hBags hbags[RIG_MAX_NBAGS], *hipp, *hss;
     CommBuffer *hbuf;
     int nbags;
     int3 L;  /* subdomain size */
@@ -24,7 +26,7 @@ struct DRigComm {
 };
 
 struct DRigUnpack {
-    hBags hbags[MAX_NBAGS], *hipp, *hss;
+    hBags hbags[RIG_MAX_NBAGS], *hipp, *hss;
     CommBuffer *hbuf;
     int nbags;
     int3 L;  /* subdomain size */

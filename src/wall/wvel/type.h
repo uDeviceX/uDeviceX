@@ -1,3 +1,5 @@
+#pragma once
+
 /* view structures                      */
 /* (what is passed to device functions) */
 

@@ -19,16 +19,16 @@ void vtk_conf_fin(VTKConf *q) {
 void vtk_conf_tri(VTKConf *q, const char *keys) {
     int n;
     n = key_list_size(q->tri);
-    if (n > N_MAX)
-        ERR("n=%d > N_MAX=%d", n, N_MAX);
+    if (n > VTK_N_MAX)
+        ERR("n=%d > N_MAX=%d", n, VTK_N_MAX);
     UC(key_list_push(q->tri, keys));
 }
 
 void vtk_conf_vert(VTKConf *q, const char *keys) {
     int n;
     n = key_list_size(q->tri);
-    if (n > N_MAX)
-        ERR("n=%d > N_MAX=%d", n, N_MAX);
+    if (n > VTK_N_MAX)
+        ERR("n=%d > N_MAX=%d", n, VTK_N_MAX);
     UC(key_list_push(q->vert, keys));
 }
 
@@ -42,16 +42,16 @@ void vtk_ini(MPI_Comm comm, int maxm, char const *path, VTKConf *c, /**/ VTK **p
     nbuf = get_nbuf(maxm, mesh_nv(mesh), mesh_nt(mesh), mesh_ne(mesh));
     EMALLOC(nbuf, &q->dbuf);
     EMALLOC(nbuf, &q->ibuf);
-    UC(mkdir(comm, DUMP_BASE, path));
-    cpy(q->path, path);
+    UC(vtk_mkdir(comm, DUMP_BASE, path));
+    vtk_cpy(q->path, path);
     UC(nk = key_list_size(c->tri));
     for (i = 0; i < nk; i++) EMALLOC(nbuf, &q->TRI[i]);
     UC(nk = key_list_size(c->vert));
     for (i = 0; i < nk; i++) EMALLOC(nbuf, &q->VERT[i]);
 
-    q->stamp = MAGIC;
+    q->stamp = VTK_MAGIC;
     q->nbuf = nbuf;
-    q->nm       = UNSET;
+    q->nm       = VTK_UNSET;
     q->rr_set   = 0;
     UC(mesh_copy(mesh, /**/ &q->mesh));
     UC(key_list_copy(c->tri, &q->tri));
@@ -64,7 +64,7 @@ void vtk_points(VTK *q, int nm, const Vectors *pos) {
     enum {X, Y, Z};
     float r[3];
     int nv, n, i, j;
-    if (q->nm != UNSET && q->nm != nm)
+    if (q->nm != VTK_UNSET && q->nm != nm)
         ERR("q->nm=%d  != nm=%d", q->nm, nm);
 
     nv = mesh_nv(q->mesh);
@@ -116,7 +116,7 @@ void vtk_write(VTK *q, MPI_Comm comm, int id) {
     const int *tt;
     const char *keys;
     Out out;
-    if (q->stamp != MAGIC)
+    if (q->stamp != VTK_MAGIC)
         ERR("VTK is not initialized");
 
     if (!key_list_marked(q->tri)) {
@@ -166,14 +166,14 @@ void vtk_write(VTK *q, MPI_Comm comm, int id) {
     UC(write_file_close(out.file));
 
     q->rr_set = 0;
-    q->nm = UNSET;
+    q->nm = VTK_UNSET;
     key_list_unmark(q->tri);
     key_list_unmark(q->vert);
 }
 
 void vtk_fin(VTK *q) {
     int i;
-    if (q->stamp != MAGIC)
+    if (q->stamp != VTK_MAGIC)
         ERR("VTK is not initialized");
     EFREE(q->dbuf);
     EFREE(q->ibuf);

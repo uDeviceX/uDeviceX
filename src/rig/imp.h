@@ -1,3 +1,5 @@
+#pragma once
+
 // tag::quants[]
 struct RigQuants {
     int n, ns, nps;              /* number of particles (total), solid, particle per solid        */

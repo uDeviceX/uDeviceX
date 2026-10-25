@@ -1,3 +1,5 @@
+#pragma once
+
 struct PFarray {
     PaArray p;
     FoArray f;

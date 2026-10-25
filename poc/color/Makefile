@@ -1,1 +1,0 @@
-all:; ./def < def.values

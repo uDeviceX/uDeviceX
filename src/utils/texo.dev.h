@@ -1,3 +1,5 @@
+#pragma once
+
 template<typename T>
 __device__ __forceinline__
 // tag::int[]

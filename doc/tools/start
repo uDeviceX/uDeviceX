@@ -1,8 +1,0 @@
-#!/bin/sh
-
-: ${PYTHON=python2}
-
-e () { echo >/dev/null "cmd: $@"; eval "$@"; }
-
-e $PYTHON -m SimpleHTTPServer '&'
-e echo $! > .pid

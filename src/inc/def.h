@@ -5,6 +5,8 @@
 
 #define ENUM_COLOR(a) a##_COLOR
 #define make_enum_color(a) ENUM_COLOR(a) ,
+#ifndef UDX_DEF_ENUMS_DEFINED
+#define UDX_DEF_ENUMS_DEFINED
 enum {
     XMACRO_COLOR(make_enum_color)
     N_COLOR
@@ -45,6 +47,7 @@ enum {
     /* safety factor for odist fragments */
     ODSTR_FACTOR = 3,
 };
+#endif
 
 /* for the spring forces r = min(lmax*RBC_SPRING_CAP, r) */
 #define RBC_SPRING_CAP (0.99)

@@ -1,4 +1,4 @@
-static void pack_pp(const DMap m, int ns, int nv, const Particle *ipp, /**/ dBags *bags) {
+static void rig_pack_pp(const DMap m, int ns, int nv, const Particle *ipp, /**/ dBags *bags) {
     Sarray<Particle*, NBAGS> wrap;
     bag2Sarray(*bags, &wrap);
 
@@ -15,7 +15,7 @@ static void pack_ss(const DMap m, int n, const Rigid *ss, /**/ dBags *bags) {
 
 
 void drig_pack(int ns, int nv, const Rigid *ss, const Particle *ipp, /**/ DRigPack *p) {
-    UC(pack_pp(p->map, ns, nv, ipp, /**/ p->dipp));
+    UC(rig_pack_pp(p->map, ns, nv, ipp, /**/ p->dipp));
     UC(pack_ss(p->map, ns, ss, /**/ p->dss));
 }
 

@@ -1,4 +1,4 @@
-static void compute_com(int nv, Vectors *pos, /**/ double *com) {
+static void spherical_compute_com(int nv, Vectors *pos, /**/ double *com) {
     enum {X, Y, Z};
     int i;
     float r[3];
@@ -16,13 +16,13 @@ static void compute_com(int nv, Vectors *pos, /**/ double *com) {
     kahan_sum_fin(sx); kahan_sum_fin(sy); kahan_sum_fin(sz);
 }
 
-static void to_com(int nv, int offset, Vectors *pos, /**/ double *rr) {
+static void spherical_to_com(int nv, int offset, Vectors *pos, /**/ double *rr) {
     enum {X, Y, Z};
     int i;
     float   r0[3]; /* from */
     double *r1;    /* to */
     double com[3];
-    UC(compute_com(nv, pos, /**/ com));
+    UC(spherical_compute_com(nv, pos, /**/ com));
     for (i = 0; i < nv; i++) {
         UC(vectors_get(pos, i + offset, /**/ r0));
         r1 = &rr[3*i];

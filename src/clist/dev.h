@@ -1,3 +1,5 @@
+#pragma once
+
 #define _I_ static __device__
 
 enum { CLIST_NMAX = (256*256*256) };

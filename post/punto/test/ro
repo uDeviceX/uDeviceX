@@ -1,2 +1,0 @@
-# TEST: ro
-u.punto.ro data/rbc.ply -- data/rbc.ply > punto.out.txt

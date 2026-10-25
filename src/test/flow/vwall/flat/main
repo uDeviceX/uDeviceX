@@ -1,8 +1,0 @@
-#### Plates : Couette
-# nTEST: flow.vwall.flat
-cd test/flow/vwall/flat
-:
-u.cp.sdf wall1/wall.dat sdf.dat
-:
-u.run udx conf.cfg
-u.avgh5 1 u 2 h5/001[0123].h5 | uscale 0.05 > h5.out.txt

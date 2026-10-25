@@ -1,3 +1,0 @@
-# TEST: 3
-: ${PYTHON=python3}
-$PYTHON except < data/default.cfg > conf.out.cfg

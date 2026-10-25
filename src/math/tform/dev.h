@@ -1,3 +1,5 @@
+#pragma once
+
 static __device__ void tform_convert_dev(const Tform_v *t, const float a0[3], /**/ float a1[3]) {
     enum {X, Y, Z};
     const float *o, *s;

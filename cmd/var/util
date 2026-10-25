@@ -1,9 +1,0 @@
-: ${DBG=0}
-: ${AWK=awk}
-
-msg () { echo >&2 "$@"; }
-err () { msg "$prog: $@"; exit 2; }
-e   () {
-    if test ! "$DBG" = 0; then msg 'cmd: '"$@"; fi
-    eval "$@"
-}

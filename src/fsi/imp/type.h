@@ -1,6 +1,8 @@
+#pragma once
+
 struct RNDunif;
 
-struct SolventWrap {
+struct FsiSolventWrap {
     PaArray pa;
     Force *ff;
     int n; 
@@ -8,7 +10,7 @@ struct SolventWrap {
 };
 
 struct Fsi {
-    SolventWrap *wo;
+    FsiSolventWrap *wo;
     RNDunif     *rgen;
     int3 L; /* subdomain size */
 };

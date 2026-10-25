@@ -1,7 +1,0 @@
-#### "Pachinko"
-# nTEST: pachinko
-cd test/pachinko
-u.cp.sdf pachinko/sdf.dat sdf.dat
-:
-u.run udx conf.cfg
-u.avgh5 1 u 2 h5/0003.h5 | uscale 0.1 > h5.out.txt

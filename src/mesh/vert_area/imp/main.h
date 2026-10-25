@@ -13,7 +13,7 @@ void mesh_vert_area_ini(MeshRead *mesh, MeshVertArea **pq) {
 }
 
 void mesh_vert_area_fin(MeshVertArea *q) { EFREE(q->tt); EFREE(q); }
-static void get(Vectors *p, int i, double d[3]) {
+static void vert_area_get(Vectors *p, int i, double d[3]) {
     enum {X, Y, Z};
     float f[3];
     UC(vectors_get(p, i, /**/ f));
@@ -23,9 +23,9 @@ static void area(int4 t, Vectors *p, int offset, /**/ double *o) {
     int ia, ib, ic;
     double a[3], b[3], c[3], A;
     ia = t.x; ib = t.y; ic = t.z;
-    UC(get(p, ia + offset, /**/ a));
-    UC(get(p, ib + offset, /**/ b));
-    UC(get(p, ic + offset, /**/ c));
+    UC(vert_area_get(p, ia + offset, /**/ a));
+    UC(vert_area_get(p, ib + offset, /**/ b));
+    UC(vert_area_get(p, ic + offset, /**/ c));
 
     A = tri_hst::kahan_area(a, b, c)/3;
     o[ia + offset] += A;

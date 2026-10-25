@@ -4,7 +4,10 @@
 #include "inc/type.h"
 #include "imp.h"
 
-enum {X, Y, Z};
+enum {PROP_X, PROP_Y, PROP_Z};
+#define X PROP_X
+#define Y PROP_Y
+#define Z PROP_Z
 enum {XX, XY, XZ, YY, YZ, ZZ};
     
 #define Ax A[X]
@@ -148,5 +151,9 @@ void mesh_inertia_tensor(int nt, const int4 *tt, const float *vv, const float *c
     for (int c = 0; c < 6; ++c)
         I[c] *= density;
 }
+
+#undef X
+#undef Y
+#undef Z
 
 #undef load_t

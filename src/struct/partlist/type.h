@@ -1,3 +1,5 @@
+#pragma once
+
 enum {
     ALIVE = 0,
     DEAD  = 1

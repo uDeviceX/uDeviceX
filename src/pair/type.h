@@ -1,3 +1,5 @@
+#pragma once
+
 /* maximum of pairwise dpd parameters */
 enum {
     MAX_PAR = (N_COLOR * (N_COLOR + 1)) / 2

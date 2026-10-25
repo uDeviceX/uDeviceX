@@ -177,8 +177,8 @@ static void ini_rig(const Config *cfg, const OptRig *opt, MPI_Comm cart, int max
     UC(rig_pininfo_set_conf(cfg, r->name, r->pininfo));
 }
 
-static void ini_dump(long maxp, Dump **dump) {
-    Dump *d;
+static void ini_dump(long maxp, ObjDump **dump) {
+    ObjDump *d;
     EMALLOC(1, dump);
     d = *dump;
     EMALLOC(maxp, &d->pp);
@@ -209,7 +209,7 @@ static int get_name_id(const char *s, int n, const char **names) {
     return NOT_FOUND;
 }
 
-static int get_id_inter(int a, int b) {
+static int obj_get_id_inter(int a, int b) {
     int i, j;
     i = a > b ? a : b;
     j = a > b ? b : a;
@@ -245,7 +245,7 @@ static void ini_cnt_params(const Config *cfg, int nmbr, int nrig, Mbr **mm, Rig 
         id_objb = get_name_id(sobjb, n, names);
 
         
-        id_inter = get_id_inter(id_obja, id_objb);
+        id_inter = obj_get_id_inter(id_obja, id_objb);
 
         read_params(cfg, pair_ns, &prms[id_inter]);
     }

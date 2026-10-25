@@ -1,3 +1,5 @@
+#pragma once
+
 // tag::int[]
 /* exclusive scan */
 template <int NCOUNTS> 

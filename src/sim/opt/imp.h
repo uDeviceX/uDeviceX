@@ -1,3 +1,5 @@
+#pragma once
+
 /* solvent options */
 struct OptFlu {
     bool colors, ids, ss, push;

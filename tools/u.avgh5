@@ -1,6 +1,0 @@
-#! /bin/sh
-
-h=`u.host`
-. u.post.load.$h
-
-exec u.avgh5.py "$@"

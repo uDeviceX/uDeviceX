@@ -1,1 +1,0 @@
-PAGES = index.html

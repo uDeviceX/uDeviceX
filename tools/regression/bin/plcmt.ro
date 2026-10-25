@@ -1,0 +1,7 @@
+#!/bin/sh
+set -eu
+
+root=${UDX_ROOT:?UDX_ROOT is not set}
+PATH="$root/pre/placement:$PATH"
+export PATH
+exec sh "$root/pre/placement/ro" "$@"

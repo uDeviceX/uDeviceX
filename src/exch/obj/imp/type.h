@@ -1,17 +1,19 @@
+#pragma once
+
 /*
 pp: particles
 cc: counts of object types
 */
 
 enum {
-    ID_PP, ID_CC,
-    MAX_NBAGS
+    EXCH_OBJ_ID_PP, EXCH_OBJ_ID_CC,
+    EXCH_OBJ_MAX_NBAGS
 };
 
 struct EObjPack {
     EMap map;
     dBags dpp;
-    hBags hbags[MAX_NBAGS], *hpp, *hcc;
+    hBags hbags[EXCH_OBJ_MAX_NBAGS], *hpp, *hcc;
     int nbags;
     CommBuffer *hbuf;
 
@@ -24,7 +26,7 @@ struct EObjComm {
 
 struct EObjUnpack {
     dBags dpp;
-    hBags hbags[MAX_NBAGS], *hpp, *hcc;
+    hBags hbags[EXCH_OBJ_MAX_NBAGS], *hpp, *hcc;
     int nbags;
     CommBuffer *hbuf;
 

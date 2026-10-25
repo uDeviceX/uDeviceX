@@ -1,3 +1,5 @@
+#pragma once
+
 struct FoArray_v {
     float *ff;
 };

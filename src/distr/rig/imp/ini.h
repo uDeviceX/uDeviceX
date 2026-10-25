@@ -1,4 +1,4 @@
-static void get_num_capacity(int maxns, /**/ int numc[NBAGS]) {
+static void rig_get_num_capacity(int maxns, /**/ int numc[NBAGS]) {
     // TODO save memory here?
     for (int i = 0; i < NBAGS; ++i)
         numc[i] = maxns;
@@ -11,7 +11,7 @@ void drig_pack_ini(int3 L, int maxns, int nv, DRigPack **pack) {
     p = *pack;
 
     p->L = L;
-    get_num_capacity(maxns, /**/ numc);
+    rig_get_num_capacity(maxns, /**/ numc);
 
     UC(dmap_ini(NBAGS, numc, /**/ &p->map));
 
@@ -22,7 +22,7 @@ void drig_pack_ini(int3 L, int maxns, int nv, DRigPack **pack) {
     UC(comm_bags_ini(PINNED, DEV_ONLY, nv * sizeof(Particle), numc, /**/ p->hipp, p->dipp));
     UC(comm_bags_ini(PINNED, DEV_ONLY, sizeof(Rigid), numc, /**/ p->hss, p->dss));
 
-    p->nbags = MAX_NBAGS;
+    p->nbags = RIG_MAX_NBAGS;
 
     UC(comm_buffer_ini(p->nbags, p->hbags, &p->hbuf));
 }
@@ -41,7 +41,7 @@ void drig_unpack_ini(int3 L, int maxns, int nv, DRigUnpack **unpack) {
     u = *unpack;
 
     u->L = L;
-    get_num_capacity(maxns, /**/ numc);
+    rig_get_num_capacity(maxns, /**/ numc);
 
     u->hipp = &u->hbags[ID_PP];  u->hss = &u->hbags[ID_SS];
     
@@ -50,7 +50,7 @@ void drig_unpack_ini(int3 L, int maxns, int nv, DRigUnpack **unpack) {
 
     UC(comm_bags_ini(HST_ONLY, NONE, sizeof(Rigid), numc, /**/ u->hss, NULL));
 
-    u->nbags = MAX_NBAGS;
+    u->nbags = RIG_MAX_NBAGS;
 
     UC(comm_buffer_ini(u->nbags, u->hbags, &u->hbuf));
 }

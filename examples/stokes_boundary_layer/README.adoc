@@ -1,3 +1,0 @@
-= stokes boundary layer
-
-See e.g. https://en.wikipedia.org/wiki/Stokes_boundary_layer

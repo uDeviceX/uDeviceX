@@ -3,6 +3,8 @@ struct Config;
 struct Restrain;
 
 // tag::wrap[]
+#pragma once
+
 struct SchemeQQ {
     Particle *o, *r;
     int on, rn;

@@ -1,8 +1,0 @@
-#### Plates : poiseuille
-# nTEST: flow.t3
-cd test/flow/plate
-:
-u.cp.sdf wall1/wall.dat sdf.dat
-:
-u.run udx conf.cfg
-u.avgh5 1 u 2 h5/0011.h5 > h5.out.txt

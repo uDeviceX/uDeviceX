@@ -1,4 +1,0 @@
-#!/bin/sh
-
-printf '%s\n' "u.batch on acer is not implimented" >&2
-exit

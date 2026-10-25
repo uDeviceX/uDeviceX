@@ -1,5 +1,8 @@
 /* error codes */
+#ifndef HE_ERROR_CODES_DEFINED
+#define HE_ERROR_CODES_DEFINED
 enum {HE_OK, HE_IO, HE_MEMORY, HE_SYS, HE_USER, HE_INDEX, HE_NUM};
+#endif
 
 /* for user code */
 #define ER(fmt, ...) ERR(HE_USER, (fmt), ##__VA_ARGS__)

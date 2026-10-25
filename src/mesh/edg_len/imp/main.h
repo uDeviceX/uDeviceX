@@ -16,7 +16,7 @@ void mesh_edg_len_ini(MeshRead *mesh, MeshEdgLen **pq) {
     *pq = q;
 }
 
-static void get(Vectors *p, int i, double d[3]) {
+static void edg_len_get(Vectors *p, int i, double d[3]) {
     enum {X, Y, Z};
     float f[3];
     UC(vectors_get(p, i, /**/ f));
@@ -26,8 +26,8 @@ static double sum_sq(double x, double y, double z) { return x*x + y*y + z*z; }
 static double len0(Vectors *pos, int i, int j) {
     enum {X, Y, Z};
     double d, a[3], b[3];
-    get(pos, i, /**/ a);
-    get(pos, j, /**/ b);
+    edg_len_get(pos, i, /**/ a);
+    edg_len_get(pos, j, /**/ b);
     d = sum_sq(a[X] - b[X], a[Y] - b[Y], a[Z] - b[Z]);
     return sqrt(d);
 }

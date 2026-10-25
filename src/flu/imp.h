@@ -1,3 +1,5 @@
+#pragma once
+
 // tag::struct[]
 struct FluQuants {
     Particle *pp, *pp0;    /* particles on device  */

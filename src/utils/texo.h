@@ -1,3 +1,5 @@
+#pragma once
+
 /* 1D texture object template */
 static void sz_check(int n) {
     if (n <            0 ) ERR("too small texo: %d", n);

@@ -1,2 +1,0 @@
-# TEST: dump
-u.wall.dump data/wall.h5 > wall.out.txt

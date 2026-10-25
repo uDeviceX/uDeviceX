@@ -6,7 +6,7 @@ void diag_part_ini(const char *path, /**/ DiagPart **pq) {
     UC(efopen(q->path, "w", /**/ &f));
     UC(efclose(f));
     msg_print("DiagPart: %s", q->path);
-    q->stamp = STAMP_GOOD;
+    q->stamp = DIAG_PART_STAMP_GOOD;
     *pq = q;
 }
 void diag_part_fin(DiagPart *q) { EFREE(q); }
@@ -36,7 +36,7 @@ static void sum_i(MPI_Comm comm, int *v) {
 
 void diag_part_apply(DiagPart *q, MPI_Comm comm, float time, int n, const Particle *pp) {
     if (time < 0) ERR("time = %g < 0", time);
-    if (q->stamp != STAMP_GOOD) ERR("the DiagPart object was not initialized");
+    if (q->stamp != DIAG_PART_STAMP_GOOD) ERR("the DiagPart object was not initialized");
     enum {X, Y, Z, D};
     int i, c;
     double k, km, ke; /* particle, total, and maximum kinetic energies */

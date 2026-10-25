@@ -1,3 +1,5 @@
+#pragma once
+
 struct Wvel;
 struct WvelStep;
 

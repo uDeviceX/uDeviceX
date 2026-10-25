@@ -17,7 +17,7 @@ void mesh_angle_fin(MeshAngle *q) {
     EFREE(q->dd); EFREE(q);
 }
 
-static void get(Vectors *p, int i, double d[3]) {
+static void angle_get(Vectors *p, int i, double d[3]) {
     enum {X, Y, Z};
     float f[3];
     UC(vectors_get(p, i, /**/ f));
@@ -28,10 +28,10 @@ static double angle(int4 t, Vectors *p, int offset) {
     double a[3], b[3], c[3], d[3], x, y;
     ia = t.x; ib = t.y; ic = t.z; id = t.w;
 
-    UC(get(p, ia + offset, /**/ a));
-    UC(get(p, ib + offset, /**/ b));
-    UC(get(p, ic + offset, /**/ c));
-    UC(get(p, id + offset, /**/ d));
+    UC(angle_get(p, ia + offset, /**/ a));
+    UC(angle_get(p, ib + offset, /**/ b));
+    UC(angle_get(p, ic + offset, /**/ c));
+    UC(angle_get(p, id + offset, /**/ d));
     
     tri_hst::dihedral_xy(a, b, c, d, /**/ &x, &y);
     return atan2(y, x);

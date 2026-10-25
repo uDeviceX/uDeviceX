@@ -14,6 +14,7 @@ import tempfile
 VERSION = "1"
 SOURCE_SUFFIXES = {".c", ".cpp", ".cu"}
 MAIN_RE = re.compile(r"\bmain\s*\(")
+DEFINE_RE = re.compile(r"^\s*#\s*define\s+([A-Za-z_]\w*)", re.MULTILINE)
 
 
 def fail(message):
@@ -61,12 +62,28 @@ def validate(paths):
         raise ValueError("multiple main functions found: " + ", ".join(mains))
 
 
+def macro_names(root):
+    names = set()
+    for path in (root / "src").rglob("*"):
+        if not path.is_file() or path.suffix not in {".h", ".c", ".cpp", ".cu"}:
+            continue
+        try:
+            text = path.read_text(encoding="utf-8")
+        except UnicodeDecodeError:
+            continue
+        names.update(DEFINE_RE.findall(text))
+    return sorted(
+        name for name in names
+        if not name.startswith("__") and not name.endswith("_DEFINED")
+    )
+
+
 def manifest(root, paths):
     sources = []
     for rel, path in paths:
         digest = hashlib.sha256(path.read_bytes()).hexdigest()
         sources.append({"path": rel, "sha256": digest})
-    return {"tool_version": VERSION, "sources": sources}
+    return {"tool_version": VERSION, "macros": macro_names(root), "sources": sources}
 
 
 def generated_text(manifest_data):
@@ -81,11 +98,16 @@ def generated_text(manifest_data):
     ]
     for item in manifest_data["sources"]:
         path = item["path"]
+        for macro in manifest_data["macros"]:
+            lines.append(f'#pragma push_macro("{macro}")')
         lines.extend([
             f'#line 1 "{path}"',
             f'#include "{path}"',
             "",
         ])
+        for macro in reversed(manifest_data["macros"]):
+            lines.append(f'#pragma pop_macro("{macro}")')
+        lines.append("")
     return "\n".join(lines)
 
 

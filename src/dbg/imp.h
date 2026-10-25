@@ -1,3 +1,5 @@
+#pragma once
+
 struct Dbg;
 
 struct Config;

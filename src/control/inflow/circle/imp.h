@@ -28,8 +28,8 @@ void inflow_ini_params_circle(const Coords *c, float3 o, float R, float H, float
         vpp->u = u;
         vpp->poiseuille = poiseuille;
 
-        i->t = TYPE_CIRCLE;
+        i->t = INFLOW_TYPE_CIRCLE;
     } else {
-        i->t = TYPE_NONE;
+        i->t = INFLOW_TYPE_NONE;
     }
 }

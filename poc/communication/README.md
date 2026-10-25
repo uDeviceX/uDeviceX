@@ -1,3 +1,0 @@
-# communication
-
-in search of common patterns for udx communications...

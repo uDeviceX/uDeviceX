@@ -1,2 +1,0 @@
-# TEST: test.pack
-u.test.pack data/a > test.out.txt

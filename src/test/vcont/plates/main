@@ -1,7 +1,0 @@
-#### Plates : poiseuille
-# nTEST: vcont.t3
-cd test/vcont/plates
-:
-u.cp.sdf wall1/wall.dat sdf.dat
-u.run udx conf.cfg
-cat vcont.txt > vcont.out.txt

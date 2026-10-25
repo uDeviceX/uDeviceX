@@ -1,3 +1,5 @@
+#pragma once
+
 static __device__ float3 fetch_pos(int i, const Particle *pp) {
     enum {X, Y, Z};
     float3 r;

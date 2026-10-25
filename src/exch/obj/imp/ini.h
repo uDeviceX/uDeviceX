@@ -39,14 +39,14 @@ void eobj_pack_ini(int3 L, int nw, int maxd, int maxpsolid, EObjPack **pack) {
 
     UC(emap_ini(nw, NFRAGS, cap, /**/ &p->map));
 
-    p->hpp = &p->hbags[ID_PP];  p->hcc = &p->hbags[ID_CC];
+    p->hpp = &p->hbags[EXCH_OBJ_ID_PP];  p->hcc = &p->hbags[EXCH_OBJ_ID_CC];
     
     UC(comm_bags_ini(PINNED,   NONE, sizeof(Particle), cap, /**/ p->hpp, &p->dpp));
     UC(comm_bags_ini(HST_ONLY, NONE, sizeof(int),    cccap, /**/ p->hcc, NULL));
 
     set_cc_counts(nw, NFRAGS, p->hcc);
 
-    p->nbags = MAX_NBAGS;
+    p->nbags = EXCH_OBJ_MAX_NBAGS;
     UC(comm_buffer_ini(p->nbags, p->hbags, &p->hbuf));
 }
 
@@ -69,14 +69,14 @@ void eobj_unpack_ini(int3 L, int nw, int maxd, int maxpsolid, EObjUnpack **unpac
     estimates(L, NFRAGS, maxd, maxpsolid, /**/ cap);
     get_cc_cap(nw, NFRAGS, cccap);
 
-    u->hpp = &u->hbags[ID_PP];  u->hcc = &u->hbags[ID_CC];
+    u->hpp = &u->hbags[EXCH_OBJ_ID_PP];  u->hcc = &u->hbags[EXCH_OBJ_ID_CC];
 
     UC(comm_bags_ini(PINNED_DEV, NONE, sizeof(Particle), cap, /**/ u->hpp, &u->dpp));
     UC(comm_bags_ini(HST_ONLY  , NONE, sizeof(int),    cccap, /**/ u->hcc, NULL));
 
     set_cc_counts(nw, NFRAGS, u->hcc);
 
-    u->nbags = MAX_NBAGS;
+    u->nbags = EXCH_OBJ_MAX_NBAGS;
     UC(comm_buffer_ini(u->nbags, u->hbags, &u->hbuf));
 }
 

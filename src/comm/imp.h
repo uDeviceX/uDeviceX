@@ -1,3 +1,5 @@
+#pragma once
+
 typedef unsigned char data_t;
 
 enum {

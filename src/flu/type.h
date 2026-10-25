@@ -1,3 +1,5 @@
+#pragma once
+
 /* helpers to communicate between halo interactions and exchanger */
 
 namespace flu {

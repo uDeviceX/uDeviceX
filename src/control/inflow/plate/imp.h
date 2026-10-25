@@ -65,5 +65,5 @@ void inflow_ini_params_plate(const Coords *c, float3 o, int dir, float L1, float
     vpp->upoiseuille = upoiseuille;
     vpp->vpoiseuille = vpoiseuille;
 
-    i->t = TYPE_PLATE;
+    i->t = INFLOW_TYPE_PLATE;
 }

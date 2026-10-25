@@ -1,3 +1,5 @@
+#pragma once
+
 // tag::convert[]
 template <typename BAGT, typename T, int N>
 static void bag2Sarray(BAGT bags, Sarray<T*, N> *buf)

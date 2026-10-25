@@ -1,14 +1,14 @@
 void vectors_float_ini(int n, const float *rr, /**/ Vectors **pq) {
     Vectors *q;
     EMALLOC(1, &q);
-    q->type = FLOAT; q->n = n; q->D.rr = rr;
+    q->type = vectors_impl::FLOAT; q->n = n; q->D.rr = rr;
     *pq = q;
 }
 
 void vectors_postions_ini(int n, const Particle *pp, /**/ Vectors **pq) {
     Vectors *q;
     EMALLOC(1, &q);
-    q->type = POSITIONS; q->n = n; q->D.pp = pp;
+    q->type = vectors_impl::POSITIONS; q->n = n; q->D.pp = pp;
     *pq = q;
 }
 
@@ -40,7 +40,7 @@ static void edge_ini_tform(const Coords *coords, Local2Global local2global, Tfor
 void vectors_postions_edge_ini(const Coords *coords, int n, const Particle *pp, /**/ Vectors **pq) {
     Vectors *q;
     EMALLOC(1, &q);
-    q->type = POSITIONS_EDGE; q->n = n; q->D.pp = pp;
+    q->type = vectors_impl::POSITIONS_EDGE; q->n = n; q->D.pp = pp;
     edge_ini_tform(coords, l2edge, /**/ &q->tform);
     *pq = q;
 }
@@ -48,7 +48,7 @@ void vectors_postions_edge_ini(const Coords *coords, int n, const Particle *pp, 
 void vectors_postions_center_ini(const Coords *coords, int n, const Particle *pp, /**/ Vectors **pq) {
     Vectors *q;
     EMALLOC(1, &q);
-    q->type = POSITIONS_EDGE; q->n = n; q->D.pp = pp;
+    q->type = vectors_impl::POSITIONS_EDGE; q->n = n; q->D.pp = pp;
     edge_ini_tform(coords, l2center, /**/ &q->tform);
     *pq = q;
 }
@@ -56,24 +56,25 @@ void vectors_postions_center_ini(const Coords *coords, int n, const Particle *pp
 void vectors_velocities_ini(int n, const Particle *pp, /**/ Vectors **pq) {
     Vectors *q;
     EMALLOC(1, &q);
-    q->type = VELOCITIES; q->n = n; q->D.pp = pp;
+    q->type = vectors_impl::VELOCITIES; q->n = n; q->D.pp = pp;
     *pq = q;
 }
 
 void vectors_zero_ini(int n, /**/ Vectors **pq) {
     Vectors *q;
     EMALLOC(1, &q);
-    q->type = ZERO; q->n = n;
+    q->type = vectors_impl::ZERO; q->n = n;
     *pq = q;
 }
 
 void vectors_fin(Vectors *q) {
-    if (q->type == POSITIONS_EDGE ||
-        q->type == POSITIONS_CENTER)
+    if (q->type == vectors_impl::POSITIONS_EDGE ||
+        q->type == vectors_impl::POSITIONS_CENTER)
         tform_fin(q->tform);
     EFREE(q);
 }
 
+namespace vectors_impl {
 static void float_get(const Vectors *q, int i, float r[3]) {
     enum {X, Y, Z};
     const float *rr;
@@ -111,10 +112,11 @@ static void zero_get(const Vectors*, int, float r[3]) {
     enum {X, Y, Z};
     r[X] = r[Y] = r[Z] = 0;
 }
+}
 void vectors_get(const Vectors *q, int i, /**/ float r[3]) {
     int n;
     n = q->n;
     if (i >= n) ERR("i = %d    >=   n = %d", i, n);
     if (i < 0)  ERR("i = %d    < 0", i);
-    get[q->type](q, i, r);
+    vectors_impl::get[q->type](q, i, r);
 }

@@ -1,9 +1,0 @@
-for f
-do
-    d=`dirname "$f"`
-    if ! test -f "$d/conf.cfg"; then continue; fi
-    if ! grep -q '$S' "$f"; then continue; fi
-    if   grep -q 'S=' "$f"; then continue; fi    
-    echo $f:1:
-done
-

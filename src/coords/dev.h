@@ -1,3 +1,5 @@
+#pragma once
+
 /* domain sizes */
 
 static __device__ int xdomain(const Coords_v c) {

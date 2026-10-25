@@ -1,3 +1,5 @@
+#pragma once
+
 // tag::struct[]
 /* [D]istr Map */
 struct DMap {

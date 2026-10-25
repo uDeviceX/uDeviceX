@@ -16,7 +16,7 @@ void outflow_ini(int maxp, /**/ Outflow **o0) {
 
     CC(d::MemsetAsync(o->kk, 0, sz));
     UC(reset_ndead(o));
-    o->type = TYPE_NONE;
+    o->type = OUTFLOW_TYPE_NONE;
 }
 
 void outflow_fin(/**/ Outflow *o) {
@@ -27,19 +27,19 @@ void outflow_fin(/**/ Outflow *o) {
 
 void outflow_set_params_circle(const Coords *coords, float3 c, float R, Outflow *o) {
     enum {X, Y, Z};
-    ParamsCircle p;
+    OutflowParamsCircle p;
     p.Rsq = R*R;
     
     // shift to local referential
     global2local(coords, c, /**/ &p.c);
 
     o->params.circle = p;
-    o->type = TYPE_CIRCLE;
+    o->type = OUTFLOW_TYPE_CIRCLE;
 }
 
 void outflow_set_params_plate(const Coords *c, int dir, float r0, Outflow *o) {
     enum {X, Y, Z};
-    ParamsPlate p = {0, 0, 0, 0};    
+    OutflowParamsPlate p = {0, 0, 0, 0};
 
     switch (dir) {
     case X:
@@ -60,20 +60,20 @@ void outflow_set_params_plate(const Coords *c, int dir, float r0, Outflow *o) {
     };    
     
     o->params.plate = p;
-    o->type = TYPE_PLATE;
+    o->type = OUTFLOW_TYPE_PLATE;
 }
 
 void outflow_filter_particles(int n, const Particle *pp, /**/ Outflow *o) {
     reset_ndead(o);
 
     switch(o->type) {
-    case TYPE_CIRCLE:
+    case OUTFLOW_TYPE_CIRCLE:
         KL(outflow_dev::filter, (k_cnf(n)), (n, pp, o->params.circle, /**/ o->ndead_dev, o->kk) );
         break;
-    case TYPE_PLATE:
+    case OUTFLOW_TYPE_PLATE:
         KL(outflow_dev::filter, (k_cnf(n)), (n, pp, o->params.plate, /**/ o->ndead_dev, o->kk) );
         break;
-    case TYPE_NONE:
+    case OUTFLOW_TYPE_NONE:
     default:
         ERR("No type set");
         break;

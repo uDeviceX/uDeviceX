@@ -1,4 +1,4 @@
-static __device__ int predicate(ParamsPlate p, const float r[3]) {
+static __device__ int predicate(OutflowParamsPlate p, const float r[3]) {
     enum {X, Y, Z};
     float s;
     
@@ -7,7 +7,7 @@ static __device__ int predicate(ParamsPlate p, const float r[3]) {
     return s > 0;
 }
 
-static __device__ int predicate(ParamsCircle p, const float r[3]) {
+static __device__ int predicate(OutflowParamsCircle p, const float r[3]) {
     enum {X, Y, Z};
     float x, y, rsq;
     x = r[X] - p.c.x;

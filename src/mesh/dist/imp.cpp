@@ -4,7 +4,12 @@
 #include "inc/type.h"
 #include "imp.h"
 
-enum {X, Y, Z};
+enum {DIST_X, DIST_Y, DIST_Z};
+#define X DIST_X
+#define Y DIST_Y
+#define Z DIST_Z
+#define min dist_min
+#define max dist_max
 
 static float min(float a, float b) {return a < b ? a : b;}
 static float max(float a, float b) {return a < b ? b : a;}
@@ -87,3 +92,9 @@ float dist_from_mesh(int nt, const int4 *tt, const float *vv, const float *r0) {
     }
     return dmin;
 }
+
+#undef X
+#undef Y
+#undef Z
+#undef min
+#undef max

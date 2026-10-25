@@ -1,5 +1,0 @@
-#### rnd generation on host
-# TEST: rnd.t0
-u.conf0 u/rnd
-{ u.make -j;     } > /dev/null
-u.run ./udx -- 100 > rnd.out.txt

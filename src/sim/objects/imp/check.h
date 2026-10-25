@@ -1,14 +1,16 @@
-static void check_size(long n, long nmax) {
+#pragma once
+
+static void obj_check_size(long n, long nmax) {
     if (n < 0 || n > nmax)
         ERR("wrong size: %ld / %ld", n, nmax);
 }
 
 static void check_size_mbr(const Mbr *m) {
-    UC(check_size(m->q.nc, MAX_CELL_NUM));
+    UC(obj_check_size(m->q.nc, MAX_CELL_NUM));
 }
 
 static void check_size_rig(const Rig *r) {
-    UC(check_size(r->q.ns, MAX_SOLIDS));
+    UC(obj_check_size(r->q.ns, MAX_SOLIDS));
 }
 
 void objects_check_size(const Objects *obj) {

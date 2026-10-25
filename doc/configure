@@ -1,8 +1,0 @@
-#!/bin/sh
-
-set -eu
-
-T="index.adoc src/install.adoc src/dev/main.adoc src/user/main.adoc src/units/main.adoc"
-
-u.doc.targets $T > make/target.mk
-u.doc.deps    $T > make/deps.mk

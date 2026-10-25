@@ -1,3 +1,0 @@
-= poiseuille
-
-poiseuille flow between 2 parallel plates

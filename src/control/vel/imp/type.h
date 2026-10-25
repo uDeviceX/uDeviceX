@@ -1,7 +1,7 @@
 enum {
-    TYPE_NONE,
-    TYPE_CART,
-    TYPE_RAD
+    VCONT_TYPE_NONE,
+    VCONT_TYPE_CART,
+    VCONT_TYPE_RAD
 };
 
 // empty for now
@@ -15,7 +15,7 @@ union Trans {
 };
 
 
-struct Sampler {
+struct VelSampler {
     int3 L;                   /* subdomain size                                  */
     long nsamples;            /* number of "pending" avg on grid                 */
     
@@ -42,7 +42,7 @@ struct Param {
 struct PidVCont {
     Param param;
     State state;
-    Sampler sampler;          /* helper to average velocity on device            */
+    VelSampler sampler;          /* helper to average velocity on device            */
     
     MPI_Comm comm;
 

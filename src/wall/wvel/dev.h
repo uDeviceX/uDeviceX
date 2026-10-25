@@ -1,3 +1,5 @@
+#pragma once
+
 // tag::vel[]
 static __device__ void wvel(WvelCste_v p, Coords_v c, float3 r, /**/ float3 *v)
 // end::vel[]

@@ -1,3 +1,5 @@
+#pragma once
+
 struct PaArray {
     bool colors;
     const float *pp;

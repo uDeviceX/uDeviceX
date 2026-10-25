@@ -1,6 +1,8 @@
 #define _I_ static __device__
 
 #if __CUDACC_VER_MAJOR__ >= 9
+#pragma once
+
 template <typename T>
 _I_ T shfl_down(T val, unsigned int width) {
     return __shfl_down_sync(0xFFFFFFFF, val, width);

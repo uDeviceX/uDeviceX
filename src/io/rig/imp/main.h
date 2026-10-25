@@ -35,14 +35,14 @@ static int swrite(const Coords *c, int ns, const Rigid *ss, int maxn, char *buf)
     return nchar;
 }
 
-static void write_mpi(MPI_Comm comm, const char *fname, long n, const char *data) {
+static void rig_write_mpi(MPI_Comm comm, const char *fname, long n, const char *data) {
     WriteFile *f;
     UC(write_file_open(comm, fname, &f));
     UC(write_all(comm, data, n, f));
     UC(write_file_close(f));
 }
 
-static void gen_fname(const char *name, long id, char *fname) {
+static void rig_gen_fname(const char *name, long id, char *fname) {
     sprintf(fname, BASE "/%s.%04ld.txt", name, id);
 }
 
@@ -65,9 +65,9 @@ void io_rig_dump(MPI_Comm comm, const Coords *c, const char *name, long id, int 
     if (m::is_master(comm))
         UC(os_mkdir(BASE));
 
-    gen_fname(name, id, fname);
+    rig_gen_fname(name, id, fname);
     nchar = swrite(c, ns, ss, maxnc, data);
-    write_mpi(comm, fname, nchar, data);
+    rig_write_mpi(comm, fname, nchar, data);
     
     EFREE(data);
 }

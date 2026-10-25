@@ -1,11 +1,13 @@
-static char *cpy(char *dest, const char *src) { return strncpy(dest, src, FILENAME_MAX); }
-static char *cat(char *dest, const char *src) { return strncat(dest, src, FILENAME_MAX); }
+#pragma once
+
+static char *point_cpy(char *dest, const char *src) { return strncpy(dest, src, FILENAME_MAX); }
+static char *point_cat(char *dest, const char *src) { return strncat(dest, src, FILENAME_MAX); }
 
 static void mkdir(const char *p, const char *s) {
     char path[FILENAME_MAX] = {'\0'};
-    cpy(path, p);
-    cat(path, "/");
-    cat(path, s);
+    point_cpy(path, p);
+    point_cat(path, "/");
+    point_cat(path, s);
     msg_print("mkdir -p '%s'", path);
     UC(os_mkdir(path));
 }
@@ -15,7 +17,7 @@ static void reset(IOPoint *q) {
     nkey = q->nkey;
     for (i = 0; i < nkey; i++)
         q->seen[i] = 0;
-    q->n = UNSET;
+    q->n = POINT_UNSET;
 }
 
 static void wrong_key(IOPoint *q, const char *key) {

@@ -1,7 +1,0 @@
-# FILE:-rw-rw-r--: data/a/B
-b
-b
-bbb
-# FILE:-rw-rw-r--: data/a/A
-a
-aa

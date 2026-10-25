@@ -1,5 +1,0 @@
-module: swap PrgEnv-cray PrgEnv-gnu
-module: load cudatoolkit
-module: load daint-gpu
-module: load cray-hdf5-parallel
-cmd: srun -n 1 ./udx 1 1 1

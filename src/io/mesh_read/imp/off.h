@@ -14,26 +14,26 @@ static void unend(char *s) { /* rm \n */
     while (s[1] != '\0') s++;
     if (s[0] == '\n') s[0] = '\0';
 }
-enum {OK, ERR};
+enum {OFF_OK, OFF_ERR};
 static int line(FILE *f, /**/ char *s) { /* read line */
     for (;;) {
-        if (fgets(s, SIZE, f) == NULL)  return ERR;
+        if (fgets(s, SIZE, f) == NULL)  return OFF_ERR;
         unend(s);
         if (!emptyp(s) && !commentp(s)) break;
     }
-    return OK;
+    return OFF_OK;
 }
 
 static int header(FILE *f, char *s) {
     char key[SIZE];
-    if (line(f, /**/ s) == ERR) return 0;
+    if (line(f, /**/ s) == OFF_ERR) return 0;
     sscanf(s, "%s", key);
     return same_str(key, "OFF");
 }
 
 static int sizes(FILE *f, char *s, /**/ int *nv, int *nt) {
     int r;
-    if (line(f, /**/ s) == ERR) return 0;
+    if (line(f, /**/ s) == OFF_ERR) return 0;
     r = sscanf(s, "%d %d %*d", nv, nt);
     return r == 2;
 }
@@ -42,7 +42,7 @@ static int vert(FILE *f, char *s, int n, float *rr) {
     int i;
     float *r;
     for (i = 0; i < n; i++) {
-        if (line(f, /**/ s) == ERR) return 0;
+        if (line(f, /**/ s) == OFF_ERR) return 0;
         r = &rr[3*i];
         if (sscanf(s, "%f %f %f", &r[X], &r[Y], &r[Z]) != 3) return 0;
     }
@@ -62,7 +62,7 @@ static int tri(FILE *f, char *s, int nt, int nv, int4 *tt) {
     int4 *t;
     int nvpt; /* number of vertices per face (triangle) */
     for (i = 0; i < nt; i++) {
-        if (line(f, /**/ s) == ERR) return 0;
+        if (line(f, /**/ s) == OFF_ERR) return 0;
         t = &tt[i];
         if (sscanf(s, "%d %d %d %d", &nvpt, &t->x, &t->y, &t->z) != 4) {
             msg_print("expecting triangle:'%s'", s);

@@ -1,3 +1,5 @@
+#pragma once
+
 #define _S_ static __device__
 #define _I_ static __device__
 

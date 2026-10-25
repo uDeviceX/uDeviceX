@@ -1,3 +1,5 @@
+#pragma once
+
 struct Config;
 struct RbcParams;
 struct RbcParams_v {

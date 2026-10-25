@@ -1,3 +1,0 @@
-#!/bin/sh
-
-exec u.gnuplot.off0 "$@"

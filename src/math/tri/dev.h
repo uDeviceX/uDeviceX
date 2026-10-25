@@ -1,4 +1,17 @@
 #ifdef TRI_HOST
+#ifndef UDX_TRI_HOST_DEFINED
+#define UDX_TRI_HOST_DEFINED
+#define UDX_TRI_BODY
+#endif
+#else
+#ifndef UDX_TRI_DEV_DEFINED
+#define UDX_TRI_DEV_DEFINED
+#define UDX_TRI_BODY
+#endif
+#endif
+
+#ifdef UDX_TRI_BODY
+#ifdef TRI_HOST
   #define _I_
   #define _S_ static
   #define BEGIN namespace tri_hst {
@@ -126,3 +139,6 @@ END
 #undef _S_
 #undef BEGIN
 #undef END
+
+#undef UDX_TRI_BODY
+#endif

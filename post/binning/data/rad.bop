@@ -1,4 +1,0 @@
-4000
-DATA_FILE: rad.values
-DATA_FORMAT: float
-VARIABLES: x y z u v w

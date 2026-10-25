@@ -1,4 +1,3 @@
-enum {MAGIC = 123};
 struct Scalars {
     int type;
     int n;
@@ -9,6 +8,9 @@ struct Scalars {
     } D;
     int stamp;
 };
+
+namespace scalars_impl {
+enum {MAGIC = 123};
 
 static double float_get (const Scalars*, int i);
 static double double_get(const Scalars*, int i);
@@ -23,3 +25,4 @@ static double one_get(const Scalars*, int i);
 enum {FLOAT, DOUBLE, VECX, VECY, VECZ, ZERO, ONE};
 static double (*get[])(const Scalars*, int i) =
 { float_get,  double_get, vecx_get, vecy_get, vecz_get, zero_get, one_get};
+}

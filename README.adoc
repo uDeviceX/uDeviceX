@@ -1,3 +1,0 @@
-== Documentation
-
-link:https://amlucas.github.io/udoc[]

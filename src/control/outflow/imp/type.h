@@ -1,22 +1,22 @@
 enum {
-    TYPE_NONE,
-    TYPE_PLATE,
-    TYPE_CIRCLE
+    OUTFLOW_TYPE_NONE,
+    OUTFLOW_TYPE_PLATE,
+    OUTFLOW_TYPE_CIRCLE
 };
 
-struct ParamsCircle {
+struct OutflowParamsCircle {
     float Rsq;  /* radius squared  */
     float3 c;   /* center          */
 };
 
 /* plane is described as a*x + b*y + c*z + d = 0 */
-struct ParamsPlate {
+struct OutflowParamsPlate {
     float a, b, c, d;
 };
 
-union ParamsU {
-    ParamsPlate plate;
-    ParamsCircle circle;
+union OutflowParamsU {
+    OutflowParamsPlate plate;
+    OutflowParamsCircle circle;
 };
 
 struct Outflow {
@@ -24,6 +24,6 @@ struct Outflow {
     int *ndead_dev; /* number of kills on dev  */
     int ndead;      /* number of kils          */
     
-    ParamsU params; /* shape parameters */
+    OutflowParamsU params; /* shape parameters */
     int type;       /* shape type       */
 };

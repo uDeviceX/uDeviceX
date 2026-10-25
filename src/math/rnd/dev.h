@@ -1,3 +1,5 @@
+#pragma once
+
 namespace rnd {
 /* random number from the ArcSine distribution on [-sqrt(2),sqrt(2)]
    mean = 0, variance = 1 */

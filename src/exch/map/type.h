@@ -1,3 +1,5 @@
+#pragma once
+
 // [E]xchange map
 
 // tag::struct[]

@@ -1,3 +1,5 @@
+#pragma once
+
 struct PairParams;
 struct PaArray;
 struct FoArray;

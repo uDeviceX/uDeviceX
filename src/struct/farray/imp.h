@@ -1,3 +1,5 @@
+#pragma once
+
 struct FoArray {
     bool stress;
     float *ff;

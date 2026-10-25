@@ -1,7 +1,0 @@
-#### Double poiseuille
-# nTEST: stress.t3
-cd test/stress/2
-:
-u.run udx conf.cfg
-u.stress.avg 1 32 1   16 32 16  ss bop/solvent-00001.bop -- bop/stress_solvent-00001.bop
-bov2txt ss.bov | awk '{print $2, $5}' | uscale 0.01 > ss.out.txt

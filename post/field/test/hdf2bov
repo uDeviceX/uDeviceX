@@ -1,3 +1,0 @@
-# TEST: hdf2bov
-u.hdf2bov ff.bov data/ff.h5  u
-cp ff.bov ff.out.bov

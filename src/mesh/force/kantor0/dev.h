@@ -1,4 +1,17 @@
 #ifdef FORCE_KANTOR0_HOST
+#ifndef UDX_KANTOR0_HOST_DEFINED
+#define UDX_KANTOR0_HOST_DEFINED
+#define UDX_KANTOR0_BODY
+#endif
+#else
+#ifndef UDX_KANTOR0_DEV_DEFINED
+#define UDX_KANTOR0_DEV_DEFINED
+#define UDX_KANTOR0_BODY
+#endif
+#endif
+
+#ifdef UDX_KANTOR0_BODY
+#ifdef FORCE_KANTOR0_HOST
   #define _I_
   #define _S_ static
   #define BEGIN namespace force_kantor0_hst {
@@ -136,3 +149,6 @@ END
 #undef _S_
 #undef BEGIN
 #undef END
+
+#undef UDX_KANTOR0_BODY
+#endif

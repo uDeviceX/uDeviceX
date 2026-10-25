@@ -1,6 +1,0 @@
-= User Documentation
-
-:lext: .adoc
-:leveloffset:  1
-
-include::conf.adoc[]

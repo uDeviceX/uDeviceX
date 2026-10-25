@@ -1,4 +1,6 @@
-enum {WARPSIZE = 32};
+#pragma once
+
+enum {VCONT_WARPSIZE = 32};
 
 static void ini_dump(int rank, /**/ FILE **f) {
     *f = NULL;
@@ -12,7 +14,7 @@ static void fin_dump(FILE *f) {
     if (f) UC(efclose(f));
 }
 
-static void reini_sampler(/**/ Sampler *s) {
+static void reini_sampler(/**/ VelSampler *s) {
     int3 L = s->L;
     int ncells = L.x * L.y * L.z;
 
@@ -24,7 +26,7 @@ static void reini_sampler(/**/ Sampler *s) {
     s->nsamples = 0;
 }
 
-static void ini_sampler(int3 L, Sampler *s) {
+static void ini_sampler(int3 L, VelSampler *s) {
     int ncells, nchunks;
     s->L = L;
     ncells = L.x * L.y * L.z;
@@ -32,7 +34,7 @@ static void ini_sampler(int3 L, Sampler *s) {
     Dalloc(&s->gridvel, ncells);
     Dalloc(&s->gridnum, ncells);
 
-    nchunks = ceiln(ncells, WARPSIZE);
+    nchunks = ceiln(ncells, VCONT_WARPSIZE);
     
     CC(d::alloc_pinned((void **) &s->totvel, nchunks * sizeof(float3)));
     CC(d::alloc_pinned((void **) &s->totnum, nchunks * sizeof(int)));
@@ -56,7 +58,7 @@ static void ini(MPI_Comm comm, int3 L, /**/ PidVCont *c) {
     
     UC(ini_dump(rank, /**/ &c->fdump));
 
-    c->type = TYPE_NONE;
+    c->type = VCONT_TYPE_NONE;
 }
 
 void vcont_ini(MPI_Comm comm, int3 L, /**/ PidVCont **c) {
@@ -66,7 +68,7 @@ void vcont_ini(MPI_Comm comm, int3 L, /**/ PidVCont **c) {
     UC(ini(comm, L, /**/ vc));
 }
 
-static void fin_sampler(Sampler *s) {
+static void fin_sampler(VelSampler *s) {
     Dfree(s->gridvel);
     Dfree(s->gridnum);
     CC(d::FreeHost(s->totvel));
@@ -96,15 +98,15 @@ void vcont_set_target(float3 vtarget, /**/ PidVCont *c) {
 }
 
 void vcont_set_cart(/**/ PidVCont *cont) {
-    cont->type = TYPE_CART;
+    cont->type = VCONT_TYPE_CART;
 }
 
 void vcont_set_radial(/**/ PidVCont *cont) {
-    cont->type = TYPE_RAD;
+    cont->type = VCONT_TYPE_RAD;
 }
 
 template <typename Trans>
-static void sample(Trans t, const Coords *coords, const Particle *pp, const int *starts, const int *counts, /**/ Sampler *s) {
+static void sample(Trans t, const Coords *coords, const Particle *pp, const int *starts, const int *counts, /**/ VelSampler *s) {
     int3 L = s->L;
     Coords_v coordsv;
 
@@ -121,12 +123,12 @@ static void sample(Trans t, const Coords *coords, const Particle *pp, const int 
 
 void vcont_sample(const Coords *coords, int, const Particle *pp, const int *starts, const int *counts, /**/ PidVCont *c) {
     switch (c->type) {
-    case TYPE_NONE:
+    case VCONT_TYPE_NONE:
         break;
-    case TYPE_CART:
+    case VCONT_TYPE_CART:
         sample(c->trans.cart, coords, pp, starts, counts, /**/ &c->sampler);
         break;
-    case TYPE_RAD:
+    case VCONT_TYPE_RAD:
         sample(c->trans.cart, coords, pp, starts, counts, /**/ &c->sampler);
         break;
     default:
@@ -135,7 +137,7 @@ void vcont_sample(const Coords *coords, int, const Particle *pp, const int *star
     };
 }
 
-static void reduce_local(Sampler *s, double3 *v, long *n) {
+static void reduce_local(VelSampler *s, double3 *v, long *n) {
     int3 L = s->L;
     int ncells, nchunks, i;
     ncells = L.x * L.y * L.z;
@@ -153,7 +155,7 @@ static void reduce_local(Sampler *s, double3 *v, long *n) {
     }
 }
 
-static float3 average_samples(MPI_Comm comm, Sampler *s) {
+static float3 average_samples(MPI_Comm comm, VelSampler *s) {
     long ncur;
     double3 vcur;
     double fac;

@@ -1,13 +1,15 @@
-static void clear_forces(int n, Force* ff) {
+#pragma once
+
+static void obj_clear_forces(int n, Force* ff) {
     if (n) DzeroA(ff, n);
 }
 
 static void clear_mbr_forces(Mbr *m) {
-    UC(clear_forces(m->q.n, m->ff));
+    UC(obj_clear_forces(m->q.n, m->ff));
 }
 
 static void clear_rig_forces(Rig *r) {
-    UC(clear_forces(r->q.n, r->ff));
+    UC(obj_clear_forces(r->q.n, r->ff));
     UC(rig_reinit_ft(r->q.ns, /**/ r->q.ss));
 }
 

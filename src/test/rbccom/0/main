@@ -1,9 +1,0 @@
-#### RBC in a periodic box (1 node)
-# nTEST: rbccom.t0
-cd test/rbccom/0
-u.cp.rbc rbc/498.off rbc.off
-x=0.75 y=8 z=12; echo 1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 > rbcs-ic.txt
-:
-u.run udx conf.cfg
-:
-sort diag/com/rbc.0003.txt | awk '{print $1, $2, $3, $4}' | uscale 100 > com.out.txt

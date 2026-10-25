@@ -61,7 +61,7 @@ static __device__ Particle create_particle(float kBT, Par params, int2 nc,
 
 template <typename Par>
 __global__ void create_particles(float kBT, Par params, int2 nc, const float3 *flux,
-                                 /*io*/ curandState_t *rnds, float *cumflux, /**/ int *n, SolventWrap wrap) {
+                                 /*io*/ curandState_t *rnds, float *cumflux, /**/ int *n, InflowSolventWrap wrap) {
     int i, xcid, ycid, j, nnew, strt;
     float c;
     float3 f;

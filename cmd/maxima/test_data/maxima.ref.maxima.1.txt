@@ -1,4 +1,0 @@
-a:"/tmp/a"
-batchload("data/1.mac")
-(%t2)                               /tmp/a
-
