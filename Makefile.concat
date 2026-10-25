@@ -1,10 +1,9 @@
-# Build one executable from generated, large flat translation units.
+# Build one executable from the checked-in editable flat units.
 
 ROOT := $(abspath .)
 BUILD := $(ROOT)/build/concat
-FLAT := $(ROOT)/udx.flat.cu
 TARGET := $(BUILD)/udx
-UNIT_DIR := $(BUILD)/units
+UNIT_DIR := $(ROOT)/flat
 OBJ_DIR := $(BUILD)/obj
 
 NVCC ?= nvcc
@@ -30,7 +29,7 @@ NVCCFLAGS += -std=c++11 $(OPT) -use_fast_math -restrict
 NVCC_LINK_LIBS := $(filter-out -Wl%,$(LIBS))
 MPI_LINK_LIBS := $(filter-out -Wl% -pthread,$(shell $(CCBIN) --showme:link 2>/dev/null)) -lopen-rte -lopen-pal
 
--include $(UNIT_DIR)/units.mk
+include $(UNIT_DIR)/units.mk
 UNIT_EXCLUDE := $(UNIT_DIR)/udx.algo-%.cu $(UNIT_DIR)/udx.control-%.cu \
 	$(UNIT_DIR)/udx.distr-flu.cu $(UNIT_DIR)/udx.distr-flu-status.cu
 UNIT_SOURCES := $(filter-out $(UNIT_EXCLUDE),$(UNIT_SOURCES))
@@ -45,16 +44,13 @@ $(TARGET): $(UNIT_OBJECTS) $(DEVICE_LINK) | $(BUILD)
 $(DEVICE_LINK): $(UNIT_OBJECTS) | $(BUILD)
 	$(NVCC) $(ARCH) -ccbin $(CCBIN) -dlink $(UNIT_OBJECTS) -o $@
 
-$(UNIT_DIR)/units.mk: $(FLAT) tools/split-flat.py | $(UNIT_DIR)
-	python3 tools/split-flat.py --input $(FLAT) --out $(UNIT_DIR)
-
-$(OBJ_DIR)/%.o: $(UNIT_DIR)/%.cu $(UNIT_DIR)/units.mk | $(OBJ_DIR)
+$(OBJ_DIR)/%.o: $(UNIT_DIR)/%.cu | $(OBJ_DIR)
 	$(NVCC) $(ARCH) -ccbin $(CCBIN) $(NVCCFLAGS) $(CPPFLAGS) -I$(UNIT_DIR) $(CXXFLAGS) -dc -c $< -o $@
 
 $(BUILD):
 	mkdir -p $@
 
-$(UNIT_DIR) $(OBJ_DIR):
+$(OBJ_DIR):
 	mkdir -p $@
 
 clean:
