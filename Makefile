@@ -74,9 +74,8 @@ OBJECTS = \
  udx.math-rnd.o \
  udx.math-tform.o \
  udx.math-tri.o \
- udx.mesh-angle.o \
+ udx.mesh-geometry.o \
  udx.mesh-area.o \
- udx.mesh-bbox.o \
  udx.mesh-collision.o \
  udx.mesh-cylindrical.o \
  udx.mesh-dist.o \
