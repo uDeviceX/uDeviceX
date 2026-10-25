@@ -500,6 +500,8 @@ void triangles_fin(Triangles*);
 // end::interface[]
 /* end src/mesh/triangles/imp.h */
 
+#ifndef UDX_MESH_KL_COMMON
+#define UDX_MESH_KL_COMMON
 /* begin src/utils/kl.h */
 /* [k]ernel [l]aunch macros */
 
@@ -557,6 +559,7 @@ inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
 
 /* TODO: header includes header */
 /* end src/utils/kl.h */
+#endif
 /* begin src/rigid/imp.h */
 struct RigPinInfo;
 struct int3;

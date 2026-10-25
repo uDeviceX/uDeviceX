@@ -155,6 +155,8 @@ void error_print_stack();
 #define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
 #define DzeroA(P, n)   DsetA(P, 0, n)
 /* end src/inc/dev.h */
+#ifndef UDX_MESH_KL_COMMON
+#define UDX_MESH_KL_COMMON
 /* begin src/utils/kl.h */
 /* [k]ernel [l]aunch macros */
 
@@ -212,6 +214,7 @@ inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
 
 /* TODO: header includes header */
 /* end src/utils/kl.h */
+#endif
 /* begin src/utils/cc.h */
 /* [c]uda [c]heck macros */
 
@@ -245,6 +248,8 @@ void check(int rc, const char *file, int line);
 
 /* TODO: header includes header */
 /* end src/utils/cc.h */
+#ifndef UDX_MESH_COMMON_CUH
+#define UDX_MESH_COMMON_CUH
 /* begin src/inc/type.h */
 template <typename T, int N>
 struct Sarray { /* [s]tatic array */
@@ -299,7 +304,10 @@ struct FoWrap {
     Force *ff;
 };
 /* end src/inc/type.h */
+#endif
 /* begin src/d/api.h */
+#ifndef UDX_MESH_DEVICE_API_COMMON
+#define UDX_MESH_DEVICE_API_COMMON
 namespace d {  /* a wrapper for device API */
 typedef int Stream_t; /* TODO: streams are not supported */
 enum {MemcpyHostToHost, MemcpyHostToDevice,
@@ -329,7 +337,10 @@ int PeekAtLastError(void);
 // end::api[]
 }
 /* end src/d/api.h */
+#endif
 
+#ifndef UDX_MESH_FORCE_KANTOR_COMMON_CUH
+#define UDX_MESH_FORCE_KANTOR_COMMON_CUH
 /* begin src/math/dev.h */
 /* use templates here because we might have mixed float/double */
 
@@ -390,6 +401,7 @@ _HD_ void axpy(const T1 a, const T2 *x, /*io*/ T3 *y) {
     y->z += a * x->z;
 }
 /* end src/math/dev.h */
+#endif
 
 /* begin src/mesh_bounce/imp.h */
 struct MeshBB;
