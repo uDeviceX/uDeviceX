@@ -52,7 +52,7 @@ OBJECTS = \
  udx.he.o \
  udx.inter-color.o \
  udx.io-bop.o \
- udx.io-com.o \
+ udx.io-text.o \
  udx.io-diag-mesh.o \
  udx.io-diag-part.o \
  udx.io-grid-output.o \
@@ -61,7 +61,6 @@ OBJECTS = \
  udx.io-point.o \
  udx.io-restart.o \
  udx.io-rig.o \
- udx.io-txt.o \
  udx.io-vtk-output.o \
  udx.io-write.o \
  udx.libconfig.o \
