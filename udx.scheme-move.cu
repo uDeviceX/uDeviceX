@@ -44,6 +44,8 @@
 
 
 /* begin src/d/api.h */
+#ifndef UDX_SCHEME_DEVICE_API_COMMON
+#define UDX_SCHEME_DEVICE_API_COMMON
 namespace d {  /* a wrapper for device API */
 typedef int Stream_t; /* TODO: streams are not supported */
 enum {MemcpyHostToHost, MemcpyHostToDevice,
@@ -73,6 +75,7 @@ int PeekAtLastError(void);
 // end::api[]
 }
 /* end src/d/api.h */
+#endif
 /* begin src/d/q.h */
 /* function and variable type [q]ualifiers */
 
@@ -191,6 +194,8 @@ static int   warpSize = 1;
 /* end src/d/ker.h */
 
 /* begin src/inc/def.h */
+#ifndef UDX_SCHEME_DEF_COMMON
+#define UDX_SCHEME_DEF_COMMON
 /* solvent colors */
 #define XMACRO_COLOR(_)                         \
     _(BLUE)                                     \
@@ -242,6 +247,7 @@ enum {
 /* for the spring forces r = min(lmax*RBC_SPRING_CAP, r) */
 #define RBC_SPRING_CAP (0.99)
 /* end src/inc/def.h */
+#endif
 /* begin src/utils/msg.h */
 // tag::int[]
 void msg_ini(int rank); // <1>
@@ -249,6 +255,8 @@ void msg_print(const char *fmt, ...); // <2>
 // end::int[]
 /* end src/utils/msg.h */
 /* begin src/utils/cc.h */
+#ifndef UDX_SCHEME_CC_COMMON
+#define UDX_SCHEME_CC_COMMON
 /* [c]uda [c]heck macros */
 
 #if   defined(CC_SYNC)
@@ -281,8 +289,11 @@ void check(int rc, const char *file, int line);
 
 /* TODO: header includes header */
 /* end src/utils/cc.h */
+#endif
 
 /* begin src/utils/kl.h */
+#ifndef UDX_SCHEME_KL_COMMON
+#define UDX_SCHEME_KL_COMMON
 /* [k]ernel [l]aunch macros */
 
 #if    defined(KL_RELEASE)
@@ -339,7 +350,10 @@ inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
 
 /* TODO: header includes header */
 /* end src/utils/kl.h */
+#endif
 /* begin src/inc/type.h */
+#ifndef UDX_SCHEME_TYPE_COMMON
+#define UDX_SCHEME_TYPE_COMMON
 template <typename T, int N>
 struct Sarray { /* [s]tatic array */
     T d[N];
@@ -393,6 +407,7 @@ struct FoWrap {
     Force *ff;
 };
 /* end src/inc/type.h */
+#endif
 /* begin src/inc/dev.h */
 /* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
