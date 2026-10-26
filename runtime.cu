@@ -13578,8 +13578,7 @@ struct PidVCont {
     int type;                 /* type of the transformation                      */
 };
 
-namespace vcont_dev {
-__global__ void reduceByWarp(const float3 *gvel, const int *gnum, const uint ncells, /**/ float3 *vel, int *num) {
+__global__ void vcont_reduce_by_warp_kernel(const float3 *gvel, const int *gnum, const uint ncells, /**/ float3 *vel, int *num) {
     assert(blockDim.x == 32);
     int i, c;
     float3 v = make_float3(0, 0, 0);
@@ -13635,7 +13634,7 @@ static __device__ int get_cid(int3 L, int3 c) {
 }
 
 template<typename Trans>
-__global__ void sample(Coords_v coords, Trans t, int3 L, const int *cellsstart, const int *cellscount, const Particle *pp,
+__global__ void vcont_sample_kernel(Coords_v coords, Trans t, int3 L, const int *cellsstart, const int *cellscount, const Particle *pp,
                        /**/ float3 *gridv, int *gridn) {
     Particle p;
     float3 u;
@@ -13658,7 +13657,6 @@ __global__ void sample(Coords_v coords, Trans t, int3 L, const int *cellsstart, 
         }
         gridn[cid] += num;
     }
-}
 }
 
 #ifndef UDX_CONTROL_WARPSIZE_COMMON
@@ -13781,7 +13779,7 @@ static void sample(Trans t, const Coords *coords, const Particle *pp, const int 
               ceiln(L.y, block.y),
               ceiln(L.z, block.z));
 
-    KL(vcont_dev::sample, (grid, block), (coordsv, t, L, starts, counts, pp, /**/ s->gridvel, s->gridnum));
+    KL(vcont_sample_kernel, (grid, block), (coordsv, t, L, starts, counts, pp, /**/ s->gridvel, s->gridnum));
     s->nsamples++;
 }
 
@@ -13807,7 +13805,7 @@ static void reduce_local(Sampler *s, double3 *v, long *n) {
     ncells = L.x * L.y * L.z;
     nchunks = ceiln(ncells, WARPSIZE);
 
-    KL(vcont_dev::reduceByWarp, (nchunks, WARPSIZE), (s->gridvel, s->gridnum, ncells, /**/ s->dtotvel, s->dtotnum));
+    KL(vcont_reduce_by_warp_kernel, (nchunks, WARPSIZE), (s->gridvel, s->gridnum, ncells, /**/ s->dtotvel, s->dtotnum));
     dSync();
 
     *v = make_double3(0, 0, 0);
