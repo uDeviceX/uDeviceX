@@ -39,10 +39,9 @@ OBJECTS = \
  udx.fluforces-bulk.o \
  udx.fluforces-halo.o \
  udx.fluforces.o \
- udx.frag.o \
+ udx.frag-he.o \
  udx.fsi.o \
  udx.grid_sampler.o \
- udx.he.o \
  udx.inter-color.o \
  udx.io-bop.o \
  udx.io-text.o \
