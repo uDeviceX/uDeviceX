@@ -7384,16 +7384,6 @@ _S_ float magn_dpd(float a, float g, float s, float kpow,
     return f0;
 }
 
-_S_ float magn_lj(float s, float e, float invr) {
-    float t2, t4, t6, f;
-    t2 = s * s * invr * invr;
-    t4 = t2 * t2;
-    t6 = t4 * t2;
-    f = e * 24 * invr * t6 * (2 * t6 - 1);
-    f = cap(f, 0, 1e4);
-    return f;
-}
-
 _S_ float force_magn(const PairDPD *p, float rnd, float ev, float r, float) {
     return magn_dpd(p->a, p->g, p->s, p->spow, rnd, r, ev);
 }
