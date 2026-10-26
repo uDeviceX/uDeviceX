@@ -406,8 +406,8 @@ int coords_size(const Coords *c);
 // end::int[]
 /* end src/coords/imp.h */
 
-#ifndef UDX_WALL_WVEL_TYPE
-#define UDX_WALL_WVEL_TYPE
+#ifndef UDX_WALL_WVEL_TYPE_COMMON
+#define UDX_WALL_WVEL_TYPE_COMMON
 /* begin src/wall/wvel/type.h */
 /* view structures                      */
 /* (what is passed to device functions) */

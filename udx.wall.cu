@@ -357,8 +357,8 @@ void check(int rc, const char *file, int line);
 /* end src/utils/cc.h */
 
 /* begin src/inc/type.h */
-#ifndef UDX_WALL_CORE_TYPE
-#define UDX_WALL_CORE_TYPE
+#ifndef UDX_WALL_TYPE_COMMON
+#define UDX_WALL_TYPE_COMMON
 template <typename T, int N>
 struct Sarray { /* [s]tatic array */
     T d[N];

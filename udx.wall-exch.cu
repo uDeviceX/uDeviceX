@@ -210,8 +210,8 @@ size_t comm_get_byte_capacity(int i, const hBags *b);   // <2>
 
 /* end src/comm/imp.h */
 
-#ifndef UDX_WALL_CORE_TYPE
-#define UDX_WALL_CORE_TYPE
+#ifndef UDX_WALL_TYPE_COMMON
+#define UDX_WALL_TYPE_COMMON
 /* begin src/inc/type.h */
 template <typename T, int N>
 struct Sarray { /* [s]tatic array */

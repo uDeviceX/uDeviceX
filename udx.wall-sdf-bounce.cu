@@ -434,6 +434,8 @@ inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
 #endif /* UDX_WALL_KL_COMMON */
 
 /* begin src/coords/type.h */
+#ifndef UDX_WALL_COORDS_TYPE_COMMON
+#define UDX_WALL_COORDS_TYPE_COMMON
 // tag::view[]
 struct Coords_v {
     int xc, yc, zc; /* rank coordinates        */
@@ -442,7 +444,10 @@ struct Coords_v {
 };
 // end::view[]
 /* end src/coords/type.h */
+#endif /* UDX_WALL_COORDS_TYPE_COMMON */
 /* begin src/coords/dev.h */
+#ifndef UDX_WALL_COORDS_DEV_COMMON
+#define UDX_WALL_COORDS_DEV_COMMON
 /* domain sizes */
 
 static __device__ int xdomain(const Coords_v c) {
@@ -538,6 +543,7 @@ static __device__ void global2local(const Coords_v c, float3 rg, /**/ float3 *rl
 }
 
 /* end src/coords/dev.h */
+#endif /* UDX_WALL_COORDS_DEV_COMMON */
 /* begin src/coords/imp.h */
 struct Coords;
 struct Coords_v;
@@ -613,8 +619,8 @@ int coords_size(const Coords *c);
 // end::int[]
 /* end src/coords/imp.h */
 
-#ifndef UDX_WALL_WVEL_TYPE
-#define UDX_WALL_WVEL_TYPE
+#ifndef UDX_WALL_WVEL_TYPE_COMMON
+#define UDX_WALL_WVEL_TYPE_COMMON
 /* begin src/wall/wvel/type.h */
 /* view structures                      */
 /* (what is passed to device functions) */
@@ -693,6 +699,8 @@ void wvel_get_view(const WvelStep *w, /**/ WvelHS_v *v);
 // end::view[]
 /* end src/wall/wvel/imp.h */
 /* begin src/wall/wvel/dev.h */
+#ifndef UDX_WALL_WVEL_DEV_COMMON
+#define UDX_WALL_WVEL_DEV_COMMON
 // tag::vel[]
 static __device__ void wvel(WvelCste_v p, Coords_v c, float3 r, /**/ float3 *v)
 // end::vel[]
@@ -760,7 +768,10 @@ static __device__ void bounce_vel(Wvel_v wv, Coords_v c, float3 rw, /* io */ flo
     v->z = 2 * vw.z - v->z;
 }
 /* end src/wall/wvel/dev.h */
+#endif /* UDX_WALL_WVEL_DEV_COMMON */
 /* begin src/math/dev.h */
+#ifndef UDX_WALL_MATH_COMMON
+#define UDX_WALL_MATH_COMMON
 /* use templates here because we might have mixed float/double */
 
 #define _HD_ __host__ __device__
@@ -820,6 +831,7 @@ _HD_ void axpy(const T1 a, const T2 *x, /*io*/ T3 *y) {
     y->z += a * x->z;
 }
 /* end src/math/dev.h */
+#endif /* UDX_WALL_MATH_COMMON */
 
 #ifndef UDX_WALL_TFORM_TYPE_COMMON
 #define UDX_WALL_TFORM_TYPE_COMMON

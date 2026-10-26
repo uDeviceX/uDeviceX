@@ -24,8 +24,7 @@ OBJECTS = \
  udx.rbc-force-bending-complete.o \
  udx.scheme-system-complete.o \
  udx.sim.o \
- udx.wall-complete.o \
- udx.wall-sdf-complete.o
+ udx.wall-all-complete.o
 
 TARGET = build/udx
 DEVICE = build/device.o

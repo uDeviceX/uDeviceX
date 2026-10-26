@@ -330,8 +330,8 @@ void check(int rc, const char *file, int line);
 /* TODO: header includes header */
 /* end src/utils/cc.h */
 
-#ifndef UDX_WALL_CORE_TYPE
-#define UDX_WALL_CORE_TYPE
+#ifndef UDX_WALL_TYPE_COMMON
+#define UDX_WALL_TYPE_COMMON
 /* begin src/inc/type.h */
 template <typename T, int N>
 struct Sarray { /* [s]tatic array */
@@ -570,6 +570,8 @@ inline __device__ float mean0var1uu( float seed, uint u, uint v )
 }
 /* end src/math/rnd/dev.h */
 /* begin src/math/dev.h */
+#ifndef UDX_WALL_MATH_COMMON
+#define UDX_WALL_MATH_COMMON
 /* use templates here because we might have mixed float/double */
 
 #define _HD_ __host__ __device__
@@ -629,6 +631,7 @@ _HD_ void axpy(const T1 a, const T2 *x, /*io*/ T3 *y) {
     y->z += a * x->z;
 }
 /* end src/math/dev.h */
+#endif /* UDX_WALL_MATH_COMMON */
 
 /* begin src/coords/type.h */
 #ifndef UDX_WALL_COORDS_TYPE_COMMON
@@ -643,6 +646,8 @@ struct Coords_v {
 /* end src/coords/type.h */
 #endif
 /* begin src/coords/dev.h */
+#ifndef UDX_WALL_COORDS_DEV_COMMON
+#define UDX_WALL_COORDS_DEV_COMMON
 /* domain sizes */
 
 static __device__ int xdomain(const Coords_v c) {
@@ -738,6 +743,7 @@ static __device__ void global2local(const Coords_v c, float3 rg, /**/ float3 *rl
 }
 
 /* end src/coords/dev.h */
+#endif /* UDX_WALL_COORDS_DEV_COMMON */
 /* begin src/coords/imp.h */
 struct Coords;
 struct Coords_v;
@@ -847,6 +853,8 @@ struct WvelHS_v;
 struct float3;
 struct Config;
 
+#ifndef UDX_WALL_WVEL_ENUM
+#define UDX_WALL_WVEL_ENUM
 // tag::enum[]
 enum {
     WALL_VEL_V_CSTE,
@@ -854,6 +862,7 @@ enum {
     WALL_VEL_V_HS,
 };
 // end::enum[]
+#endif
 
 // tag::mem[]
 void wvel_ini(Wvel **wv);
@@ -890,6 +899,8 @@ void wvel_get_view(const WvelStep *w, /**/ WvelHS_v *v);
 // end::view[]
 /* end src/wall/wvel/imp.h */
 /* begin src/wall/wvel/dev.h */
+#ifndef UDX_WALL_WVEL_DEV_COMMON
+#define UDX_WALL_WVEL_DEV_COMMON
 // tag::vel[]
 static __device__ void wvel(WvelCste_v p, Coords_v c, float3 r, /**/ float3 *v)
 // end::vel[]
@@ -957,6 +968,7 @@ static __device__ void bounce_vel(Wvel_v wv, Coords_v c, float3 rw, /* io */ flo
     v->z = 2 * vw.z - v->z;
 }
 /* end src/wall/wvel/dev.h */
+#endif /* UDX_WALL_WVEL_DEV_COMMON */
 
 /* begin src/math/tform/type.h */
 #ifndef UDX_WALL_TFORM_TYPE_COMMON
@@ -965,6 +977,8 @@ struct Tform_v { float o[3], s[3]; };
 /* end src/math/tform/type.h */
 #endif
 /* begin src/math/tform/dev.h */
+#ifndef UDX_WALL_TFORM_DEV_COMMON
+#define UDX_WALL_TFORM_DEV_COMMON
 static __device__ void tform_convert_dev(const Tform_v *t, const float a0[3], /**/ float a1[3]) {
     enum {X, Y, Z};
     const float *o, *s;
@@ -981,6 +995,7 @@ static __device__ void tform_spacing_dev(const Tform_v *t, /**/ float s[3]) {
     s[Z] = t->s[Z];
 }
 /* end src/math/tform/dev.h */
+#endif /* UDX_WALL_TFORM_DEV_COMMON */
 
 /* begin src/wall/sdf/tex3d/type.h */
 #ifndef UDX_WALL_TEX3D_TYPE_COMMON
@@ -1001,6 +1016,8 @@ struct Sdf_v {
 /* end src/wall/sdf/type.h */
 #endif
 /* begin src/wall/sdf/dev.h */
+#ifndef UDX_WALL_SDF_DEV_COMMON
+#define UDX_WALL_SDF_DEV_COMMON
 #define _S_ static __device__
 #define _I_ static __device__
 
@@ -1117,6 +1134,7 @@ _I_ float sdf_eval(const Sdf_v *sdf0, float x, float y, float z)  // <3>
 #undef _S_
 #undef _I_
 /* end src/wall/sdf/dev.h */
+#endif /* UDX_WALL_SDF_DEV_COMMON */
 
 /* begin src/pair/type.h */
 /* maximum of pairwise dpd parameters */
