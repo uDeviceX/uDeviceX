@@ -195,7 +195,10 @@ int status2errcode(MPI_Status *status);
 
 /* begin src/io/point/imp/type.h */
 struct BopData;
+#ifndef UDX_IO_OUTPUT_COMMON_LIMITS
+#define UDX_IO_OUTPUT_COMMON_LIMITS
 enum { N_MAX = 100 };
+#endif
 
 struct IOPointConf {
     int nn[N_MAX];
@@ -203,7 +206,10 @@ struct IOPointConf {
     int i;
 };
 
+#ifndef UDX_IO_OUTPUT_COMMON_UNSET
+#define UDX_IO_OUTPUT_COMMON_UNSET
 enum { UNSET = - 1 };
+#endif
 struct IOPoint {
     int maxn;
     int n;
@@ -219,8 +225,11 @@ struct IOPoint {
 };
 /* end src/io/point/imp/type.h */
 /* begin src/io/point/imp/util.h */
+#ifndef UDX_IO_OUTPUT_COMMON_UTIL
+#define UDX_IO_OUTPUT_COMMON_UTIL
 static char *cpy(char *dest, const char *src) { return strncpy(dest, src, FILENAME_MAX); }
 static char *cat(char *dest, const char *src) { return strncat(dest, src, FILENAME_MAX); }
+#endif
 
 static void mkdir(const char *p, const char *s) {
     char path[FILENAME_MAX] = {'\0'};

@@ -33,9 +33,8 @@ OBJECTS = \
  udx.frag-he.o \
  udx.pair-fsi.o \
  udx.grid-inter.o \
- udx.io-bop-vtk.o \
+ udx.io-bop-vtk-point.o \
  udx.io-text-diagnostics.o \
- udx.io-point-grid.o \
  udx.io-mesh-rig-restart.o \
  udx.utils-math.o \
  udx.mesh-complete.o \

@@ -298,8 +298,14 @@ struct VTKConf {
 };
 
 enum { MAGIC = 1234 };
+#ifndef UDX_IO_OUTPUT_COMMON_LIMITS
+#define UDX_IO_OUTPUT_COMMON_LIMITS
+#ifndef UDX_IO_OUTPUT_COMMON_UNSET
+#define UDX_IO_OUTPUT_COMMON_UNSET
 enum { UNSET = - 1 };
+#endif
 enum { N_MAX = 100 };
+#endif
 struct VTK {
     int nm; /* current number of meshes */
     Mesh *mesh;
@@ -324,8 +330,11 @@ struct Out {
 };
 /* end src/io/vtk/imp/type.h */
 /* begin src/io/vtk/imp/util.h */
+#ifndef UDX_IO_OUTPUT_COMMON_UTIL
+#define UDX_IO_OUTPUT_COMMON_UTIL
 static char *cpy(char *dest, const char *src) { return strncpy(dest, src, FILENAME_MAX); }
 static char *cat(char *dest, const char *src) { return strncat(dest, src, FILENAME_MAX); }
+#endif
 
 static void mkdir(MPI_Comm comm, const char *p, const char *s) {
     char path[FILENAME_MAX] = {'\0'};
