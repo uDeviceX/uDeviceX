@@ -8371,7 +8371,6 @@ _I_ void write_Part(const rPa *rp, int i, Particle *pp) {
 }
 /* end src/mesh_bounce/dev/type.h */
 /* begin src/mesh_bounce/dev/roots.h */
-namespace roots {
 #define SWAP(a,b) do { auto tmp = b ; b = a ; a = tmp ; } while(0)
 
 template<typename real>
@@ -8486,7 +8485,6 @@ _I_ int cubic(real a, real b, real c,
  */
 
 /* solve_cubic.c - finds the real roots of x^3 + a x^2 + b x + c = 0 */
-} // roots
 /* end src/mesh_bounce/dev/roots.h */
 /* begin src/mesh_bounce/dev/utils.h */
 typedef double real;
@@ -8716,14 +8714,14 @@ static __device__ bool cubic_root(real dt, real a, real b, real c, real d, /**/ 
         c /= a;
         d /= a;
 
-        int nsol = roots::cubic(b, c, d, &h1, &h2, &h3);
+        int nsol = cubic(b, c, d, &h1, &h2, &h3);
 
         if (valid_time(dt, h1))             {*h = h1; return true;}
         if (nsol > 1 && valid_time(dt, h2)) {*h = h2; return true;}
         if (nsol > 2 && valid_time(dt, h3)) {*h = h3; return true;}
     }
     else if (fabs(b) > eps) { // quadratic
-        if (!roots::quadratic(b, c, d, &h1, &h2)) return false;
+        if (!quadratic(b, c, d, &h1, &h2)) return false;
         if (valid_time(dt, h1)) {*h = h1; return true;}
         if (valid_time(dt, h2)) {*h = h2; return true;}
     }
