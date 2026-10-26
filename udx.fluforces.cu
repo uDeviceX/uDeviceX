@@ -127,6 +127,8 @@ float rnd_get(RNDunif *r);                                  // <4>
 // #include "math/rnd/dev.h"
 
 /* begin src/inc/type.h */
+#ifndef UDX_FLUFORCES_TYPE_COMMON
+#define UDX_FLUFORCES_TYPE_COMMON
 template <typename T, int N>
 struct Sarray { /* [s]tatic array */
     T d[N];
@@ -180,6 +182,7 @@ struct FoWrap {
     Force *ff;
 };
 /* end src/inc/type.h */
+#endif
 /* begin src/inc/dev.h */
 /* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
@@ -247,6 +250,8 @@ void parray_get_view(const PaArray *a, PaCArray_v *v); // <2>
 /* end src/struct/parray/imp.h */
 
 /* begin src/d/api.h */
+#ifndef UDX_FLUFORCES_DEVICE_API_COMMON
+#define UDX_FLUFORCES_DEVICE_API_COMMON
 namespace d {  /* a wrapper for device API */
 typedef int Stream_t; /* TODO: streams are not supported */
 enum {MemcpyHostToHost, MemcpyHostToDevice,
@@ -276,7 +281,10 @@ int PeekAtLastError(void);
 // end::api[]
 }
 /* end src/d/api.h */
+#endif
 /* begin src/utils/kl.h */
+#ifndef UDX_FLUFORCES_KL_COMMON
+#define UDX_FLUFORCES_KL_COMMON
 /* [k]ernel [l]aunch macros */
 
 #if    defined(KL_RELEASE)
@@ -333,7 +341,10 @@ inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
 
 /* TODO: header includes header */
 /* end src/utils/kl.h */
+#endif
 /* begin src/utils/cc.h */
+#ifndef UDX_FLUFORCES_CC_COMMON
+#define UDX_FLUFORCES_CC_COMMON
 /* [c]uda [c]heck macros */
 
 #if   defined(CC_SYNC)
@@ -366,6 +377,7 @@ void check(int rc, const char *file, int line);
 
 /* TODO: header includes header */
 /* end src/utils/cc.h */
+#endif
 /* begin src/utils/mc.h */
 /* [m]pi [c]heck macros */
 #define MC(ans)                                                         \
@@ -516,11 +528,14 @@ struct int3;
 struct RNDunif;
 struct FoArray;
 
+#ifndef UDX_FLUFORCES_BPA_COMMON
+#define UDX_FLUFORCES_BPA_COMMON
 struct BPaArray {
     bool colors;
     const float4 *pp;
     const int *cc;
 };
+#endif
 
 void flocal_push_pp(const float4 *pp, BPaArray *a);
 void flocal_push_cc(const int *cc, BPaArray *a);

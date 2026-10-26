@@ -44,6 +44,8 @@
 
 
 /* begin src/inc/type.h */
+#ifndef UDX_FLUFORCES_TYPE_COMMON
+#define UDX_FLUFORCES_TYPE_COMMON
 template <typename T, int N>
 struct Sarray { /* [s]tatic array */
     T d[N];
@@ -97,6 +99,7 @@ struct FoWrap {
     Force *ff;
 };
 /* end src/inc/type.h */
+#endif
 /* begin src/inc/def.h */
 /* solvent colors */
 #define XMACRO_COLOR(_)                         \
@@ -190,6 +193,8 @@ enum {
 /* end src/inc/dev.h */
 
 /* begin src/d/api.h */
+#ifndef UDX_FLUFORCES_DEVICE_API_COMMON
+#define UDX_FLUFORCES_DEVICE_API_COMMON
 namespace d {  /* a wrapper for device API */
 typedef int Stream_t; /* TODO: streams are not supported */
 enum {MemcpyHostToHost, MemcpyHostToDevice,
@@ -219,6 +224,7 @@ int PeekAtLastError(void);
 // end::api[]
 }
 /* end src/d/api.h */
+#endif
 /* begin src/d/ker.h */
 #if   defined(DEV_CUDA)
 /* begin src/d/cuda/ker.h */
@@ -315,6 +321,8 @@ void error_abort();
 void error_print_stack();
 /* end src/utils/error.h */
 /* begin src/utils/kl.h */
+#ifndef UDX_FLUFORCES_KL_COMMON
+#define UDX_FLUFORCES_KL_COMMON
 /* [k]ernel [l]aunch macros */
 
 #if    defined(KL_RELEASE)
@@ -371,7 +379,10 @@ inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
 
 /* TODO: header includes header */
 /* end src/utils/kl.h */
+#endif
 /* begin src/utils/cc.h */
+#ifndef UDX_FLUFORCES_CC_COMMON
+#define UDX_FLUFORCES_CC_COMMON
 /* [c]uda [c]heck macros */
 
 #if   defined(CC_SYNC)
@@ -404,6 +415,7 @@ void check(int rc, const char *file, int line);
 
 /* TODO: header includes header */
 /* end src/utils/cc.h */
+#endif
 /* begin src/utils/texo.h */
 /* 1D texture object template */
 static void sz_check(int n) {
@@ -1042,11 +1054,14 @@ struct int3;
 struct RNDunif;
 struct FoArray;
 
+#ifndef UDX_FLUFORCES_BPA_COMMON
+#define UDX_FLUFORCES_BPA_COMMON
 struct BPaArray {
     bool colors;
     const float4 *pp;
     const int *cc;
 };
+#endif
 
 void flocal_push_pp(const float4 *pp, BPaArray *a);
 void flocal_push_cc(const int *cc, BPaArray *a);

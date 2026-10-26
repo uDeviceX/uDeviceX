@@ -33,9 +33,8 @@ OBJECTS = \
  udx.exch-mesh.o \
  udx.exch-obj.o \
  udx.flu.o \
- udx.fluforces-bulk.o \
+ udx.fluforces-bulk-main.o \
  udx.fluforces-halo.o \
- udx.fluforces.o \
  udx.frag-he.o \
  udx.fsi.o \
  udx.grid_sampler.o \
