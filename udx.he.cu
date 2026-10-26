@@ -423,17 +423,17 @@ struct T {
 };
 
 
-enum {OK, FAIL};
+enum {HE_VALID_OK, HE_VALID_FAIL};
 static int valid(int n, int *a, int *b) {
     int i, i0;
     for (i = 0; i < n; i++) {
         i0 = b[a[i]];
         if (i != i0) {
             MSG("i=%d a[i]=%d i0=%d ", i, a[i], i0);
-            return FAIL;
+            return HE_VALID_FAIL;
         }
     }
-    return OK;
+    return HE_VALID_OK;
 }
 
 static int alloc_hdg(int nh, T *q) {
@@ -602,11 +602,11 @@ int he_read_ini(const char *path, T **pq) {
     q->nv = nv; q->nt = nt; q->ne = ne; q->nh = nh;
     q->magic = MAGIC;
 
-    if (valid(nv, q->hdg_ver, q->ver) != OK)
+    if (valid(nv, q->hdg_ver, q->ver) != HE_VALID_OK)
         E("invalid ver references");
-    if (valid(ne, q->hdg_edg, q->edg) != OK)
+    if (valid(ne, q->hdg_edg, q->edg) != HE_VALID_OK)
         E("invalid edg references");
-    if (valid(nt, q->hdg_tri, q->tri) != OK)
+    if (valid(nt, q->hdg_tri, q->tri) != HE_VALID_OK)
         E("invalid tri references");
 
     *pq = q;

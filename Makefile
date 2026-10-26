@@ -23,10 +23,9 @@ OBJECTS = \
  udx.exch-obj.o \
  udx.flu-halo.o \
  udx.fluforces-bulk-main.o \
- udx.frag-he.o \
+ udx.io-fraghe-complete.o \
  udx.pair-fsi.o \
  udx.grid-inter.o \
- udx.io-complete.o \
  udx.utils-math.o \
  udx.mesh-struct-complete.o \
  udx.rbc-core-adj-com.o \
