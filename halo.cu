@@ -7476,13 +7476,6 @@ _S_ float magn_lj(float s, float e, float invr) {
     return f;
 }
 
-_S_ float magn_adhesion(float k1, float k2, float r, float ev) {
-    float spring, visc;
-    spring = - k1 * r;
-    visc   = - k2 * ev;
-    return spring + visc;
-}
-
 _S_ float force_magn(const PairDPD *p, float rnd, float ev, float r, float) {
     return magn_dpd(p->a, p->g, p->s, p->spow, rnd, r, ev);
 }
