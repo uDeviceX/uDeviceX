@@ -62,8 +62,8 @@ void msg_print(const char *fmt, ...); // <2>
 // end::int[]
 /* end src/utils/msg.h */
 /* begin src/inc/def.h */
-#ifndef UDX_FLU_EXCH_DEF_COMMON
-#define UDX_FLU_EXCH_DEF_COMMON
+#ifndef UDX_DISTR_EXCH_DEF_COMMON
+#define UDX_DISTR_EXCH_DEF_COMMON
 #ifndef UDX_FLU_HALO_DEF_COMMON
 #define UDX_FLU_HALO_DEF_COMMON
 /* solvent colors */
@@ -117,7 +117,7 @@ enum {
 /* for the spring forces r = min(lmax*RBC_SPRING_CAP, r) */
 #define RBC_SPRING_CAP (0.99)
 /* end src/inc/def.h */
-#endif /* UDX_FLU_EXCH_DEF_COMMON */
+#endif /* UDX_DISTR_EXCH_DEF_COMMON */
 #endif
 /* begin src/inc/dev.h */
 /* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
@@ -159,8 +159,8 @@ enum {
 #define DzeroA(P, n)   DsetA(P, 0, n)
 /* end src/inc/dev.h */
 /* begin src/inc/type.h */
-#ifndef UDX_FLU_EXCH_TYPE_COMMON
-#define UDX_FLU_EXCH_TYPE_COMMON
+#ifndef UDX_DISTR_EXCH_TYPE_COMMON
+#define UDX_DISTR_EXCH_TYPE_COMMON
 #ifndef UDX_FLU_HALO_TYPE_COMMON
 #define UDX_FLU_HALO_TYPE_COMMON
 template <typename T, int N>
@@ -216,12 +216,12 @@ struct FoWrap {
     Force *ff;
 };
 /* end src/inc/type.h */
-#endif /* UDX_FLU_EXCH_TYPE_COMMON */
+#endif /* UDX_DISTR_EXCH_TYPE_COMMON */
 #endif
 
 /* begin src/d/api.h */
-#ifndef UDX_FLU_EXCH_DEVICE_API_COMMON
-#define UDX_FLU_EXCH_DEVICE_API_COMMON
+#ifndef UDX_DISTR_EXCH_DEVICE_API_COMMON
+#define UDX_DISTR_EXCH_DEVICE_API_COMMON
 #ifndef UDX_FLU_HALO_DEVICE_API_COMMON
 #define UDX_FLU_HALO_DEVICE_API_COMMON
 namespace d {  /* a wrapper for device API */
@@ -253,7 +253,7 @@ int PeekAtLastError(void);
 // end::api[]
 }
 /* end src/d/api.h */
-#endif /* UDX_FLU_EXCH_DEVICE_API_COMMON */
+#endif /* UDX_DISTR_EXCH_DEVICE_API_COMMON */
 #endif
 /* begin src/mpi/wrapper.h */
 namespace m {
@@ -494,6 +494,8 @@ int coords_size(const Coords *c);
 /* end src/coords/imp.h */
 
 /* begin src/struct/partlist/type.h */
+#ifndef UDX_DISTR_PARTLIST_TYPE_COMMON
+#define UDX_DISTR_PARTLIST_TYPE_COMMON
 enum {
     ALIVE = 0,
     DEAD  = 1
@@ -509,6 +511,7 @@ struct PartList {
 };
 // end::type[]
 /* end src/struct/partlist/type.h */
+#endif /* UDX_DISTR_PARTLIST_TYPE_COMMON */
 /* begin src/algo/scan/imp.h */
 struct Scan;
 
@@ -635,6 +638,8 @@ const Force*    txt_read_get_ff(const TxtRead *);
 /* end src/io/txt/imp.h */
 
 /* begin src/flu/imp.h */
+#ifndef UDX_DISTR_FLU_QUANTS_COMMON
+#define UDX_DISTR_FLU_QUANTS_COMMON
 // tag::struct[]
 struct FluQuants {
     Particle *pp, *pp0;    /* particles on device  */
@@ -656,6 +661,7 @@ struct FluQuants {
     int maxp; /* maximum particle number */
 };
 // end::struct[]
+#endif /* UDX_DISTR_FLU_QUANTS_COMMON */
 
 struct Coords;
 struct GenColor;

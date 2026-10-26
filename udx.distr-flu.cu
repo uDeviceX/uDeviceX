@@ -475,6 +475,8 @@ void estimates(int3 L, int nfrags, float maxd, /**/ int *cap); // <1>
 #endif /* UDX_DISTR_EXCH_FRAG_IMP_COMMON */
 
 /* begin src/struct/partlist/type.h */
+#ifndef UDX_DISTR_PARTLIST_TYPE_COMMON
+#define UDX_DISTR_PARTLIST_TYPE_COMMON
 enum {
     ALIVE = 0,
     DEAD  = 1
@@ -490,6 +492,7 @@ struct PartList {
 };
 // end::type[]
 /* end src/struct/partlist/type.h */
+#endif /* UDX_DISTR_PARTLIST_TYPE_COMMON */
 /* begin src/struct/partlist/dev.h */
 static __device__ bool is_dead(int i, const PartList lp) {
     if (lp.deathlist)
@@ -587,6 +590,8 @@ void clist_build(int nlo, int nout, const Particle *pplo, /**/ Particle *ppout, 
 // end::int[]
 /* end src/clist/imp.h */
 /* begin src/flu/imp.h */
+#ifndef UDX_DISTR_FLU_QUANTS_COMMON
+#define UDX_DISTR_FLU_QUANTS_COMMON
 // tag::struct[]
 struct FluQuants {
     Particle *pp, *pp0;    /* particles on device  */
@@ -608,6 +613,7 @@ struct FluQuants {
     int maxp; /* maximum particle number */
 };
 // end::struct[]
+#endif /* UDX_DISTR_FLU_QUANTS_COMMON */
 
 struct Coords;
 struct GenColor;

@@ -50,8 +50,8 @@ void msg_print(const char *fmt, ...); // <2>
 // end::int[]
 /* end src/utils/msg.h */
 /* begin src/inc/type.h */
-#ifndef UDX_FLU_EXCH_TYPE_COMMON
-#define UDX_FLU_EXCH_TYPE_COMMON
+#ifndef UDX_DISTR_EXCH_TYPE_COMMON
+#define UDX_DISTR_EXCH_TYPE_COMMON
 template <typename T, int N>
 struct Sarray { /* [s]tatic array */
     T d[N];
@@ -105,7 +105,7 @@ struct FoWrap {
     Force *ff;
 };
 /* end src/inc/type.h */
-#endif /* UDX_FLU_EXCH_TYPE_COMMON */
+#endif /* UDX_DISTR_EXCH_TYPE_COMMON */
 /* begin src/inc/dev.h */
 /* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
@@ -146,8 +146,8 @@ struct FoWrap {
 #define DzeroA(P, n)   DsetA(P, 0, n)
 /* end src/inc/dev.h */
 /* begin src/frag/dev.h */
-#ifndef UDX_FLU_EXCH_FRAG_DEV_COMMON
-#define UDX_FLU_EXCH_FRAG_DEV_COMMON
+#ifndef UDX_DISTR_EXCH_FRAG_DEV_COMMON
+#define UDX_DISTR_EXCH_FRAG_DEV_COMMON
 #ifdef FRAG_HOST
   #define _I_
   #define _S_ static
@@ -237,10 +237,10 @@ END
 #undef BEGIN
 #undef END
 /* end src/frag/dev.h */
-#endif /* UDX_FLU_EXCH_FRAG_DEV_COMMON */
+#endif /* UDX_DISTR_EXCH_FRAG_DEV_COMMON */
 /* begin src/frag/imp.h */
-#ifndef UDX_FLU_EXCH_FRAG_IMP_COMMON
-#define UDX_FLU_EXCH_FRAG_IMP_COMMON
+#ifndef UDX_DISTR_EXCH_FRAG_IMP_COMMON
+#define UDX_DISTR_EXCH_FRAG_IMP_COMMON
 enum {frag_bulk = 26};
 
 struct int3;
@@ -274,11 +274,11 @@ void estimates(int3 L, int nfrags, float maxd, /**/ int *cap); // <1>
 
 } // frag_hst
 /* end src/frag/imp.h */
-#endif /* UDX_FLU_EXCH_FRAG_IMP_COMMON */
+#endif /* UDX_DISTR_EXCH_FRAG_IMP_COMMON */
 
 /* begin src/d/api.h */
-#ifndef UDX_FLU_EXCH_DEVICE_API_COMMON
-#define UDX_FLU_EXCH_DEVICE_API_COMMON
+#ifndef UDX_DISTR_EXCH_DEVICE_API_COMMON
+#define UDX_DISTR_EXCH_DEVICE_API_COMMON
 namespace d {  /* a wrapper for device API */
 typedef int Stream_t; /* TODO: streams are not supported */
 enum {MemcpyHostToHost, MemcpyHostToDevice,
@@ -308,7 +308,7 @@ int PeekAtLastError(void);
 // end::api[]
 }
 /* end src/d/api.h */
-#endif /* UDX_FLU_EXCH_DEVICE_API_COMMON */
+#endif /* UDX_DISTR_EXCH_DEVICE_API_COMMON */
 /* begin src/utils/error.h */
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
@@ -410,8 +410,8 @@ void check(int rc, const char *file, int line);
 /* TODO: header includes header */
 /* end src/utils/cc.h */
 /* begin src/utils/kl.h */
-#ifndef UDX_FLU_EXCH_KL_COMMON
-#define UDX_FLU_EXCH_KL_COMMON
+#ifndef UDX_DISTR_EXCH_KL_COMMON
+#define UDX_DISTR_EXCH_KL_COMMON
 /* [k]ernel [l]aunch macros */
 
 #if    defined(KL_RELEASE)
@@ -468,9 +468,11 @@ inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
 
 /* TODO: header includes header */
 /* end src/utils/kl.h */
-#endif /* UDX_FLU_EXCH_KL_COMMON */
+#endif /* UDX_DISTR_EXCH_KL_COMMON */
 
 /* begin src/comm/imp.h */
+#ifndef UDX_DISTR_EXCH_COMM_COMMON
+#define UDX_DISTR_EXCH_COMM_COMMON
 typedef unsigned char data_t;
 
 enum {
@@ -544,7 +546,10 @@ size_t comm_get_byte_capacity(int i, const hBags *b);   // <2>
 // end::get[]
 
 /* end src/comm/imp.h */
+#endif /* UDX_DISTR_EXCH_COMM_COMMON */
 /* begin src/comm/utils.h */
+#ifndef UDX_DISTR_EXCH_COMM_UTILS_COMMON
+#define UDX_DISTR_EXCH_COMM_UTILS_COMMON
 // tag::convert[]
 template <typename BAGT, typename T, int N>
 static void bag2Sarray(BAGT bags, Sarray<T*, N> *buf)
@@ -554,6 +559,7 @@ static void bag2Sarray(BAGT bags, Sarray<T*, N> *buf)
         buf->d[i] = (T*) bags.data[i];
 }
 /* end src/comm/utils.h */
+#endif /* UDX_DISTR_EXCH_COMM_UTILS_COMMON */
 
 /* begin src/struct/parray/imp.h */
 #ifndef UDX_FLU_PARRAY_COMMON
@@ -619,8 +625,8 @@ typedef Sarray<RndFrag, 26> RndFrag26;
 /* end src/flu/type.h */
 #endif /* UDX_FLU_TYPE_COMMON */
 /* begin src/algo/utils/shfl.h */
-#ifndef UDX_FLU_EXCH_SHFL_COMMON
-#define UDX_FLU_EXCH_SHFL_COMMON
+#ifndef UDX_DISTR_EXCH_SHFL_COMMON
+#define UDX_DISTR_EXCH_SHFL_COMMON
 #define _I_ static __device__
 
 #if __CUDACC_VER_MAJOR__ >= 9
@@ -655,7 +661,7 @@ _I_ T shfl(T val, unsigned int width) {
 
 #undef _I_
 /* end src/algo/utils/shfl.h */
-#endif /* UDX_FLU_EXCH_SHFL_COMMON */
+#endif /* UDX_DISTR_EXCH_SHFL_COMMON */
 
 /* begin src/exch/flu/imp.h */
 struct EFluPack;
