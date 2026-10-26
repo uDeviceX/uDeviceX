@@ -160,6 +160,8 @@ static int   warpSize = 1;
 #endif
 /* end src/d/q.h */
 /* begin src/d/api.h */
+#ifndef UDX_FLU_HALO_DEVICE_API_COMMON
+#define UDX_FLU_HALO_DEVICE_API_COMMON
 namespace d {  /* a wrapper for device API */
 typedef int Stream_t; /* TODO: streams are not supported */
 enum {MemcpyHostToHost, MemcpyHostToDevice,
@@ -189,6 +191,7 @@ int PeekAtLastError(void);
 // end::api[]
 }
 /* end src/d/api.h */
+#endif
 
 /* begin src/frag/dev.h */
 #ifdef FRAG_HOST
@@ -316,6 +319,8 @@ void estimates(int3 L, int nfrags, float maxd, /**/ int *cap); // <1>
 /* end src/frag/imp.h */
 
 /* begin src/inc/def.h */
+#ifndef UDX_FLU_HALO_DEF_COMMON
+#define UDX_FLU_HALO_DEF_COMMON
 /* solvent colors */
 #define XMACRO_COLOR(_)                         \
     _(BLUE)                                     \
@@ -367,6 +372,7 @@ enum {
 /* for the spring forces r = min(lmax*RBC_SPRING_CAP, r) */
 #define RBC_SPRING_CAP (0.99)
 /* end src/inc/def.h */
+#endif
 /* begin src/utils/cc.h */
 /* [c]uda [c]heck macros */
 
@@ -443,6 +449,8 @@ void error_print_stack();
 /* end src/utils/error.h */
 
 /* begin src/inc/type.h */
+#ifndef UDX_FLU_HALO_TYPE_COMMON
+#define UDX_FLU_HALO_TYPE_COMMON
 template <typename T, int N>
 struct Sarray { /* [s]tatic array */
     T d[N];
@@ -496,6 +504,7 @@ struct FoWrap {
     Force *ff;
 };
 /* end src/inc/type.h */
+#endif
 /* begin src/inc/dev.h */
 /* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
