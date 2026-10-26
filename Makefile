@@ -13,7 +13,7 @@ OBJECTS = \
  udx.clist.o \
  udx.cnt.o \
  udx.color.o \
- udx.comm.o \
+ udx.comm-main.o \
  udx.conf-libconfig.o \
  udx.coords.o \
  udx.d-mpi.o \
@@ -41,7 +41,6 @@ OBJECTS = \
  udx.io-point-grid.o \
  udx.io-mesh-rig-restart.o \
  udx.io-vtk-output.o \
- udx.main.o \
  udx.utils-math.o \
  udx.mesh-complete.o \
  udx.rbc-core-adj-com.o \
