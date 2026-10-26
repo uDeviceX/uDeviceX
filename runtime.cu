@@ -21408,41 +21408,41 @@ void scan_apply(const int *input, int size, /**/ int *output, /*w*/ Scan*); // <
 void scan_ini(int size, /**/ Scan**);                                       // <2>
 void scan_fin(Scan*);                                                       // <3>
 
-namespace scan_dev {
+/* scan device helpers */
 #define _I_ static __device__
 
 #if __CUDACC_VER_MAJOR__ >= 9
 template <typename T>
-_I_ T shfl_down(T val, unsigned int width) {
+_I_ T scan_shfl_down(T val, unsigned int width) {
     return __shfl_down_sync(0xFFFFFFFF, val, width);
 }
 
 template <typename T>
-_I_ T shfl_up(T val, unsigned int width) {
+_I_ T scan_shfl_up(T val, unsigned int width) {
     return __shfl_up_sync(0xFFFFFFFF, val, width);
 }
 template <typename T>
-_I_ T shfl(T val, unsigned int width) {
+_I_ T scan_shfl(T val, unsigned int width) {
     return __shfl_sync(0xFFFFFFFF, val, width);
 }
 #else
 template <typename T>
-_I_ T shfl_down(T val, unsigned int width) {
+_I_ T scan_shfl_down(T val, unsigned int width) {
     return __shfl_down(val, width);
 }
 
 template <typename T>
-_I_ T shfl_up(T val, unsigned int width) {
+_I_ T scan_shfl_up(T val, unsigned int width) {
     return __shfl_up(val, width);
 }
 template <typename T>
-_I_ T shfl(T val, unsigned int width) {
+_I_ T scan_shfl(T val, unsigned int width) {
     return __shfl(val, width);
 }
 #endif
 
 #undef _I_
-__global__ void compress(const int nentries, const int4 *const in, uchar4 *const out) {
+__global__ void scan_compress(const int nentries, const int4 *const in, uchar4 *const out) {
     const int gid = threadIdx.x + blockDim.x * blockIdx.x;
 
     if (4 * gid >= nentries)
@@ -21454,7 +21454,7 @@ __global__ void compress(const int nentries, const int4 *const in, uchar4 *const
 }
 
 template <int NWARP>
-__global__ void breduce(const uint4 *vin, unsigned int *vout, int n) {
+__global__ void scan_breduce(const uint4 *vin, unsigned int *vout, int n) {
 
     const int wid = threadIdx.x/32;
     const int lid = threadIdx.x%32;
@@ -21473,7 +21473,7 @@ __global__ void breduce(const uint4 *vin, unsigned int *vout, int n) {
 
 #pragma unroll
     for(int i = 16; i > 0; i >>= 1)
-        val.x += shfl_down((int)val.x, i);
+        val.x += scan_shfl_down((int)val.x, i);
 
     if (0 == lid)
         shtmp[wid] = val.x;
@@ -21484,14 +21484,14 @@ __global__ void breduce(const uint4 *vin, unsigned int *vout, int n) {
 
 #pragma unroll
         for(int i = 16; i > 0; i >>= 1)
-            val.x += shfl_down((int)val.x, i);
+            val.x += scan_shfl_down((int)val.x, i);
     }
     if (0 == threadIdx.x) vout[blockIdx.x] = val.x;
     return;
 }
 
 template <int BDIM>
-__global__ void bexscan(unsigned int *v, int n) {
+__global__ void scan_bexscan(unsigned int *v, int n) {
 
     extern __shared__ unsigned int shtmp[];
 
@@ -21541,7 +21541,7 @@ __global__ void bexscan(unsigned int *v, int n) {
 }
 
 template <int NWARP>
-__global__ void gexscan(const uint4 *vin, unsigned int *offs, uint4 *vout, int n) {
+__global__ void scan_gexscan(const uint4 *vin, unsigned int *offs, uint4 *vout, int n) {
 
     const int wid = threadIdx.x/32;
     const int lid = threadIdx.x%32;
@@ -21585,7 +21585,7 @@ __global__ void gexscan(const uint4 *vin, unsigned int *offs, uint4 *vout, int n
     tu4.w = tmp;
 #pragma unroll
     for(int i = 1; i < 32; i <<= 1)
-        tu4.w += (lid >= i)*shfl_up((int)tu4.w, i);
+        tu4.w += (lid >= i)*scan_shfl_up((int)tu4.w, i);
 
     if (lid == 31)
         if (wid < NWARP-1) woff[wid+1] = tu4.w;
@@ -21598,7 +21598,7 @@ __global__ void gexscan(const uint4 *vin, unsigned int *offs, uint4 *vout, int n
         tmp = (lid < NWARP) ? woff[lid] : 0;
 #pragma unroll
         for(int i = 1; i < NWARP; i <<= 1)
-            tmp += (lid >= i)*shfl_up((int)tmp, i);
+            tmp += (lid >= i)*scan_shfl_up((int)tmp, i);
 
         if (lid < NWARP) woff[lid] = tmp;
     }
@@ -21639,7 +21639,6 @@ __global__ void gexscan(const uint4 *vin, unsigned int *offs, uint4 *vout, int n
         vout[i] = val[i];
     return;
 }
-}
 
 #if   defined(DEV_CUDA)
 struct Scan {
@@ -21650,9 +21649,9 @@ struct Scan {
 enum { THREADS = 128 };
 static void scan0(const unsigned char *input, int size, /**/ uint *output, /*w*/ uint *tmp) {
     int nblocks = ((size / 16) + THREADS - 1 ) / THREADS;
-    KL(scan_dev::breduce<THREADS/32>, (nblocks, THREADS                ), ((uint4 *)input, tmp, size / 16));
-    KL(scan_dev::bexscan<THREADS>   , (1, THREADS, nblocks*sizeof(uint)), (tmp, nblocks));
-    KL(scan_dev::gexscan<THREADS/32>, (nblocks, THREADS                ), ((uint4 *)input, tmp, (uint4 *)output, size / 16));
+    KL(scan_breduce<THREADS/32>, (nblocks, THREADS                ), ((uint4 *)input, tmp, size / 16));
+    KL(scan_bexscan<THREADS>   , (1, THREADS, nblocks*sizeof(uint)), (tmp, nblocks));
+    KL(scan_gexscan<THREADS/32>, (nblocks, THREADS                ), ((uint4 *)input, tmp, (uint4 *)output, size / 16));
 }
 
 void scan_apply(const int *input, int size, /**/ int *output, /*w*/ Scan *w) {
@@ -21661,7 +21660,7 @@ void scan_apply(const int *input, int size, /**/ int *output, /*w*/ Scan *w) {
     if (!d::is_device_pointer(input))  ERR("`input`  is not a device pointer");
     if (!d::is_device_pointer(output)) ERR("`output` is not a device pointer");
 
-    KL(scan_dev::compress, (k_cnf(size)), (size, (const int4*) input, /**/ (uchar4 *) w->compressed));
+    KL(scan_compress, (k_cnf(size)), (size, (const int4*) input, /**/ (uchar4 *) w->compressed));
     scan0(w->compressed, size, /**/ (uint*) output, /*w*/ w->tmp);
 }
 
