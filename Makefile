@@ -12,7 +12,7 @@ MPI_LIBS = -lopen-rte -lopen-pal
 OBJECTS = \
  udx.contact-complete.o \
  udx.runtime-config-complete.o \
- udx.algo-complete.o \
+ udx.support-grid-algo-complete.o \
  udx.control-complete.o \
  udx.distr-exch.o \
  udx.distr-flu.o \
@@ -25,7 +25,6 @@ OBJECTS = \
  udx.fluforces-bulk-main.o \
  udx.io-fraghe-complete.o \
  udx.pair-fsi.o \
- udx.support-grid-complete.o \
  udx.mesh-struct-complete.o \
  udx.rbc-core-adj-com.o \
  udx.rbc-force-all.o \

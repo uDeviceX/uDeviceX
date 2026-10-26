@@ -46,6 +46,8 @@
 
 
 /* begin src/inc/def.h */
+#ifndef UDX_GRID_INTER_DEF_COMMON
+#define UDX_GRID_INTER_DEF_COMMON
 /* solvent colors */
 #define XMACRO_COLOR(_)                         \
     _(BLUE)                                     \
@@ -97,6 +99,7 @@ enum {
 /* for the spring forces r = min(lmax*RBC_SPRING_CAP, r) */
 #define RBC_SPRING_CAP (0.99)
 /* end src/inc/def.h */
+#endif /* UDX_GRID_INTER_DEF_COMMON */
 /* begin src/utils/msg.h */
 // tag::int[]
 void msg_ini(int rank); // <1>
@@ -219,10 +222,8 @@ static int   warpSize = 1;
   #error DEV_* is undefined
 #endif
 /* end src/d/ker.h */
-#ifndef UDX_ALGO_DEVICE_API_COMMON
-#define UDX_ALGO_DEVICE_API_COMMON
-#ifndef UDX_ALGO_D_API_COMMON
-#define UDX_ALGO_D_API_COMMON
+#ifndef UDX_GRID_INTER_DEVICE_API_COMMON
+#define UDX_GRID_INTER_DEVICE_API_COMMON
 /* begin src/d/api.h */
 namespace d {  /* a wrapper for device API */
 typedef int Stream_t; /* TODO: streams are not supported */
@@ -253,11 +254,10 @@ int PeekAtLastError(void);
 // end::api[]
 }
 /* end src/d/api.h */
-#endif /* UDX_ALGO_D_API_COMMON */
-#endif
+#endif /* UDX_GRID_INTER_DEVICE_API_COMMON */
 
-#ifndef UDX_ALGO_TYPE_COMMON
-#define UDX_ALGO_TYPE_COMMON
+#ifndef UDX_GRID_INTER_TYPE_COMMON
+#define UDX_GRID_INTER_TYPE_COMMON
 /* begin src/inc/type.h */
 template <typename T, int N>
 struct Sarray { /* [s]tatic array */
@@ -312,7 +312,7 @@ struct FoWrap {
     Force *ff;
 };
 /* end src/inc/type.h */
-#endif /* UDX_ALGO_TYPE_COMMON */
+#endif /* UDX_GRID_INTER_TYPE_COMMON */
 /* begin src/inc/dev.h */
 /* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
@@ -429,8 +429,8 @@ _I_ float3 warpReduceSum(float3 val)  // <3>
 
 /* end src/algo/utils/dev.h */
 
-#ifndef UDX_ALGO_KL_COMMON
-#define UDX_ALGO_KL_COMMON
+#ifndef UDX_GRID_INTER_KL_COMMON
+#define UDX_GRID_INTER_KL_COMMON
 /* begin src/utils/kl.h */
 /* [k]ernel [l]aunch macros */
 
@@ -488,7 +488,7 @@ inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
 
 /* TODO: header includes header */
 /* end src/utils/kl.h */
-#endif /* UDX_ALGO_KL_COMMON */
+#endif /* UDX_GRID_INTER_KL_COMMON */
 
 /* begin src/struct/particle/dev.h */
 static __device__ float3 fetch_pos(int i, const Particle *pp) {

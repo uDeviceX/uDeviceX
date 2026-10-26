@@ -75,8 +75,8 @@ void error_abort();
 void error_print_stack();
 /* end src/utils/error.h */
 /* begin src/inc/type.h */
-#ifndef UDX_ALGO_TYPE_COMMON
-#define UDX_ALGO_TYPE_COMMON
+#ifndef UDX_GRID_INTER_TYPE_COMMON
+#define UDX_GRID_INTER_TYPE_COMMON
 template <typename T, int N>
 struct Sarray { /* [s]tatic array */
     T d[N];
@@ -130,7 +130,7 @@ struct FoWrap {
     Force *ff;
 };
 /* end src/inc/type.h */
-#endif /* UDX_ALGO_TYPE_COMMON */
+#endif /* UDX_GRID_INTER_TYPE_COMMON */
 /* begin src/coords/imp.h */
 struct Coords;
 struct Coords_v;

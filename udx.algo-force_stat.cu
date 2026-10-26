@@ -9,8 +9,8 @@
 #include <thrust/transform_reduce.h>
 
 /* begin src/inc/type.h */
-#ifndef UDX_ALGO_TYPE_COMMON
-#define UDX_ALGO_TYPE_COMMON
+#ifndef UDX_GRID_INTER_TYPE_COMMON
+#define UDX_GRID_INTER_TYPE_COMMON
 template <typename T, int N>
 struct Sarray { /* [s]tatic array */
     T d[N];
@@ -64,7 +64,7 @@ struct FoWrap {
     Force *ff;
 };
 /* end src/inc/type.h */
-#endif /* UDX_ALGO_TYPE_COMMON */
+#endif /* UDX_GRID_INTER_TYPE_COMMON */
 /* begin src/utils/error.h */
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
@@ -112,8 +112,8 @@ void msg_ini(int rank); // <1>
 void msg_print(const char *fmt, ...); // <2>
 // end::int[]
 /* end src/utils/msg.h */
-#ifndef UDX_ALGO_D_API_COMMON
-#define UDX_ALGO_D_API_COMMON
+#ifndef UDX_GRID_INTER_DEVICE_API_COMMON
+#define UDX_GRID_INTER_DEVICE_API_COMMON
 /* begin src/d/api.h */
 namespace d {  /* a wrapper for device API */
 typedef int Stream_t; /* TODO: streams are not supported */
@@ -144,7 +144,7 @@ int PeekAtLastError(void);
 // end::api[]
 }
 /* end src/d/api.h */
-#endif /* UDX_ALGO_D_API_COMMON */
+#endif /* UDX_GRID_INTER_DEVICE_API_COMMON */
 
 /* begin src/algo/force_stat/imp.h */
 struct Force;
