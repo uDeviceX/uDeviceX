@@ -869,14 +869,14 @@ typedef Sarray <float2*, 26> float2p26;
 typedef Sarray <int*, 26> intp26;
 
 enum {
-    MAX_NBAGS = 3
+    DFLU_MAX_NBAGS = 3
 };
 
 // tag::struct[]
 struct DFluPack {
     DMap map;
-    dBags dbags[MAX_NBAGS], *dpp, *dii, *dcc;
-    hBags hbags[MAX_NBAGS], *hpp, *hii, *hcc;
+    dBags dbags[DFLU_MAX_NBAGS], *dpp, *dii, *dcc;
+    hBags hbags[DFLU_MAX_NBAGS], *hpp, *hii, *hcc;
     int nbags;
     int nhalo; /* number of sent particles */
     int3 L; /* subdomain size */
@@ -888,7 +888,7 @@ struct DFluComm {
 };
 
 struct DFluUnpack {
-    hBags hbags[MAX_NBAGS], *hpp, *hii, *hcc;
+    hBags hbags[DFLU_MAX_NBAGS], *hpp, *hii, *hcc;
     int nbags;
     Particle *ppre;
     int *iire, *ccre;

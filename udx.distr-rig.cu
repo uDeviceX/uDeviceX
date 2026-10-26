@@ -339,6 +339,8 @@ struct FoWrap {
 /* end src/inc/type.h */
 #endif /* UDX_DISTR_EXCH_TYPE_COMMON */
 /* begin src/inc/def.h */
+#ifndef UDX_DISTR_EXCH_DEF_COMMON
+#define UDX_DISTR_EXCH_DEF_COMMON
 /* solvent colors */
 #define XMACRO_COLOR(_)                         \
     _(BLUE)                                     \
@@ -390,6 +392,7 @@ enum {
 /* for the spring forces r = min(lmax*RBC_SPRING_CAP, r) */
 #define RBC_SPRING_CAP (0.99)
 /* end src/inc/def.h */
+#endif /* UDX_DISTR_EXCH_DEF_COMMON */
 
 /* begin src/frag/dev.h */
 #ifndef UDX_DISTR_EXCH_FRAG_DEV_COMMON
@@ -599,6 +602,8 @@ size_t comm_get_byte_capacity(int i, const hBags *b);   // <2>
 /* end src/comm/imp.h */
 #endif /* UDX_DISTR_EXCH_COMM_COMMON */
 /* begin src/comm/utils.h */
+#ifndef UDX_DISTR_EXCH_COMM_UTILS_COMMON
+#define UDX_DISTR_EXCH_COMM_UTILS_COMMON
 // tag::convert[]
 template <typename BAGT, typename T, int N>
 static void bag2Sarray(BAGT bags, Sarray<T*, N> *buf)
@@ -608,6 +613,7 @@ static void bag2Sarray(BAGT bags, Sarray<T*, N> *buf)
         buf->d[i] = (T*) bags.data[i];
 }
 /* end src/comm/utils.h */
+#endif /* UDX_DISTR_EXCH_COMM_UTILS_COMMON */
 
 /* begin src/rig/imp.h */
 // tag::quants[]
@@ -705,6 +711,8 @@ struct DMap {
 /* end src/distr/map/type.h */
 #endif /* UDX_DISTR_EXCH_DMAP_TYPE_COMMON */
 /* begin src/distr/map/dev.h */
+#ifndef UDX_DISTR_EXCH_DMAP_DEV_COMMON
+#define UDX_DISTR_EXCH_DMAP_DEV_COMMON
 // tag::int[]
 /* exclusive scan */
 template <int NCOUNTS>
@@ -741,6 +749,7 @@ static __device__ void dmap_add(int pid, int fid, DMap m)  // <3>
     m.ids[fid][entry] = pid;
 }
 /* end src/distr/map/dev.h */
+#endif /* UDX_DISTR_EXCH_DMAP_DEV_COMMON */
 /* begin src/distr/map/imp.h */
 // tag::int[]
 void dmap_ini(int nfrags, const int capacity[], /**/ DMap *m);
@@ -837,13 +846,13 @@ __global__ void pack_ss(const Rigid *ss, DMap m, /**/ Sarray<Rigid*, 27> buf) {
 enum {
     ID_PP,
     ID_SS,
-    MAX_NBAGS
+    DRIG_MAX_NBAGS
 };
 
 struct DRigPack {
     DMap map;
-    dBags dbags[MAX_NBAGS], *dipp, *dss;
-    hBags hbags[MAX_NBAGS], *hipp, *hss;
+    dBags dbags[DRIG_MAX_NBAGS], *dipp, *dss;
+    hBags hbags[DRIG_MAX_NBAGS], *hipp, *hss;
     CommBuffer *hbuf;
     int nbags;
     int3 L;  /* subdomain size */
@@ -854,7 +863,7 @@ struct DRigComm {
 };
 
 struct DRigUnpack {
-    hBags hbags[MAX_NBAGS], *hipp, *hss;
+    hBags hbags[DRIG_MAX_NBAGS], *hipp, *hss;
     CommBuffer *hbuf;
     int nbags;
     int3 L;  /* subdomain size */
@@ -862,7 +871,7 @@ struct DRigUnpack {
 // end::struct[]
 /* end src/distr/rig/imp/type.h */
 /* begin src/distr/rig/imp/ini.h */
-static void get_num_capacity(int maxns, /**/ int numc[NBAGS]) {
+static void drig_get_num_capacity(int maxns, /**/ int numc[NBAGS]) {
     // TODO save memory here?
     for (int i = 0; i < NBAGS; ++i)
         numc[i] = maxns;
@@ -875,7 +884,7 @@ void drig_pack_ini(int3 L, int maxns, int nv, DRigPack **pack) {
     p = *pack;
 
     p->L = L;
-    get_num_capacity(maxns, /**/ numc);
+    drig_get_num_capacity(maxns, /**/ numc);
 
     UC(dmap_ini(NBAGS, numc, /**/ &p->map));
 
@@ -886,7 +895,7 @@ void drig_pack_ini(int3 L, int maxns, int nv, DRigPack **pack) {
     UC(comm_bags_ini(PINNED, DEV_ONLY, nv * sizeof(Particle), numc, /**/ p->hipp, p->dipp));
     UC(comm_bags_ini(PINNED, DEV_ONLY, sizeof(Rigid), numc, /**/ p->hss, p->dss));
 
-    p->nbags = MAX_NBAGS;
+    p->nbags = DRIG_MAX_NBAGS;
 
     UC(comm_buffer_ini(p->nbags, p->hbags, &p->hbuf));
 }
@@ -905,7 +914,7 @@ void drig_unpack_ini(int3 L, int maxns, int nv, DRigUnpack **unpack) {
     u = *unpack;
 
     u->L = L;
-    get_num_capacity(maxns, /**/ numc);
+    drig_get_num_capacity(maxns, /**/ numc);
 
     u->hipp = &u->hbags[ID_PP];  u->hss = &u->hbags[ID_SS];
 
@@ -914,7 +923,7 @@ void drig_unpack_ini(int3 L, int maxns, int nv, DRigUnpack **unpack) {
 
     UC(comm_bags_ini(HST_ONLY, NONE, sizeof(Rigid), numc, /**/ u->hss, NULL));
 
-    u->nbags = MAX_NBAGS;
+    u->nbags = DRIG_MAX_NBAGS;
 
     UC(comm_buffer_ini(u->nbags, u->hbags, &u->hbuf));
 }
@@ -952,7 +961,7 @@ void drig_build_map(int ns, const Rigid *ss, /**/ DRigPack *p) {
 }
 /* end src/distr/rig/imp/map.h */
 /* begin src/distr/rig/imp/pack.h */
-static void pack_pp(const DMap m, int ns, int nv, const Particle *ipp, /**/ dBags *bags) {
+static void drig_pack_pp(const DMap m, int ns, int nv, const Particle *ipp, /**/ dBags *bags) {
     Sarray<Particle*, NBAGS> wrap;
     bag2Sarray(*bags, &wrap);
 
@@ -969,7 +978,7 @@ static void pack_ss(const DMap m, int n, const Rigid *ss, /**/ dBags *bags) {
 
 
 void drig_pack(int ns, int nv, const Rigid *ss, const Particle *ipp, /**/ DRigPack *p) {
-    UC(pack_pp(p->map, ns, nv, ipp, /**/ p->dipp));
+    UC(drig_pack_pp(p->map, ns, nv, ipp, /**/ p->dipp));
     UC(pack_ss(p->map, ns, ss, /**/ p->dss));
 }
 

@@ -13,8 +13,7 @@ OBJECTS = \
  udx.contact-complete.o \
  udx.runtime-control-complete.o \
  udx.support-grid-algo-complete.o \
- udx.distr-exch-rig-complete.o \
- udx.distr-flu-rbc-complete.o \
+ udx.distr-all-complete.o \
  udx.exch-flu.o \
  udx.exch-mesh-obj-complete.o \
  udx.flu-halo.o \

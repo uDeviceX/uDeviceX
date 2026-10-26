@@ -456,6 +456,8 @@ struct FoWrap {
 /* end src/inc/type.h */
 #endif /* UDX_DISTR_EXCH_TYPE_COMMON */
 /* begin src/inc/def.h */
+#ifndef UDX_DISTR_EXCH_DEF_COMMON
+#define UDX_DISTR_EXCH_DEF_COMMON
 /* solvent colors */
 #define XMACRO_COLOR(_)                         \
     _(BLUE)                                     \
@@ -507,6 +509,7 @@ enum {
 /* for the spring forces r = min(lmax*RBC_SPRING_CAP, r) */
 #define RBC_SPRING_CAP (0.99)
 /* end src/inc/def.h */
+#endif /* UDX_DISTR_EXCH_DEF_COMMON */
 
 /* begin src/rbc/type.h */
 struct AreaVolume;
@@ -1066,7 +1069,7 @@ void drbc_build_map(int nc, int nv, const Particle *pp, DRbcPack *p) {
 }
 /* end src/distr/rbc/imp/map.h */
 /* begin src/distr/rbc/imp/pack.h */
-static void pack_pp(const DMap m, int nc, int nv, const Particle *pp, /**/ dBags *bags) {
+static void drbc_pack_pp(const DMap m, int nc, int nv, const Particle *pp, /**/ dBags *bags) {
     Sarray<Particle*, NBAGS> wrap;
     bag2Sarray(*bags, &wrap);
     UC(dcommon_pack_pp_packets(nc, nv, pp, m, /**/ wrap));
@@ -1088,7 +1091,7 @@ static void pack_ii(const DMap m, int, const int *ii, /**/ hBags *bags) {
 }
 
 void drbc_pack(const RbcQuants *q, /**/ DRbcPack *p) {
-    UC(pack_pp(p->map, q->nc, q->nv, q->pp, /**/ p->dpp));
+    UC(drbc_pack_pp(p->map, q->nc, q->nv, q->pp, /**/ p->dpp));
     if (p->hii) {
         UC(dmap_D2H(NBAGS, &p->map, /**/ &p->hmap));
         dSync();
