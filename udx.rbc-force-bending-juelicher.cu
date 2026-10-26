@@ -43,6 +43,9 @@
 /* end src/inc/conf.h */
 
 
+/* shared generated definitions used by both bending implementations */
+#ifndef UDX_RBC_BENDING_COMMON
+#define UDX_RBC_BENDING_COMMON
 /* begin src/inc/def.h */
 /* solvent colors */
 #define XMACRO_COLOR(_)                         \
@@ -986,6 +989,8 @@ static __device__ int adj_get_map(int i, Adj_v *adj, /**/ AdjMap *m) {
 }
 /* end src/rbc/adj/dev.h */
 
+#endif /* UDX_RBC_BENDING_COMMON */
+
 /* begin src/rbc/force/bending/juelicher/imp.h */
 struct RbcParams;
 struct Juelicher;
@@ -1014,6 +1019,9 @@ struct Juelicher {
 };
 /* end src/rbc/force/bending/juelicher/imp/type.h */
 
+/* shared Kantor angle helpers used by both bending implementations */
+#ifndef UDX_RBC_KANTOR0_COMMON
+#define UDX_RBC_KANTOR0_COMMON
 /* begin src/mesh/force/kantor0/dev.h */
 #ifdef FORCE_KANTOR0_HOST
   #define _I_
@@ -1154,6 +1162,7 @@ END
 #undef BEGIN
 #undef END
 /* end src/mesh/force/kantor0/dev.h */
+#endif /* UDX_RBC_KANTOR0_COMMON */
 
 namespace juelicher_dev {
 /* begin src/rbc/force/bending/juelicher/dev/main.h */

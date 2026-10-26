@@ -38,8 +38,7 @@ OBJECTS = \
  udx.mesh-complete.o \
  udx.rbc-core-adj-com.o \
  udx.rbc-force-all.o \
- udx.rbc-force-bending-juelicher.o \
- udx.rbc-force-bending-kantor.o \
+ udx.rbc-force-bending-all.o \
  udx.rig-complete.o \
  udx.scheme-all.o \
  udx.sim-system-all.o \
