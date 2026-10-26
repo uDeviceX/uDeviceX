@@ -1,3 +1,10482 @@
+
+#line 1 "udx.force-pair-complete.cu"
 // Grouped editable compilation unit for fluid/RBC forces and pair/FSI interactions.
-#include "udx.force-all-complete.cu"
-#include "udx.pair-fsi.cu"
+
+#line 1 "udx.force-all-complete.cu"
+
+#line 1 "udx.force-all-complete.cu"
+// Grouped editable compilation unit for fluid and RBC force implementations.
+
+#line 1 "udx.fluforces-bulk-main.cu"
+
+#line 1 "udx.fluforces-bulk-main.cu"
+// Grouped editable compilation unit for bulk fluid forces and orchestration.
+
+#line 1 "udx.fluforces-bulk.cu"
+
+#line 1 "udx.fluforces-bulk.cu"
+// generated from udx.flat.cu
+#include "udx.config.cuh"
+
+/* begin src/fluforces/bulk/imp.cu */
+#include <stdio.h>
+#include <assert.h>
+
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
+
+
+/* begin src/inc/type.h */
+#ifndef UDX_FORCE_TYPE_COMMON
+#define UDX_FORCE_TYPE_COMMON
+template <typename T, int N>
+struct Sarray { /* [s]tatic array */
+    T d[N];
+};
+
+struct Particle {
+    float r[3], v[3];
+};
+
+struct Rigid {
+    float Iinv[6],            /* moment of inertia            6        */
+        mass,                 /* mass of the solid            7        */
+        com[3],               /* [c]enter [o]f [m]ass         10       */
+        v[3], om[3],          /* linear and angular velocity  13 16    */
+        e0[3], e1[3], e2[3],  /* local referential            19 22 25 */
+        fo[3], to[3],         /* force, torque                28 31    */
+        id;                   /* id of the solid              32       */
+};
+
+struct Force {
+    float f[3];
+};
+
+struct Momentum {
+    float P[3], L[3]; /* linear and angular momentum */
+};
+
+struct Positioncp {
+    float rc[3]; /* current position  */
+    float rp[3]; /* previous position */
+};
+
+typedef Sarray<int, 26>       int26;
+typedef Sarray<int, 27>       int27;
+
+typedef Sarray<int*, 26>     intp26;
+typedef Sarray<Particle*, 26> Pap26;
+typedef Sarray<Force*,    26> Fop26;
+typedef Sarray<Momentum*, 26> Mop26;
+typedef Sarray<Positioncp*, 26> Pocpp26;
+
+/* particles wrap */
+struct PaWrap {
+    int n;
+    const Particle *pp;
+};
+
+/* forces wrap */
+struct FoWrap {
+    int n;
+    Force *ff;
+};
+/* end src/inc/type.h */
+#endif
+/* begin src/inc/def.h */
+#ifndef UDX_FORCE_DEF_COMMON
+#define UDX_FORCE_DEF_COMMON
+/* solvent colors */
+#define XMACRO_COLOR(_)                         \
+    _(BLUE)                                     \
+    _(RED)
+
+#define ENUM_COLOR(a) a##_COLOR
+#define make_enum_color(a) ENUM_COLOR(a) ,
+enum {
+    XMACRO_COLOR(make_enum_color)
+    N_COLOR
+};
+#undef make_enum_color
+
+enum {
+    /* wall margins */
+    XWM = 6,
+    YWM = 6,
+    ZWM = 6,
+
+    SAFETY_FACTOR_MAXP = 3,
+
+    /* maximum number of particles per solid */
+    MAX_PSOLID_NUM = 12000,
+
+    /* maximum number of solids per node */
+    MAX_SOLIDS = 100,
+
+    /* maximum number of object types (solid, rbc, ...) */
+    MAX_MBR_TYPES = 2,
+    MAX_RIG_TYPES = 2,
+    MAX_OBJ_TYPES = MAX_MBR_TYPES + MAX_RIG_TYPES,
+
+    /* maximum number density of particles of the objects */
+    MAX_OBJ_DENSITY = 30,
+
+    /* maximum number of red blood cells per node */
+    MAX_CELL_NUM = 1500,
+
+    /* maximum texture size in bytes */
+    MAX_TEXO_SIZE = 100000000,
+
+    /* safety factor for dpd halo interactions */
+    HSAFETY_FACTOR = 10,
+
+    /* safety factor for odist fragments */
+    ODSTR_FACTOR = 3,
+};
+
+/* for the spring forces r = min(lmax*RBC_SPRING_CAP, r) */
+#define RBC_SPRING_CAP (0.99)
+/* end src/inc/def.h */
+#endif /* UDX_FORCE_DEF_COMMON */
+/* begin src/inc/dev.h */
+#ifndef UDX_FORCE_DEVICE_COMMON
+#define UDX_FORCE_DEVICE_COMMON
+/* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
+#define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
+
+/* a common kernel execution configuration */
+#define k_cnf(n) ceiln((n), 128), 128
+
+#define dSync() CC(d::DeviceSynchronize())
+
+#define D2D d::MemcpyDeviceToDevice
+#define D2H d::MemcpyDeviceToHost
+#define H2D d::MemcpyHostToDevice
+#define H2H d::MemcpyHostToHost
+#define A2A d::MemcpyDefault /* "[a]ny to [a]ny" */
+
+#define cD2D(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), D2D))
+#define cH2H(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), H2H))  /* [t]to, [f]rom */
+#define cA2A(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), A2A))
+#define cD2H(H, D, n) CC(d::Memcpy((H), (D), (n) * sizeof((H)[0]), D2H))
+#define cH2D(D, H, n) CC(d::Memcpy((D), (H), (n) * sizeof((H)[0]), H2D))
+
+#define aD2D(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), D2D))
+#define aH2H(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), H2H))  /* [t]to, [f]rom */
+#define aA2A(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), A2A))
+#define aD2H(H, D, n) CC(d::MemcpyAsync((H), (D), (n) * sizeof((H)[0]), D2H))
+#define aH2D(D, H, n) CC(d::MemcpyAsync((D), (H), (n) * sizeof((H)[0]), H2D))
+
+/* device allocation */
+#define Dfree(D)      CC(d::Free(D))
+#define Dalloc(D, n)  CC(d::Malloc((void**)(D), (n) * sizeof(**(D))))
+
+/* [d]evice set */
+#define Dset(P, v, n) CC(d::Memset(P, v, (n)*sizeof(*(P))))
+#define Dzero(P, n)   Dset(P, 0, n)
+
+/* [d]evice [a]synchronous set */
+#define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
+#define DzeroA(P, n)   DsetA(P, 0, n)
+/* end src/inc/dev.h */
+#endif /* UDX_FORCE_DEVICE_COMMON */
+
+/* begin src/d/api.h */
+#ifndef UDX_FORCE_DEVICE_API_COMMON
+#define UDX_FORCE_DEVICE_API_COMMON
+namespace d {  /* a wrapper for device API */
+typedef int Stream_t; /* TODO: streams are not supported */
+enum {MemcpyHostToHost, MemcpyHostToDevice,
+      MemcpyDeviceToHost, MemcpyDeviceToDevice,
+      MemcpyDefault};
+
+// tag::more[]
+const char *emsg();
+int alloc_pinned(void **pHost, size_t size);
+int is_device_pointer(const void *ptr);
+// end::more[]
+
+// tag::api[]
+int GetSymbolAddress(void **devPtr, const void *symbol);
+int Malloc(void **p, size_t);
+int MemcpyToSymbol(const void *symbol, const void *src, size_t count, size_t offset=0, int kind=MemcpyHostToDevice);
+int MemcpyFromSymbol(void *dst, const void *symbol, size_t count, size_t offset=0, int kind=MemcpyDeviceToHost);
+int HostGetDevicePointer(void **pDevice, void *pHost, unsigned int flags);
+int Memcpy (void *dst, const void *src, size_t count, int kind);
+int MemsetAsync (void *devPtr, int value, size_t count, Stream_t stream=0);
+int Memset (void *devPtr, int value, size_t count);
+int MemcpyAsync (void * dst, const void * src, size_t count, int kind, Stream_t stream = 0);
+int Free (void *devPtr);
+int FreeHost (void *hstPtr);
+int DeviceSynchronize (void);
+int PeekAtLastError(void);
+// end::api[]
+}
+/* end src/d/api.h */
+#endif
+/* begin src/d/ker.h */
+#if   defined(DEV_CUDA)
+/* begin src/d/cuda/ker.h */
+#define  Ifetch(t, i)  tex1Dfetch(t, i)
+#define F4fetch(t, i)  tex1Dfetch(t, i)
+#define F2fetch(t, i)  tex1Dfetch(t, i)
+#define  Ffetch(t, i)  tex1Dfetch(t, i)
+#define Tfetch(T, t, i) tex1Dfetch<T>(t, i)
+
+#define Ttex3D(T, to, i, j, k) tex3D<T>(to, i, j, k);
+/* end src/d/cuda/ker.h */
+#elif defined(DEV_CPU)
+/* begin src/d/cpu/ker.h */
+#define atomicAdd(...) (0)
+
+#define atomicExch(...)
+#define __float2half_rn(...) (0)
+#define __fmaf_rz(...) (0.0)
+#define __ldg(p) (*(p))
+#define __popc(...)
+#define __shfl(...) (0.0)
+#define __shfl_down(...) (0.0)
+#define __shfl_up(...) (0)
+#define __shfl_xor(...) (0)
+
+#define __syncthreads(...)
+
+#define tex3D(...)
+
+#define  Ifetch(t, i)  (0);
+#define F4fetch(t, i)  (make_float4(0, 0, 0, 0))
+#define F2fetch(t, i)  (make_float2(0, 0))
+#define Ffetch(t, i)   (0.0)
+#define Tfetch(T, t, i) (T{})
+
+#define Ttex3D(T, to, i, j, k) (T{})
+/* end src/d/cpu/ker.h */
+/* begin src/d/cpu/wrap.h */
+namespace d {
+static uint3 threadIdx, blockIdx, gridDim;
+static dim3  blockDim;
+static int   warpSize = 1;
+}
+
+#define threadIdx d::threadIdx
+#define blockDim  d::blockDim
+#define gridDim   d::gridDim
+#define blockIdx  d::blockIdx
+#define warpSize  d::warpSize
+/* end src/d/cpu/wrap.h */
+#else
+  #error DEV_* is undefined
+#endif
+/* end src/d/ker.h */
+/* begin src/utils/error.h */
+#define ERR(fmt, ...)  do {                                     \
+        error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
+        error_report();                                         \
+        error_abort();                                          \
+    } while (0)
+
+/* udx check */
+#define UC(F) do {                              \
+        error_stack_push(__FILE__, __LINE__);   \
+        F;                                      \
+        if (error_get()) {                      \
+            error_report();                     \
+            error_abort();                      \
+        }                                       \
+        error_stack_pop();                      \
+    } while (0)
+
+/* [B]o[p] [c]heck */
+#define BPC(ans) do {                           \
+        BopStatus s = (ans);                    \
+        if (!bop_success(s)) {                  \
+            ERR(":%s:%d: %s\n%s\n",             \
+                __FILE__, __LINE__,             \
+                bop_report_error_desc(s),       \
+                bop_report_error_mesg());       \
+        }} while (0)
+
+void error_stack_push(const char *file, int line);
+void error_stack_pop();
+
+void error_signal(const char *file, int line, const char *fmt, ...);
+void error_signal_cuda(const char *file, int line, const char *msg);
+void error_signal_mpi(const char *file, int line, const char *msg);
+
+bool error_get();
+void error_report();
+void error_abort();
+
+void error_print_stack();
+/* end src/utils/error.h */
+/* begin src/utils/kl.h */
+#ifndef UDX_FORCE_KL_COMMON
+#define UDX_FORCE_KL_COMMON
+/* [k]ernel [l]aunch macros */
+
+#if    defined(KL_RELEASE)
+/* begin src/utils/kl/release.h */
+#define KL_BEFORE(s, C) if (!kl::safe(ESC C)) continue;
+#define KL_CALL(F, C, A) F<<<ESC C>>>A
+#define KL_AFTER(s)
+
+namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
+/* end src/utils/kl/release.h */
+#elif  defined(KL_NONE)
+/* begin src/utils/kl/none.h */
+#define KL_BEFORE(s, C)
+#define KL_CALL(F, C, A)
+#define KL_AFTER(s)
+
+namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
+/* end src/utils/kl/none.h */
+#elif  defined(KL_SYNC)
+/* begin src/utils/kl/sync.h */
+#define KL_BEFORE(s, C) if (!kl::safe(ESC C)) continue;
+#define KL_CALL(F, C, A) F<<<ESC C>>>A
+#define KL_AFTER(s)                             \
+    do {                                        \
+        dSync();                                \
+        CC(d::PeekAtLastError());               \
+    } while(0)
+
+namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
+/* end src/utils/kl/sync.h */
+#else
+  #error KL_* is undefined
+#endif
+
+/* begin src/utils/kl/common.h */
+namespace kl {
+inline int safe0(dim3 i, dim3 j) {
+    msg(i.x, i.y, i.z,   j.x, j.y, j.z);
+    return i.x>0 && i.y>0 && i.z>0   &&   j.x>0 && j.y>0 && j.z>0;
+}
+inline int safe(dim3 i, dim3 j)                    { return safe0(i, j); }
+inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
+}
+/* end src/utils/kl/common.h */
+/* begin src/utils/kl/macro.h */
+#define ESC(...) __VA_ARGS__
+#define KL(F, C, A)                             \
+    do  {                                       \
+        KL_BEFORE(#F, C);                       \
+        KL_CALL(F, C, A);                       \
+        KL_AFTER(#F);                           \
+    } while (0)
+/* end src/utils/kl/macro.h */
+
+/* TODO: header includes header */
+/* end src/utils/kl.h */
+#endif
+/* begin src/utils/cc.h */
+#ifndef UDX_FORCE_CC_COMMON
+#define UDX_FORCE_CC_COMMON
+/* [c]uda [c]heck macros */
+
+#if   defined(CC_SYNC)
+/* begin src/utils/cc/sync.h */
+/* Aggressive [sync]ronization */
+#define CC(ans)                                             \
+    do {                                                    \
+        d::DeviceSynchronize();                             \
+        cc::check((ans), __FILE__, __LINE__);               \
+        d::DeviceSynchronize();                             \
+    } while (0)
+/* end src/utils/cc/sync.h */
+#elif defined(CC_RELEASE)
+/* begin src/utils/cc/release.h */
+/* [c]cuda [c]heck */
+#define CC(ans)                                             \
+    do { cc::check((ans), __FILE__, __LINE__);} while (0)
+/* end src/utils/cc/release.h */
+#else
+  #error CC_* is undefined
+#endif
+
+/* begin src/utils/cc/common.h */
+namespace cc {
+void check(int rc, const char *file, int line);
+}
+
+
+/* end src/utils/cc/common.h */
+
+/* TODO: header includes header */
+/* end src/utils/cc.h */
+#endif
+/* begin src/utils/texo.h */
+/* 1D texture object template */
+static void sz_check(int n) {
+    if (n <            0 ) ERR("too small texo: %d", n);
+    if (n > MAX_TEXO_SIZE) ERR("too big texo: %d > %d", n, MAX_TEXO_SIZE);
+}
+
+// tag::struct[]
+template<typename T>
+struct Texo {
+    cudaTextureObject_t d;
+};
+// end::struct[]
+
+template<typename T>
+// tag::int[]
+void texo_setup(int n, T *data, /**/ Texo<T> *to)
+// end::int[]
+{
+    sz_check(n);
+
+    cudaResourceDesc resD;
+    cudaTextureDesc  texD;
+
+    memset(&resD, 0, sizeof(resD));
+    resD.resType = cudaResourceTypeLinear;
+    resD.res.linear.devPtr = data;
+    resD.res.linear.sizeInBytes = n * sizeof(T);
+    resD.res.linear.desc = cudaCreateChannelDesc<T>();
+
+    memset(&texD, 0, sizeof(texD));
+    texD.normalizedCoords = 0;
+    texD.readMode = cudaReadModeElementType;
+
+    CC(cudaCreateTextureObject(&to->d, &resD, &texD, NULL));
+}
+
+template<typename T>
+// tag::int[]
+void texo_destroy(/**/ Texo<T> *to)
+// end::int[]
+{
+    CC(cudaDestroyTextureObject(to->d));
+}
+/* end src/utils/texo.h */
+/* begin src/utils/texo.dev.h */
+template<typename T>
+__device__ __forceinline__
+// tag::int[]
+const T texo_fetch(const Texo<T> t, const int i)
+// end::int[]
+{
+    return Tfetch(T, t.d, i);
+}
+/* end src/utils/texo.dev.h */
+
+/* begin src/math/rnd/imp.h */
+// tag::interface[]
+struct RNDunif;                                             // <1>
+void rnd_ini(int x, int y, int z, int c, /**/ RNDunif **r); // <2>
+void rnd_fin(RNDunif *r);                                   // <3>
+float rnd_get(RNDunif *r);                                  // <4>
+// end::interface[]
+/* end src/math/rnd/imp.h */
+/* begin src/math/rnd/dev.h */
+#ifndef UDX_FORCE_RND_COMMON
+#define UDX_FORCE_RND_COMMON
+namespace rnd {
+/* random number from the ArcSine distribution on [-sqrt(2),sqrt(2)]
+   mean = 0, variance = 1 */
+
+// passes of logistic map
+static __const__ int N = 18;
+// spacing coefficints for low discrepancy numbers
+static __const__ float gold   = 0.6180339887498948482;
+static __const__ float silver = 0.4142135623730950488;
+static __const__ float bronze = 0.00008877875787352212838853023;
+static __const__ float tin    = 0.00004602357186447026756768986;
+static __const__ float sqrt2 = 1.41421356237309514547;
+
+/************************* Trunk generator ***********************
+ * Make one global random number per each timestep
+ * cite G. Marsaglia
+ * passes BigCrush
+ *****************************************************************/
+
+/************************* Branch generator **********************
+ * Make one random number per pair of particles per timestep
+ * Based on the Logistic map on interval [-1,1]
+ * each branch no weaker than trunk
+ * zero dependency between branches
+ *****************************************************************/
+
+// floating point version of LCG
+__inline__ __device__ float rem( float r ) {
+    return r - floorf( r );
+}
+
+// FMA wrapper for the convenience of switching rouding modes
+__inline__ __device__ float FMA( float x, float y, float z ) {
+    return __fmaf_rz( x, y, z );
+}
+
+// logistic rounds
+// <3> : 4 FMA + 1 MUL
+// <2> : 2 FMA + 1 MUL
+// <1> : 1 FMA + 1 MUL
+
+template<int N> __inline__ __device__ float __logistic_core( float x )
+{
+    float x2 = x * x;
+    float r = FMA( FMA( 8.0, x2, -8.0 ), x2, 1.0 );
+    return __logistic_core < N - 2 > ( r );
+}
+
+template<> __inline__ __device__ float __logistic_core<1>( float x ) {
+    return FMA( 2.0 * x, x, -1.0 );
+}
+
+template<> __inline__ __device__ float __logistic_core<0>( float x ) {
+    return x;
+}
+
+inline __device__ float mean0var1ii( float seed, int u, int v )
+{
+    float p = rem( ( ( u & 0x3FF ) * gold ) + u * bronze + ( ( v & 0x3FF ) * silver ) + v * tin ); // safe for large u or v
+    float l = __logistic_core<N>( seed - p );
+    return l * sqrt2;
+}
+
+inline __device__ float mean0var1uu( float seed, uint u, uint v )
+{
+    // 7 FLOPS
+    float p = rem( ( ( u & 0x3FFU ) * gold ) + u * bronze + ( ( v & 0x3FFU ) * silver ) + v * tin ); // safe for large u or v
+    // 45+1 FLOPS
+    float l = __logistic_core<N>( seed - p );
+    // 1 FLOP
+    return l * sqrt2;
+}
+
+}
+/* end src/math/rnd/dev.h */
+#endif /* UDX_FORCE_RND_COMMON */
+/* begin src/math/dev.h */
+#ifndef UDX_FORCE_MATH_COMMON
+#define UDX_FORCE_MATH_COMMON
+/* use templates here because we might have mixed float/double */
+
+#define _HD_ __host__ __device__
+
+template <typename T1, typename T2>
+_HD_ void scal(const T1 a, /*io*/ T2 *b) {
+    b->x *= a;
+    b->y *= a;
+    b->z *= a;
+}
+
+template <typename T1, typename T2>
+_HD_ void add(const T1 *a, /*io*/ T2 *b) {
+    b->x += a->x;
+    b->y += a->y;
+    b->z += a->z;
+}
+
+template <typename T1, typename T2, typename T3>
+_HD_ void diff(const T1 *a, const T2 *b, /**/ T3 *c) {
+    c->x = a->x - b->x;
+    c->y = a->y - b->y;
+    c->z = a->z - b->z;
+}
+
+template <typename T1, typename T2, typename T3>
+_HD_ T1 dot(const T2 *a, const T3 *b) {
+    return a->x * b->x + a->y * b->y + a->z * b->z;
+}
+
+template <typename T1, typename T2, typename T3>
+_HD_ void cross(const T1 *a, const T2 *b, /**/ T3 *c) {
+    c->x = a->y * b->z - a->z * b->y;
+    c->y = a->z * b->x - a->x * b->z;
+    c->z = a->x * b->y - a->y * b->x;
+}
+
+template <typename T1, typename T2, typename T3>
+_HD_ void scalmult(const T1 *a, const T2 x, /**/ const T3 *b) {
+    b->x = a->x * x;
+    b->y = a->y * x;
+    b->z = a->z * x;
+}
+
+
+template <typename T1, typename T2, typename T3, typename T4>
+_HD_ void apxb(const T1 *a, const T2 x, const T3 *b, /**/ T4 *c) {
+    c->x = a->x + x * b->x;
+    c->y = a->y + x * b->y;
+    c->z = a->z + x * b->z;
+}
+
+template <typename T1, typename T2, typename T3>
+_HD_ void axpy(const T1 a, const T2 *x, /*io*/ T3 *y) {
+    y->x += a * x->x;
+    y->y += a * x->y;
+    y->z += a * x->z;
+}
+/* end src/math/dev.h */
+#endif /* UDX_FORCE_MATH_COMMON */
+
+/* begin src/pair/type.h */
+#ifndef UDX_FORCE_PAIR_TYPE_COMMON
+#define UDX_FORCE_PAIR_TYPE_COMMON
+/* maximum of pairwise dpd parameters */
+enum {
+    MAX_PAR = (N_COLOR * (N_COLOR + 1)) / 2
+};
+
+
+struct PairDPD {
+    float a, g, s, spow;
+};
+
+struct PairDPDC {
+    int ncolors;
+    float a[MAX_PAR], g[MAX_PAR], s[MAX_PAR], spow;
+};
+
+/* mirrored */
+struct PairDPDCM {
+    int ncolors;
+    float a[N_COLOR], g[N_COLOR], s[N_COLOR], spow;
+};
+
+struct PairDPDLJ {
+    float a, g, s, spow;
+    float ljs, lje;
+};
+
+struct PairAdhesion {
+    float k1, k2;
+};
+
+struct PairPa {
+    float x, y, z;
+    float vx, vy, vz;
+    /* optional fields */
+    int color;
+};
+
+struct PairFo {
+    float x, y, z;
+};
+
+struct PairSFo {
+    float x, y, z;
+    /* stress */
+    float sxx, syy, szz, sxy, sxz, syz;
+};
+/* end src/pair/type.h */
+#endif /* UDX_FORCE_PAIR_TYPE_COMMON */
+/* begin src/pair/dev.h */
+#ifndef UDX_FORCE_PAIR_DEV_COMMON
+#define UDX_FORCE_PAIR_DEV_COMMON
+#define _S_ static __device__
+#define _I_ static __device__
+
+_S_ float cap(float x, float lo, float hi) {
+    if      (x > hi) return hi;
+    else if (x < lo) return lo;
+    else             return x;
+}
+
+static const float EPS = 1e-6;
+enum {NORM_OK, NORM_BIG, NORM_SMALL};
+_S_ int norm(/*io*/ float3 *pos, /**/ float *pr, float *pinvr) {
+    /* normalize r = [x, y, z], sets |r| and 1/|r| if not big */
+    float x, y, z, invr, r, r2;
+    x = pos->x; y = pos->y; z = pos->z;
+
+    r2 = x*x + y*y + z*z;
+    if      (r2 >= 1 )   return NORM_BIG;
+    else if (r2 < EPS) {
+        *pr = pos->x = pos->y = pos->z = 0;
+        return NORM_SMALL;
+    } else {
+        invr = rsqrtf(r2);
+        r = r2 * invr;
+        x *= invr; y *= invr; z *= invr;
+        pos->x = x; pos->y = y; pos->z = z; *pr = r; *pinvr = invr;
+        return NORM_OK;
+    }
+}
+
+_S_ float ker_wrf(float s, float x) {
+    return powf(x, s);
+}
+
+_S_ float magn_dpd(float a, float g, float s, float kpow,
+                   float rnd, float r, float ev) {
+    float wr, wc;
+    float rm, f0;
+
+    rm = max(1 - r, 0.0f);
+    wc = rm;
+    wr = ker_wrf(kpow, rm);
+
+    f0  = (-g * wr * ev + s * rnd) * wr;
+    f0 +=                        a * wc;
+    return f0;
+}
+
+_S_ float magn_lj(float s, float e, float invr) {
+    float t2, t4, t6, f;
+    t2 = s * s * invr * invr;
+    t4 = t2 * t2;
+    t6 = t4 * t2;
+    f = e * 24 * invr * t6 * (2 * t6 - 1);
+    f = cap(f, 0, 1e4);
+    return f;
+}
+
+_S_ float magn_adhesion(float k1, float k2, float r, float ev) {
+    float spring, visc;
+    spring = - k1 * r;
+    visc   = - k2 * ev;
+    return spring + visc;
+}
+
+_S_ float force_magn(const PairDPD *p, float rnd, float ev, float r, float) {
+    return magn_dpd(p->a, p->g, p->s, p->spow, rnd, r, ev);
+}
+
+_S_ float force_magn(const PairDPDLJ *p, float rnd, float ev, float r, float invr) {
+    float f;
+    f  = magn_dpd(p->a, p->g, p->s, p->spow, rnd, r, ev);
+    f += magn_lj(p->ljs, p->lje, invr);
+    return f;
+}
+
+_S_ float force_magn(const PairAdhesion *p, float, float ev, float r, float) {
+    return magn_adhesion(p->k1, p->k2, r, ev);
+}
+
+_S_ void magn2fo(float f0, float3 er, float3 dr, /**/ PairFo *f) {
+    f->x = f0 * er.x;
+    f->y = f0 * er.y;
+    f->z = f0 * er.z;
+}
+
+_S_ void magn2fo(float f0, float3 er, float3 dr, /**/ PairSFo *f) {
+    f->x = f0 * er.x;
+    f->y = f0 * er.y;
+    f->z = f0 * er.z;
+
+    f->sxx = 0.5f * f->x * dr.x;
+    f->sxy = 0.5f * f->x * dr.y;
+    f->sxz = 0.5f * f->x * dr.z;
+    f->syy = 0.5f * f->y * dr.y;
+    f->syz = 0.5f * f->y * dr.z;
+    f->szz = 0.5f * f->z * dr.z;
+}
+
+_S_ void make_zero(PairFo *f) {
+    f->x = f->y = f->z = 0;
+}
+
+_S_ void make_zero(PairSFo *f) {
+    f->x = f->y = f->z = 0;
+    f->sxx = f->sxy = f->sxz = 0;
+    f->syy = f->syz = f->szz = 0;
+}
+
+// tag::int[]
+template <typename Param, typename Fo>
+_I_ void pair_force(const Param *p, PairPa a, PairPa b, float rnd, /**/ Fo *f)
+// end::int[]
+{
+    float r, invr, ev, f0;
+    float3 dr, er, dv;
+    int vnstat; /* vector normalization status */
+
+    dr.x = a.x - b.x;
+    dr.y = a.y - b.y;
+    dr.z = a.z - b.z;
+
+    dv.x = a.vx - b.vx;
+    dv.y = a.vy - b.vy;
+    dv.z = a.vz - b.vz;
+
+    er = dr;
+
+    vnstat = norm(/*io*/ &er, /*o*/ &r, &invr);
+    if (vnstat == NORM_BIG) {
+        make_zero(f);
+        return;
+    }
+
+    ev = dot<float>(&er, &dv);
+
+    f0 = force_magn(p, rnd, ev, r, invr);
+    magn2fo(f0, er, dr, /**/ f);
+}
+
+_S_ int colors2pid(int ca, int cb) {
+    int c0, c1;
+    c0 = ca < cb ? ca : cb;
+    c1 = ca < cb ? cb : ca;
+    return c1 * (c1+1) / 2 + c0;
+}
+
+template <typename Fo>
+_I_ void pair_force(const PairDPDC *pc, PairPa a, PairPa b, float rnd, /**/ Fo *f) {
+    PairDPD p;
+    int pid;
+    pid = colors2pid(a.color, b.color);
+    p.a = pc->a[pid];
+    p.g = pc->g[pid];
+    p.s = pc->s[pid];
+    p.spow = pc->spow;
+    pair_force(&p, a, b, rnd, /**/ f);
+}
+
+/* mirrored: parameters from particle "a" only */
+template <typename Fo>
+_I_ void pair_force(const PairDPDCM *pc, PairPa a, PairPa b, float rnd, /**/ Fo *f) {
+    PairDPD p;
+    int pid = a.color;
+    p.a = pc->a[pid];
+    p.g = pc->g[pid];
+    p.s = pc->s[pid];
+    p.spow = pc->spow;
+    pair_force(&p, a, b, rnd, /**/ f);
+}
+
+
+// tag::add[]
+_I_ void pair_add(const PairFo *b, /**/ PairFo *a)
+// end::add[]
+{
+    a->x += b->x;
+    a->y += b->y;
+    a->z += b->z;
+}
+
+// tag::add[]
+_I_ void pair_add(const PairSFo *b, /**/ PairSFo *a)
+// end::add[]
+{
+    a->x += b->x;
+    a->y += b->y;
+    a->z += b->z;
+
+    a->sxx += b->sxx;
+    a->sxy += b->sxy;
+    a->sxz += b->sxz;
+    a->syy += b->syy;
+    a->syz += b->syz;
+    a->szz += b->szz;
+}
+
+#undef _S_
+#undef _I_
+/* end src/pair/dev.h */
+#endif /* UDX_FORCE_PAIR_DEV_COMMON */
+/* begin src/pair/imp.h */
+struct PairParams;
+struct Config;
+
+struct PairDPD;
+struct PairDPDC;
+struct PairDPDCM;
+struct PairDPDLJ;
+struct PairAdhesion;
+
+// tag::mem[]
+void pair_ini(PairParams **);
+void pair_fin(PairParams *);
+// end::mem[]
+
+// tag::set[]
+void pair_set_dpd(int ncol, const float a[], const float g[], float spow, PairParams *p); // <1>
+void pair_set_lj(float sigma, float eps, PairParams *p); // <2>
+// end::set[]
+void pair_set_adhesion(float k1, float k2, PairParams *p);
+
+// tag::cnf[]
+void pair_set_conf(const Config *, const char *name_space, PairParams *);
+// end::cnf[]
+
+// tag::upd[]
+void pair_compute_dpd_sigma(float kBT, float dt, PairParams *p);
+// end::upd[]
+
+// tag::view[]
+void pair_get_view_dpd(const PairParams*, PairDPD*);
+void pair_get_view_dpd_color(const PairParams*, PairDPDC*);
+void pair_get_view_dpd_mirrored(const PairParams*, PairDPDCM*);
+void pair_get_view_dpd_lj(const PairParams*, PairDPDLJ*);
+// end::view[]
+void pair_get_view_adhesion(const PairParams*, PairAdhesion*);
+/* end src/pair/imp.h */
+
+/* begin src/struct/farray/type.h */
+struct FoArray_v {
+    float *ff;
+};
+
+struct FoSArray_v {
+    float *ff;
+    float *ss;
+};
+/* end src/struct/farray/type.h */
+/* begin src/struct/farray/dev.h */
+#define _I_ static __device__
+#define _S_ static __device__
+
+template <int S, typename Fo, typename FA>
+_S_ void farray_add_force(const Fo *f, int i, /**/ FA a) {
+    enum {X, Y, Z};
+    float *af = a.ff + 3*i;
+    af[X] += S * f->x;
+    af[Y] += S * f->y;
+    af[Z] += S * f->z;
+}
+
+_S_ void farray_add_stress(const PairSFo *f, int i, /**/ FoSArray_v a) {
+    enum {XX, XY, XZ, YY, YZ, ZZ};
+    float *s = a.ss + 6*i;
+    s[XX] += f->sxx;
+    s[XY] += f->sxy;
+    s[XZ] += f->sxz;
+    s[YY] += f->syy;
+    s[YZ] += f->syz;
+    s[ZZ] += f->szz;
+}
+
+// tag::add[]
+template <int S>
+_I_ void farray_add(const PairFo *f, int i, /**/ FoArray_v a) // <1>
+// end::add[]
+{
+    farray_add_force<S>(f, i, /**/ a);
+}
+
+// tag::add[]
+template <int S>
+_I_ void farray_add(const PairSFo *f, int i, /**/ FoSArray_v a) // <2>
+// end::add[]
+{
+    farray_add_force<S>(f, i, /**/ a);
+    farray_add_stress(f, i, /**/ a);
+}
+
+
+template <int S, typename Fo, typename FA>
+_S_ void farray_atomic_add_force(const Fo *f, int i, /**/ FA a) {
+    enum {X, Y, Z};
+    float *af = a.ff + 3*i;
+    atomicAdd(&af[X], S * f->x);
+    atomicAdd(&af[Y], S * f->y);
+    atomicAdd(&af[Z], S * f->z);
+}
+
+_S_ void farray_atomic_add_stress(const PairSFo *f, int i, /**/ FoSArray_v a) {
+    enum {XX, XY, XZ, YY, YZ, ZZ};
+    float *s = a.ss + 6*i;
+    atomicAdd(&s[XX], f->sxx);
+    atomicAdd(&s[XY], f->sxy);
+    atomicAdd(&s[XZ], f->sxz);
+    atomicAdd(&s[YY], f->syy);
+    atomicAdd(&s[YZ], f->syz);
+    atomicAdd(&s[ZZ], f->szz);
+}
+
+// tag::atomic[]
+template <int S>
+_I_ void farray_atomic_add(const PairFo *f, int i, /**/ FoArray_v a)
+// end::atomic[]
+{
+    farray_atomic_add_force<S>(f, i, /**/ a);
+}
+
+// tag::atomic[]
+template <int S>
+_I_ void farray_atomic_add(const PairSFo *f, int i, /**/ FoSArray_v a)
+// end::atomic[]
+{
+    farray_atomic_add_force<S>(f, i, /**/ a);
+    farray_atomic_add_stress(f, i, /**/ a);
+}
+
+
+// tag::ini[]
+_I_ PairFo farray_fo0(FoArray_v)
+// end::ini[]
+{
+    PairFo f;
+    f.x = f.y = f.z = 0;
+    return f;
+}
+
+// tag::ini[]
+_I_ PairSFo farray_fo0(FoSArray_v)
+// end::ini[]
+{
+    PairSFo f;
+    f.x = f.y = f.z = 0;
+    f.sxx = f.sxy = f.sxz = 0;
+    f.syy = f.syz = f.szz = 0;
+    return f;
+}
+
+#undef _I_
+#undef _S_
+/* end src/struct/farray/dev.h */
+/* begin src/struct/farray/imp.h */
+struct FoArray {
+    bool stress;
+    float *ff;
+    float *ss; /* stress */
+};
+
+struct FoArray_v;
+struct FoSArray_v;
+
+struct Force;
+
+// tag::push[]
+void farray_push_ff(Force *ff, FoArray *a);
+void farray_push_ss(float *ss, FoArray *a);
+// end::push[]
+
+void farray_clear(FoArray *);
+
+// tag::get[]
+bool farray_has_stress(const FoArray *a);
+// end::get[]
+
+// tag::view[]
+void farray_get_view(const FoArray *a, FoArray_v *v);  // <1>
+void farray_get_view(const FoArray *a, FoSArray_v *v); // <2>
+// end::view[]
+/* end src/struct/farray/imp.h */
+
+/* begin src/fluforces/bulk/imp.h */
+struct PairParams;
+struct Force;
+struct float4;
+struct int3;
+struct RNDunif;
+struct FoArray;
+
+#ifndef UDX_FORCE_BPA_COMMON
+#define UDX_FORCE_BPA_COMMON
+struct BPaArray {
+    bool colors;
+    const float4 *pp;
+    const int *cc;
+};
+#endif
+
+void flocal_push_pp(const float4 *pp, BPaArray *a);
+void flocal_push_cc(const int *cc, BPaArray *a);
+
+void flocal_apply(const PairParams*, int3 L, int n, BPaArray parray, const int *start, RNDunif *rnd,
+                  /**/ const FoArray *ff);
+
+/* end src/fluforces/bulk/imp.h */
+/* begin src/fluforces/bulk/imp/type.h */
+struct TBPaArray_v {
+    Texo<float4> pp;
+};
+
+struct TBPaCArray_v {
+    Texo<float4> pp;
+    Texo<int> cc;
+};
+/* end src/fluforces/bulk/imp/type.h */
+
+namespace fbulk_dev {
+/* begin src/fluforces/bulk/dev/fetch.h */
+#define _S_ static __device__
+#define _I_ static __device__
+
+/* bulk parray fetch */
+
+template <typename Parray>
+_S_ void bpa_fetch_p(Parray a, int i, PairPa *p) {
+    float4 r, v;
+    r = a.pp[2*i + 0];
+    v = a.pp[2*i + 1];
+
+    p->x  = r.x;  p->y  = r.y;  p->z  = r.z;
+    p->vx = v.x;  p->vy = v.y;  p->vz = v.z;
+}
+
+
+/* texture bulk parray fetch */
+
+template <typename Parray>
+_S_ void tbpa_fetch_p(Parray a, int i, PairPa *p) {
+    float4 r, v;
+    r = texo_fetch(a.pp, 2*i + 0);
+    v = texo_fetch(a.pp, 2*i + 1);
+
+    p->x  = r.x;  p->y  = r.y;  p->z  = r.z;
+    p->vx = v.x;  p->vy = v.y;  p->vz = v.z;
+}
+
+_I_ void fetch(TBPaArray_v a, int i, PairPa *p) {
+    tbpa_fetch_p(a, i, p);
+}
+
+_I_ void fetch(TBPaCArray_v a, int i, PairPa *p) {
+    tbpa_fetch_p(a, i, p);
+    p->color = texo_fetch(a.cc, i);
+}
+
+#undef _S_
+#undef _I_
+/* end src/fluforces/bulk/dev/fetch.h */
+/* begin src/fluforces/bulk/dev/main.h */
+#define _S_ static __device__
+
+_S_ bool cutoff_range(PairPa pa, PairPa pb) {
+    float x, y, z;
+    x = pa.x - pb.x;
+    y = pa.y - pb.y;
+    z = pa.z - pb.z;
+    return x*x + y*y + z*z <= 1.f;
+}
+
+_S_ int3 get_cid(int3 L, const PairPa *pa) {
+    int3 c;
+    c.x = pa->x + L.x / 2;
+    c.y = pa->y + L.y / 2;
+    c.z = pa->z + L.z / 2;
+    return c;
+}
+
+_S_ bool valid_c(int c, int hi) {
+    return (c >= 0) && (c < hi);
+}
+
+template <typename Par, typename Parray, typename Farray, typename Fo>
+_S_ void loop_pp(const Par *params, int ia, PairPa pa, Parray parray, int start, int end, float seed, /**/ Fo *fa, Farray farray) {
+    enum {X, Y, Z};
+    int ib;
+    PairPa pb;
+    Fo f;
+    float rnd;
+
+    for (ib = start; ib < end; ++ib) {
+        if (ib >= ia) continue;
+
+        fetch(parray, ib, &pb);
+
+        if (!cutoff_range(pa, pb)) continue;
+
+        rnd = rnd::mean0var1ii(seed, ia, ib);
+        pair_force(params, pa, pb, rnd, /**/ &f);
+
+        pair_add(&f, /**/ fa);
+
+        farray_atomic_add<-1>(&f, ib, /**/ farray);
+    }
+}
+
+template <typename Par, typename PArray, typename Farray, typename Fo>
+_S_ void one_row(const Par *params, int3 L, int dz, int dy, int ia, int3 ca, PairPa pa, PArray parray, const int *start, float seed,
+                               /**/ Fo *fa, Farray farray) {
+    int3 cb;
+    int enddx, startx, endx, cid0, bs, be;
+    cb.z = ca.z + dz;
+    cb.y = ca.y + dy;
+    if (!valid_c(cb.z, L.z)) return;
+    if (!valid_c(cb.y, L.y)) return;
+
+    /* dx runs from -1 to enddx */
+    enddx = (dz == 0 && dy == 0) ? 0 : 1;
+
+    startx =     max(    0, ca.x - 1    );
+    endx   = 1 + min(L.x-1, ca.x + enddx);
+
+    cid0 = L.x * (cb.y + L.y * cb.z);
+
+    bs = start[cid0 + startx];
+    be = start[cid0 + endx];
+
+    loop_pp(params, ia, pa, parray, bs, be, seed, /**/ fa, farray);
+}
+
+// unroll loop
+template <typename Par, typename Parray, typename Farray>
+__global__ void apply(Par params, int3 L, int n, Parray parray, const int *start, float seed, /**/ Farray farray) {
+    enum {X, Y, Z};
+    int ia;
+    int3 ca;
+    PairPa pa;
+    auto fa = farray_fo0(farray);
+
+    ia = threadIdx.x + blockIdx.x * blockDim.x;
+    if (ia >= n) return;
+
+    fetch(parray, ia, &pa);
+    ca = get_cid(L, &pa);
+
+#define ONE_ROW(dz, dy) one_row (&params, L, dz, dy, ia, ca, pa, parray, start, seed, /**/ &fa, farray)
+
+    ONE_ROW(-1, -1);
+    ONE_ROW(-1,  0);
+    ONE_ROW(-1,  1);
+    ONE_ROW( 0, -1);
+    ONE_ROW( 0,  0);
+
+#undef ONE_ROW
+
+    farray_atomic_add<1>(&fa, ia, farray);
+}
+
+#undef _S_
+/* end src/fluforces/bulk/dev/main.h */
+// #include "dev/map.h"
+// #include "dev/xmain.h"
+}
+
+/* begin src/fluforces/bulk/imp/main.h */
+void flocal_push_pp(const float4 *pp, BPaArray *a) {
+    a->pp = pp;
+    a->colors = false;
+}
+
+void flocal_push_cc(const int *cc, BPaArray *a) {
+    a->cc = cc;
+    a->colors = true;
+}
+
+static void tbarray_get_view(int n, BPaArray a, TBPaArray_v *v) {
+    texo_setup(2*n, (float4*) a.pp, &v->pp);
+}
+
+static void tbarray_get_view(int n, BPaArray a, TBPaCArray_v *v) {
+    texo_setup(2*n, (float4*) a.pp, &v->pp);
+    texo_setup(n,      (int*) a.cc, &v->cc);
+}
+
+static void tbarray_fin_view(TBPaArray_v *v) {
+    texo_destroy(&v->pp);
+}
+
+static void tbarray_fin_view(TBPaCArray_v *v) {
+    texo_destroy(&v->pp);
+    texo_destroy(&v->cc);
+}
+
+template <typename Par, typename Parray, typename Farray>
+static void interactions(Par params, int3 L, int n, Parray parray, const int *start, RNDunif *rnd, /**/ Farray farray) {
+    enum {THR=128};
+    float seed;
+    if (n <= 0) return;
+    seed = rnd_get(rnd);
+
+    KL(fbulk_dev::apply,
+       (ceiln((n), THR), THR),
+       (params, L, n, parray, start, seed, /**/ farray));
+}
+
+template <typename Par, typename Parray>
+static void dispatch_stress(Par params, int3 L, int n, Parray parray, const int *start, RNDunif *rnd, /**/ const FoArray *farray) {
+    if (farray_has_stress(farray)) {
+        FoSArray_v farray_v;
+        farray_get_view(farray, &farray_v);
+        interactions(params, L, n, parray, start, rnd, /**/ farray_v);
+    }
+    else {
+        FoArray_v farray_v;
+        farray_get_view(farray, &farray_v);
+        interactions(params, L, n, parray, start, rnd, /**/ farray_v);
+    }
+}
+
+static void apply_color(const PairParams *params, int3 L, int n, BPaArray parray, const int *start, RNDunif *rnd, /**/ const FoArray *farray) {
+    PairDPDC pv;
+    TBPaCArray_v parray_v;
+
+    pair_get_view_dpd_color(params, &pv);
+    tbarray_get_view(n, parray, &parray_v);
+
+    dispatch_stress(pv, L, n, parray_v, start, rnd, /**/ farray);
+
+    tbarray_fin_view(&parray_v);
+}
+
+static void apply_grey(const PairParams *params, int3 L, int n, BPaArray parray, const int *start, RNDunif *rnd, /**/ const FoArray *farray) {
+    PairDPD pv;
+    TBPaArray_v parray_v;
+    pair_get_view_dpd(params, &pv);
+    tbarray_get_view(n, parray, &parray_v);
+
+    dispatch_stress(pv, L, n, parray_v, start, rnd, /**/ farray);
+
+    tbarray_fin_view(&parray_v);
+}
+
+void flocal_apply(const PairParams *params, int3 L, int n, BPaArray parray, const int *start, RNDunif *rnd, /**/ const FoArray *farray) {
+    if (parray.colors)
+        apply_color(params, L, n, parray, start, rnd, /**/ farray);
+    else
+        apply_grey(params, L, n, parray, start, rnd, /**/ farray);
+}
+/* end src/fluforces/bulk/imp/main.h */
+/* end src/fluforces/bulk/imp.cu */
+
+#line 1 "src/fluforces/halo/imp.cu"
+
+#line 3 "udx.fluforces-bulk-main.cu"
+
+#line 1 "udx.fluforces.cu"
+
+#line 1 "udx.fluforces.cu"
+// generated from udx.flat.cu
+#include "udx.config.cuh"
+
+/* begin src/fluforces/imp.cpp */
+#include <mpi.h>
+#include <assert.h>
+#include <vector_types.h>
+
+#if __CUDACC_VER_MAJOR__ >= 9
+#include <cuda_fp16.h>
+#endif
+
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
+
+
+/* begin src/utils/error.h */
+#define ERR(fmt, ...)  do {                                     \
+        error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
+        error_report();                                         \
+        error_abort();                                          \
+    } while (0)
+
+/* udx check */
+#define UC(F) do {                              \
+        error_stack_push(__FILE__, __LINE__);   \
+        F;                                      \
+        if (error_get()) {                      \
+            error_report();                     \
+            error_abort();                      \
+        }                                       \
+        error_stack_pop();                      \
+    } while (0)
+
+/* [B]o[p] [c]heck */
+#define BPC(ans) do {                           \
+        BopStatus s = (ans);                    \
+        if (!bop_success(s)) {                  \
+            ERR(":%s:%d: %s\n%s\n",             \
+                __FILE__, __LINE__,             \
+                bop_report_error_desc(s),       \
+                bop_report_error_mesg());       \
+        }} while (0)
+
+void error_stack_push(const char *file, int line);
+void error_stack_pop();
+
+void error_signal(const char *file, int line, const char *fmt, ...);
+void error_signal_cuda(const char *file, int line, const char *msg);
+void error_signal_mpi(const char *file, int line, const char *msg);
+
+bool error_get();
+void error_report();
+void error_abort();
+
+void error_print_stack();
+/* end src/utils/error.h */
+/* begin src/utils/imp.h */
+// tag::mem[]
+void emalloc(size_t, /**/ void**); // <1>
+void efree(void*); // <2>
+void *ememcpy(void *dest, const void *src, size_t n); // <3>
+// end::mem[]
+
+// tag::macros[]
+#define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
+#define EFREE(pdata) UC(efree(pdata))
+#define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
+// end::macros[]
+
+// tag::stdio[]
+void efopen(const char *fname, const char *mode, /**/ FILE**);
+void efclose(FILE*);
+void efread(void *ptr, size_t size, size_t nmemb, FILE*);
+void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
+void efgets(char *s, int size, FILE*);
+// end::stdio[]
+
+// tag::tools[]
+bool same_str(const char *a, const char *b); // <1>
+const char* get_filename_ext(const char*);
+// end::tools[]
+/* end src/utils/imp.h */
+
+/* begin src/math/rnd/imp.h */
+// tag::interface[]
+struct RNDunif;                                             // <1>
+void rnd_ini(int x, int y, int z, int c, /**/ RNDunif **r); // <2>
+void rnd_fin(RNDunif *r);                                   // <3>
+float rnd_get(RNDunif *r);                                  // <4>
+// end::interface[]
+/* end src/math/rnd/imp.h */
+// #include "math/rnd/dev.h"
+
+/* begin src/inc/type.h */
+#ifndef UDX_FORCE_TYPE_COMMON
+#define UDX_FORCE_TYPE_COMMON
+template <typename T, int N>
+struct Sarray { /* [s]tatic array */
+    T d[N];
+};
+
+struct Particle {
+    float r[3], v[3];
+};
+
+struct Rigid {
+    float Iinv[6],            /* moment of inertia            6        */
+        mass,                 /* mass of the solid            7        */
+        com[3],               /* [c]enter [o]f [m]ass         10       */
+        v[3], om[3],          /* linear and angular velocity  13 16    */
+        e0[3], e1[3], e2[3],  /* local referential            19 22 25 */
+        fo[3], to[3],         /* force, torque                28 31    */
+        id;                   /* id of the solid              32       */
+};
+
+struct Force {
+    float f[3];
+};
+
+struct Momentum {
+    float P[3], L[3]; /* linear and angular momentum */
+};
+
+struct Positioncp {
+    float rc[3]; /* current position  */
+    float rp[3]; /* previous position */
+};
+
+typedef Sarray<int, 26>       int26;
+typedef Sarray<int, 27>       int27;
+
+typedef Sarray<int*, 26>     intp26;
+typedef Sarray<Particle*, 26> Pap26;
+typedef Sarray<Force*,    26> Fop26;
+typedef Sarray<Momentum*, 26> Mop26;
+typedef Sarray<Positioncp*, 26> Pocpp26;
+
+/* particles wrap */
+struct PaWrap {
+    int n;
+    const Particle *pp;
+};
+
+/* forces wrap */
+struct FoWrap {
+    int n;
+    Force *ff;
+};
+/* end src/inc/type.h */
+#endif
+/* begin src/inc/dev.h */
+/* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
+#define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
+
+/* a common kernel execution configuration */
+#define k_cnf(n) ceiln((n), 128), 128
+
+#define dSync() CC(d::DeviceSynchronize())
+
+#define D2D d::MemcpyDeviceToDevice
+#define D2H d::MemcpyDeviceToHost
+#define H2D d::MemcpyHostToDevice
+#define H2H d::MemcpyHostToHost
+#define A2A d::MemcpyDefault /* "[a]ny to [a]ny" */
+
+#define cD2D(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), D2D))
+#define cH2H(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), H2H))  /* [t]to, [f]rom */
+#define cA2A(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), A2A))
+#define cD2H(H, D, n) CC(d::Memcpy((H), (D), (n) * sizeof((H)[0]), D2H))
+#define cH2D(D, H, n) CC(d::Memcpy((D), (H), (n) * sizeof((H)[0]), H2D))
+
+#define aD2D(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), D2D))
+#define aH2H(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), H2H))  /* [t]to, [f]rom */
+#define aA2A(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), A2A))
+#define aD2H(H, D, n) CC(d::MemcpyAsync((H), (D), (n) * sizeof((H)[0]), D2H))
+#define aH2D(D, H, n) CC(d::MemcpyAsync((D), (H), (n) * sizeof((H)[0]), H2D))
+
+/* device allocation */
+#define Dfree(D)      CC(d::Free(D))
+#define Dalloc(D, n)  CC(d::Malloc((void**)(D), (n) * sizeof(**(D))))
+
+/* [d]evice set */
+#define Dset(P, v, n) CC(d::Memset(P, v, (n)*sizeof(*(P))))
+#define Dzero(P, n)   Dset(P, 0, n)
+
+/* [d]evice [a]synchronous set */
+#define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
+#define DzeroA(P, n)   DsetA(P, 0, n)
+/* end src/inc/dev.h */
+/* begin src/struct/parray/imp.h */
+#ifndef UDX_FORCE_PARRAY_COMMON
+#define UDX_FORCE_PARRAY_COMMON
+struct PaArray {
+    bool colors;
+    const float *pp;
+    const int *cc;
+};
+
+struct PaArray_v;
+struct PaCArray_v;
+
+struct Particle;
+
+// tag::push[]
+void parray_push_pp(const Particle *pp, PaArray *a);
+void parray_push_cc(const int *cc, PaArray *a);
+// end::push[]
+
+// tag::get[]
+bool parray_is_colored(const PaArray *a);
+// end::get[]
+
+// tag::view[]
+void parray_get_view(const PaArray *a, PaArray_v *v);  // <1>
+void parray_get_view(const PaArray *a, PaCArray_v *v); // <2>
+// end::view[]
+/* end src/struct/parray/imp.h */
+#endif /* UDX_FORCE_PARRAY_COMMON */
+
+/* begin src/d/api.h */
+#ifndef UDX_FORCE_DEVICE_API_COMMON
+#define UDX_FORCE_DEVICE_API_COMMON
+namespace d {  /* a wrapper for device API */
+typedef int Stream_t; /* TODO: streams are not supported */
+enum {MemcpyHostToHost, MemcpyHostToDevice,
+      MemcpyDeviceToHost, MemcpyDeviceToDevice,
+      MemcpyDefault};
+
+// tag::more[]
+const char *emsg();
+int alloc_pinned(void **pHost, size_t size);
+int is_device_pointer(const void *ptr);
+// end::more[]
+
+// tag::api[]
+int GetSymbolAddress(void **devPtr, const void *symbol);
+int Malloc(void **p, size_t);
+int MemcpyToSymbol(const void *symbol, const void *src, size_t count, size_t offset=0, int kind=MemcpyHostToDevice);
+int MemcpyFromSymbol(void *dst, const void *symbol, size_t count, size_t offset=0, int kind=MemcpyDeviceToHost);
+int HostGetDevicePointer(void **pDevice, void *pHost, unsigned int flags);
+int Memcpy (void *dst, const void *src, size_t count, int kind);
+int MemsetAsync (void *devPtr, int value, size_t count, Stream_t stream=0);
+int Memset (void *devPtr, int value, size_t count);
+int MemcpyAsync (void * dst, const void * src, size_t count, int kind, Stream_t stream = 0);
+int Free (void *devPtr);
+int FreeHost (void *hstPtr);
+int DeviceSynchronize (void);
+int PeekAtLastError(void);
+// end::api[]
+}
+/* end src/d/api.h */
+#endif
+/* begin src/utils/kl.h */
+#ifndef UDX_FORCE_KL_COMMON
+#define UDX_FORCE_KL_COMMON
+/* [k]ernel [l]aunch macros */
+
+#if    defined(KL_RELEASE)
+/* begin src/utils/kl/release.h */
+#define KL_BEFORE(s, C) if (!kl::safe(ESC C)) continue;
+#define KL_CALL(F, C, A) F<<<ESC C>>>A
+#define KL_AFTER(s)
+
+namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
+/* end src/utils/kl/release.h */
+#elif  defined(KL_NONE)
+/* begin src/utils/kl/none.h */
+#define KL_BEFORE(s, C)
+#define KL_CALL(F, C, A)
+#define KL_AFTER(s)
+
+namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
+/* end src/utils/kl/none.h */
+#elif  defined(KL_SYNC)
+/* begin src/utils/kl/sync.h */
+#define KL_BEFORE(s, C) if (!kl::safe(ESC C)) continue;
+#define KL_CALL(F, C, A) F<<<ESC C>>>A
+#define KL_AFTER(s)                             \
+    do {                                        \
+        dSync();                                \
+        CC(d::PeekAtLastError());               \
+    } while(0)
+
+namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
+/* end src/utils/kl/sync.h */
+#else
+  #error KL_* is undefined
+#endif
+
+/* begin src/utils/kl/common.h */
+namespace kl {
+inline int safe0(dim3 i, dim3 j) {
+    msg(i.x, i.y, i.z,   j.x, j.y, j.z);
+    return i.x>0 && i.y>0 && i.z>0   &&   j.x>0 && j.y>0 && j.z>0;
+}
+inline int safe(dim3 i, dim3 j)                    { return safe0(i, j); }
+inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
+}
+/* end src/utils/kl/common.h */
+/* begin src/utils/kl/macro.h */
+#define ESC(...) __VA_ARGS__
+#define KL(F, C, A)                             \
+    do  {                                       \
+        KL_BEFORE(#F, C);                       \
+        KL_CALL(F, C, A);                       \
+        KL_AFTER(#F);                           \
+    } while (0)
+/* end src/utils/kl/macro.h */
+
+/* TODO: header includes header */
+/* end src/utils/kl.h */
+#endif
+/* begin src/utils/cc.h */
+#ifndef UDX_FORCE_CC_COMMON
+#define UDX_FORCE_CC_COMMON
+/* [c]uda [c]heck macros */
+
+#if   defined(CC_SYNC)
+/* begin src/utils/cc/sync.h */
+/* Aggressive [sync]ronization */
+#define CC(ans)                                             \
+    do {                                                    \
+        d::DeviceSynchronize();                             \
+        cc::check((ans), __FILE__, __LINE__);               \
+        d::DeviceSynchronize();                             \
+    } while (0)
+/* end src/utils/cc/sync.h */
+#elif defined(CC_RELEASE)
+/* begin src/utils/cc/release.h */
+/* [c]cuda [c]heck */
+#define CC(ans)                                             \
+    do { cc::check((ans), __FILE__, __LINE__);} while (0)
+/* end src/utils/cc/release.h */
+#else
+  #error CC_* is undefined
+#endif
+
+/* begin src/utils/cc/common.h */
+namespace cc {
+void check(int rc, const char *file, int line);
+}
+
+
+/* end src/utils/cc/common.h */
+
+/* TODO: header includes header */
+/* end src/utils/cc.h */
+#endif
+/* begin src/utils/mc.h */
+/* [m]pi [c]heck macros */
+#define MC(ans)                                                         \
+    do { mpicheck::check((ans), __FILE__, __LINE__); } while (0)
+
+namespace mpicheck {
+void check(int code, const char *file, int line);
+}
+/* end src/utils/mc.h */
+
+/* begin src/utils/msg.h */
+// tag::int[]
+void msg_ini(int rank); // <1>
+void msg_print(const char *fmt, ...); // <2>
+// end::int[]
+/* end src/utils/msg.h */
+/* begin src/mpi/wrapper.h */
+namespace m {
+int Allreduce(const void *sendbuf, void *recvbuf, int count, MPI_Datatype datatype, MPI_Op op, MPI_Comm comm);
+int Barrier(MPI_Comm comm);
+int Bcast(void *buffer, int count, MPI_Datatype datatype, int root, MPI_Comm comm);
+int Cancel(MPI_Request *request);
+int Cart_rank(MPI_Comm comm, const int coords[], int *rank);
+int Cart_create(MPI_Comm comm_old, int ndims, const int dims[], const int periods[], int reorder, MPI_Comm *comm_cart);
+int Cart_coords(MPI_Comm comm, int rank, int maxdims, int coords[]);
+int Cart_get(MPI_Comm comm, int maxdims, int dims[], int periods[], int coords[]);
+int Comm_dup(MPI_Comm comm, MPI_Comm *newcomm);
+int Comm_free(MPI_Comm *comm);
+int Comm_rank(MPI_Comm comm, int *rank);
+int Comm_size( MPI_Comm comm, int *size );
+int Exscan(const void *sendbuf, void *recvbuf, int count, MPI_Datatype datatype, MPI_Op op, MPI_Comm comm);
+int Errhandler_set(MPI_Comm comm, MPI_Errhandler errhandler);
+int File_close(MPI_File *fh);
+int File_get_position(MPI_File fh, MPI_Offset *offset);
+int File_open(MPI_Comm comm, const char *filename, int amode, MPI_Info info, MPI_File *fh);
+int File_seek(MPI_File fh, MPI_Offset offset, int whence);
+int File_set_size(MPI_File fh, MPI_Offset size);
+int File_write_at_all(MPI_File fh, MPI_Offset offset, const void *buf, int count, MPI_Datatype datatype, MPI_Status *status);
+int Finalize(void);
+int Gather(const void *sendbuf, int sendcount, MPI_Datatype sendtype, void *recvbuf,
+           int recvcount, MPI_Datatype recvtype, int root, MPI_Comm comm);
+int Gatherv(const void *sendbuf, int sendcount, MPI_Datatype sendtype, void *recvbuf, const int recvcounts[],
+            const int displs[], MPI_Datatype recvtype, int root, MPI_Comm comm);
+int Allgather(const void *sendbuf, int sendcount, MPI_Datatype sendtype, void *recvbuf,
+              int recvcount, MPI_Datatype recvtype, MPI_Comm comm);
+int Allgatherv(const void *sendbuf, int sendcount, MPI_Datatype sendtype, void *recvbuf, const int recvcounts[],
+               const int displs[], MPI_Datatype recvtype, MPI_Comm comm);
+int Init(int *argc, char ***argv);
+int Irecv(void *buf, int count, MPI_Datatype datatype, int source, int tag, MPI_Comm comm, MPI_Request *request);
+int Isend(const void *buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm, MPI_Request *request);
+int Recv(void *buf, int count, MPI_Datatype datatype, int source, int tag, MPI_Comm comm, MPI_Status *status);
+int Reduce(const void *sendbuf, void *recvbuf, int count, MPI_Datatype datatype, MPI_Op op, int root, MPI_Comm comm);
+int Type_commit(MPI_Datatype *type);
+int Type_contiguous(int count, MPI_Datatype oldtype, MPI_Datatype *newtype);
+int Waitall(int count, MPI_Request array_of_requests[], MPI_Status *array_of_statuses);
+int Probe(int source, int tag, MPI_Comm comm, MPI_Status *status);
+int Get_count(const MPI_Status *status, MPI_Datatype datatype, int *count);
+int Error_string(int errorcode, char *string, int *resultlen);
+
+/* local */
+bool is_master(MPI_Comm comm);
+int is_success(int errorcode);
+int is_pending(int errorcode);
+int is_err_in_status(int errorcode);
+int status2errcode(MPI_Status *status);
+}
+/* end src/mpi/wrapper.h */
+/* begin src/frag/imp.h */
+#ifndef UDX_FORCE_FRAG_COMMON
+#define UDX_FORCE_FRAG_COMMON
+enum {frag_bulk = 26};
+#endif
+
+struct int3;
+
+namespace frag_hst {
+
+// tag::i2d[]
+int i2dx(int i);                 // <1>
+int i2dy(int i);                 // <2>
+int i2dz(int i);                 // <3>
+void i2d3(int i, /**/ int d[3]); // <4>
+// end::i2d[]
+
+// tag::d2i[]
+int d2i(int x, int y, int z); // <1>
+int d32i(const int d[3]);     // <2>
+// end::d2i[]
+
+// tag::ncell[]
+int ncell(int3 L, int i); // <1>
+// end::ncell[]
+
+// tag::anti[]
+int antid2i(int x, int y, int z); // <1>
+int anti(int i);                  // <2>
+// end::anti[]
+
+// tag::hst[]
+void estimates(int3 L, int nfrags, float maxd, /**/ int *cap); // <1>
+// end::hst[]
+
+} // frag_hst
+/* end src/frag/imp.h */
+/* begin src/algo/convert/imp.h */
+struct Particle;
+struct Positioncp;
+struct float4;
+
+void convert_pp2rr_current (long n, const Particle *pp, Positioncp *rr);
+void convert_pp2rr_previous(long n, const Particle *pp, Positioncp *rr);
+void convert_pp2f4_pos(int n, const float *pp, /**/ float4 *zpp);
+/* end src/algo/convert/imp.h */
+
+/* begin src/flu/type.h */
+/* helpers to communicate between halo interactions and exchanger */
+
+namespace flu {
+
+enum { BULK = 0, FACE = 1, EDGE = 2, CORNER = 3 };
+
+struct LFrag { /* "local" fragment */
+    PaArray parray;
+    const int *ii; /* index */
+    int n;
+};
+
+struct RFrag { /* "remote" fragment */
+    PaArray parray;
+    const int *start;
+    int dx, dy, dz, xcells, ycells, zcells;
+    int type;
+};
+
+struct RndFrag {
+    float seed;
+    int mask;
+};
+
+typedef Sarray<LFrag,   26> LFrag26;
+typedef Sarray<RFrag,   26> RFrag26;
+typedef Sarray<RndFrag, 26> RndFrag26;
+
+} // flu
+/* end src/flu/type.h */
+/* begin src/fluforces/bulk/imp.h */
+struct PairParams;
+struct Force;
+struct float4;
+struct int3;
+struct RNDunif;
+struct FoArray;
+
+#ifndef UDX_FORCE_BPA_COMMON
+#define UDX_FORCE_BPA_COMMON
+struct BPaArray {
+    bool colors;
+    const float4 *pp;
+    const int *cc;
+};
+#endif
+
+void flocal_push_pp(const float4 *pp, BPaArray *a);
+void flocal_push_cc(const int *cc, BPaArray *a);
+
+void flocal_apply(const PairParams*, int3 L, int n, BPaArray parray, const int *start, RNDunif *rnd,
+                  /**/ const FoArray *ff);
+
+/* end src/fluforces/bulk/imp.h */
+/* begin src/fluforces/halo/imp.h */
+struct PairParams;
+struct int3;
+struct FoArray;
+
+void fhalo_apply(const PairParams*, int3 L, const flu::LFrag26 lfrags, const flu::RFrag26 rfrags, const flu::RndFrag26 rrnd, /**/ const FoArray *farray);
+/* end src/fluforces/halo/imp.h */
+
+/* begin src/fluforces/imp.h */
+struct PairParams;
+struct FluForcesBulk;
+struct FluForcesHalo;
+struct PaArray;
+struct FoArray;
+
+// tag::memb[]
+void fluforces_bulk_ini(int3 L, int maxp, /**/ FluForcesBulk **b);
+void fluforces_bulk_fin(/**/ FluForcesBulk *b);
+// end::memb[]
+
+// tag::intb[]
+void fluforces_bulk_prepare(int n, const PaArray *a, /**/ FluForcesBulk *b);
+void fluforces_bulk_apply(const PairParams*, int n, const FluForcesBulk *b, const int *start, const int *count,
+                          /**/ const FoArray *ff);
+// end::intb[]
+
+// tag::memh[]
+void fluforces_halo_ini(MPI_Comm cart, int3 L, /**/ FluForcesHalo **hd);
+void fluforces_halo_fin(/**/ FluForcesHalo *h);
+// end::memh[]
+
+// tag::inth[]
+void fluforces_halo_prepare(flu::LFrag26 lfrags, flu::RFrag26 rfrags, /**/ FluForcesHalo *h);
+void fluforces_halo_apply(const PairParams*, const FluForcesHalo *h, /**/ const FoArray *farray);
+// end::inth[]
+
+/* end src/fluforces/imp.h */
+
+/* implementation */
+
+/* begin src/fluforces/imp/type.h */
+struct FluForcesBulk {
+    float4  *zipped_pp;  /* xyzouvwo xyzouvwo xyzouvwo ...          */
+    RNDunif *rnd;        /* random generator per timestep           */
+    const int *colors;   /* pointer to colors, not to be allocated  */
+
+    int3 L; /* subdomain size */
+};
+
+struct FluForcesHalo {
+    RNDunif *trunks[26];   /* interrank rng (1 per fragment) */
+    bool masks[26];        /* interrank masks                */
+
+    flu::LFrag26 lfrags;     /* local fragment infos    */
+    flu::RFrag26 rfrags;     /* remote fragment infos   */
+    flu::RndFrag26 rndfrags; /* rng and interrank masks */
+
+    int3 L; /* subdomain size */
+};
+/* end src/fluforces/imp/type.h */
+/* begin src/fluforces/imp/ini.h */
+void fluforces_bulk_ini(int3 L, int maxp, /**/ FluForcesBulk **bd) {
+    FluForcesBulk *b;
+    EMALLOC(1, bd);
+    b = *bd;
+    Dalloc(&b->zipped_pp, 2 * maxp);
+    UC(rnd_ini(0, 0, 0, 0, /**/ &b->rnd));
+    b->colors = NULL;
+    b->L = L;
+}
+
+static int is_plus(const int d[3]) {
+    enum {X, Y, Z};
+    return (d[X] + d[Y] + d[Z] > 0) ||
+        ((d[X] + d[Y] + d[Z] == 0) && (d[X] > 0)) ||
+        ((d[X] == 0) && (d[Y] > 0)) ||
+        (d[Y] == 0 && d[Z] > 0);
+}
+
+static int imin(int a, int b) {return a < b ? a : b;}
+static int imax(int a, int b) {return a < b ? b : a;}
+
+static void get_interrank_infos(MPI_Comm cart, int fid, /**/ RNDunif* trunks[], bool masks[]) {
+    int coordsneighbor[3], c, indx[3], rank, dstrank;
+    int seed, seed_base, seed_offset;
+    int dims[3], periods[3], coords[3];
+    int d[3];
+    frag_hst::i2d3(fid, d);
+
+    MC(m::Cart_get(cart, 3, dims, periods, coords));
+    MC(m::Cart_rank(cart, coords, /**/ &rank));
+
+    for (c = 0; c < 3; ++c)
+        coordsneighbor[c] = (coords[c] + d[c] + dims[c]) % dims[c];
+
+    MC(m::Cart_rank(cart, coordsneighbor, /**/ &dstrank));
+
+    for (c = 0; c < 3; ++c)
+        indx[c] = imin(coords[c], coordsneighbor[c]) * dims[c] +
+            imax(coords[c], coordsneighbor[c]);
+
+    seed_base = indx[0] + dims[0] * dims[0] * (indx[1] + dims[1] * dims[1] * indx[2]);
+
+    {
+        int mysign = 2 * is_plus(d) - 1;
+        int v[3] = {1 + mysign * d[0], 1 + mysign * d[1], 1 + mysign * d[2]};
+        seed_offset = v[0] + 3 * (v[1] + 3 * v[2]);
+    }
+
+    seed = seed_base + seed_offset;
+
+    UC(rnd_ini(390 + seed, seed + 615, 12309, 23094, /**/ &trunks[fid]));
+
+    if (dstrank != rank)
+        masks[fid] = imin(dstrank, rank) == rank;
+    else {
+        int alter_ego = frag_hst::anti(fid);
+        masks[fid] = imin(fid, alter_ego) == fid;
+    }
+}
+
+void fluforces_halo_ini(MPI_Comm cart, int3 L, /**/ FluForcesHalo **hd) {
+    FluForcesHalo *h;
+    EMALLOC(1, hd);
+    h = *hd;
+
+    h->L = L;
+
+    for (int i = 0; i < 26; ++i)
+        get_interrank_infos(cart, i, /**/ h->trunks, h->masks);
+}
+/* end src/fluforces/imp/ini.h */
+/* begin src/fluforces/imp/fin.h */
+void fluforces_bulk_fin(/**/ FluForcesBulk *b) {
+    CC(d::Free(b->zipped_pp));
+    UC(rnd_fin(b->rnd));
+    EFREE(b);
+}
+
+void fluforces_halo_fin(/**/ FluForcesHalo *h) {
+    for (int i = 0; i < 26; ++i)
+        UC(rnd_fin(h->trunks[i]));
+    EFREE(h);
+}
+/* end src/fluforces/imp/fin.h */
+/* begin src/fluforces/imp/main.h */
+void fluforces_bulk_prepare(int n, const PaArray *a, /**/ FluForcesBulk *b) {
+    if (n == 0) return;
+    convert_pp2f4_pos(n, a->pp, /**/ b->zipped_pp);
+    if (a->colors)
+        b->colors = a->cc;
+    else
+        b->colors = NULL;
+}
+
+void fluforces_bulk_apply(const PairParams *par, int n, const FluForcesBulk *b, const int *start, const int *count,
+                          /**/ const FoArray *farray) {
+    BPaArray a;
+    if (n == 0) return;
+
+    flocal_push_pp(b->zipped_pp, &a);
+    if (b->colors)
+        flocal_push_cc(b->colors, &a);
+
+    UC(flocal_apply(par, b->L, n, a, start, b->rnd, /**/ farray));
+}
+
+
+void fluforces_halo_prepare(flu::LFrag26 lfrags, flu::RFrag26 rfrags, /**/ FluForcesHalo *h) {
+    h->lfrags = lfrags;
+    h->rfrags = rfrags;
+
+    for (int i = 0; i < 26; ++i) {
+        h->rndfrags.d[i] = {
+            .seed = rnd_get(h->trunks[i]),
+            .mask = h->masks[i]
+        };
+    }
+}
+
+void fluforces_halo_apply(const PairParams *par, const FluForcesHalo *h, /**/ const FoArray *farray) {
+    fhalo_apply(par, h->L, h->lfrags, h->rfrags, h->rndfrags, farray);
+}
+/* end src/fluforces/imp/main.h */
+/* end src/fluforces/imp.cpp */
+
+#line 1 "src/frag/imp.cpp"
+
+#line 4 "udx.fluforces-bulk-main.cu"
+
+#line 3 "udx.force-all-complete.cu"
+
+#line 1 "udx.rbc-force-bending-complete.cu"
+
+#line 1 "udx.rbc-force-bending-complete.cu"
+// Grouped editable compilation unit for RBC force and bending force code.
+
+#line 1 "udx.rbc-force-all.cu"
+
+#line 1 "udx.rbc-force-all.cu"
+// Grouped editable compilation unit for all RBC force implementations.
+
+#line 1 "udx.rbc-force-area-random.cu"
+
+#line 1 "udx.rbc-force-area-random.cu"
+// Grouped editable compilation unit for RBC area/volume and random forces.
+
+#line 1 "udx.rbc-force-area_volume.cu"
+
+#line 1 "udx.rbc-force-area_volume.cu"
+// generated from udx.flat.cu
+#include "udx.config.cuh"
+
+/* begin src/rbc/force/area_volume/imp.cu */
+#include <stdio.h>
+#include <assert.h>
+
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
+
+
+/* begin src/inc/type.h */
+#ifndef UDX_FORCE_TYPE_COMMON
+#define UDX_FORCE_TYPE_COMMON
+template <typename T, int N>
+struct Sarray { /* [s]tatic array */
+    T d[N];
+};
+
+struct Particle {
+    float r[3], v[3];
+};
+
+struct Rigid {
+    float Iinv[6],            /* moment of inertia            6        */
+        mass,                 /* mass of the solid            7        */
+        com[3],               /* [c]enter [o]f [m]ass         10       */
+        v[3], om[3],          /* linear and angular velocity  13 16    */
+        e0[3], e1[3], e2[3],  /* local referential            19 22 25 */
+        fo[3], to[3],         /* force, torque                28 31    */
+        id;                   /* id of the solid              32       */
+};
+
+struct Force {
+    float f[3];
+};
+
+struct Momentum {
+    float P[3], L[3]; /* linear and angular momentum */
+};
+
+struct Positioncp {
+    float rc[3]; /* current position  */
+    float rp[3]; /* previous position */
+};
+
+typedef Sarray<int, 26>       int26;
+typedef Sarray<int, 27>       int27;
+
+typedef Sarray<int*, 26>     intp26;
+typedef Sarray<Particle*, 26> Pap26;
+typedef Sarray<Force*,    26> Fop26;
+typedef Sarray<Momentum*, 26> Mop26;
+typedef Sarray<Positioncp*, 26> Pocpp26;
+
+/* particles wrap */
+struct PaWrap {
+    int n;
+    const Particle *pp;
+};
+
+/* forces wrap */
+struct FoWrap {
+    int n;
+    Force *ff;
+};
+/* end src/inc/type.h */
+#endif
+/* begin src/inc/dev.h */
+#ifndef UDX_FORCE_DEVICE_COMMON
+#define UDX_FORCE_DEVICE_COMMON
+/* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
+#define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
+
+/* a common kernel execution configuration */
+#define k_cnf(n) ceiln((n), 128), 128
+
+#define dSync() CC(d::DeviceSynchronize())
+
+#define D2D d::MemcpyDeviceToDevice
+#define D2H d::MemcpyDeviceToHost
+#define H2D d::MemcpyHostToDevice
+#define H2H d::MemcpyHostToHost
+#define A2A d::MemcpyDefault /* "[a]ny to [a]ny" */
+
+#define cD2D(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), D2D))
+#define cH2H(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), H2H))  /* [t]to, [f]rom */
+#define cA2A(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), A2A))
+#define cD2H(H, D, n) CC(d::Memcpy((H), (D), (n) * sizeof((H)[0]), D2H))
+#define cH2D(D, H, n) CC(d::Memcpy((D), (H), (n) * sizeof((H)[0]), H2D))
+
+#define aD2D(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), D2D))
+#define aH2H(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), H2H))  /* [t]to, [f]rom */
+#define aA2A(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), A2A))
+#define aD2H(H, D, n) CC(d::MemcpyAsync((H), (D), (n) * sizeof((H)[0]), D2H))
+#define aH2D(D, H, n) CC(d::MemcpyAsync((D), (H), (n) * sizeof((H)[0]), H2D))
+
+/* device allocation */
+#define Dfree(D)      CC(d::Free(D))
+#define Dalloc(D, n)  CC(d::Malloc((void**)(D), (n) * sizeof(**(D))))
+
+/* [d]evice set */
+#define Dset(P, v, n) CC(d::Memset(P, v, (n)*sizeof(*(P))))
+#define Dzero(P, n)   Dset(P, 0, n)
+
+/* [d]evice [a]synchronous set */
+#define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
+#define DzeroA(P, n)   DsetA(P, 0, n)
+/* end src/inc/dev.h */
+#endif /* UDX_FORCE_DEVICE_COMMON */
+/* begin src/math/dev.h */
+#ifndef UDX_FORCE_MATH_COMMON
+#define UDX_FORCE_MATH_COMMON
+/* use templates here because we might have mixed float/double */
+
+#define _HD_ __host__ __device__
+
+template <typename T1, typename T2>
+_HD_ void scal(const T1 a, /*io*/ T2 *b) {
+    b->x *= a;
+    b->y *= a;
+    b->z *= a;
+}
+
+template <typename T1, typename T2>
+_HD_ void add(const T1 *a, /*io*/ T2 *b) {
+    b->x += a->x;
+    b->y += a->y;
+    b->z += a->z;
+}
+
+template <typename T1, typename T2, typename T3>
+_HD_ void diff(const T1 *a, const T2 *b, /**/ T3 *c) {
+    c->x = a->x - b->x;
+    c->y = a->y - b->y;
+    c->z = a->z - b->z;
+}
+
+template <typename T1, typename T2, typename T3>
+_HD_ T1 dot(const T2 *a, const T3 *b) {
+    return a->x * b->x + a->y * b->y + a->z * b->z;
+}
+
+template <typename T1, typename T2, typename T3>
+_HD_ void cross(const T1 *a, const T2 *b, /**/ T3 *c) {
+    c->x = a->y * b->z - a->z * b->y;
+    c->y = a->z * b->x - a->x * b->z;
+    c->z = a->x * b->y - a->y * b->x;
+}
+
+template <typename T1, typename T2, typename T3>
+_HD_ void scalmult(const T1 *a, const T2 x, /**/ const T3 *b) {
+    b->x = a->x * x;
+    b->y = a->y * x;
+    b->z = a->z * x;
+}
+
+
+template <typename T1, typename T2, typename T3, typename T4>
+_HD_ void apxb(const T1 *a, const T2 x, const T3 *b, /**/ T4 *c) {
+    c->x = a->x + x * b->x;
+    c->y = a->y + x * b->y;
+    c->z = a->z + x * b->z;
+}
+
+template <typename T1, typename T2, typename T3>
+_HD_ void axpy(const T1 a, const T2 *x, /*io*/ T3 *y) {
+    y->x += a * x->x;
+    y->y += a * x->y;
+    y->z += a * x->z;
+}
+/* end src/math/dev.h */
+#endif /* UDX_FORCE_MATH_COMMON */
+
+/* begin src/utils/imp.h */
+// tag::mem[]
+void emalloc(size_t, /**/ void**); // <1>
+void efree(void*); // <2>
+void *ememcpy(void *dest, const void *src, size_t n); // <3>
+// end::mem[]
+
+// tag::macros[]
+#define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
+#define EFREE(pdata) UC(efree(pdata))
+#define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
+// end::macros[]
+
+// tag::stdio[]
+void efopen(const char *fname, const char *mode, /**/ FILE**);
+void efclose(FILE*);
+void efread(void *ptr, size_t size, size_t nmemb, FILE*);
+void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
+void efgets(char *s, int size, FILE*);
+// end::stdio[]
+
+// tag::tools[]
+bool same_str(const char *a, const char *b); // <1>
+const char* get_filename_ext(const char*);
+// end::tools[]
+/* end src/utils/imp.h */
+/* begin src/utils/error.h */
+#define ERR(fmt, ...)  do {                                     \
+        error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
+        error_report();                                         \
+        error_abort();                                          \
+    } while (0)
+
+/* udx check */
+#define UC(F) do {                              \
+        error_stack_push(__FILE__, __LINE__);   \
+        F;                                      \
+        if (error_get()) {                      \
+            error_report();                     \
+            error_abort();                      \
+        }                                       \
+        error_stack_pop();                      \
+    } while (0)
+
+/* [B]o[p] [c]heck */
+#define BPC(ans) do {                           \
+        BopStatus s = (ans);                    \
+        if (!bop_success(s)) {                  \
+            ERR(":%s:%d: %s\n%s\n",             \
+                __FILE__, __LINE__,             \
+                bop_report_error_desc(s),       \
+                bop_report_error_mesg());       \
+        }} while (0)
+
+void error_stack_push(const char *file, int line);
+void error_stack_pop();
+
+void error_signal(const char *file, int line, const char *fmt, ...);
+void error_signal_cuda(const char *file, int line, const char *msg);
+void error_signal_mpi(const char *file, int line, const char *msg);
+
+bool error_get();
+void error_report();
+void error_abort();
+
+void error_print_stack();
+/* end src/utils/error.h */
+/* begin src/utils/msg.h */
+// tag::int[]
+void msg_ini(int rank); // <1>
+void msg_print(const char *fmt, ...); // <2>
+// end::int[]
+/* end src/utils/msg.h */
+
+#ifndef UDX_FORCE_DEVICE_API_COMMON
+#define UDX_FORCE_DEVICE_API_COMMON
+/* begin src/d/api.h */
+namespace d {  /* a wrapper for device API */
+typedef int Stream_t; /* TODO: streams are not supported */
+enum {MemcpyHostToHost, MemcpyHostToDevice,
+      MemcpyDeviceToHost, MemcpyDeviceToDevice,
+      MemcpyDefault};
+
+// tag::more[]
+const char *emsg();
+int alloc_pinned(void **pHost, size_t size);
+int is_device_pointer(const void *ptr);
+// end::more[]
+
+// tag::api[]
+int GetSymbolAddress(void **devPtr, const void *symbol);
+int Malloc(void **p, size_t);
+int MemcpyToSymbol(const void *symbol, const void *src, size_t count, size_t offset=0, int kind=MemcpyHostToDevice);
+int MemcpyFromSymbol(void *dst, const void *symbol, size_t count, size_t offset=0, int kind=MemcpyDeviceToHost);
+int HostGetDevicePointer(void **pDevice, void *pHost, unsigned int flags);
+int Memcpy (void *dst, const void *src, size_t count, int kind);
+int MemsetAsync (void *devPtr, int value, size_t count, Stream_t stream=0);
+int Memset (void *devPtr, int value, size_t count);
+int MemcpyAsync (void * dst, const void * src, size_t count, int kind, Stream_t stream = 0);
+int Free (void *devPtr);
+int FreeHost (void *hstPtr);
+int DeviceSynchronize (void);
+int PeekAtLastError(void);
+// end::api[]
+}
+/* end src/d/api.h */
+#endif
+/* begin src/d/ker.h */
+#if   defined(DEV_CUDA)
+/* begin src/d/cuda/ker.h */
+#define  Ifetch(t, i)  tex1Dfetch(t, i)
+#define F4fetch(t, i)  tex1Dfetch(t, i)
+#define F2fetch(t, i)  tex1Dfetch(t, i)
+#define  Ffetch(t, i)  tex1Dfetch(t, i)
+#define Tfetch(T, t, i) tex1Dfetch<T>(t, i)
+
+#define Ttex3D(T, to, i, j, k) tex3D<T>(to, i, j, k);
+/* end src/d/cuda/ker.h */
+#elif defined(DEV_CPU)
+/* begin src/d/cpu/ker.h */
+#define atomicAdd(...) (0)
+
+#define atomicExch(...)
+#define __float2half_rn(...) (0)
+#define __fmaf_rz(...) (0.0)
+#define __ldg(p) (*(p))
+#define __popc(...)
+#define __shfl(...) (0.0)
+#define __shfl_down(...) (0.0)
+#define __shfl_up(...) (0)
+#define __shfl_xor(...) (0)
+
+#define __syncthreads(...)
+
+#define tex3D(...)
+
+#define  Ifetch(t, i)  (0);
+#define F4fetch(t, i)  (make_float4(0, 0, 0, 0))
+#define F2fetch(t, i)  (make_float2(0, 0))
+#define Ffetch(t, i)   (0.0)
+#define Tfetch(T, t, i) (T{})
+
+#define Ttex3D(T, to, i, j, k) (T{})
+/* end src/d/cpu/ker.h */
+/* begin src/d/cpu/wrap.h */
+namespace d {
+static uint3 threadIdx, blockIdx, gridDim;
+static dim3  blockDim;
+static int   warpSize = 1;
+}
+
+#define threadIdx d::threadIdx
+#define blockDim  d::blockDim
+#define gridDim   d::gridDim
+#define blockIdx  d::blockIdx
+#define warpSize  d::warpSize
+/* end src/d/cpu/wrap.h */
+#else
+  #error DEV_* is undefined
+#endif
+/* end src/d/ker.h */
+/* begin src/d/q.h */
+/* function and variable type [q]ualifiers */
+
+#if   defined(DEV_CUDA)
+/* begin src/d/cuda/q.h */
+/* B.1. Function Type Qualifiers */
+/* B.2. Variable Type Qualifiers */
+/* end src/d/cuda/q.h */
+#elif defined(DEV_CPU)
+/* begin src/d/cpu/q.h */
+/* B.1. Function Type Qualifiers */
+#ifdef __device__
+  #undef  __device__
+  #define __device__
+#endif
+
+#ifdef __global__
+  #undef  __global__
+  #define __global__
+#endif
+
+#ifdef __host__
+  #undef  __host__
+  #define __host__
+#endif
+
+#ifdef __noinline__
+  #undef  __noinline__
+  #define __noinline__
+#endif
+
+#ifdef __forceinline__
+  #undef  __forceinline__
+  #define __forceinline__
+#endif
+
+/* B.2. Variable Type Qualifiers */
+/* __device__ : also a function qualifier */
+#ifdef __constant__
+  #undef  __constant__
+  #define __constant__
+#endif
+
+#ifdef __shared__
+  #undef  __shared__
+  #define __shared__
+#endif
+
+#ifdef __managed__
+  #undef  __managed__
+  #define __managed__
+#endif
+
+#ifdef __restrict__
+  #undef  __restrict__
+  #define __restrict__
+#endif
+/* end src/d/cpu/q.h */
+#else
+  #error DEV_* is undefined
+#endif
+/* end src/d/q.h */
+/* begin src/utils/cc.h */
+#ifndef UDX_FORCE_CC_COMMON
+#define UDX_FORCE_CC_COMMON
+/* [c]uda [c]heck macros */
+
+#if   defined(CC_SYNC)
+/* begin src/utils/cc/sync.h */
+/* Aggressive [sync]ronization */
+#define CC(ans)                                             \
+    do {                                                    \
+        d::DeviceSynchronize();                             \
+        cc::check((ans), __FILE__, __LINE__);               \
+        d::DeviceSynchronize();                             \
+    } while (0)
+/* end src/utils/cc/sync.h */
+#elif defined(CC_RELEASE)
+/* begin src/utils/cc/release.h */
+/* [c]cuda [c]heck */
+#define CC(ans)                                             \
+    do { cc::check((ans), __FILE__, __LINE__);} while (0)
+/* end src/utils/cc/release.h */
+#else
+  #error CC_* is undefined
+#endif
+
+/* begin src/utils/cc/common.h */
+namespace cc {
+void check(int rc, const char *file, int line);
+}
+
+
+/* end src/utils/cc/common.h */
+
+/* TODO: header includes header */
+/* end src/utils/cc.h */
+#endif /* UDX_FORCE_CC_COMMON */
+/* begin src/utils/kl.h */
+#ifndef UDX_FORCE_KL_COMMON
+#define UDX_FORCE_KL_COMMON
+/* [k]ernel [l]aunch macros */
+
+#if    defined(KL_RELEASE)
+/* begin src/utils/kl/release.h */
+#define KL_BEFORE(s, C) if (!kl::safe(ESC C)) continue;
+#define KL_CALL(F, C, A) F<<<ESC C>>>A
+#define KL_AFTER(s)
+
+namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
+/* end src/utils/kl/release.h */
+#elif  defined(KL_NONE)
+/* begin src/utils/kl/none.h */
+#define KL_BEFORE(s, C)
+#define KL_CALL(F, C, A)
+#define KL_AFTER(s)
+
+namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
+/* end src/utils/kl/none.h */
+#elif  defined(KL_SYNC)
+/* begin src/utils/kl/sync.h */
+#define KL_BEFORE(s, C) if (!kl::safe(ESC C)) continue;
+#define KL_CALL(F, C, A) F<<<ESC C>>>A
+#define KL_AFTER(s)                             \
+    do {                                        \
+        dSync();                                \
+        CC(d::PeekAtLastError());               \
+    } while(0)
+
+namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
+/* end src/utils/kl/sync.h */
+#else
+  #error KL_* is undefined
+#endif
+
+/* begin src/utils/kl/common.h */
+namespace kl {
+inline int safe0(dim3 i, dim3 j) {
+    msg(i.x, i.y, i.z,   j.x, j.y, j.z);
+    return i.x>0 && i.y>0 && i.z>0   &&   j.x>0 && j.y>0 && j.z>0;
+}
+inline int safe(dim3 i, dim3 j)                    { return safe0(i, j); }
+inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
+}
+/* end src/utils/kl/common.h */
+/* begin src/utils/kl/macro.h */
+#define ESC(...) __VA_ARGS__
+#define KL(F, C, A)                             \
+    do  {                                       \
+        KL_BEFORE(#F, C);                       \
+        KL_CALL(F, C, A);                       \
+        KL_AFTER(#F);                           \
+    } while (0)
+/* end src/utils/kl/macro.h */
+
+/* TODO: header includes header */
+/* end src/utils/kl.h */
+#endif
+/* begin src/algo/utils/shfl.h */
+#define _I_ static __device__
+
+#if __CUDACC_VER_MAJOR__ >= 9
+template <typename T>
+_I_ T shfl_down(T val, unsigned int width) {
+    return __shfl_down_sync(0xFFFFFFFF, val, width);
+}
+
+template <typename T>
+_I_ T shfl_up(T val, unsigned int width) {
+    return __shfl_up_sync(0xFFFFFFFF, val, width);
+}
+template <typename T>
+_I_ T shfl(T val, unsigned int width) {
+    return __shfl_sync(0xFFFFFFFF, val, width);
+}
+#else
+template <typename T>
+_I_ T shfl_down(T val, unsigned int width) {
+    return __shfl_down(val, width);
+}
+
+template <typename T>
+_I_ T shfl_up(T val, unsigned int width) {
+    return __shfl_up(val, width);
+}
+template <typename T>
+_I_ T shfl(T val, unsigned int width) {
+    return __shfl(val, width);
+}
+#endif
+
+#undef _I_
+/* end src/algo/utils/shfl.h */
+/* begin src/algo/utils/dev.h */
+#define _S_ static __device__
+#define _I_ static __device__
+
+// tag::int[]
+template <typename T>
+_I_ T warpReduceSum(T v)  // <1>
+// end::int[]
+{
+    for (int offset = warpSize>>1; offset > 0; offset >>= 1)
+        v += shfl_down(v, offset);
+    return v;
+}
+
+// tag::int[]
+_I_ float2 warpReduceSum(float2 val)  // <2>
+// end::int[]
+{
+    for (int offset = warpSize / 2; offset > 0; offset /= 2) {
+        val.x += shfl_down(val.x, offset);
+        val.y += shfl_down(val.y, offset);
+    }
+    return val;
+}
+
+// tag::int[]
+_I_ float3 warpReduceSum(float3 val)  // <3>
+// end::int[]
+{
+    for (int offset = warpSize/2; offset > 0; offset /= 2) {
+        val.x += shfl_down(val.x, offset);
+        val.y += shfl_down(val.y, offset);
+        val.z += shfl_down(val.z, offset);
+    }
+    return val;
+}
+
+#undef _S_
+#undef _I_
+
+/* end src/algo/utils/dev.h */
+
+/* begin src/rbc/force/area_volume/imp.h */
+struct AreaVolume;
+struct Particle;
+struct int4;
+
+// tag::interface[]
+void area_volume_ini(int nv, int nt, const int4 *tt, int max_cell, AreaVolume**); // <1>
+void area_volume_fin(AreaVolume*);
+
+void area_volume_compute(AreaVolume*, int nm, const Particle*, /**/ float **av); // <2>
+void area_volume_host(AreaVolume*, /**/ float **av); // <3>
+// end::interface[]
+/* end src/rbc/force/area_volume/imp.h */
+
+namespace rbc_force_av_dev {
+/* begin src/rbc/force/area_volume/dev/main.h */
+static __device__ float3 pp2r(const Particle *pp, const int id) {
+    enum {X, Y, Z};
+    float3 r;
+    r.x = pp[id].r[X];
+    r.y = pp[id].r[Y];
+    r.z = pp[id].r[Z];
+    return r;
+}
+
+static __device__ float area(const float3 r0, const float3 r1, const float3 r2) {
+    float3 x1, x2, n;
+    diff(&r1, &r0, /**/ &x1);
+    diff(&r2, &r0, /**/ &x2);
+    cross(&x1, &x2, /**/ &n);
+    return 0.5f * sqrtf(dot<float>(&n, &n));
+}
+
+static __device__ float volume(const float3 r0, const float3 r1, const float3 r2) {
+    return
+        0.1666666667f *
+        ((r0.x*r1.y-r0.y*r1.x)*r2.z +
+         (r0.z*r1.x-r0.x*r1.z)*r2.y +
+         (r0.y*r1.z-r0.z*r1.y)*r2.x);
+}
+
+__global__ void main(int nt, int nv, const Particle *pp, const int4 *tri, float *totA_V) {
+    float2 a_v = make_float2(0.0f, 0.0f);
+    int i, cid = blockIdx.y;
+    float3 r0, r1, r2;
+    int4 ids;
+
+    for (i = blockIdx.x * blockDim.x + threadIdx.x; i < nt; i += blockDim.x * gridDim.x) {
+        ids = tri[i];
+        r0 = pp2r(pp, ids.x + cid * nv);
+        r1 = pp2r(pp, ids.y + cid * nv);
+        r2 = pp2r(pp, ids.z + cid * nv);
+
+        a_v.x += area  (r0, r1, r2);
+        a_v.y += volume(r0, r1, r2);
+    }
+    a_v = warpReduceSum(a_v);
+    if ((threadIdx.x & (warpSize - 1)) == 0) {
+        atomicAdd(&totA_V[2 * cid + 0], a_v.x);
+        atomicAdd(&totA_V[2 * cid + 1], a_v.y);
+    }
+}
+/* end src/rbc/force/area_volume/dev/main.h */
+}
+/* begin src/rbc/force/area_volume/imp/type.h */
+struct AreaVolume {
+    int nt, nv; /* number of triangles and vertices in one cell */
+    int max_cell; /* max cell number */
+    int4 *tri; /* triangles on device */
+    float *av; /* output: [area0 volume0 area1 volume1, ..] */
+    float *av_hst;
+    int nc;       /* remember the last number of cell */
+    int Computed; /* was area computed? */
+};
+/* end src/rbc/force/area_volume/imp/type.h */
+/* begin src/rbc/force/area_volume/imp/main.h */
+static void assert_tri(int nt, int nv, const int4 *tri) {
+    int *rank;
+    int f0, f1, f2, i;
+    int4 f;
+    EMALLOC(nv, &rank);
+    for (i = 0; i < nv; i++) rank[i] = 0;
+    for (i = 0; i < nt; i++) {
+        f = tri[i];
+        f0 = f.x; f1 = f.y; f2 = f.z;
+        if (f0 < 0 || f0 >= nv || f1 < 0 || f1 >= nv || f2 < 0 || f2 >= nv)
+            ERR("wrong triangle: %d = [%d %d %d] (v = %d, t = %d)", i, f0, f1, f2, nv, nt);
+        rank[f0]++; rank[f1]++; rank[f2]++;
+    }
+    for (i = 0; i < nv; i++)
+        if (rank[i] == 0) ERR("isolated vertex: %d (v = %d, t = %d)", i, nv, nt);
+    EFREE(rank);
+}
+
+void area_volume_ini(int nv, int nt, const int4 *hst, int max_cell, /**/ AreaVolume **pq) {
+    AreaVolume *q;
+    EMALLOC(1, &q);
+    q->nt = nt; q->nv = nv; q->max_cell = max_cell; q->Computed = 0;
+    Dalloc(&q->tri, nt);
+    Dalloc(&q->av , 2*max_cell);
+    EMALLOC(2*max_cell, &q->av_hst);
+    UC(assert_tri(nt, nv, hst));
+    cH2D(q->tri, hst, nt);
+    *pq = q;
+}
+
+void area_volume_fin(AreaVolume *q) {
+    Dfree(q->tri);
+    Dfree(q->av);
+    EFREE(q->av_hst);
+    EFREE(q);
+}
+
+static void compute(int nv, int nt, int nc, const Particle *pp, const int4 *tri, /**/ float *av) {
+    dim3 avThreads(256, 1);
+    dim3 avBlocks(1, nc);
+    Dzero(av, 2*nc);
+    KL(rbc_force_av_dev::main, (avBlocks, avThreads), (nt, nv, pp, tri, av));
+}
+
+void area_volume_compute(AreaVolume *q, int nc, const Particle *pp, /**/ float **pav) {
+    if (nc > q->max_cell) ERR("nc=%d > max_cell=%d", nc, q->max_cell);
+    if (!d::is_device_pointer(pp)) ERR("`pp`  is not a device pointer");
+    UC(compute(q->nv, q->nt, nc, pp, q->tri, q->av));
+    q->Computed = 1; q->nc = nc;
+    *pav = q->av;
+}
+
+void area_volume_host(AreaVolume *q, /**/ float **pav) {
+    if (!q->Computed) ERR("call `area_volume_host` before `area_volume_compute`");
+    cD2H(q->av_hst, q->av, 2*q->nc);
+    *pav = q->av_hst;
+}
+/* end src/rbc/force/area_volume/imp/main.h */
+/* end src/rbc/force/area_volume/imp.cu */
+
+#line 1 "src/rbc/force/bending/imp.cpp"
+
+#line 3 "udx.rbc-force-area-random.cu"
+
+#line 1 "udx.rbc-force-random.cu"
+
+#line 1 "udx.rbc-force-random.cu"
+// Grouped editable compilation unit for RBC random-force API and implementation.
+
+#line 1 "udx.rbc-force-rnd-api.cu"
+
+#line 1 "udx.rbc-force-rnd-api.cu"
+// generated from udx.flat.cu
+#include "udx.config.cuh"
+
+/* begin src/rbc/force/rnd/api/imp.cpp */
+#include <stddef.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <math.h>
+#include <curand.h>
+
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
+
+
+/* begin src/utils/error.h */
+#define ERR(fmt, ...)  do {                                     \
+        error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
+        error_report();                                         \
+        error_abort();                                          \
+    } while (0)
+
+/* udx check */
+#define UC(F) do {                              \
+        error_stack_push(__FILE__, __LINE__);   \
+        F;                                      \
+        if (error_get()) {                      \
+            error_report();                     \
+            error_abort();                      \
+        }                                       \
+        error_stack_pop();                      \
+    } while (0)
+
+/* [B]o[p] [c]heck */
+#define BPC(ans) do {                           \
+        BopStatus s = (ans);                    \
+        if (!bop_success(s)) {                  \
+            ERR(":%s:%d: %s\n%s\n",             \
+                __FILE__, __LINE__,             \
+                bop_report_error_desc(s),       \
+                bop_report_error_mesg());       \
+        }} while (0)
+
+void error_stack_push(const char *file, int line);
+void error_stack_pop();
+
+void error_signal(const char *file, int line, const char *fmt, ...);
+void error_signal_cuda(const char *file, int line, const char *msg);
+void error_signal_mpi(const char *file, int line, const char *msg);
+
+bool error_get();
+void error_report();
+void error_abort();
+
+void error_print_stack();
+/* end src/utils/error.h */
+/* begin src/utils/imp.h */
+// tag::mem[]
+void emalloc(size_t, /**/ void**); // <1>
+void efree(void*); // <2>
+void *ememcpy(void *dest, const void *src, size_t n); // <3>
+// end::mem[]
+
+// tag::macros[]
+#define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
+#define EFREE(pdata) UC(efree(pdata))
+#define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
+// end::macros[]
+
+// tag::stdio[]
+void efopen(const char *fname, const char *mode, /**/ FILE**);
+void efclose(FILE*);
+void efread(void *ptr, size_t size, size_t nmemb, FILE*);
+void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
+void efgets(char *s, int size, FILE*);
+// end::stdio[]
+
+// tag::tools[]
+bool same_str(const char *a, const char *b); // <1>
+const char* get_filename_ext(const char*);
+// end::tools[]
+/* end src/utils/imp.h */
+
+/* begin src/rbc/force/rnd/api/type.h */
+namespace rbc_api {
+typedef struct Generator_st *Generator_t;
+} /* namespace */
+/* end src/rbc/force/rnd/api/type.h */
+/* begin src/rbc/force/rnd/api/imp.h */
+namespace rnd_api {
+typedef struct Generator_st *Generator_t;
+int CreateGenerator(Generator_t *g);
+int SetPseudoRandomGeneratorSeed(Generator_t g,  long seed);
+int DestroyGenerator(Generator_t g);
+int GenerateNormal(Generator_t g, float *outputPtr, size_t n);
+}
+/* end src/rbc/force/rnd/api/imp.h */
+
+namespace rnd_api {
+
+#if   defined(DEV_CUDA)
+/* begin src/rbc/force/rnd/api/imp/cuda.h */
+struct Generator_st { curandGenerator_t g; };
+
+static int CreateGenerator0(curandGenerator_t *g) {
+    return curandCreateGenerator(g, CURAND_RNG_PSEUDO_DEFAULT);
+}
+int CreateGenerator(Generator_t *pg) {
+    int rc;
+    Generator_st *s;
+    EMALLOC(1, &s);
+    rc = CreateGenerator0(&s->g);
+    *pg = s;
+    return rc;
+}
+
+int DestroyGenerator(Generator_t s) {
+    int rc;
+    rc = curandDestroyGenerator(s->g);
+    EFREE(s);
+    return rc;
+}
+
+int SetPseudoRandomGeneratorSeed(Generator_t s,  long seed) {
+    return curandSetPseudoRandomGeneratorSeed(s->g, seed);
+}
+
+int GenerateNormal(Generator_t s, float *outputPtr, size_t n) {
+    float mean, std;
+    mean = 0; std = 1;
+    return curandGenerateNormal(s->g, outputPtr, n, mean, std);
+}
+/* end src/rbc/force/rnd/api/imp/cuda.h */
+#elif defined(DEV_CPU)
+/* begin src/rbc/force/rnd/api/imp/gaussrand.h */
+/* Gaussian rnd with mean = 0 and std = 1
+   Knuth and due originally to Marsaglia */
+double gaussrand() {
+    static double V1, V2, S;
+    static int phase = 0;
+    double X;
+    if (phase == 0) {
+        do {
+            double U1 = (double)rand() / RAND_MAX;
+            double U2 = (double)rand() / RAND_MAX;
+            V1 = 2 * U1 - 1;
+            V2 = 2 * U2 - 1;
+            S = V1 * V1 + V2 * V2;
+        } while(S >= 1 || S == 0);
+
+        X = V1 * sqrt(-2 * log(S) / S);
+    } else
+        X = V2 * sqrt(-2 * log(S) / S);
+    phase = 1 - phase;
+    return X;
+}
+/* end src/rbc/force/rnd/api/imp/gaussrand.h */
+/* begin src/rbc/force/rnd/api/imp/cpu.h */
+int CreateGenerator(Generator_t*) { return 0; }
+int DestroyGenerator(Generator_t) { return 0; }
+int SetPseudoRandomGeneratorSeed(Generator_t,  long seed) { srand(seed); return 0; }
+int GenerateNormal(Generator_t, float *outputPtr, size_t n) {
+    size_t i;
+    for (i = 0; i < n; i++) outputPtr[i] = gaussrand();
+    return 0;
+}
+/* end src/rbc/force/rnd/api/imp/cpu.h */
+#else
+  #error DEV_* is undefined
+#endif
+
+} /* namespace */
+/* end src/rbc/force/rnd/api/imp.cpp */
+
+#line 1 "src/rbc/force/rnd/imp.cpp"
+
+#line 3 "udx.rbc-force-random.cu"
+
+#line 1 "udx.rbc-force-rnd.cu"
+
+#line 1 "udx.rbc-force-rnd.cu"
+// generated from udx.flat.cu
+#include "udx.config.cuh"
+
+/* begin src/rbc/force/rnd/imp.cpp */
+#include <stdlib.h>
+#include <stdio.h>
+#include <mpi.h>
+#include <curand.h>
+
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
+
+
+/* begin src/utils/os.h */
+// tag::int[]
+void os_mkdir(const char* path); // <1>
+long os_time();                  // <2>
+void os_srand(long int seedval); // <3>
+double os_drand();               // <4>
+void os_sleep(unsigned int seconds); // <5>
+void os_malloc_stats();              // TODO
+// end::int[]
+/* end src/utils/os.h */
+/* begin src/utils/msg.h */
+// tag::int[]
+void msg_ini(int rank); // <1>
+void msg_print(const char *fmt, ...); // <2>
+// end::int[]
+/* end src/utils/msg.h */
+#ifndef UDX_FORCE_DEVICE_API_COMMON
+#define UDX_FORCE_DEVICE_API_COMMON
+/* begin src/d/api.h */
+namespace d {  /* a wrapper for device API */
+typedef int Stream_t; /* TODO: streams are not supported */
+enum {MemcpyHostToHost, MemcpyHostToDevice,
+      MemcpyDeviceToHost, MemcpyDeviceToDevice,
+      MemcpyDefault};
+
+// tag::more[]
+const char *emsg();
+int alloc_pinned(void **pHost, size_t size);
+int is_device_pointer(const void *ptr);
+// end::more[]
+
+// tag::api[]
+int GetSymbolAddress(void **devPtr, const void *symbol);
+int Malloc(void **p, size_t);
+int MemcpyToSymbol(const void *symbol, const void *src, size_t count, size_t offset=0, int kind=MemcpyHostToDevice);
+int MemcpyFromSymbol(void *dst, const void *symbol, size_t count, size_t offset=0, int kind=MemcpyDeviceToHost);
+int HostGetDevicePointer(void **pDevice, void *pHost, unsigned int flags);
+int Memcpy (void *dst, const void *src, size_t count, int kind);
+int MemsetAsync (void *devPtr, int value, size_t count, Stream_t stream=0);
+int Memset (void *devPtr, int value, size_t count);
+int MemcpyAsync (void * dst, const void * src, size_t count, int kind, Stream_t stream = 0);
+int Free (void *devPtr);
+int FreeHost (void *hstPtr);
+int DeviceSynchronize (void);
+int PeekAtLastError(void);
+// end::api[]
+}
+/* end src/d/api.h */
+#endif
+/* begin src/inc/dev.h */
+/* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
+#define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
+
+/* a common kernel execution configuration */
+#define k_cnf(n) ceiln((n), 128), 128
+
+#define dSync() CC(d::DeviceSynchronize())
+
+#define D2D d::MemcpyDeviceToDevice
+#define D2H d::MemcpyDeviceToHost
+#define H2D d::MemcpyHostToDevice
+#define H2H d::MemcpyHostToHost
+#define A2A d::MemcpyDefault /* "[a]ny to [a]ny" */
+
+#define cD2D(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), D2D))
+#define cH2H(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), H2H))  /* [t]to, [f]rom */
+#define cA2A(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), A2A))
+#define cD2H(H, D, n) CC(d::Memcpy((H), (D), (n) * sizeof((H)[0]), D2H))
+#define cH2D(D, H, n) CC(d::Memcpy((D), (H), (n) * sizeof((H)[0]), H2D))
+
+#define aD2D(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), D2D))
+#define aH2H(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), H2H))  /* [t]to, [f]rom */
+#define aA2A(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), A2A))
+#define aD2H(H, D, n) CC(d::MemcpyAsync((H), (D), (n) * sizeof((H)[0]), D2H))
+#define aH2D(D, H, n) CC(d::MemcpyAsync((D), (H), (n) * sizeof((H)[0]), H2D))
+
+/* device allocation */
+#define Dfree(D)      CC(d::Free(D))
+#define Dalloc(D, n)  CC(d::Malloc((void**)(D), (n) * sizeof(**(D))))
+
+/* [d]evice set */
+#define Dset(P, v, n) CC(d::Memset(P, v, (n)*sizeof(*(P))))
+#define Dzero(P, n)   Dset(P, 0, n)
+
+/* [d]evice [a]synchronous set */
+#define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
+#define DzeroA(P, n)   DsetA(P, 0, n)
+/* end src/inc/dev.h */
+
+/* begin src/utils/error.h */
+#define ERR(fmt, ...)  do {                                     \
+        error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
+        error_report();                                         \
+        error_abort();                                          \
+    } while (0)
+
+/* udx check */
+#define UC(F) do {                              \
+        error_stack_push(__FILE__, __LINE__);   \
+        F;                                      \
+        if (error_get()) {                      \
+            error_report();                     \
+            error_abort();                      \
+        }                                       \
+        error_stack_pop();                      \
+    } while (0)
+
+/* [B]o[p] [c]heck */
+#define BPC(ans) do {                           \
+        BopStatus s = (ans);                    \
+        if (!bop_success(s)) {                  \
+            ERR(":%s:%d: %s\n%s\n",             \
+                __FILE__, __LINE__,             \
+                bop_report_error_desc(s),       \
+                bop_report_error_mesg());       \
+        }} while (0)
+
+void error_stack_push(const char *file, int line);
+void error_stack_pop();
+
+void error_signal(const char *file, int line, const char *fmt, ...);
+void error_signal_cuda(const char *file, int line, const char *msg);
+void error_signal_mpi(const char *file, int line, const char *msg);
+
+bool error_get();
+void error_report();
+void error_abort();
+
+void error_print_stack();
+/* end src/utils/error.h */
+/* begin src/utils/imp.h */
+// tag::mem[]
+void emalloc(size_t, /**/ void**); // <1>
+void efree(void*); // <2>
+void *ememcpy(void *dest, const void *src, size_t n); // <3>
+// end::mem[]
+
+// tag::macros[]
+#define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
+#define EFREE(pdata) UC(efree(pdata))
+#define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
+// end::macros[]
+
+// tag::stdio[]
+void efopen(const char *fname, const char *mode, /**/ FILE**);
+void efclose(FILE*);
+void efread(void *ptr, size_t size, size_t nmemb, FILE*);
+void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
+void efgets(char *s, int size, FILE*);
+// end::stdio[]
+
+// tag::tools[]
+bool same_str(const char *a, const char *b); // <1>
+const char* get_filename_ext(const char*);
+// end::tools[]
+/* end src/utils/imp.h */
+/* begin src/utils/cc.h */
+/* [c]uda [c]heck macros */
+
+#if   defined(CC_SYNC)
+/* begin src/utils/cc/sync.h */
+/* Aggressive [sync]ronization */
+#define CC(ans)                                             \
+    do {                                                    \
+        d::DeviceSynchronize();                             \
+        cc::check((ans), __FILE__, __LINE__);               \
+        d::DeviceSynchronize();                             \
+    } while (0)
+/* end src/utils/cc/sync.h */
+#elif defined(CC_RELEASE)
+/* begin src/utils/cc/release.h */
+/* [c]cuda [c]heck */
+#define CC(ans)                                             \
+    do { cc::check((ans), __FILE__, __LINE__);} while (0)
+/* end src/utils/cc/release.h */
+#else
+  #error CC_* is undefined
+#endif
+
+/* begin src/utils/cc/common.h */
+namespace cc {
+void check(int rc, const char *file, int line);
+}
+
+
+/* end src/utils/cc/common.h */
+
+/* TODO: header includes header */
+/* end src/utils/cc.h */
+
+/* begin src/rbc/force/rnd/api/type.h */
+namespace rbc_api {
+typedef struct Generator_st *Generator_t;
+} /* namespace */
+/* end src/rbc/force/rnd/api/type.h */
+/* begin src/rbc/force/rnd/api/imp.h */
+namespace rnd_api {
+typedef struct Generator_st *Generator_t;
+int CreateGenerator(Generator_t *g);
+int SetPseudoRandomGeneratorSeed(Generator_t g,  long seed);
+int DestroyGenerator(Generator_t g);
+int GenerateNormal(Generator_t g, float *outputPtr, size_t n);
+}
+/* end src/rbc/force/rnd/api/imp.h */
+/* begin src/rbc/force/rnd/imp.h */
+struct RbcRnd;
+
+// tag::enum[]
+#ifndef UDX_RBC_FORCE_SEED_TIME
+#define UDX_RBC_FORCE_SEED_TIME
+enum {SEED_TIME = -1}; /* magic seed: ini from "time" */
+#endif
+// end::enum[]
+
+// tag::mem[]
+void rbc_rnd_ini(int n, long seed, RbcRnd**);
+void rbc_rnd_fin(RbcRnd*);
+// end::mem[]
+
+// tag::int[]
+void rbc_rnd_gen(RbcRnd*, int n, /**/ float**); // <1>
+float rbc_rnd_get_hst(const RbcRnd*, int i);    // <2>
+// end::int[]
+/* end src/rbc/force/rnd/imp.h */
+
+/* begin src/rbc/force/rnd/imp/type.h */
+struct RbcRnd { /* data */
+    float *r;
+    rnd_api::Generator_t g;
+    int max;
+};
+/* end src/rbc/force/rnd/imp/type.h */
+/* begin src/rbc/force/rnd/imp/cu.h */
+#define CU(x)                                                           \
+    do {                                                                \
+        int _curc = (x);                                                \
+        if ( _curc != 0)                                                \
+            ERR("curand error status: %d", _curc);                      \
+    } while(0)
+/* end src/rbc/force/rnd/imp/cu.h */
+/* begin src/rbc/force/rnd/imp/seed.h */
+static long decode_seed_time() {
+    long t;
+    t = os_time();
+    msg_print("seed time: %ld", t);
+    return t;
+}
+static int decode_seed(long seed) {
+    if (seed == SEED_TIME) return decode_seed_time();
+    else return seed;
+}
+/* end src/rbc/force/rnd/imp/seed.h */
+/* begin src/rbc/force/rnd/imp/main.h */
+static void ini0(RbcRnd *d, int n, long seed) {
+    Dalloc(&d->r, n);
+    CU(rnd_api::CreateGenerator(&d->g));
+    seed = decode_seed(seed);
+    CU(rnd_api::SetPseudoRandomGeneratorSeed(d->g,  seed));
+    d->max = n;
+}
+void rbc_rnd_ini(int n, long seed, RbcRnd **pq) {
+    RbcRnd *q;
+    EMALLOC(1, &q);
+    UC(ini0(q, n, seed));
+    *pq = q;
+}
+
+static void fin0(RbcRnd *d) {
+    Dfree(d->r);
+    CU(rnd_api::DestroyGenerator(d->g));
+}
+void rbc_rnd_fin(RbcRnd *d) {
+    fin0(d);
+    EFREE(d);
+}
+
+static void assert_n(int n, int max, const char *s) {
+    if (n > max)
+        ERR("%s: n = %d > max = %d", s, n , max);
+}
+
+void rbc_rnd_gen(RbcRnd *d, int n, float **pq) {
+    assert_n(n, d->max, "rbc::rnd::gen");
+    rnd_api::GenerateNormal(d->g, d->r, n);
+    *pq = d->r;
+}
+
+float rbc_rnd_get_hst(const RbcRnd *d, int i) {
+    float x;
+    float *r;
+    assert_n(i, d->max, "rbc::rnd::get_hst");
+    r = d->r;
+    cD2H(&x, &r[i], 1);
+    return x;
+}
+/* end src/rbc/force/rnd/imp/main.h */
+/* end src/rbc/force/rnd/imp.cpp */
+
+#line 1 "src/rbc/imp.cpp"
+
+#line 4 "udx.rbc-force-random.cu"
+
+#line 4 "udx.rbc-force-area-random.cu"
+
+#line 3 "udx.rbc-force-all.cu"
+
+#line 1 "udx.rbc-force-main.cu"
+
+#line 1 "udx.rbc-force-main.cu"
+// Grouped editable compilation unit for RBC force interfaces and implementation.
+
+#line 1 "udx.rbc-force-bending.cu"
+
+#line 1 "udx.rbc-force-bending.cu"
+// generated from udx.flat.cu
+#include "udx.config.cuh"
+
+/* begin src/rbc/force/bending/imp.cpp */
+#include <stdio.h>
+#include <assert.h>
+#include <stddef.h>
+
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
+/* begin src/inc/macro.h */
+#define CONTAINER_OF(ptr, type, member) \
+    ((type*)((char*)(ptr) - offsetof(type, member)))
+/* end src/inc/macro.h */
+
+#ifndef UDX_FORCE_DEF_COMMON
+#define UDX_FORCE_DEF_COMMON
+/* begin src/inc/def.h */
+/* solvent colors */
+#define XMACRO_COLOR(_)                         \
+    _(BLUE)                                     \
+    _(RED)
+
+#define ENUM_COLOR(a) a##_COLOR
+#define make_enum_color(a) ENUM_COLOR(a) ,
+enum {
+    XMACRO_COLOR(make_enum_color)
+    N_COLOR
+};
+#undef make_enum_color
+
+enum {
+    /* wall margins */
+    XWM = 6,
+    YWM = 6,
+    ZWM = 6,
+
+    SAFETY_FACTOR_MAXP = 3,
+
+    /* maximum number of particles per solid */
+    MAX_PSOLID_NUM = 12000,
+
+    /* maximum number of solids per node */
+    MAX_SOLIDS = 100,
+
+    /* maximum number of object types (solid, rbc, ...) */
+    MAX_MBR_TYPES = 2,
+    MAX_RIG_TYPES = 2,
+    MAX_OBJ_TYPES = MAX_MBR_TYPES + MAX_RIG_TYPES,
+
+    /* maximum number density of particles of the objects */
+    MAX_OBJ_DENSITY = 30,
+
+    /* maximum number of red blood cells per node */
+    MAX_CELL_NUM = 1500,
+
+    /* maximum texture size in bytes */
+    MAX_TEXO_SIZE = 100000000,
+
+    /* safety factor for dpd halo interactions */
+    HSAFETY_FACTOR = 10,
+
+    /* safety factor for odist fragments */
+    ODSTR_FACTOR = 3,
+};
+
+/* for the spring forces r = min(lmax*RBC_SPRING_CAP, r) */
+#define RBC_SPRING_CAP (0.99)
+/* end src/inc/def.h */
+#endif
+
+/* begin src/utils/error.h */
+#define ERR(fmt, ...)  do {                                     \
+        error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
+        error_report();                                         \
+        error_abort();                                          \
+    } while (0)
+
+/* udx check */
+#define UC(F) do {                              \
+        error_stack_push(__FILE__, __LINE__);   \
+        F;                                      \
+        if (error_get()) {                      \
+            error_report();                     \
+            error_abort();                      \
+        }                                       \
+        error_stack_pop();                      \
+    } while (0)
+
+/* [B]o[p] [c]heck */
+#define BPC(ans) do {                           \
+        BopStatus s = (ans);                    \
+        if (!bop_success(s)) {                  \
+            ERR(":%s:%d: %s\n%s\n",             \
+                __FILE__, __LINE__,             \
+                bop_report_error_desc(s),       \
+                bop_report_error_mesg());       \
+        }} while (0)
+
+void error_stack_push(const char *file, int line);
+void error_stack_pop();
+
+void error_signal(const char *file, int line, const char *fmt, ...);
+void error_signal_cuda(const char *file, int line, const char *msg);
+void error_signal_mpi(const char *file, int line, const char *msg);
+
+bool error_get();
+void error_report();
+void error_abort();
+
+void error_print_stack();
+/* end src/utils/error.h */
+/* begin src/utils/msg.h */
+// tag::int[]
+void msg_ini(int rank); // <1>
+void msg_print(const char *fmt, ...); // <2>
+// end::int[]
+/* end src/utils/msg.h */
+/* begin src/utils/imp.h */
+// tag::mem[]
+void emalloc(size_t, /**/ void**); // <1>
+void efree(void*); // <2>
+void *ememcpy(void *dest, const void *src, size_t n); // <3>
+// end::mem[]
+
+// tag::macros[]
+#define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
+#define EFREE(pdata) UC(efree(pdata))
+#define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
+// end::macros[]
+
+// tag::stdio[]
+void efopen(const char *fname, const char *mode, /**/ FILE**);
+void efclose(FILE*);
+void efread(void *ptr, size_t size, size_t nmemb, FILE*);
+void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
+void efgets(char *s, int size, FILE*);
+// end::stdio[]
+
+// tag::tools[]
+bool same_str(const char *a, const char *b); // <1>
+const char* get_filename_ext(const char*);
+// end::tools[]
+/* end src/utils/imp.h */
+
+/* begin src/rbc/force/bending/kantor/imp.h */
+struct RbcParams;
+struct Kantor;
+struct Force;
+struct MeshRead;
+struct RbcQuants;
+
+// tag::mem[]
+void kantor_ini(const MeshRead*, Kantor**);
+void kantor_fin(Kantor*);
+// end::mem[]
+
+// tag::apply[]
+void kantor_apply(Kantor*, const RbcParams*, const RbcQuants*, /**/ Force*); // <1>
+// end::apply[]
+/* end src/rbc/force/bending/kantor/imp.h */
+/* begin src/rbc/force/bending/juelicher/imp.h */
+struct RbcParams;
+struct Juelicher;
+struct Force;
+struct MeshRead;
+struct RbcQuants;
+
+// tag::mem[]
+void juelicher_ini(const MeshRead*, Juelicher**);
+void juelicher_fin(Juelicher*);
+// end::mem[]
+
+// tag::apply[]
+void juelicher_apply(Juelicher*, const RbcParams*, const RbcQuants*, /**/ Force*); // <1>
+// end::apply[]
+/* end src/rbc/force/bending/juelicher/imp.h */
+
+/* begin src/rbc/force/bending/imp.h */
+struct RbcParams;
+struct Bending;
+struct Force;
+struct MeshRead;
+struct RbcQuants;
+
+// tag::mem[]
+void bending_kantor_ini(const MeshRead*, Bending**);
+void bending_juelicher_ini(const MeshRead*, Bending**);
+void bending_none_ini(const MeshRead*, Bending**);
+
+void bending_fin(Bending*);
+// end::mem[]
+
+// tag::apply[]
+void bending_apply(Bending*, const RbcParams*, const RbcQuants*, /**/ Force*); // <1>
+// end::apply[]
+/* end src/rbc/force/bending/imp.h */
+/* begin src/rbc/force/bending/imp/main.h */
+struct Bending {
+    struct Bending_vtable *vtable;
+};
+
+struct Bending_vtable {
+    void (*apply)(Bending*, const RbcParams*, const RbcQuants*, /**/ Force*);
+    void (*fin)(Bending*);
+};
+
+void bending_apply(Bending *q, const RbcParams *params, const RbcQuants *quants, /**/ Force *ff) {
+    q->vtable->apply(q, params, quants, /**/ ff);
+}
+
+void bending_fin(Bending *q) {
+    q->vtable->fin(q);
+}
+
+struct BendingKantor {
+    Bending bending;
+    Kantor *kantor;
+};
+static void method_kantor_apply(Bending *q, const RbcParams *params, const RbcQuants *quants, /**/ Force *ff) {
+    BendingKantor *b = CONTAINER_OF(q, BendingKantor, bending);
+    UC(kantor_apply(b->kantor, params, quants, ff));
+}
+static void method_kantor_fin(Bending *q) {
+    BendingKantor *b = CONTAINER_OF(q, BendingKantor, bending);
+    UC(kantor_fin(b->kantor));
+    EFREE(q);
+}
+static Bending_vtable BendingKantor_vtable = { method_kantor_apply, method_kantor_fin};
+void bending_kantor_ini(const MeshRead *cell, /**/ Bending **pq) {
+    BendingKantor *q;
+    EMALLOC(1, &q);
+    UC(kantor_ini(cell, &q->kantor));
+    q->bending.vtable = &BendingKantor_vtable;
+    *pq = &q->bending;
+}
+
+
+struct BendingJuelicher {
+    Bending bending;
+    Juelicher *juelicher;
+};
+static void method_juelicher_apply(Bending *q, const RbcParams *params, const RbcQuants *quants, /**/ Force *ff) {
+    BendingJuelicher *b = CONTAINER_OF(q, BendingJuelicher, bending);
+    UC(juelicher_apply(b->juelicher, params, quants, ff));
+}
+static void method_juelicher_fin(Bending *q) {
+    BendingJuelicher *b = CONTAINER_OF(q, BendingJuelicher, bending);
+    UC(juelicher_fin(b->juelicher));
+    EFREE(q);
+}
+static Bending_vtable BendingJuelicher_vtable = { method_juelicher_apply, method_juelicher_fin};
+void bending_juelicher_ini(const MeshRead *cell, /**/ Bending **pq) {
+    BendingJuelicher *q;
+    EMALLOC(1, &q);
+    UC(juelicher_ini(cell, &q->juelicher));
+    q->bending.vtable = &BendingJuelicher_vtable;
+    *pq = &q->bending;
+}
+
+struct BendingNone { Bending bending; };
+static void method_none_apply(Bending*, const RbcParams*, const RbcQuants*, /**/ Force*) { }
+static void method_none_fin(Bending*) { }
+static Bending_vtable BendingNone_vtable = { method_none_apply, method_none_fin};
+void bending_none_ini(const MeshRead*, /**/ Bending **pq) {
+    BendingNone *q;
+    EMALLOC(1, &q);
+    q->bending.vtable = &BendingNone_vtable;
+    *pq = &q->bending;
+}
+/* end src/rbc/force/bending/imp/main.h */
+/* end src/rbc/force/bending/imp.cpp */
+
+#line 1 "src/rbc/force/bending/juelicher/imp.cu"
+
+#line 3 "udx.rbc-force-main.cu"
+
+#line 1 "udx.rbc-force.cu"
+
+#line 1 "udx.rbc-force.cu"
+// generated from udx.flat.cu
+#include "udx.config.cuh"
+
+/* begin src/rbc/force/conf.cpp */
+#include <stdio.h>
+#include <string.h>
+
+/* begin src/utils/error.h */
+#define ERR(fmt, ...)  do {                                     \
+        error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
+        error_report();                                         \
+        error_abort();                                          \
+    } while (0)
+
+/* udx check */
+#define UC(F) do {                              \
+        error_stack_push(__FILE__, __LINE__);   \
+        F;                                      \
+        if (error_get()) {                      \
+            error_report();                     \
+            error_abort();                      \
+        }                                       \
+        error_stack_pop();                      \
+    } while (0)
+
+/* [B]o[p] [c]heck */
+#define BPC(ans) do {                           \
+        BopStatus s = (ans);                    \
+        if (!bop_success(s)) {                  \
+            ERR(":%s:%d: %s\n%s\n",             \
+                __FILE__, __LINE__,             \
+                bop_report_error_desc(s),       \
+                bop_report_error_mesg());       \
+        }} while (0)
+
+void error_stack_push(const char *file, int line);
+void error_stack_pop();
+
+void error_signal(const char *file, int line, const char *fmt, ...);
+void error_signal_cuda(const char *file, int line, const char *msg);
+void error_signal_mpi(const char *file, int line, const char *msg);
+
+bool error_get();
+void error_report();
+void error_abort();
+
+void error_print_stack();
+/* end src/utils/error.h */
+/* begin src/conf/imp.h */
+struct Config;
+struct float3;
+struct int3;
+
+// tag::mem[]
+void conf_ini(/**/ Config **c);
+void conf_fin(/**/ Config *c);
+// end::mem[]
+
+// tag::ini[]
+void conf_read(int argc, char **argv, /**/ Config *cfg);
+// end::ini[]
+
+// tag::lookup[]
+void conf_lookup_int(const Config *c, const char *desc, int *a);
+void conf_lookup_float(const Config *c, const char *desc, float *a);
+void conf_lookup_bool(const Config *c, const char *desc, int *a);
+void conf_lookup_string(const Config *c, const char *desc, const char **a);
+void conf_lookup_vint(const Config *c, const char *desc, int maxn, int *n, int a[]);
+void conf_lookup_int3(const Config *c, const char *desc, int3 *a);
+void conf_lookup_vfloat(const Config *c, const char *desc, int maxn, int *n, float a[]);
+void conf_lookup_float3(const Config *c, const char *desc, float3 *a);
+void conf_lookup_vstring(const Config *c, const char *desc, int maxn, int *n, const char **ss);
+// end::lookup[]
+
+// tag::ns[]
+void conf_lookup_int_ns(const Config *c, const char *ns, const char *desc, int *a);
+void conf_lookup_float_ns(const Config *c, const char *ns, const char *desc, float *a);
+void conf_lookup_bool_ns(const Config *c, const char *ns, const char *desc, int *a);
+void conf_lookup_string_ns(const Config *c, const char *ns, const char *desc, const char **a);
+void conf_lookup_vint_ns(const Config *c, const char *ns, const char *desc, int maxn, int *n, int a[]);
+void conf_lookup_int3_ns(const Config *c, const char *ns, const char *desc, int3 *a);
+void conf_lookup_vfloat_ns(const Config *c, const char *ns, const char *desc, int maxn, int *n, float a[]);
+void conf_lookup_float3_ns(const Config *c, const char *ns, const char *desc, float3 *a);
+void conf_lookup_vstring_ns(const Config *c, const char *ns, const char *d, int maxn, int *n, const char **ss);
+// end::ns[]
+
+// tag::opt[]
+bool conf_opt_int(const Config *c, const char *desc, int *a);
+bool conf_opt_float(const Config *c, const char *desc, float *a);
+bool conf_opt_bool(const Config *c, const char *desc, int *a);
+bool conf_opt_string(const Config *c, const char *desc, const char **a);
+bool conf_opt_vint(const Config *c, const char *desc, int maxn, int *n, int a[]);
+bool conf_opt_int3(const Config *c, const char *desc, int3 *a);
+bool conf_opt_vfloat(const Config *c, const char *desc, int maxn, int *n, float a[]);
+bool conf_opt_float3(const Config *c, const char *desc, float3 *a);
+bool conf_opt_vstring(const Config *c, const char *desc, int maxn, int *n, const char **ss);
+// end::opt[]
+
+// tag::set[]
+void conf_set_int(const char *desc, int a, Config *c);
+void conf_set_vint(const char *desc, int nelem, const int a[], Config *cfg);
+void conf_set_int3(const char *desc, int3 a, Config *cfg);
+void conf_set_float(const char *desc, float a, Config *cfg);
+void conf_set_vfloat(const char *desc, int nelem, const float a[], Config *cfg);
+void conf_set_float3(const char *desc, float3 a, Config *cfg);
+void conf_set_bool(const char *desc, int a, Config *cfg);
+void conf_set_string(const char *desc, const char *a, Config *cfg);
+// end::set[]
+
+// tag::dump[]
+void conf_write_exe(const Config *cfg, FILE *stream);     // <1>
+void conf_write_history(const Config *cfg, FILE *stream); // <2>
+// end::dump[]
+/* end src/conf/imp.h */
+/* begin src/io/mesh_read/imp.h */
+struct int4;
+struct MeshRead;
+
+// tag::interface[]
+void mesh_read_ini_off(const char *path, MeshRead**);
+void mesh_read_ini_ply(const char *path, MeshRead**);
+void mesh_read_fin(MeshRead*);
+
+int mesh_read_get_nt(const MeshRead*);
+int mesh_read_get_nv(const MeshRead*);
+int mesh_read_get_ne(const MeshRead*);
+int mesh_read_get_md(const MeshRead*);
+
+const int4  *mesh_read_get_tri(const MeshRead*);
+const float *mesh_read_get_vert(const MeshRead*);
+const int4  *mesh_read_get_dih(MeshRead*);
+// end::interface[]
+/* end src/io/mesh_read/imp.h */
+
+/* begin src/rbc/force/imp.h */
+struct RbcParams;
+struct RbcForce;
+struct Force;
+struct Config;
+struct MeshRead;
+struct RbcQuants;
+
+// tag::mem[]
+void rbc_force_ini(const MeshRead*, RbcForce**);
+void rbc_force_fin(RbcForce*);
+// end::mem[]
+
+// tag::set[]
+void rbc_force_set_stressful(int nt, float totArea, /**/ RbcForce*); // <1>
+void rbc_force_set_stressfree(const char *fname, /**/ RbcForce*);    // <2>
+
+void rbc_force_set_rnd0(RbcForce*);           // <3>
+void rbc_force_set_rnd1(int seed, RbcForce*); // <4>
+void rbc_force_set_bending(const MeshRead*, const char*, RbcForce*);
+// end::set[]
+
+// tag::cnf[]
+void rbc_force_set_conf(const MeshRead*, const Config *cfg, const char *name, RbcForce*);
+// end::cnf[]
+
+// tag::apply[]
+void rbc_force_apply(RbcForce*, const RbcParams*, float dt, const RbcQuants*, /**/ Force*); // <1>
+void rbc_force_stat(/**/ float *pArea, float *pVolume); // <2>
+// end::apply[]
+/* end src/rbc/force/imp.h */
+
+void rbc_force_set_conf(const MeshRead *cell, const Config *cfg, const char *name, RbcForce *q) {
+    int stress_free, rnd;
+    const char *bending;
+    UC(conf_lookup_bool_ns(cfg, name, "stress_free", &stress_free));
+    UC(conf_lookup_bool_ns(cfg, name, "rnd", &rnd));
+    UC(conf_lookup_string_ns(cfg, name, "bending", &bending));
+    UC(rbc_force_set_bending(cell, bending, /**/ q));
+
+    if (stress_free) {
+        const char *fname;
+        UC(conf_lookup_string_ns(cfg, name, "stress_free_file", &fname));
+        UC(rbc_force_set_stressfree(fname, /**/ q));
+    }
+    else {
+        float Atot = 0;
+        int nt;
+        nt = mesh_read_get_nt(cell);
+        UC(conf_lookup_float_ns(cfg, name, "totArea", &Atot));
+        UC(rbc_force_set_stressful(nt, Atot, /**/ q));
+    }
+
+    if (rnd) {
+        int seed;
+        UC(conf_lookup_int_ns(cfg, name, "seed", &seed));
+        UC(rbc_force_set_rnd1(seed, q));
+    }
+    else {
+        UC(rbc_force_set_rnd0(q));
+    }
+}
+/* end src/rbc/force/conf.cpp */
+
+#line 1 "src/rbc/force/imp.cu"
+
+
+/* begin src/rbc/force/imp.cu */
+#include <stdio.h>
+#include <assert.h>
+
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
+
+
+#ifndef UDX_FORCE_DEF_COMMON
+#define UDX_FORCE_DEF_COMMON
+/* begin src/inc/def.h */
+/* solvent colors */
+#define XMACRO_COLOR(_)                         \
+    _(BLUE)                                     \
+    _(RED)
+
+#define ENUM_COLOR(a) a##_COLOR
+#define make_enum_color(a) ENUM_COLOR(a) ,
+enum {
+    XMACRO_COLOR(make_enum_color)
+    N_COLOR
+};
+#undef make_enum_color
+
+enum {
+    /* wall margins */
+    XWM = 6,
+    YWM = 6,
+    ZWM = 6,
+
+    SAFETY_FACTOR_MAXP = 3,
+
+    /* maximum number of particles per solid */
+    MAX_PSOLID_NUM = 12000,
+
+    /* maximum number of solids per node */
+    MAX_SOLIDS = 100,
+
+    /* maximum number of object types (solid, rbc, ...) */
+    MAX_MBR_TYPES = 2,
+    MAX_RIG_TYPES = 2,
+    MAX_OBJ_TYPES = MAX_MBR_TYPES + MAX_RIG_TYPES,
+
+    /* maximum number density of particles of the objects */
+    MAX_OBJ_DENSITY = 30,
+
+    /* maximum number of red blood cells per node */
+    MAX_CELL_NUM = 1500,
+
+    /* maximum texture size in bytes */
+    MAX_TEXO_SIZE = 100000000,
+
+    /* safety factor for dpd halo interactions */
+    HSAFETY_FACTOR = 10,
+
+    /* safety factor for odist fragments */
+    ODSTR_FACTOR = 3,
+};
+
+/* for the spring forces r = min(lmax*RBC_SPRING_CAP, r) */
+#define RBC_SPRING_CAP (0.99)
+/* end src/inc/def.h */
+#endif
+/* begin src/inc/type.h */
+#ifndef UDX_FORCE_TYPE_COMMON
+#define UDX_FORCE_TYPE_COMMON
+template <typename T, int N>
+struct Sarray { /* [s]tatic array */
+    T d[N];
+};
+
+struct Particle {
+    float r[3], v[3];
+};
+
+struct Rigid {
+    float Iinv[6],            /* moment of inertia            6        */
+        mass,                 /* mass of the solid            7        */
+        com[3],               /* [c]enter [o]f [m]ass         10       */
+        v[3], om[3],          /* linear and angular velocity  13 16    */
+        e0[3], e1[3], e2[3],  /* local referential            19 22 25 */
+        fo[3], to[3],         /* force, torque                28 31    */
+        id;                   /* id of the solid              32       */
+};
+
+struct Force {
+    float f[3];
+};
+
+struct Momentum {
+    float P[3], L[3]; /* linear and angular momentum */
+};
+
+struct Positioncp {
+    float rc[3]; /* current position  */
+    float rp[3]; /* previous position */
+};
+
+typedef Sarray<int, 26>       int26;
+typedef Sarray<int, 27>       int27;
+
+typedef Sarray<int*, 26>     intp26;
+typedef Sarray<Particle*, 26> Pap26;
+typedef Sarray<Force*,    26> Fop26;
+typedef Sarray<Momentum*, 26> Mop26;
+typedef Sarray<Positioncp*, 26> Pocpp26;
+
+/* particles wrap */
+struct PaWrap {
+    int n;
+    const Particle *pp;
+};
+
+/* forces wrap */
+struct FoWrap {
+    int n;
+    Force *ff;
+};
+/* end src/inc/type.h */
+#endif
+/* begin src/inc/dev.h */
+/* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
+#define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
+
+/* a common kernel execution configuration */
+#define k_cnf(n) ceiln((n), 128), 128
+
+#define dSync() CC(d::DeviceSynchronize())
+
+#define D2D d::MemcpyDeviceToDevice
+#define D2H d::MemcpyDeviceToHost
+#define H2D d::MemcpyHostToDevice
+#define H2H d::MemcpyHostToHost
+#define A2A d::MemcpyDefault /* "[a]ny to [a]ny" */
+
+#define cD2D(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), D2D))
+#define cH2H(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), H2H))  /* [t]to, [f]rom */
+#define cA2A(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), A2A))
+#define cD2H(H, D, n) CC(d::Memcpy((H), (D), (n) * sizeof((H)[0]), D2H))
+#define cH2D(D, H, n) CC(d::Memcpy((D), (H), (n) * sizeof((H)[0]), H2D))
+
+#define aD2D(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), D2D))
+#define aH2H(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), H2H))  /* [t]to, [f]rom */
+#define aA2A(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), A2A))
+#define aD2H(H, D, n) CC(d::MemcpyAsync((H), (D), (n) * sizeof((H)[0]), D2H))
+#define aH2D(D, H, n) CC(d::MemcpyAsync((D), (H), (n) * sizeof((H)[0]), H2D))
+
+/* device allocation */
+#define Dfree(D)      CC(d::Free(D))
+#define Dalloc(D, n)  CC(d::Malloc((void**)(D), (n) * sizeof(**(D))))
+
+/* [d]evice set */
+#define Dset(P, v, n) CC(d::Memset(P, v, (n)*sizeof(*(P))))
+#define Dzero(P, n)   Dset(P, 0, n)
+
+/* [d]evice [a]synchronous set */
+#define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
+#define DzeroA(P, n)   DsetA(P, 0, n)
+/* end src/inc/dev.h */
+/* begin src/math/dev.h */
+#ifndef UDX_FORCE_MATH_COMMON
+#define UDX_FORCE_MATH_COMMON
+/* use templates here because we might have mixed float/double */
+
+#define _HD_ __host__ __device__
+
+template <typename T1, typename T2>
+_HD_ void scal(const T1 a, /*io*/ T2 *b) {
+    b->x *= a;
+    b->y *= a;
+    b->z *= a;
+}
+
+template <typename T1, typename T2>
+_HD_ void add(const T1 *a, /*io*/ T2 *b) {
+    b->x += a->x;
+    b->y += a->y;
+    b->z += a->z;
+}
+
+template <typename T1, typename T2, typename T3>
+_HD_ void diff(const T1 *a, const T2 *b, /**/ T3 *c) {
+    c->x = a->x - b->x;
+    c->y = a->y - b->y;
+    c->z = a->z - b->z;
+}
+
+template <typename T1, typename T2, typename T3>
+_HD_ T1 dot(const T2 *a, const T3 *b) {
+    return a->x * b->x + a->y * b->y + a->z * b->z;
+}
+
+template <typename T1, typename T2, typename T3>
+_HD_ void cross(const T1 *a, const T2 *b, /**/ T3 *c) {
+    c->x = a->y * b->z - a->z * b->y;
+    c->y = a->z * b->x - a->x * b->z;
+    c->z = a->x * b->y - a->y * b->x;
+}
+
+template <typename T1, typename T2, typename T3>
+_HD_ void scalmult(const T1 *a, const T2 x, /**/ const T3 *b) {
+    b->x = a->x * x;
+    b->y = a->y * x;
+    b->z = a->z * x;
+}
+
+
+template <typename T1, typename T2, typename T3, typename T4>
+_HD_ void apxb(const T1 *a, const T2 x, const T3 *b, /**/ T4 *c) {
+    c->x = a->x + x * b->x;
+    c->y = a->y + x * b->y;
+    c->z = a->z + x * b->z;
+}
+
+template <typename T1, typename T2, typename T3>
+_HD_ void axpy(const T1 a, const T2 *x, /*io*/ T3 *y) {
+    y->x += a * x->x;
+    y->y += a * x->y;
+    y->z += a * x->z;
+}
+/* end src/math/dev.h */
+#endif
+/* begin src/math/tri/dev.h */
+#ifdef TRI_HOST
+  #define _I_
+  #define _S_ static
+  #define BEGIN namespace tri_hst {
+  #define END }
+#else
+  #define _I_ static __device__
+  #define _S_ static __device__
+  #define BEGIN namespace tri_dev {
+  #define END }
+#endif
+
+BEGIN
+
+_S_ void diff(const double *a, const double *b, /**/ double  *c) {
+    enum {X, Y, Z};
+    c[X] = a[X] - b[X];
+    c[Y] = a[Y] - b[Y];
+    c[Z] = a[Z] - b[Z];
+}
+_S_ double vabs(double *a) {
+    enum {X, Y, Z};
+    double r;
+    r = a[X]*a[X] + a[Y]*a[Y] + a[Z]*a[Z];
+    return sqrt(r);
+}
+_S_ void swap(double *a, double *b) {
+    double t;
+    t = *a; *a = *b; *b = t;
+}
+_S_ int less(double *a, double *b) { return (*a) < (*b); }
+_S_ void  sort3(double *a, double *b, double *c) {
+    if (less(c, b)) swap(c, b);
+    if (less(b, a)) swap(b, a);
+    if (less(c, b)) swap(c, b);
+}
+
+_I_ double kahan_area0(double a, double b, double c) {
+    sort3(&c, &b, &a); /* make a > b > c */
+    return sqrt((a+(b+c))*(c-(a-b))*(c+(a-b))*(a+(b-c)))/4;
+}
+
+_I_ double kahan_area(const double r0[3], const double r1[3], const double r2[3]) {
+    double r01[3], r12[3], r20[3], a, b, c;
+    diff(r0, r1, /**/ r01);
+    diff(r1, r2, /**/ r12);
+    diff(r2, r0, /**/ r20);
+    a = vabs(r01); b = vabs(r12); c = vabs(r20);
+    return kahan_area0(a, b, c);
+}
+
+_S_ double orient2d_xy(const double a[3], const double b[3], const double c[3]) {
+    enum {X, Y, Z};
+    enum {P = X, Q = Y};
+    double acp, bcp, acq, bcq;
+    acp = a[P] - c[P]; bcp = b[P] - c[P];
+    acq = a[Q] - c[Q]; bcq = b[Q] - c[Q];
+    return acp * bcq - acq * bcp;
+}
+
+_S_ double orient2d_zx(const double a[3], const double b[3], const double c[3]) {
+    enum {X, Y, Z};
+    enum {P = Z, Q = X};
+    double acp, bcp, acq, bcq;
+    acp = a[P] - c[P]; bcp = b[P] - c[P];
+    acq = a[Q] - c[Q]; bcq = b[Q] - c[Q];
+    return acp * bcq - acq * bcp;
+}
+
+_S_ double orient2d_yz(const double a[3], const double b[3], const double c[3]) {
+    enum {X, Y, Z};
+    enum {P = Y, Q = Z};
+    double acp, bcp, acq, bcq;
+    acp = a[P] - c[P]; bcp = b[P] - c[P];
+    acq = a[Q] - c[Q]; bcq = b[Q] - c[Q];
+    return acp * bcq - acq * bcp;
+}
+
+_I_ double orient3d(const double a[3], const double b[3], const double c[3], const double d[3]) {
+    enum {X, Y, Z};
+    double ax, ay, az, bx, by, bz, cx, cy, cz;
+
+    ax = a[X] - d[X]; ay = a[Y] - d[Y]; az = a[Z] - d[Z];
+    bx = b[X] - d[X]; by = b[Y] - d[Y]; bz = b[Z] - d[Z];
+    cx = c[X] - d[X]; cy = c[Y] - d[Y]; cz = c[Z] - d[Z];
+
+    return ax*(by*cz - bz*cy) + bx*(cy*az - cz*ay) + cx*(ay*bz - az*by);
+}
+
+_I_ void ac_bc_cross(const double a[3], const double b[3], const double c[3], /**/ double r[3]) {
+    enum {X, Y, Z};
+    r[X] = orient2d_yz(a, b, c);
+    r[Y] = orient2d_zx(a, b, c);
+    r[Z] = orient2d_xy(a, b, c);
+}
+
+_I_ double shewchuk_area(const double a[3], const double b[3], const double c[3]) {
+    double x, y, z;
+    x = orient2d_yz(a, b, c);
+    y = orient2d_zx(a, b, c);
+    z = orient2d_xy(a, b, c);
+    return sqrt(x*x + y*y + z*z)/2;
+}
+
+_I_ void dihedral_xy(const double a[3], const double b[3], const double c[3], const double d[3],
+                       double *px, double *py) {
+    enum {X, Y, Z};
+    double bcx, bcy, bcz, bc;
+    double k[3], l[3];
+
+    ac_bc_cross(b, c, a, /**/ k);
+    ac_bc_cross(c, b, d, /**/ l);
+
+    bcx = b[X] - c[X];
+    bcy = b[Y] - c[Y];
+    bcz = b[Z] - c[Z];
+    bc = sqrt(bcx*bcx + bcy*bcy + bcz*bcz);
+
+    *py = -orient3d(a, b, c, d)*bc;
+    *px = k[X]*l[X] + k[Y]*l[Y] + k[Z]*l[Z];
+}
+
+END
+
+#undef _I_
+#undef _S_
+#undef BEGIN
+#undef END
+/* end src/math/tri/dev.h */
+
+
+
+/* begin src/utils/error.h */
+#define ERR(fmt, ...)  do {                                     \
+        error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
+        error_report();                                         \
+        error_abort();                                          \
+    } while (0)
+
+/* udx check */
+#define UC(F) do {                              \
+        error_stack_push(__FILE__, __LINE__);   \
+        F;                                      \
+        if (error_get()) {                      \
+            error_report();                     \
+            error_abort();                      \
+        }                                       \
+        error_stack_pop();                      \
+    } while (0)
+
+/* [B]o[p] [c]heck */
+#define BPC(ans) do {                           \
+        BopStatus s = (ans);                    \
+        if (!bop_success(s)) {                  \
+            ERR(":%s:%d: %s\n%s\n",             \
+                __FILE__, __LINE__,             \
+                bop_report_error_desc(s),       \
+                bop_report_error_mesg());       \
+        }} while (0)
+
+void error_stack_push(const char *file, int line);
+void error_stack_pop();
+
+void error_signal(const char *file, int line, const char *fmt, ...);
+void error_signal_cuda(const char *file, int line, const char *msg);
+void error_signal_mpi(const char *file, int line, const char *msg);
+
+bool error_get();
+void error_report();
+void error_abort();
+
+void error_print_stack();
+/* end src/utils/error.h */
+/* begin src/utils/msg.h */
+// tag::int[]
+void msg_ini(int rank); // <1>
+void msg_print(const char *fmt, ...); // <2>
+// end::int[]
+/* end src/utils/msg.h */
+/* begin src/utils/imp.h */
+// tag::mem[]
+void emalloc(size_t, /**/ void**); // <1>
+void efree(void*); // <2>
+void *ememcpy(void *dest, const void *src, size_t n); // <3>
+// end::mem[]
+
+// tag::macros[]
+#define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
+#define EFREE(pdata) UC(efree(pdata))
+#define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
+// end::macros[]
+
+// tag::stdio[]
+void efopen(const char *fname, const char *mode, /**/ FILE**);
+void efclose(FILE*);
+void efread(void *ptr, size_t size, size_t nmemb, FILE*);
+void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
+void efgets(char *s, int size, FILE*);
+// end::stdio[]
+
+// tag::tools[]
+bool same_str(const char *a, const char *b); // <1>
+const char* get_filename_ext(const char*);
+// end::tools[]
+/* end src/utils/imp.h */
+
+/* begin src/d/q.h */
+/* function and variable type [q]ualifiers */
+
+#if   defined(DEV_CUDA)
+/* begin src/d/cuda/q.h */
+/* B.1. Function Type Qualifiers */
+/* B.2. Variable Type Qualifiers */
+/* end src/d/cuda/q.h */
+#elif defined(DEV_CPU)
+/* begin src/d/cpu/q.h */
+/* B.1. Function Type Qualifiers */
+#ifdef __device__
+  #undef  __device__
+  #define __device__
+#endif
+
+#ifdef __global__
+  #undef  __global__
+  #define __global__
+#endif
+
+#ifdef __host__
+  #undef  __host__
+  #define __host__
+#endif
+
+#ifdef __noinline__
+  #undef  __noinline__
+  #define __noinline__
+#endif
+
+#ifdef __forceinline__
+  #undef  __forceinline__
+  #define __forceinline__
+#endif
+
+/* B.2. Variable Type Qualifiers */
+/* __device__ : also a function qualifier */
+#ifdef __constant__
+  #undef  __constant__
+  #define __constant__
+#endif
+
+#ifdef __shared__
+  #undef  __shared__
+  #define __shared__
+#endif
+
+#ifdef __managed__
+  #undef  __managed__
+  #define __managed__
+#endif
+
+#ifdef __restrict__
+  #undef  __restrict__
+  #define __restrict__
+#endif
+/* end src/d/cpu/q.h */
+#else
+  #error DEV_* is undefined
+#endif
+/* end src/d/q.h */
+/* begin src/d/api.h */
+#ifndef UDX_FORCE_DEVICE_API_COMMON
+#define UDX_FORCE_DEVICE_API_COMMON
+namespace d {  /* a wrapper for device API */
+typedef int Stream_t; /* TODO: streams are not supported */
+enum {MemcpyHostToHost, MemcpyHostToDevice,
+      MemcpyDeviceToHost, MemcpyDeviceToDevice,
+      MemcpyDefault};
+
+// tag::more[]
+const char *emsg();
+int alloc_pinned(void **pHost, size_t size);
+int is_device_pointer(const void *ptr);
+// end::more[]
+
+// tag::api[]
+int GetSymbolAddress(void **devPtr, const void *symbol);
+int Malloc(void **p, size_t);
+int MemcpyToSymbol(const void *symbol, const void *src, size_t count, size_t offset=0, int kind=MemcpyHostToDevice);
+int MemcpyFromSymbol(void *dst, const void *symbol, size_t count, size_t offset=0, int kind=MemcpyDeviceToHost);
+int HostGetDevicePointer(void **pDevice, void *pHost, unsigned int flags);
+int Memcpy (void *dst, const void *src, size_t count, int kind);
+int MemsetAsync (void *devPtr, int value, size_t count, Stream_t stream=0);
+int Memset (void *devPtr, int value, size_t count);
+int MemcpyAsync (void * dst, const void * src, size_t count, int kind, Stream_t stream = 0);
+int Free (void *devPtr);
+int FreeHost (void *hstPtr);
+int DeviceSynchronize (void);
+int PeekAtLastError(void);
+// end::api[]
+}
+/* end src/d/api.h */
+ #endif
+/* begin src/d/ker.h */
+#if   defined(DEV_CUDA)
+/* begin src/d/cuda/ker.h */
+#define  Ifetch(t, i)  tex1Dfetch(t, i)
+#define F4fetch(t, i)  tex1Dfetch(t, i)
+#define F2fetch(t, i)  tex1Dfetch(t, i)
+#define  Ffetch(t, i)  tex1Dfetch(t, i)
+#define Tfetch(T, t, i) tex1Dfetch<T>(t, i)
+
+#define Ttex3D(T, to, i, j, k) tex3D<T>(to, i, j, k);
+/* end src/d/cuda/ker.h */
+#elif defined(DEV_CPU)
+/* begin src/d/cpu/ker.h */
+#define atomicAdd(...) (0)
+
+#define atomicExch(...)
+#define __float2half_rn(...) (0)
+#define __fmaf_rz(...) (0.0)
+#define __ldg(p) (*(p))
+#define __popc(...)
+#define __shfl(...) (0.0)
+#define __shfl_down(...) (0.0)
+#define __shfl_up(...) (0)
+#define __shfl_xor(...) (0)
+
+#define __syncthreads(...)
+
+#define tex3D(...)
+
+#define  Ifetch(t, i)  (0);
+#define F4fetch(t, i)  (make_float4(0, 0, 0, 0))
+#define F2fetch(t, i)  (make_float2(0, 0))
+#define Ffetch(t, i)   (0.0)
+#define Tfetch(T, t, i) (T{})
+
+#define Ttex3D(T, to, i, j, k) (T{})
+/* end src/d/cpu/ker.h */
+/* begin src/d/cpu/wrap.h */
+namespace d {
+static uint3 threadIdx, blockIdx, gridDim;
+static dim3  blockDim;
+static int   warpSize = 1;
+}
+
+#define threadIdx d::threadIdx
+#define blockDim  d::blockDim
+#define gridDim   d::gridDim
+#define blockIdx  d::blockIdx
+#define warpSize  d::warpSize
+/* end src/d/cpu/wrap.h */
+#else
+  #error DEV_* is undefined
+#endif
+/* end src/d/ker.h */
+/* begin src/utils/cc.h */
+/* [c]uda [c]heck macros */
+
+#if   defined(CC_SYNC)
+/* begin src/utils/cc/sync.h */
+/* Aggressive [sync]ronization */
+#define CC(ans)                                             \
+    do {                                                    \
+        d::DeviceSynchronize();                             \
+        cc::check((ans), __FILE__, __LINE__);               \
+        d::DeviceSynchronize();                             \
+    } while (0)
+/* end src/utils/cc/sync.h */
+#elif defined(CC_RELEASE)
+/* begin src/utils/cc/release.h */
+/* [c]cuda [c]heck */
+#define CC(ans)                                             \
+    do { cc::check((ans), __FILE__, __LINE__);} while (0)
+/* end src/utils/cc/release.h */
+#else
+  #error CC_* is undefined
+#endif
+
+/* begin src/utils/cc/common.h */
+namespace cc {
+void check(int rc, const char *file, int line);
+}
+
+
+/* end src/utils/cc/common.h */
+
+/* TODO: header includes header */
+/* end src/utils/cc.h */
+/* begin src/utils/kl.h */
+#ifndef UDX_FORCE_KL_COMMON
+#define UDX_FORCE_KL_COMMON
+/* [k]ernel [l]aunch macros */
+
+#if    defined(KL_RELEASE)
+/* begin src/utils/kl/release.h */
+#define KL_BEFORE(s, C) if (!kl::safe(ESC C)) continue;
+#define KL_CALL(F, C, A) F<<<ESC C>>>A
+#define KL_AFTER(s)
+
+namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
+/* end src/utils/kl/release.h */
+#elif  defined(KL_NONE)
+/* begin src/utils/kl/none.h */
+#define KL_BEFORE(s, C)
+#define KL_CALL(F, C, A)
+#define KL_AFTER(s)
+
+namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
+/* end src/utils/kl/none.h */
+#elif  defined(KL_SYNC)
+/* begin src/utils/kl/sync.h */
+#define KL_BEFORE(s, C) if (!kl::safe(ESC C)) continue;
+#define KL_CALL(F, C, A) F<<<ESC C>>>A
+#define KL_AFTER(s)                             \
+    do {                                        \
+        dSync();                                \
+        CC(d::PeekAtLastError());               \
+    } while(0)
+
+namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
+/* end src/utils/kl/sync.h */
+#else
+  #error KL_* is undefined
+#endif
+
+/* begin src/utils/kl/common.h */
+namespace kl {
+inline int safe0(dim3 i, dim3 j) {
+    msg(i.x, i.y, i.z,   j.x, j.y, j.z);
+    return i.x>0 && i.y>0 && i.z>0   &&   j.x>0 && j.y>0 && j.z>0;
+}
+inline int safe(dim3 i, dim3 j)                    { return safe0(i, j); }
+inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
+}
+/* end src/utils/kl/common.h */
+/* begin src/utils/kl/macro.h */
+#define ESC(...) __VA_ARGS__
+#define KL(F, C, A)                             \
+    do  {                                       \
+        KL_BEFORE(#F, C);                       \
+        KL_CALL(F, C, A);                       \
+        KL_AFTER(#F);                           \
+    } while (0)
+/* end src/utils/kl/macro.h */
+
+/* TODO: header includes header */
+/* end src/utils/kl.h */
+#endif
+
+/* begin src/rbc/params/imp.h */
+struct Config;
+struct RbcParams;
+struct RbcParams_v {
+    float gammaC, gammaT, kBT;
+    float kb, phi;
+    float ks, x0, mpow;
+    float ka, kd, kv;
+    float totArea, totVolume;
+};
+
+// tag::mem[]
+void rbc_params_ini(RbcParams **);
+void rbc_params_fin(RbcParams *);
+// end::mem[]
+
+// tag::set[]
+void rbc_params_set_fluct(float gammaC, float gammaT, float kBT, RbcParams *);
+void rbc_params_set_bending(float kb, float phi, RbcParams *);
+void rbc_params_set_spring(float ks, float x0, float mpow , RbcParams *);
+void rbc_params_set_area_volume(float ka, float kd, float kv, RbcParams *);
+void rbc_params_set_tot_area_volume(float totArea, float totVolume, RbcParams *);
+// end::set[]
+
+// tag::get[]
+double rbc_params_get_tot_volume(const RbcParams *);
+// end::get[]
+
+// tag::cnf[]
+void rbc_params_set_conf(const Config *c, const char *name, RbcParams *);
+// end::cnf[]
+
+// tag::view[]
+RbcParams_v rbc_params_get_view(const RbcParams *);
+// end::view[]
+/* end src/rbc/params/imp.h */
+/* begin src/rbc/adj/imp.h */
+struct Adj;
+struct Adj_v;
+struct AdjMap;
+struct int4;
+
+// tag::interface[]
+void adj_ini(int md, int nt, int nv, const int4 *tt, /**/ Adj**);
+void adj_fin(Adj*);
+int  adj_get_map(int i, const Adj*, /**/ AdjMap *m);
+int  adj_get_max(const Adj*);
+void adj_get_anti(const Adj*, /**/ int *anti);
+
+void adj_view_ini(const Adj*, Adj_v**);
+void adj_view_fin(Adj_v*);
+// end::interface[]
+/* end src/rbc/adj/imp.h */
+/* begin src/rbc/shape/imp.h */
+struct RbcShape;
+struct MeshRead;
+struct Adj;
+
+/* rr: vertices: x0 y0 z0   x1 y1 z1 ... */
+
+// tag::mem[]
+void rbc_shape_ini(const Adj*, const float *rr, /**/ RbcShape**);
+void rbc_shape_fin(/**/ RbcShape*);
+// end::mem[]
+
+// tag::int[]
+void rbc_shape_edg (RbcShape*, /**/ float**); // <1>
+void rbc_shape_area(RbcShape*, /**/ float**); // <2>
+
+void rbc_shape_total_area(RbcShape*, /**/ float*);    // <3>
+void rbc_shape_total_volume(RbcShape*, /**/ float*);  // <4>
+// end::int[]
+/* end src/rbc/shape/imp.h */
+/* begin src/rbc/force/bending/imp.h */
+struct RbcParams;
+struct Bending;
+struct Force;
+struct MeshRead;
+struct RbcQuants;
+
+// tag::mem[]
+void bending_kantor_ini(const MeshRead*, Bending**);
+void bending_juelicher_ini(const MeshRead*, Bending**);
+void bending_none_ini(const MeshRead*, Bending**);
+
+void bending_fin(Bending*);
+// end::mem[]
+
+// tag::apply[]
+void bending_apply(Bending*, const RbcParams*, const RbcQuants*, /**/ Force*); // <1>
+// end::apply[]
+/* end src/rbc/force/bending/imp.h */
+
+/* begin src/rbc/force/rnd/imp.h */
+struct RbcRnd;
+
+// tag::enum[]
+#ifndef UDX_RBC_FORCE_SEED_TIME
+#define UDX_RBC_FORCE_SEED_TIME
+enum {SEED_TIME = -1}; /* magic seed: ini from "time" */
+#endif
+// end::enum[]
+
+// tag::mem[]
+void rbc_rnd_ini(int n, long seed, RbcRnd**);
+void rbc_rnd_fin(RbcRnd*);
+// end::mem[]
+
+// tag::int[]
+void rbc_rnd_gen(RbcRnd*, int n, /**/ float**); // <1>
+float rbc_rnd_get_hst(const RbcRnd*, int i);    // <2>
+// end::int[]
+/* end src/rbc/force/rnd/imp.h */
+/* begin src/rbc/type.h */
+struct AreaVolume;
+struct Particle;
+
+// tag::quants[]
+struct RbcQuants {
+    int n, nc;               /* number of particles, cells                */
+    int nt, nv;              /* number of triangles and vertices per mesh */
+    int md;                  /* maximum valence of the mesh               */
+    Particle *pp, *pp_hst;   /* vertices particles on host and device     */
+    bool ids;                /* global ids active ?                       */
+    int *ii;                 /* global ids on host                        */
+    AreaVolume *area_volume; /* to compute area and volume */
+};
+// end::quants[]
+
+/* end src/rbc/type.h */
+
+/* begin src/rbc/adj/type/common.h */
+// tag::interface[]
+struct AdjMap {
+    int i0, i1, i2, i3, i4;
+    int rbc;
+};
+// end::interface[]
+/* end src/rbc/adj/type/common.h */
+/* begin src/rbc/adj/type/dev.h */
+struct Adj_v {
+    int *adj0;
+    int *adj1;
+    int nv, md;
+};
+
+/* end src/rbc/adj/type/dev.h */
+/* begin src/rbc/adj/dev.h */
+static __device__ int fetch(const int *a, int i) { return a[i]; }
+static __device__ int adj_get_map0(int md, int nv, int i, const int *adj0, const int *adj1, /**/ AdjMap *m) {
+    int i0, i1, i2, i3, i4;
+    int rbc, offset, j, k;
+    i0 = i / md;
+    j  = i % md;
+
+    k   = (i0 % nv) * md;
+    i1 = fetch(adj0, k + j);
+    if (i1 == -1) return 0; /* invalid */
+
+    i2 = fetch(adj0, k + ((j + 1) % md));
+    if (i2 == -1) {
+        i2 = fetch(adj0, k    );
+        i3 = fetch(adj0, k + 1);
+    } else {
+        i3 = fetch(adj0, k + ((j + 2) % md));
+        if (i3 == -1) i3 = fetch(adj0, k);
+    }
+    i4 = fetch(adj1, k + j);
+
+    rbc = i0 / nv;
+    offset = rbc * nv;
+    i1 += offset; i2 += offset; i3 += offset; i4 += offset; /* no i0 */
+
+    assert(rbc < MAX_CELL_NUM);
+
+    m->rbc = rbc;
+    m->i0 = i0; m->i1 = i1; m->i2 = i2; m->i3 = i3; m->i4 = i4;
+    return 1;
+}
+
+// tag::interface[]
+static __device__ int adj_get_map(int i, Adj_v *adj, /**/ AdjMap *m) {
+// end::interface[]
+    int md, nv;
+    md = adj->md;
+    nv = adj->nv;
+    const int *adj0 = adj->adj0;
+    const int *adj1 = adj->adj1;
+    return adj_get_map0(md, nv, i, adj0, adj1, m);
+}
+/* end src/rbc/adj/dev.h */
+/* begin src/rbc/force/area_volume/imp.h */
+struct AreaVolume;
+struct Particle;
+struct int4;
+
+// tag::interface[]
+void area_volume_ini(int nv, int nt, const int4 *tt, int max_cell, AreaVolume**); // <1>
+void area_volume_fin(AreaVolume*);
+
+void area_volume_compute(AreaVolume*, int nm, const Particle*, /**/ float **av); // <2>
+void area_volume_host(AreaVolume*, /**/ float **av); // <3>
+// end::interface[]
+/* end src/rbc/force/area_volume/imp.h */
+
+
+/* begin src/rbc/force/imp/type.h */
+enum {
+    RBC_SFUL,
+    RBC_SFREE
+};
+
+struct StressFree_v {
+    float *ll; /* eq. spring lengths */
+    float *aa; /* eq. triangle areas */
+};
+
+struct StressFul_v {
+    float l0; /* eq. spring length */
+    float a0; /* eq. triangle area */
+};
+
+union SFreeInfo {
+    StressFul_v sful;
+    StressFree_v sfree;
+};
+
+enum {
+    RBC_RND0,
+    RBC_RND1,
+};
+
+struct Rnd0_v {};
+struct Rnd1_v {
+    int *anti; /* indices of anti edges */
+    float *rr; /* random numbers (managed by RbcRnd) */
+};
+
+union RndInfo {
+    Rnd0_v rnd0;
+    Rnd1_v rnd1;
+};
+
+struct RbcForce {
+    RbcRnd *rnd;
+    Bending *bending;
+
+    Adj   *adj;
+    Adj_v *adj_v;
+
+    int stype;
+    SFreeInfo sinfo;
+    int rtype;
+    RndInfo rinfo;
+};
+/* end src/rbc/force/imp/type.h */
+
+namespace rbc_force_dev {
+/* begin src/rbc/force/dev/type.h */
+struct StressInfo { double l0, a0; };
+struct Rnd0Info {};
+struct Rnd1Info { double r; };
+/* end src/rbc/force/dev/type.h */
+/* begin src/rbc/force/dev/fetch.h */
+static __device__ StressInfo fetch_stress_info(int, StressFul_v sv) {
+    StressInfo si;
+    si.l0 = sv.l0;
+    si.a0 = sv.a0;
+    return si;
+}
+
+static __device__ StressInfo fetch_stress_info(int i, StressFree_v sv) {
+    StressInfo si;
+    si.l0 = sv.ll[i];
+    si.a0 = sv.aa[i];
+    return si;
+}
+
+static __device__ Rnd0Info fetch_rnd_info(int, int, Rnd0_v rv) {
+    Rnd0Info ri;
+    return ri;
+}
+
+static __device__ Rnd1Info fetch_rnd_info(int i0, int j, Rnd1_v rv) {
+    /* i0: edge index; j: vertex index */
+    Rnd1Info ri;
+    int i1;
+    i1 = rv.anti[i0];
+    if (i1 > i0) j = j - i0 + i1;
+    ri.r = rv.rr[j];
+    return ri;
+}
+/* end src/rbc/force/dev/fetch.h */
+/* begin src/rbc/force/dev/common.h */
+static __device__ double3 fvolume(const RbcParams_v *par, double3 r2, double3 r3, double v0, double v) {
+    double f0;
+    double3 f;
+    cross(&r3, &r2, /**/ &f);
+    f0 = par->kv * (v - v0) / (6 * v0);
+    scal(f0, /*io*/ &f);
+    return f;
+}
+
+static __device__ double3 farea(const RbcParams_v *par, double3 x21, double3 x31, double3 x32,   double a0, double A0, double A) {
+    double3 nn, f;
+    double a, f0, fa, fA;
+    cross(&x21, &x31, /**/ &nn);
+    cross(&nn, &x32,  /**/ &f);
+    a = 0.5 * sqrt(dot<double>(&nn, &nn));
+
+    fA = - par->ka * (A - A0) / (4 * A0 * a);
+    fa = - par->kd * (a - a0) / (4 * a0 * a);
+    f0 = fA + fa;
+    scal(f0, /*io*/ &f);
+    return f;
+}
+
+enum {SPRING_OK, SPRING_LONG};
+static __device__ double sq(double x) { return x * x; }
+static __device__ double wlc0(double r) { return (4*sq(r)-9*r+6)/(4*sq(r-1)); }
+static __device__ double wlc(double lmax, double ks, double r) { return ks/lmax*wlc0(r/lmax); }
+static __device__ double3 fspring(const RbcParams_v *par, double3 x21, double l0, /**/ int *pstatus) {
+  #define wlc_r(r) (wlc(lmax, ks, r))
+    double m, r, fwlc, fpow, lmax, ks, x0;
+    *pstatus = SPRING_OK;
+    ks = par->ks; m = par->mpow; x0 = par->x0;
+    r = sqrtf(dot<double>(&x21, &x21));
+    lmax = l0 / x0;
+    if (r >= lmax) {
+        *pstatus = SPRING_LONG;
+        r = RBC_SPRING_CAP * lmax;
+    }
+    fwlc =   wlc_r(r); /* make fwlc + fpow = 0 for r = l0 */
+    fpow = - wlc_r(l0) * powf(l0, m + 1) / powf(r, m + 1);
+    scal(fwlc + fpow, /*io*/ &x21);
+    return x21;
+  #undef wlc_r
+}
+
+static __device__ void report_tri(double3 r1, double3 r2, double3 r3) {
+    printf("bad triangle: [%g %g %g] [%g %g %g] [%g %g %g]\n",
+           r1.x, r1.y, r1.z,   r2.x, r2.y, r2.z,   r3.x, r3.y, r3.z);
+    assert(0);
+}
+static __device__ double3 ftri(const RbcParams_v *par, double3 r1, double3 r2, double3 r3,
+                             StressInfo si, double area, double volume) {
+    int spring_status;
+    double3 f, fv, fs;
+    double3 x21, x32, x31;
+
+    diff(&r2, &r1, /**/ &x21);
+    diff(&r3, &r2, /**/ &x32);
+    diff(&r3, &r1, /**/ &x31);
+
+    f = farea(par, x21, x31, x32, si.a0, par->totArea, area);
+    fv = fvolume(par, r2, r3, par->totVolume, volume);
+    add(&fv, /*io*/ &f);
+
+    fs = fspring(par, x21, si.l0, &spring_status);
+#ifdef RBC_SPRING_FAIL
+    if (spring_status != SPRING_OK) report_tri(r1, r2, r3);
+#endif
+    add(&fs, /*io*/ &f);
+    return f;
+}
+
+static __device__ double3 fvisc(const RbcParams_v *par, double3 r1, double3 r2, double3 u1, double3 u2) {
+    const double gammaC = par->gammaC, gammaT = par->gammaT;
+    double3 du, dr, f = make_double3(0, 0, 0);
+    diff(&u2, &u1, /**/ &du);
+    diff(&r1, &r2, /**/ &dr);
+
+    double fac = dot<double>(&du, &dr) / dot<double>(&dr, &dr);
+
+    axpy(gammaT      , &du, /**/ &f);
+    axpy(gammaC * fac, &dr, /**/ &f);
+
+    return f;
+}
+
+static __device__ double3 frnd(double, const RbcParams_v*, double3, double3, Rnd0Info) {
+    double3 f;
+    f.x = f.y = f.z = 0;
+    return f;
+}
+
+static __device__ double  frnd0(double dt, const RbcParams_v *par, double rnd) {
+    double f, g, T;
+    g = par->gammaC; T = par->kBT;
+    f  = sqrtf(2*g*T/dt)*rnd;
+    return f;
+}
+
+static __device__ double3 frnd(double dt, const RbcParams_v *par, double3 r1, double3 r2, Rnd1Info rnd) {
+    double3 dr;
+    double r, f0;
+    diff(&r1, &r2, /**/ &dr);
+    r = sqrtf(dot<double>(&dr, &dr));
+    f0 = frnd0(dt, par, rnd.r);
+    scal(f0/r, /*io*/ &dr);
+    return dr;
+}
+/* end src/rbc/force/dev/common.h */
+/* begin src/rbc/force/dev/main.h */
+struct Part { double3 r, v; };
+typedef double3 Pos;
+
+static __device__ Pos fetchPos(const Particle *pp, int i) {
+    enum {X, Y, Z};
+    Pos r;
+    r.x = pp[i].r[X];
+    r.y = pp[i].r[Y];
+    r.z = pp[i].r[Z];
+    return r;
+}
+
+static __device__ Part fetchPart(const Particle *pp, int i) {
+    enum {X, Y, Z};
+    Part p;
+    const float *r, *v;
+    r = pp[i].r; v = pp[i].v;
+    p.r.x = r[X]; p.r.y = r[Y]; p.r.z = r[Z];
+    p.v.x = v[X]; p.v.y = v[Y]; p.v.z = v[Z];
+    return p;
+}
+
+template <typename RndInfo>
+static __device__ void adj_tris(double dt,
+                                const RbcParams_v *par, const Particle *pp,  const Part p0, const float *av,
+                                const StressInfo si, RndInfo ri,
+                                AdjMap *m, /*io*/ double f[3]) {
+    enum {X, Y, Z};
+    double3 f0;
+    int i1, i2, rbc;
+    double area, volume;
+    i1 = m->i1; i2 = m->i2; rbc = m->rbc;
+
+    const Part p1 = fetchPart(pp, i1);
+    const Pos  r2 = fetchPos(pp,  i2);
+
+    area = av[2*rbc]; volume = av[2 * rbc + 1];
+    f0 = ftri(par, p0.r, p1.r, r2, si, area, volume);
+    f[X] += f0.x; f[Y] += f0.y; f[Z] += f0.z;
+
+    f0 = fvisc(par, p0.r, p1.r, p0.v, p1.v);
+    f[X] += f0.x; f[Y] += f0.y; f[Z] += f0.z;
+
+    f0 = frnd(dt, par, p0.r, p1.r, ri);
+    f[X] += f0.x; f[Y] += f0.y; f[Z] += f0.z;
+}
+
+template <typename Stress_v, typename Rnd_v>
+__global__ void force(double dt,
+                      RbcParams_v par, int md, int nv, int nc, const Particle *pp,
+                      Adj_v adj,
+                      Stress_v sv, Rnd_v rv,
+                      const float *av, /**/ float *ff) {
+    enum {X, Y, Z};
+    int i, pid, valid;
+    double f[3];
+    AdjMap m;
+    StressInfo si;
+
+    i = threadIdx.x + blockDim.x * blockIdx.x;
+    pid = i / md;
+
+    if (pid >= nc * nv) return;
+    valid = adj_get_map(i, &adj, /**/ &m);
+    if (!valid) return;
+    si = fetch_stress_info(i % (md * nv), sv);
+    auto ri = fetch_rnd_info(i % (md * nv), i, rv);
+
+    const Part p0 = fetchPart(pp, m.i0);
+
+    f[X] = f[Y] = f[Z] = 0;
+    adj_tris(dt, &par, pp, p0, av, si, ri, &m, /*io*/ f);
+
+    atomicAdd(&ff[3 * pid + 0], f[X]);
+    atomicAdd(&ff[3 * pid + 1], f[Y]);
+    atomicAdd(&ff[3 * pid + 2], f[Z]);
+}
+/* end src/rbc/force/dev/main.h */
+}
+
+/* begin src/rbc/force/imp/main.h */
+static bool is_stress_free(const RbcForce *f) {
+    return f->stype == RBC_SFREE;
+}
+
+static bool is_rnd(const RbcForce *f) {
+    return f->rtype == RBC_RND1;
+}
+
+void rbc_force_ini(const MeshRead *cell, RbcForce **pq) {
+    RbcForce *q;
+    int md, nt, nv;
+    const int4 *tt;
+    EMALLOC(1, &q);
+    nv = mesh_read_get_nv(cell);
+    nt = mesh_read_get_nt(cell);
+    md = mesh_read_get_md(cell);
+    tt = mesh_read_get_tri(cell);
+
+    UC(adj_ini(md, nt, nv, tt, /**/ &q->adj));
+    UC(adj_view_ini(q->adj, /**/ &q->adj_v));
+
+    *pq = q;
+}
+
+static void fin_rnd(RbcRnd *rnd) {
+    rbc_rnd_fin(rnd);
+}
+
+static void fin_stress(RbcForce *f) {
+    if (is_stress_free(f)) {
+        StressFree_v v = f->sinfo.sfree;
+        Dfree(v.ll);
+        Dfree(v.aa);
+    }
+}
+
+void rbc_force_fin(RbcForce *q) {
+    if (is_rnd(q)) {
+        Rnd1_v v = q->rinfo.rnd1;
+        Dfree(v.anti);
+        UC(fin_rnd(q->rnd));
+    }
+    UC(fin_stress(q));
+    UC(adj_fin(q->adj));
+    UC(adj_view_fin(q->adj_v));
+    UC(bending_fin(q->bending));
+    EFREE(q);
+}
+
+void rbc_force_set_stressful(int nt, float totArea, /**/ RbcForce *f) {
+    StressFul_v v;
+    float a0 = totArea / nt;
+
+    v.a0 = a0;
+    v.l0 = sqrt(a0 * 4.0 / sqrt(3.0));
+
+    f->stype = RBC_SFUL;
+    f->sinfo.sful = v;
+}
+
+void rbc_force_set_stressfree(const char *fname, /**/ RbcForce *f) {
+    StressFree_v v;
+    MeshRead *cell;
+    const Adj *adj;
+    RbcShape *shape;
+    const float *rr;
+    float *ll_hst, *aa_hst;
+    int n;
+
+    adj = f->adj;
+    UC(mesh_read_ini_off(fname, &cell));
+    rr = mesh_read_get_vert(cell);
+
+    UC(rbc_shape_ini(adj, rr, /**/ &shape));
+
+    n = adj_get_max(adj);
+
+    rbc_shape_edg(shape, &ll_hst);
+    rbc_shape_area(shape, &aa_hst);
+
+    Dalloc(&v.ll, n);
+    Dalloc(&v.aa, n);
+
+    cH2D(v.ll, ll_hst, n);
+    cH2D(v.aa, aa_hst, n);
+
+    UC(rbc_shape_fin(shape));
+    UC(mesh_read_fin(cell));
+
+    f->stype = RBC_SFREE;
+    f->sinfo.sfree = v;
+}
+
+void rbc_force_set_rnd0(RbcForce *f) {
+    Rnd0_v rnd0;
+    f->rtype = RBC_RND0;
+    f->rinfo.rnd0 = rnd0;
+}
+
+void rbc_force_set_rnd1(int seed, RbcForce *f) {
+    Rnd1_v rnd1;
+    int n;
+    int *hst;
+    Adj *adj = f->adj;
+
+    n = adj_get_max(adj);
+    Dalloc(&rnd1.anti, n);
+
+    EMALLOC(n, &hst);
+    adj_get_anti(adj, /**/ hst);
+    cH2D(rnd1.anti, hst, n);
+    EFREE(hst);
+
+    UC(rbc_rnd_ini(n * MAX_CELL_NUM, seed, &f->rnd));
+
+    f->rtype = RBC_RND1;
+    f->rinfo.rnd1 = rnd1;
+}
+
+void rbc_force_set_bending(const MeshRead *cell, const char *type, RbcForce *q) {
+    if (same_str(type, "kantor"))
+        UC(bending_kantor_ini(cell, /**/ &q->bending));
+    else if (same_str(type, "juelicher"))
+        UC(bending_juelicher_ini(cell, /**/ &q->bending));
+    else if (same_str(type, "none"))
+        UC(bending_none_ini(cell, /**/ &q->bending));
+    else
+        ERR("unknown bending type '%s'", type);
+    msg_print("bending: %s", type);
+}
+/* end src/rbc/force/imp/main.h */
+/* begin src/rbc/force/imp/forces.h */
+static void get_stress_view(const RbcForce *f, /**/ StressFul_v *v) {
+    *v = f->sinfo.sful;
+}
+
+static void get_stress_view(const RbcForce *f, /**/ StressFree_v *v) {
+    *v = f->sinfo.sfree;
+}
+
+static void get_rnd_view(const RbcForce *f, /**/ Rnd0_v *v) {
+    *v = f->rinfo.rnd0;
+}
+
+static void get_rnd_view(const RbcForce *f, /**/ Rnd1_v *v) {
+    *v = f->rinfo.rnd1;
+}
+
+template <typename Stress_v, typename Rnd_v>
+static void apply(float dt, RbcParams_v parv, int nc, int nv, int md,
+                  const Particle *pp,
+                  const Adj_v *adj_v, Stress_v sv, Rnd_v rv,
+                  float *av, /**/ Force *ff) {
+    if (!d::is_device_pointer(ff))  ERR("`ff` is not a device pointer");
+    KL(rbc_force_dev::force, (k_cnf(nc*nv*md)), (dt, parv, md, nv, nc, pp,
+                                                 *adj_v, sv, rv, av, /**/ (float*)ff));
+}
+
+template <typename Stress_v>
+static void dispatch_rnd(float dt, RbcParams_v parv, int nc, int nv, int md,
+                         const Particle *pp, RbcRnd *rnd,
+                         const Adj_v *adj_v, RbcForce *t, Stress_v sv,
+                         float *av, /**/ Force *ff){
+    if (is_rnd(t)) {
+        Rnd1_v rv;
+        get_rnd_view(t, &rv);
+        rbc_rnd_gen(rnd, nc * md * nv, /**/ &rv.rr);
+        apply(dt, parv, nc, nv, md, pp, adj_v, sv, rv, av, /**/ ff);
+    }
+    else {
+        Rnd0_v rv;
+        get_rnd_view(t, &rv);
+        apply(dt, parv, nc, nv, md, pp, adj_v, sv, rv, av, /**/ ff);
+    }
+}
+
+void rbc_force_apply(RbcForce *t, const RbcParams *par, float dt, const RbcQuants *q, /**/ Force *ff) {
+    RbcParams_v parv;
+    float *av;
+    if (q->nc <= 0) return;
+    if (!d::is_device_pointer(q->pp))
+        ERR("`q->pp` is not a device pointer");
+
+    parv = rbc_params_get_view(par);
+    UC(area_volume_compute(q->area_volume, q->nc, q->pp, /**/ &av));
+    UC(bending_apply(t->bending, par, q, /*io*/ ff));
+
+    if (is_stress_free(t)) {
+        StressFree_v si;
+        get_stress_view(t, &si);
+        dispatch_rnd(dt, parv, q->nc, q->nv, q->md, q->pp, t->rnd,
+                     t->adj_v, t, si, av, /**/ ff);
+    }
+    else {
+        StressFul_v si;
+        get_stress_view(t, &si);
+        dispatch_rnd(dt, parv, q->nc, q->nv, q->md, q->pp, t->rnd,
+                     t->adj_v, t, si, av, /**/ ff);
+    }
+}
+/* end src/rbc/force/imp/forces.h */
+/* begin src/rbc/force/imp/stat.h */
+void rbc_force_stat(float *pArea, float *pVolume) {
+    *pArea = 1.0; *pVolume = 1.0; /* TODO */
+}
+/* end src/rbc/force/imp/stat.h */
+/* end src/rbc/force/imp.cu */
+
+#line 1 "src/rbc/force/rnd/api/imp.cpp"
+
+#line 4 "udx.rbc-force-main.cu"
+
+#line 4 "udx.rbc-force-all.cu"
+
+#line 3 "udx.rbc-force-bending-complete.cu"
+
+/* The half-edge implementation is owned by the I/O unit. */
+struct HeRead;
+struct He;
+int he_read_int4_ini(int, int, const int4 *, HeRead **);
+int he_read_fin(HeRead *);
+int he_ini(HeRead *, He **);
+int he_fin(He *);
+int he_ne(He *);
+int he_nxt(He *, int);
+int he_flp(He *, int);
+int he_ver(He *, int);
+int he_hdg_edg(He *, int);
+
+/* Force units provide the shared infrastructure used by bending units. */
+#define UDX_RBC_BENDING_COMMON
+
+#line 1 "udx.rbc-force-bending-all.cu"
+
+#line 1 "udx.rbc-force-bending-all.cu"
+// Grouped editable compilation unit for the Juelicher and Kantor bending forces.
+
+#line 1 "udx.rbc-force-bending-juelicher.cu"
+
+#line 1 "udx.rbc-force-bending-juelicher.cu"
+// generated from udx.flat.cu
+#include "udx.config.cuh"
+
+/* begin src/rbc/force/bending/juelicher/imp.cu */
+#include <stdio.h>
+#include <assert.h>
+
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
+
+
+/* shared generated definitions used by both bending implementations */
+#ifndef UDX_RBC_BENDING_COMMON
+#define UDX_RBC_BENDING_COMMON
+/* begin src/inc/def.h */
+/* solvent colors */
+#define XMACRO_COLOR(_)                         \
+    _(BLUE)                                     \
+    _(RED)
+
+#define ENUM_COLOR(a) a##_COLOR
+#define make_enum_color(a) ENUM_COLOR(a) ,
+enum {
+    XMACRO_COLOR(make_enum_color)
+    N_COLOR
+};
+#undef make_enum_color
+
+enum {
+    /* wall margins */
+    XWM = 6,
+    YWM = 6,
+    ZWM = 6,
+
+    SAFETY_FACTOR_MAXP = 3,
+
+    /* maximum number of particles per solid */
+    MAX_PSOLID_NUM = 12000,
+
+    /* maximum number of solids per node */
+    MAX_SOLIDS = 100,
+
+    /* maximum number of object types (solid, rbc, ...) */
+    MAX_MBR_TYPES = 2,
+    MAX_RIG_TYPES = 2,
+    MAX_OBJ_TYPES = MAX_MBR_TYPES + MAX_RIG_TYPES,
+
+    /* maximum number density of particles of the objects */
+    MAX_OBJ_DENSITY = 30,
+
+    /* maximum number of red blood cells per node */
+    MAX_CELL_NUM = 1500,
+
+    /* maximum texture size in bytes */
+    MAX_TEXO_SIZE = 100000000,
+
+    /* safety factor for dpd halo interactions */
+    HSAFETY_FACTOR = 10,
+
+    /* safety factor for odist fragments */
+    ODSTR_FACTOR = 3,
+};
+
+/* for the spring forces r = min(lmax*RBC_SPRING_CAP, r) */
+#define RBC_SPRING_CAP (0.99)
+/* end src/inc/def.h */
+/* begin src/inc/type.h */
+template <typename T, int N>
+struct Sarray { /* [s]tatic array */
+    T d[N];
+};
+
+struct Particle {
+    float r[3], v[3];
+};
+
+struct Rigid {
+    float Iinv[6],            /* moment of inertia            6        */
+        mass,                 /* mass of the solid            7        */
+        com[3],               /* [c]enter [o]f [m]ass         10       */
+        v[3], om[3],          /* linear and angular velocity  13 16    */
+        e0[3], e1[3], e2[3],  /* local referential            19 22 25 */
+        fo[3], to[3],         /* force, torque                28 31    */
+        id;                   /* id of the solid              32       */
+};
+
+struct Force {
+    float f[3];
+};
+
+struct Momentum {
+    float P[3], L[3]; /* linear and angular momentum */
+};
+
+struct Positioncp {
+    float rc[3]; /* current position  */
+    float rp[3]; /* previous position */
+};
+
+typedef Sarray<int, 26>       int26;
+typedef Sarray<int, 27>       int27;
+
+typedef Sarray<int*, 26>     intp26;
+typedef Sarray<Particle*, 26> Pap26;
+typedef Sarray<Force*,    26> Fop26;
+typedef Sarray<Momentum*, 26> Mop26;
+typedef Sarray<Positioncp*, 26> Pocpp26;
+
+/* particles wrap */
+struct PaWrap {
+    int n;
+    const Particle *pp;
+};
+
+/* forces wrap */
+struct FoWrap {
+    int n;
+    Force *ff;
+};
+/* end src/inc/type.h */
+/* begin src/inc/dev.h */
+/* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
+#define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
+
+/* a common kernel execution configuration */
+#define k_cnf(n) ceiln((n), 128), 128
+
+#define dSync() CC(d::DeviceSynchronize())
+
+#define D2D d::MemcpyDeviceToDevice
+#define D2H d::MemcpyDeviceToHost
+#define H2D d::MemcpyHostToDevice
+#define H2H d::MemcpyHostToHost
+#define A2A d::MemcpyDefault /* "[a]ny to [a]ny" */
+
+#define cD2D(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), D2D))
+#define cH2H(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), H2H))  /* [t]to, [f]rom */
+#define cA2A(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), A2A))
+#define cD2H(H, D, n) CC(d::Memcpy((H), (D), (n) * sizeof((H)[0]), D2H))
+#define cH2D(D, H, n) CC(d::Memcpy((D), (H), (n) * sizeof((H)[0]), H2D))
+
+#define aD2D(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), D2D))
+#define aH2H(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), H2H))  /* [t]to, [f]rom */
+#define aA2A(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), A2A))
+#define aD2H(H, D, n) CC(d::MemcpyAsync((H), (D), (n) * sizeof((H)[0]), D2H))
+#define aH2D(D, H, n) CC(d::MemcpyAsync((D), (H), (n) * sizeof((H)[0]), H2D))
+
+/* device allocation */
+#define Dfree(D)      CC(d::Free(D))
+#define Dalloc(D, n)  CC(d::Malloc((void**)(D), (n) * sizeof(**(D))))
+
+/* [d]evice set */
+#define Dset(P, v, n) CC(d::Memset(P, v, (n)*sizeof(*(P))))
+#define Dzero(P, n)   Dset(P, 0, n)
+
+/* [d]evice [a]synchronous set */
+#define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
+#define DzeroA(P, n)   DsetA(P, 0, n)
+/* end src/inc/dev.h */
+/* begin src/math/dev.h */
+/* use templates here because we might have mixed float/double */
+
+#define _HD_ __host__ __device__
+
+template <typename T1, typename T2>
+_HD_ void scal(const T1 a, /*io*/ T2 *b) {
+    b->x *= a;
+    b->y *= a;
+    b->z *= a;
+}
+
+template <typename T1, typename T2>
+_HD_ void add(const T1 *a, /*io*/ T2 *b) {
+    b->x += a->x;
+    b->y += a->y;
+    b->z += a->z;
+}
+
+template <typename T1, typename T2, typename T3>
+_HD_ void diff(const T1 *a, const T2 *b, /**/ T3 *c) {
+    c->x = a->x - b->x;
+    c->y = a->y - b->y;
+    c->z = a->z - b->z;
+}
+
+template <typename T1, typename T2, typename T3>
+_HD_ T1 dot(const T2 *a, const T3 *b) {
+    return a->x * b->x + a->y * b->y + a->z * b->z;
+}
+
+template <typename T1, typename T2, typename T3>
+_HD_ void cross(const T1 *a, const T2 *b, /**/ T3 *c) {
+    c->x = a->y * b->z - a->z * b->y;
+    c->y = a->z * b->x - a->x * b->z;
+    c->z = a->x * b->y - a->y * b->x;
+}
+
+template <typename T1, typename T2, typename T3>
+_HD_ void scalmult(const T1 *a, const T2 x, /**/ const T3 *b) {
+    b->x = a->x * x;
+    b->y = a->y * x;
+    b->z = a->z * x;
+}
+
+
+template <typename T1, typename T2, typename T3, typename T4>
+_HD_ void apxb(const T1 *a, const T2 x, const T3 *b, /**/ T4 *c) {
+    c->x = a->x + x * b->x;
+    c->y = a->y + x * b->y;
+    c->z = a->z + x * b->z;
+}
+
+template <typename T1, typename T2, typename T3>
+_HD_ void axpy(const T1 a, const T2 *x, /*io*/ T3 *y) {
+    y->x += a * x->x;
+    y->y += a * x->y;
+    y->z += a * x->z;
+}
+/* end src/math/dev.h */
+/* begin src/math/tri/dev.h */
+#ifdef TRI_HOST
+  #define _I_
+  #define _S_ static
+  #define BEGIN namespace tri_hst {
+  #define END }
+#else
+  #define _I_ static __device__
+  #define _S_ static __device__
+  #define BEGIN namespace tri_dev {
+  #define END }
+#endif
+
+BEGIN
+
+_S_ void diff(const double *a, const double *b, /**/ double  *c) {
+    enum {X, Y, Z};
+    c[X] = a[X] - b[X];
+    c[Y] = a[Y] - b[Y];
+    c[Z] = a[Z] - b[Z];
+}
+_S_ double vabs(double *a) {
+    enum {X, Y, Z};
+    double r;
+    r = a[X]*a[X] + a[Y]*a[Y] + a[Z]*a[Z];
+    return sqrt(r);
+}
+_S_ void swap(double *a, double *b) {
+    double t;
+    t = *a; *a = *b; *b = t;
+}
+_S_ int less(double *a, double *b) { return (*a) < (*b); }
+_S_ void  sort3(double *a, double *b, double *c) {
+    if (less(c, b)) swap(c, b);
+    if (less(b, a)) swap(b, a);
+    if (less(c, b)) swap(c, b);
+}
+
+_I_ double kahan_area0(double a, double b, double c) {
+    sort3(&c, &b, &a); /* make a > b > c */
+    return sqrt((a+(b+c))*(c-(a-b))*(c+(a-b))*(a+(b-c)))/4;
+}
+
+_I_ double kahan_area(const double r0[3], const double r1[3], const double r2[3]) {
+    double r01[3], r12[3], r20[3], a, b, c;
+    diff(r0, r1, /**/ r01);
+    diff(r1, r2, /**/ r12);
+    diff(r2, r0, /**/ r20);
+    a = vabs(r01); b = vabs(r12); c = vabs(r20);
+    return kahan_area0(a, b, c);
+}
+
+_S_ double orient2d_xy(const double a[3], const double b[3], const double c[3]) {
+    enum {X, Y, Z};
+    enum {P = X, Q = Y};
+    double acp, bcp, acq, bcq;
+    acp = a[P] - c[P]; bcp = b[P] - c[P];
+    acq = a[Q] - c[Q]; bcq = b[Q] - c[Q];
+    return acp * bcq - acq * bcp;
+}
+
+_S_ double orient2d_zx(const double a[3], const double b[3], const double c[3]) {
+    enum {X, Y, Z};
+    enum {P = Z, Q = X};
+    double acp, bcp, acq, bcq;
+    acp = a[P] - c[P]; bcp = b[P] - c[P];
+    acq = a[Q] - c[Q]; bcq = b[Q] - c[Q];
+    return acp * bcq - acq * bcp;
+}
+
+_S_ double orient2d_yz(const double a[3], const double b[3], const double c[3]) {
+    enum {X, Y, Z};
+    enum {P = Y, Q = Z};
+    double acp, bcp, acq, bcq;
+    acp = a[P] - c[P]; bcp = b[P] - c[P];
+    acq = a[Q] - c[Q]; bcq = b[Q] - c[Q];
+    return acp * bcq - acq * bcp;
+}
+
+_I_ double orient3d(const double a[3], const double b[3], const double c[3], const double d[3]) {
+    enum {X, Y, Z};
+    double ax, ay, az, bx, by, bz, cx, cy, cz;
+
+    ax = a[X] - d[X]; ay = a[Y] - d[Y]; az = a[Z] - d[Z];
+    bx = b[X] - d[X]; by = b[Y] - d[Y]; bz = b[Z] - d[Z];
+    cx = c[X] - d[X]; cy = c[Y] - d[Y]; cz = c[Z] - d[Z];
+
+    return ax*(by*cz - bz*cy) + bx*(cy*az - cz*ay) + cx*(ay*bz - az*by);
+}
+
+_I_ void ac_bc_cross(const double a[3], const double b[3], const double c[3], /**/ double r[3]) {
+    enum {X, Y, Z};
+    r[X] = orient2d_yz(a, b, c);
+    r[Y] = orient2d_zx(a, b, c);
+    r[Z] = orient2d_xy(a, b, c);
+}
+
+_I_ double shewchuk_area(const double a[3], const double b[3], const double c[3]) {
+    double x, y, z;
+    x = orient2d_yz(a, b, c);
+    y = orient2d_zx(a, b, c);
+    z = orient2d_xy(a, b, c);
+    return sqrt(x*x + y*y + z*z)/2;
+}
+
+_I_ void dihedral_xy(const double a[3], const double b[3], const double c[3], const double d[3],
+                       double *px, double *py) {
+    enum {X, Y, Z};
+    double bcx, bcy, bcz, bc;
+    double k[3], l[3];
+
+    ac_bc_cross(b, c, a, /**/ k);
+    ac_bc_cross(c, b, d, /**/ l);
+
+    bcx = b[X] - c[X];
+    bcy = b[Y] - c[Y];
+    bcz = b[Z] - c[Z];
+    bc = sqrt(bcx*bcx + bcy*bcy + bcz*bcz);
+
+    *py = -orient3d(a, b, c, d)*bc;
+    *px = k[X]*l[X] + k[Y]*l[Y] + k[Z]*l[Z];
+}
+
+END
+
+#undef _I_
+#undef _S_
+#undef BEGIN
+#undef END
+/* end src/math/tri/dev.h */
+
+/* begin src/algo/utils/shfl.h */
+#define _I_ static __device__
+
+#if __CUDACC_VER_MAJOR__ >= 9
+template <typename T>
+_I_ T shfl_down(T val, unsigned int width) {
+    return __shfl_down_sync(0xFFFFFFFF, val, width);
+}
+
+template <typename T>
+_I_ T shfl_up(T val, unsigned int width) {
+    return __shfl_up_sync(0xFFFFFFFF, val, width);
+}
+template <typename T>
+_I_ T shfl(T val, unsigned int width) {
+    return __shfl_sync(0xFFFFFFFF, val, width);
+}
+#else
+template <typename T>
+_I_ T shfl_down(T val, unsigned int width) {
+    return __shfl_down(val, width);
+}
+
+template <typename T>
+_I_ T shfl_up(T val, unsigned int width) {
+    return __shfl_up(val, width);
+}
+template <typename T>
+_I_ T shfl(T val, unsigned int width) {
+    return __shfl(val, width);
+}
+#endif
+
+#undef _I_
+/* end src/algo/utils/shfl.h */
+/* begin src/algo/utils/dev.h */
+#define _S_ static __device__
+#define _I_ static __device__
+
+// tag::int[]
+template <typename T>
+_I_ T warpReduceSum(T v)  // <1>
+// end::int[]
+{
+    for (int offset = warpSize>>1; offset > 0; offset >>= 1)
+        v += shfl_down(v, offset);
+    return v;
+}
+
+// tag::int[]
+_I_ float2 warpReduceSum(float2 val)  // <2>
+// end::int[]
+{
+    for (int offset = warpSize / 2; offset > 0; offset /= 2) {
+        val.x += shfl_down(val.x, offset);
+        val.y += shfl_down(val.y, offset);
+    }
+    return val;
+}
+
+// tag::int[]
+_I_ float3 warpReduceSum(float3 val)  // <3>
+// end::int[]
+{
+    for (int offset = warpSize/2; offset > 0; offset /= 2) {
+        val.x += shfl_down(val.x, offset);
+        val.y += shfl_down(val.y, offset);
+        val.z += shfl_down(val.z, offset);
+    }
+    return val;
+}
+
+#undef _S_
+#undef _I_
+
+/* end src/algo/utils/dev.h */
+
+/* begin src/io/mesh_read/imp.h */
+struct int4;
+struct MeshRead;
+
+// tag::interface[]
+void mesh_read_ini_off(const char *path, MeshRead**);
+void mesh_read_ini_ply(const char *path, MeshRead**);
+void mesh_read_fin(MeshRead*);
+
+int mesh_read_get_nt(const MeshRead*);
+int mesh_read_get_nv(const MeshRead*);
+int mesh_read_get_ne(const MeshRead*);
+int mesh_read_get_md(const MeshRead*);
+
+const int4  *mesh_read_get_tri(const MeshRead*);
+const float *mesh_read_get_vert(const MeshRead*);
+const int4  *mesh_read_get_dih(MeshRead*);
+// end::interface[]
+/* end src/io/mesh_read/imp.h */
+
+/* begin src/utils/error.h */
+#define ERR(fmt, ...)  do {                                     \
+        error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
+        error_report();                                         \
+        error_abort();                                          \
+    } while (0)
+
+/* udx check */
+#define UC(F) do {                              \
+        error_stack_push(__FILE__, __LINE__);   \
+        F;                                      \
+        if (error_get()) {                      \
+            error_report();                     \
+            error_abort();                      \
+        }                                       \
+        error_stack_pop();                      \
+    } while (0)
+
+/* [B]o[p] [c]heck */
+#define BPC(ans) do {                           \
+        BopStatus s = (ans);                    \
+        if (!bop_success(s)) {                  \
+            ERR(":%s:%d: %s\n%s\n",             \
+                __FILE__, __LINE__,             \
+                bop_report_error_desc(s),       \
+                bop_report_error_mesg());       \
+        }} while (0)
+
+void error_stack_push(const char *file, int line);
+void error_stack_pop();
+
+void error_signal(const char *file, int line, const char *fmt, ...);
+void error_signal_cuda(const char *file, int line, const char *msg);
+void error_signal_mpi(const char *file, int line, const char *msg);
+
+bool error_get();
+void error_report();
+void error_abort();
+
+void error_print_stack();
+/* end src/utils/error.h */
+/* begin src/utils/msg.h */
+// tag::int[]
+void msg_ini(int rank); // <1>
+void msg_print(const char *fmt, ...); // <2>
+// end::int[]
+/* end src/utils/msg.h */
+/* begin src/utils/imp.h */
+// tag::mem[]
+void emalloc(size_t, /**/ void**); // <1>
+void efree(void*); // <2>
+void *ememcpy(void *dest, const void *src, size_t n); // <3>
+// end::mem[]
+
+// tag::macros[]
+#define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
+#define EFREE(pdata) UC(efree(pdata))
+#define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
+// end::macros[]
+
+// tag::stdio[]
+void efopen(const char *fname, const char *mode, /**/ FILE**);
+void efclose(FILE*);
+void efread(void *ptr, size_t size, size_t nmemb, FILE*);
+void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
+void efgets(char *s, int size, FILE*);
+// end::stdio[]
+
+// tag::tools[]
+bool same_str(const char *a, const char *b); // <1>
+const char* get_filename_ext(const char*);
+// end::tools[]
+/* end src/utils/imp.h */
+/* begin src/he/read.h */
+#define T HeRead
+
+struct int4;
+
+typedef struct T T;
+
+int he_read_ini(const char *path, T**);
+
+/* tri = [t0, t1, t2] [t0, t2, t2], ... */
+int he_read_tri_ini(int nv, int nt, int *tri, T**);
+
+/* tri = [tri[0].x tri[0].y tri[0].z], ... [tri[0].x tri[0].y tri[0].z] */
+int he_read_int4_ini(int nv, int nt, const int4 *tri, T**);
+
+int he_read_fin(T*);
+
+int he_read_nv(T*);
+int he_read_nt(T*);
+int he_read_ne(T*);
+int he_read_nh(T*);
+
+int he_read_nxt(T*, int**);
+int he_read_flp(T*, int**);
+int he_read_ver(T*, int**);
+int he_read_tri(T*, int**);
+int he_read_edg(T*, int**);
+
+int he_read_hdg_ver(T*, int**);
+int he_read_hdg_edg(T*, int**);
+int he_read_hdg_tri(T*, int**);
+
+int he_read_info(T*, FILE*);
+
+#undef T
+/* end src/he/read.h */
+/* begin src/he/he.h */
+#define T He
+
+typedef struct T T;
+typedef struct HeRead HeRead;
+
+int he_ini(HeRead*, T**);
+int he_file_ini(const char *path, T**);
+int he_fin(T*);
+
+int he_nv(T*); /* number of vert, edg, edg, hdg */
+int he_nt(T*);
+int he_ne(T*);
+int he_nh(T*);
+
+int he_nxt(T*, int h); /* return half-edg */
+int he_flp(T*, int h);
+
+int he_ver(T*, int h); /* return ver, tri, or edg */
+int he_tri(T*, int h);
+int he_edg(T*, int h);
+
+int he_hdg_ver(T*, int v); /* return half-edg */
+int he_hdg_edg(T*, int e);
+int he_hdg_tri(T*, int t);
+
+int he_bnd(T*, int h); /* 1 for boundary */
+
+#undef T
+/* end src/he/he.h */
+
+/* begin src/d/q.h */
+/* function and variable type [q]ualifiers */
+
+#if   defined(DEV_CUDA)
+/* begin src/d/cuda/q.h */
+/* B.1. Function Type Qualifiers */
+/* B.2. Variable Type Qualifiers */
+/* end src/d/cuda/q.h */
+#elif defined(DEV_CPU)
+/* begin src/d/cpu/q.h */
+/* B.1. Function Type Qualifiers */
+#ifdef __device__
+  #undef  __device__
+  #define __device__
+#endif
+
+#ifdef __global__
+  #undef  __global__
+  #define __global__
+#endif
+
+#ifdef __host__
+  #undef  __host__
+  #define __host__
+#endif
+
+#ifdef __noinline__
+  #undef  __noinline__
+  #define __noinline__
+#endif
+
+#ifdef __forceinline__
+  #undef  __forceinline__
+  #define __forceinline__
+#endif
+
+/* B.2. Variable Type Qualifiers */
+/* __device__ : also a function qualifier */
+#ifdef __constant__
+  #undef  __constant__
+  #define __constant__
+#endif
+
+#ifdef __shared__
+  #undef  __shared__
+  #define __shared__
+#endif
+
+#ifdef __managed__
+  #undef  __managed__
+  #define __managed__
+#endif
+
+#ifdef __restrict__
+  #undef  __restrict__
+  #define __restrict__
+#endif
+/* end src/d/cpu/q.h */
+#else
+  #error DEV_* is undefined
+#endif
+/* end src/d/q.h */
+/* begin src/d/api.h */
+namespace d {  /* a wrapper for device API */
+typedef int Stream_t; /* TODO: streams are not supported */
+enum {MemcpyHostToHost, MemcpyHostToDevice,
+      MemcpyDeviceToHost, MemcpyDeviceToDevice,
+      MemcpyDefault};
+
+// tag::more[]
+const char *emsg();
+int alloc_pinned(void **pHost, size_t size);
+int is_device_pointer(const void *ptr);
+// end::more[]
+
+// tag::api[]
+int GetSymbolAddress(void **devPtr, const void *symbol);
+int Malloc(void **p, size_t);
+int MemcpyToSymbol(const void *symbol, const void *src, size_t count, size_t offset=0, int kind=MemcpyHostToDevice);
+int MemcpyFromSymbol(void *dst, const void *symbol, size_t count, size_t offset=0, int kind=MemcpyDeviceToHost);
+int HostGetDevicePointer(void **pDevice, void *pHost, unsigned int flags);
+int Memcpy (void *dst, const void *src, size_t count, int kind);
+int MemsetAsync (void *devPtr, int value, size_t count, Stream_t stream=0);
+int Memset (void *devPtr, int value, size_t count);
+int MemcpyAsync (void * dst, const void * src, size_t count, int kind, Stream_t stream = 0);
+int Free (void *devPtr);
+int FreeHost (void *hstPtr);
+int DeviceSynchronize (void);
+int PeekAtLastError(void);
+// end::api[]
+}
+/* end src/d/api.h */
+/* begin src/d/ker.h */
+#if   defined(DEV_CUDA)
+/* begin src/d/cuda/ker.h */
+#define  Ifetch(t, i)  tex1Dfetch(t, i)
+#define F4fetch(t, i)  tex1Dfetch(t, i)
+#define F2fetch(t, i)  tex1Dfetch(t, i)
+#define  Ffetch(t, i)  tex1Dfetch(t, i)
+#define Tfetch(T, t, i) tex1Dfetch<T>(t, i)
+
+#define Ttex3D(T, to, i, j, k) tex3D<T>(to, i, j, k);
+/* end src/d/cuda/ker.h */
+#elif defined(DEV_CPU)
+/* begin src/d/cpu/ker.h */
+#define atomicAdd(...) (0)
+
+#define atomicExch(...)
+#define __float2half_rn(...) (0)
+#define __fmaf_rz(...) (0.0)
+#define __ldg(p) (*(p))
+#define __popc(...)
+#define __shfl(...) (0.0)
+#define __shfl_down(...) (0.0)
+#define __shfl_up(...) (0)
+#define __shfl_xor(...) (0)
+
+#define __syncthreads(...)
+
+#define tex3D(...)
+
+#define  Ifetch(t, i)  (0);
+#define F4fetch(t, i)  (make_float4(0, 0, 0, 0))
+#define F2fetch(t, i)  (make_float2(0, 0))
+#define Ffetch(t, i)   (0.0)
+#define Tfetch(T, t, i) (T{})
+
+#define Ttex3D(T, to, i, j, k) (T{})
+/* end src/d/cpu/ker.h */
+/* begin src/d/cpu/wrap.h */
+namespace d {
+static uint3 threadIdx, blockIdx, gridDim;
+static dim3  blockDim;
+static int   warpSize = 1;
+}
+
+#define threadIdx d::threadIdx
+#define blockDim  d::blockDim
+#define gridDim   d::gridDim
+#define blockIdx  d::blockIdx
+#define warpSize  d::warpSize
+/* end src/d/cpu/wrap.h */
+#else
+  #error DEV_* is undefined
+#endif
+/* end src/d/ker.h */
+/* begin src/utils/cc.h */
+/* [c]uda [c]heck macros */
+
+#if   defined(CC_SYNC)
+/* begin src/utils/cc/sync.h */
+/* Aggressive [sync]ronization */
+#define CC(ans)                                             \
+    do {                                                    \
+        d::DeviceSynchronize();                             \
+        cc::check((ans), __FILE__, __LINE__);               \
+        d::DeviceSynchronize();                             \
+    } while (0)
+/* end src/utils/cc/sync.h */
+#elif defined(CC_RELEASE)
+/* begin src/utils/cc/release.h */
+/* [c]cuda [c]heck */
+#define CC(ans)                                             \
+    do { cc::check((ans), __FILE__, __LINE__);} while (0)
+/* end src/utils/cc/release.h */
+#else
+  #error CC_* is undefined
+#endif
+
+/* begin src/utils/cc/common.h */
+namespace cc {
+void check(int rc, const char *file, int line);
+}
+
+
+/* end src/utils/cc/common.h */
+
+/* TODO: header includes header */
+/* end src/utils/cc.h */
+/* begin src/utils/kl.h */
+/* [k]ernel [l]aunch macros */
+
+#if    defined(KL_RELEASE)
+/* begin src/utils/kl/release.h */
+#define KL_BEFORE(s, C) if (!kl::safe(ESC C)) continue;
+#define KL_CALL(F, C, A) F<<<ESC C>>>A
+#define KL_AFTER(s)
+
+namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
+/* end src/utils/kl/release.h */
+#elif  defined(KL_NONE)
+/* begin src/utils/kl/none.h */
+#define KL_BEFORE(s, C)
+#define KL_CALL(F, C, A)
+#define KL_AFTER(s)
+
+namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
+/* end src/utils/kl/none.h */
+#elif  defined(KL_SYNC)
+/* begin src/utils/kl/sync.h */
+#define KL_BEFORE(s, C) if (!kl::safe(ESC C)) continue;
+#define KL_CALL(F, C, A) F<<<ESC C>>>A
+#define KL_AFTER(s)                             \
+    do {                                        \
+        dSync();                                \
+        CC(d::PeekAtLastError());               \
+    } while(0)
+
+namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
+/* end src/utils/kl/sync.h */
+#else
+  #error KL_* is undefined
+#endif
+
+/* begin src/utils/kl/common.h */
+namespace kl {
+inline int safe0(dim3 i, dim3 j) {
+    msg(i.x, i.y, i.z,   j.x, j.y, j.z);
+    return i.x>0 && i.y>0 && i.z>0   &&   j.x>0 && j.y>0 && j.z>0;
+}
+inline int safe(dim3 i, dim3 j)                    { return safe0(i, j); }
+inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
+}
+/* end src/utils/kl/common.h */
+/* begin src/utils/kl/macro.h */
+#define ESC(...) __VA_ARGS__
+#define KL(F, C, A)                             \
+    do  {                                       \
+        KL_BEFORE(#F, C);                       \
+        KL_CALL(F, C, A);                       \
+        KL_AFTER(#F);                           \
+    } while (0)
+/* end src/utils/kl/macro.h */
+
+/* TODO: header includes header */
+/* end src/utils/kl.h */
+
+/* begin src/rbc/params/imp.h */
+struct Config;
+struct RbcParams;
+struct RbcParams_v {
+    float gammaC, gammaT, kBT;
+    float kb, phi;
+    float ks, x0, mpow;
+    float ka, kd, kv;
+    float totArea, totVolume;
+};
+
+// tag::mem[]
+void rbc_params_ini(RbcParams **);
+void rbc_params_fin(RbcParams *);
+// end::mem[]
+
+// tag::set[]
+void rbc_params_set_fluct(float gammaC, float gammaT, float kBT, RbcParams *);
+void rbc_params_set_bending(float kb, float phi, RbcParams *);
+void rbc_params_set_spring(float ks, float x0, float mpow , RbcParams *);
+void rbc_params_set_area_volume(float ka, float kd, float kv, RbcParams *);
+void rbc_params_set_tot_area_volume(float totArea, float totVolume, RbcParams *);
+// end::set[]
+
+// tag::get[]
+double rbc_params_get_tot_volume(const RbcParams *);
+// end::get[]
+
+// tag::cnf[]
+void rbc_params_set_conf(const Config *c, const char *name, RbcParams *);
+// end::cnf[]
+
+// tag::view[]
+RbcParams_v rbc_params_get_view(const RbcParams *);
+// end::view[]
+/* end src/rbc/params/imp.h */
+/* begin src/rbc/adj/imp.h */
+struct Adj;
+struct Adj_v;
+struct AdjMap;
+struct int4;
+
+// tag::interface[]
+void adj_ini(int md, int nt, int nv, const int4 *tt, /**/ Adj**);
+void adj_fin(Adj*);
+int  adj_get_map(int i, const Adj*, /**/ AdjMap *m);
+int  adj_get_max(const Adj*);
+void adj_get_anti(const Adj*, /**/ int *anti);
+
+void adj_view_ini(const Adj*, Adj_v**);
+void adj_view_fin(Adj_v*);
+// end::interface[]
+/* end src/rbc/adj/imp.h */
+
+/* begin src/rbc/type.h */
+struct AreaVolume;
+struct Particle;
+
+// tag::quants[]
+struct RbcQuants {
+    int n, nc;               /* number of particles, cells                */
+    int nt, nv;              /* number of triangles and vertices per mesh */
+    int md;                  /* maximum valence of the mesh               */
+    Particle *pp, *pp_hst;   /* vertices particles on host and device     */
+    bool ids;                /* global ids active ?                       */
+    int *ii;                 /* global ids on host                        */
+    AreaVolume *area_volume; /* to compute area and volume */
+};
+// end::quants[]
+
+/* end src/rbc/type.h */
+
+/* begin src/rbc/adj/type/common.h */
+// tag::interface[]
+struct AdjMap {
+    int i0, i1, i2, i3, i4;
+    int rbc;
+};
+// end::interface[]
+/* end src/rbc/adj/type/common.h */
+/* begin src/rbc/adj/type/dev.h */
+struct Adj_v {
+    int *adj0;
+    int *adj1;
+    int nv, md;
+};
+
+/* end src/rbc/adj/type/dev.h */
+/* begin src/rbc/adj/dev.h */
+static __device__ int fetch(const int *a, int i) { return a[i]; }
+static __device__ int adj_get_map0(int md, int nv, int i, const int *adj0, const int *adj1, /**/ AdjMap *m) {
+    int i0, i1, i2, i3, i4;
+    int rbc, offset, j, k;
+    i0 = i / md;
+    j  = i % md;
+
+    k   = (i0 % nv) * md;
+    i1 = fetch(adj0, k + j);
+    if (i1 == -1) return 0; /* invalid */
+
+    i2 = fetch(adj0, k + ((j + 1) % md));
+    if (i2 == -1) {
+        i2 = fetch(adj0, k    );
+        i3 = fetch(adj0, k + 1);
+    } else {
+        i3 = fetch(adj0, k + ((j + 2) % md));
+        if (i3 == -1) i3 = fetch(adj0, k);
+    }
+    i4 = fetch(adj1, k + j);
+
+    rbc = i0 / nv;
+    offset = rbc * nv;
+    i1 += offset; i2 += offset; i3 += offset; i4 += offset; /* no i0 */
+
+    assert(rbc < MAX_CELL_NUM);
+
+    m->rbc = rbc;
+    m->i0 = i0; m->i1 = i1; m->i2 = i2; m->i3 = i3; m->i4 = i4;
+    return 1;
+}
+
+// tag::interface[]
+static __device__ int adj_get_map(int i, Adj_v *adj, /**/ AdjMap *m) {
+// end::interface[]
+    int md, nv;
+    md = adj->md;
+    nv = adj->nv;
+    const int *adj0 = adj->adj0;
+    const int *adj1 = adj->adj1;
+    return adj_get_map0(md, nv, i, adj0, adj1, m);
+}
+/* end src/rbc/adj/dev.h */
+
+#endif /* UDX_RBC_BENDING_COMMON */
+
+/* begin src/rbc/force/bending/juelicher/imp.h */
+struct RbcParams;
+struct Juelicher;
+struct Force;
+struct MeshRead;
+struct RbcQuants;
+
+// tag::mem[]
+void juelicher_ini(const MeshRead*, Juelicher**);
+void juelicher_fin(Juelicher*);
+// end::mem[]
+
+// tag::apply[]
+void juelicher_apply(Juelicher*, const RbcParams*, const RbcQuants*, /**/ Force*); // <1>
+// end::apply[]
+/* end src/rbc/force/bending/juelicher/imp.h */
+/* begin src/rbc/force/bending/juelicher/imp/type.h */
+struct Juelicher {
+    int4 *tri, *dih;
+
+    float *area, *lentheta, *theta;
+    float *lentheta_tot, *area_tot, *curva_mean_area_tot;
+    float *f, *fad;
+
+    int ne;
+};
+/* end src/rbc/force/bending/juelicher/imp/type.h */
+
+/* shared Kantor angle helpers used by both bending implementations */
+#ifndef UDX_RBC_KANTOR0_COMMON
+#define UDX_RBC_KANTOR0_COMMON
+/* begin src/mesh/force/kantor0/dev.h */
+#ifdef FORCE_KANTOR0_HOST
+  #define _I_
+  #define _S_ static
+  #define BEGIN namespace force_kantor0_hst {
+  #define END }
+#else
+  #define _I_ static __device__
+  #define _S_ static __device__
+  #define BEGIN namespace force_kantor0_dev {
+  #define END }
+#endif
+
+BEGIN
+
+#ifdef FORCE_KANTOR0_HOST
+_S_ double rsqrt0(double x) { return pow(x, -0.5); }
+#define PRINT(fmt, ...) msg_print((fmt), ##__VA_ARGS__)
+#define EXIT() ERR("assert")
+#else
+_S_ double rsqrt0(double x) { return rsqrt(x); }
+#define PRINT(fmt, ...) printf((fmt), ##__VA_ARGS__)
+#define EXIT() assert(0)
+#endif
+
+_S_ double max(double a, double b) { return a > b ? a : b; }
+
+enum {ANGLE_OK, ANGLE_BAD_A, ANGLE_BAD_B};
+_S_ int angle(double3 a, double3 b, /**/ double *pcos, double *pover_sin,
+              double *pover_a, double *pover_b) {
+    double  cost, over_sin, over_a, over_b;
+    double aa, bb, ab;
+    *pcos = *pover_sin = *pover_a = *pover_b = 0.0;
+
+    aa = dot<double>(&a, &a);
+    bb = dot<double>(&b, &b);
+    ab = dot<double>(&a, &b);
+
+    if (aa == 0) return ANGLE_BAD_A;
+    if (bb == 0) return ANGLE_BAD_B;
+
+    over_a = rsqrt0(aa);
+    over_b = rsqrt0(bb);
+    cost = ab * over_a * over_b;
+    over_sin = rsqrt0(max(1.0 - cost*cost, 1e-6));
+
+    *pcos = cost; *pover_sin = over_sin; *pover_a = over_a; *pover_b = over_b;
+    return ANGLE_OK;
+}
+
+_S_ void dih_write(double3 a, double3 b, double3 c, double3 d) {
+    PRINT("%g %g %g\n", a.x, a.y, a.z);
+    PRINT("%g %g %g\n", b.x, b.y, b.z);
+    PRINT("%g %g %g\n", c.x, c.y, c.z);
+    PRINT("%g %g %g\n", d.x, d.y, d.z);
+}
+
+/* forces from one dihedral */
+template <int update>
+_S_ double3 dih0(double phi, double kb,
+                 double3 a, double3 b, double3 c, double3 d) {
+    int status;
+    double over_k, over_n, cosTheta, over_sin,
+        beta, b11, b12, sint0kb, cost0kb;
+    double3 ab, ac, cd, bc, bd, da, k, n, k_n;
+    diff(&a, &b, /**/ &ab);
+    diff(&a, &c, /**/ &ac);
+    diff(&c, &d, /**/ &cd);
+    diff(&b, &d, /**/ &bd);
+    diff(&b, &c, /**/ &bc);
+    diff(&d, &a, /**/ &da);
+
+    cross(&ab, &ac, /**/ &k);
+    cross(&bd, &bc, /**/ &n);
+
+    status = angle(k, n, /**/
+                   &cosTheta, &over_sin,
+                   &over_k, &over_n);
+    if (status != ANGLE_OK) {
+        PRINT("bad dihedral\n");
+        dih_write(a, b, c, d);
+        EXIT();
+    }
+    diff(&k, &n, /**/ &k_n);
+    over_sin = copysign(over_sin, dot<double>(&k_n, &da));
+
+    sint0kb = sin(phi) * kb;
+    cost0kb = cos(phi) * kb;
+    beta = cost0kb - cosTheta * sint0kb * over_sin;
+
+    b11 = -beta *  cosTheta * over_k * over_k;
+    b12 =  beta *             over_k * over_n;
+
+    if (update == 1) {
+        double3 r32, f1, f;
+        diff(&c, &b, /**/ &r32);
+        cross(&k, &r32, /**/ &f);
+        cross(&n, &r32, /**/ &f1);
+        scal(b11, /**/ &f);
+        axpy(b12, &f1, /**/ &f);
+        return f;
+    }
+    else if (update == 2) {
+        double3 f, f1, f2, f3;
+        double b22 = -beta * cosTheta * over_n * over_n;
+
+        cross(&k, &ac, /**/ &f);
+        cross(&k, &cd, /**/ &f1);
+        cross(&n, &ac, /**/ &f2);
+        cross(&n, &cd, /**/ &f3);
+
+        scal(b11, /**/ &f);
+        add(&f2, /**/ &f1);
+        axpy(b12, &f1, /**/ &f);
+        axpy(b22, &f3, /**/ &f);
+        return f;
+    }
+    else {
+        double3 f;
+        f.x = f.y = f.z = 0;
+        assert(0);
+        return f;
+    }
+}
+
+_I_ double3 dih_a(double phi, double kb, double3 a, double3 b, double3 c, double3 d) {
+    return dih0<1>(phi, kb, a, b, c, d);
+}
+
+_I_ double3 dih_b(double phi, double kb, double3 a, double3 b, double3 c, double3 d) {
+    return dih0<2>(phi, kb, a, b, c, d);
+}
+
+END
+
+#undef _I_
+#undef _S_
+#undef BEGIN
+#undef END
+/* end src/mesh/force/kantor0/dev.h */
+#endif /* UDX_RBC_KANTOR0_COMMON */
+
+namespace juelicher_dev {
+/* begin src/rbc/force/bending/juelicher/dev/main.h */
+enum {X, Y, Z};
+static __device__  int small(double s) {
+    const double eps = 1e-12;
+    if      (s >  eps) return 0;
+    else if (s < -eps) return 0;
+    else               return 1;
+}
+static __device__ void append(double x, int i, float *a) { atomicAdd(&a[i], x); }
+static __device__ double tri_area(const double a[3], const double b[3], const double c[3]) { return tri_dev::kahan_area(a, b, c); }
+static __device__ double tri_dih(const double a[3], const double b[3], const double c[3], const double d[3]) {
+    double x, y;
+    tri_dev::dihedral_xy(a, b, c, d, /**/ &x, &y);
+    return -atan2(y, x); /* TODO: */
+}
+static __device__ void vec_scalar(const double a[3], double s, /**/ double b[3]) {
+    b[X] = s*a[X]; b[Y] = s*a[Y]; b[Z] = s*a[Z];
+}
+static __device__ void vec_minus(const double a[3], const double b[3], /**/ double c[3]) {
+    c[X] = a[X] - b[X];
+    c[Y] = a[Y] - b[Y];
+    c[Z] = a[Z] - b[Z];
+}
+static __device__ double vec_dot(const double a[3], const double b[3]) {
+   return a[X]*b[X] + a[Y]*b[Y] + a[Z]*b[Z];
+}
+static __device__ void vec_cross(const double a[3], const double b[3], /**/ double c[3]) {
+   c[X] = a[Y]*b[Z]-b[Y]*a[Z];
+   c[Y] = b[X]*a[Z]-a[X]*b[Z];
+   c[Z] = a[X]*b[Y]-b[X]*a[Y];
+}
+static __device__ double vec_abs(const double a[3]) { return sqrt(vec_dot(a, a)); }
+
+static __device__ void vec_copy(const double a[3], double b[3]) {
+    b[X] = a[X]; b[Y] = a[Y]; b[Z] = a[Z];
+}
+
+static __device__ double edg_abs(const double a[3], const double b[3]) {
+    double u[3];
+    vec_minus(b, a, u);
+    return vec_abs(u);
+}
+
+static __device__ double tri_cot(const double a[3], const double b[3], const double c[3]) { /* at `b' */
+    double x, y, u[3], v[3];
+    y = 2 * tri_area(a, b, c);
+    vec_minus(a, b, u);
+    vec_minus(c, b, v);
+    x = vec_dot(u, v);
+    return x/y; /* TODO: */
+}
+
+static __device__ void vec_linear_combination(double al, const double a[3], double be, const double b[3],
+                            /**/ double c[3]) {
+    c[X] = al*a[X] + be*b[X];
+    c[Y] = al*a[Y] + be*b[Y];
+    c[Z] = al*a[Z] + be*b[Z];
+}
+
+static __device__ void vec_negative(const double a[3], /**/ double b[3]) {
+    b[X] = -a[X]; b[Y] = -a[Y]; b[Z] = -a[Z];
+}
+static __device__ void vec_norm(const double a[3], /**/ double b[3]) {
+    double s;
+    s = vec_abs(a);
+    if (!small(s)) vec_scalar(a, 1/s, /**/ b);
+    else vec_copy(a, b);
+}
+
+static __device__ void dedg_abs(double a[3], double b[3], /**/ double da[3], double db[3]) {
+    double u[3], e[3];
+    vec_minus(b, a,   u);
+    vec_norm(u,   e);
+    vec_copy(e,     db);
+    vec_negative(e, da);
+}
+
+static __device__ void vec_scalar_append(const double a[3], double s, int i,
+                                         /**/ float *f) {
+    append(s*a[X], 3*i,     f);
+    append(s*a[Y], 3*i + 1, f);
+    append(s*a[Z], 3*i + 2, f);
+}
+
+static __device__ void tri_normal(const double a[3], const double b[3], const double c[3], /**/ double e[3]) {
+    double u[3], v[3], n[3];
+    vec_minus(b, a,   u);
+    vec_minus(c, a,   v);
+    vec_cross(u, v,   n);
+    vec_norm(n,   e);
+}
+
+static __device__ void ddih_angle(const double a[3], const double b[3], const double c[3], const double d[3], /**/
+                                  double da[3], double db[3], double dc[3], double dd[3]) {
+    double n[3], k[3];
+    double e, An, Ak, cn, bn, bk, ck;
+
+    tri_normal(a, b, c,   n);
+    tri_normal(c, b, d,   k);
+
+    e = edg_abs(c, b);
+
+    An = tri_area(a, b, c);
+    Ak = tri_area(c, b, d);
+
+    vec_scalar(n, e/(2*An),   da);
+    vec_scalar(k, e/(2*Ak),   dd);
+
+    cn = tri_cot(b, c, a);
+    bn = tri_cot(a, b, c);
+
+    bk = tri_cot(c, b, d);
+    ck = tri_cot(d, c, b);
+
+    vec_linear_combination(-bn/e, n, -bk/e, k,    dc);
+    vec_linear_combination(-cn/e, n, -ck/e, k,    db);
+}
+
+static __device__ void tri_edg(const double a[3], const double b[3], const double c[3],
+                               /**/ double ab[3], double bc[3], double ca[3]) {
+    vec_minus(b, a,   ab);
+    vec_minus(c, b,   bc);
+    vec_minus(a, c,   ca);
+}
+
+static __device__ void dtri_area(double a[3], double b[3], double c[3],  /**/ double da[3], double db[3], double dc[3]) {
+    double n[3], n2[3], ab[3], bc[3], ca[3];
+    tri_normal(a, b, c,   n);
+    vec_scalar(n, 0.5,   n2);
+    tri_edg(a, b, c,   ab, bc, ca);
+    vec_cross(n2, bc,   da);
+    vec_cross(n2, ca,   db);
+    vec_cross(n2, ab,   dc);
+}
+
+static __device__ void get(const Particle *pp, int i, /**/ double r[3]) {
+    r[X] = pp[i].r[X];
+    r[Y] = pp[i].r[Y];
+    r[Z] = pp[i].r[Z];
+}
+static __device__ void get2(const Particle *pp, int i, int j,
+                            /**/ double a[3], double b[3]) {
+    get(pp, i, /**/ a);
+    get(pp, j, /**/ b);
+}
+static __device__ void get3(const Particle *pp, int i, int j, int k,
+                            /**/ double a[3], double b[3], double c[3]) {
+    get(pp, i, /**/ a);
+    get(pp, j, /**/ b);
+    get(pp, k, /**/ c);
+}
+static __device__ void get4(const Particle *pp, int i, int j, int k, int l,
+                            /**/ double a[3], double b[3], double c[3], double d[3]) {
+    get(pp, i, /**/ a);
+    get(pp, j, /**/ b);
+    get(pp, k, /**/ c);
+    get(pp, l, /**/ d);
+}
+
+__global__ void sum(int nv, const float *from, /**/ float *to) {
+    int i, c;
+    float s;
+    i  = threadIdx.x + blockIdx.x * blockDim.x;
+    c  = blockIdx.y;
+    if (i < nv) s = from[c*nv + i]; else s = 0;
+    s = warpReduceSum(s);
+    if ((threadIdx.x % warpSize) == 0) atomicAdd(&to[c], s);
+}
+
+static __device__ void compute_area0(const Particle *pp, int4 tri, /**/ float *area) {
+    double area0;
+    double a[3], b[3], c[3];
+    int i, j, k;
+    i = tri.x; j = tri.y; k = tri.z;
+    get3(pp, i, j, k, /**/ a, b, c);
+    area0 = tri_area(a, b, c)/3;
+
+    append(area0, i, area);
+    append(area0, j, area);
+    append(area0, k, area);
+}
+
+__global__ void compute_area(int nv, int nt, int nc,
+                             const Particle *pp, const int4 *tri,
+                             /**/ float *area) {
+    int i;
+    int t, c; /* triangle, cell */
+    i = threadIdx.x + blockDim.x * blockIdx.x;
+    if (i >= nt*nc) return;
+
+    c = i / nt;
+    t = i % nt;
+
+    pp   += nv*c;
+    area += nv*c;
+    tri  += t;
+
+    compute_area0(pp, *tri, /**/ area);
+}
+
+static __device__ void compute_theta_len0(const Particle *pp, int4 dih,
+                                          /**/ float *theta, float *lentheta) {
+    int i, j, k, l;
+    double a[3], b[3], c[3], d[3], u[3];
+    double len0, theta0, lentheta0;
+
+    i = dih.x; j = dih.y; k = dih.z; l = dih.w;
+    get4(pp, i, j, k, l, /**/ a, b, c, d);
+
+    *theta = theta0 = tri_dih(a, b, c, d);
+    vec_minus(c, b, u);
+    len0 = vec_abs(u);
+    lentheta0 = len0*theta0;
+
+    append(lentheta0, j,  lentheta);
+    append(lentheta0, k,  lentheta);
+}
+
+__global__ void compute_theta_len(int nv, int ne, int nc,
+                                  const Particle *pp, const int4 *dih,
+                                  /**/ float *theta, float *lentheta) {
+    int i;
+    int e, c; /* edge, cell */
+    i = threadIdx.x + blockDim.x * blockIdx.x;
+    if (i >= ne*nc) return;
+
+    c = i / ne;
+    e = i % ne;
+
+    pp       += nv*c;
+    theta    += ne*c + e;
+    lentheta += nv*c;
+    dih      += e;
+
+    compute_theta_len0(pp, *dih, /**/ theta, lentheta);
+}
+
+__global__ void compute_mean_curv(int nc, float H0, float kad,
+                                  const float *lentheta, const float *area,
+                                  /**/ float *mean) {
+    int i;
+    float pi;
+    pi = 3.141592653589793;
+    i = threadIdx.x + blockDim.x * blockIdx.x;
+    if (i >= nc) return;
+    mean[i] = (lentheta[i]/4 - H0 * area[i])*(4*kad*pi/area[i]);
+}
+
+static __device__ void force_edg0(float H0, float curva_mean_area_tot,
+                                  const Particle *pp, const int4 dih,
+                                  float theta, const float *lentheta, const float *area,
+                                  /**/ float *f, float *fad) {
+    int j, k;
+    double b[3], c[3], db[3], dc[3];
+    double coef;
+
+    j = dih.y; k = dih.z;
+    get2(pp, j, k, /**/ b, c);
+    dedg_abs(b, c, db, dc);
+
+    coef = - ( (lentheta[j]/area[j]/4 - H0) + (lentheta[k]/area[k]/4 - H0) ) * theta;
+    vec_scalar_append(db, coef, j, f);
+    vec_scalar_append(dc, coef, k, f);
+    coef = -curva_mean_area_tot/4 * theta;
+    vec_scalar_append(db, coef, j, fad);
+    vec_scalar_append(dc, coef, k, fad);
+}
+
+__global__ void force_edg(int nv, int ne, int nc, float H0,
+                          const Particle *pp, const int4 *dih,
+                          const float *curva_mean_area_tot,
+                          const float *theta, const float *lentheta, const float *area,
+                          /**/ float *f, float *fad) {
+    int i;
+    int e, c; /* edge, cell */
+    i = threadIdx.x + blockDim.x * blockIdx.x;
+    if (i >= ne*nc) return;
+
+    c = i / ne;
+    e = i % ne;
+
+    pp       += nv*c;
+    dih      += e;
+
+    curva_mean_area_tot += c;
+    theta    += ne*c + e;
+    lentheta += nv*c;
+    area     += nv*c;
+
+    f        += 3*nv*c;
+    fad      += 3*nv*c;
+
+    force_edg0(H0, *curva_mean_area_tot,
+               pp, *dih,
+               *theta, lentheta, area, /**/ f, fad);
+}
+
+static __device__ void force_lentheta0(float H0, float curva_mean_area_tot,
+                                       const Particle *pp, const int4 dih,
+                                       const float *lentheta, const float *area,
+                                       /**/ float *f, float *fad) {
+    int i, j, k, l;
+    double len0, coef;
+    double a[3], b[3], c[3], d[3], u[3];
+    double da[3], db[3], dc[3], dd[3];
+
+    i = dih.x; j = dih.y; k = dih.z; l = dih.w;
+    get4(pp, i, j, k, l, /**/ a, b, c, d);
+    ddih_angle(a, b, c, d, /**/ da, db, dc, dd);
+    vec_minus(c, b, u);
+    len0 = vec_abs(u);
+
+    coef =  -(  (lentheta[j]/area[j]/4 - H0) + (lentheta[k]/area[k]/4 - H0) ) * len0 ;
+
+    vec_scalar_append(da, coef, i, f);
+    vec_scalar_append(db, coef, j, f);
+    vec_scalar_append(dc, coef, k, f);
+    vec_scalar_append(dd, coef, l, f);
+
+    coef = -curva_mean_area_tot/2.0*len0;
+    vec_scalar_append(da, coef, i, fad);
+    vec_scalar_append(db, coef, j, fad);
+    vec_scalar_append(dc, coef, k, fad);
+    vec_scalar_append(dd, coef, l, fad);
+}
+
+__global__ void force_lentheta(int nv, int ne, int nc, float H0,
+                               const Particle *pp, const int4 *dih,
+                               const float *curva_mean_area_tot,
+                               const float *lentheta, const float *area,
+                               /**/ float *f, float *fad) {
+    int i;
+    int e, c; /* edge, cell */
+    i = threadIdx.x + blockDim.x * blockIdx.x;
+    if (i >= ne*nc) return;
+
+    c = i / ne;
+    e = i % ne;
+
+    pp       += nv*c;
+    dih      += e;
+
+    curva_mean_area_tot += c;
+    lentheta += nv*c;
+    area     += nv*c;
+
+    f        += 3*nv*c;
+    fad      += 3*nv*c;
+
+    force_lentheta0(H0, *curva_mean_area_tot,
+                    pp, *dih,
+                    lentheta, area, /**/ f, fad);
+}
+
+static __device__ void force_area0(float H0, const Particle *pp, const int4 tri,
+                                   const float *lentheta, const float *area,
+                                   /**/ float *f) {
+    int i, j, k;
+    double a[3], b[3], c[3];
+    double da[3], db[3], dc[3];
+    double coef1, coef2, coef;
+
+    i = tri.x; j = tri.y; k = tri.z;
+    get3(pp, i, j, k, /**/ a, b, c);
+
+    dtri_area(a, b, c, da, db, dc);
+
+    coef1 = 1.0/3.0;
+
+    coef2 = lentheta[i]*lentheta[i]/8.0/area[i]/area[i] - 2.0*H0*H0;
+    coef = coef1 * coef2;
+    vec_scalar_append(da, coef, i, f);
+
+    coef2 = lentheta[j]*lentheta[j]/8.0/area[j]/area[j] - 2.0*H0*H0;
+    coef = coef1 * coef2;
+    vec_scalar_append(db, coef, j, f);
+
+    coef2 = lentheta[k]*lentheta[k]/8.0/area[k]/area[k] - 2.0*H0*H0;
+    coef = coef1 * coef2;
+    vec_scalar_append(dc, coef, k, f);
+}
+
+__global__ void force_area(int nv, int nt, int nc, float H0,
+                           const Particle *pp, const int4 *tri,
+                           const float *lentheta, const float *area,
+                           /**/ float *f) {
+    int i;
+    int t, c; /* triangle, cell */
+    i = threadIdx.x + blockDim.x * blockIdx.x;
+    if (i >= nt*nc) return;
+
+    c = i / nt;
+    t = i % nt;
+
+    pp       += nv*c;
+    tri      += t;
+
+    lentheta += nv*c;
+    area     += nv*c;
+
+    f        += 3*nv*c;
+
+    force_area0(H0, pp, *tri,
+                lentheta, area, /**/ f);
+}
+
+__global__ void accumulate(int n,
+                           const float *ff0, const float *ff1,
+                           /**/ Force *ff) {
+    enum {X, Y, Z};
+    int i;
+    Force *f;
+    const float *f0, *f1;
+
+    i = threadIdx.x + blockDim.x * blockIdx.x;
+    if (i >= n) return;
+
+    f0 = &ff0[3*i];
+    f1 = &ff1[3*i];
+    f = &ff[i];
+
+    f->f[X] += f0[X] + f1[X];
+    f->f[Y] += f0[Y] + f1[Y];
+    f->f[Z] += f0[Z] + f1[Z];
+}
+/* end src/rbc/force/bending/juelicher/dev/main.h */
+}
+
+/* begin src/rbc/force/bending/juelicher/imp/main.h */
+void juelicher_ini(const MeshRead *cell, Juelicher **pq) {
+#   define  nxt(h)     he_nxt(he, (h))
+#   define  flp(h)     he_flp(he, (h))
+#   define  ver(h)     he_ver(he, (h))
+#   define  hdg_edg(e) he_hdg_edg(he, (e))
+    Juelicher *q;
+    int nt, nv, ne, e, i, j, k, l, h, n, nn, nnf;
+    const int4 *tri;
+    HeRead *he_read;
+    He *he;
+    int4 *dih;
+
+    EMALLOC(1, &q);
+    nv = mesh_read_get_nv(cell);
+    nt = mesh_read_get_nt(cell);
+    tri = mesh_read_get_tri(cell);
+
+    he_read_int4_ini(nv, nt, tri, /**/ &he_read);
+    he_ini(he_read, /**/ &he);
+
+    ne = he_ne(he);
+    EMALLOC(ne, &dih);
+    Dalloc(&q->dih, ne);
+    Dalloc(&q->tri, nt);
+
+    Dalloc(&q->theta,    MAX_CELL_NUM*ne); /* (sic) */
+    Dalloc(&q->area,     MAX_CELL_NUM*nv);
+    Dalloc(&q->lentheta, MAX_CELL_NUM*nv);
+
+    Dalloc(&q->lentheta_tot, MAX_CELL_NUM);
+    Dalloc(&q->area_tot,     MAX_CELL_NUM);
+    Dalloc(&q->curva_mean_area_tot,     MAX_CELL_NUM);
+    Dalloc(&q->f,   3*MAX_CELL_NUM*nv);
+    Dalloc(&q->fad, 3*MAX_CELL_NUM*nv);
+
+    for (e = 0; e < ne; e++) { /* i[jk]l */
+        h = hdg_edg(e); n = nxt(h); nn = nxt(nxt(h));
+        j = ver(h); k = ver(n); i = ver(nn);
+        nnf = nxt(nxt(flp(h)));
+        l = ver(nnf);
+        dih[e].x = i; dih[e].y = j; dih[e].z = k; dih[e].w = l;
+    }
+
+    q->ne = ne;
+    cH2D(q->dih, dih, ne);
+    cH2D(q->tri, tri,  nt);
+
+    he_read_fin(he_read);
+    he_fin(he);
+    EFREE(dih);
+
+    *pq = q;
+}
+
+void juelicher_fin(Juelicher *q) {
+    Dfree(q->dih);
+    Dfree(q->tri);
+    Dfree(q->area);
+    Dfree(q->theta);
+    Dfree(q->lentheta);
+    Dfree(q->lentheta_tot);
+    Dfree(q->area_tot);
+    Dfree(q->curva_mean_area_tot);
+    Dfree(q->f);
+    Dfree(q->fad);
+    EFREE(q);
+}
+/* end src/rbc/force/bending/juelicher/imp/main.h */
+/* begin src/rbc/force/bending/juelicher/imp/forces.h */
+/*
+static void print(const char *s, float *dev) {
+    float hst;
+    cD2H(&hst, dev, 1);
+    msg_print("%s: %g", s, hst);
+    } */
+
+/*
+static void dump(int n, float *dev) {
+    int i;
+    float *hst;
+    EMALLOC(n, &hst);
+    cD2H(hst, dev, n);
+    for (i = 0; i < n; i++)
+        printf("%g\n", hst[i]);
+    EFREE(hst);
+    } */
+
+/*
+static void dump3(int n, float *dev) {
+    int i, j;
+    float *hst;
+    EMALLOC(3*n, &hst);
+    cD2H(hst, dev, 3*n);
+    for (j = i = 0; i < n; i++) {
+        printf("%g %g %g\n", hst[j], hst[j+1], hst[j+2]);
+        j += 3;
+    }
+    EFREE(hst);
+    } */
+
+static void sum(int nv, int nc, const float *from, /**/ float *to) {
+    dim3 thrd(128, 1);
+    dim3 blck(ceiln(nv, thrd.x), nc);
+    Dzero(to, nc);
+    KL(juelicher_dev::sum, (blck, thrd), (nv, from, /**/ to));
+}
+
+void juelicher_apply(Juelicher *q, const RbcParams*, const RbcQuants *quants, /**/ Force *ff) {
+    int nc, ne, nt, nv;
+    //    RbcParams_v parv;
+
+    int4 *tri, *dih;
+    float *area, *lentheta, *theta;
+    float *lentheta_tot, *area_tot, *curva_mean_area_tot;
+    float *f, *fad;
+    const Particle *pp;
+    float pi, kb, H0, kad;
+    pi = 3.141592653589793;
+
+    //parv = rbc_params_get_view(par);
+
+    H0 = -1.0/2.0;
+    kb = 1.0; /* parv.kb; */
+    kad = 2*kb/pi;
+
+    tri = q->tri; dih = q->dih;
+    area = q->area; lentheta = q->lentheta; theta = q->theta;
+    lentheta_tot = q->lentheta_tot;
+    area_tot = q->area_tot;
+    curva_mean_area_tot = q->curva_mean_area_tot;
+    f = q->f;
+    fad = q->fad;
+    pp = quants->pp;
+
+    nv = quants->nv; nc = quants->nc; nt = quants->nt;
+    ne = q->ne;
+
+    if (!d::is_device_pointer(pp))
+        ERR("`q->pp` is not a device pointer");
+    if (quants->nc <= 0) return;
+
+    // parv = rbc_params_get_view(par);
+
+    Dzero(area, nv*nc);
+    KL(juelicher_dev::compute_area, (k_cnf(nt*nc)), (nv, nt, nc, pp, tri, /**/ area));
+    dSync();
+    sum(nv, nc, area, /**/ area_tot); dSync();
+
+    Dzero(theta, ne*nc);
+    Dzero(lentheta, nv*nc);
+    KL(juelicher_dev::compute_theta_len, (k_cnf(ne*nc)), (nv, ne, nc, pp, dih, /**/ theta, lentheta));
+    dSync();
+
+    sum(nv, nc, lentheta, /**/ lentheta_tot); dSync();
+    KL(juelicher_dev::compute_mean_curv, (k_cnf(nc)), (nc, H0, kad, lentheta_tot, area_tot, /**/ curva_mean_area_tot));
+    dSync();
+
+    Dzero(f, nv*nc);
+    Dzero(fad, nv*nc);
+    KL(juelicher_dev::force_edg, (k_cnf(ne*nc)),
+       (nv, ne, nc, H0, pp, dih, curva_mean_area_tot, theta, lentheta, area, /**/ f, fad));
+    dSync();
+
+    KL(juelicher_dev::force_lentheta, (k_cnf(ne*nc)),
+       (nv, ne, nc, H0, pp, dih, curva_mean_area_tot, lentheta, area, /**/ f, fad));
+    dSync();
+
+    KL(juelicher_dev::force_area, (k_cnf(ne*nc)),
+       (nv, nt, nc, H0, pp, tri, lentheta, area, /**/ f));
+    dSync();
+
+    KL(juelicher_dev::accumulate, (k_cnf(nv*nc)),
+       (nv*nc, f, fad, /**/ ff));
+
+    /*
+    print("lentheta_tot", &lentheta_tot[0]);
+    print("curva_mean_area_tot", &curva_mean_area_tot[0]);
+    print("area", &area[0]);
+    print("fx",  &f[0]);
+    print("fad", &fad[0]);
+
+    dump3(nv*nc, f); */
+}
+/* end src/rbc/force/bending/juelicher/imp/forces.h */
+/* end src/rbc/force/bending/juelicher/imp.cu */
+
+#line 1 "src/rbc/force/bending/kantor/imp.cu"
+
+#line 3 "udx.rbc-force-bending-all.cu"
+
+#line 1 "udx.rbc-force-bending-kantor.cu"
+
+#line 1 "udx.rbc-force-bending-kantor.cu"
+// generated from udx.flat.cu
+#include "udx.config.cuh"
+
+/* begin src/rbc/force/bending/kantor/imp.cu */
+#include <stdio.h>
+#include <assert.h>
+
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
+
+
+/* shared generated definitions used by both bending implementations */
+#ifndef UDX_RBC_BENDING_COMMON
+#define UDX_RBC_BENDING_COMMON
+/* begin src/inc/def.h */
+/* solvent colors */
+#define XMACRO_COLOR(_)                         \
+    _(BLUE)                                     \
+    _(RED)
+
+#define ENUM_COLOR(a) a##_COLOR
+#define make_enum_color(a) ENUM_COLOR(a) ,
+enum {
+    XMACRO_COLOR(make_enum_color)
+    N_COLOR
+};
+#undef make_enum_color
+
+enum {
+    /* wall margins */
+    XWM = 6,
+    YWM = 6,
+    ZWM = 6,
+
+    SAFETY_FACTOR_MAXP = 3,
+
+    /* maximum number of particles per solid */
+    MAX_PSOLID_NUM = 12000,
+
+    /* maximum number of solids per node */
+    MAX_SOLIDS = 100,
+
+    /* maximum number of object types (solid, rbc, ...) */
+    MAX_MBR_TYPES = 2,
+    MAX_RIG_TYPES = 2,
+    MAX_OBJ_TYPES = MAX_MBR_TYPES + MAX_RIG_TYPES,
+
+    /* maximum number density of particles of the objects */
+    MAX_OBJ_DENSITY = 30,
+
+    /* maximum number of red blood cells per node */
+    MAX_CELL_NUM = 1500,
+
+    /* maximum texture size in bytes */
+    MAX_TEXO_SIZE = 100000000,
+
+    /* safety factor for dpd halo interactions */
+    HSAFETY_FACTOR = 10,
+
+    /* safety factor for odist fragments */
+    ODSTR_FACTOR = 3,
+};
+
+/* for the spring forces r = min(lmax*RBC_SPRING_CAP, r) */
+#define RBC_SPRING_CAP (0.99)
+/* end src/inc/def.h */
+/* begin src/inc/type.h */
+template <typename T, int N>
+struct Sarray { /* [s]tatic array */
+    T d[N];
+};
+
+struct Particle {
+    float r[3], v[3];
+};
+
+struct Rigid {
+    float Iinv[6],            /* moment of inertia            6        */
+        mass,                 /* mass of the solid            7        */
+        com[3],               /* [c]enter [o]f [m]ass         10       */
+        v[3], om[3],          /* linear and angular velocity  13 16    */
+        e0[3], e1[3], e2[3],  /* local referential            19 22 25 */
+        fo[3], to[3],         /* force, torque                28 31    */
+        id;                   /* id of the solid              32       */
+};
+
+struct Force {
+    float f[3];
+};
+
+struct Momentum {
+    float P[3], L[3]; /* linear and angular momentum */
+};
+
+struct Positioncp {
+    float rc[3]; /* current position  */
+    float rp[3]; /* previous position */
+};
+
+typedef Sarray<int, 26>       int26;
+typedef Sarray<int, 27>       int27;
+
+typedef Sarray<int*, 26>     intp26;
+typedef Sarray<Particle*, 26> Pap26;
+typedef Sarray<Force*,    26> Fop26;
+typedef Sarray<Momentum*, 26> Mop26;
+typedef Sarray<Positioncp*, 26> Pocpp26;
+
+/* particles wrap */
+struct PaWrap {
+    int n;
+    const Particle *pp;
+};
+
+/* forces wrap */
+struct FoWrap {
+    int n;
+    Force *ff;
+};
+/* end src/inc/type.h */
+/* begin src/inc/dev.h */
+/* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
+#define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
+
+/* a common kernel execution configuration */
+#define k_cnf(n) ceiln((n), 128), 128
+
+#define dSync() CC(d::DeviceSynchronize())
+
+#define D2D d::MemcpyDeviceToDevice
+#define D2H d::MemcpyDeviceToHost
+#define H2D d::MemcpyHostToDevice
+#define H2H d::MemcpyHostToHost
+#define A2A d::MemcpyDefault /* "[a]ny to [a]ny" */
+
+#define cD2D(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), D2D))
+#define cH2H(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), H2H))  /* [t]to, [f]rom */
+#define cA2A(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), A2A))
+#define cD2H(H, D, n) CC(d::Memcpy((H), (D), (n) * sizeof((H)[0]), D2H))
+#define cH2D(D, H, n) CC(d::Memcpy((D), (H), (n) * sizeof((H)[0]), H2D))
+
+#define aD2D(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), D2D))
+#define aH2H(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), H2H))  /* [t]to, [f]rom */
+#define aA2A(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), A2A))
+#define aD2H(H, D, n) CC(d::MemcpyAsync((H), (D), (n) * sizeof((H)[0]), D2H))
+#define aH2D(D, H, n) CC(d::MemcpyAsync((D), (H), (n) * sizeof((H)[0]), H2D))
+
+/* device allocation */
+#define Dfree(D)      CC(d::Free(D))
+#define Dalloc(D, n)  CC(d::Malloc((void**)(D), (n) * sizeof(**(D))))
+
+/* [d]evice set */
+#define Dset(P, v, n) CC(d::Memset(P, v, (n)*sizeof(*(P))))
+#define Dzero(P, n)   Dset(P, 0, n)
+
+/* [d]evice [a]synchronous set */
+#define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
+#define DzeroA(P, n)   DsetA(P, 0, n)
+/* end src/inc/dev.h */
+/* begin src/math/dev.h */
+/* use templates here because we might have mixed float/double */
+
+#define _HD_ __host__ __device__
+
+template <typename T1, typename T2>
+_HD_ void scal(const T1 a, /*io*/ T2 *b) {
+    b->x *= a;
+    b->y *= a;
+    b->z *= a;
+}
+
+template <typename T1, typename T2>
+_HD_ void add(const T1 *a, /*io*/ T2 *b) {
+    b->x += a->x;
+    b->y += a->y;
+    b->z += a->z;
+}
+
+template <typename T1, typename T2, typename T3>
+_HD_ void diff(const T1 *a, const T2 *b, /**/ T3 *c) {
+    c->x = a->x - b->x;
+    c->y = a->y - b->y;
+    c->z = a->z - b->z;
+}
+
+template <typename T1, typename T2, typename T3>
+_HD_ T1 dot(const T2 *a, const T3 *b) {
+    return a->x * b->x + a->y * b->y + a->z * b->z;
+}
+
+template <typename T1, typename T2, typename T3>
+_HD_ void cross(const T1 *a, const T2 *b, /**/ T3 *c) {
+    c->x = a->y * b->z - a->z * b->y;
+    c->y = a->z * b->x - a->x * b->z;
+    c->z = a->x * b->y - a->y * b->x;
+}
+
+template <typename T1, typename T2, typename T3>
+_HD_ void scalmult(const T1 *a, const T2 x, /**/ const T3 *b) {
+    b->x = a->x * x;
+    b->y = a->y * x;
+    b->z = a->z * x;
+}
+
+
+template <typename T1, typename T2, typename T3, typename T4>
+_HD_ void apxb(const T1 *a, const T2 x, const T3 *b, /**/ T4 *c) {
+    c->x = a->x + x * b->x;
+    c->y = a->y + x * b->y;
+    c->z = a->z + x * b->z;
+}
+
+template <typename T1, typename T2, typename T3>
+_HD_ void axpy(const T1 a, const T2 *x, /*io*/ T3 *y) {
+    y->x += a * x->x;
+    y->y += a * x->y;
+    y->z += a * x->z;
+}
+/* end src/math/dev.h */
+
+/* begin src/io/mesh_read/imp.h */
+struct int4;
+struct MeshRead;
+
+// tag::interface[]
+void mesh_read_ini_off(const char *path, MeshRead**);
+void mesh_read_ini_ply(const char *path, MeshRead**);
+void mesh_read_fin(MeshRead*);
+
+int mesh_read_get_nt(const MeshRead*);
+int mesh_read_get_nv(const MeshRead*);
+int mesh_read_get_ne(const MeshRead*);
+int mesh_read_get_md(const MeshRead*);
+
+const int4  *mesh_read_get_tri(const MeshRead*);
+const float *mesh_read_get_vert(const MeshRead*);
+const int4  *mesh_read_get_dih(MeshRead*);
+// end::interface[]
+/* end src/io/mesh_read/imp.h */
+
+/* begin src/utils/error.h */
+#define ERR(fmt, ...)  do {                                     \
+        error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
+        error_report();                                         \
+        error_abort();                                          \
+    } while (0)
+
+/* udx check */
+#define UC(F) do {                              \
+        error_stack_push(__FILE__, __LINE__);   \
+        F;                                      \
+        if (error_get()) {                      \
+            error_report();                     \
+            error_abort();                      \
+        }                                       \
+        error_stack_pop();                      \
+    } while (0)
+
+/* [B]o[p] [c]heck */
+#define BPC(ans) do {                           \
+        BopStatus s = (ans);                    \
+        if (!bop_success(s)) {                  \
+            ERR(":%s:%d: %s\n%s\n",             \
+                __FILE__, __LINE__,             \
+                bop_report_error_desc(s),       \
+                bop_report_error_mesg());       \
+        }} while (0)
+
+void error_stack_push(const char *file, int line);
+void error_stack_pop();
+
+void error_signal(const char *file, int line, const char *fmt, ...);
+void error_signal_cuda(const char *file, int line, const char *msg);
+void error_signal_mpi(const char *file, int line, const char *msg);
+
+bool error_get();
+void error_report();
+void error_abort();
+
+void error_print_stack();
+/* end src/utils/error.h */
+/* begin src/utils/msg.h */
+// tag::int[]
+void msg_ini(int rank); // <1>
+void msg_print(const char *fmt, ...); // <2>
+// end::int[]
+/* end src/utils/msg.h */
+/* begin src/utils/imp.h */
+// tag::mem[]
+void emalloc(size_t, /**/ void**); // <1>
+void efree(void*); // <2>
+void *ememcpy(void *dest, const void *src, size_t n); // <3>
+// end::mem[]
+
+// tag::macros[]
+#define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
+#define EFREE(pdata) UC(efree(pdata))
+#define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
+// end::macros[]
+
+// tag::stdio[]
+void efopen(const char *fname, const char *mode, /**/ FILE**);
+void efclose(FILE*);
+void efread(void *ptr, size_t size, size_t nmemb, FILE*);
+void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
+void efgets(char *s, int size, FILE*);
+// end::stdio[]
+
+// tag::tools[]
+bool same_str(const char *a, const char *b); // <1>
+const char* get_filename_ext(const char*);
+// end::tools[]
+/* end src/utils/imp.h */
+
+/* begin src/d/q.h */
+/* function and variable type [q]ualifiers */
+
+#if   defined(DEV_CUDA)
+/* begin src/d/cuda/q.h */
+/* B.1. Function Type Qualifiers */
+/* B.2. Variable Type Qualifiers */
+/* end src/d/cuda/q.h */
+#elif defined(DEV_CPU)
+/* begin src/d/cpu/q.h */
+/* B.1. Function Type Qualifiers */
+#ifdef __device__
+  #undef  __device__
+  #define __device__
+#endif
+
+#ifdef __global__
+  #undef  __global__
+  #define __global__
+#endif
+
+#ifdef __host__
+  #undef  __host__
+  #define __host__
+#endif
+
+#ifdef __noinline__
+  #undef  __noinline__
+  #define __noinline__
+#endif
+
+#ifdef __forceinline__
+  #undef  __forceinline__
+  #define __forceinline__
+#endif
+
+/* B.2. Variable Type Qualifiers */
+/* __device__ : also a function qualifier */
+#ifdef __constant__
+  #undef  __constant__
+  #define __constant__
+#endif
+
+#ifdef __shared__
+  #undef  __shared__
+  #define __shared__
+#endif
+
+#ifdef __managed__
+  #undef  __managed__
+  #define __managed__
+#endif
+
+#ifdef __restrict__
+  #undef  __restrict__
+  #define __restrict__
+#endif
+/* end src/d/cpu/q.h */
+#else
+  #error DEV_* is undefined
+#endif
+/* end src/d/q.h */
+/* begin src/d/api.h */
+namespace d {  /* a wrapper for device API */
+typedef int Stream_t; /* TODO: streams are not supported */
+enum {MemcpyHostToHost, MemcpyHostToDevice,
+      MemcpyDeviceToHost, MemcpyDeviceToDevice,
+      MemcpyDefault};
+
+// tag::more[]
+const char *emsg();
+int alloc_pinned(void **pHost, size_t size);
+int is_device_pointer(const void *ptr);
+// end::more[]
+
+// tag::api[]
+int GetSymbolAddress(void **devPtr, const void *symbol);
+int Malloc(void **p, size_t);
+int MemcpyToSymbol(const void *symbol, const void *src, size_t count, size_t offset=0, int kind=MemcpyHostToDevice);
+int MemcpyFromSymbol(void *dst, const void *symbol, size_t count, size_t offset=0, int kind=MemcpyDeviceToHost);
+int HostGetDevicePointer(void **pDevice, void *pHost, unsigned int flags);
+int Memcpy (void *dst, const void *src, size_t count, int kind);
+int MemsetAsync (void *devPtr, int value, size_t count, Stream_t stream=0);
+int Memset (void *devPtr, int value, size_t count);
+int MemcpyAsync (void * dst, const void * src, size_t count, int kind, Stream_t stream = 0);
+int Free (void *devPtr);
+int FreeHost (void *hstPtr);
+int DeviceSynchronize (void);
+int PeekAtLastError(void);
+// end::api[]
+}
+/* end src/d/api.h */
+/* begin src/d/ker.h */
+#if   defined(DEV_CUDA)
+/* begin src/d/cuda/ker.h */
+#define  Ifetch(t, i)  tex1Dfetch(t, i)
+#define F4fetch(t, i)  tex1Dfetch(t, i)
+#define F2fetch(t, i)  tex1Dfetch(t, i)
+#define  Ffetch(t, i)  tex1Dfetch(t, i)
+#define Tfetch(T, t, i) tex1Dfetch<T>(t, i)
+
+#define Ttex3D(T, to, i, j, k) tex3D<T>(to, i, j, k);
+/* end src/d/cuda/ker.h */
+#elif defined(DEV_CPU)
+/* begin src/d/cpu/ker.h */
+#define atomicAdd(...) (0)
+
+#define atomicExch(...)
+#define __float2half_rn(...) (0)
+#define __fmaf_rz(...) (0.0)
+#define __ldg(p) (*(p))
+#define __popc(...)
+#define __shfl(...) (0.0)
+#define __shfl_down(...) (0.0)
+#define __shfl_up(...) (0)
+#define __shfl_xor(...) (0)
+
+#define __syncthreads(...)
+
+#define tex3D(...)
+
+#define  Ifetch(t, i)  (0);
+#define F4fetch(t, i)  (make_float4(0, 0, 0, 0))
+#define F2fetch(t, i)  (make_float2(0, 0))
+#define Ffetch(t, i)   (0.0)
+#define Tfetch(T, t, i) (T{})
+
+#define Ttex3D(T, to, i, j, k) (T{})
+/* end src/d/cpu/ker.h */
+/* begin src/d/cpu/wrap.h */
+namespace d {
+static uint3 threadIdx, blockIdx, gridDim;
+static dim3  blockDim;
+static int   warpSize = 1;
+}
+
+#define threadIdx d::threadIdx
+#define blockDim  d::blockDim
+#define gridDim   d::gridDim
+#define blockIdx  d::blockIdx
+#define warpSize  d::warpSize
+/* end src/d/cpu/wrap.h */
+#else
+  #error DEV_* is undefined
+#endif
+/* end src/d/ker.h */
+/* begin src/utils/cc.h */
+/* [c]uda [c]heck macros */
+
+#if   defined(CC_SYNC)
+/* begin src/utils/cc/sync.h */
+/* Aggressive [sync]ronization */
+#define CC(ans)                                             \
+    do {                                                    \
+        d::DeviceSynchronize();                             \
+        cc::check((ans), __FILE__, __LINE__);               \
+        d::DeviceSynchronize();                             \
+    } while (0)
+/* end src/utils/cc/sync.h */
+#elif defined(CC_RELEASE)
+/* begin src/utils/cc/release.h */
+/* [c]cuda [c]heck */
+#define CC(ans)                                             \
+    do { cc::check((ans), __FILE__, __LINE__);} while (0)
+/* end src/utils/cc/release.h */
+#else
+  #error CC_* is undefined
+#endif
+
+/* begin src/utils/cc/common.h */
+namespace cc {
+void check(int rc, const char *file, int line);
+}
+
+
+/* end src/utils/cc/common.h */
+
+/* TODO: header includes header */
+/* end src/utils/cc.h */
+/* begin src/utils/kl.h */
+/* [k]ernel [l]aunch macros */
+
+#if    defined(KL_RELEASE)
+/* begin src/utils/kl/release.h */
+#define KL_BEFORE(s, C) if (!kl::safe(ESC C)) continue;
+#define KL_CALL(F, C, A) F<<<ESC C>>>A
+#define KL_AFTER(s)
+
+namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
+/* end src/utils/kl/release.h */
+#elif  defined(KL_NONE)
+/* begin src/utils/kl/none.h */
+#define KL_BEFORE(s, C)
+#define KL_CALL(F, C, A)
+#define KL_AFTER(s)
+
+namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
+/* end src/utils/kl/none.h */
+#elif  defined(KL_SYNC)
+/* begin src/utils/kl/sync.h */
+#define KL_BEFORE(s, C) if (!kl::safe(ESC C)) continue;
+#define KL_CALL(F, C, A) F<<<ESC C>>>A
+#define KL_AFTER(s)                             \
+    do {                                        \
+        dSync();                                \
+        CC(d::PeekAtLastError());               \
+    } while(0)
+
+namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
+/* end src/utils/kl/sync.h */
+#else
+  #error KL_* is undefined
+#endif
+
+/* begin src/utils/kl/common.h */
+namespace kl {
+inline int safe0(dim3 i, dim3 j) {
+    msg(i.x, i.y, i.z,   j.x, j.y, j.z);
+    return i.x>0 && i.y>0 && i.z>0   &&   j.x>0 && j.y>0 && j.z>0;
+}
+inline int safe(dim3 i, dim3 j)                    { return safe0(i, j); }
+inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
+}
+/* end src/utils/kl/common.h */
+/* begin src/utils/kl/macro.h */
+#define ESC(...) __VA_ARGS__
+#define KL(F, C, A)                             \
+    do  {                                       \
+        KL_BEFORE(#F, C);                       \
+        KL_CALL(F, C, A);                       \
+        KL_AFTER(#F);                           \
+    } while (0)
+/* end src/utils/kl/macro.h */
+
+/* TODO: header includes header */
+/* end src/utils/kl.h */
+
+/* begin src/rbc/params/imp.h */
+struct Config;
+struct RbcParams;
+struct RbcParams_v {
+    float gammaC, gammaT, kBT;
+    float kb, phi;
+    float ks, x0, mpow;
+    float ka, kd, kv;
+    float totArea, totVolume;
+};
+
+// tag::mem[]
+void rbc_params_ini(RbcParams **);
+void rbc_params_fin(RbcParams *);
+// end::mem[]
+
+// tag::set[]
+void rbc_params_set_fluct(float gammaC, float gammaT, float kBT, RbcParams *);
+void rbc_params_set_bending(float kb, float phi, RbcParams *);
+void rbc_params_set_spring(float ks, float x0, float mpow , RbcParams *);
+void rbc_params_set_area_volume(float ka, float kd, float kv, RbcParams *);
+void rbc_params_set_tot_area_volume(float totArea, float totVolume, RbcParams *);
+// end::set[]
+
+// tag::get[]
+double rbc_params_get_tot_volume(const RbcParams *);
+// end::get[]
+
+// tag::cnf[]
+void rbc_params_set_conf(const Config *c, const char *name, RbcParams *);
+// end::cnf[]
+
+// tag::view[]
+RbcParams_v rbc_params_get_view(const RbcParams *);
+// end::view[]
+/* end src/rbc/params/imp.h */
+/* begin src/rbc/adj/imp.h */
+struct Adj;
+struct Adj_v;
+struct AdjMap;
+struct int4;
+
+// tag::interface[]
+void adj_ini(int md, int nt, int nv, const int4 *tt, /**/ Adj**);
+void adj_fin(Adj*);
+int  adj_get_map(int i, const Adj*, /**/ AdjMap *m);
+int  adj_get_max(const Adj*);
+void adj_get_anti(const Adj*, /**/ int *anti);
+
+void adj_view_ini(const Adj*, Adj_v**);
+void adj_view_fin(Adj_v*);
+// end::interface[]
+/* end src/rbc/adj/imp.h */
+
+/* begin src/rbc/type.h */
+struct AreaVolume;
+struct Particle;
+
+// tag::quants[]
+struct RbcQuants {
+    int n, nc;               /* number of particles, cells                */
+    int nt, nv;              /* number of triangles and vertices per mesh */
+    int md;                  /* maximum valence of the mesh               */
+    Particle *pp, *pp_hst;   /* vertices particles on host and device     */
+    bool ids;                /* global ids active ?                       */
+    int *ii;                 /* global ids on host                        */
+    AreaVolume *area_volume; /* to compute area and volume */
+};
+// end::quants[]
+
+/* end src/rbc/type.h */
+
+/* begin src/rbc/adj/type/common.h */
+// tag::interface[]
+struct AdjMap {
+    int i0, i1, i2, i3, i4;
+    int rbc;
+};
+// end::interface[]
+/* end src/rbc/adj/type/common.h */
+/* begin src/rbc/adj/type/dev.h */
+struct Adj_v {
+    int *adj0;
+    int *adj1;
+    int nv, md;
+};
+
+/* end src/rbc/adj/type/dev.h */
+/* begin src/rbc/adj/dev.h */
+static __device__ int fetch(const int *a, int i) { return a[i]; }
+static __device__ int adj_get_map0(int md, int nv, int i, const int *adj0, const int *adj1, /**/ AdjMap *m) {
+    int i0, i1, i2, i3, i4;
+    int rbc, offset, j, k;
+    i0 = i / md;
+    j  = i % md;
+
+    k   = (i0 % nv) * md;
+    i1 = fetch(adj0, k + j);
+    if (i1 == -1) return 0; /* invalid */
+
+    i2 = fetch(adj0, k + ((j + 1) % md));
+    if (i2 == -1) {
+        i2 = fetch(adj0, k    );
+        i3 = fetch(adj0, k + 1);
+    } else {
+        i3 = fetch(adj0, k + ((j + 2) % md));
+        if (i3 == -1) i3 = fetch(adj0, k);
+    }
+    i4 = fetch(adj1, k + j);
+
+    rbc = i0 / nv;
+    offset = rbc * nv;
+    i1 += offset; i2 += offset; i3 += offset; i4 += offset; /* no i0 */
+
+    assert(rbc < MAX_CELL_NUM);
+
+    m->rbc = rbc;
+    m->i0 = i0; m->i1 = i1; m->i2 = i2; m->i3 = i3; m->i4 = i4;
+    return 1;
+}
+
+// tag::interface[]
+static __device__ int adj_get_map(int i, Adj_v *adj, /**/ AdjMap *m) {
+// end::interface[]
+    int md, nv;
+    md = adj->md;
+    nv = adj->nv;
+    const int *adj0 = adj->adj0;
+    const int *adj1 = adj->adj1;
+    return adj_get_map0(md, nv, i, adj0, adj1, m);
+}
+/* end src/rbc/adj/dev.h */
+
+#endif /* UDX_RBC_BENDING_COMMON */
+
+/* begin src/rbc/force/bending/kantor/imp.h */
+struct RbcParams;
+struct Kantor;
+struct Force;
+struct MeshRead;
+struct RbcQuants;
+
+// tag::mem[]
+void kantor_ini(const MeshRead*, Kantor**);
+void kantor_fin(Kantor*);
+// end::mem[]
+
+// tag::apply[]
+void kantor_apply(Kantor*, const RbcParams*, const RbcQuants*, /**/ Force*); // <1>
+// end::apply[]
+/* end src/rbc/force/bending/kantor/imp.h */
+/* begin src/rbc/force/bending/kantor/imp/type.h */
+struct Kantor {
+    Adj   *adj;
+    Adj_v *adj_v;
+};
+/* end src/rbc/force/bending/kantor/imp/type.h */
+
+/* shared Kantor angle helpers used by both bending implementations */
+#ifndef UDX_RBC_KANTOR0_COMMON
+#define UDX_RBC_KANTOR0_COMMON
+/* begin src/mesh/force/kantor0/dev.h */
+#ifdef FORCE_KANTOR0_HOST
+  #define _I_
+  #define _S_ static
+  #define BEGIN namespace force_kantor0_hst {
+  #define END }
+#else
+  #define _I_ static __device__
+  #define _S_ static __device__
+  #define BEGIN namespace force_kantor0_dev {
+  #define END }
+#endif
+
+BEGIN
+
+#ifdef FORCE_KANTOR0_HOST
+_S_ double rsqrt0(double x) { return pow(x, -0.5); }
+#define PRINT(fmt, ...) msg_print((fmt), ##__VA_ARGS__)
+#define EXIT() ERR("assert")
+#else
+_S_ double rsqrt0(double x) { return rsqrt(x); }
+#define PRINT(fmt, ...) printf((fmt), ##__VA_ARGS__)
+#define EXIT() assert(0)
+#endif
+
+_S_ double max(double a, double b) { return a > b ? a : b; }
+
+enum {ANGLE_OK, ANGLE_BAD_A, ANGLE_BAD_B};
+_S_ int angle(double3 a, double3 b, /**/ double *pcos, double *pover_sin,
+              double *pover_a, double *pover_b) {
+    double  cost, over_sin, over_a, over_b;
+    double aa, bb, ab;
+    *pcos = *pover_sin = *pover_a = *pover_b = 0.0;
+
+    aa = dot<double>(&a, &a);
+    bb = dot<double>(&b, &b);
+    ab = dot<double>(&a, &b);
+
+    if (aa == 0) return ANGLE_BAD_A;
+    if (bb == 0) return ANGLE_BAD_B;
+
+    over_a = rsqrt0(aa);
+    over_b = rsqrt0(bb);
+    cost = ab * over_a * over_b;
+    over_sin = rsqrt0(max(1.0 - cost*cost, 1e-6));
+
+    *pcos = cost; *pover_sin = over_sin; *pover_a = over_a; *pover_b = over_b;
+    return ANGLE_OK;
+}
+
+_S_ void dih_write(double3 a, double3 b, double3 c, double3 d) {
+    PRINT("%g %g %g\n", a.x, a.y, a.z);
+    PRINT("%g %g %g\n", b.x, b.y, b.z);
+    PRINT("%g %g %g\n", c.x, c.y, c.z);
+    PRINT("%g %g %g\n", d.x, d.y, d.z);
+}
+
+/* forces from one dihedral */
+template <int update>
+_S_ double3 dih0(double phi, double kb,
+                 double3 a, double3 b, double3 c, double3 d) {
+    int status;
+    double over_k, over_n, cosTheta, over_sin,
+        beta, b11, b12, sint0kb, cost0kb;
+    double3 ab, ac, cd, bc, bd, da, k, n, k_n;
+    diff(&a, &b, /**/ &ab);
+    diff(&a, &c, /**/ &ac);
+    diff(&c, &d, /**/ &cd);
+    diff(&b, &d, /**/ &bd);
+    diff(&b, &c, /**/ &bc);
+    diff(&d, &a, /**/ &da);
+
+    cross(&ab, &ac, /**/ &k);
+    cross(&bd, &bc, /**/ &n);
+
+    status = angle(k, n, /**/
+                   &cosTheta, &over_sin,
+                   &over_k, &over_n);
+    if (status != ANGLE_OK) {
+        PRINT("bad dihedral\n");
+        dih_write(a, b, c, d);
+        EXIT();
+    }
+    diff(&k, &n, /**/ &k_n);
+    over_sin = copysign(over_sin, dot<double>(&k_n, &da));
+
+    sint0kb = sin(phi) * kb;
+    cost0kb = cos(phi) * kb;
+    beta = cost0kb - cosTheta * sint0kb * over_sin;
+
+    b11 = -beta *  cosTheta * over_k * over_k;
+    b12 =  beta *             over_k * over_n;
+
+    if (update == 1) {
+        double3 r32, f1, f;
+        diff(&c, &b, /**/ &r32);
+        cross(&k, &r32, /**/ &f);
+        cross(&n, &r32, /**/ &f1);
+        scal(b11, /**/ &f);
+        axpy(b12, &f1, /**/ &f);
+        return f;
+    }
+    else if (update == 2) {
+        double3 f, f1, f2, f3;
+        double b22 = -beta * cosTheta * over_n * over_n;
+
+        cross(&k, &ac, /**/ &f);
+        cross(&k, &cd, /**/ &f1);
+        cross(&n, &ac, /**/ &f2);
+        cross(&n, &cd, /**/ &f3);
+
+        scal(b11, /**/ &f);
+        add(&f2, /**/ &f1);
+        axpy(b12, &f1, /**/ &f);
+        axpy(b22, &f3, /**/ &f);
+        return f;
+    }
+    else {
+        double3 f;
+        f.x = f.y = f.z = 0;
+        assert(0);
+        return f;
+    }
+}
+
+_I_ double3 dih_a(double phi, double kb, double3 a, double3 b, double3 c, double3 d) {
+    return dih0<1>(phi, kb, a, b, c, d);
+}
+
+_I_ double3 dih_b(double phi, double kb, double3 a, double3 b, double3 c, double3 d) {
+    return dih0<2>(phi, kb, a, b, c, d);
+}
+
+END
+
+#undef _I_
+#undef _S_
+#undef BEGIN
+#undef END
+/* end src/mesh/force/kantor0/dev.h */
+#endif /* UDX_RBC_KANTOR0_COMMON */
+
+namespace kantor_dev {
+/* begin src/rbc/force/bending/kantor/dev/main.h */
+struct Part { double3 r, v; };
+typedef double3 Pos;
+
+static __device__ Pos fetchPos(const Particle *pp, int i) {
+    enum {X, Y, Z};
+    Pos r;
+    r.x = pp[i].r[X];
+    r.y = pp[i].r[Y];
+    r.z = pp[i].r[Z];
+    return r;
+}
+
+static __device__ Part fetchPart(const Particle *pp, int i) {
+    enum {X, Y, Z};
+    Part p;
+    const float *r, *v;
+    r = pp[i].r; v = pp[i].v;
+    p.r.x = r[X]; p.r.y = r[Y]; p.r.z = r[Z];
+    p.v.x = v[X]; p.v.y = v[Y]; p.v.z = v[Z];
+    return p;
+}
+
+static __device__ void adj_dihedrals(const RbcParams_v *par, const Particle *pp, double3 r0,
+                                     AdjMap *m, /*io*/ double f[3]) {
+    enum {X, Y, Z};
+    Pos r1, r2, r3, r4;
+    double3 f0;
+    double phi, kb;
+    r1 = fetchPos(pp, m->i1);
+    r2 = fetchPos(pp, m->i2);
+    r3 = fetchPos(pp, m->i3);
+    r4 = fetchPos(pp, m->i4);
+
+    phi = par->phi / 180.0 * M_PI;
+    kb  = par->kb;
+
+    f0 = force_kantor0_dev::dih_a(phi, kb, r0, r2, r1, r4);
+    f[X] += f0.x; f[Y] += f0.y; f[Z] += f0.z;
+
+    f0 = force_kantor0_dev::dih_b(phi, kb, r1, r0, r2, r3);
+    f[X] += f0.x; f[Y] += f0.y; f[Z] += f0.z;
+}
+
+__global__ void force(RbcParams_v par, int md, int nv, int nc, const Particle *pp,
+                      Adj_v adj, /**/ float *ff) {
+    enum {X, Y, Z};
+    int i, pid, valid;
+    double f[3];
+    AdjMap m;
+
+    i = threadIdx.x + blockDim.x * blockIdx.x;
+    pid = i / md;
+
+    if (pid >= nc * nv) return;
+    valid = adj_get_map(i, &adj, /**/ &m);
+    if (!valid) return;
+
+    const Part p0 = fetchPart(pp, m.i0);
+
+    f[X] = f[Y] = f[Z] = 0;
+    adj_dihedrals(&par, pp, p0.r, &m,          /*io*/ f);
+
+    atomicAdd(&ff[3 * pid + 0], f[X]);
+    atomicAdd(&ff[3 * pid + 1], f[Y]);
+    atomicAdd(&ff[3 * pid + 2], f[Z]);
+}
+/* end src/rbc/force/bending/kantor/dev/main.h */
+}
+
+/* begin src/rbc/force/bending/kantor/imp/main.h */
+void kantor_ini(const MeshRead *cell, Kantor **pq) {
+    Kantor *q;
+    int md, nt, nv;
+    const int4 *tt;
+    EMALLOC(1, &q);
+    nv = mesh_read_get_nv(cell);
+    nt = mesh_read_get_nt(cell);
+    md = mesh_read_get_md(cell);
+    tt = mesh_read_get_tri(cell);
+
+    UC(adj_ini(md, nt, nv, tt, /**/ &q->adj));
+    UC(adj_view_ini(q->adj, /**/ &q->adj_v));
+
+    *pq = q;
+}
+
+void kantor_fin(Kantor *q) {
+    UC(adj_fin(q->adj));
+    UC(adj_view_fin(q->adj_v));
+    EFREE(q);
+}
+/* end src/rbc/force/bending/kantor/imp/main.h */
+/* begin src/rbc/force/bending/kantor/imp/forces.h */
+void kantor_apply(Kantor *t, const RbcParams *par, const RbcQuants *q, /**/ Force *ff) {
+    int nc, nv, md;
+    RbcParams_v parv;
+    if (q->nc <= 0) return;
+    if (!d::is_device_pointer(q->pp))
+        ERR("`q->pp` is not a device pointer");
+    if (!d::is_device_pointer(ff))
+        ERR("`ff` is not a device pointer");
+    md = q->md; nv = q->nv; nc = q->nc;
+    parv = rbc_params_get_view(par);
+    KL(kantor_dev::force, (k_cnf(nc*nv*md)),
+       (parv, md, nv, nc, q->pp, *t->adj_v, /**/ (float*)ff));
+}
+/* end src/rbc/force/bending/kantor/imp/forces.h */
+/* end src/rbc/force/bending/kantor/imp.cu */
+
+#line 1 "src/rbc/force/conf.cpp"
+
+#line 4 "udx.rbc-force-bending-all.cu"
+
+#line 20 "udx.rbc-force-bending-complete.cu"
+
+#line 4 "udx.force-all-complete.cu"
+
+#line 3 "udx.force-pair-complete.cu"
+
+#line 1 "udx.pair-fsi.cu"
+
+#line 1 "udx.pair-fsi.cu"
+// Grouped editable compilation unit for pair interactions and FSI.
+
+#line 1 "udx.pair.cu"
+
+#line 1 "udx.pair.cu"
+// generated from udx.flat.cu
+#include "udx.config.cuh"
+
+/* begin src/pair/conf.cpp */
+#include <stdio.h>
+#include <math.h>
+#include <string.h>
+
+/* begin src/utils/error.h */
+#define ERR(fmt, ...)  do {                                     \
+        error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
+        error_report();                                         \
+        error_abort();                                          \
+    } while (0)
+
+/* udx check */
+#define UC(F) do {                              \
+        error_stack_push(__FILE__, __LINE__);   \
+        F;                                      \
+        if (error_get()) {                      \
+            error_report();                     \
+            error_abort();                      \
+        }                                       \
+        error_stack_pop();                      \
+    } while (0)
+
+/* [B]o[p] [c]heck */
+#define BPC(ans) do {                           \
+        BopStatus s = (ans);                    \
+        if (!bop_success(s)) {                  \
+            ERR(":%s:%d: %s\n%s\n",             \
+                __FILE__, __LINE__,             \
+                bop_report_error_desc(s),       \
+                bop_report_error_mesg());       \
+        }} while (0)
+
+void error_stack_push(const char *file, int line);
+void error_stack_pop();
+
+void error_signal(const char *file, int line, const char *fmt, ...);
+void error_signal_cuda(const char *file, int line, const char *msg);
+void error_signal_mpi(const char *file, int line, const char *msg);
+
+bool error_get();
+void error_report();
+void error_abort();
+
+void error_print_stack();
+/* end src/utils/error.h */
+/* begin src/conf/imp.h */
+struct Config;
+struct float3;
+struct int3;
+
+// tag::mem[]
+void conf_ini(/**/ Config **c);
+void conf_fin(/**/ Config *c);
+// end::mem[]
+
+// tag::ini[]
+void conf_read(int argc, char **argv, /**/ Config *cfg);
+// end::ini[]
+
+// tag::lookup[]
+void conf_lookup_int(const Config *c, const char *desc, int *a);
+void conf_lookup_float(const Config *c, const char *desc, float *a);
+void conf_lookup_bool(const Config *c, const char *desc, int *a);
+void conf_lookup_string(const Config *c, const char *desc, const char **a);
+void conf_lookup_vint(const Config *c, const char *desc, int maxn, int *n, int a[]);
+void conf_lookup_int3(const Config *c, const char *desc, int3 *a);
+void conf_lookup_vfloat(const Config *c, const char *desc, int maxn, int *n, float a[]);
+void conf_lookup_float3(const Config *c, const char *desc, float3 *a);
+void conf_lookup_vstring(const Config *c, const char *desc, int maxn, int *n, const char **ss);
+// end::lookup[]
+
+// tag::ns[]
+void conf_lookup_int_ns(const Config *c, const char *ns, const char *desc, int *a);
+void conf_lookup_float_ns(const Config *c, const char *ns, const char *desc, float *a);
+void conf_lookup_bool_ns(const Config *c, const char *ns, const char *desc, int *a);
+void conf_lookup_string_ns(const Config *c, const char *ns, const char *desc, const char **a);
+void conf_lookup_vint_ns(const Config *c, const char *ns, const char *desc, int maxn, int *n, int a[]);
+void conf_lookup_int3_ns(const Config *c, const char *ns, const char *desc, int3 *a);
+void conf_lookup_vfloat_ns(const Config *c, const char *ns, const char *desc, int maxn, int *n, float a[]);
+void conf_lookup_float3_ns(const Config *c, const char *ns, const char *desc, float3 *a);
+void conf_lookup_vstring_ns(const Config *c, const char *ns, const char *d, int maxn, int *n, const char **ss);
+// end::ns[]
+
+// tag::opt[]
+bool conf_opt_int(const Config *c, const char *desc, int *a);
+bool conf_opt_float(const Config *c, const char *desc, float *a);
+bool conf_opt_bool(const Config *c, const char *desc, int *a);
+bool conf_opt_string(const Config *c, const char *desc, const char **a);
+bool conf_opt_vint(const Config *c, const char *desc, int maxn, int *n, int a[]);
+bool conf_opt_int3(const Config *c, const char *desc, int3 *a);
+bool conf_opt_vfloat(const Config *c, const char *desc, int maxn, int *n, float a[]);
+bool conf_opt_float3(const Config *c, const char *desc, float3 *a);
+bool conf_opt_vstring(const Config *c, const char *desc, int maxn, int *n, const char **ss);
+// end::opt[]
+
+// tag::set[]
+void conf_set_int(const char *desc, int a, Config *c);
+void conf_set_vint(const char *desc, int nelem, const int a[], Config *cfg);
+void conf_set_int3(const char *desc, int3 a, Config *cfg);
+void conf_set_float(const char *desc, float a, Config *cfg);
+void conf_set_vfloat(const char *desc, int nelem, const float a[], Config *cfg);
+void conf_set_float3(const char *desc, float3 a, Config *cfg);
+void conf_set_bool(const char *desc, int a, Config *cfg);
+void conf_set_string(const char *desc, const char *a, Config *cfg);
+// end::set[]
+
+// tag::dump[]
+void conf_write_exe(const Config *cfg, FILE *stream);     // <1>
+void conf_write_history(const Config *cfg, FILE *stream); // <2>
+// end::dump[]
+/* end src/conf/imp.h */
+
+/* begin src/inc/def.h */
+#ifndef UDX_FORCE_DEF_COMMON
+#define UDX_FORCE_DEF_COMMON
+/* solvent colors */
+#define XMACRO_COLOR(_)                         \
+    _(BLUE)                                     \
+    _(RED)
+
+#define ENUM_COLOR(a) a##_COLOR
+#define make_enum_color(a) ENUM_COLOR(a) ,
+enum {
+    XMACRO_COLOR(make_enum_color)
+    N_COLOR
+};
+#undef make_enum_color
+
+enum {
+    /* wall margins */
+    XWM = 6,
+    YWM = 6,
+    ZWM = 6,
+
+    SAFETY_FACTOR_MAXP = 3,
+
+    /* maximum number of particles per solid */
+    MAX_PSOLID_NUM = 12000,
+
+    /* maximum number of solids per node */
+    MAX_SOLIDS = 100,
+
+    /* maximum number of object types (solid, rbc, ...) */
+    MAX_MBR_TYPES = 2,
+    MAX_RIG_TYPES = 2,
+    MAX_OBJ_TYPES = MAX_MBR_TYPES + MAX_RIG_TYPES,
+
+    /* maximum number density of particles of the objects */
+    MAX_OBJ_DENSITY = 30,
+
+    /* maximum number of red blood cells per node */
+    MAX_CELL_NUM = 1500,
+
+    /* maximum texture size in bytes */
+    MAX_TEXO_SIZE = 100000000,
+
+    /* safety factor for dpd halo interactions */
+    HSAFETY_FACTOR = 10,
+
+    /* safety factor for odist fragments */
+    ODSTR_FACTOR = 3,
+};
+
+/* for the spring forces r = min(lmax*RBC_SPRING_CAP, r) */
+#define RBC_SPRING_CAP (0.99)
+/* end src/inc/def.h */
+#endif
+/* begin src/pair/type.h */
+#ifndef UDX_FORCE_PAIR_TYPE_COMMON
+#define UDX_FORCE_PAIR_TYPE_COMMON
+/* maximum of pairwise dpd parameters */
+enum {
+    MAX_PAR = (N_COLOR * (N_COLOR + 1)) / 2
+};
+
+
+struct PairDPD {
+    float a, g, s, spow;
+};
+
+struct PairDPDC {
+    int ncolors;
+    float a[MAX_PAR], g[MAX_PAR], s[MAX_PAR], spow;
+};
+
+/* mirrored */
+struct PairDPDCM {
+    int ncolors;
+    float a[N_COLOR], g[N_COLOR], s[N_COLOR], spow;
+};
+
+struct PairDPDLJ {
+    float a, g, s, spow;
+    float ljs, lje;
+};
+
+struct PairAdhesion {
+    float k1, k2;
+};
+
+struct PairPa {
+    float x, y, z;
+    float vx, vy, vz;
+    /* optional fields */
+    int color;
+};
+
+struct PairFo {
+    float x, y, z;
+};
+
+struct PairSFo {
+    float x, y, z;
+    /* stress */
+    float sxx, syy, szz, sxy, sxz, syz;
+};
+/* end src/pair/type.h */
+#endif
+/* begin src/pair/imp.h */
+struct PairParams;
+struct Config;
+
+struct PairDPD;
+struct PairDPDC;
+struct PairDPDCM;
+struct PairDPDLJ;
+struct PairAdhesion;
+
+// tag::mem[]
+void pair_ini(PairParams **);
+void pair_fin(PairParams *);
+// end::mem[]
+
+// tag::set[]
+void pair_set_dpd(int ncol, const float a[], const float g[], float spow, PairParams *p); // <1>
+void pair_set_lj(float sigma, float eps, PairParams *p); // <2>
+// end::set[]
+void pair_set_adhesion(float k1, float k2, PairParams *p);
+
+// tag::cnf[]
+void pair_set_conf(const Config *, const char *name_space, PairParams *);
+// end::cnf[]
+
+// tag::upd[]
+void pair_compute_dpd_sigma(float kBT, float dt, PairParams *p);
+// end::upd[]
+
+// tag::view[]
+void pair_get_view_dpd(const PairParams*, PairDPD*);
+void pair_get_view_dpd_color(const PairParams*, PairDPDC*);
+void pair_get_view_dpd_mirrored(const PairParams*, PairDPDCM*);
+void pair_get_view_dpd_lj(const PairParams*, PairDPDLJ*);
+// end::view[]
+void pair_get_view_adhesion(const PairParams*, PairAdhesion*);
+/* end src/pair/imp.h */
+
+static int get_ncol(int npar) {
+    int d = lround( sqrt(1 + 8 * npar) );
+    return (d - 1) / 2;
+}
+
+void pair_set_conf(const Config *cfg, const char *ns, PairParams *par) {
+    int dpd, lj, adhesion;
+
+    UC(conf_lookup_bool_ns(cfg, ns, "dpd",      &dpd));
+    UC(conf_lookup_bool_ns(cfg, ns, "lj",       &lj));
+    UC(conf_lookup_bool_ns(cfg, ns, "adhesion", &adhesion));
+
+    if (dpd) {
+        int na, ng, nc;
+        float a[MAX_PAR], g[MAX_PAR], spow;
+
+        UC(conf_lookup_vfloat_ns(cfg, ns, "a", MAX_PAR, &na, a));
+        UC(conf_lookup_vfloat_ns(cfg, ns, "g", MAX_PAR, &ng, g));
+        UC(conf_lookup_float_ns(cfg, ns, "spow", &spow));
+
+        if (na != ng)
+            ERR("%s.a and %s.g must have the same length: %d / %d", ns, ns, na, ng);
+
+        nc = get_ncol(na);
+
+        UC(pair_set_dpd(nc, a, g, spow, /**/ par));
+    }
+
+    if (lj) {
+        float s, e;
+
+        UC(conf_lookup_float_ns(cfg, ns, "ljs", &s));
+        UC(conf_lookup_float_ns(cfg, ns, "lje", &e));
+
+        UC(pair_set_lj(s, e, /**/ par));
+    }
+
+    if (adhesion) {
+        float k1, k2;
+
+        UC(conf_lookup_float_ns(cfg, ns, "k1", &k1));
+        UC(conf_lookup_float_ns(cfg, ns, "k2", &k2));
+
+        UC(pair_set_adhesion(k1, k2, /**/ par));
+    }
+}
+/* end src/pair/conf.cpp */
+
+#line 1 "src/pair/imp.cpp"
+
+
+/* begin src/pair/imp.cpp */
+#include <stdio.h>
+#include <string.h>
+#include <math.h>
+
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
+
+/* begin src/utils/error.h */
+#define ERR(fmt, ...)  do {                                     \
+        error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
+        error_report();                                         \
+        error_abort();                                          \
+    } while (0)
+
+/* udx check */
+#define UC(F) do {                              \
+        error_stack_push(__FILE__, __LINE__);   \
+        F;                                      \
+        if (error_get()) {                      \
+            error_report();                     \
+            error_abort();                      \
+        }                                       \
+        error_stack_pop();                      \
+    } while (0)
+
+/* [B]o[p] [c]heck */
+#define BPC(ans) do {                           \
+        BopStatus s = (ans);                    \
+        if (!bop_success(s)) {                  \
+            ERR(":%s:%d: %s\n%s\n",             \
+                __FILE__, __LINE__,             \
+                bop_report_error_desc(s),       \
+                bop_report_error_mesg());       \
+        }} while (0)
+
+void error_stack_push(const char *file, int line);
+void error_stack_pop();
+
+void error_signal(const char *file, int line, const char *fmt, ...);
+void error_signal_cuda(const char *file, int line, const char *msg);
+void error_signal_mpi(const char *file, int line, const char *msg);
+
+bool error_get();
+void error_report();
+void error_abort();
+
+void error_print_stack();
+/* end src/utils/error.h */
+/* begin src/utils/imp.h */
+// tag::mem[]
+void emalloc(size_t, /**/ void**); // <1>
+void efree(void*); // <2>
+void *ememcpy(void *dest, const void *src, size_t n); // <3>
+// end::mem[]
+
+// tag::macros[]
+#define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
+#define EFREE(pdata) UC(efree(pdata))
+#define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
+// end::macros[]
+
+// tag::stdio[]
+void efopen(const char *fname, const char *mode, /**/ FILE**);
+void efclose(FILE*);
+void efread(void *ptr, size_t size, size_t nmemb, FILE*);
+void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
+void efgets(char *s, int size, FILE*);
+// end::stdio[]
+
+// tag::tools[]
+bool same_str(const char *a, const char *b); // <1>
+const char* get_filename_ext(const char*);
+// end::tools[]
+/* end src/utils/imp.h */
+
+
+
+
+
+/* begin src/pair/imp/type.h */
+struct PairParams {
+    bool dpd;
+    float a[MAX_PAR]; /* a    : conservative */
+    float g[MAX_PAR]; /* gamma: dissipative  */
+    float s[MAX_PAR]; /* sigma: random       */
+    int ncolors;      /* number of colors    */
+    float spow;       /* s level             */
+
+    bool lj;
+    float ljs; /* lennard jones sigma   */
+    float lje; /* lennard jones epsilon */
+
+    /* adhesion parameters */
+    bool adhesion;
+    float k1; /* spring constant */
+    float k2; /* viscous coeff   */
+};
+
+/* end src/pair/imp/type.h */
+/* begin src/pair/imp/main.h */
+void pair_ini(PairParams **par) {
+    PairParams *p;
+    EMALLOC(1, par);
+    p = *par;
+
+    p->ncolors = 0;
+    p->dpd = p->lj = p->adhesion = false;
+}
+
+void pair_fin(PairParams *p) {
+    EFREE(p);
+}
+
+void pair_set_lj(float sigma, float eps, PairParams *p) {
+    p->lj = true;
+    p->ljs = sigma;
+    p->lje = eps;
+}
+
+static int get_npar(int ncol) { return (ncol * (ncol+1)) / 2; }
+
+void pair_set_dpd(int ncol, const float a[], const float g[], float spow, PairParams *p) {
+    int npar = get_npar(ncol);
+    size_t sz = sizeof(float) * npar;
+
+    if (ncol <= 0)      ERR("need at least one color (given %d)\n", ncol);
+    if (ncol > N_COLOR) ERR("too many colors (given %d)\n", ncol);
+
+    p->dpd = true;
+    p->ncolors = ncol;
+    memcpy(p->a, a, sz);
+    memcpy(p->g, g, sz);
+    p->spow = spow;
+}
+
+void pair_set_adhesion(float k1, float k2, PairParams *p) {
+    p->adhesion = true;
+    p->k1 = k1;
+    p->k2 = k2;
+}
+
+static void check_dpd(const PairParams *p) {
+    if (!p->dpd) ERR("Must have dpd parameters");
+}
+
+static void check_lj(const PairParams *p) {
+    if (!p->lj) ERR("Must have lj parameters");
+}
+
+static void check_adhesion(const PairParams *p) {
+    if (!p->adhesion) ERR("Must have adhesion parameters");
+}
+
+void pair_compute_dpd_sigma(float kBT, float dt, PairParams *p) {
+    int i, npar, ncol;
+    UC(check_dpd(p));
+    ncol = p->ncolors;
+    npar = get_npar(ncol);
+
+    for (i = 0; i < npar; ++i)
+        p->s[i] = sqrt(2 * kBT * p->g[i] / dt);
+}
+
+void pair_get_view_dpd(const PairParams *p, PairDPD *v) {
+    enum {PID=0};
+    UC(check_dpd(p));
+    v->a = p->a[PID];
+    v->g = p->g[PID];
+    v->s = p->s[PID];
+    v->spow = p->spow;
+}
+
+void pair_get_view_dpd_color(const PairParams *p, PairDPDC *v) {
+    size_t sz;
+    int ncol, npar;
+    UC(check_dpd(p));
+    ncol = v->ncolors = p->ncolors;
+    npar = get_npar(ncol);
+    sz = npar * sizeof(float);
+    memcpy(v->a, p->a, sz);
+    memcpy(v->g, p->g, sz);
+    memcpy(v->s, p->s, sz);
+    v->spow = p->spow;
+}
+
+void pair_get_view_dpd_mirrored(const PairParams *p, PairDPDCM *v) {
+    int i, j, nc;
+    UC(check_dpd(p));
+    nc = v->ncolors = p->ncolors;
+    for (i = 0; i < nc; ++i) {
+        j = (i+1) * (i+2) / 2 - 1; /* take all i-i pairs */
+        v->a[i] = p->a[j];
+        v->g[i] = p->g[j];
+        v->s[i] = p->s[j];
+    }
+    v->spow = p->spow;
+}
+
+void pair_get_view_dpd_lj(const PairParams *p, PairDPDLJ *v) {
+    enum {PID=0};
+    UC(check_dpd(p));
+    UC(check_lj(p));
+    v->a = p->a[PID];
+    v->g = p->g[PID];
+    v->s = p->s[PID];
+    v->ljs = p->ljs;
+    v->lje = p->lje;
+    v->spow = p->spow;
+}
+
+void pair_get_view_adhesion(const PairParams *p, PairAdhesion *v) {
+    UC(check_adhesion(p));
+    v->k1 = p->k1;
+    v->k2 = p->k2;
+}
+/* end src/pair/imp/main.h */
+/* end src/pair/imp.cpp */
+
+#line 1 "src/rbc/adj/imp.cpp"
+
+#line 3 "udx.pair-fsi.cu"
+
+#line 1 "udx.fsi.cu"
+
+#line 1 "udx.fsi.cu"
+// generated from udx.flat.cu
+#include "udx.config.cuh"
+
+/* begin src/fsi/imp.cu */
+#include <stdio.h>
+#include <assert.h>
+
+
+/* begin src/inc/conf.h */
+/* [k]ernel [l]aunch macros */
+#if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
+    !defined(KL_SYNC)
+#define KL_RELEASE
+#endif
+
+/* [c]uda [c]heck macro */
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
+  #define CC_RELEASE
+#endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
+  #define DEV_CUDA
+#endif
+
+/* cuda memory allocation calls */
+#if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
+  #define CUDA_ALLOC_RELEASE
+#endif
+
+/* compute rbc force in double or float */
+#if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
+  #define RBC_DOUBLE
+#endif
+
+/* what to do if r > lmax for a spring? */
+#if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
+  #define RBC_SPRING_IGNORE
+#endif
+
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+/* end src/inc/conf.h */
+
+
+/* begin src/utils/error.h */
+#define ERR(fmt, ...)  do {                                     \
+        error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
+        error_report();                                         \
+        error_abort();                                          \
+    } while (0)
+
+/* udx check */
+#define UC(F) do {                              \
+        error_stack_push(__FILE__, __LINE__);   \
+        F;                                      \
+        if (error_get()) {                      \
+            error_report();                     \
+            error_abort();                      \
+        }                                       \
+        error_stack_pop();                      \
+    } while (0)
+
+/* [B]o[p] [c]heck */
+#define BPC(ans) do {                           \
+        BopStatus s = (ans);                    \
+        if (!bop_success(s)) {                  \
+            ERR(":%s:%d: %s\n%s\n",             \
+                __FILE__, __LINE__,             \
+                bop_report_error_desc(s),       \
+                bop_report_error_mesg());       \
+        }} while (0)
+
+void error_stack_push(const char *file, int line);
+void error_stack_pop();
+
+void error_signal(const char *file, int line, const char *fmt, ...);
+void error_signal_cuda(const char *file, int line, const char *msg);
+void error_signal_mpi(const char *file, int line, const char *msg);
+
+bool error_get();
+void error_report();
+void error_abort();
+
+void error_print_stack();
+/* end src/utils/error.h */
+/* begin src/d/api.h */
+#ifndef UDX_FORCE_DEVICE_API_COMMON
+#define UDX_FORCE_DEVICE_API_COMMON
+namespace d {  /* a wrapper for device API */
+typedef int Stream_t; /* TODO: streams are not supported */
+enum {MemcpyHostToHost, MemcpyHostToDevice,
+      MemcpyDeviceToHost, MemcpyDeviceToDevice,
+      MemcpyDefault};
+
+// tag::more[]
+const char *emsg();
+int alloc_pinned(void **pHost, size_t size);
+int is_device_pointer(const void *ptr);
+// end::more[]
+
+// tag::api[]
+int GetSymbolAddress(void **devPtr, const void *symbol);
+int Malloc(void **p, size_t);
+int MemcpyToSymbol(const void *symbol, const void *src, size_t count, size_t offset=0, int kind=MemcpyHostToDevice);
+int MemcpyFromSymbol(void *dst, const void *symbol, size_t count, size_t offset=0, int kind=MemcpyDeviceToHost);
+int HostGetDevicePointer(void **pDevice, void *pHost, unsigned int flags);
+int Memcpy (void *dst, const void *src, size_t count, int kind);
+int MemsetAsync (void *devPtr, int value, size_t count, Stream_t stream=0);
+int Memset (void *devPtr, int value, size_t count);
+int MemcpyAsync (void * dst, const void * src, size_t count, int kind, Stream_t stream = 0);
+int Free (void *devPtr);
+int FreeHost (void *hstPtr);
+int DeviceSynchronize (void);
+int PeekAtLastError(void);
+// end::api[]
+}
+/* end src/d/api.h */
+#endif /* UDX_FORCE_DEVICE_API_COMMON */
+/* begin src/d/q.h */
+/* function and variable type [q]ualifiers */
+
+#if   defined(DEV_CUDA)
+/* begin src/d/cuda/q.h */
+/* B.1. Function Type Qualifiers */
+/* B.2. Variable Type Qualifiers */
+/* end src/d/cuda/q.h */
+#elif defined(DEV_CPU)
+/* begin src/d/cpu/q.h */
+/* B.1. Function Type Qualifiers */
+#ifdef __device__
+  #undef  __device__
+  #define __device__
+#endif
+
+#ifdef __global__
+  #undef  __global__
+  #define __global__
+#endif
+
+#ifdef __host__
+  #undef  __host__
+  #define __host__
+#endif
+
+#ifdef __noinline__
+  #undef  __noinline__
+  #define __noinline__
+#endif
+
+#ifdef __forceinline__
+  #undef  __forceinline__
+  #define __forceinline__
+#endif
+
+/* B.2. Variable Type Qualifiers */
+/* __device__ : also a function qualifier */
+#ifdef __constant__
+  #undef  __constant__
+  #define __constant__
+#endif
+
+#ifdef __shared__
+  #undef  __shared__
+  #define __shared__
+#endif
+
+#ifdef __managed__
+  #undef  __managed__
+  #define __managed__
+#endif
+
+#ifdef __restrict__
+  #undef  __restrict__
+  #define __restrict__
+#endif
+/* end src/d/cpu/q.h */
+#else
+  #error DEV_* is undefined
+#endif
+/* end src/d/q.h */
+/* begin src/d/ker.h */
+#if   defined(DEV_CUDA)
+/* begin src/d/cuda/ker.h */
+#define  Ifetch(t, i)  tex1Dfetch(t, i)
+#define F4fetch(t, i)  tex1Dfetch(t, i)
+#define F2fetch(t, i)  tex1Dfetch(t, i)
+#define  Ffetch(t, i)  tex1Dfetch(t, i)
+#define Tfetch(T, t, i) tex1Dfetch<T>(t, i)
+
+#define Ttex3D(T, to, i, j, k) tex3D<T>(to, i, j, k);
+/* end src/d/cuda/ker.h */
+#elif defined(DEV_CPU)
+/* begin src/d/cpu/ker.h */
+#define atomicAdd(...) (0)
+
+#define atomicExch(...)
+#define __float2half_rn(...) (0)
+#define __fmaf_rz(...) (0.0)
+#define __ldg(p) (*(p))
+#define __popc(...)
+#define __shfl(...) (0.0)
+#define __shfl_down(...) (0.0)
+#define __shfl_up(...) (0)
+#define __shfl_xor(...) (0)
+
+#define __syncthreads(...)
+
+#define tex3D(...)
+
+#define  Ifetch(t, i)  (0);
+#define F4fetch(t, i)  (make_float4(0, 0, 0, 0))
+#define F2fetch(t, i)  (make_float2(0, 0))
+#define Ffetch(t, i)   (0.0)
+#define Tfetch(T, t, i) (T{})
+
+#define Ttex3D(T, to, i, j, k) (T{})
+/* end src/d/cpu/ker.h */
+/* begin src/d/cpu/wrap.h */
+namespace d {
+static uint3 threadIdx, blockIdx, gridDim;
+static dim3  blockDim;
+static int   warpSize = 1;
+}
+
+#define threadIdx d::threadIdx
+#define blockDim  d::blockDim
+#define gridDim   d::gridDim
+#define blockIdx  d::blockIdx
+#define warpSize  d::warpSize
+/* end src/d/cpu/wrap.h */
+#else
+  #error DEV_* is undefined
+#endif
+/* end src/d/ker.h */
+
+/* begin src/math/rnd/imp.h */
+// tag::interface[]
+struct RNDunif;                                             // <1>
+void rnd_ini(int x, int y, int z, int c, /**/ RNDunif **r); // <2>
+void rnd_fin(RNDunif *r);                                   // <3>
+float rnd_get(RNDunif *r);                                  // <4>
+// end::interface[]
+/* end src/math/rnd/imp.h */
+/* begin src/math/rnd/dev.h */
+#ifndef UDX_FORCE_RND_COMMON
+#define UDX_FORCE_RND_COMMON
+namespace rnd {
+/* random number from the ArcSine distribution on [-sqrt(2),sqrt(2)]
+   mean = 0, variance = 1 */
+
+// passes of logistic map
+static __const__ int N = 18;
+// spacing coefficints for low discrepancy numbers
+static __const__ float gold   = 0.6180339887498948482;
+static __const__ float silver = 0.4142135623730950488;
+static __const__ float bronze = 0.00008877875787352212838853023;
+static __const__ float tin    = 0.00004602357186447026756768986;
+static __const__ float sqrt2 = 1.41421356237309514547;
+
+/************************* Trunk generator ***********************
+ * Make one global random number per each timestep
+ * cite G. Marsaglia
+ * passes BigCrush
+ *****************************************************************/
+
+/************************* Branch generator **********************
+ * Make one random number per pair of particles per timestep
+ * Based on the Logistic map on interval [-1,1]
+ * each branch no weaker than trunk
+ * zero dependency between branches
+ *****************************************************************/
+
+// floating point version of LCG
+__inline__ __device__ float rem( float r ) {
+    return r - floorf( r );
+}
+
+// FMA wrapper for the convenience of switching rouding modes
+__inline__ __device__ float FMA( float x, float y, float z ) {
+    return __fmaf_rz( x, y, z );
+}
+
+// logistic rounds
+// <3> : 4 FMA + 1 MUL
+// <2> : 2 FMA + 1 MUL
+// <1> : 1 FMA + 1 MUL
+
+template<int N> __inline__ __device__ float __logistic_core( float x )
+{
+    float x2 = x * x;
+    float r = FMA( FMA( 8.0, x2, -8.0 ), x2, 1.0 );
+    return __logistic_core < N - 2 > ( r );
+}
+
+template<> __inline__ __device__ float __logistic_core<1>( float x ) {
+    return FMA( 2.0 * x, x, -1.0 );
+}
+
+template<> __inline__ __device__ float __logistic_core<0>( float x ) {
+    return x;
+}
+
+inline __device__ float mean0var1ii( float seed, int u, int v )
+{
+    float p = rem( ( ( u & 0x3FF ) * gold ) + u * bronze + ( ( v & 0x3FF ) * silver ) + v * tin ); // safe for large u or v
+    float l = __logistic_core<N>( seed - p );
+    return l * sqrt2;
+}
+
+inline __device__ float mean0var1uu( float seed, uint u, uint v )
+{
+    // 7 FLOPS
+    float p = rem( ( ( u & 0x3FFU ) * gold ) + u * bronze + ( ( v & 0x3FFU ) * silver ) + v * tin ); // safe for large u or v
+    // 45+1 FLOPS
+    float l = __logistic_core<N>( seed - p );
+    // 1 FLOP
+    return l * sqrt2;
+}
+
+}
+/* end src/math/rnd/dev.h */
+#endif /* UDX_FORCE_RND_COMMON */
+/* begin src/math/dev.h */
+#ifndef UDX_FORCE_MATH_COMMON
+#define UDX_FORCE_MATH_COMMON
+/* use templates here because we might have mixed float/double */
+
+#define _HD_ __host__ __device__
+
+template <typename T1, typename T2>
+_HD_ void scal(const T1 a, /*io*/ T2 *b) {
+    b->x *= a;
+    b->y *= a;
+    b->z *= a;
+}
+
+template <typename T1, typename T2>
+_HD_ void add(const T1 *a, /*io*/ T2 *b) {
+    b->x += a->x;
+    b->y += a->y;
+    b->z += a->z;
+}
+
+template <typename T1, typename T2, typename T3>
+_HD_ void diff(const T1 *a, const T2 *b, /**/ T3 *c) {
+    c->x = a->x - b->x;
+    c->y = a->y - b->y;
+    c->z = a->z - b->z;
+}
+
+template <typename T1, typename T2, typename T3>
+_HD_ T1 dot(const T2 *a, const T3 *b) {
+    return a->x * b->x + a->y * b->y + a->z * b->z;
+}
+
+template <typename T1, typename T2, typename T3>
+_HD_ void cross(const T1 *a, const T2 *b, /**/ T3 *c) {
+    c->x = a->y * b->z - a->z * b->y;
+    c->y = a->z * b->x - a->x * b->z;
+    c->z = a->x * b->y - a->y * b->x;
+}
+
+template <typename T1, typename T2, typename T3>
+_HD_ void scalmult(const T1 *a, const T2 x, /**/ const T3 *b) {
+    b->x = a->x * x;
+    b->y = a->y * x;
+    b->z = a->z * x;
+}
+
+
+template <typename T1, typename T2, typename T3, typename T4>
+_HD_ void apxb(const T1 *a, const T2 x, const T3 *b, /**/ T4 *c) {
+    c->x = a->x + x * b->x;
+    c->y = a->y + x * b->y;
+    c->z = a->z + x * b->z;
+}
+
+template <typename T1, typename T2, typename T3>
+_HD_ void axpy(const T1 a, const T2 *x, /*io*/ T3 *y) {
+    y->x += a * x->x;
+    y->y += a * x->y;
+    y->z += a * x->z;
+}
+/* end src/math/dev.h */
+#endif /* UDX_FORCE_MATH_COMMON */
+
+/* begin src/inc/def.h */
+#ifndef UDX_FORCE_DEF_COMMON
+#define UDX_FORCE_DEF_COMMON
+/* solvent colors */
+#define XMACRO_COLOR(_)                         \
+    _(BLUE)                                     \
+    _(RED)
+
+#define ENUM_COLOR(a) a##_COLOR
+#define make_enum_color(a) ENUM_COLOR(a) ,
+enum {
+    XMACRO_COLOR(make_enum_color)
+    N_COLOR
+};
+#undef make_enum_color
+
+enum {
+    /* wall margins */
+    XWM = 6,
+    YWM = 6,
+    ZWM = 6,
+
+    SAFETY_FACTOR_MAXP = 3,
+
+    /* maximum number of particles per solid */
+    MAX_PSOLID_NUM = 12000,
+
+    /* maximum number of solids per node */
+    MAX_SOLIDS = 100,
+
+    /* maximum number of object types (solid, rbc, ...) */
+    MAX_MBR_TYPES = 2,
+    MAX_RIG_TYPES = 2,
+    MAX_OBJ_TYPES = MAX_MBR_TYPES + MAX_RIG_TYPES,
+
+    /* maximum number density of particles of the objects */
+    MAX_OBJ_DENSITY = 30,
+
+    /* maximum number of red blood cells per node */
+    MAX_CELL_NUM = 1500,
+
+    /* maximum texture size in bytes */
+    MAX_TEXO_SIZE = 100000000,
+
+    /* safety factor for dpd halo interactions */
+    HSAFETY_FACTOR = 10,
+
+    /* safety factor for odist fragments */
+    ODSTR_FACTOR = 3,
+};
+
+/* for the spring forces r = min(lmax*RBC_SPRING_CAP, r) */
+#define RBC_SPRING_CAP (0.99)
+/* end src/inc/def.h */
+#endif
+/* begin src/utils/msg.h */
+// tag::int[]
+void msg_ini(int rank); // <1>
+void msg_print(const char *fmt, ...); // <2>
+// end::int[]
+/* end src/utils/msg.h */
+/* begin src/utils/imp.h */
+// tag::mem[]
+void emalloc(size_t, /**/ void**); // <1>
+void efree(void*); // <2>
+void *ememcpy(void *dest, const void *src, size_t n); // <3>
+// end::mem[]
+
+// tag::macros[]
+#define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
+#define EFREE(pdata) UC(efree(pdata))
+#define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
+// end::macros[]
+
+// tag::stdio[]
+void efopen(const char *fname, const char *mode, /**/ FILE**);
+void efclose(FILE*);
+void efread(void *ptr, size_t size, size_t nmemb, FILE*);
+void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
+void efgets(char *s, int size, FILE*);
+// end::stdio[]
+
+// tag::tools[]
+bool same_str(const char *a, const char *b); // <1>
+const char* get_filename_ext(const char*);
+// end::tools[]
+/* end src/utils/imp.h */
+
+/* begin src/utils/cc.h */
+/* [c]uda [c]heck macros */
+
+#if   defined(CC_SYNC)
+/* begin src/utils/cc/sync.h */
+/* Aggressive [sync]ronization */
+#define CC(ans)                                             \
+    do {                                                    \
+        d::DeviceSynchronize();                             \
+        cc::check((ans), __FILE__, __LINE__);               \
+        d::DeviceSynchronize();                             \
+    } while (0)
+/* end src/utils/cc/sync.h */
+#elif defined(CC_RELEASE)
+/* begin src/utils/cc/release.h */
+/* [c]cuda [c]heck */
+#define CC(ans)                                             \
+    do { cc::check((ans), __FILE__, __LINE__);} while (0)
+/* end src/utils/cc/release.h */
+#else
+  #error CC_* is undefined
+#endif
+
+/* begin src/utils/cc/common.h */
+namespace cc {
+void check(int rc, const char *file, int line);
+}
+
+
+/* end src/utils/cc/common.h */
+
+/* TODO: header includes header */
+/* end src/utils/cc.h */
+/* begin src/utils/mc.h */
+/* [m]pi [c]heck macros */
+#define MC(ans)                                                         \
+    do { mpicheck::check((ans), __FILE__, __LINE__); } while (0)
+
+namespace mpicheck {
+void check(int code, const char *file, int line);
+}
+/* end src/utils/mc.h */
+/* begin src/frag/imp.h */
+#ifndef UDX_FORCE_FRAG_COMMON
+#define UDX_FORCE_FRAG_COMMON
+enum {frag_bulk = 26};
+#endif
+
+struct int3;
+
+namespace frag_hst {
+
+// tag::i2d[]
+int i2dx(int i);                 // <1>
+int i2dy(int i);                 // <2>
+int i2dz(int i);                 // <3>
+void i2d3(int i, /**/ int d[3]); // <4>
+// end::i2d[]
+
+// tag::d2i[]
+int d2i(int x, int y, int z); // <1>
+int d32i(const int d[3]);     // <2>
+// end::d2i[]
+
+// tag::ncell[]
+int ncell(int3 L, int i); // <1>
+// end::ncell[]
+
+// tag::anti[]
+int antid2i(int x, int y, int z); // <1>
+int anti(int i);                  // <2>
+// end::anti[]
+
+// tag::hst[]
+void estimates(int3 L, int nfrags, float maxd, /**/ int *cap); // <1>
+// end::hst[]
+
+} // frag_hst
+/* end src/frag/imp.h */
+/* begin src/frag/dev.h */
+#ifdef FRAG_HOST
+  #define _I_
+  #define _S_ static
+  #define BEGIN namespace frag_hst {
+  #define END }
+#else
+  #define _I_ static __device__
+  #define _S_ static __device__
+  #define BEGIN namespace frag_dev {
+  #define END }
+#endif
+
+BEGIN
+
+enum {BAD_DIR = -2};
+
+/* fragment id to direction                    */
+
+_I_ int i2dx(int i) { return (i     + 2) % 3 - 1; }
+_I_ int i2dy(int i) { return (i / 3 + 2) % 3 - 1; }
+_I_ int i2dz(int i) { return (i / 9 + 2) % 3 - 1; }
+
+_I_ void i2d3(int i, /**/ int d[3]) {
+    enum {X, Y, Z};
+    d[X] = i2dx(i);
+    d[Y] = i2dy(i);
+    d[Z] = i2dz(i);
+}
+
+/* direction to fragment id                    */
+_I_ int d2i(int x, int y, int z) {
+    return    ((x + 2) % 3)
+        + 3 * ((y + 2) % 3)
+        + 9 * ((z + 2) % 3);
+}
+
+_I_ int d32i(const int d[3])  {
+    enum {X, Y, Z};
+    return d2i(d[X], d[Y], d[Z]);
+}
+
+/* number of cells in direction x, y, z        */
+_S_ int ncell0(int3 L, int x, int y, int z) {
+    int nx, ny, nz;
+    nx = x ? 1 : L.x;
+    ny = y ? 1 : L.y;
+    nz = z ? 1 : L.z;
+    return nx * ny * nz;
+}
+
+/* number of cells in fragment i               */
+_I_ int ncell(int3 L, int i) {
+    int x, y, z;
+    x = i2dx(i);
+    y = i2dy(i);
+    z = i2dz(i);
+    return ncell0(L, x, y, z);
+}
+
+/* anti direction to fragment id                */
+_I_ int antid2i(int x, int y, int z) {
+    return d2i(-x, -y, -z);
+}
+
+/* anti fragment                                */
+_I_ int anti(int i) {
+    int x, y, z;
+    x = i2dx(i);
+    y = i2dy(i);
+    z = i2dz(i);
+    return antid2i(x, y, z);
+}
+
+/* [f]ragment [id] : where is `i' in sorted a[27]? */
+_I_ int frag_get_fid(const int a[], const int i) {
+    int k1, k3, k9;
+    k9 = 9 * ((i >= a[9])           + (i >= a[18]));
+    k3 = 3 * ((i >= a[k9 + 3])      + (i >= a[k9 + 6]));
+    k1 =      (i >= a[k9 + k3 + 1]) + (i >= a[k9 + k3 + 2]);
+    return k9 + k3 + k1;
+}
+
+END
+
+#undef _I_
+#undef _S_
+#undef BEGIN
+#undef END
+/* end src/frag/dev.h */
+
+/* begin src/utils/kl.h */
+#ifndef UDX_FORCE_KL_COMMON
+#define UDX_FORCE_KL_COMMON
+/* [k]ernel [l]aunch macros */
+
+#if    defined(KL_RELEASE)
+/* begin src/utils/kl/release.h */
+#define KL_BEFORE(s, C) if (!kl::safe(ESC C)) continue;
+#define KL_CALL(F, C, A) F<<<ESC C>>>A
+#define KL_AFTER(s)
+
+namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
+/* end src/utils/kl/release.h */
+#elif  defined(KL_NONE)
+/* begin src/utils/kl/none.h */
+#define KL_BEFORE(s, C)
+#define KL_CALL(F, C, A)
+#define KL_AFTER(s)
+
+namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
+/* end src/utils/kl/none.h */
+#elif  defined(KL_SYNC)
+/* begin src/utils/kl/sync.h */
+#define KL_BEFORE(s, C) if (!kl::safe(ESC C)) continue;
+#define KL_CALL(F, C, A) F<<<ESC C>>>A
+#define KL_AFTER(s)                             \
+    do {                                        \
+        dSync();                                \
+        CC(d::PeekAtLastError());               \
+    } while(0)
+
+namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
+/* end src/utils/kl/sync.h */
+#else
+  #error KL_* is undefined
+#endif
+
+/* begin src/utils/kl/common.h */
+namespace kl {
+inline int safe0(dim3 i, dim3 j) {
+    msg(i.x, i.y, i.z,   j.x, j.y, j.z);
+    return i.x>0 && i.y>0 && i.z>0   &&   j.x>0 && j.y>0 && j.z>0;
+}
+inline int safe(dim3 i, dim3 j)                    { return safe0(i, j); }
+inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
+}
+/* end src/utils/kl/common.h */
+/* begin src/utils/kl/macro.h */
+#define ESC(...) __VA_ARGS__
+#define KL(F, C, A)                             \
+    do  {                                       \
+        KL_BEFORE(#F, C);                       \
+        KL_CALL(F, C, A);                       \
+        KL_AFTER(#F);                           \
+    } while (0)
+/* end src/utils/kl/macro.h */
+
+/* TODO: header includes header */
+/* end src/utils/kl.h */
+#endif /* UDX_FORCE_KL_COMMON */
+/* begin src/inc/type.h */
+#ifndef UDX_FORCE_TYPE_COMMON
+#define UDX_FORCE_TYPE_COMMON
+template <typename T, int N>
+struct Sarray { /* [s]tatic array */
+    T d[N];
+};
+
+struct Particle {
+    float r[3], v[3];
+};
+
+struct Rigid {
+    float Iinv[6],            /* moment of inertia            6        */
+        mass,                 /* mass of the solid            7        */
+        com[3],               /* [c]enter [o]f [m]ass         10       */
+        v[3], om[3],          /* linear and angular velocity  13 16    */
+        e0[3], e1[3], e2[3],  /* local referential            19 22 25 */
+        fo[3], to[3],         /* force, torque                28 31    */
+        id;                   /* id of the solid              32       */
+};
+
+struct Force {
+    float f[3];
+};
+
+struct Momentum {
+    float P[3], L[3]; /* linear and angular momentum */
+};
+
+struct Positioncp {
+    float rc[3]; /* current position  */
+    float rp[3]; /* previous position */
+};
+
+typedef Sarray<int, 26>       int26;
+typedef Sarray<int, 27>       int27;
+
+typedef Sarray<int*, 26>     intp26;
+typedef Sarray<Particle*, 26> Pap26;
+typedef Sarray<Force*,    26> Fop26;
+typedef Sarray<Momentum*, 26> Mop26;
+typedef Sarray<Positioncp*, 26> Pocpp26;
+
+/* particles wrap */
+struct PaWrap {
+    int n;
+    const Particle *pp;
+};
+
+/* forces wrap */
+struct FoWrap {
+    int n;
+    Force *ff;
+};
+/* end src/inc/type.h */
+#endif /* UDX_FORCE_TYPE_COMMON */
+/* begin src/inc/dev.h */
+/* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
+#define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
+
+/* a common kernel execution configuration */
+#define k_cnf(n) ceiln((n), 128), 128
+
+#define dSync() CC(d::DeviceSynchronize())
+
+#define D2D d::MemcpyDeviceToDevice
+#define D2H d::MemcpyDeviceToHost
+#define H2D d::MemcpyHostToDevice
+#define H2H d::MemcpyHostToHost
+#define A2A d::MemcpyDefault /* "[a]ny to [a]ny" */
+
+#define cD2D(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), D2D))
+#define cH2H(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), H2H))  /* [t]to, [f]rom */
+#define cA2A(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), A2A))
+#define cD2H(H, D, n) CC(d::Memcpy((H), (D), (n) * sizeof((H)[0]), D2H))
+#define cH2D(D, H, n) CC(d::Memcpy((D), (H), (n) * sizeof((H)[0]), H2D))
+
+#define aD2D(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), D2D))
+#define aH2H(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), H2H))  /* [t]to, [f]rom */
+#define aA2A(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), A2A))
+#define aD2H(H, D, n) CC(d::MemcpyAsync((H), (D), (n) * sizeof((H)[0]), D2H))
+#define aH2D(D, H, n) CC(d::MemcpyAsync((D), (H), (n) * sizeof((H)[0]), H2D))
+
+/* device allocation */
+#define Dfree(D)      CC(d::Free(D))
+#define Dalloc(D, n)  CC(d::Malloc((void**)(D), (n) * sizeof(**(D))))
+
+/* [d]evice set */
+#define Dset(P, v, n) CC(d::Memset(P, v, (n)*sizeof(*(P))))
+#define Dzero(P, n)   Dset(P, 0, n)
+
+/* [d]evice [a]synchronous set */
+#define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
+#define DzeroA(P, n)   DsetA(P, 0, n)
+/* end src/inc/dev.h */
+/* begin src/dbg/imp.h */
+struct Dbg;
+
+struct Config;
+struct Force;
+struct Particle;
+struct int3;
+struct Coords;
+
+// tag::kind[]
+enum {
+    DBG_POS,      // <1>
+    DBG_POS_SOFT, // <2>
+    DBG_VEL,      // <3>
+    DBG_FORCES,   // <4>
+    DBG_COLORS,   // <5>
+    DBG_CLIST,    // <6>
+    DBG_NKIND_
+};
+// end::kind[]
+
+// tag::mem[]
+void dbg_ini(Dbg**);
+void dbg_fin(Dbg*);
+// end::mem[]
+
+// tag::ini[]
+void dbg_enable(int kind, Dbg *dbg);
+void dbg_disable(int kind, Dbg *dbg);
+void dbg_set_verbose(bool, Dbg *dbg);
+void dbg_set_dump(bool, Dbg *dbg);
+// end::ini[]
+
+// tag::cnf[]
+void dbg_set_conf(const Config*, Dbg*);
+// end::cnf[]
+
+// tag::int[]
+void dbg_check_pos(const Coords *c, const char *base, const Dbg *dbg, int n, const Particle *pp);
+void dbg_check_pos_soft(const Coords *c, const char *base, const Dbg *dbg, int n, const Particle *pp);
+void dbg_check_vel(float dt, const Coords *c, const char *base, const Dbg *dbg, int n, const Particle *pp);
+void dbg_check_forces(float dt, const Coords *c, const char *base, const Dbg *dbg, int n, const Particle *pp, const Force *ff);
+void dbg_check_colors(const Coords *c, const Dbg *dbg, int n, const int *cc);
+void dbg_check_clist(const Coords *c, const Dbg *dbg, int3 L, const int *starts, const int *counts, const Particle *pp);
+// end::int[]
+/* end src/dbg/imp.h */
+
+/* begin src/pair/type.h */
+#ifndef UDX_FORCE_PAIR_TYPE_COMMON
+#define UDX_FORCE_PAIR_TYPE_COMMON
+/* maximum of pairwise dpd parameters */
+enum {
+    MAX_PAR = (N_COLOR * (N_COLOR + 1)) / 2
+};
+
+
+struct PairDPD {
+    float a, g, s, spow;
+};
+
+struct PairDPDC {
+    int ncolors;
+    float a[MAX_PAR], g[MAX_PAR], s[MAX_PAR], spow;
+};
+
+/* mirrored */
+struct PairDPDCM {
+    int ncolors;
+    float a[N_COLOR], g[N_COLOR], s[N_COLOR], spow;
+};
+
+struct PairDPDLJ {
+    float a, g, s, spow;
+    float ljs, lje;
+};
+
+struct PairAdhesion {
+    float k1, k2;
+};
+
+struct PairPa {
+    float x, y, z;
+    float vx, vy, vz;
+    /* optional fields */
+    int color;
+};
+
+struct PairFo {
+    float x, y, z;
+};
+
+struct PairSFo {
+    float x, y, z;
+    /* stress */
+    float sxx, syy, szz, sxy, sxz, syz;
+};
+/* end src/pair/type.h */
+#endif /* UDX_FORCE_PAIR_TYPE_COMMON */
+/* begin src/pair/dev.h */
+#ifndef UDX_FORCE_PAIR_DEV_COMMON
+#define UDX_FORCE_PAIR_DEV_COMMON
+#define _S_ static __device__
+#define _I_ static __device__
+
+_S_ float cap(float x, float lo, float hi) {
+    if      (x > hi) return hi;
+    else if (x < lo) return lo;
+    else             return x;
+}
+
+static const float EPS = 1e-6;
+enum {NORM_OK, NORM_BIG, NORM_SMALL};
+_S_ int norm(/*io*/ float3 *pos, /**/ float *pr, float *pinvr) {
+    /* normalize r = [x, y, z], sets |r| and 1/|r| if not big */
+    float x, y, z, invr, r, r2;
+    x = pos->x; y = pos->y; z = pos->z;
+
+    r2 = x*x + y*y + z*z;
+    if      (r2 >= 1 )   return NORM_BIG;
+    else if (r2 < EPS) {
+        *pr = pos->x = pos->y = pos->z = 0;
+        return NORM_SMALL;
+    } else {
+        invr = rsqrtf(r2);
+        r = r2 * invr;
+        x *= invr; y *= invr; z *= invr;
+        pos->x = x; pos->y = y; pos->z = z; *pr = r; *pinvr = invr;
+        return NORM_OK;
+    }
+}
+
+_S_ float ker_wrf(float s, float x) {
+    return powf(x, s);
+}
+
+_S_ float magn_dpd(float a, float g, float s, float kpow,
+                   float rnd, float r, float ev) {
+    float wr, wc;
+    float rm, f0;
+
+    rm = max(1 - r, 0.0f);
+    wc = rm;
+    wr = ker_wrf(kpow, rm);
+
+    f0  = (-g * wr * ev + s * rnd) * wr;
+    f0 +=                        a * wc;
+    return f0;
+}
+
+_S_ float magn_lj(float s, float e, float invr) {
+    float t2, t4, t6, f;
+    t2 = s * s * invr * invr;
+    t4 = t2 * t2;
+    t6 = t4 * t2;
+    f = e * 24 * invr * t6 * (2 * t6 - 1);
+    f = cap(f, 0, 1e4);
+    return f;
+}
+
+_S_ float magn_adhesion(float k1, float k2, float r, float ev) {
+    float spring, visc;
+    spring = - k1 * r;
+    visc   = - k2 * ev;
+    return spring + visc;
+}
+
+_S_ float force_magn(const PairDPD *p, float rnd, float ev, float r, float) {
+    return magn_dpd(p->a, p->g, p->s, p->spow, rnd, r, ev);
+}
+
+_S_ float force_magn(const PairDPDLJ *p, float rnd, float ev, float r, float invr) {
+    float f;
+    f  = magn_dpd(p->a, p->g, p->s, p->spow, rnd, r, ev);
+    f += magn_lj(p->ljs, p->lje, invr);
+    return f;
+}
+
+_S_ float force_magn(const PairAdhesion *p, float, float ev, float r, float) {
+    return magn_adhesion(p->k1, p->k2, r, ev);
+}
+
+_S_ void magn2fo(float f0, float3 er, float3 dr, /**/ PairFo *f) {
+    f->x = f0 * er.x;
+    f->y = f0 * er.y;
+    f->z = f0 * er.z;
+}
+
+_S_ void magn2fo(float f0, float3 er, float3 dr, /**/ PairSFo *f) {
+    f->x = f0 * er.x;
+    f->y = f0 * er.y;
+    f->z = f0 * er.z;
+
+    f->sxx = 0.5f * f->x * dr.x;
+    f->sxy = 0.5f * f->x * dr.y;
+    f->sxz = 0.5f * f->x * dr.z;
+    f->syy = 0.5f * f->y * dr.y;
+    f->syz = 0.5f * f->y * dr.z;
+    f->szz = 0.5f * f->z * dr.z;
+}
+
+_S_ void make_zero(PairFo *f) {
+    f->x = f->y = f->z = 0;
+}
+
+_S_ void make_zero(PairSFo *f) {
+    f->x = f->y = f->z = 0;
+    f->sxx = f->sxy = f->sxz = 0;
+    f->syy = f->syz = f->szz = 0;
+}
+
+// tag::int[]
+template <typename Param, typename Fo>
+_I_ void pair_force(const Param *p, PairPa a, PairPa b, float rnd, /**/ Fo *f)
+// end::int[]
+{
+    float r, invr, ev, f0;
+    float3 dr, er, dv;
+    int vnstat; /* vector normalization status */
+
+    dr.x = a.x - b.x;
+    dr.y = a.y - b.y;
+    dr.z = a.z - b.z;
+
+    dv.x = a.vx - b.vx;
+    dv.y = a.vy - b.vy;
+    dv.z = a.vz - b.vz;
+
+    er = dr;
+
+    vnstat = norm(/*io*/ &er, /*o*/ &r, &invr);
+    if (vnstat == NORM_BIG) {
+        make_zero(f);
+        return;
+    }
+
+    ev = dot<float>(&er, &dv);
+
+    f0 = force_magn(p, rnd, ev, r, invr);
+    magn2fo(f0, er, dr, /**/ f);
+}
+
+_S_ int colors2pid(int ca, int cb) {
+    int c0, c1;
+    c0 = ca < cb ? ca : cb;
+    c1 = ca < cb ? cb : ca;
+    return c1 * (c1+1) / 2 + c0;
+}
+
+template <typename Fo>
+_I_ void pair_force(const PairDPDC *pc, PairPa a, PairPa b, float rnd, /**/ Fo *f) {
+    PairDPD p;
+    int pid;
+    pid = colors2pid(a.color, b.color);
+    p.a = pc->a[pid];
+    p.g = pc->g[pid];
+    p.s = pc->s[pid];
+    p.spow = pc->spow;
+    pair_force(&p, a, b, rnd, /**/ f);
+}
+
+/* mirrored: parameters from particle "a" only */
+template <typename Fo>
+_I_ void pair_force(const PairDPDCM *pc, PairPa a, PairPa b, float rnd, /**/ Fo *f) {
+    PairDPD p;
+    int pid = a.color;
+    p.a = pc->a[pid];
+    p.g = pc->g[pid];
+    p.s = pc->s[pid];
+    p.spow = pc->spow;
+    pair_force(&p, a, b, rnd, /**/ f);
+}
+
+
+// tag::add[]
+_I_ void pair_add(const PairFo *b, /**/ PairFo *a)
+// end::add[]
+{
+    a->x += b->x;
+    a->y += b->y;
+    a->z += b->z;
+}
+
+// tag::add[]
+_I_ void pair_add(const PairSFo *b, /**/ PairSFo *a)
+// end::add[]
+{
+    a->x += b->x;
+    a->y += b->y;
+    a->z += b->z;
+
+    a->sxx += b->sxx;
+    a->sxy += b->sxy;
+    a->sxz += b->sxz;
+    a->syy += b->syy;
+    a->syz += b->syz;
+    a->szz += b->szz;
+}
+
+#undef _S_
+#undef _I_
+/* end src/pair/dev.h */
+#endif /* UDX_FORCE_PAIR_DEV_COMMON */
+/* begin src/pair/imp.h */
+struct PairParams;
+struct Config;
+
+struct PairDPD;
+struct PairDPDC;
+struct PairDPDCM;
+struct PairDPDLJ;
+struct PairAdhesion;
+
+// tag::mem[]
+void pair_ini(PairParams **);
+void pair_fin(PairParams *);
+// end::mem[]
+
+// tag::set[]
+void pair_set_dpd(int ncol, const float a[], const float g[], float spow, PairParams *p); // <1>
+void pair_set_lj(float sigma, float eps, PairParams *p); // <2>
+// end::set[]
+void pair_set_adhesion(float k1, float k2, PairParams *p);
+
+// tag::cnf[]
+void pair_set_conf(const Config *, const char *name_space, PairParams *);
+// end::cnf[]
+
+// tag::upd[]
+void pair_compute_dpd_sigma(float kBT, float dt, PairParams *p);
+// end::upd[]
+
+// tag::view[]
+void pair_get_view_dpd(const PairParams*, PairDPD*);
+void pair_get_view_dpd_color(const PairParams*, PairDPDC*);
+void pair_get_view_dpd_mirrored(const PairParams*, PairDPDCM*);
+void pair_get_view_dpd_lj(const PairParams*, PairDPDLJ*);
+// end::view[]
+void pair_get_view_adhesion(const PairParams*, PairAdhesion*);
+/* end src/pair/imp.h */
+
+/* begin src/struct/parray/type.h */
+struct PaArray_v {
+    const float *pp;
+};
+
+struct PaCArray_v {
+    const float *pp;
+    const int *cc;   /* colors */
+};
+/* end src/struct/parray/type.h */
+/* begin src/struct/parray/imp.h */
+#ifndef UDX_FORCE_PARRAY_COMMON
+#define UDX_FORCE_PARRAY_COMMON
+struct PaArray {
+    bool colors;
+    const float *pp;
+    const int *cc;
+};
+
+struct PaArray_v;
+struct PaCArray_v;
+
+struct Particle;
+
+// tag::push[]
+void parray_push_pp(const Particle *pp, PaArray *a);
+void parray_push_cc(const int *cc, PaArray *a);
+// end::push[]
+
+// tag::get[]
+bool parray_is_colored(const PaArray *a);
+// end::get[]
+
+// tag::view[]
+void parray_get_view(const PaArray *a, PaArray_v *v);  // <1>
+void parray_get_view(const PaArray *a, PaCArray_v *v); // <2>
+// end::view[]
+/* end src/struct/parray/imp.h */
+#endif /* UDX_FORCE_PARRAY_COMMON */
+/* begin src/struct/parray/dev.h */
+#define _S_ static __device__
+#define _I_ static __device__
+
+template<typename PA>
+_S_ void parray_get_pp(PA a, int i, /**/ PairPa *p) {
+    const float2 *pp = (const float2 *) a.pp;
+    float2 s0, s1, s2;
+    s0 = __ldg(pp + 3*i + 0);
+    s1 = __ldg(pp + 3*i + 1);
+    s2 = __ldg(pp + 3*i + 2);
+
+    p->x = s0.x;
+    p->y = s0.y;
+    p->z = s1.x;
+
+    p->vx = s1.y;
+    p->vy = s2.x;
+    p->vz = s2.y;
+}
+
+// tag::int[]
+_I_ void parray_get(PaArray_v a, int i, /**/ PairPa *p) // <1>
+// end::int[]
+{
+    parray_get_pp(a, i, /**/ p);
+}
+
+// tag::int[]
+_I_ void parray_get(PaCArray_v a, int i, /**/ PairPa *p) // <2>
+// end::int[]
+{
+    parray_get_pp(a, i, /**/ p);
+    p->color = a.cc[i];
+}
+
+#undef _S_
+#undef _I_
+/* end src/struct/parray/dev.h */
+
+/* local */
+
+/* begin src/fsi/imp.h */
+struct RNDunif;
+struct Fsi;
+struct int3;
+
+// tag::mem[]
+void fsi_ini(int rank, int3 L, /**/ Fsi **fsi);
+void fsi_fin(Fsi *fsi);
+// end::mem[]
+
+// tag::int[]
+void fsi_bind_solvent(PaArray pa, Force *ff, int n, const int *starts, /**/ Fsi *fsi);  // <1>
+void fsi_bulk(Fsi *fsi, int nw, const PairParams **prms, PaWrap *pw, FoWrap *fw); // <2>
+void fsi_halo(Fsi *fsi, int nw, const PairParams **prms, Pap26 all_pp, Fop26 all_ff, const int *all_counts); // <3>
+// end::int[]
+/* end src/fsi/imp.h */
+
+/* body */
+namespace fsi_dev {
+/* begin src/fsi/dev/type.h */
+typedef PairPa Pa;
+struct Fo { float *x, *y, *z; }; /* force */
+/* end src/fsi/dev/type.h */
+/* begin src/fsi/dev/common.h */
+static __device__ float random(uint lid, uint rid, float seed) {
+    return rnd::mean0var1uu(seed, lid, rid);
+}
+
+static __device__ Fo ff2f(float *ff, int i) {
+    Fo f;
+    ff += 3*i;
+    f.x = ff++; f.y = ff++; f.z = ff++;
+    return f;
+}
+
+template <typename Par>
+static __device__ void pair0(Par params, const Pa a, const Pa b, float rnd, /**/ float *fx, float *fy, float *fz) {
+    PairFo f;
+    pair_force(&params, a, b, rnd, /**/ &f);
+    *fx = f.x; *fy = f.y; *fz = f.z;
+}
+
+template <typename Par>
+static __device__ void pair(Par params, const Pa a, const Pa b, float rnd, /**/
+                            float *fx, float *fy, float *fz, Fo f) {
+    /* f[xyz]: local force; Fo f: remote force */
+    float x, y, z; /* pair force */
+    pair0(params, a, b, rnd, /**/ &x, &y, &z);
+    *fx += x; *fy += y; *fz += z;
+    atomicAdd(f.x, -x); atomicAdd(f.y, -y); atomicAdd(f.z, -z);
+}
+/* end src/fsi/dev/common.h */
+/* begin src/fsi/dev/map.common.h */
+struct Map { /* helps to find remote particle */
+    int  org0, org1, org2;
+    uint cnt0, cnt1, cnt2;
+};
+
+/* true if `i' is bigger than the number of remote particles */
+static __device__ int endp(const Map m, uint i) { return i >= m.cnt2; }
+
+static __device__ uint m2id(const Map m, uint i) {
+    /* return remote particle id */
+    int m1, m2;
+    uint id;
+    m1 = (int)(i >= m.cnt0);
+    m2 = (int)(i >= m.cnt1);
+    id = i + (m2 ? m.org2 : m1 ? m.org1 : m.org0);
+    return id;
+}
+/* end src/fsi/dev/map.common.h */
+/* begin src/fsi/dev/map/bulk.h */
+static __device__ int r2map(int3 L, const int *start, int zplane, int n, float x, float y, float z, /**/ Map *m) {
+    /* coordinate [r] to map */
+    int cnt0, cnt1, cnt2, org0;
+    int org1, org2;
+    int xoffset, yoffset, zoffset;
+    int ncells;
+
+    xoffset = L.x / 2;
+    yoffset = L.y / 2;
+    zoffset = L.z / 2;
+    ncells = L.x * L.y * L.z;
+
+    const int xcenter = xoffset + (int)floorf(x);
+    const int xstart = max(0, xcenter - 1);
+    const int xcount = min(L.x, xcenter + 2) - xstart;
+
+    if (xcenter - 1 >= L.x || xcenter + 2 <= 0) return 0;
+
+    const int ycenter = yoffset + (int)floorf(y);
+
+    const int zcenter = zoffset + (int)floorf(z);
+    const int zmy = zcenter - 1 + zplane;
+    const bool zvalid = zmy >= 0 && zmy < L.z;
+
+    int count0 = 0, count1 = 0, count2 = 0;
+
+    if (zvalid && ycenter - 1 >= 0 && ycenter - 1 < L.y) {
+        const int cid0 = xstart + L.x * (ycenter - 1 + L.y * zmy);
+        org0 = start[cid0];
+        count0 = ((cid0 + xcount == ncells)
+                  ? n
+                  : start[cid0 + xcount]) -
+            org0;
+    }
+
+    if (zvalid && ycenter >= 0 && ycenter < L.y) {
+        const int cid1 = xstart + L.x * (ycenter + L.y * zmy);
+        org1 = start[cid1];
+        count1 = ((cid1 + xcount == ncells)
+                  ? n
+                  : start[cid1 + xcount]) -
+            org1;
+    }
+
+    if (zvalid && ycenter + 1 >= 0 && ycenter + 1 < L.y) {
+        const int cid2 = xstart + L.x * (ycenter + 1 + L.y * zmy);
+        org2 = start[cid2];
+        count2 = ((cid2 + xcount == ncells)
+                  ? n
+                  : start[cid2 + xcount]) -
+            org2;
+    }
+
+    cnt0 = count0;
+    cnt1 = count0 + count1;
+    cnt2 = cnt1 + count2;
+
+    org1 -= cnt0;
+    org2 -= cnt1;
+
+    m->org0 = org0; m->org1 = org1; m->org2 = org2;
+    m->cnt0 = cnt0; m->cnt1 = cnt1; m->cnt2 = cnt2;
+    return 1;
+}
+/* end src/fsi/dev/map/bulk.h */
+/* begin src/fsi/dev/map/halo.h */
+static __device__ int tex2map(int3 L, const int *start, int zplane, int n1, float x, float y, float z, /**/ Map *m) {
+    /* textures to map */
+    int xstart, xcount;
+    int zmy;
+    int xcenter, ycenter, zcenter;
+    bool zvalid;
+    int count0, count1, count2;
+    int cid0, cid1, cid2;
+    int cnt0, cnt1, cnt2;
+    int org0, org1, org2;
+    int xoffset, yoffset, zoffset;
+    int ncells;
+
+    xoffset = L.x / 2;
+    yoffset = L.y / 2;
+    zoffset = L.z / 2;
+    ncells = L.x * L.y * L.z;
+
+    xcenter = xoffset + (int)floorf(x);
+    xstart = max(0, xcenter - 1);
+    xcount = min(L.x, xcenter + 2) - xstart;
+
+    if (xcenter - 1 >= L.x || xcenter + 2 <= 0) return 0;
+
+    ycenter = yoffset + (int)floorf(y);
+
+    zcenter = zoffset + (int)floorf(z);
+    zmy = zcenter - 1 + zplane;
+    zvalid = zmy >= 0 && zmy < L.z;
+
+    count0 = count1 = count2 = 0;
+
+    if (zvalid && ycenter - 1 >= 0 && ycenter - 1 < L.y) {
+        cid0 = xstart + L.x * (ycenter - 1 + L.y * zmy);
+        org0 = start[cid0];
+        count0 = ((cid0 + xcount == ncells)
+                  ? n1
+                  : start[cid0 + xcount]) -
+            org0;
+    }
+
+    if (zvalid && ycenter >= 0 && ycenter < L.y) {
+        cid1 = xstart + L.x * (ycenter + L.y * zmy);
+        org1 = start[cid1];
+        count1 = ((cid1 + xcount == ncells)
+                  ? n1
+                  : start[cid1 + xcount]) -
+            org1;
+    }
+
+    if (zvalid && ycenter + 1 >= 0 && ycenter + 1 < L.y) {
+        cid2 = xstart + L.x * (ycenter + 1 + L.y * zmy);
+        org2 = start[cid2];
+        count2 = ((cid2 + xcount == ncells)
+                  ? n1
+                  : start[cid2 + xcount]) -
+            org2;
+    }
+
+    cnt0 = count0;
+    cnt1 = count0 + count1;
+    cnt2 = cnt1 + count2;
+
+    org1 -= cnt0;
+    org2 -= cnt1;
+
+    m->org0 = org0; m->org1 = org1; m->org2 = org2;
+    m->cnt0 = cnt0; m->cnt1 = cnt1; m->cnt2 = cnt2;
+    return 1;
+}
+/* end src/fsi/dev/map/halo.h */
+/* begin src/fsi/dev/bulk.h */
+static __device__ void pp2p(const Particle *pp, int i, /**/ Pa *p) {
+    enum {X, Y, Z};
+    Particle a = pp[i];
+    p->x  = a.r[X]; p->y  = a.r[Y]; p->z  = a.r[Z];
+    p->vx = a.v[X]; p->vy = a.v[Y]; p->vz = a.v[Z];
+}
+
+static __device__ int p2map(int3 L, const int *start, int zplane, int n, const Pa p, /**/ Map *m) {
+    /* particle to map */
+    return r2map(L, start, zplane, n, p.x, p.y, p.z, m);
+}
+
+static const float EPS = 1e-6;
+static __device__ float dist(Pa a, Pa b) {
+    float dx, dy, dz;
+    dx = a.x - b.x;
+    dy = a.y - b.y;
+    dz = a.z - b.z;
+    return sqrt(dx*dx + dy*dy + dz*dz);
+}
+
+template <typename Par, typename Parray>
+static __device__ void bulk0(Par params, const Pa a, Parray parray, int lid, const Map m, float seed, /**/
+                             float *fx, float *fy, float *fz, float *ff) {
+    /* "[a]ocal" and "[b]emote" particles */
+    Pa b;
+    Fo f;
+    int i, rid;
+    *fx = *fy = *fz = 0; /* local force */
+    for (i = 0; !endp(m, i); ++i) {
+        rid = m2id(m, i);
+        parray_get(parray, rid, /**/ &b);
+        f = ff2f(ff, rid);
+        pair(params, a, b, random(lid, rid, seed), /**/ fx, fy, fz,   f);
+    }
+}
+
+template <typename Par, typename Parray>
+static __device__ void bulk1(Par params, const Pa a, Parray parray,
+                             const Fo f, int i, const Map m, float seed, /**/ float *ff) {
+    float fx, fy, fz; /* local force */
+    bulk0(params, a, parray, i, m, seed, /**/ &fx, &fy, &fz, ff);
+    atomicAdd(f.x, fx);
+    atomicAdd(f.y, fy);
+    atomicAdd(f.z, fz);
+}
+
+template <typename Par, typename Parray>
+static __device__ void bulk2(Par params, int3 L, const int *start, const Particle *ppA, Parray parray, int i, int zplane, int n, float seed,
+                             /**/ float *ff, float *ff0) {
+    Pa p;
+    Fo f; /* "local" particle */
+    Map m;
+    pp2p(ppA, i, /**/ &p);
+    f = ff2f(ff, i);
+    if (!p2map(L, start, zplane, n, p, /**/ &m)) return;
+    bulk1(params, p, parray, f, i, m, seed, /**/ ff0);
+}
+
+template <typename Par, typename Parray>
+__global__ void bulk(Par params, int3 L, const int *start, const Particle *ppA, Parray parray, int n0, int n1, float seed, float *ff, float *ff0) {
+    int gid, i, zplane;
+    gid    = threadIdx.x + blockDim.x * blockIdx.x;
+    i      = gid / 3;
+    zplane = gid % 3;
+    if (i >= n0) return;
+    bulk2(params, L, start, ppA, parray, i, zplane, n1, seed, ff, ff0);
+}
+/* end src/fsi/dev/bulk.h */
+/* begin src/fsi/dev/halo.h */
+static __device__ Pa warp2p(const Particle *pp, int i) {
+    enum {X, Y, Z};
+    Pa p;
+    pp += i;
+
+     p.x = pp->r[X];  p.y = pp->r[Y];  p.z = pp->r[Z];
+    p.vx = pp->v[X]; p.vy = pp->v[Y]; p.vz = pp->v[Z];
+    return p;
+}
+
+template <typename Par, typename Parray>
+static __device__ void halo0(Par params, int3 L, const int *start, Pa A, int aid, Parray parray, int nb, float seed, /**/ float *fA, float *ffB) {
+    enum {X, Y, Z};
+
+    Pa B; /* remote particles */
+    Fo f;
+
+    Map m;
+    int zplane;
+    int i, bid;
+    float fx, fy, fz;
+
+    fx = fy = fz = 0;
+    for (zplane = 0; zplane < 3; ++zplane) {
+        if (!tex2map(L, start, zplane, nb, A.x, A.y, A.z, /**/ &m)) continue;
+        for (i = 0; !endp(m, i); ++i) {
+            bid = m2id(m, i);
+            parray_get(parray, bid, /**/ &B);
+            f = ff2f(ffB, bid);
+            pair(params, A, B, random(aid, bid, seed), /**/ &fx, &fy, &fz,   f);
+        }
+    }
+    fA[X] += fx; fA[Y] += fy; fA[Z] += fz;
+}
+
+template <typename Par, typename Parray>
+static __device__ void halo1(Par params, int3 L, const int *cellsstart, int27 starts, Pap26 pp, Fop26 ff, int aid, Parray parray, int nb, float seed, /**/ float *ffB) {
+    int fid; /* fragment id */
+    int start;
+    Pa A;
+    float *fA;
+
+    fid = frag_dev::frag_get_fid(starts.d, aid);
+    start = starts.d[fid];
+
+    A = warp2p(pp.d[fid], aid - start);
+
+    fA = ff.d[fid][aid-start].f;
+
+    halo0(params, L, cellsstart, A, aid, parray, nb, seed, /**/ fA, ffB);
+}
+
+template <typename Par, typename Parray>
+__global__ void halo(Par params, int3 L, const int *cellsstart, int27 starts, Pap26 pp, Fop26 ff, Parray parray, int na, int nb, float seed, /**/ float *ffB) {
+    int aid;
+    aid = threadIdx.x + blockDim.x * blockIdx.x;
+    if (aid >= na) return;
+    halo1(params, L, cellsstart, starts, pp, ff, aid, parray, nb, seed, /**/ ffB);
+}
+/* end src/fsi/dev/halo.h */
+}
+
+/* begin src/fsi/imp/type.h */
+struct RNDunif;
+
+struct SolventWrap {
+    PaArray pa;
+    Force *ff;
+    int n;
+    const int *starts;
+};
+
+struct Fsi {
+    SolventWrap *wo;
+    RNDunif     *rgen;
+    int3 L; /* subdomain size */
+};
+/* end src/fsi/imp/type.h */
+/* begin src/fsi/imp/main.h */
+void fsi_ini(int rank, int3 L, /**/ Fsi **fsi) {
+    Fsi *f;
+    EMALLOC(1, fsi);
+    f = *fsi;
+
+    f->L = L;
+    UC(rnd_ini(1908 - rank, 1409 + rank, 290, 12968, /**/ &f->rgen));
+    EMALLOC(1, &f->wo);
+}
+
+void fsi_fin(Fsi *fsi) {
+    UC(rnd_fin(fsi->rgen));
+    EFREE(fsi->wo);
+    EFREE(fsi);
+}
+
+void fsi_bind_solvent(PaArray pa, Force *ff, int n, const int *starts, /**/ Fsi *fsi) {
+    SolventWrap *w = fsi->wo;
+    w->pa = pa;
+    w->n  = n;
+    w->ff = ff;
+    w->starts = starts;
+}
+
+/* end src/fsi/imp/main.h */
+/* begin src/fsi/imp/bulk.h */
+static void bulk_one_wrap(const PairParams *params, PaWrap *pw, FoWrap *fw, Fsi *fsi) {
+    int n0, n1;
+    float rnd;
+    const Particle *ppA = pw->pp;
+    SolventWrap *wo = fsi->wo;
+    const PaArray *parray = &wo->pa;
+
+    rnd = rnd_get(fsi->rgen);
+    n0  = pw->n;
+    n1  = wo->n;
+
+    if (parray_is_colored(parray)) {
+        PairDPDCM pv;
+        PaCArray_v paview;
+
+        pair_get_view_dpd_mirrored(params, &pv);
+        parray_get_view(parray, &paview);
+
+        KL(fsi_dev::bulk, (k_cnf(3*n0)), (pv, fsi->L, wo->starts, ppA, paview,
+                                          n0, n1,
+                                          rnd, (float*)fw->ff, (float*)wo->ff));
+    }
+    else {
+        PairDPD pv;
+        PaArray_v paview;
+
+        pair_get_view_dpd(params, &pv);
+        parray_get_view(parray, &paview);
+
+        KL(fsi_dev::bulk, (k_cnf(3*n0)), (pv, fsi->L, wo->starts, ppA, paview,
+                                          n0, n1,
+                                          rnd, (float*)fw->ff, (float*)wo->ff));
+    }
+}
+
+void fsi_bulk(Fsi *fsi, int nw, const PairParams **prms, PaWrap *pw, FoWrap *fw) {
+    if (nw == 0)
+        return;
+
+    for (int i = 0; i < nw; i++)
+        if (prms[i]) bulk_one_wrap(prms[i], &pw[i], &fw[i], fsi);
+}
+/* end src/fsi/imp/bulk.h */
+/* begin src/fsi/imp/halo.h */
+static void fsi_halo_one_type(const PairParams *params, Fsi *fsi, Pap26 PP, Fop26 FF, const int counts[26]) {
+    enum {NFRAGS = 26};
+    int i, n, s;
+    int27 starts;
+    SolventWrap *wo = fsi->wo;
+    const PaArray *parray = &wo->pa;
+    float rnd = rnd_get(fsi->rgen);
+
+    starts.d[0] = 0;
+    for (i = s = 0; i < NFRAGS; ++i) starts.d[i + 1] = (s += counts[i]);
+    n = starts.d[NFRAGS];
+
+    if (parray_is_colored(parray)) {
+        PairDPDCM pv;
+        PaCArray_v pav;
+
+        pair_get_view_dpd_mirrored(params, &pv);
+        parray_get_view(parray, &pav);
+
+        KL(fsi_dev::halo, (k_cnf(n)), (pv, fsi->L, wo->starts, starts, PP, FF, pav, n, wo->n, rnd, /**/ (float*)wo->ff));
+    }
+    else {
+        PairDPD pv;
+        PaArray_v pav;
+
+        pair_get_view_dpd(params, &pv);
+        parray_get_view(parray, &pav);
+
+        KL(fsi_dev::halo, (k_cnf(n)), (pv, fsi->L, wo->starts, starts, PP, FF, pav, n, wo->n, rnd, /**/ (float*)wo->ff));
+    }
+}
+
+void fsi_halo(Fsi *fsi, int nw, const PairParams **prms, Pap26 all_pp, Fop26 all_ff, const int *all_counts) {
+    enum {NFRAGS = 26};
+    Pap26 pp;
+    Fop26 ff;
+    int i, j, start[NFRAGS];
+    const int *counts;
+
+    memset(start, 0, sizeof(start));
+
+    for (i = 0; i < nw; i++) {
+        counts = all_counts + NFRAGS * i;
+        for (j = 0; j < NFRAGS; ++j) {
+            pp.d[j] = all_pp.d[j] + start[j];
+            ff.d[j] = all_ff.d[j] + start[j];
+            start[j] += counts[j];
+        }
+        if (prms[i]) fsi_halo_one_type(prms[i], fsi, pp, ff, counts);
+    }
+}
+/* end src/fsi/imp/halo.h */
+/* end src/fsi/imp.cu */
+
+#line 1 "src/grid_sampler/imp.cu"
+
+#line 4 "udx.pair-fsi.cu"
+
+#line 4 "udx.force-pair-complete.cu"
