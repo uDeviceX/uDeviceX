@@ -195,6 +195,8 @@ struct FoWrap {
 /* end src/inc/type.h */
 #endif
 /* begin src/inc/def.h */
+#ifndef UDX_IO_DEF_COMMON
+#define UDX_IO_DEF_COMMON
 /* solvent colors */
 #define XMACRO_COLOR(_)                         \
     _(BLUE)                                     \
@@ -246,6 +248,7 @@ enum {
 /* for the spring forces r = min(lmax*RBC_SPRING_CAP, r) */
 #define RBC_SPRING_CAP (0.99)
 /* end src/inc/def.h */
+#endif
 /* begin src/utils/os.h */
 // tag::int[]
 void os_mkdir(const char* path); // <1>

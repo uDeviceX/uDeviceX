@@ -33,8 +33,7 @@ OBJECTS = \
  udx.frag-he.o \
  udx.pair-fsi.o \
  udx.grid-inter.o \
- udx.io-all-output.o \
- udx.io-mesh-rig-restart.o \
+ udx.io-complete.o \
  udx.utils-math.o \
  udx.mesh-complete.o \
  udx.rbc-core-adj-com.o \

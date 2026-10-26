@@ -336,6 +336,8 @@ static char *cpy(char *dest, const char *src) { return strncpy(dest, src, FILENA
 static char *cat(char *dest, const char *src) { return strncat(dest, src, FILENAME_MAX); }
 #endif
 
+#ifndef UDX_IO_OUTPUT_MKDIR_COMMON
+#define UDX_IO_OUTPUT_MKDIR_COMMON
 static void mkdir(MPI_Comm comm, const char *p, const char *s) {
     char path[FILENAME_MAX] = {'\0'};
     if (!m::is_master(comm)) return;
@@ -345,6 +347,7 @@ static void mkdir(MPI_Comm comm, const char *p, const char *s) {
     msg_print("mkdir -p '%s'", path);
     UC(os_mkdir(path));
 }
+#endif
 
 static int max3(int a, int b, int c) {
     if (a > b) b = a;

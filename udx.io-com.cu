@@ -1,6 +1,9 @@
 // generated from udx.flat.cu
 #include "udx.config.cuh"
 
+#ifndef UDX_IO_COM_COMMON
+#define UDX_IO_COM_COMMON
+
 /* begin src/io/com/imp.cpp */
 #include <stdio.h>
 #include <vector_types.h>
@@ -298,14 +301,14 @@ static int swrite(const Coords *coords, int n, const int *ii, const float3 *rr, 
     return start;
 }
 
-static void write_mpi(MPI_Comm comm, const char *fname, long n, const char *data) {
+static void io_com_write_mpi(MPI_Comm comm, const char *fname, long n, const char *data) {
     WriteFile *f;
     UC(write_file_open(comm, fname, &f));
     UC(write_all(comm, data, n, f));
     UC(write_file_close(f));
 }
 
-static void gen_fname(const char *name, long id, char *fname) {
+static void io_com_gen_fname(const char *name, long id, char *fname) {
     sprintf(fname, BASE "/%s.%04ld.txt", name, id);
 }
 
@@ -317,16 +320,18 @@ void io_com_dump(MPI_Comm comm, const Coords *coords, const char *name, long id,
 
     if (m::is_master(comm))
         UC(os_mkdir(BASE));
+    MC(m::Barrier(comm));
 
-    gen_fname(name, id, fname);
+    io_com_gen_fname(name, id, fname);
 
     UC(nchar = swrite(coords, n, ii, rr, /**/ data));
-    write_mpi(comm, fname, nchar, data);
+    io_com_write_mpi(comm, fname, nchar, data);
 
     EFREE(data);
 }
 
 #undef BASE
 /* end src/io/com/imp.cpp */
+#endif
 
 #line 1 "src/io/diag/mesh/imp.cpp"

@@ -266,6 +266,8 @@ int status2errcode(MPI_Status *status);
 }
 /* end src/mpi/wrapper.h */
 /* begin src/inc/type.h */
+#ifndef UDX_IO_OUTPUT_TYPE_COMMON
+#define UDX_IO_OUTPUT_TYPE_COMMON
 #ifndef UDX_IO_TYPE_COMMON
 #define UDX_IO_TYPE_COMMON
 template <typename T, int N>
@@ -321,6 +323,7 @@ struct FoWrap {
     Force *ff;
 };
 /* end src/inc/type.h */
+#endif
 #endif
 
 /* begin src/io/mesh_read/imp.h */
@@ -403,8 +406,11 @@ struct MeshWrite {
 /* end src/io/mesh/imp/type.h */
 
 /* begin src/io/mesh/imp/util.h */
+#ifndef UDX_IO_OUTPUT_COMMON_UTIL
+#define UDX_IO_OUTPUT_COMMON_UTIL
 static char *cpy(char *dest, const char *src) { return strncpy(dest, src, FILENAME_MAX); }
 static char *cat(char *dest, const char *src) { return strncat(dest, src, FILENAME_MAX); }
+#endif
 
 static void mkdir0(const char *p, const char *s) {
     char path[FILENAME_MAX] = {'\0'};
@@ -415,9 +421,12 @@ static void mkdir0(const char *p, const char *s) {
     UC(os_mkdir(path));
 }
 
+#ifndef UDX_IO_OUTPUT_MKDIR_COMMON
+#define UDX_IO_OUTPUT_MKDIR_COMMON
 static void mkdir(MPI_Comm comm, const char *p, const char *s) {
     if (m::is_master(comm)) UC(mkdir0(p, s));
 }
+#endif
 /* end src/io/mesh/imp/util.h */
 /* begin src/io/mesh/imp/main.h */
 #define PATTERN "%s/%s/%05d.ply"

@@ -98,6 +98,8 @@ int status2errcode(MPI_Status *status);
 /* end src/mpi/wrapper.h */
 
 /* begin src/inc/type.h */
+#ifndef UDX_IO_OUTPUT_TYPE_COMMON
+#define UDX_IO_OUTPUT_TYPE_COMMON
 #ifndef UDX_IO_TYPE_COMMON
 #define UDX_IO_TYPE_COMMON
 template <typename T, int N>
@@ -154,7 +156,10 @@ struct FoWrap {
 };
 /* end src/inc/type.h */
 #endif
+#endif
 /* begin src/inc/def.h */
+#ifndef UDX_IO_DEF_COMMON
+#define UDX_IO_DEF_COMMON
 /* solvent colors */
 #define XMACRO_COLOR(_)                         \
     _(BLUE)                                     \
@@ -206,6 +211,7 @@ enum {
 /* for the spring forces r = min(lmax*RBC_SPRING_CAP, r) */
 #define RBC_SPRING_CAP (0.99)
 /* end src/inc/def.h */
+#endif
 /* begin src/utils/msg.h */
 // tag::int[]
 void msg_ini(int rank); // <1>
