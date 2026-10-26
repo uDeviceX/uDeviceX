@@ -2920,8 +2920,7 @@ void wall_repulse_prm_ini(float lambda, WallRepulsePrm**); // <1>
 void wall_repulse_prm_ini_conf(const Config*, const char *ns, WallRepulsePrm**); // <2>
 void wall_repulse_prm_fin(WallRepulsePrm*); // <3>
 
-namespace wall_dev {
-__global__ void particle2float4(const Particle *src, const int n, float4 *dst) {
+__global__ void wall_particle2float4(const Particle *src, const int n, float4 *dst) {
     enum {X, Y, Z};
     int pid = threadIdx.x + blockDim.x * blockIdx.x;
     if (pid >= n) return;
@@ -2929,7 +2928,7 @@ __global__ void particle2float4(const Particle *src, const int n, float4 *dst) {
     dst[pid] = make_float4(p.r[X], p.r[Y], p.r[Z], 0);
 }
 
-__global__ void float42particle(const float4 *src, const int n, Particle *dst) {
+__global__ void wall_float42particle(const float4 *src, const int n, Particle *dst) {
     enum {X, Y, Z};
     int pid = threadIdx.x + blockDim.x * blockIdx.x;
     if (pid >= n) return;
@@ -2939,8 +2938,6 @@ __global__ void float42particle(const float4 *src, const int n, Particle *dst) {
     p.v[X] = p.v[Y] = p.v[Z] = 0;
     dst[pid] = p;
 }
-}
-
 struct WallTicket {
     RNDunif *rnd;        /* rng on host                                        */
     Clist *cells;        /* cell lists (always the same, no need to store map) */
@@ -2986,7 +2983,7 @@ static void read(MPI_Comm comm, const char *base, int maxn, /**/ float4 *pp, int
     if (*n) {
         Dalloc(&ppdev, maxn);
         cH2D(ppdev, pphst, *n);
-        KL(wall_dev::particle2float4, (k_cnf(*n)), (ppdev, *n, /**/ pp));
+        KL(wall_particle2float4, (k_cnf(*n)), (ppdev, *n, /**/ pp));
         Dfree(ppdev);
     }
     EFREE(pphst);
@@ -2998,7 +2995,7 @@ static void write(MPI_Comm comm, const char *base, int n, const float4 *pp) {
     EMALLOC(n, &pphst);
     if (n) {
         Dalloc(&ppdev, n);
-        KL(wall_dev::float42particle , (k_cnf(n)), (pp, n, /**/ ppdev));
+        KL(wall_float42particle , (k_cnf(n)), (pp, n, /**/ ppdev));
         cD2H(pphst, ppdev, n);
         Dfree(ppdev);
     }
@@ -3050,7 +3047,7 @@ static void gen_quants(MPI_Comm cart, int numdensity, int3 L, int maxn, const Sd
     UC(freeze(cart, numdensity, L, maxn, qsdf, o_n, o_pp, w_n, frozen));
     msg_print("consolidating wall");
     Dalloc(w_pp, *w_n);
-    KL(wall_dev::particle2float4, (k_cnf(*w_n)), (frozen, *w_n, /**/ *w_pp));
+    KL(wall_particle2float4, (k_cnf(*w_n)), (frozen, *w_n, /**/ *w_pp));
 
     Dfree(frozen);
     dSync();
@@ -3068,9 +3065,9 @@ static void build_cells(const int n, float4 *pp4, Clist *cells, ClistMap *mcells
     Dalloc(&pp,  n);
     Dalloc(&pp0, n);
 
-    KL(wall_dev::float42particle, (k_cnf(n)), (pp4, n, /**/ pp));
+    KL(wall_float42particle, (k_cnf(n)), (pp4, n, /**/ pp));
     UC(clist_build(n, n, pp, /**/ pp0, cells, mcells));
-    KL(wall_dev::particle2float4, (k_cnf(n)), (pp0, n, /**/ pp4));
+    KL(wall_particle2float4, (k_cnf(n)), (pp0, n, /**/ pp4));
 
     Dfree(pp);
     Dfree(pp0);
