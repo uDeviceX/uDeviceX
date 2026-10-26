@@ -48,12 +48,11 @@ OBJECTS = \
  udx.utils-math.o \
  udx.mesh-complete.o \
  udx.pair.o \
- udx.rbc-adj-com.o \
+ udx.rbc-core-adj-com.o \
  udx.rbc-force-area-random.o \
  udx.rbc-force-bending-juelicher.o \
  udx.rbc-force-bending-kantor.o \
  udx.rbc-force-main.o \
- udx.rbc-core-geometry.o \
  udx.rig-complete.o \
  udx.scheme-all.o \
  udx.sim-objects.o \

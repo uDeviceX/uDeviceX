@@ -452,6 +452,8 @@ void check(int rc, const char *file, int line);
 /* TODO: header includes header */
 /* end src/utils/cc.h */
 /* begin src/utils/kl.h */
+#ifndef UDX_RBC_CORE_KL_COMMON
+#define UDX_RBC_CORE_KL_COMMON
 /* [k]ernel [l]aunch macros */
 
 #if    defined(KL_RELEASE)
@@ -508,6 +510,7 @@ inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
 
 /* TODO: header includes header */
 /* end src/utils/kl.h */
+#endif
 
 /* begin src/rbc/stretch/imp.h */
 struct RbcStretch;

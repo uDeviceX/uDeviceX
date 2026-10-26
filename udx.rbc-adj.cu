@@ -123,6 +123,8 @@ void msg_print(const char *fmt, ...); // <2>
 #ifndef UDX_RBC_DEVICE_API_COMMON
 #define UDX_RBC_DEVICE_API_COMMON
 /* begin src/d/api.h */
+#ifndef UDX_RBC_CORE_DEVICE_API_COMMON
+#define UDX_RBC_CORE_DEVICE_API_COMMON
 namespace d {  /* a wrapper for device API */
 typedef int Stream_t; /* TODO: streams are not supported */
 enum {MemcpyHostToHost, MemcpyHostToDevice,
@@ -152,6 +154,7 @@ int PeekAtLastError(void);
 // end::api[]
 }
 /* end src/d/api.h */
+#endif
 #endif
 /* begin src/utils/cc.h */
 /* [c]uda [c]heck macros */
@@ -254,6 +257,8 @@ int  edg_valid(int md, int i, int j,         const int *hx); // <3>
 /* end src/algo/edg/imp.h */
 
 /* begin src/rbc/adj/type/common.h */
+#ifndef UDX_RBC_ADJ_MAP_TYPE
+#define UDX_RBC_ADJ_MAP_TYPE
 // tag::interface[]
 struct AdjMap {
     int i0, i1, i2, i3, i4;
@@ -261,6 +266,7 @@ struct AdjMap {
 };
 // end::interface[]
 /* end src/rbc/adj/type/common.h */
+#endif
 /* begin src/rbc/adj/type/dev.h */
 struct Adj_v {
     int *adj0;
