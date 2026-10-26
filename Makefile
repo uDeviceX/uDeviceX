@@ -34,7 +34,7 @@ OBJECTS = \
  udx.flu-halo.o \
  udx.fluforces-bulk-main.o \
  udx.frag-he.o \
- udx.fsi.o \
+ udx.pair-fsi.o \
  udx.grid_sampler.o \
  udx.inter-color.o \
  udx.io-bop.o \
@@ -45,7 +45,6 @@ OBJECTS = \
  udx.main.o \
  udx.utils-math.o \
  udx.mesh-complete.o \
- udx.pair.o \
  udx.rbc-core-adj-com.o \
  udx.rbc-force-all.o \
  udx.rbc-force-bending-juelicher.o \

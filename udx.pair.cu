@@ -115,6 +115,8 @@ void conf_write_history(const Config *cfg, FILE *stream); // <2>
 /* end src/conf/imp.h */
 
 /* begin src/inc/def.h */
+#ifndef UDX_PAIR_FSI_DEF_COMMON
+#define UDX_PAIR_FSI_DEF_COMMON
 /* solvent colors */
 #define XMACRO_COLOR(_)                         \
     _(BLUE)                                     \
@@ -166,7 +168,10 @@ enum {
 /* for the spring forces r = min(lmax*RBC_SPRING_CAP, r) */
 #define RBC_SPRING_CAP (0.99)
 /* end src/inc/def.h */
+#endif
 /* begin src/pair/type.h */
+#ifndef UDX_PAIR_FSI_PAIR_TYPE_COMMON
+#define UDX_PAIR_FSI_PAIR_TYPE_COMMON
 /* maximum of pairwise dpd parameters */
 enum {
     MAX_PAR = (N_COLOR * (N_COLOR + 1)) / 2
@@ -214,6 +219,7 @@ struct PairSFo {
     float sxx, syy, szz, sxy, sxz, syz;
 };
 /* end src/pair/type.h */
+#endif
 /* begin src/pair/imp.h */
 struct PairParams;
 struct Config;

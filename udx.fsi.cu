@@ -378,6 +378,8 @@ _HD_ void axpy(const T1 a, const T2 *x, /*io*/ T3 *y) {
 /* end src/math/dev.h */
 
 /* begin src/inc/def.h */
+#ifndef UDX_PAIR_FSI_DEF_COMMON
+#define UDX_PAIR_FSI_DEF_COMMON
 /* solvent colors */
 #define XMACRO_COLOR(_)                         \
     _(BLUE)                                     \
@@ -429,6 +431,7 @@ enum {
 /* for the spring forces r = min(lmax*RBC_SPRING_CAP, r) */
 #define RBC_SPRING_CAP (0.99)
 /* end src/inc/def.h */
+#endif
 /* begin src/utils/msg.h */
 // tag::int[]
 void msg_ini(int rank); // <1>
@@ -827,6 +830,8 @@ void dbg_check_clist(const Coords *c, const Dbg *dbg, int3 L, const int *starts,
 /* end src/dbg/imp.h */
 
 /* begin src/pair/type.h */
+#ifndef UDX_PAIR_FSI_PAIR_TYPE_COMMON
+#define UDX_PAIR_FSI_PAIR_TYPE_COMMON
 /* maximum of pairwise dpd parameters */
 enum {
     MAX_PAR = (N_COLOR * (N_COLOR + 1)) / 2
@@ -874,6 +879,7 @@ struct PairSFo {
     float sxx, syy, szz, sxy, sxz, syz;
 };
 /* end src/pair/type.h */
+#endif
 /* begin src/pair/dev.h */
 #define _S_ static __device__
 #define _I_ static __device__
