@@ -397,6 +397,8 @@ void estimates(int3 L, int nfrags, float maxd, /**/ int *cap); // <1>
 #endif
 
 /* begin src/comm/imp.h */
+#ifndef UDX_DISTR_EXCH_COMM_COMMON
+#define UDX_DISTR_EXCH_COMM_COMMON
 typedef unsigned char data_t;
 
 enum {
@@ -470,6 +472,7 @@ size_t comm_get_byte_capacity(int i, const hBags *b);   // <2>
 // end::get[]
 
 /* end src/comm/imp.h */
+#endif /* UDX_DISTR_EXCH_COMM_COMMON */
 /* begin src/exch/common/imp.h */
 struct int3;
 

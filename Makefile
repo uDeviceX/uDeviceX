@@ -13,10 +13,9 @@ OBJECTS = \
  udx.contact-complete.o \
  udx.runtime-control-complete.o \
  udx.support-grid-algo-complete.o \
- udx.distr-exch.o \
+ udx.distr-exch-rig-complete.o \
  udx.distr-flu.o \
  udx.distr-rbc.o \
- udx.distr-rig.o \
  udx.exch-flu.o \
  udx.exch-mesh.o \
  udx.exch-obj.o \

@@ -184,6 +184,8 @@ const char* get_filename_ext(const char*);
 // end::tools[]
 /* end src/utils/imp.h */
 /* begin src/algo/utils/shfl.h */
+#ifndef UDX_DISTR_EXCH_SHFL_COMMON
+#define UDX_DISTR_EXCH_SHFL_COMMON
 #define _I_ static __device__
 
 #if __CUDACC_VER_MAJOR__ >= 9
@@ -218,6 +220,7 @@ _I_ T shfl(T val, unsigned int width) {
 
 #undef _I_
 /* end src/algo/utils/shfl.h */
+#endif /* UDX_DISTR_EXCH_SHFL_COMMON */
 
 /* begin src/distr/map/type.h */
 #ifndef UDX_DISTR_EXCH_DMAP_TYPE_COMMON
