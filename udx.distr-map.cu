@@ -220,6 +220,8 @@ _I_ T shfl(T val, unsigned int width) {
 /* end src/algo/utils/shfl.h */
 
 /* begin src/distr/map/type.h */
+#ifndef UDX_DISTR_EXCH_DMAP_TYPE_COMMON
+#define UDX_DISTR_EXCH_DMAP_TYPE_COMMON
 // tag::struct[]
 /* [D]istr Map */
 struct DMap {
@@ -231,6 +233,7 @@ struct DMap {
 };
 // end::struct[]
 /* end src/distr/map/type.h */
+#endif
 
 void dmap_ini(int nfrags, const int capacity[], /**/ DMap *m) {
     Dalloc(&m->counts,  nfrags);

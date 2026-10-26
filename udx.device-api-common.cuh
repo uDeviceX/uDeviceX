@@ -1,5 +1,5 @@
-#ifndef UDX_DEVICE_API_COMMON_CUH
-#define UDX_DEVICE_API_COMMON_CUH
+#ifndef UDX_DISTR_EXCH_DEVICE_API_COMMON
+#define UDX_DISTR_EXCH_DEVICE_API_COMMON
 
 namespace d {
 typedef int Stream_t;

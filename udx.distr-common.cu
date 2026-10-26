@@ -394,6 +394,8 @@ void estimates(int3 L, int nfrags, float maxd, /**/ int *cap); // <1>
 #endif
 
 /* begin src/distr/map/type.h */
+#ifndef UDX_DISTR_EXCH_DMAP_TYPE_COMMON
+#define UDX_DISTR_EXCH_DMAP_TYPE_COMMON
 // tag::struct[]
 /* [D]istr Map */
 struct DMap {
@@ -405,6 +407,7 @@ struct DMap {
 };
 // end::struct[]
 /* end src/distr/map/type.h */
+#endif
 
 /* begin src/distr/common/imp.h */
 struct Particle;

@@ -22,8 +22,7 @@ OBJECTS = \
  udx.control-den-outflow.o \
  udx.control-inflow.o \
  udx.control-vel.o \
- udx.distr-exch-common.o \
- udx.distr-exch-map.o \
+ udx.distr-exch.o \
  udx.distr-flu.o \
  udx.distr-rbc.o \
  udx.distr-rig.o \

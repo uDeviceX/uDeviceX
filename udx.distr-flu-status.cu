@@ -80,7 +80,10 @@ void msg_print(const char *fmt, ...); // <2>
 // end::int[]
 /* end src/utils/msg.h */
 /* begin src/frag/imp.h */
+#ifndef UDX_DISTR_EXCH_FRAG_IMP_COMMON
+#define UDX_DISTR_EXCH_FRAG_IMP_COMMON
 enum {frag_bulk = 26};
+#endif
 
 struct int3;
 

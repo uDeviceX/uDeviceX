@@ -85,6 +85,8 @@
 /* end src/inc/dev.h */
 
 /* begin src/utils/kl.h */
+#ifndef UDX_DISTR_EXCH_KL_COMMON
+#define UDX_DISTR_EXCH_KL_COMMON
 /* [k]ernel [l]aunch macros */
 
 #if    defined(KL_RELEASE)
@@ -141,6 +143,7 @@ inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
 
 /* TODO: header includes header */
 /* end src/utils/kl.h */
+#endif
 /* begin src/utils/cc.h */
 /* [c]uda [c]heck macros */
 
