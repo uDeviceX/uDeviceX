@@ -1918,14 +1918,13 @@ void wall_force_adhesion_apply(const PairParams*, const WvelStep*, const Coords*
 void wall_force_repulse(Sdf_v, WallRepulsePrm, long n, const PaArray*, const FoArray*); // <2>
 #endif
 
-namespace wf_dev {
-struct Map { /* helps to find remote particle */
+struct WallMap { /* helps to find remote particle */
     int org0, org1, org2;
     int str0, str1, str2;
 };
 static __device__ int minmax(int lo, int hi, int a) { return min(hi, max(lo, a)); }
 
-static __device__ void ini(int3 L, int zplane, const Texo<int> texstart, int w_n, float x, float y, float z, /**/ Map *m) {
+static __device__ void ini(int3 L, int zplane, const Texo<int> texstart, int w_n, float x, float y, float z, /**/ WallMap *m) {
 #define start_fetch(i) (texo_fetch(texstart, i))
     int str0, str1, str2;
     int org0, org1, org2;
@@ -1974,8 +1973,8 @@ static __device__ void ini(int3 L, int zplane, const Texo<int> texstart, int w_n
 #undef start_fetch
 }
 /* true if `i' is bigger than the number of remote particles */
-static __device__ int endp(const Map m, int i) { return i >= m.str2; }
-static __device__ int m2id(const Map m, int i) {
+static __device__ int endp(const WallMap m, int i) { return i >= m.str2; }
+static __device__ int m2id(const WallMap m, int i) {
     /* return remote particle id */
     int m1, m2, id;
     m1 = (i >= m.str0);
@@ -1998,7 +1997,7 @@ static __device__ void fetch_wall(Wvel_v wv, Coords_v c, Texo<float4> pp, int i,
 template <typename Par, typename Wvel_v, typename Fo>
 static __device__ void force0(Par params, Wvel_v wv, Coords_v c, PairPa a, int aid, int zplane,
                               float seed, WallForce wa, /**/ Fo *fa) {
-    Map m;
+    WallMap m;
     PairPa b;  /* wall particles */
     Fo f;
     float rnd;
@@ -2018,7 +2017,7 @@ static __device__ void force0(Par params, Wvel_v wv, Coords_v c, PairPa a, int a
 }
 
 template <typename Par, typename Wvel_v, typename Parray, typename Farray>
-__global__ void force(Par params, Wvel_v wv, Coords_v c, Parray parray, int np, float seed, WallForce wa, /**/ Farray farray) {
+__global__ void wall_force_kernel(Par params, Wvel_v wv, Coords_v c, Parray parray, int np, float seed, WallForce wa, /**/ Farray farray) {
     PairPa a; /* bulk particle */
     int gid, aid, zplane;
     auto ftot = farray_fo0(farray);
@@ -2057,7 +2056,7 @@ static __device__ float3 get_pos(const Particle *p) {
     return make_float3(p->r[X], p->r[Y], p->r[Z]);
 }
 
-__global__ void repulse(WallRepulsePrm wr, int n, const Particle *pp, Sdf_v sdf_v, /**/ Force *ff) {
+__global__ void wall_repulse_kernel(WallRepulsePrm wr, int n, const Particle *pp, Sdf_v sdf_v, /**/ Force *ff) {
     enum {X, Y, Z};
     int pid;
     float3 r, f;
@@ -2074,7 +2073,6 @@ __global__ void repulse(WallRepulsePrm wr, int n, const Particle *pp, Sdf_v sdf_
     ff[pid].f[Y] += f.y;
     ff[pid].f[Z] += f.z;
 }
-}
 
 enum {
     TPP = 3 /* # threads per particle */
@@ -2085,7 +2083,7 @@ static void interactions(Par params, Wvel_v wv, const Coords *c, Parray parray, 
     Coords_v coordsv;
     coords_get_view(c, &coordsv);
 
-    KL(wf_dev::force,
+    KL(wall_force_kernel,
        (k_cnf(TPP*n)),
        (params, wv, coordsv, parray, n, rnd_get(rnd), wa, /**/ farray));
 }
@@ -2158,7 +2156,7 @@ void wall_force_adhesion_apply(const PairParams *params, const WvelStep *wv, con
 
 
 void wall_force_repulse(Sdf_v sdf_v, WallRepulsePrm wr, long n, const PaArray *pa, const FoArray *fo) {
-    KL(wf_dev::repulse,
+    KL(wall_repulse_kernel,
        (k_cnf(n)),
        (wr, n, (const Particle*) pa->pp, sdf_v, (Force*) fo->ff));
 }
