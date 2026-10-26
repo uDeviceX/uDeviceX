@@ -7468,7 +7468,6 @@ struct Particle;
 void bounce_back(float dt, const WvelStep *wv, const Coords *c, const Sdf *sdf, int n, /**/ Particle *pp);
 
 
-namespace sdf_bb_dev {
 enum {
     MAX_RESCUE = 8,
     MAX_NEWTON = 2
@@ -7564,7 +7563,7 @@ static __device__ void bounce_back_1p(float dt, Wvel_v wv, Coords_v c, Sdf_v *te
 }
 
 template <typename Wvel_v>
-__global__ void bounce_back(float dt, Wvel_v wv, Coords_v c, Sdf_v texsdf, int n, /**/ Particle *pp) {
+__global__ void wall_bounce_back_kernel(float dt, Wvel_v wv, Coords_v c, Sdf_v texsdf, int n, /**/ Particle *pp) {
     float s, currsdf;
     float3 r, v;
     int i;
@@ -7583,14 +7582,13 @@ __global__ void bounce_back(float dt, Wvel_v wv, Coords_v c, Sdf_v texsdf, int n
         }
     }
 }
-}
 template <typename Wvel_v>
 static void apply(float dt, Wvel_v wv, const Coords *c, const Sdf *sdf, int n, /**/ Particle *pp) {
     Sdf_v sdf_v;
     Coords_v coordsv;
     sdf_get_view(sdf, &sdf_v);
     coords_get_view(c, &coordsv);
-    KL(sdf_bb_dev::bounce_back, (k_cnf(n)), (dt, wv, coordsv, sdf_v, n, /**/ pp));
+    KL(wall_bounce_back_kernel, (k_cnf(n)), (dt, wv, coordsv, sdf_v, n, /**/ pp));
 }
 
 void bounce_back(float dt, const WvelStep *w, const Coords *c, const Sdf *sdf, int n, /**/ Particle *pp) {
