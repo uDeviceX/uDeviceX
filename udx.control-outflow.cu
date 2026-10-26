@@ -380,8 +380,8 @@ inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
 /* end src/utils/kl.h */
 #endif
 /* begin src/d/api.h */
-#ifndef UDX_CONTROL_DEVICE_API_COMMON
-#define UDX_CONTROL_DEVICE_API_COMMON
+#ifndef UDX_CONTROL_D_API_COMMON
+#define UDX_CONTROL_D_API_COMMON
 namespace d {  /* a wrapper for device API */
 typedef int Stream_t; /* TODO: streams are not supported */
 enum {MemcpyHostToHost, MemcpyHostToDevice,
@@ -414,6 +414,8 @@ int PeekAtLastError(void);
 #endif
 
 /* begin src/math/dev.h */
+#ifndef UDX_CONTROL_MATH_COMMON
+#define UDX_CONTROL_MATH_COMMON
 /* use templates here because we might have mixed float/double */
 
 #define _HD_ __host__ __device__
@@ -473,6 +475,7 @@ _HD_ void axpy(const T1 a, const T2 *x, /*io*/ T3 *y) {
     y->z += a * x->z;
 }
 /* end src/math/dev.h */
+#endif /* UDX_CONTROL_MATH_COMMON */
 
 /* begin src/coords/type.h */
 #ifndef UDX_CONTROL_COORDS_COMMON
@@ -662,24 +665,24 @@ struct FoWrap {
 
 /* begin src/control/outflow/imp/type.h */
 enum {
-    TYPE_NONE,
-    TYPE_PLATE,
-    TYPE_CIRCLE
+    OFLOW_TYPE_NONE,
+    OFLOW_TYPE_PLATE,
+    OFLOW_TYPE_CIRCLE
 };
 
-struct ParamsCircle {
+struct OutflowParamsCircle {
     float Rsq;  /* radius squared  */
     float3 c;   /* center          */
 };
 
 /* plane is described as a*x + b*y + c*z + d = 0 */
-struct ParamsPlate {
+struct OutflowParamsPlate {
     float a, b, c, d;
 };
 
-union ParamsU {
-    ParamsPlate plate;
-    ParamsCircle circle;
+union OutflowParamsU {
+    OutflowParamsPlate plate;
+    OutflowParamsCircle circle;
 };
 
 struct Outflow {
@@ -687,14 +690,14 @@ struct Outflow {
     int *ndead_dev; /* number of kills on dev  */
     int ndead;      /* number of kils          */
 
-    ParamsU params; /* shape parameters */
+    OutflowParamsU params; /* shape parameters */
     int type;       /* shape type       */
 };
 /* end src/control/outflow/imp/type.h */
 
 namespace outflow_dev {
 /* begin src/control/outflow/dev/main.h */
-static __device__ int predicate(ParamsPlate p, const float r[3]) {
+static __device__ int predicate(OutflowParamsPlate p, const float r[3]) {
     enum {X, Y, Z};
     float s;
 
@@ -703,7 +706,7 @@ static __device__ int predicate(ParamsPlate p, const float r[3]) {
     return s > 0;
 }
 
-static __device__ int predicate(ParamsCircle p, const float r[3]) {
+static __device__ int predicate(OutflowParamsCircle p, const float r[3]) {
     enum {X, Y, Z};
     float x, y, rsq;
     x = r[X] - p.c.x;
@@ -749,7 +752,7 @@ void outflow_ini(int maxp, /**/ Outflow **o0) {
 
     CC(d::MemsetAsync(o->kk, 0, sz));
     UC(reset_ndead(o));
-    o->type = TYPE_NONE;
+    o->type = OFLOW_TYPE_NONE;
 }
 
 void outflow_fin(/**/ Outflow *o) {
@@ -760,19 +763,19 @@ void outflow_fin(/**/ Outflow *o) {
 
 void outflow_set_params_circle(const Coords *coords, float3 c, float R, Outflow *o) {
     enum {X, Y, Z};
-    ParamsCircle p;
+    OutflowParamsCircle p;
     p.Rsq = R*R;
 
     // shift to local referential
     global2local(coords, c, /**/ &p.c);
 
     o->params.circle = p;
-    o->type = TYPE_CIRCLE;
+    o->type = OFLOW_TYPE_CIRCLE;
 }
 
 void outflow_set_params_plate(const Coords *c, int dir, float r0, Outflow *o) {
     enum {X, Y, Z};
-    ParamsPlate p = {0, 0, 0, 0};
+    OutflowParamsPlate p = {0, 0, 0, 0};
 
     switch (dir) {
     case X:
@@ -793,20 +796,20 @@ void outflow_set_params_plate(const Coords *c, int dir, float r0, Outflow *o) {
     };
 
     o->params.plate = p;
-    o->type = TYPE_PLATE;
+    o->type = OFLOW_TYPE_PLATE;
 }
 
 void outflow_filter_particles(int n, const Particle *pp, /**/ Outflow *o) {
     reset_ndead(o);
 
     switch(o->type) {
-    case TYPE_CIRCLE:
+    case OFLOW_TYPE_CIRCLE:
         KL(outflow_dev::filter, (k_cnf(n)), (n, pp, o->params.circle, /**/ o->ndead_dev, o->kk) );
         break;
-    case TYPE_PLATE:
+    case OFLOW_TYPE_PLATE:
         KL(outflow_dev::filter, (k_cnf(n)), (n, pp, o->params.plate, /**/ o->ndead_dev, o->kk) );
         break;
-    case TYPE_NONE:
+    case OFLOW_TYPE_NONE:
     default:
         ERR("No type set");
         break;

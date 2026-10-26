@@ -838,6 +838,8 @@ int coords_size(const Coords *c);
 /* end src/coords/imp.h */
 
 /* begin src/algo/utils/shfl.h */
+#ifndef UDX_CONTROL_SHFL_COMMON
+#define UDX_CONTROL_SHFL_COMMON
 #define _I_ static __device__
 
 #if __CUDACC_VER_MAJOR__ >= 9
@@ -913,6 +915,7 @@ _I_ float3 warpReduceSum(float3 val)  // <3>
 #undef _I_
 
 /* end src/algo/utils/dev.h */
+#endif /* UDX_CONTROL_SHFL_COMMON */
 
 /* begin src/io/restart/imp.h */
 struct Coords;

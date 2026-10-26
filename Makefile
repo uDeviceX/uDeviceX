@@ -16,8 +16,7 @@ OBJECTS = \
  udx.conf-libconfig.o \
  udx.dbg.o \
  udx.algo-complete.o \
- udx.control-den-outflow.o \
- udx.control-all.o \
+ udx.control-complete.o \
  udx.distr-exch.o \
  udx.distr-flu.o \
  udx.distr-rbc.o \

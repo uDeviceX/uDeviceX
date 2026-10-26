@@ -374,8 +374,8 @@ inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
 /* end src/utils/kl.h */
 #endif
 /* begin src/d/api.h */
-#ifndef UDX_CONTROL_DEVICE_API_COMMON
-#define UDX_CONTROL_DEVICE_API_COMMON
+#ifndef UDX_CONTROL_D_API_COMMON
+#define UDX_CONTROL_D_API_COMMON
 namespace d {  /* a wrapper for device API */
 typedef int Stream_t; /* TODO: streams are not supported */
 enum {MemcpyHostToHost, MemcpyHostToDevice,
@@ -592,6 +592,8 @@ int coords_size(const Coords *c);
 /* end src/coords/imp.h */
 
 /* begin src/algo/utils/shfl.h */
+#ifndef UDX_CONTROL_SHFL_COMMON
+#define UDX_CONTROL_SHFL_COMMON
 #define _I_ static __device__
 
 #if __CUDACC_VER_MAJOR__ >= 9
@@ -667,6 +669,7 @@ _I_ float3 warpReduceSum(float3 val)  // <3>
 #undef _I_
 
 /* end src/algo/utils/dev.h */
+#endif /* UDX_CONTROL_SHFL_COMMON */
 
 
 
