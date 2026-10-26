@@ -53,8 +53,7 @@ OBJECTS = \
  udx.rbc-force-bending-kantor.o \
  udx.rig-complete.o \
  udx.scheme-all.o \
- udx.sim-all.o \
- udx.sim-walls.o \
+ udx.sim-system-all.o \
  udx.sim.o \
  udx.struct-all.o \
  udx.support.o \

@@ -1120,6 +1120,8 @@ void rig_update_mesh(float dt, int ns, const Rigid *ss, int nv, const float *vv,
 /* end src/rigid/imp.h */
 
 /* begin src/wall/imp.h */
+#ifndef UDX_SIM_WALLS_COMMON
+#define UDX_SIM_WALLS_COMMON
 struct PairParams;
 struct PaArray;
 struct FoArray;
@@ -1176,6 +1178,7 @@ void wall_repulse_prm_ini_conf(const Config*, const char *ns, WallRepulsePrm**);
 void wall_repulse_prm_fin(WallRepulsePrm*); // <3>
 // end::repulse[]
 /* end src/wall/imp.h */
+#endif
 
 /* begin src/scheme/move/imp.h */
 struct Force;
