@@ -47,7 +47,7 @@ OBJECTS = \
  udx.io-mesh-rig-restart.o \
  udx.io-vtk-output.o \
  udx.main.o \
- udx.math.o \
+ udx.utils-math.o \
  udx.mesh-complete.o \
  udx.pair.o \
  udx.rbc-adj-com.o \
@@ -68,7 +68,6 @@ OBJECTS = \
  udx.struct-arrays.o \
  udx.struct-pfarrays.o \
  udx.support.o \
- udx.utils-all.o \
  udx.wall-exchange-force.o \
  udx.wall-sdf-transform-bounce.o \
  udx.wall-sdf-label.o \
