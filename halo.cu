@@ -3136,10 +3136,6 @@ static __device__ bool is_dead(int i, const PartList lp) {
     return false;
 }
 
-static __device__ bool is_alive(int i, const PartList lp) {
-    return !is_dead(i, lp);
-}
-
 struct Scan;
 
 void scan_apply(const int *input, int size, /**/ int *output, /*w*/ Scan*); // <1>
