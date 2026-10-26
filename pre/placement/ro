@@ -1,7 +1,7 @@
 #!/bin/sh
 
-. plcmt.util
-prog=plcmt.ro
+. util
+prog=pack
 
 usg () {
     msg "$prog Lx Ly Lz r     f    sc ang     solid.out rbc.out"
@@ -49,17 +49,17 @@ pr=/tmp/rbc.$$; >$pr
 ps=/tmp/rig.$$; >$ps
 trap 'rm -f $pr $ps; exit' 1 2 3 15
 
-e plcmt.hex $x $y $z $r '|' plcmt.select $f "$ps" "$pr"
-e plcmt.p2mat $s $a     $pr '>' "$R"
-e plcmt.p2mat  1 $a     $ps '>' "$O"
+e hexgen $x $y $z $r '|' choose $f "$ps" "$pr"
+e matrix $s $a     $pr '>' "$R"
+e matrix  1 $a     $ps '>' "$O"
 
 rm -f $pr
 
-# TEST: plcmt.ro.t0
+# TEST: pack.t0
 # x=10 y=20 y=30 radius=1
 # fraction=0.1
 # sc=1 ang=0
-# SEED=1234 plcmt.ro 10 20 30 $radius     $fraction    $sc $ang     solid.ic rbc.ic
+# SEED=1234 pack 10 20 30 $radius     $fraction    $sc $ang     solid.ic rbc.ic
 # :
 # (sort solid.ic; sort rbc.ic) > test.out.txt
 #

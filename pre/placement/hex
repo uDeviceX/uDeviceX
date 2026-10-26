@@ -1,6 +1,6 @@
 "${AWK-awk}" '
 function usg() {
-    msg("usage: plcmt.hex <Lx> <Ly> <Lx> <r>")
+    msg("usage: hexgen <Lx> <Ly> <Lx> <r>")
     msg("  prints coordiantes of hexagonal closed packing of spheres")
     exit
 }
@@ -32,7 +32,7 @@ function arg() {
     Ly = ARGV[1]; shift()
     Lz = ARGV[1]; shift()
     r  = ARGV[1]; shift()
-    if (ARGC == 0) { msg("plcmt.hex: arguments error"); usg() }
+    if (ARGC == 0) { msg("hexgen: arguments error"); usg() }
 }
 
 function loop0() {
@@ -80,7 +80,7 @@ BEGIN {
 function msg(s) { printf "%s\n", s | "cat >&2" }
 function shift() {
     if (ARGC == 0) {
-	msg("plcmt.hex: not enougth arguments")
+	msg("hexgen: not enougth arguments")
 	exit(1)
     } else shift0()
 }
@@ -90,6 +90,6 @@ function shift0(  i) { for (i = 2; i < ARGC; i++) ARGV[i-1] = ARGV[i]; ARGC-- }
 # ref
 # https://en.wikipedia.org/wiki/Close-packing_of_equal_spheres#Simple_hcp_lattice
 
-# TEST: plcmt.hex.t0
-#  plcmt.hex 42 52 20 2 | sort > p.out.txt
+# TEST: hexgen.t0
+#  hexgen 42 52 20 2 | sort > p.out.txt
 #

@@ -8,14 +8,17 @@ export PATH
 work=$(mktemp -d "${TMPDIR:-/tmp}/udx-mix-contact.XXXXXX")
 trap 'rm -rf "$work"' EXIT INT TERM
 cd "$work"
-cp "$test_dir/conf.cfg" "$test_dir/rbc.test.cfg" .
+mkdir -p "$work/.udx"
+cp "$HOME/.udx/default.cfg" "$work/.udx/default.cfg"
+cp "$test_dir/rbc.cfg" "$work/.udx/rbc.cfg"
+cp "$test_dir/conf.cfg" .
 
-SEED=123 "$root/tools/regression/bin/plcmt.ro" 16 32 16 3.0 0.2 0.5 0.0 rigs-ic.txt rbcs-ic.txt
-"$root/tools/regression/bin/u.cp.rig" cylinder rig.ply
-"$root/tools/regression/bin/u.cp.rbc" sph/sc/642 rbc.off
-"$root/tools/regression/bin/u.cp.rbc" rbc/sc/642 ref.off
+SEED=123 "$root/tools/regression/bin/pack" 16 32 16 3.0 0.2 0.5 0.0 rigs-ic.txt rbcs-ic.txt
+"$root/tools/regression/bin/rigid" cylinder rig.ply
+"$root/tools/regression/bin/cell" sph/sc/642 rbc.off
+"$root/tools/regression/bin/cell" rbc/sc/642 ref.off
 
-mpirun -np 2 "$root/build/udx" 2 1 1 -- conf.cfg "$(cat <<'CONFIG'
+HOME="$work" mpirun -np 2 "$root/build/udx" 2 1 1 -- conf.cfg "$(cat <<'CONFIG'
 glb = {
     L = [16, 32, 16]
 }
@@ -38,7 +41,7 @@ CONFIG
 
 raw_xmf=$(find raw -maxdepth 1 -name '*.xmf' -type f | sort | head -n 1)
 test -n "$raw_xmf"
-python3 "$root/tools/raw_grid.py" check "$raw_xmf" >/dev/null
+python3 "$root/tools/grid.py" check "$raw_xmf" >/dev/null
 
 "$root/tools/ply2punto" ply/rbc/00002.ply |
     awk '{ for (i = 1; i <= NF; i++) printf "%.15g%s", 0.1 * $i, i < NF ? " " : "\n" }' > ply.out.txt
@@ -55,4 +58,4 @@ FNR == NR {
         if ($i != ref[FNR, i] && (($i - ref[FNR, i]) < -eps || ($i - ref[FNR, i]) > eps)) bad = 1
 }
 END { if (FNR != lines) bad = 1; exit bad }
-' "$test_dir/ply.ref.mix.contact.t2.txt" ply.out.txt
+' "$test_dir/reference.txt" ply.out.txt

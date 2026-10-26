@@ -151,7 +151,7 @@ def main() -> int:
         if args.command == "check":
             print(check_raw(args.xmf))
     except (OSError, RuntimeError, ValueError, ET.ParseError) as error:
-        print(f"raw_grid.py: {error}", file=sys.stderr)
+        print(f"grid.py: {error}", file=sys.stderr)
         return 1
     return 0
 
