@@ -8,7 +8,7 @@
 // Grouped editable compilation unit for rigid generation and management.
 
 
-#include "udx.config.cuh"
+#include "config.cuh"
 
 #include <mpi.h>
 #include <string.h>

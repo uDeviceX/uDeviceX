@@ -14,7 +14,7 @@
 // Grouped editable compilation unit for distribution and exchange common code.
 
 
-#include "udx.config.cuh"
+#include "config.cuh"
 
 /* [k]ernel [l]aunch macros */
 #if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \

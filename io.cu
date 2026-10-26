@@ -11,7 +11,7 @@
 // Grouped editable compilation unit for force and time schemes.
 
 
-#include "udx.config.cuh"
+#include "config.cuh"
 
 #include <stdlib.h>
 #include <stdio.h>

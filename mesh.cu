@@ -5,7 +5,7 @@
 // Grouped editable compilation unit for mesh and object exchange.
 
 
-#include "udx.config.cuh"
+#include "config.cuh"
 
 #include <mpi.h>
 #include <assert.h>

@@ -1,4 +1,4 @@
-#include "udx.config.cuh"
+#include "config.cuh"
 
 #include <stdlib.h>
 #include <assert.h>

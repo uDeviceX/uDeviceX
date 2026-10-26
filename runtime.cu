@@ -20,7 +20,7 @@
 // Grouped editable compilation unit for device and MPI adapters.
 
 
-#include "udx.config.cuh"
+#include "config.cuh"
 
 #include <stdio.h>
 #include <assert.h>

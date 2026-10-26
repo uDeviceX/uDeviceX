@@ -8,7 +8,7 @@
 // Grouped editable compilation unit for bulk fluid forces and orchestration.
 
 
-#include "udx.config.cuh"
+#include "config.cuh"
 
 #include <stdio.h>
 #include <assert.h>

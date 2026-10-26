@@ -8,7 +8,7 @@
 // Grouped editable compilation unit for wall exchange and force handling.
 
 
-#include "udx.config.cuh"
+#include "config.cuh"
 
 #include <stdio.h>
 #include <string.h>
