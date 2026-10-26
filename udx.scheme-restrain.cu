@@ -238,8 +238,8 @@ void scheme_restrain_set_conf(const Config *cfg, Restrain *r) {
 
 
 /* begin src/inc/type.h */
-#ifndef UDX_SCHEME_TYPE_COMMON
-#define UDX_SCHEME_TYPE_COMMON
+#ifndef UDX_SIM_OBJECTS_TYPE_COMMON
+#define UDX_SIM_OBJECTS_TYPE_COMMON
 template <typename T, int N>
 struct Sarray { /* [s]tatic array */
     T d[N];
@@ -334,8 +334,8 @@ struct FoWrap {
 #define DzeroA(P, n)   DsetA(P, 0, n)
 /* end src/inc/dev.h */
 /* begin src/inc/def.h */
-#ifndef UDX_SCHEME_DEF_COMMON
-#define UDX_SCHEME_DEF_COMMON
+#ifndef UDX_SIM_OBJECTS_DEF_COMMON
+#define UDX_SIM_OBJECTS_DEF_COMMON
 /* solvent colors */
 #define XMACRO_COLOR(_)                         \
     _(BLUE)                                     \
@@ -672,8 +672,8 @@ _I_ float3 warpReduceSum(float3 val)  // <3>
 /* end src/algo/utils/dev.h */
 
 /* begin src/d/api.h */
-#ifndef UDX_SCHEME_DEVICE_API_COMMON
-#define UDX_SCHEME_DEVICE_API_COMMON
+#ifndef UDX_SIM_SCHEME_DEVICE_API_COMMON
+#define UDX_SIM_SCHEME_DEVICE_API_COMMON
 namespace d {  /* a wrapper for device API */
 typedef int Stream_t; /* TODO: streams are not supported */
 enum {MemcpyHostToHost, MemcpyHostToDevice,

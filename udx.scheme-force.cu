@@ -255,8 +255,8 @@ void bforce_set_conf(const Config *cfg, /**/ BForce *bf) {
 /* end src/inc/conf.h */
 
 /* begin src/inc/type.h */
-#ifndef UDX_SCHEME_TYPE_COMMON
-#define UDX_SCHEME_TYPE_COMMON
+#ifndef UDX_SIM_OBJECTS_TYPE_COMMON
+#define UDX_SIM_OBJECTS_TYPE_COMMON
 template <typename T, int N>
 struct Sarray { /* [s]tatic array */
     T d[N];
@@ -532,8 +532,8 @@ int coords_size(const Coords *c);
 /* end src/coords/imp.h */
 
 /* begin src/d/api.h */
-#ifndef UDX_SCHEME_DEVICE_API_COMMON
-#define UDX_SCHEME_DEVICE_API_COMMON
+#ifndef UDX_SIM_SCHEME_DEVICE_API_COMMON
+#define UDX_SIM_SCHEME_DEVICE_API_COMMON
 namespace d {  /* a wrapper for device API */
 typedef int Stream_t; /* TODO: streams are not supported */
 enum {MemcpyHostToHost, MemcpyHostToDevice,

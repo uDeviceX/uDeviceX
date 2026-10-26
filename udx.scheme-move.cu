@@ -44,8 +44,8 @@
 
 
 /* begin src/d/api.h */
-#ifndef UDX_SCHEME_DEVICE_API_COMMON
-#define UDX_SCHEME_DEVICE_API_COMMON
+#ifndef UDX_SIM_SCHEME_DEVICE_API_COMMON
+#define UDX_SIM_SCHEME_DEVICE_API_COMMON
 namespace d {  /* a wrapper for device API */
 typedef int Stream_t; /* TODO: streams are not supported */
 enum {MemcpyHostToHost, MemcpyHostToDevice,
@@ -194,8 +194,8 @@ static int   warpSize = 1;
 /* end src/d/ker.h */
 
 /* begin src/inc/def.h */
-#ifndef UDX_SCHEME_DEF_COMMON
-#define UDX_SCHEME_DEF_COMMON
+#ifndef UDX_SIM_OBJECTS_DEF_COMMON
+#define UDX_SIM_OBJECTS_DEF_COMMON
 /* solvent colors */
 #define XMACRO_COLOR(_)                         \
     _(BLUE)                                     \
@@ -352,8 +352,8 @@ inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
 /* end src/utils/kl.h */
 #endif
 /* begin src/inc/type.h */
-#ifndef UDX_SCHEME_TYPE_COMMON
-#define UDX_SCHEME_TYPE_COMMON
+#ifndef UDX_SIM_OBJECTS_TYPE_COMMON
+#define UDX_SIM_OBJECTS_TYPE_COMMON
 template <typename T, int N>
 struct Sarray { /* [s]tatic array */
     T d[N];

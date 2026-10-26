@@ -197,6 +197,8 @@ enum {
 /* end src/inc/dev.h */
 
 /* begin src/d/api.h */
+#ifndef UDX_SIM_SCHEME_DEVICE_API_COMMON
+#define UDX_SIM_SCHEME_DEVICE_API_COMMON
 namespace d {  /* a wrapper for device API */
 typedef int Stream_t; /* TODO: streams are not supported */
 enum {MemcpyHostToHost, MemcpyHostToDevice,
@@ -226,6 +228,7 @@ int PeekAtLastError(void);
 // end::api[]
 }
 /* end src/d/api.h */
+#endif
 /* begin src/mpi/wrapper.h */
 namespace m {
 int Allreduce(const void *sendbuf, void *recvbuf, int count, MPI_Datatype datatype, MPI_Op op, MPI_Comm comm);
@@ -861,6 +864,8 @@ void mesh_write_fin(MeshWrite*);
 /* end src/io/mesh/imp.h */
 #endif
 /* begin src/io/restart/imp.h */
+#ifndef UDX_SIM_RESTART_COMMON
+#define UDX_SIM_RESTART_COMMON
 struct Coords;
 struct Particle;
 struct Rigid;
@@ -890,6 +895,7 @@ void restart_read_ss(MPI_Comm, const char *base, const char *code, int id, int *
 void restart_read_stream_one_node(const char *base, const char *code, int id, StreamReader, void *data);
 // end::read[]
 /* end src/io/restart/imp.h */
+#endif
 /* begin src/io/rig/imp.h */
 struct Coords;
 struct Rigid;

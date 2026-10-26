@@ -86,9 +86,12 @@ struct Particle;
 struct Rigid;
 
 // tag::id[]
+#ifndef UDX_SIM_RESTART_COMMON
+#define UDX_SIM_RESTART_COMMON
 enum {RESTART_TEMPL=-1,
       RESTART_FINAL=-2};
 enum {RESTART_BEGIN=RESTART_FINAL};
+#endif
 // end::id[]
 
 // tag::stream[]
