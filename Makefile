@@ -10,14 +10,14 @@ NVCCFLAGS = -std=c++11 $(OPT) -use_fast_math -restrict
 MPI_LIBS = -lopen-rte -lopen-pal
 
 OBJECTS = \
- runtime-contact-complete.o \
- distr-halo-complete.o \
- exch-mesh-struct-complete.o \
- force-pair-complete.o \
- scheme-io-complete.o \
- rig-rbc-core-complete.o \
- sim.o \
- wall-all-complete.o
+ runtime.o \
+ halo.o \
+ mesh.o \
+ force.o \
+ io.o \
+ body.o \
+ main.o \
+ wall.o
 
 TARGET = build/udx
 DEVICE = build/device.o
