@@ -21,9 +21,8 @@ OBJECTS = \
  udx.algo-convert-force-stat.o \
  udx.algo-edge-accumulators-scan.o \
  udx.algo-numeric.o \
- udx.control-den.o \
+ udx.control-den-outflow.o \
  udx.control-inflow.o \
- udx.control-outflow.o \
  udx.control-vel.o \
  udx.distr-common.o \
  udx.distr-exch-map.o \

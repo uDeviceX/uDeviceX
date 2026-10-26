@@ -314,6 +314,8 @@ void check(int rc, const char *file, int line);
 /* TODO: header includes header */
 /* end src/utils/cc.h */
 /* begin src/utils/kl.h */
+#ifndef UDX_CONTROL_KL_COMMON
+#define UDX_CONTROL_KL_COMMON
 /* [k]ernel [l]aunch macros */
 
 #if    defined(KL_RELEASE)
@@ -370,7 +372,10 @@ inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
 
 /* TODO: header includes header */
 /* end src/utils/kl.h */
+#endif
 /* begin src/d/api.h */
+#ifndef UDX_CONTROL_DEVICE_API_COMMON
+#define UDX_CONTROL_DEVICE_API_COMMON
 namespace d {  /* a wrapper for device API */
 typedef int Stream_t; /* TODO: streams are not supported */
 enum {MemcpyHostToHost, MemcpyHostToDevice,
@@ -400,6 +405,7 @@ int PeekAtLastError(void);
 // end::api[]
 }
 /* end src/d/api.h */
+#endif
 
 /* begin src/inc/dev.h */
 /* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
@@ -441,6 +447,8 @@ int PeekAtLastError(void);
 #define DzeroA(P, n)   DsetA(P, 0, n)
 /* end src/inc/dev.h */
 /* begin src/inc/type.h */
+#ifndef UDX_CONTROL_TYPE_COMMON
+#define UDX_CONTROL_TYPE_COMMON
 template <typename T, int N>
 struct Sarray { /* [s]tatic array */
     T d[N];
@@ -494,8 +502,11 @@ struct FoWrap {
     Force *ff;
 };
 /* end src/inc/type.h */
+#endif
 
 /* begin src/coords/type.h */
+#ifndef UDX_CONTROL_COORDS_COMMON
+#define UDX_CONTROL_COORDS_COMMON
 // tag::view[]
 struct Coords_v {
     int xc, yc, zc; /* rank coordinates        */
@@ -504,6 +515,7 @@ struct Coords_v {
 };
 // end::view[]
 /* end src/coords/type.h */
+#endif
 /* begin src/coords/imp.h */
 struct Coords;
 struct Coords_v;
