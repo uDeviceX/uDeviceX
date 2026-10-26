@@ -41,6 +41,8 @@
 
 
 /* begin src/d/api.h */
+#ifndef UDX_DISTR_EXCH_DEVICE_API_COMMON
+#define UDX_DISTR_EXCH_DEVICE_API_COMMON
 namespace d {  /* a wrapper for device API */
 typedef int Stream_t; /* TODO: streams are not supported */
 enum {MemcpyHostToHost, MemcpyHostToDevice,
@@ -70,7 +72,10 @@ int PeekAtLastError(void);
 // end::api[]
 }
 /* end src/d/api.h */
+#endif
 /* begin src/inc/type.h */
+#ifndef UDX_DISTR_EXCH_TYPE_COMMON
+#define UDX_DISTR_EXCH_TYPE_COMMON
 template <typename T, int N>
 struct Sarray { /* [s]tatic array */
     T d[N];
@@ -124,6 +129,7 @@ struct FoWrap {
     Force *ff;
 };
 /* end src/inc/type.h */
+#endif
 /* begin src/inc/dev.h */
 /* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
@@ -164,6 +170,8 @@ struct FoWrap {
 #define DzeroA(P, n)   DsetA(P, 0, n)
 /* end src/inc/dev.h */
 /* begin src/utils/kl.h */
+#ifndef UDX_DISTR_EXCH_KL_COMMON
+#define UDX_DISTR_EXCH_KL_COMMON
 /* [k]ernel [l]aunch macros */
 
 #if    defined(KL_RELEASE)
@@ -220,6 +228,7 @@ inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
 
 /* TODO: header includes header */
 /* end src/utils/kl.h */
+#endif
 /* begin src/utils/cc.h */
 /* [c]uda [c]heck macros */
 
@@ -254,6 +263,8 @@ void check(int rc, const char *file, int line);
 /* TODO: header includes header */
 /* end src/utils/cc.h */
 /* begin src/frag/dev.h */
+#ifndef UDX_DISTR_EXCH_FRAG_DEV_COMMON
+#define UDX_DISTR_EXCH_FRAG_DEV_COMMON
 #ifdef FRAG_HOST
   #define _I_
   #define _S_ static
@@ -343,7 +354,10 @@ END
 #undef BEGIN
 #undef END
 /* end src/frag/dev.h */
+#endif
 /* begin src/frag/imp.h */
+#ifndef UDX_DISTR_EXCH_FRAG_IMP_COMMON
+#define UDX_DISTR_EXCH_FRAG_IMP_COMMON
 enum {frag_bulk = 26};
 
 struct int3;
@@ -377,6 +391,7 @@ void estimates(int3 L, int nfrags, float maxd, /**/ int *cap); // <1>
 
 } // frag_hst
 /* end src/frag/imp.h */
+#endif
 
 /* begin src/distr/map/type.h */
 // tag::struct[]
