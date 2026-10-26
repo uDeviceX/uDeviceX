@@ -48,8 +48,7 @@ OBJECTS = \
  udx.io-mesh.o \
  udx.io-mesh-reader.o \
  udx.io-point-write.o \
- udx.io-restart.o \
- udx.io-rig.o \
+ udx.io-rig-restart.o \
  udx.io-vtk-output.o \
  udx.main.o \
  udx.math.o \
