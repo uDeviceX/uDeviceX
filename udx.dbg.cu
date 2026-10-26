@@ -122,6 +122,8 @@ struct int3;
 struct Coords;
 
 // tag::kind[]
+#ifndef UDX_DEBUG_KIND_COMMON
+#define UDX_DEBUG_KIND_COMMON
 enum {
     DBG_POS,      // <1>
     DBG_POS_SOFT, // <2>
@@ -132,6 +134,7 @@ enum {
     DBG_NKIND_
 };
 // end::kind[]
+#endif
 
 // tag::mem[]
 void dbg_ini(Dbg**);

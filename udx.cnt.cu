@@ -43,6 +43,8 @@
 
 
 /* begin src/d/api.h */
+#ifndef UDX_DBG_CLIST_D_API_COMMON
+#define UDX_DBG_CLIST_D_API_COMMON
 namespace d {  /* a wrapper for device API */
 typedef int Stream_t; /* TODO: streams are not supported */
 enum {MemcpyHostToHost, MemcpyHostToDevice,
@@ -72,6 +74,7 @@ int PeekAtLastError(void);
 // end::api[]
 }
 /* end src/d/api.h */
+#endif
 /* begin src/d/q.h */
 /* function and variable type [q]ualifiers */
 
@@ -403,6 +406,8 @@ _HD_ void axpy(const T1 a, const T2 *x, /*io*/ T3 *y) {
 /* end src/math/dev.h */
 
 /* begin src/inc/def.h */
+#ifndef UDX_DBG_CLIST_DEF_COMMON
+#define UDX_DBG_CLIST_DEF_COMMON
 /* solvent colors */
 #define XMACRO_COLOR(_)                         \
     _(BLUE)                                     \
@@ -454,12 +459,16 @@ enum {
 /* for the spring forces r = min(lmax*RBC_SPRING_CAP, r) */
 #define RBC_SPRING_CAP (0.99)
 /* end src/inc/def.h */
+#endif
 /* begin src/utils/msg.h */
+#ifndef UDX_DBG_CLIST_MSG_COMMON
+#define UDX_DBG_CLIST_MSG_COMMON
 // tag::int[]
 void msg_ini(int rank); // <1>
 void msg_print(const char *fmt, ...); // <2>
 // end::int[]
 /* end src/utils/msg.h */
+#endif
 /* begin src/utils/cc.h */
 /* [c]uda [c]heck macros */
 
@@ -530,6 +539,8 @@ void estimates(int3 L, int nfrags, float maxd, /**/ int *cap); // <1>
 /* end src/frag/imp.h */
 
 /* begin src/utils/kl.h */
+#ifndef UDX_DBG_CLIST_KL_COMMON
+#define UDX_DBG_CLIST_KL_COMMON
 /* [k]ernel [l]aunch macros */
 
 #if    defined(KL_RELEASE)
@@ -586,7 +597,10 @@ inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
 
 /* TODO: header includes header */
 /* end src/utils/kl.h */
+#endif
 /* begin src/inc/type.h */
+#ifndef UDX_DBG_CLIST_TYPE_COMMON
+#define UDX_DBG_CLIST_TYPE_COMMON
 template <typename T, int N>
 struct Sarray { /* [s]tatic array */
     T d[N];
@@ -640,6 +654,7 @@ struct FoWrap {
     Force *ff;
 };
 /* end src/inc/type.h */
+#endif
 /* begin src/inc/dev.h */
 /* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
@@ -780,6 +795,8 @@ struct int3;
 struct Coords;
 
 // tag::kind[]
+#ifndef UDX_DEBUG_KIND_COMMON
+#define UDX_DEBUG_KIND_COMMON
 enum {
     DBG_POS,      // <1>
     DBG_POS_SOFT, // <2>
@@ -790,6 +807,7 @@ enum {
     DBG_NKIND_
 };
 // end::kind[]
+#endif
 
 // tag::mem[]
 void dbg_ini(Dbg**);
@@ -1105,6 +1123,8 @@ void pair_get_view_adhesion(const PairParams*, PairAdhesion*);
 /* end src/pair/imp.h */
 
 /* begin src/struct/partlist/type.h */
+#ifndef UDX_CLIST_PARTLIST_COMMON
+#define UDX_CLIST_PARTLIST_COMMON
 enum {
     ALIVE = 0,
     DEAD  = 1
@@ -1120,6 +1140,7 @@ struct PartList {
 };
 // end::type[]
 /* end src/struct/partlist/type.h */
+#endif
 
 /* begin src/clist/imp.h */
 struct Clist;
@@ -1158,6 +1179,8 @@ void clist_build(int nlo, int nout, const Particle *pplo, /**/ Particle *ppout, 
 // end::int[]
 /* end src/clist/imp.h */
 /* begin src/clist/dev.h */
+#ifndef UDX_CLIST_DEV_COMMON
+#define UDX_CLIST_DEV_COMMON
 #define _I_ static __device__
 
 enum { CLIST_NMAX = (256*256*256) };
@@ -1182,6 +1205,7 @@ _I_ void clist_decode_id(uint c, /**/ int *s, int *pid)
 
 #undef _I_
 /* end src/clist/dev.h */
+#endif
 
 /* begin src/cnt/imp.h */
 struct Contact;

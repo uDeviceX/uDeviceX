@@ -409,6 +409,8 @@ inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
 #endif
 
 /* begin src/struct/partlist/type.h */
+#ifndef UDX_CLIST_PARTLIST_COMMON
+#define UDX_CLIST_PARTLIST_COMMON
 enum {
     ALIVE = 0,
     DEAD  = 1
@@ -424,6 +426,7 @@ struct PartList {
 };
 // end::type[]
 /* end src/struct/partlist/type.h */
+#endif
 /* begin src/struct/partlist/dev.h */
 static __device__ bool is_dead(int i, const PartList lp) {
     if (lp.deathlist)
@@ -489,6 +492,8 @@ void clist_build(int nlo, int nout, const Particle *pplo, /**/ Particle *ppout, 
 // end::int[]
 /* end src/clist/imp.h */
 /* begin src/clist/dev.h */
+#ifndef UDX_CLIST_DEV_COMMON
+#define UDX_CLIST_DEV_COMMON
 #define _I_ static __device__
 
 enum { CLIST_NMAX = (256*256*256) };
@@ -513,6 +518,7 @@ _I_ void clist_decode_id(uint c, /**/ int *s, int *pid)
 
 #undef _I_
 /* end src/clist/dev.h */
+#endif
 
 /* begin src/clist/imp/type.h */
 // tag::clist[]

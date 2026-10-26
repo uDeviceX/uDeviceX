@@ -10,8 +10,7 @@ NVCCFLAGS = -std=c++11 $(OPT) -use_fast_math -restrict
 MPI_LIBS = -lopen-rte -lopen-pal
 
 OBJECTS = \
- udx.debug-clist.o \
- udx.cnt.o \
+ udx.contact-complete.o \
  udx.runtime-all.o \
  udx.conf-libconfig.o \
  udx.algo-complete.o \
