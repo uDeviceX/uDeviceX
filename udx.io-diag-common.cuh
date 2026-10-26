@@ -1,5 +1,5 @@
-#ifndef UDX_IO_DIAG_COMMON_CUH
-#define UDX_IO_DIAG_COMMON_CUH
+#ifndef UDX_IO_OUTPUT_TYPE_COMMON
+#define UDX_IO_OUTPUT_TYPE_COMMON
 
 template <typename T, int N>
 struct Sarray {

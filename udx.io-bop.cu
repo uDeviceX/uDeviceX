@@ -138,6 +138,8 @@ int status2errcode(MPI_Status *status);
 /* end src/mpi/wrapper.h */
 
 /* begin src/inc/type.h */
+#ifndef UDX_IO_OUTPUT_TYPE_COMMON
+#define UDX_IO_OUTPUT_TYPE_COMMON
 template <typename T, int N>
 struct Sarray { /* [s]tatic array */
     T d[N];
@@ -191,6 +193,7 @@ struct FoWrap {
     Force *ff;
 };
 /* end src/inc/type.h */
+#endif
 /* begin src/inc/def.h */
 /* solvent colors */
 #define XMACRO_COLOR(_)                         \

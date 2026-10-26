@@ -5,6 +5,8 @@
 #include <stdio.h>
 
 /* begin src/inc/type.h */
+#ifndef UDX_IO_OUTPUT_TYPE_COMMON
+#define UDX_IO_OUTPUT_TYPE_COMMON
 #ifndef UDX_IO_DIAG_COMMON_CUH
 #define UDX_IO_DIAG_COMMON_CUH
 template <typename T, int N>
@@ -60,6 +62,7 @@ struct FoWrap {
     Force *ff;
 };
 /* end src/inc/type.h */
+#endif
 #endif
 
 /* begin src/utils/msg.h */
