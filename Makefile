@@ -10,8 +10,7 @@ NVCCFLAGS = -std=c++11 $(OPT) -use_fast_math -restrict
 MPI_LIBS = -lopen-rte -lopen-pal
 
 OBJECTS = \
- udx.contact-complete.o \
- udx.runtime-support-complete.o \
+ udx.runtime-contact-complete.o \
  udx.distr-halo-complete.o \
  udx.exch-mesh-struct-complete.o \
  udx.force-pair-complete.o \

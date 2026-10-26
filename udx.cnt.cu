@@ -345,6 +345,8 @@ inline __device__ float mean0var1uu( float seed, uint u, uint v )
 }
 /* end src/math/rnd/dev.h */
 /* begin src/math/dev.h */
+#ifndef UDX_CONTROL_MATH_COMMON
+#define UDX_CONTROL_MATH_COMMON
 /* use templates here because we might have mixed float/double */
 
 #define _HD_ __host__ __device__
@@ -404,6 +406,7 @@ _HD_ void axpy(const T1 a, const T2 *x, /*io*/ T3 *y) {
     y->z += a * x->z;
 }
 /* end src/math/dev.h */
+#endif /* UDX_CONTROL_MATH_COMMON */
 
 /* begin src/inc/def.h */
 #ifndef UDX_DBG_CLIST_DEF_COMMON
@@ -504,6 +507,8 @@ void check(int rc, const char *file, int line);
 /* end src/utils/cc.h */
 
 /* begin src/frag/imp.h */
+#ifndef UDX_SHARED_FRAG_COMMON
+#define UDX_SHARED_FRAG_COMMON
 enum {frag_bulk = 26};
 
 struct int3;
@@ -537,6 +542,7 @@ void estimates(int3 L, int nfrags, float maxd, /**/ int *cap); // <1>
 
 } // frag_hst
 /* end src/frag/imp.h */
+#endif /* UDX_SHARED_FRAG_COMMON */
 
 /* begin src/utils/kl.h */
 #ifndef UDX_DBG_CLIST_KL_COMMON

@@ -494,6 +494,8 @@ inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
 #endif /* UDX_GRID_INTER_KL_COMMON */
 
 /* begin src/struct/particle/dev.h */
+#ifndef UDX_CONTROL_PARTICLE_DEV_COMMON
+#define UDX_CONTROL_PARTICLE_DEV_COMMON
 static __device__ float3 fetch_pos(int i, const Particle *pp) {
     enum {X, Y, Z};
     float3 r;
@@ -508,6 +510,7 @@ static __device__ float3 fetch_vel(int i, const Particle *pp) {
     return v;
 }
 /* end src/struct/particle/dev.h */
+#endif /* UDX_CONTROL_PARTICLE_DEV_COMMON */
 
 /* begin src/algo/minmax/imp.h */
 struct Particle;

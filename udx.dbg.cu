@@ -583,6 +583,8 @@ int PeekAtLastError(void);
 /* end src/d/api.h */
 #endif
 /* begin src/coords/type.h */
+#ifndef UDX_CONTROL_COORDS_COMMON
+#define UDX_CONTROL_COORDS_COMMON
 // tag::view[]
 struct Coords_v {
     int xc, yc, zc; /* rank coordinates        */
@@ -590,6 +592,7 @@ struct Coords_v {
     int Lx, Ly, Lz; /* [L]ocal: subdomain size */
 };
 // end::view[]
+#endif /* UDX_CONTROL_COORDS_COMMON */
 /* end src/coords/type.h */
 /* begin src/coords/imp.h */
 struct Coords;

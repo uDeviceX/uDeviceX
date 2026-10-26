@@ -84,6 +84,8 @@
 /* end src/inc/dev.h */
 
 /* begin src/frag/imp.h */
+#ifndef UDX_SHARED_FRAG_COMMON
+#define UDX_SHARED_FRAG_COMMON
 enum {frag_bulk = 26};
 
 struct int3;
@@ -117,6 +119,7 @@ void estimates(int3 L, int nfrags, float maxd, /**/ int *cap); // <1>
 
 } // frag_hst
 /* end src/frag/imp.h */
+#endif /* UDX_SHARED_FRAG_COMMON */
 
 /* begin src/utils/msg.h */
 // tag::int[]
