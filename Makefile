@@ -56,8 +56,7 @@ OBJECTS = \
  udx.rbc-force-main.o \
  udx.rbc-core-geometry.o \
  udx.rig-complete.o \
- udx.scheme-force-time.o \
- udx.scheme-move-restrain.o \
+ udx.scheme-all.o \
  udx.sim-objects.o \
  udx.sim-objinter.o \
  udx.sim-opt.o \

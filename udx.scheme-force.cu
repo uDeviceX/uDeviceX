@@ -255,6 +255,8 @@ void bforce_set_conf(const Config *cfg, /**/ BForce *bf) {
 /* end src/inc/conf.h */
 
 /* begin src/inc/type.h */
+#ifndef UDX_SCHEME_TYPE_COMMON
+#define UDX_SCHEME_TYPE_COMMON
 template <typename T, int N>
 struct Sarray { /* [s]tatic array */
     T d[N];
@@ -308,6 +310,7 @@ struct FoWrap {
     Force *ff;
 };
 /* end src/inc/type.h */
+#endif
 /* begin src/inc/dev.h */
 /* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
@@ -529,6 +532,8 @@ int coords_size(const Coords *c);
 /* end src/coords/imp.h */
 
 /* begin src/d/api.h */
+#ifndef UDX_SCHEME_DEVICE_API_COMMON
+#define UDX_SCHEME_DEVICE_API_COMMON
 namespace d {  /* a wrapper for device API */
 typedef int Stream_t; /* TODO: streams are not supported */
 enum {MemcpyHostToHost, MemcpyHostToDevice,
@@ -558,6 +563,7 @@ int PeekAtLastError(void);
 // end::api[]
 }
 /* end src/d/api.h */
+#endif
 /* begin src/utils/error.h */
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
@@ -600,6 +606,8 @@ void error_abort();
 void error_print_stack();
 /* end src/utils/error.h */
 /* begin src/utils/kl.h */
+#ifndef UDX_SCHEME_KL_COMMON
+#define UDX_SCHEME_KL_COMMON
 /* [k]ernel [l]aunch macros */
 
 #if    defined(KL_RELEASE)
@@ -656,7 +664,10 @@ inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
 
 /* TODO: header includes header */
 /* end src/utils/kl.h */
+#endif
 /* begin src/utils/cc.h */
+#ifndef UDX_SCHEME_CC_COMMON
+#define UDX_SCHEME_CC_COMMON
 /* [c]uda [c]heck macros */
 
 #if   defined(CC_SYNC)
@@ -689,6 +700,7 @@ void check(int rc, const char *file, int line);
 
 /* TODO: header includes header */
 /* end src/utils/cc.h */
+#endif
 
 
 
