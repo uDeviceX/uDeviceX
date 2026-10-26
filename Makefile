@@ -27,8 +27,7 @@ OBJECTS = \
  udx.pair-fsi.o \
  udx.mesh-struct-complete.o \
  udx.rbc-core-adj-com.o \
- udx.rbc-force-all.o \
- udx.rbc-force-bending-all.o \
+ udx.rbc-force-bending-complete.o \
  udx.rig-complete.o \
  udx.scheme-system-complete.o \
  udx.sim.o \
