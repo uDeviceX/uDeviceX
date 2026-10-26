@@ -427,6 +427,8 @@ struct FoWrap {
 #define DzeroA(P, n)   DsetA(P, 0, n)
 /* end src/inc/dev.h */
 /* begin src/utils/texo.h */
+#ifndef UDX_WALL_TEXO_COMMON
+#define UDX_WALL_TEXO_COMMON
 /* 1D texture object template */
 static void sz_check(int n) {
     if (n <            0 ) ERR("too small texo: %d", n);
@@ -481,6 +483,7 @@ const T texo_fetch(const Texo<T> t, const int i)
     return Tfetch(T, t.d, i);
 }
 /* end src/utils/texo.dev.h */
+#endif
 
 /* begin src/math/rnd/imp.h */
 // tag::interface[]
@@ -628,6 +631,8 @@ _HD_ void axpy(const T1 a, const T2 *x, /*io*/ T3 *y) {
 /* end src/math/dev.h */
 
 /* begin src/coords/type.h */
+#ifndef UDX_WALL_COORDS_TYPE_COMMON
+#define UDX_WALL_COORDS_TYPE_COMMON
 // tag::view[]
 struct Coords_v {
     int xc, yc, zc; /* rank coordinates        */
@@ -636,6 +641,7 @@ struct Coords_v {
 };
 // end::view[]
 /* end src/coords/type.h */
+#endif
 /* begin src/coords/dev.h */
 /* domain sizes */
 
@@ -808,6 +814,8 @@ int coords_size(const Coords *c);
 /* end src/coords/imp.h */
 
 /* begin src/wall/wvel/type.h */
+#ifndef UDX_WALL_WVEL_TYPE_COMMON
+#define UDX_WALL_WVEL_TYPE_COMMON
 /* view structures                      */
 /* (what is passed to device functions) */
 
@@ -827,6 +835,7 @@ struct WvelHS_v {
 };
 
 /* end src/wall/wvel/type.h */
+#endif
 /* begin src/wall/wvel/imp.h */
 struct Wvel;
 struct WvelStep;
@@ -950,8 +959,11 @@ static __device__ void bounce_vel(Wvel_v wv, Coords_v c, float3 rw, /* io */ flo
 /* end src/wall/wvel/dev.h */
 
 /* begin src/math/tform/type.h */
+#ifndef UDX_WALL_TFORM_TYPE_COMMON
+#define UDX_WALL_TFORM_TYPE_COMMON
 struct Tform_v { float o[3], s[3]; };
 /* end src/math/tform/type.h */
+#endif
 /* begin src/math/tform/dev.h */
 static __device__ void tform_convert_dev(const Tform_v *t, const float a0[3], /**/ float a1[3]) {
     enum {X, Y, Z};
@@ -971,10 +983,15 @@ static __device__ void tform_spacing_dev(const Tform_v *t, /**/ float s[3]) {
 /* end src/math/tform/dev.h */
 
 /* begin src/wall/sdf/tex3d/type.h */
+#ifndef UDX_WALL_TEX3D_TYPE_COMMON
+#define UDX_WALL_TEX3D_TYPE_COMMON
 struct Tex3d_v { cudaTextureObject_t t; }; // <1>
 struct Tex3d   { cudaTextureObject_t t; }; // <2>
 /* end src/wall/sdf/tex3d/type.h */
+#endif
 /* begin src/wall/sdf/type.h */
+#ifndef UDX_WALL_SDF_TYPE_COMMON
+#define UDX_WALL_SDF_TYPE_COMMON
 /* view */
 struct Sdf_v {
     Tex3d_v tex;
@@ -982,6 +999,7 @@ struct Sdf_v {
     float cheap_threshold;
 };
 /* end src/wall/sdf/type.h */
+#endif
 /* begin src/wall/sdf/dev.h */
 #define _S_ static __device__
 #define _I_ static __device__
@@ -1606,6 +1624,8 @@ _I_ PairSFo farray_fo0(FoSArray_v)
 /* end src/struct/farray/dev.h */
 
 /* begin src/utils/kl.h */
+#ifndef UDX_WALL_KL_COMMON
+#define UDX_WALL_KL_COMMON
 /* [k]ernel [l]aunch macros */
 
 #if    defined(KL_RELEASE)
@@ -1662,6 +1682,7 @@ inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
 
 /* TODO: header includes header */
 /* end src/utils/kl.h */
+#endif
 /* begin src/wall/force/imp.h */
 struct PairParams;
 struct PaArray;
@@ -1670,6 +1691,9 @@ struct WvelStep;
 struct RNDunif;
 
 // tag::struct[]
+/* shared wall-force view types */
+#ifndef UDX_WALL_FORCE_TYPE_COMMON
+#define UDX_WALL_FORCE_TYPE_COMMON
 struct WallForce { /* local wall data */
     Sdf_v sdf_v;
     Texo<int> start;
@@ -1693,6 +1717,7 @@ void wall_force_adhesion_apply(const PairParams*, const WvelStep*, const Coords*
 void wall_force_repulse(Sdf_v, WallRepulsePrm, long n, const PaArray*, const FoArray*); // <2>
 // end::int[]
 /* end src/wall/force/imp.h */
+#endif
 
 namespace wf_dev {
 namespace map {

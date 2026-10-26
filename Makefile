@@ -42,9 +42,8 @@ OBJECTS = \
  udx.sim.o \
  udx.struct-all.o \
  udx.support.o \
- udx.wall-exchange-force.o \
- udx.wall-sdf-complete.o \
- udx.wall.o
+ udx.wall-complete.o \
+ udx.wall-sdf-complete.o
 
 TARGET = build/udx
 DEVICE = build/device.o
