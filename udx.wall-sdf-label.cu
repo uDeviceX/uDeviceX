@@ -44,6 +44,8 @@
 
 
 /* begin src/inc/def.h */
+#ifndef UDX_WALL_DEF_COMMON
+#define UDX_WALL_DEF_COMMON
 /* solvent colors */
 #define XMACRO_COLOR(_)                         \
     _(BLUE)                                     \
@@ -95,6 +97,7 @@ enum {
 /* for the spring forces r = min(lmax*RBC_SPRING_CAP, r) */
 #define RBC_SPRING_CAP (0.99)
 /* end src/inc/def.h */
+#endif
 /* begin src/utils/msg.h */
 // tag::int[]
 void msg_ini(int rank); // <1>
@@ -319,6 +322,8 @@ static int   warpSize = 1;
 #endif
 /* end src/d/ker.h */
 /* begin src/d/api.h */
+#ifndef UDX_WALL_DEVICE_API_COMMON
+#define UDX_WALL_DEVICE_API_COMMON
 namespace d {  /* a wrapper for device API */
 typedef int Stream_t; /* TODO: streams are not supported */
 enum {MemcpyHostToHost, MemcpyHostToDevice,
@@ -348,8 +353,11 @@ int PeekAtLastError(void);
 // end::api[]
 }
 /* end src/d/api.h */
+#endif
 
 /* begin src/inc/type.h */
+#ifndef UDX_WALL_TYPE_COMMON
+#define UDX_WALL_TYPE_COMMON
 template <typename T, int N>
 struct Sarray { /* [s]tatic array */
     T d[N];
@@ -403,6 +411,7 @@ struct FoWrap {
     Force *ff;
 };
 /* end src/inc/type.h */
+#endif
 /* begin src/inc/dev.h */
 /* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
@@ -444,6 +453,8 @@ struct FoWrap {
 /* end src/inc/dev.h */
 
 /* begin src/utils/kl.h */
+#ifndef UDX_WALL_KL_COMMON
+#define UDX_WALL_KL_COMMON
 /* [k]ernel [l]aunch macros */
 
 #if    defined(KL_RELEASE)
@@ -500,11 +511,17 @@ inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
 
 /* TODO: header includes header */
 /* end src/utils/kl.h */
+#endif
 
 /* begin src/math/tform/type.h */
+#ifndef UDX_WALL_TFORM_TYPE_COMMON
+#define UDX_WALL_TFORM_TYPE_COMMON
 struct Tform_v { float o[3], s[3]; };
 /* end src/math/tform/type.h */
+#endif
 /* begin src/math/tform/dev.h */
+#ifndef UDX_WALL_TFORM_DEV_COMMON
+#define UDX_WALL_TFORM_DEV_COMMON
 static __device__ void tform_convert_dev(const Tform_v *t, const float a0[3], /**/ float a1[3]) {
     enum {X, Y, Z};
     const float *o, *s;
@@ -521,11 +538,17 @@ static __device__ void tform_spacing_dev(const Tform_v *t, /**/ float s[3]) {
     s[Z] = t->s[Z];
 }
 /* end src/math/tform/dev.h */
+#endif
 /* begin src/wall/sdf/tex3d/type.h */
+#ifndef UDX_WALL_TEX3D_TYPE_COMMON
+#define UDX_WALL_TEX3D_TYPE_COMMON
 struct Tex3d_v { cudaTextureObject_t t; }; // <1>
 struct Tex3d   { cudaTextureObject_t t; }; // <2>
 /* end src/wall/sdf/tex3d/type.h */
+#endif
 /* begin src/wall/sdf/type.h */
+#ifndef UDX_WALL_SDF_TYPE_COMMON
+#define UDX_WALL_SDF_TYPE_COMMON
 /* view */
 struct Sdf_v {
     Tex3d_v tex;
@@ -533,6 +556,7 @@ struct Sdf_v {
     float cheap_threshold;
 };
 /* end src/wall/sdf/type.h */
+#endif
 /* begin src/wall/sdf/imp.h */
 struct Sdf;
 struct Sdf_v;
@@ -562,6 +586,8 @@ void sdf_bounce(float dt, const WvelStep*, const Coords*, const Sdf*, int n, /**
 // end::bounce[]
 /* end src/wall/sdf/imp.h */
 /* begin src/wall/sdf/dev.h */
+#ifndef UDX_WALL_SDF_DEV_COMMON
+#define UDX_WALL_SDF_DEV_COMMON
 #define _S_ static __device__
 #define _I_ static __device__
 
@@ -678,8 +704,11 @@ _I_ float sdf_eval(const Sdf_v *sdf0, float x, float y, float z)  // <3>
 #undef _S_
 #undef _I_
 /* end src/wall/sdf/dev.h */
+#endif
 
 /* begin src/wall/sdf/label/imp.h */
+#ifndef UDX_WALL_LABEL_COMMON
+#define UDX_WALL_LABEL_COMMON
 enum {
     // tag::enum[]
     LABEL_BULK,  /* remains in bulk */
@@ -693,6 +722,7 @@ void wall_label_dev(const Sdf *sdf, int n, const Particle*, /**/ int *labels); /
 void wall_label_hst(const Sdf *sdf, int n, const Particle*, /**/ int *labels); // <2>
 // end::int[]
 /* end src/wall/sdf/label/imp.h */
+#endif
 
 namespace sdf_label_dev {
 /* begin src/wall/sdf/label/dev/main.h */

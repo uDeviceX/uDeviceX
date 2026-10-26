@@ -64,8 +64,7 @@ OBJECTS = \
  udx.support.o \
  udx.wall-exchange-force.o \
  udx.wall-sdf-transform-bounce.o \
- udx.wall-sdf-label.o \
- udx.wall-sdf.o \
+ udx.wall-sdf-all.o \
  udx.wall.o
 
 TARGET = build/udx
