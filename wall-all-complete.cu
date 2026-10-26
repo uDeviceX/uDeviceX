@@ -1920,7 +1920,6 @@ void wall_force_repulse(Sdf_v, WallRepulsePrm, long n, const PaArray*, const FoA
 #endif
 
 namespace wf_dev {
-namespace map {
 struct Map { /* helps to find remote particle */
     int org0, org1, org2;
     int str0, str1, str2;
@@ -1985,7 +1984,6 @@ static __device__ int m2id(const Map m, int i) {
     id = i + (m2 ? m.org2 : m1 ? m.org1 : m.org0);
     return id;
 }
-}
 template <typename Wvel_v>
 static __device__ void fetch_wall(Wvel_v wv, Coords_v c, Texo<float4> pp, int i, /**/ PairPa *a) {
     float3 r, v; /* wall velocity */
@@ -2001,7 +1999,7 @@ static __device__ void fetch_wall(Wvel_v wv, Coords_v c, Texo<float4> pp, int i,
 template <typename Par, typename Wvel_v, typename Fo>
 static __device__ void force0(Par params, Wvel_v wv, Coords_v c, PairPa a, int aid, int zplane,
                               float seed, WallForce wa, /**/ Fo *fa) {
-    map::Map m;
+    Map m;
     PairPa b;  /* wall particles */
     Fo f;
     float rnd;
@@ -2009,10 +2007,10 @@ static __device__ void force0(Par params, Wvel_v wv, Coords_v c, PairPa a, int a
 
     if (sdf_far(&wa.sdf_v, a.x, a.y, a.z)) return;
 
-    map::ini(wa.L, zplane, wa.start, wa.n, a.x, a.y, a.z, /**/ &m);
+    ini(wa.L, zplane, wa.start, wa.n, a.x, a.y, a.z, /**/ &m);
 
-    for (i = 0; !map::endp(m, i); ++i) {
-        bid = map::m2id(m, i);
+    for (i = 0; !endp(m, i); ++i) {
+        bid = m2id(m, i);
         fetch_wall(wv, c, wa.pp, bid, /**/ &b);
         rnd = rnd::mean0var1ii(seed, aid, bid);
         pair_force(&params, a, b, rnd, /**/ &f);
