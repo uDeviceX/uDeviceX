@@ -8,17 +8,14 @@
 // Grouped editable compilation unit for wall exchange and force handling.
 
 
-// generated from udx.flat.cu
 #include "udx.config.cuh"
 
-/* begin src/wall/exch/imp.cpp */
 #include <stdio.h>
 #include <string.h>
 #include <mpi.h>
 
 #include <vector_types.h>
 
-/* begin src/inc/conf.h */
 /* [k]ernel [l]aunch macros */
 #if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
     !defined(KL_SYNC)
@@ -53,11 +50,9 @@
 #ifndef DUMP_BASE
 #define DUMP_BASE "."
 #endif
-/* end src/inc/conf.h */
 
 #ifndef UDX_WALL_DEF_COMMON
 #define UDX_WALL_DEF_COMMON
-/* begin src/inc/def.h */
 /* solvent colors */
 #define XMACRO_COLOR(_)                         \
     _(BLUE)                                     \
@@ -108,44 +103,30 @@ enum {
 
 /* for the spring forces r = min(lmax*RBC_SPRING_CAP, r) */
 #define RBC_SPRING_CAP (0.99)
-/* end src/inc/def.h */
 #endif
 
-/* begin src/frag/imp.h */
 enum {frag_bulk = 26};
 
 struct int3;
 
 namespace frag_hst {
 
-// tag::i2d[]
 int i2dx(int i);                 // <1>
 int i2dy(int i);                 // <2>
 int i2dz(int i);                 // <3>
 void i2d3(int i, /**/ int d[3]); // <4>
-// end::i2d[]
 
-// tag::d2i[]
 int d2i(int x, int y, int z); // <1>
 int d32i(const int d[3]);     // <2>
-// end::d2i[]
 
-// tag::ncell[]
 int ncell(int3 L, int i); // <1>
-// end::ncell[]
 
-// tag::anti[]
 int antid2i(int x, int y, int z); // <1>
 int anti(int i);                  // <2>
-// end::anti[]
 
-// tag::hst[]
 void estimates(int3 L, int nfrags, float maxd, /**/ int *cap); // <1>
-// end::hst[]
 
 } // frag_hst
-/* end src/frag/imp.h */
-/* begin src/comm/imp.h */
 typedef unsigned char data_t;
 
 enum {
@@ -156,73 +137,57 @@ enum {
 
 /* Allocation mod for bags */
 enum AllocMod {
-    // tag::AllocMod[]
     HST_ONLY,   /* only host bags allocated                 */
     DEV_ONLY,   /* only device bags allocated               */
     PINNED,     /* both host and device pinned              */
     PINNED_HST, /* host pinned; no device memory            */
     PINNED_DEV, /* host pinned; device global memory on gpu */
     NONE        /* no allocation                            */
-    // end::AllocMod[]
 };
 
-// tag::dBags[]
 struct dBags {
     data_t *data[NBAGS]; /* data on the device         */
 };
-// end::dBags[]
 
-// tag::hBags[]
 struct hBags {
     data_t *data[NBAGS]; /* data on the host                    */
     int         *counts; /* size of the data                    */
     int capacity[NBAGS]; /* capacity of each frag (elem number) */
     size_t bsize;        /* size of one datum in bytes          */
 };
-// end::hBags[]
 
 struct Comm;
 struct CommBuffer;
 
-// tag::alloc[]
 void comm_bags_ini(AllocMod fmod, AllocMod bmod, size_t bsize, const int capacity[NBAGS], /**/ hBags *hb, dBags *db);
 void comm_bags_fin(AllocMod fmod, AllocMod bmod, /**/ hBags *hb, dBags *db);
 void comm_ini(MPI_Comm cart, /**/ Comm **c);
 void comm_fin(/**/ Comm *c);
 void comm_buffer_ini(int nbags, const hBags *hbb, CommBuffer**);
 void comm_buffer_fin(CommBuffer*);
-// end::alloc[]
 
 
 void comm_buffer_set(int nbags, const hBags*, CommBuffer*);
 void comm_buffer_get(const CommBuffer*, int nbags, hBags*);
 
-// tag::communication[]
 void comm_post_recv(hBags *b, Comm *c);           // <1>
 void comm_post_send(const hBags *b, Comm *c);     // <2>
 
 void comm_wait_recv(Comm *c, /**/ hBags *b);      // <3>
 void comm_wait_send(Comm *c);                     // <4>
-// end::communication[]
 
-// tag::communication_b[]
 void comm_post_recv(CommBuffer *cb, Comm *c);
 void comm_post_send(const CommBuffer *cb, Comm *c);
 
 void comm_wait_recv(Comm *c, /**/ CommBuffer *cb);
 void comm_wait_send(Comm *c);
-// end::communication_b[]
 
-// tag::get[]
 int    comm_get_number_capacity(int i, const hBags *b); // <1>
 size_t comm_get_byte_capacity(int i, const hBags *b);   // <2>
-// end::get[]
 
-/* end src/comm/imp.h */
 
 #ifndef UDX_WALL_TYPE_COMMON
 #define UDX_WALL_TYPE_COMMON
-/* begin src/inc/type.h */
 template <typename T, int N>
 struct Sarray { /* [s]tatic array */
     T d[N];
@@ -275,10 +240,8 @@ struct FoWrap {
     int n;
     Force *ff;
 };
-/* end src/inc/type.h */
 #endif
 
-/* begin src/utils/error.h */
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
         error_report();                                         \
@@ -318,13 +281,8 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-/* end src/utils/error.h */
-/* begin src/utils/msg.h */
-// tag::int[]
 void msg_ini(int rank); // <1>
 void msg_print(const char *fmt, ...); // <2>
-// end::int[]
-/* end src/utils/msg.h */
 
 static void exch_estimate(int numdensity, int3 L, int cap[]) {
     enum {SAFETY_FACTOR = 2};
@@ -432,19 +390,15 @@ void wall_exch_pp(MPI_Comm cart, int numdensity, int3 L, int maxn, /*io*/ Partic
     UC(comm_bags_fin(HST_ONLY, NONE, &recv, NULL));
     UC(comm_fin(com));
 }
-/* end src/wall/exch/imp.cpp */
 
 
 
 
-// generated from udx.flat.cu
 #include "udx.config.cuh"
 
-/* begin src/wall/force/imp.cu */
 #include <stdio.h>
 #include <assert.h>
 
-/* begin src/inc/conf.h */
 /* [k]ernel [l]aunch macros */
 #if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
     !defined(KL_SYNC)
@@ -479,12 +433,10 @@ void wall_exch_pp(MPI_Comm cart, int numdensity, int3 L, int maxn, /*io*/ Partic
 #ifndef DUMP_BASE
 #define DUMP_BASE "."
 #endif
-/* end src/inc/conf.h */
 
 
 #ifndef UDX_WALL_DEF_COMMON
 #define UDX_WALL_DEF_COMMON
-/* begin src/inc/def.h */
 /* solvent colors */
 #define XMACRO_COLOR(_)                         \
     _(BLUE)                                     \
@@ -535,15 +487,9 @@ enum {
 
 /* for the spring forces r = min(lmax*RBC_SPRING_CAP, r) */
 #define RBC_SPRING_CAP (0.99)
-/* end src/inc/def.h */
 #endif
-/* begin src/utils/msg.h */
-// tag::int[]
 void msg_ini(int rank); // <1>
 void msg_print(const char *fmt, ...); // <2>
-// end::int[]
-/* end src/utils/msg.h */
-/* begin src/utils/error.h */
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
         error_report();                                         \
@@ -583,24 +529,19 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-/* end src/utils/error.h */
 
 #ifndef UDX_WALL_DEVICE_API_COMMON
 #define UDX_WALL_DEVICE_API_COMMON
-/* begin src/d/api.h */
 namespace d {  /* a wrapper for device API */
 typedef int Stream_t; /* TODO: streams are not supported */
 enum {MemcpyHostToHost, MemcpyHostToDevice,
       MemcpyDeviceToHost, MemcpyDeviceToDevice,
       MemcpyDefault};
 
-// tag::more[]
 const char *emsg();
 int alloc_pinned(void **pHost, size_t size);
 int is_device_pointer(const void *ptr);
-// end::more[]
 
-// tag::api[]
 int GetSymbolAddress(void **devPtr, const void *symbol);
 int Malloc(void **p, size_t);
 int MemcpyToSymbol(const void *symbol, const void *src, size_t count, size_t offset=0, int kind=MemcpyHostToDevice);
@@ -614,20 +555,14 @@ int Free (void *devPtr);
 int FreeHost (void *hstPtr);
 int DeviceSynchronize (void);
 int PeekAtLastError(void);
-// end::api[]
 }
-/* end src/d/api.h */
 #endif
-/* begin src/d/q.h */
 /* function and variable type [q]ualifiers */
 
 #if   defined(DEV_CUDA)
-/* begin src/d/cuda/q.h */
 /* B.1. Function Type Qualifiers */
 /* B.2. Variable Type Qualifiers */
-/* end src/d/cuda/q.h */
 #elif defined(DEV_CPU)
-/* begin src/d/cpu/q.h */
 /* B.1. Function Type Qualifiers */
 #ifdef __device__
   #undef  __device__
@@ -675,14 +610,10 @@ int PeekAtLastError(void);
   #undef  __restrict__
   #define __restrict__
 #endif
-/* end src/d/cpu/q.h */
 #else
   #error DEV_* is undefined
 #endif
-/* end src/d/q.h */
-/* begin src/d/ker.h */
 #if   defined(DEV_CUDA)
-/* begin src/d/cuda/ker.h */
 #define  Ifetch(t, i)  tex1Dfetch(t, i)
 #define F4fetch(t, i)  tex1Dfetch(t, i)
 #define F2fetch(t, i)  tex1Dfetch(t, i)
@@ -690,9 +621,7 @@ int PeekAtLastError(void);
 #define Tfetch(T, t, i) tex1Dfetch<T>(t, i)
 
 #define Ttex3D(T, to, i, j, k) tex3D<T>(to, i, j, k);
-/* end src/d/cuda/ker.h */
 #elif defined(DEV_CPU)
-/* begin src/d/cpu/ker.h */
 #define atomicAdd(...) (0)
 
 #define atomicExch(...)
@@ -716,8 +645,6 @@ int PeekAtLastError(void);
 #define Tfetch(T, t, i) (T{})
 
 #define Ttex3D(T, to, i, j, k) (T{})
-/* end src/d/cpu/ker.h */
-/* begin src/d/cpu/wrap.h */
 namespace d {
 static uint3 threadIdx, blockIdx, gridDim;
 static dim3  blockDim;
@@ -729,17 +656,13 @@ static int   warpSize = 1;
 #define gridDim   d::gridDim
 #define blockIdx  d::blockIdx
 #define warpSize  d::warpSize
-/* end src/d/cpu/wrap.h */
 #else
   #error DEV_* is undefined
 #endif
-/* end src/d/ker.h */
 
-/* begin src/utils/cc.h */
 /* [c]uda [c]heck macros */
 
 #if   defined(CC_SYNC)
-/* begin src/utils/cc/sync.h */
 /* Aggressive [sync]ronization */
 #define CC(ans)                                             \
     do {                                                    \
@@ -747,31 +670,24 @@ static int   warpSize = 1;
         cc::check((ans), __FILE__, __LINE__);               \
         d::DeviceSynchronize();                             \
     } while (0)
-/* end src/utils/cc/sync.h */
 #elif defined(CC_RELEASE)
-/* begin src/utils/cc/release.h */
 /* [c]cuda [c]heck */
 #define CC(ans)                                             \
     do { cc::check((ans), __FILE__, __LINE__);} while (0)
-/* end src/utils/cc/release.h */
 #else
   #error CC_* is undefined
 #endif
 
-/* begin src/utils/cc/common.h */
 namespace cc {
 void check(int rc, const char *file, int line);
 }
 
 
-/* end src/utils/cc/common.h */
 
 /* TODO: header includes header */
-/* end src/utils/cc.h */
 
 #ifndef UDX_WALL_TYPE_COMMON
 #define UDX_WALL_TYPE_COMMON
-/* begin src/inc/type.h */
 template <typename T, int N>
 struct Sarray { /* [s]tatic array */
     T d[N];
@@ -824,9 +740,7 @@ struct FoWrap {
     int n;
     Force *ff;
 };
-/* end src/inc/type.h */
 #endif
-/* begin src/inc/dev.h */
 /* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
 
@@ -864,8 +778,6 @@ struct FoWrap {
 /* [d]evice [a]synchronous set */
 #define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
 #define DzeroA(P, n)   DsetA(P, 0, n)
-/* end src/inc/dev.h */
-/* begin src/utils/texo.h */
 #ifndef UDX_WALL_TEXO_COMMON
 #define UDX_WALL_TEXO_COMMON
 /* 1D texture object template */
@@ -874,17 +786,13 @@ static void sz_check(int n) {
     if (n > MAX_TEXO_SIZE) ERR("too big texo: %d > %d", n, MAX_TEXO_SIZE);
 }
 
-// tag::struct[]
 template<typename T>
 struct Texo {
     cudaTextureObject_t d;
 };
-// end::struct[]
 
 template<typename T>
-// tag::int[]
 void texo_setup(int n, T *data, /**/ Texo<T> *to)
-// end::int[]
 {
     sz_check(n);
 
@@ -905,34 +813,22 @@ void texo_setup(int n, T *data, /**/ Texo<T> *to)
 }
 
 template<typename T>
-// tag::int[]
 void texo_destroy(/**/ Texo<T> *to)
-// end::int[]
 {
     CC(cudaDestroyTextureObject(to->d));
 }
-/* end src/utils/texo.h */
-/* begin src/utils/texo.dev.h */
 template<typename T>
 __device__ __forceinline__
-// tag::int[]
 const T texo_fetch(const Texo<T> t, const int i)
-// end::int[]
 {
     return Tfetch(T, t.d, i);
 }
-/* end src/utils/texo.dev.h */
 #endif
 
-/* begin src/math/rnd/imp.h */
-// tag::interface[]
 struct RNDunif;                                             // <1>
 void rnd_ini(int x, int y, int z, int c, /**/ RNDunif **r); // <2>
 void rnd_fin(RNDunif *r);                                   // <3>
 float rnd_get(RNDunif *r);                                  // <4>
-// end::interface[]
-/* end src/math/rnd/imp.h */
-/* begin src/math/rnd/dev.h */
 namespace rnd {
 /* random number from the ArcSine distribution on [-sqrt(2),sqrt(2)]
    mean = 0, variance = 1 */
@@ -1007,8 +903,6 @@ inline __device__ float mean0var1uu( float seed, uint u, uint v )
 }
 
 }
-/* end src/math/rnd/dev.h */
-/* begin src/math/dev.h */
 #ifndef UDX_WALL_MATH_COMMON
 #define UDX_WALL_MATH_COMMON
 /* use templates here because we might have mixed float/double */
@@ -1069,22 +963,16 @@ _HD_ void axpy(const T1 a, const T2 *x, /*io*/ T3 *y) {
     y->y += a * x->y;
     y->z += a * x->z;
 }
-/* end src/math/dev.h */
 #endif /* UDX_WALL_MATH_COMMON */
 
-/* begin src/coords/type.h */
 #ifndef UDX_WALL_COORDS_TYPE_COMMON
 #define UDX_WALL_COORDS_TYPE_COMMON
-// tag::view[]
 struct Coords_v {
     int xc, yc, zc; /* rank coordinates        */
     int xd, yd, zd; /* rank sizes              */
     int Lx, Ly, Lz; /* [L]ocal: subdomain size */
 };
-// end::view[]
-/* end src/coords/type.h */
 #endif
-/* begin src/coords/dev.h */
 #ifndef UDX_WALL_COORDS_DEV_COMMON
 #define UDX_WALL_COORDS_DEV_COMMON
 /* domain sizes */
@@ -1181,55 +1069,40 @@ static __device__ void global2local(const Coords_v c, float3 rg, /**/ float3 *rl
     rl->z = zg2zl(c, rg.z);
 }
 
-/* end src/coords/dev.h */
 #endif /* UDX_WALL_COORDS_DEV_COMMON */
-/* begin src/coords/imp.h */
 struct Coords;
 struct Coords_v;
 struct float3;
 struct int3;
 
-// tag::view[]
 void coords_get_view(const Coords *c, Coords_v *v);
-// end::view[]
 
-// tag::domainsz[]
 int xdomain(const Coords *c);
 int ydomain(const Coords *c);
 int zdomain(const Coords *c);
-// end::domainsz[]
 
-// tag::local2center[]
 float xl2xc(const Coords *c, float xl);
 float yl2yc(const Coords *c, float yl);
 float zl2zc(const Coords *c, float zl);
 void local2center(const Coords *c, float3 rl, /**/ float3 *rc);
-// end::local2center[]
 
-// tag::center2local[]
 float xc2xl(const Coords *c, float xc);
 float yc2yl(const Coords *c, float yc);
 float zc2zl(const Coords *c, float zc);
 void center2local(const Coords *c, float3 rc, /**/ float3 *rl);
-// end::center2local[]
 
-// tag::local2global[]
 float xl2xg(const Coords *c, float xl);
 float yl2yg(const Coords *c, float yl);
 float zl2zg(const Coords *c, float zl);
 void local2global(const Coords *c, float3 rl, /**/ float3 *rg);
-// end::local2global[]
 
-// tag::global2local[]
 float xg2xl(const Coords *c, float xg);
 float yg2yl(const Coords *c, float yg);
 float zg2zl(const Coords *c, float zg);
 void global2local(const Coords *c, float3 rg, /**/ float3 *rl);
-// end::global2local[]
 
 /* edges of the sub-domain in global coordinates */
 
-// tag::bblocal[]
 int xlo(const Coords*);
 int ylo(const Coords*);
 int zlo(const Coords*);
@@ -1237,16 +1110,12 @@ int zlo(const Coords*);
 int xhi(const Coords*);
 int yhi(const Coords*);
 int zhi(const Coords*);
-// end::bblocal[]
 
-// tag::subdomainsz[]
 int xs(const Coords*);
 int ys(const Coords*);
 int zs(const Coords*);
 int3 subdomain(const Coords*);
-// end::subdomainsz[]
 
-// tag::int[]
 /* rank predicates */
 bool is_end(const Coords *c, int dir);
 
@@ -1255,10 +1124,7 @@ void coord_stamp(const Coords *c, /**/ char *s);
 
 /* number of subdomains */
 int coords_size(const Coords *c);
-// end::int[]
-/* end src/coords/imp.h */
 
-/* begin src/wall/wvel/type.h */
 #ifndef UDX_WALL_WVEL_TYPE_COMMON
 #define UDX_WALL_WVEL_TYPE_COMMON
 /* view structures                      */
@@ -1279,9 +1145,7 @@ struct WvelHS_v {
     float h; // height of the channel
 };
 
-/* end src/wall/wvel/type.h */
 #endif
-/* begin src/wall/wvel/imp.h */
 struct Wvel;
 struct WvelStep;
 
@@ -1294,62 +1158,42 @@ struct Config;
 
 #ifndef UDX_WALL_WVEL_ENUM
 #define UDX_WALL_WVEL_ENUM
-// tag::enum[]
 enum {
     WALL_VEL_V_CSTE,
     WALL_VEL_V_SHEAR,
     WALL_VEL_V_HS,
 };
-// end::enum[]
 #endif
 
-// tag::mem[]
 void wvel_ini(Wvel **wv);
 void wvel_fin(Wvel *wv);
 
 void wvel_step_ini(WvelStep **wv);
 void wvel_step_fin(WvelStep *wv);
-// end::mem[]
 
-// tag::ini[]
 void wvel_set_cste(float3 u, Wvel *vw);
 void wvel_set_shear(float gdot, int vdir, int gdir, int half, Wvel *vw);
 void wvel_set_shear_sin(float gdot, int vdir, int gdir, int half, float w, Wvel *vw);
 void wvel_set_hs(float u, float h, Wvel *vw);
 void wvel_set_timestep(float dt, Wvel *vw);
-// end::ini[]
 
-// tag::cnf[]
 void wvel_set_conf(const Config *cfg, Wvel *vw);
-// end::cnf[]
 
-// tag::step[]
 void wvel_get_step(float t, const Wvel *wv, /**/ WvelStep *);
-// end::step[]
 
-// tag::get[]
 int wvel_get_type(const WvelStep *w);
-// end::get[]
 
-// tag::view[]
 void wvel_get_view(const WvelStep *w, /**/ WvelCste_v *v);
 void wvel_get_view(const WvelStep *w, /**/ WvelShear_v *v);
 void wvel_get_view(const WvelStep *w, /**/ WvelHS_v *v);
-// end::view[]
-/* end src/wall/wvel/imp.h */
-/* begin src/wall/wvel/dev.h */
 #ifndef UDX_WALL_WVEL_DEV_COMMON
 #define UDX_WALL_WVEL_DEV_COMMON
-// tag::vel[]
 static __device__ void wvel(WvelCste_v p, Coords_v c, float3 r, /**/ float3 *v)
-// end::vel[]
 {
     *v = p.u;
 }
 
-// tag::vel[]
 static __device__ void wvel(WvelShear_v p, Coords_v c, float3 r, /**/ float3 *v)
-// end::vel[]
 {
     float3 rc; // relative to center
     float gdot, d;
@@ -1374,9 +1218,7 @@ static __device__ void wvel(WvelShear_v p, Coords_v c, float3 r, /**/ float3 *v)
     else if (vdir == 2) v->z = d * gdot;
 }
 
-// tag::vel[]
 static __device__ void wvel(WvelHS_v p, Coords_v c, float3 r, /**/ float3 *v)
-// end::vel[]
 {
     float3 rc; // relative to center
     float u, h, r2inv, hfac;
@@ -1395,10 +1237,8 @@ static __device__ void wvel(WvelHS_v p, Coords_v c, float3 r, /**/ float3 *v)
     v->z = 0;
 }
 
-// tag::bb[]
 template <typename Wvel_v>
 static __device__ void bounce_vel(Wvel_v wv, Coords_v c, float3 rw, /* io */ float3* v)
-// end::bb[]
 {
     float3 vw;
     wvel(wv, c, rw, /**/ &vw);
@@ -1406,16 +1246,12 @@ static __device__ void bounce_vel(Wvel_v wv, Coords_v c, float3 rw, /* io */ flo
     v->y = 2 * vw.y - v->y;
     v->z = 2 * vw.z - v->z;
 }
-/* end src/wall/wvel/dev.h */
 #endif /* UDX_WALL_WVEL_DEV_COMMON */
 
-/* begin src/math/tform/type.h */
 #ifndef UDX_WALL_TFORM_TYPE_COMMON
 #define UDX_WALL_TFORM_TYPE_COMMON
 struct Tform_v { float o[3], s[3]; };
-/* end src/math/tform/type.h */
 #endif
-/* begin src/math/tform/dev.h */
 #ifndef UDX_WALL_TFORM_DEV_COMMON
 #define UDX_WALL_TFORM_DEV_COMMON
 static __device__ void tform_convert_dev(const Tform_v *t, const float a0[3], /**/ float a1[3]) {
@@ -1433,17 +1269,13 @@ static __device__ void tform_spacing_dev(const Tform_v *t, /**/ float s[3]) {
     s[Y] = t->s[Y];
     s[Z] = t->s[Z];
 }
-/* end src/math/tform/dev.h */
 #endif /* UDX_WALL_TFORM_DEV_COMMON */
 
-/* begin src/wall/sdf/tex3d/type.h */
 #ifndef UDX_WALL_TEX3D_TYPE_COMMON
 #define UDX_WALL_TEX3D_TYPE_COMMON
 struct Tex3d_v { cudaTextureObject_t t; }; // <1>
 struct Tex3d   { cudaTextureObject_t t; }; // <2>
-/* end src/wall/sdf/tex3d/type.h */
 #endif
-/* begin src/wall/sdf/type.h */
 #ifndef UDX_WALL_SDF_TYPE_COMMON
 #define UDX_WALL_SDF_TYPE_COMMON
 /* view */
@@ -1452,9 +1284,7 @@ struct Sdf_v {
     Tform_v t;
     float cheap_threshold;
 };
-/* end src/wall/sdf/type.h */
 #endif
-/* begin src/wall/sdf/dev.h */
 #ifndef UDX_WALL_SDF_DEV_COMMON
 #define UDX_WALL_SDF_DEV_COMMON
 #define _S_ static __device__
@@ -1504,9 +1334,7 @@ _S_ float3 grad(const Sdf_v *sdf, const float3 *pos) {
     return make_float3(gx, gy, gz);
 }
 
-// tag::int[]
 _I_ float3 sdf_ugrad(const Sdf_v *texsdf, const float3 *r) // <1>
-// end::int[]
 {
     float mag, eps;
     float3 g;
@@ -1528,16 +1356,12 @@ _S_ float cheap_sdf(const Sdf_v *sdf, float x, float y, float z)  {
     return fetch(sdf, tc[0], tc[1], tc[2]);
 }
 
-// tag::int[]
 _I_ bool sdf_far(const Sdf_v *sdf, float x, float y, float z) // <2>
-// end::int[]
 {
     return cheap_sdf(sdf, x, y, z) <= sdf->cheap_threshold - 1 ;
 }
 
-// tag::int[]
 _I_ float sdf_eval(const Sdf_v *sdf0, float x, float y, float z)  // <3>
-// end::int[]
 {
     int c;
     float s000, s001, s010, s100, s101, s011, s110, s111;
@@ -1572,10 +1396,8 @@ _I_ float sdf_eval(const Sdf_v *sdf0, float x, float y, float z)  // <3>
 
 #undef _S_
 #undef _I_
-/* end src/wall/sdf/dev.h */
 #endif /* UDX_WALL_SDF_DEV_COMMON */
 
-/* begin src/pair/type.h */
 /* maximum of pairwise dpd parameters */
 enum {
     MAX_PAR = (N_COLOR * (N_COLOR + 1)) / 2
@@ -1622,8 +1444,6 @@ struct PairSFo {
     /* stress */
     float sxx, syy, szz, sxy, sxz, syz;
 };
-/* end src/pair/type.h */
-/* begin src/pair/dev.h */
 #define _S_ static __device__
 #define _I_ static __device__
 
@@ -1733,10 +1553,8 @@ _S_ void make_zero(PairSFo *f) {
     f->syy = f->syz = f->szz = 0;
 }
 
-// tag::int[]
 template <typename Param, typename Fo>
 _I_ void pair_force(const Param *p, PairPa a, PairPa b, float rnd, /**/ Fo *f)
-// end::int[]
 {
     float r, invr, ev, f0;
     float3 dr, er, dv;
@@ -1796,18 +1614,14 @@ _I_ void pair_force(const PairDPDCM *pc, PairPa a, PairPa b, float rnd, /**/ Fo 
 }
 
 
-// tag::add[]
 _I_ void pair_add(const PairFo *b, /**/ PairFo *a)
-// end::add[]
 {
     a->x += b->x;
     a->y += b->y;
     a->z += b->z;
 }
 
-// tag::add[]
 _I_ void pair_add(const PairSFo *b, /**/ PairSFo *a)
-// end::add[]
 {
     a->x += b->x;
     a->y += b->y;
@@ -1823,8 +1637,6 @@ _I_ void pair_add(const PairSFo *b, /**/ PairSFo *a)
 
 #undef _S_
 #undef _I_
-/* end src/pair/dev.h */
-/* begin src/pair/imp.h */
 struct PairParams;
 struct Config;
 
@@ -1834,35 +1646,23 @@ struct PairDPDCM;
 struct PairDPDLJ;
 struct PairAdhesion;
 
-// tag::mem[]
 void pair_ini(PairParams **);
 void pair_fin(PairParams *);
-// end::mem[]
 
-// tag::set[]
 void pair_set_dpd(int ncol, const float a[], const float g[], float spow, PairParams *p); // <1>
 void pair_set_lj(float sigma, float eps, PairParams *p); // <2>
-// end::set[]
 void pair_set_adhesion(float k1, float k2, PairParams *p);
 
-// tag::cnf[]
 void pair_set_conf(const Config *, const char *name_space, PairParams *);
-// end::cnf[]
 
-// tag::upd[]
 void pair_compute_dpd_sigma(float kBT, float dt, PairParams *p);
-// end::upd[]
 
-// tag::view[]
 void pair_get_view_dpd(const PairParams*, PairDPD*);
 void pair_get_view_dpd_color(const PairParams*, PairDPDC*);
 void pair_get_view_dpd_mirrored(const PairParams*, PairDPDCM*);
 void pair_get_view_dpd_lj(const PairParams*, PairDPDLJ*);
-// end::view[]
 void pair_get_view_adhesion(const PairParams*, PairAdhesion*);
-/* end src/pair/imp.h */
 
-/* begin src/struct/parray/type.h */
 struct PaArray_v {
     const float *pp;
 };
@@ -1871,8 +1671,6 @@ struct PaCArray_v {
     const float *pp;
     const int *cc;   /* colors */
 };
-/* end src/struct/parray/type.h */
-/* begin src/struct/parray/imp.h */
 struct PaArray {
     bool colors;
     const float *pp;
@@ -1884,21 +1682,13 @@ struct PaCArray_v;
 
 struct Particle;
 
-// tag::push[]
 void parray_push_pp(const Particle *pp, PaArray *a);
 void parray_push_cc(const int *cc, PaArray *a);
-// end::push[]
 
-// tag::get[]
 bool parray_is_colored(const PaArray *a);
-// end::get[]
 
-// tag::view[]
 void parray_get_view(const PaArray *a, PaArray_v *v);  // <1>
 void parray_get_view(const PaArray *a, PaCArray_v *v); // <2>
-// end::view[]
-/* end src/struct/parray/imp.h */
-/* begin src/struct/parray/dev.h */
 #define _S_ static __device__
 #define _I_ static __device__
 
@@ -1919,16 +1709,12 @@ _S_ void parray_get_pp(PA a, int i, /**/ PairPa *p) {
     p->vz = s2.y;
 }
 
-// tag::int[]
 _I_ void parray_get(PaArray_v a, int i, /**/ PairPa *p) // <1>
-// end::int[]
 {
     parray_get_pp(a, i, /**/ p);
 }
 
-// tag::int[]
 _I_ void parray_get(PaCArray_v a, int i, /**/ PairPa *p) // <2>
-// end::int[]
 {
     parray_get_pp(a, i, /**/ p);
     p->color = a.cc[i];
@@ -1936,9 +1722,7 @@ _I_ void parray_get(PaCArray_v a, int i, /**/ PairPa *p) // <2>
 
 #undef _S_
 #undef _I_
-/* end src/struct/parray/dev.h */
 
-/* begin src/struct/farray/type.h */
 struct FoArray_v {
     float *ff;
 };
@@ -1947,8 +1731,6 @@ struct FoSArray_v {
     float *ff;
     float *ss;
 };
-/* end src/struct/farray/type.h */
-/* begin src/struct/farray/imp.h */
 struct FoArray {
     bool stress;
     float *ff;
@@ -1960,23 +1742,15 @@ struct FoSArray_v;
 
 struct Force;
 
-// tag::push[]
 void farray_push_ff(Force *ff, FoArray *a);
 void farray_push_ss(float *ss, FoArray *a);
-// end::push[]
 
 void farray_clear(FoArray *);
 
-// tag::get[]
 bool farray_has_stress(const FoArray *a);
-// end::get[]
 
-// tag::view[]
 void farray_get_view(const FoArray *a, FoArray_v *v);  // <1>
 void farray_get_view(const FoArray *a, FoSArray_v *v); // <2>
-// end::view[]
-/* end src/struct/farray/imp.h */
-/* begin src/struct/farray/dev.h */
 #define _I_ static __device__
 #define _S_ static __device__
 
@@ -2000,18 +1774,14 @@ _S_ void farray_add_stress(const PairSFo *f, int i, /**/ FoSArray_v a) {
     s[ZZ] += f->szz;
 }
 
-// tag::add[]
 template <int S>
 _I_ void farray_add(const PairFo *f, int i, /**/ FoArray_v a) // <1>
-// end::add[]
 {
     farray_add_force<S>(f, i, /**/ a);
 }
 
-// tag::add[]
 template <int S>
 _I_ void farray_add(const PairSFo *f, int i, /**/ FoSArray_v a) // <2>
-// end::add[]
 {
     farray_add_force<S>(f, i, /**/ a);
     farray_add_stress(f, i, /**/ a);
@@ -2038,36 +1808,28 @@ _S_ void farray_atomic_add_stress(const PairSFo *f, int i, /**/ FoSArray_v a) {
     atomicAdd(&s[ZZ], f->szz);
 }
 
-// tag::atomic[]
 template <int S>
 _I_ void farray_atomic_add(const PairFo *f, int i, /**/ FoArray_v a)
-// end::atomic[]
 {
     farray_atomic_add_force<S>(f, i, /**/ a);
 }
 
-// tag::atomic[]
 template <int S>
 _I_ void farray_atomic_add(const PairSFo *f, int i, /**/ FoSArray_v a)
-// end::atomic[]
 {
     farray_atomic_add_force<S>(f, i, /**/ a);
     farray_atomic_add_stress(f, i, /**/ a);
 }
 
 
-// tag::ini[]
 _I_ PairFo farray_fo0(FoArray_v)
-// end::ini[]
 {
     PairFo f;
     f.x = f.y = f.z = 0;
     return f;
 }
 
-// tag::ini[]
 _I_ PairSFo farray_fo0(FoSArray_v)
-// end::ini[]
 {
     PairSFo f;
     f.x = f.y = f.z = 0;
@@ -2078,31 +1840,24 @@ _I_ PairSFo farray_fo0(FoSArray_v)
 
 #undef _I_
 #undef _S_
-/* end src/struct/farray/dev.h */
 
-/* begin src/utils/kl.h */
 #ifndef UDX_WALL_KL_COMMON
 #define UDX_WALL_KL_COMMON
 /* [k]ernel [l]aunch macros */
 
 #if    defined(KL_RELEASE)
-/* begin src/utils/kl/release.h */
 #define KL_BEFORE(s, C) if (!kl::safe(ESC C)) continue;
 #define KL_CALL(F, C, A) F<<<ESC C>>>A
 #define KL_AFTER(s)
 
 namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
-/* end src/utils/kl/release.h */
 #elif  defined(KL_NONE)
-/* begin src/utils/kl/none.h */
 #define KL_BEFORE(s, C)
 #define KL_CALL(F, C, A)
 #define KL_AFTER(s)
 
 namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
-/* end src/utils/kl/none.h */
 #elif  defined(KL_SYNC)
-/* begin src/utils/kl/sync.h */
 #define KL_BEFORE(s, C) if (!kl::safe(ESC C)) continue;
 #define KL_CALL(F, C, A) F<<<ESC C>>>A
 #define KL_AFTER(s)                             \
@@ -2112,12 +1867,10 @@ namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
     } while(0)
 
 namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
-/* end src/utils/kl/sync.h */
 #else
   #error KL_* is undefined
 #endif
 
-/* begin src/utils/kl/common.h */
 namespace kl {
 inline int safe0(dim3 i, dim3 j) {
     msg(i.x, i.y, i.z,   j.x, j.y, j.z);
@@ -2126,8 +1879,6 @@ inline int safe0(dim3 i, dim3 j) {
 inline int safe(dim3 i, dim3 j)                    { return safe0(i, j); }
 inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
 }
-/* end src/utils/kl/common.h */
-/* begin src/utils/kl/macro.h */
 #define ESC(...) __VA_ARGS__
 #define KL(F, C, A)                             \
     do  {                                       \
@@ -2135,19 +1886,15 @@ inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
         KL_CALL(F, C, A);                       \
         KL_AFTER(#F);                           \
     } while (0)
-/* end src/utils/kl/macro.h */
 
 /* TODO: header includes header */
-/* end src/utils/kl.h */
 #endif
-/* begin src/wall/force/imp.h */
 struct PairParams;
 struct PaArray;
 struct FoArray;
 struct WvelStep;
 struct RNDunif;
 
-// tag::struct[]
 /* shared wall-force view types */
 #ifndef UDX_WALL_FORCE_TYPE_COMMON
 #define UDX_WALL_FORCE_TYPE_COMMON
@@ -2158,13 +1905,11 @@ struct WallForce { /* local wall data */
     int n;
     int3 L;
 };
-// end::struct[]
 
 struct WallRepulsePrm {
     float l;
 };
 
-// tag::int[]
 void wall_force_apply(const PairParams*, const WvelStep*, const Coords*, const PaArray*, int n, RNDunif*, WallForce,
                       /**/ const FoArray*); // <1>
 
@@ -2172,19 +1917,14 @@ void wall_force_adhesion_apply(const PairParams*, const WvelStep*, const Coords*
                                /**/ const FoArray*);
 
 void wall_force_repulse(Sdf_v, WallRepulsePrm, long n, const PaArray*, const FoArray*); // <2>
-// end::int[]
-/* end src/wall/force/imp.h */
 #endif
 
 namespace wf_dev {
 namespace map {
-/* begin src/wall/force/dev/map/type.h */
 struct Map { /* helps to find remote particle */
     int org0, org1, org2;
     int str0, str1, str2;
 };
-/* end src/wall/force/dev/map/type.h */
-/* begin src/wall/force/dev/map/ini.h */
 static __device__ int minmax(int lo, int hi, int a) { return min(hi, max(lo, a)); }
 
 static __device__ void ini(int3 L, int zplane, const Texo<int> texstart, int w_n, float x, float y, float z, /**/ Map *m) {
@@ -2235,8 +1975,6 @@ static __device__ void ini(int3 L, int zplane, const Texo<int> texstart, int w_n
     m->str0 = str0; m->str1 = str1; m->str2 = str2;
 #undef start_fetch
 }
-/* end src/wall/force/dev/map/ini.h */
-/* begin src/wall/force/dev/map/use.h */
 /* true if `i' is bigger than the number of remote particles */
 static __device__ int endp(const Map m, int i) { return i >= m.str2; }
 static __device__ int m2id(const Map m, int i) {
@@ -2247,9 +1985,7 @@ static __device__ int m2id(const Map m, int i) {
     id = i + (m2 ? m.org2 : m1 ? m.org1 : m.org0);
     return id;
 }
-/* end src/wall/force/dev/map/use.h */
 }
-/* begin src/wall/force/dev/main.h */
 template <typename Wvel_v>
 static __device__ void fetch_wall(Wvel_v wv, Coords_v c, Texo<float4> pp, int i, /**/ PairPa *a) {
     float3 r, v; /* wall velocity */
@@ -2341,10 +2077,8 @@ __global__ void repulse(WallRepulsePrm wr, int n, const Particle *pp, Sdf_v sdf_
     ff[pid].f[Y] += f.y;
     ff[pid].f[Z] += f.z;
 }
-/* end src/wall/force/dev/main.h */
 }
 
-/* begin src/wall/force/imp/main.h */
 enum {
     TPP = 3 /* # threads per particle */
 };
@@ -2431,22 +2165,17 @@ void wall_force_repulse(Sdf_v sdf_v, WallRepulsePrm wr, long n, const PaArray *p
        (k_cnf(n)),
        (wr, n, (const Particle*) pa->pp, sdf_v, (Force*) fo->ff));
 }
-/* end src/wall/force/imp/main.h */
-/* end src/wall/force/imp.cu */
 
 
 
 
 
-// generated from udx.flat.cu
 #include "udx.config.cuh"
 
-/* begin src/wall/imp.cu */
 #include <mpi.h>
 #include <stdio.h>
 #include <assert.h>
 
-/* begin src/inc/conf.h */
 /* [k]ernel [l]aunch macros */
 #if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
     !defined(KL_SYNC)
@@ -2481,9 +2210,7 @@ void wall_force_repulse(Sdf_v sdf_v, WallRepulsePrm wr, long n, const PaArray *p
 #ifndef DUMP_BASE
 #define DUMP_BASE "."
 #endif
-/* end src/inc/conf.h */
 
-/* begin src/inc/def.h */
 #ifndef UDX_WALL_DEF_COMMON
 #define UDX_WALL_DEF_COMMON
 /* solvent colors */
@@ -2536,16 +2263,10 @@ enum {
 
 /* for the spring forces r = min(lmax*RBC_SPRING_CAP, r) */
 #define RBC_SPRING_CAP (0.99)
-/* end src/inc/def.h */
 #endif
-/* begin src/utils/msg.h */
-// tag::int[]
 void msg_ini(int rank); // <1>
 void msg_print(const char *fmt, ...); // <2>
-// end::int[]
-/* end src/utils/msg.h */
 
-/* begin src/utils/error.h */
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
         error_report();                                         \
@@ -2585,34 +2306,22 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-/* end src/utils/error.h */
-/* begin src/utils/imp.h */
-// tag::mem[]
 void emalloc(size_t, /**/ void**); // <1>
 void efree(void*); // <2>
 void *ememcpy(void *dest, const void *src, size_t n); // <3>
-// end::mem[]
 
-// tag::macros[]
 #define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
 #define EFREE(pdata) UC(efree(pdata))
 #define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
-// end::macros[]
 
-// tag::stdio[]
 void efopen(const char *fname, const char *mode, /**/ FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
 void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
 void efgets(char *s, int size, FILE*);
-// end::stdio[]
 
-// tag::tools[]
 bool same_str(const char *a, const char *b); // <1>
 const char* get_filename_ext(const char*);
-// end::tools[]
-/* end src/utils/imp.h */
-/* begin src/d/api.h */
 #ifndef UDX_WALL_DEVICE_API_COMMON
 #define UDX_WALL_DEVICE_API_COMMON
 namespace d {  /* a wrapper for device API */
@@ -2621,13 +2330,10 @@ enum {MemcpyHostToHost, MemcpyHostToDevice,
       MemcpyDeviceToHost, MemcpyDeviceToDevice,
       MemcpyDefault};
 
-// tag::more[]
 const char *emsg();
 int alloc_pinned(void **pHost, size_t size);
 int is_device_pointer(const void *ptr);
-// end::more[]
 
-// tag::api[]
 int GetSymbolAddress(void **devPtr, const void *symbol);
 int Malloc(void **p, size_t);
 int MemcpyToSymbol(const void *symbol, const void *src, size_t count, size_t offset=0, int kind=MemcpyHostToDevice);
@@ -2641,20 +2347,14 @@ int Free (void *devPtr);
 int FreeHost (void *hstPtr);
 int DeviceSynchronize (void);
 int PeekAtLastError(void);
-// end::api[]
 }
-/* end src/d/api.h */
 #endif
-/* begin src/d/q.h */
 /* function and variable type [q]ualifiers */
 
 #if   defined(DEV_CUDA)
-/* begin src/d/cuda/q.h */
 /* B.1. Function Type Qualifiers */
 /* B.2. Variable Type Qualifiers */
-/* end src/d/cuda/q.h */
 #elif defined(DEV_CPU)
-/* begin src/d/cpu/q.h */
 /* B.1. Function Type Qualifiers */
 #ifdef __device__
   #undef  __device__
@@ -2702,14 +2402,10 @@ int PeekAtLastError(void);
   #undef  __restrict__
   #define __restrict__
 #endif
-/* end src/d/cpu/q.h */
 #else
   #error DEV_* is undefined
 #endif
-/* end src/d/q.h */
-/* begin src/d/ker.h */
 #if   defined(DEV_CUDA)
-/* begin src/d/cuda/ker.h */
 #define  Ifetch(t, i)  tex1Dfetch(t, i)
 #define F4fetch(t, i)  tex1Dfetch(t, i)
 #define F2fetch(t, i)  tex1Dfetch(t, i)
@@ -2717,9 +2413,7 @@ int PeekAtLastError(void);
 #define Tfetch(T, t, i) tex1Dfetch<T>(t, i)
 
 #define Ttex3D(T, to, i, j, k) tex3D<T>(to, i, j, k);
-/* end src/d/cuda/ker.h */
 #elif defined(DEV_CPU)
-/* begin src/d/cpu/ker.h */
 #define atomicAdd(...) (0)
 
 #define atomicExch(...)
@@ -2743,8 +2437,6 @@ int PeekAtLastError(void);
 #define Tfetch(T, t, i) (T{})
 
 #define Ttex3D(T, to, i, j, k) (T{})
-/* end src/d/cpu/ker.h */
-/* begin src/d/cpu/wrap.h */
 namespace d {
 static uint3 threadIdx, blockIdx, gridDim;
 static dim3  blockDim;
@@ -2756,17 +2448,13 @@ static int   warpSize = 1;
 #define gridDim   d::gridDim
 #define blockIdx  d::blockIdx
 #define warpSize  d::warpSize
-/* end src/d/cpu/wrap.h */
 #else
   #error DEV_* is undefined
 #endif
-/* end src/d/ker.h */
 
-/* begin src/utils/cc.h */
 /* [c]uda [c]heck macros */
 
 #if   defined(CC_SYNC)
-/* begin src/utils/cc/sync.h */
 /* Aggressive [sync]ronization */
 #define CC(ans)                                             \
     do {                                                    \
@@ -2774,29 +2462,22 @@ static int   warpSize = 1;
         cc::check((ans), __FILE__, __LINE__);               \
         d::DeviceSynchronize();                             \
     } while (0)
-/* end src/utils/cc/sync.h */
 #elif defined(CC_RELEASE)
-/* begin src/utils/cc/release.h */
 /* [c]cuda [c]heck */
 #define CC(ans)                                             \
     do { cc::check((ans), __FILE__, __LINE__);} while (0)
-/* end src/utils/cc/release.h */
 #else
   #error CC_* is undefined
 #endif
 
-/* begin src/utils/cc/common.h */
 namespace cc {
 void check(int rc, const char *file, int line);
 }
 
 
-/* end src/utils/cc/common.h */
 
 /* TODO: header includes header */
-/* end src/utils/cc.h */
 
-/* begin src/inc/type.h */
 #ifndef UDX_WALL_TYPE_COMMON
 #define UDX_WALL_TYPE_COMMON
 template <typename T, int N>
@@ -2851,9 +2532,7 @@ struct FoWrap {
     int n;
     Force *ff;
 };
-/* end src/inc/type.h */
 #endif
-/* begin src/inc/dev.h */
 /* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
 
@@ -2891,30 +2570,23 @@ struct FoWrap {
 /* [d]evice [a]synchronous set */
 #define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
 #define DzeroA(P, n)   DsetA(P, 0, n)
-/* end src/inc/dev.h */
-/* begin src/utils/kl.h */
 #ifndef UDX_WALL_KL_COMMON
 #define UDX_WALL_KL_COMMON
 /* [k]ernel [l]aunch macros */
 
 #if    defined(KL_RELEASE)
-/* begin src/utils/kl/release.h */
 #define KL_BEFORE(s, C) if (!kl::safe(ESC C)) continue;
 #define KL_CALL(F, C, A) F<<<ESC C>>>A
 #define KL_AFTER(s)
 
 namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
-/* end src/utils/kl/release.h */
 #elif  defined(KL_NONE)
-/* begin src/utils/kl/none.h */
 #define KL_BEFORE(s, C)
 #define KL_CALL(F, C, A)
 #define KL_AFTER(s)
 
 namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
-/* end src/utils/kl/none.h */
 #elif  defined(KL_SYNC)
-/* begin src/utils/kl/sync.h */
 #define KL_BEFORE(s, C) if (!kl::safe(ESC C)) continue;
 #define KL_CALL(F, C, A) F<<<ESC C>>>A
 #define KL_AFTER(s)                             \
@@ -2924,12 +2596,10 @@ namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
     } while(0)
 
 namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
-/* end src/utils/kl/sync.h */
 #else
   #error KL_* is undefined
 #endif
 
-/* begin src/utils/kl/common.h */
 namespace kl {
 inline int safe0(dim3 i, dim3 j) {
     msg(i.x, i.y, i.z,   j.x, j.y, j.z);
@@ -2938,8 +2608,6 @@ inline int safe0(dim3 i, dim3 j) {
 inline int safe(dim3 i, dim3 j)                    { return safe0(i, j); }
 inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
 }
-/* end src/utils/kl/common.h */
-/* begin src/utils/kl/macro.h */
 #define ESC(...) __VA_ARGS__
 #define KL(F, C, A)                             \
     do  {                                       \
@@ -2947,12 +2615,9 @@ inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
         KL_CALL(F, C, A);                       \
         KL_AFTER(#F);                           \
     } while (0)
-/* end src/utils/kl/macro.h */
 
 /* TODO: header includes header */
-/* end src/utils/kl.h */
 #endif
-/* begin src/utils/texo.h */
 #ifndef UDX_WALL_TEXO_COMMON
 #define UDX_WALL_TEXO_COMMON
 /* 1D texture object template */
@@ -2961,17 +2626,13 @@ static void sz_check(int n) {
     if (n > MAX_TEXO_SIZE) ERR("too big texo: %d > %d", n, MAX_TEXO_SIZE);
 }
 
-// tag::struct[]
 template<typename T>
 struct Texo {
     cudaTextureObject_t d;
 };
-// end::struct[]
 
 template<typename T>
-// tag::int[]
 void texo_setup(int n, T *data, /**/ Texo<T> *to)
-// end::int[]
 {
     sz_check(n);
 
@@ -2992,30 +2653,21 @@ void texo_setup(int n, T *data, /**/ Texo<T> *to)
 }
 
 template<typename T>
-// tag::int[]
 void texo_destroy(/**/ Texo<T> *to)
-// end::int[]
 {
     CC(cudaDestroyTextureObject(to->d));
 }
-/* end src/utils/texo.h */
 #endif
 
-/* begin src/conf/imp.h */
 struct Config;
 struct float3;
 struct int3;
 
-// tag::mem[]
 void conf_ini(/**/ Config **c);
 void conf_fin(/**/ Config *c);
-// end::mem[]
 
-// tag::ini[]
 void conf_read(int argc, char **argv, /**/ Config *cfg);
-// end::ini[]
 
-// tag::lookup[]
 void conf_lookup_int(const Config *c, const char *desc, int *a);
 void conf_lookup_float(const Config *c, const char *desc, float *a);
 void conf_lookup_bool(const Config *c, const char *desc, int *a);
@@ -3025,9 +2677,7 @@ void conf_lookup_int3(const Config *c, const char *desc, int3 *a);
 void conf_lookup_vfloat(const Config *c, const char *desc, int maxn, int *n, float a[]);
 void conf_lookup_float3(const Config *c, const char *desc, float3 *a);
 void conf_lookup_vstring(const Config *c, const char *desc, int maxn, int *n, const char **ss);
-// end::lookup[]
 
-// tag::ns[]
 void conf_lookup_int_ns(const Config *c, const char *ns, const char *desc, int *a);
 void conf_lookup_float_ns(const Config *c, const char *ns, const char *desc, float *a);
 void conf_lookup_bool_ns(const Config *c, const char *ns, const char *desc, int *a);
@@ -3037,9 +2687,7 @@ void conf_lookup_int3_ns(const Config *c, const char *ns, const char *desc, int3
 void conf_lookup_vfloat_ns(const Config *c, const char *ns, const char *desc, int maxn, int *n, float a[]);
 void conf_lookup_float3_ns(const Config *c, const char *ns, const char *desc, float3 *a);
 void conf_lookup_vstring_ns(const Config *c, const char *ns, const char *d, int maxn, int *n, const char **ss);
-// end::ns[]
 
-// tag::opt[]
 bool conf_opt_int(const Config *c, const char *desc, int *a);
 bool conf_opt_float(const Config *c, const char *desc, float *a);
 bool conf_opt_bool(const Config *c, const char *desc, int *a);
@@ -3049,9 +2697,7 @@ bool conf_opt_int3(const Config *c, const char *desc, int3 *a);
 bool conf_opt_vfloat(const Config *c, const char *desc, int maxn, int *n, float a[]);
 bool conf_opt_float3(const Config *c, const char *desc, float3 *a);
 bool conf_opt_vstring(const Config *c, const char *desc, int maxn, int *n, const char **ss);
-// end::opt[]
 
-// tag::set[]
 void conf_set_int(const char *desc, int a, Config *c);
 void conf_set_vint(const char *desc, int nelem, const int a[], Config *cfg);
 void conf_set_int3(const char *desc, int3 a, Config *cfg);
@@ -3060,36 +2706,23 @@ void conf_set_vfloat(const char *desc, int nelem, const float a[], Config *cfg);
 void conf_set_float3(const char *desc, float3 a, Config *cfg);
 void conf_set_bool(const char *desc, int a, Config *cfg);
 void conf_set_string(const char *desc, const char *a, Config *cfg);
-// end::set[]
 
-// tag::dump[]
 void conf_write_exe(const Config *cfg, FILE *stream);     // <1>
 void conf_write_history(const Config *cfg, FILE *stream); // <2>
-// end::dump[]
-/* end src/conf/imp.h */
 
-/* begin src/math/rnd/imp.h */
-// tag::interface[]
 struct RNDunif;                                             // <1>
 void rnd_ini(int x, int y, int z, int c, /**/ RNDunif **r); // <2>
 void rnd_fin(RNDunif *r);                                   // <3>
 float rnd_get(RNDunif *r);                                  // <4>
-// end::interface[]
-/* end src/math/rnd/imp.h */
 
-/* begin src/coords/type.h */
 #ifndef UDX_WALL_COORDS_TYPE_COMMON
 #define UDX_WALL_COORDS_TYPE_COMMON
-// tag::view[]
 struct Coords_v {
     int xc, yc, zc; /* rank coordinates        */
     int xd, yd, zd; /* rank sizes              */
     int Lx, Ly, Lz; /* [L]ocal: subdomain size */
 };
-// end::view[]
-/* end src/coords/type.h */
 #endif
-/* begin src/wall/wvel/type.h */
 #ifndef UDX_WALL_WVEL_TYPE_COMMON
 #define UDX_WALL_WVEL_TYPE_COMMON
 /* view structures                      */
@@ -3110,23 +2743,17 @@ struct WvelHS_v {
     float h; // height of the channel
 };
 
-/* end src/wall/wvel/type.h */
 #endif
 
-/* begin src/math/tform/type.h */
 #ifndef UDX_WALL_TFORM_TYPE_COMMON
 #define UDX_WALL_TFORM_TYPE_COMMON
 struct Tform_v { float o[3], s[3]; };
-/* end src/math/tform/type.h */
 #endif
-/* begin src/wall/sdf/tex3d/type.h */
 #ifndef UDX_WALL_TEX3D_TYPE_COMMON
 #define UDX_WALL_TEX3D_TYPE_COMMON
 struct Tex3d_v { cudaTextureObject_t t; }; // <1>
 struct Tex3d   { cudaTextureObject_t t; }; // <2>
-/* end src/wall/sdf/tex3d/type.h */
 #endif
-/* begin src/wall/sdf/type.h */
 #ifndef UDX_WALL_SDF_TYPE_COMMON
 #define UDX_WALL_SDF_TYPE_COMMON
 /* view */
@@ -3135,9 +2762,7 @@ struct Sdf_v {
     Tform_v t;
     float cheap_threshold;
 };
-/* end src/wall/sdf/type.h */
 #endif
-/* begin src/wall/sdf/imp.h */
 struct Sdf;
 struct Sdf_v;
 struct WvelStep;
@@ -3145,28 +2770,18 @@ struct Coords;
 struct Particle;
 struct int3;
 
-// tag::mem[]
 void sdf_ini(int3 L, Sdf**);
 void sdf_fin(Sdf*);
-// end::mem[]
 
-// tag::int[]
 void sdf_gen(const Coords*, MPI_Comm cart, bool dump, Sdf*); // <1>
 void sdf_get_view(const Sdf*, /**/ Sdf_v*);                  // <2>
-// end::int[]
 
-// tag::tools[]
 void sdf_bulk_wall(const Sdf*, /*io*/ int *s_n, Particle *s_pp, /*o*/ int *w_n, Particle *w_pp); // <1>
 int  sdf_who_stays(const Sdf*, int n, const Particle*, int nc, int nv, /**/ int *stay);          // <2>
 double sdf_compute_volume(MPI_Comm, int3 L, const Sdf*, long nsamples);                          // <3>
-// end::tools[]
 
-// tag::bounce[]
 void sdf_bounce(float dt, const WvelStep*, const Coords*, const Sdf*, int n, /**/ Particle*);
-// end::bounce[]
-/* end src/wall/sdf/imp.h */
 
-/* begin src/struct/partlist/type.h */
 enum {
     ALIVE = 0,
     DEAD  = 1
@@ -3175,43 +2790,30 @@ enum {
 /* structure of particle                           */
 /* optional "deathlist" for particles to be killed */
 
-// tag::type[]
 struct PartList {
     const Particle *pp;   /* particles array          */
     const int *deathlist; /* what pp is dead or alive */
 };
-// end::type[]
-/* end src/struct/partlist/type.h */
-/* begin src/algo/scan/imp.h */
 struct Scan;
 
-// tag::interface[]
 void scan_apply(const int *input, int size, /**/ int *output, /*w*/ Scan*); // <1>
 void scan_ini(int size, /**/ Scan**);                                       // <2>
 void scan_fin(Scan*);                                                       // <3>
-// end::interface[]
-/* end src/algo/scan/imp.h */
-/* begin src/clist/imp.h */
 struct Clist;
 struct ClistMap;
 
-// tag::mem[]
 void clist_ini(int LX, int LY, int LZ, /**/ Clist **c);
 void clist_fin(/**/ Clist *c);
 
 void clist_ini_map(int maxp, int nA, const Clist *c, /**/ ClistMap **m);
 void clist_fin_map(ClistMap *m);
-// end::mem[]
 
-// tag::access[]
 const int* clists_get_ss(const Clist *c);
 const int* clists_get_cc(const Clist *c);
 int3       clists_get_dim(const Clist *c);
 int        clists_get_n(const Clist *c);
 const uint* clist_get_ids(const ClistMap *m);
-// end::access[]
 
-// tag::int[]
 void clist_ini_counts(Clist *c);
 void clist_subindex(bool project, int aid, int n, const PartList lp, /**/ Clist *c, ClistMap *m);
 void clist_build_map(const int nn[], /**/ Clist *c, ClistMap *m);
@@ -3225,55 +2827,37 @@ void clist_gather_ii(const int *iilo, const int *iire, const ClistMap *m, long n
 
 /* quick cell build for single array */
 void clist_build(int nlo, int nout, const Particle *pplo, /**/ Particle *ppout, Clist *c, ClistMap *m);
-// end::int[]
-/* end src/clist/imp.h */
 
-/* begin src/io/restart/imp.h */
 struct Coords;
 struct Particle;
 struct Rigid;
 
-// tag::id[]
 enum {RESTART_TEMPL=-1,
       RESTART_FINAL=-2};
 enum {RESTART_BEGIN=RESTART_FINAL};
-// end::id[]
 
-// tag::stream[]
 typedef void (*StreamWriter)(const void*, FILE*);
 typedef void (*StreamReader)(FILE*, void*);
-// end::stream[]
 
-// tag::write[]
 void restart_write_pp(MPI_Comm, const char *base, const char *code, int id, long n, const Particle *pp); // <1>
 void restart_write_ii(MPI_Comm, const char *base, const char *code, int id, long n, const int *ii);      // <2>
 void restart_write_ss(MPI_Comm, const char *base, const char *code, int id, long n, const Rigid *ss);    // <3>
 void restart_write_stream_one_node(MPI_Comm, const char *base, const char *code, int id, const void *data, StreamWriter); // <4>
- // end::write[]
 
-// tag::read[]
 void restart_read_pp(MPI_Comm, const char *base, const char *code, int id, int *n, Particle *pp);
 void restart_read_ii(MPI_Comm, const char *base, const char *code, int id, int *n, int *ii);
 void restart_read_ss(MPI_Comm, const char *base, const char *code, int id, int *n, Rigid *ss);
 void restart_read_stream_one_node(const char *base, const char *code, int id, StreamReader, void *data);
-// end::read[]
-/* end src/io/restart/imp.h */
 
-/* begin src/wall/exch/imp.h */
 struct int3;
 struct Particle;
-// tag::int[]
 void wall_exch_pp(MPI_Comm cart, int numdensity, int3 L, int maxn, /*io*/ Particle *pp, int *n);
-// end::int[]
-/* end src/wall/exch/imp.h */
-/* begin src/wall/force/imp.h */
 struct PairParams;
 struct PaArray;
 struct FoArray;
 struct WvelStep;
 struct RNDunif;
 
-// tag::struct[]
 /* shared wall-force view types */
 #ifndef UDX_WALL_FORCE_TYPE_COMMON
 #define UDX_WALL_FORCE_TYPE_COMMON
@@ -3284,13 +2868,11 @@ struct WallForce { /* local wall data */
     int n;
     int3 L;
 };
-// end::struct[]
 
 struct WallRepulsePrm {
     float l;
 };
 
-// tag::int[]
 void wall_force_apply(const PairParams*, const WvelStep*, const Coords*, const PaArray*, int n, RNDunif*, WallForce,
                       /**/ const FoArray*); // <1>
 
@@ -3298,11 +2880,8 @@ void wall_force_adhesion_apply(const PairParams*, const WvelStep*, const Coords*
                                /**/ const FoArray*);
 
 void wall_force_repulse(Sdf_v, WallRepulsePrm, long n, const PaArray*, const FoArray*); // <2>
-// end::int[]
-/* end src/wall/force/imp.h */
 #endif
 
-/* begin src/wall/imp.h */
 struct PairParams;
 struct PaArray;
 struct FoArray;
@@ -3313,7 +2892,6 @@ struct int3;
 struct float4;
 struct Config;
 
-// tag::struct[]
 struct WallQuants {
     float4 *pp; /* particle positions xyzo xyzo ... */
     int n;      /* number of particles              */
@@ -3323,27 +2901,19 @@ struct WallQuants {
 struct WallTicket;
 struct WallRepulsePrm;
 
-// end::struct[]
 
-// tag::mem[]
 void wall_ini_quants(int3 L, WallQuants*);
 void wall_ini_ticket(int3 L, WallTicket**);
 
 void wall_fin_quants(WallQuants*);
 void wall_fin_ticket(WallTicket*);
-// end::mem[]
 
-// tag::gen[]
 void wall_gen_quants(MPI_Comm, int numdensity, int maxn, const Sdf*, /* io */ int *o_n, Particle *o_pp, /**/ WallQuants*); // <1>
 void wall_gen_ticket(const WallQuants*, WallTicket*); // <2>
-// end::gen[]
 
-// tag::start[]
 void wall_strt_quants(MPI_Comm, const char *base, int maxn, WallQuants*); // <1>
 void wall_strt_dump_templ(MPI_Comm, const char *base, const WallQuants*); // <2>
-// end::start[]
 
-// tag::int[]
 void wall_force(const PairParams*, const WvelStep *, const Coords*, const Sdf*, const WallQuants*,
                 const WallTicket*, int n, const PaArray*, const FoArray*); // <1>
 
@@ -3351,17 +2921,12 @@ void wall_force_adhesion(const PairParams*, const WvelStep *, const Coords*, con
                          const WallTicket*, int n, const PaArray*, const FoArray*); // <2>
 
 void wall_repulse(const Sdf*, const WallRepulsePrm*, long n, const PaArray*, const FoArray*); // <3>
-// end::int[]
 
-// tag::repulse[]
 void wall_repulse_prm_ini(float lambda, WallRepulsePrm**); // <1>
 void wall_repulse_prm_ini_conf(const Config*, const char *ns, WallRepulsePrm**); // <2>
 void wall_repulse_prm_fin(WallRepulsePrm*); // <3>
-// end::repulse[]
-/* end src/wall/imp.h */
 
 namespace wall_dev {
-/* begin src/wall/dev/main.h */
 __global__ void particle2float4(const Particle *src, const int n, float4 *dst) {
     enum {X, Y, Z};
     int pid = threadIdx.x + blockDim.x * blockIdx.x;
@@ -3380,18 +2945,14 @@ __global__ void float42particle(const float4 *src, const int n, Particle *dst) {
     p.v[X] = p.v[Y] = p.v[Z] = 0;
     dst[pid] = p;
 }
-/* end src/wall/dev/main.h */
 }
 
-/* begin src/wall/imp/type.h */
 struct WallTicket {
     RNDunif *rnd;        /* rng on host                                        */
     Clist *cells;        /* cell lists (always the same, no need to store map) */
     Texo<int> texstart;  /* texture of starts from clist                       */
     Texo<float4> texpp;  /* texture of particle positions                      */
 };
-/* end src/wall/imp/type.h */
-/* begin src/wall/imp/ini.h */
 void wall_ini_quants(int3 L, WallQuants *q) {
     q->n = 0;
     q->pp = NULL;
@@ -3407,8 +2968,6 @@ void wall_ini_ticket(int3 L, WallTicket **ti) {
                  L.y + 2 * YWM,
                  L.z + 2 * ZWM, /**/ &t->cells));
 }
-/* end src/wall/imp/ini.h */
-/* begin src/wall/imp/fin.h */
 void wall_fin_quants(WallQuants *q) {
     if (q->pp) Dfree(q->pp);
     q->n = 0;
@@ -3421,8 +2980,6 @@ void wall_fin_ticket(WallTicket *t) {
     UC(clist_fin(t->cells));
     EFREE(t);
 }
-/* end src/wall/imp/fin.h */
-/* begin src/wall/imp/strt.h */
 #define CODE "wall"
 #define PP CODE ".pp"
 
@@ -3478,8 +3035,6 @@ void wall_strt_dump_templ(MPI_Comm comm, const char *base, const WallQuants *q) 
 
 #undef PP
 #undef CODE
-/* end src/wall/imp/strt.h */
-/* begin src/wall/imp/generate.h */
 static void freeze0(MPI_Comm cart, int numdensity, int3 L, int maxn, const Sdf *qsdf, /*io*/ int *n, Particle *pp, /*o*/ int *w_n, Particle *dev, /*w*/ Particle *hst) {
     sdf_bulk_wall(qsdf, /*io*/ n, pp, /*o*/ w_n, hst); /* sort into bulk-frozen */
     msg_print("before exch: bulk/frozen : %d/%d", *n, *w_n);
@@ -3540,8 +3095,6 @@ static void gen_ticket(const int w_n, float4 *w_pp, Clist *cells, Texo<int> *tex
 void wall_gen_ticket(const WallQuants *q, WallTicket *t) {
     UC(gen_ticket(q->n, q->pp, t->cells, &t->texstart, &t->texpp));
 }
-/* end src/wall/imp/generate.h */
-/* begin src/wall/imp/force.h */
 static WallForce get_wa(const Sdf *sdf, const WallQuants *q, const WallTicket *t, int) {
     WallForce wa; /* local wall data */
 
@@ -3575,8 +3128,6 @@ void wall_repulse(const Sdf *sdf, const WallRepulsePrm *wr, long n, const PaArra
     sdf_get_view(sdf, &sdf_v);
     UC(wall_force_repulse(sdf_v, *wr, n, pa, /**/ fa));
 }
-/* end src/wall/imp/force.h */
-/* begin src/wall/imp/repulse.h */
 void wall_repulse_prm_ini(float lambda, WallRepulsePrm **wrp) {
     WallRepulsePrm *wr;
     EMALLOC(1, wrp);
@@ -3593,8 +3144,6 @@ void wall_repulse_prm_ini_conf(const Config *cfg, const char *ns, WallRepulsePrm
 void wall_repulse_prm_fin(WallRepulsePrm *wr) {
     EFREE(wr);
 }
-/* end src/wall/imp/repulse.h */
-/* end src/wall/imp.cu */
 
 
 
@@ -3606,15 +3155,12 @@ void wall_repulse_prm_fin(WallRepulsePrm *wr) {
 // Grouped editable compilation unit for SDF core and label handling.
 
 
-// generated from udx.flat.cu
 #include "udx.config.cuh"
 
-/* begin src/wall/sdf/imp.cu */
 #include <mpi.h>
 
 #include <curand.h>
 
-/* begin src/inc/conf.h */
 /* [k]ernel [l]aunch macros */
 #if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
     !defined(KL_SYNC)
@@ -3649,19 +3195,14 @@ void wall_repulse_prm_fin(WallRepulsePrm *wr) {
 #ifndef DUMP_BASE
 #define DUMP_BASE "."
 #endif
-/* end src/inc/conf.h */
 
 
-/* begin src/d/q.h */
 /* function and variable type [q]ualifiers */
 
 #if   defined(DEV_CUDA)
-/* begin src/d/cuda/q.h */
 /* B.1. Function Type Qualifiers */
 /* B.2. Variable Type Qualifiers */
-/* end src/d/cuda/q.h */
 #elif defined(DEV_CPU)
-/* begin src/d/cpu/q.h */
 /* B.1. Function Type Qualifiers */
 #ifdef __device__
   #undef  __device__
@@ -3709,12 +3250,9 @@ void wall_repulse_prm_fin(WallRepulsePrm *wr) {
   #undef  __restrict__
   #define __restrict__
 #endif
-/* end src/d/cpu/q.h */
 #else
   #error DEV_* is undefined
 #endif
-/* end src/d/q.h */
-/* begin src/d/api.h */
 #ifndef UDX_WALL_DEVICE_API_COMMON
 #define UDX_WALL_DEVICE_API_COMMON
 namespace d {  /* a wrapper for device API */
@@ -3723,13 +3261,10 @@ enum {MemcpyHostToHost, MemcpyHostToDevice,
       MemcpyDeviceToHost, MemcpyDeviceToDevice,
       MemcpyDefault};
 
-// tag::more[]
 const char *emsg();
 int alloc_pinned(void **pHost, size_t size);
 int is_device_pointer(const void *ptr);
-// end::more[]
 
-// tag::api[]
 int GetSymbolAddress(void **devPtr, const void *symbol);
 int Malloc(void **p, size_t);
 int MemcpyToSymbol(const void *symbol, const void *src, size_t count, size_t offset=0, int kind=MemcpyHostToDevice);
@@ -3743,13 +3278,9 @@ int Free (void *devPtr);
 int FreeHost (void *hstPtr);
 int DeviceSynchronize (void);
 int PeekAtLastError(void);
-// end::api[]
 }
-/* end src/d/api.h */
 #endif
-/* begin src/d/ker.h */
 #if   defined(DEV_CUDA)
-/* begin src/d/cuda/ker.h */
 #define  Ifetch(t, i)  tex1Dfetch(t, i)
 #define F4fetch(t, i)  tex1Dfetch(t, i)
 #define F2fetch(t, i)  tex1Dfetch(t, i)
@@ -3757,9 +3288,7 @@ int PeekAtLastError(void);
 #define Tfetch(T, t, i) tex1Dfetch<T>(t, i)
 
 #define Ttex3D(T, to, i, j, k) tex3D<T>(to, i, j, k);
-/* end src/d/cuda/ker.h */
 #elif defined(DEV_CPU)
-/* begin src/d/cpu/ker.h */
 #define atomicAdd(...) (0)
 
 #define atomicExch(...)
@@ -3783,8 +3312,6 @@ int PeekAtLastError(void);
 #define Tfetch(T, t, i) (T{})
 
 #define Ttex3D(T, to, i, j, k) (T{})
-/* end src/d/cpu/ker.h */
-/* begin src/d/cpu/wrap.h */
 namespace d {
 static uint3 threadIdx, blockIdx, gridDim;
 static dim3  blockDim;
@@ -3796,12 +3323,9 @@ static int   warpSize = 1;
 #define gridDim   d::gridDim
 #define blockIdx  d::blockIdx
 #define warpSize  d::warpSize
-/* end src/d/cpu/wrap.h */
 #else
   #error DEV_* is undefined
 #endif
-/* end src/d/ker.h */
-/* begin src/utils/error.h */
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
         error_report();                                         \
@@ -3841,8 +3365,6 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-/* end src/utils/error.h */
-/* begin src/inc/def.h */
 #ifndef UDX_WALL_DEF_COMMON
 #define UDX_WALL_DEF_COMMON
 /* solvent colors */
@@ -3895,19 +3417,12 @@ enum {
 
 /* for the spring forces r = min(lmax*RBC_SPRING_CAP, r) */
 #define RBC_SPRING_CAP (0.99)
-/* end src/inc/def.h */
 #endif
-/* begin src/utils/msg.h */
-// tag::int[]
 void msg_ini(int rank); // <1>
 void msg_print(const char *fmt, ...); // <2>
-// end::int[]
-/* end src/utils/msg.h */
-/* begin src/utils/cc.h */
 /* [c]uda [c]heck macros */
 
 #if   defined(CC_SYNC)
-/* begin src/utils/cc/sync.h */
 /* Aggressive [sync]ronization */
 #define CC(ans)                                             \
     do {                                                    \
@@ -3915,28 +3430,21 @@ void msg_print(const char *fmt, ...); // <2>
         cc::check((ans), __FILE__, __LINE__);               \
         d::DeviceSynchronize();                             \
     } while (0)
-/* end src/utils/cc/sync.h */
 #elif defined(CC_RELEASE)
-/* begin src/utils/cc/release.h */
 /* [c]cuda [c]heck */
 #define CC(ans)                                             \
     do { cc::check((ans), __FILE__, __LINE__);} while (0)
-/* end src/utils/cc/release.h */
 #else
   #error CC_* is undefined
 #endif
 
-/* begin src/utils/cc/common.h */
 namespace cc {
 void check(int rc, const char *file, int line);
 }
 
 
-/* end src/utils/cc/common.h */
 
 /* TODO: header includes header */
-/* end src/utils/cc.h */
-/* begin src/utils/mc.h */
 /* [m]pi [c]heck macros */
 #define MC(ans)                                                         \
     do { mpicheck::check((ans), __FILE__, __LINE__); } while (0)
@@ -3944,30 +3452,23 @@ void check(int rc, const char *file, int line);
 namespace mpicheck {
 void check(int code, const char *file, int line);
 }
-/* end src/utils/mc.h */
-/* begin src/utils/kl.h */
 #ifndef UDX_WALL_KL_COMMON
 #define UDX_WALL_KL_COMMON
 /* [k]ernel [l]aunch macros */
 
 #if    defined(KL_RELEASE)
-/* begin src/utils/kl/release.h */
 #define KL_BEFORE(s, C) if (!kl::safe(ESC C)) continue;
 #define KL_CALL(F, C, A) F<<<ESC C>>>A
 #define KL_AFTER(s)
 
 namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
-/* end src/utils/kl/release.h */
 #elif  defined(KL_NONE)
-/* begin src/utils/kl/none.h */
 #define KL_BEFORE(s, C)
 #define KL_CALL(F, C, A)
 #define KL_AFTER(s)
 
 namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
-/* end src/utils/kl/none.h */
 #elif  defined(KL_SYNC)
-/* begin src/utils/kl/sync.h */
 #define KL_BEFORE(s, C) if (!kl::safe(ESC C)) continue;
 #define KL_CALL(F, C, A) F<<<ESC C>>>A
 #define KL_AFTER(s)                             \
@@ -3977,12 +3478,10 @@ namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
     } while(0)
 
 namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
-/* end src/utils/kl/sync.h */
 #else
   #error KL_* is undefined
 #endif
 
-/* begin src/utils/kl/common.h */
 namespace kl {
 inline int safe0(dim3 i, dim3 j) {
     msg(i.x, i.y, i.z,   j.x, j.y, j.z);
@@ -3991,8 +3490,6 @@ inline int safe0(dim3 i, dim3 j) {
 inline int safe(dim3 i, dim3 j)                    { return safe0(i, j); }
 inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
 }
-/* end src/utils/kl/common.h */
-/* begin src/utils/kl/macro.h */
 #define ESC(...) __VA_ARGS__
 #define KL(F, C, A)                             \
     do  {                                       \
@@ -4000,13 +3497,10 @@ inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
         KL_CALL(F, C, A);                       \
         KL_AFTER(#F);                           \
     } while (0)
-/* end src/utils/kl/macro.h */
 
 /* TODO: header includes header */
-/* end src/utils/kl.h */
 #endif
 
-/* begin src/mpi/wrapper.h */
 namespace m {
 int Allreduce(const void *sendbuf, void *recvbuf, int count, MPI_Datatype datatype, MPI_Op op, MPI_Comm comm);
 int Barrier(MPI_Comm comm);
@@ -4056,9 +3550,7 @@ int is_pending(int errorcode);
 int is_err_in_status(int errorcode);
 int status2errcode(MPI_Status *status);
 }
-/* end src/mpi/wrapper.h */
 
-/* begin src/inc/type.h */
 #ifndef UDX_WALL_TYPE_COMMON
 #define UDX_WALL_TYPE_COMMON
 template <typename T, int N>
@@ -4113,9 +3605,7 @@ struct FoWrap {
     int n;
     Force *ff;
 };
-/* end src/inc/type.h */
 #endif
-/* begin src/inc/dev.h */
 /* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
 
@@ -4153,81 +3643,56 @@ struct FoWrap {
 /* [d]evice [a]synchronous set */
 #define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
 #define DzeroA(P, n)   DsetA(P, 0, n)
-/* end src/inc/dev.h */
-/* begin src/utils/imp.h */
-// tag::mem[]
 void emalloc(size_t, /**/ void**); // <1>
 void efree(void*); // <2>
 void *ememcpy(void *dest, const void *src, size_t n); // <3>
-// end::mem[]
 
-// tag::macros[]
 #define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
 #define EFREE(pdata) UC(efree(pdata))
 #define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
-// end::macros[]
 
-// tag::stdio[]
 void efopen(const char *fname, const char *mode, /**/ FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
 void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
 void efgets(char *s, int size, FILE*);
-// end::stdio[]
 
-// tag::tools[]
 bool same_str(const char *a, const char *b); // <1>
 const char* get_filename_ext(const char*);
-// end::tools[]
-/* end src/utils/imp.h */
 
-/* begin src/coords/imp.h */
 struct Coords;
 struct Coords_v;
 struct float3;
 struct int3;
 
-// tag::view[]
 void coords_get_view(const Coords *c, Coords_v *v);
-// end::view[]
 
-// tag::domainsz[]
 int xdomain(const Coords *c);
 int ydomain(const Coords *c);
 int zdomain(const Coords *c);
-// end::domainsz[]
 
-// tag::local2center[]
 float xl2xc(const Coords *c, float xl);
 float yl2yc(const Coords *c, float yl);
 float zl2zc(const Coords *c, float zl);
 void local2center(const Coords *c, float3 rl, /**/ float3 *rc);
-// end::local2center[]
 
-// tag::center2local[]
 float xc2xl(const Coords *c, float xc);
 float yc2yl(const Coords *c, float yc);
 float zc2zl(const Coords *c, float zc);
 void center2local(const Coords *c, float3 rc, /**/ float3 *rl);
-// end::center2local[]
 
-// tag::local2global[]
 float xl2xg(const Coords *c, float xl);
 float yl2yg(const Coords *c, float yl);
 float zl2zg(const Coords *c, float zl);
 void local2global(const Coords *c, float3 rl, /**/ float3 *rg);
-// end::local2global[]
 
-// tag::global2local[]
 float xg2xl(const Coords *c, float xg);
 float yg2yl(const Coords *c, float yg);
 float zg2zl(const Coords *c, float zg);
 void global2local(const Coords *c, float3 rg, /**/ float3 *rl);
-// end::global2local[]
 
 /* edges of the sub-domain in global coordinates */
 
-// tag::bblocal[]
 int xlo(const Coords*);
 int ylo(const Coords*);
 int zlo(const Coords*);
@@ -4235,16 +3700,12 @@ int zlo(const Coords*);
 int xhi(const Coords*);
 int yhi(const Coords*);
 int zhi(const Coords*);
-// end::bblocal[]
 
-// tag::subdomainsz[]
 int xs(const Coords*);
 int ys(const Coords*);
 int zs(const Coords*);
 int3 subdomain(const Coords*);
-// end::subdomainsz[]
 
-// tag::int[]
 /* rank predicates */
 bool is_end(const Coords *c, int dir);
 
@@ -4253,108 +3714,70 @@ void coord_stamp(const Coords *c, /**/ char *s);
 
 /* number of subdomains */
 int coords_size(const Coords *c);
-// end::int[]
-/* end src/coords/imp.h */
 
-/* begin src/wall/sdf/array3d/imp.h */
 struct Array3d;
 void array3d_ini(Array3d**, size_t x, size_t y, size_t z);                // <1>
 void array3d_fin(Array3d*);                                               // <2>
 void array3d_copy(size_t x, size_t y, size_t z, float *D, /**/ Array3d*); // <3>
-/* end src/wall/sdf/array3d/imp.h */
-/* begin src/wall/sdf/tex3d/type.h */
 #ifndef UDX_WALL_TEX3D_TYPE_COMMON
 #define UDX_WALL_TEX3D_TYPE_COMMON
 struct Tex3d_v { cudaTextureObject_t t; }; // <1>
 struct Tex3d   { cudaTextureObject_t t; }; // <2>
-/* end src/wall/sdf/tex3d/type.h */
 #endif
-/* begin src/wall/sdf/tex3d/imp.h */
 struct Tex3d;
 struct Tex3d_v;
 struct Array3d;
 
-// tag::mem[]
 void tex3d_ini(Tex3d**);
 void tex3d_fin(Tex3d*);
-// end::mem[]
 
-// tag::int[]
 void tex3d_copy(const Array3d*, /**/ Tex3d*);    // <1>
 void tex3d_to_view(const Tex3d*, /**/ Tex3d_v*); // <2>
-// end::int[]
-/* end src/wall/sdf/tex3d/imp.h */
 
-/* begin src/wall/sdf/field/imp.h */
 struct Coords;
 struct Tform;
 struct Field;
 
-// tag::mem[]
 void field_ini(const char *path, /**/ Field**); // <1>
 void field_fin(Field*);                         // <2>
-// end::mem[]
 
-// tag::int[]
 void field_sample(const Field*, const Tform*, const int N[3], /**/ Field**); // <1>
-// end::int[]
 
-// tag::get[]
 void field_size(const Field*, /**/ int N[3]);       // <1>
 void field_extend(const Field*, /**/ float ext[3]); // <2>
 void field_data(const Field*, /**/ float**);        // <3>
-// end::get[]
 
-// tag::int[]
 void field_dump(const Field*, const Coords*, MPI_Comm cart); // <2>
 void field_scale(Field*, float scale); // <3>
-// end::int[]
-/* end src/wall/sdf/field/imp.h */
-/* begin src/wall/sdf/bounce/imp.h */
 struct Sdf;
 struct WvelStep;
 struct Coords;
 struct Particle;
 
-// tag::int[]
 void bounce_back(float dt, const WvelStep *wv, const Coords *c, const Sdf *sdf, int n, /**/ Particle *pp);
-// end::int[]
 
-/* end src/wall/sdf/bounce/imp.h */
-/* begin src/wall/sdf/label/imp.h */
 #ifndef UDX_WALL_LABEL_COMMON
 #define UDX_WALL_LABEL_COMMON
 enum {
-    // tag::enum[]
     LABEL_BULK,  /* remains in bulk */
     LABEL_WALL,  /* becomes wall particle */
     LABEL_DEEP   /* deep inside the wall */
-    // end::enum[]
 };
 
-// tag::int[]
 void wall_label_dev(const Sdf *sdf, int n, const Particle*, /**/ int *labels); // <1>
 void wall_label_hst(const Sdf *sdf, int n, const Particle*, /**/ int *labels); // <2>
-// end::int[]
-/* end src/wall/sdf/label/imp.h */
 #endif
 
-/* begin src/math/tform/type.h */
 #ifndef UDX_WALL_TFORM_TYPE_COMMON
 #define UDX_WALL_TFORM_TYPE_COMMON
 struct Tform_v { float o[3], s[3]; };
-/* end src/math/tform/type.h */
 #endif
-/* begin src/math/tform/imp.h */
 struct Tform;
 struct Tform_v;
 
-// tag::ini[]
 void tform_ini(Tform**);
 void tform_fin(Tform*);
-// end::ini[]
 
-// tag::def[]
 void tform_vector(const float a0[3], const float a1[3],   const float b0[3], const float b1[3], /**/ Tform*); // <1>
 void tform_chain(const Tform *A, const Tform *B, /**/ Tform *C); // <2>
 void tform_to_grid(const float lo[3], const float hi[3], const int n[3], /**/ Tform*); // <3>
@@ -4362,23 +3785,14 @@ void tform_from_grid(const float a0[3], const float b0[3], const int n[3], /**/ 
 void tform_grid2grid(const float f_lo[3], const float f_hi[3], const int f_n[3],
                      const float t_lo[3], const float t_hi[3], const int t_n[3],
                      Tform*); // <5>
-// end::def[]
 
 
-// tag::convert[]
 void tform_convert(const Tform*, const float a0[3], /**/ float a1[3]);
-// end::convert[]
 
-// tag::view[]
 void tform_to_view(const Tform*, /**/ Tform_v*);
-// end::view[]
 
-// tag::log[]
 void tform_log(Tform*);
 void tform_dump(Tform*, FILE*);
-// end::log[]
-/* end src/math/tform/imp.h */
-/* begin src/math/tform/dev.h */
 #ifndef UDX_WALL_TFORM_DEV_COMMON
 #define UDX_WALL_TFORM_DEV_COMMON
 static __device__ void tform_convert_dev(const Tform_v *t, const float a0[3], /**/ float a1[3]) {
@@ -4396,21 +3810,15 @@ static __device__ void tform_spacing_dev(const Tform_v *t, /**/ float s[3]) {
     s[Y] = t->s[Y];
     s[Z] = t->s[Z];
 }
-/* end src/math/tform/dev.h */
 #endif
-/* begin src/wall/sdf/tform/imp.h */
 struct Tform;
 struct Coords;
 
-// tag::int[]
 /* T: texture size, N: sdf file size, M: wall margin */
 void tex2sdf_ini(const Coords*, const int T[3], const int N[3], const int M[3], /**/ Tform*); // <1>
 void out2sdf_ini(const Coords*, const int N[3], /**/ Tform*); // <2>
 void sub2tex_ini(const Coords*, const int T[3], const int M[3], /**/ Tform*); // <3>
-// end::int[]
 
-/* end src/wall/sdf/tform/imp.h */
-/* begin src/algo/utils/shfl.h */
 #define _I_ static __device__
 
 #if __CUDACC_VER_MAJOR__ >= 9
@@ -4444,24 +3852,18 @@ _I_ T shfl(T val, unsigned int width) {
 #endif
 
 #undef _I_
-/* end src/algo/utils/shfl.h */
-/* begin src/algo/utils/dev.h */
 #define _S_ static __device__
 #define _I_ static __device__
 
-// tag::int[]
 template <typename T>
 _I_ T warpReduceSum(T v)  // <1>
-// end::int[]
 {
     for (int offset = warpSize>>1; offset > 0; offset >>= 1)
         v += shfl_down(v, offset);
     return v;
 }
 
-// tag::int[]
 _I_ float2 warpReduceSum(float2 val)  // <2>
-// end::int[]
 {
     for (int offset = warpSize / 2; offset > 0; offset /= 2) {
         val.x += shfl_down(val.x, offset);
@@ -4470,9 +3872,7 @@ _I_ float2 warpReduceSum(float2 val)  // <2>
     return val;
 }
 
-// tag::int[]
 _I_ float3 warpReduceSum(float3 val)  // <3>
-// end::int[]
 {
     for (int offset = warpSize/2; offset > 0; offset /= 2) {
         val.x += shfl_down(val.x, offset);
@@ -4485,9 +3885,7 @@ _I_ float3 warpReduceSum(float3 val)  // <3>
 #undef _S_
 #undef _I_
 
-/* end src/algo/utils/dev.h */
 
-/* begin src/wall/sdf/type.h */
 #ifndef UDX_WALL_SDF_TYPE_COMMON
 #define UDX_WALL_SDF_TYPE_COMMON
 /* view */
@@ -4496,9 +3894,7 @@ struct Sdf_v {
     Tform_v t;
     float cheap_threshold;
 };
-/* end src/wall/sdf/type.h */
 #endif
-/* begin src/wall/sdf/imp.h */
 struct Sdf;
 struct Sdf_v;
 struct WvelStep;
@@ -4506,28 +3902,18 @@ struct Coords;
 struct Particle;
 struct int3;
 
-// tag::mem[]
 void sdf_ini(int3 L, Sdf**);
 void sdf_fin(Sdf*);
-// end::mem[]
 
-// tag::int[]
 void sdf_gen(const Coords*, MPI_Comm cart, bool dump, Sdf*); // <1>
 void sdf_get_view(const Sdf*, /**/ Sdf_v*);                  // <2>
-// end::int[]
 
-// tag::tools[]
 void sdf_bulk_wall(const Sdf*, /*io*/ int *s_n, Particle *s_pp, /*o*/ int *w_n, Particle *w_pp); // <1>
 int  sdf_who_stays(const Sdf*, int n, const Particle*, int nc, int nv, /**/ int *stay);          // <2>
 double sdf_compute_volume(MPI_Comm, int3 L, const Sdf*, long nsamples);                          // <3>
-// end::tools[]
 
-// tag::bounce[]
 void sdf_bounce(float dt, const WvelStep*, const Coords*, const Sdf*, int n, /**/ Particle*);
-// end::bounce[]
-/* end src/wall/sdf/imp.h */
 
-/* begin src/wall/sdf/dev.h */
 #ifndef UDX_WALL_SDF_DEV_COMMON
 #define UDX_WALL_SDF_DEV_COMMON
 #define _S_ static __device__
@@ -4577,9 +3963,7 @@ _S_ float3 grad(const Sdf_v *sdf, const float3 *pos) {
     return make_float3(gx, gy, gz);
 }
 
-// tag::int[]
 _I_ float3 sdf_ugrad(const Sdf_v *texsdf, const float3 *r) // <1>
-// end::int[]
 {
     float mag, eps;
     float3 g;
@@ -4601,16 +3985,12 @@ _S_ float cheap_sdf(const Sdf_v *sdf, float x, float y, float z)  {
     return fetch(sdf, tc[0], tc[1], tc[2]);
 }
 
-// tag::int[]
 _I_ bool sdf_far(const Sdf_v *sdf, float x, float y, float z) // <2>
-// end::int[]
 {
     return cheap_sdf(sdf, x, y, z) <= sdf->cheap_threshold - 1 ;
 }
 
-// tag::int[]
 _I_ float sdf_eval(const Sdf_v *sdf0, float x, float y, float z)  // <3>
-// end::int[]
 {
     int c;
     float s000, s001, s010, s100, s101, s011, s110, s111;
@@ -4645,11 +4025,9 @@ _I_ float sdf_eval(const Sdf_v *sdf0, float x, float y, float z)  // <3>
 
 #undef _S_
 #undef _I_
-/* end src/wall/sdf/dev.h */
 #endif
 
 namespace sdf_dev {
-/* begin src/wall/sdf/dev/main.h */
 static __device__ float3 get_r(int3 L, const float *U) {
     enum {X, Y, Z};
     float3 r;
@@ -4680,10 +4058,8 @@ __global__ void count_inside(Sdf_v sv, int3 L, int n, const float *UU, int *coun
     if (warpmaster)
         atomicAdd(&counts[chunkid], c);
 }
-/* end src/wall/sdf/dev/main.h */
 }
 
-/* begin src/wall/sdf/imp/type.h */
 struct Array3d;
 struct Tform;
 struct Sdf {
@@ -4694,8 +4070,6 @@ struct Sdf {
 
     int3 Lte; /* texture grid size */
 };
-/* end src/wall/sdf/imp/type.h */
-/* begin src/wall/sdf/imp/gen.h */
 static void gen0(const Coords *coords, Field *F, /**/ Sdf *sdf) {
     enum {X, Y, Z};
     int M[3] = {XWM, YWM, ZWM}; /* margin and texture */
@@ -4751,8 +4125,6 @@ void sdf_gen(const Coords *coords, MPI_Comm cart, bool dump, Sdf *sdf) {
     UC(gen3(coords, dump, cart, F, /**/ sdf));
     UC(field_fin(F));
 }
-/* end src/wall/sdf/imp/gen.h */
-/* begin src/wall/sdf/imp/split.h */
 /* sort solvent particle into remaining in solvent and turning into wall according to keys (all on hst) */
 static void split_wall_solvent(const int *keys, /*io*/ int *s_n, Particle *s_pp, /**/ int *w_n, Particle *w_pp) {
     int n = *s_n;
@@ -4809,8 +4181,6 @@ int sdf_who_stays(const Sdf *sdf, int n, const Particle *pp, int nc, int nv, /**
     EFREE(labels);
     return nc;
 }
-/* end src/wall/sdf/imp/split.h */
-/* begin src/wall/sdf/imp/main.h */
 static int3 texture_grid_size(int3 L, int3 M) {
     enum {PAD = 16};
     int3 T;
@@ -4932,20 +4302,15 @@ double sdf_compute_volume(MPI_Comm comm, int3 L, const Sdf *sdf, long nsamples) 
 
     return tot;
 }
-/* end src/wall/sdf/imp/main.h */
-/* end src/wall/sdf/imp.cu */
 
 
 
 
-// generated from udx.flat.cu
 #include "udx.config.cuh"
 
-/* begin src/wall/sdf/label/imp.cu */
 #include <assert.h>
 #include <mpi.h>
 
-/* begin src/inc/conf.h */
 /* [k]ernel [l]aunch macros */
 #if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
     !defined(KL_SYNC)
@@ -4980,10 +4345,8 @@ double sdf_compute_volume(MPI_Comm comm, int3 L, const Sdf *sdf, long nsamples) 
 #ifndef DUMP_BASE
 #define DUMP_BASE "."
 #endif
-/* end src/inc/conf.h */
 
 
-/* begin src/inc/def.h */
 #ifndef UDX_WALL_DEF_COMMON
 #define UDX_WALL_DEF_COMMON
 /* solvent colors */
@@ -5036,19 +4399,12 @@ enum {
 
 /* for the spring forces r = min(lmax*RBC_SPRING_CAP, r) */
 #define RBC_SPRING_CAP (0.99)
-/* end src/inc/def.h */
 #endif
-/* begin src/utils/msg.h */
-// tag::int[]
 void msg_ini(int rank); // <1>
 void msg_print(const char *fmt, ...); // <2>
-// end::int[]
-/* end src/utils/msg.h */
-/* begin src/utils/cc.h */
 /* [c]uda [c]heck macros */
 
 #if   defined(CC_SYNC)
-/* begin src/utils/cc/sync.h */
 /* Aggressive [sync]ronization */
 #define CC(ans)                                             \
     do {                                                    \
@@ -5056,28 +4412,21 @@ void msg_print(const char *fmt, ...); // <2>
         cc::check((ans), __FILE__, __LINE__);               \
         d::DeviceSynchronize();                             \
     } while (0)
-/* end src/utils/cc/sync.h */
 #elif defined(CC_RELEASE)
-/* begin src/utils/cc/release.h */
 /* [c]cuda [c]heck */
 #define CC(ans)                                             \
     do { cc::check((ans), __FILE__, __LINE__);} while (0)
-/* end src/utils/cc/release.h */
 #else
   #error CC_* is undefined
 #endif
 
-/* begin src/utils/cc/common.h */
 namespace cc {
 void check(int rc, const char *file, int line);
 }
 
 
-/* end src/utils/cc/common.h */
 
 /* TODO: header includes header */
-/* end src/utils/cc.h */
-/* begin src/utils/error.h */
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
         error_report();                                         \
@@ -5117,44 +4466,29 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-/* end src/utils/error.h */
-/* begin src/utils/imp.h */
-// tag::mem[]
 void emalloc(size_t, /**/ void**); // <1>
 void efree(void*); // <2>
 void *ememcpy(void *dest, const void *src, size_t n); // <3>
-// end::mem[]
 
-// tag::macros[]
 #define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
 #define EFREE(pdata) UC(efree(pdata))
 #define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
-// end::macros[]
 
-// tag::stdio[]
 void efopen(const char *fname, const char *mode, /**/ FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
 void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
 void efgets(char *s, int size, FILE*);
-// end::stdio[]
 
-// tag::tools[]
 bool same_str(const char *a, const char *b); // <1>
 const char* get_filename_ext(const char*);
-// end::tools[]
-/* end src/utils/imp.h */
 
-/* begin src/d/q.h */
 /* function and variable type [q]ualifiers */
 
 #if   defined(DEV_CUDA)
-/* begin src/d/cuda/q.h */
 /* B.1. Function Type Qualifiers */
 /* B.2. Variable Type Qualifiers */
-/* end src/d/cuda/q.h */
 #elif defined(DEV_CPU)
-/* begin src/d/cpu/q.h */
 /* B.1. Function Type Qualifiers */
 #ifdef __device__
   #undef  __device__
@@ -5202,14 +4536,10 @@ const char* get_filename_ext(const char*);
   #undef  __restrict__
   #define __restrict__
 #endif
-/* end src/d/cpu/q.h */
 #else
   #error DEV_* is undefined
 #endif
-/* end src/d/q.h */
-/* begin src/d/ker.h */
 #if   defined(DEV_CUDA)
-/* begin src/d/cuda/ker.h */
 #define  Ifetch(t, i)  tex1Dfetch(t, i)
 #define F4fetch(t, i)  tex1Dfetch(t, i)
 #define F2fetch(t, i)  tex1Dfetch(t, i)
@@ -5217,9 +4547,7 @@ const char* get_filename_ext(const char*);
 #define Tfetch(T, t, i) tex1Dfetch<T>(t, i)
 
 #define Ttex3D(T, to, i, j, k) tex3D<T>(to, i, j, k);
-/* end src/d/cuda/ker.h */
 #elif defined(DEV_CPU)
-/* begin src/d/cpu/ker.h */
 #define atomicAdd(...) (0)
 
 #define atomicExch(...)
@@ -5243,8 +4571,6 @@ const char* get_filename_ext(const char*);
 #define Tfetch(T, t, i) (T{})
 
 #define Ttex3D(T, to, i, j, k) (T{})
-/* end src/d/cpu/ker.h */
-/* begin src/d/cpu/wrap.h */
 namespace d {
 static uint3 threadIdx, blockIdx, gridDim;
 static dim3  blockDim;
@@ -5256,12 +4582,9 @@ static int   warpSize = 1;
 #define gridDim   d::gridDim
 #define blockIdx  d::blockIdx
 #define warpSize  d::warpSize
-/* end src/d/cpu/wrap.h */
 #else
   #error DEV_* is undefined
 #endif
-/* end src/d/ker.h */
-/* begin src/d/api.h */
 #ifndef UDX_WALL_DEVICE_API_COMMON
 #define UDX_WALL_DEVICE_API_COMMON
 namespace d {  /* a wrapper for device API */
@@ -5270,13 +4593,10 @@ enum {MemcpyHostToHost, MemcpyHostToDevice,
       MemcpyDeviceToHost, MemcpyDeviceToDevice,
       MemcpyDefault};
 
-// tag::more[]
 const char *emsg();
 int alloc_pinned(void **pHost, size_t size);
 int is_device_pointer(const void *ptr);
-// end::more[]
 
-// tag::api[]
 int GetSymbolAddress(void **devPtr, const void *symbol);
 int Malloc(void **p, size_t);
 int MemcpyToSymbol(const void *symbol, const void *src, size_t count, size_t offset=0, int kind=MemcpyHostToDevice);
@@ -5290,12 +4610,9 @@ int Free (void *devPtr);
 int FreeHost (void *hstPtr);
 int DeviceSynchronize (void);
 int PeekAtLastError(void);
-// end::api[]
 }
-/* end src/d/api.h */
 #endif
 
-/* begin src/inc/type.h */
 #ifndef UDX_WALL_TYPE_COMMON
 #define UDX_WALL_TYPE_COMMON
 template <typename T, int N>
@@ -5350,9 +4667,7 @@ struct FoWrap {
     int n;
     Force *ff;
 };
-/* end src/inc/type.h */
 #endif
-/* begin src/inc/dev.h */
 /* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
 
@@ -5390,31 +4705,24 @@ struct FoWrap {
 /* [d]evice [a]synchronous set */
 #define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
 #define DzeroA(P, n)   DsetA(P, 0, n)
-/* end src/inc/dev.h */
 
-/* begin src/utils/kl.h */
 #ifndef UDX_WALL_KL_COMMON
 #define UDX_WALL_KL_COMMON
 /* [k]ernel [l]aunch macros */
 
 #if    defined(KL_RELEASE)
-/* begin src/utils/kl/release.h */
 #define KL_BEFORE(s, C) if (!kl::safe(ESC C)) continue;
 #define KL_CALL(F, C, A) F<<<ESC C>>>A
 #define KL_AFTER(s)
 
 namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
-/* end src/utils/kl/release.h */
 #elif  defined(KL_NONE)
-/* begin src/utils/kl/none.h */
 #define KL_BEFORE(s, C)
 #define KL_CALL(F, C, A)
 #define KL_AFTER(s)
 
 namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
-/* end src/utils/kl/none.h */
 #elif  defined(KL_SYNC)
-/* begin src/utils/kl/sync.h */
 #define KL_BEFORE(s, C) if (!kl::safe(ESC C)) continue;
 #define KL_CALL(F, C, A) F<<<ESC C>>>A
 #define KL_AFTER(s)                             \
@@ -5424,12 +4732,10 @@ namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
     } while(0)
 
 namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
-/* end src/utils/kl/sync.h */
 #else
   #error KL_* is undefined
 #endif
 
-/* begin src/utils/kl/common.h */
 namespace kl {
 inline int safe0(dim3 i, dim3 j) {
     msg(i.x, i.y, i.z,   j.x, j.y, j.z);
@@ -5438,8 +4744,6 @@ inline int safe0(dim3 i, dim3 j) {
 inline int safe(dim3 i, dim3 j)                    { return safe0(i, j); }
 inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
 }
-/* end src/utils/kl/common.h */
-/* begin src/utils/kl/macro.h */
 #define ESC(...) __VA_ARGS__
 #define KL(F, C, A)                             \
     do  {                                       \
@@ -5447,19 +4751,14 @@ inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
         KL_CALL(F, C, A);                       \
         KL_AFTER(#F);                           \
     } while (0)
-/* end src/utils/kl/macro.h */
 
 /* TODO: header includes header */
-/* end src/utils/kl.h */
 #endif
 
-/* begin src/math/tform/type.h */
 #ifndef UDX_WALL_TFORM_TYPE_COMMON
 #define UDX_WALL_TFORM_TYPE_COMMON
 struct Tform_v { float o[3], s[3]; };
-/* end src/math/tform/type.h */
 #endif
-/* begin src/math/tform/dev.h */
 #ifndef UDX_WALL_TFORM_DEV_COMMON
 #define UDX_WALL_TFORM_DEV_COMMON
 static __device__ void tform_convert_dev(const Tform_v *t, const float a0[3], /**/ float a1[3]) {
@@ -5477,16 +4776,12 @@ static __device__ void tform_spacing_dev(const Tform_v *t, /**/ float s[3]) {
     s[Y] = t->s[Y];
     s[Z] = t->s[Z];
 }
-/* end src/math/tform/dev.h */
 #endif
-/* begin src/wall/sdf/tex3d/type.h */
 #ifndef UDX_WALL_TEX3D_TYPE_COMMON
 #define UDX_WALL_TEX3D_TYPE_COMMON
 struct Tex3d_v { cudaTextureObject_t t; }; // <1>
 struct Tex3d   { cudaTextureObject_t t; }; // <2>
-/* end src/wall/sdf/tex3d/type.h */
 #endif
-/* begin src/wall/sdf/type.h */
 #ifndef UDX_WALL_SDF_TYPE_COMMON
 #define UDX_WALL_SDF_TYPE_COMMON
 /* view */
@@ -5495,9 +4790,7 @@ struct Sdf_v {
     Tform_v t;
     float cheap_threshold;
 };
-/* end src/wall/sdf/type.h */
 #endif
-/* begin src/wall/sdf/imp.h */
 struct Sdf;
 struct Sdf_v;
 struct WvelStep;
@@ -5505,27 +4798,17 @@ struct Coords;
 struct Particle;
 struct int3;
 
-// tag::mem[]
 void sdf_ini(int3 L, Sdf**);
 void sdf_fin(Sdf*);
-// end::mem[]
 
-// tag::int[]
 void sdf_gen(const Coords*, MPI_Comm cart, bool dump, Sdf*); // <1>
 void sdf_get_view(const Sdf*, /**/ Sdf_v*);                  // <2>
-// end::int[]
 
-// tag::tools[]
 void sdf_bulk_wall(const Sdf*, /*io*/ int *s_n, Particle *s_pp, /*o*/ int *w_n, Particle *w_pp); // <1>
 int  sdf_who_stays(const Sdf*, int n, const Particle*, int nc, int nv, /**/ int *stay);          // <2>
 double sdf_compute_volume(MPI_Comm, int3 L, const Sdf*, long nsamples);                          // <3>
-// end::tools[]
 
-// tag::bounce[]
 void sdf_bounce(float dt, const WvelStep*, const Coords*, const Sdf*, int n, /**/ Particle*);
-// end::bounce[]
-/* end src/wall/sdf/imp.h */
-/* begin src/wall/sdf/dev.h */
 #ifndef UDX_WALL_SDF_DEV_COMMON
 #define UDX_WALL_SDF_DEV_COMMON
 #define _S_ static __device__
@@ -5575,9 +4858,7 @@ _S_ float3 grad(const Sdf_v *sdf, const float3 *pos) {
     return make_float3(gx, gy, gz);
 }
 
-// tag::int[]
 _I_ float3 sdf_ugrad(const Sdf_v *texsdf, const float3 *r) // <1>
-// end::int[]
 {
     float mag, eps;
     float3 g;
@@ -5599,16 +4880,12 @@ _S_ float cheap_sdf(const Sdf_v *sdf, float x, float y, float z)  {
     return fetch(sdf, tc[0], tc[1], tc[2]);
 }
 
-// tag::int[]
 _I_ bool sdf_far(const Sdf_v *sdf, float x, float y, float z) // <2>
-// end::int[]
 {
     return cheap_sdf(sdf, x, y, z) <= sdf->cheap_threshold - 1 ;
 }
 
-// tag::int[]
 _I_ float sdf_eval(const Sdf_v *sdf0, float x, float y, float z)  // <3>
-// end::int[]
 {
     int c;
     float s000, s001, s010, s100, s101, s011, s110, s111;
@@ -5643,29 +4920,21 @@ _I_ float sdf_eval(const Sdf_v *sdf0, float x, float y, float z)  // <3>
 
 #undef _S_
 #undef _I_
-/* end src/wall/sdf/dev.h */
 #endif
 
-/* begin src/wall/sdf/label/imp.h */
 #ifndef UDX_WALL_LABEL_COMMON
 #define UDX_WALL_LABEL_COMMON
 enum {
-    // tag::enum[]
     LABEL_BULK,  /* remains in bulk */
     LABEL_WALL,  /* becomes wall particle */
     LABEL_DEEP   /* deep inside the wall */
-    // end::enum[]
 };
 
-// tag::int[]
 void wall_label_dev(const Sdf *sdf, int n, const Particle*, /**/ int *labels); // <1>
 void wall_label_hst(const Sdf *sdf, int n, const Particle*, /**/ int *labels); // <2>
-// end::int[]
-/* end src/wall/sdf/label/imp.h */
 #endif
 
 namespace sdf_label_dev {
-/* begin src/wall/sdf/label/dev/main.h */
 static __global__ void main(Sdf_v sdf_v, int n, const Particle *pp, /**/ int *labels) {
     enum {X, Y, Z};
     int pid;
@@ -5680,9 +4949,7 @@ static __global__ void main(Sdf_v sdf_v, int n, const Particle *pp, /**/ int *la
         s >= 0 ? LABEL_WALL :
                  LABEL_BULK;
 }
-/* end src/wall/sdf/label/dev/main.h */
 }
-/* begin src/wall/sdf/label/imp/main.h */
 void wall_label_dev(const Sdf *sdf, int n, const Particle *pp, /**/ int *labels) {
     Sdf_v sdf_v;
     sdf_get_view(sdf, &sdf_v);
@@ -5698,8 +4965,6 @@ void wall_label_hst(const Sdf *sdf, int n, const Particle *pp, /**/ int *hst) {
     cD2H(hst, dev, n);
     Dfree(dev);
 }
-/* end src/wall/sdf/label/imp/main.h */
-/* end src/wall/sdf/label/imp.cu */
 
 
 
@@ -5714,13 +4979,10 @@ void wall_label_hst(const Sdf *sdf, int n, const Particle *pp, /**/ int *hst) {
 // Grouped editable compilation unit for SDF grid storage and transforms.
 
 
-// generated from udx.flat.cu
 #include "udx.config.cuh"
 
-/* begin src/wall/sdf/array3d/imp.cu */
 #include <stdio.h>
 
-/* begin src/inc/conf.h */
 /* [k]ernel [l]aunch macros */
 #if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
     !defined(KL_SYNC)
@@ -5755,25 +5017,20 @@ void wall_label_hst(const Sdf *sdf, int n, const Particle *pp, /**/ int *hst) {
 #ifndef DUMP_BASE
 #define DUMP_BASE "."
 #endif
-/* end src/inc/conf.h */
 
 
 #ifndef UDX_WALL_DEVICE_API_COMMON
 #define UDX_WALL_DEVICE_API_COMMON
-/* begin src/d/api.h */
 namespace d {  /* a wrapper for device API */
 typedef int Stream_t; /* TODO: streams are not supported */
 enum {MemcpyHostToHost, MemcpyHostToDevice,
       MemcpyDeviceToHost, MemcpyDeviceToDevice,
       MemcpyDefault};
 
-// tag::more[]
 const char *emsg();
 int alloc_pinned(void **pHost, size_t size);
 int is_device_pointer(const void *ptr);
-// end::more[]
 
-// tag::api[]
 int GetSymbolAddress(void **devPtr, const void *symbol);
 int Malloc(void **p, size_t);
 int MemcpyToSymbol(const void *symbol, const void *src, size_t count, size_t offset=0, int kind=MemcpyHostToDevice);
@@ -5787,38 +5044,25 @@ int Free (void *devPtr);
 int FreeHost (void *hstPtr);
 int DeviceSynchronize (void);
 int PeekAtLastError(void);
-// end::api[]
 }
-/* end src/d/api.h */
 #endif
 
-/* begin src/utils/imp.h */
-// tag::mem[]
 void emalloc(size_t, /**/ void**); // <1>
 void efree(void*); // <2>
 void *ememcpy(void *dest, const void *src, size_t n); // <3>
-// end::mem[]
 
-// tag::macros[]
 #define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
 #define EFREE(pdata) UC(efree(pdata))
 #define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
-// end::macros[]
 
-// tag::stdio[]
 void efopen(const char *fname, const char *mode, /**/ FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
 void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
 void efgets(char *s, int size, FILE*);
-// end::stdio[]
 
-// tag::tools[]
 bool same_str(const char *a, const char *b); // <1>
 const char* get_filename_ext(const char*);
-// end::tools[]
-/* end src/utils/imp.h */
-/* begin src/utils/error.h */
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
         error_report();                                         \
@@ -5858,12 +5102,9 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-/* end src/utils/error.h */
-/* begin src/utils/cc.h */
 /* [c]uda [c]heck macros */
 
 #if   defined(CC_SYNC)
-/* begin src/utils/cc/sync.h */
 /* Aggressive [sync]ronization */
 #define CC(ans)                                             \
     do {                                                    \
@@ -5871,49 +5112,35 @@ void error_print_stack();
         cc::check((ans), __FILE__, __LINE__);               \
         d::DeviceSynchronize();                             \
     } while (0)
-/* end src/utils/cc/sync.h */
 #elif defined(CC_RELEASE)
-/* begin src/utils/cc/release.h */
 /* [c]cuda [c]heck */
 #define CC(ans)                                             \
     do { cc::check((ans), __FILE__, __LINE__);} while (0)
-/* end src/utils/cc/release.h */
 #else
   #error CC_* is undefined
 #endif
 
-/* begin src/utils/cc/common.h */
 namespace cc {
 void check(int rc, const char *file, int line);
 }
 
 
-/* end src/utils/cc/common.h */
 
 /* TODO: header includes header */
-/* end src/utils/cc.h */
-/* begin src/utils/msg.h */
-// tag::int[]
 void msg_ini(int rank); // <1>
 void msg_print(const char *fmt, ...); // <2>
-// end::int[]
-/* end src/utils/msg.h */
 
 #ifndef UDX_WALL_SDF_ARRAY3D_TYPE
 #define UDX_WALL_SDF_ARRAY3D_TYPE
-/* begin src/wall/sdf/array3d/type.h */
 struct Array3d {
     cudaArray_t a;  // <1>
     size_t x, y, z; // <2>
 };
-/* end src/wall/sdf/array3d/type.h */
 #endif
-/* begin src/wall/sdf/array3d/imp.h */
 struct Array3d;
 void array3d_ini(Array3d**, size_t x, size_t y, size_t z);                // <1>
 void array3d_fin(Array3d*);                                               // <2>
 void array3d_copy(size_t x, size_t y, size_t z, float *D, /**/ Array3d*); // <3>
-/* end src/wall/sdf/array3d/imp.h */
 
 void array3d_ini(Array3d **pq, size_t x, size_t y, size_t z) {
     Array3d *q;
@@ -5949,17 +5176,13 @@ void array3d_copy(size_t x, size_t y, size_t z, float *D, /**/ Array3d *q) {
     copyParams.kind = cudaMemcpyHostToDevice;
     CC(cudaMemcpy3D(&copyParams));
 }
-/* end src/wall/sdf/array3d/imp.cu */
 
 
 
 
-// generated from udx.flat.cu
 #include "udx.config.cuh"
 
-/* begin src/wall/sdf/tform/imp.cpp */
 #include <stdio.h>
-/* begin src/utils/error.h */
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
         error_report();                                         \
@@ -5999,54 +5222,39 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-/* end src/utils/error.h */
-/* begin src/coords/imp.h */
 struct Coords;
 struct Coords_v;
 struct float3;
 struct int3;
 
-// tag::view[]
 void coords_get_view(const Coords *c, Coords_v *v);
-// end::view[]
 
-// tag::domainsz[]
 int xdomain(const Coords *c);
 int ydomain(const Coords *c);
 int zdomain(const Coords *c);
-// end::domainsz[]
 
-// tag::local2center[]
 float xl2xc(const Coords *c, float xl);
 float yl2yc(const Coords *c, float yl);
 float zl2zc(const Coords *c, float zl);
 void local2center(const Coords *c, float3 rl, /**/ float3 *rc);
-// end::local2center[]
 
-// tag::center2local[]
 float xc2xl(const Coords *c, float xc);
 float yc2yl(const Coords *c, float yc);
 float zc2zl(const Coords *c, float zc);
 void center2local(const Coords *c, float3 rc, /**/ float3 *rl);
-// end::center2local[]
 
-// tag::local2global[]
 float xl2xg(const Coords *c, float xl);
 float yl2yg(const Coords *c, float yl);
 float zl2zg(const Coords *c, float zl);
 void local2global(const Coords *c, float3 rl, /**/ float3 *rg);
-// end::local2global[]
 
-// tag::global2local[]
 float xg2xl(const Coords *c, float xg);
 float yg2yl(const Coords *c, float yg);
 float zg2zl(const Coords *c, float zg);
 void global2local(const Coords *c, float3 rg, /**/ float3 *rl);
-// end::global2local[]
 
 /* edges of the sub-domain in global coordinates */
 
-// tag::bblocal[]
 int xlo(const Coords*);
 int ylo(const Coords*);
 int zlo(const Coords*);
@@ -6054,16 +5262,12 @@ int zlo(const Coords*);
 int xhi(const Coords*);
 int yhi(const Coords*);
 int zhi(const Coords*);
-// end::bblocal[]
 
-// tag::subdomainsz[]
 int xs(const Coords*);
 int ys(const Coords*);
 int zs(const Coords*);
 int3 subdomain(const Coords*);
-// end::subdomainsz[]
 
-// tag::int[]
 /* rank predicates */
 bool is_end(const Coords *c, int dir);
 
@@ -6072,18 +5276,12 @@ void coord_stamp(const Coords *c, /**/ char *s);
 
 /* number of subdomains */
 int coords_size(const Coords *c);
-// end::int[]
-/* end src/coords/imp.h */
-/* begin src/math/tform/imp.h */
 struct Tform;
 struct Tform_v;
 
-// tag::ini[]
 void tform_ini(Tform**);
 void tform_fin(Tform*);
-// end::ini[]
 
-// tag::def[]
 void tform_vector(const float a0[3], const float a1[3],   const float b0[3], const float b1[3], /**/ Tform*); // <1>
 void tform_chain(const Tform *A, const Tform *B, /**/ Tform *C); // <2>
 void tform_to_grid(const float lo[3], const float hi[3], const int n[3], /**/ Tform*); // <3>
@@ -6091,35 +5289,23 @@ void tform_from_grid(const float a0[3], const float b0[3], const int n[3], /**/ 
 void tform_grid2grid(const float f_lo[3], const float f_hi[3], const int f_n[3],
                      const float t_lo[3], const float t_hi[3], const int t_n[3],
                      Tform*); // <5>
-// end::def[]
 
 
-// tag::convert[]
 void tform_convert(const Tform*, const float a0[3], /**/ float a1[3]);
-// end::convert[]
 
-// tag::view[]
 void tform_to_view(const Tform*, /**/ Tform_v*);
-// end::view[]
 
-// tag::log[]
 void tform_log(Tform*);
 void tform_dump(Tform*, FILE*);
-// end::log[]
-/* end src/math/tform/imp.h */
 
-/* begin src/wall/sdf/tform/imp.h */
 struct Tform;
 struct Coords;
 
-// tag::int[]
 /* T: texture size, N: sdf file size, M: wall margin */
 void tex2sdf_ini(const Coords*, const int T[3], const int N[3], const int M[3], /**/ Tform*); // <1>
 void out2sdf_ini(const Coords*, const int N[3], /**/ Tform*); // <2>
 void sub2tex_ini(const Coords*, const int T[3], const int M[3], /**/ Tform*); // <3>
-// end::int[]
 
-/* end src/wall/sdf/tform/imp.h */
 
 struct TGrid {
     float lo[3], hi[3];
@@ -6232,7 +5418,6 @@ void sub2tex_ini(const Coords *c, const int T[3], const int M[3], /**/ Tform *t)
 
     tform_to_grid(lo, hi, T, /**/ t);
 }
-/* end src/wall/sdf/tform/imp.cpp */
 
 
 
@@ -6244,15 +5429,12 @@ void sub2tex_ini(const Coords *c, const int T[3], const int M[3], /**/ Tform *t)
 // Grouped editable compilation unit for SDF field and texture sampling.
 
 
-// generated from udx.flat.cu
 #include "udx.config.cuh"
 
-/* begin src/wall/sdf/field/imp.cpp */
 #include <mpi.h>
 #include <math.h>
 #include <vector_types.h>
 
-/* begin src/inc/conf.h */
 /* [k]ernel [l]aunch macros */
 #if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
     !defined(KL_SYNC)
@@ -6287,10 +5469,8 @@ void sub2tex_ini(const Coords *c, const int T[3], const int M[3], /**/ Tform *t)
 #ifndef DUMP_BASE
 #define DUMP_BASE "."
 #endif
-/* end src/inc/conf.h */
 
 
-/* begin src/utils/error.h */
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
         error_report();                                         \
@@ -6330,91 +5510,58 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-/* end src/utils/error.h */
-/* begin src/utils/imp.h */
-// tag::mem[]
 void emalloc(size_t, /**/ void**); // <1>
 void efree(void*); // <2>
 void *ememcpy(void *dest, const void *src, size_t n); // <3>
-// end::mem[]
 
-// tag::macros[]
 #define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
 #define EFREE(pdata) UC(efree(pdata))
 #define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
-// end::macros[]
 
-// tag::stdio[]
 void efopen(const char *fname, const char *mode, /**/ FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
 void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
 void efgets(char *s, int size, FILE*);
-// end::stdio[]
 
-// tag::tools[]
 bool same_str(const char *a, const char *b); // <1>
 const char* get_filename_ext(const char*);
-// end::tools[]
-/* end src/utils/imp.h */
-/* begin src/io/grid/imp.h */
-// tag::int[]
 void grid_write(int3 subGrid, int3 subDomain, MPI_Comm, const char *path, int ncmp, const float **data, const char **names);
-// end::int[]
-/* end src/io/grid/imp.h */
-/* begin src/utils/msg.h */
-// tag::int[]
 void msg_ini(int rank); // <1>
 void msg_print(const char *fmt, ...); // <2>
-// end::int[]
-/* end src/utils/msg.h */
-/* begin src/coords/imp.h */
 struct Coords;
 struct Coords_v;
 struct float3;
 struct int3;
 
-// tag::view[]
 void coords_get_view(const Coords *c, Coords_v *v);
-// end::view[]
 
-// tag::domainsz[]
 int xdomain(const Coords *c);
 int ydomain(const Coords *c);
 int zdomain(const Coords *c);
-// end::domainsz[]
 
-// tag::local2center[]
 float xl2xc(const Coords *c, float xl);
 float yl2yc(const Coords *c, float yl);
 float zl2zc(const Coords *c, float zl);
 void local2center(const Coords *c, float3 rl, /**/ float3 *rc);
-// end::local2center[]
 
-// tag::center2local[]
 float xc2xl(const Coords *c, float xc);
 float yc2yl(const Coords *c, float yc);
 float zc2zl(const Coords *c, float zc);
 void center2local(const Coords *c, float3 rc, /**/ float3 *rl);
-// end::center2local[]
 
-// tag::local2global[]
 float xl2xg(const Coords *c, float xl);
 float yl2yg(const Coords *c, float yl);
 float zl2zg(const Coords *c, float zl);
 void local2global(const Coords *c, float3 rl, /**/ float3 *rg);
-// end::local2global[]
 
-// tag::global2local[]
 float xg2xl(const Coords *c, float xg);
 float yg2yl(const Coords *c, float yg);
 float zg2zl(const Coords *c, float zg);
 void global2local(const Coords *c, float3 rg, /**/ float3 *rl);
-// end::global2local[]
 
 /* edges of the sub-domain in global coordinates */
 
-// tag::bblocal[]
 int xlo(const Coords*);
 int ylo(const Coords*);
 int zlo(const Coords*);
@@ -6422,16 +5569,12 @@ int zlo(const Coords*);
 int xhi(const Coords*);
 int yhi(const Coords*);
 int zhi(const Coords*);
-// end::bblocal[]
 
-// tag::subdomainsz[]
 int xs(const Coords*);
 int ys(const Coords*);
 int zs(const Coords*);
 int3 subdomain(const Coords*);
-// end::subdomainsz[]
 
-// tag::int[]
 /* rank predicates */
 bool is_end(const Coords *c, int dir);
 
@@ -6440,19 +5583,13 @@ void coord_stamp(const Coords *c, /**/ char *s);
 
 /* number of subdomains */
 int coords_size(const Coords *c);
-// end::int[]
-/* end src/coords/imp.h */
 
-/* begin src/math/tform/imp.h */
 struct Tform;
 struct Tform_v;
 
-// tag::ini[]
 void tform_ini(Tform**);
 void tform_fin(Tform*);
-// end::ini[]
 
-// tag::def[]
 void tform_vector(const float a0[3], const float a1[3],   const float b0[3], const float b1[3], /**/ Tform*); // <1>
 void tform_chain(const Tform *A, const Tform *B, /**/ Tform *C); // <2>
 void tform_to_grid(const float lo[3], const float hi[3], const int n[3], /**/ Tform*); // <3>
@@ -6460,69 +5597,44 @@ void tform_from_grid(const float a0[3], const float b0[3], const int n[3], /**/ 
 void tform_grid2grid(const float f_lo[3], const float f_hi[3], const int f_n[3],
                      const float t_lo[3], const float t_hi[3], const int t_n[3],
                      Tform*); // <5>
-// end::def[]
 
 
-// tag::convert[]
 void tform_convert(const Tform*, const float a0[3], /**/ float a1[3]);
-// end::convert[]
 
-// tag::view[]
 void tform_to_view(const Tform*, /**/ Tform_v*);
-// end::view[]
 
-// tag::log[]
 void tform_log(Tform*);
 void tform_dump(Tform*, FILE*);
-// end::log[]
-/* end src/math/tform/imp.h */
-/* begin src/wall/sdf/tform/imp.h */
 struct Tform;
 struct Coords;
 
-// tag::int[]
 /* T: texture size, N: sdf file size, M: wall margin */
 void tex2sdf_ini(const Coords*, const int T[3], const int N[3], const int M[3], /**/ Tform*); // <1>
 void out2sdf_ini(const Coords*, const int N[3], /**/ Tform*); // <2>
 void sub2tex_ini(const Coords*, const int T[3], const int M[3], /**/ Tform*); // <3>
-// end::int[]
 
-/* end src/wall/sdf/tform/imp.h */
 
-/* begin src/wall/sdf/field/imp.h */
 struct Coords;
 struct Tform;
 struct Field;
 
-// tag::mem[]
 void field_ini(const char *path, /**/ Field**); // <1>
 void field_fin(Field*);                         // <2>
-// end::mem[]
 
-// tag::int[]
 void field_sample(const Field*, const Tform*, const int N[3], /**/ Field**); // <1>
-// end::int[]
 
-// tag::get[]
 void field_size(const Field*, /**/ int N[3]);       // <1>
 void field_extend(const Field*, /**/ float ext[3]); // <2>
 void field_data(const Field*, /**/ float**);        // <3>
-// end::get[]
 
-// tag::int[]
 void field_dump(const Field*, const Coords*, MPI_Comm cart); // <2>
 void field_scale(Field*, float scale); // <3>
-// end::int[]
-/* end src/wall/sdf/field/imp.h */
 
-/* begin src/wall/sdf/field/imp/type.h */
 struct Field {  /* size, extension, and data */
     int N[3];
     float ext[3];
     float *D;
 };
-/* end src/wall/sdf/field/imp/type.h */
-/* begin src/wall/sdf/field/imp/ini.h */
 static void read_extents(FILE *f, /**/ float *x, float *y, float *z) {
     int r;
     char s[2048];
@@ -6566,14 +5678,10 @@ void field_ini(const char *path, /**/ Field **pq) {
 
     *pq = q;
 }
-/* end src/wall/sdf/field/imp/ini.h */
-/* begin src/wall/sdf/field/imp/fin.h */
 void field_fin(Field *q) {
     EFREE(q->D);
     EFREE(q);
 }
-/* end src/wall/sdf/field/imp/fin.h */
-/* begin src/wall/sdf/field/imp/sample.h */
 struct Fi { /* field */
     const Tform *t;
     const int *n;
@@ -6663,8 +5771,6 @@ static void sample(const Tform *t, const int N0[3], const float *D0, const int N
         }
     }
 }
-/* end src/wall/sdf/field/imp/sample.h */
-/* begin src/wall/sdf/field/imp/main.h */
 static void dump0(const Coords *coords, const int N0[3], const float *D0, /**/ float *D1) {
     int L[3] = {xs(coords), ys(coords), zs(coords)};
     Tform *t;
@@ -6729,19 +5835,14 @@ void field_sample(const Field *F, const Tform *t, const int N1[3], /**/ Field **
 void field_dump(const Field *q, const Coords *c, MPI_Comm cart) {
     dump(c, cart, q->N, q->D);
 }
-/* end src/wall/sdf/field/imp/main.h */
-/* end src/wall/sdf/field/imp.cpp */
 
 
 
 
-// generated from udx.flat.cu
 #include "udx.config.cuh"
 
-/* begin src/wall/sdf/tex3d/imp.cu */
 #include <stdio.h>
 
-/* begin src/inc/conf.h */
 /* [k]ernel [l]aunch macros */
 #if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
     !defined(KL_SYNC)
@@ -6776,25 +5877,20 @@ void field_dump(const Field *q, const Coords *c, MPI_Comm cart) {
 #ifndef DUMP_BASE
 #define DUMP_BASE "."
 #endif
-/* end src/inc/conf.h */
 
 
 #ifndef UDX_WALL_DEVICE_API_COMMON
 #define UDX_WALL_DEVICE_API_COMMON
-/* begin src/d/api.h */
 namespace d {  /* a wrapper for device API */
 typedef int Stream_t; /* TODO: streams are not supported */
 enum {MemcpyHostToHost, MemcpyHostToDevice,
       MemcpyDeviceToHost, MemcpyDeviceToDevice,
       MemcpyDefault};
 
-// tag::more[]
 const char *emsg();
 int alloc_pinned(void **pHost, size_t size);
 int is_device_pointer(const void *ptr);
-// end::more[]
 
-// tag::api[]
 int GetSymbolAddress(void **devPtr, const void *symbol);
 int Malloc(void **p, size_t);
 int MemcpyToSymbol(const void *symbol, const void *src, size_t count, size_t offset=0, int kind=MemcpyHostToDevice);
@@ -6808,38 +5904,25 @@ int Free (void *devPtr);
 int FreeHost (void *hstPtr);
 int DeviceSynchronize (void);
 int PeekAtLastError(void);
-// end::api[]
 }
-/* end src/d/api.h */
 #endif
 
-/* begin src/utils/imp.h */
-// tag::mem[]
 void emalloc(size_t, /**/ void**); // <1>
 void efree(void*); // <2>
 void *ememcpy(void *dest, const void *src, size_t n); // <3>
-// end::mem[]
 
-// tag::macros[]
 #define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
 #define EFREE(pdata) UC(efree(pdata))
 #define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
-// end::macros[]
 
-// tag::stdio[]
 void efopen(const char *fname, const char *mode, /**/ FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
 void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
 void efgets(char *s, int size, FILE*);
-// end::stdio[]
 
-// tag::tools[]
 bool same_str(const char *a, const char *b); // <1>
 const char* get_filename_ext(const char*);
-// end::tools[]
-/* end src/utils/imp.h */
-/* begin src/utils/error.h */
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
         error_report();                                         \
@@ -6879,12 +5962,9 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-/* end src/utils/error.h */
-/* begin src/utils/cc.h */
 /* [c]uda [c]heck macros */
 
 #if   defined(CC_SYNC)
-/* begin src/utils/cc/sync.h */
 /* Aggressive [sync]ronization */
 #define CC(ans)                                             \
     do {                                                    \
@@ -6892,62 +5972,45 @@ void error_print_stack();
         cc::check((ans), __FILE__, __LINE__);               \
         d::DeviceSynchronize();                             \
     } while (0)
-/* end src/utils/cc/sync.h */
 #elif defined(CC_RELEASE)
-/* begin src/utils/cc/release.h */
 /* [c]cuda [c]heck */
 #define CC(ans)                                             \
     do { cc::check((ans), __FILE__, __LINE__);} while (0)
-/* end src/utils/cc/release.h */
 #else
   #error CC_* is undefined
 #endif
 
-/* begin src/utils/cc/common.h */
 namespace cc {
 void check(int rc, const char *file, int line);
 }
 
 
-/* end src/utils/cc/common.h */
 
 /* TODO: header includes header */
-/* end src/utils/cc.h */
 
 #ifndef UDX_WALL_SDF_ARRAY3D_TYPE
 #define UDX_WALL_SDF_ARRAY3D_TYPE
-/* begin src/wall/sdf/array3d/type.h */
 struct Array3d {
     cudaArray_t a;  // <1>
     size_t x, y, z; // <2>
 };
-/* end src/wall/sdf/array3d/type.h */
 #endif
 
 #ifndef UDX_WALL_TEX3D_TYPE_COMMON
 #define UDX_WALL_TEX3D_TYPE_COMMON
-/* begin src/wall/sdf/tex3d/type.h */
 struct Tex3d_v { cudaTextureObject_t t; }; // <1>
 struct Tex3d   { cudaTextureObject_t t; }; // <2>
-/* end src/wall/sdf/tex3d/type.h */
 #endif
-/* begin src/wall/sdf/tex3d/imp.h */
 struct Tex3d;
 struct Tex3d_v;
 struct Array3d;
 
-// tag::mem[]
 void tex3d_ini(Tex3d**);
 void tex3d_fin(Tex3d*);
-// end::mem[]
 
-// tag::int[]
 void tex3d_copy(const Array3d*, /**/ Tex3d*);    // <1>
 void tex3d_to_view(const Tex3d*, /**/ Tex3d_v*); // <2>
-// end::int[]
-/* end src/wall/sdf/tex3d/imp.h */
 
-/* begin src/wall/sdf/tex3d/imp/main.h */
 void tex3d_ini(Tex3d **pq) {
     Tex3d *q;
     EMALLOC(1, &q);
@@ -6979,47 +6042,32 @@ void tex3d_copy(const Array3d *a, /**/ Tex3d *t) {
 }
 
 void tex3d_to_view(const Tex3d *t, /**/ Tex3d_v *v) { v->t = t->t; }
-/* end src/wall/sdf/tex3d/imp/main.h */
-/* end src/wall/sdf/tex3d/imp.cu */
 
 
 
 
 
-// generated from udx.flat.cu
 #include "udx.config.cuh"
 
-/* begin src/wall/wvel/conf.cpp */
 #include <stdio.h>
 #include <vector_types.h>
 
-/* begin src/utils/imp.h */
-// tag::mem[]
 void emalloc(size_t, /**/ void**); // <1>
 void efree(void*); // <2>
 void *ememcpy(void *dest, const void *src, size_t n); // <3>
-// end::mem[]
 
-// tag::macros[]
 #define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
 #define EFREE(pdata) UC(efree(pdata))
 #define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
-// end::macros[]
 
-// tag::stdio[]
 void efopen(const char *fname, const char *mode, /**/ FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
 void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
 void efgets(char *s, int size, FILE*);
-// end::stdio[]
 
-// tag::tools[]
 bool same_str(const char *a, const char *b); // <1>
 const char* get_filename_ext(const char*);
-// end::tools[]
-/* end src/utils/imp.h */
-/* begin src/utils/error.h */
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
         error_report();                                         \
@@ -7059,22 +6107,15 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-/* end src/utils/error.h */
-/* begin src/conf/imp.h */
 struct Config;
 struct float3;
 struct int3;
 
-// tag::mem[]
 void conf_ini(/**/ Config **c);
 void conf_fin(/**/ Config *c);
-// end::mem[]
 
-// tag::ini[]
 void conf_read(int argc, char **argv, /**/ Config *cfg);
-// end::ini[]
 
-// tag::lookup[]
 void conf_lookup_int(const Config *c, const char *desc, int *a);
 void conf_lookup_float(const Config *c, const char *desc, float *a);
 void conf_lookup_bool(const Config *c, const char *desc, int *a);
@@ -7084,9 +6125,7 @@ void conf_lookup_int3(const Config *c, const char *desc, int3 *a);
 void conf_lookup_vfloat(const Config *c, const char *desc, int maxn, int *n, float a[]);
 void conf_lookup_float3(const Config *c, const char *desc, float3 *a);
 void conf_lookup_vstring(const Config *c, const char *desc, int maxn, int *n, const char **ss);
-// end::lookup[]
 
-// tag::ns[]
 void conf_lookup_int_ns(const Config *c, const char *ns, const char *desc, int *a);
 void conf_lookup_float_ns(const Config *c, const char *ns, const char *desc, float *a);
 void conf_lookup_bool_ns(const Config *c, const char *ns, const char *desc, int *a);
@@ -7096,9 +6135,7 @@ void conf_lookup_int3_ns(const Config *c, const char *ns, const char *desc, int3
 void conf_lookup_vfloat_ns(const Config *c, const char *ns, const char *desc, int maxn, int *n, float a[]);
 void conf_lookup_float3_ns(const Config *c, const char *ns, const char *desc, float3 *a);
 void conf_lookup_vstring_ns(const Config *c, const char *ns, const char *d, int maxn, int *n, const char **ss);
-// end::ns[]
 
-// tag::opt[]
 bool conf_opt_int(const Config *c, const char *desc, int *a);
 bool conf_opt_float(const Config *c, const char *desc, float *a);
 bool conf_opt_bool(const Config *c, const char *desc, int *a);
@@ -7108,9 +6145,7 @@ bool conf_opt_int3(const Config *c, const char *desc, int3 *a);
 bool conf_opt_vfloat(const Config *c, const char *desc, int maxn, int *n, float a[]);
 bool conf_opt_float3(const Config *c, const char *desc, float3 *a);
 bool conf_opt_vstring(const Config *c, const char *desc, int maxn, int *n, const char **ss);
-// end::opt[]
 
-// tag::set[]
 void conf_set_int(const char *desc, int a, Config *c);
 void conf_set_vint(const char *desc, int nelem, const int a[], Config *cfg);
 void conf_set_int3(const char *desc, int3 a, Config *cfg);
@@ -7119,15 +6154,10 @@ void conf_set_vfloat(const char *desc, int nelem, const float a[], Config *cfg);
 void conf_set_float3(const char *desc, float3 a, Config *cfg);
 void conf_set_bool(const char *desc, int a, Config *cfg);
 void conf_set_string(const char *desc, const char *a, Config *cfg);
-// end::set[]
 
-// tag::dump[]
 void conf_write_exe(const Config *cfg, FILE *stream);     // <1>
 void conf_write_history(const Config *cfg, FILE *stream); // <2>
-// end::dump[]
-/* end src/conf/imp.h */
 
-/* begin src/wall/wvel/imp.h */
 struct Wvel;
 struct WvelStep;
 
@@ -7140,49 +6170,34 @@ struct Config;
 
 #ifndef UDX_WALL_WVEL_ENUM
 #define UDX_WALL_WVEL_ENUM
-// tag::enum[]
 enum {
     WALL_VEL_V_CSTE,
     WALL_VEL_V_SHEAR,
     WALL_VEL_V_HS,
 };
-// end::enum[]
 #endif
 
-// tag::mem[]
 void wvel_ini(Wvel **wv);
 void wvel_fin(Wvel *wv);
 
 void wvel_step_ini(WvelStep **wv);
 void wvel_step_fin(WvelStep *wv);
-// end::mem[]
 
-// tag::ini[]
 void wvel_set_cste(float3 u, Wvel *vw);
 void wvel_set_shear(float gdot, int vdir, int gdir, int half, Wvel *vw);
 void wvel_set_shear_sin(float gdot, int vdir, int gdir, int half, float w, Wvel *vw);
 void wvel_set_hs(float u, float h, Wvel *vw);
 void wvel_set_timestep(float dt, Wvel *vw);
-// end::ini[]
 
-// tag::cnf[]
 void wvel_set_conf(const Config *cfg, Wvel *vw);
-// end::cnf[]
 
-// tag::step[]
 void wvel_get_step(float t, const Wvel *wv, /**/ WvelStep *);
-// end::step[]
 
-// tag::get[]
 int wvel_get_type(const WvelStep *w);
-// end::get[]
 
-// tag::view[]
 void wvel_get_view(const WvelStep *w, /**/ WvelCste_v *v);
 void wvel_get_view(const WvelStep *w, /**/ WvelShear_v *v);
 void wvel_get_view(const WvelStep *w, /**/ WvelHS_v *v);
-// end::view[]
-/* end src/wall/wvel/imp.h */
 
 void wvel_set_conf(const Config *cfg, Wvel *vw) {
     const char *type;
@@ -7222,17 +6237,14 @@ void wvel_set_conf(const Config *cfg, Wvel *vw) {
         ERR("unknown type <%s>\n", type);
     }
 }
-/* end src/wall/wvel/conf.cpp */
 
 
 
-/* begin src/wall/wvel/imp.cpp */
 #include <mpi.h>
 #include <math.h>
 #include <vector_types.h>
 #include <assert.h>
 
-/* begin src/inc/conf.h */
 /* [k]ernel [l]aunch macros */
 #if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
     !defined(KL_SYNC)
@@ -7267,9 +6279,7 @@ void wvel_set_conf(const Config *cfg, Wvel *vw) {
 #ifndef DUMP_BASE
 #define DUMP_BASE "."
 #endif
-/* end src/inc/conf.h */
 
-/* begin src/utils/error.h */
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
         error_report();                                         \
@@ -7309,62 +6319,43 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-/* end src/utils/error.h */
 
-/* begin src/utils/msg.h */
-// tag::int[]
 void msg_ini(int rank); // <1>
 void msg_print(const char *fmt, ...); // <2>
-// end::int[]
-/* end src/utils/msg.h */
 
-/* begin src/coords/imp.h */
 struct Coords;
 struct Coords_v;
 struct float3;
 struct int3;
 
-// tag::view[]
 void coords_get_view(const Coords *c, Coords_v *v);
-// end::view[]
 
-// tag::domainsz[]
 int xdomain(const Coords *c);
 int ydomain(const Coords *c);
 int zdomain(const Coords *c);
-// end::domainsz[]
 
-// tag::local2center[]
 float xl2xc(const Coords *c, float xl);
 float yl2yc(const Coords *c, float yl);
 float zl2zc(const Coords *c, float zl);
 void local2center(const Coords *c, float3 rl, /**/ float3 *rc);
-// end::local2center[]
 
-// tag::center2local[]
 float xc2xl(const Coords *c, float xc);
 float yc2yl(const Coords *c, float yc);
 float zc2zl(const Coords *c, float zc);
 void center2local(const Coords *c, float3 rc, /**/ float3 *rl);
-// end::center2local[]
 
-// tag::local2global[]
 float xl2xg(const Coords *c, float xl);
 float yl2yg(const Coords *c, float yl);
 float zl2zg(const Coords *c, float zl);
 void local2global(const Coords *c, float3 rl, /**/ float3 *rg);
-// end::local2global[]
 
-// tag::global2local[]
 float xg2xl(const Coords *c, float xg);
 float yg2yl(const Coords *c, float yg);
 float zg2zl(const Coords *c, float zg);
 void global2local(const Coords *c, float3 rg, /**/ float3 *rl);
-// end::global2local[]
 
 /* edges of the sub-domain in global coordinates */
 
-// tag::bblocal[]
 int xlo(const Coords*);
 int ylo(const Coords*);
 int zlo(const Coords*);
@@ -7372,16 +6363,12 @@ int zlo(const Coords*);
 int xhi(const Coords*);
 int yhi(const Coords*);
 int zhi(const Coords*);
-// end::bblocal[]
 
-// tag::subdomainsz[]
 int xs(const Coords*);
 int ys(const Coords*);
 int zs(const Coords*);
 int3 subdomain(const Coords*);
-// end::subdomainsz[]
 
-// tag::int[]
 /* rank predicates */
 bool is_end(const Coords *c, int dir);
 
@@ -7390,12 +6377,9 @@ void coord_stamp(const Coords *c, /**/ char *s);
 
 /* number of subdomains */
 int coords_size(const Coords *c);
-// end::int[]
-/* end src/coords/imp.h */
 
 #ifndef UDX_WALL_WVEL_TYPE_COMMON
 #define UDX_WALL_WVEL_TYPE_COMMON
-/* begin src/wall/wvel/type.h */
 /* view structures                      */
 /* (what is passed to device functions) */
 
@@ -7414,11 +6398,9 @@ struct WvelHS_v {
     float h; // height of the channel
 };
 
-/* end src/wall/wvel/type.h */
 #endif
 
 
-/* begin src/wall/wvel/imp/type.h */
 /* data stored on the host                       */
 /* (helpers to setup the views at each timestep) */
 
@@ -7477,8 +6459,6 @@ struct WvelStep {
     int type;
 };
 
-/* end src/wall/wvel/imp/type.h */
-/* begin src/wall/wvel/imp/main.h */
 void wvel_ini(Wvel **wv) {
     EMALLOC(1, wv);
 }
@@ -7600,23 +6580,18 @@ void wvel_get_view(const WvelStep *w, /**/ WvelShear_v *v) {
 void wvel_get_view(const WvelStep *w, /**/ WvelHS_v *v) {
     *v = w->p.hs;
 }
-/* end src/wall/wvel/imp/main.h */
-/* end src/wall/wvel/imp.cpp */
 
 
 
 
 
 
-// generated from udx.flat.cu
 #include "udx.config.cuh"
 
-/* begin src/wall/sdf/bounce/imp.cu */
 #include <stdio.h>
 #include <assert.h>
 #include <mpi.h>
 
-/* begin src/inc/conf.h */
 /* [k]ernel [l]aunch macros */
 #if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
     !defined(KL_SYNC)
@@ -7651,20 +6626,13 @@ void wvel_get_view(const WvelStep *w, /**/ WvelHS_v *v) {
 #ifndef DUMP_BASE
 #define DUMP_BASE "."
 #endif
-/* end src/inc/conf.h */
 
 
-/* begin src/utils/msg.h */
-// tag::int[]
 void msg_ini(int rank); // <1>
 void msg_print(const char *fmt, ...); // <2>
-// end::int[]
-/* end src/utils/msg.h */
-/* begin src/utils/cc.h */
 /* [c]uda [c]heck macros */
 
 #if   defined(CC_SYNC)
-/* begin src/utils/cc/sync.h */
 /* Aggressive [sync]ronization */
 #define CC(ans)                                             \
     do {                                                    \
@@ -7672,28 +6640,21 @@ void msg_print(const char *fmt, ...); // <2>
         cc::check((ans), __FILE__, __LINE__);               \
         d::DeviceSynchronize();                             \
     } while (0)
-/* end src/utils/cc/sync.h */
 #elif defined(CC_RELEASE)
-/* begin src/utils/cc/release.h */
 /* [c]cuda [c]heck */
 #define CC(ans)                                             \
     do { cc::check((ans), __FILE__, __LINE__);} while (0)
-/* end src/utils/cc/release.h */
 #else
   #error CC_* is undefined
 #endif
 
-/* begin src/utils/cc/common.h */
 namespace cc {
 void check(int rc, const char *file, int line);
 }
 
 
-/* end src/utils/cc/common.h */
 
 /* TODO: header includes header */
-/* end src/utils/cc.h */
-/* begin src/utils/error.h */
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
         error_report();                                         \
@@ -7733,18 +6694,13 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-/* end src/utils/error.h */
 
-/* begin src/d/q.h */
 /* function and variable type [q]ualifiers */
 
 #if   defined(DEV_CUDA)
-/* begin src/d/cuda/q.h */
 /* B.1. Function Type Qualifiers */
 /* B.2. Variable Type Qualifiers */
-/* end src/d/cuda/q.h */
 #elif defined(DEV_CPU)
-/* begin src/d/cpu/q.h */
 /* B.1. Function Type Qualifiers */
 #ifdef __device__
   #undef  __device__
@@ -7792,14 +6748,10 @@ void error_print_stack();
   #undef  __restrict__
   #define __restrict__
 #endif
-/* end src/d/cpu/q.h */
 #else
   #error DEV_* is undefined
 #endif
-/* end src/d/q.h */
-/* begin src/d/ker.h */
 #if   defined(DEV_CUDA)
-/* begin src/d/cuda/ker.h */
 #define  Ifetch(t, i)  tex1Dfetch(t, i)
 #define F4fetch(t, i)  tex1Dfetch(t, i)
 #define F2fetch(t, i)  tex1Dfetch(t, i)
@@ -7807,9 +6759,7 @@ void error_print_stack();
 #define Tfetch(T, t, i) tex1Dfetch<T>(t, i)
 
 #define Ttex3D(T, to, i, j, k) tex3D<T>(to, i, j, k);
-/* end src/d/cuda/ker.h */
 #elif defined(DEV_CPU)
-/* begin src/d/cpu/ker.h */
 #define atomicAdd(...) (0)
 
 #define atomicExch(...)
@@ -7833,8 +6783,6 @@ void error_print_stack();
 #define Tfetch(T, t, i) (T{})
 
 #define Ttex3D(T, to, i, j, k) (T{})
-/* end src/d/cpu/ker.h */
-/* begin src/d/cpu/wrap.h */
 namespace d {
 static uint3 threadIdx, blockIdx, gridDim;
 static dim3  blockDim;
@@ -7846,27 +6794,21 @@ static int   warpSize = 1;
 #define gridDim   d::gridDim
 #define blockIdx  d::blockIdx
 #define warpSize  d::warpSize
-/* end src/d/cpu/wrap.h */
 #else
   #error DEV_* is undefined
 #endif
-/* end src/d/ker.h */
 #ifndef UDX_WALL_DEVICE_API_COMMON
 #define UDX_WALL_DEVICE_API_COMMON
-/* begin src/d/api.h */
 namespace d {  /* a wrapper for device API */
 typedef int Stream_t; /* TODO: streams are not supported */
 enum {MemcpyHostToHost, MemcpyHostToDevice,
       MemcpyDeviceToHost, MemcpyDeviceToDevice,
       MemcpyDefault};
 
-// tag::more[]
 const char *emsg();
 int alloc_pinned(void **pHost, size_t size);
 int is_device_pointer(const void *ptr);
-// end::more[]
 
-// tag::api[]
 int GetSymbolAddress(void **devPtr, const void *symbol);
 int Malloc(void **p, size_t);
 int MemcpyToSymbol(const void *symbol, const void *src, size_t count, size_t offset=0, int kind=MemcpyHostToDevice);
@@ -7880,14 +6822,11 @@ int Free (void *devPtr);
 int FreeHost (void *hstPtr);
 int DeviceSynchronize (void);
 int PeekAtLastError(void);
-// end::api[]
 }
-/* end src/d/api.h */
 #endif
 
 #ifndef UDX_WALL_TYPE_COMMON
 #define UDX_WALL_TYPE_COMMON
-/* begin src/inc/type.h */
 template <typename T, int N>
 struct Sarray { /* [s]tatic array */
     T d[N];
@@ -7940,9 +6879,7 @@ struct FoWrap {
     int n;
     Force *ff;
 };
-/* end src/inc/type.h */
 #endif /* UDX_WALL_TYPE_COMMON */
-/* begin src/inc/dev.h */
 /* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
 
@@ -7980,31 +6917,24 @@ struct FoWrap {
 /* [d]evice [a]synchronous set */
 #define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
 #define DzeroA(P, n)   DsetA(P, 0, n)
-/* end src/inc/dev.h */
 
 #ifndef UDX_WALL_KL_COMMON
 #define UDX_WALL_KL_COMMON
-/* begin src/utils/kl.h */
 /* [k]ernel [l]aunch macros */
 
 #if    defined(KL_RELEASE)
-/* begin src/utils/kl/release.h */
 #define KL_BEFORE(s, C) if (!kl::safe(ESC C)) continue;
 #define KL_CALL(F, C, A) F<<<ESC C>>>A
 #define KL_AFTER(s)
 
 namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
-/* end src/utils/kl/release.h */
 #elif  defined(KL_NONE)
-/* begin src/utils/kl/none.h */
 #define KL_BEFORE(s, C)
 #define KL_CALL(F, C, A)
 #define KL_AFTER(s)
 
 namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
-/* end src/utils/kl/none.h */
 #elif  defined(KL_SYNC)
-/* begin src/utils/kl/sync.h */
 #define KL_BEFORE(s, C) if (!kl::safe(ESC C)) continue;
 #define KL_CALL(F, C, A) F<<<ESC C>>>A
 #define KL_AFTER(s)                             \
@@ -8014,12 +6944,10 @@ namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
     } while(0)
 
 namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
-/* end src/utils/kl/sync.h */
 #else
   #error KL_* is undefined
 #endif
 
-/* begin src/utils/kl/common.h */
 namespace kl {
 inline int safe0(dim3 i, dim3 j) {
     msg(i.x, i.y, i.z,   j.x, j.y, j.z);
@@ -8028,8 +6956,6 @@ inline int safe0(dim3 i, dim3 j) {
 inline int safe(dim3 i, dim3 j)                    { return safe0(i, j); }
 inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
 }
-/* end src/utils/kl/common.h */
-/* begin src/utils/kl/macro.h */
 #define ESC(...) __VA_ARGS__
 #define KL(F, C, A)                             \
     do  {                                       \
@@ -8037,25 +6963,18 @@ inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
         KL_CALL(F, C, A);                       \
         KL_AFTER(#F);                           \
     } while (0)
-/* end src/utils/kl/macro.h */
 
 /* TODO: header includes header */
-/* end src/utils/kl.h */
 #endif /* UDX_WALL_KL_COMMON */
 
-/* begin src/coords/type.h */
 #ifndef UDX_WALL_COORDS_TYPE_COMMON
 #define UDX_WALL_COORDS_TYPE_COMMON
-// tag::view[]
 struct Coords_v {
     int xc, yc, zc; /* rank coordinates        */
     int xd, yd, zd; /* rank sizes              */
     int Lx, Ly, Lz; /* [L]ocal: subdomain size */
 };
-// end::view[]
-/* end src/coords/type.h */
 #endif /* UDX_WALL_COORDS_TYPE_COMMON */
-/* begin src/coords/dev.h */
 #ifndef UDX_WALL_COORDS_DEV_COMMON
 #define UDX_WALL_COORDS_DEV_COMMON
 /* domain sizes */
@@ -8152,55 +7071,40 @@ static __device__ void global2local(const Coords_v c, float3 rg, /**/ float3 *rl
     rl->z = zg2zl(c, rg.z);
 }
 
-/* end src/coords/dev.h */
 #endif /* UDX_WALL_COORDS_DEV_COMMON */
-/* begin src/coords/imp.h */
 struct Coords;
 struct Coords_v;
 struct float3;
 struct int3;
 
-// tag::view[]
 void coords_get_view(const Coords *c, Coords_v *v);
-// end::view[]
 
-// tag::domainsz[]
 int xdomain(const Coords *c);
 int ydomain(const Coords *c);
 int zdomain(const Coords *c);
-// end::domainsz[]
 
-// tag::local2center[]
 float xl2xc(const Coords *c, float xl);
 float yl2yc(const Coords *c, float yl);
 float zl2zc(const Coords *c, float zl);
 void local2center(const Coords *c, float3 rl, /**/ float3 *rc);
-// end::local2center[]
 
-// tag::center2local[]
 float xc2xl(const Coords *c, float xc);
 float yc2yl(const Coords *c, float yc);
 float zc2zl(const Coords *c, float zc);
 void center2local(const Coords *c, float3 rc, /**/ float3 *rl);
-// end::center2local[]
 
-// tag::local2global[]
 float xl2xg(const Coords *c, float xl);
 float yl2yg(const Coords *c, float yl);
 float zl2zg(const Coords *c, float zl);
 void local2global(const Coords *c, float3 rl, /**/ float3 *rg);
-// end::local2global[]
 
-// tag::global2local[]
 float xg2xl(const Coords *c, float xg);
 float yg2yl(const Coords *c, float yg);
 float zg2zl(const Coords *c, float zg);
 void global2local(const Coords *c, float3 rg, /**/ float3 *rl);
-// end::global2local[]
 
 /* edges of the sub-domain in global coordinates */
 
-// tag::bblocal[]
 int xlo(const Coords*);
 int ylo(const Coords*);
 int zlo(const Coords*);
@@ -8208,16 +7112,12 @@ int zlo(const Coords*);
 int xhi(const Coords*);
 int yhi(const Coords*);
 int zhi(const Coords*);
-// end::bblocal[]
 
-// tag::subdomainsz[]
 int xs(const Coords*);
 int ys(const Coords*);
 int zs(const Coords*);
 int3 subdomain(const Coords*);
-// end::subdomainsz[]
 
-// tag::int[]
 /* rank predicates */
 bool is_end(const Coords *c, int dir);
 
@@ -8226,12 +7126,9 @@ void coord_stamp(const Coords *c, /**/ char *s);
 
 /* number of subdomains */
 int coords_size(const Coords *c);
-// end::int[]
-/* end src/coords/imp.h */
 
 #ifndef UDX_WALL_WVEL_TYPE_COMMON
 #define UDX_WALL_WVEL_TYPE_COMMON
-/* begin src/wall/wvel/type.h */
 /* view structures                      */
 /* (what is passed to device functions) */
 
@@ -8250,9 +7147,7 @@ struct WvelHS_v {
     float h; // height of the channel
 };
 
-/* end src/wall/wvel/type.h */
 #endif
-/* begin src/wall/wvel/imp.h */
 struct Wvel;
 struct WvelStep;
 
@@ -8265,62 +7160,42 @@ struct Config;
 
 #ifndef UDX_WALL_WVEL_ENUM
 #define UDX_WALL_WVEL_ENUM
-// tag::enum[]
 enum {
     WALL_VEL_V_CSTE,
     WALL_VEL_V_SHEAR,
     WALL_VEL_V_HS,
 };
-// end::enum[]
 #endif
 
-// tag::mem[]
 void wvel_ini(Wvel **wv);
 void wvel_fin(Wvel *wv);
 
 void wvel_step_ini(WvelStep **wv);
 void wvel_step_fin(WvelStep *wv);
-// end::mem[]
 
-// tag::ini[]
 void wvel_set_cste(float3 u, Wvel *vw);
 void wvel_set_shear(float gdot, int vdir, int gdir, int half, Wvel *vw);
 void wvel_set_shear_sin(float gdot, int vdir, int gdir, int half, float w, Wvel *vw);
 void wvel_set_hs(float u, float h, Wvel *vw);
 void wvel_set_timestep(float dt, Wvel *vw);
-// end::ini[]
 
-// tag::cnf[]
 void wvel_set_conf(const Config *cfg, Wvel *vw);
-// end::cnf[]
 
-// tag::step[]
 void wvel_get_step(float t, const Wvel *wv, /**/ WvelStep *);
-// end::step[]
 
-// tag::get[]
 int wvel_get_type(const WvelStep *w);
-// end::get[]
 
-// tag::view[]
 void wvel_get_view(const WvelStep *w, /**/ WvelCste_v *v);
 void wvel_get_view(const WvelStep *w, /**/ WvelShear_v *v);
 void wvel_get_view(const WvelStep *w, /**/ WvelHS_v *v);
-// end::view[]
-/* end src/wall/wvel/imp.h */
-/* begin src/wall/wvel/dev.h */
 #ifndef UDX_WALL_WVEL_DEV_COMMON
 #define UDX_WALL_WVEL_DEV_COMMON
-// tag::vel[]
 static __device__ void wvel(WvelCste_v p, Coords_v c, float3 r, /**/ float3 *v)
-// end::vel[]
 {
     *v = p.u;
 }
 
-// tag::vel[]
 static __device__ void wvel(WvelShear_v p, Coords_v c, float3 r, /**/ float3 *v)
-// end::vel[]
 {
     float3 rc; // relative to center
     float gdot, d;
@@ -8345,9 +7220,7 @@ static __device__ void wvel(WvelShear_v p, Coords_v c, float3 r, /**/ float3 *v)
     else if (vdir == 2) v->z = d * gdot;
 }
 
-// tag::vel[]
 static __device__ void wvel(WvelHS_v p, Coords_v c, float3 r, /**/ float3 *v)
-// end::vel[]
 {
     float3 rc; // relative to center
     float u, h, r2inv, hfac;
@@ -8366,10 +7239,8 @@ static __device__ void wvel(WvelHS_v p, Coords_v c, float3 r, /**/ float3 *v)
     v->z = 0;
 }
 
-// tag::bb[]
 template <typename Wvel_v>
 static __device__ void bounce_vel(Wvel_v wv, Coords_v c, float3 rw, /* io */ float3* v)
-// end::bb[]
 {
     float3 vw;
     wvel(wv, c, rw, /**/ &vw);
@@ -8377,9 +7248,7 @@ static __device__ void bounce_vel(Wvel_v wv, Coords_v c, float3 rw, /* io */ flo
     v->y = 2 * vw.y - v->y;
     v->z = 2 * vw.z - v->z;
 }
-/* end src/wall/wvel/dev.h */
 #endif /* UDX_WALL_WVEL_DEV_COMMON */
-/* begin src/math/dev.h */
 #ifndef UDX_WALL_MATH_COMMON
 #define UDX_WALL_MATH_COMMON
 /* use templates here because we might have mixed float/double */
@@ -8440,18 +7309,14 @@ _HD_ void axpy(const T1 a, const T2 *x, /*io*/ T3 *y) {
     y->y += a * x->y;
     y->z += a * x->z;
 }
-/* end src/math/dev.h */
 #endif /* UDX_WALL_MATH_COMMON */
 
 #ifndef UDX_WALL_TFORM_TYPE_COMMON
 #define UDX_WALL_TFORM_TYPE_COMMON
-/* begin src/math/tform/type.h */
 struct Tform_v { float o[3], s[3]; };
-/* end src/math/tform/type.h */
 #endif
 #ifndef UDX_WALL_TFORM_DEV_COMMON
 #define UDX_WALL_TFORM_DEV_COMMON
-/* begin src/math/tform/dev.h */
 static __device__ void tform_convert_dev(const Tform_v *t, const float a0[3], /**/ float a1[3]) {
     enum {X, Y, Z};
     const float *o, *s;
@@ -8467,27 +7332,21 @@ static __device__ void tform_spacing_dev(const Tform_v *t, /**/ float s[3]) {
     s[Y] = t->s[Y];
     s[Z] = t->s[Z];
 }
-/* end src/math/tform/dev.h */
 #endif
 #ifndef UDX_WALL_TEX3D_TYPE_COMMON
 #define UDX_WALL_TEX3D_TYPE_COMMON
-/* begin src/wall/sdf/tex3d/type.h */
 struct Tex3d_v { cudaTextureObject_t t; }; // <1>
 struct Tex3d   { cudaTextureObject_t t; }; // <2>
-/* end src/wall/sdf/tex3d/type.h */
 #endif
 #ifndef UDX_WALL_SDF_TYPE_COMMON
 #define UDX_WALL_SDF_TYPE_COMMON
-/* begin src/wall/sdf/type.h */
 /* view */
 struct Sdf_v {
     Tex3d_v tex;
     Tform_v t;
     float cheap_threshold;
 };
-/* end src/wall/sdf/type.h */
 #endif /* UDX_WALL_SDF_TYPE_COMMON */
-/* begin src/wall/sdf/imp.h */
 struct Sdf;
 struct Sdf_v;
 struct WvelStep;
@@ -8495,30 +7354,20 @@ struct Coords;
 struct Particle;
 struct int3;
 
-// tag::mem[]
 void sdf_ini(int3 L, Sdf**);
 void sdf_fin(Sdf*);
-// end::mem[]
 
-// tag::int[]
 void sdf_gen(const Coords*, MPI_Comm cart, bool dump, Sdf*); // <1>
 void sdf_get_view(const Sdf*, /**/ Sdf_v*);                  // <2>
-// end::int[]
 
-// tag::tools[]
 void sdf_bulk_wall(const Sdf*, /*io*/ int *s_n, Particle *s_pp, /*o*/ int *w_n, Particle *w_pp); // <1>
 int  sdf_who_stays(const Sdf*, int n, const Particle*, int nc, int nv, /**/ int *stay);          // <2>
 double sdf_compute_volume(MPI_Comm, int3 L, const Sdf*, long nsamples);                          // <3>
-// end::tools[]
 
-// tag::bounce[]
 void sdf_bounce(float dt, const WvelStep*, const Coords*, const Sdf*, int n, /**/ Particle*);
-// end::bounce[]
-/* end src/wall/sdf/imp.h */
 
 #ifndef UDX_WALL_SDF_DEV_COMMON
 #define UDX_WALL_SDF_DEV_COMMON
-/* begin src/wall/sdf/dev.h */
 #define _S_ static __device__
 #define _I_ static __device__
 
@@ -8566,9 +7415,7 @@ _S_ float3 grad(const Sdf_v *sdf, const float3 *pos) {
     return make_float3(gx, gy, gz);
 }
 
-// tag::int[]
 _I_ float3 sdf_ugrad(const Sdf_v *texsdf, const float3 *r) // <1>
-// end::int[]
 {
     float mag, eps;
     float3 g;
@@ -8590,16 +7437,12 @@ _S_ float cheap_sdf(const Sdf_v *sdf, float x, float y, float z)  {
     return fetch(sdf, tc[0], tc[1], tc[2]);
 }
 
-// tag::int[]
 _I_ bool sdf_far(const Sdf_v *sdf, float x, float y, float z) // <2>
-// end::int[]
 {
     return cheap_sdf(sdf, x, y, z) <= sdf->cheap_threshold - 1 ;
 }
 
-// tag::int[]
 _I_ float sdf_eval(const Sdf_v *sdf0, float x, float y, float z)  // <3>
-// end::int[]
 {
     int c;
     float s000, s001, s010, s100, s101, s011, s110, s111;
@@ -8634,23 +7477,17 @@ _I_ float sdf_eval(const Sdf_v *sdf0, float x, float y, float z)  // <3>
 
 #undef _S_
 #undef _I_
-/* end src/wall/sdf/dev.h */
 #endif /* UDX_WALL_SDF_DEV_COMMON */
 
-/* begin src/wall/sdf/bounce/imp.h */
 struct Sdf;
 struct WvelStep;
 struct Coords;
 struct Particle;
 
-// tag::int[]
 void bounce_back(float dt, const WvelStep *wv, const Coords *c, const Sdf *sdf, int n, /**/ Particle *pp);
-// end::int[]
 
-/* end src/wall/sdf/bounce/imp.h */
 
 namespace sdf_bb_dev {
-/* begin src/wall/sdf/bounce/dev/main.h */
 enum {
     MAX_RESCUE = 8,
     MAX_NEWTON = 2
@@ -8765,9 +7602,7 @@ __global__ void bounce_back(float dt, Wvel_v wv, Coords_v c, Sdf_v texsdf, int n
         }
     }
 }
-/* end src/wall/sdf/bounce/dev/main.h */
 }
-/* begin src/wall/sdf/bounce/imp/main.h */
 template <typename Wvel_v>
 static void apply(float dt, Wvel_v wv, const Coords *c, const Sdf *sdf, int n, /**/ Particle *pp) {
     Sdf_v sdf_v;
@@ -8799,5 +7634,3 @@ void bounce_back(float dt, const WvelStep *w, const Coords *c, const Sdf *sdf, i
     }
     };
 }
-/* end src/wall/sdf/bounce/imp/main.h */
-/* end src/wall/sdf/bounce/imp.cu */

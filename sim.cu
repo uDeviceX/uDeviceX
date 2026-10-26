@@ -1,13 +1,10 @@
-// generated from udx.flat.cu
 #include "udx.config.cuh"
 
-/* begin src/sim/imp.cpp */
 #include <stdlib.h>
 #include <assert.h>
 #include <mpi.h>
 #include <vector_types.h>
 
-/* begin src/inc/conf.h */
 /* [k]ernel [l]aunch macros */
 #if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
     !defined(KL_SYNC)
@@ -42,24 +39,17 @@
 #ifndef DUMP_BASE
 #define DUMP_BASE "."
 #endif
-/* end src/inc/conf.h */
 
 
-/* begin src/conf/imp.h */
 struct Config;
 struct float3;
 struct int3;
 
-// tag::mem[]
 void conf_ini(/**/ Config **c);
 void conf_fin(/**/ Config *c);
-// end::mem[]
 
-// tag::ini[]
 void conf_read(int argc, char **argv, /**/ Config *cfg);
-// end::ini[]
 
-// tag::lookup[]
 void conf_lookup_int(const Config *c, const char *desc, int *a);
 void conf_lookup_float(const Config *c, const char *desc, float *a);
 void conf_lookup_bool(const Config *c, const char *desc, int *a);
@@ -69,9 +59,7 @@ void conf_lookup_int3(const Config *c, const char *desc, int3 *a);
 void conf_lookup_vfloat(const Config *c, const char *desc, int maxn, int *n, float a[]);
 void conf_lookup_float3(const Config *c, const char *desc, float3 *a);
 void conf_lookup_vstring(const Config *c, const char *desc, int maxn, int *n, const char **ss);
-// end::lookup[]
 
-// tag::ns[]
 void conf_lookup_int_ns(const Config *c, const char *ns, const char *desc, int *a);
 void conf_lookup_float_ns(const Config *c, const char *ns, const char *desc, float *a);
 void conf_lookup_bool_ns(const Config *c, const char *ns, const char *desc, int *a);
@@ -81,9 +69,7 @@ void conf_lookup_int3_ns(const Config *c, const char *ns, const char *desc, int3
 void conf_lookup_vfloat_ns(const Config *c, const char *ns, const char *desc, int maxn, int *n, float a[]);
 void conf_lookup_float3_ns(const Config *c, const char *ns, const char *desc, float3 *a);
 void conf_lookup_vstring_ns(const Config *c, const char *ns, const char *d, int maxn, int *n, const char **ss);
-// end::ns[]
 
-// tag::opt[]
 bool conf_opt_int(const Config *c, const char *desc, int *a);
 bool conf_opt_float(const Config *c, const char *desc, float *a);
 bool conf_opt_bool(const Config *c, const char *desc, int *a);
@@ -93,9 +79,7 @@ bool conf_opt_int3(const Config *c, const char *desc, int3 *a);
 bool conf_opt_vfloat(const Config *c, const char *desc, int maxn, int *n, float a[]);
 bool conf_opt_float3(const Config *c, const char *desc, float3 *a);
 bool conf_opt_vstring(const Config *c, const char *desc, int maxn, int *n, const char **ss);
-// end::opt[]
 
-// tag::set[]
 void conf_set_int(const char *desc, int a, Config *c);
 void conf_set_vint(const char *desc, int nelem, const int a[], Config *cfg);
 void conf_set_int3(const char *desc, int3 a, Config *cfg);
@@ -104,15 +88,10 @@ void conf_set_vfloat(const char *desc, int nelem, const float a[], Config *cfg);
 void conf_set_float3(const char *desc, float3 a, Config *cfg);
 void conf_set_bool(const char *desc, int a, Config *cfg);
 void conf_set_string(const char *desc, const char *a, Config *cfg);
-// end::set[]
 
-// tag::dump[]
 void conf_write_exe(const Config *cfg, FILE *stream);     // <1>
 void conf_write_history(const Config *cfg, FILE *stream); // <2>
-// end::dump[]
-/* end src/conf/imp.h */
 
-/* begin src/utils/error.h */
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
         error_report();                                         \
@@ -152,32 +131,23 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-/* end src/utils/error.h */
-/* begin src/utils/os.h */
-// tag::int[]
 void os_mkdir(const char* path); // <1>
 long os_time();                  // <2>
 void os_srand(long int seedval); // <3>
 double os_drand();               // <4>
 void os_sleep(unsigned int seconds); // <5>
 void os_malloc_stats();              // TODO
-// end::int[]
-/* end src/utils/os.h */
 
-/* begin src/d/api.h */
 namespace d {  /* a wrapper for device API */
 typedef int Stream_t; /* TODO: streams are not supported */
 enum {MemcpyHostToHost, MemcpyHostToDevice,
       MemcpyDeviceToHost, MemcpyDeviceToDevice,
       MemcpyDefault};
 
-// tag::more[]
 const char *emsg();
 int alloc_pinned(void **pHost, size_t size);
 int is_device_pointer(const void *ptr);
-// end::more[]
 
-// tag::api[]
 int GetSymbolAddress(void **devPtr, const void *symbol);
 int Malloc(void **p, size_t);
 int MemcpyToSymbol(const void *symbol, const void *src, size_t count, size_t offset=0, int kind=MemcpyHostToDevice);
@@ -191,71 +161,49 @@ int Free (void *devPtr);
 int FreeHost (void *hstPtr);
 int DeviceSynchronize (void);
 int PeekAtLastError(void);
-// end::api[]
 }
-/* end src/d/api.h */
 
-/* begin src/coords/ini.h */
 struct Coords;
 struct Config;
 
-// tag::mem[]
 void coords_ini(MPI_Comm cart, int Lx, int Ly, int Lz, Coords **c); // <1>
 void coords_fin(Coords *c); // <2>
-// end::mem[]
 
-// tag::cnf[]
 void coords_ini_conf(MPI_Comm cart, const Config *cfg, Coords **c);
-// end::cnf[]
 
-/* end src/coords/ini.h */
-/* begin src/coords/imp.h */
 struct Coords;
 struct Coords_v;
 struct float3;
 struct int3;
 
-// tag::view[]
 void coords_get_view(const Coords *c, Coords_v *v);
-// end::view[]
 
-// tag::domainsz[]
 int xdomain(const Coords *c);
 int ydomain(const Coords *c);
 int zdomain(const Coords *c);
-// end::domainsz[]
 
-// tag::local2center[]
 float xl2xc(const Coords *c, float xl);
 float yl2yc(const Coords *c, float yl);
 float zl2zc(const Coords *c, float zl);
 void local2center(const Coords *c, float3 rl, /**/ float3 *rc);
-// end::local2center[]
 
-// tag::center2local[]
 float xc2xl(const Coords *c, float xc);
 float yc2yl(const Coords *c, float yc);
 float zc2zl(const Coords *c, float zc);
 void center2local(const Coords *c, float3 rc, /**/ float3 *rl);
-// end::center2local[]
 
-// tag::local2global[]
 float xl2xg(const Coords *c, float xl);
 float yl2yg(const Coords *c, float yl);
 float zl2zg(const Coords *c, float zl);
 void local2global(const Coords *c, float3 rl, /**/ float3 *rg);
-// end::local2global[]
 
-// tag::global2local[]
 float xg2xl(const Coords *c, float xg);
 float yg2yl(const Coords *c, float yg);
 float zg2zl(const Coords *c, float zg);
 void global2local(const Coords *c, float3 rg, /**/ float3 *rl);
-// end::global2local[]
 
 /* edges of the sub-domain in global coordinates */
 
-// tag::bblocal[]
 int xlo(const Coords*);
 int ylo(const Coords*);
 int zlo(const Coords*);
@@ -263,16 +211,12 @@ int zlo(const Coords*);
 int xhi(const Coords*);
 int yhi(const Coords*);
 int zhi(const Coords*);
-// end::bblocal[]
 
-// tag::subdomainsz[]
 int xs(const Coords*);
 int ys(const Coords*);
 int zs(const Coords*);
 int3 subdomain(const Coords*);
-// end::subdomainsz[]
 
-// tag::int[]
 /* rank predicates */
 bool is_end(const Coords *c, int dir);
 
@@ -281,10 +225,7 @@ void coord_stamp(const Coords *c, /**/ char *s);
 
 /* number of subdomains */
 int coords_size(const Coords *c);
-// end::int[]
-/* end src/coords/imp.h */
 
-/* begin src/mpi/wrapper.h */
 namespace m {
 int Allreduce(const void *sendbuf, void *recvbuf, int count, MPI_Datatype datatype, MPI_Op op, MPI_Comm comm);
 int Barrier(MPI_Comm comm);
@@ -334,9 +275,7 @@ int is_pending(int errorcode);
 int is_err_in_status(int errorcode);
 int status2errcode(MPI_Status *status);
 }
-/* end src/mpi/wrapper.h */
 
-/* begin src/inc/def.h */
 /* solvent colors */
 #define XMACRO_COLOR(_)                         \
     _(BLUE)                                     \
@@ -387,44 +326,27 @@ enum {
 
 /* for the spring forces r = min(lmax*RBC_SPRING_CAP, r) */
 #define RBC_SPRING_CAP (0.99)
-/* end src/inc/def.h */
-/* begin src/utils/msg.h */
-// tag::int[]
 void msg_ini(int rank); // <1>
 void msg_print(const char *fmt, ...); // <2>
-// end::int[]
-/* end src/utils/msg.h */
-/* begin src/utils/imp.h */
-// tag::mem[]
 void emalloc(size_t, /**/ void**); // <1>
 void efree(void*); // <2>
 void *ememcpy(void *dest, const void *src, size_t n); // <3>
-// end::mem[]
 
-// tag::macros[]
 #define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
 #define EFREE(pdata) UC(efree(pdata))
 #define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
-// end::macros[]
 
-// tag::stdio[]
 void efopen(const char *fname, const char *mode, /**/ FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
 void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
 void efgets(char *s, int size, FILE*);
-// end::stdio[]
 
-// tag::tools[]
 bool same_str(const char *a, const char *b); // <1>
 const char* get_filename_ext(const char*);
-// end::tools[]
-/* end src/utils/imp.h */
-/* begin src/utils/cc.h */
 /* [c]uda [c]heck macros */
 
 #if   defined(CC_SYNC)
-/* begin src/utils/cc/sync.h */
 /* Aggressive [sync]ronization */
 #define CC(ans)                                             \
     do {                                                    \
@@ -432,28 +354,21 @@ const char* get_filename_ext(const char*);
         cc::check((ans), __FILE__, __LINE__);               \
         d::DeviceSynchronize();                             \
     } while (0)
-/* end src/utils/cc/sync.h */
 #elif defined(CC_RELEASE)
-/* begin src/utils/cc/release.h */
 /* [c]cuda [c]heck */
 #define CC(ans)                                             \
     do { cc::check((ans), __FILE__, __LINE__);} while (0)
-/* end src/utils/cc/release.h */
 #else
   #error CC_* is undefined
 #endif
 
-/* begin src/utils/cc/common.h */
 namespace cc {
 void check(int rc, const char *file, int line);
 }
 
 
-/* end src/utils/cc/common.h */
 
 /* TODO: header includes header */
-/* end src/utils/cc.h */
-/* begin src/utils/mc.h */
 /* [m]pi [c]heck macros */
 #define MC(ans)                                                         \
     do { mpicheck::check((ans), __FILE__, __LINE__); } while (0)
@@ -461,9 +376,7 @@ void check(int rc, const char *file, int line);
 namespace mpicheck {
 void check(int code, const char *file, int line);
 }
-/* end src/utils/mc.h */
 
-/* begin src/inc/type.h */
 template <typename T, int N>
 struct Sarray { /* [s]tatic array */
     T d[N];
@@ -516,8 +429,6 @@ struct FoWrap {
     int n;
     Force *ff;
 };
-/* end src/inc/type.h */
-/* begin src/inc/dev.h */
 /* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
 
@@ -555,9 +466,7 @@ struct FoWrap {
 /* [d]evice [a]synchronous set */
 #define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
 #define DzeroA(P, n)   DsetA(P, 0, n)
-/* end src/inc/dev.h */
 
-/* begin src/pair/imp.h */
 struct PairParams;
 struct Config;
 
@@ -567,34 +476,22 @@ struct PairDPDCM;
 struct PairDPDLJ;
 struct PairAdhesion;
 
-// tag::mem[]
 void pair_ini(PairParams **);
 void pair_fin(PairParams *);
-// end::mem[]
 
-// tag::set[]
 void pair_set_dpd(int ncol, const float a[], const float g[], float spow, PairParams *p); // <1>
 void pair_set_lj(float sigma, float eps, PairParams *p); // <2>
-// end::set[]
 void pair_set_adhesion(float k1, float k2, PairParams *p);
 
-// tag::cnf[]
 void pair_set_conf(const Config *, const char *name_space, PairParams *);
-// end::cnf[]
 
-// tag::upd[]
 void pair_compute_dpd_sigma(float kBT, float dt, PairParams *p);
-// end::upd[]
 
-// tag::view[]
 void pair_get_view_dpd(const PairParams*, PairDPD*);
 void pair_get_view_dpd_color(const PairParams*, PairDPDC*);
 void pair_get_view_dpd_mirrored(const PairParams*, PairDPDCM*);
 void pair_get_view_dpd_lj(const PairParams*, PairDPDLJ*);
-// end::view[]
 void pair_get_view_adhesion(const PairParams*, PairAdhesion*);
-/* end src/pair/imp.h */
-/* begin src/struct/parray/imp.h */
 struct PaArray {
     bool colors;
     const float *pp;
@@ -606,21 +503,13 @@ struct PaCArray_v;
 
 struct Particle;
 
-// tag::push[]
 void parray_push_pp(const Particle *pp, PaArray *a);
 void parray_push_cc(const int *cc, PaArray *a);
-// end::push[]
 
-// tag::get[]
 bool parray_is_colored(const PaArray *a);
-// end::get[]
 
-// tag::view[]
 void parray_get_view(const PaArray *a, PaArray_v *v);  // <1>
 void parray_get_view(const PaArray *a, PaCArray_v *v); // <2>
-// end::view[]
-/* end src/struct/parray/imp.h */
-/* begin src/struct/farray/imp.h */
 struct FoArray {
     bool stress;
     float *ff;
@@ -632,23 +521,15 @@ struct FoSArray_v;
 
 struct Force;
 
-// tag::push[]
 void farray_push_ff(Force *ff, FoArray *a);
 void farray_push_ss(float *ss, FoArray *a);
-// end::push[]
 
 void farray_clear(FoArray *);
 
-// tag::get[]
 bool farray_has_stress(const FoArray *a);
-// end::get[]
 
-// tag::view[]
 void farray_get_view(const FoArray *a, FoArray_v *v);  // <1>
 void farray_get_view(const FoArray *a, FoSArray_v *v); // <2>
-// end::view[]
-/* end src/struct/farray/imp.h */
-/* begin src/struct/pfarrays/imp.h */
 struct PFarray {
     PaArray p;
     FoArray f;
@@ -669,8 +550,6 @@ void pfarrays_push(PFarrays*, PFarray);
 int  pfarrays_size(const PFarrays*);
 void pfarrays_get(int i, const PFarrays*, long *n, PaArray*, FoArray*);
 void pfarrays_get(int i, const PFarrays*, PFarray*);
-/* end src/struct/pfarrays/imp.h */
-/* begin src/struct/partlist/type.h */
 enum {
     ALIVE = 0,
     DEAD  = 1
@@ -679,55 +558,37 @@ enum {
 /* structure of particle                           */
 /* optional "deathlist" for particles to be killed */
 
-// tag::type[]
 struct PartList {
     const Particle *pp;   /* particles array          */
     const int *deathlist; /* what pp is dead or alive */
 };
-// end::type[]
-/* end src/struct/partlist/type.h */
 
-/* begin src/io/diag/part/imp.h */
 struct Particle;
 struct DiagPart;
 
-// tag::interface[]
 void diag_part_ini(const char *path, /**/ DiagPart**);
 void diag_part_fin(DiagPart*);
 void diag_part_apply(DiagPart*, MPI_Comm, float time, int n, const Particle*);
-// end::interface[]
-/* end src/io/diag/part/imp.h */
-/* begin src/grid_sampler/imp.h */
 struct GridSampler;
 struct GridSampleData;
 
 struct Particle;
 
-// tag::data_mem[]
 void grid_sampler_data_ini(GridSampleData **);
 void grid_sampler_data_fin(GridSampleData  *);
-// end::data_mem[]
 
-// tag::data_int[]
 void grid_sampler_data_reset(GridSampleData *); // <1>
 void grid_sampler_data_push(long n, const Particle *pp, const int *cc,
                             const float *ss, GridSampleData *); // <2>
-// end::data_int[]
 
 
-// tag::mem[]
 void grid_sampler_ini(bool colors, bool stress, int3 L, int3 N, GridSampler**); // <1>
 void grid_sampler_fin(GridSampler*); // <2>
-// end::mem[]
 
-// tag::int[]
 void grid_sampler_reset(GridSampler*); // <1>
 void grid_sampler_add(const GridSampleData*, GridSampler*); // <2>
 void grid_sampler_dump(MPI_Comm, const char *dir, long id, GridSampler*); // <3>
-// end::int[]
-/* end src/grid_sampler/imp.h */
 
-/* begin src/dbg/imp.h */
 struct Dbg;
 
 struct Config;
@@ -736,7 +597,6 @@ struct Particle;
 struct int3;
 struct Coords;
 
-// tag::kind[]
 enum {
     DBG_POS,      // <1>
     DBG_POS_SOFT, // <2>
@@ -746,84 +606,58 @@ enum {
     DBG_CLIST,    // <6>
     DBG_NKIND_
 };
-// end::kind[]
 
-// tag::mem[]
 void dbg_ini(Dbg**);
 void dbg_fin(Dbg*);
-// end::mem[]
 
-// tag::ini[]
 void dbg_enable(int kind, Dbg *dbg);
 void dbg_disable(int kind, Dbg *dbg);
 void dbg_set_verbose(bool, Dbg *dbg);
 void dbg_set_dump(bool, Dbg *dbg);
-// end::ini[]
 
-// tag::cnf[]
 void dbg_set_conf(const Config*, Dbg*);
-// end::cnf[]
 
-// tag::int[]
 void dbg_check_pos(const Coords *c, const char *base, const Dbg *dbg, int n, const Particle *pp);
 void dbg_check_pos_soft(const Coords *c, const char *base, const Dbg *dbg, int n, const Particle *pp);
 void dbg_check_vel(float dt, const Coords *c, const char *base, const Dbg *dbg, int n, const Particle *pp);
 void dbg_check_forces(float dt, const Coords *c, const char *base, const Dbg *dbg, int n, const Particle *pp, const Force *ff);
 void dbg_check_colors(const Coords *c, const Dbg *dbg, int n, const int *cc);
 void dbg_check_clist(const Coords *c, const Dbg *dbg, int3 L, const int *starts, const int *counts, const Particle *pp);
-// end::int[]
-/* end src/dbg/imp.h */
-/* begin src/io/restart/imp.h */
 struct Coords;
 struct Particle;
 struct Rigid;
 
-// tag::id[]
 enum {RESTART_TEMPL=-1,
       RESTART_FINAL=-2};
 enum {RESTART_BEGIN=RESTART_FINAL};
-// end::id[]
 
-// tag::stream[]
 typedef void (*StreamWriter)(const void*, FILE*);
 typedef void (*StreamReader)(FILE*, void*);
-// end::stream[]
 
-// tag::write[]
 void restart_write_pp(MPI_Comm, const char *base, const char *code, int id, long n, const Particle *pp); // <1>
 void restart_write_ii(MPI_Comm, const char *base, const char *code, int id, long n, const int *ii);      // <2>
 void restart_write_ss(MPI_Comm, const char *base, const char *code, int id, long n, const Rigid *ss);    // <3>
 void restart_write_stream_one_node(MPI_Comm, const char *base, const char *code, int id, const void *data, StreamWriter); // <4>
- // end::write[]
 
-// tag::read[]
 void restart_read_pp(MPI_Comm, const char *base, const char *code, int id, int *n, Particle *pp);
 void restart_read_ii(MPI_Comm, const char *base, const char *code, int id, int *n, int *ii);
 void restart_read_ss(MPI_Comm, const char *base, const char *code, int id, int *n, Rigid *ss);
 void restart_read_stream_one_node(const char *base, const char *code, int id, StreamReader, void *data);
-// end::read[]
-/* end src/io/restart/imp.h */
-/* begin src/clist/imp.h */
 struct Clist;
 struct ClistMap;
 
-// tag::mem[]
 void clist_ini(int LX, int LY, int LZ, /**/ Clist **c);
 void clist_fin(/**/ Clist *c);
 
 void clist_ini_map(int maxp, int nA, const Clist *c, /**/ ClistMap **m);
 void clist_fin_map(ClistMap *m);
-// end::mem[]
 
-// tag::access[]
 const int* clists_get_ss(const Clist *c);
 const int* clists_get_cc(const Clist *c);
 int3       clists_get_dim(const Clist *c);
 int        clists_get_n(const Clist *c);
 const uint* clist_get_ids(const ClistMap *m);
-// end::access[]
 
-// tag::int[]
 void clist_ini_counts(Clist *c);
 void clist_subindex(bool project, int aid, int n, const PartList lp, /**/ Clist *c, ClistMap *m);
 void clist_build_map(const int nn[], /**/ Clist *c, ClistMap *m);
@@ -837,11 +671,7 @@ void clist_gather_ii(const int *iilo, const int *iire, const ClistMap *m, long n
 
 /* quick cell build for single array */
 void clist_build(int nlo, int nout, const Particle *pplo, /**/ Particle *ppout, Clist *c, ClistMap *m);
-// end::int[]
-/* end src/clist/imp.h */
 
-/* begin src/flu/imp.h */
-// tag::struct[]
 struct FluQuants {
     Particle *pp, *pp0;    /* particles on device  */
     int       n;           /* particle number      */
@@ -861,36 +691,25 @@ struct FluQuants {
 
     int maxp; /* maximum particle number */
 };
-// end::struct[]
 
 struct Coords;
 struct GenColor;
 
-// tag::mem[]
 void flu_ini(bool colors, bool ids, int3 L, int maxp, FluQuants *q);
 void flu_fin(FluQuants *q);
-// end::mem[]
 
-// tag::gen[]
 void flu_gen_quants(const Coords*, int numdensity, const GenColor *gc, FluQuants *q); // <1>
 void flu_gen_ids(MPI_Comm, const int n, FluQuants *q); // <2>
-// end::gen[]
 
-// tag::start[]
 void flu_strt_quants(MPI_Comm, const char *base, const int id, FluQuants *q);     // <1>
 void flu_strt_dump(MPI_Comm, const char *base, const int id, const FluQuants *q); // <2>
-// end::start[]
 
-// tag::tools[]
 void flu_txt_dump(const Coords*, const FluQuants *q); // <1>
 
 /* build cells only from one array of particles fully contained in the domain */
 /* warning: this will delete particles which are outside                      */
 void flu_build_cells(/**/ FluQuants *q); // <2>
-// end::tools[]
-/* end src/flu/imp.h */
 
-/* begin src/comm/imp.h */
 typedef unsigned char data_t;
 
 enum {
@@ -901,76 +720,59 @@ enum {
 
 /* Allocation mod for bags */
 enum AllocMod {
-    // tag::AllocMod[]
     HST_ONLY,   /* only host bags allocated                 */
     DEV_ONLY,   /* only device bags allocated               */
     PINNED,     /* both host and device pinned              */
     PINNED_HST, /* host pinned; no device memory            */
     PINNED_DEV, /* host pinned; device global memory on gpu */
     NONE        /* no allocation                            */
-    // end::AllocMod[]
 };
 
-// tag::dBags[]
 struct dBags {
     data_t *data[NBAGS]; /* data on the device         */
 };
-// end::dBags[]
 
-// tag::hBags[]
 struct hBags {
     data_t *data[NBAGS]; /* data on the host                    */
     int         *counts; /* size of the data                    */
     int capacity[NBAGS]; /* capacity of each frag (elem number) */
     size_t bsize;        /* size of one datum in bytes          */
 };
-// end::hBags[]
 
 struct Comm;
 struct CommBuffer;
 
-// tag::alloc[]
 void comm_bags_ini(AllocMod fmod, AllocMod bmod, size_t bsize, const int capacity[NBAGS], /**/ hBags *hb, dBags *db);
 void comm_bags_fin(AllocMod fmod, AllocMod bmod, /**/ hBags *hb, dBags *db);
 void comm_ini(MPI_Comm cart, /**/ Comm **c);
 void comm_fin(/**/ Comm *c);
 void comm_buffer_ini(int nbags, const hBags *hbb, CommBuffer**);
 void comm_buffer_fin(CommBuffer*);
-// end::alloc[]
 
 
 void comm_buffer_set(int nbags, const hBags*, CommBuffer*);
 void comm_buffer_get(const CommBuffer*, int nbags, hBags*);
 
-// tag::communication[]
 void comm_post_recv(hBags *b, Comm *c);           // <1>
 void comm_post_send(const hBags *b, Comm *c);     // <2>
 
 void comm_wait_recv(Comm *c, /**/ hBags *b);      // <3>
 void comm_wait_send(Comm *c);                     // <4>
-// end::communication[]
 
-// tag::communication_b[]
 void comm_post_recv(CommBuffer *cb, Comm *c);
 void comm_post_send(const CommBuffer *cb, Comm *c);
 
 void comm_wait_recv(Comm *c, /**/ CommBuffer *cb);
 void comm_wait_send(Comm *c);
-// end::communication_b[]
 
-// tag::get[]
 int    comm_get_number_capacity(int i, const hBags *b); // <1>
 size_t comm_get_byte_capacity(int i, const hBags *b);   // <2>
-// end::get[]
 
-/* end src/comm/imp.h */
-/* begin src/distr/flu/imp.h */
 struct DFluPack;
 struct DFluComm;
 struct DFluUnpack;
 struct DFluStatus;
 
-// tag::interface[]
 void dflu_pack_ini(bool colors, bool ids, int3 L, int maxdensity, DFluPack **p);
 void dflu_comm_ini(MPI_Comm comm, /**/ DFluComm **c);
 void dflu_unpack_ini(bool colors, bool ids, int3 L, int maxdensity, DFluUnpack **u);
@@ -994,17 +796,12 @@ void dflu_wait_send(DFluComm *c);
 
 /* unpack */
 void dflu_unpack(/**/ DFluUnpack *u);
-// end::interface[]
 
 
-// tag::clist[]
 /* cell lists */
 void dflu_bulk(PartList lp, /**/ FluQuants *q);
 void dflu_halo(const DFluUnpack *u, /**/ FluQuants *q);
 void dflu_gather(int ndead, const DFluPack *p, const DFluUnpack *u, /**/ FluQuants *q);
-// end::clist[]
-/* end src/distr/flu/imp.h */
-/* begin src/distr/flu/status/imp.h */
 struct DFluStatus;
 struct Config;
 
@@ -1020,9 +817,7 @@ void dflu_status_log(DFluStatus *s);
 /* set */
 void dflu_status_exceed(int frag, int counter, int capacity, /**/ DFluStatus *s);
 
-/* end src/distr/flu/status/imp.h */
 
-/* begin src/flu/type.h */
 /* helpers to communicate between halo interactions and exchanger */
 
 namespace flu {
@@ -1052,14 +847,11 @@ typedef Sarray<RFrag,   26> RFrag26;
 typedef Sarray<RndFrag, 26> RndFrag26;
 
 } // flu
-/* end src/flu/type.h */
-/* begin src/exch/flu/imp.h */
 struct EFluPack;
 struct EFluComm;
 struct EFluUnpack;
 struct PaArray;
 
-// tag::mem[]
 void eflu_pack_ini(bool colors, int3 L, int maxd, EFluPack **p);
 void eflu_comm_ini(MPI_Comm comm, /**/ EFluComm **c);
 void eflu_unpack_ini(bool colors, int3 L, int maxd, EFluUnpack **u);
@@ -1067,26 +859,18 @@ void eflu_unpack_ini(bool colors, int3 L, int maxd, EFluUnpack **u);
 void eflu_pack_fin(EFluPack *p);
 void eflu_comm_fin(EFluComm *c);
 void eflu_unpack_fin(EFluUnpack *u);
-// end::mem[]
 
-// tag::map[]
 void eflu_compute_map(const int *start, const int *count, /**/ EFluPack *p);
 void eflu_download_cell_starts(/**/ EFluPack *p);
-// end::map[]
 
-// tag::pack[]
 void eflu_pack(const PaArray *parray, /**/ EFluPack *p);
 void eflu_download_data(EFluPack *p);
-// end::pack[]
 
-// tag::com[]
 void eflu_post_recv(EFluComm *c, EFluUnpack *u);
 void eflu_post_send(EFluPack *p, EFluComm *c);
 void eflu_wait_recv(EFluComm *c, EFluUnpack *u);
 void eflu_wait_send(EFluComm *c);
-// tag::end[]
 
-// tag::unpack[]
 void eflu_unpack(EFluUnpack *u);
 
 using flu::LFrag26;
@@ -1094,40 +878,27 @@ using flu::RFrag26;
 
 void eflu_get_local_frags(const EFluPack *p, /**/ LFrag26 *lfrags);
 void eflu_get_remote_frags(const EFluUnpack *u, /**/ RFrag26 *rfrags);
-// end::unpack[]
 
-/* end src/exch/flu/imp.h */
 
-/* begin src/fluforces/imp.h */
 struct PairParams;
 struct FluForcesBulk;
 struct FluForcesHalo;
 struct PaArray;
 struct FoArray;
 
-// tag::memb[]
 void fluforces_bulk_ini(int3 L, int maxp, /**/ FluForcesBulk **b);
 void fluforces_bulk_fin(/**/ FluForcesBulk *b);
-// end::memb[]
 
-// tag::intb[]
 void fluforces_bulk_prepare(int n, const PaArray *a, /**/ FluForcesBulk *b);
 void fluforces_bulk_apply(const PairParams*, int n, const FluForcesBulk *b, const int *start, const int *count,
                           /**/ const FoArray *ff);
-// end::intb[]
 
-// tag::memh[]
 void fluforces_halo_ini(MPI_Comm cart, int3 L, /**/ FluForcesHalo **hd);
 void fluforces_halo_fin(/**/ FluForcesHalo *h);
-// end::memh[]
 
-// tag::inth[]
 void fluforces_halo_prepare(flu::LFrag26 lfrags, flu::RFrag26 rfrags, /**/ FluForcesHalo *h);
 void fluforces_halo_apply(const PairParams*, const FluForcesHalo *h, /**/ const FoArray *farray);
-// end::inth[]
 
-/* end src/fluforces/imp.h */
-/* begin src/io/bop/imp.h */
 struct IoBop;
 
 void io_bop_ini(MPI_Comm comm, int maxp, IoBop **t);
@@ -1138,35 +909,23 @@ void io_bop_parts_forces(MPI_Comm cart, const Coords *coords, long n, const Part
 void io_bop_stresses    (MPI_Comm cart, long n, const float *ss, const char *name, int id, IoBop *t);
 void io_bop_ids         (MPI_Comm cart, long n, const int   *ii, const char *name, int id, IoBop *t);
 void io_bop_colors      (MPI_Comm cart, long n, const int   *cc, const char *name, int id, IoBop *t);
-/* end src/io/bop/imp.h */
 
-/* begin src/inter/color/imp.h */
 struct GenColor;
 struct Particle;
 struct Coords;
 struct Config;
 
-// tag::mem[]
 void inter_color_ini(GenColor**);
 void inter_color_fin(GenColor*);
-// end::mem[]
 
-// tag::set[]
 void inter_color_set_drop(float R, GenColor*); // <1>
 void inter_color_set_uniform(GenColor*); // <2>
-// end::set[]
 
-// tag::cfg[]
 void inter_color_set_conf(const Config*, GenColor*);
-// end::cfg[]
 
-// tag::int[]
 void inter_color_apply_hst(const Coords*, const GenColor*, int n, const Particle *pp, /**/ int *cc);
 void inter_color_apply_dev(const Coords*, const GenColor*, int n, const Particle *pp, /**/ int *cc);
-// end::int[]
 
-/* end src/inter/color/imp.h */
-/* begin src/scheme/force/imp.h */
 struct Particle;
 struct Force;
 struct BForce;
@@ -1174,123 +933,77 @@ struct float3;
 struct Config;
 struct Coords;
 
-// tag::mem[]
 void bforce_ini(BForce **p);
 void bforce_fin(BForce *p);
-// end::mem[]
 
-// tag::set[]
 void bforce_set_none(/**/ BForce *p);            // <1>
 void bforce_set_cste(float3 f, /**/ BForce *p);  // <2>
 void bforce_set_dp(float a, /**/ BForce *p);     // <3>
 void bforce_set_shear(float a, /**/ BForce *p);  // <4>
 void bforce_set_rol(float a, /**/ BForce *p);    // <5>
 void bforce_set_rad(float a, /**/ BForce *p);    // <6>
-// end::set[]
 
-// tag::cnf[]
 void bforce_set_conf(const Config *cfg, /**/ BForce *bf);
-// end::cnf[]
 
-// tag::interface[]
 void bforce_adjust(float3 f, /**/ BForce *fpar); // <1>
 void bforce_apply(const Coords *c, float mass, const BForce *bf, int n, const Particle *pp, /**/ Force *ff); // <2>
-// end::interface[]
-/* end src/scheme/force/imp.h */
-/* begin src/scheme/move/imp.h */
 struct Force;
 struct Particle;
 
-// tag::int[]
 void scheme_move_apply(float dt, float mass, int n, const Force*, Particle*); // <1>
 void scheme_move_clear_vel(int n, Particle*); // <2>
-// end::int[]
-/* end src/scheme/move/imp.h */
-/* begin src/scheme/restrain/imp.h */
 struct Particle;
 struct Config;
 struct Restrain;
 
-// tag::wrap[]
 struct SchemeQQ {
     Particle *o, *r;
     int on, rn;
 };
-// end::wrap[]
 
-// tag::mem[]
 void scheme_restrain_ini(Restrain**);
 void scheme_restrain_fin(Restrain*);
-// end::mem[]
 
-// tag::set[]
 void scheme_restrain_set_red(Restrain*); // <1>
 void scheme_restrain_set_rbc(Restrain*); // <2>
 void scheme_restrain_set_none(Restrain*); // <3>
 void scheme_restrain_set_freq(int freq, Restrain*); // <4>
-// end::set[]
 
-// tag::cnf[]
 void scheme_restrain_set_conf(const Config*, Restrain*);
-// end::cnf[]
 
-// tag::int[]
 void scheme_restrain_apply(MPI_Comm comm, const int *cc, long it, /**/ Restrain *r, SchemeQQ qq);
-// end::int[]
-/* end src/scheme/restrain/imp.h */
-/* begin src/scheme/time_line/imp.h */
 struct TimeLine;
 
-// tag::mem[]
 void time_line_ini(float start, /**/ TimeLine**);
 void time_line_fin(TimeLine*);
-// end::mem[]
 
-// tag::int[]
 void time_line_advance(float dt, TimeLine*);           // <1>
 int  time_line_cross(const TimeLine*, float interval); // <2>
-// end::int[]
 
-// tag::strt[]
 void time_line_strt_dump(MPI_Comm, const char *base, int id, const TimeLine*); // <1>
 void time_line_strt_read(const char *base, int id, TimeLine*); // <2>
-// end::strt[]
 
-// tag::get[]
 float time_line_get_current  (const TimeLine*); // <1>
 long  time_line_get_iteration(const TimeLine*); // <2>
-// end::get[]
-/* end src/scheme/time_line/imp.h */
-/* begin src/scheme/time_step/imp.h */
 struct TimeStep;
 struct TimeStepAccel;
 struct Force;
 struct Config;
 
-// tag::amem[]
 void time_step_accel_ini(/**/ TimeStepAccel**);
 void time_step_accel_fin(TimeStepAccel*);
-// end::amem[]
 
-// tag::aint[]
 void time_step_accel_push(TimeStepAccel*, float m, int n, Force*); // <1>
 void time_step_accel_reset(TimeStepAccel*); // <2>
-// end::aint[]
 
 
-// tag::mem[]
 void time_step_ini(const Config*, /**/ TimeStep**); // <1>
 void time_step_fin(TimeStep*);
-// end::mem[]
 
-// tag::int[]
 float time_step_dt(TimeStep*, MPI_Comm, TimeStepAccel*); // <1>
 float time_step_dt0(TimeStep*);                          // <2>
 void time_step_log(TimeStep*);                           // <3>
-// end::int[]
-/* end src/scheme/time_step/imp.h */
 
-/* begin src/control/vel/imp.h */
 struct PidVCont;
 struct Coords;
 struct Config;
@@ -1298,69 +1011,45 @@ struct float3;
 struct int3;
 struct Particle;
 
-// tag::mem[]
 void vcont_ini(MPI_Comm comm, int3 L, /**/ PidVCont **c);
 void vcont_fin(/**/ PidVCont *cont);
-// end::mem[]
 
-// tag::set[]
 void vcont_set_params(float factor, float Kp, float Ki, float Kd, /**/ PidVCont *c); // <1>
 void vcont_set_target(float3 vtarget, /**/ PidVCont *c);  // <2>
 void vcont_set_cart(/**/ PidVCont *c);  // <3>
 void vcont_set_radial(/**/ PidVCont *c);  // <4>
-// end::set[]
 
-// tag::cnf[]
 void vcont_set_conf(const Config *cfg, /**/ PidVCont *c);
-// end::cnf[]
 
-// tag::start[]
 void vcont_strt_dump(MPI_Comm, const char *base, int id, const PidVCont*); // <1>
 void vcont_strt_read(          const char *base, int id, PidVCont*);       // <2>
-// end::start[]
 
-// tag::int[]
 void   vcont_sample(const Coords *coords, int n, const Particle *pp, const int *starts, const int *counts, /**/ PidVCont *c); // <1>
 float3 vcont_adjustF(/**/ PidVCont *c); // <2>
 void   vcont_log(const PidVCont *c);    // <3>
-// end::int[]
-/* end src/control/vel/imp.h */
-/* begin src/control/den/imp.h */
 struct DCont;
 struct DContMap;
 
 struct Config;
 struct Coords;
 
-// tag::mem[]
 void den_ini(int maxp, /**/ DCont**);
 void den_map_ini(DContMap**);
 
 void den_fin(DCont*);
 void den_map_fin(DContMap*);
-// end::mem[]
 
-// tag::set[]
 void den_map_set_none(const Coords*, DContMap*);
 void den_map_set_circle(const Coords*, float R, DContMap*);
-// end::set[]
 
-// tag::cfg[]
 void den_map_set_conf(const Config*, const Coords*, DContMap*);
-// end::cfg[]
 
-// tag::int[]
 void den_reset(int n, /**/ DCont*d); // <1>
 void den_filter_particles(int maxdensity, const DContMap*, const int *starts, const int *counts, /**/ DCont*); // <2>
 void den_download_ndead(DCont*); // <3>
-// end::int[]
 
-// tag::get[]
 const int* den_get_deathlist(DCont*); // <1>
 int        den_get_ndead(DCont*); // <2>
-// end::get[]
-/* end src/control/den/imp.h */
-/* begin src/control/outflow/imp.h */
 struct Outflow;
 
 struct Config;
@@ -1368,31 +1057,21 @@ struct Coords;
 struct Particle;
 struct float3;
 
-// tag::mem[]
 void outflow_ini(int maxp, /**/ Outflow **o);
 void outflow_fin(/**/ Outflow *o);
-// end::mem[]
 
-// tag::set[]
 void outflow_set_params_circle(const Coords*, float3 c, float R, Outflow *o);
 void outflow_set_params_plate(const Coords*, int dir, float r0, Outflow *o);
-// end::set[]
 
-// tag::cfg[]
 void outflow_set_conf(const Config *cfg, const Coords*, Outflow *);
-// end::cfg[]
 
-// tag::int[]
 void outflow_filter_particles(int n, const Particle *pp, /**/ Outflow *o); // <1>
 
 void outflow_download_ndead(Outflow *o);                                   // <2>
 
 int* outflow_get_deathlist(Outflow *o);                                    // <3>
 int  outflow_get_ndead(Outflow *o);                                        // <4>
-// tag::int[]
 
-/* end src/control/outflow/imp.h */
-/* begin src/control/inflow/imp.h */
 struct Inflow;
 struct Config;
 struct Particle;
@@ -1400,12 +1079,9 @@ struct int2;
 struct float3;
 struct Coords;
 
-// tag::mem[]
 void inflow_ini(int2 nc, Inflow **i);
 void inflow_fin(Inflow *i);
-// end::mem[]
 
-// tag::ini[]
 void inflow_ini_velocity(Inflow *i);
 
 void inflow_ini_params_plate(const Coords *c, float3 o, int dir, float L1, float L2,
@@ -1413,19 +1089,12 @@ void inflow_ini_params_plate(const Coords *c, float3 o, int dir, float L1, float
                              /**/ Inflow *i);
 void inflow_ini_params_circle(const Coords *c, float3 o, float R, float H, float u, bool poiseuille,
                               /**/ Inflow *i);
-// end::ini[]
 
-// tag::cnf[]
 void inflow_ini_params_conf(const Coords *coords, const Config *cfg, /**/ Inflow *i);
-// end::cnf[]
 
-// tag::int[]
 void inflow_create_pp(float kBT, int numdensity, float dt, Inflow *i, int *n, Particle *pp); // <1>
 void inflow_create_pp_cc(float kBT, int numdensity, float dt, int newcolor, Inflow *i, int *n, Particle *pp, int *cc); // <2>
-// end::int[]
-/* end src/control/inflow/imp.h */
 
-/* begin src/color/imp.h */
 struct int3;
 struct Particle;
 struct Coords;
@@ -1440,9 +1109,7 @@ void decolor_tracers(const Coords *coords, int color, const float R, const float
 void tracers_ini(const int n);
 
 void tracers_fin();
-/* end src/color/imp.h */
 
-/* begin src/sim/objects/imp.h */
 struct Objects;
 
 struct Sdf;
@@ -1458,34 +1125,25 @@ struct IoBop;
 struct PairParams;
 struct WallRepulsePrm;
 
-// tag::mem[]
 void objects_ini(const Config*, const Opt*, MPI_Comm, const Coords*, int maxp, Objects**);
 void objects_fin(Objects*);
-// end::mem[]
 
 void objects_save_mesh(Objects*);
-// tag::upd[]
 void objects_clear_vel(Objects*);         // <1>
 void objects_advance(float dt, Objects*); // <2>
 void objects_distribute(Objects*);        // <3>
 void objects_update_dpd_prms(float dt, float kBT, Objects*); // <4>
-// end::upd[]
 
-// tag::force[]
 void objects_clear_forces(Objects*);                 // <1>
 void objects_body_forces(const BForce*, Objects *o); // <2>
-// end::force[]
 
-// tag::dump[]
 void objects_mesh_dump(Objects*);                    // <1>
 void objects_diag_dump(float t, Objects*);           // <2>
 void objects_part_dump(long id, Objects*, IoBop*);   // <3>
 
 void objects_strt_templ(const char *base, Objects*);         // <4>
 void objects_strt_dump(const char *base, long id, Objects*); // <5>
-// end::dump[]
 
-// tag::get[]
 bool objects_have_bounce(const Objects*);
 
 void objects_get_particles_all(Objects*, PFarrays*);    // <1>
@@ -1496,33 +1154,22 @@ void objects_get_params_fsi(const Objects*, const PairParams*[]);           // <
 void objects_get_params_adhesion(const Objects*, const PairParams*[]);      // <5>
 void objects_get_params_repulsion(const Objects*, const WallRepulsePrm*[]); // <6>
 void objects_get_params_cnt(const Objects*, const PairParams***);           // <7>
-// end::get[]
 
-// tag::gen[]
 void objects_gen_mesh(Objects*);                           // <1>
 void objects_remove_from_wall(const Sdf *sdf, Objects *o); // <2>
 void objects_gen_freeze(PFarray*, Objects*);               // <3>
-// end::gen[]
 
-// tag::strt[]
 void objects_restart(Objects*);
-// end::strt[]
 
-// tag::tools[]
 void objects_activate_mbr_bounce(Objects*);
 void objects_bounce(float dt, float flu_mass, const Clist *flu_cells, long n, const Particle *flu_pp0, Particle *flu_pp, Objects *obj); // <1>
 void objects_recolor_flu(Objects*, PFarray *flu); // <2>
 double objects_mbr_tot_volume(const Objects*);    // <3>
-// end::tools[]
 
-// tag::check[]
 void objects_check_size(const Objects*);
 void objects_check_vel(const Objects*, const Dbg*, float dt);
 void objects_check_forces(const Objects*, const Dbg*, float dt);
-// end::check[]
 
-/* end src/sim/objects/imp.h */
-/* begin src/sim/objinter/imp.h */
 struct ObjInter;
 
 struct Config;
@@ -1530,16 +1177,10 @@ struct Opt;
 struct PFarray;
 struct PFarrays;
 
-// tag::mem[]
 void obj_inter_ini(const Config*, const Opt*, MPI_Comm, float dt, int maxp, /**/ ObjInter**);
 void obj_inter_fin(ObjInter*);
-// end::mem[]
 
-// tag::int[]
 void obj_inter_forces(ObjInter*, const PairParams **fsi_prms, const PairParams **cnt_prms, PFarray *flu, const int *flu_start, PFarrays *obj); // <1>
-// end::int[]
-/* end src/sim/objinter/imp.h */
-/* begin src/sim/opt/imp.h */
 /* solvent options */
 struct OptFlu {
     bool colors, ids, ss, push;
@@ -1605,8 +1246,6 @@ struct Config;
 void opt_read(const Config*, Opt*);
 void opt_check(const Opt*);
 long opt_estimate_maxp(const Opt*);
-/* end src/sim/opt/imp.h */
-/* begin src/sim/walls/imp.h */
 struct Wall;
 
 struct OptParams;
@@ -1614,61 +1253,39 @@ struct Config;
 struct PairParams;
 struct Coords;
 
-// tag::mem[]
 void wall_ini(const Config*, int3 L, Wall**);
 void wall_fin(Wall*);
-// end::mem[]
 
-// tag::gen[]
 void wall_gen(MPI_Comm, const Coords*, OptParams, bool dump_sdf,
               /*io*/ int *n, Particle *pp, /**/ Wall*);
-// end::gen[]
 
-// tag::strt[]
 void wall_restart(MPI_Comm, const Coords*, OptParams, bool dump_sdf,
                   const char *base, /**/ Wall*);
-// end::strt[]
 
-// tag::dump[]
 void wall_dump_templ(const Wall*, MPI_Comm, const char *base);
-// end::dump[]
 
-// tag::main[]
 void wall_interact(const Coords*, const PairParams*[], Wall*, PFarrays*);
 void wall_adhesion(const Coords*, const PairParams*[], Wall*, PFarrays*);
 void wall_bounce(const Wall*, const Coords*, float dt, PFarrays*);
 void wall_repulse(const Wall*, const WallRepulsePrm *[], PFarrays*);
-// end::main[]
 
-// tag::upd[]
 void wall_update_vel(float t, Wall *);
-// end::upd[]
 
-// tag::get[]
 void wall_get_sdf_ptr(const Wall*, const Sdf**);           // <1>
 double wall_compute_volume(const Wall*, MPI_Comm, int3 L); // <2>
-// end::get[]
-/* end src/sim/walls/imp.h */
 
-/* begin src/sim/imp.h */
 struct Sim;
 struct Config;
 
-// tag::mem[]
 void sim_ini(const Config*, MPI_Comm, /**/ Sim**);
 void sim_fin(Sim*);
-// end::mem[]
 
-// tag::run[]
 void sim_gen(Sim*);  // <1>
 void sim_strt(Sim*); // <2>
-// end::run[]
-/* end src/sim/imp.h */
 
 #define _I_ static
 #define _S_ static
 
-/* begin src/sim/imp/type.h */
 /* solvent distribution */
 struct FluDistr {
     DFluPack *p;
@@ -1788,8 +1405,6 @@ struct Sim {
     /* inter processing helpers */
     GenColor *gen_color;
 };
-/* end src/sim/imp/type.h */
-/* begin src/sim/imp/utils.h */
 _I_ bool active_walls(const Sim *s) {
     return !s->equilibrating && s->opt.wall.active;
 }
@@ -1886,8 +1501,6 @@ _I_ void utils_set_n_flu_pf(const PFarray *flu, Sim *s) {
     Flu *f = &s->flu;
     f->q.n = flu->n;
 }
-/* end src/sim/imp/utils.h */
-/* begin src/sim/imp/force.h */
 _S_ void body_force(const BForce *bforce, Sim *s) {
     Flu *flu = &s->flu;
     const Opt *opt = &s->opt;
@@ -2032,9 +1645,7 @@ _I_ void forces(float dt, TimeLine *time, const BForce *bforce, Sim *s) {
 
     dSync();
 }
-/* end src/sim/imp/force.h */
 
-/* begin src/sim/imp/ini.h */
 _S_ void ini_flu_exch(const Opt *opt, MPI_Comm comm, int3 L, /**/ FluExch *e) {
     int maxd = HSAFETY_FACTOR * opt->params.numdensity;
 
@@ -2267,8 +1878,6 @@ void sim_ini(const Config *cfg, MPI_Comm cart, /**/ Sim **sim) {
 
     MC(m::Barrier(s->cart));
 }
-/* end src/sim/imp/ini.h */
-/* begin src/sim/imp/fin.h */
 _S_ void fin_flu_exch(/**/ FluExch *e) {
     UC(eflu_pack_fin(/**/ e->p));
     UC(eflu_comm_fin(/**/ e->c));
@@ -2369,8 +1978,6 @@ void sim_fin(Sim *s) {
     MC(m::Comm_free(&s->cart));
     EFREE(s);
 }
-/* end src/sim/imp/fin.h */
-/* begin src/sim/imp/check.h */
 _S_ void check_size(long n, long nmax) {
     if (n < 0 || n > nmax)
         ERR("wrong size: %ld / %ld", n, nmax);
@@ -2396,8 +2003,6 @@ _I_ void check_forces(float dt, Sim *s) {
     UC(dbg_check_forces(dt, c, "flu.ff", s->dbg, s->flu.q.n, s->flu.q.pp, s->flu.ff));
     UC(objects_check_forces(s->obj, s->dbg, dt));
 }
-/* end src/sim/imp/check.h */
-/* begin src/sim/imp/dump.h */
 _S_ long download_all_pp(Sim *s) { /* device to host  data transfer */
     long i, np = 0;
     Flu *flu = &s->flu;
@@ -2509,8 +2114,6 @@ _I_ void dump(TimeLine *time, Sim *s) {
     if (o->strt  && time_line_cross(time, o->freq_strt))
         dump_strt(s);
 }
-/* end src/sim/imp/dump.h */
-/* begin src/sim/imp/addons.h */
 /* velocity controller */
 
 _S_ bool valid_step(long id, const int freq) {
@@ -2617,8 +2220,6 @@ _I_ void activate_mbr_bb(Sim *s) {
     UC(colors_from_rbc(s));
     UC(objects_activate_mbr_bounce(s->obj));
 }
-/* end src/sim/imp/addons.h */
-/* begin src/sim/imp/update.h */
 _I_ void clear_vel(Sim *s) {
     Flu *flu = &s->flu;
     UC(scheme_move_clear_vel(flu->q.n, flu->q.pp));
@@ -2691,8 +2292,6 @@ _I_ void update_params(float dt, Sim *s) {
     UC(flu_update_dpd_prms(dt, kBT, s));
     UC(objects_update_dpd_prms(dt, kBT, s->obj));
 }
-/* end src/sim/imp/update.h */
-/* begin src/sim/imp/distr.h */
 /* the following functions will need to be splitted in the future
    for performance reasons */
 
@@ -2748,8 +2347,6 @@ _I_ void distribute_flu(Sim *s) {
 
     dSync();
 }
-/* end src/sim/imp/distr.h */
-/* begin src/sim/imp/run.h */
 _S_ void pre_run(Sim *s) {
     s->equilibrating = false;
 
@@ -2831,8 +2428,6 @@ _I_ void run(float ts, float te, Sim *s) {
     }
     UC(distribute_flu(/**/ s));
 }
-/* end src/sim/imp/run.h */
-/* begin src/sim/imp/main.h */
 _S_ void gen_flu(Sim *s) {
     Flu *flu = &s->flu;
     UC(flu_gen_quants(s->coords, s->opt.params.numdensity, s->gen_color, &flu->q));
@@ -2929,8 +2524,6 @@ void sim_strt(Sim *s) {
     run(s->time.eq, s->time.end, s);
     if (opt->dump.strt) UC(dump_strt_final(s));
 }
-/* end src/sim/imp/main.h */
 
 #undef _I_
 #undef _S_
-/* end src/sim/imp.cpp */

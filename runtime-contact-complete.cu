@@ -20,14 +20,11 @@
 // Grouped editable compilation unit for device and MPI adapters.
 
 
-// generated from udx.flat.cu
 #include "udx.config.cuh"
 
-/* begin src/d/api.cu */
 #include <stdio.h>
 #include <assert.h>
 
-/* begin src/inc/conf.h */
 /* [k]ernel [l]aunch macros */
 #if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
     !defined(KL_SYNC)
@@ -62,36 +59,24 @@
 #ifndef DUMP_BASE
 #define DUMP_BASE "."
 #endif
-/* end src/inc/conf.h */
 
 
-/* begin src/utils/imp.h */
-// tag::mem[]
 void emalloc(size_t, /**/ void**); // <1>
 void efree(void*); // <2>
 void *ememcpy(void *dest, const void *src, size_t n); // <3>
-// end::mem[]
 
-// tag::macros[]
 #define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
 #define EFREE(pdata) UC(efree(pdata))
 #define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
-// end::macros[]
 
-// tag::stdio[]
 void efopen(const char *fname, const char *mode, /**/ FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
 void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
 void efgets(char *s, int size, FILE*);
-// end::stdio[]
 
-// tag::tools[]
 bool same_str(const char *a, const char *b); // <1>
 const char* get_filename_ext(const char*);
-// end::tools[]
-/* end src/utils/imp.h */
-/* begin src/utils/error.h */
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
         error_report();                                         \
@@ -131,15 +116,9 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-/* end src/utils/error.h */
-/* begin src/utils/msg.h */
-// tag::int[]
 void msg_ini(int rank); // <1>
 void msg_print(const char *fmt, ...); // <2>
-// end::int[]
-/* end src/utils/msg.h */
 
-/* begin src/d/api.h */
 #ifndef UDX_D_MPI_COLOR_D_API
 #define UDX_D_MPI_COLOR_D_API
 namespace d {  /* a wrapper for device API */
@@ -148,13 +127,10 @@ enum {MemcpyHostToHost, MemcpyHostToDevice,
       MemcpyDeviceToHost, MemcpyDeviceToDevice,
       MemcpyDefault};
 
-// tag::more[]
 const char *emsg();
 int alloc_pinned(void **pHost, size_t size);
 int is_device_pointer(const void *ptr);
-// end::more[]
 
-// tag::api[]
 int GetSymbolAddress(void **devPtr, const void *symbol);
 int Malloc(void **p, size_t);
 int MemcpyToSymbol(const void *symbol, const void *src, size_t count, size_t offset=0, int kind=MemcpyHostToDevice);
@@ -168,19 +144,14 @@ int Free (void *devPtr);
 int FreeHost (void *hstPtr);
 int DeviceSynchronize (void);
 int PeekAtLastError(void);
-// end::api[]
 }
-/* end src/d/api.h */
 #endif
 
 namespace d {
-/* begin src/d/common.h */
 static const char *emsg0; /* last error message */
 const char *emsg() { return emsg0; }
-/* end src/d/common.h */
 
 #if   defined(DEV_CUDA)
-/* begin src/d/cuda/imp.h */
 #define SZ(a) (int)(sizeof(a)/sizeof(*(a)))
 static enum cudaMemcpyKind k2k0[] = {  /* [k]ind to [k]ind */
     cudaMemcpyHostToHost, cudaMemcpyHostToDevice,
@@ -262,9 +233,7 @@ int DeviceSynchronize (void) {
 int PeekAtLastError(void) {
     return R(cudaPeekAtLastError());
 }
-/* end src/d/cuda/imp.h */
 #  if  defined(CUDA_ALLOC_RELEASE)
-/* begin src/d/cuda/release/alloc.h */
 int alloc_pinned(void **pHost, size_t size) {
     return R(cudaHostAlloc(pHost, size, cudaHostAllocMapped));
 }
@@ -280,9 +249,7 @@ int Free (void *devPtr) {
 int FreeHost (void *hstPtr) {
     return R(cudaFreeHost(hstPtr));
 }
-/* end src/d/cuda/release/alloc.h */
 #  elif defined(CUDA_ALLOC_DEBUG)
-/* begin src/d/cuda/debug/alloc.h */
 /* for sysconf */
 #include <unistd.h>
 
@@ -325,12 +292,10 @@ int FreeHost (void *hstPtr) {
     msg_print("[FreeHost]");
     return R(cudaFreeHost(hstPtr));
 }
-/* end src/d/cuda/debug/alloc.h */
 #  else
 #    error CUDA_ALLOC_* is undefined
 #  endif
 #elif defined(DEV_CPU)
-/* begin src/d/cpu/imp.h */
 /* [v]oid add : shift by `n' number of bytes */
 #define vadd(p, n) (void*)((char*)(p) + (n))
 
@@ -403,26 +368,21 @@ int DeviceSynchronize (void) {
 int PeekAtLastError(void) {
     return 0;
 }
-/* end src/d/cpu/imp.h */
 #else
 #  error DEV_* is undefined
 #endif
 
 }
-/* end src/d/api.cu */
 
 
 
 
-// generated from udx.flat.cu
 #include "udx.config.cuh"
 
-/* begin src/mpi/glb.cpp */
 #include <stdlib.h>
 #include <string.h>
 #include <mpi.h>
 
-/* begin src/inc/conf.h */
 /* [k]ernel [l]aunch macros */
 #if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
     !defined(KL_SYNC)
@@ -457,10 +417,8 @@ int PeekAtLastError(void) {
 #ifndef DUMP_BASE
 #define DUMP_BASE "."
 #endif
-/* end src/inc/conf.h */
 
 
-/* begin src/mpi/wrapper.h */
 namespace m {
 int Allreduce(const void *sendbuf, void *recvbuf, int count, MPI_Datatype datatype, MPI_Op op, MPI_Comm comm);
 int Barrier(MPI_Comm comm);
@@ -510,9 +468,7 @@ int is_pending(int errorcode);
 int is_err_in_status(int errorcode);
 int status2errcode(MPI_Status *status);
 }
-/* end src/mpi/wrapper.h */
 
-/* begin src/utils/mc.h */
 /* [m]pi [c]heck macros */
 #define MC(ans)                                                         \
     do { mpicheck::check((ans), __FILE__, __LINE__); } while (0)
@@ -520,7 +476,6 @@ int status2errcode(MPI_Status *status);
 namespace mpicheck {
 void check(int code, const char *file, int line);
 }
-/* end src/utils/mc.h */
 
 namespace m { /* MPI */
 enum {X, Y, Z, D};
@@ -584,11 +539,9 @@ void get_cart(MPI_Comm comm, const int dims[3], /**/ MPI_Comm *cart) {
 void fin() { MC(m::Finalize()); }
 
 } /* namespace */
-/* end src/mpi/glb.cpp */
 
 
 
-/* begin src/mpi/wrapper.cpp */
 #include <mpi.h>
 
 
@@ -754,7 +707,6 @@ int is_err_in_status(int errorcode) { return errorcode == MPI_ERR_IN_STATUS; }
 
 int status2errcode(MPI_Status *status) { return status->MPI_ERROR; }
 }
-/* end src/mpi/wrapper.cpp */
 
 
 
@@ -763,15 +715,12 @@ int status2errcode(MPI_Status *status) { return status->MPI_ERROR; }
 // Grouped editable compilation unit for color and coordinate helpers.
 
 
-// generated from udx.flat.cu
 #include "udx.config.cuh"
 
-/* begin src/color/imp.cu */
 #include <stdio.h>
 #include <curand_kernel.h>
 #include <assert.h>
 
-/* begin src/inc/conf.h */
 /* [k]ernel [l]aunch macros */
 #if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
     !defined(KL_SYNC)
@@ -806,20 +755,13 @@ int status2errcode(MPI_Status *status) { return status->MPI_ERROR; }
 #ifndef DUMP_BASE
 #define DUMP_BASE "."
 #endif
-/* end src/inc/conf.h */
 
 
-/* begin src/utils/msg.h */
-// tag::int[]
 void msg_ini(int rank); // <1>
 void msg_print(const char *fmt, ...); // <2>
-// end::int[]
-/* end src/utils/msg.h */
-/* begin src/utils/cc.h */
 /* [c]uda [c]heck macros */
 
 #if   defined(CC_SYNC)
-/* begin src/utils/cc/sync.h */
 /* Aggressive [sync]ronization */
 #define CC(ans)                                             \
     do {                                                    \
@@ -827,50 +769,38 @@ void msg_print(const char *fmt, ...); // <2>
         cc::check((ans), __FILE__, __LINE__);               \
         d::DeviceSynchronize();                             \
     } while (0)
-/* end src/utils/cc/sync.h */
 #elif defined(CC_RELEASE)
-/* begin src/utils/cc/release.h */
 /* [c]cuda [c]heck */
 #define CC(ans)                                             \
     do { cc::check((ans), __FILE__, __LINE__);} while (0)
-/* end src/utils/cc/release.h */
 #else
   #error CC_* is undefined
 #endif
 
-/* begin src/utils/cc/common.h */
 namespace cc {
 void check(int rc, const char *file, int line);
 }
 
 
-/* end src/utils/cc/common.h */
 
 /* TODO: header includes header */
-/* end src/utils/cc.h */
-/* begin src/utils/kl.h */
 #ifndef UDX_CONTROL_KL_COMMON
 #define UDX_CONTROL_KL_COMMON
 /* [k]ernel [l]aunch macros */
 
 #if    defined(KL_RELEASE)
-/* begin src/utils/kl/release.h */
 #define KL_BEFORE(s, C) if (!kl::safe(ESC C)) continue;
 #define KL_CALL(F, C, A) F<<<ESC C>>>A
 #define KL_AFTER(s)
 
 namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
-/* end src/utils/kl/release.h */
 #elif  defined(KL_NONE)
-/* begin src/utils/kl/none.h */
 #define KL_BEFORE(s, C)
 #define KL_CALL(F, C, A)
 #define KL_AFTER(s)
 
 namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
-/* end src/utils/kl/none.h */
 #elif  defined(KL_SYNC)
-/* begin src/utils/kl/sync.h */
 #define KL_BEFORE(s, C) if (!kl::safe(ESC C)) continue;
 #define KL_CALL(F, C, A) F<<<ESC C>>>A
 #define KL_AFTER(s)                             \
@@ -880,12 +810,10 @@ namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
     } while(0)
 
 namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
-/* end src/utils/kl/sync.h */
 #else
   #error KL_* is undefined
 #endif
 
-/* begin src/utils/kl/common.h */
 namespace kl {
 inline int safe0(dim3 i, dim3 j) {
     msg(i.x, i.y, i.z,   j.x, j.y, j.z);
@@ -894,8 +822,6 @@ inline int safe0(dim3 i, dim3 j) {
 inline int safe(dim3 i, dim3 j)                    { return safe0(i, j); }
 inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
 }
-/* end src/utils/kl/common.h */
-/* begin src/utils/kl/macro.h */
 #define ESC(...) __VA_ARGS__
 #define KL(F, C, A)                             \
     do  {                                       \
@@ -903,12 +829,9 @@ inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
         KL_CALL(F, C, A);                       \
         KL_AFTER(#F);                           \
     } while (0)
-/* end src/utils/kl/macro.h */
 
 /* TODO: header includes header */
-/* end src/utils/kl.h */
 #endif /* UDX_CONTROL_KL_COMMON */
-/* begin src/d/api.h */
 #ifndef UDX_D_MPI_COLOR_D_API
 #define UDX_D_MPI_COLOR_D_API
 namespace d {  /* a wrapper for device API */
@@ -917,13 +840,10 @@ enum {MemcpyHostToHost, MemcpyHostToDevice,
       MemcpyDeviceToHost, MemcpyDeviceToDevice,
       MemcpyDefault};
 
-// tag::more[]
 const char *emsg();
 int alloc_pinned(void **pHost, size_t size);
 int is_device_pointer(const void *ptr);
-// end::more[]
 
-// tag::api[]
 int GetSymbolAddress(void **devPtr, const void *symbol);
 int Malloc(void **p, size_t);
 int MemcpyToSymbol(const void *symbol, const void *src, size_t count, size_t offset=0, int kind=MemcpyHostToDevice);
@@ -937,15 +857,12 @@ int Free (void *devPtr);
 int FreeHost (void *hstPtr);
 int DeviceSynchronize (void);
 int PeekAtLastError(void);
-// end::api[]
 }
-/* end src/d/api.h */
 #endif
 #ifndef UDX_CONTROL_D_API_COMMON
 #define UDX_CONTROL_D_API_COMMON
 #endif
 
-/* begin src/inc/dev.h */
 /* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
 
@@ -983,8 +900,6 @@ int PeekAtLastError(void);
 /* [d]evice [a]synchronous set */
 #define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
 #define DzeroA(P, n)   DsetA(P, 0, n)
-/* end src/inc/dev.h */
-/* begin src/inc/type.h */
 #ifndef UDX_CONTROL_TYPE_COMMON
 #define UDX_CONTROL_TYPE_COMMON
 template <typename T, int N>
@@ -1039,75 +954,54 @@ struct FoWrap {
     int n;
     Force *ff;
 };
-/* end src/inc/type.h */
 #endif /* UDX_CONTROL_TYPE_COMMON */
 
-/* begin src/coords/type.h */
 #ifndef UDX_CONTROL_COORDS_COMMON
 #define UDX_CONTROL_COORDS_COMMON
-// tag::view[]
 struct Coords_v {
     int xc, yc, zc; /* rank coordinates        */
     int xd, yd, zd; /* rank sizes              */
     int Lx, Ly, Lz; /* [L]ocal: subdomain size */
 };
-// end::view[]
-/* end src/coords/type.h */
-/* begin src/coords/imp/type.h */
 struct Coords {
     int xc, yc, zc; /* rank coordinates        */
     int xd, yd, zd; /* rank sizes              */
     int Lx, Ly, Lz; /* [L]ocal: subdomain size */
 };
-/* end src/coords/imp/type.h */
 #endif
-/* begin src/coords/imp.h */
 struct Coords;
 struct Coords_v;
 struct float3;
 struct int3;
 
-// tag::view[]
 void coords_get_view(const Coords *c, Coords_v *v);
-// end::view[]
 
-// tag::domainsz[]
 int xdomain(const Coords *c);
 int ydomain(const Coords *c);
 int zdomain(const Coords *c);
-// end::domainsz[]
 
-// tag::local2center[]
 float xl2xc(const Coords *c, float xl);
 float yl2yc(const Coords *c, float yl);
 float zl2zc(const Coords *c, float zl);
 void local2center(const Coords *c, float3 rl, /**/ float3 *rc);
-// end::local2center[]
 
-// tag::center2local[]
 float xc2xl(const Coords *c, float xc);
 float yc2yl(const Coords *c, float yc);
 float zc2zl(const Coords *c, float zc);
 void center2local(const Coords *c, float3 rc, /**/ float3 *rl);
-// end::center2local[]
 
-// tag::local2global[]
 float xl2xg(const Coords *c, float xl);
 float yl2yg(const Coords *c, float yl);
 float zl2zg(const Coords *c, float zl);
 void local2global(const Coords *c, float3 rl, /**/ float3 *rg);
-// end::local2global[]
 
-// tag::global2local[]
 float xg2xl(const Coords *c, float xg);
 float yg2yl(const Coords *c, float yg);
 float zg2zl(const Coords *c, float zg);
 void global2local(const Coords *c, float3 rg, /**/ float3 *rl);
-// end::global2local[]
 
 /* edges of the sub-domain in global coordinates */
 
-// tag::bblocal[]
 int xlo(const Coords*);
 int ylo(const Coords*);
 int zlo(const Coords*);
@@ -1115,16 +1009,12 @@ int zlo(const Coords*);
 int xhi(const Coords*);
 int yhi(const Coords*);
 int zhi(const Coords*);
-// end::bblocal[]
 
-// tag::subdomainsz[]
 int xs(const Coords*);
 int ys(const Coords*);
 int zs(const Coords*);
 int3 subdomain(const Coords*);
-// end::subdomainsz[]
 
-// tag::int[]
 /* rank predicates */
 bool is_end(const Coords *c, int dir);
 
@@ -1133,10 +1023,7 @@ void coord_stamp(const Coords *c, /**/ char *s);
 
 /* number of subdomains */
 int coords_size(const Coords *c);
-// end::int[]
-/* end src/coords/imp.h */
 
-/* begin src/color/imp.h */
 struct int3;
 struct Particle;
 struct Coords;
@@ -1151,13 +1038,9 @@ void decolor_tracers(const Coords *coords, int color, const float R, const float
 void tracers_ini(const int n);
 
 void tracers_fin();
-/* end src/color/imp.h */
-/* begin src/color/imp/type.h */
 struct Rnd {
     curandState_t * state;
 } color_rnd;
-/* end src/color/imp/type.h */
-/* begin src/color/imp/main.h */
 namespace color_dev
 {
 
@@ -1283,49 +1166,34 @@ void tracers_ini(const int n) {
 void tracers_fin() {
     Dfree(color_rnd.state);
 }
-/* end src/color/imp/main.h */
-
-/* end src/color/imp.cu */
 
 
 
 
-// generated from udx.flat.cu
+
 #include "udx.config.cuh"
 
-/* begin src/coords/conf.cpp */
 #include <stdio.h>
 #include <mpi.h>
 
 #include <vector_types.h>
 
-/* begin src/utils/imp.h */
-// tag::mem[]
 void emalloc(size_t, /**/ void**); // <1>
 void efree(void*); // <2>
 void *ememcpy(void *dest, const void *src, size_t n); // <3>
-// end::mem[]
 
-// tag::macros[]
 #define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
 #define EFREE(pdata) UC(efree(pdata))
 #define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
-// end::macros[]
 
-// tag::stdio[]
 void efopen(const char *fname, const char *mode, /**/ FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
 void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
 void efgets(char *s, int size, FILE*);
-// end::stdio[]
 
-// tag::tools[]
 bool same_str(const char *a, const char *b); // <1>
 const char* get_filename_ext(const char*);
-// end::tools[]
-/* end src/utils/imp.h */
-/* begin src/utils/error.h */
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
         error_report();                                         \
@@ -1365,22 +1233,15 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-/* end src/utils/error.h */
-/* begin src/conf/imp.h */
 struct Config;
 struct float3;
 struct int3;
 
-// tag::mem[]
 void conf_ini(/**/ Config **c);
 void conf_fin(/**/ Config *c);
-// end::mem[]
 
-// tag::ini[]
 void conf_read(int argc, char **argv, /**/ Config *cfg);
-// end::ini[]
 
-// tag::lookup[]
 void conf_lookup_int(const Config *c, const char *desc, int *a);
 void conf_lookup_float(const Config *c, const char *desc, float *a);
 void conf_lookup_bool(const Config *c, const char *desc, int *a);
@@ -1390,9 +1251,7 @@ void conf_lookup_int3(const Config *c, const char *desc, int3 *a);
 void conf_lookup_vfloat(const Config *c, const char *desc, int maxn, int *n, float a[]);
 void conf_lookup_float3(const Config *c, const char *desc, float3 *a);
 void conf_lookup_vstring(const Config *c, const char *desc, int maxn, int *n, const char **ss);
-// end::lookup[]
 
-// tag::ns[]
 void conf_lookup_int_ns(const Config *c, const char *ns, const char *desc, int *a);
 void conf_lookup_float_ns(const Config *c, const char *ns, const char *desc, float *a);
 void conf_lookup_bool_ns(const Config *c, const char *ns, const char *desc, int *a);
@@ -1402,9 +1261,7 @@ void conf_lookup_int3_ns(const Config *c, const char *ns, const char *desc, int3
 void conf_lookup_vfloat_ns(const Config *c, const char *ns, const char *desc, int maxn, int *n, float a[]);
 void conf_lookup_float3_ns(const Config *c, const char *ns, const char *desc, float3 *a);
 void conf_lookup_vstring_ns(const Config *c, const char *ns, const char *d, int maxn, int *n, const char **ss);
-// end::ns[]
 
-// tag::opt[]
 bool conf_opt_int(const Config *c, const char *desc, int *a);
 bool conf_opt_float(const Config *c, const char *desc, float *a);
 bool conf_opt_bool(const Config *c, const char *desc, int *a);
@@ -1414,9 +1271,7 @@ bool conf_opt_int3(const Config *c, const char *desc, int3 *a);
 bool conf_opt_vfloat(const Config *c, const char *desc, int maxn, int *n, float a[]);
 bool conf_opt_float3(const Config *c, const char *desc, float3 *a);
 bool conf_opt_vstring(const Config *c, const char *desc, int maxn, int *n, const char **ss);
-// end::opt[]
 
-// tag::set[]
 void conf_set_int(const char *desc, int a, Config *c);
 void conf_set_vint(const char *desc, int nelem, const int a[], Config *cfg);
 void conf_set_int3(const char *desc, int3 a, Config *cfg);
@@ -1425,43 +1280,30 @@ void conf_set_vfloat(const char *desc, int nelem, const float a[], Config *cfg);
 void conf_set_float3(const char *desc, float3 a, Config *cfg);
 void conf_set_bool(const char *desc, int a, Config *cfg);
 void conf_set_string(const char *desc, const char *a, Config *cfg);
-// end::set[]
 
-// tag::dump[]
 void conf_write_exe(const Config *cfg, FILE *stream);     // <1>
 void conf_write_history(const Config *cfg, FILE *stream); // <2>
-// end::dump[]
-/* end src/conf/imp.h */
 
-/* begin src/coords/ini.h */
 struct Coords;
 struct Config;
 
-// tag::mem[]
 void coords_ini(MPI_Comm cart, int Lx, int Ly, int Lz, Coords **c); // <1>
 void coords_fin(Coords *c); // <2>
-// end::mem[]
 
-// tag::cnf[]
 void coords_ini_conf(MPI_Comm cart, const Config *cfg, Coords **c);
-// end::cnf[]
 
-/* end src/coords/ini.h */
 
 void coords_ini_conf(MPI_Comm cart, const Config *cfg, Coords **c) {
     int3 L;
     UC(conf_lookup_int3(cfg, "glb/L", &L));
     UC(coords_ini(cart, L.x, L.y, L.z, c));
 }
-/* end src/coords/conf.cpp */
 
 
 
-/* begin src/coords/imp.cpp */
 #include <vector_types.h>
 #include <mpi.h>
 
-/* begin src/inc/conf.h */
 /* [k]ernel [l]aunch macros */
 #if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
     !defined(KL_SYNC)
@@ -1496,10 +1338,8 @@ void coords_ini_conf(MPI_Comm cart, const Config *cfg, Coords **c) {
 #ifndef DUMP_BASE
 #define DUMP_BASE "."
 #endif
-/* end src/inc/conf.h */
 
 
-/* begin src/utils/error.h */
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
         error_report();                                         \
@@ -1539,9 +1379,7 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-/* end src/utils/error.h */
 
-/* begin src/utils/mc.h */
 /* [m]pi [c]heck macros */
 #define MC(ans)                                                         \
     do { mpicheck::check((ans), __FILE__, __LINE__); } while (0)
@@ -1549,9 +1387,7 @@ void error_print_stack();
 namespace mpicheck {
 void check(int code, const char *file, int line);
 }
-/* end src/utils/mc.h */
 
-/* begin src/mpi/wrapper.h */
 namespace m {
 int Allreduce(const void *sendbuf, void *recvbuf, int count, MPI_Datatype datatype, MPI_Op op, MPI_Comm comm);
 int Barrier(MPI_Comm comm);
@@ -1601,67 +1437,48 @@ int is_pending(int errorcode);
 int is_err_in_status(int errorcode);
 int status2errcode(MPI_Status *status);
 }
-/* end src/mpi/wrapper.h */
 
-/* begin src/coords/type.h */
 #ifndef UDX_CONTROL_COORDS_COMMON
 #define UDX_CONTROL_COORDS_COMMON
-// tag::view[]
 struct Coords_v {
     int xc, yc, zc; /* rank coordinates        */
     int xd, yd, zd; /* rank sizes              */
     int Lx, Ly, Lz; /* [L]ocal: subdomain size */
 };
-// end::view[]
-/* end src/coords/type.h */
 
-/* begin src/coords/imp.h */
 struct Coords;
 struct Coords_v;
 struct float3;
 struct int3;
 
-// tag::view[]
 void coords_get_view(const Coords *c, Coords_v *v);
-// end::view[]
 
-// tag::domainsz[]
 int xdomain(const Coords *c);
 int ydomain(const Coords *c);
 int zdomain(const Coords *c);
-// end::domainsz[]
 
-// tag::local2center[]
 float xl2xc(const Coords *c, float xl);
 float yl2yc(const Coords *c, float yl);
 float zl2zc(const Coords *c, float zl);
 void local2center(const Coords *c, float3 rl, /**/ float3 *rc);
-// end::local2center[]
 
-// tag::center2local[]
 float xc2xl(const Coords *c, float xc);
 float yc2yl(const Coords *c, float yc);
 float zc2zl(const Coords *c, float zc);
 void center2local(const Coords *c, float3 rc, /**/ float3 *rl);
-// end::center2local[]
 
-// tag::local2global[]
 float xl2xg(const Coords *c, float xl);
 float yl2yg(const Coords *c, float yl);
 float zl2zg(const Coords *c, float zl);
 void local2global(const Coords *c, float3 rl, /**/ float3 *rg);
-// end::local2global[]
 
-// tag::global2local[]
 float xg2xl(const Coords *c, float xg);
 float yg2yl(const Coords *c, float yg);
 float zg2zl(const Coords *c, float zg);
 void global2local(const Coords *c, float3 rg, /**/ float3 *rl);
-// end::global2local[]
 
 /* edges of the sub-domain in global coordinates */
 
-// tag::bblocal[]
 int xlo(const Coords*);
 int ylo(const Coords*);
 int zlo(const Coords*);
@@ -1669,16 +1486,12 @@ int zlo(const Coords*);
 int xhi(const Coords*);
 int yhi(const Coords*);
 int zhi(const Coords*);
-// end::bblocal[]
 
-// tag::subdomainsz[]
 int xs(const Coords*);
 int ys(const Coords*);
 int zs(const Coords*);
 int3 subdomain(const Coords*);
-// end::subdomainsz[]
 
-// tag::int[]
 /* rank predicates */
 bool is_end(const Coords *c, int dir);
 
@@ -1687,17 +1500,12 @@ void coord_stamp(const Coords *c, /**/ char *s);
 
 /* number of subdomains */
 int coords_size(const Coords *c);
-// end::int[]
-/* end src/coords/imp.h */
-/* begin src/coords/imp/type.h */
 struct Coords {
     int xc, yc, zc; /* rank coordinates        */
     int xd, yd, zd; /* rank sizes              */
     int Lx, Ly, Lz; /* [L]ocal: subdomain size */
 };
-/* end src/coords/imp/type.h */
 #endif
-/* begin src/coords/imp/main.h */
 enum {X, Y, Z, D};
 
 void coords_get_view(const Coords *c, Coords_v *v) {
@@ -1883,8 +1691,6 @@ void coord_stamp(const Coords *c, /**/ char *s) {
 int coords_size(const Coords *c) {
     return c->xd * c->yd * c->zd;
 }
-/* end src/coords/imp/main.h */
-/* end src/coords/imp.cpp */
 
 
 
@@ -1894,15 +1700,12 @@ int coords_size(const Coords *c) {
 // Grouped editable compilation unit for communication and program entry.
 
 
-// generated from udx.flat.cu
 #include "udx.config.cuh"
 
-/* begin src/comm/imp.cpp */
 #include <assert.h>
 #include <string.h>
 #include <mpi.h>
 
-/* begin src/inc/conf.h */
 /* [k]ernel [l]aunch macros */
 #if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
     !defined(KL_SYNC)
@@ -1937,9 +1740,7 @@ int coords_size(const Coords *c) {
 #ifndef DUMP_BASE
 #define DUMP_BASE "."
 #endif
-/* end src/inc/conf.h */
 
-/* begin src/inc/dev.h */
 /* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
 
@@ -1977,9 +1778,7 @@ int coords_size(const Coords *c) {
 /* [d]evice [a]synchronous set */
 #define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
 #define DzeroA(P, n)   DsetA(P, 0, n)
-/* end src/inc/dev.h */
 
-/* begin src/frag/imp.h */
 #ifndef UDX_SHARED_FRAG_COMMON
 #define UDX_SHARED_FRAG_COMMON
 enum {frag_bulk = 26};
@@ -1988,68 +1787,42 @@ struct int3;
 
 namespace frag_hst {
 
-// tag::i2d[]
 int i2dx(int i);                 // <1>
 int i2dy(int i);                 // <2>
 int i2dz(int i);                 // <3>
 void i2d3(int i, /**/ int d[3]); // <4>
-// end::i2d[]
 
-// tag::d2i[]
 int d2i(int x, int y, int z); // <1>
 int d32i(const int d[3]);     // <2>
-// end::d2i[]
 
-// tag::ncell[]
 int ncell(int3 L, int i); // <1>
-// end::ncell[]
 
-// tag::anti[]
 int antid2i(int x, int y, int z); // <1>
 int anti(int i);                  // <2>
-// end::anti[]
 
-// tag::hst[]
 void estimates(int3 L, int nfrags, float maxd, /**/ int *cap); // <1>
-// end::hst[]
 
 } // frag_hst
-/* end src/frag/imp.h */
 #endif /* UDX_SHARED_FRAG_COMMON */
 
-/* begin src/utils/msg.h */
-// tag::int[]
 void msg_ini(int rank); // <1>
 void msg_print(const char *fmt, ...); // <2>
-// end::int[]
-/* end src/utils/msg.h */
-/* begin src/utils/imp.h */
-// tag::mem[]
 void emalloc(size_t, /**/ void**); // <1>
 void efree(void*); // <2>
 void *ememcpy(void *dest, const void *src, size_t n); // <3>
-// end::mem[]
 
-// tag::macros[]
 #define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
 #define EFREE(pdata) UC(efree(pdata))
 #define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
-// end::macros[]
 
-// tag::stdio[]
 void efopen(const char *fname, const char *mode, /**/ FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
 void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
 void efgets(char *s, int size, FILE*);
-// end::stdio[]
 
-// tag::tools[]
 bool same_str(const char *a, const char *b); // <1>
 const char* get_filename_ext(const char*);
-// end::tools[]
-/* end src/utils/imp.h */
-/* begin src/utils/mc.h */
 /* [m]pi [c]heck macros */
 #define MC(ans)                                                         \
     do { mpicheck::check((ans), __FILE__, __LINE__); } while (0)
@@ -2057,12 +1830,9 @@ const char* get_filename_ext(const char*);
 namespace mpicheck {
 void check(int code, const char *file, int line);
 }
-/* end src/utils/mc.h */
-/* begin src/utils/cc.h */
 /* [c]uda [c]heck macros */
 
 #if   defined(CC_SYNC)
-/* begin src/utils/cc/sync.h */
 /* Aggressive [sync]ronization */
 #define CC(ans)                                             \
     do {                                                    \
@@ -2070,28 +1840,21 @@ void check(int code, const char *file, int line);
         cc::check((ans), __FILE__, __LINE__);               \
         d::DeviceSynchronize();                             \
     } while (0)
-/* end src/utils/cc/sync.h */
 #elif defined(CC_RELEASE)
-/* begin src/utils/cc/release.h */
 /* [c]cuda [c]heck */
 #define CC(ans)                                             \
     do { cc::check((ans), __FILE__, __LINE__);} while (0)
-/* end src/utils/cc/release.h */
 #else
   #error CC_* is undefined
 #endif
 
-/* begin src/utils/cc/common.h */
 namespace cc {
 void check(int rc, const char *file, int line);
 }
 
 
-/* end src/utils/cc/common.h */
 
 /* TODO: header includes header */
-/* end src/utils/cc.h */
-/* begin src/utils/error.h */
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
         error_report();                                         \
@@ -2131,23 +1894,18 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-/* end src/utils/error.h */
 #ifndef UDX_D_MPI_COLOR_D_API
 #define UDX_D_MPI_COLOR_D_API
-/* begin src/d/api.h */
 namespace d {  /* a wrapper for device API */
 typedef int Stream_t; /* TODO: streams are not supported */
 enum {MemcpyHostToHost, MemcpyHostToDevice,
       MemcpyDeviceToHost, MemcpyDeviceToDevice,
       MemcpyDefault};
 
-// tag::more[]
 const char *emsg();
 int alloc_pinned(void **pHost, size_t size);
 int is_device_pointer(const void *ptr);
-// end::more[]
 
-// tag::api[]
 int GetSymbolAddress(void **devPtr, const void *symbol);
 int Malloc(void **p, size_t);
 int MemcpyToSymbol(const void *symbol, const void *src, size_t count, size_t offset=0, int kind=MemcpyHostToDevice);
@@ -2161,11 +1919,8 @@ int Free (void *devPtr);
 int FreeHost (void *hstPtr);
 int DeviceSynchronize (void);
 int PeekAtLastError(void);
-// end::api[]
 }
-/* end src/d/api.h */
 #endif /* UDX_D_MPI_COLOR_D_API */
-/* begin src/mpi/wrapper.h */
 namespace m {
 int Allreduce(const void *sendbuf, void *recvbuf, int count, MPI_Datatype datatype, MPI_Op op, MPI_Comm comm);
 int Barrier(MPI_Comm comm);
@@ -2215,9 +1970,7 @@ int is_pending(int errorcode);
 int is_err_in_status(int errorcode);
 int status2errcode(MPI_Status *status);
 }
-/* end src/mpi/wrapper.h */
 
-/* begin src/comm/imp.h */
 typedef unsigned char data_t;
 
 enum {
@@ -2228,72 +1981,55 @@ enum {
 
 /* Allocation mod for bags */
 enum AllocMod {
-    // tag::AllocMod[]
     HST_ONLY,   /* only host bags allocated                 */
     DEV_ONLY,   /* only device bags allocated               */
     PINNED,     /* both host and device pinned              */
     PINNED_HST, /* host pinned; no device memory            */
     PINNED_DEV, /* host pinned; device global memory on gpu */
     NONE        /* no allocation                            */
-    // end::AllocMod[]
 };
 
-// tag::dBags[]
 struct dBags {
     data_t *data[NBAGS]; /* data on the device         */
 };
-// end::dBags[]
 
-// tag::hBags[]
 struct hBags {
     data_t *data[NBAGS]; /* data on the host                    */
     int         *counts; /* size of the data                    */
     int capacity[NBAGS]; /* capacity of each frag (elem number) */
     size_t bsize;        /* size of one datum in bytes          */
 };
-// end::hBags[]
 
 struct Comm;
 struct CommBuffer;
 
-// tag::alloc[]
 void comm_bags_ini(AllocMod fmod, AllocMod bmod, size_t bsize, const int capacity[NBAGS], /**/ hBags *hb, dBags *db);
 void comm_bags_fin(AllocMod fmod, AllocMod bmod, /**/ hBags *hb, dBags *db);
 void comm_ini(MPI_Comm cart, /**/ Comm **c);
 void comm_fin(/**/ Comm *c);
 void comm_buffer_ini(int nbags, const hBags *hbb, CommBuffer**);
 void comm_buffer_fin(CommBuffer*);
-// end::alloc[]
 
 
 void comm_buffer_set(int nbags, const hBags*, CommBuffer*);
 void comm_buffer_get(const CommBuffer*, int nbags, hBags*);
 
-// tag::communication[]
 void comm_post_recv(hBags *b, Comm *c);           // <1>
 void comm_post_send(const hBags *b, Comm *c);     // <2>
 
 void comm_wait_recv(Comm *c, /**/ hBags *b);      // <3>
 void comm_wait_send(Comm *c);                     // <4>
-// end::communication[]
 
-// tag::communication_b[]
 void comm_post_recv(CommBuffer *cb, Comm *c);
 void comm_post_send(const CommBuffer *cb, Comm *c);
 
 void comm_wait_recv(Comm *c, /**/ CommBuffer *cb);
 void comm_wait_send(Comm *c);
-// end::communication_b[]
 
-// tag::get[]
 int    comm_get_number_capacity(int i, const hBags *b); // <1>
 size_t comm_get_byte_capacity(int i, const hBags *b);   // <2>
-// end::get[]
 
-/* end src/comm/imp.h */
 
-/* begin src/comm/imp/type.h */
-// tag::comm[]
 struct Comm {
     MPI_Request sreq[NBAGS]; /* send requests */
     MPI_Request rreq[NBAGS]; /* recv requests */
@@ -2301,14 +2037,11 @@ struct Comm {
     int ranks[NFRAGS];       /* ranks of neighbors     */
     int  tags[NFRAGS];       /* tags in bt coordinates */
 };
-// end::comm[]
 
 struct CommBuffer {
     data_t *buf[NBAGS];
     size_t sz[NBAGS], cap[NBAGS];
 };
-/* end src/comm/imp/type.h */
-/* begin src/comm/imp/ini.h */
 /* pinned allocation */
 
 static void alloc_counts(int n, /**/ int **hc) {
@@ -2409,8 +2142,6 @@ void comm_ini(MPI_Comm cart, /**/ Comm **com_p) {
     MC(m::Comm_dup(cart, &com->cart));
 }
 
-/* end src/comm/imp/ini.h */
-/* begin src/comm/imp/fin.h */
 static void free_counts(int **hc) {
     EFREE(*hc);
     *hc = NULL;
@@ -2464,8 +2195,6 @@ void comm_fin(/**/ Comm *c) {
     MC(m::Comm_free(&c->cart));
     EFREE(c);
 }
-/* end src/comm/imp/fin.h */
-/* begin src/comm/imp/buffer.h */
 static void frag_set_buffer(int fid, int nbags, const hBags *hbb, CommBuffer *cb) {
     size_t tot_sz, sz, bs;
     int i, c, *counts;
@@ -2521,8 +2250,6 @@ void comm_buffer_get(const CommBuffer *cb, int nbags, hBags *hbb) {
     for (int fid = 0; fid < NFRAGS; ++fid)
         frag_get_buffer(fid, cb, nbags, hbb);
 }
-/* end src/comm/imp/buffer.h */
-/* begin src/comm/imp/main.h */
 void comm_post_recv(hBags *b, Comm *com) {
     int i, c, tag;
     for (i = 0; i < NFRAGS; ++i) {
@@ -2661,20 +2388,15 @@ int comm_get_number_capacity(int i, const hBags *b) {
 size_t comm_get_byte_capacity(int i, const hBags *b) {
     return b->bsize * comm_get_number_capacity(i, b);
 }
-/* end src/comm/imp/main.h */
-/* end src/comm/imp.cpp */
 
 
 
 
-// generated from udx.flat.cu
 #include "udx.config.cuh"
 
-/* begin src/main.cpp */
 #include <mpi.h>
 #include <stdio.h>
 
-/* begin src/inc/conf.h */
 /* [k]ernel [l]aunch macros */
 #if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
     !defined(KL_SYNC)
@@ -2709,16 +2431,10 @@ size_t comm_get_byte_capacity(int i, const hBags *b) {
 #ifndef DUMP_BASE
 #define DUMP_BASE "."
 #endif
-/* end src/inc/conf.h */
 
 
-/* begin src/utils/msg.h */
-// tag::int[]
 void msg_ini(int rank); // <1>
 void msg_print(const char *fmt, ...); // <2>
-// end::int[]
-/* end src/utils/msg.h */
-/* begin src/utils/error.h */
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
         error_report();                                         \
@@ -2758,8 +2474,6 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-/* end src/utils/error.h */
-/* begin src/utils/mc.h */
 /* [m]pi [c]heck macros */
 #define MC(ans)                                                         \
     do { mpicheck::check((ans), __FILE__, __LINE__); } while (0)
@@ -2767,16 +2481,12 @@ void error_print_stack();
 namespace mpicheck {
 void check(int code, const char *file, int line);
 }
-/* end src/utils/mc.h */
-/* begin src/mpi/glb.h */
 namespace m { /* mini MPI */
 void ini(int *argc, char ***argv);
 void get_dims(int *argc, char ***argv, int dims[3]);
 void get_cart(MPI_Comm comm, const int dims[3], /**/ MPI_Comm *cart);
 void fin();
 }
-/* end src/mpi/glb.h */
-/* begin src/mpi/wrapper.h */
 namespace m {
 int Allreduce(const void *sendbuf, void *recvbuf, int count, MPI_Datatype datatype, MPI_Op op, MPI_Comm comm);
 int Barrier(MPI_Comm comm);
@@ -2826,45 +2536,28 @@ int is_pending(int errorcode);
 int is_err_in_status(int errorcode);
 int status2errcode(MPI_Status *status);
 }
-/* end src/mpi/wrapper.h */
-/* begin src/scheme/time_line/imp.h */
 struct TimeLine;
 
-// tag::mem[]
 void time_line_ini(float start, /**/ TimeLine**);
 void time_line_fin(TimeLine*);
-// end::mem[]
 
-// tag::int[]
 void time_line_advance(float dt, TimeLine*);           // <1>
 int  time_line_cross(const TimeLine*, float interval); // <2>
-// end::int[]
 
-// tag::strt[]
 void time_line_strt_dump(MPI_Comm, const char *base, int id, const TimeLine*); // <1>
 void time_line_strt_read(const char *base, int id, TimeLine*); // <2>
-// end::strt[]
 
-// tag::get[]
 float time_line_get_current  (const TimeLine*); // <1>
 long  time_line_get_iteration(const TimeLine*); // <2>
-// end::get[]
-/* end src/scheme/time_line/imp.h */
-/* begin src/conf/imp.h */
 struct Config;
 struct float3;
 struct int3;
 
-// tag::mem[]
 void conf_ini(/**/ Config **c);
 void conf_fin(/**/ Config *c);
-// end::mem[]
 
-// tag::ini[]
 void conf_read(int argc, char **argv, /**/ Config *cfg);
-// end::ini[]
 
-// tag::lookup[]
 void conf_lookup_int(const Config *c, const char *desc, int *a);
 void conf_lookup_float(const Config *c, const char *desc, float *a);
 void conf_lookup_bool(const Config *c, const char *desc, int *a);
@@ -2874,9 +2567,7 @@ void conf_lookup_int3(const Config *c, const char *desc, int3 *a);
 void conf_lookup_vfloat(const Config *c, const char *desc, int maxn, int *n, float a[]);
 void conf_lookup_float3(const Config *c, const char *desc, float3 *a);
 void conf_lookup_vstring(const Config *c, const char *desc, int maxn, int *n, const char **ss);
-// end::lookup[]
 
-// tag::ns[]
 void conf_lookup_int_ns(const Config *c, const char *ns, const char *desc, int *a);
 void conf_lookup_float_ns(const Config *c, const char *ns, const char *desc, float *a);
 void conf_lookup_bool_ns(const Config *c, const char *ns, const char *desc, int *a);
@@ -2886,9 +2577,7 @@ void conf_lookup_int3_ns(const Config *c, const char *ns, const char *desc, int3
 void conf_lookup_vfloat_ns(const Config *c, const char *ns, const char *desc, int maxn, int *n, float a[]);
 void conf_lookup_float3_ns(const Config *c, const char *ns, const char *desc, float3 *a);
 void conf_lookup_vstring_ns(const Config *c, const char *ns, const char *d, int maxn, int *n, const char **ss);
-// end::ns[]
 
-// tag::opt[]
 bool conf_opt_int(const Config *c, const char *desc, int *a);
 bool conf_opt_float(const Config *c, const char *desc, float *a);
 bool conf_opt_bool(const Config *c, const char *desc, int *a);
@@ -2898,9 +2587,7 @@ bool conf_opt_int3(const Config *c, const char *desc, int3 *a);
 bool conf_opt_vfloat(const Config *c, const char *desc, int maxn, int *n, float a[]);
 bool conf_opt_float3(const Config *c, const char *desc, float3 *a);
 bool conf_opt_vstring(const Config *c, const char *desc, int maxn, int *n, const char **ss);
-// end::opt[]
 
-// tag::set[]
 void conf_set_int(const char *desc, int a, Config *c);
 void conf_set_vint(const char *desc, int nelem, const int a[], Config *cfg);
 void conf_set_int3(const char *desc, int3 a, Config *cfg);
@@ -2909,27 +2596,17 @@ void conf_set_vfloat(const char *desc, int nelem, const float a[], Config *cfg);
 void conf_set_float3(const char *desc, float3 a, Config *cfg);
 void conf_set_bool(const char *desc, int a, Config *cfg);
 void conf_set_string(const char *desc, const char *a, Config *cfg);
-// end::set[]
 
-// tag::dump[]
 void conf_write_exe(const Config *cfg, FILE *stream);     // <1>
 void conf_write_history(const Config *cfg, FILE *stream); // <2>
-// end::dump[]
-/* end src/conf/imp.h */
-/* begin src/sim/imp.h */
 struct Sim;
 struct Config;
 
-// tag::mem[]
 void sim_ini(const Config*, MPI_Comm, /**/ Sim**);
 void sim_fin(Sim*);
-// end::mem[]
 
-// tag::run[]
 void sim_gen(Sim*);  // <1>
 void sim_strt(Sim*); // <2>
-// end::run[]
-/* end src/sim/imp.h */
 
 int main(int argc, char **argv) {
     Sim *sim;
@@ -2963,7 +2640,6 @@ int main(int argc, char **argv) {
     m::fin();
     msg_print("end");
 }
-/* end src/main.cpp */
 
 
 
@@ -2972,17 +2648,14 @@ int main(int argc, char **argv) {
 // Grouped editable compilation unit for configuration and bundled libconfig.
 
 
-// generated from udx.flat.cu
 #include "udx.config.cuh"
 
-/* begin src/conf/imp.cpp */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 /* libconfig is bundled above. */
 #include <vector_types.h>
 
-/* begin src/utils/error.h */
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
         error_report();                                         \
@@ -3022,55 +2695,34 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-/* end src/utils/error.h */
-/* begin src/utils/imp.h */
-// tag::mem[]
 void emalloc(size_t, /**/ void**); // <1>
 void efree(void*); // <2>
 void *ememcpy(void *dest, const void *src, size_t n); // <3>
-// end::mem[]
 
-// tag::macros[]
 #define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
 #define EFREE(pdata) UC(efree(pdata))
 #define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
-// end::macros[]
 
-// tag::stdio[]
 void efopen(const char *fname, const char *mode, /**/ FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
 void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
 void efgets(char *s, int size, FILE*);
-// end::stdio[]
 
-// tag::tools[]
 bool same_str(const char *a, const char *b); // <1>
 const char* get_filename_ext(const char*);
-// end::tools[]
-/* end src/utils/imp.h */
-/* begin src/utils/msg.h */
-// tag::int[]
 void msg_ini(int rank); // <1>
 void msg_print(const char *fmt, ...); // <2>
-// end::int[]
-/* end src/utils/msg.h */
 
-/* begin src/conf/imp.h */
 struct Config;
 struct float3;
 struct int3;
 
-// tag::mem[]
 void conf_ini(/**/ Config **c);
 void conf_fin(/**/ Config *c);
-// end::mem[]
 
-// tag::ini[]
 void conf_read(int argc, char **argv, /**/ Config *cfg);
-// end::ini[]
 
-// tag::lookup[]
 void conf_lookup_int(const Config *c, const char *desc, int *a);
 void conf_lookup_float(const Config *c, const char *desc, float *a);
 void conf_lookup_bool(const Config *c, const char *desc, int *a);
@@ -3080,9 +2732,7 @@ void conf_lookup_int3(const Config *c, const char *desc, int3 *a);
 void conf_lookup_vfloat(const Config *c, const char *desc, int maxn, int *n, float a[]);
 void conf_lookup_float3(const Config *c, const char *desc, float3 *a);
 void conf_lookup_vstring(const Config *c, const char *desc, int maxn, int *n, const char **ss);
-// end::lookup[]
 
-// tag::ns[]
 void conf_lookup_int_ns(const Config *c, const char *ns, const char *desc, int *a);
 void conf_lookup_float_ns(const Config *c, const char *ns, const char *desc, float *a);
 void conf_lookup_bool_ns(const Config *c, const char *ns, const char *desc, int *a);
@@ -3092,9 +2742,7 @@ void conf_lookup_int3_ns(const Config *c, const char *ns, const char *desc, int3
 void conf_lookup_vfloat_ns(const Config *c, const char *ns, const char *desc, int maxn, int *n, float a[]);
 void conf_lookup_float3_ns(const Config *c, const char *ns, const char *desc, float3 *a);
 void conf_lookup_vstring_ns(const Config *c, const char *ns, const char *d, int maxn, int *n, const char **ss);
-// end::ns[]
 
-// tag::opt[]
 bool conf_opt_int(const Config *c, const char *desc, int *a);
 bool conf_opt_float(const Config *c, const char *desc, float *a);
 bool conf_opt_bool(const Config *c, const char *desc, int *a);
@@ -3104,9 +2752,7 @@ bool conf_opt_int3(const Config *c, const char *desc, int3 *a);
 bool conf_opt_vfloat(const Config *c, const char *desc, int maxn, int *n, float a[]);
 bool conf_opt_float3(const Config *c, const char *desc, float3 *a);
 bool conf_opt_vstring(const Config *c, const char *desc, int maxn, int *n, const char **ss);
-// end::opt[]
 
-// tag::set[]
 void conf_set_int(const char *desc, int a, Config *c);
 void conf_set_vint(const char *desc, int nelem, const int a[], Config *cfg);
 void conf_set_int3(const char *desc, int3 a, Config *cfg);
@@ -3115,16 +2761,10 @@ void conf_set_vfloat(const char *desc, int nelem, const float a[], Config *cfg);
 void conf_set_float3(const char *desc, float3 a, Config *cfg);
 void conf_set_bool(const char *desc, int a, Config *cfg);
 void conf_set_string(const char *desc, const char *a, Config *cfg);
-// end::set[]
 
-// tag::dump[]
 void conf_write_exe(const Config *cfg, FILE *stream);     // <1>
 void conf_write_history(const Config *cfg, FILE *stream); // <2>
-// end::dump[]
-/* end src/conf/imp.h */
 
-/* begin src/conf/imp/type.h */
-// tag::struct[]
 enum {
     EXE, /* from program setters */
     ARG, /* from arguments       */
@@ -3137,7 +2777,6 @@ struct Config {
     config_t c[NCFG];
     config_t *r; /* what have been read */
 };
-// end::struct[]
 
 enum {
     OK,
@@ -3152,8 +2791,6 @@ enum {
 struct CBuf {
     char c[MAX_LEVEL][FILENAME_MAX];
 };
-/* end src/conf/imp/type.h */
-/* begin src/conf/imp/main.h */
 static void set_write_options(config_t *c) {
     config_set_option(c, CONFIG_OPTION_SEMICOLON_SEPARATORS,            CONFIG_FALSE);
     config_set_option(c, CONFIG_OPTION_COLON_ASSIGNMENT_FOR_GROUPS,     CONFIG_FALSE);
@@ -3278,8 +2915,6 @@ void conf_write_exe(const Config *cfg, FILE *stream) {
 void conf_write_history(const Config *cfg, FILE *stream) {
     config_write(cfg->r, stream);
 }
-/* end src/conf/imp/main.h */
-/* begin src/conf/imp/set.h */
 static config_setting_t* subsetting(const char *desc, int type, config_setting_t *group) {
     config_setting_t *sub;
     sub = config_setting_lookup(group, desc);
@@ -3501,8 +3136,6 @@ void conf_set_string(const char *desc, const char *a, Config *cfg) {
     UC(set_string(desc, a, &cfg->c[EXE]));
 }
 
-/* end src/conf/imp/set.h */
-/* begin src/conf/imp/get.h */
 static bool found(const config_setting_t *s) {return s != NULL;}
 static void treat_status(int status, const char *desc, const char *type) {
     if (status == NOTFOUND)
@@ -3785,14 +3418,10 @@ bool conf_opt_float3(const Config *c, const char *desc, float3 *a) {
 bool conf_opt_vstring(const Config *c, const char *desc, int maxn, int *n, const char **ss) {
     return OK == lookup_vstring(c, desc, maxn, n, ss);
 }
-/* end src/conf/imp/get.h */
-/* end src/conf/imp.cpp */
 
 
 
 
-/* begin bundled libconfig */
-/* begin libconfig/lib/libconfig.h */
 /* ----------------------------------------------------------------------------
    libconfig - A library for processing structured configuration files
    Copyright (C) 2005-2018  Mark A Lindner
@@ -4148,8 +3777,6 @@ extern LIBCONFIG_API int config_lookup_string(const config_t *config,
 #endif /* __cplusplus */
 
 #endif /* __libconfig_h */
-/* end libconfig/lib/libconfig.h */
-/* begin libconfig/lib/strbuf.h */
 /* ----------------------------------------------------------------------------
    libconfig - A library for processing structured configuration files
    Copyright (C) 2005-2020  Mark A Lindner
@@ -4192,8 +3819,6 @@ void libconfig_strbuf_append_char(strbuf_t *buf, char c);
 char *libconfig_strbuf_release(strbuf_t *buf);
 
 #endif /* __libconfig_strbuf_h */
-/* end libconfig/lib/strbuf.h */
-/* begin libconfig/lib/strvec.h */
 /* ----------------------------------------------------------------------------
    libconfig - A library for processing structured configuration files
    Copyright (C) 2005-2020  Mark A Lindner
@@ -4237,8 +3862,6 @@ extern const char **libconfig_strvec_release(strvec_t *vec);
 extern void libconfig_strvec_delete(const char * const *vec);
 
 #endif /* __libconfig_strvec_h */
-/* end libconfig/lib/strvec.h */
-/* begin libconfig/lib/util.h */
 /* ----------------------------------------------------------------------------
    libconfig - A library for processing structured configuration files
    Copyright (C) 2005-2018  Mark A Lindner
@@ -4274,8 +3897,6 @@ extern unsigned long long libconfig_parse_hex64(const char *s);
 extern void libconfig_format_double(double val, int precision, int sci_ok,
                                     char *buf, size_t buflen);
 
-/* end libconfig/lib/util.h */
-/* begin libconfig/lib/wincompat.h */
 /* ----------------------------------------------------------------------------
    libconfig - A library for processing structured configuration files
    Copyright (C) 2005-2018  Mark A Lindner
@@ -4394,8 +4015,6 @@ extern int fsync(int fd);
 #endif /* defined(WIN32/WIN64) && ! defined(__MINGW32__) */
 
 #endif /* __wincompat_h */
-/* end libconfig/lib/wincompat.h */
-/* begin libconfig/lib/scanctx.h */
 /* ----------------------------------------------------------------------------
    libconfig - A library for processing structured configuration files
    Copyright (C) 2005-2020  Mark A Lindner
@@ -4502,8 +4121,6 @@ extern char *libconfig_scanctx_take_string(struct scan_context *ctx);
 extern const char *libconfig_scanctx_current_filename(struct scan_context *ctx);
 
 #endif /* __libconfig_scanctx_h */
-/* end libconfig/lib/scanctx.h */
-/* begin libconfig/lib/parsectx.h */
 /* ----------------------------------------------------------------------------
    libconfig - A library for processing structured configuration files
    Copyright (C) 2005-2020  Mark A Lindner
@@ -4550,8 +4167,6 @@ struct parse_context
   libconfig_strbuf_release(&((C)->string))
 
 #endif /* __libconfig_parsectx_h */
-/* end libconfig/lib/parsectx.h */
-/* begin libconfig/lib/grammar.h */
 /* A Bison parser, made by GNU Bison 3.0.4.  */
 
 /* Bison interface for Yacc-like parsers in C
@@ -4666,8 +4281,6 @@ typedef union YYSTYPE YYSTYPE;
 int libconfig_yyparse (void *scanner, struct parse_context *ctx, struct scan_context *scan_ctx);
 
 #endif /* !YY_LIBCONFIG_YY_GRAMMAR_H_INCLUDED  */
-/* end libconfig/lib/grammar.h */
-/* begin libconfig/lib/scanner.h */
 #ifndef libconfig_yyHEADER_H
 #define libconfig_yyHEADER_H 1
 #define libconfig_yyIN_HEADER 1
@@ -4910,13 +4523,11 @@ int libconfig_yyparse (void *scanner, struct parse_context *ctx, struct scan_con
 
 /* First, we deal with  platform-specific or compiler-specific issues. */
 
-/* begin standard C headers. */
 #include <stdio.h>
 #include <string.h>
 #include <errno.h>
 #include <stdlib.h>
 
-/* end standard C headers. */
 
 /* flex integer type definitions */
 
@@ -4986,7 +4597,6 @@ typedef unsigned int flex_uint32_t;
 
 #endif /* ! FLEXINT_H */
 
-/* begin standard C++ headers. */
 
 /* TODO: this is always defined, so inline it */
 #define yyconst const
@@ -5383,14 +4993,12 @@ extern int yylex \
 
 #undef libconfig_yyIN_HEADER
 #endif /* libconfig_yyHEADER_H */
-/* end libconfig/lib/scanner.h */
 #ifndef YY_BUFFER_NEW
 #define YY_BUFFER_NEW 0
 #define YY_BUFFER_NORMAL 1
 #define YY_BUFFER_EOF_PENDING 2
 #endif
 
-/* begin libconfig/lib/strbuf.c */
 /* ----------------------------------------------------------------------------
    libconfig - A library for processing structured configuration files
    Copyright (C) 2005-2020  Mark A Lindner
@@ -5463,8 +5071,6 @@ void libconfig_strbuf_append_char(strbuf_t *buf, char c)
 }
 
 /* ------------------------------------------------------------------------- */
-/* end libconfig/lib/strbuf.c */
-/* begin libconfig/lib/strvec.c */
 /* ----------------------------------------------------------------------------
    libconfig - A library for processing structured configuration files
    Copyright (C) 2005-2020  Mark A Lindner
@@ -5537,8 +5143,6 @@ void libconfig_strvec_delete(const char *const *vec)
 }
 
 /* ------------------------------------------------------------------------- */
-/* end libconfig/lib/strvec.c */
-/* begin libconfig/lib/util.c */
 /* ----------------------------------------------------------------------------
    libconfig - A library for processing structured configuration files
    Copyright (C) 2005-2018  Mark A Lindner
@@ -5659,8 +5263,6 @@ void libconfig_format_double(double val, int precision, int sci_ok, char *buf,
 }
 
 /* ------------------------------------------------------------------------- */
-/* end libconfig/lib/util.c */
-/* begin libconfig/lib/wincompat.c */
 /* ----------------------------------------------------------------------------
    libconfig - A library for processing structured configuration files
    Copyright (C) 2005-2018  Mark A Lindner
@@ -5721,8 +5323,6 @@ int fsync(int fd)
 }
 
 #endif // WIN32 || WIN64
-/* end libconfig/lib/wincompat.c */
-/* begin libconfig/lib/scanctx.c */
 /* ----------------------------------------------------------------------------
    libconfig - A library for processing structured configuration files
    Copyright (C) 2005-2020  Mark A Lindner
@@ -5917,8 +5517,6 @@ const char *libconfig_scanctx_current_filename(struct scan_context *ctx)
 }
 
 /* ------------------------------------------------------------------------- */
-/* end libconfig/lib/scanctx.c */
-/* begin libconfig/lib/grammar.c */
 /* A Bison parser, made by GNU Bison 3.0.4.  */
 
 /* Bison implementation for Yacc-like parsers in C
@@ -7740,8 +7338,6 @@ yyreturn:
   return yyresult;
 }
 
-/* end libconfig/lib/grammar.c */
-/* begin libconfig/lib/scanner.c */
 
 
 #define  YY_INT_ALIGNED short int
@@ -7980,13 +7576,11 @@ yyreturn:
 
 /* First, we deal with  platform-specific or compiler-specific issues. */
 
-/* begin standard C headers. */
 #include <stdio.h>
 #include <string.h>
 #include <errno.h>
 #include <stdlib.h>
 
-/* end standard C headers. */
 
 /* flex integer type definitions */
 
@@ -8056,7 +7650,6 @@ typedef unsigned int flex_uint32_t;
 
 #endif /* ! FLEXINT_H */
 
-/* begin standard C++ headers. */
 
 /* TODO: this is always defined, so inline it */
 #define yyconst const
@@ -8741,7 +8334,6 @@ static int input ( yyscan_t yyscanner );
 #define YY_FATAL_ERROR(msg) yy_fatal_error( msg , yyscanner)
 #endif
 
-/* end tables serialization structures and prototypes */
 
 /* Default declaration of generated scanner - a define so the user can
  * easily add parameters.
@@ -10298,8 +9890,6 @@ void yyfree (void * ptr , yyscan_t yyscanner)
 
 #define YYTABLES_NAME "yytables"
 
-/* end libconfig/lib/scanner.c */
-/* begin libconfig/lib/libconfig.c */
 /* ----------------------------------------------------------------------------
    libconfig - A library for processing structured configuration files
    Copyright (C) 2005-2020  Mark A Lindner
@@ -12068,11 +11658,9 @@ int config_setting_is_aggregate(const config_setting_t *setting)
 }
 
 /* ------------------------------------------------------------------------- */
-/* end libconfig/lib/libconfig.c */
 #undef BEGIN
 #undef CHUNK_SIZE
 #undef ECHO
-/* end bundled libconfig */
 
 
 
@@ -12083,44 +11671,32 @@ int config_setting_is_aggregate(const config_setting_t *setting)
 // Grouped editable compilation unit for inflow and velocity control.
 
 
-// generated from udx.flat.cu
 #define DEV_CUDA
 #define CC_RELEASE
 #define KL_RELEASE
 #include "udx.api.cuh"
 
-/* begin src/control/inflow/conf.cpp */
 #include <stdlib.h>
 #include <stdio.h>
 #include <vector_types.h>
 
 #ifndef UDX_CONTROL_COORDS_COMMON
 #define UDX_CONTROL_COORDS_COMMON
-/* begin src/coords/type.h */
-// tag::view[]
 struct Coords_v {
     int xc, yc, zc; /* rank coordinates        */
     int xd, yd, zd; /* rank sizes              */
     int Lx, Ly, Lz; /* [L]ocal: subdomain size */
 };
-// end::view[]
-/* end src/coords/type.h */
 #endif /* UDX_CONTROL_COORDS_COMMON */
-/* begin src/conf/imp.h */
 struct Config;
 struct float3;
 struct int3;
 
-// tag::mem[]
 void conf_ini(/**/ Config **c);
 void conf_fin(/**/ Config *c);
-// end::mem[]
 
-// tag::ini[]
 void conf_read(int argc, char **argv, /**/ Config *cfg);
-// end::ini[]
 
-// tag::lookup[]
 void conf_lookup_int(const Config *c, const char *desc, int *a);
 void conf_lookup_float(const Config *c, const char *desc, float *a);
 void conf_lookup_bool(const Config *c, const char *desc, int *a);
@@ -12130,9 +11706,7 @@ void conf_lookup_int3(const Config *c, const char *desc, int3 *a);
 void conf_lookup_vfloat(const Config *c, const char *desc, int maxn, int *n, float a[]);
 void conf_lookup_float3(const Config *c, const char *desc, float3 *a);
 void conf_lookup_vstring(const Config *c, const char *desc, int maxn, int *n, const char **ss);
-// end::lookup[]
 
-// tag::ns[]
 void conf_lookup_int_ns(const Config *c, const char *ns, const char *desc, int *a);
 void conf_lookup_float_ns(const Config *c, const char *ns, const char *desc, float *a);
 void conf_lookup_bool_ns(const Config *c, const char *ns, const char *desc, int *a);
@@ -12142,9 +11716,7 @@ void conf_lookup_int3_ns(const Config *c, const char *ns, const char *desc, int3
 void conf_lookup_vfloat_ns(const Config *c, const char *ns, const char *desc, int maxn, int *n, float a[]);
 void conf_lookup_float3_ns(const Config *c, const char *ns, const char *desc, float3 *a);
 void conf_lookup_vstring_ns(const Config *c, const char *ns, const char *d, int maxn, int *n, const char **ss);
-// end::ns[]
 
-// tag::opt[]
 bool conf_opt_int(const Config *c, const char *desc, int *a);
 bool conf_opt_float(const Config *c, const char *desc, float *a);
 bool conf_opt_bool(const Config *c, const char *desc, int *a);
@@ -12154,9 +11726,7 @@ bool conf_opt_int3(const Config *c, const char *desc, int3 *a);
 bool conf_opt_vfloat(const Config *c, const char *desc, int maxn, int *n, float a[]);
 bool conf_opt_float3(const Config *c, const char *desc, float3 *a);
 bool conf_opt_vstring(const Config *c, const char *desc, int maxn, int *n, const char **ss);
-// end::opt[]
 
-// tag::set[]
 void conf_set_int(const char *desc, int a, Config *c);
 void conf_set_vint(const char *desc, int nelem, const int a[], Config *cfg);
 void conf_set_int3(const char *desc, int3 a, Config *cfg);
@@ -12165,45 +11735,30 @@ void conf_set_vfloat(const char *desc, int nelem, const float a[], Config *cfg);
 void conf_set_float3(const char *desc, float3 a, Config *cfg);
 void conf_set_bool(const char *desc, int a, Config *cfg);
 void conf_set_string(const char *desc, const char *a, Config *cfg);
-// end::set[]
 
-// tag::dump[]
 void conf_write_exe(const Config *cfg, FILE *stream);     // <1>
 void conf_write_history(const Config *cfg, FILE *stream); // <2>
-// end::dump[]
-/* end src/conf/imp.h */
 #ifndef UDX_CONTROL_UTILS_COMMON
 #define UDX_CONTROL_UTILS_COMMON
-/* begin src/utils/imp.h */
-// tag::mem[]
 void emalloc(size_t, /**/ void**); // <1>
 void efree(void*); // <2>
 void *ememcpy(void *dest, const void *src, size_t n); // <3>
-// end::mem[]
 
-// tag::macros[]
 #define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
 #define EFREE(pdata) UC(efree(pdata))
 #define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
-// end::macros[]
 
-// tag::stdio[]
 void efopen(const char *fname, const char *mode, /**/ FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
 void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
 void efgets(char *s, int size, FILE*);
-// end::stdio[]
 
-// tag::tools[]
 bool same_str(const char *a, const char *b); // <1>
 const char* get_filename_ext(const char*);
-// end::tools[]
-/* end src/utils/imp.h */
 #endif /* UDX_CONTROL_UTILS_COMMON */
 #ifndef UDX_CONTROL_ERROR_COMMON
 #define UDX_CONTROL_ERROR_COMMON
-/* begin src/utils/error.h */
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
         error_report();                                         \
@@ -12243,10 +11798,8 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-/* end src/utils/error.h */
 #endif /* UDX_CONTROL_ERROR_COMMON */
 
-/* begin src/control/inflow/imp.h */
 struct Inflow;
 struct Config;
 struct Particle;
@@ -12254,12 +11807,9 @@ struct int2;
 struct float3;
 struct Coords;
 
-// tag::mem[]
 void inflow_ini(int2 nc, Inflow **i);
 void inflow_fin(Inflow *i);
-// end::mem[]
 
-// tag::ini[]
 void inflow_ini_velocity(Inflow *i);
 
 void inflow_ini_params_plate(const Coords *c, float3 o, int dir, float L1, float L2,
@@ -12267,17 +11817,11 @@ void inflow_ini_params_plate(const Coords *c, float3 o, int dir, float L1, float
                              /**/ Inflow *i);
 void inflow_ini_params_circle(const Coords *c, float3 o, float R, float H, float u, bool poiseuille,
                               /**/ Inflow *i);
-// end::ini[]
 
-// tag::cnf[]
 void inflow_ini_params_conf(const Coords *coords, const Config *cfg, /**/ Inflow *i);
-// end::cnf[]
 
-// tag::int[]
 void inflow_create_pp(float kBT, int numdensity, float dt, Inflow *i, int *n, Particle *pp); // <1>
 void inflow_create_pp_cc(float kBT, int numdensity, float dt, int newcolor, Inflow *i, int *n, Particle *pp, int *cc); // <2>
-// end::int[]
-/* end src/control/inflow/imp.h */
 
 void inflow_ini_params_conf(const Coords *coords, const Config *cfg, /**/ Inflow *i) {
     const char *type;
@@ -12315,15 +11859,12 @@ void inflow_ini_params_conf(const Coords *coords, const Config *cfg, /**/ Inflow
     }
 }
 
-/* end src/control/inflow/conf.cpp */
 
 
 
-/* begin src/control/inflow/imp.cu */
 #include <stdio.h>
 #include <curand_kernel.h>
 
-/* begin src/inc/conf.h */
 /* [k]ernel [l]aunch macros */
 #if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
     !defined(KL_SYNC)
@@ -12358,12 +11899,10 @@ void inflow_ini_params_conf(const Coords *coords, const Config *cfg, /**/ Inflow
 #ifndef DUMP_BASE
 #define DUMP_BASE "."
 #endif
-/* end src/inc/conf.h */
 
 
 #ifndef UDX_CONTROL_ERROR_COMMON
 #define UDX_CONTROL_ERROR_COMMON
-/* begin src/utils/error.h */
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
         error_report();                                         \
@@ -12403,14 +11942,11 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-/* end src/utils/error.h */
 #endif /* UDX_CONTROL_ERROR_COMMON */
 
-/* begin src/utils/cc.h */
 /* [c]uda [c]heck macros */
 
 #if   defined(CC_SYNC)
-/* begin src/utils/cc/sync.h */
 /* Aggressive [sync]ronization */
 #define CC(ans)                                             \
     do {                                                    \
@@ -12418,50 +11954,38 @@ void error_print_stack();
         cc::check((ans), __FILE__, __LINE__);               \
         d::DeviceSynchronize();                             \
     } while (0)
-/* end src/utils/cc/sync.h */
 #elif defined(CC_RELEASE)
-/* begin src/utils/cc/release.h */
 /* [c]cuda [c]heck */
 #define CC(ans)                                             \
     do { cc::check((ans), __FILE__, __LINE__);} while (0)
-/* end src/utils/cc/release.h */
 #else
   #error CC_* is undefined
 #endif
 
-/* begin src/utils/cc/common.h */
 namespace cc {
 void check(int rc, const char *file, int line);
 }
 
 
-/* end src/utils/cc/common.h */
 
 /* TODO: header includes header */
-/* end src/utils/cc.h */
 #ifndef UDX_CONTROL_KL_COMMON
 #define UDX_CONTROL_KL_COMMON
-/* begin src/utils/kl.h */
 /* [k]ernel [l]aunch macros */
 
 #if    defined(KL_RELEASE)
-/* begin src/utils/kl/release.h */
 #define KL_BEFORE(s, C) if (!kl::safe(ESC C)) continue;
 #define KL_CALL(F, C, A) F<<<ESC C>>>A
 #define KL_AFTER(s)
 
 namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
-/* end src/utils/kl/release.h */
 #elif  defined(KL_NONE)
-/* begin src/utils/kl/none.h */
 #define KL_BEFORE(s, C)
 #define KL_CALL(F, C, A)
 #define KL_AFTER(s)
 
 namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
-/* end src/utils/kl/none.h */
 #elif  defined(KL_SYNC)
-/* begin src/utils/kl/sync.h */
 #define KL_BEFORE(s, C) if (!kl::safe(ESC C)) continue;
 #define KL_CALL(F, C, A) F<<<ESC C>>>A
 #define KL_AFTER(s)                             \
@@ -12471,12 +11995,10 @@ namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
     } while(0)
 
 namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
-/* end src/utils/kl/sync.h */
 #else
   #error KL_* is undefined
 #endif
 
-/* begin src/utils/kl/common.h */
 namespace kl {
 inline int safe0(dim3 i, dim3 j) {
     msg(i.x, i.y, i.z,   j.x, j.y, j.z);
@@ -12485,8 +12007,6 @@ inline int safe0(dim3 i, dim3 j) {
 inline int safe(dim3 i, dim3 j)                    { return safe0(i, j); }
 inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
 }
-/* end src/utils/kl/common.h */
-/* begin src/utils/kl/macro.h */
 #define ESC(...) __VA_ARGS__
 #define KL(F, C, A)                             \
     do  {                                       \
@@ -12494,27 +12014,21 @@ inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
         KL_CALL(F, C, A);                       \
         KL_AFTER(#F);                           \
     } while (0)
-/* end src/utils/kl/macro.h */
 
 /* TODO: header includes header */
-/* end src/utils/kl.h */
 #endif /* UDX_CONTROL_KL_COMMON */
 #ifndef UDX_CONTROL_D_API_COMMON
 #define UDX_CONTROL_D_API_COMMON
-/* begin src/d/api.h */
 namespace d {  /* a wrapper for device API */
 typedef int Stream_t; /* TODO: streams are not supported */
 enum {MemcpyHostToHost, MemcpyHostToDevice,
       MemcpyDeviceToHost, MemcpyDeviceToDevice,
       MemcpyDefault};
 
-// tag::more[]
 const char *emsg();
 int alloc_pinned(void **pHost, size_t size);
 int is_device_pointer(const void *ptr);
-// end::more[]
 
-// tag::api[]
 int GetSymbolAddress(void **devPtr, const void *symbol);
 int Malloc(void **p, size_t);
 int MemcpyToSymbol(const void *symbol, const void *src, size_t count, size_t offset=0, int kind=MemcpyHostToDevice);
@@ -12528,12 +12042,9 @@ int Free (void *devPtr);
 int FreeHost (void *hstPtr);
 int DeviceSynchronize (void);
 int PeekAtLastError(void);
-// end::api[]
 }
-/* end src/d/api.h */
 #endif /* UDX_CONTROL_D_API_COMMON */
 
-/* begin src/inc/dev.h */
 /* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
 
@@ -12571,10 +12082,8 @@ int PeekAtLastError(void);
 /* [d]evice [a]synchronous set */
 #define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
 #define DzeroA(P, n)   DsetA(P, 0, n)
-/* end src/inc/dev.h */
 #ifndef UDX_CONTROL_TYPE_COMMON
 #define UDX_CONTROL_TYPE_COMMON
-/* begin src/inc/type.h */
 template <typename T, int N>
 struct Sarray { /* [s]tatic array */
     T d[N];
@@ -12627,57 +12136,42 @@ struct FoWrap {
     int n;
     Force *ff;
 };
-/* end src/inc/type.h */
 #endif /* UDX_CONTROL_TYPE_COMMON */
 
 
-/* begin src/coords/imp.h */
 struct Coords;
 struct Coords_v;
 struct float3;
 struct int3;
 
-// tag::view[]
 void coords_get_view(const Coords *c, Coords_v *v);
-// end::view[]
 
-// tag::domainsz[]
 int xdomain(const Coords *c);
 int ydomain(const Coords *c);
 int zdomain(const Coords *c);
-// end::domainsz[]
 
-// tag::local2center[]
 float xl2xc(const Coords *c, float xl);
 float yl2yc(const Coords *c, float yl);
 float zl2zc(const Coords *c, float zl);
 void local2center(const Coords *c, float3 rl, /**/ float3 *rc);
-// end::local2center[]
 
-// tag::center2local[]
 float xc2xl(const Coords *c, float xc);
 float yc2yl(const Coords *c, float yc);
 float zc2zl(const Coords *c, float zc);
 void center2local(const Coords *c, float3 rc, /**/ float3 *rl);
-// end::center2local[]
 
-// tag::local2global[]
 float xl2xg(const Coords *c, float xl);
 float yl2yg(const Coords *c, float yl);
 float zl2zg(const Coords *c, float zl);
 void local2global(const Coords *c, float3 rl, /**/ float3 *rg);
-// end::local2global[]
 
-// tag::global2local[]
 float xg2xl(const Coords *c, float xg);
 float yg2yl(const Coords *c, float yg);
 float zg2zl(const Coords *c, float zg);
 void global2local(const Coords *c, float3 rg, /**/ float3 *rl);
-// end::global2local[]
 
 /* edges of the sub-domain in global coordinates */
 
-// tag::bblocal[]
 int xlo(const Coords*);
 int ylo(const Coords*);
 int zlo(const Coords*);
@@ -12685,16 +12179,12 @@ int zlo(const Coords*);
 int xhi(const Coords*);
 int yhi(const Coords*);
 int zhi(const Coords*);
-// end::bblocal[]
 
-// tag::subdomainsz[]
 int xs(const Coords*);
 int ys(const Coords*);
 int zs(const Coords*);
 int3 subdomain(const Coords*);
-// end::subdomainsz[]
 
-// tag::int[]
 /* rank predicates */
 bool is_end(const Coords *c, int dir);
 
@@ -12703,11 +12193,8 @@ void coord_stamp(const Coords *c, /**/ char *s);
 
 /* number of subdomains */
 int coords_size(const Coords *c);
-// end::int[]
-/* end src/coords/imp.h */
 #ifndef UDX_CONTROL_MATH_COMMON
 #define UDX_CONTROL_MATH_COMMON
-/* begin src/math/dev.h */
 /* use templates here because we might have mixed float/double */
 
 #define _HD_ __host__ __device__
@@ -12766,12 +12253,10 @@ _HD_ void axpy(const T1 a, const T2 *x, /*io*/ T3 *y) {
     y->y += a * x->y;
     y->z += a * x->z;
 }
-/* end src/math/dev.h */
 #endif /* UDX_CONTROL_MATH_COMMON */
 
 
 
-/* begin src/control/inflow/plate/type.h */
 struct ParamsPlate {
     float3 o, a, b;
 };
@@ -12780,8 +12265,6 @@ struct VParamsPlate {
     float3 u;
     bool upoiseuille, vpoiseuille;
 };
-/* end src/control/inflow/plate/type.h */
-/* begin src/control/inflow/plate/dev.h */
 static __device__ void coords2pos(ParamsPlate p, float2 xi, /**/ float3 *r) {
     *r = p.o;
     axpy(xi.x, &p.a, /**/ r);
@@ -12807,9 +12290,7 @@ static __device__ void coords2vel(VParamsPlate vp, ParamsPlate p, float2 xi, /**
     *u = vp.u;
     scal(fact, /**/ u);
 }
-/* end src/control/inflow/plate/dev.h */
 
-/* begin src/control/inflow/circle/type.h */
 struct ParamsCircle {
     float3 o;   /* center of cylinder */
     float R, H; /* radius, hight      */
@@ -12819,8 +12300,6 @@ struct VParamsCircle {
     float u;
     bool poiseuille;
 };
-/* end src/control/inflow/circle/type.h */
-/* begin src/control/inflow/circle/dev.h */
 static __device__ void coords2pos(ParamsCircle p, float2 xi, /**/ float3 *r) {
     float th, h, cth, sth;
     th = xi.x * 2 * M_PI;
@@ -12862,10 +12341,8 @@ static __device__ void coords2vel(VParamsCircle vp, ParamsCircle p, float2 xi, /
     *u = make_float3(cth, sth, 0);
     scal(fact * vp.u, /**/ u);
 }
-/* end src/control/inflow/circle/dev.h */
 
 
-/* begin src/control/inflow/imp/type.h */
 enum Type {
     TYPE_NONE,
     TYPE_PLATE,
@@ -12903,10 +12380,8 @@ struct SolventWrap {
     bool multisolvent;  /* true if color activated */
     int color;          /* color of new particles  */
 };
-/* end src/control/inflow/imp/type.h */
 
 namespace inflow_dev {
-/* begin src/control/inflow/dev/ini.h */
 __global__ void ini_rnd(long seed, int n, curandState_t *rr) {
     long i;
     i = threadIdx.x + blockIdx.x * blockDim.x;
@@ -12920,8 +12395,6 @@ __global__ void ini_flux(int n, /**/ curandState_t *rr, float *cumflux) {
     if (i >= n) return;
     cumflux[i] = curand_uniform(rr + i);
 }
-/* end src/control/inflow/dev/ini.h */
-/* begin src/control/inflow/dev/main.h */
 template <typename Par, typename VPar>
 __global__ void ini_vel(VPar vparams, Par params, int2 nc, /**/ float3 *uu) {
     int i, xcid, ycid;
@@ -13017,10 +12490,8 @@ __global__ void create_particles(float kBT, Par params, int2 nc, const float3 *f
 
     rnds[i] = rndstate;
 }
-/* end src/control/inflow/dev/main.h */
 }
 
-/* begin src/control/inflow/plate/imp.h */
 static float crop(float x, float lo, float hi) {
     if (x < lo) return lo;
     if (x > hi) return hi;
@@ -13090,8 +12561,6 @@ void inflow_ini_params_plate(const Coords *c, float3 o, int dir, float L1, float
 
     i->t = TYPE_PLATE;
 }
-/* end src/control/inflow/plate/imp.h */
-/* begin src/control/inflow/circle/imp.h */
 static bool is_inside_subdomain(const Coords *c, float3 r) {
     bool inside = true;
     inside &= (xlo(c) <= r.x) && (r.x < xhi(c));
@@ -13127,9 +12596,7 @@ void inflow_ini_params_circle(const Coords *c, float3 o, float R, float H, float
         i->t = TYPE_NONE;
     }
 }
-/* end src/control/inflow/circle/imp.h */
 
-/* begin src/control/inflow/imp/main.h */
 static void ini_rnd(int n, curandState_t *rr) {
     long seed = 1234567;
     KL(inflow_dev::ini_rnd, (k_cnf(n)), (seed, n, rr));
@@ -13248,55 +12715,40 @@ void inflow_create_pp_cc(float kBT, int numdensity, float dt, int newcolor, Infl
     wrap.color = newcolor;
     create_solvent(kBT, numdensity, dt, i, n, wrap);
 }
-/* end src/control/inflow/imp/main.h */
-/* end src/control/inflow/imp.cu */
 
 
 
 
-// generated from udx.flat.cu
 #define DEV_CUDA
 #define CC_RELEASE
 #define KL_RELEASE
 #include "udx.api.cuh"
 
-/* begin src/control/vel/conf.cpp */
 #include <stdio.h>
 #include <mpi.h>
 #include <vector_types.h>
 
 #ifndef UDX_CONTROL_UTILS_COMMON
 #define UDX_CONTROL_UTILS_COMMON
-/* begin src/utils/imp.h */
-// tag::mem[]
 void emalloc(size_t, /**/ void**); // <1>
 void efree(void*); // <2>
 void *ememcpy(void *dest, const void *src, size_t n); // <3>
-// end::mem[]
 
-// tag::macros[]
 #define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
 #define EFREE(pdata) UC(efree(pdata))
 #define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
-// end::macros[]
 
-// tag::stdio[]
 void efopen(const char *fname, const char *mode, /**/ FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
 void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
 void efgets(char *s, int size, FILE*);
-// end::stdio[]
 
-// tag::tools[]
 bool same_str(const char *a, const char *b); // <1>
 const char* get_filename_ext(const char*);
-// end::tools[]
-/* end src/utils/imp.h */
 #endif /* UDX_CONTROL_UTILS_COMMON */
 #ifndef UDX_CONTROL_ERROR_COMMON
 #define UDX_CONTROL_ERROR_COMMON
-/* begin src/utils/error.h */
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
         error_report();                                         \
@@ -13336,23 +12788,16 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-/* end src/utils/error.h */
 #endif /* UDX_CONTROL_ERROR_COMMON */
-/* begin src/conf/imp.h */
 struct Config;
 struct float3;
 struct int3;
 
-// tag::mem[]
 void conf_ini(/**/ Config **c);
 void conf_fin(/**/ Config *c);
-// end::mem[]
 
-// tag::ini[]
 void conf_read(int argc, char **argv, /**/ Config *cfg);
-// end::ini[]
 
-// tag::lookup[]
 void conf_lookup_int(const Config *c, const char *desc, int *a);
 void conf_lookup_float(const Config *c, const char *desc, float *a);
 void conf_lookup_bool(const Config *c, const char *desc, int *a);
@@ -13362,9 +12807,7 @@ void conf_lookup_int3(const Config *c, const char *desc, int3 *a);
 void conf_lookup_vfloat(const Config *c, const char *desc, int maxn, int *n, float a[]);
 void conf_lookup_float3(const Config *c, const char *desc, float3 *a);
 void conf_lookup_vstring(const Config *c, const char *desc, int maxn, int *n, const char **ss);
-// end::lookup[]
 
-// tag::ns[]
 void conf_lookup_int_ns(const Config *c, const char *ns, const char *desc, int *a);
 void conf_lookup_float_ns(const Config *c, const char *ns, const char *desc, float *a);
 void conf_lookup_bool_ns(const Config *c, const char *ns, const char *desc, int *a);
@@ -13374,9 +12817,7 @@ void conf_lookup_int3_ns(const Config *c, const char *ns, const char *desc, int3
 void conf_lookup_vfloat_ns(const Config *c, const char *ns, const char *desc, int maxn, int *n, float a[]);
 void conf_lookup_float3_ns(const Config *c, const char *ns, const char *desc, float3 *a);
 void conf_lookup_vstring_ns(const Config *c, const char *ns, const char *d, int maxn, int *n, const char **ss);
-// end::ns[]
 
-// tag::opt[]
 bool conf_opt_int(const Config *c, const char *desc, int *a);
 bool conf_opt_float(const Config *c, const char *desc, float *a);
 bool conf_opt_bool(const Config *c, const char *desc, int *a);
@@ -13386,9 +12827,7 @@ bool conf_opt_int3(const Config *c, const char *desc, int3 *a);
 bool conf_opt_vfloat(const Config *c, const char *desc, int maxn, int *n, float a[]);
 bool conf_opt_float3(const Config *c, const char *desc, float3 *a);
 bool conf_opt_vstring(const Config *c, const char *desc, int maxn, int *n, const char **ss);
-// end::opt[]
 
-// tag::set[]
 void conf_set_int(const char *desc, int a, Config *c);
 void conf_set_vint(const char *desc, int nelem, const int a[], Config *cfg);
 void conf_set_int3(const char *desc, int3 a, Config *cfg);
@@ -13397,15 +12836,10 @@ void conf_set_vfloat(const char *desc, int nelem, const float a[], Config *cfg);
 void conf_set_float3(const char *desc, float3 a, Config *cfg);
 void conf_set_bool(const char *desc, int a, Config *cfg);
 void conf_set_string(const char *desc, const char *a, Config *cfg);
-// end::set[]
 
-// tag::dump[]
 void conf_write_exe(const Config *cfg, FILE *stream);     // <1>
 void conf_write_history(const Config *cfg, FILE *stream); // <2>
-// end::dump[]
-/* end src/conf/imp.h */
 
-/* begin src/control/vel/imp.h */
 struct PidVCont;
 struct Coords;
 struct Config;
@@ -13413,33 +12847,22 @@ struct float3;
 struct int3;
 struct Particle;
 
-// tag::mem[]
 void vcont_ini(MPI_Comm comm, int3 L, /**/ PidVCont **c);
 void vcont_fin(/**/ PidVCont *cont);
-// end::mem[]
 
-// tag::set[]
 void vcont_set_params(float factor, float Kp, float Ki, float Kd, /**/ PidVCont *c); // <1>
 void vcont_set_target(float3 vtarget, /**/ PidVCont *c);  // <2>
 void vcont_set_cart(/**/ PidVCont *c);  // <3>
 void vcont_set_radial(/**/ PidVCont *c);  // <4>
-// end::set[]
 
-// tag::cnf[]
 void vcont_set_conf(const Config *cfg, /**/ PidVCont *c);
-// end::cnf[]
 
-// tag::start[]
 void vcont_strt_dump(MPI_Comm, const char *base, int id, const PidVCont*); // <1>
 void vcont_strt_read(          const char *base, int id, PidVCont*);       // <2>
-// end::start[]
 
-// tag::int[]
 void   vcont_sample(const Coords *coords, int n, const Particle *pp, const int *starts, const int *counts, /**/ PidVCont *c); // <1>
 float3 vcont_adjustF(/**/ PidVCont *c); // <2>
 void   vcont_log(const PidVCont *c);    // <3>
-// end::int[]
-/* end src/control/vel/imp.h */
 
 void vcont_set_conf(const Config *cfg, /**/ PidVCont *c) {
     const char *type;
@@ -13464,16 +12887,13 @@ void vcont_set_conf(const Config *cfg, /**/ PidVCont *c) {
         ERR("Unrecognised type <%s>", type);
 
 }
-/* end src/control/vel/conf.cpp */
 
 
 
-/* begin src/control/vel/imp.cu */
 #include <stdio.h>
 #include <mpi.h>
 #include <assert.h>
 
-/* begin src/inc/conf.h */
 /* [k]ernel [l]aunch macros */
 #if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
     !defined(KL_SYNC)
@@ -13508,18 +12928,12 @@ void vcont_set_conf(const Config *cfg, /**/ PidVCont *c) {
 #ifndef DUMP_BASE
 #define DUMP_BASE "."
 #endif
-/* end src/inc/conf.h */
 
-/* begin src/utils/msg.h */
-// tag::int[]
 void msg_ini(int rank); // <1>
 void msg_print(const char *fmt, ...); // <2>
-// end::int[]
-/* end src/utils/msg.h */
 
 #ifndef UDX_CONTROL_ERROR_COMMON
 #define UDX_CONTROL_ERROR_COMMON
-/* begin src/utils/error.h */
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
         error_report();                                         \
@@ -13559,13 +12973,11 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-/* end src/utils/error.h */
 #endif /* UDX_CONTROL_ERROR_COMMON */
 
 
 #ifndef UDX_CONTROL_TYPE_COMMON
 #define UDX_CONTROL_TYPE_COMMON
-/* begin src/inc/type.h */
 template <typename T, int N>
 struct Sarray { /* [s]tatic array */
     T d[N];
@@ -13618,9 +13030,7 @@ struct FoWrap {
     int n;
     Force *ff;
 };
-/* end src/inc/type.h */
 #endif /* UDX_CONTROL_TYPE_COMMON */
-/* begin src/inc/dev.h */
 /* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
 
@@ -13658,23 +13068,18 @@ struct FoWrap {
 /* [d]evice [a]synchronous set */
 #define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
 #define DzeroA(P, n)   DsetA(P, 0, n)
-/* end src/inc/dev.h */
 #ifndef UDX_CONTROL_D_API_COMMON
 #define UDX_CONTROL_D_API_COMMON
-/* begin src/d/api.h */
 namespace d {  /* a wrapper for device API */
 typedef int Stream_t; /* TODO: streams are not supported */
 enum {MemcpyHostToHost, MemcpyHostToDevice,
       MemcpyDeviceToHost, MemcpyDeviceToDevice,
       MemcpyDefault};
 
-// tag::more[]
 const char *emsg();
 int alloc_pinned(void **pHost, size_t size);
 int is_device_pointer(const void *ptr);
-// end::more[]
 
-// tag::api[]
 int GetSymbolAddress(void **devPtr, const void *symbol);
 int Malloc(void **p, size_t);
 int MemcpyToSymbol(const void *symbol, const void *src, size_t count, size_t offset=0, int kind=MemcpyHostToDevice);
@@ -13688,11 +13093,8 @@ int Free (void *devPtr);
 int FreeHost (void *hstPtr);
 int DeviceSynchronize (void);
 int PeekAtLastError(void);
-// end::api[]
 }
-/* end src/d/api.h */
 #endif /* UDX_CONTROL_D_API_COMMON */
-/* begin src/mpi/wrapper.h */
 namespace m {
 int Allreduce(const void *sendbuf, void *recvbuf, int count, MPI_Datatype datatype, MPI_Op op, MPI_Comm comm);
 int Barrier(MPI_Comm comm);
@@ -13742,12 +13144,9 @@ int is_pending(int errorcode);
 int is_err_in_status(int errorcode);
 int status2errcode(MPI_Status *status);
 }
-/* end src/mpi/wrapper.h */
-/* begin src/utils/cc.h */
 /* [c]uda [c]heck macros */
 
 #if   defined(CC_SYNC)
-/* begin src/utils/cc/sync.h */
 /* Aggressive [sync]ronization */
 #define CC(ans)                                             \
     do {                                                    \
@@ -13755,50 +13154,38 @@ int status2errcode(MPI_Status *status);
         cc::check((ans), __FILE__, __LINE__);               \
         d::DeviceSynchronize();                             \
     } while (0)
-/* end src/utils/cc/sync.h */
 #elif defined(CC_RELEASE)
-/* begin src/utils/cc/release.h */
 /* [c]cuda [c]heck */
 #define CC(ans)                                             \
     do { cc::check((ans), __FILE__, __LINE__);} while (0)
-/* end src/utils/cc/release.h */
 #else
   #error CC_* is undefined
 #endif
 
-/* begin src/utils/cc/common.h */
 namespace cc {
 void check(int rc, const char *file, int line);
 }
 
 
-/* end src/utils/cc/common.h */
 
 /* TODO: header includes header */
-/* end src/utils/cc.h */
 #ifndef UDX_CONTROL_KL_COMMON
 #define UDX_CONTROL_KL_COMMON
-/* begin src/utils/kl.h */
 /* [k]ernel [l]aunch macros */
 
 #if    defined(KL_RELEASE)
-/* begin src/utils/kl/release.h */
 #define KL_BEFORE(s, C) if (!kl::safe(ESC C)) continue;
 #define KL_CALL(F, C, A) F<<<ESC C>>>A
 #define KL_AFTER(s)
 
 namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
-/* end src/utils/kl/release.h */
 #elif  defined(KL_NONE)
-/* begin src/utils/kl/none.h */
 #define KL_BEFORE(s, C)
 #define KL_CALL(F, C, A)
 #define KL_AFTER(s)
 
 namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
-/* end src/utils/kl/none.h */
 #elif  defined(KL_SYNC)
-/* begin src/utils/kl/sync.h */
 #define KL_BEFORE(s, C) if (!kl::safe(ESC C)) continue;
 #define KL_CALL(F, C, A) F<<<ESC C>>>A
 #define KL_AFTER(s)                             \
@@ -13808,12 +13195,10 @@ namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
     } while(0)
 
 namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
-/* end src/utils/kl/sync.h */
 #else
   #error KL_* is undefined
 #endif
 
-/* begin src/utils/kl/common.h */
 namespace kl {
 inline int safe0(dim3 i, dim3 j) {
     msg(i.x, i.y, i.z,   j.x, j.y, j.z);
@@ -13822,8 +13207,6 @@ inline int safe0(dim3 i, dim3 j) {
 inline int safe(dim3 i, dim3 j)                    { return safe0(i, j); }
 inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
 }
-/* end src/utils/kl/common.h */
-/* begin src/utils/kl/macro.h */
 #define ESC(...) __VA_ARGS__
 #define KL(F, C, A)                             \
     do  {                                       \
@@ -13831,12 +13214,9 @@ inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
         KL_CALL(F, C, A);                       \
         KL_AFTER(#F);                           \
     } while (0)
-/* end src/utils/kl/macro.h */
 
 /* TODO: header includes header */
-/* end src/utils/kl.h */
 #endif /* UDX_CONTROL_KL_COMMON */
-/* begin src/utils/mc.h */
 /* [m]pi [c]heck macros */
 #define MC(ans)                                                         \
     do { mpicheck::check((ans), __FILE__, __LINE__); } while (0)
@@ -13844,11 +13224,9 @@ inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
 namespace mpicheck {
 void check(int code, const char *file, int line);
 }
-/* end src/utils/mc.h */
 
 #ifndef UDX_CONTROL_MATH_COMMON
 #define UDX_CONTROL_MATH_COMMON
-/* begin src/math/dev.h */
 /* use templates here because we might have mixed float/double */
 
 #define _HD_ __host__ __device__
@@ -13907,21 +13285,15 @@ _HD_ void axpy(const T1 a, const T2 *x, /*io*/ T3 *y) {
     y->y += a * x->y;
     y->z += a * x->z;
 }
-/* end src/math/dev.h */
 #endif /* UDX_CONTROL_MATH_COMMON */
 #ifndef UDX_CONTROL_COORDS_COMMON
 #define UDX_CONTROL_COORDS_COMMON
-/* begin src/coords/type.h */
-// tag::view[]
 struct Coords_v {
     int xc, yc, zc; /* rank coordinates        */
     int xd, yd, zd; /* rank sizes              */
     int Lx, Ly, Lz; /* [L]ocal: subdomain size */
 };
-// end::view[]
-/* end src/coords/type.h */
 #endif /* UDX_CONTROL_COORDS_COMMON */
-/* begin src/coords/dev.h */
 /* domain sizes */
 
 static __device__ int xdomain(const Coords_v c) {
@@ -14016,54 +13388,39 @@ static __device__ void global2local(const Coords_v c, float3 rg, /**/ float3 *rl
     rl->z = zg2zl(c, rg.z);
 }
 
-/* end src/coords/dev.h */
-/* begin src/coords/imp.h */
 struct Coords;
 struct Coords_v;
 struct float3;
 struct int3;
 
-// tag::view[]
 void coords_get_view(const Coords *c, Coords_v *v);
-// end::view[]
 
-// tag::domainsz[]
 int xdomain(const Coords *c);
 int ydomain(const Coords *c);
 int zdomain(const Coords *c);
-// end::domainsz[]
 
-// tag::local2center[]
 float xl2xc(const Coords *c, float xl);
 float yl2yc(const Coords *c, float yl);
 float zl2zc(const Coords *c, float zl);
 void local2center(const Coords *c, float3 rl, /**/ float3 *rc);
-// end::local2center[]
 
-// tag::center2local[]
 float xc2xl(const Coords *c, float xc);
 float yc2yl(const Coords *c, float yc);
 float zc2zl(const Coords *c, float zc);
 void center2local(const Coords *c, float3 rc, /**/ float3 *rl);
-// end::center2local[]
 
-// tag::local2global[]
 float xl2xg(const Coords *c, float xl);
 float yl2yg(const Coords *c, float yl);
 float zl2zg(const Coords *c, float zl);
 void local2global(const Coords *c, float3 rl, /**/ float3 *rg);
-// end::local2global[]
 
-// tag::global2local[]
 float xg2xl(const Coords *c, float xg);
 float yg2yl(const Coords *c, float yg);
 float zg2zl(const Coords *c, float zg);
 void global2local(const Coords *c, float3 rg, /**/ float3 *rl);
-// end::global2local[]
 
 /* edges of the sub-domain in global coordinates */
 
-// tag::bblocal[]
 int xlo(const Coords*);
 int ylo(const Coords*);
 int zlo(const Coords*);
@@ -14071,16 +13428,12 @@ int zlo(const Coords*);
 int xhi(const Coords*);
 int yhi(const Coords*);
 int zhi(const Coords*);
-// end::bblocal[]
 
-// tag::subdomainsz[]
 int xs(const Coords*);
 int ys(const Coords*);
 int zs(const Coords*);
 int3 subdomain(const Coords*);
-// end::subdomainsz[]
 
-// tag::int[]
 /* rank predicates */
 bool is_end(const Coords *c, int dir);
 
@@ -14089,10 +13442,7 @@ void coord_stamp(const Coords *c, /**/ char *s);
 
 /* number of subdomains */
 int coords_size(const Coords *c);
-// end::int[]
-/* end src/coords/imp.h */
 
-/* begin src/algo/utils/shfl.h */
 #ifndef UDX_CONTROL_SHFL_COMMON
 #define UDX_CONTROL_SHFL_COMMON
 #define _I_ static __device__
@@ -14128,24 +13478,18 @@ _I_ T shfl(T val, unsigned int width) {
 #endif
 
 #undef _I_
-/* end src/algo/utils/shfl.h */
-/* begin src/algo/utils/dev.h */
 #define _S_ static __device__
 #define _I_ static __device__
 
-// tag::int[]
 template <typename T>
 _I_ T warpReduceSum(T v)  // <1>
-// end::int[]
 {
     for (int offset = warpSize>>1; offset > 0; offset >>= 1)
         v += shfl_down(v, offset);
     return v;
 }
 
-// tag::int[]
 _I_ float2 warpReduceSum(float2 val)  // <2>
-// end::int[]
 {
     for (int offset = warpSize / 2; offset > 0; offset /= 2) {
         val.x += shfl_down(val.x, offset);
@@ -14154,9 +13498,7 @@ _I_ float2 warpReduceSum(float2 val)  // <2>
     return val;
 }
 
-// tag::int[]
 _I_ float3 warpReduceSum(float3 val)  // <3>
-// end::int[]
 {
     for (int offset = warpSize/2; offset > 0; offset /= 2) {
         val.x += shfl_down(val.x, offset);
@@ -14169,43 +13511,31 @@ _I_ float3 warpReduceSum(float3 val)  // <3>
 #undef _S_
 #undef _I_
 
-/* end src/algo/utils/dev.h */
 #endif /* UDX_CONTROL_SHFL_COMMON */
 
-/* begin src/io/restart/imp.h */
 struct Coords;
 struct Particle;
 struct Rigid;
 
-// tag::id[]
 enum {RESTART_TEMPL=-1,
       RESTART_FINAL=-2};
 enum {RESTART_BEGIN=RESTART_FINAL};
-// end::id[]
 
-// tag::stream[]
 typedef void (*StreamWriter)(const void*, FILE*);
 typedef void (*StreamReader)(FILE*, void*);
-// end::stream[]
 
-// tag::write[]
 void restart_write_pp(MPI_Comm, const char *base, const char *code, int id, long n, const Particle *pp); // <1>
 void restart_write_ii(MPI_Comm, const char *base, const char *code, int id, long n, const int *ii);      // <2>
 void restart_write_ss(MPI_Comm, const char *base, const char *code, int id, long n, const Rigid *ss);    // <3>
 void restart_write_stream_one_node(MPI_Comm, const char *base, const char *code, int id, const void *data, StreamWriter); // <4>
- // end::write[]
 
-// tag::read[]
 void restart_read_pp(MPI_Comm, const char *base, const char *code, int id, int *n, Particle *pp);
 void restart_read_ii(MPI_Comm, const char *base, const char *code, int id, int *n, int *ii);
 void restart_read_ss(MPI_Comm, const char *base, const char *code, int id, int *n, Rigid *ss);
 void restart_read_stream_one_node(const char *base, const char *code, int id, StreamReader, void *data);
-// end::read[]
-/* end src/io/restart/imp.h */
 
 
 
-/* begin src/control/vel/imp/type.h */
 enum {
     VCONT_TYPE_NONE,
     VCONT_TYPE_CART,
@@ -14259,10 +13589,8 @@ struct PidVCont {
     Trans trans;              /* transformation of the velocity before averaging */
     int type;                 /* type of the transformation                      */
 };
-/* end src/control/vel/imp/type.h */
 
 namespace vcont_dev {
-/* begin src/control/vel/dev/common.h */
 __global__ void reduceByWarp(const float3 *gvel, const int *gnum, const uint ncells, /**/ float3 *vel, int *num) {
     assert(blockDim.x == 32);
     int i, c;
@@ -14284,8 +13612,6 @@ __global__ void reduceByWarp(const float3 *gvel, const int *gnum, const uint nce
         num[c] = n;
     }
 }
-/* end src/control/vel/dev/common.h */
-/* begin src/control/vel/dev/cart.h */
 static __device__ float3 transform(Coords_v, TCart, const Particle p) {
     enum {X, Y, Z};
     float3 u;
@@ -14294,8 +13620,6 @@ static __device__ float3 transform(Coords_v, TCart, const Particle p) {
     u.z = p.v[Z];
     return u;
 }
-/* end src/control/vel/dev/cart.h */
-/* begin src/control/vel/dev/radial.h */
 static __device__ float3 transform(Coords_v c, TRad, const Particle p) {
     enum {X, Y, Z};
     float3 u; // radial coordinates
@@ -14314,8 +13638,6 @@ static __device__ float3 transform(Coords_v c, TRad, const Particle p) {
     u.z = p.v[Z];
     return u;
 }
-/* end src/control/vel/dev/radial.h */
-/* begin src/control/vel/dev/sample.h */
 static __device__ bool valid_cell(int3 L, int3 c) {
     return c.x < L.x && c.y < L.y && c.z < L.z;
 }
@@ -14349,10 +13671,8 @@ __global__ void sample(Coords_v coords, Trans t, int3 L, const int *cellsstart, 
         gridn[cid] += num;
     }
 }
-/* end src/control/vel/dev/sample.h */
 }
 
-/* begin src/control/vel/imp/main.h */
 #ifndef UDX_CONTROL_WARPSIZE_COMMON
 #define UDX_CONTROL_WARPSIZE_COMMON
 enum {WARPSIZE = 32};
@@ -14561,8 +13881,6 @@ void vcont_log(const PidVCont *c) {
             v.x, v.y, v.z, f.x, f.y, f.z);
     fflush(c->fdump);
 }
-/* end src/control/vel/imp/main.h */
-/* begin src/control/vel/imp/start.h */
 #define CODE "vcon"
 #define PAT "%g %g %g\n"
 
@@ -14611,8 +13929,6 @@ void vcont_strt_read(const char *base, int id, PidVCont *c) {
 
 #undef CODE
 #undef PAT
-/* end src/control/vel/imp/start.h */
-/* end src/control/vel/imp.cu */
 
 
 
@@ -14621,16 +13937,13 @@ void vcont_strt_read(const char *base, int id, PidVCont *c) {
 // Grouped editable compilation unit for density and outflow control.
 
 
-// generated from udx.flat.cu
 #define DEV_CUDA
 #define CC_RELEASE
 #define KL_RELEASE
 #include "udx.api.cuh"
 
-/* begin src/control/den/conf.cpp */
 #include <stdio.h>
 
-/* begin src/utils/error.h */
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
         error_report();                                         \
@@ -14670,48 +13983,31 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-/* end src/utils/error.h */
-/* begin src/utils/imp.h */
-// tag::mem[]
 void emalloc(size_t, /**/ void**); // <1>
 void efree(void*); // <2>
 void *ememcpy(void *dest, const void *src, size_t n); // <3>
-// end::mem[]
 
-// tag::macros[]
 #define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
 #define EFREE(pdata) UC(efree(pdata))
 #define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
-// end::macros[]
 
-// tag::stdio[]
 void efopen(const char *fname, const char *mode, /**/ FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
 void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
 void efgets(char *s, int size, FILE*);
-// end::stdio[]
 
-// tag::tools[]
 bool same_str(const char *a, const char *b); // <1>
 const char* get_filename_ext(const char*);
-// end::tools[]
-/* end src/utils/imp.h */
-/* begin src/conf/imp.h */
 struct Config;
 struct float3;
 struct int3;
 
-// tag::mem[]
 void conf_ini(/**/ Config **c);
 void conf_fin(/**/ Config *c);
-// end::mem[]
 
-// tag::ini[]
 void conf_read(int argc, char **argv, /**/ Config *cfg);
-// end::ini[]
 
-// tag::lookup[]
 void conf_lookup_int(const Config *c, const char *desc, int *a);
 void conf_lookup_float(const Config *c, const char *desc, float *a);
 void conf_lookup_bool(const Config *c, const char *desc, int *a);
@@ -14721,9 +14017,7 @@ void conf_lookup_int3(const Config *c, const char *desc, int3 *a);
 void conf_lookup_vfloat(const Config *c, const char *desc, int maxn, int *n, float a[]);
 void conf_lookup_float3(const Config *c, const char *desc, float3 *a);
 void conf_lookup_vstring(const Config *c, const char *desc, int maxn, int *n, const char **ss);
-// end::lookup[]
 
-// tag::ns[]
 void conf_lookup_int_ns(const Config *c, const char *ns, const char *desc, int *a);
 void conf_lookup_float_ns(const Config *c, const char *ns, const char *desc, float *a);
 void conf_lookup_bool_ns(const Config *c, const char *ns, const char *desc, int *a);
@@ -14733,9 +14027,7 @@ void conf_lookup_int3_ns(const Config *c, const char *ns, const char *desc, int3
 void conf_lookup_vfloat_ns(const Config *c, const char *ns, const char *desc, int maxn, int *n, float a[]);
 void conf_lookup_float3_ns(const Config *c, const char *ns, const char *desc, float3 *a);
 void conf_lookup_vstring_ns(const Config *c, const char *ns, const char *d, int maxn, int *n, const char **ss);
-// end::ns[]
 
-// tag::opt[]
 bool conf_opt_int(const Config *c, const char *desc, int *a);
 bool conf_opt_float(const Config *c, const char *desc, float *a);
 bool conf_opt_bool(const Config *c, const char *desc, int *a);
@@ -14745,9 +14037,7 @@ bool conf_opt_int3(const Config *c, const char *desc, int3 *a);
 bool conf_opt_vfloat(const Config *c, const char *desc, int maxn, int *n, float a[]);
 bool conf_opt_float3(const Config *c, const char *desc, float3 *a);
 bool conf_opt_vstring(const Config *c, const char *desc, int maxn, int *n, const char **ss);
-// end::opt[]
 
-// tag::set[]
 void conf_set_int(const char *desc, int a, Config *c);
 void conf_set_vint(const char *desc, int nelem, const int a[], Config *cfg);
 void conf_set_int3(const char *desc, int3 a, Config *cfg);
@@ -14756,48 +14046,32 @@ void conf_set_vfloat(const char *desc, int nelem, const float a[], Config *cfg);
 void conf_set_float3(const char *desc, float3 a, Config *cfg);
 void conf_set_bool(const char *desc, int a, Config *cfg);
 void conf_set_string(const char *desc, const char *a, Config *cfg);
-// end::set[]
 
-// tag::dump[]
 void conf_write_exe(const Config *cfg, FILE *stream);     // <1>
 void conf_write_history(const Config *cfg, FILE *stream); // <2>
-// end::dump[]
-/* end src/conf/imp.h */
-/* begin src/control/den/imp.h */
 struct DCont;
 struct DContMap;
 
 struct Config;
 struct Coords;
 
-// tag::mem[]
 void den_ini(int maxp, /**/ DCont**);
 void den_map_ini(DContMap**);
 
 void den_fin(DCont*);
 void den_map_fin(DContMap*);
-// end::mem[]
 
-// tag::set[]
 void den_map_set_none(const Coords*, DContMap*);
 void den_map_set_circle(const Coords*, float R, DContMap*);
-// end::set[]
 
-// tag::cfg[]
 void den_map_set_conf(const Config*, const Coords*, DContMap*);
-// end::cfg[]
 
-// tag::int[]
 void den_reset(int n, /**/ DCont*d); // <1>
 void den_filter_particles(int maxdensity, const DContMap*, const int *starts, const int *counts, /**/ DCont*); // <2>
 void den_download_ndead(DCont*); // <3>
-// end::int[]
 
-// tag::get[]
 const int* den_get_deathlist(DCont*); // <1>
 int        den_get_ndead(DCont*); // <2>
-// end::get[]
-/* end src/control/den/imp.h */
 
 void den_map_set_conf(const Config *cfg, const Coords *c, DContMap *m) {
     const char *type;
@@ -14814,15 +14088,12 @@ void den_map_set_conf(const Config *cfg, const Coords *c, DContMap *m) {
         ERR("Unrecognized type <%s>", type);
     }
 }
-/* end src/control/den/conf.cpp */
 
 
 
-/* begin src/control/den/imp.cu */
 #include <stdio.h>
 #include <curand_kernel.h>
 
-/* begin src/inc/conf.h */
 /* [k]ernel [l]aunch macros */
 #if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
     !defined(KL_SYNC)
@@ -14857,10 +14128,8 @@ void den_map_set_conf(const Config *cfg, const Coords *c, DContMap *m) {
 #ifndef DUMP_BASE
 #define DUMP_BASE "."
 #endif
-/* end src/inc/conf.h */
 
 
-/* begin src/utils/error.h */
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
         error_report();                                         \
@@ -14900,13 +14169,10 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-/* end src/utils/error.h */
 
-/* begin src/utils/cc.h */
 /* [c]uda [c]heck macros */
 
 #if   defined(CC_SYNC)
-/* begin src/utils/cc/sync.h */
 /* Aggressive [sync]ronization */
 #define CC(ans)                                             \
     do {                                                    \
@@ -14914,50 +14180,38 @@ void error_print_stack();
         cc::check((ans), __FILE__, __LINE__);               \
         d::DeviceSynchronize();                             \
     } while (0)
-/* end src/utils/cc/sync.h */
 #elif defined(CC_RELEASE)
-/* begin src/utils/cc/release.h */
 /* [c]cuda [c]heck */
 #define CC(ans)                                             \
     do { cc::check((ans), __FILE__, __LINE__);} while (0)
-/* end src/utils/cc/release.h */
 #else
   #error CC_* is undefined
 #endif
 
-/* begin src/utils/cc/common.h */
 namespace cc {
 void check(int rc, const char *file, int line);
 }
 
 
-/* end src/utils/cc/common.h */
 
 /* TODO: header includes header */
-/* end src/utils/cc.h */
-/* begin src/utils/kl.h */
 #ifndef UDX_CONTROL_KL_COMMON
 #define UDX_CONTROL_KL_COMMON
 /* [k]ernel [l]aunch macros */
 
 #if    defined(KL_RELEASE)
-/* begin src/utils/kl/release.h */
 #define KL_BEFORE(s, C) if (!kl::safe(ESC C)) continue;
 #define KL_CALL(F, C, A) F<<<ESC C>>>A
 #define KL_AFTER(s)
 
 namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
-/* end src/utils/kl/release.h */
 #elif  defined(KL_NONE)
-/* begin src/utils/kl/none.h */
 #define KL_BEFORE(s, C)
 #define KL_CALL(F, C, A)
 #define KL_AFTER(s)
 
 namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
-/* end src/utils/kl/none.h */
 #elif  defined(KL_SYNC)
-/* begin src/utils/kl/sync.h */
 #define KL_BEFORE(s, C) if (!kl::safe(ESC C)) continue;
 #define KL_CALL(F, C, A) F<<<ESC C>>>A
 #define KL_AFTER(s)                             \
@@ -14967,12 +14221,10 @@ namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
     } while(0)
 
 namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
-/* end src/utils/kl/sync.h */
 #else
   #error KL_* is undefined
 #endif
 
-/* begin src/utils/kl/common.h */
 namespace kl {
 inline int safe0(dim3 i, dim3 j) {
     msg(i.x, i.y, i.z,   j.x, j.y, j.z);
@@ -14981,8 +14233,6 @@ inline int safe0(dim3 i, dim3 j) {
 inline int safe(dim3 i, dim3 j)                    { return safe0(i, j); }
 inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
 }
-/* end src/utils/kl/common.h */
-/* begin src/utils/kl/macro.h */
 #define ESC(...) __VA_ARGS__
 #define KL(F, C, A)                             \
     do  {                                       \
@@ -14990,12 +14240,9 @@ inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
         KL_CALL(F, C, A);                       \
         KL_AFTER(#F);                           \
     } while (0)
-/* end src/utils/kl/macro.h */
 
 /* TODO: header includes header */
-/* end src/utils/kl.h */
 #endif
-/* begin src/d/api.h */
 #ifndef UDX_CONTROL_D_API_COMMON
 #define UDX_CONTROL_D_API_COMMON
 namespace d {  /* a wrapper for device API */
@@ -15004,13 +14251,10 @@ enum {MemcpyHostToHost, MemcpyHostToDevice,
       MemcpyDeviceToHost, MemcpyDeviceToDevice,
       MemcpyDefault};
 
-// tag::more[]
 const char *emsg();
 int alloc_pinned(void **pHost, size_t size);
 int is_device_pointer(const void *ptr);
-// end::more[]
 
-// tag::api[]
 int GetSymbolAddress(void **devPtr, const void *symbol);
 int Malloc(void **p, size_t);
 int MemcpyToSymbol(const void *symbol, const void *src, size_t count, size_t offset=0, int kind=MemcpyHostToDevice);
@@ -15024,12 +14268,9 @@ int Free (void *devPtr);
 int FreeHost (void *hstPtr);
 int DeviceSynchronize (void);
 int PeekAtLastError(void);
-// end::api[]
 }
-/* end src/d/api.h */
 #endif
 
-/* begin src/inc/dev.h */
 /* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
 
@@ -15067,8 +14308,6 @@ int PeekAtLastError(void);
 /* [d]evice [a]synchronous set */
 #define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
 #define DzeroA(P, n)   DsetA(P, 0, n)
-/* end src/inc/dev.h */
-/* begin src/inc/type.h */
 #ifndef UDX_CONTROL_TYPE_COMMON
 #define UDX_CONTROL_TYPE_COMMON
 template <typename T, int N>
@@ -15123,68 +14362,49 @@ struct FoWrap {
     int n;
     Force *ff;
 };
-/* end src/inc/type.h */
 #endif
 
-/* begin src/coords/type.h */
 #ifndef UDX_CONTROL_COORDS_COMMON
 #define UDX_CONTROL_COORDS_COMMON
-// tag::view[]
 struct Coords_v {
     int xc, yc, zc; /* rank coordinates        */
     int xd, yd, zd; /* rank sizes              */
     int Lx, Ly, Lz; /* [L]ocal: subdomain size */
 };
-// end::view[]
-/* end src/coords/type.h */
 #endif
-/* begin src/coords/imp.h */
 struct Coords;
 struct Coords_v;
 struct float3;
 struct int3;
 
-// tag::view[]
 void coords_get_view(const Coords *c, Coords_v *v);
-// end::view[]
 
-// tag::domainsz[]
 int xdomain(const Coords *c);
 int ydomain(const Coords *c);
 int zdomain(const Coords *c);
-// end::domainsz[]
 
-// tag::local2center[]
 float xl2xc(const Coords *c, float xl);
 float yl2yc(const Coords *c, float yl);
 float zl2zc(const Coords *c, float zl);
 void local2center(const Coords *c, float3 rl, /**/ float3 *rc);
-// end::local2center[]
 
-// tag::center2local[]
 float xc2xl(const Coords *c, float xc);
 float yc2yl(const Coords *c, float yc);
 float zc2zl(const Coords *c, float zc);
 void center2local(const Coords *c, float3 rc, /**/ float3 *rl);
-// end::center2local[]
 
-// tag::local2global[]
 float xl2xg(const Coords *c, float xl);
 float yl2yg(const Coords *c, float yl);
 float zl2zg(const Coords *c, float zl);
 void local2global(const Coords *c, float3 rl, /**/ float3 *rg);
-// end::local2global[]
 
-// tag::global2local[]
 float xg2xl(const Coords *c, float xg);
 float yg2yl(const Coords *c, float yg);
 float zg2zl(const Coords *c, float zg);
 void global2local(const Coords *c, float3 rg, /**/ float3 *rl);
-// end::global2local[]
 
 /* edges of the sub-domain in global coordinates */
 
-// tag::bblocal[]
 int xlo(const Coords*);
 int ylo(const Coords*);
 int zlo(const Coords*);
@@ -15192,16 +14412,12 @@ int zlo(const Coords*);
 int xhi(const Coords*);
 int yhi(const Coords*);
 int zhi(const Coords*);
-// end::bblocal[]
 
-// tag::subdomainsz[]
 int xs(const Coords*);
 int ys(const Coords*);
 int zs(const Coords*);
 int3 subdomain(const Coords*);
-// end::subdomainsz[]
 
-// tag::int[]
 /* rank predicates */
 bool is_end(const Coords *c, int dir);
 
@@ -15210,10 +14426,7 @@ void coord_stamp(const Coords *c, /**/ char *s);
 
 /* number of subdomains */
 int coords_size(const Coords *c);
-// end::int[]
-/* end src/coords/imp.h */
 
-/* begin src/algo/utils/shfl.h */
 #ifndef UDX_CONTROL_SHFL_COMMON
 #define UDX_CONTROL_SHFL_COMMON
 #define _I_ static __device__
@@ -15249,24 +14462,18 @@ _I_ T shfl(T val, unsigned int width) {
 #endif
 
 #undef _I_
-/* end src/algo/utils/shfl.h */
-/* begin src/algo/utils/dev.h */
 #define _S_ static __device__
 #define _I_ static __device__
 
-// tag::int[]
 template <typename T>
 _I_ T warpReduceSum(T v)  // <1>
-// end::int[]
 {
     for (int offset = warpSize>>1; offset > 0; offset >>= 1)
         v += shfl_down(v, offset);
     return v;
 }
 
-// tag::int[]
 _I_ float2 warpReduceSum(float2 val)  // <2>
-// end::int[]
 {
     for (int offset = warpSize / 2; offset > 0; offset /= 2) {
         val.x += shfl_down(val.x, offset);
@@ -15275,9 +14482,7 @@ _I_ float2 warpReduceSum(float2 val)  // <2>
     return val;
 }
 
-// tag::int[]
 _I_ float3 warpReduceSum(float3 val)  // <3>
-// end::int[]
 {
     for (int offset = warpSize/2; offset > 0; offset /= 2) {
         val.x += shfl_down(val.x, offset);
@@ -15290,13 +14495,11 @@ _I_ float3 warpReduceSum(float3 val)  // <3>
 #undef _S_
 #undef _I_
 
-/* end src/algo/utils/dev.h */
 #endif /* UDX_CONTROL_SHFL_COMMON */
 
 
 
 namespace den_dev {
-/* begin src/control/den/dev/main.h */
 __global__ void kill(int maxden, const int *starts, const int *counts, int n, const int *cids, /**/ int *ndead, int *kk) {
     int i, nd, cid, s, c, pid, j;
     nd = 0;
@@ -15324,10 +14527,8 @@ __global__ void kill(int maxden, const int *starts, const int *counts, int n, co
     if (threadIdx.x % warpSize == 0)
         atomicAdd(ndead, nd);
 }
-/* end src/control/den/dev/main.h */
 }
 
-/* begin src/control/den/imp/type.h */
 struct DCont {
     int *ndead_dev, ndead;
     int *kk;
@@ -15338,8 +14539,6 @@ struct DContMap {
     int n;     // cells to be controlled
     int *cids; // cell ids of the controlled cells
 };
-/* end src/control/den/imp/type.h */
-/* begin src/control/den/imp/main.h */
 static void reset_ndead(DCont *d) {
     CC(d::MemsetAsync(d->ndead_dev, 0, sizeof(int)));
     d->ndead = 0;
@@ -15383,8 +14582,6 @@ void den_download_ndead(DCont *d) {
 
 const int* den_get_deathlist(DCont *d) {return d->kk;}
 int        den_get_ndead(DCont *d)     {return d->ndead;}
-/* end src/control/den/imp/main.h */
-/* begin src/control/den/imp/map.h */
 struct Circle {
     float R;
 };
@@ -15462,24 +14659,19 @@ void den_map_fin(DContMap *m) {
     if (m->cids) Dfree(m->cids);
     EFREE(m);
 }
-/* end src/control/den/imp/map.h */
-
-/* end src/control/den/imp.cu */
 
 
 
 
-// generated from udx.flat.cu
+
 #define DEV_CUDA
 #define CC_RELEASE
 #define KL_RELEASE
 #include "udx.api.cuh"
 
-/* begin src/control/outflow/conf.cpp */
 #include <stdio.h>
 #include <vector_types.h>
 
-/* begin src/utils/error.h */
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
         error_report();                                         \
@@ -15519,48 +14711,31 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-/* end src/utils/error.h */
-/* begin src/utils/imp.h */
-// tag::mem[]
 void emalloc(size_t, /**/ void**); // <1>
 void efree(void*); // <2>
 void *ememcpy(void *dest, const void *src, size_t n); // <3>
-// end::mem[]
 
-// tag::macros[]
 #define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
 #define EFREE(pdata) UC(efree(pdata))
 #define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
-// end::macros[]
 
-// tag::stdio[]
 void efopen(const char *fname, const char *mode, /**/ FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
 void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
 void efgets(char *s, int size, FILE*);
-// end::stdio[]
 
-// tag::tools[]
 bool same_str(const char *a, const char *b); // <1>
 const char* get_filename_ext(const char*);
-// end::tools[]
-/* end src/utils/imp.h */
-/* begin src/conf/imp.h */
 struct Config;
 struct float3;
 struct int3;
 
-// tag::mem[]
 void conf_ini(/**/ Config **c);
 void conf_fin(/**/ Config *c);
-// end::mem[]
 
-// tag::ini[]
 void conf_read(int argc, char **argv, /**/ Config *cfg);
-// end::ini[]
 
-// tag::lookup[]
 void conf_lookup_int(const Config *c, const char *desc, int *a);
 void conf_lookup_float(const Config *c, const char *desc, float *a);
 void conf_lookup_bool(const Config *c, const char *desc, int *a);
@@ -15570,9 +14745,7 @@ void conf_lookup_int3(const Config *c, const char *desc, int3 *a);
 void conf_lookup_vfloat(const Config *c, const char *desc, int maxn, int *n, float a[]);
 void conf_lookup_float3(const Config *c, const char *desc, float3 *a);
 void conf_lookup_vstring(const Config *c, const char *desc, int maxn, int *n, const char **ss);
-// end::lookup[]
 
-// tag::ns[]
 void conf_lookup_int_ns(const Config *c, const char *ns, const char *desc, int *a);
 void conf_lookup_float_ns(const Config *c, const char *ns, const char *desc, float *a);
 void conf_lookup_bool_ns(const Config *c, const char *ns, const char *desc, int *a);
@@ -15582,9 +14755,7 @@ void conf_lookup_int3_ns(const Config *c, const char *ns, const char *desc, int3
 void conf_lookup_vfloat_ns(const Config *c, const char *ns, const char *desc, int maxn, int *n, float a[]);
 void conf_lookup_float3_ns(const Config *c, const char *ns, const char *desc, float3 *a);
 void conf_lookup_vstring_ns(const Config *c, const char *ns, const char *d, int maxn, int *n, const char **ss);
-// end::ns[]
 
-// tag::opt[]
 bool conf_opt_int(const Config *c, const char *desc, int *a);
 bool conf_opt_float(const Config *c, const char *desc, float *a);
 bool conf_opt_bool(const Config *c, const char *desc, int *a);
@@ -15594,9 +14765,7 @@ bool conf_opt_int3(const Config *c, const char *desc, int3 *a);
 bool conf_opt_vfloat(const Config *c, const char *desc, int maxn, int *n, float a[]);
 bool conf_opt_float3(const Config *c, const char *desc, float3 *a);
 bool conf_opt_vstring(const Config *c, const char *desc, int maxn, int *n, const char **ss);
-// end::opt[]
 
-// tag::set[]
 void conf_set_int(const char *desc, int a, Config *c);
 void conf_set_vint(const char *desc, int nelem, const int a[], Config *cfg);
 void conf_set_int3(const char *desc, int3 a, Config *cfg);
@@ -15605,15 +14774,10 @@ void conf_set_vfloat(const char *desc, int nelem, const float a[], Config *cfg);
 void conf_set_float3(const char *desc, float3 a, Config *cfg);
 void conf_set_bool(const char *desc, int a, Config *cfg);
 void conf_set_string(const char *desc, const char *a, Config *cfg);
-// end::set[]
 
-// tag::dump[]
 void conf_write_exe(const Config *cfg, FILE *stream);     // <1>
 void conf_write_history(const Config *cfg, FILE *stream); // <2>
-// end::dump[]
-/* end src/conf/imp.h */
 
-/* begin src/control/outflow/imp.h */
 struct Outflow;
 
 struct Config;
@@ -15621,30 +14785,21 @@ struct Coords;
 struct Particle;
 struct float3;
 
-// tag::mem[]
 void outflow_ini(int maxp, /**/ Outflow **o);
 void outflow_fin(/**/ Outflow *o);
-// end::mem[]
 
-// tag::set[]
 void outflow_set_params_circle(const Coords*, float3 c, float R, Outflow *o);
 void outflow_set_params_plate(const Coords*, int dir, float r0, Outflow *o);
-// end::set[]
 
-// tag::cfg[]
 void outflow_set_conf(const Config *cfg, const Coords*, Outflow *);
-// end::cfg[]
 
-// tag::int[]
 void outflow_filter_particles(int n, const Particle *pp, /**/ Outflow *o); // <1>
 
 void outflow_download_ndead(Outflow *o);                                   // <2>
 
 int* outflow_get_deathlist(Outflow *o);                                    // <3>
 int  outflow_get_ndead(Outflow *o);                                        // <4>
-// tag::int[]
 
-/* end src/control/outflow/imp.h */
 
 void outflow_set_conf(const Config *cfg, const Coords *coords, Outflow *o) {
     const char *type;
@@ -15669,14 +14824,11 @@ void outflow_set_conf(const Config *cfg, const Coords *coords, Outflow *o) {
         ERR("Unrecognized type <%s>", type);
     }
 }
-/* end src/control/outflow/conf.cpp */
 
 
 
-/* begin src/control/outflow/imp.cu */
 #include <stdio.h>
 
-/* begin src/inc/conf.h */
 /* [k]ernel [l]aunch macros */
 #if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
     !defined(KL_SYNC)
@@ -15711,10 +14863,8 @@ void outflow_set_conf(const Config *cfg, const Coords *coords, Outflow *o) {
 #ifndef DUMP_BASE
 #define DUMP_BASE "."
 #endif
-/* end src/inc/conf.h */
 
 
-/* begin src/utils/error.h */
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
         error_report();                                         \
@@ -15754,13 +14904,10 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-/* end src/utils/error.h */
 
-/* begin src/utils/cc.h */
 /* [c]uda [c]heck macros */
 
 #if   defined(CC_SYNC)
-/* begin src/utils/cc/sync.h */
 /* Aggressive [sync]ronization */
 #define CC(ans)                                             \
     do {                                                    \
@@ -15768,50 +14915,38 @@ void error_print_stack();
         cc::check((ans), __FILE__, __LINE__);               \
         d::DeviceSynchronize();                             \
     } while (0)
-/* end src/utils/cc/sync.h */
 #elif defined(CC_RELEASE)
-/* begin src/utils/cc/release.h */
 /* [c]cuda [c]heck */
 #define CC(ans)                                             \
     do { cc::check((ans), __FILE__, __LINE__);} while (0)
-/* end src/utils/cc/release.h */
 #else
   #error CC_* is undefined
 #endif
 
-/* begin src/utils/cc/common.h */
 namespace cc {
 void check(int rc, const char *file, int line);
 }
 
 
-/* end src/utils/cc/common.h */
 
 /* TODO: header includes header */
-/* end src/utils/cc.h */
-/* begin src/utils/kl.h */
 #ifndef UDX_CONTROL_KL_COMMON
 #define UDX_CONTROL_KL_COMMON
 /* [k]ernel [l]aunch macros */
 
 #if    defined(KL_RELEASE)
-/* begin src/utils/kl/release.h */
 #define KL_BEFORE(s, C) if (!kl::safe(ESC C)) continue;
 #define KL_CALL(F, C, A) F<<<ESC C>>>A
 #define KL_AFTER(s)
 
 namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
-/* end src/utils/kl/release.h */
 #elif  defined(KL_NONE)
-/* begin src/utils/kl/none.h */
 #define KL_BEFORE(s, C)
 #define KL_CALL(F, C, A)
 #define KL_AFTER(s)
 
 namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
-/* end src/utils/kl/none.h */
 #elif  defined(KL_SYNC)
-/* begin src/utils/kl/sync.h */
 #define KL_BEFORE(s, C) if (!kl::safe(ESC C)) continue;
 #define KL_CALL(F, C, A) F<<<ESC C>>>A
 #define KL_AFTER(s)                             \
@@ -15821,12 +14956,10 @@ namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
     } while(0)
 
 namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
-/* end src/utils/kl/sync.h */
 #else
   #error KL_* is undefined
 #endif
 
-/* begin src/utils/kl/common.h */
 namespace kl {
 inline int safe0(dim3 i, dim3 j) {
     msg(i.x, i.y, i.z,   j.x, j.y, j.z);
@@ -15835,8 +14968,6 @@ inline int safe0(dim3 i, dim3 j) {
 inline int safe(dim3 i, dim3 j)                    { return safe0(i, j); }
 inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
 }
-/* end src/utils/kl/common.h */
-/* begin src/utils/kl/macro.h */
 #define ESC(...) __VA_ARGS__
 #define KL(F, C, A)                             \
     do  {                                       \
@@ -15844,12 +14975,9 @@ inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
         KL_CALL(F, C, A);                       \
         KL_AFTER(#F);                           \
     } while (0)
-/* end src/utils/kl/macro.h */
 
 /* TODO: header includes header */
-/* end src/utils/kl.h */
 #endif
-/* begin src/d/api.h */
 #ifndef UDX_CONTROL_D_API_COMMON
 #define UDX_CONTROL_D_API_COMMON
 namespace d {  /* a wrapper for device API */
@@ -15858,13 +14986,10 @@ enum {MemcpyHostToHost, MemcpyHostToDevice,
       MemcpyDeviceToHost, MemcpyDeviceToDevice,
       MemcpyDefault};
 
-// tag::more[]
 const char *emsg();
 int alloc_pinned(void **pHost, size_t size);
 int is_device_pointer(const void *ptr);
-// end::more[]
 
-// tag::api[]
 int GetSymbolAddress(void **devPtr, const void *symbol);
 int Malloc(void **p, size_t);
 int MemcpyToSymbol(const void *symbol, const void *src, size_t count, size_t offset=0, int kind=MemcpyHostToDevice);
@@ -15878,12 +15003,9 @@ int Free (void *devPtr);
 int FreeHost (void *hstPtr);
 int DeviceSynchronize (void);
 int PeekAtLastError(void);
-// end::api[]
 }
-/* end src/d/api.h */
 #endif
 
-/* begin src/math/dev.h */
 #ifndef UDX_CONTROL_MATH_COMMON
 #define UDX_CONTROL_MATH_COMMON
 /* use templates here because we might have mixed float/double */
@@ -15944,68 +15066,49 @@ _HD_ void axpy(const T1 a, const T2 *x, /*io*/ T3 *y) {
     y->y += a * x->y;
     y->z += a * x->z;
 }
-/* end src/math/dev.h */
 #endif /* UDX_CONTROL_MATH_COMMON */
 
-/* begin src/coords/type.h */
 #ifndef UDX_CONTROL_COORDS_COMMON
 #define UDX_CONTROL_COORDS_COMMON
-// tag::view[]
 struct Coords_v {
     int xc, yc, zc; /* rank coordinates        */
     int xd, yd, zd; /* rank sizes              */
     int Lx, Ly, Lz; /* [L]ocal: subdomain size */
 };
-// end::view[]
-/* end src/coords/type.h */
 #endif
-/* begin src/coords/imp.h */
 struct Coords;
 struct Coords_v;
 struct float3;
 struct int3;
 
-// tag::view[]
 void coords_get_view(const Coords *c, Coords_v *v);
-// end::view[]
 
-// tag::domainsz[]
 int xdomain(const Coords *c);
 int ydomain(const Coords *c);
 int zdomain(const Coords *c);
-// end::domainsz[]
 
-// tag::local2center[]
 float xl2xc(const Coords *c, float xl);
 float yl2yc(const Coords *c, float yl);
 float zl2zc(const Coords *c, float zl);
 void local2center(const Coords *c, float3 rl, /**/ float3 *rc);
-// end::local2center[]
 
-// tag::center2local[]
 float xc2xl(const Coords *c, float xc);
 float yc2yl(const Coords *c, float yc);
 float zc2zl(const Coords *c, float zc);
 void center2local(const Coords *c, float3 rc, /**/ float3 *rl);
-// end::center2local[]
 
-// tag::local2global[]
 float xl2xg(const Coords *c, float xl);
 float yl2yg(const Coords *c, float yl);
 float zl2zg(const Coords *c, float zl);
 void local2global(const Coords *c, float3 rl, /**/ float3 *rg);
-// end::local2global[]
 
-// tag::global2local[]
 float xg2xl(const Coords *c, float xg);
 float yg2yl(const Coords *c, float yg);
 float zg2zl(const Coords *c, float zg);
 void global2local(const Coords *c, float3 rg, /**/ float3 *rl);
-// end::global2local[]
 
 /* edges of the sub-domain in global coordinates */
 
-// tag::bblocal[]
 int xlo(const Coords*);
 int ylo(const Coords*);
 int zlo(const Coords*);
@@ -16013,16 +15116,12 @@ int zlo(const Coords*);
 int xhi(const Coords*);
 int yhi(const Coords*);
 int zhi(const Coords*);
-// end::bblocal[]
 
-// tag::subdomainsz[]
 int xs(const Coords*);
 int ys(const Coords*);
 int zs(const Coords*);
 int3 subdomain(const Coords*);
-// end::subdomainsz[]
 
-// tag::int[]
 /* rank predicates */
 bool is_end(const Coords *c, int dir);
 
@@ -16031,10 +15130,7 @@ void coord_stamp(const Coords *c, /**/ char *s);
 
 /* number of subdomains */
 int coords_size(const Coords *c);
-// end::int[]
-/* end src/coords/imp.h */
 
-/* begin src/inc/dev.h */
 /* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
 
@@ -16072,8 +15168,6 @@ int coords_size(const Coords *c);
 /* [d]evice [a]synchronous set */
 #define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
 #define DzeroA(P, n)   DsetA(P, 0, n)
-/* end src/inc/dev.h */
-/* begin src/inc/type.h */
 #ifndef UDX_CONTROL_TYPE_COMMON
 #define UDX_CONTROL_TYPE_COMMON
 template <typename T, int N>
@@ -16128,12 +15222,10 @@ struct FoWrap {
     int n;
     Force *ff;
 };
-/* end src/inc/type.h */
 #endif
 
 
 
-/* begin src/control/outflow/imp/type.h */
 enum {
     OFLOW_TYPE_NONE,
     OFLOW_TYPE_PLATE,
@@ -16163,10 +15255,8 @@ struct Outflow {
     OutflowParamsU params; /* shape parameters */
     int type;       /* shape type       */
 };
-/* end src/control/outflow/imp/type.h */
 
 namespace outflow_dev {
-/* begin src/control/outflow/dev/main.h */
 static __device__ int predicate(OutflowParamsPlate p, const float r[3]) {
     enum {X, Y, Z};
     float s;
@@ -16200,10 +15290,8 @@ __global__ void filter(int n, const Particle *pp, Par params, /**/ int *ndead, i
         atomicAdd(ndead, 1);
 }
 
-/* end src/control/outflow/dev/main.h */
 }
 
-/* begin src/control/outflow/imp/main.h */
 static void reset_ndead(Outflow *o) {
     CC(d::MemsetAsync(o->ndead_dev, 0, sizeof(int)));
     o->ndead = 0;
@@ -16293,8 +15381,6 @@ void outflow_download_ndead(Outflow *o) {
 
 int* outflow_get_deathlist(Outflow *o) {return o->kk;}
 int  outflow_get_ndead(Outflow *o)     {return o->ndead;}
-/* end src/control/outflow/imp/main.h */
-/* end src/control/outflow/imp.cu */
 
 
 
@@ -16308,7 +15394,6 @@ int  outflow_get_ndead(Outflow *o)     {return o->ndead;}
 // Grouped editable compilation unit for BOP support and grid utilities.
 
 
-/* begin bundled BOP */
 #ifndef UDX_BOP_COMMON
 #include <mpi.h>
 #include <stdlib.h>
@@ -16317,7 +15402,6 @@ int  outflow_get_ndead(Outflow *o)     {return o->ndead;}
 #include <assert.h>
 #include <stdarg.h>
 
-/* begin bop/src/bop_common.h */
 struct Cbuf {
     enum {SIZ=256};
     char c[SIZ];
@@ -16325,46 +15409,32 @@ struct Cbuf {
 struct BopData;
 typedef int BopStatus;
 
-// tag::type[]
 enum {BopFLOAT, BopDOUBLE, BopINT, BopFASCII, BopIASCII, _BopNTYPES};
 typedef int BopType;
-// end::type[]
 
-// tag::mem[]
 BopStatus bop_ini(BopData **d);  // <1>
 BopStatus bop_alloc(BopData *d); // <2>
 BopStatus bop_fin(BopData *d);   // <3>
-// end::mem[]
 
-// tag::set[]
 BopStatus bop_set_n(long n, BopData *d);                     // <1>
 BopStatus bop_set_vars(int n, const char *vars, BopData *d); // <2>
 BopStatus bop_set_type(BopType type, BopData *d);            // <3>
 void* bop_get_data(BopData *d);                              // <4>
-// end::set[]
 
-// tag::get[]
 BopStatus bop_get_n(const BopData *d, long *n);              // <1>
 BopStatus bop_get_nvars(const BopData *d, int *n);           // <2>
 BopStatus bop_get_vars(const BopData *d, Cbuf *vars);        // <3>
 BopStatus bop_get_vars(const BopData *d, const char **vars); // <4>
 BopStatus bop_get_type(const BopData *d, BopType *type);     // <5>
 const void* bop_get_data(const BopData *d);                  // <6>
-// end::get[]
 
-// tag::tools[]
 BopStatus bop_summary(const BopData *d);                                    // <1>
 BopStatus bop_concatenate(const int nd, const BopData **dd, BopData *dall); // <2>
-// end::tools[]
 
-// tag::err[]
 bool         bop_success(BopStatus status);           // <1>
 const char * bop_report_error_desc(BopStatus status); // <2>
 char *       bop_report_error_mesg();                 // <3>
-// end::err[]
 
-/* end bop/src/bop_common.h */
-/* begin bop/src/type.h */
 /* use define instead of enum because of implementation details */
 /* see str macro                                                */
 #define CBUFSIZE 256
@@ -16395,13 +15465,9 @@ enum {
     _BOP_NERR
 };
 
-/* end bop/src/type.h */
-/* begin bop/src/macros.h */
 #define xstr(s) str(s)
 #define str(s) #s
 
-/* end bop/src/macros.h */
-/* begin bop/src/utils.h */
 namespace bop_utils {
 
 BopStatus safe_malloc(size_t sz, void **data);
@@ -16419,41 +15485,25 @@ void report_err(const char *fmt, ...);
 
 } // bop_utils
 
-/* end bop/src/utils.h */
-/* begin bop/src/header.h */
 namespace bop_header {
 enum {SERIAL = -1};
 BopStatus read_header(int rank, const char *fname, /**/ char *dfname, BopData *d);
 }
 
-/* end bop/src/header.h */
-/* begin bop/src/bop_mpi.h */
-// tag::write[]
 BopStatus bop_write_header(MPI_Comm comm, const char *name, const BopData *d); // <1>
 BopStatus bop_write_values(MPI_Comm comm, const char *name, const BopData *d); // <2>
-// end::write[]
 
-// tag::read[]
 BopStatus bop_read_header(MPI_Comm comm, const char *hfname, BopData *d, char *dfname);  // <1>
 BopStatus bop_read_values(MPI_Comm comm, const char *dfname, BopData *d);                // <2>
-// end::read[]
 
-/* end bop/src/bop_mpi.h */
-/* begin bop/src/bop_serial.h */
-// tag::write[]
 BopStatus bop_write_header(const char *name, const BopData *d); // <1>
 BopStatus bop_write_values(const char *name, const BopData *d); // <2>
-// end::write[]
 
-// tag::read[]
 BopStatus bop_read_header(const char *hfname, BopData *d, char *dfname); // <1>
 BopStatus bop_read_values(const char *dfname, BopData *d);               // <2>
-// end::read[]
 
-/* end bop/src/bop_serial.h */
 #define UDX_BOP_COMMON
 #endif
-/* begin bop/src/bop_common.cpp */
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -16651,8 +15701,6 @@ char* bop_report_error_mesg() {
 }
 
 
-/* end bop/src/bop_common.cpp */
-/* begin bop/src/utils.cpp */
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -16747,8 +15795,6 @@ void report_err(const char *fmt, ...) {
 
 } // bop_header
 
-/* end bop/src/utils.cpp */
-/* begin bop/src/header.cpp */
 #include <stdio.h>
 #include <string.h>
 
@@ -16866,8 +15912,6 @@ BopStatus read_header(int rank, const char *fname, /**/ char *dfname, BopData *d
 
 } // bop_header
 
-/* end bop/src/header.cpp */
-/* begin bop/src/bop_mpi.cpp */
 #include <mpi.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -17055,8 +16099,6 @@ BopStatus bop_read_values(MPI_Comm comm, const char *dfname, BopData *d) {
     return BOP_SUCCESS;
 }
 
-/* end bop/src/bop_mpi.cpp */
-/* begin bop/src/bop_serial.cpp */
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -17210,8 +16252,6 @@ BopStatus bop_read_values(const char *dfname, BopData *d) {
     return BOP_SUCCESS;
 }
 
-/* end bop/src/bop_serial.cpp */
-/* end bundled BOP */
 
 
 
@@ -17221,14 +16261,11 @@ BopStatus bop_read_values(const char *dfname, BopData *d) {
 // Grouped editable compilation unit for grid sampling and color interaction.
 
 
-// generated from udx.flat.cu
 #include "udx.config.cuh"
 
-/* begin src/grid_sampler/imp.cu */
 #include <mpi.h>
 #include <stdio.h>
 
-/* begin src/inc/conf.h */
 /* [k]ernel [l]aunch macros */
 #if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
     !defined(KL_SYNC)
@@ -17263,10 +16300,8 @@ BopStatus bop_read_values(const char *dfname, BopData *d) {
 #ifndef DUMP_BASE
 #define DUMP_BASE "."
 #endif
-/* end src/inc/conf.h */
 
 
-/* begin src/utils/error.h */
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
         error_report();                                         \
@@ -17306,57 +16341,40 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-/* end src/utils/error.h */
-/* begin src/utils/imp.h */
-// tag::mem[]
 void emalloc(size_t, /**/ void**); // <1>
 void efree(void*); // <2>
 void *ememcpy(void *dest, const void *src, size_t n); // <3>
-// end::mem[]
 
-// tag::macros[]
 #define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
 #define EFREE(pdata) UC(efree(pdata))
 #define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
-// end::macros[]
 
-// tag::stdio[]
 void efopen(const char *fname, const char *mode, /**/ FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
 void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
 void efgets(char *s, int size, FILE*);
-// end::stdio[]
 
-// tag::tools[]
 bool same_str(const char *a, const char *b); // <1>
 const char* get_filename_ext(const char*);
-// end::tools[]
-/* end src/utils/imp.h */
 
-/* begin src/utils/kl.h */
 #ifndef UDX_CONTROL_KL_COMMON
 #define UDX_CONTROL_KL_COMMON
 /* [k]ernel [l]aunch macros */
 
 #if    defined(KL_RELEASE)
-/* begin src/utils/kl/release.h */
 #define KL_BEFORE(s, C) if (!kl::safe(ESC C)) continue;
 #define KL_CALL(F, C, A) F<<<ESC C>>>A
 #define KL_AFTER(s)
 
 namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
-/* end src/utils/kl/release.h */
 #elif  defined(KL_NONE)
-/* begin src/utils/kl/none.h */
 #define KL_BEFORE(s, C)
 #define KL_CALL(F, C, A)
 #define KL_AFTER(s)
 
 namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
-/* end src/utils/kl/none.h */
 #elif  defined(KL_SYNC)
-/* begin src/utils/kl/sync.h */
 #define KL_BEFORE(s, C) if (!kl::safe(ESC C)) continue;
 #define KL_CALL(F, C, A) F<<<ESC C>>>A
 #define KL_AFTER(s)                             \
@@ -17366,12 +16384,10 @@ namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
     } while(0)
 
 namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
-/* end src/utils/kl/sync.h */
 #else
   #error KL_* is undefined
 #endif
 
-/* begin src/utils/kl/common.h */
 namespace kl {
 inline int safe0(dim3 i, dim3 j) {
     msg(i.x, i.y, i.z,   j.x, j.y, j.z);
@@ -17380,8 +16396,6 @@ inline int safe0(dim3 i, dim3 j) {
 inline int safe(dim3 i, dim3 j)                    { return safe0(i, j); }
 inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
 }
-/* end src/utils/kl/common.h */
-/* begin src/utils/kl/macro.h */
 #define ESC(...) __VA_ARGS__
 #define KL(F, C, A)                             \
     do  {                                       \
@@ -17389,16 +16403,12 @@ inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
         KL_CALL(F, C, A);                       \
         KL_AFTER(#F);                           \
     } while (0)
-/* end src/utils/kl/macro.h */
 
 /* TODO: header includes header */
-/* end src/utils/kl.h */
 #endif
-/* begin src/utils/cc.h */
 /* [c]uda [c]heck macros */
 
 #if   defined(CC_SYNC)
-/* begin src/utils/cc/sync.h */
 /* Aggressive [sync]ronization */
 #define CC(ans)                                             \
     do {                                                    \
@@ -17406,29 +16416,22 @@ inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
         cc::check((ans), __FILE__, __LINE__);               \
         d::DeviceSynchronize();                             \
     } while (0)
-/* end src/utils/cc/sync.h */
 #elif defined(CC_RELEASE)
-/* begin src/utils/cc/release.h */
 /* [c]cuda [c]heck */
 #define CC(ans)                                             \
     do { cc::check((ans), __FILE__, __LINE__);} while (0)
-/* end src/utils/cc/release.h */
 #else
   #error CC_* is undefined
 #endif
 
-/* begin src/utils/cc/common.h */
 namespace cc {
 void check(int rc, const char *file, int line);
 }
 
 
-/* end src/utils/cc/common.h */
 
 /* TODO: header includes header */
-/* end src/utils/cc.h */
 
-/* begin src/d/api.h */
 #ifndef UDX_CONTROL_D_API_COMMON
 #define UDX_CONTROL_D_API_COMMON
 namespace d {  /* a wrapper for device API */
@@ -17437,13 +16440,10 @@ enum {MemcpyHostToHost, MemcpyHostToDevice,
       MemcpyDeviceToHost, MemcpyDeviceToDevice,
       MemcpyDefault};
 
-// tag::more[]
 const char *emsg();
 int alloc_pinned(void **pHost, size_t size);
 int is_device_pointer(const void *ptr);
-// end::more[]
 
-// tag::api[]
 int GetSymbolAddress(void **devPtr, const void *symbol);
 int Malloc(void **p, size_t);
 int MemcpyToSymbol(const void *symbol, const void *src, size_t count, size_t offset=0, int kind=MemcpyHostToDevice);
@@ -17457,12 +16457,9 @@ int Free (void *devPtr);
 int FreeHost (void *hstPtr);
 int DeviceSynchronize (void);
 int PeekAtLastError(void);
-// end::api[]
 }
-/* end src/d/api.h */
 #endif
 
-/* begin src/inc/type.h */
 #ifndef UDX_CONTROL_TYPE_COMMON
 #define UDX_CONTROL_TYPE_COMMON
 template <typename T, int N>
@@ -17517,9 +16514,7 @@ struct FoWrap {
     int n;
     Force *ff;
 };
-/* end src/inc/type.h */
 #endif
-/* begin src/inc/def.h */
 #ifndef UDX_GRID_INTER_DEF_COMMON
 #define UDX_GRID_INTER_DEF_COMMON
 /* solvent colors */
@@ -17572,9 +16567,7 @@ enum {
 
 /* for the spring forces r = min(lmax*RBC_SPRING_CAP, r) */
 #define RBC_SPRING_CAP (0.99)
-/* end src/inc/def.h */
 #endif
-/* begin src/inc/dev.h */
 /* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
 
@@ -17612,44 +16605,28 @@ enum {
 /* [d]evice [a]synchronous set */
 #define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
 #define DzeroA(P, n)   DsetA(P, 0, n)
-/* end src/inc/dev.h */
 
-/* begin src/io/grid/imp.h */
-// tag::int[]
 void grid_write(int3 subGrid, int3 subDomain, MPI_Comm, const char *path, int ncmp, const float **data, const char **names);
-// end::int[]
-/* end src/io/grid/imp.h */
 
-/* begin src/grid_sampler/imp.h */
 struct GridSampler;
 struct GridSampleData;
 
 struct Particle;
 
-// tag::data_mem[]
 void grid_sampler_data_ini(GridSampleData **);
 void grid_sampler_data_fin(GridSampleData  *);
-// end::data_mem[]
 
-// tag::data_int[]
 void grid_sampler_data_reset(GridSampleData *); // <1>
 void grid_sampler_data_push(long n, const Particle *pp, const int *cc,
                             const float *ss, GridSampleData *); // <2>
-// end::data_int[]
 
 
-// tag::mem[]
 void grid_sampler_ini(bool colors, bool stress, int3 L, int3 N, GridSampler**); // <1>
 void grid_sampler_fin(GridSampler*); // <2>
-// end::mem[]
 
-// tag::int[]
 void grid_sampler_reset(GridSampler*); // <1>
 void grid_sampler_add(const GridSampleData*, GridSampler*); // <2>
 void grid_sampler_dump(MPI_Comm, const char *dir, long id, GridSampler*); // <3>
-// end::int[]
-/* end src/grid_sampler/imp.h */
-/* begin src/grid_sampler/imp/type.h */
 enum {
     RHO, VX, VY, VZ,
     NFIELDS_P
@@ -17709,10 +16686,8 @@ struct GridSampleData {
     int n;
     SampleDatum d[MAX_N_DATA];
 };
-/* end src/grid_sampler/imp/type.h */
 
 namespace sampler_dev {
-/* begin src/grid_sampler/dev/type.h */
 struct Part {
     float3 r, v;
 };
@@ -17720,8 +16695,6 @@ struct Part {
 struct Stress {
     float3 s1, s2;
 };
-/* end src/grid_sampler/dev/type.h */
-/* begin src/grid_sampler/dev/fetch.h */
 #define _S_ static __device__
 #define _I_ static __device__
 
@@ -17749,8 +16722,6 @@ _I_ void fetch_stress(int i, const SampleDatum *d, Stress *s) {
 
 #undef _S_
 #undef _I_
-/* end src/grid_sampler/dev/fetch.h */
-/* begin src/grid_sampler/dev/add.h */
 #define _S_ static __device__
 #define _I_ static __device__
 
@@ -17783,8 +16754,6 @@ _I_ void add_stress(int i, const Stress *s, const Grid *g) {
 
 #undef _S_
 #undef _I_
-/* end src/grid_sampler/dev/add.h */
-/* begin src/grid_sampler/dev/main.h */
 #define _S_ static __device__
 
 _S_ float get_spacing(int L, int N) {
@@ -17931,10 +16900,8 @@ __global__ void time_avg(int nsteps, Grid g) {
 }
 
 #undef _S_
-/* end src/grid_sampler/dev/main.h */
 }
 
-/* begin src/grid_sampler/imp/main.h */
 static long get_size(const Grid *g) {
     int3 N = g->N;
     return N.x * N.y * N.z;
@@ -18106,8 +17073,6 @@ void grid_sampler_dump(MPI_Comm cart, const char *dir, long id, GridSampler *s) 
     dSync();
     UC(dump(cart, dir, id, &s->hst));
 }
-/* end src/grid_sampler/imp/main.h */
-/* begin src/grid_sampler/imp/data.h */
 void grid_sampler_data_ini(GridSampleData **s) {
     EMALLOC(1, s);
     grid_sampler_data_reset(*s);
@@ -18136,19 +17101,14 @@ void grid_sampler_data_push(long n, const Particle *pp, const int *cc, const flo
     d->ss = ss;
 }
 
-/* end src/grid_sampler/imp/data.h */
-/* end src/grid_sampler/imp.cu */
 
 
 
 
-// generated from udx.flat.cu
 #include "udx.config.cuh"
 
-/* begin src/inter/color/conf.cpp */
 #include <stdio.h>
 
-/* begin src/utils/error.h */
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
         error_report();                                         \
@@ -18188,48 +17148,31 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-/* end src/utils/error.h */
-/* begin src/utils/imp.h */
-// tag::mem[]
 void emalloc(size_t, /**/ void**); // <1>
 void efree(void*); // <2>
 void *ememcpy(void *dest, const void *src, size_t n); // <3>
-// end::mem[]
 
-// tag::macros[]
 #define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
 #define EFREE(pdata) UC(efree(pdata))
 #define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
-// end::macros[]
 
-// tag::stdio[]
 void efopen(const char *fname, const char *mode, /**/ FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
 void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
 void efgets(char *s, int size, FILE*);
-// end::stdio[]
 
-// tag::tools[]
 bool same_str(const char *a, const char *b); // <1>
 const char* get_filename_ext(const char*);
-// end::tools[]
-/* end src/utils/imp.h */
-/* begin src/conf/imp.h */
 struct Config;
 struct float3;
 struct int3;
 
-// tag::mem[]
 void conf_ini(/**/ Config **c);
 void conf_fin(/**/ Config *c);
-// end::mem[]
 
-// tag::ini[]
 void conf_read(int argc, char **argv, /**/ Config *cfg);
-// end::ini[]
 
-// tag::lookup[]
 void conf_lookup_int(const Config *c, const char *desc, int *a);
 void conf_lookup_float(const Config *c, const char *desc, float *a);
 void conf_lookup_bool(const Config *c, const char *desc, int *a);
@@ -18239,9 +17182,7 @@ void conf_lookup_int3(const Config *c, const char *desc, int3 *a);
 void conf_lookup_vfloat(const Config *c, const char *desc, int maxn, int *n, float a[]);
 void conf_lookup_float3(const Config *c, const char *desc, float3 *a);
 void conf_lookup_vstring(const Config *c, const char *desc, int maxn, int *n, const char **ss);
-// end::lookup[]
 
-// tag::ns[]
 void conf_lookup_int_ns(const Config *c, const char *ns, const char *desc, int *a);
 void conf_lookup_float_ns(const Config *c, const char *ns, const char *desc, float *a);
 void conf_lookup_bool_ns(const Config *c, const char *ns, const char *desc, int *a);
@@ -18251,9 +17192,7 @@ void conf_lookup_int3_ns(const Config *c, const char *ns, const char *desc, int3
 void conf_lookup_vfloat_ns(const Config *c, const char *ns, const char *desc, int maxn, int *n, float a[]);
 void conf_lookup_float3_ns(const Config *c, const char *ns, const char *desc, float3 *a);
 void conf_lookup_vstring_ns(const Config *c, const char *ns, const char *d, int maxn, int *n, const char **ss);
-// end::ns[]
 
-// tag::opt[]
 bool conf_opt_int(const Config *c, const char *desc, int *a);
 bool conf_opt_float(const Config *c, const char *desc, float *a);
 bool conf_opt_bool(const Config *c, const char *desc, int *a);
@@ -18263,9 +17202,7 @@ bool conf_opt_int3(const Config *c, const char *desc, int3 *a);
 bool conf_opt_vfloat(const Config *c, const char *desc, int maxn, int *n, float a[]);
 bool conf_opt_float3(const Config *c, const char *desc, float3 *a);
 bool conf_opt_vstring(const Config *c, const char *desc, int maxn, int *n, const char **ss);
-// end::opt[]
 
-// tag::set[]
 void conf_set_int(const char *desc, int a, Config *c);
 void conf_set_vint(const char *desc, int nelem, const int a[], Config *cfg);
 void conf_set_int3(const char *desc, int3 a, Config *cfg);
@@ -18274,40 +17211,26 @@ void conf_set_vfloat(const char *desc, int nelem, const float a[], Config *cfg);
 void conf_set_float3(const char *desc, float3 a, Config *cfg);
 void conf_set_bool(const char *desc, int a, Config *cfg);
 void conf_set_string(const char *desc, const char *a, Config *cfg);
-// end::set[]
 
-// tag::dump[]
 void conf_write_exe(const Config *cfg, FILE *stream);     // <1>
 void conf_write_history(const Config *cfg, FILE *stream); // <2>
-// end::dump[]
-/* end src/conf/imp.h */
 
-/* begin src/inter/color/imp.h */
 struct GenColor;
 struct Particle;
 struct Coords;
 struct Config;
 
-// tag::mem[]
 void inter_color_ini(GenColor**);
 void inter_color_fin(GenColor*);
-// end::mem[]
 
-// tag::set[]
 void inter_color_set_drop(float R, GenColor*); // <1>
 void inter_color_set_uniform(GenColor*); // <2>
-// end::set[]
 
-// tag::cfg[]
 void inter_color_set_conf(const Config*, GenColor*);
-// end::cfg[]
 
-// tag::int[]
 void inter_color_apply_hst(const Coords*, const GenColor*, int n, const Particle *pp, /**/ int *cc);
 void inter_color_apply_dev(const Coords*, const GenColor*, int n, const Particle *pp, /**/ int *cc);
-// end::int[]
 
-/* end src/inter/color/imp.h */
 
 void inter_color_set_conf(const Config *cfg, GenColor *gc) {
     const char *kind;
@@ -18328,14 +17251,11 @@ void inter_color_set_conf(const Config *cfg, GenColor *gc) {
         ERR("unrecognised kind <%s>", kind);
     }
 }
-/* end src/inter/color/conf.cpp */
 
 
 
-/* begin src/inter/color/imp.cpp */
 #include <stdio.h>
 
-/* begin src/inc/conf.h */
 /* [k]ernel [l]aunch macros */
 #if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
     !defined(KL_SYNC)
@@ -18370,10 +17290,8 @@ void inter_color_set_conf(const Config *cfg, GenColor *gc) {
 #ifndef DUMP_BASE
 #define DUMP_BASE "."
 #endif
-/* end src/inc/conf.h */
 
 
-/* begin src/inc/def.h */
 #ifndef UDX_GRID_INTER_DEF_COMMON
 #define UDX_GRID_INTER_DEF_COMMON
 /* solvent colors */
@@ -18426,9 +17344,7 @@ enum {
 
 /* for the spring forces r = min(lmax*RBC_SPRING_CAP, r) */
 #define RBC_SPRING_CAP (0.99)
-/* end src/inc/def.h */
 #endif
-/* begin src/inc/dev.h */
 /* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
 
@@ -18466,8 +17382,6 @@ enum {
 /* [d]evice [a]synchronous set */
 #define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
 #define DzeroA(P, n)   DsetA(P, 0, n)
-/* end src/inc/dev.h */
-/* begin src/inc/type.h */
 #ifndef UDX_CONTROL_TYPE_COMMON
 #define UDX_CONTROL_TYPE_COMMON
 template <typename T, int N>
@@ -18522,10 +17436,8 @@ struct FoWrap {
     int n;
     Force *ff;
 };
-/* end src/inc/type.h */
 #endif
 
-/* begin src/d/api.h */
 #ifndef UDX_CONTROL_D_API_COMMON
 #define UDX_CONTROL_D_API_COMMON
 namespace d {  /* a wrapper for device API */
@@ -18534,13 +17446,10 @@ enum {MemcpyHostToHost, MemcpyHostToDevice,
       MemcpyDeviceToHost, MemcpyDeviceToDevice,
       MemcpyDefault};
 
-// tag::more[]
 const char *emsg();
 int alloc_pinned(void **pHost, size_t size);
 int is_device_pointer(const void *ptr);
-// end::more[]
 
-// tag::api[]
 int GetSymbolAddress(void **devPtr, const void *symbol);
 int Malloc(void **p, size_t);
 int MemcpyToSymbol(const void *symbol, const void *src, size_t count, size_t offset=0, int kind=MemcpyHostToDevice);
@@ -18554,12 +17463,9 @@ int Free (void *devPtr);
 int FreeHost (void *hstPtr);
 int DeviceSynchronize (void);
 int PeekAtLastError(void);
-// end::api[]
 }
-/* end src/d/api.h */
 #endif
 
-/* begin src/utils/error.h */
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
         error_report();                                         \
@@ -18599,19 +17505,12 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-/* end src/utils/error.h */
 
-/* begin src/utils/msg.h */
-// tag::int[]
 void msg_ini(int rank); // <1>
 void msg_print(const char *fmt, ...); // <2>
-// end::int[]
-/* end src/utils/msg.h */
-/* begin src/utils/cc.h */
 /* [c]uda [c]heck macros */
 
 #if   defined(CC_SYNC)
-/* begin src/utils/cc/sync.h */
 /* Aggressive [sync]ronization */
 #define CC(ans)                                             \
     do {                                                    \
@@ -18619,75 +17518,55 @@ void msg_print(const char *fmt, ...); // <2>
         cc::check((ans), __FILE__, __LINE__);               \
         d::DeviceSynchronize();                             \
     } while (0)
-/* end src/utils/cc/sync.h */
 #elif defined(CC_RELEASE)
-/* begin src/utils/cc/release.h */
 /* [c]cuda [c]heck */
 #define CC(ans)                                             \
     do { cc::check((ans), __FILE__, __LINE__);} while (0)
-/* end src/utils/cc/release.h */
 #else
   #error CC_* is undefined
 #endif
 
-/* begin src/utils/cc/common.h */
 namespace cc {
 void check(int rc, const char *file, int line);
 }
 
 
-/* end src/utils/cc/common.h */
 
 /* TODO: header includes header */
-/* end src/utils/cc.h */
 
-/* begin src/coords/imp.h */
 struct Coords;
 struct Coords_v;
 struct float3;
 struct int3;
 
-// tag::view[]
 void coords_get_view(const Coords *c, Coords_v *v);
-// end::view[]
 
-// tag::domainsz[]
 int xdomain(const Coords *c);
 int ydomain(const Coords *c);
 int zdomain(const Coords *c);
-// end::domainsz[]
 
-// tag::local2center[]
 float xl2xc(const Coords *c, float xl);
 float yl2yc(const Coords *c, float yl);
 float zl2zc(const Coords *c, float zl);
 void local2center(const Coords *c, float3 rl, /**/ float3 *rc);
-// end::local2center[]
 
-// tag::center2local[]
 float xc2xl(const Coords *c, float xc);
 float yc2yl(const Coords *c, float yc);
 float zc2zl(const Coords *c, float zc);
 void center2local(const Coords *c, float3 rc, /**/ float3 *rl);
-// end::center2local[]
 
-// tag::local2global[]
 float xl2xg(const Coords *c, float xl);
 float yl2yg(const Coords *c, float yl);
 float zl2zg(const Coords *c, float zl);
 void local2global(const Coords *c, float3 rl, /**/ float3 *rg);
-// end::local2global[]
 
-// tag::global2local[]
 float xg2xl(const Coords *c, float xg);
 float yg2yl(const Coords *c, float yg);
 float zg2zl(const Coords *c, float zg);
 void global2local(const Coords *c, float3 rg, /**/ float3 *rl);
-// end::global2local[]
 
 /* edges of the sub-domain in global coordinates */
 
-// tag::bblocal[]
 int xlo(const Coords*);
 int ylo(const Coords*);
 int zlo(const Coords*);
@@ -18695,16 +17574,12 @@ int zlo(const Coords*);
 int xhi(const Coords*);
 int yhi(const Coords*);
 int zhi(const Coords*);
-// end::bblocal[]
 
-// tag::subdomainsz[]
 int xs(const Coords*);
 int ys(const Coords*);
 int zs(const Coords*);
 int3 subdomain(const Coords*);
-// end::subdomainsz[]
 
-// tag::int[]
 /* rank predicates */
 bool is_end(const Coords *c, int dir);
 
@@ -18713,11 +17588,8 @@ void coord_stamp(const Coords *c, /**/ char *s);
 
 /* number of subdomains */
 int coords_size(const Coords *c);
-// end::int[]
-/* end src/coords/imp.h */
 
 
-/* begin src/inter/color/imp/type.h */
 enum {
     COLOR_NONE,
     COLOR_DROP,
@@ -18728,14 +17600,10 @@ struct GenColor {
     int kind;
     float R;
 };
-/* end src/inter/color/imp/type.h */
-/* begin src/inter/color/imp/unif.h */
 static void set_color_unif(int n, /**/ int* cc) {
     int i;
     for (i = 0; i < n; i++) cc[i] = BLUE_COLOR;
 }
-/* end src/inter/color/imp/unif.h */
-/* begin src/inter/color/imp/drop.h */
 static void set_color_drop(float rad, const Coords *coords, int n, const Particle *pp, /**/ int *cc) {
     enum {X, Y, Z};
     int lx, ly, lz; /* domain */
@@ -18765,8 +17633,6 @@ static void set_color_drop(float rad, const Coords *coords, int n, const Particl
     msg_print("color scheme: Bangladesh");
     msg_print("red/green : %d/%d", r, g);
 }
-/* end src/inter/color/imp/drop.h */
-/* begin src/inter/color/imp/main.h */
 void inter_color_ini(GenColor **c) {
     GenColor *gc;
     EMALLOC(1, c);
@@ -18821,8 +17687,6 @@ void inter_color_apply_dev(const Coords *coords, const GenColor *gc, int n, cons
     EFREE(pp_hst);
     EFREE(cc_hst);
 }
-/* end src/inter/color/imp/main.h */
-/* end src/inter/color/imp.cpp */
 
 
 
@@ -18834,13 +17698,10 @@ void inter_color_apply_dev(const Coords *coords, const GenColor *gc, int n, cons
 // Grouped editable compilation unit for general and string utilities.
 
 
-// generated from udx.flat.cu
 #include "udx.config.cuh"
 
-/* begin src/utils/cc.cpp */
 #include <stdio.h>
 
-/* begin src/inc/conf.h */
 /* [k]ernel [l]aunch macros */
 #if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
     !defined(KL_SYNC)
@@ -18875,10 +17736,8 @@ void inter_color_apply_dev(const Coords *coords, const GenColor *gc, int n, cons
 #ifndef DUMP_BASE
 #define DUMP_BASE "."
 #endif
-/* end src/inc/conf.h */
 
 
-/* begin src/utils/error.h */
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
         error_report();                                         \
@@ -18918,8 +17777,6 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-/* end src/utils/error.h */
-/* begin src/d/api.h */
 #ifndef UDX_CONTROL_D_API_COMMON
 #define UDX_CONTROL_D_API_COMMON
 namespace d {  /* a wrapper for device API */
@@ -18928,13 +17785,10 @@ enum {MemcpyHostToHost, MemcpyHostToDevice,
       MemcpyDeviceToHost, MemcpyDeviceToDevice,
       MemcpyDefault};
 
-// tag::more[]
 const char *emsg();
 int alloc_pinned(void **pHost, size_t size);
 int is_device_pointer(const void *ptr);
-// end::more[]
 
-// tag::api[]
 int GetSymbolAddress(void **devPtr, const void *symbol);
 int Malloc(void **p, size_t);
 int MemcpyToSymbol(const void *symbol, const void *src, size_t count, size_t offset=0, int kind=MemcpyHostToDevice);
@@ -18948,18 +17802,14 @@ int Free (void *devPtr);
 int FreeHost (void *hstPtr);
 int DeviceSynchronize (void);
 int PeekAtLastError(void);
-// end::api[]
 }
-/* end src/d/api.h */
 #endif
 
-/* begin src/utils/cc/common.h */
 namespace cc {
 void check(int rc, const char *file, int line);
 }
 
 
-/* end src/utils/cc/common.h */
 namespace cc {
 void check(int rc, const char *file, int line) {
     if (rc != 0) {
@@ -18969,24 +17819,17 @@ void check(int rc, const char *file, int line) {
     }
 }
 }
-/* end src/utils/cc.cpp */
 
 
 
-/* begin src/utils/error.cpp */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdarg.h>
 #include <assert.h>
 
-/* begin src/utils/msg.h */
-// tag::int[]
 void msg_ini(int rank); // <1>
 void msg_print(const char *fmt, ...); // <2>
-// end::int[]
-/* end src/utils/msg.h */
-/* begin src/utils/error.h */
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
         error_report();                                         \
@@ -19026,7 +17869,6 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-/* end src/utils/error.h */
 
 /* context information */
 static int         err_line;
@@ -19123,28 +17965,21 @@ void error_print_stack() {
     stack_dump();
     msg_print("%s", back_trace);
 }
-/* end src/utils/error.cpp */
 
 
 
-/* begin src/utils/imp.cpp */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <errno.h>
 
-/* begin src/utils/os.h */
-// tag::int[]
 void os_mkdir(const char* path); // <1>
 long os_time();                  // <2>
 void os_srand(long int seedval); // <3>
 double os_drand();               // <4>
 void os_sleep(unsigned int seconds); // <5>
 void os_malloc_stats();              // TODO
-// end::int[]
-/* end src/utils/os.h */
 
-/* begin src/utils/error.h */
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
         error_report();                                         \
@@ -19184,34 +18019,23 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-/* end src/utils/error.h */
 
-/* begin src/utils/imp.h */
-// tag::mem[]
 void emalloc(size_t, /**/ void**); // <1>
 void efree(void*); // <2>
 void *ememcpy(void *dest, const void *src, size_t n); // <3>
-// end::mem[]
 
-// tag::macros[]
 #define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
 #define EFREE(pdata) UC(efree(pdata))
 #define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
-// end::macros[]
 
-// tag::stdio[]
 void efopen(const char *fname, const char *mode, /**/ FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
 void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
 void efgets(char *s, int size, FILE*);
-// end::stdio[]
 
-// tag::tools[]
 bool same_str(const char *a, const char *b); // <1>
 const char* get_filename_ext(const char*);
-// end::tools[]
-/* end src/utils/imp.h */
 
 static double Bytes2MBytes(size_t sz) {
     return (double) sz / (double) (1 << 20);
@@ -19281,18 +18105,15 @@ const char* get_filename_ext(const char *filename) {
     if (!dot || dot == filename) return "";
     return dot + 1;
 }
-/* end src/utils/imp.cpp */
 
 
 
-/* begin src/utils/mc.cpp */
 #include <stdio.h>
 #include <mpi.h>
 
 
 
 
-/* begin src/mpi/wrapper.h */
 namespace m {
 int Allreduce(const void *sendbuf, void *recvbuf, int count, MPI_Datatype datatype, MPI_Op op, MPI_Comm comm);
 int Barrier(MPI_Comm comm);
@@ -19342,8 +18163,6 @@ int is_pending(int errorcode);
 int is_err_in_status(int errorcode);
 int status2errcode(MPI_Status *status);
 }
-/* end src/mpi/wrapper.h */
-/* begin src/utils/error.h */
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
         error_report();                                         \
@@ -19383,8 +18202,6 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-/* end src/utils/error.h */
-/* begin src/utils/mc.h */
 /* [m]pi [c]heck macros */
 #define MC(ans)                                                         \
     do { mpicheck::check((ans), __FILE__, __LINE__); } while (0)
@@ -19392,7 +18209,6 @@ void error_print_stack();
 namespace mpicheck {
 void check(int code, const char *file, int line);
 }
-/* end src/utils/mc.h */
 
 namespace mpicheck {
 void check(int code, const char *file, int line) {
@@ -19406,11 +18222,9 @@ void check(int code, const char *file, int line) {
     error_abort();
 }
 } // mpicheck
-/* end src/utils/mc.cpp */
 
 
 
-/* begin src/utils/msg.cpp */
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
@@ -19476,9 +18290,7 @@ void msg_print(const char *fmt, ...) {
         exit(2);
     }
 }
-/* end src/utils/msg.cpp */
 
-/* begin src/utils/os.cpp */
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -19489,7 +18301,6 @@ void msg_print(const char *fmt, ...) {
 #include <malloc.h>
 
 
-/* begin src/utils/error.h */
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
         error_report();                                         \
@@ -19529,7 +18340,6 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-/* end src/utils/error.h */
 
 
 
@@ -19579,18 +18389,14 @@ void os_srand(long int seedval) { srand48(seedval); }
 double os_drand() { return drand48(); }
 void os_sleep(unsigned int seconds) { sleep(seconds); }
 void os_malloc_stats() { malloc_stats(); }
-/* end src/utils/os.cpp */
 
 
 
 
-// generated from udx.flat.cu
 #include "udx.config.cuh"
 
-/* begin src/utils/string/imp.cpp */
 #include <ctype.h>
 
-/* begin src/utils/error.h */
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
         error_report();                                         \
@@ -19630,11 +18436,8 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-/* end src/utils/error.h */
 
-/* begin src/utils/string/imp.h */
 int string_nword(const char *s);
-/* end src/utils/string/imp.h */
 
 int string_nword(const char *s) {
     enum {OUT, IN};
@@ -19657,7 +18460,6 @@ int string_nword(const char *s) {
     return n;
 }
 
-/* end src/utils/string/imp.cpp */
 
 
 
@@ -19666,11 +18468,8 @@ int string_nword(const char *s) {
 // Grouped editable compilation unit for small math helpers.
 
 
-// generated from udx.flat.cu
 #include "udx.config.cuh"
 
-/* begin src/math/linal/imp.cpp */
-/* begin src/utils/error.h */
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
         error_report();                                         \
@@ -19710,12 +18509,7 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-/* end src/utils/error.h */
-/* begin src/math/linal/imp.h */
-// tag::interface[]
 void linal_inv3x3(const float m0[6], /**/ float minv0[6]); // <1>
-// end::interface[]
-/* end src/math/linal/imp.h */
 
 /* inverts symmetric matrix m[6] (see poc/3x3) */
 void linal_inv3x3(const float *m, /**/ float *r) {
@@ -19747,20 +18541,16 @@ void linal_inv3x3(const float *m, /**/ float *r) {
     r[YZ] = i*(xy*xz-xx*yz);
     r[ZZ] = i*(xx*yy-xy2);
 }
-/* end src/math/linal/imp.cpp */
 
 
 
 
-// generated from udx.flat.cu
 #include "udx.config.cuh"
 
-/* begin src/math/rnd/imp.cpp */
 #include <limits>
 #include <stdio.h>
 #include <stdint.h>
 
-/* begin src/utils/error.h */
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
         error_report();                                         \
@@ -19800,42 +18590,27 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-/* end src/utils/error.h */
-/* begin src/utils/imp.h */
-// tag::mem[]
 void emalloc(size_t, /**/ void**); // <1>
 void efree(void*); // <2>
 void *ememcpy(void *dest, const void *src, size_t n); // <3>
-// end::mem[]
 
-// tag::macros[]
 #define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
 #define EFREE(pdata) UC(efree(pdata))
 #define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
-// end::macros[]
 
-// tag::stdio[]
 void efopen(const char *fname, const char *mode, /**/ FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
 void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
 void efgets(char *s, int size, FILE*);
-// end::stdio[]
 
-// tag::tools[]
 bool same_str(const char *a, const char *b); // <1>
 const char* get_filename_ext(const char*);
-// end::tools[]
-/* end src/utils/imp.h */
 
-/* begin src/math/rnd/imp.h */
-// tag::interface[]
 struct RNDunif;                                             // <1>
 void rnd_ini(int x, int y, int z, int c, /**/ RNDunif **r); // <2>
 void rnd_fin(RNDunif *r);                                   // <3>
 float rnd_get(RNDunif *r);                                  // <4>
-// end::interface[]
-/* end src/math/rnd/imp.h */
 typedef uint32_t integer;
 struct RNDunif { integer x, y, z, c; };
 
@@ -19862,20 +18637,15 @@ static integer get_int(RNDunif *r) {
 float rnd_get(RNDunif *r) {
     return get_int(r) / float( std::numeric_limits<integer>::max() );
 }
-/* end src/math/rnd/imp.cpp */
 
 
 
 
-// generated from udx.flat.cu
 #include "udx.config.cuh"
 
-/* begin src/math/tri/imp.cpp */
 #include <math.h>
 
-/* begin src/math/tri/imp.h */
 namespace tri_hst {
-// tag::interface[]
 double kahan_area0(double a, double b, double c); // <1>
 double kahan_area(const double a[3], const double b[3], const double c[3]); // <2>
 void   ac_bc_cross(const double a[3], const double b[3], const double c[3], /**/ double r[3]); // <3>
@@ -19883,12 +18653,9 @@ double shewchuk_area(const double a[3], const double b[3], const double c[3]); /
 double orient3d(const double a[3], const double b[3], const double c[3], const double d[3]); // <5>
 void dihedral_xy(const double a[3], const double b[3], const double c[3], const double d[3],
                    double *x, double *y); // <6>
-// end::interface[]
 }
-/* end src/math/tri/imp.h */
 
 #define TRI_HOST
-/* begin src/math/tri/dev.h */
 #ifdef TRI_HOST
   #define _I_
   #define _S_ static
@@ -20017,20 +18784,15 @@ END
 #undef _S_
 #undef BEGIN
 #undef END
-/* end src/math/tri/dev.h */
 #undef TRI_HOST
-/* end src/math/tri/imp.cpp */
 
 
 
 
-// generated from udx.flat.cu
 #include "udx.config.cuh"
 
-/* begin src/math/tform/imp.cpp */
 #include <stdio.h>
 
-/* begin src/inc/conf.h */
 /* [k]ernel [l]aunch macros */
 #if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
     !defined(KL_SYNC)
@@ -20065,42 +18827,26 @@ END
 #ifndef DUMP_BASE
 #define DUMP_BASE "."
 #endif
-/* end src/inc/conf.h */
 
 
-/* begin src/utils/msg.h */
-// tag::int[]
 void msg_ini(int rank); // <1>
 void msg_print(const char *fmt, ...); // <2>
-// end::int[]
-/* end src/utils/msg.h */
-/* begin src/utils/imp.h */
-// tag::mem[]
 void emalloc(size_t, /**/ void**); // <1>
 void efree(void*); // <2>
 void *ememcpy(void *dest, const void *src, size_t n); // <3>
-// end::mem[]
 
-// tag::macros[]
 #define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
 #define EFREE(pdata) UC(efree(pdata))
 #define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
-// end::macros[]
 
-// tag::stdio[]
 void efopen(const char *fname, const char *mode, /**/ FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
 void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
 void efgets(char *s, int size, FILE*);
-// end::stdio[]
 
-// tag::tools[]
 bool same_str(const char *a, const char *b); // <1>
 const char* get_filename_ext(const char*);
-// end::tools[]
-/* end src/utils/imp.h */
-/* begin src/utils/error.h */
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
         error_report();                                         \
@@ -20140,21 +18886,14 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-/* end src/utils/error.h */
 
-/* begin src/math/tform/type.h */
 struct Tform_v { float o[3], s[3]; };
-/* end src/math/tform/type.h */
-/* begin src/math/tform/imp.h */
 struct Tform;
 struct Tform_v;
 
-// tag::ini[]
 void tform_ini(Tform**);
 void tform_fin(Tform*);
-// end::ini[]
 
-// tag::def[]
 void tform_vector(const float a0[3], const float a1[3],   const float b0[3], const float b1[3], /**/ Tform*); // <1>
 void tform_chain(const Tform *A, const Tform *B, /**/ Tform *C); // <2>
 void tform_to_grid(const float lo[3], const float hi[3], const int n[3], /**/ Tform*); // <3>
@@ -20162,27 +18901,16 @@ void tform_from_grid(const float a0[3], const float b0[3], const int n[3], /**/ 
 void tform_grid2grid(const float f_lo[3], const float f_hi[3], const int f_n[3],
                      const float t_lo[3], const float t_hi[3], const int t_n[3],
                      Tform*); // <5>
-// end::def[]
 
 
-// tag::convert[]
 void tform_convert(const Tform*, const float a0[3], /**/ float a1[3]);
-// end::convert[]
 
-// tag::view[]
 void tform_to_view(const Tform*, /**/ Tform_v*);
-// end::view[]
 
-// tag::log[]
 void tform_log(Tform*);
 void tform_dump(Tform*, FILE*);
-// end::log[]
-/* end src/math/tform/imp.h */
 
-/* begin src/math/tform/imp/type.h */
 struct Tform   { float o[3], s[3]; };
-/* end src/math/tform/imp/type.h */
-/* begin src/math/tform/imp/main.h */
 void tform_ini(Tform **pq) { EMALLOC(1, pq); }
 void tform_fin(Tform *q)   { EFREE(q);       }
 
@@ -20326,8 +19054,6 @@ void tform_to_view(const Tform *t, Tform_v *v) {
     v->s[Y] = t->s[Y];
     v->s[Z] = t->s[Z];
 }
-/* end src/math/tform/imp/main.h */
-/* end src/math/tform/imp.cpp */
 
 
 
@@ -20345,42 +19071,29 @@ void tform_to_view(const Tform *t, Tform_v *v) {
 // Grouped editable compilation unit for scalar and vector algorithms.
 
 
-// generated from udx.flat.cu
 #define DEV_CUDA
 #define CC_RELEASE
 #define KL_RELEASE
 #include "udx.api.cuh"
 
-/* begin src/algo/scalars/imp.cpp */
 #include <stdio.h>
 
-/* begin src/utils/imp.h */
-// tag::mem[]
 void emalloc(size_t, /**/ void**); // <1>
 void efree(void*); // <2>
 void *ememcpy(void *dest, const void *src, size_t n); // <3>
-// end::mem[]
 
-// tag::macros[]
 #define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
 #define EFREE(pdata) UC(efree(pdata))
 #define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
-// end::macros[]
 
-// tag::stdio[]
 void efopen(const char *fname, const char *mode, /**/ FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
 void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
 void efgets(char *s, int size, FILE*);
-// end::stdio[]
 
-// tag::tools[]
 bool same_str(const char *a, const char *b); // <1>
 const char* get_filename_ext(const char*);
-// end::tools[]
-/* end src/utils/imp.h */
-/* begin src/utils/error.h */
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
         error_report();                                         \
@@ -20420,14 +19133,11 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-/* end src/utils/error.h */
 
-/* begin src/algo/vectors/imp.h */
 struct Particle;
 struct Vectors;
 struct Coords;
 
-// tag::interface[]
 void vectors_float_ini(int n, const float*, /**/ Vectors**); // <1>
 void vectors_postions_ini(int n, const Particle*, /**/ Vectors**); // <2>
 void vectors_postions_edge_ini  (const Coords*, int n, const Particle*, /**/ Vectors**); // <3>
@@ -20437,15 +19147,11 @@ void vectors_zero_ini(int n, /**/ Vectors**); // <6>
 
 void vectors_fin(Vectors*);
 void vectors_get(const Vectors*, int i, /**/ float r[3]); // <7>
-// end::interface[]
-/* end src/algo/vectors/imp.h */
 
-/* begin src/algo/scalars/imp.h */
 struct Particle;
 struct Scalars;
 struct Vectors;
 
-// tag::interface[]
 void scalars_float_ini(int n, const float*, /**/ Scalars**);
 void scalars_double_ini(int n, const double*, /**/ Scalars**);
 void scalars_vectors_ini(int n, const Vectors*, int dim, /**/ Scalars**);
@@ -20455,9 +19161,6 @@ void scalars_one_ini(int n, /**/ Scalars**);
 
 void scalars_fin(Scalars*);
 double scalars_get(const Scalars*, int i);
-// end::interface[]
-/* end src/algo/scalars/imp.h */
-/* begin src/algo/scalars/imp/type.h */
 enum {MAGIC = 123};
 struct Scalars {
     int type;
@@ -20483,8 +19186,6 @@ static double one_get(const Scalars*, int i);
 enum {SCALAR_FLOAT, SCALAR_DOUBLE, SCALAR_VECX, SCALAR_VECY, SCALAR_VECZ, SCALAR_ZERO, SCALAR_ONE};
 static double (*scalar_get_table[])(const Scalars*, int i) =
 { float_get,  double_get, vecx_get, vecy_get, vecz_get, zero_get, one_get};
-/* end src/algo/scalars/imp/type.h */
-/* begin src/algo/scalars/imp/main.h */
 void scalars_float_ini(int n, const float *rr, /**/ Scalars **pq) {
     Scalars *q;
     EMALLOC(1, &q);
@@ -20567,48 +19268,33 @@ double scalars_get(const Scalars *q, int i) {
     if (i < 0)  ERR("i = %d    < 0", i);
     return scalar_get_table[q->type](q, i);
 }
-/* end src/algo/scalars/imp/main.h */
-/* end src/algo/scalars/imp.cpp */
 
 
 
 
-// generated from udx.flat.cu
 #define DEV_CUDA
 #define CC_RELEASE
 #define KL_RELEASE
 #include "udx.api.cuh"
 
-/* begin src/algo/vectors/imp.cpp */
 #include <stdio.h>
 
-/* begin src/utils/imp.h */
-// tag::mem[]
 void emalloc(size_t, /**/ void**); // <1>
 void efree(void*); // <2>
 void *ememcpy(void *dest, const void *src, size_t n); // <3>
-// end::mem[]
 
-// tag::macros[]
 #define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
 #define EFREE(pdata) UC(efree(pdata))
 #define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
-// end::macros[]
 
-// tag::stdio[]
 void efopen(const char *fname, const char *mode, /**/ FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
 void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
 void efgets(char *s, int size, FILE*);
-// end::stdio[]
 
-// tag::tools[]
 bool same_str(const char *a, const char *b); // <1>
 const char* get_filename_ext(const char*);
-// end::tools[]
-/* end src/utils/imp.h */
-/* begin src/utils/error.h */
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
         error_report();                                         \
@@ -20648,8 +19334,6 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-/* end src/utils/error.h */
-/* begin src/inc/type.h */
 #ifndef UDX_CONTROL_TYPE_COMMON
 #define UDX_CONTROL_TYPE_COMMON
 template <typename T, int N>
@@ -20704,55 +19388,40 @@ struct FoWrap {
     int n;
     Force *ff;
 };
-/* end src/inc/type.h */
 #endif /* UDX_GRID_INTER_TYPE_COMMON */
-/* begin src/coords/imp.h */
 struct Coords;
 struct Coords_v;
 struct float3;
 struct int3;
 
-// tag::view[]
 void coords_get_view(const Coords *c, Coords_v *v);
-// end::view[]
 
-// tag::domainsz[]
 int xdomain(const Coords *c);
 int ydomain(const Coords *c);
 int zdomain(const Coords *c);
-// end::domainsz[]
 
-// tag::local2center[]
 float xl2xc(const Coords *c, float xl);
 float yl2yc(const Coords *c, float yl);
 float zl2zc(const Coords *c, float zl);
 void local2center(const Coords *c, float3 rl, /**/ float3 *rc);
-// end::local2center[]
 
-// tag::center2local[]
 float xc2xl(const Coords *c, float xc);
 float yc2yl(const Coords *c, float yc);
 float zc2zl(const Coords *c, float zc);
 void center2local(const Coords *c, float3 rc, /**/ float3 *rl);
-// end::center2local[]
 
-// tag::local2global[]
 float xl2xg(const Coords *c, float xl);
 float yl2yg(const Coords *c, float yl);
 float zl2zg(const Coords *c, float zl);
 void local2global(const Coords *c, float3 rl, /**/ float3 *rg);
-// end::local2global[]
 
-// tag::global2local[]
 float xg2xl(const Coords *c, float xg);
 float yg2yl(const Coords *c, float yg);
 float zg2zl(const Coords *c, float zg);
 void global2local(const Coords *c, float3 rg, /**/ float3 *rl);
-// end::global2local[]
 
 /* edges of the sub-domain in global coordinates */
 
-// tag::bblocal[]
 int xlo(const Coords*);
 int ylo(const Coords*);
 int zlo(const Coords*);
@@ -20760,16 +19429,12 @@ int zlo(const Coords*);
 int xhi(const Coords*);
 int yhi(const Coords*);
 int zhi(const Coords*);
-// end::bblocal[]
 
-// tag::subdomainsz[]
 int xs(const Coords*);
 int ys(const Coords*);
 int zs(const Coords*);
 int3 subdomain(const Coords*);
-// end::subdomainsz[]
 
-// tag::int[]
 /* rank predicates */
 bool is_end(const Coords *c, int dir);
 
@@ -20778,18 +19443,12 @@ void coord_stamp(const Coords *c, /**/ char *s);
 
 /* number of subdomains */
 int coords_size(const Coords *c);
-// end::int[]
-/* end src/coords/imp.h */
-/* begin src/math/tform/imp.h */
 struct Tform;
 struct Tform_v;
 
-// tag::ini[]
 void tform_ini(Tform**);
 void tform_fin(Tform*);
-// end::ini[]
 
-// tag::def[]
 void tform_vector(const float a0[3], const float a1[3],   const float b0[3], const float b1[3], /**/ Tform*); // <1>
 void tform_chain(const Tform *A, const Tform *B, /**/ Tform *C); // <2>
 void tform_to_grid(const float lo[3], const float hi[3], const int n[3], /**/ Tform*); // <3>
@@ -20797,29 +19456,19 @@ void tform_from_grid(const float a0[3], const float b0[3], const int n[3], /**/ 
 void tform_grid2grid(const float f_lo[3], const float f_hi[3], const int f_n[3],
                      const float t_lo[3], const float t_hi[3], const int t_n[3],
                      Tform*); // <5>
-// end::def[]
 
 
-// tag::convert[]
 void tform_convert(const Tform*, const float a0[3], /**/ float a1[3]);
-// end::convert[]
 
-// tag::view[]
 void tform_to_view(const Tform*, /**/ Tform_v*);
-// end::view[]
 
-// tag::log[]
 void tform_log(Tform*);
 void tform_dump(Tform*, FILE*);
-// end::log[]
-/* end src/math/tform/imp.h */
 
-/* begin src/algo/vectors/imp.h */
 struct Particle;
 struct Vectors;
 struct Coords;
 
-// tag::interface[]
 void vectors_float_ini(int n, const float*, /**/ Vectors**); // <1>
 void vectors_postions_ini(int n, const Particle*, /**/ Vectors**); // <2>
 void vectors_postions_edge_ini  (const Coords*, int n, const Particle*, /**/ Vectors**); // <3>
@@ -20829,9 +19478,6 @@ void vectors_zero_ini(int n, /**/ Vectors**); // <6>
 
 void vectors_fin(Vectors*);
 void vectors_get(const Vectors*, int i, /**/ float r[3]); // <7>
-// end::interface[]
-/* end src/algo/vectors/imp.h */
-/* begin src/algo/vectors/imp/type.h */
 struct Vectors {
     int type;
     int n;
@@ -20855,8 +19501,6 @@ static void (*vector_get_table[])(const Vectors*, int i, float r[3]) =
 { float_get,  positions_get, positions_edge_get, positions_center_get, velocities_get, zero_get };
 
 typedef  void (*Local2Global)(const Coords *coords, float a[3], /**/ float b[3]);
-/* end src/algo/vectors/imp/type.h */
-/* begin src/algo/vectors/imp/main.h */
 void vectors_float_ini(int n, const float *rr, /**/ Vectors **pq) {
     Vectors *q;
     EMALLOC(1, &q);
@@ -20977,8 +19621,6 @@ void vectors_get(const Vectors *q, int i, /**/ float r[3]) {
     if (i < 0)  ERR("i = %d    < 0", i);
     vector_get_table[q->type](q, i, r);
 }
-/* end src/algo/vectors/imp/main.h */
-/* end src/algo/vectors/imp.cpp */
 
 
 
@@ -20987,14 +19629,11 @@ void vectors_get(const Vectors *q, int i, /**/ float r[3]) {
 // Grouped editable compilation unit for algorithm conversion and force statistics.
 
 
-// generated from udx.flat.cu
 #define DEV_CUDA
 #define CC_RELEASE
 #define KL_RELEASE
 #include "udx.api.cuh"
 
-/* begin src/algo/convert/imp.cu */
-/* begin src/inc/conf.h */
 /* [k]ernel [l]aunch macros */
 #if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
     !defined(KL_SYNC)
@@ -21029,9 +19668,7 @@ void vectors_get(const Vectors *q, int i, /**/ float r[3]) {
 #ifndef DUMP_BASE
 #define DUMP_BASE "."
 #endif
-/* end src/inc/conf.h */
 
-/* begin src/inc/type.h */
 #ifndef UDX_CONTROL_TYPE_COMMON
 #define UDX_CONTROL_TYPE_COMMON
 template <typename T, int N>
@@ -21086,9 +19723,7 @@ struct FoWrap {
     int n;
     Force *ff;
 };
-/* end src/inc/type.h */
 #endif /* UDX_GRID_INTER_TYPE_COMMON */
-/* begin src/inc/dev.h */
 /* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
 
@@ -21126,30 +19761,23 @@ struct FoWrap {
 /* [d]evice [a]synchronous set */
 #define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
 #define DzeroA(P, n)   DsetA(P, 0, n)
-/* end src/inc/dev.h */
 #ifndef UDX_CONTROL_KL_COMMON
 #define UDX_CONTROL_KL_COMMON
-/* begin src/utils/kl.h */
 /* [k]ernel [l]aunch macros */
 
 #if    defined(KL_RELEASE)
-/* begin src/utils/kl/release.h */
 #define KL_BEFORE(s, C) if (!kl::safe(ESC C)) continue;
 #define KL_CALL(F, C, A) F<<<ESC C>>>A
 #define KL_AFTER(s)
 
 namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
-/* end src/utils/kl/release.h */
 #elif  defined(KL_NONE)
-/* begin src/utils/kl/none.h */
 #define KL_BEFORE(s, C)
 #define KL_CALL(F, C, A)
 #define KL_AFTER(s)
 
 namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
-/* end src/utils/kl/none.h */
 #elif  defined(KL_SYNC)
-/* begin src/utils/kl/sync.h */
 #define KL_BEFORE(s, C) if (!kl::safe(ESC C)) continue;
 #define KL_CALL(F, C, A) F<<<ESC C>>>A
 #define KL_AFTER(s)                             \
@@ -21159,12 +19787,10 @@ namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
     } while(0)
 
 namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
-/* end src/utils/kl/sync.h */
 #else
   #error KL_* is undefined
 #endif
 
-/* begin src/utils/kl/common.h */
 namespace kl {
 inline int safe0(dim3 i, dim3 j) {
     msg(i.x, i.y, i.z,   j.x, j.y, j.z);
@@ -21173,8 +19799,6 @@ inline int safe0(dim3 i, dim3 j) {
 inline int safe(dim3 i, dim3 j)                    { return safe0(i, j); }
 inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
 }
-/* end src/utils/kl/common.h */
-/* begin src/utils/kl/macro.h */
 #define ESC(...) __VA_ARGS__
 #define KL(F, C, A)                             \
     do  {                                       \
@@ -21182,13 +19806,10 @@ inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
         KL_CALL(F, C, A);                       \
         KL_AFTER(#F);                           \
     } while (0)
-/* end src/utils/kl/macro.h */
 
 /* TODO: header includes header */
-/* end src/utils/kl.h */
 #endif /* UDX_GRID_INTER_KL_COMMON */
 
-/* begin src/algo/convert/imp.h */
 struct Particle;
 struct Positioncp;
 struct float4;
@@ -21196,10 +19817,8 @@ struct float4;
 void convert_pp2rr_current (long n, const Particle *pp, Positioncp *rr);
 void convert_pp2rr_previous(long n, const Particle *pp, Positioncp *rr);
 void convert_pp2f4_pos(int n, const float *pp, /**/ float4 *zpp);
-/* end src/algo/convert/imp.h */
 
 namespace convert_dev {
-/* begin src/algo/convert/dev/main.h */
 __global__ void pp2rr_current (long n, const Particle *pp, Positioncp *rr) {
     enum {X, Y, Z};
     const float *s;
@@ -21248,10 +19867,8 @@ __global__ void pp2f4_pos(int n, const float *pp, /**/ float4 *zpp) {
     zpp[2*i]     = make_float4(x,   y,  z, 0);
     zpp[2*i + 1] = make_float4(vx, vy, vz, 0);
 }
-/* end src/algo/convert/dev/main.h */
 }
 
-/* begin src/algo/convert/imp/main.h */
 void convert_pp2rr_current (long n, const Particle *pp, Positioncp *rr) {
     KL(convert_dev::pp2rr_current, (k_cnf(n)), (n, pp, rr));
 }
@@ -21265,23 +19882,18 @@ void convert_pp2f4_pos(int n, const float *pp, /**/ float4 *zpp) {
                   "sizeof(Particle) != 6 * sizeof(float)");
     KL(convert_dev::pp2f4_pos, (k_cnf(n)), (n, pp, zpp));
 }
-/* end src/algo/convert/imp/main.h */
-/* end src/algo/convert/imp.cu */
 
 
 
 
-// generated from udx.flat.cu
 #define DEV_CUDA
 #define CC_RELEASE
 #define KL_RELEASE
 #include "udx.api.cuh"
 
-/* begin src/algo/force_stat/imp.cu */
 #include <thrust/device_ptr.h>
 #include <thrust/transform_reduce.h>
 
-/* begin src/inc/type.h */
 #ifndef UDX_CONTROL_TYPE_COMMON
 #define UDX_CONTROL_TYPE_COMMON
 template <typename T, int N>
@@ -21336,9 +19948,7 @@ struct FoWrap {
     int n;
     Force *ff;
 };
-/* end src/inc/type.h */
 #endif /* UDX_GRID_INTER_TYPE_COMMON */
-/* begin src/utils/error.h */
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
         error_report();                                         \
@@ -21378,29 +19988,20 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-/* end src/utils/error.h */
-/* begin src/utils/msg.h */
-// tag::int[]
 void msg_ini(int rank); // <1>
 void msg_print(const char *fmt, ...); // <2>
-// end::int[]
-/* end src/utils/msg.h */
 #ifndef UDX_CONTROL_D_API_COMMON
 #define UDX_CONTROL_D_API_COMMON
-/* begin src/d/api.h */
 namespace d {  /* a wrapper for device API */
 typedef int Stream_t; /* TODO: streams are not supported */
 enum {MemcpyHostToHost, MemcpyHostToDevice,
       MemcpyDeviceToHost, MemcpyDeviceToDevice,
       MemcpyDefault};
 
-// tag::more[]
 const char *emsg();
 int alloc_pinned(void **pHost, size_t size);
 int is_device_pointer(const void *ptr);
-// end::more[]
 
-// tag::api[]
 int GetSymbolAddress(void **devPtr, const void *symbol);
 int Malloc(void **p, size_t);
 int MemcpyToSymbol(const void *symbol, const void *src, size_t count, size_t offset=0, int kind=MemcpyHostToDevice);
@@ -21414,18 +20015,13 @@ int Free (void *devPtr);
 int FreeHost (void *hstPtr);
 int DeviceSynchronize (void);
 int PeekAtLastError(void);
-// end::api[]
 }
-/* end src/d/api.h */
 #endif /* UDX_GRID_INTER_DEVICE_API_COMMON */
 
-/* begin src/algo/force_stat/imp.h */
 struct Force;
 
 /* sqrt(max(fx^2 + fy^2 + fz^2)) */
 float force_stat_max(int n, const Force*);
-/* end src/algo/force_stat/imp.h */
-/* begin src/algo/force_stat/imp/main.h */
 static __device__ float sumsq(Force f) {
     enum {X, Y, Z};
     float x, y, z;
@@ -21454,8 +20050,6 @@ float force_stat_max(int n, const Force *dev) {
     }
     return sqrt(m);
 }
-/* end src/algo/force_stat/imp/main.h */
-/* end src/algo/force_stat/imp.cu */
 
 
 
@@ -21471,17 +20065,14 @@ float force_stat_max(int n, const Force *dev) {
 // Grouped editable compilation unit for edge and min/max algorithms.
 
 
-// generated from udx.flat.cu
 #define DEV_CUDA
 #define CC_RELEASE
 #define KL_RELEASE
 #include "udx.api.cuh"
 
-/* begin src/algo/edg/imp.cpp */
 #include <stdlib.h>
 #include <stdio.h>
 
-/* begin src/utils/error.h */
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
         error_report();                                         \
@@ -21521,21 +20112,14 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-/* end src/utils/error.h */
-/* begin src/algo/edg/imp.h */
-// tag::interface[]
 void edg_ini(int md, int nv,                     int *hx);
 void edg_set(int md, int i, int j, int val, /**/ int *hx,       int *hy); // <1>
 int  edg_get(int md, int i, int j,         const int *hx, const int *hy); // <2>
 int  edg_valid(int md, int i, int j,         const int *hx); // <3>
-// end::interface[]
-/* end src/algo/edg/imp.h */
 
-/* begin src/algo/edg/imp/main.h */
 #include <stdlib.h>
 #include <stdio.h>
 
-/* begin src/utils/error.h */
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
         error_report();                                         \
@@ -21575,7 +20159,6 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-/* end src/utils/error.h */
 void edg_ini(int md, int nv, /**/ int *hx) {
     int n, i;
     n = md * nv;
@@ -21611,22 +20194,17 @@ int edg_valid(int md, int i, int x, const int *hx) { /* valid? */
     }
     return 1;
 }
-/* end src/algo/edg/imp/main.h */
-/* end src/algo/edg/imp.cpp */
 
 
 
 
-// generated from udx.flat.cu
 #define DEV_CUDA
 #define CC_RELEASE
 #define KL_RELEASE
 #include "udx.api.cuh"
 
-/* begin src/algo/minmax/imp.cu */
 #include <stdio.h>
 
-/* begin src/inc/conf.h */
 /* [k]ernel [l]aunch macros */
 #if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
     !defined(KL_SYNC)
@@ -21661,10 +20239,8 @@ int edg_valid(int md, int i, int x, const int *hx) { /* valid? */
 #ifndef DUMP_BASE
 #define DUMP_BASE "."
 #endif
-/* end src/inc/conf.h */
 
 
-/* begin src/inc/def.h */
 #ifndef UDX_GRID_INTER_DEF_COMMON
 #define UDX_GRID_INTER_DEF_COMMON
 /* solvent colors */
@@ -21717,24 +20293,15 @@ enum {
 
 /* for the spring forces r = min(lmax*RBC_SPRING_CAP, r) */
 #define RBC_SPRING_CAP (0.99)
-/* end src/inc/def.h */
 #endif /* UDX_GRID_INTER_DEF_COMMON */
-/* begin src/utils/msg.h */
-// tag::int[]
 void msg_ini(int rank); // <1>
 void msg_print(const char *fmt, ...); // <2>
-// end::int[]
-/* end src/utils/msg.h */
-/* begin src/d/q.h */
 /* function and variable type [q]ualifiers */
 
 #if   defined(DEV_CUDA)
-/* begin src/d/cuda/q.h */
 /* B.1. Function Type Qualifiers */
 /* B.2. Variable Type Qualifiers */
-/* end src/d/cuda/q.h */
 #elif defined(DEV_CPU)
-/* begin src/d/cpu/q.h */
 /* B.1. Function Type Qualifiers */
 #ifdef __device__
   #undef  __device__
@@ -21782,14 +20349,10 @@ void msg_print(const char *fmt, ...); // <2>
   #undef  __restrict__
   #define __restrict__
 #endif
-/* end src/d/cpu/q.h */
 #else
   #error DEV_* is undefined
 #endif
-/* end src/d/q.h */
-/* begin src/d/ker.h */
 #if   defined(DEV_CUDA)
-/* begin src/d/cuda/ker.h */
 #define  Ifetch(t, i)  tex1Dfetch(t, i)
 #define F4fetch(t, i)  tex1Dfetch(t, i)
 #define F2fetch(t, i)  tex1Dfetch(t, i)
@@ -21797,9 +20360,7 @@ void msg_print(const char *fmt, ...); // <2>
 #define Tfetch(T, t, i) tex1Dfetch<T>(t, i)
 
 #define Ttex3D(T, to, i, j, k) tex3D<T>(to, i, j, k);
-/* end src/d/cuda/ker.h */
 #elif defined(DEV_CPU)
-/* begin src/d/cpu/ker.h */
 #define atomicAdd(...) (0)
 
 #define atomicExch(...)
@@ -21823,8 +20384,6 @@ void msg_print(const char *fmt, ...); // <2>
 #define Tfetch(T, t, i) (T{})
 
 #define Ttex3D(T, to, i, j, k) (T{})
-/* end src/d/cpu/ker.h */
-/* begin src/d/cpu/wrap.h */
 namespace d {
 static uint3 threadIdx, blockIdx, gridDim;
 static dim3  blockDim;
@@ -21836,27 +20395,21 @@ static int   warpSize = 1;
 #define gridDim   d::gridDim
 #define blockIdx  d::blockIdx
 #define warpSize  d::warpSize
-/* end src/d/cpu/wrap.h */
 #else
   #error DEV_* is undefined
 #endif
-/* end src/d/ker.h */
 #ifndef UDX_CONTROL_D_API_COMMON
 #define UDX_CONTROL_D_API_COMMON
-/* begin src/d/api.h */
 namespace d {  /* a wrapper for device API */
 typedef int Stream_t; /* TODO: streams are not supported */
 enum {MemcpyHostToHost, MemcpyHostToDevice,
       MemcpyDeviceToHost, MemcpyDeviceToDevice,
       MemcpyDefault};
 
-// tag::more[]
 const char *emsg();
 int alloc_pinned(void **pHost, size_t size);
 int is_device_pointer(const void *ptr);
-// end::more[]
 
-// tag::api[]
 int GetSymbolAddress(void **devPtr, const void *symbol);
 int Malloc(void **p, size_t);
 int MemcpyToSymbol(const void *symbol, const void *src, size_t count, size_t offset=0, int kind=MemcpyHostToDevice);
@@ -21870,14 +20423,11 @@ int Free (void *devPtr);
 int FreeHost (void *hstPtr);
 int DeviceSynchronize (void);
 int PeekAtLastError(void);
-// end::api[]
 }
-/* end src/d/api.h */
 #endif /* UDX_GRID_INTER_DEVICE_API_COMMON */
 
 #ifndef UDX_CONTROL_TYPE_COMMON
 #define UDX_CONTROL_TYPE_COMMON
-/* begin src/inc/type.h */
 template <typename T, int N>
 struct Sarray { /* [s]tatic array */
     T d[N];
@@ -21930,9 +20480,7 @@ struct FoWrap {
     int n;
     Force *ff;
 };
-/* end src/inc/type.h */
 #endif /* UDX_GRID_INTER_TYPE_COMMON */
-/* begin src/inc/dev.h */
 /* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
 
@@ -21970,8 +20518,6 @@ struct FoWrap {
 /* [d]evice [a]synchronous set */
 #define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
 #define DzeroA(P, n)   DsetA(P, 0, n)
-/* end src/inc/dev.h */
-/* begin src/algo/utils/shfl.h */
 #ifndef UDX_CONTROL_SHFL_COMMON
 #define UDX_CONTROL_SHFL_COMMON
 #define _I_ static __device__
@@ -22007,24 +20553,18 @@ _I_ T shfl(T val, unsigned int width) {
 #endif
 
 #undef _I_
-/* end src/algo/utils/shfl.h */
-/* begin src/algo/utils/dev.h */
 #define _S_ static __device__
 #define _I_ static __device__
 
-// tag::int[]
 template <typename T>
 _I_ T warpReduceSum(T v)  // <1>
-// end::int[]
 {
     for (int offset = warpSize>>1; offset > 0; offset >>= 1)
         v += shfl_down(v, offset);
     return v;
 }
 
-// tag::int[]
 _I_ float2 warpReduceSum(float2 val)  // <2>
-// end::int[]
 {
     for (int offset = warpSize / 2; offset > 0; offset /= 2) {
         val.x += shfl_down(val.x, offset);
@@ -22033,9 +20573,7 @@ _I_ float2 warpReduceSum(float2 val)  // <2>
     return val;
 }
 
-// tag::int[]
 _I_ float3 warpReduceSum(float3 val)  // <3>
-// end::int[]
 {
     for (int offset = warpSize/2; offset > 0; offset /= 2) {
         val.x += shfl_down(val.x, offset);
@@ -22048,32 +20586,25 @@ _I_ float3 warpReduceSum(float3 val)  // <3>
 #undef _S_
 #undef _I_
 
-/* end src/algo/utils/dev.h */
 #endif /* UDX_CONTROL_SHFL_COMMON */
 
 #ifndef UDX_CONTROL_KL_COMMON
 #define UDX_CONTROL_KL_COMMON
-/* begin src/utils/kl.h */
 /* [k]ernel [l]aunch macros */
 
 #if    defined(KL_RELEASE)
-/* begin src/utils/kl/release.h */
 #define KL_BEFORE(s, C) if (!kl::safe(ESC C)) continue;
 #define KL_CALL(F, C, A) F<<<ESC C>>>A
 #define KL_AFTER(s)
 
 namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
-/* end src/utils/kl/release.h */
 #elif  defined(KL_NONE)
-/* begin src/utils/kl/none.h */
 #define KL_BEFORE(s, C)
 #define KL_CALL(F, C, A)
 #define KL_AFTER(s)
 
 namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
-/* end src/utils/kl/none.h */
 #elif  defined(KL_SYNC)
-/* begin src/utils/kl/sync.h */
 #define KL_BEFORE(s, C) if (!kl::safe(ESC C)) continue;
 #define KL_CALL(F, C, A) F<<<ESC C>>>A
 #define KL_AFTER(s)                             \
@@ -22083,12 +20614,10 @@ namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
     } while(0)
 
 namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
-/* end src/utils/kl/sync.h */
 #else
   #error KL_* is undefined
 #endif
 
-/* begin src/utils/kl/common.h */
 namespace kl {
 inline int safe0(dim3 i, dim3 j) {
     msg(i.x, i.y, i.z,   j.x, j.y, j.z);
@@ -22097,8 +20626,6 @@ inline int safe0(dim3 i, dim3 j) {
 inline int safe(dim3 i, dim3 j)                    { return safe0(i, j); }
 inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
 }
-/* end src/utils/kl/common.h */
-/* begin src/utils/kl/macro.h */
 #define ESC(...) __VA_ARGS__
 #define KL(F, C, A)                             \
     do  {                                       \
@@ -22106,13 +20633,10 @@ inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
         KL_CALL(F, C, A);                       \
         KL_AFTER(#F);                           \
     } while (0)
-/* end src/utils/kl/macro.h */
 
 /* TODO: header includes header */
-/* end src/utils/kl.h */
 #endif /* UDX_GRID_INTER_KL_COMMON */
 
-/* begin src/struct/particle/dev.h */
 #ifndef UDX_CONTROL_PARTICLE_DEV_COMMON
 #define UDX_CONTROL_PARTICLE_DEV_COMMON
 static __device__ float3 fetch_pos(int i, const Particle *pp) {
@@ -22128,16 +20652,11 @@ static __device__ float3 fetch_vel(int i, const Particle *pp) {
     v.x = pp[i].v[X]; v.y = pp[i].v[Y]; v.z = pp[i].v[Z];
     return v;
 }
-/* end src/struct/particle/dev.h */
 #endif /* UDX_CONTROL_PARTICLE_DEV_COMMON */
 
-/* begin src/algo/minmax/imp.h */
 struct Particle;
 struct float3;
-// tag::interface[]
 void minmax(const Particle *pp, int nv, int nobj, /**/ float3 *lo, float3 *hi);
-// end::interface[]
-/* end src/algo/minmax/imp.h */
 
 #ifndef UDX_CONTROL_WARPSIZE_COMMON
 #define UDX_CONTROL_WARPSIZE_COMMON
@@ -22237,7 +20756,6 @@ void minmax(const Particle *pp, int nv, int nobj, /**/ float3 *lo, float3 *hi) {
 
     KL(minmax_dev::minmax, (blck, thrd), (nv, pp, lo, hi));
 }
-/* end src/algo/minmax/imp.cu */
 
 
 
@@ -22246,42 +20764,29 @@ void minmax(const Particle *pp, int nv, int nobj, /**/ float3 *lo, float3 *hi) {
 // Grouped editable compilation unit for Kahan sums and key lists.
 
 
-// generated from udx.flat.cu
 #define DEV_CUDA
 #define CC_RELEASE
 #define KL_RELEASE
 #include "udx.api.cuh"
 
-/* begin src/algo/kahan_sum/imp.cpp */
 #include <stdio.h>
 
-/* begin src/utils/imp.h */
-// tag::mem[]
 void emalloc(size_t, /**/ void**); // <1>
 void efree(void*); // <2>
 void *ememcpy(void *dest, const void *src, size_t n); // <3>
-// end::mem[]
 
-// tag::macros[]
 #define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
 #define EFREE(pdata) UC(efree(pdata))
 #define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
-// end::macros[]
 
-// tag::stdio[]
 void efopen(const char *fname, const char *mode, /**/ FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
 void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
 void efgets(char *s, int size, FILE*);
-// end::stdio[]
 
-// tag::tools[]
 bool same_str(const char *a, const char *b); // <1>
 const char* get_filename_ext(const char*);
-// end::tools[]
-/* end src/utils/imp.h */
-/* begin src/utils/error.h */
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
         error_report();                                         \
@@ -22321,21 +20826,15 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-/* end src/utils/error.h */
 
-/* begin src/algo/kahan_sum/imp.h */
 struct KahanSum;
 
-// tag::interface[]
 void kahan_sum_ini(/**/ KahanSum**);
 void kahan_sum_fin(KahanSum*);
 
 void kahan_sum_add(KahanSum*, double input); // <1>
 double kahan_sum_get(const KahanSum*); // <2>
 double kahan_sum_compensation(const KahanSum*); // <3>
-// end::interface[]
-/* end src/algo/kahan_sum/imp.h */
-/* begin src/algo/kahan_sum/imp/type.h */
 /*
 
 var sum = 0.0
@@ -22353,8 +20852,6 @@ var sum = 0.0
 struct KahanSum {
     double c, y, sum;
 };
-/* end src/algo/kahan_sum/imp/type.h */
-/* begin src/algo/kahan_sum/imp/main.h */
 void kahan_sum_ini(/**/ KahanSum **pq) {
     KahanSum *q;
     EMALLOC(1, &q);
@@ -22378,23 +20875,18 @@ void kahan_sum_add(KahanSum *q, double input) {
 
 double kahan_sum_get(const KahanSum *q) { return q->sum; }
 double kahan_sum_compensation(const KahanSum *q) { return q->c; }
-/* end src/algo/kahan_sum/imp/main.h */
-/* end src/algo/kahan_sum/imp.cpp */
 
 
 
 
-// generated from udx.flat.cu
 #define DEV_CUDA
 #define CC_RELEASE
 #define KL_RELEASE
 #include "udx.api.cuh"
 
-/* begin src/algo/key_list/imp.cpp */
 #include <stdio.h>
 #include <string.h>
 
-/* begin src/utils/error.h */
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
         error_report();                                         \
@@ -22434,44 +20926,26 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-/* end src/utils/error.h */
-/* begin src/utils/imp.h */
-// tag::mem[]
 void emalloc(size_t, /**/ void**); // <1>
 void efree(void*); // <2>
 void *ememcpy(void *dest, const void *src, size_t n); // <3>
-// end::mem[]
 
-// tag::macros[]
 #define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
 #define EFREE(pdata) UC(efree(pdata))
 #define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
-// end::macros[]
 
-// tag::stdio[]
 void efopen(const char *fname, const char *mode, /**/ FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
 void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
 void efgets(char *s, int size, FILE*);
-// end::stdio[]
 
-// tag::tools[]
 bool same_str(const char *a, const char *b); // <1>
 const char* get_filename_ext(const char*);
-// end::tools[]
-/* end src/utils/imp.h */
-/* begin src/utils/msg.h */
-// tag::int[]
 void msg_ini(int rank); // <1>
 void msg_print(const char *fmt, ...); // <2>
-// end::int[]
-/* end src/utils/msg.h */
-/* begin src/utils/string/imp.h */
 int string_nword(const char *s);
-/* end src/utils/string/imp.h */
 
-/* begin src/algo/key_list/imp.h */
 struct KeyList;
 
 void key_list_ini(KeyList**);
@@ -22490,8 +20964,6 @@ int  key_list_marked(KeyList*);
 void key_list_unmark(KeyList*);
 
 void key_list_log(KeyList*);
-/* end src/algo/key_list/imp.h */
-/* begin src/algo/key_list/imp/type.h */
 enum {MAX_NK = 100 };
 enum {STAMP_GOOD = 42 };
 
@@ -22502,11 +20974,7 @@ struct KeyList {
     char keys[MAX_NK][FILENAME_MAX];
     int stamp;
 };
-/* end src/algo/key_list/imp/type.h */
-/* begin src/algo/key_list/imp/util.h */
 static char *key_cpy(char *dest, const char *src) { return strncpy(dest, src, FILENAME_MAX); }
-/* end src/algo/key_list/imp/util.h */
-/* begin src/algo/key_list/imp/main.h */
 void key_list_ini(KeyList **pq) {
     KeyList *q;
     EMALLOC(1, &q);
@@ -22635,23 +21103,18 @@ void key_list_log(KeyList *q) {
         msg_print("'%s' %d", q->keys[i], q->mark[i]);
     msg_print(">");
 }
-/* end src/algo/key_list/imp/main.h */
-/* end src/algo/key_list/imp.cpp */
 
 
 
 
 
 
-// generated from udx.flat.cu
 #define DEV_CUDA
 #define CC_RELEASE
 #define KL_RELEASE
 #include "udx.api.cuh"
 
-/* begin src/algo/scan/imp.cu */
 #include <stdio.h>
-/* begin src/inc/conf.h */
 /* [k]ernel [l]aunch macros */
 #if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
     !defined(KL_SYNC)
@@ -22686,10 +21149,8 @@ void key_list_log(KeyList *q) {
 #ifndef DUMP_BASE
 #define DUMP_BASE "."
 #endif
-/* end src/inc/conf.h */
 
 
-/* begin src/inc/dev.h */
 /* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
 
@@ -22727,34 +21188,22 @@ void key_list_log(KeyList *q) {
 /* [d]evice [a]synchronous set */
 #define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
 #define DzeroA(P, n)   DsetA(P, 0, n)
-/* end src/inc/dev.h */
-/* begin src/utils/imp.h */
-// tag::mem[]
 void emalloc(size_t, /**/ void**); // <1>
 void efree(void*); // <2>
 void *ememcpy(void *dest, const void *src, size_t n); // <3>
-// end::mem[]
 
-// tag::macros[]
 #define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
 #define EFREE(pdata) UC(efree(pdata))
 #define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
-// end::macros[]
 
-// tag::stdio[]
 void efopen(const char *fname, const char *mode, /**/ FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
 void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
 void efgets(char *s, int size, FILE*);
-// end::stdio[]
 
-// tag::tools[]
 bool same_str(const char *a, const char *b); // <1>
 const char* get_filename_ext(const char*);
-// end::tools[]
-/* end src/utils/imp.h */
-/* begin src/utils/error.h */
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
         error_report();                                         \
@@ -22794,12 +21243,9 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-/* end src/utils/error.h */
-/* begin src/utils/cc.h */
 /* [c]uda [c]heck macros */
 
 #if   defined(CC_SYNC)
-/* begin src/utils/cc/sync.h */
 /* Aggressive [sync]ronization */
 #define CC(ans)                                             \
     do {                                                    \
@@ -22807,50 +21253,38 @@ void error_print_stack();
         cc::check((ans), __FILE__, __LINE__);               \
         d::DeviceSynchronize();                             \
     } while (0)
-/* end src/utils/cc/sync.h */
 #elif defined(CC_RELEASE)
-/* begin src/utils/cc/release.h */
 /* [c]cuda [c]heck */
 #define CC(ans)                                             \
     do { cc::check((ans), __FILE__, __LINE__);} while (0)
-/* end src/utils/cc/release.h */
 #else
   #error CC_* is undefined
 #endif
 
-/* begin src/utils/cc/common.h */
 namespace cc {
 void check(int rc, const char *file, int line);
 }
 
 
-/* end src/utils/cc/common.h */
 
 /* TODO: header includes header */
-/* end src/utils/cc.h */
 #ifndef UDX_CONTROL_KL_COMMON
 #define UDX_CONTROL_KL_COMMON
-/* begin src/utils/kl.h */
 /* [k]ernel [l]aunch macros */
 
 #if    defined(KL_RELEASE)
-/* begin src/utils/kl/release.h */
 #define KL_BEFORE(s, C) if (!kl::safe(ESC C)) continue;
 #define KL_CALL(F, C, A) F<<<ESC C>>>A
 #define KL_AFTER(s)
 
 namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
-/* end src/utils/kl/release.h */
 #elif  defined(KL_NONE)
-/* begin src/utils/kl/none.h */
 #define KL_BEFORE(s, C)
 #define KL_CALL(F, C, A)
 #define KL_AFTER(s)
 
 namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
-/* end src/utils/kl/none.h */
 #elif  defined(KL_SYNC)
-/* begin src/utils/kl/sync.h */
 #define KL_BEFORE(s, C) if (!kl::safe(ESC C)) continue;
 #define KL_CALL(F, C, A) F<<<ESC C>>>A
 #define KL_AFTER(s)                             \
@@ -22860,12 +21294,10 @@ namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
     } while(0)
 
 namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
-/* end src/utils/kl/sync.h */
 #else
   #error KL_* is undefined
 #endif
 
-/* begin src/utils/kl/common.h */
 namespace kl {
 inline int safe0(dim3 i, dim3 j) {
     msg(i.x, i.y, i.z,   j.x, j.y, j.z);
@@ -22874,8 +21306,6 @@ inline int safe0(dim3 i, dim3 j) {
 inline int safe(dim3 i, dim3 j)                    { return safe0(i, j); }
 inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
 }
-/* end src/utils/kl/common.h */
-/* begin src/utils/kl/macro.h */
 #define ESC(...) __VA_ARGS__
 #define KL(F, C, A)                             \
     do  {                                       \
@@ -22883,14 +21313,11 @@ inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
         KL_CALL(F, C, A);                       \
         KL_AFTER(#F);                           \
     } while (0)
-/* end src/utils/kl/macro.h */
 
 /* TODO: header includes header */
-/* end src/utils/kl.h */
 #endif /* UDX_GRID_INTER_KL_COMMON */
 #ifndef UDX_CONTROL_D_API_COMMON
 #define UDX_CONTROL_D_API_COMMON
-/* begin src/d/api.h */
 #ifndef UDX_ALGO_DEVICE_API_COMMON
 #define UDX_ALGO_DEVICE_API_COMMON
 namespace d {  /* a wrapper for device API */
@@ -22899,13 +21326,10 @@ enum {MemcpyHostToHost, MemcpyHostToDevice,
       MemcpyDeviceToHost, MemcpyDeviceToDevice,
       MemcpyDefault};
 
-// tag::more[]
 const char *emsg();
 int alloc_pinned(void **pHost, size_t size);
 int is_device_pointer(const void *ptr);
-// end::more[]
 
-// tag::api[]
 int GetSymbolAddress(void **devPtr, const void *symbol);
 int Malloc(void **p, size_t);
 int MemcpyToSymbol(const void *symbol, const void *src, size_t count, size_t offset=0, int kind=MemcpyHostToDevice);
@@ -22919,21 +21343,15 @@ int Free (void *devPtr);
 int FreeHost (void *hstPtr);
 int DeviceSynchronize (void);
 int PeekAtLastError(void);
-// end::api[]
 }
-/* end src/d/api.h */
 #endif /* UDX_GRID_INTER_DEVICE_API_COMMON */
 #endif
-/* begin src/d/q.h */
 /* function and variable type [q]ualifiers */
 
 #if   defined(DEV_CUDA)
-/* begin src/d/cuda/q.h */
 /* B.1. Function Type Qualifiers */
 /* B.2. Variable Type Qualifiers */
-/* end src/d/cuda/q.h */
 #elif defined(DEV_CPU)
-/* begin src/d/cpu/q.h */
 /* B.1. Function Type Qualifiers */
 #ifdef __device__
   #undef  __device__
@@ -22981,14 +21399,10 @@ int PeekAtLastError(void);
   #undef  __restrict__
   #define __restrict__
 #endif
-/* end src/d/cpu/q.h */
 #else
   #error DEV_* is undefined
 #endif
-/* end src/d/q.h */
-/* begin src/d/ker.h */
 #if   defined(DEV_CUDA)
-/* begin src/d/cuda/ker.h */
 #define  Ifetch(t, i)  tex1Dfetch(t, i)
 #define F4fetch(t, i)  tex1Dfetch(t, i)
 #define F2fetch(t, i)  tex1Dfetch(t, i)
@@ -22996,9 +21410,7 @@ int PeekAtLastError(void);
 #define Tfetch(T, t, i) tex1Dfetch<T>(t, i)
 
 #define Ttex3D(T, to, i, j, k) tex3D<T>(to, i, j, k);
-/* end src/d/cuda/ker.h */
 #elif defined(DEV_CPU)
-/* begin src/d/cpu/ker.h */
 #define atomicAdd(...) (0)
 
 #define atomicExch(...)
@@ -23022,8 +21434,6 @@ int PeekAtLastError(void);
 #define Tfetch(T, t, i) (T{})
 
 #define Ttex3D(T, to, i, j, k) (T{})
-/* end src/d/cpu/ker.h */
-/* begin src/d/cpu/wrap.h */
 namespace d {
 static uint3 threadIdx, blockIdx, gridDim;
 static dim3  blockDim;
@@ -23035,24 +21445,17 @@ static int   warpSize = 1;
 #define gridDim   d::gridDim
 #define blockIdx  d::blockIdx
 #define warpSize  d::warpSize
-/* end src/d/cpu/wrap.h */
 #else
   #error DEV_* is undefined
 #endif
-/* end src/d/ker.h */
 
-/* begin src/algo/scan/imp.h */
 struct Scan;
 
-// tag::interface[]
 void scan_apply(const int *input, int size, /**/ int *output, /*w*/ Scan*); // <1>
 void scan_ini(int size, /**/ Scan**);                                       // <2>
 void scan_fin(Scan*);                                                       // <3>
-// end::interface[]
-/* end src/algo/scan/imp.h */
 
 namespace scan_dev {
-/* begin src/algo/utils/shfl.h */
 #define _I_ static __device__
 
 #if __CUDACC_VER_MAJOR__ >= 9
@@ -23086,8 +21489,6 @@ _I_ T shfl(T val, unsigned int width) {
 #endif
 
 #undef _I_
-/* end src/algo/utils/shfl.h */
-/* begin src/algo/scan/dev.h */
 __global__ void compress(const int nentries, const int4 *const in, uchar4 *const out) {
     const int gid = threadIdx.x + blockDim.x * blockIdx.x;
 
@@ -23285,18 +21686,14 @@ __global__ void gexscan(const uint4 *vin, unsigned int *offs, uint4 *vout, int n
         vout[i] = val[i];
     return;
 }
-/* end src/algo/scan/dev.h */
 }
 
 #if   defined(DEV_CUDA)
-/* begin src/algo/scan/cuda/type.h */
 struct Scan {
     int size;
     unsigned int  *tmp;
     unsigned char *compressed;
 };
-/* end src/algo/scan/cuda/type.h */
-/* begin src/algo/scan/cuda/imp.h */
 enum { THREADS = 128 };
 static void scan0(const unsigned char *input, int size, /**/ uint *output, /*w*/ uint *tmp) {
     int nblocks = ((size / 16) + THREADS - 1 ) / THREADS;
@@ -23329,12 +21726,8 @@ void scan_fin(/**/ Scan *w) {
     Dfree(w->compressed);
     EFREE(w);
 }
-/* end src/algo/scan/cuda/imp.h */
 #elif defined(DEV_CPU)
-/* begin src/algo/scan/cpu/type.h */
 struct Scan { };
-/* end src/algo/scan/cpu/type.h */
-/* begin src/algo/scan/cpu/imp.h */
 void scan_ini(int, Scan**) { }
 void scan_fin(Scan*) { }
 
@@ -23347,11 +21740,9 @@ void scan_apply(const int* input, int size, /**/ int* output, /*w*/ Scan*) {
     }
 
 }
-/* end src/algo/scan/cpu/imp.h */
 #else
   #error DEV_* is undefined
 #endif
-/* end src/algo/scan/imp.cu */
 
 
 
@@ -23372,13 +21763,10 @@ void scan_apply(const int* input, int size, /**/ int* output, /*w*/ Scan*) {
 // Grouped editable compilation unit for debug and contact-list code.
 
 
-// generated from udx.flat.cu
 #include "udx.config.cuh"
 
-/* begin src/dbg/conf.cpp */
 #include <stdio.h>
 
-/* begin src/utils/error.h */
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
         error_report();                                         \
@@ -23418,22 +21806,15 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-/* end src/utils/error.h */
-/* begin src/conf/imp.h */
 struct Config;
 struct float3;
 struct int3;
 
-// tag::mem[]
 void conf_ini(/**/ Config **c);
 void conf_fin(/**/ Config *c);
-// end::mem[]
 
-// tag::ini[]
 void conf_read(int argc, char **argv, /**/ Config *cfg);
-// end::ini[]
 
-// tag::lookup[]
 void conf_lookup_int(const Config *c, const char *desc, int *a);
 void conf_lookup_float(const Config *c, const char *desc, float *a);
 void conf_lookup_bool(const Config *c, const char *desc, int *a);
@@ -23443,9 +21824,7 @@ void conf_lookup_int3(const Config *c, const char *desc, int3 *a);
 void conf_lookup_vfloat(const Config *c, const char *desc, int maxn, int *n, float a[]);
 void conf_lookup_float3(const Config *c, const char *desc, float3 *a);
 void conf_lookup_vstring(const Config *c, const char *desc, int maxn, int *n, const char **ss);
-// end::lookup[]
 
-// tag::ns[]
 void conf_lookup_int_ns(const Config *c, const char *ns, const char *desc, int *a);
 void conf_lookup_float_ns(const Config *c, const char *ns, const char *desc, float *a);
 void conf_lookup_bool_ns(const Config *c, const char *ns, const char *desc, int *a);
@@ -23455,9 +21834,7 @@ void conf_lookup_int3_ns(const Config *c, const char *ns, const char *desc, int3
 void conf_lookup_vfloat_ns(const Config *c, const char *ns, const char *desc, int maxn, int *n, float a[]);
 void conf_lookup_float3_ns(const Config *c, const char *ns, const char *desc, float3 *a);
 void conf_lookup_vstring_ns(const Config *c, const char *ns, const char *d, int maxn, int *n, const char **ss);
-// end::ns[]
 
-// tag::opt[]
 bool conf_opt_int(const Config *c, const char *desc, int *a);
 bool conf_opt_float(const Config *c, const char *desc, float *a);
 bool conf_opt_bool(const Config *c, const char *desc, int *a);
@@ -23467,9 +21844,7 @@ bool conf_opt_int3(const Config *c, const char *desc, int3 *a);
 bool conf_opt_vfloat(const Config *c, const char *desc, int maxn, int *n, float a[]);
 bool conf_opt_float3(const Config *c, const char *desc, float3 *a);
 bool conf_opt_vstring(const Config *c, const char *desc, int maxn, int *n, const char **ss);
-// end::opt[]
 
-// tag::set[]
 void conf_set_int(const char *desc, int a, Config *c);
 void conf_set_vint(const char *desc, int nelem, const int a[], Config *cfg);
 void conf_set_int3(const char *desc, int3 a, Config *cfg);
@@ -23478,15 +21853,10 @@ void conf_set_vfloat(const char *desc, int nelem, const float a[], Config *cfg);
 void conf_set_float3(const char *desc, float3 a, Config *cfg);
 void conf_set_bool(const char *desc, int a, Config *cfg);
 void conf_set_string(const char *desc, const char *a, Config *cfg);
-// end::set[]
 
-// tag::dump[]
 void conf_write_exe(const Config *cfg, FILE *stream);     // <1>
 void conf_write_history(const Config *cfg, FILE *stream); // <2>
-// end::dump[]
-/* end src/conf/imp.h */
 
-/* begin src/dbg/imp.h */
 struct Dbg;
 
 struct Config;
@@ -23495,7 +21865,6 @@ struct Particle;
 struct int3;
 struct Coords;
 
-// tag::kind[]
 #ifndef UDX_DEBUG_KIND_COMMON
 #define UDX_DEBUG_KIND_COMMON
 enum {
@@ -23507,34 +21876,24 @@ enum {
     DBG_CLIST,    // <6>
     DBG_NKIND_
 };
-// end::kind[]
 #endif
 
-// tag::mem[]
 void dbg_ini(Dbg**);
 void dbg_fin(Dbg*);
-// end::mem[]
 
-// tag::ini[]
 void dbg_enable(int kind, Dbg *dbg);
 void dbg_disable(int kind, Dbg *dbg);
 void dbg_set_verbose(bool, Dbg *dbg);
 void dbg_set_dump(bool, Dbg *dbg);
-// end::ini[]
 
-// tag::cnf[]
 void dbg_set_conf(const Config*, Dbg*);
-// end::cnf[]
 
-// tag::int[]
 void dbg_check_pos(const Coords *c, const char *base, const Dbg *dbg, int n, const Particle *pp);
 void dbg_check_pos_soft(const Coords *c, const char *base, const Dbg *dbg, int n, const Particle *pp);
 void dbg_check_vel(float dt, const Coords *c, const char *base, const Dbg *dbg, int n, const Particle *pp);
 void dbg_check_forces(float dt, const Coords *c, const char *base, const Dbg *dbg, int n, const Particle *pp, const Force *ff);
 void dbg_check_colors(const Coords *c, const Dbg *dbg, int n, const int *cc);
 void dbg_check_clist(const Coords *c, const Dbg *dbg, int3 L, const int *starts, const int *counts, const Particle *pp);
-// end::int[]
-/* end src/dbg/imp.h */
 
 static void set(const Config *cfg, const char *desc, int kind, Dbg *dbg) {
     int enabled = 0;
@@ -23557,14 +21916,11 @@ void dbg_set_conf(const Config *cfg, Dbg *dbg) {
     UC(conf_lookup_bool(cfg, "dbg.dump", &v));
     dbg_set_dump(v, dbg);
 }
-/* end src/dbg/conf.cpp */
 
 
 
-/* begin src/dbg/imp.cu */
 #include <stdio.h>
 #include <assert.h>
-/* begin src/inc/conf.h */
 /* [k]ernel [l]aunch macros */
 #if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
     !defined(KL_SYNC)
@@ -23599,8 +21955,6 @@ void dbg_set_conf(const Config *cfg, Dbg *dbg) {
 #ifndef DUMP_BASE
 #define DUMP_BASE "."
 #endif
-/* end src/inc/conf.h */
-/* begin src/inc/def.h */
 #ifndef UDX_DBG_CLIST_DEF_COMMON
 #define UDX_DBG_CLIST_DEF_COMMON
 /* solvent colors */
@@ -23653,10 +22007,8 @@ enum {
 
 /* for the spring forces r = min(lmax*RBC_SPRING_CAP, r) */
 #define RBC_SPRING_CAP (0.99)
-/* end src/inc/def.h */
 #endif
 
-/* begin src/inc/type.h */
 #ifndef UDX_DBG_CLIST_TYPE_COMMON
 #define UDX_DBG_CLIST_TYPE_COMMON
 template <typename T, int N>
@@ -23711,9 +22063,7 @@ struct FoWrap {
     int n;
     Force *ff;
 };
-/* end src/inc/type.h */
 #endif
-/* begin src/inc/dev.h */
 /* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
 
@@ -23751,35 +22101,23 @@ struct FoWrap {
 /* [d]evice [a]synchronous set */
 #define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
 #define DzeroA(P, n)   DsetA(P, 0, n)
-/* end src/inc/dev.h */
 
-/* begin src/utils/imp.h */
-// tag::mem[]
 void emalloc(size_t, /**/ void**); // <1>
 void efree(void*); // <2>
 void *ememcpy(void *dest, const void *src, size_t n); // <3>
-// end::mem[]
 
-// tag::macros[]
 #define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
 #define EFREE(pdata) UC(efree(pdata))
 #define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
-// end::macros[]
 
-// tag::stdio[]
 void efopen(const char *fname, const char *mode, /**/ FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
 void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
 void efgets(char *s, int size, FILE*);
-// end::stdio[]
 
-// tag::tools[]
 bool same_str(const char *a, const char *b); // <1>
 const char* get_filename_ext(const char*);
-// end::tools[]
-/* end src/utils/imp.h */
-/* begin src/utils/error.h */
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
         error_report();                                         \
@@ -23819,12 +22157,9 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-/* end src/utils/error.h */
-/* begin src/utils/cc.h */
 /* [c]uda [c]heck macros */
 
 #if   defined(CC_SYNC)
-/* begin src/utils/cc/sync.h */
 /* Aggressive [sync]ronization */
 #define CC(ans)                                             \
     do {                                                    \
@@ -23832,50 +22167,38 @@ void error_print_stack();
         cc::check((ans), __FILE__, __LINE__);               \
         d::DeviceSynchronize();                             \
     } while (0)
-/* end src/utils/cc/sync.h */
 #elif defined(CC_RELEASE)
-/* begin src/utils/cc/release.h */
 /* [c]cuda [c]heck */
 #define CC(ans)                                             \
     do { cc::check((ans), __FILE__, __LINE__);} while (0)
-/* end src/utils/cc/release.h */
 #else
   #error CC_* is undefined
 #endif
 
-/* begin src/utils/cc/common.h */
 namespace cc {
 void check(int rc, const char *file, int line);
 }
 
 
-/* end src/utils/cc/common.h */
 
 /* TODO: header includes header */
-/* end src/utils/cc.h */
-/* begin src/utils/kl.h */
 #ifndef UDX_DBG_CLIST_KL_COMMON
 #define UDX_DBG_CLIST_KL_COMMON
 /* [k]ernel [l]aunch macros */
 
 #if    defined(KL_RELEASE)
-/* begin src/utils/kl/release.h */
 #define KL_BEFORE(s, C) if (!kl::safe(ESC C)) continue;
 #define KL_CALL(F, C, A) F<<<ESC C>>>A
 #define KL_AFTER(s)
 
 namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
-/* end src/utils/kl/release.h */
 #elif  defined(KL_NONE)
-/* begin src/utils/kl/none.h */
 #define KL_BEFORE(s, C)
 #define KL_CALL(F, C, A)
 #define KL_AFTER(s)
 
 namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
-/* end src/utils/kl/none.h */
 #elif  defined(KL_SYNC)
-/* begin src/utils/kl/sync.h */
 #define KL_BEFORE(s, C) if (!kl::safe(ESC C)) continue;
 #define KL_CALL(F, C, A) F<<<ESC C>>>A
 #define KL_AFTER(s)                             \
@@ -23885,12 +22208,10 @@ namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
     } while(0)
 
 namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
-/* end src/utils/kl/sync.h */
 #else
   #error KL_* is undefined
 #endif
 
-/* begin src/utils/kl/common.h */
 namespace kl {
 inline int safe0(dim3 i, dim3 j) {
     msg(i.x, i.y, i.z,   j.x, j.y, j.z);
@@ -23899,8 +22220,6 @@ inline int safe0(dim3 i, dim3 j) {
 inline int safe(dim3 i, dim3 j)                    { return safe0(i, j); }
 inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
 }
-/* end src/utils/kl/common.h */
-/* begin src/utils/kl/macro.h */
 #define ESC(...) __VA_ARGS__
 #define KL(F, C, A)                             \
     do  {                                       \
@@ -23908,21 +22227,14 @@ inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
         KL_CALL(F, C, A);                       \
         KL_AFTER(#F);                           \
     } while (0)
-/* end src/utils/kl/macro.h */
 
 /* TODO: header includes header */
-/* end src/utils/kl.h */
 #endif
-/* begin src/utils/msg.h */
 #ifndef UDX_DBG_CLIST_MSG_COMMON
 #define UDX_DBG_CLIST_MSG_COMMON
-// tag::int[]
 void msg_ini(int rank); // <1>
 void msg_print(const char *fmt, ...); // <2>
-// end::int[]
-/* end src/utils/msg.h */
 #endif
-/* begin src/d/api.h */
 #ifndef UDX_DBG_CLIST_D_API_COMMON
 #define UDX_DBG_CLIST_D_API_COMMON
 namespace d {  /* a wrapper for device API */
@@ -23931,13 +22243,10 @@ enum {MemcpyHostToHost, MemcpyHostToDevice,
       MemcpyDeviceToHost, MemcpyDeviceToDevice,
       MemcpyDefault};
 
-// tag::more[]
 const char *emsg();
 int alloc_pinned(void **pHost, size_t size);
 int is_device_pointer(const void *ptr);
-// end::more[]
 
-// tag::api[]
 int GetSymbolAddress(void **devPtr, const void *symbol);
 int Malloc(void **p, size_t);
 int MemcpyToSymbol(const void *symbol, const void *src, size_t count, size_t offset=0, int kind=MemcpyHostToDevice);
@@ -23951,69 +22260,49 @@ int Free (void *devPtr);
 int FreeHost (void *hstPtr);
 int DeviceSynchronize (void);
 int PeekAtLastError(void);
-// end::api[]
 }
-/* end src/d/api.h */
 #endif
-/* begin src/coords/type.h */
 #ifndef UDX_CONTROL_COORDS_COMMON
 #define UDX_CONTROL_COORDS_COMMON
-// tag::view[]
 struct Coords_v {
     int xc, yc, zc; /* rank coordinates        */
     int xd, yd, zd; /* rank sizes              */
     int Lx, Ly, Lz; /* [L]ocal: subdomain size */
 };
-// end::view[]
 #endif /* UDX_CONTROL_COORDS_COMMON */
-/* end src/coords/type.h */
-/* begin src/coords/imp.h */
 struct Coords;
 struct Coords_v;
 struct float3;
 struct int3;
 
-// tag::view[]
 void coords_get_view(const Coords *c, Coords_v *v);
-// end::view[]
 
-// tag::domainsz[]
 int xdomain(const Coords *c);
 int ydomain(const Coords *c);
 int zdomain(const Coords *c);
-// end::domainsz[]
 
-// tag::local2center[]
 float xl2xc(const Coords *c, float xl);
 float yl2yc(const Coords *c, float yl);
 float zl2zc(const Coords *c, float zl);
 void local2center(const Coords *c, float3 rl, /**/ float3 *rc);
-// end::local2center[]
 
-// tag::center2local[]
 float xc2xl(const Coords *c, float xc);
 float yc2yl(const Coords *c, float yc);
 float zc2zl(const Coords *c, float zc);
 void center2local(const Coords *c, float3 rc, /**/ float3 *rl);
-// end::center2local[]
 
-// tag::local2global[]
 float xl2xg(const Coords *c, float xl);
 float yl2yg(const Coords *c, float yl);
 float zl2zg(const Coords *c, float zl);
 void local2global(const Coords *c, float3 rl, /**/ float3 *rg);
-// end::local2global[]
 
-// tag::global2local[]
 float xg2xl(const Coords *c, float xg);
 float yg2yl(const Coords *c, float yg);
 float zg2zl(const Coords *c, float zg);
 void global2local(const Coords *c, float3 rg, /**/ float3 *rl);
-// end::global2local[]
 
 /* edges of the sub-domain in global coordinates */
 
-// tag::bblocal[]
 int xlo(const Coords*);
 int ylo(const Coords*);
 int zlo(const Coords*);
@@ -24021,16 +22310,12 @@ int zlo(const Coords*);
 int xhi(const Coords*);
 int yhi(const Coords*);
 int zhi(const Coords*);
-// end::bblocal[]
 
-// tag::subdomainsz[]
 int xs(const Coords*);
 int ys(const Coords*);
 int zs(const Coords*);
 int3 subdomain(const Coords*);
-// end::subdomainsz[]
 
-// tag::int[]
 /* rank predicates */
 bool is_end(const Coords *c, int dir);
 
@@ -24039,19 +22324,13 @@ void coord_stamp(const Coords *c, /**/ char *s);
 
 /* number of subdomains */
 int coords_size(const Coords *c);
-// end::int[]
-/* end src/coords/imp.h */
-/* begin src/io/txt/imp.h */
 struct Particle;
 struct Force;
 struct TxtRead;
 
-// tag::write[]
 void txt_write_pp(long n, const Particle*, const char *path);
 void txt_write_pp_ff(long n, const Particle*, const Force*, const char *path);
-// end::write[]
 
-// tag::read[]
 void txt_read_pp(const char *path, TxtRead **);
 void txt_read_pp_ff(const char *path, TxtRead **);
 void txt_read_ff(const char *path, TxtRead **);
@@ -24060,11 +22339,8 @@ void txt_read_fin(TxtRead*);
 int txt_read_get_n(const TxtRead *);
 const Particle* txt_read_get_pp(const TxtRead *);
 const Force*    txt_read_get_ff(const TxtRead *);
-// end::read[]
-/* end src/io/txt/imp.h */
 
 
-/* begin src/dbg/error.h */
 #define ERRLIST(_) _(NONE),  /* no error */     \
         _(INVALID),  /* invalid value */        \
         _(INF_VAL),  /* inf value */            \
@@ -24104,10 +22380,8 @@ static err_type err_get() {
 }
 
 static const char* get_err_str(err_type e) {return err_str[e];}
-/* end src/dbg/error.h */
 
 namespace dbg_dev {
-/* begin src/dbg/dev/common.h */
 static __device__ void report(err_type e) {
     if (e != ERR_NONE) atomicExch(&error, e);
 }
@@ -24128,8 +22402,6 @@ static __device__ err_type check_float3(const float a[3]) {
 #undef check_ret
     return ERR_NONE;
 }
-/* end src/dbg/dev/common.h */
-/* begin src/dbg/dev/pos.h */
 static __device__ bool valid_pos(float x, int L) {
     if (x < -0.5*L || x > 0.5*L)
         return false;
@@ -24205,8 +22477,6 @@ __global__ void check_pos_pu(int3 L, const Particle *pp, int n, bool verbose = t
     err_type e = valid_pos_pu(L, p, verbose);
     report(e);
 }
-/* end src/dbg/dev/pos.h */
-/* begin src/dbg/dev/vel.h */
 static __device__ bool valid_vel(float dt, float v, int L) {
     float dx = fabs(v * dt);
     if (dx > L/2)
@@ -24247,8 +22517,6 @@ __global__ void check_vv(float dt, int3 L, const Particle *pp, int n, bool verbo
     err_type e = valid_vv(dt, L, p, verbose);
     report(e);
 }
-/* end src/dbg/dev/vel.h */
-/* begin src/dbg/dev/force.h */
 static __device__ bool valid_acc(float dt, float a, int L, bool verbose) {
     float dx = fabs(a * dt * dt);
     if (dx > 0.5*L) {
@@ -24285,8 +22553,6 @@ __global__ void check_ff(float dt, int3 L, const Force *ff, int n, bool verbose 
     err_type e = valid_f(dt, L, ff + i, verbose);
     report(e);
 }
-/* end src/dbg/dev/force.h */
-/* begin src/dbg/dev/color.h */
 static __device__ err_type valid_color(int c, bool verbose) {
     if (c != BLUE_COLOR && c != RED_COLOR) {
         if (verbose) printf("DBG: color = %d\n", c);
@@ -24301,8 +22567,6 @@ __global__ void check_cc(const int *cc, int n, bool verbose = true) {
     err_type e = valid_color(cc[i], verbose);
     report(e);
 }
-/* end src/dbg/dev/color.h */
-/* begin src/dbg/dev/clist.h */
 static __device__ int3 cell_coords(int3 L, int cid) {
     int3 c;
     c.x = cid % L.x;
@@ -24365,17 +22629,13 @@ __global__ void check_clist(int3 ncells, const int *ss, const int *cc, const Par
     err_type e = valid_cell(ncells, i, s, c, pp, verbose);
     report(e);
 }
-/* end src/dbg/dev/clist.h */
 } // devdbg
 
-/* begin src/dbg/imp/type.h */
 struct Dbg {
     int state[DBG_NKIND_];
     bool verbose;
     bool dump;
 };
-/* end src/dbg/imp/type.h */
-/* begin src/dbg/imp/main.h */
 void dbg_ini(Dbg **dbg) {
     Dbg *d;
     int i;
@@ -24531,20 +22791,15 @@ void dbg_check_clist(const Coords*, const Dbg *dbg, int3 L, const int *starts, c
         UC(print());
     }
 }
-/* end src/dbg/imp/main.h */
-/* end src/dbg/imp.cu */
 
 
 
 
-// generated from udx.flat.cu
 #include "udx.config.cuh"
 
-/* begin src/clist/imp.cu */
 #include <stdio.h>
 #include <assert.h>
 
-/* begin src/inc/conf.h */
 /* [k]ernel [l]aunch macros */
 #if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
     !defined(KL_SYNC)
@@ -24579,10 +22834,8 @@ void dbg_check_clist(const Coords*, const Dbg *dbg, int3 L, const int *starts, c
 #ifndef DUMP_BASE
 #define DUMP_BASE "."
 #endif
-/* end src/inc/conf.h */
 
 
-/* begin src/utils/error.h */
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
         error_report();                                         \
@@ -24622,44 +22875,28 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-/* end src/utils/error.h */
-/* begin src/utils/msg.h */
 #ifndef UDX_DBG_CLIST_MSG_COMMON
 #define UDX_DBG_CLIST_MSG_COMMON
-// tag::int[]
 void msg_ini(int rank); // <1>
 void msg_print(const char *fmt, ...); // <2>
-// end::int[]
-/* end src/utils/msg.h */
 #endif
-/* begin src/utils/imp.h */
-// tag::mem[]
 void emalloc(size_t, /**/ void**); // <1>
 void efree(void*); // <2>
 void *ememcpy(void *dest, const void *src, size_t n); // <3>
-// end::mem[]
 
-// tag::macros[]
 #define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
 #define EFREE(pdata) UC(efree(pdata))
 #define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
-// end::macros[]
 
-// tag::stdio[]
 void efopen(const char *fname, const char *mode, /**/ FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
 void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
 void efgets(char *s, int size, FILE*);
-// end::stdio[]
 
-// tag::tools[]
 bool same_str(const char *a, const char *b); // <1>
 const char* get_filename_ext(const char*);
-// end::tools[]
-/* end src/utils/imp.h */
 
-/* begin src/inc/def.h */
 #ifndef UDX_DBG_CLIST_DEF_COMMON
 #define UDX_DBG_CLIST_DEF_COMMON
 /* solvent colors */
@@ -24712,9 +22949,7 @@ enum {
 
 /* for the spring forces r = min(lmax*RBC_SPRING_CAP, r) */
 #define RBC_SPRING_CAP (0.99)
-/* end src/inc/def.h */
 #endif
-/* begin src/inc/type.h */
 #ifndef UDX_DBG_CLIST_TYPE_COMMON
 #define UDX_DBG_CLIST_TYPE_COMMON
 template <typename T, int N>
@@ -24769,9 +23004,7 @@ struct FoWrap {
     int n;
     Force *ff;
 };
-/* end src/inc/type.h */
 #endif
-/* begin src/inc/dev.h */
 /* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
 
@@ -24809,18 +23042,12 @@ struct FoWrap {
 /* [d]evice [a]synchronous set */
 #define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
 #define DzeroA(P, n)   DsetA(P, 0, n)
-/* end src/inc/dev.h */
-/* begin src/algo/scan/imp.h */
 struct Scan;
 
-// tag::interface[]
 void scan_apply(const int *input, int size, /**/ int *output, /*w*/ Scan*); // <1>
 void scan_ini(int size, /**/ Scan**);                                       // <2>
 void scan_fin(Scan*);                                                       // <3>
-// end::interface[]
-/* end src/algo/scan/imp.h */
 
-/* begin src/d/api.h */
 #ifndef UDX_DBG_CLIST_D_API_COMMON
 #define UDX_DBG_CLIST_D_API_COMMON
 namespace d {  /* a wrapper for device API */
@@ -24829,13 +23056,10 @@ enum {MemcpyHostToHost, MemcpyHostToDevice,
       MemcpyDeviceToHost, MemcpyDeviceToDevice,
       MemcpyDefault};
 
-// tag::more[]
 const char *emsg();
 int alloc_pinned(void **pHost, size_t size);
 int is_device_pointer(const void *ptr);
-// end::more[]
 
-// tag::api[]
 int GetSymbolAddress(void **devPtr, const void *symbol);
 int Malloc(void **p, size_t);
 int MemcpyToSymbol(const void *symbol, const void *src, size_t count, size_t offset=0, int kind=MemcpyHostToDevice);
@@ -24849,15 +23073,11 @@ int Free (void *devPtr);
 int FreeHost (void *hstPtr);
 int DeviceSynchronize (void);
 int PeekAtLastError(void);
-// end::api[]
 }
-/* end src/d/api.h */
 #endif
-/* begin src/utils/cc.h */
 /* [c]uda [c]heck macros */
 
 #if   defined(CC_SYNC)
-/* begin src/utils/cc/sync.h */
 /* Aggressive [sync]ronization */
 #define CC(ans)                                             \
     do {                                                    \
@@ -24865,50 +23085,38 @@ int PeekAtLastError(void);
         cc::check((ans), __FILE__, __LINE__);               \
         d::DeviceSynchronize();                             \
     } while (0)
-/* end src/utils/cc/sync.h */
 #elif defined(CC_RELEASE)
-/* begin src/utils/cc/release.h */
 /* [c]cuda [c]heck */
 #define CC(ans)                                             \
     do { cc::check((ans), __FILE__, __LINE__);} while (0)
-/* end src/utils/cc/release.h */
 #else
   #error CC_* is undefined
 #endif
 
-/* begin src/utils/cc/common.h */
 namespace cc {
 void check(int rc, const char *file, int line);
 }
 
 
-/* end src/utils/cc/common.h */
 
 /* TODO: header includes header */
-/* end src/utils/cc.h */
-/* begin src/utils/kl.h */
 #ifndef UDX_DBG_CLIST_KL_COMMON
 #define UDX_DBG_CLIST_KL_COMMON
 /* [k]ernel [l]aunch macros */
 
 #if    defined(KL_RELEASE)
-/* begin src/utils/kl/release.h */
 #define KL_BEFORE(s, C) if (!kl::safe(ESC C)) continue;
 #define KL_CALL(F, C, A) F<<<ESC C>>>A
 #define KL_AFTER(s)
 
 namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
-/* end src/utils/kl/release.h */
 #elif  defined(KL_NONE)
-/* begin src/utils/kl/none.h */
 #define KL_BEFORE(s, C)
 #define KL_CALL(F, C, A)
 #define KL_AFTER(s)
 
 namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
-/* end src/utils/kl/none.h */
 #elif  defined(KL_SYNC)
-/* begin src/utils/kl/sync.h */
 #define KL_BEFORE(s, C) if (!kl::safe(ESC C)) continue;
 #define KL_CALL(F, C, A) F<<<ESC C>>>A
 #define KL_AFTER(s)                             \
@@ -24918,12 +23126,10 @@ namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
     } while(0)
 
 namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
-/* end src/utils/kl/sync.h */
 #else
   #error KL_* is undefined
 #endif
 
-/* begin src/utils/kl/common.h */
 namespace kl {
 inline int safe0(dim3 i, dim3 j) {
     msg(i.x, i.y, i.z,   j.x, j.y, j.z);
@@ -24932,8 +23138,6 @@ inline int safe0(dim3 i, dim3 j) {
 inline int safe(dim3 i, dim3 j)                    { return safe0(i, j); }
 inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
 }
-/* end src/utils/kl/common.h */
-/* begin src/utils/kl/macro.h */
 #define ESC(...) __VA_ARGS__
 #define KL(F, C, A)                             \
     do  {                                       \
@@ -24941,13 +23145,10 @@ inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
         KL_CALL(F, C, A);                       \
         KL_AFTER(#F);                           \
     } while (0)
-/* end src/utils/kl/macro.h */
 
 /* TODO: header includes header */
-/* end src/utils/kl.h */
 #endif
 
-/* begin src/struct/partlist/type.h */
 #ifndef UDX_CLIST_PARTLIST_COMMON
 #define UDX_CLIST_PARTLIST_COMMON
 enum {
@@ -24958,15 +23159,11 @@ enum {
 /* structure of particle                           */
 /* optional "deathlist" for particles to be killed */
 
-// tag::type[]
 struct PartList {
     const Particle *pp;   /* particles array          */
     const int *deathlist; /* what pp is dead or alive */
 };
-// end::type[]
-/* end src/struct/partlist/type.h */
 #endif
-/* begin src/struct/partlist/dev.h */
 static __device__ bool is_dead(int i, const PartList lp) {
     if (lp.deathlist)
         return lp.deathlist[i] == DEAD;
@@ -24976,9 +23173,7 @@ static __device__ bool is_dead(int i, const PartList lp) {
 static __device__ bool is_alive(int i, const PartList lp) {
     return !is_dead(i, lp);
 }
-/* end src/struct/partlist/dev.h */
 
-/* begin src/struct/particle/dev.h */
 #ifndef UDX_CONTROL_PARTICLE_DEV_COMMON
 #define UDX_CONTROL_PARTICLE_DEV_COMMON
 static __device__ float3 fetch_pos(int i, const Particle *pp) {
@@ -24994,30 +23189,23 @@ static __device__ float3 fetch_vel(int i, const Particle *pp) {
     v.x = pp[i].v[X]; v.y = pp[i].v[Y]; v.z = pp[i].v[Z];
     return v;
 }
-/* end src/struct/particle/dev.h */
 #endif /* UDX_CONTROL_PARTICLE_DEV_COMMON */
 
-/* begin src/clist/imp.h */
 struct Clist;
 struct ClistMap;
 
-// tag::mem[]
 void clist_ini(int LX, int LY, int LZ, /**/ Clist **c);
 void clist_fin(/**/ Clist *c);
 
 void clist_ini_map(int maxp, int nA, const Clist *c, /**/ ClistMap **m);
 void clist_fin_map(ClistMap *m);
-// end::mem[]
 
-// tag::access[]
 const int* clists_get_ss(const Clist *c);
 const int* clists_get_cc(const Clist *c);
 int3       clists_get_dim(const Clist *c);
 int        clists_get_n(const Clist *c);
 const uint* clist_get_ids(const ClistMap *m);
-// end::access[]
 
-// tag::int[]
 void clist_ini_counts(Clist *c);
 void clist_subindex(bool project, int aid, int n, const PartList lp, /**/ Clist *c, ClistMap *m);
 void clist_build_map(const int nn[], /**/ Clist *c, ClistMap *m);
@@ -25031,27 +23219,20 @@ void clist_gather_ii(const int *iilo, const int *iire, const ClistMap *m, long n
 
 /* quick cell build for single array */
 void clist_build(int nlo, int nout, const Particle *pplo, /**/ Particle *ppout, Clist *c, ClistMap *m);
-// end::int[]
-/* end src/clist/imp.h */
-/* begin src/clist/dev.h */
 #ifndef UDX_CLIST_DEV_COMMON
 #define UDX_CLIST_DEV_COMMON
 #define _I_ static __device__
 
 enum { CLIST_NMAX = (256*256*256) };
 
-// tag::int[]
 _I_ uint clist_encode_id(int s, int pid)
-// end::int[]
 {
     /* pid: particle id; s: array id */
     assert(pid < CLIST_NMAX);
     return CLIST_NMAX * s + pid;
 }
 
-// tag::int[]
 _I_ void clist_decode_id(uint c, /**/ int *s, int *pid)
-// end::int[]
 {
     /* pid: particle id; s: array id; c : code */
     *pid = c % CLIST_NMAX;
@@ -25059,19 +23240,14 @@ _I_ void clist_decode_id(uint c, /**/ int *s, int *pid)
 }
 
 #undef _I_
-/* end src/clist/dev.h */
 #endif
 
-/* begin src/clist/imp/type.h */
-// tag::clist[]
 struct Clist {
     int3 dims;
     int ncells;
     int *starts, *counts;
 };
-// end::clist[]
 
-// tag::map[]
 struct ClistMap {
     int nA;       /* number of source arrays to build the cell lists, e.g remote+bulk -> 2 */
     uchar4 **ee;  /* cell entries */
@@ -25079,10 +23255,7 @@ struct ClistMap {
     Scan *scan;   /* scan workspace */
     long maxp;    /* maximum number of particles per input vector */
 };
-// end::map[]
-/* end src/clist/imp/type.h */
 namespace clist_dev {
-/* begin src/clist/dev/main.h */
 enum {
     VALID   = 0,
     INVALID = 255
@@ -25184,9 +23357,7 @@ __global__ void gather(const Sarray<const T*, N> src, const uint *ii, int n, /**
     uint code = ii[i];
     fetch(src, code, /**/ dd + i);
 }
-/* end src/clist/dev/main.h */
 }
-/* begin src/clist/imp/ini.h */
 void clist_ini(int LX, int LY, int LZ, /**/ Clist **cl) {
     Clist *c;
     EMALLOC(1, cl);
@@ -25218,8 +23389,6 @@ void clist_ini_map(int maxp, int nA, const Clist *c, /**/ ClistMap **map) {
     size = nA * maxp;
     Dalloc(&m->ii, size);
 }
-/* end src/clist/imp/ini.h */
-/* begin src/clist/imp/fin.h */
 void clist_fin(/**/ Clist *c) {
     Dfree(c->starts);
     Dfree(c->counts);
@@ -25234,8 +23403,6 @@ void clist_fin_map(ClistMap *m) {
     Dfree(m->ii);
     EFREE(m);
 }
-/* end src/clist/imp/fin.h */
-/* begin src/clist/imp/main.h */
 enum {LOCAL, REMOTE};
 
 const int* clists_get_ss(const Clist *c) {return c->starts;}
@@ -25320,20 +23487,15 @@ void clist_build(int nlo, int nout, const Particle *pplo, /**/ Particle *ppout, 
     UC(clist_build_map(nn, /**/ c, m));
     UC(clist_gather_pp(pplo, NULL, m, nout, ppout));
 }
-/* end src/clist/imp/main.h */
-/* end src/clist/imp.cu */
 
 
 
 
 
-// generated from udx.flat.cu
 #include "udx.config.cuh"
 
-/* begin src/cnt/imp.cu */
 #include <assert.h>
 #include <stdio.h>
-/* begin src/inc/conf.h */
 /* [k]ernel [l]aunch macros */
 #if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
     !defined(KL_SYNC)
@@ -25368,10 +23530,8 @@ void clist_build(int nlo, int nout, const Particle *pplo, /**/ Particle *ppout, 
 #ifndef DUMP_BASE
 #define DUMP_BASE "."
 #endif
-/* end src/inc/conf.h */
 
 
-/* begin src/d/api.h */
 #ifndef UDX_DBG_CLIST_D_API_COMMON
 #define UDX_DBG_CLIST_D_API_COMMON
 namespace d {  /* a wrapper for device API */
@@ -25380,13 +23540,10 @@ enum {MemcpyHostToHost, MemcpyHostToDevice,
       MemcpyDeviceToHost, MemcpyDeviceToDevice,
       MemcpyDefault};
 
-// tag::more[]
 const char *emsg();
 int alloc_pinned(void **pHost, size_t size);
 int is_device_pointer(const void *ptr);
-// end::more[]
 
-// tag::api[]
 int GetSymbolAddress(void **devPtr, const void *symbol);
 int Malloc(void **p, size_t);
 int MemcpyToSymbol(const void *symbol, const void *src, size_t count, size_t offset=0, int kind=MemcpyHostToDevice);
@@ -25400,20 +23557,14 @@ int Free (void *devPtr);
 int FreeHost (void *hstPtr);
 int DeviceSynchronize (void);
 int PeekAtLastError(void);
-// end::api[]
 }
-/* end src/d/api.h */
 #endif
-/* begin src/d/q.h */
 /* function and variable type [q]ualifiers */
 
 #if   defined(DEV_CUDA)
-/* begin src/d/cuda/q.h */
 /* B.1. Function Type Qualifiers */
 /* B.2. Variable Type Qualifiers */
-/* end src/d/cuda/q.h */
 #elif defined(DEV_CPU)
-/* begin src/d/cpu/q.h */
 /* B.1. Function Type Qualifiers */
 #ifdef __device__
   #undef  __device__
@@ -25461,14 +23612,10 @@ int PeekAtLastError(void);
   #undef  __restrict__
   #define __restrict__
 #endif
-/* end src/d/cpu/q.h */
 #else
   #error DEV_* is undefined
 #endif
-/* end src/d/q.h */
-/* begin src/d/ker.h */
 #if   defined(DEV_CUDA)
-/* begin src/d/cuda/ker.h */
 #define  Ifetch(t, i)  tex1Dfetch(t, i)
 #define F4fetch(t, i)  tex1Dfetch(t, i)
 #define F2fetch(t, i)  tex1Dfetch(t, i)
@@ -25476,9 +23623,7 @@ int PeekAtLastError(void);
 #define Tfetch(T, t, i) tex1Dfetch<T>(t, i)
 
 #define Ttex3D(T, to, i, j, k) tex3D<T>(to, i, j, k);
-/* end src/d/cuda/ker.h */
 #elif defined(DEV_CPU)
-/* begin src/d/cpu/ker.h */
 #define atomicAdd(...) (0)
 
 #define atomicExch(...)
@@ -25502,8 +23647,6 @@ int PeekAtLastError(void);
 #define Tfetch(T, t, i) (T{})
 
 #define Ttex3D(T, to, i, j, k) (T{})
-/* end src/d/cpu/ker.h */
-/* begin src/d/cpu/wrap.h */
 namespace d {
 static uint3 threadIdx, blockIdx, gridDim;
 static dim3  blockDim;
@@ -25515,13 +23658,10 @@ static int   warpSize = 1;
 #define gridDim   d::gridDim
 #define blockIdx  d::blockIdx
 #define warpSize  d::warpSize
-/* end src/d/cpu/wrap.h */
 #else
   #error DEV_* is undefined
 #endif
-/* end src/d/ker.h */
 
-/* begin src/utils/error.h */
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
         error_report();                                         \
@@ -25561,43 +23701,27 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-/* end src/utils/error.h */
-/* begin src/utils/imp.h */
-// tag::mem[]
 void emalloc(size_t, /**/ void**); // <1>
 void efree(void*); // <2>
 void *ememcpy(void *dest, const void *src, size_t n); // <3>
-// end::mem[]
 
-// tag::macros[]
 #define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
 #define EFREE(pdata) UC(efree(pdata))
 #define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
-// end::macros[]
 
-// tag::stdio[]
 void efopen(const char *fname, const char *mode, /**/ FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
 void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
 void efgets(char *s, int size, FILE*);
-// end::stdio[]
 
-// tag::tools[]
 bool same_str(const char *a, const char *b); // <1>
 const char* get_filename_ext(const char*);
-// end::tools[]
-/* end src/utils/imp.h */
 
-/* begin src/math/rnd/imp.h */
-// tag::interface[]
 struct RNDunif;                                             // <1>
 void rnd_ini(int x, int y, int z, int c, /**/ RNDunif **r); // <2>
 void rnd_fin(RNDunif *r);                                   // <3>
 float rnd_get(RNDunif *r);                                  // <4>
-// end::interface[]
-/* end src/math/rnd/imp.h */
-/* begin src/math/rnd/dev.h */
 namespace rnd {
 /* random number from the ArcSine distribution on [-sqrt(2),sqrt(2)]
    mean = 0, variance = 1 */
@@ -25672,8 +23796,6 @@ inline __device__ float mean0var1uu( float seed, uint u, uint v )
 }
 
 }
-/* end src/math/rnd/dev.h */
-/* begin src/math/dev.h */
 #ifndef UDX_CONTROL_MATH_COMMON
 #define UDX_CONTROL_MATH_COMMON
 /* use templates here because we might have mixed float/double */
@@ -25734,10 +23856,8 @@ _HD_ void axpy(const T1 a, const T2 *x, /*io*/ T3 *y) {
     y->y += a * x->y;
     y->z += a * x->z;
 }
-/* end src/math/dev.h */
 #endif /* UDX_CONTROL_MATH_COMMON */
 
-/* begin src/inc/def.h */
 #ifndef UDX_DBG_CLIST_DEF_COMMON
 #define UDX_DBG_CLIST_DEF_COMMON
 /* solvent colors */
@@ -25790,22 +23910,15 @@ enum {
 
 /* for the spring forces r = min(lmax*RBC_SPRING_CAP, r) */
 #define RBC_SPRING_CAP (0.99)
-/* end src/inc/def.h */
 #endif
-/* begin src/utils/msg.h */
 #ifndef UDX_DBG_CLIST_MSG_COMMON
 #define UDX_DBG_CLIST_MSG_COMMON
-// tag::int[]
 void msg_ini(int rank); // <1>
 void msg_print(const char *fmt, ...); // <2>
-// end::int[]
-/* end src/utils/msg.h */
 #endif
-/* begin src/utils/cc.h */
 /* [c]uda [c]heck macros */
 
 #if   defined(CC_SYNC)
-/* begin src/utils/cc/sync.h */
 /* Aggressive [sync]ronization */
 #define CC(ans)                                             \
     do {                                                    \
@@ -25813,29 +23926,22 @@ void msg_print(const char *fmt, ...); // <2>
         cc::check((ans), __FILE__, __LINE__);               \
         d::DeviceSynchronize();                             \
     } while (0)
-/* end src/utils/cc/sync.h */
 #elif defined(CC_RELEASE)
-/* begin src/utils/cc/release.h */
 /* [c]cuda [c]heck */
 #define CC(ans)                                             \
     do { cc::check((ans), __FILE__, __LINE__);} while (0)
-/* end src/utils/cc/release.h */
 #else
   #error CC_* is undefined
 #endif
 
-/* begin src/utils/cc/common.h */
 namespace cc {
 void check(int rc, const char *file, int line);
 }
 
 
-/* end src/utils/cc/common.h */
 
 /* TODO: header includes header */
-/* end src/utils/cc.h */
 
-/* begin src/frag/imp.h */
 #ifndef UDX_SHARED_FRAG_COMMON
 #define UDX_SHARED_FRAG_COMMON
 enum {frag_bulk = 26};
@@ -25844,58 +23950,41 @@ struct int3;
 
 namespace frag_hst {
 
-// tag::i2d[]
 int i2dx(int i);                 // <1>
 int i2dy(int i);                 // <2>
 int i2dz(int i);                 // <3>
 void i2d3(int i, /**/ int d[3]); // <4>
-// end::i2d[]
 
-// tag::d2i[]
 int d2i(int x, int y, int z); // <1>
 int d32i(const int d[3]);     // <2>
-// end::d2i[]
 
-// tag::ncell[]
 int ncell(int3 L, int i); // <1>
-// end::ncell[]
 
-// tag::anti[]
 int antid2i(int x, int y, int z); // <1>
 int anti(int i);                  // <2>
-// end::anti[]
 
-// tag::hst[]
 void estimates(int3 L, int nfrags, float maxd, /**/ int *cap); // <1>
-// end::hst[]
 
 } // frag_hst
-/* end src/frag/imp.h */
 #endif /* UDX_SHARED_FRAG_COMMON */
 
-/* begin src/utils/kl.h */
 #ifndef UDX_DBG_CLIST_KL_COMMON
 #define UDX_DBG_CLIST_KL_COMMON
 /* [k]ernel [l]aunch macros */
 
 #if    defined(KL_RELEASE)
-/* begin src/utils/kl/release.h */
 #define KL_BEFORE(s, C) if (!kl::safe(ESC C)) continue;
 #define KL_CALL(F, C, A) F<<<ESC C>>>A
 #define KL_AFTER(s)
 
 namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
-/* end src/utils/kl/release.h */
 #elif  defined(KL_NONE)
-/* begin src/utils/kl/none.h */
 #define KL_BEFORE(s, C)
 #define KL_CALL(F, C, A)
 #define KL_AFTER(s)
 
 namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
-/* end src/utils/kl/none.h */
 #elif  defined(KL_SYNC)
-/* begin src/utils/kl/sync.h */
 #define KL_BEFORE(s, C) if (!kl::safe(ESC C)) continue;
 #define KL_CALL(F, C, A) F<<<ESC C>>>A
 #define KL_AFTER(s)                             \
@@ -25905,12 +23994,10 @@ namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
     } while(0)
 
 namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
-/* end src/utils/kl/sync.h */
 #else
   #error KL_* is undefined
 #endif
 
-/* begin src/utils/kl/common.h */
 namespace kl {
 inline int safe0(dim3 i, dim3 j) {
     msg(i.x, i.y, i.z,   j.x, j.y, j.z);
@@ -25919,8 +24006,6 @@ inline int safe0(dim3 i, dim3 j) {
 inline int safe(dim3 i, dim3 j)                    { return safe0(i, j); }
 inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
 }
-/* end src/utils/kl/common.h */
-/* begin src/utils/kl/macro.h */
 #define ESC(...) __VA_ARGS__
 #define KL(F, C, A)                             \
     do  {                                       \
@@ -25928,12 +24013,9 @@ inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
         KL_CALL(F, C, A);                       \
         KL_AFTER(#F);                           \
     } while (0)
-/* end src/utils/kl/macro.h */
 
 /* TODO: header includes header */
-/* end src/utils/kl.h */
 #endif
-/* begin src/inc/type.h */
 #ifndef UDX_DBG_CLIST_TYPE_COMMON
 #define UDX_DBG_CLIST_TYPE_COMMON
 template <typename T, int N>
@@ -25988,9 +24070,7 @@ struct FoWrap {
     int n;
     Force *ff;
 };
-/* end src/inc/type.h */
 #endif
-/* begin src/inc/dev.h */
 /* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
 
@@ -26028,8 +24108,6 @@ struct FoWrap {
 /* [d]evice [a]synchronous set */
 #define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
 #define DzeroA(P, n)   DsetA(P, 0, n)
-/* end src/inc/dev.h */
-/* begin src/frag/dev.h */
 #ifdef FRAG_HOST
   #define _I_
   #define _S_ static
@@ -26118,9 +24196,7 @@ END
 #undef _S_
 #undef BEGIN
 #undef END
-/* end src/frag/dev.h */
 
-/* begin src/dbg/imp.h */
 struct Dbg;
 
 struct Config;
@@ -26129,7 +24205,6 @@ struct Particle;
 struct int3;
 struct Coords;
 
-// tag::kind[]
 #ifndef UDX_DEBUG_KIND_COMMON
 #define UDX_DEBUG_KIND_COMMON
 enum {
@@ -26141,36 +24216,25 @@ enum {
     DBG_CLIST,    // <6>
     DBG_NKIND_
 };
-// end::kind[]
 #endif
 
-// tag::mem[]
 void dbg_ini(Dbg**);
 void dbg_fin(Dbg*);
-// end::mem[]
 
-// tag::ini[]
 void dbg_enable(int kind, Dbg *dbg);
 void dbg_disable(int kind, Dbg *dbg);
 void dbg_set_verbose(bool, Dbg *dbg);
 void dbg_set_dump(bool, Dbg *dbg);
-// end::ini[]
 
-// tag::cnf[]
 void dbg_set_conf(const Config*, Dbg*);
-// end::cnf[]
 
-// tag::int[]
 void dbg_check_pos(const Coords *c, const char *base, const Dbg *dbg, int n, const Particle *pp);
 void dbg_check_pos_soft(const Coords *c, const char *base, const Dbg *dbg, int n, const Particle *pp);
 void dbg_check_vel(float dt, const Coords *c, const char *base, const Dbg *dbg, int n, const Particle *pp);
 void dbg_check_forces(float dt, const Coords *c, const char *base, const Dbg *dbg, int n, const Particle *pp, const Force *ff);
 void dbg_check_colors(const Coords *c, const Dbg *dbg, int n, const int *cc);
 void dbg_check_clist(const Coords *c, const Dbg *dbg, int3 L, const int *starts, const int *counts, const Particle *pp);
-// end::int[]
-/* end src/dbg/imp.h */
 
-/* begin src/pair/type.h */
 /* maximum of pairwise dpd parameters */
 enum {
     MAX_PAR = (N_COLOR * (N_COLOR + 1)) / 2
@@ -26217,8 +24281,6 @@ struct PairSFo {
     /* stress */
     float sxx, syy, szz, sxy, sxz, syz;
 };
-/* end src/pair/type.h */
-/* begin src/pair/dev.h */
 #define _S_ static __device__
 #define _I_ static __device__
 
@@ -26328,10 +24390,8 @@ _S_ void make_zero(PairSFo *f) {
     f->syy = f->syz = f->szz = 0;
 }
 
-// tag::int[]
 template <typename Param, typename Fo>
 _I_ void pair_force(const Param *p, PairPa a, PairPa b, float rnd, /**/ Fo *f)
-// end::int[]
 {
     float r, invr, ev, f0;
     float3 dr, er, dv;
@@ -26391,18 +24451,14 @@ _I_ void pair_force(const PairDPDCM *pc, PairPa a, PairPa b, float rnd, /**/ Fo 
 }
 
 
-// tag::add[]
 _I_ void pair_add(const PairFo *b, /**/ PairFo *a)
-// end::add[]
 {
     a->x += b->x;
     a->y += b->y;
     a->z += b->z;
 }
 
-// tag::add[]
 _I_ void pair_add(const PairSFo *b, /**/ PairSFo *a)
-// end::add[]
 {
     a->x += b->x;
     a->y += b->y;
@@ -26418,8 +24474,6 @@ _I_ void pair_add(const PairSFo *b, /**/ PairSFo *a)
 
 #undef _S_
 #undef _I_
-/* end src/pair/dev.h */
-/* begin src/pair/imp.h */
 struct PairParams;
 struct Config;
 
@@ -26429,35 +24483,23 @@ struct PairDPDCM;
 struct PairDPDLJ;
 struct PairAdhesion;
 
-// tag::mem[]
 void pair_ini(PairParams **);
 void pair_fin(PairParams *);
-// end::mem[]
 
-// tag::set[]
 void pair_set_dpd(int ncol, const float a[], const float g[], float spow, PairParams *p); // <1>
 void pair_set_lj(float sigma, float eps, PairParams *p); // <2>
-// end::set[]
 void pair_set_adhesion(float k1, float k2, PairParams *p);
 
-// tag::cnf[]
 void pair_set_conf(const Config *, const char *name_space, PairParams *);
-// end::cnf[]
 
-// tag::upd[]
 void pair_compute_dpd_sigma(float kBT, float dt, PairParams *p);
-// end::upd[]
 
-// tag::view[]
 void pair_get_view_dpd(const PairParams*, PairDPD*);
 void pair_get_view_dpd_color(const PairParams*, PairDPDC*);
 void pair_get_view_dpd_mirrored(const PairParams*, PairDPDCM*);
 void pair_get_view_dpd_lj(const PairParams*, PairDPDLJ*);
-// end::view[]
 void pair_get_view_adhesion(const PairParams*, PairAdhesion*);
-/* end src/pair/imp.h */
 
-/* begin src/struct/partlist/type.h */
 #ifndef UDX_CLIST_PARTLIST_COMMON
 #define UDX_CLIST_PARTLIST_COMMON
 enum {
@@ -26468,36 +24510,27 @@ enum {
 /* structure of particle                           */
 /* optional "deathlist" for particles to be killed */
 
-// tag::type[]
 struct PartList {
     const Particle *pp;   /* particles array          */
     const int *deathlist; /* what pp is dead or alive */
 };
-// end::type[]
-/* end src/struct/partlist/type.h */
 #endif
 
-/* begin src/clist/imp.h */
 struct Clist;
 struct ClistMap;
 
-// tag::mem[]
 void clist_ini(int LX, int LY, int LZ, /**/ Clist **c);
 void clist_fin(/**/ Clist *c);
 
 void clist_ini_map(int maxp, int nA, const Clist *c, /**/ ClistMap **m);
 void clist_fin_map(ClistMap *m);
-// end::mem[]
 
-// tag::access[]
 const int* clists_get_ss(const Clist *c);
 const int* clists_get_cc(const Clist *c);
 int3       clists_get_dim(const Clist *c);
 int        clists_get_n(const Clist *c);
 const uint* clist_get_ids(const ClistMap *m);
-// end::access[]
 
-// tag::int[]
 void clist_ini_counts(Clist *c);
 void clist_subindex(bool project, int aid, int n, const PartList lp, /**/ Clist *c, ClistMap *m);
 void clist_build_map(const int nn[], /**/ Clist *c, ClistMap *m);
@@ -26511,27 +24544,20 @@ void clist_gather_ii(const int *iilo, const int *iire, const ClistMap *m, long n
 
 /* quick cell build for single array */
 void clist_build(int nlo, int nout, const Particle *pplo, /**/ Particle *ppout, Clist *c, ClistMap *m);
-// end::int[]
-/* end src/clist/imp.h */
-/* begin src/clist/dev.h */
 #ifndef UDX_CLIST_DEV_COMMON
 #define UDX_CLIST_DEV_COMMON
 #define _I_ static __device__
 
 enum { CLIST_NMAX = (256*256*256) };
 
-// tag::int[]
 _I_ uint clist_encode_id(int s, int pid)
-// end::int[]
 {
     /* pid: particle id; s: array id */
     assert(pid < CLIST_NMAX);
     return CLIST_NMAX * s + pid;
 }
 
-// tag::int[]
 _I_ void clist_decode_id(uint c, /**/ int *s, int *pid)
-// end::int[]
 {
     /* pid: particle id; s: array id; c : code */
     *pid = c % CLIST_NMAX;
@@ -26539,28 +24565,20 @@ _I_ void clist_decode_id(uint c, /**/ int *s, int *pid)
 }
 
 #undef _I_
-/* end src/clist/dev.h */
 #endif
 
-/* begin src/cnt/imp.h */
 struct Contact;
 struct int3;
 struct PairParams;
 
-// tag::mem[]
 void cnt_ini(int maxp, int rank, int3 L, int nobj, /**/ Contact **c);
 void cnt_fin(Contact *c);
-// end::mem[]
 
-// tag::int[]
 void cnt_build_cells(int nw, const PairParams **prms, const PaWrap *pw, /**/ Contact *c); // <1>
 void cnt_bulk(const Contact *cnt, int nw, const PairParams **prms, PaWrap *pw, FoWrap *fw); // <2>
 void cnt_halo(const Contact *cnt, int nw, const PairParams **prms, PaWrap *pw, FoWrap *fw, Pap26 all_pp, Fop26 all_ff, const int *all_counts); // <3>
-// end::int[]
-/* end src/cnt/imp.h */
 
 namespace cnt_dev {
-/* begin src/cnt/dev/pair.h */
 template <typename Par>
 static __device__ void pair(Par params, PairPa a, PairPa b, float rnd, /**/
                             float *fx, float *fy, float *fz) {
@@ -26568,8 +24586,6 @@ static __device__ void pair(Par params, PairPa a, PairPa b, float rnd, /**/
     pair_force(&params, a, b, rnd, /**/ &f);
     *fx = f.x; *fy = f.y; *fz = f.z;
 }
-/* end src/cnt/dev/pair.h */
-/* begin src/cnt/dev/map/common.h */
 /** TODO: should be merged with Map in fsi:: */
 enum {FULL, EMPTY}; /* map status */
 struct Map { /* helps to find remote particle */
@@ -26589,8 +24605,6 @@ static __device__ int m2id(const Map m, int i) {
     id = i + (m2 ? m.org2 : m1 ? m.org1 : m.org0);
     return id;
 }
-/* end src/cnt/dev/map/common.h */
-/* begin src/cnt/dev/map/halo.h */
 static __device__ int tex2map(int3 L, int zplane, float x, float y, float z, const int *starts, /**/ Map *m) {
     int cnt0, cnt1, cnt2, org0;
     int org1, org2;
@@ -26643,8 +24657,6 @@ static __device__ int tex2map(int3 L, int zplane, float x, float y, float z, con
     m->cnt0 = cnt0; m->cnt1 = cnt1; m->cnt2 = cnt2;
     return FULL;
 }
-/* end src/cnt/dev/map/halo.h */
-/* begin src/cnt/dev/map/bulk.h */
 static __device__ int r2map(int3 L, int zplane, int n, float x, float y, float z, const int *starts, /**/ Map *m) {
     /* coordinate [r] to map */
     int cnt0, cnt1, cnt2, org0;
@@ -26692,8 +24704,6 @@ static __device__ int r2map(int3 L, int zplane, int n, float x, float y, float z
     m->cnt0 = cnt0; m->cnt1 = cnt1; m->cnt2 = cnt2;
     return FULL;
 }
-/* end src/cnt/dev/map/bulk.h */
-/* begin src/cnt/dev/bulk.h */
 static __device__ void f22p(float2 a, float2 b, float2 c, PairPa *p) {
     p->x  = a.x; p->y  = a.y; p->z  = b.x;
     p->vx = b.y; p->vy = c.x; p->vz = c.y;
@@ -26759,8 +24769,6 @@ __global__ void bulk(bool self, Par params, int3 L, int n_dst, const float2 *pp_
     atomicAdd(ff_dst + 3 * aid + 1, yforce);
     atomicAdd(ff_dst + 3 * aid + 2, zforce);
 }
-/* end src/cnt/dev/bulk.h */
-/* begin src/cnt/dev/halo.h */
 template <typename Par>
 static __device__
 void interactions_one_p(Par params, int3 L, float seed, PairPa a, int aid,
@@ -26821,10 +24829,8 @@ __global__ void halo(Par params, int3 L, float seed,
     interactions_one_p(params, L, seed, a, aid, cellstarts, ids_src, pp_src,
                        /**/ ff_src, fA);
 }
-/* end src/cnt/dev/halo.h */
 }
 
-/* begin src/cnt/imp/type.h */
 struct Contact {
     int nobj;         /* number of objects       */
     Clist    **cells; /* cell lists              */
@@ -26832,8 +24838,6 @@ struct Contact {
     RNDunif *rgen;    /* random number generator */
     int3 L;           /* dimensions of subdomain */
 };
-/* end src/cnt/imp/type.h */
-/* begin src/cnt/imp/bulk.h */
 static int get_id_inter(int a, int b) {
     int i, j;
     i = a > b ? a : b;
@@ -26880,8 +24884,6 @@ void cnt_bulk(const Contact *c, int nw, const PairParams **prms, PaWrap *pw, FoW
     }
 }
 
-/* end src/cnt/imp/bulk.h */
-/* begin src/cnt/imp/halo.h */
 static int scan(int n, const int cc[], int ss[]) {
     int i, s;
     ss[0] = 0;
@@ -26941,8 +24943,6 @@ void cnt_halo(const Contact *cnt, int nw, const PairParams **prms,
         halo_one_type(i, cnt, nw, prms, pw, fw, pp, ff, counts);
     }
 }
-/* end src/cnt/imp/halo.h */
-/* begin src/cnt/imp/main.h */
 enum {
     CID_SUBINDEX,
     CN_SUBINDICES
@@ -27004,5 +25004,3 @@ void cnt_build_cells(int nw, const PairParams **prms, const PaWrap *pw, /**/ Con
         build_cells(&pw[i], c->cells[i], c->cmap[i]);
     }
 }
-/* end src/cnt/imp/main.h */
-/* end src/cnt/imp.cu */

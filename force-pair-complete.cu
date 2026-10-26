@@ -8,14 +8,11 @@
 // Grouped editable compilation unit for bulk fluid forces and orchestration.
 
 
-// generated from udx.flat.cu
 #include "udx.config.cuh"
 
-/* begin src/fluforces/bulk/imp.cu */
 #include <stdio.h>
 #include <assert.h>
 
-/* begin src/inc/conf.h */
 /* [k]ernel [l]aunch macros */
 #if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
     !defined(KL_SYNC)
@@ -50,10 +47,8 @@
 #ifndef DUMP_BASE
 #define DUMP_BASE "."
 #endif
-/* end src/inc/conf.h */
 
 
-/* begin src/inc/type.h */
 #ifndef UDX_FORCE_TYPE_COMMON
 #define UDX_FORCE_TYPE_COMMON
 template <typename T, int N>
@@ -108,9 +103,7 @@ struct FoWrap {
     int n;
     Force *ff;
 };
-/* end src/inc/type.h */
 #endif
-/* begin src/inc/def.h */
 #ifndef UDX_FORCE_DEF_COMMON
 #define UDX_FORCE_DEF_COMMON
 /* solvent colors */
@@ -163,9 +156,7 @@ enum {
 
 /* for the spring forces r = min(lmax*RBC_SPRING_CAP, r) */
 #define RBC_SPRING_CAP (0.99)
-/* end src/inc/def.h */
 #endif /* UDX_FORCE_DEF_COMMON */
-/* begin src/inc/dev.h */
 #ifndef UDX_FORCE_DEVICE_COMMON
 #define UDX_FORCE_DEVICE_COMMON
 /* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
@@ -205,10 +196,8 @@ enum {
 /* [d]evice [a]synchronous set */
 #define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
 #define DzeroA(P, n)   DsetA(P, 0, n)
-/* end src/inc/dev.h */
 #endif /* UDX_FORCE_DEVICE_COMMON */
 
-/* begin src/d/api.h */
 #ifndef UDX_FORCE_DEVICE_API_COMMON
 #define UDX_FORCE_DEVICE_API_COMMON
 namespace d {  /* a wrapper for device API */
@@ -217,13 +206,10 @@ enum {MemcpyHostToHost, MemcpyHostToDevice,
       MemcpyDeviceToHost, MemcpyDeviceToDevice,
       MemcpyDefault};
 
-// tag::more[]
 const char *emsg();
 int alloc_pinned(void **pHost, size_t size);
 int is_device_pointer(const void *ptr);
-// end::more[]
 
-// tag::api[]
 int GetSymbolAddress(void **devPtr, const void *symbol);
 int Malloc(void **p, size_t);
 int MemcpyToSymbol(const void *symbol, const void *src, size_t count, size_t offset=0, int kind=MemcpyHostToDevice);
@@ -237,13 +223,9 @@ int Free (void *devPtr);
 int FreeHost (void *hstPtr);
 int DeviceSynchronize (void);
 int PeekAtLastError(void);
-// end::api[]
 }
-/* end src/d/api.h */
 #endif
-/* begin src/d/ker.h */
 #if   defined(DEV_CUDA)
-/* begin src/d/cuda/ker.h */
 #define  Ifetch(t, i)  tex1Dfetch(t, i)
 #define F4fetch(t, i)  tex1Dfetch(t, i)
 #define F2fetch(t, i)  tex1Dfetch(t, i)
@@ -251,9 +233,7 @@ int PeekAtLastError(void);
 #define Tfetch(T, t, i) tex1Dfetch<T>(t, i)
 
 #define Ttex3D(T, to, i, j, k) tex3D<T>(to, i, j, k);
-/* end src/d/cuda/ker.h */
 #elif defined(DEV_CPU)
-/* begin src/d/cpu/ker.h */
 #define atomicAdd(...) (0)
 
 #define atomicExch(...)
@@ -277,8 +257,6 @@ int PeekAtLastError(void);
 #define Tfetch(T, t, i) (T{})
 
 #define Ttex3D(T, to, i, j, k) (T{})
-/* end src/d/cpu/ker.h */
-/* begin src/d/cpu/wrap.h */
 namespace d {
 static uint3 threadIdx, blockIdx, gridDim;
 static dim3  blockDim;
@@ -290,12 +268,9 @@ static int   warpSize = 1;
 #define gridDim   d::gridDim
 #define blockIdx  d::blockIdx
 #define warpSize  d::warpSize
-/* end src/d/cpu/wrap.h */
 #else
   #error DEV_* is undefined
 #endif
-/* end src/d/ker.h */
-/* begin src/utils/error.h */
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
         error_report();                                         \
@@ -335,30 +310,23 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-/* end src/utils/error.h */
-/* begin src/utils/kl.h */
 #ifndef UDX_FORCE_KL_COMMON
 #define UDX_FORCE_KL_COMMON
 /* [k]ernel [l]aunch macros */
 
 #if    defined(KL_RELEASE)
-/* begin src/utils/kl/release.h */
 #define KL_BEFORE(s, C) if (!kl::safe(ESC C)) continue;
 #define KL_CALL(F, C, A) F<<<ESC C>>>A
 #define KL_AFTER(s)
 
 namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
-/* end src/utils/kl/release.h */
 #elif  defined(KL_NONE)
-/* begin src/utils/kl/none.h */
 #define KL_BEFORE(s, C)
 #define KL_CALL(F, C, A)
 #define KL_AFTER(s)
 
 namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
-/* end src/utils/kl/none.h */
 #elif  defined(KL_SYNC)
-/* begin src/utils/kl/sync.h */
 #define KL_BEFORE(s, C) if (!kl::safe(ESC C)) continue;
 #define KL_CALL(F, C, A) F<<<ESC C>>>A
 #define KL_AFTER(s)                             \
@@ -368,12 +336,10 @@ namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
     } while(0)
 
 namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
-/* end src/utils/kl/sync.h */
 #else
   #error KL_* is undefined
 #endif
 
-/* begin src/utils/kl/common.h */
 namespace kl {
 inline int safe0(dim3 i, dim3 j) {
     msg(i.x, i.y, i.z,   j.x, j.y, j.z);
@@ -382,8 +348,6 @@ inline int safe0(dim3 i, dim3 j) {
 inline int safe(dim3 i, dim3 j)                    { return safe0(i, j); }
 inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
 }
-/* end src/utils/kl/common.h */
-/* begin src/utils/kl/macro.h */
 #define ESC(...) __VA_ARGS__
 #define KL(F, C, A)                             \
     do  {                                       \
@@ -391,18 +355,14 @@ inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
         KL_CALL(F, C, A);                       \
         KL_AFTER(#F);                           \
     } while (0)
-/* end src/utils/kl/macro.h */
 
 /* TODO: header includes header */
-/* end src/utils/kl.h */
 #endif
-/* begin src/utils/cc.h */
 #ifndef UDX_FORCE_CC_COMMON
 #define UDX_FORCE_CC_COMMON
 /* [c]uda [c]heck macros */
 
 #if   defined(CC_SYNC)
-/* begin src/utils/cc/sync.h */
 /* Aggressive [sync]ronization */
 #define CC(ans)                                             \
     do {                                                    \
@@ -410,46 +370,35 @@ inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
         cc::check((ans), __FILE__, __LINE__);               \
         d::DeviceSynchronize();                             \
     } while (0)
-/* end src/utils/cc/sync.h */
 #elif defined(CC_RELEASE)
-/* begin src/utils/cc/release.h */
 /* [c]cuda [c]heck */
 #define CC(ans)                                             \
     do { cc::check((ans), __FILE__, __LINE__);} while (0)
-/* end src/utils/cc/release.h */
 #else
   #error CC_* is undefined
 #endif
 
-/* begin src/utils/cc/common.h */
 namespace cc {
 void check(int rc, const char *file, int line);
 }
 
 
-/* end src/utils/cc/common.h */
 
 /* TODO: header includes header */
-/* end src/utils/cc.h */
 #endif
-/* begin src/utils/texo.h */
 /* 1D texture object template */
 static void sz_check(int n) {
     if (n <            0 ) ERR("too small texo: %d", n);
     if (n > MAX_TEXO_SIZE) ERR("too big texo: %d > %d", n, MAX_TEXO_SIZE);
 }
 
-// tag::struct[]
 template<typename T>
 struct Texo {
     cudaTextureObject_t d;
 };
-// end::struct[]
 
 template<typename T>
-// tag::int[]
 void texo_setup(int n, T *data, /**/ Texo<T> *to)
-// end::int[]
 {
     sz_check(n);
 
@@ -470,33 +419,21 @@ void texo_setup(int n, T *data, /**/ Texo<T> *to)
 }
 
 template<typename T>
-// tag::int[]
 void texo_destroy(/**/ Texo<T> *to)
-// end::int[]
 {
     CC(cudaDestroyTextureObject(to->d));
 }
-/* end src/utils/texo.h */
-/* begin src/utils/texo.dev.h */
 template<typename T>
 __device__ __forceinline__
-// tag::int[]
 const T texo_fetch(const Texo<T> t, const int i)
-// end::int[]
 {
     return Tfetch(T, t.d, i);
 }
-/* end src/utils/texo.dev.h */
 
-/* begin src/math/rnd/imp.h */
-// tag::interface[]
 struct RNDunif;                                             // <1>
 void rnd_ini(int x, int y, int z, int c, /**/ RNDunif **r); // <2>
 void rnd_fin(RNDunif *r);                                   // <3>
 float rnd_get(RNDunif *r);                                  // <4>
-// end::interface[]
-/* end src/math/rnd/imp.h */
-/* begin src/math/rnd/dev.h */
 #ifndef UDX_FORCE_RND_COMMON
 #define UDX_FORCE_RND_COMMON
 namespace rnd {
@@ -573,9 +510,7 @@ inline __device__ float mean0var1uu( float seed, uint u, uint v )
 }
 
 }
-/* end src/math/rnd/dev.h */
 #endif /* UDX_FORCE_RND_COMMON */
-/* begin src/math/dev.h */
 #ifndef UDX_FORCE_MATH_COMMON
 #define UDX_FORCE_MATH_COMMON
 /* use templates here because we might have mixed float/double */
@@ -636,10 +571,8 @@ _HD_ void axpy(const T1 a, const T2 *x, /*io*/ T3 *y) {
     y->y += a * x->y;
     y->z += a * x->z;
 }
-/* end src/math/dev.h */
 #endif /* UDX_FORCE_MATH_COMMON */
 
-/* begin src/pair/type.h */
 #ifndef UDX_FORCE_PAIR_TYPE_COMMON
 #define UDX_FORCE_PAIR_TYPE_COMMON
 /* maximum of pairwise dpd parameters */
@@ -688,9 +621,7 @@ struct PairSFo {
     /* stress */
     float sxx, syy, szz, sxy, sxz, syz;
 };
-/* end src/pair/type.h */
 #endif /* UDX_FORCE_PAIR_TYPE_COMMON */
-/* begin src/pair/dev.h */
 #ifndef UDX_FORCE_PAIR_DEV_COMMON
 #define UDX_FORCE_PAIR_DEV_COMMON
 #define _S_ static __device__
@@ -802,10 +733,8 @@ _S_ void make_zero(PairSFo *f) {
     f->syy = f->syz = f->szz = 0;
 }
 
-// tag::int[]
 template <typename Param, typename Fo>
 _I_ void pair_force(const Param *p, PairPa a, PairPa b, float rnd, /**/ Fo *f)
-// end::int[]
 {
     float r, invr, ev, f0;
     float3 dr, er, dv;
@@ -865,18 +794,14 @@ _I_ void pair_force(const PairDPDCM *pc, PairPa a, PairPa b, float rnd, /**/ Fo 
 }
 
 
-// tag::add[]
 _I_ void pair_add(const PairFo *b, /**/ PairFo *a)
-// end::add[]
 {
     a->x += b->x;
     a->y += b->y;
     a->z += b->z;
 }
 
-// tag::add[]
 _I_ void pair_add(const PairSFo *b, /**/ PairSFo *a)
-// end::add[]
 {
     a->x += b->x;
     a->y += b->y;
@@ -892,9 +817,7 @@ _I_ void pair_add(const PairSFo *b, /**/ PairSFo *a)
 
 #undef _S_
 #undef _I_
-/* end src/pair/dev.h */
 #endif /* UDX_FORCE_PAIR_DEV_COMMON */
-/* begin src/pair/imp.h */
 struct PairParams;
 struct Config;
 
@@ -904,35 +827,23 @@ struct PairDPDCM;
 struct PairDPDLJ;
 struct PairAdhesion;
 
-// tag::mem[]
 void pair_ini(PairParams **);
 void pair_fin(PairParams *);
-// end::mem[]
 
-// tag::set[]
 void pair_set_dpd(int ncol, const float a[], const float g[], float spow, PairParams *p); // <1>
 void pair_set_lj(float sigma, float eps, PairParams *p); // <2>
-// end::set[]
 void pair_set_adhesion(float k1, float k2, PairParams *p);
 
-// tag::cnf[]
 void pair_set_conf(const Config *, const char *name_space, PairParams *);
-// end::cnf[]
 
-// tag::upd[]
 void pair_compute_dpd_sigma(float kBT, float dt, PairParams *p);
-// end::upd[]
 
-// tag::view[]
 void pair_get_view_dpd(const PairParams*, PairDPD*);
 void pair_get_view_dpd_color(const PairParams*, PairDPDC*);
 void pair_get_view_dpd_mirrored(const PairParams*, PairDPDCM*);
 void pair_get_view_dpd_lj(const PairParams*, PairDPDLJ*);
-// end::view[]
 void pair_get_view_adhesion(const PairParams*, PairAdhesion*);
-/* end src/pair/imp.h */
 
-/* begin src/struct/farray/type.h */
 struct FoArray_v {
     float *ff;
 };
@@ -941,8 +852,6 @@ struct FoSArray_v {
     float *ff;
     float *ss;
 };
-/* end src/struct/farray/type.h */
-/* begin src/struct/farray/dev.h */
 #define _I_ static __device__
 #define _S_ static __device__
 
@@ -966,18 +875,14 @@ _S_ void farray_add_stress(const PairSFo *f, int i, /**/ FoSArray_v a) {
     s[ZZ] += f->szz;
 }
 
-// tag::add[]
 template <int S>
 _I_ void farray_add(const PairFo *f, int i, /**/ FoArray_v a) // <1>
-// end::add[]
 {
     farray_add_force<S>(f, i, /**/ a);
 }
 
-// tag::add[]
 template <int S>
 _I_ void farray_add(const PairSFo *f, int i, /**/ FoSArray_v a) // <2>
-// end::add[]
 {
     farray_add_force<S>(f, i, /**/ a);
     farray_add_stress(f, i, /**/ a);
@@ -1004,36 +909,28 @@ _S_ void farray_atomic_add_stress(const PairSFo *f, int i, /**/ FoSArray_v a) {
     atomicAdd(&s[ZZ], f->szz);
 }
 
-// tag::atomic[]
 template <int S>
 _I_ void farray_atomic_add(const PairFo *f, int i, /**/ FoArray_v a)
-// end::atomic[]
 {
     farray_atomic_add_force<S>(f, i, /**/ a);
 }
 
-// tag::atomic[]
 template <int S>
 _I_ void farray_atomic_add(const PairSFo *f, int i, /**/ FoSArray_v a)
-// end::atomic[]
 {
     farray_atomic_add_force<S>(f, i, /**/ a);
     farray_atomic_add_stress(f, i, /**/ a);
 }
 
 
-// tag::ini[]
 _I_ PairFo farray_fo0(FoArray_v)
-// end::ini[]
 {
     PairFo f;
     f.x = f.y = f.z = 0;
     return f;
 }
 
-// tag::ini[]
 _I_ PairSFo farray_fo0(FoSArray_v)
-// end::ini[]
 {
     PairSFo f;
     f.x = f.y = f.z = 0;
@@ -1044,8 +941,6 @@ _I_ PairSFo farray_fo0(FoSArray_v)
 
 #undef _I_
 #undef _S_
-/* end src/struct/farray/dev.h */
-/* begin src/struct/farray/imp.h */
 struct FoArray {
     bool stress;
     float *ff;
@@ -1057,24 +952,16 @@ struct FoSArray_v;
 
 struct Force;
 
-// tag::push[]
 void farray_push_ff(Force *ff, FoArray *a);
 void farray_push_ss(float *ss, FoArray *a);
-// end::push[]
 
 void farray_clear(FoArray *);
 
-// tag::get[]
 bool farray_has_stress(const FoArray *a);
-// end::get[]
 
-// tag::view[]
 void farray_get_view(const FoArray *a, FoArray_v *v);  // <1>
 void farray_get_view(const FoArray *a, FoSArray_v *v); // <2>
-// end::view[]
-/* end src/struct/farray/imp.h */
 
-/* begin src/fluforces/bulk/imp.h */
 struct PairParams;
 struct Force;
 struct float4;
@@ -1097,8 +984,6 @@ void flocal_push_cc(const int *cc, BPaArray *a);
 void flocal_apply(const PairParams*, int3 L, int n, BPaArray parray, const int *start, RNDunif *rnd,
                   /**/ const FoArray *ff);
 
-/* end src/fluforces/bulk/imp.h */
-/* begin src/fluforces/bulk/imp/type.h */
 struct TBPaArray_v {
     Texo<float4> pp;
 };
@@ -1107,10 +992,8 @@ struct TBPaCArray_v {
     Texo<float4> pp;
     Texo<int> cc;
 };
-/* end src/fluforces/bulk/imp/type.h */
 
 namespace fbulk_dev {
-/* begin src/fluforces/bulk/dev/fetch.h */
 #define _S_ static __device__
 #define _I_ static __device__
 
@@ -1150,8 +1033,6 @@ _I_ void fetch(TBPaCArray_v a, int i, PairPa *p) {
 
 #undef _S_
 #undef _I_
-/* end src/fluforces/bulk/dev/fetch.h */
-/* begin src/fluforces/bulk/dev/main.h */
 #define _S_ static __device__
 
 _S_ bool cutoff_range(PairPa pa, PairPa pb) {
@@ -1251,12 +1132,10 @@ __global__ void apply(Par params, int3 L, int n, Parray parray, const int *start
 }
 
 #undef _S_
-/* end src/fluforces/bulk/dev/main.h */
 // #include "dev/map.h"
 // #include "dev/xmain.h"
 }
 
-/* begin src/fluforces/bulk/imp/main.h */
 void flocal_push_pp(const float4 *pp, BPaArray *a) {
     a->pp = pp;
     a->colors = false;
@@ -1340,16 +1219,12 @@ void flocal_apply(const PairParams *params, int3 L, int n, BPaArray parray, cons
     else
         apply_grey(params, L, n, parray, start, rnd, /**/ farray);
 }
-/* end src/fluforces/bulk/imp/main.h */
-/* end src/fluforces/bulk/imp.cu */
 
 
 
 
-// generated from udx.flat.cu
 #include "udx.config.cuh"
 
-/* begin src/fluforces/imp.cpp */
 #include <mpi.h>
 #include <assert.h>
 #include <vector_types.h>
@@ -1358,7 +1233,6 @@ void flocal_apply(const PairParams *params, int3 L, int n, BPaArray parray, cons
 #include <cuda_fp16.h>
 #endif
 
-/* begin src/inc/conf.h */
 /* [k]ernel [l]aunch macros */
 #if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
     !defined(KL_SYNC)
@@ -1393,10 +1267,8 @@ void flocal_apply(const PairParams *params, int3 L, int n, BPaArray parray, cons
 #ifndef DUMP_BASE
 #define DUMP_BASE "."
 #endif
-/* end src/inc/conf.h */
 
 
-/* begin src/utils/error.h */
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
         error_report();                                         \
@@ -1436,45 +1308,29 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-/* end src/utils/error.h */
-/* begin src/utils/imp.h */
-// tag::mem[]
 void emalloc(size_t, /**/ void**); // <1>
 void efree(void*); // <2>
 void *ememcpy(void *dest, const void *src, size_t n); // <3>
-// end::mem[]
 
-// tag::macros[]
 #define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
 #define EFREE(pdata) UC(efree(pdata))
 #define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
-// end::macros[]
 
-// tag::stdio[]
 void efopen(const char *fname, const char *mode, /**/ FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
 void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
 void efgets(char *s, int size, FILE*);
-// end::stdio[]
 
-// tag::tools[]
 bool same_str(const char *a, const char *b); // <1>
 const char* get_filename_ext(const char*);
-// end::tools[]
-/* end src/utils/imp.h */
 
-/* begin src/math/rnd/imp.h */
-// tag::interface[]
 struct RNDunif;                                             // <1>
 void rnd_ini(int x, int y, int z, int c, /**/ RNDunif **r); // <2>
 void rnd_fin(RNDunif *r);                                   // <3>
 float rnd_get(RNDunif *r);                                  // <4>
-// end::interface[]
-/* end src/math/rnd/imp.h */
 // #include "math/rnd/dev.h"
 
-/* begin src/inc/type.h */
 #ifndef UDX_FORCE_TYPE_COMMON
 #define UDX_FORCE_TYPE_COMMON
 template <typename T, int N>
@@ -1529,9 +1385,7 @@ struct FoWrap {
     int n;
     Force *ff;
 };
-/* end src/inc/type.h */
 #endif
-/* begin src/inc/dev.h */
 /* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
 
@@ -1569,8 +1423,6 @@ struct FoWrap {
 /* [d]evice [a]synchronous set */
 #define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
 #define DzeroA(P, n)   DsetA(P, 0, n)
-/* end src/inc/dev.h */
-/* begin src/struct/parray/imp.h */
 #ifndef UDX_FORCE_PARRAY_COMMON
 #define UDX_FORCE_PARRAY_COMMON
 struct PaArray {
@@ -1584,23 +1436,15 @@ struct PaCArray_v;
 
 struct Particle;
 
-// tag::push[]
 void parray_push_pp(const Particle *pp, PaArray *a);
 void parray_push_cc(const int *cc, PaArray *a);
-// end::push[]
 
-// tag::get[]
 bool parray_is_colored(const PaArray *a);
-// end::get[]
 
-// tag::view[]
 void parray_get_view(const PaArray *a, PaArray_v *v);  // <1>
 void parray_get_view(const PaArray *a, PaCArray_v *v); // <2>
-// end::view[]
-/* end src/struct/parray/imp.h */
 #endif /* UDX_FORCE_PARRAY_COMMON */
 
-/* begin src/d/api.h */
 #ifndef UDX_FORCE_DEVICE_API_COMMON
 #define UDX_FORCE_DEVICE_API_COMMON
 namespace d {  /* a wrapper for device API */
@@ -1609,13 +1453,10 @@ enum {MemcpyHostToHost, MemcpyHostToDevice,
       MemcpyDeviceToHost, MemcpyDeviceToDevice,
       MemcpyDefault};
 
-// tag::more[]
 const char *emsg();
 int alloc_pinned(void **pHost, size_t size);
 int is_device_pointer(const void *ptr);
-// end::more[]
 
-// tag::api[]
 int GetSymbolAddress(void **devPtr, const void *symbol);
 int Malloc(void **p, size_t);
 int MemcpyToSymbol(const void *symbol, const void *src, size_t count, size_t offset=0, int kind=MemcpyHostToDevice);
@@ -1629,33 +1470,25 @@ int Free (void *devPtr);
 int FreeHost (void *hstPtr);
 int DeviceSynchronize (void);
 int PeekAtLastError(void);
-// end::api[]
 }
-/* end src/d/api.h */
 #endif
-/* begin src/utils/kl.h */
 #ifndef UDX_FORCE_KL_COMMON
 #define UDX_FORCE_KL_COMMON
 /* [k]ernel [l]aunch macros */
 
 #if    defined(KL_RELEASE)
-/* begin src/utils/kl/release.h */
 #define KL_BEFORE(s, C) if (!kl::safe(ESC C)) continue;
 #define KL_CALL(F, C, A) F<<<ESC C>>>A
 #define KL_AFTER(s)
 
 namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
-/* end src/utils/kl/release.h */
 #elif  defined(KL_NONE)
-/* begin src/utils/kl/none.h */
 #define KL_BEFORE(s, C)
 #define KL_CALL(F, C, A)
 #define KL_AFTER(s)
 
 namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
-/* end src/utils/kl/none.h */
 #elif  defined(KL_SYNC)
-/* begin src/utils/kl/sync.h */
 #define KL_BEFORE(s, C) if (!kl::safe(ESC C)) continue;
 #define KL_CALL(F, C, A) F<<<ESC C>>>A
 #define KL_AFTER(s)                             \
@@ -1665,12 +1498,10 @@ namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
     } while(0)
 
 namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
-/* end src/utils/kl/sync.h */
 #else
   #error KL_* is undefined
 #endif
 
-/* begin src/utils/kl/common.h */
 namespace kl {
 inline int safe0(dim3 i, dim3 j) {
     msg(i.x, i.y, i.z,   j.x, j.y, j.z);
@@ -1679,8 +1510,6 @@ inline int safe0(dim3 i, dim3 j) {
 inline int safe(dim3 i, dim3 j)                    { return safe0(i, j); }
 inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
 }
-/* end src/utils/kl/common.h */
-/* begin src/utils/kl/macro.h */
 #define ESC(...) __VA_ARGS__
 #define KL(F, C, A)                             \
     do  {                                       \
@@ -1688,18 +1517,14 @@ inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
         KL_CALL(F, C, A);                       \
         KL_AFTER(#F);                           \
     } while (0)
-/* end src/utils/kl/macro.h */
 
 /* TODO: header includes header */
-/* end src/utils/kl.h */
 #endif
-/* begin src/utils/cc.h */
 #ifndef UDX_FORCE_CC_COMMON
 #define UDX_FORCE_CC_COMMON
 /* [c]uda [c]heck macros */
 
 #if   defined(CC_SYNC)
-/* begin src/utils/cc/sync.h */
 /* Aggressive [sync]ronization */
 #define CC(ans)                                             \
     do {                                                    \
@@ -1707,29 +1532,22 @@ inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
         cc::check((ans), __FILE__, __LINE__);               \
         d::DeviceSynchronize();                             \
     } while (0)
-/* end src/utils/cc/sync.h */
 #elif defined(CC_RELEASE)
-/* begin src/utils/cc/release.h */
 /* [c]cuda [c]heck */
 #define CC(ans)                                             \
     do { cc::check((ans), __FILE__, __LINE__);} while (0)
-/* end src/utils/cc/release.h */
 #else
   #error CC_* is undefined
 #endif
 
-/* begin src/utils/cc/common.h */
 namespace cc {
 void check(int rc, const char *file, int line);
 }
 
 
-/* end src/utils/cc/common.h */
 
 /* TODO: header includes header */
-/* end src/utils/cc.h */
 #endif
-/* begin src/utils/mc.h */
 /* [m]pi [c]heck macros */
 #define MC(ans)                                                         \
     do { mpicheck::check((ans), __FILE__, __LINE__); } while (0)
@@ -1737,15 +1555,9 @@ void check(int rc, const char *file, int line);
 namespace mpicheck {
 void check(int code, const char *file, int line);
 }
-/* end src/utils/mc.h */
 
-/* begin src/utils/msg.h */
-// tag::int[]
 void msg_ini(int rank); // <1>
 void msg_print(const char *fmt, ...); // <2>
-// end::int[]
-/* end src/utils/msg.h */
-/* begin src/mpi/wrapper.h */
 namespace m {
 int Allreduce(const void *sendbuf, void *recvbuf, int count, MPI_Datatype datatype, MPI_Op op, MPI_Comm comm);
 int Barrier(MPI_Comm comm);
@@ -1795,8 +1607,6 @@ int is_pending(int errorcode);
 int is_err_in_status(int errorcode);
 int status2errcode(MPI_Status *status);
 }
-/* end src/mpi/wrapper.h */
-/* begin src/frag/imp.h */
 #ifndef UDX_FORCE_FRAG_COMMON
 #define UDX_FORCE_FRAG_COMMON
 enum {frag_bulk = 26};
@@ -1806,34 +1616,22 @@ struct int3;
 
 namespace frag_hst {
 
-// tag::i2d[]
 int i2dx(int i);                 // <1>
 int i2dy(int i);                 // <2>
 int i2dz(int i);                 // <3>
 void i2d3(int i, /**/ int d[3]); // <4>
-// end::i2d[]
 
-// tag::d2i[]
 int d2i(int x, int y, int z); // <1>
 int d32i(const int d[3]);     // <2>
-// end::d2i[]
 
-// tag::ncell[]
 int ncell(int3 L, int i); // <1>
-// end::ncell[]
 
-// tag::anti[]
 int antid2i(int x, int y, int z); // <1>
 int anti(int i);                  // <2>
-// end::anti[]
 
-// tag::hst[]
 void estimates(int3 L, int nfrags, float maxd, /**/ int *cap); // <1>
-// end::hst[]
 
 } // frag_hst
-/* end src/frag/imp.h */
-/* begin src/algo/convert/imp.h */
 struct Particle;
 struct Positioncp;
 struct float4;
@@ -1841,9 +1639,7 @@ struct float4;
 void convert_pp2rr_current (long n, const Particle *pp, Positioncp *rr);
 void convert_pp2rr_previous(long n, const Particle *pp, Positioncp *rr);
 void convert_pp2f4_pos(int n, const float *pp, /**/ float4 *zpp);
-/* end src/algo/convert/imp.h */
 
-/* begin src/flu/type.h */
 /* helpers to communicate between halo interactions and exchanger */
 
 namespace flu {
@@ -1873,8 +1669,6 @@ typedef Sarray<RFrag,   26> RFrag26;
 typedef Sarray<RndFrag, 26> RndFrag26;
 
 } // flu
-/* end src/flu/type.h */
-/* begin src/fluforces/bulk/imp.h */
 struct PairParams;
 struct Force;
 struct float4;
@@ -1897,48 +1691,34 @@ void flocal_push_cc(const int *cc, BPaArray *a);
 void flocal_apply(const PairParams*, int3 L, int n, BPaArray parray, const int *start, RNDunif *rnd,
                   /**/ const FoArray *ff);
 
-/* end src/fluforces/bulk/imp.h */
-/* begin src/fluforces/halo/imp.h */
 struct PairParams;
 struct int3;
 struct FoArray;
 
 void fhalo_apply(const PairParams*, int3 L, const flu::LFrag26 lfrags, const flu::RFrag26 rfrags, const flu::RndFrag26 rrnd, /**/ const FoArray *farray);
-/* end src/fluforces/halo/imp.h */
 
-/* begin src/fluforces/imp.h */
 struct PairParams;
 struct FluForcesBulk;
 struct FluForcesHalo;
 struct PaArray;
 struct FoArray;
 
-// tag::memb[]
 void fluforces_bulk_ini(int3 L, int maxp, /**/ FluForcesBulk **b);
 void fluforces_bulk_fin(/**/ FluForcesBulk *b);
-// end::memb[]
 
-// tag::intb[]
 void fluforces_bulk_prepare(int n, const PaArray *a, /**/ FluForcesBulk *b);
 void fluforces_bulk_apply(const PairParams*, int n, const FluForcesBulk *b, const int *start, const int *count,
                           /**/ const FoArray *ff);
-// end::intb[]
 
-// tag::memh[]
 void fluforces_halo_ini(MPI_Comm cart, int3 L, /**/ FluForcesHalo **hd);
 void fluforces_halo_fin(/**/ FluForcesHalo *h);
-// end::memh[]
 
-// tag::inth[]
 void fluforces_halo_prepare(flu::LFrag26 lfrags, flu::RFrag26 rfrags, /**/ FluForcesHalo *h);
 void fluforces_halo_apply(const PairParams*, const FluForcesHalo *h, /**/ const FoArray *farray);
-// end::inth[]
 
-/* end src/fluforces/imp.h */
 
 /* implementation */
 
-/* begin src/fluforces/imp/type.h */
 struct FluForcesBulk {
     float4  *zipped_pp;  /* xyzouvwo xyzouvwo xyzouvwo ...          */
     RNDunif *rnd;        /* random generator per timestep           */
@@ -1957,8 +1737,6 @@ struct FluForcesHalo {
 
     int3 L; /* subdomain size */
 };
-/* end src/fluforces/imp/type.h */
-/* begin src/fluforces/imp/ini.h */
 void fluforces_bulk_ini(int3 L, int maxp, /**/ FluForcesBulk **bd) {
     FluForcesBulk *b;
     EMALLOC(1, bd);
@@ -2029,8 +1807,6 @@ void fluforces_halo_ini(MPI_Comm cart, int3 L, /**/ FluForcesHalo **hd) {
     for (int i = 0; i < 26; ++i)
         get_interrank_infos(cart, i, /**/ h->trunks, h->masks);
 }
-/* end src/fluforces/imp/ini.h */
-/* begin src/fluforces/imp/fin.h */
 void fluforces_bulk_fin(/**/ FluForcesBulk *b) {
     CC(d::Free(b->zipped_pp));
     UC(rnd_fin(b->rnd));
@@ -2042,8 +1818,6 @@ void fluforces_halo_fin(/**/ FluForcesHalo *h) {
         UC(rnd_fin(h->trunks[i]));
     EFREE(h);
 }
-/* end src/fluforces/imp/fin.h */
-/* begin src/fluforces/imp/main.h */
 void fluforces_bulk_prepare(int n, const PaArray *a, /**/ FluForcesBulk *b) {
     if (n == 0) return;
     convert_pp2f4_pos(n, a->pp, /**/ b->zipped_pp);
@@ -2081,8 +1855,6 @@ void fluforces_halo_prepare(flu::LFrag26 lfrags, flu::RFrag26 rfrags, /**/ FluFo
 void fluforces_halo_apply(const PairParams *par, const FluForcesHalo *h, /**/ const FoArray *farray) {
     fhalo_apply(par, h->L, h->lfrags, h->rfrags, h->rndfrags, farray);
 }
-/* end src/fluforces/imp/main.h */
-/* end src/fluforces/imp.cpp */
 
 
 
@@ -2097,14 +1869,11 @@ void fluforces_halo_apply(const PairParams *par, const FluForcesHalo *h, /**/ co
 // Grouped editable compilation unit for RBC area/volume and random forces.
 
 
-// generated from udx.flat.cu
 #include "udx.config.cuh"
 
-/* begin src/rbc/force/area_volume/imp.cu */
 #include <stdio.h>
 #include <assert.h>
 
-/* begin src/inc/conf.h */
 /* [k]ernel [l]aunch macros */
 #if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
     !defined(KL_SYNC)
@@ -2139,10 +1908,8 @@ void fluforces_halo_apply(const PairParams *par, const FluForcesHalo *h, /**/ co
 #ifndef DUMP_BASE
 #define DUMP_BASE "."
 #endif
-/* end src/inc/conf.h */
 
 
-/* begin src/inc/type.h */
 #ifndef UDX_FORCE_TYPE_COMMON
 #define UDX_FORCE_TYPE_COMMON
 template <typename T, int N>
@@ -2197,9 +1964,7 @@ struct FoWrap {
     int n;
     Force *ff;
 };
-/* end src/inc/type.h */
 #endif
-/* begin src/inc/dev.h */
 #ifndef UDX_FORCE_DEVICE_COMMON
 #define UDX_FORCE_DEVICE_COMMON
 /* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
@@ -2239,9 +2004,7 @@ struct FoWrap {
 /* [d]evice [a]synchronous set */
 #define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
 #define DzeroA(P, n)   DsetA(P, 0, n)
-/* end src/inc/dev.h */
 #endif /* UDX_FORCE_DEVICE_COMMON */
-/* begin src/math/dev.h */
 #ifndef UDX_FORCE_MATH_COMMON
 #define UDX_FORCE_MATH_COMMON
 /* use templates here because we might have mixed float/double */
@@ -2302,36 +2065,24 @@ _HD_ void axpy(const T1 a, const T2 *x, /*io*/ T3 *y) {
     y->y += a * x->y;
     y->z += a * x->z;
 }
-/* end src/math/dev.h */
 #endif /* UDX_FORCE_MATH_COMMON */
 
-/* begin src/utils/imp.h */
-// tag::mem[]
 void emalloc(size_t, /**/ void**); // <1>
 void efree(void*); // <2>
 void *ememcpy(void *dest, const void *src, size_t n); // <3>
-// end::mem[]
 
-// tag::macros[]
 #define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
 #define EFREE(pdata) UC(efree(pdata))
 #define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
-// end::macros[]
 
-// tag::stdio[]
 void efopen(const char *fname, const char *mode, /**/ FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
 void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
 void efgets(char *s, int size, FILE*);
-// end::stdio[]
 
-// tag::tools[]
 bool same_str(const char *a, const char *b); // <1>
 const char* get_filename_ext(const char*);
-// end::tools[]
-/* end src/utils/imp.h */
-/* begin src/utils/error.h */
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
         error_report();                                         \
@@ -2371,30 +2122,21 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-/* end src/utils/error.h */
-/* begin src/utils/msg.h */
-// tag::int[]
 void msg_ini(int rank); // <1>
 void msg_print(const char *fmt, ...); // <2>
-// end::int[]
-/* end src/utils/msg.h */
 
 #ifndef UDX_FORCE_DEVICE_API_COMMON
 #define UDX_FORCE_DEVICE_API_COMMON
-/* begin src/d/api.h */
 namespace d {  /* a wrapper for device API */
 typedef int Stream_t; /* TODO: streams are not supported */
 enum {MemcpyHostToHost, MemcpyHostToDevice,
       MemcpyDeviceToHost, MemcpyDeviceToDevice,
       MemcpyDefault};
 
-// tag::more[]
 const char *emsg();
 int alloc_pinned(void **pHost, size_t size);
 int is_device_pointer(const void *ptr);
-// end::more[]
 
-// tag::api[]
 int GetSymbolAddress(void **devPtr, const void *symbol);
 int Malloc(void **p, size_t);
 int MemcpyToSymbol(const void *symbol, const void *src, size_t count, size_t offset=0, int kind=MemcpyHostToDevice);
@@ -2408,13 +2150,9 @@ int Free (void *devPtr);
 int FreeHost (void *hstPtr);
 int DeviceSynchronize (void);
 int PeekAtLastError(void);
-// end::api[]
 }
-/* end src/d/api.h */
 #endif
-/* begin src/d/ker.h */
 #if   defined(DEV_CUDA)
-/* begin src/d/cuda/ker.h */
 #define  Ifetch(t, i)  tex1Dfetch(t, i)
 #define F4fetch(t, i)  tex1Dfetch(t, i)
 #define F2fetch(t, i)  tex1Dfetch(t, i)
@@ -2422,9 +2160,7 @@ int PeekAtLastError(void);
 #define Tfetch(T, t, i) tex1Dfetch<T>(t, i)
 
 #define Ttex3D(T, to, i, j, k) tex3D<T>(to, i, j, k);
-/* end src/d/cuda/ker.h */
 #elif defined(DEV_CPU)
-/* begin src/d/cpu/ker.h */
 #define atomicAdd(...) (0)
 
 #define atomicExch(...)
@@ -2448,8 +2184,6 @@ int PeekAtLastError(void);
 #define Tfetch(T, t, i) (T{})
 
 #define Ttex3D(T, to, i, j, k) (T{})
-/* end src/d/cpu/ker.h */
-/* begin src/d/cpu/wrap.h */
 namespace d {
 static uint3 threadIdx, blockIdx, gridDim;
 static dim3  blockDim;
@@ -2461,21 +2195,15 @@ static int   warpSize = 1;
 #define gridDim   d::gridDim
 #define blockIdx  d::blockIdx
 #define warpSize  d::warpSize
-/* end src/d/cpu/wrap.h */
 #else
   #error DEV_* is undefined
 #endif
-/* end src/d/ker.h */
-/* begin src/d/q.h */
 /* function and variable type [q]ualifiers */
 
 #if   defined(DEV_CUDA)
-/* begin src/d/cuda/q.h */
 /* B.1. Function Type Qualifiers */
 /* B.2. Variable Type Qualifiers */
-/* end src/d/cuda/q.h */
 #elif defined(DEV_CPU)
-/* begin src/d/cpu/q.h */
 /* B.1. Function Type Qualifiers */
 #ifdef __device__
   #undef  __device__
@@ -2523,18 +2251,14 @@ static int   warpSize = 1;
   #undef  __restrict__
   #define __restrict__
 #endif
-/* end src/d/cpu/q.h */
 #else
   #error DEV_* is undefined
 #endif
-/* end src/d/q.h */
-/* begin src/utils/cc.h */
 #ifndef UDX_FORCE_CC_COMMON
 #define UDX_FORCE_CC_COMMON
 /* [c]uda [c]heck macros */
 
 #if   defined(CC_SYNC)
-/* begin src/utils/cc/sync.h */
 /* Aggressive [sync]ronization */
 #define CC(ans)                                             \
     do {                                                    \
@@ -2542,51 +2266,39 @@ static int   warpSize = 1;
         cc::check((ans), __FILE__, __LINE__);               \
         d::DeviceSynchronize();                             \
     } while (0)
-/* end src/utils/cc/sync.h */
 #elif defined(CC_RELEASE)
-/* begin src/utils/cc/release.h */
 /* [c]cuda [c]heck */
 #define CC(ans)                                             \
     do { cc::check((ans), __FILE__, __LINE__);} while (0)
-/* end src/utils/cc/release.h */
 #else
   #error CC_* is undefined
 #endif
 
-/* begin src/utils/cc/common.h */
 namespace cc {
 void check(int rc, const char *file, int line);
 }
 
 
-/* end src/utils/cc/common.h */
 
 /* TODO: header includes header */
-/* end src/utils/cc.h */
 #endif /* UDX_FORCE_CC_COMMON */
-/* begin src/utils/kl.h */
 #ifndef UDX_FORCE_KL_COMMON
 #define UDX_FORCE_KL_COMMON
 /* [k]ernel [l]aunch macros */
 
 #if    defined(KL_RELEASE)
-/* begin src/utils/kl/release.h */
 #define KL_BEFORE(s, C) if (!kl::safe(ESC C)) continue;
 #define KL_CALL(F, C, A) F<<<ESC C>>>A
 #define KL_AFTER(s)
 
 namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
-/* end src/utils/kl/release.h */
 #elif  defined(KL_NONE)
-/* begin src/utils/kl/none.h */
 #define KL_BEFORE(s, C)
 #define KL_CALL(F, C, A)
 #define KL_AFTER(s)
 
 namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
-/* end src/utils/kl/none.h */
 #elif  defined(KL_SYNC)
-/* begin src/utils/kl/sync.h */
 #define KL_BEFORE(s, C) if (!kl::safe(ESC C)) continue;
 #define KL_CALL(F, C, A) F<<<ESC C>>>A
 #define KL_AFTER(s)                             \
@@ -2596,12 +2308,10 @@ namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
     } while(0)
 
 namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
-/* end src/utils/kl/sync.h */
 #else
   #error KL_* is undefined
 #endif
 
-/* begin src/utils/kl/common.h */
 namespace kl {
 inline int safe0(dim3 i, dim3 j) {
     msg(i.x, i.y, i.z,   j.x, j.y, j.z);
@@ -2610,8 +2320,6 @@ inline int safe0(dim3 i, dim3 j) {
 inline int safe(dim3 i, dim3 j)                    { return safe0(i, j); }
 inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
 }
-/* end src/utils/kl/common.h */
-/* begin src/utils/kl/macro.h */
 #define ESC(...) __VA_ARGS__
 #define KL(F, C, A)                             \
     do  {                                       \
@@ -2619,12 +2327,9 @@ inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
         KL_CALL(F, C, A);                       \
         KL_AFTER(#F);                           \
     } while (0)
-/* end src/utils/kl/macro.h */
 
 /* TODO: header includes header */
-/* end src/utils/kl.h */
 #endif
-/* begin src/algo/utils/shfl.h */
 #define _I_ static __device__
 
 #if __CUDACC_VER_MAJOR__ >= 9
@@ -2658,24 +2363,18 @@ _I_ T shfl(T val, unsigned int width) {
 #endif
 
 #undef _I_
-/* end src/algo/utils/shfl.h */
-/* begin src/algo/utils/dev.h */
 #define _S_ static __device__
 #define _I_ static __device__
 
-// tag::int[]
 template <typename T>
 _I_ T warpReduceSum(T v)  // <1>
-// end::int[]
 {
     for (int offset = warpSize>>1; offset > 0; offset >>= 1)
         v += shfl_down(v, offset);
     return v;
 }
 
-// tag::int[]
 _I_ float2 warpReduceSum(float2 val)  // <2>
-// end::int[]
 {
     for (int offset = warpSize / 2; offset > 0; offset /= 2) {
         val.x += shfl_down(val.x, offset);
@@ -2684,9 +2383,7 @@ _I_ float2 warpReduceSum(float2 val)  // <2>
     return val;
 }
 
-// tag::int[]
 _I_ float3 warpReduceSum(float3 val)  // <3>
-// end::int[]
 {
     for (int offset = warpSize/2; offset > 0; offset /= 2) {
         val.x += shfl_down(val.x, offset);
@@ -2699,24 +2396,18 @@ _I_ float3 warpReduceSum(float3 val)  // <3>
 #undef _S_
 #undef _I_
 
-/* end src/algo/utils/dev.h */
 
-/* begin src/rbc/force/area_volume/imp.h */
 struct AreaVolume;
 struct Particle;
 struct int4;
 
-// tag::interface[]
 void area_volume_ini(int nv, int nt, const int4 *tt, int max_cell, AreaVolume**); // <1>
 void area_volume_fin(AreaVolume*);
 
 void area_volume_compute(AreaVolume*, int nm, const Particle*, /**/ float **av); // <2>
 void area_volume_host(AreaVolume*, /**/ float **av); // <3>
-// end::interface[]
-/* end src/rbc/force/area_volume/imp.h */
 
 namespace rbc_force_av_dev {
-/* begin src/rbc/force/area_volume/dev/main.h */
 static __device__ float3 pp2r(const Particle *pp, const int id) {
     enum {X, Y, Z};
     float3 r;
@@ -2763,9 +2454,7 @@ __global__ void main(int nt, int nv, const Particle *pp, const int4 *tri, float 
         atomicAdd(&totA_V[2 * cid + 1], a_v.y);
     }
 }
-/* end src/rbc/force/area_volume/dev/main.h */
 }
-/* begin src/rbc/force/area_volume/imp/type.h */
 struct AreaVolume {
     int nt, nv; /* number of triangles and vertices in one cell */
     int max_cell; /* max cell number */
@@ -2775,8 +2464,6 @@ struct AreaVolume {
     int nc;       /* remember the last number of cell */
     int Computed; /* was area computed? */
 };
-/* end src/rbc/force/area_volume/imp/type.h */
-/* begin src/rbc/force/area_volume/imp/main.h */
 static void assert_tri(int nt, int nv, const int4 *tri) {
     int *rank;
     int f0, f1, f2, i;
@@ -2834,8 +2521,6 @@ void area_volume_host(AreaVolume *q, /**/ float **pav) {
     cD2H(q->av_hst, q->av, 2*q->nc);
     *pav = q->av_hst;
 }
-/* end src/rbc/force/area_volume/imp/main.h */
-/* end src/rbc/force/area_volume/imp.cu */
 
 
 
@@ -2843,17 +2528,14 @@ void area_volume_host(AreaVolume *q, /**/ float **pav) {
 // Grouped editable compilation unit for RBC random-force API and implementation.
 
 
-// generated from udx.flat.cu
 #include "udx.config.cuh"
 
-/* begin src/rbc/force/rnd/api/imp.cpp */
 #include <stddef.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
 #include <curand.h>
 
-/* begin src/inc/conf.h */
 /* [k]ernel [l]aunch macros */
 #if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
     !defined(KL_SYNC)
@@ -2888,10 +2570,8 @@ void area_volume_host(AreaVolume *q, /**/ float **pav) {
 #ifndef DUMP_BASE
 #define DUMP_BASE "."
 #endif
-/* end src/inc/conf.h */
 
 
-/* begin src/utils/error.h */
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
         error_report();                                         \
@@ -2931,40 +2611,26 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-/* end src/utils/error.h */
-/* begin src/utils/imp.h */
-// tag::mem[]
 void emalloc(size_t, /**/ void**); // <1>
 void efree(void*); // <2>
 void *ememcpy(void *dest, const void *src, size_t n); // <3>
-// end::mem[]
 
-// tag::macros[]
 #define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
 #define EFREE(pdata) UC(efree(pdata))
 #define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
-// end::macros[]
 
-// tag::stdio[]
 void efopen(const char *fname, const char *mode, /**/ FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
 void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
 void efgets(char *s, int size, FILE*);
-// end::stdio[]
 
-// tag::tools[]
 bool same_str(const char *a, const char *b); // <1>
 const char* get_filename_ext(const char*);
-// end::tools[]
-/* end src/utils/imp.h */
 
-/* begin src/rbc/force/rnd/api/type.h */
 namespace rbc_api {
 typedef struct Generator_st *Generator_t;
 } /* namespace */
-/* end src/rbc/force/rnd/api/type.h */
-/* begin src/rbc/force/rnd/api/imp.h */
 namespace rnd_api {
 typedef struct Generator_st *Generator_t;
 int CreateGenerator(Generator_t *g);
@@ -2972,12 +2638,10 @@ int SetPseudoRandomGeneratorSeed(Generator_t g,  long seed);
 int DestroyGenerator(Generator_t g);
 int GenerateNormal(Generator_t g, float *outputPtr, size_t n);
 }
-/* end src/rbc/force/rnd/api/imp.h */
 
 namespace rnd_api {
 
 #if   defined(DEV_CUDA)
-/* begin src/rbc/force/rnd/api/imp/cuda.h */
 struct Generator_st { curandGenerator_t g; };
 
 static int CreateGenerator0(curandGenerator_t *g) {
@@ -3008,9 +2672,7 @@ int GenerateNormal(Generator_t s, float *outputPtr, size_t n) {
     mean = 0; std = 1;
     return curandGenerateNormal(s->g, outputPtr, n, mean, std);
 }
-/* end src/rbc/force/rnd/api/imp/cuda.h */
 #elif defined(DEV_CPU)
-/* begin src/rbc/force/rnd/api/imp/gaussrand.h */
 /* Gaussian rnd with mean = 0 and std = 1
    Knuth and due originally to Marsaglia */
 double gaussrand() {
@@ -3032,8 +2694,6 @@ double gaussrand() {
     phase = 1 - phase;
     return X;
 }
-/* end src/rbc/force/rnd/api/imp/gaussrand.h */
-/* begin src/rbc/force/rnd/api/imp/cpu.h */
 int CreateGenerator(Generator_t*) { return 0; }
 int DestroyGenerator(Generator_t) { return 0; }
 int SetPseudoRandomGeneratorSeed(Generator_t,  long seed) { srand(seed); return 0; }
@@ -3042,27 +2702,22 @@ int GenerateNormal(Generator_t, float *outputPtr, size_t n) {
     for (i = 0; i < n; i++) outputPtr[i] = gaussrand();
     return 0;
 }
-/* end src/rbc/force/rnd/api/imp/cpu.h */
 #else
   #error DEV_* is undefined
 #endif
 
 } /* namespace */
-/* end src/rbc/force/rnd/api/imp.cpp */
 
 
 
 
-// generated from udx.flat.cu
 #include "udx.config.cuh"
 
-/* begin src/rbc/force/rnd/imp.cpp */
 #include <stdlib.h>
 #include <stdio.h>
 #include <mpi.h>
 #include <curand.h>
 
-/* begin src/inc/conf.h */
 /* [k]ernel [l]aunch macros */
 #if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
     !defined(KL_SYNC)
@@ -3097,41 +2752,28 @@ int GenerateNormal(Generator_t, float *outputPtr, size_t n) {
 #ifndef DUMP_BASE
 #define DUMP_BASE "."
 #endif
-/* end src/inc/conf.h */
 
 
-/* begin src/utils/os.h */
-// tag::int[]
 void os_mkdir(const char* path); // <1>
 long os_time();                  // <2>
 void os_srand(long int seedval); // <3>
 double os_drand();               // <4>
 void os_sleep(unsigned int seconds); // <5>
 void os_malloc_stats();              // TODO
-// end::int[]
-/* end src/utils/os.h */
-/* begin src/utils/msg.h */
-// tag::int[]
 void msg_ini(int rank); // <1>
 void msg_print(const char *fmt, ...); // <2>
-// end::int[]
-/* end src/utils/msg.h */
 #ifndef UDX_FORCE_DEVICE_API_COMMON
 #define UDX_FORCE_DEVICE_API_COMMON
-/* begin src/d/api.h */
 namespace d {  /* a wrapper for device API */
 typedef int Stream_t; /* TODO: streams are not supported */
 enum {MemcpyHostToHost, MemcpyHostToDevice,
       MemcpyDeviceToHost, MemcpyDeviceToDevice,
       MemcpyDefault};
 
-// tag::more[]
 const char *emsg();
 int alloc_pinned(void **pHost, size_t size);
 int is_device_pointer(const void *ptr);
-// end::more[]
 
-// tag::api[]
 int GetSymbolAddress(void **devPtr, const void *symbol);
 int Malloc(void **p, size_t);
 int MemcpyToSymbol(const void *symbol, const void *src, size_t count, size_t offset=0, int kind=MemcpyHostToDevice);
@@ -3145,11 +2787,8 @@ int Free (void *devPtr);
 int FreeHost (void *hstPtr);
 int DeviceSynchronize (void);
 int PeekAtLastError(void);
-// end::api[]
 }
-/* end src/d/api.h */
 #endif
-/* begin src/inc/dev.h */
 /* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
 
@@ -3187,9 +2826,7 @@ int PeekAtLastError(void);
 /* [d]evice [a]synchronous set */
 #define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
 #define DzeroA(P, n)   DsetA(P, 0, n)
-/* end src/inc/dev.h */
 
-/* begin src/utils/error.h */
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
         error_report();                                         \
@@ -3229,38 +2866,25 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-/* end src/utils/error.h */
-/* begin src/utils/imp.h */
-// tag::mem[]
 void emalloc(size_t, /**/ void**); // <1>
 void efree(void*); // <2>
 void *ememcpy(void *dest, const void *src, size_t n); // <3>
-// end::mem[]
 
-// tag::macros[]
 #define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
 #define EFREE(pdata) UC(efree(pdata))
 #define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
-// end::macros[]
 
-// tag::stdio[]
 void efopen(const char *fname, const char *mode, /**/ FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
 void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
 void efgets(char *s, int size, FILE*);
-// end::stdio[]
 
-// tag::tools[]
 bool same_str(const char *a, const char *b); // <1>
 const char* get_filename_ext(const char*);
-// end::tools[]
-/* end src/utils/imp.h */
-/* begin src/utils/cc.h */
 /* [c]uda [c]heck macros */
 
 #if   defined(CC_SYNC)
-/* begin src/utils/cc/sync.h */
 /* Aggressive [sync]ronization */
 #define CC(ans)                                             \
     do {                                                    \
@@ -3268,34 +2892,25 @@ const char* get_filename_ext(const char*);
         cc::check((ans), __FILE__, __LINE__);               \
         d::DeviceSynchronize();                             \
     } while (0)
-/* end src/utils/cc/sync.h */
 #elif defined(CC_RELEASE)
-/* begin src/utils/cc/release.h */
 /* [c]cuda [c]heck */
 #define CC(ans)                                             \
     do { cc::check((ans), __FILE__, __LINE__);} while (0)
-/* end src/utils/cc/release.h */
 #else
   #error CC_* is undefined
 #endif
 
-/* begin src/utils/cc/common.h */
 namespace cc {
 void check(int rc, const char *file, int line);
 }
 
 
-/* end src/utils/cc/common.h */
 
 /* TODO: header includes header */
-/* end src/utils/cc.h */
 
-/* begin src/rbc/force/rnd/api/type.h */
 namespace rbc_api {
 typedef struct Generator_st *Generator_t;
 } /* namespace */
-/* end src/rbc/force/rnd/api/type.h */
-/* begin src/rbc/force/rnd/api/imp.h */
 namespace rnd_api {
 typedef struct Generator_st *Generator_t;
 int CreateGenerator(Generator_t *g);
@@ -3303,44 +2918,30 @@ int SetPseudoRandomGeneratorSeed(Generator_t g,  long seed);
 int DestroyGenerator(Generator_t g);
 int GenerateNormal(Generator_t g, float *outputPtr, size_t n);
 }
-/* end src/rbc/force/rnd/api/imp.h */
-/* begin src/rbc/force/rnd/imp.h */
 struct RbcRnd;
 
-// tag::enum[]
 #ifndef UDX_RBC_FORCE_SEED_TIME
 #define UDX_RBC_FORCE_SEED_TIME
 enum {SEED_TIME = -1}; /* magic seed: ini from "time" */
 #endif
-// end::enum[]
 
-// tag::mem[]
 void rbc_rnd_ini(int n, long seed, RbcRnd**);
 void rbc_rnd_fin(RbcRnd*);
-// end::mem[]
 
-// tag::int[]
 void rbc_rnd_gen(RbcRnd*, int n, /**/ float**); // <1>
 float rbc_rnd_get_hst(const RbcRnd*, int i);    // <2>
-// end::int[]
-/* end src/rbc/force/rnd/imp.h */
 
-/* begin src/rbc/force/rnd/imp/type.h */
 struct RbcRnd { /* data */
     float *r;
     rnd_api::Generator_t g;
     int max;
 };
-/* end src/rbc/force/rnd/imp/type.h */
-/* begin src/rbc/force/rnd/imp/cu.h */
 #define CU(x)                                                           \
     do {                                                                \
         int _curc = (x);                                                \
         if ( _curc != 0)                                                \
             ERR("curand error status: %d", _curc);                      \
     } while(0)
-/* end src/rbc/force/rnd/imp/cu.h */
-/* begin src/rbc/force/rnd/imp/seed.h */
 static long decode_seed_time() {
     long t;
     t = os_time();
@@ -3351,8 +2952,6 @@ static int decode_seed(long seed) {
     if (seed == SEED_TIME) return decode_seed_time();
     else return seed;
 }
-/* end src/rbc/force/rnd/imp/seed.h */
-/* begin src/rbc/force/rnd/imp/main.h */
 static void ini0(RbcRnd *d, int n, long seed) {
     Dalloc(&d->r, n);
     CU(rnd_api::CreateGenerator(&d->g));
@@ -3395,8 +2994,6 @@ float rbc_rnd_get_hst(const RbcRnd *d, int i) {
     cD2H(&x, &r[i], 1);
     return x;
 }
-/* end src/rbc/force/rnd/imp/main.h */
-/* end src/rbc/force/rnd/imp.cpp */
 
 
 
@@ -3406,15 +3003,12 @@ float rbc_rnd_get_hst(const RbcRnd *d, int i) {
 // Grouped editable compilation unit for RBC force interfaces and implementation.
 
 
-// generated from udx.flat.cu
 #include "udx.config.cuh"
 
-/* begin src/rbc/force/bending/imp.cpp */
 #include <stdio.h>
 #include <assert.h>
 #include <stddef.h>
 
-/* begin src/inc/conf.h */
 /* [k]ernel [l]aunch macros */
 #if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
     !defined(KL_SYNC)
@@ -3449,15 +3043,11 @@ float rbc_rnd_get_hst(const RbcRnd *d, int i) {
 #ifndef DUMP_BASE
 #define DUMP_BASE "."
 #endif
-/* end src/inc/conf.h */
-/* begin src/inc/macro.h */
 #define CONTAINER_OF(ptr, type, member) \
     ((type*)((char*)(ptr) - offsetof(type, member)))
-/* end src/inc/macro.h */
 
 #ifndef UDX_FORCE_DEF_COMMON
 #define UDX_FORCE_DEF_COMMON
-/* begin src/inc/def.h */
 /* solvent colors */
 #define XMACRO_COLOR(_)                         \
     _(BLUE)                                     \
@@ -3508,10 +3098,8 @@ enum {
 
 /* for the spring forces r = min(lmax*RBC_SPRING_CAP, r) */
 #define RBC_SPRING_CAP (0.99)
-/* end src/inc/def.h */
 #endif
 
-/* begin src/utils/error.h */
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
         error_report();                                         \
@@ -3551,93 +3139,59 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-/* end src/utils/error.h */
-/* begin src/utils/msg.h */
-// tag::int[]
 void msg_ini(int rank); // <1>
 void msg_print(const char *fmt, ...); // <2>
-// end::int[]
-/* end src/utils/msg.h */
-/* begin src/utils/imp.h */
-// tag::mem[]
 void emalloc(size_t, /**/ void**); // <1>
 void efree(void*); // <2>
 void *ememcpy(void *dest, const void *src, size_t n); // <3>
-// end::mem[]
 
-// tag::macros[]
 #define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
 #define EFREE(pdata) UC(efree(pdata))
 #define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
-// end::macros[]
 
-// tag::stdio[]
 void efopen(const char *fname, const char *mode, /**/ FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
 void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
 void efgets(char *s, int size, FILE*);
-// end::stdio[]
 
-// tag::tools[]
 bool same_str(const char *a, const char *b); // <1>
 const char* get_filename_ext(const char*);
-// end::tools[]
-/* end src/utils/imp.h */
 
-/* begin src/rbc/force/bending/kantor/imp.h */
 struct RbcParams;
 struct Kantor;
 struct Force;
 struct MeshRead;
 struct RbcQuants;
 
-// tag::mem[]
 void kantor_ini(const MeshRead*, Kantor**);
 void kantor_fin(Kantor*);
-// end::mem[]
 
-// tag::apply[]
 void kantor_apply(Kantor*, const RbcParams*, const RbcQuants*, /**/ Force*); // <1>
-// end::apply[]
-/* end src/rbc/force/bending/kantor/imp.h */
-/* begin src/rbc/force/bending/juelicher/imp.h */
 struct RbcParams;
 struct Juelicher;
 struct Force;
 struct MeshRead;
 struct RbcQuants;
 
-// tag::mem[]
 void juelicher_ini(const MeshRead*, Juelicher**);
 void juelicher_fin(Juelicher*);
-// end::mem[]
 
-// tag::apply[]
 void juelicher_apply(Juelicher*, const RbcParams*, const RbcQuants*, /**/ Force*); // <1>
-// end::apply[]
-/* end src/rbc/force/bending/juelicher/imp.h */
 
-/* begin src/rbc/force/bending/imp.h */
 struct RbcParams;
 struct Bending;
 struct Force;
 struct MeshRead;
 struct RbcQuants;
 
-// tag::mem[]
 void bending_kantor_ini(const MeshRead*, Bending**);
 void bending_juelicher_ini(const MeshRead*, Bending**);
 void bending_none_ini(const MeshRead*, Bending**);
 
 void bending_fin(Bending*);
-// end::mem[]
 
-// tag::apply[]
 void bending_apply(Bending*, const RbcParams*, const RbcQuants*, /**/ Force*); // <1>
-// end::apply[]
-/* end src/rbc/force/bending/imp.h */
-/* begin src/rbc/force/bending/imp/main.h */
 struct Bending {
     struct Bending_vtable *vtable;
 };
@@ -3710,20 +3264,15 @@ void bending_none_ini(const MeshRead*, /**/ Bending **pq) {
     q->bending.vtable = &BendingNone_vtable;
     *pq = &q->bending;
 }
-/* end src/rbc/force/bending/imp/main.h */
-/* end src/rbc/force/bending/imp.cpp */
 
 
 
 
-// generated from udx.flat.cu
 #include "udx.config.cuh"
 
-/* begin src/rbc/force/conf.cpp */
 #include <stdio.h>
 #include <string.h>
 
-/* begin src/utils/error.h */
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
         error_report();                                         \
@@ -3763,22 +3312,15 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-/* end src/utils/error.h */
-/* begin src/conf/imp.h */
 struct Config;
 struct float3;
 struct int3;
 
-// tag::mem[]
 void conf_ini(/**/ Config **c);
 void conf_fin(/**/ Config *c);
-// end::mem[]
 
-// tag::ini[]
 void conf_read(int argc, char **argv, /**/ Config *cfg);
-// end::ini[]
 
-// tag::lookup[]
 void conf_lookup_int(const Config *c, const char *desc, int *a);
 void conf_lookup_float(const Config *c, const char *desc, float *a);
 void conf_lookup_bool(const Config *c, const char *desc, int *a);
@@ -3788,9 +3330,7 @@ void conf_lookup_int3(const Config *c, const char *desc, int3 *a);
 void conf_lookup_vfloat(const Config *c, const char *desc, int maxn, int *n, float a[]);
 void conf_lookup_float3(const Config *c, const char *desc, float3 *a);
 void conf_lookup_vstring(const Config *c, const char *desc, int maxn, int *n, const char **ss);
-// end::lookup[]
 
-// tag::ns[]
 void conf_lookup_int_ns(const Config *c, const char *ns, const char *desc, int *a);
 void conf_lookup_float_ns(const Config *c, const char *ns, const char *desc, float *a);
 void conf_lookup_bool_ns(const Config *c, const char *ns, const char *desc, int *a);
@@ -3800,9 +3340,7 @@ void conf_lookup_int3_ns(const Config *c, const char *ns, const char *desc, int3
 void conf_lookup_vfloat_ns(const Config *c, const char *ns, const char *desc, int maxn, int *n, float a[]);
 void conf_lookup_float3_ns(const Config *c, const char *ns, const char *desc, float3 *a);
 void conf_lookup_vstring_ns(const Config *c, const char *ns, const char *d, int maxn, int *n, const char **ss);
-// end::ns[]
 
-// tag::opt[]
 bool conf_opt_int(const Config *c, const char *desc, int *a);
 bool conf_opt_float(const Config *c, const char *desc, float *a);
 bool conf_opt_bool(const Config *c, const char *desc, int *a);
@@ -3812,9 +3350,7 @@ bool conf_opt_int3(const Config *c, const char *desc, int3 *a);
 bool conf_opt_vfloat(const Config *c, const char *desc, int maxn, int *n, float a[]);
 bool conf_opt_float3(const Config *c, const char *desc, float3 *a);
 bool conf_opt_vstring(const Config *c, const char *desc, int maxn, int *n, const char **ss);
-// end::opt[]
 
-// tag::set[]
 void conf_set_int(const char *desc, int a, Config *c);
 void conf_set_vint(const char *desc, int nelem, const int a[], Config *cfg);
 void conf_set_int3(const char *desc, int3 a, Config *cfg);
@@ -3823,18 +3359,12 @@ void conf_set_vfloat(const char *desc, int nelem, const float a[], Config *cfg);
 void conf_set_float3(const char *desc, float3 a, Config *cfg);
 void conf_set_bool(const char *desc, int a, Config *cfg);
 void conf_set_string(const char *desc, const char *a, Config *cfg);
-// end::set[]
 
-// tag::dump[]
 void conf_write_exe(const Config *cfg, FILE *stream);     // <1>
 void conf_write_history(const Config *cfg, FILE *stream); // <2>
-// end::dump[]
-/* end src/conf/imp.h */
-/* begin src/io/mesh_read/imp.h */
 struct int4;
 struct MeshRead;
 
-// tag::interface[]
 void mesh_read_ini_off(const char *path, MeshRead**);
 void mesh_read_ini_ply(const char *path, MeshRead**);
 void mesh_read_fin(MeshRead*);
@@ -3847,10 +3377,7 @@ int mesh_read_get_md(const MeshRead*);
 const int4  *mesh_read_get_tri(const MeshRead*);
 const float *mesh_read_get_vert(const MeshRead*);
 const int4  *mesh_read_get_dih(MeshRead*);
-// end::interface[]
-/* end src/io/mesh_read/imp.h */
 
-/* begin src/rbc/force/imp.h */
 struct RbcParams;
 struct RbcForce;
 struct Force;
@@ -3858,29 +3385,20 @@ struct Config;
 struct MeshRead;
 struct RbcQuants;
 
-// tag::mem[]
 void rbc_force_ini(const MeshRead*, RbcForce**);
 void rbc_force_fin(RbcForce*);
-// end::mem[]
 
-// tag::set[]
 void rbc_force_set_stressful(int nt, float totArea, /**/ RbcForce*); // <1>
 void rbc_force_set_stressfree(const char *fname, /**/ RbcForce*);    // <2>
 
 void rbc_force_set_rnd0(RbcForce*);           // <3>
 void rbc_force_set_rnd1(int seed, RbcForce*); // <4>
 void rbc_force_set_bending(const MeshRead*, const char*, RbcForce*);
-// end::set[]
 
-// tag::cnf[]
 void rbc_force_set_conf(const MeshRead*, const Config *cfg, const char *name, RbcForce*);
-// end::cnf[]
 
-// tag::apply[]
 void rbc_force_apply(RbcForce*, const RbcParams*, float dt, const RbcQuants*, /**/ Force*); // <1>
 void rbc_force_stat(/**/ float *pArea, float *pVolume); // <2>
-// end::apply[]
-/* end src/rbc/force/imp.h */
 
 void rbc_force_set_conf(const MeshRead *cell, const Config *cfg, const char *name, RbcForce *q) {
     int stress_free, rnd;
@@ -3912,15 +3430,12 @@ void rbc_force_set_conf(const MeshRead *cell, const Config *cfg, const char *nam
         UC(rbc_force_set_rnd0(q));
     }
 }
-/* end src/rbc/force/conf.cpp */
 
 
 
-/* begin src/rbc/force/imp.cu */
 #include <stdio.h>
 #include <assert.h>
 
-/* begin src/inc/conf.h */
 /* [k]ernel [l]aunch macros */
 #if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
     !defined(KL_SYNC)
@@ -3955,12 +3470,10 @@ void rbc_force_set_conf(const MeshRead *cell, const Config *cfg, const char *nam
 #ifndef DUMP_BASE
 #define DUMP_BASE "."
 #endif
-/* end src/inc/conf.h */
 
 
 #ifndef UDX_FORCE_DEF_COMMON
 #define UDX_FORCE_DEF_COMMON
-/* begin src/inc/def.h */
 /* solvent colors */
 #define XMACRO_COLOR(_)                         \
     _(BLUE)                                     \
@@ -4011,9 +3524,7 @@ enum {
 
 /* for the spring forces r = min(lmax*RBC_SPRING_CAP, r) */
 #define RBC_SPRING_CAP (0.99)
-/* end src/inc/def.h */
 #endif
-/* begin src/inc/type.h */
 #ifndef UDX_FORCE_TYPE_COMMON
 #define UDX_FORCE_TYPE_COMMON
 template <typename T, int N>
@@ -4068,9 +3579,7 @@ struct FoWrap {
     int n;
     Force *ff;
 };
-/* end src/inc/type.h */
 #endif
-/* begin src/inc/dev.h */
 /* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
 
@@ -4108,8 +3617,6 @@ struct FoWrap {
 /* [d]evice [a]synchronous set */
 #define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
 #define DzeroA(P, n)   DsetA(P, 0, n)
-/* end src/inc/dev.h */
-/* begin src/math/dev.h */
 #ifndef UDX_FORCE_MATH_COMMON
 #define UDX_FORCE_MATH_COMMON
 /* use templates here because we might have mixed float/double */
@@ -4170,9 +3677,7 @@ _HD_ void axpy(const T1 a, const T2 *x, /*io*/ T3 *y) {
     y->y += a * x->y;
     y->z += a * x->z;
 }
-/* end src/math/dev.h */
 #endif
-/* begin src/math/tri/dev.h */
 #ifdef TRI_HOST
   #define _I_
   #define _S_ static
@@ -4301,11 +3806,9 @@ END
 #undef _S_
 #undef BEGIN
 #undef END
-/* end src/math/tri/dev.h */
 
 
 
-/* begin src/utils/error.h */
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
         error_report();                                         \
@@ -4345,50 +3848,31 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-/* end src/utils/error.h */
-/* begin src/utils/msg.h */
-// tag::int[]
 void msg_ini(int rank); // <1>
 void msg_print(const char *fmt, ...); // <2>
-// end::int[]
-/* end src/utils/msg.h */
-/* begin src/utils/imp.h */
-// tag::mem[]
 void emalloc(size_t, /**/ void**); // <1>
 void efree(void*); // <2>
 void *ememcpy(void *dest, const void *src, size_t n); // <3>
-// end::mem[]
 
-// tag::macros[]
 #define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
 #define EFREE(pdata) UC(efree(pdata))
 #define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
-// end::macros[]
 
-// tag::stdio[]
 void efopen(const char *fname, const char *mode, /**/ FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
 void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
 void efgets(char *s, int size, FILE*);
-// end::stdio[]
 
-// tag::tools[]
 bool same_str(const char *a, const char *b); // <1>
 const char* get_filename_ext(const char*);
-// end::tools[]
-/* end src/utils/imp.h */
 
-/* begin src/d/q.h */
 /* function and variable type [q]ualifiers */
 
 #if   defined(DEV_CUDA)
-/* begin src/d/cuda/q.h */
 /* B.1. Function Type Qualifiers */
 /* B.2. Variable Type Qualifiers */
-/* end src/d/cuda/q.h */
 #elif defined(DEV_CPU)
-/* begin src/d/cpu/q.h */
 /* B.1. Function Type Qualifiers */
 #ifdef __device__
   #undef  __device__
@@ -4436,12 +3920,9 @@ const char* get_filename_ext(const char*);
   #undef  __restrict__
   #define __restrict__
 #endif
-/* end src/d/cpu/q.h */
 #else
   #error DEV_* is undefined
 #endif
-/* end src/d/q.h */
-/* begin src/d/api.h */
 #ifndef UDX_FORCE_DEVICE_API_COMMON
 #define UDX_FORCE_DEVICE_API_COMMON
 namespace d {  /* a wrapper for device API */
@@ -4450,13 +3931,10 @@ enum {MemcpyHostToHost, MemcpyHostToDevice,
       MemcpyDeviceToHost, MemcpyDeviceToDevice,
       MemcpyDefault};
 
-// tag::more[]
 const char *emsg();
 int alloc_pinned(void **pHost, size_t size);
 int is_device_pointer(const void *ptr);
-// end::more[]
 
-// tag::api[]
 int GetSymbolAddress(void **devPtr, const void *symbol);
 int Malloc(void **p, size_t);
 int MemcpyToSymbol(const void *symbol, const void *src, size_t count, size_t offset=0, int kind=MemcpyHostToDevice);
@@ -4470,13 +3948,9 @@ int Free (void *devPtr);
 int FreeHost (void *hstPtr);
 int DeviceSynchronize (void);
 int PeekAtLastError(void);
-// end::api[]
 }
-/* end src/d/api.h */
  #endif
-/* begin src/d/ker.h */
 #if   defined(DEV_CUDA)
-/* begin src/d/cuda/ker.h */
 #define  Ifetch(t, i)  tex1Dfetch(t, i)
 #define F4fetch(t, i)  tex1Dfetch(t, i)
 #define F2fetch(t, i)  tex1Dfetch(t, i)
@@ -4484,9 +3958,7 @@ int PeekAtLastError(void);
 #define Tfetch(T, t, i) tex1Dfetch<T>(t, i)
 
 #define Ttex3D(T, to, i, j, k) tex3D<T>(to, i, j, k);
-/* end src/d/cuda/ker.h */
 #elif defined(DEV_CPU)
-/* begin src/d/cpu/ker.h */
 #define atomicAdd(...) (0)
 
 #define atomicExch(...)
@@ -4510,8 +3982,6 @@ int PeekAtLastError(void);
 #define Tfetch(T, t, i) (T{})
 
 #define Ttex3D(T, to, i, j, k) (T{})
-/* end src/d/cpu/ker.h */
-/* begin src/d/cpu/wrap.h */
 namespace d {
 static uint3 threadIdx, blockIdx, gridDim;
 static dim3  blockDim;
@@ -4523,16 +3993,12 @@ static int   warpSize = 1;
 #define gridDim   d::gridDim
 #define blockIdx  d::blockIdx
 #define warpSize  d::warpSize
-/* end src/d/cpu/wrap.h */
 #else
   #error DEV_* is undefined
 #endif
-/* end src/d/ker.h */
-/* begin src/utils/cc.h */
 /* [c]uda [c]heck macros */
 
 #if   defined(CC_SYNC)
-/* begin src/utils/cc/sync.h */
 /* Aggressive [sync]ronization */
 #define CC(ans)                                             \
     do {                                                    \
@@ -4540,50 +4006,38 @@ static int   warpSize = 1;
         cc::check((ans), __FILE__, __LINE__);               \
         d::DeviceSynchronize();                             \
     } while (0)
-/* end src/utils/cc/sync.h */
 #elif defined(CC_RELEASE)
-/* begin src/utils/cc/release.h */
 /* [c]cuda [c]heck */
 #define CC(ans)                                             \
     do { cc::check((ans), __FILE__, __LINE__);} while (0)
-/* end src/utils/cc/release.h */
 #else
   #error CC_* is undefined
 #endif
 
-/* begin src/utils/cc/common.h */
 namespace cc {
 void check(int rc, const char *file, int line);
 }
 
 
-/* end src/utils/cc/common.h */
 
 /* TODO: header includes header */
-/* end src/utils/cc.h */
-/* begin src/utils/kl.h */
 #ifndef UDX_FORCE_KL_COMMON
 #define UDX_FORCE_KL_COMMON
 /* [k]ernel [l]aunch macros */
 
 #if    defined(KL_RELEASE)
-/* begin src/utils/kl/release.h */
 #define KL_BEFORE(s, C) if (!kl::safe(ESC C)) continue;
 #define KL_CALL(F, C, A) F<<<ESC C>>>A
 #define KL_AFTER(s)
 
 namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
-/* end src/utils/kl/release.h */
 #elif  defined(KL_NONE)
-/* begin src/utils/kl/none.h */
 #define KL_BEFORE(s, C)
 #define KL_CALL(F, C, A)
 #define KL_AFTER(s)
 
 namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
-/* end src/utils/kl/none.h */
 #elif  defined(KL_SYNC)
-/* begin src/utils/kl/sync.h */
 #define KL_BEFORE(s, C) if (!kl::safe(ESC C)) continue;
 #define KL_CALL(F, C, A) F<<<ESC C>>>A
 #define KL_AFTER(s)                             \
@@ -4593,12 +4047,10 @@ namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
     } while(0)
 
 namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
-/* end src/utils/kl/sync.h */
 #else
   #error KL_* is undefined
 #endif
 
-/* begin src/utils/kl/common.h */
 namespace kl {
 inline int safe0(dim3 i, dim3 j) {
     msg(i.x, i.y, i.z,   j.x, j.y, j.z);
@@ -4607,8 +4059,6 @@ inline int safe0(dim3 i, dim3 j) {
 inline int safe(dim3 i, dim3 j)                    { return safe0(i, j); }
 inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
 }
-/* end src/utils/kl/common.h */
-/* begin src/utils/kl/macro.h */
 #define ESC(...) __VA_ARGS__
 #define KL(F, C, A)                             \
     do  {                                       \
@@ -4616,13 +4066,10 @@ inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
         KL_CALL(F, C, A);                       \
         KL_AFTER(#F);                           \
     } while (0)
-/* end src/utils/kl/macro.h */
 
 /* TODO: header includes header */
-/* end src/utils/kl.h */
 #endif
 
-/* begin src/rbc/params/imp.h */
 struct Config;
 struct RbcParams;
 struct RbcParams_v {
@@ -4633,38 +4080,25 @@ struct RbcParams_v {
     float totArea, totVolume;
 };
 
-// tag::mem[]
 void rbc_params_ini(RbcParams **);
 void rbc_params_fin(RbcParams *);
-// end::mem[]
 
-// tag::set[]
 void rbc_params_set_fluct(float gammaC, float gammaT, float kBT, RbcParams *);
 void rbc_params_set_bending(float kb, float phi, RbcParams *);
 void rbc_params_set_spring(float ks, float x0, float mpow , RbcParams *);
 void rbc_params_set_area_volume(float ka, float kd, float kv, RbcParams *);
 void rbc_params_set_tot_area_volume(float totArea, float totVolume, RbcParams *);
-// end::set[]
 
-// tag::get[]
 double rbc_params_get_tot_volume(const RbcParams *);
-// end::get[]
 
-// tag::cnf[]
 void rbc_params_set_conf(const Config *c, const char *name, RbcParams *);
-// end::cnf[]
 
-// tag::view[]
 RbcParams_v rbc_params_get_view(const RbcParams *);
-// end::view[]
-/* end src/rbc/params/imp.h */
-/* begin src/rbc/adj/imp.h */
 struct Adj;
 struct Adj_v;
 struct AdjMap;
 struct int4;
 
-// tag::interface[]
 void adj_ini(int md, int nt, int nv, const int4 *tt, /**/ Adj**);
 void adj_fin(Adj*);
 int  adj_get_map(int i, const Adj*, /**/ AdjMap *m);
@@ -4673,73 +4107,49 @@ void adj_get_anti(const Adj*, /**/ int *anti);
 
 void adj_view_ini(const Adj*, Adj_v**);
 void adj_view_fin(Adj_v*);
-// end::interface[]
-/* end src/rbc/adj/imp.h */
-/* begin src/rbc/shape/imp.h */
 struct RbcShape;
 struct MeshRead;
 struct Adj;
 
 /* rr: vertices: x0 y0 z0   x1 y1 z1 ... */
 
-// tag::mem[]
 void rbc_shape_ini(const Adj*, const float *rr, /**/ RbcShape**);
 void rbc_shape_fin(/**/ RbcShape*);
-// end::mem[]
 
-// tag::int[]
 void rbc_shape_edg (RbcShape*, /**/ float**); // <1>
 void rbc_shape_area(RbcShape*, /**/ float**); // <2>
 
 void rbc_shape_total_area(RbcShape*, /**/ float*);    // <3>
 void rbc_shape_total_volume(RbcShape*, /**/ float*);  // <4>
-// end::int[]
-/* end src/rbc/shape/imp.h */
-/* begin src/rbc/force/bending/imp.h */
 struct RbcParams;
 struct Bending;
 struct Force;
 struct MeshRead;
 struct RbcQuants;
 
-// tag::mem[]
 void bending_kantor_ini(const MeshRead*, Bending**);
 void bending_juelicher_ini(const MeshRead*, Bending**);
 void bending_none_ini(const MeshRead*, Bending**);
 
 void bending_fin(Bending*);
-// end::mem[]
 
-// tag::apply[]
 void bending_apply(Bending*, const RbcParams*, const RbcQuants*, /**/ Force*); // <1>
-// end::apply[]
-/* end src/rbc/force/bending/imp.h */
 
-/* begin src/rbc/force/rnd/imp.h */
 struct RbcRnd;
 
-// tag::enum[]
 #ifndef UDX_RBC_FORCE_SEED_TIME
 #define UDX_RBC_FORCE_SEED_TIME
 enum {SEED_TIME = -1}; /* magic seed: ini from "time" */
 #endif
-// end::enum[]
 
-// tag::mem[]
 void rbc_rnd_ini(int n, long seed, RbcRnd**);
 void rbc_rnd_fin(RbcRnd*);
-// end::mem[]
 
-// tag::int[]
 void rbc_rnd_gen(RbcRnd*, int n, /**/ float**); // <1>
 float rbc_rnd_get_hst(const RbcRnd*, int i);    // <2>
-// end::int[]
-/* end src/rbc/force/rnd/imp.h */
-/* begin src/rbc/type.h */
 struct AreaVolume;
 struct Particle;
 
-// tag::quants[]
 struct RbcQuants {
     int n, nc;               /* number of particles, cells                */
     int nt, nv;              /* number of triangles and vertices per mesh */
@@ -4749,27 +4159,18 @@ struct RbcQuants {
     int *ii;                 /* global ids on host                        */
     AreaVolume *area_volume; /* to compute area and volume */
 };
-// end::quants[]
 
-/* end src/rbc/type.h */
 
-/* begin src/rbc/adj/type/common.h */
-// tag::interface[]
 struct AdjMap {
     int i0, i1, i2, i3, i4;
     int rbc;
 };
-// end::interface[]
-/* end src/rbc/adj/type/common.h */
-/* begin src/rbc/adj/type/dev.h */
 struct Adj_v {
     int *adj0;
     int *adj1;
     int nv, md;
 };
 
-/* end src/rbc/adj/type/dev.h */
-/* begin src/rbc/adj/dev.h */
 static __device__ int fetch(const int *a, int i) { return a[i]; }
 static __device__ int adj_get_map0(int md, int nv, int i, const int *adj0, const int *adj1, /**/ AdjMap *m) {
     int i0, i1, i2, i3, i4;
@@ -4802,9 +4203,7 @@ static __device__ int adj_get_map0(int md, int nv, int i, const int *adj0, const
     return 1;
 }
 
-// tag::interface[]
 static __device__ int adj_get_map(int i, Adj_v *adj, /**/ AdjMap *m) {
-// end::interface[]
     int md, nv;
     md = adj->md;
     nv = adj->nv;
@@ -4812,23 +4211,17 @@ static __device__ int adj_get_map(int i, Adj_v *adj, /**/ AdjMap *m) {
     const int *adj1 = adj->adj1;
     return adj_get_map0(md, nv, i, adj0, adj1, m);
 }
-/* end src/rbc/adj/dev.h */
-/* begin src/rbc/force/area_volume/imp.h */
 struct AreaVolume;
 struct Particle;
 struct int4;
 
-// tag::interface[]
 void area_volume_ini(int nv, int nt, const int4 *tt, int max_cell, AreaVolume**); // <1>
 void area_volume_fin(AreaVolume*);
 
 void area_volume_compute(AreaVolume*, int nm, const Particle*, /**/ float **av); // <2>
 void area_volume_host(AreaVolume*, /**/ float **av); // <3>
-// end::interface[]
-/* end src/rbc/force/area_volume/imp.h */
 
 
-/* begin src/rbc/force/imp/type.h */
 enum {
     RBC_SFUL,
     RBC_SFREE
@@ -4877,15 +4270,11 @@ struct RbcForce {
     int rtype;
     RndInfo rinfo;
 };
-/* end src/rbc/force/imp/type.h */
 
 namespace rbc_force_dev {
-/* begin src/rbc/force/dev/type.h */
 struct StressInfo { double l0, a0; };
 struct Rnd0Info {};
 struct Rnd1Info { double r; };
-/* end src/rbc/force/dev/type.h */
-/* begin src/rbc/force/dev/fetch.h */
 static __device__ StressInfo fetch_stress_info(int, StressFul_v sv) {
     StressInfo si;
     si.l0 = sv.l0;
@@ -4914,8 +4303,6 @@ static __device__ Rnd1Info fetch_rnd_info(int i0, int j, Rnd1_v rv) {
     ri.r = rv.rr[j];
     return ri;
 }
-/* end src/rbc/force/dev/fetch.h */
-/* begin src/rbc/force/dev/common.h */
 static __device__ double3 fvolume(const RbcParams_v *par, double3 r2, double3 r3, double v0, double v) {
     double f0;
     double3 f;
@@ -5024,8 +4411,6 @@ static __device__ double3 frnd(double dt, const RbcParams_v *par, double3 r1, do
     scal(f0/r, /*io*/ &dr);
     return dr;
 }
-/* end src/rbc/force/dev/common.h */
-/* begin src/rbc/force/dev/main.h */
 struct Part { double3 r, v; };
 typedef double3 Pos;
 
@@ -5103,10 +4488,8 @@ __global__ void force(double dt,
     atomicAdd(&ff[3 * pid + 1], f[Y]);
     atomicAdd(&ff[3 * pid + 2], f[Z]);
 }
-/* end src/rbc/force/dev/main.h */
 }
 
-/* begin src/rbc/force/imp/main.h */
 static bool is_stress_free(const RbcForce *f) {
     return f->stype == RBC_SFREE;
 }
@@ -5237,8 +4620,6 @@ void rbc_force_set_bending(const MeshRead *cell, const char *type, RbcForce *q) 
         ERR("unknown bending type '%s'", type);
     msg_print("bending: %s", type);
 }
-/* end src/rbc/force/imp/main.h */
-/* begin src/rbc/force/imp/forces.h */
 static void get_stress_view(const RbcForce *f, /**/ StressFul_v *v) {
     *v = f->sinfo.sful;
 }
@@ -5307,13 +4688,9 @@ void rbc_force_apply(RbcForce *t, const RbcParams *par, float dt, const RbcQuant
                      t->adj_v, t, si, av, /**/ ff);
     }
 }
-/* end src/rbc/force/imp/forces.h */
-/* begin src/rbc/force/imp/stat.h */
 void rbc_force_stat(float *pArea, float *pVolume) {
     *pArea = 1.0; *pVolume = 1.0; /* TODO */
 }
-/* end src/rbc/force/imp/stat.h */
-/* end src/rbc/force/imp.cu */
 
 
 
@@ -5339,14 +4716,11 @@ int he_hdg_edg(He *, int);
 // Grouped editable compilation unit for the Juelicher and Kantor bending forces.
 
 
-// generated from udx.flat.cu
 #include "udx.config.cuh"
 
-/* begin src/rbc/force/bending/juelicher/imp.cu */
 #include <stdio.h>
 #include <assert.h>
 
-/* begin src/inc/conf.h */
 /* [k]ernel [l]aunch macros */
 #if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
     !defined(KL_SYNC)
@@ -5381,13 +4755,11 @@ int he_hdg_edg(He *, int);
 #ifndef DUMP_BASE
 #define DUMP_BASE "."
 #endif
-/* end src/inc/conf.h */
 
 
 /* shared generated definitions used by both bending implementations */
 #ifndef UDX_RBC_BENDING_COMMON
 #define UDX_RBC_BENDING_COMMON
-/* begin src/inc/def.h */
 /* solvent colors */
 #define XMACRO_COLOR(_)                         \
     _(BLUE)                                     \
@@ -5438,8 +4810,6 @@ enum {
 
 /* for the spring forces r = min(lmax*RBC_SPRING_CAP, r) */
 #define RBC_SPRING_CAP (0.99)
-/* end src/inc/def.h */
-/* begin src/inc/type.h */
 template <typename T, int N>
 struct Sarray { /* [s]tatic array */
     T d[N];
@@ -5492,8 +4862,6 @@ struct FoWrap {
     int n;
     Force *ff;
 };
-/* end src/inc/type.h */
-/* begin src/inc/dev.h */
 /* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
 
@@ -5531,8 +4899,6 @@ struct FoWrap {
 /* [d]evice [a]synchronous set */
 #define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
 #define DzeroA(P, n)   DsetA(P, 0, n)
-/* end src/inc/dev.h */
-/* begin src/math/dev.h */
 /* use templates here because we might have mixed float/double */
 
 #define _HD_ __host__ __device__
@@ -5591,8 +4957,6 @@ _HD_ void axpy(const T1 a, const T2 *x, /*io*/ T3 *y) {
     y->y += a * x->y;
     y->z += a * x->z;
 }
-/* end src/math/dev.h */
-/* begin src/math/tri/dev.h */
 #ifdef TRI_HOST
   #define _I_
   #define _S_ static
@@ -5721,9 +5085,7 @@ END
 #undef _S_
 #undef BEGIN
 #undef END
-/* end src/math/tri/dev.h */
 
-/* begin src/algo/utils/shfl.h */
 #define _I_ static __device__
 
 #if __CUDACC_VER_MAJOR__ >= 9
@@ -5757,24 +5119,18 @@ _I_ T shfl(T val, unsigned int width) {
 #endif
 
 #undef _I_
-/* end src/algo/utils/shfl.h */
-/* begin src/algo/utils/dev.h */
 #define _S_ static __device__
 #define _I_ static __device__
 
-// tag::int[]
 template <typename T>
 _I_ T warpReduceSum(T v)  // <1>
-// end::int[]
 {
     for (int offset = warpSize>>1; offset > 0; offset >>= 1)
         v += shfl_down(v, offset);
     return v;
 }
 
-// tag::int[]
 _I_ float2 warpReduceSum(float2 val)  // <2>
-// end::int[]
 {
     for (int offset = warpSize / 2; offset > 0; offset /= 2) {
         val.x += shfl_down(val.x, offset);
@@ -5783,9 +5139,7 @@ _I_ float2 warpReduceSum(float2 val)  // <2>
     return val;
 }
 
-// tag::int[]
 _I_ float3 warpReduceSum(float3 val)  // <3>
-// end::int[]
 {
     for (int offset = warpSize/2; offset > 0; offset /= 2) {
         val.x += shfl_down(val.x, offset);
@@ -5798,13 +5152,10 @@ _I_ float3 warpReduceSum(float3 val)  // <3>
 #undef _S_
 #undef _I_
 
-/* end src/algo/utils/dev.h */
 
-/* begin src/io/mesh_read/imp.h */
 struct int4;
 struct MeshRead;
 
-// tag::interface[]
 void mesh_read_ini_off(const char *path, MeshRead**);
 void mesh_read_ini_ply(const char *path, MeshRead**);
 void mesh_read_fin(MeshRead*);
@@ -5817,10 +5168,7 @@ int mesh_read_get_md(const MeshRead*);
 const int4  *mesh_read_get_tri(const MeshRead*);
 const float *mesh_read_get_vert(const MeshRead*);
 const int4  *mesh_read_get_dih(MeshRead*);
-// end::interface[]
-/* end src/io/mesh_read/imp.h */
 
-/* begin src/utils/error.h */
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
         error_report();                                         \
@@ -5860,40 +5208,24 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-/* end src/utils/error.h */
-/* begin src/utils/msg.h */
-// tag::int[]
 void msg_ini(int rank); // <1>
 void msg_print(const char *fmt, ...); // <2>
-// end::int[]
-/* end src/utils/msg.h */
-/* begin src/utils/imp.h */
-// tag::mem[]
 void emalloc(size_t, /**/ void**); // <1>
 void efree(void*); // <2>
 void *ememcpy(void *dest, const void *src, size_t n); // <3>
-// end::mem[]
 
-// tag::macros[]
 #define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
 #define EFREE(pdata) UC(efree(pdata))
 #define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
-// end::macros[]
 
-// tag::stdio[]
 void efopen(const char *fname, const char *mode, /**/ FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
 void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
 void efgets(char *s, int size, FILE*);
-// end::stdio[]
 
-// tag::tools[]
 bool same_str(const char *a, const char *b); // <1>
 const char* get_filename_ext(const char*);
-// end::tools[]
-/* end src/utils/imp.h */
-/* begin src/he/read.h */
 #define T HeRead
 
 struct int4;
@@ -5928,8 +5260,6 @@ int he_read_hdg_tri(T*, int**);
 int he_read_info(T*, FILE*);
 
 #undef T
-/* end src/he/read.h */
-/* begin src/he/he.h */
 #define T He
 
 typedef struct T T;
@@ -5958,18 +5288,13 @@ int he_hdg_tri(T*, int t);
 int he_bnd(T*, int h); /* 1 for boundary */
 
 #undef T
-/* end src/he/he.h */
 
-/* begin src/d/q.h */
 /* function and variable type [q]ualifiers */
 
 #if   defined(DEV_CUDA)
-/* begin src/d/cuda/q.h */
 /* B.1. Function Type Qualifiers */
 /* B.2. Variable Type Qualifiers */
-/* end src/d/cuda/q.h */
 #elif defined(DEV_CPU)
-/* begin src/d/cpu/q.h */
 /* B.1. Function Type Qualifiers */
 #ifdef __device__
   #undef  __device__
@@ -6017,25 +5342,19 @@ int he_bnd(T*, int h); /* 1 for boundary */
   #undef  __restrict__
   #define __restrict__
 #endif
-/* end src/d/cpu/q.h */
 #else
   #error DEV_* is undefined
 #endif
-/* end src/d/q.h */
-/* begin src/d/api.h */
 namespace d {  /* a wrapper for device API */
 typedef int Stream_t; /* TODO: streams are not supported */
 enum {MemcpyHostToHost, MemcpyHostToDevice,
       MemcpyDeviceToHost, MemcpyDeviceToDevice,
       MemcpyDefault};
 
-// tag::more[]
 const char *emsg();
 int alloc_pinned(void **pHost, size_t size);
 int is_device_pointer(const void *ptr);
-// end::more[]
 
-// tag::api[]
 int GetSymbolAddress(void **devPtr, const void *symbol);
 int Malloc(void **p, size_t);
 int MemcpyToSymbol(const void *symbol, const void *src, size_t count, size_t offset=0, int kind=MemcpyHostToDevice);
@@ -6049,12 +5368,8 @@ int Free (void *devPtr);
 int FreeHost (void *hstPtr);
 int DeviceSynchronize (void);
 int PeekAtLastError(void);
-// end::api[]
 }
-/* end src/d/api.h */
-/* begin src/d/ker.h */
 #if   defined(DEV_CUDA)
-/* begin src/d/cuda/ker.h */
 #define  Ifetch(t, i)  tex1Dfetch(t, i)
 #define F4fetch(t, i)  tex1Dfetch(t, i)
 #define F2fetch(t, i)  tex1Dfetch(t, i)
@@ -6062,9 +5377,7 @@ int PeekAtLastError(void);
 #define Tfetch(T, t, i) tex1Dfetch<T>(t, i)
 
 #define Ttex3D(T, to, i, j, k) tex3D<T>(to, i, j, k);
-/* end src/d/cuda/ker.h */
 #elif defined(DEV_CPU)
-/* begin src/d/cpu/ker.h */
 #define atomicAdd(...) (0)
 
 #define atomicExch(...)
@@ -6088,8 +5401,6 @@ int PeekAtLastError(void);
 #define Tfetch(T, t, i) (T{})
 
 #define Ttex3D(T, to, i, j, k) (T{})
-/* end src/d/cpu/ker.h */
-/* begin src/d/cpu/wrap.h */
 namespace d {
 static uint3 threadIdx, blockIdx, gridDim;
 static dim3  blockDim;
@@ -6101,16 +5412,12 @@ static int   warpSize = 1;
 #define gridDim   d::gridDim
 #define blockIdx  d::blockIdx
 #define warpSize  d::warpSize
-/* end src/d/cpu/wrap.h */
 #else
   #error DEV_* is undefined
 #endif
-/* end src/d/ker.h */
-/* begin src/utils/cc.h */
 /* [c]uda [c]heck macros */
 
 #if   defined(CC_SYNC)
-/* begin src/utils/cc/sync.h */
 /* Aggressive [sync]ronization */
 #define CC(ans)                                             \
     do {                                                    \
@@ -6118,48 +5425,36 @@ static int   warpSize = 1;
         cc::check((ans), __FILE__, __LINE__);               \
         d::DeviceSynchronize();                             \
     } while (0)
-/* end src/utils/cc/sync.h */
 #elif defined(CC_RELEASE)
-/* begin src/utils/cc/release.h */
 /* [c]cuda [c]heck */
 #define CC(ans)                                             \
     do { cc::check((ans), __FILE__, __LINE__);} while (0)
-/* end src/utils/cc/release.h */
 #else
   #error CC_* is undefined
 #endif
 
-/* begin src/utils/cc/common.h */
 namespace cc {
 void check(int rc, const char *file, int line);
 }
 
 
-/* end src/utils/cc/common.h */
 
 /* TODO: header includes header */
-/* end src/utils/cc.h */
-/* begin src/utils/kl.h */
 /* [k]ernel [l]aunch macros */
 
 #if    defined(KL_RELEASE)
-/* begin src/utils/kl/release.h */
 #define KL_BEFORE(s, C) if (!kl::safe(ESC C)) continue;
 #define KL_CALL(F, C, A) F<<<ESC C>>>A
 #define KL_AFTER(s)
 
 namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
-/* end src/utils/kl/release.h */
 #elif  defined(KL_NONE)
-/* begin src/utils/kl/none.h */
 #define KL_BEFORE(s, C)
 #define KL_CALL(F, C, A)
 #define KL_AFTER(s)
 
 namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
-/* end src/utils/kl/none.h */
 #elif  defined(KL_SYNC)
-/* begin src/utils/kl/sync.h */
 #define KL_BEFORE(s, C) if (!kl::safe(ESC C)) continue;
 #define KL_CALL(F, C, A) F<<<ESC C>>>A
 #define KL_AFTER(s)                             \
@@ -6169,12 +5464,10 @@ namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
     } while(0)
 
 namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
-/* end src/utils/kl/sync.h */
 #else
   #error KL_* is undefined
 #endif
 
-/* begin src/utils/kl/common.h */
 namespace kl {
 inline int safe0(dim3 i, dim3 j) {
     msg(i.x, i.y, i.z,   j.x, j.y, j.z);
@@ -6183,8 +5476,6 @@ inline int safe0(dim3 i, dim3 j) {
 inline int safe(dim3 i, dim3 j)                    { return safe0(i, j); }
 inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
 }
-/* end src/utils/kl/common.h */
-/* begin src/utils/kl/macro.h */
 #define ESC(...) __VA_ARGS__
 #define KL(F, C, A)                             \
     do  {                                       \
@@ -6192,12 +5483,9 @@ inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
         KL_CALL(F, C, A);                       \
         KL_AFTER(#F);                           \
     } while (0)
-/* end src/utils/kl/macro.h */
 
 /* TODO: header includes header */
-/* end src/utils/kl.h */
 
-/* begin src/rbc/params/imp.h */
 struct Config;
 struct RbcParams;
 struct RbcParams_v {
@@ -6208,38 +5496,25 @@ struct RbcParams_v {
     float totArea, totVolume;
 };
 
-// tag::mem[]
 void rbc_params_ini(RbcParams **);
 void rbc_params_fin(RbcParams *);
-// end::mem[]
 
-// tag::set[]
 void rbc_params_set_fluct(float gammaC, float gammaT, float kBT, RbcParams *);
 void rbc_params_set_bending(float kb, float phi, RbcParams *);
 void rbc_params_set_spring(float ks, float x0, float mpow , RbcParams *);
 void rbc_params_set_area_volume(float ka, float kd, float kv, RbcParams *);
 void rbc_params_set_tot_area_volume(float totArea, float totVolume, RbcParams *);
-// end::set[]
 
-// tag::get[]
 double rbc_params_get_tot_volume(const RbcParams *);
-// end::get[]
 
-// tag::cnf[]
 void rbc_params_set_conf(const Config *c, const char *name, RbcParams *);
-// end::cnf[]
 
-// tag::view[]
 RbcParams_v rbc_params_get_view(const RbcParams *);
-// end::view[]
-/* end src/rbc/params/imp.h */
-/* begin src/rbc/adj/imp.h */
 struct Adj;
 struct Adj_v;
 struct AdjMap;
 struct int4;
 
-// tag::interface[]
 void adj_ini(int md, int nt, int nv, const int4 *tt, /**/ Adj**);
 void adj_fin(Adj*);
 int  adj_get_map(int i, const Adj*, /**/ AdjMap *m);
@@ -6248,14 +5523,10 @@ void adj_get_anti(const Adj*, /**/ int *anti);
 
 void adj_view_ini(const Adj*, Adj_v**);
 void adj_view_fin(Adj_v*);
-// end::interface[]
-/* end src/rbc/adj/imp.h */
 
-/* begin src/rbc/type.h */
 struct AreaVolume;
 struct Particle;
 
-// tag::quants[]
 struct RbcQuants {
     int n, nc;               /* number of particles, cells                */
     int nt, nv;              /* number of triangles and vertices per mesh */
@@ -6265,27 +5536,18 @@ struct RbcQuants {
     int *ii;                 /* global ids on host                        */
     AreaVolume *area_volume; /* to compute area and volume */
 };
-// end::quants[]
 
-/* end src/rbc/type.h */
 
-/* begin src/rbc/adj/type/common.h */
-// tag::interface[]
 struct AdjMap {
     int i0, i1, i2, i3, i4;
     int rbc;
 };
-// end::interface[]
-/* end src/rbc/adj/type/common.h */
-/* begin src/rbc/adj/type/dev.h */
 struct Adj_v {
     int *adj0;
     int *adj1;
     int nv, md;
 };
 
-/* end src/rbc/adj/type/dev.h */
-/* begin src/rbc/adj/dev.h */
 static __device__ int fetch(const int *a, int i) { return a[i]; }
 static __device__ int adj_get_map0(int md, int nv, int i, const int *adj0, const int *adj1, /**/ AdjMap *m) {
     int i0, i1, i2, i3, i4;
@@ -6318,9 +5580,7 @@ static __device__ int adj_get_map0(int md, int nv, int i, const int *adj0, const
     return 1;
 }
 
-// tag::interface[]
 static __device__ int adj_get_map(int i, Adj_v *adj, /**/ AdjMap *m) {
-// end::interface[]
     int md, nv;
     md = adj->md;
     nv = adj->nv;
@@ -6328,27 +5588,19 @@ static __device__ int adj_get_map(int i, Adj_v *adj, /**/ AdjMap *m) {
     const int *adj1 = adj->adj1;
     return adj_get_map0(md, nv, i, adj0, adj1, m);
 }
-/* end src/rbc/adj/dev.h */
 
 #endif /* UDX_RBC_BENDING_COMMON */
 
-/* begin src/rbc/force/bending/juelicher/imp.h */
 struct RbcParams;
 struct Juelicher;
 struct Force;
 struct MeshRead;
 struct RbcQuants;
 
-// tag::mem[]
 void juelicher_ini(const MeshRead*, Juelicher**);
 void juelicher_fin(Juelicher*);
-// end::mem[]
 
-// tag::apply[]
 void juelicher_apply(Juelicher*, const RbcParams*, const RbcQuants*, /**/ Force*); // <1>
-// end::apply[]
-/* end src/rbc/force/bending/juelicher/imp.h */
-/* begin src/rbc/force/bending/juelicher/imp/type.h */
 struct Juelicher {
     int4 *tri, *dih;
 
@@ -6358,12 +5610,10 @@ struct Juelicher {
 
     int ne;
 };
-/* end src/rbc/force/bending/juelicher/imp/type.h */
 
 /* shared Kantor angle helpers used by both bending implementations */
 #ifndef UDX_RBC_KANTOR0_COMMON
 #define UDX_RBC_KANTOR0_COMMON
-/* begin src/mesh/force/kantor0/dev.h */
 #ifdef FORCE_KANTOR0_HOST
   #define _I_
   #define _S_ static
@@ -6502,11 +5752,9 @@ END
 #undef _S_
 #undef BEGIN
 #undef END
-/* end src/mesh/force/kantor0/dev.h */
 #endif /* UDX_RBC_KANTOR0_COMMON */
 
 namespace juelicher_dev {
-/* begin src/rbc/force/bending/juelicher/dev/main.h */
 enum {X, Y, Z};
 static __device__  int small(double s) {
     const double eps = 1e-12;
@@ -6931,10 +6179,8 @@ __global__ void accumulate(int n,
     f->f[Y] += f0[Y] + f1[Y];
     f->f[Z] += f0[Z] + f1[Z];
 }
-/* end src/rbc/force/bending/juelicher/dev/main.h */
 }
 
-/* begin src/rbc/force/bending/juelicher/imp/main.h */
 void juelicher_ini(const MeshRead *cell, Juelicher **pq) {
 #   define  nxt(h)     he_nxt(he, (h))
 #   define  flp(h)     he_flp(he, (h))
@@ -7002,8 +6248,6 @@ void juelicher_fin(Juelicher *q) {
     Dfree(q->fad);
     EFREE(q);
 }
-/* end src/rbc/force/bending/juelicher/imp/main.h */
-/* begin src/rbc/force/bending/juelicher/imp/forces.h */
 /*
 static void print(const char *s, float *dev) {
     float hst;
@@ -7118,20 +6362,15 @@ void juelicher_apply(Juelicher *q, const RbcParams*, const RbcQuants *quants, /*
 
     dump3(nv*nc, f); */
 }
-/* end src/rbc/force/bending/juelicher/imp/forces.h */
-/* end src/rbc/force/bending/juelicher/imp.cu */
 
 
 
 
-// generated from udx.flat.cu
 #include "udx.config.cuh"
 
-/* begin src/rbc/force/bending/kantor/imp.cu */
 #include <stdio.h>
 #include <assert.h>
 
-/* begin src/inc/conf.h */
 /* [k]ernel [l]aunch macros */
 #if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
     !defined(KL_SYNC)
@@ -7166,13 +6405,11 @@ void juelicher_apply(Juelicher *q, const RbcParams*, const RbcQuants *quants, /*
 #ifndef DUMP_BASE
 #define DUMP_BASE "."
 #endif
-/* end src/inc/conf.h */
 
 
 /* shared generated definitions used by both bending implementations */
 #ifndef UDX_RBC_BENDING_COMMON
 #define UDX_RBC_BENDING_COMMON
-/* begin src/inc/def.h */
 /* solvent colors */
 #define XMACRO_COLOR(_)                         \
     _(BLUE)                                     \
@@ -7223,8 +6460,6 @@ enum {
 
 /* for the spring forces r = min(lmax*RBC_SPRING_CAP, r) */
 #define RBC_SPRING_CAP (0.99)
-/* end src/inc/def.h */
-/* begin src/inc/type.h */
 template <typename T, int N>
 struct Sarray { /* [s]tatic array */
     T d[N];
@@ -7277,8 +6512,6 @@ struct FoWrap {
     int n;
     Force *ff;
 };
-/* end src/inc/type.h */
-/* begin src/inc/dev.h */
 /* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
 
@@ -7316,8 +6549,6 @@ struct FoWrap {
 /* [d]evice [a]synchronous set */
 #define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
 #define DzeroA(P, n)   DsetA(P, 0, n)
-/* end src/inc/dev.h */
-/* begin src/math/dev.h */
 /* use templates here because we might have mixed float/double */
 
 #define _HD_ __host__ __device__
@@ -7376,13 +6607,10 @@ _HD_ void axpy(const T1 a, const T2 *x, /*io*/ T3 *y) {
     y->y += a * x->y;
     y->z += a * x->z;
 }
-/* end src/math/dev.h */
 
-/* begin src/io/mesh_read/imp.h */
 struct int4;
 struct MeshRead;
 
-// tag::interface[]
 void mesh_read_ini_off(const char *path, MeshRead**);
 void mesh_read_ini_ply(const char *path, MeshRead**);
 void mesh_read_fin(MeshRead*);
@@ -7395,10 +6623,7 @@ int mesh_read_get_md(const MeshRead*);
 const int4  *mesh_read_get_tri(const MeshRead*);
 const float *mesh_read_get_vert(const MeshRead*);
 const int4  *mesh_read_get_dih(MeshRead*);
-// end::interface[]
-/* end src/io/mesh_read/imp.h */
 
-/* begin src/utils/error.h */
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
         error_report();                                         \
@@ -7438,50 +6663,31 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-/* end src/utils/error.h */
-/* begin src/utils/msg.h */
-// tag::int[]
 void msg_ini(int rank); // <1>
 void msg_print(const char *fmt, ...); // <2>
-// end::int[]
-/* end src/utils/msg.h */
-/* begin src/utils/imp.h */
-// tag::mem[]
 void emalloc(size_t, /**/ void**); // <1>
 void efree(void*); // <2>
 void *ememcpy(void *dest, const void *src, size_t n); // <3>
-// end::mem[]
 
-// tag::macros[]
 #define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
 #define EFREE(pdata) UC(efree(pdata))
 #define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
-// end::macros[]
 
-// tag::stdio[]
 void efopen(const char *fname, const char *mode, /**/ FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
 void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
 void efgets(char *s, int size, FILE*);
-// end::stdio[]
 
-// tag::tools[]
 bool same_str(const char *a, const char *b); // <1>
 const char* get_filename_ext(const char*);
-// end::tools[]
-/* end src/utils/imp.h */
 
-/* begin src/d/q.h */
 /* function and variable type [q]ualifiers */
 
 #if   defined(DEV_CUDA)
-/* begin src/d/cuda/q.h */
 /* B.1. Function Type Qualifiers */
 /* B.2. Variable Type Qualifiers */
-/* end src/d/cuda/q.h */
 #elif defined(DEV_CPU)
-/* begin src/d/cpu/q.h */
 /* B.1. Function Type Qualifiers */
 #ifdef __device__
   #undef  __device__
@@ -7529,25 +6735,19 @@ const char* get_filename_ext(const char*);
   #undef  __restrict__
   #define __restrict__
 #endif
-/* end src/d/cpu/q.h */
 #else
   #error DEV_* is undefined
 #endif
-/* end src/d/q.h */
-/* begin src/d/api.h */
 namespace d {  /* a wrapper for device API */
 typedef int Stream_t; /* TODO: streams are not supported */
 enum {MemcpyHostToHost, MemcpyHostToDevice,
       MemcpyDeviceToHost, MemcpyDeviceToDevice,
       MemcpyDefault};
 
-// tag::more[]
 const char *emsg();
 int alloc_pinned(void **pHost, size_t size);
 int is_device_pointer(const void *ptr);
-// end::more[]
 
-// tag::api[]
 int GetSymbolAddress(void **devPtr, const void *symbol);
 int Malloc(void **p, size_t);
 int MemcpyToSymbol(const void *symbol, const void *src, size_t count, size_t offset=0, int kind=MemcpyHostToDevice);
@@ -7561,12 +6761,8 @@ int Free (void *devPtr);
 int FreeHost (void *hstPtr);
 int DeviceSynchronize (void);
 int PeekAtLastError(void);
-// end::api[]
 }
-/* end src/d/api.h */
-/* begin src/d/ker.h */
 #if   defined(DEV_CUDA)
-/* begin src/d/cuda/ker.h */
 #define  Ifetch(t, i)  tex1Dfetch(t, i)
 #define F4fetch(t, i)  tex1Dfetch(t, i)
 #define F2fetch(t, i)  tex1Dfetch(t, i)
@@ -7574,9 +6770,7 @@ int PeekAtLastError(void);
 #define Tfetch(T, t, i) tex1Dfetch<T>(t, i)
 
 #define Ttex3D(T, to, i, j, k) tex3D<T>(to, i, j, k);
-/* end src/d/cuda/ker.h */
 #elif defined(DEV_CPU)
-/* begin src/d/cpu/ker.h */
 #define atomicAdd(...) (0)
 
 #define atomicExch(...)
@@ -7600,8 +6794,6 @@ int PeekAtLastError(void);
 #define Tfetch(T, t, i) (T{})
 
 #define Ttex3D(T, to, i, j, k) (T{})
-/* end src/d/cpu/ker.h */
-/* begin src/d/cpu/wrap.h */
 namespace d {
 static uint3 threadIdx, blockIdx, gridDim;
 static dim3  blockDim;
@@ -7613,16 +6805,12 @@ static int   warpSize = 1;
 #define gridDim   d::gridDim
 #define blockIdx  d::blockIdx
 #define warpSize  d::warpSize
-/* end src/d/cpu/wrap.h */
 #else
   #error DEV_* is undefined
 #endif
-/* end src/d/ker.h */
-/* begin src/utils/cc.h */
 /* [c]uda [c]heck macros */
 
 #if   defined(CC_SYNC)
-/* begin src/utils/cc/sync.h */
 /* Aggressive [sync]ronization */
 #define CC(ans)                                             \
     do {                                                    \
@@ -7630,48 +6818,36 @@ static int   warpSize = 1;
         cc::check((ans), __FILE__, __LINE__);               \
         d::DeviceSynchronize();                             \
     } while (0)
-/* end src/utils/cc/sync.h */
 #elif defined(CC_RELEASE)
-/* begin src/utils/cc/release.h */
 /* [c]cuda [c]heck */
 #define CC(ans)                                             \
     do { cc::check((ans), __FILE__, __LINE__);} while (0)
-/* end src/utils/cc/release.h */
 #else
   #error CC_* is undefined
 #endif
 
-/* begin src/utils/cc/common.h */
 namespace cc {
 void check(int rc, const char *file, int line);
 }
 
 
-/* end src/utils/cc/common.h */
 
 /* TODO: header includes header */
-/* end src/utils/cc.h */
-/* begin src/utils/kl.h */
 /* [k]ernel [l]aunch macros */
 
 #if    defined(KL_RELEASE)
-/* begin src/utils/kl/release.h */
 #define KL_BEFORE(s, C) if (!kl::safe(ESC C)) continue;
 #define KL_CALL(F, C, A) F<<<ESC C>>>A
 #define KL_AFTER(s)
 
 namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
-/* end src/utils/kl/release.h */
 #elif  defined(KL_NONE)
-/* begin src/utils/kl/none.h */
 #define KL_BEFORE(s, C)
 #define KL_CALL(F, C, A)
 #define KL_AFTER(s)
 
 namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
-/* end src/utils/kl/none.h */
 #elif  defined(KL_SYNC)
-/* begin src/utils/kl/sync.h */
 #define KL_BEFORE(s, C) if (!kl::safe(ESC C)) continue;
 #define KL_CALL(F, C, A) F<<<ESC C>>>A
 #define KL_AFTER(s)                             \
@@ -7681,12 +6857,10 @@ namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
     } while(0)
 
 namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
-/* end src/utils/kl/sync.h */
 #else
   #error KL_* is undefined
 #endif
 
-/* begin src/utils/kl/common.h */
 namespace kl {
 inline int safe0(dim3 i, dim3 j) {
     msg(i.x, i.y, i.z,   j.x, j.y, j.z);
@@ -7695,8 +6869,6 @@ inline int safe0(dim3 i, dim3 j) {
 inline int safe(dim3 i, dim3 j)                    { return safe0(i, j); }
 inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
 }
-/* end src/utils/kl/common.h */
-/* begin src/utils/kl/macro.h */
 #define ESC(...) __VA_ARGS__
 #define KL(F, C, A)                             \
     do  {                                       \
@@ -7704,12 +6876,9 @@ inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
         KL_CALL(F, C, A);                       \
         KL_AFTER(#F);                           \
     } while (0)
-/* end src/utils/kl/macro.h */
 
 /* TODO: header includes header */
-/* end src/utils/kl.h */
 
-/* begin src/rbc/params/imp.h */
 struct Config;
 struct RbcParams;
 struct RbcParams_v {
@@ -7720,38 +6889,25 @@ struct RbcParams_v {
     float totArea, totVolume;
 };
 
-// tag::mem[]
 void rbc_params_ini(RbcParams **);
 void rbc_params_fin(RbcParams *);
-// end::mem[]
 
-// tag::set[]
 void rbc_params_set_fluct(float gammaC, float gammaT, float kBT, RbcParams *);
 void rbc_params_set_bending(float kb, float phi, RbcParams *);
 void rbc_params_set_spring(float ks, float x0, float mpow , RbcParams *);
 void rbc_params_set_area_volume(float ka, float kd, float kv, RbcParams *);
 void rbc_params_set_tot_area_volume(float totArea, float totVolume, RbcParams *);
-// end::set[]
 
-// tag::get[]
 double rbc_params_get_tot_volume(const RbcParams *);
-// end::get[]
 
-// tag::cnf[]
 void rbc_params_set_conf(const Config *c, const char *name, RbcParams *);
-// end::cnf[]
 
-// tag::view[]
 RbcParams_v rbc_params_get_view(const RbcParams *);
-// end::view[]
-/* end src/rbc/params/imp.h */
-/* begin src/rbc/adj/imp.h */
 struct Adj;
 struct Adj_v;
 struct AdjMap;
 struct int4;
 
-// tag::interface[]
 void adj_ini(int md, int nt, int nv, const int4 *tt, /**/ Adj**);
 void adj_fin(Adj*);
 int  adj_get_map(int i, const Adj*, /**/ AdjMap *m);
@@ -7760,14 +6916,10 @@ void adj_get_anti(const Adj*, /**/ int *anti);
 
 void adj_view_ini(const Adj*, Adj_v**);
 void adj_view_fin(Adj_v*);
-// end::interface[]
-/* end src/rbc/adj/imp.h */
 
-/* begin src/rbc/type.h */
 struct AreaVolume;
 struct Particle;
 
-// tag::quants[]
 struct RbcQuants {
     int n, nc;               /* number of particles, cells                */
     int nt, nv;              /* number of triangles and vertices per mesh */
@@ -7777,27 +6929,18 @@ struct RbcQuants {
     int *ii;                 /* global ids on host                        */
     AreaVolume *area_volume; /* to compute area and volume */
 };
-// end::quants[]
 
-/* end src/rbc/type.h */
 
-/* begin src/rbc/adj/type/common.h */
-// tag::interface[]
 struct AdjMap {
     int i0, i1, i2, i3, i4;
     int rbc;
 };
-// end::interface[]
-/* end src/rbc/adj/type/common.h */
-/* begin src/rbc/adj/type/dev.h */
 struct Adj_v {
     int *adj0;
     int *adj1;
     int nv, md;
 };
 
-/* end src/rbc/adj/type/dev.h */
-/* begin src/rbc/adj/dev.h */
 static __device__ int fetch(const int *a, int i) { return a[i]; }
 static __device__ int adj_get_map0(int md, int nv, int i, const int *adj0, const int *adj1, /**/ AdjMap *m) {
     int i0, i1, i2, i3, i4;
@@ -7830,9 +6973,7 @@ static __device__ int adj_get_map0(int md, int nv, int i, const int *adj0, const
     return 1;
 }
 
-// tag::interface[]
 static __device__ int adj_get_map(int i, Adj_v *adj, /**/ AdjMap *m) {
-// end::interface[]
     int md, nv;
     md = adj->md;
     nv = adj->nv;
@@ -7840,37 +6981,27 @@ static __device__ int adj_get_map(int i, Adj_v *adj, /**/ AdjMap *m) {
     const int *adj1 = adj->adj1;
     return adj_get_map0(md, nv, i, adj0, adj1, m);
 }
-/* end src/rbc/adj/dev.h */
 
 #endif /* UDX_RBC_BENDING_COMMON */
 
-/* begin src/rbc/force/bending/kantor/imp.h */
 struct RbcParams;
 struct Kantor;
 struct Force;
 struct MeshRead;
 struct RbcQuants;
 
-// tag::mem[]
 void kantor_ini(const MeshRead*, Kantor**);
 void kantor_fin(Kantor*);
-// end::mem[]
 
-// tag::apply[]
 void kantor_apply(Kantor*, const RbcParams*, const RbcQuants*, /**/ Force*); // <1>
-// end::apply[]
-/* end src/rbc/force/bending/kantor/imp.h */
-/* begin src/rbc/force/bending/kantor/imp/type.h */
 struct Kantor {
     Adj   *adj;
     Adj_v *adj_v;
 };
-/* end src/rbc/force/bending/kantor/imp/type.h */
 
 /* shared Kantor angle helpers used by both bending implementations */
 #ifndef UDX_RBC_KANTOR0_COMMON
 #define UDX_RBC_KANTOR0_COMMON
-/* begin src/mesh/force/kantor0/dev.h */
 #ifdef FORCE_KANTOR0_HOST
   #define _I_
   #define _S_ static
@@ -8009,11 +7140,9 @@ END
 #undef _S_
 #undef BEGIN
 #undef END
-/* end src/mesh/force/kantor0/dev.h */
 #endif /* UDX_RBC_KANTOR0_COMMON */
 
 namespace kantor_dev {
-/* begin src/rbc/force/bending/kantor/dev/main.h */
 struct Part { double3 r, v; };
 typedef double3 Pos;
 
@@ -8080,10 +7209,8 @@ __global__ void force(RbcParams_v par, int md, int nv, int nc, const Particle *p
     atomicAdd(&ff[3 * pid + 1], f[Y]);
     atomicAdd(&ff[3 * pid + 2], f[Z]);
 }
-/* end src/rbc/force/bending/kantor/dev/main.h */
 }
 
-/* begin src/rbc/force/bending/kantor/imp/main.h */
 void kantor_ini(const MeshRead *cell, Kantor **pq) {
     Kantor *q;
     int md, nt, nv;
@@ -8105,8 +7232,6 @@ void kantor_fin(Kantor *q) {
     UC(adj_view_fin(q->adj_v));
     EFREE(q);
 }
-/* end src/rbc/force/bending/kantor/imp/main.h */
-/* begin src/rbc/force/bending/kantor/imp/forces.h */
 void kantor_apply(Kantor *t, const RbcParams *par, const RbcQuants *q, /**/ Force *ff) {
     int nc, nv, md;
     RbcParams_v parv;
@@ -8120,8 +7245,6 @@ void kantor_apply(Kantor *t, const RbcParams *par, const RbcQuants *q, /**/ Forc
     KL(kantor_dev::force, (k_cnf(nc*nv*md)),
        (parv, md, nv, nc, q->pp, *t->adj_v, /**/ (float*)ff));
 }
-/* end src/rbc/force/bending/kantor/imp/forces.h */
-/* end src/rbc/force/bending/kantor/imp.cu */
 
 
 
@@ -8132,15 +7255,12 @@ void kantor_apply(Kantor *t, const RbcParams *par, const RbcQuants *q, /**/ Forc
 // Grouped editable compilation unit for pair interactions and FSI.
 
 
-// generated from udx.flat.cu
 #include "udx.config.cuh"
 
-/* begin src/pair/conf.cpp */
 #include <stdio.h>
 #include <math.h>
 #include <string.h>
 
-/* begin src/utils/error.h */
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
         error_report();                                         \
@@ -8180,22 +7300,15 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-/* end src/utils/error.h */
-/* begin src/conf/imp.h */
 struct Config;
 struct float3;
 struct int3;
 
-// tag::mem[]
 void conf_ini(/**/ Config **c);
 void conf_fin(/**/ Config *c);
-// end::mem[]
 
-// tag::ini[]
 void conf_read(int argc, char **argv, /**/ Config *cfg);
-// end::ini[]
 
-// tag::lookup[]
 void conf_lookup_int(const Config *c, const char *desc, int *a);
 void conf_lookup_float(const Config *c, const char *desc, float *a);
 void conf_lookup_bool(const Config *c, const char *desc, int *a);
@@ -8205,9 +7318,7 @@ void conf_lookup_int3(const Config *c, const char *desc, int3 *a);
 void conf_lookup_vfloat(const Config *c, const char *desc, int maxn, int *n, float a[]);
 void conf_lookup_float3(const Config *c, const char *desc, float3 *a);
 void conf_lookup_vstring(const Config *c, const char *desc, int maxn, int *n, const char **ss);
-// end::lookup[]
 
-// tag::ns[]
 void conf_lookup_int_ns(const Config *c, const char *ns, const char *desc, int *a);
 void conf_lookup_float_ns(const Config *c, const char *ns, const char *desc, float *a);
 void conf_lookup_bool_ns(const Config *c, const char *ns, const char *desc, int *a);
@@ -8217,9 +7328,7 @@ void conf_lookup_int3_ns(const Config *c, const char *ns, const char *desc, int3
 void conf_lookup_vfloat_ns(const Config *c, const char *ns, const char *desc, int maxn, int *n, float a[]);
 void conf_lookup_float3_ns(const Config *c, const char *ns, const char *desc, float3 *a);
 void conf_lookup_vstring_ns(const Config *c, const char *ns, const char *d, int maxn, int *n, const char **ss);
-// end::ns[]
 
-// tag::opt[]
 bool conf_opt_int(const Config *c, const char *desc, int *a);
 bool conf_opt_float(const Config *c, const char *desc, float *a);
 bool conf_opt_bool(const Config *c, const char *desc, int *a);
@@ -8229,9 +7338,7 @@ bool conf_opt_int3(const Config *c, const char *desc, int3 *a);
 bool conf_opt_vfloat(const Config *c, const char *desc, int maxn, int *n, float a[]);
 bool conf_opt_float3(const Config *c, const char *desc, float3 *a);
 bool conf_opt_vstring(const Config *c, const char *desc, int maxn, int *n, const char **ss);
-// end::opt[]
 
-// tag::set[]
 void conf_set_int(const char *desc, int a, Config *c);
 void conf_set_vint(const char *desc, int nelem, const int a[], Config *cfg);
 void conf_set_int3(const char *desc, int3 a, Config *cfg);
@@ -8240,15 +7347,10 @@ void conf_set_vfloat(const char *desc, int nelem, const float a[], Config *cfg);
 void conf_set_float3(const char *desc, float3 a, Config *cfg);
 void conf_set_bool(const char *desc, int a, Config *cfg);
 void conf_set_string(const char *desc, const char *a, Config *cfg);
-// end::set[]
 
-// tag::dump[]
 void conf_write_exe(const Config *cfg, FILE *stream);     // <1>
 void conf_write_history(const Config *cfg, FILE *stream); // <2>
-// end::dump[]
-/* end src/conf/imp.h */
 
-/* begin src/inc/def.h */
 #ifndef UDX_FORCE_DEF_COMMON
 #define UDX_FORCE_DEF_COMMON
 /* solvent colors */
@@ -8301,9 +7403,7 @@ enum {
 
 /* for the spring forces r = min(lmax*RBC_SPRING_CAP, r) */
 #define RBC_SPRING_CAP (0.99)
-/* end src/inc/def.h */
 #endif
-/* begin src/pair/type.h */
 #ifndef UDX_FORCE_PAIR_TYPE_COMMON
 #define UDX_FORCE_PAIR_TYPE_COMMON
 /* maximum of pairwise dpd parameters */
@@ -8352,9 +7452,7 @@ struct PairSFo {
     /* stress */
     float sxx, syy, szz, sxy, sxz, syz;
 };
-/* end src/pair/type.h */
 #endif
-/* begin src/pair/imp.h */
 struct PairParams;
 struct Config;
 
@@ -8364,33 +7462,22 @@ struct PairDPDCM;
 struct PairDPDLJ;
 struct PairAdhesion;
 
-// tag::mem[]
 void pair_ini(PairParams **);
 void pair_fin(PairParams *);
-// end::mem[]
 
-// tag::set[]
 void pair_set_dpd(int ncol, const float a[], const float g[], float spow, PairParams *p); // <1>
 void pair_set_lj(float sigma, float eps, PairParams *p); // <2>
-// end::set[]
 void pair_set_adhesion(float k1, float k2, PairParams *p);
 
-// tag::cnf[]
 void pair_set_conf(const Config *, const char *name_space, PairParams *);
-// end::cnf[]
 
-// tag::upd[]
 void pair_compute_dpd_sigma(float kBT, float dt, PairParams *p);
-// end::upd[]
 
-// tag::view[]
 void pair_get_view_dpd(const PairParams*, PairDPD*);
 void pair_get_view_dpd_color(const PairParams*, PairDPDC*);
 void pair_get_view_dpd_mirrored(const PairParams*, PairDPDCM*);
 void pair_get_view_dpd_lj(const PairParams*, PairDPDLJ*);
-// end::view[]
 void pair_get_view_adhesion(const PairParams*, PairAdhesion*);
-/* end src/pair/imp.h */
 
 static int get_ncol(int npar) {
     int d = lround( sqrt(1 + 8 * npar) );
@@ -8438,16 +7525,13 @@ void pair_set_conf(const Config *cfg, const char *ns, PairParams *par) {
         UC(pair_set_adhesion(k1, k2, /**/ par));
     }
 }
-/* end src/pair/conf.cpp */
 
 
 
-/* begin src/pair/imp.cpp */
 #include <stdio.h>
 #include <string.h>
 #include <math.h>
 
-/* begin src/inc/conf.h */
 /* [k]ernel [l]aunch macros */
 #if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
     !defined(KL_SYNC)
@@ -8482,9 +7566,7 @@ void pair_set_conf(const Config *cfg, const char *ns, PairParams *par) {
 #ifndef DUMP_BASE
 #define DUMP_BASE "."
 #endif
-/* end src/inc/conf.h */
 
-/* begin src/utils/error.h */
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
         error_report();                                         \
@@ -8524,39 +7606,27 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-/* end src/utils/error.h */
-/* begin src/utils/imp.h */
-// tag::mem[]
 void emalloc(size_t, /**/ void**); // <1>
 void efree(void*); // <2>
 void *ememcpy(void *dest, const void *src, size_t n); // <3>
-// end::mem[]
 
-// tag::macros[]
 #define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
 #define EFREE(pdata) UC(efree(pdata))
 #define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
-// end::macros[]
 
-// tag::stdio[]
 void efopen(const char *fname, const char *mode, /**/ FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
 void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
 void efgets(char *s, int size, FILE*);
-// end::stdio[]
 
-// tag::tools[]
 bool same_str(const char *a, const char *b); // <1>
 const char* get_filename_ext(const char*);
-// end::tools[]
-/* end src/utils/imp.h */
 
 
 
 
 
-/* begin src/pair/imp/type.h */
 struct PairParams {
     bool dpd;
     float a[MAX_PAR]; /* a    : conservative */
@@ -8575,8 +7645,6 @@ struct PairParams {
     float k2; /* viscous coeff   */
 };
 
-/* end src/pair/imp/type.h */
-/* begin src/pair/imp/main.h */
 void pair_ini(PairParams **par) {
     PairParams *p;
     EMALLOC(1, par);
@@ -8692,21 +7760,16 @@ void pair_get_view_adhesion(const PairParams *p, PairAdhesion *v) {
     v->k1 = p->k1;
     v->k2 = p->k2;
 }
-/* end src/pair/imp/main.h */
-/* end src/pair/imp.cpp */
 
 
 
 
-// generated from udx.flat.cu
 #include "udx.config.cuh"
 
-/* begin src/fsi/imp.cu */
 #include <stdio.h>
 #include <assert.h>
 
 
-/* begin src/inc/conf.h */
 /* [k]ernel [l]aunch macros */
 #if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
     !defined(KL_SYNC)
@@ -8741,10 +7804,8 @@ void pair_get_view_adhesion(const PairParams *p, PairAdhesion *v) {
 #ifndef DUMP_BASE
 #define DUMP_BASE "."
 #endif
-/* end src/inc/conf.h */
 
 
-/* begin src/utils/error.h */
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
         error_report();                                         \
@@ -8784,8 +7845,6 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-/* end src/utils/error.h */
-/* begin src/d/api.h */
 #ifndef UDX_FORCE_DEVICE_API_COMMON
 #define UDX_FORCE_DEVICE_API_COMMON
 namespace d {  /* a wrapper for device API */
@@ -8794,13 +7853,10 @@ enum {MemcpyHostToHost, MemcpyHostToDevice,
       MemcpyDeviceToHost, MemcpyDeviceToDevice,
       MemcpyDefault};
 
-// tag::more[]
 const char *emsg();
 int alloc_pinned(void **pHost, size_t size);
 int is_device_pointer(const void *ptr);
-// end::more[]
 
-// tag::api[]
 int GetSymbolAddress(void **devPtr, const void *symbol);
 int Malloc(void **p, size_t);
 int MemcpyToSymbol(const void *symbol, const void *src, size_t count, size_t offset=0, int kind=MemcpyHostToDevice);
@@ -8814,20 +7870,14 @@ int Free (void *devPtr);
 int FreeHost (void *hstPtr);
 int DeviceSynchronize (void);
 int PeekAtLastError(void);
-// end::api[]
 }
-/* end src/d/api.h */
 #endif /* UDX_FORCE_DEVICE_API_COMMON */
-/* begin src/d/q.h */
 /* function and variable type [q]ualifiers */
 
 #if   defined(DEV_CUDA)
-/* begin src/d/cuda/q.h */
 /* B.1. Function Type Qualifiers */
 /* B.2. Variable Type Qualifiers */
-/* end src/d/cuda/q.h */
 #elif defined(DEV_CPU)
-/* begin src/d/cpu/q.h */
 /* B.1. Function Type Qualifiers */
 #ifdef __device__
   #undef  __device__
@@ -8875,14 +7925,10 @@ int PeekAtLastError(void);
   #undef  __restrict__
   #define __restrict__
 #endif
-/* end src/d/cpu/q.h */
 #else
   #error DEV_* is undefined
 #endif
-/* end src/d/q.h */
-/* begin src/d/ker.h */
 #if   defined(DEV_CUDA)
-/* begin src/d/cuda/ker.h */
 #define  Ifetch(t, i)  tex1Dfetch(t, i)
 #define F4fetch(t, i)  tex1Dfetch(t, i)
 #define F2fetch(t, i)  tex1Dfetch(t, i)
@@ -8890,9 +7936,7 @@ int PeekAtLastError(void);
 #define Tfetch(T, t, i) tex1Dfetch<T>(t, i)
 
 #define Ttex3D(T, to, i, j, k) tex3D<T>(to, i, j, k);
-/* end src/d/cuda/ker.h */
 #elif defined(DEV_CPU)
-/* begin src/d/cpu/ker.h */
 #define atomicAdd(...) (0)
 
 #define atomicExch(...)
@@ -8916,8 +7960,6 @@ int PeekAtLastError(void);
 #define Tfetch(T, t, i) (T{})
 
 #define Ttex3D(T, to, i, j, k) (T{})
-/* end src/d/cpu/ker.h */
-/* begin src/d/cpu/wrap.h */
 namespace d {
 static uint3 threadIdx, blockIdx, gridDim;
 static dim3  blockDim;
@@ -8929,21 +7971,14 @@ static int   warpSize = 1;
 #define gridDim   d::gridDim
 #define blockIdx  d::blockIdx
 #define warpSize  d::warpSize
-/* end src/d/cpu/wrap.h */
 #else
   #error DEV_* is undefined
 #endif
-/* end src/d/ker.h */
 
-/* begin src/math/rnd/imp.h */
-// tag::interface[]
 struct RNDunif;                                             // <1>
 void rnd_ini(int x, int y, int z, int c, /**/ RNDunif **r); // <2>
 void rnd_fin(RNDunif *r);                                   // <3>
 float rnd_get(RNDunif *r);                                  // <4>
-// end::interface[]
-/* end src/math/rnd/imp.h */
-/* begin src/math/rnd/dev.h */
 #ifndef UDX_FORCE_RND_COMMON
 #define UDX_FORCE_RND_COMMON
 namespace rnd {
@@ -9020,9 +8055,7 @@ inline __device__ float mean0var1uu( float seed, uint u, uint v )
 }
 
 }
-/* end src/math/rnd/dev.h */
 #endif /* UDX_FORCE_RND_COMMON */
-/* begin src/math/dev.h */
 #ifndef UDX_FORCE_MATH_COMMON
 #define UDX_FORCE_MATH_COMMON
 /* use templates here because we might have mixed float/double */
@@ -9083,10 +8116,8 @@ _HD_ void axpy(const T1 a, const T2 *x, /*io*/ T3 *y) {
     y->y += a * x->y;
     y->z += a * x->z;
 }
-/* end src/math/dev.h */
 #endif /* UDX_FORCE_MATH_COMMON */
 
-/* begin src/inc/def.h */
 #ifndef UDX_FORCE_DEF_COMMON
 #define UDX_FORCE_DEF_COMMON
 /* solvent colors */
@@ -9139,46 +8170,29 @@ enum {
 
 /* for the spring forces r = min(lmax*RBC_SPRING_CAP, r) */
 #define RBC_SPRING_CAP (0.99)
-/* end src/inc/def.h */
 #endif
-/* begin src/utils/msg.h */
-// tag::int[]
 void msg_ini(int rank); // <1>
 void msg_print(const char *fmt, ...); // <2>
-// end::int[]
-/* end src/utils/msg.h */
-/* begin src/utils/imp.h */
-// tag::mem[]
 void emalloc(size_t, /**/ void**); // <1>
 void efree(void*); // <2>
 void *ememcpy(void *dest, const void *src, size_t n); // <3>
-// end::mem[]
 
-// tag::macros[]
 #define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
 #define EFREE(pdata) UC(efree(pdata))
 #define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
-// end::macros[]
 
-// tag::stdio[]
 void efopen(const char *fname, const char *mode, /**/ FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
 void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
 void efgets(char *s, int size, FILE*);
-// end::stdio[]
 
-// tag::tools[]
 bool same_str(const char *a, const char *b); // <1>
 const char* get_filename_ext(const char*);
-// end::tools[]
-/* end src/utils/imp.h */
 
-/* begin src/utils/cc.h */
 /* [c]uda [c]heck macros */
 
 #if   defined(CC_SYNC)
-/* begin src/utils/cc/sync.h */
 /* Aggressive [sync]ronization */
 #define CC(ans)                                             \
     do {                                                    \
@@ -9186,28 +8200,21 @@ const char* get_filename_ext(const char*);
         cc::check((ans), __FILE__, __LINE__);               \
         d::DeviceSynchronize();                             \
     } while (0)
-/* end src/utils/cc/sync.h */
 #elif defined(CC_RELEASE)
-/* begin src/utils/cc/release.h */
 /* [c]cuda [c]heck */
 #define CC(ans)                                             \
     do { cc::check((ans), __FILE__, __LINE__);} while (0)
-/* end src/utils/cc/release.h */
 #else
   #error CC_* is undefined
 #endif
 
-/* begin src/utils/cc/common.h */
 namespace cc {
 void check(int rc, const char *file, int line);
 }
 
 
-/* end src/utils/cc/common.h */
 
 /* TODO: header includes header */
-/* end src/utils/cc.h */
-/* begin src/utils/mc.h */
 /* [m]pi [c]heck macros */
 #define MC(ans)                                                         \
     do { mpicheck::check((ans), __FILE__, __LINE__); } while (0)
@@ -9215,8 +8222,6 @@ void check(int rc, const char *file, int line);
 namespace mpicheck {
 void check(int code, const char *file, int line);
 }
-/* end src/utils/mc.h */
-/* begin src/frag/imp.h */
 #ifndef UDX_FORCE_FRAG_COMMON
 #define UDX_FORCE_FRAG_COMMON
 enum {frag_bulk = 26};
@@ -9226,34 +8231,22 @@ struct int3;
 
 namespace frag_hst {
 
-// tag::i2d[]
 int i2dx(int i);                 // <1>
 int i2dy(int i);                 // <2>
 int i2dz(int i);                 // <3>
 void i2d3(int i, /**/ int d[3]); // <4>
-// end::i2d[]
 
-// tag::d2i[]
 int d2i(int x, int y, int z); // <1>
 int d32i(const int d[3]);     // <2>
-// end::d2i[]
 
-// tag::ncell[]
 int ncell(int3 L, int i); // <1>
-// end::ncell[]
 
-// tag::anti[]
 int antid2i(int x, int y, int z); // <1>
 int anti(int i);                  // <2>
-// end::anti[]
 
-// tag::hst[]
 void estimates(int3 L, int nfrags, float maxd, /**/ int *cap); // <1>
-// end::hst[]
 
 } // frag_hst
-/* end src/frag/imp.h */
-/* begin src/frag/dev.h */
 #ifdef FRAG_HOST
   #define _I_
   #define _S_ static
@@ -9342,31 +8335,24 @@ END
 #undef _S_
 #undef BEGIN
 #undef END
-/* end src/frag/dev.h */
 
-/* begin src/utils/kl.h */
 #ifndef UDX_FORCE_KL_COMMON
 #define UDX_FORCE_KL_COMMON
 /* [k]ernel [l]aunch macros */
 
 #if    defined(KL_RELEASE)
-/* begin src/utils/kl/release.h */
 #define KL_BEFORE(s, C) if (!kl::safe(ESC C)) continue;
 #define KL_CALL(F, C, A) F<<<ESC C>>>A
 #define KL_AFTER(s)
 
 namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
-/* end src/utils/kl/release.h */
 #elif  defined(KL_NONE)
-/* begin src/utils/kl/none.h */
 #define KL_BEFORE(s, C)
 #define KL_CALL(F, C, A)
 #define KL_AFTER(s)
 
 namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
-/* end src/utils/kl/none.h */
 #elif  defined(KL_SYNC)
-/* begin src/utils/kl/sync.h */
 #define KL_BEFORE(s, C) if (!kl::safe(ESC C)) continue;
 #define KL_CALL(F, C, A) F<<<ESC C>>>A
 #define KL_AFTER(s)                             \
@@ -9376,12 +8362,10 @@ namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
     } while(0)
 
 namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
-/* end src/utils/kl/sync.h */
 #else
   #error KL_* is undefined
 #endif
 
-/* begin src/utils/kl/common.h */
 namespace kl {
 inline int safe0(dim3 i, dim3 j) {
     msg(i.x, i.y, i.z,   j.x, j.y, j.z);
@@ -9390,8 +8374,6 @@ inline int safe0(dim3 i, dim3 j) {
 inline int safe(dim3 i, dim3 j)                    { return safe0(i, j); }
 inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
 }
-/* end src/utils/kl/common.h */
-/* begin src/utils/kl/macro.h */
 #define ESC(...) __VA_ARGS__
 #define KL(F, C, A)                             \
     do  {                                       \
@@ -9399,12 +8381,9 @@ inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
         KL_CALL(F, C, A);                       \
         KL_AFTER(#F);                           \
     } while (0)
-/* end src/utils/kl/macro.h */
 
 /* TODO: header includes header */
-/* end src/utils/kl.h */
 #endif /* UDX_FORCE_KL_COMMON */
-/* begin src/inc/type.h */
 #ifndef UDX_FORCE_TYPE_COMMON
 #define UDX_FORCE_TYPE_COMMON
 template <typename T, int N>
@@ -9459,9 +8438,7 @@ struct FoWrap {
     int n;
     Force *ff;
 };
-/* end src/inc/type.h */
 #endif /* UDX_FORCE_TYPE_COMMON */
-/* begin src/inc/dev.h */
 /* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
 
@@ -9499,8 +8476,6 @@ struct FoWrap {
 /* [d]evice [a]synchronous set */
 #define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
 #define DzeroA(P, n)   DsetA(P, 0, n)
-/* end src/inc/dev.h */
-/* begin src/dbg/imp.h */
 struct Dbg;
 
 struct Config;
@@ -9509,7 +8484,6 @@ struct Particle;
 struct int3;
 struct Coords;
 
-// tag::kind[]
 enum {
     DBG_POS,      // <1>
     DBG_POS_SOFT, // <2>
@@ -9519,35 +8493,24 @@ enum {
     DBG_CLIST,    // <6>
     DBG_NKIND_
 };
-// end::kind[]
 
-// tag::mem[]
 void dbg_ini(Dbg**);
 void dbg_fin(Dbg*);
-// end::mem[]
 
-// tag::ini[]
 void dbg_enable(int kind, Dbg *dbg);
 void dbg_disable(int kind, Dbg *dbg);
 void dbg_set_verbose(bool, Dbg *dbg);
 void dbg_set_dump(bool, Dbg *dbg);
-// end::ini[]
 
-// tag::cnf[]
 void dbg_set_conf(const Config*, Dbg*);
-// end::cnf[]
 
-// tag::int[]
 void dbg_check_pos(const Coords *c, const char *base, const Dbg *dbg, int n, const Particle *pp);
 void dbg_check_pos_soft(const Coords *c, const char *base, const Dbg *dbg, int n, const Particle *pp);
 void dbg_check_vel(float dt, const Coords *c, const char *base, const Dbg *dbg, int n, const Particle *pp);
 void dbg_check_forces(float dt, const Coords *c, const char *base, const Dbg *dbg, int n, const Particle *pp, const Force *ff);
 void dbg_check_colors(const Coords *c, const Dbg *dbg, int n, const int *cc);
 void dbg_check_clist(const Coords *c, const Dbg *dbg, int3 L, const int *starts, const int *counts, const Particle *pp);
-// end::int[]
-/* end src/dbg/imp.h */
 
-/* begin src/pair/type.h */
 #ifndef UDX_FORCE_PAIR_TYPE_COMMON
 #define UDX_FORCE_PAIR_TYPE_COMMON
 /* maximum of pairwise dpd parameters */
@@ -9596,9 +8559,7 @@ struct PairSFo {
     /* stress */
     float sxx, syy, szz, sxy, sxz, syz;
 };
-/* end src/pair/type.h */
 #endif /* UDX_FORCE_PAIR_TYPE_COMMON */
-/* begin src/pair/dev.h */
 #ifndef UDX_FORCE_PAIR_DEV_COMMON
 #define UDX_FORCE_PAIR_DEV_COMMON
 #define _S_ static __device__
@@ -9710,10 +8671,8 @@ _S_ void make_zero(PairSFo *f) {
     f->syy = f->syz = f->szz = 0;
 }
 
-// tag::int[]
 template <typename Param, typename Fo>
 _I_ void pair_force(const Param *p, PairPa a, PairPa b, float rnd, /**/ Fo *f)
-// end::int[]
 {
     float r, invr, ev, f0;
     float3 dr, er, dv;
@@ -9773,18 +8732,14 @@ _I_ void pair_force(const PairDPDCM *pc, PairPa a, PairPa b, float rnd, /**/ Fo 
 }
 
 
-// tag::add[]
 _I_ void pair_add(const PairFo *b, /**/ PairFo *a)
-// end::add[]
 {
     a->x += b->x;
     a->y += b->y;
     a->z += b->z;
 }
 
-// tag::add[]
 _I_ void pair_add(const PairSFo *b, /**/ PairSFo *a)
-// end::add[]
 {
     a->x += b->x;
     a->y += b->y;
@@ -9800,9 +8755,7 @@ _I_ void pair_add(const PairSFo *b, /**/ PairSFo *a)
 
 #undef _S_
 #undef _I_
-/* end src/pair/dev.h */
 #endif /* UDX_FORCE_PAIR_DEV_COMMON */
-/* begin src/pair/imp.h */
 struct PairParams;
 struct Config;
 
@@ -9812,35 +8765,23 @@ struct PairDPDCM;
 struct PairDPDLJ;
 struct PairAdhesion;
 
-// tag::mem[]
 void pair_ini(PairParams **);
 void pair_fin(PairParams *);
-// end::mem[]
 
-// tag::set[]
 void pair_set_dpd(int ncol, const float a[], const float g[], float spow, PairParams *p); // <1>
 void pair_set_lj(float sigma, float eps, PairParams *p); // <2>
-// end::set[]
 void pair_set_adhesion(float k1, float k2, PairParams *p);
 
-// tag::cnf[]
 void pair_set_conf(const Config *, const char *name_space, PairParams *);
-// end::cnf[]
 
-// tag::upd[]
 void pair_compute_dpd_sigma(float kBT, float dt, PairParams *p);
-// end::upd[]
 
-// tag::view[]
 void pair_get_view_dpd(const PairParams*, PairDPD*);
 void pair_get_view_dpd_color(const PairParams*, PairDPDC*);
 void pair_get_view_dpd_mirrored(const PairParams*, PairDPDCM*);
 void pair_get_view_dpd_lj(const PairParams*, PairDPDLJ*);
-// end::view[]
 void pair_get_view_adhesion(const PairParams*, PairAdhesion*);
-/* end src/pair/imp.h */
 
-/* begin src/struct/parray/type.h */
 struct PaArray_v {
     const float *pp;
 };
@@ -9849,8 +8790,6 @@ struct PaCArray_v {
     const float *pp;
     const int *cc;   /* colors */
 };
-/* end src/struct/parray/type.h */
-/* begin src/struct/parray/imp.h */
 #ifndef UDX_FORCE_PARRAY_COMMON
 #define UDX_FORCE_PARRAY_COMMON
 struct PaArray {
@@ -9864,22 +8803,14 @@ struct PaCArray_v;
 
 struct Particle;
 
-// tag::push[]
 void parray_push_pp(const Particle *pp, PaArray *a);
 void parray_push_cc(const int *cc, PaArray *a);
-// end::push[]
 
-// tag::get[]
 bool parray_is_colored(const PaArray *a);
-// end::get[]
 
-// tag::view[]
 void parray_get_view(const PaArray *a, PaArray_v *v);  // <1>
 void parray_get_view(const PaArray *a, PaCArray_v *v); // <2>
-// end::view[]
-/* end src/struct/parray/imp.h */
 #endif /* UDX_FORCE_PARRAY_COMMON */
-/* begin src/struct/parray/dev.h */
 #define _S_ static __device__
 #define _I_ static __device__
 
@@ -9900,16 +8831,12 @@ _S_ void parray_get_pp(PA a, int i, /**/ PairPa *p) {
     p->vz = s2.y;
 }
 
-// tag::int[]
 _I_ void parray_get(PaArray_v a, int i, /**/ PairPa *p) // <1>
-// end::int[]
 {
     parray_get_pp(a, i, /**/ p);
 }
 
-// tag::int[]
 _I_ void parray_get(PaCArray_v a, int i, /**/ PairPa *p) // <2>
-// end::int[]
 {
     parray_get_pp(a, i, /**/ p);
     p->color = a.cc[i];
@@ -9917,34 +8844,24 @@ _I_ void parray_get(PaCArray_v a, int i, /**/ PairPa *p) // <2>
 
 #undef _S_
 #undef _I_
-/* end src/struct/parray/dev.h */
 
 /* local */
 
-/* begin src/fsi/imp.h */
 struct RNDunif;
 struct Fsi;
 struct int3;
 
-// tag::mem[]
 void fsi_ini(int rank, int3 L, /**/ Fsi **fsi);
 void fsi_fin(Fsi *fsi);
-// end::mem[]
 
-// tag::int[]
 void fsi_bind_solvent(PaArray pa, Force *ff, int n, const int *starts, /**/ Fsi *fsi);  // <1>
 void fsi_bulk(Fsi *fsi, int nw, const PairParams **prms, PaWrap *pw, FoWrap *fw); // <2>
 void fsi_halo(Fsi *fsi, int nw, const PairParams **prms, Pap26 all_pp, Fop26 all_ff, const int *all_counts); // <3>
-// end::int[]
-/* end src/fsi/imp.h */
 
 /* body */
 namespace fsi_dev {
-/* begin src/fsi/dev/type.h */
 typedef PairPa Pa;
 struct Fo { float *x, *y, *z; }; /* force */
-/* end src/fsi/dev/type.h */
-/* begin src/fsi/dev/common.h */
 static __device__ float random(uint lid, uint rid, float seed) {
     return rnd::mean0var1uu(seed, lid, rid);
 }
@@ -9972,8 +8889,6 @@ static __device__ void pair(Par params, const Pa a, const Pa b, float rnd, /**/
     *fx += x; *fy += y; *fz += z;
     atomicAdd(f.x, -x); atomicAdd(f.y, -y); atomicAdd(f.z, -z);
 }
-/* end src/fsi/dev/common.h */
-/* begin src/fsi/dev/map.common.h */
 struct Map { /* helps to find remote particle */
     int  org0, org1, org2;
     uint cnt0, cnt1, cnt2;
@@ -9991,8 +8906,6 @@ static __device__ uint m2id(const Map m, uint i) {
     id = i + (m2 ? m.org2 : m1 ? m.org1 : m.org0);
     return id;
 }
-/* end src/fsi/dev/map.common.h */
-/* begin src/fsi/dev/map/bulk.h */
 static __device__ int r2map(int3 L, const int *start, int zplane, int n, float x, float y, float z, /**/ Map *m) {
     /* coordinate [r] to map */
     int cnt0, cnt1, cnt2, org0;
@@ -10057,8 +8970,6 @@ static __device__ int r2map(int3 L, const int *start, int zplane, int n, float x
     m->cnt0 = cnt0; m->cnt1 = cnt1; m->cnt2 = cnt2;
     return 1;
 }
-/* end src/fsi/dev/map/bulk.h */
-/* begin src/fsi/dev/map/halo.h */
 static __device__ int tex2map(int3 L, const int *start, int zplane, int n1, float x, float y, float z, /**/ Map *m) {
     /* textures to map */
     int xstart, xcount;
@@ -10129,8 +9040,6 @@ static __device__ int tex2map(int3 L, const int *start, int zplane, int n1, floa
     m->cnt0 = cnt0; m->cnt1 = cnt1; m->cnt2 = cnt2;
     return 1;
 }
-/* end src/fsi/dev/map/halo.h */
-/* begin src/fsi/dev/bulk.h */
 static __device__ void pp2p(const Particle *pp, int i, /**/ Pa *p) {
     enum {X, Y, Z};
     Particle a = pp[i];
@@ -10199,8 +9108,6 @@ __global__ void bulk(Par params, int3 L, const int *start, const Particle *ppA, 
     if (i >= n0) return;
     bulk2(params, L, start, ppA, parray, i, zplane, n1, seed, ff, ff0);
 }
-/* end src/fsi/dev/bulk.h */
-/* begin src/fsi/dev/halo.h */
 static __device__ Pa warp2p(const Particle *pp, int i) {
     enum {X, Y, Z};
     Pa p;
@@ -10260,10 +9167,8 @@ __global__ void halo(Par params, int3 L, const int *cellsstart, int27 starts, Pa
     if (aid >= na) return;
     halo1(params, L, cellsstart, starts, pp, ff, aid, parray, nb, seed, /**/ ffB);
 }
-/* end src/fsi/dev/halo.h */
 }
 
-/* begin src/fsi/imp/type.h */
 struct RNDunif;
 
 struct SolventWrap {
@@ -10278,8 +9183,6 @@ struct Fsi {
     RNDunif     *rgen;
     int3 L; /* subdomain size */
 };
-/* end src/fsi/imp/type.h */
-/* begin src/fsi/imp/main.h */
 void fsi_ini(int rank, int3 L, /**/ Fsi **fsi) {
     Fsi *f;
     EMALLOC(1, fsi);
@@ -10304,8 +9207,6 @@ void fsi_bind_solvent(PaArray pa, Force *ff, int n, const int *starts, /**/ Fsi 
     w->starts = starts;
 }
 
-/* end src/fsi/imp/main.h */
-/* begin src/fsi/imp/bulk.h */
 static void bulk_one_wrap(const PairParams *params, PaWrap *pw, FoWrap *fw, Fsi *fsi) {
     int n0, n1;
     float rnd;
@@ -10348,8 +9249,6 @@ void fsi_bulk(Fsi *fsi, int nw, const PairParams **prms, PaWrap *pw, FoWrap *fw)
     for (int i = 0; i < nw; i++)
         if (prms[i]) bulk_one_wrap(prms[i], &pw[i], &fw[i], fsi);
 }
-/* end src/fsi/imp/bulk.h */
-/* begin src/fsi/imp/halo.h */
 static void fsi_halo_one_type(const PairParams *params, Fsi *fsi, Pap26 PP, Fop26 FF, const int counts[26]) {
     enum {NFRAGS = 26};
     int i, n, s;
@@ -10401,5 +9300,3 @@ void fsi_halo(Fsi *fsi, int nw, const PairParams **prms, Pap26 all_pp, Fop26 all
         if (prms[i]) fsi_halo_one_type(prms[i], fsi, pp, ff, counts);
     }
 }
-/* end src/fsi/imp/halo.h */
-/* end src/fsi/imp.cu */
