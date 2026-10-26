@@ -14,7 +14,7 @@ OBJECTS = \
  udx.cnt.o \
  udx.color.o \
  udx.comm.o \
- udx.conf.o \
+ udx.conf-libconfig.o \
  udx.coords.o \
  udx.d-mpi.o \
  udx.dbg.o \
@@ -53,7 +53,6 @@ OBJECTS = \
  udx.io-restart.o \
  udx.io-rig.o \
  udx.io-vtk-output.o \
- udx.libconfig.o \
  udx.main.o \
  udx.math.o \
  udx.mesh-complete.o \
