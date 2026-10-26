@@ -221,6 +221,8 @@ static int   warpSize = 1;
 /* end src/d/ker.h */
 #ifndef UDX_ALGO_DEVICE_API_COMMON
 #define UDX_ALGO_DEVICE_API_COMMON
+#ifndef UDX_ALGO_D_API_COMMON
+#define UDX_ALGO_D_API_COMMON
 /* begin src/d/api.h */
 namespace d {  /* a wrapper for device API */
 typedef int Stream_t; /* TODO: streams are not supported */
@@ -251,8 +253,11 @@ int PeekAtLastError(void);
 // end::api[]
 }
 /* end src/d/api.h */
+#endif /* UDX_ALGO_D_API_COMMON */
 #endif
 
+#ifndef UDX_ALGO_TYPE_COMMON
+#define UDX_ALGO_TYPE_COMMON
 /* begin src/inc/type.h */
 template <typename T, int N>
 struct Sarray { /* [s]tatic array */
@@ -307,6 +312,7 @@ struct FoWrap {
     Force *ff;
 };
 /* end src/inc/type.h */
+#endif /* UDX_ALGO_TYPE_COMMON */
 /* begin src/inc/dev.h */
 /* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
@@ -482,7 +488,7 @@ inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
 
 /* TODO: header includes header */
 /* end src/utils/kl.h */
-#endif
+#endif /* UDX_ALGO_KL_COMMON */
 
 /* begin src/struct/particle/dev.h */
 static __device__ float3 fetch_pos(int i, const Particle *pp) {

@@ -98,7 +98,7 @@ struct FoWrap {
     Force *ff;
 };
 /* end src/inc/type.h */
-#endif
+#endif /* UDX_ALGO_TYPE_COMMON */
 /* begin src/inc/dev.h */
 /* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
@@ -138,6 +138,8 @@ struct FoWrap {
 #define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
 #define DzeroA(P, n)   DsetA(P, 0, n)
 /* end src/inc/dev.h */
+#ifndef UDX_ALGO_KL_COMMON
+#define UDX_ALGO_KL_COMMON
 /* begin src/utils/kl.h */
 /* [k]ernel [l]aunch macros */
 
@@ -195,6 +197,7 @@ inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
 
 /* TODO: header includes header */
 /* end src/utils/kl.h */
+#endif /* UDX_ALGO_KL_COMMON */
 
 /* begin src/algo/convert/imp.h */
 struct Particle;

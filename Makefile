@@ -15,8 +15,7 @@ OBJECTS = \
  udx.runtime-all.o \
  udx.conf-libconfig.o \
  udx.dbg.o \
- udx.algo-all.o \
- udx.algo-edge-accumulators-scan.o \
+ udx.algo-complete.o \
  udx.control-den-outflow.o \
  udx.control-all.o \
  udx.distr-exch.o \

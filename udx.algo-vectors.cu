@@ -130,7 +130,7 @@ struct FoWrap {
     Force *ff;
 };
 /* end src/inc/type.h */
-#endif
+#endif /* UDX_ALGO_TYPE_COMMON */
 /* begin src/coords/imp.h */
 struct Coords;
 struct Coords_v;

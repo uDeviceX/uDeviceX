@@ -242,7 +242,9 @@ inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
 
 /* TODO: header includes header */
 /* end src/utils/kl.h */
-#endif
+#endif /* UDX_ALGO_KL_COMMON */
+#ifndef UDX_ALGO_D_API_COMMON
+#define UDX_ALGO_D_API_COMMON
 /* begin src/d/api.h */
 #ifndef UDX_ALGO_DEVICE_API_COMMON
 #define UDX_ALGO_DEVICE_API_COMMON
@@ -275,6 +277,7 @@ int PeekAtLastError(void);
 // end::api[]
 }
 /* end src/d/api.h */
+#endif /* UDX_ALGO_D_API_COMMON */
 #endif
 /* begin src/d/q.h */
 /* function and variable type [q]ualifiers */
