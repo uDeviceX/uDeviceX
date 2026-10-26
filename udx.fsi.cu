@@ -86,6 +86,8 @@ void error_abort();
 void error_print_stack();
 /* end src/utils/error.h */
 /* begin src/d/api.h */
+#ifndef UDX_FORCE_DEVICE_API_COMMON
+#define UDX_FORCE_DEVICE_API_COMMON
 namespace d {  /* a wrapper for device API */
 typedef int Stream_t; /* TODO: streams are not supported */
 enum {MemcpyHostToHost, MemcpyHostToDevice,
@@ -115,6 +117,7 @@ int PeekAtLastError(void);
 // end::api[]
 }
 /* end src/d/api.h */
+#endif /* UDX_FORCE_DEVICE_API_COMMON */
 /* begin src/d/q.h */
 /* function and variable type [q]ualifiers */
 
@@ -241,6 +244,8 @@ float rnd_get(RNDunif *r);                                  // <4>
 // end::interface[]
 /* end src/math/rnd/imp.h */
 /* begin src/math/rnd/dev.h */
+#ifndef UDX_FORCE_RND_COMMON
+#define UDX_FORCE_RND_COMMON
 namespace rnd {
 /* random number from the ArcSine distribution on [-sqrt(2),sqrt(2)]
    mean = 0, variance = 1 */
@@ -316,7 +321,10 @@ inline __device__ float mean0var1uu( float seed, uint u, uint v )
 
 }
 /* end src/math/rnd/dev.h */
+#endif /* UDX_FORCE_RND_COMMON */
 /* begin src/math/dev.h */
+#ifndef UDX_FORCE_MATH_COMMON
+#define UDX_FORCE_MATH_COMMON
 /* use templates here because we might have mixed float/double */
 
 #define _HD_ __host__ __device__
@@ -376,10 +384,11 @@ _HD_ void axpy(const T1 a, const T2 *x, /*io*/ T3 *y) {
     y->z += a * x->z;
 }
 /* end src/math/dev.h */
+#endif /* UDX_FORCE_MATH_COMMON */
 
 /* begin src/inc/def.h */
-#ifndef UDX_PAIR_FSI_DEF_COMMON
-#define UDX_PAIR_FSI_DEF_COMMON
+#ifndef UDX_FORCE_DEF_COMMON
+#define UDX_FORCE_DEF_COMMON
 /* solvent colors */
 #define XMACRO_COLOR(_)                         \
     _(BLUE)                                     \
@@ -508,7 +517,10 @@ void check(int code, const char *file, int line);
 }
 /* end src/utils/mc.h */
 /* begin src/frag/imp.h */
+#ifndef UDX_FORCE_FRAG_COMMON
+#define UDX_FORCE_FRAG_COMMON
 enum {frag_bulk = 26};
+#endif
 
 struct int3;
 
@@ -633,6 +645,8 @@ END
 /* end src/frag/dev.h */
 
 /* begin src/utils/kl.h */
+#ifndef UDX_FORCE_KL_COMMON
+#define UDX_FORCE_KL_COMMON
 /* [k]ernel [l]aunch macros */
 
 #if    defined(KL_RELEASE)
@@ -689,7 +703,10 @@ inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
 
 /* TODO: header includes header */
 /* end src/utils/kl.h */
+#endif /* UDX_FORCE_KL_COMMON */
 /* begin src/inc/type.h */
+#ifndef UDX_FORCE_TYPE_COMMON
+#define UDX_FORCE_TYPE_COMMON
 template <typename T, int N>
 struct Sarray { /* [s]tatic array */
     T d[N];
@@ -743,6 +760,7 @@ struct FoWrap {
     Force *ff;
 };
 /* end src/inc/type.h */
+#endif /* UDX_FORCE_TYPE_COMMON */
 /* begin src/inc/dev.h */
 /* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
@@ -830,8 +848,8 @@ void dbg_check_clist(const Coords *c, const Dbg *dbg, int3 L, const int *starts,
 /* end src/dbg/imp.h */
 
 /* begin src/pair/type.h */
-#ifndef UDX_PAIR_FSI_PAIR_TYPE_COMMON
-#define UDX_PAIR_FSI_PAIR_TYPE_COMMON
+#ifndef UDX_FORCE_PAIR_TYPE_COMMON
+#define UDX_FORCE_PAIR_TYPE_COMMON
 /* maximum of pairwise dpd parameters */
 enum {
     MAX_PAR = (N_COLOR * (N_COLOR + 1)) / 2
@@ -879,8 +897,10 @@ struct PairSFo {
     float sxx, syy, szz, sxy, sxz, syz;
 };
 /* end src/pair/type.h */
-#endif
+#endif /* UDX_FORCE_PAIR_TYPE_COMMON */
 /* begin src/pair/dev.h */
+#ifndef UDX_FORCE_PAIR_DEV_COMMON
+#define UDX_FORCE_PAIR_DEV_COMMON
 #define _S_ static __device__
 #define _I_ static __device__
 
@@ -1081,6 +1101,7 @@ _I_ void pair_add(const PairSFo *b, /**/ PairSFo *a)
 #undef _S_
 #undef _I_
 /* end src/pair/dev.h */
+#endif /* UDX_FORCE_PAIR_DEV_COMMON */
 /* begin src/pair/imp.h */
 struct PairParams;
 struct Config;
@@ -1130,6 +1151,8 @@ struct PaCArray_v {
 };
 /* end src/struct/parray/type.h */
 /* begin src/struct/parray/imp.h */
+#ifndef UDX_FORCE_PARRAY_COMMON
+#define UDX_FORCE_PARRAY_COMMON
 struct PaArray {
     bool colors;
     const float *pp;
@@ -1155,6 +1178,7 @@ void parray_get_view(const PaArray *a, PaArray_v *v);  // <1>
 void parray_get_view(const PaArray *a, PaCArray_v *v); // <2>
 // end::view[]
 /* end src/struct/parray/imp.h */
+#endif /* UDX_FORCE_PARRAY_COMMON */
 /* begin src/struct/parray/dev.h */
 #define _S_ static __device__
 #define _I_ static __device__

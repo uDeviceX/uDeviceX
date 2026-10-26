@@ -223,6 +223,8 @@ struct FoWrap {
 #define DzeroA(P, n)   DsetA(P, 0, n)
 /* end src/inc/dev.h */
 /* begin src/struct/parray/imp.h */
+#ifndef UDX_FORCE_PARRAY_COMMON
+#define UDX_FORCE_PARRAY_COMMON
 struct PaArray {
     bool colors;
     const float *pp;
@@ -248,6 +250,7 @@ void parray_get_view(const PaArray *a, PaArray_v *v);  // <1>
 void parray_get_view(const PaArray *a, PaCArray_v *v); // <2>
 // end::view[]
 /* end src/struct/parray/imp.h */
+#endif /* UDX_FORCE_PARRAY_COMMON */
 
 /* begin src/d/api.h */
 #ifndef UDX_FORCE_DEVICE_API_COMMON
@@ -446,7 +449,10 @@ int status2errcode(MPI_Status *status);
 }
 /* end src/mpi/wrapper.h */
 /* begin src/frag/imp.h */
+#ifndef UDX_FORCE_FRAG_COMMON
+#define UDX_FORCE_FRAG_COMMON
 enum {frag_bulk = 26};
+#endif
 
 struct int3;
 

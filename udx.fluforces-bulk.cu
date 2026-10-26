@@ -487,6 +487,8 @@ float rnd_get(RNDunif *r);                                  // <4>
 // end::interface[]
 /* end src/math/rnd/imp.h */
 /* begin src/math/rnd/dev.h */
+#ifndef UDX_FORCE_RND_COMMON
+#define UDX_FORCE_RND_COMMON
 namespace rnd {
 /* random number from the ArcSine distribution on [-sqrt(2),sqrt(2)]
    mean = 0, variance = 1 */
@@ -562,6 +564,7 @@ inline __device__ float mean0var1uu( float seed, uint u, uint v )
 
 }
 /* end src/math/rnd/dev.h */
+#endif /* UDX_FORCE_RND_COMMON */
 /* begin src/math/dev.h */
 #ifndef UDX_FORCE_MATH_COMMON
 #define UDX_FORCE_MATH_COMMON
@@ -627,6 +630,8 @@ _HD_ void axpy(const T1 a, const T2 *x, /*io*/ T3 *y) {
 #endif /* UDX_FORCE_MATH_COMMON */
 
 /* begin src/pair/type.h */
+#ifndef UDX_FORCE_PAIR_TYPE_COMMON
+#define UDX_FORCE_PAIR_TYPE_COMMON
 /* maximum of pairwise dpd parameters */
 enum {
     MAX_PAR = (N_COLOR * (N_COLOR + 1)) / 2
@@ -674,7 +679,10 @@ struct PairSFo {
     float sxx, syy, szz, sxy, sxz, syz;
 };
 /* end src/pair/type.h */
+#endif /* UDX_FORCE_PAIR_TYPE_COMMON */
 /* begin src/pair/dev.h */
+#ifndef UDX_FORCE_PAIR_DEV_COMMON
+#define UDX_FORCE_PAIR_DEV_COMMON
 #define _S_ static __device__
 #define _I_ static __device__
 
@@ -875,6 +883,7 @@ _I_ void pair_add(const PairSFo *b, /**/ PairSFo *a)
 #undef _S_
 #undef _I_
 /* end src/pair/dev.h */
+#endif /* UDX_FORCE_PAIR_DEV_COMMON */
 /* begin src/pair/imp.h */
 struct PairParams;
 struct Config;

@@ -15,9 +15,8 @@ OBJECTS = \
  udx.distr-all-complete.o \
  udx.exch-flu-halo-complete.o \
  udx.exch-mesh-obj-complete.o \
- udx.force-all-complete.o \
+ udx.force-pair-complete.o \
  udx.io-fraghe-complete.o \
- udx.pair-fsi.o \
  udx.mesh-struct-complete.o \
  udx.rig-rbc-core-complete.o \
  udx.scheme-system-complete.o \
