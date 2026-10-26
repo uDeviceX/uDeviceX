@@ -84,6 +84,8 @@ void check(int rc, const char *file, int line);
 /* TODO: header includes header */
 /* end src/utils/cc.h */
 /* begin src/utils/kl.h */
+#ifndef UDX_CONTROL_KL_COMMON
+#define UDX_CONTROL_KL_COMMON
 /* [k]ernel [l]aunch macros */
 
 #if    defined(KL_RELEASE)
@@ -140,6 +142,7 @@ inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
 
 /* TODO: header includes header */
 /* end src/utils/kl.h */
+#endif /* UDX_CONTROL_KL_COMMON */
 /* begin src/d/api.h */
 #ifndef UDX_D_MPI_COLOR_D_API
 #define UDX_D_MPI_COLOR_D_API
@@ -172,6 +175,9 @@ int PeekAtLastError(void);
 // end::api[]
 }
 /* end src/d/api.h */
+#endif
+#ifndef UDX_CONTROL_D_API_COMMON
+#define UDX_CONTROL_D_API_COMMON
 #endif
 
 /* begin src/inc/dev.h */
@@ -214,6 +220,8 @@ int PeekAtLastError(void);
 #define DzeroA(P, n)   DsetA(P, 0, n)
 /* end src/inc/dev.h */
 /* begin src/inc/type.h */
+#ifndef UDX_CONTROL_TYPE_COMMON
+#define UDX_CONTROL_TYPE_COMMON
 template <typename T, int N>
 struct Sarray { /* [s]tatic array */
     T d[N];
@@ -267,10 +275,11 @@ struct FoWrap {
     Force *ff;
 };
 /* end src/inc/type.h */
+#endif /* UDX_CONTROL_TYPE_COMMON */
 
 /* begin src/coords/type.h */
-#ifndef UDX_COLOR_COORDS_TYPES
-#define UDX_COLOR_COORDS_TYPES
+#ifndef UDX_CONTROL_COORDS_COMMON
+#define UDX_CONTROL_COORDS_COMMON
 // tag::view[]
 struct Coords_v {
     int xc, yc, zc; /* rank coordinates        */
@@ -496,14 +505,14 @@ void decolor_tracers(const Coords *coords, int color, const float R, const float
     KL(color_dev::decolor_tracer, (k_cnf(n)), (view, R, Po, color, n, pp, cc, rnd.state));
 }
 
-static void ini_rnd(int n, curandState_t *state) {
+static void color_ini_rnd(int n, curandState_t *state) {
     long seed = 1234567;
     KL(color_dev::ini_rnd, (k_cnf(n)), (seed, n, state));
 }
 
 void tracers_ini(const int n) {
     Dalloc(&rnd.state, n);
-    ini_rnd(n, rnd.state);
+    color_ini_rnd(n, rnd.state);
 }
 
 void tracers_fin() {

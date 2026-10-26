@@ -313,8 +313,8 @@ int status2errcode(MPI_Status *status);
 /* end src/mpi/wrapper.h */
 
 /* begin src/coords/type.h */
-#ifndef UDX_COLOR_COORDS_TYPES
-#define UDX_COLOR_COORDS_TYPES
+#ifndef UDX_CONTROL_COORDS_COMMON
+#define UDX_CONTROL_COORDS_COMMON
 // tag::view[]
 struct Coords_v {
     int xc, yc, zc; /* rank coordinates        */
