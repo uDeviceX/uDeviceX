@@ -73,8 +73,8 @@ const char* get_filename_ext(const char*);
 /* end src/utils/imp.h */
 
 /* begin src/inc/type.h */
-#ifndef UDX_MESH_COMMON_CUH
-#define UDX_MESH_COMMON_CUH
+#ifndef UDX_EXCH_TYPE_COMMON
+#define UDX_EXCH_TYPE_COMMON
 template <typename T, int N>
 struct Sarray { /* [s]tatic array */
     T d[N];
@@ -128,7 +128,7 @@ struct FoWrap {
     Force *ff;
 };
 /* end src/inc/type.h */
-#endif
+#endif /* UDX_EXCH_TYPE_COMMON */
 
 /* begin src/struct/parray/imp.h */
 #ifndef UDX_STRUCT_PARRAY_COMMON

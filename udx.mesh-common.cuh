@@ -1,7 +1,10 @@
-#ifndef UDX_MESH_COMMON_CUH
-#define UDX_MESH_COMMON_CUH
+#ifndef UDX_EXCH_TYPE_COMMON
+#define UDX_EXCH_TYPE_COMMON
 
+#ifndef UDX_MESH_COORD_COMMON
+#define UDX_MESH_COORD_COMMON
 enum {X, Y, Z};
+#endif
 
 template <typename T, int N>
 struct Sarray { T d[N]; };
@@ -26,4 +29,4 @@ typedef Sarray<Positioncp*, 26> Pocpp26;
 struct PaWrap { int n; const Particle *pp; };
 struct FoWrap { int n; Force *ff; };
 
-#endif
+#endif /* UDX_EXCH_TYPE_COMMON */

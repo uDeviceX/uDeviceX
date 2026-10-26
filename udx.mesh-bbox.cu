@@ -4,8 +4,8 @@
 /* begin src/mesh/bbox/imp.cpp */
 #include <vector_types.h>
 
-#ifndef UDX_MESH_COMMON_CUH
-#define UDX_MESH_COMMON_CUH
+#ifndef UDX_EXCH_TYPE_COMMON
+#define UDX_EXCH_TYPE_COMMON
 /* begin src/inc/type.h */
 template <typename T, int N>
 struct Sarray { /* [s]tatic array */

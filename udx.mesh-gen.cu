@@ -174,8 +174,8 @@ enum {
 #define RBC_SPRING_CAP (0.99)
 /* end src/inc/def.h */
 #endif
-#ifndef UDX_MESH_COMMON_CUH
-#define UDX_MESH_COMMON_CUH
+#ifndef UDX_EXCH_TYPE_COMMON
+#define UDX_EXCH_TYPE_COMMON
 /* begin src/inc/type.h */
 template <typename T, int N>
 struct Sarray { /* [s]tatic array */
@@ -230,7 +230,7 @@ struct FoWrap {
     Force *ff;
 };
 /* end src/inc/type.h */
-#endif
+#endif /* UDX_EXCH_TYPE_COMMON */
 
 /* begin src/utils/msg.h */
 // tag::int[]

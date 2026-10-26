@@ -155,8 +155,8 @@ void error_print_stack();
 #define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
 #define DzeroA(P, n)   DsetA(P, 0, n)
 /* end src/inc/dev.h */
-#ifndef UDX_MESH_KL_COMMON
-#define UDX_MESH_KL_COMMON
+#ifndef UDX_EXCH_KL_COMMON
+#define UDX_EXCH_KL_COMMON
 /* begin src/utils/kl.h */
 /* [k]ernel [l]aunch macros */
 
@@ -190,7 +190,7 @@ namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
 /* end src/utils/kl/sync.h */
 #else
   #error KL_* is undefined
-#endif
+#endif /* UDX_EXCH_KL_COMMON */
 
 /* begin src/utils/kl/common.h */
 namespace kl {
@@ -248,8 +248,8 @@ void check(int rc, const char *file, int line);
 
 /* TODO: header includes header */
 /* end src/utils/cc.h */
-#ifndef UDX_MESH_COMMON_CUH
-#define UDX_MESH_COMMON_CUH
+#ifndef UDX_EXCH_TYPE_COMMON
+#define UDX_EXCH_TYPE_COMMON
 /* begin src/inc/type.h */
 template <typename T, int N>
 struct Sarray { /* [s]tatic array */
@@ -304,10 +304,10 @@ struct FoWrap {
     Force *ff;
 };
 /* end src/inc/type.h */
-#endif
+#endif /* UDX_EXCH_TYPE_COMMON */
 /* begin src/d/api.h */
-#ifndef UDX_MESH_DEVICE_API_COMMON
-#define UDX_MESH_DEVICE_API_COMMON
+#ifndef UDX_EXCH_DEVICE_API_COMMON
+#define UDX_EXCH_DEVICE_API_COMMON
 namespace d {  /* a wrapper for device API */
 typedef int Stream_t; /* TODO: streams are not supported */
 enum {MemcpyHostToHost, MemcpyHostToDevice,
@@ -337,7 +337,7 @@ int PeekAtLastError(void);
 // end::api[]
 }
 /* end src/d/api.h */
-#endif
+#endif /* UDX_EXCH_DEVICE_API_COMMON */
 
 #ifndef UDX_MESH_FORCE_KANTOR_COMMON_CUH
 #define UDX_MESH_FORCE_KANTOR_COMMON_CUH
@@ -648,7 +648,10 @@ _I_ int cubic(real a, real b, real c,
 /* begin src/mesh_bounce/dev/utils.h */
 typedef double real;
 typedef double3 real3;
+#ifndef UDX_MESH_COORD_COMMON
+#define UDX_MESH_COORD_COMMON
 enum {X, Y, Z};
+#endif
 
 
 template <typename T> _S_ T min3(T a, T b, T c) {return min(a, min(b, c));}

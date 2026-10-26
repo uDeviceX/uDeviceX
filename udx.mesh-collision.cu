@@ -294,8 +294,8 @@ static int   warpSize = 1;
   #error DEV_* is undefined
 #endif
 /* end src/d/ker.h */
-#ifndef UDX_MESH_DEVICE_API_COMMON
-#define UDX_MESH_DEVICE_API_COMMON
+#ifndef UDX_EXCH_DEVICE_API_COMMON
+#define UDX_EXCH_DEVICE_API_COMMON
 /* begin src/d/api.h */
 namespace d {  /* a wrapper for device API */
 typedef int Stream_t; /* TODO: streams are not supported */
@@ -328,8 +328,8 @@ int PeekAtLastError(void);
 /* end src/d/api.h */
 #endif
 
-#ifndef UDX_MESH_COMMON_CUH
-#define UDX_MESH_COMMON_CUH
+#ifndef UDX_EXCH_TYPE_COMMON
+#define UDX_EXCH_TYPE_COMMON
 /* begin src/inc/type.h */
 template <typename T, int N>
 struct Sarray { /* [s]tatic array */
@@ -500,8 +500,8 @@ void triangles_fin(Triangles*);
 // end::interface[]
 /* end src/mesh/triangles/imp.h */
 
-#ifndef UDX_MESH_KL_COMMON
-#define UDX_MESH_KL_COMMON
+#ifndef UDX_EXCH_KL_COMMON
+#define UDX_EXCH_KL_COMMON
 /* begin src/utils/kl.h */
 /* [k]ernel [l]aunch macros */
 
