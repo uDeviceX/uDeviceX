@@ -44,6 +44,8 @@
 
 
 /* begin src/inc/type.h */
+#ifndef UDX_RBC_FORCE_TYPE_COMMON
+#define UDX_RBC_FORCE_TYPE_COMMON
 template <typename T, int N>
 struct Sarray { /* [s]tatic array */
     T d[N];
@@ -97,6 +99,7 @@ struct FoWrap {
     Force *ff;
 };
 /* end src/inc/type.h */
+#endif
 /* begin src/inc/dev.h */
 /* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
@@ -137,6 +140,8 @@ struct FoWrap {
 #define DzeroA(P, n)   DsetA(P, 0, n)
 /* end src/inc/dev.h */
 /* begin src/math/dev.h */
+#ifndef UDX_RBC_FORCE_MATH_COMMON
+#define UDX_RBC_FORCE_MATH_COMMON
 /* use templates here because we might have mixed float/double */
 
 #define _HD_ __host__ __device__
@@ -196,6 +201,7 @@ _HD_ void axpy(const T1 a, const T2 *x, /*io*/ T3 *y) {
     y->z += a * x->z;
 }
 /* end src/math/dev.h */
+#endif
 
 /* begin src/utils/imp.h */
 // tag::mem[]
@@ -454,6 +460,8 @@ void check(int rc, const char *file, int line);
 /* TODO: header includes header */
 /* end src/utils/cc.h */
 /* begin src/utils/kl.h */
+#ifndef UDX_RBC_FORCE_KL_COMMON
+#define UDX_RBC_FORCE_KL_COMMON
 /* [k]ernel [l]aunch macros */
 
 #if    defined(KL_RELEASE)
@@ -510,6 +518,7 @@ inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
 
 /* TODO: header includes header */
 /* end src/utils/kl.h */
+#endif
 /* begin src/algo/utils/shfl.h */
 #define _I_ static __device__
 

@@ -297,6 +297,8 @@ enum {
 /* end src/inc/def.h */
 #endif
 /* begin src/inc/type.h */
+#ifndef UDX_RBC_FORCE_TYPE_COMMON
+#define UDX_RBC_FORCE_TYPE_COMMON
 template <typename T, int N>
 struct Sarray { /* [s]tatic array */
     T d[N];
@@ -350,6 +352,7 @@ struct FoWrap {
     Force *ff;
 };
 /* end src/inc/type.h */
+#endif
 /* begin src/inc/dev.h */
 /* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
@@ -390,6 +393,8 @@ struct FoWrap {
 #define DzeroA(P, n)   DsetA(P, 0, n)
 /* end src/inc/dev.h */
 /* begin src/math/dev.h */
+#ifndef UDX_RBC_FORCE_MATH_COMMON
+#define UDX_RBC_FORCE_MATH_COMMON
 /* use templates here because we might have mixed float/double */
 
 #define _HD_ __host__ __device__
@@ -449,6 +454,7 @@ _HD_ void axpy(const T1 a, const T2 *x, /*io*/ T3 *y) {
     y->z += a * x->z;
 }
 /* end src/math/dev.h */
+#endif
 /* begin src/math/tri/dev.h */
 #ifdef TRI_HOST
   #define _I_
@@ -719,6 +725,8 @@ const char* get_filename_ext(const char*);
 #endif
 /* end src/d/q.h */
 /* begin src/d/api.h */
+#ifndef UDX_RBC_FORCE_DEVICE_API_COMMON
+#define UDX_RBC_FORCE_DEVICE_API_COMMON
 namespace d {  /* a wrapper for device API */
 typedef int Stream_t; /* TODO: streams are not supported */
 enum {MemcpyHostToHost, MemcpyHostToDevice,
@@ -748,6 +756,7 @@ int PeekAtLastError(void);
 // end::api[]
 }
 /* end src/d/api.h */
+ #endif
 /* begin src/d/ker.h */
 #if   defined(DEV_CUDA)
 /* begin src/d/cuda/ker.h */
@@ -836,6 +845,8 @@ void check(int rc, const char *file, int line);
 /* TODO: header includes header */
 /* end src/utils/cc.h */
 /* begin src/utils/kl.h */
+#ifndef UDX_RBC_FORCE_KL_COMMON
+#define UDX_RBC_FORCE_KL_COMMON
 /* [k]ernel [l]aunch macros */
 
 #if    defined(KL_RELEASE)
@@ -892,6 +903,7 @@ inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
 
 /* TODO: header includes header */
 /* end src/utils/kl.h */
+#endif
 
 /* begin src/rbc/params/imp.h */
 struct Config;
@@ -990,7 +1002,10 @@ void bending_apply(Bending*, const RbcParams*, const RbcQuants*, /**/ Force*); /
 struct RbcRnd;
 
 // tag::enum[]
+#ifndef UDX_RBC_FORCE_SEED_TIME
+#define UDX_RBC_FORCE_SEED_TIME
 enum {SEED_TIME = -1}; /* magic seed: ini from "time" */
+#endif
 // end::enum[]
 
 // tag::mem[]

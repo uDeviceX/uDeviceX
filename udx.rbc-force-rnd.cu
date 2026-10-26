@@ -253,7 +253,10 @@ int GenerateNormal(Generator_t g, float *outputPtr, size_t n);
 struct RbcRnd;
 
 // tag::enum[]
+#ifndef UDX_RBC_FORCE_SEED_TIME
+#define UDX_RBC_FORCE_SEED_TIME
 enum {SEED_TIME = -1}; /* magic seed: ini from "time" */
+#endif
 // end::enum[]
 
 // tag::mem[]
