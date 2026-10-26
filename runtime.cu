@@ -1039,10 +1039,7 @@ void tracers_fin();
 struct Rnd {
     curandState_t * state;
 } color_rnd;
-namespace color_dev
-{
-
-__global__ void linear_flux(int3 L, int dir, int color, int n, const Particle *pp, int *cc) {
+__global__ void color_linear_flux_kernel(int3 L, int dir, int color, int n, const Particle *pp, int *cc) {
     int i;
     Particle p;
     i = threadIdx.x + blockIdx.x * blockDim.x;
@@ -1054,7 +1051,7 @@ __global__ void linear_flux(int3 L, int dir, int color, int n, const Particle *p
         cc[i] = color;
 }
 
-__global__ void radial_flux(const Coords_v c, const float R, const float Po, int color, int n, const Particle *pp, int *cc, curandState_t *rg) {
+__global__ void color_radial_flux_kernel(const Coords_v c, const float R, const float Po, int color, int n, const Particle *pp, int *cc, curandState_t *rg) {
 
     long i = threadIdx.x + blockIdx.x * blockDim.x;
     curandState_t rnd_state = rg[i];
@@ -1081,7 +1078,7 @@ __global__ void radial_flux(const Coords_v c, const float R, const float Po, int
     }
 }
 
-__global__ void decolor_tracer(const Coords_v c, const float R, const float Po, const int color, const int n, const Particle *pp, int *cc, curandState_t *rg) {
+__global__ void color_decolor_tracer_kernel(const Coords_v c, const float R, const float Po, const int color, const int n, const Particle *pp, int *cc, curandState_t *rg) {
 
     int i;
     i = threadIdx.x + blockIdx.x * blockDim.x;
@@ -1112,20 +1109,17 @@ __global__ void decolor_tracer(const Coords_v c, const float R, const float Po, 
     }
 }
 
-__global__ void ini_rnd(long seed, int n, curandState_t *state) {
+__global__ void color_ini_rnd_kernel(long seed, int n, curandState_t *state) {
     long i;
     i = threadIdx.x + blockIdx.x * blockDim.x;
     if (i >= n) return;
     curand_init(seed, i, 0, &state[i]);
 }
 
-}
-
-
 void color_linear_flux(const Coords *coords, int3 L, int dir, int color, int n, const Particle *pp, int *cc) {
     assert(dir >= 0 && dir <= 2);
     if (is_end(coords, dir))
-        KL(color_dev::linear_flux, (k_cnf(n)), (L, dir, color, n, pp, cc));
+        KL(color_linear_flux_kernel, (k_cnf(n)), (L, dir, color, n, pp, cc));
 }
 
 void color_tracers(const Coords *coords, int color, const float R, const float Po, int n, const Particle *pp, int *cc) {
@@ -1141,19 +1135,19 @@ void color_tracers(const Coords *coords, int color, const float R, const float P
     if (inradius) {
         Coords_v view;
         coords_get_view(coords, &view);
-    KL(color_dev::radial_flux, (k_cnf(n)), (view, R, Po, color, n, pp, cc, color_rnd.state));
+    KL(color_radial_flux_kernel, (k_cnf(n)), (view, R, Po, color, n, pp, cc, color_rnd.state));
     }
 }
 
 void decolor_tracers(const Coords *coords, int color, const float R, const float Po, int n, const Particle *pp, int *cc) {
     Coords_v view;
     coords_get_view(coords, &view);
-    KL(color_dev::decolor_tracer, (k_cnf(n)), (view, R, Po, color, n, pp, cc, color_rnd.state));
+    KL(color_decolor_tracer_kernel, (k_cnf(n)), (view, R, Po, color, n, pp, cc, color_rnd.state));
 }
 
 static void color_ini_rnd(int n, curandState_t *state) {
     long seed = 1234567;
-    KL(color_dev::ini_rnd, (k_cnf(n)), (seed, n, state));
+    KL(color_ini_rnd_kernel, (k_cnf(n)), (seed, n, state));
 }
 
 void tracers_ini(const int n) {
