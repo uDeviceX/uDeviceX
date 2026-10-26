@@ -14,9 +14,8 @@ OBJECTS = \
  udx.runtime-control-complete.o \
  udx.support-grid-algo-complete.o \
  udx.distr-all-complete.o \
- udx.exch-flu.o \
+ udx.exch-flu-halo-complete.o \
  udx.exch-mesh-obj-complete.o \
- udx.flu-halo.o \
  udx.fluforces-bulk-main.o \
  udx.io-fraghe-complete.o \
  udx.pair-fsi.o \

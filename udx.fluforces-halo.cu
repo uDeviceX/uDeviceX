@@ -160,6 +160,8 @@ static int   warpSize = 1;
 #endif
 /* end src/d/q.h */
 /* begin src/d/api.h */
+#ifndef UDX_FLU_EXCH_DEVICE_API_COMMON
+#define UDX_FLU_EXCH_DEVICE_API_COMMON
 #ifndef UDX_FLU_HALO_DEVICE_API_COMMON
 #define UDX_FLU_HALO_DEVICE_API_COMMON
 namespace d {  /* a wrapper for device API */
@@ -191,9 +193,12 @@ int PeekAtLastError(void);
 // end::api[]
 }
 /* end src/d/api.h */
+#endif /* UDX_FLU_EXCH_DEVICE_API_COMMON */
 #endif
 
 /* begin src/frag/dev.h */
+#ifndef UDX_FLU_EXCH_FRAG_DEV_COMMON
+#define UDX_FLU_EXCH_FRAG_DEV_COMMON
 #ifdef FRAG_HOST
   #define _I_
   #define _S_ static
@@ -283,7 +288,10 @@ END
 #undef BEGIN
 #undef END
 /* end src/frag/dev.h */
+#endif /* UDX_FLU_EXCH_FRAG_DEV_COMMON */
 /* begin src/frag/imp.h */
+#ifndef UDX_FLU_EXCH_FRAG_IMP_COMMON
+#define UDX_FLU_EXCH_FRAG_IMP_COMMON
 enum {frag_bulk = 26};
 
 struct int3;
@@ -317,8 +325,11 @@ void estimates(int3 L, int nfrags, float maxd, /**/ int *cap); // <1>
 
 } // frag_hst
 /* end src/frag/imp.h */
+#endif /* UDX_FLU_EXCH_FRAG_IMP_COMMON */
 
 /* begin src/inc/def.h */
+#ifndef UDX_FLU_EXCH_DEF_COMMON
+#define UDX_FLU_EXCH_DEF_COMMON
 #ifndef UDX_FLU_HALO_DEF_COMMON
 #define UDX_FLU_HALO_DEF_COMMON
 /* solvent colors */
@@ -372,6 +383,7 @@ enum {
 /* for the spring forces r = min(lmax*RBC_SPRING_CAP, r) */
 #define RBC_SPRING_CAP (0.99)
 /* end src/inc/def.h */
+#endif /* UDX_FLU_EXCH_DEF_COMMON */
 #endif
 /* begin src/utils/cc.h */
 /* [c]uda [c]heck macros */
@@ -449,6 +461,8 @@ void error_print_stack();
 /* end src/utils/error.h */
 
 /* begin src/inc/type.h */
+#ifndef UDX_FLU_EXCH_TYPE_COMMON
+#define UDX_FLU_EXCH_TYPE_COMMON
 #ifndef UDX_FLU_HALO_TYPE_COMMON
 #define UDX_FLU_HALO_TYPE_COMMON
 template <typename T, int N>
@@ -504,6 +518,7 @@ struct FoWrap {
     Force *ff;
 };
 /* end src/inc/type.h */
+#endif /* UDX_FLU_EXCH_TYPE_COMMON */
 #endif
 /* begin src/inc/dev.h */
 /* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
@@ -893,6 +908,8 @@ void pair_get_view_adhesion(const PairParams*, PairAdhesion*);
 /* end src/pair/imp.h */
 
 /* begin src/utils/kl.h */
+#ifndef UDX_FLU_EXCH_KL_COMMON
+#define UDX_FLU_EXCH_KL_COMMON
 /* [k]ernel [l]aunch macros */
 
 #if    defined(KL_RELEASE)
@@ -949,6 +966,7 @@ inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
 
 /* TODO: header includes header */
 /* end src/utils/kl.h */
+#endif /* UDX_FLU_EXCH_KL_COMMON */
 
 /* begin src/math/rnd/dev.h */
 namespace rnd {
@@ -1038,6 +1056,8 @@ struct PaCArray_v {
 };
 /* end src/struct/parray/type.h */
 /* begin src/struct/parray/imp.h */
+#ifndef UDX_FLU_PARRAY_COMMON
+#define UDX_FLU_PARRAY_COMMON
 struct PaArray {
     bool colors;
     const float *pp;
@@ -1063,6 +1083,7 @@ void parray_get_view(const PaArray *a, PaArray_v *v);  // <1>
 void parray_get_view(const PaArray *a, PaCArray_v *v); // <2>
 // end::view[]
 /* end src/struct/parray/imp.h */
+#endif /* UDX_FLU_PARRAY_COMMON */
 /* begin src/struct/parray/dev.h */
 #define _S_ static __device__
 #define _I_ static __device__
@@ -1246,6 +1267,8 @@ _I_ PairSFo farray_fo0(FoSArray_v)
 /* end src/struct/farray/dev.h */
 
 /* begin src/flu/type.h */
+#ifndef UDX_FLU_TYPE_COMMON
+#define UDX_FLU_TYPE_COMMON
 /* helpers to communicate between halo interactions and exchanger */
 
 namespace flu {
@@ -1276,6 +1299,7 @@ typedef Sarray<RndFrag, 26> RndFrag26;
 
 } // flu
 /* end src/flu/type.h */
+#endif /* UDX_FLU_TYPE_COMMON */
 
 /* begin src/fluforces/halo/imp.h */
 struct PairParams;
