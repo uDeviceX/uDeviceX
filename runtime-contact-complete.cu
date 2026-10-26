@@ -1,40 +1,25 @@
 
-#line 1 "udx.runtime-contact-complete.cu"
 // Editable compilation unit for runtime/support and contact units.
 
-#line 1 "udx.runtime-support-complete.cu"
 
-#line 1 "udx.runtime-support-complete.cu"
 // Grouped editable compilation unit for runtime/control and support/grid algorithms.
 
-#line 1 "udx.runtime-control-complete.cu"
 
-#line 1 "udx.runtime-control-complete.cu"
 // Grouped editable compilation unit for runtime/config and control systems.
 
-#line 1 "udx.runtime-config-complete.cu"
 
-#line 1 "udx.runtime-config-complete.cu"
 // Grouped editable compilation unit for runtime and configuration code.
 
-#line 1 "udx.runtime-all.cu"
 
-#line 1 "udx.runtime-all.cu"
 // Grouped editable compilation unit for device/MPI adapters and program entry.
 
-#line 1 "udx.d-mpi-color-coords.cu"
 
-#line 1 "udx.d-mpi-color-coords.cu"
 // Grouped editable compilation unit for device/MPI and color-coordinate helpers.
 
-#line 1 "udx.d-mpi.cu"
 
-#line 1 "udx.d-mpi.cu"
 // Grouped editable compilation unit for device and MPI adapters.
 
-#line 1 "udx.d.cu"
 
-#line 1 "udx.d.cu"
 // generated from udx.flat.cu
 #include "udx.config.cuh"
 
@@ -426,13 +411,9 @@ int PeekAtLastError(void) {
 }
 /* end src/d/api.cu */
 
-#line 1 "src/dbg/conf.cpp"
 
-#line 3 "udx.d-mpi.cu"
 
-#line 1 "udx.mpi.cu"
 
-#line 1 "udx.mpi.cu"
 // generated from udx.flat.cu
 #include "udx.config.cuh"
 
@@ -605,7 +586,6 @@ void fin() { MC(m::Finalize()); }
 } /* namespace */
 /* end src/mpi/glb.cpp */
 
-#line 1 "src/mpi/wrapper.cpp"
 
 
 /* begin src/mpi/wrapper.cpp */
@@ -776,20 +756,13 @@ int status2errcode(MPI_Status *status) { return status->MPI_ERROR; }
 }
 /* end src/mpi/wrapper.cpp */
 
-#line 1 "src/pair/conf.cpp"
 
-#line 4 "udx.d-mpi.cu"
 
-#line 3 "udx.d-mpi-color-coords.cu"
 
-#line 1 "udx.color-coords.cu"
 
-#line 1 "udx.color-coords.cu"
 // Grouped editable compilation unit for color and coordinate helpers.
 
-#line 1 "udx.color.cu"
 
-#line 1 "udx.color.cu"
 // generated from udx.flat.cu
 #include "udx.config.cuh"
 
@@ -1314,13 +1287,9 @@ void tracers_fin() {
 
 /* end src/color/imp.cu */
 
-#line 1 "src/comm/imp.cpp"
 
-#line 3 "udx.color-coords.cu"
 
-#line 1 "udx.coords.cu"
 
-#line 1 "udx.coords.cu"
 // generated from udx.flat.cu
 #include "udx.config.cuh"
 
@@ -1486,7 +1455,6 @@ void coords_ini_conf(MPI_Comm cart, const Config *cfg, Coords **c) {
 }
 /* end src/coords/conf.cpp */
 
-#line 1 "src/coords/imp.cpp"
 
 
 /* begin src/coords/imp.cpp */
@@ -1918,22 +1886,14 @@ int coords_size(const Coords *c) {
 /* end src/coords/imp/main.h */
 /* end src/coords/imp.cpp */
 
-#line 1 "src/d/api.cu"
 
-#line 4 "udx.color-coords.cu"
 
-#line 4 "udx.d-mpi-color-coords.cu"
 
-#line 3 "udx.runtime-all.cu"
 
-#line 1 "udx.comm-main.cu"
 
-#line 1 "udx.comm-main.cu"
 // Grouped editable compilation unit for communication and program entry.
 
-#line 1 "udx.comm.cu"
 
-#line 1 "udx.comm.cu"
 // generated from udx.flat.cu
 #include "udx.config.cuh"
 
@@ -2704,13 +2664,9 @@ size_t comm_get_byte_capacity(int i, const hBags *b) {
 /* end src/comm/imp/main.h */
 /* end src/comm/imp.cpp */
 
-#line 1 "src/conf/imp.cpp"
 
-#line 3 "udx.comm-main.cu"
 
-#line 1 "udx.main.cu"
 
-#line 1 "udx.main.cu"
 // generated from udx.flat.cu
 #include "udx.config.cuh"
 
@@ -3009,20 +2965,13 @@ int main(int argc, char **argv) {
 }
 /* end src/main.cpp */
 
-#line 4 "udx.comm-main.cu"
 
-#line 4 "udx.runtime-all.cu"
 
-#line 3 "udx.runtime-config-complete.cu"
 
-#line 1 "udx.conf-libconfig.cu"
 
-#line 1 "udx.conf-libconfig.cu"
 // Grouped editable compilation unit for configuration and bundled libconfig.
 
-#line 1 "udx.conf.cu"
 
-#line 1 "udx.conf.cu"
 // generated from udx.flat.cu
 #include "udx.config.cuh"
 
@@ -3839,13 +3788,9 @@ bool conf_opt_vstring(const Config *c, const char *desc, int maxn, int *n, const
 /* end src/conf/imp/get.h */
 /* end src/conf/imp.cpp */
 
-#line 1 "src/control/den/conf.cpp"
 
-#line 3 "udx.conf-libconfig.cu"
 
-#line 1 "udx.libconfig.cu"
 
-#line 1 "udx.libconfig.cu"
 /* begin bundled libconfig */
 /* begin libconfig/lib/libconfig.h */
 /* ----------------------------------------------------------------------------
@@ -4703,14 +4648,12 @@ extern int libconfig_yydebug;
 
 union YYSTYPE
 {
-#line 76 "grammar.y" /* yacc.c:1909  */
 
   int ival;
   long long llval;
   double fval;
   char *sval;
 
-#line 105 "grammar.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;
@@ -4729,9 +4672,7 @@ int libconfig_yyparse (void *scanner, struct parse_context *ctx, struct scan_con
 #define libconfig_yyHEADER_H 1
 #define libconfig_yyIN_HEADER 1
 
-#line 5 "scanner.h"
 
-#line 7 "scanner.h"
 
 #define  YY_INT_ALIGNED short int
 
@@ -5439,9 +5380,7 @@ extern int yylex \
 #undef yyTABLES_NAME
 #endif
 
-#line 203 "scanner.l"
 
-#line 717 "scanner.h"
 #undef libconfig_yyIN_HEADER
 #endif /* libconfig_yyHEADER_H */
 /* end libconfig/lib/scanner.h */
@@ -6050,7 +5989,6 @@ const char *libconfig_scanctx_current_filename(struct scan_context *ctx)
 
 
 /* Copy the first part of user declarations.  */
-#line 32 "grammar.y" /* yacc.c:339  */
 
 #include <string.h>
 #include <stdlib.h>
@@ -6088,7 +6026,6 @@ void libconfig_yyerror(void *scanner, struct parse_context *ctx,
 }
 
 
-#line 115 "grammar.c" /* yacc.c:339  */
 
 # ifndef YY_NULLPTR
 #  if defined __cplusplus && 201103L <= __cplusplus
@@ -6172,14 +6109,12 @@ extern int libconfig_yydebug;
 
 union YYSTYPE
 {
-#line 76 "grammar.y" /* yacc.c:355  */
 
   int ival;
   long long llval;
   double fval;
   char *sval;
 
-#line 206 "grammar.c" /* yacc.c:355  */
 };
 
 typedef union YYSTYPE YYSTYPE;
@@ -6195,7 +6130,6 @@ int libconfig_yyparse (void *scanner, struct parse_context *ctx, struct scan_con
 
 /* Copy the second part of user declarations.  */
 
-#line 222 "grammar.c" /* yacc.c:358  */
 
 #ifdef short
 # undef short
@@ -7054,9 +6988,7 @@ yydestruct (const char *yymsg, int yytype, YYSTYPE *yyvaluep, void *scanner, str
   switch (yytype)
     {
           case 9: /* TOK_STRING  */
-#line 88 "grammar.y" /* yacc.c:1257  */
       { free(((*yyvaluep).sval)); }
-#line 1083 "grammar.c" /* yacc.c:1257  */
         break;
 
 
@@ -7322,7 +7254,6 @@ yyreduce:
   switch (yyn)
     {
         case 11:
-#line 115 "grammar.y" /* yacc.c:1646  */
     {
     ctx->setting = config_setting_add(ctx->parent, (yyvsp[0].sval), CONFIG_TYPE_NONE);
 
@@ -7336,11 +7267,9 @@ yyreduce:
       CAPTURE_PARSE_POS(ctx->setting);
     }
   }
-#line 1363 "grammar.c" /* yacc.c:1646  */
     break;
 
   case 13:
-#line 134 "grammar.y" /* yacc.c:1646  */
     {
     if(IN_LIST())
     {
@@ -7354,20 +7283,16 @@ yyreduce:
       ctx->setting = NULL;
     }
   }
-#line 1381 "grammar.c" /* yacc.c:1646  */
     break;
 
   case 14:
-#line 149 "grammar.y" /* yacc.c:1646  */
     {
     if(ctx->parent)
       ctx->parent = ctx->parent->parent;
   }
-#line 1390 "grammar.c" /* yacc.c:1646  */
     break;
 
   case 15:
-#line 157 "grammar.y" /* yacc.c:1646  */
     {
     if(IN_LIST())
     {
@@ -7381,32 +7306,24 @@ yyreduce:
       ctx->setting = NULL;
     }
   }
-#line 1408 "grammar.c" /* yacc.c:1646  */
     break;
 
   case 16:
-#line 172 "grammar.y" /* yacc.c:1646  */
     {
     if(ctx->parent)
       ctx->parent = ctx->parent->parent;
   }
-#line 1417 "grammar.c" /* yacc.c:1646  */
     break;
 
   case 21:
-#line 186 "grammar.y" /* yacc.c:1646  */
     { libconfig_parsectx_append_string(ctx, (yyvsp[0].sval)); free((yyvsp[0].sval)); }
-#line 1423 "grammar.c" /* yacc.c:1646  */
     break;
 
   case 22:
-#line 187 "grammar.y" /* yacc.c:1646  */
     { libconfig_parsectx_append_string(ctx, (yyvsp[0].sval)); free((yyvsp[0].sval)); }
-#line 1429 "grammar.c" /* yacc.c:1646  */
     break;
 
   case 23:
-#line 192 "grammar.y" /* yacc.c:1646  */
     {
     if(IN_ARRAY() || IN_LIST())
     {
@@ -7426,11 +7343,9 @@ yyreduce:
     else
       config_setting_set_bool(ctx->setting, (int)(yyvsp[0].ival));
   }
-#line 1453 "grammar.c" /* yacc.c:1646  */
     break;
 
   case 24:
-#line 212 "grammar.y" /* yacc.c:1646  */
     {
     if(IN_ARRAY() || IN_LIST())
     {
@@ -7452,11 +7367,9 @@ yyreduce:
       config_setting_set_format(ctx->setting, CONFIG_FORMAT_DEFAULT);
     }
   }
-#line 1479 "grammar.c" /* yacc.c:1646  */
     break;
 
   case 25:
-#line 234 "grammar.y" /* yacc.c:1646  */
     {
     if(IN_ARRAY() || IN_LIST())
     {
@@ -7478,11 +7391,9 @@ yyreduce:
       config_setting_set_format(ctx->setting, CONFIG_FORMAT_DEFAULT);
     }
   }
-#line 1505 "grammar.c" /* yacc.c:1646  */
     break;
 
   case 26:
-#line 256 "grammar.y" /* yacc.c:1646  */
     {
     if(IN_ARRAY() || IN_LIST())
     {
@@ -7504,11 +7415,9 @@ yyreduce:
       config_setting_set_format(ctx->setting, CONFIG_FORMAT_HEX);
     }
   }
-#line 1531 "grammar.c" /* yacc.c:1646  */
     break;
 
   case 27:
-#line 278 "grammar.y" /* yacc.c:1646  */
     {
     if(IN_ARRAY() || IN_LIST())
     {
@@ -7530,11 +7439,9 @@ yyreduce:
       config_setting_set_format(ctx->setting, CONFIG_FORMAT_HEX);
     }
   }
-#line 1557 "grammar.c" /* yacc.c:1646  */
     break;
 
   case 28:
-#line 300 "grammar.y" /* yacc.c:1646  */
     {
     if(IN_ARRAY() || IN_LIST())
     {
@@ -7552,11 +7459,9 @@ yyreduce:
     else
       config_setting_set_float(ctx->setting, (yyvsp[0].fval));
   }
-#line 1579 "grammar.c" /* yacc.c:1646  */
     break;
 
   case 29:
-#line 318 "grammar.y" /* yacc.c:1646  */
     {
     if(IN_ARRAY() || IN_LIST())
     {
@@ -7581,11 +7486,9 @@ yyreduce:
       __delete(s);
     }
   }
-#line 1608 "grammar.c" /* yacc.c:1646  */
     break;
 
   case 40:
-#line 368 "grammar.y" /* yacc.c:1646  */
     {
     if(IN_LIST())
     {
@@ -7599,20 +7502,16 @@ yyreduce:
       ctx->setting = NULL;
     }
   }
-#line 1626 "grammar.c" /* yacc.c:1646  */
     break;
 
   case 41:
-#line 383 "grammar.y" /* yacc.c:1646  */
     {
     if(ctx->parent)
       ctx->parent = ctx->parent->parent;
   }
-#line 1635 "grammar.c" /* yacc.c:1646  */
     break;
 
 
-#line 1639 "grammar.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -7840,13 +7739,10 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 389 "grammar.y" /* yacc.c:1906  */
 
 /* end libconfig/lib/grammar.c */
 /* begin libconfig/lib/scanner.c */
-#line 1 "scanner.c"
 
-#line 3 "scanner.c"
 
 #define  YY_INT_ALIGNED short int
 
@@ -8602,7 +8498,6 @@ static const flex_int32_t yy_rule_can_match_eol[45] =
 #define yymore() yymore_used_but_not_detected
 #define YY_MORE_ADJ 0
 #define YY_RESTORE_YY_MORE_OFFSET
-#line 1 "scanner.l"
 /* -*- mode: C -*- */
 /* --------------------------------------------------------------------------
    libconfig - A library for processing structured configuration files
@@ -8626,7 +8521,6 @@ static const flex_int32_t yy_rule_can_match_eol[45] =
    ----------------------------------------------------------------------------
 */
 #define YY_NO_UNISTD_H 1
-#line 36 "scanner.l"
 
 #ifdef _MSC_VER
 #pragma warning (disable: 4996)
@@ -8641,9 +8535,7 @@ static const flex_int32_t yy_rule_can_match_eol[45] =
 
 #define YY_NO_INPUT // Suppress generation of useless input() function
 
-#line 803 "scanner.c"
 
-#line 805 "scanner.c"
 
 #define INITIAL 0
 #define SINGLE_LINE_COMMENT 1
@@ -8920,10 +8812,8 @@ YY_DECL
 		}
 
 	{
-#line 70 "scanner.l"
 
 
-#line 1085 "scanner.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -8991,85 +8881,69 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 72 "scanner.l"
 { BEGIN SINGLE_LINE_COMMENT; }
 	YY_BREAK
 case 2:
 /* rule 2 can match eol */
 YY_RULE_SETUP
-#line 73 "scanner.l"
 { BEGIN INITIAL; }
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 74 "scanner.l"
 { /* ignore */ }
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 76 "scanner.l"
 { BEGIN MULTI_LINE_COMMENT; }
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 77 "scanner.l"
 { BEGIN INITIAL; }
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 78 "scanner.l"
 { /* ignore */ }
 	YY_BREAK
 case 7:
 /* rule 7 can match eol */
 YY_RULE_SETUP
-#line 79 "scanner.l"
 { /* ignore */ }
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 81 "scanner.l"
 { BEGIN STRING; }
 	YY_BREAK
 case 9:
 /* rule 9 can match eol */
 YY_RULE_SETUP
-#line 82 "scanner.l"
 { libconfig_scanctx_append_string(yyextra, yytext); }
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 83 "scanner.l"
 { libconfig_scanctx_append_char(yyextra, '\n'); }
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 84 "scanner.l"
 { libconfig_scanctx_append_char(yyextra, '\r'); }
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 85 "scanner.l"
 { libconfig_scanctx_append_char(yyextra, '\t'); }
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 86 "scanner.l"
 { libconfig_scanctx_append_char(yyextra, '\f'); }
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 87 "scanner.l"
 { libconfig_scanctx_append_char(yyextra, '\\'); }
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 88 "scanner.l"
 { libconfig_scanctx_append_char(yyextra, '\"'); }
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 89 "scanner.l"
 {
                     char c = (char)(strtol(yytext + 2, NULL, 16) & 0xFF);
                     libconfig_scanctx_append_char(yyextra, c);
@@ -9077,12 +8951,10 @@ YY_RULE_SETUP
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 93 "scanner.l"
 { libconfig_scanctx_append_char(yyextra, '\\'); }
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 94 "scanner.l"
 {
                     yylval->sval = libconfig_scanctx_take_string(yyextra);
                     BEGIN INITIAL;
@@ -9091,28 +8963,23 @@ YY_RULE_SETUP
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 100 "scanner.l"
 { BEGIN INCLUDE; }
 	YY_BREAK
 case 20:
 /* rule 20 can match eol */
 YY_RULE_SETUP
-#line 101 "scanner.l"
 { libconfig_scanctx_append_string(yyextra, yytext); }
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 102 "scanner.l"
 { libconfig_scanctx_append_char(yyextra, '\\'); }
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 103 "scanner.l"
 { libconfig_scanctx_append_char(yyextra, '\"'); }
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 104 "scanner.l"
 {
   const char *error = NULL;
   const char *path = libconfig_scanctx_take_string(yyextra);
@@ -9139,57 +9006,46 @@ YY_RULE_SETUP
 case 24:
 /* rule 24 can match eol */
 YY_RULE_SETUP
-#line 127 "scanner.l"
 { /* ignore */ }
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 128 "scanner.l"
 { /* ignore */ }
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 130 "scanner.l"
 { return(TOK_EQUALS); }
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 131 "scanner.l"
 { return(TOK_COMMA); }
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 132 "scanner.l"
 { return(TOK_GROUP_START); }
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 133 "scanner.l"
 { return(TOK_GROUP_END); }
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 134 "scanner.l"
 { yylval->ival = 1; return(TOK_BOOLEAN); }
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 135 "scanner.l"
 { yylval->ival = 0; return(TOK_BOOLEAN); }
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 136 "scanner.l"
 { yylval->sval = yytext; return(TOK_NAME); }
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 137 "scanner.l"
 { yylval->fval = atof(yytext); return(TOK_FLOAT); }
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 138 "scanner.l"
 {
                     int ok;
                     long long llval = libconfig_parse_integer(yytext, &ok);
@@ -9210,12 +9066,10 @@ YY_RULE_SETUP
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 155 "scanner.l"
 { yylval->llval = atoll(yytext); return(TOK_INTEGER64); }
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 156 "scanner.l"
 {
                     yylval->ival = strtoul(yytext, NULL, 16);
                     return(TOK_HEX);
@@ -9223,7 +9077,6 @@ YY_RULE_SETUP
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 160 "scanner.l"
 {
                     yylval->llval = libconfig_parse_hex64(yytext);
                     return(TOK_HEX64);
@@ -9231,32 +9084,26 @@ YY_RULE_SETUP
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 164 "scanner.l"
 { return(TOK_ARRAY_START); }
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
-#line 165 "scanner.l"
 { return(TOK_ARRAY_END); }
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
-#line 166 "scanner.l"
 { return(TOK_LIST_START); }
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
-#line 167 "scanner.l"
 { return(TOK_LIST_END); }
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
-#line 168 "scanner.l"
 { return(TOK_SEMICOLON); }
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
-#line 169 "scanner.l"
 { return(TOK_GARBAGE); }
 	YY_BREAK
 case YY_STATE_EOF(INITIAL):
@@ -9264,7 +9111,6 @@ case YY_STATE_EOF(SINGLE_LINE_COMMENT):
 case YY_STATE_EOF(MULTI_LINE_COMMENT):
 case YY_STATE_EOF(STRING):
 case YY_STATE_EOF(INCLUDE):
-#line 171 "scanner.l"
 {
   const char *error = NULL;
   FILE *fp;
@@ -9300,10 +9146,8 @@ case YY_STATE_EOF(INCLUDE):
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
-#line 203 "scanner.l"
 ECHO;
 	YY_BREAK
-#line 1465 "scanner.c"
 
 	case YY_END_OF_BUFFER:
 		{
@@ -10454,7 +10298,6 @@ void yyfree (void * ptr , yyscan_t yyscanner)
 
 #define YYTABLES_NAME "yytables"
 
-#line 203 "scanner.l"
 /* end libconfig/lib/scanner.c */
 /* begin libconfig/lib/libconfig.c */
 /* ----------------------------------------------------------------------------
@@ -12230,25 +12073,16 @@ int config_setting_is_aggregate(const config_setting_t *setting)
 #undef CHUNK_SIZE
 #undef ECHO
 /* end bundled libconfig */
-#line 4 "udx.conf-libconfig.cu"
 
-#line 4 "udx.runtime-config-complete.cu"
 
-#line 3 "udx.runtime-control-complete.cu"
 
-#line 1 "udx.control-complete.cu"
 
-#line 1 "udx.control-complete.cu"
 // Grouped editable compilation unit for all control subsystems.
 
-#line 1 "udx.control-all.cu"
 
-#line 1 "udx.control-all.cu"
 // Grouped editable compilation unit for inflow and velocity control.
 
-#line 1 "udx.control-inflow.cu"
 
-#line 1 "udx.control-inflow.cu"
 // generated from udx.flat.cu
 #define DEV_CUDA
 #define CC_RELEASE
@@ -12483,7 +12317,6 @@ void inflow_ini_params_conf(const Coords *coords, const Config *cfg, /**/ Inflow
 
 /* end src/control/inflow/conf.cpp */
 
-#line 1 "src/control/inflow/imp.cu"
 
 
 /* begin src/control/inflow/imp.cu */
@@ -13418,13 +13251,9 @@ void inflow_create_pp_cc(float kBT, int numdensity, float dt, int newcolor, Infl
 /* end src/control/inflow/imp/main.h */
 /* end src/control/inflow/imp.cu */
 
-#line 1 "src/control/outflow/conf.cpp"
 
-#line 3 "udx.control-all.cu"
 
-#line 1 "udx.control-vel.cu"
 
-#line 1 "udx.control-vel.cu"
 // generated from udx.flat.cu
 #define DEV_CUDA
 #define CC_RELEASE
@@ -13637,7 +13466,6 @@ void vcont_set_conf(const Config *cfg, /**/ PidVCont *c) {
 }
 /* end src/control/vel/conf.cpp */
 
-#line 1 "src/control/vel/imp.cu"
 
 
 /* begin src/control/vel/imp.cu */
@@ -14786,20 +14614,13 @@ void vcont_strt_read(const char *base, int id, PidVCont *c) {
 /* end src/control/vel/imp/start.h */
 /* end src/control/vel/imp.cu */
 
-#line 1 "src/coords/conf.cpp"
 
-#line 4 "udx.control-all.cu"
 
-#line 3 "udx.control-complete.cu"
 
-#line 1 "udx.control-den-outflow.cu"
 
-#line 1 "udx.control-den-outflow.cu"
 // Grouped editable compilation unit for density and outflow control.
 
-#line 1 "udx.control-den.cu"
 
-#line 1 "udx.control-den.cu"
 // generated from udx.flat.cu
 #define DEV_CUDA
 #define CC_RELEASE
@@ -14995,7 +14816,6 @@ void den_map_set_conf(const Config *cfg, const Coords *c, DContMap *m) {
 }
 /* end src/control/den/conf.cpp */
 
-#line 1 "src/control/den/imp.cu"
 
 
 /* begin src/control/den/imp.cu */
@@ -15646,13 +15466,9 @@ void den_map_fin(DContMap *m) {
 
 /* end src/control/den/imp.cu */
 
-#line 1 "src/control/inflow/conf.cpp"
 
-#line 3 "udx.control-den-outflow.cu"
 
-#line 1 "udx.control-outflow.cu"
 
-#line 1 "udx.control-outflow.cu"
 // generated from udx.flat.cu
 #define DEV_CUDA
 #define CC_RELEASE
@@ -15855,7 +15671,6 @@ void outflow_set_conf(const Config *cfg, const Coords *coords, Outflow *o) {
 }
 /* end src/control/outflow/conf.cpp */
 
-#line 1 "src/control/outflow/imp.cu"
 
 
 /* begin src/control/outflow/imp.cu */
@@ -16481,29 +16296,18 @@ int  outflow_get_ndead(Outflow *o)     {return o->ndead;}
 /* end src/control/outflow/imp/main.h */
 /* end src/control/outflow/imp.cu */
 
-#line 1 "src/control/vel/conf.cpp"
 
-#line 4 "udx.control-den-outflow.cu"
 
-#line 4 "udx.control-complete.cu"
 
-#line 4 "udx.runtime-control-complete.cu"
 
-#line 3 "udx.runtime-support-complete.cu"
 
-#line 1 "udx.support-grid-algo-complete.cu"
 
-#line 1 "udx.support-grid-algo-complete.cu"
 // Grouped editable compilation unit for BOP support, grid utilities, and algorithms.
 
-#line 1 "udx.support-grid-complete.cu"
 
-#line 1 "udx.support-grid-complete.cu"
 // Grouped editable compilation unit for BOP support and grid utilities.
 
-#line 1 "udx.support.cu"
 
-#line 1 "udx.support.cu"
 /* begin bundled BOP */
 #ifndef UDX_BOP_COMMON
 #include <mpi.h>
@@ -17409,21 +17213,14 @@ BopStatus bop_read_values(const char *dfname, BopData *d) {
 /* end bop/src/bop_serial.cpp */
 /* end bundled BOP */
 
-#line 3 "udx.support-grid-complete.cu"
 
-#line 1 "udx.grid-math-complete.cu"
 
-#line 1 "udx.grid-math-complete.cu"
 // Grouped editable compilation unit for grid interaction and utility math.
 
-#line 1 "udx.grid-inter.cu"
 
-#line 1 "udx.grid-inter.cu"
 // Grouped editable compilation unit for grid sampling and color interaction.
 
-#line 1 "udx.grid_sampler.cu"
 
-#line 1 "udx.grid_sampler.cu"
 // generated from udx.flat.cu
 #include "udx.config.cuh"
 
@@ -18342,13 +18139,9 @@ void grid_sampler_data_push(long n, const Particle *pp, const int *cc, const flo
 /* end src/grid_sampler/imp/data.h */
 /* end src/grid_sampler/imp.cu */
 
-#line 1 "src/he/err.cpp"
 
-#line 3 "udx.grid-inter.cu"
 
-#line 1 "udx.inter-color.cu"
 
-#line 1 "udx.inter-color.cu"
 // generated from udx.flat.cu
 #include "udx.config.cuh"
 
@@ -18537,7 +18330,6 @@ void inter_color_set_conf(const Config *cfg, GenColor *gc) {
 }
 /* end src/inter/color/conf.cpp */
 
-#line 1 "src/inter/color/imp.cpp"
 
 
 /* begin src/inter/color/imp.cpp */
@@ -19032,25 +18824,16 @@ void inter_color_apply_dev(const Coords *coords, const GenColor *gc, int n, cons
 /* end src/inter/color/imp/main.h */
 /* end src/inter/color/imp.cpp */
 
-#line 1 "src/io/bop/imp.cpp"
 
-#line 4 "udx.grid-inter.cu"
 
-#line 3 "udx.grid-math-complete.cu"
 
-#line 1 "udx.utils-math.cu"
 
-#line 1 "udx.utils-math.cu"
 // Grouped editable compilation unit for general utilities and math helpers.
 
-#line 1 "udx.utils-all.cu"
 
-#line 1 "udx.utils-all.cu"
 // Grouped editable compilation unit for general and string utilities.
 
-#line 1 "udx.utils.cu"
 
-#line 1 "udx.utils.cu"
 // generated from udx.flat.cu
 #include "udx.config.cuh"
 
@@ -19188,7 +18971,6 @@ void check(int rc, const char *file, int line) {
 }
 /* end src/utils/cc.cpp */
 
-#line 1 "src/utils/error.cpp"
 
 
 /* begin src/utils/error.cpp */
@@ -19343,7 +19125,6 @@ void error_print_stack() {
 }
 /* end src/utils/error.cpp */
 
-#line 1 "src/utils/imp.cpp"
 
 
 /* begin src/utils/imp.cpp */
@@ -19502,7 +19283,6 @@ const char* get_filename_ext(const char *filename) {
 }
 /* end src/utils/imp.cpp */
 
-#line 1 "src/utils/mc.cpp"
 
 
 /* begin src/utils/mc.cpp */
@@ -19628,7 +19408,6 @@ void check(int code, const char *file, int line) {
 } // mpicheck
 /* end src/utils/mc.cpp */
 
-#line 1 "src/utils/msg.cpp"
 
 
 /* begin src/utils/msg.cpp */
@@ -19802,13 +19581,9 @@ void os_sleep(unsigned int seconds) { sleep(seconds); }
 void os_malloc_stats() { malloc_stats(); }
 /* end src/utils/os.cpp */
 
-#line 1 "src/utils/string/imp.cpp"
 
-#line 3 "udx.utils-all.cu"
 
-#line 1 "udx.utils-string.cu"
 
-#line 1 "udx.utils-string.cu"
 // generated from udx.flat.cu
 #include "udx.config.cuh"
 
@@ -19884,20 +19659,13 @@ int string_nword(const char *s) {
 
 /* end src/utils/string/imp.cpp */
 
-#line 1 "src/wall/exch/imp.cpp"
 
-#line 4 "udx.utils-all.cu"
 
-#line 3 "udx.utils-math.cu"
 
-#line 1 "udx.math.cu"
 
-#line 1 "udx.math.cu"
 // Grouped editable compilation unit for small math helpers.
 
-#line 1 "udx.math-linal.cu"
 
-#line 1 "udx.math-linal.cu"
 // generated from udx.flat.cu
 #include "udx.config.cuh"
 
@@ -19981,13 +19749,9 @@ void linal_inv3x3(const float *m, /**/ float *r) {
 }
 /* end src/math/linal/imp.cpp */
 
-#line 1 "src/math/rnd/imp.cpp"
 
-#line 3 "udx.math.cu"
 
-#line 1 "udx.math-rnd.cu"
 
-#line 1 "udx.math-rnd.cu"
 // generated from udx.flat.cu
 #include "udx.config.cuh"
 
@@ -20100,13 +19864,9 @@ float rnd_get(RNDunif *r) {
 }
 /* end src/math/rnd/imp.cpp */
 
-#line 1 "src/math/tform/imp.cpp"
 
-#line 4 "udx.math.cu"
 
-#line 1 "udx.math-tri.cu"
 
-#line 1 "udx.math-tri.cu"
 // generated from udx.flat.cu
 #include "udx.config.cuh"
 
@@ -20261,13 +20021,9 @@ END
 #undef TRI_HOST
 /* end src/math/tri/imp.cpp */
 
-#line 1 "src/mesh/angle/imp.cpp"
 
-#line 5 "udx.math.cu"
 
-#line 1 "udx.math-tform.cu"
 
-#line 1 "udx.math-tform.cu"
 // generated from udx.flat.cu
 #include "udx.config.cuh"
 
@@ -20573,36 +20329,22 @@ void tform_to_view(const Tform *t, Tform_v *v) {
 /* end src/math/tform/imp/main.h */
 /* end src/math/tform/imp.cpp */
 
-#line 1 "src/math/tri/imp.cpp"
 
-#line 6 "udx.math.cu"
 
-#line 4 "udx.utils-math.cu"
 
-#line 4 "udx.grid-math-complete.cu"
 
-#line 4 "udx.support-grid-complete.cu"
 
-#line 3 "udx.support-grid-algo-complete.cu"
 
-#line 1 "udx.algo-complete.cu"
 
-#line 1 "udx.algo-complete.cu"
 // Grouped editable compilation unit for all algorithm helpers.
 
-#line 1 "udx.algo-all.cu"
 
-#line 1 "udx.algo-all.cu"
 // Grouped editable compilation unit for all scalar, vector, conversion, and force-stat algorithms.
 
-#line 1 "udx.algo-numeric.cu"
 
-#line 1 "udx.algo-numeric.cu"
 // Grouped editable compilation unit for scalar and vector algorithms.
 
-#line 1 "udx.algo-scalars.cu"
 
-#line 1 "udx.algo-scalars.cu"
 // generated from udx.flat.cu
 #define DEV_CUDA
 #define CC_RELEASE
@@ -20828,13 +20570,9 @@ double scalars_get(const Scalars *q, int i) {
 /* end src/algo/scalars/imp/main.h */
 /* end src/algo/scalars/imp.cpp */
 
-#line 1 "src/algo/scan/imp.cu"
 
-#line 3 "udx.algo-numeric.cu"
 
-#line 1 "udx.algo-vectors.cu"
 
-#line 1 "udx.algo-vectors.cu"
 // generated from udx.flat.cu
 #define DEV_CUDA
 #define CC_RELEASE
@@ -21242,20 +20980,13 @@ void vectors_get(const Vectors *q, int i, /**/ float r[3]) {
 /* end src/algo/vectors/imp/main.h */
 /* end src/algo/vectors/imp.cpp */
 
-#line 1 "src/clist/imp.cu"
 
-#line 4 "udx.algo-numeric.cu"
 
-#line 3 "udx.algo-all.cu"
 
-#line 1 "udx.algo-convert-force-stat.cu"
 
-#line 1 "udx.algo-convert-force-stat.cu"
 // Grouped editable compilation unit for algorithm conversion and force statistics.
 
-#line 1 "udx.algo-convert.cu"
 
-#line 1 "udx.algo-convert.cu"
 // generated from udx.flat.cu
 #define DEV_CUDA
 #define CC_RELEASE
@@ -21537,13 +21268,9 @@ void convert_pp2f4_pos(int n, const float *pp, /**/ float4 *zpp) {
 /* end src/algo/convert/imp/main.h */
 /* end src/algo/convert/imp.cu */
 
-#line 1 "src/algo/edg/imp.cpp"
 
-#line 3 "udx.algo-convert-force-stat.cu"
 
-#line 1 "udx.algo-force_stat.cu"
 
-#line 1 "udx.algo-force_stat.cu"
 // generated from udx.flat.cu
 #define DEV_CUDA
 #define CC_RELEASE
@@ -21730,32 +21457,20 @@ float force_stat_max(int n, const Force *dev) {
 /* end src/algo/force_stat/imp/main.h */
 /* end src/algo/force_stat/imp.cu */
 
-#line 1 "src/algo/kahan_sum/imp.cpp"
 
-#line 4 "udx.algo-convert-force-stat.cu"
 
-#line 4 "udx.algo-all.cu"
 
-#line 3 "udx.algo-complete.cu"
 
-#line 1 "udx.algo-edge-accumulators-scan.cu"
 
-#line 1 "udx.algo-edge-accumulators-scan.cu"
 // Grouped editable compilation unit for edge algorithms, accumulators, and scans.
 
-#line 1 "udx.algo-edge-accumulators.cu"
 
-#line 1 "udx.algo-edge-accumulators.cu"
 // Grouped editable compilation unit for edge algorithms and accumulators.
 
-#line 1 "udx.algo-edg-minmax.cu"
 
-#line 1 "udx.algo-edg-minmax.cu"
 // Grouped editable compilation unit for edge and min/max algorithms.
 
-#line 1 "udx.algo-edg.cu"
 
-#line 1 "udx.algo-edg.cu"
 // generated from udx.flat.cu
 #define DEV_CUDA
 #define CC_RELEASE
@@ -21899,13 +21614,9 @@ int edg_valid(int md, int i, int x, const int *hx) { /* valid? */
 /* end src/algo/edg/imp/main.h */
 /* end src/algo/edg/imp.cpp */
 
-#line 1 "src/algo/force_stat/imp.cu"
 
-#line 3 "udx.algo-edg-minmax.cu"
 
-#line 1 "udx.algo-minmax.cu"
 
-#line 1 "udx.algo-minmax.cu"
 // generated from udx.flat.cu
 #define DEV_CUDA
 #define CC_RELEASE
@@ -22528,20 +22239,13 @@ void minmax(const Particle *pp, int nv, int nobj, /**/ float3 *lo, float3 *hi) {
 }
 /* end src/algo/minmax/imp.cu */
 
-#line 1 "src/algo/scalars/imp.cpp"
 
-#line 4 "udx.algo-edg-minmax.cu"
 
-#line 3 "udx.algo-edge-accumulators.cu"
 
-#line 1 "udx.algo-accumulators.cu"
 
-#line 1 "udx.algo-accumulators.cu"
 // Grouped editable compilation unit for Kahan sums and key lists.
 
-#line 1 "udx.algo-kahan_sum.cu"
 
-#line 1 "udx.algo-kahan_sum.cu"
 // generated from udx.flat.cu
 #define DEV_CUDA
 #define CC_RELEASE
@@ -22677,13 +22381,9 @@ double kahan_sum_compensation(const KahanSum *q) { return q->c; }
 /* end src/algo/kahan_sum/imp/main.h */
 /* end src/algo/kahan_sum/imp.cpp */
 
-#line 1 "src/algo/key_list/imp.cpp"
 
-#line 3 "udx.algo-accumulators.cu"
 
-#line 1 "udx.algo-key_list.cu"
 
-#line 1 "udx.algo-key_list.cu"
 // generated from udx.flat.cu
 #define DEV_CUDA
 #define CC_RELEASE
@@ -22938,17 +22638,11 @@ void key_list_log(KeyList *q) {
 /* end src/algo/key_list/imp/main.h */
 /* end src/algo/key_list/imp.cpp */
 
-#line 1 "src/algo/minmax/imp.cu"
 
-#line 4 "udx.algo-accumulators.cu"
 
-#line 4 "udx.algo-edge-accumulators.cu"
 
-#line 3 "udx.algo-edge-accumulators-scan.cu"
 
-#line 1 "udx.algo-scan.cu"
 
-#line 1 "udx.algo-scan.cu"
 // generated from udx.flat.cu
 #define DEV_CUDA
 #define CC_RELEASE
@@ -23659,17 +23353,11 @@ void scan_apply(const int* input, int size, /**/ int* output, /*w*/ Scan*) {
 #endif
 /* end src/algo/scan/imp.cu */
 
-#line 1 "src/algo/vectors/imp.cpp"
 
-#line 4 "udx.algo-edge-accumulators-scan.cu"
 
-#line 4 "udx.algo-complete.cu"
 
-#line 4 "udx.support-grid-algo-complete.cu"
 
-#line 4 "udx.runtime-support-complete.cu"
 
-#line 3 "udx.runtime-contact-complete.cu"
 
 #define UDX_DBG_CLIST_D_API_COMMON
 #define UDX_DBG_CLIST_DEF_COMMON
@@ -23677,19 +23365,13 @@ void scan_apply(const int* input, int size, /**/ int* output, /*w*/ Scan*) {
 #define UDX_DBG_CLIST_TYPE_COMMON
 
 
-#line 1 "udx.contact-complete.cu"
 
-#line 1 "udx.contact-complete.cu"
 // Grouped editable compilation unit for debug, contact-list, and contact code.
 
-#line 1 "udx.debug-clist.cu"
 
-#line 1 "udx.debug-clist.cu"
 // Grouped editable compilation unit for debug and contact-list code.
 
-#line 1 "udx.dbg.cu"
 
-#line 1 "udx.dbg.cu"
 // generated from udx.flat.cu
 #include "udx.config.cuh"
 
@@ -23877,7 +23559,6 @@ void dbg_set_conf(const Config *cfg, Dbg *dbg) {
 }
 /* end src/dbg/conf.cpp */
 
-#line 1 "src/dbg/imp.cu"
 
 
 /* begin src/dbg/imp.cu */
@@ -24853,13 +24534,9 @@ void dbg_check_clist(const Coords*, const Dbg *dbg, int3 L, const int *starts, c
 /* end src/dbg/imp/main.h */
 /* end src/dbg/imp.cu */
 
-#line 1 "src/distr/common/imp.cu"
 
-#line 3 "udx.debug-clist.cu"
 
-#line 1 "udx.clist.cu"
 
-#line 1 "udx.clist.cu"
 // generated from udx.flat.cu
 #include "udx.config.cuh"
 
@@ -25646,15 +25323,10 @@ void clist_build(int nlo, int nout, const Particle *pplo, /**/ Particle *ppout, 
 /* end src/clist/imp/main.h */
 /* end src/clist/imp.cu */
 
-#line 1 "src/cnt/imp.cu"
 
-#line 4 "udx.debug-clist.cu"
 
-#line 3 "udx.contact-complete.cu"
 
-#line 1 "udx.cnt.cu"
 
-#line 1 "udx.cnt.cu"
 // generated from udx.flat.cu
 #include "udx.config.cuh"
 
@@ -27334,9 +27006,3 @@ void cnt_build_cells(int nw, const PairParams **prms, const PaWrap *pw, /**/ Con
 }
 /* end src/cnt/imp/main.h */
 /* end src/cnt/imp.cu */
-
-#line 1 "src/color/imp.cu"
-
-#line 4 "udx.contact-complete.cu"
-
-#line 10 "udx.runtime-contact-complete.cu"

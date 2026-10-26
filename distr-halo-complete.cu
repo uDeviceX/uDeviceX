@@ -1,30 +1,19 @@
 
-#line 1 "udx.distr-halo-complete.cu"
 // Editable compilation unit for particle distribution and fluid halo exchange.
 
-#line 1 "udx.distr-all-complete.cu"
 
-#line 1 "udx.distr-all-complete.cu"
 // Grouped editable compilation unit for all distribution units.
 
-#line 1 "udx.distr-exch-rig-complete.cu"
 
-#line 1 "udx.distr-exch-rig-complete.cu"
 // Grouped editable compilation unit for distribution exchange and rigid distribution.
 
-#line 1 "udx.distr-exch.cu"
 
-#line 1 "udx.distr-exch.cu"
 // Grouped editable compilation unit for distribution exchange helpers.
 
-#line 1 "udx.distr-exch-common.cu"
 
-#line 1 "udx.distr-exch-common.cu"
 // Grouped editable compilation unit for distribution and exchange common code.
 
-#line 1 "udx.distr-common.cu"
 
-#line 1 "udx.distr-common.cu"
 // generated from udx.flat.cu
 #include "udx.config.cuh"
 
@@ -522,13 +511,9 @@ void dcommon_shift_halo(int3 L, int nhalo, const Sarray<int, 27> starts, /**/ Pa
 }
 /* end src/distr/common/imp.cu */
 
-#line 1 "src/distr/flu/imp.cu"
 
-#line 3 "udx.distr-exch-common.cu"
 
-#line 1 "udx.exch-common.cu"
 
-#line 1 "udx.exch-common.cu"
 // generated from udx.flat.cu
 #include "udx.config.cuh"
 
@@ -1097,25 +1082,16 @@ void ecommon_shift_rrcp_one_frag(int3 L, int n, const int fid, /**/ Positioncp *
 }
 /* end src/exch/common/imp.cu */
 
-#line 1 "src/exch/flu/imp.cu"
 
-#line 4 "udx.distr-exch-common.cu"
 
-#line 3 "udx.distr-exch.cu"
 
-#line 1 "udx.distr-exch-map.cu"
 
-#line 1 "udx.distr-exch-map.cu"
 // Grouped editable compilation unit for distribution and exchange maps.
 
-#line 1 "udx.distr-status-map.cu"
 
-#line 1 "udx.distr-status-map.cu"
 // Grouped editable compilation unit for fluid status and distribution maps.
 
-#line 1 "udx.distr-flu-status.cu"
 
-#line 1 "udx.distr-flu-status.cu"
 // generated from udx.flat.cu
 #define DEV_CUDA
 #define CC_RELEASE
@@ -1304,13 +1280,9 @@ void dflu_status_exceed(int fid, int cnt, int cap, /**/ DFluStatus *s) {
 int dflu_status_nullp(DFluStatus *s) { return s == NULL; }
 /* end src/distr/flu/status/imp.cpp */
 
-#line 1 "src/distr/map/imp.cu"
 
-#line 3 "udx.distr-status-map.cu"
 
-#line 1 "udx.distr-map.cu"
 
-#line 1 "udx.distr-map.cu"
 // generated from udx.flat.cu
 #include "udx.config.cuh"
 #include "udx.device-api-common.cuh"
@@ -1621,15 +1593,10 @@ void dmap_D2H(int nfrags, const DMap *d, /**/ DMap *h) {
 }
 /* end src/distr/map/imp.cu */
 
-#line 1 "src/distr/rbc/imp.cu"
 
-#line 4 "udx.distr-status-map.cu"
 
-#line 3 "udx.distr-exch-map.cu"
 
-#line 1 "udx.exch-map.cu"
 
-#line 1 "udx.exch-map.cu"
 // generated from udx.flat.cu
 #include "udx.config.cuh"
 #include "udx.device-api-common.cuh"
@@ -2055,17 +2022,11 @@ void emap_download_all_counts(int nw, int nfrags, EMap map, /**/ int tot_counts[
 }
 /* end src/exch/map/imp.cu */
 
-#line 1 "src/exch/mesh/imp.cu"
 
-#line 4 "udx.distr-exch-map.cu"
 
-#line 4 "udx.distr-exch.cu"
 
-#line 3 "udx.distr-exch-rig-complete.cu"
 
-#line 1 "udx.distr-rig.cu"
 
-#line 1 "udx.distr-rig.cu"
 // generated from udx.flat.cu
 #include "udx.config.cuh"
 
@@ -3129,20 +3090,13 @@ void drig_unpack_halo(const DRigUnpack *u, /**/ RigQuants *q) {
 
 /* end src/distr/rig/imp.cu */
 
-#line 1 "src/exch/common/imp.cu"
 
-#line 4 "udx.distr-exch-rig-complete.cu"
 
-#line 3 "udx.distr-all-complete.cu"
 
-#line 1 "udx.distr-flu-rbc-complete.cu"
 
-#line 1 "udx.distr-flu-rbc-complete.cu"
 // Grouped editable compilation unit for fluid and RBC distribution.
 
-#line 1 "udx.distr-flu.cu"
 
-#line 1 "udx.distr-flu.cu"
 // generated from udx.flat.cu
 #define DEV_CUDA
 #define CC_RELEASE
@@ -4459,13 +4413,9 @@ void dflu_gather(int ndead, const DFluPack *p, const DFluUnpack *u, /**/ FluQuan
 /* end src/distr/flu/imp/gather.h */
 /* end src/distr/flu/imp.cu */
 
-#line 1 "src/distr/flu/status/imp.cpp"
 
-#line 3 "udx.distr-flu-rbc-complete.cu"
 
-#line 1 "udx.distr-rbc.cu"
 
-#line 1 "udx.distr-rbc.cu"
 // generated from udx.flat.cu
 #include "udx.config.cuh"
 
@@ -5678,22 +5628,14 @@ void drbc_unpack_halo(const DRbcUnpack *u, /**/ RbcQuants *q) {
 /* end src/distr/rbc/imp/unpack.h */
 /* end src/distr/rbc/imp.cu */
 
-#line 1 "src/distr/rig/imp.cu"
 
-#line 4 "udx.distr-flu-rbc-complete.cu"
 
-#line 4 "udx.distr-all-complete.cu"
 
-#line 3 "udx.distr-halo-complete.cu"
 
-#line 1 "udx.exch-flu-halo-complete.cu"
 
-#line 1 "udx.exch-flu-halo-complete.cu"
 // Grouped editable compilation unit for fluid exchange and halo forces.
 
-#line 1 "udx.exch-flu.cu"
 
-#line 1 "udx.exch-flu.cu"
 // generated from udx.flat.cu
 #include "udx.config.cuh"
 
@@ -6952,18 +6894,12 @@ void eflu_get_remote_frags(const EFluUnpack *u, /**/ RFrag26 *rfrags) {
 /* end src/exch/flu/imp/get.h */
 /* end src/exch/flu/imp.cu */
 
-#line 1 "src/exch/map/imp.cu"
 
-#line 3 "udx.exch-flu-halo-complete.cu"
 
-#line 1 "udx.flu-halo.cu"
 
-#line 1 "udx.flu-halo.cu"
 // Grouped editable compilation unit for fluid state and halo forces.
 
-#line 1 "udx.flu.cu"
 
-#line 1 "udx.flu.cu"
 // generated from udx.flat.cu
 #include "udx.config.cuh"
 
@@ -7853,13 +7789,9 @@ void flu_build_cells(/**/ FluQuants *q) {
 /* end src/flu/imp/cells.h */
 /* end src/flu/imp.cpp */
 
-#line 1 "src/fluforces/bulk/imp.cu"
 
-#line 3 "udx.flu-halo.cu"
 
-#line 1 "udx.fluforces-halo.cu"
 
-#line 1 "udx.fluforces-halo.cu"
 // generated from udx.flat.cu
 #include "udx.config.cuh"
 
@@ -9550,11 +9482,3 @@ void fhalo_apply(const PairParams *params, int3 L, const flu::LFrag26 lfrags, co
 }
 /* end src/fluforces/halo/imp/main.h */
 /* end src/fluforces/halo/imp.cu */
-
-#line 1 "src/fluforces/imp.cpp"
-
-#line 4 "udx.flu-halo.cu"
-
-#line 4 "udx.exch-flu-halo-complete.cu"
-
-#line 4 "udx.distr-halo-complete.cu"

@@ -1,20 +1,13 @@
 
-#line 1 "udx.force-pair-complete.cu"
 // Grouped editable compilation unit for fluid/RBC forces and pair/FSI interactions.
 
-#line 1 "udx.force-all-complete.cu"
 
-#line 1 "udx.force-all-complete.cu"
 // Grouped editable compilation unit for fluid and RBC force implementations.
 
-#line 1 "udx.fluforces-bulk-main.cu"
 
-#line 1 "udx.fluforces-bulk-main.cu"
 // Grouped editable compilation unit for bulk fluid forces and orchestration.
 
-#line 1 "udx.fluforces-bulk.cu"
 
-#line 1 "udx.fluforces-bulk.cu"
 // generated from udx.flat.cu
 #include "udx.config.cuh"
 
@@ -1350,13 +1343,9 @@ void flocal_apply(const PairParams *params, int3 L, int n, BPaArray parray, cons
 /* end src/fluforces/bulk/imp/main.h */
 /* end src/fluforces/bulk/imp.cu */
 
-#line 1 "src/fluforces/halo/imp.cu"
 
-#line 3 "udx.fluforces-bulk-main.cu"
 
-#line 1 "udx.fluforces.cu"
 
-#line 1 "udx.fluforces.cu"
 // generated from udx.flat.cu
 #include "udx.config.cuh"
 
@@ -2095,30 +2084,19 @@ void fluforces_halo_apply(const PairParams *par, const FluForcesHalo *h, /**/ co
 /* end src/fluforces/imp/main.h */
 /* end src/fluforces/imp.cpp */
 
-#line 1 "src/frag/imp.cpp"
 
-#line 4 "udx.fluforces-bulk-main.cu"
 
-#line 3 "udx.force-all-complete.cu"
 
-#line 1 "udx.rbc-force-bending-complete.cu"
 
-#line 1 "udx.rbc-force-bending-complete.cu"
 // Grouped editable compilation unit for RBC force and bending force code.
 
-#line 1 "udx.rbc-force-all.cu"
 
-#line 1 "udx.rbc-force-all.cu"
 // Grouped editable compilation unit for all RBC force implementations.
 
-#line 1 "udx.rbc-force-area-random.cu"
 
-#line 1 "udx.rbc-force-area-random.cu"
 // Grouped editable compilation unit for RBC area/volume and random forces.
 
-#line 1 "udx.rbc-force-area_volume.cu"
 
-#line 1 "udx.rbc-force-area_volume.cu"
 // generated from udx.flat.cu
 #include "udx.config.cuh"
 
@@ -2859,18 +2837,12 @@ void area_volume_host(AreaVolume *q, /**/ float **pav) {
 /* end src/rbc/force/area_volume/imp/main.h */
 /* end src/rbc/force/area_volume/imp.cu */
 
-#line 1 "src/rbc/force/bending/imp.cpp"
 
-#line 3 "udx.rbc-force-area-random.cu"
 
-#line 1 "udx.rbc-force-random.cu"
 
-#line 1 "udx.rbc-force-random.cu"
 // Grouped editable compilation unit for RBC random-force API and implementation.
 
-#line 1 "udx.rbc-force-rnd-api.cu"
 
-#line 1 "udx.rbc-force-rnd-api.cu"
 // generated from udx.flat.cu
 #include "udx.config.cuh"
 
@@ -3078,13 +3050,9 @@ int GenerateNormal(Generator_t, float *outputPtr, size_t n) {
 } /* namespace */
 /* end src/rbc/force/rnd/api/imp.cpp */
 
-#line 1 "src/rbc/force/rnd/imp.cpp"
 
-#line 3 "udx.rbc-force-random.cu"
 
-#line 1 "udx.rbc-force-rnd.cu"
 
-#line 1 "udx.rbc-force-rnd.cu"
 // generated from udx.flat.cu
 #include "udx.config.cuh"
 
@@ -3430,22 +3398,14 @@ float rbc_rnd_get_hst(const RbcRnd *d, int i) {
 /* end src/rbc/force/rnd/imp/main.h */
 /* end src/rbc/force/rnd/imp.cpp */
 
-#line 1 "src/rbc/imp.cpp"
 
-#line 4 "udx.rbc-force-random.cu"
 
-#line 4 "udx.rbc-force-area-random.cu"
 
-#line 3 "udx.rbc-force-all.cu"
 
-#line 1 "udx.rbc-force-main.cu"
 
-#line 1 "udx.rbc-force-main.cu"
 // Grouped editable compilation unit for RBC force interfaces and implementation.
 
-#line 1 "udx.rbc-force-bending.cu"
 
-#line 1 "udx.rbc-force-bending.cu"
 // generated from udx.flat.cu
 #include "udx.config.cuh"
 
@@ -3753,13 +3713,9 @@ void bending_none_ini(const MeshRead*, /**/ Bending **pq) {
 /* end src/rbc/force/bending/imp/main.h */
 /* end src/rbc/force/bending/imp.cpp */
 
-#line 1 "src/rbc/force/bending/juelicher/imp.cu"
 
-#line 3 "udx.rbc-force-main.cu"
 
-#line 1 "udx.rbc-force.cu"
 
-#line 1 "udx.rbc-force.cu"
 // generated from udx.flat.cu
 #include "udx.config.cuh"
 
@@ -3958,7 +3914,6 @@ void rbc_force_set_conf(const MeshRead *cell, const Config *cfg, const char *nam
 }
 /* end src/rbc/force/conf.cpp */
 
-#line 1 "src/rbc/force/imp.cu"
 
 
 /* begin src/rbc/force/imp.cu */
@@ -5360,13 +5315,9 @@ void rbc_force_stat(float *pArea, float *pVolume) {
 /* end src/rbc/force/imp/stat.h */
 /* end src/rbc/force/imp.cu */
 
-#line 1 "src/rbc/force/rnd/api/imp.cpp"
 
-#line 4 "udx.rbc-force-main.cu"
 
-#line 4 "udx.rbc-force-all.cu"
 
-#line 3 "udx.rbc-force-bending-complete.cu"
 
 /* The half-edge implementation is owned by the I/O unit. */
 struct HeRead;
@@ -5384,14 +5335,10 @@ int he_hdg_edg(He *, int);
 /* Force units provide the shared infrastructure used by bending units. */
 #define UDX_RBC_BENDING_COMMON
 
-#line 1 "udx.rbc-force-bending-all.cu"
 
-#line 1 "udx.rbc-force-bending-all.cu"
 // Grouped editable compilation unit for the Juelicher and Kantor bending forces.
 
-#line 1 "udx.rbc-force-bending-juelicher.cu"
 
-#line 1 "udx.rbc-force-bending-juelicher.cu"
 // generated from udx.flat.cu
 #include "udx.config.cuh"
 
@@ -7174,13 +7121,9 @@ void juelicher_apply(Juelicher *q, const RbcParams*, const RbcQuants *quants, /*
 /* end src/rbc/force/bending/juelicher/imp/forces.h */
 /* end src/rbc/force/bending/juelicher/imp.cu */
 
-#line 1 "src/rbc/force/bending/kantor/imp.cu"
 
-#line 3 "udx.rbc-force-bending-all.cu"
 
-#line 1 "udx.rbc-force-bending-kantor.cu"
 
-#line 1 "udx.rbc-force-bending-kantor.cu"
 // generated from udx.flat.cu
 #include "udx.config.cuh"
 
@@ -8180,24 +8123,15 @@ void kantor_apply(Kantor *t, const RbcParams *par, const RbcQuants *q, /**/ Forc
 /* end src/rbc/force/bending/kantor/imp/forces.h */
 /* end src/rbc/force/bending/kantor/imp.cu */
 
-#line 1 "src/rbc/force/conf.cpp"
 
-#line 4 "udx.rbc-force-bending-all.cu"
 
-#line 20 "udx.rbc-force-bending-complete.cu"
 
-#line 4 "udx.force-all-complete.cu"
 
-#line 3 "udx.force-pair-complete.cu"
 
-#line 1 "udx.pair-fsi.cu"
 
-#line 1 "udx.pair-fsi.cu"
 // Grouped editable compilation unit for pair interactions and FSI.
 
-#line 1 "udx.pair.cu"
 
-#line 1 "udx.pair.cu"
 // generated from udx.flat.cu
 #include "udx.config.cuh"
 
@@ -8506,7 +8440,6 @@ void pair_set_conf(const Config *cfg, const char *ns, PairParams *par) {
 }
 /* end src/pair/conf.cpp */
 
-#line 1 "src/pair/imp.cpp"
 
 
 /* begin src/pair/imp.cpp */
@@ -8762,13 +8695,9 @@ void pair_get_view_adhesion(const PairParams *p, PairAdhesion *v) {
 /* end src/pair/imp/main.h */
 /* end src/pair/imp.cpp */
 
-#line 1 "src/rbc/adj/imp.cpp"
 
-#line 3 "udx.pair-fsi.cu"
 
-#line 1 "udx.fsi.cu"
 
-#line 1 "udx.fsi.cu"
 // generated from udx.flat.cu
 #include "udx.config.cuh"
 
@@ -10474,9 +10403,3 @@ void fsi_halo(Fsi *fsi, int nw, const PairParams **prms, Pap26 all_pp, Fop26 all
 }
 /* end src/fsi/imp/halo.h */
 /* end src/fsi/imp.cu */
-
-#line 1 "src/grid_sampler/imp.cu"
-
-#line 4 "udx.pair-fsi.cu"
-
-#line 4 "udx.force-pair-complete.cu"

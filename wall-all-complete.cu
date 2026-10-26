@@ -1,20 +1,13 @@
 
-#line 1 "udx.wall-all-complete.cu"
 // Grouped editable compilation unit for wall exchange, forces, drivers, and SDF.
 
-#line 1 "udx.wall-complete.cu"
 
-#line 1 "udx.wall-complete.cu"
 // Grouped editable compilation unit for wall exchange, force, and driver code.
 
-#line 1 "udx.wall-exchange-force.cu"
 
-#line 1 "udx.wall-exchange-force.cu"
 // Grouped editable compilation unit for wall exchange and force handling.
 
-#line 1 "udx.wall-exch.cu"
 
-#line 1 "udx.wall-exch.cu"
 // generated from udx.flat.cu
 #include "udx.config.cuh"
 
@@ -441,13 +434,9 @@ void wall_exch_pp(MPI_Comm cart, int numdensity, int3 L, int maxn, /*io*/ Partic
 }
 /* end src/wall/exch/imp.cpp */
 
-#line 1 "src/wall/force/imp.cu"
 
-#line 3 "udx.wall-exchange-force.cu"
 
-#line 1 "udx.wall-force.cu"
 
-#line 1 "udx.wall-force.cu"
 // generated from udx.flat.cu
 #include "udx.config.cuh"
 
@@ -2445,15 +2434,10 @@ void wall_force_repulse(Sdf_v sdf_v, WallRepulsePrm wr, long n, const PaArray *p
 /* end src/wall/force/imp/main.h */
 /* end src/wall/force/imp.cu */
 
-#line 1 "src/wall/imp.cu"
 
-#line 4 "udx.wall-exchange-force.cu"
 
-#line 3 "udx.wall-complete.cu"
 
-#line 1 "udx.wall.cu"
 
-#line 1 "udx.wall.cu"
 // generated from udx.flat.cu
 #include "udx.config.cuh"
 
@@ -3612,25 +3596,16 @@ void wall_repulse_prm_fin(WallRepulsePrm *wr) {
 /* end src/wall/imp/repulse.h */
 /* end src/wall/imp.cu */
 
-#line 1 "src/wall/sdf/array3d/imp.cu"
 
-#line 4 "udx.wall-complete.cu"
 
-#line 3 "udx.wall-all-complete.cu"
 
-#line 1 "udx.wall-sdf-complete.cu"
 
-#line 1 "udx.wall-sdf-complete.cu"
 // Grouped editable compilation unit for the complete SDF subsystem.
 
-#line 1 "udx.wall-sdf-all.cu"
 
-#line 1 "udx.wall-sdf-all.cu"
 // Grouped editable compilation unit for SDF core and label handling.
 
-#line 1 "udx.wall-sdf.cu"
 
-#line 1 "udx.wall-sdf.cu"
 // generated from udx.flat.cu
 #include "udx.config.cuh"
 
@@ -4960,13 +4935,9 @@ double sdf_compute_volume(MPI_Comm comm, int3 L, const Sdf *sdf, long nsamples) 
 /* end src/wall/sdf/imp/main.h */
 /* end src/wall/sdf/imp.cu */
 
-#line 1 "src/wall/sdf/label/imp.cu"
 
-#line 3 "udx.wall-sdf-all.cu"
 
-#line 1 "udx.wall-sdf-label.cu"
 
-#line 1 "udx.wall-sdf-label.cu"
 // generated from udx.flat.cu
 #include "udx.config.cuh"
 
@@ -5730,30 +5701,19 @@ void wall_label_hst(const Sdf *sdf, int n, const Particle *pp, /**/ int *hst) {
 /* end src/wall/sdf/label/imp/main.h */
 /* end src/wall/sdf/label/imp.cu */
 
-#line 1 "src/wall/sdf/tex3d/imp.cu"
 
-#line 4 "udx.wall-sdf-all.cu"
 
-#line 3 "udx.wall-sdf-complete.cu"
 
-#line 1 "udx.wall-sdf-transform-bounce.cu"
 
-#line 1 "udx.wall-sdf-transform-bounce.cu"
 // Grouped editable compilation unit for SDF transforms, velocity, and bounce.
 
-#line 1 "udx.wall-sdf-transform-velocity.cu"
 
-#line 1 "udx.wall-sdf-transform-velocity.cu"
 // Grouped editable compilation unit for SDF transforms and wall velocity.
 
-#line 1 "udx.wall-sdf-grid-transform.cu"
 
-#line 1 "udx.wall-sdf-grid-transform.cu"
 // Grouped editable compilation unit for SDF grid storage and transforms.
 
-#line 1 "udx.wall-sdf-array3d.cu"
 
-#line 1 "udx.wall-sdf-array3d.cu"
 // generated from udx.flat.cu
 #include "udx.config.cuh"
 
@@ -5991,13 +5951,9 @@ void array3d_copy(size_t x, size_t y, size_t z, float *D, /**/ Array3d *q) {
 }
 /* end src/wall/sdf/array3d/imp.cu */
 
-#line 1 "src/wall/sdf/bounce/imp.cu"
 
-#line 3 "udx.wall-sdf-grid-transform.cu"
 
-#line 1 "udx.wall-sdf-tform.cu"
 
-#line 1 "udx.wall-sdf-tform.cu"
 // generated from udx.flat.cu
 #include "udx.config.cuh"
 
@@ -6278,25 +6234,16 @@ void sub2tex_ini(const Coords *c, const int T[3], const int M[3], /**/ Tform *t)
 }
 /* end src/wall/sdf/tform/imp.cpp */
 
-#line 1 "src/wall/wvel/conf.cpp"
 
-#line 4 "udx.wall-sdf-grid-transform.cu"
 
-#line 3 "udx.wall-sdf-transform-velocity.cu"
 
-#line 1 "udx.wall-sdf-velocity.cu"
 
-#line 1 "udx.wall-sdf-velocity.cu"
 // Grouped editable compilation unit for SDF sampling and wall velocity models.
 
-#line 1 "udx.wall-sdf-sampling.cu"
 
-#line 1 "udx.wall-sdf-sampling.cu"
 // Grouped editable compilation unit for SDF field and texture sampling.
 
-#line 1 "udx.wall-sdf-field.cu"
 
-#line 1 "udx.wall-sdf-field.cu"
 // generated from udx.flat.cu
 #include "udx.config.cuh"
 
@@ -6785,13 +6732,9 @@ void field_dump(const Field *q, const Coords *c, MPI_Comm cart) {
 /* end src/wall/sdf/field/imp/main.h */
 /* end src/wall/sdf/field/imp.cpp */
 
-#line 1 "src/wall/sdf/imp.cu"
 
-#line 3 "udx.wall-sdf-sampling.cu"
 
-#line 1 "udx.wall-sdf-tex3d.cu"
 
-#line 1 "udx.wall-sdf-tex3d.cu"
 // generated from udx.flat.cu
 #include "udx.config.cuh"
 
@@ -7039,15 +6982,10 @@ void tex3d_to_view(const Tex3d *t, /**/ Tex3d_v *v) { v->t = t->t; }
 /* end src/wall/sdf/tex3d/imp/main.h */
 /* end src/wall/sdf/tex3d/imp.cu */
 
-#line 1 "src/wall/sdf/tform/imp.cpp"
 
-#line 4 "udx.wall-sdf-sampling.cu"
 
-#line 3 "udx.wall-sdf-velocity.cu"
 
-#line 1 "udx.wall-wvel.cu"
 
-#line 1 "udx.wall-wvel.cu"
 // generated from udx.flat.cu
 #include "udx.config.cuh"
 
@@ -7286,7 +7224,6 @@ void wvel_set_conf(const Config *cfg, Wvel *vw) {
 }
 /* end src/wall/wvel/conf.cpp */
 
-#line 1 "src/wall/wvel/imp.cpp"
 
 
 /* begin src/wall/wvel/imp.cpp */
@@ -7666,17 +7603,11 @@ void wvel_get_view(const WvelStep *w, /**/ WvelHS_v *v) {
 /* end src/wall/wvel/imp/main.h */
 /* end src/wall/wvel/imp.cpp */
 
-#line 1 "src/main.cpp"
 
-#line 4 "udx.wall-sdf-velocity.cu"
 
-#line 4 "udx.wall-sdf-transform-velocity.cu"
 
-#line 3 "udx.wall-sdf-transform-bounce.cu"
 
-#line 1 "udx.wall-sdf-bounce.cu"
 
-#line 1 "udx.wall-sdf-bounce.cu"
 // generated from udx.flat.cu
 #include "udx.config.cuh"
 
@@ -8870,11 +8801,3 @@ void bounce_back(float dt, const WvelStep *w, const Coords *c, const Sdf *sdf, i
 }
 /* end src/wall/sdf/bounce/imp/main.h */
 /* end src/wall/sdf/bounce/imp.cu */
-
-#line 1 "src/wall/sdf/field/imp.cpp"
-
-#line 4 "udx.wall-sdf-transform-bounce.cu"
-
-#line 4 "udx.wall-sdf-complete.cu"
-
-#line 4 "udx.wall-all-complete.cu"

@@ -2934,5 +2934,3 @@ void sim_strt(Sim *s) {
 #undef _I_
 #undef _S_
 /* end src/sim/imp.cpp */
-
-#line 1 "src/sim/objects/imp.cpp"

@@ -1,15 +1,10 @@
 
-#line 1 "udx.exch-mesh-struct-complete.cu"
 // Editable compilation unit for mesh exchange and mesh/structure coupling.
 
-#line 1 "udx.exch-mesh-obj-complete.cu"
 
-#line 1 "udx.exch-mesh-obj-complete.cu"
 // Grouped editable compilation unit for mesh and object exchange.
 
-#line 1 "udx.exch-mesh.cu"
 
-#line 1 "udx.exch-mesh.cu"
 // generated from udx.flat.cu
 #include "udx.config.cuh"
 
@@ -1486,13 +1481,9 @@ void emesh_unpack_mom(int nt, const EMeshPack *p, const EMeshUnpackM *u, /**/ Mo
 /* end src/exch/mesh/imp/unpack.h */
 /* end src/exch/mesh/imp.cu */
 
-#line 1 "src/exch/obj/imp.cu"
 
-#line 3 "udx.exch-mesh-obj-complete.cu"
 
-#line 1 "udx.exch-obj.cu"
 
-#line 1 "udx.exch-obj.cu"
 // generated from udx.flat.cu
 #include "udx.config.cuh"
 
@@ -2719,45 +2710,28 @@ void eobj_unpack_ff(EObjUnpackF *u, const EObjPack *p, int nw, /**/ FoWrap *ww) 
 /* end src/exch/obj/imp/unpack.h */
 /* end src/exch/obj/imp.cu */
 
-#line 1 "src/flu/imp.cpp"
 
-#line 4 "udx.exch-mesh-obj-complete.cu"
 
-#line 3 "udx.exch-mesh-struct-complete.cu"
 
-#line 1 "udx.mesh-struct-complete.cu"
 
-#line 1 "udx.mesh-struct-complete.cu"
 // Grouped editable compilation unit for mesh and structure subsystems.
 
-#line 1 "udx.mesh-complete.cu"
 
-#line 1 "udx.mesh-complete.cu"
 // Grouped editable compilation unit for the complete mesh subsystem.
 
-#line 1 "udx.mesh-all.cu"
 
-#line 1 "udx.mesh-all.cu"
 // Grouped editable compilation unit for mesh geometry, topology, coordinates, and generation.
 
-#line 1 "udx.mesh-geometry-topology.cu"
 
-#line 1 "udx.mesh-geometry-topology.cu"
 // Grouped editable compilation unit for mesh geometry, measures, topology, and collision.
 
-#line 1 "udx.mesh-geometry-measures.cu"
 
-#line 1 "udx.mesh-geometry-measures.cu"
 // Grouped editable compilation unit for mesh geometry and measures.
 
-#line 1 "udx.mesh-geometry.cu"
 
-#line 1 "udx.mesh-geometry.cu"
 // Grouped editable compilation unit for mesh geometry helpers.
 
-#line 1 "udx.mesh-angle.cu"
 
-#line 1 "udx.mesh-angle.cu"
 // generated from udx.flat.cu
 #include "udx.config.cuh"
 
@@ -2962,13 +2936,9 @@ void mesh_angle_apply(MeshAngle *q, int m, Vectors *p, /**/ double *angle0) {
 
 /* end src/mesh/angle/imp.cpp */
 
-#line 1 "src/mesh/area/imp.cpp"
 
-#line 3 "udx.mesh-geometry.cu"
 
-#line 1 "udx.mesh-bbox.cu"
 
-#line 1 "udx.mesh-bbox.cu"
 // generated from udx.flat.cu
 #include "udx.config.cuh"
 
@@ -3093,25 +3063,16 @@ void mesh_get_bboxes_dev(const Particle *pp, const int nps, const int ns, /**/ f
 }
 /* end src/mesh/bbox/imp.cpp */
 
-#line 1 "src/mesh/collision/imp.cu"
 
-#line 4 "udx.mesh-geometry.cu"
 
-#line 3 "udx.mesh-geometry-measures.cu"
 
-#line 1 "udx.mesh-measures.cu"
 
-#line 1 "udx.mesh-measures.cu"
 // Grouped editable compilation unit for mesh area and length measures.
 
-#line 1 "udx.mesh-area-group.cu"
 
-#line 1 "udx.mesh-area-group.cu"
 // Grouped editable compilation unit for mesh area calculations.
 
-#line 1 "udx.mesh-area.cu"
 
-#line 1 "udx.mesh-area.cu"
 // generated from udx.flat.cu
 #include "udx.config.cuh"
 
@@ -3333,13 +3294,9 @@ void mesh_area_apply(MeshArea *q, int m, Vectors *p, double *area0) {
 
 /* end src/mesh/area/imp.cpp */
 
-#line 1 "src/mesh/bbox/imp.cpp"
 
-#line 3 "udx.mesh-area-group.cu"
 
-#line 1 "udx.mesh-tri_area.cu"
 
-#line 1 "udx.mesh-tri_area.cu"
 // generated from udx.flat.cu
 #include "udx.config.cuh"
 
@@ -3537,20 +3494,13 @@ void mesh_tri_area_apply(MeshTriArea *q, int m, Vectors *p, double *area0) {
 
 /* end src/mesh/tri_area/imp.cpp */
 
-#line 1 "src/mesh/triangles/imp.cpp"
 
-#line 4 "udx.mesh-area-group.cu"
 
-#line 3 "udx.mesh-measures.cu"
 
-#line 1 "udx.mesh-length-area.cu"
 
-#line 1 "udx.mesh-length-area.cu"
 // Grouped editable compilation unit for edge lengths and vertex areas.
 
-#line 1 "udx.mesh-edg_len.cu"
 
-#line 1 "udx.mesh-edg_len.cu"
 // generated from udx.flat.cu
 #include "udx.config.cuh"
 
@@ -3752,13 +3702,9 @@ void mesh_edg_len_fin(MeshEdgLen *q) {
 /* end src/mesh/edg_len/imp/main.h */
 /* end src/mesh/edg_len/imp.cpp */
 
-#line 1 "src/mesh/eng_julicher/imp.cpp"
 
-#line 3 "udx.mesh-length-area.cu"
 
-#line 1 "udx.mesh-vert_area.cu"
 
-#line 1 "udx.mesh-vert_area.cu"
 // generated from udx.flat.cu
 #include "udx.config.cuh"
 
@@ -3961,29 +3907,18 @@ void mesh_vert_area_apply(MeshVertArea *q, int nm, Vectors *pos, double *o) {
 /* end src/mesh/vert_area/imp/main.h */
 /* end src/mesh/vert_area/imp.cpp */
 
-#line 1 "src/mesh/volume/imp.cpp"
 
-#line 4 "udx.mesh-length-area.cu"
 
-#line 4 "udx.mesh-measures.cu"
 
-#line 4 "udx.mesh-geometry-measures.cu"
 
-#line 3 "udx.mesh-geometry-topology.cu"
 
-#line 1 "udx.mesh-topology-collision.cu"
 
-#line 1 "udx.mesh-topology-collision.cu"
 // Grouped editable compilation unit for mesh topology and collision.
 
-#line 1 "udx.mesh-topology.cu"
 
-#line 1 "udx.mesh-topology.cu"
 // Grouped editable compilation unit for mesh topology and volume helpers.
 
-#line 1 "udx.mesh-triangles.cu"
 
-#line 1 "udx.mesh-triangles.cu"
 // generated from udx.flat.cu
 #include "udx.config.cuh"
 
@@ -4264,13 +4199,9 @@ void triangles_fin(Triangles *q) {
 }
 /* end src/mesh/triangles/imp.cpp */
 
-#line 1 "src/mesh/vert_area/imp.cpp"
 
-#line 3 "udx.mesh-topology.cu"
 
-#line 1 "udx.mesh-volume.cu"
 
-#line 1 "udx.mesh-volume.cu"
 // generated from udx.flat.cu
 #include "udx.config.cuh"
 
@@ -4529,13 +4460,9 @@ double mesh_volume_apply0(MeshVolume *q, Vectors *positions) {
 
 /* end src/mesh/volume/imp.cpp */
 
-#line 1 "src/mesh_bounce/imp.cu"
 
-#line 4 "udx.mesh-topology.cu"
 
-#line 1 "udx.mesh-scatter.cu"
 
-#line 1 "udx.mesh-scatter.cu"
 // generated from udx.flat.cu
 #include "udx.config.cuh"
 
@@ -4764,15 +4691,10 @@ void mesh_scatter_fin(MeshScatter *q) {
 /* end src/mesh/scatter/imp/main.h */
 /* end src/mesh/scatter/imp.cpp */
 
-#line 1 "src/mesh/spherical/imp.cpp"
 
-#line 5 "udx.mesh-topology.cu"
 
-#line 3 "udx.mesh-topology-collision.cu"
 
-#line 1 "udx.mesh-collision.cu"
 
-#line 1 "udx.mesh-collision.cu"
 // generated from udx.flat.cu
 #include "udx.config.cuh"
 
@@ -5513,32 +5435,20 @@ void collision_label(int pdir, int n, const Particle *pp, const Triangles *tri,
 }
 /* end src/mesh/collision/imp.cu */
 
-#line 1 "src/mesh/cylindrical/imp.cpp"
 
-#line 4 "udx.mesh-topology-collision.cu"
 
-#line 4 "udx.mesh-geometry-topology.cu"
 
-#line 3 "udx.mesh-all.cu"
 
-#line 1 "udx.mesh-coordinates-distance-generation.cu"
 
-#line 1 "udx.mesh-coordinates-distance-generation.cu"
 // Grouped editable compilation unit for mesh coordinates, distance, generation, and energy.
 
-#line 1 "udx.mesh-coordinates-distance.cu"
 
-#line 1 "udx.mesh-coordinates-distance.cu"
 // Grouped editable compilation unit for mesh coordinates and distance properties.
 
-#line 1 "udx.mesh-coordinates.cu"
 
-#line 1 "udx.mesh-coordinates.cu"
 // Grouped editable compilation unit for cylindrical and spherical coordinates.
 
-#line 1 "udx.mesh-cylindrical.cu"
 
-#line 1 "udx.mesh-cylindrical.cu"
 // generated from udx.flat.cu
 #include "udx.config.cuh"
 
@@ -5710,13 +5620,9 @@ void mesh_cylindrical_apply(MeshCylindrical *q, int m, Vectors *pos, /**/ double
 /* end src/mesh/cylindrical/imp/main.h */
 /* end src/mesh/cylindrical/imp.cpp */
 
-#line 1 "src/mesh/dist/imp.cpp"
 
-#line 3 "udx.mesh-coordinates.cu"
 
-#line 1 "udx.mesh-spherical.cu"
 
-#line 1 "udx.mesh-spherical.cu"
 // generated from udx.flat.cu
 #include "udx.config.cuh"
 
@@ -5891,20 +5797,13 @@ void mesh_spherical_apply(MeshSpherical *q, int m, Vectors *pos, /**/ double *r,
 /* end src/mesh/spherical/imp/main.h */
 /* end src/mesh/spherical/imp.cpp */
 
-#line 1 "src/mesh/tri_area/imp.cpp"
 
-#line 4 "udx.mesh-coordinates.cu"
 
-#line 3 "udx.mesh-coordinates-distance.cu"
 
-#line 1 "udx.mesh-distance-props.cu"
 
-#line 1 "udx.mesh-distance-props.cu"
 // Grouped editable compilation unit for mesh distance and properties.
 
-#line 1 "udx.mesh-dist.cu"
 
-#line 1 "udx.mesh-dist.cu"
 // generated from udx.flat.cu
 #include "udx.config.cuh"
 
@@ -6001,13 +5900,9 @@ float dist_from_mesh(int nt, const int4 *tt, const float *vv, const float *r0) {
 }
 /* end src/mesh/dist/imp.cpp */
 
-#line 1 "src/mesh/edg_len/imp.cpp"
 
-#line 3 "udx.mesh-distance-props.cu"
 
-#line 1 "udx.mesh-props.cu"
 
-#line 1 "udx.mesh-props.cu"
 // generated from udx.flat.cu
 #include "udx.config.cuh"
 
@@ -6170,32 +6065,20 @@ void mesh_inertia_tensor(int nt, const int4 *tt, const float *vv, const float *c
 #undef load_t
 /* end src/mesh/props/imp.cpp */
 
-#line 1 "src/mesh/scatter/imp.cpp"
 
-#line 4 "udx.mesh-distance-props.cu"
 
-#line 4 "udx.mesh-coordinates-distance.cu"
 
-#line 3 "udx.mesh-coordinates-distance-generation.cu"
 
-#line 1 "udx.mesh-generation-energy.cu"
 
-#line 1 "udx.mesh-generation-energy.cu"
 // Grouped editable compilation unit for mesh generation, energies, and forces.
 
-#line 1 "udx.mesh-kantor.cu"
 
-#line 1 "udx.mesh-kantor.cu"
 // Grouped editable compilation unit for mesh energies and Kantor force backends.
 
-#line 1 "udx.mesh-energy.cu"
 
-#line 1 "udx.mesh-energy.cu"
 // Grouped editable compilation unit for Julicher and Kantor mesh energies.
 
-#line 1 "udx.mesh-eng_julicher.cu"
 
-#line 1 "udx.mesh-eng_julicher.cu"
 // generated from udx.flat.cu
 #include "udx.config.cuh"
 
@@ -6490,13 +6373,9 @@ void mesh_eng_julicher_apply(MeshEngJulicher *q, int nm, Vectors *pos, double kb
 /* end src/mesh/eng_julicher/imp/main.h */
 /* end src/mesh/eng_julicher/imp.cpp */
 
-#line 1 "src/mesh/eng_kantor/imp.cpp"
 
-#line 3 "udx.mesh-energy.cu"
 
-#line 1 "udx.mesh-eng_kantor.cu"
 
-#line 1 "udx.mesh-eng_kantor.cu"
 // generated from udx.flat.cu
 #include "udx.config.cuh"
 
@@ -6714,20 +6593,13 @@ void mesh_eng_kantor_apply(MeshEngKantor *q, int nm, Vectors *pos, double kb, do
 /* end src/mesh/eng_kantor/imp/main.h */
 /* end src/mesh/eng_kantor/imp.cpp */
 
-#line 1 "src/mesh/force/kantor0/imp.cpp"
 
-#line 4 "udx.mesh-energy.cu"
 
-#line 3 "udx.mesh-kantor.cu"
 
-#line 1 "udx.mesh-force-kantor.cu"
 
-#line 1 "udx.mesh-force-kantor.cu"
 // Grouped editable compilation unit for Kantor force backends.
 
-#line 1 "udx.mesh-force-kantor0.cu"
 
-#line 1 "udx.mesh-force-kantor0.cu"
 // generated from udx.flat.cu
 #include "udx.config.cuh"
 #include "udx.mesh-force-kantor-common.cuh"
@@ -6941,13 +6813,9 @@ END
 #undef FORCE_KANTOR0_HOST
 /* end src/mesh/force/kantor0/imp.cpp */
 
-#line 1 "src/mesh/force/kantor1/imp.cpp"
 
-#line 3 "udx.mesh-force-kantor.cu"
 
-#line 1 "udx.mesh-force-kantor1.cu"
 
-#line 1 "udx.mesh-force-kantor1.cu"
 // generated from udx.flat.cu
 #include "udx.config.cuh"
 #include "udx.mesh-force-kantor-common.cuh"
@@ -7178,22 +7046,14 @@ END
 #undef FORCE_KANTOR1_HOST
 /* end src/mesh/force/kantor1/imp.cpp */
 
-#line 1 "src/mesh/gen/imp.cpp"
 
-#line 4 "udx.mesh-force-kantor.cu"
 
-#line 4 "udx.mesh-kantor.cu"
 
-#line 3 "udx.mesh-generation-energy.cu"
 
-#line 1 "udx.mesh-generation.cu"
 
-#line 1 "udx.mesh-generation.cu"
 // Grouped editable compilation unit for matrix and mesh generation.
 
-#line 1 "udx.mesh-gen-matrices.cu"
 
-#line 1 "udx.mesh-gen-matrices.cu"
 // generated from udx.flat.cu
 #include "udx.config.cuh"
 
@@ -7481,13 +7341,9 @@ void matrices_fin(Matrices *q) { EFREE(q->m); EFREE(q); }
 /* end src/mesh/gen/matrices/imp/main.h */
 /* end src/mesh/gen/matrices/imp.cpp */
 
-#line 1 "src/mesh/props/imp.cpp"
 
-#line 3 "udx.mesh-generation.cu"
 
-#line 1 "udx.mesh-gen.cu"
 
-#line 1 "udx.mesh-gen.cu"
 // generated from udx.flat.cu
 #include "udx.config.cuh"
 
@@ -7978,21 +7834,13 @@ int mesh_gen_from_file(const Coords *coords, const float *rr0, const char *path,
 /* end src/mesh/gen/imp/main.h */
 /* end src/mesh/gen/imp.cpp */
 
-#line 1 "src/mesh/gen/matrices/imp.cpp"
 
-#line 4 "udx.mesh-generation.cu"
 
-#line 4 "udx.mesh-generation-energy.cu"
 
-#line 4 "udx.mesh-coordinates-distance-generation.cu"
 
-#line 4 "udx.mesh-all.cu"
 
-#line 3 "udx.mesh-complete.cu"
 
-#line 1 "udx.mesh_bounce.cu"
 
-#line 1 "udx.mesh_bounce.cu"
 // generated from udx.flat.cu
 #include "udx.config.cuh"
 
@@ -9359,25 +9207,16 @@ void mesh_bounce_collect_rbc_momentum(float mass, int nc, MeshInfo mi, const Mom
 #undef _S_
 /* end src/mesh_bounce/imp.cu */
 
-#line 1 "src/mpi/glb.cpp"
 
-#line 4 "udx.mesh-complete.cu"
 
-#line 3 "udx.mesh-struct-complete.cu"
 
-#line 1 "udx.struct-all.cu"
 
-#line 1 "udx.struct-all.cu"
 // Grouped editable compilation unit for particle, force, and paired arrays.
 
-#line 1 "udx.struct-arrays.cu"
 
-#line 1 "udx.struct-arrays.cu"
 // Grouped editable compilation unit for the particle and force array views.
 
-#line 1 "udx.struct-parray.cu"
 
-#line 1 "udx.struct-parray.cu"
 // generated from udx.flat.cu
 #include "udx.config.cuh"
 
@@ -9451,13 +9290,9 @@ void parray_get_view(const PaArray *a, PaCArray_v *v) {
 
 /* end src/struct/parray/imp.cpp */
 
-#line 1 "src/struct/pfarrays/imp.cpp"
 
-#line 3 "udx.struct-arrays.cu"
 
-#line 1 "udx.struct-farray.cu"
 
-#line 1 "udx.struct-farray.cu"
 // generated from udx.flat.cu
 #include "udx.config.cuh"
 
@@ -9533,15 +9368,10 @@ void farray_get_view(const FoArray *a, FoSArray_v *v) {
 
 /* end src/struct/farray/imp.cpp */
 
-#line 1 "src/struct/parray/imp.cpp"
 
-#line 4 "udx.struct-arrays.cu"
 
-#line 3 "udx.struct-all.cu"
 
-#line 1 "udx.struct-pfarrays.cu"
 
-#line 1 "udx.struct-pfarrays.cu"
 // generated from udx.flat.cu
 #include "udx.config.cuh"
 
@@ -9817,11 +9647,3 @@ void pfarrays_get(int i, const PFarrays *pp, PFarray *p) {
 }
 /* end src/struct/pfarrays/imp/main.h */
 /* end src/struct/pfarrays/imp.cpp */
-
-#line 1 "src/utils/cc.cpp"
-
-#line 4 "udx.struct-all.cu"
-
-#line 4 "udx.mesh-struct-complete.cu"
-
-#line 4 "udx.exch-mesh-struct-complete.cu"

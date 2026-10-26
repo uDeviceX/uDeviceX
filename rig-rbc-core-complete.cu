@@ -1,20 +1,13 @@
 
-#line 1 "udx.rig-rbc-core-complete.cu"
 // Grouped editable compilation unit for rigid and RBC core/adjacency.
 
-#line 1 "udx.rig-complete.cu"
 
-#line 1 "udx.rig-complete.cu"
 // Grouped editable compilation unit for the complete rigid subsystem.
 
-#line 1 "udx.rig-gen-main.cu"
 
-#line 1 "udx.rig-gen-main.cu"
 // Grouped editable compilation unit for rigid generation and management.
 
-#line 1 "udx.rig-gen.cu"
 
-#line 1 "udx.rig-gen.cu"
 // generated from udx.flat.cu
 #include "udx.config.cuh"
 
@@ -1232,13 +1225,9 @@ void rig_gen_from_solvent(const Coords *coords, MPI_Comm cart, RigGenInfo rgi, /
 #undef _S_
 /* end src/rig/gen/imp.cpp */
 
-#line 1 "src/rig/imp.cpp"
 
-#line 3 "udx.rig-gen-main.cu"
 
-#line 1 "udx.rig.cu"
 
-#line 1 "udx.rig.cu"
 // generated from udx.flat.cu
 #include "udx.config.cuh"
 
@@ -2106,15 +2095,10 @@ void rig_strt_dump(MPI_Comm comm, const char *base, const char *name, const int 
 /* end src/rig/imp/start.h */
 /* end src/rig/imp.cpp */
 
-#line 1 "src/rigid/conf.cpp"
 
-#line 4 "udx.rig-gen-main.cu"
 
-#line 3 "udx.rig-complete.cu"
 
-#line 1 "udx.rigid.cu"
 
-#line 1 "udx.rigid.cu"
 // generated from udx.flat.cu
 #include "udx.config.cuh"
 
@@ -2278,7 +2262,6 @@ void rig_pininfo_set_conf(const Config *cfg, const char *ns, RigPinInfo *pi) {
 }
 /* end src/rigid/conf.cpp */
 
-#line 1 "src/rigid/imp.cu"
 
 
 /* begin src/rigid/imp.cu */
@@ -3015,25 +2998,16 @@ void rig_update_mesh(float dt, int ns, const Rigid *ss, int nv, const float *vv,
 /* end src/rigid/imp/main.h */
 /* end src/rigid/imp.cu */
 
-#line 1 "src/scheme/force/conf.cpp"
 
-#line 4 "udx.rig-complete.cu"
 
-#line 3 "udx.rig-rbc-core-complete.cu"
 
-#line 1 "udx.rbc-core-adj-com.cu"
 
-#line 1 "udx.rbc-core-adj-com.cu"
 // Grouped editable compilation unit for RBC core, adjacency, and communication.
 
-#line 1 "udx.rbc-core-geometry.cu"
 
-#line 1 "udx.rbc-core-geometry.cu"
 // Grouped editable compilation unit for RBC core and geometry.
 
-#line 1 "udx.rbc.cu"
 
-#line 1 "udx.rbc.cu"
 // generated from udx.flat.cu
 #include "udx.config.cuh"
 
@@ -3730,23 +3704,15 @@ void rbc_strt_dump(MPI_Comm comm, const char *base, const char *name, int id, co
 /* end src/rbc/imp/start.h */
 /* end src/rbc/imp.cpp */
 
-#line 1 "src/rbc/params/conf.cpp"
 
-#line 3 "udx.rbc-core-geometry.cu"
 
-#line 1 "udx.rbc-geometry.cu"
 
-#line 1 "udx.rbc-geometry.cu"
 // Grouped editable compilation unit for RBC parameters, shape, and stretch.
 
-#line 1 "udx.rbc-parameters-shape.cu"
 
-#line 1 "udx.rbc-parameters-shape.cu"
 // Grouped editable compilation unit for RBC parameters and shape geometry.
 
-#line 1 "udx.rbc-params.cu"
 
-#line 1 "udx.rbc-params.cu"
 // generated from udx.flat.cu
 #include "udx.config.cuh"
 
@@ -3962,7 +3928,6 @@ void rbc_params_set_conf(const Config *c, const char *name, RbcParams *par) {
 }
 /* end src/rbc/params/conf.cpp */
 
-#line 1 "src/rbc/params/imp.cpp"
 
 
 /* begin src/rbc/params/imp.cpp */
@@ -4118,13 +4083,9 @@ RbcParams_v rbc_params_get_view(const RbcParams *p) {
 }
 /* end src/rbc/params/imp.cpp */
 
-#line 1 "src/rbc/shape/imp.cpp"
 
-#line 3 "udx.rbc-parameters-shape.cu"
 
-#line 1 "udx.rbc-shape.cu"
 
-#line 1 "udx.rbc-shape.cu"
 // generated from udx.flat.cu
 #include "udx.config.cuh"
 
@@ -4404,15 +4365,10 @@ void rbc_shape_total_volume(RbcShape *q, /**/ float *pe) {
 /* end src/rbc/shape/imp/main.h */
 /* end src/rbc/shape/imp.cpp */
 
-#line 1 "src/rbc/stretch/imp.cu"
 
-#line 4 "udx.rbc-parameters-shape.cu"
 
-#line 3 "udx.rbc-geometry.cu"
 
-#line 1 "udx.rbc-stretch.cu"
 
-#line 1 "udx.rbc-stretch.cu"
 // generated from udx.flat.cu
 #include "udx.config.cuh"
 
@@ -5035,22 +4991,14 @@ void rbc_stretch_apply(int nm, const RbcStretch *f, /**/ Force *ff) {
 /* end src/rbc/stretch/imp/main.h */
 /* end src/rbc/stretch/imp.cu */
 
-#line 1 "src/rig/gen/imp.cpp"
 
-#line 4 "udx.rbc-geometry.cu"
 
-#line 4 "udx.rbc-core-geometry.cu"
 
-#line 3 "udx.rbc-core-adj-com.cu"
 
-#line 1 "udx.rbc-adj-com.cu"
 
-#line 1 "udx.rbc-adj-com.cu"
 // Grouped editable compilation unit for RBC adjacency and communication.
 
-#line 1 "udx.rbc-adj.cu"
 
-#line 1 "udx.rbc-adj.cu"
 // generated from udx.flat.cu
 #include "udx.config.cuh"
 
@@ -5501,13 +5449,9 @@ void adj_get_anti(const Adj *adj, /**/ int *anti) {
 /* end src/rbc/adj/imp/anti.h */
 /* end src/rbc/adj/imp.cpp */
 
-#line 1 "src/rbc/com/imp.cu"
 
-#line 3 "udx.rbc-adj-com.cu"
 
-#line 1 "udx.rbc-com.cu"
 
-#line 1 "udx.rbc-com.cu"
 // generated from udx.flat.cu
 #include "udx.config.cuh"
 
@@ -6308,11 +6252,3 @@ void rbc_com_apply(RbcCom *q, int nm, const Particle *pp, /**/ float3 **prr, flo
 }
 /* end src/rbc/com/imp/main.h */
 /* end src/rbc/com/imp.cu */
-
-#line 1 "src/rbc/force/area_volume/imp.cu"
-
-#line 4 "udx.rbc-adj-com.cu"
-
-#line 4 "udx.rbc-core-adj-com.cu"
-
-#line 4 "udx.rig-rbc-core-complete.cu"

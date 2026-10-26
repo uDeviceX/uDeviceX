@@ -1,25 +1,16 @@
 
-#line 1 "udx.scheme-io-complete.cu"
 // Editable compilation unit for scheme/system and I/O clients.
 
-#line 1 "udx.scheme-system-complete.cu"
 
-#line 1 "udx.scheme-system-complete.cu"
 // Grouped editable compilation unit for scheme and simulation-system code.
 
-#line 1 "udx.scheme-all.cu"
 
-#line 1 "udx.scheme-all.cu"
 // Grouped editable compilation unit for force, time, move, and restraint schemes.
 
-#line 1 "udx.scheme-force-time.cu"
 
-#line 1 "udx.scheme-force-time.cu"
 // Grouped editable compilation unit for force and time schemes.
 
-#line 1 "udx.scheme-force.cu"
 
-#line 1 "udx.scheme-force.cu"
 // generated from udx.flat.cu
 #include "udx.config.cuh"
 
@@ -233,7 +224,6 @@ void bforce_set_conf(const Config *cfg, /**/ BForce *bf) {
 
 /* end src/scheme/force/conf.cpp */
 
-#line 1 "src/scheme/force/imp.cu"
 
 
 /* begin src/scheme/force/imp.cu */
@@ -1066,18 +1056,12 @@ void bforce_apply(const Coords *c, float mass, const BForce *bf, int n, const Pa
 /* end src/scheme/force/imp/main.h */
 /* end src/scheme/force/imp.cu */
 
-#line 1 "src/scheme/move/imp.cu"
 
-#line 3 "udx.scheme-force-time.cu"
 
-#line 1 "udx.scheme-time.cu"
 
-#line 1 "udx.scheme-time.cu"
 // Grouped editable compilation unit for time-line and time-step schemes.
 
-#line 1 "udx.scheme-time_line.cu"
 
-#line 1 "udx.scheme-time_line.cu"
 // generated from udx.flat.cu
 #include "udx.config.cuh"
 
@@ -1300,13 +1284,9 @@ void time_line_strt_read(const char *base, int id, TimeLine *t) {
 /* end src/scheme/time_line/imp/start.h */
 /* end src/scheme/time_line/imp.cpp */
 
-#line 1 "src/scheme/time_step/imp.cpp"
 
-#line 3 "udx.scheme-time.cu"
 
-#line 1 "udx.scheme-time_step.cu"
 
-#line 1 "udx.scheme-time_step.cu"
 // generated from udx.flat.cu
 #include "udx.config.cuh"
 
@@ -1724,22 +1704,14 @@ float time_step_dt0(TimeStep *q) { return q->dt; };
 /* end src/scheme/time_step/imp/main.h */
 /* end src/scheme/time_step/imp.cpp */
 
-#line 1 "src/sim/imp.cpp"
 
-#line 4 "udx.scheme-time.cu"
 
-#line 4 "udx.scheme-force-time.cu"
 
-#line 3 "udx.scheme-all.cu"
 
-#line 1 "udx.scheme-move-restrain.cu"
 
-#line 1 "udx.scheme-move-restrain.cu"
 // Grouped editable compilation unit for move and restraint schemes.
 
-#line 1 "udx.scheme-move.cu"
 
-#line 1 "udx.scheme-move.cu"
 // generated from udx.flat.cu
 #include "udx.config.cuh"
 
@@ -2261,13 +2233,9 @@ void scheme_move_clear_vel(int n, /**/ Particle *pp) {
 /* end src/scheme/move/imp/main.h */
 /* end src/scheme/move/imp.cu */
 
-#line 1 "src/scheme/restrain/conf.cpp"
 
-#line 3 "udx.scheme-move-restrain.cu"
 
-#line 1 "udx.scheme-restrain.cu"
 
-#line 1 "udx.scheme-restrain.cu"
 // generated from udx.flat.cu
 #include "udx.config.cuh"
 
@@ -2462,7 +2430,6 @@ void scheme_restrain_set_conf(const Config *cfg, Restrain *r) {
 }
 /* end src/scheme/restrain/conf.cpp */
 
-#line 1 "src/scheme/restrain/imp.cu"
 
 
 /* begin src/scheme/restrain/imp.cu */
@@ -3178,32 +3145,20 @@ void scheme_restrain_apply(MPI_Comm comm, const int *cc, long it, /**/ Restrain 
 /* end src/scheme/restrain/imp/main.h */
 /* end src/scheme/restrain/imp.cu */
 
-#line 1 "src/scheme/time_line/imp.cpp"
 
-#line 4 "udx.scheme-move-restrain.cu"
 
-#line 4 "udx.scheme-all.cu"
 
-#line 3 "udx.scheme-system-complete.cu"
 
-#line 1 "udx.sim-system-all.cu"
 
-#line 1 "udx.sim-system-all.cu"
 // Grouped editable compilation unit for simulation options, objects, and walls.
 
-#line 1 "udx.sim-all.cu"
 
-#line 1 "udx.sim-all.cu"
 // Grouped editable compilation unit for simulation options and objects.
 
-#line 1 "udx.sim-objects-objinter.cu"
 
-#line 1 "udx.sim-objects-objinter.cu"
 // Grouped editable compilation unit for simulation objects and interactions.
 
-#line 1 "udx.sim-objects.cu"
 
-#line 1 "udx.sim-objects.cu"
 // generated from udx.flat.cu
 #include "udx.config.cuh"
 
@@ -6226,13 +6181,9 @@ void objects_gen_freeze(PFarray *flu, Objects *o) {
 /* end src/sim/objects/imp/gen.h */
 /* end src/sim/objects/imp.cpp */
 
-#line 1 "src/sim/objinter/imp.cpp"
 
-#line 3 "udx.sim-objects-objinter.cu"
 
-#line 1 "udx.sim-objinter.cu"
 
-#line 1 "udx.sim-objinter.cu"
 // generated from udx.flat.cu
 #include "udx.config.cuh"
 
@@ -7036,15 +6987,10 @@ void obj_inter_forces(ObjInter *oi, const PairParams **fsi_prms, const PairParam
 /* end src/sim/objinter/imp/main.h */
 /* end src/sim/objinter/imp.cpp */
 
-#line 1 "src/sim/opt/imp.cpp"
 
-#line 4 "udx.sim-objects-objinter.cu"
 
-#line 3 "udx.sim-all.cu"
 
-#line 1 "udx.sim-opt.cu"
 
-#line 1 "udx.sim-opt.cu"
 // generated from udx.flat.cu
 #include "udx.config.cuh"
 
@@ -7528,15 +7474,10 @@ long opt_estimate_maxp(const Opt *o) {
 }
 /* end src/sim/opt/imp.cpp */
 
-#line 1 "src/sim/walls/imp.cpp"
 
-#line 4 "udx.sim-all.cu"
 
-#line 3 "udx.sim-system-all.cu"
 
-#line 1 "udx.sim-walls.cu"
 
-#line 1 "udx.sim-walls.cu"
 // generated from udx.flat.cu
 #include "udx.config.cuh"
 
@@ -8286,42 +8227,26 @@ void wall_update_vel(float t, Wall *w) {
 /* end src/sim/walls/imp/main.h */
 /* end src/sim/walls/imp.cpp */
 
-#line 1 "src/struct/farray/imp.cpp"
 
-#line 4 "udx.sim-system-all.cu"
 
-#line 4 "udx.scheme-system-complete.cu"
 
-#line 3 "udx.scheme-io-complete.cu"
 
-#line 1 "udx.io-fraghe-complete.cu"
 
-#line 1 "udx.io-fraghe-complete.cu"
 // Grouped editable compilation unit for I/O and half-edge code.
 
-#line 1 "udx.io-complete.cu"
 
-#line 1 "udx.io-complete.cu"
 // Grouped editable compilation unit for output, mesh, and restart I/O.
 
-#line 1 "udx.io-all-output.cu"
 
-#line 1 "udx.io-all-output.cu"
 // Grouped editable compilation unit for all current output backends.
 
-#line 1 "udx.io-bop-vtk-point.cu"
 
-#line 1 "udx.io-bop-vtk-point.cu"
 // Grouped editable compilation unit for BOP, VTK, and point-grid output.
 
-#line 1 "udx.io-bop-vtk.cu"
 
-#line 1 "udx.io-bop-vtk.cu"
 // Grouped editable compilation unit for BOP and VTK output.
 
-#line 1 "udx.io-bop.cu"
 
-#line 1 "udx.io-bop.cu"
 // generated from udx.flat.cu
 #include "udx.config.cuh"
 
@@ -8908,18 +8833,12 @@ void io_bop_colors(MPI_Comm cart, long n, const int *cc, const char *name, int i
 /* end src/io/bop/imp/main.h */
 /* end src/io/bop/imp.cpp */
 
-#line 1 "src/io/com/imp.cpp"
 
-#line 3 "udx.io-bop-vtk.cu"
 
-#line 1 "udx.io-vtk-output.cu"
 
-#line 1 "udx.io-vtk-output.cu"
 // Grouped editable compilation unit for VTK output.
 
-#line 1 "udx.io-vtk-mesh.cu"
 
-#line 1 "udx.io-vtk-mesh.cu"
 // generated from udx.flat.cu
 #include "udx.config.cuh"
 
@@ -9101,13 +9020,9 @@ const int* mesh_tt(Mesh *q) { return q->tt; }
 /* end src/io/vtk/mesh/imp/main.h */
 /* end src/io/vtk/mesh/imp.cpp */
 
-#line 1 "src/io/write/imp.cpp"
 
-#line 3 "udx.io-vtk-output.cu"
 
-#line 1 "udx.io-vtk.cu"
 
-#line 1 "udx.io-vtk.cu"
 // generated from udx.flat.cu
 #include "udx.config.cuh"
 
@@ -9810,28 +9725,18 @@ void vtk_fin(VTK *q) {
 /* end src/io/vtk/imp/main.h */
 /* end src/io/vtk/imp.cpp */
 
-#line 1 "src/io/vtk/mesh/imp.cpp"
 
-#line 4 "udx.io-vtk-output.cu"
 
-#line 4 "udx.io-bop-vtk.cu"
 
-#line 3 "udx.io-bop-vtk-point.cu"
 #undef PATTERN
 
-#line 1 "udx.io-point-grid.cu"
 
-#line 1 "udx.io-point-grid.cu"
 // Grouped editable compilation unit for point and grid output.
 
-#line 1 "udx.io-point-write.cu"
 
-#line 1 "udx.io-point-write.cu"
 // Grouped editable compilation unit for point I/O and generic writing.
 
-#line 1 "udx.io-point.cu"
 
-#line 1 "udx.io-point.cu"
 // generated from udx.flat.cu
 #include "udx.config.cuh"
 
@@ -10224,13 +10129,9 @@ void io_point_write(IOPoint *q, MPI_Comm comm, int id) {
 /* end src/io/point/imp/main.h */
 /* end src/io/point/imp.cpp */
 
-#line 1 "src/io/restart/imp.cpp"
 
-#line 3 "udx.io-point-write.cu"
 
-#line 1 "udx.io-write.cu"
 
-#line 1 "udx.io-write.cu"
 // generated from udx.flat.cu
 #include "udx.config.cuh"
 
@@ -10475,20 +10376,13 @@ int write_reduce(MPI_Comm comm, int n0, /**/ int *n) {
 /* end src/io/write/imp/main.h */
 /* end src/io/write/imp.cpp */
 
-#line 1 "src/math/linal/imp.cpp"
 
-#line 4 "udx.io-point-write.cu"
 
-#line 3 "udx.io-point-grid.cu"
 
-#line 1 "udx.io-grid-output.cu"
 
-#line 1 "udx.io-grid-output.cu"
 // Grouped editable compilation unit for raw-grid and XMF output.
 
-#line 1 "udx.io-grid-raw.cu"
 
-#line 1 "udx.io-grid-raw.cu"
 // generated from udx.flat.cu
 #include "udx.config.cuh"
 
@@ -10630,11 +10524,8 @@ void raw_write(int3 N, MPI_Comm cart, const char *path, int ncomp,
 }
 /* end src/io/grid/raw/imp.cpp */
 
-#line 3 "udx.io-grid-output.cu"
 
-#line 1 "udx.io-grid-xmf.cu"
 
-#line 1 "udx.io-grid-xmf.cu"
 // generated from udx.flat.cu
 #include "udx.config.cuh"
 
@@ -10796,13 +10687,9 @@ void xmf_write(int3 domainSize, int3 gridSize, const char *path, int ncomp, cons
 }
 /* end src/io/grid/xmf/imp.cpp */
 
-#line 1 "src/io/mesh/imp.cpp"
 
-#line 4 "udx.io-grid-output.cu"
 
-#line 1 "udx.io-grid.cu"
 
-#line 1 "udx.io-grid.cu"
 // generated from udx.flat.cu
 #include "udx.config.cuh"
 
@@ -10985,29 +10872,18 @@ void grid_write(int3 N, int3 L, MPI_Comm cart, const char *path, int ncmp, const
 }
 /* end src/io/grid/imp.cpp */
 
-#line 1 "src/io/grid/xmf/imp.cpp"
 
-#line 5 "udx.io-grid-output.cu"
 
-#line 4 "udx.io-point-grid.cu"
 
-#line 5 "udx.io-bop-vtk-point.cu"
 
-#line 3 "udx.io-all-output.cu"
 
-#line 1 "udx.io-text-diagnostics.cu"
 
-#line 1 "udx.io-text-diagnostics.cu"
 // Grouped editable compilation unit for text and diagnostic I/O.
 
-#line 1 "udx.io-text.cu"
 
-#line 1 "udx.io-text.cu"
 // Grouped editable compilation unit for text and communication I/O.
 
-#line 1 "udx.io-com.cu"
 
-#line 1 "udx.io-com.cu"
 // generated from udx.flat.cu
 #include "udx.config.cuh"
 
@@ -11344,13 +11220,9 @@ void io_com_dump(MPI_Comm comm, const Coords *coords, const char *name, long id,
 /* end src/io/com/imp.cpp */
 #endif
 
-#line 1 "src/io/diag/mesh/imp.cpp"
 
-#line 3 "udx.io-text.cu"
 
-#line 1 "udx.io-txt.cu"
 
-#line 1 "udx.io-txt.cu"
 // generated from udx.flat.cu
 #include "udx.config.cuh"
 
@@ -11670,20 +11542,13 @@ const Force*    txt_read_get_ff(const TxtRead *q) { return q->ff; }
 /* end src/io/txt/imp/read.h */
 /* end src/io/txt/imp.cpp */
 
-#line 1 "src/io/vtk/imp.cpp"
 
-#line 4 "udx.io-text.cu"
 
-#line 3 "udx.io-text-diagnostics.cu"
 
-#line 1 "udx.io-diagnostics.cu"
 
-#line 1 "udx.io-diagnostics.cu"
 // Grouped editable compilation unit for diagnostic output.
 
-#line 1 "udx.io-diag-mesh.cu"
 
-#line 1 "udx.io-diag-mesh.cu"
 // generated from udx.flat.cu
 #include "udx.config.cuh"
 
@@ -11920,13 +11785,9 @@ void diag_mesh_apply(DiagMesh*, MPI_Comm, float, int, Particle*) {
 /* end src/io/diag/mesh/imp/main.h */
 /* end src/io/diag/mesh/imp.cpp */
 
-#line 1 "src/io/diag/part/imp.cpp"
 
-#line 3 "udx.io-diagnostics.cu"
 
-#line 1 "udx.io-diag-part.cu"
 
-#line 1 "udx.io-diag-part.cu"
 // generated from udx.flat.cu
 #include "udx.config.cuh"
 
@@ -12198,24 +12059,15 @@ void diag_part_apply(DiagPart *q, MPI_Comm comm, float time, int n, const Partic
 /* end src/io/diag/part/imp/main.h */
 /* end src/io/diag/part/imp.cpp */
 
-#line 1 "src/io/grid/raw/imp.cpp"
 
-#line 4 "udx.io-diagnostics.cu"
 
-#line 4 "udx.io-text-diagnostics.cu"
 
-#line 4 "udx.io-all-output.cu"
 
-#line 3 "udx.io-complete.cu"
 
-#line 1 "udx.io-mesh-rig-restart.cu"
 
-#line 1 "udx.io-mesh-rig-restart.cu"
 // Grouped editable compilation unit for mesh, rigid, and restart output.
 
-#line 1 "udx.io-mesh.cu"
 
-#line 1 "udx.io-mesh.cu"
 // generated from udx.flat.cu
 #include "udx.config.cuh"
 
@@ -12803,18 +12655,12 @@ void mesh_write_vectors(MeshWrite *q, MPI_Comm comm, int nc, Vectors *pos, Vecto
 /* end src/io/mesh/imp/main.h */
 /* end src/io/mesh/imp.cpp */
 
-#line 1 "src/io/mesh_read/edg/imp.cpp"
 
-#line 3 "udx.io-mesh-rig-restart.cu"
 
-#line 1 "udx.io-rig-restart.cu"
 
-#line 1 "udx.io-rig-restart.cu"
 // Grouped editable compilation unit for rigid output and restart I/O.
 
-#line 1 "udx.io-rig.cu"
 
-#line 1 "udx.io-rig.cu"
 // generated from udx.flat.cu
 #include "udx.config.cuh"
 
@@ -13231,13 +13077,9 @@ void io_rig_dump(MPI_Comm comm, const Coords *c, const char *name, long id, int 
 /* end src/io/rig/imp/main.h */
 /* end src/io/rig/imp.cpp */
 
-#line 1 "src/io/txt/imp.cpp"
 
-#line 3 "udx.io-rig-restart.cu"
 
-#line 1 "udx.io-restart.cu"
 
-#line 1 "udx.io-restart.cu"
 // generated from udx.flat.cu
 #include "udx.config.cuh"
 
@@ -13778,20 +13620,13 @@ void restart_read_stream_one_node(const char *base, const char *code, int id, St
 /* end src/io/restart/imp/main.h */
 /* end src/io/restart/imp.cpp */
 
-#line 1 "src/io/rig/imp.cpp"
 
-#line 4 "udx.io-rig-restart.cu"
 
-#line 4 "udx.io-mesh-rig-restart.cu"
 
-#line 1 "udx.io-mesh-reader.cu"
 
-#line 1 "udx.io-mesh-reader.cu"
 // Grouped editable compilation unit for mesh reading and edge topology.
 
-#line 1 "udx.io-mesh_read-edg.cu"
 
-#line 1 "udx.io-mesh_read-edg.cu"
 // generated from udx.flat.cu
 #include "udx.config.cuh"
 
@@ -13927,13 +13762,9 @@ int e_valid(Edg *q, int i, int j) {
 /* end src/io/mesh_read/edg/imp/main.h */
 /* end src/io/mesh_read/edg/imp.cpp */
 
-#line 1 "src/io/mesh_read/imp.cpp"
 
-#line 3 "udx.io-mesh-reader.cu"
 
-#line 1 "udx.io-mesh_read.cu"
 
-#line 1 "udx.io-mesh_read.cu"
 // generated from udx.flat.cu
 #include "udx.config.cuh"
 
@@ -14357,24 +14188,15 @@ const int4  *mesh_read_get_dih(MeshRead *q) {
 /* end src/io/mesh_read/imp/main.h */
 /* end src/io/mesh_read/imp.cpp */
 
-#line 1 "src/io/point/imp.cpp"
 
-#line 4 "udx.io-mesh-reader.cu"
 
-#line 5 "udx.io-mesh-rig-restart.cu"
 
-#line 4 "udx.io-complete.cu"
 
-#line 3 "udx.io-fraghe-complete.cu"
 
-#line 1 "udx.frag-he.cu"
 
-#line 1 "udx.frag-he.cu"
 // Grouped editable compilation unit for fragment indexing and half-edge I/O.
 
-#line 1 "udx.frag.cu"
 
-#line 1 "udx.frag.cu"
 // generated from udx.flat.cu
 #include "udx.config.cuh"
 
@@ -14522,13 +14344,9 @@ void estimates(int3 L, int nfrags, float maxd, /**/ int *cap) {
 } // frag_hst
 /* end src/frag/imp.cpp */
 
-#line 1 "src/fsi/imp.cu"
 
-#line 3 "udx.frag-he.cu"
 
-#line 1 "udx.he.cu"
 
-#line 1 "udx.he.cu"
 // generated from udx.flat.cu
 #include "udx.config.cuh"
 
@@ -14587,7 +14405,6 @@ void he_msg(const char *file, int line, const char *fmt, ...) {
 }
 /* end src/he/err.cpp */
 
-#line 1 "src/he/hash.cpp"
 
 
 /* begin src/he/hash.cpp */
@@ -14704,7 +14521,6 @@ int he_hash_get(T *q, int i, int j) {
 }
 /* end src/he/hash.cpp */
 
-#line 1 "src/he/he.cpp"
 
 
 /* begin src/he/he.cpp */
@@ -14880,7 +14696,6 @@ int he_hdg_tri(T *q, int t) { V(t, q->nt); return q->hdg_tri[t]; }
 int he_bnd(T *q, int h)     { V(h, q->nh); return q->flp[h] == -1; }
 /* end src/he/he.cpp */
 
-#line 1 "src/he/memory.cpp"
 
 
 /* begin src/he/memory.cpp */
@@ -14913,7 +14728,6 @@ int he_memcpy(void *dest, const void *src, size_t n) {
 }
 /* end src/he/memory.cpp */
 
-#line 1 "src/he/read.cpp"
 
 
 /* begin src/he/read.cpp */
@@ -15209,7 +15023,6 @@ int he_read_hdg_edg(T *q, int **p) { *p = q->hdg_edg; return HE_OK; };
 int he_read_hdg_tri(T *q, int **p) { *p = q->hdg_tri; return HE_OK; };
 /* end src/he/read.cpp */
 
-#line 1 "src/he/util.cpp"
 
 
 /* begin src/he/util.cpp */
@@ -15253,11 +15066,3 @@ char *util_comment_fgets(char *s, FILE *stream) {
     return s;
 }
 /* end src/he/util.cpp */
-
-#line 1 "src/inter/color/conf.cpp"
-
-#line 4 "udx.frag-he.cu"
-
-#line 4 "udx.io-fraghe-complete.cu"
-
-#line 4 "udx.scheme-io-complete.cu"
