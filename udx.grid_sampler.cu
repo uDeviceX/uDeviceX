@@ -112,8 +112,8 @@ const char* get_filename_ext(const char*);
 /* end src/utils/imp.h */
 
 /* begin src/utils/kl.h */
-#ifndef UDX_GRID_INTER_KL_COMMON
-#define UDX_GRID_INTER_KL_COMMON
+#ifndef UDX_CONTROL_KL_COMMON
+#define UDX_CONTROL_KL_COMMON
 /* [k]ernel [l]aunch macros */
 
 #if    defined(KL_RELEASE)
@@ -206,8 +206,8 @@ void check(int rc, const char *file, int line);
 /* end src/utils/cc.h */
 
 /* begin src/d/api.h */
-#ifndef UDX_GRID_INTER_DEVICE_API_COMMON
-#define UDX_GRID_INTER_DEVICE_API_COMMON
+#ifndef UDX_CONTROL_D_API_COMMON
+#define UDX_CONTROL_D_API_COMMON
 namespace d {  /* a wrapper for device API */
 typedef int Stream_t; /* TODO: streams are not supported */
 enum {MemcpyHostToHost, MemcpyHostToDevice,
@@ -240,8 +240,8 @@ int PeekAtLastError(void);
 #endif
 
 /* begin src/inc/type.h */
-#ifndef UDX_GRID_INTER_TYPE_COMMON
-#define UDX_GRID_INTER_TYPE_COMMON
+#ifndef UDX_CONTROL_TYPE_COMMON
+#define UDX_CONTROL_TYPE_COMMON
 template <typename T, int N>
 struct Sarray { /* [s]tatic array */
     T d[N];

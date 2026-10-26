@@ -325,8 +325,8 @@ enum {
 #define DzeroA(P, n)   DsetA(P, 0, n)
 /* end src/inc/dev.h */
 /* begin src/inc/type.h */
-#ifndef UDX_GRID_INTER_TYPE_COMMON
-#define UDX_GRID_INTER_TYPE_COMMON
+#ifndef UDX_CONTROL_TYPE_COMMON
+#define UDX_CONTROL_TYPE_COMMON
 template <typename T, int N>
 struct Sarray { /* [s]tatic array */
     T d[N];
@@ -383,8 +383,8 @@ struct FoWrap {
 #endif
 
 /* begin src/d/api.h */
-#ifndef UDX_GRID_INTER_DEVICE_API_COMMON
-#define UDX_GRID_INTER_DEVICE_API_COMMON
+#ifndef UDX_CONTROL_D_API_COMMON
+#define UDX_CONTROL_D_API_COMMON
 namespace d {  /* a wrapper for device API */
 typedef int Stream_t; /* TODO: streams are not supported */
 enum {MemcpyHostToHost, MemcpyHostToDevice,
@@ -576,9 +576,9 @@ int coords_size(const Coords *c);
 
 /* begin src/inter/color/imp/type.h */
 enum {
-    NONE,
-    DROP,
-    UNIF
+    COLOR_NONE,
+    COLOR_DROP,
+    COLOR_UNIF
 };
 
 struct GenColor {
@@ -628,7 +628,7 @@ void inter_color_ini(GenColor **c) {
     GenColor *gc;
     EMALLOC(1, c);
     gc = *c;
-    gc->kind = NONE;
+    gc->kind = COLOR_NONE;
 }
 
 void inter_color_fin(GenColor *c) {
@@ -636,23 +636,23 @@ void inter_color_fin(GenColor *c) {
 }
 
 void inter_color_set_drop(float R, GenColor *c) {
-    c->kind = DROP;
+    c->kind = COLOR_DROP;
     c->R = R;
 }
 
 void inter_color_set_uniform(GenColor *c) {
-    c->kind = UNIF;
+    c->kind = COLOR_UNIF;
 }
 
 void inter_color_apply_hst(const Coords *coords, const GenColor *gc, int n, const Particle *pp, /**/ int *cc) {
     switch (gc->kind) {
-    case UNIF:
+    case COLOR_UNIF:
         set_color_unif(n, /**/ cc);
         break;
-    case DROP:
+    case COLOR_DROP:
         set_color_drop(gc->R, coords, n, pp, /**/ cc);
         break;
-    case NONE:
+    case COLOR_NONE:
         break;
     default:
         ERR("Unrecognised kind <%d>", gc->kind);
@@ -664,7 +664,7 @@ void inter_color_apply_dev(const Coords *coords, const GenColor *gc, int n, cons
     int *cc_hst;
     Particle *pp_hst;
 
-    if (gc->kind == NONE) return;
+    if (gc->kind == COLOR_NONE) return;
 
     EMALLOC(n, &cc_hst);
     EMALLOC(n, &pp_hst);

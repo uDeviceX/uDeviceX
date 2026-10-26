@@ -222,8 +222,8 @@ static int   warpSize = 1;
   #error DEV_* is undefined
 #endif
 /* end src/d/ker.h */
-#ifndef UDX_GRID_INTER_DEVICE_API_COMMON
-#define UDX_GRID_INTER_DEVICE_API_COMMON
+#ifndef UDX_CONTROL_D_API_COMMON
+#define UDX_CONTROL_D_API_COMMON
 /* begin src/d/api.h */
 namespace d {  /* a wrapper for device API */
 typedef int Stream_t; /* TODO: streams are not supported */
@@ -256,8 +256,8 @@ int PeekAtLastError(void);
 /* end src/d/api.h */
 #endif /* UDX_GRID_INTER_DEVICE_API_COMMON */
 
-#ifndef UDX_GRID_INTER_TYPE_COMMON
-#define UDX_GRID_INTER_TYPE_COMMON
+#ifndef UDX_CONTROL_TYPE_COMMON
+#define UDX_CONTROL_TYPE_COMMON
 /* begin src/inc/type.h */
 template <typename T, int N>
 struct Sarray { /* [s]tatic array */
@@ -353,6 +353,8 @@ struct FoWrap {
 #define DzeroA(P, n)   DsetA(P, 0, n)
 /* end src/inc/dev.h */
 /* begin src/algo/utils/shfl.h */
+#ifndef UDX_CONTROL_SHFL_COMMON
+#define UDX_CONTROL_SHFL_COMMON
 #define _I_ static __device__
 
 #if __CUDACC_VER_MAJOR__ >= 9
@@ -428,9 +430,10 @@ _I_ float3 warpReduceSum(float3 val)  // <3>
 #undef _I_
 
 /* end src/algo/utils/dev.h */
+#endif /* UDX_CONTROL_SHFL_COMMON */
 
-#ifndef UDX_GRID_INTER_KL_COMMON
-#define UDX_GRID_INTER_KL_COMMON
+#ifndef UDX_CONTROL_KL_COMMON
+#define UDX_CONTROL_KL_COMMON
 /* begin src/utils/kl.h */
 /* [k]ernel [l]aunch macros */
 
@@ -514,8 +517,11 @@ void minmax(const Particle *pp, int nv, int nobj, /**/ float3 *lo, float3 *hi);
 // end::interface[]
 /* end src/algo/minmax/imp.h */
 
+#ifndef UDX_CONTROL_WARPSIZE_COMMON
+#define UDX_CONTROL_WARPSIZE_COMMON
+enum { WARPSIZE = 32 };
+#endif
 enum {
-    WARPSIZE   = 32,
     BLOCK_SIZE = 128,
     NWARPS     = BLOCK_SIZE / WARPSIZE
 };

@@ -43,8 +43,8 @@
 /* end src/inc/conf.h */
 
 /* begin src/inc/type.h */
-#ifndef UDX_GRID_INTER_TYPE_COMMON
-#define UDX_GRID_INTER_TYPE_COMMON
+#ifndef UDX_CONTROL_TYPE_COMMON
+#define UDX_CONTROL_TYPE_COMMON
 template <typename T, int N>
 struct Sarray { /* [s]tatic array */
     T d[N];
@@ -138,8 +138,8 @@ struct FoWrap {
 #define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
 #define DzeroA(P, n)   DsetA(P, 0, n)
 /* end src/inc/dev.h */
-#ifndef UDX_GRID_INTER_KL_COMMON
-#define UDX_GRID_INTER_KL_COMMON
+#ifndef UDX_CONTROL_KL_COMMON
+#define UDX_CONTROL_KL_COMMON
 /* begin src/utils/kl.h */
 /* [k]ernel [l]aunch macros */
 

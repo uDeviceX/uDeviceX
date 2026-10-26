@@ -167,28 +167,28 @@ static void report(const float a0[3], const float a1[3],   const float b0[3], co
     msg_print("b0: %g %g %g", b0[X], b0[Y], b0[Z]);
     msg_print("b1: %g %g %g", b1[X], b1[Y], b1[Z]);
 }
-enum {OK, ZERO};
+enum {TFORM_OK, TFORM_ZERO};
 static int os(float a0, float a1,   float b0, float b1, /**/ float *o, float *s) {
     /* origin, space */
     const float eps = 1e-8;
     float d;
     d = b0 - a0;
-    if (-eps < d && d < eps) return ZERO;
+    if (-eps < d && d < eps) return TFORM_ZERO;
     *o = (a1*b0-a0*b1)/(b0-a0);
     *s = (b1-a1)      /(b0-a0);
-    return OK;
+    return TFORM_OK;
 }
 void tform_vector(const float a0[3], const float a1[3],   const float b0[3], const float b1[3], /**/ Tform* t) {
     int r;
     enum {X, Y, Z};
     r = os(a0[X], a1[X], b0[X], b1[X], /**/ &t->o[X], &t->s[X]);
-    if (r != OK) { report(a0, a1,   b0, b1); ERR("tform_vector failed"); }
+    if (r != TFORM_OK) { report(a0, a1,   b0, b1); ERR("tform_vector failed"); }
 
     r = os(a0[Y], a1[Y], b0[Y], b1[Y], /**/ &t->o[Y], &t->s[Y]);
-    if (r != OK) { report(a0, a1,   b0, b1); ERR("tform_vector failed"); }
+    if (r != TFORM_OK) { report(a0, a1,   b0, b1); ERR("tform_vector failed"); }
 
     r = os(a0[Z], a1[Z], b0[Z], b1[Z], /**/ &t->o[Z], &t->s[Z]);
-    if (r != OK) { report(a0, a1,   b0, b1); ERR("tform_vector failed"); }
+    if (r != TFORM_OK) { report(a0, a1,   b0, b1); ERR("tform_vector failed"); }
 }
 
 static int smallp(const float s[3]) {

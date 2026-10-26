@@ -118,7 +118,7 @@ struct KeyList {
 };
 /* end src/algo/key_list/imp/type.h */
 /* begin src/algo/key_list/imp/util.h */
-static char *cpy(char *dest, const char *src) { return strncpy(dest, src, FILENAME_MAX); }
+static char *key_cpy(char *dest, const char *src) { return strncpy(dest, src, FILENAME_MAX); }
 /* end src/algo/key_list/imp/util.h */
 /* begin src/algo/key_list/imp/main.h */
 void key_list_ini(KeyList **pq) {
@@ -137,7 +137,7 @@ void key_list_copy(KeyList *a, /**/ KeyList **pq) {
     for (i = 0; i < nk; i++) {
         q->ww[i] = a->ww[i];
         q->mark[i] = a->mark[i];
-        cpy(q->keys[i], a->keys[i]);
+        key_cpy(q->keys[i], a->keys[i]);
     }
     q->stamp = STAMP_GOOD;
     q->nk = nk;
@@ -155,7 +155,7 @@ void key_list_push(KeyList *q, const char *k) {
     nk = q->nk;
     if (nk == MAX_NK)
         ERR("nk=%d == MAX_NK=%d", nk, MAX_NK);
-    cpy(q->keys[nk], k);
+    key_cpy(q->keys[nk], k);
     q->ww[nk] = string_nword(k);
     q->mark[nk] = 0;
     q->nk = nk + 1;

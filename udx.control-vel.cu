@@ -1098,7 +1098,10 @@ __global__ void sample(Coords_v coords, Trans t, int3 L, const int *cellsstart, 
 }
 
 /* begin src/control/vel/imp/main.h */
+#ifndef UDX_CONTROL_WARPSIZE_COMMON
+#define UDX_CONTROL_WARPSIZE_COMMON
 enum {WARPSIZE = 32};
+#endif
 
 static void ini_dump(int rank, /**/ FILE **f) {
     *f = NULL;
