@@ -840,6 +840,8 @@ const int4  *mesh_read_get_dih(MeshRead*);
 // end::interface[]
 /* end src/io/mesh_read/imp.h */
 /* begin src/io/mesh/imp.h */
+#ifndef UDX_SIM_MESH_IO_COMMON
+#define UDX_SIM_MESH_IO_COMMON
 struct Coords;
 struct Particle;
 struct int4;
@@ -857,6 +859,7 @@ void mesh_write_vectors(MeshWrite*, MPI_Comm, int nm, Vectors *pos, Vectors *vel
 
 void mesh_write_fin(MeshWrite*);
 /* end src/io/mesh/imp.h */
+#endif
 /* begin src/io/restart/imp.h */
 struct Coords;
 struct Particle;

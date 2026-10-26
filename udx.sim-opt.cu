@@ -8,6 +8,8 @@
 #include <vector_types.h>
 
 /* begin src/inc/def.h */
+#ifndef UDX_SIM_OBJECTS_DEF_COMMON
+#define UDX_SIM_OBJECTS_DEF_COMMON
 /* solvent colors */
 #define XMACRO_COLOR(_)                         \
     _(BLUE)                                     \
@@ -59,6 +61,7 @@ enum {
 /* for the spring forces r = min(lmax*RBC_SPRING_CAP, r) */
 #define RBC_SPRING_CAP (0.99)
 /* end src/inc/def.h */
+#endif
 
 /* begin src/conf/imp.h */
 struct Config;
@@ -195,6 +198,8 @@ const char* get_filename_ext(const char*);
 /* end src/utils/imp.h */
 
 /* begin src/io/mesh/imp.h */
+#ifndef UDX_SIM_MESH_IO_COMMON
+#define UDX_SIM_MESH_IO_COMMON
 struct Coords;
 struct Particle;
 struct int4;
@@ -212,8 +217,11 @@ void mesh_write_vectors(MeshWrite*, MPI_Comm, int nm, Vectors *pos, Vectors *vel
 
 void mesh_write_fin(MeshWrite*);
 /* end src/io/mesh/imp.h */
+#endif
 
 /* begin src/sim/opt/imp.h */
+#ifndef UDX_SIM_OBJECTS_OPT_COMMON
+#define UDX_SIM_OBJECTS_OPT_COMMON
 /* solvent options */
 struct OptFlu {
     bool colors, ids, ss, push;
@@ -280,6 +288,7 @@ void opt_read(const Config*, Opt*);
 void opt_check(const Opt*);
 long opt_estimate_maxp(const Opt*);
 /* end src/sim/opt/imp.h */
+#endif
 
 static int str2shifttype(const char *type) {
     if      (same_str(type, "edge"  )) return MESH_WRITE_EDGE;
