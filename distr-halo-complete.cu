@@ -455,7 +455,6 @@ void dcommon_shift_halo(int3 L, int nhalo, const Sarray<int, 27> starts, /**/ Pa
 
 
 
-#include "udx.config.cuh"
 
 #include <mpi.h>
 
@@ -1118,7 +1117,6 @@ int dflu_status_nullp(DFluStatus *s) { return s == NULL; }
 
 
 
-#include "udx.config.cuh"
 #include "udx.device-api-common.cuh"
 
 #include <stdlib.h>
@@ -1399,7 +1397,6 @@ void dmap_D2H(int nfrags, const DMap *d, /**/ DMap *h) {
 
 
 
-#include "udx.config.cuh"
 #include "udx.device-api-common.cuh"
 
 #include <stdlib.h>
@@ -1778,7 +1775,6 @@ void emap_download_all_counts(int nw, int nfrags, EMap map, /**/ int tot_counts[
 
 
 
-#include "udx.config.cuh"
 
 #include <mpi.h>
 #include <assert.h>
@@ -3861,7 +3857,6 @@ void dflu_gather(int ndead, const DFluPack *p, const DFluUnpack *u, /**/ FluQuan
 
 
 
-#include "udx.config.cuh"
 
 #include <mpi.h>
 #include <assert.h>
@@ -4928,7 +4923,6 @@ void drbc_unpack_halo(const DRbcUnpack *u, /**/ RbcQuants *q) {
 // Grouped editable compilation unit for fluid exchange and halo forces.
 
 
-#include "udx.config.cuh"
 
 #include <mpi.h>
 #include <assert.h>
@@ -6061,7 +6055,6 @@ void eflu_get_remote_frags(const EFluUnpack *u, /**/ RFrag26 *rfrags) {
 // Grouped editable compilation unit for fluid state and halo forces.
 
 
-#include "udx.config.cuh"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -6818,7 +6811,6 @@ void flu_build_cells(/**/ FluQuants *q) {
 
 
 
-#include "udx.config.cuh"
 
 #include <stdio.h>
 #include <assert.h>
