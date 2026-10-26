@@ -5,6 +5,8 @@
 #include <stdio.h>
 
 /* begin src/inc/type.h */
+#ifndef UDX_IO_DIAG_COMMON_CUH
+#define UDX_IO_DIAG_COMMON_CUH
 template <typename T, int N>
 struct Sarray { /* [s]tatic array */
     T d[N];
@@ -58,6 +60,7 @@ struct FoWrap {
     Force *ff;
 };
 /* end src/inc/type.h */
+#endif
 
 /* begin src/utils/msg.h */
 // tag::int[]

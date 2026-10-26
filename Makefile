@@ -42,8 +42,7 @@ OBJECTS = \
  udx.grid_sampler.o \
  udx.inter-color.o \
  udx.io-bop.o \
- udx.io-text.o \
- udx.io-diagnostics.o \
+ udx.io-text-diagnostics.o \
  udx.io-point-grid.o \
  udx.io-mesh.o \
  udx.io-mesh-reader.o \
