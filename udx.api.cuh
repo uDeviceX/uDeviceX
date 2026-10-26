@@ -1694,8 +1694,6 @@ enum {
 
 /* end bop/src/macros.h */
 /* begin bop/src/utils.h */
-namespace bop_utils {
-
 BopStatus safe_malloc(size_t sz, void **data);
 BopStatus safe_open(const char *fname, const char *mode, FILE **f);
 
@@ -1709,14 +1707,10 @@ BopType str2type(const char *str);
 
 void report_err(const char *fmt, ...);
 
-} // bop_utils
-
 /* end bop/src/utils.h */
 /* begin bop/src/header.h */
-namespace bop_header {
 enum {SERIAL = -1};
 BopStatus read_header(int rank, const char *fname, /**/ char *dfname, BopData *d);
-}
 
 /* end bop/src/header.h */
 /* begin bop/src/bop_mpi.h */

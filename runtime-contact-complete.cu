@@ -15468,8 +15468,6 @@ enum {
 #define xstr(s) str(s)
 #define str(s) #s
 
-namespace bop_utils {
-
 BopStatus safe_malloc(size_t sz, void **data);
 BopStatus safe_open(const char *fname, const char *mode, FILE **f);
 
@@ -15483,12 +15481,8 @@ BopType str2type(const char *str);
 
 void report_err(const char *fmt, ...);
 
-} // bop_utils
-
-namespace bop_header {
 enum {SERIAL = -1};
 BopStatus read_header(int rank, const char *fname, /**/ char *dfname, BopData *d);
-}
 
 BopStatus bop_write_header(MPI_Comm comm, const char *name, const BopData *d); // <1>
 BopStatus bop_write_values(MPI_Comm comm, const char *name, const BopData *d); // <2>
@@ -15508,8 +15502,6 @@ BopStatus bop_read_values(const char *dfname, BopData *d);               // <2>
 #include <stdio.h>
 #include <string.h>
 #include <assert.h>
-
-using namespace bop_utils;
 
 char bop_error_msg[1024] = {0};
 static const char * err_desc[_BOP_NERR] = {
@@ -15706,8 +15698,6 @@ char* bop_report_error_mesg() {
 #include <string.h>
 #include <stdarg.h>
 
-namespace bop_utils {
-
 static const char *typestr[] = {
     "float", "double", "int", "fascii", "iascii"};
 
@@ -15793,13 +15783,8 @@ void report_err(const char *fmt, ...) {
              __FILE__, __LINE__, msg);
 }
 
-} // bop_header
-
 #include <stdio.h>
 #include <string.h>
-
-namespace bop_header {
-using namespace bop_utils;
 
 static int is_desc(const char *s, const char *d) {
     if (strcmp(s, d) == 0)
@@ -15910,15 +15895,10 @@ BopStatus read_header(int rank, const char *fname, /**/ char *dfname, BopData *d
     return s;
 }
 
-} // bop_header
-
 #include <mpi.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-
-using namespace bop_header;
-using namespace bop_utils;
 
 template <typename T>
 static void write_mpi(MPI_Comm comm, const char *fname, long n, const T *data, MPI_Datatype type) {
@@ -16103,9 +16083,6 @@ BopStatus bop_read_values(MPI_Comm comm, const char *dfname, BopData *d) {
 #include <stdio.h>
 #include <string.h>
 
-using namespace bop_header;
-using namespace bop_utils;
-
 static BopStatus write_header(const char *fhname, const char *fdname, const BopData *d) {
     FILE *f;
     BopStatus s;
@@ -16182,8 +16159,6 @@ BopStatus bop_write_values(const char *name, const BopData *d) {
 }
 
 BopStatus bop_read_header(const char *hfname, BopData *d, char *dfname) {
-    using namespace bop_header;
-    using namespace bop_utils;
     BopStatus s;
     char dfname0[CBUFSIZE] = {0}, locdfname[CBUFSIZE] = {0};
     s = read_header(SERIAL, hfname, /**/ dfname0, d);
