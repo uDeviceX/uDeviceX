@@ -44,8 +44,8 @@
 
 
 /* begin src/inc/type.h */
-#ifndef UDX_FLUFORCES_TYPE_COMMON
-#define UDX_FLUFORCES_TYPE_COMMON
+#ifndef UDX_FORCE_TYPE_COMMON
+#define UDX_FORCE_TYPE_COMMON
 template <typename T, int N>
 struct Sarray { /* [s]tatic array */
     T d[N];
@@ -101,6 +101,8 @@ struct FoWrap {
 /* end src/inc/type.h */
 #endif
 /* begin src/inc/def.h */
+#ifndef UDX_FORCE_DEF_COMMON
+#define UDX_FORCE_DEF_COMMON
 /* solvent colors */
 #define XMACRO_COLOR(_)                         \
     _(BLUE)                                     \
@@ -152,7 +154,10 @@ enum {
 /* for the spring forces r = min(lmax*RBC_SPRING_CAP, r) */
 #define RBC_SPRING_CAP (0.99)
 /* end src/inc/def.h */
+#endif /* UDX_FORCE_DEF_COMMON */
 /* begin src/inc/dev.h */
+#ifndef UDX_FORCE_DEVICE_COMMON
+#define UDX_FORCE_DEVICE_COMMON
 /* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
 
@@ -191,10 +196,11 @@ enum {
 #define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
 #define DzeroA(P, n)   DsetA(P, 0, n)
 /* end src/inc/dev.h */
+#endif /* UDX_FORCE_DEVICE_COMMON */
 
 /* begin src/d/api.h */
-#ifndef UDX_FLUFORCES_DEVICE_API_COMMON
-#define UDX_FLUFORCES_DEVICE_API_COMMON
+#ifndef UDX_FORCE_DEVICE_API_COMMON
+#define UDX_FORCE_DEVICE_API_COMMON
 namespace d {  /* a wrapper for device API */
 typedef int Stream_t; /* TODO: streams are not supported */
 enum {MemcpyHostToHost, MemcpyHostToDevice,
@@ -321,8 +327,8 @@ void error_abort();
 void error_print_stack();
 /* end src/utils/error.h */
 /* begin src/utils/kl.h */
-#ifndef UDX_FLUFORCES_KL_COMMON
-#define UDX_FLUFORCES_KL_COMMON
+#ifndef UDX_FORCE_KL_COMMON
+#define UDX_FORCE_KL_COMMON
 /* [k]ernel [l]aunch macros */
 
 #if    defined(KL_RELEASE)
@@ -381,8 +387,8 @@ inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
 /* end src/utils/kl.h */
 #endif
 /* begin src/utils/cc.h */
-#ifndef UDX_FLUFORCES_CC_COMMON
-#define UDX_FLUFORCES_CC_COMMON
+#ifndef UDX_FORCE_CC_COMMON
+#define UDX_FORCE_CC_COMMON
 /* [c]uda [c]heck macros */
 
 #if   defined(CC_SYNC)
@@ -557,6 +563,8 @@ inline __device__ float mean0var1uu( float seed, uint u, uint v )
 }
 /* end src/math/rnd/dev.h */
 /* begin src/math/dev.h */
+#ifndef UDX_FORCE_MATH_COMMON
+#define UDX_FORCE_MATH_COMMON
 /* use templates here because we might have mixed float/double */
 
 #define _HD_ __host__ __device__
@@ -616,6 +624,7 @@ _HD_ void axpy(const T1 a, const T2 *x, /*io*/ T3 *y) {
     y->z += a * x->z;
 }
 /* end src/math/dev.h */
+#endif /* UDX_FORCE_MATH_COMMON */
 
 /* begin src/pair/type.h */
 /* maximum of pairwise dpd parameters */
@@ -1054,8 +1063,8 @@ struct int3;
 struct RNDunif;
 struct FoArray;
 
-#ifndef UDX_FLUFORCES_BPA_COMMON
-#define UDX_FLUFORCES_BPA_COMMON
+#ifndef UDX_FORCE_BPA_COMMON
+#define UDX_FORCE_BPA_COMMON
 struct BPaArray {
     bool colors;
     const float4 *pp;

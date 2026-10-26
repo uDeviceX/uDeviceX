@@ -47,8 +47,8 @@
     ((type*)((char*)(ptr) - offsetof(type, member)))
 /* end src/inc/macro.h */
 
-#ifndef UDX_RBC_FORCE_DEF_COMMON
-#define UDX_RBC_FORCE_DEF_COMMON
+#ifndef UDX_FORCE_DEF_COMMON
+#define UDX_FORCE_DEF_COMMON
 /* begin src/inc/def.h */
 /* solvent colors */
 #define XMACRO_COLOR(_)                         \

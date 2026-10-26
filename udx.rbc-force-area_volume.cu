@@ -44,8 +44,8 @@
 
 
 /* begin src/inc/type.h */
-#ifndef UDX_RBC_FORCE_TYPE_COMMON
-#define UDX_RBC_FORCE_TYPE_COMMON
+#ifndef UDX_FORCE_TYPE_COMMON
+#define UDX_FORCE_TYPE_COMMON
 template <typename T, int N>
 struct Sarray { /* [s]tatic array */
     T d[N];
@@ -101,6 +101,8 @@ struct FoWrap {
 /* end src/inc/type.h */
 #endif
 /* begin src/inc/dev.h */
+#ifndef UDX_FORCE_DEVICE_COMMON
+#define UDX_FORCE_DEVICE_COMMON
 /* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
 
@@ -139,9 +141,10 @@ struct FoWrap {
 #define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
 #define DzeroA(P, n)   DsetA(P, 0, n)
 /* end src/inc/dev.h */
+#endif /* UDX_FORCE_DEVICE_COMMON */
 /* begin src/math/dev.h */
-#ifndef UDX_RBC_FORCE_MATH_COMMON
-#define UDX_RBC_FORCE_MATH_COMMON
+#ifndef UDX_FORCE_MATH_COMMON
+#define UDX_FORCE_MATH_COMMON
 /* use templates here because we might have mixed float/double */
 
 #define _HD_ __host__ __device__
@@ -201,7 +204,7 @@ _HD_ void axpy(const T1 a, const T2 *x, /*io*/ T3 *y) {
     y->z += a * x->z;
 }
 /* end src/math/dev.h */
-#endif
+#endif /* UDX_FORCE_MATH_COMMON */
 
 /* begin src/utils/imp.h */
 // tag::mem[]
@@ -277,8 +280,8 @@ void msg_print(const char *fmt, ...); // <2>
 // end::int[]
 /* end src/utils/msg.h */
 
-#ifndef UDX_RBC_FORCE_DEVICE_API_COMMON
-#define UDX_RBC_FORCE_DEVICE_API_COMMON
+#ifndef UDX_FORCE_DEVICE_API_COMMON
+#define UDX_FORCE_DEVICE_API_COMMON
 /* begin src/d/api.h */
 namespace d {  /* a wrapper for device API */
 typedef int Stream_t; /* TODO: streams are not supported */
@@ -427,6 +430,8 @@ static int   warpSize = 1;
 #endif
 /* end src/d/q.h */
 /* begin src/utils/cc.h */
+#ifndef UDX_FORCE_CC_COMMON
+#define UDX_FORCE_CC_COMMON
 /* [c]uda [c]heck macros */
 
 #if   defined(CC_SYNC)
@@ -459,9 +464,10 @@ void check(int rc, const char *file, int line);
 
 /* TODO: header includes header */
 /* end src/utils/cc.h */
+#endif /* UDX_FORCE_CC_COMMON */
 /* begin src/utils/kl.h */
-#ifndef UDX_RBC_FORCE_KL_COMMON
-#define UDX_RBC_FORCE_KL_COMMON
+#ifndef UDX_FORCE_KL_COMMON
+#define UDX_FORCE_KL_COMMON
 /* [k]ernel [l]aunch macros */
 
 #if    defined(KL_RELEASE)

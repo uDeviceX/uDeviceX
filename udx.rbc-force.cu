@@ -241,8 +241,8 @@ void rbc_force_set_conf(const MeshRead *cell, const Config *cfg, const char *nam
 /* end src/inc/conf.h */
 
 
-#ifndef UDX_RBC_FORCE_DEF_COMMON
-#define UDX_RBC_FORCE_DEF_COMMON
+#ifndef UDX_FORCE_DEF_COMMON
+#define UDX_FORCE_DEF_COMMON
 /* begin src/inc/def.h */
 /* solvent colors */
 #define XMACRO_COLOR(_)                         \
@@ -297,8 +297,8 @@ enum {
 /* end src/inc/def.h */
 #endif
 /* begin src/inc/type.h */
-#ifndef UDX_RBC_FORCE_TYPE_COMMON
-#define UDX_RBC_FORCE_TYPE_COMMON
+#ifndef UDX_FORCE_TYPE_COMMON
+#define UDX_FORCE_TYPE_COMMON
 template <typename T, int N>
 struct Sarray { /* [s]tatic array */
     T d[N];
@@ -393,8 +393,8 @@ struct FoWrap {
 #define DzeroA(P, n)   DsetA(P, 0, n)
 /* end src/inc/dev.h */
 /* begin src/math/dev.h */
-#ifndef UDX_RBC_FORCE_MATH_COMMON
-#define UDX_RBC_FORCE_MATH_COMMON
+#ifndef UDX_FORCE_MATH_COMMON
+#define UDX_FORCE_MATH_COMMON
 /* use templates here because we might have mixed float/double */
 
 #define _HD_ __host__ __device__
@@ -725,8 +725,8 @@ const char* get_filename_ext(const char*);
 #endif
 /* end src/d/q.h */
 /* begin src/d/api.h */
-#ifndef UDX_RBC_FORCE_DEVICE_API_COMMON
-#define UDX_RBC_FORCE_DEVICE_API_COMMON
+#ifndef UDX_FORCE_DEVICE_API_COMMON
+#define UDX_FORCE_DEVICE_API_COMMON
 namespace d {  /* a wrapper for device API */
 typedef int Stream_t; /* TODO: streams are not supported */
 enum {MemcpyHostToHost, MemcpyHostToDevice,
@@ -845,8 +845,8 @@ void check(int rc, const char *file, int line);
 /* TODO: header includes header */
 /* end src/utils/cc.h */
 /* begin src/utils/kl.h */
-#ifndef UDX_RBC_FORCE_KL_COMMON
-#define UDX_RBC_FORCE_KL_COMMON
+#ifndef UDX_FORCE_KL_COMMON
+#define UDX_FORCE_KL_COMMON
 /* [k]ernel [l]aunch macros */
 
 #if    defined(KL_RELEASE)

@@ -127,8 +127,8 @@ float rnd_get(RNDunif *r);                                  // <4>
 // #include "math/rnd/dev.h"
 
 /* begin src/inc/type.h */
-#ifndef UDX_FLUFORCES_TYPE_COMMON
-#define UDX_FLUFORCES_TYPE_COMMON
+#ifndef UDX_FORCE_TYPE_COMMON
+#define UDX_FORCE_TYPE_COMMON
 template <typename T, int N>
 struct Sarray { /* [s]tatic array */
     T d[N];
@@ -250,8 +250,8 @@ void parray_get_view(const PaArray *a, PaCArray_v *v); // <2>
 /* end src/struct/parray/imp.h */
 
 /* begin src/d/api.h */
-#ifndef UDX_FLUFORCES_DEVICE_API_COMMON
-#define UDX_FLUFORCES_DEVICE_API_COMMON
+#ifndef UDX_FORCE_DEVICE_API_COMMON
+#define UDX_FORCE_DEVICE_API_COMMON
 namespace d {  /* a wrapper for device API */
 typedef int Stream_t; /* TODO: streams are not supported */
 enum {MemcpyHostToHost, MemcpyHostToDevice,
@@ -283,8 +283,8 @@ int PeekAtLastError(void);
 /* end src/d/api.h */
 #endif
 /* begin src/utils/kl.h */
-#ifndef UDX_FLUFORCES_KL_COMMON
-#define UDX_FLUFORCES_KL_COMMON
+#ifndef UDX_FORCE_KL_COMMON
+#define UDX_FORCE_KL_COMMON
 /* [k]ernel [l]aunch macros */
 
 #if    defined(KL_RELEASE)
@@ -343,8 +343,8 @@ inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
 /* end src/utils/kl.h */
 #endif
 /* begin src/utils/cc.h */
-#ifndef UDX_FLUFORCES_CC_COMMON
-#define UDX_FLUFORCES_CC_COMMON
+#ifndef UDX_FORCE_CC_COMMON
+#define UDX_FORCE_CC_COMMON
 /* [c]uda [c]heck macros */
 
 #if   defined(CC_SYNC)
@@ -528,8 +528,8 @@ struct int3;
 struct RNDunif;
 struct FoArray;
 
-#ifndef UDX_FLUFORCES_BPA_COMMON
-#define UDX_FLUFORCES_BPA_COMMON
+#ifndef UDX_FORCE_BPA_COMMON
+#define UDX_FORCE_BPA_COMMON
 struct BPaArray {
     bool colors;
     const float4 *pp;
