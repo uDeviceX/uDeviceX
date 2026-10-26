@@ -44,6 +44,8 @@
 /* end src/inc/conf.h */
 
 /* begin src/inc/type.h */
+#ifndef UDX_SIM_OBJECTS_TYPE_COMMON
+#define UDX_SIM_OBJECTS_TYPE_COMMON
 template <typename T, int N>
 struct Sarray { /* [s]tatic array */
     T d[N];
@@ -97,7 +99,10 @@ struct FoWrap {
     Force *ff;
 };
 /* end src/inc/type.h */
+#endif
 /* begin src/inc/def.h */
+#ifndef UDX_SIM_OBJECTS_DEF_COMMON
+#define UDX_SIM_OBJECTS_DEF_COMMON
 /* solvent colors */
 #define XMACRO_COLOR(_)                         \
     _(BLUE)                                     \
@@ -149,6 +154,7 @@ enum {
 /* for the spring forces r = min(lmax*RBC_SPRING_CAP, r) */
 #define RBC_SPRING_CAP (0.99)
 /* end src/inc/def.h */
+#endif
 
 /* begin src/utils/imp.h */
 // tag::mem[]
@@ -313,6 +319,8 @@ int status2errcode(MPI_Status *status);
 /* end src/mpi/wrapper.h */
 
 /* begin src/struct/parray/imp.h */
+#ifndef UDX_SIM_OBJECTS_PARRAY_COMMON
+#define UDX_SIM_OBJECTS_PARRAY_COMMON
 struct PaArray {
     bool colors;
     const float *pp;
@@ -338,7 +346,10 @@ void parray_get_view(const PaArray *a, PaArray_v *v);  // <1>
 void parray_get_view(const PaArray *a, PaCArray_v *v); // <2>
 // end::view[]
 /* end src/struct/parray/imp.h */
+#endif
 /* begin src/struct/farray/imp.h */
+#ifndef UDX_SIM_OBJECTS_FARRAY_COMMON
+#define UDX_SIM_OBJECTS_FARRAY_COMMON
 struct FoArray {
     bool stress;
     float *ff;
@@ -366,7 +377,10 @@ void farray_get_view(const FoArray *a, FoArray_v *v);  // <1>
 void farray_get_view(const FoArray *a, FoSArray_v *v); // <2>
 // end::view[]
 /* end src/struct/farray/imp.h */
+#endif
 /* begin src/struct/pfarrays/imp.h */
+#ifndef UDX_SIM_OBJECTS_PFARRAYS_COMMON
+#define UDX_SIM_OBJECTS_PFARRAYS_COMMON
 struct PFarray {
     PaArray p;
     FoArray f;
@@ -388,6 +402,7 @@ int  pfarrays_size(const PFarrays*);
 void pfarrays_get(int i, const PFarrays*, long *n, PaArray*, FoArray*);
 void pfarrays_get(int i, const PFarrays*, PFarray*);
 /* end src/struct/pfarrays/imp.h */
+#endif
 
 /* begin src/pair/imp.h */
 struct PairParams;
@@ -530,6 +545,8 @@ void eobj_unpack_ff(EObjUnpackF *u, const EObjPack *p, int nw, /**/ FoWrap *ww);
 /* end src/exch/obj/imp.h */
 
 /* begin src/sim/opt/imp.h */
+#ifndef UDX_SIM_OBJECTS_OPT_COMMON
+#define UDX_SIM_OBJECTS_OPT_COMMON
 /* solvent options */
 struct OptFlu {
     bool colors, ids, ss, push;
@@ -596,6 +613,7 @@ void opt_read(const Config*, Opt*);
 void opt_check(const Opt*);
 long opt_estimate_maxp(const Opt*);
 /* end src/sim/opt/imp.h */
+#endif
 
 /* begin src/sim/objinter/imp.h */
 struct ObjInter;
