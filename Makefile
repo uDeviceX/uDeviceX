@@ -16,7 +16,7 @@ OBJECTS = \
  udx.comm.o \
  udx.conf.o \
  udx.coords.o \
- udx.d.o \
+ udx.d-mpi.o \
  udx.dbg.o \
  udx.algo-convert.o \
  udx.algo-edge-accumulators-scan.o \
@@ -57,7 +57,6 @@ OBJECTS = \
  udx.main.o \
  udx.math.o \
  udx.mesh-complete.o \
- udx.mpi.o \
  udx.pair.o \
  udx.rbc-adj-com.o \
  udx.rbc-force-area-random.o \
