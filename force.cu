@@ -1223,7 +1223,6 @@ void flocal_apply(const PairParams *params, int3 L, int n, BPaArray parray, cons
 
 
 
-#include "udx.config.cuh"
 
 #include <mpi.h>
 #include <assert.h>
@@ -1869,7 +1868,6 @@ void fluforces_halo_apply(const PairParams *par, const FluForcesHalo *h, /**/ co
 // Grouped editable compilation unit for RBC area/volume and random forces.
 
 
-#include "udx.config.cuh"
 
 #include <stdio.h>
 #include <assert.h>
@@ -2528,7 +2526,6 @@ void area_volume_host(AreaVolume *q, /**/ float **pav) {
 // Grouped editable compilation unit for RBC random-force API and implementation.
 
 
-#include "udx.config.cuh"
 
 #include <stddef.h>
 #include <stdlib.h>
@@ -2711,7 +2708,6 @@ int GenerateNormal(Generator_t, float *outputPtr, size_t n) {
 
 
 
-#include "udx.config.cuh"
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -3003,7 +2999,6 @@ float rbc_rnd_get_hst(const RbcRnd *d, int i) {
 // Grouped editable compilation unit for RBC force interfaces and implementation.
 
 
-#include "udx.config.cuh"
 
 #include <stdio.h>
 #include <assert.h>
@@ -3268,7 +3263,6 @@ void bending_none_ini(const MeshRead*, /**/ Bending **pq) {
 
 
 
-#include "udx.config.cuh"
 
 #include <stdio.h>
 #include <string.h>
@@ -4716,7 +4710,6 @@ int he_hdg_edg(He *, int);
 // Grouped editable compilation unit for the Juelicher and Kantor bending forces.
 
 
-#include "udx.config.cuh"
 
 #include <stdio.h>
 #include <assert.h>
@@ -6366,7 +6359,6 @@ void juelicher_apply(Juelicher *q, const RbcParams*, const RbcQuants *quants, /*
 
 
 
-#include "udx.config.cuh"
 
 #include <stdio.h>
 #include <assert.h>
@@ -7255,7 +7247,6 @@ void kantor_apply(Kantor *t, const RbcParams *par, const RbcQuants *q, /**/ Forc
 // Grouped editable compilation unit for pair interactions and FSI.
 
 
-#include "udx.config.cuh"
 
 #include <stdio.h>
 #include <math.h>
@@ -7764,7 +7755,6 @@ void pair_get_view_adhesion(const PairParams *p, PairAdhesion *v) {
 
 
 
-#include "udx.config.cuh"
 
 #include <stdio.h>
 #include <assert.h>

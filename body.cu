@@ -1067,7 +1067,6 @@ void rig_gen_from_solvent(const Coords *coords, MPI_Comm cart, RigGenInfo rgi, /
 
 
 
-#include "udx.config.cuh"
 
 #include <mpi.h>
 #include <stdio.h>
@@ -1829,7 +1828,6 @@ void rig_strt_dump(MPI_Comm comm, const char *base, const char *name, const int 
 
 
 
-#include "udx.config.cuh"
 
 #include <stdio.h>
 #include <vector_types.h>
@@ -2641,7 +2639,6 @@ void rig_update_mesh(float dt, int ns, const Rigid *ss, int nv, const float *vv,
 // Grouped editable compilation unit for RBC core and geometry.
 
 
-#include "udx.config.cuh"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -3247,7 +3244,6 @@ void rbc_strt_dump(MPI_Comm comm, const char *base, const char *name, int id, co
 // Grouped editable compilation unit for RBC parameters and shape geometry.
 
 
-#include "udx.config.cuh"
 
 #include <stdio.h>
 
@@ -3569,7 +3565,6 @@ RbcParams_v rbc_params_get_view(const RbcParams *p) {
 
 
 
-#include "udx.config.cuh"
 
 #include <stdio.h>
 #include <math.h>
@@ -3811,7 +3806,6 @@ void rbc_shape_total_volume(RbcShape *q, /**/ float *pe) {
 
 
 
-#include "udx.config.cuh"
 
 #include <stdio.h>
 #include <assert.h>
@@ -4364,7 +4358,6 @@ void rbc_stretch_apply(int nm, const RbcStretch *f, /**/ Force *ff) {
 // Grouped editable compilation unit for RBC adjacency and communication.
 
 
-#include "udx.config.cuh"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -4756,7 +4749,6 @@ void adj_get_anti(const Adj *adj, /**/ int *anti) {
 
 
 
-#include "udx.config.cuh"
 
 #include <stdio.h>
 #include <assert.h>

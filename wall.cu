@@ -394,7 +394,6 @@ void wall_exch_pp(MPI_Comm cart, int numdensity, int3 L, int maxn, /*io*/ Partic
 
 
 
-#include "udx.config.cuh"
 
 #include <stdio.h>
 #include <assert.h>
@@ -2168,7 +2167,6 @@ void wall_force_repulse(Sdf_v sdf_v, WallRepulsePrm wr, long n, const PaArray *p
 
 
 
-#include "udx.config.cuh"
 
 #include <mpi.h>
 #include <stdio.h>
@@ -3153,7 +3151,6 @@ void wall_repulse_prm_fin(WallRepulsePrm *wr) {
 // Grouped editable compilation unit for SDF core and label handling.
 
 
-#include "udx.config.cuh"
 
 #include <mpi.h>
 
@@ -4304,7 +4301,6 @@ double sdf_compute_volume(MPI_Comm comm, int3 L, const Sdf *sdf, long nsamples) 
 
 
 
-#include "udx.config.cuh"
 
 #include <assert.h>
 #include <mpi.h>
@@ -4977,7 +4973,6 @@ void wall_label_hst(const Sdf *sdf, int n, const Particle *pp, /**/ int *hst) {
 // Grouped editable compilation unit for SDF grid storage and transforms.
 
 
-#include "udx.config.cuh"
 
 #include <stdio.h>
 
@@ -5178,7 +5173,6 @@ void array3d_copy(size_t x, size_t y, size_t z, float *D, /**/ Array3d *q) {
 
 
 
-#include "udx.config.cuh"
 
 #include <stdio.h>
 #define ERR(fmt, ...)  do {                                     \
@@ -5427,7 +5421,6 @@ void sub2tex_ini(const Coords *c, const int T[3], const int M[3], /**/ Tform *t)
 // Grouped editable compilation unit for SDF field and texture sampling.
 
 
-#include "udx.config.cuh"
 
 #include <mpi.h>
 #include <math.h>
@@ -5837,7 +5830,6 @@ void field_dump(const Field *q, const Coords *c, MPI_Comm cart) {
 
 
 
-#include "udx.config.cuh"
 
 #include <stdio.h>
 
@@ -6045,7 +6037,6 @@ void tex3d_to_view(const Tex3d *t, /**/ Tex3d_v *v) { v->t = t->t; }
 
 
 
-#include "udx.config.cuh"
 
 #include <stdio.h>
 #include <vector_types.h>
@@ -6584,7 +6575,6 @@ void wvel_get_view(const WvelStep *w, /**/ WvelHS_v *v) {
 
 
 
-#include "udx.config.cuh"
 
 #include <stdio.h>
 #include <assert.h>

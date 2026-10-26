@@ -1331,7 +1331,6 @@ void emesh_unpack_mom(int nt, const EMeshPack *p, const EMeshUnpackM *u, /**/ Mo
 
 
 
-#include "udx.config.cuh"
 
 #include <mpi.h>
 #include <assert.h>
@@ -2434,7 +2433,6 @@ void eobj_unpack_ff(EObjUnpackF *u, const EObjPack *p, int nw, /**/ FoWrap *ww) 
 // Grouped editable compilation unit for mesh geometry helpers.
 
 
-#include "udx.config.cuh"
 
 #include <stdio.h>
 #include <math.h>
@@ -2602,7 +2600,6 @@ void mesh_angle_apply(MeshAngle *q, int m, Vectors *p, /**/ double *angle0) {
 
 
 
-#include "udx.config.cuh"
 
 #include <vector_types.h>
 
@@ -2725,7 +2722,6 @@ void mesh_get_bboxes_dev(const Particle *pp, const int nps, const int ns, /**/ f
 // Grouped editable compilation unit for mesh area calculations.
 
 
-#include "udx.config.cuh"
 
 #include <stdio.h>
 #include <vector_types.h>
@@ -2906,7 +2902,6 @@ void mesh_area_apply(MeshArea *q, int m, Vectors *p, double *area0) {
 
 
 
-#include "udx.config.cuh"
 
 #include <stdio.h>
 #include <vector_types.h>
@@ -3071,7 +3066,6 @@ void mesh_tri_area_apply(MeshTriArea *q, int m, Vectors *p, double *area0) {
 // Grouped editable compilation unit for edge lengths and vertex areas.
 
 
-#include "udx.config.cuh"
 
 #include <stdio.h>
 #include <math.h>
@@ -3240,7 +3234,6 @@ void mesh_edg_len_fin(MeshEdgLen *q) {
 
 
 
-#include "udx.config.cuh"
 
 #include <stdio.h>
 #include <vector_types.h>
@@ -3415,7 +3408,6 @@ void mesh_vert_area_apply(MeshVertArea *q, int nm, Vectors *pos, double *o) {
 // Grouped editable compilation unit for mesh topology and volume helpers.
 
 
-#include "udx.config.cuh"
 
 #include <stdio.h>
 #include <vector_types.h>
@@ -3653,7 +3645,6 @@ void triangles_fin(Triangles *q) {
 
 
 
-#include "udx.config.cuh"
 
 #include <stdio.h>
 #include <vector_types.h>
@@ -3875,7 +3866,6 @@ double mesh_volume_apply0(MeshVolume *q, Vectors *positions) {
 
 
 
-#include "udx.config.cuh"
 
 #include <stdio.h>
 #include <vector_types.h>
@@ -4072,7 +4062,6 @@ void mesh_scatter_fin(MeshScatter *q) {
 
 
 
-#include "udx.config.cuh"
 
 #include <stdio.h>
 #include <assert.h>
@@ -4739,7 +4728,6 @@ void collision_label(int pdir, int n, const Particle *pp, const Triangles *tri,
 // Grouped editable compilation unit for cylindrical and spherical coordinates.
 
 
-#include "udx.config.cuh"
 
 #include <stdio.h>
 #include <math.h>
@@ -4878,7 +4866,6 @@ void mesh_cylindrical_apply(MeshCylindrical *q, int m, Vectors *pos, /**/ double
 
 
 
-#include "udx.config.cuh"
 
 #include <stdio.h>
 #include <math.h>
@@ -5022,7 +5009,6 @@ void mesh_spherical_apply(MeshSpherical *q, int m, Vectors *pos, /**/ double *r,
 // Grouped editable compilation unit for mesh distance and properties.
 
 
-#include "udx.config.cuh"
 
 #include <vector_types.h>
 #include <math.h>
@@ -5116,7 +5102,6 @@ float dist_from_mesh(int nt, const int4 *tt, const float *vv, const float *r0) {
 
 
 
-#include "udx.config.cuh"
 
 #include <vector_types.h>
 #include <string.h>
@@ -5287,7 +5272,6 @@ void mesh_inertia_tensor(int nt, const int4 *tt, const float *vv, const float *c
 // Grouped editable compilation unit for Julicher and Kantor mesh energies.
 
 
-#include "udx.config.cuh"
 
 #include <stdio.h>
 
@@ -5525,7 +5509,6 @@ void mesh_eng_julicher_apply(MeshEngJulicher *q, int nm, Vectors *pos, double kb
 
 
 
-#include "udx.config.cuh"
 
 #include <stdio.h>
 #include <math.h>
@@ -5702,7 +5685,6 @@ void mesh_eng_kantor_apply(MeshEngKantor *q, int nm, Vectors *pos, double kb, do
 // Grouped editable compilation unit for Kantor force backends.
 
 
-#include "udx.config.cuh"
 #include "udx.mesh-force-kantor-common.cuh"
 
 #include <math.h>
@@ -5903,7 +5885,6 @@ END
 
 
 
-#include "udx.config.cuh"
 #include "udx.mesh-force-kantor-common.cuh"
 
 #include <math.h>
@@ -6126,7 +6107,6 @@ END
 // Grouped editable compilation unit for matrix and mesh generation.
 
 
-#include "udx.config.cuh"
 
 #include <stdio.h>
 #include <string.h>
@@ -6369,7 +6349,6 @@ void matrices_fin(Matrices *q) { EFREE(q->m); EFREE(q); }
 
 
 
-#include "udx.config.cuh"
 
 #include <stdio.h>
 #include <assert.h>
@@ -6803,7 +6782,6 @@ int mesh_gen_from_file(const Coords *coords, const float *rr0, const char *path,
 
 
 
-#include "udx.config.cuh"
 
 #include <assert.h>
 #include <stdio.h>
@@ -8098,7 +8076,6 @@ void mesh_bounce_collect_rbc_momentum(float mass, int nc, MeshInfo mi, const Mom
 // Grouped editable compilation unit for the particle and force array views.
 
 
-#include "udx.config.cuh"
 
 #include <stdio.h>
 
@@ -8159,7 +8136,6 @@ void parray_get_view(const PaArray *a, PaCArray_v *v) {
 
 
 
-#include "udx.config.cuh"
 
 #include <stdio.h>
 
@@ -8223,7 +8199,6 @@ void farray_get_view(const FoArray *a, FoSArray_v *v) {
 
 
 
-#include "udx.config.cuh"
 
 #include <stdio.h>
 

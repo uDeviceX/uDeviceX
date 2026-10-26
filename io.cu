@@ -947,7 +947,6 @@ void bforce_apply(const Coords *c, float mass, const BForce *bf, int n, const Pa
 // Grouped editable compilation unit for time-line and time-step schemes.
 
 
-#include "udx.config.cuh"
 
 #include <mpi.h>
 #include <stdio.h>
@@ -1127,7 +1126,6 @@ void time_line_strt_read(const char *base, int id, TimeLine *t) {
 
 
 
-#include "udx.config.cuh"
 
 #include <mpi.h>
 #include <math.h>
@@ -1493,7 +1491,6 @@ float time_step_dt0(TimeStep *q) { return q->dt; };
 // Grouped editable compilation unit for move and restraint schemes.
 
 
-#include "udx.config.cuh"
 
 #include <stdio.h>
 #include <assert.h>
@@ -1950,7 +1947,6 @@ void scheme_move_clear_vel(int n, /**/ Particle *pp) {
 
 
 
-#include "udx.config.cuh"
 
 #include <stdio.h>
 #include <mpi.h>
@@ -2766,7 +2762,6 @@ void scheme_restrain_apply(MPI_Comm comm, const int *cc, long it, /**/ Restrain 
 // Grouped editable compilation unit for simulation objects and interactions.
 
 
-#include "udx.config.cuh"
 
 #include <mpi.h>
 #include <stdlib.h>
@@ -5402,7 +5397,6 @@ void objects_gen_freeze(PFarray *flu, Objects *o) {
 
 
 
-#include "udx.config.cuh"
 
 #include <stdio.h>
 #include <mpi.h>
@@ -6100,7 +6094,6 @@ void obj_inter_forces(ObjInter *oi, const PairParams **fsi_prms, const PairParam
 
 
 
-#include "udx.config.cuh"
 
 #include <mpi.h>
 #include <stdio.h>
@@ -6550,7 +6543,6 @@ long opt_estimate_maxp(const Opt *o) {
 
 
 
-#include "udx.config.cuh"
 
 #include <stdio.h>
 #include <mpi.h>
@@ -7210,7 +7202,6 @@ void wall_update_vel(float t, Wall *w) {
 // Grouped editable compilation unit for BOP and VTK output.
 
 
-#include "udx.config.cuh"
 
 #include <mpi.h>
 #include <string.h>
@@ -7741,7 +7732,6 @@ void io_bop_colors(MPI_Comm cart, long n, const int *cc, const char *name, int i
 // Grouped editable compilation unit for VTK output.
 
 
-#include "udx.config.cuh"
 
 #include <stdio.h>
 #include <vector_types.h>
@@ -7896,7 +7886,6 @@ const int* mesh_tt(Mesh *q) { return q->tt; }
 
 
 
-#include "udx.config.cuh"
 
 #include <stdio.h>
 #include <stdarg.h>
@@ -8551,7 +8540,6 @@ void vtk_fin(VTK *q) {
 // Grouped editable compilation unit for point I/O and generic writing.
 
 
-#include "udx.config.cuh"
 
 #include <string.h>
 #include <ctype.h>
@@ -8909,7 +8897,6 @@ void io_point_write(IOPoint *q, MPI_Comm comm, int id) {
 
 
 
-#include "udx.config.cuh"
 
 #include <stdlib.h>
 #include <mpi.h>
@@ -9131,7 +9118,6 @@ int write_reduce(MPI_Comm comm, int n0, /**/ int *n) {
 // Grouped editable compilation unit for raw-grid and XMF output.
 
 
-#include "udx.config.cuh"
 
 #include <mpi.h>
 #include <stdint.h>
@@ -9271,7 +9257,6 @@ void raw_write(int3 N, MPI_Comm cart, const char *path, int ncomp,
 
 
 
-#include "udx.config.cuh"
 
 #include <string.h>
 #include <stdio.h>
@@ -9416,7 +9401,6 @@ void xmf_write(int3 domainSize, int3 gridSize, const char *path, int ncomp, cons
 
 
 
-#include "udx.config.cuh"
 
 #include <mpi.h>
 #include <stdio.h>
@@ -9591,7 +9575,6 @@ void grid_write(int3 N, int3 L, MPI_Comm cart, const char *path, int ncmp, const
 // Grouped editable compilation unit for text and communication I/O.
 
 
-#include "udx.config.cuh"
 
 #ifndef UDX_IO_COM_COMMON
 #define UDX_IO_COM_COMMON
@@ -9879,7 +9862,6 @@ void io_com_dump(MPI_Comm comm, const Coords *coords, const char *name, long id,
 
 
 
-#include "udx.config.cuh"
 
 #include <stdio.h>
 
@@ -10172,7 +10154,6 @@ const Force*    txt_read_get_ff(const TxtRead *q) { return q->ff; }
 // Grouped editable compilation unit for diagnostic output.
 
 
-#include "udx.config.cuh"
 
 #include <stdio.h>
 #include <string.h>
@@ -10376,7 +10357,6 @@ void diag_mesh_apply(DiagMesh*, MPI_Comm, float, int, Particle*) {
 
 
 
-#include "udx.config.cuh"
 
 #include <stdio.h>
 #include <string.h>
@@ -10623,7 +10603,6 @@ void diag_part_apply(DiagPart *q, MPI_Comm comm, float time, int n, const Partic
 // Grouped editable compilation unit for mesh, rigid, and restart output.
 
 
-#include "udx.config.cuh"
 
 #include <mpi.h>
 #include <stdio.h>
@@ -11145,7 +11124,6 @@ void mesh_write_vectors(MeshWrite *q, MPI_Comm comm, int nc, Vectors *pos, Vecto
 // Grouped editable compilation unit for rigid output and restart I/O.
 
 
-#include "udx.config.cuh"
 
 #include <stdio.h>
 #include <string.h>
@@ -11509,7 +11487,6 @@ void io_rig_dump(MPI_Comm comm, const Coords *c, const char *name, long id, int 
 
 
 
-#include "udx.config.cuh"
 
 #include <stdio.h>
 #include <string.h>
@@ -11997,7 +11974,6 @@ void restart_read_stream_one_node(const char *base, const char *code, int id, St
 // Grouped editable compilation unit for mesh reading and edge topology.
 
 
-#include "udx.config.cuh"
 
 #include <stdio.h>
 
@@ -12108,7 +12084,6 @@ int e_valid(Edg *q, int i, int j) {
 
 
 
-#include "udx.config.cuh"
 
 #include <stdio.h>
 #include <string.h>
@@ -12507,7 +12482,6 @@ const int4  *mesh_read_get_dih(MeshRead *q) {
 // Grouped editable compilation unit for fragment indexing and half-edge I/O.
 
 
-#include "udx.config.cuh"
 
 #include <vector_types.h>
 enum {frag_bulk = 26};
@@ -12640,7 +12614,6 @@ void estimates(int3 L, int nfrags, float maxd, /**/ int *cap) {
 
 
 
-#include "udx.config.cuh"
 
 #include <stdarg.h>
 #include <stdlib.h>

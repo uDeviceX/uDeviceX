@@ -377,7 +377,6 @@ int PeekAtLastError(void) {
 
 
 
-#include "udx.config.cuh"
 
 #include <stdlib.h>
 #include <string.h>
@@ -715,7 +714,6 @@ int status2errcode(MPI_Status *status) { return status->MPI_ERROR; }
 // Grouped editable compilation unit for color and coordinate helpers.
 
 
-#include "udx.config.cuh"
 
 #include <stdio.h>
 #include <curand_kernel.h>
@@ -1171,7 +1169,6 @@ void tracers_fin() {
 
 
 
-#include "udx.config.cuh"
 
 #include <stdio.h>
 #include <mpi.h>
@@ -1700,7 +1697,6 @@ int coords_size(const Coords *c) {
 // Grouped editable compilation unit for communication and program entry.
 
 
-#include "udx.config.cuh"
 
 #include <assert.h>
 #include <string.h>
@@ -2392,7 +2388,6 @@ size_t comm_get_byte_capacity(int i, const hBags *b) {
 
 
 
-#include "udx.config.cuh"
 
 #include <mpi.h>
 #include <stdio.h>
@@ -2648,7 +2643,6 @@ int main(int argc, char **argv) {
 // Grouped editable compilation unit for configuration and bundled libconfig.
 
 
-#include "udx.config.cuh"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -16236,7 +16230,6 @@ BopStatus bop_read_values(const char *dfname, BopData *d) {
 // Grouped editable compilation unit for grid sampling and color interaction.
 
 
-#include "udx.config.cuh"
 
 #include <mpi.h>
 #include <stdio.h>
@@ -17080,7 +17073,6 @@ void grid_sampler_data_push(long n, const Particle *pp, const int *cc, const flo
 
 
 
-#include "udx.config.cuh"
 
 #include <stdio.h>
 
@@ -17673,7 +17665,6 @@ void inter_color_apply_dev(const Coords *coords, const GenColor *gc, int n, cons
 // Grouped editable compilation unit for general and string utilities.
 
 
-#include "udx.config.cuh"
 
 #include <stdio.h>
 
@@ -18368,7 +18359,6 @@ void os_malloc_stats() { malloc_stats(); }
 
 
 
-#include "udx.config.cuh"
 
 #include <ctype.h>
 
@@ -18443,7 +18433,6 @@ int string_nword(const char *s) {
 // Grouped editable compilation unit for small math helpers.
 
 
-#include "udx.config.cuh"
 
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
@@ -18520,7 +18509,6 @@ void linal_inv3x3(const float *m, /**/ float *r) {
 
 
 
-#include "udx.config.cuh"
 
 #include <limits>
 #include <stdio.h>
@@ -18616,7 +18604,6 @@ float rnd_get(RNDunif *r) {
 
 
 
-#include "udx.config.cuh"
 
 #include <math.h>
 
@@ -18764,7 +18751,6 @@ END
 
 
 
-#include "udx.config.cuh"
 
 #include <stdio.h>
 
@@ -21738,7 +21724,6 @@ void scan_apply(const int* input, int size, /**/ int* output, /*w*/ Scan*) {
 // Grouped editable compilation unit for debug and contact-list code.
 
 
-#include "udx.config.cuh"
 
 #include <stdio.h>
 
@@ -22770,7 +22755,6 @@ void dbg_check_clist(const Coords*, const Dbg *dbg, int3 L, const int *starts, c
 
 
 
-#include "udx.config.cuh"
 
 #include <stdio.h>
 #include <assert.h>
@@ -23467,7 +23451,6 @@ void clist_build(int nlo, int nout, const Particle *pplo, /**/ Particle *ppout, 
 
 
 
-#include "udx.config.cuh"
 
 #include <assert.h>
 #include <stdio.h>
