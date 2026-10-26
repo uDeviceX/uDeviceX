@@ -308,11 +308,14 @@ static void  (*tlog[])(TimeStep*)                          = { const_log,  disp_
 static float (*dt[])(TimeStep*, MPI_Comm, TimeStepAccel*) = { const_dt,  disp_dt };
 /* end src/scheme/time_step/imp/type.h */
 /* begin src/scheme/time_step/imp/util.h */
+#ifndef UDX_SCHEME_IO_REDUCE_COMMON
+#define UDX_SCHEME_IO_REDUCE_COMMON
 static void reduce(MPI_Comm comm, const void *sendbuf0, void *recvbuf, int count, MPI_Datatype datatype, MPI_Op op) {
     int root = 0;
     const void *sendbuf = (m::is_master(comm) ? MPI_IN_PLACE : sendbuf0);
     MC(m::Reduce(sendbuf, recvbuf, count, datatype, op, root, comm));
 }
+#endif /* UDX_SCHEME_IO_REDUCE_COMMON */
 
 static void max_float(MPI_Comm comm, /*io*/ float *v) {
     int count = 1;

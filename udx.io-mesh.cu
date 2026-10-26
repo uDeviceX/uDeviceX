@@ -266,10 +266,10 @@ int status2errcode(MPI_Status *status);
 }
 /* end src/mpi/wrapper.h */
 /* begin src/inc/type.h */
-#ifndef UDX_IO_OUTPUT_TYPE_COMMON
-#define UDX_IO_OUTPUT_TYPE_COMMON
-#ifndef UDX_IO_TYPE_COMMON
-#define UDX_IO_TYPE_COMMON
+#ifndef UDX_SIM_OBJECTS_TYPE_COMMON
+#define UDX_SIM_OBJECTS_TYPE_COMMON
+#ifndef UDX_SIM_OBJECTS_TYPE_COMMON
+#define UDX_SIM_OBJECTS_TYPE_COMMON
 template <typename T, int N>
 struct Sarray { /* [s]tatic array */
     T d[N];
@@ -386,7 +386,10 @@ struct MeshWrite;
 struct MeshRead;
 struct Vectors;
 
+#ifndef UDX_SIM_MESH_WRITE_COMMON
+#define UDX_SIM_MESH_WRITE_COMMON
 enum {MESH_WRITE_EDGE, MESH_WRITE_CENTER};
+#endif
 
 void mesh_write_ini(MPI_Comm comm, int shifttype, const int4 *tt, int nv, int nt, const char *directory, /**/ MeshWrite**);
 void mesh_write_ini_from_mesh(MPI_Comm comm, int shifttype, MeshRead*, const char *directory, /**/ MeshWrite**);

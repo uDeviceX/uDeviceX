@@ -98,10 +98,10 @@ int status2errcode(MPI_Status *status);
 /* end src/mpi/wrapper.h */
 
 /* begin src/inc/type.h */
-#ifndef UDX_IO_OUTPUT_TYPE_COMMON
-#define UDX_IO_OUTPUT_TYPE_COMMON
-#ifndef UDX_IO_TYPE_COMMON
-#define UDX_IO_TYPE_COMMON
+#ifndef UDX_SIM_OBJECTS_TYPE_COMMON
+#define UDX_SIM_OBJECTS_TYPE_COMMON
+#ifndef UDX_SIM_OBJECTS_TYPE_COMMON
+#define UDX_SIM_OBJECTS_TYPE_COMMON
 template <typename T, int N>
 struct Sarray { /* [s]tatic array */
     T d[N];
@@ -158,8 +158,8 @@ struct FoWrap {
 #endif
 #endif
 /* begin src/inc/def.h */
-#ifndef UDX_IO_DEF_COMMON
-#define UDX_IO_DEF_COMMON
+#ifndef UDX_SIM_OBJECTS_DEF_COMMON
+#define UDX_SIM_OBJECTS_DEF_COMMON
 /* solvent colors */
 #define XMACRO_COLOR(_)                         \
     _(BLUE)                                     \
@@ -366,9 +366,12 @@ struct Particle;
 struct Rigid;
 
 // tag::id[]
+#ifndef UDX_SIM_RESTART_COMMON
+#define UDX_SIM_RESTART_COMMON
 enum {RESTART_TEMPL=-1,
       RESTART_FINAL=-2};
 enum {RESTART_BEGIN=RESTART_FINAL};
+#endif
 // end::id[]
 
 // tag::stream[]

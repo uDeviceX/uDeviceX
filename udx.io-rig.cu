@@ -7,8 +7,8 @@
 #include <mpi.h>
 
 /* begin src/inc/type.h */
-#ifndef UDX_IO_OUTPUT_TYPE_COMMON
-#define UDX_IO_OUTPUT_TYPE_COMMON
+#ifndef UDX_SIM_OBJECTS_TYPE_COMMON
+#define UDX_SIM_OBJECTS_TYPE_COMMON
 #ifndef UDX_IO_TYPE_COMMON
 #define UDX_IO_TYPE_COMMON
 template <typename T, int N>

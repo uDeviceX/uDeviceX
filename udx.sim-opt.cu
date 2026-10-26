@@ -207,7 +207,10 @@ struct MeshWrite;
 struct MeshRead;
 struct Vectors;
 
+#ifndef UDX_SIM_MESH_WRITE_COMMON
+#define UDX_SIM_MESH_WRITE_COMMON
 enum {MESH_WRITE_EDGE, MESH_WRITE_CENTER};
+#endif
 
 void mesh_write_ini(MPI_Comm comm, int shifttype, const int4 *tt, int nv, int nt, const char *directory, /**/ MeshWrite**);
 void mesh_write_ini_from_mesh(MPI_Comm comm, int shifttype, MeshRead*, const char *directory, /**/ MeshWrite**);
