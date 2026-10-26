@@ -42,8 +42,8 @@
 /* end src/inc/conf.h */
 
 
-#ifndef UDX_WALL_SDF_DEVICE_API_COMMON
-#define UDX_WALL_SDF_DEVICE_API_COMMON
+#ifndef UDX_WALL_DEVICE_API_COMMON
+#define UDX_WALL_DEVICE_API_COMMON
 /* begin src/d/api.h */
 namespace d {  /* a wrapper for device API */
 typedef int Stream_t; /* TODO: streams are not supported */
@@ -187,8 +187,8 @@ struct Array3d {
 /* end src/wall/sdf/array3d/type.h */
 #endif
 
-#ifndef UDX_WALL_SDF_TEX3D_TYPE
-#define UDX_WALL_SDF_TEX3D_TYPE
+#ifndef UDX_WALL_TEX3D_TYPE_COMMON
+#define UDX_WALL_TEX3D_TYPE_COMMON
 /* begin src/wall/sdf/tex3d/type.h */
 struct Tex3d_v { cudaTextureObject_t t; }; // <1>
 struct Tex3d   { cudaTextureObject_t t; }; // <2>

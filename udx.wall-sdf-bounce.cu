@@ -241,8 +241,8 @@ static int   warpSize = 1;
   #error DEV_* is undefined
 #endif
 /* end src/d/ker.h */
-#ifndef UDX_WALL_SDF_DEVICE_API_COMMON
-#define UDX_WALL_SDF_DEVICE_API_COMMON
+#ifndef UDX_WALL_DEVICE_API_COMMON
+#define UDX_WALL_DEVICE_API_COMMON
 /* begin src/d/api.h */
 namespace d {  /* a wrapper for device API */
 typedef int Stream_t; /* TODO: streams are not supported */
@@ -275,6 +275,8 @@ int PeekAtLastError(void);
 /* end src/d/api.h */
 #endif
 
+#ifndef UDX_WALL_TYPE_COMMON
+#define UDX_WALL_TYPE_COMMON
 /* begin src/inc/type.h */
 template <typename T, int N>
 struct Sarray { /* [s]tatic array */
@@ -329,6 +331,7 @@ struct FoWrap {
     Force *ff;
 };
 /* end src/inc/type.h */
+#endif /* UDX_WALL_TYPE_COMMON */
 /* begin src/inc/dev.h */
 /* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
@@ -369,6 +372,8 @@ struct FoWrap {
 #define DzeroA(P, n)   DsetA(P, 0, n)
 /* end src/inc/dev.h */
 
+#ifndef UDX_WALL_KL_COMMON
+#define UDX_WALL_KL_COMMON
 /* begin src/utils/kl.h */
 /* [k]ernel [l]aunch macros */
 
@@ -426,6 +431,7 @@ inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
 
 /* TODO: header includes header */
 /* end src/utils/kl.h */
+#endif /* UDX_WALL_KL_COMMON */
 
 /* begin src/coords/type.h */
 // tag::view[]
@@ -815,14 +821,14 @@ _HD_ void axpy(const T1 a, const T2 *x, /*io*/ T3 *y) {
 }
 /* end src/math/dev.h */
 
-#ifndef UDX_WALL_SDF_TFORM_TYPE
-#define UDX_WALL_SDF_TFORM_TYPE
+#ifndef UDX_WALL_TFORM_TYPE_COMMON
+#define UDX_WALL_TFORM_TYPE_COMMON
 /* begin src/math/tform/type.h */
 struct Tform_v { float o[3], s[3]; };
 /* end src/math/tform/type.h */
 #endif
-#ifndef UDX_WALL_SDF_TFORM_DEV
-#define UDX_WALL_SDF_TFORM_DEV
+#ifndef UDX_WALL_TFORM_DEV_COMMON
+#define UDX_WALL_TFORM_DEV_COMMON
 /* begin src/math/tform/dev.h */
 static __device__ void tform_convert_dev(const Tform_v *t, const float a0[3], /**/ float a1[3]) {
     enum {X, Y, Z};
@@ -841,16 +847,15 @@ static __device__ void tform_spacing_dev(const Tform_v *t, /**/ float s[3]) {
 }
 /* end src/math/tform/dev.h */
 #endif
-#ifndef UDX_WALL_SDF_TEX3D_TYPE
-#define UDX_WALL_SDF_TEX3D_TYPE
-#ifndef UDX_WALL_SDF_TEX3D_TYPE
-#define UDX_WALL_SDF_TEX3D_TYPE
+#ifndef UDX_WALL_TEX3D_TYPE_COMMON
+#define UDX_WALL_TEX3D_TYPE_COMMON
 /* begin src/wall/sdf/tex3d/type.h */
 struct Tex3d_v { cudaTextureObject_t t; }; // <1>
 struct Tex3d   { cudaTextureObject_t t; }; // <2>
 /* end src/wall/sdf/tex3d/type.h */
 #endif
-#endif
+#ifndef UDX_WALL_SDF_TYPE_COMMON
+#define UDX_WALL_SDF_TYPE_COMMON
 /* begin src/wall/sdf/type.h */
 /* view */
 struct Sdf_v {
@@ -859,6 +864,7 @@ struct Sdf_v {
     float cheap_threshold;
 };
 /* end src/wall/sdf/type.h */
+#endif /* UDX_WALL_SDF_TYPE_COMMON */
 /* begin src/wall/sdf/imp.h */
 struct Sdf;
 struct Sdf_v;
@@ -888,6 +894,8 @@ void sdf_bounce(float dt, const WvelStep*, const Coords*, const Sdf*, int n, /**
 // end::bounce[]
 /* end src/wall/sdf/imp.h */
 
+#ifndef UDX_WALL_SDF_DEV_COMMON
+#define UDX_WALL_SDF_DEV_COMMON
 /* begin src/wall/sdf/dev.h */
 #define _S_ static __device__
 #define _I_ static __device__
@@ -1005,6 +1013,7 @@ _I_ float sdf_eval(const Sdf_v *sdf0, float x, float y, float z)  // <3>
 #undef _S_
 #undef _I_
 /* end src/wall/sdf/dev.h */
+#endif /* UDX_WALL_SDF_DEV_COMMON */
 
 /* begin src/wall/sdf/bounce/imp.h */
 struct Sdf;

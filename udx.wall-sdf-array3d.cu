@@ -42,8 +42,8 @@
 /* end src/inc/conf.h */
 
 
-#ifndef UDX_WALL_SDF_DEVICE_API_COMMON
-#define UDX_WALL_SDF_DEVICE_API_COMMON
+#ifndef UDX_WALL_DEVICE_API_COMMON
+#define UDX_WALL_DEVICE_API_COMMON
 /* begin src/d/api.h */
 namespace d {  /* a wrapper for device API */
 typedef int Stream_t; /* TODO: streams are not supported */
