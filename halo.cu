@@ -7494,10 +7494,6 @@ _S_ float force_magn(const PairDPDLJ *p, float rnd, float ev, float r, float inv
     return f;
 }
 
-_S_ float force_magn(const PairAdhesion *p, float, float ev, float r, float) {
-    return magn_adhesion(p->k1, p->k2, r, ev);
-}
-
 _S_ void magn2fo(float f0, float3 er, float3 dr, /**/ PairFo *f) {
     f->x = f0 * er.x;
     f->y = f0 * er.y;
