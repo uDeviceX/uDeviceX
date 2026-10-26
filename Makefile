@@ -56,8 +56,7 @@ OBJECTS = \
  udx.sim-all.o \
  udx.sim-walls.o \
  udx.sim.o \
- udx.struct-arrays.o \
- udx.struct-pfarrays.o \
+ udx.struct-all.o \
  udx.support.o \
  udx.wall-exchange-force.o \
  udx.wall-sdf-transform-bounce.o \

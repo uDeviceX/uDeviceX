@@ -128,6 +128,8 @@ struct FoWrap {
 /* end src/inc/type.h */
 
 /* begin src/struct/parray/imp.h */
+#ifndef UDX_STRUCT_PARRAY_COMMON
+#define UDX_STRUCT_PARRAY_COMMON
 struct PaArray {
     bool colors;
     const float *pp;
@@ -153,7 +155,10 @@ void parray_get_view(const PaArray *a, PaArray_v *v);  // <1>
 void parray_get_view(const PaArray *a, PaCArray_v *v); // <2>
 // end::view[]
 /* end src/struct/parray/imp.h */
+#endif
 /* begin src/struct/farray/imp.h */
+#ifndef UDX_STRUCT_FARRAY_COMMON
+#define UDX_STRUCT_FARRAY_COMMON
 struct FoArray {
     bool stress;
     float *ff;
@@ -181,6 +186,7 @@ void farray_get_view(const FoArray *a, FoArray_v *v);  // <1>
 void farray_get_view(const FoArray *a, FoSArray_v *v); // <2>
 // end::view[]
 /* end src/struct/farray/imp.h */
+#endif
 
 /* begin src/struct/pfarrays/imp.h */
 struct PFarray {

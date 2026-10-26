@@ -5,6 +5,8 @@
 #include <stdio.h>
 
 /* begin src/struct/parray/imp.h */
+#ifndef UDX_STRUCT_PARRAY_COMMON
+#define UDX_STRUCT_PARRAY_COMMON
 struct PaArray {
     bool colors;
     const float *pp;
@@ -30,6 +32,7 @@ void parray_get_view(const PaArray *a, PaArray_v *v);  // <1>
 void parray_get_view(const PaArray *a, PaCArray_v *v); // <2>
 // end::view[]
 /* end src/struct/parray/imp.h */
+#endif
 
 /* begin src/struct/parray/type.h */
 struct PaArray_v {

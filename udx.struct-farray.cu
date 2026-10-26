@@ -5,6 +5,8 @@
 #include <stdio.h>
 
 /* begin src/struct/farray/imp.h */
+#ifndef UDX_STRUCT_FARRAY_COMMON
+#define UDX_STRUCT_FARRAY_COMMON
 struct FoArray {
     bool stress;
     float *ff;
@@ -32,6 +34,7 @@ void farray_get_view(const FoArray *a, FoArray_v *v);  // <1>
 void farray_get_view(const FoArray *a, FoSArray_v *v); // <2>
 // end::view[]
 /* end src/struct/farray/imp.h */
+#endif
 
 /* begin src/struct/farray/type.h */
 struct FoArray_v {
