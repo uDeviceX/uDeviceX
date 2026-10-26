@@ -47,4 +47,4 @@
 #define DUMP_BASE "."
 #endif
 
-#include "udx.api.cuh"
+#include "api.cuh"

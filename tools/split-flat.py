@@ -94,7 +94,7 @@ def split_text(text: str) -> dict[str, str]:
     prefix = (
         "// generated from udx.flat.cu\n"
         "#define DEV_CUDA\n#define CC_RELEASE\n#define KL_RELEASE\n"
-        "#include \"udx.api.cuh\"\n\n"
+        "#include \"api.cuh\"\n\n"
     )
     result = {"libconfig": libconfig_support, "support": bop_support}
     result.update(
@@ -116,7 +116,7 @@ def main() -> int:
     output = pathlib.Path(args.out)
     output.mkdir(parents=True, exist_ok=True)
     units = split_text(source)
-    (output / "udx.api.cuh").write_text(units.pop("api"))
+    (output / "api.cuh").write_text(units.pop("api"))
     for name, content in units.items():
         (output / f"udx.{name}.cu").write_text(content)
     names = sorted(units)

@@ -11662,7 +11662,7 @@ int config_setting_is_aggregate(const config_setting_t *setting)
 #define DEV_CUDA
 #define CC_RELEASE
 #define KL_RELEASE
-#include "udx.api.cuh"
+#include "api.cuh"
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -12708,7 +12708,7 @@ void inflow_create_pp_cc(float kBT, int numdensity, float dt, int newcolor, Infl
 #define DEV_CUDA
 #define CC_RELEASE
 #define KL_RELEASE
-#include "udx.api.cuh"
+#include "api.cuh"
 
 #include <stdio.h>
 #include <mpi.h>
@@ -13924,7 +13924,7 @@ void vcont_strt_read(const char *base, int id, PidVCont *c) {
 #define DEV_CUDA
 #define CC_RELEASE
 #define KL_RELEASE
-#include "udx.api.cuh"
+#include "api.cuh"
 
 #include <stdio.h>
 
@@ -14651,7 +14651,7 @@ void den_map_fin(DContMap *m) {
 #define DEV_CUDA
 #define CC_RELEASE
 #define KL_RELEASE
-#include "udx.api.cuh"
+#include "api.cuh"
 
 #include <stdio.h>
 #include <vector_types.h>
@@ -19022,7 +19022,7 @@ void tform_to_view(const Tform *t, Tform_v *v) {
 #define DEV_CUDA
 #define CC_RELEASE
 #define KL_RELEASE
-#include "udx.api.cuh"
+#include "api.cuh"
 
 #include <stdio.h>
 
@@ -19223,7 +19223,7 @@ double scalars_get(const Scalars *q, int i) {
 #define DEV_CUDA
 #define CC_RELEASE
 #define KL_RELEASE
-#include "udx.api.cuh"
+#include "api.cuh"
 
 #include <stdio.h>
 
@@ -19580,7 +19580,7 @@ void vectors_get(const Vectors *q, int i, /**/ float r[3]) {
 #define DEV_CUDA
 #define CC_RELEASE
 #define KL_RELEASE
-#include "udx.api.cuh"
+#include "api.cuh"
 
 /* [k]ernel [l]aunch macros */
 #if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
@@ -19837,7 +19837,7 @@ void convert_pp2f4_pos(int n, const float *pp, /**/ float4 *zpp) {
 #define DEV_CUDA
 #define CC_RELEASE
 #define KL_RELEASE
-#include "udx.api.cuh"
+#include "api.cuh"
 
 #include <thrust/device_ptr.h>
 #include <thrust/transform_reduce.h>
@@ -20016,7 +20016,7 @@ float force_stat_max(int n, const Force *dev) {
 #define DEV_CUDA
 #define CC_RELEASE
 #define KL_RELEASE
-#include "udx.api.cuh"
+#include "api.cuh"
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -20149,7 +20149,7 @@ int edg_valid(int md, int i, int x, const int *hx) { /* valid? */
 #define DEV_CUDA
 #define CC_RELEASE
 #define KL_RELEASE
-#include "udx.api.cuh"
+#include "api.cuh"
 
 #include <stdio.h>
 
@@ -20715,7 +20715,7 @@ void minmax(const Particle *pp, int nv, int nobj, /**/ float3 *lo, float3 *hi) {
 #define DEV_CUDA
 #define CC_RELEASE
 #define KL_RELEASE
-#include "udx.api.cuh"
+#include "api.cuh"
 
 #include <stdio.h>
 
@@ -20830,7 +20830,7 @@ double kahan_sum_compensation(const KahanSum *q) { return q->c; }
 #define DEV_CUDA
 #define CC_RELEASE
 #define KL_RELEASE
-#include "udx.api.cuh"
+#include "api.cuh"
 
 #include <stdio.h>
 #include <string.h>
@@ -21060,7 +21060,7 @@ void key_list_log(KeyList *q) {
 #define DEV_CUDA
 #define CC_RELEASE
 #define KL_RELEASE
-#include "udx.api.cuh"
+#include "api.cuh"
 
 #include <stdio.h>
 /* [k]ernel [l]aunch macros */

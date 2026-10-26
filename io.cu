@@ -10247,7 +10247,7 @@ int is_pending(int errorcode);
 int is_err_in_status(int errorcode);
 int status2errcode(MPI_Status *status);
 }
-#include "udx.io-diag-common.cuh"
+#include "diagnostic.cuh"
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
         error_report();                                         \
@@ -10449,7 +10449,7 @@ int is_pending(int errorcode);
 int is_err_in_status(int errorcode);
 int status2errcode(MPI_Status *status);
 }
-#include "udx.io-diag-common.cuh"
+#include "diagnostic.cuh"
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
         error_report();                                         \

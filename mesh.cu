@@ -4819,7 +4819,7 @@ void mesh_cylindrical_ini(int nv, /**/ MeshCylindrical**);
 void mesh_cylindrical_fin(MeshCylindrical*);
 void  mesh_cylindrical_apply(MeshCylindrical*, int nm, Vectors*, /**/
                            double *r, double *phi, double *z);
-#include "udx.mesh-coordinate-common.cuh"
+#include "coordinate.cuh"
 struct MeshCylindrical {
     double *rr; /* workspace for coordinates shifted to a mesh center
                    of mass */
@@ -4957,7 +4957,7 @@ void mesh_spherical_ini(int nv, /**/ MeshSpherical**);
 void mesh_spherical_fin(MeshSpherical*);
 void  mesh_spherical_apply(MeshSpherical*, int nm, Vectors*, /**/
                            double *r, double *theta, double *phi);
-#include "udx.mesh-coordinate-common.cuh"
+#include "coordinate.cuh"
 struct MeshSpherical {
     double *rr; /* workspace for coordinates shifted to a mesh center
                    of mass */
@@ -5013,7 +5013,7 @@ void mesh_spherical_apply(MeshSpherical *q, int m, Vectors *pos, /**/ double *r,
 #include <vector_types.h>
 #include <math.h>
 
-#include "udx.mesh-common.cuh"
+#include "meshcore.cuh"
 struct int4;
 float dist_from_mesh(int nt, const int4 *tt, const float *vv, const float *r0);
 
@@ -5106,7 +5106,7 @@ float dist_from_mesh(int nt, const int4 *tt, const float *vv, const float *r0) {
 #include <vector_types.h>
 #include <string.h>
 
-#include "udx.mesh-common.cuh"
+#include "meshcore.cuh"
 struct int4;
 float mesh_volume0(int nt, const int4 *tt, const float *vv);
 void mesh_center_of_mass(int nt, const int4 *tt, const float *vv, /**/ float *com);
@@ -5685,7 +5685,7 @@ void mesh_eng_kantor_apply(MeshEngKantor *q, int nm, Vectors *pos, double kb, do
 // Grouped editable compilation unit for Kantor force backends.
 
 
-#include "udx.mesh-force-kantor-common.cuh"
+#include "kantor.cuh"
 
 #include <math.h>
 #include <assert.h>
@@ -5885,7 +5885,7 @@ END
 
 
 
-#include "udx.mesh-force-kantor-common.cuh"
+#include "kantor.cuh"
 
 #include <math.h>
 #include <assert.h>

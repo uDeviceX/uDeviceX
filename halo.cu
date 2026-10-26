@@ -880,7 +880,7 @@ void ecommon_shift_rrcp_one_frag(int3 L, int n, const int fid, /**/ Positioncp *
 #define DEV_CUDA
 #define CC_RELEASE
 #define KL_RELEASE
-#include "udx.api.cuh"
+#include "api.cuh"
 
 #include <stdio.h>
 void emalloc(size_t, /**/ void**); // <1>
@@ -1035,7 +1035,7 @@ int dflu_status_nullp(DFluStatus *s) { return s == NULL; }
 
 
 
-#include "udx.device-api-common.cuh"
+#include "device.cuh"
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -1315,7 +1315,7 @@ void dmap_D2H(int nfrags, const DMap *d, /**/ DMap *h) {
 
 
 
-#include "udx.device-api-common.cuh"
+#include "device.cuh"
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -2624,7 +2624,7 @@ void drig_unpack_halo(const DRigUnpack *u, /**/ RigQuants *q) {
 #define DEV_CUDA
 #define CC_RELEASE
 #define KL_RELEASE
-#include "udx.api.cuh"
+#include "api.cuh"
 
 #include <mpi.h>
 #include <assert.h>
