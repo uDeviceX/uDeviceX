@@ -25,7 +25,7 @@ OBJECTS = \
  udx.fluforces-bulk-main.o \
  udx.io-fraghe-complete.o \
  udx.pair-fsi.o \
- udx.grid-math-complete.o \
+ udx.support-grid-complete.o \
  udx.mesh-struct-complete.o \
  udx.rbc-core-adj-com.o \
  udx.rbc-force-all.o \
@@ -33,7 +33,6 @@ OBJECTS = \
  udx.rig-complete.o \
  udx.scheme-system-complete.o \
  udx.sim.o \
- udx.support.o \
  udx.wall-complete.o \
  udx.wall-sdf-complete.o
 

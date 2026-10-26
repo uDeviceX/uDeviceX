@@ -1,4 +1,5 @@
 /* begin bundled BOP */
+#ifndef UDX_BOP_COMMON
 #include <mpi.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -140,6 +141,8 @@ BopStatus bop_read_values(const char *dfname, BopData *d);               // <2>
 // end::read[]
 
 /* end bop/src/bop_serial.h */
+#define UDX_BOP_COMMON
+#endif
 /* begin bop/src/bop_common.cpp */
 #include <stdlib.h>
 #include <stdio.h>
