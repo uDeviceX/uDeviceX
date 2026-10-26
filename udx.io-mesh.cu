@@ -266,6 +266,8 @@ int status2errcode(MPI_Status *status);
 }
 /* end src/mpi/wrapper.h */
 /* begin src/inc/type.h */
+#ifndef UDX_IO_TYPE_COMMON
+#define UDX_IO_TYPE_COMMON
 template <typename T, int N>
 struct Sarray { /* [s]tatic array */
     T d[N];
@@ -319,6 +321,7 @@ struct FoWrap {
     Force *ff;
 };
 /* end src/inc/type.h */
+#endif
 
 /* begin src/io/mesh_read/imp.h */
 struct int4;
