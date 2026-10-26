@@ -118,6 +118,8 @@ void msg_print(const char *fmt, ...); // <2>
 /* end src/utils/msg.h */
 
 /* begin src/d/api.h */
+#ifndef UDX_D_MPI_COLOR_D_API
+#define UDX_D_MPI_COLOR_D_API
 namespace d {  /* a wrapper for device API */
 typedef int Stream_t; /* TODO: streams are not supported */
 enum {MemcpyHostToHost, MemcpyHostToDevice,
@@ -147,6 +149,7 @@ int PeekAtLastError(void);
 // end::api[]
 }
 /* end src/d/api.h */
+#endif
 
 namespace d {
 /* begin src/d/common.h */

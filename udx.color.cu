@@ -141,6 +141,8 @@ inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
 /* TODO: header includes header */
 /* end src/utils/kl.h */
 /* begin src/d/api.h */
+#ifndef UDX_D_MPI_COLOR_D_API
+#define UDX_D_MPI_COLOR_D_API
 namespace d {  /* a wrapper for device API */
 typedef int Stream_t; /* TODO: streams are not supported */
 enum {MemcpyHostToHost, MemcpyHostToDevice,
@@ -170,6 +172,7 @@ int PeekAtLastError(void);
 // end::api[]
 }
 /* end src/d/api.h */
+#endif
 
 /* begin src/inc/dev.h */
 /* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
