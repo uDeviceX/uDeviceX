@@ -29,14 +29,13 @@ OBJECTS = \
  udx.grid-inter.o \
  udx.io-complete.o \
  udx.utils-math.o \
- udx.mesh-complete.o \
+ udx.mesh-struct-complete.o \
  udx.rbc-core-adj-com.o \
  udx.rbc-force-all.o \
  udx.rbc-force-bending-all.o \
  udx.rig-complete.o \
  udx.scheme-system-complete.o \
  udx.sim.o \
- udx.struct-all.o \
  udx.support.o \
  udx.wall-complete.o \
  udx.wall-sdf-complete.o
