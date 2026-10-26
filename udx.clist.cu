@@ -85,11 +85,14 @@ void error_abort();
 void error_print_stack();
 /* end src/utils/error.h */
 /* begin src/utils/msg.h */
+#ifndef UDX_DBG_CLIST_MSG_COMMON
+#define UDX_DBG_CLIST_MSG_COMMON
 // tag::int[]
 void msg_ini(int rank); // <1>
 void msg_print(const char *fmt, ...); // <2>
 // end::int[]
 /* end src/utils/msg.h */
+#endif
 /* begin src/utils/imp.h */
 // tag::mem[]
 void emalloc(size_t, /**/ void**); // <1>
@@ -118,6 +121,8 @@ const char* get_filename_ext(const char*);
 /* end src/utils/imp.h */
 
 /* begin src/inc/def.h */
+#ifndef UDX_DBG_CLIST_DEF_COMMON
+#define UDX_DBG_CLIST_DEF_COMMON
 /* solvent colors */
 #define XMACRO_COLOR(_)                         \
     _(BLUE)                                     \
@@ -169,7 +174,10 @@ enum {
 /* for the spring forces r = min(lmax*RBC_SPRING_CAP, r) */
 #define RBC_SPRING_CAP (0.99)
 /* end src/inc/def.h */
+#endif
 /* begin src/inc/type.h */
+#ifndef UDX_DBG_CLIST_TYPE_COMMON
+#define UDX_DBG_CLIST_TYPE_COMMON
 template <typename T, int N>
 struct Sarray { /* [s]tatic array */
     T d[N];
@@ -223,6 +231,7 @@ struct FoWrap {
     Force *ff;
 };
 /* end src/inc/type.h */
+#endif
 /* begin src/inc/dev.h */
 /* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
@@ -273,6 +282,8 @@ void scan_fin(Scan*);                                                       // <
 /* end src/algo/scan/imp.h */
 
 /* begin src/d/api.h */
+#ifndef UDX_DBG_CLIST_D_API_COMMON
+#define UDX_DBG_CLIST_D_API_COMMON
 namespace d {  /* a wrapper for device API */
 typedef int Stream_t; /* TODO: streams are not supported */
 enum {MemcpyHostToHost, MemcpyHostToDevice,
@@ -302,6 +313,7 @@ int PeekAtLastError(void);
 // end::api[]
 }
 /* end src/d/api.h */
+#endif
 /* begin src/utils/cc.h */
 /* [c]uda [c]heck macros */
 
@@ -336,6 +348,8 @@ void check(int rc, const char *file, int line);
 /* TODO: header includes header */
 /* end src/utils/cc.h */
 /* begin src/utils/kl.h */
+#ifndef UDX_DBG_CLIST_KL_COMMON
+#define UDX_DBG_CLIST_KL_COMMON
 /* [k]ernel [l]aunch macros */
 
 #if    defined(KL_RELEASE)
@@ -392,6 +406,7 @@ inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
 
 /* TODO: header includes header */
 /* end src/utils/kl.h */
+#endif
 
 /* begin src/struct/partlist/type.h */
 enum {
