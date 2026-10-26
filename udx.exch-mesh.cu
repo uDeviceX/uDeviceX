@@ -76,6 +76,8 @@ void msg_print(const char *fmt, ...); // <2>
 // end::int[]
 /* end src/utils/msg.h */
 /* begin src/inc/type.h */
+#ifndef UDX_EXCH_TYPE_COMMON
+#define UDX_EXCH_TYPE_COMMON
 template <typename T, int N>
 struct Sarray { /* [s]tatic array */
     T d[N];
@@ -129,6 +131,7 @@ struct FoWrap {
     Force *ff;
 };
 /* end src/inc/type.h */
+#endif /* UDX_EXCH_TYPE_COMMON */
 /* begin src/inc/dev.h */
 /* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
@@ -169,6 +172,8 @@ struct FoWrap {
 #define DzeroA(P, n)   DsetA(P, 0, n)
 /* end src/inc/dev.h */
 /* begin src/frag/dev.h */
+#ifndef UDX_EXCH_FRAG_DEV_COMMON
+#define UDX_EXCH_FRAG_DEV_COMMON
 #ifdef FRAG_HOST
   #define _I_
   #define _S_ static
@@ -258,8 +263,11 @@ END
 #undef BEGIN
 #undef END
 /* end src/frag/dev.h */
+#endif /* UDX_EXCH_FRAG_DEV_COMMON */
 
 /* begin src/d/api.h */
+#ifndef UDX_EXCH_DEVICE_API_COMMON
+#define UDX_EXCH_DEVICE_API_COMMON
 namespace d {  /* a wrapper for device API */
 typedef int Stream_t; /* TODO: streams are not supported */
 enum {MemcpyHostToHost, MemcpyHostToDevice,
@@ -289,6 +297,7 @@ int PeekAtLastError(void);
 // end::api[]
 }
 /* end src/d/api.h */
+#endif /* UDX_EXCH_DEVICE_API_COMMON */
 /* begin src/utils/cc.h */
 /* [c]uda [c]heck macros */
 
@@ -323,6 +332,8 @@ void check(int rc, const char *file, int line);
 /* TODO: header includes header */
 /* end src/utils/cc.h */
 /* begin src/utils/kl.h */
+#ifndef UDX_EXCH_KL_COMMON
+#define UDX_EXCH_KL_COMMON
 /* [k]ernel [l]aunch macros */
 
 #if    defined(KL_RELEASE)
@@ -379,6 +390,7 @@ inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
 
 /* TODO: header includes header */
 /* end src/utils/kl.h */
+#endif /* UDX_EXCH_KL_COMMON */
 /* begin src/utils/error.h */
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
@@ -465,6 +477,8 @@ _I_ T shfl(T val, unsigned int width) {
 /* end src/algo/utils/shfl.h */
 
 /* begin src/frag/imp.h */
+#ifndef UDX_EXCH_FRAG_IMP_COMMON
+#define UDX_EXCH_FRAG_IMP_COMMON
 enum {frag_bulk = 26};
 
 struct int3;
@@ -498,7 +512,10 @@ void estimates(int3 L, int nfrags, float maxd, /**/ int *cap); // <1>
 
 } // frag_hst
 /* end src/frag/imp.h */
+#endif /* UDX_EXCH_FRAG_IMP_COMMON */
 /* begin src/comm/imp.h */
+#ifndef UDX_EXCH_COMM_COMMON
+#define UDX_EXCH_COMM_COMMON
 typedef unsigned char data_t;
 
 enum {
@@ -572,7 +589,10 @@ size_t comm_get_byte_capacity(int i, const hBags *b);   // <2>
 // end::get[]
 
 /* end src/comm/imp.h */
+#endif /* UDX_EXCH_COMM_COMMON */
 /* begin src/comm/utils.h */
+#ifndef UDX_EXCH_COMM_UTILS_COMMON
+#define UDX_EXCH_COMM_UTILS_COMMON
 // tag::convert[]
 template <typename BAGT, typename T, int N>
 static void bag2Sarray(BAGT bags, Sarray<T*, N> *buf)
@@ -582,8 +602,11 @@ static void bag2Sarray(BAGT bags, Sarray<T*, N> *buf)
         buf->d[i] = (T*) bags.data[i];
 }
 /* end src/comm/utils.h */
+#endif /* UDX_EXCH_COMM_UTILS_COMMON */
 
 /* begin src/exch/map/type.h */
+#ifndef UDX_EXCH_MAP_TYPE_COMMON
+#define UDX_EXCH_MAP_TYPE_COMMON
 // [E]xchange map
 
 // tag::struct[]
@@ -599,7 +622,10 @@ struct EMap {
 // end::struct[]
 
 /* end src/exch/map/type.h */
+#endif /* UDX_EXCH_MAP_TYPE_COMMON */
 /* begin src/exch/map/imp.h */
+#ifndef UDX_EXCH_MAP_IMP_COMMON
+#define UDX_EXCH_MAP_IMP_COMMON
 // tag::int[]
 void emap_ini(int nw, int nfrags, int cap[], /**/ EMap *map);               // <1>
 void emap_fin(int nfrags, EMap *map);                                       // <2>
@@ -609,6 +635,7 @@ void emap_download_tot_counts(int nw, int nfrags, EMap map, /**/ int counts[]); 
 void emap_download_all_counts(int nw, int nfrags, EMap map, /**/ int tot_counts[], int *counts[]);
 // end::int[]
 /* end src/exch/map/imp.h */
+#endif /* UDX_EXCH_MAP_IMP_COMMON */
 
 /* begin src/exch/mesh/imp.h */
 struct EMeshPack;
@@ -687,6 +714,8 @@ void emesh_unpack_mom(int nt, const EMeshPack *p, const EMeshUnpackM *u, /**/ Mo
 /* end src/exch/mesh/imp.h */
 
 /* begin src/exch/map/dev.h */
+#ifndef UDX_EXCH_MAP_DEV_COMMON
+#define UDX_EXCH_MAP_DEV_COMMON
 #define _I_ static __device__
 #define _S_ static __device__
 
@@ -774,7 +803,10 @@ _I_ int emap_decode(int code, /**/ int fids[MAX_DSTS]) // <4>
 #undef _I_
 #undef _S_
 /* end src/exch/map/dev.h */
+#endif /* UDX_EXCH_MAP_DEV_COMMON */
 /* begin src/exch/common/imp.h */
+#ifndef UDX_EXCH_COMMON_IMP_COMMON
+#define UDX_EXCH_COMMON_IMP_COMMON
 struct int3;
 
 // tag::struct[]
@@ -792,17 +824,18 @@ void ecommon_shift_pp_one_frag(int3 L, int n, const int fid, /**/ Particle *pp);
 void ecommon_shift_rrcp_one_frag(int3 L, int n, const int fid, /**/ Positioncp *rr);
 // end::int[]
 /* end src/exch/common/imp.h */
+#endif /* UDX_EXCH_COMMON_IMP_COMMON */
 
 /* begin src/exch/mesh/imp/type.h */
 enum {
-    MAX_NBAGS = 1
+    EMESH_MAX_NBAGS = 1
 };
 
 struct EMeshPack {
     EMap map;
     float3 *minext, *maxext;
-    dBags dbags[MAX_NBAGS], *dpp;
-    hBags hbags[MAX_NBAGS], *hpp;
+    dBags dbags[EMESH_MAX_NBAGS], *dpp;
+    hBags hbags[EMESH_MAX_NBAGS], *hpp;
     int nbags;
     CommBuffer *hbuf;
 
@@ -814,8 +847,8 @@ struct EMeshComm {
 };
 
 struct EMeshUnpack {
-    hBags hbags[MAX_NBAGS], *hpp;
-    dBags dbags[MAX_NBAGS], *dpp;
+    hBags hbags[EMESH_MAX_NBAGS], *hpp;
+    dBags dbags[EMESH_MAX_NBAGS], *dpp;
     int nbags;
     CommBuffer *hbuf;
 

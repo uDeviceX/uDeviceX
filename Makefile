@@ -16,8 +16,7 @@ OBJECTS = \
  udx.distr-exch-rig-complete.o \
  udx.distr-flu-rbc-complete.o \
  udx.exch-flu.o \
- udx.exch-mesh.o \
- udx.exch-obj.o \
+ udx.exch-mesh-obj-complete.o \
  udx.flu-halo.o \
  udx.fluforces-bulk-main.o \
  udx.io-fraghe-complete.o \
