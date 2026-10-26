@@ -84,6 +84,8 @@ void error_abort();
 void error_print_stack();
 /* end src/utils/error.h */
 /* begin src/d/api.h */
+#ifndef UDX_GRID_INTER_DEVICE_API_COMMON
+#define UDX_GRID_INTER_DEVICE_API_COMMON
 namespace d {  /* a wrapper for device API */
 typedef int Stream_t; /* TODO: streams are not supported */
 enum {MemcpyHostToHost, MemcpyHostToDevice,
@@ -113,6 +115,7 @@ int PeekAtLastError(void);
 // end::api[]
 }
 /* end src/d/api.h */
+#endif
 
 /* begin src/utils/cc/common.h */
 namespace cc {
