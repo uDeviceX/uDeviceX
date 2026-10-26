@@ -9,6 +9,8 @@
 #include <thrust/transform_reduce.h>
 
 /* begin src/inc/type.h */
+#ifndef UDX_ALGO_TYPE_COMMON
+#define UDX_ALGO_TYPE_COMMON
 template <typename T, int N>
 struct Sarray { /* [s]tatic array */
     T d[N];
@@ -62,6 +64,7 @@ struct FoWrap {
     Force *ff;
 };
 /* end src/inc/type.h */
+#endif
 /* begin src/utils/error.h */
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \

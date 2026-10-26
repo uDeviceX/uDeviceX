@@ -43,6 +43,8 @@
 /* end src/inc/conf.h */
 
 /* begin src/inc/type.h */
+#ifndef UDX_ALGO_TYPE_COMMON
+#define UDX_ALGO_TYPE_COMMON
 template <typename T, int N>
 struct Sarray { /* [s]tatic array */
     T d[N];
@@ -96,6 +98,7 @@ struct FoWrap {
     Force *ff;
 };
 /* end src/inc/type.h */
+#endif
 /* begin src/inc/dev.h */
 /* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )

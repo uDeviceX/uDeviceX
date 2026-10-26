@@ -18,9 +18,8 @@ OBJECTS = \
  udx.coords.o \
  udx.d-mpi.o \
  udx.dbg.o \
- udx.algo-convert.o \
+ udx.algo-convert-force-stat.o \
  udx.algo-edge-accumulators-scan.o \
- udx.algo-force_stat.o \
  udx.algo-numeric.o \
  udx.control-den.o \
  udx.control-inflow.o \
