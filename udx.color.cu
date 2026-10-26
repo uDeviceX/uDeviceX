@@ -266,6 +266,8 @@ struct FoWrap {
 /* end src/inc/type.h */
 
 /* begin src/coords/type.h */
+#ifndef UDX_COLOR_COORDS_TYPES
+#define UDX_COLOR_COORDS_TYPES
 // tag::view[]
 struct Coords_v {
     int xc, yc, zc; /* rank coordinates        */
@@ -281,6 +283,7 @@ struct Coords {
     int Lx, Ly, Lz; /* [L]ocal: subdomain size */
 };
 /* end src/coords/imp/type.h */
+#endif
 /* begin src/coords/imp.h */
 struct Coords;
 struct Coords_v;
