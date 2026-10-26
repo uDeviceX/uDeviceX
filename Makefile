@@ -11,8 +11,7 @@ MPI_LIBS = -lopen-rte -lopen-pal
 
 OBJECTS = \
  udx.contact-complete.o \
- udx.runtime-all.o \
- udx.conf-libconfig.o \
+ udx.runtime-config-complete.o \
  udx.algo-complete.o \
  udx.control-complete.o \
  udx.distr-exch.o \
