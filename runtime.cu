@@ -12369,22 +12369,21 @@ struct SolventWrap {
     int color;          /* color of new particles  */
 };
 
-namespace inflow_dev {
-__global__ void ini_rnd(long seed, int n, curandState_t *rr) {
+__global__ void inflow_ini_rnd_kernel(long seed, int n, curandState_t *rr) {
     long i;
     i = threadIdx.x + blockIdx.x * blockDim.x;
     if (i >= n) return;
     curand_init(seed, i, 0, &rr[i]);
 }
 
-__global__ void ini_flux(int n, /**/ curandState_t *rr, float *cumflux) {
+__global__ void inflow_ini_flux_kernel(int n, /**/ curandState_t *rr, float *cumflux) {
     long i;
     i = threadIdx.x + blockIdx.x * blockDim.x;
     if (i >= n) return;
     cumflux[i] = curand_uniform(rr + i);
 }
 template <typename Par, typename VPar>
-__global__ void ini_vel(VPar vparams, Par params, int2 nc, /**/ float3 *uu) {
+__global__ void inflow_ini_vel_kernel(VPar vparams, Par params, int2 nc, /**/ float3 *uu) {
     int i, xcid, ycid;
     float3 u;
     float2 xi;
@@ -12404,7 +12403,7 @@ __global__ void ini_vel(VPar vparams, Par params, int2 nc, /**/ float3 *uu) {
 }
 
 template <typename Par>
-__global__ void cumulative_flux(float nxdt, Par params, int2 nc, const float3 *uu, /**/ float *cumflux) {
+__global__ void inflow_cumulative_flux_kernel(float nxdt, Par params, int2 nc, const float3 *uu, /**/ float *cumflux) {
     int i, xcid, ycid;
     float dn;
     float3 normal, u;
@@ -12445,7 +12444,7 @@ static __device__ Particle create_particle(float kBT, Par params, int2 nc,
 }
 
 template <typename Par>
-__global__ void create_particles(float kBT, Par params, int2 nc, const float3 *flux,
+__global__ void inflow_create_particles_kernel(float kBT, Par params, int2 nc, const float3 *flux,
                                  /*io*/ curandState_t *rnds, float *cumflux, /**/ int *n, SolventWrap wrap) {
     int i, xcid, ycid, j, nnew, strt;
     float c;
@@ -12477,7 +12476,6 @@ __global__ void create_particles(float kBT, Par params, int2 nc, const float3 *f
     }
 
     rnds[i] = rndstate;
-}
 }
 
 static float crop(float x, float lo, float hi) {
@@ -12587,11 +12585,11 @@ void inflow_ini_params_circle(const Coords *c, float3 o, float R, float H, float
 
 static void ini_rnd(int n, curandState_t *rr) {
     long seed = 1234567;
-    KL(inflow_dev::ini_rnd, (k_cnf(n)), (seed, n, rr));
+    KL(inflow_ini_rnd_kernel, (k_cnf(n)), (seed, n, rr));
 }
 
 static void ini_flux(int n, curandState_t *rr, float *cumflux) {
-    KL(inflow_dev::ini_flux, (k_cnf(n)), (n, rr, cumflux));
+    KL(inflow_ini_flux_kernel, (k_cnf(n)), (n, rr, cumflux));
 }
 
 void inflow_ini(int2 nc, Inflow **i) {
@@ -12622,10 +12620,10 @@ static void ini_velocity(Type t, int2 nc, const ParamsU *p, const VParamsU *vp, 
     int n = nc.x * nc.y;
     switch(t) {
     case TYPE_PLATE:
-        KL(inflow_dev::ini_vel, (k_cnf(n)), (vp->plate, p->plate, nc, /**/ uu));
+        KL(inflow_ini_vel_kernel, (k_cnf(n)), (vp->plate, p->plate, nc, /**/ uu));
         break;
     case TYPE_CIRCLE:
-        KL(inflow_dev::ini_vel, (k_cnf(n)), (vp->circle, p->circle, nc, /**/ uu));
+        KL(inflow_ini_vel_kernel, (k_cnf(n)), (vp->circle, p->circle, nc, /**/ uu));
         break;
     case TYPE_NONE:
         break;
@@ -12663,13 +12661,13 @@ static void create_solvent(float kBT, int numdensity, float dt, Inflow *i, int *
 
     switch(i->t) {
     case TYPE_PLATE:
-        KL(inflow_dev::cumulative_flux, (k_cnf(nctot)), (nxdt, i->p.plate, nc, d->uu, /**/ d->cumflux));
-        KL(inflow_dev::create_particles, (k_cnf(nctot)),
+        KL(inflow_cumulative_flux_kernel, (k_cnf(nctot)), (nxdt, i->p.plate, nc, d->uu, /**/ d->cumflux));
+        KL(inflow_create_particles_kernel, (k_cnf(nctot)),
            (kBT, i->p.plate, nc, d->uu, /*io*/ d->rnds, d->cumflux, /**/ d->ndev, wrap));
         break;
     case TYPE_CIRCLE:
-        KL(inflow_dev::cumulative_flux, (k_cnf(nctot)), (nxdt, i->p.circle, nc, d->uu, /**/ d->cumflux));
-        KL(inflow_dev::create_particles, (k_cnf(nctot)),
+        KL(inflow_cumulative_flux_kernel, (k_cnf(nctot)), (nxdt, i->p.circle, nc, d->uu, /**/ d->cumflux));
+        KL(inflow_create_particles_kernel, (k_cnf(nctot)),
            (kBT, i->p.circle, nc, d->uu, /*io*/ d->rnds, d->cumflux, /**/ d->ndev, wrap));
         break;
     case TYPE_NONE:
