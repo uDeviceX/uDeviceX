@@ -208,6 +208,8 @@ void rig_pininfo_set_conf(const Config *cfg, const char *ns, RigPinInfo *pi) {
 #ifndef UDX_RIG_CORE_TYPE
 #define UDX_RIG_CORE_TYPE
 /* begin src/inc/type.h */
+#ifndef UDX_RBC_RIG_TYPE_COMMON
+#define UDX_RBC_RIG_TYPE_COMMON
 template <typename T, int N>
 struct Sarray { /* [s]tatic array */
     T d[N];
@@ -261,6 +263,7 @@ struct FoWrap {
     Force *ff;
 };
 /* end src/inc/type.h */
+#endif /* UDX_RBC_RIG_TYPE_COMMON */
 #endif
 /* begin src/inc/dev.h */
 /* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
@@ -305,6 +308,8 @@ struct FoWrap {
 #ifndef UDX_RIG_DEVICE_API_COMMON
 #define UDX_RIG_DEVICE_API_COMMON
 /* begin src/d/api.h */
+#ifndef UDX_RBC_RIG_DEVICE_API_COMMON
+#define UDX_RBC_RIG_DEVICE_API_COMMON
 namespace d {  /* a wrapper for device API */
 typedef int Stream_t; /* TODO: streams are not supported */
 enum {MemcpyHostToHost, MemcpyHostToDevice,
@@ -334,6 +339,7 @@ int PeekAtLastError(void);
 // end::api[]
 }
 /* end src/d/api.h */
+#endif /* UDX_RBC_RIG_DEVICE_API_COMMON */
 #endif
 
 /* begin src/utils/msg.h */
@@ -443,6 +449,8 @@ void check(int rc, const char *file, int line);
 /* TODO: header includes header */
 /* end src/utils/cc.h */
 /* begin src/utils/kl.h */
+#ifndef UDX_RBC_RIG_KL_COMMON
+#define UDX_RBC_RIG_KL_COMMON
 /* [k]ernel [l]aunch macros */
 
 #if    defined(KL_RELEASE)
@@ -499,7 +507,10 @@ inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
 
 /* TODO: header includes header */
 /* end src/utils/kl.h */
+#endif /* UDX_RBC_RIG_KL_COMMON */
 /* begin src/algo/utils/shfl.h */
+#ifndef UDX_RBC_RIG_SHFL_COMMON
+#define UDX_RBC_RIG_SHFL_COMMON
 #define _I_ static __device__
 
 #if __CUDACC_VER_MAJOR__ >= 9
@@ -534,7 +545,10 @@ _I_ T shfl(T val, unsigned int width) {
 
 #undef _I_
 /* end src/algo/utils/shfl.h */
+#endif /* UDX_RBC_RIG_SHFL_COMMON */
 /* begin src/algo/utils/dev.h */
+#ifndef UDX_RBC_RIG_ALGO_DEV_COMMON
+#define UDX_RBC_RIG_ALGO_DEV_COMMON
 #define _S_ static __device__
 #define _I_ static __device__
 
@@ -575,6 +589,7 @@ _I_ float3 warpReduceSum(float3 val)  // <3>
 #undef _I_
 
 /* end src/algo/utils/dev.h */
+#endif /* UDX_RBC_RIG_ALGO_DEV_COMMON */
 
 
 

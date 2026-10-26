@@ -50,6 +50,8 @@
 #ifndef UDX_RBC_CORE_DEF_COMMON
 #define UDX_RBC_CORE_DEF_COMMON
 /* begin src/inc/def.h */
+#ifndef UDX_RBC_RIG_DEF_COMMON
+#define UDX_RBC_RIG_DEF_COMMON
 /* solvent colors */
 #define XMACRO_COLOR(_)                         \
     _(BLUE)                                     \
@@ -101,10 +103,13 @@ enum {
 /* for the spring forces r = min(lmax*RBC_SPRING_CAP, r) */
 #define RBC_SPRING_CAP (0.99)
 /* end src/inc/def.h */
+#endif /* UDX_RBC_RIG_DEF_COMMON */
 #endif
 #ifndef UDX_RBC_CORE_TYPE_COMMON
 #define UDX_RBC_CORE_TYPE_COMMON
 /* begin src/inc/type.h */
+#ifndef UDX_RBC_RIG_TYPE_COMMON
+#define UDX_RBC_RIG_TYPE_COMMON
 template <typename T, int N>
 struct Sarray { /* [s]tatic array */
     T d[N];
@@ -158,6 +163,7 @@ struct FoWrap {
     Force *ff;
 };
 /* end src/inc/type.h */
+#endif /* UDX_RBC_RIG_TYPE_COMMON */
 #endif
 /* begin src/inc/dev.h */
 /* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
@@ -209,6 +215,8 @@ void msg_print(const char *fmt, ...); // <2>
 #ifndef UDX_RBC_CORE_DEVICE_API_COMMON
 #define UDX_RBC_CORE_DEVICE_API_COMMON
 /* begin src/d/api.h */
+#ifndef UDX_RBC_RIG_DEVICE_API_COMMON
+#define UDX_RBC_RIG_DEVICE_API_COMMON
 namespace d {  /* a wrapper for device API */
 typedef int Stream_t; /* TODO: streams are not supported */
 enum {MemcpyHostToHost, MemcpyHostToDevice,
@@ -238,6 +246,7 @@ int PeekAtLastError(void);
 // end::api[]
 }
 /* end src/d/api.h */
+#endif /* UDX_RBC_RIG_DEVICE_API_COMMON */
 #endif
 /* begin src/utils/error.h */
 #define ERR(fmt, ...)  do {                                     \
@@ -421,6 +430,8 @@ const int4  *mesh_read_get_dih(MeshRead*);
 // end::interface[]
 /* end src/io/mesh_read/imp.h */
 /* begin src/io/restart/imp.h */
+#ifndef UDX_RBC_RIG_RESTART_COMMON
+#define UDX_RBC_RIG_RESTART_COMMON
 struct Coords;
 struct Particle;
 struct Rigid;
@@ -450,6 +461,7 @@ void restart_read_ss(MPI_Comm, const char *base, const char *code, int id, int *
 void restart_read_stream_one_node(const char *base, const char *code, int id, StreamReader, void *data);
 // end::read[]
 /* end src/io/restart/imp.h */
+#endif /* UDX_RBC_RIG_RESTART_COMMON */
 
 /* begin src/rbc/type.h */
 struct AreaVolume;
@@ -630,14 +642,14 @@ void rbc_gen_freeze(MPI_Comm comm, /**/ RbcQuants *q) {
 #define PP  ".pp"
 #define IDS ".ids"
 
-static void gen_code(const char *name, const char *ext, char *code) {
+static void rbc_gen_code(const char *name, const char *ext, char *code) {
     strcpy(code, name);
     strcat(code, ext);
 }
 
 static void setup_from_strt(MPI_Comm comm, const char *base, const char *name, int nv, int id, /**/ Particle *pp, int *nc, int *n, /*w*/ Particle *pp_hst) {
     char code[FILENAME_MAX];
-    gen_code(name, PP, code);
+    rbc_gen_code(name, PP, code);
     restart_read_pp(comm, base, code, id, n, pp_hst);
     *nc = *n / nv;
 
@@ -647,7 +659,7 @@ static void setup_from_strt(MPI_Comm comm, const char *base, const char *name, i
 static void ids_from_strt(MPI_Comm comm, const char *base, const char *name, int id, /**/ int *ii) {
     int nc;
     char code[FILENAME_MAX];
-    gen_code(name, IDS, code);
+    rbc_gen_code(name, IDS, code);
     restart_read_ii(comm, base, code, id, &nc, ii);
 }
 
@@ -660,14 +672,14 @@ void rbc_strt_quants(MPI_Comm comm, const MeshRead *off, const char *base, const
 
 static void strt_dump(MPI_Comm comm, const char *base, const char *name, int id, int n, const Particle *pp, /*w*/ Particle *pp_hst) {
     char code[FILENAME_MAX];
-    gen_code(name, PP, code);
+    rbc_gen_code(name, PP, code);
     if (n) cD2H(pp_hst, pp, n);
     restart_write_pp(comm, base, code, id, n, pp_hst);
 }
 
 static void strt_dump_ii(MPI_Comm comm, const char *base, const char *name, int id, int nc, const int *ii) {
     char code[FILENAME_MAX];
-    gen_code(name, IDS, code);
+    rbc_gen_code(name, IDS, code);
     restart_write_ii(comm, base, code, id, nc, ii);
 }
 

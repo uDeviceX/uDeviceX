@@ -46,6 +46,8 @@
 #ifndef UDX_RBC_CORE_DEF_COMMON
 #define UDX_RBC_CORE_DEF_COMMON
 /* begin src/inc/def.h */
+#ifndef UDX_RBC_RIG_DEF_COMMON
+#define UDX_RBC_RIG_DEF_COMMON
 /* solvent colors */
 #define XMACRO_COLOR(_)                         \
     _(BLUE)                                     \
@@ -97,10 +99,13 @@ enum {
 /* for the spring forces r = min(lmax*RBC_SPRING_CAP, r) */
 #define RBC_SPRING_CAP (0.99)
 /* end src/inc/def.h */
+#endif /* UDX_RBC_RIG_DEF_COMMON */
 #endif
 #ifndef UDX_RBC_CORE_TYPE_COMMON
 #define UDX_RBC_CORE_TYPE_COMMON
 /* begin src/inc/type.h */
+#ifndef UDX_RBC_RIG_TYPE_COMMON
+#define UDX_RBC_RIG_TYPE_COMMON
 template <typename T, int N>
 struct Sarray { /* [s]tatic array */
     T d[N];
@@ -154,6 +159,7 @@ struct FoWrap {
     Force *ff;
 };
 /* end src/inc/type.h */
+#endif /* UDX_RBC_RIG_TYPE_COMMON */
 #endif
 /* begin src/inc/dev.h */
 /* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
@@ -267,6 +273,8 @@ void msg_print(const char *fmt, ...); // <2>
 #ifndef UDX_RBC_CORE_DEVICE_API_COMMON
 #define UDX_RBC_CORE_DEVICE_API_COMMON
 /* begin src/d/api.h */
+#ifndef UDX_RBC_RIG_DEVICE_API_COMMON
+#define UDX_RBC_RIG_DEVICE_API_COMMON
 namespace d {  /* a wrapper for device API */
 typedef int Stream_t; /* TODO: streams are not supported */
 enum {MemcpyHostToHost, MemcpyHostToDevice,
@@ -296,6 +304,7 @@ int PeekAtLastError(void);
 // end::api[]
 }
 /* end src/d/api.h */
+#endif /* UDX_RBC_RIG_DEVICE_API_COMMON */
 #endif
 /* begin src/d/ker.h */
 #if   defined(DEV_CUDA)
@@ -452,6 +461,8 @@ void check(int rc, const char *file, int line);
 /* TODO: header includes header */
 /* end src/utils/cc.h */
 /* begin src/utils/kl.h */
+#ifndef UDX_RBC_RIG_KL_COMMON
+#define UDX_RBC_RIG_KL_COMMON
 #ifndef UDX_RBC_CORE_KL_COMMON
 #define UDX_RBC_CORE_KL_COMMON
 /* [k]ernel [l]aunch macros */
@@ -510,6 +521,7 @@ inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
 
 /* TODO: header includes header */
 /* end src/utils/kl.h */
+#endif /* UDX_RBC_RIG_KL_COMMON */
 #endif
 
 /* begin src/rbc/stretch/imp.h */

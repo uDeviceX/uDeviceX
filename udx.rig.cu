@@ -435,6 +435,8 @@ const int4  *mesh_read_get_dih(MeshRead*);
 // end::interface[]
 /* end src/io/mesh_read/imp.h */
 /* begin src/io/restart/imp.h */
+#ifndef UDX_RBC_RIG_RESTART_COMMON
+#define UDX_RBC_RIG_RESTART_COMMON
 struct Coords;
 struct Particle;
 struct Rigid;
@@ -464,6 +466,7 @@ void restart_read_ss(MPI_Comm, const char *base, const char *code, int id, int *
 void restart_read_stream_one_node(const char *base, const char *code, int id, StreamReader, void *data);
 // end::read[]
 /* end src/io/restart/imp.h */
+#endif /* UDX_RBC_RIG_RESTART_COMMON */
 
 /* begin src/mesh/gen/matrices/imp.h */
 struct Matrices;

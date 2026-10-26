@@ -123,6 +123,8 @@ void msg_print(const char *fmt, ...); // <2>
 #ifndef UDX_RBC_DEVICE_API_COMMON
 #define UDX_RBC_DEVICE_API_COMMON
 /* begin src/d/api.h */
+#ifndef UDX_RBC_RIG_DEVICE_API_COMMON
+#define UDX_RBC_RIG_DEVICE_API_COMMON
 #ifndef UDX_RBC_CORE_DEVICE_API_COMMON
 #define UDX_RBC_CORE_DEVICE_API_COMMON
 namespace d {  /* a wrapper for device API */
@@ -154,6 +156,7 @@ int PeekAtLastError(void);
 // end::api[]
 }
 /* end src/d/api.h */
+#endif /* UDX_RBC_RIG_DEVICE_API_COMMON */
 #endif
 #endif
 /* begin src/utils/cc.h */
