@@ -9,6 +9,8 @@
 #include <stdio.h>
 #include <vector_types.h>
 
+#ifndef UDX_CONTROL_COORDS_COMMON
+#define UDX_CONTROL_COORDS_COMMON
 /* begin src/coords/type.h */
 // tag::view[]
 struct Coords_v {
@@ -18,6 +20,7 @@ struct Coords_v {
 };
 // end::view[]
 /* end src/coords/type.h */
+#endif /* UDX_CONTROL_COORDS_COMMON */
 /* begin src/conf/imp.h */
 struct Config;
 struct float3;
@@ -84,6 +87,8 @@ void conf_write_exe(const Config *cfg, FILE *stream);     // <1>
 void conf_write_history(const Config *cfg, FILE *stream); // <2>
 // end::dump[]
 /* end src/conf/imp.h */
+#ifndef UDX_CONTROL_UTILS_COMMON
+#define UDX_CONTROL_UTILS_COMMON
 /* begin src/utils/imp.h */
 // tag::mem[]
 void emalloc(size_t, /**/ void**); // <1>
@@ -110,6 +115,9 @@ bool same_str(const char *a, const char *b); // <1>
 const char* get_filename_ext(const char*);
 // end::tools[]
 /* end src/utils/imp.h */
+#endif /* UDX_CONTROL_UTILS_COMMON */
+#ifndef UDX_CONTROL_ERROR_COMMON
+#define UDX_CONTROL_ERROR_COMMON
 /* begin src/utils/error.h */
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
@@ -151,6 +159,7 @@ void error_abort();
 
 void error_print_stack();
 /* end src/utils/error.h */
+#endif /* UDX_CONTROL_ERROR_COMMON */
 
 /* begin src/control/inflow/imp.h */
 struct Inflow;
@@ -268,6 +277,8 @@ void inflow_ini_params_conf(const Coords *coords, const Config *cfg, /**/ Inflow
 /* end src/inc/conf.h */
 
 
+#ifndef UDX_CONTROL_ERROR_COMMON
+#define UDX_CONTROL_ERROR_COMMON
 /* begin src/utils/error.h */
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
@@ -309,6 +320,7 @@ void error_abort();
 
 void error_print_stack();
 /* end src/utils/error.h */
+#endif /* UDX_CONTROL_ERROR_COMMON */
 
 /* begin src/utils/cc.h */
 /* [c]uda [c]heck macros */
@@ -343,6 +355,8 @@ void check(int rc, const char *file, int line);
 
 /* TODO: header includes header */
 /* end src/utils/cc.h */
+#ifndef UDX_CONTROL_KL_COMMON
+#define UDX_CONTROL_KL_COMMON
 /* begin src/utils/kl.h */
 /* [k]ernel [l]aunch macros */
 
@@ -400,6 +414,9 @@ inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
 
 /* TODO: header includes header */
 /* end src/utils/kl.h */
+#endif /* UDX_CONTROL_KL_COMMON */
+#ifndef UDX_CONTROL_D_API_COMMON
+#define UDX_CONTROL_D_API_COMMON
 /* begin src/d/api.h */
 namespace d {  /* a wrapper for device API */
 typedef int Stream_t; /* TODO: streams are not supported */
@@ -430,6 +447,7 @@ int PeekAtLastError(void);
 // end::api[]
 }
 /* end src/d/api.h */
+#endif /* UDX_CONTROL_D_API_COMMON */
 
 /* begin src/inc/dev.h */
 /* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
@@ -470,6 +488,8 @@ int PeekAtLastError(void);
 #define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
 #define DzeroA(P, n)   DsetA(P, 0, n)
 /* end src/inc/dev.h */
+#ifndef UDX_CONTROL_TYPE_COMMON
+#define UDX_CONTROL_TYPE_COMMON
 /* begin src/inc/type.h */
 template <typename T, int N>
 struct Sarray { /* [s]tatic array */
@@ -524,6 +544,7 @@ struct FoWrap {
     Force *ff;
 };
 /* end src/inc/type.h */
+#endif /* UDX_CONTROL_TYPE_COMMON */
 
 
 /* begin src/coords/imp.h */
@@ -600,6 +621,8 @@ void coord_stamp(const Coords *c, /**/ char *s);
 int coords_size(const Coords *c);
 // end::int[]
 /* end src/coords/imp.h */
+#ifndef UDX_CONTROL_MATH_COMMON
+#define UDX_CONTROL_MATH_COMMON
 /* begin src/math/dev.h */
 /* use templates here because we might have mixed float/double */
 
@@ -660,6 +683,7 @@ _HD_ void axpy(const T1 a, const T2 *x, /*io*/ T3 *y) {
     y->z += a * x->z;
 }
 /* end src/math/dev.h */
+#endif /* UDX_CONTROL_MATH_COMMON */
 
 
 

@@ -19,8 +19,7 @@ OBJECTS = \
  udx.algo-all.o \
  udx.algo-edge-accumulators-scan.o \
  udx.control-den-outflow.o \
- udx.control-inflow.o \
- udx.control-vel.o \
+ udx.control-all.o \
  udx.distr-exch.o \
  udx.distr-flu.o \
  udx.distr-rbc.o \

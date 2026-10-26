@@ -9,6 +9,8 @@
 #include <mpi.h>
 #include <vector_types.h>
 
+#ifndef UDX_CONTROL_UTILS_COMMON
+#define UDX_CONTROL_UTILS_COMMON
 /* begin src/utils/imp.h */
 // tag::mem[]
 void emalloc(size_t, /**/ void**); // <1>
@@ -35,6 +37,9 @@ bool same_str(const char *a, const char *b); // <1>
 const char* get_filename_ext(const char*);
 // end::tools[]
 /* end src/utils/imp.h */
+#endif /* UDX_CONTROL_UTILS_COMMON */
+#ifndef UDX_CONTROL_ERROR_COMMON
+#define UDX_CONTROL_ERROR_COMMON
 /* begin src/utils/error.h */
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
@@ -76,6 +81,7 @@ void error_abort();
 
 void error_print_stack();
 /* end src/utils/error.h */
+#endif /* UDX_CONTROL_ERROR_COMMON */
 /* begin src/conf/imp.h */
 struct Config;
 struct float3;
@@ -256,6 +262,8 @@ void msg_print(const char *fmt, ...); // <2>
 // end::int[]
 /* end src/utils/msg.h */
 
+#ifndef UDX_CONTROL_ERROR_COMMON
+#define UDX_CONTROL_ERROR_COMMON
 /* begin src/utils/error.h */
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
@@ -297,8 +305,11 @@ void error_abort();
 
 void error_print_stack();
 /* end src/utils/error.h */
+#endif /* UDX_CONTROL_ERROR_COMMON */
 
 
+#ifndef UDX_CONTROL_TYPE_COMMON
+#define UDX_CONTROL_TYPE_COMMON
 /* begin src/inc/type.h */
 template <typename T, int N>
 struct Sarray { /* [s]tatic array */
@@ -353,6 +364,7 @@ struct FoWrap {
     Force *ff;
 };
 /* end src/inc/type.h */
+#endif /* UDX_CONTROL_TYPE_COMMON */
 /* begin src/inc/dev.h */
 /* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
@@ -392,6 +404,8 @@ struct FoWrap {
 #define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
 #define DzeroA(P, n)   DsetA(P, 0, n)
 /* end src/inc/dev.h */
+#ifndef UDX_CONTROL_D_API_COMMON
+#define UDX_CONTROL_D_API_COMMON
 /* begin src/d/api.h */
 namespace d {  /* a wrapper for device API */
 typedef int Stream_t; /* TODO: streams are not supported */
@@ -422,6 +436,7 @@ int PeekAtLastError(void);
 // end::api[]
 }
 /* end src/d/api.h */
+#endif /* UDX_CONTROL_D_API_COMMON */
 /* begin src/mpi/wrapper.h */
 namespace m {
 int Allreduce(const void *sendbuf, void *recvbuf, int count, MPI_Datatype datatype, MPI_Op op, MPI_Comm comm);
@@ -506,6 +521,8 @@ void check(int rc, const char *file, int line);
 
 /* TODO: header includes header */
 /* end src/utils/cc.h */
+#ifndef UDX_CONTROL_KL_COMMON
+#define UDX_CONTROL_KL_COMMON
 /* begin src/utils/kl.h */
 /* [k]ernel [l]aunch macros */
 
@@ -563,6 +580,7 @@ inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
 
 /* TODO: header includes header */
 /* end src/utils/kl.h */
+#endif /* UDX_CONTROL_KL_COMMON */
 /* begin src/utils/mc.h */
 /* [m]pi [c]heck macros */
 #define MC(ans)                                                         \
@@ -573,6 +591,8 @@ void check(int code, const char *file, int line);
 }
 /* end src/utils/mc.h */
 
+#ifndef UDX_CONTROL_MATH_COMMON
+#define UDX_CONTROL_MATH_COMMON
 /* begin src/math/dev.h */
 /* use templates here because we might have mixed float/double */
 
@@ -633,6 +653,9 @@ _HD_ void axpy(const T1 a, const T2 *x, /*io*/ T3 *y) {
     y->z += a * x->z;
 }
 /* end src/math/dev.h */
+#endif /* UDX_CONTROL_MATH_COMMON */
+#ifndef UDX_CONTROL_COORDS_COMMON
+#define UDX_CONTROL_COORDS_COMMON
 /* begin src/coords/type.h */
 // tag::view[]
 struct Coords_v {
@@ -642,6 +665,7 @@ struct Coords_v {
 };
 // end::view[]
 /* end src/coords/type.h */
+#endif /* UDX_CONTROL_COORDS_COMMON */
 /* begin src/coords/dev.h */
 /* domain sizes */
 
@@ -925,9 +949,9 @@ void restart_read_stream_one_node(const char *base, const char *code, int id, St
 
 /* begin src/control/vel/imp/type.h */
 enum {
-    TYPE_NONE,
-    TYPE_CART,
-    TYPE_RAD
+    VCONT_TYPE_NONE,
+    VCONT_TYPE_CART,
+    VCONT_TYPE_RAD
 };
 
 // empty for now
@@ -1129,7 +1153,7 @@ static void ini(MPI_Comm comm, int3 L, /**/ PidVCont *c) {
 
     UC(ini_dump(rank, /**/ &c->fdump));
 
-    c->type = TYPE_NONE;
+    c->type = VCONT_TYPE_NONE;
 }
 
 void vcont_ini(MPI_Comm comm, int3 L, /**/ PidVCont **c) {
@@ -1169,11 +1193,11 @@ void vcont_set_target(float3 vtarget, /**/ PidVCont *c) {
 }
 
 void vcont_set_cart(/**/ PidVCont *cont) {
-    cont->type = TYPE_CART;
+    cont->type = VCONT_TYPE_CART;
 }
 
 void vcont_set_radial(/**/ PidVCont *cont) {
-    cont->type = TYPE_RAD;
+    cont->type = VCONT_TYPE_RAD;
 }
 
 template <typename Trans>
@@ -1194,12 +1218,12 @@ static void sample(Trans t, const Coords *coords, const Particle *pp, const int 
 
 void vcont_sample(const Coords *coords, int, const Particle *pp, const int *starts, const int *counts, /**/ PidVCont *c) {
     switch (c->type) {
-    case TYPE_NONE:
+    case VCONT_TYPE_NONE:
         break;
-    case TYPE_CART:
+    case VCONT_TYPE_CART:
         sample(c->trans.cart, coords, pp, starts, counts, /**/ &c->sampler);
         break;
-    case TYPE_RAD:
+    case VCONT_TYPE_RAD:
         sample(c->trans.cart, coords, pp, starts, counts, /**/ &c->sampler);
         break;
     default:
