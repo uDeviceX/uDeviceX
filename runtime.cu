@@ -15242,8 +15242,7 @@ struct Outflow {
     int type;       /* shape type       */
 };
 
-namespace outflow_dev {
-static __device__ int predicate(OutflowParamsPlate p, const float r[3]) {
+static __device__ int outflow_predicate(OutflowParamsPlate p, const float r[3]) {
     enum {X, Y, Z};
     float s;
 
@@ -15252,7 +15251,7 @@ static __device__ int predicate(OutflowParamsPlate p, const float r[3]) {
     return s > 0;
 }
 
-static __device__ int predicate(OutflowParamsCircle p, const float r[3]) {
+static __device__ int outflow_predicate(OutflowParamsCircle p, const float r[3]) {
     enum {X, Y, Z};
     float x, y, rsq;
     x = r[X] - p.c.x;
@@ -15263,19 +15262,17 @@ static __device__ int predicate(OutflowParamsCircle p, const float r[3]) {
 }
 
 template <typename Par>
-__global__ void filter(int n, const Particle *pp, Par params, /**/ int *ndead, int *kk) {
+__global__ void outflow_filter_kernel(int n, const Particle *pp, Par params, /**/ int *ndead, int *kk) {
     int i = threadIdx.x + blockIdx.x * blockDim.x;
     int dead;
     Particle p;
     if (i >= n) return;
 
     p = pp[i];
-    dead = predicate(params, p.r);
+    dead = outflow_predicate(params, p.r);
     kk[i] = dead;
     if (dead)
         atomicAdd(ndead, 1);
-}
-
 }
 
 static void reset_ndead(Outflow *o) {
@@ -15348,10 +15345,10 @@ void outflow_filter_particles(int n, const Particle *pp, /**/ Outflow *o) {
 
     switch(o->type) {
     case OFLOW_TYPE_CIRCLE:
-        KL(outflow_dev::filter, (k_cnf(n)), (n, pp, o->params.circle, /**/ o->ndead_dev, o->kk) );
+        KL(outflow_filter_kernel, (k_cnf(n)), (n, pp, o->params.circle, /**/ o->ndead_dev, o->kk) );
         break;
     case OFLOW_TYPE_PLATE:
-        KL(outflow_dev::filter, (k_cnf(n)), (n, pp, o->params.plate, /**/ o->ndead_dev, o->kk) );
+        KL(outflow_filter_kernel, (k_cnf(n)), (n, pp, o->params.plate, /**/ o->ndead_dev, o->kk) );
         break;
     case OFLOW_TYPE_NONE:
     default:
