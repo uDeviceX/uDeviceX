@@ -231,6 +231,8 @@ void inter_color_set_conf(const Config *cfg, GenColor *gc) {
 
 
 /* begin src/inc/def.h */
+#ifndef UDX_GRID_INTER_DEF_COMMON
+#define UDX_GRID_INTER_DEF_COMMON
 /* solvent colors */
 #define XMACRO_COLOR(_)                         \
     _(BLUE)                                     \
@@ -282,6 +284,7 @@ enum {
 /* for the spring forces r = min(lmax*RBC_SPRING_CAP, r) */
 #define RBC_SPRING_CAP (0.99)
 /* end src/inc/def.h */
+#endif
 /* begin src/inc/dev.h */
 /* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
@@ -322,6 +325,8 @@ enum {
 #define DzeroA(P, n)   DsetA(P, 0, n)
 /* end src/inc/dev.h */
 /* begin src/inc/type.h */
+#ifndef UDX_GRID_INTER_TYPE_COMMON
+#define UDX_GRID_INTER_TYPE_COMMON
 template <typename T, int N>
 struct Sarray { /* [s]tatic array */
     T d[N];
@@ -375,8 +380,11 @@ struct FoWrap {
     Force *ff;
 };
 /* end src/inc/type.h */
+#endif
 
 /* begin src/d/api.h */
+#ifndef UDX_GRID_INTER_DEVICE_API_COMMON
+#define UDX_GRID_INTER_DEVICE_API_COMMON
 namespace d {  /* a wrapper for device API */
 typedef int Stream_t; /* TODO: streams are not supported */
 enum {MemcpyHostToHost, MemcpyHostToDevice,
@@ -406,6 +414,7 @@ int PeekAtLastError(void);
 // end::api[]
 }
 /* end src/d/api.h */
+#endif
 
 /* begin src/utils/error.h */
 #define ERR(fmt, ...)  do {                                     \

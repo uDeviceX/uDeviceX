@@ -35,8 +35,7 @@ OBJECTS = \
  udx.fluforces-bulk-main.o \
  udx.frag-he.o \
  udx.pair-fsi.o \
- udx.grid_sampler.o \
- udx.inter-color.o \
+ udx.grid-inter.o \
  udx.io-bop.o \
  udx.io-text-diagnostics.o \
  udx.io-point-grid.o \
