@@ -12,8 +12,7 @@ MPI_LIBS = -lopen-rte -lopen-pal
 OBJECTS = \
  udx.clist.o \
  udx.cnt.o \
- udx.d-mpi-color-coords.o \
- udx.comm-main.o \
+ udx.runtime-all.o \
  udx.conf-libconfig.o \
  udx.dbg.o \
  udx.algo-all.o \

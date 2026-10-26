@@ -233,6 +233,8 @@ void error_abort();
 
 void error_print_stack();
 /* end src/utils/error.h */
+#ifndef UDX_D_MPI_COLOR_D_API
+#define UDX_D_MPI_COLOR_D_API
 /* begin src/d/api.h */
 namespace d {  /* a wrapper for device API */
 typedef int Stream_t; /* TODO: streams are not supported */
@@ -263,6 +265,7 @@ int PeekAtLastError(void);
 // end::api[]
 }
 /* end src/d/api.h */
+#endif /* UDX_D_MPI_COLOR_D_API */
 /* begin src/mpi/wrapper.h */
 namespace m {
 int Allreduce(const void *sendbuf, void *recvbuf, int count, MPI_Datatype datatype, MPI_Op op, MPI_Comm comm);
