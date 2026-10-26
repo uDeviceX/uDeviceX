@@ -44,10 +44,9 @@ OBJECTS = \
  udx.io-bop.o \
  udx.io-text.o \
  udx.io-diagnostics.o \
- udx.io-grid-output.o \
+ udx.io-point-grid.o \
  udx.io-mesh.o \
  udx.io-mesh-reader.o \
- udx.io-point-write.o \
  udx.io-rig-restart.o \
  udx.io-vtk-output.o \
  udx.main.o \
