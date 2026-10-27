@@ -21,11 +21,12 @@ OBJECTS = \
 
 TARGET = build/udx
 DEVICE = build/device.o
+DEPS = $(OBJECTS:.o=.d)
 
 .SUFFIXES: .cu .o
 
 .cu.o:
-	$(NVCC) $(ARCH) -ccbin $(CCBIN) $(NVCCFLAGS) $(CPPFLAGS) -dc -c $< -o $@
+	$(NVCC) $(ARCH) -ccbin $(CCBIN) $(NVCCFLAGS) $(CPPFLAGS) -MMD -MP -MF $(@:.o=.d) -dc -c $< -o $@
 
 all: $(TARGET)
 
@@ -38,6 +39,8 @@ $(DEVICE): $(OBJECTS)
 	$(NVCC) $(ARCH) -ccbin $(CCBIN) -dlink $(OBJECTS) -o $@
 
 clean:
-	rm -f $(OBJECTS) $(DEVICE) $(TARGET)
+	rm -f $(OBJECTS) $(DEPS) $(DEVICE) $(TARGET)
 
 .PHONY: all clean
+
+-include $(DEPS)
