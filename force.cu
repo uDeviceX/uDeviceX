@@ -51,58 +51,7 @@
 
 #ifndef UDX_FORCE_TYPE_COMMON
 #define UDX_FORCE_TYPE_COMMON
-template <typename T, int N>
-struct Sarray { /* [s]tatic array */
-    T d[N];
-};
-
-struct Particle {
-    float r[3], v[3];
-};
-
-struct Rigid {
-    float Iinv[6],            /* moment of inertia            6        */
-        mass,                 /* mass of the solid            7        */
-        com[3],               /* [c]enter [o]f [m]ass         10       */
-        v[3], om[3],          /* linear and angular velocity  13 16    */
-        e0[3], e1[3], e2[3],  /* local referential            19 22 25 */
-        fo[3], to[3],         /* force, torque                28 31    */
-        id;                   /* id of the solid              32       */
-};
-
-struct Force {
-    float f[3];
-};
-
-struct Momentum {
-    float P[3], L[3]; /* linear and angular momentum */
-};
-
-struct Positioncp {
-    float rc[3]; /* current position  */
-    float rp[3]; /* previous position */
-};
-
-typedef Sarray<int, 26>       int26;
-typedef Sarray<int, 27>       int27;
-
-typedef Sarray<int*, 26>     intp26;
-typedef Sarray<Particle*, 26> Pap26;
-typedef Sarray<Force*,    26> Fop26;
-typedef Sarray<Momentum*, 26> Mop26;
-typedef Sarray<Positioncp*, 26> Pocpp26;
-
-/* particles wrap */
-struct PaWrap {
-    int n;
-    const Particle *pp;
-};
-
-/* forces wrap */
-struct FoWrap {
-    int n;
-    Force *ff;
-};
+#include "types.cuh"
 #endif
 #ifndef UDX_FORCE_DEF_COMMON
 #define UDX_FORCE_DEF_COMMON
@@ -1329,58 +1278,7 @@ float rnd_get(RNDunif *r);                                  // <4>
 
 #ifndef UDX_FORCE_TYPE_COMMON
 #define UDX_FORCE_TYPE_COMMON
-template <typename T, int N>
-struct Sarray { /* [s]tatic array */
-    T d[N];
-};
-
-struct Particle {
-    float r[3], v[3];
-};
-
-struct Rigid {
-    float Iinv[6],            /* moment of inertia            6        */
-        mass,                 /* mass of the solid            7        */
-        com[3],               /* [c]enter [o]f [m]ass         10       */
-        v[3], om[3],          /* linear and angular velocity  13 16    */
-        e0[3], e1[3], e2[3],  /* local referential            19 22 25 */
-        fo[3], to[3],         /* force, torque                28 31    */
-        id;                   /* id of the solid              32       */
-};
-
-struct Force {
-    float f[3];
-};
-
-struct Momentum {
-    float P[3], L[3]; /* linear and angular momentum */
-};
-
-struct Positioncp {
-    float rc[3]; /* current position  */
-    float rp[3]; /* previous position */
-};
-
-typedef Sarray<int, 26>       int26;
-typedef Sarray<int, 27>       int27;
-
-typedef Sarray<int*, 26>     intp26;
-typedef Sarray<Particle*, 26> Pap26;
-typedef Sarray<Force*,    26> Fop26;
-typedef Sarray<Momentum*, 26> Mop26;
-typedef Sarray<Positioncp*, 26> Pocpp26;
-
-/* particles wrap */
-struct PaWrap {
-    int n;
-    const Particle *pp;
-};
-
-/* forces wrap */
-struct FoWrap {
-    int n;
-    Force *ff;
-};
+#include "types.cuh"
 #endif
 /* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
@@ -1907,58 +1805,7 @@ void fluforces_halo_apply(const PairParams *par, const FluForcesHalo *h, /**/ co
 
 #ifndef UDX_FORCE_TYPE_COMMON
 #define UDX_FORCE_TYPE_COMMON
-template <typename T, int N>
-struct Sarray { /* [s]tatic array */
-    T d[N];
-};
-
-struct Particle {
-    float r[3], v[3];
-};
-
-struct Rigid {
-    float Iinv[6],            /* moment of inertia            6        */
-        mass,                 /* mass of the solid            7        */
-        com[3],               /* [c]enter [o]f [m]ass         10       */
-        v[3], om[3],          /* linear and angular velocity  13 16    */
-        e0[3], e1[3], e2[3],  /* local referential            19 22 25 */
-        fo[3], to[3],         /* force, torque                28 31    */
-        id;                   /* id of the solid              32       */
-};
-
-struct Force {
-    float f[3];
-};
-
-struct Momentum {
-    float P[3], L[3]; /* linear and angular momentum */
-};
-
-struct Positioncp {
-    float rc[3]; /* current position  */
-    float rp[3]; /* previous position */
-};
-
-typedef Sarray<int, 26>       int26;
-typedef Sarray<int, 27>       int27;
-
-typedef Sarray<int*, 26>     intp26;
-typedef Sarray<Particle*, 26> Pap26;
-typedef Sarray<Force*,    26> Fop26;
-typedef Sarray<Momentum*, 26> Mop26;
-typedef Sarray<Positioncp*, 26> Pocpp26;
-
-/* particles wrap */
-struct PaWrap {
-    int n;
-    const Particle *pp;
-};
-
-/* forces wrap */
-struct FoWrap {
-    int n;
-    Force *ff;
-};
+#include "types.cuh"
 #endif
 #ifndef UDX_FORCE_DEVICE_COMMON
 #define UDX_FORCE_DEVICE_COMMON
@@ -3516,58 +3363,7 @@ enum {
 #endif
 #ifndef UDX_FORCE_TYPE_COMMON
 #define UDX_FORCE_TYPE_COMMON
-template <typename T, int N>
-struct Sarray { /* [s]tatic array */
-    T d[N];
-};
-
-struct Particle {
-    float r[3], v[3];
-};
-
-struct Rigid {
-    float Iinv[6],            /* moment of inertia            6        */
-        mass,                 /* mass of the solid            7        */
-        com[3],               /* [c]enter [o]f [m]ass         10       */
-        v[3], om[3],          /* linear and angular velocity  13 16    */
-        e0[3], e1[3], e2[3],  /* local referential            19 22 25 */
-        fo[3], to[3],         /* force, torque                28 31    */
-        id;                   /* id of the solid              32       */
-};
-
-struct Force {
-    float f[3];
-};
-
-struct Momentum {
-    float P[3], L[3]; /* linear and angular momentum */
-};
-
-struct Positioncp {
-    float rc[3]; /* current position  */
-    float rp[3]; /* previous position */
-};
-
-typedef Sarray<int, 26>       int26;
-typedef Sarray<int, 27>       int27;
-
-typedef Sarray<int*, 26>     intp26;
-typedef Sarray<Particle*, 26> Pap26;
-typedef Sarray<Force*,    26> Fop26;
-typedef Sarray<Momentum*, 26> Mop26;
-typedef Sarray<Positioncp*, 26> Pocpp26;
-
-/* particles wrap */
-struct PaWrap {
-    int n;
-    const Particle *pp;
-};
-
-/* forces wrap */
-struct FoWrap {
-    int n;
-    Force *ff;
-};
+#include "types.cuh"
 #endif
 /* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
@@ -8362,58 +8158,7 @@ inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
 #endif /* UDX_FORCE_KL_COMMON */
 #ifndef UDX_FORCE_TYPE_COMMON
 #define UDX_FORCE_TYPE_COMMON
-template <typename T, int N>
-struct Sarray { /* [s]tatic array */
-    T d[N];
-};
-
-struct Particle {
-    float r[3], v[3];
-};
-
-struct Rigid {
-    float Iinv[6],            /* moment of inertia            6        */
-        mass,                 /* mass of the solid            7        */
-        com[3],               /* [c]enter [o]f [m]ass         10       */
-        v[3], om[3],          /* linear and angular velocity  13 16    */
-        e0[3], e1[3], e2[3],  /* local referential            19 22 25 */
-        fo[3], to[3],         /* force, torque                28 31    */
-        id;                   /* id of the solid              32       */
-};
-
-struct Force {
-    float f[3];
-};
-
-struct Momentum {
-    float P[3], L[3]; /* linear and angular momentum */
-};
-
-struct Positioncp {
-    float rc[3]; /* current position  */
-    float rp[3]; /* previous position */
-};
-
-typedef Sarray<int, 26>       int26;
-typedef Sarray<int, 27>       int27;
-
-typedef Sarray<int*, 26>     intp26;
-typedef Sarray<Particle*, 26> Pap26;
-typedef Sarray<Force*,    26> Fop26;
-typedef Sarray<Momentum*, 26> Mop26;
-typedef Sarray<Positioncp*, 26> Pocpp26;
-
-/* particles wrap */
-struct PaWrap {
-    int n;
-    const Particle *pp;
-};
-
-/* forces wrap */
-struct FoWrap {
-    int n;
-    Force *ff;
-};
+#include "types.cuh"
 #endif /* UDX_FORCE_TYPE_COMMON */
 /* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
