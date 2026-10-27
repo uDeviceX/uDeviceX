@@ -53,56 +53,7 @@
 
 #ifndef UDX_WALL_DEF_COMMON
 #define UDX_WALL_DEF_COMMON
-/* solvent colors */
-#define XMACRO_COLOR(_)                         \
-    _(BLUE)                                     \
-    _(RED)
-
-#define ENUM_COLOR(a) a##_COLOR
-#define make_enum_color(a) ENUM_COLOR(a) ,
-enum {
-    XMACRO_COLOR(make_enum_color)
-    N_COLOR
-};
-#undef make_enum_color
-
-enum {
-    /* wall margins */
-    XWM = 6,
-    YWM = 6,
-    ZWM = 6,
-
-    SAFETY_FACTOR_MAXP = 3,
-
-    /* maximum number of particles per solid */
-    MAX_PSOLID_NUM = 12000,
-
-    /* maximum number of solids per node */
-    MAX_SOLIDS = 100,
-
-    /* maximum number of object types (solid, rbc, ...) */
-    MAX_MBR_TYPES = 2,
-    MAX_RIG_TYPES = 2,
-    MAX_OBJ_TYPES = MAX_MBR_TYPES + MAX_RIG_TYPES,
-
-    /* maximum number density of particles of the objects */
-    MAX_OBJ_DENSITY = 30,
-
-    /* maximum number of red blood cells per node */
-    MAX_CELL_NUM = 1500,
-
-    /* maximum texture size in bytes */
-    MAX_TEXO_SIZE = 100000000,
-
-    /* safety factor for dpd halo interactions */
-    HSAFETY_FACTOR = 10,
-
-    /* safety factor for odist fragments */
-    ODSTR_FACTOR = 3,
-};
-
-/* for the spring forces r = min(lmax*RBC_SPRING_CAP, r) */
-#define RBC_SPRING_CAP (0.99)
+#include "constants.cuh"
 #endif
 
 enum {frag_bulk = 26};
@@ -385,56 +336,7 @@ void wall_exch_pp(MPI_Comm cart, int numdensity, int3 L, int maxn, /*io*/ Partic
 
 #ifndef UDX_WALL_DEF_COMMON
 #define UDX_WALL_DEF_COMMON
-/* solvent colors */
-#define XMACRO_COLOR(_)                         \
-    _(BLUE)                                     \
-    _(RED)
-
-#define ENUM_COLOR(a) a##_COLOR
-#define make_enum_color(a) ENUM_COLOR(a) ,
-enum {
-    XMACRO_COLOR(make_enum_color)
-    N_COLOR
-};
-#undef make_enum_color
-
-enum {
-    /* wall margins */
-    XWM = 6,
-    YWM = 6,
-    ZWM = 6,
-
-    SAFETY_FACTOR_MAXP = 3,
-
-    /* maximum number of particles per solid */
-    MAX_PSOLID_NUM = 12000,
-
-    /* maximum number of solids per node */
-    MAX_SOLIDS = 100,
-
-    /* maximum number of object types (solid, rbc, ...) */
-    MAX_MBR_TYPES = 2,
-    MAX_RIG_TYPES = 2,
-    MAX_OBJ_TYPES = MAX_MBR_TYPES + MAX_RIG_TYPES,
-
-    /* maximum number density of particles of the objects */
-    MAX_OBJ_DENSITY = 30,
-
-    /* maximum number of red blood cells per node */
-    MAX_CELL_NUM = 1500,
-
-    /* maximum texture size in bytes */
-    MAX_TEXO_SIZE = 100000000,
-
-    /* safety factor for dpd halo interactions */
-    HSAFETY_FACTOR = 10,
-
-    /* safety factor for odist fragments */
-    ODSTR_FACTOR = 3,
-};
-
-/* for the spring forces r = min(lmax*RBC_SPRING_CAP, r) */
-#define RBC_SPRING_CAP (0.99)
+#include "constants.cuh"
 #endif
 void msg_ini(int rank); // <1>
 void msg_print(const char *fmt, ...); // <2>
@@ -2105,56 +2007,7 @@ void wall_force_repulse(Sdf_v sdf_v, WallRepulsePrm wr, long n, const PaArray *p
 
 #ifndef UDX_WALL_DEF_COMMON
 #define UDX_WALL_DEF_COMMON
-/* solvent colors */
-#define XMACRO_COLOR(_)                         \
-    _(BLUE)                                     \
-    _(RED)
-
-#define ENUM_COLOR(a) a##_COLOR
-#define make_enum_color(a) ENUM_COLOR(a) ,
-enum {
-    XMACRO_COLOR(make_enum_color)
-    N_COLOR
-};
-#undef make_enum_color
-
-enum {
-    /* wall margins */
-    XWM = 6,
-    YWM = 6,
-    ZWM = 6,
-
-    SAFETY_FACTOR_MAXP = 3,
-
-    /* maximum number of particles per solid */
-    MAX_PSOLID_NUM = 12000,
-
-    /* maximum number of solids per node */
-    MAX_SOLIDS = 100,
-
-    /* maximum number of object types (solid, rbc, ...) */
-    MAX_MBR_TYPES = 2,
-    MAX_RIG_TYPES = 2,
-    MAX_OBJ_TYPES = MAX_MBR_TYPES + MAX_RIG_TYPES,
-
-    /* maximum number density of particles of the objects */
-    MAX_OBJ_DENSITY = 30,
-
-    /* maximum number of red blood cells per node */
-    MAX_CELL_NUM = 1500,
-
-    /* maximum texture size in bytes */
-    MAX_TEXO_SIZE = 100000000,
-
-    /* safety factor for dpd halo interactions */
-    HSAFETY_FACTOR = 10,
-
-    /* safety factor for odist fragments */
-    ODSTR_FACTOR = 3,
-};
-
-/* for the spring forces r = min(lmax*RBC_SPRING_CAP, r) */
-#define RBC_SPRING_CAP (0.99)
+#include "constants.cuh"
 #endif
 void msg_ini(int rank); // <1>
 void msg_print(const char *fmt, ...); // <2>
@@ -3204,56 +3057,7 @@ void error_abort();
 void error_print_stack();
 #ifndef UDX_WALL_DEF_COMMON
 #define UDX_WALL_DEF_COMMON
-/* solvent colors */
-#define XMACRO_COLOR(_)                         \
-    _(BLUE)                                     \
-    _(RED)
-
-#define ENUM_COLOR(a) a##_COLOR
-#define make_enum_color(a) ENUM_COLOR(a) ,
-enum {
-    XMACRO_COLOR(make_enum_color)
-    N_COLOR
-};
-#undef make_enum_color
-
-enum {
-    /* wall margins */
-    XWM = 6,
-    YWM = 6,
-    ZWM = 6,
-
-    SAFETY_FACTOR_MAXP = 3,
-
-    /* maximum number of particles per solid */
-    MAX_PSOLID_NUM = 12000,
-
-    /* maximum number of solids per node */
-    MAX_SOLIDS = 100,
-
-    /* maximum number of object types (solid, rbc, ...) */
-    MAX_MBR_TYPES = 2,
-    MAX_RIG_TYPES = 2,
-    MAX_OBJ_TYPES = MAX_MBR_TYPES + MAX_RIG_TYPES,
-
-    /* maximum number density of particles of the objects */
-    MAX_OBJ_DENSITY = 30,
-
-    /* maximum number of red blood cells per node */
-    MAX_CELL_NUM = 1500,
-
-    /* maximum texture size in bytes */
-    MAX_TEXO_SIZE = 100000000,
-
-    /* safety factor for dpd halo interactions */
-    HSAFETY_FACTOR = 10,
-
-    /* safety factor for odist fragments */
-    ODSTR_FACTOR = 3,
-};
-
-/* for the spring forces r = min(lmax*RBC_SPRING_CAP, r) */
-#define RBC_SPRING_CAP (0.99)
+#include "constants.cuh"
 #endif
 void msg_ini(int rank); // <1>
 void msg_print(const char *fmt, ...); // <2>
@@ -4131,56 +3935,7 @@ double sdf_compute_volume(MPI_Comm comm, int3 L, const Sdf *sdf, long nsamples) 
 
 #ifndef UDX_WALL_DEF_COMMON
 #define UDX_WALL_DEF_COMMON
-/* solvent colors */
-#define XMACRO_COLOR(_)                         \
-    _(BLUE)                                     \
-    _(RED)
-
-#define ENUM_COLOR(a) a##_COLOR
-#define make_enum_color(a) ENUM_COLOR(a) ,
-enum {
-    XMACRO_COLOR(make_enum_color)
-    N_COLOR
-};
-#undef make_enum_color
-
-enum {
-    /* wall margins */
-    XWM = 6,
-    YWM = 6,
-    ZWM = 6,
-
-    SAFETY_FACTOR_MAXP = 3,
-
-    /* maximum number of particles per solid */
-    MAX_PSOLID_NUM = 12000,
-
-    /* maximum number of solids per node */
-    MAX_SOLIDS = 100,
-
-    /* maximum number of object types (solid, rbc, ...) */
-    MAX_MBR_TYPES = 2,
-    MAX_RIG_TYPES = 2,
-    MAX_OBJ_TYPES = MAX_MBR_TYPES + MAX_RIG_TYPES,
-
-    /* maximum number density of particles of the objects */
-    MAX_OBJ_DENSITY = 30,
-
-    /* maximum number of red blood cells per node */
-    MAX_CELL_NUM = 1500,
-
-    /* maximum texture size in bytes */
-    MAX_TEXO_SIZE = 100000000,
-
-    /* safety factor for dpd halo interactions */
-    HSAFETY_FACTOR = 10,
-
-    /* safety factor for odist fragments */
-    ODSTR_FACTOR = 3,
-};
-
-/* for the spring forces r = min(lmax*RBC_SPRING_CAP, r) */
-#define RBC_SPRING_CAP (0.99)
+#include "constants.cuh"
 #endif
 void msg_ini(int rank); // <1>
 void msg_print(const char *fmt, ...); // <2>
