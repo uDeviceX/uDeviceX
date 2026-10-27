@@ -1,11 +1,11 @@
 
-// Grouped editable compilation unit for fluid/RBC forces and pair/FSI interactions.
 
 
-// Grouped editable compilation unit for fluid and RBC force implementations.
 
 
-// Grouped editable compilation unit for bulk fluid forces and orchestration.
+
+
+
 
 
 #include "config.cuh"
@@ -13,33 +13,33 @@
 #include <stdio.h>
 #include <assert.h>
 
-/* [k]ernel [l]aunch macros */
+
 #if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
     !defined(KL_SYNC)
 #define KL_RELEASE
 #endif
 
-/* [c]uda [c]heck macro */
+
 #if !defined(CC_RELEASE) && !defined(CC_SYNC)
   #define CC_RELEASE
 #endif
 
-/* who plays as device? */
+
 #if !defined(DEV_CUDA) && !defined(DEV_CPU)
   #define DEV_CUDA
 #endif
 
-/* cuda memory allocation calls */
+
 #if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
   #define CUDA_ALLOC_RELEASE
 #endif
 
-/* compute rbc force in double or float */
+
 #if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
   #define RBC_DOUBLE
 #endif
 
-/* what to do if r > lmax for a spring? */
+
 #if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
   #define RBC_SPRING_IGNORE
 #endif
@@ -56,13 +56,13 @@
 #ifndef UDX_FORCE_DEF_COMMON
 #define UDX_FORCE_DEF_COMMON
 #include "constants.cuh"
-#endif /* UDX_FORCE_DEF_COMMON */
+#endif
 #ifndef UDX_FORCE_DEVICE_COMMON
 #define UDX_FORCE_DEVICE_COMMON
-/* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
+
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
 
-/* a common kernel execution configuration */
+
 #define k_cnf(n) ceiln((n), 128), 128
 
 #define dSync() CC(d::DeviceSynchronize())
@@ -71,32 +71,32 @@
 #define D2H d::MemcpyDeviceToHost
 #define H2D d::MemcpyHostToDevice
 #define H2H d::MemcpyHostToHost
-#define A2A d::MemcpyDefault /* "[a]ny to [a]ny" */
+#define A2A d::MemcpyDefault
 
 #define cD2D(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), D2D))
-#define cH2H(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), H2H))  /* [t]to, [f]rom */
+#define cH2H(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), H2H))
 #define cA2A(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), A2A))
 #define cD2H(H, D, n) CC(d::Memcpy((H), (D), (n) * sizeof((H)[0]), D2H))
 #define cH2D(D, H, n) CC(d::Memcpy((D), (H), (n) * sizeof((H)[0]), H2D))
 
 #define aD2D(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), D2D))
-#define aH2H(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), H2H))  /* [t]to, [f]rom */
+#define aH2H(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), H2H))
 #define aA2A(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), A2A))
 #define aD2H(H, D, n) CC(d::MemcpyAsync((H), (D), (n) * sizeof((H)[0]), D2H))
 #define aH2D(D, H, n) CC(d::MemcpyAsync((D), (H), (n) * sizeof((H)[0]), H2D))
 
-/* device allocation */
+
 #define Dfree(D)      CC(d::Free(D))
 #define Dalloc(D, n)  CC(d::Malloc((void**)(D), (n) * sizeof(**(D))))
 
-/* [d]evice set */
+
 #define Dset(P, v, n) CC(d::Memset(P, v, (n)*sizeof(*(P))))
 #define Dzero(P, n)   Dset(P, 0, n)
 
-/* [d]evice [a]synchronous set */
+
 #define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
 #define DzeroA(P, n)   DsetA(P, 0, n)
-#endif /* UDX_FORCE_DEVICE_COMMON */
+#endif
 
 #ifndef UDX_FORCE_DEVICE_API_COMMON
 #define UDX_FORCE_DEVICE_API_COMMON
@@ -154,7 +154,7 @@ static int   warpSize = 1;
         error_abort();                                          \
     } while (0)
 
-/* udx check */
+
 #define UC(F) do {                              \
         error_stack_push(__FILE__, __LINE__);   \
         F;                                      \
@@ -165,7 +165,7 @@ static int   warpSize = 1;
         error_stack_pop();                      \
     } while (0)
 
-/* [B]o[p] [c]heck */
+
 #define BPC(ans) do {                           \
         BopStatus s = (ans);                    \
         if (!bop_success(s)) {                  \
@@ -193,10 +193,10 @@ void error_print_stack();
 #endif
 #ifndef UDX_FORCE_CC_COMMON
 #define UDX_FORCE_CC_COMMON
-/* [c]uda [c]heck macros */
+
 
 #if   defined(CC_SYNC)
-/* Aggressive [sync]ronization */
+
 #define CC(ans)                                             \
     do {                                                    \
         d::DeviceSynchronize();                             \
@@ -204,7 +204,7 @@ void error_print_stack();
         d::DeviceSynchronize();                             \
     } while (0)
 #elif defined(CC_RELEASE)
-/* [c]cuda [c]heck */
+
 #define CC(ans)                                             \
     do { cc::check((ans), __FILE__, __LINE__);} while (0)
 #else
@@ -217,9 +217,9 @@ void check(int rc, const char *file, int line);
 
 
 
-/* TODO: header includes header */
+
 #endif
-/* 1D texture object template */
+
 static void sz_check(int n) {
     if (n <            0 ) ERR("too small texo: %d", n);
     if (n > MAX_TEXO_SIZE) ERR("too big texo: %d > %d", n, MAX_TEXO_SIZE);
@@ -231,7 +231,7 @@ struct Texo {
 };
 
 template<typename T>
-void texo_setup(int n, T *data, /**/ Texo<T> *to)
+void texo_setup(int n, T *data,      Texo<T> *to)
 {
     sz_check(n);
 
@@ -252,7 +252,7 @@ void texo_setup(int n, T *data, /**/ Texo<T> *to)
 }
 
 template<typename T>
-void texo_destroy(/**/ Texo<T> *to)
+void texo_destroy(     Texo<T> *to)
 {
     CC(cudaDestroyTextureObject(to->d));
 }
@@ -263,52 +263,52 @@ const T texo_fetch(const Texo<T> t, const int i)
     return Tfetch(T, t.d, i);
 }
 
-struct RNDunif;                                             // <1>
-void rnd_ini(int x, int y, int z, int c, /**/ RNDunif **r); // <2>
-void rnd_fin(RNDunif *r);                                   // <3>
-float rnd_get(RNDunif *r);                                  // <4>
+struct RNDunif;
+void rnd_ini(int x, int y, int z, int c,      RNDunif **r);
+void rnd_fin(RNDunif *r);
+float rnd_get(RNDunif *r);
 #ifndef UDX_FORCE_RND_COMMON
 #define UDX_FORCE_RND_COMMON
 namespace rnd {
-/* random number from the ArcSine distribution on [-sqrt(2),sqrt(2)]
-   mean = 0, variance = 1 */
 
-// passes of logistic map
+
+
+
 static __const__ int N = 18;
-// spacing coefficints for low discrepancy numbers
+
 static __const__ float gold   = 0.6180339887498948482;
 static __const__ float silver = 0.4142135623730950488;
 static __const__ float bronze = 0.00008877875787352212838853023;
 static __const__ float tin    = 0.00004602357186447026756768986;
 static __const__ float sqrt2 = 1.41421356237309514547;
 
-/************************* Trunk generator ***********************
- * Make one global random number per each timestep
- * cite G. Marsaglia
- * passes BigCrush
- *****************************************************************/
 
-/************************* Branch generator **********************
- * Make one random number per pair of particles per timestep
- * Based on the Logistic map on interval [-1,1]
- * each branch no weaker than trunk
- * zero dependency between branches
- *****************************************************************/
 
-// floating point version of LCG
+
+
+
+
+
+
+
+
+
+
+
+
 __inline__ __device__ float rem( float r ) {
     return r - floorf( r );
 }
 
-// FMA wrapper for the convenience of switching rouding modes
+
 __inline__ __device__ float FMA( float x, float y, float z ) {
     return __fmaf_rz( x, y, z );
 }
 
-// logistic rounds
-// <3> : 4 FMA + 1 MUL
-// <2> : 2 FMA + 1 MUL
-// <1> : 1 FMA + 1 MUL
+
+
+
+
 
 template<int N> __inline__ __device__ float __logistic_core( float x )
 {
@@ -327,45 +327,45 @@ template<> __inline__ __device__ float __logistic_core<0>( float x ) {
 
 inline __device__ float mean0var1ii( float seed, int u, int v )
 {
-    float p = rem( ( ( u & 0x3FF ) * gold ) + u * bronze + ( ( v & 0x3FF ) * silver ) + v * tin ); // safe for large u or v
+    float p = rem( ( ( u & 0x3FF ) * gold ) + u * bronze + ( ( v & 0x3FF ) * silver ) + v * tin );
     float l = __logistic_core<N>( seed - p );
     return l * sqrt2;
 }
 
 inline __device__ float mean0var1uu( float seed, uint u, uint v )
 {
-    // 7 FLOPS
-    float p = rem( ( ( u & 0x3FFU ) * gold ) + u * bronze + ( ( v & 0x3FFU ) * silver ) + v * tin ); // safe for large u or v
-    // 45+1 FLOPS
+
+    float p = rem( ( ( u & 0x3FFU ) * gold ) + u * bronze + ( ( v & 0x3FFU ) * silver ) + v * tin );
+
     float l = __logistic_core<N>( seed - p );
-    // 1 FLOP
+
     return l * sqrt2;
 }
 
 }
-#endif /* UDX_FORCE_RND_COMMON */
+#endif
 #ifndef UDX_FORCE_MATH_COMMON
 #define UDX_FORCE_MATH_COMMON
-/* use templates here because we might have mixed float/double */
+
 
 #define _HD_ __host__ __device__
 
 template <typename T1, typename T2>
-_HD_ void scal(const T1 a, /*io*/ T2 *b) {
+_HD_ void scal(const T1 a,        T2 *b) {
     b->x *= a;
     b->y *= a;
     b->z *= a;
 }
 
 template <typename T1, typename T2>
-_HD_ void add(const T1 *a, /*io*/ T2 *b) {
+_HD_ void add(const T1 *a,        T2 *b) {
     b->x += a->x;
     b->y += a->y;
     b->z += a->z;
 }
 
 template <typename T1, typename T2, typename T3>
-_HD_ void diff(const T1 *a, const T2 *b, /**/ T3 *c) {
+_HD_ void diff(const T1 *a, const T2 *b,      T3 *c) {
     c->x = a->x - b->x;
     c->y = a->y - b->y;
     c->z = a->z - b->z;
@@ -377,14 +377,14 @@ _HD_ T1 dot(const T2 *a, const T3 *b) {
 }
 
 template <typename T1, typename T2, typename T3>
-_HD_ void cross(const T1 *a, const T2 *b, /**/ T3 *c) {
+_HD_ void cross(const T1 *a, const T2 *b,      T3 *c) {
     c->x = a->y * b->z - a->z * b->y;
     c->y = a->z * b->x - a->x * b->z;
     c->z = a->x * b->y - a->y * b->x;
 }
 
 template <typename T1, typename T2, typename T3>
-_HD_ void scalmult(const T1 *a, const T2 x, /**/ const T3 *b) {
+_HD_ void scalmult(const T1 *a, const T2 x,      const T3 *b) {
     b->x = a->x * x;
     b->y = a->y * x;
     b->z = a->z * x;
@@ -392,23 +392,23 @@ _HD_ void scalmult(const T1 *a, const T2 x, /**/ const T3 *b) {
 
 
 template <typename T1, typename T2, typename T3, typename T4>
-_HD_ void apxb(const T1 *a, const T2 x, const T3 *b, /**/ T4 *c) {
+_HD_ void apxb(const T1 *a, const T2 x, const T3 *b,      T4 *c) {
     c->x = a->x + x * b->x;
     c->y = a->y + x * b->y;
     c->z = a->z + x * b->z;
 }
 
 template <typename T1, typename T2, typename T3>
-_HD_ void axpy(const T1 a, const T2 *x, /*io*/ T3 *y) {
+_HD_ void axpy(const T1 a, const T2 *x,        T3 *y) {
     y->x += a * x->x;
     y->y += a * x->y;
     y->z += a * x->z;
 }
-#endif /* UDX_FORCE_MATH_COMMON */
+#endif
 
 #ifndef UDX_FORCE_PAIR_TYPE_COMMON
 #define UDX_FORCE_PAIR_TYPE_COMMON
-/* maximum of pairwise dpd parameters */
+
 enum {
     MAX_PAR = (N_COLOR * (N_COLOR + 1)) / 2
 };
@@ -423,7 +423,7 @@ struct PairDPDC {
     float a[MAX_PAR], g[MAX_PAR], s[MAX_PAR], spow;
 };
 
-/* mirrored */
+
 struct PairDPDCM {
     int ncolors;
     float a[N_COLOR], g[N_COLOR], s[N_COLOR], spow;
@@ -441,7 +441,7 @@ struct PairAdhesion {
 struct PairPa {
     float x, y, z;
     float vx, vy, vz;
-    /* optional fields */
+
     int color;
 };
 
@@ -451,10 +451,10 @@ struct PairFo {
 
 struct PairSFo {
     float x, y, z;
-    /* stress */
+
     float sxx, syy, szz, sxy, sxz, syz;
 };
-#endif /* UDX_FORCE_PAIR_TYPE_COMMON */
+#endif
 #ifndef UDX_FORCE_PAIR_DEV_COMMON
 #define UDX_FORCE_PAIR_DEV_COMMON
 #define _S_ static __device__
@@ -468,8 +468,8 @@ _S_ float cap(float x, float lo, float hi) {
 
 static const float EPS = 1e-6;
 enum {NORM_OK, NORM_BIG, NORM_SMALL};
-_S_ int norm(/*io*/ float3 *pos, /**/ float *pr, float *pinvr) {
-    /* normalize r = [x, y, z], sets |r| and 1/|r| if not big */
+_S_ int norm(       float3 *pos,      float *pr, float *pinvr) {
+
     float x, y, z, invr, r, r2;
     x = pos->x; y = pos->y; z = pos->z;
 
@@ -537,13 +537,13 @@ _S_ float force_magn(const PairAdhesion *p, float, float ev, float r, float) {
     return magn_adhesion(p->k1, p->k2, r, ev);
 }
 
-_S_ void magn2fo(float f0, float3 er, float3 dr, /**/ PairFo *f) {
+_S_ void magn2fo(float f0, float3 er, float3 dr,      PairFo *f) {
     f->x = f0 * er.x;
     f->y = f0 * er.y;
     f->z = f0 * er.z;
 }
 
-_S_ void magn2fo(float f0, float3 er, float3 dr, /**/ PairSFo *f) {
+_S_ void magn2fo(float f0, float3 er, float3 dr,      PairSFo *f) {
     f->x = f0 * er.x;
     f->y = f0 * er.y;
     f->z = f0 * er.z;
@@ -567,11 +567,11 @@ _S_ void make_zero(PairSFo *f) {
 }
 
 template <typename Param, typename Fo>
-_I_ void pair_force(const Param *p, PairPa a, PairPa b, float rnd, /**/ Fo *f)
+_I_ void pair_force(const Param *p, PairPa a, PairPa b, float rnd,      Fo *f)
 {
     float r, invr, ev, f0;
     float3 dr, er, dv;
-    int vnstat; /* vector normalization status */
+    int vnstat;
 
     dr.x = a.x - b.x;
     dr.y = a.y - b.y;
@@ -583,7 +583,7 @@ _I_ void pair_force(const Param *p, PairPa a, PairPa b, float rnd, /**/ Fo *f)
 
     er = dr;
 
-    vnstat = norm(/*io*/ &er, /*o*/ &r, &invr);
+    vnstat = norm(       &er,       &r, &invr);
     if (vnstat == NORM_BIG) {
         make_zero(f);
         return;
@@ -592,7 +592,7 @@ _I_ void pair_force(const Param *p, PairPa a, PairPa b, float rnd, /**/ Fo *f)
     ev = dot<float>(&er, &dv);
 
     f0 = force_magn(p, rnd, ev, r, invr);
-    magn2fo(f0, er, dr, /**/ f);
+    magn2fo(f0, er, dr,      f);
 }
 
 _S_ int colors2pid(int ca, int cb) {
@@ -603,7 +603,7 @@ _S_ int colors2pid(int ca, int cb) {
 }
 
 template <typename Fo>
-_I_ void pair_force(const PairDPDC *pc, PairPa a, PairPa b, float rnd, /**/ Fo *f) {
+_I_ void pair_force(const PairDPDC *pc, PairPa a, PairPa b, float rnd,      Fo *f) {
     PairDPD p;
     int pid;
     pid = colors2pid(a.color, b.color);
@@ -611,30 +611,30 @@ _I_ void pair_force(const PairDPDC *pc, PairPa a, PairPa b, float rnd, /**/ Fo *
     p.g = pc->g[pid];
     p.s = pc->s[pid];
     p.spow = pc->spow;
-    pair_force(&p, a, b, rnd, /**/ f);
+    pair_force(&p, a, b, rnd,      f);
 }
 
-/* mirrored: parameters from particle "a" only */
+
 template <typename Fo>
-_I_ void pair_force(const PairDPDCM *pc, PairPa a, PairPa b, float rnd, /**/ Fo *f) {
+_I_ void pair_force(const PairDPDCM *pc, PairPa a, PairPa b, float rnd,      Fo *f) {
     PairDPD p;
     int pid = a.color;
     p.a = pc->a[pid];
     p.g = pc->g[pid];
     p.s = pc->s[pid];
     p.spow = pc->spow;
-    pair_force(&p, a, b, rnd, /**/ f);
+    pair_force(&p, a, b, rnd,      f);
 }
 
 
-_I_ void pair_add(const PairFo *b, /**/ PairFo *a)
+_I_ void pair_add(const PairFo *b,      PairFo *a)
 {
     a->x += b->x;
     a->y += b->y;
     a->z += b->z;
 }
 
-_I_ void pair_add(const PairSFo *b, /**/ PairSFo *a)
+_I_ void pair_add(const PairSFo *b,      PairSFo *a)
 {
     a->x += b->x;
     a->y += b->y;
@@ -650,7 +650,7 @@ _I_ void pair_add(const PairSFo *b, /**/ PairSFo *a)
 
 #undef _S_
 #undef _I_
-#endif /* UDX_FORCE_PAIR_DEV_COMMON */
+#endif
 struct PairParams;
 struct Config;
 
@@ -663,8 +663,8 @@ struct PairAdhesion;
 void pair_ini(PairParams **);
 void pair_fin(PairParams *);
 
-void pair_set_dpd(int ncol, const float a[], const float g[], float spow, PairParams *p); // <1>
-void pair_set_lj(float sigma, float eps, PairParams *p); // <2>
+void pair_set_dpd(int ncol, const float a[], const float g[], float spow, PairParams *p);
+void pair_set_lj(float sigma, float eps, PairParams *p);
 void pair_set_adhesion(float k1, float k2, PairParams *p);
 
 void pair_set_conf(const Config *, const char *name_space, PairParams *);
@@ -689,7 +689,7 @@ struct FoSArray_v {
 #define _S_ static __device__
 
 template <int S, typename Fo, typename FA>
-_S_ void farray_add_force(const Fo *f, int i, /**/ FA a) {
+_S_ void farray_add_force(const Fo *f, int i,      FA a) {
     enum {X, Y, Z};
     float *af = a.ff + 3*i;
     af[X] += S * f->x;
@@ -697,7 +697,7 @@ _S_ void farray_add_force(const Fo *f, int i, /**/ FA a) {
     af[Z] += S * f->z;
 }
 
-_S_ void farray_add_stress(const PairSFo *f, int i, /**/ FoSArray_v a) {
+_S_ void farray_add_stress(const PairSFo *f, int i,      FoSArray_v a) {
     enum {XX, XY, XZ, YY, YZ, ZZ};
     float *s = a.ss + 6*i;
     s[XX] += f->sxx;
@@ -709,21 +709,21 @@ _S_ void farray_add_stress(const PairSFo *f, int i, /**/ FoSArray_v a) {
 }
 
 template <int S>
-_I_ void farray_add(const PairFo *f, int i, /**/ FoArray_v a) // <1>
+_I_ void farray_add(const PairFo *f, int i,      FoArray_v a)
 {
-    farray_add_force<S>(f, i, /**/ a);
+    farray_add_force<S>(f, i,      a);
 }
 
 template <int S>
-_I_ void farray_add(const PairSFo *f, int i, /**/ FoSArray_v a) // <2>
+_I_ void farray_add(const PairSFo *f, int i,      FoSArray_v a)
 {
-    farray_add_force<S>(f, i, /**/ a);
-    farray_add_stress(f, i, /**/ a);
+    farray_add_force<S>(f, i,      a);
+    farray_add_stress(f, i,      a);
 }
 
 
 template <int S, typename Fo, typename FA>
-_S_ void farray_atomic_add_force(const Fo *f, int i, /**/ FA a) {
+_S_ void farray_atomic_add_force(const Fo *f, int i,      FA a) {
     enum {X, Y, Z};
     float *af = a.ff + 3*i;
     atomicAdd(&af[X], S * f->x);
@@ -731,7 +731,7 @@ _S_ void farray_atomic_add_force(const Fo *f, int i, /**/ FA a) {
     atomicAdd(&af[Z], S * f->z);
 }
 
-_S_ void farray_atomic_add_stress(const PairSFo *f, int i, /**/ FoSArray_v a) {
+_S_ void farray_atomic_add_stress(const PairSFo *f, int i,      FoSArray_v a) {
     enum {XX, XY, XZ, YY, YZ, ZZ};
     float *s = a.ss + 6*i;
     atomicAdd(&s[XX], f->sxx);
@@ -743,16 +743,16 @@ _S_ void farray_atomic_add_stress(const PairSFo *f, int i, /**/ FoSArray_v a) {
 }
 
 template <int S>
-_I_ void farray_atomic_add(const PairFo *f, int i, /**/ FoArray_v a)
+_I_ void farray_atomic_add(const PairFo *f, int i,      FoArray_v a)
 {
-    farray_atomic_add_force<S>(f, i, /**/ a);
+    farray_atomic_add_force<S>(f, i,      a);
 }
 
 template <int S>
-_I_ void farray_atomic_add(const PairSFo *f, int i, /**/ FoSArray_v a)
+_I_ void farray_atomic_add(const PairSFo *f, int i,      FoSArray_v a)
 {
-    farray_atomic_add_force<S>(f, i, /**/ a);
-    farray_atomic_add_stress(f, i, /**/ a);
+    farray_atomic_add_force<S>(f, i,      a);
+    farray_atomic_add_stress(f, i,      a);
 }
 
 
@@ -777,7 +777,7 @@ _I_ PairSFo farray_fo0(FoSArray_v)
 struct FoArray {
     bool stress;
     float *ff;
-    float *ss; /* stress */
+    float *ss;
 };
 
 struct FoArray_v;
@@ -792,8 +792,8 @@ void farray_clear(FoArray *);
 
 bool farray_has_stress(const FoArray *a);
 
-void farray_get_view(const FoArray *a, FoArray_v *v);  // <1>
-void farray_get_view(const FoArray *a, FoSArray_v *v); // <2>
+void farray_get_view(const FoArray *a, FoArray_v *v);
+void farray_get_view(const FoArray *a, FoSArray_v *v);
 
 struct PairParams;
 struct Force;
@@ -815,7 +815,7 @@ void flocal_push_pp(const float4 *pp, BPaArray *a);
 void flocal_push_cc(const int *cc, BPaArray *a);
 
 void flocal_apply(const PairParams*, int3 L, int n, BPaArray parray, const int *start, RNDunif *rnd,
-                  /**/ const FoArray *ff);
+                       const FoArray *ff);
 
 struct TBPaArray_v {
     Texo<float4> pp;
@@ -829,7 +829,7 @@ struct TBPaCArray_v {
 #define _S_ static __device__
 #define _I_ static __device__
 
-/* bulk parray fbulk_fetch */
+
 
 template <typename Parray>
 _S_ void fbulk_bpa_fetch_p(Parray a, int i, PairPa *p) {
@@ -842,7 +842,7 @@ _S_ void fbulk_bpa_fetch_p(Parray a, int i, PairPa *p) {
 }
 
 
-/* texture bulk parray fbulk_fetch */
+
 
 template <typename Parray>
 _S_ void fbulk_tbpa_fetch_p(Parray a, int i, PairPa *p) {
@@ -888,7 +888,7 @@ _S_ bool fbulk_valid_c(int c, int hi) {
 }
 
 template <typename Par, typename Parray, typename Farray, typename Fo>
-_S_ void fbulk_loop_pp(const Par *params, int ia, PairPa pa, Parray parray, int start, int end, float seed, /**/ Fo *fa, Farray farray) {
+_S_ void fbulk_loop_pp(const Par *params, int ia, PairPa pa, Parray parray, int start, int end, float seed,      Fo *fa, Farray farray) {
     enum {X, Y, Z};
     int ib;
     PairPa pb;
@@ -903,17 +903,17 @@ _S_ void fbulk_loop_pp(const Par *params, int ia, PairPa pa, Parray parray, int 
         if (!fbulk_cutoff_range(pa, pb)) continue;
 
         rnd = rnd::mean0var1ii(seed, ia, ib);
-        pair_force(params, pa, pb, rnd, /**/ &f);
+        pair_force(params, pa, pb, rnd,      &f);
 
-        pair_add(&f, /**/ fa);
+        pair_add(&f,      fa);
 
-        farray_atomic_add<-1>(&f, ib, /**/ farray);
+        farray_atomic_add<-1>(&f, ib,      farray);
     }
 }
 
 template <typename Par, typename PArray, typename Farray, typename Fo>
 _S_ void fbulk_one_row(const Par *params, int3 L, int dz, int dy, int ia, int3 ca, PairPa pa, PArray parray, const int *start, float seed,
-                               /**/ Fo *fa, Farray farray) {
+                                    Fo *fa, Farray farray) {
     int3 cb;
     int enddx, startx, endx, cid0, bs, be;
     cb.z = ca.z + dz;
@@ -921,7 +921,7 @@ _S_ void fbulk_one_row(const Par *params, int3 L, int dz, int dy, int ia, int3 c
     if (!fbulk_valid_c(cb.z, L.z)) return;
     if (!fbulk_valid_c(cb.y, L.y)) return;
 
-    /* dx runs from -1 to enddx */
+
     enddx = (dz == 0 && dy == 0) ? 0 : 1;
 
     startx =     max(    0, ca.x - 1    );
@@ -932,12 +932,12 @@ _S_ void fbulk_one_row(const Par *params, int3 L, int dz, int dy, int ia, int3 c
     bs = start[cid0 + startx];
     be = start[cid0 + endx];
 
-    fbulk_loop_pp(params, ia, pa, parray, bs, be, seed, /**/ fa, farray);
+    fbulk_loop_pp(params, ia, pa, parray, bs, be, seed,      fa, farray);
 }
 
-// unroll loop
+
 template <typename Par, typename Parray, typename Farray>
-__global__ void fbulk_apply_kernel(Par params, int3 L, int n, Parray parray, const int *start, float seed, /**/ Farray farray) {
+__global__ void fbulk_apply_kernel(Par params, int3 L, int n, Parray parray, const int *start, float seed,      Farray farray) {
     enum {X, Y, Z};
     int ia;
     int3 ca;
@@ -950,7 +950,7 @@ __global__ void fbulk_apply_kernel(Par params, int3 L, int n, Parray parray, con
     fbulk_fetch(parray, ia, &pa);
     ca = fbulk_get_cid(L, &pa);
 
-#define ONE_ROW(dz, dy) fbulk_one_row (&params, L, dz, dy, ia, ca, pa, parray, start, seed, /**/ &fa, farray)
+#define ONE_ROW(dz, dy) fbulk_one_row (&params, L, dz, dy, ia, ca, pa, parray, start, seed,      &fa, farray)
 
     ONE_ROW(-1, -1);
     ONE_ROW(-1,  0);
@@ -964,8 +964,8 @@ __global__ void fbulk_apply_kernel(Par params, int3 L, int n, Parray parray, con
 }
 
 #undef _S_
-// #include "dev/map.h"
-// #include "dev/xmain.h"
+
+
 void flocal_push_pp(const float4 *pp, BPaArray *a) {
     a->pp = pp;
     a->colors = false;
@@ -995,7 +995,7 @@ static void tbarray_fin_view(TBPaCArray_v *v) {
 }
 
 template <typename Par, typename Parray, typename Farray>
-static void interactions(Par params, int3 L, int n, Parray parray, const int *start, RNDunif *rnd, /**/ Farray farray) {
+static void interactions(Par params, int3 L, int n, Parray parray, const int *start, RNDunif *rnd,      Farray farray) {
     enum {THR=128};
     float seed;
     if (n <= 0) return;
@@ -1003,51 +1003,51 @@ static void interactions(Par params, int3 L, int n, Parray parray, const int *st
 
     KL(fbulk_apply_kernel,
        (ceiln((n), THR), THR),
-       (params, L, n, parray, start, seed, /**/ farray));
+       (params, L, n, parray, start, seed,      farray));
 }
 
 template <typename Par, typename Parray>
-static void dispatch_stress(Par params, int3 L, int n, Parray parray, const int *start, RNDunif *rnd, /**/ const FoArray *farray) {
+static void dispatch_stress(Par params, int3 L, int n, Parray parray, const int *start, RNDunif *rnd,      const FoArray *farray) {
     if (farray_has_stress(farray)) {
         FoSArray_v farray_v;
         farray_get_view(farray, &farray_v);
-        interactions(params, L, n, parray, start, rnd, /**/ farray_v);
+        interactions(params, L, n, parray, start, rnd,      farray_v);
     }
     else {
         FoArray_v farray_v;
         farray_get_view(farray, &farray_v);
-        interactions(params, L, n, parray, start, rnd, /**/ farray_v);
+        interactions(params, L, n, parray, start, rnd,      farray_v);
     }
 }
 
-static void apply_color(const PairParams *params, int3 L, int n, BPaArray parray, const int *start, RNDunif *rnd, /**/ const FoArray *farray) {
+static void apply_color(const PairParams *params, int3 L, int n, BPaArray parray, const int *start, RNDunif *rnd,      const FoArray *farray) {
     PairDPDC pv;
     TBPaCArray_v parray_v;
 
     pair_get_view_dpd_color(params, &pv);
     tbarray_get_view(n, parray, &parray_v);
 
-    dispatch_stress(pv, L, n, parray_v, start, rnd, /**/ farray);
+    dispatch_stress(pv, L, n, parray_v, start, rnd,      farray);
 
     tbarray_fin_view(&parray_v);
 }
 
-static void apply_grey(const PairParams *params, int3 L, int n, BPaArray parray, const int *start, RNDunif *rnd, /**/ const FoArray *farray) {
+static void apply_grey(const PairParams *params, int3 L, int n, BPaArray parray, const int *start, RNDunif *rnd,      const FoArray *farray) {
     PairDPD pv;
     TBPaArray_v parray_v;
     pair_get_view_dpd(params, &pv);
     tbarray_get_view(n, parray, &parray_v);
 
-    dispatch_stress(pv, L, n, parray_v, start, rnd, /**/ farray);
+    dispatch_stress(pv, L, n, parray_v, start, rnd,      farray);
 
     tbarray_fin_view(&parray_v);
 }
 
-void flocal_apply(const PairParams *params, int3 L, int n, BPaArray parray, const int *start, RNDunif *rnd, /**/ const FoArray *farray) {
+void flocal_apply(const PairParams *params, int3 L, int n, BPaArray parray, const int *start, RNDunif *rnd,      const FoArray *farray) {
     if (parray.colors)
-        apply_color(params, L, n, parray, start, rnd, /**/ farray);
+        apply_color(params, L, n, parray, start, rnd,      farray);
     else
-        apply_grey(params, L, n, parray, start, rnd, /**/ farray);
+        apply_grey(params, L, n, parray, start, rnd,      farray);
 }
 
 
@@ -1060,33 +1060,33 @@ void flocal_apply(const PairParams *params, int3 L, int n, BPaArray parray, cons
 
 #include <cuda_fp16.h>
 
-/* [k]ernel [l]aunch macros */
+
 #if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
     !defined(KL_SYNC)
 #define KL_RELEASE
 #endif
 
-/* [c]uda [c]heck macro */
+
 #if !defined(CC_RELEASE) && !defined(CC_SYNC)
   #define CC_RELEASE
 #endif
 
-/* who plays as device? */
+
 #if !defined(DEV_CUDA) && !defined(DEV_CPU)
   #define DEV_CUDA
 #endif
 
-/* cuda memory allocation calls */
+
 #if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
   #define CUDA_ALLOC_RELEASE
 #endif
 
-/* compute rbc force in double or float */
+
 #if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
   #define RBC_DOUBLE
 #endif
 
-/* what to do if r > lmax for a spring? */
+
 #if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
   #define RBC_SPRING_IGNORE
 #endif
@@ -1102,7 +1102,7 @@ void flocal_apply(const PairParams *params, int3 L, int n, BPaArray parray, cons
         error_abort();                                          \
     } while (0)
 
-/* udx check */
+
 #define UC(F) do {                              \
         error_stack_push(__FILE__, __LINE__);   \
         F;                                      \
@@ -1113,7 +1113,7 @@ void flocal_apply(const PairParams *params, int3 L, int n, BPaArray parray, cons
         error_stack_pop();                      \
     } while (0)
 
-/* [B]o[p] [c]heck */
+
 #define BPC(ans) do {                           \
         BopStatus s = (ans);                    \
         if (!bop_success(s)) {                  \
@@ -1135,37 +1135,37 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-void emalloc(size_t, /**/ void**); // <1>
-void efree(void*); // <2>
-void *ememcpy(void *dest, const void *src, size_t n); // <3>
+void emalloc(size_t,      void**);
+void efree(void*);
+void *ememcpy(void *dest, const void *src, size_t n);
 
 #define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
 #define EFREE(pdata) UC(efree(pdata))
 #define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
 
-void efopen(const char *fname, const char *mode, /**/ FILE**);
+void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
 void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
 void efgets(char *s, int size, FILE*);
 
-bool same_str(const char *a, const char *b); // <1>
+bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
 
-struct RNDunif;                                             // <1>
-void rnd_ini(int x, int y, int z, int c, /**/ RNDunif **r); // <2>
-void rnd_fin(RNDunif *r);                                   // <3>
-float rnd_get(RNDunif *r);                                  // <4>
-// #include "math/rnd/dev.h"
+struct RNDunif;
+void rnd_ini(int x, int y, int z, int c,      RNDunif **r);
+void rnd_fin(RNDunif *r);
+float rnd_get(RNDunif *r);
+
 
 #ifndef UDX_FORCE_TYPE_COMMON
 #define UDX_FORCE_TYPE_COMMON
 #include "types.cuh"
 #endif
-/* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
+
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
 
-/* a common kernel execution configuration */
+
 #define k_cnf(n) ceiln((n), 128), 128
 
 #define dSync() CC(d::DeviceSynchronize())
@@ -1174,29 +1174,29 @@ float rnd_get(RNDunif *r);                                  // <4>
 #define D2H d::MemcpyDeviceToHost
 #define H2D d::MemcpyHostToDevice
 #define H2H d::MemcpyHostToHost
-#define A2A d::MemcpyDefault /* "[a]ny to [a]ny" */
+#define A2A d::MemcpyDefault
 
 #define cD2D(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), D2D))
-#define cH2H(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), H2H))  /* [t]to, [f]rom */
+#define cH2H(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), H2H))
 #define cA2A(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), A2A))
 #define cD2H(H, D, n) CC(d::Memcpy((H), (D), (n) * sizeof((H)[0]), D2H))
 #define cH2D(D, H, n) CC(d::Memcpy((D), (H), (n) * sizeof((H)[0]), H2D))
 
 #define aD2D(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), D2D))
-#define aH2H(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), H2H))  /* [t]to, [f]rom */
+#define aH2H(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), H2H))
 #define aA2A(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), A2A))
 #define aD2H(H, D, n) CC(d::MemcpyAsync((H), (D), (n) * sizeof((H)[0]), D2H))
 #define aH2D(D, H, n) CC(d::MemcpyAsync((D), (H), (n) * sizeof((H)[0]), H2D))
 
-/* device allocation */
+
 #define Dfree(D)      CC(d::Free(D))
 #define Dalloc(D, n)  CC(d::Malloc((void**)(D), (n) * sizeof(**(D))))
 
-/* [d]evice set */
+
 #define Dset(P, v, n) CC(d::Memset(P, v, (n)*sizeof(*(P))))
 #define Dzero(P, n)   Dset(P, 0, n)
 
-/* [d]evice [a]synchronous set */
+
 #define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
 #define DzeroA(P, n)   DsetA(P, 0, n)
 #ifndef UDX_FORCE_PARRAY_COMMON
@@ -1217,9 +1217,9 @@ void parray_push_cc(const int *cc, PaArray *a);
 
 bool parray_is_colored(const PaArray *a);
 
-void parray_get_view(const PaArray *a, PaArray_v *v);  // <1>
-void parray_get_view(const PaArray *a, PaCArray_v *v); // <2>
-#endif /* UDX_FORCE_PARRAY_COMMON */
+void parray_get_view(const PaArray *a, PaArray_v *v);
+void parray_get_view(const PaArray *a, PaCArray_v *v);
+#endif
 
 #ifndef UDX_FORCE_DEVICE_API_COMMON
 #define UDX_FORCE_DEVICE_API_COMMON
@@ -1231,10 +1231,10 @@ void parray_get_view(const PaArray *a, PaCArray_v *v); // <2>
 #endif
 #ifndef UDX_FORCE_CC_COMMON
 #define UDX_FORCE_CC_COMMON
-/* [c]uda [c]heck macros */
+
 
 #if   defined(CC_SYNC)
-/* Aggressive [sync]ronization */
+
 #define CC(ans)                                             \
     do {                                                    \
         d::DeviceSynchronize();                             \
@@ -1242,7 +1242,7 @@ void parray_get_view(const PaArray *a, PaCArray_v *v); // <2>
         d::DeviceSynchronize();                             \
     } while (0)
 #elif defined(CC_RELEASE)
-/* [c]cuda [c]heck */
+
 #define CC(ans)                                             \
     do { cc::check((ans), __FILE__, __LINE__);} while (0)
 #else
@@ -1255,9 +1255,9 @@ void check(int rc, const char *file, int line);
 
 
 
-/* TODO: header includes header */
+
 #endif
-/* [m]pi [c]heck macros */
+
 #define MC(ans)                                                         \
     do { mpicheck::check((ans), __FILE__, __LINE__); } while (0)
 
@@ -1265,8 +1265,8 @@ namespace mpicheck {
 void check(int code, const char *file, int line);
 }
 
-void msg_ini(int rank); // <1>
-void msg_print(const char *fmt, ...); // <2>
+void msg_ini(int rank);
+void msg_print(const char *fmt, ...);
 namespace m {
 int Allreduce(const void *sendbuf, void *recvbuf, int count, MPI_Datatype datatype, MPI_Op op, MPI_Comm comm);
 int Barrier(MPI_Comm comm);
@@ -1309,7 +1309,7 @@ int Probe(int source, int tag, MPI_Comm comm, MPI_Status *status);
 int Get_count(const MPI_Status *status, MPI_Datatype datatype, int *count);
 int Error_string(int errorcode, char *string, int *resultlen);
 
-/* local */
+
 bool is_master(MPI_Comm comm);
 int is_success(int errorcode);
 int is_pending(int errorcode);
@@ -1325,43 +1325,43 @@ struct int3;
 
 namespace frag_hst {
 
-int i2dx(int i);                 // <1>
-int i2dy(int i);                 // <2>
-int i2dz(int i);                 // <3>
-void i2d3(int i, /**/ int d[3]); // <4>
+int i2dx(int i);
+int i2dy(int i);
+int i2dz(int i);
+void i2d3(int i,      int d[3]);
 
-int d2i(int x, int y, int z); // <1>
-int d32i(const int d[3]);     // <2>
+int d2i(int x, int y, int z);
+int d32i(const int d[3]);
 
-int ncell(int3 L, int i); // <1>
+int ncell(int3 L, int i);
 
-int antid2i(int x, int y, int z); // <1>
-int anti(int i);                  // <2>
+int antid2i(int x, int y, int z);
+int anti(int i);
 
-void estimates(int3 L, int nfrags, float maxd, /**/ int *cap); // <1>
+void estimates(int3 L, int nfrags, float maxd,      int *cap);
 
-} // frag_hst
+}
 struct Particle;
 struct Positioncp;
 struct float4;
 
 void convert_pp2rr_current (long n, const Particle *pp, Positioncp *rr);
 void convert_pp2rr_previous(long n, const Particle *pp, Positioncp *rr);
-void convert_pp2f4_pos(int n, const float *pp, /**/ float4 *zpp);
+void convert_pp2f4_pos(int n, const float *pp,      float4 *zpp);
 
-/* helpers to communicate between halo interactions and exchanger */
+
 
 namespace flu {
 
 enum { BULK = 0, FACE = 1, EDGE = 2, CORNER = 3 };
 
-struct LFrag { /* "local" fragment */
+struct LFrag {
     PaArray parray;
-    const int *ii; /* index */
+    const int *ii;
     int n;
 };
 
-struct RFrag { /* "remote" fragment */
+struct RFrag {
     PaArray parray;
     const int *start;
     int dx, dy, dz, xcells, ycells, zcells;
@@ -1377,7 +1377,7 @@ typedef Sarray<LFrag,   26> LFrag26;
 typedef Sarray<RFrag,   26> RFrag26;
 typedef Sarray<RndFrag, 26> RndFrag26;
 
-} // flu
+}
 struct PairParams;
 struct Force;
 struct float4;
@@ -1398,13 +1398,13 @@ void flocal_push_pp(const float4 *pp, BPaArray *a);
 void flocal_push_cc(const int *cc, BPaArray *a);
 
 void flocal_apply(const PairParams*, int3 L, int n, BPaArray parray, const int *start, RNDunif *rnd,
-                  /**/ const FoArray *ff);
+                       const FoArray *ff);
 
 struct PairParams;
 struct int3;
 struct FoArray;
 
-void fhalo_apply(const PairParams*, int3 L, const flu::LFrag26 lfrags, const flu::RFrag26 rfrags, const flu::RndFrag26 rrnd, /**/ const FoArray *farray);
+void fhalo_apply(const PairParams*, int3 L, const flu::LFrag26 lfrags, const flu::RFrag26 rfrags, const flu::RndFrag26 rrnd,      const FoArray *farray);
 
 struct PairParams;
 struct FluForcesBulk;
@@ -1412,46 +1412,46 @@ struct FluForcesHalo;
 struct PaArray;
 struct FoArray;
 
-void fluforces_bulk_ini(int3 L, int maxp, /**/ FluForcesBulk **b);
-void fluforces_bulk_fin(/**/ FluForcesBulk *b);
+void fluforces_bulk_ini(int3 L, int maxp,      FluForcesBulk **b);
+void fluforces_bulk_fin(     FluForcesBulk *b);
 
-void fluforces_bulk_prepare(int n, const PaArray *a, /**/ FluForcesBulk *b);
+void fluforces_bulk_prepare(int n, const PaArray *a,      FluForcesBulk *b);
 void fluforces_bulk_apply(const PairParams*, int n, const FluForcesBulk *b, const int *start, const int *count,
-                          /**/ const FoArray *ff);
+                               const FoArray *ff);
 
-void fluforces_halo_ini(MPI_Comm cart, int3 L, /**/ FluForcesHalo **hd);
-void fluforces_halo_fin(/**/ FluForcesHalo *h);
+void fluforces_halo_ini(MPI_Comm cart, int3 L,      FluForcesHalo **hd);
+void fluforces_halo_fin(     FluForcesHalo *h);
 
-void fluforces_halo_prepare(flu::LFrag26 lfrags, flu::RFrag26 rfrags, /**/ FluForcesHalo *h);
-void fluforces_halo_apply(const PairParams*, const FluForcesHalo *h, /**/ const FoArray *farray);
+void fluforces_halo_prepare(flu::LFrag26 lfrags, flu::RFrag26 rfrags,      FluForcesHalo *h);
+void fluforces_halo_apply(const PairParams*, const FluForcesHalo *h,      const FoArray *farray);
 
 
-/* implementation */
+
 
 struct FluForcesBulk {
-    float4  *zipped_pp;  /* xyzouvwo xyzouvwo xyzouvwo ...          */
-    RNDunif *rnd;        /* random generator per timestep           */
-    const int *colors;   /* pointer to colors, not to be allocated  */
+    float4  *zipped_pp;
+    RNDunif *rnd;
+    const int *colors;
 
-    int3 L; /* subdomain size */
+    int3 L;
 };
 
 struct FluForcesHalo {
-    RNDunif *trunks[26];   /* interrank rng (1 per fragment) */
-    bool masks[26];        /* interrank masks                */
+    RNDunif *trunks[26];
+    bool masks[26];
 
-    flu::LFrag26 lfrags;     /* local fragment infos    */
-    flu::RFrag26 rfrags;     /* remote fragment infos   */
-    flu::RndFrag26 rndfrags; /* rng and interrank masks */
+    flu::LFrag26 lfrags;
+    flu::RFrag26 rfrags;
+    flu::RndFrag26 rndfrags;
 
-    int3 L; /* subdomain size */
+    int3 L;
 };
-void fluforces_bulk_ini(int3 L, int maxp, /**/ FluForcesBulk **bd) {
+void fluforces_bulk_ini(int3 L, int maxp,      FluForcesBulk **bd) {
     FluForcesBulk *b;
     EMALLOC(1, bd);
     b = *bd;
     Dalloc(&b->zipped_pp, 2 * maxp);
-    UC(rnd_ini(0, 0, 0, 0, /**/ &b->rnd));
+    UC(rnd_ini(0, 0, 0, 0,      &b->rnd));
     b->colors = NULL;
     b->L = L;
 }
@@ -1467,7 +1467,7 @@ static int is_plus(const int d[3]) {
 static int imin(int a, int b) {return a < b ? a : b;}
 static int imax(int a, int b) {return a < b ? b : a;}
 
-static void get_interrank_infos(MPI_Comm cart, int fid, /**/ RNDunif* trunks[], bool masks[]) {
+static void get_interrank_infos(MPI_Comm cart, int fid,      RNDunif* trunks[], bool masks[]) {
     int coordsneighbor[3], c, indx[3], rank, dstrank;
     int seed, seed_base, seed_offset;
     int dims[3], periods[3], coords[3];
@@ -1475,12 +1475,12 @@ static void get_interrank_infos(MPI_Comm cart, int fid, /**/ RNDunif* trunks[], 
     frag_hst::i2d3(fid, d);
 
     MC(m::Cart_get(cart, 3, dims, periods, coords));
-    MC(m::Cart_rank(cart, coords, /**/ &rank));
+    MC(m::Cart_rank(cart, coords,      &rank));
 
     for (c = 0; c < 3; ++c)
         coordsneighbor[c] = (coords[c] + d[c] + dims[c]) % dims[c];
 
-    MC(m::Cart_rank(cart, coordsneighbor, /**/ &dstrank));
+    MC(m::Cart_rank(cart, coordsneighbor,      &dstrank));
 
     for (c = 0; c < 3; ++c)
         indx[c] = imin(coords[c], coordsneighbor[c]) * dims[c] +
@@ -1496,7 +1496,7 @@ static void get_interrank_infos(MPI_Comm cart, int fid, /**/ RNDunif* trunks[], 
 
     seed = seed_base + seed_offset;
 
-    UC(rnd_ini(390 + seed, seed + 615, 12309, 23094, /**/ &trunks[fid]));
+    UC(rnd_ini(390 + seed, seed + 615, 12309, 23094,      &trunks[fid]));
 
     if (dstrank != rank)
         masks[fid] = imin(dstrank, rank) == rank;
@@ -1506,7 +1506,7 @@ static void get_interrank_infos(MPI_Comm cart, int fid, /**/ RNDunif* trunks[], 
     }
 }
 
-void fluforces_halo_ini(MPI_Comm cart, int3 L, /**/ FluForcesHalo **hd) {
+void fluforces_halo_ini(MPI_Comm cart, int3 L,      FluForcesHalo **hd) {
     FluForcesHalo *h;
     EMALLOC(1, hd);
     h = *hd;
@@ -1514,22 +1514,22 @@ void fluforces_halo_ini(MPI_Comm cart, int3 L, /**/ FluForcesHalo **hd) {
     h->L = L;
 
     for (int i = 0; i < 26; ++i)
-        get_interrank_infos(cart, i, /**/ h->trunks, h->masks);
+        get_interrank_infos(cart, i,      h->trunks, h->masks);
 }
-void fluforces_bulk_fin(/**/ FluForcesBulk *b) {
+void fluforces_bulk_fin(     FluForcesBulk *b) {
     CC(d::Free(b->zipped_pp));
     UC(rnd_fin(b->rnd));
     EFREE(b);
 }
 
-void fluforces_halo_fin(/**/ FluForcesHalo *h) {
+void fluforces_halo_fin(     FluForcesHalo *h) {
     for (int i = 0; i < 26; ++i)
         UC(rnd_fin(h->trunks[i]));
     EFREE(h);
 }
-void fluforces_bulk_prepare(int n, const PaArray *a, /**/ FluForcesBulk *b) {
+void fluforces_bulk_prepare(int n, const PaArray *a,      FluForcesBulk *b) {
     if (n == 0) return;
-    convert_pp2f4_pos(n, a->pp, /**/ b->zipped_pp);
+    convert_pp2f4_pos(n, a->pp,      b->zipped_pp);
     if (a->colors)
         b->colors = a->cc;
     else
@@ -1537,7 +1537,7 @@ void fluforces_bulk_prepare(int n, const PaArray *a, /**/ FluForcesBulk *b) {
 }
 
 void fluforces_bulk_apply(const PairParams *par, int n, const FluForcesBulk *b, const int *start, const int *count,
-                          /**/ const FoArray *farray) {
+                               const FoArray *farray) {
     BPaArray a;
     if (n == 0) return;
 
@@ -1545,11 +1545,11 @@ void fluforces_bulk_apply(const PairParams *par, int n, const FluForcesBulk *b, 
     if (b->colors)
         flocal_push_cc(b->colors, &a);
 
-    UC(flocal_apply(par, b->L, n, a, start, b->rnd, /**/ farray));
+    UC(flocal_apply(par, b->L, n, a, start, b->rnd,      farray));
 }
 
 
-void fluforces_halo_prepare(flu::LFrag26 lfrags, flu::RFrag26 rfrags, /**/ FluForcesHalo *h) {
+void fluforces_halo_prepare(flu::LFrag26 lfrags, flu::RFrag26 rfrags,      FluForcesHalo *h) {
     h->lfrags = lfrags;
     h->rfrags = rfrags;
 
@@ -1561,7 +1561,7 @@ void fluforces_halo_prepare(flu::LFrag26 lfrags, flu::RFrag26 rfrags, /**/ FluFo
     }
 }
 
-void fluforces_halo_apply(const PairParams *par, const FluForcesHalo *h, /**/ const FoArray *farray) {
+void fluforces_halo_apply(const PairParams *par, const FluForcesHalo *h,      const FoArray *farray) {
     fhalo_apply(par, h->L, h->lfrags, h->rfrags, h->rndfrags, farray);
 }
 
@@ -1569,46 +1569,46 @@ void fluforces_halo_apply(const PairParams *par, const FluForcesHalo *h, /**/ co
 
 
 
-// Grouped editable compilation unit for RBC force and bending force code.
 
 
-// Grouped editable compilation unit for all RBC force implementations.
 
 
-// Grouped editable compilation unit for RBC area/volume and random forces.
+
+
+
 
 
 
 #include <stdio.h>
 #include <assert.h>
 
-/* [k]ernel [l]aunch macros */
+
 #if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
     !defined(KL_SYNC)
 #define KL_RELEASE
 #endif
 
-/* [c]uda [c]heck macro */
+
 #if !defined(CC_RELEASE) && !defined(CC_SYNC)
   #define CC_RELEASE
 #endif
 
-/* who plays as device? */
+
 #if !defined(DEV_CUDA) && !defined(DEV_CPU)
   #define DEV_CUDA
 #endif
 
-/* cuda memory allocation calls */
+
 #if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
   #define CUDA_ALLOC_RELEASE
 #endif
 
-/* compute rbc force in double or float */
+
 #if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
   #define RBC_DOUBLE
 #endif
 
-/* what to do if r > lmax for a spring? */
+
 #if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
   #define RBC_SPRING_IGNORE
 #endif
@@ -1624,10 +1624,10 @@ void fluforces_halo_apply(const PairParams *par, const FluForcesHalo *h, /**/ co
 #endif
 #ifndef UDX_FORCE_DEVICE_COMMON
 #define UDX_FORCE_DEVICE_COMMON
-/* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
+
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
 
-/* a common kernel execution configuration */
+
 #define k_cnf(n) ceiln((n), 128), 128
 
 #define dSync() CC(d::DeviceSynchronize())
@@ -1636,54 +1636,54 @@ void fluforces_halo_apply(const PairParams *par, const FluForcesHalo *h, /**/ co
 #define D2H d::MemcpyDeviceToHost
 #define H2D d::MemcpyHostToDevice
 #define H2H d::MemcpyHostToHost
-#define A2A d::MemcpyDefault /* "[a]ny to [a]ny" */
+#define A2A d::MemcpyDefault
 
 #define cD2D(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), D2D))
-#define cH2H(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), H2H))  /* [t]to, [f]rom */
+#define cH2H(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), H2H))
 #define cA2A(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), A2A))
 #define cD2H(H, D, n) CC(d::Memcpy((H), (D), (n) * sizeof((H)[0]), D2H))
 #define cH2D(D, H, n) CC(d::Memcpy((D), (H), (n) * sizeof((H)[0]), H2D))
 
 #define aD2D(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), D2D))
-#define aH2H(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), H2H))  /* [t]to, [f]rom */
+#define aH2H(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), H2H))
 #define aA2A(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), A2A))
 #define aD2H(H, D, n) CC(d::MemcpyAsync((H), (D), (n) * sizeof((H)[0]), D2H))
 #define aH2D(D, H, n) CC(d::MemcpyAsync((D), (H), (n) * sizeof((H)[0]), H2D))
 
-/* device allocation */
+
 #define Dfree(D)      CC(d::Free(D))
 #define Dalloc(D, n)  CC(d::Malloc((void**)(D), (n) * sizeof(**(D))))
 
-/* [d]evice set */
+
 #define Dset(P, v, n) CC(d::Memset(P, v, (n)*sizeof(*(P))))
 #define Dzero(P, n)   Dset(P, 0, n)
 
-/* [d]evice [a]synchronous set */
+
 #define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
 #define DzeroA(P, n)   DsetA(P, 0, n)
-#endif /* UDX_FORCE_DEVICE_COMMON */
+#endif
 #ifndef UDX_FORCE_MATH_COMMON
 #define UDX_FORCE_MATH_COMMON
-/* use templates here because we might have mixed float/double */
+
 
 #define _HD_ __host__ __device__
 
 template <typename T1, typename T2>
-_HD_ void scal(const T1 a, /*io*/ T2 *b) {
+_HD_ void scal(const T1 a,        T2 *b) {
     b->x *= a;
     b->y *= a;
     b->z *= a;
 }
 
 template <typename T1, typename T2>
-_HD_ void add(const T1 *a, /*io*/ T2 *b) {
+_HD_ void add(const T1 *a,        T2 *b) {
     b->x += a->x;
     b->y += a->y;
     b->z += a->z;
 }
 
 template <typename T1, typename T2, typename T3>
-_HD_ void diff(const T1 *a, const T2 *b, /**/ T3 *c) {
+_HD_ void diff(const T1 *a, const T2 *b,      T3 *c) {
     c->x = a->x - b->x;
     c->y = a->y - b->y;
     c->z = a->z - b->z;
@@ -1695,14 +1695,14 @@ _HD_ T1 dot(const T2 *a, const T3 *b) {
 }
 
 template <typename T1, typename T2, typename T3>
-_HD_ void cross(const T1 *a, const T2 *b, /**/ T3 *c) {
+_HD_ void cross(const T1 *a, const T2 *b,      T3 *c) {
     c->x = a->y * b->z - a->z * b->y;
     c->y = a->z * b->x - a->x * b->z;
     c->z = a->x * b->y - a->y * b->x;
 }
 
 template <typename T1, typename T2, typename T3>
-_HD_ void scalmult(const T1 *a, const T2 x, /**/ const T3 *b) {
+_HD_ void scalmult(const T1 *a, const T2 x,      const T3 *b) {
     b->x = a->x * x;
     b->y = a->y * x;
     b->z = a->z * x;
@@ -1710,35 +1710,35 @@ _HD_ void scalmult(const T1 *a, const T2 x, /**/ const T3 *b) {
 
 
 template <typename T1, typename T2, typename T3, typename T4>
-_HD_ void apxb(const T1 *a, const T2 x, const T3 *b, /**/ T4 *c) {
+_HD_ void apxb(const T1 *a, const T2 x, const T3 *b,      T4 *c) {
     c->x = a->x + x * b->x;
     c->y = a->y + x * b->y;
     c->z = a->z + x * b->z;
 }
 
 template <typename T1, typename T2, typename T3>
-_HD_ void axpy(const T1 a, const T2 *x, /*io*/ T3 *y) {
+_HD_ void axpy(const T1 a, const T2 *x,        T3 *y) {
     y->x += a * x->x;
     y->y += a * x->y;
     y->z += a * x->z;
 }
-#endif /* UDX_FORCE_MATH_COMMON */
+#endif
 
-void emalloc(size_t, /**/ void**); // <1>
-void efree(void*); // <2>
-void *ememcpy(void *dest, const void *src, size_t n); // <3>
+void emalloc(size_t,      void**);
+void efree(void*);
+void *ememcpy(void *dest, const void *src, size_t n);
 
 #define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
 #define EFREE(pdata) UC(efree(pdata))
 #define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
 
-void efopen(const char *fname, const char *mode, /**/ FILE**);
+void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
 void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
 void efgets(char *s, int size, FILE*);
 
-bool same_str(const char *a, const char *b); // <1>
+bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
 #define ERR(fmt, ...)  do {                                     \
         error_signal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
@@ -1746,7 +1746,7 @@ const char* get_filename_ext(const char*);
         error_abort();                                          \
     } while (0)
 
-/* udx check */
+
 #define UC(F) do {                              \
         error_stack_push(__FILE__, __LINE__);   \
         F;                                      \
@@ -1757,7 +1757,7 @@ const char* get_filename_ext(const char*);
         error_stack_pop();                      \
     } while (0)
 
-/* [B]o[p] [c]heck */
+
 #define BPC(ans) do {                           \
         BopStatus s = (ans);                    \
         if (!bop_success(s)) {                  \
@@ -1779,8 +1779,8 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-void msg_ini(int rank); // <1>
-void msg_print(const char *fmt, ...); // <2>
+void msg_ini(int rank);
+void msg_print(const char *fmt, ...);
 
 #ifndef UDX_FORCE_DEVICE_API_COMMON
 #define UDX_FORCE_DEVICE_API_COMMON
@@ -1832,13 +1832,13 @@ static int   warpSize = 1;
 #else
   #error DEV_* is undefined
 #endif
-/* function and variable type [q]ualifiers */
+
 
 #if   defined(DEV_CUDA)
-/* B.1. Function Type Qualifiers */
-/* B.2. Variable Type Qualifiers */
+
+
 #elif defined(DEV_CPU)
-/* B.1. Function Type Qualifiers */
+
 #ifdef __device__
   #undef  __device__
   #define __device__
@@ -1864,8 +1864,8 @@ static int   warpSize = 1;
   #define __forceinline__
 #endif
 
-/* B.2. Variable Type Qualifiers */
-/* __device__ : also a function qualifier */
+
+
 #ifdef __constant__
   #undef  __constant__
   #define __constant__
@@ -1890,10 +1890,10 @@ static int   warpSize = 1;
 #endif
 #ifndef UDX_FORCE_CC_COMMON
 #define UDX_FORCE_CC_COMMON
-/* [c]uda [c]heck macros */
+
 
 #if   defined(CC_SYNC)
-/* Aggressive [sync]ronization */
+
 #define CC(ans)                                             \
     do {                                                    \
         d::DeviceSynchronize();                             \
@@ -1901,7 +1901,7 @@ static int   warpSize = 1;
         d::DeviceSynchronize();                             \
     } while (0)
 #elif defined(CC_RELEASE)
-/* [c]cuda [c]heck */
+
 #define CC(ans)                                             \
     do { cc::check((ans), __FILE__, __LINE__);} while (0)
 #else
@@ -1914,8 +1914,8 @@ void check(int rc, const char *file, int line);
 
 
 
-/* TODO: header includes header */
-#endif /* UDX_FORCE_CC_COMMON */
+
+#endif
 #ifndef UDX_FORCE_KL_COMMON
 #define UDX_FORCE_KL_COMMON
 #include "launch.cuh"
@@ -1941,14 +1941,14 @@ _I_ T shfl(T val, unsigned int width) {
 #define _I_ static __device__
 
 template <typename T>
-_I_ T warpReduceSum(T v)  // <1>
+_I_ T warpReduceSum(T v)
 {
     for (int offset = warpSize>>1; offset > 0; offset >>= 1)
         v += shfl_down(v, offset);
     return v;
 }
 
-_I_ float2 warpReduceSum(float2 val)  // <2>
+_I_ float2 warpReduceSum(float2 val)
 {
     for (int offset = warpSize / 2; offset > 0; offset /= 2) {
         val.x += shfl_down(val.x, offset);
@@ -1957,7 +1957,7 @@ _I_ float2 warpReduceSum(float2 val)  // <2>
     return val;
 }
 
-_I_ float3 warpReduceSum(float3 val)  // <3>
+_I_ float3 warpReduceSum(float3 val)
 {
     for (int offset = warpSize/2; offset > 0; offset /= 2) {
         val.x += shfl_down(val.x, offset);
@@ -1975,11 +1975,11 @@ struct AreaVolume;
 struct Particle;
 struct int4;
 
-void area_volume_ini(int nv, int nt, const int4 *tt, int max_cell, AreaVolume**); // <1>
+void area_volume_ini(int nv, int nt, const int4 *tt, int max_cell, AreaVolume**);
 void area_volume_fin(AreaVolume*);
 
-void area_volume_compute(AreaVolume*, int nm, const Particle*, /**/ float **av); // <2>
-void area_volume_host(AreaVolume*, /**/ float **av); // <3>
+void area_volume_compute(AreaVolume*, int nm, const Particle*,      float **av);
+void area_volume_host(AreaVolume*,      float **av);
 
 static __device__ float3 rbc_force_av_pp2r(const Particle *pp, const int id) {
     enum {X, Y, Z};
@@ -1992,9 +1992,9 @@ static __device__ float3 rbc_force_av_pp2r(const Particle *pp, const int id) {
 
 static __device__ float rbc_force_av_area(const float3 r0, const float3 r1, const float3 r2) {
     float3 x1, x2, n;
-    diff(&r1, &r0, /**/ &x1);
-    diff(&r2, &r0, /**/ &x2);
-    cross(&x1, &x2, /**/ &n);
+    diff(&r1, &r0,      &x1);
+    diff(&r2, &r0,      &x2);
+    cross(&x1, &x2,      &n);
     return 0.5f * sqrtf(dot<float>(&n, &n));
 }
 
@@ -2028,13 +2028,13 @@ __global__ void rbc_force_av_kernel(int nt, int nv, const Particle *pp, const in
     }
 }
 struct AreaVolume {
-    int nt, nv; /* number of triangles and vertices in one cell */
-    int max_cell; /* max cell number */
-    int4 *tri; /* triangles on device */
-    float *av; /* output: [area0 volume0 area1 volume1, ..] */
+    int nt, nv;
+    int max_cell;
+    int4 *tri;
+    float *av;
     float *av_hst;
-    int nc;       /* remember the last number of cell */
-    int Computed; /* was area computed? */
+    int nc;
+    int Computed;
 };
 static void assert_tri(int nt, int nv, const int4 *tri) {
     int *rank;
@@ -2054,7 +2054,7 @@ static void assert_tri(int nt, int nv, const int4 *tri) {
     EFREE(rank);
 }
 
-void area_volume_ini(int nv, int nt, const int4 *hst, int max_cell, /**/ AreaVolume **pq) {
+void area_volume_ini(int nv, int nt, const int4 *hst, int max_cell,      AreaVolume **pq) {
     AreaVolume *q;
     EMALLOC(1, &q);
     q->nt = nt; q->nv = nv; q->max_cell = max_cell; q->Computed = 0;
@@ -2073,14 +2073,14 @@ void area_volume_fin(AreaVolume *q) {
     EFREE(q);
 }
 
-static void compute(int nv, int nt, int nc, const Particle *pp, const int4 *tri, /**/ float *av) {
+static void compute(int nv, int nt, int nc, const Particle *pp, const int4 *tri,      float *av) {
     dim3 avThreads(256, 1);
     dim3 avBlocks(1, nc);
     Dzero(av, 2*nc);
     KL(rbc_force_av_kernel, (avBlocks, avThreads), (nt, nv, pp, tri, av));
 }
 
-void area_volume_compute(AreaVolume *q, int nc, const Particle *pp, /**/ float **pav) {
+void area_volume_compute(AreaVolume *q, int nc, const Particle *pp,      float **pav) {
     if (nc > q->max_cell) ERR("nc=%d > max_cell=%d", nc, q->max_cell);
     if (!d::is_device_pointer(pp)) ERR("`pp`  is not a device pointer");
     UC(compute(q->nv, q->nt, nc, pp, q->tri, q->av));
@@ -2088,7 +2088,7 @@ void area_volume_compute(AreaVolume *q, int nc, const Particle *pp, /**/ float *
     *pav = q->av;
 }
 
-void area_volume_host(AreaVolume *q, /**/ float **pav) {
+void area_volume_host(AreaVolume *q,      float **pav) {
     if (!q->Computed) ERR("call `area_volume_host` before `area_volume_compute`");
     cD2H(q->av_hst, q->av, 2*q->nc);
     *pav = q->av_hst;
@@ -2097,7 +2097,7 @@ void area_volume_host(AreaVolume *q, /**/ float **pav) {
 
 
 
-// Grouped editable compilation unit for RBC random-force API and implementation.
+
 
 
 
@@ -2107,33 +2107,33 @@ void area_volume_host(AreaVolume *q, /**/ float **pav) {
 #include <math.h>
 #include <curand.h>
 
-/* [k]ernel [l]aunch macros */
+
 #if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
     !defined(KL_SYNC)
 #define KL_RELEASE
 #endif
 
-/* [c]uda [c]heck macro */
+
 #if !defined(CC_RELEASE) && !defined(CC_SYNC)
   #define CC_RELEASE
 #endif
 
-/* who plays as device? */
+
 #if !defined(DEV_CUDA) && !defined(DEV_CPU)
   #define DEV_CUDA
 #endif
 
-/* cuda memory allocation calls */
+
 #if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
   #define CUDA_ALLOC_RELEASE
 #endif
 
-/* compute rbc force in double or float */
+
 #if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
   #define RBC_DOUBLE
 #endif
 
-/* what to do if r > lmax for a spring? */
+
 #if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
   #define RBC_SPRING_IGNORE
 #endif
@@ -2149,7 +2149,7 @@ void area_volume_host(AreaVolume *q, /**/ float **pav) {
         error_abort();                                          \
     } while (0)
 
-/* udx check */
+
 #define UC(F) do {                              \
         error_stack_push(__FILE__, __LINE__);   \
         F;                                      \
@@ -2160,7 +2160,7 @@ void area_volume_host(AreaVolume *q, /**/ float **pav) {
         error_stack_pop();                      \
     } while (0)
 
-/* [B]o[p] [c]heck */
+
 #define BPC(ans) do {                           \
         BopStatus s = (ans);                    \
         if (!bop_success(s)) {                  \
@@ -2182,26 +2182,26 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-void emalloc(size_t, /**/ void**); // <1>
-void efree(void*); // <2>
-void *ememcpy(void *dest, const void *src, size_t n); // <3>
+void emalloc(size_t,      void**);
+void efree(void*);
+void *ememcpy(void *dest, const void *src, size_t n);
 
 #define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
 #define EFREE(pdata) UC(efree(pdata))
 #define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
 
-void efopen(const char *fname, const char *mode, /**/ FILE**);
+void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
 void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
 void efgets(char *s, int size, FILE*);
 
-bool same_str(const char *a, const char *b); // <1>
+bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
 
 namespace rbc_api {
 typedef struct Generator_st *Generator_t;
-} /* namespace */
+}
 namespace rnd_api {
 typedef struct Generator_st *Generator_t;
 int CreateGenerator(Generator_t *g);
@@ -2244,8 +2244,8 @@ int GenerateNormal(Generator_t s, float *outputPtr, size_t n) {
     return curandGenerateNormal(s->g, outputPtr, n, mean, std);
 }
 #elif defined(DEV_CPU)
-/* Gaussian rnd with mean = 0 and std = 1
-   Knuth and due originally to Marsaglia */
+
+
 double gaussrand() {
     static double V1, V2, S;
     static int phase = 0;
@@ -2277,7 +2277,7 @@ int GenerateNormal(Generator_t, float *outputPtr, size_t n) {
   #error DEV_* is undefined
 #endif
 
-} /* namespace */
+}
 
 
 
@@ -2288,33 +2288,33 @@ int GenerateNormal(Generator_t, float *outputPtr, size_t n) {
 #include <mpi.h>
 #include <curand.h>
 
-/* [k]ernel [l]aunch macros */
+
 #if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
     !defined(KL_SYNC)
 #define KL_RELEASE
 #endif
 
-/* [c]uda [c]heck macro */
+
 #if !defined(CC_RELEASE) && !defined(CC_SYNC)
   #define CC_RELEASE
 #endif
 
-/* who plays as device? */
+
 #if !defined(DEV_CUDA) && !defined(DEV_CPU)
   #define DEV_CUDA
 #endif
 
-/* cuda memory allocation calls */
+
 #if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
   #define CUDA_ALLOC_RELEASE
 #endif
 
-/* compute rbc force in double or float */
+
 #if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
   #define RBC_DOUBLE
 #endif
 
-/* what to do if r > lmax for a spring? */
+
 #if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
   #define RBC_SPRING_IGNORE
 #endif
@@ -2324,22 +2324,22 @@ int GenerateNormal(Generator_t, float *outputPtr, size_t n) {
 #endif
 
 
-void os_mkdir(const char* path); // <1>
-long os_time();                  // <2>
-void os_srand(long int seedval); // <3>
-double os_drand();               // <4>
-void os_sleep(unsigned int seconds); // <5>
-void os_malloc_stats();              // TODO
-void msg_ini(int rank); // <1>
-void msg_print(const char *fmt, ...); // <2>
+void os_mkdir(const char* path);
+long os_time();
+void os_srand(long int seedval);
+double os_drand();
+void os_sleep(unsigned int seconds);
+void os_malloc_stats();
+void msg_ini(int rank);
+void msg_print(const char *fmt, ...);
 #ifndef UDX_FORCE_DEVICE_API_COMMON
 #define UDX_FORCE_DEVICE_API_COMMON
 #include "device.cuh"
 #endif
-/* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
+
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
 
-/* a common kernel execution configuration */
+
 #define k_cnf(n) ceiln((n), 128), 128
 
 #define dSync() CC(d::DeviceSynchronize())
@@ -2348,29 +2348,29 @@ void msg_print(const char *fmt, ...); // <2>
 #define D2H d::MemcpyDeviceToHost
 #define H2D d::MemcpyHostToDevice
 #define H2H d::MemcpyHostToHost
-#define A2A d::MemcpyDefault /* "[a]ny to [a]ny" */
+#define A2A d::MemcpyDefault
 
 #define cD2D(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), D2D))
-#define cH2H(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), H2H))  /* [t]to, [f]rom */
+#define cH2H(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), H2H))
 #define cA2A(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), A2A))
 #define cD2H(H, D, n) CC(d::Memcpy((H), (D), (n) * sizeof((H)[0]), D2H))
 #define cH2D(D, H, n) CC(d::Memcpy((D), (H), (n) * sizeof((H)[0]), H2D))
 
 #define aD2D(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), D2D))
-#define aH2H(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), H2H))  /* [t]to, [f]rom */
+#define aH2H(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), H2H))
 #define aA2A(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), A2A))
 #define aD2H(H, D, n) CC(d::MemcpyAsync((H), (D), (n) * sizeof((H)[0]), D2H))
 #define aH2D(D, H, n) CC(d::MemcpyAsync((D), (H), (n) * sizeof((H)[0]), H2D))
 
-/* device allocation */
+
 #define Dfree(D)      CC(d::Free(D))
 #define Dalloc(D, n)  CC(d::Malloc((void**)(D), (n) * sizeof(**(D))))
 
-/* [d]evice set */
+
 #define Dset(P, v, n) CC(d::Memset(P, v, (n)*sizeof(*(P))))
 #define Dzero(P, n)   Dset(P, 0, n)
 
-/* [d]evice [a]synchronous set */
+
 #define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
 #define DzeroA(P, n)   DsetA(P, 0, n)
 
@@ -2380,7 +2380,7 @@ void msg_print(const char *fmt, ...); // <2>
         error_abort();                                          \
     } while (0)
 
-/* udx check */
+
 #define UC(F) do {                              \
         error_stack_push(__FILE__, __LINE__);   \
         F;                                      \
@@ -2391,7 +2391,7 @@ void msg_print(const char *fmt, ...); // <2>
         error_stack_pop();                      \
     } while (0)
 
-/* [B]o[p] [c]heck */
+
 #define BPC(ans) do {                           \
         BopStatus s = (ans);                    \
         if (!bop_success(s)) {                  \
@@ -2413,26 +2413,26 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-void emalloc(size_t, /**/ void**); // <1>
-void efree(void*); // <2>
-void *ememcpy(void *dest, const void *src, size_t n); // <3>
+void emalloc(size_t,      void**);
+void efree(void*);
+void *ememcpy(void *dest, const void *src, size_t n);
 
 #define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
 #define EFREE(pdata) UC(efree(pdata))
 #define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
 
-void efopen(const char *fname, const char *mode, /**/ FILE**);
+void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
 void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
 void efgets(char *s, int size, FILE*);
 
-bool same_str(const char *a, const char *b); // <1>
+bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
-/* [c]uda [c]heck macros */
+
 
 #if   defined(CC_SYNC)
-/* Aggressive [sync]ronization */
+
 #define CC(ans)                                             \
     do {                                                    \
         d::DeviceSynchronize();                             \
@@ -2440,7 +2440,7 @@ const char* get_filename_ext(const char*);
         d::DeviceSynchronize();                             \
     } while (0)
 #elif defined(CC_RELEASE)
-/* [c]cuda [c]heck */
+
 #define CC(ans)                                             \
     do { cc::check((ans), __FILE__, __LINE__);} while (0)
 #else
@@ -2453,11 +2453,11 @@ void check(int rc, const char *file, int line);
 
 
 
-/* TODO: header includes header */
+
 
 namespace rbc_api {
 typedef struct Generator_st *Generator_t;
-} /* namespace */
+}
 namespace rnd_api {
 typedef struct Generator_st *Generator_t;
 int CreateGenerator(Generator_t *g);
@@ -2469,16 +2469,16 @@ struct RbcRnd;
 
 #ifndef UDX_RBC_FORCE_SEED_TIME
 #define UDX_RBC_FORCE_SEED_TIME
-enum {SEED_TIME = -1}; /* magic seed: ini from "time" */
+enum {SEED_TIME = -1};
 #endif
 
 void rbc_rnd_ini(int n, long seed, RbcRnd**);
 void rbc_rnd_fin(RbcRnd*);
 
-void rbc_rnd_gen(RbcRnd*, int n, /**/ float**); // <1>
-float rbc_rnd_get_hst(const RbcRnd*, int i);    // <2>
+void rbc_rnd_gen(RbcRnd*, int n,      float**);
+float rbc_rnd_get_hst(const RbcRnd*, int i);
 
-struct RbcRnd { /* data */
+struct RbcRnd {
     float *r;
     rnd_api::Generator_t g;
     int max;
@@ -2547,7 +2547,7 @@ float rbc_rnd_get_hst(const RbcRnd *d, int i) {
 
 
 
-// Grouped editable compilation unit for RBC force interfaces and implementation.
+
 
 
 
@@ -2555,33 +2555,33 @@ float rbc_rnd_get_hst(const RbcRnd *d, int i) {
 #include <assert.h>
 #include <stddef.h>
 
-/* [k]ernel [l]aunch macros */
+
 #if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
     !defined(KL_SYNC)
 #define KL_RELEASE
 #endif
 
-/* [c]uda [c]heck macro */
+
 #if !defined(CC_RELEASE) && !defined(CC_SYNC)
   #define CC_RELEASE
 #endif
 
-/* who plays as device? */
+
 #if !defined(DEV_CUDA) && !defined(DEV_CPU)
   #define DEV_CUDA
 #endif
 
-/* cuda memory allocation calls */
+
 #if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
   #define CUDA_ALLOC_RELEASE
 #endif
 
-/* compute rbc force in double or float */
+
 #if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
   #define RBC_DOUBLE
 #endif
 
-/* what to do if r > lmax for a spring? */
+
 #if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
   #define RBC_SPRING_IGNORE
 #endif
@@ -2603,7 +2603,7 @@ float rbc_rnd_get_hst(const RbcRnd *d, int i) {
         error_abort();                                          \
     } while (0)
 
-/* udx check */
+
 #define UC(F) do {                              \
         error_stack_push(__FILE__, __LINE__);   \
         F;                                      \
@@ -2614,7 +2614,7 @@ float rbc_rnd_get_hst(const RbcRnd *d, int i) {
         error_stack_pop();                      \
     } while (0)
 
-/* [B]o[p] [c]heck */
+
 #define BPC(ans) do {                           \
         BopStatus s = (ans);                    \
         if (!bop_success(s)) {                  \
@@ -2636,23 +2636,23 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-void msg_ini(int rank); // <1>
-void msg_print(const char *fmt, ...); // <2>
-void emalloc(size_t, /**/ void**); // <1>
-void efree(void*); // <2>
-void *ememcpy(void *dest, const void *src, size_t n); // <3>
+void msg_ini(int rank);
+void msg_print(const char *fmt, ...);
+void emalloc(size_t,      void**);
+void efree(void*);
+void *ememcpy(void *dest, const void *src, size_t n);
 
 #define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
 #define EFREE(pdata) UC(efree(pdata))
 #define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
 
-void efopen(const char *fname, const char *mode, /**/ FILE**);
+void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
 void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
 void efgets(char *s, int size, FILE*);
 
-bool same_str(const char *a, const char *b); // <1>
+bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
 
 struct RbcParams;
@@ -2664,7 +2664,7 @@ struct RbcQuants;
 void kantor_ini(const MeshRead*, Kantor**);
 void kantor_fin(Kantor*);
 
-void kantor_apply(Kantor*, const RbcParams*, const RbcQuants*, /**/ Force*); // <1>
+void kantor_apply(Kantor*, const RbcParams*, const RbcQuants*,      Force*);
 struct RbcParams;
 struct Juelicher;
 struct Force;
@@ -2674,7 +2674,7 @@ struct RbcQuants;
 void juelicher_ini(const MeshRead*, Juelicher**);
 void juelicher_fin(Juelicher*);
 
-void juelicher_apply(Juelicher*, const RbcParams*, const RbcQuants*, /**/ Force*); // <1>
+void juelicher_apply(Juelicher*, const RbcParams*, const RbcQuants*,      Force*);
 
 struct RbcParams;
 struct Bending;
@@ -2688,18 +2688,18 @@ void bending_none_ini(const MeshRead*, Bending**);
 
 void bending_fin(Bending*);
 
-void bending_apply(Bending*, const RbcParams*, const RbcQuants*, /**/ Force*); // <1>
+void bending_apply(Bending*, const RbcParams*, const RbcQuants*,      Force*);
 struct Bending {
     struct Bending_vtable *vtable;
 };
 
 struct Bending_vtable {
-    void (*apply)(Bending*, const RbcParams*, const RbcQuants*, /**/ Force*);
+    void (*apply)(Bending*, const RbcParams*, const RbcQuants*,      Force*);
     void (*fin)(Bending*);
 };
 
-void bending_apply(Bending *q, const RbcParams *params, const RbcQuants *quants, /**/ Force *ff) {
-    q->vtable->apply(q, params, quants, /**/ ff);
+void bending_apply(Bending *q, const RbcParams *params, const RbcQuants *quants,      Force *ff) {
+    q->vtable->apply(q, params, quants,      ff);
 }
 
 void bending_fin(Bending *q) {
@@ -2710,7 +2710,7 @@ struct BendingKantor {
     Bending bending;
     Kantor *kantor;
 };
-static void method_kantor_apply(Bending *q, const RbcParams *params, const RbcQuants *quants, /**/ Force *ff) {
+static void method_kantor_apply(Bending *q, const RbcParams *params, const RbcQuants *quants,      Force *ff) {
     BendingKantor *b = CONTAINER_OF(q, BendingKantor, bending);
     UC(kantor_apply(b->kantor, params, quants, ff));
 }
@@ -2720,7 +2720,7 @@ static void method_kantor_fin(Bending *q) {
     EFREE(q);
 }
 static Bending_vtable BendingKantor_vtable = { method_kantor_apply, method_kantor_fin};
-void bending_kantor_ini(const MeshRead *cell, /**/ Bending **pq) {
+void bending_kantor_ini(const MeshRead *cell,      Bending **pq) {
     BendingKantor *q;
     EMALLOC(1, &q);
     UC(kantor_ini(cell, &q->kantor));
@@ -2733,7 +2733,7 @@ struct BendingJuelicher {
     Bending bending;
     Juelicher *juelicher;
 };
-static void method_juelicher_apply(Bending *q, const RbcParams *params, const RbcQuants *quants, /**/ Force *ff) {
+static void method_juelicher_apply(Bending *q, const RbcParams *params, const RbcQuants *quants,      Force *ff) {
     BendingJuelicher *b = CONTAINER_OF(q, BendingJuelicher, bending);
     UC(juelicher_apply(b->juelicher, params, quants, ff));
 }
@@ -2743,7 +2743,7 @@ static void method_juelicher_fin(Bending *q) {
     EFREE(q);
 }
 static Bending_vtable BendingJuelicher_vtable = { method_juelicher_apply, method_juelicher_fin};
-void bending_juelicher_ini(const MeshRead *cell, /**/ Bending **pq) {
+void bending_juelicher_ini(const MeshRead *cell,      Bending **pq) {
     BendingJuelicher *q;
     EMALLOC(1, &q);
     UC(juelicher_ini(cell, &q->juelicher));
@@ -2752,10 +2752,10 @@ void bending_juelicher_ini(const MeshRead *cell, /**/ Bending **pq) {
 }
 
 struct BendingNone { Bending bending; };
-static void method_none_apply(Bending*, const RbcParams*, const RbcQuants*, /**/ Force*) { }
+static void method_none_apply(Bending*, const RbcParams*, const RbcQuants*,      Force*) { }
 static void method_none_fin(Bending*) { }
 static Bending_vtable BendingNone_vtable = { method_none_apply, method_none_fin};
-void bending_none_ini(const MeshRead*, /**/ Bending **pq) {
+void bending_none_ini(const MeshRead*,      Bending **pq) {
     BendingNone *q;
     EMALLOC(1, &q);
     q->bending.vtable = &BendingNone_vtable;
@@ -2775,7 +2775,7 @@ void bending_none_ini(const MeshRead*, /**/ Bending **pq) {
         error_abort();                                          \
     } while (0)
 
-/* udx check */
+
 #define UC(F) do {                              \
         error_stack_push(__FILE__, __LINE__);   \
         F;                                      \
@@ -2786,7 +2786,7 @@ void bending_none_ini(const MeshRead*, /**/ Bending **pq) {
         error_stack_pop();                      \
     } while (0)
 
-/* [B]o[p] [c]heck */
+
 #define BPC(ans) do {                           \
         BopStatus s = (ans);                    \
         if (!bop_success(s)) {                  \
@@ -2812,10 +2812,10 @@ struct Config;
 struct float3;
 struct int3;
 
-void conf_ini(/**/ Config **c);
-void conf_fin(/**/ Config *c);
+void conf_ini(     Config **c);
+void conf_fin(     Config *c);
 
-void conf_read(int argc, char **argv, /**/ Config *cfg);
+void conf_read(int argc, char **argv,      Config *cfg);
 
 void conf_lookup_int(const Config *c, const char *desc, int *a);
 void conf_lookup_float(const Config *c, const char *desc, float *a);
@@ -2856,8 +2856,8 @@ void conf_set_float3(const char *desc, float3 a, Config *cfg);
 void conf_set_bool(const char *desc, int a, Config *cfg);
 void conf_set_string(const char *desc, const char *a, Config *cfg);
 
-void conf_write_exe(const Config *cfg, FILE *stream);     // <1>
-void conf_write_history(const Config *cfg, FILE *stream); // <2>
+void conf_write_exe(const Config *cfg, FILE *stream);
+void conf_write_history(const Config *cfg, FILE *stream);
 struct int4;
 struct MeshRead;
 
@@ -2884,17 +2884,17 @@ struct RbcQuants;
 void rbc_force_ini(const MeshRead*, RbcForce**);
 void rbc_force_fin(RbcForce*);
 
-void rbc_force_set_stressful(int nt, float totArea, /**/ RbcForce*); // <1>
-void rbc_force_set_stressfree(const char *fname, /**/ RbcForce*);    // <2>
+void rbc_force_set_stressful(int nt, float totArea,      RbcForce*);
+void rbc_force_set_stressfree(const char *fname,      RbcForce*);
 
-void rbc_force_set_rnd0(RbcForce*);           // <3>
-void rbc_force_set_rnd1(int seed, RbcForce*); // <4>
+void rbc_force_set_rnd0(RbcForce*);
+void rbc_force_set_rnd1(int seed, RbcForce*);
 void rbc_force_set_bending(const MeshRead*, const char*, RbcForce*);
 
 void rbc_force_set_conf(const MeshRead*, const Config *cfg, const char *name, RbcForce*);
 
-void rbc_force_apply(RbcForce*, const RbcParams*, float dt, const RbcQuants*, /**/ Force*); // <1>
-void rbc_force_stat(/**/ float *pArea, float *pVolume); // <2>
+void rbc_force_apply(RbcForce*, const RbcParams*, float dt, const RbcQuants*,      Force*);
+void rbc_force_stat(     float *pArea, float *pVolume);
 
 void rbc_force_set_conf(const MeshRead *cell, const Config *cfg, const char *name, RbcForce *q) {
     int stress_free, rnd;
@@ -2902,19 +2902,19 @@ void rbc_force_set_conf(const MeshRead *cell, const Config *cfg, const char *nam
     UC(conf_lookup_bool_ns(cfg, name, "stress_free", &stress_free));
     UC(conf_lookup_bool_ns(cfg, name, "rnd", &rnd));
     UC(conf_lookup_string_ns(cfg, name, "bending", &bending));
-    UC(rbc_force_set_bending(cell, bending, /**/ q));
+    UC(rbc_force_set_bending(cell, bending,      q));
 
     if (stress_free) {
         const char *fname;
         UC(conf_lookup_string_ns(cfg, name, "stress_free_file", &fname));
-        UC(rbc_force_set_stressfree(fname, /**/ q));
+        UC(rbc_force_set_stressfree(fname,      q));
     }
     else {
         float Atot = 0;
         int nt;
         nt = mesh_read_get_nt(cell);
         UC(conf_lookup_float_ns(cfg, name, "totArea", &Atot));
-        UC(rbc_force_set_stressful(nt, Atot, /**/ q));
+        UC(rbc_force_set_stressful(nt, Atot,      q));
     }
 
     if (rnd) {
@@ -2932,33 +2932,33 @@ void rbc_force_set_conf(const MeshRead *cell, const Config *cfg, const char *nam
 #include <stdio.h>
 #include <assert.h>
 
-/* [k]ernel [l]aunch macros */
+
 #if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
     !defined(KL_SYNC)
 #define KL_RELEASE
 #endif
 
-/* [c]uda [c]heck macro */
+
 #if !defined(CC_RELEASE) && !defined(CC_SYNC)
   #define CC_RELEASE
 #endif
 
-/* who plays as device? */
+
 #if !defined(DEV_CUDA) && !defined(DEV_CPU)
   #define DEV_CUDA
 #endif
 
-/* cuda memory allocation calls */
+
 #if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
   #define CUDA_ALLOC_RELEASE
 #endif
 
-/* compute rbc force in double or float */
+
 #if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
   #define RBC_DOUBLE
 #endif
 
-/* what to do if r > lmax for a spring? */
+
 #if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
   #define RBC_SPRING_IGNORE
 #endif
@@ -2976,10 +2976,10 @@ void rbc_force_set_conf(const MeshRead *cell, const Config *cfg, const char *nam
 #define UDX_FORCE_TYPE_COMMON
 #include "types.cuh"
 #endif
-/* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
+
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
 
-/* a common kernel execution configuration */
+
 #define k_cnf(n) ceiln((n), 128), 128
 
 #define dSync() CC(d::DeviceSynchronize())
@@ -2988,53 +2988,53 @@ void rbc_force_set_conf(const MeshRead *cell, const Config *cfg, const char *nam
 #define D2H d::MemcpyDeviceToHost
 #define H2D d::MemcpyHostToDevice
 #define H2H d::MemcpyHostToHost
-#define A2A d::MemcpyDefault /* "[a]ny to [a]ny" */
+#define A2A d::MemcpyDefault
 
 #define cD2D(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), D2D))
-#define cH2H(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), H2H))  /* [t]to, [f]rom */
+#define cH2H(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), H2H))
 #define cA2A(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), A2A))
 #define cD2H(H, D, n) CC(d::Memcpy((H), (D), (n) * sizeof((H)[0]), D2H))
 #define cH2D(D, H, n) CC(d::Memcpy((D), (H), (n) * sizeof((H)[0]), H2D))
 
 #define aD2D(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), D2D))
-#define aH2H(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), H2H))  /* [t]to, [f]rom */
+#define aH2H(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), H2H))
 #define aA2A(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), A2A))
 #define aD2H(H, D, n) CC(d::MemcpyAsync((H), (D), (n) * sizeof((H)[0]), D2H))
 #define aH2D(D, H, n) CC(d::MemcpyAsync((D), (H), (n) * sizeof((H)[0]), H2D))
 
-/* device allocation */
+
 #define Dfree(D)      CC(d::Free(D))
 #define Dalloc(D, n)  CC(d::Malloc((void**)(D), (n) * sizeof(**(D))))
 
-/* [d]evice set */
+
 #define Dset(P, v, n) CC(d::Memset(P, v, (n)*sizeof(*(P))))
 #define Dzero(P, n)   Dset(P, 0, n)
 
-/* [d]evice [a]synchronous set */
+
 #define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
 #define DzeroA(P, n)   DsetA(P, 0, n)
 #ifndef UDX_FORCE_MATH_COMMON
 #define UDX_FORCE_MATH_COMMON
-/* use templates here because we might have mixed float/double */
+
 
 #define _HD_ __host__ __device__
 
 template <typename T1, typename T2>
-_HD_ void scal(const T1 a, /*io*/ T2 *b) {
+_HD_ void scal(const T1 a,        T2 *b) {
     b->x *= a;
     b->y *= a;
     b->z *= a;
 }
 
 template <typename T1, typename T2>
-_HD_ void add(const T1 *a, /*io*/ T2 *b) {
+_HD_ void add(const T1 *a,        T2 *b) {
     b->x += a->x;
     b->y += a->y;
     b->z += a->z;
 }
 
 template <typename T1, typename T2, typename T3>
-_HD_ void diff(const T1 *a, const T2 *b, /**/ T3 *c) {
+_HD_ void diff(const T1 *a, const T2 *b,      T3 *c) {
     c->x = a->x - b->x;
     c->y = a->y - b->y;
     c->z = a->z - b->z;
@@ -3046,14 +3046,14 @@ _HD_ T1 dot(const T2 *a, const T3 *b) {
 }
 
 template <typename T1, typename T2, typename T3>
-_HD_ void cross(const T1 *a, const T2 *b, /**/ T3 *c) {
+_HD_ void cross(const T1 *a, const T2 *b,      T3 *c) {
     c->x = a->y * b->z - a->z * b->y;
     c->y = a->z * b->x - a->x * b->z;
     c->z = a->x * b->y - a->y * b->x;
 }
 
 template <typename T1, typename T2, typename T3>
-_HD_ void scalmult(const T1 *a, const T2 x, /**/ const T3 *b) {
+_HD_ void scalmult(const T1 *a, const T2 x,      const T3 *b) {
     b->x = a->x * x;
     b->y = a->y * x;
     b->z = a->z * x;
@@ -3061,14 +3061,14 @@ _HD_ void scalmult(const T1 *a, const T2 x, /**/ const T3 *b) {
 
 
 template <typename T1, typename T2, typename T3, typename T4>
-_HD_ void apxb(const T1 *a, const T2 x, const T3 *b, /**/ T4 *c) {
+_HD_ void apxb(const T1 *a, const T2 x, const T3 *b,      T4 *c) {
     c->x = a->x + x * b->x;
     c->y = a->y + x * b->y;
     c->z = a->z + x * b->z;
 }
 
 template <typename T1, typename T2, typename T3>
-_HD_ void axpy(const T1 a, const T2 *x, /*io*/ T3 *y) {
+_HD_ void axpy(const T1 a, const T2 *x,        T3 *y) {
     y->x += a * x->x;
     y->y += a * x->y;
     y->z += a * x->z;
@@ -3081,7 +3081,7 @@ _HD_ void axpy(const T1 a, const T2 *x, /*io*/ T3 *y) {
 
 BEGIN
 
-_S_ void diff(const double *a, const double *b, /**/ double  *c) {
+_S_ void diff(const double *a, const double *b,      double  *c) {
     enum {X, Y, Z};
     c[X] = a[X] - b[X];
     c[Y] = a[Y] - b[Y];
@@ -3105,15 +3105,15 @@ _S_ void  sort3(double *a, double *b, double *c) {
 }
 
 _I_ double kahan_area0(double a, double b, double c) {
-    sort3(&c, &b, &a); /* make a > b > c */
+    sort3(&c, &b, &a);
     return sqrt((a+(b+c))*(c-(a-b))*(c+(a-b))*(a+(b-c)))/4;
 }
 
 _I_ double kahan_area(const double r0[3], const double r1[3], const double r2[3]) {
     double r01[3], r12[3], r20[3], a, b, c;
-    diff(r0, r1, /**/ r01);
-    diff(r1, r2, /**/ r12);
-    diff(r2, r0, /**/ r20);
+    diff(r0, r1,      r01);
+    diff(r1, r2,      r12);
+    diff(r2, r0,      r20);
     a = vabs(r01); b = vabs(r12); c = vabs(r20);
     return kahan_area0(a, b, c);
 }
@@ -3156,7 +3156,7 @@ _I_ double orient3d(const double a[3], const double b[3], const double c[3], con
     return ax*(by*cz - bz*cy) + bx*(cy*az - cz*ay) + cx*(ay*bz - az*by);
 }
 
-_I_ void ac_bc_cross(const double a[3], const double b[3], const double c[3], /**/ double r[3]) {
+_I_ void ac_bc_cross(const double a[3], const double b[3], const double c[3],      double r[3]) {
     enum {X, Y, Z};
     r[X] = orient2d_yz(a, b, c);
     r[Y] = orient2d_zx(a, b, c);
@@ -3177,8 +3177,8 @@ _I_ void dihedral_xy(const double a[3], const double b[3], const double c[3], co
     double bcx, bcy, bcz, bc;
     double k[3], l[3];
 
-    ac_bc_cross(b, c, a, /**/ k);
-    ac_bc_cross(c, b, d, /**/ l);
+    ac_bc_cross(b, c, a,      k);
+    ac_bc_cross(c, b, d,      l);
 
     bcx = b[X] - c[X];
     bcy = b[Y] - c[Y];
@@ -3204,7 +3204,7 @@ END
         error_abort();                                          \
     } while (0)
 
-/* udx check */
+
 #define UC(F) do {                              \
         error_stack_push(__FILE__, __LINE__);   \
         F;                                      \
@@ -3215,7 +3215,7 @@ END
         error_stack_pop();                      \
     } while (0)
 
-/* [B]o[p] [c]heck */
+
 #define BPC(ans) do {                           \
         BopStatus s = (ans);                    \
         if (!bop_success(s)) {                  \
@@ -3237,32 +3237,32 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-void msg_ini(int rank); // <1>
-void msg_print(const char *fmt, ...); // <2>
-void emalloc(size_t, /**/ void**); // <1>
-void efree(void*); // <2>
-void *ememcpy(void *dest, const void *src, size_t n); // <3>
+void msg_ini(int rank);
+void msg_print(const char *fmt, ...);
+void emalloc(size_t,      void**);
+void efree(void*);
+void *ememcpy(void *dest, const void *src, size_t n);
 
 #define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
 #define EFREE(pdata) UC(efree(pdata))
 #define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
 
-void efopen(const char *fname, const char *mode, /**/ FILE**);
+void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
 void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
 void efgets(char *s, int size, FILE*);
 
-bool same_str(const char *a, const char *b); // <1>
+bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
 
-/* function and variable type [q]ualifiers */
+
 
 #if   defined(DEV_CUDA)
-/* B.1. Function Type Qualifiers */
-/* B.2. Variable Type Qualifiers */
+
+
 #elif defined(DEV_CPU)
-/* B.1. Function Type Qualifiers */
+
 #ifdef __device__
   #undef  __device__
   #define __device__
@@ -3288,8 +3288,8 @@ const char* get_filename_ext(const char*);
   #define __forceinline__
 #endif
 
-/* B.2. Variable Type Qualifiers */
-/* __device__ : also a function qualifier */
+
+
 #ifdef __constant__
   #undef  __constant__
   #define __constant__
@@ -3362,10 +3362,10 @@ static int   warpSize = 1;
 #else
   #error DEV_* is undefined
 #endif
-/* [c]uda [c]heck macros */
+
 
 #if   defined(CC_SYNC)
-/* Aggressive [sync]ronization */
+
 #define CC(ans)                                             \
     do {                                                    \
         d::DeviceSynchronize();                             \
@@ -3373,7 +3373,7 @@ static int   warpSize = 1;
         d::DeviceSynchronize();                             \
     } while (0)
 #elif defined(CC_RELEASE)
-/* [c]cuda [c]heck */
+
 #define CC(ans)                                             \
     do { cc::check((ans), __FILE__, __LINE__);} while (0)
 #else
@@ -3386,7 +3386,7 @@ void check(int rc, const char *file, int line);
 
 
 
-/* TODO: header includes header */
+
 #ifndef UDX_FORCE_KL_COMMON
 #define UDX_FORCE_KL_COMMON
 #include "launch.cuh"
@@ -3421,11 +3421,11 @@ struct Adj_v;
 struct AdjMap;
 struct int4;
 
-void adj_ini(int md, int nt, int nv, const int4 *tt, /**/ Adj**);
+void adj_ini(int md, int nt, int nv, const int4 *tt,      Adj**);
 void adj_fin(Adj*);
-int  adj_get_map(int i, const Adj*, /**/ AdjMap *m);
+int  adj_get_map(int i, const Adj*,      AdjMap *m);
 int  adj_get_max(const Adj*);
-void adj_get_anti(const Adj*, /**/ int *anti);
+void adj_get_anti(const Adj*,      int *anti);
 
 void adj_view_ini(const Adj*, Adj_v**);
 void adj_view_fin(Adj_v*);
@@ -3433,16 +3433,16 @@ struct RbcShape;
 struct MeshRead;
 struct Adj;
 
-/* rr: vertices: x0 y0 z0   x1 y1 z1 ... */
 
-void rbc_shape_ini(const Adj*, const float *rr, /**/ RbcShape**);
-void rbc_shape_fin(/**/ RbcShape*);
 
-void rbc_shape_edg (RbcShape*, /**/ float**); // <1>
-void rbc_shape_area(RbcShape*, /**/ float**); // <2>
+void rbc_shape_ini(const Adj*, const float *rr,      RbcShape**);
+void rbc_shape_fin(     RbcShape*);
 
-void rbc_shape_total_area(RbcShape*, /**/ float*);    // <3>
-void rbc_shape_total_volume(RbcShape*, /**/ float*);  // <4>
+void rbc_shape_edg (RbcShape*,      float**);
+void rbc_shape_area(RbcShape*,      float**);
+
+void rbc_shape_total_area(RbcShape*,      float*);
+void rbc_shape_total_volume(RbcShape*,      float*);
 struct RbcParams;
 struct Bending;
 struct Force;
@@ -3455,31 +3455,31 @@ void bending_none_ini(const MeshRead*, Bending**);
 
 void bending_fin(Bending*);
 
-void bending_apply(Bending*, const RbcParams*, const RbcQuants*, /**/ Force*); // <1>
+void bending_apply(Bending*, const RbcParams*, const RbcQuants*,      Force*);
 
 struct RbcRnd;
 
 #ifndef UDX_RBC_FORCE_SEED_TIME
 #define UDX_RBC_FORCE_SEED_TIME
-enum {SEED_TIME = -1}; /* magic seed: ini from "time" */
+enum {SEED_TIME = -1};
 #endif
 
 void rbc_rnd_ini(int n, long seed, RbcRnd**);
 void rbc_rnd_fin(RbcRnd*);
 
-void rbc_rnd_gen(RbcRnd*, int n, /**/ float**); // <1>
-float rbc_rnd_get_hst(const RbcRnd*, int i);    // <2>
+void rbc_rnd_gen(RbcRnd*, int n,      float**);
+float rbc_rnd_get_hst(const RbcRnd*, int i);
 struct AreaVolume;
 struct Particle;
 
 struct RbcQuants {
-    int n, nc;               /* number of particles, cells                */
-    int nt, nv;              /* number of triangles and vertices per mesh */
-    int md;                  /* maximum valence of the mesh               */
-    Particle *pp, *pp_hst;   /* vertices particles on host and device     */
-    bool ids;                /* global ids active ?                       */
-    int *ii;                 /* global ids on host                        */
-    AreaVolume *area_volume; /* to compute area and volume */
+    int n, nc;
+    int nt, nv;
+    int md;
+    Particle *pp, *pp_hst;
+    bool ids;
+    int *ii;
+    AreaVolume *area_volume;
 };
 
 
@@ -3494,7 +3494,7 @@ struct Adj_v {
 };
 
 static __device__ int fetch(const int *a, int i) { return a[i]; }
-static __device__ int adj_get_map0(int md, int nv, int i, const int *adj0, const int *adj1, /**/ AdjMap *m) {
+static __device__ int adj_get_map0(int md, int nv, int i, const int *adj0, const int *adj1,      AdjMap *m) {
     int i0, i1, i2, i3, i4;
     int rbc, offset, j, k;
     i0 = i / md;
@@ -3502,7 +3502,7 @@ static __device__ int adj_get_map0(int md, int nv, int i, const int *adj0, const
 
     k   = (i0 % nv) * md;
     i1 = fetch(adj0, k + j);
-    if (i1 == -1) return 0; /* invalid */
+    if (i1 == -1) return 0;
 
     i2 = fetch(adj0, k + ((j + 1) % md));
     if (i2 == -1) {
@@ -3516,7 +3516,7 @@ static __device__ int adj_get_map0(int md, int nv, int i, const int *adj0, const
 
     rbc = i0 / nv;
     offset = rbc * nv;
-    i1 += offset; i2 += offset; i3 += offset; i4 += offset; /* no i0 */
+    i1 += offset; i2 += offset; i3 += offset; i4 += offset;
 
     assert(rbc < MAX_CELL_NUM);
 
@@ -3525,7 +3525,7 @@ static __device__ int adj_get_map0(int md, int nv, int i, const int *adj0, const
     return 1;
 }
 
-static __device__ int adj_get_map(int i, Adj_v *adj, /**/ AdjMap *m) {
+static __device__ int adj_get_map(int i, Adj_v *adj,      AdjMap *m) {
     int md, nv;
     md = adj->md;
     nv = adj->nv;
@@ -3537,11 +3537,11 @@ struct AreaVolume;
 struct Particle;
 struct int4;
 
-void area_volume_ini(int nv, int nt, const int4 *tt, int max_cell, AreaVolume**); // <1>
+void area_volume_ini(int nv, int nt, const int4 *tt, int max_cell, AreaVolume**);
 void area_volume_fin(AreaVolume*);
 
-void area_volume_compute(AreaVolume*, int nm, const Particle*, /**/ float **av); // <2>
-void area_volume_host(AreaVolume*, /**/ float **av); // <3>
+void area_volume_compute(AreaVolume*, int nm, const Particle*,      float **av);
+void area_volume_host(AreaVolume*,      float **av);
 
 
 enum {
@@ -3550,13 +3550,13 @@ enum {
 };
 
 struct StressFree_v {
-    float *ll; /* eq. spring lengths */
-    float *aa; /* eq. triangle areas */
+    float *ll;
+    float *aa;
 };
 
 struct StressFul_v {
-    float l0; /* eq. spring length */
-    float a0; /* eq. triangle area */
+    float l0;
+    float a0;
 };
 
 union SFreeInfo {
@@ -3571,8 +3571,8 @@ enum {
 
 struct Rnd0_v {};
 struct Rnd1_v {
-    int *anti; /* indices of anti edges */
-    float *rr; /* random numbers (managed by RbcRnd) */
+    int *anti;
+    float *rr;
 };
 
 union RndInfo {
@@ -3616,7 +3616,7 @@ static __device__ RbcForceRnd0Info rbc_force_fetch_rnd_info(int, int, Rnd0_v rv)
 }
 
 static __device__ RbcForceRnd1Info rbc_force_fetch_rnd_info(int i0, int j, Rnd1_v rv) {
-    /* i0: edge index; j: vertex index */
+
     RbcForceRnd1Info ri;
     int i1;
     i1 = rv.anti[i0];
@@ -3627,23 +3627,23 @@ static __device__ RbcForceRnd1Info rbc_force_fetch_rnd_info(int i0, int j, Rnd1_
 static __device__ double3 rbc_force_fvolume(const RbcParams_v *par, double3 r2, double3 r3, double v0, double v) {
     double f0;
     double3 f;
-    cross(&r3, &r2, /**/ &f);
+    cross(&r3, &r2,      &f);
     f0 = par->kv * (v - v0) / (6 * v0);
-    scal(f0, /*io*/ &f);
+    scal(f0,        &f);
     return f;
 }
 
 static __device__ double3 rbc_force_farea(const RbcParams_v *par, double3 x21, double3 x31, double3 x32,   double a0, double A0, double A) {
     double3 nn, f;
     double a, f0, fa, fA;
-    cross(&x21, &x31, /**/ &nn);
-    cross(&nn, &x32,  /**/ &f);
+    cross(&x21, &x31,      &nn);
+    cross(&nn, &x32,       &f);
     a = 0.5 * sqrt(dot<double>(&nn, &nn));
 
     fA = - par->ka * (A - A0) / (4 * A0 * a);
     fa = - par->kd * (a - a0) / (4 * a0 * a);
     f0 = fA + fa;
-    scal(f0, /*io*/ &f);
+    scal(f0,        &f);
     return f;
 }
 
@@ -3651,7 +3651,7 @@ enum {RBC_FORCE_SPRING_OK, RBC_FORCE_SPRING_LONG};
 static __device__ double rbc_force_sq(double x) { return x * x; }
 static __device__ double rbc_force_wlc0(double r) { return (4*rbc_force_sq(r)-9*r+6)/(4*rbc_force_sq(r-1)); }
 static __device__ double rbc_force_wlc(double lmax, double ks, double r) { return ks/lmax*rbc_force_wlc0(r/lmax); }
-static __device__ double3 rbc_force_fspring(const RbcParams_v *par, double3 x21, double l0, /**/ int *pstatus) {
+static __device__ double3 rbc_force_fspring(const RbcParams_v *par, double3 x21, double l0,      int *pstatus) {
   #define wlc_r(r) (rbc_force_wlc(lmax, ks, r))
     double m, r, fwlc, fpow, lmax, ks, x0;
     *pstatus = RBC_FORCE_SPRING_OK;
@@ -3662,9 +3662,9 @@ static __device__ double3 rbc_force_fspring(const RbcParams_v *par, double3 x21,
         *pstatus = RBC_FORCE_SPRING_LONG;
         r = RBC_SPRING_CAP * lmax;
     }
-    fwlc =   wlc_r(r); /* make fwlc + fpow = 0 for r = l0 */
+    fwlc =   wlc_r(r);
     fpow = - wlc_r(l0) * powf(l0, m + 1) / powf(r, m + 1);
-    scal(fwlc + fpow, /*io*/ &x21);
+    scal(fwlc + fpow,        &x21);
     return x21;
   #undef wlc_r
 }
@@ -3680,32 +3680,32 @@ static __device__ double3 rbc_force_ftri(const RbcParams_v *par, double3 r1, dou
     double3 f, fv, fs;
     double3 x21, x32, x31;
 
-    diff(&r2, &r1, /**/ &x21);
-    diff(&r3, &r2, /**/ &x32);
-    diff(&r3, &r1, /**/ &x31);
+    diff(&r2, &r1,      &x21);
+    diff(&r3, &r2,      &x32);
+    diff(&r3, &r1,      &x31);
 
     f = rbc_force_farea(par, x21, x31, x32, si.a0, par->totArea, area);
     fv = rbc_force_fvolume(par, r2, r3, par->totVolume, volume);
-    add(&fv, /*io*/ &f);
+    add(&fv,        &f);
 
     fs = rbc_force_fspring(par, x21, si.l0, &spring_status);
 #ifdef RBC_SPRING_FAIL
     if (spring_status != RBC_FORCE_SPRING_OK) rbc_force_report_tri(r1, r2, r3);
 #endif
-    add(&fs, /*io*/ &f);
+    add(&fs,        &f);
     return f;
 }
 
 static __device__ double3 rbc_force_fvisc(const RbcParams_v *par, double3 r1, double3 r2, double3 u1, double3 u2) {
     const double gammaC = par->gammaC, gammaT = par->gammaT;
     double3 du, dr, f = make_double3(0, 0, 0);
-    diff(&u2, &u1, /**/ &du);
-    diff(&r1, &r2, /**/ &dr);
+    diff(&u2, &u1,      &du);
+    diff(&r1, &r2,      &dr);
 
     double fac = dot<double>(&du, &dr) / dot<double>(&dr, &dr);
 
-    axpy(gammaT      , &du, /**/ &f);
-    axpy(gammaC * fac, &dr, /**/ &f);
+    axpy(gammaT      , &du,      &f);
+    axpy(gammaC * fac, &dr,      &f);
 
     return f;
 }
@@ -3726,10 +3726,10 @@ static __device__ double  rbc_force_frnd0(double dt, const RbcParams_v *par, dou
 static __device__ double3 rbc_force_frnd(double dt, const RbcParams_v *par, double3 r1, double3 r2, RbcForceRnd1Info rnd) {
     double3 dr;
     double r, f0;
-    diff(&r1, &r2, /**/ &dr);
+    diff(&r1, &r2,      &dr);
     r = sqrtf(dot<double>(&dr, &dr));
     f0 = rbc_force_frnd0(dt, par, rnd.r);
-    scal(f0/r, /*io*/ &dr);
+    scal(f0/r,        &dr);
     return dr;
 }
 struct RbcForcePart { double3 r, v; };
@@ -3758,7 +3758,7 @@ template <typename RndInfo>
 static __device__ void rbc_force_adj_tris(double dt,
                                 const RbcParams_v *par, const Particle *pp,  const RbcForcePart p0, const float *av,
                                 const RbcForceStressInfo si, RndInfo ri,
-                                AdjMap *m, /*io*/ double f[3]) {
+                                AdjMap *m,        double f[3]) {
     enum {X, Y, Z};
     double3 f0;
     int i1, i2, rbc;
@@ -3784,7 +3784,7 @@ __global__ void rbc_force_kernel(double dt,
                       RbcParams_v par, int md, int nv, int nc, const Particle *pp,
                       Adj_v adj,
                       Stress_v sv, Rnd_v rv,
-                      const float *av, /**/ float *ff) {
+                      const float *av,      float *ff) {
     enum {X, Y, Z};
     int i, pid, valid;
     double f[3];
@@ -3795,7 +3795,7 @@ __global__ void rbc_force_kernel(double dt,
     pid = i / md;
 
     if (pid >= nc * nv) return;
-    valid = adj_get_map(i, &adj, /**/ &m);
+    valid = adj_get_map(i, &adj,      &m);
     if (!valid) return;
     si = rbc_force_fetch_stress_info(i % (md * nv), sv);
     auto ri = rbc_force_fetch_rnd_info(i % (md * nv), i, rv);
@@ -3803,7 +3803,7 @@ __global__ void rbc_force_kernel(double dt,
     const RbcForcePart p0 = rbc_force_fetch_part(pp, m.i0);
 
     f[X] = f[Y] = f[Z] = 0;
-    rbc_force_adj_tris(dt, &par, pp, p0, av, si, ri, &m, /*io*/ f);
+    rbc_force_adj_tris(dt, &par, pp, p0, av, si, ri, &m,        f);
 
     atomicAdd(&ff[3 * pid + 0], f[X]);
     atomicAdd(&ff[3 * pid + 1], f[Y]);
@@ -3827,8 +3827,8 @@ void rbc_force_ini(const MeshRead *cell, RbcForce **pq) {
     md = mesh_read_get_md(cell);
     tt = mesh_read_get_tri(cell);
 
-    UC(adj_ini(md, nt, nv, tt, /**/ &q->adj));
-    UC(adj_view_ini(q->adj, /**/ &q->adj_v));
+    UC(adj_ini(md, nt, nv, tt,      &q->adj));
+    UC(adj_view_ini(q->adj,      &q->adj_v));
 
     *pq = q;
 }
@@ -3858,7 +3858,7 @@ void rbc_force_fin(RbcForce *q) {
     EFREE(q);
 }
 
-void rbc_force_set_stressful(int nt, float totArea, /**/ RbcForce *f) {
+void rbc_force_set_stressful(int nt, float totArea,      RbcForce *f) {
     StressFul_v v;
     float a0 = totArea / nt;
 
@@ -3869,7 +3869,7 @@ void rbc_force_set_stressful(int nt, float totArea, /**/ RbcForce *f) {
     f->sinfo.sful = v;
 }
 
-void rbc_force_set_stressfree(const char *fname, /**/ RbcForce *f) {
+void rbc_force_set_stressfree(const char *fname,      RbcForce *f) {
     StressFree_v v;
     MeshRead *cell;
     const Adj *adj;
@@ -3882,7 +3882,7 @@ void rbc_force_set_stressfree(const char *fname, /**/ RbcForce *f) {
     UC(mesh_read_ini_off(fname, &cell));
     rr = mesh_read_get_vert(cell);
 
-    UC(rbc_shape_ini(adj, rr, /**/ &shape));
+    UC(rbc_shape_ini(adj, rr,      &shape));
 
     n = adj_get_max(adj);
 
@@ -3918,7 +3918,7 @@ void rbc_force_set_rnd1(int seed, RbcForce *f) {
     Dalloc(&rnd1.anti, n);
 
     EMALLOC(n, &hst);
-    adj_get_anti(adj, /**/ hst);
+    adj_get_anti(adj,      hst);
     cH2D(rnd1.anti, hst, n);
     EFREE(hst);
 
@@ -3930,28 +3930,28 @@ void rbc_force_set_rnd1(int seed, RbcForce *f) {
 
 void rbc_force_set_bending(const MeshRead *cell, const char *type, RbcForce *q) {
     if (same_str(type, "kantor"))
-        UC(bending_kantor_ini(cell, /**/ &q->bending));
+        UC(bending_kantor_ini(cell,      &q->bending));
     else if (same_str(type, "juelicher"))
-        UC(bending_juelicher_ini(cell, /**/ &q->bending));
+        UC(bending_juelicher_ini(cell,      &q->bending));
     else if (same_str(type, "none"))
-        UC(bending_none_ini(cell, /**/ &q->bending));
+        UC(bending_none_ini(cell,      &q->bending));
     else
         ERR("unknown bending type '%s'", type);
     msg_print("bending: %s", type);
 }
-static void get_stress_view(const RbcForce *f, /**/ StressFul_v *v) {
+static void get_stress_view(const RbcForce *f,      StressFul_v *v) {
     *v = f->sinfo.sful;
 }
 
-static void get_stress_view(const RbcForce *f, /**/ StressFree_v *v) {
+static void get_stress_view(const RbcForce *f,      StressFree_v *v) {
     *v = f->sinfo.sfree;
 }
 
-static void get_rnd_view(const RbcForce *f, /**/ Rnd0_v *v) {
+static void get_rnd_view(const RbcForce *f,      Rnd0_v *v) {
     *v = f->rinfo.rnd0;
 }
 
-static void get_rnd_view(const RbcForce *f, /**/ Rnd1_v *v) {
+static void get_rnd_view(const RbcForce *f,      Rnd1_v *v) {
     *v = f->rinfo.rnd1;
 }
 
@@ -3959,31 +3959,31 @@ template <typename Stress_v, typename Rnd_v>
 static void apply(float dt, RbcParams_v parv, int nc, int nv, int md,
                   const Particle *pp,
                   const Adj_v *adj_v, Stress_v sv, Rnd_v rv,
-                  float *av, /**/ Force *ff) {
+                  float *av,      Force *ff) {
     if (!d::is_device_pointer(ff))  ERR("`ff` is not a device pointer");
     KL(rbc_force_kernel, (k_cnf(nc*nv*md)), (dt, parv, md, nv, nc, pp,
-                                                 *adj_v, sv, rv, av, /**/ (float*)ff));
+                                                 *adj_v, sv, rv, av,      (float*)ff));
 }
 
 template <typename Stress_v>
 static void dispatch_rnd(float dt, RbcParams_v parv, int nc, int nv, int md,
                          const Particle *pp, RbcRnd *rnd,
                          const Adj_v *adj_v, RbcForce *t, Stress_v sv,
-                         float *av, /**/ Force *ff){
+                         float *av,      Force *ff){
     if (is_rnd(t)) {
         Rnd1_v rv;
         get_rnd_view(t, &rv);
-        rbc_rnd_gen(rnd, nc * md * nv, /**/ &rv.rr);
-        apply(dt, parv, nc, nv, md, pp, adj_v, sv, rv, av, /**/ ff);
+        rbc_rnd_gen(rnd, nc * md * nv,      &rv.rr);
+        apply(dt, parv, nc, nv, md, pp, adj_v, sv, rv, av,      ff);
     }
     else {
         Rnd0_v rv;
         get_rnd_view(t, &rv);
-        apply(dt, parv, nc, nv, md, pp, adj_v, sv, rv, av, /**/ ff);
+        apply(dt, parv, nc, nv, md, pp, adj_v, sv, rv, av,      ff);
     }
 }
 
-void rbc_force_apply(RbcForce *t, const RbcParams *par, float dt, const RbcQuants *q, /**/ Force *ff) {
+void rbc_force_apply(RbcForce *t, const RbcParams *par, float dt, const RbcQuants *q,      Force *ff) {
     RbcParams_v parv;
     float *av;
     if (q->nc <= 0) return;
@@ -3991,31 +3991,31 @@ void rbc_force_apply(RbcForce *t, const RbcParams *par, float dt, const RbcQuant
         ERR("`q->pp` is not a device pointer");
 
     parv = rbc_params_get_view(par);
-    UC(area_volume_compute(q->area_volume, q->nc, q->pp, /**/ &av));
-    UC(bending_apply(t->bending, par, q, /*io*/ ff));
+    UC(area_volume_compute(q->area_volume, q->nc, q->pp,      &av));
+    UC(bending_apply(t->bending, par, q,        ff));
 
     if (is_stress_free(t)) {
         StressFree_v si;
         get_stress_view(t, &si);
         dispatch_rnd(dt, parv, q->nc, q->nv, q->md, q->pp, t->rnd,
-                     t->adj_v, t, si, av, /**/ ff);
+                     t->adj_v, t, si, av,      ff);
     }
     else {
         StressFul_v si;
         get_stress_view(t, &si);
         dispatch_rnd(dt, parv, q->nc, q->nv, q->md, q->pp, t->rnd,
-                     t->adj_v, t, si, av, /**/ ff);
+                     t->adj_v, t, si, av,      ff);
     }
 }
 void rbc_force_stat(float *pArea, float *pVolume) {
-    *pArea = 1.0; *pVolume = 1.0; /* TODO */
+    *pArea = 1.0; *pVolume = 1.0;
 }
 
 
 
 
 
-/* The half-edge implementation is owned by the I/O unit. */
+
 struct HeRead;
 struct He;
 int he_read_int4_ini(int, int, const int4 *, HeRead **);
@@ -4028,44 +4028,44 @@ int he_flp(He *, int);
 int he_ver(He *, int);
 int he_hdg_edg(He *, int);
 
-/* Force units provide the shared infrastructure used by bending units. */
+
 #define UDX_RBC_BENDING_COMMON
 
 
-// Grouped editable compilation unit for the Juelicher and Kantor bending forces.
+
 
 
 
 #include <stdio.h>
 #include <assert.h>
 
-/* [k]ernel [l]aunch macros */
+
 #if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
     !defined(KL_SYNC)
 #define KL_RELEASE
 #endif
 
-/* [c]uda [c]heck macro */
+
 #if !defined(CC_RELEASE) && !defined(CC_SYNC)
   #define CC_RELEASE
 #endif
 
-/* who plays as device? */
+
 #if !defined(DEV_CUDA) && !defined(DEV_CPU)
   #define DEV_CUDA
 #endif
 
-/* cuda memory allocation calls */
+
 #if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
   #define CUDA_ALLOC_RELEASE
 #endif
 
-/* compute rbc force in double or float */
+
 #if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
   #define RBC_DOUBLE
 #endif
 
-/* what to do if r > lmax for a spring? */
+
 #if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
   #define RBC_SPRING_IGNORE
 #endif
@@ -4075,10 +4075,10 @@ int he_hdg_edg(He *, int);
 #endif
 
 
-/* shared generated definitions used by both bending implementations */
+
 #ifndef UDX_RBC_BENDING_COMMON
 #define UDX_RBC_BENDING_COMMON
-/* solvent colors */
+
 #define XMACRO_COLOR(_)                         \
     _(BLUE)                                     \
     _(RED)
@@ -4092,44 +4092,44 @@ enum {
 #undef make_enum_color
 
 enum {
-    /* wall margins */
+
     XWM = 6,
     YWM = 6,
     ZWM = 6,
 
     SAFETY_FACTOR_MAXP = 3,
 
-    /* maximum number of particles per solid */
+
     MAX_PSOLID_NUM = 12000,
 
-    /* maximum number of solids per node */
+
     MAX_SOLIDS = 100,
 
-    /* maximum number of object types (solid, rbc, ...) */
+
     MAX_MBR_TYPES = 2,
     MAX_RIG_TYPES = 2,
     MAX_OBJ_TYPES = MAX_MBR_TYPES + MAX_RIG_TYPES,
 
-    /* maximum number density of particles of the objects */
+
     MAX_OBJ_DENSITY = 30,
 
-    /* maximum number of red blood cells per node */
+
     MAX_CELL_NUM = 1500,
 
-    /* maximum texture size in bytes */
+
     MAX_TEXO_SIZE = 100000000,
 
-    /* safety factor for dpd halo interactions */
+
     HSAFETY_FACTOR = 10,
 
-    /* safety factor for odist fragments */
+
     ODSTR_FACTOR = 3,
 };
 
-/* for the spring forces r = min(lmax*RBC_SPRING_CAP, r) */
+
 #define RBC_SPRING_CAP (0.99)
 template <typename T, int N>
-struct Sarray { /* [s]tatic array */
+struct Sarray {
     T d[N];
 };
 
@@ -4138,13 +4138,13 @@ struct Particle {
 };
 
 struct Rigid {
-    float Iinv[6],            /* moment of inertia            6        */
-        mass,                 /* mass of the solid            7        */
-        com[3],               /* [c]enter [o]f [m]ass         10       */
-        v[3], om[3],          /* linear and angular velocity  13 16    */
-        e0[3], e1[3], e2[3],  /* local referential            19 22 25 */
-        fo[3], to[3],         /* force, torque                28 31    */
-        id;                   /* id of the solid              32       */
+    float Iinv[6],
+        mass,
+        com[3],
+        v[3], om[3],
+        e0[3], e1[3], e2[3],
+        fo[3], to[3],
+        id;
 };
 
 struct Force {
@@ -4152,12 +4152,12 @@ struct Force {
 };
 
 struct Momentum {
-    float P[3], L[3]; /* linear and angular momentum */
+    float P[3], L[3];
 };
 
 struct Positioncp {
-    float rc[3]; /* current position  */
-    float rp[3]; /* previous position */
+    float rc[3];
+    float rp[3];
 };
 
 typedef Sarray<int, 26>       int26;
@@ -4169,21 +4169,21 @@ typedef Sarray<Force*,    26> Fop26;
 typedef Sarray<Momentum*, 26> Mop26;
 typedef Sarray<Positioncp*, 26> Pocpp26;
 
-/* particles wrap */
+
 struct PaWrap {
     int n;
     const Particle *pp;
 };
 
-/* forces wrap */
+
 struct FoWrap {
     int n;
     Force *ff;
 };
-/* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
+
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
 
-/* a common kernel execution configuration */
+
 #define k_cnf(n) ceiln((n), 128), 128
 
 #define dSync() CC(d::DeviceSynchronize())
@@ -4192,51 +4192,51 @@ struct FoWrap {
 #define D2H d::MemcpyDeviceToHost
 #define H2D d::MemcpyHostToDevice
 #define H2H d::MemcpyHostToHost
-#define A2A d::MemcpyDefault /* "[a]ny to [a]ny" */
+#define A2A d::MemcpyDefault
 
 #define cD2D(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), D2D))
-#define cH2H(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), H2H))  /* [t]to, [f]rom */
+#define cH2H(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), H2H))
 #define cA2A(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), A2A))
 #define cD2H(H, D, n) CC(d::Memcpy((H), (D), (n) * sizeof((H)[0]), D2H))
 #define cH2D(D, H, n) CC(d::Memcpy((D), (H), (n) * sizeof((H)[0]), H2D))
 
 #define aD2D(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), D2D))
-#define aH2H(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), H2H))  /* [t]to, [f]rom */
+#define aH2H(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), H2H))
 #define aA2A(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), A2A))
 #define aD2H(H, D, n) CC(d::MemcpyAsync((H), (D), (n) * sizeof((H)[0]), D2H))
 #define aH2D(D, H, n) CC(d::MemcpyAsync((D), (H), (n) * sizeof((H)[0]), H2D))
 
-/* device allocation */
+
 #define Dfree(D)      CC(d::Free(D))
 #define Dalloc(D, n)  CC(d::Malloc((void**)(D), (n) * sizeof(**(D))))
 
-/* [d]evice set */
+
 #define Dset(P, v, n) CC(d::Memset(P, v, (n)*sizeof(*(P))))
 #define Dzero(P, n)   Dset(P, 0, n)
 
-/* [d]evice [a]synchronous set */
+
 #define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
 #define DzeroA(P, n)   DsetA(P, 0, n)
-/* use templates here because we might have mixed float/double */
+
 
 #define _HD_ __host__ __device__
 
 template <typename T1, typename T2>
-_HD_ void scal(const T1 a, /*io*/ T2 *b) {
+_HD_ void scal(const T1 a,        T2 *b) {
     b->x *= a;
     b->y *= a;
     b->z *= a;
 }
 
 template <typename T1, typename T2>
-_HD_ void add(const T1 *a, /*io*/ T2 *b) {
+_HD_ void add(const T1 *a,        T2 *b) {
     b->x += a->x;
     b->y += a->y;
     b->z += a->z;
 }
 
 template <typename T1, typename T2, typename T3>
-_HD_ void diff(const T1 *a, const T2 *b, /**/ T3 *c) {
+_HD_ void diff(const T1 *a, const T2 *b,      T3 *c) {
     c->x = a->x - b->x;
     c->y = a->y - b->y;
     c->z = a->z - b->z;
@@ -4248,14 +4248,14 @@ _HD_ T1 dot(const T2 *a, const T3 *b) {
 }
 
 template <typename T1, typename T2, typename T3>
-_HD_ void cross(const T1 *a, const T2 *b, /**/ T3 *c) {
+_HD_ void cross(const T1 *a, const T2 *b,      T3 *c) {
     c->x = a->y * b->z - a->z * b->y;
     c->y = a->z * b->x - a->x * b->z;
     c->z = a->x * b->y - a->y * b->x;
 }
 
 template <typename T1, typename T2, typename T3>
-_HD_ void scalmult(const T1 *a, const T2 x, /**/ const T3 *b) {
+_HD_ void scalmult(const T1 *a, const T2 x,      const T3 *b) {
     b->x = a->x * x;
     b->y = a->y * x;
     b->z = a->z * x;
@@ -4263,14 +4263,14 @@ _HD_ void scalmult(const T1 *a, const T2 x, /**/ const T3 *b) {
 
 
 template <typename T1, typename T2, typename T3, typename T4>
-_HD_ void apxb(const T1 *a, const T2 x, const T3 *b, /**/ T4 *c) {
+_HD_ void apxb(const T1 *a, const T2 x, const T3 *b,      T4 *c) {
     c->x = a->x + x * b->x;
     c->y = a->y + x * b->y;
     c->z = a->z + x * b->z;
 }
 
 template <typename T1, typename T2, typename T3>
-_HD_ void axpy(const T1 a, const T2 *x, /*io*/ T3 *y) {
+_HD_ void axpy(const T1 a, const T2 *x,        T3 *y) {
     y->x += a * x->x;
     y->y += a * x->y;
     y->z += a * x->z;
@@ -4282,7 +4282,7 @@ _HD_ void axpy(const T1 a, const T2 *x, /*io*/ T3 *y) {
 
 BEGIN
 
-_S_ void diff(const double *a, const double *b, /**/ double  *c) {
+_S_ void diff(const double *a, const double *b,      double  *c) {
     enum {X, Y, Z};
     c[X] = a[X] - b[X];
     c[Y] = a[Y] - b[Y];
@@ -4306,15 +4306,15 @@ _S_ void  sort3(double *a, double *b, double *c) {
 }
 
 _I_ double kahan_area0(double a, double b, double c) {
-    sort3(&c, &b, &a); /* make a > b > c */
+    sort3(&c, &b, &a);
     return sqrt((a+(b+c))*(c-(a-b))*(c+(a-b))*(a+(b-c)))/4;
 }
 
 _I_ double kahan_area(const double r0[3], const double r1[3], const double r2[3]) {
     double r01[3], r12[3], r20[3], a, b, c;
-    diff(r0, r1, /**/ r01);
-    diff(r1, r2, /**/ r12);
-    diff(r2, r0, /**/ r20);
+    diff(r0, r1,      r01);
+    diff(r1, r2,      r12);
+    diff(r2, r0,      r20);
     a = vabs(r01); b = vabs(r12); c = vabs(r20);
     return kahan_area0(a, b, c);
 }
@@ -4357,7 +4357,7 @@ _I_ double orient3d(const double a[3], const double b[3], const double c[3], con
     return ax*(by*cz - bz*cy) + bx*(cy*az - cz*ay) + cx*(ay*bz - az*by);
 }
 
-_I_ void ac_bc_cross(const double a[3], const double b[3], const double c[3], /**/ double r[3]) {
+_I_ void ac_bc_cross(const double a[3], const double b[3], const double c[3],      double r[3]) {
     enum {X, Y, Z};
     r[X] = orient2d_yz(a, b, c);
     r[Y] = orient2d_zx(a, b, c);
@@ -4378,8 +4378,8 @@ _I_ void dihedral_xy(const double a[3], const double b[3], const double c[3], co
     double bcx, bcy, bcz, bc;
     double k[3], l[3];
 
-    ac_bc_cross(b, c, a, /**/ k);
-    ac_bc_cross(c, b, d, /**/ l);
+    ac_bc_cross(b, c, a,      k);
+    ac_bc_cross(c, b, d,      l);
 
     bcx = b[X] - c[X];
     bcy = b[Y] - c[Y];
@@ -4418,14 +4418,14 @@ _I_ T shfl(T val, unsigned int width) {
 #define _I_ static __device__
 
 template <typename T>
-_I_ T warpReduceSum(T v)  // <1>
+_I_ T warpReduceSum(T v)
 {
     for (int offset = warpSize>>1; offset > 0; offset >>= 1)
         v += shfl_down(v, offset);
     return v;
 }
 
-_I_ float2 warpReduceSum(float2 val)  // <2>
+_I_ float2 warpReduceSum(float2 val)
 {
     for (int offset = warpSize / 2; offset > 0; offset /= 2) {
         val.x += shfl_down(val.x, offset);
@@ -4434,7 +4434,7 @@ _I_ float2 warpReduceSum(float2 val)  // <2>
     return val;
 }
 
-_I_ float3 warpReduceSum(float3 val)  // <3>
+_I_ float3 warpReduceSum(float3 val)
 {
     for (int offset = warpSize/2; offset > 0; offset /= 2) {
         val.x += shfl_down(val.x, offset);
@@ -4470,7 +4470,7 @@ const int4  *mesh_read_get_dih(MeshRead*);
         error_abort();                                          \
     } while (0)
 
-/* udx check */
+
 #define UC(F) do {                              \
         error_stack_push(__FILE__, __LINE__);   \
         F;                                      \
@@ -4481,7 +4481,7 @@ const int4  *mesh_read_get_dih(MeshRead*);
         error_stack_pop();                      \
     } while (0)
 
-/* [B]o[p] [c]heck */
+
 #define BPC(ans) do {                           \
         BopStatus s = (ans);                    \
         if (!bop_success(s)) {                  \
@@ -4503,23 +4503,23 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-void msg_ini(int rank); // <1>
-void msg_print(const char *fmt, ...); // <2>
-void emalloc(size_t, /**/ void**); // <1>
-void efree(void*); // <2>
-void *ememcpy(void *dest, const void *src, size_t n); // <3>
+void msg_ini(int rank);
+void msg_print(const char *fmt, ...);
+void emalloc(size_t,      void**);
+void efree(void*);
+void *ememcpy(void *dest, const void *src, size_t n);
 
 #define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
 #define EFREE(pdata) UC(efree(pdata))
 #define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
 
-void efopen(const char *fname, const char *mode, /**/ FILE**);
+void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
 void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
 void efgets(char *s, int size, FILE*);
 
-bool same_str(const char *a, const char *b); // <1>
+bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
 #define T HeRead
 
@@ -4529,10 +4529,10 @@ typedef struct T T;
 
 int he_read_ini(const char *path, T**);
 
-/* tri = [t0, t1, t2] [t0, t2, t2], ... */
+
 int he_read_tri_ini(int nv, int nt, int *tri, T**);
 
-/* tri = [tri[0].x tri[0].y tri[0].z], ... [tri[0].x tri[0].y tri[0].z] */
+
 int he_read_int4_ini(int nv, int nt, const int4 *tri, T**);
 
 int he_read_fin(T*);
@@ -4564,33 +4564,33 @@ int he_ini(HeRead*, T**);
 int he_file_ini(const char *path, T**);
 int he_fin(T*);
 
-int he_nv(T*); /* number of vert, edg, edg, hdg */
+int he_nv(T*);
 int he_nt(T*);
 int he_ne(T*);
 int he_nh(T*);
 
-int he_nxt(T*, int h); /* return half-edg */
+int he_nxt(T*, int h);
 int he_flp(T*, int h);
 
-int he_ver(T*, int h); /* return ver, tri, or edg */
+int he_ver(T*, int h);
 int he_tri(T*, int h);
 int he_edg(T*, int h);
 
-int he_hdg_ver(T*, int v); /* return half-edg */
+int he_hdg_ver(T*, int v);
 int he_hdg_edg(T*, int e);
 int he_hdg_tri(T*, int t);
 
-int he_bnd(T*, int h); /* 1 for boundary */
+int he_bnd(T*, int h);
 
 #undef T
 
-/* function and variable type [q]ualifiers */
+
 
 #if   defined(DEV_CUDA)
-/* B.1. Function Type Qualifiers */
-/* B.2. Variable Type Qualifiers */
+
+
 #elif defined(DEV_CPU)
-/* B.1. Function Type Qualifiers */
+
 #ifdef __device__
   #undef  __device__
   #define __device__
@@ -4616,8 +4616,8 @@ int he_bnd(T*, int h); /* 1 for boundary */
   #define __forceinline__
 #endif
 
-/* B.2. Variable Type Qualifiers */
-/* __device__ : also a function qualifier */
+
+
 #ifdef __constant__
   #undef  __constant__
   #define __constant__
@@ -4640,8 +4640,8 @@ int he_bnd(T*, int h); /* 1 for boundary */
 #else
   #error DEV_* is undefined
 #endif
-namespace d {  /* a wrapper for device API */
-typedef int Stream_t; /* TODO: streams are not supported */
+namespace d {
+typedef int Stream_t;
 enum {MemcpyHostToHost, MemcpyHostToDevice,
       MemcpyDeviceToHost, MemcpyDeviceToDevice,
       MemcpyDefault};
@@ -4710,10 +4710,10 @@ static int   warpSize = 1;
 #else
   #error DEV_* is undefined
 #endif
-/* [c]uda [c]heck macros */
+
 
 #if   defined(CC_SYNC)
-/* Aggressive [sync]ronization */
+
 #define CC(ans)                                             \
     do {                                                    \
         d::DeviceSynchronize();                             \
@@ -4721,7 +4721,7 @@ static int   warpSize = 1;
         d::DeviceSynchronize();                             \
     } while (0)
 #elif defined(CC_RELEASE)
-/* [c]cuda [c]heck */
+
 #define CC(ans)                                             \
     do { cc::check((ans), __FILE__, __LINE__);} while (0)
 #else
@@ -4734,8 +4734,8 @@ void check(int rc, const char *file, int line);
 
 
 
-/* TODO: header includes header */
-/* [k]ernel [l]aunch macros */
+
+
 
 #if    defined(KL_RELEASE)
 #define KL_BEFORE(s, C) if (!kl::safe(ESC C)) continue;
@@ -4779,7 +4779,7 @@ inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
         KL_AFTER(#F);                           \
     } while (0)
 
-/* TODO: header includes header */
+
 
 struct Config;
 struct RbcParams;
@@ -4810,11 +4810,11 @@ struct Adj_v;
 struct AdjMap;
 struct int4;
 
-void adj_ini(int md, int nt, int nv, const int4 *tt, /**/ Adj**);
+void adj_ini(int md, int nt, int nv, const int4 *tt,      Adj**);
 void adj_fin(Adj*);
-int  adj_get_map(int i, const Adj*, /**/ AdjMap *m);
+int  adj_get_map(int i, const Adj*,      AdjMap *m);
 int  adj_get_max(const Adj*);
-void adj_get_anti(const Adj*, /**/ int *anti);
+void adj_get_anti(const Adj*,      int *anti);
 
 void adj_view_ini(const Adj*, Adj_v**);
 void adj_view_fin(Adj_v*);
@@ -4823,13 +4823,13 @@ struct AreaVolume;
 struct Particle;
 
 struct RbcQuants {
-    int n, nc;               /* number of particles, cells                */
-    int nt, nv;              /* number of triangles and vertices per mesh */
-    int md;                  /* maximum valence of the mesh               */
-    Particle *pp, *pp_hst;   /* vertices particles on host and device     */
-    bool ids;                /* global ids active ?                       */
-    int *ii;                 /* global ids on host                        */
-    AreaVolume *area_volume; /* to compute area and volume */
+    int n, nc;
+    int nt, nv;
+    int md;
+    Particle *pp, *pp_hst;
+    bool ids;
+    int *ii;
+    AreaVolume *area_volume;
 };
 
 
@@ -4844,7 +4844,7 @@ struct Adj_v {
 };
 
 static __device__ int fetch(const int *a, int i) { return a[i]; }
-static __device__ int adj_get_map0(int md, int nv, int i, const int *adj0, const int *adj1, /**/ AdjMap *m) {
+static __device__ int adj_get_map0(int md, int nv, int i, const int *adj0, const int *adj1,      AdjMap *m) {
     int i0, i1, i2, i3, i4;
     int rbc, offset, j, k;
     i0 = i / md;
@@ -4852,7 +4852,7 @@ static __device__ int adj_get_map0(int md, int nv, int i, const int *adj0, const
 
     k   = (i0 % nv) * md;
     i1 = fetch(adj0, k + j);
-    if (i1 == -1) return 0; /* invalid */
+    if (i1 == -1) return 0;
 
     i2 = fetch(adj0, k + ((j + 1) % md));
     if (i2 == -1) {
@@ -4866,7 +4866,7 @@ static __device__ int adj_get_map0(int md, int nv, int i, const int *adj0, const
 
     rbc = i0 / nv;
     offset = rbc * nv;
-    i1 += offset; i2 += offset; i3 += offset; i4 += offset; /* no i0 */
+    i1 += offset; i2 += offset; i3 += offset; i4 += offset;
 
     assert(rbc < MAX_CELL_NUM);
 
@@ -4875,7 +4875,7 @@ static __device__ int adj_get_map0(int md, int nv, int i, const int *adj0, const
     return 1;
 }
 
-static __device__ int adj_get_map(int i, Adj_v *adj, /**/ AdjMap *m) {
+static __device__ int adj_get_map(int i, Adj_v *adj,      AdjMap *m) {
     int md, nv;
     md = adj->md;
     nv = adj->nv;
@@ -4884,7 +4884,7 @@ static __device__ int adj_get_map(int i, Adj_v *adj, /**/ AdjMap *m) {
     return adj_get_map0(md, nv, i, adj0, adj1, m);
 }
 
-#endif /* UDX_RBC_BENDING_COMMON */
+#endif
 
 struct RbcParams;
 struct Juelicher;
@@ -4895,7 +4895,7 @@ struct RbcQuants;
 void juelicher_ini(const MeshRead*, Juelicher**);
 void juelicher_fin(Juelicher*);
 
-void juelicher_apply(Juelicher*, const RbcParams*, const RbcQuants*, /**/ Force*); // <1>
+void juelicher_apply(Juelicher*, const RbcParams*, const RbcQuants*,      Force*);
 struct Juelicher {
     int4 *tri, *dih;
 
@@ -4906,7 +4906,7 @@ struct Juelicher {
     int ne;
 };
 
-/* shared Kantor angle helpers used by both bending implementations */
+
 #ifndef UDX_RBC_KANTOR0_COMMON
 #define UDX_RBC_KANTOR0_COMMON
   #define _I_ static __device__
@@ -4923,7 +4923,7 @@ _S_ double rsqrt0(double x) { return rsqrt(x); }
 _S_ double max(double a, double b) { return a > b ? a : b; }
 
 enum {ANGLE_OK, ANGLE_BAD_A, ANGLE_BAD_B};
-_S_ int angle(double3 a, double3 b, /**/ double *pcos, double *pover_sin,
+_S_ int angle(double3 a, double3 b,      double *pcos, double *pover_sin,
               double *pover_a, double *pover_b) {
     double  cost, over_sin, over_a, over_b;
     double aa, bb, ab;
@@ -4952,7 +4952,7 @@ _S_ void dih_write(double3 a, double3 b, double3 c, double3 d) {
     PRINT("%g %g %g\n", d.x, d.y, d.z);
 }
 
-/* forces from one dihedral */
+
 template <int update>
 _S_ double3 dih0(double phi, double kb,
                  double3 a, double3 b, double3 c, double3 d) {
@@ -4960,17 +4960,17 @@ _S_ double3 dih0(double phi, double kb,
     double over_k, over_n, cosTheta, over_sin,
         beta, b11, b12, sint0kb, cost0kb;
     double3 ab, ac, cd, bc, bd, da, k, n, k_n;
-    diff(&a, &b, /**/ &ab);
-    diff(&a, &c, /**/ &ac);
-    diff(&c, &d, /**/ &cd);
-    diff(&b, &d, /**/ &bd);
-    diff(&b, &c, /**/ &bc);
-    diff(&d, &a, /**/ &da);
+    diff(&a, &b,      &ab);
+    diff(&a, &c,      &ac);
+    diff(&c, &d,      &cd);
+    diff(&b, &d,      &bd);
+    diff(&b, &c,      &bc);
+    diff(&d, &a,      &da);
 
-    cross(&ab, &ac, /**/ &k);
-    cross(&bd, &bc, /**/ &n);
+    cross(&ab, &ac,      &k);
+    cross(&bd, &bc,      &n);
 
-    status = angle(k, n, /**/
+    status = angle(k, n,
                    &cosTheta, &over_sin,
                    &over_k, &over_n);
     if (status != ANGLE_OK) {
@@ -4978,7 +4978,7 @@ _S_ double3 dih0(double phi, double kb,
         dih_write(a, b, c, d);
         EXIT();
     }
-    diff(&k, &n, /**/ &k_n);
+    diff(&k, &n,      &k_n);
     over_sin = copysign(over_sin, dot<double>(&k_n, &da));
 
     sint0kb = sin(phi) * kb;
@@ -4990,26 +4990,26 @@ _S_ double3 dih0(double phi, double kb,
 
     if (update == 1) {
         double3 r32, f1, f;
-        diff(&c, &b, /**/ &r32);
-        cross(&k, &r32, /**/ &f);
-        cross(&n, &r32, /**/ &f1);
-        scal(b11, /**/ &f);
-        axpy(b12, &f1, /**/ &f);
+        diff(&c, &b,      &r32);
+        cross(&k, &r32,      &f);
+        cross(&n, &r32,      &f1);
+        scal(b11,      &f);
+        axpy(b12, &f1,      &f);
         return f;
     }
     else if (update == 2) {
         double3 f, f1, f2, f3;
         double b22 = -beta * cosTheta * over_n * over_n;
 
-        cross(&k, &ac, /**/ &f);
-        cross(&k, &cd, /**/ &f1);
-        cross(&n, &ac, /**/ &f2);
-        cross(&n, &cd, /**/ &f3);
+        cross(&k, &ac,      &f);
+        cross(&k, &cd,      &f1);
+        cross(&n, &ac,      &f2);
+        cross(&n, &cd,      &f3);
 
-        scal(b11, /**/ &f);
-        add(&f2, /**/ &f1);
-        axpy(b12, &f1, /**/ &f);
-        axpy(b22, &f3, /**/ &f);
+        scal(b11,      &f);
+        add(&f2,      &f1);
+        axpy(b12, &f1,      &f);
+        axpy(b22, &f3,      &f);
         return f;
     }
     else {
@@ -5034,7 +5034,7 @@ END
 #undef _S_
 #undef BEGIN
 #undef END
-#endif /* UDX_RBC_KANTOR0_COMMON */
+#endif
 
 enum {X, Y, Z};
 static __device__  int small(double s) {
@@ -5047,13 +5047,13 @@ static __device__ void juelicher_append(double x, int i, float *a) { atomicAdd(&
 static __device__ double juelicher_tri_area(const double a[3], const double b[3], const double c[3]) { return tri_dev::kahan_area(a, b, c); }
 static __device__ double juelicher_tri_dih(const double a[3], const double b[3], const double c[3], const double d[3]) {
     double x, y;
-    tri_dev::dihedral_xy(a, b, c, d, /**/ &x, &y);
-    return -atan2(y, x); /* TODO: */
+    tri_dev::dihedral_xy(a, b, c, d,      &x, &y);
+    return -atan2(y, x);
 }
-static __device__ void juelicher_vec_scalar(const double a[3], double s, /**/ double b[3]) {
+static __device__ void juelicher_vec_scalar(const double a[3], double s,      double b[3]) {
     b[X] = s*a[X]; b[Y] = s*a[Y]; b[Z] = s*a[Z];
 }
-static __device__ void juelicher_vec_minus(const double a[3], const double b[3], /**/ double c[3]) {
+static __device__ void juelicher_vec_minus(const double a[3], const double b[3],      double c[3]) {
     c[X] = a[X] - b[X];
     c[Y] = a[Y] - b[Y];
     c[Z] = a[Z] - b[Z];
@@ -5061,7 +5061,7 @@ static __device__ void juelicher_vec_minus(const double a[3], const double b[3],
 static __device__ double juelicher_vec_dot(const double a[3], const double b[3]) {
    return a[X]*b[X] + a[Y]*b[Y] + a[Z]*b[Z];
 }
-static __device__ void juelicher_vec_cross(const double a[3], const double b[3], /**/ double c[3]) {
+static __device__ void juelicher_vec_cross(const double a[3], const double b[3],      double c[3]) {
    c[X] = a[Y]*b[Z]-b[Y]*a[Z];
    c[Y] = b[X]*a[Z]-a[X]*b[Z];
    c[Z] = a[X]*b[Y]-b[X]*a[Y];
@@ -5078,33 +5078,33 @@ static __device__ double juelicher_edg_abs(const double a[3], const double b[3])
     return juelicher_vec_abs(u);
 }
 
-static __device__ double juelicher_tri_cot(const double a[3], const double b[3], const double c[3]) { /* at `b' */
+static __device__ double juelicher_tri_cot(const double a[3], const double b[3], const double c[3]) {
     double x, y, u[3], v[3];
     y = 2 * juelicher_tri_area(a, b, c);
     juelicher_vec_minus(a, b, u);
     juelicher_vec_minus(c, b, v);
     x = juelicher_vec_dot(u, v);
-    return x/y; /* TODO: */
+    return x/y;
 }
 
 static __device__ void juelicher_vec_linear_combination(double al, const double a[3], double be, const double b[3],
-                            /**/ double c[3]) {
+                                 double c[3]) {
     c[X] = al*a[X] + be*b[X];
     c[Y] = al*a[Y] + be*b[Y];
     c[Z] = al*a[Z] + be*b[Z];
 }
 
-static __device__ void juelicher_vec_negative(const double a[3], /**/ double b[3]) {
+static __device__ void juelicher_vec_negative(const double a[3],      double b[3]) {
     b[X] = -a[X]; b[Y] = -a[Y]; b[Z] = -a[Z];
 }
-static __device__ void juelicher_vec_norm(const double a[3], /**/ double b[3]) {
+static __device__ void juelicher_vec_norm(const double a[3],      double b[3]) {
     double s;
     s = juelicher_vec_abs(a);
-    if (!small(s)) juelicher_vec_scalar(a, 1/s, /**/ b);
+    if (!small(s)) juelicher_vec_scalar(a, 1/s,      b);
     else juelicher_vec_copy(a, b);
 }
 
-static __device__ void juelicher_dedg_abs(double a[3], double b[3], /**/ double da[3], double db[3]) {
+static __device__ void juelicher_dedg_abs(double a[3], double b[3],      double da[3], double db[3]) {
     double u[3], e[3];
     juelicher_vec_minus(b, a,   u);
     juelicher_vec_norm(u,   e);
@@ -5113,13 +5113,13 @@ static __device__ void juelicher_dedg_abs(double a[3], double b[3], /**/ double 
 }
 
 static __device__ void juelicher_vec_scalar_append(const double a[3], double s, int i,
-                                         /**/ float *f) {
+                                              float *f) {
     juelicher_append(s*a[X], 3*i,     f);
     juelicher_append(s*a[Y], 3*i + 1, f);
     juelicher_append(s*a[Z], 3*i + 2, f);
 }
 
-static __device__ void juelicher_tri_normal(const double a[3], const double b[3], const double c[3], /**/ double e[3]) {
+static __device__ void juelicher_tri_normal(const double a[3], const double b[3], const double c[3],      double e[3]) {
     double u[3], v[3], n[3];
     juelicher_vec_minus(b, a,   u);
     juelicher_vec_minus(c, a,   v);
@@ -5127,7 +5127,7 @@ static __device__ void juelicher_tri_normal(const double a[3], const double b[3]
     juelicher_vec_norm(n,   e);
 }
 
-static __device__ void juelicher_ddih_angle(const double a[3], const double b[3], const double c[3], const double d[3], /**/
+static __device__ void juelicher_ddih_angle(const double a[3], const double b[3], const double c[3], const double d[3],
                                   double da[3], double db[3], double dc[3], double dd[3]) {
     double n[3], k[3];
     double e, An, Ak, cn, bn, bk, ck;
@@ -5154,13 +5154,13 @@ static __device__ void juelicher_ddih_angle(const double a[3], const double b[3]
 }
 
 static __device__ void juelicher_tri_edg(const double a[3], const double b[3], const double c[3],
-                               /**/ double ab[3], double bc[3], double ca[3]) {
+                                    double ab[3], double bc[3], double ca[3]) {
     juelicher_vec_minus(b, a,   ab);
     juelicher_vec_minus(c, b,   bc);
     juelicher_vec_minus(a, c,   ca);
 }
 
-static __device__ void juelicher_dtri_area(double a[3], double b[3], double c[3],  /**/ double da[3], double db[3], double dc[3]) {
+static __device__ void juelicher_dtri_area(double a[3], double b[3], double c[3],       double da[3], double db[3], double dc[3]) {
     double n[3], n2[3], ab[3], bc[3], ca[3];
     juelicher_tri_normal(a, b, c,   n);
     juelicher_vec_scalar(n, 0.5,   n2);
@@ -5170,31 +5170,31 @@ static __device__ void juelicher_dtri_area(double a[3], double b[3], double c[3]
     juelicher_vec_cross(n2, ab,   dc);
 }
 
-static __device__ void juelicher_get(const Particle *pp, int i, /**/ double r[3]) {
+static __device__ void juelicher_get(const Particle *pp, int i,      double r[3]) {
     r[X] = pp[i].r[X];
     r[Y] = pp[i].r[Y];
     r[Z] = pp[i].r[Z];
 }
 static __device__ void juelicher_get2(const Particle *pp, int i, int j,
-                            /**/ double a[3], double b[3]) {
-    juelicher_get(pp, i, /**/ a);
-    juelicher_get(pp, j, /**/ b);
+                                 double a[3], double b[3]) {
+    juelicher_get(pp, i,      a);
+    juelicher_get(pp, j,      b);
 }
 static __device__ void juelicher_get3(const Particle *pp, int i, int j, int k,
-                            /**/ double a[3], double b[3], double c[3]) {
-    juelicher_get(pp, i, /**/ a);
-    juelicher_get(pp, j, /**/ b);
-    juelicher_get(pp, k, /**/ c);
+                                 double a[3], double b[3], double c[3]) {
+    juelicher_get(pp, i,      a);
+    juelicher_get(pp, j,      b);
+    juelicher_get(pp, k,      c);
 }
 static __device__ void juelicher_get4(const Particle *pp, int i, int j, int k, int l,
-                            /**/ double a[3], double b[3], double c[3], double d[3]) {
-    juelicher_get(pp, i, /**/ a);
-    juelicher_get(pp, j, /**/ b);
-    juelicher_get(pp, k, /**/ c);
-    juelicher_get(pp, l, /**/ d);
+                                 double a[3], double b[3], double c[3], double d[3]) {
+    juelicher_get(pp, i,      a);
+    juelicher_get(pp, j,      b);
+    juelicher_get(pp, k,      c);
+    juelicher_get(pp, l,      d);
 }
 
-__global__ void juelicher_sum_kernel(int nv, const float *from, /**/ float *to) {
+__global__ void juelicher_sum_kernel(int nv, const float *from,      float *to) {
     int i, c;
     float s;
     i  = threadIdx.x + blockIdx.x * blockDim.x;
@@ -5204,12 +5204,12 @@ __global__ void juelicher_sum_kernel(int nv, const float *from, /**/ float *to) 
     if ((threadIdx.x % warpSize) == 0) atomicAdd(&to[c], s);
 }
 
-static __device__ void juelicher_compute_area0(const Particle *pp, int4 tri, /**/ float *area) {
+static __device__ void juelicher_compute_area0(const Particle *pp, int4 tri,      float *area) {
     double area0;
     double a[3], b[3], c[3];
     int i, j, k;
     i = tri.x; j = tri.y; k = tri.z;
-    juelicher_get3(pp, i, j, k, /**/ a, b, c);
+    juelicher_get3(pp, i, j, k,      a, b, c);
     area0 = juelicher_tri_area(a, b, c)/3;
 
     juelicher_append(area0, i, area);
@@ -5219,9 +5219,9 @@ static __device__ void juelicher_compute_area0(const Particle *pp, int4 tri, /**
 
 __global__ void juelicher_compute_area_kernel(int nv, int nt, int nc,
                              const Particle *pp, const int4 *tri,
-                             /**/ float *area) {
+                                  float *area) {
     int i;
-    int t, c; /* triangle, cell */
+    int t, c;
     i = threadIdx.x + blockDim.x * blockIdx.x;
     if (i >= nt*nc) return;
 
@@ -5232,17 +5232,17 @@ __global__ void juelicher_compute_area_kernel(int nv, int nt, int nc,
     area += nv*c;
     tri  += t;
 
-    juelicher_compute_area0(pp, *tri, /**/ area);
+    juelicher_compute_area0(pp, *tri,      area);
 }
 
 static __device__ void juelicher_compute_theta_len0(const Particle *pp, int4 dih,
-                                          /**/ float *theta, float *lentheta) {
+                                               float *theta, float *lentheta) {
     int i, j, k, l;
     double a[3], b[3], c[3], d[3], u[3];
     double len0, theta0, lentheta0;
 
     i = dih.x; j = dih.y; k = dih.z; l = dih.w;
-    juelicher_get4(pp, i, j, k, l, /**/ a, b, c, d);
+    juelicher_get4(pp, i, j, k, l,      a, b, c, d);
 
     *theta = theta0 = juelicher_tri_dih(a, b, c, d);
     juelicher_vec_minus(c, b, u);
@@ -5255,9 +5255,9 @@ static __device__ void juelicher_compute_theta_len0(const Particle *pp, int4 dih
 
 __global__ void juelicher_compute_theta_len_kernel(int nv, int ne, int nc,
                                   const Particle *pp, const int4 *dih,
-                                  /**/ float *theta, float *lentheta) {
+                                       float *theta, float *lentheta) {
     int i;
-    int e, c; /* edge, cell */
+    int e, c;
     i = threadIdx.x + blockDim.x * blockIdx.x;
     if (i >= ne*nc) return;
 
@@ -5269,12 +5269,12 @@ __global__ void juelicher_compute_theta_len_kernel(int nv, int ne, int nc,
     lentheta += nv*c;
     dih      += e;
 
-    juelicher_compute_theta_len0(pp, *dih, /**/ theta, lentheta);
+    juelicher_compute_theta_len0(pp, *dih,      theta, lentheta);
 }
 
 __global__ void juelicher_compute_mean_curv_kernel(int nc, float H0, float kad,
                                   const float *lentheta, const float *area,
-                                  /**/ float *mean) {
+                                       float *mean) {
     int i;
     float pi;
     pi = 3.141592653589793;
@@ -5286,13 +5286,13 @@ __global__ void juelicher_compute_mean_curv_kernel(int nc, float H0, float kad,
 static __device__ void juelicher_force_edg0(float H0, float curva_mean_area_tot,
                                   const Particle *pp, const int4 dih,
                                   float theta, const float *lentheta, const float *area,
-                                  /**/ float *f, float *fad) {
+                                       float *f, float *fad) {
     int j, k;
     double b[3], c[3], db[3], dc[3];
     double coef;
 
     j = dih.y; k = dih.z;
-    juelicher_get2(pp, j, k, /**/ b, c);
+    juelicher_get2(pp, j, k,      b, c);
     juelicher_dedg_abs(b, c, db, dc);
 
     coef = - ( (lentheta[j]/area[j]/4 - H0) + (lentheta[k]/area[k]/4 - H0) ) * theta;
@@ -5307,9 +5307,9 @@ __global__ void juelicher_force_edg_kernel(int nv, int ne, int nc, float H0,
                           const Particle *pp, const int4 *dih,
                           const float *curva_mean_area_tot,
                           const float *theta, const float *lentheta, const float *area,
-                          /**/ float *f, float *fad) {
+                               float *f, float *fad) {
     int i;
-    int e, c; /* edge, cell */
+    int e, c;
     i = threadIdx.x + blockDim.x * blockIdx.x;
     if (i >= ne*nc) return;
 
@@ -5329,21 +5329,21 @@ __global__ void juelicher_force_edg_kernel(int nv, int ne, int nc, float H0,
 
     juelicher_force_edg0(H0, *curva_mean_area_tot,
                pp, *dih,
-               *theta, lentheta, area, /**/ f, fad);
+               *theta, lentheta, area,      f, fad);
 }
 
 static __device__ void juelicher_force_lentheta0(float H0, float curva_mean_area_tot,
                                        const Particle *pp, const int4 dih,
                                        const float *lentheta, const float *area,
-                                       /**/ float *f, float *fad) {
+                                            float *f, float *fad) {
     int i, j, k, l;
     double len0, coef;
     double a[3], b[3], c[3], d[3], u[3];
     double da[3], db[3], dc[3], dd[3];
 
     i = dih.x; j = dih.y; k = dih.z; l = dih.w;
-    juelicher_get4(pp, i, j, k, l, /**/ a, b, c, d);
-    juelicher_ddih_angle(a, b, c, d, /**/ da, db, dc, dd);
+    juelicher_get4(pp, i, j, k, l,      a, b, c, d);
+    juelicher_ddih_angle(a, b, c, d,      da, db, dc, dd);
     juelicher_vec_minus(c, b, u);
     len0 = juelicher_vec_abs(u);
 
@@ -5365,9 +5365,9 @@ __global__ void juelicher_force_lentheta_kernel(int nv, int ne, int nc, float H0
                                const Particle *pp, const int4 *dih,
                                const float *curva_mean_area_tot,
                                const float *lentheta, const float *area,
-                               /**/ float *f, float *fad) {
+                                    float *f, float *fad) {
     int i;
-    int e, c; /* edge, cell */
+    int e, c;
     i = threadIdx.x + blockDim.x * blockIdx.x;
     if (i >= ne*nc) return;
 
@@ -5386,19 +5386,19 @@ __global__ void juelicher_force_lentheta_kernel(int nv, int ne, int nc, float H0
 
     juelicher_force_lentheta0(H0, *curva_mean_area_tot,
                     pp, *dih,
-                    lentheta, area, /**/ f, fad);
+                    lentheta, area,      f, fad);
 }
 
 static __device__ void juelicher_force_area0(float H0, const Particle *pp, const int4 tri,
                                    const float *lentheta, const float *area,
-                                   /**/ float *f) {
+                                        float *f) {
     int i, j, k;
     double a[3], b[3], c[3];
     double da[3], db[3], dc[3];
     double coef1, coef2, coef;
 
     i = tri.x; j = tri.y; k = tri.z;
-    juelicher_get3(pp, i, j, k, /**/ a, b, c);
+    juelicher_get3(pp, i, j, k,      a, b, c);
 
     juelicher_dtri_area(a, b, c, da, db, dc);
 
@@ -5420,9 +5420,9 @@ static __device__ void juelicher_force_area0(float H0, const Particle *pp, const
 __global__ void juelicher_force_area_kernel(int nv, int nt, int nc, float H0,
                            const Particle *pp, const int4 *tri,
                            const float *lentheta, const float *area,
-                           /**/ float *f) {
+                                float *f) {
     int i;
-    int t, c; /* triangle, cell */
+    int t, c;
     i = threadIdx.x + blockDim.x * blockIdx.x;
     if (i >= nt*nc) return;
 
@@ -5438,12 +5438,12 @@ __global__ void juelicher_force_area_kernel(int nv, int nt, int nc, float H0,
     f        += 3*nv*c;
 
     juelicher_force_area0(H0, pp, *tri,
-                lentheta, area, /**/ f);
+                lentheta, area,      f);
 }
 
 __global__ void juelicher_accumulate_kernel(int n,
                            const float *ff0, const float *ff1,
-                           /**/ Force *ff) {
+                                Force *ff) {
     enum {X, Y, Z};
     int i;
     Force *f;
@@ -5477,15 +5477,15 @@ void juelicher_ini(const MeshRead *cell, Juelicher **pq) {
     nt = mesh_read_get_nt(cell);
     tri = mesh_read_get_tri(cell);
 
-    he_read_int4_ini(nv, nt, tri, /**/ &he_read);
-    he_ini(he_read, /**/ &he);
+    he_read_int4_ini(nv, nt, tri,      &he_read);
+    he_ini(he_read,      &he);
 
     ne = he_ne(he);
     EMALLOC(ne, &dih);
     Dalloc(&q->dih, ne);
     Dalloc(&q->tri, nt);
 
-    Dalloc(&q->theta,    MAX_CELL_NUM*ne); /* (sic) */
+    Dalloc(&q->theta,    MAX_CELL_NUM*ne);
     Dalloc(&q->area,     MAX_CELL_NUM*nv);
     Dalloc(&q->lentheta, MAX_CELL_NUM*nv);
 
@@ -5495,7 +5495,7 @@ void juelicher_ini(const MeshRead *cell, Juelicher **pq) {
     Dalloc(&q->f,   3*MAX_CELL_NUM*nv);
     Dalloc(&q->fad, 3*MAX_CELL_NUM*nv);
 
-    for (e = 0; e < ne; e++) { /* i[jk]l */
+    for (e = 0; e < ne; e++) {
         h = hdg_edg(e); n = nxt(h); nn = nxt(nxt(h));
         j = ver(h); k = ver(n); i = ver(nn);
         nnf = nxt(nxt(flp(h)));
@@ -5527,47 +5527,47 @@ void juelicher_fin(Juelicher *q) {
     Dfree(q->fad);
     EFREE(q);
 }
-/*
-static void print(const char *s, float *dev) {
-    float hst;
-    cD2H(&hst, dev, 1);
-    msg_print("%s: %g", s, hst);
-    } */
 
-/*
-static void dump(int n, float *dev) {
-    int i;
-    float *hst;
-    EMALLOC(n, &hst);
-    cD2H(hst, dev, n);
-    for (i = 0; i < n; i++)
-        printf("%g\n", hst[i]);
-    EFREE(hst);
-    } */
 
-/*
-static void dump3(int n, float *dev) {
-    int i, j;
-    float *hst;
-    EMALLOC(3*n, &hst);
-    cD2H(hst, dev, 3*n);
-    for (j = i = 0; i < n; i++) {
-        printf("%g %g %g\n", hst[j], hst[j+1], hst[j+2]);
-        j += 3;
-    }
-    EFREE(hst);
-    } */
 
-static void sum(int nv, int nc, const float *from, /**/ float *to) {
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+static void sum(int nv, int nc, const float *from,      float *to) {
     dim3 thrd(128, 1);
     dim3 blck(ceiln(nv, thrd.x), nc);
     Dzero(to, nc);
-    KL(juelicher_sum_kernel, (blck, thrd), (nv, from, /**/ to));
+    KL(juelicher_sum_kernel, (blck, thrd), (nv, from,      to));
 }
 
-void juelicher_apply(Juelicher *q, const RbcParams*, const RbcQuants *quants, /**/ Force *ff) {
+void juelicher_apply(Juelicher *q, const RbcParams*, const RbcQuants *quants,      Force *ff) {
     int nc, ne, nt, nv;
-    //    RbcParams_v parv;
+
 
     int4 *tri, *dih;
     float *area, *lentheta, *theta;
@@ -5577,10 +5577,10 @@ void juelicher_apply(Juelicher *q, const RbcParams*, const RbcQuants *quants, /*
     float pi, kb, H0, kad;
     pi = 3.141592653589793;
 
-    //parv = rbc_params_get_view(par);
+
 
     H0 = -1.0/2.0;
-    kb = 1.0; /* parv.kb; */
+    kb = 1.0;
     kad = 2*kb/pi;
 
     tri = q->tri; dih = q->dih;
@@ -5599,47 +5599,47 @@ void juelicher_apply(Juelicher *q, const RbcParams*, const RbcQuants *quants, /*
         ERR("`q->pp` is not a device pointer");
     if (quants->nc <= 0) return;
 
-    // parv = rbc_params_get_view(par);
+
 
     Dzero(area, nv*nc);
-    KL(juelicher_compute_area_kernel, (k_cnf(nt*nc)), (nv, nt, nc, pp, tri, /**/ area));
+    KL(juelicher_compute_area_kernel, (k_cnf(nt*nc)), (nv, nt, nc, pp, tri,      area));
     dSync();
-    sum(nv, nc, area, /**/ area_tot); dSync();
+    sum(nv, nc, area,      area_tot); dSync();
 
     Dzero(theta, ne*nc);
     Dzero(lentheta, nv*nc);
-    KL(juelicher_compute_theta_len_kernel, (k_cnf(ne*nc)), (nv, ne, nc, pp, dih, /**/ theta, lentheta));
+    KL(juelicher_compute_theta_len_kernel, (k_cnf(ne*nc)), (nv, ne, nc, pp, dih,      theta, lentheta));
     dSync();
 
-    sum(nv, nc, lentheta, /**/ lentheta_tot); dSync();
-    KL(juelicher_compute_mean_curv_kernel, (k_cnf(nc)), (nc, H0, kad, lentheta_tot, area_tot, /**/ curva_mean_area_tot));
+    sum(nv, nc, lentheta,      lentheta_tot); dSync();
+    KL(juelicher_compute_mean_curv_kernel, (k_cnf(nc)), (nc, H0, kad, lentheta_tot, area_tot,      curva_mean_area_tot));
     dSync();
 
     Dzero(f, nv*nc);
     Dzero(fad, nv*nc);
     KL(juelicher_force_edg_kernel, (k_cnf(ne*nc)),
-       (nv, ne, nc, H0, pp, dih, curva_mean_area_tot, theta, lentheta, area, /**/ f, fad));
+       (nv, ne, nc, H0, pp, dih, curva_mean_area_tot, theta, lentheta, area,      f, fad));
     dSync();
 
     KL(juelicher_force_lentheta_kernel, (k_cnf(ne*nc)),
-       (nv, ne, nc, H0, pp, dih, curva_mean_area_tot, lentheta, area, /**/ f, fad));
+       (nv, ne, nc, H0, pp, dih, curva_mean_area_tot, lentheta, area,      f, fad));
     dSync();
 
     KL(juelicher_force_area_kernel, (k_cnf(ne*nc)),
-       (nv, nt, nc, H0, pp, tri, lentheta, area, /**/ f));
+       (nv, nt, nc, H0, pp, tri, lentheta, area,      f));
     dSync();
 
     KL(juelicher_accumulate_kernel, (k_cnf(nv*nc)),
-       (nv*nc, f, fad, /**/ ff));
+       (nv*nc, f, fad,      ff));
 
-    /*
-    print("lentheta_tot", &lentheta_tot[0]);
-    print("curva_mean_area_tot", &curva_mean_area_tot[0]);
-    print("area", &area[0]);
-    print("fx",  &f[0]);
-    print("fad", &fad[0]);
 
-    dump3(nv*nc, f); */
+
+
+
+
+
+
+
 }
 
 
@@ -5649,33 +5649,33 @@ void juelicher_apply(Juelicher *q, const RbcParams*, const RbcQuants *quants, /*
 #include <stdio.h>
 #include <assert.h>
 
-/* [k]ernel [l]aunch macros */
+
 #if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
     !defined(KL_SYNC)
 #define KL_RELEASE
 #endif
 
-/* [c]uda [c]heck macro */
+
 #if !defined(CC_RELEASE) && !defined(CC_SYNC)
   #define CC_RELEASE
 #endif
 
-/* who plays as device? */
+
 #if !defined(DEV_CUDA) && !defined(DEV_CPU)
   #define DEV_CUDA
 #endif
 
-/* cuda memory allocation calls */
+
 #if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
   #define CUDA_ALLOC_RELEASE
 #endif
 
-/* compute rbc force in double or float */
+
 #if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
   #define RBC_DOUBLE
 #endif
 
-/* what to do if r > lmax for a spring? */
+
 #if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
   #define RBC_SPRING_IGNORE
 #endif
@@ -5685,10 +5685,10 @@ void juelicher_apply(Juelicher *q, const RbcParams*, const RbcQuants *quants, /*
 #endif
 
 
-/* shared generated definitions used by both bending implementations */
+
 #ifndef UDX_RBC_BENDING_COMMON
 #define UDX_RBC_BENDING_COMMON
-/* solvent colors */
+
 #define XMACRO_COLOR(_)                         \
     _(BLUE)                                     \
     _(RED)
@@ -5702,44 +5702,44 @@ enum {
 #undef make_enum_color
 
 enum {
-    /* wall margins */
+
     XWM = 6,
     YWM = 6,
     ZWM = 6,
 
     SAFETY_FACTOR_MAXP = 3,
 
-    /* maximum number of particles per solid */
+
     MAX_PSOLID_NUM = 12000,
 
-    /* maximum number of solids per node */
+
     MAX_SOLIDS = 100,
 
-    /* maximum number of object types (solid, rbc, ...) */
+
     MAX_MBR_TYPES = 2,
     MAX_RIG_TYPES = 2,
     MAX_OBJ_TYPES = MAX_MBR_TYPES + MAX_RIG_TYPES,
 
-    /* maximum number density of particles of the objects */
+
     MAX_OBJ_DENSITY = 30,
 
-    /* maximum number of red blood cells per node */
+
     MAX_CELL_NUM = 1500,
 
-    /* maximum texture size in bytes */
+
     MAX_TEXO_SIZE = 100000000,
 
-    /* safety factor for dpd halo interactions */
+
     HSAFETY_FACTOR = 10,
 
-    /* safety factor for odist fragments */
+
     ODSTR_FACTOR = 3,
 };
 
-/* for the spring forces r = min(lmax*RBC_SPRING_CAP, r) */
+
 #define RBC_SPRING_CAP (0.99)
 template <typename T, int N>
-struct Sarray { /* [s]tatic array */
+struct Sarray {
     T d[N];
 };
 
@@ -5748,13 +5748,13 @@ struct Particle {
 };
 
 struct Rigid {
-    float Iinv[6],            /* moment of inertia            6        */
-        mass,                 /* mass of the solid            7        */
-        com[3],               /* [c]enter [o]f [m]ass         10       */
-        v[3], om[3],          /* linear and angular velocity  13 16    */
-        e0[3], e1[3], e2[3],  /* local referential            19 22 25 */
-        fo[3], to[3],         /* force, torque                28 31    */
-        id;                   /* id of the solid              32       */
+    float Iinv[6],
+        mass,
+        com[3],
+        v[3], om[3],
+        e0[3], e1[3], e2[3],
+        fo[3], to[3],
+        id;
 };
 
 struct Force {
@@ -5762,12 +5762,12 @@ struct Force {
 };
 
 struct Momentum {
-    float P[3], L[3]; /* linear and angular momentum */
+    float P[3], L[3];
 };
 
 struct Positioncp {
-    float rc[3]; /* current position  */
-    float rp[3]; /* previous position */
+    float rc[3];
+    float rp[3];
 };
 
 typedef Sarray<int, 26>       int26;
@@ -5779,21 +5779,21 @@ typedef Sarray<Force*,    26> Fop26;
 typedef Sarray<Momentum*, 26> Mop26;
 typedef Sarray<Positioncp*, 26> Pocpp26;
 
-/* particles wrap */
+
 struct PaWrap {
     int n;
     const Particle *pp;
 };
 
-/* forces wrap */
+
 struct FoWrap {
     int n;
     Force *ff;
 };
-/* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
+
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
 
-/* a common kernel execution configuration */
+
 #define k_cnf(n) ceiln((n), 128), 128
 
 #define dSync() CC(d::DeviceSynchronize())
@@ -5802,51 +5802,51 @@ struct FoWrap {
 #define D2H d::MemcpyDeviceToHost
 #define H2D d::MemcpyHostToDevice
 #define H2H d::MemcpyHostToHost
-#define A2A d::MemcpyDefault /* "[a]ny to [a]ny" */
+#define A2A d::MemcpyDefault
 
 #define cD2D(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), D2D))
-#define cH2H(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), H2H))  /* [t]to, [f]rom */
+#define cH2H(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), H2H))
 #define cA2A(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), A2A))
 #define cD2H(H, D, n) CC(d::Memcpy((H), (D), (n) * sizeof((H)[0]), D2H))
 #define cH2D(D, H, n) CC(d::Memcpy((D), (H), (n) * sizeof((H)[0]), H2D))
 
 #define aD2D(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), D2D))
-#define aH2H(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), H2H))  /* [t]to, [f]rom */
+#define aH2H(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), H2H))
 #define aA2A(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), A2A))
 #define aD2H(H, D, n) CC(d::MemcpyAsync((H), (D), (n) * sizeof((H)[0]), D2H))
 #define aH2D(D, H, n) CC(d::MemcpyAsync((D), (H), (n) * sizeof((H)[0]), H2D))
 
-/* device allocation */
+
 #define Dfree(D)      CC(d::Free(D))
 #define Dalloc(D, n)  CC(d::Malloc((void**)(D), (n) * sizeof(**(D))))
 
-/* [d]evice set */
+
 #define Dset(P, v, n) CC(d::Memset(P, v, (n)*sizeof(*(P))))
 #define Dzero(P, n)   Dset(P, 0, n)
 
-/* [d]evice [a]synchronous set */
+
 #define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
 #define DzeroA(P, n)   DsetA(P, 0, n)
-/* use templates here because we might have mixed float/double */
+
 
 #define _HD_ __host__ __device__
 
 template <typename T1, typename T2>
-_HD_ void scal(const T1 a, /*io*/ T2 *b) {
+_HD_ void scal(const T1 a,        T2 *b) {
     b->x *= a;
     b->y *= a;
     b->z *= a;
 }
 
 template <typename T1, typename T2>
-_HD_ void add(const T1 *a, /*io*/ T2 *b) {
+_HD_ void add(const T1 *a,        T2 *b) {
     b->x += a->x;
     b->y += a->y;
     b->z += a->z;
 }
 
 template <typename T1, typename T2, typename T3>
-_HD_ void diff(const T1 *a, const T2 *b, /**/ T3 *c) {
+_HD_ void diff(const T1 *a, const T2 *b,      T3 *c) {
     c->x = a->x - b->x;
     c->y = a->y - b->y;
     c->z = a->z - b->z;
@@ -5858,14 +5858,14 @@ _HD_ T1 dot(const T2 *a, const T3 *b) {
 }
 
 template <typename T1, typename T2, typename T3>
-_HD_ void cross(const T1 *a, const T2 *b, /**/ T3 *c) {
+_HD_ void cross(const T1 *a, const T2 *b,      T3 *c) {
     c->x = a->y * b->z - a->z * b->y;
     c->y = a->z * b->x - a->x * b->z;
     c->z = a->x * b->y - a->y * b->x;
 }
 
 template <typename T1, typename T2, typename T3>
-_HD_ void scalmult(const T1 *a, const T2 x, /**/ const T3 *b) {
+_HD_ void scalmult(const T1 *a, const T2 x,      const T3 *b) {
     b->x = a->x * x;
     b->y = a->y * x;
     b->z = a->z * x;
@@ -5873,14 +5873,14 @@ _HD_ void scalmult(const T1 *a, const T2 x, /**/ const T3 *b) {
 
 
 template <typename T1, typename T2, typename T3, typename T4>
-_HD_ void apxb(const T1 *a, const T2 x, const T3 *b, /**/ T4 *c) {
+_HD_ void apxb(const T1 *a, const T2 x, const T3 *b,      T4 *c) {
     c->x = a->x + x * b->x;
     c->y = a->y + x * b->y;
     c->z = a->z + x * b->z;
 }
 
 template <typename T1, typename T2, typename T3>
-_HD_ void axpy(const T1 a, const T2 *x, /*io*/ T3 *y) {
+_HD_ void axpy(const T1 a, const T2 *x,        T3 *y) {
     y->x += a * x->x;
     y->y += a * x->y;
     y->z += a * x->z;
@@ -5908,7 +5908,7 @@ const int4  *mesh_read_get_dih(MeshRead*);
         error_abort();                                          \
     } while (0)
 
-/* udx check */
+
 #define UC(F) do {                              \
         error_stack_push(__FILE__, __LINE__);   \
         F;                                      \
@@ -5919,7 +5919,7 @@ const int4  *mesh_read_get_dih(MeshRead*);
         error_stack_pop();                      \
     } while (0)
 
-/* [B]o[p] [c]heck */
+
 #define BPC(ans) do {                           \
         BopStatus s = (ans);                    \
         if (!bop_success(s)) {                  \
@@ -5941,32 +5941,32 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-void msg_ini(int rank); // <1>
-void msg_print(const char *fmt, ...); // <2>
-void emalloc(size_t, /**/ void**); // <1>
-void efree(void*); // <2>
-void *ememcpy(void *dest, const void *src, size_t n); // <3>
+void msg_ini(int rank);
+void msg_print(const char *fmt, ...);
+void emalloc(size_t,      void**);
+void efree(void*);
+void *ememcpy(void *dest, const void *src, size_t n);
 
 #define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
 #define EFREE(pdata) UC(efree(pdata))
 #define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
 
-void efopen(const char *fname, const char *mode, /**/ FILE**);
+void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
 void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
 void efgets(char *s, int size, FILE*);
 
-bool same_str(const char *a, const char *b); // <1>
+bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
 
-/* function and variable type [q]ualifiers */
+
 
 #if   defined(DEV_CUDA)
-/* B.1. Function Type Qualifiers */
-/* B.2. Variable Type Qualifiers */
+
+
 #elif defined(DEV_CPU)
-/* B.1. Function Type Qualifiers */
+
 #ifdef __device__
   #undef  __device__
   #define __device__
@@ -5992,8 +5992,8 @@ const char* get_filename_ext(const char*);
   #define __forceinline__
 #endif
 
-/* B.2. Variable Type Qualifiers */
-/* __device__ : also a function qualifier */
+
+
 #ifdef __constant__
   #undef  __constant__
   #define __constant__
@@ -6016,8 +6016,8 @@ const char* get_filename_ext(const char*);
 #else
   #error DEV_* is undefined
 #endif
-namespace d {  /* a wrapper for device API */
-typedef int Stream_t; /* TODO: streams are not supported */
+namespace d {
+typedef int Stream_t;
 enum {MemcpyHostToHost, MemcpyHostToDevice,
       MemcpyDeviceToHost, MemcpyDeviceToDevice,
       MemcpyDefault};
@@ -6086,10 +6086,10 @@ static int   warpSize = 1;
 #else
   #error DEV_* is undefined
 #endif
-/* [c]uda [c]heck macros */
+
 
 #if   defined(CC_SYNC)
-/* Aggressive [sync]ronization */
+
 #define CC(ans)                                             \
     do {                                                    \
         d::DeviceSynchronize();                             \
@@ -6097,7 +6097,7 @@ static int   warpSize = 1;
         d::DeviceSynchronize();                             \
     } while (0)
 #elif defined(CC_RELEASE)
-/* [c]cuda [c]heck */
+
 #define CC(ans)                                             \
     do { cc::check((ans), __FILE__, __LINE__);} while (0)
 #else
@@ -6110,8 +6110,8 @@ void check(int rc, const char *file, int line);
 
 
 
-/* TODO: header includes header */
-/* [k]ernel [l]aunch macros */
+
+
 
 #if    defined(KL_RELEASE)
 #define KL_BEFORE(s, C) if (!kl::safe(ESC C)) continue;
@@ -6155,7 +6155,7 @@ inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
         KL_AFTER(#F);                           \
     } while (0)
 
-/* TODO: header includes header */
+
 
 struct Config;
 struct RbcParams;
@@ -6186,11 +6186,11 @@ struct Adj_v;
 struct AdjMap;
 struct int4;
 
-void adj_ini(int md, int nt, int nv, const int4 *tt, /**/ Adj**);
+void adj_ini(int md, int nt, int nv, const int4 *tt,      Adj**);
 void adj_fin(Adj*);
-int  adj_get_map(int i, const Adj*, /**/ AdjMap *m);
+int  adj_get_map(int i, const Adj*,      AdjMap *m);
 int  adj_get_max(const Adj*);
-void adj_get_anti(const Adj*, /**/ int *anti);
+void adj_get_anti(const Adj*,      int *anti);
 
 void adj_view_ini(const Adj*, Adj_v**);
 void adj_view_fin(Adj_v*);
@@ -6199,13 +6199,13 @@ struct AreaVolume;
 struct Particle;
 
 struct RbcQuants {
-    int n, nc;               /* number of particles, cells                */
-    int nt, nv;              /* number of triangles and vertices per mesh */
-    int md;                  /* maximum valence of the mesh               */
-    Particle *pp, *pp_hst;   /* vertices particles on host and device     */
-    bool ids;                /* global ids active ?                       */
-    int *ii;                 /* global ids on host                        */
-    AreaVolume *area_volume; /* to compute area and volume */
+    int n, nc;
+    int nt, nv;
+    int md;
+    Particle *pp, *pp_hst;
+    bool ids;
+    int *ii;
+    AreaVolume *area_volume;
 };
 
 
@@ -6220,7 +6220,7 @@ struct Adj_v {
 };
 
 static __device__ int fetch(const int *a, int i) { return a[i]; }
-static __device__ int adj_get_map0(int md, int nv, int i, const int *adj0, const int *adj1, /**/ AdjMap *m) {
+static __device__ int adj_get_map0(int md, int nv, int i, const int *adj0, const int *adj1,      AdjMap *m) {
     int i0, i1, i2, i3, i4;
     int rbc, offset, j, k;
     i0 = i / md;
@@ -6228,7 +6228,7 @@ static __device__ int adj_get_map0(int md, int nv, int i, const int *adj0, const
 
     k   = (i0 % nv) * md;
     i1 = fetch(adj0, k + j);
-    if (i1 == -1) return 0; /* invalid */
+    if (i1 == -1) return 0;
 
     i2 = fetch(adj0, k + ((j + 1) % md));
     if (i2 == -1) {
@@ -6242,7 +6242,7 @@ static __device__ int adj_get_map0(int md, int nv, int i, const int *adj0, const
 
     rbc = i0 / nv;
     offset = rbc * nv;
-    i1 += offset; i2 += offset; i3 += offset; i4 += offset; /* no i0 */
+    i1 += offset; i2 += offset; i3 += offset; i4 += offset;
 
     assert(rbc < MAX_CELL_NUM);
 
@@ -6251,7 +6251,7 @@ static __device__ int adj_get_map0(int md, int nv, int i, const int *adj0, const
     return 1;
 }
 
-static __device__ int adj_get_map(int i, Adj_v *adj, /**/ AdjMap *m) {
+static __device__ int adj_get_map(int i, Adj_v *adj,      AdjMap *m) {
     int md, nv;
     md = adj->md;
     nv = adj->nv;
@@ -6260,7 +6260,7 @@ static __device__ int adj_get_map(int i, Adj_v *adj, /**/ AdjMap *m) {
     return adj_get_map0(md, nv, i, adj0, adj1, m);
 }
 
-#endif /* UDX_RBC_BENDING_COMMON */
+#endif
 
 struct RbcParams;
 struct Kantor;
@@ -6271,13 +6271,13 @@ struct RbcQuants;
 void kantor_ini(const MeshRead*, Kantor**);
 void kantor_fin(Kantor*);
 
-void kantor_apply(Kantor*, const RbcParams*, const RbcQuants*, /**/ Force*); // <1>
+void kantor_apply(Kantor*, const RbcParams*, const RbcQuants*,      Force*);
 struct Kantor {
     Adj   *adj;
     Adj_v *adj_v;
 };
 
-/* shared Kantor angle helpers used by both bending implementations */
+
 #ifndef UDX_RBC_KANTOR0_COMMON
 #define UDX_RBC_KANTOR0_COMMON
   #define _I_ static __device__
@@ -6294,7 +6294,7 @@ _S_ double rsqrt0(double x) { return rsqrt(x); }
 _S_ double max(double a, double b) { return a > b ? a : b; }
 
 enum {ANGLE_OK, ANGLE_BAD_A, ANGLE_BAD_B};
-_S_ int angle(double3 a, double3 b, /**/ double *pcos, double *pover_sin,
+_S_ int angle(double3 a, double3 b,      double *pcos, double *pover_sin,
               double *pover_a, double *pover_b) {
     double  cost, over_sin, over_a, over_b;
     double aa, bb, ab;
@@ -6323,7 +6323,7 @@ _S_ void dih_write(double3 a, double3 b, double3 c, double3 d) {
     PRINT("%g %g %g\n", d.x, d.y, d.z);
 }
 
-/* forces from one dihedral */
+
 template <int update>
 _S_ double3 dih0(double phi, double kb,
                  double3 a, double3 b, double3 c, double3 d) {
@@ -6331,17 +6331,17 @@ _S_ double3 dih0(double phi, double kb,
     double over_k, over_n, cosTheta, over_sin,
         beta, b11, b12, sint0kb, cost0kb;
     double3 ab, ac, cd, bc, bd, da, k, n, k_n;
-    diff(&a, &b, /**/ &ab);
-    diff(&a, &c, /**/ &ac);
-    diff(&c, &d, /**/ &cd);
-    diff(&b, &d, /**/ &bd);
-    diff(&b, &c, /**/ &bc);
-    diff(&d, &a, /**/ &da);
+    diff(&a, &b,      &ab);
+    diff(&a, &c,      &ac);
+    diff(&c, &d,      &cd);
+    diff(&b, &d,      &bd);
+    diff(&b, &c,      &bc);
+    diff(&d, &a,      &da);
 
-    cross(&ab, &ac, /**/ &k);
-    cross(&bd, &bc, /**/ &n);
+    cross(&ab, &ac,      &k);
+    cross(&bd, &bc,      &n);
 
-    status = angle(k, n, /**/
+    status = angle(k, n,
                    &cosTheta, &over_sin,
                    &over_k, &over_n);
     if (status != ANGLE_OK) {
@@ -6349,7 +6349,7 @@ _S_ double3 dih0(double phi, double kb,
         dih_write(a, b, c, d);
         EXIT();
     }
-    diff(&k, &n, /**/ &k_n);
+    diff(&k, &n,      &k_n);
     over_sin = copysign(over_sin, dot<double>(&k_n, &da));
 
     sint0kb = sin(phi) * kb;
@@ -6361,26 +6361,26 @@ _S_ double3 dih0(double phi, double kb,
 
     if (update == 1) {
         double3 r32, f1, f;
-        diff(&c, &b, /**/ &r32);
-        cross(&k, &r32, /**/ &f);
-        cross(&n, &r32, /**/ &f1);
-        scal(b11, /**/ &f);
-        axpy(b12, &f1, /**/ &f);
+        diff(&c, &b,      &r32);
+        cross(&k, &r32,      &f);
+        cross(&n, &r32,      &f1);
+        scal(b11,      &f);
+        axpy(b12, &f1,      &f);
         return f;
     }
     else if (update == 2) {
         double3 f, f1, f2, f3;
         double b22 = -beta * cosTheta * over_n * over_n;
 
-        cross(&k, &ac, /**/ &f);
-        cross(&k, &cd, /**/ &f1);
-        cross(&n, &ac, /**/ &f2);
-        cross(&n, &cd, /**/ &f3);
+        cross(&k, &ac,      &f);
+        cross(&k, &cd,      &f1);
+        cross(&n, &ac,      &f2);
+        cross(&n, &cd,      &f3);
 
-        scal(b11, /**/ &f);
-        add(&f2, /**/ &f1);
-        axpy(b12, &f1, /**/ &f);
-        axpy(b22, &f3, /**/ &f);
+        scal(b11,      &f);
+        add(&f2,      &f1);
+        axpy(b12, &f1,      &f);
+        axpy(b22, &f3,      &f);
         return f;
     }
     else {
@@ -6405,7 +6405,7 @@ END
 #undef _S_
 #undef BEGIN
 #undef END
-#endif /* UDX_RBC_KANTOR0_COMMON */
+#endif
 
 struct KantorPart { double3 r, v; };
 typedef double3 Pos;
@@ -6430,7 +6430,7 @@ static __device__ KantorPart kantor_fetch_part(const Particle *pp, int i) {
 }
 
 static __device__ void kantor_adj_dihedrals(const RbcParams_v *par, const Particle *pp, double3 r0,
-                                     AdjMap *m, /*io*/ double f[3]) {
+                                     AdjMap *m,        double f[3]) {
     enum {X, Y, Z};
     Pos r1, r2, r3, r4;
     double3 f0;
@@ -6451,7 +6451,7 @@ static __device__ void kantor_adj_dihedrals(const RbcParams_v *par, const Partic
 }
 
 __global__ void kantor_force_kernel(RbcParams_v par, int md, int nv, int nc, const Particle *pp,
-                      Adj_v adj, /**/ float *ff) {
+                      Adj_v adj,      float *ff) {
     enum {X, Y, Z};
     int i, pid, valid;
     double f[3];
@@ -6461,13 +6461,13 @@ __global__ void kantor_force_kernel(RbcParams_v par, int md, int nv, int nc, con
     pid = i / md;
 
     if (pid >= nc * nv) return;
-    valid = adj_get_map(i, &adj, /**/ &m);
+    valid = adj_get_map(i, &adj,      &m);
     if (!valid) return;
 
     const KantorPart p0 = kantor_fetch_part(pp, m.i0);
 
     f[X] = f[Y] = f[Z] = 0;
-    kantor_adj_dihedrals(&par, pp, p0.r, &m,          /*io*/ f);
+    kantor_adj_dihedrals(&par, pp, p0.r, &m,                 f);
 
     atomicAdd(&ff[3 * pid + 0], f[X]);
     atomicAdd(&ff[3 * pid + 1], f[Y]);
@@ -6483,8 +6483,8 @@ void kantor_ini(const MeshRead *cell, Kantor **pq) {
     md = mesh_read_get_md(cell);
     tt = mesh_read_get_tri(cell);
 
-    UC(adj_ini(md, nt, nv, tt, /**/ &q->adj));
-    UC(adj_view_ini(q->adj, /**/ &q->adj_v));
+    UC(adj_ini(md, nt, nv, tt,      &q->adj));
+    UC(adj_view_ini(q->adj,      &q->adj_v));
 
     *pq = q;
 }
@@ -6494,7 +6494,7 @@ void kantor_fin(Kantor *q) {
     UC(adj_view_fin(q->adj_v));
     EFREE(q);
 }
-void kantor_apply(Kantor *t, const RbcParams *par, const RbcQuants *q, /**/ Force *ff) {
+void kantor_apply(Kantor *t, const RbcParams *par, const RbcQuants *q,      Force *ff) {
     int nc, nv, md;
     RbcParams_v parv;
     if (q->nc <= 0) return;
@@ -6505,7 +6505,7 @@ void kantor_apply(Kantor *t, const RbcParams *par, const RbcQuants *q, /**/ Forc
     md = q->md; nv = q->nv; nc = q->nc;
     parv = rbc_params_get_view(par);
     KL(kantor_force_kernel, (k_cnf(nc*nv*md)),
-       (parv, md, nv, nc, q->pp, *t->adj_v, /**/ (float*)ff));
+       (parv, md, nv, nc, q->pp, *t->adj_v,      (float*)ff));
 }
 
 
@@ -6514,7 +6514,7 @@ void kantor_apply(Kantor *t, const RbcParams *par, const RbcQuants *q, /**/ Forc
 
 
 
-// Grouped editable compilation unit for pair interactions and FSI.
+
 
 
 
@@ -6528,7 +6528,7 @@ void kantor_apply(Kantor *t, const RbcParams *par, const RbcQuants *q, /**/ Forc
         error_abort();                                          \
     } while (0)
 
-/* udx check */
+
 #define UC(F) do {                              \
         error_stack_push(__FILE__, __LINE__);   \
         F;                                      \
@@ -6539,7 +6539,7 @@ void kantor_apply(Kantor *t, const RbcParams *par, const RbcQuants *q, /**/ Forc
         error_stack_pop();                      \
     } while (0)
 
-/* [B]o[p] [c]heck */
+
 #define BPC(ans) do {                           \
         BopStatus s = (ans);                    \
         if (!bop_success(s)) {                  \
@@ -6565,10 +6565,10 @@ struct Config;
 struct float3;
 struct int3;
 
-void conf_ini(/**/ Config **c);
-void conf_fin(/**/ Config *c);
+void conf_ini(     Config **c);
+void conf_fin(     Config *c);
 
-void conf_read(int argc, char **argv, /**/ Config *cfg);
+void conf_read(int argc, char **argv,      Config *cfg);
 
 void conf_lookup_int(const Config *c, const char *desc, int *a);
 void conf_lookup_float(const Config *c, const char *desc, float *a);
@@ -6609,8 +6609,8 @@ void conf_set_float3(const char *desc, float3 a, Config *cfg);
 void conf_set_bool(const char *desc, int a, Config *cfg);
 void conf_set_string(const char *desc, const char *a, Config *cfg);
 
-void conf_write_exe(const Config *cfg, FILE *stream);     // <1>
-void conf_write_history(const Config *cfg, FILE *stream); // <2>
+void conf_write_exe(const Config *cfg, FILE *stream);
+void conf_write_history(const Config *cfg, FILE *stream);
 
 #ifndef UDX_FORCE_DEF_COMMON
 #define UDX_FORCE_DEF_COMMON
@@ -6618,7 +6618,7 @@ void conf_write_history(const Config *cfg, FILE *stream); // <2>
 #endif
 #ifndef UDX_FORCE_PAIR_TYPE_COMMON
 #define UDX_FORCE_PAIR_TYPE_COMMON
-/* maximum of pairwise dpd parameters */
+
 enum {
     MAX_PAR = (N_COLOR * (N_COLOR + 1)) / 2
 };
@@ -6633,7 +6633,7 @@ struct PairDPDC {
     float a[MAX_PAR], g[MAX_PAR], s[MAX_PAR], spow;
 };
 
-/* mirrored */
+
 struct PairDPDCM {
     int ncolors;
     float a[N_COLOR], g[N_COLOR], s[N_COLOR], spow;
@@ -6651,7 +6651,7 @@ struct PairAdhesion {
 struct PairPa {
     float x, y, z;
     float vx, vy, vz;
-    /* optional fields */
+
     int color;
 };
 
@@ -6661,7 +6661,7 @@ struct PairFo {
 
 struct PairSFo {
     float x, y, z;
-    /* stress */
+
     float sxx, syy, szz, sxy, sxz, syz;
 };
 #endif
@@ -6677,8 +6677,8 @@ struct PairAdhesion;
 void pair_ini(PairParams **);
 void pair_fin(PairParams *);
 
-void pair_set_dpd(int ncol, const float a[], const float g[], float spow, PairParams *p); // <1>
-void pair_set_lj(float sigma, float eps, PairParams *p); // <2>
+void pair_set_dpd(int ncol, const float a[], const float g[], float spow, PairParams *p);
+void pair_set_lj(float sigma, float eps, PairParams *p);
 void pair_set_adhesion(float k1, float k2, PairParams *p);
 
 void pair_set_conf(const Config *, const char *name_space, PairParams *);
@@ -6716,7 +6716,7 @@ void pair_set_conf(const Config *cfg, const char *ns, PairParams *par) {
 
         nc = get_ncol(na);
 
-        UC(pair_set_dpd(nc, a, g, spow, /**/ par));
+        UC(pair_set_dpd(nc, a, g, spow,      par));
     }
 
     if (lj) {
@@ -6725,7 +6725,7 @@ void pair_set_conf(const Config *cfg, const char *ns, PairParams *par) {
         UC(conf_lookup_float_ns(cfg, ns, "ljs", &s));
         UC(conf_lookup_float_ns(cfg, ns, "lje", &e));
 
-        UC(pair_set_lj(s, e, /**/ par));
+        UC(pair_set_lj(s, e,      par));
     }
 
     if (adhesion) {
@@ -6734,7 +6734,7 @@ void pair_set_conf(const Config *cfg, const char *ns, PairParams *par) {
         UC(conf_lookup_float_ns(cfg, ns, "k1", &k1));
         UC(conf_lookup_float_ns(cfg, ns, "k2", &k2));
 
-        UC(pair_set_adhesion(k1, k2, /**/ par));
+        UC(pair_set_adhesion(k1, k2,      par));
     }
 }
 
@@ -6744,33 +6744,33 @@ void pair_set_conf(const Config *cfg, const char *ns, PairParams *par) {
 #include <string.h>
 #include <math.h>
 
-/* [k]ernel [l]aunch macros */
+
 #if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
     !defined(KL_SYNC)
 #define KL_RELEASE
 #endif
 
-/* [c]uda [c]heck macro */
+
 #if !defined(CC_RELEASE) && !defined(CC_SYNC)
   #define CC_RELEASE
 #endif
 
-/* who plays as device? */
+
 #if !defined(DEV_CUDA) && !defined(DEV_CPU)
   #define DEV_CUDA
 #endif
 
-/* cuda memory allocation calls */
+
 #if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
   #define CUDA_ALLOC_RELEASE
 #endif
 
-/* compute rbc force in double or float */
+
 #if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
   #define RBC_DOUBLE
 #endif
 
-/* what to do if r > lmax for a spring? */
+
 #if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
   #define RBC_SPRING_IGNORE
 #endif
@@ -6785,7 +6785,7 @@ void pair_set_conf(const Config *cfg, const char *ns, PairParams *par) {
         error_abort();                                          \
     } while (0)
 
-/* udx check */
+
 #define UC(F) do {                              \
         error_stack_push(__FILE__, __LINE__);   \
         F;                                      \
@@ -6796,7 +6796,7 @@ void pair_set_conf(const Config *cfg, const char *ns, PairParams *par) {
         error_stack_pop();                      \
     } while (0)
 
-/* [B]o[p] [c]heck */
+
 #define BPC(ans) do {                           \
         BopStatus s = (ans);                    \
         if (!bop_success(s)) {                  \
@@ -6818,21 +6818,21 @@ void error_report();
 void error_abort();
 
 void error_print_stack();
-void emalloc(size_t, /**/ void**); // <1>
-void efree(void*); // <2>
-void *ememcpy(void *dest, const void *src, size_t n); // <3>
+void emalloc(size_t,      void**);
+void efree(void*);
+void *ememcpy(void *dest, const void *src, size_t n);
 
 #define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
 #define EFREE(pdata) UC(efree(pdata))
 #define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
 
-void efopen(const char *fname, const char *mode, /**/ FILE**);
+void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
 void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
 void efgets(char *s, int size, FILE*);
 
-bool same_str(const char *a, const char *b); // <1>
+bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
 
 
@@ -6841,20 +6841,20 @@ const char* get_filename_ext(const char*);
 
 struct PairParams {
     bool dpd;
-    float a[MAX_PAR]; /* a    : conservative */
-    float g[MAX_PAR]; /* gamma: dissipative  */
-    float s[MAX_PAR]; /* sigma: random       */
-    int ncolors;      /* number of colors    */
-    float spow;       /* s level             */
+    float a[MAX_PAR];
+    float g[MAX_PAR];
+    float s[MAX_PAR];
+    int ncolors;
+    float spow;
 
     bool lj;
-    float ljs; /* lennard jones sigma   */
-    float lje; /* lennard jones epsilon */
+    float ljs;
+    float lje;
 
-    /* adhesion parameters */
+
     bool adhesion;
-    float k1; /* spring constant */
-    float k2; /* viscous coeff   */
+    float k1;
+    float k2;
 };
 
 void pair_ini(PairParams **par) {
@@ -6947,7 +6947,7 @@ void pair_get_view_dpd_mirrored(const PairParams *p, PairDPDCM *v) {
     UC(check_dpd(p));
     nc = v->ncolors = p->ncolors;
     for (i = 0; i < nc; ++i) {
-        j = (i+1) * (i+2) / 2 - 1; /* take all i-i pairs */
+        j = (i+1) * (i+2) / 2 - 1;
         v->a[i] = p->a[j];
         v->g[i] = p->g[j];
         v->s[i] = p->s[j];
@@ -6981,33 +6981,33 @@ void pair_get_view_adhesion(const PairParams *p, PairAdhesion *v) {
 #include <assert.h>
 
 
-/* [k]ernel [l]aunch macros */
+
 #if !defined(KL_RELEASE)    && !defined(KL_NONE)   &&   \
     !defined(KL_SYNC)
 #define KL_RELEASE
 #endif
 
-/* [c]uda [c]heck macro */
+
 #if !defined(CC_RELEASE) && !defined(CC_SYNC)
   #define CC_RELEASE
 #endif
 
-/* who plays as device? */
+
 #if !defined(DEV_CUDA) && !defined(DEV_CPU)
   #define DEV_CUDA
 #endif
 
-/* cuda memory allocation calls */
+
 #if !defined(CUDA_ALLOC_RELEASE) && !defined(CUDA_ALLOC_DEBUG)
   #define CUDA_ALLOC_RELEASE
 #endif
 
-/* compute rbc force in double or float */
+
 #if !defined(RBC_DOUBLE) && !defined(RBC_FLOAT)
   #define RBC_DOUBLE
 #endif
 
-/* what to do if r > lmax for a spring? */
+
 #if !defined(RBC_SPRING_IGNORE) && !defined(RBC_SPRING_FAIL)
   #define RBC_SPRING_IGNORE
 #endif
@@ -7023,7 +7023,7 @@ void pair_get_view_adhesion(const PairParams *p, PairAdhesion *v) {
         error_abort();                                          \
     } while (0)
 
-/* udx check */
+
 #define UC(F) do {                              \
         error_stack_push(__FILE__, __LINE__);   \
         F;                                      \
@@ -7034,7 +7034,7 @@ void pair_get_view_adhesion(const PairParams *p, PairAdhesion *v) {
         error_stack_pop();                      \
     } while (0)
 
-/* [B]o[p] [c]heck */
+
 #define BPC(ans) do {                           \
         BopStatus s = (ans);                    \
         if (!bop_success(s)) {                  \
@@ -7059,14 +7059,14 @@ void error_print_stack();
 #ifndef UDX_FORCE_DEVICE_API_COMMON
 #define UDX_FORCE_DEVICE_API_COMMON
 #include "device.cuh"
-#endif /* UDX_FORCE_DEVICE_API_COMMON */
-/* function and variable type [q]ualifiers */
+#endif
+
 
 #if   defined(DEV_CUDA)
-/* B.1. Function Type Qualifiers */
-/* B.2. Variable Type Qualifiers */
+
+
 #elif defined(DEV_CPU)
-/* B.1. Function Type Qualifiers */
+
 #ifdef __device__
   #undef  __device__
   #define __device__
@@ -7092,8 +7092,8 @@ void error_print_stack();
   #define __forceinline__
 #endif
 
-/* B.2. Variable Type Qualifiers */
-/* __device__ : also a function qualifier */
+
+
 #ifdef __constant__
   #undef  __constant__
   #define __constant__
@@ -7163,52 +7163,52 @@ static int   warpSize = 1;
   #error DEV_* is undefined
 #endif
 
-struct RNDunif;                                             // <1>
-void rnd_ini(int x, int y, int z, int c, /**/ RNDunif **r); // <2>
-void rnd_fin(RNDunif *r);                                   // <3>
-float rnd_get(RNDunif *r);                                  // <4>
+struct RNDunif;
+void rnd_ini(int x, int y, int z, int c,      RNDunif **r);
+void rnd_fin(RNDunif *r);
+float rnd_get(RNDunif *r);
 #ifndef UDX_FORCE_RND_COMMON
 #define UDX_FORCE_RND_COMMON
 namespace rnd {
-/* random number from the ArcSine distribution on [-sqrt(2),sqrt(2)]
-   mean = 0, variance = 1 */
 
-// passes of logistic map
+
+
+
 static __const__ int N = 18;
-// spacing coefficints for low discrepancy numbers
+
 static __const__ float gold   = 0.6180339887498948482;
 static __const__ float silver = 0.4142135623730950488;
 static __const__ float bronze = 0.00008877875787352212838853023;
 static __const__ float tin    = 0.00004602357186447026756768986;
 static __const__ float sqrt2 = 1.41421356237309514547;
 
-/************************* Trunk generator ***********************
- * Make one global random number per each timestep
- * cite G. Marsaglia
- * passes BigCrush
- *****************************************************************/
 
-/************************* Branch generator **********************
- * Make one random number per pair of particles per timestep
- * Based on the Logistic map on interval [-1,1]
- * each branch no weaker than trunk
- * zero dependency between branches
- *****************************************************************/
 
-// floating point version of LCG
+
+
+
+
+
+
+
+
+
+
+
+
 __inline__ __device__ float rem( float r ) {
     return r - floorf( r );
 }
 
-// FMA wrapper for the convenience of switching rouding modes
+
 __inline__ __device__ float FMA( float x, float y, float z ) {
     return __fmaf_rz( x, y, z );
 }
 
-// logistic rounds
-// <3> : 4 FMA + 1 MUL
-// <2> : 2 FMA + 1 MUL
-// <1> : 1 FMA + 1 MUL
+
+
+
+
 
 template<int N> __inline__ __device__ float __logistic_core( float x )
 {
@@ -7227,45 +7227,45 @@ template<> __inline__ __device__ float __logistic_core<0>( float x ) {
 
 inline __device__ float mean0var1ii( float seed, int u, int v )
 {
-    float p = rem( ( ( u & 0x3FF ) * gold ) + u * bronze + ( ( v & 0x3FF ) * silver ) + v * tin ); // safe for large u or v
+    float p = rem( ( ( u & 0x3FF ) * gold ) + u * bronze + ( ( v & 0x3FF ) * silver ) + v * tin );
     float l = __logistic_core<N>( seed - p );
     return l * sqrt2;
 }
 
 inline __device__ float mean0var1uu( float seed, uint u, uint v )
 {
-    // 7 FLOPS
-    float p = rem( ( ( u & 0x3FFU ) * gold ) + u * bronze + ( ( v & 0x3FFU ) * silver ) + v * tin ); // safe for large u or v
-    // 45+1 FLOPS
+
+    float p = rem( ( ( u & 0x3FFU ) * gold ) + u * bronze + ( ( v & 0x3FFU ) * silver ) + v * tin );
+
     float l = __logistic_core<N>( seed - p );
-    // 1 FLOP
+
     return l * sqrt2;
 }
 
 }
-#endif /* UDX_FORCE_RND_COMMON */
+#endif
 #ifndef UDX_FORCE_MATH_COMMON
 #define UDX_FORCE_MATH_COMMON
-/* use templates here because we might have mixed float/double */
+
 
 #define _HD_ __host__ __device__
 
 template <typename T1, typename T2>
-_HD_ void scal(const T1 a, /*io*/ T2 *b) {
+_HD_ void scal(const T1 a,        T2 *b) {
     b->x *= a;
     b->y *= a;
     b->z *= a;
 }
 
 template <typename T1, typename T2>
-_HD_ void add(const T1 *a, /*io*/ T2 *b) {
+_HD_ void add(const T1 *a,        T2 *b) {
     b->x += a->x;
     b->y += a->y;
     b->z += a->z;
 }
 
 template <typename T1, typename T2, typename T3>
-_HD_ void diff(const T1 *a, const T2 *b, /**/ T3 *c) {
+_HD_ void diff(const T1 *a, const T2 *b,      T3 *c) {
     c->x = a->x - b->x;
     c->y = a->y - b->y;
     c->z = a->z - b->z;
@@ -7277,14 +7277,14 @@ _HD_ T1 dot(const T2 *a, const T3 *b) {
 }
 
 template <typename T1, typename T2, typename T3>
-_HD_ void cross(const T1 *a, const T2 *b, /**/ T3 *c) {
+_HD_ void cross(const T1 *a, const T2 *b,      T3 *c) {
     c->x = a->y * b->z - a->z * b->y;
     c->y = a->z * b->x - a->x * b->z;
     c->z = a->x * b->y - a->y * b->x;
 }
 
 template <typename T1, typename T2, typename T3>
-_HD_ void scalmult(const T1 *a, const T2 x, /**/ const T3 *b) {
+_HD_ void scalmult(const T1 *a, const T2 x,      const T3 *b) {
     b->x = a->x * x;
     b->y = a->y * x;
     b->z = a->z * x;
@@ -7292,47 +7292,47 @@ _HD_ void scalmult(const T1 *a, const T2 x, /**/ const T3 *b) {
 
 
 template <typename T1, typename T2, typename T3, typename T4>
-_HD_ void apxb(const T1 *a, const T2 x, const T3 *b, /**/ T4 *c) {
+_HD_ void apxb(const T1 *a, const T2 x, const T3 *b,      T4 *c) {
     c->x = a->x + x * b->x;
     c->y = a->y + x * b->y;
     c->z = a->z + x * b->z;
 }
 
 template <typename T1, typename T2, typename T3>
-_HD_ void axpy(const T1 a, const T2 *x, /*io*/ T3 *y) {
+_HD_ void axpy(const T1 a, const T2 *x,        T3 *y) {
     y->x += a * x->x;
     y->y += a * x->y;
     y->z += a * x->z;
 }
-#endif /* UDX_FORCE_MATH_COMMON */
+#endif
 
 #ifndef UDX_FORCE_DEF_COMMON
 #define UDX_FORCE_DEF_COMMON
 #include "constants.cuh"
 #endif
-void msg_ini(int rank); // <1>
-void msg_print(const char *fmt, ...); // <2>
-void emalloc(size_t, /**/ void**); // <1>
-void efree(void*); // <2>
-void *ememcpy(void *dest, const void *src, size_t n); // <3>
+void msg_ini(int rank);
+void msg_print(const char *fmt, ...);
+void emalloc(size_t,      void**);
+void efree(void*);
+void *ememcpy(void *dest, const void *src, size_t n);
 
 #define EMALLOC(n, ppdata) UC(emalloc((n)*sizeof(**(ppdata)), (void**)(ppdata)))
 #define EFREE(pdata) UC(efree(pdata))
 #define EMEMCPY(n, src, dest) ememcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
 
-void efopen(const char *fname, const char *mode, /**/ FILE**);
+void efopen(const char *fname, const char *mode,      FILE**);
 void efclose(FILE*);
 void efread(void *ptr, size_t size, size_t nmemb, FILE*);
 void efwrite(const void *ptr, size_t size, size_t nmemb, FILE*);
 void efgets(char *s, int size, FILE*);
 
-bool same_str(const char *a, const char *b); // <1>
+bool same_str(const char *a, const char *b);
 const char* get_filename_ext(const char*);
 
-/* [c]uda [c]heck macros */
+
 
 #if   defined(CC_SYNC)
-/* Aggressive [sync]ronization */
+
 #define CC(ans)                                             \
     do {                                                    \
         d::DeviceSynchronize();                             \
@@ -7340,7 +7340,7 @@ const char* get_filename_ext(const char*);
         d::DeviceSynchronize();                             \
     } while (0)
 #elif defined(CC_RELEASE)
-/* [c]cuda [c]heck */
+
 #define CC(ans)                                             \
     do { cc::check((ans), __FILE__, __LINE__);} while (0)
 #else
@@ -7353,8 +7353,8 @@ void check(int rc, const char *file, int line);
 
 
 
-/* TODO: header includes header */
-/* [m]pi [c]heck macros */
+
+
 #define MC(ans)                                                         \
     do { mpicheck::check((ans), __FILE__, __LINE__); } while (0)
 
@@ -7370,36 +7370,36 @@ struct int3;
 
 namespace frag_hst {
 
-int i2dx(int i);                 // <1>
-int i2dy(int i);                 // <2>
-int i2dz(int i);                 // <3>
-void i2d3(int i, /**/ int d[3]); // <4>
+int i2dx(int i);
+int i2dy(int i);
+int i2dz(int i);
+void i2d3(int i,      int d[3]);
 
-int d2i(int x, int y, int z); // <1>
-int d32i(const int d[3]);     // <2>
+int d2i(int x, int y, int z);
+int d32i(const int d[3]);
 
-int ncell(int3 L, int i); // <1>
+int ncell(int3 L, int i);
 
-int antid2i(int x, int y, int z); // <1>
-int anti(int i);                  // <2>
+int antid2i(int x, int y, int z);
+int anti(int i);
 
-void estimates(int3 L, int nfrags, float maxd, /**/ int *cap); // <1>
+void estimates(int3 L, int nfrags, float maxd,      int *cap);
 
-} // frag_hst
+}
 #include "fragment.cuh"
 
 #ifndef UDX_FORCE_KL_COMMON
 #define UDX_FORCE_KL_COMMON
 #include "launch.cuh"
-#endif /* UDX_FORCE_KL_COMMON */
+#endif
 #ifndef UDX_FORCE_TYPE_COMMON
 #define UDX_FORCE_TYPE_COMMON
 #include "types.cuh"
-#endif /* UDX_FORCE_TYPE_COMMON */
-/* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
+#endif
+
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
 
-/* a common kernel execution configuration */
+
 #define k_cnf(n) ceiln((n), 128), 128
 
 #define dSync() CC(d::DeviceSynchronize())
@@ -7408,29 +7408,29 @@ void estimates(int3 L, int nfrags, float maxd, /**/ int *cap); // <1>
 #define D2H d::MemcpyDeviceToHost
 #define H2D d::MemcpyHostToDevice
 #define H2H d::MemcpyHostToHost
-#define A2A d::MemcpyDefault /* "[a]ny to [a]ny" */
+#define A2A d::MemcpyDefault
 
 #define cD2D(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), D2D))
-#define cH2H(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), H2H))  /* [t]to, [f]rom */
+#define cH2H(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), H2H))
 #define cA2A(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), A2A))
 #define cD2H(H, D, n) CC(d::Memcpy((H), (D), (n) * sizeof((H)[0]), D2H))
 #define cH2D(D, H, n) CC(d::Memcpy((D), (H), (n) * sizeof((H)[0]), H2D))
 
 #define aD2D(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), D2D))
-#define aH2H(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), H2H))  /* [t]to, [f]rom */
+#define aH2H(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), H2H))
 #define aA2A(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), A2A))
 #define aD2H(H, D, n) CC(d::MemcpyAsync((H), (D), (n) * sizeof((H)[0]), D2H))
 #define aH2D(D, H, n) CC(d::MemcpyAsync((D), (H), (n) * sizeof((H)[0]), H2D))
 
-/* device allocation */
+
 #define Dfree(D)      CC(d::Free(D))
 #define Dalloc(D, n)  CC(d::Malloc((void**)(D), (n) * sizeof(**(D))))
 
-/* [d]evice set */
+
 #define Dset(P, v, n) CC(d::Memset(P, v, (n)*sizeof(*(P))))
 #define Dzero(P, n)   Dset(P, 0, n)
 
-/* [d]evice [a]synchronous set */
+
 #define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
 #define DzeroA(P, n)   DsetA(P, 0, n)
 struct Dbg;
@@ -7442,12 +7442,12 @@ struct int3;
 struct Coords;
 
 enum {
-    DBG_POS,      // <1>
-    DBG_POS_SOFT, // <2>
-    DBG_VEL,      // <3>
-    DBG_FORCES,   // <4>
-    DBG_COLORS,   // <5>
-    DBG_CLIST,    // <6>
+    DBG_POS,
+    DBG_POS_SOFT,
+    DBG_VEL,
+    DBG_FORCES,
+    DBG_COLORS,
+    DBG_CLIST,
     DBG_NKIND_
 };
 
@@ -7470,7 +7470,7 @@ void dbg_check_clist(const Coords *c, const Dbg *dbg, int3 L, const int *starts,
 
 #ifndef UDX_FORCE_PAIR_TYPE_COMMON
 #define UDX_FORCE_PAIR_TYPE_COMMON
-/* maximum of pairwise dpd parameters */
+
 enum {
     MAX_PAR = (N_COLOR * (N_COLOR + 1)) / 2
 };
@@ -7485,7 +7485,7 @@ struct PairDPDC {
     float a[MAX_PAR], g[MAX_PAR], s[MAX_PAR], spow;
 };
 
-/* mirrored */
+
 struct PairDPDCM {
     int ncolors;
     float a[N_COLOR], g[N_COLOR], s[N_COLOR], spow;
@@ -7503,7 +7503,7 @@ struct PairAdhesion {
 struct PairPa {
     float x, y, z;
     float vx, vy, vz;
-    /* optional fields */
+
     int color;
 };
 
@@ -7513,10 +7513,10 @@ struct PairFo {
 
 struct PairSFo {
     float x, y, z;
-    /* stress */
+
     float sxx, syy, szz, sxy, sxz, syz;
 };
-#endif /* UDX_FORCE_PAIR_TYPE_COMMON */
+#endif
 #ifndef UDX_FORCE_PAIR_DEV_COMMON
 #define UDX_FORCE_PAIR_DEV_COMMON
 #define _S_ static __device__
@@ -7530,8 +7530,8 @@ _S_ float cap(float x, float lo, float hi) {
 
 static const float EPS = 1e-6;
 enum {NORM_OK, NORM_BIG, NORM_SMALL};
-_S_ int norm(/*io*/ float3 *pos, /**/ float *pr, float *pinvr) {
-    /* normalize r = [x, y, z], sets |r| and 1/|r| if not big */
+_S_ int norm(       float3 *pos,      float *pr, float *pinvr) {
+
     float x, y, z, invr, r, r2;
     x = pos->x; y = pos->y; z = pos->z;
 
@@ -7599,13 +7599,13 @@ _S_ float force_magn(const PairAdhesion *p, float, float ev, float r, float) {
     return magn_adhesion(p->k1, p->k2, r, ev);
 }
 
-_S_ void magn2fo(float f0, float3 er, float3 dr, /**/ PairFo *f) {
+_S_ void magn2fo(float f0, float3 er, float3 dr,      PairFo *f) {
     f->x = f0 * er.x;
     f->y = f0 * er.y;
     f->z = f0 * er.z;
 }
 
-_S_ void magn2fo(float f0, float3 er, float3 dr, /**/ PairSFo *f) {
+_S_ void magn2fo(float f0, float3 er, float3 dr,      PairSFo *f) {
     f->x = f0 * er.x;
     f->y = f0 * er.y;
     f->z = f0 * er.z;
@@ -7629,11 +7629,11 @@ _S_ void make_zero(PairSFo *f) {
 }
 
 template <typename Param, typename Fo>
-_I_ void pair_force(const Param *p, PairPa a, PairPa b, float rnd, /**/ Fo *f)
+_I_ void pair_force(const Param *p, PairPa a, PairPa b, float rnd,      Fo *f)
 {
     float r, invr, ev, f0;
     float3 dr, er, dv;
-    int vnstat; /* vector normalization status */
+    int vnstat;
 
     dr.x = a.x - b.x;
     dr.y = a.y - b.y;
@@ -7645,7 +7645,7 @@ _I_ void pair_force(const Param *p, PairPa a, PairPa b, float rnd, /**/ Fo *f)
 
     er = dr;
 
-    vnstat = norm(/*io*/ &er, /*o*/ &r, &invr);
+    vnstat = norm(       &er,       &r, &invr);
     if (vnstat == NORM_BIG) {
         make_zero(f);
         return;
@@ -7654,7 +7654,7 @@ _I_ void pair_force(const Param *p, PairPa a, PairPa b, float rnd, /**/ Fo *f)
     ev = dot<float>(&er, &dv);
 
     f0 = force_magn(p, rnd, ev, r, invr);
-    magn2fo(f0, er, dr, /**/ f);
+    magn2fo(f0, er, dr,      f);
 }
 
 _S_ int colors2pid(int ca, int cb) {
@@ -7665,7 +7665,7 @@ _S_ int colors2pid(int ca, int cb) {
 }
 
 template <typename Fo>
-_I_ void pair_force(const PairDPDC *pc, PairPa a, PairPa b, float rnd, /**/ Fo *f) {
+_I_ void pair_force(const PairDPDC *pc, PairPa a, PairPa b, float rnd,      Fo *f) {
     PairDPD p;
     int pid;
     pid = colors2pid(a.color, b.color);
@@ -7673,30 +7673,30 @@ _I_ void pair_force(const PairDPDC *pc, PairPa a, PairPa b, float rnd, /**/ Fo *
     p.g = pc->g[pid];
     p.s = pc->s[pid];
     p.spow = pc->spow;
-    pair_force(&p, a, b, rnd, /**/ f);
+    pair_force(&p, a, b, rnd,      f);
 }
 
-/* mirrored: parameters from particle "a" only */
+
 template <typename Fo>
-_I_ void pair_force(const PairDPDCM *pc, PairPa a, PairPa b, float rnd, /**/ Fo *f) {
+_I_ void pair_force(const PairDPDCM *pc, PairPa a, PairPa b, float rnd,      Fo *f) {
     PairDPD p;
     int pid = a.color;
     p.a = pc->a[pid];
     p.g = pc->g[pid];
     p.s = pc->s[pid];
     p.spow = pc->spow;
-    pair_force(&p, a, b, rnd, /**/ f);
+    pair_force(&p, a, b, rnd,      f);
 }
 
 
-_I_ void pair_add(const PairFo *b, /**/ PairFo *a)
+_I_ void pair_add(const PairFo *b,      PairFo *a)
 {
     a->x += b->x;
     a->y += b->y;
     a->z += b->z;
 }
 
-_I_ void pair_add(const PairSFo *b, /**/ PairSFo *a)
+_I_ void pair_add(const PairSFo *b,      PairSFo *a)
 {
     a->x += b->x;
     a->y += b->y;
@@ -7712,7 +7712,7 @@ _I_ void pair_add(const PairSFo *b, /**/ PairSFo *a)
 
 #undef _S_
 #undef _I_
-#endif /* UDX_FORCE_PAIR_DEV_COMMON */
+#endif
 struct PairParams;
 struct Config;
 
@@ -7725,8 +7725,8 @@ struct PairAdhesion;
 void pair_ini(PairParams **);
 void pair_fin(PairParams *);
 
-void pair_set_dpd(int ncol, const float a[], const float g[], float spow, PairParams *p); // <1>
-void pair_set_lj(float sigma, float eps, PairParams *p); // <2>
+void pair_set_dpd(int ncol, const float a[], const float g[], float spow, PairParams *p);
+void pair_set_lj(float sigma, float eps, PairParams *p);
 void pair_set_adhesion(float k1, float k2, PairParams *p);
 
 void pair_set_conf(const Config *, const char *name_space, PairParams *);
@@ -7745,7 +7745,7 @@ struct PaArray_v {
 
 struct PaCArray_v {
     const float *pp;
-    const int *cc;   /* colors */
+    const int *cc;
 };
 #ifndef UDX_FORCE_PARRAY_COMMON
 #define UDX_FORCE_PARRAY_COMMON
@@ -7765,14 +7765,14 @@ void parray_push_cc(const int *cc, PaArray *a);
 
 bool parray_is_colored(const PaArray *a);
 
-void parray_get_view(const PaArray *a, PaArray_v *v);  // <1>
-void parray_get_view(const PaArray *a, PaCArray_v *v); // <2>
-#endif /* UDX_FORCE_PARRAY_COMMON */
+void parray_get_view(const PaArray *a, PaArray_v *v);
+void parray_get_view(const PaArray *a, PaCArray_v *v);
+#endif
 #define _S_ static __device__
 #define _I_ static __device__
 
 template<typename PA>
-_S_ void parray_get_pp(PA a, int i, /**/ PairPa *p) {
+_S_ void parray_get_pp(PA a, int i,      PairPa *p) {
     const float2 *pp = (const float2 *) a.pp;
     float2 s0, s1, s2;
     s0 = __ldg(pp + 3*i + 0);
@@ -7788,36 +7788,36 @@ _S_ void parray_get_pp(PA a, int i, /**/ PairPa *p) {
     p->vz = s2.y;
 }
 
-_I_ void parray_get(PaArray_v a, int i, /**/ PairPa *p) // <1>
+_I_ void parray_get(PaArray_v a, int i,      PairPa *p)
 {
-    parray_get_pp(a, i, /**/ p);
+    parray_get_pp(a, i,      p);
 }
 
-_I_ void parray_get(PaCArray_v a, int i, /**/ PairPa *p) // <2>
+_I_ void parray_get(PaCArray_v a, int i,      PairPa *p)
 {
-    parray_get_pp(a, i, /**/ p);
+    parray_get_pp(a, i,      p);
     p->color = a.cc[i];
 }
 
 #undef _S_
 #undef _I_
 
-/* local */
+
 
 struct RNDunif;
 struct Fsi;
 struct int3;
 
-void fsi_ini(int rank, int3 L, /**/ Fsi **fsi);
+void fsi_ini(int rank, int3 L,      Fsi **fsi);
 void fsi_fin(Fsi *fsi);
 
-void fsi_bind_solvent(PaArray pa, Force *ff, int n, const int *starts, /**/ Fsi *fsi);  // <1>
-void fsi_bulk(Fsi *fsi, int nw, const PairParams **prms, PaWrap *pw, FoWrap *fw); // <2>
-void fsi_halo(Fsi *fsi, int nw, const PairParams **prms, Pap26 all_pp, Fop26 all_ff, const int *all_counts); // <3>
+void fsi_bind_solvent(PaArray pa, Force *ff, int n, const int *starts,      Fsi *fsi);
+void fsi_bulk(Fsi *fsi, int nw, const PairParams **prms, PaWrap *pw, FoWrap *fw);
+void fsi_halo(Fsi *fsi, int nw, const PairParams **prms, Pap26 all_pp, Fop26 all_ff, const int *all_counts);
 
-/* body */
+
 typedef PairPa Pa;
-struct FsiFo { float *x, *y, *z; }; /* force */
+struct FsiFo { float *x, *y, *z; };
 static __device__ float fsi_random(uint lid, uint rid, float seed) {
     return rnd::mean0var1uu(seed, lid, rid);
 }
@@ -7830,31 +7830,31 @@ static __device__ FsiFo fsi_ff2f(float *ff, int i) {
 }
 
 template <typename Par>
-static __device__ void fsi_pair0(Par params, const Pa a, const Pa b, float rnd, /**/ float *fx, float *fy, float *fz) {
+static __device__ void fsi_pair0(Par params, const Pa a, const Pa b, float rnd,      float *fx, float *fy, float *fz) {
     PairFo f;
-    pair_force(&params, a, b, rnd, /**/ &f);
+    pair_force(&params, a, b, rnd,      &f);
     *fx = f.x; *fy = f.y; *fz = f.z;
 }
 
 template <typename Par>
-static __device__ void fsi_pair(Par params, const Pa a, const Pa b, float rnd, /**/
+static __device__ void fsi_pair(Par params, const Pa a, const Pa b, float rnd,
                             float *fx, float *fy, float *fz, FsiFo f) {
-    /* f[xyz]: local force; FsiFo f: remote force */
-    float x, y, z; /* fsi_pair force */
-    fsi_pair0(params, a, b, rnd, /**/ &x, &y, &z);
+
+    float x, y, z;
+    fsi_pair0(params, a, b, rnd,      &x, &y, &z);
     *fx += x; *fy += y; *fz += z;
     atomicAdd(f.x, -x); atomicAdd(f.y, -y); atomicAdd(f.z, -z);
 }
-struct FsiMap { /* helps to find remote particle */
+struct FsiMap {
     int  org0, org1, org2;
     uint cnt0, cnt1, cnt2;
 };
 
-/* true if `i' is bigger than the number of remote particles */
+
 static __device__ int fsi_endp(const FsiMap m, uint i) { return i >= m.cnt2; }
 
 static __device__ uint fsi_m2id(const FsiMap m, uint i) {
-    /* return remote particle id */
+
     int m1, m2;
     uint id;
     m1 = (int)(i >= m.cnt0);
@@ -7862,8 +7862,8 @@ static __device__ uint fsi_m2id(const FsiMap m, uint i) {
     id = i + (m2 ? m.org2 : m1 ? m.org1 : m.org0);
     return id;
 }
-static __device__ int fsi_r2map(int3 L, const int *start, int zplane, int n, float x, float y, float z, /**/ FsiMap *m) {
-    /* coordinate [r] to map */
+static __device__ int fsi_r2map(int3 L, const int *start, int zplane, int n, float x, float y, float z,      FsiMap *m) {
+
     int cnt0, cnt1, cnt2, org0;
     int org1, org2;
     int xoffset, yoffset, zoffset;
@@ -7926,8 +7926,8 @@ static __device__ int fsi_r2map(int3 L, const int *start, int zplane, int n, flo
     m->cnt0 = cnt0; m->cnt1 = cnt1; m->cnt2 = cnt2;
     return 1;
 }
-static __device__ int fsi_tex2map(int3 L, const int *start, int zplane, int n1, float x, float y, float z, /**/ FsiMap *m) {
-    /* textures to map */
+static __device__ int fsi_tex2map(int3 L, const int *start, int zplane, int n1, float x, float y, float z,      FsiMap *m) {
+
     int xstart, xcount;
     int zmy;
     int xcenter, ycenter, zcenter;
@@ -7996,15 +7996,15 @@ static __device__ int fsi_tex2map(int3 L, const int *start, int zplane, int n1, 
     m->cnt0 = cnt0; m->cnt1 = cnt1; m->cnt2 = cnt2;
     return 1;
 }
-static __device__ void fsi_pp2p(const Particle *pp, int i, /**/ Pa *p) {
+static __device__ void fsi_pp2p(const Particle *pp, int i,      Pa *p) {
     enum {X, Y, Z};
     Particle a = pp[i];
     p->x  = a.r[X]; p->y  = a.r[Y]; p->z  = a.r[Z];
     p->vx = a.v[X]; p->vy = a.v[Y]; p->vz = a.v[Z];
 }
 
-static __device__ int fsi_p2map(int3 L, const int *start, int zplane, int n, const Pa p, /**/ FsiMap *m) {
-    /* particle to map */
+static __device__ int fsi_p2map(int3 L, const int *start, int zplane, int n, const Pa p,      FsiMap *m) {
+
     return fsi_r2map(L, start, zplane, n, p.x, p.y, p.z, m);
 }
 
@@ -8018,26 +8018,26 @@ static __device__ float fsi_dist(Pa a, Pa b) {
 }
 
 template <typename Par, typename Parray>
-static __device__ void fsi_bulk0(Par params, const Pa a, Parray parray, int lid, const FsiMap m, float seed, /**/
+static __device__ void fsi_bulk0(Par params, const Pa a, Parray parray, int lid, const FsiMap m, float seed,
                              float *fx, float *fy, float *fz, float *ff) {
-    /* "[a]ocal" and "[b]emote" particles */
+
     Pa b;
     FsiFo f;
     int i, rid;
-    *fx = *fy = *fz = 0; /* local force */
+    *fx = *fy = *fz = 0;
     for (i = 0; !fsi_endp(m, i); ++i) {
         rid = fsi_m2id(m, i);
-        parray_get(parray, rid, /**/ &b);
+        parray_get(parray, rid,      &b);
         f = fsi_ff2f(ff, rid);
-        fsi_pair(params, a, b, fsi_random(lid, rid, seed), /**/ fx, fy, fz,   f);
+        fsi_pair(params, a, b, fsi_random(lid, rid, seed),      fx, fy, fz,   f);
     }
 }
 
 template <typename Par, typename Parray>
 static __device__ void bulk1(Par params, const Pa a, Parray parray,
-                             const FsiFo f, int i, const FsiMap m, float seed, /**/ float *ff) {
-    float fx, fy, fz; /* local force */
-    fsi_bulk0(params, a, parray, i, m, seed, /**/ &fx, &fy, &fz, ff);
+                             const FsiFo f, int i, const FsiMap m, float seed,      float *ff) {
+    float fx, fy, fz;
+    fsi_bulk0(params, a, parray, i, m, seed,      &fx, &fy, &fz, ff);
     atomicAdd(f.x, fx);
     atomicAdd(f.y, fy);
     atomicAdd(f.z, fz);
@@ -8045,14 +8045,14 @@ static __device__ void bulk1(Par params, const Pa a, Parray parray,
 
 template <typename Par, typename Parray>
 static __device__ void bulk2(Par params, int3 L, const int *start, const Particle *ppA, Parray parray, int i, int zplane, int n, float seed,
-                             /**/ float *ff, float *ff0) {
+                                  float *ff, float *ff0) {
     Pa p;
-    FsiFo f; /* "local" particle */
+    FsiFo f;
     FsiMap m;
-    fsi_pp2p(ppA, i, /**/ &p);
+    fsi_pp2p(ppA, i,      &p);
     f = fsi_ff2f(ff, i);
-    if (!fsi_p2map(L, start, zplane, n, p, /**/ &m)) return;
-    bulk1(params, p, parray, f, i, m, seed, /**/ ff0);
+    if (!fsi_p2map(L, start, zplane, n, p,      &m)) return;
+    bulk1(params, p, parray, f, i, m, seed,      ff0);
 }
 
 template <typename Par, typename Parray>
@@ -8075,10 +8075,10 @@ static __device__ Pa warp2p(const Particle *pp, int i) {
 }
 
 template <typename Par, typename Parray>
-static __device__ void halo0(Par params, int3 L, const int *start, Pa A, int aid, Parray parray, int nb, float seed, /**/ float *fA, float *ffB) {
+static __device__ void halo0(Par params, int3 L, const int *start, Pa A, int aid, Parray parray, int nb, float seed,      float *fA, float *ffB) {
     enum {X, Y, Z};
 
-    Pa B; /* remote particles */
+    Pa B;
     FsiFo f;
 
     FsiMap m;
@@ -8088,20 +8088,20 @@ static __device__ void halo0(Par params, int3 L, const int *start, Pa A, int aid
 
     fx = fy = fz = 0;
     for (zplane = 0; zplane < 3; ++zplane) {
-        if (!fsi_tex2map(L, start, zplane, nb, A.x, A.y, A.z, /**/ &m)) continue;
+        if (!fsi_tex2map(L, start, zplane, nb, A.x, A.y, A.z,      &m)) continue;
         for (i = 0; !fsi_endp(m, i); ++i) {
             bid = fsi_m2id(m, i);
-            parray_get(parray, bid, /**/ &B);
+            parray_get(parray, bid,      &B);
             f = fsi_ff2f(ffB, bid);
-            fsi_pair(params, A, B, fsi_random(aid, bid, seed), /**/ &fx, &fy, &fz,   f);
+            fsi_pair(params, A, B, fsi_random(aid, bid, seed),      &fx, &fy, &fz,   f);
         }
     }
     fA[X] += fx; fA[Y] += fy; fA[Z] += fz;
 }
 
 template <typename Par, typename Parray>
-static __device__ void halo1(Par params, int3 L, const int *cellsstart, int27 starts, Pap26 pp, Fop26 ff, int aid, Parray parray, int nb, float seed, /**/ float *ffB) {
-    int fid; /* fragment id */
+static __device__ void halo1(Par params, int3 L, const int *cellsstart, int27 starts, Pap26 pp, Fop26 ff, int aid, Parray parray, int nb, float seed,      float *ffB) {
+    int fid;
     int start;
     Pa A;
     float *fA;
@@ -8113,15 +8113,15 @@ static __device__ void halo1(Par params, int3 L, const int *cellsstart, int27 st
 
     fA = ff.d[fid][aid-start].f;
 
-    halo0(params, L, cellsstart, A, aid, parray, nb, seed, /**/ fA, ffB);
+    halo0(params, L, cellsstart, A, aid, parray, nb, seed,      fA, ffB);
 }
 
 template <typename Par, typename Parray>
-__global__ void fsi_halo_kernel(Par params, int3 L, const int *cellsstart, int27 starts, Pap26 pp, Fop26 ff, Parray parray, int na, int nb, float seed, /**/ float *ffB) {
+__global__ void fsi_halo_kernel(Par params, int3 L, const int *cellsstart, int27 starts, Pap26 pp, Fop26 ff, Parray parray, int na, int nb, float seed,      float *ffB) {
     int aid;
     aid = threadIdx.x + blockDim.x * blockIdx.x;
     if (aid >= na) return;
-    halo1(params, L, cellsstart, starts, pp, ff, aid, parray, nb, seed, /**/ ffB);
+    halo1(params, L, cellsstart, starts, pp, ff, aid, parray, nb, seed,      ffB);
 }
 
 struct RNDunif;
@@ -8136,15 +8136,15 @@ struct SolventWrap {
 struct Fsi {
     SolventWrap *wo;
     RNDunif     *rgen;
-    int3 L; /* subdomain size */
+    int3 L;
 };
-void fsi_ini(int rank, int3 L, /**/ Fsi **fsi) {
+void fsi_ini(int rank, int3 L,      Fsi **fsi) {
     Fsi *f;
     EMALLOC(1, fsi);
     f = *fsi;
 
     f->L = L;
-    UC(rnd_ini(1908 - rank, 1409 + rank, 290, 12968, /**/ &f->rgen));
+    UC(rnd_ini(1908 - rank, 1409 + rank, 290, 12968,      &f->rgen));
     EMALLOC(1, &f->wo);
 }
 
@@ -8154,7 +8154,7 @@ void fsi_fin(Fsi *fsi) {
     EFREE(fsi);
 }
 
-void fsi_bind_solvent(PaArray pa, Force *ff, int n, const int *starts, /**/ Fsi *fsi) {
+void fsi_bind_solvent(PaArray pa, Force *ff, int n, const int *starts,      Fsi *fsi) {
     SolventWrap *w = fsi->wo;
     w->pa = pa;
     w->n  = n;
@@ -8223,7 +8223,7 @@ static void fsi_halo_one_type(const PairParams *params, Fsi *fsi, Pap26 PP, Fop2
         pair_get_view_dpd_mirrored(params, &pv);
         parray_get_view(parray, &pav);
 
-        KL(fsi_halo_kernel, (k_cnf(n)), (pv, fsi->L, wo->starts, starts, PP, FF, pav, n, wo->n, rnd, /**/ (float*)wo->ff));
+        KL(fsi_halo_kernel, (k_cnf(n)), (pv, fsi->L, wo->starts, starts, PP, FF, pav, n, wo->n, rnd,      (float*)wo->ff));
     }
     else {
         PairDPD pv;
@@ -8232,7 +8232,7 @@ static void fsi_halo_one_type(const PairParams *params, Fsi *fsi, Pap26 PP, Fop2
         pair_get_view_dpd(params, &pv);
         parray_get_view(parray, &pav);
 
-        KL(fsi_halo_kernel, (k_cnf(n)), (pv, fsi->L, wo->starts, starts, PP, FF, pav, n, wo->n, rnd, /**/ (float*)wo->ff));
+        KL(fsi_halo_kernel, (k_cnf(n)), (pv, fsi->L, wo->starts, starts, PP, FF, pav, n, wo->n, rnd,      (float*)wo->ff));
     }
 }
 
