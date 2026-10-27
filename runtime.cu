@@ -20610,23 +20610,22 @@ enum {
     NWARPS     = BLOCK_SIZE / WARPSIZE
 };
 
-namespace minmax_dev {
-static const float MINV = -100000000.;
-static const float MAXV =  100000000.;
+static const float minmax_minv = -100000000.;
+static const float minmax_maxv =  100000000.;
 
-static __device__ float3 minf3(float3 a, float3 b) {
+static __device__ float3 minmax_minf3(float3 a, float3 b) {
     return make_float3(min(a.x, b.x),
                        min(a.y, b.y),
                        min(a.z, b.z));
 }
 
-static __device__ float3 maxf3(float3 a, float3 b) {
+static __device__ float3 minmax_maxf3(float3 a, float3 b) {
     return make_float3(max(a.x, b.x),
                        max(a.y, b.y),
                        max(a.z, b.z));
 }
 
-static __device__ float3 warpReduce_minf3(float3 val) {
+static __device__ float3 minmax_warp_reduce_min(float3 val) {
     for (int offset = warpSize/2; offset > 0; offset /= 2) {
         val.x = min(val.x, shfl_down(val.x, offset));
         val.y = min(val.y, shfl_down(val.y, offset));
@@ -20635,7 +20634,7 @@ static __device__ float3 warpReduce_minf3(float3 val) {
     return val;
 }
 
-static __device__ float3 warpReduce_maxf3(float3 val) {
+static __device__ float3 minmax_warp_reduce_max(float3 val) {
     for (int offset = warpSize/2; offset > 0; offset /= 2) {
         val.x = max(val.x, shfl_down(val.x, offset));
         val.y = max(val.y, shfl_down(val.y, offset));
@@ -20645,7 +20644,7 @@ static __device__ float3 warpReduce_maxf3(float3 val) {
 }
 
 
-__global__ void minmax(int nv, const Particle *pp, float3 *lo, float3 *hi) {
+__global__ void minmax_kernel(int nv, const Particle *pp, float3 *lo, float3 *hi) {
     enum {LO, HI, D};
     int i, objid, stride, pid, wid, lid;
     float3 r, lmin, lmax;
@@ -20657,18 +20656,18 @@ __global__ void minmax(int nv, const Particle *pp, float3 *lo, float3 *hi) {
     wid = i / warpSize;
     objid = blockIdx.y;
 
-    lmin = make_float3(MAXV, MAXV, MAXV);
-    lmax = make_float3(MINV, MINV, MINV);
+    lmin = make_float3(minmax_maxv, minmax_maxv, minmax_maxv);
+    lmax = make_float3(minmax_minv, minmax_minv, minmax_minv);
 
     for (; i < nv; i += stride) {
         pid = objid * nv + i;
         r = fetch_pos(pid, pp);
-        lmin = minf3(r, lmin);
-        lmax = maxf3(r, lmax);
+        lmin = minmax_minf3(r, lmin);
+        lmax = minmax_maxf3(r, lmax);
     }
 
-    lmin = warpReduce_minf3(lmin);
-    lmax = warpReduce_maxf3(lmax);
+    lmin = minmax_warp_reduce_min(lmin);
+    lmax = minmax_warp_reduce_max(lmax);
 
     if (lid == 0) {
         lohi[LO][wid] = lmin;
@@ -20682,8 +20681,8 @@ __global__ void minmax(int nv, const Particle *pp, float3 *lo, float3 *hi) {
             lmin = lohi[LO][lid];
             lmax = lohi[HI][lid];
         }
-        lmin = warpReduce_minf3(lmin);
-        lmax = warpReduce_maxf3(lmax);
+        lmin = minmax_warp_reduce_min(lmin);
+        lmax = minmax_warp_reduce_max(lmax);
 
         if (lid == 0) {
             lo[objid] = lmin;
@@ -20691,13 +20690,11 @@ __global__ void minmax(int nv, const Particle *pp, float3 *lo, float3 *hi) {
         }
     }
 }
-}
-
 void minmax(const Particle *pp, int nv, int nobj, /**/ float3 *lo, float3 *hi) {
     dim3 thrd(BLOCK_SIZE, 1);
     dim3 blck(1, nobj);
 
-    KL(minmax_dev::minmax, (blck, thrd), (nv, pp, lo, hi));
+    KL(minmax_kernel, (blck, thrd), (nv, pp, lo, hi));
 }
 
 
