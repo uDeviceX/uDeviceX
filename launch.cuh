@@ -1,7 +1,7 @@
 #ifndef UDX_LAUNCH_CUH
 #define UDX_LAUNCH_CUH
 
-/* [k]ernel [l]aunch macros */
+
 
 #if    defined(KL_RELEASE)
 #define KL_BEFORE(s, C) if (!kl::safe(ESC C)) continue;
@@ -45,6 +45,6 @@ inline int safe(dim3 i, dim3 j, int)               { return safe0(i, j); }
         KL_AFTER(#F);                           \
     } while (0)
 
-/* TODO: header includes header */
+
 
 #endif
