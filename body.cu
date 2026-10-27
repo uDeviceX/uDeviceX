@@ -2339,34 +2339,33 @@ struct RigPinInfo {
     int pdir; /* direction of periodicity */
 };
 
-namespace rigid_dev {
-static __device__ float dot(const float *v, const float *u) {
+static __device__ float rigid_dot(const float *v, const float *u) {
     enum {X, Y, Z};
     return v[X]*u[X] + v[Y]*u[Y] + v[Z]*u[Z];
 }
 
-static __device__ void reject(/**/ float *v, float *u) {
+static __device__ void rigid_reject(/**/ float *v, float *u) {
     enum {X, Y, Z};
-    const float d = dot(v, u);
+    const float d = rigid_dot(v, u);
     v[X] -= d*u[X]; v[Y] -= d*u[Y]; v[Z] -= d*u[Z];
 }
 
-static __device__ void normalize(/**/ float *v) {
+static __device__ void rigid_normalize(/**/ float *v) {
     enum {X, Y, Z};
-    const float s = rsqrtf(dot(v, v));
+    const float s = rsqrtf(rigid_dot(v, v));
     v[X] *= s; v[Y] *= s; v[Z] *= s;
 }
 
 __device__ void gram_schmidt(/**/ float *e0, float *e1, float *e2) {
     /* :TODO: use better more stable version of Gram-Schmidt */
-    normalize(e0);
+    rigid_normalize(e0);
 
-    reject(e1, e0);
-    normalize(e1);
+    rigid_reject(e1, e0);
+    rigid_normalize(e1);
 
-    reject(e2, e0);
-    reject(e2, e1);
-    normalize(e2);
+    rigid_reject(e2, e0);
+    rigid_reject(e2, e1);
+    rigid_normalize(e2);
 }
 
 __device__ void rot_e(float dt, const float *om, /**/ float *e) {
@@ -2380,7 +2379,7 @@ __device__ void rot_e(float dt, const float *om, /**/ float *e) {
 
     e[X] += vx*dt; e[Y] += vy*dt; e[Z] += vz*dt;
 }
-__global__ void rot_referential(float dt, const int ns, Rigid *ss) {
+__global__ void rigid_rot_referential_kernel(float dt, const int ns, Rigid *ss) {
     int i;
     i = threadIdx.x + blockIdx.x * blockDim.x;
     if (i < ns) {
@@ -2394,14 +2393,14 @@ __global__ void rot_referential(float dt, const int ns, Rigid *ss) {
     }
 }
 
-static __device__ void atomicAdd3(float d[3], float3 s) {
+static __device__ void rigid_atomic_add3(float d[3], float3 s) {
     enum {X, Y, Z};
     atomicAdd(d + X, s.x);
     atomicAdd(d + Y, s.y);
     atomicAdd(d + Z, s.z);
 }
 
-static __device__ float3 fetch_force(int i, const Force *ff) {
+static __device__ float3 rigid_fetch_force(int i, const Force *ff) {
     enum {X, Y, Z};
     float3 f;
     f.x = ff[i].f[X];
@@ -2410,7 +2409,7 @@ static __device__ float3 fetch_force(int i, const Force *ff) {
     return f;
 }
 
-__global__ void add_f_to(const int nps, const Particle *pp, const Force *ff, /**/ Rigid *ss) {
+__global__ void rigid_add_f_to_kernel(const int nps, const Particle *pp, const Force *ff, /**/ Rigid *ss) {
     enum {X, Y, Z};
     int gid, sid, i;
     gid = blockIdx.x * blockDim.x + threadIdx.x;
@@ -2422,7 +2421,7 @@ __global__ void add_f_to(const int nps, const Particle *pp, const Force *ff, /**
     Particle   p = {0, 0, 0, 0, 0, 0};
 
     if (gid < nps) {
-        f = fetch_force(i, ff);
+        f = rigid_fetch_force(i, ff);
         p = pp[i];
     }
 
@@ -2438,12 +2437,12 @@ __global__ void add_f_to(const int nps, const Particle *pp, const Force *ff, /**
     to = warpReduceSum(to);
 
     if ((threadIdx.x & (warpSize - 1)) == 0) {
-        atomicAdd3(ss[sid].fo, f);
-        atomicAdd3(ss[sid].to, to);
+        rigid_atomic_add3(ss[sid].fo, f);
+        rigid_atomic_add3(ss[sid].to, to);
     }
 }
 
-__global__ void reinit_ft(const int ns, Rigid *ss) {
+__global__ void rigid_reinit_ft_kernel(const int ns, Rigid *ss) {
     enum {X, Y, Z};
     const int gid = blockIdx.x * blockDim.x + threadIdx.x;
     if (gid < ns) {
@@ -2453,7 +2452,7 @@ __global__ void reinit_ft(const int ns, Rigid *ss) {
     }
 }
 
-__global__ void update_om_v(RigPinInfo pi, float dt, const int ns, Rigid *ss) {
+__global__ void rigid_update_om_v_kernel(RigPinInfo pi, float dt, const int ns, Rigid *ss) {
     enum {X, Y, Z};
     enum {XX, XY, XZ, YY, YZ, ZZ};
     enum {YX = XY, ZX = XZ, ZY = YZ};
@@ -2488,7 +2487,7 @@ __global__ void update_om_v(RigPinInfo pi, float dt, const int ns, Rigid *ss) {
     }
 }
 
-__global__ void update_com(float dt, int ns, Rigid *ss) {
+__global__ void rigid_update_com_kernel(float dt, int ns, Rigid *ss) {
     int sid, c, i;
     i = threadIdx.x + blockIdx.x * blockDim.x;
     sid = i / 3;
@@ -2498,7 +2497,7 @@ __global__ void update_com(float dt, int ns, Rigid *ss) {
         ss[sid].com[c] += ss[sid].v[c]*dt;
 }
 
-__global__ void update_pp(const int nps, const float *rr0, const Rigid *ss, /**/ Particle *pp) {
+__global__ void rigid_update_pp_kernel(const int nps, const float *rr0, const Rigid *ss, /**/ Particle *pp) {
     enum {X, Y, Z};
     int pid, sid, i;
     Rigid s;
@@ -2533,7 +2532,7 @@ __global__ void update_pp(const int nps, const float *rr0, const Rigid *ss, /**/
     }
 }
 
-__global__ void update_mesh(float dt, const Rigid *ss_dev, const int nv, const float *vv, /**/ Particle *pp) {
+__global__ void rigid_update_mesh_kernel(float dt, const Rigid *ss_dev, const int nv, const float *vv, /**/ Particle *pp) {
     enum {X, Y, Z};
     const int sid = blockIdx.y; // solid Id
     const Rigid *s = ss_dev + sid;
@@ -2560,8 +2559,6 @@ __global__ void update_mesh(float dt, const Rigid *ss_dev, const int nv, const f
         pp[vid] = p;
     }
 }
-}
-
 enum {NTHRD=128};
 
 void rig_pininfo_ini(RigPinInfo **pi) {
@@ -2589,7 +2586,7 @@ int rig_pininfo_get_pdir(const RigPinInfo *pi) {
 }
 
 void rig_reinit_ft(const int nsolid, /**/ Rigid *ss) {
-    KL(rigid_dev::reinit_ft, (k_cnf(nsolid)), (nsolid, /**/ ss));
+    KL(rigid_reinit_ft_kernel, (k_cnf(nsolid)), (nsolid, /**/ ss));
 }
 
 static bool pinned_com(const RigPinInfo *pi) {
@@ -2605,13 +2602,13 @@ void rig_update(const RigPinInfo *pi, float dt, int n, const Force *ff, const fl
     const dim3 nblck ( ceiln(nps, NTHRD), ns );
     const dim3 nthrd ( NTHRD, 1 );
 
-    KL(rigid_dev::add_f_to, ( nblck, nthrd ), (nps, pp, ff, /**/ ss));
-    KL(rigid_dev::update_om_v, (1, ns), (*pi, dt, ns, /**/ ss));
+    KL(rigid_add_f_to_kernel, ( nblck, nthrd ), (nps, pp, ff, /**/ ss));
+    KL(rigid_update_om_v_kernel, (1, ns), (*pi, dt, ns, /**/ ss));
     if (!pinned_com(pi))
-        KL(rigid_dev::update_com, (1, 3*ns ), (dt, ns, /**/ ss));
-    KL(rigid_dev::rot_referential, (1, ns), (dt, ns, /**/ ss));
+        KL(rigid_update_com_kernel, (1, 3*ns ), (dt, ns, /**/ ss));
+    KL(rigid_rot_referential_kernel, (1, ns), (dt, ns, /**/ ss));
 
-    KL(rigid_dev::update_pp, ( nblck, nthrd ), (nps, rr0, ss, /**/ pp));
+    KL(rigid_update_pp_kernel, ( nblck, nthrd ), (nps, rr0, ss, /**/ pp));
 }
 
 void rig_generate(int ns, const Rigid *ss, int nps, const float *rr0, /**/ Particle *pp) {
@@ -2620,13 +2617,13 @@ void rig_generate(int ns, const Rigid *ss, int nps, const float *rr0, /**/ Parti
     const dim3 nblck ( ceiln(nps, NTHRD), ns );
     const dim3 nthrd ( NTHRD, 1 );
 
-    KL(rigid_dev::update_pp, ( nblck, nthrd ), (nps, rr0, ss, /**/ pp));
+    KL(rigid_update_pp_kernel, ( nblck, nthrd ), (nps, rr0, ss, /**/ pp));
 }
 
 void rig_update_mesh(float dt, int ns, const Rigid *ss, int nv, const float *vv, /**/ Particle *pp) {
     const dim3 nblck ( ceiln(nv, NTHRD), ns );
     const dim3 nthrd ( NTHRD, 1 );
-    KL(rigid_dev::update_mesh, (nblck, nthrd ), (dt, ss, nv, vv, /**/ pp));
+    KL(rigid_update_mesh_kernel, (nblck, nthrd ), (dt, ss, nv, vv, /**/ pp));
 }
 
 
@@ -4271,26 +4268,23 @@ struct Force;
 void rbc_stretch_ini(const char *path, int nv, /**/ RbcStretch**); /* `nv` is for error check */
 void rbc_stretch_fin(RbcStretch*);
 void rbc_stretch_apply(int nm, const RbcStretch*, /**/ Force*);
-namespace rbc_stretch_dev {
-static __device__ void apply0(const float *f, /**/ float *fb) {
+static __device__ void rbc_stretch_apply0(const float *f, /**/ float *fb) {
     enum {X, Y, Z};
     fb[X] += f[X]; fb[Y] += f[Y]; fb[Z] += f[Z];
 }
 
-static __device__ void apply1(int i, int nv, const float *f, Force *ff) {
+static __device__ void rbc_stretch_apply1(int i, int nv, const float *f, Force *ff) {
     int k;
     k = i % nv;
-    apply0(&f[3*k], /**/ ff[i].f);
+    rbc_stretch_apply0(&f[3*k], /**/ ff[i].f);
 }
 
-__global__ void apply(int n, int nv, const float *f, Force *ff) {
+__global__ void rbc_stretch_apply_kernel(int n, int nv, const float *f, Force *ff) {
     int i;
     i = threadIdx.x + blockDim.x * blockIdx.x;
     if (i >= n) return;
-    apply1(i, nv, f, /**/ ff);
-}
-}
-struct RbcStretch {
+    rbc_stretch_apply1(i, nv, f, /**/ ff);
+}struct RbcStretch {
     int nv; /* number of vertices */
     float *f; /* force: 3*nv */
 };
@@ -4347,7 +4341,7 @@ void rbc_stretch_apply(int nm, const RbcStretch *f, /**/ Force *ff) {
     int n, nv;
     nv = f->nv;
     n  = nm * nv;
-    if (n) KL(rbc_stretch_dev::apply, (k_cnf(n)), (n, nv, f->f, /**/ ff));
+    if (n) KL(rbc_stretch_apply_kernel, (k_cnf(n)), (n, nv, f->f, /**/ ff));
 }
 
 
@@ -5356,8 +5350,7 @@ struct RbcCom {
     float3 *hrr, *hvv;  /* positions, velocities on host   */
 };
 
-namespace rbccom_dev {
-__global__ void reduce_props(int nv, const Particle *pp, /**/ float3 *rr, float3 *vv) {
+__global__ void rbccom_reduce_props_kernel(int nv, const Particle *pp, /**/ float3 *rr, float3 *vv) {
     int mid, i;
     float3 r, v;
     i   = threadIdx.x + blockIdx.x * blockDim.x;
@@ -5385,9 +5378,7 @@ __global__ void reduce_props(int nv, const Particle *pp, /**/ float3 *rr, float3
         atomicAdd(&vv[mid].y, v.y);
         atomicAdd(&vv[mid].z, v.z);
     }
-}
-}
-void rbc_com_ini(int nv, int max_cell, /**/ RbcCom **pq) {
+}void rbc_com_ini(int nv, int max_cell, /**/ RbcCom **pq) {
     RbcCom *q;
     size_t sz;
     EMALLOC(1, &q);
@@ -5415,7 +5406,7 @@ static void reduce(int nm, int nv, const Particle *pp, /**/ float3 *rr, float3 *
     dim3 thrd(128, 1);
     dim3 blck(ceiln(nv, thrd.x), nm);
 
-    KL(rbccom_dev::reduce_props, (blck, thrd), (nv, pp, /**/ rr, vv));
+    KL(rbccom_reduce_props_kernel, (blck, thrd), (nv, pp, /**/ rr, vv));
 }
 
 static void download(int nm, const float3 *d, /**/ float3 *h) {
