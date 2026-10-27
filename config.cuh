@@ -1,6 +1,6 @@
 #pragma once
 
-/* One build policy for every compilation unit in the executable. */
+
 #if defined(DEV_CUDA) && defined(DEV_CPU)
 #error "DEV_CUDA and DEV_CPU cannot both be defined"
 #endif
