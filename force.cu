@@ -993,14 +993,13 @@ struct TBPaCArray_v {
     Texo<int> cc;
 };
 
-namespace fbulk_dev {
 #define _S_ static __device__
 #define _I_ static __device__
 
-/* bulk parray fetch */
+/* bulk parray fbulk_fetch */
 
 template <typename Parray>
-_S_ void bpa_fetch_p(Parray a, int i, PairPa *p) {
+_S_ void fbulk_bpa_fetch_p(Parray a, int i, PairPa *p) {
     float4 r, v;
     r = a.pp[2*i + 0];
     v = a.pp[2*i + 1];
@@ -1010,10 +1009,10 @@ _S_ void bpa_fetch_p(Parray a, int i, PairPa *p) {
 }
 
 
-/* texture bulk parray fetch */
+/* texture bulk parray fbulk_fetch */
 
 template <typename Parray>
-_S_ void tbpa_fetch_p(Parray a, int i, PairPa *p) {
+_S_ void fbulk_tbpa_fetch_p(Parray a, int i, PairPa *p) {
     float4 r, v;
     r = texo_fetch(a.pp, 2*i + 0);
     v = texo_fetch(a.pp, 2*i + 1);
@@ -1022,12 +1021,12 @@ _S_ void tbpa_fetch_p(Parray a, int i, PairPa *p) {
     p->vx = v.x;  p->vy = v.y;  p->vz = v.z;
 }
 
-_I_ void fetch(TBPaArray_v a, int i, PairPa *p) {
-    tbpa_fetch_p(a, i, p);
+_I_ void fbulk_fetch(TBPaArray_v a, int i, PairPa *p) {
+    fbulk_tbpa_fetch_p(a, i, p);
 }
 
-_I_ void fetch(TBPaCArray_v a, int i, PairPa *p) {
-    tbpa_fetch_p(a, i, p);
+_I_ void fbulk_fetch(TBPaCArray_v a, int i, PairPa *p) {
+    fbulk_tbpa_fetch_p(a, i, p);
     p->color = texo_fetch(a.cc, i);
 }
 
@@ -1035,7 +1034,7 @@ _I_ void fetch(TBPaCArray_v a, int i, PairPa *p) {
 #undef _I_
 #define _S_ static __device__
 
-_S_ bool cutoff_range(PairPa pa, PairPa pb) {
+_S_ bool fbulk_cutoff_range(PairPa pa, PairPa pb) {
     float x, y, z;
     x = pa.x - pb.x;
     y = pa.y - pb.y;
@@ -1043,7 +1042,7 @@ _S_ bool cutoff_range(PairPa pa, PairPa pb) {
     return x*x + y*y + z*z <= 1.f;
 }
 
-_S_ int3 get_cid(int3 L, const PairPa *pa) {
+_S_ int3 fbulk_get_cid(int3 L, const PairPa *pa) {
     int3 c;
     c.x = pa->x + L.x / 2;
     c.y = pa->y + L.y / 2;
@@ -1051,12 +1050,12 @@ _S_ int3 get_cid(int3 L, const PairPa *pa) {
     return c;
 }
 
-_S_ bool valid_c(int c, int hi) {
+_S_ bool fbulk_valid_c(int c, int hi) {
     return (c >= 0) && (c < hi);
 }
 
 template <typename Par, typename Parray, typename Farray, typename Fo>
-_S_ void loop_pp(const Par *params, int ia, PairPa pa, Parray parray, int start, int end, float seed, /**/ Fo *fa, Farray farray) {
+_S_ void fbulk_loop_pp(const Par *params, int ia, PairPa pa, Parray parray, int start, int end, float seed, /**/ Fo *fa, Farray farray) {
     enum {X, Y, Z};
     int ib;
     PairPa pb;
@@ -1066,9 +1065,9 @@ _S_ void loop_pp(const Par *params, int ia, PairPa pa, Parray parray, int start,
     for (ib = start; ib < end; ++ib) {
         if (ib >= ia) continue;
 
-        fetch(parray, ib, &pb);
+        fbulk_fetch(parray, ib, &pb);
 
-        if (!cutoff_range(pa, pb)) continue;
+        if (!fbulk_cutoff_range(pa, pb)) continue;
 
         rnd = rnd::mean0var1ii(seed, ia, ib);
         pair_force(params, pa, pb, rnd, /**/ &f);
@@ -1080,14 +1079,14 @@ _S_ void loop_pp(const Par *params, int ia, PairPa pa, Parray parray, int start,
 }
 
 template <typename Par, typename PArray, typename Farray, typename Fo>
-_S_ void one_row(const Par *params, int3 L, int dz, int dy, int ia, int3 ca, PairPa pa, PArray parray, const int *start, float seed,
+_S_ void fbulk_one_row(const Par *params, int3 L, int dz, int dy, int ia, int3 ca, PairPa pa, PArray parray, const int *start, float seed,
                                /**/ Fo *fa, Farray farray) {
     int3 cb;
     int enddx, startx, endx, cid0, bs, be;
     cb.z = ca.z + dz;
     cb.y = ca.y + dy;
-    if (!valid_c(cb.z, L.z)) return;
-    if (!valid_c(cb.y, L.y)) return;
+    if (!fbulk_valid_c(cb.z, L.z)) return;
+    if (!fbulk_valid_c(cb.y, L.y)) return;
 
     /* dx runs from -1 to enddx */
     enddx = (dz == 0 && dy == 0) ? 0 : 1;
@@ -1100,12 +1099,12 @@ _S_ void one_row(const Par *params, int3 L, int dz, int dy, int ia, int3 ca, Pai
     bs = start[cid0 + startx];
     be = start[cid0 + endx];
 
-    loop_pp(params, ia, pa, parray, bs, be, seed, /**/ fa, farray);
+    fbulk_loop_pp(params, ia, pa, parray, bs, be, seed, /**/ fa, farray);
 }
 
 // unroll loop
 template <typename Par, typename Parray, typename Farray>
-__global__ void apply(Par params, int3 L, int n, Parray parray, const int *start, float seed, /**/ Farray farray) {
+__global__ void fbulk_apply_kernel(Par params, int3 L, int n, Parray parray, const int *start, float seed, /**/ Farray farray) {
     enum {X, Y, Z};
     int ia;
     int3 ca;
@@ -1115,10 +1114,10 @@ __global__ void apply(Par params, int3 L, int n, Parray parray, const int *start
     ia = threadIdx.x + blockIdx.x * blockDim.x;
     if (ia >= n) return;
 
-    fetch(parray, ia, &pa);
-    ca = get_cid(L, &pa);
+    fbulk_fetch(parray, ia, &pa);
+    ca = fbulk_get_cid(L, &pa);
 
-#define ONE_ROW(dz, dy) one_row (&params, L, dz, dy, ia, ca, pa, parray, start, seed, /**/ &fa, farray)
+#define ONE_ROW(dz, dy) fbulk_one_row (&params, L, dz, dy, ia, ca, pa, parray, start, seed, /**/ &fa, farray)
 
     ONE_ROW(-1, -1);
     ONE_ROW(-1,  0);
@@ -1134,8 +1133,6 @@ __global__ void apply(Par params, int3 L, int n, Parray parray, const int *start
 #undef _S_
 // #include "dev/map.h"
 // #include "dev/xmain.h"
-}
-
 void flocal_push_pp(const float4 *pp, BPaArray *a) {
     a->pp = pp;
     a->colors = false;
@@ -1171,7 +1168,7 @@ static void interactions(Par params, int3 L, int n, Parray parray, const int *st
     if (n <= 0) return;
     seed = rnd_get(rnd);
 
-    KL(fbulk_dev::apply,
+    KL(fbulk_apply_kernel,
        (ceiln((n), THR), THR),
        (params, L, n, parray, start, seed, /**/ farray));
 }
