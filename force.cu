@@ -2405,8 +2405,7 @@ void area_volume_fin(AreaVolume*);
 void area_volume_compute(AreaVolume*, int nm, const Particle*, /**/ float **av); // <2>
 void area_volume_host(AreaVolume*, /**/ float **av); // <3>
 
-namespace rbc_force_av_dev {
-static __device__ float3 pp2r(const Particle *pp, const int id) {
+static __device__ float3 rbc_force_av_pp2r(const Particle *pp, const int id) {
     enum {X, Y, Z};
     float3 r;
     r.x = pp[id].r[X];
@@ -2415,7 +2414,7 @@ static __device__ float3 pp2r(const Particle *pp, const int id) {
     return r;
 }
 
-static __device__ float area(const float3 r0, const float3 r1, const float3 r2) {
+static __device__ float rbc_force_av_area(const float3 r0, const float3 r1, const float3 r2) {
     float3 x1, x2, n;
     diff(&r1, &r0, /**/ &x1);
     diff(&r2, &r0, /**/ &x2);
@@ -2423,7 +2422,7 @@ static __device__ float area(const float3 r0, const float3 r1, const float3 r2) 
     return 0.5f * sqrtf(dot<float>(&n, &n));
 }
 
-static __device__ float volume(const float3 r0, const float3 r1, const float3 r2) {
+static __device__ float rbc_force_av_volume(const float3 r0, const float3 r1, const float3 r2) {
     return
         0.1666666667f *
         ((r0.x*r1.y-r0.y*r1.x)*r2.z +
@@ -2431,7 +2430,7 @@ static __device__ float volume(const float3 r0, const float3 r1, const float3 r2
          (r0.y*r1.z-r0.z*r1.y)*r2.x);
 }
 
-__global__ void main(int nt, int nv, const Particle *pp, const int4 *tri, float *totA_V) {
+__global__ void rbc_force_av_kernel(int nt, int nv, const Particle *pp, const int4 *tri, float *totA_V) {
     float2 a_v = make_float2(0.0f, 0.0f);
     int i, cid = blockIdx.y;
     float3 r0, r1, r2;
@@ -2439,19 +2438,18 @@ __global__ void main(int nt, int nv, const Particle *pp, const int4 *tri, float 
 
     for (i = blockIdx.x * blockDim.x + threadIdx.x; i < nt; i += blockDim.x * gridDim.x) {
         ids = tri[i];
-        r0 = pp2r(pp, ids.x + cid * nv);
-        r1 = pp2r(pp, ids.y + cid * nv);
-        r2 = pp2r(pp, ids.z + cid * nv);
+        r0 = rbc_force_av_pp2r(pp, ids.x + cid * nv);
+        r1 = rbc_force_av_pp2r(pp, ids.y + cid * nv);
+        r2 = rbc_force_av_pp2r(pp, ids.z + cid * nv);
 
-        a_v.x += area  (r0, r1, r2);
-        a_v.y += volume(r0, r1, r2);
+        a_v.x += rbc_force_av_area  (r0, r1, r2);
+        a_v.y += rbc_force_av_volume(r0, r1, r2);
     }
     a_v = warpReduceSum(a_v);
     if ((threadIdx.x & (warpSize - 1)) == 0) {
         atomicAdd(&totA_V[2 * cid + 0], a_v.x);
         atomicAdd(&totA_V[2 * cid + 1], a_v.y);
     }
-}
 }
 struct AreaVolume {
     int nt, nv; /* number of triangles and vertices in one cell */
@@ -2503,7 +2501,7 @@ static void compute(int nv, int nt, int nc, const Particle *pp, const int4 *tri,
     dim3 avThreads(256, 1);
     dim3 avBlocks(1, nc);
     Dzero(av, 2*nc);
-    KL(rbc_force_av_dev::main, (avBlocks, avThreads), (nt, nv, pp, tri, av));
+    KL(rbc_force_av_kernel, (avBlocks, avThreads), (nt, nv, pp, tri, av));
 }
 
 void area_volume_compute(AreaVolume *q, int nc, const Particle *pp, /**/ float **pav) {
