@@ -4017,8 +4017,7 @@ _I_ float sdf_eval(const Sdf_v *sdf0, float x, float y, float z)  // <3>
 #undef _I_
 #endif
 
-namespace sdf_dev {
-static __device__ float3 get_r(int3 L, const float *U) {
+static __device__ float3 sdf_get_r(int3 L, const float *U) {
     enum {X, Y, Z};
     float3 r;
     r.x = L.x * (U[X] - 0.5);
@@ -4027,7 +4026,7 @@ static __device__ float3 get_r(int3 L, const float *U) {
     return r;
 }
 
-__global__ void count_inside(Sdf_v sv, int3 L, int n, const float *UU, int *counts) {
+__global__ void sdf_count_inside_kernel(Sdf_v sv, int3 L, int n, const float *UU, int *counts) {
     int i, c, chunkid, warpmaster;
     float3 r;
     float s;
@@ -4038,7 +4037,7 @@ __global__ void count_inside(Sdf_v sv, int3 L, int n, const float *UU, int *coun
     chunkid = blockDim.x;
 
     if (i < n) {
-        r = get_r(L, UU + 3 * i);
+        r = sdf_get_r(L, UU + 3 * i);
         s = sdf_eval(&sv, r.x, r.y, r.z);
         c = (s <= 0.f);
     }
@@ -4048,8 +4047,6 @@ __global__ void count_inside(Sdf_v sv, int3 L, int n, const float *UU, int *coun
     if (warpmaster)
         atomicAdd(&counts[chunkid], c);
 }
-}
-
 struct Array3d;
 struct Tform;
 struct Sdf {
@@ -4245,7 +4242,7 @@ static void chunk_counts(int3 L, const Sdf *sdf, int nsamples, int nchunks, int 
 
     gen_rnd(3 * nsamples, UU);
 
-    KL(sdf_dev::count_inside,
+    KL(sdf_count_inside_kernel,
        (nchunks, NTHREADS),
        (view, L, nsamples, UU, /**/ counts_dev));
 
