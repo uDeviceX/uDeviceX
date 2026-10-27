@@ -14483,8 +14483,7 @@ _I_ float3 warpReduceSum(float3 val)  // <3>
 
 
 
-namespace den_dev {
-__global__ void kill(int maxden, const int *starts, const int *counts, int n, const int *cids, /**/ int *ndead, int *kk) {
+__global__ void den_kill_kernel(int maxden, const int *starts, const int *counts, int n, const int *cids, /**/ int *ndead, int *kk) {
     int i, nd, cid, s, c, pid, j;
     nd = 0;
     c = maxden;
@@ -14511,8 +14510,6 @@ __global__ void kill(int maxden, const int *starts, const int *counts, int n, co
     if (threadIdx.x % warpSize == 0)
         atomicAdd(ndead, nd);
 }
-}
-
 struct DCont {
     int *ndead_dev, ndead;
     int *kk;
@@ -14555,7 +14552,7 @@ void den_reset(int n, /**/ DCont *d) {
 }
 
 void den_filter_particles(int maxdensity, const DContMap *m, const int *starts, const int *counts, /**/ DCont *d) {
-    KL( den_dev::kill, (k_cnf(m->n)), (maxdensity, starts, counts, m->n, m->cids, /**/ d->ndead_dev, d->kk) );
+    KL( den_kill_kernel, (k_cnf(m->n)), (maxdensity, starts, counts, m->n, m->cids, /**/ d->ndead_dev, d->kk) );
 }
 
 void den_download_ndead(DCont *d) {
