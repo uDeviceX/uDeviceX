@@ -24506,25 +24506,24 @@ void cnt_build_cells(int nw, const PairParams **prms, const PaWrap *pw, /**/ Con
 void cnt_bulk(const Contact *cnt, int nw, const PairParams **prms, PaWrap *pw, FoWrap *fw); // <2>
 void cnt_halo(const Contact *cnt, int nw, const PairParams **prms, PaWrap *pw, FoWrap *fw, Pap26 all_pp, Fop26 all_ff, const int *all_counts); // <3>
 
-namespace cnt_dev {
 template <typename Par>
-static __device__ void pair(Par params, PairPa a, PairPa b, float rnd, /**/
+static __device__ void cnt_pair(Par params, PairPa a, PairPa b, float rnd, /**/
                             float *fx, float *fy, float *fz) {
     PairFo f;
     pair_force(&params, a, b, rnd, /**/ &f);
     *fx = f.x; *fy = f.y; *fz = f.z;
 }
-/** TODO: should be merged with Map in fsi:: */
-enum {FULL, EMPTY}; /* map status */
-struct Map { /* helps to find remote particle */
+/** TODO: should be merged with CntMap in fsi:: */
+enum {CNT_FULL, CNT_EMPTY}; /* map status */
+struct CntMap { /* helps to find remote particle */
     int  org0, org1, org2;
     int cnt0, cnt1, cnt2;
 };
 
 /* true if `i' is bigger than the number of remote particles */
-static __device__ int endp(const Map m, int i) { return i >= m.cnt2; }
+static __device__ int cnt_endp(const CntMap m, int i) { return i >= m.cnt2; }
 
-static __device__ int m2id(const Map m, int i) {
+static __device__ int cnt_m2id(const CntMap m, int i) {
     /* return remote particle id */
     int m1, m2;
     int id;
@@ -24533,7 +24532,7 @@ static __device__ int m2id(const Map m, int i) {
     id = i + (m2 ? m.org2 : m1 ? m.org1 : m.org0);
     return id;
 }
-static __device__ int tex2map(int3 L, int zplane, float x, float y, float z, const int *starts, /**/ Map *m) {
+static __device__ int cnt_tex2map(int3 L, int zplane, float x, float y, float z, const int *starts, /**/ CntMap *m) {
     int cnt0, cnt1, cnt2, org0;
     int org1, org2;
     int xcenter, xstart, xcount;
@@ -24546,7 +24545,7 @@ static __device__ int tex2map(int3 L, int zplane, float x, float y, float z, con
     xstart = max(0, xcenter - 1);
     xcount = min(L.x, xcenter + 2) - xstart;
 
-    if (xcenter - 1 >= L.x || xcenter + 2 <= 0) return EMPTY;
+    if (xcenter - 1 >= L.x || xcenter + 2 <= 0) return CNT_EMPTY;
 
     ycenter = L.y / 2 + (int)floorf(y);
 
@@ -24583,9 +24582,9 @@ static __device__ int tex2map(int3 L, int zplane, float x, float y, float z, con
 
     m->org0 = org0; m->org1 = org1; m->org2 = org2;
     m->cnt0 = cnt0; m->cnt1 = cnt1; m->cnt2 = cnt2;
-    return FULL;
+    return CNT_FULL;
 }
-static __device__ int r2map(int3 L, int zplane, int n, float x, float y, float z, const int *starts, /**/ Map *m) {
+static __device__ int cnt_r2map(int3 L, int zplane, int n, float x, float y, float z, const int *starts, /**/ CntMap *m) {
     /* coordinate [r] to map */
     int cnt0, cnt1, cnt2, org0;
     int org1, org2;
@@ -24598,7 +24597,7 @@ static __device__ int r2map(int3 L, int zplane, int n, float x, float y, float z
     xcenter = min(L.x - 1, max(0, L.x / 2 + (int)floorf(x)));
     xstart = max(0, xcenter - 1);
     xcount = min(L.x, xcenter + 2) - xstart;
-    if (xcenter - 1 >= L.x || xcenter + 2 <= 0) return EMPTY;
+    if (xcenter - 1 >= L.x || xcenter + 2 <= 0) return CNT_EMPTY;
     ycenter = min(L.y - 1, max(0, L.y / 2 + (int)floorf(y)));
     zcenter = min(L.z - 1, max(0, L.z / 2 + (int)floorf(z)));
     zmy = zcenter - 1 + zplane;
@@ -24630,26 +24629,26 @@ static __device__ int r2map(int3 L, int zplane, int n, float x, float y, float z
 
     m->org0 = org0; m->org1 = org1; m->org2 = org2;
     m->cnt0 = cnt0; m->cnt1 = cnt1; m->cnt2 = cnt2;
-    return FULL;
+    return CNT_FULL;
 }
-static __device__ void f22p(float2 a, float2 b, float2 c, PairPa *p) {
+static __device__ void cnt_f22p(float2 a, float2 b, float2 c, PairPa *p) {
     p->x  = a.x; p->y  = a.y; p->z  = b.x;
     p->vx = b.y; p->vy = c.x; p->vz = c.y;
 }
 
-static __device__ void fetch(int i, const float2 *pp, PairPa *p) {
+static __device__ void cnt_fetch(int i, const float2 *pp, PairPa *p) {
     float2 a, b, c;
     a = __ldg(pp + 3 * i + 0);
     b = __ldg(pp + 3 * i + 1);
     c = __ldg(pp + 3 * i + 2);
-    f22p(a, b, c, p);
+    cnt_f22p(a, b, c, p);
 }
 
 template <typename Par>
-__global__ void bulk(bool self, Par params, int3 L, int n_dst, const float2 *pp_dst,
+__global__ void cnt_bulk_kernel(bool self, Par params, int3 L, int n_dst, const float2 *pp_dst,
                      const int *starts, const uint *ids_src, const float2 *pp_src,
                      float seed, /**/ float *ff_dst, float *ff_src) {
-    Map m; /* see map/ */
+    CntMap m; /* see map/ */
 
     float fx, fy, fz, rnd;
     PairPa a, b;
@@ -24665,23 +24664,23 @@ __global__ void bulk(bool self, Par params, int3 L, int n_dst, const float2 *pp_
 
     if (aid >= n_dst) return;
 
-    fetch(aid, pp_dst, &a);
-    mapstatus = r2map(L, zplane, n_dst, a.x, a.y, a.z, starts, /**/ &m);
+    cnt_fetch(aid, pp_dst, &a);
+    mapstatus = cnt_r2map(L, zplane, n_dst, a.x, a.y, a.z, starts, /**/ &m);
 
-    if (mapstatus == EMPTY) return;
+    if (mapstatus == CNT_EMPTY) return;
     xforce = yforce = zforce = 0;
-    for (i = 0; !endp(m, i); ++i) {
-        slot = m2id(m, i);
+    for (i = 0; !cnt_endp(m, i); ++i) {
+        slot = cnt_m2id(m, i);
         code = ids_src[slot];
         clist_decode_id(code, /**/ &objid, &bid);
 
         if (self && aid <= bid) continue;
 
-        fetch(bid, pp_src, &b);
+        cnt_fetch(bid, pp_src, &b);
 
         rnd = rnd::mean0var1ii(seed, aid, bid);
 
-        pair(params, a, b, rnd, /**/ &fx, &fy, &fz);
+        cnt_pair(params, a, b, rnd, /**/ &fx, &fy, &fz);
 
         xforce += fx;
         yforce += fy;
@@ -24703,7 +24702,7 @@ void interactions_one_p(Par params, int3 L, float seed, PairPa a, int aid,
                         const int *starts, const uint *ids_src, const float2 *pp_src,
                         /**/ float *ff_src, float *fA) {
     enum {X, Y, Z};
-    Map m;
+    CntMap m;
     int mapstatus;
     PairPa b;
     float fx, fy, fz;
@@ -24714,16 +24713,16 @@ void interactions_one_p(Par params, int3 L, float seed, PairPa a, int aid,
     float rnd;
 
     for (zplane = 0; zplane < 3; ++zplane) {
-        mapstatus = tex2map(L, zplane, a.x, a.y, a.z, starts, /**/ &m);
-        if (mapstatus == EMPTY) continue;
-        for (i = 0; !endp(m, i); ++i) {
-            slot = m2id(m, i);
+        mapstatus = cnt_tex2map(L, zplane, a.x, a.y, a.z, starts, /**/ &m);
+        if (mapstatus == CNT_EMPTY) continue;
+        for (i = 0; !cnt_endp(m, i); ++i) {
+            slot = cnt_m2id(m, i);
             code = ids_src[slot];
             clist_decode_id(code, /**/ &oid, &bid);
 
-            fetch(bid, pp_src, /**/ &b);
+            cnt_fetch(bid, pp_src, /**/ &b);
             rnd = rnd::mean0var1ii(seed, aid, bid);
-            pair(params, a, b, rnd, /**/ &fx, &fy, &fz);
+            cnt_pair(params, a, b, rnd, /**/ &fx, &fy, &fz);
             xforce += fx;
             yforce += fy;
             zforce += fz;
@@ -24738,7 +24737,7 @@ void interactions_one_p(Par params, int3 L, float seed, PairPa a, int aid,
 }
 
 template <typename Par>
-__global__ void halo(Par params, int3 L, float seed,
+__global__ void cnt_halo_kernel(Par params, int3 L, float seed,
                      const int27 starts, int n_dst, Pap26 hpp,
                      const int *cellstarts, const uint *ids_src, const float2 *pp_src,
                      /**/ Fop26 hff, float *ff_src) {
@@ -24752,13 +24751,11 @@ __global__ void halo(Par params, int3 L, float seed,
 
     fid = frag_dev::frag_get_fid(starts.d, aid);
     start = starts.d[fid];
-    fetch(aid - start, (const float2*)hpp.d[fid], &a);
+    cnt_fetch(aid - start, (const float2*)hpp.d[fid], &a);
     fA = hff.d[fid][aid - start].f;
     interactions_one_p(params, L, seed, a, aid, cellstarts, ids_src, pp_src,
                        /**/ ff_src, fA);
 }
-}
-
 struct Contact {
     int nobj;         /* number of objects       */
     Clist    **cells; /* cell lists              */
@@ -24803,7 +24800,7 @@ void cnt_bulk(const Contact *c, int nw, const PairParams **prms, PaWrap *pw, FoW
             UC(pair_get_view_dpd_lj(prm, &pv));
 
             rnd = rnd_get(c->rgen);
-            KL(cnt_dev::bulk, (k_cnf(3 * pwi.n)),
+            KL(cnt_bulk_kernel, (k_cnf(3 * pwi.n)),
                (self, pv, c->L,
                 pwi.n, (const float2*) pwi.pp,
                 starts, ids, (const float2*) pwj.pp,
@@ -24846,7 +24843,7 @@ static void halo_one_type(int idh, const Contact *c, int nw, const PairParams **
 
         UC(pair_get_view_dpd_lj(prm, &pv));
 
-        KL(cnt_dev::halo, (k_cnf(n)),
+        KL(cnt_halo_kernel, (k_cnf(n)),
            (pv, c->L, rnd_get(c->rgen), starts,
             n, PP, cellstarts, ids, (const float2*) pwi.pp,
             /**/ FF, (float*) fwi.ff));
