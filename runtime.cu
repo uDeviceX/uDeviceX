@@ -16639,18 +16639,17 @@ struct GridSampleData {
     SampleDatum d[MAX_N_DATA];
 };
 
-namespace sampler_dev {
-struct Part {
+struct SamplerPart {
     float3 r, v;
 };
 
-struct Stress {
+struct SamplerStress {
     float3 s1, s2;
 };
 #define _S_ static __device__
 #define _I_ static __device__
 
-_I_ void fetch_part(int i, const SampleDatum *d, Part *p) {
+_I_ void sampler_fetch_part(int i, const SampleDatum *d, SamplerPart *p) {
     float2 p0, p1, p2;
     const float2 *pp = (const float2*) d->pp;
     p0 = pp[3*i+0]; p1 = pp[3*i+1]; p2 = pp[3*i+2];
@@ -16659,11 +16658,11 @@ _I_ void fetch_part(int i, const SampleDatum *d, Part *p) {
     p->v = make_float3(p1.y, p2.x, p2.y);
 }
 
-_I_ void fetch_color(int i, const SampleDatum *d, int *c) {
+_I_ void sampler_fetch_color(int i, const SampleDatum *d, int *c) {
     *c = d->cc[i];
 }
 
-_I_ void fetch_stress(int i, const SampleDatum *d, Stress *s) {
+_I_ void sampler_fetch_stress(int i, const SampleDatum *d, SamplerStress *s) {
     float2 s0, s1, s2;
     const float2 *ss = (const float2*) d->ss;
     s0 = ss[3*i+0]; s1 = ss[3*i+1]; s2 = ss[3*i+2];
@@ -16677,14 +16676,14 @@ _I_ void fetch_stress(int i, const SampleDatum *d, Stress *s) {
 #define _S_ static __device__
 #define _I_ static __device__
 
-_I_ void add_part(int i, const Part *p, const Grid *g) {
+_I_ void sampler_add_part(int i, const SamplerPart *p, const Grid *g) {
     atomicAdd(g->p[RHO] + i, 1.f);
     atomicAdd(g->p[VX]  + i, p->v.x);
     atomicAdd(g->p[VY]  + i, p->v.y);
     atomicAdd(g->p[VZ]  + i, p->v.z);
 }
 
-_I_ void add_color(int i, const int c, const Grid *g) {
+_I_ void sampler_add_color(int i, const int c, const Grid *g) {
 #define ADD_COLOR(a)                               \
     if (ENUM_COLOR(a) == c)                        \
         atomicAdd(g->c[ENUM_COLOR(a)] + i, 1.f);
@@ -16694,7 +16693,7 @@ _I_ void add_color(int i, const int c, const Grid *g) {
 #undef ADD_COLOR
 }
 
-_I_ void add_stress(int i, const Stress *s, const Grid *g) {
+_I_ void sampler_add_stress(int i, const SamplerStress *s, const Grid *g) {
     atomicAdd(g->s[SXX] + i, s->s1.x);
     atomicAdd(g->s[SXY] + i, s->s1.y);
     atomicAdd(g->s[SXZ] + i, s->s1.z);
@@ -16708,81 +16707,81 @@ _I_ void add_stress(int i, const Stress *s, const Grid *g) {
 #undef _I_
 #define _S_ static __device__
 
-_S_ float get_spacing(int L, int N) {
+_S_ float sampler_get_spacing(int L, int N) {
     return (float) L / (float) N;
 }
 
-_S_ int get_coord(float x, int L, int N) {
+_S_ int sampler_get_coord(float x, int L, int N) {
     int i;
     float dx;
-    dx = get_spacing(L, N);
+    dx = sampler_get_spacing(L, N);
     i = (x + L/2) / dx;
     return min(N-1, max(0, i));
 }
 
-_S_ int3 get_cell_coords(float3 r, int3 L, int3 N) {
-    return make_int3(get_coord(r.x, L.x, N.x),
-                     get_coord(r.y, L.y, N.y),
-                     get_coord(r.z, L.z, N.z));
+_S_ int3 sampler_get_cell_coords(float3 r, int3 L, int3 N) {
+    return make_int3(sampler_get_coord(r.x, L.x, N.x),
+                     sampler_get_coord(r.y, L.y, N.y),
+                     sampler_get_coord(r.z, L.z, N.z));
 }
 
-_S_ int get_grid_id(int3 gc, int3 N) {
+_S_ int sampler_get_grid_id(int3 gc, int3 N) {
     return gc.x + N.x * (gc.y + N.y * gc.z);
 }
 
-_S_ int get_grid_id(const Part *p, const Grid *g) {
+_S_ int sampler_get_grid_id(const SamplerPart *p, const Grid *g) {
     int3 gcoords;
-    gcoords = get_cell_coords(p->r, g->L, g->N);
-    return get_grid_id(gcoords, g->N);
+    gcoords = sampler_get_cell_coords(p->r, g->L, g->N);
+    return sampler_get_grid_id(gcoords, g->N);
 }
 
-__global__ void add(SampleDatum data, /**/ Grid grid) {
+__global__ void sampler_add_kernel(SampleDatum data, /**/ Grid grid) {
     int pid, gid; /* particle and grid id */
-    Part p;
+    SamplerPart p;
     pid = threadIdx.x + blockIdx.x * blockDim.x;
     if (pid >= data.n) return;
 
-    fetch_part(pid, &data, &p);
-    gid = get_grid_id(&p, &grid);
+    sampler_fetch_part(pid, &data, &p);
+    gid = sampler_get_grid_id(&p, &grid);
 
-    add_part(gid, &p, &grid);
+    sampler_add_part(gid, &p, &grid);
 
     if (grid.colors) {
         int c;
-        fetch_color(pid, &data, &c);
-        add_color(gid, c, &grid);
+        sampler_fetch_color(pid, &data, &c);
+        sampler_add_color(gid, c, &grid);
     }
 
     if (grid.stress) {
-        Stress s;
-        fetch_stress(pid, &data, &s);
-        add_stress(gid, &s, &grid);
+        SamplerStress s;
+        sampler_fetch_stress(pid, &data, &s);
+        sampler_add_stress(gid, &s, &grid);
     }
 }
 
-_S_ long get_size(const Grid *g) {
+_S_ long sampler_get_size(const Grid *g) {
     int3 N = g->N;
     return N.x * N.y * N.z;
 }
 
-_S_ float cell_volume(const Grid *g) {
+_S_ float sampler_cell_volume(const Grid *g) {
     float dx, dy, dz;
-    dx = get_spacing(g->L.x, g->N.x);
-    dy = get_spacing(g->L.y, g->N.y);
-    dz = get_spacing(g->L.z, g->N.z);
+    dx = sampler_get_spacing(g->L.x, g->N.x);
+    dy = sampler_get_spacing(g->L.y, g->N.y);
+    dz = sampler_get_spacing(g->L.z, g->N.z);
     return dx * dy * dz;
 }
 
-__global__ void space_avg(Grid g) {
+__global__ void sampler_space_avg_kernel(Grid g) {
     long i;
     float inv_rho;
     float rho, vol;
     float sv, sr, ss; /* scales for v, rho, stress */
     i = threadIdx.x + blockIdx.x * blockDim.x;
-    if (i >= get_size(&g)) return;
+    if (i >= sampler_get_size(&g)) return;
 
     rho = g.p[RHO][i];
-    vol = cell_volume(&g);
+    vol = sampler_cell_volume(&g);
 
     inv_rho = fabs(rho) > 1e-6 ? 1.f / rho : 0;
 
@@ -16812,10 +16811,10 @@ __global__ void space_avg(Grid g) {
     }
 }
 
-__global__ void add_to_grid(const Grid src, Grid dst) {
+__global__ void sampler_add_to_grid_kernel(const Grid src, Grid dst) {
     long i, j;
     i = threadIdx.x + blockIdx.x * blockDim.x;
-    if (i >= get_size(&src)) return;
+    if (i >= sampler_get_size(&src)) return;
 
     for (j = 0; j < NFIELDS_P; ++j)
         dst.p[j][i] += src.p[j][i];
@@ -16831,11 +16830,11 @@ __global__ void add_to_grid(const Grid src, Grid dst) {
     }
 }
 
-__global__ void time_avg(int nsteps, Grid g) {
+__global__ void sampler_time_avg_kernel(int nsteps, Grid g) {
     long i, j;
     float s;
     i = threadIdx.x + blockIdx.x * blockDim.x;
-    if (i >= get_size(&g)) return;
+    if (i >= sampler_get_size(&g)) return;
 
     s = 1.0 / nsteps;
 
@@ -16852,7 +16851,6 @@ __global__ void time_avg(int nsteps, Grid g) {
 }
 
 #undef _S_
-}
 
 static long get_size(const Grid *g) {
     int3 N = g->N;
@@ -16953,18 +16951,18 @@ static void add_data_to_grid(const GridSampleData *data, Grid *g) {
     for (i = 0; i < data->n; ++i) {
         d = data->d[i];
         n = d.n;
-        KL(sampler_dev::add, (k_cnf(n)), (d, *g));
+        KL(sampler_add_kernel, (k_cnf(n)), (d, *g));
     }
 }
 
 static void space_avg(Grid *g) {
     long n = get_size(g);
-    KL(sampler_dev::space_avg, (k_cnf(n)), (*g));
+    KL(sampler_space_avg_kernel, (k_cnf(n)), (*g));
 }
 
 static void add_to_grid(const Grid *s, Grid *st) {
     long n = get_size(s);
-    KL(sampler_dev::add_to_grid, (k_cnf(n)), (*s, *st));
+    KL(sampler_add_to_grid_kernel, (k_cnf(n)), (*s, *st));
 }
 
 void grid_sampler_add(const GridSampleData *data, GridSampler *s) {
@@ -16980,7 +16978,7 @@ void grid_sampler_add(const GridSampleData *data, GridSampler *s) {
 
 static void time_avg(int nsteps, Grid *g) {
     long n = get_size(g);
-    KL(sampler_dev::time_avg, (k_cnf(n)), (nsteps, *g));
+    KL(sampler_time_avg_kernel, (k_cnf(n)), (nsteps, *g));
 }
 
 static void download_n(int na, long n, float * const dev[], float *hst[]) {
